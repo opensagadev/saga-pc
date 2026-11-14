@@ -1,20 +1,14 @@
-// nu3d translation unit (retail 0x5c0200-0x5f7490), being rebuilt one module at a time; the PC
-// platform unit that follows it (0x5f7490-0x60df00) is nu3d_platform_pc.cpp.
-// Retail compiled nu3d as one C++ unit and emitted it in bottom-up call-graph passes, so module
-// functions interleave in the EXE; definitions here follow retail address order.
-// Modules merged so far: nuanim (with the PC procedural joint overrides), nuqfnt, nufont, occlusion, nugscn,
+// nu3d translation unit: nuanim (with the PC procedural joint overrides), nuqfnt, nufont, occlusion, nugscn,
 // nuportal, numtl, nutimebar, nudlist, nupostfilter, nulgtlaser, nutex_pc, nuframe, nuvport, nuprim, nudlist_pc,
 // nutrig, posteffect_ports_pc, nudynamiclight, nuspline, nutex, nuspecial_shadow_pc, nuqfnt_print, nughg,
 // nuocclusion, nuvisibility, nuspecial, nucore, nuhgobj, nupostdeferred and the nu3d post-blur helpers of
 // nudlist_material_pc.
 // The PS/Pc halves live in the platform unit, nu3d_platform_pc.cpp.
-// nufloat, numtx, nuhtml, nustateanim and nufrustum_pc stay separate: merged, their small leaves inline into
-// nu3d callers that retail compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlFlushPc, StateAnimEvaluate2, TestBox).
+// nufloat, numtx, nuhtml, nustateanim and nufrustum_pc are separate units, so their small leaves (NuFsqrt,
+// NuMtxMulH, NuHtmlFlushPc, StateAnimEvaluate2, TestBox) stay calls from nu3d.
 // StateAnimEvaluate itself is defined here: it keeps x87 and edx live across its call to
 // PCSpecialEmptyHandler, so it knew the hook's register use (same unit).
-// nuvec and nucamera stay separate for the same reason (AnimationDiagnosticNoOpPc and the nucamera
-// getters fold into their callers); nutexanim stays separate too: merged, NuTexAnimEnvProc drops from 80.5%
-// to 66.3%.
+// nuvec, nucamera and nutexanim are separate units for the same reason.
 
 #include "saga.h"
 
@@ -225,12 +219,11 @@ extern "C" {
     (((((value0) - (value1)) * 2.0 + (tangent0) + (tangent1)) * (t) - ((value0) - (value1)) * 3.0) -                   \
      (tangent0) * 2.0 - (tangent1))
 
-/* Genuine in-place operations; no reconstruction-only helper symbols. */
 #define PC_LEGACY_CURVE_STORE(destination, channel)                                                                    \
     (destination) = formats[(channel)] == 0 ? curves[(channel)].constant                                               \
                                             : NuAnimCurve2CalcValEx(&curves[(channel)], time, (u32)formats[(channel)])
 
-/* Radian <-> NUANG (65536 per turn) factors; float-precision double literals in retail. */
+/* Radian <-> NUANG (65536 per turn) factors, written as float-precision double literals. */
 #define PC_NUANG_PER_RADIAN 10430.3779296875
 #define PC_RADIAN_PER_NUANG 9.58738019107841e-05
 
@@ -656,7 +649,6 @@ extern "C" {
         return -1;
     }
 
-    /* PC native 0x005c9dd0, 84 bytes. */
     NuAnimReadChunk *NuAnimDataChunkCreate(i32 curve_set_count) {
         NuAnimReadChunk *chunk = (NuAnimReadChunk *)NuAlloc(sizeof(NuAnimReadChunk), NuAnimSourceFileName, 0x4a8);
         memset(chunk, 0, sizeof(NuAnimReadChunk));
@@ -667,7 +659,6 @@ extern "C" {
         return chunk;
     }
 
-    /* PC native 0x005c9e30, 59 bytes. */
     void *NuAnimDataCreate(i32 chunk_count) {
         u32 allocation_size = (u32)chunk_count * sizeof(void *) + offsetof(NuAnimReadData, chunk_storage);
         NuAnimReadData *animation = (NuAnimReadData *)NuAlloc((i32)allocation_size, NuAnimSourceFileName, 0x4bb);
@@ -793,7 +784,6 @@ extern "C" {
         buffer->joint_flags = (u8 *)NuScratchAlloc32(buffer->max_joints);
     }
 
-    /* PC native 0x005ca2f0, 41 bytes. */
     void NuAnimBuffDestroyScratch(ANI3_BUFFER_PC *buffer) {
         if (buffer == NULL) {
             return;
@@ -836,9 +826,6 @@ extern "C" {
             anim = (ANI3_HEADER_PC *)((char *)anim + anim->next_block);
         }
     }
-
-    /* Access conventions and valid-engine backing requirements are specified in the
-     * handoff; these are not historical full aggregate types. */
 
     void NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK_PC callback, void **data, i32 *joints) {
         AnimBuffEvalCB = callback;
@@ -1732,7 +1719,7 @@ extern "C" {
         return 0;
     }
 
-    /* Blend players are separate retail entries because their quaternion format
+    /* Blend players are separate functions because their quaternion format
      * and output-buffer state have distinct update semantics. */
     i32 ANI_SimpleAni3PlayerV4Joint_Blend_Quat3(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer, f32 blend,
                                                 i32 joint_count, i32 first_joint, NUVEC *root_translation) {
@@ -2112,7 +2099,7 @@ extern "C" {
                     squared = _mm_add_ps(_mm_shuffle_ps(squared, squared, 0x4e), squared);
                     squared = _mm_add_ps(_mm_shuffle_ps(squared, squared, 0xb1), squared);
                     _mm_store_ps(&sampled.x, _mm_mul_ps(_mm_rsqrt_ps(squared), result));
-                    /* Retail computes into its stack quaternion and discards that result. */
+                    /* Computes into its stack quaternion and discards that result. */
                     VuQuatSlerpFast(&sampled, (NUQUAT *)out, &sampled, blend);
                     out += 4;
                 } else {
@@ -2851,10 +2838,7 @@ extern "C" {
         matrix->m32 = -matrix->m32;
     }
 
-    /* Eleven physical words. Name is a distinct PC reconstruction convention.
-     * Root translation and locator output may be NULL; all other backing is valid.
-     * Curve calls always enter an empty owned x87 stack; FTOL preserves lower prefix.
-     * Return convention is source-only; original result type remains unapproved. */
+    /* Root translation and locator output may be NULL; curve calls always enter an empty x87 stack. */
     void PCBuildLegacySkeletalJoint(DWA_CURVE_CELL_PC *curves, i8 *formats, u8 node_flags, NUANIM_TIME2_PC *time,
                                     NUHGOBJ_EVAL_JOINT_PC *joint, NUVEC *scale, NUVEC *parent_scale, NUMTX *matrix,
                                     NUHGOBJ_JOINT_OVERRIDE_PC *override, NUVEC *root_translation,
@@ -3004,7 +2988,7 @@ extern "C" {
         globalbuffer = header;
     }
 
-    /* Pointer-typed rebase; retail selects between the moved pointer and NULL. */
+    /* Pointer-typed rebase; selects between the moved pointer and NULL. */
     static void *NuAnimRebaseChar(void *pointer, i32 amount) {
         return pointer != NULL ? (char *)pointer + amount : NULL;
     }
@@ -3714,7 +3698,7 @@ extern "C" {
 
 } // extern "C"
 
-// nuqfnt and nufont (0x5d0880-0x5d1750 and their later passes).
+// nuqfnt and nufont.
 extern "C" {
 
     void NuStrFixExtPlatform(char *dst, char *src, char *ext, i32 dst_size, char *platform_string);
@@ -4717,7 +4701,7 @@ extern "C" {
         buffer->addr += 4;
         *(f32 *)buffer->void_ptr = 1.0f / height;
         buffer->addr += 4;
-        /* The zero words are stored as integers (retail mov dword ptr [ecx], 0). */
+        /* The zero words are stored as integers. */
         *(i32 *)buffer->void_ptr = 0;
         buffer->addr += 4;
         *(i32 *)buffer->void_ptr = 0;
@@ -5339,7 +5323,7 @@ extern "C" i32 NuOcclusionManagerIsInitialised(void) {
 }
 
 extern "C" i32 NuOcclusionManagerIsEnabled(void) {
-    // MATCH-EXCEPTION: the int ternary narrowed to bool gives retail's `mov eax, 1` / `test al, al`
+    // MATCH-EXCEPTION: the int ternary narrowed to bool gives `mov eax, 1` / `test al, al`
     // (the original went through an inlined bool accessor).
     return (bool)(g_OcclusionManager.initialized && g_OcclusionManager.enabled ? TRUE : FALSE) != 0;
 }
@@ -5766,12 +5750,12 @@ extern "C" {
     }
 }
 
-/* Genuine original occlusion.cpp static members; outside extern C. */
+/* occlusion.cpp static members; outside extern C. */
 NUMTL *OccluderSet::ms_pZOnlyMtl3D = 0;
 NUMTL *OccluderSet::ms_pZOnlyMtl2D = 0;
 NUMTL *OccluderSet::ms_pAlphaMtl2D = 0;
 
-/* NuDynamicLight shadow helpers; unreferenced in retail but kept by the linker. */
+/* NuDynamicLight shadow helpers; unreferenced but kept by the linker. */
 extern "C" i32 rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const NUVEC4 *plane) {
     i32 count = 0;
     NUVEC4 *out = output;
@@ -5954,7 +5938,7 @@ extern "C" void PostShadowComputeClippingPlanesPc(const NUMTX *matrix, bool zero
     near_plane->w = -dot;
 }
 
-/* Original same-TU register helper: EDI plane, ESI origin, ECX point_a, EAX point_b. */
+/* Same-unit register helper: EDI plane, ESI origin, ECX point_a, EAX point_b. */
 static void PostShadowMakePlanePrivatePc(NUVEC4 *plane, const NUVEC4 *origin, const NUVEC4 *point_a,
                                          const NUVEC4 *point_b) {
     __declspec(align(16)) NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
@@ -5977,7 +5961,7 @@ extern "C" void PostShadowComputeFrustumCubePc(const NUCAMERA *camera, NUVEC4 *c
     OccluderVertexSet(&corners[1], -width, height, camera->near_clip, 1.0f);
     OccluderVertexSet(&corners[2], width, height, camera->near_clip, 1.0f);
     OccluderVertexSet(&corners[3], width, -height, camera->near_clip, 1.0f);
-    /* Each far corner goes through its own XYZ scratch (retail reloads every unwritten fourth word, so the four
+    /* Each far corner goes through its own XYZ scratch (every unwritten fourth word is reloaded, so the four
        copies do not share one loop variable); the original copies that unwritten word. */
 #define POST_SHADOW_FAR_CORNER(i)                                                                                      \
     do {                                                                                                               \
@@ -6081,14 +6065,14 @@ extern "C" void PostShadowComputeCapsulePc(const NUVEC4 *direction, const NUVEC4
             *radius = distance;
         }
     }
-    /* Native passes the final vertex distance, after all maximum stores. */
+    /* Passes the final vertex distance, after all maximum stores. */
     *radius = NuFsqrt(distance);
     NUVEC scaled = {(f32)((f64)direction->x * 100.0), (f32)((f64)direction->y * 100.0),
                     (f32)((f64)direction->z * 100.0)};
     delta.x = center->x - scaled.x;
     delta.y = center->y - scaled.y;
     delta.z = center->z - scaled.z;
-    /* As in the retail stack scratch, the fourth component was not assigned. */
+    /* As in the original stack scratch, the fourth component is not assigned. */
     OccluderVertexSet(endpoint, delta.x, delta.y, delta.z, delta.w);
 }
 
@@ -6621,7 +6605,7 @@ extern "C" {
     static NUPORTAL_FRUSTUM_PC *copyFrustrum(NUPORTAL_FRUSTUM_PC *source) {
         NUPORTAL_FRUSTUM_PC *copy = allocateFrustrum(source->plane_count);
         i32 i;
-        /* The complete native struct copy also overwrites the newly allocated planes pointer. */
+        /* The complete struct copy also overwrites the newly allocated planes pointer. */
         *copy = *source;
         for (i = 0; i < source->plane_count; ++i) {
             copy->planes[i] = source->planes[i];
@@ -6736,14 +6720,12 @@ extern "C" {
             frustum->planes[i].d =
                 -(normal.x * camera_position.x + normal.y * camera_position.y + normal.z * camera_position.z);
         }
-        /* Native argument order is portal, maximum, minimum. */
+        /* Argument order is portal, maximum, minimum. */
         computePortalExtents(portal, &frustum->maximum, &frustum->minimum);
         transposeClipPlanes(frustum);
         return frustum;
     }
 
-    /* Native same-TU callers. External declarations below are held genuine targets,
-       not substitute implementations; the scratch object is not source-link closed. */
     extern u8 NuPortalVisibilityBitsPc[625];
     static void drawInitialFrustum(NUPORTAL_FRUSTUM_PC *);
     static void drawFullPortal(NUPORTAL *, NUGSCNROOM *);
@@ -6950,7 +6932,7 @@ extern "C" {
               NuPortalCameraPlane.c * NuPortalWorldCameraPc.z);
         frustum = buildFrustrum((NUVEC *)&NuPortalBoundsMinusOnePc, (NUVEC *)&NuPortalBoundsOnePc, -2);
         drawInitialFrustum(frustum);
-        /* The native room count compare is unsigned. */
+        /* The room count compare is unsigned. */
         for (i = 0; i < (u32)scene->num_rooms; ++i) {
             scene->rooms[i].flags &= (u8)~4;
         }
@@ -7003,7 +6985,7 @@ extern "C" {
         vertices[7].x = min_x;
         vertices[7].y = min_y;
         vertices[7].z = 1.0f;
-        /* Native line-strip consumer reads only x/y/z/colour; rhw and uv are not written. */
+        /* The line-strip consumer reads only x/y/z/colour; rhw and uv are not written. */
         NuRndrLineStrip2d(vertices, NULL, 8);
     }
 
@@ -8024,7 +8006,7 @@ extern "C" {
     void NuTimeBarDestroySet(i32 set) {
         TimeBarSet *timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
 
-        /* Both retail originals free the allocations when this word is nonzero. */
+        /* Frees the allocations when this word is nonzero. */
         if (timebar->uses_buffer != 0) {
             NuFree(timebar->accumulators[0], NuTimeBarSource, 0x169);
             NuFree(timebar->accumulators[1], NuTimeBarSource, 0x16a);
@@ -9105,7 +9087,7 @@ extern "C" {
         return items;
     }
 
-    /* Same layout as NURNDRLIBSTATE without 1- or 2-byte arrays: retail's stack copy carries no /GS cookie. */
+    /* Same layout as NURNDRLIBSTATE without 1- or 2-byte arrays, so the stack copy carries no /GS cookie. */
     typedef struct pc_rndr_state_local_s {
         u32 opaque_00_08[2];
         void *mtl;
@@ -10217,7 +10199,7 @@ extern "C" void NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
         return;
     }
     if ((scene->render_flags & 4) != 0) {
-        /* Genuine mapped RET diagnostic; native caller pushes no context. */
+        /* The empty diagnostic hook is called without context. */
         reinterpret_cast<void (*)(void)>(PCAnimationLoadFailureNoOp)();
         return;
     }
@@ -10238,7 +10220,7 @@ extern "C" void NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
     DisplayGenerateTransformsNoOpPc(scene);
     gscene = scene->gscene;
     if (gscene == NULL) {
-        /* Native writes only the required display_list slot in this local. */
+        /* Writes only the required display_list slot in this local. */
         temporary_scene.display_list = scene;
         gscene = &temporary_scene;
     }
@@ -10419,8 +10401,7 @@ extern "C" void NuDisplayListHtmlEndPc(void) {
     }
 }
 
-/* The native debug-name projection reads one pointer at scene+0. Historical
- * visibility/owning extent of this projection is not established. */
+/* The debug-name projection reads one pointer at scene+0. */
 typedef struct PC_DISPLAY_DEBUG_NAME_READER {
     const char *name;           // 0x0
 } PC_DISPLAY_DEBUG_NAME_READER; // size 0x4
@@ -10580,7 +10561,7 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
 
 // ---- nupostfilter (generic post-filter code; the PC members are in nu3d_platform_pc.cpp) ----
 
-/* The native reset clears these three adjacent flags together. */
+/* The reset clears these three adjacent flags together. */
 STATIC_ASSERT(offsetof(NuMainFilterGen, bloom_enabled) == offsetof(NuMainFilterGen, dof_enabled) + sizeof(bool));
 STATIC_ASSERT(offsetof(NuMainFilterGen, motion_blur_enabled) ==
               offsetof(NuMainFilterGen, bloom_enabled) + sizeof(bool));
@@ -10664,8 +10645,6 @@ extern "C" void NuPostEffectResizePc(void) {
     PCGraphicsResizePostEffectTexturesPc(width, height);
 }
 
-/* Original nupostfilter source family. This is an append proposal to existing
- * nupostfilter.c; includes/layout declarations supplied separately. */
 void NuPostEffectReset(void) {
     NuPostEffectsRanPc = 0;
     NuPostLastFrameEffectPc = 0;
@@ -10846,7 +10825,6 @@ bool NuMainFilterGen::isEnabled() {
     return active_filter_count != 0;
 }
 
-/* Private complete initializer/filter initialization bodies; merge existing TU. */
 struct POST_SHADER_PROGRAM_PC;
 extern "C" {
     POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32, const DWORD *, const DWORD *);
@@ -10895,7 +10873,7 @@ extern "C" u32 NuPostShaderEngineFlagsPc;
 inline NuPostFilterGen::~NuPostFilterGen() {
 }
 
-/* Native platform initializers call their generic implementations out of line. */
+/* Platform initializers call their generic implementations out of line. */
 void NuPostFilterGen::initResources() {
     input_fbo = PCGraphicsCreateFramebuffer();
 }
@@ -10942,8 +10920,7 @@ void NuMainFilterGen::initResources() {
     active_filter_count = 0;
 }
 
-/* Bound by the post filters only; private to this unit, so retail passes the program in ESI. The
- * posteffect_shader_pc.cpp copy is a leftover of the normalized ABI. */
+/* Bound by the post filters only; private to this unit, so the program is passed in ESI. */
 extern "C" {
     static void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *program) {
         if (program != NULL) {
@@ -12792,7 +12769,7 @@ extern "C" {
 
     /* Writes every item of a display list to the HTML capture. Bit 0 of flags follows
      * jump items (id 1); bit 1 selects the 0x84 terminator instead of 0x8e. Static, so VC8
-     * passes items in EAX as retail does. */
+     * passes items in EAX. */
     static void DisplayListPrintItemsPc(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types,
                                         i32 file_handle) {
         i32 index = 0;
@@ -12800,7 +12777,7 @@ extern "C" {
         if (item == NULL) {
             return;
         }
-        end = ((u8)flags & 2) ? 0x84 : 0x8e; // MATCH-EXCEPTION: byte test of the flags, retail tests al
+        end = ((u8)flags & 2) ? 0x84 : 0x8e; // MATCH-EXCEPTION: byte test of the flags (test al)
         do {
             DisplayListPrintItem(item, index, type_count, types, file_handle);
             if (flags & 1) {
@@ -13228,7 +13205,7 @@ extern "C" void NuDynamicLightSetUsedOnSpecials(PC_SPECIAL_SHADOW_LIGHT *light, 
     light->used_on_specials = enabled;
 }
 
-/* Access-only native views; storage remains PC_SPECIAL_SHADOW_LIGHT/NUGSCN. */
+/* Access-only views; storage remains PC_SPECIAL_SHADOW_LIGHT/NUGSCN. */
 struct SHADOW_PRODUCER_SET_PC {
     u8 unknown000[0x280]; // 0x000
     NUVEC4 endpoint0;     // 0x280
@@ -13257,7 +13234,7 @@ struct SHADOW_PRODUCER_MATERIAL_PC {
     u8 alternate;         // 0x268
 }; // size 0x269
 
-/* The local helper's native compiler ABI uses ECX, EDX and three caller-clean stack words. */
+/* The local helper's compiler ABI uses ECX, EDX and three caller-clean stack words. */
 static i32 ShadowSegmentClipPc(const NUVEC *point, const NUVEC *end, const NUVEC *start, f32 radius0, f32 radius1) {
     __declspec(align(16)) NUVEC segment = {end->x - start->x, end->y - start->y, end->z - start->z};
     f32 length = (segment.x * segment.x + segment.y * segment.y) + segment.z * segment.z;
@@ -14662,7 +14639,7 @@ extern "C" {
         f32 unknown_w;              // 0xc
     } VISIBILITY_EXTENT_SCRATCH_PC; // size 0x10
 
-/* Preserve the native f32 load/store before clearing the sign, including NaNs. */
+/* Preserve the f32 load/store before clearing the sign, including NaNs. */
 #define VISIBILITY_ABSOLUTE_COMPONENT_PC(destination, source)                                                          \
     do {                                                                                                               \
         union {                                                                                                        \
@@ -14918,9 +14895,8 @@ extern "C" {
 
 #undef VISIBILITY_ABSOLUTE_COMPONENT_PC
 
-    /* Held original defect: native three-component extent writer leaves the fourth
-     * local component untouched before the four-column clipping comparisons.
-     * No zero initialization or substitute four-component provider is invented. */
+    /* Original defect: the three-component extent writer leaves the fourth
+     * local component untouched before the four-column clipping comparisons. */
     i32 VisibilityTreeClipNodePc(NUVEC *center, NUVEC *extent, f32 far_distance, i32 instance) {
         __declspec(align(16)) NUVEC4 projected;
         VISIBILITY_EXTENT_SCRATCH_PC projected_extent;
@@ -15435,7 +15411,7 @@ extern "C" {
         return 0;
     }
 
-    /* Retail's debug print, compiled empty; varargs keeps the calls out-of-line. Callers pass anything from
+    /* Debug print, compiled empty; varargs keeps the calls out-of-line. Callers pass anything from
      * nothing to a format and its arguments. */
     void PCSpecialEmptyHandler(...) {
     }
@@ -15626,7 +15602,7 @@ extern "C" {
         }
     }
 
-    /* Shared private helper (native EAX source, ECX destination): component-wise |v|. */
+    /* Shared private helper (source in EAX, destination in ECX): component-wise |v|. */
     // noinline: the original calls NuVec4AbsPrivatePc out of line from NuDisplayListUpdateSpecial; VC8 would inline it
     // there.
     static __declspec(noinline) void NuVec4AbsPrivatePc(NUVEC4 *out, const NUVEC4 *in) {
@@ -15871,7 +15847,7 @@ extern "C" {
 
     i32 special_debug = 0;
 
-    /* Debug listing of a scene's specials; the retail print call is the empty handler. */
+    /* Debug listing of a scene's specials; the print call is the empty handler. */
     void NuSpecialList(NUGSCN *scene) {
         NUSPECIAL_LEGACY_PC *special;
         NUDISPLAY_SPECIAL_PC *display_special;
@@ -16721,12 +16697,6 @@ extern "C" {
                                     matrices, root_fn, root_data);
     }
 
-    /* Proposal only. Normal finite skeleton/override counts 0..255, readable
-     * indexed payloads and hierarchy, writable outputs; optional installed root
-     * callback obeys the existing six-word normal engine contract. Legacy duration1
-     * leaves time_offset undefined: format4 requires a separately valid offset.
-     * Missing-node scales remain undefined; later scale-dependent children require
-     * a valid prior parent node or the initialized parent255 sentinel. */
     void NuHGobjEvalAnim2Root(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation, f32 time, i32 override_count,
                               NUHGOBJ_JOINT_OVERRIDE_PC *overrides, NUMTX *matrices, ANI3_ROOT_CALLBACK_PC root_fn,
                               void *root_data) {
@@ -17359,7 +17329,6 @@ extern "C" {
 } // extern "C"
 
 /* nupostdeferred */
-/* Native private register parameters are expressed by typed source arguments. */
 extern "C" {
     extern NUMTX PostShadowViewPc;
     extern NUMTX PostShadowProjectionPc;
@@ -17544,7 +17513,7 @@ PC_SPECIAL_SHADOW_LIGHT &PC_SPECIAL_SHADOW_LIGHT::operator=(const PC_SPECIAL_SHA
     return *this;
 }
 
-/* Private to this unit: retail passes count in EAX and vertices in ECX, offset/scale/four outputs on the stack. */
+/* Private to this unit: count is passed in EAX and vertices in ECX, offset/scale/four outputs on the stack. */
 extern "C" {
     static void PostShadowProjectBoundsPc(i32 count, const NUVEC4 *vertices, NUVEC *offset, f32 scale, f32 *xmin_out,
                                           f32 *xmax_out, f32 *ymin_out, f32 *ymax_out) {
@@ -18198,7 +18167,7 @@ extern "C" {
     extern f32 PostBlurInputBiasPc;
 }
 
-// NuShaderProgramMakeCurrent and the per-stage sampler binds, as retail inlines them here.
+// NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
 #define POST_BLUR_BIND_PROGRAM(bound_program)                                                                          \
     do {                                                                                                               \
         POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \
@@ -18222,7 +18191,7 @@ extern "C" {
 extern "C" void PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
                                   GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations, i32 levels,
                                   bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
-    // Retail explicitly spills ceil's double result to binary32 before ftol2.
+    // Explicitly spills ceil's double result to binary32 before ftol2.
     f32 rounded_radius = (f32)ceil((f64)radius);
     i32 guard = (i32)rounded_radius * 3;
     i32 work_width = PCGraphicsEffectTextureWidth(PCGraphicsPostEffectWorkTexturePc);

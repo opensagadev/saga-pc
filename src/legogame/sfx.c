@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Retail unit 0x4bdcd0-0x4c00fc: definitions in retail address order. */
-
 typedef struct level_sfx_world_view_s {
     u8 unknown_00[0x4684];          // 0x0000
     i32 teleport_count;             // 0x4684
@@ -31,8 +29,6 @@ typedef struct level_sfx_cut_s {
     LEVEL_SFX_CUT_SLOT_PC sfx[6]; // 0x70
 } LEVEL_SFX_CUT_PC;               // size 0xe8
 
-// Genuine original static configuration definitions.
-/* Original static game.cpp settings/items. Proposal only, no production data. */
 AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
 
 i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {

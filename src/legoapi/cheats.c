@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x56e000-0x56e5ad: definitions in retail address order. */
-
 static f32 Cheat_PowerUpTime = 0;
 
 STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, cheats) == 0);
@@ -106,7 +104,6 @@ void Cheat_GetOnOffBitfield(u32 *onoffs, i32 count) {
     }
 }
 
-/* Complete native0056e2a0..0056e2dc. */
 u32 Cheat_MultiplyScore(u32 score) {
     u32 flags = CheatSystemPtr->flags;
     if ((flags & 4) != 0) {

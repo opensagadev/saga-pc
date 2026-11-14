@@ -1,4 +1,4 @@
-// RAD's Direct3D blitter (Bink SDK sample code) was built without the engine's SSE vector header: retail
+// RAD's Direct3D blitter (Bink SDK sample code) was built without the engine's SSE vector header:
 // RadFmvDrawOutlinePc still takes a static-call argument in EBX (see saga.h).
 #define SAGA_VENDORED_LIBRARY
 #include "nu2api/pc_fmv_native.h"

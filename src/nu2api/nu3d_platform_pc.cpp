@@ -1,11 +1,9 @@
-// PC platform unit linked after nu3d (retail 0x5f7490-0x60df00), being rebuilt one module at a time.
-// Retail compiled the nu3d\pc sources (assert paths name nugscn_dlist.c, numtl_dlist.c, nustream.c,
-// nugobj.c, nutex_pc.cpp and nuqfnt_PC.cpp) together with the PS/Pc halves of the generic modules as
-// one C++ unit; nu3d only ever calls into it, never inlines from it. Definitions follow retail address
-// order. Modules merged so far: nugscn_pc, nuportal_pc, numtl PS/Pc, the nudlist and nupostfilter
-// platform members, the render-state/stream/scene/gobj/particle backends and the geometry backend, plus
-// the platform members of nulgtlaser, nuframe, nuvport, nuprim, nuhgobj, nupostdeferred, nurndr, nucamera
-// and nuvec.
+// PC platform unit linked after nu3d. The nu3d\pc sources (assert paths name nugscn_dlist.c, numtl_dlist.c,
+// nustream.c, nugobj.c, nutex_pc.cpp and nuqfnt_PC.cpp) and the PS/Pc halves of the generic modules form
+// one C++ unit; nu3d only ever calls into it, never inlines from it. It holds nugscn_pc, nuportal_pc, numtl
+// PS/Pc, the nudlist and nupostfilter platform members, the render-state/stream/scene/gobj/particle backends
+// and the geometry backend, plus the platform members of nulgtlaser, nuframe, nuvport, nuprim, nuhgobj,
+// nupostdeferred, nurndr, nucamera and nuvec.
 
 #define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): VC8 CRT selector.
 #include "saga.h"
@@ -69,7 +67,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, next) == 4);
     STATIC_ASSERT(sizeof(NUDISPLAYLISTITEM) == 16);
 
-    /* nuportal PC backend (0x600bd0-0x600f20). */
+    /* nuportal PC backend. */
 
     typedef struct PORTAL_BOX_PC {
         NUVEC first;  // 0x00
@@ -89,7 +87,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, render_flags) == 0x74);
     STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, portal_visibility_overrides) == 0x88);
 
-    /* numtl PS half (0x601210). */
+    /* numtl PS half. */
 
     typedef struct FRAME_MTL_ANIM_DESC_PC {
         u8 u_mode;            // 0x00
@@ -133,7 +131,7 @@ extern "C" {
 #pragma bss_seg()
 
     /* The shadow-volume pass reads the arena globals that nurndr.c defines as pointers through array
-     * declarations, so retail draws from the pointer variables' own addresses (the pass has no caller). */
+     * declarations, so it draws from the pointer variables' own addresses (the pass has no caller). */
     extern NUVEC4 RendererArenaDataPc[];
     extern u32 RendererArenaOffsetsPc[];
     extern i32 RendererArenaTypesPc[];
@@ -168,7 +166,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_packet_cache) == 0x168);
     STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_state_word) == 0x16c);
 
-    /* Native PC material-dependent transform state belongs to this original owner. */
     typedef struct PC_TRANSFORM_MATERIAL_VIEW PC_TRANSFORM_MATERIAL_VIEW;
 
     struct PC_TRANSFORM_MATERIAL_VIEW {
@@ -768,7 +765,6 @@ extern "C" {
         f32 viewport[4];   // 0x84
     } PC_DL_CAMERA_READER; // size 0x94
 
-    /* Source-local working declarations; backing and canonical union remain separate gates. */
     typedef struct PC_DL_MATERIAL_READER {
         u8 unknown_0000[0x40]; // 0x00
         u32 reflection_flags;  // 0x40
@@ -792,7 +788,7 @@ extern "C" {
 
     extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49];
 
-    /* PC-only table slot 0xad; no Android function identity is asserted. */
+    /* PC-only table slot 0xad. */
     typedef struct PC_DL_AD_COLOURS {
         NUVEC colour[5]; // 0x00
     } PC_DL_AD_COLOURS;  // size 0x3c
@@ -873,7 +869,7 @@ extern "C" {
         f32 y_offset;               // 0x18
     } PC_DL_LIGHTMAP_UPDATE_READER; // size 0x1c
 
-    /* Existing canonical integer slot holds the native 32-bit packet identity. */
+    /* The integer slot holds the 32-bit packet identity. */
     extern i32 PCGraphicsBoundShader;
 
     extern "C" void NuStrFixExt(char *, char *, char *, i32);
@@ -1138,7 +1134,7 @@ extern "C" {
 
 #undef LINK_MTL_STATE
 
-    /* Native selects one of the two adjacent material-use buffers by bit 15. */
+    /* Selects one of the two adjacent material-use buffers by bit 15. */
     typedef struct NUPRIM_SCENE_USAGE_PC {
         u8 unknown_0000[0x58]; // 0x00
         u8 *material_used[2];  // 0x58
@@ -1155,7 +1151,7 @@ extern "C" {
     // @@FUNCTIONS
 
     /* The PC backend has no special-transform work: the leaf forwards to the shared empty
-     * diagnostic (0x603a10 is a lone jmp to it). */
+     * diagnostic. */
     void DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix) {
         DisplayListSpecialTransformNoOpPc(special, matrix);
     }
@@ -1487,7 +1483,6 @@ extern "C" {
         return texture->external_id;
     }
 
-    /* Retail calls this from PCGraphicsCreatePostEffectTextures rather than inlining it. */
     // noinline: the original calls PCGraphicsInitRenderTexture out of line from PCGraphicsCreatePostEffectTextures; VC8
     // would inline it there.
     __declspec(noinline) void PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height,
@@ -1536,8 +1531,8 @@ extern "C" {
         return &texture->flags;
     }
 
-    /* Retail calls this from NuDeferredFilter::ResizeTexturesPc instead of inlining it: its x87
-     * byte-count conversion (an inline fnstcw/fistp for the unsigned cast) keeps it above VC8's inline limit. */
+    /* Called from NuDeferredFilter::ResizeTexturesPc instead of inlined: its x87 byte-count
+     * conversion (an inline fnstcw/fistp for the unsigned cast) keeps it above VC8's inline limit. */
     void PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height, i32 levels) {
         if (texture == NULL) {
             return;
@@ -1648,8 +1643,6 @@ extern "C" {
         return NuDisplayHandlerMaterialPc;
     }
 
-    /* Two additional genuine original leaves, proposed in existing effect_surface.cpp.
-     * Complete native entries are6B and1B; neither replaces the held copy operation. */
     PC_FRAMEBUFFER_PC *PCGraphicsGetBoundFramebufferPc(void) {
         return PcBoundFramebuffer;
     }
@@ -1678,7 +1671,7 @@ extern "C" {
         if (level != NULL) {
             *level = target->level;
         }
-        /* Retail tests field but writes through level, including when level is null. */
+        /* Tests field but writes through level, including when level is null. */
         if (field != NULL) {
             *level = target->field_10;
         }
@@ -1865,8 +1858,7 @@ extern "C" {
         PCDeviceCreateCubeTextureFromFile("pc\\stuff\\PhongMap_PC.dds", &NuTexturePhongCubePc);
     }
 
-    /* Native PC entries 0x005f8fb0 and 0x005f8fc0 are RET-only; the D3D release and
-     * restore paths call them for textures. Their historical names are unknown. */
+    /* Empty hooks; the D3D release and restore paths call them for textures. */
     void NuTexReleaseResourcesPc(void) {
     }
 
@@ -2123,7 +2115,7 @@ extern "C" {
         }
     }
 
-    /* Renders the queued hierarchy shadow packets as stencil shadow volumes; retail never calls it. */
+    /* Renders the queued hierarchy shadow packets as stencil shadow volumes; never called. */
     void NuRndrShadowVolumesPc(void) {
         if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 1 && PCShadowPacketCount != 0) {
             PCDeviceSetVertexShaderPc(NULL);
@@ -2162,8 +2154,7 @@ extern "C" {
         PCGraphicsRenderTextureAllocationError();
     }
 
-    /* Native PC entry 0x005fa220 is RET-only; the D3D release paths call it for the
-     * geometry origin state. Its historical name is unknown. */
+    /* Empty hook; the D3D release paths call it for the geometry origin state. */
     void PcGeometryOriginReleasePc(void) {
     }
 
@@ -4353,8 +4344,7 @@ extern "C" {
         }
     }
 
-    /* Native PC entry 0x00600bb0 is RET-only; the D3D release path calls it before
-     * releasing the geometry buffers (0x00600bc0 is its restore counterpart). */
+    /* Empty hook; the D3D release path calls it before releasing the geometry buffers. */
     void NuPrimReleaseResourcesPc(void) {
     }
 
@@ -4437,7 +4427,7 @@ extern "C" {
                 if (((bits >> bit) & 1) != 0) {
                     continue;
                 }
-                /* Native dereferences a null display only for an unseen instance. */
+                /* Dereferences a null display only for an unseen instance. */
                 display = scene->display_list;
                 if (((display->portal_visibility_overrides[byte_index] >> bit) & 1) != 0) {
                     NuPortalVisibilityBitsPc[byte_index] = bits | (u8)(1 << bit);
@@ -5313,7 +5303,6 @@ extern "C" {
     void fun_00603950(void) {
     }
 
-    /* Native603960 is an actual empty cross-TU operation, also empty in source. */
     void DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *scene) {
         (void)scene;
     }
@@ -5440,7 +5429,7 @@ extern "C" {
         }
     }
 
-    /* Claims a free render-texture slot; retail inlines it into each creator. */
+    /* Claims a free render-texture slot; inlined into each creator. */
     static GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsAllocRenderTexturePc(void) {
         for (i32 i = 0; i != 32; ++i) {
             if (PCGraphicsRenderTextureActive[i] == 0) {
@@ -7286,8 +7275,7 @@ extern "C" {
         DwaStreamCapacityPc = 0x2000;
     }
 
-    /* Native PC entry 0x005fe450 is RET-only; PcRendererCleanup calls it while the D3D
-     * device is torn down. Its historical name is unknown. */
+    /* Empty hook; PcRendererCleanup calls it while the D3D device is torn down. */
     void NuRndrDwaReleasePc(void) {
     }
 
@@ -7766,7 +7754,7 @@ extern "C" {
         }
     }
 
-    /* Direct object rendering is not supported on PC: retail reports it and draws nothing. */
+    /* Direct object rendering is not supported on PC: it is reported and nothing is drawn. */
     i32 NuRndrGobj(void *object, NUMTX *matrix) {
         PCClipScreenUnsupported();
         return 0;

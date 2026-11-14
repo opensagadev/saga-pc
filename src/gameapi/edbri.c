@@ -182,7 +182,7 @@ i32 edbriLoadPage(char *path, void *scene) {
     }
     index = 0;
     for (i = 0; i < count; i++) {
-        /* Retail tests the record before checking the index limit. */
+        /* Tests the record before checking the index limit. */
         while (edBridges[index].connection_index != -1 && index < 64) {
             ++index;
         }
@@ -253,7 +253,7 @@ void edbriBridgeUpdate(i32 index, NUGSCN *scene) {
     NuVecRotateZ(&delta, &delta, edBridges[index].rotation_z);
     NuVecRotateY(&delta, &delta, edBridges[index].rotation_y);
     NuVecAdd(&end, &edBridges[index].position, &delta);
-    // MATCH-EXCEPTION: alpha 0x80 folded into the blue term; retail subtracts 0x8000 before the shifts.
+    // MATCH-EXCEPTION: alpha 0x80 folded into the blue term; the original subtracts 0x8000 before the shifts.
     colour = edBridges[index].red + ((edBridges[index].green << 8) + ((edBridges[index].blue - 0x8000) << 16));
     memset(&first, 0, sizeof(first));
     if (edBridges[index].special_20 != -1) {

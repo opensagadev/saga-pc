@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Retail unit 0x4028c0-0x403c83 (legogame/attracto.c): definitions in retail address order. */
-
 struct attracto_pc_s {
     u8 unknown_00[0x10]; // 0x00
     NUVEC position;      // 0x10

@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4c0100-0x4c0d50: definitions in retail address order. */
-
 typedef struct shard_progress_recovered_pc_s {
     u32 collected[4]; // 0x00
     u32 active[4];    // 0x10

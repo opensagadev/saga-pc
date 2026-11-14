@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x589f60-0x58a504: definitions in retail address order. */
-
 extern i32 CharacterBlobShadowsOnPc;
 f32 DropInOutScale(GAMEOBJECT *object);
 

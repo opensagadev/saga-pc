@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x56ef00-0x571825: definitions in retail address order. */
-
 extern i32 NuMainSkipCutBordersPc;
 extern i32 drawautosaveicon;
 STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) + 6 * sizeof(void *) == 0x80);
@@ -156,7 +154,6 @@ typedef struct pickup_counter_buildit_pc_s {
 
 STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-/* Append to gizmopickups.c: share its actual private GizmoPickupSys pointer. */
 STATIC_ASSERT(sizeof(GIZMOPICKUP_PC) == 0x2c);
 STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 void SuperCounter_ActivateGizmoPickup(GIZMO_PC *, GIZMOPICKUP_PC *);
@@ -749,7 +746,6 @@ u32 GizmoPickups_TotalScore(WORLDINFO *world) {
     return score;
 }
 
-/* Complete native00570030..00570082. */
 i32 GizmoPickup_NumberOfType(WORLDINFO *world, i32 type, u8 filter) {
     GIZMOPICKUPRUNTIMESYS_s *system = world->pickup_runtime_sys;
     GIZMOPICKUP_PC *pickup = system->pickups;

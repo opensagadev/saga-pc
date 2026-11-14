@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x5a8590-0x5a86c4: definitions in retail address order. */
-
 static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemTypePc = 0;
 static i32 PlayerItemTypeCountPc = 0;
 

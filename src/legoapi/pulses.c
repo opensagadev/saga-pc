@@ -2,8 +2,8 @@
 
 #include <string.h>
 
-/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. Retail keeps this
- * TU's out-of-line copy at 0x5a2a60. */
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. This
+ * unit keeps its own out-of-line copy. */
 static f32 PulsesFabsPc(f32 f) {
     f32 rv;
 

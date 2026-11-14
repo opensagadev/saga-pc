@@ -264,7 +264,7 @@ void Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count) 
     *buffer = out;
 }
 
-/* Retail 4cf4b0 consists solely of RET. */
+/* Empty. */
 void Text_FillInExtendedSaveInfo(void) {
 }
 

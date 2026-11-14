@@ -3,8 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Level editor (Android editor/edlevelall.cpp). The retail unit is C++ and
- * also holds the EdDraw primitives. */
+/* Level editor. The unit is C++ and also holds the EdDraw primitives. */
 
 extern "C" {
     extern eduimenu_s *edLevelActiveMenu;
@@ -147,8 +146,8 @@ template <class T> T *CreateObject(MemoryBuffer *buffer) {
 }
 
 /* Fixed-size stack of the open stream blocks. Like CSListLink, the
- * constructor tests this against NULL before clearing the count. Retail keeps
- * out-of-line Count/Push/Pop/Top copies (0x6c1130-0x6c11ef); only
+ * constructor tests this against NULL before clearing the count. The
+ * Count/Push/Pop/Top helpers stay out of line; only
  * EdFileInputStream::BeginBlock goes through them, the other stream functions
  * use the fields directly. */
 template <class T, i32 N> class EdStack {
@@ -258,7 +257,7 @@ template EdFileInputStream::Block EdStack<EdFileInputStream::Block, 8>::Pop();
 template void EdStack<i32, 8>::Push(i32 item);
 template i32 EdStack<i32, 8>::Pop();
 
-/* Transform gizmo of the class editor (Android EdManipulator). */
+/* Transform gizmo of the class editor. */
 class EdManipulator {
   public:
     virtual i32 Process(EdInputContext &input, ClassObjectList &objects);
@@ -498,8 +497,8 @@ EdManRotate theRotateManipulator;
 EdManScale theScaleManipulator;
 PropertyMenuMetrics menu_startmetrics = {20, 5, 200, 400};
 
-/* EdDraw: the editor's debug primitives (retail 0x6ba6a0-0x6bc3f0, inside
- * this unit). C linkage, as the C units that call them declare them. */
+/* EdDraw: the editor's debug primitives. C linkage, as the C units that call
+ * them declare them. */
 extern "C" {
 
 #define EDDRAW_SET_VEC4(v, px, py, pz)                                                                                 \
@@ -1291,7 +1290,7 @@ class SplineObject : public CSListLink<SplineObject> {
     i32 drop;               // 0x50
     i32 closed;             // 0x54
 
-    /* Retail never casts the terrain ray here; a dropping spline is just
+    /* The terrain ray is never cast here; a dropping spline is just
      * lowered by 10. */
     void DropPoint(VuVec &point) {
         if (drop != 0) {
@@ -1334,7 +1333,7 @@ struct SplineObjectList {
     i32 Count();
 };
 
-/* The spline object class (Android SplineHelper), theSplineHelper. */
+/* The spline object class, theSplineHelper. */
 class SplineHelper : public EdClassInterface {
   public:
     SplineHelper() : auto_generate_points(1) {
@@ -1420,8 +1419,8 @@ static i32 bezierdraw_depth = 0;
 SplineHelper theSplineHelper;
 SplineTool theSplineTool;
 
-/* The placeable object types (Android PlaceableHelper): every placeable
- * helper registers its interface here so tools can walk all placeables. */
+/* The placeable object types: every placeable helper registers its
+ * interface here so tools can walk all placeables. */
 class PlaceableHelper {
   public:
     struct ObjectType {                       // 0x08
@@ -1498,9 +1497,8 @@ static EdClassObjectNameControl *edClassObjectNameControl;
 
 EdEnumControl::Item EdEnumControl::YesNoItems[] = {{"Yes", 1}, {"No", 0}, {NULL, 0}};
 
-/* Retail's editor message hooks (0x6b7c40/0x6b7c50), the first code of the
- * unit; the format strings were compiled out, leaving empty variadic
- * bodies. */
+/* The editor message hooks; the format strings were compiled out, leaving
+ * empty variadic bodies. */
 void EdTrace(...) {
 }
 
@@ -2748,8 +2746,8 @@ void EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour) {
 }
 
 void EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
-    // MATCH-EXCEPTION: a copy of colour frees its parameter slot, which retail
-    // reuses for the vertex temporaries; no other source form found.
+    // MATCH-EXCEPTION: a copy of colour frees its parameter slot, which the
+    // original reuses for the vertex temporaries; no other source form found.
     i32 vertex_colour = colour;
     if (NewPrim == 1) {
         NuPrim3DBegin(0xc, 5, EdDrawMtl[NewMtl], NewMtx);
@@ -3482,7 +3480,7 @@ const VuVec *Placeable::GetInitialPosition() const {
     return matrix ? reinterpret_cast<const VuVec *>(&matrix->matrix.m30) : NULL;
 }
 
-/* Retail only translates a scratch copy; the object is left unchanged. */
+/* Only a scratch copy is translated; the object is left unchanged. */
 void Placeable::SetInitialPosition(const VuVec *position) {
     NUMTX matrix;
     const VuMtx *initial = GetInitialTransform();
@@ -4181,7 +4179,7 @@ const VuVec *SceneInstance::GetInitialPosition() const {
     return (const VuVec *)&initial_transform.matrix.m30;
 }
 
-/* Retail writes the current translation here too. */
+/* The current translation is written here too. */
 void SceneInstance::SetInitialPosition(const VuVec *position) {
     current_transform.matrix.m30 = position->x;
     current_transform.matrix.m31 = position->y;
@@ -5167,7 +5165,7 @@ void SplineKnotList::Clear() {
     count = 0;
 }
 
-/* Retail keeps this out of line: KnotHelper::CreateObject calls it (0x6cf159). */
+/* Kept out of line: KnotHelper::CreateObject calls it. */
 __declspec(noinline) void SplineKnotList::InsertAfter(SplineKnot *knot, SplineKnot *after) {
     if (after != NULL) {
         knot->previous = after;
@@ -5302,8 +5300,8 @@ void ClassEditor::RegisterTool(EdTool &tool) {
     last_tool = &tool;
 }
 
-/* Snapping onto the terrain along snap_ray: retail keeps only the ray
- * normalisation; the terrain test and the point update are compiled out. */
+/* Snapping onto the terrain along snap_ray: only the ray normalisation
+ * remains; the terrain test and the point update are compiled out. */
 void ClassEditor::SnapPoint(VuVec &) {
     if (snap_mode == 1 || snap_mode == 2) {
         __declspec(align(16)) VuVec ray = snap_ray;
@@ -6680,7 +6678,7 @@ i32 EdClass::GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count,
     return result;
 }
 
-/* Retail keeps this out of line: SerialiseObject calls it (0x6cda5e). */
+/* Kept out of line: SerialiseObject calls it. */
 EdRef *EdClass::FindTypeRef(char *member_name, i32 recursive) {
     for (EdRef *member = members; member != NULL; member = member->next) {
         if (member->attributes & 0x80000000) {
@@ -7072,7 +7070,7 @@ void EdRefSpline::GetMemberData(void *object, i32 requested_type, void *data, i3
 }
 
 /* Each change drops the generated points when they regenerate
- * automatically; other members are read back, as in retail. */
+ * automatically; other members are read back. */
 void EdRefSpline::SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *) {
     SplineObject *spline = static_cast<SplineObject *>(object);
     CheckType(requested_type);
@@ -7341,8 +7339,8 @@ void EdFileInputStream::Open(NUFILE handle, i32 stream_version) {
     }
 }
 
-/* Retail reports through EdMessage with the block names alone; the format
- * strings are not in the executable. */
+/* Reports through EdMessage with the block names alone; the format strings
+ * are compiled out. */
 char const *EdFileInputStream::BeginBlock(char const *name) {
     i32 position = (i32)NuFilePos(file);
     char *block_name;
@@ -7392,9 +7390,8 @@ void EdFileInputStream::EndBlock() {
     name_length = block.name_offset;
 }
 
-/* Retail keeps an argument-less EdTrace call on the overflow paths of
- * BeginBlock/EndBlock; with EdTrace's empty body in this unit the compiler
- * drops it. */
+/* The overflow paths of BeginBlock/EndBlock keep an argument-less EdTrace
+ * call; with EdTrace's empty body in this unit the compiler drops it. */
 char const *EdFileOutputStream::BeginBlock(char const *name) {
     i32 position = (i32)NuFilePos(file);
     if (block_positions.count < 8) {
@@ -7487,7 +7484,7 @@ void EdSystem::Render() {
 void EdTerrInit(void *, void *) {
 }
 
-/* The height is left unset while shadows are disabled, as in retail. */
+/* The height is left unset while shadows are disabled. */
 f32 EdTerrShadow(NUVEC *position, f32 height_above, f32 height_below, i32 terrain_mask) {
     f32 height;
     if (edterr_shadow_disabled == 0) {
@@ -7824,7 +7821,7 @@ void ClassEditor::DrawObjectSphere(ClassObject &selected, i32 colour) {
             difference.y = transform.matrix.m31 - scaled.y;
             difference.z = transform.matrix.m32 - scaled.z;
         }
-        /* Retail copies the difference's unset w along with it. */
+        /* The difference's unset w is copied along with it. */
         {
             VuVec tip;
             tip.x = difference.x;
@@ -8121,8 +8118,7 @@ void ClassEditor::cbEdClassDeleteObject(eduimenu_s *, eduiitem_s *, u32) {
 }
 
 /* Steps the manipulator through move, rotate and scale (modes 3, 4, 5); any
- * other mode is just re-applied. Retail keeps it unreferenced; the name is
- * not known. */
+ * other mode is just re-applied. Unreferenced. */
 void cbEdClassCycleMode(eduimenu_s *, eduiitem_s *, u32) {
     switch (theClassEditor.mode) {
         case 3:
@@ -9095,7 +9091,7 @@ void EdRefPlaceable::GetMemberData(void *object, i32 requested_type, void *data,
             break;
         }
         case 0x80000005: {
-            /* Retail tests the reference's own name, not the parameter text. */
+            /* Tests the reference's own name, not the parameter text. */
             const char *params = placeable->params.data ? placeable->params.data + 1 : NULL;
             if (name != NULL) {
                 NuStrNCpy(static_cast<char *>(data), params, data_size);
@@ -9652,7 +9648,7 @@ void SplineObject::SmoothKnots() {
 }
 
 /* Copies the spline with its knots; the points are regenerated on this
- * spline, not on the copy, as in retail. */
+ * spline, not on the copy. */
 SplineObject *SplineObject::Clone() {
     SplineObject *clone = new (theMemoryManager.AllocPool(sizeof(SplineObject), 1)) SplineObject;
     NuStrCpy(clone->name, name);
@@ -9951,7 +9947,7 @@ i32 ClassEditor::CreateObject(EdClass *object_class) {
     return 0;
 }
 
-/* Retail calls this out of line from both callers (0x6cf88b, 0x6d25fa). */
+/* Kept out of line: both callers call it. */
 __declspec(noinline) i32 ClassEditor::CreateObject(i32 class_id) {
     if (theLevelEditor.current_led_file == -1) {
         SelectLED(class_id);

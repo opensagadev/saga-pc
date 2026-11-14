@@ -1331,7 +1331,7 @@ void ResetParts(void) {
     part_slot_cursor = 0;
 }
 
-// MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
+// MATCH-EXCEPTION: noinline; the original calls this out of line from UpdateParts.
 __declspec(noinline) void DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
         debkeydata[handle].position.x = x;
@@ -1744,7 +1744,7 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
     return particle;
 }
 
-/* The SDK NuFabs; retail keeps this unit's out-of-line copy at 0x64fdc0. */
+/* The SDK NuFabs; this unit keeps its own out-of-line copy. */
 static f32 DebrisFabs(f32 f) {
     f32 rv;
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -1993,7 +1993,7 @@ void AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position, NUVEC 
         emission_time = emission_interval + key->emission_epoch;
     }
     DebrisGetControlStackLock();
-    // MATCH-EXCEPTION: retail tests the 16-bit counts once before entering the loop.
+    // MATCH-EXCEPTION: the original tests the 16-bit counts once before entering the loop.
     if (key->controlled_chunk_count < key->allocated_chunk_count) {
         for (chunk_index = key->controlled_chunk_count; chunk_index < key->allocated_chunk_count; ++chunk_index) {
             if (freechunkcontrolsptr < (debrischunks + debrischunksglass) * 2) {
@@ -2107,7 +2107,7 @@ void DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
         extent.z = -extent.z;
     }
     padding = (f32)((f64)0.0001f * effect->max_size);
-    /* Retail rounds after each padding pass. */
+    /* Rounds after each padding pass. */
     extent.x += padding;
     extent.y += padding;
     extent.z += padding;
@@ -2474,7 +2474,7 @@ void AddDebrisEffectToStack(DEBRISKEY_PC *key) {
     debris_keystack = key;
 }
 
-// MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
+// MATCH-EXCEPTION: noinline; the original calls this out of line from UpdateParts.
 __declspec(noinline) void DebrisOrientationMtx(i32 handle, NUMTX *source) {
     if (handle != -1) {
         debkeydata[handle].effect_orientation = *source;
@@ -2778,7 +2778,7 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     i32 result = 0;
     f32 ratio;
     f32 closest_distance;
-    // Retail uses this inclusive upper check; loaded type IDs are 0..127.
+    // Inclusive upper check; loaded type IDs are 0..127.
     if (effect_index < 1) {
         return -1;
     }
@@ -3503,7 +3503,7 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
     if (EdFileOpen(path, 0) != 0) {
         EdFileSetReadWrongEndianess(1);
         version = EdFileReadInt();
-        // MATCH-EXCEPTION: retail tests the low and high version bounds separately; one && folds them
+        // MATCH-EXCEPTION: the original tests the low and high version bounds separately; one && folds them
         // into a single unsigned range compare.
         if (version < 1) {
             EdFileClose();
@@ -3774,7 +3774,7 @@ void UpdatePartEmits(f32 time) {
                     if (type->variant_mode == 0) {
                         variant = (i32)(NuRandFloatSeeded(&partseed) * 65535.0f) % type->variant_count;
                     } else if (type->variant_mode == 1) {
-                        // MATCH-EXCEPTION: retail treats field_33 as signed; saga.h declares it u8.
+                        // MATCH-EXCEPTION: the original treats field_33 as signed; saga.h declares it u8.
                         if (++*(i8 *)&emitter->field_33 >= type->variant_count) {
                             emitter->field_33 = 0;
                         }
@@ -3974,7 +3974,7 @@ i32 edpartPtlChangeType(i32 index, i32 type) {
 
 void edpartDestroyAllEffects(void) {
     i32 i;
-    // Retail walks 512 slots here although part_emits holds 40.
+    // Walks 512 slots here although part_emits holds 40.
     for (i = 0; i < 512; ++i) {
         if (part_emits[i].effect_id != -1) {
             part_emits[i].effect_id = -1;
@@ -4954,7 +4954,7 @@ void UpdateParts(f32 time) {
     }
 }
 
-// MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
+// MATCH-EXCEPTION: noinline; the original calls this out of line from UpdateParts.
 __declspec(noinline) i32 AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time,
                                                             i16 z_rotation, i16 y_rotation, NUMTX *orientation,
                                                             f32 scale) {

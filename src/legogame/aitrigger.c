@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x401870-0x4028b4 (legogame/aitrigger.c): definitions in retail address order. */
-
 typedef struct trigger_lever_pc_s {
     u8 unknown000[0x94]; // 0x00
     u16 flags;           // 0x94

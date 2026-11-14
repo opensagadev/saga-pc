@@ -6,7 +6,7 @@ extern i32 EdAnimLocalFrameCountPc;
 f32 edanimPlayerAnimDistance(i32 parameter_index);
 void edanimParticleDestroy(i32 parameter_index, i32 particle_index);
 
-/* Native 659860/172: flags are deliberately not compacted by this helper. */
+/* Flags are deliberately not compacted by this helper. */
 void edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
     i32 i;
     for (i = sound_index; i < AnimParams[parameter_index].sound_count - 1; ++i) {
@@ -19,9 +19,7 @@ void edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
     --AnimParams[parameter_index].sound_count;
 }
 
-/* Native 686950: instructions [686950,686f8a), alignment [686f8a,686f8c),
- * 12-entry switch table [686f8c,686fbc). Total mapped extent 1644 bytes. */
-/* Float fabs by clearing the sign bit; retail inlines it this way. */
+/* Float fabs by clearing the sign bit. */
 static f32 EdAnimFabsPc(f32 value) {
     f32 result;
     *(u32 *)&result = *(u32 *)&value & 0x7fffffff;
@@ -163,10 +161,9 @@ void edanimUpdateObjects(f32 elapsed) {
                         NUVEC position;
                         NuMtxInvRSS(&matrix, NuSpecialGetMtx(&special));
                         NuMtxMul(&matrix, &matrix, NuSpecialGetDrawMtx(&special));
-                        /* Native uses the completed particle-loop index here. */
+                        /* Uses the completed particle-loop index here. */
                         position = *(NUVEC *)AnimParams[index].sound_positions[particle_index];
                         NuVecMtxTransform(&position, &position, &matrix);
-                        /* Native PC has no sound-play call at this point. */
                     }
                 } else if (AnimParams[index].sound_names[sound_index][0] != 0) {
                     AnimParams[index].sound_ids[sound_index] = -1;

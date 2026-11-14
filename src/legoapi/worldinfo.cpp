@@ -2,10 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Retail unit 0x55f3b0-0x560ab2 (legoapi/worldinfo.cpp), with GizmoSysClearLevelProgress
-   (legoapi/gizmo.c) before it and SetAreaPickupGravity (legoapi/gizmopickups.c) after it: definitions
-   in retail address order. The PortalDoors functions (0x55f960-0x55fbe4) stay in gizportal.c, which
-   relies on C conversions. */
+/* World info, with GizmoSysClearLevelProgress (gizmo.c) before it and SetAreaPickupGravity
+   (gizmopickups.c) after it. The PortalDoors functions stay in gizportal.c, which relies on C
+   conversions. */
 STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
@@ -195,13 +194,13 @@ extern "C" {
     void WorldInfo_Dump(WORLDINFO *world) {
         i32 index;
         WORLD_RESOURCE_ICONS_READER_PC *resource = (WORLD_RESOURCE_ICONS_READER_PC *)world;
-        Customiser_DumpAll(Game_Customiser, world); /* Native 55f6cd. */
+        Customiser_DumpAll(Game_Customiser, world);
         if (world->cutscene_sys != NULL) {
             for (index = 0; index < world->cutscene_sys->count; ++index) {
                 ClearLinkedCutSceneMusic(world->cutscene_sys->records[index]->instance);
             }
         }
-        CharacterMiniKits_Dump(world); /* Native 55f716. */
+        CharacterMiniKits_Dump(world);
         CharScenes_LevelDump(world);
         CutScenes_Destroy(world->cutscene_sys);
         if (resource->icons_scene != NULL) {
@@ -730,7 +729,7 @@ extern "C" {
         }
         if (WorldInfo_Reset(LWORLD, next_level) != 0) {
             waiting_for_level = next_level;
-            WorldInfo_Load(LWORLD); /* Native 56069c: actual ordinary cdecl1. */
+            WorldInfo_Load(LWORLD);
         }
         waiting_for_level = -1;
         if (LWORLD->loaded != 0) {

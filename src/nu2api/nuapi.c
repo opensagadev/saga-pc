@@ -18,8 +18,7 @@ void MenuSetPlatformState(i32 state) {
     (void)state;
 }
 
-/* Genuine native PC entry 0x006d6b40 is RET-only. Historical name/TU
- * visibility is unknown; its presentation caller consumes no return value. */
+/* Empty; its presentation caller consumes no return value. */
 void PCPresentationPlatformLeafPc(void) {
 }
 

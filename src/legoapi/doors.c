@@ -162,9 +162,9 @@ i32 StartDoorPositions(void) {
                             NuVecSub(&direction, &door->spline->pts[point], start->position);
                             angle = NuAtan2D(direction.x, direction.z);
                         } else {
-                            /* Retail reads start[-1] here, which in retail's data layout is PlayerList.
-                               The rebuild does not place PlayerList before PlayerStart, so
-                               name it explicitly (costs the byte match: ~94% -> ~70%). */
+                            /* Reads start[-1] here, which in the original data layout is
+                               PlayerList. PlayerList is not placed before PlayerStart here,
+                               so it is named explicitly. */
                             PLAYER_POSITION_RECORD_PC *previous =
                                 point == 5 ? (PLAYER_POSITION_RECORD_PC *)PlayerList : start - 1;
                             start->position = previous->position;
@@ -538,7 +538,6 @@ void Doors_Configure(WORLDINFO *world_ptr, char *config) {
     }
 }
 
-/* Private append to doors.c after existing types; full native PC bodies. */
 STATIC_ASSERT(sizeof(DOOR_s) == 0x128);
 STATIC_ASSERT(offsetof(DOOR_s, pos) == 0xd4);
 STATIC_ASSERT(offsetof(DOOR_s, normal) == 0xe4);

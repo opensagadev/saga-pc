@@ -1,8 +1,8 @@
 #include "saga.h"
 #include <excpt.h>
 
-/* Retail detects the CPU with a hand-written inline assembly block, ported as is;
-   the shifts by zero come from its uniform field-extraction pattern. */
+/* Detects the CPU with a hand-written inline assembly block; the shifts by
+   zero come from its uniform field-extraction pattern. */
 extern "C" void CpuDetectFeaturesPc(void) {
     __asm {
         pushfd
@@ -207,7 +207,7 @@ extern "C" void CpuDetectFeaturesPc(void) {
     CpuInitializedPc = 1;
 }
 
-/* Native 0x6e62d0-0x6e668d: lazy accessors for the detected CPU fields. None has a caller in retail. */
+/* Lazy accessors for the detected CPU fields. None has a caller. */
 extern "C" u32 CpuGetHasCpuidPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();

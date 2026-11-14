@@ -20,7 +20,7 @@ struct CABLE_RECORD_PC {
     u16 flags;               // 0x1ea
 }; // size 0x1ec
 
-// The retail cable code tests the character context flags as a 64-bit field.
+// The cable code tests the character context flags as a 64-bit field.
 typedef struct cable_context_info_pc_s {
     const char *name;    // 0x0
     i32 action;          // 0x4
@@ -30,7 +30,7 @@ typedef struct cable_context_info_pc_s {
 extern const f64 GameObjectNearFloorNoFloorHeight;
 i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second);
 
-// The retail unit carries a private copy of the safe divide used by the cable code.
+// The unit carries a private copy of the safe divide used by the cable code.
 static f32 CableFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;

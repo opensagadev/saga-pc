@@ -9,14 +9,12 @@ extern "C" {
 
 extern "C" PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256];
 
-/* Header-inline in retail: the swap loop's local target expands the destructor. */
+/* Header-inline: the swap loop's local target expands the destructor. */
 inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
     Reset();
     PcSurfaceRegistry[registry_index] = NULL;
 }
 
-/* Full native 60aff0 control reconstruction, with genuinely missing VOID
- * actions retained at their actual call sites. No consumed value is stubbed. */
 extern "C" i32 NuRndrSwapScreen(i32 mode) {
     i32 last_effect_scene = -1;
     RenderFrameShaderTimePc += nuapi.frame_time;
@@ -89,7 +87,7 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             scene->scene_id = -1;
         }
         if (scene->unknown_ac != 0) {
-            NuPostEffectIsInitialised(8); /* Native60b270 result unused. */
+            NuPostEffectIsInitialised(8);
         }
         if (scene->unknown_58 != 0 && NuPostEffectIsInitialised(4)) {
             NuPostEffectEnable(4);
@@ -166,7 +164,7 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             }
         }
     }
-    sceneParametersCount = 0; /* Actual native60b50d, after both live-count loops. */
+    sceneParametersCount = 0;
     NuRndrEndFrameActionPc();
     NuPostEffectEnd();
     _NuTimeBarSlotEnd(-1, 4);
@@ -181,7 +179,7 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
         RenderFrameCallbackPc();
     }
     NuRndrEndSceneEx(0);
-    PCDeviceEndScenePc(); /* Genuine native10-byte wrapper6e4a10; result unused. */
+    PCDeviceEndScenePc();
     PcInputEndFramePc();
     PCFramePresentNativePc(mode, 1);
     NudxFw_D3DEndCriticalSection();

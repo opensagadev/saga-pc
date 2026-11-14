@@ -2,8 +2,7 @@
 
 NetSessionManager *theNetSessionManager;
 
-/* TTNetwork object (0x60dee0-0x60ffcb): network statistics and the TTNetwork
- * singleton. Only the statistics helpers are ported so far. */
+/* TTNetwork object: network statistics and the TTNetwork singleton. */
 
 STATIC_ASSERT(offsetof(NetStats, history_index) == 0x18);
 STATIC_ASSERT(offsetof(NetStats, last_time) == 0x1c);

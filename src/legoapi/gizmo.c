@@ -35,7 +35,7 @@ typedef struct area_gizmosys_prefix_pc_s {
     AREA_GIZMOSET_PC *sets;
 } AREA_GIZMOSYS_PREFIX_PC;
 
-/* Retail calls one empty diagnostic entry with varying arguments (none, or the clashing prefix names); it is
+/* One empty diagnostic entry is called with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
 void GizmoDiagnosticPc(char *format, ...);
 #define GIZMO_DIAGNOSTIC_BARE() ((void (*)())GizmoDiagnosticPc)()
@@ -292,7 +292,7 @@ void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *system, WORLDINFO *world, i32 *ids,
     }
 }
 
-/* MATCH-EXCEPTION: retail reads the typed gizmotypes global at each use (saga.h declares it void *). */
+/* MATCH-EXCEPTION: the original reads the typed gizmotypes global at each use (saga.h declares it void *). */
 void GizmoSysClearLevelProgress(void *owner, i32 index) {
     GIZMOTYPE_PC *type;
     i32 i;
@@ -1153,7 +1153,7 @@ extern "C" {
 }
 #endif
 
-/* Original source name unknown. The native entry is exactly RET (0x559570, in this unit). */
+/* Empty. */
 void GizmoDiagnosticPc(char *format, ...) {
     (void)format;
 }

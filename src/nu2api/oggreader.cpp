@@ -32,7 +32,7 @@ class OggReader : public WavReader {
     static u32 ReadCallbackPc(void *, u32, u32, void *);
     static i32 SeekCallbackPc(void *, i64, i32);
     static i32 CloseCallbackPc(void *);
-    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
+    // NOLINTNEXTLINE(google-runtime-int): the upstream long type keeps the C ABI.
     static long TellCallbackPc(void *);
     u8 compressed;                  // 0x040
     u8 unknown_041[7];              // 0x041
@@ -237,7 +237,7 @@ i32 OggReader::CloseCallbackPc(void *source) {
     return 1;
 }
 
-// NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
+// NOLINTNEXTLINE(google-runtime-int): the upstream long type keeps the C ABI.
 long OggReader::TellCallbackPc(void *source) {
     OggReader *reader = (OggReader *)source;
     if (reader->cache == NULL) {
@@ -280,7 +280,7 @@ HRESULT OggReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
         cache = &PCOggCachePoolPc[index];
         if (cache->data != NULL) {
             memset(cache->data, 0xcd, cache->bytes);
-            // MATCH-EXCEPTION: an alias of cache for the free call only reproduces retail's operand order
+            // MATCH-EXCEPTION: an alias of cache for the free call only reproduces the original operand order
             // of the rate * channels product below (symbol numbering, no code of its own).
             PC_OGG_CACHE_RECORD_PC *record = cache;
             NuFree(record->data, ".\\pc\\oggreader.cpp", 132);

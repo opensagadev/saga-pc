@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x5476e0-0x5477e0 (legoapi/buffers.c): definitions in retail address order. */
-
 extern "C" {
 
     void StartPerm(void) {

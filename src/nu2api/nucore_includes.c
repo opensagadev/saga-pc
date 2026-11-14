@@ -22,7 +22,6 @@ typedef struct numemblk_s {
 i32 decode_buffer_left = 0;
 static i32 decode_buffer_pos = 0;
 static u8 decode_buffer[262144] = {0};
-/* Preserve the existing canonical working view; this is not a PC capacity claim. */
 static u8 read_buffer[0x40000] = {0};
 i32 read_buffer_size = 0;
 static i32 read_buffer_decoded_size = 0;
@@ -54,8 +53,6 @@ struct NUPPHEADER_PC {
     (((value) >> 24) | (((value) & 0x00ff0000) >> 8) | (((value) & 0x0000ff00) << 8) | ((value) << 24))
 
 STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, header) == 0);
-
-/* Append to nufile.c: real existing NuFileWrite is intentionally in this TU. */
 
 STATIC_ASSERT(offsetof(NUDATHDR, unknown_b4) == 0xb4);
 
@@ -134,7 +131,7 @@ enum {
 
 static i32 NuRDPIExpression(NURDPICTX_PC *context);
 
-/* PC manager prefix and block header touched by the retail allocator. */
+/* PC manager prefix and block header touched by the allocator. */
 typedef struct nualloc_manager_block_pc_s {
     union {             // 0x0
         u32 size_flags; // 0x0
@@ -2379,7 +2376,7 @@ NUDATHDR *NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 m
                 header->hashes_len = *(i32 *)cursor;
                 cursor += sizeof(i32);
                 header->hashes = (char *)cursor;
-                /* Android endian-swaps each hash entry here; on PC the walk is left without a swap. */
+                /* On PC the hash entries are walked without an endian swap. */
                 hash = header->hashes;
                 for (index = 0; index < header->hash_count; ++index) {
                     name_len = NuStrLen(hash);
@@ -2592,7 +2589,7 @@ i32 NuFileExtConvert(char *dest, char *path) {
         if (source->platform == 4) {
             return 1;
         }
-        /* Retail uses the same pointer termination here. */
+        /* Uses the same pointer termination here. */
         for (target = extensions; target != NULL; ++target) {
             if (target->platform == 4 && target->type == type) {
                 char *extension;
@@ -2610,7 +2607,7 @@ i32 NuFileExtConvert(char *dest, char *path) {
 
 i32 NuFileExtGetExt(char *dest, i32 dest_size, i32 type) {
     PC_FILEEXTINFO *info;
-    /* Retail terminates this scan when the pointer wraps to zero. */
+    /* Terminates this scan when the pointer wraps to zero. */
     for (info = extensions; info != NULL; ++info) {
         if (info->platform == 4 && info->type == type) {
             i32 i;
@@ -2718,7 +2715,7 @@ void *NuFilePakLoadKey(char *filepath, VARIPTR *buffer, VARIPTR end, i32 alignme
         case 0x12345678:
             break;
         default:
-            // MATCH-EXCEPTION: retail passes the unknown pak type to the folded no-op diagnostic at 0x4ef7b0.
+            // MATCH-EXCEPTION: the original passes the unknown pak type to the folded no-op diagnostic.
             ((void (*)(i32))NuFileRetry)(header->type);
             fpk_err = 4;
             return NULL;
@@ -4838,7 +4835,7 @@ static void NuAllocManagerUnlinkPc(NUALLOC_MANAGER_BLOCK_PC *block) {
     }
 }
 
-/* Consistency check hook; empty in retail. */
+/* Consistency check hook; empty. */
 static void NuAllocManagerCheckPc(NUALLOC_MANAGER_PREFIX_PC *manager) {
 }
 
@@ -5023,7 +5020,7 @@ u32 NuAllocManagerGetFreeBytesPc(NUALLOC_MANAGER_PREFIX_PC *manager) {
 }
 
 /* Moves an allocation above the free block that follows it and returns its new payload. The free block is
-   rebuilt at the old payload address, 12 bytes past the old header, as in retail. No retail caller. */
+   rebuilt at the old payload address, 12 bytes past the old header. No caller. */
 void *NuAllocManagerDefragPc(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
     NUALLOC_MANAGER_BLOCK_PC *block;
     NUALLOC_MANAGER_BLOCK_PC *next;
@@ -5109,7 +5106,7 @@ f32 NuRDPF(char *input) {
     return NuRDPFVar(input, NULL);
 }
 
-/* Native unused string utilities; SOURCE-only proposal. */
+/* Unused string utilities. */
 i32 NuStrCpyWC(char *dst, const char *src, const char *replacement) {
     i32 copied = 0;
     if (src == NULL) {
@@ -5605,9 +5602,9 @@ i32 NuHexStringToI(char *string) {
     return value;
 }
 
-/* SOURCE-only R69 carry. Raw wide units and PC case ranges, not Unicode/locale
- * conversion. The character functions return NUWCHAR: only AX is the defined
- * return value; incidental high EAX bits are not a 32-bit integer contract.
+/* Raw wide units and PC case ranges, not Unicode/locale conversion. The
+ * character functions return NUWCHAR: only AX is the defined return value;
+ * incidental high EAX bits are not a 32-bit integer contract.
  */
 NUWCHAR NuToUpperW(NUWCHAR character) {
     if (character >= 0x61 && character <= 0x7a) {
@@ -5639,10 +5636,10 @@ void NuStrCatW(NUWCHAR *str, const NUWCHAR *ext) {
     }
 }
 
-/* SOURCE proposal: ordinary wide-string counterparts in the existing nustring owner.
- * Work on raw 16-bit units, including Native's broad Latin-1 case conversion.
- * Counts preserve the PC's subtract-then-test behavior and 32-bit wrap; these
- * are not bounded libc replacements and do not add missing-pointer guards.
+/* Wide-string counterparts of the nustring functions. They work on raw 16-bit
+ * units, including a broad Latin-1 case conversion. Counts keep the
+ * subtract-then-test behavior and 32-bit wrap; these are not bounded libc
+ * replacements and do not add missing-pointer guards.
  */
 i32 NuStrNCatW(NUWCHAR *str, const NUWCHAR *ext, i32 n) {
     i32 copied;
@@ -7464,7 +7461,7 @@ static void NuFileAddExtensionPC(const char *extension, i32 type, i32 platform) 
     }
     next->len = (char)len;
     if (len >= 13) {
-        /* The retail no-op diagnostic accepts and ignores this stack argument. */
+        /* The no-op diagnostic accepts and ignores this stack argument. */
         ((void (*)(i32))NuFileError)(13);
     }
     ext = next->extension;
@@ -7755,7 +7752,7 @@ f32 NuFrameEnd(void) {
     NuFrameEndLeafPc();
     PCDisplayListCriticalSectionEnterPc();
     NudxFw_D3DBeginCriticalSection();
-    /* DispatchMessage may update the native focus and policy flags. */
+    /* DispatchMessage may update the focus and policy flags. */
     if (SoundVoiceEnabledGate == 0) {
         if (PcNoFocusPolicy != 0) {
             Sleep(1);
@@ -8204,7 +8201,6 @@ i32 fun_004f4360(void) {
     return FramePadProfilePortPc;
 }
 
-// Uncompiled nupad.c append; Save133 belongs to peer material_review.
 void NuPadUpdatePads(void) {
     i32 max_interface_devices;
     i32 max_game_pads;
@@ -8625,7 +8621,6 @@ void fun_004f4f20(void) {
 void fun_004f4f30(void) {
 }
 
-/* Append to existing nupad.c; genuine NUAPI.pad_record layout is already asserted. */
 void NuPadRecordSave(char *filepath) {
     NUFILE file;
     u32 size;

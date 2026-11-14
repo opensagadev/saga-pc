@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Retail unit 0x42f4a0-0x430117: definitions in retail address order. */
-
 typedef struct startup_object_light_pc_s {
     u8 unknown_000[0x1fc]; // 0x0000
     u32 flags;             // 0x01fc
@@ -134,7 +132,7 @@ STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
 
-/* Native cut resource access prefix; sole resource owner remains the cut loader. */
+/* Cut resource access prefix; the cut loader owns the resource. */
 typedef struct BURNOUT_CUT_PREFIX_PC {
     u8 unknown_00[0x50]; // 0x00
     u32 flags;           // 0x50
@@ -448,7 +446,7 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
                               RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].material, &velocity);
                 }
             }
-            /* The native sound position remains unwritten when no particles are emitted. */
+            /* The sound position stays unwritten when no particles are emitted. */
             if (contact_timer->timer <= 0) {
                 PlaySfx("SabFField", &position);
                 contact_timer->timer = RippleSfxCooldownPc;

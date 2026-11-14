@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x58e8f0-0x5925c0 (legoapi/gizmo/object/gizbuildit.cpp): definitions in retail address order. */
-
 typedef struct gizbuildit_record_reader_pc_s {
     char name[16];             // 0x00
     u8 unknown_10[0x6c];       // 0x10
@@ -168,7 +166,7 @@ typedef struct {
     NUVEC position;
 } FLOW_BUILDIT_POSITION_PC;
 
-/* These allocation records use the native PC strides, rather than the larger imported views. */
+/* These allocation records use the PC strides, rather than the larger views. */
 typedef struct registry_buildit_record_pc_s {
     u8 unknown_00[0x10];
     GAMEANIMSET *anim_set;
@@ -212,12 +210,8 @@ typedef struct {
 extern "C" {
     extern i32 gizbuildit_gizmotype_id;
 }
-// Add only to the genuine Hub owner, after its existing private table definition.
 struct GIZBUILDIT_PC;
 
-/* 58eaa0/465. WORLDINFO currently carries Android buildit pointee types;
- * cast the pointee to the asserted PC array owner, never index Android84.
- */
 typedef struct hub_buildit_sys_pc_s {
     GIZBUILDIT_PC *buildits;
     u16 count;
@@ -1252,7 +1246,6 @@ extern "C" {
     }
 }
 
-/* 590da0/182. Add to the native buildit owner with the shared PC type. */
 extern "C" void GizBuildIt_SetToEnd(GIZBUILDIT_PC *buildit) {
     if (buildit == NULL) {
         return;

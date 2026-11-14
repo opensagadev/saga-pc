@@ -1,8 +1,8 @@
 #include "saga.h"
 
-/* AI script network replication (0x53d140-0x53db50). AINet is abstract: the
- * game derives from it to map AI packets to network ids. No class derives from
- * it in retail, so AINet::sm_instance stays NULL and replication is a no-op. */
+/* AI script network replication. AINet is abstract: the game derives from it
+ * to map AI packets to network ids. No class derives from it, so
+ * AINet::sm_instance stays NULL and replication is a no-op. */
 extern "C" {
     extern AIACTIONDEF_PC api_aiactiondefs[];
     extern AIACTIONDEF_PC *game_aiactiondefs;

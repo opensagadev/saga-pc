@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Retail unit 0x4e9f30-0x4eead7 (legogame/episodeVI.c): definitions in retail address order. */
-
 typedef struct SARLACC_DISCO_PC {
     AIAREA_PC *area;                // 0x000
     NUSPECIALHANDLE off[16];        // 0x004
@@ -47,7 +45,7 @@ f32 DeathStarZapWidthBiasPc = 0.01f;
 f32 DeathStarZapEndWidthPc = 1.5f;
 i32 DeathStarZapLaserTypePc = 0;
 
-/* Original episodeVI.cpp private owner, PC 0x0088a668, two player timers. */
+/* Private owner of the two player timers. */
 static f32 slowDownTimer[2] = {0};
 f32 FireDeltaPositionPc = 0.0f;
 
@@ -79,7 +77,7 @@ typedef struct sarlacc_panel_pc_s {
 
 extern i32 DrawBossHitPointsTwoRowsPc;
 
-/* Native Emperor floor packet and private controls. */
+/* Emperor floor packet and private controls. */
 typedef struct emperor_update_packet_pc_s {
     i32 state;              // 0x0
     u8 enabled;             // 0x4
@@ -93,7 +91,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_opponent_exclusion_mask) == 0xeb8);
 #define RANCOR_PLAYER_IN_AREA_PC(player, world, n)                                                                     \
     (U64_PAIR((player)->ai_area_mask) & (1 << (LevArea[n] - (world)->ai_sys->areas)))
-/* PC 0x0088ab2c: fairground party split locator. */
+/* Fairground party split locator. */
 static AILOCATOR_PC *FairgroundSplitPartyLocatorPc;
 
 typedef struct JABBA_ANTINODE_VIEW_PC {
@@ -339,7 +337,7 @@ static void DeathStar2BattleFire_UpdateSlowDownMul(f32 dt) {
 }
 
 f32 DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
-    // MATCH-EXCEPTION: retail reads field_280 as a signed char (movsx) at each use; saga.h declares it u8
+    // MATCH-EXCEPTION: the original reads field_280 as a signed char (movsx) at each use; saga.h declares it u8
     if (object == NULL || (object->field_280 != 0 && object->field_280 != 1)) {
         return 1.0f;
     }
@@ -929,7 +927,7 @@ void SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
             sarlaccb_netpacket->height = sarlaccdisco.height;
         }
         bit = 1u << index;
-        /* Retail expands the show-and-raise code separately in each branch. */
+        /* Expands the show-and-raise code separately in each branch. */
 #define SARLACC_SHOW_PANEL_PC(handle)                                                                                  \
     do {                                                                                                               \
         NuSpecialSetVisibility(handle, 1);                                                                             \
@@ -1577,7 +1575,7 @@ void NewTown_Init(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "dummy_exp8");
 }
 
-/* PC 0x0088a58c..0x0088a58f and 0x0088a6ec/0x0088a6ed: bonus level vehicle ride flags. */
+/* Bonus level vehicle ride flags. */
 static u8 prevOnFireTruck = 0;
 static u8 prevOnLifeBoat = 0;
 
@@ -1688,7 +1686,7 @@ void EndorBattleA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "bbq_popnull", 1);
 }
 
-/* PC 0x00800358 / 0x0080035c: Endor barbecue smoke interval and countdown. */
+/* Endor barbecue smoke interval and countdown. */
 static f32 EndorBattleAPartTimePc = 0.75f;
 static f32 EndorBattleAPartTimerPc = 0.75f;
 

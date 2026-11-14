@@ -44,7 +44,6 @@ typedef struct controller_cut_view_pc_s {
     f32 current_frame;
 } CONTROLLER_CUT_VIEW_PC;
 
-/* Native PC startup and callback providers; insert in gameai.c before GameAISysSetGame. */
 typedef char *(*AI_CHARACTER_NAME_PC)(u8);
 typedef char *(*AI_GLOBAL_CHARACTER_NAME_PC)(i32);
 typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ_PC)(i32);
@@ -88,7 +87,6 @@ void ClearAICreatures(void);
 void StarWars_GameAISysInit(void);
 void Indy_GameAISysInit(void);
 i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
-/* Genuine original call declarations: no placeholder implementations. */
 GAMEOBJECT *AddCreature(i32 model, i32 mode);
 extern i32 complexsockposition_forcesock;
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
@@ -861,7 +859,6 @@ static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
     return 1;
 }
 
-/* Native 0x0043b730, 137 bytes. */
 void GameAIResetPathConnectionsPc(AISYS_PC *system) {
     AIPATH_PC *path;
     AIPATHCNX_PC *connection;
@@ -885,7 +882,6 @@ void GameAIResetPathConnectionsPc(AISYS_PC *system) {
     }
 }
 
-/* Native 0x0043b7c0, 376 bytes: private EDI-argument helper of frame owner. */
 static void GameAIUpdateAreaPc(AIAREA_PC *area) {
     i32 area_index = area - WORLD->ai_sys->areas;
     GAMEOBJECT *object = Obj;
@@ -924,7 +920,6 @@ static void GameAIUpdateAreaPc(AIAREA_PC *area) {
     }
 }
 
-/* Native 0x0043b940, 467 bytes. */
 void GameAISysStartFrame(AISYS_PC *system) {
     i32 path_index;
     i32 connection_index;
@@ -1283,7 +1278,7 @@ NUVEC *GetAICreatureOrigin(AISYS_PC *system, AIPACKET_PC *packet) {
 }
 
 void GameAILoad(AISYS_PC *system, i32 version, NUGSCN *unused2, VARIPTR *buffer, VARIPTR *buffer_end) {
-    /* Retail allocates through this uninitialised cursor against the system's storage end, not the caller's
+    /* Allocates through this uninitialised cursor against the system's storage end, not the caller's
        buffer. */
     VARIPTR cursor;
     char tag[8];
@@ -1879,7 +1874,7 @@ void oneAtOnce_SetInitDistPerRow(float distance) {
 
 void oneAtOnce_MaintainArray(void) {
     GAMEOBJECT *previous_attackers[8][4];
-    /* Four explicit zeros: retail stores the first four counts from one register and zero-fills the rest. */
+    /* Four explicit zeros: the first four counts are stored from one register and the rest zero-filled. */
     i32 attacker_count[8] = {0, 0, 0, 0};
     i32 previous_count[8] = {0, 0, 0, 0};
     GAMEOBJECT *object;
@@ -2130,7 +2125,7 @@ GAMEOBJECT *AddDynamicCreature(i32 model, NUVEC *position, i32 angle, char *scri
 void AISysGetPathPos2(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *path_info, NUVEC *path_position,
                       AIPATH_PC *path, i32 flags) {
     if (system != NULL && position != NULL && path_info != NULL) {
-        /* The packet is a raw byte buffer (retail places it above the object as a /GS buffer). */
+        /* The packet is a raw byte buffer (placed above the object as a /GS buffer). */
         u8 packet_data[0x210];
         AIPACKET_PC *packet = (AIPACKET_PC *)packet_data;
         BULK_AI_FULL_OBJECT_PC object;

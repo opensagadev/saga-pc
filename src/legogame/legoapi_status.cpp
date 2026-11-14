@@ -3,9 +3,7 @@
 #pragma bss_seg(".bss$goldbrickmsgcount")
 static i32 goldbrickmsgcount = 0;
 
-/* Retail unit 0x482c00-0x486f20 (legoapi/misc/legoapi_status.cpp): definitions in retail address order. */
-
-/* Native walks the two adjacent 0x14-byte rumble records. */
+/* Walks the two adjacent 0x14-byte rumble records. */
 typedef struct STATUS_RUMBLE_PAIR_PC {
     RUMBLE_PACKET_RESOURCE_PC players[2];
 } STATUS_RUMBLE_PAIR_PC;
@@ -238,7 +236,6 @@ extern "C" {
         return NULL;
     }
 
-    /* Complete native status-control foundation. No registration/table activation. */
     void StatusStage_Reset(STATUS_STAGE_s *stage) {
         if (stage != NULL) {
             stage->field_0x14 = -1;
@@ -248,7 +245,7 @@ extern "C" {
         }
     }
 
-    /* Native status-stage handlers call this shared routine. */
+    /* The status-stage handlers call this shared routine. */
     void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
         for (i32 i = 0; i < 2; ++i) {
             if (StatusPacket.player_active[i] != 0 && (player == -1 || player == i)) {
@@ -500,7 +497,7 @@ extern "C" {
             return;
         }
         if ((p->flags_word & 0x400) != 0) {
-            /* Retail tests the current level separately for loaded and unloaded worlds. */
+            /* Tests the current level separately for loaded and unloaded worlds. */
             if (NewLData == STATUS_LDATA || (WORLD->loaded && WORLD->current_level == STATUS_LDATA) ||
                 (!WORLD->loaded && WORLD->current_level == STATUS_LDATA)) {
                 struct EPISODESAVE_s *save = &Game.episode_save[episode];
@@ -904,7 +901,7 @@ extern "C" {
         }
     }
 
-    /* Retail places StatusIconsOnOff (0x4850e0) with the shared status-screen code next to
+    /* StatusIconsOnOff lives with the shared status-screen code next to
        Status_DrawPlayerIconsPc, not with the LSW stage callbacks, so the stage callbacks call
        it instead of inlining it. */
     f32 StatusIconsOnOff(f32 blend) {
@@ -1457,7 +1454,7 @@ extern "C" void FinishStatusPacket(i32 choice) {
     NuSound3StopRumble();
 }
 
-/* Retail 486c00 consists solely of RET. */
+/* Empty. */
 extern "C" void NuMainStatusHelperPc(STATUSPACKET_s *) {
 }
 

@@ -2,9 +2,6 @@
 #include <string.h>
 #include "saga.h"
 
-/* Retail unit 0x55b1c0-0x55c0ec (legoapi/characters.c): definitions in retail address order,
-   followed by the functions of other compilands that this file still holds. */
-
 STATIC_ASSERT(sizeof(CHAR_CATEGORY_RECORD_PC) == 12);
 STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, name) == 0);
 STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, model_flags) == 4);
@@ -125,7 +122,7 @@ extern "C" CHARACTERDATA_PC *CDataFromName(const char *name) {
     return NULL;
 }
 
-// Genuine character subsystem callback; arg1 prefix, arg4 output are PC order.
+// Character subsystem callback.
 i32 RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *animation, char *output_path) {
     const ANIM_REDIRECT_VIEW_PC *redirect;
     const char *name;
@@ -182,7 +179,7 @@ extern "C" {
         for (i32 i = 0; i < apicharsys->loaded_model_count; ++i) {
             const i32 model_id = apicharsys->models[i].model_id;
             if (KillPartsCharSceneAreaPc[model_id].scene == NULL && (CDataList[model_id].flags & 1) != 0) {
-                /* Retail reuses the loop counter as InModelList's output index. */
+                /* Reuses the loop counter as InModelList's output index. */
                 if (InModelList(list, model_id, &i) != 0 && list[i].count != 0) {
                     CharScene_Load(&KillPartsCharSceneAreaPc[model_id], model_id, buffer, end);
                 }

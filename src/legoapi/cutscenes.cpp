@@ -1,7 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Retail unit 0x57a810-0x57f647: definitions in retail address order. */
 #pragma bss_seg(".bss$CS_area")
 static i32 CS_area = 0;
 #pragma bss_seg()
@@ -1199,7 +1198,7 @@ extern "C" CUT_LOAD_SYS_PC *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *
         sys->records = reinterpret_cast<CUT_LOAD_RECORD_PC **>(buf->void_ptr);
         u32 size = sys->count * sizeof(CUT_LOAD_RECORD_PC *);
         PCByteCopy(sys->records, entries, size);
-        // Retail reserves count pointer-table rows after copying the count entries.
+        // Reserves count pointer-table rows after copying the count entries.
         buf->addr = (buf->addr + sys->count * size + 3) & ~3U;
         return sys;
     }
@@ -1447,7 +1446,7 @@ void CutScenes_Destroy(CUTSYS_PC *system) {
     }
 }
 
-/* PC never lets a cutscene be skipped here: both outcomes of the Android test return 0. */
+/* PC never lets a cutscene be skipped here: both outcomes of the test return 0. */
 i32 CutScene_IsSkippable(CUTINFO *cut) {
     if (FadeSys.fade == 0.0f && cut != NULL && cut != (CUTINFO *)CutStopInfo) {
         return 0;
@@ -1534,7 +1533,7 @@ extern "C" {
 
     static void bgLoadStreamCutScene(BGPROCINFO *) {
         if (cutscene_load_instance != NULL) {
-            /* Retail's debug trace of the frame counter; the print is compiled empty. */
+            /* Debug trace of the frame counter; the print is compiled empty. */
             CutSceneConfigMissingPc(reinterpret_cast<char *>(nuvideo_global_vbcnt));
             instNuGCutSceneServiceLoad();
         }
@@ -2121,7 +2120,6 @@ extern "C" {
         return CutScenePlayer != NULL ? CutScenePlayer->active : NULL;
     }
 
-    /* 0057e720..0057e7d2, ordinary one-argument cdecl. */
     i32 CutScenePlayer_CanStart(i32 clip_id) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         i32 area_id;
@@ -2143,8 +2141,7 @@ extern "C" {
         return 0;
     }
 
-    /* 0057e7e0..0057e849. The following 0057e850 text function is a separate
-     * native owner. PC accepts one argument and does not write return_door. */
+    /* Accepts one argument and does not write return_door. */
     void CutScenePlayer_Start(i32 clip_id) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         if (CutScenePlayer != NULL && clip_id >= 0 && clip_id < CutScenePlayer->clip_count) {
@@ -2156,8 +2153,7 @@ extern "C" {
         }
     }
 
-    /* 0057e850..0057ea41 instructions, alignment to0057ea44, four-entry table
-     *0057ea44..0057ea54. PC mode is only a boolean controlling the type suffix. */
+    /* Mode is only a boolean controlling the type suffix. */
     void CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         LEVELDATA_PC *level;
@@ -2230,7 +2226,7 @@ extern "C" {
     }
 
     void CutScenePlayer_SetObjects(CUTINFO *owner) {
-        // MATCH-EXCEPTION: cast at each use (I45); a cast local lets VC8 pack the end frame into the dead parameter
+        // MATCH-EXCEPTION: cast at each use; a cast local lets VC8 pack the end frame into the dead parameter
         // slot.
         i32 i;
         if (CutScenePlayer == NULL || CutScenePlayer->active == NULL) {
@@ -2288,7 +2284,7 @@ extern "C" {
             i32 status = music_man.PlayTrack(16, 1);
             CutSceneMusicStartFramePc = nuapi.frame_count;
             if (status != 1) {
-                // MATCH-EXCEPTION: retail tests status == 1 below on the eax this diagnostic stub returns (the
+                // MATCH-EXCEPTION: the original tests status == 1 below on the eax this diagnostic stub returns (the
                 // empty stub leaves the status there), so the status is read back from the call.
                 status = reinterpret_cast<i32 (*)(char *)>(CutSceneConfigMissingPc)(reinterpret_cast<char *>(status));
             }
@@ -2439,8 +2435,8 @@ extern "C" {
         if (world->cutscene_sys == NULL) {
             return;
         }
-        // MATCH-EXCEPTION: the search runs on stop_index itself and jumps past the not-found reset; retail keeps
-        // the loop counter as the stop index and skips the DebrisSetRenderGroup(1) test on the found path.
+        // MATCH-EXCEPTION: the search runs on stop_index itself and jumps past the not-found reset; the original
+        // keeps the loop counter as the stop index and skips the DebrisSetRenderGroup(1) test on the found path.
         i32 stop_index;
         for (stop_index = 0; stop_index < world->cutscene_sys->count; ++stop_index) {
             CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[stop_index]);

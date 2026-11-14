@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Retail unit 0x595110-0x5970b0 (legoapi/lighting.c): definitions in retail address order. */
-
 typedef struct startup_object_light_pc_s {
     u8 unknown_000[0x1fc];
     u32 flags;
@@ -478,7 +476,7 @@ extern "C" {
                 (f32)(NuTrigTable[((u32)(angle >> 1)) & 0x7fff] * ((f64)owner->arrow_blend * 0.5) + 1.0);
         } else if (Lighting_FlashRedOnLastHeart != 0 && (owner->flags_1fc_word & 0x80) && owner->current_hp == 1 &&
                    owner->field_107e > 1 && owner->vehicle_hit_timer < -0.5f) {
-            // MATCH-EXCEPTION: retail negates the (negative) timer and subtracts it rather than adding.
+            // MATCH-EXCEPTION: the original negates the (negative) timer and subtracts it rather than adding.
             i32 angle = (i32)((1.0 - (-owner->vehicle_hit_timer)) * 2.0 * 65536.0 + 16384.0);
             f32 flash = (f32)((1.0 - NuTrigTable[((u32)(angle >> 1)) & 0x7fff]) * 0.5 * (f64)0.333f);
             red = (f32)(((f64)Lighting_RedFlashRedPc - 1.0) * flash + 1.0);
@@ -530,7 +528,7 @@ extern "C" {
         SetLights(&intensity[0], &direction[0], &intensity[1], &direction[1], &intensity[2], &direction[2], &ambient);
     }
 
-    /* PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc, which retail inlines here. */
+    /* PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc, inlined here. */
     static void EnableShadowLight(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 enabled) {
         if (enabled != 0 && light->enabled == 0) {
             i32 i;
@@ -574,7 +572,7 @@ extern "C" {
         EnableShadowLight(PCShadowSecondaryLight, 1);
     }
 
-    /* File-local, so VC8 passes center in EDI as retail does; radius stays on the stack. */
+    /* File-local, so VC8 passes center in EDI; radius stays on the stack. */
     static i32 ShadowAveragePlayerBoundsPc(NUVEC *center, f32 *radius) {
         *center = APIObjectZeroMomentumPC;
         *radius = -1.0f;
@@ -629,7 +627,6 @@ extern "C" void SetSpotLightMode(void) {
     NuLightSpotFadeSet(0x80808080);
 }
 
-// Append to the current shadowmap.cpp owner; real existing definitions above.
 void ResetShadowMapRenderingFn(void) {
     ResetShadowMapRendering();
 }

@@ -312,7 +312,7 @@ extern "C" __declspec(noinline) void PCDeviceSetFVFPc(u32 fvf) {
     PCDeviceLastResult = device->methods->set_fvf(device, fvf);
 }
 
-/* Draws the [-1, 1] cube transformed by matrix as 12 untextured triangles (no retail caller). */
+/* Draws the [-1, 1] cube transformed by matrix as 12 untextured triangles (no caller). */
 extern "C" void PCGraphicsDrawUnitBoxPc(NUMTX *matrix) {
     NUVEC4 corners[8] = {{-1.0f, -1.0f, -1.0f, 1.0f}, {-1.0f, 1.0f, -1.0f, 1.0f}, {1.0f, 1.0f, -1.0f, 1.0f},
                          {1.0f, -1.0f, -1.0f, 1.0f},  {-1.0f, -1.0f, 1.0f, 1.0f}, {-1.0f, 1.0f, 1.0f, 1.0f},
@@ -970,7 +970,7 @@ void PC_DEVICE_BACKEND_PC::Present(const RECT *source, const RECT *destination, 
                 CreateOrResetDevice(1);
             }
         } else if (present_result != static_cast<HRESULT>(0x88760827)) {
-            /* Retail closes the window through separate branches for an internal driver error and the rest. */
+            /* Closes the window through separate branches for an internal driver error and the rest. */
             SendMessageA(PCInputInstance, WM_CLOSE, 0, 0);
         } else {
             SendMessageA(PCInputInstance, WM_CLOSE, 0, 0);
@@ -1421,7 +1421,7 @@ struct PC_SURFACE_PC {
 };
 
 /* Copies a render-target surface to system memory and writes it as the first free "<prefix>_pcNNN.bmp".
-   No retail caller remains. */
+   No caller. */
 extern "C" void PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE_PC *surface) {
     typedef HRESULT(__stdcall * CREATE_TEXTURE_PC)(PC_D3D9_DEVICE_PC *, u32, u32, u32, u32, u32, i32,
                                                    PC_TEXTURE_RESOURCE_PC **, HANDLE *);
@@ -1830,7 +1830,7 @@ void PC_DEVICE_BACKEND_PC::SetDepthStencilSurface(PC_EFFECT_SURFACE_PC *target) 
         GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
         view->methods->set_depth_stencil_surface(view, target->surface);
     } else if (multisample_index != 0) {
-        /* Retail keeps a separate multisample branch that binds the same depth surface. */
+        /* Keeps a separate multisample branch that binds the same depth surface. */
         GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
         view->methods->set_depth_stencil_surface(view, depth_surface);
     } else {
@@ -2019,7 +2019,7 @@ void PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabl
     }
 }
 
-/* Thin IDirect3DDevice9 getters (no retail caller); each records its result. */
+/* Thin IDirect3DDevice9 getters (no caller); each records its result. */
 extern "C" void PCDeviceColorFillPc(PC_TEXTURE_RESOURCE_PC *surface, const RECT *rect, u32 colour) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->color_fill(PCDeviceBackend.device, surface, rect, colour);
 }
@@ -2247,7 +2247,7 @@ extern "C" void NuPs2GetViewport(NUVPCURRENT *viewport) {
     }
 }
 
-// Native platform aspect supplier, append to pc_device.cpp.
+// Platform aspect supplier.
 extern "C" void PCDeviceLightEnablePc(u32 index, BOOL enable) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->light_enable(PCDeviceBackend.device, index, enable);
 }

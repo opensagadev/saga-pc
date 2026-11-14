@@ -3,8 +3,6 @@
 #include <string.h>
 #include <float.h>
 
-/* Retail unit 0x46a8d0-0x46d7f0 (legoapi/gizmo/object/gizmopickup.cpp): definitions in retail address order. */
-
 typedef struct coin_packet_pc_s {
     u32 coins;
     f32 scale;
@@ -800,7 +798,7 @@ u32 TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *build
 void CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
     NUVEC momentum;
     (void)flags;
-    // MATCH-EXCEPTION: retail tests the same range twice (likely a macro/PC variant pair that
+    // MATCH-EXCEPTION: the original tests the same range twice (likely a macro/PC variant pair that
     // expanded to the same check); a single test drops the second compare.
     if ((object->current_hp > 0 && object->current_hp < object->field_107e) ||
         (object->current_hp > 0 && object->current_hp < object->field_107e)) {
@@ -955,7 +953,6 @@ i32 LoseCoins(GAMEOBJECT *object, i32 cause) {
     return (i32)lost;
 }
 
-/* Native 0046c7d0..0046ca7d. */
 void GizmoPickups_SetOnOff(void) {
     u32 arcade_flags;
     i32 index;

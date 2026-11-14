@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x561ba0-0x564310 (legoapi/jumping.c): definitions in retail address order. */
 extern i32 LEGOCONTEXT_JUMP;
 extern i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
 extern void (*BigJump_EndOfLandFn)(GAMEOBJECT *);
@@ -305,7 +304,6 @@ void BackFlipCode(GAMEOBJECT *object) {
     }
 }
 
-/* Native 5624d0: ordinary cdecl(object,vertical_speed), returning genuine success. */
 i32 Slam_Start(GAMEOBJECT *object, f32 speed) {
     if (LEGOCONTEXT_JUMP != -1) {
         object->character_context = (i8)LEGOCONTEXT_JUMP;

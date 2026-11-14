@@ -55,8 +55,8 @@ static void UpdateMissionIconX(MISSION_SYSTEM_READER_PC *system, i32 initialize)
     i32 index;
     f32 x;
     for (index = 0; index < system->count; ++index) {
-        // MATCH-EXCEPTION: explicit 0.0f centre term; retail keeps the addition of a 0.0f centre (likely a named
-        // constant in the original), which cannot be folded under strict float semantics.
+        // MATCH-EXCEPTION: explicit 0.0f centre term; the original keeps the addition of a 0.0f centre (likely a
+        // named constant), which cannot be folded under strict float semantics.
         if (index < MissionMenuSelectionPc) {
             x = 0.0f - MissionIconGapPc - (MissionMenuSelectionPc - index) * MissionIconStepPc;
         } else if (index == MissionMenuSelectionPc) {

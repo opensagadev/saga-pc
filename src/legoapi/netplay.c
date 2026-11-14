@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x578740-0x5787c4: definitions in retail address order. */
-
 void *SetLevelHack(i32 size) {
     memset(OldLevelHackData, 0, 0x80);
     memset(LevelHackData, 0, 0x80);

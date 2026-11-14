@@ -1,7 +1,7 @@
 #include "saga.h"
 
-/* PC timing leaves of nutimebar outside nu3d (0x4ff100-0x4ffbb0); the time bars
- * themselves live in nu3d_includes.cpp. */
+/* PC timing leaves of nutimebar outside nu3d; the time bars themselves live
+ * in nu3d_includes.cpp. */
 
 void NuTimeGetTicksPS(u32 *low, i32 *high) {
     LARGE_INTEGER counter;

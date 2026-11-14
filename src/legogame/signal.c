@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4c7880-0x4c8bad: definitions in retail address order. */
-
 STATIC_ASSERT(sizeof(SIGNAL_s) == 0x94);
 STATIC_ASSERT(offsetof(SIGNAL_s, matrix) == 0x10);
 STATIC_ASSERT(offsetof(SIGNAL_s, position) == 0x50);

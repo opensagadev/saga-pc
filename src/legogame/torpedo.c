@@ -762,7 +762,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     } else {
         TORPEDO_PACKET_PC(object)->flags &= (u8)~2;
     }
-    /* Retail tests the pickup timer twice before firing. */
+    /* Tests the pickup timer twice before firing. */
     if (fire != 0 && object->character_context == -1 && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
         (TORPEDO_PACKET_PC(object)->flags & 2) == 0 && TORPEDO_PACKET_PC(object)->pickup_timer >= 0.8f &&
         TORPEDO_PACKET_PC(object)->count > 0 && TORPEDO_PACKET_PC(object)->pickup_timer >= 0.8f) {
@@ -779,7 +779,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     }
     maximum = getMaxTorpedos(object);
     while (TORPEDO_PACKET_PC(object)->count > maximum) {
-        /* Retail spawns the discarded torpedo's debris at pickup_positions[count]. */
+        /* Spawns the discarded torpedo's debris at pickup_positions[count]. */
         if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0) {
             AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[72].effect,
                                         &TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count],

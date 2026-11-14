@@ -18,7 +18,7 @@ struct PC_FMV_REALTIME_PC {
     u32 data_rate;         // 0x34
 }; // size 0x38
 
-/* Original name unknown; uncalled in retail (0x631110). Seconds played of the current movie. */
+/* Uncalled. Seconds played of the current movie. */
 extern "C" f32 FmvGetTimePc(void) {
     PC_FMV_REALTIME_PC realtime;
     BinkGetRealtime(FmvMoviePc.bink, &realtime, 0);

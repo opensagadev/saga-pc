@@ -23,7 +23,7 @@ TUBE_PC *Tube_InAnyCylinder(WORLDINFO *world, GAMEOBJECT *object, i32 ignore_hei
     return NULL;
 }
 
-/* Retail inlines this test into Tube_MoveCode but calls it from Tube_InAnyCylinder. */
+/* Inlined into Tube_MoveCode but called from Tube_InAnyCylinder. */
 i32 Tube_InCylinder(GAMEOBJECT *object, TUBE_PC *tube, f32 *horizontal_distance_squared, i32 ignore_height) {
     f32 delta_x;
     f32 delta_z;
@@ -145,7 +145,7 @@ typedef struct tube_callbacks_pc_s {
 } TUBE_CALLBACKS_PC;              // size 0x40
 
 typedef struct tube_progress_pc_s {
-    /* Retail indexes both masks by tube / 32, although only 32 tubes are stored. */
+    /* Indexes both masks by tube / 32, although only 32 tubes are stored. */
     u32 visible_mask[1]; // 0x0
     u32 active_mask[1];  // 0x4
 } TUBE_PROGRESS_PC;      // size 0x8
@@ -193,7 +193,7 @@ static void Tube_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 
-/* Derived cylinder values; retail keeps an out-of-line copy before Tubes_Reset. */
+/* Derived cylinder values; an out-of-line copy is kept before Tubes_Reset. */
 static void Tube_ResetDerivedPc(TUBE_CALLBACKS_PC *tube) {
     tube->top = tube->position.y + tube->height;
     tube->radius_squared = tube->radius * tube->radius;

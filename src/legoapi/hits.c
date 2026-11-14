@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/* Retail unit 0x58b720-0x58b8aa (legoapi/hits.c): definitions in retail address order. */
-
 u16 ObjHitObj_Flags(GAMEOBJECT *object) {
     u16 flags = 0;
     if (object != NULL) {

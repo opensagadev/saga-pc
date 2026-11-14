@@ -344,8 +344,8 @@ typedef struct TERRAIN_SKIN_BATCH_PC {
     f32 max_z;           // 0x10
 } TERRAIN_SKIN_BATCH_PC; // size 0x14
 
-/* Raw records remain variable-length: a stream is the observed
- * 20-byte header followed by count 100-byte polygons. */
+/* Raw records are variable-length: a stream is a 20-byte header followed
+ * by count 100-byte polygons. */
 struct TERRAIN_SKIN_STREAM_PC {
     TERRAIN_SKIN_BATCH_PC header;        // 0x00
     TERRAIN_POLYGON_INFO_PC polygons[1]; // 0x14
@@ -354,8 +354,6 @@ struct TERRAIN_SKIN_STREAM_PC {
 extern const f32 TerrainSkinBoundsMaxPc;
 extern const f32 TerrainSkinBoundsMinPc;
 
-/* Explicit output-pointer interface preserves the verified PC five-word ABI.
- * Android's aggregate return is a source candidate, not a historical PC type. */
 NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO_PC *info, const NUVEC *position, f32 weight, i32 mode) {
     NUVEC4 point;
     NUMTX matrix;
@@ -585,9 +583,6 @@ NUVEC *TerrainStaticMtx(NUVEC *result, const TERRAIN_SKIN_INFO_PC *info, const N
     return result;
 }
 
-/* Insert after skin-info/use-record declarations; storage root-owned.
- * All seven new views retain BLANK original CSVsize and ctype / zero credit.
- */
 extern i32 PlatSkinCnt;
 extern TERRAIN_SKIN_INFO_PC *PlatSkinInfo;
 extern u32 TerrainUpadteCnt;
@@ -596,17 +591,11 @@ extern i32 PlatSkinMaxStore;
 extern i32 PlatSkinMaxSize;
 extern u8 *PlatSkinMem;
 
-/* Keep public CurrentTerrain as existing void* storage. TerI points at the
- * 0x948-byte TerrainQuery_s query packet. Keep existing
- * PLATFORM.scene_object as void*, locally accessed through NUMTX*; PLATFORM.instance_flags
- * points at the owning instance's flags word. No full scene-owner type transfer.
+/* TerI points at the 0x948-byte TerrainQuery_s query packet.
+ * PLATFORM.scene_object is a void*, accessed through NUMTX*;
+ * PLATFORM.instance_flags points at the owning instance's flags word.
  */
 
-/* Genuine C draft for insertion into existing nuterrain.c.
- * Qualified initialized skin records and pool storage; not allocation history.
- * Required source-view replacements are listed in the accompanying header file.
- * Source-convention void: original EAX values are ignored, not a recovered type.
- */
 void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     i32 selected;
     i32 candidate;
@@ -674,12 +663,6 @@ extern u16 TerrainRoofValidPc;
 extern i16 TerrainRoofIndexPc;
 extern NUVEC TerrainRoofNormalPc;
 extern const f32 TerrainCastLowerSentinel;
-/* Existing canonical globals: CurrentTerrain(void*), ShadPoly,
- * EShadPoly, ShadRoofPoly, EShadY,
- * GetSurfaceInfoRoofHeightPc, ShadNorm,
- * GetSurfaceInfoWaterNormalPc, TerrainSurfaceClassPc.
- * Reuse existing BoltTargetRandomDenominator(f64)/LevelConfigFarDistance(f32).
- */
 
 extern u16 TerrainSurfaceClassPc;
 
@@ -1213,8 +1196,8 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
     castnum = -1;
     TerrainShadowFloorIndexPc = -1;
     scan = TerI->scan_words;
-    /* MATCH-EXCEPTION: retail loads the group table once, after the loop's
-     * entry test (the original hoisted CurrentTerrain->groups itself); the
+    /* MATCH-EXCEPTION: the original loads the group table once, after the
+     * loop's entry test (it hoisted CurrentTerrain->groups itself); the
      * guarded load reproduces that placement. */
     if (scan->header.shape_count > 0) {
         groups = ((TERRAIN_SET_PC *)CurrentTerrain)->groups;
@@ -1229,8 +1212,8 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
             TERRAIN_POLYGON_INFO_PC *surface = entry->shape;
             i32 facing;
             i32 side;
-/* InsideLineF(x, z, start, end) as retail inlined it (the start and end
- * coordinates are f32 parameter copies). */
+/* InsideLineF(x, z, start, end), inlined (the start and end coordinates
+ * are f32 parameter copies). */
 #define CAST_LINE(a, b)                                                                                                \
     (line_x = surface->vertices[a].x, line_z = surface->vertices[a].z, end_x = surface->vertices[b].x,                 \
      end_z = surface->vertices[b].z, (x - line_x) * (end_z - line_z) + (z - line_z) * (line_x - end_x) < 0.0f ? 0 : 1)
@@ -1407,7 +1390,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
     return 0.0f;
 }
 
-/* Append after the integrated kernels; presentation macros stay local. */
+/* The presentation macros stay local to the kernels above. */
 #undef TERRAIN_FINISH_GROUP
 #undef TERRAIN_CROSS
 #undef SHADOW_BOUNDS_OVERLAP
@@ -2714,7 +2697,7 @@ void ReassignPickupInst(i32 index, i32 type) {
     group->radius = source->radius;
 }
 
-/* Native debug geometry uses the canonical 100-byte polygon view. */
+/* Debug geometry uses the 100-byte polygon view. */
 STATIC_ASSERT(sizeof(TERRAIN_POLYGON_INFO_PC) == 0x64);
 STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, vertices) == 0x18);
 STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normals) == 0x48);
@@ -3133,8 +3116,8 @@ STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_groups) == 0xa488);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_platforms) == 0xa48c);
 STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, origin) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, scene_index) == 0x30);
-/* Native 680e90: this preparation updates group bounds/radius, leaving
- * the copied polygon and batch bounds intact. */
+/* This preparation updates group bounds/radius, leaving the copied polygon
+ * and batch bounds intact. */
 #define TERRAIN_SKIN_BOUND(value, lo, hi)                                                                              \
     do {                                                                                                               \
         if ((value) < (lo))                                                                                            \
@@ -3262,8 +3245,8 @@ void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM_PC *output, 
 #undef TERRAIN_SKIN_PREPARE_NORMAL
 #undef TERRAIN_SKIN_BOUND
 
-/* Native 681470: preserve the native ordered error checks and live group
- * count reloads across the genuine skin preparation call. */
+/* Keeps the ordered error checks and live group count reloads across the
+ * skin preparation call. */
 #define TERRAIN_SCI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 
 i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_PC *blend, const NUVEC4 *sample_rows, f32 scale,
@@ -3330,8 +3313,8 @@ i32 fun_006816a0(NUMTX *matrix, const TERRAIN_SKIN_BLEND_PC *blend, const NUVEC4
 
 #undef TERRAIN_SCI_SET
 
-/* Native 6813e0: caller-owned arena start/end and explicit record capacity.
- * This partitions an existing arena; it does not establish its allocation. */
+/* Caller-owned arena start/end and explicit record capacity. This
+ * partitions an existing arena. */
 void TerrainSkinInitArenaPc(TERRAIN_SKIN_INFO_PC *base, u8 *end, i32 capacity) {
     PlatSkinInfo = base;
     PlatSkinMem = (u8 *)(base + capacity);
@@ -3353,8 +3336,8 @@ void TerrainSkinResetArenaPc(void) {
     }
 }
 
-/* Native 6816d0: temporary bounds and cell selectors are carved backwards
- * from the supplied end. Enough readable/writable arena is the native domain. */
+/* Temporary bounds and cell selectors are carved backwards from the
+ * supplied end. */
 u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
     TERRAIN_SET_PC *terrain = CurrentTerrain;
     TERRAIN_GROUP_PC *group;
@@ -3385,7 +3368,7 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
             if (group->bounds_min.x < world_min_x) {
                 world_min_x = group->bounds_min.x;
             }
-            /* Each native comparison uses the matching minimum or maximum. */
+            /* Each comparison uses the matching minimum or maximum. */
             if (group->bounds_min.y < world_min_y) {
                 world_min_y = group->bounds_min.y;
             }
@@ -3460,7 +3443,7 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
             selectors[i] = (i16)(z * 7 + x);
         }
     }
-    /* Native clear runs one past cells[] into the adjacent platform_cell. */
+    /* The clear runs one past cells[] into the adjacent platform_cell. */
     for (i = 0; i < 257; ++i) {
         terrain->cells[i].group_count = 0;
     }
@@ -3505,7 +3488,7 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
             terrain->group_indices[terrain->group_index_count++] = (i16)i;
             ++terrain->platform_cell.group_count;
             terrain->platforms[group->scene_index].terrain_group_index = (i16)i;
-            ++group; /* Native cursor advances only on the platform branch. */
+            ++group; /* The cursor advances only on the platform branch. */
         }
     }
     use = (TERRAIN_SKIN_USE_RECORD_PC *)(PlatSkinMem + PlatSkinMaxSize * pool_slots);

@@ -17,7 +17,7 @@ typedef struct transform_glow_pc_s {
     u8 glow_kind;                  // 0xe2c
 } TRANSFORM_GLOW_PC;               // size 0xe30
 
-// The retail target draw keeps a private copy of this numtx-style Z rotation.
+// The target draw keeps a private copy of this numtx-style Z rotation.
 static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];

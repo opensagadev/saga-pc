@@ -114,7 +114,7 @@ extern "C" {
     i32 NuMainSplineDebugPhasePc = 0;
 }
 
-/* Debug view of the scene splines (retail 0x491bd0); NuMainRenderWorld calls it only while
+/* Debug view of the scene splines; NuMainRenderWorld calls it only while
  * NuMainSplineDebugModePc is set, and mode 2 animates the dash pattern. */
 static void NuMainDrawSplinesPc(NUGSCN *gscn) {
     i32 colours[8] = {-1, -1, -1, -1, 0, 0, 0, 0};
@@ -150,7 +150,7 @@ static void NuMainDrawSplinesPc(NUGSCN *gscn) {
     }
 }
 
-/* PC splits NuMain's per-frame game update (0x491d50) and world render (0x4927f0) into helpers. */
+/* PC splits NuMain's per-frame game update and world render into helpers. */
 static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     GAMEOBJECT *object;
     LEVELDATA_PC *level;

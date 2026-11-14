@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Retail unit 0x457ec0-0x458461: definitions in retail address order. */
-
 void Text_ExpandAllButtonStrings(char *, char *);
 
 f32 CurrentHintAlpha(void) {

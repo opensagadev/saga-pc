@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Retail unit 0x5999e0-0x59a595 (legoapi/minikits.c): definitions in retail address order. */
-
 STATIC_ASSERT(sizeof(*Char_MiniKit) == 4);
 extern f32 KITPOS2YPc;
 
@@ -221,7 +219,6 @@ i32 AllMiniKitsDone(AREASAVE_s *save) {
     return 1;
 }
 
-/* Complete native0059a1e0..0059a414. */
 void DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
     i32 model = ChallengeMode != 0 ? CharKitModelId_PC : MiniKitModelId_PC;
     f32 factor;
@@ -273,8 +270,6 @@ void MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
     GameCam_Judder(GameCam, -0.2f, 0, NULL);
 }
 
-/* PC level-script and antinode views retain the surrounding canonical layouts.
- */
 typedef struct HOTH_WORLD_SCRIPT_PC {
     u8 reserved[0x2b00];          // 0x0000
     AISCRIPTPROCESS_PC processor; // 0x2b00

@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x576bc0-0x578718: definitions in retail address order. */
 #include <string.h>
 
 typedef struct MINICAM_CAMERA_PC {

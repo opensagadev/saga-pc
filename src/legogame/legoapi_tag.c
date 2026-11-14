@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x486f20-0x488e82: definitions in retail address order. */
-
 extern GAMEOBJECT *player_tag_from;
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
@@ -16,7 +14,7 @@ STATIC_ASSERT(sizeof(Player) == 32);
      (target) != (source) && (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 &&                          \
      ((target)->tag_flags & 2) == 0)
 
-/* A copy of the actual 33-DWORD script cohort (script processor plus takeover link), without extending the
+/* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 typedef union TAGSCRIPTSTATE_PC {
     u32 words[0x33];
@@ -38,7 +36,7 @@ typedef struct TAGFLAGS1FC_PC {
 } TAGFLAGS1FC_PC;
 
 #define TAG_FLAGS(object) ((TAGFLAGS1FC_PC *)&(object)->flags_1fc_word)
-/* Defined in render.c, the TU that owns 0x486f20; an in-TU empty body lets the call be dropped. */
+/* Defined in render.c; an empty body in this unit would let the call be dropped. */
 void TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name);
 
 void Tag_SetMode(i32 mode) {
@@ -107,7 +105,6 @@ void GetTakeOverPos(GAMEOBJECT *object, NUVEC *position) {
     }
 }
 
-/* Appended after tag-draft.c and get-pos.c in the original-TU scratch group. */
 static void SetRiderPos(GAMEOBJECT *object, NUVEC *position) {
     if (object->rider != NULL) {
         if (position != NULL) {

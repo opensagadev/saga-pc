@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x55c950-0x55dd9f: definitions in retail address order. */
-
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 
 typedef struct grapple_rotation_pc_s {
@@ -23,7 +21,7 @@ typedef struct kill_zipup_pc_s {
     u16 runtime_flags;   // 0x68
 } KILL_ZIPUP_PC;         // size 0x6a
 
-/* A copy of the actual 33-DWORD script cohort (script processor plus takeover link), without extending the
+/* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 typedef union TAGSCRIPTSTATE_PC {
     u32 words[0x33]; // 0x00
@@ -63,8 +61,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
 STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 12);
 STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
 
-/* Source-private in gameobjects.c. Forward pointer uses struct tag in saga.h.
- * Tail[1] exposes actual counted traversal; it is NOT owner/allocation count.
+/* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
  */
 typedef struct shadow_platform_entry_pc_s {
     GAMEOBJECT *object;     // 0x00
@@ -156,7 +153,7 @@ void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     }
     other = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++other) {
-        // Retail shifts through __allshl, which yields 0 for groups >= 64.
+        // Shifts through __allshl, which yields 0 for groups >= 64.
         U64_PAIR(other->collision_contact_mask) &= ~U64_PAIR(object->collision_identity_mask);
         U64_PAIR(other->hostility_mask) &= ~((u64)1 << object->hostility_group);
         U64_PAIR(&other->field_eb0) &= ~((u64)1 << object->hostility_group);
@@ -612,19 +609,10 @@ void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
     object->use_action_parameter = parameter;
 }
 
-/* Original-TU private globals are handed off to the single data owner. */
-
-/* Preserve existing GAMEOBJECT field declarations/assertions:
- * level_object_index signedWORD1070, flags_1fc BYTE1fc,
- * character_data pointer54 -> game_character pointer24 -> field_028 f32.
- * No new aggregate/type claim in this private source access view.
- */
-
-/* Bitwise absolute value through a float temporary, as retail does. */
+/* Bitwise absolute value through a float temporary. */
 
 // Copies the antinode timer and its 0x8000 flag from one creature's packet to the other's.
 typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
-/* The genuine callback definitions and initializer remain in the original aisys owner. */
 extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
 
 typedef struct OPPONENT_PACKET_PC {
@@ -691,7 +679,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, route_start_index) == 0x1081);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1088) == 0x1088);
 STATIC_ASSERT(offsetof(GAMEOBJECT, route_search_index) == 0x1089);
 
-/* Native 0x0043fda0, 390 bytes. */
 STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
 STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);
 STATIC_ASSERT(offsetof(WORLDINFO, ai_path_cnx_control_sys) == 0x4670);

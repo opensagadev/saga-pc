@@ -569,8 +569,7 @@ void edmainSetLocVec(NUVEC *location) {
     ed_loc = location;
 }
 
-/* Native 617f80/6. The pointer is zero-initialized engine/editor storage.
- * The neighboring native setter 617f70 has no verified direct caller. */
+/* The pointer is zero-initialized engine/editor storage. */
 NUVEC *edmainQueryLocVec(void) {
     return ed_loc;
 }
@@ -1253,7 +1252,7 @@ void cbSetAutoSpeed(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-/* Android edmainRegister: adds an editor module to the front of the list. */
+/* Adds an editor module to the front of the list. */
 i32 edmainRegister(ed_module_s *module) {
     if (ed_init) {
         edmainClose();
@@ -1534,7 +1533,7 @@ eduiitem_s *eduiMenuAddItemAfter(eduimenu_s *menu, eduiitem_s *item, eduiitem_s 
     return item;
 }
 
-/* As in retail, the item before the insertion point keeps its old next link. */
+/* The item before the insertion point keeps its old next link. */
 eduiitem_s *eduiMenuAddItemBefore(eduimenu_s *menu, eduiitem_s *item, eduiitem_s *before) {
     if (before == NULL) {
         return eduiMenuAddItemLast(menu, item);
@@ -2042,7 +2041,7 @@ static void EduiExpanderOpenPc(EDUI_EXPANDER_PC *expander) {
 /* Is the editor cursor over the expander's open/close button? */
 static i32 EduiExpanderOverButtonPc(EDUI_EXPANDER_PC *expander) {
     // MATCH-EXCEPTION: parameter copy, reversed declarations, a local for button_x and mirrored
-    // compares; only this form gives retail's x87 operand order (U9/U20).
+    // compares; only this form gives the original x87 operand order.
     EDUI_EXPANDER_PC *e = expander;
     f32 bottom = (e->button_y + e->button_size) * 0.5;
     f32 right = e->button_size + e->button_x;
@@ -4150,8 +4149,8 @@ typedef struct FILE_DIRECTORY_ENTRY_PC {
 /* FILE_DIRECTORY_ENTRY_PC.flags: the entry is a directory (listed as <name>, opened on selection). */
 enum FILE_DIRECTORY_FLAG_PC { FILE_DIRECTORY_FLAG_DIRECTORY_PC = 8 };
 
-/* As in retail, the key cascade tests the key pointers instead of the keys, so
- * the year only decides when the two pointers differ. */
+/* The key cascade tests the key pointers instead of the keys, so the year
+ * only decides when the two pointers differ. */
 static void eduiFilePickDateKeysPc(FILE_DIRECTORY_ENTRY_PC *a, FILE_DIRECTORY_ENTRY_PC *b, i32 *key_a, i32 *key_b) {
     *key_a = a->modified.year;
     *key_b = b->modified.year;
@@ -4595,8 +4594,6 @@ i32 eduiMenuProcessAux(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
     return eduiProcessInteracts(menu, pad);
 }
 
-/* SOURCE ONLY: independent file-selector helpers appended to src/gameapi/edfile.c. */
-
 void FS_MakeDateTimeString(const FS_PACKED_ENTRY_HEADER_PC *entry, char *output) {
     NuSPrintf(output, " %.2d/%.2d/%d %.2d:%.2d:%.2d", entry->encoded_day - 'A', entry->encoded_month - 'A',
               entry->encoded_year + 1915, entry->encoded_hour - 'A', entry->encoded_minute - 'A',
@@ -4657,7 +4654,7 @@ f32 FS_GetDirTextWidth(void) {
     return max_width;
 }
 
-/* PC file-selector rendering. Data mapping extents remain separately reviewed. */
+/* PC file-selector rendering, each string in its own section. */
 #pragma section(".data$FS_Title", read, write)
 __declspec(allocate(".data$FS_Title")) char FS_Title[64] = "Title";
 #pragma section(".data$FS_X", read, write)

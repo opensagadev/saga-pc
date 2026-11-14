@@ -763,8 +763,8 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
         } else if (GizObstacleUpdateFnsPc[obstacle->mode]) {
             GizObstacleUpdateFnsPc[obstacle->mode](obstacle);
         }
-        // MATCH-EXCEPTION: retail tests the three low GAMEANIMSET flag bits one by one (word load, test al, 7);
-        // a single `flags & 7` compiles to a byte test.
+        // MATCH-EXCEPTION: the original tests the three low GAMEANIMSET flag bits one by one (word load, test al,
+        // 7); a single `flags & 7` compiles to a byte test.
         if ((obstacle->anim_set->flags & 1) || (obstacle->anim_set->flags & 2) || (obstacle->anim_set->flags & 4)) {
             GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
             if (obstacle->runtime_flags & 0x20) {
@@ -1159,8 +1159,8 @@ static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUV
                 (obstacle->runtime_flags & 0x80)) {
                 continue;
             }
-            // MATCH-EXCEPTION: the radius local feeds only the first bound; retail then loads the position before
-            // the radius in the z and y "+" bounds, which no other form of this test reproduces.
+            // MATCH-EXCEPTION: the radius local feeds only the first bound; the original then loads the position
+            // before the radius in the z and y "+" bounds, which no other form of this test reproduces.
             obstacle_radius = obstacle->evaluated_radius;
             if (maximum->x < obstacle->evaluated_position.x - obstacle_radius ||
                 minimum->x > obstacle->evaluated_position.x + obstacle->evaluated_radius ||

@@ -5,7 +5,7 @@ extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
         return;
     }
     PC_INPUT_CONFIG_PC *config = NULL;
-    /* Retail scans 24 table slots although the static table holds 15 configs. */
+    /* Scans 24 table slots although the static table holds 15 configs. */
     for (u32 index = 0; index < 24; ++index) {
         if (PcStaticInputConfigs[index].product_id == (u32)product_id) {
             config = &PcStaticInputConfigs[index];

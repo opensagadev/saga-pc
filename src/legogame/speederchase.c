@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4c8bd0-0x4c9a40: definitions in retail address order. */
-
 extern i16 CharacterFixupIdPc007f1a3c;
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, name) == 0xf2);
 STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
@@ -203,7 +201,6 @@ i32 fun_004c9230(void) {
     return 0;
 }
 
-/* PC 0x0088056c / 0x00880588. */
 i32 set_speedermode = 0;
 f32 speeder_mode_ahead_timer = 0.0f;
 
@@ -215,7 +212,7 @@ static void SpeederChase_SetMode(AISCRIPTPROCESS_PC *processor, i32 mode) {
     speeder_hitpoints_lost = 0;
 }
 
-/* PC 0x007fcd88..0x007fce1c: speeder chase pursuit tuning. */
+/* Speeder chase pursuit tuning. */
 f32 speeder_ahead_time = 15.0f;
 f32 speeder_midrange_time = 10.0f;
 f32 speeder_kill_dist = 75.0f;
@@ -400,7 +397,7 @@ i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
                         }
                     }
                 } else {
-                // MATCH-EXCEPTION: case 1 jumps into case 2's else block; retail lays the shared
+                // MATCH-EXCEPTION: case 1 jumps into case 2's else block; the original lays the shared
                 // SetMode(0) tail out after case 2's body, which no goto-free form reproduced.
                 reset:
                     SpeederChase_SetMode(processor, 0);

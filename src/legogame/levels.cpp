@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Retail unit 0x488e90-0x48fc30 (legoapi/levels.cpp): definitions in retail address order. */
-
 extern "C" void FmvPlatformUpdatePc(void);
 extern "C" void Particles_LoadAreaPage(char *);
 extern "C" {
@@ -116,7 +114,7 @@ extern "C" void CloudCityEscapeA_Panel(WORLDINFO *);
 extern "C" void CloudCityTrapA_Init(WORLDINFO *);
 extern "C" void CloudCityTrapA_Reset(WORLDINFO *);
 extern "C" void CloudCityTrapA_Update(WORLDINFO *);
-/* Per-level callbacks installed by FixUpLevels (retail entry addresses in config/symbols.csv). */
+/* Per-level callbacks installed by FixUpLevels. */
 extern "C" void DrawStatusScreen(WORLDINFO *);
 extern "C" void LostTempleC_ResetPc(WORLDINFO *);
 extern "C" void LostTempleC_UpdatePc(WORLDINFO *);
@@ -322,7 +320,6 @@ extern "C" void ChrisDogFightAReset(WORLDINFO *);
 extern "C" void ChrisDogFightAUpdate(WORLDINFO *);
 extern "C" void ChrisDogFightADraw(WORLDINFO *);
 
-/* Native 0x0048a310, 217 bytes. */
 typedef struct level_script_progress_pc_s {
     char name[16];
     f32 params[4];
@@ -717,7 +714,6 @@ static void PicturesFixUpPc(WORLDINFO *world) {
     LevTime[0] = 0.0f;
 }
 
-/* Native 489aa0..489b58, original world private EAX output-buffer helper. */
 static void WorldGetTitlesNamePrivatePc(char *titles) {
     switch (Text_Language) {
         case 2:
@@ -943,7 +939,6 @@ extern "C" {
         }
     }
 
-    /* Shared LEVEL_SCRIPT_PROCESS_PC is defined in saga.h in the final patch. */
     void LevelScriptReStoreProgress(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *process) {
         i32 index;
         i32 parameter;
@@ -1099,11 +1094,11 @@ void LoadPerm1(void) {
         shadow_random[index] = (u8)(qrand() >> 8);
     }
     NuRndrShadowInit(shadow_random);
-    CreateFadeMaterials();   /* Native 48aa7a. */
-    CreateUsefulMaterials(); /* Native 48aa7f. */
+    CreateFadeMaterials();
+    CreateUsefulMaterials();
     edgraClumpsReset();
     edanimParamReset();
-    NuTexAnimProgSysInit(); /* Native 48aa8e. */
+    NuTexAnimProgSysInit();
     if (StartupGameFlag1 != 0) {
         InitTexAnimScripts(TexAnimScriptNamesGamePc);
     } else {
@@ -1178,8 +1173,7 @@ extern "C" {
         }
     }
 
-    /* Original area.cpp helper: native EDI area, ESI list output, one stack story
-     * output. */
+    /* Original area.cpp helper. */
     static void AreaSelectModelListsPrivatePc(i32 area, APICHARACTERMODELLIST **list, APICHARACTERMODELLIST **story) {
         if (StartupGameFlag1 != 0 && HUB_ADATA != NULL && area == HUB_ADATA->index) {
             *list = Hub_ModelList;
@@ -1586,7 +1580,7 @@ void LoadAreaCharacters(void) {
             (FadeSys.pending_type == FADE_TYPE_NONE || FadeSys.pending_type == FADE_TYPE_STILL)) {
             FADETYPE wipe = {FADE_TYPE_STILL_WIPE};
             FadeSys.SetFade(wipe, 0);
-            NeedScreenGrab(1); /* Native48bf88. */
+            NeedScreenGrab(1);
             GrabStillScreen();
         }
         edGraEnableTerrainSwap();
@@ -1609,7 +1603,7 @@ void LoadAreaCharacters(void) {
 
 extern "C" {
 
-    /* SCENESPECIALPROGRESS_PC.flags as the bitfields retail stores through. */
+    /* Bitfield view of SCENESPECIALPROGRESS_PC.flags. */
     typedef struct scene_special_state_pc_s {
         u32 frame : 11;
         u32 visible : 1;
@@ -1665,7 +1659,6 @@ extern "C" {
     }
 }
 
-/* Append in existing world.cpp beside StoreSceneProgress. PC48c3f0..48c590 inclusive417. */
 void ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
     i32 count;
     i32 i;
@@ -2013,16 +2006,15 @@ void WorldInfo_Load(WORLDINFO *world) {
         goto abort;
     }
     if (world->area != NULL && world->area == HUB_ADATA && GAMEDEMO == 0) {
-        Hub_LoadAndFixUpMiniKits(world, &world->giz_buffer, &world->buffer_end); /* Native 48d160. */
+        Hub_LoadAndFixUpMiniKits(world, &world->giz_buffer, &world->buffer_end);
         if (abort_load != 0) {
             goto abort;
         }
     } else if ((world->current_level->flags & 0x400) != 0 && world->area != NULL && world->area->minikit_id != -1) {
         MiniKit_Load((MINIKIT_PC *)&resource->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end,
-                     NULL); /* Native 48d1a5. */
+                     NULL);
         if (resource->minikit.scene != NULL) {
-            MiniKit_InitPieces((MINIKIT_PC *)&resource->minikit, 10, &world->giz_buffer,
-                               &world->buffer_end); /* Native 48d1b7. */
+            MiniKit_InitPieces((MINIKIT_PC *)&resource->minikit, 10, &world->giz_buffer, &world->buffer_end);
         }
         if (abort_load != 0) {
             goto abort;
@@ -2045,7 +2037,7 @@ void WorldInfo_Load(WORLDINFO *world) {
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
     resource->character_scenes = world->giz_buffer.void_ptr;
     world->giz_buffer.addr += CHARCOUNT * 0x10;
-    CharScenes_LevelLoad(world); /* Native 48d282: actual ordinary cdecl1. */
+    CharScenes_LevelLoad(world);
     if ((world->current_level->flags & 2) != 0 && (world->current_level->flags & 0xe0) == 0) {
         world->sock_sys = SockSysInit(&world->giz_buffer, world->buffer_end, world->current_gscn);
     }
@@ -2077,13 +2069,12 @@ void WorldInfo_Load(WORLDINFO *world) {
         }
     }
     if (world->area != NULL && (world->area->flags & 5) == 5 && (world->current_level->flags & 0x4e0) == 0) {
-        CharacterMiniKits_Load(&MiniKitCollection, world, &world->giz_buffer, &world->buffer_end); /* Native 48d3d6. */
+        CharacterMiniKits_Load(&MiniKitCollection, world, &world->giz_buffer, &world->buffer_end);
         if (abort_load != 0) {
             goto abort;
         }
     }
-    /* Native always performs these calls after the optional character-minikit
-     * branch. */
+    /* These calls always run after the optional character-minikit branch. */
     LoadTerrainFile(world);
     if (abort_load != 0) {
         goto abort;
@@ -2133,7 +2124,7 @@ void WorldInfo_Load(WORLDINFO *world) {
         goto abort;
     }
     if (world->config_count > 0) {
-        RippleEffects_Configure(world, ConfigBuffer.bytes); /* Native 48d5b7. */
+        RippleEffects_Configure(world, ConfigBuffer.bytes);
         PortalDoors_Configure(world, ConfigBuffer.bytes);
         if (abort_load != 0) {
             goto abort;
@@ -2159,7 +2150,7 @@ void WorldInfo_Load(WORLDINFO *world) {
         ((void (*)(WORLDINFO *, VARIPTR *, VARIPTR *))world->current_level->callbacks[0])(world, &world->giz_buffer,
                                                                                           &world->buffer_end);
     }
-    SetAreaPickupGravity(world->area_index, world->level_idx); /* Native 48d683: cdecl(area,level). */
+    SetAreaPickupGravity(world->area_index, world->level_idx);
     world->loaded = 1;
     LOG_INFO("World load complete: world=%p area=%d level=%d scene=%p", (void *)world, world->area_index,
              world->level_idx, (void *)world->current_gscn);
@@ -2289,1021 +2280,815 @@ extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
     LEVELDATA_PC *level;
     i32 index;
     Levels_FixUp(fixup);
-    level = Level_FindByName("titles", NULL); /* Native call 0x48da62. */
-    TITLES_LDATA = level;                     /* Native store 0x48da6c. */
+    level = Level_FindByName("titles", NULL);
+    TITLES_LDATA = level;
     if (level != NULL) {
-        TITLES_LDATA->callbacks[1] = (void *)Titles_Init;   /* Native 0x48da7c: callbacks[1] = entry 0x489b60. */
-        TITLES_LDATA->callbacks[3] = (void *)Titles_Update; /* Native 0x48da89: callbacks[3] = entry 0x489ca0. */
-        TITLES_LDATA->callbacks[5] = (void *)Titles_Draw;   /* Native 0x48da96: callbacks[5] = entry 0x489da0. */
+        TITLES_LDATA->callbacks[1] = (void *)Titles_Init;
+        TITLES_LDATA->callbacks[3] = (void *)Titles_Update;
+        TITLES_LDATA->callbacks[5] = (void *)Titles_Draw;
         TITLES_LDATA->flags &= ~0xau;
         TITLES_LDATA->music_index = GetMusicIndex("titles", MusicInfo, -1);
         TITLES_LDATA->music_tracks[0] = TITLES_LDATA->music_tracks[1] = music_man.GetTrackHandle(1, "titles");
         TITLES_LDATA->music_tracks[2] = TITLES_LDATA->music_tracks[3] = music_man.GetTrackHandle(2, "titles");
         TITLES_LDATA->music_tracks[4] = TITLES_LDATA->music_tracks[5] = music_man.GetTrackHandle(0x20, "titles");
     }
-    level = Level_FindByName("status", NULL); /* Native call 0x48db58. */
-    STATUS_LDATA = level;                     /* Native store 0x48db62. */
+    level = Level_FindByName("status", NULL);
+    STATUS_LDATA = level;
     if (level != NULL) {
-        STATUS_LDATA->callbacks[3] = (void *)UpdateStatusScreen; /* Native 0x48db69: callbacks[3] = entry 0x486c60. */
-        STATUS_LDATA->callbacks[6] = (void *)DrawStatusScreen;   /* Native 0x48db76: callbacks[6] = entry 0x486200. */
+        STATUS_LDATA->callbacks[3] = (void *)UpdateStatusScreen;
+        STATUS_LDATA->callbacks[6] = (void *)DrawStatusScreen;
         STATUS_LDATA->flags |= 0x400;
         STATUS_LDATA->flags &= ~0xau;
     }
-    level = Level_FindByName("credits", NULL); /* Native call 0x48db9b. */
-    CREDITS_LDATA = level;                     /* Native store 0x48dba5. */
+    level = Level_FindByName("credits", NULL);
+    CREDITS_LDATA = level;
     if (level != NULL) {
-        level->flags = 0;                                          /* Native48dbac. */
-        CREDITS_LDATA->callbacks[0] = (void *)Credits_Load;        /* Native 0x48dbb8: callbacks[0] = entry 0x59cd50. */
-        CREDITS_LDATA->callbacks[1] = (void *)Credits_Init_Game;   /* Native 0x48dbc5: callbacks[1] = entry 0x48d6b0. */
-        CREDITS_LDATA->callbacks[3] = (void *)Credits_Update_Game; /* Native 0x48dbd2: callbacks[3] = entry 0x48d7d0. */
-        CREDITS_LDATA->callbacks[5] = (void *)Credits_Draw_Game;   /* Native 0x48dbde: callbacks[5] = entry 0x48d830. */
-        CREDITS_LDATA->callbacks[6] = (void *)Credits_DrawPanel;   /* Native 0x48dbeb: callbacks[6] = entry 0x59d450. */
+        level->flags = 0;
+        CREDITS_LDATA->callbacks[0] = (void *)Credits_Load;
+        CREDITS_LDATA->callbacks[1] = (void *)Credits_Init_Game;
+        CREDITS_LDATA->callbacks[3] = (void *)Credits_Update_Game;
+        CREDITS_LDATA->callbacks[5] = (void *)Credits_Draw_Game;
+        CREDITS_LDATA->callbacks[6] = (void *)Credits_DrawPanel;
     }
     if (StartupGameFlag0 == 0) {
         if (StartupGameFlag1 != 0) {
-            level = Level_FindByName("losttemple_a", NULL); /* Native call 0x48dc16. */
-            LevelFixupSlotPc0087b2c4 = level;               /* Native store 0x48dc22. */
-            level = Level_FindByName("losttemple_c", NULL); /* Native call 0x48dc27. */
-            UpdateSockets_LDATA = level;                    /* Native store 0x48dc31. */
+            level = Level_FindByName("losttemple_a", NULL);
+            LevelFixupSlotPc0087b2c4 = level;
+            level = Level_FindByName("losttemple_c", NULL);
+            UpdateSockets_LDATA = level;
             if (level != NULL) {
-                UpdateSockets_LDATA->callbacks[2] =
-                    (void *)LostTempleC_ResetPc; /* Native 0x48dc38: callbacks[2] = entry 0x481920. */
-                UpdateSockets_LDATA->callbacks[3] =
-                    (void *)LostTempleC_UpdatePc; /* Native 0x48dc45: callbacks[3] = entry 0x481950. */
+                UpdateSockets_LDATA->callbacks[2] = (void *)LostTempleC_ResetPc;
+                UpdateSockets_LDATA->callbacks[3] = (void *)LostTempleC_UpdatePc;
             }
-            level = Level_FindByName("losttemple_d", NULL);         /* Native call 0x48dc53. */
-            LevelFixupSlotPc0087b2cc = level;                       /* Native store 0x48dc5f. */
-            level = Level_FindByName("losttemple_e", NULL);         /* Native call 0x48dc64. */
-            LevelFixupSlotPc0087b2d0 = level;                       /* Native store 0x48dc70. */
-            level = Level_FindByName("losttemple_f", NULL);         /* Native call 0x48dc75. */
-            LevelFixupSlotPc0087b2d4 = level;                       /* Native store 0x48dc81. */
-            level = Level_FindByName("losttemple_outrowin", NULL);  /* Native call 0x48dc86. */
-            LevelFixupSlotPc0087b2d8 = level;                       /* Native store 0x48dc92. */
-            level = Level_FindByName("losttemple_outrolose", NULL); /* Native call 0x48dc97. */
-            LevelFixupSlotPc0087b2dc = level;                       /* Native store 0x48dca3. */
-            level = Level_FindByName("map", NULL);                  /* Native call 0x48dca8. */
-            HUB_LDATA = level;                                      /* Native store 0x48dcb2. */
+            level = Level_FindByName("losttemple_d", NULL);
+            LevelFixupSlotPc0087b2cc = level;
+            level = Level_FindByName("losttemple_e", NULL);
+            LevelFixupSlotPc0087b2d0 = level;
+            level = Level_FindByName("losttemple_f", NULL);
+            LevelFixupSlotPc0087b2d4 = level;
+            level = Level_FindByName("losttemple_outrowin", NULL);
+            LevelFixupSlotPc0087b2d8 = level;
+            level = Level_FindByName("losttemple_outrolose", NULL);
+            LevelFixupSlotPc0087b2dc = level;
+            level = Level_FindByName("map", NULL);
+            HUB_LDATA = level;
             if (level != NULL) {
-                HUB_LDATA->callbacks[0] = (void *)Hub_Load;      /* Native 0x48dcb9: callbacks[0] = entry 0x4778d0. */
-                HUB_LDATA->callbacks[1] = (void *)Hub_Init;      /* Native 0x48dcc5: callbacks[1] = entry 0x47cab0. */
-                HUB_LDATA->callbacks[2] = (void *)Hub_Reset;     /* Native 0x48dcd2: callbacks[2] = entry 0x479b30. */
-                HUB_LDATA->callbacks[3] = (void *)Hub_Update;    /* Native 0x48dcdf: callbacks[3] = entry 0x47cdd0. */
-                HUB_LDATA->callbacks[5] = (void *)Hub_Draw3D;    /* Native 0x48dceb: callbacks[5] = entry 0x479ed0. */
-                HUB_LDATA->callbacks[6] = (void *)Hub_DrawPanel; /* Native 0x48dcf8: callbacks[6] = entry 0x47dce0. */
+                HUB_LDATA->callbacks[0] = (void *)Hub_Load;
+                HUB_LDATA->callbacks[1] = (void *)Hub_Init;
+                HUB_LDATA->callbacks[2] = (void *)Hub_Reset;
+                HUB_LDATA->callbacks[3] = (void *)Hub_Update;
+                HUB_LDATA->callbacks[5] = (void *)Hub_Draw3D;
+                HUB_LDATA->callbacks[6] = (void *)Hub_DrawPanel;
             }
-            level = Level_FindByName("speederchase_a", NULL); /* Native call 0x48dd09. */
-            SPEEDERCHASEA_LDATA = level;                      /* Native store 0x48dd13. */
+            level = Level_FindByName("speederchase_a", NULL);
+            SPEEDERCHASEA_LDATA = level;
             if (level != NULL) {
-                SPEEDERCHASEA_LDATA->callbacks[1] =
-                    (void *)SpeederChaseA_Init; /* Native 0x48dd1a: callbacks[1] = entry 0x4c8c40. */
-                SPEEDERCHASEA_LDATA->callbacks[2] =
-                    (void *)SpeederChaseA_Reset; /* Native 0x48dd27: callbacks[2] = entry 0x4c8d90. */
-                SPEEDERCHASEA_LDATA->callbacks[3] =
-                    (void *)SpeederChaseA_Update; /* Native 0x48dd33: callbacks[3] = entry 0x4c8e40. */
-                SPEEDERCHASEA_LDATA->callbacks[6] =
-                    (void *)SpeederChaseA_Panel; /* Native 0x48dd40: callbacks[6] = entry 0x4c9080. */
+                SPEEDERCHASEA_LDATA->callbacks[1] = (void *)SpeederChaseA_Init;
+                SPEEDERCHASEA_LDATA->callbacks[2] = (void *)SpeederChaseA_Reset;
+                SPEEDERCHASEA_LDATA->callbacks[3] = (void *)SpeederChaseA_Update;
+                SPEEDERCHASEA_LDATA->callbacks[6] = (void *)SpeederChaseA_Panel;
             }
-            level = Level_FindByName("negotiations_a", NULL); /* Native call 0x48dd51. */
-            NEGOTIATIONSA_LDATA = level;                      /* Native store 0x48dd5d. */
-            level = Level_FindByName("negotiations_b", NULL); /* Native call 0x48dd62. */
-            NEGOTIATIONSB_LDATA = level;                      /* Native store 0x48dd6e. */
-            level = Level_FindByName("negotiations_c", NULL); /* Native call 0x48dd73. */
-            NEGOTIATIONSC_LDATA = level;                      /* Native store 0x48dd7f. */
-            level = Level_FindByName("gungan_a", NULL);       /* Native call 0x48dd84. */
-            GUNGAN_A_LDATA = level;                           /* Native store 0x48dd8e. */
+            level = Level_FindByName("negotiations_a", NULL);
+            NEGOTIATIONSA_LDATA = level;
+            level = Level_FindByName("negotiations_b", NULL);
+            NEGOTIATIONSB_LDATA = level;
+            level = Level_FindByName("negotiations_c", NULL);
+            NEGOTIATIONSC_LDATA = level;
+            level = Level_FindByName("gungan_a", NULL);
+            GUNGAN_A_LDATA = level;
             if (level != NULL) {
-                GUNGAN_A_LDATA->callbacks[1] =
-                    (void *)GunganA_Init; /* Native 0x48dd95: callbacks[1] = entry 0x4d82f0. */
-                GUNGAN_A_LDATA->callbacks[3] =
-                    (void *)GunganA_Update; /* Native 0x48dda2: callbacks[3] = entry 0x4d83e0. */
+                GUNGAN_A_LDATA->callbacks[1] = (void *)GunganA_Init;
+                GUNGAN_A_LDATA->callbacks[3] = (void *)GunganA_Update;
             }
-            level = Level_FindByName("rescue_c", NULL);         /* Native call 0x48ddb1. */
-            RESCUEC_LDATA = level;                              /* Native store 0x48ddbd. */
-            level = Level_FindByName("PodRace_Arrival1", NULL); /* Native call 0x48ddc2. */
-            WorldArchiveOneLevelsPc[0] = level;                 /* Native store 0x48ddce. */
-            level = Level_FindByName("PodRace_Arrival2", NULL); /* Native call 0x48ddd3. */
-            WorldArchiveOneLevelsPc[1] = level;                 /* Native store 0x48dddf. */
-            level = Level_FindByName("PodRace_Arrival3", NULL); /* Native call 0x48dde4. */
-            WorldArchiveOneLevelsPc[2] = level;                 /* Native store 0x48ddf0. */
-            level = Level_FindByName("PodRace_Arrival4", NULL); /* Native call 0x48ddf5. */
-            WorldArchiveOneLevelsPc[3] = level;                 /* Native store 0x48de01. */
-            level = Level_FindByName("PodRace_Intro", NULL);    /* Native call 0x48de06. */
-            WorldArchiveOneLevelsPc[4] = level;                 /* Native store 0x48de12. */
-            level = Level_FindByName("PodRace_B", NULL);        /* Native call 0x48de17. */
-            WorldArchiveOneLevelsPc[5] = level;                 /* Native store 0x48de23. */
-            level = Level_FindByName("PodRace_C", NULL);        /* Native call 0x48de28. */
-            WorldArchiveOneLevelsPc[6] = level;                 /* Native store 0x48de37. */
-            level = Level_FindByName("PodRace_A", NULL);        /* Native call 0x48de3c. */
-            WorldArchiveOneLevelsPc[7] = level;                 /* Native store 0x48de48. */
-            level = Level_FindByName("PodRace_Outro1", NULL);   /* Native call 0x48de4d. */
-            WorldArchiveOneLevelsPc[8] = level;                 /* Native store 0x48de59. */
-            level = Level_FindByName("PodRace_Outro2", NULL);   /* Native call 0x48de5e. */
-            WorldArchiveOneLevelsPc[9] = level;                 /* Native store 0x48de6a. */
-            level = Level_FindByName("PodRace_Status", NULL);   /* Native call 0x48de6f. */
-            WorldArchiveOneLevelsPc[10] = level;                /* Native store 0x48de7b. */
-            level = Level_FindByName("ANewHope_Intro", NULL);   /* Native call 0x48de80. */
-            WorldArchiveThreeLevelsPc[0] = level;               /* Native store 0x48de8c. */
-            level = Level_FindByName("ANewHope_A", NULL);       /* Native call 0x48de91. */
-            WorldArchiveThreeLevelsPc[1] = level;               /* Native store 0x48de9d. */
-            level = Level_FindByName("ANewHope_B", NULL);       /* Native call 0x48dea2. */
-            WorldArchiveThreeLevelsPc[2] = level;               /* Native store 0x48deae. */
-            level = Level_FindByName("ANewHope_Status", NULL);  /* Native call 0x48deb3. */
-            WorldArchiveThreeLevelsPc[3] = level;               /* Native store 0x48dec2. */
-            level = Level_FindByName("podrace_b", NULL);        /* Native call 0x48dec7. */
-            PODRACEB_LDATA = level;                             /* Native store 0x48ded1. */
+            level = Level_FindByName("rescue_c", NULL);
+            RESCUEC_LDATA = level;
+            level = Level_FindByName("PodRace_Arrival1", NULL);
+            WorldArchiveOneLevelsPc[0] = level;
+            level = Level_FindByName("PodRace_Arrival2", NULL);
+            WorldArchiveOneLevelsPc[1] = level;
+            level = Level_FindByName("PodRace_Arrival3", NULL);
+            WorldArchiveOneLevelsPc[2] = level;
+            level = Level_FindByName("PodRace_Arrival4", NULL);
+            WorldArchiveOneLevelsPc[3] = level;
+            level = Level_FindByName("PodRace_Intro", NULL);
+            WorldArchiveOneLevelsPc[4] = level;
+            level = Level_FindByName("PodRace_B", NULL);
+            WorldArchiveOneLevelsPc[5] = level;
+            level = Level_FindByName("PodRace_C", NULL);
+            WorldArchiveOneLevelsPc[6] = level;
+            level = Level_FindByName("PodRace_A", NULL);
+            WorldArchiveOneLevelsPc[7] = level;
+            level = Level_FindByName("PodRace_Outro1", NULL);
+            WorldArchiveOneLevelsPc[8] = level;
+            level = Level_FindByName("PodRace_Outro2", NULL);
+            WorldArchiveOneLevelsPc[9] = level;
+            level = Level_FindByName("PodRace_Status", NULL);
+            WorldArchiveOneLevelsPc[10] = level;
+            level = Level_FindByName("ANewHope_Intro", NULL);
+            WorldArchiveThreeLevelsPc[0] = level;
+            level = Level_FindByName("ANewHope_A", NULL);
+            WorldArchiveThreeLevelsPc[1] = level;
+            level = Level_FindByName("ANewHope_B", NULL);
+            WorldArchiveThreeLevelsPc[2] = level;
+            level = Level_FindByName("ANewHope_Status", NULL);
+            WorldArchiveThreeLevelsPc[3] = level;
+            level = Level_FindByName("podrace_b", NULL);
+            PODRACEB_LDATA = level;
             if (level != NULL) {
-                PODRACEB_LDATA->callbacks[1] =
-                    (void *)PodRaceBInit; /* Native 0x48dee2: callbacks[1] = entry 0x4dd580. */
-                PODRACEB_LDATA->callbacks[2] =
-                    (void *)PodRaceBReset; /* Native 0x48deee: callbacks[2] = entry 0x4dd5c0. */
-                PODRACEB_LDATA->callbacks[3] =
-                    (void *)PodRaceBUpdate; /* Native 0x48defb: callbacks[3] = entry 0x4dae30. */
+                PODRACEB_LDATA->callbacks[1] = (void *)PodRaceBInit;
+                PODRACEB_LDATA->callbacks[2] = (void *)PodRaceBReset;
+                PODRACEB_LDATA->callbacks[3] = (void *)PodRaceBUpdate;
             }
-            level = Level_FindByName("podrace_a", NULL); /* Native call 0x48df1d. */
-            PODRACEA_LDATA = level;                      /* Native store 0x48df27. */
+            level = Level_FindByName("podrace_a", NULL);
+            PODRACEA_LDATA = level;
             if (level != NULL) {
-                PODRACEA_LDATA->callbacks[1] =
-                    (void *)PodRaceAInit; /* Native 0x48df2e: callbacks[1] = entry 0x4dd4e0. */
-                PODRACEA_LDATA->callbacks[2] =
-                    (void *)PodRaceAReset; /* Native 0x48df3b: callbacks[2] = entry 0x4dd4f0. */
-                PODRACEA_LDATA->callbacks[3] =
-                    (void *)PodRaceAUpdatePc; /* Native 0x48df48: callbacks[3] = entry 0x4daab0. */
-                PODRACEA_LDATA->callbacks[4] =
-                    (void *)PodRaceA_AlwaysUpdate; /* Native 0x48df54: callbacks[4] = entry 0x4daaf0. */
-                PODRACEA_LDATA->callbacks[5] =
-                    (void *)PodRaceADrawPc; /* Native 0x48df61: callbacks[5] = entry 0x4dab40. */
+                PODRACEA_LDATA->callbacks[1] = (void *)PodRaceAInit;
+                PODRACEA_LDATA->callbacks[2] = (void *)PodRaceAReset;
+                PODRACEA_LDATA->callbacks[3] = (void *)PodRaceAUpdatePc;
+                PODRACEA_LDATA->callbacks[4] = (void *)PodRaceA_AlwaysUpdate;
+                PODRACEA_LDATA->callbacks[5] = (void *)PodRaceADrawPc;
             }
-            level = Level_FindByName("podrace_c", NULL); /* Native call 0x48df7b. */
-            LevelFixupSlotPc0087b0b4 = level;            /* Native store 0x48df85. */
+            level = Level_FindByName("podrace_c", NULL);
+            LevelFixupSlotPc0087b0b4 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b0b4->callbacks[1] =
-                    (void *)PodRaceCInit; /* Native 0x48df8c: callbacks[1] = entry 0x4dd650. */
-                LevelFixupSlotPc0087b0b4->callbacks[2] =
-                    (void *)PodRaceCReset; /* Native 0x48df98: callbacks[2] = entry 0x4dd770. */
-                LevelFixupSlotPc0087b0b4->callbacks[3] =
-                    (void *)PodRaceCUpdate; /* Native 0x48dfa5: callbacks[3] = entry 0x4db080. */
+                LevelFixupSlotPc0087b0b4->callbacks[1] = (void *)PodRaceCInit;
+                LevelFixupSlotPc0087b0b4->callbacks[2] = (void *)PodRaceCReset;
+                LevelFixupSlotPc0087b0b4->callbacks[3] = (void *)PodRaceCUpdate;
             }
-            level = Level_FindByName("PodRace_Outro1", NULL); /* Native call 0x48dfc7. */
-            LevelFixupSlotPc0087b0b8 = level;                 /* Native store 0x48dfd3. */
-            level = Level_FindByName("podrace_status", NULL); /* Native call 0x48dfd8. */
-            LevelFixupSlotPc0087b0bc = level;                 /* Native store 0x48dfe4. */
-            level = Level_FindByName("PodSprint_A", NULL);    /* Native call 0x48dfe9. */
-            PODSPRINTA_LDATA = level;                         /* Native store 0x48dff3. */
+            level = Level_FindByName("PodRace_Outro1", NULL);
+            LevelFixupSlotPc0087b0b8 = level;
+            level = Level_FindByName("podrace_status", NULL);
+            LevelFixupSlotPc0087b0bc = level;
+            level = Level_FindByName("PodSprint_A", NULL);
+            PODSPRINTA_LDATA = level;
             if (level != NULL) {
-                PODSPRINTA_LDATA->callbacks[1] =
-                    (void *)PodSprintA_Init; /* Native 0x48dffa: callbacks[1] = entry 0x4dbce0. */
-                PODSPRINTA_LDATA->callbacks[2] =
-                    (void *)PodSprintA_Reset; /* Native 0x48e007: callbacks[2] = entry 0x4dbe20. */
-                PODSPRINTA_LDATA->callbacks[3] =
-                    (void *)PodSprintA_Update; /* Native 0x48e014: callbacks[3] = entry 0x4dc640. */
-                PODSPRINTA_LDATA->callbacks[6] =
-                    (void *)PodSprintA_Panel; /* Native 0x48e020: callbacks[6] = entry 0x4dc810. */
+                PODSPRINTA_LDATA->callbacks[1] = (void *)PodSprintA_Init;
+                PODSPRINTA_LDATA->callbacks[2] = (void *)PodSprintA_Reset;
+                PODSPRINTA_LDATA->callbacks[3] = (void *)PodSprintA_Update;
+                PODSPRINTA_LDATA->callbacks[6] = (void *)PodSprintA_Panel;
             }
-            level = Level_FindByName("AnakinsFlight_B", NULL); /* Native call 0x48e031. */
-            LevelFixupSlotPc0087b0d4 = level;                  /* Native store 0x48e03b. */
+            level = Level_FindByName("AnakinsFlight_B", NULL);
+            LevelFixupSlotPc0087b0d4 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b0d4->callbacks[1] =
-                    (void *)AnakinsFlightB_Init; /* Native 0x48e042: callbacks[1] = entry 0x4dd2f0. */
-                LevelFixupSlotPc0087b0d4->callbacks[3] =
-                    (void *)AnakinsFlightB_Update; /* Native 0x48e04f: callbacks[3] = entry 0x4dd380. */
-                LevelFixupSlotPc0087b0d4->callbacks[5] =
-                    (void *)AnakinsFlightB_Draw; /* Native 0x48e05c: callbacks[5] = entry 0x4dd390. */
+                LevelFixupSlotPc0087b0d4->callbacks[1] = (void *)AnakinsFlightB_Init;
+                LevelFixupSlotPc0087b0d4->callbacks[3] = (void *)AnakinsFlightB_Update;
+                LevelFixupSlotPc0087b0d4->callbacks[5] = (void *)AnakinsFlightB_Draw;
             }
-            level = Level_FindByName("retake_b", NULL); /* Native call 0x48e06a. */
-            RETAKEB_LDATA = level;                      /* Native store 0x48e076. */
-            level = Level_FindByName("retake_d", NULL); /* Native call 0x48e07b. */
-            RETAKED_LDATA = level;                      /* Native store 0x48e087. */
-            level = Level_FindByName("retake_e", NULL); /* Native call 0x48e08c. */
-            RETAKEE_LDATA = level;                      /* Native store 0x48e098. */
-            level = Level_FindByName("retake_g", NULL); /* Native call 0x48e09d. */
-            LevelFixupSlotPc0087b0d0 = level;           /* Native store 0x48e0a7. */
+            level = Level_FindByName("retake_b", NULL);
+            RETAKEB_LDATA = level;
+            level = Level_FindByName("retake_d", NULL);
+            RETAKED_LDATA = level;
+            level = Level_FindByName("retake_e", NULL);
+            RETAKEE_LDATA = level;
+            level = Level_FindByName("retake_g", NULL);
+            LevelFixupSlotPc0087b0d0 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b0d0->callbacks[1] =
-                    (void *)RetakeG_Init; /* Native 0x48e0ae: callbacks[1] = entry 0x4dceb0. */
-                LevelFixupSlotPc0087b0d0->callbacks[2] =
-                    (void *)RetakeG_Reset; /* Native 0x48e0ba: callbacks[2] = entry 0x4dcef0. */
-                LevelFixupSlotPc0087b0d0->callbacks[3] =
-                    (void *)RetakeG_Update; /* Native 0x48e0c7: callbacks[3] = entry 0x4dcf00. */
-                LevelFixupSlotPc0087b0d0->callbacks[6] =
-                    (void *)RetakeG_Panel; /* Native 0x48e0d4: callbacks[6] = entry 0x4dcf70. */
+                LevelFixupSlotPc0087b0d0->callbacks[1] = (void *)RetakeG_Init;
+                LevelFixupSlotPc0087b0d0->callbacks[2] = (void *)RetakeG_Reset;
+                LevelFixupSlotPc0087b0d0->callbacks[3] = (void *)RetakeG_Update;
+                LevelFixupSlotPc0087b0d0->callbacks[6] = (void *)RetakeG_Panel;
             }
-            level = Level_FindByName("Maul_A", NULL); /* Native call 0x48e0e5. */
-            MAULA_LDATA = level;                      /* Native store 0x48e0ef. */
+            level = Level_FindByName("Maul_A", NULL);
+            MAULA_LDATA = level;
             if (level != NULL) {
-                MAULA_LDATA->callbacks[1] = (void *)MaulA_Init;   /* Native 0x48e0f6: callbacks[1] = entry 0x4dd070. */
-                MAULA_LDATA->callbacks[2] = (void *)MaulA_Reset;  /* Native 0x48e102: callbacks[2] = entry 0x4dd110. */
-                MAULA_LDATA->callbacks[3] = (void *)MaulA_Update; /* Native 0x48e10f: callbacks[3] = entry 0x4dd160. */
-                MAULA_LDATA->callbacks[6] = (void *)MaulA_Panel;  /* Native 0x48e11c: callbacks[6] = entry 0x4dd170. */
+                MAULA_LDATA->callbacks[1] = (void *)MaulA_Init;
+                MAULA_LDATA->callbacks[2] = (void *)MaulA_Reset;
+                MAULA_LDATA->callbacks[3] = (void *)MaulA_Update;
+                MAULA_LDATA->callbacks[6] = (void *)MaulA_Panel;
             }
-            level = Level_FindByName("Maul_B", NULL); /* Native call 0x48e12d. */
-            LevelFixupSlotPc0087b0dc = level;         /* Native store 0x48e139. */
-            level = Level_FindByName("Maul_D", NULL); /* Native call 0x48e13e. */
-            MAULD_LDATA = level;                      /* Native store 0x48e148. */
+            level = Level_FindByName("Maul_B", NULL);
+            LevelFixupSlotPc0087b0dc = level;
+            level = Level_FindByName("Maul_D", NULL);
+            MAULD_LDATA = level;
             if (level != NULL) {
-                MAULD_LDATA->callbacks[1] = (void *)MaulD_Init;   /* Native 0x48e14f: callbacks[1] = entry 0x4dd1d0. */
-                MAULD_LDATA->callbacks[3] = (void *)MaulD_Update; /* Native 0x48e15b: callbacks[3] = entry 0x4dd1e0. */
+                MAULD_LDATA->callbacks[1] = (void *)MaulD_Init;
+                MAULD_LDATA->callbacks[3] = (void *)MaulD_Update;
             }
-            level = Level_FindByName("Maul_E", NULL); /* Native call 0x48e169. */
-            LevelFixupSlotPc0087b0e4 = level;         /* Native store 0x48e173. */
+            level = Level_FindByName("Maul_E", NULL);
+            LevelFixupSlotPc0087b0e4 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b0e4->callbacks[1] =
-                    (void *)MaulE_Init; /* Native 0x48e17a: callbacks[1] = entry 0x4dd1f0. */
-                LevelFixupSlotPc0087b0e4->callbacks[3] =
-                    (void *)MaulE_Update; /* Native 0x48e187: callbacks[3] = entry 0x4dd200. */
+                LevelFixupSlotPc0087b0e4->callbacks[1] = (void *)MaulE_Init;
+                LevelFixupSlotPc0087b0e4->callbacks[3] = (void *)MaulE_Update;
             }
-            level = Level_FindByName("Maul_F", NULL); /* Native call 0x48e195. */
-            MAULF_LDATA = level;                      /* Native store 0x48e19f. */
+            level = Level_FindByName("Maul_F", NULL);
+            MAULF_LDATA = level;
             if (level != NULL) {
-                MAULF_LDATA->callbacks[1] = (void *)MaulF_Init;   /* Native 0x48e1a6: callbacks[1] = entry 0x4dd210. */
-                MAULF_LDATA->callbacks[2] = (void *)MaulF_Reset;  /* Native 0x48e1b3: callbacks[2] = entry 0x4dd280. */
-                MAULF_LDATA->callbacks[3] = (void *)MaulF_Update; /* Native 0x48e1bf: callbacks[3] = entry 0x4dd2a0. */
-                MAULF_LDATA->callbacks[6] = (void *)MaulF_Panel;  /* Native 0x48e1cc: callbacks[6] = entry 0x4dd2b0. */
+                MAULF_LDATA->callbacks[1] = (void *)MaulF_Init;
+                MAULF_LDATA->callbacks[2] = (void *)MaulF_Reset;
+                MAULF_LDATA->callbacks[3] = (void *)MaulF_Update;
+                MAULF_LDATA->callbacks[6] = (void *)MaulF_Panel;
             }
-            level = Level_FindByName("Jedi_B", NULL); /* Native call 0x48e1dd. */
-            JEDI_B_LDATA = level;                     /* Native store 0x48e1e7. */
+            level = Level_FindByName("Jedi_B", NULL);
+            JEDI_B_LDATA = level;
             if (level != NULL) {
-                JEDI_B_LDATA->callbacks[1] = (void *)JediB_Init;   /* Native 0x48e1ee: callbacks[1] = entry 0x4de360. */
-                JEDI_B_LDATA->callbacks[2] = (void *)JediB_Reset;  /* Native 0x48e1fb: callbacks[2] = entry 0x4de740. */
-                JEDI_B_LDATA->callbacks[3] = (void *)JediB_Update; /* Native 0x48e207: callbacks[3] = entry 0x4df120. */
-                JEDI_B_LDATA->callbacks[6] =
-                    (void *)JediB_DrawPanelPc; /* Native 0x48e214: callbacks[6] = entry 0x4df9b0. */
+                JEDI_B_LDATA->callbacks[1] = (void *)JediB_Init;
+                JEDI_B_LDATA->callbacks[2] = (void *)JediB_Reset;
+                JEDI_B_LDATA->callbacks[3] = (void *)JediB_Update;
+                JEDI_B_LDATA->callbacks[6] = (void *)JediB_DrawPanelPc;
             }
-            level = Level_FindByName("Jedi_Outro", NULL); /* Native call 0x48e225. */
-            LevelFixupSlotPc0087b0f0 = level;             /* Native store 0x48e231. */
-            level = Level_FindByName("gunship_a", NULL);  /* Native call 0x48e236. */
-            GUNSHIPA_LDATA = level;                       /* Native store 0x48e240. */
+            level = Level_FindByName("Jedi_Outro", NULL);
+            LevelFixupSlotPc0087b0f0 = level;
+            level = Level_FindByName("gunship_a", NULL);
+            GUNSHIPA_LDATA = level;
             if (level != NULL) {
-                GUNSHIPA_LDATA->callbacks[1] =
-                    (void *)GunshipA_Init; /* Native 0x48e247: callbacks[1] = entry 0x4e23e0. */
-                GUNSHIPA_LDATA->callbacks[3] =
-                    (void *)GunshipA_Update; /* Native 0x48e254: callbacks[3] = entry 0x4e24d0. */
-                GUNSHIPA_LDATA->callbacks[5] =
-                    (void *)GunshipA_DrawPc; /* Native 0x48e260: callbacks[5] = entry 0x4e24e0. */
+                GUNSHIPA_LDATA->callbacks[1] = (void *)GunshipA_Init;
+                GUNSHIPA_LDATA->callbacks[3] = (void *)GunshipA_Update;
+                GUNSHIPA_LDATA->callbacks[5] = (void *)GunshipA_DrawPc;
             }
-            level = Level_FindByName("gunship_b", NULL); /* Native call 0x48e26e. */
-            GUNSHIPB_LDATA = level;                      /* Native store 0x48e278. */
+            level = Level_FindByName("gunship_b", NULL);
+            GUNSHIPB_LDATA = level;
             if (level != NULL) {
-                GUNSHIPB_LDATA->callbacks[2] =
-                    (void *)GunshipB_Reset; /* Native 0x48e27f: callbacks[2] = entry 0x4e24f0. */
+                GUNSHIPB_LDATA->callbacks[2] = (void *)GunshipB_Reset;
             }
-            level = Level_FindByName("bonus_gunship_a", NULL); /* Native call 0x48e28d. */
-            BONUS_GUNSHIPA_LDATA = level;                      /* Native store 0x48e297. */
+            level = Level_FindByName("bonus_gunship_a", NULL);
+            BONUS_GUNSHIPA_LDATA = level;
             if (level != NULL) {
-                BONUS_GUNSHIPA_LDATA->callbacks[2] =
-                    (void *)BonusGunshipA_ResetPc; /* Native 0x48e29e: callbacks[2] = entry 0x4e2740. */
-                BONUS_GUNSHIPA_LDATA->callbacks[3] =
-                    (void *)BonusGunshipA_UpdatePc; /* Native 0x48e2ab: callbacks[3] = entry 0x4e2770. */
+                BONUS_GUNSHIPA_LDATA->callbacks[2] = (void *)BonusGunshipA_ResetPc;
+                BONUS_GUNSHIPA_LDATA->callbacks[3] = (void *)BonusGunshipA_UpdatePc;
             }
-            level = Level_FindByName("bonus_gunship_b", NULL); /* Native call 0x48e2b9. */
-            BONUS_GUNSHIPB_LDATA = level;                      /* Native store 0x48e2c3. */
+            level = Level_FindByName("bonus_gunship_b", NULL);
+            BONUS_GUNSHIPB_LDATA = level;
             if (level != NULL) {
-                BONUS_GUNSHIPB_LDATA->callbacks[1] =
-                    (void *)BonusGunshipB_InitPc; /* Native 0x48e2ca: callbacks[1] = entry 0x4e2860. */
-                BONUS_GUNSHIPB_LDATA->callbacks[2] =
-                    (void *)BonusGunshipB_ResetPc; /* Native 0x48e2d7: callbacks[2] = entry 0x4e2890. */
-                BONUS_GUNSHIPB_LDATA->callbacks[3] =
-                    (void *)BonusGunshipB_UpdatePc; /* Native 0x48e2e3: callbacks[3] = entry 0x4e28b0. */
-                BONUS_GUNSHIPB_LDATA->callbacks[6] =
-                    (void *)BonusGunshipB_PanelPc; /* Native 0x48e2f0: callbacks[6] = entry 0x4e2ae0. */
+                BONUS_GUNSHIPB_LDATA->callbacks[1] = (void *)BonusGunshipB_InitPc;
+                BONUS_GUNSHIPB_LDATA->callbacks[2] = (void *)BonusGunshipB_ResetPc;
+                BONUS_GUNSHIPB_LDATA->callbacks[3] = (void *)BonusGunshipB_UpdatePc;
+                BONUS_GUNSHIPB_LDATA->callbacks[6] = (void *)BonusGunshipB_PanelPc;
             }
-            level = Level_FindByName("pursuit_a", NULL); /* Native call 0x48e301. */
-            CollisionVehicleExcludedLevelPc = level;     /* Native store 0x48e30b. */
+            level = Level_FindByName("pursuit_a", NULL);
+            CollisionVehicleExcludedLevelPc = level;
             if (level != NULL) {
-                CollisionVehicleExcludedLevelPc->callbacks[1] =
-                    (void *)BountyHunterPursuitA_Init; /* Native 0x48e312: callbacks[1] = entry 0x4bc4b0. */
-                CollisionVehicleExcludedLevelPc->callbacks[2] =
-                    (void *)BountyHunterPursuitA_Reset; /* Native 0x48e31f: callbacks[2] = entry 0x4bc4c0. */
-                CollisionVehicleExcludedLevelPc->callbacks[3] =
-                    (void *)BountyHunterPursuitA_Update; /* Native 0x48e32b: callbacks[3] = entry 0x4bc4f0. */
+                CollisionVehicleExcludedLevelPc->callbacks[1] = (void *)BountyHunterPursuitA_Init;
+                CollisionVehicleExcludedLevelPc->callbacks[2] = (void *)BountyHunterPursuitA_Reset;
+                CollisionVehicleExcludedLevelPc->callbacks[3] = (void *)BountyHunterPursuitA_Update;
             }
-            level = Level_FindByName("pursuit_b", NULL); /* Native call 0x48e339. */
-            LevelFixupSlotPc0087b108 = level;            /* Native store 0x48e343. */
+            level = Level_FindByName("pursuit_b", NULL);
+            LevelFixupSlotPc0087b108 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b108->callbacks[1] =
-                    (void *)BountyHunterPursuitB_Init; /* Native 0x48e34a: callbacks[1] = entry 0x4bc500. */
-                LevelFixupSlotPc0087b108->callbacks[2] =
-                    (void *)BountyHunterPursuitB_Reset; /* Native 0x48e357: callbacks[2] = entry 0x4bc510. */
-                LevelFixupSlotPc0087b108->callbacks[3] =
-                    (void *)BountyHunterPursuitB_Update; /* Native 0x48e364: callbacks[3] = entry 0x4bc620. */
+                LevelFixupSlotPc0087b108->callbacks[1] = (void *)BountyHunterPursuitB_Init;
+                LevelFixupSlotPc0087b108->callbacks[2] = (void *)BountyHunterPursuitB_Reset;
+                LevelFixupSlotPc0087b108->callbacks[3] = (void *)BountyHunterPursuitB_Update;
             }
-            level = Level_FindByName("pursuit_c", NULL); /* Native call 0x48e372. */
-            LevelFixupSlotPc0087b10c = level;            /* Native store 0x48e37c. */
+            level = Level_FindByName("pursuit_c", NULL);
+            LevelFixupSlotPc0087b10c = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b10c->callbacks[1] =
-                    (void *)BountyHunterPursuitC_Init; /* Native 0x48e383: callbacks[1] = entry 0x4bc640. */
-                LevelFixupSlotPc0087b10c->callbacks[2] =
-                    (void *)BountyHunterPursuitC_Reset; /* Native 0x48e38f: callbacks[2] = entry 0x4bc650. */
-                LevelFixupSlotPc0087b10c->callbacks[3] =
-                    (void *)BountyHunterPursuitC_Update; /* Native 0x48e39c: callbacks[3] = entry 0x4bc750. */
+                LevelFixupSlotPc0087b10c->callbacks[1] = (void *)BountyHunterPursuitC_Init;
+                LevelFixupSlotPc0087b10c->callbacks[2] = (void *)BountyHunterPursuitC_Reset;
+                LevelFixupSlotPc0087b10c->callbacks[3] = (void *)BountyHunterPursuitC_Update;
             }
-            level = Level_FindByName("pursuit_d", NULL); /* Native call 0x48e3aa. */
-            LevelFixupSlotPc0087b110 = level;            /* Native store 0x48e3b4. */
+            level = Level_FindByName("pursuit_d", NULL);
+            LevelFixupSlotPc0087b110 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b110->callbacks[1] =
-                    (void *)BountyHunterPursuitD_Init; /* Native 0x48e3bb: callbacks[1] = entry 0x4bc800. */
-                LevelFixupSlotPc0087b110->callbacks[2] =
-                    (void *)BountyHunterPursuitD_Reset; /* Native 0x48e3c8: callbacks[2] = entry 0x4bc810. */
-                LevelFixupSlotPc0087b110->callbacks[3] =
-                    (void *)BountyHunterPursuitD_Update; /* Native 0x48e3d4: callbacks[3] = entry 0x4bc990. */
+                LevelFixupSlotPc0087b110->callbacks[1] = (void *)BountyHunterPursuitD_Init;
+                LevelFixupSlotPc0087b110->callbacks[2] = (void *)BountyHunterPursuitD_Reset;
+                LevelFixupSlotPc0087b110->callbacks[3] = (void *)BountyHunterPursuitD_Update;
             }
-            level = Level_FindByName("pursuit_e", NULL);  /* Native call 0x48e3e2. */
-            BOUNTYHUNTERPURSUITE_LDATA = level;           /* Native store 0x48e3ee. */
-            level = Level_FindByName("dogfight_a", NULL); /* Native call 0x48e3f3. */
-            DOGFIGHTA_LDATA = level;                      /* Native store 0x48e3fd. */
+            level = Level_FindByName("pursuit_e", NULL);
+            BOUNTYHUNTERPURSUITE_LDATA = level;
+            level = Level_FindByName("dogfight_a", NULL);
+            DOGFIGHTA_LDATA = level;
             if (level != NULL) {
-                DOGFIGHTA_LDATA->callbacks[1] =
-                    (void *)ChrisDogFightAInit; /* Native 0x48e404: callbacks[1] = entry 0x413a20. */
-                DOGFIGHTA_LDATA->callbacks[2] =
-                    (void *)ChrisDogFightAReset; /* Native 0x48e411: callbacks[2] = entry 0x4124f0. */
-                DOGFIGHTA_LDATA->callbacks[3] =
-                    (void *)ChrisDogFightAUpdate; /* Native 0x48e41e: callbacks[3] = entry 0x413aa0. */
-                DOGFIGHTA_LDATA->callbacks[5] =
-                    (void *)ChrisDogFightADraw; /* Native 0x48e42a: callbacks[5] = entry 0x413b10. */
+                DOGFIGHTA_LDATA->callbacks[1] = (void *)ChrisDogFightAInit;
+                DOGFIGHTA_LDATA->callbacks[2] = (void *)ChrisDogFightAReset;
+                DOGFIGHTA_LDATA->callbacks[3] = (void *)ChrisDogFightAUpdate;
+                DOGFIGHTA_LDATA->callbacks[5] = (void *)ChrisDogFightADraw;
             }
-            level = Level_FindByName("Factory_B", NULL); /* Native call 0x48e438. */
-            FACTORYB_LDATA = level;                      /* Native store 0x48e442. */
+            level = Level_FindByName("Factory_B", NULL);
+            FACTORYB_LDATA = level;
             if (level != NULL) {
-                FACTORYB_LDATA->callbacks[1] =
-                    (void *)FactoryB_Init; /* Native 0x48e449: callbacks[1] = entry 0x4e2c60. */
-                FACTORYB_LDATA->callbacks[2] =
-                    (void *)FactoryB_Reset; /* Native 0x48e456: callbacks[2] = entry 0x4dfc90. */
-                FACTORYB_LDATA->callbacks[3] =
-                    (void *)FactoryB_Update; /* Native 0x48e463: callbacks[3] = entry 0x4dfd00. */
-                FACTORYB_LDATA->callbacks[5] =
-                    (void *)FactoryB_Draw; /* Native 0x48e46f: callbacks[5] = entry 0x4dfdf0. */
+                FACTORYB_LDATA->callbacks[1] = (void *)FactoryB_Init;
+                FACTORYB_LDATA->callbacks[2] = (void *)FactoryB_Reset;
+                FACTORYB_LDATA->callbacks[3] = (void *)FactoryB_Update;
+                FACTORYB_LDATA->callbacks[5] = (void *)FactoryB_Draw;
             }
-            level = Level_FindByName("Factory_D", NULL); /* Native call 0x48e47d. */
-            FACTORYD_LDATA = level;                      /* Native store 0x48e489. */
-            level = Level_FindByName("Factory_F", NULL); /* Native call 0x48e48e. */
-            FACTORYF_LDATA = level;                      /* Native store 0x48e49a. */
-            level = Level_FindByName("Factory_G", NULL); /* Native call 0x48e49f. */
-            FACTORYG_LDATA = level;                      /* Native store 0x48e4a9. */
+            level = Level_FindByName("Factory_D", NULL);
+            FACTORYD_LDATA = level;
+            level = Level_FindByName("Factory_F", NULL);
+            FACTORYF_LDATA = level;
+            level = Level_FindByName("Factory_G", NULL);
+            FACTORYG_LDATA = level;
             if (level != NULL) {
-                FACTORYG_LDATA->callbacks[1] =
-                    (void *)FactoryG_Init; /* Native 0x48e4b0: callbacks[1] = entry 0x4dff40. */
-                FACTORYG_LDATA->callbacks[3] =
-                    (void *)FactoryG_Update; /* Native 0x48e4bd: callbacks[3] = entry 0x4dfff0. */
+                FACTORYG_LDATA->callbacks[1] = (void *)FactoryG_Init;
+                FACTORYG_LDATA->callbacks[3] = (void *)FactoryG_Update;
             }
-            level = Level_FindByName("Dooku_C", NULL); /* Native call 0x48e4cb. */
-            DOOKUC_LDATA = level;                      /* Native store 0x48e4d5. */
+            level = Level_FindByName("Dooku_C", NULL);
+            DOOKUC_LDATA = level;
             if (level != NULL) {
-                DOOKUC_LDATA->callbacks[2] = (void *)DookuC_Reset; /* Native 0x48e4dc: callbacks[2] = entry 0x4dfe00. */
-                DOOKUC_LDATA->callbacks[3] =
-                    (void *)DookuC_Update; /* Native 0x48e4e9: callbacks[3] = entry 0x4dfe80. */
-                DOOKUC_LDATA->callbacks[6] =
-                    (void *)DookuC_DrawPanel; /* Native 0x48e4f5: callbacks[6] = entry 0x4dfef0. */
+                DOOKUC_LDATA->callbacks[2] = (void *)DookuC_Reset;
+                DOOKUC_LDATA->callbacks[3] = (void *)DookuC_Update;
+                DOOKUC_LDATA->callbacks[6] = (void *)DookuC_DrawPanel;
             }
-            level = Level_FindByName("Dooku_Outro", NULL); /* Native call 0x48e506. */
-            LevelFixupSlotPc0087b140 = level;              /* Native store 0x48e512. */
-            level = Level_FindByName("Kamino_A", NULL);    /* Native call 0x48e517. */
-            LevelFixupSlotPc0087b12c = level;              /* Native store 0x48e521. */
+            level = Level_FindByName("Dooku_Outro", NULL);
+            LevelFixupSlotPc0087b140 = level;
+            level = Level_FindByName("Kamino_A", NULL);
+            LevelFixupSlotPc0087b12c = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b12c->callbacks[4] =
-                    (void *)KaminoA_AlwaysUpdate; /* Native 0x48e528: callbacks[4] = entry 0x4e0180. */
+                LevelFixupSlotPc0087b12c->callbacks[4] = (void *)KaminoA_AlwaysUpdate;
             }
-            level = Level_FindByName("Kamino_C", NULL); /* Native call 0x48e536. */
-            KAMINOC_LDATA = level;                      /* Native store 0x48e540. */
+            level = Level_FindByName("Kamino_C", NULL);
+            KAMINOC_LDATA = level;
             if (level != NULL) {
-                KAMINOC_LDATA->callbacks[2] =
-                    (void *)KaminoC_Reset; /* Native 0x48e547: callbacks[2] = entry 0x4e06e0. */
-                KAMINOC_LDATA->callbacks[1] =
-                    (void *)KaminoC_Init; /* Native 0x48e554: callbacks[1] = entry 0x4e01b0. */
-                KAMINOC_LDATA->callbacks[3] =
-                    (void *)KaminoC_Update; /* Native 0x48e561: callbacks[3] = entry 0x4e0b50. */
+                KAMINOC_LDATA->callbacks[2] = (void *)KaminoC_Reset;
+                KAMINOC_LDATA->callbacks[1] = (void *)KaminoC_Init;
+                KAMINOC_LDATA->callbacks[3] = (void *)KaminoC_Update;
             }
-            level = Level_FindByName("Kamino_Outro1", NULL); /* Native call 0x48e56f. */
-            LevelFixupSlotPc0087b138 = level;                /* Native store 0x48e579. */
+            level = Level_FindByName("Kamino_Outro1", NULL);
+            LevelFixupSlotPc0087b138 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b138->callbacks[1] =
-                    (void *)KaminoOutro_Init; /* Native 0x48e580: callbacks[1] = entry 0x4e23b0. */
+                LevelFixupSlotPc0087b138->callbacks[1] = (void *)KaminoOutro_Init;
             }
-            level = Level_FindByName("Kamino_A", NULL); /* Native call 0x48e58e. */
-            LevelFixupSlotPc0087b12c = level;           /* Native store 0x48e59a. */
-            level = Level_FindByName("Kamino_C", NULL); /* Native call 0x48e59f. */
-            KAMINOC_LDATA = level;                      /* Native store 0x48e5ab. */
-            level = Level_FindByName("Kamino_E", NULL); /* Native call 0x48e5b0. */
-            KAMINOE_LDATA = level;                      /* Native store 0x48e5ba. */
+            level = Level_FindByName("Kamino_A", NULL);
+            LevelFixupSlotPc0087b12c = level;
+            level = Level_FindByName("Kamino_C", NULL);
+            KAMINOC_LDATA = level;
+            level = Level_FindByName("Kamino_E", NULL);
+            KAMINOE_LDATA = level;
             if (level != NULL) {
-                KAMINOE_LDATA->callbacks[2] =
-                    (void *)KaminoE_Reset; /* Native 0x48e5c1: callbacks[2] = entry 0x4e1260. */
-                KAMINOE_LDATA->callbacks[1] =
-                    (void *)KaminoE_Init; /* Native 0x48e5cd: callbacks[1] = entry 0x4e1220. */
-                KAMINOE_LDATA->callbacks[4] =
-                    (void *)KaminoE_AlwaysUpdate; /* Native 0x48e5da: callbacks[4] = entry 0x4e1f40. */
-                KAMINOE_LDATA->callbacks[3] =
-                    (void *)KaminoE_UpdatePc; /* Native 0x48e5e7: callbacks[3] = entry 0x4e1f70. */
-                KAMINOE_LDATA->callbacks[5] =
-                    (void *)KaminoE_Draw; /* Native 0x48e5f3: callbacks[5] = entry 0x4e2280. */
+                KAMINOE_LDATA->callbacks[2] = (void *)KaminoE_Reset;
+                KAMINOE_LDATA->callbacks[1] = (void *)KaminoE_Init;
+                KAMINOE_LDATA->callbacks[4] = (void *)KaminoE_AlwaysUpdate;
+                KAMINOE_LDATA->callbacks[3] = (void *)KaminoE_UpdatePc;
+                KAMINOE_LDATA->callbacks[5] = (void *)KaminoE_Draw;
             }
-            level = Level_FindByName("Dogfight_A", NULL); /* Native call 0x48e601. */
-            DOGFIGHTA_LDATA = level;                      /* Native store 0x48e60d. */
-            level = Level_FindByName("Cruiser_A", NULL);  /* Native call 0x48e612. */
-            LevelFixupSlotPc0087b164 = level;             /* Native store 0x48e61c. */
+            level = Level_FindByName("Dogfight_A", NULL);
+            DOGFIGHTA_LDATA = level;
+            level = Level_FindByName("Cruiser_A", NULL);
+            LevelFixupSlotPc0087b164 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b164->callbacks[1] =
-                    (void *)CruiserAInit; /* Native 0x48e623: callbacks[1] = entry 0x4e2cf0. */
-                LevelFixupSlotPc0087b164->callbacks[3] =
-                    (void *)CruiserAUpdate; /* Native 0x48e630: callbacks[3] = entry 0x4e2d50. */
+                LevelFixupSlotPc0087b164->callbacks[1] = (void *)CruiserAInit;
+                LevelFixupSlotPc0087b164->callbacks[3] = (void *)CruiserAUpdate;
             }
-            level = Level_FindByName("Cruiser_C", NULL); /* Native call 0x48e63e. */
-            CRUISERC_LDATA = level;                      /* Native store 0x48e648. */
+            level = Level_FindByName("Cruiser_C", NULL);
+            CRUISERC_LDATA = level;
             if (level != NULL) {
-                CRUISERC_LDATA->callbacks[2] =
-                    (void *)CruiserCReset; /* Native 0x48e64f: callbacks[2] = entry 0x4e2db0. */
-                CRUISERC_LDATA->callbacks[3] =
-                    (void *)CruiserCUpdate; /* Native 0x48e65c: callbacks[3] = entry 0x4e2de0. */
-                CRUISERC_LDATA->callbacks[6] =
-                    (void *)CruiserCPanel; /* Native 0x48e668: callbacks[6] = entry 0x4e2f40. */
+                CRUISERC_LDATA->callbacks[2] = (void *)CruiserCReset;
+                CRUISERC_LDATA->callbacks[3] = (void *)CruiserCUpdate;
+                CRUISERC_LDATA->callbacks[6] = (void *)CruiserCPanel;
             }
-            level = Level_FindByName("Cruiser_D", NULL); /* Native call 0x48e679. */
-            CRUISERD_LDATA = level;                      /* Native store 0x48e683. */
+            level = Level_FindByName("Cruiser_D", NULL);
+            CRUISERD_LDATA = level;
             if (level != NULL) {
-                CRUISERD_LDATA->callbacks[1] =
-                    (void *)CruiserDInit; /* Native 0x48e68a: callbacks[1] = entry 0x4e2f80. */
-                CRUISERD_LDATA->callbacks[2] =
-                    (void *)CruiserDReset; /* Native 0x48e697: callbacks[2] = entry 0x4e3040. */
-                CRUISERD_LDATA->callbacks[3] =
-                    (void *)CruiserDUpdate; /* Native 0x48e6a4: callbacks[3] = entry 0x4e3120. */
+                CRUISERD_LDATA->callbacks[1] = (void *)CruiserDInit;
+                CRUISERD_LDATA->callbacks[2] = (void *)CruiserDReset;
+                CRUISERD_LDATA->callbacks[3] = (void *)CruiserDUpdate;
             }
-            level = Level_FindByName("Cruiser_E", NULL);  /* Native call 0x48e6b2. */
-            LevelFixupSlotPc0087b170 = level;             /* Native store 0x48e6be. */
-            level = Level_FindByName("cruiser_g", NULL);  /* Native call 0x48e6c3. */
-            CRUISERG_LDATA = level;                       /* Native store 0x48e6cf. */
-            level = Level_FindByName("Grievous_A", NULL); /* Native call 0x48e6d4. */
-            LevelFixupSlotPc0087b144 = level;             /* Native store 0x48e6de. */
+            level = Level_FindByName("Cruiser_E", NULL);
+            LevelFixupSlotPc0087b170 = level;
+            level = Level_FindByName("cruiser_g", NULL);
+            CRUISERG_LDATA = level;
+            level = Level_FindByName("Grievous_A", NULL);
+            LevelFixupSlotPc0087b144 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b144->callbacks[1] =
-                    (void *)GrievousA_Init; /* Native 0x48e6e5: callbacks[1] = entry 0x4e3330. */
-                LevelFixupSlotPc0087b144->callbacks[2] =
-                    (void *)GrievousA_Reset; /* Native 0x48e6f1: callbacks[2] = entry 0x4e3340. */
-                LevelFixupSlotPc0087b144->callbacks[3] =
-                    (void *)GrievousA_Update; /* Native 0x48e6fe: callbacks[3] = entry 0x4e3380. */
+                LevelFixupSlotPc0087b144->callbacks[1] = (void *)GrievousA_Init;
+                LevelFixupSlotPc0087b144->callbacks[2] = (void *)GrievousA_Reset;
+                LevelFixupSlotPc0087b144->callbacks[3] = (void *)GrievousA_Update;
             }
-            level = Level_FindByName("temple_b", NULL); /* Native call 0x48e70c. */
-            LevelFixupSlotPc0087b148 = level;           /* Native store 0x48e718. */
-            level = Level_FindByName("temple_c", NULL); /* Native call 0x48e71d. */
-            LevelFixupSlotPc0087b14c = level;           /* Native store 0x48e727. */
+            level = Level_FindByName("temple_b", NULL);
+            LevelFixupSlotPc0087b148 = level;
+            level = Level_FindByName("temple_c", NULL);
+            LevelFixupSlotPc0087b14c = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b14c->callbacks[4] =
-                    (void *)TempleC_AlwaysUpdate; /* Native 0x48e72e: callbacks[4] = entry 0x4e3c30. */
+                LevelFixupSlotPc0087b14c->callbacks[4] = (void *)TempleC_AlwaysUpdate;
             }
-            level = Level_FindByName("temple_status", NULL); /* Native call 0x48e73c. */
-            LevelFixupSlotPc0087b150 = level;                /* Native store 0x48e748. */
-            level = Level_FindByName("Kashyyyk_A", NULL);    /* Native call 0x48e74d. */
-            LevelFixupSlotPc0087b154 = level;                /* Native store 0x48e757. */
+            level = Level_FindByName("temple_status", NULL);
+            LevelFixupSlotPc0087b150 = level;
+            level = Level_FindByName("Kashyyyk_A", NULL);
+            LevelFixupSlotPc0087b154 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b154->callbacks[1] =
-                    (void *)KashyyykA_Init; /* Native 0x48e75e: callbacks[1] = entry 0x4e33e0. */
-                LevelFixupSlotPc0087b154->callbacks[2] =
-                    (void *)KashyyykA_Reset; /* Native 0x48e76b: callbacks[2] = entry 0x4e33f0. */
-                LevelFixupSlotPc0087b154->callbacks[3] =
-                    (void *)KashyyykA_Update; /* Native 0x48e777: callbacks[3] = entry 0x4e3430. */
-                LevelFixupSlotPc0087b154->callbacks[6] =
-                    (void *)KashyyykA_Panel; /* Native 0x48e784: callbacks[6] = entry 0x4e3440. */
+                LevelFixupSlotPc0087b154->callbacks[1] = (void *)KashyyykA_Init;
+                LevelFixupSlotPc0087b154->callbacks[2] = (void *)KashyyykA_Reset;
+                LevelFixupSlotPc0087b154->callbacks[3] = (void *)KashyyykA_Update;
+                LevelFixupSlotPc0087b154->callbacks[6] = (void *)KashyyykA_Panel;
             }
-            level = Level_FindByName("Kashyyyk_B", NULL); /* Native call 0x48e795. */
-            LevelFixupSlotPc0087b158 = level;             /* Native store 0x48e79f. */
+            level = Level_FindByName("Kashyyyk_B", NULL);
+            LevelFixupSlotPc0087b158 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b158->callbacks[1] =
-                    (void *)KashyyykB_Init; /* Native 0x48e7a6: callbacks[1] = entry 0x4e3540. */
-                LevelFixupSlotPc0087b158->callbacks[2] =
-                    (void *)KashyyykB_Reset; /* Native 0x48e7b3: callbacks[2] = entry 0x4e3550. */
-                LevelFixupSlotPc0087b158->callbacks[3] =
-                    (void *)KashyyykB_Update; /* Native 0x48e7bf: callbacks[3] = entry 0x4e3560. */
+                LevelFixupSlotPc0087b158->callbacks[1] = (void *)KashyyykB_Init;
+                LevelFixupSlotPc0087b158->callbacks[2] = (void *)KashyyykB_Reset;
+                LevelFixupSlotPc0087b158->callbacks[3] = (void *)KashyyykB_Update;
             }
-            level = Level_FindByName("Kashyyyk_C", NULL); /* Native call 0x48e7cd. */
-            LevelFixupSlotPc0087b15c = level;             /* Native store 0x48e7d7. */
+            level = Level_FindByName("Kashyyyk_C", NULL);
+            LevelFixupSlotPc0087b15c = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b15c->callbacks[1] =
-                    (void *)KashyyykC_Init; /* Native 0x48e7de: callbacks[1] = entry 0x4e3570. */
-                LevelFixupSlotPc0087b15c->callbacks[3] =
-                    (void *)KashyyykC_Update; /* Native 0x48e7eb: callbacks[3] = entry 0x4e3580. */
+                LevelFixupSlotPc0087b15c->callbacks[1] = (void *)KashyyykC_Init;
+                LevelFixupSlotPc0087b15c->callbacks[3] = (void *)KashyyykC_Update;
             }
-            level = Level_FindByName("Kashyyyk_D", NULL); /* Native call 0x48e7f9. */
-            KASHYYYKD_LDATA = level;                      /* Native store 0x48e803. */
+            level = Level_FindByName("Kashyyyk_D", NULL);
+            KASHYYYKD_LDATA = level;
             if (level != NULL) {
-                KASHYYYKD_LDATA->callbacks[1] =
-                    (void *)KashyyykD_Init; /* Native 0x48e80a: callbacks[1] = entry 0x4e3590. */
-                KASHYYYKD_LDATA->callbacks[2] =
-                    (void *)KashyyykD_Reset; /* Native 0x48e817: callbacks[2] = entry 0x4e35d0. */
-                KASHYYYKD_LDATA->callbacks[3] =
-                    (void *)KashyyykD_Update; /* Native 0x48e823: callbacks[3] = entry 0x4e3990. */
+                KASHYYYKD_LDATA->callbacks[1] = (void *)KashyyykD_Init;
+                KASHYYYKD_LDATA->callbacks[2] = (void *)KashyyykD_Reset;
+                KASHYYYKD_LDATA->callbacks[3] = (void *)KashyyykD_Update;
             }
-            level = Level_FindByName("vader_a", NULL); /* Native call 0x48e831. */
-            VADERA_LDATA = level;                      /* Native store 0x48e83b. */
+            level = Level_FindByName("vader_a", NULL);
+            VADERA_LDATA = level;
             if (level != NULL) {
-                VADERA_LDATA->callbacks[1] = (void *)VaderA_Init;  /* Native 0x48e842: callbacks[1] = entry 0x4e3db0. */
-                VADERA_LDATA->callbacks[2] = (void *)VaderA_Reset; /* Native 0x48e84f: callbacks[2] = entry 0x4e3e50. */
-                VADERA_LDATA->callbacks[3] =
-                    (void *)VaderA_Update; /* Native 0x48e85c: callbacks[3] = entry 0x4e3ea0. */
-                VADERA_LDATA->callbacks[6] =
-                    (void *)VaderA_DrawPanel; /* Native 0x48e868: callbacks[6] = entry 0x4e41e0. */
+                VADERA_LDATA->callbacks[1] = (void *)VaderA_Init;
+                VADERA_LDATA->callbacks[2] = (void *)VaderA_Reset;
+                VADERA_LDATA->callbacks[3] = (void *)VaderA_Update;
+                VADERA_LDATA->callbacks[6] = (void *)VaderA_DrawPanel;
             }
-            level = Level_FindByName("vader_b", NULL); /* Native call 0x48e879. */
-            LevelFixupSlotPc0087b17c = level;          /* Native store 0x48e883. */
+            level = Level_FindByName("vader_b", NULL);
+            LevelFixupSlotPc0087b17c = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b17c->callbacks[1] =
-                    (void *)VaderB_Init; /* Native 0x48e88a: callbacks[1] = entry 0x4e4260. */
-                LevelFixupSlotPc0087b17c->callbacks[2] =
-                    (void *)VaderB_Reset; /* Native 0x48e897: callbacks[2] = entry 0x4e4270. */
-                LevelFixupSlotPc0087b17c->callbacks[3] =
-                    (void *)VaderB_Update; /* Native 0x48e8a4: callbacks[3] = entry 0x4e42a0. */
-                LevelFixupSlotPc0087b17c->callbacks[6] =
-                    (void *)VaderB_DrawPanel; /* Native 0x48e8b0: callbacks[6] = entry 0x4e4340. */
+                LevelFixupSlotPc0087b17c->callbacks[1] = (void *)VaderB_Init;
+                LevelFixupSlotPc0087b17c->callbacks[2] = (void *)VaderB_Reset;
+                LevelFixupSlotPc0087b17c->callbacks[3] = (void *)VaderB_Update;
+                LevelFixupSlotPc0087b17c->callbacks[6] = (void *)VaderB_DrawPanel;
             }
-            level = Level_FindByName("vader_c", NULL); /* Native call 0x48e8c1. */
-            VADERC_LDATA = level;                      /* Native store 0x48e8cb. */
+            level = Level_FindByName("vader_c", NULL);
+            VADERC_LDATA = level;
             if (level != NULL) {
-                VADERC_LDATA->callbacks[1] = (void *)VaderC_Init;  /* Native 0x48e8d2: callbacks[1] = entry 0x4e4350. */
-                VADERC_LDATA->callbacks[2] = (void *)VaderC_Reset; /* Native 0x48e8df: callbacks[2] = entry 0x4e4470. */
-                VADERC_LDATA->callbacks[3] =
-                    (void *)VaderC_Update; /* Native 0x48e8ec: callbacks[3] = entry 0x4e4480. */
-                VADERC_LDATA->callbacks[6] =
-                    (void *)VaderC_DrawPanel; /* Native 0x48e8f8: callbacks[6] = entry 0x4e49c0. */
+                VADERC_LDATA->callbacks[1] = (void *)VaderC_Init;
+                VADERC_LDATA->callbacks[2] = (void *)VaderC_Reset;
+                VADERC_LDATA->callbacks[3] = (void *)VaderC_Update;
+                VADERC_LDATA->callbacks[6] = (void *)VaderC_DrawPanel;
             }
-            level = Level_FindByName("BlockadeRunner_B", NULL); /* Native call 0x48e909. */
-            LevelFixupSlotPc0087b194 = level;                   /* Native store 0x48e913. */
+            level = Level_FindByName("BlockadeRunner_B", NULL);
+            LevelFixupSlotPc0087b194 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b194->callbacks[1] =
-                    (void *)BlockadeRunnerB_Init; /* Native 0x48e91a: callbacks[1] = entry 0x4e4b40. */
-                LevelFixupSlotPc0087b194->callbacks[3] =
-                    (void *)BlockadeRunnerB_Update; /* Native 0x48e927: callbacks[3] = entry 0x4e4b60. */
+                LevelFixupSlotPc0087b194->callbacks[1] = (void *)BlockadeRunnerB_Init;
+                LevelFixupSlotPc0087b194->callbacks[3] = (void *)BlockadeRunnerB_Update;
             }
-            level = Level_FindByName("BlockadeRunner_C", NULL); /* Native call 0x48e935. */
-            ObstacleReturnLevelPc = level;                      /* Native store 0x48e93f. */
+            level = Level_FindByName("BlockadeRunner_C", NULL);
+            ObstacleReturnLevelPc = level;
             if (level != NULL) {
-                ObstacleReturnLevelPc->callbacks[1] =
-                    (void *)BlockadeRunnerC_Init; /* Native 0x48e946: callbacks[1] = entry 0x4e4b90. */
+                ObstacleReturnLevelPc->callbacks[1] = (void *)BlockadeRunnerC_Init;
             }
-            level = Level_FindByName("BlockadeRunner_D", NULL); /* Native call 0x48e954. */
-            LevelFixupSlotPc0087b19c = level;                   /* Native store 0x48e95e. */
+            level = Level_FindByName("BlockadeRunner_D", NULL);
+            LevelFixupSlotPc0087b19c = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b19c->callbacks[2] =
-                    (void *)BlockadeRunnerD_Reset; /* Native 0x48e965: callbacks[2] = entry 0x4e4df0. */
-                LevelFixupSlotPc0087b19c->callbacks[3] =
-                    (void *)BlockadeRunnerD_Update; /* Native 0x48e972: callbacks[3] = entry 0x4e4e40. */
+                LevelFixupSlotPc0087b19c->callbacks[2] = (void *)BlockadeRunnerD_Reset;
+                LevelFixupSlotPc0087b19c->callbacks[3] = (void *)BlockadeRunnerD_Update;
             }
-            level = Level_FindByName("moseisley_a", NULL); /* Native call 0x48e980. */
-            MOSEISLEYA_LDATA = level;                      /* Native store 0x48e98c. */
-            level = Level_FindByName("moseisley_b", NULL); /* Native call 0x48e991. */
-            MOSEISLEYB_LDATA = level;                      /* Native store 0x48e99b. */
+            level = Level_FindByName("moseisley_a", NULL);
+            MOSEISLEYA_LDATA = level;
+            level = Level_FindByName("moseisley_b", NULL);
+            MOSEISLEYB_LDATA = level;
             if (level != NULL) {
-                MOSEISLEYB_LDATA->callbacks[1] =
-                    (void *)MosEisleyB_Init; /* Native 0x48e9a2: callbacks[1] = entry 0x4e4a40. */
+                MOSEISLEYB_LDATA->callbacks[1] = (void *)MosEisleyB_Init;
             }
-            level = Level_FindByName("moseisley_c", NULL); /* Native call 0x48e9b0. */
-            MOSEISLEYC_LDATA = level;                      /* Native store 0x48e9bc. */
-            level = Level_FindByName("moseisley_d", NULL); /* Native call 0x48e9c1. */
-            LevelFixupSlotPc0087b1bc = level;              /* Native store 0x48e9cb. */
+            level = Level_FindByName("moseisley_c", NULL);
+            MOSEISLEYC_LDATA = level;
+            level = Level_FindByName("moseisley_d", NULL);
+            LevelFixupSlotPc0087b1bc = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b1bc->callbacks[4] =
-                    (void *)MosEisleyD_AlwaysUpdate; /* Native 0x48e9d2: callbacks[4] = entry 0x4e4ab0. */
+                LevelFixupSlotPc0087b1bc->callbacks[4] = (void *)MosEisleyD_AlwaysUpdate;
             }
-            level = Level_FindByName("moseisley_e", NULL); /* Native call 0x48e9e0. */
-            LevelFixupSlotPc0087b1c0 = level;              /* Native store 0x48e9ea. */
+            level = Level_FindByName("moseisley_e", NULL);
+            LevelFixupSlotPc0087b1c0 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b1c0->callbacks[1] =
-                    (void *)MosEisleyE_Init; /* Native 0x48e9f1: callbacks[1] = entry 0x4e4ad0. */
-                LevelFixupSlotPc0087b1c0->callbacks[2] =
-                    (void *)MosEisleyE_Reset; /* Native 0x48e9fd: callbacks[2] = entry 0x4e4b00. */
-                LevelFixupSlotPc0087b1c0->callbacks[3] =
-                    (void *)MosEisleyE_Update; /* Native 0x48ea0a: callbacks[3] = entry 0x4e4b10. */
+                LevelFixupSlotPc0087b1c0->callbacks[1] = (void *)MosEisleyE_Init;
+                LevelFixupSlotPc0087b1c0->callbacks[2] = (void *)MosEisleyE_Reset;
+                LevelFixupSlotPc0087b1c0->callbacks[3] = (void *)MosEisleyE_Update;
             }
-            level = Level_FindByName("tatooine_a", NULL);        /* Native call 0x48ea18. */
-            TATOOINEA_LDATA = level;                             /* Native store 0x48ea24. */
-            level = Level_FindByName("tatooine_b", NULL);        /* Native call 0x48ea29. */
-            TATOOINEB_LDATA = level;                             /* Native store 0x48ea35. */
-            level = Level_FindByName("tatooine_d", NULL);        /* Native call 0x48ea3a. */
-            LevelFixupSlotPc0087b1a8 = level;                    /* Native store 0x48ea46. */
-            level = Level_FindByName("tatooine_e", NULL);        /* Native call 0x48ea4b. */
-            TATOOINEE_LDATA = level;                             /* Native store 0x48ea57. */
-            level = Level_FindByName("deathstarrescue_a", NULL); /* Native call 0x48ea5c. */
-            DEATHSTARRESCUEA_LDATA = level;                      /* Native store 0x48ea68. */
-            level = Level_FindByName("deathstarrescue_b", NULL); /* Native call 0x48ea6d. */
-            DEATHSTARRESCUEB_LDATA = level;                      /* Native store 0x48ea77. */
+            level = Level_FindByName("tatooine_a", NULL);
+            TATOOINEA_LDATA = level;
+            level = Level_FindByName("tatooine_b", NULL);
+            TATOOINEB_LDATA = level;
+            level = Level_FindByName("tatooine_d", NULL);
+            LevelFixupSlotPc0087b1a8 = level;
+            level = Level_FindByName("tatooine_e", NULL);
+            TATOOINEE_LDATA = level;
+            level = Level_FindByName("deathstarrescue_a", NULL);
+            DEATHSTARRESCUEA_LDATA = level;
+            level = Level_FindByName("deathstarrescue_b", NULL);
+            DEATHSTARRESCUEB_LDATA = level;
             if (level != NULL) {
-                DEATHSTARRESCUEB_LDATA->callbacks[1] =
-                    (void *)DeathStarRescueB_Init; /* Native 0x48ea7e: callbacks[1] = entry 0x4e4f80. */
-                DEATHSTARRESCUEB_LDATA->callbacks[3] =
-                    (void *)DeathStarRescueB_Update; /* Native 0x48ea8b: callbacks[3] = entry 0x4e5060. */
-                DEATHSTARRESCUEB_LDATA->callbacks[4] =
-                    (void *)DeathStarRescueB_AlwaysUpdate; /* Native 0x48ea97: callbacks[4] = entry 0x4e5130. */
+                DEATHSTARRESCUEB_LDATA->callbacks[1] = (void *)DeathStarRescueB_Init;
+                DEATHSTARRESCUEB_LDATA->callbacks[3] = (void *)DeathStarRescueB_Update;
+                DEATHSTARRESCUEB_LDATA->callbacks[4] = (void *)DeathStarRescueB_AlwaysUpdate;
             }
-            level = Level_FindByName("deathstarrescue_c", NULL); /* Native call 0x48eaa5. */
-            DEATHSTARRESCUEC_LDATA = level;                      /* Native store 0x48eaaf. */
+            level = Level_FindByName("deathstarrescue_c", NULL);
+            DEATHSTARRESCUEC_LDATA = level;
             if (level != NULL) {
-                DEATHSTARRESCUEC_LDATA->callbacks[4] =
-                    (void *)DeathStarRescueC_AlwaysUpdate; /* Native 0x48eab6: callbacks[4] = entry 0x4e5150. */
+                DEATHSTARRESCUEC_LDATA->callbacks[4] = (void *)DeathStarRescueC_AlwaysUpdate;
             }
-            level = Level_FindByName("deathstarrescue_d", NULL); /* Native call 0x48eac4. */
-            LevelFixupSlotPc0087b1d0 = level;                    /* Native store 0x48ead0. */
-            level = Level_FindByName("deathstarrescue_e", NULL); /* Native call 0x48ead5. */
-            DEATHSTARRESCUEE_LDATA = level;                      /* Native store 0x48eae1. */
-            level = Level_FindByName("deathstarescape_a", NULL); /* Native call 0x48eae6. */
-            DEATHSTARESCAPEA_LDATA = level;                      /* Native store 0x48eaf0. */
+            level = Level_FindByName("deathstarrescue_d", NULL);
+            LevelFixupSlotPc0087b1d0 = level;
+            level = Level_FindByName("deathstarrescue_e", NULL);
+            DEATHSTARRESCUEE_LDATA = level;
+            level = Level_FindByName("deathstarescape_a", NULL);
+            DEATHSTARESCAPEA_LDATA = level;
             if (level != NULL) {
-                DEATHSTARESCAPEA_LDATA->callbacks[3] =
-                    (void *)DeathStarEscapeA_Update; /* Native 0x48eaf7: callbacks[3] = entry 0x4e5460. */
+                DEATHSTARESCAPEA_LDATA->callbacks[3] = (void *)DeathStarEscapeA_Update;
             }
-            level = Level_FindByName("deathstarescape_b", NULL); /* Native call 0x48eb05. */
-            DEATHSTARESCAPEB_LDATA = level;                      /* Native store 0x48eb0f. */
+            level = Level_FindByName("deathstarescape_b", NULL);
+            DEATHSTARESCAPEB_LDATA = level;
             if (level != NULL) {
-                DEATHSTARESCAPEB_LDATA->callbacks[1] = (void *)DeathStarEscapeB_Init;   /* Native 0x48eb16. */
-                DEATHSTARESCAPEB_LDATA->callbacks[3] = (void *)DeathStarEscapeB_Update; /* Native 0x48eb23. */
-                DEATHSTARESCAPEB_LDATA->callbacks[4] =
-                    (void *)DeathStarEscapeB_AlwaysUpdate; /* Native 0x48eb30: callbacks[4] = entry 0x4e5380. */
-                DEATHSTARESCAPEB_LDATA->callbacks[5] =
-                    (void *)DeathStarEscapeB_Draw; /* Native 0x48eb3c: callbacks[5] = entry 0x4e53e0. */
+                DEATHSTARESCAPEB_LDATA->callbacks[1] = (void *)DeathStarEscapeB_Init;
+                DEATHSTARESCAPEB_LDATA->callbacks[3] = (void *)DeathStarEscapeB_Update;
+                DEATHSTARESCAPEB_LDATA->callbacks[4] = (void *)DeathStarEscapeB_AlwaysUpdate;
+                DEATHSTARESCAPEB_LDATA->callbacks[5] = (void *)DeathStarEscapeB_Draw;
             }
-            level = Level_FindByName("deathstarescape_c", NULL); /* Native call 0x48eb4a. */
-            DEATHSTARESCAPEC_LDATA = level;                      /* Native store 0x48eb54. */
+            level = Level_FindByName("deathstarescape_c", NULL);
+            DEATHSTARESCAPEC_LDATA = level;
             if (level != NULL) {
-                DEATHSTARESCAPEC_LDATA->callbacks[1] =
-                    (void *)DeathStarEscapeC_Init; /* Native 0x48eb5b: callbacks[1] = entry 0x4e54d0. */
-                DEATHSTARESCAPEC_LDATA->callbacks[3] =
-                    (void *)DeathStarEscapeC_Update; /* Native 0x48eb68: callbacks[3] = entry 0x4e5540. */
-                DEATHSTARESCAPEC_LDATA->callbacks[2] =
-                    (void *)DeathStarEscapeC_Reset; /* Native 0x48eb75: callbacks[2] = entry 0x4e5520. */
+                DEATHSTARESCAPEC_LDATA->callbacks[1] = (void *)DeathStarEscapeC_Init;
+                DEATHSTARESCAPEC_LDATA->callbacks[3] = (void *)DeathStarEscapeC_Update;
+                DEATHSTARESCAPEC_LDATA->callbacks[2] = (void *)DeathStarEscapeC_Reset;
             }
-            level = Level_FindByName("deathstarescape_d", NULL); /* Native call 0x48eb83. */
-            DEATHSTARESCAPED_LDATA = level;                      /* Native store 0x48eb8d. */
+            level = Level_FindByName("deathstarescape_d", NULL);
+            DEATHSTARESCAPED_LDATA = level;
             if (level != NULL) {
-                DEATHSTARESCAPED_LDATA->callbacks[3] =
-                    (void *)DeathStarEscapeD_Update; /* Native 0x48eb94: callbacks[3] = entry 0x4e55c0. */
+                DEATHSTARESCAPED_LDATA->callbacks[3] = (void *)DeathStarEscapeD_Update;
             }
-            level = Level_FindByName("deathstarbattle_a", NULL); /* Native call 0x48eba2. */
-            DEATHSTARBATTLEA_LDATA = level;                      /* Native store 0x48ebae. */
-            level = Level_FindByName("deathstarbattle_b", NULL); /* Native call 0x48ebb3. */
-            DEATHSTARBATTLEB_LDATA = level;                      /* Native store 0x48ebbf. */
-            level = Level_FindByName("deathstarbattle_c", NULL); /* Native call 0x48ebc4. */
-            DEATHSTARBATTLEC_LDATA = level;                      /* Native store 0x48ebce. */
+            level = Level_FindByName("deathstarbattle_a", NULL);
+            DEATHSTARBATTLEA_LDATA = level;
+            level = Level_FindByName("deathstarbattle_b", NULL);
+            DEATHSTARBATTLEB_LDATA = level;
+            level = Level_FindByName("deathstarbattle_c", NULL);
+            DEATHSTARBATTLEC_LDATA = level;
             if (level != NULL) {
-                DEATHSTARBATTLEC_LDATA->callbacks[4] =
-                    (void *)DeathStarBattleC_AlwaysUpdate; /* Native 0x48ebd5: callbacks[4] = entry 0x4e5630. */
+                DEATHSTARBATTLEC_LDATA->callbacks[4] = (void *)DeathStarBattleC_AlwaysUpdate;
             }
-            level = Level_FindByName("deathstarbattle_d", NULL); /* Native call 0x48ebe3. */
-            DEATHSTARBATTLED_LDATA = level;                      /* Native store 0x48ebed. */
+            level = Level_FindByName("deathstarbattle_d", NULL);
+            DEATHSTARBATTLED_LDATA = level;
             if (level != NULL) {
-                DEATHSTARBATTLED_LDATA->callbacks[1] =
-                    (void *)DeathStarBattleDInit; /* Native 0x48ebf4: callbacks[1] = entry 0x4e5b30. */
-                DEATHSTARBATTLED_LDATA->callbacks[3] =
-                    (void *)DeathStarBattleDUpdate; /* Native 0x48ec00: callbacks[3] = entry 0x4e5ba0. */
-                DEATHSTARBATTLED_LDATA->callbacks[5] =
-                    (void *)DeathStarBattleDDraw; /* Native 0x48ec0d: callbacks[5] = entry 0x4e5ea0. */
-                DEATHSTARBATTLED_LDATA->callbacks[2] =
-                    (void *)DeathStarBattleDReset; /* Native 0x48ec1a: callbacks[2] = entry 0x4e5b40. */
+                DEATHSTARBATTLED_LDATA->callbacks[1] = (void *)DeathStarBattleDInit;
+                DEATHSTARBATTLED_LDATA->callbacks[3] = (void *)DeathStarBattleDUpdate;
+                DEATHSTARBATTLED_LDATA->callbacks[5] = (void *)DeathStarBattleDDraw;
+                DEATHSTARBATTLED_LDATA->callbacks[2] = (void *)DeathStarBattleDReset;
             }
-            level = Level_FindByName("hothbattle_a", NULL); /* Native call 0x48ec28. */
-            HOTHBATTLEA_LDATA = level;                      /* Native store 0x48ec32. */
+            level = Level_FindByName("hothbattle_a", NULL);
+            HOTHBATTLEA_LDATA = level;
             if (level != NULL) {
                 HOTHBATTLEA_LDATA->callbacks[1] = (void *)HothBattleA_Init;
                 HOTHBATTLEA_LDATA->callbacks[2] = (void *)HothBattleA_Reset;
                 HOTHBATTLEA_LDATA->callbacks[3] = (void *)HothBattleA_Update;
                 HOTHBATTLEA_LDATA->callbacks[5] = (void *)HothBattleA_DrawPc;
             }
-            level = Level_FindByName("hothbattle_b", NULL); /* Native call 0x48ec6d. */
-            LevelFixupSlotPc0087b200 = level;               /* Native store 0x48ec79. */
-            level = Level_FindByName("hothbattle_c", NULL); /* Native call 0x48ec7e. */
-            LevelFixupSlotPc0087b204 = level;               /* Native store 0x48ec88. */
+            level = Level_FindByName("hothbattle_b", NULL);
+            LevelFixupSlotPc0087b200 = level;
+            level = Level_FindByName("hothbattle_c", NULL);
+            LevelFixupSlotPc0087b204 = level;
             if (level != NULL) {
                 LevelFixupSlotPc0087b204->callbacks[1] = (void *)HothBattleC_Init;
                 LevelFixupSlotPc0087b204->callbacks[2] = (void *)HothBattleC_Reset;
                 LevelFixupSlotPc0087b204->callbacks[3] = (void *)HothBattleC_Update;
                 LevelFixupSlotPc0087b204->callbacks[5] = (void *)HothBattleC_DrawPc;
             }
-            level = Level_FindByName("hothbattle_d", NULL); /* Native call 0x48ecc3. */
-            LevelFixupSlotPc0087b208 = level;               /* Native store 0x48eccf. */
-            level = Level_FindByName("hothbattle_e", NULL); /* Native call 0x48ecd4. */
-            LevelFixupSlotPc0087b20c = level;               /* Native store 0x48ecde. */
+            level = Level_FindByName("hothbattle_d", NULL);
+            LevelFixupSlotPc0087b208 = level;
+            level = Level_FindByName("hothbattle_e", NULL);
+            LevelFixupSlotPc0087b20c = level;
             if (level != NULL) {
                 LevelFixupSlotPc0087b20c->callbacks[1] = (void *)HothBattleE_Init;
                 LevelFixupSlotPc0087b20c->callbacks[3] = (void *)HothBattleE_Update;
                 LevelFixupSlotPc0087b20c->callbacks[5] = (void *)HothBattleE_DrawPc;
                 LevelFixupSlotPc0087b20c->callbacks[6] = (void *)HothBattleE_PanelPc;
             }
-            level = Level_FindByName("HothBattle_Outro", NULL); /* Native call 0x48ed1c. */
-            LevelFixupSlotPc0087b210 = level;                   /* Native store 0x48ed28. */
-            level = Level_FindByName("hothescape_a", NULL);     /* Native call 0x48ed2d. */
-            HOTHESCAPEA_LDATA = level;                          /* Native store 0x48ed37. */
+            level = Level_FindByName("HothBattle_Outro", NULL);
+            LevelFixupSlotPc0087b210 = level;
+            level = Level_FindByName("hothescape_a", NULL);
+            HOTHESCAPEA_LDATA = level;
             if (level != NULL) {
-                HOTHESCAPEA_LDATA->callbacks[1] =
-                    (void *)HothEscapeA_Init; /* Native 0x48ed3e: callbacks[1] = entry 0x4e6360. */
-                HOTHESCAPEA_LDATA->callbacks[3] =
-                    (void *)HothEscapeA_Update; /* Native 0x48ed4a: callbacks[3] = entry 0x4e6390. */
-                HOTHESCAPEA_LDATA->callbacks[2] =
-                    (void *)HothEscapeA_Reset; /* Native 0x48ed57: callbacks[2] = entry 0x4e6380. */
+                HOTHESCAPEA_LDATA->callbacks[1] = (void *)HothEscapeA_Init;
+                HOTHESCAPEA_LDATA->callbacks[3] = (void *)HothEscapeA_Update;
+                HOTHESCAPEA_LDATA->callbacks[2] = (void *)HothEscapeA_Reset;
             }
-            level = Level_FindByName("hothescape_b", NULL); /* Native call 0x48ed65. */
-            LevelFixupSlotPc0087b218 = level;               /* Native store 0x48ed6f. */
+            level = Level_FindByName("hothescape_b", NULL);
+            LevelFixupSlotPc0087b218 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b218->callbacks[1] =
-                    (void *)HothEscapeB_Init; /* Native 0x48ed76: callbacks[1] = entry 0x4e63b0. */
-                LevelFixupSlotPc0087b218->callbacks[3] =
-                    (void *)HothEscapeB_Update; /* Native 0x48ed83: callbacks[3] = entry 0x4e6470. */
-                LevelFixupSlotPc0087b218->callbacks[2] =
-                    (void *)HothEscapeB_Reset; /* Native 0x48ed8f: callbacks[2] = entry 0x4e6410. */
+                LevelFixupSlotPc0087b218->callbacks[1] = (void *)HothEscapeB_Init;
+                LevelFixupSlotPc0087b218->callbacks[3] = (void *)HothEscapeB_Update;
+                LevelFixupSlotPc0087b218->callbacks[2] = (void *)HothEscapeB_Reset;
             }
-            level = Level_FindByName("hothescape_c", NULL); /* Native call 0x48ed9d. */
-            HOTHESCAPEC_LDATA = level;                      /* Native store 0x48eda7. */
+            level = Level_FindByName("hothescape_c", NULL);
+            HOTHESCAPEC_LDATA = level;
             if (level != NULL) {
-                HOTHESCAPEC_LDATA->callbacks[1] =
-                    (void *)HothEscapeC_Init; /* Native 0x48edae: callbacks[1] = entry 0x4e64d0. */
-                HOTHESCAPEC_LDATA->callbacks[3] =
-                    (void *)HothEscapeC_Update; /* Native 0x48edbb: callbacks[3] = entry 0x4e6500. */
-                HOTHESCAPEC_LDATA->callbacks[4] =
-                    (void *)HothEscapeC_AlwaysUpdate; /* Native 0x48edc8: callbacks[4] = entry 0x4e6520. */
-                HOTHESCAPEC_LDATA->callbacks[2] =
-                    (void *)HothEscapeC_Reset; /* Native 0x48edd4: callbacks[2] = entry 0x4e64f0. */
+                HOTHESCAPEC_LDATA->callbacks[1] = (void *)HothEscapeC_Init;
+                HOTHESCAPEC_LDATA->callbacks[3] = (void *)HothEscapeC_Update;
+                HOTHESCAPEC_LDATA->callbacks[4] = (void *)HothEscapeC_AlwaysUpdate;
+                HOTHESCAPEC_LDATA->callbacks[2] = (void *)HothEscapeC_Reset;
             }
-            level = Level_FindByName("hothescape_d", NULL); /* Native call 0x48ede2. */
-            LevelFixupSlotPc0087b220 = level;               /* Native store 0x48edec. */
+            level = Level_FindByName("hothescape_d", NULL);
+            LevelFixupSlotPc0087b220 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b220->callbacks[1] =
-                    (void *)HothEscapeD_Init; /* Native 0x48edf3: callbacks[1] = entry 0x4e6540. */
-                LevelFixupSlotPc0087b220->callbacks[3] =
-                    (void *)HothEscapeD_Update; /* Native 0x48ee00: callbacks[3] = entry 0x4e6570. */
-                LevelFixupSlotPc0087b220->callbacks[2] =
-                    (void *)HothEscapeD_Reset; /* Native 0x48ee0d: callbacks[2] = entry 0x4e6560. */
+                LevelFixupSlotPc0087b220->callbacks[1] = (void *)HothEscapeD_Init;
+                LevelFixupSlotPc0087b220->callbacks[3] = (void *)HothEscapeD_Update;
+                LevelFixupSlotPc0087b220->callbacks[2] = (void *)HothEscapeD_Reset;
             }
-            level = Level_FindByName("AsteroidChase_A", NULL); /* Native call 0x48ee1b. */
-            ASTEROIDCHASEA_LDATA = level;                      /* Native store 0x48ee25. */
+            level = Level_FindByName("AsteroidChase_A", NULL);
+            ASTEROIDCHASEA_LDATA = level;
             if (level != NULL) {
-                ASTEROIDCHASEA_LDATA->callbacks[1] =
-                    (void *)AsteroidChaseA_Init; /* Native 0x48ee2c: callbacks[1] = entry 0x4e6f40. */
-                ASTEROIDCHASEA_LDATA->callbacks[2] =
-                    (void *)AsteroidChaseA_Reset; /* Native 0x48ee38: callbacks[2] = entry 0x4e6f50. */
-                ASTEROIDCHASEA_LDATA->callbacks[3] =
-                    (void *)AsteroidChaseA_Update; /* Native 0x48ee45: callbacks[3] = entry 0x4e6f60. */
+                ASTEROIDCHASEA_LDATA->callbacks[1] = (void *)AsteroidChaseA_Init;
+                ASTEROIDCHASEA_LDATA->callbacks[2] = (void *)AsteroidChaseA_Reset;
+                ASTEROIDCHASEA_LDATA->callbacks[3] = (void *)AsteroidChaseA_Update;
             }
-            level = Level_FindByName("AsteroidChase_B", NULL); /* Native call 0x48ee53. */
-            LevelFixupSlotPc0087b228 = level;                  /* Native store 0x48ee5d. */
+            level = Level_FindByName("AsteroidChase_B", NULL);
+            LevelFixupSlotPc0087b228 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b228->callbacks[1] =
-                    (void *)AsteroidChaseB_Init; /* Native 0x48ee64: callbacks[1] = entry 0x4e6f70. */
-                LevelFixupSlotPc0087b228->callbacks[2] =
-                    (void *)AsteroidChaseB_Reset; /* Native 0x48ee71: callbacks[2] = entry 0x4e7080. */
-                LevelFixupSlotPc0087b228->callbacks[3] =
-                    (void *)AsteroidChaseB_Update; /* Native 0x48ee7d: callbacks[3] = entry 0x4e7090. */
+                LevelFixupSlotPc0087b228->callbacks[1] = (void *)AsteroidChaseB_Init;
+                LevelFixupSlotPc0087b228->callbacks[2] = (void *)AsteroidChaseB_Reset;
+                LevelFixupSlotPc0087b228->callbacks[3] = (void *)AsteroidChaseB_Update;
             }
-            level = Level_FindByName("AsteroidChase_C", NULL); /* Native call 0x48ee8b. */
-            ASTEROIDCHASEC_LDATA = level;                      /* Native store 0x48ee95. */
+            level = Level_FindByName("AsteroidChase_C", NULL);
+            ASTEROIDCHASEC_LDATA = level;
             if (level != NULL) {
-                ASTEROIDCHASEC_LDATA->callbacks[1] =
-                    (void *)AsteroidChaseC_Init; /* Native 0x48ee9c: callbacks[1] = entry 0x4e7260. */
-                ASTEROIDCHASEC_LDATA->callbacks[2] =
-                    (void *)AsteroidChaseC_Reset; /* Native 0x48eea9: callbacks[2] = entry 0x4e73c0. */
-                ASTEROIDCHASEC_LDATA->callbacks[3] =
-                    (void *)AsteroidChaseC_Update; /* Native 0x48eeb6: callbacks[3] = entry 0x4e73d0. */
+                ASTEROIDCHASEC_LDATA->callbacks[1] = (void *)AsteroidChaseC_Init;
+                ASTEROIDCHASEC_LDATA->callbacks[2] = (void *)AsteroidChaseC_Reset;
+                ASTEROIDCHASEC_LDATA->callbacks[3] = (void *)AsteroidChaseC_Update;
             }
-            level = Level_FindByName("AsteroidChase_D", NULL); /* Native call 0x48eec4. */
-            ASTEROIDCHASED_LDATA = level;                      /* Native store 0x48eece. */
+            level = Level_FindByName("AsteroidChase_D", NULL);
+            ASTEROIDCHASED_LDATA = level;
             if (level != NULL) {
-                ASTEROIDCHASED_LDATA->callbacks[1] =
-                    (void *)AsteroidChaseD_Init; /* Native 0x48eed5: callbacks[1] = entry 0x4e7630. */
-                ASTEROIDCHASED_LDATA->callbacks[3] =
-                    (void *)AsteroidChaseD_Update; /* Native 0x48eee1: callbacks[3] = entry 0x4e77e0. */
-                ASTEROIDCHASED_LDATA->callbacks[5] =
-                    (void *)AsteroidChaseD_Panel; /* Native 0x48eeee: callbacks[5] = entry 0x4e7c60. */
+                ASTEROIDCHASED_LDATA->callbacks[1] = (void *)AsteroidChaseD_Init;
+                ASTEROIDCHASED_LDATA->callbacks[3] = (void *)AsteroidChaseD_Update;
+                ASTEROIDCHASED_LDATA->callbacks[5] = (void *)AsteroidChaseD_Panel;
             }
-            level = Level_FindByName("AsteroidChase_Midtro", NULL); /* Native call 0x48eefc. */
-            ASTEROIDCHASEMITRO_LDATA = level;                       /* Native store 0x48ef08. */
-            level = Level_FindByName("dagobah_a", NULL);            /* Native call 0x48ef0d. */
-            LevelFixupSlotPc0087b258 = level;                       /* Native store 0x48ef19. */
-            level = Level_FindByName("dagobah_d", NULL);            /* Native call 0x48ef1e. */
-            LevelFixupSlotPc0087b264 = level;                       /* Native store 0x48ef2a. */
-            level = Level_FindByName("dagobah_e", NULL);            /* Native call 0x48ef2f. */
-            LevelFixupSlotPc0087b268 = level;                       /* Native store 0x48ef3b. */
-            level = Level_FindByName("dagobah_e", NULL);            /* Native call 0x48ef40. */
-            LevelFixupSlotPc0087b268 = level;                       /* Native store 0x48ef4a. */
+            level = Level_FindByName("AsteroidChase_Midtro", NULL);
+            ASTEROIDCHASEMITRO_LDATA = level;
+            level = Level_FindByName("dagobah_a", NULL);
+            LevelFixupSlotPc0087b258 = level;
+            level = Level_FindByName("dagobah_d", NULL);
+            LevelFixupSlotPc0087b264 = level;
+            level = Level_FindByName("dagobah_e", NULL);
+            LevelFixupSlotPc0087b268 = level;
+            level = Level_FindByName("dagobah_e", NULL);
+            LevelFixupSlotPc0087b268 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b268->callbacks[1] =
-                    (void *)DagobahE_Init; /* Native 0x48ef51: callbacks[1] = entry 0x4e84c0. */
+                LevelFixupSlotPc0087b268->callbacks[1] = (void *)DagobahE_Init;
             }
-            level = Level_FindByName("dagobah_b", NULL); /* Native call 0x48ef5f. */
-            LevelFixupSlotPc0087b25c = level;            /* Native store 0x48ef69. */
+            level = Level_FindByName("dagobah_b", NULL);
+            LevelFixupSlotPc0087b25c = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b25c->callbacks[1] =
-                    (void *)DagobahB_Init; /* Native 0x48ef70: callbacks[1] = entry 0x4e8410. */
-                LevelFixupSlotPc0087b25c->callbacks[2] =
-                    (void *)DagobahB_Reset; /* Native 0x48ef7d: callbacks[2] = entry 0x4e8420. */
+                LevelFixupSlotPc0087b25c->callbacks[1] = (void *)DagobahB_Init;
+                LevelFixupSlotPc0087b25c->callbacks[2] = (void *)DagobahB_Reset;
             }
-            level = Level_FindByName("dagobah_c", NULL); /* Native call 0x48ef8b. */
-            DAGOBAHC_LDATA = level;                      /* Native store 0x48ef95. */
+            level = Level_FindByName("dagobah_c", NULL);
+            DAGOBAHC_LDATA = level;
             if (level != NULL) {
-                DAGOBAHC_LDATA->callbacks[1] =
-                    (void *)DagobahC_Init; /* Native 0x48ef9c: callbacks[1] = entry 0x4e85b0. */
-                DAGOBAHC_LDATA->callbacks[6] =
-                    (void *)DagobahC_Panel; /* Native 0x48efa8: callbacks[6] = entry 0x4e85f0. */
+                DAGOBAHC_LDATA->callbacks[1] = (void *)DagobahC_Init;
+                DAGOBAHC_LDATA->callbacks[6] = (void *)DagobahC_Panel;
             }
-            level = Level_FindByName("CloudCityTrap_A", NULL); /* Native call 0x48efb9. */
-            CLOUDCITYTRAPA_LDATA = level;                      /* Native store 0x48efc3. */
+            level = Level_FindByName("CloudCityTrap_A", NULL);
+            CLOUDCITYTRAPA_LDATA = level;
             if (level != NULL) {
-                CLOUDCITYTRAPA_LDATA->callbacks[1] = (void *)CloudCityTrapA_Init;   /* Native 0x48efca. */
-                CLOUDCITYTRAPA_LDATA->callbacks[3] = (void *)CloudCityTrapA_Update; /* Native 0x48efd7. */
-                CLOUDCITYTRAPA_LDATA->callbacks[2] = (void *)CloudCityTrapA_Reset;  /* Native 0x48efe4. */
+                CLOUDCITYTRAPA_LDATA->callbacks[1] = (void *)CloudCityTrapA_Init;
+                CLOUDCITYTRAPA_LDATA->callbacks[3] = (void *)CloudCityTrapA_Update;
+                CLOUDCITYTRAPA_LDATA->callbacks[2] = (void *)CloudCityTrapA_Reset;
             }
-            level = Level_FindByName("CloudCityTrap_B", NULL); /* Native call 0x48eff2. */
-            CLOUDCITYTRAPB_LDATA = level;                      /* Native store 0x48effc. */
+            level = Level_FindByName("CloudCityTrap_B", NULL);
+            CLOUDCITYTRAPB_LDATA = level;
             if (level != NULL) {
-                CLOUDCITYTRAPB_LDATA->callbacks[1] =
-                    (void *)CloudCityTrapB_Init; /* Native 0x48f003: callbacks[1] = entry 0x4e7dc0. */
-                CLOUDCITYTRAPB_LDATA->callbacks[3] =
-                    (void *)CloudCityTrapB_Update; /* Native 0x48f00f: callbacks[3] = entry 0x4e7e10. */
+                CLOUDCITYTRAPB_LDATA->callbacks[1] = (void *)CloudCityTrapB_Init;
+                CLOUDCITYTRAPB_LDATA->callbacks[3] = (void *)CloudCityTrapB_Update;
             }
-            level = Level_FindByName("CloudCityTrap_C", NULL); /* Native call 0x48f01d. */
-            LevelFixupSlotPc0087b24c = level;                  /* Native store 0x48f027. */
+            level = Level_FindByName("CloudCityTrap_C", NULL);
+            LevelFixupSlotPc0087b24c = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b24c->callbacks[2] =
-                    (void *)CloudCityTrapC_Reset; /* Native 0x48f02e: callbacks[2] = entry 0x4e7ed0. */
-                LevelFixupSlotPc0087b24c->callbacks[3] =
-                    (void *)CloudCityTrapC_Update; /* Native 0x48f03b: callbacks[3] = entry 0x4e7f90. */
-                LevelFixupSlotPc0087b24c->callbacks[6] =
-                    (void *)CloudCityTrapC_Panel; /* Native 0x48f048: callbacks[6] = entry 0x4e8040. */
+                LevelFixupSlotPc0087b24c->callbacks[2] = (void *)CloudCityTrapC_Reset;
+                LevelFixupSlotPc0087b24c->callbacks[3] = (void *)CloudCityTrapC_Update;
+                LevelFixupSlotPc0087b24c->callbacks[6] = (void *)CloudCityTrapC_Panel;
             }
-            level = Level_FindByName("CloudCityTrap_Outro", NULL); /* Native call 0x48f059. */
-            LevelFixupSlotPc0087b250 = level;                      /* Native store 0x48f065. */
-            level = Level_FindByName("cloudcityescape_a", NULL);   /* Native call 0x48f06a. */
-            CLOUDCITYESCAPEA_LDATA = level;                        /* Native store 0x48f074. */
+            level = Level_FindByName("CloudCityTrap_Outro", NULL);
+            LevelFixupSlotPc0087b250 = level;
+            level = Level_FindByName("cloudcityescape_a", NULL);
+            CLOUDCITYESCAPEA_LDATA = level;
             if (level != NULL) {
                 CLOUDCITYESCAPEA_LDATA->callbacks[1] = (void *)CloudCityEscapeA_Init;
                 CLOUDCITYESCAPEA_LDATA->callbacks[2] = (void *)CloudCityEscapeA_Reset;
                 CLOUDCITYESCAPEA_LDATA->callbacks[3] = (void *)CloudCityEscapeA_Update;
                 CLOUDCITYESCAPEA_LDATA->callbacks[6] = (void *)CloudCityEscapeA_Panel;
             }
-            level = Level_FindByName("cloudcityescape_b", NULL); /* Native call 0x48f0b2. */
-            LevelFixupSlotPc0087b23c = level;                    /* Native store 0x48f0be. */
-            level = Level_FindByName("cloudcityescape_c", NULL); /* Native call 0x48f0c3. */
-            CLOUDCITYESCAPEC_LDATA = level;                      /* Native store 0x48f0cd. */
+            level = Level_FindByName("cloudcityescape_b", NULL);
+            LevelFixupSlotPc0087b23c = level;
+            level = Level_FindByName("cloudcityescape_c", NULL);
+            CLOUDCITYESCAPEC_LDATA = level;
             if (level != NULL) {
-                CLOUDCITYESCAPEC_LDATA->callbacks[1] =
-                    (void *)CloudCityEscapeC_Init; /* Native 0x48f0d4: callbacks[1] = entry 0x4e82b0. */
-                CLOUDCITYESCAPEC_LDATA->callbacks[3] =
-                    (void *)CloudCityEscapeC_Update; /* Native 0x48f0e0: callbacks[3] = entry 0x4e8310. */
+                CLOUDCITYESCAPEC_LDATA->callbacks[1] = (void *)CloudCityEscapeC_Init;
+                CLOUDCITYESCAPEC_LDATA->callbacks[3] = (void *)CloudCityEscapeC_Update;
             }
-            level = Level_FindByName("jabbaspalace_a", NULL); /* Native call 0x48f0ee. */
-            JABBASPALACEA_LDATA = level;                      /* Native store 0x48f0f8. */
+            level = Level_FindByName("jabbaspalace_a", NULL);
+            JABBASPALACEA_LDATA = level;
             if (level != NULL) {
-                JABBASPALACEA_LDATA->callbacks[1] =
-                    (void *)JabbasPalaceA_Init; /* Native 0x48f0ff: callbacks[1] = entry 0x4ebba0. */
-                JABBASPALACEA_LDATA->callbacks[2] =
-                    (void *)JabbasPalaceA_Reset; /* Native 0x48f10c: callbacks[2] = entry 0x4ebbc0. */
-                JABBASPALACEA_LDATA->callbacks[3] =
-                    (void *)JabbasPalaceA_Update; /* Native 0x48f119: callbacks[3] = entry 0x4ebbe0. */
+                JABBASPALACEA_LDATA->callbacks[1] = (void *)JabbasPalaceA_Init;
+                JABBASPALACEA_LDATA->callbacks[2] = (void *)JabbasPalaceA_Reset;
+                JABBASPALACEA_LDATA->callbacks[3] = (void *)JabbasPalaceA_Update;
             }
-            level = Level_FindByName("jabbaspalace_b", NULL); /* Native call 0x48f127. */
-            JABBASPALACEB_LDATA = level;                      /* Native store 0x48f131. */
+            level = Level_FindByName("jabbaspalace_b", NULL);
+            JABBASPALACEB_LDATA = level;
             if (level != NULL) {
-                JABBASPALACEB_LDATA->callbacks[1] =
-                    (void *)JabbasPalaceB_Init; /* Native 0x48f138: callbacks[1] = entry 0x4ebc50. */
-                JABBASPALACEB_LDATA->callbacks[2] =
-                    (void *)JabbasPalaceB_Reset; /* Native 0x48f144: callbacks[2] = entry 0x4ebc80. */
+                JABBASPALACEB_LDATA->callbacks[1] = (void *)JabbasPalaceB_Init;
+                JABBASPALACEB_LDATA->callbacks[2] = (void *)JabbasPalaceB_Reset;
             }
-            level = Level_FindByName("jabbaspalace_d", NULL); /* Native call 0x48f152. */
-            JABBASPALACED_LDATA = level;                      /* Native store 0x48f15c. */
+            level = Level_FindByName("jabbaspalace_d", NULL);
+            JABBASPALACED_LDATA = level;
             if (level != NULL) {
-                JABBASPALACED_LDATA->callbacks[2] =
-                    (void *)JabbasPalaceD_Reset; /* Native 0x48f163: callbacks[2] = entry 0x4ebca0. */
+                JABBASPALACED_LDATA->callbacks[2] = (void *)JabbasPalaceD_Reset;
             }
-            level = Level_FindByName("jabbaspalace_e", NULL); /* Native call 0x48f171. */
-            JABBASPALACEE_LDATA = level;                      /* Native store 0x48f17b. */
+            level = Level_FindByName("jabbaspalace_e", NULL);
+            JABBASPALACEE_LDATA = level;
             if (level != NULL) {
-                JABBASPALACEE_LDATA->callbacks[1] =
-                    (void *)JabbasPalaceE_Init; /* Native 0x48f182: callbacks[1] = entry 0x4ebcc0. */
-                JABBASPALACEE_LDATA->callbacks[2] =
-                    (void *)JabbasPalaceE_Reset; /* Native 0x48f18f: callbacks[2] = entry 0x4ebd10. */
-                JABBASPALACEE_LDATA->callbacks[3] =
-                    (void *)JabbasPalaceE_Update; /* Native 0x48f19c: callbacks[3] = entry 0x4ebda0. */
-                JABBASPALACEE_LDATA->callbacks[6] =
-                    (void *)JabbasPalaceE_Panel; /* Native 0x48f1a8: callbacks[6] = entry 0x4ec2f0. */
+                JABBASPALACEE_LDATA->callbacks[1] = (void *)JabbasPalaceE_Init;
+                JABBASPALACEE_LDATA->callbacks[2] = (void *)JabbasPalaceE_Reset;
+                JABBASPALACEE_LDATA->callbacks[3] = (void *)JabbasPalaceE_Update;
+                JABBASPALACEE_LDATA->callbacks[6] = (void *)JabbasPalaceE_Panel;
             }
-            level = Level_FindByName("jabbaspalace_Outro", NULL); /* Native call 0x48f1b9. */
-            LevelFixupSlotPc0087b2b0 = level;                     /* Native store 0x48f1c5. */
-            level = Level_FindByName("endorbattle_a", NULL);      /* Native call 0x48f1ca. */
-            ENDORBATTLEA_LDATA = level;                           /* Native store 0x48f1d4. */
+            level = Level_FindByName("jabbaspalace_Outro", NULL);
+            LevelFixupSlotPc0087b2b0 = level;
+            level = Level_FindByName("endorbattle_a", NULL);
+            ENDORBATTLEA_LDATA = level;
             if (level != NULL) {
-                ENDORBATTLEA_LDATA->callbacks[1] =
-                    (void *)EndorBattleA_Init; /* Native 0x48f1db: callbacks[1] = entry 0x4ee380. */
-                ENDORBATTLEA_LDATA->callbacks[3] =
-                    (void *)EndorBattleA_Update; /* Native 0x48f1e8: callbacks[3] = entry 0x4ee3a0. */
+                ENDORBATTLEA_LDATA->callbacks[1] = (void *)EndorBattleA_Init;
+                ENDORBATTLEA_LDATA->callbacks[3] = (void *)EndorBattleA_Update;
             }
-            level = Level_FindByName("endorbattle_b", NULL);      /* Native call 0x48f1f6. */
-            ENDORBATTLEB_LDATA = level;                           /* Native store 0x48f202. */
-            level = Level_FindByName("endorbattle_c", NULL);      /* Native call 0x48f207. */
-            ENDORBATTLEC_LDATA = level;                           /* Native store 0x48f213. */
-            level = Level_FindByName("endorbattle_d", NULL);      /* Native call 0x48f218. */
-            ENDORBATTLED_LDATA = level;                           /* Native store 0x48f224. */
-            level = Level_FindByName("DeathStar2Battle_A", NULL); /* Native call 0x48f229. */
-            DEATHSTAR2BATTLEA_LDATA = level;                      /* Native store 0x48f233. */
+            level = Level_FindByName("endorbattle_b", NULL);
+            ENDORBATTLEB_LDATA = level;
+            level = Level_FindByName("endorbattle_c", NULL);
+            ENDORBATTLEC_LDATA = level;
+            level = Level_FindByName("endorbattle_d", NULL);
+            ENDORBATTLED_LDATA = level;
+            level = Level_FindByName("DeathStar2Battle_A", NULL);
+            DEATHSTAR2BATTLEA_LDATA = level;
             if (level != NULL) {
-                DEATHSTAR2BATTLEA_LDATA->callbacks[4] =
-                    (void *)DeathStar2BattleA_AlwaysUpdate; /* Native 0x48f23a: callbacks[4] = entry 0x4e9f30. */
+                DEATHSTAR2BATTLEA_LDATA->callbacks[4] = (void *)DeathStar2BattleA_AlwaysUpdate;
             }
-            level = Level_FindByName("DeathStar2Battle_B", NULL); /* Native call 0x48f248. */
-            DEATHSTAR2BATTLEB_LDATA = level;                      /* Native store 0x48f254. */
-            level = Level_FindByName("DeathStar2Battle_D", NULL); /* Native call 0x48f259. */
-            DEATHSTAR2BATTLED_LDATA = level;                      /* Native store 0x48f263. */
+            level = Level_FindByName("DeathStar2Battle_B", NULL);
+            DEATHSTAR2BATTLEB_LDATA = level;
+            level = Level_FindByName("DeathStar2Battle_D", NULL);
+            DEATHSTAR2BATTLED_LDATA = level;
             if (level != NULL) {
-                DEATHSTAR2BATTLED_LDATA->callbacks[1] =
-                    (void *)DeathStar2BattleD_Init; /* Native 0x48f26a: callbacks[1] = entry 0x4e9f50. */
-                DEATHSTAR2BATTLED_LDATA->callbacks[3] =
-                    (void *)DeathStar2BattleD_Update; /* Native 0x48f277: callbacks[3] = entry 0x4ea110. */
+                DEATHSTAR2BATTLED_LDATA->callbacks[1] = (void *)DeathStar2BattleD_Init;
+                DEATHSTAR2BATTLED_LDATA->callbacks[3] = (void *)DeathStar2BattleD_Update;
             }
-            level = Level_FindByName("DeathStar2Battle_E", NULL); /* Native call 0x48f285. */
-            DEATHSTAR2BATTLEE_LDATA = level;                      /* Native store 0x48f28f. */
+            level = Level_FindByName("DeathStar2Battle_E", NULL);
+            DEATHSTAR2BATTLEE_LDATA = level;
             if (level != NULL) {
-                DEATHSTAR2BATTLEE_LDATA->callbacks[1] =
-                    (void *)DeathStar2BattleFire_Init; /* Native 0x48f2a0: callbacks[1] = entry 0x4ee430. */
+                DEATHSTAR2BATTLEE_LDATA->callbacks[1] = (void *)DeathStar2BattleFire_Init;
             }
-            level = Level_FindByName("DeathStar2Battle_F", NULL); /* Native call 0x48f2bf. */
-            DEATHSTAR2BATTLEF_LDATA = level;                      /* Native store 0x48f2c9. */
+            level = Level_FindByName("DeathStar2Battle_F", NULL);
+            DEATHSTAR2BATTLEF_LDATA = level;
             if (level != NULL) {
-                DEATHSTAR2BATTLEF_LDATA->callbacks[1] =
-                    (void *)DeathStar2BattleFire_Init; /* Native 0x48f2d0: callbacks[1] = entry 0x4ee430. */
+                DEATHSTAR2BATTLEF_LDATA->callbacks[1] = (void *)DeathStar2BattleFire_Init;
             }
-            level = Level_FindByName("DeathStar2Battle_G", NULL); /* Native call 0x48f2ef. */
-            DEATHSTAR2BATTLEG_LDATA = level;                      /* Native store 0x48f2f9. */
+            level = Level_FindByName("DeathStar2Battle_G", NULL);
+            DEATHSTAR2BATTLEG_LDATA = level;
             if (level != NULL) {
-                DEATHSTAR2BATTLEG_LDATA->callbacks[1] =
-                    (void *)DeathStar2BattleFire_Init; /* Native 0x48f300: callbacks[1] = entry 0x4ee430. */
+                DEATHSTAR2BATTLEG_LDATA->callbacks[1] = (void *)DeathStar2BattleFire_Init;
             }
-            level = Level_FindByName("DeathStar2Battle_Midtro", NULL); /* Native call 0x48f320. */
-            LevelFixupSlotPc0087b284 = level;                          /* Native store 0x48f32c. */
-            level = Level_FindByName("EmperorFight_A", NULL);          /* Native call 0x48f331. */
-            EMPERORFIGHTA_LDATA = level;                               /* Native store 0x48f33b. */
+            level = Level_FindByName("DeathStar2Battle_Midtro", NULL);
+            LevelFixupSlotPc0087b284 = level;
+            level = Level_FindByName("EmperorFight_A", NULL);
+            EMPERORFIGHTA_LDATA = level;
             if (level != NULL) {
-                EMPERORFIGHTA_LDATA->callbacks[1] = (void *)EmperorFightA_Init;  /* Native 0x48f343. */
-                EMPERORFIGHTA_LDATA->callbacks[2] = (void *)EmperorFightA_Reset; /* Native 0x48f34f. */
-                EMPERORFIGHTA_LDATA->callbacks[3] =
-                    (void *)EmperorFightA_Update; /* Native 0x48f35c: callbacks[3] = entry 0x4eaf30. */
-                EMPERORFIGHTA_LDATA->callbacks[6] =
-                    (void *)EmperorFightA_Panel; /* Native 0x48f369: callbacks[6] = entry 0x4ebb60. */
+                EMPERORFIGHTA_LDATA->callbacks[1] = (void *)EmperorFightA_Init;
+                EMPERORFIGHTA_LDATA->callbacks[2] = (void *)EmperorFightA_Reset;
+                EMPERORFIGHTA_LDATA->callbacks[3] = (void *)EmperorFightA_Update;
+                EMPERORFIGHTA_LDATA->callbacks[6] = (void *)EmperorFightA_Panel;
             }
-            level = Level_FindByName("SarlaccPit_A", NULL); /* Native call 0x48f37a. */
-            SARLACCPITA_LDATA = level;                      /* Native store 0x48f384. */
+            level = Level_FindByName("SarlaccPit_A", NULL);
+            SARLACCPITA_LDATA = level;
             if (level != NULL) {
-                SARLACCPITA_LDATA->callbacks[2] =
-                    (void *)SarlaccPitA_Reset; /* Native 0x48f38b: callbacks[2] = entry 0x4ec330. */
-                SARLACCPITA_LDATA->callbacks[5] =
-                    (void *)SarlaccPitA_Draw; /* Native 0x48f397: callbacks[5] = entry 0x4ec390. */
+                SARLACCPITA_LDATA->callbacks[2] = (void *)SarlaccPitA_Reset;
+                SARLACCPITA_LDATA->callbacks[5] = (void *)SarlaccPitA_Draw;
             }
-            level = Level_FindByName("SarlaccPit_B", NULL); /* Native call 0x48f3a5. */
-            SARLACCPITB_LDATA = level;                      /* Native store 0x48f3af. */
+            level = Level_FindByName("SarlaccPit_B", NULL);
+            SARLACCPITB_LDATA = level;
             if (level != NULL) {
-                SARLACCPITB_LDATA->callbacks[1] =
-                    (void *)SarlaccPitB_Init; /* Native 0x48f3b6: callbacks[1] = entry 0x4ec7e0. */
-                SARLACCPITB_LDATA->callbacks[2] =
-                    (void *)SarlaccPitB_Reset; /* Native 0x48f3c3: callbacks[2] = entry 0x4ecb50. */
-                SARLACCPITB_LDATA->callbacks[3] =
-                    (void *)SarlaccPitB_Update; /* Native 0x48f3d0: callbacks[3] = entry 0x4ece70. */
+                SARLACCPITB_LDATA->callbacks[1] = (void *)SarlaccPitB_Init;
+                SARLACCPITB_LDATA->callbacks[2] = (void *)SarlaccPitB_Reset;
+                SARLACCPITB_LDATA->callbacks[3] = (void *)SarlaccPitB_Update;
             }
-            level = Level_FindByName("SarlaccPit_C", NULL); /* Native call 0x48f3de. */
-            SARLACCPITC_LDATA = level;                      /* Native store 0x48f3e8. */
+            level = Level_FindByName("SarlaccPit_C", NULL);
+            SARLACCPITC_LDATA = level;
             if (level != NULL) {
-                SARLACCPITC_LDATA->callbacks[1] =
-                    (void *)SarlaccPitC_Init; /* Native 0x48f3ef: callbacks[1] = entry 0x4ed6c0. */
-                SARLACCPITC_LDATA->callbacks[2] = (void *)SarlaccPitC_Reset;  /* Native 0x48f3fb. */
-                SARLACCPITC_LDATA->callbacks[3] = (void *)SarlaccPitC_Update; /* Native 0x48f408. */
+                SARLACCPITC_LDATA->callbacks[1] = (void *)SarlaccPitC_Init;
+                SARLACCPITC_LDATA->callbacks[2] = (void *)SarlaccPitC_Reset;
+                SARLACCPITC_LDATA->callbacks[3] = (void *)SarlaccPitC_Update;
             }
-            level = Level_FindByName("lego_city", NULL); /* Native call 0x48f416. */
-            LevelFixupSlotPc0087b298 = level;            /* Native store 0x48f420. */
+            level = Level_FindByName("lego_city", NULL);
+            LevelFixupSlotPc0087b298 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b298->callbacks[2] =
-                    (void *)LegoCity_Reset; /* Native 0x48f427: callbacks[2] = entry 0x4edbb0. */
-                LevelFixupSlotPc0087b298->callbacks[3] =
-                    (void *)LegoCity_Update; /* Native 0x48f434: callbacks[3] = entry 0x4edc10. */
+                LevelFixupSlotPc0087b298->callbacks[2] = (void *)LegoCity_Reset;
+                LevelFixupSlotPc0087b298->callbacks[3] = (void *)LegoCity_Update;
             }
-            level = Level_FindByName("new_town", NULL); /* Native call 0x48f442. */
-            LevelFixupSlotPc0087b29c = level;           /* Native store 0x48f44c. */
+            level = Level_FindByName("new_town", NULL);
+            LevelFixupSlotPc0087b29c = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087b29c->callbacks[1] =
-                    (void *)NewTown_Init; /* Native 0x48f453: callbacks[1] = entry 0x4edfb0. */
-                LevelFixupSlotPc0087b29c->callbacks[2] =
-                    (void *)NewTown_Reset; /* Native 0x48f45f: callbacks[2] = entry 0x4edfe0. */
-                LevelFixupSlotPc0087b29c->callbacks[3] =
-                    (void *)NewTown_Update; /* Native 0x48f46c: callbacks[3] = entry 0x4ee0a0. */
+                LevelFixupSlotPc0087b29c->callbacks[1] = (void *)NewTown_Init;
+                LevelFixupSlotPc0087b29c->callbacks[2] = (void *)NewTown_Reset;
+                LevelFixupSlotPc0087b29c->callbacks[3] = (void *)NewTown_Update;
             }
         } else {
-            level = Level_FindByName("batcave_a", NULL);       /* Native call 0x48f47a. */
-            LevelFixupSlotPc0087af58 = level;                  /* Native store 0x48f486. */
-            HUB_LDATA = level;                                 /* Native store 0x48f48b. */
-            level = Level_FindByName("rooftops_a", NULL);      /* Native call 0x48f490. */
-            LevelFixupSlotPc0087af5c = level;                  /* Native store 0x48f49c. */
-            level = Level_FindByName("fairgroundbad_a", NULL); /* Native call 0x48f4a1. */
-            LevelFixupSlotPc0087af60 = level;                  /* Native store 0x48f4ab. */
+            level = Level_FindByName("batcave_a", NULL);
+            LevelFixupSlotPc0087af58 = level;
+            HUB_LDATA = level;
+            level = Level_FindByName("rooftops_a", NULL);
+            LevelFixupSlotPc0087af5c = level;
+            level = Level_FindByName("fairgroundbad_a", NULL);
+            LevelFixupSlotPc0087af60 = level;
             if (level != NULL) {
-                LevelFixupSlotPc0087af60->callbacks[1] =
-                    (void *)FairgroundbadA_Init; /* Native 0x48f4b2: callbacks[1] = entry 0x4ee970. */
-                LevelFixupSlotPc0087af60->callbacks[3] =
-                    (void *)FairgroundbadA_Update; /* Native 0x48f4bf: callbacks[3] = entry 0x4ee990. */
-                LevelFixupSlotPc0087af60->callbacks[5] =
-                    (void *)FairgroundbadA_Draw; /* Native 0x48f4cb: callbacks[5] = entry 0x4eeae0. */
+                LevelFixupSlotPc0087af60->callbacks[1] = (void *)FairgroundbadA_Init;
+                LevelFixupSlotPc0087af60->callbacks[3] = (void *)FairgroundbadA_Update;
+                LevelFixupSlotPc0087af60->callbacks[5] = (void *)FairgroundbadA_Draw;
             }
         }
     }
     for (index = 0, level = LDataList; index < LEVELCOUNT; ++index, ++level) {
         if ((level->flags & 0x400) != 0 || level == STATUS_LDATA) {
-            level->callbacks[3] = (void *)UpdateStatusScreen; /* Native 0x48f4fd: callbacks[3] = entry 0x486c60. */
-            level->callbacks[6] = (void *)DrawStatusScreen;   /* Native 0x48f500: callbacks[6] = entry 0x486200. */
+            level->callbacks[3] = (void *)UpdateStatusScreen;
+            level->callbacks[6] = (void *)DrawStatusScreen;
         }
     }
 }

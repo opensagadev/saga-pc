@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Retail unit 0x493c30-0x496e20 (legoapi/frontend/menu.cpp): definitions in retail address order. */
-
 #pragma section(".bss$MenuButtonHistoryPc", read, write)
 
 extern "C" {
@@ -1139,8 +1137,6 @@ extern "C" {
         }
     }
 
-    /* 00496650..00496738. Callback remains unwired until the full native shop
-     * interaction/drawing/exit dependency chain is available. */
     void MenuDrawShop(MENU *menu) {
         f32 alpha;
         (void)menu;

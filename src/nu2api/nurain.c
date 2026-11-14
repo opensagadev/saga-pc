@@ -1,6 +1,6 @@
 #include "saga.h"
 
-/* PC rain: a DAVE_RAIN debris key fed around the camera. Retail keeps the code but never calls it. */
+/* PC rain: a DAVE_RAIN debris key fed around the camera. The code is kept but never called. */
 i32 NuRainKey = -1;
 i32 testrain = 1;
 NUMTX NuRainOldCameraMtx = {123456.0f, 123456.0f, 123456.0f, 123456.0f, 123456.0f, 123456.0f, 123456.0f, 123456.0f,
@@ -14,7 +14,7 @@ i32 NuRainPitch = 0;
 i32 NuRainInactive = 0;
 i32 NuRainWob = 0;
 
-/* Retail keeps an out-of-line copy at 0x74e170; NuRainProcess inlines it. */
+/* An out-of-line copy is kept as well; NuRainProcess inlines it. */
 static f32 NuRainFabsPc(f32 value) {
     f32 result;
 

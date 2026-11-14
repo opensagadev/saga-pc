@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Retail unit 0x578890-0x57a810 (legoapi/levels.c): definitions in retail address order. */
-
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 STATIC_ASSERT(offsetof(WORLDINFO, camera_splines) == 0x2ac4);
 STATIC_ASSERT(offsetof(LEVELSPLINE_PC, scene) == 0);
@@ -14,7 +12,6 @@ extern "C" {
     void LevelsConfigDiagnosticPc(char *message);
 }
 
-/* Native 0x0048a310, 217 bytes. */
 typedef struct level_script_progress_pc_s {
     char name[16];          // 0x00
     f32 params[4];          // 0x10

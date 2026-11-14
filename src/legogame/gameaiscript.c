@@ -51,7 +51,7 @@ extern const char RaceOpponentDistancePrefix[9];
 
 typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
 
-/* Original AISYS PC callbacks; bounded native evidence in ../native. */
+/* AISYS PC callbacks. */
 
 typedef struct ai_context_reset_view_pc_s {
     u8 unknown_000[0x6c4];  // 0x000
@@ -90,7 +90,7 @@ typedef struct ai_force_object_pc_s {
     GIZFORCE_PC *force;    // 0x10cc
 } AI_FORCE_OBJECT_PC;      // size 0x10d0
 
-/* Original AISYS callback family; PC-native seven-argument callback ABI. */
+/* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
@@ -113,7 +113,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 
-/* Prospective src/gameapi/aisys.c append; existing typed state/shape contracts reused. */
 void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
 
 STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
@@ -341,7 +340,7 @@ STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
 
 STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
 
-/* Native instance reader: only the condition's flags field is consumed. */
+/* Instance reader: only the condition's flags field is consumed. */
 typedef struct condition_cut_instance_reader_pc_s {
     u8 opaque_00_88[0x88];          // 0x00
     u32 flags;                      // 0x88
@@ -364,8 +363,6 @@ SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
 
 void AINetReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
 
-/* Candidate source for src/gameapi/aiscript.c. Readonly access-view bindings
- * retain their separately reviewed original owner and extent policies. */
 extern const char ActionSnapPlayer1Name[8];
 
 extern const char ActionSnapRotationYName[5];
@@ -527,7 +524,7 @@ GAMEOBJECT *GetNamedGameObject(void *sys, char *name) {
     return NULL;
 }
 
-/* Forward declarations for functions used before their retail position. */
+/* Forward declarations for functions used before their definition. */
 
 static i32 PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     NUVEC difference;
@@ -1967,7 +1964,7 @@ void *Condition_NumForceObjectsInit(AISYS_PC *system, char *name, AISCRIPT_PC *u
     return (void *)flags;
 }
 
-/* Retail returns zero unconditionally. */
+/* Returns zero unconditionally. */
 f32 Condition_NumForceObjects(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2, char *unused3,
                               void *unused4) {
     return 0.0f;
@@ -2497,7 +2494,7 @@ f32 Condition_TakeOverTargetInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *
             target = packet->owner->objptr->takeover_target;
         }
         if (system->player_1 != NULL && target != NULL) {
-            /* The retail compiler helper consumes CL, including its out-of-range zero cases. */
+            /* The compiler's shift helper consumes CL, including its out-of-range zero cases. */
             mask = (u64)1 << index;
             if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)target)->membership & mask) != 0) {
                 return 1.0f;
@@ -2519,7 +2516,7 @@ f32 Condition_EitherPlayerInMyTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *
             if (system->player_1 != NULL && area->system != NULL) {
                 object = (GAMEOBJECT *)system->player_1;
                 index = (i32)((u32)area - (u32)area->system->areas) >> 6;
-                /* Retail wraps the 32-bit shift and sign-extends bit 31. */
+                /* Wraps the 32-bit shift and sign-extends bit 31. */
                 mask = (i32)(1u << ((u32)index & 31));
                 if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0) {
                     return 1.0f;
@@ -2774,7 +2771,7 @@ f32 Condition_GotOpponentLOS(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     } else {
         opponent = packet->opponent;
     }
-    /* hostility_group is below 64 for every live object; __allshl yields 0 otherwise, as in retail. */
+    /* hostility_group is below 64 for every live object; __allshl yields 0 otherwise. */
     if (opponent != NULL && (WORLD->object_sys->hostility_masks[packet->owner->hostility_group] &
                              ((u64)1 << opponent->hostility_group)) != 0) {
         return 1.0f;
@@ -4556,8 +4553,6 @@ i32 Action_SetDoomedEscapeLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
     return 1;
 }
 
-/* Source conventions expose the seven supplied words; historical aggregate
- * types and formal signatures are a separate gate. */
 i32 Action_SnapToPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                           i32 count, i32 first_time, f32 elapsed) {
     NUVEC position = {0.0f, 0.0f, 0.0f};
@@ -5516,7 +5511,7 @@ i32 Action_PressSpecialButton(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
         return 1;
     }
     object = packet->owner->objptr;
-    // MATCH-EXCEPTION: retail tests the loaded object again (probably a macro-expanded guard).
+    // MATCH-EXCEPTION: the original tests the loaded object again (probably a macro-expanded guard).
     if (object == NULL) {
         return 1;
     }
@@ -5788,7 +5783,7 @@ i32 Action_AddToSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *p
         return 1;
     }
     object = packet->owner->objptr;
-    // MATCH-EXCEPTION: retail tests the loaded object again (probably a macro-expanded guard).
+    // MATCH-EXCEPTION: the original tests the loaded object again (probably a macro-expanded guard).
     if (object == NULL) {
         return 1;
     }
@@ -11941,7 +11936,7 @@ i32 Action_CircleLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_
                     packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, value);
                 } else if (NuStrICmp(params[index], "reverse") == 0) {
                     packet->flags = (packet->flags & ~0x200u) |
-                                    (~packet->flags & 0x200u); // MATCH-EXCEPTION: retail toggles a one-bit bitfield
+                                    (~packet->flags & 0x200u); // MATCH-EXCEPTION: toggles a one-bit bitfield
                 } else if (NuStrICmp(params[index], "anticlockwise") == 0) {
                     packet->flags &= ~0x200u;
                 } else if (NuStrICmp(params[index], "clockwise") == 0) {

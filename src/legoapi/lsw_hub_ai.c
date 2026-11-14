@@ -74,12 +74,10 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
     }
 }
 
-/* Native HubAI producer family. Insert in lsw_hub_ai.c after the existing
- * Hub_MakeListCharactersAvailable native body, with shared state refined. */
+/* HubAI producer family. */
 extern const char *HubAreaNamesPc[10];
 extern const char HubAIServingCustomerPc[16];
 
-/* 0x491380/481 */
 void LSW_Hub_InitAI(WORLDINFO *world) {
     i32 area;
     i32 locator;
@@ -116,13 +114,12 @@ void LSW_Hub_InitAI(WORLDINFO *world) {
     }
 }
 
-/* 0x491570/39 */
 void LSW_Hub_ResetAI(WORLDINFO *world) {
     HubAiMusicStatePc.area = -1;
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "BandDoor_Open");
 }
 
-/* 0x491760/155; retail private EDX-argument helper. */
+/* Private helper taking its argument in EDX. */
 static i32 HubChooseRandomCharacterPc(i16 *characters) {
     i32 candidates[340];
     i32 count = 0;
@@ -148,14 +145,12 @@ static i32 HubChooseRandomCharacterPc(i16 *characters) {
     return -1;
 }
 
-/* 0x491800/56 */
 i32 Hub_GetRandomCharType(void) {
     i16 characters[340];
     Hub_MakeListCharactersAvailable(characters);
     return HubChooseRandomCharacterPc(characters);
 }
 
-/* 0x491840/595 */
 void HubGoneThroughDoorPc(WORLDINFO *world) {
     i32 new_area;
     i32 index;
@@ -221,7 +216,6 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
     }
 }
 
-/* 0x491aa0/130 */
 void LSW_Hub_UpdateAI(WORLDINFO *world) {
     if (hub_character_ready != -1) {
         SetLevelSfxBits(world);
@@ -247,7 +241,6 @@ void LSW_Hub_UpdateAI(WORLDINFO *world) {
     }
 }
 
-/* 0x491b30/56 */
 void *Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     i32 index;
     if (name != NULL) {
@@ -260,7 +253,6 @@ void *Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script)
     return (void *)-1;
 }
 
-/* 0x491b70/19 */
 f32 Condition_InHubArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *area) {
     if (HubAiMusicStatePc.area == (i32)area) {
         return 1.0f;

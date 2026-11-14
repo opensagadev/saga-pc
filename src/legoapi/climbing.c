@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x56b6f0-0x56cd72: definitions in retail address order. */
-
 extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC;
 extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
 

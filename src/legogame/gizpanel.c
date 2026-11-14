@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x46d7f0-0x46f890 (legoapi/gizmos/object/gizpanel.cpp): definitions in retail address order. */
-
 typedef struct bulk_ai_panel_pc_s {
     u8 unknown_00[0x50];
     NUVEC position;
@@ -70,13 +68,11 @@ typedef struct panel_load_system_pc_s {
     PANEL_MOVEMENT_PC *panels;
 } PANEL_SYSTEM_PC;
 
-/* Private append-only fragment for canonical 144B PANEL_MOVEMENT_PC. */
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern const f64 PanelVariantTwoTargetY;
 extern const f64 PanelVariantTwoTargetZ;
 extern const f64 PanelVariantThreeTargetY;
 extern const f64 PanelVariantThreeTargetZ;
-/* Private append to gizpanel_pc.c; reuse canonical PANEL_MOVEMENT_PC144/PANEL_SYSTEM_PC8. */
 extern f32 GizPanelPictureYPc;
 extern f32 GizPanelPictureZPc;
 extern f32 GizPanelFloorLiftPc;
@@ -85,7 +81,7 @@ extern u8 PanelDroidActivePc;
 extern u8 PanelBountyHunterActivePc;
 void SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
 
-/* Native PC hint updater records retain their original packed field offsets. */
+/* Hint updater records keep their packed field offsets. */
 typedef struct HINT_PANEL_PC {
     u8 reserved00[0x61];
     u8 model_variant;
@@ -95,7 +91,7 @@ typedef struct HINT_PANEL_PC {
 } HINT_PANEL_PC;
 struct panel_movement_pc_s;
 
-/* Retail terrain helper is private to these callers (panel arrives in ESI). */
+/* Terrain helper private to these callers (panel arrives in ESI). */
 static void GizPanel_CreateTerrain(PANEL_MOVEMENT_PC *panel) {
     if (panel == NULL) {
         return;
@@ -497,10 +493,10 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
     }
 }
 
-/* Real mutable original globals: 007f90c4 Z and 007f90c8 Y, each4B. */
+/* Picture Z and Y offsets. */
 f32 GizPanelPictureZPc = -0.123f;
 f32 GizPanelPictureYPc = 0.0775f;
-/* Lift of the panel target above the floor it was dropped onto (007f90cc). */
+/* Lift of the panel target above the floor it was dropped onto. */
 f32 GizPanelFloorLiftPc = 0.001f;
 
 void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {

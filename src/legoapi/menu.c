@@ -860,7 +860,7 @@ void DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     f32 scale;
     f32 spacing;
 
-    /* Retail writes low bytes, then forwards each partially written 32-bit color slot. */
+    /* Writes low bytes, then forwards each partially written 32-bit color slot. */
     union {
         u8 byte;
         u32 slot;

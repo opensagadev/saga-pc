@@ -1,6 +1,6 @@
 #include "saga.h"
 
-/* Frame timing helpers (0x6179c0-0x617a51, Android gamelib/util/Utilities.cpp). */
+/* Frame timing helpers. */
 
 static u32 frameStartTimeMS = 0;
 static NuTime frameStartTime = {0};

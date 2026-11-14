@@ -2,8 +2,6 @@
 #include <float.h>
 #include <string.h>
 
-/* Retail unit 0x62a5e0-0x630d61 (gameapi/apiobject.c): definitions in retail address order. */
-
 static API_ACTION_INFO_PC *APIActionInfo = 0;
 static API_EXTRA_ACTION_PC *APIExtraActionData = 0;
 
@@ -2106,7 +2104,7 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, f
     }
 
 update_timers:
-    // End-frame services can change overlay state; retail reloads it here.
+    // End-frame services can change overlay state; it is reloaded here.
     if (packet->overlay_animation != -1) {
         if (model->model_data_b[packet->requested_animation] != NULL &&
             model->model_data_b[packet->overlay_animation] != NULL) {
@@ -2889,7 +2887,7 @@ CHARACTERDATA_PC *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARI
     i32 inside;
     i32 index;
     i32 length;
-    (void)buffer_end; /* Genuine native formal is unused; no fabricated capacity. */
+    (void)buffer_end; /* Unused. */
     parser = NuFParCreate(file);
     if (parser == NULL) {
         PCCharacterSystemExistingNoOp(file);
@@ -3041,7 +3039,7 @@ void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 
     apicharsys->set_creature_lights = lights;
 }
 
-/* Table sine and cosine of an angle in radians; the cosine negates the angle as retail does. */
+/* Table sine and cosine of an angle in radians; the cosine negates the angle. */
 
 static void WindShearComponentsPC(f32 *shear_x, f32 *shear_z, i32 wind_scale, i32 wind_speed) {
     f32 amplitude = (f32)(((f64)wind_scale / 65535.0) * global_windscale);
@@ -3069,7 +3067,7 @@ void WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_speed) {
 
 // extern "C"
 
-/* Float fabs by clearing the sign bit; retail inlines it this way. */
+/* Float fabs by clearing the sign bit. */
 static f32 APIObjectFabs(f32 value) {
     f32 result;
     *(u32 *)&result = *(u32 *)&value & 0x7fffffff;

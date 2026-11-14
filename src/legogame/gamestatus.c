@@ -10,7 +10,7 @@ static f32 StatusLerpPc(f32 to, f32 from, f32 blend) {
     return result;
 }
 
-/* Retail keeps an out-of-line copy at 0x45e350; every caller inlines it. */
+/* Kept out of line as well; every caller inlines it. */
 static __inline f32 StatusFabsPc(f32 value) {
     f32 result;
 

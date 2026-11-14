@@ -9,17 +9,14 @@ extern "C" {
     extern f32 MeleeRowsScalePc;
     extern f32 MeleeRowsYOffsetPc;
 }
-/* PC475390 1184 bytes (CFGextent475390..47582f), five rows. Fullstackselected/alpha. */
 extern "C" i32 Arcade_Score[2];
 extern "C" i32 PCArcadePointGoals[5];
-/* PC4b79a0,1846bytes. Selecting arguments are unused natively; local selecting IDs initialized-1. */
 extern "C" f32 HubPromptXPc;
 extern "C" f32 HubPromptSpacingPc;
 extern "C" f32 HubPromptLabelOffsetPc;
 extern "C" f32 HubPromptMaxWidthPc;
 extern "C" i32 HubPromptOffColourPc[3];
 extern "C" i32 HubPromptOnColourPc[3];
-/* PC4b86f0,444 bytes; x,y,count,total,scale_x,scale_y,alpha,angle full stack. */
 extern "C" i32 HubBuildBarSegmentsPc;
 extern "C" f32 HubBuildBarSpacingPc;
 extern "C" f32 HubBuildBarScalePc;
@@ -28,7 +25,6 @@ extern "C" TIMER ChallengeTimer;
 extern "C" {
     extern f32 STATSPOS2YPc;
     extern f32 HudCoinAdjustYPc;
-    /* Add to panel.c before DrawPlayerHudPc so VC8 can derive the native internal ABI. */
     extern i32 DrawBossHitPointsTwoRowsPc;
     extern f32 PanelHeartSpacingPc;
     extern f32 PanelHeartRowOffsetPc;
@@ -86,7 +82,6 @@ typedef struct PANEL_PRIM_VERTEX_PC {
     u32 colour;
 } PANEL_PRIM_VERTEX_PC;
 
-// Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v8/tag-lsw.cppfrag
 typedef struct TAG_CHARACTER_DATA_READER_PC {
     u8 opaque_00[0x42];
     i16 icon_model;
@@ -126,7 +121,6 @@ extern "C" {
         drawautosaveicon = 1;
     }
 
-    /* Append to src/legoapi/panel.c. Complete native 004b71a0..004b7943. */
     void UpdateStats(void) {
         f32 target;
         i32 freeplay;
@@ -218,7 +212,7 @@ extern "C" {
                     }
                     maximum = WORLD->area->true_hero_targets[freeplay];
                     if (maximum > 0) {
-                        /* Existing canonical names are swapped: 87b9a0 is done;87b9b4 is amount. */
+                        /* The BuildUp counter names are swapped relative to their use. */
                         if (BuildUpTotal == 0) {
                             BuildUpDone = 0;
                             if (Player[0] != NULL && ((GAMEOBJECT *)Player[0])->coin_packet != NULL) {
@@ -633,7 +627,6 @@ extern "C" {
     }
 }
 
-/* PC4b8cf0,718bytes. Fiveargs y,active0,active1,alpha,scores. */
 void DrawBonusScore(f32 y, i32 active0, i32 active1, f32 alpha, i32 *scores) {
     i32 in_arcade;
     i32 goal;
@@ -687,8 +680,6 @@ extern "C" {
                     DoubleScoreTextScalePc, DoubleScoreTextScalePc, 0, 255, 255, 255, 1.5f, 1, NULL, 0, alpha);
     }
 
-    /* Append in src/legoapi/panel.c after the static DrawHitPointsPc definition.
-       Native bounded routine004b9110..004ba185 (4213 bytes), cdecl(i32 paused). */
     void DrawPlayerHudPc(i32 paused) {
         u32 arcade_flags;
         i32 arcade_mode;
@@ -935,7 +926,6 @@ extern "C" {
         Arcade_ResetPanel();
     }
 
-    /* Complete native004ba1f0..004ba2c3/211, original boss argument ESI. */
     static i32 DrawBossHitPointsPc(GAMEOBJECT *boss) {
         if (boss != NULL && boss->dead == 0 && (boss->flags_1fc & 0x80) == 0) {
             if (FadeSys.fade == 0.0f) {
@@ -1044,14 +1034,13 @@ extern "C" {
         }
     }
 
-    /* PC 0x0087b950 / 0x0087b970 / 0x0087b980 / 0x0087b99c / 0x0087b9a4: melee target counter state. */
+    /* Melee target counter state. */
     i8 meleeTarg_maxCount[4] = {0};
     f32 meleeTarg_alpha[4] = {0};
     f32 meleeTarg_flashTime[4] = {0};
     i8 meleeTarg_localCount[4] = {0};
     f32 meleeTarg_scaleSize[4] = {0};
 
-    /* PC 0x004ba680. */
     void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special) {
         char text[4];
         f32 icon_scale;
@@ -1060,7 +1049,7 @@ extern "C" {
         f32 x;
         f32 y;
         f32 alpha_target;
-        /* Retail keeps a stack copy of the flash time and re-reads the spilled one. */
+        /* Keeps a stack copy of the flash time and re-reads the spilled one. */
         volatile f32 time_spill;
         f32 time;
         i32 red;

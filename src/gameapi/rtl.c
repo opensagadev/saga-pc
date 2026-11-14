@@ -179,7 +179,7 @@ static void RtlDirectionStatePc(NUVEC *d0, NUVEC *c0, NUVEC *d1, NUVEC *c1, NUVE
 }
 
 /* The ambient and specular halves of the same render-state helpers; inlined into rtlSetLights and
-   rtlSetSpecularLight, with out-of-line copies kept at retail 0x633f00 and 0x633f30. */
+   rtlSetSpecularLight, with out-of-line copies kept as well. */
 static i32 RtlAmbientStatePc(NUVEC *colour) {
     PCGlobalLightingState.ambient = *colour;
     return NuRndrSetAmbientLightPS(colour);
@@ -214,13 +214,13 @@ i32 rtlDynamicMasterEnable(i32 enabled) {
     return old;
 }
 
-/* Absolute value by clearing the float's sign bit; retail keeps an out-of-line copy at 0x633e10. */
+/* Absolute value by clearing the float's sign bit; an out-of-line copy is kept as well. */
 static __inline f32 RtlFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
 
-/* nu2 helper; VC8 inlines it here and also keeps an out-of-line copy (retail 0x633e30). The shared pointer it
+/* nu2 helper; VC8 inlines it here and also keeps an out-of-line copy. The shared pointer it
    leaves keeps ambient in EBX. */
 static __inline void NuVecClear(NUVEC *v) {
     v->x = v->y = v->z = 0.0f;
@@ -1121,10 +1121,10 @@ STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_50) == 4);
 STATIC_ASSERT(sizeof(BURN_PARAMETERS_PC) == 0x54);
 
 static NUVEC burn_editor_position_pc = {0};
-// NOLINTNEXTLINE(readability-identifier-naming) -- original same-TU public state name.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the unit's public state name.
 BURN_SET_PC *edrtl_edit_burnset = 0;
 
-// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 void edrtlInitBurnset(BURN_SET_PC *set) {
     i32 i;
     set->parameters.field_00 = 1;
@@ -1169,7 +1169,7 @@ void edrtlInitBurnset(BURN_SET_PC *set) {
     }
 }
 
-// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 void edrtlDetermineNearestBurn(float distance, BURN_SET_PC *set) {
     i32 i;
     NUVEC delta;
@@ -1194,7 +1194,7 @@ void edrtlDetermineNearestBurn(float distance, BURN_SET_PC *set) {
     }
 }
 
-// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 i32 edrtlBurnoutLoadSet(char *filename, BURN_SET_PC *set) {
     i32 i;
     i32 max_version;
@@ -1281,7 +1281,7 @@ i32 edrtlBurnoutLoadSet(char *filename, BURN_SET_PC *set) {
     return 0;
 }
 
-// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 BURN_SET_PC *edrtlBurnoutLoad(char *filename, VARIPTR *buffer, i32 unused_end) {
     BURN_SET_PC *set;
     buffer->addr = (buffer->addr + 3) & ~3u;
@@ -1293,7 +1293,7 @@ BURN_SET_PC *edrtlBurnoutLoad(char *filename, VARIPTR *buffer, i32 unused_end) {
     return set;
 }
 
-// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32 *dispersion, NUVEC *camera_position,
                            f32 frame_time) {
     i32 i;
@@ -1421,7 +1421,7 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
     *dispersion = set->parameters_copy.field_1c;
 }
 
-// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 void edrtlCalculateBurnoutEx(BURN_SET_PC *set, BURN_PARAMETERS_PC *parameters, NUVEC *camera_position, f32 frame_time) {
     memcpy(parameters, &set->parameters, sizeof(*parameters));
     edrtlCalculateBurnout(set, &parameters->field_24, &parameters->field_14, &parameters->field_1c, camera_position,
@@ -1462,11 +1462,6 @@ void rtlSetSpecularLight(RTL_DATA_PC *data) {
     }
 }
 
-/* SOURCE DRAFT ONLY: append in existing src/gameapi/rtl.c after its genuine
- * burn_editor_position_pc definition. Native extents for new working data views
- * remain unknown; no allocation credit, sections, attributes or caller activation.
- * Existing system_qfont, modifiers, PS2_REZ_W, and burn_editor_position_pc owners
- * are reused. State initializers are the exact Native PE/BSS initial values. */
 f32 edrtl_text_scale = 1.0f;
 i32 rtl_debug = 0;
 RTL_SET_PC *curr_set = NULL;
@@ -1715,7 +1710,7 @@ void edrtlDrawRTLInfo(void) {
 void EdFileWriteInt(i32 value);
 void EdFileWriteNuVec(NUVEC *value);
 
-// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 i32 edrtlBurnoutSave(char *filename, BURN_SET_PC *set) {
     i32 index;
     i32 count = 0;
@@ -1771,7 +1766,7 @@ i32 edrtlBurnoutSave(char *filename, BURN_SET_PC *set) {
     return 0;
 }
 
-// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem callback identity.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's callback name.
 void edrtlBurnoutFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char name[256];
     char directory[256];
@@ -1800,7 +1795,7 @@ void edrtlBurnoutFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem callback identity.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's callback name.
 void edrtlResetBurnset(BURN_SET_PC *burnset) {
     i32 index;
     if (burnset == NULL) {
@@ -2449,7 +2444,7 @@ void SelectPrevRTL(void) {
 }
 
 extern RTL_FOG_MIGRATION_PC *curr_fog;
-/* Native-observed fog editor mode (0x29139a0) and cursor size (0x80ff3c). */
+/* Fog editor mode and cursor size; the mode has its own section to keep the data layout. */
 #pragma section(".bss$RtlFogModePc", read, write)
 __declspec(allocate(".bss$RtlFogModePc")) i32 fogmode = 0;
 f32 cursor_size = 1.0f;
@@ -2472,7 +2467,7 @@ static __forceinline void edrtlRndrLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vert
 }
 
 void edrtlDrawCursor(void) {
-    /* Retail's frame (0x90) holds three vertices; only two are used. */
+    /* The frame holds three vertices; only two are used. */
     NURND_VERTEX3D_PC line[3];
     line[0].position.x = burn_editor_position_pc.x - cursor_size;
     line[0].position.y = burn_editor_position_pc.y;
@@ -2642,7 +2637,7 @@ void edrtlDrawBurnInfo(void) {
     }
 }
 
-/* Genuine Native-observed editor state. Native allocation extents are unknown. */
+/* Editor state, each cell in its own section to keep the data layout. */
 #pragma section(".bss$RtledMenuActivePc", read, write)
 __declspec(allocate(".bss$RtledMenuActivePc")) i32 rtled_menu_active = 0;
 #pragma section(".bss$DeleteMenuActivePc", read, write)
@@ -2686,7 +2681,7 @@ void rtlCbToggleHasSpecularPc(struct eduimenu_s *menu, struct eduiitem_s *item, 
     light->flags = (light->flags & ~4u) | ((u32)highlighted << 2);
 }
 
-/* Native 0x00639130..0x0063914b: three unused cdecl UI callback arguments. */
+/* UI callbacks with three unused cdecl arguments. */
 extern RTL_LIGHT_PC clipboard_light;
 
 void cbCopyLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
@@ -2695,10 +2690,6 @@ void cbCopyLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-/* Fragment for the natural rtl.c owner; real data definitions are owned by CPP.
- * Compile only with genuine callback registration/owner integration, no retention hints.
- * Existing types: eduimenu_s, eduiitem_s, RTL_FOG_MIGRATION_PC, ctl_ix.
- */
 extern i32 hide_types[8];
 STATIC_ASSERT(offsetof(eduiitem_s, data) == 0x0c);
 STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
@@ -2762,7 +2753,7 @@ void rtlCbRLowTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 butto
     }
 }
 
-/* Genuine editor pointer/index cells; backing bank capacities are not inferred. */
+/* Editor pointer/index cells, each in its own section to keep the data layout. */
 #pragma section(".bss$RtlUndoIndexPc", read, write)
 __declspec(allocate(".bss$RtlUndoIndexPc")) static u32 rtl_undo_ix = 0;
 #pragma section(".bss$RtlUndoSnapshotsPc", read, write)
@@ -3167,7 +3158,7 @@ __declspec(allocate(".bss$RtlUI_fog_pasteinto_item")) static eduiitem_s *fog_pas
 __declspec(allocate(".bss$RtlUI_modifier_adj_items")) static eduiitem_s *modifier_adj_items[32] = {0};
 #pragma section(".bss$RtlUI_initialised", read, write)
 __declspec(allocate(".bss$RtlUI_initialised")) static i32 rtl_ui_initialised = 0;
-/* Source-only Native-observed table initializer; no provider/binding until actual emission. */
+/* Camera direction names, in their own section to keep the data layout. */
 #pragma section(".data$RtlUICamdirNamesPc", read, write)
 __declspec(allocate(".data$RtlUICamdirNamesPc")) static char *camdir_id_names[16] = {
     "ID 0", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
@@ -3512,7 +3503,7 @@ void InitUI(void) {
     NuQFntPopCoordinateSystem();
 }
 
-/* Native-observed editor camera (0x29139cc). */
+/* Editor camera, in its own section to keep the data layout. */
 #pragma section(".bss$RtlUsrCamPc", read, write)
 __declspec(allocate(".bss$RtlUsrCamPc")) static NUCAMERA *usr_cam = 0;
 
@@ -3559,7 +3550,7 @@ void edrtlDrawLights(void) {
     }
 }
 
-/* Native editor-owned f32 cells. Observed minimum four bytes each; allocation unknown. */
+/* Editor-owned f32 cells, each in its own section to keep the data layout. */
 #pragma section(".bss$RtlEditorFarClip", read, write)
 __declspec(allocate(".bss$RtlEditorFarClip")) static f32 game_farclip = 0.0f;
 #pragma section(".bss$RtlEditorNearClip", read, write)
@@ -3990,7 +3981,6 @@ void edrtlRedo(void) {
     }
 }
 
-/* Genuine rtlCmp is defined by the separately frozen same-TU component. */
 static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second);
 char *rtlGetEnvPath(void);
 char *rtlGetEnvSceneName(void);
@@ -4066,7 +4056,7 @@ void cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     edrtlRedo();
 }
 
-/* Native RTL editor state views; allocation extents remain unknown. */
+/* RTL editor state, each cell in its own section to keep the data layout. */
 #pragma section(".bss$RtlProc_menu_cancelled", read, write)
 __declspec(allocate(".bss$RtlProc_menu_cancelled")) i32 menu_cancelled = 0;
 #pragma section(".bss$RtlProc_ed_just_entered", read, write)

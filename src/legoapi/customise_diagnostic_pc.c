@@ -6,8 +6,8 @@
 void Customiser_Dump(void) {
 }
 
-/* Original source name unknown. Also empty on PC; the retail linker folded it
-   into Customiser_Dump. Customiser_LoadAll calls it with the path of each
-   scene or texture it has just loaded. */
+/* Also empty on PC; the linker folds it into Customiser_Dump.
+   Customiser_LoadAll calls it with the path of each scene or texture it has
+   just loaded. */
 void CustomiserLoadTracePc(char *path) {
 }

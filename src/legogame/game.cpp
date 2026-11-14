@@ -26,7 +26,6 @@ extern "C" void SurfaceMaskOff(u32 *surface_mask);
 extern "C" void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
 extern "C" void PodRace_IncreaseLap(void);
 
-/* Native Game fields consumed by 42b080. */
 typedef struct SHOP_COMPLETION_GAME_PC {
     u8 reserved_0000[0x782c];             // 0x0000
     AREASAVE_s area_save[72];             // 0x782c
@@ -71,7 +70,6 @@ extern "C" {
     extern i16 CharacterFixupIdPc007f1828; /* character id fixed up from "PenguinBomb" */
 }
 
-/* Integrate these declarations once. Keep all existing canonical data owners. */
 typedef struct SHOP_SAVE_VIEW_PC {
     u8 unknown_0000[0x7bd4];
     u32 hint_purchased_bits[3];
@@ -83,15 +81,9 @@ typedef struct SHOP_SAVE_VIEW_PC {
     u8 bolt_unlocked;
 } SHOP_SAVE_VIEW_PC;
 
-/* Add to actual current game.cpp prefix only after root source/header/data grant.
- * Source composition, not a compiled/ABI/emitted-output acceptance.
- * Genuine subsystem suppliers are kept in their original owners.
- * All local callbacks are retained solely by the true publisher below. */
 extern "C" i32 Hub_PanelBusy(void);
 #define GAME_PUBLISHER_ASSERT(expression)                                                                              \
     typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
-// Source lease:
-// build/analysis/next-world-loading-wave/game-init-after-MM/callback-contract-v1/object-policy-callbacks.cppfrag
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
 GAME_PUBLISHER_ASSERT(offsetof(SUIT_LAYERS_PC, flags) == 0xc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
@@ -102,9 +94,6 @@ GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_e33) == 0xe33);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-// Source lease:
-// build/analysis/next-world-loading-wave/game-init-after-MM/callback-contract-v1/cutscene-accept-source.cppfrag
-/* Reuse the canonical serialized clip declaration shared with gcutscn. */
 GAME_PUBLISHER_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG_PC) == 0x44);
 GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, level_id) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, type) == 2);
@@ -113,7 +102,6 @@ GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, name) == 4);
 GAME_PUBLISHER_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
 GAME_PUBLISHER_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
-// Source lease: build/analysis/startup-combat-hold-next/v1-contract/combat-game.cppfrag
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
@@ -139,7 +127,6 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 
-// Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/player-movement-callbacks-v1/closed7.cppfrag
 typedef struct game_callback_weapon_flags_pc_s {
     u8 unknown_00[0xe22];
     u8 weapon_flags;
@@ -191,8 +178,6 @@ extern "C" {
 }
 extern "C" i32 GetRandomCoinType(void);
 extern "C" void GameFog_Reset(void);
-// Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/player-movement-callbacks-v1/held2.cppfrag
-/* Genuine proposed supplier definitions remain in their original speederchase/suit owners. */
 extern "C" f32 GetVehicleAreaRememberSpeed(void);
 extern "C" {
     void SetAnimBlendMode(i32 mode);
@@ -218,8 +203,6 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, ne
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
 GAME_PUBLISHER_ASSERT(sizeof(AIPATHINFO_PC) == 0x18);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, frame_state) == 0x4c0);
-// Source lease: build/analysis/publication-render-audio-next/source-contract-v2/private-type-proposal.hfrag
-// Working reader views only; never establishes native allocation/capacity.
 GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, flags_word) == 0xb0);
 GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, status_flags) == 0xb4);
 GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, stage) == 0x124);
@@ -234,31 +217,20 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, op
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-// Declare only after sole-writer canonical audit. No backing supplied here.
 extern i32 selectmodemode;
-// Original Android static game.cpp state; PC private visibility/TU unproved.
 extern i32 deathstar_hold_count;
-// External declarations only; final shared integration must use canonical C linkage.
 extern i32 (*CheckMusicOtherFn)(void);
 extern i32 (*GameAudio_ActionMusicFn)(void);
 extern i32 (*PauseRenderOffFn)(void);
-// Genuine unresolved value suppliers: cannot activate music family with substitutes.
 i32 Hub_Outside(void);
 #define ACTION_MUSIC_PLAYER_FIGHTING(player)                                                                           \
     ((player) != NULL &&                                                                                               \
      ((player)->ai_packet.opponent != NULL ||                                                                          \
       ((player)->ai_packet.nearest_opponent != NULL && (player)->ai_packet.nearest_opponent->dead == 0 &&              \
        (player)->ai_packet.nearest_opponent_metric < 3.0f)))
-// Source lease:
-// build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v1/game-private-three.cppfrag Same
-// original game.cpp private callback/publisher group. No retention references.
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 0x1);
-// Genuine mutable source-owned state, pending sole-writer canonical overlap review.
 extern f32 minikittime;
-// Source lease:
-// build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v2/message-and-pickup.cppfrag Source
-// fragments only; the genuine private callback/publisher TU must be resolved.
 GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, score) == 0xdc);
 GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, target_is_coin_total) == 0xfe);
 GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, position_a) == 0x7c);
@@ -269,8 +241,6 @@ GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 GAME_PUBLISHER_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
 GAME_PUBLISHER_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
-// Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v3/game-buildit.cppfrag
-// Private callbacks stay with their genuine original Init publisher.
 struct GIZBUILDIT_PC;
 
 struct GAME_BUILDIT_READER_PC {
@@ -286,22 +256,14 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, gold_bricks) == 0x7c1a);
 GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, part_debris_sys) == 0x138);
 extern "C" i16 TextIdPc880ff0;
-// Source lease:
-// build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v4/collection-selecting.cppfrag Keep
-// in the coherent original private callback publication group; no wrappers.
 extern i32 freeplaymode;
 GAME_PUBLISHER_ASSERT(sizeof(MISSION_MENU_PACKET_PC) == 0xa);
 GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
-// Source lease:
-// build/analysis/next-world-loading-wave/game-init-after-MM/publisher-source-v1/world-and-hub-corrected.cppfrag
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-// Keep this private callback with the real publisher; native is a tail call.
 extern "C" void Hub_ResetPanel(void);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
 
-// Source lease:
-// build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v7/game-gizmo-sfx.cppfrag
 /* Local minimum reader; no GAMECAMERA size or backing claim. */
 typedef struct GAME_GIZMO_SFX_CAMERA_READER_PC {
     u8 opaque_00;
@@ -313,7 +275,6 @@ typedef struct GAME_GIZMO_SFX_CAMERA_READER_PC {
 GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER_PC, sock) == 1);
 GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER_PC, sock_distance) == 0x2c);
 
-// Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v8/tag-lsw.cppfrag
 typedef struct TAG_CHARACTER_DATA_READER_PC {
     u8 opaque_00[0x42];
     i16 icon_model;
@@ -328,7 +289,6 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
 extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
-// Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v9/tag-alternate.cppfrag
 /* Reuse TAG_CHARACTER_DATA_READER_PC from the LSW callback contract. */
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pause_context_state) == 0xee8);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
@@ -340,8 +300,6 @@ GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m32) == 0x38);
 GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP_PC, mid_position) == 0x4c);
 GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP_PC, target_scale) == 0xa8);
 
-// Source lease:
-// build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v12/autobuild-and-reward-typed.cppfrag
 typedef struct ATTRACTO_READER_PC {
     u8 opaque_00[0x5c];
     u16 angle;
@@ -380,7 +338,7 @@ extern "C" void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target);
 static void LEGO_AllGoldBricksFn(void);
 extern "C" {
 
-    /* Retail keeps this TU's out-of-line NuFabs copy at 0x428930. */
+    /* This unit keeps its own out-of-line NuFabs copy. */
     static f32 CutSceneFabsPc(f32 value) {
         i32 bits = *(i32 *)&value;
         bits &= 0x7fffffff;
@@ -614,7 +572,6 @@ static i32 IsWearingBackPack_Game(GAMEOBJECT *object) {
     return object->suit != NULL && (object->suit->flags & 0x100) != 0;
 }
 
-// Source lease: build/analysis/startup-combat-hold-next/v1-contract/player-clear-context-held.cppfrag
 static void Player_ClearContext_Game(GAMEOBJECT *object, i32 release_takeover) {
     ReleaseForce(object, 0);
     ReleaseEat(object);
@@ -805,12 +762,9 @@ static void ExtraDieSfx_LSW(GAMEOBJECT *object) {
     }
 }
 
-// Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/sound-fade-callback.cppfrag
-/* Uncompiled true original legogame/game.cpp static callback, published by
- * InitGameAfterConfig42e7fa to924dec. Full native429740..4299b5/629.
- * PC87afa4 is canonical BATTLEOVERCORUSCANT_ADATA, not an AA name guess.
- * Native never reads its passed WORLDINFO argument; it reads canonical WORLD.
- * No default state is written on the miss path. */
+/* Static callback published by InitGameAfterConfig. It never reads its
+ * WORLDINFO argument; it reads WORLD. No default state is written on the miss
+ * path. */
 static i32 SetSoundFadeDistCallBackFn_LSW(WORLDINFO_s *) {
     if (WORLD->current_level == KAMINOE_LDATA) {
         nusound_fade_start = 3.0f;
@@ -941,8 +895,6 @@ static void GameObjectDimensionsExtra_LSW(GAMEOBJECT *object) {
     }
 }
 
-// Source lease:
-// build/analysis/next-world-loading-wave/game-init-after-MM/callback-contract-v1/disguise-adjust-source.cppfrag
 static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *offset) {
     *scale = GizmoBlowupUnitScalePc;
     *offset = v000;
@@ -1022,8 +974,6 @@ static void PauseGame_ExtraCode(void) {
     Hub_ResetPanel();
 }
 
-// Source lease: build/analysis/publication-render-audio-next/source-contract-v2/render-bodies.cppfrag
-// Append inside the real publisher/private cohort only after owner review.
 static void CutScene_OverrideConfigFileName_LSW(char *filename, i32 unused0, i32 unused1) {
     char *prefix = "episodei\\ep1_podrace_";
     i32 length;
@@ -1161,9 +1111,6 @@ static i32 LastSafePosExtra(GAMEOBJECT *object) {
     return 0;
 }
 
-// Source lease: build/analysis/publication-render-audio-next/source-contract-v2/music-bodies.cppfrag
-// Genuine private callback/helper group: retain within real game publisher TU.
-// The five named value suppliers below are genuine unresolved providers, not stubs.
 static i32 ActionMusicSockChoicePc(void) {
     NUVEC position;
     SOCKPOSITION_PC socket_position;
@@ -1598,7 +1545,7 @@ extern "C" {
         }
         for (i = 0; i < 44; ++i) {
             CompletionPointInfoRecalculatePc[4] += POINTS_PER_CHEAT;
-            // MATCH-EXCEPTION: unsigned word index (retail shr) with a signed loop counter (jl).
+            // MATCH-EXCEPTION: unsigned word index (shr) with a signed loop counter (jl).
             if ((save->purchased_extra_bits[(u32)i >> 5] & (1U << (i & 31))) != 0) {
                 AddToCompletionPoints(POINTS_PER_CHEAT);
             }
@@ -1622,7 +1569,6 @@ extern "C" {
     }
 }
 
-/* 42b4c0/47. Originalargument unused, retainABI/call. */
 extern "C" void InitChallenge(i32 area) {
     (void)area;
     ChallengeMode = 1;
@@ -2746,10 +2692,6 @@ static CUT_DRAW_SETTINGS_PC InitCutSettingsAlternatePc = {0x5b, 0x5c, 0xe7, 2, 1
 static PLAYER_ITEM_TYPE_RESET_PC InitPlayerItemTypesPc[2] = {{15, {6, 0}, "blue", 2, 0, {0, 0}},
                                                              {-1, {0, 0}, NULL, 0, 0, {0, 0}}};
 
-// Actual publication parent; unresolved VOID actions remain at native sites.
-/* Source-only candidate. Native complete parent 42e160..42f393/4659.
- * Shared member refinements and real config storage in the adjacent recipe
- * must close before compilation. No substitute backing is supplied here. */
 void InitGameAfterConfig(void) {
     POINTS_PER_STORY = 6;
     POINTS_PER_CHARACTER = 1;
@@ -3275,11 +3217,6 @@ extern "C" {
         }
     }
 }
-
-// These two genuine Hub functions belong in the Hub owner, not game.cpp.
-
-// Source lease:
-// build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v10/transform-and-allgold.cppfrag
 
 static void LEGO_AllGoldBricksFn(void) {
 }

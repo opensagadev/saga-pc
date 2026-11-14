@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x5b0340-0x5b0769: definitions in retail address order. */
 typedef struct GIZFLOW_LOAD_LEVEL_PC {
     u8 unknown_000[0xe9]; // 0x000
     u8 max_timers;        // 0x0e9
@@ -136,7 +135,7 @@ void *GizTimer_ReserveBufferSpace(void *world_info) {
     return world->timers;
 }
 
-// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 GIZMO_PC *createGizTimer(void *unused, f32 time, i32 random_time, char *name) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();
     GIZFLOW_TIMER_PC *timer;

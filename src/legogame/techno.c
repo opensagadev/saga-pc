@@ -39,9 +39,9 @@ TECHNO_PC *Technos_FindControllingTechno(GAMEOBJECT *object) {
     return NULL;
 }
 
-/* Original source name unknown. Retail keeps a call to this empty (RET-only)
- * diagnostic for each failed target lookup; it is defined in
- * techno_diagnostic_pc.c because VC8 drops calls to an empty body it can see. */
+/* A call to this empty diagnostic is kept for each failed target lookup; it
+ * is defined in techno_diagnostic_pc.c because VC8 drops calls to an empty
+ * body it can see. */
 void TechnoTargetDiagnosticPc(char *name);
 void TechnoMoveSpecialTargetPc(void);
 

@@ -203,7 +203,6 @@ typedef struct CHARACTER_IDLE_POLICY_PC {
 } CHARACTER_IDLE_POLICY_PC;
 
 f32 animduration_blendouttime;
-// Append to src/legoapi/characters.cpp. Retail 00419e90/284 and 00419fb0/808.
 i32 CharacterLoadAreaModelsPc;
 i16 CharacterFixupIdPc007f18c4;
 i32 AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id);
@@ -255,7 +254,7 @@ typedef struct player_idle_character_pc_s {
     u8 use_standard_idle;
 } PLAYER_IDLE_CHARACTER_PC;
 
-/* Two-DWORD consumer view of the existing genuine mutable default mask. */
+/* Two-DWORD view of the default mask. */
 typedef struct PLAYER_ROUTE_MASK_WORDS_PC {
     u32 low;
     u32 high;
@@ -342,13 +341,9 @@ typedef union DRAW_ATTACHMENTS_PACKET_PC {
     u32 words[18];
 } DRAW_ATTACHMENTS_PACKET_PC;
 
-/* Private players.c helper. Retail 0x419130, 158 bytes through RET at 0x4191cd.
- * Retail private ABI: object=EAX; f32 result=ST0.
- * The two calculated return paths require a final f32 store/reload.
- */
+/* Both calculated return paths end in an f32 store/reload. */
 f32 DropInOutScale(GAMEOBJECT *object);
 
-/* Private native PC 41cb50/2038 draft; integrate only after source review. */
 typedef struct CHARACTER_DRAW_HIERARCHY_PC {
     u8 unknown_000[0x1a0];
     u8 suppress_shadow_surface_points;
@@ -358,7 +353,6 @@ extern i32 GameKeepMergeActionPc;
 extern i32 CharacterBlobShadowsOnPc;
 extern i32 GameDrawCharacterModelFlagPc;
 
-/* Selective append to players.c after the existing five private matrix helpers. */
 typedef struct DRAW_PREPASS_TELEPORT_PC {
     u8 unknown_00[0x4c];
     u8 flags;
@@ -391,17 +385,12 @@ void DrawTorpedos(GAMEOBJECT *);
 void GizDrawBuildItPiece(GAMEOBJECT *, i32);
 void TransformDrawTargetPc(NUVEC *, f32, f32);
 
-/* Native 0x0041fe90, 526 bytes. */
 typedef struct ai_creature_init_packet_pc_s {
     u8 unknown_000[0xa0];
     void *area;
     void *locator;
 } AI_CREATURE_INIT_PACKET_PC;
 
-/* Private source fragment for src/legoapi/players.c; not a standalone TU.
- * Retail private ABI: Copy src=EAX,dst=ECX; other helpers matrix=EAX,angle=ECX.
- * Same-TU compiler convention must be checked with all retail callers.
- */
 static void GameDrawMtxCopyPc(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
@@ -733,9 +722,8 @@ static __declspec(noinline) void InitCreatureModelFlagsPc(GAMEOBJECT *object) {
     }
 }
 
-/* Original source name unknown. Retail places this with the game object code
-   at 0x414d10, and PlayersDropInOut calls it rather than inlining it, so the
-   definition lives in its own unit. */
+/* Placed with the game object code; PlayersDropInOut calls it rather than
+   inlining it, so the definition lives in its own unit. */
 void PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints) {
     object->current_hp = hitpoints;
     if (hitpoints > object->field_107e) {
@@ -2633,7 +2621,7 @@ static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
                 second = 0x77;
             }
             NuRndrStartReflectionRender(0);
-            /* Retail draws the original matrix in this reflection pass. */
+            /* Draws the original matrix in this reflection pass. */
             Draw3DObjectMtx(NULL, first, &matrix);
             Draw3DObjectMtx(NULL, second, &matrix);
             NuRndrEndReflectionRender();
@@ -2750,7 +2738,7 @@ static void ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection, 
     if (reflection != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
                                             WORLD->current_level->reflection_y, &reflected)) {
         NuSpecialDrawAt(&WORLD->level_objects[model].special, &reflected);
-        /* Retail draws the attachment with the unreflected matrix here. */
+        /* Draws the attachment with the unreflected matrix here. */
         if (extra_model != -1 && WORLD->level_objects[extra_model].active != 0) {
             NuSpecialDrawAt(&WORLD->level_objects[extra_model].special, &matrix);
         }
@@ -2824,7 +2812,7 @@ static void ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection,
     if (reflection != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
                                             WORLD->current_level->reflection_y, &reflected)) {
         NuSpecialDrawAt(&WORLD->level_objects[model].special, &reflected);
-        /* Retail draws the attachment with the unreflected matrix here. */
+        /* Draws the attachment with the unreflected matrix here. */
         if (extra_model != -1 && WORLD->level_objects[extra_model].active != 0) {
             NuSpecialDrawAt(&WORLD->level_objects[extra_model].special, &matrix);
         }

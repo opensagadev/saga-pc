@@ -21,9 +21,9 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const
     f32 fov = ((f64)camera->fov * 180.0) / 3.1415927410125732;
     NuMtxSetPerspectiveD3D(&PostShadowProjectionPc, fov, aspect, camera->near_clip, camera->far_clip);
     NuMtxInv(&PostShadowViewPc, &camera->mtx);
-    // MATCH-EXCEPTION: retail reads each row into temporaries before storing, as an inlined
+    // MATCH-EXCEPTION: the original reads each row into temporaries before storing, as an inlined
     // vec4 setter would (it also keeps that setter's redundant w stores, which a helper here
-    // would reproduce but only with an out-of-line copy retail does not have).
+    // would reproduce but only with an out-of-line copy the original does not have).
     {
         f32 x = camera->mtx.m30;
         f32 y = camera->mtx.m31;

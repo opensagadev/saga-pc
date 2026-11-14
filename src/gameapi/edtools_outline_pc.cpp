@@ -1,7 +1,7 @@
 #include "saga.h"
 
-/* Camera-facing outline helpers from the retail edtools unit, used by the
- * light editor. */
+/* Camera-facing outline helpers from the edtools unit, used by the light
+ * editor. */
 
 /* Draws one line between two vertices, optionally transformed by a matrix
  * (copied to aligned storage when it is not 16-byte aligned). */

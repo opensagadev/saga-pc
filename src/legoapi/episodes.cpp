@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x59b330-0x59bb30 (legoapi/episodes.cpp): definitions in retail address order. */
-
 typedef struct episode_area_save_reader_pc_s {
     u8 complete;               // 0x0
     u8 area_complete;          // 0x1
@@ -158,7 +156,7 @@ extern "C" {
     }
 }
 
-/* 59b700/86. Native early NULL save guard does not initialize output count. */
+/* An early NULL save guard does not initialize the output count. */
 extern "C" i32 Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
     COLLECTION_AREA_SAVE_PC *saves = Game_AreaSave;
     i32 completed = 0;
@@ -206,9 +204,8 @@ extern "C" i32 fun_0059b7e0(i32 area) {
     return -1;
 }
 
-/* Original episode.cpp C++ entry. PC resets every counter even on the -1 path,
- * counts the superstory brick regardless of area filter, and has no Android
- * Store_IsPackUnlocked guard. No backing or capacity is inferred here. */
+/* Resets every counter even on the -1 path, counts the superstory brick
+ * regardless of area filter, and has no pack-unlock guard. */
 i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SAVE_PC *saves) {
     i32 open = 0;
     EpCompleteCount = EpCompleteTotal = 0;

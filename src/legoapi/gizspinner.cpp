@@ -73,7 +73,7 @@ typedef struct SpinnerProgressEntryPc {
     u8 unused;            // 0x7
 } SpinnerProgressEntryPc; // size 0x8
 
-/* Retail takes these absolute values through the float's bit pattern. */
+/* Takes these absolute values through the float's bit pattern. */
 static f32 SpinnerFabsPc(f32 value) {
     i32 bits = *(i32 *)&value & 0x7fffffff;
     f32 result = *(f32 *)&bits;
@@ -90,7 +90,7 @@ static i32 SpinnerFindSpecialPc(WORLDINFO *world, NUSPECIALHANDLE *special, char
     return NuSpecialExistsFn(special) != 0;
 }
 
-// Retail private helper receives spinner in EAX, bolt in ESI, and flags on the stack.
+// Private helper; receives spinner in EAX, bolt in ESI, and flags on the stack.
 // A four-byte aggregate preserves that stack slot under VC8's private argument optimization.
 struct SPINNER_HIT_FLAGS_STACK_PC {
     u8 *value; // 0x0
@@ -245,7 +245,7 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
                 world->spinners[index].initial_rotation = EdFileReadShort();
                 name_length = EdFileReadChar();
                 EdFileRead(special_name, name_length);
-                // MATCH-EXCEPTION: the SpinnerFindSpecialPc lookup written out; retail tests each result in place here.
+                // MATCH-EXCEPTION: the SpinnerFindSpecialPc lookup written out; each result is tested in place here.
                 NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&special, special_name, 0);
                 if (NuSpecialExistsFn((NUSPECIALHANDLE *)&special) == 0) {
                     NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&special, special_name, 0);

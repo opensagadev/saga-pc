@@ -2,8 +2,6 @@
 #pragma data_seg(".data$id_ROBIN")
 static i16 id_ROBIN = -1;
 
-/* Retail unit 0x403c90-0x407e40 (legoapi/items/collect/batarang.cpp): definitions in retail address order. */
-
 extern "C" {
     i32 Batman_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
     void ClearSpecialMove(GAMEOBJECT *);

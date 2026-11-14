@@ -299,7 +299,6 @@ struct HATMACHINE_PROGRESS_PC {
 
 extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 extern "C" i32 hatmachine_gizmotype_id;
-// Genuine Draw callback is retained as an unresolved source dependency until its full body is transferred.
 extern "C" {
     static void HatMachine_Draw(void *, void *, f32);
 }
@@ -790,7 +789,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                     NuSpecialDrawAtAlpha(&world->level_objects[41].special, &matrix, ready_alpha);
                 }
             }
-            /* Retail draws the two arm specials with separate copies of the same code. */
+            /* Draws the two arm specials with separate copies of the same code. */
             if (world->level_objects[285].active != 0) {
                 offset = v000;
                 switch (machine->animation_state) {

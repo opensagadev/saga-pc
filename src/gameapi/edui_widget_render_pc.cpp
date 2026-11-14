@@ -786,11 +786,6 @@ extern "C" void cbgpcfgCPPress(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     eduiMenuDestroy(menu);
 }
 
-/* SOURCE ONLY: append to the existing edui_widget_render_pc.cpp. The Native
- * register-argument helpers belong with their real caller in this existing
- * drawing unit. No ABI attributes, alignment forcing or caller activation.
- * New colour cells have unknown Native allocation
- * extents and zero allocation credit. All other state owners are reused. */
 extern "C" {
     extern f32 edui_font_scale_x;
     extern f32 edui_font_scale_y;
@@ -1092,9 +1087,9 @@ i32 cbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAM
     return result;
 }
 
-/* Copies the picker's target colour to the clipboard and tints the Paste button with it. Retail calls
+/* Copies the picker's target colour to the clipboard and tints the Paste button with it. The original calls
    __ftol2_sse for each channel; VC8 inlines the conversions here because the packed value is stored to
-   the u32 eduiitem_s::colours. With colours declared i32 (as retail's codegen implies) this is exact. */
+   the u32 eduiitem_s::colours, which the original's code suggests was declared i32. */
 void cbCopy(eduimenu_s *, eduiitem_s *, u32) {
     EduiColourClipboardRedPc = *EduiColourTargetRedPc;
     EduiColourClipboardGreenPc = *EduiColourTargetGreenPc;
@@ -1581,7 +1576,7 @@ extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item
         point_v[corner] = MIN(1.0f, MAX(0.0f, point_v[corner]));
     }
     u32 colours[2];
-    // MATCH-EXCEPTION: retail stores the second default colour first; an initializer or a chained
+    // MATCH-EXCEPTION: the original stores the second default colour first; an initializer or a chained
     // assignment either reverses the stores or reshuffles the x87 code above.
     colours[1] = 0x807f7f7f;
     colours[0] = 0x807f7f7f;
@@ -1842,7 +1837,7 @@ STATIC_ASSERT(offsetof(nugraph_s, y) == 0x24);
 STATIC_ASSERT(offsetof(nugraph_s, x_scale) == 0x44);
 STATIC_ASSERT(offsetof(nugraph_s, y_extent) == 0x50);
 
-/* Float fabs by clearing the sign bit; retail inlines it this way. */
+/* Float fabs by clearing the sign bit. */
 static f32 EduiFabsPc(f32 value) {
     *(u32 *)&value &= 0x7fffffff;
     return value;

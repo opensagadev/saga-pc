@@ -168,7 +168,7 @@ extern "C" void ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *opaque, i3
             *block->position = block->snap_positions[0];
         }
     } else {
-        // Retail uses this distinct mutable vector, not the canonical v000.
+        // Uses this distinct mutable vector, not the canonical v000.
         block->bounds_min = p000;
         block->bounds_max = p000;
         block->position = &p000;
@@ -1563,7 +1563,6 @@ extern "C" void GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
         } else {
             block->ground_height = (height3 + (height1 + height0 + height2)) * 0.25;
         }
-        // PC has no Android TerrainBlockOnBlock call here.
         block->previous_extra_terrain_info = block->extra_terrain_info.word;
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {

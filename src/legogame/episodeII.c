@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <math.h>
 
-/* Retail unit 0x4ddc80-0x4e2cce: definitions in retail address order. */
-
 typedef struct BONUS_GUNSHIP_FLAGS_PC {
     u8 progress;
     u8 secondary;
@@ -1888,7 +1886,7 @@ void KaminoE_UpdatePc(WORLDINFO *world) {
     InitSurfaceInfo(target);
 }
 
-/* Reads the Kamino_E state block (show_hearts at 0x88903c, slave1 at 0x88904c). */
+/* Reads the Kamino_E state block. */
 void KaminoE_Draw(WORLDINFO *world) {
     if (netclient == 0 && kamino_e.show_hearts->value > 0.0f) {
         GAMEOBJECT *jango = FindGameObject(id_JANGOFETT, 1, 1, 1, 0);

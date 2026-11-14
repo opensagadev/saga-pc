@@ -1,7 +1,6 @@
 #include "saga.h"
 
-/* Network statistics overlays (0x60f3a0-0x60ffcb): NetSmallStats::Draw and
- * NetStats::Draw (Android gamelib/util/Stats.cpp). */
+/* Network statistics overlays: NetSmallStats::Draw and NetStats::Draw. */
 
 typedef struct NET_PRIM_VERTEX_PC {
     f32 x;            // 0x00

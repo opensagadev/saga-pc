@@ -418,7 +418,7 @@ static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LO
     }
     if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC_PC *)locator, frame, &time, &scale, &rate) != 0) {
         if (scale < 0.0f && (locator->flags & 0x10) == 0) {
-            // MATCH-EXCEPTION: retail negates with fldz/fsubrp (0 - scale), unary minus gives fchs.
+            // MATCH-EXCEPTION: the original negates with fldz/fsubrp (0 - scale), unary minus gives fchs.
             scale = (f32)debtab[effect]->frequency * (0.0f - scale);
         }
         if ((f64)scale > 0.10000000149011612) {

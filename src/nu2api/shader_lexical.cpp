@@ -106,7 +106,7 @@ bool ShaderCompilerDictionaryPc::IsNumericToken(const char *text) {
     return true;
 }
 
-// MATCH-EXCEPTION: retail calls Equals everywhere; the pointer-walking body is small enough
+// MATCH-EXCEPTION: the original calls Equals everywhere; the pointer-walking body is small enough
 // that VC8 would otherwise inline it into ShaderDeclarationSemanticPc.
 __declspec(noinline) bool ShaderLexicalSlicePc::Equals(const char *text) {
     const char *source = begin;
@@ -506,7 +506,7 @@ extern "C" bool fun_0074bd00(const char *left, const char *right) {
     return ShaderConditionPrecedencePc(left) > ShaderConditionPrecedencePc(right);
 }
 
-/* The accessors below have no retail caller. */
+/* The accessors below have no caller. */
 i32 ShaderLexicalReaderPc::IsWordChar(u8 c) {
     return ShaderLexicalClassesPc[c] & 1;
 }

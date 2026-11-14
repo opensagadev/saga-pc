@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x566600-0x56b6ea: definitions in retail address order. */
-
 typedef struct {
     char name[16];        // 0x00
     u8 opaque[0x7c - 16]; // 0x10
@@ -83,7 +81,6 @@ STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, name) == 0x40);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, name) == 0xf2);
 
-/* Append gizmo_add_callbacks_pc.c: complete native21+21+15+15+21. */
 typedef struct {
     u8 unknown_00[0x1c];  // 0x00
     NUVEC position;       // 0x1c
@@ -363,8 +360,8 @@ STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
 STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
 STATIC_ASSERT(offsetof(BOLT_PC, direction) == 0xac);
 
-/* Bit view of GIZMOBLOWUP_PC.status_flags: retail stores these bits as bitfields. Stands in for a
- * bitfield member of the shared struct (hand-off). */
+/* Bit view of GIZMOBLOWUP_PC.status_flags, whose bits are stored as bitfields. Stands in for a
+ * bitfield member of the shared struct. */
 typedef struct BLOWUP_STATUS_BITS_PC {
     u32 blown_up : 1;
     u32 unknown_1 : 13;

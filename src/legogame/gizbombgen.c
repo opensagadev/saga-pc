@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x465dd0-0x4667eb: definitions in retail address order. */
-
 typedef struct {
     GIZBOMBGEN_s *items;
     u16 count;

@@ -1,7 +1,6 @@
 #include "saga.h"
 #pragma bss_seg(".bss$splcodes")
 #pragma bss_seg(".bss$splshelf")
-/* Integrate these declarations once. Keep all existing canonical data owners. */
 STATIC_ASSERT(offsetof(shopitem_s, item_id) == 0x60);
 STATIC_ASSERT(offsetof(shopitem_s, type) == 0x62);
 STATIC_ASSERT(offsetof(shopitem_s, unlocked) == 0x63);
@@ -10,8 +9,7 @@ STATIC_ASSERT(offsetof(shopitem_s, special) == 0x68);
 STATIC_ASSERT(offsetof(COLLECTID, cheat_code) == 0xc);
 STATIC_ASSERT(offsetof(COLLECTID, field3_0x4) == 4);
 
-/* The retail shop code clamps through nested min/max macros: the inner min is evaluated twice. */
-/* Place before Shop_DrawCharacter in shard.c; static native same-TU helpers. */
+/* The shop code clamps through nested min/max macros: the inner min is evaluated twice. */
 
 static i32 Signals_Load(void *world_info, void *unused1) {
     i32 version;
@@ -102,12 +100,11 @@ static void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 
-/* Native PC shop state machine. Child callbacks remain real unresolved native
- * references until their complete functions are ported; menu ID 13 stays unwired. */
+/* Shop state machine. */
 typedef i32 (*SHOP_MENU_CALLBACK_PC)(void *);
 typedef void (*SHOP_DRAW_CALLBACK_PC)(void);
 
-/* The retail move code is written out per shelf slot: any compiler-unrolled
+/* The move code is written out per shelf slot: any compiler-unrolled
  * loop in the function makes VC8 schedule the x87 operands differently. */
 
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);

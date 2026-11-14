@@ -1,7 +1,7 @@
 #include "saga.h"
 
-/* Network file transfer manager (retail Ftp.cpp, 0x617180-0x6179a0). Only
- * the bookkeeping survives on PC; the transfer bodies are empty. */
+/* Network file transfer manager. Only the bookkeeping survives on PC; the
+ * transfer bodies are empty. */
 
 STATIC_ASSERT(sizeof(FtpFile) == 0xb0);
 STATIC_ASSERT(offsetof(FtpFile, name) == 0xc);

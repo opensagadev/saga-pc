@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Retail unit 0x46a450-0x46a868: definitions in retail address order. */
-
 typedef struct bolt_gizmo_type_pc_s {
     u8 unknown_00[0x6c];
     i32 (*hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *);

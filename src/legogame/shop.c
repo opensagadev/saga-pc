@@ -1,7 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Integrate these declarations once. Keep all existing canonical data owners. */
 typedef struct SHOP_SAVE_VIEW_PC {
     u8 unknown_0000[0x7bd4];
     u32 hint_purchased_bits[3];
@@ -78,12 +77,9 @@ extern f32 ShopTopCodeOffsetPc;
 extern f32 ShopTopExtraOffsetPc;
 extern f32 ShopTopHintOffsetPc;
 extern i32 (*menuptr)(void *menu);
-/* PC4c6c50/21, append to shard.c (or retain C linkage in C++).
- * 880100 native callback BSS0, single owner; SHOPACTIVE existing880494. */
 extern void (*ShopDrawPanelFnPc)(void);
 
-/* Native PC shop state machine. Child callbacks remain real unresolved native
- * references until their complete functions are ported; menu ID 13 stays unwired. */
+/* Shop state machine. */
 typedef struct SHOP_INPUT_PC {
     i32 left_pressed;
     i32 right_pressed;
@@ -127,8 +123,8 @@ extern f32 ShopScaleOverridePc[7];
 extern f32 ShopInOutScalePc;
 extern char *ShopCheatNamePc;
 extern char ShopUserCodePc[6];
-/* The interaction batch shares SHOP_INPUT_PC and the existing Shop*Pc state
- * contract above. Native movement mode is 1=left, 2=right (not Android's sign). */
+/* The interaction batch shares SHOP_INPUT_PC and the Shop*Pc state above.
+ * Movement mode is 1=left, 2=right. */
 extern i32 ShopMoveItemsPc;
 extern i32 ShopSubMoveSfxLockPc;
 extern i32 ShopScrollKeyHitPc;
@@ -164,7 +160,7 @@ extern i16 TextIdPc880708;
 extern i16 TextIdPc88074c;
 extern i16 TextIdPc880778;
 
-/* Same-TU matrix helpers; retail keeps their standalone copies (source in EAX, destination in ECX). */
+/* Same-unit matrix helpers, also kept as standalone copies (source in EAX, destination in ECX). */
 static void ShopMtxCopyPc(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
@@ -238,7 +234,7 @@ static void NuMtxRotateZInline(NUMTX *m, i32 a) {
     m->m31 = (m30 * sinx) + (m->m31 * cosx);
 }
 
-/* 004c1050..004c1077: original same-TU EAX helper includes the vehicle exception. */
+/* Same-unit helper taking EAX; includes the vehicle exception. */
 static i32 Shop_CharacterUnlockedPc(i32 character_id) {
     if (character_id == VehicleBoltId7f17d4Pc) {
         return ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0;
@@ -246,7 +242,7 @@ static i32 Shop_CharacterUnlockedPc(i32 character_id) {
     return CollectIDUnlocked(character_id) != 0;
 }
 
-/* 004c1080..004c11ba: input argument is EAX in the original same-TU helper. */
+/* Same-unit helper taking its input in EAX. */
 static void Shop_GetInput(SHOP_INPUT_PC *input) {
     i32 player;
     GAMEPAD_RUNTIME_INPUT_PC *pad;
@@ -365,7 +361,7 @@ void InitExtraList(void) {
         ExtraItems[i].item_id = (i16)i;
         ExtraItems[i].type = 2;
         ExtraItems[i].unlocked = 0;
-        // MATCH-EXCEPTION: retail keeps the word's byte offset in a register (add r, r twice)
+        // MATCH-EXCEPTION: the original keeps the word's byte offset in a register (add r, r twice)
         // instead of scaling the index, which only a byte-offset form reproduces.
         word = i / 32 * 4;
         if (((u64) * (u32 *)((u8 *)save->extra_unlocked_bits + word) & ((u64)1 << (i % 32))) != 0) {
@@ -633,8 +629,6 @@ void InitShop(WORLDINFO *world) {
     shopcutsceneplayer = CutScenePlayer_Available();
 }
 
-/* 004c2660..004c2725. Preserve the PC purchase pulse owner separately from the
- * existing shop initialization value at 0087bbd0. */
 i32 CheckCash(shopitem_s *items, i32 item) {
     return Game.coins >= (u32)items[item].price;
 }
@@ -668,7 +662,6 @@ i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
     return 1;
 }
 
-/* 004c2730..004c2ae8 instructions; 004c2ae8..004c2b00 six-entry switch table. */
 i32 SelectShopItem(shopitem_s *items, i32 index) {
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     HINT_PC *hint;
@@ -786,8 +779,8 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
     }
 }
 
-/* 004c2b00..004c31fd. Right moves IDs toward index zero, interpolates slots
- * 1..6 toward their previous shelf slot, and uses the PC scale2 owner. */
+/* Right moves IDs toward index zero, interpolates slots 1..6 toward their
+ * previous shelf slot, and uses scale2. */
 i32 MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
     i32 angle;
     i32 i;
@@ -843,8 +836,8 @@ i32 MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
     return 0;
 }
 
-/* 004c3200..004c38fc. Preserve the descending PC interpolation order and
- * the distinct scale4 owner, including when positions aliases SubShelfPos. */
+/* Interpolates in descending order with the distinct scale4, including when
+ * positions aliases SubShelfPos. */
 i32 MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
     i32 angle;
     i32 i;
@@ -900,7 +893,6 @@ i32 MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
     return 0;
 }
 
-/* 004c3900..004c3988 instructions; 004c3988..004c39a0 six-entry switch table. */
 void SelectSubItem(void) {
     shopitem_s *items;
     i32 index;
@@ -940,8 +932,8 @@ void SelectSubItem(void) {
     }
 }
 
-/* 004c39a0..004c410a. The PC callback uses direct shop-pad input, buys on one
- * confirm, and has no Android touch rows, item-selection mode, or cursor input. */
+/* Uses direct shop-pad input, buys on one confirm, and has no touch rows,
+ * item-selection mode, or cursor input. */
 i32 SubItemMenu(void *menu) {
     SHOP_INPUT_PC input;
     shopitem_s *items = NULL;
@@ -1116,7 +1108,7 @@ finish:
     return 0;
 }
 
-/* 004c4110..004c4193. PC cancellation belongs to the active child callback. */
+/* Cancellation belongs to the active child callback. */
 i32 DoShopMenu(void *menu) {
     i32 result;
     if (menuptr != NULL) {
@@ -1144,7 +1136,6 @@ i32 DoShopMenu(void *menu) {
     return 0;
 }
 
-/* 004c41a0..004c4f38. Same TU as the native EAX-argument input helper. */
 i32 CodeMenu(void *menu) {
     i32 down = 0;
     i32 up = 0;
@@ -1398,8 +1389,7 @@ i32 CodeMenu(void *menu) {
     return 7;
 }
 
-/* 004c4f40..004c501f. ShopCheatNamePc is a text pointer at00880008; the
- * separate integer code column is at0087c564. */
+/* ShopCheatNamePc is a text pointer; the integer code column is separate. */
 void DrawCodeMenu(void) {
     if (ShopCheatTimerPc > 0.0f) {
         if (ShopCheatNamePc != NULL && (f64)ShopCheatTimerPc < 3.1499998569488525 &&
@@ -1411,7 +1401,6 @@ void DrawCodeMenu(void) {
     }
 }
 
-/* Replace the existing sole static owner in shard.c; native same 450B function. */
 static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_value, f32 ypush, u16 xrot, u16 yrot,
                                u16 zrot) {
     if (!(!NuSpecialExistsFn(&iconback))) {
@@ -1494,7 +1483,6 @@ void DrawArrow(nuhspecial_s *special, float scale_value) {
     }
 }
 
-/* Append in shard.c after Shop_DrawCharacter and DrawItem; retain those owners. */
 static void Shop_DrawItemPc(shopitem_s *item, NUVEC *position, f32 scale_value, f32 alpha, i32 opaque, f32 ypush,
                             u16 xrot, u16 yrot, u16 zrot) {
     NUVEC scale;
@@ -1549,8 +1537,8 @@ void DrawTopShelf(i32 unused) {
     Shop_DrawItemPc(&TopShelf[5], &ShelfPos[5], topscale[5], 1.0f, 1, toppush[5], 0, shelfang, 0);
 }
 
-/* 004c5650..004c58dd. PC renders exactly six code slots, uses codeshelfscale,
- * and updates the original arrow phase owner without Android's extra slot. */
+/* Renders exactly six code slots, uses codeshelfscale, and updates the
+ * arrow phase. */
 void DrawCodeMenu3D(void) {
     i32 letters[6];
     i32 i;
@@ -1593,7 +1581,6 @@ void DrawCodeMenu3D(void) {
     ShopCodeArrowBingPc = NuTrigTable[(angle >> 1) & 0x7fff] * ShopCodeArrowAmplitudePc;
 }
 
-/* 004c58e0..004c63fc, including two six-entry native switch tables. */
 void DrawSubItems(void) {
     f32 bing = 0.0f;
     f32 bing_scale;
@@ -1806,7 +1793,7 @@ void DrawSubItems(void) {
     }
 }
 
-/* 004c6400..004c64e9. The PC top-level label follows all six native shelves. */
+/* The top-level label follows all six shelves. */
 void DrawItemMenu2D(void) {
     i32 text_id;
     if (ShopNameAlpha > 0.0f) {
@@ -1828,7 +1815,6 @@ void DrawItemMenu2D(void) {
     }
 }
 
-/* 004c64f0..004c6bec instructions;004c6bec..004c6c04 six-entry table. */
 void DrawSubItemMenu2D(void) {
     shopitem_s *items;
     i32 *ids;
@@ -1882,7 +1868,7 @@ void DrawSubItemMenu2D(void) {
         buyable = items[ids[3]].unlocked == 1 ? 0 : (u32)items[ids[3]].price > 0;
     } else if (items[ids[3]].type == 2) {
         id = (u16)items[ids[3]].item_id;
-        // MATCH-EXCEPTION: retail selects the 16-bit text id before sign-extending it once, which the
+        // MATCH-EXCEPTION: the original selects the 16-bit text id before sign-extending it once, which the
         // casts reproduce; the plain ternary widens each arm separately.
         NuStrCpy(subtitle,
                  TTab[(i16)(ExtrasCheatsPc[id].text_id != NULL ? (u16)*ExtrasCheatsPc[id].text_id : tUNKNOWN)]);
@@ -1969,7 +1955,6 @@ void DrawSubItemMenu2D(void) {
     }
 }
 
-/* 004c6c10..004c6c15: retain the real native target, currently unresolved. */
 void DrawSubItemMenu3D(void) {
     DrawSubItems();
 }
@@ -1988,8 +1973,6 @@ void DrawShopPanel(void) {
     }
 }
 
-/* 004c6c70..004c6dd8 instructions;004c6dd8..004c6df0 six-entry table.
- * This native predicate was previously misidentified as DrawShopPrompts. */
 static i32 Shop_CanSelectPc(void) {
     shopitem_s *item;
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
@@ -2043,8 +2026,8 @@ static void ShopMtxSetIdentityPc(NUMTX *matrix) {
     ShopMtxCopyPc(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
 }
 
-/* 004c6e90..004c74dd. The PC version deliberately ignores the generic MENU
- * confirm/cursor fields and permits selection of all six original shelves. */
+/* Ignores the generic MENU confirm/cursor fields and permits selection of all
+ * six shelves. */
 i32 ItemMenu(void *menu) {
     SHOP_INPUT_PC input;
     i32 entry_picked = picked;
@@ -2182,8 +2165,8 @@ i32 ItemMenu(void *menu) {
     return 7;
 }
 
-/* 004c74e0..004c76c4. Preserve PC initialization to shelf zero, and the
- * complete cutscene-player return state rather than Android's defaults. */
+/* Initializes to shelf zero and keeps the complete cutscene-player
+ * return state. */
 i32 UpdateShop(void *menu) {
     i32 i;
     UpdateCharacterIDs();
@@ -2247,8 +2230,8 @@ void DrawQuestion(NUVEC *position, f32 scale_value, f32 y_push) {
     }
 }
 
-/* 004c7750..004c7819. Keep the affordability predicate separate from actual
- * prompt drawing and preserve both players' native prompt arguments. */
+/* The affordability predicate, separate from the prompt drawing; it takes
+ * both players' prompt arguments. */
 void DrawShopPrompts(void) {
     i32 select = -1;
     i32 back = -1;

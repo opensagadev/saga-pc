@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Retail unit 0x5b1770-0x5b1e97: definitions in retail address order. */
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, engine_level) == 0xd94);
 STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_count) == 0x46cc);
 STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_events) == 0x46d8);

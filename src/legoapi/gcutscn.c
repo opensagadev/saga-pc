@@ -1107,12 +1107,12 @@ i32 CutTriggerSetTestPc(CUT_TRIGGER_SET_PC *set, char *name, NUVEC *pos, f32 rad
     return 0;
 }
 
-/* Empty on PC (a bare RET at the start of this unit in retail). It lives in this
-   unit and takes variable arguments: once a call passes a pointer through the
-   ellipsis (CutScriptExecutePc), VC8 keeps every later call and knows the body
-   preserves eax/ecx/edx, which CutTriggerFirePc and CutTriggerUpdatePc rely on.
-   Calls compiled before the definition stay ordinary external calls
-   (CutScriptParseBlockPc), so it is defined here rather than at the top. */
+/* Empty on PC. It lives in this unit and takes variable arguments: once a call
+   passes a pointer through the ellipsis (CutScriptExecutePc), VC8 keeps every
+   later call and knows the body preserves eax/ecx/edx, which CutTriggerFirePc
+   and CutTriggerUpdatePc rely on. Calls compiled before the definition stay
+   ordinary external calls (CutScriptParseBlockPc), so it is defined here rather
+   than at the top. */
 void CutSceneMissingObjectDiagnosticPc(char *format, ...) {
 }
 

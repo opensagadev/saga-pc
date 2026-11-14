@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x56cdb0-0x56d2ec: definitions in retail address order. */
-
 typedef struct guideline_record_pc_s {
     char name[8];         // 0x00
     NUVEC start_position; // 0x08
