@@ -125,6 +125,16 @@ class LiteralScanTests(unittest.TestCase):
         symbols = (self.root / "config/symbols.csv").read_text()
         self.assertRegex(symbols, r"0x751000,\?\?_C@_0BD@\w+@Your\S*@HMDOKFMK@,19")
 
+    def test_float_constant_becomes_a_real_literal(self):
+        source = literalscan.Source("src/f.c", "const f32 HalfPc = 0.5;\nconst f64 MixedPc = 0.1f;\n"
+                                    "void F(f32 *x) { *x = -HalfPc * *x; }\n")
+        decls = list(literalscan.declarations(source))
+        self.assertEqual([d["name"] for d in decls], ["HalfPc"])  # a double holding a float value has no literal
+        self.assertEqual((decls[0]["literal"], decls[0]["symbol"]), ("0.5f", "__real@3f000000"))
+        edits = literalscan.source_edits([source], dict(decls[0], uses=literalscan.uses([source], decls[0])))
+        text, _ = literalscan.apply_edits(source.text, edits["src/f.c"])
+        self.assertIn("*x = -0.5f * *x;", text)
+
     def test_tidy_segments(self):
         text = ('#pragma const_seg(".rdata$A")\n#pragma const_seg(".rdata$B")\nconst char B[] = "b";\n'
                 '#pragma const_seg()\n#pragma const_seg()\n')

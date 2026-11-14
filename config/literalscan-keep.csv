@@ -1,1 +1,2 @@
 file,name,reason
+src/legoapi/dogfight_reset_constants_pc.c,DogfightOriginStartXPc,"inline, VC8 stores the value through a double constant (__real@c096c399a0000000) that retail does not have: DogfightResetSpacePc reads the named float"

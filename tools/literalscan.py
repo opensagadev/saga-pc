@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Find string constants that only name one literal, and write the literal inline.
+"""Find string and floating constants that only name one literal, and write the literal inline.
 
 A named `const char NAME[] = "..."` (or `const char *const NAME = "..."`) that
 one expression uses is a literal moved away from its use. The original wrote
 the literal at the call (`NuSevereWarning("Your Scene version is %d, ...", ...)`):
 VC8 emits it as a `??_C@` COMDAT that the linker pools with every identical
-literal of the program, whereas a named array is a data object of its own. The
-scan is textual (comments and strings are separated first, as in
+literal of the program, whereas a named array is a data object of its own.
+Floating constants are the same: `const f32 NAME = 0.5f;` read once is the
+literal `0.5f`, a pooled `__real@3f000000`. The scan is textual (comments and strings are separated first, as in
 tools/oddscan.py); it needs no compiler and no originals.
 
     python3 tools/literalscan.py                 # summary
@@ -43,6 +44,7 @@ import collections
 import csv
 import io
 import re
+import struct
 import sys
 from pathlib import Path
 
@@ -51,7 +53,7 @@ if __package__ in (None, ""):
 
 from tools import budget  # noqa: E402
 from tools.oddscan import lex  # noqa: E402
-from tools.unmapped import literal_name  # noqa: E402
+from tools.unmapped import literal_name, real_name  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET = ROOT / "config/literalscan-budget.json"
@@ -68,6 +70,9 @@ HELD_DECLARATIONS = ("src/saga.h",)
 DECL = re.compile(r'(?P<storage>\b(?:extern\s*"\s*"\s*|extern\s+|static\s+))?\bconst\s+char\s+'
                   r'(?:(?P<array>[A-Za-z_]\w*)\s*\[\s*(?P<size>[^\]\n]*)\]|\*\s*const\s+(?P<pointer>[A-Za-z_]\w*))'
                   r'\s*=\s*(?P<init>(?:"[^"\n]*"\s*)+);')
+FLOAT_DECL = re.compile(r'(?P<storage>\b(?:extern\s*"\s*"\s*|extern\s+|static\s+))?\bconst\s+'
+                        r'(?P<type>f32|f64|float|double)\s+(?P<name>[A-Za-z_]\w*)\s*=\s*'
+                        r'(?P<init>-?\s*(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?[fF]?)\s*;')
 PIECE = re.compile(r'"((?:\\.|[^"\\\n])*)"')
 PREPROCESSOR = re.compile(r'^[ \t]*#(?:[^\n]*\\\n)*[^\n]*', re.MULTILINE)
 CHAR_CAST = re.compile(r'\(\s*(?:const\s+)?char\s*\*\s*\)\s*$')
@@ -153,7 +158,32 @@ class Source:
         return find_span(self.macro_spans, offset) is not None
 
 
+def float_declarations(source):
+    """`const f32 NAME = 1.5f;` and `const f64 NAME = 0.5;`: an inline literal is a `__real@` constant."""
+    for match in FLOAT_DECL.finditer(source.code):
+        if source.in_macro(match.start()):
+            continue
+        start = match.start("storage") if match.group("storage") else match.start()
+        storage = match.group("storage").split()[0] if match.group("storage") else ""
+        init = re.sub(r'\s+', '', match.group("init"))
+        single = match.group("type") in ("f32", "float")
+        suffixed = init[-1] in "fF"
+        if not single and suffixed:
+            continue  # a double initialized with a float value has no literal of its own
+        number = init.rstrip("fF")
+        literal = number + ("f" if single else "") if "." in number or "e" in number.lower() else None
+        if literal is None:
+            literal = number + (".0f" if single else ".0")
+        data = struct.pack("<f" if single else "<d", float(number))
+        body = source.body_at(start)
+        yield {"file": source.path, "line": source.line(start), "name": match.group("name"),
+               "span": (start, match.end()), "storage": storage, "local": body is not None, "body": body,
+               "literal": literal, "data": data, "padded": False, "pointer": False,
+               "symbol": real_name(data), "ctype": "const f32" if single else "const f64"}
+
+
 def declarations(source):
+    yield from float_declarations(source)
     for match in DECL.finditer(source.code):
         if source.in_macro(match.start()):
             continue
@@ -169,7 +199,7 @@ def declarations(source):
                "storage": storage, "local": body is not None, "body": body,
                "literal": " ".join(f'"{p}"' for p in pieces), "data": data,
                "padded": bool(size) and (not size.isdigit() or int(size) != len(data)),
-               "pointer": match.group("pointer") is not None}
+               "pointer": match.group("pointer") is not None, "symbol": None, "ctype": f"char[{len(data)}]"}
 
 
 def extern_spans(source, name):
@@ -284,7 +314,7 @@ SEGMENT_SUFFIX = "HMDOKFMK@"
 
 def plan_symbols(symbols, decl, in_segment=False):
     """(edits {line index: new line or None}, problem) for the symbols.csv rows of an inlined constant."""
-    literal = literal_name(decl["data"], False) + (SEGMENT_SUFFIX if in_segment else "")
+    literal = decl["symbol"] or literal_name(decl["data"], False) + (SEGMENT_SUFFIX if in_segment else "")
     named = symbols.named(decl["name"])
     existing = {int(r[0], 16) for _, r in symbols.by_symbol(literal)}
     addresses = {int(r[0], 16) for _, r in named}
@@ -297,7 +327,7 @@ def plan_symbols(symbols, decl, in_segment=False):
     edits = {index: None for index, _ in named}
     if not existing:
         index, row = named[0]
-        edits[index] = f"{row[0].strip()},{literal},{len(decl['data'])},char[{len(decl['data'])}]\n"
+        edits[index] = f"{row[0].strip()},{literal},{len(decl['data'])},{decl['ctype']}\n"
     return edits, None
 
 
@@ -346,7 +376,10 @@ def source_edits(sources, decl):
     use_source, use_start, use_end, kind = decl["uses"][0]
     if kind == "cast":
         use_start = CHAR_CAST.search(use_source.code[:use_start].rstrip()).start()
-    edits.setdefault(use_source.path, []).append((use_start, use_end, decl["literal"], (decl["file"], decl["name"])))
+    literal = decl["literal"]
+    if literal.startswith("-") and use_source.code[use_start - 1:use_start] in ("-", "+"):
+        literal = f"({literal})"
+    edits.setdefault(use_source.path, []).append((use_start, use_end, literal, (decl["file"], decl["name"])))
     for other in sources:
         if other.path in HELD_DECLARATIONS:
             continue
