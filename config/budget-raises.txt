@@ -135,3 +135,4 @@ config/castscan-budget.json function-pointer 805 port batch 4: casts and unit-lo
 config/castscan-budget.json int-pointer 814 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view
 config/castscan-budget.json void-pointer-cpp 1276 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view
 config/declscan-budget.json C 369 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view
+config/literalscan-budget.json kept 7 the scan also counts constants read several times (tools/literalscan.py multi-use): three frontend strings whose uses sit under different const_seg settings and three doubles whose inline literals VC8 compiles or folds differently (config/literalscan-keep.csv)

@@ -8,7 +8,7 @@ counts with a budget file; a count above its budget fails CI:
     config/declscan-budget.json  tools/declscan.py --check   unit declaration classes A-E (docs/declarations.md)
     config/warning-budget.json   tools/warnings.py --check   MSVC warning codes per build kind
     config/castscan-budget.json  tools/castscan.py --check   explicit casts per cause class (docs/cast-audit.md)
-    config/literalscan-budget.json  tools/literalscan.py --check  string constants that name one literal
+    config/literalscan-budget.json  tools/literalscan.py --check  constants that only name their literal
     config/standalone-budget.json   tools/standalone.py --check   module headers that do not compile alone
 
 Each tool's `--write-budget` lowers its budget to the current counts (it never
