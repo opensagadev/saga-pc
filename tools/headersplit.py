@@ -2148,11 +2148,52 @@ def dependencies(plan):
     return result
 
 
+NOLINT_REGION = re.compile(r"^\s*//\s*NOLINT(BEGIN|END)\(([^)]*)\)")
+
+
+def nolint_regions(seg):
+    """[(first line, last line, BEGIN comment)] of the `// NOLINTBEGIN(...)` / `// NOLINTEND(...)` regions."""
+    regions = []
+    open_ = {}
+    for number, line in enumerate(seg.lines, 1):
+        match = NOLINT_REGION.match(line)
+        if not match:
+            continue
+        if match.group(1) == "BEGIN":
+            open_[match.group(2)] = (number, line.strip())
+        elif match.group(2) in open_:
+            first, text = open_.pop(match.group(2))
+            regions.append((first, number, text))
+    return regions
+
+
+def _region_of(seg, line):
+    if not hasattr(seg, "_nolint_regions"):
+        seg._nolint_regions = nolint_regions(seg)
+    for first, last, text in seg._nolint_regions:
+        if first < line < last:
+            return text
+    return None
+
+
+def _without_nolint_regions(lines):
+    return [line for line in lines if not NOLINT_REGION.match(line)]
+
+
 def render_items(seg, items):
-    """The items' text with their #if contexts and extern "C" blocks re-emitted around them."""
+    """The items' text with their #if contexts and extern "C" blocks re-emitted around them. An item inside a
+    `// NOLINTBEGIN(...)` region of saga.h gets the region's comments around its run of items (asserts only
+    inside a run of other items)."""
     out = []
     open_frames = []  # [(frame id, branch)]
     linked = False
+    region = None
+
+    def close_region():
+        nonlocal region
+        if region:
+            out.append("// NOLINTEND(" + NOLINT_REGION.match(region).group(2) + ")")
+            region = None
 
     def close_link():
         nonlocal linked
@@ -2161,8 +2202,13 @@ def render_items(seg, items):
             linked = False
 
     for item in items:
+        want_region = _region_of(seg, item.first)
+        if item.kind == "assert" and want_region != region:
+            want_region = None  # a run of asserts alone needs no NOLINT region
+        if want_region != region:
+            close_region()
         for first, last in item.carried:
-            out.append("\n".join(seg.lines[first - 1:last]))
+            out.append("\n".join(_without_nolint_regions(seg.lines[first - 1:last])))
         want = list(item.context)
         want_link = item.linkage > 0
         common = 0
@@ -2193,8 +2239,12 @@ def render_items(seg, items):
         if want_link and not linked:
             out.append('#ifdef __cplusplus\nextern "C" {\n#endif')
             linked = True
+        if want_region and not region:
+            out.append(want_region)
+            region = want_region
         lead = seg.lines[item.lead - 1:item.first - 1]
-        out.append("\n".join(lead + seg.lines[item.first - 1:item.last]))
+        out.append("\n".join(_without_nolint_regions(lead + seg.lines[item.first - 1:item.last])))
+    close_region()
     close_link()
     while open_frames:
         out.append("#endif")
