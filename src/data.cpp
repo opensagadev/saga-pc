@@ -24194,8 +24194,6 @@ extern "C" {
 
 extern "C" {
     i32 PadFlyMode = 0;
-
-    struct numtx_s *ed_remap_mtx = 0;
 }
 
 extern "C" {
@@ -24840,7 +24838,6 @@ extern "C" {
 
     struct PC_SCENE_MTL_VIEW *uimtls[5] = {0};
 
-    struct eduimenu_s *edui_messagemenu = 0;
     struct eduimenu_s *messagemenu = 0;
     struct eduimenu_s *ptldatamenu = 0;
     char edbits_datapath[256] = {0};
@@ -25117,7 +25114,6 @@ extern "C" {
     struct FILE_DIRECTORY_ENTRY_PC *dir_list = 0;
 
 #pragma data_seg(".data$edui_filepick_listsize")
-    i32 edui_filepick_listsize = 8;
 }
 
 extern "C" {

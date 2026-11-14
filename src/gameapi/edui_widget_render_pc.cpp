@@ -1022,6 +1022,7 @@ extern "C" {
     static eduiitem_s *cp_info = NULL;
     static eduiitem_s *cp_copy = NULL;
     static eduiitem_s *cp_paste = NULL;
+    struct eduimenu_s *edui_messagemenu = 0;
     static i32 (*cp_process)(eduimenu_s *, eduiitem_s *, f32, FRAME_PAD_PC *) = NULL;
     static f32 *EduiColourTargetRedPc = NULL;
     static f32 *EduiColourTargetGreenPc = NULL;
@@ -1220,6 +1221,7 @@ extern "C" {
 #pragma section(".bss$EduiColourTempBluePc", read, write)
     __declspec(allocate(".bss$EduiColourTempBluePc")) f32 EduiColourTempBluePc = 0.0f;
 #pragma section(".bss$EduiColourTempAlphaPc", read, write)
+    struct numtx_s *ed_remap_mtx = 0;
     __declspec(allocate(".bss$EduiColourTempAlphaPc")) f32 EduiColourTempAlphaPc = 0.0f;
     void eduiSetActiveMenu(eduimenu_s *menu);
 }
@@ -1773,6 +1775,7 @@ extern "C" i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_
 extern "C" {
     i32 show_x_scale_help = 0;
     i32 show_y_scale_help = 0;
+    i32 edui_filepick_listsize = 8;
     i32 EduiGraphDrawCurvePc = 1;
     i32 EduiGraphDrawDebugPc = 0;
     i32 EduiGraphDrawDebugBoundPc = 0;
