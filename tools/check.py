@@ -452,10 +452,16 @@ def analysis_configuration():
     # at the verified originals without changing their contents or the host SDK.
     overlay = ROOT / "build/lint/headers.json"
     overlay.parent.mkdir(parents=True, exist_ok=True)
-    overlay.write_text(json.dumps({"version": 0, "case-sensitive": False, "roots": [
+    text = json.dumps({"version": 0, "case-sensitive": False, "roots": [
         {"type": "file", "name": str(path), "external-contents": str(path)}
         for directory in include_dirs for path in sorted(directory.rglob("*")) if path.is_file()
-    ]}) + "\n")
+    ]}) + "\n"
+    # Several tools run side by side (tools/proof.py): replace the file atomically, and only when it changes,
+    # so no reader ever sees it half written.
+    if not overlay.is_file() or overlay.read_text() != text:
+        partial = overlay.with_name(f"{overlay.name}.{os.getpid()}")
+        partial.write_text(text)
+        os.replace(partial, overlay)
     flags = ["--target=i686-pc-windows-msvc", "-fms-extensions", "-fms-compatibility",
              "-fms-compatibility-version=14.00", "-nostdinc", "-D_MT", "-Isrc", "-Ilib/ogg-vorbis/vorbis"]
     for directory in include_dirs:
