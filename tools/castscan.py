@@ -22,6 +22,18 @@ a numeric conversion.
     python3 tools/castscan.py --list redundant-identity src/legoapi
     python3 tools/castscan.py --check            # fail if a class grew (config/castscan-budget.json)
     python3 tools/castscan.py --write-budget     # lower the budget after a cleanup
+    python3 tools/castscan.py --fix redundant-identity,redundant-implicit [PATHS] [--dry-run]
+
+`--fix` deletes the casts of the named classes and keeps their operands, from the
+locations of the scan (no textual guessing): a C-style cast loses `(T)`, a named
+cast `static_cast<T>`, and the parentheses around the operand or around the cast
+go when the expression left behind binds as tightly or is a whole initializer,
+right-hand side, return value or argument. In a macro argument only the cast
+itself goes; a cast in a src/ macro body is left and reported. Run `make format`
+afterwards. A redundant cast that the exact build needs is listed in
+config/castscan-keep.csv (file, function, cast text, occurrence in the function,
+reason) and counts as `codegen-steering`; `--check` fails on an entry that
+matches no cast.
 
 The scan is cached per unit (build/castscan/cache.json) and runs two parses at a
 time (`--jobs`). docs/cast-audit.md explains the classes and the cleanup plan.
@@ -44,10 +56,12 @@ if __package__ in (None, ""):
 from tools import budget  # noqa: E402
 from tools.lib import ROOT  # noqa: E402
 
-VERSION = 4
+VERSION = 6
 OUTPUT = ROOT / "build/castscan"
 CACHE = OUTPUT / "cache.json"
 BUDGET = ROOT / "config/castscan-budget.json"
+# Casts that the C rules call redundant but that the exact build needs (docs/cast-audit.md, "Kept casts").
+KEEP = ROOT / "config/castscan-keep.csv"
 DEBUG_DEFINE = "-DSAGA_DEBUG"
 # Units that use a macro whose arguments only the Debug build kind expands get the second parse.
 DEBUG_MACROS = re.compile(r"\b(?:LOG(?:_[A-Z_]+)?|SAGA_DEBUG|SAGA_SKIN_CALL|SAGA_SOUND_[A-Z_]+|STUBBED(?:_NAMED)?"
@@ -60,6 +74,8 @@ CLASSES = [
     ("redundant-identity", "redundant", "source and target are the same type after typedefs: delete the cast"),
     ("redundant-implicit", "redundant",
      "the implicit conversion of the context gives the same value without a diagnostic: delete the cast"),
+    ("codegen-steering", "steers-codegen",
+     "redundant by the C rules, but VC8 compiles the unit differently without it (config/castscan-keep.csv)"),
     ("discard", "idiomatic", "(void) cast of an unused value or parameter"),
     ("null-pointer", "idiomatic", "integer constant 0 cast to a pointer"),
     ("address-constant", "int-pointer", "other integer constant cast to a pointer (fixed address, sentinel)"),
@@ -123,7 +139,21 @@ class Locator:
         self.function.argtypes = [ci.SourceLocation, ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(ctypes.c_uint),
                                   ctypes.POINTER(ctypes.c_uint), ctypes.POINTER(ctypes.c_uint)]
         self.function.restype = None
+        self.expansion = ci.conf.lib.clang_getExpansionLocation
+        self.expansion.argtypes = self.function.argtypes
+        self.expansion.restype = None
         self.names = {}
+
+    def plain(self, location):
+        """Whether the tokens at `location` are written where they are compiled (not in a macro body or a
+        macro argument): the file location and the expansion location are the same."""
+        handles, offsets = [], []
+        for function in (self.function, self.expansion):
+            handle, line, column, offset = ctypes.c_void_p(), ctypes.c_uint(), ctypes.c_uint(), ctypes.c_uint()
+            function(location, ctypes.byref(handle), ctypes.byref(line), ctypes.byref(column), ctypes.byref(offset))
+            handles.append(handle.value)
+            offsets.append(offset.value)
+        return handles[0] is not None and handles[0] == handles[1] and offsets[0] == offsets[1]
 
     def __call__(self, location):
         ci = cindex()
@@ -618,7 +648,95 @@ class Unit:
         entity = self.entity(operand)
         if entity is not None:
             record["entity"], record["mode"] = entity
+        if not macro:
+            record.update(self.removal(node, kind, operand, ancestors, context, file, text))
         self.casts.append(record)
+
+    # ------------------------------------------------------------------ removal (--fix)
+    def single(self, node):
+        """`node` without the implicit conversions around it that cover the same tokens."""
+        K = self.ci.CursorKind
+        while node.kind == K.UNEXPOSED_EXPR:
+            children = [child for child in node.get_children() if child.kind.is_expression()]
+            if len(children) != 1:
+                break
+            node = children[0]
+        return node
+
+    def comma(self, node):
+        node = self.single(node)
+        return node.kind == self.ci.CursorKind.BINARY_OPERATOR and self.operators.binary(node) == ","
+
+    def removal(self, node, kind, operand, ancestors, context, file, text):
+        """{"text": the cast as written, "fix": [[start, end], ...] character ranges of `file` whose deletion
+        leaves the operand in place of the cast} or {"nofix": reason}. A C-style cast loses `(T)`, a named cast
+        `static_cast<T>`; the parentheses around the operand (and around the cast) go too when the expression
+        left behind binds at least as tightly as the cast did, or when the cast is a whole initializer,
+        right-hand side, return value or argument. In a macro argument only the cast itself is deleted."""
+        K = self.ci.CursorKind
+        ends = [self.locate(node.extent.start), self.locate(node.extent.end),
+                self.locate(operand.extent.start), self.locate(operand.extent.end)]
+        if any(found[0] != file for found in ends):
+            return {"nofix": "extent"}
+        start, end, operand_start, operand_end = (found[3] for found in ends)
+        written = " ".join(text[start:end].split())
+        if kind not in ("c", "static", "reinterpret", "const"):
+            return {"text": written, "nofix": "functional cast"}
+        if not start < operand_start <= operand_end <= end:
+            return {"text": written, "nofix": "extent"}
+        prefix, suffix = text[start:operand_start], text[operand_end:end]
+        if kind == "c":
+            if not (prefix.startswith("(") and prefix.rstrip().endswith(")") and suffix == ""):
+                return {"text": written, "nofix": "syntax"}
+            keep_open = start + len(prefix.rstrip())  # first character after `(T)`
+            open_at = None
+        else:
+            open_at = start + len(prefix.rstrip()) - 1
+            if not (prefix.startswith(kind + "_cast") and text[open_at] == "(" and suffix.strip() == ")"):
+                return {"text": written, "nofix": "syntax"}
+            keep_open = open_at
+        plain = all(self.locate.plain(location) for location in (node.extent.start, node.extent.end,
+                                                                 operand.extent.start, operand.extent.end))
+        if not plain:
+            return {"text": written, "fix": [[start, keep_open]], "macro-argument": True}
+        inner = self.single(operand)
+        postfix = (K.DECL_REF_EXPR, K.MEMBER_REF_EXPR, K.CALL_EXPR, K.ARRAY_SUBSCRIPT_EXPR, K.INTEGER_LITERAL,
+                   K.FLOATING_LITERAL, K.STRING_LITERAL, K.CHARACTER_LITERAL, K.PAREN_EXPR)
+        tight = (*postfix, K.UNARY_OPERATOR, K.CXX_UNARY_EXPR, *self.cast_kinds)
+        whole = context in ("init", "assign", "return", "arg")
+        deletions = []
+        if kind == "c":
+            left = inner
+            if inner.kind == K.PAREN_EXPR and text[operand_start] == "(" and text[operand_end - 1] == ")":
+                contents = [child for child in inner.get_children() if child.kind.is_expression()]
+                body = self.single(contents[0]) if len(contents) == 1 else None
+                if body is not None and (body.kind in tight or whole and not self.comma(body)):
+                    deletions = [[start, operand_start + 1], [operand_end - 1, operand_end]]
+                    left = body
+            if not deletions:
+                deletions = [[start, keep_open]]
+        else:
+            left = inner
+            # A named cast is a postfix expression (`static_cast<T *>(&x)->f`): only a postfix operand may lose
+            # the parentheses, unless the cast is a whole initializer, right-hand side, return value or argument.
+            if inner.kind in postfix or whole and not self.comma(inner):
+                deletions = [[start, open_at + 1], [operand_end, end]]
+            else:
+                deletions = [[start, open_at]]
+                left = None  # `(operand)` stays: a parenthesized expression
+        # `((T)p)->x`: the parentheses around the cast are needless when what is left is a postfix expression.
+        index = len(ancestors) - 1
+        while index >= 0 and ancestors[index].kind == K.UNEXPOSED_EXPR:
+            index -= 1
+        if (left is None or left.kind in postfix) and index >= 0 and ancestors[index].kind == K.PAREN_EXPR:
+            paren = ancestors[index]
+            outer = [self.locate(paren.extent.start), self.locate(paren.extent.end)]
+            if all(found[0] == file for found in outer) and self.locate.plain(paren.extent.start) and \
+                    self.locate.plain(paren.extent.end) and text[outer[0][3]] == "(" and \
+                    text[outer[1][3] - 1] == ")" and text[outer[0][3] + 1:start].strip() == "" and \
+                    text[end:outer[1][3] - 1].strip() == "":
+                deletions = [[outer[0][3], outer[0][3] + 1], *deletions, [outer[1][3] - 1, outer[1][3]]]
+        return {"text": written, "fix": deletions}
 
 
 def relative(path):
@@ -847,8 +965,110 @@ def records_related(a, b):
     return None
 
 
+def load_keep(path=KEEP):
+    """[{file, function, cast, occurrence, reason}] of config/castscan-keep.csv (empty when it is missing)."""
+    try:
+        with Path(path).open(newline="") as handle:
+            return [dict(row, occurrence=int(row["occurrence"])) for row in csv.DictReader(handle)
+                    if row.get("file") and not row["file"].startswith("#")]
+    except OSError:
+        return []
+
+
+def keep_key(record, ordinal):
+    return record["file"], record["function"], record.get("text", ""), ordinal
+
+
+def ordinals(casts):
+    """{id(record): n}: the cast is the n-th (from 1, in source order) cast of the same text in its function."""
+    counts, found = Counter(), {}
+    for record in sorted(casts, key=lambda r: (r["file"], r["line"], r["column"])):
+        if record.get("text") and not record["macro"]:
+            key = (record["file"], record["function"], record["text"])
+            counts[key] += 1
+            found[id(record)] = counts[key]
+    return found
+
+
+def mark_kept(casts, keep):
+    """Reclassify the redundant casts that config/castscan-keep.csv lists as codegen-steering; returns the
+    entries that match no cast (stale: the cast was edited or removed)."""
+    wanted = {(row["file"], row["function"], " ".join(row["cast"].split()), row["occurrence"]): row
+              for row in keep}
+    matched = set()
+    numbers = ordinals(casts)
+    for record in casts:
+        if id(record) not in numbers:
+            continue
+        key = keep_key(record, numbers[id(record)])
+        if key in wanted:
+            matched.add(key)
+            if record["class"] in REDUNDANT:
+                record["class"] = "codegen-steering"
+    return [row for key, row in wanted.items() if key not in matched]
+
+
+IDENTIFIER = re.compile(r"\w")
+OPERATOR = set("+-*/%&|^!~<>=.")
+
+
+def apply_deletions(text, deletions):
+    """`text` without the character ranges `deletions` ([start, end] pairs, may overlap). Where a deletion
+    would join two tokens (`return(T)x`, `a-(T)-b`) one space is left."""
+    gone = bytearray(len(text) + 1)
+    for start, end in deletions:
+        gone[start:end] = b"\1" * (end - start)
+    out, index, size = [], 0, len(text)
+    while index < size:
+        if not gone[index]:
+            out.append(text[index])
+            index += 1
+            continue
+        while index < size and gone[index]:
+            index += 1
+        before = out[-1] if out else ""
+        after = text[index] if index < size else ""
+        if before and after and (IDENTIFIER.match(before) and IDENTIFIER.match(after) or
+                                 before in OPERATOR and after in OPERATOR):
+            out.append(" ")
+    return "".join(out)
+
+
+def fix_plan(casts, chosen):
+    """(plan, skipped): the removals of the casts of the classes `chosen`, and the casts left with a reason."""
+    plan, skipped = [], []
+    for record in sorted(casts, key=lambda r: (r["file"], r["line"], r["column"])):
+        if record["class"] not in chosen:
+            continue
+        reason = "macro body" if record["macro"] else record.get("nofix")
+        if reason or "fix" not in record:
+            skipped.append((record, reason or "no extent"))
+            continue
+        plan.append({"file": record["file"], "line": record["line"], "column": record["column"],
+                     "function": record["function"], "class": record["class"], "text": record.get("text", ""),
+                     "debug": bool(record.get("debug")), "macro_argument": bool(record.get("macro-argument")),
+                     "fix": record["fix"]})
+    return plan, skipped
+
+
+def fix_files(plan):
+    """Rewrite every file of the plan; returns {file: casts removed}."""
+    by_file = defaultdict(list)
+    for entry in plan:
+        by_file[entry["file"]].append(entry)
+    done = {}
+    for file, entries in sorted(by_file.items()):
+        path = ROOT / file
+        text = path.read_bytes().decode("latin-1")
+        deletions = [span for entry in entries for span in entry["fix"]]
+        path.write_bytes(apply_deletions(text, deletions).encode("latin-1"))
+        done[file] = len(entries)
+    return done
+
+
 class Classifier:
-    def __init__(self, facts, duplicates=None, ours=lambda decl: decl.startswith("src/")):
+    def __init__(self, facts, duplicates=None, ours=lambda decl: decl.startswith("src/"), keep=None):
+        self.keep = load_keep() if keep is None else keep
         self.ours = ours  # whether a declaration (`file:line`) is one src/ can change
         self.records = {}
         self.entities = {}
@@ -998,6 +1218,7 @@ class Classifier:
     def classify(self, casts):
         for record in casts:
             record["class"] = self.base(record)
+        self.keep_unmatched = mark_kept(casts, self.keep)
         groups = defaultdict(list)
         for record in casts:
             if record["class"] in self.DECLARATION_CANDIDATES and record.get("entity") and \
@@ -1202,6 +1423,10 @@ def main(argv=None):
     parser.add_argument("--check", action="store_true",
                         help=f"fail when a class count exceeds {BUDGET.relative_to(ROOT)}")
     parser.add_argument("--write-budget", action="store_true", help="lower the budget to the current counts")
+    parser.add_argument("--fix", metavar="CLASSES",
+                        help="delete the casts of these classes (comma separated), keep their operands")
+    parser.add_argument("--dry-run", action="store_true", help="with --fix: write the plan only "
+                        "(build/castscan/fix.json), change no file")
     parser.add_argument("--budget", type=Path, default=BUDGET)
     args = parser.parse_args(argv)
 
@@ -1217,10 +1442,35 @@ def main(argv=None):
         if failures:
             print("castscan: units failed to parse; the counts are incomplete", file=sys.stderr)
             return 1
-        return check_budget(args, casts)
+        for row in classifier.keep_unmatched:
+            print(f"castscan: {relative(KEEP)}: no cast {row['cast']} (#{row['occurrence']}) in "
+                  f"{row['function']} ({row['file']}); update or remove the entry", file=sys.stderr)
+        return check_budget(args, casts) or (1 if classifier.keep_unmatched else 0)
     if args.paths:
         wanted = [Path(p).resolve().relative_to(ROOT).as_posix() for p in args.paths]
         casts = [r for r in casts if any(r["file"] == p or r["file"].startswith(p.rstrip("/") + "/") for p in wanted)]
+    if args.fix:
+        if failures:
+            print("castscan: units failed to parse; fix nothing", file=sys.stderr)
+            return 1
+        unknown = set(args.fix.split(",")) - set(CLASS_IDS)
+        if unknown:
+            parser.error(f"unknown classes: {', '.join(sorted(unknown))}")
+        plan, skipped = fix_plan(casts, set(args.fix.split(",")))
+        OUTPUT.mkdir(parents=True, exist_ok=True)
+        (OUTPUT / "fix.json").write_text(json.dumps(plan, indent=1) + "\n")
+        for record, reason in skipped:
+            print(f"castscan: kept {record['file']}:{record['line']}: {record['class']} "
+                  f"({record['target']}) in {record['function']}: {reason}"
+                  f"{' ' + record['macro'] if record['macro'] else ''}")
+        files = {entry["file"] for entry in plan}
+        print(f"castscan: {len(plan)} casts in {len(files)} files to remove "
+              f"({sum(e['debug'] for e in plan)} Debug-only, {sum(e['macro_argument'] for e in plan)} in macro "
+              f"arguments), {len(skipped)} left; plan in {relative(OUTPUT / 'fix.json')}")
+        if not args.dry_run:
+            fix_files(plan)
+            print("castscan: files rewritten; run make format")
+        return 0
     if args.list:
         chosen = set(args.list.split(","))
         for r in sorted(casts, key=lambda r: (r["file"], r["line"], r["column"])):

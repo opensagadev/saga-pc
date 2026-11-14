@@ -176,7 +176,91 @@ class CppTests(unittest.TestCase):
         self.assertEqual(found["Take((i32)small)"], ["widening"])
 
 
+FIX_UNIT = """#include "saga.h"
+#define TWICE(x) ((x) + (x))
+#define AS_INT(x) ((i32)(x))
+i32 Count;
+i32 Pass(i32 value) { return value; }
+
+i32 Fix(u8 small, i32 *slot) {
+    i32 sum = (i32)small;
+    i32 *alias = (i32 *)slot;
+    sum = (i32)(small + 1);
+    sum += (i32)small * 2;
+    sum += -(i32)-Count;
+    sum += Pass((i32)(Count + small));
+    sum += ((i32 *)slot)[0];
+    sum += TWICE((i32)small);
+    sum += AS_INT(small);
+    sum = sum*(i32)(Count + 1);
+    return(i32)Count;
+}
+"""
+
+CPP_FIX_UNIT = """#include "saga.h"
+i32 Count;
+Thing Things[2];
+i32 Fix(u8 small) {
+    i32 sum = static_cast<i32>(small);
+    sum += static_cast<i32>(Count + small) * 2;
+    sum += static_cast<Thing *>(&Things[0])->a;
+    return sum;
+}
+"""
+
+
+@unittest.skipUnless(HAVE_CLANG, "libclang is not installed")
+class FixTests(unittest.TestCase):
+    def fixed(self, name, text, keep=()):
+        facts = {name: scan(name, text)}
+        casts, _ = castscan.gather(facts, macros={"TWICE": f"/virtual/{name}:2", "AS_INT": f"/virtual/{name}:3"})
+        classifier = castscan.Classifier(facts, duplicates=set(), ours=lambda decl: True, keep=list(keep))
+        classifier.classify(casts)
+        plan, skipped = castscan.fix_plan(casts, castscan.REDUNDANT)
+        deletions = [span for entry in plan for span in entry["fix"]]
+        return castscan.apply_deletions(text, deletions), plan, skipped, casts, classifier
+
+    def test_c(self):
+        result, plan, skipped, _, _ = self.fixed("unit.c", FIX_UNIT)
+        body = result.split("i32 Fix(", 1)[1]
+        self.assertIn("i32 sum = small;", body)
+        self.assertIn("i32 *alias = slot;", body)
+        self.assertIn("sum = small + 1;", body)           # a whole right-hand side loses the parentheses
+        self.assertIn("sum += small * 2;", body)
+        self.assertIn("sum += - -Count;", body)           # the tokens stay apart
+        self.assertIn("Pass(Count + small)", body)        # a whole argument
+        self.assertIn("sum += slot[0];", body)            # the parentheses around the cast go too
+        self.assertIn("TWICE(small)", body)               # a macro argument loses the cast only
+        self.assertIn("sum*(Count + 1)", body)            # an operand of `*` keeps them
+        self.assertIn("return Count;", body)
+        self.assertEqual([reason for _, reason in skipped], ["macro body"])
+        self.assertTrue(any(entry["macro_argument"] for entry in plan))
+
+    def test_cpp(self):
+        result, _, _, _, _ = self.fixed("unit.cpp", CPP_FIX_UNIT)
+        self.assertIn("i32 sum = small;", result)
+        self.assertIn("sum += (Count + small) * 2;", result)
+        self.assertIn("sum += (&Things[0])->a;", result)
+
+    def test_keep_list(self):
+        keep = [{"file": "/virtual/unit.c", "function": "Fix", "cast": "(i32)small", "occurrence": 2,
+                 "reason": "test"},
+                {"file": "/virtual/unit.c", "function": "Fix", "cast": "(i32)gone", "occurrence": 1,
+                 "reason": "stale"}]
+        result, _, _, casts, classifier = self.fixed("unit.c", FIX_UNIT, keep)
+        self.assertIn("i32 sum = small;", result)        # occurrence 1 goes
+        self.assertIn("sum += (i32)small * 2;", result)   # occurrence 2 stays
+        self.assertEqual([r["class"] for r in casts if r.get("text") == "(i32)small"],
+                         ["redundant-implicit", "codegen-steering", "redundant-implicit"])
+        self.assertEqual([row["cast"] for row in classifier.keep_unmatched], ["(i32)gone"])
+
+
 class RuleTests(unittest.TestCase):
+    def test_apply_deletions(self):
+        self.assertEqual(castscan.apply_deletions("return(T)x;", [[6, 9]]), "return x;")
+        self.assertEqual(castscan.apply_deletions("a-(T)-b", [[2, 5], [3, 4]]), "a- -b")
+        self.assertEqual(castscan.apply_deletions("f((T)y)", [[2, 5]]), "f(y)")
+
     def test_value_preserving(self):
         u8 = {"kind": "int", "size": 1, "signed": False, "spelling": "unsigned char"}
         i8 = {"kind": "int", "size": 1, "signed": True, "spelling": "signed char"}
