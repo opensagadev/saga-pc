@@ -14632,9 +14632,6 @@ extern "C" {
 #pragma data_seg(".data$GizmoPickupSys_Game")
     PICKUP_TYPE_SYSTEM_PC GizmoPickupSys_Game = {GizmoPickupType, CoinTab, 10, 4, 4, 2, 0, 0};
 #pragma data_seg()
-#pragma data_seg(".data$COINMAGNETSCALE")
-    f32 COINMAGNETSCALE = 3.0f;
-#pragma data_seg()
 #pragma data_seg(".data$GizmoPickups_Collide2DFn")
     f32 (*GizmoPickups_Collide2DFn)(GAMEOBJECT *) = NULL;
 #pragma data_seg()
