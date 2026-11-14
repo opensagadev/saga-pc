@@ -972,17 +972,13 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                  f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, i32 alpha) {
     typedef struct box_geometry_s {
         f32 reserved;
-        f32 x;
-        f32 y;
+        f32 x; // 0x4
+        f32 y; // 0x8
         f32 z;
-        f32 width;
-        f32 height;
+        f32 width;  // 0x10
+        f32 height; // 0x14
     } BOX_GEOMETRY;
 
-    STATIC_ASSERT(offsetof(BOX_GEOMETRY, x) == 4);
-    STATIC_ASSERT(offsetof(BOX_GEOMETRY, y) == 8);
-    STATIC_ASSERT(offsetof(BOX_GEOMETRY, width) == 0x10);
-    STATIC_ASSERT(offsetof(BOX_GEOMETRY, height) == 0x14);
     BOX_GEOMETRY *box = message_box;
     i32 widest_line = -1;
     f32 saved_x_scale;

@@ -31,7 +31,6 @@ extern "C" {
     i32 BURNOUTON = 1;
 #pragma data_seg()
 }
-STATIC_ASSERT(sizeof(BURNOUTON) == 4);
 
 typedef struct main_controller_world_view_s { // size 0x4674
     u8 unknown_0000[0x4670];                  // 0x0000

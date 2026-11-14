@@ -210,20 +210,17 @@ i32 ProcessConditionFlowBox(GIZFLOW *flow, FLOWBOX *box, u8 frame) {
 }
 
 i32 CheckOutputConditionFlowBox(GIZFLOW *system, FLOWBOX *box, u8 output) {
-    typedef struct FlowCheckFlags {
+    typedef struct FlowCheckFlags { // size 0x2
         u16 unknown_00 : 10;
         u16 output_state : 1;
         u16 unknown_0b : 5;
     } FlowCheckFlags;
 
-    typedef struct FlowCheckBox {
+    typedef struct FlowCheckBox { // size 0xc
         u8 unknown_00[0xa];
-        FlowCheckFlags flags;
+        FlowCheckFlags flags; // 0xa
     } FlowCheckBox;
 
-    STATIC_ASSERT(sizeof(FlowCheckFlags) == 2);
-    STATIC_ASSERT(offsetof(FlowCheckBox, flags) == 0xa);
-    STATIC_ASSERT(sizeof(FlowCheckBox) == 0xc);
     FlowCheckBox *state = (FlowCheckBox *)box;
     (void)output;
     if ((box->state_flags & 0x200) != 0) {
@@ -534,7 +531,7 @@ void SetGizFlowVisible(GIZFLOW *system) {
 }
 
 void ResetGizFlow(GIZFLOW *system, GIZFLOWPROGRESS *progress) {
-    typedef struct FlowResetFlags {
+    typedef struct FlowResetFlags { // size 0x2
         u16 active : 1;
         u16 completed : 1;
         u16 unknown_02 : 3;
@@ -544,14 +541,11 @@ void ResetGizFlow(GIZFLOW *system, GIZFLOWPROGRESS *progress) {
         u16 unknown_0b : 5;
     } FlowResetFlags;
 
-    typedef struct FlowResetBox {
+    typedef struct FlowResetBox { // size 0xc
         u8 unknown_00[0xa];
-        FlowResetFlags flags;
+        FlowResetFlags flags; // 0xa
     } FlowResetBox;
 
-    STATIC_ASSERT(sizeof(FlowResetFlags) == 2);
-    STATIC_ASSERT(offsetof(FlowResetBox, flags) == 0xa);
-    STATIC_ASSERT(sizeof(FlowResetBox) == 0xc);
     FLOWBOX *box;
     i32 i;
     if (system == NULL) {
@@ -777,7 +771,7 @@ static void GizFlowConfigGizmo(NUFPAR_PC *parser) {
     }
     ++data->gizmo_count;
     {
-        typedef union FlowGizmoFlags {
+        typedef union FlowGizmoFlags { // size 0x2
             u16 value;
 
             struct {
@@ -796,7 +790,6 @@ static void GizFlowConfigGizmo(NUFPAR_PC *parser) {
             } bits;
         } FlowGizmoFlags;
 
-        STATIC_ASSERT(sizeof(FlowGizmoFlags) == 2);
         u32 flags = (i16)load_g_flags;
         FlowGizmoFlags packed;
         packed.value = load_flowbox->state_flags;

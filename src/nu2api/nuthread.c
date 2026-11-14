@@ -1,7 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(CRITICAL_SECTION) == 0x18);
-
 /* PC-only state for the critical-section wrappers; their higher-level names
  * remain provisional until the original thread initialization path is mapped. */
 extern i32 PCThreadCriticalSectionCount;

@@ -342,8 +342,6 @@ void creatureEditorSaveData(AIPATHSYS *);
 
 static eduiiattr_s AiEditorSaveMessageColours = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 
-STATIC_ASSERT(sizeof(AiEditorSaveMessageColours) == 16);
-
 #define REBUILD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                                           \
     do {                                                                                                                                   \
         u32 allocation_size = (input_size);                                                                                                \

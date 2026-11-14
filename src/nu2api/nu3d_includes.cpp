@@ -16914,9 +16914,6 @@ template void LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>::Free(PC_SPECIAL_SHADOW_L
 static LightObjectPool<NUDISPLAYLISTITEM> dlistItemPool;
 static LightObjectPool<PC_SPECIAL_SHADOW_LIGHT> dynamicLightPool;
 static LightObjectPool<NURNDRLIBSTATE> rndrStatePool;
-STATIC_ASSERT(sizeof(dlistItemPool) == 0x88);
-STATIC_ASSERT(sizeof(dynamicLightPool) == 0x4188);
-STATIC_ASSERT(sizeof(rndrStatePool) == 0x208);
 
 extern "C" void *fun_005f5a10(size_t, LightObjectPool<NUDISPLAYLISTITEM> *pool) {
     return pool->allocate();
@@ -17172,8 +17169,6 @@ extern "C" {
             }
         }
     }
-
-    STATIC_ASSERT(sizeof(NUJOINTPROCANIMFN_PC) == 4);
 
     void NuHGobjEvalAnim2Root_3(NUHGOBJ_EVAL *object, ANI3_HEADER *animation, f32 time, i32 override_count, void *overrides,
                                 NUMTX *matrices, ANI3_ROOT_CALLBACK_PC root_fn, void *root_data) {

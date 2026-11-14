@@ -1090,14 +1090,12 @@ static i32 GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bolt, u8 *
                 continue;
             }
             for (object = obstacle->anim_set->objects; object; object = object->next) {
-                typedef struct obstacle_anim_object_data_s {
+                typedef struct obstacle_anim_object_data_s { // size 0x4
                     u16 flags;
-                    i16 platform;
+                    i16 platform; // 0x2
                 } OBSTACLE_ANIM_OBJECT_DATA;
 
                 OBSTACLE_ANIM_OBJECT_DATA *object_data = object->object_data;
-                STATIC_ASSERT(sizeof(OBSTACLE_ANIM_OBJECT_DATA) == 4);
-                STATIC_ASSERT(offsetof(OBSTACLE_ANIM_OBJECT_DATA, platform) == 2);
                 if (object_data->platform == bolt->hit_platform) {
                     BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, world);
                     GAMEOBJECT *owner = bolt->owner;

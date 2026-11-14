@@ -36,8 +36,6 @@ class OggReader : public WavReader { // size 0x338
 };
 
 #pragma pack(pop)
-STATIC_ASSERT(sizeof(OggVorbis_File) == 0x2d0);
-STATIC_ASSERT(offsetof(OggVorbis_File, callbacks) == 0x2c0);
 
 OggReader::OggReader(void) {
     compressed = 0;

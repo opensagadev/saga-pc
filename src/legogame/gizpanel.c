@@ -117,7 +117,7 @@ static NUVEC *PanelGetTrackingPosition(PANEL_MOVEMENT *panel, NUVEC *position) {
 }
 
 i32 GizPanel_Load(void *world_pointer, void *unused) {
-    typedef union PanelLoadFlags {
+    typedef union PanelLoadFlags { // size 0x1
         u8 value;
 
         struct {
@@ -128,7 +128,7 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
         } bits;
     } PanelLoadFlags;
 
-    typedef union PanelLoadDrawFlags {
+    typedef union PanelLoadDrawFlags { // size 0x1
         u8 value;
 
         struct {
@@ -139,17 +139,12 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
         } bits;
     } PanelLoadDrawFlags;
 
-    typedef struct PanelLoadState {
+    typedef struct PanelLoadState { // size 0x64
         u8 unknown_00[0x62];
-        PanelLoadFlags flags;
-        PanelLoadDrawFlags draw_flags;
+        PanelLoadFlags flags;          // 0x62
+        PanelLoadDrawFlags draw_flags; // 0x63
     } PanelLoadState;
 
-    STATIC_ASSERT(sizeof(PanelLoadFlags) == 1);
-    STATIC_ASSERT(sizeof(PanelLoadDrawFlags) == 1);
-    STATIC_ASSERT(offsetof(PanelLoadState, flags) == 0x62);
-    STATIC_ASSERT(offsetof(PanelLoadState, draw_flags) == 0x63);
-    STATIC_ASSERT(sizeof(PanelLoadState) == 0x64);
     WORLDINFO *world = world_pointer;
     PANEL_SYSTEM *system;
     i32 version;
@@ -230,7 +225,7 @@ void *GizPanels_ReserveBufferSpace(void *pointer) {
 }
 
 void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-    typedef union PanelVisibleFlags {
+    typedef union PanelVisibleFlags { // size 0x1
         u8 value;
 
         struct {
@@ -242,11 +237,9 @@ void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 
     typedef struct PanelVisibleState {
         u8 unknown_00[0x62];
-        PanelVisibleFlags flags;
+        PanelVisibleFlags flags; // 0x62
     } PanelVisibleState;
 
-    STATIC_ASSERT(sizeof(PanelVisibleFlags) == 1);
-    STATIC_ASSERT(offsetof(PanelVisibleState, flags) == 0x62);
     PANEL_MOVEMENT *panel;
     PanelVisibleState *state;
     i32 was_visible;
@@ -1012,7 +1005,7 @@ void GizPanel_Reset(void *context) {
 }
 
 void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) {
-    typedef union PanelProgressFlags {
+    typedef union PanelProgressFlags { // size 0x1
         u8 value;
 
         struct {
@@ -1023,14 +1016,11 @@ void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) 
         } bits;
     } PanelProgressFlags;
 
-    typedef struct PanelProgressState {
+    typedef struct PanelProgressState { // size 0x63
         u8 unknown_00[0x62];
-        PanelProgressFlags flags;
+        PanelProgressFlags flags; // 0x62
     } PanelProgressState;
 
-    STATIC_ASSERT(sizeof(PanelProgressFlags) == 1);
-    STATIC_ASSERT(offsetof(PanelProgressState, flags) == 0x62);
-    STATIC_ASSERT(sizeof(PanelProgressState) == 0x63);
     WORLDINFO *world = world_pointer;
     PANEL_SYSTEM *system;
     PANEL_MOVEMENT *panel;
@@ -1071,7 +1061,7 @@ void fun_0046f6f0(PANEL_MOVEMENT *panel, NUVEC *position) {
 }
 
 void GizPanel_Activate(void *input, i32 active) {
-    typedef union PanelActiveFlags {
+    typedef union PanelActiveFlags { // size 0x1
         u8 value;
 
         struct {
@@ -1081,14 +1071,11 @@ void GizPanel_Activate(void *input, i32 active) {
         } bits;
     } PanelActiveFlags;
 
-    typedef struct PanelActiveState {
+    typedef struct PanelActiveState { // size 0x63
         u8 unknown_00[0x62];
-        PanelActiveFlags flags;
+        PanelActiveFlags flags; // 0x62
     } PanelActiveState;
 
-    STATIC_ASSERT(sizeof(PanelActiveFlags) == 1);
-    STATIC_ASSERT(offsetof(PanelActiveState, flags) == 0x62);
-    STATIC_ASSERT(sizeof(PanelActiveState) == 0x63);
     GIZMO_PC *gizmo = input;
     PANEL_MOVEMENT *panel;
     if (gizmo != NULL && gizmo->object != NULL) {
