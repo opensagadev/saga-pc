@@ -1282,7 +1282,14 @@ void AtatPart_Update(PART_PC *part) {
     }
 }
 
+i32 timebase_updates = 1;
 static i32 KillPartsTieSpinRatePc = 200000;
+i32 CombatHitReactionIntervalPc = 3;
+f32 CombatReactionDurationPc = 3.0f;
+f32 KillPartsTieTrailScalePc = 0.10000000149011612f;
+NUVEC KillPartsTieSpinTranslationPc = {0.0f, 0.0f, -0.05000000074505806f};
+f32 AIFireIntervalMul = 1.0f;
+static f32 SHIELDFLICKERTIME = 0.10000000149011612f;
 
 void TieSpinZPart_Move(PART_PC *part, f32 time) {
     NUVEC trail;
@@ -1539,7 +1546,6 @@ void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
 }
 
 #pragma data_seg(".data$SHIELDFLICKERTIME")
-static f32 SHIELDFLICKERTIME = 0.10000000149011612f;
 #pragma data_seg()
 
 void ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *unused_bolt) {

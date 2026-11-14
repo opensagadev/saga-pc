@@ -9931,17 +9931,11 @@ extern "C" {
     f32 SUPERCARRY_RELEASESPEED_XZ = 2.0f;
 #pragma data_seg()
     PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn = 0;
-#pragma data_seg(".data$AIFireIntervalMul")
-    f32 AIFireIntervalMul = 1.0f;
-#pragma data_seg()
 #pragma data_seg(".data$GhostLightMul")
     f32 GhostLightMul = 1.0f;
 #pragma data_seg()
 #pragma data_seg(".data$GhostLightTargetMul")
     f32 GhostLightTargetMul = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$timebase_updates")
-    i32 timebase_updates = 1;
 #pragma data_seg()
     f32 tieonsfxwait = 0;
     f32 tieoffsfxwait = 0;
@@ -11476,16 +11470,6 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$KillPartsTieTrailScalePc")
-    f32 KillPartsTieTrailScalePc = 0.10000000149011612f;
-#pragma data_seg()
-}
-extern "C" {
-#pragma data_seg(".data$KillPartsTieSpinTranslationPc")
-    NUVEC KillPartsTieSpinTranslationPc = {0.0f, 0.0f, -0.05000000074505806f};
-#pragma data_seg()
-}
-extern "C" {
 #pragma data_seg(".data$KillPartsAtatExplodeTextPc")
     char KillPartsAtatExplodeTextPc[9] = "EXPLODE1";
 #pragma data_seg()
@@ -11572,14 +11556,6 @@ extern "C" {
 
 #pragma data_seg(".data$CombatPlayerDeathDifficultyAmountPc")
     f32 CombatPlayerDeathDifficultyAmountPc = -0.02500000037252903f;
-#pragma data_seg()
-
-#pragma data_seg(".data$CombatHitReactionIntervalPc")
-    i32 CombatHitReactionIntervalPc = 3;
-#pragma data_seg()
-
-#pragma data_seg(".data$CombatReactionDurationPc")
-    f32 CombatReactionDurationPc = 3.0f;
 #pragma data_seg()
 
 #pragma data_seg(".data$objhit_damage_joints")
