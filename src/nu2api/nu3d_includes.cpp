@@ -5800,9 +5800,9 @@ extern "C" void PostShadowComputeBoundingSpacePc(const NUVEC4 *points, NUMTX *ma
 extern "C" void PostShadowComputeClippingPlanesPc(const NUMTX *matrix, bool zero_near, NUVEC4 *left, NUVEC4 *right,
                                                   NUVEC4 *bottom, NUVEC4 *top, NUVEC4 *near_plane, NUVEC4 *far_plane) {
     const NUVEC4 symmetric[8] = {{-1, -1, -1, 1}, {-1, 1, -1, 1}, {1, 1, -1, 1}, {1, -1, -1, 1},
-                                                       {-1, -1, 1, 1},  {-1, 1, 1, 1},  {1, 1, 1, 1},  {1, -1, 1, 1}};
+                                 {-1, -1, 1, 1},  {-1, 1, 1, 1},  {1, 1, 1, 1},  {1, -1, 1, 1}};
     const NUVEC4 positive[8] = {{-1, -1, 0, 1}, {-1, 1, 0, 1}, {1, 1, 0, 1}, {1, -1, 0, 1},
-                                                      {-1, -1, 1, 1}, {-1, 1, 1, 1}, {1, 1, 1, 1}, {1, -1, 1, 1}};
+                                {-1, -1, 1, 1}, {-1, 1, 1, 1}, {1, 1, 1, 1}, {1, -1, 1, 1}};
     const NUVEC4 *source = zero_near ? positive : symmetric;
     NUVEC4 corners[8];
     for (i32 i = 0; i < 8; ++i) {
@@ -11538,17 +11538,15 @@ void NuMainFilterGen::render() {
         f32 scale_range = (bloom->far_scale - bloom->near_scale) * bloom->intensity;
         f32 angle_start = bloom->near_angle / 180.0;
         f32 angle_range = 180.0 / (bloom->far_angle - bloom->near_angle);
-        f32 angle[4] = {bloom->near_scale * bloom->intensity, scale_range, angle_start,
-                                              angle_range};
+        f32 angle[4] = {bloom->near_scale * bloom->intensity, scale_range, angle_start, angle_range};
         PCDeviceSetVertexShaderConstantsF(0x88, angle, 1);
         if (bloom->directional) {
             f32 direction_scale_range = (bloom->direction_far_scale - bloom->direction_near_scale) * bloom->intensity;
             f32 direction_angle_start = bloom->direction_near_angle * 3.1415927410125732 / 180.0;
             f32 direction_angle_range =
                 180.0 / ((bloom->direction_far_angle - bloom->direction_near_angle) * 3.1415927410125732);
-            f32 directional[4] = {bloom->direction_near_scale * bloom->intensity,
-                                                        direction_scale_range, direction_angle_start,
-                                                        direction_angle_range};
+            f32 directional[4] = {bloom->direction_near_scale * bloom->intensity, direction_scale_range,
+                                  direction_angle_start, direction_angle_range};
             PCDeviceSetVertexShaderConstantsF(0x89, directional, 1);
             const NUVEC *source = &bloom->direction;
             f32 direction_y = source->y;

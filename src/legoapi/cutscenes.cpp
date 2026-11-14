@@ -296,13 +296,13 @@ typedef struct CUT_DRAW_RIGID_PC {
 } CUT_DRAW_RIGID_PC;
 
 typedef struct CUT_DRAW_LOCATOR_ENTRY_PC {
-    char *name;                                                                                  // 0x00
-    u32 unknown_04;                                                                              // 0x04
-    u32 unknown_08;                                                                              // 0x08
-    u32 unknown_0c;                                                                              // 0x0c
-    void (*update)(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS_PC *, CUT_DRAW_LOCATOR_INSTANCE_PC *, // 0x10
-                   CUT_DRAW_LOCATOR_PC *, f32, NUMTX *, i32);
-} CUT_DRAW_LOCATOR_ENTRY_PC; // size 0x14
+    char *name;     // 0x00
+    u32 unknown_04; // 0x04
+    u32 unknown_08; // 0x08
+    u32 unknown_0c; // 0x0c
+    void (*update)(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS_PC *, CUT_DRAW_LOCATOR_INSTANCE_PC *, CUT_DRAW_LOCATOR_PC *,
+                   f32, NUMTX *, i32); // 0x10
+} CUT_DRAW_LOCATOR_ENTRY_PC;           // size 0x14
 
 typedef struct CUT_CONTROLLER_INSTANCE_PC {
     u8 unknown_00[0x88];      // 0x00

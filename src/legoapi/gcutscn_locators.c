@@ -391,10 +391,10 @@ typedef struct CUT_UPDATE_ENTRY_PC {
     u32 unknown_04; // 0x04
     u32 unknown_08; // 0x08
     u32 unknown_0c; // 0x0c
-    void (*update)( // 0x10
-        INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
-        i32);
-} CUT_UPDATE_ENTRY_PC; // size 0x14
+    void (*update)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32,
+                   NUMTX *,
+                   i32); // 0x10
+} CUT_UPDATE_ENTRY_PC;   // size 0x14
 
 extern i32 (*TriggerLocatorVfxFn)(i32, NUMTX *);
 extern void (*UpdateLocatorVfxFn)(i32, NUMTX *);

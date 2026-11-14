@@ -67,10 +67,10 @@ typedef struct bolt_gizmo_type_pc_s {
     u8 unknown_00[0x6c];                                       // 0x00
     i32 (*hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *); // 0x6c
     u8 unknown_70[4];                                          // 0x70
-    i32 (*hit_bolt)(WORLDINFO *,                               // 0x74
-                    void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *);
-    u8 unknown_78[0x24]; // 0x78
-} BOLT_GIZMO_TYPE_PC;    // size 0x9c
+    i32 (*hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32,
+                    u8 *); // 0x74
+    u8 unknown_78[0x24];   // 0x78
+} BOLT_GIZMO_TYPE_PC;      // size 0x9c
 
 typedef NUVEC *(*GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
 void EdFileWrite(void *data, i32 len);

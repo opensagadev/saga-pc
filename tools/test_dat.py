@@ -116,10 +116,10 @@ def write_clock_provider(directory):
     services into this isolated parser test.
     """
     production = (ROOT / "src/nu2api/nutimebar.c").read_text()
-    start = production.index("void __cdecl NuTimeGetTicksPS(")
-    end = production.index("void __cdecl PcInitializeStartupCriticalSection(", start)
+    start = production.index("void NuTimeGetTicksPS(")
+    end = production.index("void PcInitializeStartupCriticalSection(", start)
     bodies = production[start:end]
-    if len(re.findall(r"^.*void __cdecl NuTime\w+\(", bodies, re.MULTILINE)) != 1:
+    if len(re.findall(r"^.*void NuTime\w+\(", bodies, re.MULTILINE)) != 1:
         raise ValueError("DAT clock provider no longer contains exactly the production tick routine")
     data = (ROOT / "src/data.cpp").read_text()
     definitions = []

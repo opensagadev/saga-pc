@@ -137,12 +137,12 @@ def spell_variable(type_, name, translator):
                 if spelled is None:
                     return None
                 params.append(spelled)
-        return f"{ret_text} (__cdecl *{name}{suffix})({', '.join(params) or 'void'})"
+        return f"{ret_text} (*{name}{suffix})({', '.join(params) or 'void'})"
     return translator.spell(type_, name, 10 ** 9)
 
 
 def function_prototype(cursor, translator):
-    """`RET __cdecl NAME(PARAMS);` in PC types, or None."""
+    """`RET NAME(PARAMS);` in PC types, or None."""
     result = cursor.result_type
     if result.kind == T.VOID:
         ret = "void"
@@ -159,7 +159,7 @@ def function_prototype(cursor, translator):
         params.append(spelled)
     if cursor.type.kind == T.FUNCTIONPROTO and cursor.type.is_function_variadic():
         params.append("...")
-    return f"{ret} __cdecl {cursor.spelling}({', '.join(params) or 'void'});"
+    return f"{ret} {cursor.spelling}({', '.join(params) or 'void'});"
 
 
 def variable_declared(name):

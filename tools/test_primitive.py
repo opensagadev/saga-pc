@@ -17,14 +17,14 @@ from tools.lib import ROOT
 def write_provider(directory):
     production = (ROOT / "src/nu2api/nu3d_includes.cpp").read_text()
     types_start = production.index("typedef struct nuprim_command_pc_s {")
-    types_end = production.index("void __cdecl NuDisplayListLinkMtl(", types_start)
+    types_end = production.index("void NuDisplayListLinkMtl(", types_start)
     types = production[types_start:types_end]
     if len(re.findall(r"^typedef struct", types, re.MULTILINE)) != 2:
         raise ValueError("Primitive fixture requires the two complete production packet types")
-    start = production.index("void __cdecl NuDisplayListLinkMtl(")
+    start = production.index("void NuDisplayListLinkMtl(")
     end = production.index("#undef LINK_MTL_STATE\n", start) + len("#undef LINK_MTL_STATE\n")
     body = production[start:end]
-    if len(re.findall(r"^void __cdecl", body, re.MULTILINE)) != 1:
+    if len(re.findall(r"^void ", body, re.MULTILINE)) != 1:
         raise ValueError("Primitive fixture requires exactly the complete material linker")
     source = directory / "primitive_fixture.c"
     source.write_text('#include "saga.h"\n' + types + body +

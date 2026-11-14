@@ -719,9 +719,9 @@ typedef struct cut_instance_load_pc_s {
 struct cut_locator_function_entry_pc_s {
     char *name;     // 0x00
     u32 unknown_04; // 0x04
-    void (*reset)(  // 0x08
-        INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *);
-    u8 unknown_0c[8]; // 0x0c
+    void (*reset)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
+                  CUT_LOAD_LOCATOR *); // 0x08
+    u8 unknown_0c[8];                  // 0x0c
 }; // size 0x14
 
 static void CutCameraFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {

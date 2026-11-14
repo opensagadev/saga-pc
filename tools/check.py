@@ -244,7 +244,7 @@ def check_diagnostic_boundaries():
         ),
         'src/gameapi/saveload.cpp': (
             (
-                '    char *__cdecl fullslotname(i32 slot) {\n'
+                '    char *fullslotname(i32 slot) {\n'
                 '#ifndef SAGA_DEBUG\n'
                 '        PCOptionsBuildFolder(SaveFolderPathPc);\n'
                 '        strcat(SaveFolderPathPc, "SavedGames");\n'
@@ -261,7 +261,7 @@ def check_diagnostic_boundaries():
                 '#endif\n'
             ),
             (
-                '    void __cdecl createslotfolder(i32) {\n'
+                '    void createslotfolder(i32) {\n'
                 '#ifndef SAGA_DEBUG\n'
                 '        PCOptionsBuildFolder(SaveFolderPathPc);\n'
                 '        strcat(SaveFolderPathPc, "SavedGames");\n'

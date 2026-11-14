@@ -534,8 +534,8 @@ extern "C" {
 #define EDDRAW_LINE_CIRCLE(rotate, base_y, base_z)                                                                     \
     do {                                                                                                               \
         VuVec &origin = *(VuVec *)centre;                                                                              \
-        VuVec base;                                                                              \
-        VuVec point;                                                                             \
+        VuVec base;                                                                                                    \
+        VuVec point;                                                                                                   \
         __declspec(align(16)) VuVec previous;                                                                          \
         i32 i;                                                                                                         \
         base.x = 0.0f;                                                                                                 \
