@@ -148,6 +148,8 @@ extern "C" {
     POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc = 0;
     POST_SHADER_PROGRAM_PC *PostCopyTexLodProgramPc = 0;
     POST_SHADER_PROGRAM_PC *PostBlendTexProgramPc = 0;
+    POST_SHADER_PROGRAM_PC *dat_00973820 = 0;
+    POST_SHADER_PROGRAM_PC *dat_0097382c = 0;
     POST_SHADER_PROGRAM_PC *PostBlur5x5ProgramPc = 0;
     POST_SHADER_PROGRAM_PC *PostBlur7x7ProgramPc = 0;
     POST_SHADER_PROGRAM_PC *PostCopyAuxProgramPc = 0;

@@ -10928,8 +10928,6 @@ extern "C" {
 
 extern "C" {
     NULSTHDR *g_overrideList = 0;
-    POST_SHADER_PROGRAM_PC *dat_00973820 = 0;
-    POST_SHADER_PROGRAM_PC *dat_0097382c = 0;
     i32 dat_0097401c = 0;
     i32 dat_00974020 = 0;
     i32 *Char_MiniKit = 0;
