@@ -57,6 +57,8 @@ build configuration. Asserts that disagree, do not parse or carry a trailing
 comment stay and are reported; the edited lines are run through clang-format.
 """
 import argparse
+import hashlib
+import json
 import multiprocessing
 import re
 import subprocess
@@ -553,14 +555,41 @@ def analyze_files(files, jobs, all_configs=True):
             configs = configs[:1] if not rel.endswith(".h") else [configs[0], configs[2]]
         work.extend((rel, [*flags, *config]) for config in configs)
     result = defaultdict(list)
-    if jobs > 1 and len(work) > 1:
-        with multiprocessing.Pool(min(jobs, len(work))) as pool:
-            for rel, _, facts in pool.imap_unordered(_analyze_job, work):
-                result[rel].append(facts)
+    # Facts of one file and configuration are reused while the file, every project header, the flags,
+    # this tool and libclang are unchanged (build/layoutcheck/), so a run after a unit edit takes seconds.
+    shared = hashlib.sha256()
+    for path in [Path(__file__), *sorted((ROOT / "src").rglob("*.h"))]:
+        shared.update(path.relative_to(ROOT).as_posix().encode() + b"\0" + path.read_bytes())
+    shared.update(str(getattr(cindex(), "__file__", "")).encode())
+    cache = ROOT / "build/layoutcheck"
+    cache.mkdir(parents=True, exist_ok=True)
+
+    def key(job):
+        rel, args = job
+        h = shared.copy()
+        h.update(json.dumps(args).encode() + b"\0" + rel.encode() + b"\0" + (ROOT / rel).read_bytes())
+        return cache / (h.hexdigest() + ".json")
+
+    pending = []
+    for job in work:
+        stored = key(job)
+        if stored.is_file():
+            result[job[0]].append(json.loads(stored.read_text()))
+        else:
+            pending.append(job)
+
+    def keep(job, facts):
+        result[job[0]].append(facts)
+        key(job).write_text(json.dumps(facts))
+
+    if jobs > 1 and len(pending) > 1:
+        with multiprocessing.Pool(min(jobs, len(pending))) as pool:
+            for rel, args, facts in pool.imap_unordered(_analyze_job, pending):
+                keep((rel, args), facts)
     else:
-        for job in work:
-            rel, _, facts = _analyze_job(job)
-            result[rel].append(facts)
+        for job in pending:
+            rel, args, facts = _analyze_job(job)
+            keep((rel, args), facts)
     for rel, facts_list in list(result.items()):
         good = [facts for facts in facts_list if not facts["errors"]]
         # A header may be valid in one language only (C++ classes, C-only code); a unit must parse.
@@ -1025,7 +1054,7 @@ def main(argv=None):
                         help="rewrite the comments of every converted record (or of the named files) to the current "
                              "format; with --dry-run: report only")
     parser.add_argument("--stats", action="store_true", help="coverage by comments and asserts (parses all of src/)")
-    parser.add_argument("--jobs", type=int, default=min(2, multiprocessing.cpu_count()))
+    parser.add_argument("--jobs", type=int, default=min(8, multiprocessing.cpu_count()))
     args = parser.parse_args(argv)
     if args.convert:
         file, *_ = parse_target(args.convert)

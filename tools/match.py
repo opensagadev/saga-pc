@@ -666,6 +666,47 @@ def print_diff(diff, symbol_name):
                         print(f"  {int(ins['address']):08x}  {ins.get('formatted', '')}")
 
 
+def input_hashes(config):
+    """Hashes of every file a report depends on (matching.json "inputs")."""
+    inputs = [ROOT / "Makefile", *sorted((ROOT / "src").rglob("*.h")),
+              *sorted((ROOT / "config").glob("*")),
+              *sorted((ROOT / "tools").glob("*.py")), *sorted((ROOT / "tools").glob("*.def")),
+              *sorted((ROOT / "src").rglob("*.cpp")),
+              *sorted((ROOT / "src").rglob("*.c"))]
+    inputs.extend(dependency_files(ROOT))
+    if config.get("code_groups") and ROOT / config["code_groups"] not in inputs:
+        inputs.append(ROOT / config["code_groups"])
+    return {p.relative_to(ROOT).as_posix(): sha256(p) for p in inputs}
+
+
+def object_hashes(objects):
+    return {object_path(unit).relative_to(ROOT).as_posix(): digest(obj.data)
+            for unit, obj in sorted(objects.items())}
+
+
+def refresh(path=None):
+    """Re-record input, object and member-proof hashes of an existing report whose objects kept their code,
+    data and relocations (tools/proof.py checks that first); every comparison result stays as it is."""
+    path = path or ROOT / "matching.json"
+    config = project()
+    result = json.loads(Path(path).read_text())
+    objects = compiled_objects()
+    result["inputs"] = input_hashes(config)
+    result["objects"] = object_hashes(objects)
+    if "data_member_proof" in result:
+        if __package__:
+            from .data_members import evaluate_members
+        else:
+            from tools.data_members import evaluate_members
+        records = load_symbols()
+        grouped = prepare_code_group_objects(objects, load_code_groups(config), records)
+        members, proof = evaluate_members(config, grouped, records, config["target"], retail(config["target"]))
+        if members != result.get("data_members"):
+            raise ValueError("Typed data members changed: run tools/match.py --update")
+        result["data_member_proof"] = repository_paths(proof)
+    Path(path).write_text(json.dumps(result, indent=2) + "\n")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--update", action="store_true", help="Update matching.json and the README badge")
@@ -857,20 +898,11 @@ def main():
     if inlined:
         print(f"Recorded {len(inlined)} inlined symbols as part of their callers; "
               "no standalone address or byte coverage is assigned.")
-    inputs = [ROOT / "Makefile", *sorted((ROOT / "src").rglob("*.h")),
-              *sorted((ROOT / "config").glob("*")),
-              *sorted((ROOT / "tools").glob("*.py")), *sorted((ROOT / "tools").glob("*.def")),
-              *sorted((ROOT / "src").rglob("*.cpp")),
-              *sorted((ROOT / "src").rglob("*.c"))]
-    inputs.extend(dependency_files(ROOT))
-    if config.get("code_groups") and ROOT / config["code_groups"] not in inputs:
-        inputs.append(ROOT / config["code_groups"])
     result = {"format_version": 2, "target_sha256": target["sha256"],
               "compiler": load_json(ROOT / "config/toolchain.json")["version"],
               "objdiff_version": cli_pin["version"],
-              "inputs": {p.relative_to(ROOT).as_posix(): sha256(p) for p in inputs},
-              "objects": {object_path(unit).relative_to(ROOT).as_posix(): digest(obj.data)
-                          for unit, obj in sorted(objects.items())},
+              "inputs": input_hashes(config),
+              "objects": object_hashes(objects),
               "functions": functions, "data": data, "externals": list(externals.values()),
               "inlined": inlined}
     if candidate_only is not None:

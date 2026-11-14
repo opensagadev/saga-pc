@@ -104,7 +104,7 @@ Matching:
 	$(MAKE) BUILD_KIND=Matching build
 Debug:
 	$(MAKE) BUILD_KIND=Debug build
-.PHONY: link-strict prune-objects
+.PHONY: link-strict prune-objects proof
 # Objects of renamed or removed units go, so nobody deletes objects by hand.
 prune-objects:
 	@$(PYTHON) tools/prune_objects.py $(OBJ_DIR) $(OBJECTS) $(DIAGNOSTIC_OBJECTS)
@@ -207,6 +207,11 @@ lower-warning-budget: objects
 
 test:
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
+
+# Build, object identity against the last proven build, match only when code or data changed, scans and
+# tool tests; one verdict line (tools/proof.py).
+proof:
+	$(PYTHON) tools/proof.py
 
 match: check-objects
 	$(PYTHON) tools/match.py --update

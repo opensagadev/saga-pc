@@ -183,7 +183,7 @@ Never commit original game files, assets, compiler binaries or extracted objects
    bundled SDK go in `src/externals.h`.
 3. Compare: `make -j"$(nproc)" diff FUNC=NuRand` (C name, exact linker symbol
    or original address).
-4. Run `make -j"$(nproc)" match` to refresh `matching.json`, the README
+4. Run `make proof` (see [Proving a change](#proving-a-change)), or `make -j"$(nproc)" match` alone, to refresh `matching.json`, the README
    badges and their SVG files in `docs/badges/`, then commit them together
    (`tools/check.py` fails when they disagree).
 
@@ -210,6 +210,38 @@ compiled definition to have a mapping or to be listed in
 [config/candidate-only.json](config/candidate-only.json) (compiler-generated
 helpers with no known original address, which earn no credit). CI runs
 everything that needs no original files; matching runs locally only.
+
+### Proving a change
+
+`make proof` (tools/proof.py) builds, compares every object's code, data,
+relocations and symbols with the last proven build (COFF timestamps and
+`.debug$*` sections left out, so comments and file names do not count), runs
+`tools/match.py --update` only when an object differs (otherwise it refreshes
+the report's input hashes), runs the budget guard, the scans and the tool tests
+side by side, and prints one line:
+
+```text
+proof: PASS; functions 13513->13513 (+0 -0); data 15111->15111 (+0 -0); file data 972838->972838 bytes; bss ...; 47 s
+```
+
+Losses are listed by address; a loss of a function named in
+[docs/fragile-flips.md](docs/fragile-flips.md) is counted as a fragile flip, not
+a regression. Logs are in `build/proof/`. Set `SAGA_CLANG_PYTHON` to an
+interpreter whose libclang is the pinned 18 when the default one has another.
+
+Measured on a 16-thread machine (seconds; scans and tests run side by side, so
+the wall time is the build, the match or refresh, and the slowest check):
+
+| step | before | now |
+|---|---|---|
+| `make build` after one unit edit / after a header edit | 5 / 122 | 5 / 122 |
+| `match.py --update`, warm | 895 | 60 |
+| datadiff (inside match) | 127 | 11 |
+| layoutcheck, cold / unchanged headers | 190 / 190 | 66 / 1 |
+| tool tests | 100 | 46 (six groups) |
+| oddscan, castscan, literalscan | 38, 37, 12 | same |
+| proof, object-identical change after the build | about 1000 | 47 |
+| proof, code-changing change after the build | about 1000 | about 100 |
 
 ### House rules enforced by CI
 
