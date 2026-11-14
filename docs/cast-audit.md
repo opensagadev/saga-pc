@@ -12,6 +12,7 @@ python3 tools/castscan.py --report                      # top 50 root causes; bu
 python3 tools/castscan.py --list redundant-identity,redundant-implicit src/legogame/bolt.c
 python3 tools/castscan.py --check                       # class counts against config/castscan-budget.json (make check-core)
 python3 tools/castscan.py --write-budget                # lower the budget after a cleanup
+python3 tools/castscan.py --fix redundant-identity,redundant-implicit src   # delete them (then make format)
 ```
 
 `tools/castscan.py` parses every unit with libclang and the lint flags
@@ -32,12 +33,14 @@ only that unit.
 ## 1. Classes
 
 Each cast gets the first class whose rule applies, in this order. Snapshot after
-the pilot below (`origin/main` of 2026-11-13 plus this branch): **27,805 casts**.
+the pilot below (`origin/main` of 2026-11-13 plus this branch): **27,805 casts**; after batch 1
+(section 5) **25,528**, of which 63 redundant (in macro bodies) and 57 `codegen-steering`.
 
 | Class | Casts | Cause | Rule |
 |---|---:|---|---|
-| redundant-identity | 809 | redundant | source and target are the same type after typedefs |
-| redundant-implicit | 1,587 | redundant | the implicit conversion of an assignment, initialization, return, prototyped argument or integer promotion gives the same value without a diagnostic |
+| redundant-identity | 809 (27 after batch 1) | redundant | source and target are the same type after typedefs |
+| redundant-implicit | 1,587 (36 after batch 1) | redundant | the implicit conversion of an assignment, initialization, return, prototyped argument or integer promotion gives the same value without a diagnostic |
+| codegen-steering | 0 (57 after batch 1) | steers code | a redundant cast listed in `config/castscan-keep.csv`: VC8 compiles the unit differently without it |
 | discard | 1,284 | idiomatic | `(void)` of an unused value or parameter |
 | null-pointer | 142 | idiomatic | `(T *)0` |
 | address-constant | 52 | int-pointer | other integer constant cast to a pointer (fixed address, GUID table entry) |
@@ -223,7 +226,7 @@ the check is needed anyway).
 
 | # | Batch | Casts | Changes | Risk | How |
 |---:|---|---:|---|---|---|
-| 1 | Redundant casts, one directory per commit | ~2,300 of 2,396 (C-style, outside macros; 183 files) | 5-8 commits | none: objects byte-identical | delete with the classes of `--list redundant-identity,redundant-implicit`, drop the parentheses left behind, compare each object |
+| 1, done | Redundant casts (section 5) | ~2,300 of 2,396 (C-style, outside macros; 183 files) | 5-8 commits | none: objects byte-identical | delete with the classes of `--list redundant-identity,redundant-implicit`, drop the parentheses left behind, compare each object |
 | 2 | Unit-local declarations (`declaration-type` with a declaration in a `.c`/`.cpp`; `EdLevelFnt`, `edpp.c` item parameters, level packets, `hub.cpp` bonus gizmo) | ~560 | ~150 | low: one or two objects each | as the pilot: retype, delete the casts, compare objects |
 | 3 | Unit copies of `src/saga.h` structs (`duplicate-type`, `view-type` with a local side: `edpart.c`, `cutscene_lifecycle.c`, `lever.c`, `hatmachine.cpp`, `screen.cpp`, `parts.c`, `techno.c`, `config.c`, `cutscenes.cpp`, `pc_device.cpp`, `pc_input.cpp`) | ~1,800 | ~100 types | low to medium: field names and types must be merged into the real struct; one unit each | move missing fields into the `src/saga.h` struct only when another unit needs them, otherwise rename the fields of the local copy's users |
 | 4 | `void *` globals and fields of `src/saga.h` (`Player`, `CurrentTerrain`, `edui_font`, `APIOBJECT_PC.owner`, `bolt_s.owner`, `gizmotypes`, `nuspecial_handle_s.scene`, `nudisplay_list_pc_s.items`, `NuDebrisVertexData`, ...) | ~1,150 (declaration-type) + ~700 (laundering roots) | ~40 declarations, 3-4 `src/saga.h` commits | medium: full build and exact set; C++ units keep a cast where they assign an allocation | coordinate with the `src/saga.h` struct-comment conversion; one commit per group of declarations |
@@ -237,3 +240,40 @@ Batches 1-7 remove an estimated 8,000 to 9,000 casts (about 30% of 27,805);
 batches 1-3 alone, which need no `src/saga.h` change, about 4,600. After each
 batch `python3 tools/castscan.py --write-budget` lowers the budget so that
 `make check-core` keeps the gain.
+
+## 5. Batch 1: redundant casts removed
+
+`python3 tools/castscan.py --fix redundant-identity,redundant-implicit src`
+deleted every redundant cast at the location the scan recorded (cast text and
+the character ranges of `(T)` or `static_cast<T>`, from libclang extents): the
+operand stays; the parentheses around the operand (or around the cast) go only
+when what is left binds as tightly or is a whole initializer, right-hand side,
+return value or argument; in a macro argument only the cast goes. The 63 casts
+in `src/` macro bodies are left (one body serves expansions of different
+types). Then `make format`.
+
+2,332 casts in 182 files went (4 of them Debug-only, 18 in macro arguments; one
+more became redundant once its outer cast was gone). Every unit was rebuilt and
+compared with the base objects: 367 objects stayed byte-identical. In the other
+six, each function group and then each cast was put back and the unit
+re-scored (`tools/unitscore.py`, every mapped function against retail); a cast
+stays when its removal changes any score of the unit. 57 stay (net 2,275 removed: 27,803 to 25,528), listed with the
+reason in `config/castscan-keep.csv` (file, function, cast text, occurrence in
+the function) and counted as `codegen-steering`, so the redundant classes keep
+their budget near zero:
+
+| Unit | Kept | Why |
+|---|---:|---|
+| `nu2api/terrain_query.cpp` | 39 | `(f32)(a + 0.02f + r)` of a float expression in `ScanTerrainHandel`, `ScanTerrainPlatform`, `NewScanHandelFullPc`: the x87 code changes |
+| `nu2api/nu3d_includes.cpp` | 15 | `ComputeShadowMatrixPc` 1 (float); 14 identity casts in `NuSpecialGet*/Set*` and `NuHGobjEvalAnim2Root`: removing any one moves `NuDeferredFilterGen::render` (93.89 to 93.90 %), a unit-wide numbering effect, not their own code |
+| `legoapi/explosions.c` | 1 | `(f32)(z * inverse)` in `UpdateExplosion_Generic` |
+| `gamelib/net/NetworkObjectManager.cpp` | 1 | `(bool)(memcmp(...) == 0)`: without it `NOSContext::operator==` is not exact |
+| `legogame/tightrope.cpp` | 1 | `(NUANG)` in a conditional of `TightRopes_Draw` |
+
+`legogame/game.obj` differs in `InitGameAfterConfig` (two registers swap; a
+FRAGILE function, not exact, score unchanged at 82.24 %); every other object is
+byte-identical to the base build. The textual magic-number classes of
+`tools/oddscan.py` see 40 existing literals once the cast in front of the field
+access is gone (`magic-flag` +18, `magic-bound` +14, `magic-mask` +7,
+`magic-state` +1): a reviewed raise in `config/budget-raises.txt`, to be paid
+back by naming the constants.
