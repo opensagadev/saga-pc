@@ -1,10 +1,11 @@
-"""tools/headersplit.py on small in-memory headers (segmentation, map rules, rendering, neutrality)."""
+"""tools/headersplit.py on small in-memory headers (segmentation, map rules, ordering, rendering, checks)."""
 import collections
 import shutil
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from tools import headersplit as hs
 
@@ -149,9 +150,11 @@ class Segmentation(unittest.TestCase):
 
 
 class Planning(unittest.TestCase):
+    """The --exact-order plan: saga.h order, interleaved headers in parts."""
+
     def setUp(self):
         self.seg = hs.segment(HEADER)
-        self.plan = hs.make_plan(self.seg, rows_for(self.seg, MAP))
+        self.plan = hs.make_plan(self.seg, rows_for(self.seg, MAP), exact=True)
 
     def test_interleaved_headers_get_parts_in_order(self):
         runs = self.plan.targets["numath/nuvec.h"]
@@ -190,7 +193,75 @@ class Planning(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             (Path(tmp) / "colour.h").write_text("/* exists */\n")
             with self.assertRaises(ValueError):
-                hs.apply_plan(self.plan, tmp)
+                hs.apply_plan(self.plan, tmp, format_=False)
+
+
+def index_of(plan, key):
+    order = [i.key for run in plan.runs for i in run.items]
+    return order.index(key)
+
+
+class Grouping(unittest.TestCase):
+    """The default plan: items reordered as far as dependencies allow."""
+
+    def setUp(self):
+        self.seg = hs.segment(HEADER)
+        self.plan = hs.make_plan(self.seg, rows_for(self.seg, MAP))
+
+    def test_every_header_is_one_run(self):
+        self.assertFalse(self.plan.exact)
+        self.assertEqual({h: len(r) for h, r in self.plan.targets.items() if len(r) > 1}, {})
+        self.assertEqual(self.plan.split, {})
+        shim = hs.render_shim(self.plan)
+        self.assertIn(hs.SHIM_COMMENT, shim)
+
+    def test_dependencies_keep_their_order(self):
+        before = [("typedef:i32", "function:GizmoFind"), ("typedef:f32", "struct:nuvec_s"),
+                  ("struct:nuvec_s", "function:NuVecAdd"), ("forward:gizmo_s", "function:GizmoFind"),
+                  ("include:stddef.h", "typedef:i32"), ("macro:STATIC_ASSERT", "pack:packed_s")]
+        for first, then in before:
+            with self.subTest(first=first, then=then):
+                self.assertLess(index_of(self.plan, first), index_of(self.plan, then))
+
+    def test_header_cycle_is_forced_into_parts(self):
+        text = ("struct a1 { int x; };\nstruct b { struct a1 a; };\nstruct a2 { struct b b; };\n"
+                "void f(struct a1 *);\n")
+        seg = hs.segment(text)
+        mapping = {"struct:a1": "a.h", "struct:b": "b.h", "struct:a2": "a.h", "function:f": "b.h"}
+        plan = hs.make_plan(seg, rows_for(seg, mapping))
+        self.assertEqual(len(plan.targets["a.h"]), 2)
+        self.assertEqual(len(plan.targets["b.h"]), 1)  # f moves up to b
+        self.assertEqual(plan.split, {"a.h": "forced"})
+        self.assertEqual(seg.items[plan.forced["a.h"]].key, "struct:b")
+
+
+class Commuting(unittest.TestCase):
+    """dependency_graph: which pairs keep their saga.h order."""
+
+    def predecessors(self, text):
+        seg = hs.segment(text)
+        keys = [i.key for i in seg.items]
+        graph = hs.dependency_graph(seg, root=Path("/nonexistent"))
+        return {keys[i]: {keys[j] for j in preds} for i, preds in enumerate(graph)}
+
+    def test_parameter_names_bind_nothing_but_meet_macros(self):
+        graph = self.predecessors("void f(int count);\nextern int count;\nvoid g(int size);\n#define size 4\n")
+        self.assertNotIn("function:f", graph["variable:count"])
+        self.assertIn("function:g", graph["macro:size"])
+
+    def test_redeclaring_or_completing_a_declared_tag(self):
+        graph = self.predecessors("struct s;\nvoid f(struct s *);\nstruct s;\nstruct s { int x; };\n"
+                                  "typedef struct s S;\nint n = sizeof(S);\n")
+        self.assertIn("forward:s", graph["function:f"])
+        self.assertNotIn("function:f", graph["forward:s#2"])  # a repeated forward declaration commutes
+        self.assertNotIn("function:f", graph["struct:s"])  # a prototype does not need the tag complete
+        # Using the typedef needs the struct complete: the alias stands for the tag.
+        self.assertIn("struct:s", set().union(graph["definition:n"], *(graph[k] for k in graph["definition:n"])))
+
+    def test_macro_mentions_expand_and_prelude_includes_are_barriers(self):
+        graph = self.predecessors("#include <stddef.h>\n#define N LIMIT\nint a[N];\nenum { LIMIT = 4 };\n")
+        self.assertIn("include:stddef.h", graph["macro:N"])
+        self.assertIn("definition:a", graph["enum:LIMIT"])  # a[N] means a[LIMIT]: LIMIT must not move up
 
 
 class Tokens(unittest.TestCase):
@@ -203,6 +274,19 @@ class Tokens(unittest.TestCase):
         self.assertNotEqual(hs.with_linkage(one), hs.with_linkage(moved))
         braces = hs.with_linkage(hs.pp_tokens("struct s { int a; };"))
         self.assertIn(("{", False), braces)
+
+    def test_top_level_declarations(self):
+        text = ('#pragma pack(push, 1)\nstruct p { char c; int i; };\n#pragma pack(pop)\n'
+                'typedef char saga_static_assert_7[1];\nvoid f(void) { int x; }\nextern "C" { int g(int); }\n'
+                'namespace n { int h; }\nint k = { 1 };\n')
+        decls = hs.top_level_declarations(hs.with_linkage(hs.pp_tokens(text)))
+        self.assertEqual(decls[1], (("struct", "p", "{", "char", "c", ";", "int", "i", ";", "}", ";"), False, "1"))
+        self.assertEqual(decls[3][0], ("typedef", "char", "saga_static_assert_#", "[", "1", "]", ";"))
+        self.assertEqual(decls[4][0][-1], "}")  # a function body ends its definition
+        self.assertEqual(decls[5], (("int", "g", "(", "int", ")", ";"), True, ""))
+        self.assertEqual(decls[6][0][:2], ("namespace", "n"))
+        self.assertEqual(decls[7][0][-1], ";")
+        self.assertEqual(len(decls), 8)
 
 
 class Rules(unittest.TestCase):
@@ -226,6 +310,10 @@ class Rules(unittest.TestCase):
         ev._folded = None
         ev.externals_names = set()
         ev.same_entity = [("GizmoTotalPc", "GizmoTotal")]
+        ev.uses = collections.defaultdict(dict, {"GizmoTotal": {"legoapi/gizmo.c": 2}})
+        ev.lib_users = set()
+        ev.compiland_start = {}
+        ev.shadowed = set(hs.SHADOWED_DEFAULT)
         return ev
 
     def test_build_map_evidence_order(self):
@@ -241,8 +329,21 @@ class Rules(unittest.TestCase):
         self.assertEqual((rows["variable:GizmoCount"]["target"], rows["variable:GizmoCount"]["evidence"]),
                          ("globals.h", "android-weak"))
         self.assertEqual(rows["macro:STATIC_ASSERT"]["target"], "decomp.h")
-        self.assertEqual(rows["variable:NuVecZero"]["target"], "")
-        self.assertEqual(rows["variable:NuVecZero"]["evidence"], "unknown")
+        self.assertEqual(rows["variable:GizmoCount"]["detail"].split(";")[0], "catch-all (needs a module owner)")
+        # No unit uses it: a deletion candidate, owned by the nearest placed declaration around it.
+        self.assertEqual((rows["variable:NuVecZero"]["target"], rows["variable:NuVecZero"]["evidence"]),
+                         ("legoapi/gizmo/base/gizmo.h", "unused"))
+        self.assertIn("PC declaration", rows["variable:NuVecZero"]["detail"])
+
+    def test_unused_transferred_declarations_go_to_the_transitional_header(self):
+        seg = hs.segment(HEADER)
+        with mock.patch.object(hs, "TRANSFERRED_FROM", 40):
+            rows = {r["key"]: r for r in hs.build_map(seg, self.evidence())}
+        # An Android name no unit uses: kept, but in the transitional header, with the owner it would get.
+        self.assertEqual((rows["class:Thing"]["target"], rows["class:Thing"]["evidence"]), (hs.TRANSITIONAL, "unused"))
+        self.assertIn("would go to legoapi/thing.h (android)", rows["class:Thing"]["detail"])
+        self.assertEqual(rows["variable:NuVecZero"]["evidence"], "unused")  # before the transferred section
+        self.assertEqual(rows["function:GizmoTotal"]["evidence"], "users")  # used: stays
 
     def test_reviewed_rows_are_kept(self):
         seg = hs.segment(HEADER)
@@ -251,6 +352,23 @@ class Rules(unittest.TestCase):
         rows = {r["key"]: r for r in hs.build_map(seg, self.evidence(), previous)}
         self.assertEqual(rows["variable:NuVecZero"]["target"], "numath/nuvec.h")
         self.assertEqual(rows["variable:NuVecZero"]["evidence"], "review")
+
+    def test_heaviest_user_ties_go_to_the_lowest_address(self):
+        ev = self.evidence()
+        ev.file_compiland = {"a.c": ("a.c", "", 0), "b.c": ("b.c", "", 0), "c.c": ("c.c", "", 0)}
+        ev.compiland_start = {("a.c", ""): 0x500, ("b.c", ""): 0x100, ("c.c", ""): 0x50}
+        ev.uses = {"X": {"a.c": 3, "b.c": 3, "c.c": 1, "data.cpp": 9}}
+        self.assertEqual(ev.heaviest_user(["X"]), (("b.c", ""), 3))
+        self.assertEqual(ev.heaviest_user(["Y"]), (None, 0))
+
+    def test_library_and_shadowing_names(self):
+        self.assertEqual(hs.library_header("ogg_sync_init"), "transitional/libogg/ogg.h")
+        self.assertEqual(hs.library_header("ogg_int64_t"), "transitional/libogg/os_types.h")
+        self.assertEqual(hs.library_header("drft_init"), "transitional/libvorbis/smallft.h")
+        self.assertIsNone(hs.library_header("NuVecAdd"))
+        self.assertEqual(hs.unshadowed("legoapi/props/objects/signal.h", {"signal.h"}),
+                         "legoapi/props/objects/legoapi_signal.h")
+        self.assertEqual(hs.unshadowed("legoapi/thing.h", {"signal.h"}), "legoapi/thing.h")
 
     def test_demangle_and_stems(self):
         self.assertEqual(hs.demangle("_NuVecAdd"), "NuVecAdd")
@@ -271,24 +389,40 @@ class Neutrality(unittest.TestCase):
 
     def test_split_tree_preprocesses_to_the_same_tokens(self):
         seg = hs.segment(HEADER)
+        plan = hs.make_plan(seg, rows_for(seg, MAP), exact=True)
+        with tempfile.TemporaryDirectory() as before, tempfile.TemporaryDirectory() as after:
+            for root in (before, after):
+                (Path(root) / "src").mkdir()
+                (Path(root) / "src/saga.h").write_text(HEADER)
+                (Path(root) / "src/unit.c").write_text('#include "saga.h"\ni32 use(NUVEC *v) { return v != 0; }\n')
+            hs.apply_plan(plan, Path(after) / "src", format_=False)
+            for language in ("c", "c++"):
+                with self.subTest(language=language):
+                    self.assertEqual(self.preprocess(before, language), self.preprocess(after, language))
+
+    def test_grouped_split_keeps_the_declarations(self):
+        seg = hs.segment(HEADER)
         plan = hs.make_plan(seg, rows_for(seg, MAP))
         with tempfile.TemporaryDirectory() as before, tempfile.TemporaryDirectory() as after:
             for root in (before, after):
                 (Path(root) / "src").mkdir()
                 (Path(root) / "src/saga.h").write_text(HEADER)
                 (Path(root) / "src/unit.c").write_text('#include "saga.h"\ni32 use(NUVEC *v) { return v != 0; }\n')
-            hs.apply_plan(plan, Path(after) / "src")
+            hs.apply_plan(plan, Path(after) / "src", format_=False)
             for language in ("c", "c++"):
                 with self.subTest(language=language):
-                    self.assertEqual(self.preprocess(before, language), self.preprocess(after, language))
+                    one, two = self.preprocess(before, language), self.preprocess(after, language)
+                    self.assertNotEqual(one, two)  # moved
+                    decls = [hs.top_level_declarations(x) for x in (one, two)]
+                    self.assertEqual(collections.Counter(decls[0]), collections.Counter(decls[1]))
 
     def test_direct_include_gives_all_parts(self):
         seg = hs.segment(HEADER)
-        plan = hs.make_plan(seg, rows_for(seg, MAP))
+        plan = hs.make_plan(seg, rows_for(seg, MAP), exact=True)
         with tempfile.TemporaryDirectory() as root:
             (Path(root) / "src").mkdir()
             (Path(root) / "src/saga.h").write_text(HEADER)
-            hs.apply_plan(plan, Path(root) / "src")
+            hs.apply_plan(plan, Path(root) / "src", format_=False)
             (Path(root) / "src/unit.c").write_text('#include "numath/nuvec.h"\n#include "numath/nuvec.h"\n')
             tokens = [t for t, _ in self.preprocess(root, "c++")]
             text = " ".join(tokens)

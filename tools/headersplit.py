@@ -6,13 +6,16 @@ typedefs, forward declarations, function prototypes, extern variables, macros,
 STATIC_ASSERTs, includes, and the `#pragma pack` regions and directive-only
 conditionals around them. `config/header-map.csv` names the target header of
 every item. The split writes each header's items there and turns saga.h into a
-shim that includes the headers in an order reproducing the original declaration
-order exactly. Items without a target stay in saga.h at their place.
+shim that includes the headers.
 
-- A header whose items are interleaved with another header's items in saga.h
-  gets ordered fragments: `x.h` includes `x.part01.h`, `x.part02.h`, ... and the
-  shim includes the fragments at their original places (`--interleaving` lists
-  them, so the map can be adjusted instead).
+- Order: by default the items are reordered as far as that is inert
+  (dependency_graph: a declaration stays after what it names, redeclarations
+  and macros keep their order), so most headers are one block and the shim is
+  a list of whole-header includes. `--exact-order` keeps saga.h order instead
+  (token-neutral, most headers in many parts).
+- A header that cannot be one block gets numbered parts in the same file: the
+  shim includes it once per part, a direct include gives all parts at once
+  (`--interleaving` lists them and why).
 - Each item keeps its preprocessor context: the enclosing top-level `#if`
   branches and the `extern "C"` block are re-emitted around every run of items
   (original directive text where the run starts in the first branch, a derived
@@ -24,16 +27,20 @@ order exactly. Items without a target stay in saga.h at their place.
     python3 tools/headersplit.py --build-map            # (re)write config/header-map.csv from the evidence
     python3 tools/headersplit.py --stats                # items per kind and target, coverage, unknowns
     python3 tools/headersplit.py --dry-run              # what the split would write, nothing written
-    python3 tools/headersplit.py --interleaving         # headers that need fragments, and where
+    python3 tools/headersplit.py --interleaving         # headers that need parts, and why
     python3 tools/headersplit.py --apply --root DIR     # write the split into DIR/src (default: this tree)
-    python3 tools/headersplit.py --check-neutral src/legoapi/doors.c ...
+    python3 tools/headersplit.py --check-counts src/legoapi/doors.c ...
+    python3 tools/headersplit.py --check-neutral src/legoapi/doors.c ...   # the --exact-order split
 
-`--check-neutral` preprocesses each unit with clang -E and the lint flags
+Both checks preprocess each unit with clang -E and the lint flags
 (tools/declscan.py), once in this tree and once in a scratch copy with the split
-applied (build/headersplit/), and compares the token streams with line markers
-dropped. `extern "C" {` blocks are compared by meaning: their braces are dropped
-and each token carries its linkage, so splitting one block into several is
-neutral and anything else is not. One clang process runs at a time.
+applied (build/headersplit/), one clang process at a time. `--check-neutral`
+compares the token streams with line markers dropped; `extern "C" {` blocks are
+compared by meaning (their braces are dropped and each token carries its
+linkage). `--check-counts` compares the multiset of top-level declarations
+(tokens, linkage, `#pragma pack` in effect; STATIC_ASSERT counter numbers
+dropped) and the clang -fsyntax-only errors: the proof that a reordered split
+gives every unit the same declarations; object identity is the build's proof.
 
 The segmentation is lossless: the items and the context directives between them
 give back saga.h byte for byte (`--roundtrip`).
@@ -232,6 +239,7 @@ class Item:
     key: str = ""
     detail: str = ""
     carried: list = field(default_factory=list)  # comment lines before context directives just before it
+    locals: set = field(default_factory=set)  # parameter names of its declarators: refs that bind no global
 
 
 @dataclass
@@ -388,7 +396,10 @@ def classify(code, directives):
         if has_body:
             kw = next((w for w in words[:4] if w in ("struct", "union", "enum", "class")), "typedef")
             brace = next(i for i, t in top if t.text == "{")
-            tag = [toks[k].text for k in range(1, brace) if toks[k].kind == "id" and toks[k - 1].text == kw]
+            tag = []
+            if kw in words[:4]:
+                name = _tag_name(toks, words.index(kw) + 1)
+                tag = [name] if name else []
             close = _skip_group(toks, brace, "{", "}")
             names = tag + _declarator_names(toks[close + 1:])
             names += _enumerators(toks[brace:close + 1]) if kw == "enum" else []
@@ -400,7 +411,7 @@ def classify(code, directives):
     if words and words[0] in ("struct", "union", "enum", "class"):
         if has_body:
             brace = next(i for i, t in top if t.text == "{")
-            name = toks[1].text if toks[1].kind == "id" else ""
+            name = _tag_name(toks, 1)
             close = _skip_group(toks, brace, "{", "}")
             names = ([name] if name else []) + _declarator_names(toks[close + 1:])
             names += _enumerators(toks[brace:close + 1]) if words[0] == "enum" else []
@@ -428,6 +439,13 @@ def classify(code, directives):
         return "function", [name] if name else []
     kind = "variable" if "extern" in words or linkage else "definition"
     return kind, _variable_name(toks)
+
+
+def _tag_name(toks, k):
+    """The tag after a class key at toks[k], past `__declspec(...)`; "" for an anonymous one."""
+    while k < len(toks) and toks[k].text == "__declspec" and k + 1 < len(toks) and toks[k + 1].text == "(":
+        k = _skip_group(toks, k + 1, "(", ")") + 1
+    return toks[k].text if k < len(toks) and toks[k].kind == "id" and toks[k].text not in KEYWORDS else ""
 
 
 def _pointer_declarator(inner):
@@ -486,8 +504,12 @@ def _typedef_name(toks):
             name = _pointer_declarator(inner)
             if name:
                 return name
+            # parenthesised function type: typedef void (__cdecl NAME)(args);
+            named = [t for t in inner if t.text not in CALLCONV]
+            if len(named) == 1 and named[0].kind == "id" and named[0].text not in KEYWORDS:
+                return named[0].text
             # function type: typedef i32 NAME(args);
-            if i > 0 and toks[i - 1].kind == "id":
+            if i > 0 and toks[i - 1].kind == "id" and toks[i - 1].text not in KEYWORDS:
                 return toks[i - 1].text
             break
     ids = [t for _, t in top if t.kind == "id" and t.text not in KEYWORDS and not ATTRIBUTE_MACRO.match(t.text)]
@@ -707,6 +729,42 @@ def _opening_brace(tokens, start, close):
     return start
 
 
+NOT_A_NAME_AFTER = {"struct", "union", "enum", "class", "const", "volatile", "typename"}
+
+
+def _parameter_names(code):
+    """The names a declaration gives its parameters (also of function pointer parameters): the last identifier
+    of a parameter that follows a type (an identifier, `*` or `&`), before any array bounds or default."""
+    out = set()
+    stack = []
+    for i, t in enumerate(code):
+        if t.text == "(":
+            stack.append(i)
+        elif t.text == ")" and stack:
+            start = stack.pop()
+            depth = 0
+            parameter = []
+            for u in code[start + 1:i] + [Token("punct", ",", 0, 0)]:
+                if u.text in "([" and u.kind == "punct":
+                    depth += 1
+                elif u.text in ")]" and u.kind == "punct":
+                    depth -= 1
+                if depth == 0 and u.text == ",":
+                    head = []
+                    for v in parameter:
+                        if v.text in ("=", "["):
+                            break
+                        head.append(v)
+                    if len(head) >= 2 and head[-1].kind == "id" and head[-1].text not in KEYWORDS:
+                        before = head[-2]
+                        if (before.kind == "id" and before.text not in NOT_A_NAME_AFTER) or before.text in "*&":
+                            out.add(head[-1].text)
+                    parameter = []
+                else:
+                    parameter.append(u)
+    return out
+
+
 def _make_item(toks, frames, linkage, events):
     code = [t for t in toks if t.kind != "dir"]
     directives = [t for t in toks if t.kind == "dir"]
@@ -731,6 +789,8 @@ def _make_item(toks, frames, linkage, events):
     context = tuple((f.id, b) for f, b in frames)
     item = Item(len([e for e in events if e.item]), toks[0].line, toks[-1].end, 0, kind, names, refs, context,
                 linkage)
+    if kind in ("function", "variable", "typedef"):
+        item.locals = _parameter_names(code) & refs
     return Event("item", toks[0].line, toks[-1].end, 0, item=item)
 
 
@@ -805,6 +865,45 @@ DECOMP_MACROS = {"SAGA_JOIN_IMPL", "SAGA_JOIN", "STATIC_ASSERT", "STUBBED", "STU
 VIEW_NAME = re.compile(r"(_VIEW|View|_VIEW_PC)$")
 # The libogg/libvorbis API that saga.h carries (lib/ogg-vorbis/vorbis/ogg/ogg.h includes saga.h for it).
 LIBRARY_NAME = re.compile(r"(ogg|oggpack|oggpackB|vorbis|ov|drft|_vorbis|_ogg)_\w+$|^OggVorbis_File$|^ogg_int\d+_t$")
+# The original upstream headers that saga.h carries verbatim (declarations token-identical; checked against libogg
+# 1.1.3 and libvorbis 1.2.0). lib/ogg-vorbis materialises stubs at these paths that include saga.h.
+# The upstream header each copy in saga.h comes from. lib/ogg-vorbis (config/ogg-vorbis.json) materialises the
+# real libvorbis vorbis/codec.h and vorbis/vorbisfile.h, but its vorbis/ogg/ogg.h, ogg/os_types.h and smallft.h
+# are stubs that include saga.h, where the copies live. Until the pin carries the upstream files, the split moves
+# the copies into these holding headers (not named like the library headers: MSVC's quoted-include search would
+# find src/ogg/ogg.h before the stub from a vendored unit); they go when the stubs become the real headers.
+LIBRARY_HEADERS = {
+    "ogg/ogg.h": ("transitional/libogg/ogg.h", "libogg 1.1.3 include/ogg/ogg.h"),
+    "ogg/os_types.h": ("transitional/libogg/os_types.h", "libogg 1.1.3 include/ogg/os_types.h (_WIN32 MSVC branch)"),
+    "smallft.h": ("transitional/libvorbis/smallft.h", "libvorbis 1.2.0 lib/smallft.h (same declarations)"),
+}
+LIBRARY_ORIGIN = {holding: f"{origin}; replaces lib stub {real}"
+                  for real, (holding, origin) in LIBRARY_HEADERS.items()}
+
+
+def library_header(name):
+    """The holding header of a saga.h copy of a libogg/libvorbis declaration, or None."""
+    if re.match(r"ogg_u?int\d+_t$", name):
+        return LIBRARY_HEADERS["ogg/os_types.h"][0]
+    if name.startswith("drft_"):
+        return LIBRARY_HEADERS["smallft.h"][0]
+    if LIBRARY_NAME.match(name):
+        return LIBRARY_HEADERS["ogg/ogg.h"][0]
+    return None
+
+
+# SDK/CRT header names a module header must not take (MSVC searches the directories of every open includer for a
+# quoted include); the full list comes from the pinned SDK when it is installed.
+SHADOWED_DEFAULT = {"windows.h", "signal.h", "traffic.h", "assert.h", "string.h", "math.h", "time.h", "memory.h",
+                    "process.h", "errno.h", "limits.h", "float.h", "stdio.h", "stdlib.h", "ctype.h", "locale.h"}
+
+
+def unshadowed(target, shadowed):
+    """`target`, or `<dir>/<area>_<name>` when its file name is an SDK/CRT header name."""
+    path = Path(target)
+    if path.name.lower() not in shadowed or "/" not in target:
+        return target
+    return f"{path.parent.as_posix()}/{target.split('/')[0]}_{path.name}"
 SDK_HEADER = {"binkw32": "bink", "d3d9": "d3d9", "d3dx9_35": "d3dx9", "dinput8": "dinput", "dsound": "dsound",
               "xinput1_3": "xinput"}
 SDK_DEFS = tuple(SDK_HEADER)
@@ -844,6 +943,13 @@ class Evidence:
         self.text_range = (0, 0)
         self._folded = None
         self.externals_names = set()
+        self.uses = collections.defaultdict(dict)  # identifier -> {current src file: occurrences}
+        self.lib_users = set()  # identifiers of the vendored library units
+        self.compiland_start = {}  # (compiland, inner) -> lowest retail address
+        self.shadowed = set(SHADOWED_DEFAULT)
+        for directory in ("build/tools/msvc8/include", "build/tools/msvc8/PlatformSDK/Include"):
+            if (self.root / directory).is_dir():
+                self.shadowed |= {p.name.lower() for p in (self.root / directory).rglob("*.h")}
         self._load()
 
     def _load(self):
@@ -900,6 +1006,9 @@ class Evidence:
             inner = row["inner_file"] if row["inner_file"] not in ("", "?") else ""
             ranges.append((int(row["start"], 16), int(row["end"], 16), compiland, inner))
             if compiland:
+                key = (compiland, inner)
+                self.compiland_start[key] = min(self.compiland_start.get(key, 1 << 32), int(row["start"], 16))
+            if compiland:
                 self.android_unit.setdefault(compiland, set()).update(row["android_unit"].split())
             weights = collections.Counter()
             for part in row["current_source_files"].split():
@@ -934,10 +1043,15 @@ class Evidence:
                 continue
             relative = path.relative_to(self.root / "src").as_posix()
             text = strip_comments(read_text(path))
-            for name in set(identifier.findall(text)):
+            for name, count in collections.Counter(identifier.findall(text)).items():
                 self.users[name].add(relative)
+                self.uses[name][relative] = count
             for match in definition.finditer(text):
                 self.definers[match[1]].add(relative)
+        vendored_units = self.root / "lib/ogg-vorbis"
+        if vendored_units.is_dir():
+            for path in sorted(vendored_units.rglob("*.c")):
+                self.lib_users.update(identifier.findall(strip_comments(read_text(path))))
 
     # -- helpers ------------------------------------------------------------------------------------------
     def android_choice(self, name):
@@ -984,6 +1098,21 @@ class Evidence:
             if owner and path != "data.cpp":
                 found[owner[:2]] += 1
         return found
+
+    def heaviest_user(self, names):
+        """(compiland, inner), occurrences: the compiland whose units use `names` most (ties: lowest address)."""
+        weight = collections.Counter()
+        for name in names:
+            for path, count in self.uses.get(name, {}).items():
+                # A file outside the unit table (a newer PC-only file) stands for itself.
+                owner = self.file_compiland.get(path, (path, ""))
+                if path != "data.cpp":
+                    weight[owner[:2]] += count
+        if not weight:
+            return None, 0
+        best = max(weight.values())
+        tied = sorted((self.compiland_start.get(c, 1 << 32), c) for c, n in weight.items() if n == best)
+        return tied[0][1], best
 
     def compilands_using(self, name):
         found = set()
@@ -1034,10 +1163,9 @@ def decide(item, ev, seg):
     if item.kind in ("struct", "union", "typedef", "forward", "class") and any(VIEW_NAME.search(n) for n in names):
         return "decomp.h", "decomp", "view type"
     for name in names:
-        if LIBRARY_NAME.match(name):
-            return "externals/ogg.h", "externals", "libogg/libvorbis API " + name
-        if name in ev.vendored:
-            return "externals/ogg.h", "externals", "vendored " + " ".join(sorted(ev.vendored[name]))
+        header = library_header(name)
+        if header:
+            return header, "library", LIBRARY_ORIGIN[header]
         if name in ev.sdk_exports:
             dll = ev.sdk_exports[name]
             return f"externals/{SDK_HEADER[dll]}.h", "externals", f"SDK {dll}.dll, no SDK header"
@@ -1100,11 +1228,7 @@ def build_map(seg, ev, previous=None):
     _propagate(seg, ev, decisions)
     _same_entity(seg, ev, decisions)
     all_names = {name for item in seg.items for name in item.names}
-    for item in seg.items:
-        target = decisions[item.index][0]
-        if target and item.kind not in ("forward", "assert"):
-            for name in item.names:
-                owner_of_name.setdefault(name, target)
+    owner_of_name.update(_owners(seg, decisions))
     for item in seg.items:
         target, how, detail = decisions[item.index]
         if how == "review":
@@ -1119,6 +1243,8 @@ def build_map(seg, ev, previous=None):
             match = ASSERT_TYPE.search(text)
             if match is None:
                 decisions[item.index] = ("decomp.h", "decomp", "data model check")
+            elif match[1] in owner_of_name and owner_of_name[match[1]] in LIBRARY_ORIGIN:
+                decisions[item.index] = ("decomp.h", "decomp", f"layout check of library type {match[1]}")
             elif match[1] in owner_of_name:
                 decisions[item.index] = (owner_of_name[match[1]], "follow-type", match[1])
             elif match[1] in ev.externals_names:
@@ -1128,6 +1254,10 @@ def build_map(seg, ev, previous=None):
                 decisions[item.index] = ("decomp.h", "decomp", f"data model check of SDK type {match[1]}")
             else:
                 decisions[item.index] = (RESIDUE, "unknown", f"asserts on {match[1]}")
+    _rule(seg, ev, decisions)
+    _data_nearest(seg, ev, decisions)
+    _follow_types(seg, ev, decisions, all_names)
+    _unused(seg, ev, decisions)
     # Items that follow the next item (an #undef before a declaration, an include inside a block).
     for position in range(len(seg.items) - 1, -1, -1):
         item = seg.items[position]
@@ -1137,13 +1267,202 @@ def build_map(seg, ev, previous=None):
     rows = []
     for item in seg.items:
         target, how, detail = decisions[item.index]
+        if target in CATCH_ALL and not detail.startswith(CATCH_ALL_NOTE):
+            detail = f"{CATCH_ALL_NOTE}; {detail}"
+        if target and how != "review":
+            renamed = unshadowed(target, ev.shadowed)
+            if renamed != target:
+                detail = f"{detail}; renamed from {target} (SDK/CRT header name)"
+                target = renamed
         rows.append({"key": item.key, "kind": item.kind, "names": " ".join(item.names[:6]),
                      "line_start": item.first, "line_end": item.last, "lines": item.last - item.lead + 1,
                      "target": target or RESIDUE, "evidence": how, "detail": detail})
     return rows
 
 
-STRONG = {"android", "android-stem", "symbol", "definition", "users", "decomp", "externals", "review"}
+STRONG = {"android", "android-stem", "symbol", "definition", "users", "decomp", "externals", "library", "review"}
+# Android's own catch-all headers: acceptable step-1 targets, to be given module owners later.
+CATCH_ALL = {"globals.h", "legoapi/legoapi_types.h"}
+CATCH_ALL_NOTE = "catch-all (needs a module owner)"
+TRANSITIONAL = "transitional/unused.h"
+TRANSFERRED_FROM = 25487  # first line of the sections tools/typeimport.py and tools/globals.py wrote
+
+
+def _follow_types(seg, ev, decisions, all_names):
+    """STATIC_ASSERTs and forward declarations still open follow the type they name, once it is placed."""
+    owner_of_name = _owners(seg, decisions)
+    for item in seg.items:
+        target, how, _ = decisions[item.index]
+        if how != "unknown":
+            continue
+        if item.kind == "assert":
+            match = ASSERT_TYPE.search(seg.own_text(Event("item", item.first, item.last, item.lead)))
+            if match and match[1] in owner_of_name:
+                decisions[item.index] = (owner_of_name[match[1]], "follow-type", match[1])
+        elif item.kind in ("forward", "typedef"):
+            for name in item.names:
+                if name in owner_of_name:
+                    decisions[item.index] = (owner_of_name[name], "follow-definition", name)
+                    break
+
+
+def _owners(seg, decisions):
+    """name -> target of its defining item (a forward declaration's target when nothing else declares it)."""
+    owners = {}
+    for forward in (False, True):
+        for item in seg.items:
+            target = decisions[item.index][0]
+            if target and item.kind != "assert" and (item.kind == "forward") == forward:
+                for name in item.names:
+                    owners.setdefault(name, target)
+    return owners
+
+
+def _rule(seg, ev, decisions):
+    """Shared declarations: the compiland that defines it, else the one whose units use it most (ties: lowest
+    address); a type only saga.h uses goes where most of its saga.h users go."""
+    by_name = collections.defaultdict(list)
+    closure = _macro_closure(seg)  # a use of a typedef or macro uses what it stands for
+    for item in seg.items:
+        refs = set(item.refs)
+        for ref in item.refs:
+            refs |= closure.get(ref, set())
+        for ref in refs:
+            by_name[ref].append(item)
+    for item in seg.items:
+        target, how, _ = decisions[item.index]
+        if how != "unknown" or item.kind in ("assert", "undef"):
+            continue
+        defined = set()
+        for name in item.names:
+            defined |= {ev.file_compiland[p][:2] for p in ev.definers.get(name, ())
+                        if p != "data.cpp" and p in ev.file_compiland}
+        if defined and item.kind in ("variable", "function", "definition"):
+            owner = min(defined, key=lambda c: ev.compiland_start.get(c, 1 << 32))
+            header, path_how = ev.header_for_compiland(*owner)
+            decisions[item.index] = (header, "rule", f"defined in {_label(owner)} {path_how}")
+            continue
+        owner, count = ev.heaviest_user(item.names)
+        if owner:
+            header, path_how = ev.header_for_compiland(*owner)
+            decisions[item.index] = (header, "rule", f"used most in {_label(owner)} ({count}) {path_how}")
+    for _ in range(4):
+        for item in seg.items:
+            target, how, _ = decisions[item.index]
+            if how != "unknown" or item.kind in ("assert", "undef"):
+                continue
+            alias = next((f for f in seg.items if f.kind == "forward" and len(f.names) > 1 and
+                          item.kind in ("struct", "union", "class") and f.names[0] in item.names[:1] and
+                          decisions[f.index][1] not in ("unknown", "unused")), None)
+            if alias is not None:
+                # Units use the struct through its typedef: the struct goes where the typedef went.
+                decisions[item.index] = (decisions[alias.index][0], "rule",
+                                         f"with its typedef {alias.names[1]} ({decisions[alias.index][1]})")
+                continue
+            targets = collections.Counter()
+            first = {}
+            for name in item.names:
+                for user in by_name.get(name, ()):
+                    user_target = decisions[user.index][0]
+                    if user is not item and user.kind != "assert" and user_target:
+                        targets[user_target] += 1
+                        first.setdefault(user_target, user.index)
+            if targets:
+                best = max(targets.values())
+                header = min((h for h, n in targets.items() if n == best), key=lambda h: first[h])
+                decisions[item.index] = (header, "rule", f"used in saga.h only, most by {header} ({best})")
+
+
+def _data_nearest(seg, ev, decisions):
+    """A global still open that only data.cpp mentions: the header of its nearest placed neighbour in retail
+    data (weaker than data-order, which needs both neighbours to agree)."""
+    import bisect  # noqa: PLC0415
+    placed = sorted((ev.data_address[n], decisions[i.index][0]) for i in seg.items
+                    if i.kind == "variable" and decisions[i.index][0] and decisions[i.index][1] in STRONG
+                    for n in i.names if n in ev.data_address)
+    addresses = [a for a, _ in placed]
+    for item in seg.items:
+        if decisions[item.index][1] != "unknown" or item.kind != "variable":
+            continue
+        address = next((ev.data_address[n] for n in item.names if n in ev.data_address), None)
+        if address is None or not placed:
+            continue
+        k = bisect.bisect_left(addresses, address)
+        near = min((p for p in (placed[k - 1] if k > 0 else None, placed[k] if k < len(placed) else None) if p),
+                   key=lambda p: abs(p[0] - address))
+        decisions[item.index] = (near[1], "data-nearest",
+                                 f"only data.cpp mentions it; retail 0x{address:x}, nearest 0x{near[0]:x}")
+
+
+def _label(owner):
+    return owner[0] + (f"[{owner[1]}]" if owner[1] else "")
+
+
+def _unused(seg, ev, decisions):
+    """Declarations no unit uses: open ones, and those of the Android-transferred sections, go to the
+    transitional header (deleted in step 3) unless a kept declaration needs them."""
+    candidates = set()
+    # The pairs of config/sibling-names.csv: deleting one of them changed code generation (docs/header-plan.md).
+    renamed = {name for pair in ev.same_entity for name in pair}
+    for item in seg.items:
+        target, how, _ = decisions[item.index]
+        if how in ("decomp", "library", "externals", "review", "same-entity") or \
+                item.kind in ("include", "undef", "assert"):
+            continue
+        if not item.names or any(n in ev.users or n in ev.lib_users or n in renamed for n in item.names):
+            continue
+        if how == "unknown" or item.first >= TRANSFERRED_FROM:
+            candidates.add(item.index)
+    items = {item.index: item for item in seg.items}
+    declarers = collections.defaultdict(set)
+    for item in seg.items:
+        for name in item.names:
+            declarers[name].add(item.index)
+    bodies = {"inline", "definition", "macro", "class", "block"}
+    closure = _macro_closure(seg)  # a use of a typedef or macro uses what it stands for
+    changed = True
+    while changed:
+        changed = False
+        for item in seg.items:
+            if item.index in candidates or item.kind == "assert":
+                continue
+            refs = set(item.refs)
+            for ref in item.refs:
+                refs |= closure.get(ref, set())
+            for ref in refs:
+                # A variable or function is needed only by code (bodies, initialisers, macros); a type by any
+                # declaration that names it.
+                needed = {i for i in declarers.get(ref, set()) & candidates
+                          if item.kind in bodies or items[i].kind not in ("variable", "function")}
+                if needed:
+                    candidates -= needed
+                    changed = True
+    placed = sorted((item.first, decisions[item.index][0]) for item in seg.items
+                    if item.index not in candidates and decisions[item.index][0] and item.kind != "assert"
+                    and decisions[item.index][0] not in CATCH_ALL)
+    lines = [line for line, _ in placed]
+    import bisect  # noqa: PLC0415
+    for index in sorted(candidates):
+        item = items[index]
+        target, how, _ = decisions[index]
+        if not target:
+            # No evidence at all: propose the module of the nearest placed declaration around it in saga.h.
+            k = bisect.bisect_left(lines, item.first)
+            near = [placed[j] for j in (k - 1, k) if 0 <= j < len(placed)]
+            target = min(near, key=lambda p: abs(p[0] - item.first))[1]
+            how = "saga.h neighbour"
+        if item.first >= TRANSFERRED_FROM:
+            decisions[index] = (TRANSITIONAL, "unused",
+                                f"no unit uses it; Android-transferred section; would go to {target} ({how})")
+        else:
+            decisions[index] = (target, "unused", f"no unit uses it; PC declaration; owner by {how}")
+    unused_names = {n for i in candidates for n in items[i].names}
+    for item in seg.items:
+        if item.kind == "assert" and decisions[item.index][1] in ("follow-type", "unknown"):
+            match = ASSERT_TYPE.search(seg.own_text(Event("item", item.first, item.last, item.lead)))
+            if match and match[1] in unused_names:
+                owner = next(decisions[i][0] for i in candidates if match[1] in items[i].names)
+                decisions[item.index] = (owner, "follow-type", match[1])
 
 
 def _propagate(seg, ev, decisions):
@@ -1296,20 +1615,24 @@ class Plan:
     stale: list  # map rows that no longer match an item
     missing: list  # items without a map row
     includes: dict = field(default_factory=dict)  # header -> (plain includes, shim-only includes, notes)
+    exact: bool = True  # saga.h order (token-neutral) rather than grouped
+    split: dict = field(default_factory=dict)  # grouped: header -> "forced" or "cycle" for the headers in parts
+    forced: dict = field(default_factory=dict)  # grouped: header -> an item that depends on it and that it needs
 
 
-def make_plan(seg, rows):
+def make_plan(seg, rows, exact=False, extra=None):
+    """The runs of the split. `exact`: saga.h order (token-neutral); otherwise grouped: the items reordered
+    as far as their dependencies allow (see dependency_graph), so most headers are one run."""
     by_key = {row["key"]: row for row in rows}
     stale = [row for row in rows if row["key"] not in {i.key for i in seg.items}]
-    missing = []
+    missing = [item for item in seg.items if item.key not in by_key]
+    target_of = {item.index: (by_key[item.key]["target"].strip() if item.key in by_key else RESIDUE)
+                 for item in seg.items}
+    why = {}
+    order = seg.items if exact else schedule(seg, target_of, extra, why)
     runs = []
-    for item in seg.items:
-        row = by_key.get(item.key)
-        if row is None:
-            missing.append(item)
-            target = RESIDUE
-        else:
-            target = row["target"].strip()
+    for item in order:
+        target = target_of[item.index]
         if runs and runs[-1].target == target:
             runs[-1].items.append(item)
         else:
@@ -1323,9 +1646,438 @@ def make_plan(seg, rows):
             for n, run in enumerate(header_runs, 1):
                 run.part = n
     unplaced = [i for run in runs if not run.target for i in run.items]
-    plan = Plan(seg, runs, dict(targets), unplaced, stale, missing)
+    plan = Plan(seg, runs, dict(targets), unplaced, stale, missing, exact=exact, split=why.get("split", {}),
+                forced=why.get("forced", {}))
     plan.includes = dependencies(plan)
     return plan
+
+
+# --------------------------------------------------------------------------------------------------------------
+# Which reorderings are inert
+#
+# Two top-level items commute (can swap places without changing the meaning of either) unless
+# - one declares a name the other declares too (redeclarations keep their order: linkage, composite types,
+#   overloads, the C/C++ variants of one declaration),
+# - one declares a name the other mentions (a use stays after the declaration it binds to; in C a
+#   `struct tag *` in a prototype must not move before or after the tag's declaration), counting the
+#   identifiers a mentioned macro expands to,
+# - one is a macro definition or #undef and the other contains its name (expansion happens at the item),
+# - one tests a macro in its #if context that the other defines,
+# - one is an #include of a system header (a barrier), or of a project header, which counts as declaring and
+#   mentioning what that header does.
+# A macro's own body is not bound where it is defined, so it does not order the macro against the names it
+# uses. Any order that keeps every non-commuting pair in saga.h order is equivalent: each unit then sees the
+# same declarations, each with the same meaning; only their order and the __COUNTER__ numbers that name the
+# STATIC_ASSERT typedefs change.
+
+
+def _macro_closure(seg):
+    """name -> the names a mention of it also mentions: a macro's body (expanded where it is used) and the
+    types a typedef stands for (using `N` of `typedef struct T N;` may need T complete), transitively."""
+    bodies = {}
+    for item in seg.items:
+        if item.kind == "macro":
+            for name in item.names:
+                bodies.setdefault(name, set()).update(item.refs)
+        elif item.kind == "typedef":
+            for name in item.names:
+                bodies.setdefault(name, set()).update(item.refs - item.locals)
+        elif item.kind == "forward" and len(item.names) > 1:
+            for name in item.names[1:]:
+                bodies.setdefault(name, set()).add(item.names[0])
+    closure = {}
+    for name in bodies:
+        seen = set()
+        stack = [name]
+        while stack:
+            current = stack.pop()
+            for ref in bodies.get(current, ()):
+                if ref not in seen:
+                    seen.add(ref)
+                    if ref in bodies:
+                        stack.append(ref)
+        closure[name] = seen
+    return closure
+
+
+def _project_header_names(path, seen=None):
+    """(names, refs) of a project header and the project headers it includes."""
+    seen = seen if seen is not None else set()
+    names, refs = set(), set()
+    if path in seen or not path.is_file():
+        return names, refs
+    seen.add(path)
+    seg = segment(read_text(path))
+    for item in seg.items:
+        if item.kind == "include":
+            for included in item.names:
+                more = _project_header_names(path.parent / included, seen)
+                names |= more[0]
+                refs |= more[1]
+        names.update(item.names)
+        refs.update(item.refs)
+    return names, refs - names
+
+
+SYSTEM_INCLUDE_DIRS = ("build/tools/msvc8/include", "build/tools/msvc8/PlatformSDK/Include")
+INCLUDE_LINE = re.compile(r'^\s*#\s*include\s*[<"]([^>"]+)[>"]', re.M)
+
+
+def _depth_zero_ids(text):
+    """Identifiers of preprocessed C++ outside any braces, where `extern "C" {` and enum braces count as
+    transparent: a superset of the names declared at global scope."""
+    out = set()
+    stack = []  # True for a transparent brace
+    previous = []
+    for match in re.finditer(r'"(?:\\.|[^"\\\n])*"|[A-Za-z_]\w*|[{};]', text):
+        token = match.group()
+        if token == "{":
+            transparent = (len(previous) >= 2 and previous[-1].startswith('"') and previous[-2] == "extern") or \
+                any(t == "enum" for t in previous[-4:])
+            stack.append(transparent)
+        elif token == "}":
+            if stack:
+                stack.pop()
+        elif all(stack) and (token[0].isalpha() or token[0] == "_"):
+            out.add(token)
+        if token in "{};":
+            previous = []
+        else:
+            previous.append(token)
+    return out
+
+
+def system_header_names(header, root=ROOT):
+    """(global, every, macros) identifiers of a toolchain header, or None when they cannot be read.
+
+    `every`: the identifiers of the header and the headers it includes, read lexically over all branches, a
+    superset of what it defines and tests as macros. `global`: its macros and the identifiers outside braces
+    of its preprocessed text (one clang -E), plus `std`, a superset of what it declares outside namespace std,
+    where a saga.h declaration could meet it."""
+    dirs = [root / d for d in SYSTEM_INCLUDE_DIRS if (root / d).is_dir()]
+    clang = os.environ.get("CLANG") or shutil.which("clang-18") or shutil.which("clang")
+    if not dirs or not clang:
+        return None
+    every = set()
+    seen = set()
+    stack = [(header, None)]
+    while stack:
+        name, here = stack.pop()
+        candidates = ([here / name] if here else []) + [d / name for d in dirs]
+        path = next((p for p in candidates if p.is_file()), None)
+        if path is None or path in seen:
+            continue
+        seen.add(path)
+        text = strip_comments(read_text(path))
+        every |= set(re.findall(r"[A-Za-z_]\w*", text))
+        stack += [(included, path.parent) for included in INCLUDE_LINE.findall(text)]
+    if not seen:
+        return None
+    from tools import declscan  # noqa: PLC0415
+
+    def expand(source):
+        return subprocess.run([clang, "-E", "-dD", *declscan.base_flags(), "-x", "c++", "-"], cwd=root,
+                              input=source, capture_output=True, text=True, encoding="latin-1", timeout=600)
+
+    result = expand(f"#include <{header}>\n")
+    if result.returncode or not result.stdout:
+        return None
+    defined = re.compile(r"^#\s*define\s+([A-Za-z_]\w*)", re.M)
+    macros = set(defined.findall(result.stdout)) - set(defined.findall(expand("").stdout))  # not the predefined
+    code = "\n".join(line for line in result.stdout.splitlines() if not line.lstrip().startswith("#"))
+    return (macros | _depth_zero_ids(code) | {"std"}, every | macros, macros)
+
+
+TAG_KINDS = {"struct", "union", "class"}
+NAMING_KINDS = {"function"}  # prototypes: a later definition of a tag they name changes nothing for them
+
+
+def _context_prefix(outer, inner):
+    return tuple(inner[:len(outer)]) == tuple(outer)
+
+
+def dependency_graph(seg, extra=None, root=ROOT):
+    """predecessors[i]: the items that must stay before item i (indices into seg.items).
+
+    `extra`: header -> system_header_names(header); a system #include not in it is looked up in the toolchain.
+    The includes of the prelude (before the first declaration) and those that cannot be read are barriers.
+    Another system include declares and mentions its `global` identifiers, and keeps its place against every
+    macro definition or #undef of one of its identifiers."""
+    extra = dict(extra or {})
+    closure = _macro_closure(seg)
+    conditions = {}
+    for frame in seg.frames:
+        ids = set()
+        for condition in frame.conditions:
+            ids.update(re.findall(r"[A-Za-z_]\w*", condition))
+        conditions[frame.id] = ids - {"defined"}
+    declares = []
+    mentions = []
+    barrier = []
+    prelude = True  # system includes before the first declaration stay barriers
+    system = []  # (index, every identifier) of the system includes that are not barriers
+    for item in seg.items:
+        names = set(item.names)
+        refs = set() if item.kind == "macro" else set(item.refs)
+        is_barrier = False
+        if item.kind == "include":
+            header = item.names[0] if item.names else ""
+            local = root / "src" / header
+            if local.is_file():
+                more = _project_header_names(local)
+                names, refs = more[0], more[1]
+            else:
+                if header not in extra and not prelude:
+                    extra[header] = system_header_names(header, root)
+                if extra.get(header) is None or prelude:
+                    is_barrier = True
+                else:
+                    names, refs = set(extra[header][0]), set()  # declares all; mentions too, below
+                    system.append((item.index, extra[header][1]))
+        elif item.kind not in ("macro", "undef", "pragma", "directive"):
+            prelude = False
+        if item.kind in ("undef", "pragma", "directive"):
+            refs |= names
+        for ref in list(refs):
+            refs |= closure.get(ref, set())
+        for frame_id, _ in item.context:
+            refs |= conditions[frame_id]
+        names -= KEYWORDS  # a keyword a name was taken from by mistake binds nothing
+        declares.append(names)
+        mentions.append(refs - names - KEYWORDS)
+        barrier.append(is_barrier)
+        if item.kind == "include" and not is_barrier and not (root / "src" / item.names[0]).is_file():
+            mentions[-1] = set(names)
+    predecessors = [set() for _ in seg.items]
+    by_name = collections.defaultdict(list)
+    for i, item in enumerate(seg.items):
+        for name in declares[i]:
+            by_name[name].append((i, "D"))
+        for name in mentions[i]:
+            by_name[name].append((i, "M" if name in item.locals else "R"))
+    macro_like = {i for i, item in enumerate(seg.items) if item.kind in ("macro", "undef")}
+    system_macros = {i: extra[seg.items[i].names[0]][2] for i, _ in system}
+    for name, touches in by_name.items():
+        if not any(role == "D" for _, role in touches):
+            continue
+        # A parameter name binds nothing; it only meets a macro of that name.
+        local_counts = any(role == "D" and (i in macro_like or name in system_macros.get(i, ())) for i, role in touches)
+        touches.sort()
+        last_declarer = None
+        tags = []  # earlier struct/union/class/forward/typedef declarers of the name
+        since = []  # mentions after the last declarer
+        for i, role in touches:
+            if role == "M" and not local_counts:
+                continue
+            kind = seg.items[i].kind
+            if role == "D":
+                if last_declarer is not None and last_declarer != i:
+                    predecessors[i].add(last_declarer)
+                visible = any(_context_prefix(seg.items[t].context, seg.items[i].context) for t in tags)
+                if kind == "forward" and visible:
+                    # Redeclaring a declared tag changes nothing for the mentions around it.
+                    last_declarer = i
+                    continue
+                if kind in TAG_KINDS and visible:
+                    # Completing a declared tag changes nothing for declarations that only name it.
+                    predecessors[i].update(j for j in since if j != i and seg.items[j].kind not in NAMING_KINDS)
+                else:
+                    predecessors[i].update(j for j in since if j != i)
+                if kind in TAG_KINDS or kind in ("forward", "typedef"):
+                    tags.append(i)
+                last_declarer = i
+                since = []
+            else:
+                if last_declarer is not None and last_declarer != i:
+                    predecessors[i].add(last_declarer)
+                since.append(i)
+    for i, every in system:
+        for j, item in enumerate(seg.items):
+            if item.kind in ("macro", "undef") and j != i and every.intersection(item.names):
+                predecessors[max(i, j)].add(min(i, j))
+    last_barrier = None
+    since_barrier = []
+    for i in range(len(seg.items)):
+        if barrier[i]:
+            predecessors[i].update(since_barrier)
+            if last_barrier is not None:
+                predecessors[i].add(last_barrier)
+            last_barrier = i
+            since_barrier = []
+        else:
+            if last_barrier is not None:
+                predecessors[i].add(last_barrier)
+            since_barrier.append(i)
+    return predecessors
+
+
+def forced_splits(predecessors, header_of):
+    """The headers that cannot be one run in any order: some item outside the header both depends on one of
+    its items and is needed by another (header -> such an outside item, the first in saga.h order)."""
+    successors = [[] for _ in predecessors]
+    for i, preds in enumerate(predecessors):
+        for j in preds:
+            successors[j].append(i)
+    members = collections.defaultdict(list)
+    for i, header in enumerate(header_of):
+        members[header].append(i)
+
+    def outside_reach(header, starts, step):
+        seen = set()
+        stack = [k for s in starts for k in step[s] if header_of[k] != header]
+        seen.update(stack)
+        while stack:
+            for k in step[stack.pop()]:
+                if k not in seen:
+                    seen.add(k)
+                    stack.append(k)
+        return seen
+
+    forced = {}
+    for header, items in members.items():
+        later = outside_reach(header, items, successors)
+        if later:
+            between = later & outside_reach(header, items, predecessors)
+            if between:
+                forced[header] = min(between)
+    return forced
+
+
+def _cyclic_components(nodes, edges):
+    """The strongly connected components with more than one node (iterative Tarjan)."""
+    index, low, on_stack, stack, out = {}, {}, set(), [], []
+    counter = 0
+    for root in nodes:
+        if root in index:
+            continue
+        work = [(root, iter(edges.get(root, ())))]
+        index[root] = low[root] = counter
+        counter += 1
+        stack.append(root)
+        on_stack.add(root)
+        while work:
+            node, children = work[-1]
+            advanced = False
+            for child in children:
+                if child not in index:
+                    index[child] = low[child] = counter
+                    counter += 1
+                    stack.append(child)
+                    on_stack.add(child)
+                    work.append((child, iter(edges.get(child, ()))))
+                    advanced = True
+                    break
+                if child in on_stack:
+                    low[node] = min(low[node], index[child])
+            if advanced:
+                continue
+            work.pop()
+            if work:
+                low[work[-1][0]] = min(low[work[-1][0]], low[node])
+            if low[node] == index[node]:
+                component = []
+                while True:
+                    member = stack.pop()
+                    on_stack.discard(member)
+                    component.append(member)
+                    if member == node:
+                        break
+                if len(component) > 1:
+                    out.append(component)
+    return out
+
+
+def choose_splits(predecessors, header_of):
+    """(split headers, why): the forced ones, then, while the headers that stay whole still form a cycle,
+    the header of each cycle with the most dependency edges inside it."""
+    forced = forced_splits(predecessors, header_of)
+    split = dict.fromkeys(forced, "forced")
+    while True:
+        node = [("item", i) if header_of[i] in split else header_of[i] for i in range(len(header_of))]
+        edges = collections.defaultdict(set)
+        for i, preds in enumerate(predecessors):
+            for j in preds:
+                if node[j] != node[i]:
+                    edges[node[j]].add(node[i])
+        components = _cyclic_components(list(dict.fromkeys(node)), edges)
+        if not components:
+            return split, forced
+        for component in components:
+            members = set(component)
+            weight = collections.Counter()
+            for a in component:
+                if isinstance(a, str):
+                    inside = sum(1 for b in edges.get(a, ()) if b in members)
+                    weight[a] = inside * sum(1 for b in component if a in edges.get(b, ()))
+            split[max(weight, key=lambda h: (weight[h], h))] = "cycle"
+
+
+def schedule(seg, target_of, extra=None, report=None):
+    """Items in an order that keeps every dependency (dependency_graph) with as few headers as can be split
+    into parts: the headers that stay whole are emitted at once, in saga.h order; the items of a split header
+    are emitted one by one, continuing its current run while it has ready items."""
+    import heapq  # noqa: PLC0415
+    items = seg.items
+    header_of = [target_of[item.index] for item in items]
+    predecessors = dependency_graph(seg, extra)
+    split, forced = choose_splits(predecessors, header_of)
+    if report is not None:
+        report.update(split=split, forced=forced)
+    node = [("item", i) if header_of[i] in split else header_of[i] for i in range(len(items))]
+    members = collections.defaultdict(list)
+    for i, n in enumerate(node):
+        members[n].append(i)
+    edges = collections.defaultdict(set)
+    pending = collections.Counter()
+    for i, preds in enumerate(predecessors):
+        for j in preds:
+            if node[j] != node[i] and node[i] not in edges[node[j]]:
+                edges[node[j]].add(node[i])
+                pending[node[i]] += 1
+    whole_ready = []  # heap of (first item, header) of the whole headers that are ready
+    item_ready = collections.defaultdict(list)  # split header -> heap of its ready items
+    left = collections.Counter(header_of[i] for i in range(len(items)) if header_of[i] in split)
+
+    def release(n):
+        if isinstance(n, tuple):
+            heapq.heappush(item_ready[header_of[n[1]]], n[1])
+        else:
+            heapq.heappush(whole_ready, (members[n][0], n))
+
+    for n in members:
+        if not pending[n]:
+            release(n)
+    current = None
+    order = []
+    while len(order) < len(items):
+        if current is None or not item_ready[current]:
+            # A split header whose remaining items are all ready closes now; then the whole headers; only when
+            # none is ready the split header with the earliest ready item starts or continues a part.
+            closing = [(item_ready[h][0], h) for h in left if left[h] and len(item_ready[h]) == left[h]]
+            candidates = closing + whole_ready[:1]
+            if candidates:
+                choice = min(candidates)[1]
+            else:
+                choice = min((heap[0], h) for h, heap in item_ready.items() if heap)[1]
+            if choice not in split:
+                heapq.heappop(whole_ready)
+                done = [choice]
+                current = None
+            else:
+                current = choice
+        if current is not None:
+            i = heapq.heappop(item_ready[current])
+            left[current] -= 1
+            done = [("item", i)]
+        for n in done:
+            order += [items[i] for i in members[n]]
+            for m in edges.get(n, ()):
+                pending[m] -= 1
+                if not pending[m]:
+                    release(m)
+    if len(order) != len(items):
+        raise ValueError("dependency cycle among the headers that stay whole")
+    return order
 
 
 TYPE_KINDS = {"struct", "union", "enum", "class", "typedef", "forward", "macro", "pack", "inline"}
@@ -1339,14 +2091,17 @@ def dependencies(plan):
     there); otherwise only outside the shim (`#ifndef SAGA_SHIM`), so the shim order stays as it is."""
     seg = plan.seg
     target_of = {}
+    position = {}
     for run in plan.runs:
         for item in run.items:
             target_of[item.index] = (run.target, run.index)
-    declared = collections.defaultdict(list)  # name -> [item index] in order
+            position[item.index] = len(position)
+    declared = collections.defaultdict(list)  # name -> [position] in shim order
     for item in seg.items:
         if item.kind in TYPE_KINDS:
             for name in item.names:
-                declared[name].append(item.index)
+                declared[name].append(position[item.index])
+    at = {p: i for i, p in position.items()}
     first_run = {}
     last_run = {}
     for run in plan.runs:
@@ -1363,12 +2118,12 @@ def dependencies(plan):
                     providers = declared.get(ref)
                     if not providers:
                         continue
-                    k = bisect.bisect_left(providers, item.index) - 1
+                    k = bisect.bisect_left(providers, position[item.index]) - 1
                     if k < 0:
                         continue
-                    if any(target_of[p][0] == header for p in providers[:k + 1]):
+                    if any(target_of[at[p]][0] == header for p in providers[:k + 1]):
                         continue
-                    provider = target_of[providers[k]][0]
+                    provider = target_of[at[providers[k]]][0]
                     if provider == header:
                         continue
                     if not provider:
@@ -1385,7 +2140,7 @@ def dependencies(plan):
                 shim_only.append(other)
         notes = []
         if shim_only:
-            notes.append(f"{SHIM_NOTE}: " + ", ".join(shim_only) + " (not all earlier in saga.h order)")
+            notes.append(f"{SHIM_NOTE}: " + ", ".join(shim_only) + " (not all of it earlier in the shim)")
         if residue:
             notes.append("uses declarations still in saga.h: " + ", ".join(sorted(residue)[:12]) +
                          (" ..." if len(residue) > 12 else ""))
@@ -1469,7 +2224,7 @@ def render_header(plan, header):
     if len(runs) == 1:
         out += ["", render_items(plan.seg, runs[0].items), "", f"#endif"]
         return "\n".join(out) + "\n"
-    out.append(f"/* {len(runs)} parts: saga.h includes this header once per part, in its declaration order; "
+    out.append(f"/* {len(runs)} parts: saga.h includes this header once per part, each where its declarations belong; "
                "included directly, it gives all parts at once. */")
     for run in runs:
         out += ["", f"#if {guard}_PART == {run.part} && !defined({guard}_STOP)",
@@ -1480,7 +2235,10 @@ def render_header(plan, header):
     return "\n".join(out) + "\n"
 
 
-SHIM_COMMENT = """/* Include-all shim (docs/header-plan.md, step 1): the module headers in the order that reproduces the
+SHIM_COMMENT = """/* Include-all shim (docs/header-plan.md, step 1): every module header, in an order where each declaration
+ * comes after what it depends on. A header with several parts is included once per part. Declarations without a
+ * mapped header (config/header-map.csv) stay here, at their place. */"""
+SHIM_COMMENT_EXACT = """/* Include-all shim (docs/header-plan.md, step 1): the module headers in the order that reproduces the
  * declaration order of the former catch-all header exactly. A header with several parts is included once per
  * part. Declarations without a mapped header (config/header-map.csv) stay here, at their place. */"""
 
@@ -1491,7 +2249,7 @@ def render_shim(plan):
     out = []
     if guard:
         out += [guard[0].text, guard[1].text, ""]
-    out += [SHIM_COMMENT, "#define SAGA_SHIM", ""]
+    out += [SHIM_COMMENT_EXACT if plan.exact else SHIM_COMMENT, "#define SAGA_SHIM", ""]
     for run in plan.runs:
         if run.target:
             out.append(f'#include "{run.target}"')
@@ -1502,8 +2260,9 @@ def render_shim(plan):
     return "\n".join(out) + "\n"
 
 
-def apply_plan(plan, src):
-    """Write the shim and the headers under `src` (a directory laid out like src/)."""
+def apply_plan(plan, src, format_=True):
+    """Write the shim and the headers under `src` (a directory laid out like src/), formatted with the house
+    style (.clang-format: includes are never reordered) so that `check.py --format` passes as written."""
     src = Path(src)
     written = []
     for header in sorted(plan.targets):
@@ -1516,6 +2275,11 @@ def apply_plan(plan, src):
         path.write_text(render_header(plan, header), encoding="latin-1", newline="\n")
         written.append(header)
     (src / "saga.h").write_text(render_shim(plan), encoding="latin-1", newline="\n")
+    if format_:
+        from tools.check import clang_tool  # noqa: PLC0415
+        files = [str(src / header) for header in written] + [str(src / "saga.h")]
+        subprocess.run([clang_tool("clang-format"), "--style=file", "--fallback-style=none", "-i", *files],
+                       cwd=ROOT, check=True, timeout=600)
     return written
 
 
@@ -1606,6 +2370,108 @@ def compare_units(units, before_root, after_root, debug=False, report=print):
     return differing
 
 
+STATIC_ASSERT_NAME = re.compile(r"^saga_static_assert_\d+$")
+PACK = re.compile(r"^#\s*pragma\s+pack\s*\((.*)\)$")
+
+
+def top_level_declarations(pairs):
+    """The top-level declarations of a preprocessed unit, from with_linkage() pairs: (tokens, extern "C",
+    #pragma pack in effect). A declaration ends at a `;` outside brackets, or at the `}` that closes a function
+    body or namespace. `saga_static_assert_N` names lose their __COUNTER__ number; #pragma lines outside a
+    declaration are entries of their own, and `#pragma pack` lines also set the packing of what follows."""
+    out = []
+    current = []
+    depth = 0
+    body = False  # the open top-level brace is a function body or a namespace
+    pack = []  # stack of explicit packings; [] is the command-line default
+    linkage = False
+    for token, linked in pairs:
+        if token.startswith("#") and not current:
+            match = PACK.match(token)
+            if match:
+                args = [a.strip() for a in match.group(1).split(",") if a.strip()]
+                if args[:1] == ["push"]:
+                    pack.append(args[-1] if len(args) > 1 else (pack[-1] if pack else ""))
+                elif args[:1] == ["pop"]:
+                    if pack:
+                        pack.pop()
+                else:
+                    pack[-1:] = [args[0] if args else ""]
+            out.append(((token,), linked, pack[-1] if pack else ""))
+            continue
+        if not current:
+            linkage = linked
+        current.append("saga_static_assert_#" if STATIC_ASSERT_NAME.match(token) else token)
+        if token in ("(", "["):
+            depth += 1
+        elif token in (")", "]"):
+            depth -= 1
+        elif token == "{":
+            if depth == 0:
+                before = current[-2] if len(current) > 1 else ""
+                body = before in (")", "const") or "namespace" in current
+            depth += 1
+        elif token == "}":
+            depth -= 1
+        if depth == 0 and (token == ";" or (token == "}" and body)):
+            out.append((tuple(current), linkage, pack[-1] if pack else ""))
+            current = []
+            body = False
+    if current:
+        out.append((tuple(current), linkage, pack[-1] if pack else ""))
+    return out
+
+
+def syntax_errors(unit, cwd, flags):
+    """The error messages of clang -fsyntax-only on `unit`, without their file and line."""
+    clang = os.environ.get("CLANG") or shutil.which("clang-18") or shutil.which("clang")
+    if not clang:
+        raise ValueError("clang (18) is required for --check-counts; set CLANG")
+    result = subprocess.run([clang, "-fsyntax-only", "-ferror-limit=0", *flags, unit], cwd=cwd,
+                            capture_output=True, text=True, encoding="latin-1", timeout=600)
+    return collections.Counter(line.split(" error: ", 1)[1] for line in result.stderr.splitlines()
+                               if " error: " in line)
+
+
+def compare_counts(units, before_root, after_root, debug=False, report=print):
+    """Compare the declarations each unit sees in two trees as multisets (tokens, linkage, packing), and the
+    clang -fsyntax-only errors; returns the units that differ. Order is not compared: a grouped split moves
+    declarations, and only the object code (built per unit) shows that the moves are inert."""
+    from tools import declscan  # noqa: PLC0415
+    base = declscan.base_flags()
+    differing = []
+    for unit in units:
+        # VC8 reads // comments in C too; under the lint flags' -std=c89 they would become tokens that travel
+        # with the declarations they follow.
+        flags = ["-std=gnu89" if f == "-std=c89" else f for f in declscan.unit_flags(unit, base)]
+        if debug:
+            flags = declscan.debug_flags(flags)
+        sides = []
+        for root in (before_root, after_root):
+            text, _ = preprocess(unit, root, flags)
+            tokens = with_linkage(pp_tokens(text))
+            sides.append((top_level_declarations(tokens), syntax_errors(unit, root, flags)))
+        (before, before_errors), (after, after_errors) = sides
+        before_set, after_set = collections.Counter(before), collections.Counter(after)
+        moved = sum(1 for a, b in zip(before, after) if a != b)
+        if before_set == after_set and before_errors == after_errors:
+            report(f"{unit}: same {len(before)} declarations ({moved} at another place), "
+                   f"{sum(before_errors.values())} clang errors on both sides")
+            continue
+        differing.append(unit)
+        report(f"{unit}: DIFFERS: {len(before)}/{len(after)} declarations, "
+               f"{sum(before_errors.values())}/{sum(after_errors.values())} clang errors")
+        for label, extra in (("only before", before_set - after_set), ("only after", after_set - before_set)):
+            for (tokens, linked, pack), count in list(extra.items())[:5]:
+                text = " ".join(tokens)
+                report(f"  {label} x{count} (extern C {int(linked)}, pack {pack or '-'}): {text[:160]}")
+        for label, extra in (("errors only before", before_errors - after_errors),
+                             ("errors only after", after_errors - before_errors)):
+            for message, count in list(extra.items())[:5]:
+                report(f"  {label} x{count}: {message[:160]}")
+    return differing
+
+
 def scratch_tree(plan, root=ROOT, scratch=None):
     """A copy of src/ with the split applied (lib/ linked), for --check-neutral; returns its root."""
     scratch = Path(scratch or Path(root) / SCRATCH)
@@ -1664,9 +2530,16 @@ def stats(seg, rows, top=40, report=print):
 def interleaving(plan, top=30, report=print):
     multi = {h: runs for h, runs in plan.targets.items() if len(runs) > 1}
     parts = sum(len(r) for r in multi.values())
-    report(f"{len(plan.runs)} runs in saga.h order; {len(plan.targets)} headers, {len(multi)} of them in "
+    mode = "saga.h order (--exact-order)" if plan.exact else "grouped order"
+    report(f"{len(plan.runs)} runs in {mode}; {len(plan.targets)} headers, {len(multi)} of them in "
            f"several parts ({parts} parts); {sum(1 for r in plan.runs if not r.target)} runs stay in saga.h")
-    report("\nheaders by number of parts (parts, items, first-last line, headers in between most often):")
+    if not plan.exact:
+        forced = sum(1 for why in plan.split.values() if why == "forced")
+        report(f"{forced} headers must have parts in any order (an item of another header depends on one of "
+               f"their items and is needed by another); {len(plan.split) - forced} more break the cycles left "
+               "among the headers that stay whole")
+    report("\nheaders by number of parts (parts, items, first-last line, headers in between most often"
+           + ("" if plan.exact else "; why") + "):")
     order = sorted(multi.items(), key=lambda kv: -len(kv[1]))
     for header, runs in order[:top]:
         between = collections.Counter()
@@ -1675,8 +2548,16 @@ def interleaving(plan, top=30, report=print):
                 between[run.target or "(saga.h)"] += 1
         items = sum(len(r.items) for r in runs)
         span = f"{runs[0].items[0].first}-{runs[-1].items[-1].last}"
+        why = ""
+        if not plan.exact:
+            witness = plan.forced.get(header)
+            if witness is not None:
+                item = plan.seg.items[witness]
+                why = f"; forced: {item.kind} {(item.names or ['?'])[0]} (line {item.first})"
+            else:
+                why = f"; {plan.split.get(header, '?')}"
         report(f"  {header:<44} {len(runs):>4} {items:>5} {span:>12}  " +
-               ", ".join(f"{h} {n}" for h, n in between.most_common(3)))
+               ", ".join(f"{h} {n}" for h, n in between.most_common(3)) + why)
     # What breaks runs: single items of another header between two items of one header.
     breakers = collections.Counter()
     for k in range(1, len(plan.runs) - 1):
@@ -1718,15 +2599,20 @@ def main(argv=None):
     mode.add_argument("--dry-run", action="store_true", help="what --apply would write")
     mode.add_argument("--interleaving", action="store_true", help="headers whose items are interleaved")
     mode.add_argument("--apply", action="store_true", help="write the split into ROOT/src")
-    mode.add_argument("--check-neutral", nargs="+", metavar="UNIT", help="compare preprocessed units")
+    mode.add_argument("--check-neutral", nargs="+", metavar="UNIT",
+                      help="compare preprocessed units token by token (the --exact-order split)")
+    mode.add_argument("--check-counts", nargs="+", metavar="UNIT",
+                      help="compare the declarations units see as multisets, and their clang errors")
     mode.add_argument("--roundtrip", action="store_true", help="check that the segmentation is lossless")
     mode.add_argument("--place", nargs="+", metavar="NAME",
                       help="target header of names declared in units (declscan class C/D) by the same rules")
     parser.add_argument("--android", help="Android decompilation checkout (default: ../saga-android or ../saga)")
     parser.add_argument("--map", default=MAP, help=f"mapping file (default {MAP})")
     parser.add_argument("--root", default=str(ROOT), help="tree to apply the split to (default: this tree)")
-    parser.add_argument("--debug", action="store_true", help="--check-neutral: also with SAGA_DEBUG")
-    parser.add_argument("--keep", action="store_true", help=f"--check-neutral: keep {SCRATCH}")
+    parser.add_argument("--exact-order", action="store_true",
+                        help="keep saga.h order (token-neutral; most headers in several parts)")
+    parser.add_argument("--debug", action="store_true", help="--check-neutral/--check-counts: also with SAGA_DEBUG")
+    parser.add_argument("--keep", action="store_true", help=f"--check-neutral/--check-counts: keep {SCRATCH}")
     parser.add_argument("--top", type=int, default=40, help="rows per report table")
     args = parser.parse_args(argv)
     text = read_text(ROOT / SAGA)
@@ -1758,7 +2644,7 @@ def main(argv=None):
     if args.stats:
         stats(seg, rows, args.top)
         return 0
-    plan = make_plan(seg, rows)
+    plan = make_plan(seg, rows, exact=args.exact_order or bool(args.check_neutral))
     if args.interleaving:
         interleaving(plan, args.top)
         return 0
@@ -1772,21 +2658,23 @@ def main(argv=None):
         written = apply_plan(plan, Path(args.root) / "src")
         print(f"wrote {len(written)} headers and the shim under {Path(args.root) / 'src'}")
         return 0
-    if args.check_neutral:
+    if args.check_neutral or args.check_counts:
+        compare = compare_units if args.check_neutral else compare_counts
         units = [Path(u).resolve().relative_to(ROOT).as_posix() if Path(u).is_absolute() else u
-                 for u in args.check_neutral]
+                 for u in (args.check_neutral or args.check_counts)]
         scratch = scratch_tree(plan)
         try:
-            differing = compare_units(units, ROOT, scratch)
+            differing = compare(units, ROOT, scratch)
             if args.debug:
-                differing += compare_units(units, ROOT, scratch, debug=True)
+                differing += compare(units, ROOT, scratch, debug=True)
         finally:
             if not args.keep:
                 shutil.rmtree(scratch, ignore_errors=True)
         if differing:
             print(f"{len(differing)} of {len(units)} units differ")
             return 1
-        print(f"all {len(units)} units neutral" + (" (Matching and Debug)" if args.debug else ""))
+        verdict = "neutral" if args.check_neutral else "see the same declarations"
+        print(f"all {len(units)} units {verdict}" + (" (Matching and Debug)" if args.debug else ""))
         return 0
     return 0
 
