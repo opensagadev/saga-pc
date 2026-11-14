@@ -57,7 +57,7 @@ STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, best_times) == 0);
 STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, completed) == 0x50);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
 
-/* Original name unknown. Empty on PC (a bare RET at 0x58a510); called when the file cannot be
+/* Original name unknown. Empty on PC; called when the file cannot be
    opened. VC8 drops calls to an empty body it can see, so the definition lives outside this file
    (see SpecialMovesConfigMissingPc). */
 void MissionsConfigMissingPc(char *filename);

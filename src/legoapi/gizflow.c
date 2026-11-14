@@ -567,7 +567,7 @@ void ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
         FlowResetBoxPc *state = (FlowResetBoxPc *)box;
         // MATCH-EXCEPTION: the progress bits are written through a local bitfield overlay of
-        // state_flags (FLOWBOX_PC has no bitfield view); retail's later clear mask (0xfedd)
+        // state_flags (FLOWBOX_PC has no bitfield view); the original's later clear mask (0xfedd)
         // repeats the already-clear 0x20 bit.
         box->state_flags &= (u16)~0x20;
         box->last_process_frame = 0;

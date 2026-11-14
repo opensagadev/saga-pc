@@ -99,7 +99,7 @@ void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *character, f32 frame, NUMTX 
     }
     if (animation_index != NULL) {
         if (animation->curve_count > 7) {
-            // MATCH-EXCEPTION: retail converts through a signed i32 store; saga.h declares the parameter u32 *.
+            // MATCH-EXCEPTION: the original converts through a signed i32 store; saga.h declares the parameter u32 *.
             *(i32 *)animation_index = (i32)(values[7] < 0.0f ? values[7] - 0.5 : values[7] + 0.5);
         } else {
             *animation_index = character->animation_index;
