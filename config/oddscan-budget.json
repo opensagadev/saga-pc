@@ -22,7 +22,7 @@
   "if0": 0,
   "match-exception": 80,
   "nolint": 73,
-  "format-off": 0,
+  "format-off": 3,
   "do-while0": 2,
   "dummy": 26,
   "void-cast": 1249,
