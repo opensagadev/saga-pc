@@ -131,7 +131,7 @@ NUVEC4 &NUVEC4::fun_00595290(const NUVEC &v) {
     return *this;
 }
 
-void PC_SPECIAL_SHADOW_LIGHT::LookAtPc(NUVEC *eye, NUVEC *target, NUVEC *up) {
+void PC_SPECIAL_SHADOW_LIGHT::LookAt(NUVEC *eye, NUVEC *target, NUVEC *up) {
     NUVEC4 *direction = &light_direction4_pc;
     f32 direction_y = target->y - eye->y;
     f32 direction_z = target->z - eye->z;
@@ -154,7 +154,7 @@ void PC_SPECIAL_SHADOW_LIGHT::fun_00595360(f32 left, f32 right, f32 bottom, f32 
     NuMtxSetOrthoBlend(&projection, left, right, bottom, top, near_plane, far_plane);
 }
 
-void PC_SPECIAL_SHADOW_LIGHT::SetParameterfPc(i32 parameter, f32 value) {
+void PC_SPECIAL_SHADOW_LIGHT::SetParameterf(i32 parameter, f32 value) {
     switch (parameter) {
         case 0:
             parameter_0 = value;
@@ -600,7 +600,7 @@ extern "C" void RenderShadowLights(i32 paused) {
         currentScene.dyn_light_ptr = PCShadowCurrentLight;
         currentScene.unknown_40 = 0;
         if (WORLD->current_gscn != NULL) {
-            PCShadowCurrentLight->RenderSceneShadowPc(WORLD->current_gscn);
+            PCShadowCurrentLight->RenderSceneShadow(WORLD->current_gscn);
         }
         NuSpecialSetClipping(0, previous);
         NuRndrEndScene();
@@ -777,20 +777,20 @@ extern "C" void SetShadowLight(void) {
     if (alternate) {
         parameter = secondary_strength;
     }
-    PCShadowCurrentLight->SetParameterfPc(0, parameter);
-    PCShadowCurrentLight->SetParameterfPc(1, WORLD->shadow_editor->field_10);
-    PCShadowCurrentLight->SetParameterfPc(2, WORLD->shadow_editor->field_14);
-    PCShadowCurrentLight->SetParameterfPc(12, WORLD->shadow_editor->field_1c);
-    PCShadowCurrentLight->SetParameterfPc(9, WORLD->shadow_editor->field_18);
-    PCShadowCurrentLight->SetParameterfPc(6, ShadowLightWarp);
-    PCShadowCurrentLight->SetParameterfPc(17, WORLD->shadow_editor->field_1c);
-    PCShadowCurrentLight->SetParameterfPc(15, WORLD->shadow_editor->field_18);
-    PCShadowCurrentLight->SetParameterfPc(8, ShadowLightWarp);
-    PCShadowCurrentLight->SetParameterfPc(19, splits[split_count - 1] * ShadowLightSplitScale);
-    PCShadowCurrentLight->SetParameterfPc(20, splits[split_count - 1]);
-    PCShadowCurrentLight->LookAtPc(&eye, &center, &ShadowLightUp);
-    PCShadowCurrentLight->SetupCustomCameraFrustumPc(camera, splits, split_count);
+    PCShadowCurrentLight->SetParameterf(0, parameter);
+    PCShadowCurrentLight->SetParameterf(1, WORLD->shadow_editor->field_10);
+    PCShadowCurrentLight->SetParameterf(2, WORLD->shadow_editor->field_14);
+    PCShadowCurrentLight->SetParameterf(12, WORLD->shadow_editor->field_1c);
+    PCShadowCurrentLight->SetParameterf(9, WORLD->shadow_editor->field_18);
+    PCShadowCurrentLight->SetParameterf(6, ShadowLightWarp);
+    PCShadowCurrentLight->SetParameterf(17, WORLD->shadow_editor->field_1c);
+    PCShadowCurrentLight->SetParameterf(15, WORLD->shadow_editor->field_18);
+    PCShadowCurrentLight->SetParameterf(8, ShadowLightWarp);
+    PCShadowCurrentLight->SetParameterf(19, splits[split_count - 1] * ShadowLightSplitScale);
+    PCShadowCurrentLight->SetParameterf(20, splits[split_count - 1]);
+    PCShadowCurrentLight->LookAt(&eye, &center, &ShadowLightUp);
+    PCShadowCurrentLight->SetupCustomCameraFrustum(camera, splits, split_count);
     PCShadowSecondaryLight->parameter_0 = secondary_strength;
-    PCShadowSecondaryLight->LookAtPc(&secondary_eye, &center, &ShadowLightUp);
-    PCShadowSecondaryLight->SetupCustomCameraFrustumPc(camera, splits, split_count);
+    PCShadowSecondaryLight->LookAt(&secondary_eye, &center, &ShadowLightUp);
+    PCShadowSecondaryLight->SetupCustomCameraFrustum(camera, splits, split_count);
 }

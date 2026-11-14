@@ -483,7 +483,7 @@ extern "C" void PCFrameConfigureTargets(void) {
 }
 
 extern "C" void PCDevicePostEffectBarrierPc(void) {
-    PCDeviceBackend.PostEffectBarrierPc();
+    PCDeviceBackend.PostEffectBarrier();
 }
 
 extern "C" i32 PcApiGetCallBufferCount(void) {
@@ -537,7 +537,7 @@ extern "C" void fun_006dfea0(void) {
 
 extern "C" void fun_006dfec0(u32 width, u32 height) {
     PcFreeApiCallBuffer();
-    PcApiCallBufferCount = PCDeviceBackend.CaptureScreenshotPc(width, height, &PcApiCallBuffer);
+    PcApiCallBufferCount = PCDeviceBackend.CaptureScreenshot(width, height, &PcApiCallBuffer);
 }
 
 extern "C" void fun_006dff30(void) {

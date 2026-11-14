@@ -478,7 +478,7 @@ typedef union EdcamMayaAngleObserved { // size 0x4
 void do_maya_mouse_camera(edcam_s *camera) {
     /* The historical mapped name TargetAng denotes the smoothed PC slot. */
     __declspec(allocate(".bss$EdcamMayaSmoothedAnglePc")) static EdcamMayaAngleObserved TargetAng = {0};
-    __declspec(allocate(".bss$EdcamMayaRawAnglePc")) static EdcamMayaAngleObserved RawTargetAngPc = {0};
+    __declspec(allocate(".bss$EdcamMayaRawAnglePc")) static EdcamMayaAngleObserved RawTargetAng = {0};
     f32 zoom_scale =
         camera->auto_zoom_dist_scale != 0.0f ? EdcamFabs(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base : 1.0f;
     NUVEC movement;
@@ -504,14 +504,14 @@ void do_maya_mouse_camera(edcam_s *camera) {
             i32 difference;
             f32 sine;
             if (mouse_x != 0.0f || mouse_y != 0.0f) {
-                RawTargetAngPc.parts.angle = (u16)NuAtan2D(-mouse_x, -mouse_y);
+                RawTargetAng.parts.angle = (u16)NuAtan2D(-mouse_x, -mouse_y);
             }
-            difference = (RawTargetAngPc.word - TargetAng.word) & 0xffff;
+            difference = (RawTargetAng.word - TargetAng.word) & 0xffff;
             if (difference >= 0x8000) {
                 difference -= 0x10000;
             }
             if (abs(difference) > 20000) {
-                TargetAng.parts.angle = RawTargetAngPc.parts.angle;
+                TargetAng.parts.angle = RawTargetAng.parts.angle;
             } else {
                 TargetAng.parts.angle += difference / 4;
             }

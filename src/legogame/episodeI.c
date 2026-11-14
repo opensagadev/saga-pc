@@ -1280,14 +1280,14 @@ i32 Action_SetLapTime(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *pack
     (void)ignored;
     if (first_time != 0 && PodRacePc->previous_lap_display == 0.0f) {
         for (i = 0; i < param_count; ++i) {
-            char *value = NuStrIStr(params[i], PodRaceMaxLapTimeKeywordPc);
+            char *value = NuStrIStr(params[i], PodRaceMaxLapTimeKeyword);
             if (value != NULL) {
                 PodRacePc->max_lap_time = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 11);
-            } else if ((value = NuStrIStr(params[i], PodRaceLapTimeKeywordPc)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], PodRaceLapTimeKeyword)) != NULL) {
                 PodRacePc->previous_lap_display = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 8);
-            } else if ((value = NuStrIStr(params[i], PodRaceAttemptsKeywordPc)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], PodRaceAttemptsKeyword)) != NULL) {
                 PodRacePc->attempts_per_increment = (i32)AIParamToFloat((AISCRIPTPROCESS *)packet, value + 24);
-            } else if ((value = NuStrIStr(params[i], PodRaceIncrementKeywordPc)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], PodRaceIncrementKeyword)) != NULL) {
                 PodRacePc->lap_time_increment = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 10);
             }
         }
@@ -1414,17 +1414,17 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS *process, AIPACKET *packet
     return 0;
 }
 
-i32 PodRaceKeyPc[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
+i32 PodRaceKey[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 
 void fun_004db710(void) {
-    PodRaceKeyPc[0] = -1;
-    PodRaceKeyPc[1] = -1;
-    PodRaceKeyPc[2] = -1;
-    PodRaceKeyPc[3] = -1;
-    PodRaceKeyPc[4] = -1;
-    PodRaceKeyPc[5] = -1;
-    PodRaceKeyPc[6] = -1;
-    PodRaceKeyPc[7] = -1;
+    PodRaceKey[0] = -1;
+    PodRaceKey[1] = -1;
+    PodRaceKey[2] = -1;
+    PodRaceKey[3] = -1;
+    PodRaceKey[4] = -1;
+    PodRaceKey[5] = -1;
+    PodRaceKey[6] = -1;
+    PodRaceKey[7] = -1;
 }
 
 void PodDust(WORLDINFO *world, GAMEOBJECT *object) {
@@ -1479,13 +1479,13 @@ void PodDust(WORLDINFO *world, GAMEOBJECT *object) {
         matrix.m31 = object->locator_matrices[locator].m31;
         matrix.m32 = object->locator_matrices[locator].m32;
         matrix.m33 = object->locator_matrices[locator].m33;
-        if (PodRaceKeyPc[key] == -1) {
-            AddDebrisEffect(&PodRaceKeyPc[key], world->game_debris_sys->entries[53].effect, 0, 0, 0);
+        if (PodRaceKey[key] == -1) {
+            AddDebrisEffect(&PodRaceKey[key], world->game_debris_sys->entries[53].effect, 0, 0, 0);
         } else {
-            DebrisPosOrientationMtx(PodRaceKeyPc[key], &matrix);
+            DebrisPosOrientationMtx(PodRaceKey[key], &matrix);
         }
-        if (PodRaceKeyPc[key + 2] == -1) {
-            AddDebrisEffect(&PodRaceKeyPc[key + 2], world->game_debris_sys->entries[54].effect, 0, 0, 0);
+        if (PodRaceKey[key + 2] == -1) {
+            AddDebrisEffect(&PodRaceKey[key + 2], world->game_debris_sys->entries[54].effect, 0, 0, 0);
         } else {
             matrix.m00 = -NuTrigTable[((object->field_0x276 + 0x4000) >> 1) & 0x7fff];
             matrix.m01 = 0;
@@ -1497,7 +1497,7 @@ void PodDust(WORLDINFO *world, GAMEOBJECT *object) {
             matrix.m21 = 1;
             matrix.m22 = 0;
             matrix.m31 = (f32)((f64)object->floor_height + (f64).1f);
-            DebrisPosOrientationMtx(PodRaceKeyPc[key + 2], &matrix);
+            DebrisPosOrientationMtx(PodRaceKey[key + 2], &matrix);
         }
     }
     if (count == 0) {
@@ -2116,7 +2116,7 @@ void PodRaceInit(WORLDINFO *world) {
     }
     InitPodRaceMines();
     for (i = 0; i < 8; i++) {
-        PodRaceKeyPc[i] = -1;
+        PodRaceKey[i] = -1;
     }
     ResetPodStuff();
     id = apicharsys->playermodelids[id_ANAKINSPOD];
@@ -2136,7 +2136,7 @@ void PodRaceReset(void) {
     podrace->flags &= 0xfc;
     podhurry_i = -1;
     for (i = 0; i < 8; i++) {
-        PodRaceKeyPc[i] = -1;
+        PodRaceKey[i] = -1;
     }
 }
 
@@ -2280,7 +2280,7 @@ i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packe
         return 1;
     }
     for (i = 0; i < param_count; ++i) {
-        char *value = NuStrIStr(params[i], PodCreateSplineKeywordPc);
+        char *value = NuStrIStr(params[i], PodCreateSplineKeyword);
         if (value != NULL) {
             spline_id = (i32)AIParamToFloat((AISCRIPTPROCESS *)packet, value + 10);
         } else if ((value = NuStrIStr(params[i], "type=")) != NULL) {
@@ -2290,15 +2290,15 @@ i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packe
                     model_id = LevelCharacterGlobalIDFn(model_id);
                 }
             }
-        } else if ((value = NuStrIStr(params[i], PodCreateStartKeywordPc)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], PodCreateStartKeyword)) != NULL) {
             start = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 13);
-        } else if ((value = NuStrIStr(params[i], PodCreateEndKeywordPc)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], PodCreateEndKeyword)) != NULL) {
             end = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 11);
-        } else if ((value = NuStrIStr(params[i], PodCreateTimeKeywordPc)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], PodCreateTimeKeyword)) != NULL) {
             time_factor = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 12);
-        } else if (NuStrICmp(params[i], PodCreatePacemakerKeywordPc) == 0) {
+        } else if (NuStrICmp(params[i], PodCreatePacemakerKeyword) == 0) {
             pacemaker = 1;
-        } else if (NuStrICmp(params[i], PodCreateDamagedKeywordPc) == 0) {
+        } else if (NuStrICmp(params[i], PodCreateDamagedKeyword) == 0) {
             damaged = 1;
         }
     }

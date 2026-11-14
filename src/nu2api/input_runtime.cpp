@@ -15,7 +15,7 @@ extern "C" u32 fun_006d58f0(i32 button) {
     return 0;
 }
 
-i32 PC_INPUT_RUNTIME_PC::ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 bank_count) {
+i32 PC_INPUT_RUNTIME_PC::ResolveAuxiliaryConflicts(i32 auxiliary_index, i32 bank_count) {
     if ((u32)(auxiliary_ports[auxiliary_index] - 10) > 3) {
         return 0;
     }
@@ -74,7 +74,7 @@ i32 PC_INPUT_RUNTIME_PC::ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 ba
     return missing;
 }
 
-i32 PC_INPUT_RUNTIME_PC::SelectConfigurationPc(i32 port, i32 key, i32 auxiliary_index) {
+i32 PC_INPUT_RUNTIME_PC::SelectConfiguration(i32 port, i32 key, i32 auxiliary_index) {
     PC_INPUT_CONFIG_PC *config = NULL;
     for (i32 attempt = 0; attempt < 3; ++attempt) {
         config = FindConfig(3, port, key);
@@ -90,14 +90,14 @@ i32 PC_INPUT_RUNTIME_PC::SelectConfigurationPc(i32 port, i32 key, i32 auxiliary_
         for (i32 device = 0; device < 3; ++device) {
             (void)NuPadGetPort(device);
         }
-        if (ResolveAuxiliaryConflictsPc(auxiliary_index, 4)) {
+        if (ResolveAuxiliaryConflicts(auxiliary_index, 4)) {
             config = NULL;
         }
     }
     return config != NULL;
 }
 
-u8 PC_INPUT_RUNTIME_PC::InstallDropInConfigurationPc(i32 port, i32 player_index) {
+u8 PC_INPUT_RUNTIME_PC::InstallDropInConfiguration(i32 port, i32 player_index) {
     for (i32 bank = 0; bank < 3; ++bank) {
         if (bank == player_index) {
             continue;
@@ -124,15 +124,15 @@ u8 PC_INPUT_RUNTIME_PC::InstallDropInConfigurationPc(i32 port, i32 player_index)
         return 0;
     }
     InstallConfig(config, port, player_index, 1, player_index);
-    return ResolveAuxiliaryConflictsPc(player_index, 3) == 0;
+    return ResolveAuxiliaryConflicts(player_index, 3) == 0;
 }
 
 i32 PC_INPUT_RUNTIME_PC::fun_006d7410(i32 key, i32 port) {
-    return SelectConfigurationPc(port, key, key);
+    return SelectConfiguration(port, key, key);
 }
 
 extern "C" u8 PcInput_MappingIsGood(i32 port, i32 player_index) {
-    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->InstallDropInConfigurationPc(port, player_index);
+    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->InstallDropInConfiguration(port, player_index);
 }
 
 extern "C" i32 PcInput_ScanForAnyInput(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active) {
@@ -194,7 +194,7 @@ extern "C" i32 PcInput_RemapVirtualKeyboard(i32 port, i32 player) {
 }
 
 extern "C" u8 PcInput_SafeGetMapping(i32 port, i32 key, i32 auxiliary_index) {
-    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->SelectConfigurationPc(port, key, auxiliary_index);
+    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->SelectConfiguration(port, key, auxiliary_index);
 }
 
 extern "C" void PcInput_SetIsUsedCallBack(i32 (*filter)(i32, i32)) {
@@ -578,13 +578,13 @@ extern "C" i32 NuPadGetDeadzoneByPortPS(i32 port) {
 extern "C" i32 NuPadReadOutputsPc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2, u32 *buttons, u8 *unknown,
                                   i32 *flags) {
     if (nu_input_state != NULL) {
-        return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->ReadSamplePc(port, lx, ly, rx, ry, l1, l2, r1, r2, buttons, unknown, flags);
+        return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->ReadSample(port, lx, ly, rx, ry, l1, l2, r1, r2, buttons, unknown, flags);
     }
     return 0;
 }
 
-i32 PC_INPUT_RUNTIME_PC::ReadSamplePc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2, u32 *buttons, u8 *unknown,
-                                      i32 *flags) {
+i32 PC_INPUT_RUNTIME_PC::ReadSample(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2, u32 *buttons, u8 *unknown,
+                                    i32 *flags) {
     i32 valid = 0;
     if ((u32)(port - 10) <= 3 && !devices[port].action_keys_active) {
         return 0;
@@ -610,9 +610,9 @@ i32 PC_INPUT_RUNTIME_PC::ReadSamplePc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, 
         read_mask |= mask;
         valid = SampleDevicePc(port, &raw_sample);
         if ((action_mask & mask) && valid) {
-            CaptureBindingPc(port);
+            CaptureBinding(port);
         }
-        TranslateBindingsPc(port, sample, valid, &raw_sample, &mouse, &keyboard_state);
+        TranslateBindings(port, sample, valid, &raw_sample, &mouse, &keyboard_state);
         if ((port == 10 || port == 12) && !keyboard_ui_override) {
             ApplyMouseAxisPc(sample);
         }
@@ -622,7 +622,7 @@ i32 PC_INPUT_RUNTIME_PC::ReadSamplePc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, 
             }
             i32 linked = NuPadGetPort(TextInputLastDeviceIndexPc);
             if (linked == port || (linked == -1 && (u32)(port - 10) <= 3)) {
-                sample->buttons = CombineUiButtonsPc(port, sample->buttons);
+                sample->buttons = CombineUiButtons(port, sample->buttons);
             }
         }
     }
@@ -646,7 +646,7 @@ i32 PC_INPUT_RUNTIME_PC::ReadSamplePc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, 
     return valid;
 }
 
-u32 PC_INPUT_RUNTIME_PC::CombineUiButtonsPc(i32 port, u32 buttons) {
+u32 PC_INPUT_RUNTIME_PC::CombineUiButtons(i32 port, u32 buttons) {
     if ((u32)(port - 10) <= 3) {
         buttons = 0;
     }
@@ -771,8 +771,8 @@ i32 PC_INPUT_RUNTIME_PC::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample
         sample->axes[4] = (i16)-state.gamepad.thumb_ry;
         sample->axes[6] = (i16)((u16)state.gamepad.left_trigger << 7);
         sample->axes[7] = (i16)((u16)state.gamepad.right_trigger << 7);
-        NormalizeAxisPairPc(&sample->axes[0], &sample->axes[1]);
-        NormalizeAxisPairPc(&sample->axes[3], &sample->axes[4]);
+        NormalizeAxisPair(&sample->axes[0], &sample->axes[1]);
+        NormalizeAxisPair(&sample->axes[3], &sample->axes[4]);
     } else {
         NuKeyboardDevice_PC *device = devices[port].device;
         if (device == NULL) {
@@ -935,8 +935,8 @@ void PC_INPUT_RUNTIME_PC::ApplyMouseAxisPc(PC_INPUT_SAMPLE_PC *sample) {
 // Uncompiled PC control-flow reconstruction. All indexed records require native initialized domains.
 extern u8 PcMouseAxisModesPc[3];
 
-i32 PC_INPUT_RUNTIME_PC::TranslateBindingsPc(i32 port, PC_INPUT_SAMPLE_PC *out, i32 valid, PC_INPUT_RAW_SAMPLE_PC *raw,
-                                             PC_INPUT_MOUSE_RUNTIME_PC *motion, u8 **keys) {
+i32 PC_INPUT_RUNTIME_PC::TranslateBindings(i32 port, PC_INPUT_SAMPLE_PC *out, i32 valid, PC_INPUT_RAW_SAMPLE_PC *raw,
+                                           PC_INPUT_MOUSE_RUNTIME_PC *motion, u8 **keys) {
     i32 step;
     if (ramp_seconds == 0.0f) {
         step = 32768;
@@ -1121,7 +1121,7 @@ u32 PC_INPUT_RUNTIME_PC::fun_006d82d0(i32, u32 buttons, i32 key, i32 mouse_butto
     return buttons;
 }
 
-void PC_INPUT_RUNTIME_PC::CaptureBindingPc(i32 port) {
+void PC_INPUT_RUNTIME_PC::CaptureBinding(i32 port) {
     u32 mask = 1u << port;
     if (!(action_mask & mask) || (completed_mask & mask)) {
         return;
@@ -1225,7 +1225,7 @@ void PC_INPUT_RUNTIME_PC::CaptureBindingPc(i32 port) {
 }
 
 // Native input_runtime.cpp member.
-void PC_INPUT_RUNTIME_PC::NormalizeAxisPairPc(i16 *x, i16 *y) {
+void PC_INPUT_RUNTIME_PC::NormalizeAxisPair(i16 *x, i16 *y) {
     f32 vx = (f32)*x;
     f32 vy = (f32)*y;
     f32 ax = vx < 0 ? -vx : vx;
@@ -1279,7 +1279,7 @@ i32 PC_INPUT_RUNTIME_PC::fun_006d4a30(i32 axis, i32 active) {
 }
 
 // Uncompiled native input_runtime.cpp lifecycle cohort.
-void PC_INPUT_RUNTIME_PC::ServicePendingCapturePc() {
+void PC_INPUT_RUNTIME_PC::ServicePendingCapture() {
     if (action_mask == 0) {
         return;
     }
@@ -1291,19 +1291,19 @@ void PC_INPUT_RUNTIME_PC::ServicePendingCapturePc() {
     for (i32 port = 0; port < 14; ++port) {
         u32 mask = 1u << port;
         // Native 6d87a7 JNE skips SET bits: preserve this condition, even though
-        // CaptureBindingPc then sees a clear bit and returns without recording.
+        // CaptureBinding then sees a clear bit and returns without recording.
         if (!(action_mask & mask)) {
             read_mask |= mask;
             action_mask &= ~mask;
             i32 valid = SampleDevicePc(port, &raw_sample);
             if (valid || (u32)(port - 10) <= 3) {
-                CaptureBindingPc(port);
+                CaptureBinding(port);
             }
         }
     }
 }
 
-void PC_INPUT_RUNTIME_PC::AdvanceCaptureRecordsPc() {
+void PC_INPUT_RUNTIME_PC::AdvanceCaptureRecords() {
     for (i32 port = 0; port < 14; ++port) {
         staged_capture[port] = captures[port];
         captures[port].kind[2] = 0;
@@ -1497,7 +1497,7 @@ extern "C" void PcInputEndFramePc(void) {
 
 // Append to input_runtime.cpp; declarations/mappings in B-contract.json.
 
-void PC_INPUT_RUNTIME_PC::CopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank) {
+void PC_INPUT_RUNTIME_PC::CopyBindings(i32 port, i32 to_auxiliary, i32 bank) {
     if (port < 0) {
         return;
     }
@@ -1510,7 +1510,7 @@ void PC_INPUT_RUNTIME_PC::CopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank) {
 }
 
 extern "C" void PcInputCopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank) {
-    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->CopyBindingsPc(port, to_auxiliary, bank);
+    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->CopyBindings(port, to_auxiliary, bank);
 }
 
 extern "C" f32 fun_006d5b00(void) {
@@ -1685,7 +1685,7 @@ extern "C" i32 PcInputMixConfigurationHashPc(i32 previous, i32 value) {
     return (previous * 2) ^ value ^ 0x12345678;
 }
 
-i32 PC_INPUT_RUNTIME_PC::HashAuxiliaryBindingsPc() {
+i32 PC_INPUT_RUNTIME_PC::HashAuxiliaryBindings() {
     i32 hash = 0;
     for (i32 bank = 0; bank < 4; ++bank) {
         for (i32 action = 0; action < 32; ++action) {
@@ -1706,7 +1706,7 @@ i32 PC_INPUT_RUNTIME_PC::fun_006d38b0(PC_INPUT_CONFIG_PC *config) {
 }
 
 extern "C" i32 PcInputHashAuxiliaryBindingsPc() {
-    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->HashAuxiliaryBindingsPc();
+    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->HashAuxiliaryBindings();
 }
 
 extern "C" void PcInputInstallConfigPc(PC_INPUT_CONFIG_PC *config, i32 port, i32 key, i32 auxiliary, i32 bank) {
@@ -1722,7 +1722,7 @@ extern "C" PC_INPUT_CONFIG_PC *PcInputFindConfigPc(u8 mask, i32 port, i32 key) {
     return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->FindConfig(mask, port, key);
 }
 
-i32 PC_INPUT_RUNTIME_PC::BindingAvailablePc(i32 bank, i32 bank_count, i32 kind, i32 value) {
+i32 PC_INPUT_RUNTIME_PC::BindingAvailable(i32 bank, i32 bank_count, i32 kind, i32 value) {
     i32 port;
     const char *key;
     i32 blocked;
@@ -1769,10 +1769,10 @@ i32 PC_INPUT_RUNTIME_PC::BindingAvailablePc(i32 bank, i32 bank_count, i32 kind, 
 }
 
 extern "C" i32 PcInputBindingAvailablePc(i32 bank, i32 bank_count, i32 kind, i32 value) {
-    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->BindingAvailablePc(bank, bank_count, kind, value);
+    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->BindingAvailable(bank, bank_count, kind, value);
 }
 
-void PC_INPUT_RUNTIME_PC::ClearOtherBankConflictsPc(i32 bank, i32 bank_count) {
+void PC_INPUT_RUNTIME_PC::ClearOtherBankConflicts(i32 bank, i32 bank_count) {
     PC_INPUT_BINDING_PC *source;
     PC_INPUT_BINDING_PC *target;
     i32 port;
@@ -1801,11 +1801,11 @@ void PC_INPUT_RUNTIME_PC::ClearOtherBankConflictsPc(i32 bank, i32 bank_count) {
 }
 
 extern "C" void PcInputClearOtherBankConflictsPc(i32 bank, i32 bank_count) {
-    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->ClearOtherBankConflictsPc(bank, bank_count);
+    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->ClearOtherBankConflicts(bank, bank_count);
 }
 
 extern "C" i32 PcInputResolveAuxiliaryConflictsPc(i32 bank, i32 bank_count) {
-    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->ResolveAuxiliaryConflictsPc(bank, bank_count);
+    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->ResolveAuxiliaryConflicts(bank, bank_count);
 }
 
 void PC_INPUT_RUNTIME_PC::InitializeDefaultRecords() {
@@ -1906,7 +1906,7 @@ void PC_INPUT_RUNTIME_PC::AddInputRecord(i32 field_00, i32 field_01, i32 field_0
     }
 }
 
-void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
+void PC_INPUT_RUNTIME_PC::AssignBinding(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
     PC_INPUT_BINDING_PC *bindings = auxiliary ? auxiliary_bindings[bank] : devices[port].bindings;
     i32 simple = (u32)port <= 3;
     i32 active = commands[action].active;
@@ -1998,7 +1998,7 @@ void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 va
 }
 
 extern "C" void PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
-    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->AssignBindingPc(action, port, kind, value, unused, auxiliary, bank, excluded);
+    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->AssignBinding(action, port, kind, value, unused, auxiliary, bank, excluded);
 }
 
 extern "C" void fun_006d9250(i32 button, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
@@ -2007,7 +2007,7 @@ extern "C" void fun_006d9250(i32 button, i32 port, i32 kind, i32 value, i32 unus
     for (i32 action = 0; action < 32; ++action) {
         runtime->fun_006d4ef0(action, NULL, NULL, &command_button, NULL);
         if (command_button == button) {
-            runtime->AssignBindingPc(action, port, kind, value, unused, auxiliary, bank, excluded);
+            runtime->AssignBinding(action, port, kind, value, unused, auxiliary, bank, excluded);
             return;
         }
     }
@@ -2020,7 +2020,7 @@ extern "C" void fun_006d92c0(i32 axis, i32 active, i32 port, i32 kind, i32 value
     for (i32 action = 0; action < 32; ++action) {
         runtime->fun_006d4ef0(action, &command_active, &command_axis, NULL, NULL);
         if (command_axis == axis && command_active == active) {
-            runtime->AssignBindingPc(action, port, kind, value, unused, auxiliary, bank, excluded);
+            runtime->AssignBinding(action, port, kind, value, unused, auxiliary, bank, excluded);
             return;
         }
     }
@@ -2036,7 +2036,7 @@ struct PC_INPUT_EXPORT_METADATA_PC { // size 0xc
     i16 key;                         // 0xa
 };
 
-void PC_INPUT_RUNTIME_PC::ExportConfigPc(i32 port, PC_INPUT_CONFIG_PC *config, i32 auxiliary, i32 bank, i32 key) {
+void PC_INPUT_RUNTIME_PC::ExportConfig(i32 port, PC_INPUT_CONFIG_PC *config, i32 auxiliary, i32 bank, i32 key) {
     PC_INPUT_BINDING_PC *bindings = auxiliary ? auxiliary_bindings[bank] : devices[port].bindings;
     for (i32 i = 0; i < 8; ++i) {
         config->all_axes[i][0] = 0;
@@ -2129,7 +2129,7 @@ void PC_INPUT_RUNTIME_PC::ExportConfigPc(i32 port, PC_INPUT_CONFIG_PC *config, i
     metadata->key = saved_key;
 }
 
-void PC_INPUT_RUNTIME_PC::PromoteConfigPc(PC_INPUT_CONFIG_PC *records, i32 count, PC_INPUT_CONFIG_PC *config) {
+void PC_INPUT_RUNTIME_PC::PromoteConfig(PC_INPUT_CONFIG_PC *records, i32 count, PC_INPUT_CONFIG_PC *config) {
     i32 index = 0;
     for (; index < count; ++index) {
         if (config->product_id == records[index].product_id && records[index].key == config->key) {
@@ -2146,7 +2146,7 @@ void PC_INPUT_RUNTIME_PC::PromoteConfigPc(PC_INPUT_CONFIG_PC *records, i32 count
 }
 
 void PC_INPUT_RUNTIME_PC::fun_006d3970(PC_INPUT_CONFIG_PC *config) {
-    PromoteConfigPc(primary, 64, config);
+    PromoteConfig(primary, 64, config);
 }
 
 void PC_INPUT_RUNTIME_PC::fun_006d3980(i32) {
@@ -2155,15 +2155,15 @@ void PC_INPUT_RUNTIME_PC::fun_006d3980(i32) {
 extern "C" void PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key) {
     PC_INPUT_CONFIG_PC config;
     PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
-    runtime->ExportConfigPc(port, &config, 1, bank, key);
-    runtime->PromoteConfigPc(runtime->primary, 64, &config);
+    runtime->ExportConfig(port, &config, 1, bank, key);
+    runtime->PromoteConfig(runtime->primary, 64, &config);
 }
 
 // Append input_runtime.cpp. Native strings/table definitions and mappings in B-save-data.json.
 extern u8 PcInputWriteTextProfiles;
 extern const char *PcInputBindingKindNames[14];
 
-void PC_INPUT_RUNTIME_PC::SanitizeConfigNamePc(const char *name, char *destination) {
+void PC_INPUT_RUNTIME_PC::SanitizeConfigName(const char *name, char *destination) {
     PCByteCopy(destination, name, 63);
     destination[63] = 0;
     char *out = destination;
@@ -2176,7 +2176,7 @@ void PC_INPUT_RUNTIME_PC::SanitizeConfigNamePc(const char *name, char *destinati
     *out = 0;
 }
 
-void PC_INPUT_RUNTIME_PC::FormatConfigTextPc(char *destination, PC_INPUT_CONFIG_PC *config) {
+void PC_INPUT_RUNTIME_PC::FormatConfigText(char *destination, PC_INPUT_CONFIG_PC *config) {
     char text[256];
     char part[256];
     char character[4];
@@ -2243,25 +2243,25 @@ void PC_INPUT_RUNTIME_PC::FormatConfigTextPc(char *destination, PC_INPUT_CONFIG_
     NuStrCat(destination, text);
 }
 
-void PC_INPUT_RUNTIME_PC::WriteConfigTextPc(const char *directory, PC_INPUT_CONFIG_PC *config) {
+void PC_INPUT_RUNTIME_PC::WriteConfigText(const char *directory, PC_INPUT_CONFIG_PC *config) {
     char name[64];
     char path[1024];
     char text[2036];
     if (!config->name[0]) {
         return;
     }
-    SanitizeConfigNamePc(config->name, name);
+    SanitizeConfigName(config->name, name);
     sprintf(path, "%s%s_v%d.txt", directory, name, config->key);
     FILE *file = PcOpenPlatformFile(path, "", 0, "w");
     if (file != NULL) {
-        FormatConfigTextPc(text, config);
+        FormatConfigText(text, config);
         fwrite(text, NuStrLen(text), 1, file);
         fclose(file);
     }
 }
 
 void PC_INPUT_RUNTIME_PC::fun_006d6eb0(i32 port, PC_INPUT_CONFIG_PC *config) {
-    ExportConfigPc(port, config, 0, 0, 0);
+    ExportConfig(port, config, 0, 0, 0);
 }
 
 PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::fun_006d6ed0(u8 mask, i32 port) {
@@ -2282,7 +2282,7 @@ void PC_INPUT_RUNTIME_PC::fun_006d6ef0(u8 mask, i32 port, i32 key, i32 auxiliary
     InstallConfig(config, port, config->key, auxiliary, auxiliary_port);
 }
 
-void PC_INPUT_RUNTIME_PC::WriteConfigurationPc(PC_INPUT_CONFIG_PC *records, i32 count, const char *directory) {
+void PC_INPUT_RUNTIME_PC::WriteConfiguration(PC_INPUT_CONFIG_PC *records, i32 count, const char *directory) {
     char path[1024];
     NuStrCpy(path, directory);
     NuStrCat(path, "Mappings.dat");
@@ -2297,7 +2297,7 @@ void PC_INPUT_RUNTIME_PC::WriteConfigurationPc(PC_INPUT_CONFIG_PC *records, i32 
     }
     for (i32 i = 0; i < count; ++i) {
         if (records[i].name[0] && PcInputWriteTextProfiles) {
-            WriteConfigTextPc(directory, &records[i]);
+            WriteConfigText(directory, &records[i]);
         }
     }
 }
@@ -2307,7 +2307,7 @@ void PC_INPUT_RUNTIME_PC::SaveConfigurationPc() {
     /* Retail passes only the folder; the two missing %s read the company and product arguments that
        PcGetUserFolder left on the stack (cdecl cleanup is deferred). */
     sprintf(directory, "%s\\%s\\%s\\", PcGetUserFolder(PcCompanyName, PcProductName));
-    WriteConfigurationPc(primary, 64, directory);
+    WriteConfiguration(primary, 64, directory);
 }
 
 extern "C" void PcInputSaveConfigurationPc() {

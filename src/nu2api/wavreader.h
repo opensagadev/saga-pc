@@ -25,16 +25,16 @@ class WavReader { // size 0x40
     WavReader(void);
     virtual ~WavReader(void);
     virtual HRESULT Open(NUDATHDR *, char *, WAVEFORMATEX *);
-    virtual HRESULT Unknown08Pc(u32, u32);
+    virtual HRESULT Unknown08(u32, u32);
     virtual HRESULT Close(void);
     virtual WAVEFORMATEX *GetFormat(void);
     virtual i32 GetSize(void);
     virtual HRESULT Reset(void);
     virtual HRESULT Read(void *, u32, u32 *);
     virtual i32 SeekTime(f32);
-    u32 FourCcPc(const char *);
-    i32 FindChunkPc(HANDLE, const char *, PC_WAVE_CHUNK *);
-    i32 SkipChunkPc(HANDLE, const PC_WAVE_CHUNK *);
+    u32 FourCc(const char *);
+    i32 FindChunk(HANDLE, const char *, PC_WAVE_CHUNK *);
+    i32 SkipChunk(HANDLE, const PC_WAVE_CHUNK *);
     u32 unknown_004;     // 0x04
     HANDLE file;         // 0x08
     u32 unknown_00c;     // 0x0c

@@ -1434,7 +1434,7 @@ extern "C" {
         return &texture->flags;
     }
 
-    /* Called from NuDeferredFilter::ResizeTexturesPc instead of inlined: its x87 byte-count
+    /* Called from NuDeferredFilter::ResizeTextures instead of inlined: its x87 byte-count
      * conversion (an inline fnstcw/fistp for the unsigned cast) keeps it above VC8's inline limit. */
     void PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE *texture, i32 width, i32 height, i32 levels) {
         if (texture == NULL) {
@@ -2614,7 +2614,7 @@ extern "C" {
     }
 
     /* Non-virtual post-filter resize members; NuPostEffectResize calls them after a device reset. */
-    void NuMainFilter::ResizeTexturesPc(i32, i32) {
+    void NuMainFilter::ResizeTextures(i32, i32) {
     }
 
     void PC_EFFECT_SURFACE::Reset() {
@@ -2708,7 +2708,7 @@ extern "C" {
         NuDeferredFilterGen::initTextureResources(width, height);
     }
 
-    void NuDeferredFilter::ResizeTexturesPc(i32, i32) {
+    void NuDeferredFilter::ResizeTextures(i32, i32) {
         if (textures[2] != NULL) {
             PCGraphicsResizeEffectTexture(textures[2], -1, -1, -1);
         }
@@ -2735,7 +2735,7 @@ extern "C" {
         texture_surface.Reset();
     }
 
-    void NuSpeedBlurFilter::ResizeTexturesPc(i32, i32) {
+    void NuSpeedBlurFilter::ResizeTextures(i32, i32) {
     }
 
     i32 PcInitializeDynamicGeometryBuffers(PC_DYNAMIC_GEOMETRY *geometry, i32 count) {
@@ -6667,7 +6667,7 @@ extern "C" {
 
     void NuMainFilter::render() {
         if (bloom_enabled) {
-            RenderBloomPc();
+            RenderBloom();
         }
     }
 

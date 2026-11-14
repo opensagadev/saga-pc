@@ -31,7 +31,7 @@ void PC_WINDOW_OPTIONS_PC::SetMultisample(i32 value) {
     multisample = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetAspectModePc(i32 value) {
+void PC_WINDOW_OPTIONS_PC::SetAspectMode(i32 value) {
     aspect_mode = value;
 }
 
@@ -421,7 +421,7 @@ void PC_WINDOW_OPTIONS_PC::SetDesiredBloomMethod(i32 value) {
     desiredbloommethod = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetBloomEnabledPc(u8 value) {
+void PC_WINDOW_OPTIONS_PC::SetBloomEnabled(u8 value) {
     bloomenabled = value;
 }
 
@@ -429,7 +429,7 @@ void PC_WINDOW_OPTIONS_PC::SetDesiredShadowMethod(i32 value) {
     desiredshadowmethod = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetShadowsEnabledPc(u8 value) {
+void PC_WINDOW_OPTIONS_PC::SetShadowsEnabled(u8 value) {
     shadowsenabled = value;
 }
 
@@ -442,7 +442,7 @@ void PC_WINDOW_OPTIONS_PC::SetUseHires(u8 value) {
     usehirespending = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetUseHiresPendingPc(u8 value) {
+void PC_WINDOW_OPTIONS_PC::SetUseHiresPending(u8 value) {
     usehirespending = value;
 }
 

@@ -506,43 +506,43 @@ struct PC_INPUT_RUNTIME_PC {          // size 0x68b4
     PC_INPUT_CONFIG_PC *FindConfig(u8 mask, i32 port, i32 key);
     void InstallConfig(PC_INPUT_CONFIG_PC *, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port);
     void BindPreferredConfig(i32 mask, i32 port);
-    i32 ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 bank_count);
-    i32 SelectConfigurationPc(i32 port, i32 key, i32 auxiliary_index);
-    u8 InstallDropInConfigurationPc(i32 port, i32 player_index);
+    i32 ResolveAuxiliaryConflicts(i32 auxiliary_index, i32 bank_count);
+    i32 SelectConfiguration(i32 port, i32 key, i32 auxiliary_index);
+    u8 InstallDropInConfiguration(i32 port, i32 player_index);
     void InitKeyboardProfiles();
     void AutoConfigurePadsPc(i32 count);
-    void ServicePendingCapturePc();
-    void AdvanceCaptureRecordsPc();
+    void ServicePendingCapture();
+    void AdvanceCaptureRecords();
 
     void EndFramePc() {
-        ServicePendingCapturePc();
-        AdvanceCaptureRecordsPc();
+        ServicePendingCapture();
+        AdvanceCaptureRecords();
         read_mask = 0;
         keyboard_polled = 0;
         mouse_polled = 0;
         capture_available = 0;
     }
 
-    i32 ReadSamplePc(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
+    i32 ReadSample(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
     i32 SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample);
     i32 UpdateMousePc();
-    void CaptureBindingPc(i32 port);
-    i32 TranslateBindingsPc(i32 port, PC_INPUT_SAMPLE_PC *, i32 valid, PC_INPUT_RAW_SAMPLE_PC *, PC_INPUT_MOUSE_RUNTIME_PC *, u8 **keys);
+    void CaptureBinding(i32 port);
+    i32 TranslateBindings(i32 port, PC_INPUT_SAMPLE_PC *, i32 valid, PC_INPUT_RAW_SAMPLE_PC *, PC_INPUT_MOUSE_RUNTIME_PC *, u8 **keys);
     void ApplyMouseAxisPc(PC_INPUT_SAMPLE_PC *sample);
-    u32 CombineUiButtonsPc(i32 port, u32 buttons);
-    void NormalizeAxisPairPc(i16 *x, i16 *y);
+    u32 CombineUiButtons(i32 port, u32 buttons);
+    void NormalizeAxisPair(i16 *x, i16 *y);
     void InitXInputCaps(const PC_XINPUT_CAPABILITIES_PC *, PC_INPUT_DEVICE_PC *);
-    void CopyBindingsPc(i32, i32, i32);
-    i32 HashAuxiliaryBindingsPc();
-    i32 BindingAvailablePc(i32, i32, i32, i32);
-    void ClearOtherBankConflictsPc(i32, i32);
-    void AssignBindingPc(i32, i32, i32, i32, i32, i32, i32, u32);
-    void ExportConfigPc(i32, PC_INPUT_CONFIG_PC *, i32, i32, i32);
-    void PromoteConfigPc(PC_INPUT_CONFIG_PC *, i32, PC_INPUT_CONFIG_PC *);
-    void SanitizeConfigNamePc(const char *, char *);
-    void FormatConfigTextPc(char *, PC_INPUT_CONFIG_PC *);
-    void WriteConfigTextPc(const char *, PC_INPUT_CONFIG_PC *);
-    void WriteConfigurationPc(PC_INPUT_CONFIG_PC *, i32, const char *);
+    void CopyBindings(i32, i32, i32);
+    i32 HashAuxiliaryBindings();
+    i32 BindingAvailable(i32, i32, i32, i32);
+    void ClearOtherBankConflicts(i32, i32);
+    void AssignBinding(i32, i32, i32, i32, i32, i32, i32, u32);
+    void ExportConfig(i32, PC_INPUT_CONFIG_PC *, i32, i32, i32);
+    void PromoteConfig(PC_INPUT_CONFIG_PC *, i32, PC_INPUT_CONFIG_PC *);
+    void SanitizeConfigName(const char *, char *);
+    void FormatConfigText(char *, PC_INPUT_CONFIG_PC *);
+    void WriteConfigText(const char *, PC_INPUT_CONFIG_PC *);
+    void WriteConfiguration(PC_INPUT_CONFIG_PC *, i32, const char *);
     void SaveConfigurationPc();
     i32 fun_006d38b0(PC_INPUT_CONFIG_PC *config);
     void fun_006d3970(PC_INPUT_CONFIG_PC *config);
@@ -683,7 +683,7 @@ extern "C" {
 #endif
     void SetPadDescriptorPc(i32, const u16 *);
     void InitPadDescriptorsPc(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
-    i32 QueueKeyPressPc(i32, i32);
+    i32 QueueKeyPress(i32, i32);
 #ifdef __cplusplus
 }
 #endif

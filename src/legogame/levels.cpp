@@ -2018,7 +2018,7 @@ void WorldInfo_Load(WORLDINFO *world) {
     LevelObjects_InitForLevel(world);
     BoltTypes_Init(world);
     if (world->config_count > 0) {
-        LevelConfig_AfterLoad(world->current_level, ConfigBuffer.bytes, WorldLoadAfterKeywordsPc);
+        LevelConfig_AfterLoad(world->current_level, ConfigBuffer.bytes, WorldLoadAfterKeywords);
         EquivalentObjects_Configure(world, ConfigBuffer.bytes);
         Teleports_Configure(world, ConfigBuffer.bytes);
         Doors_Configure(world, ConfigBuffer.bytes);

@@ -1,6 +1,6 @@
 #include "saga.h"
 
-u8 MENU_VIDEO_OPTIONS::ChangedPc() {
+u8 MENU_VIDEO_OPTIONS::Changed() {
     if (aspect_mode != PcWindowOptions.aspect_mode) {
         return 1;
     }
@@ -20,17 +20,17 @@ void MENU_VIDEO_OPTIONS::fun_005091f0() {
 }
 
 void MENU_VIDEO_OPTIONS::ApplyPc() {
-    PcWindowOptions.SetAspectModePc(aspect_mode);
+    PcWindowOptions.SetAspectMode(aspect_mode);
     PcWindowOptions.Save();
     i32 aspect = PcWindowOptions.aspect_mode;
     if (aspect == 3) {
         aspect = PCDeviceBackend.active_aspect_mode;
     }
     MenuAppliedAspect = aspect;
-    PcWindowOptions.SetShadowsEnabledPc(shadows_enabled == 1);
-    PcWindowOptions.SetBloomEnabledPc(bloom_enabled == 1);
+    PcWindowOptions.SetShadowsEnabled(shadows_enabled == 1);
+    PcWindowOptions.SetBloomEnabled(bloom_enabled == 1);
     PcWindowOptions.SetSpeedBlurEnabled(speed_blur_enabled == 1);
-    PcWindowOptions.SetUseHiresPendingPc(hires_enabled == 1);
+    PcWindowOptions.SetUseHiresPending(hires_enabled == 1);
     PcWindowOptions.Save();
 }
 
@@ -77,7 +77,7 @@ extern "C" void MenuExitEffects(MENU *) {
 }
 
 extern "C" void MenuApplyVideo(void) {
-    if (PCDeviceBackend.HasRequestedModeChangedPc()) {
+    if (PCDeviceBackend.HasRequestedModeChanged()) {
         MenuSFX = MENUSFX_MENUSELECT;
         MenuVideoOptions.ApplyPc();
         PCDeviceBackend.CreateOrResetDevice(1);
@@ -85,7 +85,7 @@ extern "C" void MenuApplyVideo(void) {
         NewMenu(1027, 0, -1);
         return;
     }
-    if (MenuVideoOptions.ChangedPc()) {
+    if (MenuVideoOptions.Changed()) {
         MenuSFX = MENUSFX_MENUSELECT;
         MenuVideoOptions.ApplyPc();
         if (PcWindowOptions.usehirespending != PcWindowOptions.usehires) {
@@ -193,12 +193,12 @@ extern "C" void MenuUpdateEffects(MENU *menu) {
                 } else if (index >= 5) {
                     index = 0;
                 }
-                if (!PCDeviceBackend.SupportsMultisamplePc(index)) {
+                if (!PCDeviceBackend.SupportsMultisample(index)) {
                     do {
                         if (++index >= 5) {
                             index = 0;
                         }
-                    } while (!PCDeviceBackend.SupportsMultisamplePc(index));
+                    } while (!PCDeviceBackend.SupportsMultisample(index));
                 }
                 PCDeviceBackend.requested_multisample = index;
             }
@@ -301,7 +301,7 @@ extern "C" void MenuDrawVideo(MENU *menu) {
     }
     NuSPrintf(text, "%s: %s", MenuPcStrings[23], value);
     DrawMenuEntryEx(menu, text, (u8)((PcWindowOptions.option459 ? 255 : 64) * MenuAlpha));
-    if (!PCDeviceBackend.HasRequestedModeChangedPc() && !MenuVideoOptions.ChangedPc()) {
+    if (!PCDeviceBackend.HasRequestedModeChanged() && !MenuVideoOptions.Changed()) {
         if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
         }
@@ -437,7 +437,7 @@ extern "C" void MenuDrawEffects(MENU *menu) {
     }
     NuSPrintf(text, "%s: %s", MenuPcStrings[35], value);
     DrawMenuEntryEx(menu, text, 255);
-    if (!PCDeviceBackend.HasRequestedModeChangedPc() && !MenuVideoOptions.ChangedPc()) {
+    if (!PCDeviceBackend.HasRequestedModeChanged() && !MenuVideoOptions.Changed()) {
         if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
         }
@@ -452,7 +452,7 @@ extern "C" void MenuDrawEffects(MENU *menu) {
     }
 }
 
-void PC_DEVICE_BACKEND_PC::RestoreSavedModePc() {
+void PC_DEVICE_BACKEND_PC::RestoreSavedMode() {
     requested_windowed = saved_windowed;
     if (saved_mode < mode_count) {
         requested_mode = saved_mode;
@@ -462,7 +462,7 @@ void PC_DEVICE_BACKEND_PC::RestoreSavedModePc() {
     requested_feature = saved_feature;
     requested_multisample = saved_multisample;
     requested_target_count = saved_target_count;
-    PcWindowOptions.SetAspectModePc(saved_aspect);
+    PcWindowOptions.SetAspectMode(saved_aspect);
     PcWindowOptions.Save();
     i32 aspect = PcWindowOptions.aspect_mode;
     if (aspect == 3) {
@@ -506,7 +506,7 @@ extern "C" void MenuUpdateVideoConfirm(MENU *menu) {
         return;
     }
     if ((menu->selected_row == 1 && menu->confirm_pressed) || menu->menu_time >= MenuVideoConfirmDuration) {
-        PCDeviceBackend.RestoreSavedModePc();
+        PCDeviceBackend.RestoreSavedMode();
         MenuVideoOptions.aspect_mode = PcWindowOptions.aspect_mode;
         MenuVideoOptions.shadows_enabled = PcWindowOptions.shadowsenabled != 0;
         MenuVideoOptions.bloom_enabled = PcWindowOptions.bloomenabled != 0;

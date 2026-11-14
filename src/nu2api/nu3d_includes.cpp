@@ -11376,13 +11376,13 @@ extern "C" void NuPostEffectResize(void) {
     i32 width = PS2_REZ_W;
     i32 height = PS2_REZ_H;
     if (mainFilter != NULL) {
-        ((NuMainFilter *)mainFilter)->ResizeTexturesPc(width, height);
+        ((NuMainFilter *)mainFilter)->ResizeTextures(width, height);
     }
     if (speedBlurFilter != NULL) {
-        ((NuSpeedBlurFilter *)speedBlurFilter)->ResizeTexturesPc(width, height);
+        ((NuSpeedBlurFilter *)speedBlurFilter)->ResizeTextures(width, height);
     }
     if (deferredFilter != NULL) {
-        ((NuDeferredFilter *)deferredFilter)->ResizeTexturesPc(width, height);
+        ((NuDeferredFilter *)deferredFilter)->ResizeTextures(width, height);
     }
     PCGraphicsResizePostEffectTextures(width, height);
 }
@@ -12540,7 +12540,7 @@ NUMTX *PC_SPECIAL_SHADOW_LIGHT::fun_005c2f40() {
     return &projection;
 }
 
-f32 PC_SPECIAL_SHADOW_LIGHT::GetParameterfPc(i32 parameter) {
+f32 PC_SPECIAL_SHADOW_LIGHT::GetParameterf(i32 parameter) {
     switch (parameter) {
         case 0:
             return parameter_0;
@@ -12575,7 +12575,7 @@ f32 PC_SPECIAL_SHADOW_LIGHT::GetParameterfPc(i32 parameter) {
     return 0.0f;
 }
 
-void PC_SPECIAL_SHADOW_LIGHT::SetParameteriPc(i32 parameter, i32 value) {
+void PC_SPECIAL_SHADOW_LIGHT::SetParameteri(i32 parameter, i32 value) {
     switch (parameter) {
         case 4:
             parameter_4 = value;
@@ -12586,7 +12586,7 @@ void PC_SPECIAL_SHADOW_LIGHT::SetParameteriPc(i32 parameter, i32 value) {
     }
 }
 
-i32 PC_SPECIAL_SHADOW_LIGHT::GetParameteriPc(i32 parameter) {
+i32 PC_SPECIAL_SHADOW_LIGHT::GetParameteri(i32 parameter) {
     switch (parameter) {
         case 4:
             return parameter_4;
@@ -13891,7 +13891,7 @@ extern "C" void NuDynamicLightEndCapture(void) {
 }
 
 extern "C" void NuDynamicLightLookAt(PC_SPECIAL_SHADOW_LIGHT *light, NUVEC *eye, NUVEC *target, NUVEC *up) {
-    light->LookAtPc(eye, target, up);
+    light->LookAt(eye, target, up);
 }
 
 extern "C" NU_LIGHT_SHADOW_LIST_VIEW *NuDynamicLightGetDList(PC_SPECIAL_SHADOW_LIGHT *light, i32 render_set,
@@ -13911,11 +13911,11 @@ extern "C" NUMTX *NuDynamicLightGetProjection(PC_SPECIAL_SHADOW_LIGHT *light) {
 }
 
 extern "C" void NuDynamicLightSetParameterf(PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, f32 value) {
-    light->SetParameterfPc(parameter, value);
+    light->SetParameterf(parameter, value);
 }
 
 extern "C" f32 NuDynamicLightGetParameterf(PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter) {
-    return light->GetParameterfPc(parameter);
+    return light->GetParameterf(parameter);
 }
 
 extern "C" void NuDynamicLightSetParameteri(PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, i32 value) {
@@ -14011,7 +14011,7 @@ NU_LIGHT_SHADOW_LIST_VIEW *PC_SPECIAL_SHADOW_LIGHT::fun_005c2ee0(i32 set, NUMTL 
     return &render_sets[set].shadow_lists[0];
 }
 
-void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadowPc(NUGSCN *scene) {
+void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
     SHADOW_PRODUCER_SET *sets = reinterpret_cast<SHADOW_PRODUCER_SET *>(render_sets);
     for (i32 set = 0; set < render_set_count; ++set) {
         for (i32 variant = 0; variant < 2; ++variant) {
@@ -16939,7 +16939,7 @@ extern "C" i32 NuOcclusionManagerIsOccludedSphere(const NUVEC *center, f32 radiu
 }
 
 extern "C" void fun_005f2860(PC_SPECIAL_SHADOW_LIGHT *light, NUCAMERA *camera, const f32 *splits, i32 count) {
-    light->SetupCustomCameraFrustumPc(camera, splits, count);
+    light->SetupCustomCameraFrustum(camera, splits, count);
 }
 
 extern "C" void fun_005f2880(NuDynamicLight *light) {
@@ -17057,7 +17057,7 @@ extern "C" PC_SPECIAL_SHADOW_LIGHT *NuDynamicLightClone(PC_SPECIAL_SHADOW_LIGHT 
 }
 
 extern "C" void fun_005f6a80(PC_SPECIAL_SHADOW_LIGHT *light, NUGSCN *scene) {
-    light->RenderSceneShadowPc(scene);
+    light->RenderSceneShadow(scene);
 }
 
 extern "C" PC_SPECIAL_SHADOW_LIGHT *fun_005f6a90(void) {
@@ -18276,7 +18276,7 @@ extern "C" {
         (dst).m33 = (src).m33;                                                                                                             \
     } while (0)
 
-void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
+void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrix(NURNDRLIGHTRECORD *set) {
     NUMTX *shadow_matrix = &set->shadow_matrix_pc;
     NUMTX original = set->view_pc;
     NUMTX captured = PostShadowView;
@@ -18434,11 +18434,11 @@ PC_SPECIAL_SHADOW_LIGHT *PC_SPECIAL_SHADOW_LIGHT::Clone(VARIPTR *arena, VARIPTR)
     return copy;
 }
 
-void PC_SPECIAL_SHADOW_LIGHT::SetupShadowPc(NURNDRLIGHTRECORD *set) {
+void PC_SPECIAL_SHADOW_LIGHT::SetupShadow(NURNDRLIGHTRECORD *set) {
     NUMTX inverse;
     NUMTX bias;
     NuMtxInvH(&inverse, &PostShadowView);
-    ComputeShadowMatrixPc(set);
+    ComputeShadowMatrix(set);
     bias.m00 = 0.5f;
     bias.m01 = 0.0f;
     bias.m02 = 0.0f;
@@ -18459,13 +18459,13 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupShadowPc(NURNDRLIGHTRECORD *set) {
     NuMtxMulH(&set->texture_matrix, &set->texture_matrix, &bias);
 }
 
-void PC_SPECIAL_SHADOW_LIGHT::RenderShadowPc(i32 index, PC_FRAMEBUFFER *) {
+void PC_SPECIAL_SHADOW_LIGHT::RenderShadow(i32 index, PC_FRAMEBUFFER *) {
     NURNDRLIGHTRECORD &set = render_sets[index];
     if (set.shadow_lists[0].material_last == set.shadow_lists[0].first && set.shadow_lists[1].material_last == set.shadow_lists[1].first &&
         set.count == 0) {
         return;
     }
-    SetupShadowPc(&set);
+    SetupShadow(&set);
     PostShadowSelectHandlers(1);
     NUMTX axis;
     NUMTX view_projection;
@@ -18510,7 +18510,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadowPc(i32 index, PC_FRAMEBUFFER *) {
     PostShadowSelectHandlers(0);
 }
 
-void PC_SPECIAL_SHADOW_LIGHT::RenderConstantsPc(void *) {
+void PC_SPECIAL_SHADOW_LIGHT::RenderConstants(void *) {
     NUMTX inverse;
     NuMtxInv(&inverse, &view);
     if (parameter_4 == 0) {
@@ -18623,7 +18623,7 @@ void NuDeferredFilterGen::render() {
             PCGraphicsEffectTextureDimensions(textures[2], 0, &width, &height);
             PCGraphicsSubmitViewport(0, 0, width, height);
             PCGraphicsClearFramebuffer(0x300, 0xffffffff);
-            light->RenderShadowPc(shadow, shadow_fbos[shadow]);
+            light->RenderShadow(shadow, shadow_fbos[shadow]);
             PCGraphicsResolveFramebuffer(1);
         }
         D3DPERF_EndEvent();
@@ -18653,7 +18653,7 @@ void NuDeferredFilterGen::render() {
             NuDisplayHandlerPixelShaderCachePc = NULL;
         }
         NuShaderProgramMakeCurrent(program);
-        light->RenderConstantsPc(program);
+        light->RenderConstants(program);
         PCGraphicsEffectTextureSetFilterFields(depth_texture, 2, 2, 0);
         {
             const u32 stage_pc = 0;

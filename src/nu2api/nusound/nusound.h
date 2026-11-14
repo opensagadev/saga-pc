@@ -84,14 +84,14 @@ typedef struct SoundVoiceManagerPC { // size 0xda8
     SoundVoiceManagerPC();
     ~SoundVoiceManagerPC();
     void Init(i32, u8, u8);
-    i32 LoadWavSamplePc(const char *, i32);
+    i32 LoadWavSample(const char *, i32);
     void UnloadSample(i32);
-    void ClearSamplesPc(void);
-    void SetOptionD14Pc(u8);
+    void ClearSamples(void);
+    void SetOptionD14(u8);
     IDirectSound8 *GetFactory(void);
     void SetSampleName(const char *name, i32 sample_index);
     i32 AllocateVoice(i32, i32);
-    bool FindLoopVoicePc(NUVEC *, i32, i32 *);
+    bool FindLoopVoice(NUVEC *, i32, i32 *);
     void SetVoice(i32, i32, f32, i32);
     void SetVolumeTableIndex(i32, i32);
     void SetFrequencyParameter(i32, i32);
@@ -379,11 +379,11 @@ struct SoundQueue {                    // size 0x400
 
     SoundQueue(IDirectSound8 *, i32);
     ~SoundQueue(void);
-    void SuspendForFocusPc(void);
-    void CancelPausePc(void);
+    void SuspendForFocus(void);
+    void CancelPause(void);
     DWORD Run(void);
-    i32 SetFormatPc(const WAVEFORMATEX *);
-    i32 FillBufferPc(i32, u32);
+    i32 SetFormat(const WAVEFORMATEX *);
+    i32 FillBuffer(i32, u32);
     i32 SendCommand(i32 command, i32 argument);
     // noinline: the original calls these out of line from the NuSound3*StereoStream wrappers; VC8 would inline them.
     __declspec(noinline) i32 Stop();

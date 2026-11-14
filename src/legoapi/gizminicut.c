@@ -262,40 +262,40 @@ i32 GizMiniCut_Load(void *world_ptr, void *data) {
 }
 
 ADDGIZMOTYPE_PC *MiniCut_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC MiniCutAddTypePc = {0};
+    static ADDGIZMOTYPE_PC MiniCutAddType = {0};
     (void)type_id;
-    MiniCutAddTypePc = Default_ADDGIZMOTYPE;
-    MiniCutAddTypePc.name = "MiniCut";
-    MiniCutAddTypePc.prefix = "";
-    MiniCutAddTypePc.fns.options = 0;
-    MiniCutAddTypePc.fns.get_max_gizmos_fn = GizMiniCut_GetMaxGizmos;
-    MiniCutAddTypePc.fns.add_gizmos_fn = (void *)GizMiniCut_AddGizmos;
-    MiniCutAddTypePc.fns.early_update_fn = NULL;
-    MiniCutAddTypePc.fns.late_update_fn = NULL;
-    MiniCutAddTypePc.fns.draw_fn = NULL;
-    MiniCutAddTypePc.fns.panel_draw_fn = NULL;
-    MiniCutAddTypePc.fns.get_gizmo_name_fn = (void *)GizMiniCut_GetGizmoName;
-    MiniCutAddTypePc.fns.get_output_fn = (void *)GizMiniCut_GetOutput;
-    MiniCutAddTypePc.fns.get_output_name_fn = (void *)GizMiniCut_GetOutputName;
-    MiniCutAddTypePc.fns.get_num_outputs_fn = (void *)GizMiniCut_GetNumOutputs;
-    MiniCutAddTypePc.fns.activate_fn = (void *)GizMiniCut_Activate;
-    MiniCutAddTypePc.fns.activate_rev_fn = NULL;
-    MiniCutAddTypePc.fns.set_visibility_fn = NULL;
-    MiniCutAddTypePc.fns.get_visibility_fn = NULL;
-    MiniCutAddTypePc.fns.get_pos_fn = (void *)GizMiniCut_GetPos;
-    MiniCutAddTypePc.fns.using_special_fn = (void *)GizMiniCut_UsingSpecial;
-    MiniCutAddTypePc.fns.bolt_hit_plat_fn = NULL;
-    MiniCutAddTypePc.fns.get_best_bolt_target_fn = NULL;
-    MiniCutAddTypePc.fns.bolt_hit_fn = NULL;
-    MiniCutAddTypePc.fns.allocate_progress_data_fn = NULL;
-    MiniCutAddTypePc.fns.clear_progress_fn = NULL;
-    MiniCutAddTypePc.fns.store_progress_fn = NULL;
-    MiniCutAddTypePc.fns.reset_fn = GizMiniCut_Reset;
-    MiniCutAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))GizMiniCut_ReserveBufferSpace;
-    MiniCutAddTypePc.fns.load_fn = GizMiniCut_Load;
-    MiniCutAddTypePc.fns.post_load_fn = NULL;
-    MiniCutAddTypePc.fns.add_level_sfx_fn = NULL;
-    return &MiniCutAddTypePc;
+    MiniCutAddType = Default_ADDGIZMOTYPE;
+    MiniCutAddType.name = "MiniCut";
+    MiniCutAddType.prefix = "";
+    MiniCutAddType.fns.options = 0;
+    MiniCutAddType.fns.get_max_gizmos_fn = GizMiniCut_GetMaxGizmos;
+    MiniCutAddType.fns.add_gizmos_fn = (void *)GizMiniCut_AddGizmos;
+    MiniCutAddType.fns.early_update_fn = NULL;
+    MiniCutAddType.fns.late_update_fn = NULL;
+    MiniCutAddType.fns.draw_fn = NULL;
+    MiniCutAddType.fns.panel_draw_fn = NULL;
+    MiniCutAddType.fns.get_gizmo_name_fn = (void *)GizMiniCut_GetGizmoName;
+    MiniCutAddType.fns.get_output_fn = (void *)GizMiniCut_GetOutput;
+    MiniCutAddType.fns.get_output_name_fn = (void *)GizMiniCut_GetOutputName;
+    MiniCutAddType.fns.get_num_outputs_fn = (void *)GizMiniCut_GetNumOutputs;
+    MiniCutAddType.fns.activate_fn = (void *)GizMiniCut_Activate;
+    MiniCutAddType.fns.activate_rev_fn = NULL;
+    MiniCutAddType.fns.set_visibility_fn = NULL;
+    MiniCutAddType.fns.get_visibility_fn = NULL;
+    MiniCutAddType.fns.get_pos_fn = (void *)GizMiniCut_GetPos;
+    MiniCutAddType.fns.using_special_fn = (void *)GizMiniCut_UsingSpecial;
+    MiniCutAddType.fns.bolt_hit_plat_fn = NULL;
+    MiniCutAddType.fns.get_best_bolt_target_fn = NULL;
+    MiniCutAddType.fns.bolt_hit_fn = NULL;
+    MiniCutAddType.fns.allocate_progress_data_fn = NULL;
+    MiniCutAddType.fns.clear_progress_fn = NULL;
+    MiniCutAddType.fns.store_progress_fn = NULL;
+    MiniCutAddType.fns.reset_fn = GizMiniCut_Reset;
+    MiniCutAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))GizMiniCut_ReserveBufferSpace;
+    MiniCutAddType.fns.load_fn = GizMiniCut_Load;
+    MiniCutAddType.fns.post_load_fn = NULL;
+    MiniCutAddType.fns.add_level_sfx_fn = NULL;
+    return &MiniCutAddType;
 }
 
 void fun_005b1030(i32 frames) {

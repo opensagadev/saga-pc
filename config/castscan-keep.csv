@@ -16,7 +16,7 @@ src/nu2api/nu3d_includes.cpp,NuHGobjEvalAnim2Root,(i32)i,1,without it NuDeferred
 src/nu2api/nu3d_includes.cpp,NuHGobjEvalAnim2Root,(i32)overrides[i].joint_index,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
 src/nu2api/nu3d_includes.cpp,NuHGobjEvalAnim2Root,(i32)i,2,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
 src/nu2api/nu3d_includes.cpp,NuHGobjEvalAnim2Root,(i32)i,3,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
-src/nu2api/nu3d_includes.cpp,PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc,(f32)(1.0f - absolute.f),1,float cast of a float expression: without it the function's x87 code changes (score drops)
+src/nu2api/nu3d_includes.cpp,PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrix,(f32)(1.0f - absolute.f),1,float cast of a float expression: without it the function's x87 code changes (score drops)
 src/nu2api/terrain_query.cpp,ScanTerrainHandel,(f32)(0.02f + query->collision_radius_sq + movement_sq),1,float cast of a float expression: without it the function's x87 code changes (score drops)
 src/nu2api/terrain_query.cpp,ScanTerrainPlatform,(f32)(0.02f + query->collision_radius_sq + movement_sq),1,float cast of a float expression: without it the function's x87 code changes (score drops)
 src/nu2api/terrain_query.cpp,ScanTerrainPlatform,(f32)(query->position.x - 0.02f - query->collision_radius),1,float cast of a float expression: without it the function's x87 code changes (score drops)

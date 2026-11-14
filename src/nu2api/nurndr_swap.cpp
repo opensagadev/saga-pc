@@ -155,7 +155,7 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
                     bool resize = width != PS2_REZ_W || height != PS2_REZ_H;
                     PC_EFFECT_SURFACE target;
                     target.Attach(render_texture, 0, false);
-                    PCDeviceBackend.CopySurfaceTargetPc(&target, resize ? 2 : 1, 0);
+                    PCDeviceBackend.CopySurfaceTarget(&target, resize ? 2 : 1, 0);
                 }
             }
         }

@@ -9274,12 +9274,12 @@ variable:SuitRecordInit,variable,SuitRecordInit,18149,18149,1,legoapi/actions/ch
 variable:PlayerStart,variable,PlayerStart,18150,18150,1,legoapi/characters/core/players.h,android,PlayerStart
 variable:PodPacemaker,variable,PodPacemaker,18152,18152,2,legoapi/world/levels/episodeI.h,users,PodPacemaker: only legogame/episodeI.c android-path
 variable:PodRaceSplineIncrement,variable,PodRaceSplineIncrement,18153,18153,1,legoapi/world/levels/episodeI.h,rule,used most in legogame/episodeI.c (2) android-path
-variable:PodCreateSplineKeywordPc,variable,PodCreateSplineKeywordPc,18154,18154,1,legoapi/world/levels/episodeI.h,users,PodCreateSplineKeywordPc: only legogame/episodeI.c android-path
-variable:PodCreateStartKeywordPc,variable,PodCreateStartKeywordPc,18155,18155,1,legoapi/world/levels/episodeI.h,users,PodCreateStartKeywordPc: only legogame/episodeI.c android-path
-variable:PodCreateEndKeywordPc,variable,PodCreateEndKeywordPc,18156,18156,1,legoapi/world/levels/episodeI.h,users,PodCreateEndKeywordPc: only legogame/episodeI.c android-path
-variable:PodCreateTimeKeywordPc,variable,PodCreateTimeKeywordPc,18157,18157,1,legoapi/world/levels/episodeI.h,users,PodCreateTimeKeywordPc: only legogame/episodeI.c android-path
-variable:PodCreatePacemakerKeywordPc,variable,PodCreatePacemakerKeywordPc,18158,18158,1,legoapi/world/levels/episodeI.h,users,PodCreatePacemakerKeywordPc: only legogame/episodeI.c android-path
-variable:PodCreateDamagedKeywordPc,variable,PodCreateDamagedKeywordPc,18159,18159,1,legoapi/world/levels/episodeI.h,users,PodCreateDamagedKeywordPc: only legogame/episodeI.c android-path
+variable:PodCreateSplineKeyword,variable,PodCreateSplineKeyword,18154,18154,1,legoapi/world/levels/episodeI.h,users,PodCreateSplineKeyword: only legogame/episodeI.c android-path
+variable:PodCreateStartKeyword,variable,PodCreateStartKeyword,18155,18155,1,legoapi/world/levels/episodeI.h,users,PodCreateStartKeyword: only legogame/episodeI.c android-path
+variable:PodCreateEndKeyword,variable,PodCreateEndKeyword,18156,18156,1,legoapi/world/levels/episodeI.h,users,PodCreateEndKeyword: only legogame/episodeI.c android-path
+variable:PodCreateTimeKeyword,variable,PodCreateTimeKeyword,18157,18157,1,legoapi/world/levels/episodeI.h,users,PodCreateTimeKeyword: only legogame/episodeI.c android-path
+variable:PodCreatePacemakerKeyword,variable,PodCreatePacemakerKeyword,18158,18158,1,legoapi/world/levels/episodeI.h,users,PodCreatePacemakerKeyword: only legogame/episodeI.c android-path
+variable:PodCreateDamagedKeyword,variable,PodCreateDamagedKeyword,18159,18159,1,legoapi/world/levels/episodeI.h,users,PodCreateDamagedKeyword: only legogame/episodeI.c android-path
 struct:CHARACTER_SHADOW_RESET_SLOT,struct,CHARACTER_SHADOW_RESET_SLOT,18161,18166,7,legoapi/render/core/gameliball.h,rule,used most in gameapi/gameliball.cpp (3) android-path
 assert:-#3617,assert,,18168,18168,2,legoapi/render/core/gameliball.h,follow-type,CHARACTER_SHADOW_RESET_SLOT
 assert:-#3618,assert,,18169,18169,1,legoapi/render/core/gameliball.h,follow-type,CHARACTER_SHADOW_RESET_SLOT
@@ -9696,10 +9696,10 @@ variable:LevLock,variable,LevLock,18756,18756,1,globals.h,android-weak,catch-all
 variable:SuperStoryEpisode,variable,SuperStoryEpisode,18757,18757,1,globals.h,android-weak,catch-all (needs a module owner); SuperStoryEpisode
 variable:hub_from_superstory,variable,hub_from_superstory,18758,18758,1,legoapi/world/levels/levels.h,android,hub_from_superstory
 variable:hub_from_mission,variable,hub_from_mission,18759,18759,1,legoapi/world/levels/levels.h,android,hub_from_mission
-variable:PodRaceMaxLapTimeKeywordPc,variable,PodRaceMaxLapTimeKeywordPc,18760,18760,1,legoapi/world/levels/episodeI.h,users,PodRaceMaxLapTimeKeywordPc: only legogame/episodeI.c android-path
-variable:PodRaceLapTimeKeywordPc,variable,PodRaceLapTimeKeywordPc,18761,18761,1,legoapi/world/levels/episodeI.h,users,PodRaceLapTimeKeywordPc: only legogame/episodeI.c android-path
-variable:PodRaceAttemptsKeywordPc,variable,PodRaceAttemptsKeywordPc,18762,18762,1,legoapi/world/levels/episodeI.h,users,PodRaceAttemptsKeywordPc: only legogame/episodeI.c android-path
-variable:PodRaceIncrementKeywordPc,variable,PodRaceIncrementKeywordPc,18763,18763,1,legoapi/world/levels/episodeI.h,users,PodRaceIncrementKeywordPc: only legogame/episodeI.c android-path
+variable:PodRaceMaxLapTimeKeyword,variable,PodRaceMaxLapTimeKeyword,18760,18760,1,legoapi/world/levels/episodeI.h,users,PodRaceMaxLapTimeKeyword: only legogame/episodeI.c android-path
+variable:PodRaceLapTimeKeyword,variable,PodRaceLapTimeKeyword,18761,18761,1,legoapi/world/levels/episodeI.h,users,PodRaceLapTimeKeyword: only legogame/episodeI.c android-path
+variable:PodRaceAttemptsKeyword,variable,PodRaceAttemptsKeyword,18762,18762,1,legoapi/world/levels/episodeI.h,users,PodRaceAttemptsKeyword: only legogame/episodeI.c android-path
+variable:PodRaceIncrementKeyword,variable,PodRaceIncrementKeyword,18763,18763,1,legoapi/world/levels/episodeI.h,users,PodRaceIncrementKeyword: only legogame/episodeI.c android-path
 variable:LevDeaths,variable,LevDeaths,18764,18764,1,globals.h,android-weak,catch-all (needs a module owner); LevDeaths
 variable:newlevelfrommenu_newmenuid,variable,newlevelfrommenu_newmenuid,18765,18765,1,globals.h,android-weak,catch-all (needs a module owner); newlevelfrommenu_newmenuid
 variable:newlevelfrommenu_newmenuy,variable,newlevelfrommenu_newmenuy,18766,18766,1,globals.h,android-weak,catch-all (needs a module owner); newlevelfrommenu_newmenuy
@@ -10828,7 +10828,7 @@ assert:-#4237,assert,,21400,21400,1,decomp.h,decomp,data model check of SDK type
 assert:-#4238,assert,,21401,21401,1,decomp.h,decomp,data model check of SDK type FILTERKEYS
 function:SetPadDescriptorPc,function,SetPadDescriptorPc,21406,21406,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:InitPadDescriptorsPc,function,InitPadDescriptorsPc,21407,21407,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:QueueKeyPressPc,function,QueueKeyPressPc,21408,21408,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:QueueKeyPress,function,QueueKeyPress,21408,21408,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:CreateWindowPc,function,CreateWindowPc,21409,21409,1,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 function:PublishWindowPc,function,PublishWindowPc,21410,21410,1,nu2api/nuwin32/pcapi.h,rule,used most in nu2api/nuwin32/pcapi.cpp (1) pc-path
 function:RegisterWindowCallbackPc,function,RegisterWindowCallbackPc,21411,21411,1,nu2api/nuwin32/nu2api_windows.h,users,RegisterWindowCallbackPc: only nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
@@ -11037,7 +11037,7 @@ function:APILoadCharacterModels,function,APILoadCharacterModels,21754,21754,1,le
 function:NuGHGRead,function,NuGHGRead,21755,21755,1,nu2api/nucore/nuhgobj.h,android,NuGHGRead
 variable:WorldArchiveOneLevels,variable,WorldArchiveOneLevels,21763,21763,1,legoapi/world/levels.h,users,WorldArchiveOneLevels: only legogame/levels.cpp android-path
 variable:WorldArchiveThreeLevels,variable,WorldArchiveThreeLevels,21764,21764,1,legoapi/world/levels.h,users,WorldArchiveThreeLevels: only legogame/levels.cpp android-path
-variable:WorldLoadAfterKeywordsPc,variable,WorldLoadAfterKeywordsPc,21765,21765,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:WorldLoadAfterKeywords,variable,WorldLoadAfterKeywords,21765,21765,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
 variable:WorldLightUserId,variable,WorldLightUserId,21766,21766,1,legoapi/world/levels.h,users,WorldLightUserId: only legogame/levels.cpp android-path
 variable:numtl_force_mipmode,variable,numtl_force_mipmode,21767,21767,1,legoapi/world/levels.h,users,numtl_force_mipmode: only legogame/levels.cpp android-path
 struct:VirtualStackAllocator,struct,VirtualStackAllocator,21773,21786,14,gamelib/util/gamelib_util_types.h,android,VirtualStackAllocator

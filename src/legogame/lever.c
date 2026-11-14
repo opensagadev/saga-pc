@@ -547,40 +547,40 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
 }
 
 ADDGIZMOTYPE_PC *Levers_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC LeversAddTypePc = {0};
-    LeversAddTypePc = Default_ADDGIZMOTYPE;
-    LeversAddTypePc.name = LeverTypeNamePtr;
-    LeversAddTypePc.prefix = "";
-    LeversAddTypePc.fns.options = 12;
-    LeversAddTypePc.fns.get_max_gizmos_fn = Levers_GetMaxGizmos;
-    LeversAddTypePc.fns.add_gizmos_fn = (void *)Levers_AddGizmos;
-    LeversAddTypePc.fns.early_update_fn = NULL;
-    LeversAddTypePc.fns.late_update_fn = Levers_Update;
-    LeversAddTypePc.fns.draw_fn = Levers_Draw;
-    LeversAddTypePc.fns.panel_draw_fn = NULL;
-    LeversAddTypePc.fns.get_gizmo_name_fn = (void *)Lever_GetGizmoName;
-    LeversAddTypePc.fns.get_output_fn = (void *)Lever_GetOutput;
-    LeversAddTypePc.fns.get_output_name_fn = (void *)Lever_GetOutputName;
-    LeversAddTypePc.fns.get_num_outputs_fn = (void *)Lever_GetNumOutputs;
-    LeversAddTypePc.fns.activate_fn = (void *)Lever_Activate;
-    LeversAddTypePc.fns.activate_rev_fn = (void *)Lever_ActivateRev;
-    LeversAddTypePc.fns.set_visibility_fn = (void *)Lever_SetVisibility;
-    LeversAddTypePc.fns.get_visibility_fn = NULL;
-    LeversAddTypePc.fns.get_pos_fn = NULL;
-    LeversAddTypePc.fns.using_special_fn = NULL;
-    LeversAddTypePc.fns.bolt_hit_plat_fn = NULL;
-    LeversAddTypePc.fns.get_best_bolt_target_fn = NULL;
-    LeversAddTypePc.fns.bolt_hit_fn = NULL;
-    LeversAddTypePc.fns.allocate_progress_data_fn = Levers_AllocateProgressData;
-    LeversAddTypePc.fns.clear_progress_fn = Levers_ClearProgress;
-    LeversAddTypePc.fns.store_progress_fn = Levers_StoreProgress;
-    LeversAddTypePc.fns.reset_fn = Levers_Reset;
-    LeversAddTypePc.fns.reserve_buffer_space_fn = Levers_ReserveBufferSpace;
-    LeversAddTypePc.fns.load_fn = Levers_Load;
-    LeversAddTypePc.fns.post_load_fn = NULL;
-    LeversAddTypePc.fns.add_level_sfx_fn = NULL;
+    static ADDGIZMOTYPE_PC LeversAddType = {0};
+    LeversAddType = Default_ADDGIZMOTYPE;
+    LeversAddType.name = LeverTypeNamePtr;
+    LeversAddType.prefix = "";
+    LeversAddType.fns.options = 12;
+    LeversAddType.fns.get_max_gizmos_fn = Levers_GetMaxGizmos;
+    LeversAddType.fns.add_gizmos_fn = (void *)Levers_AddGizmos;
+    LeversAddType.fns.early_update_fn = NULL;
+    LeversAddType.fns.late_update_fn = Levers_Update;
+    LeversAddType.fns.draw_fn = Levers_Draw;
+    LeversAddType.fns.panel_draw_fn = NULL;
+    LeversAddType.fns.get_gizmo_name_fn = (void *)Lever_GetGizmoName;
+    LeversAddType.fns.get_output_fn = (void *)Lever_GetOutput;
+    LeversAddType.fns.get_output_name_fn = (void *)Lever_GetOutputName;
+    LeversAddType.fns.get_num_outputs_fn = (void *)Lever_GetNumOutputs;
+    LeversAddType.fns.activate_fn = (void *)Lever_Activate;
+    LeversAddType.fns.activate_rev_fn = (void *)Lever_ActivateRev;
+    LeversAddType.fns.set_visibility_fn = (void *)Lever_SetVisibility;
+    LeversAddType.fns.get_visibility_fn = NULL;
+    LeversAddType.fns.get_pos_fn = NULL;
+    LeversAddType.fns.using_special_fn = NULL;
+    LeversAddType.fns.bolt_hit_plat_fn = NULL;
+    LeversAddType.fns.get_best_bolt_target_fn = NULL;
+    LeversAddType.fns.bolt_hit_fn = NULL;
+    LeversAddType.fns.allocate_progress_data_fn = Levers_AllocateProgressData;
+    LeversAddType.fns.clear_progress_fn = Levers_ClearProgress;
+    LeversAddType.fns.store_progress_fn = Levers_StoreProgress;
+    LeversAddType.fns.reset_fn = Levers_Reset;
+    LeversAddType.fns.reserve_buffer_space_fn = Levers_ReserveBufferSpace;
+    LeversAddType.fns.load_fn = Levers_Load;
+    LeversAddType.fns.post_load_fn = NULL;
+    LeversAddType.fns.add_level_sfx_fn = NULL;
     lever_gizmotype_id = type_id;
-    return &LeversAddTypePc;
+    return &LeversAddType;
 }
 
 static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {

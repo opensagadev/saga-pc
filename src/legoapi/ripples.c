@@ -223,7 +223,7 @@ static void RippleEffectType(NUFPAR_PC *parser) {
     }
 }
 
-static NUFPCOMJMP RippleEffectConfigKeywordsPc[8] = {
+static NUFPCOMJMP RippleEffectConfigKeywords[8] = {
     {"texture_name", RippleTextureName},
     {"effect_type",  RippleEffectType },
     {"start_colour", RippleStartColour},
@@ -248,7 +248,7 @@ void RippleEffects_Configure(WORLDINFO *world, char *config) {
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
     effect = view->effects = world->giz_buffer.void_ptr;
-    NuFParPushCom(parser, RippleEffectConfigKeywordsPc);
+    NuFParPushCom(parser, RippleEffectConfigKeywords);
     active = 0;
     while (NuFParGetLine(parser)) {
         NuFParGetWord(parser);

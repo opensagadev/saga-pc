@@ -22,18 +22,18 @@ class OggReader : public WavReader { // size 0x338
     OggReader(void);
     virtual ~OggReader(void);
     virtual HRESULT Open(NUDATHDR *, char *, WAVEFORMATEX *);
-    virtual HRESULT Unknown08Pc(u32, u32);
+    virtual HRESULT Unknown08(u32, u32);
     virtual HRESULT Close(void);
     virtual WAVEFORMATEX *GetFormat(void);
     virtual i32 GetSize(void);
     virtual HRESULT Reset(void);
     virtual HRESULT Read(void *, u32, u32 *);
     virtual i32 SeekTime(f32);
-    static u32 ReadCallbackPc(void *, u32, u32, void *);
-    static i32 SeekCallbackPc(void *, i64, i32);
-    static i32 CloseCallbackPc(void *);
+    static u32 ReadCallback(void *, u32, u32, void *);
+    static i32 SeekCallback(void *, i64, i32);
+    static i32 CloseCallback(void *);
     // NOLINTNEXTLINE(google-runtime-int): the upstream long type keeps the C ABI.
-    static long TellCallbackPc(void *);
+    static long TellCallback(void *);
     u8 compressed;                  // 0x040
     u8 unknown_041[7];              // 0x041
     OggVorbis_File vorbis_state;    // 0x048
@@ -72,7 +72,7 @@ OggReader::~OggReader(void) {
     }
 }
 
-HRESULT OggReader::Unknown08Pc(u32 a, u32 b) {
+HRESULT OggReader::Unknown08(u32 a, u32 b) {
     (void)a;
     (void)b;
     return E_FAIL;
@@ -181,7 +181,7 @@ i32 OggReader::SeekTime(f32 seconds) {
     return result;
 }
 
-u32 OggReader::ReadCallbackPc(void *output, u32 element_size, u32 element_count, void *source) {
+u32 OggReader::ReadCallback(void *output, u32 element_size, u32 element_count, void *source) {
     NuThreadCriticalSectionBegin(PCOggCriticalSection);
     OggReader *reader = (OggReader *)source;
     if (reader->cache == NULL || reader->cache->data == NULL) {
@@ -203,7 +203,7 @@ u32 OggReader::ReadCallbackPc(void *output, u32 element_size, u32 element_count,
     return (u32)bytes / element_size;
 }
 
-i32 OggReader::SeekCallbackPc(void *source, i64 offset, i32 origin) {
+i32 OggReader::SeekCallback(void *source, i64 offset, i32 origin) {
     NuThreadCriticalSectionBegin(PCOggCriticalSection);
     OggReader *reader = (OggReader *)source;
     if (reader->cache == NULL) {
@@ -226,7 +226,7 @@ i32 OggReader::SeekCallbackPc(void *source, i64 offset, i32 origin) {
     return result;
 }
 
-i32 OggReader::CloseCallbackPc(void *source) {
+i32 OggReader::CloseCallback(void *source) {
     NuThreadCriticalSectionBegin(PCOggCriticalSection);
     OggReader *reader = (OggReader *)source;
     if (reader->cache != NULL) {
@@ -238,7 +238,7 @@ i32 OggReader::CloseCallbackPc(void *source) {
 }
 
 // NOLINTNEXTLINE(google-runtime-int): the upstream long type keeps the C ABI.
-long OggReader::TellCallbackPc(void *source) {
+long OggReader::TellCallback(void *source) {
     OggReader *reader = (OggReader *)source;
     if (reader->cache == NULL) {
         return 0;
@@ -319,7 +319,7 @@ HRESULT OggReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
         ++cache->references;
     }
     PCThreadMilliseconds();
-    ov_callbacks callbacks = {ReadCallbackPc, SeekCallbackPc, CloseCallbackPc, TellCallbackPc};
+    ov_callbacks callbacks = {ReadCallback, SeekCallback, CloseCallback, TellCallback};
     if (ov_open_callbacks(this, &vorbis_state, NULL, 0, callbacks) < 0) {
         if (cache != NULL) {
             --cache->references;

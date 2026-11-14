@@ -17,8 +17,8 @@
 class NuMainFilter : public NuMainFilterGen { // size 0x160
   public:
     NuMainFilter();
-    void RenderBloomPc();
-    void ResizeTexturesPc(i32 width, i32 height);
+    void RenderBloom();
+    void ResizeTextures(i32 width, i32 height);
     virtual void initResources();
     virtual void initTextureResources(i32, i32);
     virtual void destroyResources();

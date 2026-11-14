@@ -4104,7 +4104,7 @@ enum FILE_DIRECTORY_FLAG_PC { FILE_DIRECTORY_FLAG_DIRECTORY_PC = 8 };
 
 /* The key cascade tests the key pointers instead of the keys, so the year
  * only decides when the two pointers differ. */
-static void eduiFilePickDateKeysPc(FILE_DIRECTORY_ENTRY_PC *a, FILE_DIRECTORY_ENTRY_PC *b, i32 *key_a, i32 *key_b) {
+static void eduiFilePickDateKeys(FILE_DIRECTORY_ENTRY_PC *a, FILE_DIRECTORY_ENTRY_PC *b, i32 *key_a, i32 *key_b) {
     *key_a = a->modified.year;
     *key_b = b->modified.year;
     if (key_a == key_b) {
@@ -4132,14 +4132,14 @@ static void eduiFilePickDateKeysPc(FILE_DIRECTORY_ENTRY_PC *a, FILE_DIRECTORY_EN
 i32 eduiFilePickCompareDate(void *a, void *b) {
     i32 key_a;
     i32 key_b;
-    eduiFilePickDateKeysPc(a, b, &key_a, &key_b);
+    eduiFilePickDateKeys(a, b, &key_a, &key_b);
     return key_a - key_b;
 }
 
 i32 eduiFilePickCompareDateReverse(void *a, void *b) {
     i32 key_a;
     i32 key_b;
-    eduiFilePickDateKeysPc(a, b, &key_a, &key_b);
+    eduiFilePickDateKeys(a, b, &key_a, &key_b);
     return key_b - key_a;
 }
 

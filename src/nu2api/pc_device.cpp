@@ -45,7 +45,7 @@ extern "C" HRESULT PCDeviceSetTransform(i32 state, const NUMTX *matrix) {
     return result;
 }
 
-// noinline: the original calls PCDeviceSetRenderState out of line from PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc; VC8
+// noinline: the original calls PCDeviceSetRenderState out of line from PC_DEVICE_BACKEND_PC::SetColorWriteMask; VC8
 // would inline it there.
 extern "C" __declspec(noinline) void PCDeviceSetRenderState(i32 state, u32 value) {
     i16 cache_index;
@@ -615,7 +615,7 @@ extern "C" __declspec(noinline) HRESULT PCDeviceTestCooperativeLevel() {
     return device->methods->test_cooperative_level(device);
 }
 
-PC_VIEWPORT *PC_DEVICE_BACKEND_PC::GetRequestedViewportPc() {
+PC_VIEWPORT *PC_DEVICE_BACKEND_PC::GetRequestedViewport() {
     return &requested_viewport;
 }
 
@@ -1098,7 +1098,7 @@ void PC_DEVICE_BACKEND_PC::SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE *surfa
 }
 
 /* Captures the current surface as a BMP image in a new NuAlloc block and returns its size. */
-u32 PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, void **data) {
+u32 PC_DEVICE_BACKEND_PC::CaptureScreenshot(u32 width, u32 height, void **data) {
     PC_TEXTURE_RESOURCE *target;
     PC_TEXTURE_RESOURCE *copy;
     ID3DXBuffer *buffer;
@@ -1193,13 +1193,13 @@ i32 PC_DEVICE_BACKEND_PC::fun_005090a0() {
     return multisample_index;
 }
 
-u8 PC_DEVICE_BACKEND_PC::SupportsMultisamplePc(i32 index) {
+u8 PC_DEVICE_BACKEND_PC::SupportsMultisample(i32 index) {
     return multisample_tested != 0 && quality[index] != -1;
 }
 
 u8 PC_DEVICE_BACKEND_PC::fun_005090e0() {
     for (i32 index = 0; index != 5; index++) {
-        if (index != 0 && SupportsMultisamplePc(index)) {
+        if (index != 0 && SupportsMultisample(index)) {
             return 1;
         }
     }
@@ -1219,7 +1219,7 @@ void PC_DEVICE_BACKEND_PC::fun_00509130(i32 multisample) {
 }
 
 void PC_DEVICE_BACKEND_PC::fun_00509140(i32 mode) {
-    PcWindowOptions.SetAspectModePc(mode);
+    PcWindowOptions.SetAspectMode(mode);
     PcWindowOptions.Save();
     if (PcWindowOptions.aspect_mode == 3) {
         MenuAppliedAspect = active_aspect_mode;
@@ -1228,7 +1228,7 @@ void PC_DEVICE_BACKEND_PC::fun_00509140(i32 mode) {
     }
 }
 
-u8 PC_DEVICE_BACKEND_PC::HasRequestedModeChangedPc() {
+u8 PC_DEVICE_BACKEND_PC::HasRequestedModeChanged() {
     return requested_windowed != (parameters.windowed == 1) || requested_mode != active_mode || requested_feature != feature634 ||
            requested_multisample != multisample_index || requested_target_count != target_count;
 }
@@ -1937,7 +1937,7 @@ extern "C" void PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, 
     SAGA_SKIN_CALL(skin_trace_upload, 1, start, count, values, PCDeviceLastResult);
 }
 
-HRESULT PC_DEVICE_BACKEND_PC::CopySurfaceTargetPc(PC_EFFECT_SURFACE *target, i32 filter, i32 unused) {
+HRESULT PC_DEVICE_BACKEND_PC::CopySurfaceTarget(PC_EFFECT_SURFACE *target, i32 filter, i32 unused) {
     (void)unused;
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     return view->methods->stretch_rect(view, current_surface, NULL, target->surface, NULL, filter);
@@ -1961,14 +1961,14 @@ extern "C" void PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE *buffer
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_stream_source(PCDeviceBackend.device, stream, buffer, offset, stride);
 }
 
-// noinline: the original calls PCDeviceDrawPrimitivePc out of line from PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc; VC8
+// noinline: the original calls PCDeviceDrawPrimitivePc out of line from PC_DEVICE_BACKEND_PC::DrawPostEffectQuad; VC8
 // would inline it there.
 extern "C" __declspec(noinline) void PCDeviceDrawPrimitivePc(i32 type, u32 start, u32 count) {
     ++PCDevicePrimitiveCallCountPc;
     PCDeviceLastResult = PCDeviceBackend.device->methods->draw_primitive(PCDeviceBackend.device, type, start, count);
 }
 
-// noinline: the original calls PCDeviceSetIndicesPc out of line from PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc; VC8
+// noinline: the original calls PCDeviceSetIndicesPc out of line from PC_DEVICE_BACKEND_PC::DrawPostEffectIndexed; VC8
 // would inline it there.
 extern "C" __declspec(noinline) void PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE *buffer) {
     if (PCDeviceStateCacheEnabled != 0) {
@@ -1981,7 +1981,7 @@ extern "C" __declspec(noinline) void PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE *bu
 }
 
 // noinline: the original calls PCDeviceDrawIndexedPrimitivePc out of line from
-// PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc; VC8 would inline it there.
+// PC_DEVICE_BACKEND_PC::DrawPostEffectIndexed; VC8 would inline it there.
 extern "C" __declspec(noinline) void PCDeviceDrawIndexedPrimitivePc(i32 type, i32 base_vertex, u32 minimum_vertex, u32 vertex_count,
                                                                     u32 start_index, u32 primitive_count) {
     ++PCDeviceIndexedPrimitiveCallCountPc;
@@ -1994,7 +1994,7 @@ extern "C" void PCDeviceSetStreamSourceFreqPc(u32 stream, u32 setting) {
 }
 
 // noinline: the original calls PCDeviceSetVertexDeclarationPc out of line from
-// PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc; VC8 would inline it there.
+// PC_DEVICE_BACKEND_PC::DrawPostEffectQuad; VC8 would inline it there.
 extern "C" __declspec(noinline) void PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE *declaration) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.vertex_declaration == declaration) {
@@ -2015,7 +2015,7 @@ extern "C" void PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE *shader) {
     SAGA_SKIN_CALL(skin_trace_bind, 1, (unsigned)shader, PCDeviceLastResult);
 }
 
-void PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabled, i32 target) {
+void PC_DEVICE_BACKEND_PC::SetColorWriteMask(u8 colour_enabled, u8 alpha_enabled, i32 target) {
     u32 disabled;
     if (target != 0 && target_count == 1) {
         return;
@@ -2382,24 +2382,24 @@ extern "C" void PCDeviceBeginScenePc(void) {
 extern "C" void fun_006e45d0(void) {
 }
 
-// noinline: the original calls DrawPostEffectQuadPc out of line from PCGraphicsDrawPostEffectQuad; VC8 would inline
+// noinline: the original calls DrawPostEffectQuad out of line from PCGraphicsDrawPostEffectQuad; VC8 would inline
 // it there.
-__declspec(noinline) void PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc() {
+__declspec(noinline) void PC_DEVICE_BACKEND_PC::DrawPostEffectQuad() {
     PCDeviceSetVertexDeclarationPc(declaration68c);
     PCDeviceSetStreamSourcePc(0, buffer690, 0, 20);
     PCDeviceDrawPrimitivePc(5, 0, 2);
 }
 
-// noinline: the original calls DrawPostEffectIndexedPc out of line from PCGraphicsDrawPostEffectIndexed; VC8 would
+// noinline: the original calls DrawPostEffectIndexed out of line from PCGraphicsDrawPostEffectIndexed; VC8 would
 // inline it there.
-__declspec(noinline) void PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc() {
+__declspec(noinline) void PC_DEVICE_BACKEND_PC::DrawPostEffectIndexed() {
     PCDeviceSetVertexDeclarationPc(declaration68c);
     PCDeviceSetStreamSourcePc(0, buffer694, 0, 20);
     PCDeviceSetIndicesPc(buffer698);
     PCDeviceDrawIndexedPrimitivePc(4, 0, 0, state6a4, 0, state6a8);
 }
 
-void PC_DEVICE_BACKEND_PC::PostEffectBarrierPc() {
+void PC_DEVICE_BACKEND_PC::PostEffectBarrier() {
 }
 
 u16 PC_DEVICE_BACKEND_PC::fun_006e2140() {
@@ -2448,11 +2448,11 @@ void PC_DEVICE_BACKEND_PC::fun_006e2ce0(u32 width, u32 height, u32 refresh) {
 }
 
 extern "C" void PCGraphicsDrawPostEffectQuad(void) {
-    PCDeviceBackend.DrawPostEffectQuadPc();
+    PCDeviceBackend.DrawPostEffectQuad();
 }
 
 extern "C" void PCGraphicsDrawPostEffectIndexed(void) {
-    PCDeviceBackend.DrawPostEffectIndexedPc();
+    PCDeviceBackend.DrawPostEffectIndexed();
 }
 
 extern "C" void NuRndrEndFrameAction(void) {

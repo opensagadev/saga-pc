@@ -320,13 +320,13 @@ extern "C" void NuDisplayListMaterial(void *arg) {
     NuDisplayHandlerReflection = 0;
     NuMtlSetRenderStatesPS(&material->common);
     if ((shader->unknown_4d4 & 6) == 0) {
-        PCDeviceBackend.SetColorWriteMaskPc(1, 1, 1);
+        PCDeviceBackend.SetColorWriteMask(1, 1, 1);
     } else {
-        PCDeviceBackend.SetColorWriteMaskPc(0, 0, 1);
+        PCDeviceBackend.SetColorWriteMask(0, 0, 1);
     }
     u32 write_mask = ~shader->unknown_4d4 & 8;
     write_mask >>= 3;
-    PCDeviceBackend.SetColorWriteMaskPc(write_mask, write_mask, 3);
+    PCDeviceBackend.SetColorWriteMask(write_mask, write_mask, 3);
     if (PCDeviceHardwareVertexProcessingPC != 4 && PCShaderCurrentObjectPc() != NULL) {
         if (PCShaderCurrentObjectPc() != NULL &&
             ((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc())->parameters[0x4f].register_index >= 0) {
@@ -442,13 +442,13 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
         write_alpha = 0;
     }
     if (RenderFrameSceneFlags != 0) {
-        PCDeviceBackend.SetColorWriteMaskPc(1, 1, 0);
+        PCDeviceBackend.SetColorWriteMask(1, 1, 0);
         NuDisplayHandlerZMode = 0;
         PCDeviceSetRenderState(7, 1);
         PCDeviceSetRenderState(14, 1);
         PCDeviceSetRenderState(23, 4);
     } else {
-        PCDeviceBackend.SetColorWriteMaskPc(write_colour == 0, write_alpha == 0, 0);
+        PCDeviceBackend.SetColorWriteMask(write_colour == 0, write_alpha == 0, 0);
     }
     NuDisplayHandlerTint = NuDisplayHandlerDefaultTint;
     NuShaderManagerSetfv(0x38, &NuDisplayHandlerDefaultTint.x);
@@ -611,7 +611,7 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
             POST_BLUR_LOW_BIND_INPUT(1);
             POST_BLUR_LOW_BIND_INPUT(2);
             POST_BLUR_LOW_BIND_INPUT(3);
-            PCDeviceBackend.DrawPostEffectQuadPc();
+            PCDeviceBackend.DrawPostEffectQuad();
             POST_BLUR_BIND_PROGRAM(PostBlurAuxProgram);
             POST_BLUR_LOW_BIND_INPUT(0);
             if (output_height < work_height) {
@@ -624,7 +624,7 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
                 viewport.min_z = 0;
                 viewport.max_z = 1;
                 NuVpSubmit(&viewport);
-                PCDeviceBackend.DrawPostEffectQuadPc();
+                PCDeviceBackend.DrawPostEffectQuad();
             }
             if (output_width < work_width) {
                 f32 edge[4] = {0, 1, 1, 0};
@@ -636,7 +636,7 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
                 viewport.max_z = 1;
                 NuVpSubmit(&viewport);
                 PCDeviceSetVertexShaderConstantsF(0, edge, 1);
-                PCDeviceBackend.DrawPostEffectQuadPc();
+                PCDeviceBackend.DrawPostEffectQuad();
             }
             POST_BLUR_LOW_ATTACH(output, output_lod);
             PCGraphicsBindFramebuffer(PostBlurFramebuffer);
@@ -660,7 +660,7 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
             POST_BIND_GLOBAL_TEXTURE(1, PCGraphicsPostEffectWorkTexture);
             POST_BIND_GLOBAL_TEXTURE(2, PCGraphicsPostEffectWorkTexture);
             POST_BIND_GLOBAL_TEXTURE(3, PCGraphicsPostEffectWorkTexture);
-            PCDeviceBackend.DrawPostEffectQuadPc();
+            PCDeviceBackend.DrawPostEffectQuad();
             input = output;
             input_lod = output_lod;
         }
@@ -714,7 +714,7 @@ extern "C" void PCGraphicsCopyFramebufferTex2D(i32 attachment, GRAPHICS_RENDER_T
         bool resize = width != PS2_REZ_W || height != PS2_REZ_H;
         PC_EFFECT_SURFACE target;
         target.Attach(texture, level, false);
-        PCDeviceBackend.CopySurfaceTargetPc(&target, resize ? 2 : 1, 0);
+        PCDeviceBackend.CopySurfaceTarget(&target, resize ? 2 : 1, 0);
     } else {
         /* An empty operation; no argument is read. */
         PCGraphicsRenderTextureAllocationError();
@@ -725,7 +725,7 @@ NuMainFilter::NuMainFilter() {
     platform_fbo = NULL;
 }
 
-void NuMainFilter::RenderBloomPc() {
+void NuMainFilter::RenderBloom() {
     PC_FRAMEBUFFER *output = (PC_FRAMEBUFFER *)PostPortOutFramebuffer.manager->entries[PostPortOutFramebuffer.index].data;
     PC_POST_BUFFER_PROXY *color = (PC_POST_BUFFER_PROXY *)PostPortColorBuffer.manager->entries[PostPortColorBuffer.index].data;
     PC_POST_BUFFER_PROXY *normal = (PC_POST_BUFFER_PROXY *)PostPortNormalBuffer.manager->entries[PostPortNormalBuffer.index].data;
@@ -738,7 +738,7 @@ void NuMainFilter::RenderBloomPc() {
     }
     GRAPHICS_RENDER_TEXTURE *output_texture = output->targets[0].texture;
     GRAPHICS_RENDER_TEXTURE *color_texture = color->texture;
-    PCDeviceBackend.CopySurfaceTargetPc(&texture_surface, 2, 0);
+    PCDeviceBackend.CopySurfaceTarget(&texture_surface, 2, 0);
     if (normal_texture != NULL) {
         if (PostBloomAttachPending) {
             PC_FRAMEBUFFER *framebuffer = platform_fbo;
@@ -761,10 +761,10 @@ void NuMainFilter::RenderBloomPc() {
         }
         PCDeviceSetTexture(0, normal_texture->resource);
         PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR_PC *)PostCopyTexProgram);
-        PCDeviceBackend.SetColorWriteMaskPc(1, 0, 0);
-        PCDeviceBackend.DrawPostEffectQuadPc();
+        PCDeviceBackend.SetColorWriteMask(1, 0, 0);
+        PCDeviceBackend.DrawPostEffectQuad();
         PCDeviceSetTexture(0, NULL);
-        PCDeviceBackend.SetColorWriteMaskPc(0, 0, 0);
+        PCDeviceBackend.SetColorWriteMask(0, 0, 0);
         PostBlur7x7Dispatch(PCGraphicsPostEffectBackBufferTexture, 0, PCGraphicsPostEffectBackBufferTexture, 0, 5, 1, false, 1.0f,
                             PostBlur5x5Program);
     } else {
@@ -862,7 +862,7 @@ void NuMainFilter::RenderBloomPc() {
         PCDeviceSetRenderState(171, 1);
         PCDeviceSetRenderState(15, 0);
     }
-    PCDeviceBackend.DrawPostEffectIndexedPc();
+    PCDeviceBackend.DrawPostEffectIndexed();
     PCDeviceSetTexture(0, NULL);
     PCDeviceSetTexture(3, NULL);
     color->texture = output_texture;
@@ -925,7 +925,7 @@ void NuSpeedBlurFilter::render() {
     constants[0] = 0.0f;
     constants[1] = parameters->scale * NuSpeedBlurVertexScale;
     computeSpeedBlur((NUVEC4 *)(constants + 4));
-    PCDeviceBackend.CopySurfaceTargetPc(&texture_surface, 2, 0);
+    PCDeviceBackend.CopySurfaceTarget(&texture_surface, 2, 0);
     PCDeviceSetRenderState(22, 1);
     PCDeviceSetRenderState(15, 0);
     PCDeviceSetRenderState(27, 0);
@@ -936,7 +936,7 @@ void NuSpeedBlurFilter::render() {
         color_texture->flags = (color_texture->flags & 0xfc13ffff) | 0x120000;
         PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR_PC *)PostCopyTexProgram);
         PCGraphicsBindEffectTexturePc(0, color_texture);
-        PCDeviceBackend.DrawPostEffectQuadPc();
+        PCDeviceBackend.DrawPostEffectQuad();
     }
     PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR_PC *)programs[0]);
     PCDeviceSetVertexShaderConstantsF(platform_uniform, constants, 2);
@@ -955,7 +955,7 @@ void NuSpeedBlurFilter::render() {
     PCDeviceSetRenderState(19, 5);
     PCDeviceSetRenderState(20, 6);
     PCDeviceSetRenderState(171, 1);
-    PCDeviceBackend.DrawPostEffectIndexedPc();
+    PCDeviceBackend.DrawPostEffectIndexed();
     PCDeviceSetRenderState(22, 1);
     PCDeviceSetRenderState(15, 0);
     PCDeviceSetRenderState(27, 0);

@@ -15,7 +15,7 @@ WavReader::~WavReader(void) {
     }
 }
 
-HRESULT WavReader::Unknown08Pc(u32 unused0, u32 unused1) {
+HRESULT WavReader::Unknown08(u32 unused0, u32 unused1) {
     (void)unused0;
     (void)unused1;
     return E_FAIL;
@@ -67,12 +67,12 @@ BOOL __stdcall WavReaderSetFilePointer(HANDLE file, LARGE_INTEGER distance, LARG
     return result;
 }
 
-u32 WavReader::FourCcPc(const char *text) {
+u32 WavReader::FourCc(const char *text) {
     return ((u32)(i32)text[3] << 24) | ((u32)(i32)text[2] << 16) | ((u32)(i32)text[1] << 8) | (u32)(i32)text[0];
 }
 
-i32 WavReader::FindChunkPc(HANDLE input, const char *name, PC_WAVE_CHUNK *chunk) {
-    u32 wanted = FourCcPc(name);
+i32 WavReader::FindChunk(HANDLE input, const char *name, PC_WAVE_CHUNK *chunk) {
+    u32 wanted = FourCc(name);
     DWORD bytes;
     LARGE_INTEGER move;
     LARGE_INTEGER position;
@@ -91,7 +91,7 @@ i32 WavReader::FindChunkPc(HANDLE input, const char *name, PC_WAVE_CHUNK *chunk)
     return 0;
 }
 
-i32 WavReader::SkipChunkPc(HANDLE input, const PC_WAVE_CHUNK *chunk) {
+i32 WavReader::SkipChunk(HANDLE input, const PC_WAVE_CHUNK *chunk) {
     LARGE_INTEGER move;
     LARGE_INTEGER position;
     move.QuadPart = base_position + (i64)(u32)chunk->offset + chunk->bytes;
@@ -130,7 +130,7 @@ HRESULT WavReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
         if (!ReadFile(file, &riff, 12, &bytes, NULL) || bytes != 12 || riff.riff != 0x46464952 || riff.wave != 0x45564157) {
             goto fail;
         }
-        if (!FindChunkPc(file, "fmt ", &chunk) || chunk.bytes < 16) {
+        if (!FindChunk(file, "fmt ", &chunk) || chunk.bytes < 16) {
             goto fail;
         }
         memset(&format, 0, sizeof(format));
@@ -144,8 +144,8 @@ HRESULT WavReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
         if (format.wFormatTag != 1) {
             goto fail;
         }
-        SkipChunkPc(file, &chunk);
-        if (!FindChunkPc(file, "data", &chunk)) {
+        SkipChunk(file, &chunk);
+        if (!FindChunk(file, "data", &chunk)) {
             goto fail;
         }
         data_offset = chunk.offset;

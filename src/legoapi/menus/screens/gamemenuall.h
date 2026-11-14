@@ -19,7 +19,7 @@ typedef struct MENU_VIDEO_OPTIONS { // size 0x14
     i32 speed_blur_enabled;         // 0x0c
     i32 hires_enabled;              // 0x10
 #ifdef __cplusplus
-    u8 ChangedPc();
+    u8 Changed();
     void fun_005091f0();
     void ApplyPc();
 #endif

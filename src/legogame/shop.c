@@ -127,7 +127,7 @@ extern char ShopUserCode[6];
  * Movement mode is 1=left, 2=right. */
 extern i32 ShopMoveItems;
 extern i32 ShopSubMoveSfxLock;
-extern i32 ShopScrollKeyHitPc;
+extern i32 ShopScrollKeyHit;
 void AddToCompletionPoints(u32 points);
 extern f32 ShopPurchasePulse;
 extern i32 HubForceShopSave;
@@ -1103,7 +1103,7 @@ finish:
         ShopNameAlpha = 0.0f;
         return 6;
     }
-    ShopScrollKeyHitPc = scrolling;
+    ShopScrollKeyHit = scrolling;
     return 0;
 }
 

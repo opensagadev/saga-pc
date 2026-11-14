@@ -1350,15 +1350,15 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     i32 used_on_specials; // 0x824
 #ifdef __cplusplus
     PC_SPECIAL_SHADOW_LIGHT();
-    void LookAtPc(NUVEC *, NUVEC *, NUVEC *);
-    void SetupCustomCameraFrustumPc(NUCAMERA *, const f32 *, i32);
-    void RenderSceneShadowPc(NUGSCN *scene);
-    void ComputeShadowMatrixPc(NURNDRLIGHTRECORD *);
-    void SetupShadowPc(NURNDRLIGHTRECORD *);
-    void RenderShadowPc(i32, PC_FRAMEBUFFER *);
-    void RenderConstantsPc(void *);
+    void LookAt(NUVEC *, NUVEC *, NUVEC *);
+    void SetupCustomCameraFrustum(NUCAMERA *, const f32 *, i32);
+    void RenderSceneShadow(NUGSCN *scene);
+    void ComputeShadowMatrix(NURNDRLIGHTRECORD *);
+    void SetupShadow(NURNDRLIGHTRECORD *);
+    void RenderShadow(i32, PC_FRAMEBUFFER *);
+    void RenderConstants(void *);
     void SetEnabledPc(i32 enabled);
-    void SetParameterfPc(i32 parameter, f32 value);
+    void SetParameterf(i32 parameter, f32 value);
     i32 fun_005c2eb0();
     void fun_005c2ec0(i32 used);
     NU_LIGHT_SHADOW_LIST_VIEW *fun_005c2ee0(i32 set, NUMTL *material);
@@ -1366,9 +1366,9 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     i32 fun_005c2f20();
     NUMTX *fun_005c2f30();
     NUMTX *fun_005c2f40();
-    f32 GetParameterfPc(i32 parameter);
-    void SetParameteriPc(i32 parameter, i32 value);
-    i32 GetParameteriPc(i32 parameter);
+    f32 GetParameterf(i32 parameter);
+    void SetParameteri(i32 parameter, i32 value);
+    i32 GetParameteri(i32 parameter);
     void fun_005c3070(i32 set, i32 scene);
     PC_SPECIAL_SHADOW_LIGHT *Clone(VARIPTR *arena, VARIPTR end);
     PC_SPECIAL_SHADOW_LIGHT &operator=(const PC_SPECIAL_SHADOW_LIGHT &other);

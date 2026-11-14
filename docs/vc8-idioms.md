@@ -378,7 +378,7 @@ store to an absolute address. Globals a `data.cpp` table takes the address of
 ```
 retail                                   ours
   mov  ecx, offset PCDeviceBackend         ret        ; empty body inlined
-  jmp  PostEffectBarrierPc
+  jmp  PostEffectBarrier
 ```
 
 A call to a small function (even an empty one) that retail keeps, where ours

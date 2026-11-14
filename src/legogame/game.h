@@ -268,7 +268,7 @@ typedef struct customiser_completion_reader_s { // size 0x4
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUFPCOMJMP WorldLoadAfterKeywordsPc[1];
+    extern NUFPCOMJMP WorldLoadAfterKeywords[1];
     extern i32 EpisodeGoldBrickForSuperStory;
     extern i32 EpisodeGoldBrickForSuperBonus;
     extern i32 EpisodeGoldBrickForChallenge;

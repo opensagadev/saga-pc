@@ -235,7 +235,7 @@ REVIEW = {
     0x6df010: dict(name="d3dApiCalls", area="nu2api/nuwin32", lang="cpp", conf="high",
                    why="marker; retail .\\d3dApiCalls.cpp (Mac nuwin32/d3dApiCalls.cpp)"),
     0x6e1820: dict(name="d3dCore", area="nu2api/nuwin32", lang="cpp", conf="high",
-                   why="marker; retail .\\d3dCore.cpp from PC_DEVICE_BACKEND_PC::CaptureScreenshotPc"),
+                   why="marker; retail .\\d3dCore.cpp from PC_DEVICE_BACKEND_PC::CaptureScreenshot"),
     0x6e4ff0: dict(name="d3dCalls", area="nu2api/nuwin32", lang="cpp", conf="medium",
                    why="retail .\\d3dCalls.cpp at 0x6e58d0/0x6e5ab0; start from the Android split (no marker)"),
     0x6dee30: dict(name=None, why="one Batman nucore vote (numc); separate from nucore_includes, which ends at 0x4fe640"),

@@ -256,12 +256,12 @@ typedef struct PC_DEVICE_BACKEND_PC {       // size 0x700
     PC_DEVICE_BACKEND_PC();
     ~PC_DEVICE_BACKEND_PC();
     void Shutdown();
-    void DrawPostEffectQuadPc();
-    void DrawPostEffectIndexedPc();
-    void PostEffectBarrierPc();
+    void DrawPostEffectQuad();
+    void DrawPostEffectIndexed();
+    void PostEffectBarrier();
     HRESULT EndScene();
-    HRESULT CopySurfaceTargetPc(PC_EFFECT_SURFACE *target, i32 filter, i32 unused);
-    void SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabled, i32 target);
+    HRESULT CopySurfaceTarget(PC_EFFECT_SURFACE *target, i32 filter, i32 unused);
+    void SetColorWriteMask(u8 colour_enabled, u8 alpha_enabled, i32 target);
     void ReleaseDefaultPoolResources();
     void ApplyViewport(const PC_VIEWPORT *viewport);
     void InitializeFactory();
@@ -277,7 +277,7 @@ typedef struct PC_DEVICE_BACKEND_PC {       // size 0x700
     void ConfigureTargetKinds();
     void ResetTargets();
     void SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE *surface);
-    u32 CaptureScreenshotPc(u32 width, u32 height, void **data);
+    u32 CaptureScreenshot(u32 width, u32 height, void **data);
     void ResetViewport();
     void ConfigureCurrentTargets();
     void BeginDefaultTargets();
@@ -287,7 +287,7 @@ typedef struct PC_DEVICE_BACKEND_PC {       // size 0x700
     void NextRefresh();
     void PreviousRefresh();
     void ResetRequestedMode();
-    PC_VIEWPORT *GetRequestedViewportPc();
+    PC_VIEWPORT *GetRequestedViewport();
     void SetSurfaceRenderTarget(PC_EFFECT_SURFACE *, u32);
     void SetDepthStencilSurface(PC_EFFECT_SURFACE *);
     void ClearDepthStencilSurface();
@@ -297,9 +297,9 @@ typedef struct PC_DEVICE_BACKEND_PC {       // size 0x700
 
     GRAPHICS_DISPLAY_MODE *fun_00509090(i32 index);
     i32 fun_005090a0();
-    u8 SupportsMultisamplePc(i32);
-    u8 HasRequestedModeChangedPc();
-    void RestoreSavedModePc();
+    u8 SupportsMultisample(i32);
+    u8 HasRequestedModeChanged();
+    void RestoreSavedMode();
 
     u8 fun_005090e0();
     u32 fun_00509110();

@@ -325,7 +325,7 @@ extern "C" {
 #pragma data_seg(push, ".data$DogfightBoltModelsSecondPc")
     i32 DogfightBoltModelsSecond[4] = {304, 306, 302, 302};
 #pragma data_seg(pop)
-    extern i32 DogfightDebrisKeysPc[4];
+    extern i32 DogfightDebrisKeys[4];
     extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 
 #pragma data_seg(".data$DogfightCollisionRadiusSquaredPc")
@@ -390,7 +390,7 @@ extern "C" {
 
     void SetPreSeekStartPoint(f32 offset);
 #pragma data_seg(".data$DogfightDebrisKeysPc")
-    i32 DogfightDebrisKeysPc[4] = {-1, -1, -1, -1};
+    i32 DogfightDebrisKeys[4] = {-1, -1, -1, -1};
 #pragma data_seg()
 
     static void CopyFlightMatrix(NUMTX *destination, const NUMTX *source);
@@ -1923,10 +1923,10 @@ extern "C" {
     }
 
     void fun_00411f00() {
-        DogfightDebrisKeysPc[0] = -1;
-        DogfightDebrisKeysPc[1] = -1;
-        DogfightDebrisKeysPc[2] = -1;
-        DogfightDebrisKeysPc[3] = -1;
+        DogfightDebrisKeys[0] = -1;
+        DogfightDebrisKeys[1] = -1;
+        DogfightDebrisKeys[2] = -1;
+        DogfightDebrisKeys[3] = -1;
     }
 
     static void DrawSpaceLevel(DOGFIGHT_SPACE_PC *space) {
@@ -1962,11 +1962,11 @@ extern "C" {
                 continue;
             }
             if (player->id != (u16)id_JEDISTARFIGHTERYELLOWEP3 && player->id != (u16)dat_007f19e8) {
-                if (DogfightDebrisKeysPc[i] != -1) {
-                    DebFreeInstantly(&DogfightDebrisKeysPc[i]);
+                if (DogfightDebrisKeys[i] != -1) {
+                    DebFreeInstantly(&DogfightDebrisKeys[i]);
                 }
-            } else if (DogfightDebrisKeysPc[i] == -1) {
-                AddDebrisEffect(&DogfightDebrisKeysPc[i], WORLD->game_debris_sys->entries[47].effect, 0.0f, 0.0f, 0.0f);
+            } else if (DogfightDebrisKeys[i] == -1) {
+                AddDebrisEffect(&DogfightDebrisKeys[i], WORLD->game_debris_sys->entries[47].effect, 0.0f, 0.0f, 0.0f);
             } else {
                 matrix.m00 = player->transform.m00;
                 matrix.m01 = player->transform.m01;
@@ -1999,7 +1999,7 @@ extern "C" {
                     matrix.m32 += ((f64)matrix.m22 * DogfightJetOffset.y + (f64)matrix.m02 * DogfightJetOffset.x) +
                                   (f64)matrix.m12 * DogfightJetOffset.z;
                 }
-                DebrisPosOrientationMtx(DogfightDebrisKeysPc[i], &matrix);
+                DebrisPosOrientationMtx(DogfightDebrisKeys[i], &matrix);
             }
         }
     }
@@ -2089,10 +2089,10 @@ extern "C" {
         ResetSpaceFromWorld(world);
         BOLT_OVERRIDE_PLAYERBOLTSPEED = 150.0f;
         BOLT_OVERRIDE_PLAYERBOLTDURATION = 1.5f;
-        DogfightDebrisKeysPc[0] = -1;
-        DogfightDebrisKeysPc[1] = -1;
-        DogfightDebrisKeysPc[2] = -1;
-        DogfightDebrisKeysPc[3] = -1;
+        DogfightDebrisKeys[0] = -1;
+        DogfightDebrisKeys[1] = -1;
+        DogfightDebrisKeys[2] = -1;
+        DogfightDebrisKeys[3] = -1;
         music_man.StopTrack(2, 0);
         music_man.StopTrack(0x20, 0);
     }

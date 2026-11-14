@@ -17,7 +17,7 @@ extern "C" void NuKeyFlush(void) {
     PcKeyQueueHead = PcKeyQueueTail;
 }
 
-extern "C" i32 QueueKeyPressPc(i32 scan_code, i32 modifiers) {
+extern "C" i32 QueueKeyPress(i32 scan_code, i32 modifiers) {
     if ((u8)(PcKeyQueueTail + 1) != PcKeyQueueHead) {
         PcKeyQueueScanCodes[PcKeyQueueTail] = (u8)scan_code;
         PcKeyQueueModifiers[PcKeyQueueTail] = (u8)modifiers;
@@ -48,7 +48,7 @@ extern "C" void PcKeyDown(i32 scan_code) {
         case 184:
             return;
         default:
-            QueueKeyPressPc(scan_code, modifiers);
+            QueueKeyPress(scan_code, modifiers);
             break;
     }
 }

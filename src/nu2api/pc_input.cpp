@@ -742,8 +742,8 @@ extern "C" void fun_006da360(i32 player) {
     PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     PC_INPUT_CONFIG_PC config;
     i32 port = NuPadGetPort(player);
-    state->ExportConfigPc(port, &config, 0, 0, 0);
-    state->PromoteConfigPc(state->primary, 64, &config);
+    state->ExportConfig(port, &config, 0, 0, 0);
+    state->PromoteConfig(state->primary, 64, &config);
     state->SaveConfigurationPc();
 }
 

@@ -2772,7 +2772,7 @@ void InitGameAfterConfig(void) {
         }
     }
 
-    Level_RegisterGameConfigKeywords(LevelConfigKeywords_BeforeLoad, WorldLoadAfterKeywordsPc);
+    Level_RegisterGameConfigKeywords(LevelConfigKeywords_BeforeLoad, WorldLoadAfterKeywords);
     Suits_Init();
     Collection_Configure("chars\\collection.txt", &permbuffer_ptr, &permbuffer_end);
     if ((u16)dat_007f17d4 != 0xffff && InCollectList_Index(dat_007f17d4, NULL, 0) != -1 && TempCollectID != NULL) {

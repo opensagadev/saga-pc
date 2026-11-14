@@ -392,7 +392,7 @@ extern "C" {
 extern "C" {
     LEVELDATA_PC *WorldArchiveOneLevels[11] = {NULL};
     LEVELDATA_PC *WorldArchiveThreeLevels[4] = {NULL};
-    NUFPCOMJMP WorldLoadAfterKeywordsPc[1] = {
+    NUFPCOMJMP WorldLoadAfterKeywords[1] = {
         {NULL, NULL}
     };
     i32 WorldLightUserId = 1;
@@ -4085,19 +4085,19 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$PodRaceMaxLapTimeKeywordPc")
-    char PodRaceMaxLapTimeKeywordPc[12] = "maxlaptime=";
+    char PodRaceMaxLapTimeKeyword[12] = "maxlaptime=";
 #pragma data_seg()
 
 #pragma data_seg(".data$PodRaceLapTimeKeywordPc")
-    char PodRaceLapTimeKeywordPc[9] = "laptime=";
+    char PodRaceLapTimeKeyword[9] = "laptime=";
 #pragma data_seg()
 
 #pragma data_seg(".data$PodRaceAttemptsKeywordPc")
-    char PodRaceAttemptsKeywordPc[25] = "nattempts_per_increment=";
+    char PodRaceAttemptsKeyword[25] = "nattempts_per_increment=";
 #pragma data_seg()
 
 #pragma data_seg(".data$PodRaceIncrementKeywordPc")
-    char PodRaceIncrementKeywordPc[11] = "increment=";
+    char PodRaceIncrementKeyword[11] = "increment=";
 #pragma data_seg()
 
 #pragma bss_seg(".bss$LevDeaths")
@@ -9970,7 +9970,7 @@ extern "C" {
     f32 SnakeHeadHeight = 0.15f;
 #pragma data_seg()
 #pragma data_seg(".data$SnakeYawSeekRatePc")
-    f32 SnakeYawSeekRatePc = 5.0f;
+    f32 SnakeYawSeekRate = 5.0f;
 #pragma data_seg()
 #pragma data_seg(".data$SnakeSegmentHeightPc")
     f32 SnakeSegmentHeight = 0.02f;
@@ -12250,27 +12250,27 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$PodCreateSplineKeywordPc")
-    char PodCreateSplineKeywordPc[11] = "spline_id=";
+    char PodCreateSplineKeyword[11] = "spline_id=";
 #pragma data_seg()
 
 #pragma data_seg(".data$PodCreateStartKeywordPc")
-    char PodCreateStartKeywordPc[14] = "spline_start=";
+    char PodCreateStartKeyword[14] = "spline_start=";
 #pragma data_seg()
 
 #pragma data_seg(".data$PodCreateEndKeywordPc")
-    char PodCreateEndKeywordPc[12] = "spline_end=";
+    char PodCreateEndKeyword[12] = "spline_end=";
 #pragma data_seg()
 
 #pragma data_seg(".data$PodCreateTimeKeywordPc")
-    char PodCreateTimeKeywordPc[13] = "time_factor=";
+    char PodCreateTimeKeyword[13] = "time_factor=";
 #pragma data_seg()
 
 #pragma data_seg(".data$PodCreatePacemakerKeywordPc")
-    char PodCreatePacemakerKeywordPc[10] = "pacemaker";
+    char PodCreatePacemakerKeyword[10] = "pacemaker";
 #pragma data_seg()
 
 #pragma data_seg(".data$PodCreateDamagedKeywordPc")
-    char PodCreateDamagedKeywordPc[8] = "damaged";
+    char PodCreateDamagedKeyword[8] = "damaged";
 #pragma data_seg()
 
 /* PodRacePc is defined as a private static in legoapi/episodeI.c. */
@@ -25361,7 +25361,7 @@ extern "C" {
     i32 ShopMoveItems = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ShopScrollKeyHitPc")
-    i32 ShopScrollKeyHitPc = 0;
+    i32 ShopScrollKeyHit = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ShopSubMoveSfxLockPc")
     i32 ShopSubMoveSfxLock = 0;

@@ -35,7 +35,7 @@ typedef struct snake_object_reader_s { // size 0x10b0
 
 extern f32 SnakeSegmentSpacing;
 extern f32 SnakeHeadHeight;
-extern f32 SnakeYawSeekRatePc;
+extern f32 SnakeYawSeekRate;
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
@@ -142,7 +142,7 @@ void UpdateSnakeBody(GAMEOBJECT *object) {
         reader->snake_body->segments[index].position = position;
         reader->snake_body->segments[index].yaw =
             SeekRot((u16)reader->snake_body->segments[index].yaw,
-                    index != 0 ? reader->snake_body->segments[index - 1].yaw : object->field_0x276, SnakeYawSeekRatePc);
+                    index != 0 ? reader->snake_body->segments[index - 1].yaw : object->field_0x276, SnakeYawSeekRate);
         reader->snake_body->segments[index].pitch = 0;
         offset.x = 0.0f;
         offset.y = 0.0f;

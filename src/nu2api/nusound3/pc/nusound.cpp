@@ -195,7 +195,7 @@ extern "C" void PCSoundPlayPositionedWrapper(NUVEC *position, i32 sample_id, i32
                           rumble_release, 0);
 }
 
-bool SoundVoiceManagerPC::FindLoopVoicePc(NUVEC *position, i32 sample_id, i32 *voice_id) {
+bool SoundVoiceManagerPC::FindLoopVoice(NUVEC *position, i32 sample_id, i32 *voice_id) {
     i32 index;
 
     if (SoundVoiceEnabledGate == 0) {
@@ -242,7 +242,7 @@ extern "C" void PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id, i32 vo
     if (attenuated_volume == 0) {
         return;
     }
-    reused = SoundVoiceManager.FindLoopVoicePc(position, sample_id, &voice_id);
+    reused = SoundVoiceManager.FindLoopVoice(position, sample_id, &voice_id);
     if (voice_id <= -1) {
         return;
     }
@@ -670,7 +670,7 @@ void SoundVoiceManagerPC::UnloadSample(i32 index) {
     LeaveCriticalSection(&SoundVoiceCriticalSection);
 }
 
-void SoundVoiceManagerPC::SetOptionD14Pc(u8 mode) {
+void SoundVoiceManagerPC::SetOptionD14(u8 mode) {
     option_d14 = mode;
 }
 
@@ -731,7 +731,7 @@ extern "C" i32 PCSoundSampleLimit;
 extern "C" const GUID PCSampleBufferAlgorithm;
 extern "C" char *PCSampleFilenameExtension;
 
-i32 SoundVoiceManagerPC::LoadWavSamplePc(const char *name, i32 index) {
+i32 SoundVoiceManagerPC::LoadWavSample(const char *name, i32 index) {
     WavReader reader;
     WAVEFORMATEX format;
     PC_DS_BUFFER_DESC_VIEW descriptor;
@@ -811,7 +811,7 @@ u8 SoundVoiceManagerPC::fun_00697390(i32 sample_index) {
     return 0;
 }
 
-void SoundVoiceManagerPC::ClearSamplesPc(void) {
+void SoundVoiceManagerPC::ClearSamples(void) {
     i32 i;
     EnterCriticalSection(&SoundSampleCriticalSection);
     for (i = 0; i < 64; ++i) {
@@ -841,7 +841,7 @@ void NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VARIPTR end
     if (PCStereoSampleMetadata == NULL) {
         SoundVoiceManager.Init(0, 0, 1);
     } else {
-        SoundVoiceManager.ClearSamplesPc();
+        SoundVoiceManager.ClearSamples();
     }
     PCStereoSampleMetadata = info;
     for (SoundSampleCount = 0; info[SoundSampleCount].index != -1; ++SoundSampleCount) {
@@ -921,7 +921,7 @@ extern "C" {
                         }
                         name = PCStereoSampleMetadata[i].filename;
                         if (NuStrICmp(".wav", PCSampleFilenameExtension) == 0) {
-                            SoundVoiceManager.LoadWavSamplePc(name, i);
+                            SoundVoiceManager.LoadWavSample(name, i);
                         } else {
                             PCSoundAlreadyPlayingHook(PCSampleFilenameExtension);
                         }

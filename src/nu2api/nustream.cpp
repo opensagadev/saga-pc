@@ -22,18 +22,18 @@ class OggReader : public WavReader { // size 0x338
     OggReader(void);
     virtual ~OggReader(void);
     virtual HRESULT Open(NUDATHDR *, char *, WAVEFORMATEX *);
-    virtual HRESULT Unknown08Pc(u32, u32);
+    virtual HRESULT Unknown08(u32, u32);
     virtual HRESULT Close(void);
     virtual WAVEFORMATEX *GetFormat(void);
     virtual i32 GetSize(void);
     virtual HRESULT Reset(void);
     virtual HRESULT Read(void *, u32, u32 *);
     virtual i32 SeekTime(f32);
-    static u32 ReadCallbackPc(void *, u32, u32, void *);
-    static i32 SeekCallbackPc(void *, i64, i32);
-    static i32 CloseCallbackPc(void *);
+    static u32 ReadCallback(void *, u32, u32, void *);
+    static i32 SeekCallback(void *, i64, i32);
+    static i32 CloseCallback(void *);
     // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
-    static long TellCallbackPc(void *);
+    static long TellCallback(void *);
     u8 compressed;                  // 0x040
     u8 unknown_041[7];              // 0x041
     OggVorbis_File vorbis_state;    // 0x048
@@ -359,7 +359,7 @@ extern "C" i32 NuSoundGetStereoStreamStatus(i32 stream) {
     return NuSound3GetStereoStreamStatus(PCStereoChannel1A);
 }
 
-void SoundQueue::CancelPausePc(void) {
+void SoundQueue::CancelPause(void) {
     if (this == NULL || unknown_03f4 == 0) {
         return;
     }
@@ -379,7 +379,7 @@ SoundQueue::~SoundQueue(void) {
     }
     if (active != 0) {
         if (unknown_03f4 != 0) {
-            CancelPausePc();
+            CancelPause();
         }
         if (active != 0) {
             SendCommand(3, 0);
@@ -418,7 +418,7 @@ SoundQueue::~SoundQueue(void) {
     active = 0;
 }
 
-i32 SoundQueue::SetFormatPc(const WAVEFORMATEX *format) {
+i32 SoundQueue::SetFormat(const WAVEFORMATEX *format) {
     if (volume_sink != NULL) {
         EnterCriticalSection(&volume_lock);
         IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
@@ -450,7 +450,7 @@ i32 SoundQueue::SetFormatPc(const WAVEFORMATEX *format) {
     return 0;
 }
 
-i32 SoundQueue::FillBufferPc(i32 bytes, u32 flags) {
+i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
     if (stream_state != 1 && stream_state != 2) {
         return 0;
     }
@@ -621,7 +621,7 @@ DWORD SoundQueue::Run(void) {
                         WAVEFORMATEX format;
                         if (SUCCEEDED(decoder->vtable->open(decoder, NULL, current_path, &format))) {
                             if (wave_format.nSamplesPerSec != format.nSamplesPerSec || wave_format.nChannels != format.nChannels) {
-                                SetFormatPc(&format);
+                                SetFormat(&format);
                             }
                             unknown_0004 = 1;
                         }
@@ -651,7 +651,7 @@ DWORD SoundQueue::Run(void) {
                             if (buffer != NULL) {
                                 buffer->vtable->set_current_position(buffer, 0);
                             }
-                            FillBufferPc(preload, 2);
+                            FillBuffer(preload, 2);
                             buffer = (IDirectSoundBuffer *)volume_sink;
                             if (buffer != NULL && SUCCEEDED(buffer->vtable->set_current_position(buffer, 0))) {
                                 if ((command_arg & 2) != 0) {
@@ -683,7 +683,7 @@ DWORD SoundQueue::Run(void) {
                         buffer = (IDirectSoundBuffer *)volume_sink;
                         if (buffer != NULL && SUCCEEDED(buffer->vtable->stop(buffer))) {
                             buffer_write_position = 0;
-                            FillBufferPc(buffer_seconds * wave_format.nAvgBytesPerSec, 3);
+                            FillBuffer(buffer_seconds * wave_format.nAvgBytesPerSec, 3);
                         }
                         stream_state = 0;
                         break;
@@ -735,7 +735,7 @@ DWORD SoundQueue::Run(void) {
                 }
             }
         } else if (wait == WAIT_OBJECT_0 && (i32)unknown_0004 >= 0) {
-            FillBufferPc((u32)(buffer_seconds * wave_format.nAvgBytesPerSec) >> 2, 0);
+            FillBuffer((u32)(buffer_seconds * wave_format.nAvgBytesPerSec) >> 2, 0);
             if (pending_bytes > 0 && stream_state == 2) {
                 IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
                 if (buffer != NULL) {
@@ -871,7 +871,7 @@ SoundQueue::SoundQueue(IDirectSound8 *factory_value, i32 mode) {
     }
 }
 
-void SoundQueue::SuspendForFocusPc(void) {
+void SoundQueue::SuspendForFocus(void) {
     if (this == NULL) {
         return;
     }
@@ -888,8 +888,8 @@ void SoundQueue::SuspendForFocusPc(void) {
 extern "C" void NuSound3SuspendForFocus(void) {
     if (NuSound3Initialized != 0) {
         SoundVoiceManager.StopAllVoices();
-        NuSound3StereoStreams[0]->SuspendForFocusPc();
-        NuSound3StereoStreams[1]->SuspendForFocusPc();
+        NuSound3StereoStreams[0]->SuspendForFocus();
+        NuSound3StereoStreams[1]->SuspendForFocus();
     }
 }
 
@@ -908,8 +908,8 @@ i32 SoundQueue::fun_00699040(const WAVEFORMATEX *format) {
 
 extern "C" void NuSound3ResumeAfterFocus(void) {
     if (NuSound3Initialized != 0) {
-        NuSound3StereoStreams[0]->CancelPausePc();
-        NuSound3StereoStreams[1]->CancelPausePc();
+        NuSound3StereoStreams[0]->CancelPause();
+        NuSound3StereoStreams[1]->CancelPause();
     }
 }
 

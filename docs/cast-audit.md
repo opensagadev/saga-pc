@@ -265,7 +265,7 @@ their budget near zero:
 | Unit | Kept | Why |
 |---|---:|---|
 | `nu2api/terrain_query.cpp` | 39 | `(f32)(a + 0.02f + r)` of a float expression in `ScanTerrainHandel`, `ScanTerrainPlatform`, `NewScanHandelFull`: the x87 code changes |
-| `nu2api/nu3d_includes.cpp` | 15 | `ComputeShadowMatrixPc` 1 (float); 14 identity casts in `NuSpecialGet*/Set*` and `NuHGobjEvalAnim2Root`: removing any one moves `NuDeferredFilterGen::render` (93.89 to 93.90 %), a unit-wide numbering effect, not their own code |
+| `nu2api/nu3d_includes.cpp` | 15 | `ComputeShadowMatrix` 1 (float); 14 identity casts in `NuSpecialGet*/Set*` and `NuHGobjEvalAnim2Root`: removing any one moves `NuDeferredFilterGen::render` (93.89 to 93.90 %), a unit-wide numbering effect, not their own code |
 | `legoapi/explosions.c` | 1 | `(f32)(z * inverse)` in `UpdateExplosion_Generic` |
 | `gamelib/net/NetworkObjectManager.cpp` | 1 | `(bool)(memcmp(...) == 0)`: without it `NOSContext::operator==` is not exact |
 | `legogame/tightrope.cpp` | 1 | `(NUANG)` in a conditional of `TightRopes_Draw` |

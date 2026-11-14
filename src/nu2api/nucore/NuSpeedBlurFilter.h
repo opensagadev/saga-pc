@@ -27,7 +27,7 @@ extern "C" {
 
 class NuSpeedBlurFilter : public NuSpeedBlurFilterGen { // size 0x40
   public:
-    void ResizeTexturesPc(i32 width, i32 height);
+    void ResizeTextures(i32 width, i32 height);
     virtual void initResources();
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();

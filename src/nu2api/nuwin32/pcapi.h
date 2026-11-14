@@ -84,10 +84,10 @@ typedef struct PC_WINDOW_OPTIONS_PC { // size 0x460
     void SetVibration(u8 value);
     void SetForceShaderModel(i32 value);
 
-    void SetAspectModePc(i32);
-    void SetShadowsEnabledPc(u8);
-    void SetBloomEnabledPc(u8);
-    void SetUseHiresPendingPc(u8);
+    void SetAspectMode(i32);
+    void SetShadowsEnabled(u8);
+    void SetBloomEnabled(u8);
+    void SetUseHiresPending(u8);
     u8 fun_00509030();
     u8 fun_00509040();
     u8 fun_00509050();
