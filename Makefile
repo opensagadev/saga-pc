@@ -174,7 +174,7 @@ format:
 	$(PYTHON) tools/check.py --format-fix
 
 # Counts that may only go down (tools/budget.py): oddities, unit declarations, casts, single-use string
-# constants; warnings: check-warnings.
+# constants, module headers that do not compile alone; warnings: check-warnings.
 check-core: dependencies
 	$(PYTHON) tools/check.py
 	$(PYTHON) tools/budget.py --guard
@@ -183,6 +183,7 @@ check-core: dependencies
 	$(PYTHON) tools/castscan.py --check
 	$(PYTHON) tools/literalscan.py --check
 	$(PYTHON) tools/layoutcheck.py
+	$(PYTHON) tools/standalone.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 
 

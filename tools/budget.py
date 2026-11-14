@@ -9,6 +9,7 @@ counts with a budget file; a count above its budget fails CI:
     config/warning-budget.json   tools/warnings.py --check   MSVC warning codes per build kind
     config/castscan-budget.json  tools/castscan.py --check   explicit casts per cause class (docs/cast-audit.md)
     config/literalscan-budget.json  tools/literalscan.py --check  string constants that name one literal
+    config/standalone-budget.json   tools/standalone.py --check   module headers that do not compile alone
 
 Each tool's `--write-budget` lowers its budget to the current counts (it never
 raises one). Raising a budget is a reviewed exception: `--guard` compares every
@@ -31,7 +32,8 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET_FILES = ("config/oddscan-budget.json", "config/declscan-budget.json", "config/warning-budget.json",
-                "config/castscan-budget.json", "config/literalscan-budget.json")
+                "config/castscan-budget.json", "config/literalscan-budget.json",
+                "config/standalone-budget.json")
 RAISES = "config/budget-raises.txt"
 
 

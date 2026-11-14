@@ -222,10 +222,11 @@ everything that needs no original files; matching runs locally only.
 | No attributes the code does not need: no explicit `__cdecl` (the default) or `__thiscall` on members; `__stdcall` only where a Win32, COM, SDK or retail callback ABI requires it (`WINAPI`/`CALLBACK` in Win32 callbacks); `__declspec(align)`, `noreturn`, `dllimport`, `__restrict` only where the object code or an SDK header needs them | `make check-core` (oddscan `cdecl`, `thiscall`, `stdcall`, `declspec-align`, `declspec-other`) | `python3 tools/oddscan.py --list --class stdcall` |
 | Write a literal where it is used: `NuSevereWarning("Your Scene version is %d, ...", version, 0, 2)`, not a `static const char Name[] = "..."` (or a `const f32 Name = 0.5f`) that one expression reads. A named constant needs more than one use or a meaning beyond its text (an array indexed or measured with `sizeof`); VC8 pools literals as `??_C@` and `__real@` COMDATs, so the name only moves the value away. Exceptions with retail evidence of a separate object go in [config/literalscan-keep.csv](config/literalscan-keep.csv) | `make check-core` | `python3 tools/literalscan.py --list`; `--fix` inlines them and renames their config/symbols.csv rows, then `make format` |
 | One declarator per declaration: `u32 a : 2;` and `u32 b : 1;`, not `u32 a : 2, b : 1;` (fields, bitfields, globals, `extern`s, locals, typedefs, prototypes; a `for` initialisation may declare several) | `make lint` (locals: `readability-isolate-declaration`), `make check-core` (the rest: oddscan `multi-declaration`) | `python3 tools/onedecl.py --fix` splits them, then `make format` |
+| Module headers compile on their own (`#include` of the header alone, C and C++, libclang with the lint flags); the count of those that do not only goes down ([docs/header-plan.md](docs/header-plan.md), step 2) | `make check-core` | `python3 tools/standalone.py --list`; `python3 tools/standalone.py HEADER` shows the errors, `--vc8 HEADER` compiles with VC8 |
 | No new MSVC warnings (distinct warnings per code, Matching and Debug) | `make check-warnings` after the build in CI | `make build check-warnings`, `make BUILD_KIND=Debug build check-warnings`; the report is `build/warnings.json` |
 
 Each count has a budget in `config/`: `oddscan-budget.json`, `declscan-budget.json`,
-`literalscan-budget.json`, `warning-budget.json`. A count above its budget fails; a count below it is
+`literalscan-budget.json`, `standalone-budget.json`, `warning-budget.json`. A count above its budget fails; a count below it is
 reported with the command that lowers the budget. Lower it in the same change
 that removed the findings:
 
@@ -233,6 +234,7 @@ that removed the findings:
 python3 tools/oddscan.py --write-budget
 python3 tools/declscan.py --write-budget
 python3 tools/literalscan.py --write-budget
+python3 tools/standalone.py --write-budget
 make lower-warning-budget && make BUILD_KIND=Debug lower-warning-budget
 ```
 
