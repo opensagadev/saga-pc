@@ -2,6 +2,30 @@
 #include <stdio.h>
 struct eduimenu_s *edptl_detail_menu = 0;
 static struct edui_slider_s *grad_jib_x_amp_item = 0;
+struct eduimenu_s *edptl_testdetail_menu = 0;
+char *edpp_save_names[6] = {0};
+i32 edpp_emitrotz = 0;
+i32 edpp_emitroty = 0;
+i32 edpp_emitrotx = 0;
+i32 edpp_rotz = 0;
+i32 edpp_roty = 0;
+f32 edpp_offset = 0;
+i32 edpp_refrotz = 0;
+i32 edpp_refroty = 0;
+i32 edpp_copyrotz = 0;
+i32 edpp_copyroty = 0;
+i32 edpp_facrotx = 0;
+i32 edpp_facroty = 0;
+i32 edptl_count = 0;
+struct eduiitem_s *grad_item = 0;
+struct eduiitem_s *grad_alpha_item = 0;
+struct eduiitem_s *grad_size_w_item = 0;
+struct eduiitem_s *grad_size_h_item = 0;
+struct edui_slider_s *grad_size_min_item = 0;
+struct edui_slider_s *grad_size_max_item = 0;
+struct eduiitem_s *grad_rot_item = 0;
+struct edui_slider_s *grad_rot_min_item = 0;
+struct edui_slider_s *grad_rot_max_item = 0;
 static struct edui_slider_s *grad_jib_x_freq_item = 0;
 static struct edui_slider_s *grad_jib_y_amp_item = 0;
 static struct edui_slider_s *grad_jib_y_freq_item = 0;
@@ -555,6 +579,10 @@ void cbPtlChangeRepeatFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 
 /* The repeat-box submenu, its X and Z sliders and the XZ lock that keeps the box square. */
 eduimenu_s *ptlrepeatboxmenu = NULL;
+struct eduiitem_s *coll_env_item = 0;
+struct eduiitem_s *torus_env1_item = 0;
+struct eduiitem_s *torus_env2_item = 0;
+struct eduiitem_s *torus_env3_item = 0;
 static edui_slider_s *ptlrepeatbox_x_slider = NULL;
 static edui_slider_s *ptlrepeatbox_z_slider = NULL;
 i32 ptlrepeatbox_xz_lock = 1;

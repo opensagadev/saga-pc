@@ -23638,25 +23638,8 @@ extern "C" {
 }
 
 extern "C" {
-    i32 edpp_rotz = 0;
-
-    i32 edpp_roty = 0;
-
-    i32 edpp_emitrotx = 0;
-
-    i32 edpp_emitroty = 0;
-
-    i32 edpp_emitrotz = 0;
-
-    i32 edpp_copyrotz = 0;
 
     struct PC_SCENE_MTL_VIEW *edpp_boxmtl = 0;
-
-    i32 edpp_facroty = 0;
-
-    i32 edpp_refroty = 0;
-
-    i32 edpp_refrotz = 0;
 }
 
 extern "C" {
@@ -23697,13 +23680,10 @@ extern "C" {
 }
 
 extern "C" {
-    i32 edpp_facrotx = 0;
 
     i32 edpp_copy_mode = 0;
 
     i32 edpp_copy_source_count = 0;
-
-    f32 edpp_offset = 0;
 
     void edppInit(void);
     void edppClose(void);
@@ -23843,8 +23823,6 @@ extern "C" {
 
 extern "C" {
     NUVEC edpp_copy_source_vec = {0};
-
-    i32 edpp_copyroty = 0;
 }
 
 extern "C" {
@@ -24154,7 +24132,6 @@ extern "C" {
 
     struct eduimenu_s *effectlistmenu = 0;
 
-    struct eduimenu_s *edptl_testdetail_menu = 0;
     struct eduimenu_s *edptl_torus_menu = 0;
     struct eduimenu_s *ptlrotmenu = 0;
     struct eduimenu_s *collmenu = 0;
@@ -24163,21 +24140,8 @@ extern "C" {
     struct eduimenu_s *ptlgcodemenu = 0;
     struct eduimenu_s *edptl_group_menu = 0;
     struct eduimenu_s *edptl_drawflag_menu = 0;
-    struct eduiitem_s *grad_rot_item = 0;
-    struct edui_slider_s *grad_rot_min_item = 0;
-    struct edui_slider_s *grad_rot_max_item = 0;
     struct eduimenu_s *ptlcolmenu = 0;
-    struct eduiitem_s *grad_item = 0;
-    struct eduiitem_s *grad_alpha_item = 0;
     struct eduimenu_s *ptlsizemenu = 0;
-    struct eduiitem_s *grad_size_w_item = 0;
-    struct eduiitem_s *grad_size_h_item = 0;
-    struct edui_slider_s *grad_size_min_item = 0;
-    struct edui_slider_s *grad_size_max_item = 0;
-    struct eduiitem_s *coll_env_item = 0;
-    struct eduiitem_s *torus_env1_item = 0;
-    struct eduiitem_s *torus_env2_item = 0;
-    struct eduiitem_s *torus_env3_item = 0;
 
     struct eduimenu_s *dpadmodemenu = 0;
 
@@ -24187,8 +24151,6 @@ extern "C" {
 
 #pragma data_seg(".data$edptl_clipboard_entry")
     i32 edptl_clipboard_entry = -1;
-
-    i32 edptl_count = 0;
 }
 
 extern "C" {
@@ -24313,7 +24275,6 @@ extern "C" {
     struct eduimenu_s *ptldatamenu = 0;
     char edbits_datapath[256] = {0};
     i32 edbits_override_backups = 0;
-    char *edpp_save_names[6] = {0};
 }
 
 extern "C" {
