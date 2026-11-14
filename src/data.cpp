@@ -237,16 +237,10 @@ extern "C" {
     struct EPISODESAVE_s *EpisodeSavePc = NULL;
     i32 EpisodeGoldBrickForSuperBonusPc = 0;
     i32 EpisodeGoldBrickForChallengePc = 0;
-    u16 TextCrawlRotateXPc = 13107;
     u16 TextCrawlRotateYPc = 0;
     u16 TextCrawlRotateZPc = 0;
     f32 TextCrawlTimePc = 0.0f;
-    f32 TextCrawlScaleXPc = 0.009999999776482582f;
-    f32 TextCrawlScaleYPc = 0.009999999776482582f;
-    f32 TextCrawlLineWidthPc = 7.0f;
-    f32 TextCrawlLineSpacingPc = 1.2999999523162842f;
     u32 TextCrawlRedPc = 0;
-    u32 TextCrawlGreenPc = 111;
     u8 TextCrawlBluePc = 255;
     i32 Arcade_TextCrawlID = -1;
     i32 Arcade_TextCrawlParagraphs = 1;
@@ -8105,9 +8099,6 @@ extern "C" {
 #pragma data_seg()
     VUFNT *QFont3DZ = 0;
     VUFNT *SmartTextFont = 0;
-    f32 INTROTEXT_Y = 0.175f;
-    f32 INTROTEXT_SCALE = 0.79f;
-    void (*Text_GameSetLanguageFn)(i32) = 0;
 #pragma const_seg(".rdata$Text_TimeS")
     extern const char Text_TimeS[3] = "%i";
 #pragma const_seg()
@@ -8567,12 +8558,6 @@ extern "C" {
                                                  {-1, NULL}};
     STATIC_ASSERT(offsetof(LANGUAGEDATA, localized_name) == 4);
 
-    LANGUAGEDATA *Text_LanguageList = Text_LanguageList_Default;
-    i32 LANGUAGECOUNT = 6;
-    i32 Text_Language = 1;
-    i32 INTROTEXT_ID = -1;
-    void *Text_AppFont = 0;
-    char **TTab = 0;
 #pragma const_seg(".rdata$Text_UnknownText")
     extern const char Text_UnknownText[2] = "?";
 #pragma const_seg()
@@ -8581,13 +8566,6 @@ extern "C" {
     i32 MessageMtlInit = 0;
     char *txt_NULL = const_cast<char *>(Text_UnknownText);
     char *txt_UNKNOWN = const_cast<char *>(Text_UnknownText);
-    char *Text_PathEnglish = const_cast<char *>("english");
-    char *Text_PathFrench = const_cast<char *>("french");
-    char *Text_PathGerman = const_cast<char *>("german");
-    char *Text_PathItalian = const_cast<char *>("italian");
-    char *Text_PathSpanish = const_cast<char *>("spanish");
-    char *Text_PathDanish = const_cast<char *>("danish");
-    char *Text_PathJapanese = const_cast<char *>("japanese");
     char *apitxt_ENGLISH = const_cast<char *>("English");
     char *apitxt_FRENCH = const_cast<char *>("Fran\xc3\xa7"
                                              "ais");
@@ -14173,11 +14151,6 @@ extern "C" {
     const char *InitAsciiLeftPc = "<";
     const char *InitAsciiRightPc = ">";
     const char *InitAsciiBigArrowPc = "\xC2\xA4";
-    const char *LEGOASCII_UP = NULL;
-    const char *LEGOASCII_DOWN = NULL;
-    const char *LEGOASCII_LEFT = NULL;
-    const char *LEGOASCII_RIGHT = NULL;
-    const char *LEGOASCII_BIGARROW = NULL;
     i32 CompletionPointInfoPc[7] = {0};
 
     i16 LEGOACT_BUILD = -1;

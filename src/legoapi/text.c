@@ -2,8 +2,15 @@
 #include <stdio.h>
 #include <string.h>
 
+void *Text_AppFont = 0;
 static char **TTab_Original = 0;
 static char *Text_ErrorString = "Err...";
+char **TTab = 0;
+const char *LEGOASCII_UP = NULL;
+const char *LEGOASCII_DOWN = NULL;
+const char *LEGOASCII_LEFT = NULL;
+const char *LEGOASCII_RIGHT = NULL;
+const char *LEGOASCII_BIGARROW = NULL;
 static i32 Text_MaxStrings_Overall = 0;
 static u32 *Text_StringBits = 0;
 
@@ -1261,9 +1268,29 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, area_index) == 0x87);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, text_id_value) == 0x96);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, name_id) == 0);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, text_id) == 2);
+void (*Text_GameSetLanguageFn)(i32) = 0;
 static TEXT_CRAWL_VIEW_PC *TextCrawlCurrentPc = 0;
 static NUMTX TextCrawlMatrixPc = {0};
+char *Text_PathEnglish = "english";
+char *Text_PathFrench = "french";
+char *Text_PathGerman = "german";
+char *Text_PathItalian = "italian";
+char *Text_PathSpanish = "spanish";
+char *Text_PathDanish = "danish";
+char *Text_PathJapanese = "japanese";
+i32 Text_Language = 1;
+LANGUAGEDATA *Text_LanguageList = Text_LanguageList_Default;
+i32 LANGUAGECOUNT = 6;
+i32 INTROTEXT_ID = -1;
+f32 INTROTEXT_SCALE = 0.79f;
+f32 INTROTEXT_Y = 0.175f;
+f32 TextCrawlScaleXPc = 0.009999999776482582f;
+f32 TextCrawlScaleYPc = 0.009999999776482582f;
+f32 TextCrawlLineWidthPc = 7.0f;
+f32 TextCrawlLineSpacingPc = 1.2999999523162842f;
 static NUVEC TextCrawlOffsetPc = {0.0f, -1.0f, 10.0f};
+u32 TextCrawlGreenPc = 111;
+u16 TextCrawlRotateXPc = 13107;
 
 void TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
     if (crawl == NULL || QFont3DZ == NULL) {
