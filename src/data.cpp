@@ -8289,8 +8289,6 @@ extern "C" {
     HWND PCInputInstance = 0;
     PC_DEVICE_BACKEND_PC PCDeviceBackend;
     NuKeyboardOwner_PC nu_keyboard_owner;
-    u8 nu_keyboard_pages[0x200] = {0};
-    char dat_029753c0[512] = {0};
     u8 nu_keyboard_page_index = 0;
     i32 nu_keyboard_device_flags = 0;
     i32 nu_keyboard_key_index = 0;

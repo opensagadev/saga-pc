@@ -2298,4 +2298,6 @@ const char *PcInputBindingKindNames[14] = {"NOTSET",        "PADDIGITAL",    "PA
                                            "MOUSEDIGITAL",  "MOUSEMOVEPOS",  "MOUSEMOVENEG",    "KEYDIGITAL",
                                            "KEYDIGITALPOS", "KEYDIGITALNEG", "KEYANALOGUEPAIR", "PADANALOGUEPAIR",
                                            "FORCEDMOUSEX",  "FORCEDMOUSEY"};
+u8 nu_keyboard_pages[0x200] = {0};
+char dat_029753c0[512] = {0};
 u8 PcInputWriteTextProfiles = 0;
