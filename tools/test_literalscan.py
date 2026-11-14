@@ -1,4 +1,4 @@
-"""Single-use string constants (tools/literalscan.py) on small in-memory sources."""
+"""String and floating constants that only name their literal (tools/literalscan.py) on small sources."""
 import tempfile
 import unittest
 from pathlib import Path
@@ -23,6 +23,7 @@ void Report(i32 version) {
     Print(TwicePc);
     Print(TwicePc);
     Print(&DigitsPc[version]);
+    Print(DigitsPc);
     Print(PaddedPc);
 }
 
@@ -70,9 +71,10 @@ class LiteralScanTests(unittest.TestCase):
     def test_decode_escapes(self):
         self.assertEqual(literalscan.decode([r"a\tb\x41", r"\101\\"]), b"a\tbAA\\\0")
 
-    def test_finds_single_use_constants_only(self):
+    def test_finds_constants_read_only_as_values(self):
         _, found, stale = self.scan()
-        self.assertEqual(sorted(d["name"] for d in found), ["LocalPc", "OtherPc", "WarningPc"])
+        self.assertEqual(sorted(d["name"] for d in found), ["LocalPc", "OtherPc", "TwicePc", "WarningPc"])
+        self.assertEqual(next(d for d in found if d["name"] == "TwicePc")["class"], "multi-use")
         self.assertEqual(stale, [])
         local = next(d for d in found if d["name"] == "LocalPc")
         self.assertTrue(local["local"])
@@ -84,15 +86,17 @@ class LiteralScanTests(unittest.TestCase):
         keep = [{"file": "src/unit.c", "name": "WarningPc", "reason": "r"},
                 {"file": "src/unit.c", "name": "TwicePc", "reason": "r"}]
         _, found, stale = self.scan(keep)
-        self.assertEqual(literalscan.counts(found), {"single-use": 2, "kept": 1})
-        self.assertEqual([row["name"] for row in stale], ["TwicePc"])
+        self.assertEqual(literalscan.counts(found), {"single-use": 2, "multi-use": 0, "kept": 2})
+        self.assertEqual(stale, [])
+        _, _, stale = self.scan([{"file": "src/unit.c", "name": "DigitsPc", "reason": "r"}])
+        self.assertEqual([row["name"] for row in stale], ["DigitsPc"])
 
     def test_fix_inlines_and_renames_rows(self):
         sources, found, _ = self.scan()
         for decl in found:
             if decl["name"] == "LocalPc":
                 decl["class"] = "kept"  # no row: would be skipped anyway
-        fixed, skipped = literalscan.fix(sources, found)
+        fixed, skipped = literalscan.fix(sources, [d for d in found if d["name"] != "TwicePc"])
         self.assertEqual(sorted(d["name"] for d in fixed), ["OtherPc", "WarningPc"])
         self.assertEqual(skipped, [])
         unit = (self.root / "src/unit.c").read_text()
@@ -109,6 +113,35 @@ class LiteralScanTests(unittest.TestCase):
         self.assertNotIn("_OtherPc", symbols)
         self.assertIn("0x751020,??_C@_05BGEKGIIP@other?$AA@", symbols)
 
+    def test_fix_writes_the_literal_at_every_use(self):
+        path = self.root / "config/symbols.csv"
+        path.write_text(SYMBOLS + "0x751030,_TwicePc,6,const char[6]\n")
+        sources, found, _ = self.scan()
+        fixed, skipped = literalscan.fix(sources, [d for d in found if d["name"] == "TwicePc"])
+        self.assertEqual(([d["name"] for d in fixed], skipped), (["TwicePc"], []))
+        unit = (self.root / "src/unit.c").read_text()
+        self.assertEqual(unit.count('Print("twice");'), 2)
+        self.assertNotIn("TwicePc", unit)
+        self.assertIn("0x751030,??_C@_05", path.read_text())
+
+    def test_uses_under_different_segments_are_not_fixed(self):
+        unit = (self.root / "src/unit.c").read_text().replace(
+            '    Print(TwicePc);\n    Print(TwicePc);',
+            '    Print(TwicePc);\n#pragma const_seg(".rdata$X")\n    Print(TwicePc);\n#pragma const_seg()')
+        (self.root / "src/unit.c").write_text(unit)
+        sources, found, _ = self.scan()
+        fixed, skipped = literalscan.fix(sources, [d for d in found if d["name"] == "TwicePc"])
+        self.assertEqual(fixed, [])
+        self.assertIn("const_seg", skipped[0][1])
+
+    def test_reused_float_counts_only_when_its_name_restates_the_value(self):
+        text = ("const f32 NuPrimTwo = 2.0f;\nconst f64 NuScale1000 = 1000.0;\nconst f32 UnsetHeightPc = 2.0f;\n"
+                "void F(f32 *x) { *x = NuPrimTwo * NuScale1000 * UnsetHeightPc; *x += NuPrimTwo + NuScale1000"
+                " + UnsetHeightPc; }\n")
+        (self.root / "src/f.c").write_text(text)
+        _, found, _ = self.scan()
+        self.assertEqual(sorted(d["name"] for d in found if d["symbol"]), ["NuPrimTwo", "NuScale1000"])
+
     def test_literal_mapped_elsewhere_is_not_fixed(self):
         path = self.root / "config/symbols.csv"
         path.write_text(SYMBOLS.replace("0x751020,??", "0x752000,??"))
@@ -118,7 +151,8 @@ class LiteralScanTests(unittest.TestCase):
         self.assertIn("mapped at 0x752000", skipped[0][1])
 
     def test_literal_inside_a_named_segment_gets_the_suffix(self):
-        unit = (self.root / "src/unit.c").read_text().replace('NuSevereWarning', '#pragma const_seg(".rdata$X")\n    NuSevereWarning')
+        unit = (self.root / "src/unit.c").read_text().replace(
+            'NuSevereWarning', '#pragma const_seg(".rdata$X")\n    NuSevereWarning')
         (self.root / "src/unit.c").write_text(unit)
         sources, found, _ = self.scan()
         literalscan.fix(sources, [d for d in found if d["name"] == "WarningPc"])

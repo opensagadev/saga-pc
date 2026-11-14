@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
-"""Find string and floating constants that only name one literal, and write the literal inline.
+"""Find string and floating constants that only name their literal, and write the literal inline.
 
 A named `const char NAME[] = "..."` (or `const char *const NAME = "..."`) that
-one expression uses is a literal moved away from its use. The original wrote
-the literal at the call (`NuSevereWarning("Your Scene version is %d, ...", ...)`):
-VC8 emits it as a `??_C@` COMDAT that the linker pools with every identical
-literal of the program, whereas a named array is a data object of its own.
-Floating constants are the same: `const f32 NAME = 0.5f;` read once is the
-literal `0.5f`, a pooled `__real@3f000000`. The scan is textual (comments and strings are separated first, as in
-tools/oddscan.py); it needs no compiler and no originals.
+expressions only read as a value is a literal moved away from its uses. The
+original wrote the literal at the call (`NuSevereWarning("Your Scene version is
+%d, ...", ...)`): VC8 emits it as a `??_C@` COMDAT that the linker pools with
+every identical literal of the program, whereas a named array is a data object
+of its own. Floating constants are the same: `const f32 NAME = 0.5f;` is the
+literal `0.5f`, a pooled `__real@3f000000`. Reuse alone is not a meaning: the
+original wrote the same literal at every use (a `__FILE__` argument, an assert
+or allocation message, a script keyword), and pooling makes N uses of one
+literal one object. The scan is textual (comments and strings are separated
+first, as in tools/oddscan.py); it needs no compiler and no originals.
 
     python3 tools/literalscan.py                 # summary
     python3 tools/literalscan.py --list          # file:line NAME uses class
-    python3 tools/literalscan.py --fix [PATHS]   # inline the single-use constants (then `make format`)
+    python3 tools/literalscan.py --fix [PATHS]   # inline the constants found (then `make format`)
     python3 tools/literalscan.py --check         # fail when a count exceeds config/literalscan-budget.json
     python3 tools/literalscan.py --write-budget  # lower the budget to the current counts
 
@@ -21,22 +24,28 @@ for a `static`, and in all of src/ otherwise; `extern` declarations are not
 uses. Classes:
 
   single-use   one use, as a value (an argument, an initializer, a cast operand)
-  kept         a single-use constant listed in config/literalscan-keep.csv
+  multi-use    several uses, each one a value; a floating constant counts only
+               when its name restates the value (NuPrimTwo, InitOnceHalf,
+               NuScale1000): a name that says what the quantity is
+               (AIPositionUnsetPc) is a meaning beyond the text
+  kept         a constant of either class listed in config/literalscan-keep.csv
                (file, name, reason): retail evidence that the text is a data
-               object of its own, or a match that needs the array
+               object of its own, a match that needs the name, or a meaning
+               beyond the text (a key the original plausibly #defined)
 
-Constants used through `sizeof`, an index, `&`, or a macro, used more than
-once, or whose array is longer than the text are not counted: they have a
-meaning beyond their text.
+Constants used through `sizeof`, an index, `&`, or a macro, or whose array is
+longer than the text are not counted: they have a meaning beyond their text.
 
 `--fix` deletes the declaration (with its `#pragma const_seg` pair and any
-`extern` declaration of the name outside src/saga.h, see HELD_DECLARATIONS), writes the literal at the use (a `(char *)`
-cast of the name goes with it) and renames the name's config/symbols.csv row to
-the literal's `??_C@` name, or drops the row when the literal's row is already
-there. A constant whose literal name config/symbols.csv maps to another address
-is not changed: retail has the same text twice, so this copy is an object of
-its own; list it in the keep file. `--check` also fails on a keep entry that
-matches no candidate. Budgets only go down (tools/budget.py --guard).
+`extern` declaration of the name outside src/saga.h, see HELD_DECLARATIONS),
+writes the literal at every use (a `(char *)` cast of the name goes with it)
+and renames the name's config/symbols.csv row to the literal's `??_C@` name, or
+drops the row when the literal's row is already there. A constant whose literal
+name config/symbols.csv maps to another address is not changed: retail has the
+same text twice, so this copy is an object of its own; list it in the keep
+file. Neither is one whose uses sit under different `#pragma const_seg`
+settings (they would be two literals). `--check` also fails on a keep entry
+that matches no candidate. Budgets only go down (tools/budget.py --guard).
 """
 import argparse
 import bisect
@@ -60,7 +69,7 @@ BUDGET = ROOT / "config/literalscan-budget.json"
 KEEP = ROOT / "config/literalscan-keep.csv"
 SYMBOLS = ROOT / "config/symbols.csv"
 SUFFIXES = {".c", ".cpp", ".h", ".inc"}
-CLASSES = ("single-use", "kept")
+CLASSES = ("single-use", "multi-use", "kept")
 # `extern` declarations that --fix leaves: VC8 code generation of a few units (BoulderSpawnPc,
 # BlockadeRunnerDEjectCreaturePc) depends on the number of declarations saga.h gives them, so
 # saga.h loses its unused declarations header by header (docs/header-plan.md, step 2).
@@ -158,6 +167,19 @@ class Source:
         return find_span(self.macro_spans, offset) is not None
 
 
+NUMBER_WORDS = ("zero", "one", "two", "three", "four", "five", "six", "eight", "ten", "half", "quarter", "third",
+                "hundred", "thousand", "million", "minus")
+
+
+def restates_value(decl):
+    """Whether a floating constant's name only says its value: a number word, or the value's integer digits."""
+    words = [w.lower() for w in re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?![a-z])|\d+', decl["name"])]
+    if any(word in NUMBER_WORDS for word in words):
+        return True
+    value = abs(struct.unpack("<f" if len(decl["data"]) == 4 else "<d", decl["data"])[0])
+    return value == int(value) and str(int(value)) in words
+
+
 def float_declarations(source):
     """`const f32 NAME = 1.5f;` and `const f64 NAME = 0.5;`: an inline literal is a `__real@` constant."""
     for match in FLOAT_DECL.finditer(source.code):
@@ -230,8 +252,8 @@ def uses(sources, decl):
                 kind = "macro"
             elif re.search(r'\bsizeof\s*\(?$', before):
                 kind = "sizeof"
-            elif after.startswith("[") or (after.startswith("+") and not after.startswith("++")):
-                kind = "index"
+            elif after.startswith("[") or (not decl["symbol"] and re.match(r'\+(?!\+)', after)):
+                kind = "index"  # pointer arithmetic on a string; a float added to something is a value
             elif before.endswith("&") and not before.endswith("&&"):
                 kind = "address"
             elif CHAR_CAST.search(before):
@@ -260,9 +282,13 @@ def scan(root=ROOT, keep=None):
             if decl["padded"]:
                 continue
             decl["uses"] = uses(sources, decl)
-            if len(decl["uses"]) != 1 or decl["uses"][0][3] not in ("plain", "cast"):
+            if not decl["uses"] or any(kind not in ("plain", "cast") for *_, kind in decl["uses"]):
                 continue
-            decl["class"] = "kept" if (decl["file"], decl["name"]) in kept else "single-use"
+            single = len(decl["uses"]) == 1
+            if not single and decl["symbol"] and not restates_value(decl):
+                continue
+            decl["class"] = ("kept" if (decl["file"], decl["name"]) in kept
+                             else "single-use" if single else "multi-use")
             found.append(decl)
     names = {(d["file"], d["name"]) for d in found}
     stale = [row for row in keep if (row["file"], row["name"]) not in names]
@@ -364,7 +390,8 @@ def tidy_segments(text):
 
 
 def source_edits(sources, decl):
-    """{path: [(start, end, replacement)]} that inline one constant; the use's edit is marked "use"."""
+    """{path: [(start, end, replacement, use)]} that inline one constant; each use's edit is marked with
+    (file, name, index)."""
     edits = {}
     source = next(s for s in sources if s.path == decl["file"])
     start, end = remove_line_span(source.text, *decl["span"])
@@ -383,13 +410,14 @@ def source_edits(sources, decl):
             start = allocate.start()
         end = remove_line_span(source.text, start, decl["span"][1])[1]
     edits.setdefault(source.path, []).append((start, end, "", None))
-    use_source, use_start, use_end, kind = decl["uses"][0]
-    if kind == "cast":
-        use_start = CHAR_CAST.search(use_source.code[:use_start].rstrip()).start()
-    literal = decl["literal"]
-    if literal.startswith("-") and use_source.code[use_start - 1:use_start] in ("-", "+"):
-        literal = f"({literal})"
-    edits.setdefault(use_source.path, []).append((use_start, use_end, literal, (decl["file"], decl["name"])))
+    for index, (use_source, use_start, use_end, kind) in enumerate(decl["uses"]):
+        if kind == "cast":
+            use_start = CHAR_CAST.search(use_source.code[:use_start].rstrip()).start()
+        literal = decl["literal"]
+        if literal.startswith("-") and use_source.code[use_start - 1:use_start] in ("-", "+"):
+            literal = f"({literal})"
+        edits.setdefault(use_source.path, []).append((use_start, use_end, literal,
+                                                      (decl["file"], decl["name"], index)))
     for other in sources:
         if other.path in HELD_DECLARATIONS:
             continue
@@ -420,9 +448,9 @@ def in_named_segment(text, offset):
 
 
 def fix(sources, found, only=None):
-    """Inline every single-use constant (in PATHS when given); returns (fixed, skipped [(decl, reason)])."""
+    """Inline every constant found and not kept (in PATHS when given); returns (fixed, skipped [(decl, reason)])."""
     chosen = [d for d in found
-              if d["class"] == "single-use" and (not only or any(d["file"].startswith(p) for p in only))]
+              if d["class"] != "kept" and (not only or any(d["file"].startswith(p) for p in only))]
     skipped = []
     while True:
         edits = {}
@@ -433,12 +461,16 @@ def fix(sources, found, only=None):
         texts, segment = {}, {}
         for path, changes in edits.items():
             texts[path], placed = apply_edits(by_path[path].text, changes)
-            for name, offset in placed.items():
-                segment[name] = in_named_segment(texts[path], offset)
+            for (file, name, _), offset in placed.items():
+                segment.setdefault((file, name), set()).add(in_named_segment(texts[path], offset))
         symbols = SymbolMap()
         problems = []
         for decl in chosen:
-            rows, problem = plan_symbols(symbols, decl, segment[(decl["file"], decl["name"])])
+            segments = segment[(decl["file"], decl["name"])]
+            if len(segments) > 1:
+                problems.append((decl, "its uses sit under different #pragma const_seg settings"))
+                continue
+            rows, problem = plan_symbols(symbols, decl, segments.pop())
             if problem or rows is None:
                 problems.append((decl, problem))
                 continue
@@ -458,7 +490,7 @@ def fix(sources, found, only=None):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--list", action="store_true", help="print file:line NAME uses class")
-    parser.add_argument("--fix", nargs="*", metavar="PATH", help="inline the single-use constants (under PATHS)")
+    parser.add_argument("--fix", nargs="*", metavar="PATH", help="inline the constants found (under PATHS)")
     parser.add_argument("--check", action="store_true", help="fail when a class exceeds its budget")
     parser.add_argument("--write-budget", action="store_true", help="lower the budget to the current counts")
     parser.add_argument("--budget", type=Path, default=BUDGET)
@@ -483,19 +515,20 @@ def main(argv=None):
         status = budget.report("literalscan", over, under, "python3 tools/literalscan.py --write-budget")
         for row in stale:
             print(f"literalscan: config/literalscan-keep.csv lists {row['file']} {row['name']}, "
-                  "which is not a single-use constant", file=sys.stderr)
+                  "which is not a constant the scan finds", file=sys.stderr)
         if over:
-            print("literalscan: python3 tools/literalscan.py --list shows them; write the literal at its use",
+            print("literalscan: python3 tools/literalscan.py --list shows them; write the literal at its uses",
                   file=sys.stderr)
         elif not stale:
-            print(f"literalscan: {current['single-use']} single-use constants, {current['kept']} kept, "
-                  "within budget")
+            print(f"literalscan: {current['single-use']} single-use constants, {current['multi-use']} multi-use, "
+                  f"{current['kept']} kept, within budget")
         return status or int(bool(stale))
     if args.list:
         for decl in found:
             use_source, at, _, kind = decl["uses"][0]
+            more = f" (+{len(decl['uses']) - 1})" if len(decl["uses"]) > 1 else ""
             print(f"{decl['file']}:{decl['line']}\t{decl['name']}\t{use_source.path}:{use_source.line(at)} "
-                  f"{kind}\t{decl['class']}")
+                  f"{kind}{more}\t{decl['class']}")
         return 0
     for cls in CLASSES:
         print(f"{cls:12} {current[cls]:5}")
