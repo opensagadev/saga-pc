@@ -9337,7 +9337,6 @@ extern "C" {
     f32 PARTSCALEUPTIME = 0.5f;
 #pragma data_seg()
 
-    PODSPRINT_PC podsprint = {0};
     NARROWSOCKEXCEPTION_PC *NarrowSockException = 0;
 #pragma data_seg(".data$id_BASKETCANNON")
     i16 id_BASKETCANNON = -1;
@@ -9737,7 +9736,6 @@ extern "C" {
 #pragma data_seg(".data$CircleLeanDegrees")
     i32 CircleLeanDegrees = 30;
 #pragma data_seg()
-    i32 podrace_section = 0;
 #pragma data_seg(".data$GAMEPAD_DUP")
     i32 GAMEPAD_DUP = 4096;
 #pragma data_seg()
@@ -10174,7 +10172,6 @@ extern "C" {
     i32 OldBonusScore[2] = {0};
     i32 BonusScore[2] = {0};
     GAMEOBJECT *BombGenerator_PlayerBomb[2] = {0};
-    i32 Lap = 0;
     i32 BuildUpTotal = 0;
     i32 BuildUpDone = 0;
     AREA_GLOBALS_PC AreaGlobals_PC = {0};
@@ -13067,8 +13064,6 @@ extern "C" {
 
     PLAYER_START_INITIALIZER_RECORD_PC PlayerStart[8] = {0};
 
-    GAMEOBJECT *PodPacemakerPc = 0;
-
 #pragma data_seg(".data$PodCreateSplineKeywordPc")
     char PodCreateSplineKeywordPc[11] = "spline_id=";
 #pragma data_seg()
@@ -13518,15 +13513,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$StreakAlphaScalePc")
     f32 StreakAlphaScalePc = 2.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PodDustLocatorIndicesPc")
-    i32 PodDustLocatorIndicesPc[2] = {1, 2};
-#pragma data_seg()
-#pragma data_seg(".data$PodDustEmissionRatePc")
-    f32 PodDustEmissionRatePc = 100.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PodDustHeightScalePc")
-    f32 PodDustHeightScalePc = 2.0f;
 #pragma data_seg()
 }
 
@@ -22987,22 +22973,8 @@ extern "C" {
 }
 
 extern "C" {
-    struct PODSPRINTNETPACKET_s *podsprint_netpacket = 0;
-
-    struct gameobject_s *Maul_obj = 0;
-
-    i32 mushroom_collapse = 0;
-
-#pragma data_seg(".data$mushroom0_along")
-    f32 mushroom0_along = 65.0f;
-
-#pragma data_seg(".data$mushroom2_along")
-    f32 mushroom2_along = 85.0f;
 
 #pragma data_seg(".data$mushroom_time_increment")
-    f32 mushroom_time_increment = 1.0f;
-
-    i32 mushroom_nattempts_per_increment = 0;
 }
 
 extern "C" {
@@ -23017,10 +22989,8 @@ extern "C" {
 }
 
 extern "C" {
-    i32 PodRace_nsnipers = 0;
 
 #pragma data_seg(".data$PodRace_sniper_fire_time")
-    f32 PodRace_sniper_fire_time = 0.25f;
 }
 
 extern "C" {
@@ -23089,16 +23059,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$PodRace_sniper_start_fire_radius")
-    f32 PodRace_sniper_start_fire_radius = 90.0f;
-
-#pragma data_seg(".data$PodRace_sniper_fire_radius")
-    f32 PodRace_sniper_fire_radius = 2.5f;
 
 #pragma data_seg(".data$PodRace_sniper_fire_range_time")
-    f32 PodRace_sniper_fire_range_time = 2.0f;
-
-    SNIPER_s PodRace_snipers[10] = {0};
 }
 
 extern "C" {
@@ -23387,47 +23349,7 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$sockstep")
-    f32 sockstep = 10.0f;
-
-#pragma data_seg(".data$test_factor")
-    f32 test_factor = 10.0f;
-
-#pragma data_seg(".data$test_seek_rate")
-    f32 test_seek_rate = 0.009999999776482582f;
-
-#pragma data_seg(".data$max_speed_mul")
-    f32 max_speed_mul = 1.2999999523162842f;
-
-#pragma data_seg(".data$min_speed_mul")
-    f32 min_speed_mul = 0.5f;
-
-#pragma data_seg(".data$sebulba_goal_ahead")
-    f32 sebulba_goal_ahead = 10.0f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_catchup_dist")
-    f32 sebulba_catchup_dist = -3.0f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_catchup_speed_mul")
-    f32 sebulba_catchup_speed_mul = 1.5f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_catchup_lerpf")
-    f32 sebulba_catchup_lerpf = 5.0f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_fallback_dist")
-    f32 sebulba_fallback_dist = 150.0f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_fallback_lerpf")
-    f32 sebulba_fallback_lerpf = 5.0f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_goal_ahead_vals")
-    f32 sebulba_goal_ahead_vals[4] = {100.0f, 75.0f, 50.0f, 25.0f};
-#pragma data_seg()
-    f32 sebulba_fallback_speed_mul = 0;
 #pragma data_seg(".data$sebulba_lerpf")
-    f32 sebulba_lerpf = 0.5f;
-
-    i32 do_mine = 0;
 }
 
 extern "C" {
@@ -26239,19 +26161,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$DrawGameObjectsVehicleFarClipPc")
     f32 DrawGameObjectsVehicleFarClipPc = 50.0f;
-#pragma data_seg()
-}
-
-extern "C" {
-    NUSPECIALHANDLE SebulbaMineSpecialPc = {0};
-}
-
-extern "C" {
-#pragma data_seg(".data$SebulbaThrowIntervalPc")
-    f32 SebulbaThrowIntervalPc = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SebulbaDistanceBiasPc")
-    f32 SebulbaDistanceBiasPc = 25.0f;
 #pragma data_seg()
 }
 
