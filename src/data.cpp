@@ -10778,8 +10778,6 @@ extern "C" {
     i32 edgra_elementthin = 1;
 #pragma data_seg()
     i32 edgra_page_on[8] = {0};
-    NULSTHDR *rtl_dynamic_pool = 0;
-    i32 rtl_dynamic_max = 0;
     i32 debris_suspended = 0;
     f32 globaltime = 0;
     f32 panelglobaltime = 0;
@@ -13507,34 +13505,6 @@ extern "C" {
     NUVEC RtlUnitDirectionZPc = {0.0f, 0.0f, 1.0f};
 #pragma data_seg()
 
-#pragma data_seg(".data$rtl_helper_radius")
-    f32 rtl_helper_radius = 0.25f;
-#pragma data_seg()
-
-#pragma data_seg(".data$rtl_dynamic_lights_enabled")
-    i32 rtl_dynamic_lights_enabled = 1;
-#pragma data_seg()
-
-#pragma data_seg(".data$rtl_shadow_blend_rate")
-    f32 rtl_shadow_blend_rate = 2.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$rtl_shadow_flicker")
-    NUVEC rtl_shadow_flicker = {0.10000000149011612f, 0.10000000149011612f, 0.10000000149011612f};
-#pragma data_seg()
-
-#pragma data_seg(".data$RtlModifierIndexZeroPc")
-    f32 RtlModifierIndexZeroPc = 1.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$modifiers")
-    f32 *modifiers = &RtlModifierIndexZeroPc;
-#pragma data_seg()
-
-#pragma data_seg(".data$rtlwob")
-    f32 rtlwob = 0.05000000074505806f;
-#pragma data_seg()
-
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight = 0;
 
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight = 0;
@@ -13552,17 +13522,6 @@ extern "C" {
     i32 dat_02854cac = 0;
 
     i32 dat_02854cb0 = 0;
-
-    i32 rtl_error = 0;
-
-    f32 rtl_frametime = 0;
-
-#pragma data_seg(".data$rtltimer1adv")
-    f32 rtltimer1adv = 2500.0f;
-#pragma data_seg()
-    i32 rtltimer1 = 0;
-
-    RTL_INDEX_PC *dbg_rtlindex = 0;
 }
 
 extern "C" {
@@ -13937,7 +13896,6 @@ extern "C" {
     struct eduimenu_s *edLevelDestroyThisMenu = 0;
     struct eduimenu_s *edLevelDestroyThisMenu2 = 0;
     i32 edlevel_mouseandkeyboard = 0;
-    i32 rtl_helper_radius_mode = 0;
     i32 pad_disabled = 0;
 }
 

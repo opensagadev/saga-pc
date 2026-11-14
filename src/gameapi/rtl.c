@@ -3,11 +3,17 @@
 #include <string.h>
 #include <stdio.h>
 #pragma data_seg(".data$RtlFileVersionPc")
+f32 rtl_helper_radius = 0.25f;
+i32 rtl_dynamic_lights_enabled = 1;
 static i32 curr_version = 5;
 #pragma data_seg()
 #pragma data_seg(".data$RtlUidCounterPc")
+f32 rtl_shadow_blend_rate = 2.0f;
+NUVEC rtl_shadow_flicker = {0.10000000149011612f, 0.10000000149011612f, 0.10000000149011612f};
 static u16 rtl_uid = 1;
 #pragma data_seg()
+NULSTHDR *rtl_dynamic_pool = 0;
+i32 rtl_dynamic_max = 0;
 static i32 rtl_dynamic_cnt = 0;
 
 typedef union RTL_FRAME_TIMER_VIEW_PC {
@@ -1473,7 +1479,9 @@ RTL_LIGHT_PC *base_rtl = NULL;
 RTL_LIGHT_PC *rtl_locked = NULL;
 NUMTL *mtls[3] = {0};
 i32 modifier_cnt = 1;
+f32 RtlModifierIndexZeroPc = 1.0f;
 static char *default_modifier_names[1] = {"default"};
+f32 *modifiers = &RtlModifierIndexZeroPc;
 char **modifier_names = default_modifier_names;
 
 void rtlSetModifiers(f32 *values, char **names, i32 count) {
@@ -1487,6 +1495,7 @@ f32 lockflash_rate = 0.7f;
 static i32 maxundo = 0;
 static i32 rtl_undo_cnt = 0;
 static i32 rtl_undo_maxcnt = 0;
+f32 rtltimer1adv = 2500.0f;
 i32 ctl_ix = 1;
 static i32 helpmode = 0;
 i32 help_line = 190;
@@ -2212,6 +2221,7 @@ void edrtlBurnSetMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_va
     }
 }
 
+i32 rtl_helper_radius_mode = 0;
 eduimenu_s *edrtl_active_menu = NULL;
 eduimenu_s *edrtl_burn_main_menu = NULL;
 
@@ -3137,6 +3147,9 @@ __declspec(allocate(".bss$RtlUI_blurdensity_item")) static eduiitem_s *blurdensi
 #pragma section(".bss$RtlUI_fogadjrng_item", read, write)
 __declspec(allocate(".bss$RtlUI_fogadjrng_item")) static eduiitem_s *fogadjrng_item = NULL;
 #pragma section(".bss$RtlUI_fogadjnear_item", read, write)
+f32 rtl_frametime = 0;
+i32 rtltimer1 = 0;
+RTL_INDEX_PC *dbg_rtlindex = 0;
 __declspec(allocate(".bss$RtlUI_fogadjnear_item")) static eduiitem_s *fogadjnear_item = NULL;
 #pragma section(".bss$RtlUI_fogadjfar_item", read, write)
 __declspec(allocate(".bss$RtlUI_fogadjfar_item")) static eduiitem_s *fogadjfar_item = NULL;
@@ -3158,6 +3171,7 @@ __declspec(allocate(".bss$RtlUI_modifier_adj_items")) static eduiitem_s *modifie
 __declspec(allocate(".bss$RtlUI_initialised")) static i32 rtl_ui_initialised = 0;
 /* Camera direction names, in their own section to keep the data layout. */
 #pragma section(".data$RtlUICamdirNamesPc", read, write)
+f32 rtlwob = 0.05000000074505806f;
 __declspec(allocate(".data$RtlUICamdirNamesPc")) static char *camdir_id_names[16] = {
     "ID 0", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
     "ID 8", "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
@@ -4326,6 +4340,7 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
 static i32 curFogLoc = -1;
+i32 rtl_error = 0;
 // NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
 i32 fog_editor_active = 0;
 // NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
