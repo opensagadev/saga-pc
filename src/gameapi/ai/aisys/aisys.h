@@ -73,7 +73,7 @@ typedef struct AIPATHNODELINK_PC { // size 0x4
 } AIPATHNODELINK_PC;
 typedef struct AISYS_PC AISYS_PC;
 
-typedef struct AIAREA_PC { // size 0x40 (Android: 0x3c)
+typedef struct AIAREA_PC { // size 0x40
     char name[0x10];       // 0x00
     NUVEC position;        // 0x10
     f32 half_width;        // 0x1c

@@ -104,7 +104,7 @@ struct EdManipulator;
 #if SAGA_EDITOR_EDLEVELALL_H_PART == 2 && !defined(SAGA_EDITOR_EDLEVELALL_H_STOP)
 #ifdef __cplusplus
 
-/* Editor object-class interface (Android gameapi_edtools_types.h). MSVC lays
+/* Editor object-class interface. MSVC lays
  * overloaded virtuals out in reverse declaration order, so the filtered
  * GetNextObject sits in slot 4 and the two-vector DistanceToObject in slot 27. */
 class EdClassInterface {
@@ -196,7 +196,7 @@ class EdClassInterface {
 STATIC_ASSERT(sizeof(EdClassInterface) == 0x8);
 STATIC_ASSERT(offsetof(EdClassInterface, object_class) == 0x4);
 
-/* Intrusive list link (Android CSListLink<T>); non-polymorphic, so it sits
+/* Intrusive list link; non-polymorphic, so it sits
  * after the vtable pointer of the classes that derive from it. */
 template <class T> class CSListLink {
   public:
@@ -303,7 +303,7 @@ struct EdString {
     char *fun_006b86a0();
 };
 
-/* Editor serialisation stream (Android EdStream); mode is 1 reading, 2 writing. */
+/* Editor serialisation stream; mode is 1 reading, 2 writing. */
 class EdStream {
   public:
     EdStream();
@@ -379,7 +379,7 @@ class EdInputStream : public EdStream {
     virtual i32 SerialiseString(char **text, i32 count);
 };
 
-/* A registered editor value type (Android EdType). */
+/* A registered editor value type. */
 struct EdType {
     char *name;
     i32 size;
@@ -395,7 +395,7 @@ struct EdClass {
     EdRef *members;
     EdRef *last_member;
     i32 member_count;
-    EdClassInterface *object_interface; /* Android "interface" (an objbase.h macro) */
+    EdClassInterface *object_interface; /* "interface" is an objbase.h macro */
 
     i32 FindMember(EdMember *result, void *object, i32 attributes, i32 recursive);
     i32 GetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size);
@@ -508,7 +508,7 @@ class EditorSettings {
 #if SAGA_EDITOR_EDLEVELALL_H_PART == 3 && !defined(SAGA_EDITOR_EDLEVELALL_H_STOP)
 #ifdef __cplusplus
 
-/* The editor's type/class registry (Android EdRegistry), theRegistry. */
+/* The editor's type/class registry, theRegistry. */
 struct EdRegistry {
     struct NameMapping {
         char *source;
@@ -570,9 +570,9 @@ extern EdRegistry theRegistry;
 
 extern ClassEditor theClassEditor;
 
-/* The editor's per-frame input state (Android EdInputContext): the camera
+/* The editor's per-frame input state: the camera
  * view, the cursor ray and 40 logical inputs with press/release/repeat
- * edges. The PC layout has 8 more bytes at the end than Android's. */
+ * edges. */
 struct EdInputContext {
     VuVec view_position;
     VuVec view_direction;

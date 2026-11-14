@@ -13,7 +13,7 @@
 
 #ifdef __cplusplus
 
-/* The per-frame object interface ThingManager dispatches (Android BaseThing).
+/* The per-frame object interface ThingManager dispatches.
  * flags holds the THING_FLAG_SKIP_* bits; profiling brackets the call with
  * the time bar. */
 class BaseThing {

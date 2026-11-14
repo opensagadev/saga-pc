@@ -47,7 +47,7 @@ void VirtualStackAllocator::fun_00740fa0(VirtualStackAllocator &parent, u32 size
     setExternalMemoryPool(memory, size);
 }
 
-/* A shader program key (Android ShaderObjectKey). */
+/* A shader program key. */
 struct ShaderObjectKey {
     ShaderObjectKey(const PC_SHADER_MATERIAL_FILTER_VIEW &filter, bool pixel_stage);
     bool operator==(const ShaderObjectKey &other) const;

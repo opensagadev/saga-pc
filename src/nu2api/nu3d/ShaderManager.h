@@ -6,8 +6,8 @@
 #ifndef SAGA_SHIM
 #pragma once
 #endif
-#ifndef SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_PART
-#define SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_PART 1
+#ifndef SAGA_NU2API_NU3D_SHADERMANAGER_H_PART
+#define SAGA_NU2API_NU3D_SHADERMANAGER_H_PART 1
 #endif
 
 #include "nu2api/nucore/common.h"
@@ -15,14 +15,14 @@
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "decomp.h"
-#include "nu2api/nu3d/android/nushaderobject.h"
+#include "nu2api/nu3d/nushaderobject.h"
 #include "nu2api/nu3d/nushaderobjectbase.h"
 #endif
 
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
-#if SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_PART == 1 && !defined(SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_STOP)
+#if SAGA_NU2API_NU3D_SHADERMANAGER_H_PART == 1 && !defined(SAGA_NU2API_NU3D_SHADERMANAGER_H_STOP)
 
 struct PC_SHADER_FILTER_DESC_VIEW;
 struct PC_SHADER_FILTER_MATERIAL_VIEW;
@@ -46,14 +46,14 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_PART
-#define SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_PART 2
+#undef SAGA_NU2API_NU3D_SHADERMANAGER_H_PART
+#define SAGA_NU2API_NU3D_SHADERMANAGER_H_PART 2
 #ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_STOP
+#define SAGA_NU2API_NU3D_SHADERMANAGER_H_STOP
 #endif
 #endif
 
-#if SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_PART == 2 && !defined(SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_STOP)
+#if SAGA_NU2API_NU3D_SHADERMANAGER_H_PART == 2 && !defined(SAGA_NU2API_NU3D_SHADERMANAGER_H_STOP)
 #ifdef __cplusplus
 
 class NuShaderObject {
@@ -114,11 +114,11 @@ template <class T> class ShaderManagerTemplate {
     T *FindShader(const u32 *key);
 };
 #endif
-#undef SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_PART
-#define SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_PART 3
+#undef SAGA_NU2API_NU3D_SHADERMANAGER_H_PART
+#define SAGA_NU2API_NU3D_SHADERMANAGER_H_PART 3
 #ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_STOP
+#define SAGA_NU2API_NU3D_SHADERMANAGER_H_STOP
 #endif
 #endif
 
-#undef SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_STOP
+#undef SAGA_NU2API_NU3D_SHADERMANAGER_H_STOP

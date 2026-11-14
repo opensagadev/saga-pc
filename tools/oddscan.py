@@ -103,6 +103,7 @@ CLASSES = [
     ("comment-todo", "c", "TODO/FIXME/XXX/HACK comments"),
     ("comment-retail", "c", "comments that mention retail"),
     ("comment-address", "c", "comments that cite an executable address"),
+    ("other-platform", "c", "Android/iOS/OpenGL in a source path, identifier or comment (this is the PC game)"),
     ("define-in-unit", "d", "#define in a .c/.cpp"),
     ("define-keyword", "d", "#define of a keyword or builtin type"),
     ("define-prototype", "d", "macro-generated unprototyped calls (*_BARE, UNPROTOTYPED)"),
@@ -169,6 +170,7 @@ PRAGMA_KIND = {
     "pack": "pragma-pack", "warning": "pragma-warning", "comment": "pragma-comment",
     "push_macro": "pragma-macro", "pop_macro": "pragma-macro",
 }
+OTHER_PLATFORM = re.compile(r'(?i:android)|\biOS\b|IOS_|OpenGL|\bGLES\d*\b')
 CODE_PATTERNS = [
     ("noinline", re.compile(r'__declspec\s*\(\s*noinline\s*\)')),
     ("forceinline", re.compile(r'\b__forceinline\b')),
@@ -198,6 +200,7 @@ CODE_PATTERNS = [
         r'(?:(?:FUN|DAT|LAB|PTR|sub|SUB|data|loc|off|byte|dword|word)_(?:0x)?[0-9a-fA-F]{4,8}'
         r'|[A-Za-z]\w*?[a-z_](?=[0-9a-f]*[0-9][0-9a-f]*\b)(?=[0-9a-f]*[a-f])[0-9a-f]{4,8})\b')),
     ("candidate-name", re.compile(r'\b\w+_candidate\w*\b')),
+    ("other-platform", OTHER_PLATFORM),
 ]
 VIEW_NAME = r'\b[A-Za-z_]\w*(?:_VIEW_PC|_VIEW|_view|View_PC|ViewPc)\b'
 VIEW_DEF = re.compile(r'\b(?:struct|union|typedef\s+(?:struct|union))\s+(' + VIEW_NAME[2:-2] + r')\b')
@@ -214,6 +217,7 @@ COMMENT_PATTERNS = [
     ("comment-todo", re.compile(r'\b(?:TODO|FIXME|XXX|HACK)\b')),
     ("comment-retail", re.compile(r'\b[Rr]etail\b')),
     ("comment-address", re.compile(r'\b0x(?:00)?[4-7][0-9a-fA-F]{5}\b')),
+    ("other-platform", OTHER_PLATFORM),
     ("nolint", re.compile(r'\bNOLINT(?:NEXTLINE|BEGIN|END)?\b')),
     ("format-off", re.compile(r'clang-format\s+off')),
 ]
@@ -334,6 +338,8 @@ class FileScan:
         self.top_level_statements = []                   # (line, text) at file or extern "C" scope
         self.functions = []                              # (first line, last line) of function definitions
         self.first_code_line = None                      # first ; { } outside extern "C"/namespace braces
+        if OTHER_PLATFORM.search(relative):
+            self.add("other-platform", 1, relative)
         self.scan(text)
         self.layout(text)
         self.declarations(text)

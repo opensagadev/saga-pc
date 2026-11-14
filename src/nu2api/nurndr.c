@@ -322,7 +322,7 @@ void NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *parameters
     currentScene.burnout_parameters_pc = *parameters;
 }
 
-/* View of the scene's post-effect block at 0xac..0x187 (Android nurenderscene_s: depth of field,
+/* View of the scene's post-effect block at 0xac..0x187 (depth of field,
  * texture blend, camera and accumulation motion blur). */
 typedef struct NURNDR_EFFECTS_VIEW_PC { // size 0xdc
     NU_POST_DOF_PARAMETERS_PC dof;      // 0x00
@@ -569,7 +569,7 @@ void NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
 }
 
 /* Prospective insertion in src/nu2api/nurndr.c before existing LOCATOR_PRIM_POSITION undef. */
-/* Genuine inline position operation witnessed in Android nuprim_internal.h:47.
+/* Genuine inline position operation.
    Scalar parameters materialize coordinates before persistent stream writes.
    No standalone Native provider/allocation credit; actual emission must be audited. */
 static void NuRndrPrimPosition(f32 x, f32 y, f32 z) {

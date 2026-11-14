@@ -152,7 +152,7 @@ class V2PeerList {
     i32 count;
 };
 
-/* Listener interface registered with a NetTransporter (Android names). The
+/* Listener interface registered with a NetTransporter. The
  * default bodies are emitted at 0x53d1b0-0x53d240 and 0x53d670. */
 class NetListenerInterface {
   public:
@@ -350,7 +350,7 @@ class NOSFilter {
     virtual i32 AllowPush(const EdClass *object_class, void *object) = 0;
 };
 
-/* Replicates one group of an object's members (Android NetReplicator). */
+/* Replicates one group of an object's members. */
 class NetReplicator : public CSListLink<NetReplicator> {
   public:
     NetReplicator(i32 group, f32 minimum_seconds, f32 maximum_seconds);
@@ -391,8 +391,7 @@ struct NetworkObject {
     void *replicator_data;
 };
 
-/* Network object system (Android NetworkObjectManager, listener channel 3,
- * TTNetwork+0x3780). */
+/* Network object system (listener channel 3, TTNetwork+0x3780). */
 class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifier {
   public:
     struct NetPeerPush {
@@ -547,7 +546,7 @@ extern NetworkObjectManager *theNos;
 #if SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART == 3 && !defined(SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP)
 #ifdef __cplusplus
 
-/* Session base class (names from the Android symbols). Retail never constructs
+/* Session base class. Retail never constructs
  * it: the vtable is referenced only by the constructor. */
 class V2SessionManager {
   public:

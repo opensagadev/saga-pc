@@ -10,7 +10,7 @@
 #include "decomp.h"
 #include "gamelib/util/CRC16.h"
 #include "gamelib/util/gamelib_util_types.h"
-#include "nu2api/nu3d/ShaderManagerOpenGL.h"
+#include "nu2api/nu3d/ShaderManager.h"
 #include "nu2api/nu3d/ShaderObjectKey.h"
 #endif
 

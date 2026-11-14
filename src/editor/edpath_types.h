@@ -86,7 +86,7 @@ struct EDAIPATH_s {
     i16 runtime_end;
     i16 runtime_nearest;
     i16 node_count;
-    i8 draw_index; /* PC keeps the draw index at 0x38 (Android: 0x36). */
+    i8 draw_index; /* PC keeps the draw index at 0x38. */
     u8 unknown_039[7];
     struct EDAIPATHROUTE_s routes[16];
 };

@@ -126,7 +126,7 @@ extern "C" {
 #endif
     NUGSCN *NuGScnRead(VARIPTR *, VARIPTR, char *);
 
-    /* Globals and constants transferred from the Android sources (tools/globals.py). */
+    /* Globals and constants. */
     void NuGScnRndr3(NUGSCN *);
 #ifdef __cplusplus
 }

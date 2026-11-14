@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 NuIOS_IsLowEndDevice(void);
+    i32 NuIsLowEndDevice(void);
 #ifdef __cplusplus
 }
 #endif

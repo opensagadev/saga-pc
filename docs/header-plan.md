@@ -394,7 +394,7 @@ The 50 largest `rule` rows:
 | `area_data_pc_s` | struct | 32 | `legoapi/lib/hub.h` | used most in legogame/hub.cpp (14) |
 | `WavReader` | pack | 32 | `nu2api/wavreader.h` | used most in nu2api/wavreader.cpp (15) |
 | `TERRAIN_SET_PC` | struct | 31 | `legoapi/render/core/gameliball.h` | used most in gameapi/gameliball.cpp (113) |
-| `PC_SHADER_PARAMETER_LOCAL_PC` | struct | 31 | `nu2api/nu3d/android/nushaderobject.h` | used most in nu2api/nushaderobject.cpp (14) |
+| `PC_SHADER_PARAMETER_LOCAL_PC` | struct | 31 | `nu2api/nu3d/nushaderobject.h` | used most in nu2api/nushaderobject.cpp (14) |
 | `EdInputContext` | struct | 31 | `editor/edlevelall.h` | used most in editor/edlevelall.cpp (56) |
 | `AREA_SAVE_PICKUP_PC` | struct | 30 | `legoapi/items/collect/shard.h` | used most in legoapi/shard.c (2) |
 | `GAMEPAD_PC` | struct | 30 | `legoapi/characters/motion/move.h` | used most in legogame/move.c (18) |
@@ -569,7 +569,7 @@ Transferred, by proposed owner:
 - `legoapi/items/objects/cable.h` (android): `DestroyCable`
 - `legoapi/items/objects/objectsall.h` (android): `edpart_cam_pos`
 - `legoapi/lib/hub.h` (saga.h neighbour): `hub_makefreeplaylist_addotherid`
-- `legoapi/misc/androidbatman.h` (saga.h neighbour): `LEGOMENU_PAUSESYNC`
+- `legoapi/misc/gamemain.h` (saga.h neighbour): `LEGOMENU_PAUSESYNC`
 - `legoapi/props/objects/techno.h` (android): `TECHNO_FLAG_COMPLETE`
 - `legoapi/render/core/gameliball.h` (android): `DebrisStatusNormal`
 - `legoapi/render/core/gameliball.h` (saga.h neighbour): `routeEditor_cbSetRouteUsers`

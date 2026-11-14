@@ -2899,7 +2899,7 @@ extern "C" {
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 11 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 #ifdef __cplusplus
 
-/* Fixed-capacity list of BaseThings run once per pass (Android ThingManager).
+/* Fixed-capacity list of BaseThings run once per pass.
  * Every pass is virtual; the 0x24-byte object comes from theMemoryManager's
  * pools and its thing array from the permanent buffer. */
 class ThingManager {
@@ -2968,7 +2968,7 @@ class GameThingManager : public ThingManager {
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 12 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 #ifdef __cplusplus
 
-/* Base of every placeable level-editor object (Android legoapi_types.h). */
+/* Base of every placeable level-editor object. */
 class Placeable {
   public:
     i16 scene_id;
@@ -3135,7 +3135,7 @@ class BaseEditor : public CSListLink<BaseEditor> {
     static i32 blockDepth;
 };
 
-/* The class/object editor (Android ClassEditor), theClassEditor. */
+/* The class/object editor, theClassEditor. */
 class ClassEditor : public BaseEditor {
   public:
     ClassEditor();
@@ -3247,9 +3247,7 @@ class ClassEditor : public BaseEditor {
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 13 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 #ifdef __cplusplus
 
-/* The level editor thing (Android LevelEditor), theLevelEditor. The PC input
- * context is 8 bytes larger than Android's, so every field after it sits 8
- * bytes later. */
+/* The level editor thing, theLevelEditor. */
 class LevelEditor : public BaseThing {
   public:
     LevelEditor();

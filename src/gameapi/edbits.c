@@ -282,7 +282,6 @@ void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCEN
     }
 }
 
-/* Android edbitsRegisterSoundEffect. */
 void edbitsRegisterSoundEffect(char *name, i32 id) {
     strncpy(edbitsGameSound[edbits_numsounds].name, name, 16);
     edbitsGameSound[edbits_numsounds].name[15] = '\0';
@@ -290,17 +289,14 @@ void edbitsRegisterSoundEffect(char *name, i32 id) {
     edbits_numsounds++;
 }
 
-/* Android edbitsRegisterPlaySound. */
 void edbitsRegisterPlaySound(void (*callback)(NUVEC *position, i32 id)) {
     edbitsPlaySound = callback;
 }
 
-/* Android edbitsRegisterRequestSound. */
 void edbitsRegisterRequestSound(i32 (*callback)(char *name)) {
     edbitsRequestSound = callback;
 }
 
-/* Android edbitsLookupSound. */
 i32 edbitsLookupSound(char *name) {
     i32 index;
     for (index = 0; index < edbits_numsounds; ++index) {
@@ -315,7 +311,6 @@ i32 edbitsLookupSoundFX(char *name) {
     return -1;
 }
 
-/* Android edbitsSetSoundFxVolume. */
 void edbitsSetSoundFxVolume(i32 volume) {
     edbitsSfxVol = volume;
 }

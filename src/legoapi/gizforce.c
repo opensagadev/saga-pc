@@ -33,7 +33,7 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
                    lightning_endw[lightning_index], distance);
         PlaySfx("ForceLightningLp", &target->collision_position);
 
-        if (object->field_1088 != 0 && object->field_1087 == 2 && NuIOS_IsLowEndDevice() == 0 && lightning_type != 0) {
+        if (object->field_1088 != 0 && object->field_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
             NUVEC reflected_target;
             f32 plane;
             reflected_origin = primary;
@@ -64,7 +64,7 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
                lightning_endw[lightning_index], distance);
     PlaySfx("ForceLightningLp", &target->collision_position);
 
-    if (object->field_1088 != 0 && object->field_1087 == 2 && NuIOS_IsLowEndDevice() == 0 && lightning_type != 0) {
+    if (object->field_1088 != 0 && object->field_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
         NUVEC reflected_origin = secondary;
         NUVEC reflected_target = target_position;
         f32 plane = WORLD->current_level->reflection_y;

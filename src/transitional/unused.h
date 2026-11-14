@@ -29,7 +29,7 @@
 
 #define QRAND_FLOAT() (qrand() * (1.0f / 65535.0f))
 
-/* Types imported from the Android sources (tools/typeimport.py). */
+/* Types used by the units below. */
 typedef struct AIAREA_s AIAREA_s;
 typedef struct AIPATHCNXCONTROLSYS_s AIPATHCNXCONTROLSYS_s;
 typedef struct AREA_GLOBAL_VALUES AREA_GLOBAL_VALUES;

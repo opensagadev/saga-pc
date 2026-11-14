@@ -59,7 +59,7 @@ union variptr_u;
 
 typedef u32 usize;
 
-/* Android macros and callback types that ported code uses. */
+/* Shared macros and callback types. */
 #ifndef MIN
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif

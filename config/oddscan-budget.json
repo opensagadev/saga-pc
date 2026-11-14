@@ -69,5 +69,6 @@
   "cdecl": 0,
   "stdcall": 288,
   "declspec-align": 170,
-  "declspec-other": 17
+  "declspec-other": 17,
+  "other-platform": 0
 }

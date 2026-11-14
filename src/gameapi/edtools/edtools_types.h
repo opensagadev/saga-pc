@@ -9,8 +9,7 @@
 extern "C" {
 #endif
 
-    /* A sound effect name the game registered for the editors (Android
-     * EDBITS_GAME_SOUND). */
+    /* A sound effect name the game registered for the editors. */
     typedef struct EDBITS_GAME_SOUND {
         char name[16];
         i32 id;

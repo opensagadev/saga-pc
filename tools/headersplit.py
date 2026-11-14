@@ -68,6 +68,29 @@ MAP_FIELDS = ["key", "kind", "names", "line_start", "line_end", "lines", "target
 RESIDUE = ""  # target of an item that stays in saga.h
 SHIM_NOTE = "included via saga.h only for now"
 
+# Headers the Android tree keeps under platform names get neutral names here (no Android/iOS/OpenGL in src).
+NEUTRAL_HEADERS = {
+    "legoapi/misc/androidbatman.h": "legoapi/misc/gamemain.h",
+    "nu2api/nu3d/ShaderManagerOpenGL.h": "nu2api/nu3d/ShaderManager.h",
+    "nu2api/nuandroid/ios_graphics.h": "nu2api/nucore/graphics.h",
+}
+# Platform halves whose plain name a PC header already has.
+PLATFORM_HEADERS = {"nudlist", "nugscn", "numtl", "nuportal", "nurndr", "bgproc"}
+
+
+def neutral_path(path):
+    """`path` (an Android tree path) as it is named in src."""
+    if path in NEUTRAL_HEADERS:
+        return NEUTRAL_HEADERS[path]
+    path = path.replace("/android/", "/")
+    stem, dot, suffix = path.rpartition(".")
+    if stem.endswith("_android"):
+        stem = stem[: -len("_android")]
+        if stem.rpartition("/")[2] in PLATFORM_HEADERS:
+            stem += "_platform"
+    return stem + dot + suffix
+
+
 # --------------------------------------------------------------------------------------------------------------
 # Lexer
 
@@ -1068,7 +1091,7 @@ class Evidence:
         strong = [h for h in headers if not ANDROID_WEAK.search(h)]
         pool = strong or headers
         pool.sort(key=lambda h: (h.count("/") == 0, len(h), h))
-        return pool[0], not strong, [h for h in headers if h != pool[0]]
+        return neutral_path(pool[0]), not strong, [neutral_path(h) for h in headers if h != pool[0]]
 
     def android_choice_folded(self, name):
         """android_choice of the Android name that differs from `name` only in case (gameobject_s -> GameObject_s)."""
@@ -1089,10 +1112,10 @@ class Evidence:
         headers = [a for a in android if a.endswith(".h")]
         if headers:
             headers.sort(key=lambda h: (h.endswith("_types.h"), len(h)))
-            return headers[0], "android-path"
+            return neutral_path(headers[0]), "android-path"
         units = [a for a in android if not a.endswith(".h")]
         if units:
-            return f"{Path(units[0]).parent.as_posix()}/{Path(units[0]).stem}.h", "android-dir"
+            return neutral_path(f"{Path(units[0]).parent.as_posix()}/{Path(units[0]).stem}.h"), "android-dir"
         directory = Path(compiland).parent.as_posix()
         return f"{directory}/{stem}.h", "pc-path"
 

@@ -3478,7 +3478,7 @@ function:WindShear,function,WindShear,11118,11118,1,nu2api/nu3d/nurndr.h,android
 function:NuMtxCalcCheapFaceY_v2,function,NuMtxCalcCheapFaceY_v2,11119,11119,1,nu2api/numath/numtx.h,android,NuMtxCalcCheapFaceY_v2
 function:NuDisplayListLinkItems,function,NuDisplayListLinkItems,11120,11120,1,nu2api/nu3d/nudlist.h,android,NuDisplayListLinkItems
 function:DisplayListCreateGeomTransformPS,function,DisplayListCreateGeomTransformPS,11121,11121,1,nu2api/nu3d/nudlist.h,android,DisplayListCreateGeomTransformPS
-function:DisplayListCreateFaceonTransformPS,function,DisplayListCreateFaceonTransformPS,11122,11122,1,nu2api/nu3d/android/nudlist_android.h,android,DisplayListCreateFaceonTransformPS
+function:DisplayListCreateFaceonTransformPS,function,DisplayListCreateFaceonTransformPS,11122,11122,1,nu2api/nu3d/nudlist_platform.h,android,DisplayListCreateFaceonTransformPS
 function:DisplayListCreateSkinTransformPS,function,DisplayListCreateSkinTransformPS,11123,11123,1,nu2api/nu3d/nudlist.h,android,DisplayListCreateSkinTransformPS
 function:NuDisplayListPrepareFaceonPS,function,NuDisplayListPrepareFaceonPS,11124,11124,1,nu2api/nu3d/nudlist.h,android,NuDisplayListPrepareFaceonPS
 function:DisplayListSetShadowCasterFlagPS,function,DisplayListSetShadowCasterFlagPS,11125,11125,1,nu2api/nu3d/nudlist.h,android,DisplayListSetShadowCasterFlagPS
@@ -4762,7 +4762,7 @@ function:NuOcclusionManagerInit,function,NuOcclusionManagerInit,12776,12776,1,nu
 function:NuOcclusionManagerBeginFrame,function,NuOcclusionManagerBeginFrame,12777,12777,1,nu2api/nu3d/nuocclusion.h,android,NuOcclusionManagerBeginFrame
 function:NuFrameBegin,function,NuFrameBegin,12778,12778,1,nu2api/nucore/nuapi.h,android,NuFrameBegin
 variable:Game_NuPad_Store,variable,Game_NuPad_Store,12779,12779,1,legogame/pcbatman.h,users,Game_NuPad_Store: only legogame/pcbatman.cpp pc-path
-variable:Game_NuPad,variable,Game_NuPad,12780,12780,1,legoapi/misc/androidbatman.h,android,Game_NuPad
+variable:Game_NuPad,variable,Game_NuPad,12780,12780,1,legoapi/misc/gamemain.h,android,Game_NuPad
 variable:NuTimeBar_SetList,variable,NuTimeBar_SetList,12781,12781,1,nu2api/nu3d/nu3d_includes.h,users,NuTimeBar_SetList: only nu2api/nu3d_includes.cpp android-path
 variable:NuTimeBar_Initialised,variable,NuTimeBar_Initialised,12782,12782,1,nu2api/nu3d/nu3d_includes.h,users,NuTimeBar_Initialised: only nu2api/nu3d_includes.cpp android-path
 variable:NuTimeBar_PeakReset,variable,NuTimeBar_PeakReset,12783,12783,1,nu2api/nu3d/nu3d_includes.h,users,NuTimeBar_PeakReset: only nu2api/nu3d_includes.cpp android-path
@@ -4809,23 +4809,23 @@ variable:NuScale1000,variable,NuScale1000,12823,12823,1,nu2api/huffdecode.h,rule
 variable:NuTime_MicroScale,variable,NuTime_MicroScale,12824,12824,1,nu2api/huffdecode.h,data-order,retail 0x75e9f0 between 0x75e9e8 and 0x75eaac
 variable:NuTime_ScanlineScale,variable,NuTime_ScanlineScale,12825,12825,1,nu2api/huffdecode.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:NuTime_RefreshRate,variable,NuTime_RefreshRate,12826,12826,1,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (2) android-path
-function:NuTimeBarSlotReset,function,NuTimeBarSlotReset,12827,12827,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarSlotReset
-function:_NuTimeBarSlotBegin,function,_NuTimeBarSlotBegin,12828,12828,1,nu2api/nu3d/android/nutimebar_plain.h,android,_NuTimeBarSlotBegin
-function:NuTimeBarCreateSetEx,function,NuTimeBarCreateSetEx,12829,12829,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarCreateSetEx
-function:NuTimeBarCreateSetEx2,function,NuTimeBarCreateSetEx2,12830,12830,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarCreateSetEx2
-function:NuTimeBarCreateSet,function,NuTimeBarCreateSet,12831,12831,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarCreateSet
-function:NuTimeBarDestroySet,function,NuTimeBarDestroySet,12832,12832,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarDestroySet
-function:_NuTimeBarSlotEnd,function,_NuTimeBarSlotEnd,12833,12833,1,nu2api/nu3d/android/nutimebar_plain.h,android,_NuTimeBarSlotEnd
-function:NuTimeBarSlotSet,function,NuTimeBarSlotSet,12834,12834,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarSlotSet
-function:NuTimeBarSlotSetName,function,NuTimeBarSlotSetName,12835,12835,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarSlotSetName
-function:NuTimeBarSlotSetEx,function,NuTimeBarSlotSetEx,12836,12836,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarSlotSetEx
-function:NuTimeBarSlotLastValueMicroseconds,function,NuTimeBarSlotLastValueMicroseconds,12837,12837,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarSlotLastValueMicroseconds
-function:NuTimeBarSlotLastValue,function,NuTimeBarSlotLastValue,12838,12838,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarSlotLastValue
-function:NuTimeBarResetPeaks,function,NuTimeBarResetPeaks,12839,12839,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarResetPeaks
-function:NuTimeBarEnable,function,NuTimeBarEnable,12840,12840,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarEnable
-function:NuTimeBarIndicateGpuFrameOut,function,NuTimeBarIndicateGpuFrameOut,12841,12841,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarIndicateGpuFrameOut
-function:NuTimeBarInitEx,function,NuTimeBarInitEx,12842,12842,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarInitEx
-function:NuTimeBarInit,function,NuTimeBarInit,12843,12843,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarInit
+function:NuTimeBarSlotReset,function,NuTimeBarSlotReset,12827,12827,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarSlotReset
+function:_NuTimeBarSlotBegin,function,_NuTimeBarSlotBegin,12828,12828,1,nu2api/nu3d/nutimebar_plain.h,android,_NuTimeBarSlotBegin
+function:NuTimeBarCreateSetEx,function,NuTimeBarCreateSetEx,12829,12829,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarCreateSetEx
+function:NuTimeBarCreateSetEx2,function,NuTimeBarCreateSetEx2,12830,12830,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarCreateSetEx2
+function:NuTimeBarCreateSet,function,NuTimeBarCreateSet,12831,12831,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarCreateSet
+function:NuTimeBarDestroySet,function,NuTimeBarDestroySet,12832,12832,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarDestroySet
+function:_NuTimeBarSlotEnd,function,_NuTimeBarSlotEnd,12833,12833,1,nu2api/nu3d/nutimebar_plain.h,android,_NuTimeBarSlotEnd
+function:NuTimeBarSlotSet,function,NuTimeBarSlotSet,12834,12834,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarSlotSet
+function:NuTimeBarSlotSetName,function,NuTimeBarSlotSetName,12835,12835,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarSlotSetName
+function:NuTimeBarSlotSetEx,function,NuTimeBarSlotSetEx,12836,12836,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarSlotSetEx
+function:NuTimeBarSlotLastValueMicroseconds,function,NuTimeBarSlotLastValueMicroseconds,12837,12837,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarSlotLastValueMicroseconds
+function:NuTimeBarSlotLastValue,function,NuTimeBarSlotLastValue,12838,12838,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarSlotLastValue
+function:NuTimeBarResetPeaks,function,NuTimeBarResetPeaks,12839,12839,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarResetPeaks
+function:NuTimeBarEnable,function,NuTimeBarEnable,12840,12840,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarEnable
+function:NuTimeBarIndicateGpuFrameOut,function,NuTimeBarIndicateGpuFrameOut,12841,12841,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarIndicateGpuFrameOut
+function:NuTimeBarInitEx,function,NuTimeBarInitEx,12842,12842,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarInitEx
+function:NuTimeBarInit,function,NuTimeBarInit,12843,12843,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarInit
 function:NuVideoGetMode,function,NuVideoGetMode,12844,12844,1,nu2api/nucore/nuvideo.h,android,NuVideoGetMode
 function:NuVideoSetMode,function,NuVideoSetMode,12845,12845,1,nu2api/nucore/nuvideo.h,android,NuVideoSetMode
 function:NuVideoSetResolution,function,NuVideoSetResolution,12846,12846,1,nu2api/nucore/nuvideo.h,android,NuVideoSetResolution
@@ -5115,7 +5115,7 @@ function:NuQFntSetJustifiedTolerances,function,NuQFntSetJustifiedTolerances,1312
 function:NuFloor,function,NuFloor,13130,13130,1,nu2api/numath/nufloat.h,android,NuFloor
 function:NuFsign,function,NuFsign,13131,13131,1,nu2api/numath/nufloat.h,android,NuFsign
 variable:nu_fsign_minus_one,variable,nu_fsign_minus_one,13132,13132,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (3) pc-path
-function:InitOnce,function,InitOnce,13133,13133,1,legoapi/misc/androidbatman.h,android,InitOnce
+function:InitOnce,function,InitOnce,13133,13133,1,legoapi/misc/gamemain.h,android,InitOnce
 function:StartupParseArgument,function,StartupParseArgument,13134,13134,1,legogame/pcbatman.h,rule,used most in legogame/pcbatman.cpp (1) pc-path
 function:StartupOpenDats,function,StartupOpenDats,13135,13135,1,nu2api/nuwin32/pcapi.h,users,StartupOpenDats: only nu2api/nuwin32/pcapi.cpp pc-path
 variable:StartupDatList,variable,StartupDatList,13136,13136,1,legoapi/startup_dats.h,rule,used most in legoapi/startup_dats.c (9) pc-path
@@ -5372,7 +5372,7 @@ variable:NuRndrFxPreviousHeightPc,variable,NuRndrFxPreviousHeightPc,13390,13390,
 variable:NuRndrFxColourPc,variable,NuRndrFxColourPc,13391,13391,1,nu2api/nustencilshadows_PC.h,users,NuRndrFxColourPc: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 function:NuRndrClear,function,NuRndrClear,13392,13392,1,nu2api/nu3d/nurndr.h,android,NuRndrClear
 function:NuRndrGradClear,function,NuRndrGradClear,13393,13393,1,nu2api/nu3d/nurndr.h,android,NuRndrGradClear
-variable:DEFAULTFRAMETIME,variable,DEFAULTFRAMETIME,13394,13394,1,legoapi/misc/androidbatman.h,data-order,retail 0x92503c between 0x925014 and 0x925040
+variable:DEFAULTFRAMETIME,variable,DEFAULTFRAMETIME,13394,13394,1,legoapi/misc/gamemain.h,data-order,retail 0x92503c between 0x925014 and 0x925040
 variable:PAL,variable,PAL,13395,13395,1,globals.h,android-weak,catch-all (needs a module owner); PAL
 function:SetBackgroundMusic,function,SetBackgroundMusic,13396,13396,1,legoapi/audio/audio.h,android,SetBackgroundMusic
 function:LoadPerm,function,LoadPerm,13397,13397,1,legogame/startup.h,android,LoadPerm
@@ -5394,10 +5394,10 @@ variable:bgproc_freeze,variable,bgproc_freeze,13412,13412,1,nu2api/nucore/bgproc
 variable:bgproc_resume_event_name,variable,bgproc_resume_event_name,13413,13413,1,nu2api/nucore/bgproc.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:bgproc_work_event_name,variable,bgproc_work_event_name,13414,13414,1,nu2api/nucore/bgproc.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 function:bgProcInit,function,bgProcInit,13415,13415,1,nu2api/nucore/bgproc.h,android,bgProcInit
-function:bgprocFreeze,function,bgprocFreeze,13416,13416,1,nu2api/nucore/android/bgproc_android.h,android,bgprocFreeze
-function:bgprocUnFreeze,function,bgprocUnFreeze,13417,13417,1,nu2api/nucore/android/bgproc_android.h,android,bgprocUnFreeze
+function:bgprocFreeze,function,bgprocFreeze,13416,13416,1,nu2api/nucore/bgproc_platform.h,android,bgprocFreeze
+function:bgprocUnFreeze,function,bgprocUnFreeze,13417,13417,1,nu2api/nucore/bgproc_platform.h,android,bgprocUnFreeze
 function:bgprocIsFrozen,function,bgprocIsFrozen,13418,13418,1,nu2api/bgproc_pc.h,symbol,nu2api/nucore_pc_includes.cpp[bgproc_pc.cpp] pc-path
-function:bgprocIsFreezing,function,bgprocIsFreezing,13419,13419,1,nu2api/nucore/android/bgproc_android.h,android,bgprocIsFreezing
+function:bgprocIsFreezing,function,bgprocIsFreezing,13419,13419,1,nu2api/nucore/bgproc_platform.h,android,bgprocIsFreezing
 function:bgProcIsBgThread,function,bgProcIsBgThread,13420,13420,1,nu2api/nucore/bgproc.h,android,bgProcIsBgThread
 function:APITransparentInit,function,APITransparentInit,13421,13421,1,legoapi/characters/core/character.h,android,APITransparentInit
 function:InitShadowLights,function,InitShadowLights,13422,13422,1,legoapi/render/light/shadow.h,android,InitShadowLights
@@ -5492,32 +5492,32 @@ variable:PCVertexDeclarationCountPC,variable,PCVertexDeclarationCountPC,13510,13
 variable:PCVertexDeclarationCachePC,variable,PCVertexDeclarationCachePC,13511,13511,1,nu2api/VertexDeclarations.h,users,PCVertexDeclarationCachePC: only nu2api/VertexDeclarations.cpp pc-path
 variable:CRC16TablePC,variable,CRC16TablePC,13512,13512,1,nu2api/ShaderManagerHLSL.h,users,CRC16TablePC: only nu2api/ShaderManagerHLSL.cpp pc-path
 variable:ShaderProgramHashPC,variable,ShaderProgramHashPC,13513,13513,1,nu2api/nu3d/ShaderObjectKey.h,users,ShaderProgramHashPC: only nu2api/ShaderObjectKey.cpp android-dir
-function:NuGetVertexDeclaration,function,NuGetVertexDeclaration,13514,13514,1,nu2api/nu3d/android/nuvertexformat_android.h,android,NuGetVertexDeclaration
+function:NuGetVertexDeclaration,function,NuGetVertexDeclaration,13514,13514,1,nu2api/nu3d/nuvertexformat.h,android,NuGetVertexDeclaration
 function:PCDeviceCreateVertexDeclaration,function,PCDeviceCreateVertexDeclaration,13515,13515,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (4) pc-path
 forward:PC_SHADER_FILTER_DESC_VIEW,forward,PC_SHADER_FILTER_DESC_VIEW,13516,13516,1,decomp.h,decomp,view type
 forward:PC_SHADER_FILTER_MATERIAL_VIEW,forward,PC_SHADER_FILTER_MATERIAL_VIEW,13517,13517,1,decomp.h,decomp,view type
 forward:PC_SHADER_MATERIAL_FILTER_VIEW,forward,PC_SHADER_MATERIAL_FILTER_VIEW,13518,13518,1,decomp.h,decomp,view type
-forward:NuShaderObject,forward,NuShaderObject,13520,13520,1,nu2api/nu3d/ShaderManagerOpenGL.h,android,NuShaderObject
+forward:NuShaderObject,forward,NuShaderObject,13520,13520,1,nu2api/nu3d/ShaderManager.h,android,NuShaderObject
 typedef:PC_SHADER_OBJECT_FULL_VIEW,typedef,PC_SHADER_OBJECT_FULL_VIEW,13521,13521,1,decomp.h,decomp,view type
 forward:PC_SHADER_OBJECT_FULL_VIEW,forward,PC_SHADER_OBJECT_FULL_VIEW,13523,13523,1,decomp.h,decomp,view type
 function:NuShaderManagerInit,function,NuShaderManagerInit,13525,13525,1,nu2api/nu3d/nushader_plain.h,android,NuShaderManagerInit
 function:NuShaderManagerRetrieveShader,function,NuShaderManagerRetrieveShader,13526,13527,2,nu2api/nu3d/nushader_plain.h,android,NuShaderManagerRetrieveShader
 function:NuShaderManagerRetrieveShaderVariant,function,NuShaderManagerRetrieveShaderVariant,13528,13529,2,nu2api/nu3d/nushader_plain.h,android,NuShaderManagerRetrieveShaderVariant
-function:NuShaderObjectKeyGenerate3,function,NuShaderObjectKeyGenerate3,13530,13530,1,nu2api/nu3d/ShaderManagerOpenGL.h,android,NuShaderObjectKeyGenerate3
-function:PCShaderNativeUnInit,function,PCShaderNativeUnInit,13531,13531,1,nu2api/nu3d/android/nushaderobject.h,symbol,nu2api/nushaderobject.cpp android-dir
+function:NuShaderObjectKeyGenerate3,function,NuShaderObjectKeyGenerate3,13530,13530,1,nu2api/nu3d/ShaderManager.h,android,NuShaderObjectKeyGenerate3
+function:PCShaderNativeUnInit,function,PCShaderNativeUnInit,13531,13531,1,nu2api/nu3d/nushaderobject.h,symbol,nu2api/nushaderobject.cpp android-dir
 function:NuShaderObjectBaseUnInit,function,NuShaderObjectBaseUnInit,13532,13532,1,nu2api/nu3d/nushader.h,android,NuShaderObjectBaseUnInit
 function:NuShaderObjectUnInit,function,NuShaderObjectUnInit,13533,13533,1,nu2api/nu3d/nushader.h,android,NuShaderObjectUnInit
 function:NuTextureGetDimensions,function,NuTextureGetDimensions,13534,13534,1,nu2api/nu3d/nu3d_includes.h,symbol,nu2api/nu3d_includes.cpp android-path
-forward:PC_SHADER_PARAMETER_LOCAL_PC,forward,PC_SHADER_PARAMETER_LOCAL_PC,13536,13536,2,nu2api/nu3d/android/nushaderobject.h,rule,used most in nu2api/nushaderobject.cpp (24) android-dir
-struct:PC_SHADER_PARAMETER_LOCAL_PC,struct,PC_SHADER_PARAMETER_LOCAL_PC,13538,13574,38,nu2api/nu3d/android/nushaderobject.h,rule,used most in nu2api/nushaderobject.cpp (24) android-dir
-assert:-#3062,assert,,13576,13576,2,nu2api/nu3d/android/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
-assert:-#3063,assert,,13577,13577,1,nu2api/nu3d/android/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
-assert:-#3064,assert,,13578,13578,1,nu2api/nu3d/android/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
-assert:-#3065,assert,,13579,13579,1,nu2api/nu3d/android/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
-assert:-#3066,assert,,13580,13580,1,nu2api/nu3d/android/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
-assert:-#3067,assert,,13581,13581,1,nu2api/nu3d/android/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
-assert:-#3068,assert,,13582,13582,1,nu2api/nu3d/android/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
-assert:-#3069,assert,,13583,13583,1,nu2api/nu3d/android/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
+forward:PC_SHADER_PARAMETER_LOCAL_PC,forward,PC_SHADER_PARAMETER_LOCAL_PC,13536,13536,2,nu2api/nu3d/nushaderobject.h,rule,used most in nu2api/nushaderobject.cpp (24) android-dir
+struct:PC_SHADER_PARAMETER_LOCAL_PC,struct,PC_SHADER_PARAMETER_LOCAL_PC,13538,13574,38,nu2api/nu3d/nushaderobject.h,rule,used most in nu2api/nushaderobject.cpp (24) android-dir
+assert:-#3062,assert,,13576,13576,2,nu2api/nu3d/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
+assert:-#3063,assert,,13577,13577,1,nu2api/nu3d/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
+assert:-#3064,assert,,13578,13578,1,nu2api/nu3d/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
+assert:-#3065,assert,,13579,13579,1,nu2api/nu3d/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
+assert:-#3066,assert,,13580,13580,1,nu2api/nu3d/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
+assert:-#3067,assert,,13581,13581,1,nu2api/nu3d/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
+assert:-#3068,assert,,13582,13582,1,nu2api/nu3d/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
+assert:-#3069,assert,,13583,13583,1,nu2api/nu3d/nushaderobject.h,follow-type,PC_SHADER_PARAMETER_LOCAL_PC
 struct:PC_SHADER_OBJECT_FULL_VIEW,struct,PC_SHADER_OBJECT_FULL_VIEW,13585,13597,13,decomp.h,decomp,view type
 assert:-#3070,assert,,13599,13599,2,decomp.h,follow-type,PC_SHADER_OBJECT_FULL_VIEW
 assert:-#3071,assert,,13600,13600,1,decomp.h,follow-type,PC_SHADER_OBJECT_FULL_VIEW
@@ -5530,24 +5530,24 @@ assert:-#3077,assert,,13606,13606,1,decomp.h,follow-type,PC_SHADER_OBJECT_FULL_V
 assert:-#3078,assert,,13607,13607,1,decomp.h,follow-type,PC_SHADER_OBJECT_FULL_VIEW
 struct:D3DX_BUFFER_METHODS_PC,struct,D3DX_BUFFER_METHODS_PC,13611,13617,9,nu2api/nuwin32/d3dCore.h,rule,"used in saga.h only, most by nu2api/nuwin32/d3dCore.h (1)"
 struct:ID3DXBuffer,struct,ID3DXBuffer,13619,13621,4,nu2api/nuwin32/d3dCore.h,rule,used most in nu2api/nuwin32/d3dCore.cpp (3) pc-path
-struct:D3DX_CONSTANT_DESCRIPTION_PC,struct,D3DX_CONSTANT_DESCRIPTION_PC,13623,13636,15,nu2api/nu3d/android/nushaderobject.h,users,D3DX_CONSTANT_DESCRIPTION_PC: only nu2api/nushaderobject.cpp android-dir
-assert:-#3079,assert,,13638,13638,2,nu2api/nu3d/android/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
-assert:-#3080,assert,,13639,13639,1,nu2api/nu3d/android/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
-assert:-#3081,assert,,13640,13640,1,nu2api/nu3d/android/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
-assert:-#3082,assert,,13641,13641,1,nu2api/nu3d/android/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
-assert:-#3083,assert,,13642,13642,1,nu2api/nu3d/android/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
-assert:-#3084,assert,,13643,13643,1,nu2api/nu3d/android/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
-struct:D3DX_CONSTANT_TABLE_METHODS_PC,struct,D3DX_CONSTANT_TABLE_METHODS_PC,13645,13657,14,nu2api/nu3d/android/nushaderobject.h,type-users,used by its saga.h users only there
-struct:ID3DXConstantTable,struct,ID3DXConstantTable,13659,13661,4,nu2api/nu3d/android/nushaderobject.h,users,ID3DXConstantTable: only nu2api/nushaderobject.cpp android-dir
+struct:D3DX_CONSTANT_DESCRIPTION_PC,struct,D3DX_CONSTANT_DESCRIPTION_PC,13623,13636,15,nu2api/nu3d/nushaderobject.h,users,D3DX_CONSTANT_DESCRIPTION_PC: only nu2api/nushaderobject.cpp android-dir
+assert:-#3079,assert,,13638,13638,2,nu2api/nu3d/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
+assert:-#3080,assert,,13639,13639,1,nu2api/nu3d/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
+assert:-#3081,assert,,13640,13640,1,nu2api/nu3d/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
+assert:-#3082,assert,,13641,13641,1,nu2api/nu3d/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
+assert:-#3083,assert,,13642,13642,1,nu2api/nu3d/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
+assert:-#3084,assert,,13643,13643,1,nu2api/nu3d/nushaderobject.h,follow-type,D3DX_CONSTANT_DESCRIPTION_PC
+struct:D3DX_CONSTANT_TABLE_METHODS_PC,struct,D3DX_CONSTANT_TABLE_METHODS_PC,13645,13657,14,nu2api/nu3d/nushaderobject.h,type-users,used by its saga.h users only there
+struct:ID3DXConstantTable,struct,ID3DXConstantTable,13659,13661,4,nu2api/nu3d/nushaderobject.h,users,ID3DXConstantTable: only nu2api/nushaderobject.cpp android-dir
 assert:-#3085,assert,,13663,13663,2,nu2api/nuwin32/d3dCore.h,follow-type,D3DX_BUFFER_METHODS_PC
 assert:-#3086,assert,,13664,13664,1,nu2api/nuwin32/d3dCore.h,follow-type,D3DX_BUFFER_METHODS_PC
-assert:-#3087,assert,,13665,13665,1,nu2api/nu3d/android/nushaderobject.h,follow-type,D3DX_CONSTANT_TABLE_METHODS_PC
-assert:-#3088,assert,,13666,13666,1,nu2api/nu3d/android/nushaderobject.h,follow-type,D3DX_CONSTANT_TABLE_METHODS_PC
+assert:-#3087,assert,,13665,13665,1,nu2api/nu3d/nushaderobject.h,follow-type,D3DX_CONSTANT_TABLE_METHODS_PC
+assert:-#3088,assert,,13666,13666,1,nu2api/nu3d/nushaderobject.h,follow-type,D3DX_CONSTANT_TABLE_METHODS_PC
 function:NuShaderObjectBaseInit,function,NuShaderObjectBaseInit,13667,13667,1,nu2api/nu3d/nushader.h,android,NuShaderObjectBaseInit
 function:NuShaderObjectInit,function,NuShaderObjectInit,13668,13668,1,nu2api/nu3d/nushader_internal.h,android,NuShaderObjectInit
 function:PCShaderAllocateParameter,function,PCShaderAllocateParameter,13669,13669,1,nu2api/nu3d/nushaderobjectbase.h,symbol,nu2api/nushaderobjectbase.cpp android-dir
-function:PCShaderProbeHLSLConstants,function,PCShaderProbeHLSLConstants,13670,13670,1,nu2api/nu3d/android/nushaderobject.h,symbol,nu2api/nushaderobject.cpp android-dir
-function:PCShaderObjectInitHLSLPc,function,PCShaderObjectInitHLSLPc,13671,13672,2,nu2api/nu3d/android/nushaderobject.h,symbol,nu2api/nushaderobject.cpp android-dir
+function:PCShaderProbeHLSLConstants,function,PCShaderProbeHLSLConstants,13670,13670,1,nu2api/nu3d/nushaderobject.h,symbol,nu2api/nushaderobject.cpp android-dir
+function:PCShaderObjectInitHLSLPc,function,PCShaderObjectInitHLSLPc,13671,13672,2,nu2api/nu3d/nushaderobject.h,symbol,nu2api/nushaderobject.cpp android-dir
 function:PCDeviceCreateVertexShader,function,PCDeviceCreateVertexShader,13673,13673,1,nu2api/nucamera_dlist.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] (1) pc-path
 function:PCDeviceCreatePixelShader,function,PCDeviceCreatePixelShader,13674,13674,1,nu2api/nucamera_dlist.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] (1) pc-path
 function:NewRumble,function,NewRumble,13676,13676,2,legoapi/core/input/gamepads.h,android,NewRumble
@@ -5728,7 +5728,7 @@ variable:NuRndrDebBase,variable,NuRndrDebBase,13874,13874,1,nu2api/nu3d/nurndr.h
 variable:NuRndrDebRange,variable,NuRndrDebRange,13875,13875,1,nu2api/nu3d/nurndr.h,android,NuRndrDebRange
 variable:NuRndrDebRangeInv,variable,NuRndrDebRangeInv,13876,13876,1,nu2api/nu3d/nurndr.h,android,NuRndrDebRangeInv
 variable:debris_box_corners,variable,debris_box_corners,13877,13877,1,nu2api/nu3d/nu3d_includes.h,users,debris_box_corners: only nu2api/nu3d_includes.cpp android-path
-function:NuRndrSetParticleRotation,function,NuRndrSetParticleRotation,13878,13878,1,nu2api/nu3d/android/nuptl_android.h,android,NuRndrSetParticleRotation
+function:NuRndrSetParticleRotation,function,NuRndrSetParticleRotation,13878,13878,1,nu2api/nu3d/nuptl.h,android,NuRndrSetParticleRotation
 function:NuRndrSetDebBox,function,NuRndrSetDebBox,13879,13879,1,nu2api/nu3d/nurndr.h,android,NuRndrSetDebBox
 variable:render_scene_ptrs,variable,render_scene_ptrs,13881,13881,2,nu2api/nu3d/nu3d_includes.h,definition,nu2api/nu3d_includes.cpp android-path
 function:DisplayListLinkDynamicMtls,function,DisplayListLinkDynamicMtls,13882,13882,1,nu2api/nu3d/nudlist.h,android,DisplayListLinkDynamicMtls
@@ -7023,12 +7023,12 @@ variable:gencodetab,variable,gencodetab,15444,15444,1,legoapi/items/objects/obje
 function:DebAlloc,function,DebAlloc,15445,15445,1,legoapi/render/core/gameliball.h,android,DebAlloc
 function:DebrisStartOffsetEx,function,DebrisStartOffsetEx,15446,15446,1,legoapi/render/fx/game_deb.h,android,DebrisStartOffsetEx
 function:DebrisDrawCalculateClipBoxes,function,DebrisDrawCalculateClipBoxes,15447,15447,1,legoapi/render/core/gameliball.h,android,DebrisDrawCalculateClipBoxes
-function:NuDebrisRendererFlushBuffers,function,NuDebrisRendererFlushBuffers,15448,15448,1,nu2api/nu3d/android/nuptl_android.h,android,NuDebrisRendererFlushBuffers
-function:NuDebrisRendererNextBuffer,function,NuDebrisRendererNextBuffer,15449,15449,1,nu2api/nu3d/android/nuptl_android.h,android,NuDebrisRendererNextBuffer
-function:NuRndrParticleSetRepeat,function,NuRndrParticleSetRepeat,15450,15450,1,nu2api/nu3d/android/nuptl_android.h,android,NuRndrParticleSetRepeat
-function:BuildDebrisVerts,function,BuildDebrisVerts,15451,15452,2,nu2api/nu3d/android/nuptl_android.h,android,BuildDebrisVerts
-function:NuRndrParticleGroup,function,NuRndrParticleGroup,15453,15454,2,nu2api/nu3d/android/nuptl_android.h,android,NuRndrParticleGroup
-function:AddParticleGroupToDisplayList,function,AddParticleGroupToDisplayList,15455,15455,1,nu2api/nu3d/android/nuptl_android.h,android,AddParticleGroupToDisplayList
+function:NuDebrisRendererFlushBuffers,function,NuDebrisRendererFlushBuffers,15448,15448,1,nu2api/nu3d/nuptl.h,android,NuDebrisRendererFlushBuffers
+function:NuDebrisRendererNextBuffer,function,NuDebrisRendererNextBuffer,15449,15449,1,nu2api/nu3d/nuptl.h,android,NuDebrisRendererNextBuffer
+function:NuRndrParticleSetRepeat,function,NuRndrParticleSetRepeat,15450,15450,1,nu2api/nu3d/nuptl.h,android,NuRndrParticleSetRepeat
+function:BuildDebrisVerts,function,BuildDebrisVerts,15451,15452,2,nu2api/nu3d/nuptl.h,android,BuildDebrisVerts
+function:NuRndrParticleGroup,function,NuRndrParticleGroup,15453,15454,2,nu2api/nu3d/nuptl.h,android,NuRndrParticleGroup
+function:AddParticleGroupToDisplayList,function,AddParticleGroupToDisplayList,15455,15455,1,nu2api/nu3d/nuptl.h,android,AddParticleGroupToDisplayList
 function:DebrisStartOffset,function,DebrisStartOffset,15457,15457,2,legoapi/render/core/gameliball.h,android,DebrisStartOffset
 function:DebrisOrientation,function,DebrisOrientation,15458,15458,1,legoapi/render/core/gameliball.h,android,DebrisOrientation
 function:DebrisEmitterOrientation,function,DebrisEmitterOrientation,15459,15459,1,legoapi/render/core/gameliball.h,android,DebrisEmitterOrientation
@@ -7065,7 +7065,7 @@ function:AddVariableShotDebrisEffectMtx3,function,AddVariableShotDebrisEffectMtx
 function:AddVariableShotDebrisEffect,function,AddVariableShotDebrisEffect,15508,15508,1,legoapi/render/fx.h,android,AddVariableShotDebrisEffect
 function:edbitsLookupInstance,function,edbitsLookupInstance,15510,15510,2,legoapi/render/core/gameliball.h,android,edbitsLookupInstance
 function:edgraCalculatePage,function,edgraCalculatePage,15511,15511,1,legoapi/render/core/gameliball.h,android,edgraCalculatePage
-function:NuFadeObjGetAngleTerrainValues,function,NuFadeObjGetAngleTerrainValues,15512,15512,1,nu2api/nu3d/android/nuobject_android.h,android,NuFadeObjGetAngleTerrainValues
+function:NuFadeObjGetAngleTerrainValues,function,NuFadeObjGetAngleTerrainValues,15512,15512,1,nu2api/nu3d/nuobject.h,android,NuFadeObjGetAngleTerrainValues
 function:NewShadow,function,NewShadow,15513,15513,1,legoapi/render/core/terrain.h,android,NewShadow
 function:NuGScnNumSpecials,function,NuGScnNumSpecials,15514,15514,1,nu2api/nugscn_gen.h,symbol,nu2api/nu3d_includes.cpp[nugscn_gen.cpp] pc-path
 function:NuGScnGetSpecial,function,NuGScnGetSpecial,15515,15515,1,nu2api/nugscn_gen.h,symbol,nu2api/nu3d_includes.cpp[nugscn_gen.cpp] pc-path
@@ -7137,12 +7137,12 @@ variable:NuWindMaxGroupsPC,variable,NuWindMaxGroupsPC,15650,15650,1,gamelib/nuwi
 variable:NuWindWave,variable,NuWindWave,15651,15651,1,gamelib/nuwind/nuwind.h,users,NuWindWave: only nu2api/nuwind.c android-path
 variable:NuWindDir,variable,NuWindDir,15652,15652,1,gamelib/nuwind/nuwind.h,users,NuWindDir: only nu2api/nuwind.c android-path
 variable:NuWindDir2,variable,NuWindDir2,15653,15653,1,gamelib/nuwind/nuwind.h,users,NuWindDir2: only nu2api/nuwind.c android-path
-function:NuFadeObjInit,function,NuFadeObjInit,15654,15654,1,nu2api/nu3d/android/nuobject_android.h,android,NuFadeObjInit
+function:NuFadeObjInit,function,NuFadeObjInit,15654,15654,1,nu2api/nu3d/nuobject.h,android,NuFadeObjInit
 function:NuFadeObjAllocateGrp,function,NuFadeObjAllocateGrp,15655,15655,1,nu2api/nuobject.h,symbol,nu2api/nuobject.c pc-path
-function:NuFadeObjCreateMtx,function,NuFadeObjCreateMtx,15656,15656,1,nu2api/nu3d/android/nuobject_android.h,android,NuFadeObjCreateMtx
-function:NuFadeObjUpdateArray,function,NuFadeObjUpdateArray,15657,15657,1,nu2api/nu3d/android/nuobject_android.h,android,NuFadeObjUpdateArray
-function:NuFadeObjUpdate,function,NuFadeObjUpdate,15658,15658,1,nu2api/nu3d/android/nuobject_android.h,android,NuFadeObjUpdate
-function:NuFadeObjDraw,function,NuFadeObjDraw,15659,15659,1,nu2api/nu3d/android/nuobject_android.h,android,NuFadeObjDraw
+function:NuFadeObjCreateMtx,function,NuFadeObjCreateMtx,15656,15656,1,nu2api/nu3d/nuobject.h,android,NuFadeObjCreateMtx
+function:NuFadeObjUpdateArray,function,NuFadeObjUpdateArray,15657,15657,1,nu2api/nu3d/nuobject.h,android,NuFadeObjUpdateArray
+function:NuFadeObjUpdate,function,NuFadeObjUpdate,15658,15658,1,nu2api/nu3d/nuobject.h,android,NuFadeObjUpdate
+function:NuFadeObjDraw,function,NuFadeObjDraw,15659,15659,1,nu2api/nu3d/nuobject.h,android,NuFadeObjDraw
 function:NuWindInit,function,NuWindInit,15660,15660,1,gamelib/nuwind/nuwind.h,android,NuWindInit
 function:NuWindAllocateGrp,function,NuWindAllocateGrp,15661,15661,1,gamelib/nuwind/nuwind.h,android,NuWindAllocateGrp
 function:NuWindCreateMtx,function,NuWindCreateMtx,15662,15662,1,gamelib/nuwind/nuwind.h,android,NuWindCreateMtx
@@ -7154,7 +7154,7 @@ variable:edgra_page_on#2,variable,edgra_page_on,15667,15667,1,gameapi/edtools/ed
 variable:edgra_page_calculate_done,variable,edgra_page_calculate_done,15668,15668,1,gameapi/edtools/edgra_internal.h,android,edgra_page_calculate_done
 function:edgraStartPage,function,edgraStartPage,15669,15669,1,gameapi/edtools/edgra.h,android,edgraStartPage (also gameapi/edtools/edstubs.h)
 function:NuWindInit#2,function,NuWindInit,15670,15670,1,gamelib/nuwind/nuwind.h,android,NuWindInit
-function:NuFadeObjInit#2,function,NuFadeObjInit,15671,15671,1,nu2api/nu3d/android/nuobject_android.h,android,NuFadeObjInit
+function:NuFadeObjInit#2,function,NuFadeObjInit,15671,15671,1,nu2api/nu3d/nuobject.h,android,NuFadeObjInit
 struct:debris_particle_chunk_pc_s,struct,debris_particle_chunk_pc_s,15673,15683,12,nu2api/nustencilshadows_PC.h,rule,with its typedef DEBRIS_PARTICLE_CHUNK_PC (rule)
 assert:-#3421,assert,,15685,15685,2,nu2api/nustencilshadows_PC.h,follow-type,DEBRIS_PARTICLE_CHUNK_PC
 assert:-#3422,assert,,15686,15686,1,nu2api/nustencilshadows_PC.h,follow-type,DEBRIS_PARTICLE_CHUNK_PC
@@ -7181,7 +7181,7 @@ function:SolveQuadratic,function,SolveQuadratic,15722,15722,1,legoapi/render/cor
 function:DebrisGetControlStackLock,function,DebrisGetControlStackLock,15723,15723,1,legoapi/render/core/gameliball.h,android,DebrisGetControlStackLock
 function:DebrisReleaseControlStackLock,function,DebrisReleaseControlStackLock,15724,15724,1,legoapi/render/core/gameliball.h,android,DebrisReleaseControlStackLock
 function:AddChunkControlToStack,function,AddChunkControlToStack,15725,15725,1,legoapi/render/core/gameliball.h,android,AddChunkControlToStack
-function:GenericDebinfoDmaTypeUpdate,function,GenericDebinfoDmaTypeUpdate,15727,15727,2,nu2api/nu3d/android/nuptl_android.h,android,GenericDebinfoDmaTypeUpdate
+function:GenericDebinfoDmaTypeUpdate,function,GenericDebinfoDmaTypeUpdate,15727,15727,2,nu2api/nu3d/nuptl.h,android,GenericDebinfoDmaTypeUpdate
 function:NuPtlDmaSlotsExhaustedPc,function,NuPtlDmaSlotsExhaustedPc,15728,15728,1,nu2api/nu3d_pc_includes.h,symbol,nu2api/nu3d_pc_includes.cpp pc-path
 variable:freeDmaDebType,variable,freeDmaDebType,15729,15729,1,legoapi/render/fx/game_deb.h,android,freeDmaDebType
 variable:EDPP_MAX_DMADEBTYPES,variable,EDPP_MAX_DMADEBTYPES,15730,15730,1,legoapi/render/fx/game_deb.h,android,EDPP_MAX_DMADEBTYPES
@@ -7215,10 +7215,10 @@ variable:freedebchunks,variable,freedebchunks,15770,15770,1,legoapi/render/core/
 variable:freedebchunksglass,variable,freedebchunksglass,15771,15771,1,legoapi/render/core/gameliball.h,android,freedebchunksglass
 variable:ParticleChunkToRender,variable,ParticleChunkToRender,15772,15772,1,legoapi/render/core/gameliball.h,android,ParticleChunkToRender
 variable:ParticleChunkRenderStack,variable,ParticleChunkRenderStack,15773,15773,1,legoapi/render/core/gameliball.h,android,ParticleChunkRenderStack
-function:CreateDmaParticleSet,function,CreateDmaParticleSet,15774,15774,1,nu2api/nu3d/android/nuptl_android.h,android,CreateDmaParticleSet
-function:CreateDmaParticleSetGlass,function,CreateDmaParticleSetGlass,15775,15775,1,nu2api/nu3d/android/nuptl_android.h,android,CreateDmaParticleSetGlass
-function:CreateDmaPartEffectList,function,CreateDmaPartEffectList,15776,15776,1,nu2api/nu3d/android/nuptl_android.h,android,CreateDmaPartEffectList
-function:LinkDmaParticalSets,function,LinkDmaParticalSets,15777,15777,1,nu2api/nu3d/android/nuptl_android.h,android,LinkDmaParticalSets
+function:CreateDmaParticleSet,function,CreateDmaParticleSet,15774,15774,1,nu2api/nu3d/nuptl.h,android,CreateDmaParticleSet
+function:CreateDmaParticleSetGlass,function,CreateDmaParticleSetGlass,15775,15775,1,nu2api/nu3d/nuptl.h,android,CreateDmaParticleSetGlass
+function:CreateDmaPartEffectList,function,CreateDmaPartEffectList,15776,15776,1,nu2api/nu3d/nuptl.h,android,CreateDmaPartEffectList
+function:LinkDmaParticalSets,function,LinkDmaParticalSets,15777,15777,1,nu2api/nu3d/nuptl.h,android,LinkDmaParticalSets
 function:DebrisReserveTrashableSpace,function,DebrisReserveTrashableSpace,15778,15778,1,legoapi/render/core/gameliball.h,android,DebrisReserveTrashableSpace
 function:DebrisTrashableSetup,function,DebrisTrashableSetup,15779,15779,1,legoapi/render/core/gameliball.h,android,DebrisTrashableSetup
 function:AddChunkToRenderStack,function,AddChunkToRenderStack,15780,15780,1,legoapi/render/core/gameliball.h,symbol,gameapi/gameliball.cpp android-path
@@ -7425,7 +7425,7 @@ variable:NuSound3GroupSampleCount,variable,NuSound3GroupSampleCount,15994,15994,
 variable:NuSound3GroupCount,variable,NuSound3GroupCount,15995,15995,1,legoapi/render/core/gameliball.h,users,NuSound3GroupCount: only gameapi/gameliball.cpp android-path
 function:VuQuatSlerpFast,function,VuQuatSlerpFast,15996,15996,1,nu2api/numath/nuquat.h,android,VuQuatSlerpFast
 function:GameObjectOrigin,function,GameObjectOrigin,15997,15997,1,legoapi/items/objects/gameobjects.h,symbol,legoapi/gameobjects.c android-path
-variable:FRAMETIME,variable,FRAMETIME,15998,15998,1,legoapi/misc/androidbatman.h,data-order,retail 0x925038 between 0x925014 and 0x925040
+variable:FRAMETIME,variable,FRAMETIME,15998,15998,1,legoapi/misc/gamemain.h,data-order,retail 0x925038 between 0x925014 and 0x925040
 variable:debris_cutoff_camera_vec,variable,debris_cutoff_camera_vec,15999,15999,1,gameapi/edptl.h,rule,used most in gameapi/gameliball.cpp[edptl.c] (4) pc-path
 variable:debris_render_group,variable,debris_render_group,16000,16000,1,legoapi/render/fx/game_deb.h,android,debris_render_group
 function:CameraEmitterDistance,function,CameraEmitterDistance,16001,16001,1,legoapi/characters/motion.h,android,CameraEmitterDistance
@@ -7763,9 +7763,9 @@ variable:fstack,variable,fstack,16334,16334,1,nu2api/nu3d/nu3d_includes.h,users,
 variable:fstack_top,variable,fstack_top,16335,16335,1,nu2api/nu3d/nu3d_includes.h,users,fstack_top: only nu2api/nu3d_includes.cpp android-path
 variable:fstack_limit,variable,fstack_limit,16336,16336,1,nu2api/nu3d/nu3d_includes.h,users,fstack_limit: only nu2api/nu3d_includes.cpp android-path
 function:NuPortalInit,function,NuPortalInit,16337,16337,1,nu2api/nu3d/nuportal.h,android,NuPortalInit
-function:Initialise_PS,function,Initialise_PS,16338,16338,1,nu2api/nu3d/android/nuportal_android.h,android,Initialise_PS
-function:SetAllInstancesVisible,function,SetAllInstancesVisible,16339,16339,1,nu2api/nu3d/android/nuportal_android.h,android,SetAllInstancesVisible
-function:SetAllInstancesHidden,function,SetAllInstancesHidden,16340,16340,1,nu2api/nu3d/android/nuportal_android.h,android,SetAllInstancesHidden
+function:Initialise_PS,function,Initialise_PS,16338,16338,1,nu2api/nu3d/nuportal_platform.h,android,Initialise_PS
+function:SetAllInstancesVisible,function,SetAllInstancesVisible,16339,16339,1,nu2api/nu3d/nuportal_platform.h,android,SetAllInstancesVisible
+function:SetAllInstancesHidden,function,SetAllInstancesHidden,16340,16340,1,nu2api/nu3d/nuportal_platform.h,android,SetAllInstancesHidden
 function:PortalFlagRoomVisiblePc,function,PortalFlagRoomVisiblePc,16341,16341,1,nu2api/nuprim_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nuprim_dlist.cpp] pc-path
 function:PortalClipRoomPc,function,PortalClipRoomPc,16342,16342,1,nu2api/nuprim_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nuprim_dlist.cpp] pc-path
 variable:NuPortalCameraPc,variable,NuPortalCameraPc,16343,16343,1,nu2api/nu3d/nu3d_includes.h,users,NuPortalCameraPc: only nu2api/nu3d_includes.cpp android-path
@@ -8420,12 +8420,12 @@ variable:NuBridgeProc,variable,NuBridgeProc,17070,17070,1,nu2api/nubridge.h,user
 function:NuMtxPreRotateX,function,NuMtxPreRotateX,17071,17071,1,nu2api/numath/numtx.h,android,NuMtxPreRotateX
 function:NuMtxPreRotateY,function,NuMtxPreRotateY,17072,17072,1,nu2api/numath/numtx.h,android,NuMtxPreRotateY
 function:NuMtxPreRotateZ,function,NuMtxPreRotateZ,17073,17073,1,nu2api/numath/numtx.h,android,NuMtxPreRotateZ
-function:NuBridgeCreate,function,NuBridgeCreate,17074,17075,2,nu2api/nu3d/android/nubridge_android.h,android,NuBridgeCreate
-function:NuBridgeInit,function,NuBridgeInit,17076,17076,1,nu2api/nu3d/android/nubridge_android.h,android,NuBridgeInit
-function:NuBridgeRemove,function,NuBridgeRemove,17077,17077,1,nu2api/nu3d/android/nubridge_android.h,android,NuBridgeRemove
+function:NuBridgeCreate,function,NuBridgeCreate,17074,17075,2,nu2api/nu3d/nubridge.h,android,NuBridgeCreate
+function:NuBridgeInit,function,NuBridgeInit,17076,17076,1,nu2api/nu3d/nubridge.h,android,NuBridgeInit
+function:NuBridgeRemove,function,NuBridgeRemove,17077,17077,1,nu2api/nu3d/nubridge.h,android,NuBridgeRemove
 function:NuBridgeUpdate,function,NuBridgeUpdate,17078,17078,1,nu2api/nubridge.h,symbol,nu2api/nubridge.c pc-path
 function:NuBridgeDraw,function,NuBridgeDraw,17079,17079,1,nu2api/nubridge.h,symbol,nu2api/nubridge.c pc-path
-function:NuBrdigeDrawRope,function,NuBrdigeDrawRope,17080,17080,1,nu2api/nu3d/android/nubridge_android.h,android,NuBrdigeDrawRope
+function:NuBrdigeDrawRope,function,NuBrdigeDrawRope,17080,17080,1,nu2api/nu3d/nubridge.h,android,NuBrdigeDrawRope
 variable:AIFireIntervalMul,variable,AIFireIntervalMul,17081,17081,1,legoapi/items/objects/game_obj.h,users,AIFireIntervalMul: only legogame/game_obj.c android-path
 variable:GhostLightMul,variable,GhostLightMul,17082,17082,1,legoapi/items/objects/game_obj.h,rule,used most in legogame/game_obj.c (3) android-path
 variable:GhostLightTargetMul,variable,GhostLightTargetMul,17083,17083,1,legoapi/items/objects/game_obj.h,users,GhostLightTargetMul: only legogame/game_obj.c android-path
@@ -9084,7 +9084,7 @@ variable:edbri_page_on,variable,edbri_page_on,17886,17886,1,legoapi/render/core/
 function:edbriBridgesReset,function,edbriBridgesReset,17887,17887,1,legoapi/render/core/gameliball.h,android,edbriBridgesReset
 function:edgraSetup,function,edgraSetup,17888,17888,1,legoapi/render/core/gameliball.h,android,edgraSetup
 function:NuWindSetup,function,NuWindSetup,17889,17889,1,gamelib/nuwind/nuwind.h,android,NuWindSetup
-function:NuFadeObjSetup,function,NuFadeObjSetup,17890,17890,1,nu2api/nu3d/android/nuobject_android.h,android,NuFadeObjSetup
+function:NuFadeObjSetup,function,NuFadeObjSetup,17890,17890,1,nu2api/nu3d/nuobject.h,android,NuFadeObjSetup
 function:edgraClumpsReset,function,edgraClumpsReset,17892,17892,2,gameapi/edtools/edgra.h,symbol,gameapi/gameliball.cpp[edgra.c] android-path
 function:AddGameDebrisMomentum,function,AddGameDebrisMomentum,17894,17894,2,legoapi/render/fx.h,android,AddGameDebrisMomentum
 function:AddGameDebrisXYZ,function,AddGameDebrisXYZ,17895,17895,1,legoapi/render/fx.h,android,AddGameDebrisXYZ
@@ -9109,7 +9109,7 @@ variable:SceneUploadBufferStartPC,variable,SceneUploadBufferStartPC,17915,17915,
 variable:SceneUploadBufferCursorPC,variable,SceneUploadBufferCursorPC,17916,17916,1,nu2api/nustencilshadows_PC.h,users,SceneUploadBufferCursorPC: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:SceneUploadBufferEndPC,variable,SceneUploadBufferEndPC,17917,17917,1,nu2api/nustencilshadows_PC.h,users,SceneUploadBufferEndPC: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:SceneUploadSourcePathPC,variable,SceneUploadSourcePathPC,17918,17918,1,nu2api/nustencilshadows_PC.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-function:NuGScnUploadGfxDataFromFilePS,function,NuGScnUploadGfxDataFromFilePS,17919,17919,1,nu2api/nu3d/android/nugscn_android.h,android,NuGScnUploadGfxDataFromFilePS
+function:NuGScnUploadGfxDataFromFilePS,function,NuGScnUploadGfxDataFromFilePS,17919,17919,1,nu2api/nu3d/nugscn_platform.h,android,NuGScnUploadGfxDataFromFilePS
 function:DebReAlloc2,function,DebReAlloc2,17920,17920,1,legoapi/render/core/gameliball.h,android,DebReAlloc2
 function:DebReAlloc,function,DebReAlloc,17921,17921,1,legoapi/render/fx/game_deb.h,android,DebReAlloc
 variable:PCDynamicDisplayScene,variable,PCDynamicDisplayScene,17922,17922,1,nu2api/nu3d/nu3d_includes.h,users,PCDynamicDisplayScene: only nu2api/nu3d_includes.cpp android-path
@@ -10005,10 +10005,10 @@ function:AddScaledVariableShotDebrisEffect1,function,AddScaledVariableShotDebris
 function:DebrisStatusAlwaysOff,function,DebrisStatusAlwaysOff,19163,19163,1,legoapi/render/core/gameliball.h,android,DebrisStatusAlwaysOff
 variable:NetPaused,variable,NetPaused,19164,19164,1,globals.h,android-weak,catch-all (needs a module owner); NetPaused
 function:ClearPause,function,ClearPause,19169,19169,3,legoapi/menus/screens/gamestructure.h,android,ClearPause
-variable:app_tbgameset,variable,app_tbgameset,19170,19170,1,legoapi/misc/androidbatman.h,android,app_tbgameset
-variable:app_tbplayerset,variable,app_tbplayerset,19171,19171,1,legoapi/misc/androidbatman.h,android,app_tbplayerset
-variable:app_tbaiset,variable,app_tbaiset,19172,19172,1,legoapi/misc/androidbatman.h,android,app_tbaiset
-variable:app_tbdrawset,variable,app_tbdrawset,19173,19173,1,legoapi/misc/androidbatman.h,android,app_tbdrawset
+variable:app_tbgameset,variable,app_tbgameset,19170,19170,1,legoapi/misc/gamemain.h,android,app_tbgameset
+variable:app_tbplayerset,variable,app_tbplayerset,19171,19171,1,legoapi/misc/gamemain.h,android,app_tbplayerset
+variable:app_tbaiset,variable,app_tbaiset,19172,19172,1,legoapi/misc/gamemain.h,android,app_tbaiset
+variable:app_tbdrawset,variable,app_tbdrawset,19173,19173,1,legoapi/misc/gamemain.h,android,app_tbdrawset
 forward:nusound_filename_info_s#2,forward,nusound_filename_info_s,19175,19175,2,nu2api/nusound/nusound.h,android,nusound_filename_info_s
 class:NuMusic,class,NuMusic,19177,19349,174,nu2api/numusic/numusic.h,android,NuMusic
 assert:-#3779,assert,,19351,19351,2,nu2api/numusic/numusic.h,follow-type,NuMusic
@@ -10206,7 +10206,7 @@ function:NuLstCreateBuff,function,NuLstCreateBuff,20050,20050,1,nu2api/nucore/nu
 function:NuMtlInitOverride,function,NuMtlInitOverride,20051,20051,1,nu2api/nu3d/numtl.h,android,NuMtlInitOverride
 variable:NuDebrisIdealDynamicVBSizePc,variable,NuDebrisIdealDynamicVBSizePc,20052,20052,1,nu2api/nustencilshadows_PC.h,users,NuDebrisIdealDynamicVBSizePc: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:MaxAnimJoints,variable,MaxAnimJoints,20053,20053,1,nu2api/nucore/nuanim3.h,android,MaxAnimJoints (also globals.h)
-function:NuInitDebrisRenderer,function,NuInitDebrisRenderer,20054,20054,1,nu2api/nu3d/android/nuptl_android.h,android,NuInitDebrisRenderer
+function:NuInitDebrisRenderer,function,NuInitDebrisRenderer,20054,20054,1,nu2api/nu3d/nuptl.h,android,NuInitDebrisRenderer
 function:NuAPIInit,function,NuAPIInit,20055,20055,1,nu2api/nucore/nuapi.h,android,NuAPIInit
 function:NuWindInitialise,function,NuWindInitialise,20056,20056,1,gamelib/nuwind/nuwind.h,android,NuWindInitialise
 function:NuAnimInit,function,NuAnimInit,20057,20057,1,nu2api/nucore/nuanim3.h,android,NuAnimInit
@@ -10465,7 +10465,7 @@ function:NuTimeGetFrameTime,function,NuTimeGetFrameTime,20481,20481,1,nu2api/nuc
 function:NuDisplayListAnimateMtls,function,NuDisplayListAnimateMtls,20482,20482,1,nu2api/nu3d/nu3d_includes.h,android,NuDisplayListAnimateMtls
 function:NuMtlSetUVOffsetPS,function,NuMtlSetUVOffsetPS,20483,20483,1,nu2api/nu3d/numtl.h,android,NuMtlSetUVOffsetPS
 function:NuMtlAnimateShaderMtlTextures,function,NuMtlAnimateShaderMtlTextures,20484,20484,1,nu2api/nu3d/numtl.h,android,NuMtlAnimateShaderMtlTextures
-function:NuMtlAnimate,function,NuMtlAnimate,20485,20485,1,nu2api/nu3d/android/numtl_android.h,android,NuMtlAnimate
+function:NuMtlAnimate,function,NuMtlAnimate,20485,20485,1,nu2api/nu3d/numtl_platform.h,android,NuMtlAnimate
 struct:PICKUP_TYPE_SYSTEM_PC,struct,PICKUP_TYPE_SYSTEM_PC,20491,20500,11,legoapi/gizmos/fx/gizmopickups.h,users,PICKUP_TYPE_SYSTEM_PC: only legoapi/gizmopickups.c android-path
 assert:-#4046,assert,,20502,20502,2,legoapi/gizmos/fx/gizmopickups.h,follow-type,PICKUP_TYPE_SYSTEM_PC
 assert:-#4047,assert,,20503,20503,1,legoapi/gizmos/fx/gizmopickups.h,follow-type,PICKUP_TYPE_SYSTEM_PC
@@ -11217,11 +11217,11 @@ assert:-#4407,assert,,22384,22384,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,Sh
 assert:-#4408,assert,,22385,22385,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBasePc
 function:PCShaderObjectCreateHLSLPc,function,PCShaderObjectCreateHLSLPc,22387,22387,2,nu2api/nu3d/nushaderobjectbase.h,symbol,nu2api/nushaderobjectbase.cpp android-dir
 function:PCShaderObjectDestroyHLSLPc,function,PCShaderObjectDestroyHLSLPc,22388,22388,1,nu2api/nu3d/nushaderobjectbase.h,symbol,nu2api/nushaderobjectbase.cpp android-dir
-class:NuShaderObject,class,NuShaderObject,22390,22422,34,nu2api/nu3d/ShaderManagerOpenGL.h,android,NuShaderObject
+class:NuShaderObject,class,NuShaderObject,22390,22422,34,nu2api/nu3d/ShaderManager.h,android,NuShaderObject
 assert:-#4409,assert,,22424,22424,2,decomp.h,follow-type,PC_SHADER_OBJECT_FULL_VIEW
 assert:-#4410,assert,,22425,22425,1,decomp.h,follow-type,PC_SHADER_OBJECT_FULL_VIEW
 assert:-#4411,assert,,22426,22426,1,decomp.h,follow-type,PC_SHADER_OBJECT_FULL_VIEW
-class:ShaderManagerTemplate,class,ShaderManagerTemplate,22428,22449,23,nu2api/nu3d/ShaderManagerOpenGL.h,android,ShaderManagerTemplate
+class:ShaderManagerTemplate,class,ShaderManagerTemplate,22428,22449,23,nu2api/nu3d/ShaderManager.h,android,ShaderManagerTemplate
 typedef:PC_SHADER_MANAGER_VIEW,typedef,PC_SHADER_MANAGER_VIEW,22451,22451,2,decomp.h,decomp,view type
 assert:-#4412,assert,,22452,22452,1,decomp.h,follow-type,PC_SHADER_MANAGER_VIEW
 assert:-#4413,assert,,22453,22453,1,decomp.h,follow-type,PC_SHADER_MANAGER_VIEW
@@ -12673,8 +12673,8 @@ assert:-#4600,assert,,24769,24769,1,decomp.h,follow-type,PC_BOOT_FRAMEBUFFER_VIE
 assert:-#4601,assert,,24770,24770,1,decomp.h,follow-type,PC_BOOT_FRAMEBUFFER_VIEW_PC
 function:NuRndrSwapScreen,function,NuRndrSwapScreen,24775,24775,1,nu2api/nu3d/nurndr.h,android,NuRndrSwapScreen
 function:NuRndrSwapScreenEx,function,NuRndrSwapScreenEx,24776,24776,1,nu2api/nu3d/nurndr.h,android,NuRndrSwapScreenEx
-function:NuPostEffectInit,function,NuPostEffectInit,24777,24777,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectInit
-function:NuPostEffectIsInitialised,function,NuPostEffectIsInitialised,24778,24778,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectIsInitialised
+function:NuPostEffectInit,function,NuPostEffectInit,24777,24777,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectInit
+function:NuPostEffectIsInitialised,function,NuPostEffectIsInitialised,24778,24778,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectIsInitialised
 function:NuDynamicLightIsEnabled,function,NuDynamicLightIsEnabled,24779,24779,1,nu2api/nu3d/nu3d_includes.h,android,NuDynamicLightIsEnabled
 function:NuDynamicLightAddRenderScene,function,NuDynamicLightAddRenderScene,24780,24780,1,nu2api/nucore/NuDynamicLight.h,android,NuDynamicLightAddRenderScene
 function:NuTexGetWidth,function,NuTexGetWidth,24781,24781,1,nu2api/nu3d/nu3d_includes.h,symbol,nu2api/nu3d_includes.cpp android-path
@@ -12684,7 +12684,7 @@ function:NuTexRegisterDimensionsPc,function,NuTexRegisterDimensionsPc,24784,2478
 function:NuTexRegisterRenderTargetPc,function,NuTexRegisterRenderTargetPc,24785,24785,1,nu2api/nucamera_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
 function:NuDisplayListCaptureBegin,function,NuDisplayListCaptureBegin,24786,24786,1,nu2api/nu3d/nudlist.h,android,NuDisplayListCaptureBegin
 function:NuRndrEndSceneEx,function,NuRndrEndSceneEx,24787,24787,1,nu2api/nu3d/nurndr.h,android,NuRndrEndSceneEx (also batman.h)
-function:NuTimeBarSetRender,function,NuTimeBarSetRender,24788,24788,1,nu2api/nu3d/android/nutimebar_plain.h,android,NuTimeBarSetRender
+function:NuTimeBarSetRender,function,NuTimeBarSetRender,24788,24788,1,nu2api/nu3d/nutimebar_plain.h,android,NuTimeBarSetRender
 function:PCGraphicsBindFramebuffer,function,PCGraphicsBindFramebuffer,24789,24789,1,nu2api/NuEffectTex_pc.h,symbol,nu2api/nu3d_pc_includes.cpp[NuEffectTex_pc.cpp] pc-path
 variable:PcDefaultFramebuffer,variable,PcDefaultFramebuffer,24790,24790,1,nu2api/nustencilshadows_PC.h,definition,nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:PcBootFramebuffersPc,variable,PcBootFramebuffersPc,24791,24791,1,nu2api/nustencilshadows_PC.h,definition,nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
@@ -12759,8 +12759,8 @@ function:NuShaderManagerBindShader,function,NuShaderManagerBindShader,24896,2489
 forward:PC_SHADER_WATER_MATERIAL_VIEW,forward,PC_SHADER_WATER_MATERIAL_VIEW,24901,24901,2,decomp.h,decomp,view type
 forward:PC_DL_SHADER_PROGRAM_PAIR_PC,forward,PC_DL_SHADER_PROGRAM_PAIR_PC,24902,24902,1,nu2api/nuhgo_dlist.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nuhgo_dlist.cpp] (8) pc-path
 variable:PCShaderShininessFactorStorage,variable,PCShaderShininessFactorStorage,24906,24906,1,nu2api/nu3d/nushadermanager_gen.h,users,PCShaderShininessFactorStorage: only nu2api/nushadermanager_gen.cpp android-dir
-variable:PCSamplerBiasMinimum,variable,PCSamplerBiasMinimum,24907,24907,1,nu2api/nu3d/android/nushaderobject.h,users,PCSamplerBiasMinimum: only nu2api/nushaderobject.cpp android-dir
-variable:PCSamplerBiasMaximum,variable,PCSamplerBiasMaximum,24908,24908,1,nu2api/nu3d/android/nushaderobject.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
+variable:PCSamplerBiasMinimum,variable,PCSamplerBiasMinimum,24907,24907,1,nu2api/nu3d/nushaderobject.h,users,PCSamplerBiasMinimum: only nu2api/nushaderobject.cpp android-dir
+variable:PCSamplerBiasMaximum,variable,PCSamplerBiasMaximum,24908,24908,1,nu2api/nu3d/nushaderobject.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:PCSamplerBiasMaximumComparison,variable,PCSamplerBiasMaximumComparison,24909,24909,1,nu2api/nu3d/nushaderobjectbase.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:PCShaderWaterThetaStep,variable,PCShaderWaterThetaStep,24910,24910,1,nu2api/nu3d/nushaderobjectbase.h,users,PCShaderWaterThetaStep: only nu2api/nushaderobjectbase.cpp android-dir
 variable:PCShaderWaterAmplitudeScale,variable,PCShaderWaterAmplitudeScale,24911,24911,1,nu2api/nu3d/nushaderobjectbase.h,users,PCShaderWaterAmplitudeScale: only nu2api/nushaderobjectbase.cpp android-dir
@@ -12769,7 +12769,7 @@ variable:PCShaderWaterLastFrame,variable,PCShaderWaterLastFrame,24913,24913,1,nu
 variable:PCShaderWaterTable,variable,PCShaderWaterTable,24914,24914,1,nu2api/nu3d/nushaderobjectbase.h,users,PCShaderWaterTable: only nu2api/nushaderobjectbase.cpp android-dir
 variable:PCShaderWaterPreviousMaterial,variable,PCShaderWaterPreviousMaterial,24915,24915,1,nu2api/nu3d/nushaderobjectbase.h,users,PCShaderWaterPreviousMaterial: only nu2api/nushaderobjectbase.cpp android-dir
 variable:PCShaderWaterInitializationBits,variable,PCShaderWaterInitializationBits,24916,24916,1,nu2api/nu3d/nushaderobjectbase.h,users,PCShaderWaterInitializationBits: only nu2api/nushaderobjectbase.cpp android-dir
-variable:PCShaderMaterialSamplerBiasOffsetPc,variable,PCShaderMaterialSamplerBiasOffsetPc,24917,24917,1,nu2api/nu3d/android/nushaderobject.h,rule,used most in nu2api/nushaderobject.cpp (9) android-dir
+variable:PCShaderMaterialSamplerBiasOffsetPc,variable,PCShaderMaterialSamplerBiasOffsetPc,24917,24917,1,nu2api/nu3d/nushaderobject.h,rule,used most in nu2api/nushaderobject.cpp (9) android-dir
 variable:NuDisplayMaterialLastPc,variable,NuDisplayMaterialLastPc,24918,24918,1,nu2api/nuhgo_dlist.h,users,NuDisplayMaterialLastPc: only nu2api/nu3d_pc_includes.cpp[nuhgo_dlist.cpp] pc-path
 variable:NuDisplayHandlerVertexShaderCachePc,variable,NuDisplayHandlerVertexShaderCachePc,24919,24919,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x2854c38 between 0x2854c00 and 0x2854c90
 variable:NuDisplayHandlerPixelShaderCachePc,variable,NuDisplayHandlerPixelShaderCachePc,24920,24920,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x2854c3c between 0x2854c00 and 0x2854c90
@@ -12789,12 +12789,12 @@ variable:NuPostEffectBackBufferCopyPc,variable,NuPostEffectBackBufferCopyPc,2493
 assert:-#4614,assert,,24938,24938,2,gamelib/nuwind/nuwind.h,follow-type,NUWIND
 assert:-#4615,assert,,24939,24939,1,gamelib/nuwind/nuwind.h,follow-type,NUWIND
 assert:-#4616,assert,,24940,24940,1,gamelib/nuwind/nuwind.h,follow-type,NUWIND
-function:PCShaderSetMaterialParametersPc,function,PCShaderSetMaterialParametersPc,24944,24944,1,nu2api/nu3d/android/nushaderobject.h,symbol,nu2api/nushaderobject.cpp android-dir
+function:PCShaderSetMaterialParametersPc,function,PCShaderSetMaterialParametersPc,24944,24944,1,nu2api/nu3d/nushaderobject.h,symbol,nu2api/nushaderobject.cpp android-dir
 function:NuWindCurrent,function,NuWindCurrent,24945,24945,1,gamelib/nuwind/nuwind.h,android,NuWindCurrent
 function:PCGraphicsBindTextureDimensionsPc,function,PCGraphicsBindTextureDimensionsPc,24946,24946,1,nu2api/nutex_pc.h,symbol,nu2api/nu3d_pc_includes.cpp[nutex_pc.cpp] pc-path
 function:NuShaderManagerGetShininessFactor,function,NuShaderManagerGetShininessFactor,24947,24947,1,nu2api/nu3d/nushadermanager_gen.h,symbol,nu2api/nushadermanager_gen.cpp android-dir
-function:NuPostEffectGetBackBuffer,function,NuPostEffectGetBackBuffer,24948,24948,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectGetBackBuffer
-function:NuMtlSetRenderStatesPS,function,NuMtlSetRenderStatesPS,24956,24956,1,nu2api/nu3d/android/nurndr_android.h,android,NuMtlSetRenderStatesPS
+function:NuPostEffectGetBackBuffer,function,NuPostEffectGetBackBuffer,24948,24948,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectGetBackBuffer
+function:NuMtlSetRenderStatesPS,function,NuMtlSetRenderStatesPS,24956,24956,1,nu2api/nu3d/nurndr_platform.h,android,NuMtlSetRenderStatesPS
 function:PCGraphicsGetBoundFramebufferPc,function,PCGraphicsGetBoundFramebufferPc,24957,24957,1,nu2api/NuEffectTex_pc.h,symbol,nu2api/nu3d_pc_includes.cpp[NuEffectTex_pc.cpp] pc-path
 function:PCGraphicsEnableFramebufferGuardsPc,function,PCGraphicsEnableFramebufferGuardsPc,24958,24958,1,nu2api/NuEffectTex_pc.h,symbol,nu2api/nu3d_pc_includes.cpp[NuEffectTex_pc.cpp] pc-path
 function:PCGraphicsCopyFramebufferTex2DPc,function,PCGraphicsCopyFramebufferTex2DPc,24959,24959,1,nu2api/nugobj.h,symbol,nu2api/nu3d_pc_includes.cpp[nugobj.c] pc-path
@@ -12822,7 +12822,7 @@ assert:-#4625,assert,,25030,25030,1,nu2api/nu3d/nu3d_includes.h,follow-type,NU_P
 assert:-#4626,assert,,25031,25031,1,nu2api/nu3d/nu3d_includes.h,follow-type,NU_POST_BLOOM_PARAMETERS_PC
 assert:-#4627,assert,,25032,25032,1,nu2api/nu3d/nu3d_includes.h,follow-type,NU_POST_BLOOM_PARAMETERS_PC
 variable:PostProxyBuffersPc,variable,PostProxyBuffersPc,25036,25036,1,nu2api/nu3d/nu3d_includes.h,definition,nu2api/nu3d_includes.cpp android-path
-function:NuPostEffectRender,function,NuPostEffectRender,25037,25037,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectRender
+function:NuPostEffectRender,function,NuPostEffectRender,25037,25037,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectRender
 struct:PC_POST_DATA_PORT_ENTRY,struct,PC_POST_DATA_PORT_ENTRY,25043,25047,5,nu2api/nu3d/nu3d_includes.h,users,PC_POST_DATA_PORT_ENTRY: only nu2api/nu3d_includes.cpp android-path
 struct:PC_POST_DATA_PORT_MANAGER,struct,PC_POST_DATA_PORT_MANAGER,25049,25053,6,nu2api/nu3d/nu3d_includes.h,users,PC_POST_DATA_PORT_MANAGER: only nu2api/nu3d_includes.cpp android-path
 struct:PC_POST_DATA_PORT,struct,PC_POST_DATA_PORT,25055,25058,5,nu2api/nu3d/nu3d_includes.h,users,PC_POST_DATA_PORT: only nu2api/nu3d_includes.cpp android-path
@@ -12887,17 +12887,17 @@ variable:speedBlurFilter,variable,speedBlurFilter,25199,25199,1,nu2api/nu3d/nu3d
 variable:NuPostEffectsRanPc,variable,NuPostEffectsRanPc,25200,25200,1,nu2api/nu3d/nu3d_includes.h,users,NuPostEffectsRanPc: only nu2api/nu3d_includes.cpp android-path
 variable:NuPostLastFrameEffectPc,variable,NuPostLastFrameEffectPc,25201,25201,1,nu2api/nu3d/nu3d_includes.h,users,NuPostLastFrameEffectPc: only nu2api/nu3d_includes.cpp android-path
 function:PCDeviceResetSamplerDefaultsPc,function,PCDeviceResetSamplerDefaultsPc,25202,25202,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
-function:NuPostEffectReset,function,NuPostEffectReset,25203,25203,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectReset
-function:NuPostEffectEnable,function,NuPostEffectEnable,25204,25204,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectEnable
-function:NuPostEffectDisable,function,NuPostEffectDisable,25205,25205,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectDisable
-function:NuPostEffectAddDynamicLight,function,NuPostEffectAddDynamicLight,25206,25206,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectAddDynamicLight
-function:NuPostEffectGetActiveDynamicLightCount,function,NuPostEffectGetActiveDynamicLightCount,25207,25207,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectGetActiveDynamicLightCount
-function:NuPostEffectDepthOfField,function,NuPostEffectDepthOfField,25208,25208,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectDepthOfField
-function:NuPostEffectDeferredShading,function,NuPostEffectDeferredShading,25209,25209,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectDeferredShading
-function:NuPostEffectBloom,function,NuPostEffectBloom,25210,25210,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectBloom
-function:NuPostEffectMotionBlur,function,NuPostEffectMotionBlur,25211,25211,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectMotionBlur
-function:NuPostEffectAccumulationMotionBlur,function,NuPostEffectAccumulationMotionBlur,25212,25212,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectAccumulationMotionBlur
-function:NuPostEffectSpeedBlur,function,NuPostEffectSpeedBlur,25213,25213,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectSpeedBlur
+function:NuPostEffectReset,function,NuPostEffectReset,25203,25203,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectReset
+function:NuPostEffectEnable,function,NuPostEffectEnable,25204,25204,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectEnable
+function:NuPostEffectDisable,function,NuPostEffectDisable,25205,25205,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectDisable
+function:NuPostEffectAddDynamicLight,function,NuPostEffectAddDynamicLight,25206,25206,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectAddDynamicLight
+function:NuPostEffectGetActiveDynamicLightCount,function,NuPostEffectGetActiveDynamicLightCount,25207,25207,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectGetActiveDynamicLightCount
+function:NuPostEffectDepthOfField,function,NuPostEffectDepthOfField,25208,25208,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectDepthOfField
+function:NuPostEffectDeferredShading,function,NuPostEffectDeferredShading,25209,25209,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectDeferredShading
+function:NuPostEffectBloom,function,NuPostEffectBloom,25210,25210,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectBloom
+function:NuPostEffectMotionBlur,function,NuPostEffectMotionBlur,25211,25211,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectMotionBlur
+function:NuPostEffectAccumulationMotionBlur,function,NuPostEffectAccumulationMotionBlur,25212,25212,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectAccumulationMotionBlur
+function:NuPostEffectSpeedBlur,function,NuPostEffectSpeedBlur,25213,25213,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectSpeedBlur
 assert:-#4672,assert,,25217,25217,1,nu2api/nu3d/nu3d_includes.h,follow-type,NURNDRLIGHTRECORD
 assert:-#4673,assert,,25218,25218,1,nu2api/nu3d/nu3d_includes.h,follow-type,NURNDRLIGHTRECORD
 class:NuPostFilterGen,class,NuPostFilterGen,25221,25242,23,nu2api/nucore/NuPostFilterGen.h,android,NuPostFilterGen
@@ -13810,7 +13810,7 @@ function:IconScenes_Dump,function,IconScenes_Dump,29538,29538,1,legoapi/characte
 function:Particles_DumpAreaPage,function,Particles_DumpAreaPage,29539,29539,1,legoapi/render/fx/particles.h,android,Particles_DumpAreaPage
 variable:LEGOMENU_PAUSECUT,variable,LEGOMENU_PAUSECUT,29540,29540,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to globals.h (android-weak)
 variable:LEGOMENU_PAUSESYNC,variable,LEGOMENU_PAUSESYNC,29541,29541,1,legoapi/menus/screens/gamestructure.h,users,LEGOMENU_PAUSESYNC: only legoapi/gamestructure.cpp android-path
-variable:PauseTimer,variable,PauseTimer,29542,29542,1,legoapi/misc/androidbatman.h,data-order,retail 0x925018 between 0x925014 and 0x925040
+variable:PauseTimer,variable,PauseTimer,29542,29542,1,legoapi/misc/gamemain.h,data-order,retail 0x925018 between 0x925014 and 0x925040
 variable:CustomiseMode,variable,CustomiseMode,29543,29543,1,legoapi/menus/screens/customise.h,users,CustomiseMode: only legogame/customise.c android-path
 variable:LevTime,variable,LevTime,29544,29544,1,legoapi/world/levels.h,data-order,retail 0x87a9ec between 0x87a958 and 0x87aa50
 variable:makeplayerlist_freeplay,variable,makeplayerlist_freeplay,29545,29545,1,legoapi/characters/core/players.h,android,makeplayerlist_freeplay
@@ -14373,7 +14373,7 @@ variable:pop_timer,variable,pop_timer,30104,30104,1,legoapi/misc/legoapi_status.
 variable:StatusMiniKitPartLightingPc,variable,StatusMiniKitPartLightingPc,30105,30105,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path
 function:DrawPanel3DObjectMtxNoAlpha,function,DrawPanel3DObjectMtxNoAlpha,30106,30106,1,legoapi/misc/utilities.h,android,DrawPanel3DObjectMtxNoAlpha
 variable:PauseSaveAndExitPc,variable,PauseSaveAndExitPc,30107,30107,1,legoapi/misc/legoapi_status.h,rule,used most in legogame/legoapi_status.cpp (3) android-path
-variable:BonusTimer,variable,BonusTimer,30108,30108,1,legoapi/misc/androidbatman.h,data-order,retail 0x925028 between 0x925014 and 0x925040
+variable:BonusTimer,variable,BonusTimer,30108,30108,1,legoapi/misc/gamemain.h,data-order,retail 0x925028 between 0x925014 and 0x925040
 variable:ChallengeTimer,variable,ChallengeTimer,30109,30109,1,globals.h,android-weak,catch-all (needs a module owner); ChallengeTimer
 variable:Game_MissionSave,variable,Game_MissionSave,30110,30110,1,legogame/game.h,definition,legogame/game.c android-path
 variable:TextIdPc88073c,variable,TextIdPc88073c,30111,30111,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
@@ -14583,7 +14583,7 @@ function:findrange,function,findrange,30315,30315,1,nu2api/nu3d/nu3d_includes.h,
 function:NuTexAddReference,function,NuTexAddReference,30316,30316,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/nu3d/nutex.h (android)
 variable:AiRndrCullDistance,variable,AiRndrCullDistance,30317,30317,1,legoapi/ai/core/aisysall.h,android,AiRndrCullDistance
 variable:DisableDebugMsg,variable,DisableDebugMsg,30318,30318,1,nu2api/nuerror_gen.h,users,DisableDebugMsg: only nu2api/nucore_pc_includes.cpp[nuerror_gen.cpp] pc-path
-function:NuDebugMsgPrint,function,NuDebugMsgPrint,30319,30319,1,nu2api/nucore/android/nuerror_android.h,android,NuDebugMsgPrint
+function:NuDebugMsgPrint,function,NuDebugMsgPrint,30319,30319,1,nu2api/nucore/nuerror.h,android,NuDebugMsgPrint
 variable:err_msg_filter,variable,err_msg_filter,30320,30320,1,nu2api/nuerror_gen.h,users,err_msg_filter: only nu2api/nucore_pc_includes.cpp[nuerror_gen.cpp] pc-path
 variable:nudebug_handler,variable,nudebug_handler,30321,30321,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/nuerror_gen.h (saga.h neighbour)
 variable:nufile,variable,nufile,30322,30322,1,nu2api/nuerror_gen.h,users,nufile: only nu2api/nucore_pc_includes.cpp[nuerror_gen.cpp] pc-path
@@ -14794,7 +14794,7 @@ function:GizTorps_Reset,function,GizTorps_Reset,30540,30540,1,legoapi/gizmo/obje
 variable:giztorpmachine_gizmotype_id,variable,giztorpmachine_gizmotype_id,30541,30541,1,legoapi/gizmo/object/giztorpedo.h,android,giztorpmachine_gizmotype_id
 variable:HothBattleC_BombGenerator,variable,HothBattleC_BombGenerator,30542,30542,1,legoapi/world/levels/episodeV.h,users,HothBattleC_BombGenerator: only legogame/episodeV.c android-path
 function:HothBattleE_UpdateWave,function,HothBattleE_UpdateWave,30543,30543,1,legoapi/world/levels/episodeV.h,android,HothBattleE_UpdateWave
-function:NuIOS_IsLowEndDevice,function,NuIOS_IsLowEndDevice,30544,30544,1,nu2api/nuandroid/ios_graphics.h,android,NuIOS_IsLowEndDevice
+function:NuIsLowEndDevice,function,NuIsLowEndDevice,30544,30544,1,nu2api/nucore/graphics.h,android,NuIsLowEndDevice
 function:UpdateMiniSnowTroopers,function,UpdateMiniSnowTroopers,30545,30545,1,legoapi/world/level.h,android,UpdateMiniSnowTroopers
 function:DrawMiniSnowTroopers,function,DrawMiniSnowTroopers,30546,30546,1,legoapi/render/core/render.h,android,DrawMiniSnowTroopers
 variable:Game_EpisodeSave,variable,Game_EpisodeSave,30547,30547,1,globals.h,android-weak,catch-all (needs a module owner); Game_EpisodeSave
@@ -14961,9 +14961,9 @@ function:NuFileUpCase,function,NuFileUpCase,30712,30712,1,nu2api/nufile/nufile.h
 variable:iop_image_name,variable,iop_image_name,30713,30713,1,nu2api/huffdecode.h,users,iop_image_name: only nu2api/nucore_includes.cpp[huffdecode.c] pc-path
 variable:NuFileIopImageNamePc,variable,NuFileIopImageNamePc,30714,30714,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/huffdecode.h (saga.h neighbour)
 function:MakePlayCorner,function,MakePlayCorner,30715,30716,2,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/huffdecode.h (saga.h neighbour)
-function:SetPlayPlane,function,SetPlayPlane,30717,30719,3,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/nucore/android/nuerror_android.h (saga.h neighbour)
-function:NuErrorPrint,function,NuErrorPrint,30720,30720,1,nu2api/nucore/android/nuerror_android.h,android,NuErrorPrint
-function:NuWarningPrint,function,NuWarningPrint,30721,30721,1,nu2api/nucore/android/nuerror_android.h,android,NuWarningPrint
+function:SetPlayPlane,function,SetPlayPlane,30717,30719,3,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/nucore/nuerror.h (saga.h neighbour)
+function:NuErrorPrint,function,NuErrorPrint,30720,30720,1,nu2api/nucore/nuerror.h,android,NuErrorPrint
+function:NuWarningPrint,function,NuWarningPrint,30721,30721,1,nu2api/nucore/nuerror.h,android,NuWarningPrint
 variable:nuerror_handler,variable,nuerror_handler,30722,30722,1,nu2api/nuerror_gen.h,users,nuerror_handler: only nu2api/nucore_pc_includes.cpp[nuerror_gen.cpp] pc-path
 variable:nuwarning_handler,variable,nuwarning_handler,30723,30723,1,nu2api/nuerror_gen.h,users,nuwarning_handler: only nu2api/nucore_pc_includes.cpp[nuerror_gen.cpp] pc-path
 function:GameMsg_Draw_MiniKitDetector,function,GameMsg_Draw_MiniKitDetector,30724,30724,1,legoapi/gizmos/fx/gizmopickups.h,symbol,legoapi/gizmopickups.c android-path
@@ -15658,7 +15658,7 @@ function:PostFilterBlitTexturePc,function,PostFilterBlitTexturePc,31647,31648,2,
 function:PostFilterCopyTexturePc,function,PostFilterCopyTexturePc,31649,31650,2,nu2api/nucamera_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
 function:PCDevicePostEffectBarrierPc,function,PCDevicePostEffectBarrierPc,31651,31651,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
 function:NuRndrEndFrameActionPc,function,NuRndrEndFrameActionPc,31652,31652,1,nu2api/nu3d/nu3d_includes.h,symbol,nu2api/nu3d_includes.cpp android-path
-function:NuPostEffectEnd,function,NuPostEffectEnd,31653,31653,1,nu2api/nu3d/android/nupostfilter.h,android,NuPostEffectEnd
+function:NuPostEffectEnd,function,NuPostEffectEnd,31653,31653,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectEnd
 assert:-#5068,assert,,31658,31658,2,legoapi/world/world.h,follow-type,WORLDINFO
 assert:-#5069,assert,,31659,31659,1,nu2api/nu3d/nu3d_includes.h,follow-type,NURNDRLIBSCENE
 assert:-#5070,assert,,31660,31660,1,nu2api/nu3d/nu3d_includes.h,follow-type,NURNDRLIBSCENE

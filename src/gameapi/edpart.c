@@ -1092,7 +1092,7 @@ void edpartClose(void) {
 extern NUVEC edpart_entry_position;
 void edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw);
 
-/* Android edpartEnter: remembers where the editor was entered and moves the
+/* Remembers where the editor was entered and moves the
  * camera there on the first entry of a level. */
 void edpartEnter(void) {
     NUVEC origin = {0.0f, 0.0f, 0.0f};
