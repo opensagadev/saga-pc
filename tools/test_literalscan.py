@@ -188,6 +188,16 @@ class LiteralScanTests(unittest.TestCase):
         new, _ = literalscan.apply_edits(text, literalscan.source_edits([source], decl)["src/a.c"])
         self.assertEqual(new, 'char *Name = "ab";\n')
 
+    def test_segment_that_runs_on_stays(self):
+        text = ('#pragma const_seg(".rdata$APc")\nconst char APc[] = "ab";\nconst char *Table[] = {"x"};\n'
+                '#pragma const_seg()\nchar *Name = (char *)APc;\n')
+        source = literalscan.Source("src/a.c", text)
+        decl = next(literalscan.declarations(source))
+        decl["uses"] = literalscan.uses([source], decl)
+        new, _ = literalscan.apply_edits(text, literalscan.source_edits([source], decl)["src/a.c"])
+        self.assertEqual(new, '#pragma const_seg(".rdata$APc")\nconst char *Table[] = {"x"};\n'
+                              '#pragma const_seg()\nchar *Name = "ab";\n')
+
     def test_tidy_segments(self):
         text = ('#pragma const_seg(".rdata$A")\n#pragma const_seg(".rdata$B")\nconst char B[] = "b";\n'
                 '#pragma const_seg()\n#pragma const_seg()\n')

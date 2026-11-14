@@ -401,8 +401,8 @@ def source_edits(sources, decl):
     start, end = remove_line_span(source.text, *decl["span"])
     before = re.search(r'^[ \t]*#\s*pragma\s+const_seg\s*\(\s*"\.rdata\$' + re.escape(decl["name"]) +
                        r'"\s*\)[ \t]*\n\Z', source.text[:start], re.MULTILINE)
-    if before:
-        start = before.start()
+    if before and re.match(r'\s*#\s*pragma\s+const_seg\s*\(', source.text[end:]):
+        start = before.start()  # the pair closes right after; a segment that runs on holds other data
     allocate = re.search(r'(?:^[ \t]*#\s*pragma\s+section\s*\(\s*"([^"\n]*)"[^\n]*\n)?'
                          r'^[ \t]*__declspec\s*\(\s*allocate\s*\(\s*"([^"\n]*)"\s*\)\s*\)\s*\Z',
                          source.text[:decl["span"][0]], re.MULTILINE)
