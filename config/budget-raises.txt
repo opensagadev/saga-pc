@@ -56,3 +56,37 @@ config/oddscan-budget.json dup-type 926 attribute audit: function-pointer typede
 config/oddscan-budget.json stdcall 288 new class (attribute audit): every remaining __stdcall is a Win32, COM/D3D vtable, DirectInput, RAD Bink or retail callback ABI; counted so no new one appears without review
 config/oddscan-budget.json declspec-align 152 new class (attribute audit): the aligned locals, globals and SSE types whose removal changes an object (137 others removed)
 config/oddscan-budget.json declspec-other 17 new class (attribute audit): RAD Bink and RtlUnwind dllimport prototypes and NuCommandLine's __restrict (removing it changes the code)
+config/oddscan-budget.json address-name 3370 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json assert-offsetof-header 4448 port batch 2: get_level_count asserted like the other slots of the not yet converted PC_TEXTURE_RESOURCE_METHODS_PC
+config/oddscan-budget.json declspec-align 166 port batch 2: aligned locals of new member functions whose removal changes the object (tried one by one)
+config/oddscan-budget.json define-in-unit 536 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json dense-function 1217 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json hex-name 9686 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json magic-bound 1665 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json magic-flag 7558 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json magic-mask 1221 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json magic-state 8745 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json nolint 65 port batch 2: XINPUT_VIBRATION completed with the SDK member names, and one SDK spelling in new code
+config/oddscan-budget.json pc-suffix 46293 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json placeholder-field 9575 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json pragma-seg 6456 port batch 2: new data rows defined in data.cpp under the per-variable section pragmas of their neighbours
+config/oddscan-budget.json stdcall 289 port batch 2: get_level_count, a COM slot of the D3D texture vtable view (PC_TEXTURE_RESOURCE_METHODS_PC +0x34)
+config/oddscan-budget.json undef-in-unit 220 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json view-type 186 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json view-use 1049 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/castscan-budget.json codegen-steering 58 port batch 2: the float cast in PC_CONTROL_SCREEN_PC::fun_00420d30 (config/castscan-keep.csv)
+config/castscan-budget.json declaration-type 1741 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json duplicate-type 1651 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json field-address 344 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json float-int 3078 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json float-width 3988 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json function-pointer 803 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json int-pointer 807 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json layout-compatible 300 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json scalar-pun 274 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json truncation 2091 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json view-type 529 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/castscan-budget.json void-pointer-cpp 1270 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
+config/declscan-budget.json A 131 port batch 2: unit-local declarations of callees and globals the new functions need
+config/declscan-budget.json C 367 port batch 2: unit-local declarations of callees and globals the new functions need
+config/declscan-budget.json D 2602 port batch 2: unit-local declarations of callees and globals the new functions need
