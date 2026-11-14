@@ -217,7 +217,6 @@ extern "C" {
     i32 EpisodeGoldBrickForChallengePc = 0;
     u16 TextCrawlRotateYPc = 0;
     u16 TextCrawlRotateZPc = 0;
-    f32 TextCrawlTimePc = 0.0f;
     u32 TextCrawlRedPc = 0;
     u8 TextCrawlBluePc = 255;
 }
@@ -227,11 +226,6 @@ extern "C" {
     i32 menu_pulsate_angle = 0;
     f32 menu_pulsate_speed = 0.0f;
     f32 menu_pulsate = 0.0f;
-    f32 sfx_wait = 0.0f;
-    i32 MenuSuppressUpHeldPc = 0;
-    i32 MenuSuppressDownHeldPc = 0;
-    i32 MenuSuppressLeftHeldPc = 0;
-    i32 MenuSuppressRightHeldPc = 0;
     i32 MENUSFX_MENUMOVE = -1;
     i32 Menu_InSaveFlow = 0;
     i32 Menu_InLoadFlow = 0;
@@ -7857,8 +7851,6 @@ extern "C" {
     f32 FRAMETIME = 0;
     f32 QFONTSCALEX = 1.0f;
     f32 STCOORDSCALE = 1.0f;
-    VUFNT *QFont2D = 0;
-    VUFNT *QFont2DButtons = 0;
     VUFNT *system_qfont = 0;
     NUTEXDIM_PC **NuTextureDimensions = 0;
 #pragma const_seg(".rdata$NuPrimPS2XScale")
@@ -8069,8 +8061,6 @@ extern "C" {
         "Episode_IV.DAT", "Episode_V.DAT", "Episode_VI.DAT",
     };
 #pragma data_seg()
-    VUFNT *QFont3DZ = 0;
-    VUFNT *SmartTextFont = 0;
 #pragma const_seg(".rdata$Text_TimeS")
     extern const char Text_TimeS[3] = "%i";
 #pragma const_seg()
@@ -8528,9 +8518,6 @@ extern "C" {
 #pragma const_seg(".rdata$Text_UnknownText")
     extern const char Text_UnknownText[2] = "?";
 #pragma const_seg()
-    void (*buttonmapfn)(char *, char *) = 0;
-    i32 smarttext_fwn = 0;
-    i32 MessageMtlInit = 0;
     char *txt_NULL = const_cast<char *>(Text_UnknownText);
     char *txt_UNKNOWN = const_cast<char *>(Text_UnknownText);
     char *apitxt_ENGLISH = const_cast<char *>("English");
@@ -8739,8 +8726,6 @@ extern "C" {
     i32 header_b = 0;
     i32 MenuFadeEnabled = 0;
     i32 MenuDrawDropShadows = 0;
-    NUMTL *MenuFadeMtl = 0;
-    u8 MENUHEADERR = 0;
 #pragma data_seg(".data$MENUHEADERG")
     u8 MENUHEADERG = 0x7f;
 #pragma data_seg(".data$MENUHEADERB")
@@ -11059,7 +11044,6 @@ extern "C" {
     i32 MenuValidated = 0;
     f32 MenuAlpha = 0;
     i32 MenuA = 0;
-    i32 CurrentMenuId = 0;
     f32 DoubleScoreTime = 0;
     i32 LookAtBoth = 0;
     i32 PlayPlanesUseRenderMtxPc = 0;
@@ -12418,10 +12402,6 @@ extern "C" {
 
     f32 text3d_width = 0;
 
-    i32 followon_line = 0;
-
-    i32 TextPrintModePc = 0;
-
     TEXT_INPUT_LABELS_PC *TextInputAlternateLabelsPc = 0;
 
     TEXT_INPUT_LABELS_PC *TextInputDefaultLabelsPc = 0;
@@ -12829,8 +12809,6 @@ extern "C" {
 #pragma data_seg(".data$MenuPromptPositionScalePc")
     f32 MenuPromptPositionScalePc = 1.0f;
 #pragma data_seg()
-
-    VUFNT *QFont2DLower = 0;
 }
 
 extern "C" {
@@ -12869,16 +12847,6 @@ extern "C" {
     i32 MenuDisableHeaders = 0;
 
     void (*predrawfn)(MENU *) = 0;
-
-    u8 MENUNORMALB = 0;
-
-    i32 memcard_autosavestarted = 0;
-
-    f32 memcard_autosavepredelay = 0;
-
-    f32 memcard_autosavepostdelay = 0;
-
-    void (*memcard_drawasiconfn)(void) = 0;
 }
 
 extern "C" {
@@ -13527,15 +13495,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 create_qfont2dlower = 0;
-    i32 create_qfont2dz = 0;
-    i32 create_qfont3d = 0;
-    i32 create_qfont3dz = 0;
-    VUFNT *QFont2DZ = NULL;
-    VUFNT *QFont3D = NULL;
-}
-
-extern "C" {
     i32 CutSceneStreamLoadGuardPc = 0;
     u32 PcUseUserGeoRegionPc = 0;
 }
@@ -13582,47 +13541,6 @@ extern "C" {
     i32 saveload_cardtype = 2;
     i32 saveload_cardformatted = 1;
     i32 MenuSaveOccurred = 0;
-    i32 memcard_slot = 0;
-    i32 memcard_loadneeded = 0;
-    i32 memcard_loadstarted = 0;
-    i32 memcard_loadfailed = 0;
-    i32 memcard_loadcorrupt = 0;
-    i32 memcard_saveneeded = 0;
-    i32 memcard_savestarted = 0;
-    i32 memcard_savefailed = 0;
-    i32 memcard_autosaveneeded = 0;
-    i32 memcard_autosaveinprogress = 0;
-    i32 memcard_autosavedisabled = 0;
-    i32 memcard_deleteneeded = 0;
-    i32 memcard_deletestarted = 0;
-    i32 memcard_deletefailed = 0;
-    i32 memcard_formatme = 0;
-    i32 memcard_formatting = 0;
-    i32 memcard_formatfailed = 0;
-    i32 memcard_justformatted = 0;
-    f32 memcard_loadmessage_delay = 0.0f;
-    f32 memcard_savemessage_delay = 0.0f;
-    f32 memcard_formatmessage_delay = 0.0f;
-    f32 memcard_createmessage_delay = 0.0f;
-    f32 memcard_deletemessage_delay = 0.0f;
-    f32 memcard_loadresult_delay = 0.0f;
-    f32 memcard_saveresult_delay = 0.0f;
-    f32 memcard_formatresult_delay = 0.0f;
-    f32 memcard_createresult_delay = 0.0f;
-    f32 memcard_deleteresult_delay = 0.0f;
-    f32 memcard_message_delay = 0.0f;
-    f32 memcard_result_delay = 0.0f;
-    i32 memcard_cardchanged = 0;
-    void *memcard_savedata = NULL;
-    void *memcard_savedatabuffer = NULL;
-    i32 memcard_savedatasize = 0;
-    i32 memcard_autosave = 0;
-    SAVE_HASH_FN_PC memcard_hashfn = NULL;
-    void *memcard_headerdata = NULL;
-    void *memcard_headerdatabuffer = NULL;
-    i32 memcard_headerdatasize = 0;
-    i32 memcard_slotsused = 0;
-    SAVE_VOID_FN_PC savesuccessfn = NULL;
     i32 saveload_error = 0;
     i32 saveload_cardchanged = 0;
     i32 saveload_savepresent = 0;
@@ -13640,22 +13558,16 @@ extern "C" {
     i32 SAVESIZE_ADDITIONAL = 3;
     i32 MENUSFX_MENUSELECT = -1;
     i32 MENUSFX_MENUNOENTRY = -1;
-    i32 memcard_autosaveenabled = 0;
     i32 Menu_LastFlow = 0;
     i32 saveload_filecorrupt = 0;
     i32 SAVESIZE = 50;
-    u8 MENUENTRYR = 0;
     u8 MENUENTRYG = 127;
     u8 MENUENTRYB = 255;
-    u8 MENUFLASH0R = 0;
     u8 MENUFLASH0G = 255;
     u8 MENUFLASH0B = 255;
     u8 MENUFLASH1R = 127;
-    u8 MENUFLASH1G = 0;
     u8 MENUFLASH1B = 255;
     f32 dme_sx = 1.0f;
-    i32 dme_rgb = 0;
-    i32 dme_align = 0;
     u8 dme_r = 0;
     u8 dme_g = 0;
     u8 dme_b = 0;
@@ -13688,8 +13600,6 @@ extern "C" {
     f32 SLAMJUMPSPEED = 3.0f;
     f32 MENUBOTY = -0.75f;
     u8 MENUWARNR = 255;
-    u8 MENUWARNG = 0;
-    u8 MENUWARNB = 0;
 }
 
 extern "C" {
