@@ -309,6 +309,9 @@ void __cdecl MenuExitCardWarning(MENU *menu) {
     Menu_InWarningFlow = 0;
 }
 
+void __cdecl MenuDrawDoNotRemoveCard(MENU *menu) {
+}
+
 void __cdecl MenuUpdateSave(MENU *menu) {
     i32 slot;
     if (Menu_DisableCancel != 0) {
@@ -335,6 +338,12 @@ void __cdecl MenuUpdateSave(MENU *menu) {
     } else if (menu->cancel_pressed != 0 && Menu_DisableCancel == 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         NewMenu(1016, 1, -1);
+    }
+}
+
+void __cdecl MenuUpdateDoNotRemoveCard(MENU *menu) {
+    if (menu->menu_time > 2.0f && saveload_status == 1) {
+        BackupMenu();
     }
 }
 
@@ -659,6 +668,40 @@ void __cdecl MenuUpdateFormatCancel(MENU *menu) {
     }
 }
 
+void __cdecl MenuUpdateCardWarning(MENU *menu) {
+    menu->previous_item = MenuCardWarningState;
+    switch (MenuCardWarningState) {
+        case 7:
+            if (menu->confirm_pressed != 0) {
+                MenuCardWarningState = 3;
+                MenuSFX = MENUSFX_MENUSELECT;
+                BackupMenu();
+                return;
+            }
+            break;
+        case 0:
+            if (saveload_status == 1) {
+                Menu_InWarningFlow = 1;
+                Menu_LastFlow = 1;
+                MenuCardWarningState = 3;
+                BackupMenu();
+                return;
+            }
+            break;
+    }
+    if (MenuCardWarningState == 3) {
+        BackupMenu();
+        return;
+    }
+    if (MenuCardWarningState != menu->previous_item) {
+        if (MenuCardWarningState != 0) {
+            MenuAlpha = 0.0f;
+            MenuA = 0;
+        }
+        menu->time_04 = 0.0f;
+    }
+}
+
 static i32 lastslot = 0;
 static i32 slideleft = 0;
 static i32 slideright = 0;
@@ -925,6 +968,15 @@ void __cdecl MenuDrawFormatCancel(MENU *menu) {
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
 
+void __cdecl MenuDrawCardWarning(MENU *menu) {
+    /* The shipping build draws no warning text; the buffer it was formatted in still gives the
+       function its security cookie. */
+    char text[8];
+    if (0) {
+        sprintf(text, "%d", menu->menu);
+    }
+}
+
 void __cdecl MenuDrawLoadConfirm(MENU *menu) {
     NuStrCpy(MenuHeader, apitxt_LOADGAME);
     header_r = MENUHEADERR;
@@ -1024,6 +1076,18 @@ static void MenuDrawLoadCorruptMessagePc(void) {
     f32 scale = MenuTextScalePc;
     MenuSmartTextEx(apitxt_CORRUPTLOAD, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
                     1.5f, 3, NULL, 0, MenuA);
+}
+
+static void MenuDrawFormattingMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_FORMATTING, 0.0f, 0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
+                    1.5f, 2, NULL, 0, MenuA);
+}
+
+static void MenuDrawFormattedMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_FORMATTINGCOMPLETE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
+                    MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
 }
 
 static i32 MenuLoadResultShownPc = 0;
@@ -1136,6 +1200,30 @@ void __cdecl MenuDrawNotEnoughSpace(MENU *menu) {
         sprintf(message, "");
     }
     MenuDrawNotEnoughSpaceMessagePc();
+}
+
+static i32 MenuFormattingResultShownPc = 0;
+
+void __cdecl MenuDrawFormatting(MENU *menu) {
+    if (memcard_formatting != 0 || memcard_formatme != 0 || memcard_formatmessage_delay > 0.0f) {
+        MenuFormattingResultShownPc = 0;
+        MenuDrawFormattingMessagePc();
+        return;
+    }
+    if (memcard_formatfailed != 0) {
+        if (MenuFormattingResultShownPc == 0) {
+            MenuAlpha = 0.0f;
+            MenuA = 0;
+            MenuFormattingResultShownPc = 1;
+        }
+        return;
+    }
+    if (MenuFormattingResultShownPc == 0) {
+        MenuAlpha = 0.0f;
+        MenuA = 0;
+        MenuFormattingResultShownPc = 1;
+    }
+    MenuDrawFormattedMessagePc();
 }
 
 static i32 MenuSaveResultShownPc = 0;

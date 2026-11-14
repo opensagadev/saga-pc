@@ -10514,16 +10514,25 @@ extern "C" {
     void __cdecl MenuDrawLoading(MENU *);
     void __cdecl MenuUpdateFileCorrupt(MENU *);
 
-    // Menus 1001, 1007, 1019 and 1024 still have NULL slots for functions that are not ported yet.
+    void __cdecl MenuDrawDoNotRemoveCard(MENU *);
+    void __cdecl MenuUpdateDoNotRemoveCard(MENU *);
+    void __cdecl MenuDrawFormatting(MENU *);
+    void __cdecl MenuDrawCardWarning(MENU *);
+    void __cdecl MenuUpdateCardWarning(MENU *);
+    void __cdecl fun_00509470(MENU *);
+    void __cdecl fun_00509480(MENU *);
+    void __cdecl fun_00509490(MENU *);
+    void __cdecl fun_005094a0(MENU *);
+
     MENUFNINFO MenuInfo[100] = {
         {1000, MenuEnterSave, MenuDrawSave, MenuUpdateSave, MenuExitSave, -1, -1, 0, 1, 1, 0},
-        {1001, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1001, NULL, MenuDrawDoNotRemoveCard, MenuUpdateDoNotRemoveCard, NULL, -1, -1, 0, 0, 0, 0},
         {1002, MenuEnterInsertCard, MenuDrawInsertCard, MenuUpdateInsertCard, NULL, -1, -1, 0, 1, 1, 0},
         {1004, MenuEnterNoMemoryCard, MenuDrawNoMemoryCard, MenuUpdateNoMemoryCard, NULL, -1, -1, 0, 1, 1, 0},
         {1003, NULL, MenuDrawNotEnoughSpace, MenuUpdateNotEnoughSpace, NULL, -1, -1, 0, 1, 1, 0},
         {1005, NULL, MenuDrawNoData, MenuUpdateNoData, NULL, -1, -1, 0, 1, 1, 0},
         {1006, NULL, MenuDrawFormatConfirm, MenuUpdateFormatConfirm, NULL, -1, -1, 0, 1, 1, 0},
-        {1007, NULL, NULL, MenuUpdateFormatting, NULL, -1, -1, 0, 0, 0, 0},
+        {1007, NULL, MenuDrawFormatting, MenuUpdateFormatting, NULL, -1, -1, 0, 0, 0, 0},
         {1008, MenuEnterSaveConfirm, MenuDrawSaveConfirm, MenuUpdateSaveConfirm, NULL, -1, -1, 0, 1, 1, 0},
         {1009, NULL, MenuDrawSaving, MenuUpdateSaving, NULL, -1, -1, 0, 0, 0, 0},
         {1010, MenuEnterAutoSaveWarning, MenuDrawAutoSaveWarning, MenuUpdateAutoSaveWarning, NULL, -1, -1, 0, 1, 0, 0},
@@ -10535,12 +10544,13 @@ extern "C" {
         {1016, NULL, MenuDrawSaveCancel, MenuUpdateSaveCancel, NULL, -1, -1, 0, 1, 1, 0},
         {1017, NULL, MenuDrawLoadCancel, MenuUpdateLoadCancel, NULL, -1, -1, 0, 1, 1, 0},
         {1018, NULL, MenuDrawFormatCancel, MenuUpdateFormatCancel, NULL, -1, -1, 0, 1, 1, 0},
-        {1019, MenuEnterCardWarning, NULL, NULL, MenuExitCardWarning, -1, -1, 0, 1, 0, 0},
+        {1019, MenuEnterCardWarning, MenuDrawCardWarning, MenuUpdateCardWarning, MenuExitCardWarning, -1, -1, 0, 1, 0,
+         0},
         {1020, NULL, MenuDrawFileCorrupt, MenuUpdateFileCorrupt, NULL, -1, -1, 0, 1, 1, 0},
         {1021, MenuEnterHeaderSave, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1022, MenuEnterStartNewGame, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1023, NULL, MenuDrawDeleteConfirm, MenuUpdateDeleteConfirm, NULL, -1, -1, 0, 1, 1, 0},
-        {1024, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1024, fun_00509470, fun_00509480, fun_00509490, fun_005094a0, -1, -1, 0, 0, 0, 0},
         {1025, MenuEnterVideoPc, MenuDrawVideoPc, MenuUpdateVideoPc, MenuExitVideoPc, -1, -1, 0, 0, 0, 0},
         {1026, MenuEnterEffectsPc, MenuDrawEffectsPc, MenuUpdateEffectsPc, MenuExitEffectsPc, -1, -1, 0, 0, 0, 0},
         {1027, MenuEnterVideoConfirmPc, MenuDrawVideoConfirmPc, MenuUpdateVideoConfirmPc, MenuExitVideoConfirmPc, -1,

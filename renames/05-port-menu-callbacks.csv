@@ -1,0 +1,8 @@
+old,new,evidence
+fun_0050a7f0,MenuDrawDoNotRemoveCard,MenuInfo row 1001 draw slot; Android MenuInfo
+fun_0050a910,MenuUpdateDoNotRemoveCard,MenuInfo row 1001 update slot; Android MenuInfo
+fun_005110d0,MenuDrawFormatting,MenuInfo row 1007 draw slot; Android MenuInfo
+fun_00511e80,MenuDrawCardWarning,MenuInfo row 1019 draw slot; Android MenuInfo
+fun_0050b270,MenuUpdateCardWarning,MenuInfo row 1019 update slot; Android MenuInfo
+fun_00510df0,MenuDrawFormattingMessagePc,draws apitxt_FORMATTING for MenuDrawFormatting
+fun_00510e70,MenuDrawFormattedMessagePc,draws apitxt_FORMATTINGCOMPLETE for MenuDrawFormatting

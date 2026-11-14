@@ -547,6 +547,19 @@ extern "C" void __cdecl MenuEnterQuitPc(MENU *menu) {
 extern "C" void __cdecl MenuExitQuitPc(MENU *) {
 }
 
+/* Menu 1024 has empty enter, draw, update and exit steps on PC. */
+extern "C" void __cdecl fun_00509470(MENU *) {
+}
+
+extern "C" void __cdecl fun_00509480(MENU *) {
+}
+
+extern "C" void __cdecl fun_00509490(MENU *) {
+}
+
+extern "C" void __cdecl fun_005094a0(MENU *) {
+}
+
 extern "C" void __cdecl MenuDrawQuitPc(MENU *menu) {
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
