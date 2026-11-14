@@ -3,13 +3,19 @@
 #include <string.h>
 #include <float.h>
 
+NUPLANE VisibilityDepthPlanePc = {0};
+char *nudlist_field_18b0 = NULL;
+NUVEC NuPortalWorldCameraPc = {0};
 NURNDRLIBSCENE currentScene = {0};
 NUVPCURRENT vpCurrent = {0};
 i32 sceneParametersCount = 0;
 NUDISPLAYLIST PCDisplayList2dPc = {0};
+NUDISPLAYLISTITEM nudlist_2d_static = {0};
 i32 nused_sort_pris = 0;
 NUSORTPRI *sort_list = 0;
 i32 render_scene_index = 0;
+i32 *NuPortalFrustumCountPc = 0;
+CAMERA_CLIP_PLANES_PC CameraClipPlanesPc = {0};
 NURNDRLIBSCENE sceneParameters[16] = {0};
 NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24] = {0};
 
@@ -1350,6 +1356,7 @@ u8 NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value) {
     return (u8)MIN(255.0f, MAX(0.0f, value));
 }
 
+PC_HG_SHADOW_STATE_VIEW PCShadowState = {0};
 PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc = 0;
 PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc = 0;
 
@@ -1359,10 +1366,25 @@ typedef struct RENDERER_ARENA_VERTEX_PC {
     u32 colour;             // 0xc
 } RENDERER_ARENA_VERTEX_PC; // size 0x10
 
+VARIPTR fstack = {0};
 RENDERER_ARENA_VERTEX_PC *RendererArenaDataPc = 0;
 u32 *RendererArenaOffsetsPc = 0;
 i32 *RendererArenaTypesPc = 0;
 i32 RendererArenaCountPc = 0;
+NUDISPLAYLISTRENDERSCENE *PCSafeRenderScenes[24] = {0};
+i32 nudlist_alloc_count = 0;
+u32 nudlist_alloc_base = 0;
+u32 nudlist_alloc_end = 0;
+u32 nudlist_item_base = 0;
+i32 nudlist_field_fc4 = 0;
+u32 nudlist_field_fc8 = 0;
+u32 nudlist_field_fe4 = 0;
+i32 DisplaySceneRenderDisabledPc = 0;
+i32 noscenespecials = 0;
+i32 PCShadowPacketSequence = 0;
+f32 PCShadowNearValue = 0;
+f32 PCShadowFarValue = 0;
+i32 PCShadowPacketCount = 0;
 i32 RendererArenaVertexCountPc = 0;
 i32 RendererArenaIndexCountPc = 0;
 

@@ -8127,18 +8127,10 @@ extern "C" {
     };
 #pragma data_seg()
     STATIC_ASSERT(sizeof(LevelSplinesTable) == 0x1a0);
-    i32 nudlist_alloc_count = 0;
-    u32 nudlist_alloc_base = 0;
-    u32 nudlist_alloc_end = 0;
-    u32 nudlist_item_base = 0;
     i32 nudlist_frame_active = 2;
     u32 nudlist_field_e80 = 0;
-    u32 nudlist_field_fc8 = 0;
-    i32 nudlist_field_fc4 = 0;
     u32 nudlist_field_9d0 = 0;
     u32 nudlist_field_9d8 = 0;
-    u32 nudlist_field_fe4 = 0;
-    NUDISPLAYLISTITEM nudlist_2d_static = {0};
     VARIPTR nudlist_stream_cursor = {0};
     u32 nudlist_field_1598 = 0;
     u32 nuprim_field_ba8 = 0;
@@ -8801,7 +8793,6 @@ extern "C" {
 #pragma const_seg()
     NUJOINTPROCANIMFN_PC JointProcAnimFn = 0;
     u8 fstackmem[NU_PORTAL_STACK_SIZE] = {0};
-    VARIPTR fstack = {0};
     VARIPTR fstack_limit = {0};
     i32 DebrisCutSceneMode = 0;
     RTLSET_PC *PartRTL = 0;
@@ -10771,7 +10762,6 @@ extern "C" {
 }
 
 extern "C" {
-    CAMERA_CLIP_PLANES_PC CameraClipPlanesPc = {0};
 
     DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass = 0;
     DEBRIS_PARTICLE_CHUNK_PC **freedebchunks = 0;
@@ -10990,7 +10980,6 @@ extern "C" {
 #pragma data_seg(".data$PCMaterialLinkItemIndex")
     i32 PCMaterialLinkItemIndex = 7;
 #pragma data_seg()
-    NUDISPLAYLISTRENDERSCENE *PCSafeRenderScenes[24] = {0};
     f32 debris_render_global_time = 0;
     f32 debris_render_panel_time = 0;
 }
@@ -12223,16 +12212,6 @@ extern "C" {
     u8 CutSceneBoundingBoxTrackRoot = 0;
 
     i32 dat_009739d4 = 0;
-
-    i32 PCShadowPacketSequence = 0;
-
-    f32 PCShadowNearValue = 0;
-
-    f32 PCShadowFarValue = 0;
-
-    i32 PCShadowPacketCount = 0;
-
-    PC_HG_SHADOW_STATE_VIEW PCShadowState = {0};
 
     NUHGOBJ_EVAL_PC *Temphgobj = 0;
 
@@ -13888,7 +13867,6 @@ extern "C" {
     NUMTX NuPortalLocalViewPc = {0};
     NUMTX NuPortalProjectionScratchPc = {0};
     NUMTX NuPortalProjectionInversePc = {0};
-    i32 *NuPortalFrustumCountPc = 0;
 #pragma const_seg(".rdata$NuPortalBoundsOnePc")
     const NUVEC NuPortalBoundsOnePc = {1.0f, 1.0f, 1.0f};
 #pragma const_seg()
@@ -13896,7 +13874,6 @@ extern "C" {
     const NUVEC NuPortalBoundsMinusOnePc = {-1.0f, -1.0f, -1.0f};
 #pragma const_seg()
     u8 NuPortalVisibilityBitsPc[625] = {0};
-    NUVEC NuPortalWorldCameraPc = {0};
     NUVEC *NuPortalOverrideCameraPc = 0;
     i32 dat_009739b4 = 0;
     i32 dat_009739b8 = 0;
@@ -13953,7 +13930,6 @@ extern "C" {
     NUMTX VisibilityPrimaryWorldMatrixPc = {0};
     NUMTX VisibilityPrimaryAbsoluteMatrixPc = {0};
     NUMTX VisibilityAlternateAbsoluteMatrixPc = {0};
-    NUPLANE VisibilityDepthPlanePc = {0};
     NUPLANE VisibilityAbsoluteDepthPlanePc = {0};
     f32 zxs = 0;
     u8 cacheValues[256] = {0};
@@ -13981,8 +13957,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 DisplaySceneRenderDisabledPc = 0;
-    i32 noscenespecials = 0;
 #pragma data_seg(".data$VisibilityPortalFilterEnabledPc")
     i32 VisibilityPortalFilterEnabledPc = 1;
 #pragma data_seg()
@@ -23247,7 +23221,6 @@ extern "C" {
     FRAME_NATIVE_TEXTURE_POOL_PC FrameNativeTexturePoolPc = {0};
     NUFILE nudlist_field_988 = 0;
     char *PCDisplayCaptureCursorPc = NULL;
-    char *nudlist_field_18b0 = NULL;
 }
 #pragma data_seg()
 
