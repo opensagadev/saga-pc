@@ -119,7 +119,7 @@ headers have one part each and no cycle; give `decomp.h`'s prelude and
 `STATIC_ASSERT` a header that everything includes first. A header that
 compiles alone is the test (`clang -fsyntax-only` per header, C and C++).
 
-### Step 2 groundwork (2026-11-14, later)
+### Step 2 groundwork (2026-11-14, later; on origin/main 7e2e1d82)
 
 `tools/standalone.py` compiles each module header alone (included twice,
 C and C++, libclang with the lint flags) and counts those that fail against
@@ -130,7 +130,7 @@ header can reach.
 
 | | before | now |
 |---|---:|---:|
-| module headers that compile alone | 19 of 421 | 190 of 421 |
+| module headers that compile alone | 19 of 421 | 191 of 421 |
 | largest include cycle | 120 | 37 (plus one of 3 and one of 2) |
 | headers in parts | 74 | 70 |
 
@@ -163,7 +163,7 @@ What changed:
    (where the declarations sit, not how many there are).
 4. `nuvec.h`, `nufile_pc.h` and `common.h` are one part each.
 
-Measured against origin/main 77c2713b (full build, `match.py --update`):
+Measured against origin/main 77c2713b and again on 7e2e1d82 (full build, `match.py --update`):
 no function changes its bytes or score, the exact set by address is the
 same and reproduced data stays 970,473 bytes.
 
@@ -173,7 +173,7 @@ types needed by value across headers: the catch-alls
 `nu3d_includes.h` and `nustencilshadows_PC.h`, `NUSPECIALHANDLE`
 (`nu3d_includes.h`) inside `world.h`, `level.h` and `apiobject.h`, and the
 save types between `levels.h`, `game.h`, `audio.h` and `hub.h`. Most of the
-231 failing headers fail only because they reach this cycle. The fragile
+230 failing headers fail only because they reach this cycle. The fragile
 units are not ready: `legogame/episodeIII.c` (`BoulderSpawnPc`) uses 55
 module headers, 39 of them not standalone; `legogame/episodeIV.c` uses 44,
 32 not standalone.
