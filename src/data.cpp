@@ -10646,7 +10646,6 @@ extern "C" {
 }
 
 extern "C" {
-    void *emperorfighta_netpacket = 0;
     i32 LevSfxFlag[4] = {0};
 }
 
@@ -10697,13 +10696,6 @@ extern "C" {
 #pragma data_seg()
     GIZAIMESSAGE *LevAIMessage[8] = {0};
     AIAREA_PC *LevArea[4] = {0};
-    u64 routemask_efloor_on = 0;
-    u64 routemask_efloor_off = 0;
-    f32 eFloor_timer = 0;
-    NUSPECIALHANDLE *hspecial_efloor = 0;
-    i32 SarlaccPowerPc = 0;
-    i32 SarlaccRechargingPc = 0;
-    i32 SarlaccTargetShieldPc[2] = {0};
 #pragma const_seg(".rdata$EpisodeVI_ffieldoff")
     extern const char EpisodeVI_ffieldoff[10] = "ffieldoff";
 #pragma const_seg()
@@ -14211,7 +14203,6 @@ extern "C" {
 extern "C" {
     HUB_AI_MUSIC_VIEW_PC HubAiMusicStatePc = {0};
     KAMINO_DISCO_MUSIC_VIEW_PC KaminoDiscoMusicStatePc = {0};
-    SARLACC_NETPACKET_PC *sarlaccb_netpacket = NULL;
 }
 
 extern "C" {
@@ -23117,16 +23108,6 @@ extern "C" {
 }
 
 extern "C" {
-    SPLINEPOS fireSplinePos = {0};
-
-    SPLINEPOS fireBackPos = {0};
-
-    f32 runningTotalPos = 0;
-
-    f32 fireSpeedScale = 0;
-}
-
-extern "C" {
 #pragma data_seg(".data$gizmopickup_typeid")
     i32 gizmopickup_typeid = -1;
 }
@@ -23718,7 +23699,6 @@ extern "C" {
     i32 bombgen_gizmotype_id = -1;
 
 #pragma data_seg(".data$fire_clip_dist")
-    i32 fire_clip_dist = 1000;
 }
 
 extern "C" {
@@ -26670,25 +26650,13 @@ extern "C" {
 }
 
 #pragma data_seg(".data$EmperorFloorRadiusPc")
-extern "C" {
-    f32 EmperorFloorRadiusPc = 0.35f;
-}
 #pragma data_seg()
 #pragma data_seg(".data$EmperorFloorJitterPc")
-extern "C" {
-    f32 EmperorFloorJitterPc = 0.2f;
-}
 #pragma data_seg()
 #pragma data_seg(".data$EmperorFloorPushPc")
-extern "C" {
-    f32 EmperorFloorPushPc = 0.2f;
-}
 #pragma data_seg()
 
 #pragma data_seg(".data$EmperorFloorSafeXMinimumPc")
-extern "C" {
-    f32 EmperorFloorSafeXMinimumPc = 1.5f;
-}
 #pragma data_seg()
 
 extern "C" {

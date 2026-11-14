@@ -36,7 +36,14 @@ f32 SarlaccDiscoBaseOffsetPc = -0.12f;
 static SARLACC_DISCO_PC sarlaccdisco = {0};
 NUSPECIALHANDLE SarlaccLevSpecialPc[7] = {0};
 void *SarlaccLevelBuilditsPc[2] = {0};
+SPLINEPOS fireSplinePos = {0};
+void *emperorfighta_netpacket = 0;
+f32 fireSpeedScale = 0;
+i32 SarlaccTargetShieldPc[2] = {0};
+u64 routemask_efloor_off = 0;
+SARLACC_NETPACKET_PC *sarlaccb_netpacket = NULL;
 GIZMO_PC *SarlaccObstMirrorBallPc = NULL;
+SPLINEPOS fireBackPos = {0};
 GIZMO_PC *SarlaccForceMirrorBallPc = NULL;
 
 f32 DeathStarZapSizeWidthPc = 1.0f;
@@ -1123,6 +1130,11 @@ static i32 SarlaccDiscoPickPanel(i32 state, i32 exclude) {
     return count != 0 ? candidates[NuRand(NULL) % count] : -1;
 }
 
+i32 fire_clip_dist = 1000;
+f32 EmperorFloorRadiusPc = 0.35f;
+f32 EmperorFloorJitterPc = 0.2f;
+f32 EmperorFloorPushPc = 0.2f;
+f32 EmperorFloorSafeXMinimumPc = 1.5f;
 f32 SarlaccDiscoHeightPc = 1.27f;
 f32 SarlaccDiscoSeekPc = 2.0f;
 f32 SarlaccDiscoTimePc = 40.0f;
@@ -1329,7 +1341,10 @@ void SarlaccPitC_Init(WORLDINFO *world) {
 }
 
 static i32 SarlaccBlowUpTargetCountPc = 0;
+u64 routemask_efloor_on = 0;
 static GIZMOBLOWUP_PC *SarlaccBlowUpTargetsPc[4] = {0};
+NUSPECIALHANDLE *hspecial_efloor = 0;
+f32 eFloor_timer = 0;
 static i32 SarlaccTakenOverPc = 0;
 
 void SarlaccPitC_Reset(WORLDINFO *world) {
@@ -1375,6 +1390,8 @@ void SarlaccPitC_Reset(WORLDINFO *world) {
     }
 }
 
+i32 SarlaccPowerPc = 0;
+i32 SarlaccRechargingPc = 0;
 static f32 SarlaccRechargeTimerPc = 0;
 
 void SarlaccPitC_Update(WORLDINFO *world) {
@@ -1567,7 +1584,8 @@ void NewTown_Init(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "dummy_exp8");
 }
 
-/* Bonus level vehicle ride flags. */
+/* PC 0x0088a58c..0x0088a58f and 0x0088a6ec/0x0088a6ed: bonus level vehicle ride flags. */
+f32 runningTotalPos = 0;
 static u8 prevOnFireTruck = 0;
 static u8 prevOnLifeBoat = 0;
 
