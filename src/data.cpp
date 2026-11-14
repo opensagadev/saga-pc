@@ -25188,26 +25188,7 @@ extern "C" {
 #pragma data_seg(".data$CamDewbackLiftPc")
     f32 CamDewbackLiftPc = 1.5f;
 
-#pragma data_seg(".data$PlayPlaneCornersPc")
-    NUVEC PlayPlaneCornersPc[4] = {
-        {-0.85f, 0.85f, 1.0f}, {0.85f, 0.85f, 1.0f}, {-0.85f, -0.85f, 1.0f}, {0.85f, -0.85f, 1.0f}};
-
-#pragma data_seg(".data$PlayPlaneDepthPc")
-    f32 PP_dist = 5.0f;
-
-#pragma data_seg(".data$GameCamShakeRadiusPc")
-    f32 GameCamShakeRadiusPc = 0.1f;
-
-#pragma data_seg(".data$GameCamShakeRetargetPc")
-    f32 GameCamShakeRetargetPc = 0.025f;
-
-#pragma data_seg(".data$GameCamShakeDirSeekPc")
-    f32 GameCamShakeDirSeekPc = 10.0f;
-
-#pragma data_seg(".data$GameCamShakeOffsetSeekPc")
-    f32 GameCamShakeOffsetSeekPc = 2.0f;
-#pragma data_seg()
-    // Frontend strings: language-selected index/string tables.
+    // Native PC frontend strings: language-selected index/string tables.
 
     extern const char MenuPcString75f0b0[5] = "Back";
     extern const char MenuPcString75f2b4[7] = "Cancel";

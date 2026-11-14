@@ -115,6 +115,13 @@ void GameCam_HitJudder(void) {
 
 static i32 GameCamLookRotXPc = 10;
 static i32 GameCamLookRotYPc = 15;
+NUVEC PlayPlaneCornersPc[4] = {
+    {-0.85f, 0.85f, 1.0f}, {0.85f, 0.85f, 1.0f}, {-0.85f, -0.85f, 1.0f}, {0.85f, -0.85f, 1.0f}};
+f32 PP_dist = 5.0f;
+f32 GameCamShakeRadiusPc = 0.1f;
+f32 GameCamShakeRetargetPc = 0.025f;
+f32 GameCamShakeDirSeekPc = 10.0f;
+f32 GameCamShakeOffsetSeekPc = 2.0f;
 extern NUVEC PlayPlaneCornersPc[4];
 extern f32 PP_dist;
 extern f32 GameCamShakeRadiusPc;
