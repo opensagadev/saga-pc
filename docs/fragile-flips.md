@@ -13,3 +13,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | literals at every use | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.97 % | exact |
 | layout asserts to comments | BoulderSpawn | legogame/episodeIII.c | exact | different |
 | layout asserts to comments | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |
+| duplicate types into headers | BoulderSpawn | legogame/episodeIII.c | different | exact |
+| duplicate types into headers | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |

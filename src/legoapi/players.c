@@ -91,14 +91,6 @@ typedef struct CREATURE_RESET_PACKET_VIEW { // size 0xe4c
     u8 packet[0x788];                       // 0x6c4
 } CREATURE_RESET_PACKET_VIEW;
 
-typedef struct player_position_record_s { // size 0x10
-    NUVEC *position;                      // 0x0
-    i32 sock_location;                    // 0x4
-    f32 sock_ratio;                       // 0x8
-    i16 angle;                            // 0xc
-    u8 unknown_0e[2];                     // 0xe
-} PLAYER_POSITION_RECORD;
-
 typedef union player_position_sock_pc_u { // size 0x38
     SOCKPOSITION_PC sock;
 

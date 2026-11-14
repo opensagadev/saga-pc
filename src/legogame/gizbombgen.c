@@ -1,17 +1,5 @@
 #include "saga.h"
 
-typedef struct {
-    GIZBOMBGEN_s *items;
-    u16 count;
-    u16 capacity;
-    void *pool;
-    i16 reset : 1;
-    i16 reset_saved : 1;
-    i16 reset_flags_unused : 14;
-    u16 opaque_0e;
-    void *progress;
-} ADD_BOMB_RESET_SYS;
-
 extern i32 come_from_an_editor;
 
 typedef struct {

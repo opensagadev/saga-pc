@@ -356,18 +356,6 @@ typedef struct CUT_PLAYER_INST_ANIM {
     u32 flags;
 } CUT_PLAYER_INST_ANIM;
 
-typedef struct cut_player_config_s {
-    CUT_PLAYER_CLIP_CONFIG *clips;
-    CUT_PLAYER_CLIP_CONFIG *active;
-    u16 clip_count;
-    i16 return_door;
-    i16 *clip_text;
-    i16 *intro_text;
-    i16 *midtro_text;
-    i16 *outro_text;
-    i16 *ending_text;
-} CUT_PLAYER_CONFIG;
-
 extern "C" {
     extern i32 (*CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG *);
 }

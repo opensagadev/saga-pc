@@ -77,3 +77,22 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct ripple_effect_s { // size 0x28
+
+    union { // size 0x4
+        u32 start_color;
+        u8 start_rgba[4];
+    }; // 0x00
+
+    union { // size 0x4
+        u32 end_color;
+        u8 end_rgba[4];
+    }; // 0x04
+
+    f32 lifetime;          // 0x08
+    f32 initial_size;      // 0x0c
+    f32 end_size;          // 0x10
+    char texture_name[16]; // 0x14
+    NUMTL *material;       // 0x24
+} RIPPLE_EFFECT;

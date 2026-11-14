@@ -96,18 +96,6 @@ typedef struct CUT_PLAYER_INST_ANIM { // size 0x54
     u32 flags;                        // 0x50
 } CUT_PLAYER_INST_ANIM;
 
-typedef struct cut_player_config_s { // size 0x20
-    CUT_PLAYER_CLIP_CONFIG *clips;   // 0x00
-    CUT_PLAYER_CLIP_CONFIG *active;  // 0x04
-    u16 clip_count;                  // 0x08
-    i16 return_door;                 // 0x0a
-    i16 *clip_text;                  // 0x0c
-    i16 *intro_text;                 // 0x10
-    i16 *midtro_text;                // 0x14
-    i16 *outro_text;                 // 0x18
-    i16 *ending_text;                // 0x1c
-} CUT_PLAYER_CONFIG;
-
 typedef struct cut_average_rigid_system_s { // size 0x8
     void *rigids;                           // 0x0
     u16 count;                              // 0x4

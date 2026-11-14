@@ -1,11 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct grapple_rotation_s { // size 0x3c
-    u8 unknown_00[0x30];            // 0x00
-    NUVEC hook_position;            // 0x30
-} GRAPPLE_ROTATION;
-
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) + 2 * sizeof(NUMTX) == 0x884);
@@ -54,18 +49,6 @@ typedef struct gameobject_collision_reset_s { // size 0x2b8
     u32 collision_overlap_low;                // 0x2b0
     u32 collision_overlap_high;               // 0x2b4
 } GAMEOBJECT_COLLISION_RESET;
-
-typedef struct GAME_ANTI_NODE_DATA { // size 0x24
-    NUVEC position;                  // 0x00
-    f32 radius;                      // 0x0c
-    f32 min_y;                       // 0x10
-    f32 max_y;                       // 0x14
-    f32 extent_x;                    // 0x18
-    f32 extent_z;                    // 0x1c
-    u16 angle;                       // 0x20
-    u8 shape;                        // 0x22
-    u8 mode;                         // 0x23
-} GAME_ANTI_NODE_DATA;
 
 void ClearGameObjects(APIOBJECTSYS *system) {
     memset(Obj, 0, sizeof(GAMEOBJECT) * 64);

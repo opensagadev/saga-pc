@@ -5,11 +5,6 @@
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, reset_mode) == 0x406);
 
-typedef struct ai_control_slot_s {
-    NULISTLNK links;
-    u8 unknown_08[0xa0];
-} AI_CONTROL_SLOT;
-
 typedef struct ai_control_system_s {
     i32 capacity;
     AI_CONTROL_SLOT *controllers;
@@ -147,12 +142,6 @@ typedef struct ai_frame_world_s {
     i32 processor_count;
     LEVEL_SCRIPT_PROCESS processors[32];
 } AI_FRAME_WORLD;
-
-typedef struct {
-    u8 opaque[0x2aec];
-    i32 count;
-    struct LEVELSCRIPTPROCESS_s items[32];
-} ADD_AI_WORLD;
 
 extern char AIGizmoNameBuffer[16];
 

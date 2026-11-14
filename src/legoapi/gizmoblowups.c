@@ -44,34 +44,6 @@ typedef struct {         // size 0x4688
     i32 count;           // 0x4684
 } ADD_TELEPORT_WORLD;
 
-typedef struct {                           // size 0x4670
-    u8 opaque[0x2aec];                     // 0x0000
-    i32 count;                             // 0x2aec
-    struct LEVELSCRIPTPROCESS_s items[32]; // 0x2af0
-} ADD_AI_WORLD;
-
-typedef struct {                 // size 0x14
-    GIZBOMBGEN_s *items;         // 0x00
-    u16 count;                   // 0x04
-    u16 capacity;                // 0x06
-    void *pool;                  // 0x08
-    i16 reset : 1;               // 0x0c:0
-    i16 reset_saved : 1;         // 0x0c:1
-    i16 reset_flags_unused : 14; // 0x0c:2
-    u16 opaque_0e;               // 0x0e
-    void *progress;              // 0x10
-} ADD_BOMB_RESET_SYS;
-
-typedef struct {         // size 0x28
-    u8 unknown_00[0x1c]; // 0x00
-    NUVEC position;      // 0x1c
-} FLOW_FORCE_POSITION;
-
-typedef struct {         // size 0x40
-    u8 unknown_00[0x34]; // 0x00
-    NUVEC position;      // 0x34
-} FLOW_BUILDIT_POSITION;
-
 typedef struct {         // size 0x3c
     u8 unknown_00[0x30]; // 0x00
     NUVEC position;      // 0x30

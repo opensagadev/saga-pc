@@ -82,12 +82,6 @@ typedef struct GIZMO_NAME_TYPE {     // size 0x9c
     u8 unknown_48[0x54];             // 0x48
 } GIZMO_NAME_TYPE;
 
-typedef struct level_sfx_gizmotype_s {
-    u8 unknown_00[0x94];
-    void (*add_level_sfx)(WORLDINFO *, void *, i32 *, i32 *, i32);
-    u8 unknown_98[4];
-} LEVEL_SFX_GIZMOTYPE;
-
 static i32 DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo);
 static i32 DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode);
 static char *DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output);

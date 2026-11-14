@@ -376,3 +376,18 @@ struct PORTALDOOR_s {            // size 0x10
     u8 portal_id;                // 0xe
     u8 pad_0f;                   // 0xf
 };
+
+typedef struct level_sfx_gizmotype_s {
+    u8 unknown_00[0x94];
+    void (*add_level_sfx)(WORLDINFO *, void *, i32 *, i32 *, i32);
+    u8 unknown_98[4];
+} LEVEL_SFX_GIZMOTYPE;
+
+typedef struct world_minikit_reader_s { // size 0x2ae4
+    u8 unknown_0000[0x2968];            // 0x0000
+    MINIKIT_PC minikit;                 // 0x2968
+    u8 unknown_2980[4];                 // 0x2980
+    MINIKIT_PC **pieces_by_id;          // 0x2984
+    u8 unknown_2988[0x158];             // 0x2988
+    u8 *hub_minikits;                   // 0x2ae0
+} WORLD_MINIKIT_READER;

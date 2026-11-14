@@ -51,17 +51,7 @@ extern f32 SebulbaThrowIntervalPc;
 static f32 PodSebulbaThrowSpeed;
 static f32 PodSebulbaThrowGravity;
 
-typedef struct pod_race_countdown_reader_s {
-    u8 unknown_0000[0xb000];
-    f32 lap_countdown;
-} POD_RACE_COUNTDOWN_READER;
-
 /* Episode I level callbacks installed by FixUpLevels. */
-typedef struct podrace_levflag_s {
-    u8 podrace_state;
-    u8 mushroom_state;
-    u8 remaining[14];
-} PODRACE_LEVFLAG;
 
 typedef struct gungan_a_s {
     i16 unknown_000;
@@ -74,15 +64,6 @@ typedef struct gungan_a_s {
     i16 models[4];
 } GUNGAN_A_PC;
 
-typedef struct mine_entry_s {
-    u32 active;
-    NUVEC pos;
-    f32 grow;
-    f32 grow_alpha;
-    u16 rotx;
-    u16 roty;
-} MINE_ENTRY_PC;
-
 typedef struct minesys_s {
     NUSPECIALHANDLE mine_special;
     MINE_ENTRY_PC mines[64];
@@ -94,13 +75,6 @@ typedef struct minesys_s {
     i32 mine_part;
     f32 update_timer;
 } MINESYS_PC;
-
-typedef struct client_mines_s {
-    NUVEC positions[64];
-    u32 present_words[2];
-    u32 exploded_words[2];
-    u32 unknown_310[2];
-} CLIENT_MINES_PC;
 
 typedef struct retakeg_netpacket_s {
     i16 guard_a;
@@ -164,13 +138,6 @@ typedef struct PODSPRINT_VIEW {
         } bits;
     };
 } PODSPRINT_VIEW;
-
-typedef struct PODSPRINT_NETPACKET {
-    i16 ai_state;
-    u8 unknown_02[4];
-    i16 countdown;
-    i16 lap_time;
-} PODSPRINT_NETPACKET;
 
 #define PODSPRINT ((PODSPRINT_VIEW *)&podsprint)
 #define PODSPRINT_NET ((PODSPRINT_NETPACKET *)podsprint_netpacket)

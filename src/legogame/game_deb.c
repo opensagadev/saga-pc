@@ -12,24 +12,6 @@ typedef struct startup_object_light_s { // size 0x10d8
 
 STATIC_ASSERT(sizeof(STARTUP_OBJECT_LIGHT) == sizeof(GAMEOBJECT));
 
-typedef struct GAME_LIGHT_VIEW {            // size 0x670
-    u8 unknown000[0x285];                   // 0x000
-    i8 floor_surface;                       // 0x285
-    u8 unknown_286[0x4d8 - 0x286];          // 0x286
-    RTL_DATA light_data;                    // 0x4d8
-    OBJECT_LIGHT_STATE_GAME lighting_state; // 0x61c
-} GAME_LIGHT_VIEW;
-
-typedef struct BURN_OUT { // size 0x24
-    i32 active;           // 0x00
-    NUVEC position;       // 0x04
-    f32 field_10;         // 0x10
-    f32 field_14;         // 0x14
-    f32 field_18;         // 0x18
-    f32 field_1c;         // 0x1c
-    f32 field_20;         // 0x20
-} BURN_OUT;
-
 typedef struct BURN_SET {            // size 0x564
     BURN_PARAMETERS parameters;      // 0x000
     BURN_PARAMETERS parameters_copy; // 0x054
@@ -66,24 +48,6 @@ typedef struct BURNOUT_CUT_PREFIX { // size 0x54
     u8 unknown_00[0x50];            // 0x00
     u32 flags;                      // 0x50
 } BURNOUT_CUT_PREFIX;
-
-typedef struct ripple_effect_s {
-    union {
-        u32 start_color;
-        u8 start_rgba[4];
-    };
-
-    union {
-        u32 end_color;
-        u8 end_rgba[4];
-    };
-
-    f32 lifetime;
-    f32 initial_size;
-    f32 end_size;
-    char texture_name[16];
-    NUMTL *material;
-} RIPPLE_EFFECT;
 
 typedef struct world_ripple_view_s {
     u8 unknown_0000[0x46f4];

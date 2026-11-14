@@ -37,11 +37,6 @@ typedef struct podrace_resource_s {        // size 0xb030
     u8 unknown_b021[15];                   // 0xb021
 } PODRACE_RESOURCE;
 
-typedef struct pod_race_countdown_reader_s { // size 0xb004
-    u8 unknown_0000[0xb000];                 // 0x0000
-    f32 lap_countdown;                       // 0xb000
-} POD_RACE_COUNTDOWN_READER;
-
 typedef struct pod_merge_packet_reader_s { // size 0x48
     u8 unknown_00[0x10];                   // 0x00
     f32 blend_source_time;                 // 0x10
@@ -54,11 +49,6 @@ typedef struct pod_merge_packet_reader_s { // size 0x48
 } POD_MERGE_PACKET_READER;
 
 /* Episode I level callbacks installed by FixUpLevels. */
-typedef struct podrace_levflag_s { // size 0x10
-    u8 podrace_state;              // 0x0
-    u8 mushroom_state;             // 0x1
-    u8 remaining[14];              // 0x2
-} PODRACE_LEVFLAG;
 
 typedef struct gungan_a_s { // size 0x114
     i16 unknown_000;        // 0x000
@@ -71,15 +61,6 @@ typedef struct gungan_a_s { // size 0x114
     i16 models[4];          // 0x10c
 } GUNGAN_A_PC;
 
-typedef struct mine_entry_s { // size 0x1c
-    u32 active;               // 0x00
-    NUVEC pos;                // 0x04
-    f32 grow;                 // 0x10
-    f32 grow_alpha;           // 0x14
-    u16 rotx;                 // 0x18
-    u16 roty;                 // 0x1a
-} MINE_ENTRY_PC;
-
 typedef struct minesys_s {        // size 0x748
     NUSPECIALHANDLE mine_special; // 0x000
     MINE_ENTRY_PC mines[64];      // 0x00c
@@ -91,13 +72,6 @@ typedef struct minesys_s {        // size 0x748
     i32 mine_part;                // 0x740
     f32 update_timer;             // 0x744
 } MINESYS_PC;
-
-typedef struct client_mines_s { // size 0x318
-    NUVEC positions[64];        // 0x000
-    u32 present_words[2];       // 0x300
-    u32 exploded_words[2];      // 0x308
-    u32 unknown_310[2];         // 0x310
-} CLIENT_MINES_PC;
 
 typedef struct cut_instance_reader_s { // size 0x94
     u8 opaque_00_88[0x88];             // 0x00
@@ -178,13 +152,6 @@ typedef struct PODSPRINT_VIEW {   // size 0x94
 } PODSPRINT_VIEW;
 
 STATIC_ASSERT(sizeof(PODSPRINT_VIEW) == sizeof(PODSPRINT_PC));
-
-typedef struct PODSPRINT_NETPACKET {
-    i16 ai_state;
-    u8 unknown_02[4];
-    i16 countdown;
-    i16 lap_time;
-} PODSPRINT_NETPACKET;
 
 typedef struct pod_race_panel_netpacket_s { // size 0x14
     f32 start_countdown;                    // 0x00

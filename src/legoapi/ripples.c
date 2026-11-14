@@ -119,25 +119,6 @@ void AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 life
     }
 }
 
-typedef struct ripple_effect_s { // size 0x28
-
-    union { // size 0x4
-        u32 start_color;
-        u8 start_rgba[4];
-    }; // 0x00
-
-    union { // size 0x4
-        u32 end_color;
-        u8 end_rgba[4];
-    }; // 0x04
-
-    f32 lifetime;          // 0x08
-    f32 initial_size;      // 0x0c
-    f32 end_size;          // 0x10
-    char texture_name[16]; // 0x14
-    NUMTL *material;       // 0x24
-} RIPPLE_EFFECT;
-
 typedef struct world_ripple_view_s { // size 0x4704
     u8 unknown_0000[0x46f4];         // 0x0000
     RIPPLE_EFFECT *effects;          // 0x46f4

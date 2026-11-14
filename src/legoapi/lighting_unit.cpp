@@ -10,24 +10,6 @@ typedef struct startup_object_light_s {
     u8 unknown_e08[0x2d0];
 } STARTUP_OBJECT_LIGHT;
 
-typedef struct GAME_LIGHT_VIEW {
-    u8 unknown000[0x285];
-    i8 floor_surface;
-    u8 unknown_286[0x4d8 - 0x286];
-    RTL_DATA light_data;
-    OBJECT_LIGHT_STATE_GAME lighting_state;
-} GAME_LIGHT_VIEW;
-
-typedef struct BURN_OUT {
-    i32 active;
-    NUVEC position;
-    f32 field_10;
-    f32 field_14;
-    f32 field_18;
-    f32 field_1c;
-    f32 field_20;
-} BURN_OUT;
-
 typedef struct BURN_SET {
     BURN_PARAMETERS parameters;
     BURN_PARAMETERS parameters_copy;
@@ -71,12 +53,6 @@ extern "C" {
     extern NUVEC ShadowLightUp;
     extern i32 ShadowLightSplitCount;
 }
-
-struct SHADOW_PLAYER_BOUNDS {
-    u8 unknown_000[0x5fc];
-    NUVEC center;
-    f32 radius;
-};
 
 extern "C" NUCAMERA *edmainGetCamera(void);
 extern "C" void NuLightSpotFadeSet(u32 fade);

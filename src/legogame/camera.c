@@ -50,30 +50,10 @@ typedef struct CAMERA_CONTEXT_PATH {
     u8 flags;
 } CAMERA_CONTEXT_PATH;
 
-typedef struct CAMERA_CONTEXT_FOCUS {
-    u8 unknown_00[0x28];
-    NUVEC focus;
-} CAMERA_CONTEXT_FOCUS;
-
-typedef struct CAMERA_CONTEXT_BUILDIT {
-    u8 unknown_00[0x34];
-    NUVEC position;
-} CAMERA_CONTEXT_BUILDIT;
-
-typedef struct CAMERA_GIZFORCE_TARGET {
-    u8 unknown_00[0x1c];
-    NUVEC position;
-} CAMERA_GIZFORCE_TARGET;
-
 typedef struct CAMERA_CABLE {
     GAMEOBJECT *source;
     GAMEOBJECT *target;
 } CAMERA_CABLE;
-
-typedef struct CAMERA_GRABBER {
-    u8 unknown_000[0x48c];
-    NUVEC grab_position;
-} CAMERA_GRABBER;
 
 i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
 f32 NuVecMagVU0(NUVEC *v);

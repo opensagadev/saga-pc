@@ -14,11 +14,6 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
 void MovePlayer_NETWORK(GAMEOBJECT *);
 GAMEOBJECT *fun_0055e2b0(i32 id);
 
-typedef struct grapple_rotation_s {
-    u8 unknown_00[0x30];
-    NUVEC hook_position;
-} GRAPPLE_ROTATION;
-
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern u8 SuperCarryPlayerRgb[2][3];
 extern i32 FalconDebKey[2];

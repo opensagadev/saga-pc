@@ -161,13 +161,6 @@ typedef struct AI_CREATURE_RESET_FLAGS {
     u16 reset_flags;
 } AI_CREATURE_RESET_FLAGS;
 
-typedef struct KEEP_SCREEN_CAMERA_FIELDS {
-    u8 unknown_000[0x110];
-    NUVEC direction;
-    u8 unknown_11c[0xdc];
-    u16 pitch;
-} KEEP_SCREEN_CAMERA_FIELDS;
-
 void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object);
 void MovePlayer_ROLLING(GAMEOBJECT *object);
 i32 MovePlayer_TWIST(GAMEOBJECT *object);
@@ -211,27 +204,6 @@ typedef struct SPECIAL_LAYER_PC_s {
     const char *name;
     u32 mask;
 } SPECIAL_LAYER_PC;
-
-typedef struct player_reset_fields_s {
-    u8 unknown_0[0xc50];
-    NUVEC weapon_trail_offset;
-    u8 unknown_c5c[0xa4];
-    void *incoming_special;
-    u8 unknown_d04[0x14];
-    void *force_glow_candidate;
-    u8 unknown_d1c[8];
-    f32 ground_contact_grace_timer;
-    u8 unknown_d28[0x78];
-    f32 nearby_floor_distance;
-    u8 unknown_da4[0x14];
-    f32 pre_reset_hover_height;
-    u8 unknown_dbc[0x28];
-    f32 hold_timer;
-    u8 unknown_de8[0x1c];
-    i32 dynamic_light_id;
-    u8 unknown_e08[0x275];
-    u8 pre_reset_state;
-} PLAYER_RESET_FIELDS;
 
 typedef struct player_suit_name_s {
     u8 unknown_000[0x4];

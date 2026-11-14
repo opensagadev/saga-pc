@@ -127,11 +127,6 @@ typedef struct {
     u8 opaque[0x7c - 16];
 } ADD_BUILDIT;
 
-typedef struct {
-    u8 unknown_00[0x34];
-    NUVEC position;
-} FLOW_BUILDIT_POSITION;
-
 /* These allocation records use the PC strides, rather than the larger views. */
 typedef struct registry_buildit_record_pc_s {
     u8 unknown_00[0x10];

@@ -301,13 +301,6 @@ void CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVE
 void ViewCamDraw(void) {
 }
 
-typedef struct KEEP_SCREEN_CAMERA_FIELDS { // size 0x1fc
-    u8 unknown_000[0x110];                 // 0x000
-    NUVEC direction;                       // 0x110
-    u8 unknown_11c[0xdc];                  // 0x11c
-    u16 pitch;                             // 0x1f8
-} KEEP_SCREEN_CAMERA_FIELDS;
-
 void GameCam_Reset(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;
@@ -342,30 +335,10 @@ typedef struct CAMERA_CONTEXT_PATH { // size 0x50
     u8 flags;                        // 0x4c
 } CAMERA_CONTEXT_PATH;
 
-typedef struct CAMERA_CONTEXT_FOCUS { // size 0x34
-    u8 unknown_00[0x28];              // 0x00
-    NUVEC focus;                      // 0x28
-} CAMERA_CONTEXT_FOCUS;
-
-typedef struct CAMERA_CONTEXT_BUILDIT { // size 0x40
-    u8 unknown_00[0x34];                // 0x00
-    NUVEC position;                     // 0x34
-} CAMERA_CONTEXT_BUILDIT;
-
-typedef struct CAMERA_GIZFORCE_TARGET { // size 0x28
-    u8 unknown_00[0x1c];                // 0x00
-    NUVEC position;                     // 0x1c
-} CAMERA_GIZFORCE_TARGET;
-
 typedef struct CAMERA_CABLE { // size 0x8
     GAMEOBJECT *source;       // 0x0
     GAMEOBJECT *target;       // 0x4
 } CAMERA_CABLE;
-
-typedef struct CAMERA_GRABBER { // size 0x498
-    u8 unknown_000[0x48c];      // 0x000
-    NUVEC grab_position;        // 0x48c
-} CAMERA_GRABBER;
 
 #define GAME_CAMERA_ABSOLUTE(destination, source)                                                                                          \
     do {                                                                                                                                   \

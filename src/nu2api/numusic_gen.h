@@ -66,3 +66,15 @@ typedef struct PC_SOUND_INIT_CONFIG {     // size 0x28
     i32 option_20;                        // 0x20
     i32 option_24;                        // 0x24
 } PC_SOUND_INIT_CONFIG;
+
+struct PC_STEREO_PLAY_PACKET { // size 0x24
+    i32 option11;              // 0x00
+    i32 reserved;              // 0x04
+    i32 stream_index;          // 0x08
+    i32 first_sample;          // 0x0c
+    i32 last_sample;           // 0x10
+    i32 volume_left;           // 0x14
+    i32 volume_right;          // 0x18
+    i32 option9_mode;          // 0x1c
+    f32 start_offset;          // 0x20
+};

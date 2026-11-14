@@ -229,3 +229,10 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct nualloc_manager_prefix_s { // size 0x10
+    void *base;                           // 0x0
+    u32 size;                             // 0x4
+    u32 block_count;                      // 0x8
+    u32 used_bytes;                       // 0xc
+} NUALLOC_MANAGER_PREFIX_PC;

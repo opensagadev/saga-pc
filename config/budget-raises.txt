@@ -150,3 +150,5 @@ config/oddscan-budget.json address-name 16324 2,419 names that restated their ad
 config/oddscan-budget.json hex-name 590 offset-named fields (state6a0Pc) were hidden from the pattern by the pc marker; they are now visible for the placeholder pass (no new name)
 config/oddscan-budget.json view-use 886 locals named ...ViewPc read as views once the pc marker goes (no new view)
 config/oddscan-budget.json placeholder-field 8998 placeholder names the class did not recognise (padding_12, field_c0 spellings) take its unknown_<hex>/pad_<hex> form (no new placeholder)
+config/castscan-budget.json layout-compatible 301 15 casts between unit copies of one type become casts between distinct types once the copies merge (duplicate-type 1647 -> 1632; same casts)
+config/castscan-budget.json record-pun 625 see layout-compatible 301 (same 15 casts)

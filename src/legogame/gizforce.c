@@ -97,11 +97,6 @@ typedef struct {
     u8 opaque[0xa4 - 16];
 } ADD_FORCE;
 
-typedef struct {
-    u8 unknown_00[0x1c];
-    NUVEC position;
-} FLOW_FORCE_POSITION;
-
 typedef struct registry_force_record_pc_s {
     u8 unknown_00[0x28];
     GAMEANIMSET *anim_set;

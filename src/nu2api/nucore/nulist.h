@@ -26,3 +26,8 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct ai_control_slot_s { // size 0xa8
+    NULISTLNK links;               // 0x00
+    u8 unknown_08[0xa0];           // 0x08
+} AI_CONTROL_SLOT;

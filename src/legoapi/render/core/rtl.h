@@ -190,3 +190,11 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct GAME_LIGHT_VIEW {
+    u8 unknown000[0x285];
+    i8 floor_surface;
+    u8 unknown_286[0x4d8 - 0x286];
+    RTL_DATA light_data;
+    OBJECT_LIGHT_STATE_GAME lighting_state;
+} GAME_LIGHT_VIEW;

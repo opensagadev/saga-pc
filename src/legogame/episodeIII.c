@@ -135,18 +135,6 @@ typedef struct cruiserd_netpacket_s {
     u32 flags;
 } CRUISERD_NETPACKET_PC;
 
-typedef struct cruiserd_lift_anim_s {
-    NUMTX matrix;
-    f32 tfactor;
-    u8 unknown_44[8];
-    f32 ltime;
-    u32 playing : 1;
-    u32 flags_rest : 31;
-    f32 fparam1;
-    f32 prev_eval_time;
-    u16 animation_index;
-} CRUISERD_LIFT_ANIM_PC;
-
 typedef struct vadera_netpacket_s {
     u16 count;
     i16 subtitle;
@@ -162,12 +150,6 @@ typedef struct vaderc_s {
     u8 players_dead;
     u8 reserved_96[2];
 } VADERC_PC;
-
-typedef struct terrain_platform_reader_pc_s {
-    u8 opaque_00_40[0x40];
-    NUMTX *scene_object;
-    u8 opaque_44_6c[0x28];
-} TERRAIN_PLATFORM_READER_PC;
 
 typedef struct terrain_set_reader_s {
     u8 opaque_00_68[0x68];

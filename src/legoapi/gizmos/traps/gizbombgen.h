@@ -53,3 +53,15 @@ extern "C" {
 enum { GIZBOMBGEN_FLAG_ACTIVE = 1 };
 
 enum { GIZBOMBGEN_FLAG_VISIBLE = 2 };
+
+typedef struct {                 // size 0x14
+    GIZBOMBGEN_s *items;         // 0x00
+    u16 count;                   // 0x04
+    u16 capacity;                // 0x06
+    void *pool;                  // 0x08
+    i16 reset : 1;               // 0x0c:0
+    i16 reset_saved : 1;         // 0x0c:1
+    i16 reset_flags_unused : 14; // 0x0c:2
+    u16 opaque_0e;               // 0x0e
+    void *progress;              // 0x10
+} ADD_BOMB_RESET_SYS;

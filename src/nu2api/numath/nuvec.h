@@ -98,3 +98,102 @@ typedef struct cut_load_bounds_s { // size 0x18
     NUVEC min;                     // 0x00
     NUVEC max;                     // 0x0c
 } CUT_LOAD_BOUNDS;
+
+typedef struct BURN_OUT { // size 0x24
+    i32 active;           // 0x00
+    NUVEC position;       // 0x04
+    f32 field_10;         // 0x10
+    f32 field_14;         // 0x14
+    f32 field_18;         // 0x18
+    f32 field_1c;         // 0x1c
+    f32 field_20;         // 0x20
+} BURN_OUT;
+
+typedef struct CAMERA_CONTEXT_BUILDIT { // size 0x40
+    u8 unknown_00[0x34];                // 0x00
+    NUVEC position;                     // 0x34
+} CAMERA_CONTEXT_BUILDIT;
+
+typedef struct CAMERA_CONTEXT_FOCUS { // size 0x34
+    u8 unknown_00[0x28];              // 0x00
+    NUVEC focus;                      // 0x28
+} CAMERA_CONTEXT_FOCUS;
+
+typedef struct CAMERA_GIZFORCE_TARGET { // size 0x28
+    u8 unknown_00[0x1c];                // 0x00
+    NUVEC position;                     // 0x1c
+} CAMERA_GIZFORCE_TARGET;
+
+typedef struct CAMERA_GRABBER { // size 0x498
+    u8 unknown_000[0x48c];      // 0x000
+    NUVEC grab_position;        // 0x48c
+} CAMERA_GRABBER;
+
+typedef struct {
+    u8 unknown_00[0x34];
+    NUVEC position;
+} FLOW_BUILDIT_POSITION;
+
+typedef struct {         // size 0x28
+    u8 unknown_00[0x1c]; // 0x00
+    NUVEC position;      // 0x1c
+} FLOW_FORCE_POSITION;
+
+typedef struct GAME_ANTI_NODE_DATA {
+    NUVEC position;
+    f32 radius;
+    f32 min_y;
+    f32 max_y;
+    f32 extent_x;
+    f32 extent_z;
+    u16 angle;
+    u8 shape;
+    u8 mode;
+} GAME_ANTI_NODE_DATA;
+
+typedef struct KEEP_SCREEN_CAMERA_FIELDS { // size 0x1fc
+    u8 unknown_000[0x110];                 // 0x000
+    NUVEC direction;                       // 0x110
+    u8 unknown_11c[0xdc];                  // 0x11c
+    u16 pitch;                             // 0x1f8
+} KEEP_SCREEN_CAMERA_FIELDS;
+
+struct SHADOW_PLAYER_BOUNDS {
+    u8 unknown_000[0x5fc];
+    NUVEC center;
+    f32 radius;
+};
+
+typedef struct grapple_rotation_s { // size 0x3c
+    u8 unknown_00[0x30];            // 0x00
+    NUVEC hook_position;            // 0x30
+} GRAPPLE_ROTATION;
+
+typedef struct player_position_record_s { // size 0x10
+    NUVEC *position;                      // 0x0
+    i32 sock_location;                    // 0x4
+    f32 sock_ratio;                       // 0x8
+    i16 angle;                            // 0xc
+    u8 unknown_0e[2];                     // 0xe
+} PLAYER_POSITION_RECORD;
+
+typedef struct player_reset_fields_s {
+    u8 unknown_0[0xc50];
+    NUVEC weapon_trail_offset;
+    u8 unknown_c5c[0xa4];
+    void *incoming_special;
+    u8 unknown_d04[0x14];
+    void *force_glow_candidate;
+    u8 unknown_d1c[8];
+    f32 ground_contact_grace_timer;
+    u8 unknown_d28[0x78];
+    f32 nearby_floor_distance;
+    u8 unknown_da4[0x14];
+    f32 pre_reset_hover_height;
+    u8 unknown_dbc[0x28];
+    f32 hold_timer;
+    u8 unknown_de8[0x1c];
+    i32 dynamic_light_id;
+    u8 unknown_e08[0x275];
+    u8 pre_reset_state;
+} PLAYER_RESET_FIELDS;

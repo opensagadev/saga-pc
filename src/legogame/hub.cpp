@@ -235,15 +235,6 @@ typedef struct hub_freeplay_pad_reader_pc_s {
     u32 digital_buttons_pressed;
 } HUB_FREEPLAY_PAD_READER_PC;
 
-typedef struct world_minikit_reader_s {
-    u8 unknown_0000[0x2968];
-    MINIKIT_PC minikit;
-    u8 unknown_2980[4];
-    MINIKIT_PC **pieces_by_id;
-    u8 unknown_2988[0x158];
-    u8 *hub_minikits;
-} WORLD_MINIKIT_READER;
-
 static f32 HubFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;

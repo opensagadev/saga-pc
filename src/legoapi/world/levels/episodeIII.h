@@ -30,3 +30,21 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct cruiserd_lift_anim_s { // size 0x60
+    NUMTX matrix;                     // 0x00
+    f32 tfactor;                      // 0x40
+    u8 unknown_44[8];                 // 0x44
+    f32 ltime;                        // 0x4c
+    u32 playing : 1;                  // 0x50:0
+    u32 flags_rest : 31;              // 0x50:1
+    f32 fparam1;                      // 0x54
+    f32 prev_eval_time;               // 0x58
+    u16 animation_index;              // 0x5c
+} CRUISERD_LIFT_ANIM_PC;
+
+typedef struct terrain_platform_reader_pc_s { // size 0x6c
+    u8 opaque_00_40[0x40];                    // 0x00
+    NUMTX *scene_object;                      // 0x40
+    u8 opaque_44_6c[0x28];                    // 0x44
+} TERRAIN_PLATFORM_READER_PC;

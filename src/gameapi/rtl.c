@@ -1024,16 +1024,6 @@ void rtlSetShadowFlickerBlendTime(f32 time) {
 void fun_00635b00(void) {
 }
 
-typedef struct BURN_OUT { // size 0x24
-    i32 active;           // 0x00
-    NUVEC position;       // 0x04
-    f32 field_10;         // 0x10
-    f32 field_14;         // 0x14
-    f32 field_18;         // 0x18
-    f32 field_1c;         // 0x1c
-    f32 field_20;         // 0x20
-} BURN_OUT;
-
 struct BURN_SET {                    // size 0x564
     BURN_PARAMETERS parameters;      // 0x000
     BURN_PARAMETERS parameters_copy; // 0x054

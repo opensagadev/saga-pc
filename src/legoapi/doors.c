@@ -86,14 +86,6 @@ void Doors_Init(WORLDINFO *world) {
     }
 }
 
-typedef struct player_position_record_s { // size 0x10
-    NUVEC *position;                      // 0x0
-    i32 sock_location;                    // 0x4
-    f32 sock_ratio;                       // 0x8
-    i16 angle;                            // 0xc
-    u8 unknown_0e[2];                     // 0xe
-} PLAYER_POSITION_RECORD;
-
 typedef struct player_door_s { // size 0x128
     char name[128];            // 0x000
     char camera_name[32];      // 0x080
