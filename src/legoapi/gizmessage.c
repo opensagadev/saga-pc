@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
 
-/* Retail unit 0x5aab50-0x5ab073: definitions in retail address order. */
-
 void ResetGizAIMessageSys(GIZAIMESSAGESYS *sys) {
     i32 i;
     if (sys == NULL) {

@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x576340-0x576bb3: definitions in retail address order. */
-
 STATIC_ASSERT(offsetof(HINTSYS_PC, active_hint) == 8);
 STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
 
@@ -25,7 +23,7 @@ typedef struct HINT_WORLD_TELEPORT_PC {
     i32 teleport_count;    // 0x4684
 } HINT_WORLD_TELEPORT_PC;  // size 0x4688
 
-/* Native PC hint updater records retain their original packed field offsets. */
+/* Hint updater records keep their packed field offsets. */
 typedef struct HINT_PANEL_PC {
     u8 reserved00[0x61]; // 0x00
     u8 model_variant;    // 0x61
@@ -195,7 +193,6 @@ void Hint_Reset(void) {
     hintsys.active_hint = NULL;
 }
 
-/* 00576630..00576668. Both arguments are ordinary cdecl stack arguments. */
 void Hint_ResetHint(i32 hint_id, i32 reset_completed) {
     HINT_PC *hint = hintsys.hints;
     if (hint == NULL) {
@@ -285,7 +282,6 @@ void Hint_LoadAllGameState(void) {
     }
 }
 
-/* PC576840/31; append to hint.c; update_fn alias below names native+0. */
 void Hint_Draw(i32 viewport) {
     if (hintsys.active_hint != NULL && hintsys.draw_fn != NULL) {
         hintsys.draw_fn(hintsys.active_hint, viewport);
@@ -358,7 +354,6 @@ void Hint_SetCompletePc(HINT_PC *hint) {
     }
 }
 
-/* SOURCE ONLY: append to src/legoapi/hint.c; no header/data/map changes. */
 void Hint_Process(f32 elapsed) {
     i32 available = 1;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
@@ -369,7 +364,6 @@ void Hint_Process(f32 elapsed) {
         return;
     }
 
-    /* Existing historical symbol names the DWORD native reads at00803984. */
     if (LEGOHINT_PUNCH == 0 || CUTSTOPGAME != 0 || MiniCutCam == 1 || MiniCutCam == 2 || MiniCutCam == 3 ||
         SuperStory != 0 || BonusArea != 0 || (world->current_level->flags & 0x200) != 0 ||
         (world->area != NULL && (world->area->flags & 0x124) != 0) || GetMenuID() != -1 || FadeSys.fade != 0.0f ||
@@ -406,5 +400,3 @@ void Hint_Process(f32 elapsed) {
 
 void fun_00576bc0(void) {
 }
-
-/* Append to src/legoapi/hint.c. */

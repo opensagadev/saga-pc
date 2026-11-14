@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4cf680-0x4d0650 (legoapi/thermaldetonators.c): definitions in retail address order. */
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);

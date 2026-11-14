@@ -62,7 +62,7 @@ static void LedgeSetAttachPositionPc(GAMEOBJECT *object, NUVEC *position, u16 an
         object->external_force.z - NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * object->bounds_radius;
 }
 
-/* Retail takes these absolute values through the float's bit pattern. */
+/* Takes these absolute values through the float's bit pattern. */
 extern "C" {
     static f32 LedgeFabsPc(f32 value) {
         f32 result;

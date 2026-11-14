@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x55c0f0-0x55c8e6: definitions in retail address order. */
-
 extern "C" void DumpAreaData(i32 mode, i32 last_area);
 extern "C" void BackDrop_Dump(void);
 

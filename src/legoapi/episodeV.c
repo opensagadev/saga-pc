@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
 
-/* Retail unit 0x4e5f10-0x4e9f30 (legoapi/world/levels/episodeV.cpp): definitions in retail address order. */
 #include <string.h>
 
 /* Episode V FixUpLevels callbacks (Hoth escape, Dagobah, Cloud City trap). */
@@ -31,7 +30,7 @@ extern i32 turret_gizmotype_id;
 void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special);
 #define FALCON_SLOT(object) ((i8)(object)->field_280)
 
-/* PC 0x00889660: asteroid field (original episodeV.cpp). */
+/* Asteroid field. */
 typedef struct ASTEROID_PC {
     NUSPECIALHANDLE special;
     GIZMOBLOWUP_PC *blowup;
@@ -41,7 +40,7 @@ typedef struct ASTEROID_PC {
     u8 activated;
 } ASTEROID_PC;
 
-/* PC 0x0088a268: rotating rock at the end of AsteroidChase C. */
+/* Rotating rock at the end of AsteroidChase C. */
 typedef struct FINAL_ASTEROID_PC {
     NUSPECIALHANDLE special;
     GIZMOBLOWUP_PC *blowups[8];
@@ -89,8 +88,6 @@ extern u32 LEGO_AIPATHCNX_BIGJUMP;
         }                                                                                                              \
     } while (0)
 
-/* PC level-script and antinode views retain the surrounding canonical layouts.
- */
 typedef struct HOTH_WORLD_SCRIPT_PC {
     u8 reserved[0x2b00];
     AISCRIPTPROCESS_PC processor;
@@ -374,7 +371,6 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
 
 ASTEROID_PC asteroids[128] = {0};
 i32 nasteroids = 0;
-/* PC 0x00800290. */
 i32 maxrotspd[3] = {0x1555, 0x38e, 0x16c};
 
 void Asteroids_Reset(WORLDINFO *world) {
@@ -481,7 +477,7 @@ void Asteroids_Update(void) {
     }
 }
 
-/* PC 0x0088a554 / 0x0088a55c / 0x00800214 / 0x0080021c: Falcon spotlight phases. */
+/* Falcon spotlight phases. */
 f32 spotLightA_yrot[2] = {0};
 f32 spotLightA_zrot[2] = {0};
 f32 spotLightB_yrot[2] = {0.5f, 0.5f};
@@ -695,7 +691,6 @@ void AsteroidChaseC_Update(WORLDINFO *world) {
     }
 }
 
-/* PC 0x0088a310 / 0x0088a314. */
 i32 lastPlaying = 0;
 NUSPECIALHANDLE specialIcon = {0};
 

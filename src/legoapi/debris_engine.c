@@ -840,7 +840,7 @@ void DebrisProcessAllocation(void) {
     }
 }
 
-/* Retail inlines SetSfxBit_On/SetSfxBit_OnEx into the emitter sound loop. */
+/* SetSfxBit_On/SetSfxBit_OnEx are inlined into the emitter sound loop. */
 #define DEBRIS_SET_SFX_BIT_ON(sound_id)                                                                                \
     do {                                                                                                               \
         i32 sample_id;                                                                                                 \
@@ -1725,8 +1725,7 @@ void DebrisGlassClose(void) {
     }
 }
 
-/* Native PC entries 0x00659140 and 0x00659150 are RET-only; the D3D release and
- * restore paths call them for debris. Their historical names are unknown. */
+/* Empty hooks; the D3D release and restore paths call them for debris. */
 void DebrisReleaseResourcesPc(void) {
 }
 

@@ -58,7 +58,7 @@ typedef struct pod_merge_packet_reader_pc_s {
     f32 overlay_weight;       // 0x44
 } POD_MERGE_PACKET_READER_PC; // size 0x48
 
-/* Episode I level callbacks installed by FixUpLevels (retail 0x4d82f0 .. 0x4dd770). */
+/* Episode I level callbacks installed by FixUpLevels. */
 typedef struct podrace_levflag_pc_s {
     u8 podrace_state;  // 0x0
     u8 mushroom_state; // 0x1

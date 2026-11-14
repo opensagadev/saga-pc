@@ -1,6 +1,6 @@
 #include "saga.h"
 
-/* Retail 64fdb0: an external diagnostic entry whose complete body is RET. */
+/* An external diagnostic entry with an empty body. */
 void TerrainDiagnosticNoOpPC(const void *context, ...) {
     (void)context;
 }

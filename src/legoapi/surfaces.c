@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x572360-0x572aba: definitions in retail address order. */
-
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
 typedef struct world_conveyor_pc_s {

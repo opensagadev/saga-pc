@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x58aae0-0x58b34c: definitions in retail address order. */
 STATIC_ASSERT(sizeof(SPECIALMOVE_PC) == 0x10);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, attacker_animation) == 0);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, attacker_id) == 2);

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
 
-/* Retail unit 0x560ac0-0x561b7e: definitions in retail address order. */
 #include <string.h>
 
 typedef struct coin_packet_pc_s {
@@ -294,7 +293,6 @@ void UpdateGameMessages(void) {
     }
 }
 
-/* PC5612f0/267; append to gamemessages.c. Native cdecl3 pointers, all stack. */
 void TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *camera_direction) {
     GAME_MESSAGE_PC *message = GameMessage;
     GAME_MESSAGE_PC *end = message + 128;
@@ -329,7 +327,6 @@ void TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *c
     }
 }
 
-/* PC561400/1235. Append to render.c (body valid C99), existing native globals. */
 void DrawGameMessages(void) {
     GAME_MESSAGE_PC *message;
     i32 index;

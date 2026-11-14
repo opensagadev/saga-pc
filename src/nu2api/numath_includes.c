@@ -1466,8 +1466,6 @@ void NuMtxInvRSSH(NUMTX *inv, NUMTX *T) {
 }
 
 void NuMtxInvH(NUMTX *mi, NUMTX *m0) {
-    // there's some weird stack alignment stuff going on here...
-    // also not sure if this semantically matches the original implementation
     i32 p[4];
     i32 j;
     i32 k;
@@ -4434,7 +4432,7 @@ f32 NuAtan2DAF(f32 dx, f32 dy) {
 
 NUANG NuAngAdd(NUANG a, NUANG b) {
     NUANG sum = (a + b) & 0xffff;
-    // Retail VC8 uses cmp 0x8000; jl for this normalization.
+    // VC8 uses cmp 0x8000; jl for this normalization.
     if (sum >= 0x8000) {
         sum -= 0x10000;
     }

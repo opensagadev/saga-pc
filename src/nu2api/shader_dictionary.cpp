@@ -113,7 +113,7 @@ ShaderMacroDefinitionPc *ShaderCompilerDictionaryPc::FindDefinition(const char *
     return NULL;
 }
 
-// AddDefinition body; retail inlines it into EmitProgram only.
+// AddDefinition body; inlined into EmitProgram only.
 char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena);
 #define SHADER_ADD_DEFINITION_PC(DICTIONARY, NAME, VALUE, EMIT)                                                        \
     do {                                                                                                               \
@@ -265,7 +265,7 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
         } while (next != NULL);
         value = definition->value;
     } else {
-        // The native path reloads this input after the definition lookup.
+        // This input is reloaded after the definition lookup.
         value = reinterpret_cast<const volatile ShaderConditionNodePc *>(node)->token;
     }
     if (value == NULL || !IsNumericToken(value)) {
@@ -355,7 +355,6 @@ ShaderSourceNodePc *ShaderCompilerDictionaryPc::FindASTUniform(const char *name)
     return NULL;
 }
 
-// Native type-name table minimum22 entries; original declaration visibility remains qualified.
 static const char *ShaderCompilerTypeNamesPc[22] = {
     "undefined", "float",     "float",     "float2",    "float3",      "float4",  "float3x3", "float4x4",
     "half",      "half",      "half2",     "half3",     "half4",       "half3x3", "half4x4",  "bool",

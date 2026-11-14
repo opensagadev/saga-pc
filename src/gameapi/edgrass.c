@@ -683,7 +683,7 @@ i32 edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer, VARIPTR
             i32 skipped_individuals;
             i32 individual;
             i32 element;
-            /* Retail proceeds with the limit record if no free slot was found. */
+            /* Proceeds with the limit record if no free slot was found. */
             while (GrassClumps[slot].element_count != 0 && slot < EDGRA_MAX_CLUMPS) {
                 ++slot;
             }

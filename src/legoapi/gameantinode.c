@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x59a5a0-0x59b32d: definitions in retail address order. */
-
 typedef struct antinode_pc_s {
     NUVEC position;             // 0x00
     f32 radius;                 // 0x0c

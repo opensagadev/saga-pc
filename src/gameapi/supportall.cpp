@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-/* ThingManager's unit (retail 0x633500-0x633df0). */
+/* ThingManager's unit. */
 
 STATIC_ASSERT(sizeof(BaseThing) == 0x10);
 STATIC_ASSERT(offsetof(BaseThing, id) == 0x4);

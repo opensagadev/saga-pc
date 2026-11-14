@@ -7,7 +7,7 @@ STATIC_ASSERT(offsetof(MEMORYMANAGER, unknown_10) == 0x10);
 STATIC_ASSERT(offsetof(MEMORYMANAGER, unknown_14) == 0x14);
 STATIC_ASSERT(offsetof(MEMORYMANAGER, size) == 0x18);
 
-/* Linear allocation from the memory manager's arena (0x6104e0). */
+/* Linear allocation from the memory manager's arena. */
 void *memorymanager_s::AllocLinear(u32 bytes, u32 alignment, i32 clear) {
     void *memory = NULL;
     if (bytes < *end_anchor - *start_anchor) {

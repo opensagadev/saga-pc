@@ -547,7 +547,7 @@ extern "C" {
 #undef TERRAIN_HP_FACE
 #undef TERRAIN_HP_EDGE
 #undef TERRAIN_HP_VERTEX
-// Retail re-reads the wall list after every call.
+// Re-reads the wall list after every call.
 #define TERRAIN_HWS_A (((TERRAIN_WALL_POINT *)WallSplList)[i].position)
 #define TERRAIN_HWS_B (((TERRAIN_WALL_POINT *)WallSplList)[i + 1].position)
 // NuFabs: the masked bits are copied into a second float (I16).

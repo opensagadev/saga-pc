@@ -661,7 +661,7 @@ SoundVoiceManagerPC::SoundVoiceManagerPC() {
     }
 }
 
-// Plain .bss like retail: VC8 drops the constructor's memset only for an object it knows is zero-filled.
+// Plain .bss: VC8 drops the constructor's memset only for an object it knows is zero-filled.
 SoundVoiceManagerPC SoundVoiceManager;
 
 void SoundVoiceManagerPC::UnloadSample(i32 index) {

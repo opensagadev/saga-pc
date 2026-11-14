@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <string.h>
-/* Existing compiled native owners; declarations only, no replacement bodies/data. */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -12,7 +11,6 @@ extern "C" {
 STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_look_position_pc) == 0x1098);
 extern "C" void LostTempleC_ResetPc(WORLDINFO *);
 extern "C" void LostTempleC_UpdatePc(WORLDINFO *);
-/* Original level.cpp FixUpLevels family; PC-specific startup gates verified. */
 STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) == 0x68);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
@@ -29,24 +27,19 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 STATIC_ASSERT(offsetof(WORLDINFO, sock_sys) == 0x2988);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_obstacle_sys) == 0x46a4);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) == 0x68);
-/* Actual PC Draw3D omits the Android sign/episode scene branch. */
+/* Draw3D on PC has no sign/episode scene branch. */
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
-// Add only to the genuine Hub owner, after its existing private table definition.
 struct GIZBUILDIT_PC;
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-/* 424750/92. Can share the fuller Customiser canonical type once integrated. */
-/* 58eaa0/465. WORLDINFO currently carries Android buildit pointee types;
- * cast the pointee to the asserted PC array owner, never index Android84.
- */
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, object_data) == 0x24);
 STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) == 0x80);
 STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, start_mtx) == 0);
-/* PC50ed50 282 bytes, native three stack parameters: action, player0, player1.
- * Last two are char* values tested for nonzero rather than string contents. */
+/* Takes action, player0 and player1; the last two are char* values tested
+ * for nonzero rather than string contents. */
 extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32, i32);
-extern "C" char HubButtonStringBufferPc[]; /*8016a8 native scratch owner size TBD, initial"???"*/
+extern "C" char HubButtonStringBufferPc[];
 extern "C" {
     STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
     STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
@@ -63,9 +56,6 @@ extern "C" {
                                             {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}};
 }
 
-/* Research-only declarations of genuine original Hub state; native initializer
- * and canonical/private ownership verification pending sole writer. */
-
 extern "C" void Hub_LockUnlockDoors(WORLDINFO *world) {
     (void)world;
 }
@@ -74,16 +64,7 @@ extern "C" void Hub_DrawStarField(void) {
     GetMenuID();
 }
 
-/* Additional source-private viewer state/native menu-reader view, genuine
- * original backing/ownership gate pending; no placeholder storage emitted. */
-
-/* Application fragment for the existing hub.cpp owner. Native 47cdd0/3846.
- * Private draft: declarations/data ownership listed separately; no activation.
- * Existing misleading Hub* names are deliberately retained by mapped address.
- */
-
-/* PC511560 106 bytes. Cdecl all stack, original 13 args + fixed suffix0,0,128. Retail lives in the menu
-   unit and is never inlined into hub callers. */
+/* Lives in the menu unit and is never inlined into hub callers. */
 extern "C" void SmartText(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align, i32 red, i32 green,
                           i32 blue, f32 max_width, i32 center) {
     SmartTextEx(text, x, y, z, sx, sy, sz, align, red, green, blue, max_width, center, NULL, 0, 128);
@@ -108,7 +89,6 @@ extern "C" char *TextButtonStringPc(i32 action, const char *player0, const char 
     return HubButtonStringBufferPc;
 }
 
-/* PC4015e0 462 bytes. Exact command family, no prefix/default substitution. */
 extern "C" i32 Text_ExpandButtonString(char *command, char *output) {
     if (NuStrICmp(command, "[TAG]") == 0 || NuStrICmp(command, "[TRIANGLE]") == 0 || NuStrICmp(command, "[T]") == 0) {
         NuStrCpy(output, TextButtonStringPc(12, TTab[816], TTab[817]));
@@ -136,11 +116,4 @@ extern "C" i32 Text_ExpandButtonString(char *command, char *output) {
 }
 
 extern "C" void MenuInitFreePlay(MENU *) {
-} /*47a970/1 genuineRET*/
-
-/* Five reviewed providers: append these four to existing hub.cpp. */
-
-/* Reviewed remaining native HUD helper family, shared total, and sole DrawPanel owner. */
-/* Append before moved DrawPanel, in same existing hub.cpp as DrawHitPointsPc. */
-
-/* Complete native player HUD4213B; independent source gate pending. */
+}

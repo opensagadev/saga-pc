@@ -434,7 +434,7 @@ typedef struct SOCKPAR_CONTEXT_PC {
     SOCK_PC *sock;
 } SOCKPAR_CONTEXT_PC;
 
-// RET-only in retail (0x0053db50), like SockSysMissingCameraDiagnostic: the warning for a
+// Empty on PC, like SockSysMissingCameraDiagnostic: the warning for a
 // sock block without sock_end was compiled out.
 void SockSysMissingSockEndDiagnostic(char *file_name);
 
@@ -1849,7 +1849,6 @@ i32 SockSegmentsAhead(SOCK_PC *sock, i32 segment, i32 *from_segment, i32 *to_seg
     return advanced;
 }
 
-/* Append to canonical socksys.c after reviewed helper290. No shared edits. */
 f32 EnforceSockYLimits(f32 y, SOCKPOSITION_PC *position, SOCKSYS_PC *sock_sys) {
     if (sock_sys != NULL) {
         if (y < position->camera_position.y) {

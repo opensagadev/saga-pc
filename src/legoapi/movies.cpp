@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x5b2350-0x5b2690: definitions in retail address order. */
-
 extern "C" {
     extern i32 movie_skipped;
     extern f32 MoviePlayTime;

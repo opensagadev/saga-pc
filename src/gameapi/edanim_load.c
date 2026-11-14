@@ -28,12 +28,11 @@ i32 edanimLookupSpecial(char *name, NUGSCN *scene) {
     return -1;
 }
 
-/* Android edqrand: the editors' 16-bit random sequence. */
+/* The editors' 16-bit random sequence. */
 void edqrand(void) {
     edqseed = (edqseed * 0x24cd + 1) & 0xffff;
 }
 
-/* Android edbitsRegisterLevel. */
 void edbitsRegisterLevel(char *filename, i8 game) {
     if (filename) {
         NuStrCpy(edbits_level_filename, filename);
@@ -323,8 +322,8 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
             AnimParams[slot].bounce_spring = 0;
             AnimParams[slot].bounce_damping = 0;
         }
-        /* PlatInstBounce(platform_id, impulse, spring, damping), expanded in place as retail inlines it:
-           the arguments are copied first and CurrentTerrain is re-read for every store. */
+        /* PlatInstBounce(platform_id, impulse, spring, damping), expanded in place: the arguments are
+           copied first and CurrentTerrain is re-read for every store. */
         if (AnimParams[slot].platform_id != -1) {
             item = AnimParams[slot].platform_id;
             impulse = AnimParams[slot].bounce_impulse;

@@ -2,8 +2,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-/* PC-only network session manager (0x60ffd0-0x6104b0). Not reached from the
- * Android source; retail never constructs it outside this object. */
+/* PC-only network session manager, never constructed outside this
+ * object. */
 
 STATIC_ASSERT(sizeof(NetStatCounters) == 0x10);
 STATIC_ASSERT(sizeof(NetStats) == 0x220);

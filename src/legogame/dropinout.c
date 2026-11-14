@@ -170,7 +170,7 @@ void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
         GameAudio_PlaySfx(0x20, &object->collision_position, 0, 0);
     }
     ReleaseTakeOver(object, 1);
-    /* The lean angles are signed in retail (loaded with movsx); the shared header has them as u16. */
+    /* The lean angles are signed (loaded with movsx); the shared header has them as u16. */
     secondary = object->secondary_lean_angle;
     movement = object->movement_lean_angle;
     tertiary = object->tertiary_lean_angle;

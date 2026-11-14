@@ -113,7 +113,7 @@ extern "C" void PCOptionsBuildFolder(char *destination) {
     }
     HRESULT result = SHGetFolderPathA(NULL, folder, NULL, 0, PcUserFolder);
     const char *source = result < 0 ? NULL : PcUserFolder;
-    // MATCH-EXCEPTION: copied by hand; retail walks both pointers, which the strcpy intrinsic never emits
+    // MATCH-EXCEPTION: copied by hand; the original walks both pointers, which the strcpy intrinsic never emits
     char *target = destination;
     char c;
     do {

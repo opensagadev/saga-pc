@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-/* theMemoryManager's 32-byte size-class pools (retail supportall unit, C++).
+/* theMemoryManager's 32-byte size-class pools (supportall unit, C++).
  * A freed block is pushed on its class list; allocation pops it, or carves a
  * fresh 16-byte-aligned block from the permanent buffer. */
 

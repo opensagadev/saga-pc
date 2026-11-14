@@ -250,7 +250,7 @@ static void Plugs_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
         if (!plug->active) {
             progress->active_mask[word] &= ~bit;
         }
-        /* Retail sets the plugged bit in the active mask. */
+        /* Sets the plugged bit in the active mask. */
         if (plug->plugged) {
             progress->active_mask[word] |= bit;
         }

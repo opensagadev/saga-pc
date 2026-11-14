@@ -26,7 +26,7 @@ typedef struct ZAMARROW_PC {
     f32 timer;
 } ZAMARROW_PC;
 
-/* PC 0x007fc434..0x007fc454: pursuit tuning values. */
+/* Pursuit tuning values. */
 static f32 pursuit_laser_range = 1000.0f;
 static f32 pursuit_laser_width = 1.0f;
 static f32 pursuit_laser_segment = 1.0f;
@@ -37,9 +37,9 @@ static f32 zamarrow_height = 1.0f;
 f32 traffic_test_z = -360.0f;
 static i32 pursuit_c_hack = 1;
 
-/* PC 0x0087b9e0: Zam Wesell locator arrow. */
+/* Zam Wesell locator arrow. */
 static ZAMARROW_PC zamarrow;
-/* PC 0x0087b9e8: generator laser type. */
+/* Generator laser type. */
 static i32 pursuit_laser_type;
 
 static void UpdateZamArrow(WORLDINFO *world) {

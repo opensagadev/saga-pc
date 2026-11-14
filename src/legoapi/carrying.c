@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x597c20-0x5999e0: definitions in retail address order. */
 typedef struct carry_plug_pc_s {
     char name[16];       // 0x00
     NUVEC position;      // 0x10

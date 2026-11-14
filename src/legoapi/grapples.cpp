@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
 
-/* Retail unit 0x54cd30-0x54f960 (legoapi/gizmos/transport/grapples.cpp): definitions in retail address order. */
-
 typedef struct {
     char name[16];
     u8 opaque[0xf8 - 16];
@@ -84,7 +82,6 @@ STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, rope_points) == 0x5c);
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, target_rope_points) == 0xa4);
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, ground_x_rotation) == 0x48);
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, ground_z_rotation) == 0x4a);
-/* Append after the existing canonical GRAPPLE_MOTION_PC and reset helpers. */
 STATIC_ASSERT(sizeof(GRAPPLE_MOTION_PC) == 0xf8);
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, display_special) == 0xec);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, grapple_locators) == 0x10a);
