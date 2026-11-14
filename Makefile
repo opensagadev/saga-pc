@@ -35,6 +35,11 @@ PROJECT_HEADERS := $(shell find src -type f -name '*.h' | LC_ALL=C sort)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
 OBJECTS += $(patsubst lib/ogg-vorbis/%,$(OBJ_DIR)/vendored/%,$(DEPENDENCY_SOURCES:.c=.obj))
+# Two sources with one stem (nushaderobject.c and nushaderobject.cpp) would share an object: refuse.
+DUPLICATE_OBJECTS := $(shell printf '%s\n' $(OBJECTS) | LC_ALL=C sort | uniq -d)
+ifneq ($(DUPLICATE_OBJECTS),)
+$(error Two sources compile to $(DUPLICATE_OBJECTS); give one of them another name)
+endif
 $(filter $(OBJ_DIR)/nu2api/pc_fmv%.obj $(OBJ_DIR)/nu2api/nufmv/pc/Bink/dsplay_bink.obj,$(OBJECTS)): src/nu2api/pc_fmv_native.h
 
 # Original Vorbis private headers/textual tables belong to these owners only.
@@ -92,14 +97,17 @@ LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib adva
 .PHONY: dependencies all build objects link Matching Debug run setup editor check check-core lint format check-objects check-warnings lower-warning-budget test match diff inspect clean
 
 all: build
-build: link
+build: link prune-objects
 objects: $(OBJECTS) $(DIAGNOSTIC_OBJECTS)
 link: $(EXE)
 Matching:
 	$(MAKE) BUILD_KIND=Matching build
 Debug:
 	$(MAKE) BUILD_KIND=Debug build
-.PHONY: link-strict
+.PHONY: link-strict prune-objects
+# Objects of renamed or removed units go, so nobody deletes objects by hand.
+prune-objects:
+	@$(PYTHON) tools/prune_objects.py $(OBJ_DIR) $(OBJECTS) $(DIAGNOSTIC_OBJECTS)
 run: $(EXE)
 	cd res && WINEPREFIX="$(CURDIR)/build/tools/wine" WINEDEBUG=-all WINEDLLOVERRIDES="winemenubuilder.exe=d" wine ../$(EXE)
 
