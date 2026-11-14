@@ -28,6 +28,8 @@ static struct eduimenu_s *testmenu0 = 0;
 #define EDUI_MIN(a, b) ((a) < (b) ? (a) : (b))
 #define EDUI_MAX(a, b) ((a) > (b) ? (a) : (b))
 
+i32 selection_value = 0;
+i32 PadFlyMode = 0;
 static i32 edfile_media = 0;
 static void *edfile_pakfile = 0;
 i32 edfile_handle = -1;
@@ -1799,6 +1801,8 @@ void eduiShowCursor(i32 show) {
     bShowCursor = show;
 }
 
+struct eduimenu_s *default_active_menu = 0;
+i32 edui_donotdraw = 0;
 f32 edui_cursor_dx;
 f32 edui_cursor_dy;
 u32 edui_cursor_colour = 0xff000000;
@@ -1893,6 +1897,8 @@ eduimenu_s *eduiGetActiveMenu(void) {
 
 void PcGetMousePositionPc(f32 *x, f32 *y);
 void PcSetMousePositionPc(f32 x, f32 y);
+u32 edui_cursor_buttons = 0;
+u32 edui_cursor_buttons_db = 0;
 u32 edui_cursor_buttons_old;
 i32 edui_cursor_locked;
 
@@ -2342,6 +2348,26 @@ eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback
  * and an optional button (1 arrow, 2 up/down arrows, 3 colour swatch). */
 static char eduiPropTextStore[256] = {0};
 static char eduiPropTextEdit[256] = {0};
+// PC walks 8-byte entries to a zero key.
+NUKEYCHAR NuKeyChar[65] = {
+    {0x2, 0x31, 0x21, {0, 0}},  {0x3, 0x32, 0x22, {0, 0}},  {0x4, 0x33, 0xa3, {0, 0}},  {0x5, 0x34, 0x24, {0, 0}},
+    {0x6, 0x35, 0x25, {0, 0}},  {0x7, 0x36, 0x5e, {0, 0}},  {0x8, 0x37, 0x26, {0, 0}},  {0x9, 0x38, 0x2a, {0, 0}},
+    {0xa, 0x39, 0x28, {0, 0}},  {0xb, 0x30, 0x29, {0, 0}},  {0xc, 0x2d, 0x5f, {0, 0}},  {0xd, 0x3d, 0x2b, {0, 0}},
+    {0xf, 0x09, 0x09, {0, 0}},  {0x10, 0x71, 0x51, {0, 0}}, {0x11, 0x77, 0x57, {0, 0}}, {0x12, 0x65, 0x45, {0, 0}},
+    {0x13, 0x72, 0x52, {0, 0}}, {0x14, 0x74, 0x54, {0, 0}}, {0x15, 0x79, 0x59, {0, 0}}, {0x16, 0x75, 0x55, {0, 0}},
+    {0x17, 0x69, 0x49, {0, 0}}, {0x18, 0x6f, 0x4f, {0, 0}}, {0x19, 0x70, 0x50, {0, 0}}, {0x1a, 0x5b, 0x7b, {0, 0}},
+    {0x1b, 0x5d, 0x7d, {0, 0}}, {0x1e, 0x61, 0x41, {0, 0}}, {0x1f, 0x73, 0x53, {0, 0}}, {0x20, 0x64, 0x44, {0, 0}},
+    {0x21, 0x66, 0x46, {0, 0}}, {0x22, 0x67, 0x47, {0, 0}}, {0x23, 0x68, 0x48, {0, 0}}, {0x24, 0x6a, 0x4a, {0, 0}},
+    {0x25, 0x6b, 0x4b, {0, 0}}, {0x26, 0x6c, 0x4c, {0, 0}}, {0x27, 0x3b, 0x3a, {0, 0}}, {0x28, 0x27, 0x40, {0, 0}},
+    {0x2b, 0x5c, 0x3f, {0, 0}}, {0x2c, 0x7a, 0x5a, {0, 0}}, {0x2d, 0x78, 0x58, {0, 0}}, {0x2e, 0x63, 0x43, {0, 0}},
+    {0x2f, 0x76, 0x56, {0, 0}}, {0x30, 0x62, 0x42, {0, 0}}, {0x31, 0x6e, 0x4e, {0, 0}}, {0x32, 0x6d, 0x4d, {0, 0}},
+    {0x33, 0x2c, 0x3c, {0, 0}}, {0x34, 0x2e, 0x3e, {0, 0}}, {0x35, 0x2f, 0x00, {0, 0}}, {0x37, 0x2a, 0x2a, {0, 0}},
+    {0x39, 0x20, 0x20, {0, 0}}, {0x47, 0x37, 0x37, {0, 0}}, {0x48, 0x38, 0x38, {0, 0}}, {0x49, 0x39, 0x39, {0, 0}},
+    {0x4a, 0x2d, 0x2d, {0, 0}}, {0x4b, 0x34, 0x34, {0, 0}}, {0x4c, 0x35, 0x35, {0, 0}}, {0x4d, 0x36, 0x36, {0, 0}},
+    {0x4e, 0x2b, 0x2b, {0, 0}}, {0x4f, 0x31, 0x31, {0, 0}}, {0x50, 0x32, 0x32, {0, 0}}, {0x51, 0x33, 0x33, {0, 0}},
+    {0x52, 0x30, 0x30, {0, 0}}, {0x53, 0x2e, 0x2e, {0, 0}}, {0x8d, 0x3d, 0x3d, {0, 0}}, {0xb5, 0x2f, 0x2f, {0, 0}},
+    {0x0, 0x00, 0x00, {0, 0}},
+};
 f32 EduiPropLabelWidthPc = 50.0f;
 extern void NuKeyFlush(void);
 extern void EduiFntPrintScaledPc(void *font, f32 x, f32 y, i32 alignment, char *text);
@@ -3937,6 +3963,9 @@ char FS_Filter[256] = "*.nup | *.hgp   ";
 char FS_FilterOut[256] = "_PC. | _360. | _PS3.";
 char *FS_CurrentPos = FS_FileList;
 char *FS_CurrentCursorPos = FS_FileList;
+u8 FS_ShowVolumes = 0;
+u8 FS_Active = 0;
+char FS_Path[256] = {0};
 i32 FS_CursorLine = 0;
 
 static __inline i32 FS_PrevNameLen(char *name) {
@@ -4014,9 +4043,14 @@ void FS_SetCursorToLastFileName(void) {
 extern void NuStrToLower(char *text);
 char FileSelFilterBlocksPc[8][96] = {0};
 char FileSelFilterOutBlocksPc[8][12] = {0};
+i32 FS_CurrentPosFileNum = 0;
+i32 FS_NumFiles = 0;
+void (*FS_Callback)(char *arg0, char *arg1) = 0;
+char FS_LastFileName[64] = {0};
 i32 FileSelFilterBlockCountPc = 0;
 i32 FileSelFilterOutBlockCountPc = 0;
 char FileSelVolumeNamesPc[1024] = {0};
+i32 FS_SortMode = 3;
 char FS_ParentEntry[8] = "D######";
 char *FS_FileListEnd = FS_FileList;
 
@@ -4211,6 +4245,8 @@ i32 eduiFilePickCompareNameReversePc(void *a, void *b) {
 
 /* File picker directory menu: the picker and menu it was opened for. */
 static eduimenu_s *filepick_menu = 0;
+char ed_levelfile[256] = {0};
+void *edui_font = 0;
 static edui_file_pick_s *filepick_item = 0;
 static i32 dir_size = 0;
 
@@ -4651,6 +4687,7 @@ f32 FS_GetDirTextWidth(void) {
 #pragma section(".data$FS_Title", read, write)
 __declspec(allocate(".data$FS_Title")) char FS_Title[64] = "Title";
 #pragma section(".data$FS_X", read, write)
+f32 FS_Width = 248.0f;
 __declspec(allocate(".data$FS_X")) f32 FS_X = 50.0f;
 #pragma section(".data$FS_Y", read, write)
 __declspec(allocate(".data$FS_Y")) f32 FS_Y = 40.0f;
