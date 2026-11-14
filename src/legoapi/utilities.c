@@ -7,8 +7,7 @@ void NuTexAnimScriptMissingPc(char *path);
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
-/* Source-private in gameobjects.c. Forward pointer uses struct tag in saga.h.
- * Tail[1] exposes actual counted traversal; it is NOT owner/allocation count.
+/* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
  */
 typedef struct shadow_platform_entry_pc_s {
     GAMEOBJECT *object;

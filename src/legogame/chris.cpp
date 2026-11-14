@@ -1,6 +1,5 @@
-// Dogfight translation unit (retail 0x40e870-0x413b70): the space-battle levels, their flight
-// splines, the Anakin C doors and the dogfight music points. Retail compiled these as one C++ unit;
-// definitions follow retail address order.
+// Dogfight translation unit: the space-battle levels, their flight splines, the Anakin C doors and
+// the dogfight music points, compiled as one C++ unit.
 
 #include "saga.h"
 #include <stdio.h>
@@ -313,7 +312,7 @@ extern "C" {
     STATIC_ASSERT(sizeof(DOOR_s) == 0x128);
     extern void SpaceResetAudioPoint(void);
 
-/* PC drawing controls are distinct owners; AnakinC occupies the intervening slot. */
+/* Drawing controls, each in its own section; AnakinC occupies the intervening slot. */
 #pragma data_seg(push, ".data$DogfightSelectedSockPc")
     SOCKPOSITION_PC *DogfightSelectedSockPc = NULL;
 #pragma data_seg(pop)
@@ -547,7 +546,7 @@ extern "C" {
                     door->offset = minimum;
                 }
             }
-            // The retail transform temporaries require a 16-byte-aligned stack.
+            // The transform temporaries require a 16-byte-aligned stack.
             {
                 f32 offset = door->offset;
                 __declspec(align(16)) NUVEC translation;
@@ -665,7 +664,6 @@ extern "C" {
         }
     }
 
-    /* This allocator has a genuine public stack entry in the PC executable. */
     DOGFIGHT_QUICK_BOLT_PC *QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
         DOGFIGHT_QUICK_BOLT_PC *start = buffer->records + buffer->used;
         DOGFIGHT_QUICK_BOLT_PC *end = buffer->records + buffer->capacity;
@@ -1005,7 +1003,7 @@ extern "C" {
         EdFileClose();
     }
 
-    /* Native debug paths retain these vector evaluations without line submission calls. */
+    /* The debug paths keep these vector evaluations without line submission calls. */
     static void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode) {
         NUVEC4 points[512];
         __declspec(align(16)) NUVEC4 direction;
@@ -1214,7 +1212,6 @@ extern "C" {
         space->value_one_b = 1.0f;
     }
 
-    /* Native private helpers stay in the same translation unit as their caller. */
     // noinline: the original calls DogfightResetGroupPc out of line from DogfightResetSpacePc; VC8 would inline it
     // there.
     static __declspec(noinline) void DogfightResetGroupPc(DOGFIGHT_GROUP_PC *group) {
@@ -1853,7 +1850,7 @@ extern "C" {
                 break;
             }
         }
-        // Retail computes the door times first and clears them when no door was found.
+        // Computes the door times first and clears them when no door was found.
         value = DogfightDoorsPc[i].timer;
         space->door_time = value;
         value = (f32)((f64)value * (f64)94.977417f / (f64)59.449684f);
@@ -2078,8 +2075,7 @@ extern "C" {
         }
     }
 
-    /* Original source name unknown: one of four identical native WORLD adapters.
-     * No callback registration is enabled by this prerequisite translation unit. */
+    /* One of four identical WORLD adapters. */
     void ResetSpaceFromWorldPc(WORLDINFO *world) {
         DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
     }

@@ -8201,7 +8201,6 @@ i32 fun_004f4360(void) {
     return FramePadProfilePortPc;
 }
 
-// Uncompiled nupad.c append; Save133 belongs to peer material_review.
 void NuPadUpdatePads(void) {
     i32 max_interface_devices;
     i32 max_game_pads;

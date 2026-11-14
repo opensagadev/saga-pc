@@ -4654,7 +4654,7 @@ f32 FS_GetDirTextWidth(void) {
     return max_width;
 }
 
-/* PC file-selector rendering. Data mapping extents remain separately reviewed. */
+/* PC file-selector rendering, each string in its own section. */
 #pragma section(".data$FS_Title", read, write)
 __declspec(allocate(".data$FS_Title")) char FS_Title[64] = "Title";
 #pragma section(".data$FS_X", read, write)

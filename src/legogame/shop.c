@@ -234,7 +234,7 @@ static void NuMtxRotateZInline(NUMTX *m, i32 a) {
     m->m31 = (m30 * sinx) + (m->m31 * cosx);
 }
 
-/* 004c1050..004c1077: original same-TU EAX helper includes the vehicle exception. */
+/* Same-unit helper taking EAX; includes the vehicle exception. */
 static i32 Shop_CharacterUnlockedPc(i32 character_id) {
     if (character_id == VehicleBoltId7f17d4Pc) {
         return ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0;
@@ -242,7 +242,7 @@ static i32 Shop_CharacterUnlockedPc(i32 character_id) {
     return CollectIDUnlocked(character_id) != 0;
 }
 
-/* 004c1080..004c11ba: input argument is EAX in the original same-TU helper. */
+/* Same-unit helper taking its input in EAX. */
 static void Shop_GetInput(SHOP_INPUT_PC *input) {
     i32 player;
     GAMEPAD_RUNTIME_INPUT_PC *pad;
@@ -629,8 +629,6 @@ void InitShop(WORLDINFO *world) {
     shopcutsceneplayer = CutScenePlayer_Available();
 }
 
-/* 004c2660..004c2725. Preserve the PC purchase pulse owner separately from the
- * existing shop initialization value at 0087bbd0. */
 i32 CheckCash(shopitem_s *items, i32 item) {
     return Game.coins >= (u32)items[item].price;
 }
@@ -664,7 +662,6 @@ i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
     return 1;
 }
 
-/* 004c2730..004c2ae8 instructions; 004c2ae8..004c2b00 six-entry switch table. */
 i32 SelectShopItem(shopitem_s *items, i32 index) {
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     HINT_PC *hint;
@@ -782,8 +779,8 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
     }
 }
 
-/* 004c2b00..004c31fd. Right moves IDs toward index zero, interpolates slots
- * 1..6 toward their previous shelf slot, and uses the PC scale2 owner. */
+/* Right moves IDs toward index zero, interpolates slots 1..6 toward their
+ * previous shelf slot, and uses scale2. */
 i32 MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
     i32 angle;
     i32 i;
@@ -839,8 +836,8 @@ i32 MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
     return 0;
 }
 
-/* 004c3200..004c38fc. Preserve the descending PC interpolation order and
- * the distinct scale4 owner, including when positions aliases SubShelfPos. */
+/* Interpolates in descending order with the distinct scale4, including when
+ * positions aliases SubShelfPos. */
 i32 MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
     i32 angle;
     i32 i;
@@ -896,7 +893,6 @@ i32 MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
     return 0;
 }
 
-/* 004c3900..004c3988 instructions; 004c3988..004c39a0 six-entry switch table. */
 void SelectSubItem(void) {
     shopitem_s *items;
     i32 index;
@@ -1112,7 +1108,7 @@ finish:
     return 0;
 }
 
-/* 004c4110..004c4193. PC cancellation belongs to the active child callback. */
+/* Cancellation belongs to the active child callback. */
 i32 DoShopMenu(void *menu) {
     i32 result;
     if (menuptr != NULL) {
@@ -1393,8 +1389,7 @@ i32 CodeMenu(void *menu) {
     return 7;
 }
 
-/* 004c4f40..004c501f. ShopCheatNamePc is a text pointer at00880008; the
- * separate integer code column is at0087c564. */
+/* ShopCheatNamePc is a text pointer; the integer code column is separate. */
 void DrawCodeMenu(void) {
     if (ShopCheatTimerPc > 0.0f) {
         if (ShopCheatNamePc != NULL && (f64)ShopCheatTimerPc < 3.1499998569488525 &&
@@ -1820,7 +1815,6 @@ void DrawItemMenu2D(void) {
     }
 }
 
-/* 004c64f0..004c6bec instructions;004c6bec..004c6c04 six-entry table. */
 void DrawSubItemMenu2D(void) {
     shopitem_s *items;
     i32 *ids;
@@ -2032,8 +2026,8 @@ static void ShopMtxSetIdentityPc(NUMTX *matrix) {
     ShopMtxCopyPc(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
 }
 
-/* 004c6e90..004c74dd. The PC version deliberately ignores the generic MENU
- * confirm/cursor fields and permits selection of all six original shelves. */
+/* Ignores the generic MENU confirm/cursor fields and permits selection of all
+ * six shelves. */
 i32 ItemMenu(void *menu) {
     SHOP_INPUT_PC input;
     i32 entry_picked = picked;

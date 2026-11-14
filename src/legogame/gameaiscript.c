@@ -363,8 +363,6 @@ SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
 
 void AINetReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
 
-/* Candidate source for src/gameapi/aiscript.c. Readonly access-view bindings
- * retain their separately reviewed original owner and extent policies. */
 extern const char ActionSnapPlayer1Name[8];
 
 extern const char ActionSnapRotationYName[5];

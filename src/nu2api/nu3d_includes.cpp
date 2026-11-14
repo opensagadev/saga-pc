@@ -2838,10 +2838,7 @@ extern "C" {
         matrix->m32 = -matrix->m32;
     }
 
-    /* Eleven physical words. Name is a distinct PC reconstruction convention.
-     * Root translation and locator output may be NULL; all other backing is valid.
-     * Curve calls always enter an empty owned x87 stack; FTOL preserves lower prefix.
-     * Return convention is source-only; original result type remains unapproved. */
+    /* Root translation and locator output may be NULL; curve calls always enter an empty x87 stack. */
     void PCBuildLegacySkeletalJoint(DWA_CURVE_CELL_PC *curves, i8 *formats, u8 node_flags, NUANIM_TIME2_PC *time,
                                     NUHGOBJ_EVAL_JOINT_PC *joint, NUVEC *scale, NUVEC *parent_scale, NUMTX *matrix,
                                     NUHGOBJ_JOINT_OVERRIDE_PC *override, NUVEC *root_translation,
@@ -5941,7 +5938,7 @@ extern "C" void PostShadowComputeClippingPlanesPc(const NUMTX *matrix, bool zero
     near_plane->w = -dot;
 }
 
-/* Original same-TU register helper: EDI plane, ESI origin, ECX point_a, EAX point_b. */
+/* Same-unit register helper: EDI plane, ESI origin, ECX point_a, EAX point_b. */
 static void PostShadowMakePlanePrivatePc(NUVEC4 *plane, const NUVEC4 *origin, const NUVEC4 *point_a,
                                          const NUVEC4 *point_b) {
     __declspec(align(16)) NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
@@ -10828,7 +10825,6 @@ bool NuMainFilterGen::isEnabled() {
     return active_filter_count != 0;
 }
 
-/* Private complete initializer/filter initialization bodies; merge existing TU. */
 struct POST_SHADER_PROGRAM_PC;
 extern "C" {
     POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32, const DWORD *, const DWORD *);

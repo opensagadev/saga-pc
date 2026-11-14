@@ -1390,7 +1390,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
     return 0.0f;
 }
 
-/* Append after the integrated kernels; presentation macros stay local. */
+/* The presentation macros stay local to the kernels above. */
 #undef TERRAIN_FINISH_GROUP
 #undef TERRAIN_CROSS
 #undef SHADOW_BOUNDS_OVERLAP

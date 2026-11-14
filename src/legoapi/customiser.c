@@ -213,7 +213,6 @@ i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, 
     return index;
 }
 
-/* 00592940 / 291 */
 i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 attempts;

@@ -1887,7 +1887,6 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
 static f32 HubFreePlayCursorSizePc = 0.1599999964237213f;
 #pragma data_seg()
 
-/* PC477630668bytes, fullstackargs(collection,active_cursors,alpha,scale). */
 static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cursors, f32 alpha, f32 scale) {
     if (alpha <= 0.0f || scale < 0.0f) {
         return;
@@ -2405,7 +2404,7 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
                                    Game.area_save[area_index].true_hero_complete[1] != 0
                                ? "$"
                                : "X");
-            // MATCH-EXCEPTION: retail converts phase * 128.0 again here instead of reusing alpha.
+            // MATCH-EXCEPTION: the original converts phase * 128.0 again here instead of reusing alpha.
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)(i32)(phase * 128.0));
         }
@@ -4871,7 +4870,7 @@ extern "C" {
                      owner->position.y;
         if (difference > IndyGrappleHeightTolerancePc) {
             owner->indy_guideline_state.movement_direction = 1;
-            // MATCH-EXCEPTION: negated <= keeps retail's unordered-compare branch (test ah,1).
+            // MATCH-EXCEPTION: negated <= keeps the unordered-compare branch (test ah,1).
             if (!(owner->context_hover_target_y <= 0.0f)) {
                 return 1;
             }

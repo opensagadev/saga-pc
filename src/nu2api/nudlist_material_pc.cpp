@@ -178,7 +178,6 @@ typedef struct PC_DL_E_MATERIAL_READER {
 STATIC_ASSERT(sizeof(NUMTL) == 0x9c);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) + 0x4f * sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 0x3d0);
 
-/* New C++ material owner, not a replacement or migration of nudlist_pc.c. */
 struct PC_DL_SHADER_PROGRAM_PAIR_PC {
     PC_TEXTURE_RESOURCE_PC *vertex_shader; // 0x0
     PC_TEXTURE_RESOURCE_PC *pixel_shader;  // 0x4

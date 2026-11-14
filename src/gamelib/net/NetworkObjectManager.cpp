@@ -1,8 +1,7 @@
 #include "saga.h"
 
-/* Network object system (retail [0x6118f0,0x617180)): replicates editor
- * objects between peers on listener channel 3. Names follow the Android
- * NetworkObjectManager. */
+/* Network object system: replicates editor objects between peers on
+ * listener channel 3. */
 
 STATIC_ASSERT(sizeof(NetworkObject) == 0x18);
 STATIC_ASSERT(offsetof(NetworkObject, owner) == 0x8);
@@ -28,7 +27,7 @@ STATIC_ASSERT(offsetof(NetworkObjectManager, allow_duplicates) == 0xd96c);
 STATIC_ASSERT(sizeof(NetworkObjectManager) == 0xd970);
 STATIC_ASSERT(offsetof(TTNetwork, nos) == 0x3780);
 
-/* Empty trace hooks of the network object system (retail 0x611890 / 0x6118f0, the start of this unit). */
+/* Empty trace hooks of the network object system. */
 void NetTrace(...) {
 }
 
@@ -69,7 +68,7 @@ i32 V2Peer::fun_00611a60(i32 time) const {
     return time_offset + time;
 }
 
-/* Serialises replicated members into a NETMESSAGE_PC (Android NetOutputStream). */
+/* Serialises replicated members into a NETMESSAGE_PC. */
 class NetOutputStream : public EdOutputStream {
   public:
     NetOutputStream() {
@@ -101,7 +100,7 @@ class NetOutputStream : public EdOutputStream {
     NETMESSAGE_PC *message; // 0x20
 }; // size 0x24
 
-/* Reads replicated members back out of a NETMESSAGE_PC (Android NetInputStream). */
+/* Reads replicated members back out of a NETMESSAGE_PC. */
 class NetInputStream : public EdInputStream {
   public:
     NetInputStream() : message(NULL) {
@@ -141,8 +140,8 @@ class NetInputStream : public EdInputStream {
 /* Replicator data is a packed run of word-aligned per-object records. */
 #define REPLICATOR_ALIGN(cursor) (((u32)(cursor) + 3) & ~3)
 
-/* Replicators the game binds to its classes (Android Network.cpp). Retail
- * never constructs them, so no vtables or RTTI are emitted. */
+/* Replicators the game binds to its classes. They are never constructed, so
+ * no vtables or RTTI are emitted. */
 class NetSimpleReplicator : public NetReplicator {
   public:
     virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
@@ -1288,7 +1287,7 @@ NOSContext &NOSContext::operator=(const NOSContext &other) {
 }
 
 bool NOSContext::operator==(const NOSContext &other) const {
-    // MATCH-EXCEPTION: the redundant bool cast gives retail's direct sete al.
+    // MATCH-EXCEPTION: the redundant bool cast gives a direct sete al.
     return (bool)(memcmp(bytes, other.bytes, sizeof(bytes)) == 0);
 }
 
@@ -1625,7 +1624,7 @@ i32 NetworkObjectManager::ObjectOwnerCall(void *instance, i32 call_id, NETMESSAG
             outgoing.Prepend16(object_id);
             outgoing.Prepend8(call_id);
             outgoing.Prepend8(8);
-            /* Retail passes the address of the owner field, not the owner. */
+            /* Passes the address of the owner field, not the owner. */
             theTTNetwork.SendEx(outgoing, 3, (V2Peer *)&object->owner, 0, 0);
             outgoing.Release();
         }

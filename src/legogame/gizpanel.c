@@ -493,10 +493,10 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
     }
 }
 
-/* Real mutable original globals: 007f90c4 Z and 007f90c8 Y, each4B. */
+/* Picture Z and Y offsets. */
 f32 GizPanelPictureZPc = -0.123f;
 f32 GizPanelPictureYPc = 0.0775f;
-/* Lift of the panel target above the floor it was dropped onto (007f90cc). */
+/* Lift of the panel target above the floor it was dropped onto. */
 f32 GizPanelFloorLiftPc = 0.001f;
 
 void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {

@@ -347,7 +347,7 @@ i32 NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
                     }
                 }
             } else {
-                /* Retail clears the slot but still reports failure. */
+                /* Clears the slot but still reports failure. */
                 album->tracks[class_index] = NULL;
             }
         }
@@ -355,7 +355,7 @@ i32 NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
     return 0;
 }
 
-/* Empty diagnostic hook; retail calls it with the track name when a name lookup fails. */
+/* Empty diagnostic hook; called with the track name when a name lookup fails. */
 extern "C" void PCMusicTrackNotFound(...) {
 }
 
@@ -1115,7 +1115,7 @@ void NuMusic::xNoMusicC(NUFPAR_PC *parser) {
     ParseTrack(32, parser);
 }
 
-/* The inverse of NuMusicDecibelsToGain; uncalled in retail (0x695540). */
+/* The inverse of NuMusicDecibelsToGain; uncalled. */
 f32 NuMusicGainToDecibels(f32 gain) {
     if (gain <= 0.0f) {
         return -100.0f;
@@ -1526,7 +1526,7 @@ extern "C" i32 NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_parameter,
                 break;
             case 6:
                 config.option_20 = va_arg(args, i32);
-                /* Native case6 consumes two consecutive values. */
+                /* Case 6 consumes two consecutive values. */
                 config.option_24 = va_arg(args, i32);
                 break;
             case 11:
@@ -1539,7 +1539,7 @@ extern "C" i32 NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_parameter,
     return PCSoundInitializePc(&config);
 }
 
-/* Original names unknown; retail keeps both uncalled wrappers after NuSound3InitV (0x695360, 0x695390). */
+/* Both wrappers are uncalled. */
 extern "C" i32 NuSound3InitTablePc(SFX_FILE_INFO_PC *samples, i32 sample_count, i32 device_parameter) {
     VARIPTR end;
     end.void_ptr = NULL;

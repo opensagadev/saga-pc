@@ -61,8 +61,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
 STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 12);
 STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
 
-/* Source-private in gameobjects.c. Forward pointer uses struct tag in saga.h.
- * Tail[1] exposes actual counted traversal; it is NOT owner/allocation count.
+/* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
  */
 typedef struct shadow_platform_entry_pc_s {
     GAMEOBJECT *object;     // 0x00
@@ -609,14 +608,6 @@ void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
     object->use_action_frames = grapple_attach_frames;
     object->use_action_parameter = parameter;
 }
-
-/* Original-TU private globals are handed off to the single data owner. */
-
-/* Preserve existing GAMEOBJECT field declarations/assertions:
- * level_object_index signedWORD1070, flags_1fc BYTE1fc,
- * character_data pointer54 -> game_character pointer24 -> field_028 f32.
- * No new aggregate/type claim in this private source access view.
- */
 
 /* Bitwise absolute value through a float temporary. */
 

@@ -2120,7 +2120,6 @@ extern "C" {
         return CutScenePlayer != NULL ? CutScenePlayer->active : NULL;
     }
 
-    /* 0057e720..0057e7d2, ordinary one-argument cdecl. */
     i32 CutScenePlayer_CanStart(i32 clip_id) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         i32 area_id;
@@ -2154,8 +2153,7 @@ extern "C" {
         }
     }
 
-    /* 0057e850..0057ea41 instructions, alignment to0057ea44, four-entry table
-     *0057ea44..0057ea54. PC mode is only a boolean controlling the type suffix. */
+    /* Mode is only a boolean controlling the type suffix. */
     void CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         LEVELDATA_PC *level;

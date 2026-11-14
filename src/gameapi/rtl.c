@@ -1121,7 +1121,7 @@ STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_50) == 4);
 STATIC_ASSERT(sizeof(BURN_PARAMETERS_PC) == 0x54);
 
 static NUVEC burn_editor_position_pc = {0};
-// NOLINTNEXTLINE(readability-identifier-naming) -- original same-TU public state name.
+// NOLINTNEXTLINE(readability-identifier-naming) -- the unit's public state name.
 BURN_SET_PC *edrtl_edit_burnset = 0;
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.

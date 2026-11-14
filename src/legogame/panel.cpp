@@ -627,7 +627,6 @@ extern "C" {
     }
 }
 
-/* PC4b8cf0,718bytes. Fiveargs y,active0,active1,alpha,scores. */
 void DrawBonusScore(f32 y, i32 active0, i32 active1, f32 alpha, i32 *scores) {
     i32 in_arcade;
     i32 goal;
