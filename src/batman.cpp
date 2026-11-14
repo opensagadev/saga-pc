@@ -77,6 +77,22 @@ extern "C" {
     void ReleaseAllTakeOvers(void);
     void Mission_Clear(MISSIONSYS_s *mission_sys);
     void RestoreGameCut(void);
+    u8 StatusPlayerActivePc[8] = {0};
+    u8 NuAllocDumpOnLevelPc = 0;
+    i32 editor_active = 0;
+    i32 peak_poly_count = 0;
+    i32 poly_count = 0;
+    i32 openlevels = 0;
+    i32 NOAICREATURES = 0;
+    i32 NOTERRAINSTOP = 0;
+    i32 NuMainSkipCutBordersPc = 0;
+    i32 LOADEROFF = 0;
+    i32 frameout = 0;
+    i64 frameout_count = 0;
+    i32 HubMainRenderTimeHack = 0;
+    DAT_HANDLES_PC NuDatHandles = {0};
+    i32 NuMainSplineDebugModePc = 0;
+    i32 NuMainSplineDebugPhasePc = 0;
     TIMER BonusTimer = {0};
 
     void NuAllocDumpRecords(i32 min_size);
@@ -103,16 +119,10 @@ extern "C" {
     void GizmoSysDraw(void *system, void *world, f32 delta_time);
     void SpeedBlur_Apply(WORLDINFO *world);
 
-    u8 NuAllocDumpOnLevelPc = 0;
-    i32 NuMainSkipCutBordersPc = 0;
-    i64 frameout_count = 0;
     char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&TextIdPc8810c0, NULL};
 }
 
-extern "C" {
-    i32 NuMainSplineDebugModePc = 0;
-    i32 NuMainSplineDebugPhasePc = 0;
-}
+extern "C" {}
 
 /* Debug view of the scene splines; NuMainRenderWorld calls it only while
  * NuMainSplineDebugModePc is set, and mode 2 animates the dash pattern. */
@@ -569,7 +579,6 @@ STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_7) == 7);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, coins) == 0);
 
 extern "C" {
-    u8 StatusPlayerActivePc[8] = {0};
     void NuMainStatusHelperPc(STATUSPACKET_s *);
     void MusicClearAll(void);
     void SoundKillAll(void);

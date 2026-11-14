@@ -268,7 +268,6 @@ extern "C" {
     u8 MenuKeyboardOverrideActivePc = 0;
     i32 MenuKeyboardPendingPc = 0;
     i32 pause_i_pad = -1;
-    i32 editor_active = 0;
     u32 GAMEPAD_MENUSELECT = 0x40;
     u32 GAMEPAD_MENUCANCEL = 0x10;
     u32 GAMEPAD_SELECT = 0x100;
@@ -7652,15 +7651,11 @@ i32 BonusCoinTotal = 0;
 i32 NewMode = 0;
 i32 reset_load = 1;
 i32 newlevel_resumecutaudio = 1;
-i32 frameout = 0;
 i32 other_level = -1;
 volatile i32 waiting_for_level = 0;
 i32 waiting_for_new_level = 0;
 i32 MiniCutCam = 0;
 i32 clear_screen_onstill = 1;
-i32 HubMainRenderTimeHack = 0;
-i32 peak_poly_count = 0;
-i32 poly_count = 0;
 i32 CUTSTOPGAME = 0;
 i32 Paused = 0;
 i32 NetPaused = 0;
@@ -7941,7 +7936,6 @@ extern "C" {
     i32 NuFadeObjEnabledPc = 1;
     i32 BGLOAD = 1;
     i32 PermDataLoaded = 1;
-    i32 LOADEROFF = 0;
     volatile i32 LoadPerm_LanguageSelect = 0;
     NUMTL *legal_mtl = 0;
     i32 legal_tid = 0;
@@ -8122,7 +8116,6 @@ extern "C" {
 #pragma const_seg(".rdata$NuFileDiscSuffix")
     extern const char nufile_disc_suffix[3] = ";1";
 #pragma const_seg()
-    DAT_HANDLES_PC NuDatHandles = {0};
 #pragma data_seg(".data$StartupDatNames")
     const char *StartupDatNames[7] = {
         "GAME.DAT",       "Episode_I.DAT", "Episode_II.DAT", "Episode_III.DAT",
@@ -8572,7 +8565,6 @@ extern "C" {
     i32 netclient = 0;
     i32 NOSOUND = 0;
     volatile i32 nuvideo_global_vbcnt = 0;
-    i32 openlevels = 0;
 #pragma data_seg(".data$gizaimessage_prefix")
     char gizaimessage_prefix[5] = "msg_";
 #pragma data_seg()
@@ -12955,8 +12947,6 @@ extern "C" {
 
     LEVELDATA_PC *ENDORBATTLEC_LDATA = 0;
 
-    i32 NOTERRAINSTOP = 0;
-
     void (*VehicleSlowdownCallbackPc)(GAMEOBJECT *) = 0;
 
     f32 VehicleLaunchHoverOffsetPc = 0;
@@ -13214,8 +13204,6 @@ extern "C" {
 #pragma data_seg()
 
     i16 tATTRACTSUIT = 0;
-
-    i32 NOAICREATURES = 0;
 
     i32 addcreature_override_id_check = 0;
 
