@@ -8262,7 +8262,6 @@ extern "C" {
     AREA_DATA_PC *DEATHSTARBATTLE_ADATA = 0;
     AREA_DATA_PC *HOTHBATTLE_ADATA = 0;
     LEVELDATA_PC *HOTHBATTLEA_LDATA = 0;
-    i32 getvehiclehoverheight_hothbattlehack = 0;
     i32 disable_narrow_socks = 0;
     AREA_DATA_PC *HOTHESCAPE_ADATA = 0;
     AREA_DATA_PC *ASTEROIDCHASE_ADATA = 0;
@@ -8890,10 +8889,6 @@ extern "C" {
     NUVEC plr_lastpos = {0};
     NUVEC v000 = {0};
     TIMER GameTimer = {0};
-#pragma data_seg(".data$ForcePush_Speed")
-    f32 ForcePush_Speed = 2.5f;
-#pragma data_seg()
-    i32 ForcePush_SuperPush = 0;
 #pragma const_seg(".rdata$PCContextName_Jump")
     extern const char PCContextName_Jump[5] = "Jump";
 #pragma const_seg()
@@ -9025,9 +9020,6 @@ extern "C" {
         {"Whip", -1, 0x33, 1},
         {"NetWait", -1, 0x23, 0},
     };
-#pragma data_seg()
-#pragma data_seg(".data$CInfo")
-    CHARACTER_CONTEXT_INFO_PC *CInfo = &PCContextInfoTable[1];
 #pragma data_seg()
 #pragma data_seg(".data$default_path_radius")
     f32 default_path_radius = 0.25f;
@@ -9203,17 +9195,6 @@ extern "C" {
 
 extern "C" {
     GAMEOBJECT *CarWashHack = 0;
-    i32 IDLESPEEDINNARROWSOCKSONLY = 0;
-    f32 VehicleAreaRememberSpeed = 0;
-#pragma data_seg(".data$VehicleCollisionDamageSpeedFraction")
-    f32 VehicleCollisionDamageSpeedFraction = 0.6000000238418579f;
-#pragma data_seg()
-#pragma data_seg(".data$VehicleCollisionFrontAngle")
-    i32 VehicleCollisionFrontAngle = 45;
-#pragma data_seg()
-#pragma data_seg(".data$VehicleCollisionRearAngle")
-    i32 VehicleCollisionRearAngle = 10;
-#pragma data_seg()
     LEVELDATA_PC *MOSEISLEYB_LDATA = 0;
     LEVELDATA_PC *DEATHSTAR2BATTLEE_LDATA = 0;
     LEVELDATA_PC *DEATHSTAR2BATTLEF_LDATA = 0;
@@ -9248,29 +9229,12 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$TURNTIME")
-    f32 TURNTIME = 1.0f;
-#pragma data_seg()
 #pragma const_seg(".rdata$TurnLoopSfx")
     extern const char TurnLoopSfx[17] = "XWing_LoopDeLoop";
 #pragma const_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$BladeTab")
-    BLADE_PC BladeTab[4] = {
-        {101, 223, 1, 59, 64, {255, 31, 0}, {0, 0, 0}},
-        {103, 221, 2, 60, 65, {30, 191, 15}, {0, 0, 0}},
-        {105, 225, 3, 61, 66, {0, 191, 255}, {0, 0, 0}},
-        {107, 227, 4, 62, 67, {200, 0, 255}, {0, 0, 0}},
-    };
-#pragma data_seg()
-#pragma data_seg(".data$GameDeflectPartGravity")
-    f32 GameDeflectPartGravity = -2.5f;
-#pragma data_seg()
-#pragma data_seg(".data$GameDeflectPartSpeed")
-    f32 GameDeflectPartSpeed = 5.0f;
-#pragma data_seg()
 #pragma data_seg(".data$PARTSCALEUPTIME")
     f32 PARTSCALEUPTIME = 0.5f;
 #pragma data_seg()
@@ -9283,7 +9247,6 @@ extern "C" {
 }
 
 extern "C" {
-    f32 SaberSparksTimer = 0;
 #pragma const_seg(".rdata$SaberSparksName")
     extern const char SaberSparksName[12] = "SaberSparks";
 #pragma const_seg()
@@ -9293,9 +9256,6 @@ extern "C" {
 #pragma const_seg(".rdata$AIActionDistName")
     extern const char AIActionDistName[5] = "Dist";
 #pragma const_seg()
-#pragma data_seg(".data$rocket_speed")
-    f32 rocket_speed = 1.2000000476837158f;
-#pragma data_seg()
     LEVELDATA_PC *GUNSHIPA_LDATA = 0;
     APIDEBRISSYS_PC *perm_debrissys = 0;
 }
@@ -9400,7 +9360,6 @@ extern "C" {
 #pragma const_seg(".rdata$AIActionFalseName")
     const char AIActionFalseName[6] = "FALSE";
 #pragma const_seg()
-    f32 ForceBackRadius2 = 0;
 
 #pragma data_seg(".data$Tag_Mode")
     i32 Tag_Mode = 2;
@@ -9594,26 +9553,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$CurrentSpeed")
-    f32 CurrentSpeed = 10.0f;
-#pragma data_seg()
     f32 avg_currentspeed_mul = 0;
-#pragma data_seg(".data$TwistSockRotationModeA")
-    i32 TwistSockRotationModeA = 3;
-#pragma data_seg()
-#pragma data_seg(".data$TwistSockRotationModeB")
-    i32 TwistSockRotationModeB = 5;
-#pragma data_seg()
-#pragma data_seg(".data$TwistYawLeanDegrees")
-    i32 TwistYawLeanDegrees = 15;
-#pragma data_seg()
-#pragma data_seg(".data$TwistPitchLeanDegrees")
-    i32 TwistPitchLeanDegrees = 15;
-#pragma data_seg()
-#pragma data_seg(".data$TwistLateralSpeed")
-    f32 TwistLateralSpeed = 8.0f;
-#pragma data_seg()
-    i32 TwistScaleLean = 0;
 }
 
 extern "C" {
@@ -9671,9 +9611,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$CircleLeanDegrees")
-    i32 CircleLeanDegrees = 30;
-#pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_DUP")
     i32 GAMEPAD_DUP = 4096;
 #pragma data_seg()
@@ -9696,9 +9633,6 @@ extern "C" {
 }
 
 extern "C" {
-    // Hub arrays are two-entry source views; full original capacities remain unknown.
-    f32 pod_roll[2] = {0};
-    f32 pod_roll_target[2] = {0};
     u16 Hub_PadAngle[2] = {0};
     MISSIONSYS_PC *MissionSys = 0;
     void (*GameObjectDimensionsExtraFn)(GAMEOBJECT *) = 0;
@@ -9765,10 +9699,6 @@ extern "C" {
 #pragma data_seg()
     f32 tieonsfxwait = 0;
     f32 tieoffsfxwait = 0;
-    f32 CurrentSpeedOverride = 0;
-#pragma data_seg(".data$BaseCurrentSpeed")
-    f32 BaseCurrentSpeed = 10.0f;
-#pragma data_seg()
     i32 DoubleScore = 0;
 #pragma data_seg(".data$id_SEBULBASPOD")
     i16 id_SEBULBASPOD = -1;
@@ -10818,9 +10748,6 @@ extern "C" {
                                                       {"dig", 0U},
                                                       {PlayerActionNamePc_233, 0U}};
 #pragma data_seg()
-#pragma data_seg(".data$PlayerBlockActionInfoPc")
-    void *PlayerBlockActionInfoPc = &PlayerActionInfoListPc[1];
-#pragma data_seg()
 }
 
 extern "C" {
@@ -11292,14 +11219,6 @@ extern "C" {
     u8 objhit_damage_joints[3] = {6, 8, 7};
 #pragma data_seg()
 
-#pragma data_seg(".data$CombatReactionHorizontalScalePc")
-    f32 CombatReactionHorizontalScalePc = 1.5f;
-#pragma data_seg()
-
-#pragma data_seg(".data$CombatReactionVerticalScalePc")
-    f32 CombatReactionVerticalScalePc = 2.0f;
-#pragma data_seg()
-
 #pragma data_seg(".data$LEGOCONTEXT_HOLD")
     i32 LEGOCONTEXT_HOLD = -1;
 #pragma data_seg()
@@ -11330,20 +11249,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$VehicleGunshipHoverBasePc")
-    f32 VehicleGunshipHoverBasePc = 2.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$VehicleGunshipHoverOtherPc")
-    f32 VehicleGunshipHoverOtherPc = 1.25f;
-#pragma data_seg()
-
-#pragma data_seg(".data$VehicleGunshipHoverSeparationPc")
-    f32 VehicleGunshipHoverSeparationPc = 0.800000011920929f;
-#pragma data_seg()
-}
-
-extern "C" {
     GRAPPLE_DYNAMIC_PC DynamicGrapplePc[4] = {0};
 }
 
@@ -11368,34 +11273,12 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$VehicleLoopTimePc")
-    f32 VehicleLoopTimePc = 1.5f;
-#pragma data_seg()
-}
-
-extern "C" {
     i32 (*Fighting_WeaponInActionFn)(GAMEOBJECT *) = 0;
 
     i32 (*Fighting_WeaponOutActionFn)(GAMEOBJECT *) = 0;
 }
 
 extern "C" {
-#pragma data_seg(".data$AwkwardShapeSpherePc")
-    AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSpherePc[14] = {{&id_RANCOR, 4, 0, 0.30000001192092896f},
-                                                        {&id_DEWBACK, 1, 1, 0.20000000298023224f},
-                                                        {&id_DEWBACK, 2, 0, 0.125f},
-                                                        {&id_DEWBACK, 3, 0, 0.10000000149011612f},
-                                                        {&id_DEWBACK, 4, 0, 0.07500000298023224f},
-                                                        {&id_BIGGUN, 3, 0, 0.17499999701976776f},
-                                                        {&id_BIGGUN, 4, 0, 0.17499999701976776f},
-                                                        {&id_BIGGUN, 5, 0, 0.17499999701976776f},
-                                                        {&id_BANTHA, 1, 1, 0.25f},
-                                                        {&id_ATAT, 7, 1, 1.2000000476837158f},
-                                                        {&id_CATAPULT, 1, 0, 0.25f},
-                                                        {&id_FIRETRUCK, 1, 1, 0.30000001192092896f},
-                                                        {&id_FIRETRUCK, 2, 1, 0.30000001192092896f},
-                                                        {NULL, 0, 0, 0.0f}};
-#pragma data_seg()
 
 #pragma data_seg(".data$id_CATAPULT")
     i16 id_CATAPULT = -1;
@@ -11563,35 +11446,11 @@ extern "C" {
     i16 id_ZAMSSPEEDER = -1;
 #pragma data_seg()
 
-#pragma data_seg(".data$VehicleGunshipAngleADefaultPc")
-    i32 VehicleGunshipAngleADefaultPc = 8;
-#pragma data_seg()
-
-#pragma data_seg(".data$VehicleGunshipAngleAPlayer1Pc")
-    i32 VehicleGunshipAngleAPlayer1Pc = 10;
-#pragma data_seg()
-
-#pragma data_seg(".data$VehicleGunshipAngleAPlayer2Pc")
-    i32 VehicleGunshipAngleAPlayer2Pc = 5;
-#pragma data_seg()
-
-#pragma data_seg(".data$VehicleGunshipAngleBDefaultPc")
-    i32 VehicleGunshipAngleBDefaultPc = 3;
-#pragma data_seg()
-
-#pragma data_seg(".data$VehicleGunshipAngleBPlayer1Pc")
-    i32 VehicleGunshipAngleBPlayer1Pc = 4;
-#pragma data_seg()
-
 #pragma data_seg(".data$DEACTIVATEDTIME")
     f32 DEACTIVATEDTIME = 8.0f;
 #pragma data_seg()
 
     LEVELDATA_PC *GUNSHIPB_LDATA = 0;
-
-    i32 ForcePush_SuperMindTrick = 0;
-
-    i32 VehicleGunshipAngleBPlayer2Pc = 0;
 
     f32 BOLT_OVERRIDE_PLAYERBOLTSPEED = 0;
 
@@ -12355,10 +12214,6 @@ extern "C" {
 
     u8 CheatPooCoinsEnabledPc = 0;
 
-#pragma data_seg(".data$test_ai_combo")
-    i32 test_ai_combo = 1;
-#pragma data_seg()
-
 #pragma data_seg(".data$LEGOCONTEXT_PUNCH")
     i32 LEGOCONTEXT_PUNCH = -1;
 #pragma data_seg()
@@ -12400,14 +12255,6 @@ extern "C" {
 #pragma data_seg()
 
     LEVELDATA_PC *MOSEISLEYC_LDATA = 0;
-
-    i32 ComboOpponent_Behind = 0;
-
-    f32 ComboOpponent_Range2 = 0;
-
-    NUVEC PooPositionPc[2] = {0};
-
-    i32 objopponent_ignoreaiopponent = 0;
 
     i32 (*IsWearingBackPackFn)(GAMEOBJECT *) = 0;
 
@@ -12567,76 +12414,6 @@ extern "C" {
     i16 id_TRACTOR = -1;
 #pragma data_seg()
 
-#pragma data_seg(".data$PCForceGlowRadiusMultiplier")
-    f32 PCForceGlowRadiusMultiplier = 1.125f;
-#pragma data_seg()
-
-#pragma data_seg(".data$PCForceGlowHoldDuration")
-    f32 PCForceGlowHoldDuration = 0.3330000042915344f;
-#pragma data_seg()
-
-#pragma data_seg(".data$FORCEGLOWTIME")
-    f32 FORCEGLOWTIME = 0.10000000149011612f;
-#pragma data_seg()
-
-#pragma data_seg(".data$CableTargetScalePc")
-    f32 CableTargetScalePc = 2.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$VehicleZamSmokeRatePc")
-    f32 VehicleZamSmokeRatePc = 10.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$VehicleShieldTargetPc")
-    f32 VehicleShieldTargetPc = 5.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$PodRaceMinimumSpeedPc")
-    f32 PodRaceMinimumSpeedPc = 0.3330000042915344f;
-#pragma data_seg()
-
-#pragma data_seg(".data$PodRaceBoostSpeedPc")
-    f32 PodRaceBoostSpeedPc = 2.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$PodSprintMinimumSpeedPc")
-    f32 PodSprintMinimumSpeedPc = 1.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$PodSprintBoostSpeedPc")
-    f32 PodSprintBoostSpeedPc = 1.399999976158142f;
-#pragma data_seg()
-
-#pragma data_seg(".data$PodBoostHeightPc")
-    f32 PodBoostHeightPc = 1.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$PodPitchHistoryPc")
-    f32 PodPitchHistoryPc[2] = {1.0f, 1.0f};
-#pragma data_seg()
-
-#pragma data_seg(".data$PodSprintDebrisIndexPc")
-    i32 PodSprintDebrisIndexPc = 117;
-#pragma data_seg()
-
-#pragma data_seg(".data$PodCollisionThresholdPc")
-    f32 PodCollisionThresholdPc = 0.9990000128746033f;
-#pragma data_seg()
-
-#pragma data_seg(".data$PodSprintLiftPositionsPc")
-    NUVEC PodSprintLiftPositionsPc[3] = {{-395.260009765625f, -5.480000019073486f, -165.0800018310547f},
-                                         {-375.3800048828125f, -5.039999961853027f, -286.5f},
-                                         {-354.9100036621094f, -4.849999904632568f, -299.32000732421875f}};
-#pragma data_seg()
-#pragma data_seg(".data$DirectionalGrappleSeekScalePc")
-    f32 DirectionalGrappleSeekScalePc = 0.5f;
-#pragma data_seg(".data$DirectionalZipUpSeekRatePc")
-    f32 DirectionalZipUpSeekRatePc = 8.0f;
-#pragma data_seg()
-#pragma data_seg(".data$LandspeederExhaustJointsPc")
-    i32 LandspeederExhaustJointsPc[3] = {2, 3, 4};
-#pragma data_seg()
-
     u32 LswForceUsedHintFlagsPc = 0;
 
     LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA = 0;
@@ -12646,12 +12423,6 @@ extern "C" {
     LEVELDATA_PC *DAGOBAHC_LDATA = 0;
 
     LEVELDATA_PC *ENDORBATTLEC_LDATA = 0;
-
-    void (*VehicleSlowdownCallbackPc)(GAMEOBJECT *) = 0;
-
-    f32 VehicleLaunchHoverOffsetPc = 0;
-
-    f32 PodCollisionMagnitudePc = 0;
 
     i32 LEGO_AIPATHCNX_BLOCKAGE = 0;
 
@@ -13459,8 +13230,6 @@ extern "C" {
     i16 JumpSlamActionPc = -1;
     i16 id_JUMBOHOMINGDROID = -1;
     i16 id_R2Q5 = -1;
-    f32 speeder_smoke_rate = 5.0f;
-    f32 speeder_offset_speed = 2.0f;
     i32 SAVESLOTS = 6;
     f32 memcard_autosavecanceldelay = 1.5f;
     i32 saveload_cardtype = 2;
@@ -13621,10 +13390,6 @@ extern "C" {
     i16 id_MOUSEDROID = -1;
     i16 id_BUZZDROID = -1;
     i16 id_SUPERBATTLEDROID = -1;
-    f32 CritterSnakeExtraHoverPc = -0.15000000596046448f;
-    f32 CritterBatExtraHoverPc = 0.20000000298023224f;
-    f32 pod_animtime[2] = {1.0f, 1.0f};
-    f32 podanimendframe = 1.0f;
     i16 id_BATTLEDROID = -1;
     i16 id_BATTLEDROIDCOMMANDER = -1;
     i16 id_BATTLEDROIDGEONOSIAN = -1;
@@ -13918,7 +13683,6 @@ extern "C" {
 extern "C" {
     i16 id_SERVICECAR = -1;
     i32 SuperCarry_UseActionButton = 0;
-    i32 ForcePush_Waft = 0;
 }
 
 // The HLSL uber-shader source compiled into every material variant, with its NUL.
@@ -22516,15 +22280,6 @@ extern "C" {
 
 extern "C" {
     void (*ResumeGame_ExtraCodeFn)(void) = NULL;
-    f32 PlayerOpponent_Range2 = 0.0f;
-}
-
-extern "C" {
-    f32 testlaser_sizew = 0.02f;
-    f32 testlaser_sizel = 0.1f;
-    f32 testlaser_sizewab = 0.01f;
-    f32 testlaser_endw = 0.1f;
-    i32 testlaser_type = 0;
 }
 
 extern "C" {
@@ -23105,10 +22860,6 @@ extern "C" {
     struct eduimenu_s *edanim_particle_menu = 0;
 
     struct eduimenu_s *edanim_sound_menu = 0;
-}
-
-extern "C" {
-    i32 lightning_type = 0;
 }
 
 extern "C" {
@@ -25663,38 +25414,6 @@ extern "C" {
 #pragma data_seg(".data$PushInitCornerInsetPc")
     f32 PushInitCornerInsetPc = -0.0060000000521540642f;
 
-#pragma data_seg()
-}
-
-extern "C" {
-    f32 lightning_sizew[2] = {0.02f, 0.02f};
-    f32 lightning_sizel[2] = {0.1f, 0.1f};
-    f32 lightning_sizewab[2] = {0.01f, 0.01f};
-    f32 lightning_endw[2] = {0.1f, 0.1f};
-    u32 lightning_col[2] = {0xff808040, 0xff808040};
-}
-
-extern "C" {
-#pragma data_seg(".data$ForceDeflectTuningPc")
-    f32 ForceDeflectSpeedPc = 4.0f;
-    f32 ForceDeflectSeekRatePc = 3.0f;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$ForceThrowTuningPc")
-    f32 MaulF_ForceThrowGravity = -0.5f;
-    f32 MaulF_ForceThrowSpeed = 1.0f;
-    f32 DookuC_ForceThrowGravity = -2.5f;
-    f32 DookuC_ForceThrowSpeed = 2.5f;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$PlayerForcePushTuningPc")
-    f32 ForcePushDurationPc = 0.8f;
-    f32 ForcePushStrongDurationPc = 1.2f;
-    f32 ForcePushMindTrickDurationPc = 0.4f;
 #pragma data_seg()
 }
 

@@ -495,6 +495,130 @@ static f32 MoveFabsPc(f32 value) {
 }
 
 i16 id_R2Q5;
+static f32 PlayerFloatHeightFractionPc = 0.625f;
+static f32 VEHICLE_SUBMARINE_DEPTH = 0.20000000298023224f;
+static f32 VEHICLE_WATER_SPEED_MUL = 0.699999988079071f;
+f32 GameDeflectPartGravity = -2.5f;
+f32 GameDeflectPartSpeed = 5.0f;
+f32 MaulF_ForceThrowGravity = -0.5f;
+f32 MaulF_ForceThrowSpeed = 1.0f;
+f32 DookuC_ForceThrowGravity = -2.5f;
+f32 DookuC_ForceThrowSpeed = 2.5f;
+f32 ForcePush_Speed = 2.5f;
+static f32 PlayerBackwardMomentumScalePc = 1.2000000476837158f;
+f32 testlaser_sizew = 0.02f;
+f32 testlaser_sizel = 0.1f;
+f32 testlaser_sizewab = 0.01f;
+f32 testlaser_endw = 0.1f;
+static f32 PlayerSecondBackwardMomentumScalePc = 1.2000000476837158f;
+static f32 VEHICLE_TUBE_UPSPEED = 5.0f;
+static f32 PODSPRINT_SLOWSPEED = 15.0f;
+static f32 PODSPRINT_CRUISESPEED = 25.0f;
+static f32 PODSPRINT_RUNSPEED = 35.0f;
+static f32 PODSPRINT_ACCELTIME = 0.5f;
+static f32 PODSPRINT_DECELTIME = 0.25f;
+static f32 PODSPRINT_VELOCITYSEEK = 8.0f;
+static f32 PODSPRINT_TURNRATE = 1.0f;
+static f32 PODSPRINT_HIGH_TURNRATE = 1.0f;
+static f32 PODSPRINT_GRAVITY = -35.0f;
+CHARACTER_CONTEXT_INFO_PC *CInfo = &PCContextInfoTable[1];
+BLADE_PC BladeTab[4] = {
+    {101, 223, 1, 59, 64, {255, 31, 0}, {0, 0, 0}},
+    {103, 221, 2, 60, 65, {30, 191, 15}, {0, 0, 0}},
+    {105, 225, 3, 61, 66, {0, 191, 255}, {0, 0, 0}},
+    {107, 227, 4, 62, 67, {200, 0, 255}, {0, 0, 0}},
+};
+void *PlayerBlockActionInfoPc = &PlayerActionInfoListPc[1];
+static f32 ApplyGravityContextHoverHeight = 0.20000000298023224f;
+f32 lightning_sizew[2] = {0.02f, 0.02f};
+f32 lightning_sizel[2] = {0.1f, 0.1f};
+f32 lightning_sizewab[2] = {0.01f, 0.01f};
+f32 lightning_endw[2] = {0.1f, 0.1f};
+u32 lightning_col[2] = {0xff808040, 0xff808040};
+static f32 ApplyGravityContext22HoverHeight = 0.20000000298023224f;
+static f32 ApplyGravityWallRunAcceleration = -0.25f;
+static f32 ApplyGravityContext42HoverHeight = 0.20000000298023224f;
+i32 TwistSockRotationModeA = 3;
+i32 TwistSockRotationModeB = 5;
+i32 TwistYawLeanDegrees = 15;
+i32 TwistPitchLeanDegrees = 15;
+f32 TwistLateralSpeed = 8.0f;
+f32 CurrentSpeed = 10.0f;
+f32 BaseCurrentSpeed = 10.0f;
+i32 CircleLeanDegrees = 30;
+i32 NetworkTurnScalePc = 3;
+static f32 PodRollInputRate = 6.0f;
+static f32 PodRollReleaseRate = 3.0f;
+static f32 PodFacingSeekRate = 2.0f;
+f32 TURNTIME = 1.0f;
+f32 VehicleLoopTimePc = 1.5f;
+f32 TurnCamSafeDurationScalePc = 0.95f;
+f32 CombatReactionHorizontalScalePc = 1.5f;
+f32 CombatReactionVerticalScalePc = 2.0f;
+i32 test_ai_combo = 1;
+f32 ForceDeflectSpeedPc = 4.0f;
+f32 ForceDeflectSeekRatePc = 3.0f;
+f32 ForcePushDurationPc = 0.8f;
+f32 ForcePushStrongDurationPc = 1.2f;
+f32 ForcePushMindTrickDurationPc = 0.4f;
+f32 PCForceGlowRadiusMultiplier = 1.125f;
+f32 PCForceGlowHoldDuration = 0.3330000042915344f;
+f32 FORCEGLOWTIME = 0.10000000149011612f;
+f32 rocket_speed = 1.2000000476837158f;
+i32 VehicleGunshipAngleADefaultPc = 8;
+i32 VehicleGunshipAngleAPlayer1Pc = 10;
+i32 VehicleGunshipAngleAPlayer2Pc = 5;
+i32 VehicleGunshipAngleBDefaultPc = 3;
+i32 VehicleGunshipAngleBPlayer1Pc = 4;
+f32 CableTargetScalePc = 2.0f;
+static f32 JumpAnimHoldTimePc = 0.100000001f;
+AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSpherePc[14] = {{&id_RANCOR, 4, 0, 0.30000001192092896f},
+                                                    {&id_DEWBACK, 1, 1, 0.20000000298023224f},
+                                                    {&id_DEWBACK, 2, 0, 0.125f},
+                                                    {&id_DEWBACK, 3, 0, 0.10000000149011612f},
+                                                    {&id_DEWBACK, 4, 0, 0.07500000298023224f},
+                                                    {&id_BIGGUN, 3, 0, 0.17499999701976776f},
+                                                    {&id_BIGGUN, 4, 0, 0.17499999701976776f},
+                                                    {&id_BIGGUN, 5, 0, 0.17499999701976776f},
+                                                    {&id_BANTHA, 1, 1, 0.25f},
+                                                    {&id_ATAT, 7, 1, 1.2000000476837158f},
+                                                    {&id_CATAPULT, 1, 0, 0.25f},
+                                                    {&id_FIRETRUCK, 1, 1, 0.30000001192092896f},
+                                                    {&id_FIRETRUCK, 2, 1, 0.30000001192092896f},
+                                                    {NULL, 0, 0, 0.0f}};
+static f32 DefaultMotionSpiderFarSpeedPc = -2.0f;
+static f32 DefaultMotionSpiderNearSpeedPc = -0.4f;
+static f32 DefaultMotionSpiderRangePc = 1.0f;
+f32 VehicleZamSmokeRatePc = 10.0f;
+f32 speeder_offset_speed = 2.0f;
+f32 speeder_smoke_rate = 5.0f;
+f32 VehicleGunshipHoverBasePc = 2.0f;
+f32 VehicleGunshipHoverOtherPc = 1.25f;
+f32 VehicleGunshipHoverSeparationPc = 0.800000011920929f;
+f32 CritterSnakeExtraHoverPc = -0.15000000596046448f;
+f32 CritterBatExtraHoverPc = 0.20000000298023224f;
+f32 VehicleShieldTargetPc = 5.0f;
+f32 PodRaceMinimumSpeedPc = 0.3330000042915344f;
+f32 PodRaceBoostSpeedPc = 2.0f;
+f32 PodSprintMinimumSpeedPc = 1.0f;
+f32 PodSprintBoostSpeedPc = 1.399999976158142f;
+f32 PodBoostHeightPc = 1.0f;
+f32 PodPitchHistoryPc[2] = {1.0f, 1.0f};
+f32 pod_animtime[2] = {1.0f, 1.0f};
+f32 podanimendframe = 1.0f;
+i32 PodSprintDebrisIndexPc = 117;
+f32 VehicleCollisionDamageSpeedFraction = 0.6000000238418579f;
+i32 VehicleCollisionFrontAngle = 45;
+i32 VehicleCollisionRearAngle = 10;
+static f32 rocket_lock_distance = 1.0f;
+f32 PodCollisionThresholdPc = 0.9990000128746033f;
+NUVEC PodSprintLiftPositionsPc[3] = {{-395.260009765625f, -5.480000019073486f, -165.0800018310547f},
+                                     {-375.3800048828125f, -5.039999961853027f, -286.5f},
+                                     {-354.9100036621094f, -4.849999904632568f, -299.32000732421875f}};
+f32 DirectionalGrappleSeekScalePc = 0.5f;
+f32 DirectionalZipUpSeekRatePc = 8.0f;
+i32 LandspeederExhaustJointsPc[3] = {2, 3, 4};
+static f32 SLAMGRAVITY = -15.0f;
 
 typedef struct CHARACTER_COMMUNICATE_READER_PC {
     u8 unknown_000[0xd38];
@@ -1160,7 +1284,36 @@ static f32 MovementWalkingSpeedPC(GAMEOBJECT *object, f32 scale) {
     return speed;
 }
 
+f32 PlayerOpponent_Range2 = 0.0f;
+static f32 ForceBackRadiusPc = 0;
+f32 ForceBackRadius2 = 0;
+i32 ComboOpponent_Behind = 0;
+f32 ComboOpponent_Range2 = 0;
+NUVEC PooPositionPc[2] = {0};
+f32 VehicleAreaRememberSpeed = 0;
+i32 IDLESPEEDINNARROWSOCKSONLY = 0;
+f32 SaberSparksTimer = 0;
+i32 testlaser_type = 0;
+static GAMEOBJECT *ForceBackObjPc = 0;
+static NUVEC *ForceBackPosPc = 0;
+static i32 ForceBackTypePc = 0;
+void (*VehicleSlowdownCallbackPc)(GAMEOBJECT *) = 0;
+i32 lightning_type = 0;
+static f32 applygravity_extrahoveroffset = 0;
+i32 getvehiclehoverheight_hothbattlehack = 0;
+i32 TwistScaleLean = 0;
+f32 CurrentSpeedOverride = 0;
+// Hub arrays are two-entry source views; full original capacities remain unknown.
+f32 pod_roll[2] = {0};
+f32 pod_roll_target[2] = {0};
+f32 VehicleLaunchHoverOffsetPc = 0;
+i32 objopponent_ignoreaiopponent = 0;
+i32 ForcePush_Waft = 0;
+i32 ForcePush_SuperPush = 0;
+i32 ForcePush_SuperMindTrick = 0;
+i32 VehicleGunshipAngleBPlayer2Pc = 0;
 static f32 magdif = 0;
+f32 PodCollisionMagnitudePc = 0;
 
 void VehicleCollisionCode(GAMEOBJECT *object) {
     i32 speeder_level;
@@ -1634,13 +1787,10 @@ void MovePlayer_ROLLING(GAMEOBJECT *object) {
 }
 
 #pragma data_seg(".data$PodFacingSeekRate")
-static f32 PodFacingSeekRate = 2.0f;
 #pragma data_seg()
 #pragma data_seg(".data$PodRollInputRate")
-static f32 PodRollInputRate = 6.0f;
 #pragma data_seg()
 #pragma data_seg(".data$PodRollReleaseRate")
-static f32 PodRollReleaseRate = 3.0f;
 #pragma data_seg()
 
 i32 MovePlayer_POD(GAMEOBJECT *object) {
@@ -1847,8 +1997,6 @@ void LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad,
         StartTurn(object);
     }
 }
-
-f32 TurnCamSafeDurationScalePc = 0.95f;
 
 void TurnCodeCamSafe(GAMEOBJECT *object, NUMTX *matrix) {
     static i16 TURNROLL = 180;
@@ -5761,16 +5909,10 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     }
 }
 
-static GAMEOBJECT *ForceBackObjPc = 0;
-static NUVEC *ForceBackPosPc = 0;
-
 void ResetForceBack(void) {
     ForceBackObjPc = NULL;
     ForceBackPosPc = NULL;
 }
-
-static f32 ForceBackRadiusPc = 0;
-static i32 ForceBackTypePc = 0;
 
 void SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 type) {
     ForceBackObjPc = object;
@@ -6104,7 +6246,6 @@ void fun_004a5690(void) {
 }
 
 #pragma data_seg(".data$rocket_lock_distance")
-static f32 rocket_lock_distance = 1.0f;
 #pragma data_seg()
 
 void BobaRocket_Move(PART_PC *part, f32 elapsed) {
@@ -6762,8 +6903,6 @@ void CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
         }
     }
 }
-
-static f32 JumpAnimHoldTimePc = 0.100000001f;
 
 static void JumpAnimCode(GAMEOBJECT *object) {
     DEFAULT_ANIMATION_TIMERS_PC *timers = (DEFAULT_ANIMATION_TIMERS_PC *)object;
@@ -8535,24 +8674,17 @@ i32 Shop_UpdateHint(HINT_PC *hint) {
 }
 
 #pragma data_seg(".data$ApplyGravityContext22HoverHeight")
-static f32 ApplyGravityContext22HoverHeight = 0.20000000298023224f;
 #pragma data_seg()
 #pragma data_seg(".data$ApplyGravityContext42HoverHeight")
-static f32 ApplyGravityContext42HoverHeight = 0.20000000298023224f;
 #pragma data_seg()
 #pragma data_seg(".data$ApplyGravityContextHoverHeight")
-static f32 ApplyGravityContextHoverHeight = 0.20000000298023224f;
 #pragma data_seg()
 #pragma data_seg(".data$ApplyGravityWallRunAcceleration")
-static f32 ApplyGravityWallRunAcceleration = -0.25f;
 #pragma data_seg()
 #pragma data_seg(".data$PODSPRINT_GRAVITY")
-static f32 PODSPRINT_GRAVITY = -35.0f;
 #pragma data_seg()
 #pragma data_seg(".data$SLAMGRAVITY")
-static f32 SLAMGRAVITY = -15.0f;
 #pragma data_seg()
-static f32 applygravity_extrahoveroffset = 0;
 
 void ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_rate, f32 *ground_height) {
     CHARACTERDATA_PC *character;
@@ -8857,16 +8989,12 @@ void ApplyGravity_Network(GAMEOBJECT *object) {
 }
 
 #pragma data_seg(".data$PlayerBackwardMomentumScalePc")
-static f32 PlayerBackwardMomentumScalePc = 1.2000000476837158f;
 #pragma data_seg()
 #pragma data_seg(".data$PlayerFloatHeightFractionPc")
-static f32 PlayerFloatHeightFractionPc = 0.625f;
 #pragma data_seg()
 #pragma data_seg(".data$PlayerSecondBackwardMomentumScalePc")
-static f32 PlayerSecondBackwardMomentumScalePc = 1.2000000476837158f;
 #pragma data_seg()
 #pragma data_seg(".data$VEHICLE_WATER_SPEED_MUL")
-static f32 VEHICLE_WATER_SPEED_MUL = 0.699999988079071f;
 #pragma data_seg()
 
 void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
@@ -9835,34 +9963,24 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
 }
 
 #pragma data_seg(".data$PODSPRINT_ACCELTIME")
-static f32 PODSPRINT_ACCELTIME = 0.5f;
 #pragma data_seg()
 #pragma data_seg(".data$PODSPRINT_CRUISESPEED")
-static f32 PODSPRINT_CRUISESPEED = 25.0f;
 #pragma data_seg()
 #pragma data_seg(".data$PODSPRINT_DECELTIME")
-static f32 PODSPRINT_DECELTIME = 0.25f;
 #pragma data_seg()
 #pragma data_seg(".data$PODSPRINT_HIGH_TURNRATE")
-static f32 PODSPRINT_HIGH_TURNRATE = 1.0f;
 #pragma data_seg()
 #pragma data_seg(".data$PODSPRINT_RUNSPEED")
-static f32 PODSPRINT_RUNSPEED = 35.0f;
 #pragma data_seg()
 #pragma data_seg(".data$PODSPRINT_SLOWSPEED")
-static f32 PODSPRINT_SLOWSPEED = 15.0f;
 #pragma data_seg()
 #pragma data_seg(".data$PODSPRINT_TURNRATE")
-static f32 PODSPRINT_TURNRATE = 1.0f;
 #pragma data_seg()
 #pragma data_seg(".data$PODSPRINT_VELOCITYSEEK")
-static f32 PODSPRINT_VELOCITYSEEK = 8.0f;
 #pragma data_seg()
 #pragma data_seg(".data$VEHICLE_SUBMARINE_DEPTH")
-static f32 VEHICLE_SUBMARINE_DEPTH = 0.20000000298023224f;
 #pragma data_seg()
 #pragma data_seg(".data$VEHICLE_TUBE_UPSPEED")
-static f32 VEHICLE_TUBE_UPSPEED = 5.0f;
 #pragma data_seg()
 
 void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
@@ -11953,10 +12071,6 @@ weapon_in:
     return 0;
 }
 
-static f32 DefaultMotionSpiderFarSpeedPc = -2.0f;
-static f32 DefaultMotionSpiderNearSpeedPc = -0.4f;
-static f32 DefaultMotionSpiderRangePc = 1.0f;
-
 void Move_CHARACTER(GAMEOBJECT *object) {
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
@@ -12734,8 +12848,6 @@ void PostResetCode(GAMEOBJECT *object) {
         object->tertiary_lean_angle = 0;
     }
 }
-
-i32 NetworkTurnScalePc = 3;
 
 void MovePlayer_NETWORK(GAMEOBJECT *object) {
     f32 turn_override = 0.0f;
