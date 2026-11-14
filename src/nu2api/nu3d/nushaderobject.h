@@ -14,7 +14,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
 #endif
 
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
@@ -22,12 +21,19 @@
 
 #if SAGA_NU2API_NU3D_NUSHADEROBJECT_H_PART == 1 && !defined(SAGA_NU2API_NU3D_NUSHADEROBJECT_H_STOP)
 
+/* Defined in nu2api/nu3d/ShaderManager.h. */
+#ifdef __cplusplus
+class NuShaderObject;
+#else
+typedef struct NuShaderObject NuShaderObject;
+#endif
+
 struct numtl_s;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PCShaderNativeUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
+    void PCShaderNativeUnInit(NuShaderObject *);
 
     typedef struct PC_SHADER_PARAMETER_LOCAL_PC PC_SHADER_PARAMETER_LOCAL_PC;
 
@@ -119,8 +125,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *, ID3DXConstantTable *, ID3DXConstantTable *);
-    void PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32, const char *, i32, const char *, i32, i32);
+    void PCShaderProbeHLSLConstants(NuShaderObject *, ID3DXConstantTable *, ID3DXConstantTable *);
+    void PCShaderObjectInitHLSLPc(NuShaderObject *, const u32 *, i32, const char *, i32, const char *, i32, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -135,7 +141,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *, struct numtl_s *);
+    void PCShaderSetMaterialParametersPc(NuShaderObject *, struct numtl_s *);
 #ifdef __cplusplus
 }
 #endif

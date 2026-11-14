@@ -14,7 +14,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/render/core/gameliball.h"
 #include "nu2api/nu3d/nu3d_includes.h"

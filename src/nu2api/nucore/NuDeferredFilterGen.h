@@ -12,6 +12,9 @@
 #include "nu2api/nucore/NuPostFilter.h"
 #endif
 
+struct NuDynamicLight;
+struct PC_FRAMEBUFFER;
+
 #ifdef __cplusplus
 
 class NuDeferredFilterGen : public NuPostFilter { // size 0x2f8

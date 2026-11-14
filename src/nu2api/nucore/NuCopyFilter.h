@@ -11,6 +11,8 @@
 #include "nu2api/nucore/NuPostFilter.h"
 #endif
 
+struct PC_FRAMEBUFFER;
+
 #ifdef __cplusplus
 
 class NuCopyFilter : public NuPostFilter { // size 0x14

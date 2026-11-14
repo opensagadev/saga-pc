@@ -3414,7 +3414,7 @@ extern "C" {
         PC_DL_SKIN_PALETTE_READER *packet = (PC_DL_SKIN_PALETTE_READER *)arg;
         i32 count = packet->count;
         void *elements = packet->elements;
-        PC_SHADER_OBJECT_FULL_VIEW *shader = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
+        NuShaderObject *shader = (NuShaderObject *)PCShaderCurrentObjectPc();
         if (shader != NULL) {
             if (count > 8) {
                 NuPtlDmaSlotsExhausted();
@@ -4831,19 +4831,19 @@ extern "C" {
     }
 
     void NuGScnDestroyPS(NUGSCN *scene) {
-        PC_GSCN_NATIVE_VIEW *native = (PC_GSCN_NATIVE_VIEW *)scene->native_scene;
+        SCENE_FIXUP_NATIVE *native = (SCENE_FIXUP_NATIVE *)scene->native_scene;
         PC_SCENE_MTL_VIEW *material;
         i32 i;
         i32 j;
         u8 released;
         for (i = 0; i != native->vertex_buffer_count; ++i) {
             NudxFw_D3DBeginCriticalSection();
-            PCDeviceReleaseTexture(&native->vertex_buffers[i]);
+            PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE **)&native->vertex_buffers[i]);
             NudxFw_D3DEndCriticalSection();
         }
         for (i = 0; i != native->index_buffer_count; ++i) {
             NudxFw_D3DBeginCriticalSection();
-            PCDeviceReleaseTexture(&native->index_buffers[i]);
+            PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE **)&native->index_buffers[i]);
             NudxFw_D3DEndCriticalSection();
         }
         for (i = 0; i != scene->texture_count; ++i) {
@@ -4853,12 +4853,12 @@ extern "C" {
         }
         released = 0;
         for (i = 0; i != native->geometry_count; ++i) {
-            PC_GSCN_GEOMETRY_VIEW *geometry = native->geometries[i];
+            SCENE_FIXUP_GEOMETRY *geometry = native->geometries[i];
             if (geometry->vertex_format != 0 && (geometry->vertex_format & 0xf000) == 0) {
-                PC_TEXTURE_RESOURCE *resource;
+                PC_BUFFER_RESOURCE *resource;
                 released = 1;
                 NudxFw_D3DBeginCriticalSection();
-                resource = geometry->resource;
+                resource = geometry->dynamic_vertex_buffer;
                 resource->methods->release(resource);
                 NudxFw_D3DEndCriticalSection();
             }
@@ -7008,7 +7008,7 @@ typedef struct PC_SHADOW_MATERIAL_READER { // size 0x2c0
 
 extern "C" void NuDisplayListShadowMaterial(void *data) {
     PC_SHADOW_MATERIAL_READER *material = (PC_SHADOW_MATERIAL_READER *)data;
-    PC_SHADER_OBJECT_FULL_VIEW *shader = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderRecordFromHandle((u32)(i32)material->shadow_shader_id);
+    NuShaderObject *shader = (NuShaderObject *)PCShaderRecordFromHandle((u32)(i32)material->shadow_shader_id);
     if (shader != NULL) {
         NuDisplayHandlerMaterial = material;
         if (!(material->vertex_format & 0x300000) && material->common.display_list != NULL) {

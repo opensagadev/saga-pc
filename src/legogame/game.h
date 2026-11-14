@@ -7,7 +7,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
 #include "globals.h"
 #include "legoapi/audio/audio.h"
 #include "legoapi/characters/core/characters.h"

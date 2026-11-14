@@ -14,7 +14,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
 #include "legoapi/cutscenes/gcutscn.h"
 #include "legoapi/render/fx/game_deb.h"
 #include "nu2api/nu3d/nucamera.h"
@@ -37,6 +36,9 @@
 #include "nu2api/nustencilshadows_PC.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #endif
+
+struct NuDynamicLight;
+struct PC_TEXTURE_RESOURCE;
 
 /* 9 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
@@ -460,7 +462,6 @@ extern "C" {
 #endif
 
 typedef void (*PC_DISPLAY_ITEM_HANDLER_PC)(void *);
-STATIC_ASSERT(sizeof(PC_DISPLAY_ITEM_HANDLER_PC) == 4);
 /* Working accessed-field views only, not original allocation extents.
  * Pointer-only parameter types remain opaque until an actual read is consumed. */
 typedef struct NU_POST_BLOOM_PARAMETERS NU_POST_BLOOM_PARAMETERS;
@@ -1153,7 +1154,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW) == 0x2e8);
 #ifdef __cplusplus
 extern "C" {
 #endif

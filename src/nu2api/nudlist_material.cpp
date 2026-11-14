@@ -169,7 +169,7 @@ typedef struct PC_DL_E_MATERIAL_READER {     // size 0x2c0
     PC_TEXTURE_RESOURCE *vertex_declaration; // 0x2bc
 } PC_DL_E_MATERIAL_READER;
 
-STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) + 0x4f * sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 0x3d0);
+STATIC_ASSERT(offsetof(NuShaderObject, parameters) + 0x4f * sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 0x3d0);
 
 struct PC_DL_SHADER_PROGRAM_PAIR_PC {   // size 0x8
     PC_TEXTURE_RESOURCE *vertex_shader; // 0x0
@@ -192,7 +192,7 @@ extern "C" {
     }
 }
 
-extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *, NUMTL *);
+extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *, NUMTL *);
 static void PCDisplayHandlerBindPrograms(PC_DL_SHADER_PROGRAM_PAIR_PC *);
 
 static void PCDisplayHandlerBindPrograms(PC_DL_SHADER_PROGRAM_PAIR_PC *programs) {
@@ -237,7 +237,7 @@ extern "C" void fun_005fa620(i32 mode) {
 
 extern "C" void NuDisplayListMaterial(void *arg) {
     PC_DL_E_MATERIAL_READER *material = (PC_DL_E_MATERIAL_READER *)arg;
-    PC_SHADER_OBJECT_FULL_VIEW *shader = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderRecordFromHandle((u32)(i32)material->shader_id);
+    NuShaderObject *shader = (NuShaderObject *)PCShaderRecordFromHandle((u32)(i32)material->shader_id);
     NUMTX transposed;
     NuDisplayMaterialLast = material;
     NuDisplayHandlerMaterial = material;
@@ -319,17 +319,16 @@ extern "C" void NuDisplayListMaterial(void *arg) {
     }
     NuDisplayHandlerReflection = 0;
     NuMtlSetRenderStatesPS(&material->common);
-    if ((shader->unknown_4d4 & 6) == 0) {
+    if ((shader->stage_flags & 6) == 0) {
         PCDeviceBackend.SetColorWriteMask(1, 1, 1);
     } else {
         PCDeviceBackend.SetColorWriteMask(0, 0, 1);
     }
-    u32 write_mask = ~shader->unknown_4d4 & 8;
+    u32 write_mask = ~shader->stage_flags & 8;
     write_mask >>= 3;
     PCDeviceBackend.SetColorWriteMask(write_mask, write_mask, 3);
     if (PCDeviceHardwareVertexProcessingPC != 4 && PCShaderCurrentObjectPc() != NULL) {
-        if (PCShaderCurrentObjectPc() != NULL &&
-            ((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc())->parameters[0x4f].register_index >= 0) {
+        if (PCShaderCurrentObjectPc() != NULL && ((NuShaderObject *)PCShaderCurrentObjectPc())->parameters[0x4f].register_index >= 0) {
             for (i32 i = 0; i < 32; ++i) {
                 NUVEC4 group;
                 group.x = 1.0f;
@@ -344,8 +343,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
             if (count >= 8) {
                 count = 8;
             }
-            NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), 0x4e, 0, count,
-                                        &nuspecial_vertex_offsets[0][0]);
+            NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObjectPc(), 0x4e, 0, count, &nuspecial_vertex_offsets[0][0]);
         }
     }
 }

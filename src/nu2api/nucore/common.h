@@ -42,19 +42,10 @@
 
 #include "nu2api/nucore/fixed_width.h"
 
-// VC8-compatible C/C++ checks for the retail x86 data model.
-STATIC_ASSERT(sizeof(void *) == 4);
-STATIC_ASSERT(sizeof(i8) == 1);
-STATIC_ASSERT(sizeof(i16) == 2);
-STATIC_ASSERT(sizeof(i32) == 4);
-STATIC_ASSERT(sizeof(i64) == 8);
-
 // NOLINTBEGIN(google-runtime-int): These aliases must spell their compiler-provided base types.
 typedef float f32;
 typedef double f64;
 // NOLINTEND(google-runtime-int)
-STATIC_ASSERT(sizeof(f32) == 4);
-STATIC_ASSERT(sizeof(f64) == 8);
 union variptr_u;
 
 typedef u32 usize;

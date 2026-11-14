@@ -12,6 +12,8 @@
 #include "nu2api/nustencilshadows_PC.h"
 #endif
 
+struct PC_FRAMEBUFFER;
+
 #ifdef __cplusplus
 
 class NuMainFilter : public NuMainFilterGen { // size 0x160

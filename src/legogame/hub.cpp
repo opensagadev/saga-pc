@@ -4044,7 +4044,7 @@ extern "C" {
             }
             if (owner->unknown_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
                 instance = NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle);
-                if (instance == ((AI_SPECIAL_TERRAIN_VIEW *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
+                if (instance == ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
                     skip_inside = 0;
                 }
             }

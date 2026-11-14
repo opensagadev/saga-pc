@@ -12,6 +12,9 @@
 #include "nu2api/numath/numtx.h"
 #endif
 
+struct NU_POST_BLOOM_PARAMETERS;
+struct PC_FRAMEBUFFER;
+
 #ifdef __cplusplus
 
 class NuMainFilterGen : public NuPostFilter { // size 0x128

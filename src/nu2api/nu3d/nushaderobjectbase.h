@@ -14,10 +14,11 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
 #include "nu2api/nu3d/ShaderManager.h"
 #include "nu2api/numath/nuvec4.h"
 #endif
+
+struct PC_SHADER_WATER_MATERIAL_VIEW;
 
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
@@ -29,7 +30,7 @@ struct PC_SHADER_PARAMETER_LOCAL_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct PC_SHADER_PARAMETER_LOCAL_PC *PCShaderAllocateParameter(PC_SHADER_OBJECT_FULL_VIEW *, i32);
+    struct PC_SHADER_PARAMETER_LOCAL_PC *PCShaderAllocateParameter(NuShaderObject *, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -63,8 +64,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *);
-    void PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *);
+    void PCShaderObjectCreateHLSLPc(NuShaderObject *);
+    void PCShaderObjectDestroyHLSLPc(NuShaderObject *);
 #ifdef __cplusplus
 }
 #endif

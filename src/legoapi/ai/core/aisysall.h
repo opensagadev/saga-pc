@@ -18,6 +18,8 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct AIPATH;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

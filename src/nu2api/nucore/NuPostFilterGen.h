@@ -10,6 +10,8 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #endif
 
+struct PC_FRAMEBUFFER;
+
 #ifdef __cplusplus
 /* Extend/replace existing C++ accessed-field classes; private proposal only. */
 class NuPostFilterGen { // size 0xc

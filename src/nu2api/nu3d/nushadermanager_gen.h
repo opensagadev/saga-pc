@@ -7,7 +7,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
 #endif
 
 typedef struct PC_SHADER_RECORD_VIEW { // size 0x8

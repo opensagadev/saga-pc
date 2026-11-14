@@ -12,6 +12,11 @@
 #include "nu2api/numath/numtx.h"
 #endif
 
+struct NU_POST_BLOOM_PARAMETERS;
+struct NU_POST_SPEED_PARAMETERS;
+struct NuDynamicLight;
+struct PC_FRAMEBUFFER;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -14,7 +14,9 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/nushadermanager_gen.h"
+#include "nu2api/nu3d/nushaderobject.h"
 #endif
 
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
@@ -25,9 +27,8 @@
 extern "C" {
 #endif
     void NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end);
-    PC_SHADER_OBJECT_FULL_VIEW *NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
-    PC_SHADER_OBJECT_FULL_VIEW *NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *,
-                                                                     const PC_SHADER_FILTER_MATERIAL_VIEW *, i32);
+    NuShaderObject *NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
+    NuShaderObject *NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32);
     void NuShaderManagerReleaseShader(PC_SHADER_RECORD_VIEW *);
     void NuShaderManagerSetfv(i32 semantic, const f32 *values);
 
@@ -49,7 +50,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *);
+    void NuShaderManagerBindShader(NuShaderObject *);
 #ifdef __cplusplus
 }
 #endif

@@ -10,6 +10,8 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #endif
 
+struct PC_TEXTURE_RESOURCE;
+
 typedef struct PC_VERTEX_DECL_ENTRY { // size 0x8
     u32 key;                          // 0x0
     PC_TEXTURE_RESOURCE *resource;    // 0x4

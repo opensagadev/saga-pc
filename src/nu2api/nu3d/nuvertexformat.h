@@ -10,6 +10,8 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #endif
 
+struct PC_TEXTURE_RESOURCE;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

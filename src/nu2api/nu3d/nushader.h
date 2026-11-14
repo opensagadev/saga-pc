@@ -14,7 +14,7 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
+#include "nu2api/nu3d/nushaderobject.h"
 #endif
 
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
@@ -24,8 +24,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuShaderObjectBaseUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
-    void NuShaderObjectUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
+    void NuShaderObjectBaseUnInit(NuShaderObject *);
+    void NuShaderObjectUnInit(NuShaderObject *);
     void NuShaderObjectBaseSetWaterSpeed(f32);
 
 #ifdef __cplusplus
@@ -61,7 +61,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuShaderObjectBaseInit(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32);
+    void NuShaderObjectBaseInit(NuShaderObject *, const u32 *, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -76,14 +76,13 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *, i32, i32, i32, const f32 *);
+    void NuShaderObjectSetElementsfv(NuShaderObject *, i32, i32, i32, const f32 *);
 
-    void NuShaderObjectBaseCreate(PC_SHADER_OBJECT_FULL_VIEW *);
-    void NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *);
-    void NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *);
-    void NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *);
-    void NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element, i32 count,
-                                               const f32 *values);
+    void NuShaderObjectBaseCreate(NuShaderObject *);
+    void NuShaderObjectBaseDestroy(NuShaderObject *);
+    void NuShaderObjectCreate(NuShaderObject *);
+    void NuShaderObjectDestroy(NuShaderObject *);
+    void NuShaderObjectSetElementsfv_transpose(NuShaderObject *shader, i32 semantic, i32 first_element, i32 count, const f32 *values);
 #ifdef __cplusplus
 }
 #endif

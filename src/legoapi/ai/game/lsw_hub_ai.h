@@ -7,7 +7,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
 #include "gameapi/ai/aisys/aiscript_types.h"
 #include "gameapi/ai/aisys/aisys.h"
 #include "legoapi/items/base/apiobject.h"

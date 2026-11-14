@@ -7,13 +7,13 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
+#include "nu2api/nu3d/nushaderobject.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuShaderObjectInit(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32, const char *, i32, const char *, i32, i32);
+    void NuShaderObjectInit(NuShaderObject *, const u32 *, i32, const char *, i32, const char *, i32, i32);
 #ifdef __cplusplus
 }
 #endif

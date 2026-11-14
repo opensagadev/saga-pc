@@ -7,7 +7,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
 #include "gamelib/util/CRC16.h"
 #include "gamelib/util/gamelib_util_types.h"
 #include "nu2api/nu3d/ShaderManager.h"
@@ -35,7 +34,7 @@ class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW { // size 0x791b0
     void setElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values);
     void fun_007459a0(i32 flags, i32 selector, const char *vertex_text, i32 vertex_length, const char *pixel_text, i32 pixel_length);
     virtual ~ShaderManagerHLSL();
-    virtual bool CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
+    virtual bool CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32);
     virtual void AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
 };
 

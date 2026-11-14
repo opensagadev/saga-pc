@@ -34,6 +34,8 @@
 #include "nu2api/numath/numtx.h"
 #endif
 
+struct AIAREA;
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

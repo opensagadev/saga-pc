@@ -12,6 +12,8 @@
 #include "nu2api/numath/nuvec4.h"
 #endif
 
+struct NU_POST_SPEED_PARAMETERS;
+
 #ifdef __cplusplus
 
 class NuSpeedBlurFilterGen : public NuPostFilter { // size 0x20

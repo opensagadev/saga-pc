@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
+template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32);
 template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
 
 void PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW *desc, const PC_SHADER_FILTER_MATERIAL_VIEW *mtl,
@@ -518,7 +518,7 @@ void ShaderManagerHLSL::fun_007459a0(i32 flags, i32 selector, const char *vertex
                                      i32 pixel_length) {
     u32 key = 0;
     NuShaderObjectKeyGenerate4(&key, flags, selector);
-    PC_SHADER_OBJECT_FULL_VIEW *shader = NULL;
+    NuShaderObject *shader = NULL;
     for (i32 i = 0; i < 400; i++) {
         if (key == slots[i].key) {
             shader = &slots[i];
@@ -548,9 +548,9 @@ void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
             }
         }
         if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
-            PC_SHADER_OBJECT_FULL_VIEW *bound = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
+            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObjectPc();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), semantic, 0, 1, values);
+                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObjectPc(), semantic, 0, 1, values);
             }
         }
         return;
@@ -583,14 +583,14 @@ extern char uberShader2[158576];
 template <> PC_SHADER_MANAGER_VIEW::ShaderManagerTemplate() {
     bound_slot = NULL;
     last_allocated = -1;
-    PC_SHADER_OBJECT_FULL_VIEW *first = slots;
+    NuShaderObject *first = slots;
     ++first->ref_count;
 }
 
 template <> PC_SHADER_MANAGER_VIEW::~ShaderManagerTemplate() {
 }
 
-template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32) {
+template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32) {
     return false;
 }
 
@@ -618,7 +618,7 @@ ShaderManagerHLSL::~ShaderManagerHLSL() {
     }
 }
 
-// for saga.h: NuShaderObject::unknown_4d4 is a bitfield (each path bit is stored with xor/and/xor).
+// for saga.h: NuShaderObject::stage_flags is a bitfield (each path bit is stored with xor/and/xor).
 struct NuShaderObjectPathsPc {
     u32 base : 1;
     u32 first : 1;
@@ -627,8 +627,7 @@ struct NuShaderObjectPathsPc {
     u32 unknown : 28;
 };
 
-bool ShaderManagerHLSL::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *filter, bool pixel_stage, PC_SHADER_OBJECT_FULL_VIEW *shader,
-                                     i32 index) {
+bool ShaderManagerHLSL::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *filter, bool pixel_stage, NuShaderObject *shader, i32 index) {
     u32 key = 0;
     NuShaderObjectKeyGenerate3(&key, filter, pixel_stage != 0);
     vertex_source.length = 0;
@@ -636,7 +635,7 @@ bool ShaderManagerHLSL::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *filte
     compiler->Generate(const_cast<PC_SHADER_MATERIAL_FILTER_VIEW *>(filter), &vertex_source, &pixel_source);
     PCShaderObjectInitHLSLPc(shader, &key, index, reinterpret_cast<const char *>(vertex_source.data), vertex_source.length,
                              reinterpret_cast<const char *>(pixel_source.data), pixel_source.length, compiler->dictionary.profile);
-    NuShaderObjectPathsPc *paths = reinterpret_cast<NuShaderObjectPathsPc *>(&shader->unknown_4d4);
+    NuShaderObjectPathsPc *paths = reinterpret_cast<NuShaderObjectPathsPc *>(&shader->stage_flags);
     paths->base = filter->variant == 0;
     paths->first = filter->first_path != 0;
     paths->layer = filter->variant != 0 ? false : (bool)((filter->descriptor->layer_flags >> 16) & 1);
@@ -664,9 +663,9 @@ void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *value
             }
         }
         if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
-            PC_SHADER_OBJECT_FULL_VIEW *bound = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
+            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObjectPc();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), semantic, element, 1, values);
+                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObjectPc(), semantic, element, 1, values);
             }
         }
         return;
@@ -704,10 +703,9 @@ void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element,
             }
         }
         if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
-            PC_SHADER_OBJECT_FULL_VIEW *bound = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
+            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObjectPc();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv_transpose((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), semantic, first_element,
-                                                      count, values);
+                NuShaderObjectSetElementsfv_transpose((NuShaderObject *)PCShaderCurrentObjectPc(), semantic, first_element, count, values);
             }
         }
         return;
@@ -737,10 +735,9 @@ void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count
             }
         }
         if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
-            PC_SHADER_OBJECT_FULL_VIEW *bound = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
+            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObjectPc();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), semantic, first_element, count,
-                                            values);
+                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObjectPc(), semantic, first_element, count, values);
             }
         }
         return;

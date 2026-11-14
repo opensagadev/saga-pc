@@ -11,6 +11,8 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct AIAREA;
+
 typedef struct EDAIAREA_s { // size 0x48
     /* Editor area record: a list link ahead of an AIAREA image (rebuild copies it). */
     NULISTLNK link;    // 0x00

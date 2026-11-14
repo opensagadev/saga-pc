@@ -14,7 +14,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
 #include "nu2api/nu3d/nushaderobject.h"
 #include "nu2api/nu3d/nushaderobjectbase.h"
 #endif
@@ -154,15 +153,6 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW;
 struct PC_TEXTURE_RESOURCE;
 
 #ifdef __cplusplus
-#ifdef __cplusplus
-extern "C" {
-#endif
-    class NuShaderObject;
-#ifdef __cplusplus
-}
-#endif
-#endif
-#ifdef __cplusplus
 extern "C" {
 #endif
     void NuShaderObjectKeyGenerate3(u32 *, const struct PC_SHADER_MATERIAL_FILTER_VIEW *, i32);
@@ -180,7 +170,7 @@ extern "C" {
 #if SAGA_NU2API_NU3D_SHADERMANAGER_H_PART == 2 && !defined(SAGA_NU2API_NU3D_SHADERMANAGER_H_STOP)
 #ifdef __cplusplus
 
-class NuShaderObject {
+class NuShaderObject { // size 0x4d8
   public:
     NuShaderObject() {
         PCShaderObjectCreateHLSLPc(this);
@@ -190,17 +180,17 @@ class NuShaderObject {
         PCShaderObjectDestroyHLSLPc(this);
     }
 
-    i32 marker;
-    i32 ref_count;
-    u32 key;
-    u32 unknown_c;
-    PC_SHADER_PARAMETER_LOCAL_PC *active_parameters;
-    i32 version;
-    u32 unknown_18;
-    PC_SHADER_PARAMETER_LOCAL_PC parameters[100];
-    struct PC_TEXTURE_RESOURCE *vertex_shader;
-    struct PC_TEXTURE_RESOURCE *pixel_shader;
-    u32 unknown_4d4;
+    i32 marker;                                      // 0x000
+    i32 ref_count;                                   // 0x004
+    u32 key;                                         // 0x008
+    u32 unknown_c;                                   // 0x00c
+    PC_SHADER_PARAMETER_LOCAL_PC *active_parameters; // 0x010
+    i32 version;                                     // 0x014
+    u32 unknown_18;                                  // 0x018
+    PC_SHADER_PARAMETER_LOCAL_PC parameters[100];    // 0x01c
+    struct PC_TEXTURE_RESOURCE *vertex_shader;       // 0x4cc
+    struct PC_TEXTURE_RESOURCE *pixel_shader;        // 0x4d0
+    u32 stage_flags;                                 // 0x4d4
 
     void fun_00741250();
     bool fun_00741260() const;
@@ -218,14 +208,13 @@ template <class T> class ShaderManagerTemplate {
   public:
     ShaderManagerTemplate();
     virtual ~ShaderManagerTemplate();
-    virtual bool CreateShader(const struct PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
+    virtual bool CreateShader(const struct PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32);
     virtual void AdaptDescriptor(const struct PC_SHADER_FILTER_DESC_VIEW *, const struct PC_SHADER_FILTER_MATERIAL_VIEW *);
     T slots[400];
     i32 last_allocated;
-    PC_SHADER_OBJECT_FULL_VIEW *bound_slot;
-    PC_SHADER_OBJECT_FULL_VIEW *AllocateSlot(i32 *index);
-    PC_SHADER_OBJECT_FULL_VIEW *Retrieve(const struct PC_SHADER_FILTER_DESC_VIEW *, const struct PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32,
-                                         bool);
+    NuShaderObject *bound_slot;
+    NuShaderObject *AllocateSlot(i32 *index);
+    NuShaderObject *Retrieve(const struct PC_SHADER_FILTER_DESC_VIEW *, const struct PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32, bool);
     void ReleaseShader(T *slot);
     void DestroyShaders();
     void SetCurrentShader(T *slot);
@@ -235,6 +224,24 @@ template <class T> class ShaderManagerTemplate {
     static void SetShininessFactor(f32 shininess);
     static f32 GetShininessFactor();
     T *FindShader(const u32 *key);
+};
+
+/* With T = NuShaderObject (0x4d8 bytes): slots at 0x4, last_allocated at 0x79184, bound_slot at 0x79188, size 0x7918c. */
+typedef ShaderManagerTemplate<NuShaderObject> PC_SHADER_MANAGER_VIEW;
+#else
+/* NuShaderObject as C sees it: the members of the class without its constructor and methods. */
+struct NuShaderObject {                              // size 0x4d8
+    i32 marker;                                      // 0x000
+    i32 ref_count;                                   // 0x004
+    u32 key;                                         // 0x008
+    u32 unknown_c;                                   // 0x00c
+    PC_SHADER_PARAMETER_LOCAL_PC *active_parameters; // 0x010
+    i32 version;                                     // 0x014
+    u32 unknown_18;                                  // 0x018
+    PC_SHADER_PARAMETER_LOCAL_PC parameters[100];    // 0x01c
+    struct PC_TEXTURE_RESOURCE *vertex_shader;       // 0x4cc
+    struct PC_TEXTURE_RESOURCE *pixel_shader;        // 0x4d0
+    u32 stage_flags;                                 // 0x4d4
 };
 #endif
 #undef SAGA_NU2API_NU3D_SHADERMANAGER_H_PART

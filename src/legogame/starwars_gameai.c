@@ -44,7 +44,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJEC
         }
         if (owner->unknown_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL &&
             NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle) ==
-                ((AI_SPECIAL_TERRAIN_VIEW *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
+                ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
             skip_inside = 0;
         }
     } else {
