@@ -167,13 +167,15 @@ lint: dependencies
 format:
 	$(PYTHON) tools/check.py --format-fix
 
-# Counts that may only go down (tools/budget.py): oddities, unit declarations, casts; warnings: check-warnings.
+# Counts that may only go down (tools/budget.py): oddities, unit declarations, casts, single-use string
+# constants; warnings: check-warnings.
 check-core: dependencies
 	$(PYTHON) tools/check.py
 	$(PYTHON) tools/budget.py --guard
 	$(PYTHON) tools/oddscan.py --check
 	$(PYTHON) tools/declscan.py --check
 	$(PYTHON) tools/castscan.py --check
+	$(PYTHON) tools/literalscan.py --check
 	$(PYTHON) tools/layoutcheck.py
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 

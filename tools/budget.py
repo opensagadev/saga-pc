@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Count budgets that may only go down.
 
-Three tools count things a real codebase should have less of and compare the
+These tools count things a real codebase should have less of and compare the
 counts with a budget file; a count above its budget fails CI:
 
     config/oddscan-budget.json   tools/oddscan.py --check    oddity classes (docs/cleanup-audit.md)
     config/declscan-budget.json  tools/declscan.py --check   unit declaration classes A-E (docs/declarations.md)
     config/warning-budget.json   tools/warnings.py --check   MSVC warning codes per build kind
     config/castscan-budget.json  tools/castscan.py --check   explicit casts per cause class (docs/cast-audit.md)
+    config/literalscan-budget.json  tools/literalscan.py --check  string constants that name one literal
 
 Each tool's `--write-budget` lowers its budget to the current counts (it never
 raises one). Raising a budget is a reviewed exception: `--guard` compares every
@@ -30,7 +31,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET_FILES = ("config/oddscan-budget.json", "config/declscan-budget.json", "config/warning-budget.json",
-                "config/castscan-budget.json")
+                "config/castscan-budget.json", "config/literalscan-budget.json")
 RAISES = "config/budget-raises.txt"
 
 

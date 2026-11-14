@@ -113,7 +113,7 @@ def function_bodies(code):
     return bodies
 
 
-EXTERN = re.compile(r'^[ \t]*extern\b[^;{}=\n]*\b([A-Za-z_]\w*)\s*(?:\[[^\]]*\])?\s*;[ \t]*\n?', re.MULTILINE)
+EXTERN = re.compile(r'^[ \t]*extern\b[^;{}=\n]*\b([A-Za-z_]\w*)\s*(?:\[[^\]]*\])?\s*;', re.MULTILINE)
 WORD = re.compile(r'[A-Za-z_]\w*')
 
 
@@ -242,8 +242,8 @@ def counts(found):
 class SymbolMap:
     """config/symbols.csv as lines, so that an edit leaves every other row as it is."""
 
-    def __init__(self, path=SYMBOLS):
-        self.path = Path(path)
+    def __init__(self, path=None):
+        self.path = Path(path or SYMBOLS)
         self.lines = self.path.read_text().splitlines(keepends=True)
         self.symbols = collections.defaultdict(list)
         self.names = collections.defaultdict(list)
@@ -303,6 +303,28 @@ def remove_line_span(text, start, end):
     return start, end
 
 
+EMPTY_SEGMENT = re.compile(r'^[ \t]*#\s*pragma\s+const_seg\s*\(\s*"[^"\n]*"\s*\)[ \t]*\n(?:[ \t]*\n)*'
+                           r'(?=[ \t]*#\s*pragma\s+const_seg\s*\()', re.MULTILINE)
+SEGMENT = re.compile(r'^[ \t]*#\s*pragma\s+const_seg\s*\(\s*("[^"\n]*")?\s*\)[ \t]*$')
+
+
+def tidy_segments(text):
+    """Drop `#pragma const_seg("...")` lines that the next `#pragma const_seg` overrides, and resets of the
+    default segment."""
+    text = EMPTY_SEGMENT.sub("", text)
+    lines, named = [], False
+    for line in text.splitlines(keepends=True):
+        match = SEGMENT.match(line)
+        if match and not match.group(1):
+            if not named:
+                continue
+            named = False
+        elif match:
+            named = True
+        lines.append(line)
+    return "".join(lines)
+
+
 def fix(sources, found, only=None):
     """Inline every single-use constant (in PATHS when given); returns (fixed, skipped [(decl, reason)])."""
     by_path = {s.path: s for s in sources}
@@ -323,9 +345,8 @@ def fix(sources, found, only=None):
         text = source.text
         before = re.search(r'^[ \t]*#\s*pragma\s+const_seg\s*\(\s*"\.rdata\$' + re.escape(decl["name"]) +
                            r'"\s*\)[ \t]*\n\Z', text[:start], re.MULTILINE)
-        after = re.match(r'[ \t]*#\s*pragma\s+const_seg\s*\(\s*\)[ \t]*\n', text[end:])
-        if before and after:
-            start, end = before.start(), end + after.end()
+        if before:
+            start = before.start()
         edits.setdefault(source.path, []).append((start, end, ""))
         use_source, use_start, use_end, kind = decl["uses"][0]
         if kind == "cast":
@@ -339,6 +360,7 @@ def fix(sources, found, only=None):
         text = by_path[path].text
         for start, end, replacement in sorted(set(changes), reverse=True):
             text = text[:start] + replacement + text[end:]
+        text = tidy_segments(text)
         (ROOT / path).write_text(text, encoding="latin-1")
     symbols.write()
     return fixed, skipped
