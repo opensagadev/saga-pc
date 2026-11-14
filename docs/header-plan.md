@@ -29,6 +29,96 @@ Decisions on the first draft of this plan (2026-11-14):
    shim includes and step 3 deletes. Targets that shadow SDK/CRT header
    names are renamed.
 
+## Status (2026-11-14): step 1 tried, not applied
+
+The split was applied on origin/main 352eb5eb (branch `wip-split-narrow`,
+not merged). `--build-map` and `--apply`, then `make format`, wrote 421
+module headers; `src/saga.h` became 612 lines: guard, comment,
+`#define SAGA_SHIM` and 602 includes. Units were unchanged: every one still
+included `saga.h`.
+
+Result against 352eb5eb (full build, `match.py --update`):
+
+- Exact set by address: 13,224 before, 13,223 after.
+  `BlockadeRunnerDEjectCreaturePc` (`legogame/episodeIV.c`) drops from
+  exact to 95.18%. `BoulderSpawnPc` and `SubItemMenu` stay exact.
+- Reproduced data: 970,153 bytes before and after.
+- 366 of 373 objects are identical apart from the COFF timestamp. Of the
+  other seven, three differ only in names: `pc_device.obj` and
+  `shader_dictionary.obj` in the number of one compiler label
+  (`$submit$N`, `$allocate_first$N`), `edlevelall.obj` in the order of its
+  symbol table. Four change code:
+
+| unit | function | objdiff before | after |
+|---|---|---:|---:|
+| `legogame/episodeIV.c` | `BlockadeRunnerDEjectCreaturePc` | exact | 95.1754 |
+| `legogame/shop.c` | `DrawSubItems` | 82.9484 | 82.9811 |
+| `gamelib/net/NetStats.cpp` | `NetStats::Draw` | 99.9353 | 99.9727 |
+| `legogame/game.cpp` | `InitGameAfterConfig` | 82.2397 | 82.2397 (other bytes) |
+
+On the earlier base e4aa6520 (421 vs 420 headers, fewer declarations) the
+same split kept all exact functions and moved `NuRndrParticleGroup` and
+`NuDeferredFilterGen::render` instead of `BlockadeRunnerDEjectCreaturePc`
+and `NetStats::Draw`: which fragile function moves depends on the id count
+of the day (section 6, "Files as ids").
+
+The decision was to recover a lost function by narrowing its unit (step 2)
+in the same change. That is not possible yet (next section), so the split
+waits.
+
+Changes that came with it (tool and build changes, usable without the
+split):
+
+- `--apply` carries `// NOLINTBEGIN(...)` / `// NOLINTEND(...)` regions into
+  every header that receives part of one (a run of asserts alone gets
+  none). Before, `fixed_width.h` got the BEGIN and `decomp.h` an unmatched
+  END, which clang-tidy rejects.
+- The Makefile rebuilds objects when any `src/**/*.h` changes, not only
+  saga.h.
+- On the branch: `port.py` reads PC structs from every project header, and `globals.py`
+  checks every project header before it declares a name. It still writes
+  new declarations into its section at the end of saga.h (the shim), which
+  is where an unmapped declaration stays. `typexfer.py` and
+  `typeimport.py` edit struct text in saga.h in place; they stop with a
+  message until step 3 teaches them the module headers.
+- On the branch: oddscan budgets `data-file` (the shim), `dup-type` (names saga.h already
+  declared twice now sit in two files) and `nolint` (the regions repeated
+  per header) go up, with reasons in `config/budget-raises.txt`.
+- After the split, `--build-map`, `--apply`, `--stats`, `--roundtrip`,
+  `--check-counts`, `--check-neutral` and `--exact-order` have no unsplit
+  saga.h to read; `--place` (the target header of a name) keeps working.
+
+### Step 2 is blocked on self-contained headers
+
+The plan for the fragile units was to narrow them in the same change. It is
+not possible yet: the generated headers cannot be included on their own.
+
+- Each header was compiled alone (`#include "H"` in an empty C file,
+  clang with the lint flags): 19 of 421 compile. `decomp.h` does not:
+  `fixed_width.h`, which it includes first, uses `STATIC_ASSERT` before
+  `decomp.h` defines it, and does not include `decomp.h`.
+- A header's own includes are listed at its top. In the shim they are
+  no-ops; outside it a header with parts includes everything all its parts
+  need before part 1. Many of those headers include it back, so the first
+  part they need is not there yet. Example: `nuvec.h` includes `numtx.h`
+  for its second part, `numtx.h` includes `nuvec.h` for `NUVEC`.
+- The include graph has one cycle of 120 headers, `decomp.h` among them.
+  `legogame/episodeIV.c` uses 45 headers by name (`config/header-map.csv`);
+  their closure is 166 headers, 68 of them in parts. `legogame/shop.c`
+  uses 47, closure 176. Replacing `#include "saga.h"` by those lists (own
+  header, engine, game) stops VC8 at 100 errors in both units, the first in
+  `fixed_width.h`.
+
+So no include list a programmer would write compiles for any of the
+fragile units, and order within the unit cannot fix it: a direct include
+gives all parts of a header at once. What has to come first is step 3's
+ownership work, at least for the headers in the closure of a narrowed
+unit: move the joint types (`WORLDINFO_s`, `AIPACKET_PC`, `gameobject_s`,
+the view types of `decomp.h`) to headers both sides include, so the
+headers have one part each and no cycle; give `decomp.h`'s prelude and
+`STATIC_ASSERT` a header that everything includes first. A header that
+compiles alone is the test (`clang -fsyntax-only` per header, C and C++).
+
 The transition has three steps, each with its own proof. VC8's code for a few
 fragile functions depends on how many symbol ids a unit consumes before them
 (docs/cleanup-audit.md, section 7).
@@ -730,7 +820,7 @@ conditional that changes its own condition is one item.
 
 ## 5. Procedure
 
-### Step 1: split behind the shim
+### Step 1: split behind the shim (tried, see Status)
 
 1. `python3 tools/headersplit.py --apply` (tool output only, no hand edits).
 2. `python3 tools/check.py`, `python3 tools/check.py --format`.
@@ -744,6 +834,10 @@ Rerun `--build-map` after any saga.h change before applying. Rows are matched
 by key, and rows with evidence `review` are kept.
 
 ### Step 2: narrow units
+
+Prerequisite (see "Step 2 is blocked on self-contained headers" above): every
+header a narrowed unit reaches compiles on its own, in one part, without an
+include cycle.
 
 For each unit, replace `#include "saga.h"` with the module headers it uses.
 At the median, a unit sees about 16 headers directly and 86 with their

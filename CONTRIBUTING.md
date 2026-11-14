@@ -176,8 +176,11 @@ Never commit original game files, assets, compiler binaries or extracted objects
 1. Map the function in [config/symbols.csv](config/symbols.csv) (address,
    linker name, size, type; see [config/symbols.md](config/symbols.md)).
 2. Implement it under `src/`; shared types, calling conventions and
-   layout comments go in [src/saga.h](src/saga.h) (see [Layout comments](#layout-comments)). APIs missing
-   from the bundled SDK go in `src/externals.h`.
+   layout comments go in the module header that owns them (see [Layout comments](#layout-comments)).
+   `python3 tools/headersplit.py --place NAME` names it for a new declaration
+   ([docs/header-plan.md](docs/header-plan.md)). Units still include
+   `src/saga.h`, which includes every module header. APIs missing from the
+   bundled SDK go in `src/externals.h`.
 3. Compare: `make -j"$(nproc)" diff FUNC=NuRand` (C name, exact linker symbol
    or original address).
 4. Run `make -j"$(nproc)" match` to refresh `matching.json`, the README
@@ -520,7 +523,8 @@ no wrong ones. Alternate both tools until neither finds anything.
 
 ## Transferring struct fields
 
-`python3 tools/typexfer.py --android ../saga --write` fills opaque padding in
+`python3 tools/typexfer.py --android ../saga --write` (not available while
+`src/saga.h` is the include-all shim, see docs/header-plan.md) fills opaque padding in
 `src/saga.h` (`unknown_*`, `opaque_*`, `reserved*`, `padding*` byte arrays)
 with named fields from the matching Android structs. Structs are paired by
 shared field names; Android layouts are computed with MSVC rules, and a field's
@@ -530,7 +534,8 @@ brace-initialized or locally instantiated structs stays (VC8 code generation for
 local struct instances depends on member types), and edits are dropped for any
 struct whose size or existing offsets would change.
 
-`python3 tools/typeimport.py TYPE... --android ../saga --write` imports Android
+`python3 tools/typeimport.py TYPE... --android ../saga --write` (also paused
+while saga.h is the shim) imports Android
 structs that `src/saga.h` has no counterpart for (nor any unit declares) into a
 section of the header, with dependencies held by value, PC types for paired
 members and a size assertion each; structs whose layout for the MSVC x86 target
@@ -644,7 +649,7 @@ Rich header lists 199 C and 282 C++ objects and no LTCG.
 
 ```text
 config/        Target and tool pins, symbol map, data members, code groups
-src/saga.h     Shared declarations and layout checks
+src/saga.h     Include-all shim over the module headers (docs/header-plan.md)
 src/nu2api/    Engine, resources, rendering and Windows platform services
 src/legoapi/   Characters, movement, world loading, menus and gameplay
 src/gameapi/   Objects, AI, scripts and collision
