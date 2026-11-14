@@ -13273,10 +13273,6 @@ extern "C" {
 
     GAMEOBJECT *PodPacemakerPc = 0;
 
-#pragma data_seg(".data$PodRaceSplineIncrementPc")
-    f32 PodRaceSplineIncrementPc = 0.0010000000474974513f;
-#pragma data_seg()
-
 #pragma data_seg(".data$PodCreateSplineKeywordPc")
     char PodCreateSplineKeywordPc[11] = "spline_id=";
 #pragma data_seg()
@@ -23312,10 +23308,6 @@ extern "C" {
 
 extern "C" {
     f32 iconalphaoverride = 0;
-}
-
-extern "C" {
-    struct anakin_door_s *AnakinC = 0;
 }
 
 extern "C" {

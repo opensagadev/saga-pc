@@ -321,6 +321,7 @@ extern "C" {
     i32 DogfightHideGeometryPc = 0;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightDrawSplinePc")
+    struct anakin_door_s *AnakinC = 0;
     i32 DogfightDrawSplinePc = 0;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightDrawFighterSplinePc")
@@ -1072,6 +1073,7 @@ extern "C" {
     }
 
 #pragma data_seg(push, ".data$dat_007f15e4")
+    f32 PodRaceSplineIncrementPc = 0.0010000000474974513f;
     f32 dat_007f15e4 = 120.0f;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$dat_007f15e8")
