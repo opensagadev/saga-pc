@@ -32,11 +32,14 @@ class BuiltinRulesTest(unittest.TestCase):
             os.utime(root / "unit", (1, 1))
             makefile = "\n".join([*builtin_rule_lines(), "all: unit", "\t@echo linked", ""])
             (root / "Makefile").write_text(makefile)
-            result = subprocess.run(["make", "-n"], cwd=root, capture_output=True, text=True)
+            # A make that runs these tests (make check-core) exports its own flags, -r included.
+            env = {name: value for name, value in os.environ.items()
+                   if name not in ("MAKEFLAGS", "MFLAGS", "MAKELEVEL", "MAKEOVERRIDES")}
+            result = subprocess.run(["make", "-n"], cwd=root, capture_output=True, text=True, env=env)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertNotIn("unit.c", result.stdout)
             (root / "Makefile").write_text("all: unit\n\t@echo linked\n")
-            control = subprocess.run(["make", "-n"], cwd=root, capture_output=True, text=True)
+            control = subprocess.run(["make", "-n"], cwd=root, capture_output=True, text=True, env=env)
             self.assertIn("unit.c", control.stdout)
 
 
