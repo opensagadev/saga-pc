@@ -376,7 +376,9 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
 ASTEROID_PC asteroids[128] = {0};
 i32 nasteroids = 0;
 /* PC 0x00800290. */
+#pragma data_seg(".data$melee_wavePhase")
 i8 melee_wavePhase = -1;
+#pragma data_seg()
 i32 maxrotspd[3] = {0x1555, 0x38e, 0x16c};
 
 void Asteroids_Reset(WORLDINFO *world) {
