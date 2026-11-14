@@ -266,7 +266,6 @@ extern "C" {
     i32 Menu_InSaveFlow = 0;
     i32 Menu_InLoadFlow = 0;
     u8 MenuKeyboardOverrideActivePc = 0;
-    i32 MenuKeyboardPendingPc = 0;
     i32 pause_i_pad = -1;
     u32 GAMEPAD_MENUSELECT = 0x40;
     u32 GAMEPAD_MENUCANCEL = 0x10;
@@ -7642,7 +7641,6 @@ i32 level_already_loaded = -1;
 i32 next_level = 0;
 volatile i32 abort_load = 0;
 i32 ResetOldFStop = 0;
-i32 new_level_from_menu = 0;
 i32 no_more_loads = 0;
 i32 BonusWinner = -1;
 i32 BonusCoinTotal = 0;
@@ -7928,8 +7926,6 @@ extern "C" {
     OPTIONSSAVE TempOptions = {0};
     PLAYERPROGRESS PlayerProgress[8] = {0};
     i32 MenuLoadOccurred = 0;
-    i32 startnewgame_initiated = 0;
-    i32 startnewgame = 0;
     i32 saveload_autosave = -1;
     i32 NuFadeObjEnabledPc = 1;
     i32 BGLOAD = 1;
@@ -8822,11 +8818,7 @@ extern "C" {
     i16 tOFF = 0;
     i16 tACCEPT = 0;
     i16 tBACK = 0;
-    f32 MenuTitlesPromptYPc = -0.5f;
-    f32 MenuTitlesWidePromptYPc = -0.575f;
     OPTIONSSAVE *Game_OptionsSave = 0;
-    f32 opts_sfx_wait = 1.5f;
-    i32 opts_sfx_i = 0;
     LEVELDATA_PC *TITLES_LDATA = 0;
 
     // The 23-record PC table: IDs, callbacks, remembered cursors, and prompt flags.
@@ -9801,7 +9793,6 @@ extern "C" {
     i32 CircleLeanDegrees = 30;
 #pragma data_seg()
     i32 podrace_section = 0;
-    i32 newgamecam = 0;
 #pragma data_seg(".data$GAMEPAD_DUP")
     i32 GAMEPAD_DUP = 4096;
 #pragma data_seg()
@@ -13883,10 +13874,7 @@ extern "C" {
     NUMTX LevMtx = {0};
     f32 LevAlpha = 0.0f;
     f32 TitlesAlpha = 0.0f;
-    f32 newgamealpha = 0.0f;
-    f32 newgamewait = 0.0f;
     i32 newgamefade = 0;
-    i32 newgame_menudrawoff = 0;
 }
 
 struct PC_GEOMETRY_BASIS_PC;
@@ -13912,7 +13900,6 @@ extern "C" {
     i32 other_level_override = -1;
     char *LeverTypeNamePtrPc = "Lever";
     char *LeverOutputDownNamePtrPc = TextInputKeyNameTextPc75ac34;
-    MISSION_MENU_PACKET_PC MissionMenuPacketPc = {0};
     TIMER JoinInTimer = {0};
     i16 MissionMenuInstructionTextPc = 0;
     f32 MissionDropInAlphaPc = 0.75f;
@@ -14248,7 +14235,6 @@ extern "C" {
     /* These bytes are MENUEXITR, MENUEXITG and the MENULOST* blend
        endpoints; MenuDrawPauseRestart/Exit and InitGameAfterConfig address all eight. */
     u8 AlternateHudColourBytesPc[8] = {255, 191, 191, 95, 128, 255, 31, 128};
-    u8 AlternateHudRgbPc[3] = {0, 0, 0};
     i32 LEGOTHINGSSCENE_TER_SPINBASE = -1;
     i32 LEGOTHINGSSCENE_TER_SPINARM = -1;
     i32 SuperCarryEnablePc = 0;
@@ -23698,8 +23684,6 @@ extern "C" {
 
 extern "C" {
     NUMTX CutCamMtx = {0};
-
-    f32 newgamecamtime = 0;
 }
 
 extern "C" {
@@ -23995,7 +23979,6 @@ extern "C" {
     };
     const char *MenuPcStrings[39] = {0};
     i32 MenuPcStringsInitialized = 0;
-    f32 MenuNewGameYPc = -0.5f;
 #pragma const_seg()
 }
 
@@ -24897,8 +24880,6 @@ extern "C" {
 
 extern "C" {
     i32 MenuOptionsPlayerFlagPc = 0;
-    f32 MenuSaveSlotsWidthPc = 0.5f;
-    f32 MenuSaveSlotsStepYPc = 0;
 }
 
 extern "C" {
@@ -25710,8 +25691,6 @@ extern "C" {
          0x0},
         {0},
     };
-    f32 ExtrasFadeStartPc = 0.15f;
-    f32 ExtrasFadeEndPc = 0.6f;
 #pragma const_seg(".rdata$ExtrasNameFormatPc")
     extern const char ExtrasNameFormatPc[] = "%s: %s";
 #pragma const_seg()
@@ -25728,8 +25707,6 @@ extern "C" {
     // {1027, MenuEnterVideoConfirmPc, MenuDrawVideoConfirmPc, MenuUpdateVideoConfirmPc, MenuExitVideoConfirmPc, -1, -1,
     // 0, 0, 0, 0}, {1028, MenuEnterHiresNoticePc, MenuDrawHiresNoticePc, MenuUpdateHiresNoticePc,
     // MenuExitHiresNoticePc, -1, -1, 0, 0, 0, 0},
-
-    i32 PauseSaveAndExitPc = 0;
 
 #pragma data_seg(".data$MenuAutoSaveCancelFirstPc")
     u8 MenuAutoSaveCancelFirstPc = 1;
@@ -25887,7 +25864,6 @@ extern "C" {
     f32 leftrepeattime[2] = {0};
     f32 rightrepeattime[2] = {0};
     u8 uprepeatcount[2] = {0};
-    u8 downrepeatcount[2] = {0};
     u8 leftrepeatcount[2] = {0};
     u8 rightrepeatcount[2] = {0};
     i32 HubIconWibbleRatePc[4] = {0};
@@ -25923,10 +25899,6 @@ extern "C" {
     f32 ShopNativeSubInitBPc = 0.075f;
 #pragma data_seg()
     f32 ShopCharTopOffsetPc = 0;
-}
-
-extern "C" {
-    i32 ShowPlayerCoordinatePc = 0;
 }
 
 extern "C" {

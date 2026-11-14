@@ -160,7 +160,23 @@ extern "C" {
         }
     }
 
+    f32 newgamewait = 0.0f;
+    MISSION_MENU_PACKET_PC MissionMenuPacketPc = {0};
+    u8 downrepeatcount[2] = {0};
+    f32 newgamealpha = 0.0f;
     __declspec(allocate(".bss$MenuButtonHistoryPc")) u32 MenuButtonHistoryPc[15] = {0};
+    i32 ShowPlayerCoordinatePc = 0;
+    i32 MenuKeyboardPendingPc = 0;
+    i32 new_level_from_menu = 0;
+    i32 PauseSaveAndExitPc = 0;
+    u8 AlternateHudRgbPc[3] = {0, 0, 0};
+    f32 MenuSaveSlotsStepYPc = 0;
+    i32 opts_sfx_i = 0;
+    i32 newgame_menudrawoff = 0;
+    i32 newgamecam = 0;
+    f32 newgamecamtime = 0;
+    i32 startnewgame_initiated = 0;
+    i32 startnewgame = 0;
 
     void MenuUpdateButtonHistoryPc(void) {
         const i32 menu_id = GetMenuID();
@@ -1173,11 +1189,18 @@ extern "C" {
     }
 
 #pragma data_seg(".data$MenuMiniKitUpperArrowYPc")
+    f32 MenuNewGameYPc = -0.5f;
+    f32 MenuSaveSlotsWidthPc = 0.5f;
+    f32 opts_sfx_wait = 1.5f;
+    f32 ExtrasFadeStartPc = 0.15f;
+    f32 ExtrasFadeEndPc = 0.6f;
+    f32 MenuTitlesPromptYPc = -0.5f;
+    f32 MenuTitlesWidePromptYPc = -0.575f;
     f32 MenuMiniKitUpperArrowYPc = -0.175f;
-#pragma data_seg(".data$MenuMiniKitLowerArrowYPc")
     f32 MenuMiniKitLowerArrowYPc = -0.275f;
-#pragma data_seg(".data$MenuMiniKitInstructionYPc")
     f32 MenuMiniKitInstructionYPc = -0.375f;
+#pragma data_seg(".data$MenuMiniKitLowerArrowYPc")
+#pragma data_seg(".data$MenuMiniKitInstructionYPc")
 #pragma data_seg()
 
     void MenuDrawMiniKit(MENU *menu) {
