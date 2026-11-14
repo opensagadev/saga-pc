@@ -678,15 +678,99 @@ extern "C" {
         }
     }
 
+    NUFPCOMJMP *Level_ConfigAfterLoad_GameKeywords = 0;
+    LEVELSPLINE_PC *LevSplList = 0;
+    i32 LEVELSPLINECOUNT = 0;
     LEVEL_OBJECT_CONFIG_PC *ObjTabList = 0;
     i32 LEVELOBJECTCOUNT = 0;
     static i32 LEVELOBJECTMAX = 0;
+    i32 EXTRALEVELOBJECTCOUNT = 0;
     static char *ExtraLevelObject_NameTable = 0;
     static i32 ExtraLevelObject_NameTableSize = 0;
+    static i32 ExtraLevelObject_NameTableIndex = 0;
+    i32 MAXLDATA = 0x64;
+    i32 levspl_i_start = -1;
+    i32 levspl_i_startcam = -1;
+    i32 LEGOSPL_SPLIT = -1;
+    i32 PlayerStartSplineIndexPc = -1;
     i32 LEVOBJREF_FIRSTOBJ = -1;
     i32 LEVOBJREF_LASTOBJ = -1;
     i32 LEVOBJREF_FIRSTREFOBJ = -1;
     i32 LEVOBJREF_LASTREFOBJ = -1;
+    i32 LEGOOBJ_ICON_FRAME_NEUTRAL = -1;
+    i32 LEGOOBJ_ICON_FRAME_GREEN = -1;
+    i32 LEGOOBJ_ICON_FRAME_BLUE = -1;
+    i32 LegoObjectIconQuestionPc = -1;
+    i32 PCArcadeUnpairedIconModel = -1;
+    i32 CharKitModelId_PC = -1;
+    i32 MiniKitModelId_PC = -1;
+    i32 LEGOOBJ_FLOORTARGET = -1;
+    i32 LEGOOBJ_GRAPPLE_HOOK = -1;
+    LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC LEGOOBJ_DEFAULTLASTCOIN = {0xffffffffu};
+    i32 LevSafePlatID[2] = {-1, -1};
+    NUFPCOMJMP LevelConfig_BeforeLoad_GenericKeywords[5] = {
+        {const_cast<char *>("mipmapmode"), LC_BL_mipmapmode},
+        {const_cast<char *>("fix_strobing_anims"), LC_BL_fix_strobing_anims},
+        {const_cast<char *>("max_ter_groups"), LC_BL_max_ter_groups},
+        {const_cast<char *>("max_ter_platforms"), LC_BL_max_ter_platforms},
+        {NULL, NULL},
+    };
+    NUFPCOMJMP LevelConfig_AfterLoad_GenericKeywords[53] = {
+        {const_cast<char *>("backr"), LC_AL_backr},
+        {const_cast<char *>("backg"), LC_AL_backg},
+        {const_cast<char *>("backb"), LC_AL_backb},
+        {const_cast<char *>("backr_top"), LC_AL_backr_top},
+        {const_cast<char *>("backg_top"), LC_AL_backg_top},
+        {const_cast<char *>("backb_top"), LC_AL_backb_top},
+        {const_cast<char *>("backr_bottom"), LC_AL_backr_bottom},
+        {const_cast<char *>("backg_bottom"), LC_AL_backg_bottom},
+        {const_cast<char *>("backb_bottom"), LC_AL_backb_bottom},
+        {const_cast<char *>("farclip_hack"), LC_AL_farclip_hack},
+        {const_cast<char *>("farclip"), LC_AL_farclip},
+        {const_cast<char *>("nearclip"), LC_AL_nearclip},
+        {const_cast<char *>("farclip_pc"), LC_AL_farclip},
+        {const_cast<char *>("nearclip_pc"), LC_AL_nearclip},
+        {const_cast<char *>("hover_height"), LC_AL_hover_height},
+        {const_cast<char *>("blobshadow_alpha"), LC_AL_blobshadow_alpha},
+        {const_cast<char *>("blobshadow_fadenear"), LC_AL_blobshadow_fadenear},
+        {const_cast<char *>("blobshadow_fadefar"), LC_AL_blobshadow_fadefar},
+        {const_cast<char *>("reflect_range"), LC_AL_reflect_range},
+        {const_cast<char *>("reflect_y"), LC_AL_reflect_y},
+        {const_cast<char *>("metal"), LC_AL_metal},
+        {const_cast<char *>("in_space"), LC_AL_in_space},
+        {const_cast<char *>("override_nopickupgravity"), LC_AL_override_nopickupgravity},
+        {const_cast<char *>("hidden_icons"), LC_AL_hidden_icons},
+        {const_cast<char *>("pickups_to_panel"), LC_AL_pickups_to_panel},
+        {const_cast<char *>("forget_takeovers"), LC_AL_forget_takeovers},
+        {const_cast<char *>("narrow_socks"), LC_AL_narrow_socks},
+        {const_cast<char *>("camera_rain"), LC_AL_camera_rain},
+        {const_cast<char *>("terrain_rain"), LC_AL_terrain_rain},
+        {const_cast<char *>("double_score"), LC_AL_double_score},
+        {const_cast<char *>("flat_terrain"), LC_AL_flat_terrain},
+        {const_cast<char *>("cam_tilt"), LC_AL_cam_tilt},
+        {const_cast<char *>("raycaststep"), LC_AL_raycaststep},
+        {const_cast<char *>("plat_scan_dist"), LC_AL_plat_scan_dist},
+        {const_cast<char *>("waterripple_startcol_r"), LC_AL_waterripple_startcol_r},
+        {const_cast<char *>("waterripple_startcol_g"), LC_AL_waterripple_startcol_g},
+        {const_cast<char *>("waterripple_startcol_b"), LC_AL_waterripple_startcol_b},
+        {const_cast<char *>("waterripple_startcol_a"), LC_AL_waterripple_startcol_a},
+        {const_cast<char *>("waterripple_endcol_r"), LC_AL_waterripple_endcol_r},
+        {const_cast<char *>("waterripple_endcol_g"), LC_AL_waterripple_endcol_g},
+        {const_cast<char *>("waterripple_endcol_b"), LC_AL_waterripple_endcol_b},
+        {const_cast<char *>("waterripple_endcol_a"), LC_AL_waterripple_endcol_a},
+        {const_cast<char *>("waterripple_life"), LC_AL_waterripple_life},
+        {const_cast<char *>("cam_pullback_dist"), LC_AL_cam_pullback_dist},
+        {const_cast<char *>("cam_lateral_dist"), LC_AL_cam_lateral_dist},
+        {const_cast<char *>("campos_seek"), LC_AL_campos_seek},
+        {const_cast<char *>("camang_seek"), LC_AL_camang_seek},
+        {const_cast<char *>("shadowtype"), LC_AL_shadowtype},
+        {const_cast<char *>("music"), LC_AL_music},
+        {const_cast<char *>("music_other"), LC_AL_music_other},
+        {const_cast<char *>("sfx_ambient"), LC_AL_sfx_ambient},
+        {const_cast<char *>("conveyor"), LC_AL_conveyor},
+        {NULL, NULL},
+    };
+    i32 KNOBS = -1;
 
     void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *table, VARIPTR *buffer, VARIPTR *buffer_end, i32 maximum,
                                   i32 name_table_size) {
@@ -730,9 +814,6 @@ extern "C" {
             }
         }
     }
-
-    i32 EXTRALEVELOBJECTCOUNT = 0;
-    static i32 ExtraLevelObject_NameTableIndex = 0;
 
     i32 LevelObject_AddExtra(char *name, i32 kind) {
         i32 length;

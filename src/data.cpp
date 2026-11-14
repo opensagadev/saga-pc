@@ -2096,7 +2096,6 @@ i32 PcInputSelectedPort = -1;
 PC_DI_CAPS_PC PcKeyboardCapabilities = {};
 
 extern "C" {
-    i32 KNOBS = -1;
     NUGSCN *area_scene = NULL;
     NUGSCN *vehicle_scene = NULL;
     NUGSCN *big_icon_scene = NULL;
@@ -7265,9 +7264,6 @@ char *PcInputKeyNames824be0[238] = {TextInputKeyNameTextPc771d80,
                                     TextInputKeyNameTextPc7719bc};
 
 extern "C" {
-#pragma data_seg(".data$PlayerStartSplineIndexPc")
-    i32 PlayerStartSplineIndexPc = -1;
-#pragma data_seg()
 
 #pragma data_seg(".data$hub_startoutsidebonusdoor_area")
     i32 hub_startoutsidebonusdoor_area = -1;
@@ -7418,10 +7414,6 @@ extern "C" {
     extern const IID PCSoundBuffer8IIDPc = {
         0x6825a449, 0x7524, 0x4d82, {0x92, 0xf, 0x50, 0xe3, 0x6a, 0xb3, 0xab, 0x1e}};
 #pragma const_seg()
-
-#pragma data_seg(".data$LEGOOBJ_DEFAULTLASTCOIN")
-    LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC LEGOOBJ_DEFAULTLASTCOIN = {0xffffffffu};
-#pragma data_seg()
 
 #pragma data_seg(".data$TerrPlatScanDist")
     f32 TerrPlatScanDist = 10.0f;
@@ -8104,7 +8096,6 @@ extern "C" {
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     f32 PodAvalancheShakeRange = 750.0f;
     LEVEL_PROGRESS *LevelProgressData = 0;
-    LEVELSPLINE_PC *LevSplList = 0;
 #pragma data_seg(".data$LevelSplinesTable")
     LEVELSPLINE_PC LevelSplinesTable[26] = {
         {NULL, LevelSplinesStartName, 2, 0, -1, -1},
@@ -8151,9 +8142,6 @@ extern "C" {
     VARIPTR nudlist_stream_cursor = {0};
     u32 nudlist_field_1598 = 0;
     u32 nuprim_field_ba8 = 0;
-    i32 LEVELSPLINECOUNT = 0;
-    i32 levspl_i_start = -1;
-    i32 levspl_i_startcam = -1;
     LEVELDATA_PC *KAMINOE_LDATA = 0;
     LEVELDATA_PC *DOGFIGHTA_LDATA = 0;
     void *game_cutscenes_cutscene = 0;
@@ -8708,7 +8696,6 @@ extern "C" {
     i16 PlayerList[8] = {0};
     APICHARACTERMODELLIST Hub_ModelList[6] = {0};
     LEVELDATA_PC *LDataList = 0;
-    i32 MAXLDATA = 0x64;
     LEVELDATA_PC *NEWGAME_LDATA = 0;
     LEVELDATA_PC *LOADGAME_LDATA = 0;
     LEVELDATA_PC *LastLData = 0;
@@ -8831,7 +8818,6 @@ extern "C" {
     u8 NuPrimNeedsOverbrightening = 0;
     LEVELDATA_PC *levelconfig_ldata = 0;
     NUFPCOMJMP *Level_ConfigBeforeLoad_GameKeywords = 0;
-    NUFPCOMJMP *Level_ConfigAfterLoad_GameKeywords = 0;
     void (*fnInterpreterError)(NUFPAR_PC *parser) = 0;
     TERRAIN_SURFACE_PC TerSurface[32] = {
         {1.0f, 0, 0xffff},     {1.0f, 65, 0xffff},   {1.0f, 2, 0xffff},      {1.0f, 8, 0xffff},   {1.0f, 65536, 0xffff},
@@ -8909,73 +8895,6 @@ extern "C" {
         {const_cast<char *>("max_bombgens"), LC_BL_max_bombgens},
         {const_cast<char *>("windspeed"), LC_BL_wind_speed},
         {const_cast<char *>("windsize"), LC_BL_wind_size},
-        {NULL, NULL},
-    };
-#pragma data_seg()
-#pragma data_seg(".data$LevelConfig_BeforeLoad_GenericKeywords")
-    NUFPCOMJMP LevelConfig_BeforeLoad_GenericKeywords[5] = {
-        {const_cast<char *>("mipmapmode"), LC_BL_mipmapmode},
-        {const_cast<char *>("fix_strobing_anims"), LC_BL_fix_strobing_anims},
-        {const_cast<char *>("max_ter_groups"), LC_BL_max_ter_groups},
-        {const_cast<char *>("max_ter_platforms"), LC_BL_max_ter_platforms},
-        {NULL, NULL},
-    };
-#pragma data_seg()
-
-#pragma data_seg(".data$LevelConfig_AfterLoad_GenericKeywords")
-    NUFPCOMJMP LevelConfig_AfterLoad_GenericKeywords[53] = {
-        {const_cast<char *>("backr"), LC_AL_backr},
-        {const_cast<char *>("backg"), LC_AL_backg},
-        {const_cast<char *>("backb"), LC_AL_backb},
-        {const_cast<char *>("backr_top"), LC_AL_backr_top},
-        {const_cast<char *>("backg_top"), LC_AL_backg_top},
-        {const_cast<char *>("backb_top"), LC_AL_backb_top},
-        {const_cast<char *>("backr_bottom"), LC_AL_backr_bottom},
-        {const_cast<char *>("backg_bottom"), LC_AL_backg_bottom},
-        {const_cast<char *>("backb_bottom"), LC_AL_backb_bottom},
-        {const_cast<char *>("farclip_hack"), LC_AL_farclip_hack},
-        {const_cast<char *>("farclip"), LC_AL_farclip},
-        {const_cast<char *>("nearclip"), LC_AL_nearclip},
-        {const_cast<char *>("farclip_pc"), LC_AL_farclip},
-        {const_cast<char *>("nearclip_pc"), LC_AL_nearclip},
-        {const_cast<char *>("hover_height"), LC_AL_hover_height},
-        {const_cast<char *>("blobshadow_alpha"), LC_AL_blobshadow_alpha},
-        {const_cast<char *>("blobshadow_fadenear"), LC_AL_blobshadow_fadenear},
-        {const_cast<char *>("blobshadow_fadefar"), LC_AL_blobshadow_fadefar},
-        {const_cast<char *>("reflect_range"), LC_AL_reflect_range},
-        {const_cast<char *>("reflect_y"), LC_AL_reflect_y},
-        {const_cast<char *>("metal"), LC_AL_metal},
-        {const_cast<char *>("in_space"), LC_AL_in_space},
-        {const_cast<char *>("override_nopickupgravity"), LC_AL_override_nopickupgravity},
-        {const_cast<char *>("hidden_icons"), LC_AL_hidden_icons},
-        {const_cast<char *>("pickups_to_panel"), LC_AL_pickups_to_panel},
-        {const_cast<char *>("forget_takeovers"), LC_AL_forget_takeovers},
-        {const_cast<char *>("narrow_socks"), LC_AL_narrow_socks},
-        {const_cast<char *>("camera_rain"), LC_AL_camera_rain},
-        {const_cast<char *>("terrain_rain"), LC_AL_terrain_rain},
-        {const_cast<char *>("double_score"), LC_AL_double_score},
-        {const_cast<char *>("flat_terrain"), LC_AL_flat_terrain},
-        {const_cast<char *>("cam_tilt"), LC_AL_cam_tilt},
-        {const_cast<char *>("raycaststep"), LC_AL_raycaststep},
-        {const_cast<char *>("plat_scan_dist"), LC_AL_plat_scan_dist},
-        {const_cast<char *>("waterripple_startcol_r"), LC_AL_waterripple_startcol_r},
-        {const_cast<char *>("waterripple_startcol_g"), LC_AL_waterripple_startcol_g},
-        {const_cast<char *>("waterripple_startcol_b"), LC_AL_waterripple_startcol_b},
-        {const_cast<char *>("waterripple_startcol_a"), LC_AL_waterripple_startcol_a},
-        {const_cast<char *>("waterripple_endcol_r"), LC_AL_waterripple_endcol_r},
-        {const_cast<char *>("waterripple_endcol_g"), LC_AL_waterripple_endcol_g},
-        {const_cast<char *>("waterripple_endcol_b"), LC_AL_waterripple_endcol_b},
-        {const_cast<char *>("waterripple_endcol_a"), LC_AL_waterripple_endcol_a},
-        {const_cast<char *>("waterripple_life"), LC_AL_waterripple_life},
-        {const_cast<char *>("cam_pullback_dist"), LC_AL_cam_pullback_dist},
-        {const_cast<char *>("cam_lateral_dist"), LC_AL_cam_lateral_dist},
-        {const_cast<char *>("campos_seek"), LC_AL_campos_seek},
-        {const_cast<char *>("camang_seek"), LC_AL_camang_seek},
-        {const_cast<char *>("shadowtype"), LC_AL_shadowtype},
-        {const_cast<char *>("music"), LC_AL_music},
-        {const_cast<char *>("music_other"), LC_AL_music_other},
-        {const_cast<char *>("sfx_ambient"), LC_AL_sfx_ambient},
-        {const_cast<char *>("conveyor"), LC_AL_conveyor},
         {NULL, NULL},
     };
 #pragma data_seg()
@@ -9882,11 +9801,8 @@ extern "C" {
 }
 
 extern "C" {
-// Two-entry reconstruction access view; the original full array extent is unknown.
-// PC readers and reset producers access these two i32 entries; no original sizeof credit.
-#pragma data_seg(".data$LevSafePlatID")
-    i32 LevSafePlatID[2] = {-1, -1};
-#pragma data_seg()
+    // Two-entry reconstruction access view; the original full array extent is unknown.
+    // PC readers and reset producers access these two i32 entries; no original sizeof credit.
 }
 
 extern "C" {
@@ -11596,9 +11512,6 @@ extern "C" {
 #pragma data_seg(".data$COINMSGTIME")
     f32 COINMSGTIME = 1.0f;
 #pragma data_seg()
-#pragma data_seg(".data$PCArcadeUnpairedIconModel")
-    i32 PCArcadeUnpairedIconModel = -1;
-#pragma data_seg()
 #pragma data_seg(".data$BigJumpLandFallbackPc")
     i16 BigJumpLandFallbackPc = -1;
 #pragma data_seg()
@@ -11730,16 +11643,6 @@ extern "C" {
 }
 extern "C" {
     f32 MiniKitScale = 0;
-}
-extern "C" {
-#pragma data_seg(".data$MiniKitModelId_PC")
-    i32 MiniKitModelId_PC = -1;
-#pragma data_seg()
-}
-extern "C" {
-#pragma data_seg(".data$CharKitModelId_PC")
-    i32 CharKitModelId_PC = -1;
-#pragma data_seg()
 }
 extern "C" {
     NEW_MINI_PIECE_PC NewMiniPiece[10] = {0};
@@ -13432,10 +13335,6 @@ extern "C" {
     i32 drawcharicon_i_panel = -1;
 #pragma data_seg()
 
-#pragma data_seg(".data$LegoObjectIconQuestionPc")
-    i32 LegoObjectIconQuestionPc = -1;
-#pragma data_seg()
-
 #pragma data_seg(".data$DEBPAGE_GENERAL")
     i32 DEBPAGE_GENERAL = -1;
 #pragma data_seg()
@@ -14611,7 +14510,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 LEGOSPL_SPLIT = -1;
     i32 other_level_override = -1;
     char *LeverTypeNamePtrPc = "Lever";
     char *LeverOutputDownNamePtrPc = TextInputKeyNameTextPc75ac34;
@@ -14929,9 +14827,6 @@ extern "C" {
     i32 LEGOMENU_CREDITS = -1;
     i32 LEGOCAMMODE_DOORCUT = -1;
     i32 LEGOCAMMODE_OBSTACLE = -1;
-    i32 LEGOOBJ_ICON_FRAME_NEUTRAL = -1;
-    i32 LEGOOBJ_ICON_FRAME_GREEN = -1;
-    i32 LEGOOBJ_ICON_FRAME_BLUE = -1;
     i32 LegoGameDebrisSplashPc = -1;
     i32 POINTS_PER_CHARACTER = 0;
     i32 POINTS_PER_SUPERSTORY = 0;
@@ -14965,8 +14860,6 @@ extern "C" {
     u8 AlternateHudRgbPc[3] = {0, 0, 0};
     i32 LEGOTHINGSSCENE_TER_SPINBASE = -1;
     i32 LEGOTHINGSSCENE_TER_SPINARM = -1;
-    i32 LEGOOBJ_FLOORTARGET = -1;
-    i32 LEGOOBJ_GRAPPLE_HOOK = -1;
     i32 SuperCarryEnablePc = 0;
     i32 CombatRollEnablePc = 0;
     i16 TechnoDefaultObjectPc = 85;
