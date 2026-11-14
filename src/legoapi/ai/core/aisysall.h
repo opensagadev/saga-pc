@@ -19,32 +19,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "editor/edpath_types.h"
-#include "gameapi/ai/aisys/aiscript_types.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "gameapi/edtools/edui.h"
-#include "legoapi/items/base/apiobject.h"
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/nucore/nulist.h"
-#include "nu2api/nufile/nufpar.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "editor/edpath_types.h"
-#include "gameapi/ai/aisys/aiscript_types.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "gameapi/edtools/edui.h"
-#include "legoapi/items/base/apiobject.h"
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/nucore/nulist.h"
-#include "nu2api/nufile/nufpar.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

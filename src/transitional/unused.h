@@ -28,50 +28,6 @@
 #include "nu2api/numath/nuvec4.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aipath.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "gameapi/edtools/edui.h"
-#include "legoapi/gizmo/base/gizflow.h"
-#include "legoapi/gizmos/transport/grapples.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/objects/objectsall.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/lib/camera.h"
-#include "legoapi/render/core/rtl.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nucore/nulist.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#include "nu2api/numath/nuvec4.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aipath.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "gameapi/edtools/edui.h"
-#include "legoapi/gizmo/base/gizflow.h"
-#include "legoapi/gizmos/transport/grapples.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/objects/objectsall.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/lib/camera.h"
-#include "legoapi/render/core/rtl.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nucore/nulist.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#include "nu2api/numath/nuvec4.h"
-#endif
-
 #define QRAND_FLOAT() (qrand() * (1.0f / 65535.0f))
 
 /* Types imported from the Android sources (tools/typeimport.py). */

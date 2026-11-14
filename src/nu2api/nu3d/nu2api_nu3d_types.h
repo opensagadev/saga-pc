@@ -12,18 +12,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nugeom.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nugeom.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 typedef struct nugobj_s {
     u8 unknown_00[0xc];
     NUGEOM *geom;

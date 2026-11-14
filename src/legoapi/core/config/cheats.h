@@ -12,18 +12,6 @@
 #include "legoapi/legoapi_types.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/core/config/cheat.h"
-#include "legoapi/legoapi_types.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/core/config/cheat.h"
-#include "legoapi/legoapi_types.h"
-#endif
-
 typedef struct cheatsystem_pc_s {
     CHEAT_PC *cheats;
     i32 count;

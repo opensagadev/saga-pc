@@ -12,18 +12,6 @@
 #include "gamelib/util/gamelib_util_types.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "editor/edlevelall.h"
-#include "gamelib/util/gamelib_util_types.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "editor/edlevelall.h"
-#include "gamelib/util/gamelib_util_types.h"
-#endif
-
 #ifdef __cplusplus
 
 /* Network condition emulator (nunetemu, 0x610a50-0x611889): batches outgoing

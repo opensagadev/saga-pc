@@ -12,12 +12,6 @@
 #include "nu2api/nustencilshadows_PC.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/numath/nuvec.h"
-#include "nu2api/nustencilshadows_PC.h"
-#endif
-
 struct DWA_WEIGHT_BLOCK_PC;
 struct NUVEC4;
 struct numtl_s;

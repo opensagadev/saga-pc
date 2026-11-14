@@ -16,26 +16,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aisys.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aisys.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 typedef struct GRAPPLE_DYNAMIC_PC {
     u8 unknown_00[0x1d];
     u8 retain_attachment;

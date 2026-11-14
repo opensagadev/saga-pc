@@ -11,11 +11,6 @@
 #include "nu2api/numusic/numusic.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/numusic/numusic.h"
-#endif
-
 struct sfx_file_info_pc_s;
 
 #ifdef __cplusplus

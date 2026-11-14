@@ -14,20 +14,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/menus/core/hint.h"
-#include "legoapi/misc/legoapi_status.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/menus/core/hint.h"
-#include "legoapi/misc/legoapi_status.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

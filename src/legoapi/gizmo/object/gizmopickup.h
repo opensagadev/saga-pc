@@ -14,22 +14,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/gizmos/fx/gizmopickups.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/menus/core/gamemessages.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/gizmos/fx/gizmopickups.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/menus/core/gamemessages.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 struct WORLDINFO_s;
 struct gameobject_s;
 

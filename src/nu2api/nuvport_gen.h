@@ -11,16 +11,6 @@
 #include "legoapi/render/fx/game_deb.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/render/fx/game_deb.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/render/fx/game_deb.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

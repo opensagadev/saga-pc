@@ -14,22 +14,6 @@
 #include "nu2api/numath/nuvec4.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#include "nu2api/numath/nuvec4.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#include "nu2api/numath/nuvec4.h"
-#endif
-
 typedef struct anakin_door_s anakin_door_s;
 typedef struct anakin_door_setup_s anakin_door_setup_s;
 typedef struct spacelevel_flight_group_s spacelevel_flight_group_s;

@@ -15,24 +15,6 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/render/fx/edsplines.h"
-#include "legoapi/world/level.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/render/fx/edsplines.h"
-#include "legoapi/world/level.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

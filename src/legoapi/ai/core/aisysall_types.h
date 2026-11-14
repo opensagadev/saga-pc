@@ -12,18 +12,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nucore/nulist.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nucore/nulist.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 typedef struct EDAIAREA_s { /* Editor area record: a list link ahead of an AIAREA_PC image (rebuild copies it). */
     NULISTLNK link;
     char name[16];

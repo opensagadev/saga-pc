@@ -29,50 +29,6 @@
 #include "transitional/libvorbis/smallft.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aipath.h"
-#include "gameapi/edtools/edgra.h"
-#include "legoapi/actions/movement/dropinout.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/menus/core/hint.h"
-#include "legoapi/render/core/gameliball.h"
-#include "legoapi/world/level.h"
-#include "legoapi/world/missions.h"
-#include "legoapi/world/world.h"
-#include "legogame/batman_gameai.h"
-#include "nu2api/PCInput.h"
-#include "nu2api/nu3d/ShaderManagerOpenGL.h"
-#include "nu2api/nu3d/android/nushaderobject.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#include "transitional/libogg/ogg.h"
-#include "transitional/libvorbis/smallft.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aipath.h"
-#include "gameapi/edtools/edgra.h"
-#include "legoapi/actions/movement/dropinout.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/menus/core/hint.h"
-#include "legoapi/render/core/gameliball.h"
-#include "legoapi/world/level.h"
-#include "legoapi/world/missions.h"
-#include "legoapi/world/world.h"
-#include "legogame/batman_gameai.h"
-#include "nu2api/PCInput.h"
-#include "nu2api/nu3d/ShaderManagerOpenGL.h"
-#include "nu2api/nu3d/android/nushaderobject.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#include "transitional/libogg/ogg.h"
-#include "transitional/libvorbis/smallft.h"
-#endif
-
 /* 9 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

@@ -15,24 +15,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/cutscenes/gcutscn.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nufile/nufile.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/cutscenes/gcutscn.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nufile/nufile.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

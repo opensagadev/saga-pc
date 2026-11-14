@@ -11,16 +11,6 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nuwin32/d3dCore.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nuwin32/d3dCore.h"
-#endif
-
 typedef struct PC_VERTEX_DECL_ENTRY_PC {
     u32 key;
     PC_TEXTURE_RESOURCE_PC *resource;

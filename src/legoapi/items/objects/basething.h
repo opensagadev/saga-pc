@@ -12,18 +12,6 @@
 #include "legoapi/legoapi_types.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "MechInputTouch/MechInputTouch_types.h"
-#include "legoapi/legoapi_types.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "MechInputTouch/MechInputTouch_types.h"
-#include "legoapi/legoapi_types.h"
-#endif
-
 #ifdef __cplusplus
 
 /* The per-frame object interface ThingManager dispatches (Android BaseThing).

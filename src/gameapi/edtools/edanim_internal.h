@@ -12,18 +12,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 typedef struct edanim_param_pc_s {
     i32 instance_id;
     i32 effect_count;

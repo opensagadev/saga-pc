@@ -12,18 +12,6 @@
 #include "nu2api/nucore/nulst.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nucore/bgproc.h"
-#include "nu2api/nucore/nulst.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nucore/bgproc.h"
-#include "nu2api/nucore/nulst.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

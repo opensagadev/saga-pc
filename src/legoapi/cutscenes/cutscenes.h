@@ -12,18 +12,6 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legogame/game.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legogame/game.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#endif
-
 struct WORLDINFO_s;
 struct cutinfo_s;
 struct cutsys_pc_s;

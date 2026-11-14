@@ -11,16 +11,6 @@
 #include "nu2api/nufmv/pc/Bink/dsplay_bink.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nufmv/pc/Bink/dsplay_bink.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nufmv/pc/Bink/dsplay_bink.h"
-#endif
-
 // Native PC Bink ABI: opaque decoder records and the verified 32-bit DLL exports.
 typedef struct PC_FMV_BINK_PC PC_FMV_BINK_PC;
 typedef void *(__stdcall *FMV_SOUND_SYSTEM_OPEN_PC)(IDirectSound8 *);

@@ -13,20 +13,6 @@
 #include "legoapi/menus/screens/store.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/lib/hub.h"
-#include "legoapi/menus/screens/store.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/lib/hub.h"
-#include "legoapi/menus/screens/store.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

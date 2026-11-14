@@ -20,32 +20,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gamelib/util/Refpack.h"
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/core/input/timer.h"
-#include "legoapi/core/input/timing.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/world/levels.h"
-#include "legoapi/world/worldinfo.h"
-#include "legogame/game.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gamelib/util/Refpack.h"
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/core/input/timer.h"
-#include "legoapi/core/input/timing.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/world/levels.h"
-#include "legoapi/world/worldinfo.h"
-#include "legogame/game.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 /* 5 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

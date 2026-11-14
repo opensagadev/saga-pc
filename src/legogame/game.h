@@ -19,19 +19,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "decomp.h"
-#include "globals.h"
-#include "legoapi/audio/audio.h"
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/items/collect/shard.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/world/missions.h"
-#include "nu2api/nufile/nufpar.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 struct PART_PC;
 struct WORLDINFO_s;
 struct area_data_pc_s;

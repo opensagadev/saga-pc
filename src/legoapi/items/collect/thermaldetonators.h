@@ -12,16 +12,6 @@
 #include "legoapi/menus/core/hint.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/menus/core/hint.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/menus/core/hint.h"
-#endif
-
 struct PART_PC;
 struct gameobject_s;
 

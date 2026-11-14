@@ -11,16 +11,6 @@
 #include "legoapi/menus/screens/movies.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/menus/screens/movies.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/menus/screens/movies.h"
-#endif
-
 typedef struct MENU_PC_STRING_ENTRY {
     i32 id;
     const char *text;

@@ -13,20 +13,6 @@
 #include "nu2api/nucore/nutime.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gamelib/util/CRC16.h"
-#include "nu2api/huffdecode.h"
-#include "nu2api/nucore/nutime.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gamelib/util/CRC16.h"
-#include "nu2api/huffdecode.h"
-#include "nu2api/nucore/nutime.h"
-#endif
-
 typedef struct nuapi_s {
     i32 language;
     i32 region;

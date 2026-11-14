@@ -11,11 +11,6 @@
 #include "legoapi/core/input/timer.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/core/input/timer.h"
-#endif
-
 struct mission_data_pc_s;
 
 typedef struct MISSION_SAVE_READER_PC {

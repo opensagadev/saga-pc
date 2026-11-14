@@ -19,30 +19,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "editor/antinode_editor_private.h"
-#include "editor/edpath.h"
-#include "editor/edpath_types.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "legoapi/ai/core/aisysall_types.h"
-#include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nucore/nulist.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "editor/antinode_editor_private.h"
-#include "editor/edpath.h"
-#include "editor/edpath_types.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "legoapi/ai/core/aisysall_types.h"
-#include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nucore/nulist.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

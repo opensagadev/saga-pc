@@ -13,20 +13,6 @@
 #include "gamelib/util/gamelib_util_types.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "decomp.h"
-#include "gamelib/util/CRC16.h"
-#include "gamelib/util/gamelib_util_types.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "decomp.h"
-#include "gamelib/util/CRC16.h"
-#include "gamelib/util/gamelib_util_types.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

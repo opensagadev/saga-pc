@@ -16,26 +16,6 @@
 #include "nu2api/nu3d/nuspline.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aiscript_types.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "legoapi/items/base/animpacket.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nuspline.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aiscript_types.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "legoapi/items/base/animpacket.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nuspline.h"
-#endif
-
 typedef struct PODSPRINT_AI_PC {
     NUGSPLINE *spline;
     i16 vals[6];

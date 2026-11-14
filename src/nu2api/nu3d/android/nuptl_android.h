@@ -15,24 +15,6 @@
 #include "nu2api/nustencilshadows_PC.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/edtools/edgra.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#include "nu2api/nustencilshadows_PC.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/edtools/edgra.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#include "nu2api/nustencilshadows_PC.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -26,44 +26,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "MechInputTouch/MechInputTouch_types.h"
-#include "editor/edlevelall.h"
-#include "gameapi/ai/aisys/aipath.h"
-#include "gamelib/util/gamelib_util_types.h"
-#include "globals.h"
-#include "legoapi/items/collect/bolts.h"
-#include "legoapi/items/objects/basething.h"
-#include "legoapi/props/system/socksys.h"
-#include "legoapi/render/core/gameliball.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nucore/nulist.h"
-#include "nu2api/nufile/nufile.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "MechInputTouch/MechInputTouch_types.h"
-#include "editor/edlevelall.h"
-#include "gameapi/ai/aisys/aipath.h"
-#include "gamelib/util/gamelib_util_types.h"
-#include "globals.h"
-#include "legoapi/items/collect/bolts.h"
-#include "legoapi/items/objects/basething.h"
-#include "legoapi/props/system/socksys.h"
-#include "legoapi/render/core/gameliball.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nucore/nulist.h"
-#include "nu2api/nufile/nufile.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 /* 14 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

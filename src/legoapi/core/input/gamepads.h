@@ -15,24 +15,6 @@
 #include "legoapi/world/world.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/edtools/edui.h"
-#include "legoapi/characters/motion/move.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/misc/legoapi_status.h"
-#include "legoapi/world/world.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/edtools/edui.h"
-#include "legoapi/characters/motion/move.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/misc/legoapi_status.h"
-#include "legoapi/world/world.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

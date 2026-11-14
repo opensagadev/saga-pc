@@ -19,30 +19,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/gui/apimenu.h"
-#include "legoapi/actions/movement/dropinout.h"
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/menus/core/hint.h"
-#include "legoapi/menus/screens/store.h"
-#include "legogame/batman_gameai.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/gui/apimenu.h"
-#include "legoapi/actions/movement/dropinout.h"
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/menus/core/hint.h"
-#include "legoapi/menus/screens/store.h"
-#include "legogame/batman_gameai.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

@@ -11,16 +11,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/numath/nuvec.h"
-#endif
-
 typedef struct TERRAIN_LAST_IMPACT_PC {
     NUVEC position;
     f32 hit_type;

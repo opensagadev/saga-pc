@@ -15,24 +15,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/menus/core/panel.h"
-#include "legoapi/props/system/socksys.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/menus/core/panel.h"
-#include "legoapi/props/system/socksys.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 struct SUIT_LAYERS_PC;
 struct WORLDINFO_s;
 struct bolt_s;

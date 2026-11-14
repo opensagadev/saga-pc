@@ -11,16 +11,6 @@
 #include "nu2api/numath/nuplane.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/numath/nuplane.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/numath/nuplane.h"
-#endif
-
 typedef struct pc_frustum_group_pc_s {
     u8 unknown_0000[0x1a0];
     NUPLANE planes[12];

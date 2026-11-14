@@ -11,16 +11,6 @@
 #include "legoapi/props/objects/legoapi_signal.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/props/objects/legoapi_signal.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/props/objects/legoapi_signal.h"
-#endif
-
 typedef struct SUIT_LAYERS_PC {
     u8 unknown_00[0xc];
     u16 flags;

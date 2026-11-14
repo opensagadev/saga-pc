@@ -12,18 +12,6 @@
 #include "legoapi/legoapi_types.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aipath.h"
-#include "legoapi/legoapi_types.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aipath.h"
-#include "legoapi/legoapi_types.h"
-#endif
-
 typedef struct vadera_pc_s {
     GIZAIMESSAGE *in_control_room_message;
     GIZAIMESSAGE *ceiling_collapse_message;

@@ -22,21 +22,6 @@
 #include "nu2api/numath/nuvec4.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "decomp.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/render/core/gameliball.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nucamera.h"
-#include "nu2api/nu3d/nudlist.h"
-#include "nu2api/nu3d/nurndr.h"
-#include "nu2api/nucamera_dlist.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#include "nu2api/numath/nuvec4.h"
-#endif
-
 /* 7 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

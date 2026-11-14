@@ -11,16 +11,6 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
-#endif
-
 #ifdef __cplusplus
 /* Extend/replace existing C++ accessed-field classes; private proposal only. */
 class NuPostFilterGen {

@@ -12,18 +12,6 @@
 #include "legoapi/world/world.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/legoapi_types.h"
-#include "legoapi/world/world.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/legoapi_types.h"
-#include "legoapi/world/world.h"
-#endif
-
 typedef struct NEW_MINI_PIECE_PC {
     char name[8];
     i16 level;

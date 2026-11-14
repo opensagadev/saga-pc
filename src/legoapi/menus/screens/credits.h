@@ -11,16 +11,6 @@
 #include "legoapi/world/world.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/world/world.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/world/world.h"
-#endif
-
 typedef struct credit_record_pc_s CREDIT_RECORD_PC;
 #ifdef __cplusplus
 extern "C" {

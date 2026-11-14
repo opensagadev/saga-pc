@@ -14,20 +14,6 @@
 #include "legoapi/items/collect/bolts.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "editor/edlevelall.h"
-#include "gameapi/edtools/EdObjectNotifier.h"
-#include "legoapi/items/collect/bolts.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "editor/edlevelall.h"
-#include "gameapi/edtools/EdObjectNotifier.h"
-#include "legoapi/items/collect/bolts.h"
-#endif
-
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

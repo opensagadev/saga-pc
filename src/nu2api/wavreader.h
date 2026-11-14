@@ -11,16 +11,6 @@
 #include "nu2api/nufile/nufile.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nufile/nufile.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "nu2api/nufile/nufile.h"
-#endif
-
 #ifdef __cplusplus
 
 struct PC_WAVE_CHUNK_PC {

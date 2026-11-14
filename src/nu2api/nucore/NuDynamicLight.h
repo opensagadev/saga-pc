@@ -15,22 +15,6 @@
 #include "nu2api/numath/numtx.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "decomp.h"
-#include "editor/edlevelall.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/numath/numtx.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "decomp.h"
-#include "editor/edlevelall.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/numath/numtx.h"
-#endif
-
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

@@ -13,20 +13,6 @@
 #include "nu2api/nu3d/nuqfnt.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/gui/apimenu.h"
-#include "legogame/game.h"
-#include "nu2api/nu3d/nuqfnt.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/gui/apimenu.h"
-#include "legogame/game.h"
-#include "nu2api/nu3d/nuqfnt.h"
-#endif
-
 typedef struct MENU_VIDEO_OPTIONS_PC {
     i32 aspect_mode;
     i32 shadows_enabled;

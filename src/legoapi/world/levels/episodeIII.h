@@ -14,22 +14,6 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "decomp.h"
-#include "legoapi/items/objects/objectsall.h"
-#include "legoapi/world/levels/episodeIII_types.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "decomp.h"
-#include "legoapi/items/objects/objectsall.h"
-#include "legoapi/world/levels/episodeIII_types.h"
-#include "nu2api/numath/nuvec.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
