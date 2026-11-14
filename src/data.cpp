@@ -8324,7 +8324,6 @@ extern "C" {
     NUMTX NuCameraScissorProjectionScratch = {0};
     NUMTX clip_test_mtx = {0};
     f32 zx = 0;
-    f32 zy = 0;
 #pragma const_seg(".rdata$ClipOutcodeMask32")
     __declspec(align(16)) extern const u32 ClipOutcodeMask32[4] = {32, 32, 32, 32};
 #pragma const_seg()
@@ -8695,7 +8694,6 @@ extern "C" {
 #pragma const_seg()
 
     i16 tALONGTIMEAGO = 0;
-    i32 NuQFntCSModeStack[16] = {0};
     i32 NuQFntCSModeStackIndex = 0;
 
     void *gizmotypes = 0;
@@ -8832,7 +8830,6 @@ extern "C" {
     NUJOINTPROCANIMFN_PC JointProcAnimFn = 0;
     u8 fstackmem[NU_PORTAL_STACK_SIZE] = {0};
     VARIPTR fstack = {0};
-    VARIPTR fstack_top = {0};
     VARIPTR fstack_limit = {0};
     i32 DebrisCutSceneMode = 0;
     RTLSET_PC *PartRTL = 0;
@@ -9101,7 +9098,6 @@ extern "C" {
                             0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     NUMTL *numtl_defaultmtl2d = 0;
     NUMTL *numtl_defaultmtl3d = 0;
-    VARIPTR *NuDisplayListStreamCursor = 0;
     NUGLOBALRNDRSTATE_PC render_state = {0};
     AREA_DATA_PC *GUNSHIP_ADATA = 0;
     i32 menu_flash = 0;
@@ -10393,8 +10389,6 @@ extern "C" {
 
     i32 NuCameraMode = 0;
 
-    NUCAMERAREFLECT global_reflect = {0};
-
     i32 NuCameraClipScissorToViewport = 0;
 
     i32 NuCameraPreviousClipScissorToViewport = 0;
@@ -10902,9 +10896,6 @@ extern "C" {
     SCENE_VIDEO_RESOURCE_HEADER_PC SceneVideoResourcesPC = {0};
     DEBRIS_RENDER_CHUNK_PC *ParticleChunkToRender = 0;
     DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5] = {0};
-#pragma data_seg(".data$nutexanim_usepakfile")
-    i32 nutexanim_usepakfile = 1;
-#pragma data_seg()
     PC_TEXTURE_ANIM_LIST *ntal_first = 0;
     PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
     NUGSCN *PCRegisteredNativeScenes[100] = {0};
@@ -11130,7 +11121,6 @@ extern "C" {
     NUMTX *NuRndr_DebrisRotMtxPtr = 0;
     NUMTX debris_box_camera_cache = {0};
     i32 NuRndrStopUpdate = 0;
-    NUVEC NuRndrDebBase = {0};
     NUVEC NuRndrDebRange = {0};
     NUVEC NuRndrDebRangeInv = {0};
 #pragma const_seg(".rdata$debris_box_corners")
@@ -11962,7 +11952,6 @@ extern "C" {
 #pragma data_seg(".data$PCSpecialProjectionAdjust")
     PC_SPECIAL_PROJECTION_ADJUST PCSpecialProjectionAdjust = {1.0f, 1.0f, 0.0f, 0.0f};
 #pragma data_seg()
-    struct PC_SPECIAL_SHADOW_LIGHT *PCSpecialShadowLights[4] = {0};
     u32 PCSpecialShadowClipResults[4] = {0};
     NUMTX PCSpecialProjectionTranslate = {0};
     NUMTX PCSpecialProjectionScale = {0};
@@ -14073,7 +14062,6 @@ extern "C" {
     NUMTX NuPortalLocalViewPc = {0};
     NUMTX NuPortalProjectionScratchPc = {0};
     NUMTX NuPortalProjectionInversePc = {0};
-    NUPORTAL_FRUSTUM_PC **NuPortalFrustaPc = 0;
     i32 *NuPortalFrustumCountPc = 0;
 #pragma const_seg(".rdata$NuPortalBoundsOnePc")
     const NUVEC NuPortalBoundsOnePc = {1.0f, 1.0f, 1.0f};
@@ -14136,9 +14124,7 @@ extern "C" {
     i32 TreeInitialised = 0;
     VISIBILITY_RESULT_READER_PC *myvisi = 0;
     NUMTX VisibilityPrimaryPlaneMatrixPc = {0};
-    NUMTX VisibilityAlternatePlaneMatrixPc = {0};
     NUMTX VisibilityPrimaryWorldMatrixPc = {0};
-    NUMTX VisibilityAlternateWorldMatrixPc = {0};
     NUMTX VisibilityPrimaryAbsoluteMatrixPc = {0};
     NUMTX VisibilityAlternateAbsoluteMatrixPc = {0};
     NUPLANE VisibilityDepthPlanePc = {0};
@@ -14378,9 +14364,6 @@ extern "C" {
 extern "C" {
 #pragma data_seg(".data$CameraSavedStateCountPc")
     i32 cam_state_count = 0;
-#pragma data_seg()
-#pragma data_seg(".data$CameraSavedStatesPc")
-    CAMERA_SAVED_STATE_PC CameraSavedStatesPc[16] = {{0}};
 #pragma data_seg()
 }
 
@@ -23448,11 +23431,9 @@ extern "C" {
     void (*RenderFrameCallbackPc)(void) = NULL;
     u32 NuPostEffectInitialisedFlagsPc = 0;
     FRAME_NATIVE_TEXTURE_POOL_PC FrameNativeTexturePoolPc = {0};
-    NUFILE nudlist_field_958 = 0;
     NUFILE nudlist_field_988 = 0;
     char *PCDisplayCaptureCursorPc = NULL;
     char *nudlist_field_18b0 = NULL;
-    char PCDisplayCaptureBufferPc[0x1000] = {0};
 }
 #pragma data_seg()
 
@@ -23591,10 +23572,6 @@ extern "C" {
     NUMTL *PCStartupMaterial1Pc = NULL;
     NUMTL *PCStartupMaterial2Pc = NULL;
     i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
-}
-
-extern "C" {
-    NUVPCURRENT vpDevice = {0};
 }
 
 extern "C" {

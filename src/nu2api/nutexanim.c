@@ -1,6 +1,7 @@
 #include "saga.h"
 #include <string.h>
 #pragma data_seg(".data$g_texAnimCriticalSection")
+i32 nutexanim_usepakfile = 1;
 static i32 nutexanm_critical_section = -1;
 #pragma data_seg()
 static PC_TEXTURE_ANIM_LIST *ntal_free = 0;
@@ -123,6 +124,10 @@ typedef struct TEXTURE_ANIM_MATERIAL_PC {
 static u32 nta_sig_off = 0;
 static u32 nta_sig_on = 0;
 static i32 nta_iframetime = 0;
+char PCDisplayCaptureBufferPc[0x1000] = {0};
+NUCAMERAREFLECT global_reflect = {0};
+f32 zy = 0;
+VARIPTR *NuDisplayListStreamCursor = 0;
 static u16 nta_script_mask = 0;
 static u32 nta_sig_old = 0;
 
@@ -471,11 +476,21 @@ void NuTexAnimDestroy(TEXTURE_ANIMATION_PC *animation) {
 
 static TEXTURE_ANIM_PROGRAM_PC *TextureAnimationParseProgramPrivatePc = 0;
 static char TextureAnimationLabelsPrivatePc[64][21] = {0};
+NUVPCURRENT vpDevice = {0};
+NUFILE nudlist_field_958 = 0;
 static i32 TextureAnimationLabelCountPrivatePc = 0;
 static char TextureAnimationExternalLabelsPrivatePc[256][21] = {0};
+CAMERA_SAVED_STATE_PC CameraSavedStatesPc[16] = {{0}};
+i32 NuQFntCSModeStack[16] = {0};
+NUPORTAL_FRUSTUM_PC **NuPortalFrustaPc = 0;
 static i32 xdeflabtabcnt = 0;
 static i32 TextureAnimationLabelOffsetsPrivatePc[64] = {0};
 
+NUMTX VisibilityAlternateWorldMatrixPc = {0};
+NUMTX VisibilityAlternatePlaneMatrixPc = {0};
+VARIPTR fstack_top = {0};
+NUVEC NuRndrDebBase = {0};
+struct PC_SPECIAL_SHADOW_LIGHT *PCSpecialShadowLights[4] = {0};
 static PC_TEXTURE_ANIM_LIST TextureAnimationListBufferPc[64] = {0};
 
 void NuTexAnimProgSysInit(void) {
