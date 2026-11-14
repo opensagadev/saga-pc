@@ -594,6 +594,25 @@ bytes. A compare must ignore those names.
    migration (section 7) changes the declarations before the fragile
    functions, which re-tunes them anyway.
 
+*Step 1 done (2026-11-14).* `layoutcheck.py --convert UNIT --only-here` on
+each of the 208 units with size/offset asserts: 955 local structs (158 units)
+got their comments (5,540 member lines), 3,688 of the 6,813 unit assert lines
+went. No assert disagreed with the computed layout and no struct was skipped
+by the tool. After a full build 371 objects were byte-identical to the base;
+two reacted to the lower declaration count and keep asserts, marked with a
+comment that points here:
+
+| unit | kept (`--skip`) | assert lines | reacts |
+|---|---|---:|---|
+| `legogame/episodeIV.c` | `CLOUDCITY_PANEL_FLAGS_VIEW_PC`, `TORPEDO_MUSIC_FLAGS_VIEW_PC` | 3 | `BlockadeRunnerDEjectCreaturePc` loses exact with any one struct kept or with none; this pair keeps it |
+| `nu2api/nu3d_includes.cpp` | `PC_SPECIAL_RENDER_SCENE` | 1 | `NuDeferredFilterGen::render` (93.89 % vs 93.90 %) |
+
+With them every object is byte-identical to the build before the conversion.
+The 3,125 unit asserts left name `src/saga.h` types (step 2), or are
+relations the tool does not convert (`sizeof(A) == sizeof(B)`,
+`== 0xc8 - 0xb4`). Three function-pointer members that span several lines
+carry their offset on the first line (`void(__cdecl *update)( // 0x10`).
+
 At the pilot rate (0.95 assert lines removed per member comment written, and
 a net -1.3 lines per removed assert), the full conversion removes about
 12,500 of the 13,127 assert lines and about 16,000 lines in total. Nearly all
