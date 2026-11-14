@@ -2,8 +2,6 @@
 #include "saga.h"
 #include <math.h>
 
-/* Retail unit 0x4d8190-0x4ddc7f: definitions in retail address order. */
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_107e) == 0x107e);
@@ -65,7 +63,7 @@ typedef struct pod_race_countdown_reader_pc_s {
     f32 lap_countdown;
 } POD_RACE_COUNTDOWN_READER_PC;
 
-/* Episode I level callbacks installed by FixUpLevels (retail 0x4d82f0 .. 0x4dd770). */
+/* Episode I level callbacks installed by FixUpLevels. */
 typedef struct podrace_levflag_pc_s {
     u8 podrace_state;
     u8 mushroom_state;
@@ -183,7 +181,7 @@ typedef struct PODSPRINT_NETPACKET_PC {
 
 #define PODSPRINT ((PODSPRINT_VIEW_PC *)&podsprint)
 #define PODSPRINT_NET ((PODSPRINT_NETPACKET_PC *)podsprint_netpacket)
-/* PC 0x008824cc: last player positions used for the finish line tests. */
+/* Last player positions used for the finish line tests. */
 static NUVEC pod_old_pos[2];
 extern f32 HudBossIconYPc;
 i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second);
@@ -368,7 +366,7 @@ void PodRaceSnipersUpdate(void) {
                 distance = NuVecDist(&aim, &PodRace_snipers[i].prev, &direction);
                 temp_yrot = NuAtan2D(direction.x, direction.z);
                 temp_zrot = NuAtan2D(-direction.y, distance);
-                // Retail uses an aligned matrix local in its realigned stack frame.
+                // Uses an aligned matrix local in its realigned stack frame.
                 NuMtxSetRotationX(&mtx, temp_zrot);
                 NuMtxRotateY(&mtx, temp_yrot);
                 Bolt_Add(NULL, &PodRace_snipers[i].prev, &mtx, bolttype, 0);
@@ -647,7 +645,7 @@ void PodRaceAUpdate(void) {
     }
 }
 
-/* Original episodeI.cpp private owner of the active PodRace block (PC 0x00882a8c). */
+/* Private owner of the active PodRace block. */
 static PODRACE_RESOURCE_PC *PodRacePc = NULL;
 
 static RACEPOD_RESOURCE_PC *RacePodAllocatePrivatePc(void) {
@@ -995,7 +993,7 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
 static f32 podhurryalpha = 0.0f;
 static f32 podstartracealpha = 0.0f;
 static f32 podlapalpha = 0.0f;
-/* PC 0x007ffd1c..0x007ffd24 and 0x007ffd88..0x007ffd94: pod sprint HUD and boulder tuning. */
+/* Pod sprint HUD and boulder tuning. */
 static f32 PodSprintLapIconScalePc = 0.16f;
 static f32 PodSprintCountdownYPc = 0.425f;
 static f32 PodSprintCountdownScalePc = 0.75f;
@@ -1157,7 +1155,7 @@ void PodRaceADrawPc(WORLDINFO *world) {
     PodRaceADraw(world);
 }
 
-/* PC 0x007ffd34/0x007ffd38/0x007ffd3c: mushroom collapse retry window. */
+/* Mushroom collapse retry window. */
 f32 mushroom_time_available = 15.0f;
 f32 mushroom_max_time_available = 15.0f;
 
@@ -1325,11 +1323,10 @@ i32 Action_SetLapTime(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC
     return 1;
 }
 
-/* The throw timer is read through the process argument, as retail does. This is the
+/* The throw timer is read through the process argument. This is the
    processor AIScriptProcess is running, which resets its action_timer on the action's
    first frame. It is often packet->script_processor but can be an alternate processor,
-   so it is not always an alias of the packet's own timer (commit 610f69c's message
-   claimed it was). */
+   so it is not always an alias of the packet's own timer. */
 i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **unused3, i32 unused4,
                    i32 first_time, float unused6) {
     struct gameobject_s *object;

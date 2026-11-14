@@ -2,9 +2,9 @@
 #include <new>
 #include <stdio.h>
 
-/* Real-time light editor class glue. The retail rtl unit is C++: these are the
+/* Real-time light editor class glue. The rtl unit is C++: these are the
  * EdClassInterface implementation for the light set (RTLHelper) that sits
- * beside the C rtl.c code. Editor-only; unreachable in retail. */
+ * beside the C rtl.c code. Editor-only and unreachable. */
 
 extern "C" {
     extern RTL_SET_PC *curr_set;
@@ -33,7 +33,7 @@ extern "C" {
 }
 
 /* The engine's VuVec helpers (the same header edlevelall.cpp uses). VC8 inlines them here and keeps
- * out-of-line copies at retail 0x633fc0..0x6340dd; the Rtl names keep them apart from edlevelall's. */
+ * out-of-line copies; the Rtl names keep them apart from edlevelall's. */
 static inline void RtlVuVecCopy(VuVec &destination, const VuVec &source) {
     destination.x = source.x;
     destination.y = source.y;
@@ -352,7 +352,7 @@ void *RTLHelper::GetNextObject(void *object) {
 void *RTLHelper::CreateObject(void *, i32, i32) {
     RTL_LIGHT_PC *light;
     i32 i;
-    /* rtlAlloc, inlined here in retail's single C++ rtl unit. */
+    /* rtlAlloc, inlined here in the single C++ rtl unit. */
     if (curr_set != NULL) {
         for (i = 0; i < 128; i++) {
             if (curr_set->lights[i].type == 0) {
@@ -504,7 +504,7 @@ void RTLHelper::Process(void *object, EdInputContext &input) {
                     }
                 }
             } else {
-                /* The same drag, kept apart from the grab test as in retail. */
+                /* The same drag, kept apart from the grab test. */
                 if (input.GetHold(25) != 0.0f) {
                     if (rtl_helper_radius_mode == 1) {
                         f32 radius = delta.Length();
@@ -536,8 +536,8 @@ void RTLHelper::EnterEditor() {
     RTL_SET_INDEX_PC(curr_set)->enabled = 0;
 }
 
-/* The 16-byte-aligned permanent-buffer carve is the inline allocator retail
- * also uses in refpack_init. */
+/* The 16-byte-aligned permanent-buffer carve is the inline allocator also
+ * used in refpack_init. */
 void RTLHelper::PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
     if (set == NULL) {
         MEMORYMANAGER *manager = &theMemoryManager;
@@ -717,7 +717,7 @@ void FogHelper::Render(void *object, i32 selected) {
 void *FogHelper::CreateObject(void *, i32, i32) {
     RTL_FOG_MIGRATION_PC *fog;
     i32 i;
-    /* fogAlloc, inlined here in retail's single C++ rtl unit. */
+    /* fogAlloc, inlined here in the single C++ rtl unit. */
     if (curr_set != NULL) {
         for (i = 0; i < 32; i++) {
             if (RTLHELPER_FOGS(curr_set)[i].type == 0) {
