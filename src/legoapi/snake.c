@@ -4,6 +4,7 @@
 
 extern u8 snakebodies[0x440];
 static NUSPECIALHANDLE snake_hspecials[3] = {0};
+u8 snakebodies[0x440] = {0};
 
 void InitSnakes(WORLDINFO *world) {
     memset(snakebodies, 0, sizeof(snakebodies));
@@ -100,6 +101,11 @@ i32 SnakeASinPc(f32 sin) {
 #undef POW4
 #undef POW5
 
+f32 SnakeSegmentSpacingPc = 0.15000000596046448f;
+f32 SnakeHeadHeightPc = 0.15000000596046448f;
+f32 SnakeYawSeekRatePc = 5.0f;
+f32 SnakeSegmentHeightPc = 0.019999999552965164f;
+f32 SnakeDebrisUpwardSpeedPc = 1.0f;
 static f32 SnakeBodyDefaultScalePc = 1.0f;
 
 SNAKE_BODY_PC *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {

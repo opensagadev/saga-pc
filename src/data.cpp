@@ -8768,7 +8768,6 @@ extern "C" {
     volatile i32 nuvideo_global_vbcnt = 0;
     i32 nurndr_tritot_this_frame = 0;
     i32 openlevels = 0;
-    u8 snakebodies[0x440] = {0};
 #pragma data_seg(".data$gizaimessage_prefix")
     char gizaimessage_prefix[5] = "msg_";
 #pragma data_seg()
@@ -12021,21 +12020,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$SnakeSegmentSpacingPc")
-    f32 SnakeSegmentSpacingPc = 0.15000000596046448f;
-#pragma data_seg()
-#pragma data_seg(".data$SnakeHeadHeightPc")
-    f32 SnakeHeadHeightPc = 0.15000000596046448f;
-#pragma data_seg()
-#pragma data_seg(".data$SnakeYawSeekRatePc")
-    f32 SnakeYawSeekRatePc = 5.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SnakeSegmentHeightPc")
-    f32 SnakeSegmentHeightPc = 0.019999999552965164f;
-#pragma data_seg()
-#pragma data_seg(".data$SnakeDebrisUpwardSpeedPc")
-    f32 SnakeDebrisUpwardSpeedPc = 1.0f;
-#pragma data_seg()
     NUMTL *PCMaterialPoolPc = 0;
     i32 PCMaterialPoolCountPc = 0;
 }
