@@ -29,10 +29,10 @@
   "ptr-int-cast": 50,
   "raw-offset": 10,
   "view-type": 181,
-  "view-use": 852,
-  "assert-offsetof-header": 106,
+  "view-use": 843,
+  "assert-offsetof-header": 98,
   "assert-offsetof-unit": 95,
-  "assert-sizeof": 61,
+  "assert-sizeof": 60,
   "placeholder-field": 8845,
   "hex-name": 571,
   "address-name": 16324,
@@ -71,5 +71,5 @@
   "declspec-align": 170,
   "declspec-other": 17,
   "other-platform": 0,
-  "decomp-type": 9
+  "decomp-type": 7
 }

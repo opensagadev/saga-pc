@@ -53,7 +53,6 @@ struct nurndrlibstate_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef struct PC_SHADER_MATERIAL_FILTER_VIEW PC_SHADER_MATERIAL_FILTER_VIEW;
 
 #ifdef __cplusplus
 }
@@ -112,11 +111,6 @@ extern "C" {
         i32 geometry_count;                          // 0x14
     } PC_GSCN_NATIVE_VIEW;
 
-    typedef struct PC_SHADER_RECORD_VIEW { // size 0x8
-        u32 unknown_0;                     // 0x0
-        i32 ref_count;                     // 0x4
-    } PC_SHADER_RECORD_VIEW;
-
     struct PC_MATERIAL_SHADER_DESC_VIEW;
 
 #ifdef __cplusplus
@@ -124,98 +118,6 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-struct PC_SHADER_MATERIAL_FILTER_VIEW {
-    const struct PC_SHADER_FILTER_DESC_VIEW *descriptor;
-    const struct PC_SHADER_FILTER_MATERIAL_VIEW *material;
-    i32 flags;
-    i32 variant;
-    i32 first_path;
-    i32 deferred_path;
-    i32 second_path;
-    i32 layer_count;
-    i32 parameter;
-
-    PC_SHADER_MATERIAL_FILTER_VIEW() {
-    }
-
-    PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *descriptor, i32 flags, i32 parameter);
-
-    PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *desc, const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 flags,
-                                   i32 variant);
-    void Initialize(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32);
-    bool UnfilteredHasLayer(i32) const;
-    bool HasDiffuse(i32) const;
-    bool HasLayer(i32) const;
-    u32 GetVertexFlags() const;
-    i32 HasTexCoordSets(i32 count) const;
-    bool HasLayerVertexFlag8(i32 layer) const;
-    bool HasVertexSkin() const;
-    bool HasVertexSkinAlt() const;
-    i32 HasAnisoFlip() const;
-    i32 HasPhongLighting() const;
-    i32 HasLayerFlag2() const;
-    i32 HasLayerFlag5() const;
-    i32 HasLayerFlags5And15() const;
-    i32 HasLayerFlag15() const;
-    i32 HasLayerFlag10() const;
-    i32 HasLayerFlag21() const;
-    i32 HasLayerFlag4() const;
-    bool HasNoExtraLayer() const;
-    i32 HasLayerFlag17() const;
-    i32 HasLayerFlag19() const;
-    bool HasNoExtraLighting() const;
-    i32 HasLayerFlag18() const;
-    i32 HasLayerFlag30() const;
-    i32 HasLayerFlag9() const;
-    i32 HasLayerFlag29() const;
-    i32 HasUnfilteredLayerFlag22() const;
-    i32 IsVariantOrLayerFlag12() const;
-    bool LacksVariantAndLayerFlag12() const;
-    i32 HasLayerFlag28() const;
-    i32 HasLayerFlag27() const;
-    i32 HasSelector0() const;
-    i32 HasSelector1() const;
-    const PC_SHADER_FILTER_DESC_VIEW *GetDescriptor() const;
-    const PC_SHADER_FILTER_MATERIAL_VIEW *GetMaterial() const;
-    bool HasBaseLayer() const;
-    i32 HasSpecular() const;
-    bool HasBaseLighting() const;
-    i32 HasFirstPath() const;
-    i32 HasDeferredPath() const;
-    i32 HasLayerFlag20() const;
-    i32 HasLayerFlag1() const;
-    i32 HasNormalLayer1() const;
-    i32 HasLayerFlag0() const;
-    i32 HasNormalLayer0() const;
-    i32 HasLayerFlag14() const;
-    i32 HasLayerFlag13() const;
-    i32 HasFlag31With23() const;
-    i32 HasFlag31Without23() const;
-    i32 HasSecondPath() const;
-    bool HasExtraTexture() const;
-    bool HasEnvironmentTexture() const;
-    i32 HasSurfaceLayerAbove() const;
-    i32 HasSurfaceLayerAtOrBelow() const;
-    i32 fun_007442d0() const;
-    i32 fun_00744320() const;
-    i32 fun_00744330() const;
-    bool fun_00744340() const;
-    i32 fun_00744350(i32 layer) const;
-    i32 fun_00744370() const;
-    i32 fun_00744380() const;
-    i32 fun_00744390() const;
-    i32 fun_007443b0() const;
-};
-
-STATIC_ASSERT(sizeof(PC_SHADER_MATERIAL_FILTER_VIEW) == 0x24);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, parameter) == 0x20);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, descriptor) == 0);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, material) == 4);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, variant) == 0xc);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, first_path) == 0x10);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, deferred_path) == 0x14);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, second_path) == 0x18);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, layer_count) == 0x1c);
 #endif
 
 /* Refine the existing single DWORD owner; do not create another address alias. */
