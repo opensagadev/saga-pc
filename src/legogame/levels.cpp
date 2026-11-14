@@ -682,6 +682,9 @@ extern "C" {
         return 0;
     }
 }
+LEVELDATA_PC *LevelFixupSlotPc0087b2dc = NULL;
+i32 loadareacharacters_no_backdrop_reset = 0;
+i32 FreePlayModelCount = 0;
 static i32 PicturesNumLevelsPc = 0;
 
 static void PicturesFixUpPc(WORLDINFO *world) {
@@ -1329,8 +1332,29 @@ extern "C" void ClearUpAreaData() {
 }
 
 extern "C" {
+    i32 LevPathCnxDir = 0;
+    i32 FreePlayBonusCount = 0;
+    u16 TargetDeg_Near = 0;
+    AIAREA_PC *LevArea[4] = {0};
+    GIZMO_PC *LevGizmo[12] = {0};
     static f32 LoadTime = 0;
+    i32 LevPlatID[2] = {0};
     static f32 LOADWAITTIME = 0;
+    u64 LevHSpecialExists = 0ui64;
+    PART_PC *LevGamePart[8] = {0};
+    i32 makefreeplaymodellist = 0;
+    f32 LevTime[5] = {0};
+    void *LevPathCnx[16] = {0};
+    i32 LevFlag[4] = {0};
+    i32 CharacterDataLoad = 0;
+    i32 LevSfxFlag[4] = {0};
+    GIZMOBLOWUP_PC *LevBlowUp[2] = {0};
+    f32 LevAlpha = 0.0f;
+    f32 TargetDist_Mid2 = 0;
+    f32 TitlesAlpha = 0.0f;
+    GIZAIMESSAGE *LevAIMessage[8] = {0};
+    i32 LevSfxId[4] = {0};
+    u32 areaSuitBits = 0;
     static f32 LoadWait = 0;
 }
 
@@ -2164,9 +2188,71 @@ abort:
 
 extern "C" {
     f32 CreditsPictureScalePc = 2.5f;
+    LEVEL_PROGRESS *LevelProgressData = 0;
+    i32 LevDeaths = 0;
+    i32 LevelChangesInArea = 0;
+    NUMTL *PermanentEffectsMaterialPc = NULL;
+    i32 loadareacharacters_loadedlevel = 0;
+    i32 loadareadata_loadlevel = 0;
+    i32 textcrawlactive = 0;
+    NUFPCOMJMP WorldLoadAfterKeywordsPc[1] = {{NULL, NULL}};
     f32 CreditsPictureBaseYPc = 0.0f;
     f32 CreditsPictureBaseZPc = 1.0f;
+    i32 WorldLightUserIdPc = 1;
 }
+i32 AreaDataLoaded = 1;
+f32 AreaCrawlSoundWaitTimePc = 20.0f;
+f32 AreaCrawlMaximumTimePc = 45.0f;
+i32 AreaCrawlMusicEnabledPc = 1;
+f32 AreaCrawlPromptYPc = 0.745000005f;
+f32 AreaCrawlPromptScalePc = 0.400000006f;
+NUFPCOMJMP LevelConfigKeywords_BeforeLoad[45] = {
+    {const_cast<char *>("max_tightropes"), LC_BL_max_tightropes},
+    {const_cast<char *>("max_signals"), LC_BL_max_signals},
+    {const_cast<char *>("max_levers"), LC_BL_max_levers},
+    {const_cast<char *>("max_technos"), LC_BL_max_technos},
+    {const_cast<char *>("max_zipups"), LC_BL_max_zipups},
+    {const_cast<char *>("max_grapples"), LC_BL_max_grapples},
+    {const_cast<char *>("max_obstacles"), LC_BL_max_obstacles},
+    {const_cast<char *>("max_obstacle_objects"), LC_BL_max_obstacle_objects},
+    {const_cast<char *>("max_turrets"), LC_BL_max_turrets},
+    {const_cast<char *>("max_buildits"), LC_BL_max_buildits},
+    {const_cast<char *>("max_buildit_objects"), LC_BL_max_buildit_objects},
+    {const_cast<char *>("max_spinneranim_objs"), LC_BL_max_spinneranim_objs},
+    {const_cast<char *>("max_shards"), LC_BL_max_shards},
+    {const_cast<char *>("max_spinners"), LC_BL_max_spinners},
+    {const_cast<char *>("max_minicuts"), LC_BL_max_minicuts},
+    {const_cast<char *>("max_minicut_stages"), LC_BL_max_minicutParts},
+    {const_cast<char *>("maxgizmoblowuptypes"), LC_BL_max_gizmoblowuptypes},
+    {const_cast<char *>("maxgizmoblowups"), LC_BL_max_gizmoblowups},
+    {const_cast<char *>("max_climb_objects"), LC_BL_max_climb_objects},
+    {const_cast<char *>("max_attractos"), LC_BL_max_attractos},
+    {const_cast<char *>("max_timers"), LC_BL_max_timers},
+    {const_cast<char *>("max_guidelines"), LC_BL_max_guidelines},
+    {const_cast<char *>("max_ledges"), LC_BL_max_ledges},
+    {const_cast<char *>("max_securitydoors"), LC_BL_max_securitydoors},
+    {const_cast<char *>("max_tubes"), LC_BL_max_tubes},
+    {const_cast<char *>("max_pickups"), LC_BL_max_pickups},
+    {const_cast<char *>("max_gameantinodes"), LC_BL_max_gameantinodes},
+    {const_cast<char *>("max_gizpanels"), LC_BL_max_gizpanels},
+    {const_cast<char *>("max_force"), LC_BL_max_force},
+    {const_cast<char *>("max_force_objects"), LC_BL_max_force_objects},
+    {const_cast<char *>("max_pushblocks"), LC_BL_max_pushblocks},
+    {const_cast<char *>("max_pushblock_endpos"), LC_BL_max_pushblock_endpos},
+    {const_cast<char *>("max_gizspecials"), LC_BL_max_gizspecials},
+    {const_cast<char *>("max_hatmachines"), LC_BL_max_hatmachines},
+    {const_cast<char *>("max_doors"), LC_BL_max_doors},
+    {const_cast<char *>("max_teleports"), LC_BL_max_teleports},
+    {const_cast<char *>("max_gizrandoms"), LC_BL_max_gizrandoms},
+    {const_cast<char *>("max_torpmachines"), LC_BL_max_torpmachines},
+    {const_cast<char *>("max_bridges"), LC_BL_max_bridges},
+    {const_cast<char *>("max_plugs"), LC_BL_max_plugs},
+    {const_cast<char *>("max_bombgen_objects"), LC_BL_max_bombgen_objects},
+    {const_cast<char *>("max_bombgens"), LC_BL_max_bombgens},
+    {const_cast<char *>("windspeed"), LC_BL_wind_speed},
+    {const_cast<char *>("windsize"), LC_BL_wind_size},
+    {NULL, NULL},
+};
 static const char *const CreditsEpisodeMusicPc[6] = {"Ep1_EndCredits", "Ep2_EndCredits", "Ep3_EndCredits",
                                                      "Ep4_EndCredits", "Ep5_EndCredits", "Ep6_EndCredits"};
 
@@ -2249,28 +2335,163 @@ extern "C" void Credits_Draw_Game(WORLDINFO *world) {
 }
 
 extern "C" {
+    LEVELDATA_PC *JABBASPALACEA_LDATA = 0;
+    LEVELDATA_PC *JABBASPALACEB_LDATA = 0;
+    LEVELDATA_PC *JABBASPALACED_LDATA = 0;
+    LEVELDATA_PC *JABBASPALACEE_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b2b0 = NULL;
+    LEVELDATA_PC *ENDORBATTLEA_LDATA = 0;
+    LEVELDATA_PC *ENDORBATTLEB_LDATA = 0;
+    LEVELDATA_PC *ENDORBATTLEC_LDATA = 0;
+    LEVELDATA_PC *ENDORBATTLED_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b2c4 = NULL;
+    LEVELDATA_PC *UpdateSockets_LDATA = 0;
     static LEVELDATA_PC *LevelFixupSlotPc0087b2cc = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b2d0 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b2d4 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b2d8 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b0d4 = NULL;
+    AREA_DATA_PC *GOTHAMSTREETS_ADATA = 0;
+    AREA_DATA_PC *NEGOTIATIONS_ADATA = 0;
+    AREA_DATA_PC *PODSPRINT_ADATA = 0;
+    AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA = 0;
+    AREA_DATA_PC *KAMINO_ADATA = 0;
+    AREA_DATA_PC *JEDI_ADATA = 0;
+    AREA_DATA_PC *GUNSHIP_ADATA = 0;
+    AREA_DATA_PC *DOOKU_ADATA = 0;
+    AREA_DATA_PC *DOGFIGHT_ADATA = 0;
+    AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA = 0;
+    AREA_DATA_PC *VADER_ADATA = 0;
+    AREA_DATA_PC *DEATHSTARESCAPE_ADATA = 0;
+    AREA_DATA_PC *HOTHBATTLE_ADATA = 0;
+    AREA_DATA_PC *HOTHESCAPE_ADATA = 0;
+    AREA_DATA_PC *ASTEROIDCHASE_ADATA = 0;
+    AREA_DATA_PC *DAGOBAH_ADATA = 0;
+    AREA_DATA_PC *JABBASPALACE_ADATA = 0;
+    AREA_DATA_PC *SPEEDERCHASE_ADATA = 0;
+    AREA_DATA_PC *DEATHSTARBATTLE2_ADATA = 0;
+    AREA_DATA_PC *E1CHARACTER_ADATA = 0;
+    AREA_DATA_PC *E2CHARACTER_ADATA = 0;
+    AREA_DATA_PC *E3CHARACTER_ADATA = 0;
+    AREA_DATA_PC *E4CHARACTER_ADATA = 0;
+    AREA_DATA_PC *E5CHARACTER_ADATA = 0;
+    AREA_DATA_PC *E6CHARACTER_ADATA = 0;
+    AREA_DATA_PC *PODRACE_ADATA = 0;
+    AREA_DATA_PC *BONUS_GUNSHIP_ADATA = 0;
+    AREA_DATA_PC *NEWTOWN_ADATA = 0;
+    AREA_DATA_PC *LOSTTEMPLE_ADATA = 0;
+    AREA_DATA_PC *SENATE_ADATA = 0;
+    AREA_DATA_PC *UTAPAU_ADATA = 0;
+    AREA_DATA_PC *HOTH_ADATA = 0;
+    AREA_DATA_PC *BONUSDAGOBAH_ADATA = 0;
+    AREA_DATA_PC *BONUSKAMINO_ADATA = 0;
+    AREA_DATA_PC *BONUSKASHYYYK_ADATA = 0;
+    AREA_DATA_PC *JIMTEST_ADATA = 0;
+    LEVELDATA_PC *NEGOTIATIONSA_LDATA = 0;
+    LEVELDATA_PC *NEGOTIATIONSB_LDATA = 0;
+    LEVELDATA_PC *NEGOTIATIONSC_LDATA = 0;
+    LEVELDATA_PC *GUNGAN_A_LDATA = 0;
+    LEVELDATA_PC *RESCUEC_LDATA = 0;
+    LEVELDATA_PC *WorldArchiveOneLevelsPc[11] = {NULL};
+    LEVELDATA_PC *PODRACEA_LDATA = 0;
+    LEVELDATA_PC *PODRACEB_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b0b4 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b0b8 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b0bc = NULL;
+    LEVELDATA_PC *PODSPRINTA_LDATA = 0;
+    LEVELDATA_PC *RETAKEB_LDATA = 0;
+    LEVELDATA_PC *RETAKED_LDATA = 0;
+    LEVELDATA_PC *RETAKEE_LDATA = 0;
     static LEVELDATA_PC *LevelFixupSlotPc0087b0d0 = NULL;
+    LEVELDATA_PC *MAULA_LDATA = 0;
     static LEVELDATA_PC *LevelFixupSlotPc0087b0dc = NULL;
+    LEVELDATA_PC *MAULD_LDATA = 0;
     static LEVELDATA_PC *LevelFixupSlotPc0087b0e4 = NULL;
+    LEVELDATA_PC *MAULF_LDATA = 0;
+    LEVELDATA_PC *JEDI_B_LDATA = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b0f0 = NULL;
+    LEVELDATA_PC *GUNSHIPA_LDATA = 0;
+    LEVELDATA_PC *GUNSHIPB_LDATA = 0;
+    LEVELDATA_PC *BONUS_GUNSHIPA_LDATA = 0;
+    LEVELDATA_PC *BONUS_GUNSHIPB_LDATA = 0;
+    LEVELDATA_PC *CollisionVehicleExcludedLevelPc = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b108 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b10c = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b110 = NULL;
+    LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA = 0;
+    LEVELDATA_PC *DOGFIGHTA_LDATA = 0;
+    LEVELDATA_PC *FACTORYB_LDATA = 0;
+    LEVELDATA_PC *FACTORYD_LDATA = 0;
+    LEVELDATA_PC *FACTORYF_LDATA = 0;
+    LEVELDATA_PC *FACTORYG_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b12c = NULL;
+    LEVELDATA_PC *KAMINOC_LDATA = 0;
+    LEVELDATA_PC *KAMINOE_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b138 = NULL;
+    LEVELDATA_PC *DOOKUC_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b140 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b144 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b148 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b14c = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b150 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b154 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b158 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b15c = NULL;
+    LEVELDATA_PC *KASHYYYKD_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b164 = NULL;
+    LEVELDATA_PC *CRUISERC_LDATA = 0;
+    LEVELDATA_PC *CRUISERD_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b170 = NULL;
+    LEVELDATA_PC *CRUISERG_LDATA = 0;
+    LEVELDATA_PC *VADERA_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b17c = NULL;
+    LEVELDATA_PC *VADERC_LDATA = 0;
+    LEVELDATA_PC *WorldArchiveThreeLevelsPc[4] = {NULL};
+    LEVELDATA_PC *LevelFixupSlotPc0087b194 = NULL;
+    LEVELDATA_PC *ObstacleReturnLevelPc = 0;
     static LEVELDATA_PC *LevelFixupSlotPc0087b19c = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b20c = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b250 = NULL;
+    LEVELDATA_PC *SPEEDERCHASEA_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b258 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b25c = NULL;
+    LEVELDATA_PC *CLOUDCITYESCAPEC_LDATA = 0;
+    LEVELDATA_PC *CLOUDCITYTRAPA_LDATA = 0;
+    LEVELDATA_PC *CLOUDCITYTRAPB_LDATA = 0;
     static LEVELDATA_PC *LevelFixupSlotPc0087b24c = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b210 = NULL;
+    LEVELDATA_PC *HOTHESCAPEA_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b218 = NULL;
+    LEVELDATA_PC *HOTHESCAPEC_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b220 = NULL;
+    LEVELDATA_PC *ASTEROIDCHASEA_LDATA = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b228 = NULL;
+    LEVELDATA_PC *ASTEROIDCHASEC_LDATA = 0;
+    LEVELDATA_PC *ASTEROIDCHASED_LDATA = 0;
+    LEVELDATA_PC *ASTEROIDCHASEMITRO_LDATA = NULL;
+    LEVELDATA_PC *CLOUDCITYESCAPEA_LDATA = 0;
     static LEVELDATA_PC *LevelFixupSlotPc0087b23c = NULL;
+    LEVELDATA_PC *DAGOBAHC_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b264 = NULL;
+    LEVELDATA_PC *LevelFixupSlotPc0087b268 = NULL;
+    LEVELDATA_PC *DEATHSTAR2BATTLEA_LDATA = 0;
+    LEVELDATA_PC *DEATHSTAR2BATTLEB_LDATA = 0;
+    LEVELDATA_PC *DEATHSTAR2BATTLED_LDATA = 0;
+    LEVELDATA_PC *DEATHSTAR2BATTLEE_LDATA = 0;
+    LEVELDATA_PC *DEATHSTAR2BATTLEF_LDATA = 0;
+    LEVELDATA_PC *DEATHSTAR2BATTLEG_LDATA = 0;
+    LEVELDATA_PC *LevelFixupSlotPc0087b284 = NULL;
+    LEVELDATA_PC *EMPERORFIGHTA_LDATA = 0;
+    LEVELDATA_PC *SARLACCPITA_LDATA = 0;
+    LEVELDATA_PC *SARLACCPITB_LDATA = 0;
+    LEVELDATA_PC *SARLACCPITC_LDATA = 0;
     static LEVELDATA_PC *LevelFixupSlotPc0087b298 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b29c = NULL;
+    NUGSPLINE *LevelCodeSpline[8] = {0};
+    i32 LevPathNodes[8] = {0};
+    void *LevelLocator = 0;
+    NUSPECIALHANDLE LevHSpecial[88] = {0};
+    NUMTX LevMtx = {0};
     static LEVELDATA_PC *LevelFixupSlotPc0087af58 = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087af5c = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087af60 = NULL;

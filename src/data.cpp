@@ -14,18 +14,8 @@ extern "C" {
         {&ID_DEFAULTCHARACTER_A, &AreaExtraTargetId7f17bcPc},     {&PunchRangeUnitIdPc, &PunchRangeCompanionIdPc},
         {&AreaExtraSourceId7f17c8Pc, &AreaExtraTargetId7f17ccPc}, {&VehicleBoltId7f17d0Pc, &PunchRangeCompanionIdPc},
         {&VehicleBoltId7f17d4Pc, &PunchRangeCompanionIdPc},       {NULL, NULL}};
-    i32 AreaDataLoaded = 1;
-    f32 AreaCrawlSoundWaitTimePc = 20.0f;
-    f32 AreaCrawlMaximumTimePc = 45.0f;
-    i32 AreaCrawlMusicEnabledPc = 1;
-    f32 AreaCrawlPromptYPc = 0.745000005f;
-    f32 AreaCrawlPromptScalePc = 0.400000006f;
     f32 PermCollectionScalePc = 0.600000024f;
     APICHARACTERMODELLIST FreePlayModelList[49] = {0};
-    i32 CharacterDataLoad = 0;
-    i32 loadareacharacters_no_backdrop_reset = 0;
-    i32 loadareadata_loadlevel = 0;
-    i32 textcrawlactive = 0;
     AREA_LEVEL_LOAD_PC LevelLoad[12] = {0};
     i32 Area_PlayerModelCount = 0;
     APICHARACTERMODELLIST Area_FreePlayModelList[49] = {0};
@@ -52,9 +42,7 @@ extern "C" {
     i16 FreePlayId007f1b44Pc = -1;
     i16 FreePlayId007f1b40Pc = -1;
     i16 FreePlayId007f1a98Pc = -1;
-    i32 FreePlayModelCount = 0;
     i32 FreePlayResidentCount = 0;
-    i32 FreePlayBonusCount = 0;
     i16 TextCrawlChapterIdPc = 0;
     i16 TextCrawlVehicleBonusIdPc = 0;
     i16 TextCrawlCharacterBonusIdPc = 0;
@@ -194,7 +182,6 @@ extern "C" {
     i32 HubCompletionPointsPc = 0;
     i32 HubBothTrueJediGoldBricksPc = 0;
     void *HubBuildItPc = NULL;
-    u64 LevHSpecialExists = 0ui64;
     i32 EpCompleteCount = 0;
     i32 EpCompleteTotal = 0;
     i32 EpMiniKitCount = 0;
@@ -238,20 +225,6 @@ extern "C" {
 }
 
 extern "C" {
-    LEVELDATA_PC *LevelFixupSlotPc0087b0b4 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b0b8 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b0bc = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b0f0 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b12c = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b138 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b140 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b148 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b150 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b154 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b164 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b170 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b17c = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b194 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b1a8 = NULL;
     LEVELDATA_PC *TATOOINEE_LDATA = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b1bc = NULL;
@@ -260,20 +233,6 @@ extern "C" {
     LEVELDATA_PC *LevelFixupSlotPc0087b200 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b204 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b208 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b210 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b218 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b220 = NULL;
-    LEVELDATA_PC *ASTEROIDCHASEA_LDATA = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b228 = NULL;
-    LEVELDATA_PC *ASTEROIDCHASEMITRO_LDATA = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b250 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b258 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b264 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b268 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b284 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b2b0 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b2c4 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b2dc = NULL;
 }
 
 extern "C" {
@@ -334,13 +293,6 @@ extern "C" {
     char *apitxt_CONTROLLERREMOVED =
         "The controller in controller port %i has been removed. Please insert a controller into controller port %i to "
         "continue with the game.";
-}
-
-extern "C" {
-    LEVELDATA_PC *WorldArchiveOneLevelsPc[11] = {NULL};
-    LEVELDATA_PC *WorldArchiveThreeLevelsPc[4] = {NULL};
-    NUFPCOMJMP WorldLoadAfterKeywordsPc[1] = {{NULL, NULL}};
-    i32 WorldLightUserIdPc = 1;
 }
 
 extern "C" {
@@ -499,7 +451,6 @@ extern "C" {
                               "BULLET2",
                               "BULLET_HIT",
                               "POD_SPARK"};
-    NUMTL *PermanentEffectsMaterialPc = NULL;
     NUMTL *PermanentShadowMaterialPc = NULL;
     void *things_scene_terrain = NULL;
     i32 PARTPAGE_GENERAL = -1;
@@ -7250,24 +7201,6 @@ extern "C" {
     void (*WorldInfo_InitLastFn)(WORLDINFO *) = 0;
 }
 extern "C" {
-    i32 LevPathNodes[8] = {0};
-
-    f32 LevTime[5] = {0};
-    void *LevPathCnx[16] = {0};
-
-    PART_PC *LevGamePart[8] = {0};
-
-    GIZMOBLOWUP_PC *LevBlowUp[2] = {0};
-
-    i32 LevSfxId[4] = {0};
-
-    NUGSPLINE *LevelCodeSpline[8] = {0};
-
-    i32 LevPathCnxDir = 0;
-
-    void *LevelLocator = 0;
-
-    i32 LevPlatID[2] = {0};
 
     u8 LevLock[5] = {0};
 
@@ -7298,8 +7231,6 @@ extern "C" {
 #pragma data_seg(".data$PodRaceIncrementKeywordPc")
     char PodRaceIncrementKeywordPc[11] = "increment=";
 #pragma data_seg()
-
-    i32 LevDeaths = 0;
 
 #pragma data_seg(".data$newlevelfrommenu_newmenuid")
     i32 newlevelfrommenu_newmenuid = -1;
@@ -7589,11 +7520,9 @@ i32 Area = -1;
 i32 last_area = 0;
 i32 NextArea_FreePlay = 0;
 i32 FreePlay = 0;
-i32 makefreeplaymodellist = 0;
 i32 SuperStory = 0;
 i32 reset_area = 0;
 i32 PlayTrailer = -1;
-i32 loadareacharacters_loadedlevel = 0;
 i32 level_already_loaded = -1;
 i32 next_level = 0;
 volatile i32 abort_load = 0;
@@ -7614,7 +7543,6 @@ i32 Paused = 0;
 i32 NetPaused = 0;
 i32 FinishLoop_On = 1;
 i32 LevelChange = 0;
-i32 LevelChangesInArea = 0;
 i32 do_multiframe_update = 0;
 MAINFRAMECOUNTERS MainFrameCounters = {0};
 i32 Arcade = 0;
@@ -7887,7 +7815,6 @@ extern "C" {
     f32 PodAvalancheShakeFrames = 111.0f;
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     f32 PodAvalancheShakeRange = 750.0f;
-    LEVEL_PROGRESS *LevelProgressData = 0;
 #pragma data_seg(".data$LevelSplinesTable")
     LEVELSPLINE_PC LevelSplinesTable[26] = {
         {NULL, LevelSplinesStartName, 2, 0, -1, -1},
@@ -7924,8 +7851,6 @@ extern "C" {
     u32 nudlist_field_9d0 = 0;
     u32 nudlist_field_9d8 = 0;
     u32 nudlist_field_1598 = 0;
-    LEVELDATA_PC *KAMINOE_LDATA = 0;
-    LEVELDATA_PC *DOGFIGHTA_LDATA = 0;
     NUVEC PodRaceADiePos = {350.0f, 0.25f, -15.0f};
     NUVEC PodRaceBDiePos = {138.0f, 0.15f, 178.0f};
     u16 PodRaceBDieAngle = 90;
@@ -7933,10 +7858,7 @@ extern "C" {
     u16 PodRaceCDieAngle = 90;
     NUVEC GunshipADiePos = {10.0f, -1.0f, -20.0f};
     NUVEC GunshipBDiePos = {0.0f, -1.0f, -150.0f};
-    LEVELDATA_PC *PODRACEA_LDATA = 0;
     i32 LSW1 = 0;
-    LEVELDATA_PC *BONUS_GUNSHIPB_LDATA = 0;
-    LEVELDATA_PC *SPEEDERCHASEA_LDATA = 0;
     LEVELDATA_PC *DEATHSTARBATTLED_LDATA = 0;
     i16 id_SPEEDERBIKE = -1;
     i16 id_ANAKINSPOD = -1;
@@ -7950,9 +7872,6 @@ extern "C" {
     GAMEOBJECT *player = 0;
     GAMEOBJECT *CutDeadVehiclePlayer = 0;
     APICHARSYS *apicharsys = 0;
-    LEVELDATA_PC *PODSPRINTA_LDATA = 0;
-    LEVELDATA_PC *PODRACEB_LDATA = 0;
-    LEVELDATA_PC *BONUS_GUNSHIPA_LDATA = 0;
     void *Player[8] = {0};
     f32 DEFAULTFPS = 0;
     void *LevelHackData = 0;
@@ -8191,73 +8110,38 @@ extern "C" {
     extern char AreaFixUpName_Palacerescue[16] = "PalaceRescue";
     extern char AreaFixUpName_Map[4] = "map";
 
-    AREA_DATA_PC *GOTHAMSTREETS_ADATA = 0;
     AREA_DATA_PC *ROOFTOPS_ADATA = 0;
     AREA_DATA_PC *FAIRGROUND_ADATA = 0;
-    AREA_DATA_PC *NEGOTIATIONS_ADATA = 0;
     AREA_DATA_PC *GUNGAN_ADATA = 0;
     AREA_DATA_PC *RESCUE_ADATA = 0;
-    AREA_DATA_PC *PODSPRINT_ADATA = 0;
     AREA_DATA_PC *RETAKE_ADATA = 0;
     AREA_DATA_PC *MAUL_ADATA = 0;
-    AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA = 0;
-    AREA_DATA_PC *KAMINO_ADATA = 0;
     AREA_DATA_PC *FACTORY_ADATA = 0;
-    AREA_DATA_PC *JEDI_ADATA = 0;
-    AREA_DATA_PC *DOOKU_ADATA = 0;
-    AREA_DATA_PC *DOGFIGHT_ADATA = 0;
-    AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA = 0;
     AREA_DATA_PC *CRUISER_ADATA = 0;
     AREA_DATA_PC *GRIEVOUS_ADATA = 0;
     AREA_DATA_PC *KASHYYYK_ADATA = 0;
     AREA_DATA_PC *TEMPLE_ADATA = 0;
-    AREA_DATA_PC *VADER_ADATA = 0;
     AREA_DATA_PC *BLOCKADERUNNER_ADATA = 0;
     AREA_DATA_PC *TATOOINE_ADATA = 0;
     AREA_DATA_PC *MOSEISLEY_ADATA = 0;
     AREA_DATA_PC *DEATHSTARRESCUE_ADATA = 0;
-    AREA_DATA_PC *DEATHSTARESCAPE_ADATA = 0;
     AREA_DATA_PC *DEATHSTARBATTLE_ADATA = 0;
-    AREA_DATA_PC *HOTHBATTLE_ADATA = 0;
     LEVELDATA_PC *HOTHBATTLEA_LDATA = 0;
     i32 disable_narrow_socks = 0;
-    AREA_DATA_PC *HOTHESCAPE_ADATA = 0;
-    AREA_DATA_PC *ASTEROIDCHASE_ADATA = 0;
-    AREA_DATA_PC *DAGOBAH_ADATA = 0;
     AREA_DATA_PC *CLOUDCITYTRAP_ADATA = 0;
     AREA_DATA_PC *CLOUDCITYESCAPE_ADATA = 0;
-    AREA_DATA_PC *JABBASPALACE_ADATA = 0;
     AREA_DATA_PC *SARLACCPIT_ADATA = 0;
-    AREA_DATA_PC *SPEEDERCHASE_ADATA = 0;
     AREA_DATA_PC *ENDORBATTLE_ADATA = 0;
-    AREA_DATA_PC *DEATHSTARBATTLE2_ADATA = 0;
     AREA_DATA_PC *EMPERORFIGHT_ADATA = 0;
-    AREA_DATA_PC *E1CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E2CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E3CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E4CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E5CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E6CHARACTER_ADATA = 0;
     AREA_DATA_PC *E1VEHICLE_ADATA = 0;
     AREA_DATA_PC *E2VEHICLE_ADATA = 0;
     AREA_DATA_PC *E3VEHICLE_ADATA = 0;
     AREA_DATA_PC *E4VEHICLE_ADATA = 0;
     AREA_DATA_PC *E5VEHICLE_ADATA = 0;
     AREA_DATA_PC *E6VEHICLE_ADATA = 0;
-    AREA_DATA_PC *PODRACE_ADATA = 0;
     AREA_DATA_PC *ANAKINSFLIGHT_ADATA = 0;
-    AREA_DATA_PC *BONUS_GUNSHIP_ADATA = 0;
     AREA_DATA_PC *ANEWHOPE_ADATA = 0;
     AREA_DATA_PC *LEGOCITY_ADATA = 0;
-    AREA_DATA_PC *NEWTOWN_ADATA = 0;
-    AREA_DATA_PC *LOSTTEMPLE_ADATA = 0;
-    AREA_DATA_PC *SENATE_ADATA = 0;
-    AREA_DATA_PC *UTAPAU_ADATA = 0;
-    AREA_DATA_PC *HOTH_ADATA = 0;
-    AREA_DATA_PC *BONUSDAGOBAH_ADATA = 0;
-    AREA_DATA_PC *BONUSKAMINO_ADATA = 0;
-    AREA_DATA_PC *BONUSKASHYYYK_ADATA = 0;
-    AREA_DATA_PC *JIMTEST_ADATA = 0;
 
     SFX_FILE_INFO_PC *SfxFileTable = 0;
     i32 SfxFileCount = 0;
@@ -8531,55 +8415,6 @@ extern "C" {
 #pragma const_seg(".rdata$LevelConfigOff")
     extern const char LevelConfigOff[4] = "off";
 #pragma const_seg()
-#pragma data_seg(".data$LevelConfigKeywords_BeforeLoad")
-    NUFPCOMJMP LevelConfigKeywords_BeforeLoad[45] = {
-        {const_cast<char *>("max_tightropes"), LC_BL_max_tightropes},
-        {const_cast<char *>("max_signals"), LC_BL_max_signals},
-        {const_cast<char *>("max_levers"), LC_BL_max_levers},
-        {const_cast<char *>("max_technos"), LC_BL_max_technos},
-        {const_cast<char *>("max_zipups"), LC_BL_max_zipups},
-        {const_cast<char *>("max_grapples"), LC_BL_max_grapples},
-        {const_cast<char *>("max_obstacles"), LC_BL_max_obstacles},
-        {const_cast<char *>("max_obstacle_objects"), LC_BL_max_obstacle_objects},
-        {const_cast<char *>("max_turrets"), LC_BL_max_turrets},
-        {const_cast<char *>("max_buildits"), LC_BL_max_buildits},
-        {const_cast<char *>("max_buildit_objects"), LC_BL_max_buildit_objects},
-        {const_cast<char *>("max_spinneranim_objs"), LC_BL_max_spinneranim_objs},
-        {const_cast<char *>("max_shards"), LC_BL_max_shards},
-        {const_cast<char *>("max_spinners"), LC_BL_max_spinners},
-        {const_cast<char *>("max_minicuts"), LC_BL_max_minicuts},
-        {const_cast<char *>("max_minicut_stages"), LC_BL_max_minicutParts},
-        {const_cast<char *>("maxgizmoblowuptypes"), LC_BL_max_gizmoblowuptypes},
-        {const_cast<char *>("maxgizmoblowups"), LC_BL_max_gizmoblowups},
-        {const_cast<char *>("max_climb_objects"), LC_BL_max_climb_objects},
-        {const_cast<char *>("max_attractos"), LC_BL_max_attractos},
-        {const_cast<char *>("max_timers"), LC_BL_max_timers},
-        {const_cast<char *>("max_guidelines"), LC_BL_max_guidelines},
-        {const_cast<char *>("max_ledges"), LC_BL_max_ledges},
-        {const_cast<char *>("max_securitydoors"), LC_BL_max_securitydoors},
-        {const_cast<char *>("max_tubes"), LC_BL_max_tubes},
-        {const_cast<char *>("max_pickups"), LC_BL_max_pickups},
-        {const_cast<char *>("max_gameantinodes"), LC_BL_max_gameantinodes},
-        {const_cast<char *>("max_gizpanels"), LC_BL_max_gizpanels},
-        {const_cast<char *>("max_force"), LC_BL_max_force},
-        {const_cast<char *>("max_force_objects"), LC_BL_max_force_objects},
-        {const_cast<char *>("max_pushblocks"), LC_BL_max_pushblocks},
-        {const_cast<char *>("max_pushblock_endpos"), LC_BL_max_pushblock_endpos},
-        {const_cast<char *>("max_gizspecials"), LC_BL_max_gizspecials},
-        {const_cast<char *>("max_hatmachines"), LC_BL_max_hatmachines},
-        {const_cast<char *>("max_doors"), LC_BL_max_doors},
-        {const_cast<char *>("max_teleports"), LC_BL_max_teleports},
-        {const_cast<char *>("max_gizrandoms"), LC_BL_max_gizrandoms},
-        {const_cast<char *>("max_torpmachines"), LC_BL_max_torpmachines},
-        {const_cast<char *>("max_bridges"), LC_BL_max_bridges},
-        {const_cast<char *>("max_plugs"), LC_BL_max_plugs},
-        {const_cast<char *>("max_bombgen_objects"), LC_BL_max_bombgen_objects},
-        {const_cast<char *>("max_bombgens"), LC_BL_max_bombgens},
-        {const_cast<char *>("windspeed"), LC_BL_wind_speed},
-        {const_cast<char *>("windsize"), LC_BL_wind_size},
-        {NULL, NULL},
-    };
-#pragma data_seg()
 
 #pragma const_seg(".rdata$AreaResidentsExtension")
     extern const char AreaResidentsExtension[5] = ".txt";
@@ -8679,7 +8514,6 @@ extern "C" {
     f32 dme_sy = 1.0f;
     NUMTL *numtl_defaultmtl2d = 0;
     NUMTL *numtl_defaultmtl3d = 0;
-    AREA_DATA_PC *GUNSHIP_ADATA = 0;
     i32 menu_flash = 0;
     OPTIONSSAVE *Game_OptionsSave = 0;
     LEVELDATA_PC *TITLES_LDATA = 0;
@@ -8968,11 +8802,7 @@ extern "C" {
 // Additional PC movement, targeting, arcade and callback state.
 extern "C" {
     f32 TargetDist_Near2 = 0;
-    f32 TargetDist_Mid2 = 0;
-    u16 TargetDeg_Near = 0;
 
-    LEVELDATA_PC *DEATHSTAR2BATTLEA_LDATA = 0;
-    LEVELDATA_PC *ASTEROIDCHASED_LDATA = 0;
     LEVELDATA_PC *DEATHSTARRESCUEA_LDATA = 0;
 #pragma const_seg(".rdata$ForcePushApproachInnerSquare")
     extern const f32 ForcePushApproachInnerSquare = 0.010000000707805157f;
@@ -9125,16 +8955,12 @@ extern "C" {
     f32 ai_moveradius = 0.10000000149011612f;
 #pragma data_seg()
 
-    NUSPECIALHANDLE LevHSpecial[88] = {0};
     GIZOBSTACLE *LevGizObst[8] = {0};
 }
 
 extern "C" {
     GAMEOBJECT *CarWashHack = 0;
     LEVELDATA_PC *MOSEISLEYB_LDATA = 0;
-    LEVELDATA_PC *DEATHSTAR2BATTLEE_LDATA = 0;
-    LEVELDATA_PC *DEATHSTAR2BATTLEF_LDATA = 0;
-    LEVELDATA_PC *DEATHSTAR2BATTLEG_LDATA = 0;
 #pragma data_seg(".data$id_LANDSPEEDER")
     i16 id_LANDSPEEDER = -1;
 #pragma data_seg()
@@ -9192,7 +9018,6 @@ extern "C" {
 #pragma const_seg(".rdata$AIActionDistName")
     extern const char AIActionDistName[5] = "Dist";
 #pragma const_seg()
-    LEVELDATA_PC *GUNSHIPA_LDATA = 0;
     APIDEBRISSYS_PC *perm_debrissys = 0;
 }
 
@@ -9218,7 +9043,6 @@ extern "C" {
 }
 
 extern "C" {
-    GIZMO_PC *LevGizmo[12] = {0};
     EXPLOSION_PC Explosions[8] = {0};
     i32 i_explosion = 0;
     i32 ShadowMode = 0;
@@ -9392,7 +9216,6 @@ extern "C" {
 #pragma data_seg(".data$DEFAULT_PLAYERHITPOINTS")
     i32 DEFAULT_PLAYERHITPOINTS = 8;
 #pragma data_seg()
-    LEVELDATA_PC *VADERC_LDATA = 0;
 #pragma data_seg(".data$TOGGLEHOLDTIME")
     f32 TOGGLEHOLDTIME = 1.0f;
 #pragma data_seg()
@@ -9455,7 +9278,6 @@ extern "C" {
 extern "C" {
     u8 aicreature_sets_alive[16] = {0};
     GAMEOBJECT *LevGameObject[8] = {0};
-    i32 LevFlag[4] = {0};
 }
 
 extern "C" {
@@ -9482,7 +9304,6 @@ extern "C" {
 #pragma data_seg(".data$id_PKDROID")
     i16 id_PKDROID = -1;
 #pragma data_seg()
-    LEVELDATA_PC *NEGOTIATIONSC_LDATA = 0;
 #pragma const_seg(".rdata$GameObjectState_InActive")
     const char GameObjectState_InActive[9] = "InActive";
 #pragma const_seg()
@@ -9639,7 +9460,6 @@ extern "C" {
 #pragma data_seg(".data$id_SEBULBASPOD")
     i16 id_SEBULBASPOD = -1;
 #pragma data_seg()
-    LEVELDATA_PC *UpdateSockets_LDATA = 0;
 #pragma data_seg(".data$adtabentries")
     i8 adtabentries[9][4] = {{-1, -1, -1, -1}, {-1, -1, -1, 0}, {-1, -1, 0, 0}, {-1, 0, 0, 0}, {0, 0, 0, 0},
                              {1, 0, 0, 0},     {1, 1, 0, 0},    {1, 1, 1, 0},   {1, 1, 1, 1}};
@@ -9880,7 +9700,6 @@ extern "C" {
 
 extern "C" {
     GAMESAVE BackupGame = {0};
-    u32 areaSuitBits = 0;
 }
 
 extern "C" {
@@ -10127,10 +9946,6 @@ extern "C" {
 #pragma data_seg()
     i32 freechunkcontrolsptr = 0;
     volatile i32 debris_control_stack_lock = 0;
-    LEVELDATA_PC *CLOUDCITYTRAPB_LDATA = 0;
-    LEVELDATA_PC *MAULA_LDATA = 0;
-    LEVELDATA_PC *MAULF_LDATA = 0;
-    LEVELDATA_PC *DOOKUC_LDATA = 0;
 #pragma data_seg(".data$EDPP_MAX_DMADEBTYPES")
     i32 EDPP_MAX_DMADEBTYPES = 64;
 #pragma data_seg()
@@ -10304,10 +10119,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 LevSfxFlag[4] = {0};
-}
-
-extern "C" {
 #pragma data_seg(".data$LEGOACT_SUPERCARRY_WALK")
     i16 LEGOACT_SUPERCARRY_WALK = -1;
 #pragma data_seg()
@@ -10352,8 +10163,6 @@ extern "C" {
 #pragma data_seg(".data$force_gizmotype_id")
     i32 force_gizmotype_id = -1;
 #pragma data_seg()
-    GIZAIMESSAGE *LevAIMessage[8] = {0};
-    AIAREA_PC *LevArea[4] = {0};
 #pragma const_seg(".rdata$EpisodeVI_ffieldoff")
     extern const char EpisodeVI_ffieldoff[10] = "ffieldoff";
 #pragma const_seg()
@@ -10702,11 +10511,6 @@ extern "C" {
 #pragma data_seg(".data$id_DROIDEKA")
     i16 id_DROIDEKA = -1;
 #pragma data_seg()
-    LEVELDATA_PC *VADERA_LDATA = 0;
-}
-
-extern "C" {
-    LEVELDATA_PC *CRUISERD_LDATA = 0;
 }
 
 extern "C" {
@@ -10997,9 +10801,6 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-    LEVELDATA_PC *SARLACCPITA_LDATA = 0;
-}
-extern "C" {
     i32 KillPartsPreviousVariantPc = 0;
 }
 extern "C" {
@@ -11105,8 +10906,6 @@ extern "C" {
 #pragma data_seg(".data$LEGOCONTEXT_LAND_SLAM")
     i32 LEGOCONTEXT_LAND_SLAM = -1;
 #pragma data_seg()
-
-    LEVELDATA_PC *CRUISERC_LDATA = 0;
 
     i32 ObstacleCamHoldUntilPlayersMove = 0;
 
@@ -11324,8 +11123,6 @@ extern "C" {
 #pragma data_seg(".data$DEACTIVATEDTIME")
     f32 DEACTIVATEDTIME = 8.0f;
 #pragma data_seg()
-
-    LEVELDATA_PC *GUNSHIPB_LDATA = 0;
 
     f32 BOLT_OVERRIDE_PLAYERBOLTSPEED = 0;
 
@@ -12134,35 +11931,6 @@ extern "C" {
 }
 
 extern "C" {
-    LEVELDATA_PC *NEGOTIATIONSA_LDATA = 0;
-
-    LEVELDATA_PC *NEGOTIATIONSB_LDATA = 0;
-
-    LEVELDATA_PC *GUNGAN_A_LDATA = 0;
-
-    LEVELDATA_PC *RESCUEC_LDATA = 0;
-
-    LEVELDATA_PC *RETAKEB_LDATA = 0;
-
-    LEVELDATA_PC *RETAKED_LDATA = 0;
-
-    LEVELDATA_PC *RETAKEE_LDATA = 0;
-
-    LEVELDATA_PC *MAULD_LDATA = 0;
-
-    LEVELDATA_PC *FACTORYB_LDATA = 0;
-
-    LEVELDATA_PC *FACTORYD_LDATA = 0;
-
-    LEVELDATA_PC *FACTORYF_LDATA = 0;
-
-    LEVELDATA_PC *FACTORYG_LDATA = 0;
-
-    LEVELDATA_PC *KAMINOC_LDATA = 0;
-
-    LEVELDATA_PC *KASHYYYKD_LDATA = 0;
-
-    LEVELDATA_PC *CRUISERG_LDATA = 0;
 
     LEVELDATA_PC *TATOOINEA_LDATA = 0;
 
@@ -12189,40 +11957,6 @@ extern "C" {
     LEVELDATA_PC *DEATHSTARBATTLEB_LDATA = 0;
 
     LEVELDATA_PC *DEATHSTARBATTLEC_LDATA = 0;
-
-    LEVELDATA_PC *HOTHESCAPEA_LDATA = 0;
-
-    LEVELDATA_PC *HOTHESCAPEC_LDATA = 0;
-
-    LEVELDATA_PC *CLOUDCITYESCAPEA_LDATA = 0;
-
-    LEVELDATA_PC *CLOUDCITYESCAPEC_LDATA = 0;
-
-    LEVELDATA_PC *CLOUDCITYTRAPA_LDATA = 0;
-
-    LEVELDATA_PC *DEATHSTAR2BATTLEB_LDATA = 0;
-
-    LEVELDATA_PC *DEATHSTAR2BATTLED_LDATA = 0;
-
-    LEVELDATA_PC *EMPERORFIGHTA_LDATA = 0;
-
-    LEVELDATA_PC *SARLACCPITB_LDATA = 0;
-
-    LEVELDATA_PC *SARLACCPITC_LDATA = 0;
-
-    LEVELDATA_PC *JABBASPALACEA_LDATA = 0;
-
-    LEVELDATA_PC *JABBASPALACEB_LDATA = 0;
-
-    LEVELDATA_PC *JABBASPALACED_LDATA = 0;
-
-    LEVELDATA_PC *JABBASPALACEE_LDATA = 0;
-
-    LEVELDATA_PC *ENDORBATTLEA_LDATA = 0;
-
-    LEVELDATA_PC *ENDORBATTLEB_LDATA = 0;
-
-    LEVELDATA_PC *ENDORBATTLED_LDATA = 0;
 
     u8 TorpedoFillEnabledPc = 0;
 
@@ -12277,14 +12011,6 @@ extern "C" {
 #pragma data_seg()
 
     u32 LswForceUsedHintFlagsPc = 0;
-
-    LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA = 0;
-
-    LEVELDATA_PC *ASTEROIDCHASEC_LDATA = 0;
-
-    LEVELDATA_PC *DAGOBAHC_LDATA = 0;
-
-    LEVELDATA_PC *ENDORBATTLEC_LDATA = 0;
 
     i32 LEGO_AIPATHCNX_BLOCKAGE = 0;
 
@@ -12564,11 +12290,6 @@ extern "C" {
 
     /* PodRacePc is defined as a private static in legoapi/episodeI.c. */
     /* (was: void *PodRacePc) */
-}
-
-extern "C" {
-
-    LEVELDATA_PC *ObstacleReturnLevelPc = 0;
 }
 
 extern "C" {
@@ -12894,9 +12615,6 @@ extern "C" {
 #pragma data_seg(".data$GAMEPAD_START")
     u32 GAMEPAD_START = 2048;
 #pragma data_seg()
-#pragma data_seg(".data$JEDI_B_LDATA")
-    LEVELDATA_PC *JEDI_B_LDATA = NULL;
-#pragma data_seg()
 #pragma data_seg(".data$id_JANGOFETT")
     i16 id_JANGOFETT = -1;
 #pragma data_seg()
@@ -12947,12 +12665,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$gizrandom_gizmotype_id")
     i32 gizrandom_gizmotype_id = -1;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$CollisionVehicleExcludedLevelPc")
-    LEVELDATA_PC *CollisionVehicleExcludedLevelPc = NULL;
 #pragma data_seg()
 }
 
@@ -13154,9 +12866,6 @@ extern "C" {
     i16 GizSpinnerGDeb_Fail[3] = {-1, -1, -1};
     u32 (*CanPushObstaclesFn)(GAMEOBJECT *) = NULL;
     u16 PushBlockFacingTolerancePc = 910;
-    NUMTX LevMtx = {0};
-    f32 LevAlpha = 0.0f;
-    f32 TitlesAlpha = 0.0f;
     i32 newgamefade = 0;
 }
 
@@ -21951,9 +21660,6 @@ extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefixPc[49] = {
     NuDisplayListLegacyLightmapOffsetPc, /* item type 0xaf */
     NuDisplayListLightmapPacketPc,       /* item type 0xb0 */
 };
-#pragma data_seg()
-
-#pragma data_seg(".data$PostEffectFilterStatePc")
 #pragma data_seg()
 
 /* Verified DWORD working inputs; original owning extents remain unknown. */
