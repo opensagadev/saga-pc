@@ -1,7 +1,85 @@
 #include <stdio.h>
 #include <string.h>
 #include "saga.h"
+eduimenu_s *edpart_message_menu = NULL;
+NUVEC PartEditorCameraPosPc = {0};
+struct eduimenu_s *edpart_maxlife_menu = 0;
+i32 edpart_snap_enabled = 0;
+NUVEC edpart_copy_source_vec = {0};
+i32 edpart_copy_source[8] = {0};
+i32 part_platimpactcnt = 0;
+struct eduimenu_s *edpart_sscale_menu = 0;
+i32 edpart_nearest_duplicates = 0;
+struct eduimenu_s *edpart_name_menu = 0;
+i32 edpart_first_time_this_level = 0;
+PART_EMIT_PC part_emits[40] = {0};
+i32 edpart_nearest = 0;
+i32 edpart_cam_ax = 0;
+struct eduimenu_s *edpart_changegenrate_menu = 0;
+i32 part_page_used[8] = {0};
+struct eduimenu_s *edpart_emitvel_menu = 0;
+i32 edpart_cam_ay = 0;
+struct eduimenu_s *edpart_grav_menu = 0;
+NUGSCN *part_scene[32] = {0};
+struct eduimenu_s *edpart_varemit_menu = 0;
+struct eduimenu_s *edpart_data_menu = 0;
+i16 PartPlatformImpactListPc[4] = {0, 0, 0, 0};
+i32 edpart_set_debris = 0;
+PART_EMIT_PC *edpart_nearest_emit = 0;
+PARTTYPE_LOOKUP_PC *edpart_nearest_type = 0;
+i8 edpart_effect_list = 0;
+i32 edpart_copy_mode = 0;
+i32 edpart_copy_enclosed = 0;
+i32 edpart_copy_source_count = 0;
+i32 edpart_num_orphans = 0;
+i32 edpart_particle_list = 0;
+i32 edpart_part_list = 0;
+i32 edpart_filter = 0;
+i32 edpart_dpad_mode = 0;
+i32 edpart_readout = 0;
+struct eduimenu_s *edpart_active_menu = 0;
+struct eduimenu_s *edpart_opt_menu = 0;
+struct eduimenu_s *edpart_type_menu = 0;
+struct eduimenu_s *edpart_generaltype_menu = 0;
+struct eduimenu_s *edpart_leveltype_menu = 0;
 struct eduimenu_s *edpart_instance_menu = 0;
+struct eduimenu_s *edpart_worldinstance_menu = 0;
+struct eduimenu_s *edpart_thingsinstance_menu = 0;
+struct eduimenu_s *edpart_instancesettings_menu = 0;
+struct eduimenu_s *edpart_instanceflags_menu = 0;
+struct eduimenu_s *edpart_instorient_menu = 0;
+struct eduimenu_s *edpart_emit_menu = 0;
+struct eduimenu_s *edpart_debrissettings_menu = 0;
+struct eduimenu_s *edpart_trail1debris_menu = 0;
+struct eduimenu_s *edpart_trail2debris_menu = 0;
+struct eduimenu_s *edpart_emitterdebris_menu = 0;
+struct eduimenu_s *edpart_impactdebris_menu = 0;
+struct eduimenu_s *edpart_impactpart_menu = 0;
+struct eduimenu_s *edpart_diedebris_menu = 0;
+struct eduimenu_s *edpart_debrisindex_menu = 0;
+struct eduimenu_s *edpart_partindex_menu = 0;
+struct eduimenu_s *edpart_tint_menu = 0;
+struct eduimenu_s *edpart_instanceorphans_menu = 0;
+struct eduimenu_s *edpart_instancescale_menu = 0;
+struct eduimenu_s *edpart_debrisscale_menu = 0;
+struct eduimenu_s *edpart_scaletype_menu = 0;
+struct eduimenu_s *edpart_switch_menu = 0;
+struct eduimenu_s *edpart_switchtype_menu = 0;
+struct eduimenu_s *edpart_sounds_menu = 0;
+struct eduimenu_s *edpart_soundx_menu = 0;
+struct eduimenu_s *edpart_soundid_menu = 0;
+struct eduimenu_s *edpart_soundcontrol_menu = 0;
+i32 edpart_emitrotz = 0;
+i32 edpart_emitroty = 0;
+i32 edpart_emitrotx = 0;
+i32 edpart_rotz = 0;
+i32 edpart_roty = 0;
+f32 edpart_offset = 0;
+i32 edpart_refrotz = 0;
+i32 edpart_refroty = 0;
+i32 edpart_copyrotz = 0;
+i32 edpart_copyroty = 0;
+i32 edpart_count = 0;
 static struct eduiitem_s *edpart_nullobject_highlight = 0;
 
 typedef struct part_runtime_type_pc_s {
@@ -1561,7 +1639,6 @@ i32 edpartSaveEffects(char *filename, u8 page) {
 }
 
 i32 EdFileBackup(char *source, char *destination);
-eduimenu_s *edpart_message_menu = NULL;
 
 static void edpartCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_message_menu);

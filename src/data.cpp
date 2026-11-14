@@ -8135,7 +8135,6 @@ extern "C" {
     f32 DEFAULTFRAMETIME = 0;
     i32 PAL = 0;
     i32 FPSDISPLAY = 0;
-    PART_EMIT_PC part_emits[40] = {0};
     i32 part_page_on[8] = {0};
     GAMEPAD_INIT_RECORD GamePadStorage[64] = {0};
     i32 bgproc_initialized = 0;
@@ -9432,7 +9431,6 @@ extern "C" {
 
     PART_PC *Part = 0;
     i32 part_scene_pageid[32] = {0};
-    i32 part_page_used[8] = {0};
 #pragma data_seg(".data$MAXPARTS")
     i32 MAXPARTS = 32;
 #pragma data_seg()
@@ -10727,8 +10725,6 @@ extern "C" {
     void (*NuCutSceneCharacterEval)(INSTNUGCUTSCENE *, void *, void *, void *, f32) = 0;
     void (*NuCutSceneCharacterRelease)(void *, void *) = 0;
     i32 part_types_used = 0;
-    i32 part_platimpactcnt = 0;
-    NUGSCN *part_scene[32] = {0};
     i32 edpp_page_on[8] = {0};
     i32 edpp_instances_used = 0;
     i32 edpp_types_used = 0;
@@ -13816,10 +13812,6 @@ extern "C" {
 #pragma data_seg(".data$PartNullInstanceNamePc")
     char PartNullInstanceNamePc[14] = "NULL instance";
 #pragma data_seg()
-    i32 edpart_nearest = 0;
-    NUVEC PartEditorCameraPosPc = {0};
-    PART_EMIT_PC *edpart_nearest_emit = 0;
-    PARTTYPE_LOOKUP_PC *edpart_nearest_type = 0;
     i32 PartGeneralPagePc = 0;
 #pragma data_seg(".data$PartLevelPagePc")
     i32 PartLevelPagePc = 1;
@@ -13840,9 +13832,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$PartPlatformImpactListPc")
-    i16 PartPlatformImpactListPc[4] = {0, 0, 0, 0};
-#pragma data_seg()
 #pragma data_seg(".data$PartCollisionIntervalPc")
     f32 PartCollisionIntervalPc = 0.1f;
 #pragma data_seg()
@@ -23660,12 +23649,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 edpart_emitrotz = 0;
-
-    i32 edpart_emitroty = 0;
-}
-
-extern "C" {
 #pragma data_seg(".data$gizturret_test_ang")
     i32 gizturret_test_ang = 3640;
 
@@ -23678,126 +23661,26 @@ extern "C" {
 }
 
 extern "C" {
-    i32 edpart_copy_mode = 0;
-
-    i32 edpart_copyrotz = 0;
-
-    i32 edpart_copyroty = 0;
-
-    i32 edpart_rotz = 0;
-
-    i32 edpart_roty = 0;
 
     struct PC_SCENE_MTL_VIEW *edpart_mtl = 0;
 
 #pragma data_seg(".data$edpart_copy_size")
     f32 edpart_copy_size = 0.20000000298023224f;
 
-    i32 edpart_dpad_mode = 0;
-
-    i32 edpart_refrotz = 0;
-
-    i32 edpart_refroty = 0;
-
     struct PC_SCENE_MTL_VIEW *edpart_boxmtl = 0;
-
-    i32 edpart_readout = 0;
-
-    i32 edpart_num_orphans = 0;
 
 #pragma data_seg(".data$edpart_create_type")
     i32 edpart_create_type = -1;
-
-    i8 edpart_effect_list = 0;
-
-    struct eduimenu_s *edpart_generaltype_menu = 0;
-
-    struct eduimenu_s *edpart_leveltype_menu = 0;
-
-    struct eduimenu_s *edpart_changegenrate_menu = 0;
-
-    struct eduimenu_s *edpart_maxlife_menu = 0;
-
-    struct eduimenu_s *edpart_instancesettings_menu = 0;
-
-    struct eduimenu_s *edpart_worldinstance_menu = 0;
-
-    struct eduimenu_s *edpart_instanceorphans_menu = 0;
-
-    i32 edpart_set_debris = 0;
-
-    i32 edpart_particle_list = 0;
-
-    i32 edpart_part_list = 0;
-
-    struct eduimenu_s *edpart_trail1debris_menu = 0;
-
-    struct eduimenu_s *edpart_trail2debris_menu = 0;
-
-    struct eduimenu_s *edpart_emitterdebris_menu = 0;
-
-    struct eduimenu_s *edpart_impactdebris_menu = 0;
-
-    struct eduimenu_s *edpart_impactpart_menu = 0;
-
-    struct eduimenu_s *edpart_diedebris_menu = 0;
-
-    struct eduimenu_s *edpart_debrisindex_menu = 0;
-
-    struct eduimenu_s *edpart_partindex_menu = 0;
-
-    struct eduimenu_s *edpart_varemit_menu = 0;
 
     struct eduimenu_s *edpart_varstart_menu = 0;
 
     struct eduimenu_s *edpart_emittime_menu = 0;
 
-    struct eduimenu_s *edpart_emitvel_menu = 0;
-
-    struct eduimenu_s *edpart_emit_menu = 0;
-
-    struct eduimenu_s *edpart_data_menu = 0;
-
-    i32 edpart_first_time_this_level = 0;
-
     i32 edpart_curr = 0;
-
-    i32 edpart_copy_source[8] = {0};
-
-    f32 edpart_offset = 0;
-
-    struct eduimenu_s *edpart_opt_menu = 0;
-
-    i32 edpart_snap_enabled = 0;
-
-    i32 edpart_cam_ax = 0;
-
-    i32 edpart_cam_ay = 0;
-
-    struct eduimenu_s *edpart_sscale_menu = 0;
-
-    struct eduimenu_s *edpart_switch_menu = 0;
-
-    struct eduimenu_s *edpart_switchtype_menu = 0;
-
-    struct eduimenu_s *edpart_sounds_menu = 0;
-
-    struct eduimenu_s *edpart_soundx_menu = 0;
-
-    struct eduimenu_s *edpart_soundid_menu = 0;
-
-    struct eduimenu_s *edpart_soundcontrol_menu = 0;
-
-    struct eduimenu_s *edpart_tint_menu = 0;
-
-    struct eduimenu_s *edpart_instancescale_menu = 0;
 }
 
 extern "C" {
-    i32 edpart_copy_enclosed = 0;
     i32 edpart_nearest_orphans = 0;
-    i32 edpart_nearest_duplicates = 0;
-    i32 edpart_emitrotx = 0;
 }
 
 extern "C" {
@@ -23921,12 +23804,9 @@ extern "C" {
 }
 
 extern "C" {
-    struct eduimenu_s *edpart_scaletype_menu = 0;
 
 #pragma data_seg(".data$edpart_scale_factor")
     f32 edpart_scale_factor = 1.0f;
-
-    struct eduimenu_s *edpart_type_menu = 0;
 
 #pragma data_seg(".data$edpart_set_part")
     i32 edpart_set_part = 5;
@@ -23937,16 +23817,10 @@ extern "C" {
 #pragma data_seg(".data$edpart_filter_string")
     char edpart_filter_string[16] = "PART";
 
-    struct eduimenu_s *edpart_thingsinstance_menu = 0;
-
-    i32 edpart_filter = 0;
-
     struct eduimenu_s *edpart_cutoff_menu = 0;
 
 #pragma data_seg(".data$edpart_superscale")
     i32 edpart_superscale = 1;
-
-    struct eduimenu_s *edpart_grav_menu = 0;
 }
 
 extern "C" {
@@ -24036,18 +23910,6 @@ extern "C" {
     struct eduimenu_s *edanim_particletype_menu = 0;
 
     i32 edanim_particle_type = 0;
-}
-
-extern "C" {
-    struct eduimenu_s *edpart_instanceflags_menu = 0;
-
-    struct eduimenu_s *edpart_debrisscale_menu = 0;
-
-    struct eduimenu_s *edpart_debrissettings_menu = 0;
-
-    struct eduimenu_s *edpart_active_menu = 0;
-
-    i32 edpart_count = 0;
 }
 
 extern "C" {
@@ -24164,10 +24026,6 @@ extern "C" {
 }
 
 extern "C" {
-    struct eduimenu_s *edpart_instorient_menu = 0;
-}
-
-extern "C" {
     struct eduimenu_s *namemenu = 0;
 }
 
@@ -24181,10 +24039,6 @@ extern "C" {
     struct eduimenu_s *edanim_particle_menu = 0;
 
     struct eduimenu_s *edanim_sound_menu = 0;
-}
-
-extern "C" {
-    struct eduimenu_s *edpart_name_menu = 0;
 }
 
 extern "C" {
@@ -24403,12 +24257,6 @@ extern "C" {
     struct PC_SCENE_MTL_VIEW *edpp_mtl = 0;
 
     i32 edpp_showAllPlaced = 0;
-}
-
-extern "C" {
-    NUVEC edpart_copy_source_vec = {0};
-
-    i32 edpart_copy_source_count = 0;
 }
 
 extern "C" {
