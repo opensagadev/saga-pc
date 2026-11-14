@@ -158,9 +158,6 @@ typedef struct ripple_contact_timer_view_pc_s {
     f32 timer;                  // 0xdc0
 } RIPPLE_CONTACT_TIMER_VIEW_PC; // size 0xdc4
 
-#define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW_PC *)WORLD)
-#undef RIPPLE_WORLD
-
 typedef struct ripple_material_reader_pc_s {
     u8 unknown_0000[0x70];   // 0x00
     f32 opacity;             // 0x70

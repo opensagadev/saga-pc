@@ -388,20 +388,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, force_part) == 0xcb8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, techno) == 0x798);
 STATIC_ASSERT(offsetof(WORLDINFO, grabber) == 0x46ec);
 
-#define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                   \
-    do {                                                                                                               \
-        union {                                                                                                        \
-            f32 value;                                                                                                 \
-            u32 bits;                                                                                                  \
-        } storage;                                                                                                     \
-        u32 bits;                                                                                                      \
-        storage.value = (source);                                                                                      \
-        bits = storage.bits;                                                                                           \
-        bits &= 0x7fffffff;                                                                                            \
-        storage.bits = bits;                                                                                           \
-        (destination) = storage.value;                                                                                 \
-    } while (0)
-
 static void SetCameraEffectMatrixPc(void) {
     NUMTX effect_matrix;
     NUVEC scale;
@@ -426,5 +412,3 @@ void SetCameraMatrices(void) {
     NuRndrSetSpecularLightPS(NULL, NULL);
     SetCameraEffectMatrixPc();
 }
-
-#undef GAME_CAMERA_ABSOLUTE_PC

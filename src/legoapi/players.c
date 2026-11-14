@@ -6,14 +6,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
 STATIC_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-#define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
-#define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
-#define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
-#define ASIN_NEG_35_OVER_1152 PCPathArcSineCoefficient9
-#define ASIN_POW2(x) ((x) * (x))
-#define ASIN_POW3(x) ((x) * ASIN_POW2(x))
-#define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
-#define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_283) == 0x283);
 STATIC_ASSERT(offsetof(GAMEOBJECT, water_height) == 0x220);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);

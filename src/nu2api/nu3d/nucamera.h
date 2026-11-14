@@ -114,4 +114,22 @@ extern "C" {
 }
 #endif
 
+#define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                             \
+    {                                                                                                                  \
+        if ((v).z < global_camera.near_clip && (near_enabled))                                                         \
+            (code) |= 0x20;                                                                                            \
+        if ((v).z > far_clip)                                                                                          \
+            (code) |= 0x10;                                                                                            \
+        if ((v).x < -(v).z * (horizontal))                                                                             \
+            (code) |= 1;                                                                                               \
+        if ((v).x > (v).z * (horizontal))                                                                              \
+            (code) |= 2;                                                                                               \
+        if ((v).y < -(v).z * (vertical))                                                                               \
+            (code) |= 8;                                                                                               \
+        if ((v).y > (v).z * (vertical))                                                                                \
+            (code) |= 4;                                                                                               \
+    }
+
+#define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)
+
 #endif

@@ -823,6 +823,25 @@ struct POST_SHADER_PROGRAM_PC {
 };
 
 STATIC_ASSERT(sizeof(POST_SHADER_PROGRAM_PC) == 0x10);
+#define POST_BLUR_BIND_PROGRAM(bound_program)                                                                          \
+    do {                                                                                                               \
+        POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \
+        if (bound != NULL) {                                                                                           \
+            if (NuDisplayHandlerVertexShaderCachePc != bound->vertex_shader) {                                         \
+                PCDeviceSetVertexShaderPc(bound->vertex_shader);                                                       \
+                NuDisplayHandlerVertexShaderCachePc = bound->vertex_shader;                                            \
+            }                                                                                                          \
+            if (NuDisplayHandlerPixelShaderCachePc != bound->pixel_shader) {                                           \
+                PCDeviceSetPixelShaderPc(bound->pixel_shader);                                                         \
+                NuDisplayHandlerPixelShaderCachePc = bound->pixel_shader;                                              \
+            }                                                                                                          \
+        } else {                                                                                                       \
+            PCDeviceSetVertexShaderPc(NULL);                                                                           \
+            PCDeviceSetPixelShaderPc(NULL);                                                                            \
+            NuDisplayHandlerVertexShaderCachePc = NULL;                                                                \
+            NuDisplayHandlerPixelShaderCachePc = NULL;                                                                 \
+        }                                                                                                              \
+    } while (0)
 #endif
 #undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
 #define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 3

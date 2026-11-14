@@ -12800,18 +12800,6 @@ extern "C" {
 
 /* nutrig */
 extern "C" {
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define PI_OVER_4 0.785398f
-#define NEG_1_OVER_6 PCPathArcSineCoefficient3
-#define NEG_3_OVER_40 PCPathArcSineCoefficient5
-#define NEG_5_OVER_112 PCPathArcSineCoefficient7
-#define NEG_35_OVER_1152 PCPathArcSineCoefficient9
-#define MAX_SHORT_OVER_PI 10430.4f
-#define POW2(x) ((x) * (x))
-#define POW3(x) ((x) * POW2(x))
-#define POW4(x) (POW2(x) * POW2(x))
-#define POW5(x) (POW2(x) * POW3(x))
 
     i16 RenderPostASinPc(f32 sin) {
         f32 abs;
@@ -12841,18 +12829,6 @@ extern "C" {
                MAX_SHORT_OVER_PI;
     }
 
-#undef MIN
-#undef MAX
-#undef PI_OVER_4
-#undef NEG_1_OVER_6
-#undef NEG_3_OVER_40
-#undef NEG_5_OVER_112
-#undef NEG_35_OVER_1152
-#undef MAX_SHORT_OVER_PI
-#undef POW2
-#undef POW3
-#undef POW4
-#undef POW5
 } // extern "C"
 
 /* posteffect_ports_pc */
@@ -18168,25 +18144,6 @@ extern "C" {
 }
 
 // NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
-#define POST_BLUR_BIND_PROGRAM(bound_program)                                                                          \
-    do {                                                                                                               \
-        POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \
-        if (bound != NULL) {                                                                                           \
-            if (NuDisplayHandlerVertexShaderCachePc != bound->vertex_shader) {                                         \
-                PCDeviceSetVertexShaderPc(bound->vertex_shader);                                                       \
-                NuDisplayHandlerVertexShaderCachePc = bound->vertex_shader;                                            \
-            }                                                                                                          \
-            if (NuDisplayHandlerPixelShaderCachePc != bound->pixel_shader) {                                           \
-                PCDeviceSetPixelShaderPc(bound->pixel_shader);                                                         \
-                NuDisplayHandlerPixelShaderCachePc = bound->pixel_shader;                                              \
-            }                                                                                                          \
-        } else {                                                                                                       \
-            PCDeviceSetVertexShaderPc(NULL);                                                                           \
-            PCDeviceSetPixelShaderPc(NULL);                                                                            \
-            NuDisplayHandlerVertexShaderCachePc = NULL;                                                                \
-            NuDisplayHandlerPixelShaderCachePc = NULL;                                                                 \
-        }                                                                                                              \
-    } while (0)
 
 extern "C" void PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
                                   GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations, i32 levels,

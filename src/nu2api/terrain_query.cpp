@@ -4,7 +4,6 @@
 
 extern "C" {
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
     extern TerrainQuery_s *TerI;
     extern void *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
@@ -12,8 +11,6 @@ extern "C" {
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
-
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 enum {
     NUTRIGTABLE_COUNT = 32768,
@@ -84,9 +81,6 @@ struct ShadowScanWriter {
       ((wall_arg)[1].position.x >= (bounds_arg).min_x && (wall_arg)[0].position.x <= (bounds_arg).max_x)) &&           \
      (((wall_arg)[0].position.z >= (bounds_arg).min_z && (wall_arg)[1].position.z <= (bounds_arg).max_z) ||            \
       ((wall_arg)[1].position.z >= (bounds_arg).min_z && (wall_arg)[0].position.z <= (bounds_arg).max_z)))
-#define SHADOW_BOUNDS_OVERLAP(min_x_arg, min_z_arg, max_x_arg, max_z_arg, minimum_arg, maximum_arg)                    \
-    ((max_x_arg) >= (minimum_arg).x && (maximum_arg).x >= (min_x_arg) && (max_z_arg) >= (minimum_arg).z &&             \
-     (maximum_arg).z > (min_z_arg))
 #define TERRAIN_FINISH_SCAN_GROUP(w_arg, g_arg)                                                                        \
     do {                                                                                                               \
         TerrainScanWriter *w = (w_arg);                                                                                \

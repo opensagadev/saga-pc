@@ -1171,11 +1171,6 @@ void RenderPostClearScreenPc(void) {
 }
 
 STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
-#ifndef RENDER_POST_ALPHA_CACHE_PC
-#define RENDER_POST_ALPHA_CACHE_PC cacheValues
-#endif
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define IMAGE_TAN_HALF_FOV(v)                                                                                          \
     (NuTrigTable[(i32)((v) * 10430.3779296875f) >> 1 & 0x7fff] /                                                       \
      NuTrigTable[(16384 - (i32)((v) * -10430.3779296875f)) >> 1 & 0x7fff])

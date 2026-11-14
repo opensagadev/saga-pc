@@ -485,25 +485,6 @@ extern "C" void PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source
                                   bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program);
 
 // NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
-#define POST_BLUR_BIND_PROGRAM(bound_program)                                                                          \
-    do {                                                                                                               \
-        POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \
-        if (bound != NULL) {                                                                                           \
-            if (NuDisplayHandlerVertexShaderCachePc != bound->vertex_shader) {                                         \
-                PCDeviceSetVertexShaderPc(bound->vertex_shader);                                                       \
-                NuDisplayHandlerVertexShaderCachePc = bound->vertex_shader;                                            \
-            }                                                                                                          \
-            if (NuDisplayHandlerPixelShaderCachePc != bound->pixel_shader) {                                           \
-                PCDeviceSetPixelShaderPc(bound->pixel_shader);                                                         \
-                NuDisplayHandlerPixelShaderCachePc = bound->pixel_shader;                                              \
-            }                                                                                                          \
-        } else {                                                                                                       \
-            PCDeviceSetVertexShaderPc(NULL);                                                                           \
-            PCDeviceSetPixelShaderPc(NULL);                                                                            \
-            NuDisplayHandlerVertexShaderCachePc = NULL;                                                                \
-            NuDisplayHandlerPixelShaderCachePc = NULL;                                                                 \
-        }                                                                                                              \
-    } while (0)
 #define POST_BLUR_LOW_ATTACH(texture, lod)                                                                             \
     do {                                                                                                               \
         PC_FRAMEBUFFER_PC *framebuffer = PostBlurFramebufferPc;                                                        \

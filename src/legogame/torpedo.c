@@ -99,14 +99,6 @@ typedef struct torpedo_packet_alloc_pc_s {
     u8 unknown_02[0x86];   // 0x02
 } TORPEDO_PACKET_ALLOC_PC; // size 0x88
 
-#define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
-#define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
-#define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
-#define ASIN_NEG_35_OVER_1152 PCPathArcSineCoefficient9
-#define ASIN_POW2(x) ((x) * (x))
-#define ASIN_POW3(x) ((x) * ASIN_POW2(x))
-#define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
-#define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
 STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
 STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
@@ -148,15 +140,12 @@ i16 TorpedoArcSinePc(f32 sin) {
 
     unknown_d = unknown_b * unknown_c + unknown_c;
 
-    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW3(unknown_b * unknown_c * unknown_a) +
-            (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
-             ASIN_NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * ASIN_POW2(unknown_b * unknown_c * unknown_a)) +
-            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW4(unknown_b * unknown_c * unknown_a) +
-            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
-           10430.4f;
+    return (NEG_3_OVER_40 * POW2(unknown_b * unknown_c * unknown_a) * POW3(unknown_b * unknown_c * unknown_a) +
+            (unknown_d * PI_OVER_4 - (unknown_b * unknown_c * unknown_a) +
+             NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * POW2(unknown_b * unknown_c * unknown_a)) +
+            NEG_5_OVER_112 * POW3(unknown_b * unknown_c * unknown_a) * POW4(unknown_b * unknown_c * unknown_a) +
+            NEG_35_OVER_1152 * POW4(unknown_b * unknown_c * unknown_a) * POW5(unknown_b * unknown_c * unknown_a)) *
+           MAX_SHORT_OVER_PI;
 }
 
 static i16 TorpedoACosPc(f32 cos) {

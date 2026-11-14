@@ -14,8 +14,6 @@ void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32
 void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct PC_SCENE_MTL_VIEW *material,
                           i32 rotation_z, i32 rotation_y);
 
-#define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
-
 i32 edgraFileSave(char *path) {
     NUSPECIALHANDLE special;
     char name[20];

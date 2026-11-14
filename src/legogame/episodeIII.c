@@ -105,10 +105,6 @@ typedef struct kamino_e_pc_s {
     i16 platform;                            // 0x76
 } KAMINO_E_PC;                               // size 0x78
 
-#define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                     \
-    ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask &                                                \
-      (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
-
 typedef struct KAMINO_SHIP_ZERO_ANGLES_PC {
     u16 pitch;                // 0x0
     i32 yaw;                  // 0x4

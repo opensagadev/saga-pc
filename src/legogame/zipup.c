@@ -108,15 +108,6 @@ typedef struct zipup_transport_view_pc_s {
     f32 detach_fall_delay; // 0xdac
 } ZIPUP_TRANSPORT_VIEW_PC; // size 0xdb0
 
-#define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
-#define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
-#define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
-#define ASIN_NEG_35_OVER_1152 PCPathArcSineCoefficient9
-#define ASIN_POW2(x) ((x) * (x))
-#define ASIN_POW3(x) ((x) * ASIN_POW2(x))
-#define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
-#define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
-
 typedef struct zipup_progress_pc_s {
     u32 active_mask[1];  // 0x0
     u32 visible_mask[1]; // 0x4
@@ -168,15 +159,12 @@ static i32 ZipUpArcSinePc(f32 sin) {
 
     unknown_d = unknown_b * unknown_c + unknown_c;
 
-    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW3(unknown_b * unknown_c * unknown_a) +
-            (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
-             ASIN_NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * ASIN_POW2(unknown_b * unknown_c * unknown_a)) +
-            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW4(unknown_b * unknown_c * unknown_a) +
-            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
-           10430.4f;
+    return (NEG_3_OVER_40 * POW2(unknown_b * unknown_c * unknown_a) * POW3(unknown_b * unknown_c * unknown_a) +
+            (unknown_d * PI_OVER_4 - (unknown_b * unknown_c * unknown_a) +
+             NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * POW2(unknown_b * unknown_c * unknown_a)) +
+            NEG_5_OVER_112 * POW3(unknown_b * unknown_c * unknown_a) * POW4(unknown_b * unknown_c * unknown_a) +
+            NEG_35_OVER_1152 * POW4(unknown_b * unknown_c * unknown_a) * POW5(unknown_b * unknown_c * unknown_a)) *
+           MAX_SHORT_OVER_PI;
 }
 
 // The rope draw inlines these numtx rotations (other units call the

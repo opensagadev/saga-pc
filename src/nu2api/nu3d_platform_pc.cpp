@@ -1028,16 +1028,6 @@ extern "C" {
     extern void NuFrameEndLeafPc(void);
     extern void FmvPlatformUpdatePc(void);
 
-#define NUFRAME_ELAPSED(elapsed, now, start)                                                                           \
-    if ((now).low >= (start).low) {                                                                                    \
-        (elapsed).low = (now).low - (start).low;                                                                       \
-        (elapsed).high = (now).high - (start).high;                                                                    \
-    } else {                                                                                                           \
-        (elapsed).high = (now).high - (start).high;                                                                    \
-        (elapsed).low = (now).low - (start).low;                                                                       \
-        (elapsed).high -= 1;                                                                                           \
-    }
-
     extern void (*NuApiEndFrameCallbackPc)(void);
 
     STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
@@ -8288,24 +8278,6 @@ extern "C" {
         return matrix;
     }
 
-#define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                             \
-    {                                                                                                                  \
-        if ((v).z < global_camera.near_clip && (near_enabled))                                                         \
-            (code) |= 0x20;                                                                                            \
-        if ((v).z > far_clip)                                                                                          \
-            (code) |= 0x10;                                                                                            \
-        if ((v).x < -(v).z * (horizontal))                                                                             \
-            (code) |= 1;                                                                                               \
-        if ((v).x > (v).z * (horizontal))                                                                              \
-            (code) |= 2;                                                                                               \
-        if ((v).y < -(v).z * (vertical))                                                                               \
-            (code) |= 8;                                                                                               \
-        if ((v).y > (v).z * (vertical))                                                                                \
-            (code) |= 4;                                                                                               \
-    }
-
-#define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)
-
     i32 NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 far_clip, i32 clip_screen) {
         NUVEC corners[8];
         NUVEC transformed[8];
@@ -8419,9 +8391,6 @@ extern "C" {
     NUMTX *fun_00604a70(void) {
         return &smtx;
     }
-
-#undef NUCAMERA_CLIP_CODE
-#undef NUCAMERA_CLIP_CODE_EX
 
     void NuCameraSetProjectionMtx(NUMTX *out, f32 fov, f32 aspect, f32 near_clip, f32 far_clip) {
         f32 half_fov = (f32)((f64)fov * 0.5);

@@ -31,12 +31,6 @@ typedef struct render_post_prim_vertex_pc_s {
 #define GRID_TAN_HALF_FOV(half_fov)                                                                                    \
     (NuTrigTable[(i32)((half_fov) * 10430.3779296875f) >> 1 & 0x7fff] /                                                \
      NuTrigTable[(16384 - (i32)((half_fov) * -10430.3779296875f)) >> 1 & 0x7fff])
-#ifndef MIN
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#endif
 #define RGBA_TO_NUCOLOUR32(r, g, b, a)                                                                                 \
     ((u32)(u8)(r) | ((u32)(u8)(g) << 8) | ((u32)(u8)(b) << 16) | ((u32)(u8)(a) << 24))
 #define ALPHA_GRID_INLINE_COLOUR                                                                                       \
@@ -190,15 +184,6 @@ typedef struct StatusPlayerModelPairPc {
 STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_model) == offsetof(STATUSPACKET_s, player0_model) + sizeof(u16));
 STATIC_ASSERT(offsetof(STATUSPACKET_s, area_id) ==
               offsetof(STATUSPACKET_s, player0_model) + sizeof(StatusPlayerModelPairPc));
-
-#define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                  \
-    do {                                                                                                               \
-        (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                         \
-        (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                  \
-        ++(packet_arg)->stage_count;                                                                                   \
-    } while (0)
-
-#undef STATUS_APPEND_STAGE_INLINE_PC
 
 void BonusTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;

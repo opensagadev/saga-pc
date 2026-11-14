@@ -89,7 +89,6 @@ void Indy_GameAISysInit(void);
 i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
 GAMEOBJECT *AddCreature(i32 model, i32 mode);
 extern i32 complexsockposition_forcesock;
-#define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 #define INTERACTION_COPY_ANTINODE(source, target)                                                                      \
     (target)->ai->antinode_timer = (source)->ai->antinode_timer;                                                       \
     (target)->ai->flags ^= ((source)->ai->flags ^ (target)->ai->flags) & 0x8000

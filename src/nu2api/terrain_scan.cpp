@@ -2,7 +2,6 @@
 
 extern "C" {
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
     extern TerrainQuery_s *TerI;
     extern void *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;

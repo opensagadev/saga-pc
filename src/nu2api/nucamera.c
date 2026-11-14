@@ -192,24 +192,6 @@ void NuMtxCalcDebrisFaceOn(NUMTX *m) {
     m->m33 = 1.0f;
 }
 
-#define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                             \
-    {                                                                                                                  \
-        if ((v).z < global_camera.near_clip && (near_enabled))                                                         \
-            (code) |= 0x20;                                                                                            \
-        if ((v).z > far_clip)                                                                                          \
-            (code) |= 0x10;                                                                                            \
-        if ((v).x < -(v).z * (horizontal))                                                                             \
-            (code) |= 1;                                                                                               \
-        if ((v).x > (v).z * (horizontal))                                                                              \
-            (code) |= 2;                                                                                               \
-        if ((v).y < -(v).z * (vertical))                                                                               \
-            (code) |= 8;                                                                                               \
-        if ((v).y > (v).z * (vertical))                                                                                \
-            (code) |= 4;                                                                                               \
-    }
-
-#define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)
-
 /* Reconstructed storage qualifiers express the original F32 checkpoints;
    they do not assert historical declarations. */
 void NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {

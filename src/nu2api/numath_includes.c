@@ -106,19 +106,6 @@ u16 ang[513] = {
     0x1f1b, 0x1f26, 0x1f30, 0x1f3b, 0x1f45, 0x1f50, 0x1f5a, 0x1f65, 0x1f6f, 0x1f7a, 0x1f84, 0x1f8f, 0x1f99, 0x1fa4,
     0x1fae, 0x1fb8, 0x1fc3, 0x1fcd, 0x1fd7, 0x1fe1, 0x1fec, 0x1ff6, 0x2000};
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define PI_OVER_4 0.785398f
-#define NEG_1_OVER_6 PCPathArcSineCoefficient3
-#define NEG_3_OVER_40 PCPathArcSineCoefficient5
-#define NEG_5_OVER_112 PCPathArcSineCoefficient7
-#define NEG_35_OVER_1152 PCPathArcSineCoefficient9
-#define MAX_SHORT_OVER_PI 10430.4f
-#define POW2(x) ((x) * (x))
-#define POW3(x) ((x) * POW2(x))
-#define POW4(x) (POW2(x) * POW2(x))
-#define POW5(x) (POW2(x) * POW3(x))
-
 i16 NuASin(f32 sin) {
     f32 abs;
     f32 sqrt;

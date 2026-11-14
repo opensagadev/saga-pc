@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 STATIC_ASSERT(offsetof(WORLDINFO, camera_splines) == 0x2ac4);
 STATIC_ASSERT(offsetof(LEVELSPLINE_PC, scene) == 0);
 STATIC_ASSERT(offsetof(LEVELSPLINE_PC, max_points) == 0xa);

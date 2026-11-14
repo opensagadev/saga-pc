@@ -4,7 +4,6 @@
 
 extern "C" {
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
     extern TerrainQuery_s *TerI;
     extern void *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
@@ -12,8 +11,6 @@ extern "C" {
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
-
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 enum {
     NUTRIGTABLE_COUNT = 32768,

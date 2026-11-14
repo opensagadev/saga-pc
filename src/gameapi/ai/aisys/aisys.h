@@ -628,6 +628,7 @@ extern "C" {
 #endif
     void locatorEditor_cbCancelSelectLocatorSet(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     void pathEditor_cbCancelSelectMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+#define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 #ifdef __cplusplus
 }
 #endif

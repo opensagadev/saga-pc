@@ -81,4 +81,6 @@ extern "C" {
 }
 #endif
 
+#define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
+
 #endif
