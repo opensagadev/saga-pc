@@ -1,31 +1,31 @@
 #include "saga.h"
 #include <stdio.h>
 
-struct credit_record_pc_s { // size 0x18
-    char *text;             // 0x00
-    f32 x;                  // 0x04
-    f32 y;                  // 0x08
-    f32 scale;              // 0x0c
-    u8 colour[4];           // 0x10
-    u8 alignment;           // 0x14
-    i8 type;                // 0x15
-    u8 reserved[2];         // 0x16
+struct credit_record_s { // size 0x18
+    char *text;          // 0x00
+    f32 x;               // 0x04
+    f32 y;               // 0x08
+    f32 scale;           // 0x0c
+    u8 colour[4];        // 0x10
+    u8 alignment;        // 0x14
+    i8 type;             // 0x15
+    u8 reserved[2];      // 0x16
 };
 
-typedef struct credit_type_pc_s { // size 0x18
-    char *name;                   // 0x00
-    f32 scale;                    // 0x04
-    f32 width;                    // 0x08
-    u8 default_colour[4];         // 0x0c
-    u8 colour[4];                 // 0x10
-    u8 reserved[3];               // 0x14
-    i8 type;                      // 0x17
+typedef struct credit_type_s { // size 0x18
+    char *name;                // 0x00
+    f32 scale;                 // 0x04
+    f32 width;                 // 0x08
+    u8 default_colour[4];      // 0x0c
+    u8 colour[4];              // 0x10
+    u8 reserved[3];            // 0x14
+    i8 type;                   // 0x17
 } CREDIT_TYPE_PC;
 
 static f32 Credits_Duration = 120.0f;
 static f32 CreditsSize = 0;
 static i32 CreditCount = 0;
-static CREDIT_TYPE_PC CreditTypePc[5] = {
+static CREDIT_TYPE_PC CreditType[5] = {
     {"heading", 0.4f,  1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
     {"company", 0.6f,  1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
     {"title",   0.35f, 0.825f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
@@ -33,17 +33,17 @@ static CREDIT_TYPE_PC CreditTypePc[5] = {
     {"credit",  0.45f, 1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
 };
 
-static CREDIT_TYPE_PC *CreditsFindTypePc(char *word) {
+static CREDIT_TYPE_PC *CreditsFindType(char *word) {
     i32 index;
     for (index = 0; index < 5; ++index) {
-        if (NuStrICmp(CreditTypePc[index].name, word) == 0) {
-            return &CreditTypePc[index];
+        if (NuStrICmp(CreditType[index].name, word) == 0) {
+            return &CreditType[index];
         }
     }
     return NULL;
 }
 
-static void CreditsReadColourPc(NUFPAR_PC *parser, u8 *colour, i32 maximum) {
+static void CreditsReadColour(NUFPAR_PC *parser, u8 *colour, i32 maximum) {
     f32 value;
     if (NuFParGetWord(parser)) {
         value = NuAToF(parser->word_buffer_ptr);
@@ -61,8 +61,8 @@ static void CreditsReadColourPc(NUFPAR_PC *parser, u8 *colour, i32 maximum) {
     }
 }
 
-static void CreditsInitCreditPc(CREDIT_RECORD_PC *credit, char *text, f32 x, f32 y, f32 scale, u8 red, u8 green, u8 blue, u8 alpha,
-                                u8 alignment, VARIPTR *buffer, VARIPTR *end) {
+static void CreditsInitCredit(CREDIT_RECORD_PC *credit, char *text, f32 x, f32 y, f32 scale, u8 red, u8 green, u8 blue, u8 alpha,
+                              u8 alignment, VARIPTR *buffer, VARIPTR *end) {
     char *copy = NULL;
     i32 length = NuStrLen(text);
     if (length != 0) {
@@ -91,11 +91,11 @@ void Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     CreditsSize = 0.0f;
     Credits_Duration = 120.0f;
     for (index = 0; index < 5; ++index) {
-        CreditTypePc[index].type = (i8)index;
-        CreditTypePc[index].colour[0] = CreditTypePc[index].default_colour[0];
-        CreditTypePc[index].colour[1] = CreditTypePc[index].default_colour[1];
-        CreditTypePc[index].colour[2] = CreditTypePc[index].default_colour[2];
-        CreditTypePc[index].colour[3] = CreditTypePc[index].default_colour[3];
+        CreditType[index].type = (i8)index;
+        CreditType[index].colour[0] = CreditType[index].default_colour[0];
+        CreditType[index].colour[1] = CreditType[index].default_colour[1];
+        CreditType[index].colour[2] = CreditType[index].default_colour[2];
+        CreditType[index].colour[3] = CreditType[index].default_colour[3];
     }
     NuStrCpy(filename, "stuff\\text\\");
     NuStrCat(filename, "english");
@@ -122,46 +122,46 @@ void Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
                     }
                 }
             } else {
-                type = CreditsFindTypePc(parser->word_buffer_ptr);
+                type = CreditsFindType(parser->word_buffer_ptr);
                 if (type != NULL && NuFParGetWord(parser)) {
                     if (NuStrICmp(parser->word_buffer_ptr, "colour") == 0) {
-                        CreditsReadColourPc(parser, &type->colour[0], 255);
-                        CreditsReadColourPc(parser, &type->colour[1], 255);
-                        CreditsReadColourPc(parser, &type->colour[2], 255);
-                        CreditsReadColourPc(parser, &type->colour[3], 128);
+                        CreditsReadColour(parser, &type->colour[0], 255);
+                        CreditsReadColour(parser, &type->colour[1], 255);
+                        CreditsReadColour(parser, &type->colour[2], 255);
+                        CreditsReadColour(parser, &type->colour[3], 128);
                     } else if (CreditCount < 1000) {
                         credit->type = type->type;
                         switch (credit->type) {
                             case 0:
                                 if (previous == NULL || previous->type != 1) {
-                                    y = (f32)(y + CreditTypePc[0].scale / CreditTypePc[1].scale * (f64)0.2f);
+                                    y = (f32)(y + CreditType[0].scale / CreditType[1].scale * (f64)0.2f);
                                 }
-                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale, type->colour[0], type->colour[1],
-                                                    type->colour[2], type->colour[3], 1, buffer, end);
-                                y = (f32)(y + CreditTypePc[0].scale / CreditTypePc[1].scale * (f64)0.2f);
+                                CreditsInitCredit(credit, parser->word_buffer_ptr, 0.0f, y, type->scale, type->colour[0], type->colour[1],
+                                                  type->colour[2], type->colour[3], 1, buffer, end);
+                                y = (f32)(y + CreditType[0].scale / CreditType[1].scale * (f64)0.2f);
                                 y = (f32)(y + (f64)0.1f);
                                 break;
                             case 1:
                                 if (previous != NULL && previous->type != 0) {
-                                    y = (f32)(y + CreditTypePc[1].scale / CreditTypePc[1].scale * (f64)0.2f);
+                                    y = (f32)(y + CreditType[1].scale / CreditType[1].scale * (f64)0.2f);
                                 }
-                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale, type->colour[0], type->colour[1],
-                                                    type->colour[2], type->colour[3], 1, buffer, end);
-                                y = (f32)(y + CreditTypePc[1].scale / CreditTypePc[1].scale * (f64)0.2f);
+                                CreditsInitCredit(credit, parser->word_buffer_ptr, 0.0f, y, type->scale, type->colour[0], type->colour[1],
+                                                  type->colour[2], type->colour[3], 1, buffer, end);
+                                y = (f32)(y + CreditType[1].scale / CreditType[1].scale * (f64)0.2f);
                                 break;
                             case 2:
-                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, -0.015f, y, type->scale, type->colour[0],
-                                                    type->colour[1], type->colour[2], type->colour[3], 9, buffer, end);
+                                CreditsInitCredit(credit, parser->word_buffer_ptr, -0.015f, y, type->scale, type->colour[0],
+                                                  type->colour[1], type->colour[2], type->colour[3], 9, buffer, end);
                                 break;
                             case 3:
-                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.015f, y, type->scale, type->colour[0],
-                                                    type->colour[1], type->colour[2], type->colour[3], 3, buffer, end);
-                                y = (f32)(y + CreditTypePc[3].scale / CreditTypePc[1].scale * (f64)0.2f);
+                                CreditsInitCredit(credit, parser->word_buffer_ptr, 0.015f, y, type->scale, type->colour[0], type->colour[1],
+                                                  type->colour[2], type->colour[3], 3, buffer, end);
+                                y = (f32)(y + CreditType[3].scale / CreditType[1].scale * (f64)0.2f);
                                 break;
                             case 4:
-                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale, type->colour[0], type->colour[1],
-                                                    type->colour[2], type->colour[3], 1, buffer, end);
-                                y = (f32)(y + CreditTypePc[4].scale / CreditTypePc[1].scale * (f64)0.2f);
+                                CreditsInitCredit(credit, parser->word_buffer_ptr, 0.0f, y, type->scale, type->colour[0], type->colour[1],
+                                                  type->colour[2], type->colour[3], 1, buffer, end);
+                                y = (f32)(y + CreditType[4].scale / CreditType[1].scale * (f64)0.2f);
                                 break;
                         }
                         previous = credit;
@@ -207,7 +207,7 @@ typedef struct credits_completion_reader_s { // size 0x4
     u8 flags;                                // 0x3
 } CREDITS_COMPLETION_READER_PC;
 
-static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
+static void CreditsDrawList(CREDIT_RECORD_PC *credit, f32 time) {
     char percentage[32];
     f32 x;
     i32 alpha;
@@ -218,15 +218,15 @@ static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
             if (offset >= credit->y && offset <= credit->y + (f64)2.2f) {
                 alpha = (i32)(credit->colour[3] * CreditsAlpha);
                 SmartTextEx(credit->text, credit->x, (f32)(-1.0 - (credit->y - offset)), 1.0f, credit->scale, credit->scale, credit->scale,
-                            credit->alignment, credit->colour[0], credit->colour[1], credit->colour[2], CreditTypePc[credit->type].width, 1,
+                            credit->alignment, credit->colour[0], credit->colour[1], credit->colour[2], CreditType[credit->type].width, 1,
                             NULL, 0, (u32)alpha);
             }
             ++credit;
         }
     } else {
-        CREDITS_COMPLETION_READER_PC *completion = (CREDITS_COMPLETION_READER_PC *)CustomiserCompletionSavePc;
+        CREDITS_COMPLETION_READER_PC *completion = (CREDITS_COMPLETION_READER_PC *)CustomiserCompletionSave;
         points = completion != NULL ? completion->points : 0;
-        sprintf(percentage, "%.1f%%", (f64)(points * 100) / HubCompletionPointsPc);
+        sprintf(percentage, "%.1f%%", (f64)(points * 100) / HubCompletionPoints);
         x = 0.0f;
         if (CreditsFlag == 1) {
             x = (f32)((f64)0.1f + (x - (f64)0.1f) * CreditsAlpha);
@@ -239,7 +239,7 @@ static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
 }
 
 void Credits_DrawPanel(WORLDINFO *world) {
-    CreditsDrawListPc(CreditList, CreditsTime);
+    CreditsDrawList(CreditList, CreditsTime);
 }
 
 void legoSetMusicVolume(f32);

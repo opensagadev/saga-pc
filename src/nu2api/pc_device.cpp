@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-extern "C" void PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture) {
+extern "C" void PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE **texture) {
     if (*texture != NULL) {
         (*texture)->methods->release(*texture);
         *texture = NULL;
@@ -14,8 +14,8 @@ extern "C" void PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture) {
 extern "C" void fun_006e5c10(void) {
 }
 
-void PC_DEVICE_BACKEND_PC::ApplyViewport(const PC_VIEWPORT_PC *viewport) {
-    PC_VIEWPORT_PC applied = *viewport;
+void PC_DEVICE_BACKEND_PC::ApplyViewport(const PC_VIEWPORT *viewport) {
+    PC_VIEWPORT applied = *viewport;
     if (applied.width >= (u32)PS2_REZ_W) {
         applied.width = (u32)PS2_REZ_W;
     }
@@ -31,9 +31,9 @@ void PC_DEVICE_BACKEND_PC::ApplyViewport(const PC_VIEWPORT_PC *viewport) {
     memcpy(&requested_viewport.max_z, &viewport->max_z, sizeof(f32));
 }
 
-// noinline: the original calls NuVpSubmitPc out of line from PC_DEVICE_BACKEND_PC::ResetViewport; VC8 would inline it
+// noinline: the original calls NuVpSubmit out of line from PC_DEVICE_BACKEND_PC::ResetViewport; VC8 would inline it
 // there.
-extern "C" __declspec(noinline) void NuVpSubmitPc(const PC_VIEWPORT_PC *viewport) {
+extern "C" __declspec(noinline) void NuVpSubmit(const PC_VIEWPORT *viewport) {
     if (viewport != NULL) {
         PCDeviceBackend.ApplyViewport(viewport);
     }
@@ -131,7 +131,7 @@ extern "C" void PCDeviceSetTextureStageState(u32 stage, i32 state, u32 value) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_texture_stage_state(PCDeviceBackend.device, stage, state, value);
 }
 
-extern "C" void PCDeviceCreateTextureFromFilePc(char *path, PC_TEXTURE_RESOURCE_PC **texture) {
+extern "C" void PCDeviceCreateTextureFromFilePc(char *path, PC_TEXTURE_RESOURCE **texture) {
     NudxFw_D3DBeginCriticalSection();
     u32 size = static_cast<u32>(NuFileSize(path));
     if (size > 0) {
@@ -164,12 +164,12 @@ extern "C" void PCDeviceCreateEffectFromFilePc(const char *path, const D3DXMACRO
                                                    flags, pool, effect, errors);
 }
 
-extern "C" void PCDeviceCreateTextureFromMemory(const void *data, u32 size, PC_TEXTURE_RESOURCE_PC **texture) {
+extern "C" void PCDeviceCreateTextureFromMemory(const void *data, u32 size, PC_TEXTURE_RESOURCE **texture) {
     PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size,
                                                            reinterpret_cast<IDirect3DTexture9 **>(texture));
 }
 
-extern "C" void PCDeviceCreateTextureFromFileInMemoryPc(const void *data, u32 size, PC_TEXTURE_RESOURCE_PC **texture) {
+extern "C" void PCDeviceCreateTextureFromFileInMemoryPc(const void *data, u32 size, PC_TEXTURE_RESOURCE **texture) {
     PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size,
                                                            reinterpret_cast<IDirect3DTexture9 **>(texture));
 }
@@ -177,7 +177,7 @@ extern "C" void PCDeviceCreateTextureFromFileInMemoryPc(const void *data, u32 si
 // noinline: the original calls PCDeviceCreateVertexBuffer out of line from
 // PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
 extern "C" __declspec(noinline) void PCDeviceCreateVertexBuffer(u32 size, u32 usage, u32 vertex_format, i32 pool,
-                                                                PC_BUFFER_RESOURCE_PC **resource) {
+                                                                PC_BUFFER_RESOURCE **resource) {
     if (PCDeviceHardwareVertexProcessingPC == 0) {
         usage |= 0x10;
     }
@@ -187,7 +187,7 @@ extern "C" __declspec(noinline) void PCDeviceCreateVertexBuffer(u32 size, u32 us
 
 // noinline: the original calls PCDeviceCreateIndexBuffer out of line from
 // PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
-extern "C" __declspec(noinline) void PCDeviceCreateIndexBuffer(u32 size, u32 usage, i32 format, i32 pool, PC_BUFFER_RESOURCE_PC **resource,
+extern "C" __declspec(noinline) void PCDeviceCreateIndexBuffer(u32 size, u32 usage, i32 format, i32 pool, PC_BUFFER_RESOURCE **resource,
                                                                HANDLE *shared_handle) {
     if (PCDeviceHardwareVertexProcessingPC == 0) {
         usage |= 0x10;
@@ -198,14 +198,14 @@ extern "C" __declspec(noinline) void PCDeviceCreateIndexBuffer(u32 size, u32 usa
 
 extern "C" void PCDeviceCreateTextureFromMemoryEx(const void *data, u32 size, u32 width, u32 height, u32 levels, u32 usage, i32 format,
                                                   i32 pool, u32 filter, u32 mip_filter, u32 colour_key, D3DXIMAGE_INFO *information,
-                                                  PALETTEENTRY *palette, PC_TEXTURE_RESOURCE_PC **resource) {
+                                                  PALETTEENTRY *palette, PC_TEXTURE_RESOURCE **resource) {
     PCDeviceLastResult =
         D3DXCreateTextureFromFileInMemoryEx(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size, width, height, levels,
                                             usage, static_cast<D3DFORMAT>(format), static_cast<D3DPOOL>(pool), filter, mip_filter,
                                             colour_key, information, palette, reinterpret_cast<IDirect3DTexture9 **>(resource));
 }
 
-extern "C" void PCDeviceCreateCubeTextureFromMemory(const void *data, u32 size, PC_TEXTURE_RESOURCE_PC **resource) {
+extern "C" void PCDeviceCreateCubeTextureFromMemory(const void *data, u32 size, PC_TEXTURE_RESOURCE **resource) {
     PCDeviceLastResult = D3DXCreateCubeTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size,
                                                                reinterpret_cast<IDirect3DCubeTexture9 **>(resource));
 }
@@ -233,21 +233,20 @@ i32 PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant1() {
     return variant;
 }
 
-extern "C" void PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT_PC *elements, PC_TEXTURE_RESOURCE_PC **out) {
+extern "C" void PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT *elements, PC_TEXTURE_RESOURCE **out) {
     PC_D3D9_DEVICE_PC *device = PCDeviceBackend.device;
     PCDeviceLastResult = device->methods->create_vertex_declaration(device, elements, out);
 }
 
 // noinline: the original calls PCDeviceLockVertexBuffer out of line from
 // PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
-extern "C" __declspec(noinline) void PCDeviceLockVertexBuffer(u32 offset, u32 size, void **data, u32 flags,
-                                                              PC_BUFFER_RESOURCE_PC *resource) {
+extern "C" __declspec(noinline) void PCDeviceLockVertexBuffer(u32 offset, u32 size, void **data, u32 flags, PC_BUFFER_RESOURCE *resource) {
     PCDeviceLastResult = resource->methods->lock(resource, offset, size, data, flags);
 }
 
 // noinline: the original calls PCDeviceUnlockVertexBuffer out of line from
 // PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
-extern "C" __declspec(noinline) HRESULT PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
+extern "C" __declspec(noinline) HRESULT PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE *resource) {
     return resource->methods->unlock(resource);
 }
 
@@ -280,7 +279,7 @@ extern "C" void fun_006e49f0(void) {
 extern "C" void fun_006e4a00(void) {
 }
 
-// noinline: the original calls PCDeviceDrawIndexedPrimitiveUPPc out of line from PCGraphicsDrawUnitBoxPc; VC8 would
+// noinline: the original calls PCDeviceDrawIndexedPrimitiveUPPc out of line from PCGraphicsDrawUnitBox; VC8 would
 // inline it there.
 extern "C" __declspec(noinline) void PCDeviceDrawIndexedPrimitiveUPPc(i32 type, u32 minimum_vertex, u32 vertex_count, u32 primitive_count,
                                                                       const void *indices, i32 index_format, const void *vertices,
@@ -293,7 +292,7 @@ extern "C" __declspec(noinline) void PCDeviceDrawIndexedPrimitiveUPPc(i32 type, 
                                                                     index_format, vertices, stride);
 }
 
-// noinline: the original calls PCDeviceSetFVFPc out of line from PCGraphicsDrawUnitBoxPc; VC8 would inline it there.
+// noinline: the original calls PCDeviceSetFVFPc out of line from PCGraphicsDrawUnitBox; VC8 would inline it there.
 extern "C" __declspec(noinline) void PCDeviceSetFVFPc(u32 fvf) {
     PCDeviceStateCachePc.vertex_declaration = NULL;
     PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
@@ -301,7 +300,7 @@ extern "C" __declspec(noinline) void PCDeviceSetFVFPc(u32 fvf) {
 }
 
 /* Draws the [-1, 1] cube transformed by matrix as 12 untextured triangles (no caller). */
-extern "C" void PCGraphicsDrawUnitBoxPc(NUMTX *matrix) {
+extern "C" void PCGraphicsDrawUnitBox(NUMTX *matrix) {
     NUVEC4 corners[8] = {
         {-1.0f, -1.0f, -1.0f, 1.0f},
         {-1.0f, 1.0f,  -1.0f, 1.0f},
@@ -320,7 +319,7 @@ extern "C" void PCGraphicsDrawUnitBoxPc(NUMTX *matrix) {
     PCDeviceDrawIndexedPrimitiveUPPc(4, 0, 8, 12, indices, 0x65, corners, sizeof(NUVEC4));
 }
 
-extern "C" void PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE_PC **resource) {
+extern "C" void PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE **resource) {
     u32 size = static_cast<u32>(NuFileSize(path));
     if (size > 0) {
         void *data = NuFileLoad(path);
@@ -338,7 +337,7 @@ extern "C" void PCDeviceCreateEffectPc(const void *data, u32 size, const D3DXMAC
                                           pool, effect, errors);
 }
 
-extern "C" void PCDeviceReleaseResourcePc(PC_TEXTURE_RESOURCE_PC *resource) {
+extern "C" void PCDeviceReleaseResourcePc(PC_TEXTURE_RESOURCE *resource) {
     PCDeviceLastResult = static_cast<HRESULT>(resource->methods->release(resource));
 }
 
@@ -460,7 +459,7 @@ PC_DEVICE_BACKEND_PC::PC_DEVICE_BACKEND_PC() {
 }
 
 void PC_DEVICE_BACKEND_PC::InitializeFactory() {
-    factory = reinterpret_cast<GRAPHICS_FACTORY_PC *>(Direct3DCreate9(32));
+    factory = reinterpret_cast<GRAPHICS_FACTORY *>(Direct3DCreate9(32));
     if (factory == NULL) {
         PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState, "Failed to initialize DirectX");
     }
@@ -550,7 +549,7 @@ void PC_DEVICE_BACKEND_PC::Shutdown() {
         declaration6ac = NULL;
     }
     if (device != NULL) {
-        PC_TEXTURE_RESOURCE_PC *release_view = reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(device);
+        PC_TEXTURE_RESOURCE *release_view = reinterpret_cast<PC_TEXTURE_RESOURCE *>(device);
         release_view->methods->release(release_view);
         device = NULL;
     }
@@ -572,24 +571,24 @@ struct GRAPHICS_DEVICE_METHODS_PC {                                             
     void *get_available_texture_memory;                                                                   // 0x010
     HRESULT(__stdcall *evict_managed_resources)(GRAPHICS_DEVICE_PC *);                                    // 0x014
     void *get_direct3d;                                                                                   // 0x018
-    HRESULT(__stdcall *get_device_caps)(GRAPHICS_DEVICE_PC *, GRAPHICS_CAPS_PC *);                        // 0x01c
+    HRESULT(__stdcall *get_device_caps)(GRAPHICS_DEVICE_PC *, GRAPHICS_CAPS *);                           // 0x01c
     void *unknown_0020[8];                                                                                // 0x020
-    HRESULT(__stdcall *reset)(GRAPHICS_DEVICE_PC *, GRAPHICS_PRESENT_PARAMETERS_PC *);                    // 0x040
+    HRESULT(__stdcall *reset)(GRAPHICS_DEVICE_PC *, GRAPHICS_PRESENT_PARAMETERS *);                       // 0x040
     HRESULT(__stdcall *present)(GRAPHICS_DEVICE_PC *, const RECT *, const RECT *, HWND, const RGNDATA *); // 0x044
-    HRESULT(__stdcall *get_back_buffer)(GRAPHICS_DEVICE_PC *, u32, u32, i32, PC_TEXTURE_RESOURCE_PC **);  // 0x048
+    HRESULT(__stdcall *get_back_buffer)(GRAPHICS_DEVICE_PC *, u32, u32, i32, PC_TEXTURE_RESOURCE **);     // 0x048
     void *unknown_004c[15];                                                                               // 0x04c
     HRESULT(__stdcall *stretch_rect)                                                                      // 0x088
-    (GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *, i32);
-    void *unknown_008c[2];                                                                          // 0x08c
-    HRESULT(__stdcall *set_render_target)(GRAPHICS_DEVICE_PC *, u32, PC_TEXTURE_RESOURCE_PC *);     // 0x094
-    void *get_render_target;                                                                        // 0x098
-    HRESULT(__stdcall *set_depth_stencil_surface)(GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *);  // 0x09c
-    HRESULT(__stdcall *get_depth_stencil_surface)(GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC **); // 0x0a0
-    HRESULT(__stdcall *begin_scene)(GRAPHICS_DEVICE_PC *);                                          // 0x0a4
-    HRESULT(__stdcall *end_scene)(GRAPHICS_DEVICE_PC *);                                            // 0x0a8
-    HRESULT(__stdcall *clear)(GRAPHICS_DEVICE_PC *, u32, const RECT *, u32, u32, f32, u32);         // 0x0ac
-    void *unknown_00b0[33];                                                                         // 0x0b0
-    HRESULT(__stdcall *set_software_vertex_processing)(GRAPHICS_DEVICE_PC *, BOOL);                 // 0x134
+    (GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE *, const RECT *, PC_TEXTURE_RESOURCE *, const RECT *, i32);
+    void *unknown_008c[2];                                                                       // 0x08c
+    HRESULT(__stdcall *set_render_target)(GRAPHICS_DEVICE_PC *, u32, PC_TEXTURE_RESOURCE *);     // 0x094
+    void *get_render_target;                                                                     // 0x098
+    HRESULT(__stdcall *set_depth_stencil_surface)(GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE *);  // 0x09c
+    HRESULT(__stdcall *get_depth_stencil_surface)(GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE **); // 0x0a0
+    HRESULT(__stdcall *begin_scene)(GRAPHICS_DEVICE_PC *);                                       // 0x0a4
+    HRESULT(__stdcall *end_scene)(GRAPHICS_DEVICE_PC *);                                         // 0x0a8
+    HRESULT(__stdcall *clear)(GRAPHICS_DEVICE_PC *, u32, const RECT *, u32, u32, f32, u32);      // 0x0ac
+    void *unknown_00b0[33];                                                                      // 0x0b0
+    HRESULT(__stdcall *set_software_vertex_processing)(GRAPHICS_DEVICE_PC *, BOOL);              // 0x134
 };
 
 struct GRAPHICS_DEVICE_PC {
@@ -616,7 +615,7 @@ extern "C" __declspec(noinline) HRESULT PCDeviceTestCooperativeLevel() {
     return device->methods->test_cooperative_level(device);
 }
 
-PC_VIEWPORT_PC *PC_DEVICE_BACKEND_PC::GetRequestedViewportPc() {
+PC_VIEWPORT *PC_DEVICE_BACKEND_PC::GetRequestedViewportPc() {
     return &requested_viewport;
 }
 
@@ -632,7 +631,7 @@ extern "C" PC_D3D9_DEVICE_PC *PCDeviceGetDevice() {
     return PCDeviceBackend.device;
 }
 
-extern "C" GRAPHICS_FACTORY_PC *PCDeviceGetFactoryPc(void) {
+extern "C" GRAPHICS_FACTORY *PCDeviceGetFactoryPc(void) {
     return PCDeviceBackend.factory;
 }
 
@@ -651,10 +650,10 @@ struct PC_TEXTURE_CREATE_DEVICE_PC;
 struct PC_TEXTURE_CREATE_METHODS {     // size 0x78
     void *reserved_00[23];             // 0x00
     HRESULT(__stdcall *create_texture) // 0x5c
-    (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+    (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE **, HANDLE *);
     void *reserved_60[5];                    // 0x60
     HRESULT(__stdcall *create_depth_surface) // 0x74
-    (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+    (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE **, HANDLE *);
 };
 
 struct PC_TEXTURE_CREATE_DEVICE_PC {          // size 0x4
@@ -662,14 +661,13 @@ struct PC_TEXTURE_CREATE_DEVICE_PC {          // size 0x4
 };
 
 extern "C" void PCDeviceCreateDepthSurface(u32 width, u32 height, i32 format, i32 multisample, u32 quality, BOOL discard,
-                                           PC_TEXTURE_RESOURCE_PC **surface, HANDLE *shared_handle) {
+                                           PC_TEXTURE_RESOURCE **surface, HANDLE *shared_handle) {
     PC_TEXTURE_CREATE_DEVICE_PC *device = reinterpret_cast<PC_TEXTURE_CREATE_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult =
         device->methods->create_depth_surface(device, width, height, format, multisample, quality, discard, surface, shared_handle);
 }
 
-extern "C" void PCDeviceCreateTexture(u32 width, u32 height, u32 levels, u32 usage, i32 format, i32 pool,
-                                      PC_TEXTURE_RESOURCE_PC **texture) {
+extern "C" void PCDeviceCreateTexture(u32 width, u32 height, u32 levels, u32 usage, i32 format, i32 pool, PC_TEXTURE_RESOURCE **texture) {
     PC_TEXTURE_CREATE_DEVICE_PC *device = reinterpret_cast<PC_TEXTURE_CREATE_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult = device->methods->create_texture(device, width, height, levels, usage, format, pool, texture, NULL);
 }
@@ -680,8 +678,8 @@ extern "C" {
 }
 
 static i32 PCGraphicsModeCompare(const void *left_ptr, const void *right_ptr) {
-    const GRAPHICS_DISPLAY_MODE_PC *left = static_cast<const GRAPHICS_DISPLAY_MODE_PC *>(left_ptr);
-    const GRAPHICS_DISPLAY_MODE_PC *right = static_cast<const GRAPHICS_DISPLAY_MODE_PC *>(right_ptr);
+    const GRAPHICS_DISPLAY_MODE *left = static_cast<const GRAPHICS_DISPLAY_MODE *>(left_ptr);
+    const GRAPHICS_DISPLAY_MODE *right = static_cast<const GRAPHICS_DISPLAY_MODE *>(right_ptr);
     if (left->width == 0 && left->height == 0 && left->refresh_rate == 0) {
         return 1;
     }
@@ -749,7 +747,7 @@ u32 PC_DEVICE_BACKEND_PC::FindMode(u32 width, u32 height, u32 refresh) {
 extern "C" {
     i32 PCGraphicsPrepareVendor();
     void PCGraphicsRecreateResources(i32 reset_available);
-    extern void (*PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS_PC *);
+    extern void (*PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS *);
 }
 
 void PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window) {
@@ -1016,7 +1014,7 @@ void PC_DEVICE_BACKEND_PC::Present(const RECT *source, const RECT *destination, 
         }
     }
     for (i32 i = 0; i != 4; ++i) {
-        target_cache[i] = reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(-1);
+        target_cache[i] = reinterpret_cast<PC_TEXTURE_RESOURCE *>(-1);
     }
 }
 
@@ -1030,17 +1028,17 @@ __declspec(noinline) void PC_DEVICE_BACKEND_PC::BeginScene() {
     BeginDefaultTargets();
 }
 
-static PC_VERTEX_ELEMENT_PC PCGraphicsPositionUvDeclaration[3] = {
+static PC_VERTEX_ELEMENT PCGraphicsPositionUvDeclaration[3] = {
     {0,   0,  2,  0, 0, 0},
     {0,   12, 1,  0, 5, 0},
     {255, 0,  17, 0, 0, 0}
 };
-static PC_VERTEX_ELEMENT_PC PCGraphicsScreenUvDeclaration[3] = {
+static PC_VERTEX_ELEMENT PCGraphicsScreenUvDeclaration[3] = {
     {0,   0, 1,  0, 9, 0},
     {0,   8, 1,  0, 5, 0},
     {255, 0, 17, 0, 0, 0}
 };
-static PC_VERTEX_ELEMENT_PC PCGraphicsScreenColourUvDeclaration[4] = {
+static PC_VERTEX_ELEMENT PCGraphicsScreenColourUvDeclaration[4] = {
     {0,   0,  3,  0, 9,  0},
     {0,   16, 4,  0, 10, 0},
     {0,   20, 1,  0, 5,  0},
@@ -1049,7 +1047,7 @@ static PC_VERTEX_ELEMENT_PC PCGraphicsScreenColourUvDeclaration[4] = {
 
 void PC_DEVICE_BACKEND_PC::InitializeAdapter() {
     u32 total = PCDeviceBackend.factory->methods->get_adapter_mode_count(PCDeviceBackend.factory, 0, 22);
-    GRAPHICS_DISPLAY_MODE_PC *all_modes = new GRAPHICS_DISPLAY_MODE_PC[total];
+    GRAPHICS_DISPLAY_MODE *all_modes = new GRAPHICS_DISPLAY_MODE[total];
     u32 minimum_width = 640;
     u32 minimum_height = 480;
     if (PcWindowOptions.bloommethod == 2 || PcWindowOptions.shadowmethod == 2) {
@@ -1063,12 +1061,12 @@ void PC_DEVICE_BACKEND_PC::InitializeAdapter() {
             all_modes[i].refresh_rate <= 85) {
             ++mode_count;
         } else {
-            memset(&all_modes[i], 0, sizeof(GRAPHICS_DISPLAY_MODE_PC));
+            memset(&all_modes[i], 0, sizeof(GRAPHICS_DISPLAY_MODE));
         }
     }
-    qsort(all_modes, total, sizeof(GRAPHICS_DISPLAY_MODE_PC), PCGraphicsModeCompare);
-    modes = new GRAPHICS_DISPLAY_MODE_PC[mode_count];
-    memcpy(modes, all_modes, mode_count * sizeof(GRAPHICS_DISPLAY_MODE_PC));
+    qsort(all_modes, total, sizeof(GRAPHICS_DISPLAY_MODE), PCGraphicsModeCompare);
+    modes = new GRAPHICS_DISPLAY_MODE[mode_count];
+    memcpy(modes, all_modes, mode_count * sizeof(GRAPHICS_DISPLAY_MODE));
     delete all_modes;
     if (PcWindowOptions.usehires != 0 && PcWindowOptions.multisample != 6) {
         PcWindowOptions.SetMultisample(0);
@@ -1090,7 +1088,7 @@ extern "C" {
     void NuVpSetSize2(f32, f32);
 }
 
-void PC_DEVICE_BACKEND_PC::SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE_PC *surface) {
+void PC_DEVICE_BACKEND_PC::SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE *surface) {
     u16 limit = multisample_index == 0 && PCDeviceHardwareVertexProcessingPC >= 2 ? (u16)caps.simultaneous_render_targets : 1;
     if (index <= limit - 1 && target_cache[index] != surface) {
         target_cache[index] = surface;
@@ -1101,8 +1099,8 @@ void PC_DEVICE_BACKEND_PC::SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE_PC *su
 
 /* Captures the current surface as a BMP image in a new NuAlloc block and returns its size. */
 u32 PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, void **data) {
-    PC_TEXTURE_RESOURCE_PC *target;
-    PC_TEXTURE_RESOURCE_PC *copy;
+    PC_TEXTURE_RESOURCE *target;
+    PC_TEXTURE_RESOURCE *copy;
     ID3DXBuffer *buffer;
     u32 size = 0;
     if (width == 0) {
@@ -1131,8 +1129,8 @@ u32 PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, void **data
     }
     target = NULL;
     copy = NULL;
-    // Typing this slot in saga.h perturbs unrelated C units (episodeIII BoulderSpawnPc), so it is typed here.
-    typedef HRESULT(__stdcall * CREATE_RENDER_TARGET_PC)(PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **,
+    // Typing this slot in saga.h perturbs unrelated C units (episodeIII BoulderSpawn), so it is typed here.
+    typedef HRESULT(__stdcall * CREATE_RENDER_TARGET_PC)(PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE **,
                                                          HANDLE *);
     if (SUCCEEDED(reinterpret_cast<CREATE_RENDER_TARGET_PC>(device->methods->create_render_target)(device, width, height, 0x15, 0, 0, FALSE,
                                                                                                    &target, NULL))) {
@@ -1188,7 +1186,7 @@ u8 PC_WINDOW_OPTIONS_PC::fun_00509080() {
     return option459;
 }
 
-GRAPHICS_DISPLAY_MODE_PC *PC_DEVICE_BACKEND_PC::fun_00509090(i32 index) {
+GRAPHICS_DISPLAY_MODE *PC_DEVICE_BACKEND_PC::fun_00509090(i32 index) {
     return &modes[index];
 }
 
@@ -1225,9 +1223,9 @@ void PC_DEVICE_BACKEND_PC::fun_00509140(i32 mode) {
     PcWindowOptions.SetAspectModePc(mode);
     PcWindowOptions.Save();
     if (PcWindowOptions.aspect_mode == 3) {
-        MenuAppliedAspectPc = active_aspect_mode;
+        MenuAppliedAspect = active_aspect_mode;
     } else {
-        MenuAppliedAspectPc = PcWindowOptions.aspect_mode;
+        MenuAppliedAspect = PcWindowOptions.aspect_mode;
     }
 }
 
@@ -1255,7 +1253,7 @@ void PC_DEVICE_BACKEND_PC::ResetViewport() {
     requested_viewport.height = PS2_REZ_H;
     requested_viewport.min_z = 0.0f;
     requested_viewport.max_z = 1.0f;
-    NuVpSubmitPc(&requested_viewport);
+    NuVpSubmit(&requested_viewport);
 }
 
 void PC_DEVICE_BACKEND_PC::ResetTargets() {
@@ -1371,8 +1369,8 @@ void PC_DEVICE_BACKEND_PC::BeginDefaultTargets() {
 }
 
 extern "C" {
-    void PCDeviceLockIndexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE_PC *);
-    HRESULT PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *);
+    void PCDeviceLockIndexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE *);
+    HRESULT PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE *);
 }
 
 struct PC_GRAPHICS_CLIP_VERTEX { // size 0x14
@@ -1392,9 +1390,9 @@ struct PC_GRAPHICS_SCREEN_VERTEX { // size 0x10
 
 struct GRAPHICS_TEXTURE_SURFACE_VIEW;
 
-struct GRAPHICS_TEXTURE_SURFACE_METHODS {                                                                   // size 0x4c
-    void *unknown_000[18];                                                                                  // 0x00
-    HRESULT(__stdcall *get_surface_level)(GRAPHICS_TEXTURE_SURFACE_VIEW *, u32, PC_TEXTURE_RESOURCE_PC **); // 0x48
+struct GRAPHICS_TEXTURE_SURFACE_METHODS {                                                                // size 0x4c
+    void *unknown_000[18];                                                                               // 0x00
+    HRESULT(__stdcall *get_surface_level)(GRAPHICS_TEXTURE_SURFACE_VIEW *, u32, PC_TEXTURE_RESOURCE **); // 0x48
 };
 
 struct GRAPHICS_TEXTURE_SURFACE_VIEW {               // size 0x4
@@ -1403,14 +1401,13 @@ struct GRAPHICS_TEXTURE_SURFACE_VIEW {               // size 0x4
 
 // noinline: the original calls PCDeviceLockIndexBuffer out of line from
 // PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
-extern "C" __declspec(noinline) void PCDeviceLockIndexBuffer(u32 offset, u32 size, void **data, u32 flags,
-                                                             PC_BUFFER_RESOURCE_PC *resource) {
+extern "C" __declspec(noinline) void PCDeviceLockIndexBuffer(u32 offset, u32 size, void **data, u32 flags, PC_BUFFER_RESOURCE *resource) {
     PCDeviceLastResult = resource->methods->lock(resource, offset, size, data, flags);
 }
 
 // noinline: the original calls PCDeviceUnlockIndexBuffer out of line from
 // PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
-extern "C" __declspec(noinline) HRESULT PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
+extern "C" __declspec(noinline) HRESULT PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE *resource) {
     return resource->methods->unlock(resource);
 }
 
@@ -1439,28 +1436,28 @@ extern "C" void PCDeviceToggleStateCachePc(void) {
 extern "C" const char *WINAPI DXGetErrorString9A(HRESULT result);
 
 /* IDirect3DSurface9 methods used by the BMP dump; the shared resource table models textures. */
-typedef struct PC_SURFACE_PC PC_SURFACE_PC;
+typedef struct PC_SURFACE PC_SURFACE;
 
-typedef struct PC_SURFACE_METHODS {                                                      // size 0x3c
-    void *unknown_0000[2];                                                               // 0x00
-    ULONG(__stdcall *release)(PC_SURFACE_PC *);                                          // 0x08
-    void *unknown_000c[9];                                                               // 0x0c
-    HRESULT(__stdcall *get_desc)(PC_SURFACE_PC *, PC_TEXTURE_LEVEL_DESC_PC *);           // 0x30
-    HRESULT(__stdcall *lock_rect)(PC_SURFACE_PC *, PC_LOCKED_RECT *, const RECT *, u32); // 0x34
-    HRESULT(__stdcall *unlock_rect)(PC_SURFACE_PC *);                                    // 0x38
+typedef struct PC_SURFACE_METHODS {                                                   // size 0x3c
+    void *unknown_0000[2];                                                            // 0x00
+    ULONG(__stdcall *release)(PC_SURFACE *);                                          // 0x08
+    void *unknown_000c[9];                                                            // 0x0c
+    HRESULT(__stdcall *get_desc)(PC_SURFACE *, PC_TEXTURE_LEVEL_DESC *);              // 0x30
+    HRESULT(__stdcall *lock_rect)(PC_SURFACE *, PC_LOCKED_RECT *, const RECT *, u32); // 0x34
+    HRESULT(__stdcall *unlock_rect)(PC_SURFACE *);                                    // 0x38
 } PC_SURFACE_METHODS;
 
-struct PC_SURFACE_PC {
+struct PC_SURFACE {
     const PC_SURFACE_METHODS *methods;
 };
 
 /* Copies a render-target surface to system memory and writes it as the first free "<prefix>_pcNNN.bmp".
    No caller. */
-extern "C" void PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE_PC *surface) {
-    typedef HRESULT(__stdcall * CREATE_TEXTURE_PC)(PC_D3D9_DEVICE_PC *, u32, u32, u32, u32, u32, i32, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
-    PC_SURFACE_PC *copy;
-    PC_TEXTURE_RESOURCE_PC *texture;
-    PC_TEXTURE_LEVEL_DESC_PC desc;
+extern "C" void PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE *surface) {
+    typedef HRESULT(__stdcall * CREATE_TEXTURE_PC)(PC_D3D9_DEVICE_PC *, u32, u32, u32, u32, u32, i32, PC_TEXTURE_RESOURCE **, HANDLE *);
+    PC_SURFACE *copy;
+    PC_TEXTURE_RESOURCE *texture;
+    PC_TEXTURE_LEVEL_DESC desc;
     PC_LOCKED_RECT locked;
     BITMAPFILEHEADER file_header;
     BITMAPINFOHEADER info_header;
@@ -1481,15 +1478,15 @@ extern "C" void PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE_PC *surf
     device = PCDeviceBackend.device;
     PCDeviceLastResult =
         reinterpret_cast<CREATE_TEXTURE_PC>(device->methods->create_texture)(device, width, height, 1, 0, desc.format, 2, &texture, NULL);
-    texture->methods->get_surface_level(texture, 0, reinterpret_cast<PC_TEXTURE_RESOURCE_PC **>(&copy));
+    texture->methods->get_surface_level(texture, 0, reinterpret_cast<PC_TEXTURE_RESOURCE **>(&copy));
     index = 0;
     sprintf(path, "%s_pc%03d.bmp", prefix, index++);
     while (NuFileSize(path) > 0) {
         sprintf(path, "%s_pc%03d.bmp", prefix, index++);
     }
     device = PCDeviceBackend.device;
-    DXGetErrorString9A(device->methods->get_render_target_data(device, reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(surface),
-                                                               reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(copy)));
+    DXGetErrorString9A(device->methods->get_render_target_data(device, reinterpret_cast<PC_TEXTURE_RESOURCE *>(surface),
+                                                               reinterpret_cast<PC_TEXTURE_RESOURCE *>(copy)));
     file_header.bfType = 0x4d42;
     file_header.bfSize = width * height * 4 + 0x36;
     file_header.bfReserved1 = 0;
@@ -1709,7 +1706,7 @@ void PC_DEVICE_BACKEND_PC::ConfigureTargetKinds() {
 extern "C" i32 PCGraphicsPrepareVendor() {
     u32 vendor = PCDeviceBackend.identifier.vendor;
     u32 device_id = PCDeviceBackend.identifier.device_id;
-    PC_GRAPHICS_GPU_RECORD_PC *selected = NULL;
+    PC_GRAPHICS_GPU_RECORD *selected = NULL;
     PCGraphicsGpuSelectionEnabled = 1;
     PCGraphicsQueriedGpu.vendor_id = vendor;
     PCGraphicsQueriedGpu.device_id = device_id;
@@ -1730,14 +1727,14 @@ extern "C" i32 PCGraphicsPrepareVendor() {
     return 0;
 }
 
-extern "C" PC_GRAPHICS_GPU_RECORD_PC *fun_006e6720(void) {
+extern "C" PC_GRAPHICS_GPU_RECORD *fun_006e6720(void) {
     if (PCGraphicsGpuSelectionEnabled == 0) {
         PCGraphicsPrepareVendor();
     }
     return PCGraphicsSelectedGpuRecord;
 }
 
-extern "C" HRESULT PCDeviceCreateVertexShader(const DWORD *tokens, PC_TEXTURE_RESOURCE_PC **shader) {
+extern "C" HRESULT PCDeviceCreateVertexShader(const DWORD *tokens, PC_TEXTURE_RESOURCE **shader) {
     HRESULT result = PCDeviceBackend.device->methods->create_vertex_shader(PCDeviceBackend.device, tokens, shader);
     PCDeviceLastResult = result;
     return result;
@@ -1746,7 +1743,7 @@ extern "C" HRESULT PCDeviceCreateVertexShader(const DWORD *tokens, PC_TEXTURE_RE
 extern "C" void fun_006e48d0(void) {
 }
 
-extern "C" HRESULT PCDeviceCreatePixelShader(const DWORD *tokens, PC_TEXTURE_RESOURCE_PC **shader) {
+extern "C" HRESULT PCDeviceCreatePixelShader(const DWORD *tokens, PC_TEXTURE_RESOURCE **shader) {
     HRESULT result = PCDeviceBackend.device->methods->create_pixel_shader(PCDeviceBackend.device, tokens, shader);
     PCDeviceLastResult = result;
     return result;
@@ -1857,7 +1854,7 @@ void PC_DEVICE_BACKEND_PC::ResetRequestedMode() {
     requested_multisample = multisample_index;
 }
 
-void PC_DEVICE_BACKEND_PC::SetDepthStencilSurface(PC_EFFECT_SURFACE_PC *target) {
+void PC_DEVICE_BACKEND_PC::SetDepthStencilSurface(PC_EFFECT_SURFACE *target) {
     if (target != NULL && target->surface != NULL) {
         GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
         view->methods->set_depth_stencil_surface(view, target->surface);
@@ -1880,7 +1877,7 @@ void PC_DEVICE_BACKEND_PC::RestoreDefaultPoolResources() {
     BuildDefaultPoolResources();
 }
 
-void PC_DEVICE_BACKEND_PC::SetSurfaceRenderTarget(PC_EFFECT_SURFACE_PC *target, u32 index) {
+void PC_DEVICE_BACKEND_PC::SetSurfaceRenderTarget(PC_EFFECT_SURFACE *target, u32 index) {
     if (target == NULL || target->surface == NULL) {
         if (index != 0) {
             SetRenderTarget((i32)index, NULL);
@@ -1911,11 +1908,11 @@ void PC_DEVICE_BACKEND_PC::SetSurfaceRenderTarget(PC_EFFECT_SURFACE_PC *target, 
     }
 }
 
-void PC_DEVICE_BACKEND_PC::CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *texture) {
-    PC_EFFECT_SURFACE_PC target;
+void PC_DEVICE_BACKEND_PC::CopyBackBuffer(GRAPHICS_RENDER_TEXTURE *texture) {
+    PC_EFFECT_SURFACE target;
     target.Attach(texture, 0, false);
     bool resize = PCGraphicsEffectTextureWidth(texture) != PS2_REZ_W || PCGraphicsEffectTextureHeight(texture) != PS2_REZ_H;
-    PC_TEXTURE_RESOURCE_PC *source = target_surfaces[0];
+    PC_TEXTURE_RESOURCE *source = target_surfaces[0];
     if (multisample_index != 0 || source == NULL) {
         source = back_buffer;
     }
@@ -1923,8 +1920,8 @@ void PC_DEVICE_BACKEND_PC::CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *texture) {
     view->methods->stretch_rect(view, source, NULL, target.surface, NULL, resize ? 2 : 1);
 }
 
-void PC_DEVICE_BACKEND_PC::CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *texture) {
-    PC_EFFECT_SURFACE_PC target;
+void PC_DEVICE_BACKEND_PC::CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE *texture) {
+    PC_EFFECT_SURFACE target;
     target.Attach(texture, 0, false);
     bool resize = PCGraphicsEffectTextureWidth(texture) != PS2_REZ_W || PCGraphicsEffectTextureHeight(texture) != PS2_REZ_H;
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
@@ -1941,7 +1938,7 @@ extern "C" void PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, 
     SAGA_SKIN_CALL(skin_trace_upload, 1, start, count, values, PCDeviceLastResult);
 }
 
-HRESULT PC_DEVICE_BACKEND_PC::CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC *target, i32 filter, i32 unused) {
+HRESULT PC_DEVICE_BACKEND_PC::CopySurfaceTargetPc(PC_EFFECT_SURFACE *target, i32 filter, i32 unused) {
     (void)unused;
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     return view->methods->stretch_rect(view, current_surface, NULL, target->surface, NULL, filter);
@@ -1951,7 +1948,7 @@ extern "C" HRESULT PCDeviceEndScenePc(void) {
     return PCDeviceBackend.EndScene();
 }
 
-extern "C" void PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE_PC *buffer, u32 offset, u32 stride) {
+extern "C" void PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE *buffer, u32 offset, u32 stride) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.vertex_buffer == buffer && PCDeviceStateCachePc.stream_stride == stride &&
             PCDeviceStateCachePc.stream_number == stream && PCDeviceStateCachePc.stream_offset == offset) {
@@ -1974,7 +1971,7 @@ extern "C" __declspec(noinline) void PCDeviceDrawPrimitivePc(i32 type, u32 start
 
 // noinline: the original calls PCDeviceSetIndicesPc out of line from PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc; VC8
 // would inline it there.
-extern "C" __declspec(noinline) void PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *buffer) {
+extern "C" __declspec(noinline) void PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE *buffer) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.index_buffer == buffer) {
             return;
@@ -1999,7 +1996,7 @@ extern "C" void PCDeviceSetStreamSourceFreqPc(u32 stream, u32 setting) {
 
 // noinline: the original calls PCDeviceSetVertexDeclarationPc out of line from
 // PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc; VC8 would inline it there.
-extern "C" __declspec(noinline) void PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *declaration) {
+extern "C" __declspec(noinline) void PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE *declaration) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.vertex_declaration == declaration) {
             return;
@@ -2009,12 +2006,12 @@ extern "C" __declspec(noinline) void PCDeviceSetVertexDeclarationPc(PC_TEXTURE_R
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_vertex_declaration(PCDeviceBackend.device, declaration);
 }
 
-extern "C" void PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *shader) {
+extern "C" void PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE *shader) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_vertex_shader(PCDeviceBackend.device, shader);
     SAGA_SKIN_CALL(skin_trace_bind, 0, (unsigned)shader, PCDeviceLastResult);
 }
 
-extern "C" void PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *shader) {
+extern "C" void PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE *shader) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_pixel_shader(PCDeviceBackend.device, shader);
     SAGA_SKIN_CALL(skin_trace_bind, 1, (unsigned)shader, PCDeviceLastResult);
 }
@@ -2045,7 +2042,7 @@ void PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabl
 }
 
 /* Thin IDirect3DDevice9 getters (no caller); each records its result. */
-extern "C" void PCDeviceColorFillPc(PC_TEXTURE_RESOURCE_PC *surface, const RECT *rect, u32 colour) {
+extern "C" void PCDeviceColorFillPc(PC_TEXTURE_RESOURCE *surface, const RECT *rect, u32 colour) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->color_fill(PCDeviceBackend.device, surface, rect, colour);
 }
 
@@ -2053,13 +2050,13 @@ extern "C" void PCDeviceCreateAdditionalSwapChainPc(void *parameters, void **swa
     PCDeviceLastResult = PCDeviceBackend.device->methods->create_additional_swap_chain(PCDeviceBackend.device, parameters, swap_chain);
 }
 
-extern "C" void PCDeviceCreateCubeTexturePc(u32 edge_length, u32 levels, u32 usage, i32 format, i32 pool, PC_TEXTURE_RESOURCE_PC **texture,
+extern "C" void PCDeviceCreateCubeTexturePc(u32 edge_length, u32 levels, u32 usage, i32 format, i32 pool, PC_TEXTURE_RESOURCE **texture,
                                             HANDLE *shared) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->create_cube_texture(PCDeviceBackend.device, edge_length, levels, usage, format,
                                                                               pool, texture, shared);
 }
 
-extern "C" void PCDeviceCreateOffscreenPlainSurfacePc(u32 width, u32 height, i32 format, i32 pool, PC_TEXTURE_RESOURCE_PC **surface,
+extern "C" void PCDeviceCreateOffscreenPlainSurfacePc(u32 width, u32 height, i32 format, i32 pool, PC_TEXTURE_RESOURCE **surface,
                                                       HANDLE *shared) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->create_offscreen_plain_surface(PCDeviceBackend.device, width, height, format,
                                                                                          pool, surface, shared);
@@ -2074,7 +2071,7 @@ extern "C" void PCDeviceCreateStateBlockPc(i32 type, void **state_block) {
 }
 
 extern "C" void PCDeviceCreateVolumeTexturePc(u32 width, u32 height, u32 depth, u32 levels, u32 usage, i32 format, i32 pool,
-                                              PC_TEXTURE_RESOURCE_PC **texture) {
+                                              PC_TEXTURE_RESOURCE **texture) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->create_volume_texture(PCDeviceBackend.device, width, height, depth, levels, usage,
                                                                                 format, pool, texture, NULL);
 }
@@ -2107,8 +2104,8 @@ extern "C" void PCDeviceGetCurrentTexturePalettePc(u32 *palette) {
 /* Whether the adapter accepts format for the resource type and usage in its
  * current display mode. */
 extern "C" HRESULT PCDeviceCheckFormatPc(i32 format, i32 resource_type, u32 usage) {
-    GRAPHICS_CAPS_PC caps;
-    GRAPHICS_DISPLAY_MODE_PC mode;
+    GRAPHICS_CAPS caps;
+    GRAPHICS_DISPLAY_MODE mode;
     PCDeviceBackend.device->methods->get_device_caps(PCDeviceBackend.device, &caps);
     PCDeviceBackend.factory->methods->get_adapter_display_mode(PCDeviceBackend.factory, caps.adapter_ordinal, &mode);
     return PCDeviceBackend.factory->methods->check_device_format(PCDeviceBackend.factory, caps.adapter_ordinal, caps.device_type,
@@ -2119,7 +2116,7 @@ extern "C" void PCDeviceGetDisplayModePc(u32 swap_chain, void *mode) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_display_mode(PCDeviceBackend.device, swap_chain, mode);
 }
 
-extern "C" void PCDeviceGetFrontBufferDataPc(u32 swap_chain, PC_TEXTURE_RESOURCE_PC *surface) {
+extern "C" void PCDeviceGetFrontBufferDataPc(u32 swap_chain, PC_TEXTURE_RESOURCE *surface) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_front_buffer_data(PCDeviceBackend.device, swap_chain, surface);
 }
 
@@ -2127,7 +2124,7 @@ extern "C" void PCDeviceGetFVFPc(u32 *fvf) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_fvf(PCDeviceBackend.device, fvf);
 }
 
-extern "C" void PCDeviceGetIndicesPc(PC_BUFFER_RESOURCE_PC **indices) {
+extern "C" void PCDeviceGetIndicesPc(PC_BUFFER_RESOURCE **indices) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_indices(PCDeviceBackend.device, indices);
 }
 
@@ -2157,7 +2154,7 @@ extern "C" void PCDeviceGetPaletteEntriesPc(u32 palette, PALETTEENTRY *entries) 
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_palette_entries(PCDeviceBackend.device, palette, entries);
 }
 
-extern "C" void PCDeviceGetPixelShaderPc(PC_TEXTURE_RESOURCE_PC **shader) {
+extern "C" void PCDeviceGetPixelShaderPc(PC_TEXTURE_RESOURCE **shader) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_pixel_shader(PCDeviceBackend.device, shader);
 }
 
@@ -2181,11 +2178,11 @@ extern "C" void PCDeviceGetRenderStatePc(i32 state, u32 *value) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_render_state(PCDeviceBackend.device, state, value);
 }
 
-extern "C" void PCDeviceGetRenderTargetPc(u32 index, PC_TEXTURE_RESOURCE_PC **target) {
+extern "C" void PCDeviceGetRenderTargetPc(u32 index, PC_TEXTURE_RESOURCE **target) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_render_target(PCDeviceBackend.device, index, target);
 }
 
-extern "C" void PCDeviceGetRenderTargetDataPc(PC_TEXTURE_RESOURCE_PC *target, PC_TEXTURE_RESOURCE_PC *destination) {
+extern "C" void PCDeviceGetRenderTargetDataPc(PC_TEXTURE_RESOURCE *target, PC_TEXTURE_RESOURCE *destination) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_render_target_data(PCDeviceBackend.device, target, destination);
 }
 
@@ -2202,7 +2199,7 @@ extern "C" i32 PCDeviceGetSoftwareVertexProcessingPc(void) {
     return 0;
 }
 
-extern "C" void PCDeviceGetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE_PC **buffer, u32 *offset, u32 *stride) {
+extern "C" void PCDeviceGetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE **buffer, u32 *offset, u32 *stride) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_stream_source(PCDeviceBackend.device, stream, buffer, offset, stride);
 }
 
@@ -2226,11 +2223,11 @@ extern "C" void PCDeviceGetTransformPc(i32 state, NUMTX *matrix) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_transform(PCDeviceBackend.device, state, matrix);
 }
 
-extern "C" void PCDeviceGetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC **declaration) {
+extern "C" void PCDeviceGetVertexDeclarationPc(PC_TEXTURE_RESOURCE **declaration) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_vertex_declaration(PCDeviceBackend.device, declaration);
 }
 
-extern "C" void PCDeviceGetVertexShaderPc(PC_TEXTURE_RESOURCE_PC **shader) {
+extern "C" void PCDeviceGetVertexShaderPc(PC_TEXTURE_RESOURCE **shader) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->get_vertex_shader(PCDeviceBackend.device, shader);
 }
 
@@ -2266,8 +2263,8 @@ extern "C" void PCDeviceMultiplyTransformPc(i32 state, const NUMTX *matrix) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->multiply_transform(PCDeviceBackend.device, state, matrix);
 }
 
-extern "C" void PCDeviceProcessVerticesPc(u32 source_start, u32 destination_index, u32 count, PC_BUFFER_RESOURCE_PC *destination,
-                                          PC_TEXTURE_RESOURCE_PC *declaration, u32 flags) {
+extern "C" void PCDeviceProcessVerticesPc(u32 source_start, u32 destination_index, u32 count, PC_BUFFER_RESOURCE *destination,
+                                          PC_TEXTURE_RESOURCE *declaration, u32 flags) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->process_vertices(PCDeviceBackend.device, source_start, destination_index, count,
                                                                            destination, declaration, flags);
 }
@@ -2288,11 +2285,11 @@ extern "C" void PCDeviceSetCursorPositionExPc(i32 x, i32 y, u32 flags) {
     PCDeviceBackend.device->methods->set_cursor_position(PCDeviceBackend.device, x, y, flags);
 }
 
-extern "C" void PCDeviceSetCursorPropertiesPc(u32 x, u32 y, PC_TEXTURE_RESOURCE_PC *bitmap) {
+extern "C" void PCDeviceSetCursorPropertiesPc(u32 x, u32 y, PC_TEXTURE_RESOURCE *bitmap) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_cursor_properties(PCDeviceBackend.device, x, y, bitmap);
 }
 
-extern "C" void PCDeviceSetDepthStencilSurfacePc(PC_TEXTURE_RESOURCE_PC *surface) {
+extern "C" void PCDeviceSetDepthStencilSurfacePc(PC_TEXTURE_RESOURCE *surface) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_depth_stencil_surface(PCDeviceBackend.device, surface);
 }
 
@@ -2336,13 +2333,13 @@ extern "C" void PCDeviceSetVertexShaderConstantIPc(u32 start, const i32 *data, u
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_vertex_shader_constant_i(PCDeviceBackend.device, start, data, count);
 }
 
-extern "C" void PCDeviceUpdateSurfacePc(PC_TEXTURE_RESOURCE_PC *source, const RECT *source_rect, PC_TEXTURE_RESOURCE_PC *destination,
+extern "C" void PCDeviceUpdateSurfacePc(PC_TEXTURE_RESOURCE *source, const RECT *source_rect, PC_TEXTURE_RESOURCE *destination,
                                         const POINT *destination_point) {
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->update_surface(PCDeviceBackend.device, source, source_rect, destination, destination_point);
 }
 
-extern "C" void PCDeviceUpdateTexturePc(PC_TEXTURE_RESOURCE_PC *source, PC_TEXTURE_RESOURCE_PC *destination) {
+extern "C" void PCDeviceUpdateTexturePc(PC_TEXTURE_RESOURCE *source, PC_TEXTURE_RESOURCE *destination) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->update_texture(PCDeviceBackend.device, source, destination);
 }
 
@@ -2351,9 +2348,9 @@ extern "C" void PCDeviceValidateDevicePc(u32 *passes) {
 }
 
 void PC_DEVICE_STATE_CACHE_PC::Invalidate() {
-    vertex_declaration = reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(-1);
-    index_buffer = reinterpret_cast<PC_BUFFER_RESOURCE_PC *>(-1);
-    vertex_buffer = reinterpret_cast<PC_BUFFER_RESOURCE_PC *>(-1);
+    vertex_declaration = reinterpret_cast<PC_TEXTURE_RESOURCE *>(-1);
+    index_buffer = reinterpret_cast<PC_BUFFER_RESOURCE *>(-1);
+    vertex_buffer = reinterpret_cast<PC_BUFFER_RESOURCE *>(-1);
     stream_stride = (u32)-1;
     stream_number = (u32)-1;
     stream_offset = (u32)-1;
@@ -2386,7 +2383,7 @@ extern "C" void PCDeviceBeginScenePc(void) {
 extern "C" void fun_006e45d0(void) {
 }
 
-// noinline: the original calls DrawPostEffectQuadPc out of line from PCGraphicsDrawPostEffectQuadPc; VC8 would inline
+// noinline: the original calls DrawPostEffectQuadPc out of line from PCGraphicsDrawPostEffectQuad; VC8 would inline
 // it there.
 __declspec(noinline) void PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc() {
     PCDeviceSetVertexDeclarationPc(declaration68c);
@@ -2394,7 +2391,7 @@ __declspec(noinline) void PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc() {
     PCDeviceDrawPrimitivePc(5, 0, 2);
 }
 
-// noinline: the original calls DrawPostEffectIndexedPc out of line from PCGraphicsDrawPostEffectIndexedPc; VC8 would
+// noinline: the original calls DrawPostEffectIndexedPc out of line from PCGraphicsDrawPostEffectIndexed; VC8 would
 // inline it there.
 __declspec(noinline) void PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc() {
     PCDeviceSetVertexDeclarationPc(declaration68c);
@@ -2417,8 +2414,8 @@ void PC_DEVICE_BACKEND_PC::fun_006e22c0() {
     device->methods->set_depth_stencil_surface(device, depth_surface);
 }
 
-HRESULT PC_DEVICE_BACKEND_PC::fun_006e22e0(PC_EFFECT_SURFACE_PC *target, i32 filter) {
-    PC_TEXTURE_RESOURCE_PC *source = target_surfaces[0];
+HRESULT PC_DEVICE_BACKEND_PC::fun_006e22e0(PC_EFFECT_SURFACE *target, i32 filter) {
+    PC_TEXTURE_RESOURCE *source = target_surfaces[0];
     if (multisample_index != 0 || source == NULL) {
         source = back_buffer;
     }
@@ -2426,10 +2423,10 @@ HRESULT PC_DEVICE_BACKEND_PC::fun_006e22e0(PC_EFFECT_SURFACE_PC *target, i32 fil
 }
 
 void PC_DEVICE_BACKEND_PC::fun_006e2350() {
-    GRAPHICS_RENDER_TEXTURE_PC *texture = textures[0];
+    GRAPHICS_RENDER_TEXTURE *texture = textures[0];
     textures[0] = textures[2];
     textures[2] = texture;
-    PC_TEXTURE_RESOURCE_PC *surface = target_surfaces[0];
+    PC_TEXTURE_RESOURCE *surface = target_surfaces[0];
     target_surfaces[0] = target_surfaces[2];
     target_surfaces[2] = surface;
 }
@@ -2451,15 +2448,15 @@ void PC_DEVICE_BACKEND_PC::fun_006e2ce0(u32 width, u32 height, u32 refresh) {
     requested_mode = mode;
 }
 
-extern "C" void PCGraphicsDrawPostEffectQuadPc(void) {
+extern "C" void PCGraphicsDrawPostEffectQuad(void) {
     PCDeviceBackend.DrawPostEffectQuadPc();
 }
 
-extern "C" void PCGraphicsDrawPostEffectIndexedPc(void) {
+extern "C" void PCGraphicsDrawPostEffectIndexed(void) {
     PCDeviceBackend.DrawPostEffectIndexedPc();
 }
 
-extern "C" void NuRndrEndFrameActionPc(void) {
+extern "C" void NuRndrEndFrameAction(void) {
 }
 
 extern "C" i32 PCDeviceShowCursorPc(i32 show) {
@@ -2471,7 +2468,7 @@ extern "C" i32 PCDeviceShowCursorPc(i32 show) {
     return 0;
 }
 
-extern "C" void PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE_PC *source, const RECT *source_rect, PC_TEXTURE_RESOURCE_PC *destination,
+extern "C" void PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE *source, const RECT *source_rect, PC_TEXTURE_RESOURCE *destination,
                                       const RECT *destination_rect, i32 filter) {
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->stretch_rect(PCDeviceBackend.device, source, source_rect, destination, destination_rect, filter);

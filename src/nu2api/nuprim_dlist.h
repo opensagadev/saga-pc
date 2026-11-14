@@ -14,8 +14,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PortalFlagRoomVisiblePc(NUGSCNROOM *, NUGSCN *);
-    void PortalClipRoomPc(NUGSCN *, NUGSCNROOM *, NUPORTAL_FRUSTUM_PC *);
+    void PortalFlagRoomVisible(NUGSCNROOM *, NUGSCN *);
+    void PortalClipRoom(NUGSCN *, NUGSCNROOM *, NUPORTAL_FRUSTUM *);
 #ifdef __cplusplus
 }
 #endif

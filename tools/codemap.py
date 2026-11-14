@@ -8,7 +8,7 @@ config/code-evidence.csv, one evidence class per row (strongest first):
   copy      a byte-identical copy (near-call displacements masked) of a known
             header-static helper (HELPERS); named after the helper with the
             owning compiland's prefix, the way the earlier copies are named
-            (`_AttractoFabsPc`, `?RtlVuVecCopy@@YAXAAUVuVec@@ABU1@@Z`)
+            (`_AttractoFabs`, `?RtlVuVecCopy@@YAXAAUVuVec@@ABU1@@Z`)
   compiler  a dynamic initializer in the .CRT$XC table (`??__E<object>@@YAXXZ`)
             or the atexit destructor it registers (`??__F<object>@@YAXXZ`),
             named after the global it constructs or destroys
@@ -72,7 +72,7 @@ CALL = re.compile(rb"\xe8[\x00-\xff]{4}", re.S)
 HELPERS = (
     # (stem, reference row, C++ signature after the name)
     ("VuVecMake", "?VuVecMake@@YA?AUVuVec@@MMMM@Z", "@@YA?AUVuVec@@MMMM@Z"),
-    ("Fabs", "_AttractoFabsPc", "@@YAMM@Z"),
+    ("Fabs", "_AttractoFabs", "@@YAMM@Z"),
     ("VuVecCopy", "?VuVecCopy@@YAXAAUVuVec@@ABU1@@Z", "@@YAXAAUVuVec@@ABU1@@Z"),
     ("Fdiv", "?NuFdiv@@YAMMM@Z", "@@YAMMM@Z"),
     ("ACos", "_NuACos", "@@YAMM@Z"),
@@ -155,7 +155,7 @@ def copy_name(stem, signature, compiland, language, qualified=False):
         return None
     if is_cxx(language) and signature:
         return f"?{prefix(compiland, qualified)}{stem}{signature}"
-    return f"_{prefix(compiland, qualified)}{stem}Pc"
+    return f"_{prefix(compiland, qualified)}{stem}"
 
 
 def crt_initializers(ctx):

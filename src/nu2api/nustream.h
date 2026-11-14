@@ -8,20 +8,20 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuDisplayListDrawPrimitive2DPc(void *);
-    void NuDisplayListSkinPalettePc(void *);
-    void NuDisplayListLightsPc(void *);
-    void NuDisplayListTintPc(void *);
-    void NuDisplayListFogPc(void *);
-    void NuDisplayListLightmapPacketPc(void *);
-    void NuDisplayListLegacyLightmapPc(void *);
-    void NuDisplayListLegacyLightmapOffsetPc(void *);
-    void NuDisplayListTransformPc(void *);
-    void NuDisplayListTransformTransposePc(void *);
-    void NuDisplayListFaceOnTransformPc(void *);
-    void NuDisplayListPacketAdPc(void *);
-    void NuDisplayListUpdateLightmapPc(void);
-    void NuDisplayListDrawFaceOnPc(void *);
+    void NuDisplayListDrawPrimitive2D(void *);
+    void NuDisplayListSkinPalette(void *);
+    void NuDisplayListLights(void *);
+    void NuDisplayListTint(void *);
+    void NuDisplayListFog(void *);
+    void NuDisplayListLightmapPacket(void *);
+    void NuDisplayListLegacyLightmap(void *);
+    void NuDisplayListLegacyLightmapOffset(void *);
+    void NuDisplayListTransform(void *);
+    void NuDisplayListTransformTranspose(void *);
+    void NuDisplayListFaceOnTransform(void *);
+    void NuDisplayListPacketAd(void *);
+    void NuDisplayListUpdateLightmap(void);
+    void NuDisplayListDrawFaceOn(void *);
 #ifdef __cplusplus
 }
 #endif

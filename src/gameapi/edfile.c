@@ -43,9 +43,9 @@ char edfile_buffer[0x1000] = {0};
 i32 edfile_buffer_pointer = 0;
 i32 edfile_lock[2] = {0};
 i32 edfile_readwrongendianess = 0;
-i32 EduiUsingMenuFocusPc = 0;
+i32 EduiUsingMenuFocus = 0;
 
-static eduimenu_s *EduiDeepestChildPc(eduimenu_s *menu);
+static eduimenu_s *EduiDeepestChild(eduimenu_s *menu);
 
 void EdFileSetMedia(i32 media) {
     edfile_media = media;
@@ -416,13 +416,13 @@ extern i32 editor_return;
 extern struct FILE_DIRECTORY_ENTRY_PC *dir_list;
 extern i32 edui_filepick_listsize;
 
-static void eduiFilePickAllocDirListPc(void) {
+static void eduiFilePickAllocDirList(void) {
     if (edui_filepick_listsize != 0 && dir_list == NULL) {
         dir_list = NuAlloc(edui_filepick_listsize * 0x118, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x821);
     }
 }
 
-extern NUCAMERA *EdMainCurrentCameraPc;
+extern NUCAMERA *EdMainCurrentCamera;
 extern NUVEC *ed_loc;
 extern i32 edmain_cursor_enabled;
 void PcEditorCursorEnablePc(i32 enabled);
@@ -434,7 +434,7 @@ typedef struct EDUI_PRIM_VERTEX { // size 0x10
     u32 colour;                   // 0xc
 } EDUI_PRIM_VERTEX;
 
-static void EduiPrimSetColourPc(i32 colour) {
+static void EduiPrimSetColour(i32 colour) {
     u32 converted;
     if (NuPrimNeedsOverbrightening != 0) {
         converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
@@ -486,17 +486,17 @@ i32 edmainActivate(ed_module_s *module, i32 notify) {
 }
 
 void edmainSetCamera(NUMTX *matrix) {
-    NUCAMERA *camera = EdMainCurrentCameraPc;
+    NUCAMERA *camera = EdMainCurrentCamera;
     camera->mtx = *matrix;
     NuCameraSet(camera);
 }
 
-NUCAMERA *edmainGetCameraPc(void) {
-    return EdMainCurrentCameraPc;
+NUCAMERA *edmainGetCamera(void) {
+    return EdMainCurrentCamera;
 }
 
 void edmainExtCamera(NUCAMERA *camera) {
-    EdMainCurrentCameraPc = camera != NULL ? camera : edinternalcam;
+    EdMainCurrentCamera = camera != NULL ? camera : edinternalcam;
 }
 
 void edmainSetCursorEnabled(i32 enabled) {
@@ -567,8 +567,8 @@ NUVEC *edmainQueryLocVec(void) {
 }
 
 extern f32 EduiSliderGlobalAccelerationPc;
-extern f32 EduiScaleXPc;
-extern f32 EduiScaleYPc;
+extern f32 EduiScaleX;
+extern f32 EduiScaleY;
 
 void eduiSetGlobalSliderAccel(f32 acceleration) {
     if (acceleration < 0.0f) {
@@ -580,11 +580,11 @@ void eduiSetGlobalSliderAccel(f32 acceleration) {
 }
 
 i32 fun_00617fe0(f32 x) {
-    return (EduiScaleXPc * x);
+    return (EduiScaleX * x);
 }
 
 i32 fun_00617ff0(f32 y) {
-    return (EduiScaleYPc * y);
+    return (EduiScaleY * y);
 }
 
 eduiitem_s *eduiMenuAddItem(eduimenu_s *menu, eduiitem_s *item) {
@@ -798,18 +798,18 @@ void eduicbCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 }
 
 void eduiSetActiveMenu(eduimenu_s *menu) {
-    if (EduiUsingMenuFocusPc != 0) {
+    if (EduiUsingMenuFocus != 0) {
         if (menu == NULL) {
-            active_menu = EduiDeepestChildPc(default_active_menu);
+            active_menu = EduiDeepestChild(default_active_menu);
         } else {
-            active_menu = EduiDeepestChildPc(menu);
+            active_menu = EduiDeepestChild(menu);
         }
     }
 }
 
 eduimenu_s *eduiClearActiveMenu(void) {
-    if (EduiUsingMenuFocusPc != 0) {
-        active_menu = EduiDeepestChildPc(default_active_menu);
+    if (EduiUsingMenuFocus != 0) {
+        active_menu = EduiDeepestChild(default_active_menu);
     }
     return NULL;
 }
@@ -1051,7 +1051,7 @@ i32 eduiCheckForPadMenuCancel(eduimenu_s *menu, FRAME_PAD_PC *pad) {
     if (menu->parent != NULL) {
         parent = menu->parent;
     }
-    if (EduiUsingMenuFocusPc == 0 && menu->parent != NULL) {
+    if (EduiUsingMenuFocus == 0 && menu->parent != NULL) {
         eduiMenuDetach(menu);
     }
     if (menu->callback) {
@@ -1366,9 +1366,9 @@ void edmainInit(void *font, char *configuration_file) {
         }
     }
     edinternalcam = NuCameraCreate();
-    EdMainCurrentCameraPc = edinternalcam;
+    EdMainCurrentCamera = edinternalcam;
     eduiInitMaterials();
-    eduiFilePickAllocDirListPc();
+    eduiFilePickAllocDirList();
     edmainCreateMenus();
     if (configuration_file != NULL) {
         NuStrCpy(ed_levelfile, configuration_file);
@@ -1599,10 +1599,10 @@ i32 eduicbInteractSel(edui_interact_s *interact) {
 i32 numInteracts = 0;
 edui_interact_s eduiInteracts[64] = {0};
 
-static void EduiClearInteractionsPc(eduimenu_s *menu, eduiitem_s *item);
+static void EduiClearInteractions(eduimenu_s *menu, eduiitem_s *item);
 
 void eduicbItemDestroy(eduimenu_s *menu, eduiitem_s *item) {
-    EduiClearInteractionsPc(menu, item);
+    EduiClearInteractions(menu, item);
     if (item->text != NULL) {
         NuFree(item->text, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x29e);
         item->text = NULL;
@@ -1620,7 +1620,7 @@ void eduicbItemSliderDestroy(eduimenu_s *menu, eduiitem_s *item) {
     eduicbItemDestroy(menu, item);
 }
 
-static void EduiClearInteractionsPc(eduimenu_s *menu, eduiitem_s *item) {
+static void EduiClearInteractions(eduimenu_s *menu, eduiitem_s *item) {
     edui_interact_s *interact = eduiInteracts;
     i32 remaining = numInteracts;
     if (remaining > 0) {
@@ -1737,21 +1737,21 @@ void eduiRenderInteracts(void) {
     }
     for (i = 0; i < count; ++i, ++interact) {
         colour = NuRandInt();
-        EduiPrimSetColourPc(colour);
+        EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(interact->x, interact->y, 0.0f);
-        EduiPrimSetColourPc(colour);
+        EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(interact->x + interact->width, interact->y, 0.0f);
-        EduiPrimSetColourPc(colour);
+        EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(interact->x + interact->width, interact->y, 0.0f);
-        EduiPrimSetColourPc(colour);
+        EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(interact->x + interact->width, interact->height + interact->y, 0.0f);
-        EduiPrimSetColourPc(colour);
+        EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(interact->x + interact->width, interact->height + interact->y, 0.0f);
-        EduiPrimSetColourPc(colour);
+        EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(interact->x, interact->height + interact->y, 0.0f);
-        EduiPrimSetColourPc(colour);
+        EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(interact->x, interact->height + interact->y, 0.0f);
-        EduiPrimSetColourPc(colour);
+        EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(interact->x, interact->y, 0.0f);
         if (edui_cursor_x >= interact->x && edui_cursor_y >= interact->y) {
             edge = interact->x + interact->width;
@@ -1767,9 +1767,9 @@ void eduiRenderInteracts(void) {
     if (hovered != NULL) {
         NuPrim2DBegin(16, 5, (NUMTL *)uimtls[3]);
         colour = (NuRandInt() & 0x00ffffff) | 0x40000000;
-        EduiPrimSetColourPc(colour);
+        EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(hovered->x, hovered->y, 0.0f);
-        EduiPrimSetColourPc(colour);
+        EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(hovered->width + hovered->x, hovered->height + hovered->y, 0.0f);
         NuPrim2DEnd();
     }
@@ -1838,7 +1838,7 @@ void eduiRenderCursor(void) {
 
 void eduiInit(void) {
     eduiInitMaterials();
-    eduiFilePickAllocDirListPc();
+    eduiFilePickAllocDirList();
 }
 
 void eduiSetFont(void *font) {
@@ -1856,12 +1856,12 @@ void eduiSetCameraEnabled(i32 enabled) {
     edui_camera_enabled = enabled;
 }
 
-void eduiSetUsingMenuFocusPc(i32 enabled) {
-    EduiUsingMenuFocusPc = enabled;
+void eduiSetUsingMenuFocus(i32 enabled) {
+    EduiUsingMenuFocus = enabled;
 }
 
-i32 eduiGetUsingMenuFocusPc(void) {
-    return EduiUsingMenuFocusPc;
+i32 eduiGetUsingMenuFocus(void) {
+    return EduiUsingMenuFocus;
 }
 
 void eduiSetDefaultActiveMenu(eduimenu_s *menu) {
@@ -1919,8 +1919,8 @@ void fun_00627540(f32 delta_time, FRAME_PAD_PC *pad) {
         edui_cursor_x = 320.0f;
         edui_cursor_y = 112.0f;
     } else {
-        edui_cursor_dx = -NuMouseReadXVel() * TerrainScanMargin10Pc;
-        edui_cursor_dy = -NuMouseReadYVel() * TerrainScanMargin10Pc;
+        edui_cursor_dx = -NuMouseReadXVel() * TerrainScanMargin10;
+        edui_cursor_dy = -NuMouseReadYVel() * TerrainScanMargin10;
     }
     if (NuKeyboard(0x38)) {
         edui_cursor_locked = 1;
@@ -1994,13 +1994,13 @@ void eduicbMenuCloseAllexpanders(eduimenu_s *menu) {
     }
 }
 
-extern i32 EduiSelectionMaterialPc;
-extern f32 EduiScaleXPc;
-extern f32 EduiScaleYPc;
+extern i32 EduiSelectionMaterial;
+extern f32 EduiScaleX;
+extern f32 EduiScaleY;
 i32 NuVSPrintf(char *dest, const char *format, va_list args);
 void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
 
-static void EduiExpanderOpenPc(EDUI_EXPANDER *expander) {
+static void EduiExpanderOpen(EDUI_EXPANDER *expander) {
     if (expander->first_child && !expander->open) {
         expander->last_child->next = expander->base.next;
         if (expander->base.next) {
@@ -2013,7 +2013,7 @@ static void EduiExpanderOpenPc(EDUI_EXPANDER *expander) {
 }
 
 /* Is the editor cursor over the expander's open/close button? */
-static i32 EduiExpanderOverButtonPc(EDUI_EXPANDER *expander) {
+static i32 EduiExpanderOverButton(EDUI_EXPANDER *expander) {
     // MATCH-EXCEPTION: parameter copy, reversed declarations, a local for button_x and mirrored
     // compares; only this form gives the original x87 operand order.
     EDUI_EXPANDER *e = expander;
@@ -2038,7 +2038,7 @@ static i32 eduicbProcessExpander(eduimenu_s *menu, eduiitem_s *item, f32 delta_t
             if (expander->open) {
                 eduicbItemExpanderClose(item);
             } else {
-                EduiExpanderOpenPc(expander);
+                EduiExpanderOpen(expander);
             }
         }
     }
@@ -2051,11 +2051,11 @@ static i32 eduicbInteractExpander(edui_interact_s *interact) {
         if (expander->changed) {
             expander->changed(interact->menu, &expander->base, 0);
         }
-        if (EduiExpanderOverButtonPc(expander) && expander->first_child) {
+        if (EduiExpanderOverButton(expander) && expander->first_child) {
             if (expander->open) {
                 eduicbItemExpanderClose(&expander->base);
             } else {
-                EduiExpanderOpenPc(expander);
+                EduiExpanderOpen(expander);
             }
         }
     }
@@ -2123,40 +2123,40 @@ eduimenu_s *eduiGetActiveMenuParent(void) {
 }
 
 /* The menu itself or one of its open children when it holds the focus. */
-static eduimenu_s *EduiMenuChainActivePc(eduimenu_s *menu) {
+static eduimenu_s *EduiMenuChainActive(eduimenu_s *menu) {
     if (menu == NULL) {
         return NULL;
     }
     if (menu == active_menu) {
         return menu;
     }
-    return EduiMenuChainActivePc(menu->child);
+    return EduiMenuChainActive(menu->child);
 }
 
-static eduimenu_s *EduiDeepestChildPc(eduimenu_s *menu) {
+static eduimenu_s *EduiDeepestChild(eduimenu_s *menu) {
     if (menu != NULL) {
         eduimenu_s *child = menu->child;
         if (child == NULL) {
             return menu;
         }
-        return EduiDeepestChildPc(child);
+        return EduiDeepestChild(child);
     }
     return NULL;
 }
 
 /* Without menu focus every menu takes input; with it only the active one. */
-i32 EduiMenuHasFocusPc(eduimenu_s *menu) {
-    return !EduiUsingMenuFocusPc || menu == active_menu;
+i32 EduiMenuHasFocus(eduimenu_s *menu) {
+    return !EduiUsingMenuFocus || menu == active_menu;
 }
 
-i32 EduiMenuProcessSelectedPc(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
+i32 EduiMenuProcessSelected(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
     if (menu && menu->selected && !menu->selected->disabled && menu->selected->process) {
         return menu->selected->process(menu, menu->selected, delta_time, pad);
     }
     return 0;
 }
 
-void EduiMenuEnsureSelectedPc(eduimenu_s *menu) {
+void EduiMenuEnsureSelected(eduimenu_s *menu) {
     if (!menu->selected) {
         menu->selected = menu->first;
     }
@@ -2170,11 +2170,11 @@ i32 EduiMenuContainsCursorPc(eduimenu_s *menu) {
     return 0;
 }
 
-/* Screen-space helpers in 640x448 units; EduiScaleXPc/EduiScaleYPc convert to
+/* Screen-space helpers in 640x448 units; EduiScaleX/EduiScaleY convert to
  * the 16x/8x sub-pixel coordinates of the 2D renderer. */
-static void EduiDrawRectPc(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMTL *material) {
+static void EduiDrawRect(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMTL *material) {
     if (edui_donotdraw == 0) {
-        NuRndrRect2di((i32)(x * EduiScaleXPc), (i32)(y * EduiScaleYPc), (i32)(width * EduiScaleXPc), (i32)(height * EduiScaleYPc), colour,
+        NuRndrRect2di((i32)(x * EduiScaleX), (i32)(y * EduiScaleY), (i32)(width * EduiScaleX), (i32)(height * EduiScaleY), colour,
                       material);
     }
 }
@@ -2187,8 +2187,8 @@ static void EduiDrawRectPc(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMT
         f32 line_x1 = (x1);                                                                                                                \
         f32 line_y1 = (y1);                                                                                                                \
         if (edui_donotdraw == 0)                                                                                                           \
-            NuRndrLine2di((i32)(line_x0 * EduiScaleXPc), (i32)(line_y0 * EduiScaleYPc), (i32)(line_x1 * EduiScaleXPc),                     \
-                          (i32)(line_y1 * EduiScaleYPc), colour, material);                                                                \
+            NuRndrLine2di((i32)(line_x0 * EduiScaleX), (i32)(line_y0 * EduiScaleY), (i32)(line_x1 * EduiScaleX),                           \
+                          (i32)(line_y1 * EduiScaleY), colour, material);                                                                  \
     } while (0)
 
 #define EDUI_DRAW_LINE_RECT(x, y, width, height, colour, material)                                                                         \
@@ -2198,18 +2198,18 @@ static void EduiDrawRectPc(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMT
         f32 rect_width = (width);                                                                                                          \
         f32 rect_height = (height);                                                                                                        \
         if (edui_donotdraw == 0)                                                                                                           \
-            NuRndrLineRect2di((i32)(rect_x * EduiScaleXPc), (i32)(rect_y * EduiScaleYPc), (i32)(rect_width * EduiScaleXPc),                \
-                              (i32)(rect_height * EduiScaleYPc), colour, material);                                                        \
+            NuRndrLineRect2di((i32)(rect_x * EduiScaleX), (i32)(rect_y * EduiScaleY), (i32)(rect_width * EduiScaleX),                      \
+                              (i32)(rect_height * EduiScaleY), colour, material);                                                          \
     } while (0)
 
 static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip_x, f32 clip_width, char *format, ...) {
     if (edui_donotdraw == 0) {
         char text[1024];
         va_list args;
-        i32 left = (i32)(x * EduiScaleXPc);
-        i32 top = (i32)(y * EduiScaleYPc);
-        i32 clip_left = (i32)(clip_x * EduiScaleXPc);
-        i32 clip_right = (i32)(clip_width * EduiScaleXPc);
+        i32 left = (i32)(x * EduiScaleX);
+        i32 top = (i32)(y * EduiScaleY);
+        i32 clip_left = (i32)(clip_x * EduiScaleX);
+        i32 clip_right = (i32)(clip_width * EduiScaleX);
         i32 width;
         i32 text_x;
         char *end;
@@ -2258,17 +2258,17 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
     button_colours[1] = 0xffffffff;
     item->x = x;
     item->y = y;
-    expander->hover = EduiExpanderOverButtonPc(expander);
+    expander->hover = EduiExpanderOverButton(expander);
     if (edui_donotdraw == 0) {
         NuQFntSet(edui_font);
         if (edui_donotdraw == 0) {
             NuQFntSetColour(edui_font, item->colours[item->highlighted]);
         }
     }
-    row_height = NuQFntHeight(edui_font) * 1.25 * (1.0f / EduiScaleYPc);
-    baseline = (NuQFntHeight(edui_font) * 0.125 + NuQFntBaseline(edui_font)) * (1.0f / EduiScaleYPc);
-    if (menu != NULL && EduiMenuChainActivePc(menu)) {
-        EduiDrawRectPc(item_x, item_y, item_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+    row_height = NuQFntHeight(edui_font) * 1.25 * (1.0f / EduiScaleY);
+    baseline = (NuQFntHeight(edui_font) * 0.125 + NuQFntBaseline(edui_font)) * (1.0f / EduiScaleY);
+    if (menu != NULL && EduiMenuChainActive(menu)) {
+        EduiDrawRect(item_x, item_y, item_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
     }
     for (depth = 0; depth < expander->depth; depth++) {
         f32 guide_x = item_x + ((f32)depth + 0.5) * (row_height - 2.0);
@@ -2279,7 +2279,7 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
     expander->button_y = item_y + 1.0f;
     if (expander->first_child) {
         EDUI_DRAW_LINE_RECT(expander->button_x, expander->button_y, expander->button_size, expander->button_size, 0xff000000,
-                            (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+                            (NUMTL *)uimtls[EduiSelectionMaterial]);
         EDUI_DRAW_LINE(expander->button_x + 2.0f, expander->button_y + expander->button_size * 0.5,
                        expander->button_x + expander->button_size - 2.0f, expander->button_y + expander->button_size * 0.5,
                        button_colours[expander->hover], (NUMTL *)uimtls[0]);
@@ -2319,9 +2319,9 @@ eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback
  * and an optional button (1 arrow, 2 up/down arrows, 3 colour swatch). */
 static char eduiPropTextStore[256] = {0};
 static char eduiPropTextEdit[256] = {0};
-f32 EduiPropLabelWidthPc = 50.0f;
+f32 EduiPropLabelWidth = 50.0f;
 extern void NuKeyFlush(void);
-extern void EduiFntPrintScaledPc(void *font, f32 x, f32 y, i32 alignment, char *text);
+extern void EduiFntPrintScaled(void *font, f32 x, f32 y, i32 alignment, char *text);
 extern void NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
 
 i32 eduiItemPropSetText(edui_prop_s *item, char *text) {
@@ -2340,7 +2340,7 @@ i32 eduiItemPropSetText(edui_prop_s *item, char *text) {
 }
 
 /* Dragging the divider resizes the label column of every property item. */
-static i32 EduiPropDragLabelPc(edui_prop_s *property, eduimenu_s *menu) {
+static i32 EduiPropDragLabel(edui_prop_s *property, eduimenu_s *menu) {
     eduiitem_s *other;
     if (property->dragging_label) {
         property->label_width = edui_cursor_x - property->base.x;
@@ -2432,7 +2432,7 @@ static i32 EduiPropKeyboardPc(edui_prop_s *property, eduimenu_s *menu) {
 }
 
 /* Runs the button callback while it is held (or the item is activated). */
-static i32 EduiPropButtonPc(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD_PC *pad) {
+static i32 EduiPropButton(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD_PC *pad) {
     edui_camera_enabled = 1;
     if (property->button_held || (property->base.type == 17 && (pad->digital_buttons & 0x40))) {
         if (property->button) {
@@ -2449,13 +2449,13 @@ static i32 EduiPropButtonPc(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD_P
 
 static i32 eduicbProcessProp(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
     (void)delta_time;
-    EduiPropDragLabelPc((edui_prop_s *)item, menu);
+    EduiPropDragLabel((edui_prop_s *)item, menu);
     EduiPropKeyboardPc((edui_prop_s *)item, menu);
-    EduiPropButtonPc((edui_prop_s *)item, menu, pad);
+    EduiPropButton((edui_prop_s *)item, menu, pad);
     return 0;
 }
 
-static i32 EduiPropOverLabelPc(edui_interact_s *interact) {
+static i32 EduiPropOverLabel(edui_interact_s *interact) {
     f32 edge;
     if (edui_cursor_x >= interact->x && edui_cursor_y >= interact->y) {
         edge = ((edui_prop_s *)interact->item)->label_width + interact->x - 1.0;
@@ -2469,7 +2469,7 @@ static i32 EduiPropOverLabelPc(edui_interact_s *interact) {
     return 0;
 }
 
-static i32 EduiPropOverDividerPc(edui_interact_s *interact) {
+static i32 EduiPropOverDivider(edui_interact_s *interact) {
     f32 edge = ((edui_prop_s *)interact->item)->label_width + interact->x - 1.0f;
     if (edui_cursor_x >= edge && edui_cursor_y >= interact->y) {
         edge = ((edui_prop_s *)interact->item)->label_width + interact->x + 1.0f;
@@ -2483,7 +2483,7 @@ static i32 EduiPropOverDividerPc(edui_interact_s *interact) {
     return 0;
 }
 
-static i32 EduiPropOverValuePc(edui_interact_s *interact) {
+static i32 EduiPropOverValue(edui_interact_s *interact) {
     edui_prop_s *property = (edui_prop_s *)interact->item;
     f32 edge = property->label_width + interact->x + 1.0;
     if (edui_cursor_x >= edge && edui_cursor_y >= interact->y) {
@@ -2497,7 +2497,7 @@ static i32 EduiPropOverValuePc(edui_interact_s *interact) {
     return 0;
 }
 
-static i32 EduiPropOverButtonPc(edui_prop_s *property) {
+static i32 EduiPropOverButton(edui_prop_s *property) {
     return edui_cursor_x >= property->button_x && edui_cursor_y >= property->button_y * 0.5 &&
            edui_cursor_x < property->button_x + property->button_size && edui_cursor_y < (property->button_y + property->button_size) * 0.5;
 }
@@ -2509,14 +2509,14 @@ static i32 eduicbInteractProp(edui_interact_s *interact) {
     if (edui_cursor_buttons & 0x40) {
         if (!property->dragging_label && !property->button_held) {
             if (!property->editing) {
-                if (EduiPropOverLabelPc(interact) && property->selected) {
+                if (EduiPropOverLabel(interact) && property->selected) {
                     property->selected(menu, &property->base, 0);
                 }
-                if (EduiPropOverDividerPc(interact)) {
+                if (EduiPropOverDivider(interact)) {
                     property->dragging_label = 1;
                     property->divider_active = 1;
                 }
-                if (EduiPropOverValuePc(interact) && !property->editing) {
+                if (EduiPropOverValue(interact) && !property->editing) {
                     if (property->selected) {
                         property->selected(menu, &property->base, 0);
                     }
@@ -2526,13 +2526,13 @@ static i32 eduicbInteractProp(edui_interact_s *interact) {
                     NuStrCpy(eduiPropTextEdit, property->property_text);
                     eduiPropTextPos = NuStrLen(property->property_text);
                 }
-                if ((EduiPropOverButtonPc(property) || eduiInteractLocked) && property->button) {
+                if ((EduiPropOverButton(property) || eduiInteractLocked) && property->button) {
                     property->button(menu, &property->base, 0);
                     if (property->button_latched) {
                         handled = 1;
                     }
                 }
-            } else if (EduiPropOverValuePc(interact)) {
+            } else if (EduiPropOverValue(interact)) {
                 property->editing = 1;
                 eduiPropTextPos = -1;
                 handled = 1;
@@ -2556,10 +2556,9 @@ static void eduicbItemDestroyProp(eduimenu_s *menu, eduiitem_s *item) {
     menu->field_0c = menu->first;
 }
 
-static void EduiDrawLinePc(f32 x0, f32 y0, f32 x1, f32 y1, u32 colour, NUMTL *material) {
+static void EduiDrawLine(f32 x0, f32 y0, f32 x1, f32 y1, u32 colour, NUMTL *material) {
     if (edui_donotdraw == 0) {
-        NuRndrLine2di((i32)(x0 * EduiScaleXPc), (i32)(y0 * EduiScaleYPc), (i32)(x1 * EduiScaleXPc), (i32)(y1 * EduiScaleYPc), colour,
-                      material);
+        NuRndrLine2di((i32)(x0 * EduiScaleX), (i32)(y0 * EduiScaleY), (i32)(x1 * EduiScaleX), (i32)(y1 * EduiScaleY), colour, material);
     }
 }
 
@@ -2586,7 +2585,7 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
     divider_colours[1] = 0xffffffff;
     button_colours[0] = 0xff000000;
     button_colours[1] = 0xffffffff;
-    if ((EduiPropOverButtonPc(property) && eduiInteractLocked == NULL) || property->button_held) {
+    if ((EduiPropOverButton(property) && eduiInteractLocked == NULL) || property->button_held) {
         property->button_hover = 1;
     } else {
         property->button_hover = 0;
@@ -2616,55 +2615,55 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
             }
             break;
     }
-    row_height = NuQFntHeight(edui_font) * 1.25 * (1.0f / EduiScaleYPc);
-    baseline = (NuQFntHeight(edui_font) * 0.125 + NuQFntBaseline(edui_font)) * (1.0f / EduiScaleYPc);
+    row_height = NuQFntHeight(edui_font) * 1.25 * (1.0f / EduiScaleY);
+    baseline = (NuQFntHeight(edui_font) * 0.125 + NuQFntBaseline(edui_font)) * (1.0f / EduiScaleY);
     indent_width = row_height - 2.0;
     indentation = property->depth * indent_width;
     if (property->editing) {
-        f32 text_width = NuQFntPrintLenU(edui_font, eduiPropTextEdit) * (1.0f / EduiScaleXPc);
+        f32 text_width = NuQFntPrintLenU(edui_font, eduiPropTextEdit) * (1.0f / EduiScaleX);
         f32 edit_width = draw_width - property->label_width - 4.0;
         f32 caret_x;
         text_width = EDUI_MAX(text_width, edit_width);
-        EduiDrawRectPc(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[0]);
+        EduiDrawRect(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[0]);
         if (edui_donotdraw == 0) {
-            NuRndrRect2di((i32)((draw_x + property->label_width + 2.0) * EduiScaleXPc), (i32)((draw_y + 2.0) * EduiScaleYPc),
-                          (i32)(text_width * EduiScaleXPc), (i32)((row_height - 4.0) * EduiScaleYPc), 0xffffffff, (NUMTL *)uimtls[0]);
+            NuRndrRect2di((i32)((draw_x + property->label_width + 2.0) * EduiScaleX), (i32)((draw_y + 2.0) * EduiScaleY),
+                          (i32)(text_width * EduiScaleX), (i32)((row_height - 4.0) * EduiScaleY), 0xffffffff, (NUMTL *)uimtls[0]);
         }
         for (depth = 0; depth < property->depth; depth++) {
             f32 guide_x = draw_x + (depth + 0.5) * indent_width;
             if (edui_donotdraw == 0) {
-                NuRndrLine2di((i32)(guide_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc), (i32)(guide_x * EduiScaleXPc),
-                              (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000, (NUMTL *)uimtls[0]);
+                NuRndrLine2di((i32)(guide_x * EduiScaleX), (i32)(draw_y * EduiScaleY), (i32)(guide_x * EduiScaleX),
+                              (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, (NUMTL *)uimtls[0]);
             }
         }
         if (edui_donotdraw == 0) {
-            NuRndrLine2di((i32)((draw_x + property->label_width) * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc),
-                          (i32)((draw_x + property->label_width) * EduiScaleXPc), (i32)((draw_y + row_height) * EduiScaleYPc),
+            NuRndrLine2di((i32)((draw_x + property->label_width) * EduiScaleX), (i32)(draw_y * EduiScaleY),
+                          (i32)((draw_x + property->label_width) * EduiScaleX), (i32)((draw_y + row_height) * EduiScaleY),
                           divider_colours[property->divider_active], (NUMTL *)uimtls[0]);
         }
         eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation, property->label_width, item->text);
-        EduiFntPrintScaledPc(edui_font, draw_x + property->label_width + 2.0f, draw_y + baseline, 16, eduiPropTextEdit);
+        EduiFntPrintScaled(edui_font, draw_x + property->label_width + 2.0f, draw_y + baseline, 16, eduiPropTextEdit);
         NuStrNCpy(prefix, eduiPropTextEdit, eduiPropTextPos + 1);
         prefix[eduiPropTextPos + 1] = '\0';
-        caret_x = draw_x + property->label_width + 2.0f + NuQFntPrintLenU(edui_font, prefix) * (1.0f / EduiScaleXPc);
+        caret_x = draw_x + property->label_width + 2.0f + NuQFntPrintLenU(edui_font, prefix) * (1.0f / EduiScaleX);
         if (edui_donotdraw == 0) {
-            NuRndrLine2di((i32)(caret_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc), (i32)(caret_x * EduiScaleXPc),
-                          (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000, (NUMTL *)uimtls[0]);
+            NuRndrLine2di((i32)(caret_x * EduiScaleX), (i32)(draw_y * EduiScaleY), (i32)(caret_x * EduiScaleX),
+                          (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, (NUMTL *)uimtls[0]);
         }
     } else {
         property->button_size = indent_width;
         property->button_x = draw_x + draw_width - (property->button_size + 1.0f);
         property->button_y = draw_y + 1.0f;
-        if (menu != NULL && EduiMenuChainActivePc(menu)) {
-            EduiDrawRectPc(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        if (menu != NULL && EduiMenuChainActive(menu)) {
+            EduiDrawRect(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
         }
-        EduiDrawLinePc(draw_x + property->label_width, draw_y, draw_x + property->label_width, draw_y + row_height,
-                       divider_colours[property->divider_active], (NUMTL *)uimtls[0]);
+        EduiDrawLine(draw_x + property->label_width, draw_y, draw_x + property->label_width, draw_y + row_height,
+                     divider_colours[property->divider_active], (NUMTL *)uimtls[0]);
         for (depth = 0; depth < property->depth; depth++) {
             f32 guide_x = draw_x + (depth + 0.5) * indent_width;
             if (edui_donotdraw == 0) {
-                NuRndrLine2di((i32)(guide_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc), (i32)(guide_x * EduiScaleXPc),
-                              (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000, (NUMTL *)uimtls[0]);
+                NuRndrLine2di((i32)(guide_x * EduiScaleX), (i32)(draw_y * EduiScaleY), (i32)(guide_x * EduiScaleX),
+                              (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, (NUMTL *)uimtls[0]);
             }
         }
         eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation, property->label_width, item->text);
@@ -2672,41 +2671,41 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
         clip_x = draw_x + property->label_width;
         eduiFntPrintClipEx(edui_font, value_x, draw_y + baseline, 32, clip_x, value_x - clip_x, property->property_text);
         if (property->button_type == 3 && edui_donotdraw == 0) {
-            NuRndrRect2di((i32)(property->button_x * EduiScaleXPc), (i32)(property->button_y * EduiScaleYPc),
-                          (i32)(property->button_size * EduiScaleXPc), (i32)(property->button_size * EduiScaleYPc), property->button_colour,
+            NuRndrRect2di((i32)(property->button_x * EduiScaleX), (i32)(property->button_y * EduiScaleY),
+                          (i32)(property->button_size * EduiScaleX), (i32)(property->button_size * EduiScaleY), property->button_colour,
                           (NUMTL *)uimtls[0]);
         }
         if (edui_donotdraw == 0) {
-            NuRndrLineRect2di((i32)(property->button_x * EduiScaleXPc), (i32)(property->button_y * EduiScaleYPc),
-                              (i32)(property->button_size * EduiScaleXPc), (i32)(property->button_size * EduiScaleYPc), 0xff000000,
-                              (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+            NuRndrLineRect2di((i32)(property->button_x * EduiScaleX), (i32)(property->button_y * EduiScaleY),
+                              (i32)(property->button_size * EduiScaleX), (i32)(property->button_size * EduiScaleY), 0xff000000,
+                              (NUMTL *)uimtls[EduiSelectionMaterial]);
         }
         if (property->button_type == 1) {
-            points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleXPc);
-            points[1] = (i32)((property->button_y + property->button_size * 0.1f) * EduiScaleYPc);
-            points[2] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleXPc);
-            points[3] = (i32)((property->button_y + property->button_size * 0.5) * EduiScaleYPc);
+            points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleX);
+            points[1] = (i32)((property->button_y + property->button_size * 0.1f) * EduiScaleY);
+            points[2] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleX);
+            points[3] = (i32)((property->button_y + property->button_size * 0.5) * EduiScaleY);
             points[4] = points[0];
-            points[5] = (i32)((property->button_y + property->button_size * 0.9f) * EduiScaleYPc);
+            points[5] = (i32)((property->button_y + property->button_size * 0.9f) * EduiScaleY);
             if (edui_donotdraw == 0) {
                 NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], (NUMTL *)uimtls[0]);
             }
         }
         if (property->button_type == 2) {
-            points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleXPc);
-            points[1] = (i32)((property->button_y + property->button_size * 0.45f) * EduiScaleYPc);
-            points[2] = (i32)((property->button_x + property->button_size * 0.5) * EduiScaleXPc);
-            points[3] = (i32)((property->button_y + property->button_size * 0.1f) * EduiScaleYPc);
-            points[4] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleXPc);
+            points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleX);
+            points[1] = (i32)((property->button_y + property->button_size * 0.45f) * EduiScaleY);
+            points[2] = (i32)((property->button_x + property->button_size * 0.5) * EduiScaleX);
+            points[3] = (i32)((property->button_y + property->button_size * 0.1f) * EduiScaleY);
+            points[4] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleX);
             points[5] = points[1];
             if (edui_donotdraw == 0) {
                 NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], (NUMTL *)uimtls[0]);
             }
-            points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleXPc);
-            points[1] = (i32)((property->button_y + property->button_size * 0.55f) * EduiScaleYPc);
-            points[2] = (i32)((property->button_x + property->button_size * 0.5) * EduiScaleXPc);
-            points[3] = (i32)((property->button_y + property->button_size * 0.9f) * EduiScaleYPc);
-            points[4] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleXPc);
+            points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleX);
+            points[1] = (i32)((property->button_y + property->button_size * 0.55f) * EduiScaleY);
+            points[2] = (i32)((property->button_x + property->button_size * 0.5) * EduiScaleX);
+            points[3] = (i32)((property->button_y + property->button_size * 0.9f) * EduiScaleY);
+            points[4] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleX);
             points[5] = points[1];
             if (edui_donotdraw == 0) {
                 NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], (NUMTL *)uimtls[0]);
@@ -2733,7 +2732,7 @@ eduiitem_s *eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *
         item->interact = eduicbInteractProp;
         eduiItemSetText(&item->base, text);
         eduiItemPropSetText(item, value);
-        item->label_width = EduiPropLabelWidthPc;
+        item->label_width = EduiPropLabelWidth;
         item->button_type = button_type;
         item->selected = (void (*)(eduimenu_s *, eduiitem_s *, u32))selected;
         item->changed = (void (*)(eduimenu_s *, eduiitem_s *, u32))changed;
@@ -2811,9 +2810,9 @@ static i32 eduicbProcessFilter(eduimenu_s *menu, eduiitem_s *item, f32 delta_tim
     eduiitem_s *candidate;
     eduiitem_s *next;
     (void)delta_time;
-    EduiPropDragLabelPc(&filter->prop, menu);
+    EduiPropDragLabel(&filter->prop, menu);
     EduiPropKeyboardPc(&filter->prop, menu);
-    EduiPropButtonPc(&filter->prop, menu, pad);
+    EduiPropButton(&filter->prop, menu, pad);
     if (filter->prop.editing) {
         query = eduiPropTextEdit;
     } else {
@@ -2896,7 +2895,7 @@ eduiitem_s *eduiItemFilterCreate(u32 data, void *colours, char *text, char *valu
         item->prop.interact = eduicbInteractFilter;
         eduiItemSetText(&item->prop.base, text);
         eduiItemPropSetText(&item->prop, value);
-        item->prop.label_width = EduiPropLabelWidthPc;
+        item->prop.label_width = EduiPropLabelWidth;
         return &item->prop.base;
     }
     return NULL;
@@ -2958,7 +2957,7 @@ void eduiMenuSetAttr(eduimenu_s *menu, const u32 *colours) {
     }
 }
 
-void eduiMenuSetAttrAlphaPc(eduimenu_s *menu, const u32 *colours) {
+void eduiMenuSetAttrAlpha(eduimenu_s *menu, const u32 *colours) {
     eduiitem_s *item;
     for (item = menu->first; item; item = item->next) {
         item->colours[0] &= 0x00ffffff;
@@ -3222,13 +3221,13 @@ extern char EduiTextCopyBufferPc[64];
 
 /* On-screen keyboard of the text picker: rows 0-3 are the letter rows, rows
  * 4 and 5 the copy/paste row when the picker allows pasting (flag 2). */
-static void EduiTextPickPreviousRowPc(edui_textpicker_s *picker) {
+static void EduiTextPickPreviousRow(edui_textpicker_s *picker) {
     if (--picker->keyboard_row < 0) {
         picker->keyboard_row = (picker->keyboard_flag_bits & 2) ? 5 : 3;
     }
 }
 
-static void EduiTextPickNextRowPc(edui_textpicker_s *picker) {
+static void EduiTextPickNextRow(edui_textpicker_s *picker) {
     picker->keyboard_row++;
     if (picker->keyboard_flag_bits & 2) {
         if (picker->keyboard_row > 5) {
@@ -3239,7 +3238,7 @@ static void EduiTextPickNextRowPc(edui_textpicker_s *picker) {
     }
 }
 
-static void EduiTextPickPreviousColumnPc(edui_textpicker_s *picker) {
+static void EduiTextPickPreviousColumn(edui_textpicker_s *picker) {
     if (picker->keyboard_row >= 4) {
         return;
     }
@@ -3248,7 +3247,7 @@ static void EduiTextPickPreviousColumnPc(edui_textpicker_s *picker) {
     }
 }
 
-static void EduiTextPickNextColumnPc(edui_textpicker_s *picker) {
+static void EduiTextPickNextColumn(edui_textpicker_s *picker) {
     if (picker->keyboard_row >= 4) {
         return;
     }
@@ -3259,7 +3258,7 @@ static void EduiTextPickNextColumnPc(edui_textpicker_s *picker) {
 
 /* Clears the text and, when pasting is allowed, replaces it with the copy
  * buffer. */
-static void EduiTextPickPastePc(edui_textpicker_s *picker) {
+static void EduiTextPickPaste(edui_textpicker_s *picker) {
     picker->cursor = 0;
     picker->value[0] = '\0';
     if ((picker->keyboard_flag_bits & 2) && EduiTextCopyBufferPc[0]) {
@@ -3269,7 +3268,7 @@ static void EduiTextPickPastePc(edui_textpicker_s *picker) {
     }
 }
 
-static void EduiTextPickInsertPc(edui_textpicker_s *picker, char character) {
+static void EduiTextPickInsert(edui_textpicker_s *picker, char character) {
     i32 index;
     if (NuStrLen(picker->value) >= picker->max_length) {
         return;
@@ -3284,7 +3283,7 @@ static void EduiTextPickCursorRightPc(edui_textpicker_s *picker) {
     picker->cursor = EDUI_MIN(NuStrLen(picker->value), picker->cursor + 1);
 }
 
-static void EduiTextPickDeletePc(edui_textpicker_s *picker) {
+static void EduiTextPickDelete(edui_textpicker_s *picker) {
     i32 index;
     if (picker->cursor == 0) {
         return;
@@ -3300,7 +3299,7 @@ static void EduiTextPickDeletePc(edui_textpicker_s *picker) {
 }
 
 /* Swaps the keyboard letter rows between upper and lower case. */
-static void EduiTextPickToggleCasePc(void) {
+static void EduiTextPickToggleCase(void) {
     if (textrow[1] == edui_textrow_default[1]) {
         memcpy(textrow, edui_textrow_lower, sizeof(textrow));
     } else {
@@ -3325,25 +3324,25 @@ static i32 EduiTextPickKeyboardPc(edui_textpicker_s *picker, eduimenu_s *menu, F
                 }
                 break;
             case 0xcb:
-                EduiTextPickPreviousColumnPc(picker);
+                EduiTextPickPreviousColumn(picker);
                 break;
             case 0xcd:
-                EduiTextPickNextColumnPc(picker);
+                EduiTextPickNextColumn(picker);
                 break;
             case 0xc8:
-                EduiTextPickPreviousRowPc(picker);
+                EduiTextPickPreviousRow(picker);
                 break;
             case 0xd0:
-                EduiTextPickNextRowPc(picker);
+                EduiTextPickNextRow(picker);
                 break;
             case 0x0e:
             case 0xd3:
-                EduiTextPickDeletePc(picker);
+                EduiTextPickDelete(picker);
                 break;
             default: {
                 char character = NuKeyToAscii(key, modifiers & 1);
                 if (character) {
-                    EduiTextPickInsertPc(picker, character);
+                    EduiTextPickInsert(picker, character);
                 }
             } break;
         }
@@ -3408,22 +3407,22 @@ static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_
         return 0;
     }
     if (pad->digital_buttons_pressed & 0x4000) {
-        EduiTextPickNextRowPc(picker);
+        EduiTextPickNextRow(picker);
     }
     if (pad->digital_buttons_pressed & 0x1000) {
-        EduiTextPickPreviousRowPc(picker);
+        EduiTextPickPreviousRow(picker);
     }
     if (pad->digital_buttons_pressed & 0x8000) {
-        EduiTextPickPreviousColumnPc(picker);
+        EduiTextPickPreviousColumn(picker);
     }
     if (pad->digital_buttons_pressed & 0x2000) {
-        EduiTextPickNextColumnPc(picker);
+        EduiTextPickNextColumn(picker);
     }
     if ((pad->digital_buttons_pressed & 0x10) && picker->callback) {
         picker->callback(menu, &picker->base, pad->digital_buttons);
     }
     if ((pad->digital_buttons & 0xc) == 0xc) {
-        EduiTextPickPastePc(picker);
+        EduiTextPickPaste(picker);
     }
     if ((pad->digital_buttons & 3) == 3 && (picker->keyboard_flag_bits & 2)) {
         NuStrNCpy(EduiTextCopyBufferPc, picker->value, sizeof(EduiTextCopyBufferPc));
@@ -3436,13 +3435,13 @@ static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_
         EduiTextPickCursorRightPc(picker);
     }
     if (pad->digital_buttons_pressed & 0x40) {
-        EduiTextPickInsertPc(picker, textrow[picker->keyboard_row][picker->keyboard_column]);
+        EduiTextPickInsert(picker, textrow[picker->keyboard_row][picker->keyboard_column]);
     }
     if (pad->digital_buttons_pressed & 0x80) {
-        EduiTextPickDeletePc(picker);
+        EduiTextPickDelete(picker);
     }
     if (pad->digital_buttons_pressed & 0x20) {
-        EduiTextPickToggleCasePc();
+        EduiTextPickToggleCase();
     }
     return 1;
 }
@@ -3761,29 +3760,29 @@ void eduicbMenuOpenAllexpanders(eduimenu_s *menu) {
     }
 }
 
-i32 EduiRenderWidthPc = 0;
-i32 EduiSelectionMaterialPc = 0;
-u32 EduiItemOutlineColourPc = 0x80ffffff;
-u32 EduiMarkedItemOutlineColourPc = 0x0000ff00;
+i32 EduiRenderWidth = 0;
+i32 EduiSelectionMaterial = 0;
+u32 EduiItemOutlineColour = 0x80ffffff;
+u32 EduiMarkedItemOutlineColour = 0x0000ff00;
 
-static void EduiDrawDisabledItemPc(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
+static void EduiDrawDisabledItem(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
 
-i32 EduiRenderItemPc(eduiitem_s *item, eduimenu_s *menu, i32 x, i32 y, i32 width, i32 selected) {
+i32 EduiRenderItem(eduiitem_s *item, eduimenu_s *menu, i32 x, i32 y, i32 width, i32 selected) {
     i32 height;
-    EduiRenderWidthPc = width;
+    EduiRenderWidth = width;
     height = item->render(menu, item, x, y, width, selected);
     if (selected != 0) {
         i32 marked = (item->flags & 4) != 0;
-        u32 colour = EduiMarkedItemOutlineColourPc;
+        u32 colour = EduiMarkedItemOutlineColour;
         if (!marked) {
-            colour = EduiItemOutlineColourPc;
+            colour = EduiItemOutlineColour;
         }
         if (!edui_donotdraw) {
-            NuRndrLineRect2di(x << 4, (y << 3) + 8, EduiRenderWidthPc << 4, (height << 3) - 16, colour,
-                              (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+            NuRndrLineRect2di(x << 4, (y << 3) + 8, EduiRenderWidth << 4, (height << 3) - 16, colour,
+                              (NUMTL *)uimtls[EduiSelectionMaterial]);
         }
     }
-    EduiDrawDisabledItemPc(item, x, y, width, height);
+    EduiDrawDisabledItem(item, x, y, width, height);
     return height;
 }
 
@@ -3793,7 +3792,7 @@ i32 EduiRenderItemPc(eduiitem_s *item, eduimenu_s *menu, i32 x, i32 y, i32 width
             NuRndrLine2di(x0, y0, x1, y1, colour, material);                                                                               \
     } while (0)
 
-static void EduiDrawDisabledItemPc(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
+static void EduiDrawDisabledItem(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
     if (item->disabled) {
         i32 left = x << 4;
         i32 top = y << 3;
@@ -3973,11 +3972,11 @@ void FS_SetCursorToLastFileName(void) {
 }
 
 extern void NuStrToLower(char *text);
-char FileSelFilterBlocksPc[8][96] = {0};
-char FileSelFilterOutBlocksPc[8][12] = {0};
-i32 FileSelFilterBlockCountPc = 0;
-i32 FileSelFilterOutBlockCountPc = 0;
-char FileSelVolumeNamesPc[1024] = {0};
+char FileSelFilterBlocks[8][96] = {0};
+char FileSelFilterOutBlocks[8][12] = {0};
+i32 FileSelFilterBlockCount = 0;
+i32 FileSelFilterOutBlockCount = 0;
+char FileSelVolumeNames[1024] = {0};
 char FS_ParentEntry[8] = "D######";
 char *FS_FileListEnd = FS_FileList;
 
@@ -4004,14 +4003,14 @@ char *FS_GetFilterString(char *input, char *output) {
 
 void FS_BuildFilterBlocks(char *input) {
     i32 slot;
-    FileSelFilterBlockCountPc = 0;
+    FileSelFilterBlockCount = 0;
     slot = 0;
     NuStrToLower(input);
     while (*input != 0) {
-        input = FS_GetFilterString(input, &FileSelFilterBlocksPc[FileSelFilterBlockCountPc][slot * 12]);
+        input = FS_GetFilterString(input, &FileSelFilterBlocks[FileSelFilterBlockCount][slot * 12]);
         if (*input == '|') {
-            FileSelFilterBlocksPc[FileSelFilterBlockCountPc][(slot + 1) * 12] = 0;
-            ++FileSelFilterBlockCountPc;
+            FileSelFilterBlocks[FileSelFilterBlockCount][(slot + 1) * 12] = 0;
+            ++FileSelFilterBlockCount;
             slot = 0;
             ++input;
         } else {
@@ -4019,17 +4018,17 @@ void FS_BuildFilterBlocks(char *input) {
         }
     }
     if (slot != 0) {
-        ++FileSelFilterBlockCountPc;
+        ++FileSelFilterBlockCount;
     }
 }
 
 void FS_BuildFilterOutBlocks(char *input) {
-    FileSelFilterOutBlockCountPc = 0;
+    FileSelFilterOutBlockCount = 0;
     NuStrToLower(input);
     while (*input != 0) {
-        input = FS_GetFilterString(input, FileSelFilterOutBlocksPc[FileSelFilterOutBlockCountPc]);
-        if (FileSelFilterOutBlocksPc[FileSelFilterOutBlockCountPc][0] != 0) {
-            ++FileSelFilterOutBlockCountPc;
+        input = FS_GetFilterString(input, FileSelFilterOutBlocks[FileSelFilterOutBlockCount]);
+        if (FileSelFilterOutBlocks[FileSelFilterOutBlockCount][0] != 0) {
+            ++FileSelFilterOutBlockCount;
         }
         if (*input == '|') {
             ++input;
@@ -4046,18 +4045,18 @@ i32 FS_FileNameFilter(char *name) {
     char *match;
     NuStrCpy(lower, name);
     NuStrToLower(lower);
-    for (i = 0; i < FileSelFilterOutBlockCountPc; ++i) {
-        if (NuStrStr(lower, FileSelFilterOutBlocksPc[i]) != NULL) {
+    for (i = 0; i < FileSelFilterOutBlockCount; ++i) {
+        if (NuStrStr(lower, FileSelFilterOutBlocks[i]) != NULL) {
             return 0;
         }
     }
-    for (i = 0; i < FileSelFilterBlockCountPc; ++i) {
+    for (i = 0; i < FileSelFilterBlockCount; ++i) {
         retry = lower;
         do {
             match = retry;
             retry = NULL;
             for (slot = 0; slot < 7; ++slot) {
-                if (FileSelFilterBlocksPc[i][slot * 12] == 0) {
+                if (FileSelFilterBlocks[i][slot * 12] == 0) {
                     dots = 0;
                     while (*match != 0) {
                         if (*match++ == '.' && ++dots > 1) {
@@ -4069,7 +4068,7 @@ i32 FS_FileNameFilter(char *name) {
                     }
                     break;
                 }
-                match = NuStrStr(match, &FileSelFilterBlocksPc[i][slot * 12]);
+                match = NuStrStr(match, &FileSelFilterBlocks[i][slot * 12]);
                 if (match == NULL) {
                     break;
                 }
@@ -4130,21 +4129,21 @@ static void eduiFilePickDateKeysPc(FILE_DIRECTORY_ENTRY_PC *a, FILE_DIRECTORY_EN
     }
 }
 
-i32 eduiFilePickCompareDatePc(void *a, void *b) {
+i32 eduiFilePickCompareDate(void *a, void *b) {
     i32 key_a;
     i32 key_b;
     eduiFilePickDateKeysPc(a, b, &key_a, &key_b);
     return key_a - key_b;
 }
 
-i32 eduiFilePickCompareDateReversePc(void *a, void *b) {
+i32 eduiFilePickCompareDateReverse(void *a, void *b) {
     i32 key_a;
     i32 key_b;
     eduiFilePickDateKeysPc(a, b, &key_a, &key_b);
     return key_b - key_a;
 }
 
-i32 eduiFilePickCompareSizePc(void *a, void *b) {
+i32 eduiFilePickCompareSize(void *a, void *b) {
     i32 size_a = ((FILE_DIRECTORY_ENTRY_PC *)a)->size;
     i32 size_b = ((FILE_DIRECTORY_ENTRY_PC *)b)->size;
     if (size_a < size_b) {
@@ -4153,7 +4152,7 @@ i32 eduiFilePickCompareSizePc(void *a, void *b) {
     return size_a > size_b;
 }
 
-i32 eduiFilePickCompareSizeReversePc(void *a, void *b) {
+i32 eduiFilePickCompareSizeReverse(void *a, void *b) {
     i32 size_a = ((FILE_DIRECTORY_ENTRY_PC *)a)->size;
     i32 size_b = ((FILE_DIRECTORY_ENTRY_PC *)b)->size;
     if (size_a < size_b) {
@@ -4162,11 +4161,11 @@ i32 eduiFilePickCompareSizeReversePc(void *a, void *b) {
     return size_a > size_b ? -1 : 0;
 }
 
-i32 eduiFilePickCompareNamePc(void *a, void *b) {
+i32 eduiFilePickCompareName(void *a, void *b) {
     return NuStrCmp(((FILE_DIRECTORY_ENTRY_PC *)a)->name, ((FILE_DIRECTORY_ENTRY_PC *)b)->name);
 }
 
-i32 eduiFilePickCompareNameReversePc(void *a, void *b) {
+i32 eduiFilePickCompareNameReverse(void *a, void *b) {
     return NuStrCmp(((FILE_DIRECTORY_ENTRY_PC *)b)->name, ((FILE_DIRECTORY_ENTRY_PC *)a)->name);
 }
 
@@ -4345,8 +4344,8 @@ void FS_GetDirList(char *path, char *filter, char *filter_out) {
     FS_CurrentPosFileNum = 0;
     FS_NumFiles = 0;
     if (FS_ShowVolumes != 0) {
-        GetLogicalDriveStringsA(1024, FileSelVolumeNamesPc);
-        for (drive = FileSelVolumeNamesPc; *drive != 0; drive += length + 1) {
+        GetLogicalDriveStringsA(1024, FileSelVolumeNames);
+        for (drive = FileSelVolumeNames; *drive != 0; drive += length + 1) {
             length = NuStrLen(drive);
             header.kind = 'V';
             header.encoded_second = 'A';
@@ -4432,19 +4431,19 @@ void FS_GetDirList(char *path, char *filter, char *filter_out) {
 f32 edui_cursor_y = 50.0f;
 
 /* Drops a locked interaction whose owner went away. */
-static void EduiReleaseStaleInteractPc(void) {
+static void EduiReleaseStaleInteract(void) {
     if (eduiInteractLocked && (!eduiInteractLocked->menu || !eduiInteractLocked->item) && eduiInteractLocked->field_20) {
         eduiInteractLocked = NULL;
     }
 }
 
-static void EduiInteractSelectItemPc(edui_interact_s *interact) {
+static void EduiInteractSelectItem(edui_interact_s *interact) {
     if (interact && interact->menu && interact->item && interact->item->type != 18) {
         interact->menu->selected = interact->item;
     }
 }
 
-static i32 EduiInteractPressedPc(edui_interact_s *interact) {
+static i32 EduiInteractPressed(edui_interact_s *interact) {
     return (interact->buttons & edui_cursor_buttons_db) != 0;
 }
 
@@ -4462,7 +4461,7 @@ static i32 EduiInteractionContainsCursorPc(edui_interact_s *interact) {
     return 0;
 }
 
-static i32 EduiProcessLockedInteractionPc(eduimenu_s *menu) {
+static i32 EduiProcessLockedInteraction(eduimenu_s *menu) {
     eduimenu_s *locked_menu = eduiInteractLocked->menu;
     if (menu && (menu == locked_menu || menu->parent == locked_menu)) {
         eduiInteractLocked = eduiInteractLocked->callback(eduiInteractLocked) ? eduiInteractLocked : NULL;
@@ -4473,9 +4472,9 @@ static i32 EduiProcessLockedInteractionPc(eduimenu_s *menu) {
 static i32 fun_006272a0(eduimenu_s *menu, edui_interact_s *interact) {
     i32 result = 0;
     if (interact->menu == menu) {
-        if (EduiInteractPressedPc(interact) && EduiInteractionContainsCursorPc(interact)) {
+        if (EduiInteractPressed(interact) && EduiInteractionContainsCursorPc(interact)) {
             result = 1;
-            EduiInteractSelectItemPc(interact);
+            EduiInteractSelectItem(interact);
             if (interact->field_20 != 0) {
                 if ((interact->buttons & edui_cursor_buttons_db) == 0) {
                     return result;
@@ -4508,7 +4507,7 @@ i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD_PC *pad) {
             }
         }
         if (eduiInteractLocked != NULL) {
-            result = EduiProcessLockedInteractionPc(menu);
+            result = EduiProcessLockedInteraction(menu);
         } else {
             interact = &eduiInteracts[numInteracts - 1];
             for (index = 0; index < numInteracts; index++, interact--) {
@@ -4522,13 +4521,13 @@ i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD_PC *pad) {
 }
 
 i32 eduiMenuProcessAux(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
-    if (EduiMenuHasFocusPc(menu)) {
+    if (EduiMenuHasFocus(menu)) {
         i32 result;
-        EduiMenuEnsureSelectedPc(menu);
-        result = EduiMenuProcessSelectedPc(menu, delta_time, pad);
-        if (EduiMenuHasFocusPc(menu) && menu == processing_menu) {
-            EduiMenuEnsureSelectedPc(menu);
-            if (EduiMenuHasFocusPc(menu)) {
+        EduiMenuEnsureSelected(menu);
+        result = EduiMenuProcessSelected(menu, delta_time, pad);
+        if (EduiMenuHasFocus(menu) && menu == processing_menu) {
+            EduiMenuEnsureSelected(menu);
+            if (EduiMenuHasFocus(menu)) {
                 eduiMenuProcessInput(menu, delta_time, pad, result);
             }
         }
@@ -5007,7 +5006,7 @@ void ProcessFileSel(f32 elapsed, FRAME_PAD_PC *pad) {
     }
 }
 
-void FS_OpenFileSelPc(char *title, char *path, char *filter, char *filter_out, void (*callback)(char *path, char *name)) {
+void FS_OpenFileSel(char *title, char *path, char *filter, char *filter_out, void (*callback)(char *path, char *name)) {
     if (title) {
         NuStrCpy(FS_Title, title);
     }
@@ -5042,14 +5041,14 @@ typedef struct EDUI_FILE_SELECT {                                     // size 0x
     void (*changed)(eduimenu_s *menu, eduiitem_s *item, u32 buttons); // 0x60
 } EDUI_FILE_SELECT;
 
-static i32 eduicbProcessFileSelPc(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+static i32 eduicbProcessFileSel(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
     if (ProcessFileSel3(delta_time, pad) && ((EDUI_FILE_SELECT *)item)->changed) {
         ((EDUI_FILE_SELECT *)item)->changed(menu, item, pad->digital_buttons);
     }
     return 0;
 }
 
-static i32 eduicbRenderFileSelPc(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected) {
+static i32 eduicbRenderFileSel(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected) {
     FS_X = (f32)x;
     FS_Y = (f32)(y * 0.5);
     RenderFileSel3(0);
@@ -5058,7 +5057,7 @@ static i32 eduicbRenderFileSelPc(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 
     return menu->height;
 }
 
-eduiitem_s *eduiItemFileSelCreatePc(u32 data, void *colours, void *callback, char *text) {
+eduiitem_s *eduiItemFileSelCreate(u32 data, void *colours, void *callback, char *text) {
     EDUI_FILE_SELECT *item = NuAlloc(sizeof(EDUI_FILE_SELECT), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\fileselect.c", 0x54a);
     if (item) {
         memset(item, 0, sizeof(EDUI_FILE_SELECT));
@@ -5067,8 +5066,8 @@ eduiitem_s *eduiItemFileSelCreatePc(u32 data, void *colours, void *callback, cha
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.text_alignment = 0x40;
         item->base.selection_group = 0;
-        item->base.process = eduicbProcessFileSelPc;
-        item->base.render = eduicbRenderFileSelPc;
+        item->base.process = eduicbProcessFileSel;
+        item->base.render = eduicbRenderFileSel;
         item->base.destroy = eduicbItemDestroy;
         eduiItemSetText(&item->base, text);
         item->cursor_x = 0.5f;

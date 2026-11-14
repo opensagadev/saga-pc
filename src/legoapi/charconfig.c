@@ -1,9 +1,9 @@
 #include "saga.h"
 extern i32 configureallcharacters_perm;
 
-typedef struct CHARCONFIG_PC {         // size 0xfc8
+typedef struct CHARCONFIG {            // size 0xfc8
     CHARACTERDATA_PC *character;       // 0x000
-    PLAYERCHARACTERCONFIG_PC *runtime; // 0x004
+    PLAYERCHARACTERCONFIG *runtime;    // 0x004
     GAMECHARACTERLAYER *layer_scratch; // 0x008
 
     union { // size 0x4
@@ -16,20 +16,20 @@ typedef struct CHARCONFIG_PC {         // size 0xfc8
         };
     }; // 0x00c
 
-    u8 named_layers;                                   // 0x010
-    u8 unknown_11[3];                                  // 0x011
-    i32 effect_count;                                  // 0x014
-    struct CHARACTER_EFFECT_CONFIG_PC *effect_scratch; // 0x018
-    i16 character_id;                                  // 0x01c
-    u16 animation_count;                               // 0x01e
-    VARIPTR *arena;                                    // 0x020
-    VARIPTR *arena_end;                                // 0x024
-    char animation_names[100][40];                     // 0x028
-} CHARCONFIG_PC;
+    u8 named_layers;                                // 0x010
+    u8 unknown_11[3];                               // 0x011
+    i32 effect_count;                               // 0x014
+    struct CHARACTER_EFFECT_CONFIG *effect_scratch; // 0x018
+    i16 character_id;                               // 0x01c
+    u16 animation_count;                            // 0x01e
+    VARIPTR *arena;                                 // 0x020
+    VARIPTR *arena_end;                             // 0x024
+    char animation_names[100][40];                  // 0x028
+} CHARCONFIG;
 
-CHARCONFIG_PC charconfig = {0};
+CHARCONFIG charconfig = {0};
 
-/* Bit views of PLAYERCHARACTERCONFIG_PC.flags_094 and flags_098: the keyword handlers
+/* Bit views of PLAYERCHARACTERCONFIG.flags_094 and flags_098: the keyword handlers
    store these as 1-bit fields of a 32-bit unit. They belong in saga.h as members of the
    flags_094/flags_098 unions; until then the CC_FLAGS macros view the words through them. */
 typedef struct CHARCONFIG_FLAGS094 {        // size 0x4
@@ -82,10 +82,10 @@ typedef struct CHARCONFIG_FLAGS098 {  // size 0x4
 #define CC_FLAGS098 (*(CHARCONFIG_FLAGS098 *)charconfig.runtime->flags_098)
 
 /* Defined at the end of this file; called with and without a path. */
-void CharConfigPakDiagnosticPc(const char *format, ...);
+void CharConfigPakDiagnostic(const char *format, ...);
 /* MATCH-EXCEPTION: it is also called with no arguments or with a number first; those calls go through a type
  * without a prototype, as C allows no other way. */
-#define CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED ((void (*)())CharConfigPakDiagnosticPc)
+#define CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED ((void (*)())CharConfigPakDiagnostic)
 
 f32 CharConfigAbsFloat(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffffu;
@@ -311,23 +311,23 @@ static void CC_bsa_default(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_SetAnimFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, u32 flags) {
+static void CC_SetAnimFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation, u32 flags) {
     animation->flags |= flags;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         animation->flags &= ~flags;
     }
 }
 
-static void CC_SetAnimMiscFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, u16 flags) {
+static void CC_SetAnimMiscFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation, u16 flags) {
     animation->misc_flags |= flags;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         animation->misc_flags &= ~flags;
     }
 }
 
-static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, i32 character_id, CHARACTER_EFFECT_CONFIG_PC *effects,
+static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation, i32 character_id, CHARACTER_EFFECT_CONFIG *effects,
                               i32 *effect_count) {
-    CHARACTER_EFFECT_CONFIG_PC *effect;
+    CHARACTER_EFFECT_CONFIG *effect;
     if (animation->action_id == -1) {
         return;
     }
@@ -493,7 +493,7 @@ static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animat
 
 static void CC_anim_start(NUFPAR_PC *parser) {
     char name[40];
-    CHARACTERANIM_CONFIG_PC animation;
+    CHARACTERANIM_CONFIG animation;
     if (charconfig.animation_count >= 100) {
         while (NuFParGetLine(parser) != 0) {
             if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "anim_end") == 0) {
@@ -668,7 +668,7 @@ static void CC_anim_start(NUFPAR_PC *parser) {
                     ++index;
                 }
                 if (index < charconfig.character->animation_count && charconfig.character->animations[index].name != NULL) {
-                    CHARACTERANIM_CONFIG_PC *existing = &charconfig.character->animations[index];
+                    CHARACTERANIM_CONFIG *existing = &charconfig.character->animations[index];
                     existing->blend_in_time = animation.blend_in_time;
                     existing->blend_out_time = animation.blend_out_time;
                     existing->playback_rate = animation.playback_rate;
@@ -1730,7 +1730,7 @@ i32 SecondCharConfigure = 0;
 i32 configureallcharacters_perm = 0;
 char MiniBuffer[0x4000] = {0};
 
-static f32 CharConfigFdivPc(f32 a, f32 b) {
+static f32 CharConfigFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
@@ -1768,7 +1768,7 @@ i32 fun_00584730(void) {
 }
 
 void CharConfig_CalculateJumpStats(float jump_speed, float gravity, float *duration, float *height) {
-    f32 ascent_time = CharConfigFdivPc(0.0f - jump_speed, gravity);
+    f32 ascent_time = CharConfigFdiv(0.0f - jump_speed, gravity);
     if (duration != NULL) {
         *duration = ascent_time * 2.0f;
     }
@@ -1784,8 +1784,8 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     char path[128];
     i32 redirected = 0;
     GAMECHARACTERLAYER layers[32];
-    CHARACTER_EFFECT_CONFIG_PC effects[33];
-    PLAYERCHARACTERCONFIG_PC *data;
+    CHARACTER_EFFECT_CONFIG effects[33];
+    PLAYERCHARACTERCONFIG *data;
     NUFPAR_PC *parser;
     char *buffer;
     i32 length;
@@ -1960,7 +1960,7 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
         NuStrCat(filename, ".txt");
         NuStrCpy(original_path, path);
         if (pak != NULL) {
-            CharConfigPakDiagnosticPc(path);
+            CharConfigPakDiagnostic(path);
             item = NuFilePakGetItem(pak, path);
             if (item != 0) {
                 CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED();
@@ -2000,7 +2000,7 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
                     continue;
                 }
             } else {
-                CharConfigPakDiagnosticPc(path);
+                CharConfigPakDiagnostic(path);
                 continue;
             }
         } else {
@@ -2041,5 +2041,5 @@ extern "C" {
 #endif
 
 /* Empty on PC. Defined after its callers and variadic, so CharConfig_ConfigureAll keeps the calls. */
-void CharConfigPakDiagnosticPc(const char *format, ...) {
+void CharConfigPakDiagnostic(const char *format, ...) {
 }

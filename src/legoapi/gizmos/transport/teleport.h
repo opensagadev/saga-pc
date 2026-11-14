@@ -15,10 +15,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 Teleport_UpdateHints(HINT_PC *);
+    i32 Teleport_UpdateHints(HINT *);
     void Teleports_Configure(WORLDINFO *, char *);
-    typedef struct TELEPORT_MOTION_PC TELEPORT_MOTION_PC;
-    TELEPORT_MOTION_PC *Teleport_Find(GAMEOBJECT *, f32);
+    typedef struct TELEPORT_MOTION TELEPORT_MOTION;
+    TELEPORT_MOTION *Teleport_Find(GAMEOBJECT *, f32);
     void Teleport_MoveCode(GAMEOBJECT *, i32);
     void Teleports_Reset(WORLDINFO *);
     void Teleports_UpdateBeforeGameObjects(WORLDINFO *);

@@ -8,7 +8,7 @@ extern "C" {
 }
 
 extern "C" {
-    void MoviesListNoOpPc(char *path);
+    void MoviesListNoOp(char *path);
 }
 extern "C" {
     i32 GamePads_SkipMovie(void);
@@ -17,8 +17,8 @@ extern "C" {
 
 extern "C" {}
 extern "C" {
-    i32 MovieCountPc = 0;
-    char (*MovieListPc)[32] = NULL;
+    i32 MovieCount = 0;
+    char (*MovieList)[32] = NULL;
 
     void Movies_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {
         NUFPAR_PC *parser;
@@ -26,13 +26,13 @@ extern "C" {
         (void)buffer_end;
         parser = NuFParCreate(path);
         if (parser == NULL) {
-            MoviesListNoOpPc(path);
+            MoviesListNoOp(path);
             return;
         }
         buffer->addr = (buffer->addr + 3U) & ~3U;
         destination = buffer->char_ptr;
-        MovieListPc = (char(*)[32])destination;
-        MovieCountPc = 0;
+        MovieList = (char(*)[32])destination;
+        MovieCount = 0;
         while (NuFParGetLine(parser) != 0) {
             NuFParGetWord(parser);
             if (NuStrICmp(parser->word_buffer_ptr, "movie") != 0) {
@@ -46,14 +46,14 @@ extern "C" {
             }
             NuStrCpy(destination, parser->word_buffer_ptr);
             destination += 32;
-            MovieCountPc = (i32)((u32)MovieCountPc + 1U);
+            MovieCount = (i32)((u32)MovieCount + 1U);
         }
         NuFParDestroy(parser);
-        if (MovieCountPc > 0) {
+        if (MovieCount > 0) {
             buffer->char_ptr = destination;
         } else {
-            MovieListPc = NULL;
-            MoviesListNoOpPc(path);
+            MovieList = NULL;
+            MoviesListNoOp(path);
         }
     }
 }

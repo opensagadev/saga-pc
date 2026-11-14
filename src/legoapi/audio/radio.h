@@ -10,7 +10,7 @@ extern "C" {
 #endif
     void PlayRadio(char *arg0, char *arg1, i32 arg2);
     void ResetRadios(void);
-    extern u8 RadioEntriesPc[0xa0];
+    extern u8 RadioEntries[0xa0];
 #ifdef __cplusplus
 }
 #endif

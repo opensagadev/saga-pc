@@ -1,11 +1,11 @@
 #include "saga.h"
 
-static NUVEC BuckSnowmobForwardPc = {0.0f, 0.0f, 1.0f};
-static f32 BuckSnowmobJumpDurationPc = 1.0f;
-static f32 BuckSnowmobJumpHeightPc = 1.0f;
-static f32 BuckSnowmobMaxYPc = 0.1f;
-static f32 BuckSnowmobMinYPc = -0.01f;
-static f32 BuckSnowmobRadiusPc = 0.2f;
+static NUVEC BuckSnowmobForward = {0.0f, 0.0f, 1.0f};
+static f32 BuckSnowmobJumpDuration = 1.0f;
+static f32 BuckSnowmobJumpHeight = 1.0f;
+static f32 BuckSnowmobMaxY = 0.1f;
+static f32 BuckSnowmobMinY = -0.01f;
+static f32 BuckSnowmobRadius = 0.2f;
 
 extern "C" void Game_WorldInfo_InitLast(WORLDINFO *world);
 extern "C" void Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y);
@@ -17,7 +17,7 @@ extern "C" void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r
 #include <stdio.h>
 extern "C" void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 #pragma data_seg(".data$NarrowSockExceptionsLswPc")
-extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4] = {
+extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLsw[4] = {
     {"deathstarbattle_d",  -1, 1, 67.5f, 999.0f},
     {"deathstar2battle_b", -1, 0, 67.5f, 999.0f},
     {"deathstar2battle_c", -1, 0, 30.0f, 999.0f},
@@ -26,7 +26,7 @@ extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4] = {
 #pragma data_seg()
 extern "C" void SurfaceMaskOn(u32 *surface_mask);
 extern "C" void Grabber_Reset(WORLDINFO *world);
-extern "C" void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *customiser);
+extern "C" void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *customiser);
 extern "C" u32 TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces, u32 *obstacles, u32 *turrets,
                                    u32 *characters);
 extern "C" void SurfaceMaskOff(u32 *surface_mask);
@@ -44,7 +44,7 @@ typedef struct SHOP_COMPLETION_GAME {     // size 0x7e4c
     u16 completion_points;                // 0x7c18
     u8 gold_bricks;                       // 0x7c1a
     u8 reserved_7c1b[0x79];               // 0x7c1b
-    MISSION_SAVE_READER_PC mission_save;  // 0x7c94
+    MISSION_SAVE_READER mission_save;     // 0x7c94
     u8 reserved_7cf8[0x154];              // 0x7cf8
 } SHOP_COMPLETION_GAME;
 
@@ -87,12 +87,12 @@ typedef struct SHOP_SAVE_VIEW {
 extern "C" i32 Hub_PanelBusy(void);
 #define GAME_PUBLISHER_ASSERT(expression) typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
-GAME_PUBLISHER_ASSERT(offsetof(SUIT_LAYERS_PC, flags) == 0xc);
+GAME_PUBLISHER_ASSERT(offsetof(SUIT_LAYERS, flags) == 0xc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
 GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
 GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
-GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
+GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, flags_090) == 0x90);
+GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, weapon_action) == 0x116);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_e33) == 0xe33);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
@@ -142,8 +142,8 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_283) == 0x283);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, surface_normal) + offsetof(NUVEC, y) == 0xf28);
-GAME_PUBLISHER_ASSERT(sizeof(SUIT_INITIALIZER_RECORD_PC) == 0x18);
-GAME_PUBLISHER_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_id) == 0x14);
+GAME_PUBLISHER_ASSERT(sizeof(SUIT_INITIALIZER_RECORD) == 0x18);
+GAME_PUBLISHER_ASSERT(offsetof(SUIT_INITIALIZER_RECORD, character_id) == 0x14);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, trafficanim_sys) == 0x5168);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, pulses_sys) == 0x5050);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
@@ -190,7 +190,7 @@ extern "C" {
     i32 NuWindowsGetConfigValuePc(i32 index);
 }
 
-typedef struct game_door_callback_pc_s {
+typedef struct game_door_callback_s {
     u8 unknown_00[0xf0];
     u16 level_id;
 } GAME_DOOR_CALLBACK_PC;
@@ -199,11 +199,11 @@ GAME_PUBLISHER_ASSERT(offsetof(GAME_DOOR_CALLBACK_PC, level_id) == 0xf0);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, index) == 0x62);
 GAME_PUBLISHER_ASSERT(offsetof(DOOR_s, level) == offsetof(GAME_DOOR_CALLBACK_PC, level_id));
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, doomed_escape_locator) == 0xf14);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, current_route) == 0x404);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, next_route) == 0x405);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
-GAME_PUBLISHER_ASSERT(sizeof(AIPATHINFO_PC) == 0x18);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, frame_state) == 0x4c0);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, current_route) == 0x404);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, next_route) == 0x405);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
+GAME_PUBLISHER_ASSERT(sizeof(AIPATHINFO) == 0x18);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, frame_state) == 0x4c0);
 GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, flags_word) == 0xb0);
 GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, status_flags) == 0xb4);
 GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, stage) == 0x124);
@@ -212,9 +212,9 @@ GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, field_0x18) == 0x18);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
 GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent) == 0x39c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent_metric) == 0x3a0);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent) == 0x39c);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent_metric) == 0x3a0);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
@@ -241,7 +241,7 @@ GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 GAME_PUBLISHER_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
 GAME_PUBLISHER_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, special) == 0);
-struct GIZBUILDIT_PC;
+struct GIZBUILDIT;
 
 struct GAME_BUILDIT_READER {
     u8 opaque_00[0x34];
@@ -257,9 +257,9 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, part_debris_sys) == 0x138);
 extern "C" i16 TextIdPc880ff0;
 extern i32 freeplaymode;
-GAME_PUBLISHER_ASSERT(sizeof(MISSION_MENU_PACKET_PC) == 0xa);
-GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
-GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
+GAME_PUBLISHER_ASSERT(sizeof(MISSION_MENU_PACKET) == 0xa);
+GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, player_model) == 0);
+GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, active_player) == 4);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 extern "C" void Hub_ResetPanel(void);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
@@ -287,13 +287,13 @@ GAME_PUBLISHER_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, hud_icon_timer) == 0xd60);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
-GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
+GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, hover_fall_mode) == 0x116);
 extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
 /* Reuse TAG_CHARACTER_DATA_READER from the LSW callback contract. */
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pause_context_state) == 0xee8);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
-GAME_PUBLISHER_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) == 0x14);
+GAME_PUBLISHER_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) == 0x14);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m30) == 0x30);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m31) == 0x34);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m32) == 0x38);
@@ -323,9 +323,9 @@ struct MUSIC_PAIR_ARENA { // size 0x3c
     u8 unknown_03a[2];    // 0x3a
 };
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent) == 0x39c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent_metric) == 0x3a0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent) == 0x39c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent_metric) == 0x3a0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
 
 extern "C" i32 fun_0041aec0(GAMEOBJECT *object);
 void Tag_DrawIcon_LSW(GAMEOBJECT *object);
@@ -335,13 +335,13 @@ static void LEGO_AllGoldBricksFn(void);
 extern "C" {
 
     /* This unit keeps its own out-of-line NuFabs copy. */
-    static f32 CutSceneFabsPc(f32 value) {
+    static f32 CutSceneFabs(f32 value) {
         i32 bits = *(i32 *)&value;
         bits &= 0x7fffffff;
         return *(f32 *)&bits;
     }
 
-    f32 AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount) {
+    f32 AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY *difficulty, f32 amount) {
         if (difficulty != NULL && Cheat_IsOn(44) && !BonusArea && !GAMEDEMO) {
             f32 sum = amount + difficulty->accumulator;
             difficulty->accumulator = sum;
@@ -361,15 +361,15 @@ extern "C" {
     }
 
 #pragma data_seg(".data$AdaptiveDifficultyRecoveryThresholdPc")
-    static f32 AdaptiveDifficultyRecoveryThresholdPc = 0.1f;
+    static f32 AdaptiveDifficultyRecoveryThreshold = 0.1f;
 #pragma data_seg()
 
-    f32 AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY_PC *difficulty) {
+    f32 AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY *difficulty) {
         f32 threshold;
         f32 elapsed;
         i32 increase;
         if (difficulty != NULL && Cheat_IsOn(44) != 0 && BonusArea == 0 && GAMEDEMO == 0) {
-            threshold = AdaptiveDifficultyRecoveryThresholdPc;
+            threshold = AdaptiveDifficultyRecoveryThreshold;
             if (difficulty->accumulator < 1.0f && (f64)difficulty->accumulator > 1.0 - (f64)threshold) {
                 increase = 1;
             } else {
@@ -380,7 +380,7 @@ extern "C" {
             }
             elapsed = difficulty->time_elapsed + FRAMETIME;
             difficulty->time_elapsed = elapsed;
-            if (difficulty->time_elapsed >= AdaptiveDifficultyRecoveryTimePc) {
+            if (difficulty->time_elapsed >= AdaptiveDifficultyRecoveryTime) {
                 difficulty->accumulator = 0.5f;
                 if (increase != 0) {
                     ++difficulty->level;
@@ -422,9 +422,9 @@ static i32 MakeSaveHash(void) {
 
 extern "C" {
     u8 *Game_LevelSave = 0;
-    MISSION_SAVE_READER_PC *Game_MissionSave = 0;
+    MISSION_SAVE_READER *Game_MissionSave = 0;
     TIMER OverallGamePlayTimer = {0};
-    i32 GameDrawCharacterModelFlagPc = 1;
+    i32 GameDrawCharacterModelFlag = 1;
     char *partdebris_name[] = {"TRAINING_P",   "PART_MOUSE", "PART_BLACK_3", "DRAG_PART_1", "SMALL_PART_2", "RAT_PART",
                                "BOULDER_PART", "POPCORN",    "PART_THROW",   "ENG_POP",     "DOOKU_PART",   "MAUL_P_1",
                                "MAUL_P_2",     "MAUL_P_3",   "SPEAR_HIT",    "RED_BRICK",   "POD_ROCK",     NULL};
@@ -432,10 +432,10 @@ extern "C" {
 
 extern "C" void InitGameBeforeConfig(void) {
     if (PAL != 0) {
-        NuStrCpy(SaveProductCodePc, "BESLES-54221");
+        NuStrCpy(SaveProductCode, "BESLES-54221");
         DEFAULTFRAMETIME = 0.02f;
     } else {
-        NuStrCpy(SaveProductCodePc, "BASLUS-21409");
+        NuStrCpy(SaveProductCode, "BASLUS-21409");
         DEFAULTFRAMETIME = ApplyGravityMinimumFrameTime;
     }
     FRAMETIME = DEFAULTFRAMETIME;
@@ -446,9 +446,9 @@ extern "C" void InitGameBeforeConfig(void) {
     Game_OptionsSave = &Game.options_save;
     Game_LevelSave = Game.level_save;
     Game_AreaSave = (COLLECTION_AREA_SAVE_PC *)Game.area_save;
-    EpisodeSavePc = Game.episode_save;
+    EpisodeSave = Game.episode_save;
     Game_CharacterSave = Game.character_save;
-    CustomiserCompletionSavePc = (CUSTOMISER_COMPLETION_READER_PC *)&Game.save_hash;
+    CustomiserCompletionSave = (CUSTOMISER_COMPLETION_READER_PC *)&Game.save_hash;
     Game_MissionSave = &Game.mission_save;
     ResetSeeds();
     ResetTimer(&GlobalTimer, 0.0f);
@@ -467,13 +467,13 @@ extern "C" void InitGameBeforeConfig(void) {
     WorldInfo_Reset(&WorldInfo[0], -1);
     WorldInfo_Reset(&WorldInfo[1], -1);
     Game.purchased_extra_bits_high |= 0x1000;
-    memset(&KillPartsZeroLightingPc, 0, sizeof(KillPartsZeroLightingPc));
+    memset(&KillPartsZeroLighting, 0, sizeof(KillPartsZeroLighting));
     memset(GameCam, 0, sizeof(*GameCam));
     InitPartTable(partdebris_name);
     GameAudio_Reset();
     if (StartupGameFlag0 != 0) {
         NuAnimSetForceEulerToQuat(1);
-        GameDrawCharacterModelFlagPc = 0;
+        GameDrawCharacterModelFlag = 0;
     }
 }
 
@@ -641,7 +641,7 @@ static i32 Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 soun
             } else {
                 ++selected;
             }
-            if (selected < 0 || selected == 10 || SuitRecordInitPc[selected].character_id != (i16)object->id || selected == previous) {
+            if (selected < 0 || selected == 10 || SuitRecordInit[selected].character_id != (i16)object->id || selected == previous) {
                 return 0;
             }
             if ((areaSuitBits & (1 << selected)) != 0) {
@@ -657,7 +657,7 @@ static i32 Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 soun
                     GameAudio_PlaySfx(0x24, &object->collision_position, 0, 0);
                 }
             }
-            object->suit = (SUIT_LAYERS_PC *)&SuitRecordInitPc[selected];
+            object->suit = (SUIT_LAYERS *)&SuitRecordInit[selected];
             InitPlayerAI(object);
             return 1;
         }
@@ -666,7 +666,7 @@ static i32 Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 soun
 }
 
 static void Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) {
-    SUIT_LAYERS_PC *previous = object->suit;
+    SUIT_LAYERS *previous = object->suit;
     if ((i16)object->id != ID_DEFAULTCHARACTER_A && (i16)object->id != ID_DEFAULTCHARACTER_B) {
         object->suit = NULL;
     } else if (owned != 0) {
@@ -681,8 +681,8 @@ static void Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) {
         u32 toggled = object->character_toggled;
         u8 next_route = object->ai_packet.next_route;
         u32 current_route = object->ai_packet.current_route;
-        AILOCATOR_PC *escape_locator = object->doomed_escape_locator;
-        AIPATHINFO_PC path_info = object->ai_packet.path_info;
+        AILOCATOR *escape_locator = object->doomed_escape_locator;
+        AIPATHINFO path_info = object->ai_packet.path_info;
         i32 route_frame_state = object->route_frame_state;
         i32 frame_state = object->ai_packet.frame_state;
         InitPlayerAI(object);
@@ -696,7 +696,7 @@ static void Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) {
     }
 }
 
-static void Punch_HitExtraCode_alternate_PC(GAMEOBJECT *object, NUVEC *position) {
+static void Punch_HitExtraCode_alternate(GAMEOBJECT *object, NUVEC *position) {
     if ((AnimMiscFlags(object->character_model, object->field_7aa) & 4) != 0) {
         if (position != NULL) {
             PlaySfx("WhipHit", position);
@@ -742,13 +742,13 @@ static void Punch_HitHold(GAMEOBJECT *attacker, GAMEOBJECT *target) {
 }
 
 static void ExtraHurtSfx_LSW(GAMEOBJECT *object) {
-    if (object->id == (u16)id_CHEWBACCA && CheatC3poBitsEnabledPc != 0) {
+    if (object->id == (u16)id_CHEWBACCA && CheatC3poBitsEnabled != 0) {
         PlaySfx("C3_Death", &object->collision_position);
     }
 }
 
 static void ExtraDieSfx_LSW(GAMEOBJECT *object) {
-    if (object->id == (u16)id_CHEWBACCA && CheatC3poBitsEnabledPc != 0) {
+    if (object->id == (u16)id_CHEWBACCA && CheatC3poBitsEnabled != 0) {
         PlaySfx("C3_Death", &object->collision_position);
     }
 }
@@ -853,18 +853,18 @@ static void BuckStartExtra_LSW(GAMEOBJECT *object) {
         }
         NUVEC delta;
         NuVecSub(&delta, &player->lower_position, &object->locator_matrices[1].translation);
-        if (delta.y > BuckSnowmobMinYPc && delta.y < BuckSnowmobMaxYPc) {
-            f32 radius = BuckSnowmobRadiusPc;
+        if (delta.y > BuckSnowmobMinY && delta.y < BuckSnowmobMaxY) {
+            f32 radius = BuckSnowmobRadius;
             f32 distance = delta.x * delta.x + delta.z * delta.z;
             if (distance < radius * radius) {
                 NUVEC destination;
-                NuVecRotateY(&destination, &BuckSnowmobForwardPc, ((BUCK_ROTATION_READER_PC *)object)->rotation);
+                NuVecRotateY(&destination, &BuckSnowmobForward, ((BUCK_ROTATION_READER_PC *)object)->rotation);
                 NuVecAdd(&destination, &destination, &((GAMEOBJECT *)Player[i])->collision_position);
                 f32 height = GameShadow(NULL, &destination, 5.0f, -1);
                 if (height != 2000000.0f) {
                     destination.y = height;
                 }
-                StartBigJump((GAMEOBJECT *)Player[i], &destination, 0, BuckSnowmobJumpHeightPc, BuckSnowmobJumpDurationPc, 1);
+                StartBigJump((GAMEOBJECT *)Player[i], &destination, 0, BuckSnowmobJumpHeight, BuckSnowmobJumpDuration, 1);
             }
         }
     }
@@ -885,7 +885,7 @@ static void GameObjectDimensionsExtra_LSW(GAMEOBJECT *object) {
 }
 
 static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *offset) {
-    *scale = GizmoBlowupUnitScalePc;
+    *scale = GizmoBlowupUnitScale;
     *offset = v000;
 
     if (character_id == id_TAUNTAUN) {
@@ -904,34 +904,34 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         scale->x = 2.3f;
     } else if (character_id == id_ATAT) {
         scale->x = 7.0f;
-    } else if (character_id == VehicleBoltId7f18b4Pc) {
+    } else if (character_id == VehicleBoltId7f18b4) {
         scale->x = 3.0f;
     } else if (character_id == id_XWING) {
         scale->x = 10.0f;
     } else if (character_id == id_YWING) {
         scale->x = 6.5f;
-    } else if (character_id == VehicleBoltId7f1a24Pc) {
+    } else if (character_id == VehicleBoltId7f1a24) {
         scale->x = 4.0f;
-    } else if (character_id == VehicleBoltId7f19a4Pc) {
+    } else if (character_id == VehicleBoltId7f19a4) {
         scale->x = 10.0f;
-    } else if (character_id == id_TIEFIGHTER || character_id == VehicleBoltId7f1a28Pc || character_id == VehicleBoltId7f196cPc ||
+    } else if (character_id == id_TIEFIGHTER || character_id == VehicleBoltId7f1a28 || character_id == VehicleBoltId7f196c ||
                character_id == id_TIEBOMBER) {
         scale->x = 6.0f;
-    } else if (character_id == VehicleBoltId7f1a2cPc) {
+    } else if (character_id == VehicleBoltId7f1a2c) {
         scale->x = 8.0f;
-    } else if (character_id == VehicleBoltId7f195cPc) {
+    } else if (character_id == VehicleBoltId7f195c) {
         scale->x = 8.0f;
     } else if (character_id == id_WOOKIEFLYER) {
         scale->x = 6.0f;
-    } else if (character_id == FreePlayId007f1a98Pc) {
+    } else if (character_id == FreePlayId007f1a98) {
         scale->x = 5.0f;
-    } else if (character_id == FreePlayId007f1b40Pc || character_id == FreePlayId007f1b44Pc || character_id == id_ANAKINSNEWPOD ||
+    } else if (character_id == FreePlayId007f1b40 || character_id == FreePlayId007f1b44 || character_id == id_ANAKINSNEWPOD ||
                character_id == id_ANAKINSNEWPODGREEN || character_id == id_NEW_REPUBLIC_GUNSHIP ||
                character_id == id_NEW_REPUBLIC_GUNSHIP_GREEN) {
         scale->x = 6.0f;
-    } else if (character_id == VehicleBoltId7f1a9cPc || character_id == VehicleBoltId7f1aa0Pc) {
+    } else if (character_id == VehicleBoltId7f1a9c || character_id == VehicleBoltId7f1aa0) {
         scale->x = 7.0f;
-    } else if (character_id == VehicleBoltId7f1b34Pc || character_id == VehicleBoltId7f1b38Pc) {
+    } else if (character_id == VehicleBoltId7f1b34 || character_id == VehicleBoltId7f1b38) {
         scale->x = 5.0f;
     } else if (character_id == id_SEBULBASPOD) {
         scale->x = 8.0f;
@@ -945,7 +945,7 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         offset->z = -0.03f;
     } else if (character_id == (i16)id_GONKDROID) {
         offset->z = -0.0075f;
-    } else if (character_id == id_IMPERIALSPY || character_id == FreePlayId007f199cPc || character_id == id_GREEDO ||
+    } else if (character_id == id_IMPERIALSPY || character_id == FreePlayId007f199c || character_id == id_GREEDO ||
                character_id == id_BOSSK || character_id == id_CANTINABAND) {
         offset->z = -0.03f;
     } else if (character_id == id_IMPERIALGUARD) {
@@ -1029,10 +1029,10 @@ static i32 CheckMusicOther(void) {
     return 0;
 }
 
-static i32 GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT_PC *input, GAMEOBJECT *object) {
+static i32 GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT *input, GAMEOBJECT *object) {
     GAME_BUILDIT_READER *buildit = (GAME_BUILDIT_READER *)input;
     if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0) {
-        if (input == HubBuildItPc) {
+        if (input == HubBuildIt) {
             if (Game.gold_bricks < 2 * buildit->anim_object_count) {
                 return 0;
             }
@@ -1099,7 +1099,7 @@ static i32 LastSafePosExtra(GAMEOBJECT *object) {
     return 0;
 }
 
-static i32 ActionMusicSockChoicePc(void) {
+static i32 ActionMusicSockChoice(void) {
     NUVEC position;
     SOCKPOSITION_PC socket_position;
     if (Players_AveragePos(&position, &socket_position) != 0) {
@@ -1135,7 +1135,7 @@ static i32 ActionMusicFn(void) {
             return 1;
         }
         if (WORLD->current_level == SPEEDERCHASEA_LDATA) {
-            const i32 choice = ActionMusicSockChoicePc();
+            const i32 choice = ActionMusicSockChoice();
             if (choice != -1) {
                 return choice;
             }
@@ -1227,12 +1227,12 @@ static void Collection_GetSelectingPlayerIDs(i16 *ids) {
         return;
     }
     count = 0;
-    if (MissionMenuPacketPc.active_player[0] != 0 && freeplay_selected[0] <= 2) {
-        ids[0] = MissionMenuPacketPc.player_model[0];
+    if (MissionMenuPacket.active_player[0] != 0 && freeplay_selected[0] <= 2) {
+        ids[0] = MissionMenuPacket.player_model[0];
         count = 1;
     }
-    if (MissionMenuPacketPc.active_player[1] != 0 && freeplay_selected[1] <= 2) {
-        ids[count] = MissionMenuPacketPc.player_model[1];
+    if (MissionMenuPacket.active_player[1] != 0 && freeplay_selected[1] <= 2) {
+        ids[count] = MissionMenuPacket.player_model[1];
     }
 }
 
@@ -1266,15 +1266,15 @@ static NUSPECIALHANDLE *GameMsg_GetExtraObj(GAME_MESSAGE_PC *message) {
 
 static void Jump_EndOfLandContext(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS_PC *weapon = (GAME_CALLBACK_WEAPON_FLAGS_PC *)object;
-    if ((i16)object->id == id_THEEMPEROR && object->character_context == LEGOCONTEXT_LAND_COMBOJUMP && BigJumpLandPreferredPc != -1 &&
-        object->field_7aa == BigJumpLandPreferredPc && ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
+    if ((i16)object->id == id_THEEMPEROR && object->character_context == LEGOCONTEXT_LAND_COMBOJUMP && BigJumpLandPreferred != -1 &&
+        object->field_7aa == BigJumpLandPreferred && ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
 }
 
 static void BigJump_EndOfLand(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS_PC *weapon = (GAME_CALLBACK_WEAPON_FLAGS_PC *)object;
-    if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferredPc != -1 && object->field_7aa == BigJumpLandPreferredPc &&
+    if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferred != -1 && object->field_7aa == BigJumpLandPreferred &&
         ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
@@ -1287,46 +1287,46 @@ void LSW_SetIndy(i32 area_index) {
         PUNCHCHARGAP = 0.3f;
         LedgeTerrain_CheckAnims = 0;
         StartupGameFlag0 = 1;
-        DefaultMotionLedgeTerrainEnabledPc = 1;
+        DefaultMotionLedgeTerrainEnabled = 1;
         Grapples_Available = 1;
         Grapple_RopeSwingsAvailable = 1;
-        SuperCarryEnablePc = 1;
-        CombatRollEnablePc = 1;
+        SuperCarryEnable = 1;
+        CombatRollEnable = 1;
         LEGOHINT_PUNCH = 0;
-        TechnoSysPc.interaction_time = -0.2f;
-        TechnoSysPc.idle_offsets[0] = v000;
-        TechnoSysPc.idle_offsets[1] = v000;
-        TechnoSysPc.idle_object_ids[1] = 0x2f;
-        TechnoSysPc.idle_object_ids[2] = 0x30;
-        TechnoSysPc.idle_object_ids[3] = 0x31;
-        TechnoSysPc.idle_offsets[2].x = 0.0f;
-        TechnoSysPc.idle_offsets[2].y = 0.0f;
-        TechnoSysPc.idle_offsets[2].z = -0.1295f;
-        TechnoSysPc.idle_object_ids[0] = 0x56;
-        TechnoSysPc.hand_object_ids[0] = -1;
-        TechnoSysPc.hand_object_ids[1] = -1;
-        TechnoDefaultObjectPc = 0x56;
+        TechnoSys.interaction_time = -0.2f;
+        TechnoSys.idle_offsets[0] = v000;
+        TechnoSys.idle_offsets[1] = v000;
+        TechnoSys.idle_object_ids[1] = 0x2f;
+        TechnoSys.idle_object_ids[2] = 0x30;
+        TechnoSys.idle_object_ids[3] = 0x31;
+        TechnoSys.idle_offsets[2].x = 0.0f;
+        TechnoSys.idle_offsets[2].y = 0.0f;
+        TechnoSys.idle_offsets[2].z = -0.1295f;
+        TechnoSys.idle_object_ids[0] = 0x56;
+        TechnoSys.hand_object_ids[0] = -1;
+        TechnoSys.hand_object_ids[1] = -1;
+        TechnoDefaultObject = 0x56;
         GameAudio_SetActionMusicTimes(0.1f, 3.0f);
     } else {
         PUNCHGAP = 0.3f;
         PUNCHCHARGAP = 0.3f;
         StartupGameFlag0 = 0;
-        DefaultMotionLedgeTerrainEnabledPc = 0;
+        DefaultMotionLedgeTerrainEnabled = 0;
         Grapples_Available = 0;
-        SuperCarryEnablePc = 0;
-        CombatRollEnablePc = 0;
+        SuperCarryEnable = 0;
+        CombatRollEnable = 0;
         LEGOHINT_PUNCH = 1;
-        TechnoSysPc.interaction_time = 0.2f;
-        TechnoSysPc.idle_offsets[0] = v000;
-        TechnoSysPc.idle_offsets[1] = v000;
-        TechnoSysPc.idle_object_ids[1] = 0x2c;
-        TechnoSysPc.idle_object_ids[2] = -1;
-        TechnoSysPc.idle_object_ids[3] = -1;
-        TechnoSysPc.idle_offsets[2] = v000;
-        TechnoSysPc.idle_object_ids[0] = 0x55;
-        TechnoSysPc.hand_object_ids[0] = 0x2d;
-        TechnoSysPc.hand_object_ids[1] = 0x2e;
-        TechnoDefaultObjectPc = 0x55;
+        TechnoSys.interaction_time = 0.2f;
+        TechnoSys.idle_offsets[0] = v000;
+        TechnoSys.idle_offsets[1] = v000;
+        TechnoSys.idle_object_ids[1] = 0x2c;
+        TechnoSys.idle_object_ids[2] = -1;
+        TechnoSys.idle_object_ids[3] = -1;
+        TechnoSys.idle_offsets[2] = v000;
+        TechnoSys.idle_object_ids[0] = 0x55;
+        TechnoSys.hand_object_ids[0] = 0x2d;
+        TechnoSys.hand_object_ids[1] = 0x2e;
+        TechnoDefaultObject = 0x55;
         GameAudio_SetActionMusicTimes(1.0f, 6.0f);
     }
 }
@@ -1370,7 +1370,7 @@ void NewGame(void) {
     Game.purchased_extra_bits_high |= 0x1000;
     Cheat_SetOn(44, 1, 1);
     Hint_ClearHintsAndDoneFlags();
-    LswForceUsedHintFlagsPc &= ~7u;
+    LswForceUsedHintFlags &= ~7u;
     GamePad_InitButtons();
     Tag_DoneFirst = 0;
     Tag_DoneAny = 0;
@@ -1397,30 +1397,30 @@ void NewGame(void) {
     if (id_DEFAULTCHARACTER[1] != -1) {
         Game.character_save[id_DEFAULTCHARACTER[1]] |= 3;
     }
-    if (PermanentWeirdo1IdPc != -1) {
-        Game.character_save[PermanentWeirdo1IdPc] |= 3;
+    if (PermanentWeirdo1Id != -1) {
+        Game.character_save[PermanentWeirdo1Id] |= 3;
         if (CDataList != NULL) {
-            CDataList[PermanentWeirdo1IdPc].name_id = 204;
+            CDataList[PermanentWeirdo1Id].name_id = 204;
         }
     }
-    if (PermanentWeirdo2IdPc != -1) {
-        Game.character_save[PermanentWeirdo2IdPc] |= 3;
+    if (PermanentWeirdo2Id != -1) {
+        Game.character_save[PermanentWeirdo2Id] |= 3;
         if (CDataList != NULL) {
-            CDataList[PermanentWeirdo2IdPc].name_id = 205;
+            CDataList[PermanentWeirdo2Id].name_id = 205;
         }
     }
     Game.customiser_start[0].use_saved_name = 1;
     Game.customiser_start[1].use_saved_name = 1;
     for (i = 0; i < 10; ++i) {
-        if (SuitRecordInitPc[i].group != previous_group) {
+        if (SuitRecordInit[i].group != previous_group) {
             Game.initial_store_pack_flags |= 1u << i;
-            previous_group = SuitRecordInitPc[i].group;
+            previous_group = SuitRecordInit[i].group;
         }
     }
 }
 
 extern "C" {
-    i32 CompletionPointInfoRecalculatePc[7] = {0};
+    i32 CompletionPointInfoRecalculate[7] = {0};
 
     void ReCalculateCompletionPoints(void) {
         SHOP_COMPLETION_GAME *save = reinterpret_cast<SHOP_COMPLETION_GAME *>(&Game);
@@ -1429,14 +1429,14 @@ extern "C" {
         AREASAVE_s *area_save;
         save->completion_points = 0;
         save->gold_bricks = 0;
-        memset(CompletionPointInfoRecalculatePc, 0, sizeof(CompletionPointInfoRecalculatePc));
+        memset(CompletionPointInfoRecalculate, 0, sizeof(CompletionPointInfoRecalculate));
         if (AllMiniKitsDone(save->area_save) != 0) {
-            AddToCollection(VehicleBoltId7f195cPc);
+            AddToCollection(VehicleBoltId7f195c);
         }
-        for (i = 0; i < MasterCollectionPc.count; ++i) {
-            COLLECTID *entry = reinterpret_cast<COLLECTID *>(&MasterCollectionPc.list[i]);
+        for (i = 0; i < MasterCollection.count; ++i) {
+            COLLECTID *entry = reinterpret_cast<COLLECTID *>(&MasterCollection.list[i]);
             if (entry->field5_0x9 != 0) {
-                CompletionPointInfoRecalculatePc[2] += POINTS_PER_CHARACTER;
+                CompletionPointInfoRecalculate[2] += POINTS_PER_CHARACTER;
                 if (Collection_Got(entry->id) != 0) {
                     AddToCompletionPoints(POINTS_PER_CHARACTER);
                 }
@@ -1449,24 +1449,24 @@ extern "C" {
                 continue;
             }
             if ((area->flags & 0x100) != 0) {
-                CompletionPointInfoRecalculatePc[1] += POINTS_PER_SUPERBONUSCOMPLETE;
+                CompletionPointInfoRecalculate[1] += POINTS_PER_SUPERBONUSCOMPLETE;
                 if (area_save->area_complete != 0) {
                     AddToCompletionPoints(POINTS_PER_SUPERBONUSCOMPLETE);
-                    if (EpisodeGoldBrickForSuperBonusPc != 0) {
+                    if (EpisodeGoldBrickForSuperBonus != 0) {
                         AddToGoldBricks();
                     }
                 }
                 continue;
             }
             if ((area->flags & 4) != 0) {
-                CompletionPointInfoRecalculatePc[1] += POINTS_PER_TIMETRIAL;
+                CompletionPointInfoRecalculate[1] += POINTS_PER_TIMETRIAL;
                 if (area_save->challenge_trial_time < static_cast<f32>(area->challenge_trial_time)) {
                     AddToCompletionPoints(POINTS_PER_TIMETRIAL);
                     AddToGoldBricks();
                 }
                 continue;
             }
-            CompletionPointInfoRecalculatePc[1] += POINTS_PER_STORY;
+            CompletionPointInfoRecalculate[1] += POINTS_PER_STORY;
             if (area_save->area_complete != 0) {
                 AddToCompletionPoints(POINTS_PER_STORY);
                 if ((area->flags & 0x800) == 0) {
@@ -1476,18 +1476,18 @@ extern "C" {
             if ((area->flags & 0x10) == 0) {
                 continue;
             }
-            CompletionPointInfoRecalculatePc[1] += POINTS_PER_MINIKIT;
+            CompletionPointInfoRecalculate[1] += POINTS_PER_MINIKIT;
             if (area_save->minikit_complete != 0) {
                 AddToCompletionPoints(POINTS_PER_MINIKIT);
                 AddToGoldBricks();
             }
-            CompletionPointInfoRecalculatePc[1] += POINTS_PER_TRUEJEDI;
-            if (HubBothTrueJediGoldBricksPc != 0) {
+            CompletionPointInfoRecalculate[1] += POINTS_PER_TRUEJEDI;
+            if (HubBothTrueJediGoldBricks != 0) {
                 if (area_save->true_hero_complete[0] != 0) {
                     AddToCompletionPoints(POINTS_PER_TRUEJEDI);
                     AddToGoldBricks();
                 }
-                CompletionPointInfoRecalculatePc[1] += POINTS_PER_TRUEJEDI;
+                CompletionPointInfoRecalculate[1] += POINTS_PER_TRUEJEDI;
                 if (area_save->true_hero_complete[1] != 0) {
                     AddToCompletionPoints(POINTS_PER_TRUEJEDI);
                     AddToGoldBricks();
@@ -1496,21 +1496,21 @@ extern "C" {
                 AddToCompletionPoints(POINTS_PER_TRUEJEDI);
                 AddToGoldBricks();
             }
-            CompletionPointInfoRecalculatePc[1] += POINTS_PER_REDBRICK;
+            CompletionPointInfoRecalculate[1] += POINTS_PER_REDBRICK;
             if (area_save->red_brick_collected != 0) {
                 AddToCompletionPoints(POINTS_PER_REDBRICK);
             }
-            CompletionPointInfoRecalculatePc[1] += POINTS_PER_CHALLENGE;
+            CompletionPointInfoRecalculate[1] += POINTS_PER_CHALLENGE;
             if (area_save->reserved_0x7 != 0) {
                 AddToCompletionPoints(POINTS_PER_CHALLENGE);
-                if (EpisodeGoldBrickForChallengePc != 0) {
+                if (EpisodeGoldBrickForChallenge != 0) {
                     AddToGoldBricks();
                 }
             }
         }
         if (MissionSys != NULL) {
             for (i = 0; i < MissionSys->count; ++i) {
-                CompletionPointInfoRecalculatePc[3] += POINTS_PER_MISSION;
+                CompletionPointInfoRecalculate[3] += POINTS_PER_MISSION;
                 if (save->mission_save.completed[i] != 0) {
                     AddToCompletionPoints(POINTS_PER_MISSION);
                     AddToGoldBricks();
@@ -1518,32 +1518,32 @@ extern "C" {
             }
         }
         for (i = 0; i < EPISODECOUNT; ++i) {
-            CompletionPointInfoRecalculatePc[0] += POINTS_PER_SUPERSTORY;
+            CompletionPointInfoRecalculate[0] += POINTS_PER_SUPERSTORY;
             if (save->episode_save[i].superstory_complete != 0) {
                 AddToCompletionPoints(POINTS_PER_SUPERSTORY);
-                if (EpisodeGoldBrickForSuperStoryPc != 0) {
+                if (EpisodeGoldBrickForSuperStory != 0) {
                     AddToGoldBricks();
                 }
             }
         }
         for (i = 0; i < 44; ++i) {
-            CompletionPointInfoRecalculatePc[4] += POINTS_PER_CHEAT;
+            CompletionPointInfoRecalculate[4] += POINTS_PER_CHEAT;
             // MATCH-EXCEPTION: unsigned word index (shr) with a signed loop counter (jl).
             if ((save->purchased_extra_bits[(u32)i >> 5] & (1U << (i & 31))) != 0) {
                 AddToCompletionPoints(POINTS_PER_CHEAT);
             }
         }
         for (i = 0; i < SHOPHINTCOUNT; ++i) {
-            HINT_PC *hint = Hint_FindHint(ShopHintIdsPc[i]);
+            HINT *hint = Hint_FindHint(ShopHintIds[i]);
             if (hint != NULL && hint->price > 0) {
-                CompletionPointInfoRecalculatePc[5] += POINTS_PER_HINT;
+                CompletionPointInfoRecalculate[5] += POINTS_PER_HINT;
                 if ((save->purchased_hint_bits[i / 32] & (1ULL << (i % 32))) != 0) {
                     AddToCompletionPoints(POINTS_PER_HINT);
                 }
             }
         }
         for (i = 0; i < SHOPGOLDBRICKS; ++i) {
-            CompletionPointInfoRecalculatePc[6] += POINTS_PER_GOLDBRICK;
+            CompletionPointInfoRecalculate[6] += POINTS_PER_GOLDBRICK;
             if ((save->purchased_gold_brick_bits[i / 32] & (1ULL << (i % 32))) != 0) {
                 AddToCompletionPoints(POINTS_PER_GOLDBRICK);
                 AddToGoldBricks();
@@ -1557,7 +1557,7 @@ extern "C" void InitChallenge(i32 area) {
     ChallengeMode = 1;
     ResetTimer(&ChallengeTimer, 0);
     Cheats_TurnOff(0);
-    AreaGlobals_PC.field_1c = 0;
+    AreaGlobals.field_1c = 0;
 }
 
 extern "C" void MenuUpdateEndChallenge(MENU *menu) {
@@ -1593,7 +1593,7 @@ extern "C" {
                 }
                 SmartText(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
             }
-            DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobals_PC.field_20, 10);
+            DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobals.field_20, 10);
         }
     }
 
@@ -1612,7 +1612,7 @@ extern "C" {
             if (WORLD->current_level == HUB_LDATA) {
                 ExtraItems[index].unlocked = 1;
             }
-            area = ExtrasCheatsPc[index].area_index;
+            area = ExtrasCheats[index].area_index;
             if (area != -1 && Game.area_save[area].red_brick_collected == 0) {
                 Game.area_save[area].red_brick_collected = 1;
             }
@@ -1624,7 +1624,7 @@ extern "C" {
 
 extern "C" void InitGameMode(void) {
     i32 i;
-    GIZMO_PICKUP_TYPE_PC *type;
+    GIZMO_PICKUP_TYPE *type;
     f32 speed;
     GAMEOBJECT *object;
     GAMEOBJECT **players = (GAMEOBJECT **)Player;
@@ -1642,8 +1642,8 @@ extern "C" void InitGameMode(void) {
     }
     AveragePlayerCurrentSpeedMul();
     SetPlayer();
-    AreaGlobals_PC.progress_flags = WORLD->area != NULL ? AreaGlobals_PC.area_phase : 0;
-    AreaGlobals_PC.field_20 = AreaGlobals_PC.field_1c;
+    AreaGlobals.progress_flags = WORLD->area != NULL ? AreaGlobals.area_phase : 0;
+    AreaGlobals.field_20 = AreaGlobals.field_1c;
     NewLData = NULL;
     NewMode = 0;
     for (i = 0; i < 2; ++i) {
@@ -1728,18 +1728,18 @@ extern "C" void CheckResetBits(void) {
     alert_obj = NULL;
     alert_timer = 0.0f;
     drop_back_in_timer = 0.0f;
-    ResetRippleSet(RippleSetPc);
+    ResetRippleSet(RippleSet);
     Grabber_Reset(WORLD);
     Faders_Reset(WORLD);
-    TerrainChatterWaitPc = 3.0f;
-    TerrainLastChatterSfxPc = -1;
+    TerrainChatterWait = 3.0f;
+    TerrainLastChatterSfx = -1;
     tieonsfxwait = 1.0f;
     tieoffsfxwait = 1.0f;
     FalconDebKey[1] = -1;
     FalconDebKey[0] = -1;
     LevelNameTime = 0.0f;
     LevelNameMul = LevelChange != 0 ? 3.0f : 0.0f;
-    memset(&LevelLightingDataPc, 0, sizeof(LevelLightingDataPc));
+    memset(&LevelLightingData, 0, sizeof(LevelLightingData));
     if (VehicleArea != 0) {
         if (WORLD->current_level == ASTEROIDCHASED_LDATA || WORLD->current_level == DEATHSTAR2BATTLEA_LDATA) {
             TargetDist_Near2 = 6.25f;
@@ -1919,7 +1919,7 @@ extern "C" void CheckResetBits(void) {
         }
     }
     if (WORLD->level_progress != NULL) {
-        ResetGizFlow(WORLD->giz_flow, (GIZFLOWPROGRESS_PC *)WORLD->level_progress->giz_flow_progress);
+        ResetGizFlow(WORLD->giz_flow, (GIZFLOWPROGRESS *)WORLD->level_progress->giz_flow_progress);
     } else {
         ResetGizFlow(WORLD->giz_flow, NULL);
     }
@@ -1937,10 +1937,10 @@ extern "C" void CheckResetBits(void) {
         WeaponInOut_NoAIJediSfx = 0;
     }
     bonusmodearcade = 0;
-    if (WORLD->area != NULL && (WORLD->area->flags & 0x10) != 0 && AreaGlobals_PC.progress_flags < AreaGlobals_PC.area_phase) {
-        AreaGlobals_PC.progress_flags = AreaGlobals_PC.area_phase;
-        if (AreaGlobals_PC.area_phase > 10) {
-            AreaGlobals_PC.progress_flags = 10;
+    if (WORLD->area != NULL && (WORLD->area->flags & 0x10) != 0 && AreaGlobals.progress_flags < AreaGlobals.area_phase) {
+        AreaGlobals.progress_flags = AreaGlobals.area_phase;
+        if (AreaGlobals.area_phase > 10) {
+            AreaGlobals.progress_flags = 10;
         }
     }
 }
@@ -1955,7 +1955,7 @@ extern "C" {
         NUSPECIALHANDLE *special = part->source_special;
         f32 radius = part->field_e4;
         NUVEC velocity;
-        ADDPART_PC params;
+        ADDPART params;
         PART_PC *deflected;
         KillPart(part, 0);
         if (deflect != 0 && owner != NULL) {
@@ -2006,11 +2006,11 @@ extern "C" {
         NUVEC minimum;
         NUVEC maximum;
         NUVEC direction;
-        GIZMOPICKUP_PC pickup;
+        GIZMOPICKUP pickup;
         GAMEOBJECT *object;
         GAMEOBJECT *api;
-        TORPEDOPACKET_PC *packet;
-        PLAYERCHARACTERCONFIG_PC *character;
+        TORPEDOPACKET *packet;
+        PLAYERCHARACTERCONFIG *character;
         i8 context;
         u64 flags;
         i32 effect;
@@ -2253,14 +2253,14 @@ extern "C" {
     void Episodes_CompleteAllSuperStories(void) {
         i32 i;
 
-        if (EpisodeSavePc != NULL) {
+        if (EpisodeSave != NULL) {
             for (i = 0; i < EPISODECOUNT; i++) {
-                EpisodeSavePc[i].superstory_complete = 1;
-                if (EpisodeSavePc[i].superstory_score_target == 0) {
-                    EpisodeSavePc[i].superstory_score_target = 1234560;
+                EpisodeSave[i].superstory_complete = 1;
+                if (EpisodeSave[i].superstory_score_target == 0) {
+                    EpisodeSave[i].superstory_score_target = 1234560;
                 }
-                if (EpisodeSavePc[i].superstory_time_limit <= 0.0f) {
-                    EpisodeSavePc[i].superstory_time_limit = 3598.76f;
+                if (EpisodeSave[i].superstory_time_limit <= 0.0f) {
+                    EpisodeSave[i].superstory_time_limit = 3598.76f;
                 }
             }
             ReCalculateCompletionPoints();
@@ -2406,7 +2406,7 @@ extern "C" {
         if (intensity < -(PodAvalancheShakeFrames - 1.0f)) {
             intensity = -(PodAvalancheShakeFrames - 1.0f);
         }
-        intensity = CutSceneFabsPc(intensity);
+        intensity = CutSceneFabs(intensity);
         intensity = 1.0f - intensity / (PodAvalancheShakeFrames - 1.0f);
 
         distance = NuVecDist(&GameCam->position, &PodAvalanchePeakPos, NULL);
@@ -2588,7 +2588,7 @@ extern "C" {
             if (name == NULL || (NuStrIStr(name, "bush") == NULL && NuStrIStr(name, "web") == NULL)) {
                 return;
             }
-            AddDynamicCreature(ZipUpLineCharacterIdPc, &blowup->position, 0, "blowup_spider", NULL, NULL, 1, NULL, NULL, 0, 16);
+            AddDynamicCreature(ZipUpLineCharacterId, &blowup->position, 0, "blowup_spider", NULL, NULL, 1, NULL, NULL, 0, 16);
             return;
         } else {
             return;
@@ -2616,7 +2616,7 @@ extern "C" {
         cameraMtxs[lastCameraMtx] = GameCam->render_mtx;
     }
 
-    f32 SpeedBlurScalePc = 0.5f;
+    f32 SpeedBlurScale = 0.5f;
 
     void SpeedBlur_Apply(WORLDINFO *world) {
         struct level_data_s *level;
@@ -2639,22 +2639,22 @@ extern "C" {
             }
         }
         NuSpeedBlurSetMotionFactors(0.01f, -0.024f, 0.02f);
-        NuLightSpeedBlur(Paused, SpeedBlurScalePc);
+        NuLightSpeedBlur(Paused, SpeedBlurScale);
     }
 }
 
-static void GizBuildIt_FinishFn_Game(GIZBUILDIT_PC *input) {
-    if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0 && input == HubBuildItPc && (Game.hub_buildit_completed & 0x80) == 0) {
+static void GizBuildIt_FinishFn_Game(GIZBUILDIT *input) {
+    if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0 && input == HubBuildIt && (Game.hub_buildit_completed & 0x80) == 0) {
         AddFancyMessageRGB(TTab[TextIdPc880ff0], 0.0f, 0.0f, 0.6f, 1.25f, 1, 255, 0, 0);
         BuyAllShopExtras();
         ReCalculateCompletionPoints();
-        AddPartDebris(WORLD->part_debris_sys, 15, &((GAME_BUILDIT_READER *)HubBuildItPc)->position);
+        AddPartDebris(WORLD->part_debris_sys, 15, &((GAME_BUILDIT_READER *)HubBuildIt)->position);
     }
 }
 
-static CUT_DRAW_SETTINGS_PC InitCutSettingsLswPc = {0x5b, 0x5c, 0xe7, 2, 0};
-static CUT_DRAW_SETTINGS_PC InitCutSettingsAlternatePc = {0x5b, 0x5c, 0xe7, 2, 1};
-static PLAYER_ITEM_TYPE_RESET_PC InitPlayerItemTypesPc[2] = {
+static CUT_DRAW_SETTINGS InitCutSettingsLsw = {0x5b, 0x5c, 0xe7, 2, 0};
+static CUT_DRAW_SETTINGS InitCutSettingsAlternate = {0x5b, 0x5c, 0xe7, 2, 1};
+static PLAYER_ITEM_TYPE_RESET_PC InitPlayerItemTypes[2] = {
     {15, {6, 0}, "blue", 2, 0, {0, 0}},
     {-1, {0, 0}, NULL,   0, 0, {0, 0}}
 };
@@ -2678,24 +2678,24 @@ void InitGameAfterConfig(void) {
     }
 
     SHOPHINTCOUNT = 0;
-    for (i16 *text_id = ShopHintTextIdsPc; *text_id != -1 && SHOPHINTCOUNT < 24; ++text_id) {
-        HINT_PC *hint = Hint_FindHint(*text_id);
+    for (i16 *text_id = ShopHintTextIds; *text_id != -1 && SHOPHINTCOUNT < 24; ++text_id) {
+        HINT *hint = Hint_FindHint(*text_id);
         if (hint != NULL) {
-            ShopHintIdsPc[SHOPHINTCOUNT++] = hint->id;
+            ShopHintIds[SHOPHINTCOUNT++] = hint->id;
             if (hint->price > 0) {
-                HubCompletionPointsPc += POINTS_PER_HINT;
-                CompletionPointInfoPc[5] += POINTS_PER_HINT;
+                HubCompletionPoints += POINTS_PER_HINT;
+                CompletionPointInfo[5] += POINTS_PER_HINT;
             }
         }
     }
-    HubBothTrueJediGoldBricksPc = 0;
-    EpisodeGoldBrickForSuperBonusPc = 1;
-    EpisodeGoldBrickForSuperStoryPc = 0;
-    EpisodeGoldBrickForChallengePc = 0;
+    HubBothTrueJediGoldBricks = 0;
+    EpisodeGoldBrickForSuperBonus = 1;
+    EpisodeGoldBrickForSuperStory = 0;
+    EpisodeGoldBrickForChallenge = 0;
     if (EPISODECOUNT > 0) {
         i32 points = EPISODECOUNT * POINTS_PER_SUPERSTORY;
-        HubCompletionPointsPc += points;
-        CompletionPointInfoPc[0] += points;
+        HubCompletionPoints += points;
+        CompletionPointInfo[0] += points;
     }
 
     for (i32 area_id = 0; area_id < AREACOUNT; ++area_id) {
@@ -2707,20 +2707,20 @@ void InitGameAfterConfig(void) {
             continue;
         }
         if ((area->flags & 0x100) != 0) {
-            HubCompletionPointsPc += POINTS_PER_SUPERBONUSCOMPLETE;
-            CompletionPointInfoPc[1] += POINTS_PER_SUPERBONUSCOMPLETE;
-            if (EpisodeGoldBrickForSuperBonusPc != 0) {
+            HubCompletionPoints += POINTS_PER_SUPERBONUSCOMPLETE;
+            CompletionPointInfo[1] += POINTS_PER_SUPERBONUSCOMPLETE;
+            if (EpisodeGoldBrickForSuperBonus != 0) {
                 ++GOLDBRICKPOINTS;
             }
         } else if ((area->flags & 4) != 0) {
-            HubCompletionPointsPc += POINTS_PER_TIMETRIAL;
-            CompletionPointInfoPc[1] += POINTS_PER_TIMETRIAL;
+            HubCompletionPoints += POINTS_PER_TIMETRIAL;
+            CompletionPointInfo[1] += POINTS_PER_TIMETRIAL;
             ++GOLDBRICKPOINTS;
         } else {
-            i32 total = HubCompletionPointsPc + POINTS_PER_STORY;
-            i32 bucket = CompletionPointInfoPc[1] + POINTS_PER_STORY;
-            HubCompletionPointsPc = total;
-            CompletionPointInfoPc[1] = bucket;
+            i32 total = HubCompletionPoints + POINTS_PER_STORY;
+            i32 bucket = CompletionPointInfo[1] + POINTS_PER_STORY;
+            HubCompletionPoints = total;
+            CompletionPointInfo[1] = bucket;
             if ((area->flags & 0x800) == 0) {
                 ++GOLDBRICKPOINTS;
             }
@@ -2728,16 +2728,16 @@ void InitGameAfterConfig(void) {
                 GOLDBRICKPOINTS += 2;
                 total += POINTS_PER_MINIKIT + POINTS_PER_TRUEJEDI;
                 bucket += POINTS_PER_MINIKIT + POINTS_PER_TRUEJEDI;
-                if (HubBothTrueJediGoldBricksPc != 0) {
+                if (HubBothTrueJediGoldBricks != 0) {
                     total += POINTS_PER_TRUEJEDI;
                     bucket += POINTS_PER_TRUEJEDI;
                     ++GOLDBRICKPOINTS;
                 }
                 total += POINTS_PER_REDBRICK + POINTS_PER_CHALLENGE;
                 bucket += POINTS_PER_REDBRICK + POINTS_PER_CHALLENGE;
-                HubCompletionPointsPc = total;
-                CompletionPointInfoPc[1] = bucket;
-                if (EpisodeGoldBrickForChallengePc != 0) {
+                HubCompletionPoints = total;
+                CompletionPointInfo[1] = bucket;
+                if (EpisodeGoldBrickForChallenge != 0) {
                     ++GOLDBRICKPOINTS;
                 }
             }
@@ -2778,20 +2778,20 @@ void InitGameAfterConfig(void) {
     Level_RegisterGameConfigKeywords(LevelConfigKeywords_BeforeLoad, WorldLoadAfterKeywordsPc);
     Suits_Init();
     Collection_Configure("chars\\collection.txt", &permbuffer_ptr, &permbuffer_end);
-    if ((u16)VehicleBoltId7f17d4Pc != 0xffff && InCollectList_Index(VehicleBoltId7f17d4Pc, NULL, 0) != -1 && TempCollectID != NULL) {
+    if ((u16)VehicleBoltId7f17d4 != 0xffff && InCollectList_Index(VehicleBoltId7f17d4, NULL, 0) != -1 && TempCollectID != NULL) {
         TempCollectID->selection_type = 0;
         TempCollectID->shop_enabled = 1;
         TempCollectID->price = 50000;
     }
     i32 character_points = COLLECTION_COMPLETIONCOUNT * POINTS_PER_CHARACTER;
-    HubCompletionPointsPc += character_points;
-    CompletionPointInfoPc[2] += character_points;
+    HubCompletionPoints += character_points;
+    CompletionPointInfo[2] += character_points;
 
     if (StartupGameFlag1 != 0) {
         MissionSys = Missions_Configure("levels\\missions.txt", &permbuffer_ptr, &permbuffer_end, &Game.mission_save);
         if (MissionSys != NULL) {
-            HubCompletionPointsPc += MissionSys->count * POINTS_PER_MISSION;
-            CompletionPointInfoPc[3] += MissionSys->count * POINTS_PER_MISSION;
+            HubCompletionPoints += MissionSys->count * POINTS_PER_MISSION;
+            CompletionPointInfo[3] += MissionSys->count * POINTS_PER_MISSION;
             GOLDBRICKPOINTS += MissionSys->count;
         }
         Tag_DrawIconFn = Tag_DrawIcon_LSW;
@@ -2802,30 +2802,30 @@ void InitGameAfterConfig(void) {
         GlobalBoltType[2].object_ids[0] = 0x61;
         GlobalBoltType[2].object_ids[1] = 0x62;
         DEFAULT_PLAYERHITPOINTS = 4;
-        PlayerHitPointsTwoHeartsPc = 0;
-        CutScenes_InitSystem(&InitCutSettingsLswPc);
-        CutSceneLookupAllDebrisPagesPc = 1;
-        NarrowSockExceptions_Init(NarrowSockExceptionsLswPc);
+        PlayerHitPointsTwoHearts = 0;
+        CutScenes_InitSystem(&InitCutSettingsLsw);
+        CutSceneLookupAllDebrisPages = 1;
+        NarrowSockExceptions_Init(NarrowSockExceptionsLsw);
         APIObjectRegisterAnimRedirect(RedirectAnim, AnimRedirectList_LSW, "chars\\commonanims");
-        SurfaceMaskOff(&GetSurfaceInfoDefaultMaskPc.word);
-        SurfaceMaskOn(&GetSurfaceInfoRuntimeMaskPc.word);
+        SurfaceMaskOff(&GetSurfaceInfoDefaultMask.word);
+        SurfaceMaskOn(&GetSurfaceInfoRuntimeMask.word);
         Hub_UsePlayerList = 1;
         BoltSys_Init(&BoltSys_LSW);
-        GameAudio_Init(&GameAudioLswPc);
+        GameAudio_Init(&GameAudioLsw);
         KITPOSX = 0.0f;
         KITPOS2X = 0.0f;
-        ConvertOldPickupsPc = 1;
-        GrabScreenWhenFadingPc = 1;
+        ConvertOldPickups = 1;
+        GrabScreenWhenFading = 1;
         PUNCHGAP = 0.3f;
         PUNCHCHARGAP = 0.3f;
-        TrooperGameDebrisPc[0] = 0x83;
-        TrooperGameDebrisPc[1] = 0x49;
-        TrooperGameDebrisPc[2] = 0x4a;
-        TrooperGameDebrisPc[3] = 0x4b;
+        TrooperGameDebris[0] = 0x83;
+        TrooperGameDebris[1] = 0x49;
+        TrooperGameDebris[2] = 0x4a;
+        TrooperGameDebris[3] = 0x4b;
         REDBRICKPOSX = 0.0f;
         LEGOHINT_SHOOTCAMERAS = 0x266;
         REDBRICKPOSY = -0.5f;
-        PushBlockHintIdPc = 0x267;
+        PushBlockHintId = 0x267;
         LEGOHINT_BUILD = 0x25c;
         REDBRICKPOS2X = 1.25f;
         LEGOHINT_FREEPLAYTOGGLE = 0x258;
@@ -2842,7 +2842,7 @@ void InitGameAfterConfig(void) {
         Punch_HitHoldFn = Punch_HitHold;
         Punch_HitExtraCodeFn = Punch_HitExtraCode_LSW;
         SetSoundFadeDistCallBackFn = SetSoundFadeDistCallBackFn_LSW;
-        PlayerItemTypes_Init(InitPlayerItemTypesPc);
+        PlayerItemTypes_Init(InitPlayerItemTypes);
         SUPERCARRY_THROWSPEED_XZ = 2.0f;
         DisguiseAdjustFn = DisguiseAdjust_LSW;
         SUPERCARRY_THROWSPEED_Y = 1.5f;
@@ -2850,40 +2850,40 @@ void InitGameAfterConfig(void) {
         CutScene_OverrideConfigFileNameFn = CutScene_OverrideConfigFileName_LSW;
         SUPERCARRY_RELEASESPEED_XZ = 1.0f;
         CharPivot_Init(CharPivot_LSW);
-        CombatReactionHorizontalScalePc = 3.5f;
+        CombatReactionHorizontalScale = 3.5f;
         ForcePush_Waft = 1;
-        CombatReactionVerticalScalePc = 2.5f;
+        CombatReactionVerticalScale = 2.5f;
         ForcePush_SuperPush = 1;
         ForcePush_SuperMindTrick = 1;
         Lighting_HighlightFlash = 1;
     } else {
         Tag_DrawIconFn = Tag_DrawIcon_Batman;
         DEFAULT_PLAYERHITPOINTS = 8;
-        PlayerHitPointsTwoHeartsPc = 1;
+        PlayerHitPointsTwoHearts = 1;
         MenuSetColours(0, 255, 0, 255, 191, 0, 0, 127, 255, 255, 0, 31, 255, 255, 255, 175, 175, 175);
-        AlternateHudColourBytesPc[0] = 0;
-        AlternateHudColourBytesPc[1] = 255;
-        AlternateHudRgbPc[0] = 0;
-        AlternateHudColourBytesPc[2] = 255;
-        AlternateHudColourBytesPc[3] = 0;
-        AlternateHudRgbPc[1] = 0;
-        AlternateHudColourBytesPc[4] = 128;
-        AlternateHudColourBytesPc[5] = 255;
-        AlternateHudColourBytesPc[6] = 0;
-        AlternateHudRgbPc[2] = 0;
-        AlternateHudColourBytesPc[7] = 80;
-        RenderBackdropBlackPc = 1;
+        AlternateHudColourBytes[0] = 0;
+        AlternateHudColourBytes[1] = 255;
+        AlternateHudRgb[0] = 0;
+        AlternateHudColourBytes[2] = 255;
+        AlternateHudColourBytes[3] = 0;
+        AlternateHudRgb[1] = 0;
+        AlternateHudColourBytes[4] = 128;
+        AlternateHudColourBytes[5] = 255;
+        AlternateHudColourBytes[6] = 0;
+        AlternateHudRgb[2] = 0;
+        AlternateHudColourBytes[7] = 80;
+        RenderBackdropBlack = 1;
         Lighting_FlashRedOnLastHeart = 1;
-        CutScenes_InitSystem(&InitCutSettingsAlternatePc);
-        AlternateGameCallbackPc = fun_0041aec0;
+        CutScenes_InitSystem(&InitCutSettingsAlternate);
+        AlternateGameCallback = fun_0041aec0;
         APIObjectRegisterAnimRedirect(RedirectAnim, AnimRedirectList_Batman, "chars\\commonanims");
-        SurfaceMaskOn(&GetSurfaceInfoDefaultMaskPc.word);
-        SurfaceMaskOff(&GetSurfaceInfoRuntimeMaskPc.word);
+        SurfaceMaskOn(&GetSurfaceInfoDefaultMask.word);
+        SurfaceMaskOff(&GetSurfaceInfoRuntimeMask.word);
         Hub_UsePlayerList = 0;
         BoltSys_Init(&BoltSys_Batman);
-        GameAudio_Init(&GameAudioAlternatePc);
+        GameAudio_Init(&GameAudioAlternate);
         MAGNETOFFSET = 0.0305f;
-        GizmoBlowupHitMultiplierPc.value = 2;
+        GizmoBlowupHitMultiplier.value = 2;
         PUNCHGAP = 0.3f;
         CheckLostDataFn = Batarangs_CheckLostData;
         LEGOHINT_BUILD = 3;
@@ -2900,18 +2900,18 @@ void InitGameAfterConfig(void) {
     TerSurface[13].object_id = 0x16;
     LEGOACT_WALK = 0;
     LEGOACT_JUMP = 6;
-    BigJumpLandFallbackPc = 7;
+    BigJumpLandFallback = 7;
     LEGOACT_JUMP2 = 9;
     LEGOACT_JUMP3 = 0xe;
-    BigJumpLandSecondaryPc = 10;
+    BigJumpLandSecondary = 10;
     LEGOACT_LAND3 = 0x15;
     LEGOACT_COMBOJUMP = 0x12;
-    BigJumpLandPreferredPc = 0x13;
+    BigJumpLandPreferred = 0x13;
     LEGOACT_FALL = 5;
     LEGOACT_FALLLAND = 0x59;
     LEGOACT_BACKPACKFALLLAND = 0xb3;
-    BoltDeactivatedActionPc = 0x41;
-    LegoActPunchBehindPc = 0x94;
+    BoltDeactivatedAction = 0x41;
+    LegoActPunchBehind = 0x94;
     BoltShootClassId0 = 0x5b;
     BoltShootClassId1 = 0x5a;
     BoltShootClassId2 = 0x5c;
@@ -2935,7 +2935,7 @@ void InitGameAfterConfig(void) {
     LEGOACT_SUPERPUSH_PULL = 0xb0;
     LEGOACT_FLIP = 0xc;
     LEGOACT_FLIPLAND = 0xd;
-    JumpBackFlipActionPc = 0x77;
+    JumpBackFlipAction = 0x77;
     LEGOACT_WALLJUMP_WAIT = 0xa1;
     LEGOACT_GRAPPLE_IDLE = 0xba;
     LEGOACT_GRAPPLE_UP = 0xbb;
@@ -2959,7 +2959,7 @@ void InitGameAfterConfig(void) {
     LEGOACT_MAGNET_LAND = 0xca;
     LEGOACT_LUNGE = 0x1f;
     LEGOACT_LUNGELAND = 0x20;
-    JumpSlamActionPc = 0x21;
+    JumpSlamAction = 0x21;
     LEGOACT_SLAMLAND = 0x22;
     LEGOACT_COMBATROLL_JUMP = 0xb4;
     LEGOACT_COMBATROLL_FALL = 0xb5;
@@ -2970,7 +2970,7 @@ void InitGameAfterConfig(void) {
     LEGOACT_WHIP_GRAB = 0xdd;
     LEGOACT_WHIP_BREAK = 0xdd;
     LEGOCONTEXT_BIGJUMP = 0x1f;
-    BoltBlockContextPc = 0xc;
+    BoltBlockContext = 0xc;
     LEGOCONTEXT_COMBO = 5;
     LEGOCONTEXT_PUNCH = 0x26;
     LEGOCONTEXT_SPECIALMOVE_ATTACKER = 0x26;
@@ -2993,7 +2993,7 @@ void InitGameAfterConfig(void) {
     LEGOCONTEXT_CLIMB = 0x43;
     LEGOCONTEXT_HANG = 0x4e;
     LEGOCONTEXT_JUMP = 0;
-    ZipUpWallShuffleContextPc = 0x45;
+    ZipUpWallShuffleContext = 0x45;
     LEGOCONTEXT_PUSH = 0x27;
     LEGOCONTEXT_PUSHSPINNER = 0x28;
     LEGOCONTEXT_PUSHOBSTACLE = 0x59;
@@ -3002,7 +3002,7 @@ void InitGameAfterConfig(void) {
     LEGOCONTEXT_BUILDIT = 0x2d;
     LEGOCONTEXT_WEAPONIN = 6;
     LEGOCONTEXT_WEAPONOUT = 7;
-    JumpBackFlipContextPc = 0x20;
+    JumpBackFlipContext = 0x20;
     LEGOCONTEXT_WALLJUMPWAIT = 0x57;
     LEGOCONTEXT_GRAPPLE = 0x46;
     LEGOCONTEXT_SUPERCARRY = 0x58;
@@ -3013,12 +3013,12 @@ void InitGameAfterConfig(void) {
     LEGOCONTEXT_LAND_LUNGE = 0xd;
     LEGOCONTEXT_LAND_SLAM = 0xe;
     LEGOCONTEXT_LAND_SPECIAL = 0x19;
-    ZipUpLandCombatRollContextPc = 0x29;
+    ZipUpLandCombatRollContext = 0x29;
     LEGOCONTEXT_EATEN = 0x39;
     LEGOCONTEXT_SPECIALMOVE_VICTIM = 0x30;
     LEGOCONTEXT_BUCK = 0x3e;
     LEGOCONTEXT_WHIP = 0x62;
-    LegoContextNetWaitPc = 0x63;
+    LegoContextNetWait = 0x63;
     LEGOMENU_TITLES = 0;
     LEGOMENU_NEWGAME = 1;
     LEGOMENU_PAUSEMAIN = 2;
@@ -3028,12 +3028,12 @@ void InitGameAfterConfig(void) {
     LEGOOBJ_ICON_FRAME_NEUTRAL = 0xa7;
     LEGOOBJ_ICON_FRAME_GREEN = 0xa5;
     LEGOOBJ_ICON_FRAME_BLUE = 0xa6;
-    LegoObjectIconQuestionPc = 0xa1;
+    LegoObjectIconQuestion = 0xa1;
     PCArcadeUnpairedIconModel = 0xa3;
-    CharKitModelId_PC = 0xcf;
-    MiniKitModelId_PC = 0xce;
-    PlayerStartSplineIndexPc = 0;
-    LegoGameDebrisSplashPc = 0xd;
+    CharKitModelId = 0xcf;
+    MiniKitModelId = 0xce;
+    PlayerStartSplineIndex = 0;
+    LegoGameDebrisSplash = 0xd;
     GizBuilditGDeb[0] = 0x4c;
     GizBuilditGDeb[1] = 0x4d;
     GizBuilditGDeb[2] = 0x4e;
@@ -3043,11 +3043,11 @@ void InitGameAfterConfig(void) {
     GizSpinnerGDeb_Fail[0] = 0x57;
     GizSpinnerGDeb_Fail[2] = 0x58;
     GizSpinnerGDeb_Fail[1] = 1;
-    LEGOASCII_UP = InitAsciiUpPc;
-    LEGOASCII_DOWN = TagAsciiDownPc;
-    LEGOASCII_LEFT = InitAsciiLeftPc;
-    LEGOASCII_RIGHT = InitAsciiRightPc;
-    LEGOASCII_BIGARROW = InitAsciiBigArrowPc;
+    LEGOASCII_UP = InitAsciiUp;
+    LEGOASCII_DOWN = TagAsciiDown;
+    LEGOASCII_LEFT = InitAsciiLeft;
+    LEGOASCII_RIGHT = InitAsciiRight;
+    LEGOASCII_BIGARROW = InitAsciiBigArrow;
     GamePads_IgnoreInputFn = Game_IgnoreInput;
     Door_GoThrough_ExtraCodeFn = GoThroughDoor_ExtraCode;
     GizmoBlowup_TransformDrawFn = GizmoBlowup_TransformDraw_Game;
@@ -3080,7 +3080,7 @@ void InitGameAfterConfig(void) {
     GizBuildIt_CanStartBuildingFn = GizBuildIt_CanStartBuildingFn_Game;
     GizBuildIt_FinishFn = GizBuildIt_FinishFn_Game;
     POWERUP_TEXTID = powerup_text;
-    RenderBackdropAlphaFnPc = BackDrop_Alpha;
+    RenderBackdropAlphaFn = BackDrop_Alpha;
     Game_100PercentFn = LEGO_100PercentFn;
     Game_AllGoldBricksFn = LEGO_AllGoldBricksFn;
     LastSafePosExtraFn = LastSafePosExtra;
@@ -3110,56 +3110,56 @@ void InitGameAfterConfig(void) {
         NUVEC zero = v000;
         PUNCHGAP = 0.3f;
         PUNCHCHARGAP = 0.3f;
-        TechnoSysPc.idle_offsets[0] = zero;
-        TechnoSysPc.idle_offsets[1] = zero;
-        TechnoSysPc.interaction_time = -0.2f;
-        TechnoSysPc.idle_offsets[2].x = 0.0f;
-        TechnoSysPc.idle_offsets[2].y = 0.0f;
-        DefaultMotionLedgeTerrainEnabledPc = 1;
+        TechnoSys.idle_offsets[0] = zero;
+        TechnoSys.idle_offsets[1] = zero;
+        TechnoSys.interaction_time = -0.2f;
+        TechnoSys.idle_offsets[2].x = 0.0f;
+        TechnoSys.idle_offsets[2].y = 0.0f;
+        DefaultMotionLedgeTerrainEnabled = 1;
         LedgeTerrain_CheckAnims = 0;
-        TechnoSysPc.idle_offsets[2].z = -0.1295f;
+        TechnoSys.idle_offsets[2].z = -0.1295f;
         Grapples_Available = 1;
         Grapple_RopeSwingsAvailable = 1;
-        SuperCarryEnablePc = 1;
-        CombatRollEnablePc = 1;
+        SuperCarryEnable = 1;
+        CombatRollEnable = 1;
         CUTSUBTITLEDEFAULT_Y = -0.5f;
         LEGOHINT_PUNCH = 0;
         CUTSUBTITLEDEFAULT_SCALEX = 0.6f;
         CUTSUBTITLEDEFAULT_SCALEY = 0.6f;
-        TechnoSysPc.idle_object_ids[1] = 0x2f;
-        TechnoSysPc.idle_object_ids[2] = 0x30;
-        TechnoSysPc.idle_object_ids[3] = 0x31;
+        TechnoSys.idle_object_ids[1] = 0x2f;
+        TechnoSys.idle_object_ids[2] = 0x30;
+        TechnoSys.idle_object_ids[3] = 0x31;
         SUPERCARRY_THROWSPEED_XZ = 2.0f;
         SUPERCARRY_THROWSPEED_Y = 1.5f;
-        TechnoSysPc.idle_object_ids[0] = 0x56;
-        TechnoSysPc.hand_object_ids[0] = -1;
-        TechnoSysPc.hand_object_ids[1] = -1;
-        TechnoDefaultObjectPc = 0x56;
+        TechnoSys.idle_object_ids[0] = 0x56;
+        TechnoSys.hand_object_ids[0] = -1;
+        TechnoSys.hand_object_ids[1] = -1;
+        TechnoDefaultObject = 0x56;
         SuperCarry_UseActionButton = 1;
     } else if (startup_game == 0) {
         Player_ToggleSubCharacterFn = Player_ToggleSubCharacter_Game;
         Player_ToggledCharacterFn = Player_ToggledCharacter_Game;
-        Punch_HitExtraCodeFn = Punch_HitExtraCode_alternate_PC;
+        Punch_HitExtraCodeFn = Punch_HitExtraCode_alternate;
         CharPivot_Init(&CharPivot_Batman);
         startup_game = StartupGameFlag1;
     }
-    HubCompletionPointsPc += 44 * POINTS_PER_CHEAT;
+    HubCompletionPoints += 44 * POINTS_PER_CHEAT;
     for (i32 i = 0; i < 44; ++i) {
-        CompletionPointInfoPc[4] += POINTS_PER_CHEAT;
+        CompletionPointInfo[4] += POINTS_PER_CHEAT;
     }
     if (SHOPGOLDBRICKS > 0) {
         i32 count = SHOPGOLDBRICKS;
-        HubCompletionPointsPc += count * POINTS_PER_GOLDBRICK;
+        HubCompletionPoints += count * POINTS_PER_GOLDBRICK;
         GOLDBRICKPOINTS += count;
         for (i32 i = 0; i < count; ++i) {
-            CompletionPointInfoPc[6] += POINTS_PER_GOLDBRICK;
+            CompletionPointInfo[6] += POINTS_PER_GOLDBRICK;
         }
     }
     if (startup_game != 0) {
-        CUT_PLAYER_ACTIVE_PC *player = CutScenePlayer_Available();
-        CutScenePlayCountPc = 0;
+        CUT_PLAYER_ACTIVE *player = CutScenePlayer_Available();
+        CutScenePlayCount = 0;
         if (player != NULL) {
-            CutScenePlayCountPc = player->clip_count;
+            CutScenePlayCount = player->clip_count;
         }
     }
 }

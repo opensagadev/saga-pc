@@ -17,8 +17,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 Push_UpdateHints(HINT_PC *);
-    extern u16 PushBlockFacingTolerancePc;
+    i32 Push_UpdateHints(HINT *);
+    extern u16 PushBlockFacingTolerance;
     PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *, GAMEOBJECT *, f32);
     i32 PushBlock(GAMEOBJECT *);
 
@@ -31,26 +31,26 @@ extern "C" {
     void MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
     void MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
     void UpdatePushBlocks(void *, void *, f32);
-    extern f32 PushVelocitySeekRatePc;
-    extern f32 PushFallingSpeedPc;
-    extern f32 PushCornerInsetPc;
-    extern f32 PushGroundOffsetPc;
-    extern f32 PushRumblePeriodPc;
+    extern f32 PushVelocitySeekRate;
+    extern f32 PushFallingSpeed;
+    extern f32 PushCornerInset;
+    extern f32 PushGroundOffset;
+    extern f32 PushRumblePeriod;
     extern f32 PushRumbleWindowPc;
-    extern f32 PushBlockOverlapShrinkPc;
-    extern i32 PushBlockHintIdPc;
+    extern f32 PushBlockOverlapShrink;
+    extern i32 PushBlockHintId;
     void KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
     PUSH_BLOCK_PC *NearestPushBlock(WORLDINFO *, NUVEC *, f32);
-    extern char *PushBlocksNamePc;
+    extern char *PushBlocksName;
     extern f32 PushRumbleWindowPc;
-    extern f32 PushRumblePeriodPc;
-    extern f32 PushFallingSpeedPc;
-    extern f32 PushVelocitySeekRatePc;
-    extern f32 PushGroundOffsetPc;
-    extern f32 PushCornerInsetPc;
-    extern i32 PushBlockHintIdPc;
-    extern f32 PushBlockOverlapShrinkPc;
-    extern char *PushBlocksNamePc;
+    extern f32 PushRumblePeriod;
+    extern f32 PushFallingSpeed;
+    extern f32 PushVelocitySeekRate;
+    extern f32 PushGroundOffset;
+    extern f32 PushCornerInset;
+    extern i32 PushBlockHintId;
+    extern f32 PushBlockOverlapShrink;
+    extern char *PushBlocksName;
     extern u32 (*CanPushBlocksFn)(GAMEOBJECT *);
     extern i32 runoutofpostabspace;
     void ResetSinglePushBlock(struct WORLDINFO_s *world, struct pushblock_s *block, i32 index);

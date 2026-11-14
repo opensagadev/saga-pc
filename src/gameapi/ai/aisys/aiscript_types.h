@@ -24,15 +24,15 @@
 
 #if SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART == 1 && !defined(SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_STOP)
 
-struct AIACTIONDEF_PC;
-struct AICONDITIONDEF_PC;
+struct AIACTIONDEF;
+struct AICONDITIONDEF;
 
-typedef struct AISCRIPT_PC AISCRIPT_PC;
-typedef struct AISTATE_PC AISTATE_PC;
-typedef struct AIACTION_PC AIACTION_PC;
+typedef struct AISCRIPT AISCRIPT;
+typedef struct AISTATE AISTATE;
+typedef struct AIACTION AIACTION;
 typedef struct AICONDITION AICONDITION;
 typedef struct AIREFSCRIPT AIREFSCRIPT;
-typedef struct AISCRIPTPROCESS_PC AISCRIPTPROCESS_PC;
+typedef struct AISCRIPTPROCESS AISCRIPTPROCESS;
 
 typedef struct AISCRIPTPROCESSSTACK { // size 0x14
     f32 complex_params[4];            // 0x00
@@ -43,12 +43,12 @@ typedef struct AISCRIPTPROCESSSTACK { // size 0x14
 
 /* Not converted: these asserts balance VC8 symbol ids for fragile functions (docs/cleanup-audit.md, section 6). */
 
-struct AISCRIPTPROCESS_PC {              // size 0xc8
-    AISCRIPT_PC *base_script;            // 0x00
-    AISCRIPT_PC *script;                 // 0x04
-    AISTATE_PC *state;                   // 0x08
-    AIACTION_PC *action_node;            // 0x0c
-    AISTATE_PC *next_state;              // 0x10
+struct AISCRIPTPROCESS {                 // size 0xc8
+    AISCRIPT *base_script;               // 0x00
+    AISCRIPT *script;                    // 0x04
+    AISTATE *state;                      // 0x08
+    AIACTION *action_node;               // 0x0c
+    AISTATE *next_state;                 // 0x10
     f32 params[4];                       // 0x14
     f32 script_timer;                    // 0x24
     AISCRIPTPROCESSSTACK param_stack[2]; // 0x28
@@ -62,27 +62,27 @@ struct AISCRIPTPROCESS_PC {              // size 0xc8
     f32 action_data_4;                   // 0x70
     f32 action_data_5;                   // 0x74
     NUVEC action_pos;                    // 0x78
-    AIPATHINFO_PC path_info;             // 0x84
+    AIPATHINFO path_info;                // 0x84
     f32 action_timer;                    // 0x9c
     u32 unknown_a0;                      // 0xa0
-    struct AILOCATOR_PC *locator;        // 0xa4
-    struct AILOCATORSET_PC *locator_set; // 0xa8
+    struct AILOCATOR *locator;           // 0xa4
+    struct AILOCATORSET *locator_set;    // 0xa8
 
     union { // size 0x4
         u32 field_ac;
         struct nugspline_s *myspline;
     }; // 0xac
 
-    u8 creature_set;             // 0xb0
-    u8 unknown_b1;               // 0xb1
-    u16 unknown_b2;              // 0xb2
-    u8 interrupt_priority;       // 0xb4
-    u8 interrupt_id;             // 0xb5
-    u16 action_data_7;           // 0xb6
-    f32 interrupt_timer;         // 0xb8
-    AISTATE_PC *interrupt_state; // 0xbc
-    AISTATE_PC *return_to_state; // 0xc0
-    void *local_messages;        // 0xc4
+    u8 creature_set;          // 0xb0
+    u8 unknown_b1;            // 0xb1
+    u16 unknown_b2;           // 0xb2
+    u8 interrupt_priority;    // 0xb4
+    u8 interrupt_id;          // 0xb5
+    u16 action_data_7;        // 0xb6
+    f32 interrupt_timer;      // 0xb8
+    AISTATE *interrupt_state; // 0xbc
+    AISTATE *return_to_state; // 0xc0
+    void *local_messages;     // 0xc4
 };
 
 typedef struct AIACTIONMACRO AIACTIONMACRO;
@@ -114,26 +114,26 @@ typedef struct AISCRIPTPARAM { // size 0x8
 
 #if SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART == 2 && !defined(SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_STOP)
 
-struct AIACTION_PC {                   // size 0x14
-    NULISTLNK link;                    // 0x00
-    char **params;                     // 0x08
-    i32 param_count;                   // 0x0c
-    struct AIACTIONDEF_PC *definition; // 0x10
+struct AIACTION {                   // size 0x14
+    NULISTLNK link;                 // 0x00
+    char **params;                  // 0x08
+    i32 param_count;                // 0x0c
+    struct AIACTIONDEF *definition; // 0x10
 };
 
-struct AICONDITION {                      // size 0x2c
-    NULISTLNK link;                       // 0x00
-    f32 param_value;                      // 0x08
-    i8 comparison;                        // 0x0c
-    i8 param_index;                       // 0x0d
-    u16 flags;                            // 0x0e
-    char *complex_expression;             // 0x10
-    char *argument;                       // 0x14
-    void *initialized_argument;           // 0x18
-    struct AICONDITIONDEF_PC *definition; // 0x1c
-    char *next_state_name;                // 0x20
-    AISTATE_PC *next_state;               // 0x24
-    AICONDITION *parameter_condition;     // 0x28
+struct AICONDITION {                   // size 0x2c
+    NULISTLNK link;                    // 0x00
+    f32 param_value;                   // 0x08
+    i8 comparison;                     // 0x0c
+    i8 param_index;                    // 0x0d
+    u16 flags;                         // 0x0e
+    char *complex_expression;          // 0x10
+    char *argument;                    // 0x14
+    void *initialized_argument;        // 0x18
+    struct AICONDITIONDEF *definition; // 0x1c
+    char *next_state_name;             // 0x20
+    AISTATE *next_state;               // 0x24
+    AICONDITION *parameter_condition;  // 0x28
 };
 
 #undef SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART
@@ -148,15 +148,15 @@ struct AICONDITION {                      // size 0x2c
 struct AIREFSCRIPT {              // size 0x24
     NULISTLNK link;               // 0x00
     char *name;                   // 0x08
-    AISCRIPT_PC *script;          // 0x0c
+    AISCRIPT *script;             // 0x0c
     char *return_state_name;      // 0x10
-    AISTATE_PC *return_state;     // 0x14
+    AISTATE *return_state;        // 0x14
     u32 check_global_scripts : 1; // 0x18:0
     u32 check_level_scripts : 1;  // 0x18:1
     NULISTHDR conditions;         // 0x1c
 };
 
-struct AISTATE_PC {              // size 0x24
+struct AISTATE {                 // size 0x24
     NULISTLNK link;              // 0x00
     NULISTHDR conditions;        // 0x08
     NULISTHDR actions;           // 0x10
@@ -164,13 +164,13 @@ struct AISTATE_PC {              // size 0x24
     NULISTHDR reference_scripts; // 0x1c
 };
 
-struct AISCRIPT_PC {             // size 0x58
+struct AISCRIPT {                // size 0x58
     NULISTLNK link;              // 0x00
     char *name;                  // 0x08
     char *derived_from;          // 0x0c
     NULISTHDR states;            // 0x10
     AISCRIPTPARAM params[4];     // 0x18
-    AISTATE_PC *base_state;      // 0x38
+    AISTATE *base_state;         // 0x38
     u32 flags_3c;                // 0x3c
     NULISTHDR reference_scripts; // 0x40
     NULISTHDR condition_macros;  // 0x48

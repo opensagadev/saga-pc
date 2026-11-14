@@ -29,38 +29,38 @@
 
 #if SAGA_LEGOAPI_CHARACTERS_CORE_CHARACTER_H_PART == 1 && !defined(SAGA_LEGOAPI_CHARACTERS_CORE_CHARACTER_H_STOP)
 
-struct DWA_WEIGHT_BLOCK_PC;
+struct DWA_WEIGHT_BLOCK;
 struct NUGSCN_s;
-struct NUHGOBJ_EVAL_PC;
-struct NUHGOBJ_JOINT_OVERRIDE_PC;
+struct NUHGOBJ_EVAL;
+struct NUHGOBJ_JOINT_OVERRIDE;
 struct animpacket_s;
 struct apicharactermodellist_s;
 struct numtx_s;
 
-typedef struct characterdata_s {                // size 0x4c
-    i32 name_id;                                // 0x00
-    u32 model_flags;                            // 0x04
-    char *dir;                                  // 0x08
-    char *name;                                 // 0x0c
-    struct CHARACTERANIM_CONFIG_PC *animations; // 0x10
-    u16 animation_count;                        // 0x14
-    u8 field6_0x16;                             // 0x16
-    u8 field7_0x17;                             // 0x17
-    void (*move_fn)(struct gameobject_s *);     // 0x18
-    void (*animate_fn)(struct gameobject_s *);  // 0x1c
-    void *draw_fn;                              // 0x20
-    PLAYERCHARACTERCONFIG_PC *game_character;   // 0x24
-    struct CHARACTER_EFFECT_CONFIG_PC *effects; // 0x28
-    f32 scaled_radius;                          // 0x2c
-    f32 collision_radius;                       // 0x30
-    f32 bottom;                                 // 0x34
-    f32 top;                                    // 0x38
-    f32 model_scale;                            // 0x3c
-    u8 flags;                                   // 0x40
-    u8 unknown_0041;                            // 0x41
-    i16 icon_model;                             // 0x42
-    u8 unknown_44[0x4];                         // 0x44
-    u32 field22_0x48;                           // 0x48
+typedef struct characterdata_s {               // size 0x4c
+    i32 name_id;                               // 0x00
+    u32 model_flags;                           // 0x04
+    char *dir;                                 // 0x08
+    char *name;                                // 0x0c
+    struct CHARACTERANIM_CONFIG *animations;   // 0x10
+    u16 animation_count;                       // 0x14
+    u8 field6_0x16;                            // 0x16
+    u8 field7_0x17;                            // 0x17
+    void (*move_fn)(struct gameobject_s *);    // 0x18
+    void (*animate_fn)(struct gameobject_s *); // 0x1c
+    void *draw_fn;                             // 0x20
+    PLAYERCHARACTERCONFIG *game_character;     // 0x24
+    struct CHARACTER_EFFECT_CONFIG *effects;   // 0x28
+    f32 scaled_radius;                         // 0x2c
+    f32 collision_radius;                      // 0x30
+    f32 bottom;                                // 0x34
+    f32 top;                                   // 0x38
+    f32 model_scale;                           // 0x3c
+    u8 flags;                                  // 0x40
+    u8 unknown_0041;                           // 0x41
+    i16 icon_model;                            // 0x42
+    u8 unknown_44[0x4];                        // 0x44
+    u32 field22_0x48;                          // 0x48
 } CHARACTERDATA_PC;
 
 #ifdef __cplusplus
@@ -69,20 +69,20 @@ extern "C" {
     extern i16 id_GAMORREANGUARD;
     extern i16 id_ROYALGUARD;
     extern i16 id_WOOKIEE;
-    extern i16 VehicleBoltId7f1924Pc;
-    extern i16 VehicleBoltId7f1928Pc;
-    extern i16 VehicleBoltId7f196cPc;
+    extern i16 VehicleBoltId7f1924;
+    extern i16 VehicleBoltId7f1928;
+    extern i16 VehicleBoltId7f196c;
     extern i16 id_JAWA;
-    extern i16 VehicleBoltId7f19a4Pc;
-    extern i16 VehicleBoltId7f19a8Pc;
-    extern i16 VehicleBoltId7f19e8Pc;
+    extern i16 VehicleBoltId7f19a4;
+    extern i16 VehicleBoltId7f19a8;
+    extern i16 VehicleBoltId7f19e8;
     extern i16 id_REPUBLICGUNSHIP;
-    extern i16 VehicleBoltId7f1a24Pc;
-    extern i16 VehicleBoltId7f1a28Pc;
-    extern i16 VehicleBoltId7f1a2cPc;
+    extern i16 VehicleBoltId7f1a24;
+    extern i16 VehicleBoltId7f1a28;
+    extern i16 VehicleBoltId7f1a2c;
     extern i16 id_SENTRYDROID;
-    extern i16 VehicleBoltId7f1b34Pc;
-    extern i16 VehicleBoltId7f1b38Pc;
+    extern i16 VehicleBoltId7f1b34;
+    extern i16 VehicleBoltId7f1b38;
     extern i16 id_ZAMSSPEEDER;
     extern const char PodBoosterSoundNamePc[13];
     extern i16 id_DODGEM;
@@ -103,7 +103,7 @@ extern "C" {
     extern i16 id_NEW_REPUBLIC_GUNSHIP_GREEN;
     extern i16 id_JEDISTARFIGHTERYELLOWEP3;
     void APITransparentInit(void);
-    extern API_ACTION_INFO_PC PlayerActionInfoListPc[234];
+    extern API_ACTION_INFO PlayerActionInfoList[234];
     extern i16 id_GRABCONTROL;
     extern i16 id_GRABR2CONTROL;
     extern i16 id_ATST_LOWRES;
@@ -143,7 +143,7 @@ extern "C" {
     extern i16 id_BASKETCANNON;
     extern u16 id_GONKDROID;
     extern u16 id_DRAGBOMB;
-    extern PLAYERCHARACTERCONFIG_PC *GCDataList;
+    extern PLAYERCHARACTERCONFIG *GCDataList;
     extern i16 id_BODYGUARD;
     extern i16 id_GEONOSIAN;
     extern i16 id_CHEWBACCA;
@@ -167,12 +167,12 @@ extern "C" {
     i32 CharVariant_Find(char *);
     void CharVariants_Init(char **, i32);
     void IconScenes_Init(char *, VARIPTR *, VARIPTR *);
-    extern i16 FreePlayId007f199cPc;
+    extern i16 FreePlayId007f199c;
     extern i16 id_R2Q5;
     extern i16 id_R2Q5;
     extern i16 id_PRINCESSLEIABOUSHH;
 
-    CHARACTERDATA_PC *ConfigureCharacterList(char *, VARIPTR *, VARIPTR *, i32, i32 *, i32, PLAYERCHARACTERCONFIG_PC **);
+    CHARACTERDATA_PC *ConfigureCharacterList(char *, VARIPTR *, VARIPTR *, i32, i32 *, i32, PLAYERCHARACTERCONFIG **);
     extern i16 id_SUPERBATTLEDROID;
     extern i16 id_SUPERBATTLEDROID;
     extern i16 id_BATTLEDROID;
@@ -190,7 +190,7 @@ typedef struct charfixup_s { // size 0x8
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern PLAYERCHARACTERCONFIG_PC GCDATA_DEFAULT;
+    extern PLAYERCHARACTERCONFIG GCDATA_DEFAULT;
 
     extern i16 id_BARMAN;
     void FinishWeirdoNames(i32 which);
@@ -202,7 +202,7 @@ extern "C" {
     extern i16 id_GREEDO;
     extern i16 id_BOSSK;
     extern i16 id_CANTINABAND;
-    i32 RedirectAnim(char *, void *, CHARACTERANIM_CONFIG_PC *, char *);
+    i32 RedirectAnim(char *, void *, CHARACTERANIM_CONFIG *, char *);
     extern i16 id_SERVICECAR;
     void CharScenes_AreaDump(void);
     void IconScenes_Dump(void);
@@ -228,8 +228,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void APITransparentCharDraw(struct NUHGOBJ_EVAL_PC *, struct numtx_s *, i32, i16 *, struct numtx_s *, struct DWA_WEIGHT_BLOCK_PC **,
-                                i32);
+    void APITransparentCharDraw(struct NUHGOBJ_EVAL *, struct numtx_s *, i32, i16 *, struct numtx_s *, struct DWA_WEIGHT_BLOCK **, i32);
     struct NUGSCN_s *IconScene_FindById(i32);
 #ifdef __cplusplus
 }
@@ -245,9 +244,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, struct animpacket_s *, struct numtx_s *, struct numtx_s *,
-                              struct numtx_s *, NUVEC *, struct numtx_s *, GAMEOBJECT *, u32, struct NUHGOBJ_JOINT_OVERRIDE_PC *, i32, i32,
-                              f32, struct numtx_s *, void (*)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS_PC *);
+    i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *, APICHARACTERDATA *, struct animpacket_s *, struct numtx_s *, struct numtx_s *,
+                              struct numtx_s *, NUVEC *, struct numtx_s *, GAMEOBJECT *, u32, struct NUHGOBJ_JOINT_OVERRIDE *, i32, i32,
+                              f32, struct numtx_s *, void (*)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS *);
     i32 GetDefaultIdle(GAMEOBJECT *);
     void IconScenes_Load(struct apicharactermodellist_s *, i32, VARIPTR *, VARIPTR *);
     void PostAnimate_ASTROMECH(GAMEOBJECT *);
@@ -266,7 +265,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern BLADE_PC BladeTab[4];
+    extern BLADE BladeTab[4];
 #ifdef __cplusplus
 }
 #endif

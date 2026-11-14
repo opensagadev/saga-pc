@@ -40,7 +40,7 @@ void cbCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     messagemenu = NULL;
 }
 
-static void edppShowMessagePc(eduimenu_s *parent, char *text, i32 ok) {
+static void edppShowMessage(eduimenu_s *parent, char *text, i32 ok) {
     u32 colours[4] = {0x800000c0, 0x80ff0000, 0x80808080, 0x80404040};
     if (ok == 1) {
         colours[0] = 0x8000c000;
@@ -59,7 +59,7 @@ void cbCancelChangeNameMenu(eduimenu_s *menu, eduimenu_s *unused1) {
         return;
     }
     if (debtab[edpp_create_type]->name[0] == '\0') {
-        edppShowMessagePc(menu, "Name Duplicate", 0);
+        edppShowMessage(menu, "Name Duplicate", 0);
     } else {
         eduiMenuDestroy(namemenu);
         namemenu = NULL;
@@ -202,7 +202,7 @@ void edppStartSingleEffect(i32 index) {
     if (edpp_ptls[index].instance_id != -1) {
         debkeydata[edpp_ptls[index].instance_id].render_group = edpp_ptls[index].render_group;
     }
-    DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenesPc[edpp_ptls[index].page]);
+    DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenes[edpp_ptls[index].page]);
     debkeydata[edpp_ptls[index].instance_id].orientation_flags = (u8)edpp_ptls[index].detail_levels;
 }
 
@@ -1356,8 +1356,8 @@ i32 edppPtlCreate(NUVEC *position, i32 effect_index) {
         ++edpp_instances_used;
         edpp_page_used[edbits_particle_level_page] = 1;
         edpp_page_on[edbits_particle_level_page] = 1;
-        if (EdppPageScenesPc[edbits_particle_level_page] == NULL) {
-            EdppPageScenesPc[edbits_particle_level_page] = edbits_base_scene;
+        if (EdppPageScenes[edbits_particle_level_page] == NULL) {
+            EdppPageScenes[edbits_particle_level_page] = edbits_base_scene;
         }
         return index;
     }
@@ -1404,7 +1404,7 @@ i32 edppPtlCreateCopy(NUVEC *position, i32 source_index) {
         DebrisSetFacing(edpp_ptls[index].instance_id, edpp_ptls[index].facing_mode, edpp_ptls[index].facing_rotation_x,
                         edpp_ptls[index].facing_rotation_y);
         edppDebrisSetGroupID(edpp_ptls[index].instance_id, edpp_ptls[index].render_group);
-        DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenesPc[edpp_ptls[index].page]);
+        DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenes[edpp_ptls[index].page]);
         edppDebrisSetDetailLevels(edpp_ptls[index].instance_id, edpp_ptls[index].detail_levels);
         ++edpp_instances_used;
         return index;
@@ -1725,7 +1725,7 @@ i32 edppSaveEffects(char *filename, u8 page) {
             ++effect_count;
         }
     }
-    if (EdppUseMemcardPc != 0) {
+    if (EdppUseMemcard != 0) {
         EdFileSetMedia(2);
     } else {
         EdFileSetMedia(1);
@@ -2010,17 +2010,17 @@ void cbFileSaveEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     } else {
         valid_page = 0;
     }
-    if (EdppUseMemcardPc == 0 && edbits_override_backups == 0 && valid_page != 0) {
+    if (EdppUseMemcard == 0 && edbits_override_backups == 0 && valid_page != 0) {
         backup_succeeded = EdFileBackup(filename, backup);
     }
     if (valid_page != 0 && edppSaveEffects(filename, edpp_effect_list) != 0) {
         if (backup_succeeded != 0) {
-            edppShowMessagePc(parent, "Saved OK", 1);
+            edppShowMessage(parent, "Saved OK", 1);
         } else {
-            edppShowMessagePc(parent, "Saved OK - Backup Failed", 1);
+            edppShowMessage(parent, "Saved OK - Backup Failed", 1);
         }
     } else {
-        edppShowMessagePc(parent, "File Save Error", 0);
+        edppShowMessage(parent, "File Save Error", 0);
     }
     if (original_directory[0] != '\0') {
         NuFileSetCurrentDirectory(original_directory);
@@ -2130,7 +2130,7 @@ void edppRestartAllEffectsInLevel(void) {
             DebrisSetFacing(edpp_ptls[index].instance_id, edpp_ptls[index].facing_mode, edpp_ptls[index].facing_rotation_x,
                             edpp_ptls[index].facing_rotation_y);
             edppDebrisSetGroupID(edpp_ptls[index].instance_id, edpp_ptls[index].render_group);
-            DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenesPc[edpp_ptls[index].page]);
+            DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenes[edpp_ptls[index].page]);
         } else {
             edpp_ptls[index].instance_id = 99999;
         }
@@ -2202,7 +2202,7 @@ void cbFileLoadEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         edppLoadPage(path, 1, edbits_base_scene);
     }
     edppRestartAllEffectsInLevel();
-    edppShowMessagePc(parent, "Loaded OK", 1);
+    edppShowMessage(parent, "Loaded OK", 1);
     if (original_directory[0] != '\0') {
         NuFileSetCurrentDirectory(original_directory);
     }

@@ -102,14 +102,14 @@ casts; the 135 with ten or more casts explain 4,540, the 335 with five or more
 | # | Casts | Classes | Root cause | Declared at | Files |
 |---:|---:|---|---|---|---:|
 | 1 | 338 | byte-pointer, void-pointer-cpp | `variable Player (element): void *[8] -> gameobject_s *` | src/saga.h:16153 | 46 |
-| 2 | 310 | record-pun | `APIOBJECT_PC <-> gameobject_s` (src/saga.h:1559, 6278) |  | 19 |
+| 2 | 310 | record-pun | `APIOBJECT <-> gameobject_s` (src/saga.h:1559, 6278) |  | 19 |
 | 3 | 265 | view-type | `PC_SCENE_MTL_VIEW <-> numtl_s` (src/saga.h:17333, 2476) |  | 13 |
 | 4 | 209 | layout-compatible | `NUVEC4 <-> nuvec_s` (src/saga.h:101, 84) |  | 13 |
 | 5 | 195 | signedness | `field gameobject_s.id: u16 -> short` | src/saga.h:7001 | 41 |
 | 6 | 157 | field-address | `field numtx_s.m30 (address): f32 -> nuvec_s *` | src/saga.h:134 | 40 |
 | 7 | 109 | void-pointer-cpp, byte-pointer | `variable CurrentTerrain: void * -> TERRAIN_SET_PC *` | src/saga.h:16538 | 5 |
 | 8 | 109 | declaration-type | `variable edui_font: void * -> vufnt_s *` | src/saga.h:28831 | 1 |
-| 9 | 102 | byte-pointer, void-pointer-cpp | `field APIOBJECT_PC.owner: void * -> gameobject_s *` | src/saga.h:1560 | 6 |
+| 9 | 102 | byte-pointer, void-pointer-cpp | `field APIOBJECT.owner: void * -> gameobject_s *` | src/saga.h:1560 | 6 |
 | 10 | 92 | duplicate-type | `part_runtime_type_s <-> parttype_lookup_s` (src/gameapi/edpart.c:9) |  | 1 |
 | 11 | 84 | signedness | `function EdFileReadChar (result): char -> unsigned char` | src/saga.h:15432 | 14 |
 | 12 | 81 | duplicate-type | `cut_instance_load_s <-> instnugcutscene_s` (src/legoapi/cutscene_lifecycle.c:749) |  | 1 |
@@ -120,7 +120,7 @@ casts; the 135 with ten or more casts explain 4,540, the 335 with five or more
 | 17 | 54 | declaration-type | `function NuStringTableGetByName (result): u16 * -> char *` | src/saga.h:13956 | 1 |
 | 18 | 51 | const | `variable AIActionFalseName: const char[6] -> char *` | src/saga.h:14214 | 2 |
 | 19 | 44 | duplicate-type | `LEVER_WORLD <-> WORLDINFO_s` (src/legogame/lever.c:35) |  | 1 |
-| 20 | 43 | record-pun | `TERRAIN_POLYGON_INFO_PC <-> TERRAIN_SHAPE_BATCH` (src/saga.h:642, 927) |  | 4 |
+| 20 | 43 | record-pun | `TERRAIN_POLYGON_INFO <-> TERRAIN_SHAPE_BATCH` (src/saga.h:642, 927) |  | 4 |
 | 21 | 39 | duplicate-type | `permanent_material_reader_s <-> numtl_s` (src/legoapi/screen.cpp:25) |  | 1 |
 | 22 | 37 | declaration-type | `variable nu_input_state: NuKeyboardState_PC * -> PC_INPUT_RUNTIME_PC *` | src/saga.h:13692 | 2 |
 | 23 | 36 | const | `variable AIGameCharacterName: const char[11] -> char *` | src/saga.h:14517 | 1 |
@@ -132,7 +132,7 @@ casts; the 135 with ten or more casts explain 4,540, the 335 with five or more
 | 29 | 31 | byte-pointer | `field variptr_u.void_ptr: void * -> locator_prim_vertex_s *` | src/saga.h:1944 | 1 |
 | 30 | 29 | signedness | `function EdFileReadShort (result): i16 -> unsigned short` | src/saga.h:15430 | 9 |
 | 31 | 29 | byte-pointer | `variable LevFlag: i32[4] -> unsigned char *` | src/saga.h:14378 | 5 |
-| 32 | 28 | declaration-type | `field nudisplay_list_pc_s.items: void * -> nudisplaylistitem_s *` | src/saga.h:3315 | 2 |
+| 32 | 28 | declaration-type | `field nudisplay_list_s.items: void * -> nudisplaylistitem_s *` | src/saga.h:3315 | 2 |
 | 33 | 27 | duplicate-type | `HATMACHINE_WORLD <-> WORLDINFO_s` (src/legogame/hatmachine.cpp:37) |  | 1 |
 | 34 | 27 | record-pun | `NUVEC4 <-> VuVec` (src/saga.h:101, 27156) |  | 1 |
 | 35 | 27 | byte-pointer | `variable WORLD: WORLDINFO * -> void *` | src/saga.h:16151 | 3 |
@@ -141,13 +141,13 @@ casts; the 135 with ten or more casts explain 4,540, the 335 with five or more
 | 38 | 26 | declaration-type | `variable EdLevelFnt: i32 -> void *` | src/legoapi/rtlhelper.cpp:18 | 2 |
 | 39 | 26 | declaration-type | `variable id_SPEEDERBIKE: i16 -> unsigned short` | src/saga.h:12951 | 8 |
 | 40 | 25 | duplicate-type | `techno_callback_s <-> techno_s` (src/legogame/techno.c:115) |  | 1 |
-| 41 | 24 | duplicate-type | `CUT_LOAD_RECORD_PC <-> cutinfo_s` (src/legoapi/cutscenes.cpp:94) |  | 1 |
+| 41 | 24 | duplicate-type | `CUT_LOAD_RECORD <-> cutinfo_s` (src/legoapi/cutscenes.cpp:94) |  | 1 |
 | 42 | 24 | const | `variable AIScriptActionNameArgPrefix: const char[6] -> char *` | src/saga.h:16791 | 2 |
 | 43 | 24 | declaration-type | `variable GAMERAND (address): i32 -> nunrand_s *` | src/saga.h:15534 | 7 |
 | 44 | 24 | declaration-type | `variable NuDebrisVertexData: void * -> nulgtvertex_s *` | src/saga.h:13344 | 1 |
 | 45 | 23 | declaration-type | `field SoundQueue.volume_sink: SoundQueueVolumeSink * -> IDirectSoundBuffer *` | src/saga.h:19404 | 1 |
 | 46 | 23 | signedness | `field gameobject_s.jump_animation_state: u8 -> signed char` | src/saga.h:6404 | 5 |
-| 47 | 23 | duplicate-type | `charconfig_variant_reader_s <-> PLAYERCHARACTERCONFIG_PC` (src/legogame/config.c:31) |  | 1 |
+| 47 | 23 | duplicate-type | `charconfig_variant_reader_s <-> PLAYERCHARACTERCONFIG` (src/legogame/config.c:31) |  | 1 |
 | 48 | 22 | field-address | `field numtx_s.m20 (address): f32 -> nuvec_s *` | src/saga.h:130 | 11 |
 | 49 | 21 | void-pointer-cpp | `field variptr_u.void_ptr: void * -> float *` | src/saga.h:1944 | 3 |
 | 50 | 20 | duplicate-type | `cut_instance_lifecycle_s <-> instnugcutscene_s` (src/legoapi/cutscene_lifecycle.c:137) |  | 1 |
@@ -156,15 +156,15 @@ What the list says:
 
 - **Untyped globals and fields in `src/saga.h`** are the largest single
   cause: `Player[8]` (338), `CurrentTerrain` (109), `edui_font` (109),
-  `APIOBJECT_PC.owner` (102), `bolt_s.owner` (74), `gizmotypes` (65),
+  `APIOBJECT.owner` (102), `bolt_s.owner` (74), `gizmotypes` (65),
   `nuspecial_handle_s.scene` (34) are `void *` that every user casts to the
   same type.
-- **Two names for one struct**: `APIOBJECT_PC` is a second decomposition of
+- **Two names for one struct**: `APIOBJECT` is a second decomposition of
   `GAMEOBJECT` (310); `PC_SCENE_MTL_VIEW`, `PC_MATERIAL_CREATE_VIEW` and four
   unit-local material readers overlay `NUMTL` (265 + 79 + 39 + 32 + 26);
   `NUVEC4` starts with the fields of `NUVEC` (209, plus 27 with `VuVec`); unit
   copies of `WORLDINFO`, `instnugcutscene_s`, `cutinfo_s` and
-  `PLAYERCHARACTERCONFIG_PC` carry a dozen to 100 casts each.
+  `PLAYERCHARACTERCONFIG` carry a dozen to 100 casts each.
 - **Missing rows**: `numtx_s` has no `NUVEC` view of its rows, so
   `(NUVEC *)&m->m30` appears 157 times (and `m20` 22).
 - **Signedness of a declaration** (`gameobject_s.id`, `field_280`,
@@ -229,8 +229,8 @@ the check is needed anyway).
 | 1, done | Redundant casts (section 5) | ~2,300 of 2,396 (C-style, outside macros; 183 files) | 5-8 commits | none: objects byte-identical | delete with the classes of `--list redundant-identity,redundant-implicit`, drop the parentheses left behind, compare each object |
 | 2 | Unit-local declarations (`declaration-type` with a declaration in a `.c`/`.cpp`; `EdLevelFnt`, `edpp.c` item parameters, level packets, `hub.cpp` bonus gizmo) | ~560 | ~150 | low: one or two objects each | as the pilot: retype, delete the casts, compare objects |
 | 3 | Unit copies of `src/saga.h` structs (`duplicate-type`, `view-type` with a local side: `edpart.c`, `cutscene_lifecycle.c`, `lever.c`, `hatmachine.cpp`, `screen.cpp`, `parts.c`, `techno.c`, `config.c`, `cutscenes.cpp`, `pc_device.cpp`, `pc_input.cpp`) | ~1,800 | ~100 types | low to medium: field names and types must be merged into the real struct; one unit each | move missing fields into the `src/saga.h` struct only when another unit needs them, otherwise rename the fields of the local copy's users |
-| 4 | `void *` globals and fields of `src/saga.h` (`Player`, `CurrentTerrain`, `edui_font`, `APIOBJECT_PC.owner`, `bolt_s.owner`, `gizmotypes`, `nuspecial_handle_s.scene`, `nudisplay_list_pc_s.items`, `NuDebrisVertexData`, ...) | ~1,150 (declaration-type) + ~700 (laundering roots) | ~40 declarations, 3-4 `src/saga.h` commits | medium: full build and exact set; C++ units keep a cast where they assign an allocation | coordinate with the `src/saga.h` struct-comment conversion; one commit per group of declarations |
-| 5 | Record pairs in `src/saga.h`: `NUVEC4` embeds `NUVEC`, `numtx_s` gets row vectors, `PC_SCENE_MTL_VIEW` into `NUMTL`, `APIOBJECT_PC` into `GAMEOBJECT`, `TERRAIN_POLYGON_INFO_PC`/`TERRAIN_SHAPE_BATCH` | ~1,000 | 5-6 type changes | medium to high: layouts must be proven equal (`STATIC_ASSERT`s), every user recompiles | one pair per commit, full build each |
+| 4 | `void *` globals and fields of `src/saga.h` (`Player`, `CurrentTerrain`, `edui_font`, `APIOBJECT.owner`, `bolt_s.owner`, `gizmotypes`, `nuspecial_handle_s.scene`, `nudisplay_list_s.items`, `NuDebrisVertexData`, ...) | ~1,150 (declaration-type) + ~700 (laundering roots) | ~40 declarations, 3-4 `src/saga.h` commits | medium: full build and exact set; C++ units keep a cast where they assign an allocation | coordinate with the `src/saga.h` struct-comment conversion; one commit per group of declarations |
+| 5 | Record pairs in `src/saga.h`: `NUVEC4` embeds `NUVEC`, `numtx_s` gets row vectors, `PC_SCENE_MTL_VIEW` into `NUMTL`, `APIOBJECT` into `GAMEOBJECT`, `TERRAIN_POLYGON_INFO`/`TERRAIN_SHAPE_BATCH` | ~1,000 | 5-6 type changes | medium to high: layouts must be proven equal (`STATIC_ASSERT`s), every user recompiles | one pair per commit, full build each |
 | 6 | `const`: string-name tables (`AIActionFalseName`, `AIGameCharacterName`, ...) passed to `char *` parameters | ~1,000 of 1,967 | the prototypes of the receiving helpers | low for code (const does not change code), medium for churn | make the parameters `const char *`; the casts go with them |
 | 7 | Function-pointer casts (`function-pointer`) | ~400 of 796 | table element types and prototypes | medium | type the tables; callbacks that really take different arguments keep their cast |
 | 8 | Signedness of declarations (`gameobject_s.id`, `field_280`, `EdFileReadChar/Short`, `id_*` globals) | ~450 | ~10 declarations | high: the pilot shows that the load extension follows the declared type | only as matching experiments, each with a full exact-set comparison |
@@ -264,7 +264,7 @@ their budget near zero:
 
 | Unit | Kept | Why |
 |---|---:|---|
-| `nu2api/terrain_query.cpp` | 39 | `(f32)(a + 0.02f + r)` of a float expression in `ScanTerrainHandel`, `ScanTerrainPlatform`, `NewScanHandelFullPc`: the x87 code changes |
+| `nu2api/terrain_query.cpp` | 39 | `(f32)(a + 0.02f + r)` of a float expression in `ScanTerrainHandel`, `ScanTerrainPlatform`, `NewScanHandelFull`: the x87 code changes |
 | `nu2api/nu3d_includes.cpp` | 15 | `ComputeShadowMatrixPc` 1 (float); 14 identity casts in `NuSpecialGet*/Set*` and `NuHGobjEvalAnim2Root`: removing any one moves `NuDeferredFilterGen::render` (93.89 to 93.90 %), a unit-wide numbering effect, not their own code |
 | `legoapi/explosions.c` | 1 | `(f32)(z * inverse)` in `UpdateExplosion_Generic` |
 | `gamelib/net/NetworkObjectManager.cpp` | 1 | `(bool)(memcmp(...) == 0)`: without it `NOSContext::operator==` is not exact |

@@ -20,8 +20,8 @@ extern "C" {
     void GetRotationAngles(NUVEC *, u16 *, u16 *);
     extern i32 dco_id;
     extern f32 dco_reflectcoord;
-    extern PLAYERCHARACTERCONFIG_PC *dco_gcdata;
-    extern CHARACTER_MODEL_LAYERS_PC *dco_cmodel;
+    extern PLAYERCHARACTERCONFIG *dco_gcdata;
+    extern CHARACTER_MODEL_LAYERS *dco_cmodel;
     extern i32 dco_wearinghat;
     extern i32 dco_reflectaxis;
     extern u16 dco_prerotatez;

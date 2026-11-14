@@ -10,7 +10,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-struct addgizmotype_pc_s;
+struct addgizmotype_s;
 
 typedef struct edgizshadow_s { // size 0x38
     NUVEC direction;           // 0x00
@@ -30,7 +30,7 @@ typedef struct edgizshadow_s { // size 0x38
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct addgizmotype_pc_s *EdGizShadowMachine_RegisterGizmo(i32 type_id);
+    struct addgizmotype_s *EdGizShadowMachine_RegisterGizmo(i32 type_id);
 #ifdef __cplusplus
 }
 #endif

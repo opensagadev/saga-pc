@@ -17,7 +17,7 @@
 
 #if SAGA_NU2API_NU3D_NUQFNT_H_PART == 1 && !defined(SAGA_NU2API_NU3D_NUQFNT_H_STOP)
 
-struct FONT_LEGACY_READER_PC;
+struct FONT_LEGACY_READER;
 struct numtx_s;
 
 typedef struct vufnt_s VUFNT;
@@ -143,7 +143,7 @@ enum { NUQFNT_CSMODE_PS2 = 1 };
 extern "C" {
 #endif
     void NuQFntSetMtx(VUFNT *, struct numtx_s *);
-    VUFNT *NuQFntCreate(struct FONT_LEGACY_READER_PC *, i32, i32, VARIPTR *, VARIPTR *);
+    VUFNT *NuQFntCreate(struct FONT_LEGACY_READER *, i32, i32, VARIPTR *, VARIPTR *);
     f32 NuQFntPrintJustifiedW(VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, struct numtx_s *);
     void NuQFntSetMtxRS(void *stream, VUFNT *font, struct numtx_s *matrix);
 #ifdef __cplusplus

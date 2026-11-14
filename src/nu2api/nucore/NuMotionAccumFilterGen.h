@@ -26,13 +26,13 @@ class NuMotionAccumFilterGen : public NuPostFilter { // size 0x28
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();
     virtual void render();
-    void *program;                                    // 0x0c
-    PC_FRAMEBUFFER_PC *accumulation_fbo;              // 0x10
-    GRAPHICS_RENDER_TEXTURE_PC *accumulation_texture; // 0x14
-    i32 frames;                                       // 0x18
-    f32 blend;                                        // 0x1c
-    f32 mode_pc;                                      // 0x20
-    i32 current_frame;                                // 0x24
+    void *program;                                 // 0x0c
+    PC_FRAMEBUFFER *accumulation_fbo;              // 0x10
+    GRAPHICS_RENDER_TEXTURE *accumulation_texture; // 0x14
+    i32 frames;                                    // 0x18
+    f32 blend;                                     // 0x1c
+    f32 mode_pc;                                   // 0x20
+    i32 current_frame;                             // 0x24
 };
 
 #endif

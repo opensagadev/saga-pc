@@ -24,7 +24,7 @@
 
 #if SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_PART == 1 && !defined(SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_STOP)
 
-struct CHARACTER_MODEL_LAYERS_PC;
+struct CHARACTER_MODEL_LAYERS;
 struct GAMECHARACTERLAYER;
 struct PART_PC;
 struct gameobject_s;
@@ -52,7 +52,7 @@ typedef struct GAMEPAD_PC {         // size 0x5c
 
     union { // size 0x14
         u8 unknown_40[0x14];
-        RUMBLE_PACKET_RESOURCE_PC rumble;
+        RUMBLE_PACKET_RESOURCE rumble;
     }; // 0x40
 
     NUVEC *operator_data;     // 0x54
@@ -77,49 +77,49 @@ extern "C" {
 #endif
     extern i16 *objhitobj_killparts_yrot;
     extern i16 id_SNAKE;
-    extern f32 VehicleGunshipHoverBasePc;
-    extern f32 VehicleGunshipHoverOtherPc;
-    extern f32 VehicleGunshipHoverSeparationPc;
+    extern f32 VehicleGunshipHoverBase;
+    extern f32 VehicleGunshipHoverOther;
+    extern f32 VehicleGunshipHoverSeparation;
     extern u8 disorientAxis;
-    extern u8 TractorBeamEnabledPc;
-    extern i32 VehicleGunshipAngleADefaultPc;
-    extern i32 VehicleGunshipAngleAPlayer1Pc;
-    extern i32 VehicleGunshipAngleAPlayer2Pc;
-    extern i32 VehicleGunshipAngleBDefaultPc;
-    extern i32 VehicleGunshipAngleBPlayer1Pc;
+    extern u8 TractorBeamEnabled;
+    extern i32 VehicleGunshipAngleADefault;
+    extern i32 VehicleGunshipAngleAPlayer1;
+    extern i32 VehicleGunshipAngleAPlayer2;
+    extern i32 VehicleGunshipAngleBDefault;
+    extern i32 VehicleGunshipAngleBPlayer1;
     extern f32 DEACTIVATEDTIME;
-    extern i32 VehicleGunshipAngleBPlayer2Pc;
+    extern i32 VehicleGunshipAngleBPlayer2;
     extern f32 PCForceGlowRadiusMultiplier;
     extern f32 PCForceGlowHoldDuration;
     extern f32 FORCEGLOWTIME;
-    extern f32 CableTargetScalePc;
-    extern f32 VehicleZamSmokeRatePc;
-    extern f32 VehicleShieldTargetPc;
-    extern f32 PodRaceMinimumSpeedPc;
-    extern f32 PodRaceBoostSpeedPc;
-    extern f32 PodSprintMinimumSpeedPc;
-    extern f32 PodSprintBoostSpeedPc;
-    extern f32 PodBoostHeightPc;
-    extern f32 PodPitchHistoryPc[2];
-    extern i32 PodSprintDebrisIndexPc;
-    extern f32 PodCollisionThresholdPc;
-    extern NUVEC PodSprintLiftPositionsPc[3];
-    extern f32 VehicleLaunchHoverOffsetPc;
-    extern f32 PodCollisionMagnitudePc;
+    extern f32 CableTargetScale;
+    extern f32 VehicleZamSmokeRate;
+    extern f32 VehicleShieldTarget;
+    extern f32 PodRaceMinimumSpeed;
+    extern f32 PodRaceBoostSpeed;
+    extern f32 PodSprintMinimumSpeed;
+    extern f32 PodSprintBoostSpeed;
+    extern f32 PodBoostHeight;
+    extern f32 PodPitchHistory[2];
+    extern i32 PodSprintDebrisIndex;
+    extern f32 PodCollisionThreshold;
+    extern NUVEC PodSprintLiftPositions[3];
+    extern f32 VehicleLaunchHoverOffset;
+    extern f32 PodCollisionMagnitude;
     extern i16 id_CAPTAINTARPALS;
-    extern u8 CheatPooPartsEnabledPc;
-    extern u8 CheatPooCoinsEnabledPc;
+    extern u8 CheatPooPartsEnabled;
+    extern u8 CheatPooCoinsEnabled;
     extern i32 ComboOpponent_Behind;
     extern f32 ComboOpponent_Range2;
-    extern NUVEC PooPositionPc[2];
+    extern NUVEC PooPosition[2];
 
-    extern AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSpherePc[14];
+    extern AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSphere[14];
     void ResetForceGlow(void *packet);
-    i32 Dodge_UpdateHint(HINT_PC *);
+    i32 Dodge_UpdateHint(HINT *);
     extern i16 id_SNAKE;
     extern const f64 NuTimeBarColumnStep;
     extern const f64 NuQFntHalfScale;
-    extern const f64 PlayerRandomScalePc;
+    extern const f64 PlayerRandomScale;
     extern const f32 PlayerPanelVariantZeroX;
     extern const f32 PlayerPanelVariantZeroZ;
     extern i16 id_MINIATST;
@@ -148,9 +148,9 @@ extern "C" {
     extern f32 SaberSparksTimer;
     extern f32 rocket_speed;
     extern f32 ForcePush_Speed;
-    extern f32 ForcePushDurationPc;
-    extern f32 ForcePushStrongDurationPc;
-    extern f32 ForcePushMindTrickDurationPc;
+    extern f32 ForcePushDuration;
+    extern f32 ForcePushStrongDuration;
+    extern f32 ForcePushMindTrickDuration;
     extern const f32 ForcePushSeekRate;
     extern const f32 ForcePushApproachInnerSquare;
     extern const f32 ForcePushApproachOuterSquare;
@@ -163,17 +163,17 @@ extern "C" {
 
     void AveragePlayerCurrentSpeedMul(void);
 
-    extern i16 DefaultMotionSkeletonIdPc;
-    extern i16 DefaultMotionIndySnakeIdPc;
+    extern i16 DefaultMotionSkeletonId;
+    extern i16 DefaultMotionIndySnakeId;
     extern f32 speeder_smoke_rate;
     extern f32 speeder_offset_speed;
-    extern i16 DefaultAnimationLeiaSlaveIdPc;
-    extern i16 DefaultAnimationLamaSuIdPc;
-    extern i16 DefaultAnimationTaunWeIdPc;
+    extern i16 DefaultAnimationLeiaSlaveId;
+    extern i16 DefaultAnimationLamaSuId;
+    extern i16 DefaultAnimationTaunWeId;
     extern i16 id_JUMBOHOMINGDROID;
-    extern i16 DefaultAnimationLeiaSlaveIdPc;
-    extern i16 DefaultAnimationLamaSuIdPc;
-    extern i16 DefaultAnimationTaunWeIdPc;
+    extern i16 DefaultAnimationLeiaSlaveId;
+    extern i16 DefaultAnimationLamaSuId;
+    extern i16 DefaultAnimationTaunWeId;
     extern i16 id_JUMBOHOMINGDROID;
     extern f32 speeder_smoke_rate;
     extern f32 speeder_offset_speed;
@@ -184,8 +184,8 @@ extern "C" {
     extern i16 id_NAFFDROID4;
     extern i16 id_MOUSEDROID;
     extern i16 id_BUZZDROID;
-    extern f32 CritterSnakeExtraHoverPc;
-    extern f32 CritterBatExtraHoverPc;
+    extern f32 CritterSnakeExtraHover;
+    extern f32 CritterBatExtraHover;
 
     extern i16 id_BAT;
     extern i16 id_NAFFDROID1;
@@ -193,8 +193,8 @@ extern "C" {
     extern i16 id_NAFFDROID4;
     extern i16 id_MOUSEDROID;
     extern i16 id_BUZZDROID;
-    extern f32 CritterSnakeExtraHoverPc;
-    extern f32 CritterBatExtraHoverPc;
+    extern f32 CritterSnakeExtraHover;
+    extern f32 CritterBatExtraHover;
     f32 GetVehicleAreaRememberSpeed(void);
     extern f32 PlayerOpponent_Range2;
     extern f32 testlaser_sizew;
@@ -216,24 +216,24 @@ extern "C" {
 
 #if SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_PART == 2 && !defined(SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_STOP)
 
-typedef struct PLAYERCHARACTERCONFIG_PC {                                   // size 0x120
-    i32 (*make_layer_list)(struct CHARACTER_MODEL_LAYERS_PC *, i16 *, u32); // 0x000
-    struct GAMECHARACTERLAYER *layers;                                      // 0x004
-    i8 *layer_lookup;                                                       // 0x008
-    f32 stop_speed;                                                         // 0x00c
-    f32 idle_speed;                                                         // 0x010
-    f32 tiptoe_speed;                                                       // 0x014
-    f32 walk_speed;                                                         // 0x018
-    f32 run_speed;                                                          // 0x01c
-    f32 backwards_factor;                                                   // 0x020
-    f32 gravity;                                                            // 0x024
-    f32 field_028;                                                          // 0x028
-    f32 jump_speed;                                                         // 0x02c
-    f32 jump_duration;                                                      // 0x030
-    f32 jump_height;                                                        // 0x034
-    f32 second_jump_speed;                                                  // 0x038
-    f32 second_jump_duration;                                               // 0x03c
-    f32 second_jump_height;                                                 // 0x040
+typedef struct PLAYERCHARACTERCONFIG {                                   // size 0x120
+    i32 (*make_layer_list)(struct CHARACTER_MODEL_LAYERS *, i16 *, u32); // 0x000
+    struct GAMECHARACTERLAYER *layers;                                   // 0x004
+    i8 *layer_lookup;                                                    // 0x008
+    f32 stop_speed;                                                      // 0x00c
+    f32 idle_speed;                                                      // 0x010
+    f32 tiptoe_speed;                                                    // 0x014
+    f32 walk_speed;                                                      // 0x018
+    f32 run_speed;                                                       // 0x01c
+    f32 backwards_factor;                                                // 0x020
+    f32 gravity;                                                         // 0x024
+    f32 field_028;                                                       // 0x028
+    f32 jump_speed;                                                      // 0x02c
+    f32 jump_duration;                                                   // 0x030
+    f32 jump_height;                                                     // 0x034
+    f32 second_jump_speed;                                               // 0x038
+    f32 second_jump_duration;                                            // 0x03c
+    f32 second_jump_height;                                              // 0x040
 
     union { // size 0x4
         f32 acceleration;
@@ -371,7 +371,7 @@ typedef struct PLAYERCHARACTERCONFIG_PC {                                   // s
     i8 extra_character_locator; // 0x11d
     u8 flags_11e;               // 0x11e
     u8 layer_count;             // 0x11f
-} PLAYERCHARACTERCONFIG_PC;
+} PLAYERCHARACTERCONFIG;
 
 #ifdef __cplusplus
 extern "C" {
@@ -412,7 +412,7 @@ extern "C" {
     void PodCollisionCode(struct gameobject_s *);
     f32 FindPodHoverHeight(struct gameobject_s *);
     void CableCode(struct gameobject_s *, i32, f32);
-    extern void (*VehicleSlowdownCallbackPc)(struct gameobject_s *);
+    extern void (*VehicleSlowdownCallback)(struct gameobject_s *);
     void AwkwardShapeCode(struct gameobject_s *, i32);
     void TakeHitCode(struct gameobject_s *object);
     i32 TwistLevel(struct level_data_s *);

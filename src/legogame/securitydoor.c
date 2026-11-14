@@ -36,7 +36,7 @@ typedef struct security_door_progress_s { // size 0xc
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *SecurityDoor_OutputName;
 
-static void SecurityDoorUpdateMatricesPc(SECURITY_DOOR_RECORD_PC *door, u16 angle) {
+static void SecurityDoorUpdateMatrices(SECURITY_DOOR_RECORD_PC *door, u16 angle) {
     NUVEC translation = {0.0f, 0.0f, 0.0f};
     NuMtxSetRotationY(&door->leaf_matrix[0], -angle);
     translation.x = 0.2667f;
@@ -103,7 +103,7 @@ void SecurityDoor_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 
-static void SecurityDoorInitRecordPc(SECURITY_DOOR_RECORD_PC *door) {
+static void SecurityDoorInitRecord(SECURITY_DOOR_RECORD_PC *door) {
     f32 height;
     door->player_position.y = 0.0f;
     door->player_position.x = 0.0f;
@@ -120,7 +120,7 @@ static void SecurityDoorInitRecordPc(SECURITY_DOOR_RECORD_PC *door) {
     door->opening = 0.0f;
     door->state = 0;
     door->flags = (door->flags & ~12u) | 3;
-    SecurityDoorUpdateMatricesPc(door, 0);
+    SecurityDoorUpdateMatrices(door, 0);
     PlatInstRotate(door->platform_id[0], 1);
     PlatInstRotate(door->platform_id[1], 1);
 }
@@ -135,7 +135,7 @@ void SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS_
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         i32 word;
         u32 mask;
-        SecurityDoorInitRecordPc(door);
+        SecurityDoorInitRecord(door);
         if (progress == NULL || index >= 32) {
             continue;
         }
@@ -147,7 +147,7 @@ void SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS_
         if (door->bits.opened) {
             door->opening = 1.0f;
             door->state = 2;
-            SecurityDoorUpdateMatricesPc(door, 0x4000);
+            SecurityDoorUpdateMatrices(door, 0x4000);
         }
     }
 }
@@ -177,7 +177,7 @@ void SecurityDoors_Update(WORLDINFO *world, void *unused, f32 delta_time) {
             i32 phase = (i32)((f64)door->opening * 32768.0 + 16384.0);
             angle = (u16)((1.0 - ((f64)NuTrigTable[(phase >> 1) & 0x7fff] + 1.0) * 0.5) * 16384.0);
         }
-        SecurityDoorUpdateMatricesPc(door, angle);
+        SecurityDoorUpdateMatrices(door, angle);
     }
 }
 
@@ -347,46 +347,46 @@ char *SecurityDoor_OutputName = "Opened";
 char *SecurityDoorRegistryNamePc = "SecurityDoor";
 #pragma data_seg()
 #pragma data_seg(".data$SecurityDoorAddTypePc")
-ADDGIZMOTYPE_PC SecurityDoorAddTypePc = {0};
+ADDGIZMOTYPE_PC SecurityDoorAddType = {0};
 #pragma data_seg()
 
 ADDGIZMOTYPE_PC *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
     char *name = SecurityDoorRegistryNamePc;
-    SecurityDoorAddTypePc = Default_ADDGIZMOTYPE;
-    SecurityDoorAddTypePc.name = name;
-    SecurityDoorAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
-    SecurityDoorAddTypePc.fns.options = 12;
-    SecurityDoorAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))SecurityDoors_GetMaxGizmos;
-    SecurityDoorAddTypePc.fns.add_gizmos_fn = (void *)SecurityDoors_AddGizmos;
-    SecurityDoorAddTypePc.fns.early_update_fn = NULL;
-    SecurityDoorAddTypePc.fns.late_update_fn = (void (*)(void *, void *, f32))SecurityDoors_Update;
-    SecurityDoorAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))SecurityDoors_Draw;
-    SecurityDoorAddTypePc.fns.panel_draw_fn = NULL;
-    SecurityDoorAddTypePc.fns.get_gizmo_name_fn = SecurityDoor_GetGizmoName;
-    SecurityDoorAddTypePc.fns.get_output_fn = SecurityDoor_GetOutput;
-    SecurityDoorAddTypePc.fns.get_output_name_fn = SecurityDoor_GetOutputName;
-    SecurityDoorAddTypePc.fns.get_num_outputs_fn = (void *)SecurityDoor_GetNumOutputs;
-    SecurityDoorAddTypePc.fns.activate_fn = SecurityDoor_Activate;
-    SecurityDoorAddTypePc.fns.activate_rev_fn = NULL;
-    SecurityDoorAddTypePc.fns.set_visibility_fn = SecurityDoor_SetVisibility;
-    SecurityDoorAddTypePc.fns.get_visibility_fn = NULL;
-    SecurityDoorAddTypePc.fns.get_pos_fn = SecurityDoor_GetPos;
-    SecurityDoorAddTypePc.fns.using_special_fn = NULL;
-    SecurityDoorAddTypePc.fns.bolt_hit_plat_fn = NULL;
-    SecurityDoorAddTypePc.fns.get_best_bolt_target_fn = NULL;
-    SecurityDoorAddTypePc.fns.bolt_hit_fn = NULL;
-    SecurityDoorAddTypePc.fns.allocate_progress_data_fn = (void *)SecurityDoors_AllocateProgressData;
-    SecurityDoorAddTypePc.fns.clear_progress_fn = (void *)SecurityDoors_ClearProgress;
-    SecurityDoorAddTypePc.fns.store_progress_fn = (void *)SecurityDoors_StoreProgress;
-    SecurityDoorAddTypePc.fns.reset_fn = (void *)SecurityDoors_Reset;
-    SecurityDoorAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))SecurityDoors_ReserveBufferSpace;
-    SecurityDoorAddTypePc.fns.load_fn = (i32(*)(void *, void *))SecurityDoors_Load;
-    SecurityDoorAddTypePc.fns.post_load_fn = NULL;
-    SecurityDoorAddTypePc.fns.add_level_sfx_fn = NULL;
-    return &SecurityDoorAddTypePc;
+    SecurityDoorAddType = Default_ADDGIZMOTYPE;
+    SecurityDoorAddType.name = name;
+    SecurityDoorAddType.prefix = TextInputKeyNameTextPc7516c0;
+    SecurityDoorAddType.fns.options = 12;
+    SecurityDoorAddType.fns.get_max_gizmos_fn = (i32(*)(void *))SecurityDoors_GetMaxGizmos;
+    SecurityDoorAddType.fns.add_gizmos_fn = (void *)SecurityDoors_AddGizmos;
+    SecurityDoorAddType.fns.early_update_fn = NULL;
+    SecurityDoorAddType.fns.late_update_fn = (void (*)(void *, void *, f32))SecurityDoors_Update;
+    SecurityDoorAddType.fns.draw_fn = (void (*)(void *, void *, f32))SecurityDoors_Draw;
+    SecurityDoorAddType.fns.panel_draw_fn = NULL;
+    SecurityDoorAddType.fns.get_gizmo_name_fn = SecurityDoor_GetGizmoName;
+    SecurityDoorAddType.fns.get_output_fn = SecurityDoor_GetOutput;
+    SecurityDoorAddType.fns.get_output_name_fn = SecurityDoor_GetOutputName;
+    SecurityDoorAddType.fns.get_num_outputs_fn = (void *)SecurityDoor_GetNumOutputs;
+    SecurityDoorAddType.fns.activate_fn = SecurityDoor_Activate;
+    SecurityDoorAddType.fns.activate_rev_fn = NULL;
+    SecurityDoorAddType.fns.set_visibility_fn = SecurityDoor_SetVisibility;
+    SecurityDoorAddType.fns.get_visibility_fn = NULL;
+    SecurityDoorAddType.fns.get_pos_fn = SecurityDoor_GetPos;
+    SecurityDoorAddType.fns.using_special_fn = NULL;
+    SecurityDoorAddType.fns.bolt_hit_plat_fn = NULL;
+    SecurityDoorAddType.fns.get_best_bolt_target_fn = NULL;
+    SecurityDoorAddType.fns.bolt_hit_fn = NULL;
+    SecurityDoorAddType.fns.allocate_progress_data_fn = (void *)SecurityDoors_AllocateProgressData;
+    SecurityDoorAddType.fns.clear_progress_fn = (void *)SecurityDoors_ClearProgress;
+    SecurityDoorAddType.fns.store_progress_fn = (void *)SecurityDoors_StoreProgress;
+    SecurityDoorAddType.fns.reset_fn = (void *)SecurityDoors_Reset;
+    SecurityDoorAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))SecurityDoors_ReserveBufferSpace;
+    SecurityDoorAddType.fns.load_fn = (i32(*)(void *, void *))SecurityDoors_Load;
+    SecurityDoorAddType.fns.post_load_fn = NULL;
+    SecurityDoorAddType.fns.add_level_sfx_fn = NULL;
+    return &SecurityDoorAddType;
 }
 
-static void SecurityDoorStartPc(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *door, i32 facing) {
+static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *door, i32 facing) {
     object->context_variant_flags &= ~0x40u;
     object->context_timer = 0.0f;
     object->character_context = 0x5c;
@@ -454,6 +454,6 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (!(distance < range) || (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0) {
             return;
         }
-        SecurityDoorStartPc(object, door, 1);
+        SecurityDoorStart(object, door, 1);
     }
 }

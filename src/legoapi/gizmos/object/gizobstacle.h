@@ -41,11 +41,11 @@ extern "C" {
     void GizObstacles_StoreProgress(void *, void *, void *);
     i32 GizmoObstacle_ActivateRev(GIZMO_PC *, i32, i32);
     void GizObstacles_Update(void *, void *, f32);
-    extern NUVEC *GizObstacleTriggersPc[16];
-    extern i32 (*GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
+    extern NUVEC *GizObstacleTriggers[16];
+    extern i32 (*GizObstacleExcludeFn)(GIZOBSTACLE *, GAMEOBJECT *);
     GIZMO_PC *GizObstacles_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
     void GizObstacles_Draw(void *, void *, f32);
-    extern const char *GizObstacleRegistrationNamePtrPc;
+    extern const char *GizObstacleRegistrationNamePtr;
 #ifdef __cplusplus
 }
 #endif

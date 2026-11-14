@@ -59,13 +59,13 @@ extern "C" {
 }
 #endif
 
-typedef struct AREA_LEVEL_LOAD_PC { // size 0x8
-    i16 level;                      // 0x0
-    i16 first_level;                // 0x2
-    i16 second_level;               // 0x4
-    u8 flags;                       // 0x6
-    u8 unknown_07;                  // 0x7
-} AREA_LEVEL_LOAD_PC;
+typedef struct AREA_LEVEL_LOAD { // size 0x8
+    i16 level;                   // 0x0
+    i16 first_level;             // 0x2
+    i16 second_level;            // 0x4
+    u8 flags;                    // 0x6
+    u8 unknown_07;               // 0x7
+} AREA_LEVEL_LOAD;
 
 #ifdef __cplusplus
 extern "C" {

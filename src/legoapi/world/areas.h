@@ -96,15 +96,15 @@ extern "C" {
 }
 #endif
 
-typedef struct AREA_EXTRA_MODEL_PC { // size 0x8
-    i16 *model_list;                 // 0x0
-    i16 *extra_id;                   // 0x4
-} AREA_EXTRA_MODEL_PC;
+typedef struct AREA_EXTRA_MODEL { // size 0x8
+    i16 *model_list;              // 0x0
+    i16 *extra_id;                // 0x4
+} AREA_EXTRA_MODEL;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void Area_Configure(i32, i32, AREA_EXTRA_MODEL_PC *, i16 *);
+    void Area_Configure(i32, i32, AREA_EXTRA_MODEL *, i16 *);
     extern i32 AreaMusic;
     extern i32 Area_FreePlayModelCount;
     extern i32 LevelLoadCount;
@@ -170,7 +170,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern AREA_GLOBALS_PC AreaGlobals_PC;
+    extern AREA_GLOBALS_PC AreaGlobals;
 #ifdef __cplusplus
 }
 #endif

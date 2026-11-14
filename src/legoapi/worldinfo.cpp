@@ -18,7 +18,7 @@ extern "C" {
         u32 flags;                             // 0x2800
         u8 unknown_2804[0x20];                 // 0x2804
         WORLD_SCRIPT_PROGRESS_PC scripts[32];  // 0x2824
-        GIZFLOWPROGRESS_PC giz_flow_progress;  // 0x2c24
+        GIZFLOWPROGRESS giz_flow_progress;     // 0x2c24
         char disabled_effect_names[12][16];    // 0x2d68
     } LEVEL_PROGRESS_TRANSFER_PC;
 
@@ -232,7 +232,7 @@ extern "C" {
         }
     }
 
-    static i32 LevelStreamingChooseSplitPc(WORLDINFO *world, NUVEC *position, i32 first, i32 second) {
+    static i32 LevelStreamingChooseSplit(WORLDINFO *world, NUVEC *position, i32 first, i32 second) {
         NUGSPLINE *split;
         NUVEC local;
         NUVEC *points;
@@ -245,7 +245,7 @@ extern "C" {
                     return 0;
                 }
                 points = split->pts;
-                if (StreamingInsideLineXZPc(local.x, local.z, points[0].x, points[0].z, points[1].x, points[1].z)) {
+                if (StreamingInsideLineXZ(local.x, local.z, points[0].x, points[0].z, points[1].x, points[1].z)) {
                     other_level = first;
                 } else {
                     other_level = second;
@@ -703,7 +703,7 @@ extern "C" {
         i32 level;
         f32 best_distance;
         f32 distance;
-        AREA_LEVEL_LOAD_PC *load;
+        AREA_LEVEL_LOAD *load;
         LEVELDATA_PC *status;
         if (LOADEROFF != 0 || BGLOAD == 0 || world->area == NULL || (world->area->flags & 8) || NewLData != NULL ||
             Mission_Active(NULL) != NULL) {
@@ -745,7 +745,7 @@ extern "C" {
                         if (load->first_level == load->second_level) {
                             other_level = load->first_level;
                         } else {
-                            LevelStreamingChooseSplitPc(world, &position, load->first_level, load->second_level);
+                            LevelStreamingChooseSplit(world, &position, load->first_level, load->second_level);
                         }
                     }
                 }

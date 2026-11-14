@@ -2,10 +2,10 @@
 #include <string.h>
 #include <stdio.h>
 
-struct PC_MUSIC_ACTION_PAIR_PC { // size 0x1c
-    i16 quiet_id;                // 0x00
-    i16 action_id;               // 0x02
-    u8 unknown_004[0x18];        // 0x04
+struct PC_MUSIC_ACTION_PAIR { // size 0x1c
+    i16 quiet_id;             // 0x00
+    i16 action_id;            // 0x02
+    u8 unknown_004[0x18];     // 0x04
 };
 
 extern "C" {
@@ -114,8 +114,8 @@ extern "C" {
     }
 
     void GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time) {
-        ActionMusicStickyTimeoutPc[0] = initial_delay;
-        ActionMusicStickyTimeoutPc[1] = hold_time;
+        ActionMusicStickyTimeout[0] = initial_delay;
+        ActionMusicStickyTimeout[1] = hold_time;
     }
 }
 
@@ -204,28 +204,27 @@ extern "C" {
     }
 
     void ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
-        if (TerrainChatterWaitPc <= 0.0f && ParticlesPerSecond(2.0f, FRAMETIME) > 0 && object->dead == 0 &&
-            object->character_context == -1) {
-            if (sound != TerrainLastChatterSfxPc || !(interval > 0.0f)) {
+        if (TerrainChatterWait <= 0.0f && ParticlesPerSecond(2.0f, FRAMETIME) > 0 && object->dead == 0 && object->character_context == -1) {
+            if (sound != TerrainLastChatterSfx || !(interval > 0.0f)) {
                 PlaySfxById(sound, &object->collision_position);
-                TerrainChatterWaitPc = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0);
-                TerrainLastChatterSfxPc = sound;
+                TerrainChatterWait = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0);
+                TerrainLastChatterSfx = sound;
             } else {
-                TerrainChatterWaitPc = interval;
-                TerrainLastChatterSfxPc = -1;
+                TerrainChatterWait = interval;
+                TerrainLastChatterSfx = -1;
             }
         }
     }
 
     void LevChatterSfx(char *name, NUVEC *position) {
-        if (TerrainChatterWaitPc <= 0.0f && qrand() < 0x400) {
+        if (TerrainChatterWait <= 0.0f && qrand() < 0x400) {
             PlaySfx(name, position);
-            TerrainChatterWaitPc = (f32)((f64)qrand() * PlayerRandomScalePc * 2.0 + NuTimeBarColumnStep);
+            TerrainChatterWait = (f32)((f64)qrand() * PlayerRandomScale * 2.0 + NuTimeBarColumnStep);
         }
     }
 
     void EngineNoiseCode(GAMEOBJECT *object, i32 silent) {
-        PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
+        PLAYERCHARACTERCONFIG *character = object->character_data->game_character;
         i32 sfx_id = character->sfx_engine;
         f32 target;
         f32 volume;
@@ -346,7 +345,7 @@ extern "C" {
         i8 surface;
         i32 sound;
         i32 alternate;
-        CHARACTERANIM_CONFIG_PC *config;
+        CHARACTERANIM_CONFIG *config;
         ANIMPACKET_PC *packet = &object->anim_packet;
         if (object->terrain_platform_id != -1 || object->supporting_platform_id != -1 ||
             ((surface = (i8)object->jump_animation_state) != -1 && (TerSurface[surface].flags & 2) != 0)) {
@@ -692,12 +691,12 @@ extern "C" nusound_filename_info_s *ConfigureMusic(char *ignored_file, VARIPTR *
     VARIPTR buffer;
     music_man.Initialise("audio\\music.cfg", NULL, cursor, *end);
     music_man.GetSoundFiles(&files, NULL);
-    SfxMusicExtensionPc = ".mib";
+    SfxMusicExtension = ".mib";
     buffer.addr = (cursor->addr + 3) & ~3u;
     *(i32 *)buffer.void_ptr = 0;
     buffer.addr += offsetof(MUSIC_PAIR_ARENA, action_first);
     *(i16 *)buffer.void_ptr = -1;
-    ActionPairTab = (PC_MUSIC_ACTION_PAIR_PC *)buffer.void_ptr;
+    ActionPairTab = (PC_MUSIC_ACTION_PAIR *)buffer.void_ptr;
     buffer.addr += offsetof(MUSIC_PAIR_ARENA, ambient_first) - offsetof(MUSIC_PAIR_ARENA, action_first);
     *(i16 *)buffer.void_ptr = -1;
     AmbientPairTab = (i16 *)buffer.void_ptr;
@@ -793,7 +792,7 @@ extern "C" void ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options) {
     }
     if (sticky_attack != MusicActiveReset && sticky_attack_time <= 0.0f) {
         sticky_attack = MusicActiveReset;
-        sticky_attack_time = ActionMusicStickyTimeoutPc[MusicActiveReset];
+        sticky_attack_time = ActionMusicStickyTimeout[MusicActiveReset];
     }
     if (CutStopInfo != NULL) {
         CUTINFO *cut = (CUTINFO *)CutStopInfo;
@@ -844,7 +843,7 @@ extern "C" void MusicClearAll() {
 
 extern "C" {
 
-    void GameAudio_Init(GAMEAUDIO_PC *audio) {
+    void GameAudio_Init(GAMEAUDIO *audio) {
         i32 i;
         GameAudio = audio;
         for (i = 0; i < 84; ++i) {

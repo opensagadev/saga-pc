@@ -14,7 +14,7 @@ class LayoutScanTests(unittest.TestCase):
         self.assertEqual(layoutscan.name_key("_Bolt_Add"), "Bolt_Add")
         self.assertEqual(layoutscan.name_key("_DirectInputCreate@20"), "DirectInputCreate")
         self.assertEqual(layoutscan.name_key("?Push_Reset@@YAXPAX00@Z"), "Push_Reset")
-        self.assertEqual(layoutscan.name_key("?Read@NETMESSAGE_PC@@QAEXPAXHH@Z"), "NETMESSAGE_PC::Read")
+        self.assertEqual(layoutscan.name_key("?Read@NETMESSAGE@@QAEXPAXHH@Z"), "NETMESSAGE::Read")
         self.assertEqual(layoutscan.batman_key("__ZN4Fade4InitEv", "Fade::Init()"), "Fade::Init")
         self.assertEqual(layoutscan.batman_key("_NuVecAdd", "_NuVecAdd"), "NuVecAdd")
 

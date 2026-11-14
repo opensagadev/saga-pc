@@ -41,60 +41,60 @@ static f32 ChrisVuVecLength(const VuVec &v) {
 
 extern "C" {
     extern const f32 DogfightOriginEndXPc;
-    extern const f32 DogfightOriginEndYPc;
-    extern const f32 DogfightOriginEndZPc;
-    extern const f32 DogfightOriginStartXPc;
+    extern const f32 DogfightOriginEndY;
+    extern const f32 DogfightOriginEndZ;
+    extern const f32 DogfightOriginStartX;
 
     /* The PC keeps eight additional bytes at the end of each fighter record. */
-    typedef struct DOGFIGHT_FIGHTER_PC { // size 0x130
-        starfighter_s fields;            // 0x000
-        u8 unknown_128[8];               // 0x128
-    } DOGFIGHT_FIGHTER_PC;
+    typedef struct DOGFIGHT_FIGHTER { // size 0x130
+        starfighter_s fields;         // 0x000
+        u8 unknown_128[8];            // 0x128
+    } DOGFIGHT_FIGHTER;
 
-    typedef struct DOGFIGHT_GROUP_PC {   // size 0x680
-        NUMTX matrix;                    // 0x000
-        DOGFIGHT_FIGHTER_PC fighters[5]; // 0x040
-        NUVEC4 velocity;                 // 0x630
-        NUVEC4 camera_position;          // 0x640
-        NUVEC4 target;                   // 0x650
-        u8 unknown_660[8];               // 0x660
-        i32 active;                      // 0x668
-        i32 state;                       // 0x66c
-        u32 reset_colour;                // 0x670
-        i32 draw_target;                 // 0x674
-        f32 duration;                    // 0x678
-        f32 speed;                       // 0x67c
-    } DOGFIGHT_GROUP_PC;
+    typedef struct DOGFIGHT_GROUP {   // size 0x680
+        NUMTX matrix;                 // 0x000
+        DOGFIGHT_FIGHTER fighters[5]; // 0x040
+        NUVEC4 velocity;              // 0x630
+        NUVEC4 camera_position;       // 0x640
+        NUVEC4 target;                // 0x650
+        u8 unknown_660[8];            // 0x660
+        i32 active;                   // 0x668
+        i32 state;                    // 0x66c
+        u32 reset_colour;             // 0x670
+        i32 draw_target;              // 0x674
+        f32 duration;                 // 0x678
+        f32 speed;                    // 0x67c
+    } DOGFIGHT_GROUP;
 
-    typedef struct DOGFIGHT_CROSS_PC { // size 0x50
-        NUMTX matrix;                  // 0x00
-        u16 flags;                     // 0x40
-        u16 enabled;                   // 0x42
-        u8 unknown_44[4];              // 0x44
-        u32 colour;                    // 0x48
-        f32 scale;                     // 0x4c
-    } DOGFIGHT_CROSS_PC;
+    typedef struct DOGFIGHT_CROSS { // size 0x50
+        NUMTX matrix;               // 0x00
+        u16 flags;                  // 0x40
+        u16 enabled;                // 0x42
+        u8 unknown_44[4];           // 0x44
+        u32 colour;                 // 0x48
+        f32 scale;                  // 0x4c
+    } DOGFIGHT_CROSS;
 
-    typedef struct DOGFIGHT_SPLINE_HISTORY_PC { // size 0x530
-        u8 unknown_000[0x404];                  // 0x000
-        f32 current_value;                      // 0x404
-        f32 reset_value;                        // 0x408
-        u8 unknown_40c[0x514 - 0x40c];          // 0x40c
-        u32 reset_state;                        // 0x514
-        u32 current_state;                      // 0x518
-        u8 unknown_51c[0x530 - 0x51c];          // 0x51c
-    } DOGFIGHT_SPLINE_HISTORY_PC;
+    typedef struct DOGFIGHT_SPLINE_HISTORY { // size 0x530
+        u8 unknown_000[0x404];               // 0x000
+        f32 current_value;                   // 0x404
+        f32 reset_value;                     // 0x408
+        u8 unknown_40c[0x514 - 0x40c];       // 0x40c
+        u32 reset_state;                     // 0x514
+        u32 current_state;                   // 0x518
+        u8 unknown_51c[0x530 - 0x51c];       // 0x51c
+    } DOGFIGHT_SPLINE_HISTORY;
 
-    typedef struct DOGFIGHT_ACTION_PC { // size 0x8
-        i32 command;                    // 0x0
-        f32 value;                      // 0x4
-    } DOGFIGHT_ACTION_PC;
+    typedef struct DOGFIGHT_ACTION { // size 0x8
+        i32 command;                 // 0x0
+        f32 value;                   // 0x4
+    } DOGFIGHT_ACTION;
 
-    typedef struct DOGFIGHT_DOOR_PC { // size 0x14
-        char name[12];                // 0x00
-        f32 distance;                 // 0x0c
-        f32 timer;                    // 0x10
-    } DOGFIGHT_DOOR_PC;
+    typedef struct DOGFIGHT_DOOR { // size 0x14
+        char name[12];             // 0x00
+        f32 distance;              // 0x0c
+        f32 timer;                 // 0x10
+    } DOGFIGHT_DOOR;
 
     typedef struct DOGFIGHT_RESET_RECORD { // size 0x60
         u8 unknown[0x60];                  // 0x00
@@ -113,17 +113,17 @@ extern "C" {
     } DOGFIGHT_COIN_RECORD;
 
     typedef struct DOGFIGHT_SPACE_PC {            // size 0x64740
-        DOGFIGHT_CROSS_PC crosses[2];             // 0x00000
-        DOGFIGHT_GROUP_PC groups[8];              // 0x000a0
+        DOGFIGHT_CROSS crosses[2];                // 0x00000
+        DOGFIGHT_GROUP groups[8];                 // 0x000a0
         NUVEC4 draw_scale;                        // 0x034a0
-        DOGFIGHT_ACTION_PC *actions;              // 0x034b0
-        DOGFIGHT_ACTION_PC *current_action;       // 0x034b4
+        DOGFIGHT_ACTION *actions;                 // 0x034b0
+        DOGFIGHT_ACTION *current_action;          // 0x034b4
         i32 unknown_34b8;                         // 0x034b8
         i32 unknown_34bc;                         // 0x034bc
         u8 unknown_34c0[12];                      // 0x034c0
         struct DOGFIGHT_SPACE_PC *owner;          // 0x034cc
-        DOGFIGHT_SPLINE_HISTORY_PC splines[256];  // 0x034d0
-        DOGFIGHT_FIGHTER_PC queued_fighters[96];  // 0x564d0
+        DOGFIGHT_SPLINE_HISTORY splines[256];     // 0x034d0
+        DOGFIGHT_FIGHTER queued_fighters[96];     // 0x564d0
         DOGFIGHT_RESET_RECORD reset_records[256]; // 0x5d6d0
         DOGFIGHT_RESET_BUFFER reset_buffer;       // 0x636d0
         u8 unknown_636dc[4];                      // 0x636dc
@@ -147,11 +147,11 @@ extern "C" {
     STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position) + offsetof(SOCKPOSITION_PC, distance) == 0x69c);
 
 #pragma data_seg(".data$DogfightResetPc")
-    NUVEC4 DogfightDrawScalePc = {0.0f, 0.0f, 0.0f, 0.0f};
+    NUVEC4 DogfightDrawScale = {0.0f, 0.0f, 0.0f, 0.0f};
 #pragma data_seg(".data$DogfightResetTimerPc")
-    f32 DogfightResetTimerPc = 0.0f;
+    f32 DogfightResetTimer = 0.0f;
 #pragma data_seg(".data$DogfightResetPc")
-    DOGFIGHT_ACTION_PC DogfightAnakinActionsPc[10] = {
+    DOGFIGHT_ACTION DogfightAnakinActions[10] = {
         {0, 1.0f},
         {2, 7.5f},
         {0, 1.5f},
@@ -163,7 +163,7 @@ extern "C" {
         {0, 8.0f},
         {3, 0.0f},
     };
-    DOGFIGHT_DOOR_PC DogfightDoorsPc[7] = {
+    DOGFIGHT_DOOR DogfightDoors[7] = {
         {"door_to_a2", 33.0359993f, 11.5f      },
         {"door_to_a3", 121.769997f, 31.2399998f},
         {"door_to_b",  196.729996f, 60.3320007f},
@@ -176,16 +176,16 @@ extern "C" {
 
     extern void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
 
-    typedef struct DOGFIGHT_SPEEDUP_PC { // size 0x8
-        f32 distance;                    // 0x0
-        f32 speed;                       // 0x4
-    } DOGFIGHT_SPEEDUP_PC;
+    typedef struct DOGFIGHT_SPEEDUP { // size 0x8
+        f32 distance;                 // 0x0
+        f32 speed;                    // 0x4
+    } DOGFIGHT_SPEEDUP;
 
 #pragma data_seg(".data$DogfightSpeedRatePc")
-    f32 DogfightSpeedRatePc = 0.25f;
+    f32 DogfightSpeedRate = 0.25f;
 #pragma data_seg()
 #pragma data_seg(".data$DogfightSpeedListPc")
-    DOGFIGHT_SPEEDUP_PC DogfightSpeedListPc[9] = {
+    DOGFIGHT_SPEEDUP DogfightSpeedList[9] = {
         {58.0f,  0.5f},
         {72.0f,  1.0f},
         {174.0f, 0.5f},
@@ -201,7 +201,7 @@ extern "C" {
 #pragma data_seg(".data$DogfightWingSpeedPc")
     f32 DogfightWingSpeedPc = 35.0f;
 #pragma data_seg(".data$DogfightPassingSpeedPc")
-    static f32 DogfightPassingSpeedPc = 200.0f;
+    static f32 DogfightPassingSpeed = 200.0f;
 #pragma data_seg()
 
 #pragma data_seg(".data$DogfightRumbleSpeedScalePc")
@@ -214,23 +214,23 @@ extern "C" {
     f32 MulAdd = 0.0f;
 #pragma data_seg()
 
-    extern f32 FlightSplineDefaultIncrementPc;
+    extern f32 FlightSplineDefaultIncrement;
 
     /* These records retain the PC-only 0x130 fighter and 0x60 quick-bolt strides. */
-    typedef struct DOGFIGHT_QUICK_BOLT_PC { // size 0x60
-        NUMTX matrix;                       // 0x00
-        NUVEC4 velocity;                    // 0x40
-        f32 duration;                       // 0x50
-        u32 unknown_54;                     // 0x54
-        i32 type;                           // 0x58
-        u32 unknown_5c;                     // 0x5c
-    } DOGFIGHT_QUICK_BOLT_PC;
+    typedef struct DOGFIGHT_QUICK_BOLT { // size 0x60
+        NUMTX matrix;                    // 0x00
+        NUVEC4 velocity;                 // 0x40
+        f32 duration;                    // 0x50
+        u32 unknown_54;                  // 0x54
+        i32 type;                        // 0x58
+        u32 unknown_5c;                  // 0x5c
+    } DOGFIGHT_QUICK_BOLT;
 
-    typedef struct DOGFIGHT_QUICK_BUFFER_PC { // size 0xc
-        DOGFIGHT_QUICK_BOLT_PC *records;      // 0x0
-        u32 capacity;                         // 0x4
-        u32 used;                             // 0x8
-    } DOGFIGHT_QUICK_BUFFER_PC;
+    typedef struct DOGFIGHT_QUICK_BUFFER { // size 0xc
+        DOGFIGHT_QUICK_BOLT *records;      // 0x0
+        u32 capacity;                      // 0x4
+        u32 used;                          // 0x8
+    } DOGFIGHT_QUICK_BUFFER;
 
     typedef struct DOGFIGHT_TARGET_SPLINE { // size 0x530
         u8 unknown_000[0x51c];              // 0x000
@@ -239,58 +239,58 @@ extern "C" {
     } DOGFIGHT_TARGET_SPLINE;
 
 #pragma data_seg(push, ".data$DogfightDeathImpulseScalePc")
-    f32 DogfightDeathImpulseScalePc = 10.0f;
+    f32 DogfightDeathImpulseScale = 10.0f;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightAimResetPc")
-    f32 DogfightAimResetPc = 2.0f;
+    f32 DogfightAimReset = 2.0f;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightAimDecayPc")
-    f32 DogfightAimDecayPc = 2.0f;
+    f32 DogfightAimDecay = 2.0f;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightFireNearPc")
-    f32 DogfightFireNearPc = 5.0f;
+    f32 DogfightFireNear = 5.0f;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightFireFarPc")
-    f32 DogfightFireFarPc = 100.0f;
+    f32 DogfightFireFar = 100.0f;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$MissileDist")
     f32 MissileDist = -3.0f;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightCachedPlayerPositionPc")
-    NUVEC DogfightCachedPlayerPositionPc = {0.0f, 0.0f, 0.0f};
+    NUVEC DogfightCachedPlayerPosition = {0.0f, 0.0f, 0.0f};
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightCachedPlayerVelocityPc")
-    NUVEC DogfightCachedPlayerVelocityPc = {0.0f, 0.0f, 0.0f};
+    NUVEC DogfightCachedPlayerVelocity = {0.0f, 0.0f, 0.0f};
 #pragma data_seg(pop)
 
     /* Recovered PC playback views; original private source names are unknown. */
-    typedef struct DOGFIGHT_PLAYBACK_SPLINE_PC { // size 0x530
-        NUVEC4 points[64];                       // 0x000
-        i32 point_count;                         // 0x400
-        f32 next_spawn;                          // 0x404
-        f32 reset_spawn;                         // 0x408
-        f32 interval;                            // 0x40c
-        f32 length;                              // 0x410
-        f32 cumulative[64];                      // 0x414
-        i32 repeat_limit;                        // 0x514
-        i32 remaining;                           // 0x518
-        i32 target_id;                           // 0x51c
-        i32 object_id;                           // 0x520
-        i32 model_id;                            // 0x524
-        u8 unknown_528[8];                       // 0x528
-    } DOGFIGHT_PLAYBACK_SPLINE_PC;
+    typedef struct DOGFIGHT_PLAYBACK_SPLINE { // size 0x530
+        NUVEC4 points[64];                    // 0x000
+        i32 point_count;                      // 0x400
+        f32 next_spawn;                       // 0x404
+        f32 reset_spawn;                      // 0x408
+        f32 interval;                         // 0x40c
+        f32 length;                           // 0x410
+        f32 cumulative[64];                   // 0x414
+        i32 repeat_limit;                     // 0x514
+        i32 remaining;                        // 0x518
+        i32 target_id;                        // 0x51c
+        i32 object_id;                        // 0x520
+        i32 model_id;                         // 0x524
+        u8 unknown_528[8];                    // 0x528
+    } DOGFIGHT_PLAYBACK_SPLINE;
 
-    typedef struct DOGFIGHT_ACTION_STATE_PC { // size 0x30
-        NUVEC4 draw_scale;                    // 0x00
-        DOGFIGHT_ACTION_PC *actions;          // 0x10
-        DOGFIGHT_ACTION_PC *current;          // 0x14
-        i32 next_index;                       // 0x18
-        i32 command;                          // 0x1c
-        u32 unknown_20;                       // 0x20
-        f32 timer;                            // 0x24
-        u32 unknown_28;                       // 0x28
-        DOGFIGHT_SPACE_PC *owner;             // 0x2c
-    } DOGFIGHT_ACTION_STATE_PC;
+    typedef struct DOGFIGHT_ACTION_STATE { // size 0x30
+        NUVEC4 draw_scale;                 // 0x00
+        DOGFIGHT_ACTION *actions;          // 0x10
+        DOGFIGHT_ACTION *current;          // 0x14
+        i32 next_index;                    // 0x18
+        i32 command;                       // 0x1c
+        u32 unknown_20;                    // 0x20
+        f32 timer;                         // 0x24
+        u32 unknown_28;                    // 0x28
+        DOGFIGHT_SPACE_PC *owner;          // 0x2c
+    } DOGFIGHT_ACTION_STATE;
 
     typedef struct DOGFIGHT_LEVEL_FLAGS {
         u8 first;
@@ -302,34 +302,34 @@ extern "C" {
 
 /* Drawing controls, each in its own section; AnakinC occupies the intervening slot. */
 #pragma data_seg(push, ".data$DogfightSelectedSockPc")
-    SOCKPOSITION_PC *DogfightSelectedSockPc = NULL;
+    SOCKPOSITION_PC *DogfightSelectedSock = NULL;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightDrawSelectedSockPc")
-    i32 DogfightDrawSelectedSockPc = 0;
+    i32 DogfightDrawSelectedSock = 0;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightHideGeometryPc")
-    i32 DogfightHideGeometryPc = 0;
+    i32 DogfightHideGeometry = 0;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightDrawSplinePc")
-    i32 DogfightDrawSplinePc = 0;
+    i32 DogfightDrawSpline = 0;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightDrawFighterSplinePc")
-    i32 DogfightDrawFighterSplinePc = 0;
+    i32 DogfightDrawFighterSpline = 0;
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightJetOffsetPc")
-    NUVEC DogfightJetOffsetPc = {0.15f, 0.08f, 0.32f};
+    NUVEC DogfightJetOffset = {0.15f, 0.08f, 0.32f};
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightBoltModelsFirstPc")
-    i32 DogfightBoltModelsFirstPc[4] = {303, 305, 301, 301};
+    i32 DogfightBoltModelsFirst[4] = {303, 305, 301, 301};
 #pragma data_seg(pop)
 #pragma data_seg(push, ".data$DogfightBoltModelsSecondPc")
-    i32 DogfightBoltModelsSecondPc[4] = {304, 306, 302, 302};
+    i32 DogfightBoltModelsSecond[4] = {304, 306, 302, 302};
 #pragma data_seg(pop)
     extern i32 DogfightDebrisKeysPc[4];
-    extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
+    extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 
 #pragma data_seg(".data$DogfightCollisionRadiusSquaredPc")
-    f32 DogfightCollisionRadiusSquaredPc = 2.0f;
+    f32 DogfightCollisionRadiusSquared = 2.0f;
 #pragma data_seg()
 
     typedef __declspec(align(16)) struct DOGFIGHT_COLLISION_VECTOR { // size 0x10
@@ -361,87 +361,87 @@ extern "C" {
     };
 
     /* PC file records share the established 0x530-byte evaluator layout. */
-    typedef struct FLIGHT_SPLINE_FILE_PC { // size 0x530
-        NUVEC4 points[64];                 // 0x000
-        i32 point_count;                   // 0x400
-        f32 current_value;                 // 0x404
-        f32 reset_value;                   // 0x408
-        f32 rate;                          // 0x40c
-        f32 length;                        // 0x410
-        f32 cumulative_distances[64];      // 0x414
-        i32 reset_state;                   // 0x514
-        i32 current_state;                 // 0x518
-        i32 previous_id;                   // 0x51c
-        i32 order;                         // 0x520
-        i32 id;                            // 0x524
-        i32 enabled;                       // 0x528
-        u32 unknown_52c;                   // 0x52c
-    } FLIGHT_SPLINE_FILE_PC;
+    typedef struct FLIGHT_SPLINE_FILE { // size 0x530
+        NUVEC4 points[64];              // 0x000
+        i32 point_count;                // 0x400
+        f32 current_value;              // 0x404
+        f32 reset_value;                // 0x408
+        f32 rate;                       // 0x40c
+        f32 length;                     // 0x410
+        f32 cumulative_distances[64];   // 0x414
+        i32 reset_state;                // 0x514
+        i32 current_state;              // 0x518
+        i32 previous_id;                // 0x51c
+        i32 order;                      // 0x520
+        i32 id;                         // 0x524
+        i32 enabled;                    // 0x528
+        u32 unknown_52c;                // 0x52c
+    } FLIGHT_SPLINE_FILE;
 
-    STATIC_ASSERT(sizeof(FLIGHT_SPLINE_FILE_PC) == sizeof(FLIGHT_SPLINE_RESOURCE_PC));
+    STATIC_ASSERT(sizeof(FLIGHT_SPLINE_FILE) == sizeof(FLIGHT_SPLINE_RESOURCE_PC));
 
 #pragma data_seg(".data$FlightSplineExtensionPc")
-    char *FlightSplineExtensionPc = ".FSP";
+    char *FlightSplineExtension = ".FSP";
 #pragma data_seg(".data$FlightSplineDefaultIncrementPc")
-    f32 FlightSplineDefaultIncrementPc = 0.01f;
+    f32 FlightSplineDefaultIncrement = 0.01f;
 #pragma data_seg()
 
-    void FlightSplineCapacityDiagnosticPc(char *filename);
+    void FlightSplineCapacityDiagnostic(char *filename);
 
     void SetPreSeekStartPoint(f32 offset);
 #pragma data_seg(".data$DogfightDebrisKeysPc")
     i32 DogfightDebrisKeysPc[4] = {-1, -1, -1, -1};
 #pragma data_seg()
 
-    static void CopyFlightMatrixPc(NUMTX *destination, const NUMTX *source);
-    static void TransformFlightVectorPc(NUVEC *output, NUVEC *input, NUMTX *matrix);
-    static i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_id, i32 flags, f32 scale);
+    static void CopyFlightMatrix(NUMTX *destination, const NUMTX *source);
+    static void TransformFlightVector(NUVEC *output, NUVEC *input, NUMTX *matrix);
+    static i32 DrawFlightCharacter(NUMTX *matrix, i32 model_id, i32 flags, f32 scale);
     void ChrisAnakinCUpdate();
-    static void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
-    static void DrawQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
-    DOGFIGHT_QUICK_BOLT_PC *QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
-    static i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration, i32 type, i32 model_id);
-    static void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count);
-    static f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline);
-    static f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline);
-    static void FlightSplineLoadRecordPc(FLIGHT_SPLINE_FILE_PC *spline, i32 version, i32 index);
-    static void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode);
-    static void DogfightResetCrossesPc(DOGFIGHT_CROSS_PC *crosses, i32 count);
-    static DOGFIGHT_FIGHTER_PC *QueuedFighterSelectorPc(DOGFIGHT_SPACE_PC *space);
-    static void DogfightResetSplineHistoryPc(DOGFIGHT_SPLINE_HISTORY_PC *records, i32 count);
-    static void DogfightResetWorldRecordsPc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
-    static __declspec(noinline) void DogfightResetGroupPc(DOGFIGHT_GROUP_PC *group);
-    static void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode);
-    static i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix, f32 shot_speed);
-    static void StarFighterTargetPc(starfighter_s *fighter);
-    i32 ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFER_PC *info);
-    static void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record);
-    static DOGFIGHT_GROUP_PC *SelectFreeFlightGroupPc(void);
-    static void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer);
+    static void ProcessQuickBolts(DOGFIGHT_QUICK_BUFFER *buffer);
+    static void DrawQuickBolts(DOGFIGHT_QUICK_BUFFER *buffer);
+    DOGFIGHT_QUICK_BOLT *QuickBoltRecordAllocate(DOGFIGHT_QUICK_BUFFER *buffer);
+    static i32 QuickBoltCreate(DOGFIGHT_QUICK_BUFFER *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration, i32 type, i32 model_id);
+    static void SampleFlightSpline(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count);
+    static f32 FlightSplineLegacyLength(FLIGHT_SPLINE_RESOURCE_PC *spline);
+    static f32 FlightSplineCumulativeLength(FLIGHT_SPLINE_RESOURCE_PC *spline);
+    static void FlightSplineLoadRecord(FLIGHT_SPLINE_FILE *spline, i32 version, i32 index);
+    static void DrawFlightSplineDebug(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode);
+    static void DogfightResetCrosses(DOGFIGHT_CROSS *crosses, i32 count);
+    static DOGFIGHT_FIGHTER *QueuedFighterSelector(DOGFIGHT_SPACE_PC *space);
+    static void DogfightResetSplineHistory(DOGFIGHT_SPLINE_HISTORY *records, i32 count);
+    static void DogfightResetWorldRecords(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
+    static __declspec(noinline) void DogfightResetGroup(DOGFIGHT_GROUP *group);
+    static void StarFighterAlign(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode);
+    static i32 StarFighterFire(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix, f32 shot_speed);
+    static void StarFighterTarget(starfighter_s *fighter);
+    i32 ProcessStarFighter(DOGFIGHT_FIGHTER *record, DOGFIGHT_QUICK_BUFFER *info);
+    static void DrawStarFighter(DOGFIGHT_FIGHTER *record);
+    static DOGFIGHT_GROUP *SelectFreeFlightGroup(void);
+    static void ProcessFlightGroup(DOGFIGHT_GROUP *group, DOGFIGHT_QUICK_BUFFER *buffer);
     void NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale);
     void SpaceAudioPoint(void);
-    static void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
+    static void DogfightResetSpace(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
     void SpaceRumbleProcess(void);
-    static void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space);
-    void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP_PC *entry);
-    void ResetSpaceFromWorldPc(WORLDINFO *world);
+    static void DrawSpaceLevel(DOGFIGHT_SPACE_PC *space);
+    void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP *entry);
+    void ResetSpaceFromWorld(WORLDINFO *world);
     void ChrisAnakinBInit();
     void ChrisDogFightAReset(WORLDINFO *world);
     void ChrisAllocLevelStuff(WORLDINFO *world);
     static i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position, NUVEC *velocity);
     i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
-    static void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode, i32 count);
+    static void DrawSelectedSock(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode, i32 count);
     void ChrisAnakinCInit();
-    static void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_FIGHTER_PC *record);
-    static void ProcessFlightSplinePc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_SPACE_PC *space);
+    static void SpawnFlightFighter(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_FIGHTER *record);
+    static void ProcessFlightSpline(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_SPACE_PC *space);
     void MakeWingFormation(NUVEC4 *start, NUVEC4 *target, f32 duration, i32 mode);
-    static void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state);
-    static void ProcessSpaceLevelPc(DOGFIGHT_SPACE_PC *space);
+    static void ProcessFormationActions(DOGFIGHT_ACTION_STATE *state);
+    static void ProcessSpaceLevel(DOGFIGHT_SPACE_PC *space);
     void ChrisDogFightAInit(WORLDINFO *world);
     void ChrisDogFightAUpdate(WORLDINFO *world);
     void ChrisDogFightADraw(WORLDINFO *world);
 
-    static void CopyFlightMatrixPc(NUMTX *destination, const NUMTX *source) {
+    static void CopyFlightMatrix(NUMTX *destination, const NUMTX *source) {
 #define DOGFIGHT_SPACE ((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)
 #define COPY_ELEMENT(field) destination->field = source->field
         COPY_ELEMENT(m00);
@@ -463,7 +463,7 @@ extern "C" {
 #undef COPY_ELEMENT
     }
 
-    static void TransformFlightVectorPc(NUVEC *output, NUVEC *input, NUMTX *matrix) {
+    static void TransformFlightVector(NUVEC *output, NUVEC *input, NUMTX *matrix) {
         f32 x = (f64)matrix->m10 * input->y + (f64)input->x * matrix->m00 + (f64)matrix->m20 * input->z;
         f32 y = (f64)matrix->m01 * input->x + (f64)matrix->m11 * input->y + (f64)matrix->m21 * input->z;
         output->z = (f64)matrix->m02 * input->x + (f64)matrix->m12 * input->y + (f64)matrix->m22 * input->z;
@@ -486,7 +486,7 @@ extern "C" {
     void fun_0040e990() {
     }
 
-    static i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_id, i32 flags, f32 scale) {
+    static i32 DrawFlightCharacter(NUMTX *matrix, i32 model_id, i32 flags, f32 scale) {
         __declspec(align(16)) NUMTX scaled;
         i32 model_index = apicharsys->playermodelids[model_id];
         if (model_index != -1) {
@@ -548,12 +548,12 @@ extern "C" {
         NuMtxPreRotateY(matrix, 0x8000);
     }
 
-    static void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
+    static void ProcessQuickBolts(DOGFIGHT_QUICK_BUFFER *buffer) {
         __declspec(align(16)) NUVEC player0;
         __declspec(align(16)) NUVEC player1;
         __declspec(align(16)) NUVEC step;
-        DOGFIGHT_QUICK_BOLT_PC *bolt;
-        DOGFIGHT_QUICK_BOLT_PC *end;
+        DOGFIGHT_QUICK_BOLT *bolt;
+        DOGFIGHT_QUICK_BOLT *end;
         NUVEC *position;
         NUVEC *velocity;
         i32 valid0;
@@ -619,9 +619,9 @@ extern "C" {
         }
     }
 
-    static void DrawQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
-        DOGFIGHT_QUICK_BOLT_PC *bolt;
-        DOGFIGHT_QUICK_BOLT_PC *end;
+    static void DrawQuickBolts(DOGFIGHT_QUICK_BUFFER *buffer) {
+        DOGFIGHT_QUICK_BOLT *bolt;
+        DOGFIGHT_QUICK_BOLT *end;
         if (buffer == NULL || buffer->capacity == 0) {
             return;
         }
@@ -629,16 +629,16 @@ extern "C" {
         end = bolt + buffer->capacity;
         for (; bolt < end; ++bolt) {
             if (bolt->duration != 0.0f) {
-                Draw3DObjectMtx(WORLD, DogfightBoltModelsFirstPc[bolt->type], &bolt->matrix);
-                Draw3DObjectMtx(WORLD, DogfightBoltModelsSecondPc[bolt->type], &bolt->matrix);
+                Draw3DObjectMtx(WORLD, DogfightBoltModelsFirst[bolt->type], &bolt->matrix);
+                Draw3DObjectMtx(WORLD, DogfightBoltModelsSecond[bolt->type], &bolt->matrix);
             }
         }
     }
 
-    DOGFIGHT_QUICK_BOLT_PC *QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
-        DOGFIGHT_QUICK_BOLT_PC *start = buffer->records + buffer->used;
-        DOGFIGHT_QUICK_BOLT_PC *end = buffer->records + buffer->capacity;
-        DOGFIGHT_QUICK_BOLT_PC *record;
+    DOGFIGHT_QUICK_BOLT *QuickBoltRecordAllocate(DOGFIGHT_QUICK_BUFFER *buffer) {
+        DOGFIGHT_QUICK_BOLT *start = buffer->records + buffer->used;
+        DOGFIGHT_QUICK_BOLT *end = buffer->records + buffer->capacity;
+        DOGFIGHT_QUICK_BOLT *record;
         for (record = start; record < end; ++record) {
             if (record->duration == 0.0f) {
                 goto found;
@@ -656,8 +656,8 @@ extern "C" {
         return record;
     }
 
-    static i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration, i32 type, i32 model_id) {
-        DOGFIGHT_QUICK_BOLT_PC *record = QuickBoltRecordAllocatePc(buffer);
+    static i32 QuickBoltCreate(DOGFIGHT_QUICK_BUFFER *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration, i32 type, i32 model_id) {
+        DOGFIGHT_QUICK_BOLT *record = QuickBoltRecordAllocate(buffer);
         f64 dx;
         f64 dy;
         f64 dz;
@@ -828,7 +828,7 @@ extern "C" {
         CalcSplinePoint(spline, result, distance);
     }
 
-    static void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count) {
+    static void SampleFlightSpline(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count) {
         f32 step;
         f32 along;
         i32 i;
@@ -842,7 +842,7 @@ extern "C" {
         points[count - 1] = spline->points[spline->point_count - 1];
     }
 
-    static f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
+    static f32 FlightSplineLegacyLength(FLIGHT_SPLINE_RESOURCE_PC *spline) {
         f32 distance = 0.0f;
         f32 along = 1.0f;
         NUVEC4 current;
@@ -854,9 +854,9 @@ extern "C" {
             do {
                 previous = current;
                 if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
-                    along -= PodRaceSplineIncrementPc;
+                    along -= PodRaceSplineIncrement;
                 } else {
-                    along -= FlightSplineDefaultIncrementPc;
+                    along -= FlightSplineDefaultIncrement;
                 }
                 if (along < 0.0f) {
                     along = 0.0f;
@@ -872,7 +872,7 @@ extern "C" {
         return distance;
     }
 
-    static f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
+    static f32 FlightSplineCumulativeLength(FLIGHT_SPLINE_RESOURCE_PC *spline) {
         f32 distance = 0.0f;
         i32 point;
         i32 sample;
@@ -901,7 +901,7 @@ extern "C" {
         return distance;
     }
 
-    static void FlightSplineLoadRecordPc(FLIGHT_SPLINE_FILE_PC *spline, i32 version, i32 index) {
+    static void FlightSplineLoadRecord(FLIGHT_SPLINE_FILE *spline, i32 version, i32 index) {
         i32 point;
         spline->point_count = EdFileReadInt();
         spline->reset_value = EdFileReadFloat();
@@ -934,8 +934,8 @@ extern "C" {
         i32 version;
         i32 count;
         i32 i;
-        FLIGHT_SPLINE_FILE_PC *spline;
-        sprintf(filename, "%s%s", world->config_file, FlightSplineExtensionPc);
+        FLIGHT_SPLINE_FILE *spline;
+        sprintf(filename, "%s%s", world->config_file, FlightSplineExtension);
         EdFileSetMedia(1);
         if (!EdFileOpen(filename, 0)) {
             return;
@@ -943,14 +943,14 @@ extern "C" {
         version = EdFileReadInt();
         count = EdFileReadInt();
         if (count > capacity) {
-            FlightSplineCapacityDiagnosticPc(filename);
+            FlightSplineCapacityDiagnostic(filename);
         }
         for (i = 0; i < count; ++i) {
-            FlightSplineLoadRecordPc((FLIGHT_SPLINE_FILE_PC *)&splines[i], version, i);
+            FlightSplineLoadRecord((FLIGHT_SPLINE_FILE *)&splines[i], version, i);
         }
         if (version > 3) {
             for (i = 0; i < count; ++i) {
-                spline = (FLIGHT_SPLINE_FILE_PC *)&splines[i];
+                spline = (FLIGHT_SPLINE_FILE *)&splines[i];
                 spline->length = EdFileReadFloat();
                 if (version > 4) {
                     i32 point;
@@ -958,12 +958,12 @@ extern "C" {
                         spline->cumulative_distances[point] = EdFileReadFloat();
                     }
                 } else {
-                    spline->length = FlightSplineCumulativeLengthPc(&splines[i]);
+                    spline->length = FlightSplineCumulativeLength(&splines[i]);
                 }
             }
         } else {
             for (i = 0; i < count; ++i) {
-                splines[i].length = FlightSplineLegacyLengthPc(&splines[i]);
+                splines[i].length = FlightSplineLegacyLength(&splines[i]);
             }
         }
         for (; i < capacity; ++i) {
@@ -973,7 +973,7 @@ extern "C" {
     }
 
     /* The debug paths keep these vector evaluations without line submission calls. */
-    static void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode) {
+    static void DrawFlightSplineDebug(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode) {
         NUVEC4 points[512];
         __declspec(align(16)) NUVEC4 direction;
         __declspec(align(16)) NUVEC4 axis;
@@ -989,7 +989,7 @@ extern "C" {
         if (mode == 3) {
             count = spline->point_count * 8;
         }
-        SampleFlightSplinePc(spline, points, count);
+        SampleFlightSpline(spline, points, count);
         for (i = 1; i < count; ++i) {
             if (mode == 3) {
                 {
@@ -1108,9 +1108,9 @@ extern "C" {
         *target = new_target;
     }
 
-    static void DogfightResetCrossesPc(DOGFIGHT_CROSS_PC *crosses, i32 count) {
+    static void DogfightResetCrosses(DOGFIGHT_CROSS *crosses, i32 count) {
         i32 i;
-        DOGFIGHT_CROSS_PC *cross = crosses;
+        DOGFIGHT_CROSS *cross = crosses;
         for (i = 0; i < count; ++i, ++cross) {
             cross->enabled = 0;
             cross->matrix.m00 = 80.0f;
@@ -1136,7 +1136,7 @@ extern "C" {
         }
     }
 
-    static DOGFIGHT_FIGHTER_PC *QueuedFighterSelectorPc(DOGFIGHT_SPACE_PC *space) {
+    static DOGFIGHT_FIGHTER *QueuedFighterSelector(DOGFIGHT_SPACE_PC *space) {
         i32 i;
         for (i = 0; i < 96; ++i) {
             if (space->queued_fighters[i].fields.active == 0) {
@@ -1146,7 +1146,7 @@ extern "C" {
         return NULL;
     }
 
-    static void DogfightResetSplineHistoryPc(DOGFIGHT_SPLINE_HISTORY_PC *records, i32 count) {
+    static void DogfightResetSplineHistory(DOGFIGHT_SPLINE_HISTORY *records, i32 count) {
         i32 i;
         for (i = 0; i < count; ++i, ++records) {
             records->current_value = records->reset_value;
@@ -1154,19 +1154,19 @@ extern "C" {
         }
     }
 
-    static void DogfightResetWorldRecordsPc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
+    static void DogfightResetWorldRecords(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
         DOGFIGHT_RESET_BUFFER *buffer;
-        DogfightDrawScalePc.x = 4.0f;
-        DogfightDrawScalePc.y = 4.0f;
-        DogfightDrawScalePc.z = 4.0f;
-        DogfightDrawScalePc.w = 1.0f;
+        DogfightDrawScale.x = 4.0f;
+        DogfightDrawScale.y = 4.0f;
+        DogfightDrawScale.z = 4.0f;
+        DogfightDrawScale.w = 1.0f;
         space->draw_scale.x = DogfightOriginEndXPc;
-        space->draw_scale.y = DogfightOriginEndYPc;
-        space->draw_scale.z = DogfightOriginEndZPc;
+        space->draw_scale.y = DogfightOriginEndY;
+        space->draw_scale.z = DogfightOriginEndZ;
         space->draw_scale.w = 1.0f;
         space->actions = NULL;
         if (world->current_level != DOGFIGHTA_LDATA) {
-            space->actions = DogfightAnakinActionsPc;
+            space->actions = DogfightAnakinActions;
         }
         buffer = &space->reset_buffer;
         if (buffer != NULL && buffer->capacity != 0) {
@@ -1181,9 +1181,9 @@ extern "C" {
         space->value_one_b = 1.0f;
     }
 
-    // noinline: the original calls DogfightResetGroupPc out of line from DogfightResetSpacePc; VC8 would inline it
+    // noinline: the original calls DogfightResetGroup out of line from DogfightResetSpace; VC8 would inline it
     // there.
-    static __declspec(noinline) void DogfightResetGroupPc(DOGFIGHT_GROUP_PC *group) {
+    static __declspec(noinline) void DogfightResetGroup(DOGFIGHT_GROUP *group) {
 #define RESET_FIGHTER(index)                                                                                                               \
     group->fighters[index].fields.active = 0;                                                                                              \
     group->fighters[index].fields.parent = NULL;                                                                                           \
@@ -1199,7 +1199,7 @@ extern "C" {
         group->draw_target = 0;
     }
 
-    static void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode) {
+    static void StarFighterAlign(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode) {
         NUVEC4 local;
         __declspec(align(16)) NUVEC4 up;
         i16 yaw;
@@ -1249,7 +1249,7 @@ extern "C" {
     }
 
     /* Return 0: prepared shot; 1: lost target; 2: target retained without a shot. */
-    static i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix, f32 shot_speed) {
+    static i32 StarFighterFire(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix, f32 shot_speed) {
         __declspec(align(16)) NUVEC offset;
         __declspec(align(16)) NUVEC local;
         NUVEC *target_position;
@@ -1282,17 +1282,17 @@ extern "C" {
         if (fighter->target_id == -2) {
             if ((NuRandFloat() < 0.5f && (player = (GAMEOBJECT *)Player[0]) != NULL && (player->flags_1fc & 0x80) != 0) ||
                 ((player = (GAMEOBJECT *)Player[1]) != NULL && (player->flags_1fc & 0x80) != 0)) {
-                DogfightCachedPlayerPositionPc = player->collision_position;
-                DogfightCachedPlayerVelocityPc = player->velocity;
+                DogfightCachedPlayerPosition = player->collision_position;
+                DogfightCachedPlayerVelocity = player->velocity;
             }
-            target_position = &DogfightCachedPlayerPositionPc;
-            target_velocity = &DogfightCachedPlayerVelocityPc;
+            target_position = &DogfightCachedPlayerPosition;
+            target_velocity = &DogfightCachedPlayerVelocity;
         } else if (fighter->target_id == -3) {
             *aim_matrix = fighter->matrix;
             velocity->y = velocity->x = 0.0f;
             velocity->z = shot_speed;
             velocity->w = 0.0f;
-            TransformFlightVectorPc((NUVEC *)velocity, (NUVEC *)velocity, aim_matrix);
+            TransformFlightVector((NUVEC *)velocity, (NUVEC *)velocity, aim_matrix);
             return 0;
         } else {
             if (fighter->target == NULL || fighter->target->active == 0) {
@@ -1306,7 +1306,7 @@ extern "C" {
         offset.y = target_position->y - fighter->matrix.m31;
         offset.z = target_position->z - fighter->matrix.m32;
         forward = (f64)front->y * offset.y + (f64)front->x * offset.x + (f64)front->z * offset.z;
-        if (forward < DogfightFireNearPc || forward > DogfightFireFarPc) {
+        if (forward < DogfightFireNear || forward > DogfightFireFar) {
             return 1;
         }
         square = (f64)offset.y * offset.y + (f64)offset.x * offset.x + (f64)offset.z * offset.z;
@@ -1367,14 +1367,14 @@ extern "C" {
         velocity->y = velocity->x = 0.0f;
         velocity->z = shot_speed;
         velocity->w = 0.0f;
-        TransformFlightVectorPc((NUVEC *)velocity, (NUVEC *)velocity, aim_matrix);
+        TransformFlightVector((NUVEC *)velocity, (NUVEC *)velocity, aim_matrix);
         return 0;
     }
 
-    static void StarFighterTargetPc(starfighter_s *fighter) {
+    static void StarFighterTarget(starfighter_s *fighter) {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
         DOGFIGHT_TARGET_SPLINE *spline = (DOGFIGHT_TARGET_SPLINE *)fighter->spline;
-        DOGFIGHT_FIGHTER_PC *record;
+        DOGFIGHT_FIGHTER *record;
         i32 target_id;
         i32 i;
         if (spline == NULL) {
@@ -1412,10 +1412,10 @@ extern "C" {
         }
     }
 
-    i32 ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFER_PC *info) {
+    i32 ProcessStarFighter(DOGFIGHT_FIGHTER *record, DOGFIGHT_QUICK_BUFFER *info) {
         starfighter_s *fighter = &record->fields;
-        DOGFIGHT_GROUP_PC *parent;
-        DOGFIGHT_FIGHTER_PC *missile;
+        DOGFIGHT_GROUP *parent;
+        DOGFIGHT_FIGHTER *missile;
         NUVEC4 shot_velocity;
         __declspec(align(16)) NUVEC4 direction;
         NUMTX aim_matrix;
@@ -1447,7 +1447,7 @@ extern "C" {
                 } else {
                     fighter->death_timer = 2.0f;
                 }
-                parent = (DOGFIGHT_GROUP_PC *)fighter->parent;
+                parent = (DOGFIGHT_GROUP *)fighter->parent;
                 if (parent != NULL) {
                     direction.x = fighter->matrix.m30 - parent->matrix.m30;
                     direction.y = fighter->matrix.m31 - parent->matrix.m31;
@@ -1459,7 +1459,7 @@ extern "C" {
                 magnitude = (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
                 magnitude = NuFsqrt(magnitude);
                 if (magnitude != 0.0f) {
-                    scale = qrand() * (((f64)DogfightDeathImpulseScalePc + 1.0) / 65535.0) / magnitude;
+                    scale = qrand() * (((f64)DogfightDeathImpulseScale + 1.0) / 65535.0) / magnitude;
                     direction.x *= scale;
                     direction.y *= scale;
                     direction.z *= scale;
@@ -1496,7 +1496,7 @@ extern "C" {
             }
             return 0;
         }
-        parent = (DOGFIGHT_GROUP_PC *)fighter->parent;
+        parent = (DOGFIGHT_GROUP *)fighter->parent;
         if (parent != NULL) {
             fighter->matrix = parent->matrix;
             fighter->velocity = parent->velocity;
@@ -1524,7 +1524,7 @@ extern "C" {
             fighter->death_timer -= FRAMETIME;
         }
         while (distance_squared < 25.0) {
-            fighter->spline_progress += FlightSplineDefaultIncrementPc;
+            fighter->spline_progress += FlightSplineDefaultIncrement;
             if (fighter->spline_progress > 1.0f) {
                 finished = 1;
                 fighter->spline_progress -= 1.0;
@@ -1584,7 +1584,7 @@ extern "C" {
                 fighter->matrix.m30 += direction.x;
                 fighter->matrix.m31 += direction.y;
                 fighter->matrix.m32 += direction.z;
-                StarFighterAlignPc(fighter, &direction, (f64)distance / 5.0, fighter->death_timer > 0.0f);
+                StarFighterAlign(fighter, &direction, (f64)distance / 5.0, fighter->death_timer > 0.0f);
                 fighter->movement = direction;
             }
         }
@@ -1594,12 +1594,12 @@ extern "C" {
                 fighter->initial_delay -= FRAMETIME;
                 if (fighter->initial_delay <= 0.0f) {
                     fighter->initial_delay = 0.0f;
-                    fighter->aim_bias = DogfightAimResetPc;
+                    fighter->aim_bias = DogfightAimReset;
                 }
                 return 1;
             }
             if (fighter->target_ready == 0) {
-                StarFighterTargetPc(fighter);
+                StarFighterTarget(fighter);
                 if (fighter->target_ready == 0) {
                     return 1;
                 }
@@ -1608,7 +1608,7 @@ extern "C" {
                 return 1;
             }
             if (fighter->fired != 0 && fighter->aim_bias > 0.0f) {
-                fighter->aim_bias -= (f64)DogfightAimDecayPc * FRAMETIME;
+                fighter->aim_bias -= (f64)DogfightAimDecay * FRAMETIME;
             }
             if (fighter->shoot_timer > 0.0f) {
                 fighter->shoot_timer -= FRAMETIME;
@@ -1618,7 +1618,7 @@ extern "C" {
             if (info == NULL) {
                 return 1;
             }
-            fire_result = StarFighterFirePc(fighter, &shot_velocity, &aim_matrix, 75.0f);
+            fire_result = StarFighterFire(fighter, &shot_velocity, &aim_matrix, 75.0f);
             if (fire_result != 0) {
                 if (fire_result == 1 && fighter->fired != 0) {
                     fighter->delete_when_done = 1;
@@ -1626,7 +1626,7 @@ extern "C" {
                 return 1;
             }
             if (fighter->missile_count != 0 && fighter->spline->id != 85 && fighter->spline->id != 84 && NuRandFloat() < (f64)0.2f) {
-                missile = QueuedFighterSelectorPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+                missile = QueuedFighterSelector((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
                 if (missile != NULL) {
                     --fighter->missile_count;
                     *missile = *record;
@@ -1643,13 +1643,13 @@ extern "C" {
                     }
                 }
             }
-            QuickBoltCreatePc(info, &aim_matrix, &shot_velocity, 2.5f, fighter->model_id == -300, fighter->model_id);
+            QuickBoltCreate(info, &aim_matrix, &shot_velocity, 2.5f, fighter->model_id == -300, fighter->model_id);
             fighter->fired = 1;
         }
         return 1;
     }
 
-    static void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record) {
+    static void DrawStarFighter(DOGFIGHT_FIGHTER *record) {
         starfighter_s *fighter = &record->fields;
         __declspec(align(16)) NUMTX scaled;
         if (fighter->model_id < 0) {
@@ -1674,15 +1674,15 @@ extern "C" {
                 }
             }
         } else {
-            DrawFlightCharacterPc(&fighter->matrix, fighter->model_id, fighter->draw_flags, fighter->scale);
+            DrawFlightCharacter(&fighter->matrix, fighter->model_id, fighter->draw_flags, fighter->scale);
         }
-        if (DogfightDrawFighterSplinePc != 0 && fighter->health > 0 && fighter->parent == NULL && DogfightDrawSplinePc != 0 &&
+        if (DogfightDrawFighterSpline != 0 && fighter->health > 0 && fighter->parent == NULL && DogfightDrawSpline != 0 &&
             fighter->spline != NULL && fighter->spline->point_count != 0) {
-            DrawFlightSplineDebugPc(fighter->spline, 3);
+            DrawFlightSplineDebug(fighter->spline, 3);
         }
     }
 
-    static DOGFIGHT_GROUP_PC *SelectFreeFlightGroupPc(void) {
+    static DOGFIGHT_GROUP *SelectFreeFlightGroup(void) {
         i32 i;
         if (WORLD->level_specific_data != NULL) {
             for (i = 0; i < 8; ++i) {
@@ -1694,7 +1694,7 @@ extern "C" {
         return NULL;
     }
 
-    static void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer) {
+    static void ProcessFlightGroup(DOGFIGHT_GROUP *group, DOGFIGHT_QUICK_BUFFER *buffer) {
         __declspec(align(16)) NUVEC step;
         f32 speed;
         i32 i;
@@ -1758,10 +1758,10 @@ extern "C" {
         GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
         i32 i;
         for (i = 6; i != -1; --i) {
-            if ((first != NULL && first->sock_position.distance > DogfightDoorsPc[i].distance) ||
-                (second != NULL && second->sock_position.distance > DogfightDoorsPc[i].distance)) {
-                music_man.SetTrackEntryTimeByClass(2, DogfightDoorsPc[i].timer);
-                music_man.SetTrackEntryTimeByClass(0x20, DogfightDoorsPc[i].timer);
+            if ((first != NULL && first->sock_position.distance > DogfightDoors[i].distance) ||
+                (second != NULL && second->sock_position.distance > DogfightDoors[i].distance)) {
+                music_man.SetTrackEntryTimeByClass(2, DogfightDoors[i].timer);
+                music_man.SetTrackEntryTimeByClass(0x20, DogfightDoors[i].timer);
                 break;
             }
         }
@@ -1770,17 +1770,17 @@ extern "C" {
         }
     }
 
-    static void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
+    static void DogfightResetSpace(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
         NUVEC4 *direction;
         f32 value;
         i32 i = 6;
         GAMEOBJECT *first;
         GAMEOBJECT *second;
         space->origin_end.x = DogfightOriginEndXPc;
-        space->origin_end.y = DogfightOriginEndYPc;
-        space->origin_end.z = DogfightOriginEndZPc;
+        space->origin_end.y = DogfightOriginEndY;
+        space->origin_end.z = DogfightOriginEndZ;
         space->origin_end.w = 0.0f;
-        space->origin_start.x = DogfightOriginStartXPc;
+        space->origin_start.x = DogfightOriginStartX;
         space->origin_start.y = 326.5f;
         space->origin_start.z = -394.0f;
         space->origin_start.w = 0.0f;
@@ -1802,15 +1802,15 @@ extern "C" {
         second = (GAMEOBJECT *)Player[1];
         first = (GAMEOBJECT *)Player[0];
         for (; i != -1; --i) {
-            if (first != NULL && first->sock_position.distance > DogfightDoorsPc[i].distance) {
+            if (first != NULL && first->sock_position.distance > DogfightDoors[i].distance) {
                 break;
             }
-            if (second != NULL && second->sock_position.distance > DogfightDoorsPc[i].distance) {
+            if (second != NULL && second->sock_position.distance > DogfightDoors[i].distance) {
                 break;
             }
         }
         // Computes the door times first and clears them when no door was found.
-        value = DogfightDoorsPc[i].timer;
+        value = DogfightDoors[i].timer;
         space->door_time = value;
         value = (f32)((f64)value * (f64)94.977417f / (f64)59.449684f);
         space->door_countdown = value;
@@ -1821,17 +1821,17 @@ extern "C" {
             space->door_elapsed = 0.0f;
         }
         for (i = 0; i < 8; ++i) {
-            DogfightResetGroupPc(&space->groups[i]);
+            DogfightResetGroup(&space->groups[i]);
         }
-        DogfightResetWorldRecordsPc(world, space);
-        DogfightResetCrossesPc(space->crosses, 2);
+        DogfightResetWorldRecords(world, space);
+        DogfightResetCrosses(space->crosses, 2);
         for (i = 0; i < 96; ++i) {
             space->queued_fighters[i].fields.active = 0;
             space->queued_fighters[i].fields.parent = NULL;
             space->queued_fighters[i].fields.spline = NULL;
         }
-        DogfightResetSplineHistoryPc(space->splines, 256);
-        DogfightResetTimerPc = (f32)((f64)NuRandFloat() * 10.0 + 3.0);
+        DogfightResetSplineHistory(space->splines, 256);
+        DogfightResetTimer = (f32)((f64)NuRandFloat() * 10.0 + 3.0);
     }
 
     void SpaceRumbleProcess(void) {
@@ -1914,11 +1914,11 @@ extern "C" {
             }
             NewRumbleAllPlayers(strength, 0.0f, 0, 0);
         }
-        DogfightResetTimerPc -= FRAMETIME;
-        if (DogfightResetTimerPc < 0.0f) {
+        DogfightResetTimer -= FRAMETIME;
+        if (DogfightResetTimer < 0.0f) {
             GameCam_Judder(GameCam, 0.2f, 2, NULL);
             NewRumbleAllPlayers(0.3f, 0.0f, 0, 0);
-            DogfightResetTimerPc = (f32)((f64)NuRandFloat() * 10.0 + 3.0);
+            DogfightResetTimer = (f32)((f64)NuRandFloat() * 10.0 + 3.0);
         }
     }
 
@@ -1929,12 +1929,12 @@ extern "C" {
         DogfightDebrisKeysPc[3] = -1;
     }
 
-    static void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
+    static void DrawSpaceLevel(DOGFIGHT_SPACE_PC *space) {
         GAMEOBJECT *player;
         NUMTX matrix;
         i32 i;
         i32 j;
-        if (DogfightHideGeometryPc == 0) {
+        if (DogfightHideGeometry == 0) {
             for (i = 0; i < 2; ++i) {
                 if (space->crosses[i].enabled != 0) {
                     NuVecMtxTransform((NUVEC *)&space->crosses[i].matrix.m30, (NUVEC *)&space->crosses[i].matrix.m10, &GameCam->render_mtx);
@@ -1944,24 +1944,24 @@ extern "C" {
                 if (space->groups[i].active != 0) {
                     for (j = 0; j < 5; ++j) {
                         if (space->groups[i].fighters[j].fields.active != 0) {
-                            DrawStarFighterPc(&space->groups[i].fighters[j]);
+                            DrawStarFighter(&space->groups[i].fighters[j]);
                         }
                     }
                 }
             }
             for (i = 0; i < 96; ++i) {
                 if (space->queued_fighters[i].fields.active != 0) {
-                    DrawStarFighterPc(&space->queued_fighters[i]);
+                    DrawStarFighter(&space->queued_fighters[i]);
                 }
             }
-            DrawQuickBoltsPc((DOGFIGHT_QUICK_BUFFER_PC *)&space->reset_buffer);
+            DrawQuickBolts((DOGFIGHT_QUICK_BUFFER *)&space->reset_buffer);
         }
         for (i = 0; i < 4; ++i) {
             player = (GAMEOBJECT *)Player[i >> 1];
             if (player == NULL) {
                 continue;
             }
-            if (player->id != (u16)id_JEDISTARFIGHTERYELLOWEP3 && player->id != (u16)VehicleBoltId7f19e8Pc) {
+            if (player->id != (u16)id_JEDISTARFIGHTERYELLOWEP3 && player->id != (u16)VehicleBoltId7f19e8) {
                 if (DogfightDebrisKeysPc[i] != -1) {
                     DebFreeInstantly(&DogfightDebrisKeysPc[i]);
                 }
@@ -1985,19 +1985,19 @@ extern "C" {
                 matrix.m32 = player->transform.m32;
                 matrix.m33 = player->transform.m33;
                 if ((i & 1) != 0) {
-                    matrix.m30 += ((f64)matrix.m20 * DogfightJetOffsetPc.y - (f64)matrix.m00 * DogfightJetOffsetPc.x) +
-                                  (f64)matrix.m10 * DogfightJetOffsetPc.z;
-                    matrix.m31 += ((f64)matrix.m21 * DogfightJetOffsetPc.y - (f64)matrix.m01 * DogfightJetOffsetPc.x) +
-                                  (f64)matrix.m11 * DogfightJetOffsetPc.z;
-                    matrix.m32 += ((f64)matrix.m22 * DogfightJetOffsetPc.y - (f64)matrix.m02 * DogfightJetOffsetPc.x) +
-                                  (f64)matrix.m12 * DogfightJetOffsetPc.z;
+                    matrix.m30 += ((f64)matrix.m20 * DogfightJetOffset.y - (f64)matrix.m00 * DogfightJetOffset.x) +
+                                  (f64)matrix.m10 * DogfightJetOffset.z;
+                    matrix.m31 += ((f64)matrix.m21 * DogfightJetOffset.y - (f64)matrix.m01 * DogfightJetOffset.x) +
+                                  (f64)matrix.m11 * DogfightJetOffset.z;
+                    matrix.m32 += ((f64)matrix.m22 * DogfightJetOffset.y - (f64)matrix.m02 * DogfightJetOffset.x) +
+                                  (f64)matrix.m12 * DogfightJetOffset.z;
                 } else {
-                    matrix.m30 += ((f64)matrix.m20 * DogfightJetOffsetPc.y + (f64)matrix.m00 * DogfightJetOffsetPc.x) +
-                                  (f64)matrix.m10 * DogfightJetOffsetPc.z;
-                    matrix.m31 += ((f64)matrix.m21 * DogfightJetOffsetPc.y + (f64)matrix.m01 * DogfightJetOffsetPc.x) +
-                                  (f64)matrix.m11 * DogfightJetOffsetPc.z;
-                    matrix.m32 += ((f64)matrix.m22 * DogfightJetOffsetPc.y + (f64)matrix.m02 * DogfightJetOffsetPc.x) +
-                                  (f64)matrix.m12 * DogfightJetOffsetPc.z;
+                    matrix.m30 += ((f64)matrix.m20 * DogfightJetOffset.y + (f64)matrix.m00 * DogfightJetOffset.x) +
+                                  (f64)matrix.m10 * DogfightJetOffset.z;
+                    matrix.m31 += ((f64)matrix.m21 * DogfightJetOffset.y + (f64)matrix.m01 * DogfightJetOffset.x) +
+                                  (f64)matrix.m11 * DogfightJetOffset.z;
+                    matrix.m32 += ((f64)matrix.m22 * DogfightJetOffset.y + (f64)matrix.m02 * DogfightJetOffset.x) +
+                                  (f64)matrix.m12 * DogfightJetOffset.z;
                 }
                 DebrisPosOrientationMtx(DogfightDebrisKeysPc[i], &matrix);
             }
@@ -2007,7 +2007,7 @@ extern "C" {
     void fun_00412200() {
     }
 
-    void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP_PC *entry) {
+    void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP *entry) {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)world->level_specific_data;
         while (entry->distance != 0.0f) {
             if (space->door_elapsed < entry->distance && space->door_countdown >= entry->distance) {
@@ -2016,12 +2016,12 @@ extern "C" {
             ++entry;
         }
         if (space->value_one_a > space->value_one_b) {
-            space->value_one_b += FRAMETIME * DogfightSpeedRatePc;
+            space->value_one_b += FRAMETIME * DogfightSpeedRate;
             if (space->value_one_b > space->value_one_a) {
                 space->value_one_b = space->value_one_a;
             }
         } else if (space->value_one_a < space->value_one_b) {
-            space->value_one_b -= FRAMETIME * DogfightSpeedRatePc;
+            space->value_one_b -= FRAMETIME * DogfightSpeedRate;
             if (space->value_one_b < space->value_one_a) {
                 space->value_one_b = space->value_one_a;
             }
@@ -2033,16 +2033,16 @@ extern "C" {
     }
 
     /* One of four identical WORLD adapters. */
-    void ResetSpaceFromWorldPc(WORLDINFO *world) {
-        DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+    void ResetSpaceFromWorld(WORLDINFO *world) {
+        DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
     }
 
     void fun_00412370() {
-        DrawSpaceLevelPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+        DrawSpaceLevel((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
     }
 
     void fun_00412390(WORLDINFO *world) {
-        DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
     }
 
     void ChrisAnakinBInit() {
@@ -2070,15 +2070,15 @@ extern "C" {
     }
 
     void fun_00412480() {
-        DrawSpaceLevelPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+        DrawSpaceLevel((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
     }
 
     void fun_004124a0(WORLDINFO *world) {
-        DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
     }
 
     void fun_004124c0(WORLDINFO *world) {
-        DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
     }
 
     void fun_004124e0() {
@@ -2086,7 +2086,7 @@ extern "C" {
 
     void ChrisDogFightAReset(WORLDINFO *world) {
         SpaceResetAudioPoint();
-        ResetSpaceFromWorldPc(world);
+        ResetSpaceFromWorld(world);
         BOLT_OVERRIDE_PLAYERBOLTSPEED = 150.0f;
         BOLT_OVERRIDE_PLAYERBOLTDURATION = 1.5f;
         DogfightDebrisKeysPc[0] = -1;
@@ -2183,7 +2183,7 @@ extern "C" {
         b = dot + dot;
         c = (f64)relative_position.y * relative_position.y + (f64)relative_position.x * relative_position.x +
             (f64)relative_position.z * relative_position.z;
-        c -= DogfightCollisionRadiusSquaredPc;
+        c -= DogfightCollisionRadiusSquared;
         if (a > 0.0f) {
             c = (f64)b * b - ((f64)a * 4.0) * c;
             if (!(c >= 0.0f)) {
@@ -2277,7 +2277,7 @@ extern "C" {
         return 0;
     }
 
-    static void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode, i32 count) {
+    static void DrawSelectedSock(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode, i32 count) {
         SOCK_PC *sock;
         __declspec(align(16)) NUVEC a;
         __declspec(align(16)) NUVEC b;
@@ -2375,10 +2375,10 @@ extern "C" {
                 door->has_secondary = ((i16)(NuSpecialExistsFn((NUSPECIALHANDLE *)&door->secondary_special)));
             }
 
-            CopyFlightMatrixPc(&door->original_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+            CopyFlightMatrix(&door->original_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
             door->matrix = door->original_matrix = *NuSpecialGetMtx((NUSPECIALHANDLE *)&door->special);
             if (door->has_secondary != 0) {
-                CopyFlightMatrixPc(&door->original_secondary_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+                CopyFlightMatrix(&door->original_secondary_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
                 door->secondary_matrix = door->original_secondary_matrix = *NuSpecialGetMtx((NUSPECIALHANDLE *)&door->secondary_special);
             }
             door->platform_id = ((i16)(FindPlatInst(NuSpecialGetInstanceix((NUSPECIALHANDLE *)&door->special))));
@@ -2405,19 +2405,19 @@ extern "C" {
         NuMtxPreRotateY(matrix, 0x8000);
     }
 
-    static void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_FIGHTER_PC *record) {
+    static void SpawnFlightFighter(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_FIGHTER *record) {
         starfighter_s *fighter = &record->fields;
         __declspec(align(16)) NUVEC4 direction;
         i32 model;
         if (spline->point_count == 0) {
             return;
         }
-        CopyFlightMatrixPc(&fighter->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+        CopyFlightMatrix(&fighter->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
         *(NUVEC4 *)&fighter->matrix.m30 = spline->points[0];
         direction.x = spline->points[1].x - (f64)spline->points[0].x;
         direction.y = spline->points[1].y - (f64)spline->points[0].y;
         direction.z = spline->points[1].z - (f64)spline->points[0].z;
-        StarFighterAlignPc(fighter, &direction, 1.0f, 0);
+        StarFighterAlign(fighter, &direction, 1.0f, 0);
         fighter->velocity.x = 0.0f;
         fighter->velocity.y = 0.0f;
         fighter->velocity.z = 0.0f;
@@ -2469,17 +2469,17 @@ extern "C" {
         }
     }
 
-    static void ProcessFlightSplinePc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_SPACE_PC *space) {
-        DOGFIGHT_FIGHTER_PC *fighter;
+    static void ProcessFlightSpline(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_SPACE_PC *space) {
+        DOGFIGHT_FIGHTER *fighter;
         if (spline->point_count == 0) {
             return;
         }
         if (!(space->door_elapsed < spline->next_spawn && space->door_countdown >= spline->next_spawn)) {
             return;
         }
-        fighter = QueuedFighterSelectorPc(space);
+        fighter = QueuedFighterSelector(space);
         fighter->fields.spawn_time = spline->next_spawn;
-        SpawnFlightFighterPc(spline, fighter);
+        SpawnFlightFighter(spline, fighter);
         if (spline->interval != 0.0f) {
             if (spline->repeat_limit != 0) {
                 --spline->remaining;
@@ -2495,7 +2495,7 @@ extern "C" {
     }
 
     void MakeWingFormation(NUVEC4 *start, NUVEC4 *target, f32 duration, i32 mode) {
-        DOGFIGHT_GROUP_PC *group = SelectFreeFlightGroupPc();
+        DOGFIGHT_GROUP *group = SelectFreeFlightGroup();
         __declspec(align(16)) NUVEC4 offset;
         u16 angle;
         u16 step;
@@ -2507,7 +2507,7 @@ extern "C" {
         }
         group->active = 1;
         group->draw_target = 0;
-        CopyFlightMatrixPc(&group->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+        CopyFlightMatrix(&group->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
         group->matrix = GameCam->render_mtx;
         *(NUVEC4 *)&group->matrix.m30 = *start;
         if (mode != 0) {
@@ -2516,7 +2516,7 @@ extern "C" {
             group->speed = DogfightWingSpeedPc;
         } else {
             group->state = 1;
-            group->speed = DogfightPassingSpeedPc;
+            group->speed = DogfightPassingSpeed;
         }
         velocity = &group->velocity;
         velocity->x = target->x - start->x;
@@ -2550,7 +2550,7 @@ extern "C" {
         }
     }
 
-    static void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state) {
+    static void ProcessFormationActions(DOGFIGHT_ACTION_STATE *state) {
         NUVEC4 start;
         __declspec(align(16)) NUVEC4 target;
         if (state->actions == NULL) {
@@ -2604,8 +2604,8 @@ extern "C" {
         }
     }
 
-    static void ProcessSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
-        DOGFIGHT_QUICK_BUFFER_PC *buffer;
+    static void ProcessSpaceLevel(DOGFIGHT_SPACE_PC *space) {
+        DOGFIGHT_QUICK_BUFFER *buffer;
         GAMEOBJECT *player0;
         GAMEOBJECT *player1;
         DOOR_s *door;
@@ -2614,14 +2614,14 @@ extern "C" {
         space->door_elapsed = space->door_countdown;
         space->door_time += FRAMETIME;
         space->door_countdown += (f64)space->normalized_speed * FRAMETIME;
-        ProcessFormationActionsPc((DOGFIGHT_ACTION_STATE_PC *)&space->draw_scale);
-        buffer = (DOGFIGHT_QUICK_BUFFER_PC *)&space->reset_buffer;
+        ProcessFormationActions((DOGFIGHT_ACTION_STATE *)&space->draw_scale);
+        buffer = (DOGFIGHT_QUICK_BUFFER *)&space->reset_buffer;
         for (i = 0; i < 8; ++i) {
-            ProcessFlightGroupPc(&space->groups[i], buffer);
+            ProcessFlightGroup(&space->groups[i], buffer);
         }
-        ProcessQuickBoltsPc(buffer);
+        ProcessQuickBolts(buffer);
         for (i = 0; i < 256; ++i) {
-            ProcessFlightSplinePc((DOGFIGHT_PLAYBACK_SPLINE_PC *)&space->splines[i], space);
+            ProcessFlightSpline((DOGFIGHT_PLAYBACK_SPLINE *)&space->splines[i], space);
         }
         for (i = 0; i < 96; ++i) {
             if (space->queued_fighters[i].fields.active != 0) {
@@ -2631,11 +2631,11 @@ extern "C" {
         player1 = (GAMEOBJECT *)Player[1];
         player0 = (GAMEOBJECT *)Player[0];
         for (i = 6; i != -1; --i) {
-            if ((player0 != NULL && player0->sock_position.distance > DogfightDoorsPc[i].distance) ||
-                (player1 != NULL && player1->sock_position.distance > DogfightDoorsPc[i].distance)) {
+            if ((player0 != NULL && player0->sock_position.distance > DogfightDoors[i].distance) ||
+                (player1 != NULL && player1->sock_position.distance > DogfightDoors[i].distance)) {
                 door = WORLD->doors;
                 for (j = 0; j < WORLD->door_count; ++j, ++door) {
-                    if (NuStrICmp((char *)door, DogfightDoorsPc[i].name) == 0) {
+                    if (NuStrICmp((char *)door, DogfightDoors[i].name) == 0) {
                         Doors_SetLastDoor(door);
                         break;
                     }
@@ -2649,29 +2649,29 @@ extern "C" {
     }
 
     void fun_00413a10() {
-        ProcessSpaceLevelPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+        ProcessSpaceLevel((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
     }
 
     /* This entry is implemented without installing its original level callback. */
     void ChrisDogFightAInit(WORLDINFO *world) {
         i32 i;
         ChrisAllocLevelStuff(world);
-        DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
         for (i = 0; i < 256; ++i) {
             ((FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines)[i].point_count = 0;
         }
         if (world->current_level == DOGFIGHTA_LDATA) {
             FlightSpline_Init(world, (FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines, 256);
         }
-        DogfightResetSplineHistoryPc(((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->splines, 256);
+        DogfightResetSplineHistory(((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->splines, 256);
     }
 
     void ChrisDogFightAUpdate(WORLDINFO *world) {
         DOGFIGHT_LEVEL_FLAGS *flags = (DOGFIGHT_LEVEL_FLAGS *)&LevFlag;
         SpaceResetAudioPoint();
-        ProcessCurrentSpeed(world, DogfightSpeedListPc);
-        ProcessSpaceLevelPc((DOGFIGHT_SPACE_PC *)world->level_specific_data);
-        if (AreaGlobals_PC.field_00 != 0 || flags->first != 0 || BATTLEOVERCORUSCANT_ADATA == NULL) {
+        ProcessCurrentSpeed(world, DogfightSpeedList);
+        ProcessSpaceLevel((DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        if (AreaGlobals.field_00 != 0 || flags->first != 0 || BATTLEOVERCORUSCANT_ADATA == NULL) {
             return;
         }
         if (Game.area_save[BATTLEOVERCORUSCANT_ADATA->index].area_complete != 0) {
@@ -2683,9 +2683,9 @@ extern "C" {
     }
 
     void ChrisDogFightADraw(WORLDINFO *world) {
-        DrawSpaceLevelPc((DOGFIGHT_SPACE_PC *)world->level_specific_data);
-        if (DogfightDrawSelectedSockPc != 0 && DogfightSelectedSockPc != NULL) {
-            DrawSelectedSockPc(world->sock_sys, 4, DogfightSelectedSockPc, 5, 8);
+        DrawSpaceLevel((DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        if (DogfightDrawSelectedSock != 0 && DogfightSelectedSock != NULL) {
+            DrawSelectedSock(world->sock_sys, 4, DogfightSelectedSock, 5, 8);
         }
     }
 

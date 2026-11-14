@@ -13,7 +13,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern struct CHARPIVOT_PC CharPivot_Batman;
+    extern struct CHARPIVOT CharPivot_Batman;
 #ifdef __cplusplus
 }
 #endif

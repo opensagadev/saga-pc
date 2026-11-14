@@ -2,17 +2,17 @@
 
 NULSTHDR *bgproc_procinfo_pool = 0;
 
-typedef struct BGPROC_HANDLER_PC {
-    struct BGPROC_HANDLER_PC *next;
+typedef struct BGPROC_HANDLER {
+    struct BGPROC_HANDLER *next;
     void *unknown_04;
     void (*handler)(void);
-} BGPROC_HANDLER_PC;
+} BGPROC_HANDLER;
 
 i32 dat_0297ad4c = 0;
-BGPROC_HANDLER_PC *dat_0297ad58 = 0;
+BGPROC_HANDLER *dat_0297ad58 = 0;
 i32 dat_0297ad5c = 0;
 i32 dat_0297ad60 = 0;
-BGPROC_HANDLER_PC *dat_0297ad68 = 0;
+BGPROC_HANDLER *dat_0297ad68 = 0;
 volatile u32 nu_current_thread_id = 0;
 
 /* The PC build has no debug-print lock; both halves are empty. */
@@ -32,7 +32,7 @@ void fun_006de770(void) {
 }
 
 i32 fun_006de780(void) {
-    BGPROC_HANDLER_PC *handler;
+    BGPROC_HANDLER *handler;
 
     dat_0297ad4c = 1;
     for (handler = dat_0297ad58; handler != NULL; handler = handler->next) {
@@ -55,7 +55,7 @@ void fun_006de7f0(void) {
 }
 
 i32 fun_006de800(void) {
-    BGPROC_HANDLER_PC *handler;
+    BGPROC_HANDLER *handler;
 
     dat_0297ad4c = 1;
     ++nuvideo_global_vbcnt;
@@ -185,7 +185,7 @@ BGPROCINFO *bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32
 }
 
 /* Native Windows worker: the callback never returns during process lifetime. */
-static DWORD WINAPI bgProcWorkerPc(void *unused) {
+static DWORD WINAPI bgProcWorker(void *unused) {
     (void)unused;
     WaitForSingleObject(bgproc_work_event, INFINITE);
     EnterCriticalSection(&bgproc_critical_section);
@@ -234,9 +234,9 @@ void bgProcInit(void) {
         bgproc_work_event = CreateEventA(NULL, FALSE, FALSE, "BGWorkToDo");
         bgproc_resume_event = CreateEventA(NULL, TRUE, TRUE, "BGFreeze");
         bgproc_active = NULL;
-        bgproc_thread_handle_pc = CreateThread(NULL, 0x10000, bgProcWorkerPc, NULL, CREATE_SUSPENDED, &bgproc_thread_id);
-        SetThreadPriority(bgproc_thread_handle_pc, -1);
-        ResumeThread(bgproc_thread_handle_pc);
+        bgproc_thread_handle = CreateThread(NULL, 0x10000, bgProcWorker, NULL, CREATE_SUSPENDED, &bgproc_thread_id);
+        SetThreadPriority(bgproc_thread_handle, -1);
+        ResumeThread(bgproc_thread_handle);
     }
 }
 
@@ -274,7 +274,7 @@ BGPROCINFO *bgGetProcActive(void) {
     return (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, NULL);
 }
 
-void bgprocFrameSleepPc(i32 milliseconds) {
+void bgprocFrameSleep(i32 milliseconds) {
     if (bgproc_procinfo_pool != NULL) {
         if (bgproc_active != NULL || NuLstGetNext(bgproc_procinfo_pool, NULL) != NULL) {
             Sleep(milliseconds);

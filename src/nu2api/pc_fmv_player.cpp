@@ -19,7 +19,7 @@ extern "C" {
     LARGE_INTEGER FmvFrequencyPc = {1000};  // 0x0080fcd0
     void (*FmvDrawCallbackPc)(void) = NULL; // 0x02913170
 }
-PC_EFFECT_SURFACE_PC FmvSurfacePc; // 0x02913224
+PC_EFFECT_SURFACE FmvSurfacePc; // 0x02913224
 
 extern "C" void FmvInitializeFormatsPc(void) {
     FmvFormatsPc[8] = 1;
@@ -140,8 +140,8 @@ extern "C" i32 FmvDecodePc(PC_FMV_MOVIE_PC *movie, RADFMV_IMAGE_PC *image, u32 u
     return 0;
 }
 
-extern "C" i32 FmvInitializePc(HWND window, GRAPHICS_FACTORY_PC *factory, PC_D3D9_DEVICE_PC *device, IDirectSound8 *sound) {
-    GRAPHICS_DISPLAY_MODE_PC mode;
+extern "C" i32 FmvInitializePc(HWND window, GRAPHICS_FACTORY *factory, PC_D3D9_DEVICE_PC *device, IDirectSound8 *sound) {
+    GRAPHICS_DISPLAY_MODE mode;
     FmvInitializeFormatsPc();
     factory->methods->get_adapter_display_mode(factory, 0, &mode);
     FmvContextPc = (RADFMV_CONTEXT_PC *)NuAlloc(sizeof(RADFMV_CONTEXT_PC), ".\\pc\\Bink\\dsplay_bink.cpp", 0x173);
@@ -149,7 +149,7 @@ extern "C" i32 FmvInitializePc(HWND window, GRAPHICS_FACTORY_PC *factory, PC_D3D
         return 0;
     }
     RadFmvInitializeFormatsPc(factory, mode.format, FmvContextPc);
-    // GRAPHICS_CAPS_PC.texture_caps is being exposed at its verified PC offset by
+    // GRAPHICS_CAPS.texture_caps is being exposed at its verified PC offset by
     // integration.
     FmvContextPc->permits_nonpow2 = (PCDeviceBackend.caps.texture_caps >> 8) & 1;
     FmvContextPc->factory = factory;

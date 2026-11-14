@@ -11,8 +11,8 @@ typedef struct portal_callback_s { // size 0x20
     u8 reserved_1d[3];             // 0x1d
 } PORTAL_CALLBACK_PC;
 
-static char portal_output_name_pc[64] = "Active";
-static char portal_gizmo_name_pc[16] = {0};
+static char portal_output_name[64] = "Active";
+static char portal_gizmo_name[16] = {0};
 
 static i32 Portal_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
@@ -39,8 +39,8 @@ static char *Portal_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
-    sprintf(portal_gizmo_name_pc, "%s%d", PortalRegistrationPrefixPc, ((PORTAL_CALLBACK_PC *)gizmo->object)->id);
-    return portal_gizmo_name_pc;
+    sprintf(portal_gizmo_name, "%s%d", PortalRegistrationPrefix, ((PORTAL_CALLBACK_PC *)gizmo->object)->id);
+    return portal_gizmo_name;
 }
 
 static i32 Portal_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
@@ -51,7 +51,7 @@ static i32 Portal_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
 }
 
 static char *Portal_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return portal_output_name_pc;
+    return portal_output_name;
 }
 
 static i32 Portal_GetNumOutputs(GIZMO_PC *gizmo) {
@@ -142,7 +142,7 @@ ADDGIZMOTYPE_PC *Portal_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "Portal";
-    addtype.prefix = PortalRegistrationPrefixPc;
+    addtype.prefix = PortalRegistrationPrefix;
     addtype.fns.options = 0;
     addtype.fns.get_max_gizmos_fn = Portal_GetMaxGizmos;
     addtype.fns.add_gizmos_fn = Portal_AddGizmos;

@@ -59,7 +59,7 @@ void *Shards_ReserveBufferSpace(WORLDINFO *world) {
     return world->shards;
 }
 
-static void ShardInitRecordPc(WORLDINFO *world, SHARD_s *shard) {
+static void ShardInitRecord(WORLDINFO *world, SHARD_s *shard) {
     i32 attempt;
     shard->state_flags = (shard->state_flags & ~0x18u) | 3;
     shard->model_index = (i16)(qrand() / 9363);
@@ -88,7 +88,7 @@ void Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
     }
     progress_record = world->shards;
     for (index = 0; index < world->shard_count; ++index, ++progress_record) {
-        ShardInitRecordPc(world, &((SHARD_s *)world->shards)[index]);
+        ShardInitRecord(world, &((SHARD_s *)world->shards)[index]);
         if (progress != NULL && index < 128) {
             i32 word = index / 32;
             u32 mask = 1u << (index & 31);
@@ -321,43 +321,43 @@ void Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *pro
 char *ShardRegistryNamePc = "Shard";
 #pragma data_seg()
 #pragma data_seg(".data$ShardAddTypePc")
-ADDGIZMOTYPE_PC ShardAddTypePc = {0};
+ADDGIZMOTYPE_PC ShardAddType = {0};
 #pragma data_seg()
 
 ADDGIZMOTYPE_PC *Shards_RegisterGizmo(i32 unused_type_id) {
     char *name = ShardRegistryNamePc;
-    ShardAddTypePc = Default_ADDGIZMOTYPE;
-    ShardAddTypePc.name = name;
-    ShardAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
-    ShardAddTypePc.fns.options = 0x30;
-    ShardAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))Shards_GetMaxGizmos;
-    ShardAddTypePc.fns.add_gizmos_fn = (void *)Shards_AddGizmos;
-    ShardAddTypePc.fns.early_update_fn = Shards_UpdateBeforeCharacters;
-    ShardAddTypePc.fns.late_update_fn = (void (*)(void *, void *, f32))Shards_UpdateAfterCharacters;
-    ShardAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))Shards_Draw;
-    ShardAddTypePc.fns.panel_draw_fn = NULL;
-    ShardAddTypePc.fns.get_gizmo_name_fn = Shard_GetGizmoName;
-    ShardAddTypePc.fns.get_output_fn = Shard_GetOutput;
-    ShardAddTypePc.fns.get_output_name_fn = Shard_GetOutputName;
-    ShardAddTypePc.fns.get_num_outputs_fn = (void *)Shard_GetNumOutputs;
-    ShardAddTypePc.fns.activate_fn = Shard_Activate;
-    ShardAddTypePc.fns.activate_rev_fn = NULL;
-    ShardAddTypePc.fns.set_visibility_fn = Shard_SetVisibility;
-    ShardAddTypePc.fns.get_visibility_fn = NULL;
-    ShardAddTypePc.fns.get_pos_fn = NULL;
-    ShardAddTypePc.fns.using_special_fn = NULL;
-    ShardAddTypePc.fns.bolt_hit_plat_fn = NULL;
-    ShardAddTypePc.fns.get_best_bolt_target_fn = NULL;
-    ShardAddTypePc.fns.bolt_hit_fn = NULL;
-    ShardAddTypePc.fns.allocate_progress_data_fn = (void *)Shards_AllocateProgressData;
-    ShardAddTypePc.fns.clear_progress_fn = (void *)Shards_ClearProgress;
-    ShardAddTypePc.fns.store_progress_fn = (void *)Shards_StoreProgress;
-    ShardAddTypePc.fns.reset_fn = (void *)Shards_Reset;
-    ShardAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))Shards_ReserveBufferSpace;
-    ShardAddTypePc.fns.load_fn = (i32(*)(void *, void *))Shards_Load;
-    ShardAddTypePc.fns.post_load_fn = NULL;
-    ShardAddTypePc.fns.add_level_sfx_fn = NULL;
-    return &ShardAddTypePc;
+    ShardAddType = Default_ADDGIZMOTYPE;
+    ShardAddType.name = name;
+    ShardAddType.prefix = TextInputKeyNameTextPc7516c0;
+    ShardAddType.fns.options = 0x30;
+    ShardAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Shards_GetMaxGizmos;
+    ShardAddType.fns.add_gizmos_fn = (void *)Shards_AddGizmos;
+    ShardAddType.fns.early_update_fn = Shards_UpdateBeforeCharacters;
+    ShardAddType.fns.late_update_fn = (void (*)(void *, void *, f32))Shards_UpdateAfterCharacters;
+    ShardAddType.fns.draw_fn = (void (*)(void *, void *, f32))Shards_Draw;
+    ShardAddType.fns.panel_draw_fn = NULL;
+    ShardAddType.fns.get_gizmo_name_fn = Shard_GetGizmoName;
+    ShardAddType.fns.get_output_fn = Shard_GetOutput;
+    ShardAddType.fns.get_output_name_fn = Shard_GetOutputName;
+    ShardAddType.fns.get_num_outputs_fn = (void *)Shard_GetNumOutputs;
+    ShardAddType.fns.activate_fn = Shard_Activate;
+    ShardAddType.fns.activate_rev_fn = NULL;
+    ShardAddType.fns.set_visibility_fn = Shard_SetVisibility;
+    ShardAddType.fns.get_visibility_fn = NULL;
+    ShardAddType.fns.get_pos_fn = NULL;
+    ShardAddType.fns.using_special_fn = NULL;
+    ShardAddType.fns.bolt_hit_plat_fn = NULL;
+    ShardAddType.fns.get_best_bolt_target_fn = NULL;
+    ShardAddType.fns.bolt_hit_fn = NULL;
+    ShardAddType.fns.allocate_progress_data_fn = (void *)Shards_AllocateProgressData;
+    ShardAddType.fns.clear_progress_fn = (void *)Shards_ClearProgress;
+    ShardAddType.fns.store_progress_fn = (void *)Shards_StoreProgress;
+    ShardAddType.fns.reset_fn = (void *)Shards_Reset;
+    ShardAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Shards_ReserveBufferSpace;
+    ShardAddType.fns.load_fn = (i32(*)(void *, void *))Shards_Load;
+    ShardAddType.fns.post_load_fn = NULL;
+    ShardAddType.fns.add_level_sfx_fn = NULL;
+    return &ShardAddType;
 }
 
 void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {

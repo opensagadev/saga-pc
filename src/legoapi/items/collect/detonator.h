@@ -14,7 +14,7 @@
 extern "C" {
 #endif
     void Detonator_Detonate(struct DETONATOR_s *arg0);
-    extern f32 BatarangDetonatorHitDelayPc;
+    extern f32 BatarangDetonatorHitDelay;
 #ifdef __cplusplus
 }
 #endif

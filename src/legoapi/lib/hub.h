@@ -29,11 +29,11 @@
 
 #if SAGA_LEGOAPI_LIB_HUB_H_PART == 1 && !defined(SAGA_LEGOAPI_LIB_HUB_H_STOP)
 
-struct AIPACKET_PC;
-struct AIPATHCNX_PC;
+struct AIPACKET;
+struct AIPATHCNX;
 struct AISYS_PC;
-struct APIOBJECT_PC;
-struct GIZBUILDIT_PC;
+struct APIOBJECT;
+struct GIZBUILDIT;
 struct WORLDINFO_s;
 struct ai_helper_slot_s;
 struct area_supercounter_s;
@@ -41,22 +41,22 @@ struct gameobject_s;
 struct level_data_s;
 struct nugspline_s;
 
-typedef struct FADEINFO_PC { // size 0x2c
-    u32 direction;           // 0x00
-    f32 fade;                // 0x04
-    f32 rate;                // 0x08
-    i32 busy;                // 0x0c
-    i32 stage;               // 0x10
-    FadeBase *fades[4];      // 0x14
-    i32 pending_type;        // 0x24
-    i32 field_28;            // 0x28
-} FADEINFO_PC;
+typedef struct FADEINFO { // size 0x2c
+    u32 direction;        // 0x00
+    f32 fade;             // 0x04
+    f32 rate;             // 0x08
+    i32 busy;             // 0x0c
+    i32 stage;            // 0x10
+    FadeBase *fades[4];   // 0x14
+    i32 pending_type;     // 0x24
+    i32 field_28;         // 0x28
+} FADEINFO;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef struct collection_area_save_pc_s { // size 0xc
+    typedef struct collection_area_save_s { // size 0xc
 
         union { // size 0x4
             u8 unknown_00[4];
@@ -72,8 +72,8 @@ extern "C" {
         u8 unknown_05[7];    // 0x5
     } COLLECTION_AREA_SAVE_PC;
 
-    i32 Percent_UpdateHint(HINT_PC *);
-    i32 IndyUnlocked_UpdateHint(HINT_PC *);
+    i32 Percent_UpdateHint(HINT *);
+    i32 IndyUnlocked_UpdateHint(HINT *);
     extern i32 PCArcadePointGoals[5];
     extern f32 PCArcadeIconMessageY;
 #define PCArcadePointMessageY STATSPOSY            // NOLINT(readability-identifier-naming)
@@ -93,13 +93,13 @@ extern "C" {
 #endif
 
 /* Native constructor reader/writer minimum; no full allocation claim. */
-typedef struct collection_build_pc_s { // size 0x14
-    COLLECTID_PC *list;                // 0x00
-    u16 columns;                       // 0x04
-    u16 count;                         // 0x06
-    i16 *title_id;                     // 0x08
-    char *name;                        // 0x0c
-    f32 scale;                         // 0x10
+typedef struct collection_build_s { // size 0x14
+    COLLECTID_PC *list;             // 0x00
+    u16 columns;                    // 0x04
+    u16 count;                      // 0x06
+    i16 *title_id;                  // 0x08
+    char *name;                     // 0x0c
+    f32 scale;                      // 0x10
 } COLLECTION_BUILD_PC;
 
 #ifdef __cplusplus
@@ -107,22 +107,22 @@ extern "C" {
 #endif
     extern f32 hub_minikitviewer_movewait;
     extern f32 hub_minikitviewer_move;
-    extern f32 HubMiniKitViewerReflectYPc;
-    extern f32 HubHologramAlphaPc;
-    extern i32 HubBothTrueJediGoldBricksPc;
-    extern f32 HubAreaPanelOnePc[6];
-    extern f32 HubAreaTimePc;
-    extern f32 HubEpisodeTimePc;
-    extern f32 HubStatsTimePc;
-    extern i32 HubAreaPc;
-    extern i32 HubLastAreaPc;
-    extern i32 HubEpisodePc;
-    extern i32 HubMiniKitAreaPc;
-    extern f32 HubHologramTargetAlphaPc;
-    extern void *HubBuildItPc;
-    extern f32 HubJabbaAwakePc;
-    extern i32 HubBuildItsResetPc;
-    extern f32 HubPreventDropOutTimePc;
+    extern f32 HubMiniKitViewerReflectY;
+    extern f32 HubHologramAlpha;
+    extern i32 HubBothTrueJediGoldBricks;
+    extern f32 HubAreaPanelOne[6];
+    extern f32 HubAreaTime;
+    extern f32 HubEpisodeTime;
+    extern f32 HubStatsTime;
+    extern i32 HubArea;
+    extern i32 HubLastArea;
+    extern i32 HubEpisode;
+    extern i32 HubMiniKitArea;
+    extern f32 HubHologramTargetAlpha;
+    extern void *HubBuildIt;
+    extern f32 HubJabbaAwake;
+    extern i32 HubBuildItsReset;
+    extern f32 HubPreventDropOutTime;
     extern i32 EpMiniKitCount;
     extern i32 EpMiniKitTotal;
     extern i32 EpCharKitCount;
@@ -135,50 +135,50 @@ extern "C" {
     extern i32 EpRedBrickTotal;
     extern i32 Arcade_TextCrawlID;
     extern i32 Arcade_TextCrawlParagraphs;
-    extern i16 TextCrawlChapterIdPc;
-    extern i16 TextCrawlVehicleBonusIdPc;
-    extern i16 TextCrawlCharacterBonusIdPc;
-    extern COLLECTION_BUILD_PC CharacterCollectionPc;
-    extern COLLECTION_BUILD_PC VehicleCollectionPc;
-    extern MISSION_MENU_PACKET_PC MissionMenuPacketPc;
-    extern f32 MissionDropInAlphaPc;
-    extern f32 HubMiniKitPanelTimePc;
+    extern i16 TextCrawlChapterId;
+    extern i16 TextCrawlVehicleBonusId;
+    extern i16 TextCrawlCharacterBonusId;
+    extern COLLECTION_BUILD_PC CharacterCollection;
+    extern COLLECTION_BUILD_PC VehicleCollection;
+    extern MISSION_MENU_PACKET MissionMenuPacket;
+    extern f32 MissionDropInAlpha;
+    extern f32 HubMiniKitPanelTime;
     extern f32 PANEL_MINIKITCOUNTSCALE;
     extern f32 PANEL_MINIKITCOUNTY;
     extern f32 stats_xscale;
-    extern i32 HubBothTrueJediGoldBricksPc;
+    extern i32 HubBothTrueJediGoldBricks;
     extern i16 TextIdPc88077c;
     extern i32 fpcount;
-    extern i32 HubTrueJediTypeAlphaPc;
-    extern f32 HubMiniKitOpenThresholdPc;
-    extern i32 HubCompletedAreasPc;
-    extern i32 HubAreasPerEpisodePc;
-    extern NUVEC HubForceBackPositionPc;
-    extern f32 HubForceBackRadiusPc;
-    extern f32 HubMiniKitOpenTimePc;
-    extern i32 HubDoorAreaPc;
+    extern i32 HubTrueJediTypeAlpha;
+    extern f32 HubMiniKitOpenThreshold;
+    extern i32 HubCompletedAreas;
+    extern i32 HubAreasPerEpisode;
+    extern NUVEC HubForceBackPosition;
+    extern f32 HubForceBackRadius;
+    extern f32 HubMiniKitOpenTime;
+    extern i32 HubDoorArea;
 
     /* Append declarations inside saga.h extern "C" block. */
     extern f32 PANEL_MINIKITCOUNTSCALE;
     extern f32 PANEL_MINIKITCOUNTY;
     extern f32 stats_xscale;
-    extern f32 HubEpisodeTitleYPc;
-    extern f32 HubEpisodeTitleSizePc;
-    extern f32 HubEpisodeSubtitleYPc;
-    extern f32 HubEpisodeSubtitleSizePc;
-    extern f32 HubSelectMenuYPc;
-    extern f32 HubBonusMenuYPc;
-    extern f32 HubTrueJediLabelOffsetPc;
-    extern f32 HubTrueJediLabelScalePc;
-    extern f32 HubTrueJediLabelWidthPc;
-    extern u8 HubEpisodeRedPc;
-    extern u8 HubEpisodeGreenPc;
-    extern u8 HubTrueJediLabelRedPc;
-    extern u8 HubTrueJediLabelGreenPc;
-    extern u8 HubTrueJediLabelBluePc;
-    extern i32 HubDrawMiniKitCharacterPc;
-    extern u8 HubEpisodeBluePc;
-    extern f32 HubArcadeMenuYPc;
+    extern f32 HubEpisodeTitleY;
+    extern f32 HubEpisodeTitleSize;
+    extern f32 HubEpisodeSubtitleY;
+    extern f32 HubEpisodeSubtitleSize;
+    extern f32 HubSelectMenuY;
+    extern f32 HubBonusMenuY;
+    extern f32 HubTrueJediLabelOffset;
+    extern f32 HubTrueJediLabelScale;
+    extern f32 HubTrueJediLabelWidth;
+    extern u8 HubEpisodeRed;
+    extern u8 HubEpisodeGreen;
+    extern u8 HubTrueJediLabelRed;
+    extern u8 HubTrueJediLabelGreen;
+    extern u8 HubTrueJediLabelBlue;
+    extern i32 HubDrawMiniKitCharacter;
+    extern u8 HubEpisodeBlue;
+    extern f32 HubArcadeMenuY;
 
     /* Existing mapped text IDs; definitions remain in their canonical owner. */
     extern i16 TextIdPc880714;
@@ -213,40 +213,40 @@ extern "C" {
     extern i32 hub_freeplaysource;
     extern i32 bonusmodemode;
     extern f32 bonusmodeduration;
-    extern f32 HubIconWibbleTimePc[4];
+    extern f32 HubIconWibbleTime[4];
     extern f32 BlipR[2];
     extern f32 BlipU[2];
     extern f32 BlipD[2];
     extern f32 downrepeattime[2];
     extern f32 leftrepeattime[2];
     extern f32 rightrepeattime[2];
-    extern i32 HubIconWibbleRatePc[4];
+    extern i32 HubIconWibbleRate[4];
     extern i32 freeplay_i[2];
     extern i16 PCArcadeModeText;
     extern i16 PCArcadePlayText;
     extern i16 TextIdPc8807cc;
-    extern f32 IndyGrappleHeightTolerancePc;
-    extern f32 IndyGrappleReleaseRadiusPc;
-    extern f32 IndyGrappleTimeoutPc;
-    extern f32 IndyJumpDistancePc[2];
-    i32 Indy_MidSpecialMove_DefaultPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_StartJumpPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_BigJumpPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
-    i32 Indy_PrepareObstaclePc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *object, i32 checks_unused);
-    i32 Indy_PrepareWhipSwingPc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *object, i32 checks_unused);
-    i32 Indy_MidSpecialMove_WhipSwingPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
-    i32 Indy_PrepareBigJumpPc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *apiobject, i32 checks_unused);
-    i32 Indy_PreparingForSpecialMove(struct AIPACKET_PC *packet, struct APIOBJECT_PC *apiobject, i32 checks);
-    i32 Indy_MidSpecialMove(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *apiobject);
-    i32 Indy_PrepareClimbPc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *object, i32 checks);
-    i32 Indy_MidSpecialMove_ClimbUpPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_ClimbDownPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_GrappleStartPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_GrappleClimbPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_GrappleEndPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_SwingPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
-    i32 Indy_PrepareJumpPc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *object, i32 checks);
-    i32 Indy_PrepareGrapplePc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *object, i32 checks);
+    extern f32 IndyGrappleHeightTolerance;
+    extern f32 IndyGrappleReleaseRadius;
+    extern f32 IndyGrappleTimeout;
+    extern f32 IndyJumpDistance[2];
+    i32 Indy_MidSpecialMove_Default(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_StartJump(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_BigJump(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_PrepareObstacle(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks_unused);
+    i32 Indy_PrepareWhipSwingPc(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks_unused);
+    i32 Indy_MidSpecialMove_WhipSwingPc(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_PrepareBigJump(struct AIPACKET *packet, struct APIOBJECT *apiobject, i32 checks_unused);
+    i32 Indy_PreparingForSpecialMove(struct AIPACKET *packet, struct APIOBJECT *apiobject, i32 checks);
+    i32 Indy_MidSpecialMove(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *apiobject);
+    i32 Indy_PrepareClimb(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks);
+    i32 Indy_MidSpecialMove_ClimbUp(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_ClimbDown(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_GrappleStart(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_GrappleClimb(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_GrappleEnd(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_SwingPc(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_PrepareJump(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks);
+    i32 Indy_PrepareGrapple(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks);
 #ifdef __cplusplus
 }
 #endif
@@ -259,7 +259,7 @@ extern "C" {
 
 #if SAGA_LEGOAPI_LIB_HUB_H_PART == 2 && !defined(SAGA_LEGOAPI_LIB_HUB_H_STOP)
 
-typedef struct area_data_pc_s {                 // size 0x9c
+typedef struct area_data_s {                    // size 0x9c
     char dir[0x40];                             // 0x00
     char file[0x20];                            // 0x40
     i16 levels[12];                             // 0x60
@@ -295,16 +295,16 @@ typedef struct area_data_pc_s {                 // size 0x9c
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern struct nugspline_s *HubMiniKitViewerSplinePc;
-    extern void (*HubInitAIFnPc)(struct WORLDINFO_s *);
-    extern void (*HubResetAIFnPc)(struct WORLDINFO_s *);
+    extern struct nugspline_s *HubMiniKitViewerSpline;
+    extern void (*HubInitAIFn)(struct WORLDINFO_s *);
+    extern void (*HubResetAIFn)(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void (*HubUpdateAIFnPc)(struct WORLDINFO_s *);
+    extern void (*HubUpdateAIFn)(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -329,25 +329,25 @@ extern "C" {
 #endif
     extern GAMEPAD_INIT_RECORD GamePadStorage[64];
     extern struct level_data_s *LevelFixupSlotPc0087b2dc;
-    i32 Hub_BonusBuildIt(struct GIZBUILDIT_PC *);
+    i32 Hub_BonusBuildIt(struct GIZBUILDIT *);
     extern APICHARACTERMODELLIST fplist[341];
     extern APICHARACTERMODELLIST fplist[341];
 #ifdef __cplusplus
 }
 #endif
 
-typedef struct INDY_PREPARE_SPECIAL_MOVE_PC { // size 0x8
-    u32 capabilities;                         // 0x0
-    AI_PREPARING_SPECIAL_MOVE_PC prepare;     // 0x4
-} INDY_PREPARE_SPECIAL_MOVE_PC;
+typedef struct INDY_PREPARE_SPECIAL_MOVE { // size 0x8
+    u32 capabilities;                      // 0x0
+    AI_PREPARING_SPECIAL_MOVE_PC prepare;  // 0x4
+} INDY_PREPARE_SPECIAL_MOVE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern INDY_PREPARE_SPECIAL_MOVE_PC IndyPrepareSpecialMovePc[7];
-    extern AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFnsPc[10];
-    i32 IndyGrappleHelperOccupiedPc(struct ai_helper_slot_s *helper, struct gameobject_s *owner, struct AIPATHCNX_PC *connection,
-                                    u8 direction, u8 type);
+    extern INDY_PREPARE_SPECIAL_MOVE IndyPrepareSpecialMove[7];
+    extern AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFns[10];
+    i32 IndyGrappleHelperOccupied(struct ai_helper_slot_s *helper, struct gameobject_s *owner, struct AIPATHCNX *connection, u8 direction,
+                                  u8 type);
 #ifdef __cplusplus
 }
 #endif

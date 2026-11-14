@@ -29,7 +29,7 @@ extern "C" {
     void EquivalentObjects_Configure(WORLDINFO *, char *);
     void CharPlatforms_Configure(WORLDINFO *, char *);
     void SetLevelSfxBits(WORLDINFO *);
-    CUT_LOAD_SYS_PC *CutScenes_Load(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32, WORLDINFO *);
+    CUT_LOAD_SYS *CutScenes_Load(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32, WORLDINFO *);
 
     void LevelSplines_InitForLevel(WORLDINFO *);
     void NuGScnUpdate(NUGSCN *scene, f32 delta);
@@ -46,7 +46,7 @@ extern "C" {
     void ResetLevSfx(WORLDINFO *world);
     void SockSys_Configure(SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *);
     void LoadGizmoSys(void *system, void *world, char *config_file);
-    void ClearGameObjects(APIOBJECTSYS_PC *system);
+    void ClearGameObjects(APIOBJECTSYS *system);
     i32 rtlResetDynamic(void);
     void *GameAntnode_CreateSys(WORLDINFO *, VARIPTR *, VARIPTR *, i32);
     extern i32 CUTCAM;
@@ -68,7 +68,7 @@ extern "C" {
     void Doors_Configure(WORLDINFO *, char *);
     void Particles_Load(WORLDINFO *, char **, i32, i32);
     void *LoadGizFlow(void *, void *, char *, VARIPTR *, VARIPTR *);
-    void GizmoSysAddGizmos(void *, GIZFLOW_PC *, void *);
+    void GizmoSysAddGizmos(void *, GIZFLOW *, void *);
     void LoadLights(void *, char *);
 
     i32 InitSpecialSfx(void *);
@@ -84,7 +84,7 @@ extern "C" {
     void *AIPathCnxHelperSysCreate(VARIPTR *, VARIPTR *, i32);
     void *AITriggerSetSysCreate(VARIPTR *, VARIPTR *);
     void *CreateClimbObjectSys(VARIPTR *, VARIPTR *, i32);
-    APIOBJECTSYS_PC *APIObjectSysInit(i32, VARIPTR *, VARIPTR *);
+    APIOBJECTSYS *APIObjectSysInit(i32, VARIPTR *, VARIPTR *);
     void MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
     void MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
     void Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);

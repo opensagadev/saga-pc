@@ -44,14 +44,14 @@ extern "C" {
     extern const char TextPlatformPC[3];
     extern const char TextPlatformPSP[4];
     extern const char TextPlatformPS3[4];
-    extern char SuitMetadataName0075d280Pc[14];
-    extern char SuitMetadataName0075d270Pc[13];
-    extern char SuitMetadataName0075d25cPc[18];
-    extern char SuitMetadataName0075d24cPc[13];
-    extern char SuitMetadataName0075d240Pc[12];
-    extern char SuitMetadataName0075d22cPc[17];
-    extern char SuitMetadataName0075d21cPc[13];
-    extern char SuitMetadataName0075d20cPc[14];
+    extern char SuitMetadataName0075d280[14];
+    extern char SuitMetadataName0075d270[13];
+    extern char SuitMetadataName0075d25c[18];
+    extern char SuitMetadataName0075d24c[13];
+    extern char SuitMetadataName0075d240[12];
+    extern char SuitMetadataName0075d22c[17];
+    extern char SuitMetadataName0075d21c[13];
+    extern char SuitMetadataName0075d20c[14];
     extern i32 textcrawlactive;
 #ifdef __cplusplus
 }

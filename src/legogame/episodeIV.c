@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <string.h>
 #include <stdio.h>
-struct panel_movement_pc_s;
+struct panel_movement_s;
 
 typedef struct CLOUDCITY_PANEL_FLAGS_VIEW { // size 0x63
     u8 unknown_00[0x62];                    // 0x00
@@ -9,7 +9,7 @@ typedef struct CLOUDCITY_PANEL_FLAGS_VIEW { // size 0x63
 } CLOUDCITY_PANEL_FLAGS_VIEW;
 
 // Kept as an assert, not a layout comment: the declaration count of this unit steers
-// BlockadeRunnerDEjectCreaturePc (docs/cleanup-audit.md, section 6).
+// BlockadeRunnerDEjectCreature (docs/cleanup-audit.md, section 6).
 
 typedef struct CLOUDCITY_LEVEL_FLAG_VIEW { // size 0x1
     u8 started;                            // 0x0
@@ -38,7 +38,7 @@ typedef struct TORPEDO_MUSIC_FLAGS_VIEW { // size 0x2
 } TORPEDO_MUSIC_FLAGS_VIEW;
 
 // Kept as an assert, not a layout comment: the declaration count of this unit steers
-// BlockadeRunnerDEjectCreaturePc (docs/cleanup-audit.md, section 6).
+// BlockadeRunnerDEjectCreature (docs/cleanup-audit.md, section 6).
 
 i32 DeathStarShieldDown(void) {
     GIZMOBLOWUP_PC *blowup;
@@ -82,7 +82,7 @@ void DeathStarEscapeB_Init(WORLDINFO *world) {
     NUINSTANIM *animation[2];
     void *data[2];
     i32 index;
-    DeathStarEscapeBNetPacketPc = SetLevelHack(4);
+    DeathStarEscapeBNetPacket = SetLevelHack(4);
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "WindowClean", NULL);
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "lift_up", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], "lift_down", 1);
@@ -104,12 +104,12 @@ void DeathStarEscapeB_Update(WORLDINFO *world) {
     void *data[2] = {NULL, NULL};
     i32 index;
     if (netclient == 0) {
-        DeathStarEscapeBNetPacketPc[0] = (i8)LevAIMessage[0]->value;
+        DeathStarEscapeBNetPacket[0] = (i8)LevAIMessage[0]->value;
     }
-    if (LevGameObject[0] == NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
+    if (LevGameObject[0] == NULL && DeathStarEscapeBNetPacket[0] == 0) {
         LevGameObject[0] = GetNamedGameObject(world->ai_sys, "WASHER_1");
     }
-    if (LevGameObject[1] == NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
+    if (LevGameObject[1] == NULL && DeathStarEscapeBNetPacket[0] == 0) {
         LevGameObject[1] = GetNamedGameObject(world->ai_sys, "WASHER_2");
     }
     for (index = 0; index < 2; ++index) {
@@ -163,7 +163,7 @@ void BlockadeRunnerC_Init(WORLDINFO *world) {
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "obstacle8");
 }
 
-static void BlockadeRunnerDKillEjectedCreaturePc(PART_PC *part, i32 reason) {
+static void BlockadeRunnerDKillEjectedCreature(PART_PC *part, i32 reason) {
     i32 i;
     for (i = 0; i < 8; i++) {
         if (LevGamePart[i] == part) {
@@ -176,26 +176,26 @@ static void BlockadeRunnerDKillEjectedCreaturePc(PART_PC *part, i32 reason) {
     }
 }
 
-static NUVEC BlockadeRunnerDEjectVecPc[2] = {
+static NUVEC BlockadeRunnerDEjectVec[2] = {
     {13.0f, 1.6f, 7.93f},
     {13.0f, 1.6f, 6.55f}
 };
-static NUVEC BlockadeRunnerDEjectMomPc = {-0.5f, 0.0f, 0.0f};
+static NUVEC BlockadeRunnerDEjectMom = {-0.5f, 0.0f, 0.0f};
 
-static i32 BlockadeRunnerDDrawCreaturePc(PART_PC *part) {
+static i32 BlockadeRunnerDDrawCreature(PART_PC *part) {
     return 0;
 }
 
-static void BlockadeRunnerDEjectCreaturePc(i32 eject_index) {
+static void BlockadeRunnerDEjectCreature(i32 eject_index) {
     i32 models[4];
     NUMTX matrix;
-    ADDPART_PC params;
+    ADDPART params;
     i32 i;
     i32 model;
     models[0] = CharacterFixupIdPc007f1a3c;
     models[1] = CharacterFixupIdPc007f1a40;
     models[2] = CharacterFixupIdPc007f1a3c;
-    models[3] = FreePlayId007f1a44Pc;
+    models[3] = FreePlayId007f1a44;
     if ((u32)eject_index > 1) {
         return;
     }
@@ -203,10 +203,9 @@ static void BlockadeRunnerDEjectCreaturePc(i32 eject_index) {
         if (LevGamePart[i] != NULL) {
             continue;
         }
-        NuMtxSetTranslation(&matrix, &BlockadeRunnerDEjectVecPc[eject_index]);
+        NuMtxSetTranslation(&matrix, &BlockadeRunnerDEjectVec[eject_index]);
         model = models[qrand() / 0x4000];
-        LevGameObject[i] =
-            AddDynamicCreature(model, &BlockadeRunnerDEjectVecPc[eject_index], 0, "default", NULL, NULL, 0, NULL, NULL, 0, 0);
+        LevGameObject[i] = AddDynamicCreature(model, &BlockadeRunnerDEjectVec[eject_index], 0, "default", NULL, NULL, 0, NULL, NULL, 0, 0);
         if (LevGameObject[i] != NULL) {
             LevGameObject[i]->flags_ef4 = (LevGameObject[i]->flags_ef4 & ~0x20) | ((test_tb & 1) << 5);
             LevGameObject[i]->flags_ef0 |= 0x10;
@@ -215,15 +214,15 @@ static void BlockadeRunnerDEjectCreaturePc(i32 eject_index) {
             LevGameObject[i]->flags_ef0 |= 0x4000000;
             params = Default_ADDPART;
             params.matrix = &matrix;
-            params.velocity = &BlockadeRunnerDEjectMomPc;
+            params.velocity = &BlockadeRunnerDEjectMom;
             params.field_14 = 0.15f;
             params.field_18 = 0.15f;
             params.gravity = 0.0f;
             params.special = &WORLD->level_objects[254].special;
             params.flags = 0x8698;
             params.collision_fn = PartCollide_3D;
-            params.kill_fn = BlockadeRunnerDKillEjectedCreaturePc;
-            params.draw_fn = BlockadeRunnerDDrawCreaturePc;
+            params.kill_fn = BlockadeRunnerDKillEjectedCreature;
+            params.draw_fn = BlockadeRunnerDDrawCreature;
             params.time_step = FRAMETIME;
             LevGamePart[i] = AddPart(&params);
             LevGamePart[i]->time_remaining = 30.0f;
@@ -258,7 +257,7 @@ void BlockadeRunnerD_Update(WORLDINFO *world) {
             LevGameObject[i]->position = LevGameObject[i]->vehicle_orientation.translation;
             LevGameObject[i]->ai_update_position = LevGameObject[i]->position;
         }
-        if ((LevGamePart[i]->active & 1) == 0 || LevGamePart[i]->kill_fn != BlockadeRunnerDKillEjectedCreaturePc) {
+        if ((LevGamePart[i]->active & 1) == 0 || LevGamePart[i]->kill_fn != BlockadeRunnerDKillEjectedCreature) {
             KillGameObject(LevGameObject[i], 4, 0);
             LevGameObject[i] = NULL;
         }
@@ -267,7 +266,7 @@ void BlockadeRunnerD_Update(WORLDINFO *world) {
         if (GizmoGetOutput(world->gizmo_sys, LevGizmo[i], 1, 1) != 0) {
             if (((u8 *)LevFlag)[i] == 0) {
                 ((u8 *)LevFlag)[i] = 1;
-                BlockadeRunnerDEjectCreaturePc(i);
+                BlockadeRunnerDEjectCreature(i);
             }
         } else {
             ((u8 *)LevFlag)[i] = 0;
@@ -316,11 +315,11 @@ void DeathStarRescueB_Update(WORLDINFO *world) {
 
 void DeathStarEscapeB_Draw(WORLDINFO *world) {
     NUMTX matrix;
-    if (LevGameObject[0] != NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
+    if (LevGameObject[0] != NULL && DeathStarEscapeBNetPacket[0] == 0) {
         matrix = LevGameObject[0]->locator_matrices[1];
         NuSpecialDrawAt(&LevHSpecial[2], &matrix);
     }
-    if (LevGameObject[1] != NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
+    if (LevGameObject[1] != NULL && DeathStarEscapeBNetPacket[0] == 0) {
         matrix = LevGameObject[1]->locator_matrices[1];
         NuSpecialDrawAt(&LevHSpecial[2], &matrix);
     }
@@ -329,9 +328,9 @@ void DeathStarEscapeB_Draw(WORLDINFO *world) {
 void DeathStarEscapeA_Update(WORLDINFO *world) {
     if (GameCam->sock == 2) {
         NUVEC position;
-        position.x = (f32)((f64)qrand() * PlayerRandomScalePc * 2.0 + 36.5);
+        position.x = (f32)((f64)qrand() * PlayerRandomScale * 2.0 + 36.5);
         position.y = -5.5f;
-        position.z = (f32)((f64)qrand() * PlayerRandomScalePc * 2.0 + 8.5);
+        position.z = (f32)((f64)qrand() * PlayerRandomScale * 2.0 + 8.5);
         LevChatterSfx("Dianoga_Groan", &position);
     }
 }
@@ -349,22 +348,22 @@ void DeathStarEscapeC_Update(WORLDINFO *world) {
     }
     if (NuSpecialGetVisibilityFn(&LevHSpecial[2]) != 0 && (position = NuSpecialGetDrawPos(&LevHSpecial[2])) != NULL &&
         position->x < 77.25f) {
-        ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[0] &= ~0x80000000;
-        ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[1] &= ~0x80000000;
+        ((AIPATHCNX *)LevPathCnx[0])->traversal_flags[0] &= ~0x80000000;
+        ((AIPATHCNX *)LevPathCnx[0])->traversal_flags[1] &= ~0x80000000;
         if (LevAIMessage[0] != NULL) {
             LevAIMessage[0]->value = 1.0f;
         }
     } else {
-        ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[0] |= 0x80000000;
-        ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[1] |= 0x80000000;
+        ((AIPATHCNX *)LevPathCnx[0])->traversal_flags[0] |= 0x80000000;
+        ((AIPATHCNX *)LevPathCnx[0])->traversal_flags[1] |= 0x80000000;
     }
 }
 
 void DeathStarEscapeD_Update(WORLDINFO *world) {
     NUVEC position;
-    position.x = (f32)((f64)qrand() * PlayerRandomScalePc * 4.0 + 32.5);
+    position.x = (f32)((f64)qrand() * PlayerRandomScale * 4.0 + 32.5);
     position.y = -5.5f;
-    position.z = (f32)((f64)qrand() * PlayerRandomScalePc * 4.0 + 12.5);
+    position.z = (f32)((f64)qrand() * PlayerRandomScale * 4.0 + 12.5);
     LevChatterSfx("Dianoga_Groan", &position);
 }
 
@@ -433,47 +432,47 @@ void fun_004e5eb0(void) {
 }
 
 /* Asteroid field. */
-typedef struct ASTEROID_PC { // size 0x18
+typedef struct ASTEROID {    // size 0x18
     NUSPECIALHANDLE special; // 0x00
     GIZMOBLOWUP_PC *blowup;  // 0x0c
     i16 rotation_speed_x;    // 0x10
     i16 rotation_speed_y;    // 0x12
     i16 rotation_speed_z;    // 0x14
     u8 activated;            // 0x16
-} ASTEROID_PC;
+} ASTEROID;
 
 /* Rotating rock at the end of AsteroidChase C. */
-typedef struct FINAL_ASTEROID_PC { // size 0x3c
-    NUSPECIALHANDLE special;       // 0x00
-    GIZMOBLOWUP_PC *blowups[8];    // 0x0c
-    i16 blowup_count;              // 0x2c
-    i16 rotation_speed_x;          // 0x2e
-    i16 rotation_speed_y;          // 0x30
-    i16 rotation_speed_z;          // 0x32
-    i16 rotation_x;                // 0x34
-    i16 rotation_y;                // 0x36
-    i16 rotation_z;                // 0x38
-} FINAL_ASTEROID_PC;
+typedef struct FINAL_ASTEROID { // size 0x3c
+    NUSPECIALHANDLE special;    // 0x00
+    GIZMOBLOWUP_PC *blowups[8]; // 0x0c
+    i16 blowup_count;           // 0x2c
+    i16 rotation_speed_x;       // 0x2e
+    i16 rotation_speed_y;       // 0x30
+    i16 rotation_speed_z;       // 0x32
+    i16 rotation_x;             // 0x34
+    i16 rotation_y;             // 0x36
+    i16 rotation_z;             // 0x38
+} FINAL_ASTEROID;
 
-typedef struct ASTEROIDC_NETPACKET_PC {
+typedef struct ASTEROIDC_NETPACKET {
     u16 rotation_x;
     u16 rotation_y;
     u16 rotation_z;
-} ASTEROIDC_NETPACKET_PC;
+} ASTEROIDC_NETPACKET;
 
 /* Mutable tuning values. */
 #pragma data_seg(".data$TrenchLaneOffsetPc")
-f32 TrenchLaneOffsetPc = 10.0f;
+f32 TrenchLaneOffset = 10.0f;
 #pragma data_seg(".data$TrenchSeekXPc")
-f32 TrenchSeekXPc = 4.0f;
+f32 TrenchSeekX = 4.0f;
 #pragma data_seg(".data$TrenchSeekYPc")
-f32 TrenchSeekYPc = 0.5f;
+f32 TrenchSeekY = 0.5f;
 #pragma data_seg(".data$TrenchSeekZPc")
-f32 TrenchSeekZPc = 0.5f;
+f32 TrenchSeekZ = 0.5f;
 #pragma data_seg(".data$TrenchRollScalePc")
-f32 TrenchRollScalePc = 5000.0f;
+f32 TrenchRollScale = 5000.0f;
 #pragma data_seg(".data$TrenchMaxHeightMovePc")
-f32 TrenchMaxHeightMovePc = 5.0f;
+f32 TrenchMaxHeightMove = 5.0f;
 #pragma data_seg()
 
 void TrenchMove(GAMEOBJECT *object) {
@@ -511,40 +510,40 @@ void TrenchMove(GAMEOBJECT *object) {
         } else if (player->character_context == 0x2a && player->context_timer < 0.5 * TURNTIME) {
             StartTurn(object);
         } else if (object->character_context != 0x36 && player->character_context == 0x36 &&
-                   player->context_timer < 0.75 * VehicleLoopTimePc) {
+                   player->context_timer < 0.75 * VehicleLoopTime) {
             object->character_context = player->character_context;
             object->field_7aa = 1;
-            object->context_duration = VehicleLoopTimePc;
-            object->context_timer = VehicleLoopTimePc;
+            object->context_duration = VehicleLoopTime;
+            object->context_timer = VehicleLoopTime;
         }
     }
     if (object->character_context == 0x2a) {
         phase = object->context_timer / TURNTIME;
         if (object->movement_facing_angle <= 0x8000) {
-            target.x = (1.0f - phase) * TrenchLaneOffsetPc + phase * -TrenchLaneOffsetPc;
+            target.x = (1.0f - phase) * TrenchLaneOffset + phase * -TrenchLaneOffset;
         } else {
-            target.x = (1.0f - phase) * -TrenchLaneOffsetPc + phase * TrenchLaneOffsetPc;
+            target.x = (1.0f - phase) * -TrenchLaneOffset + phase * TrenchLaneOffset;
         }
         target.x = trenchrun.position.x + target.x;
     } else if (object->movement_facing_angle > 0x8000) {
-        target.x = trenchrun.position.x + TrenchLaneOffsetPc;
+        target.x = trenchrun.position.x + TrenchLaneOffset;
     } else {
-        target.x = trenchrun.position.x - TrenchLaneOffsetPc;
+        target.x = trenchrun.position.x - TrenchLaneOffset;
     }
-    object->position.x = SeekValF(object->position.x, target.x, TrenchSeekXPc);
+    object->position.x = SeekValF(object->position.x, target.x, TrenchSeekX);
     target.y = VehicleTurnOrLoopOffset(object) + (object->movement_spline_offset.y + trenchrun.position.y);
     height_difference = target.y - object->position.y;
-    if (height_difference > TrenchMaxHeightMovePc) {
-        target.y = TrenchMaxHeightMovePc + object->position.y;
+    if (height_difference > TrenchMaxHeightMove) {
+        target.y = TrenchMaxHeightMove + object->position.y;
     }
-    object->position.y = SeekValF(object->position.y, target.y, TrenchSeekYPc);
+    object->position.y = SeekValF(object->position.y, target.y, TrenchSeekY);
     target.z = object->movement_spline_offset.z + trenchrun.position.z;
-    object->position.z = SeekValF(object->position.z, target.z, TrenchSeekZPc);
+    object->position.z = SeekValF(object->position.z, target.z, TrenchSeekZ);
     NuVecSub(&object->velocity, &object->position, &object->start_position);
     NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
     if ((object->character_data->game_character->flags_090 & 1) != 0) {
         if (object->character_context != 0x2a && object->character_context != 0x36 && object->character_context != 0x3a) {
-            roll = (i32)(object->velocity.z * TrenchRollScalePc);
+            roll = (i32)(object->velocity.z * TrenchRollScale);
         } else {
             roll = 0;
         }
@@ -570,17 +569,17 @@ void TrenchMove(GAMEOBJECT *object) {
 
 /* Mutable tuning values. */
 #pragma data_seg(".data$TrenchBaseHeightPc")
-f32 TrenchBaseHeightPc = -10.5f;
+f32 TrenchBaseHeight = -10.5f;
 #pragma data_seg(".data$TrenchVerticalOffsetPc")
-f32 TrenchVerticalOffsetPc = 1.0f;
+f32 TrenchVerticalOffset = 1.0f;
 #pragma data_seg(".data$TrenchLateralOffsetPc")
-f32 TrenchLateralOffsetPc = 2.0f;
+f32 TrenchLateralOffset = 2.0f;
 #pragma data_seg(".data$TrenchSpawnDistancePc")
-f32 TrenchSpawnDistancePc = 20.0f;
+f32 TrenchSpawnDistance = 20.0f;
 #pragma data_seg(".data$TrenchSpawnHeightPc")
-f32 TrenchSpawnHeightPc = 40.0f;
+f32 TrenchSpawnHeight = 40.0f;
 #pragma data_seg()
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
 
 static void TrenchKilledCallback(GAMEOBJECT *object) {
     i32 index;
@@ -606,10 +605,10 @@ void DeathStarBattleDUpdate(WORLDINFO *world) {
     if (netclient == 0) {
         trench_player = player;
         trenchrun.position.x = trench_player->collision_position.x;
-        trenchrun.position.y = TrenchBaseHeightPc;
+        trenchrun.position.y = TrenchBaseHeight;
         if (trench_player->collision_position.x < -500.0) {
             free_play = FreePlay;
-            trenchrun.position.y = TrenchBaseHeightPc + TrenchSpawnHeightPc;
+            trenchrun.position.y = TrenchBaseHeight + TrenchSpawnHeight;
             if (free_play == 0 && trenchrun.midtro_played == 0) {
                 for (index = 0; index < 3; ++index) {
                     if (trenchrun.objects[index] != NULL) {
@@ -636,26 +635,26 @@ void DeathStarBattleDUpdate(WORLDINFO *world) {
             if (trenchrun.spawn_timer <= 0.0f) {
                 trenchrun.spawn_timer = 5.0f;
                 for (index = 0; index < 3; ++index) {
-                    spawn.x = player->collision_position.x + TrenchSpawnDistancePc;
-                    spawn.y = player->collision_position.y + TrenchSpawnHeightPc;
+                    spawn.x = player->collision_position.x + TrenchSpawnDistance;
+                    spawn.y = player->collision_position.y + TrenchSpawnHeight;
                     spawn.z = player->collision_position.z;
                     offset.x = 0.0f;
                     offset.y = 0.0f;
                     offset.z = 0.0f;
                     switch (index) {
                         case 0:
-                            offset.z = TrenchLateralOffsetPc;
+                            offset.z = TrenchLateralOffset;
                             break;
                         case 1:
-                            offset.y = TrenchVerticalOffsetPc;
+                            offset.y = TrenchVerticalOffset;
                             break;
                         case 2:
-                            offset.z = -TrenchLateralOffsetPc;
+                            offset.z = -TrenchLateralOffset;
                             break;
                     }
                     NuVecAdd(&spawn, &spawn, &offset);
                     if (trenchrun.midtro_played == 0 && index == 1) {
-                        model = VehicleBoltId7f196cPc;
+                        model = VehicleBoltId7f196c;
                     } else {
                         model = id_TIEFIGHTER;
                     }

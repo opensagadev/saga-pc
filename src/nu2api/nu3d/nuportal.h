@@ -24,7 +24,7 @@
 #if SAGA_NU2API_NU3D_NUPORTAL_H_PART == 1 && !defined(SAGA_NU2API_NU3D_NUPORTAL_H_STOP)
 
 struct NUGSCN_s;
-struct NUPORTAL_FRUSTUM_PC;
+struct NUPORTAL_FRUSTUM;
 
 typedef struct NUPORTAL { // size 0x20
     NUPLANE plane;        // 0x00
@@ -37,19 +37,19 @@ typedef struct NUPORTAL { // size 0x20
     u32 flags;            // 0x1c
 } NUPORTAL;
 
-typedef struct NUPORTALSPHERE_PC { // size 0x10
-    NUVEC center;                  // 0x0
-    f32 radius;                    // 0xc
-} NUPORTALSPHERE_PC;
+typedef struct NUPORTALSPHERE { // size 0x10
+    NUVEC center;               // 0x0
+    f32 radius;                 // 0xc
+} NUPORTALSPHERE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 clipTestSphere(NUPORTALSPHERE_PC *, struct NUPORTAL_FRUSTUM_PC *);
+    i32 clipTestSphere(NUPORTALSPHERE *, struct NUPORTAL_FRUSTUM *);
     void NuPortalInit(void);
     /* All aggregate views stay named/local and already asserted; no new shared field/data required. */
     i32 clipTestBox(NUVEC *, NUVEC *, NUPLANE *, i32);
-    i32 NuPortalClipTestBox(NUVEC *, NUVEC *, struct NUPORTAL_FRUSTUM_PC *);
+    i32 NuPortalClipTestBox(NUVEC *, NUVEC *, struct NUPORTAL_FRUSTUM *);
     void NuPortalSetActiveDirect(NUPORTAL *portal, i32 active);
 #ifdef __cplusplus
 }

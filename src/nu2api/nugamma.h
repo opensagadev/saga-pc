@@ -14,10 +14,10 @@
 extern "C" {
 #endif
     /* Actual empty separate original source operation; no invented provider. */
-    void DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *);
-    void NuDisplayListCameraPc(void *);
-    void NuDisplayListVertexGroupsPc(void *);
-    void NuDisplayListVertexOffsetsPc(void *);
+    void DisplayGenerateTransformsNoOp(NUDISPLAY_LIST_PC *);
+    void NuDisplayListCamera(void *);
+    void NuDisplayListVertexGroups(void *);
+    void NuDisplayListVertexOffsets(void *);
 #ifdef __cplusplus
 }
 #endif

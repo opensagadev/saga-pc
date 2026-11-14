@@ -746,7 +746,7 @@ void edpartInstanceMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
             selected = 1;
         }
         eduiMenuAddItem(edpart_instance_menu,
-                        eduiItemToggleCreate(9999, edblack, selected, 2, edpartSetInstanceType, PartNullInstanceNamePc));
+                        eduiItemToggleCreate(9999, edblack, selected, 2, edpartSetInstanceType, PartNullInstanceName));
         edpart_nullobject_highlight = edui_last_item;
         if (edpart_nearest_type->field_b3 == 1) {
             eduiMenuAddItem(edpart_instance_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartWorldInstanceMenu, "World Scene..."));
@@ -1385,7 +1385,7 @@ i32 edpartSaveEffects(char *filename, u8 page) {
                 if (effect_id == -1) {
                     EdFileWrite(empty_name, 16);
                 } else if (effect_id == 9999) {
-                    EdFileWrite(PartNullInstanceNamePc, 16);
+                    EdFileWrite(PartNullInstanceName, 16);
                 } else if (effect_id == 9998) {
                     EdFileWrite(((PART_RUNTIME_TYPE_PC *)part_types)[index].object_names[variant], 16);
                 } else if (((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_pages[variant] == 0) {

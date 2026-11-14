@@ -11,8 +11,8 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-struct CAMERA_CLIP_PACKET_PC;
-struct NUVEC4BLOCK_PC;
+struct CAMERA_CLIP_PACKET;
+struct NUVEC4BLOCK;
 
 typedef struct nucamera_s { // size 0x78
     NUMTX mtx;              // 0x00
@@ -45,7 +45,7 @@ extern "C" {
     extern NUMTX clip_test_mtx;
     extern f32 zx;
     extern f32 zy;
-    void PCVecMtxTransformClipBlocks(struct NUVEC4BLOCK_PC *, struct NUVEC4BLOCK_PC *, NUMTX *, i32, u32 *);
+    void PCVecMtxTransformClipBlocks(struct NUVEC4BLOCK *, struct NUVEC4BLOCK *, NUMTX *, i32, u32 *);
     i32 NuCameraClipTestExtents(NUVEC *, NUVEC *, NUMTX *, f32, i32);
     void NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
     void NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
@@ -86,7 +86,7 @@ extern "C" {
     i32 NuCameraClipTestExtentsGeneric(NUVEC *, NUVEC *, NUMTX *, f32, i32, f32 *);
     extern i32 cam_state_count;
 
-    void NuCameraCalcClipMtx(struct CAMERA_CLIP_PACKET_PC *, NUCAMERA *, i32);
+    void NuCameraCalcClipMtx(struct CAMERA_CLIP_PACKET *, NUCAMERA *, i32);
     void NuCameraTransformView(NUVEC *, NUVEC *, i32, NUMTX *);
     void NuCameraTransformScreenClip(NUVEC *, NUVEC *, i32, NUMTX *);
     void NuCameraTransformScreen(NUVEC *, NUVEC *, i32, NUMTX *);

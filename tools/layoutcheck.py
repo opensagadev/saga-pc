@@ -46,7 +46,7 @@ are parsed in their language, headers as C and as C++, each also with
     python3 tools/layoutcheck.py src/saga.h       # check named files
     python3 tools/layoutcheck.py --stats          # records/members covered by comments, asserts, neither
     python3 tools/layoutcheck.py --convert src/saga.h:400-1400 [--dry-run]
-    python3 tools/layoutcheck.py --convert GIZFLOW_PC
+    python3 tools/layoutcheck.py --convert GIZFLOW
     python3 tools/layoutcheck.py --fix [FILES] [--dry-run]   # rewrite converted records to this format
 
 `--convert` takes a file, a `file:first-last` line range or a struct name. It

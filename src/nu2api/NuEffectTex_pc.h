@@ -13,23 +13,23 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture);
-    void PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32, i32);
-    void PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture);
-    void PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
+    void PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE *texture);
+    void PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE *, i32, i32, i32, i32, i32, i32);
+    void PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE *texture);
+    void PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE *, i32, i32, i32);
     void PCGraphicsReleaseEffectTextures(void);
     void PCGraphicsRestoreEffectTextures(i32);
-    void PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *, u32);
-    i32 PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *);
-    i32 PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *);
-    void PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTURE_PC *, u16, i32 *, i32 *);
-    void PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *framebuffer);
-    PC_FRAMEBUFFER_PC *PCGraphicsGetBoundFramebufferPc(void);
-    void PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *, i32);
+    void PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE *, u32);
+    i32 PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE *);
+    i32 PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE *);
+    void PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTURE *, u16, i32 *, i32 *);
+    void PCGraphicsBindFramebuffer(PC_FRAMEBUFFER *framebuffer);
+    PC_FRAMEBUFFER *PCGraphicsGetBoundFramebuffer(void);
+    void PCGraphicsEnableFramebufferGuards(PC_FRAMEBUFFER *, i32);
 #ifdef __cplusplus
-    u32 *PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *);
-    void PCGraphicsFramebufferBarrierPc(i32, i32);
-    void PCGraphicsFramebufferActionPc(i32);
+    u32 *PCGraphicsEffectTextureSampler(GRAPHICS_RENDER_TEXTURE *);
+    void PCGraphicsFramebufferBarrier(i32, i32);
+    void PCGraphicsFramebufferAction(i32);
 #ifdef __cplusplus
 }
 #endif

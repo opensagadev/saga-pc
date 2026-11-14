@@ -20,7 +20,7 @@ extern "C" {
     extern HANDLE bgproc_work_event;
     extern HANDLE bgproc_resume_event;
     extern BGPROCINFO *bgproc_active;
-    extern HANDLE bgproc_thread_handle_pc;
+    extern HANDLE bgproc_thread_handle;
     extern DWORD bgproc_thread_id;
     i32 bgprocIsFrozen(void);
 

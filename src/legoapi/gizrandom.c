@@ -33,33 +33,33 @@ typedef struct GIZFLOW_RANDOM_SYSTEM { // size 0xc
     i32 capacity;                      // 0x8
 } GIZFLOW_RANDOM_SYSTEM;
 
-typedef struct GIZFLOW_SPECIAL_PC { // size 0x28
-    char name[32];                  // 0x00
-    GAMEANIMSET *anim_set;          // 0x20
-    u8 unknown_024[4];              // 0x24
-} GIZFLOW_SPECIAL_PC;
+typedef struct GIZFLOW_SPECIAL { // size 0x28
+    char name[32];               // 0x00
+    GAMEANIMSET *anim_set;       // 0x20
+    u8 unknown_024[4];           // 0x24
+} GIZFLOW_SPECIAL;
 
 typedef struct GIZFLOW_SPECIAL_SYSTEM { // size 0x8
-    GIZFLOW_SPECIAL_PC *specials;       // 0x0
+    GIZFLOW_SPECIAL *specials;          // 0x0
     i32 count;                          // 0x4
 } GIZFLOW_SPECIAL_SYSTEM;
 
-typedef struct GIZFLOW_LOAD_WORLD_PC { // size 0x510c
-    u8 unknown_000[0x104];             // 0x0000
-    VARIPTR giz_buffer;                // 0x0104
-    u8 unknown_108[0x20];              // 0x0108
-    GIZFLOW_LOAD_LEVEL *level;         // 0x0128
-    u8 unknown_12c[0x10];              // 0x012c
-    NUGSCN *current_gscn;              // 0x013c
-    u8 unknown_140[0x2988];            // 0x0140
-    void *gizmo_sys;                   // 0x2ac8
-    u8 unknown_2acc[0x262c];           // 0x2acc
-    GIZFLOW_TIMER *timers;             // 0x50f8
-    i32 timer_count;                   // 0x50fc
-    u8 unknown_5100[4];                // 0x5100
-    GIZFLOW_RANDOM_SYSTEM *randoms;    // 0x5104
-    GIZFLOW_SPECIAL_SYSTEM *specials;  // 0x5108
-} GIZFLOW_LOAD_WORLD_PC;
+typedef struct GIZFLOW_LOAD_WORLD {   // size 0x510c
+    u8 unknown_000[0x104];            // 0x0000
+    VARIPTR giz_buffer;               // 0x0104
+    u8 unknown_108[0x20];             // 0x0108
+    GIZFLOW_LOAD_LEVEL *level;        // 0x0128
+    u8 unknown_12c[0x10];             // 0x012c
+    NUGSCN *current_gscn;             // 0x013c
+    u8 unknown_140[0x2988];           // 0x0140
+    void *gizmo_sys;                  // 0x2ac8
+    u8 unknown_2acc[0x262c];          // 0x2acc
+    GIZFLOW_TIMER *timers;            // 0x50f8
+    i32 timer_count;                  // 0x50fc
+    u8 unknown_5100[4];               // 0x5100
+    GIZFLOW_RANDOM_SYSTEM *randoms;   // 0x5104
+    GIZFLOW_SPECIAL_SYSTEM *specials; // 0x5108
+} GIZFLOW_LOAD_WORLD;
 
 i32 GizRandom_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
@@ -70,7 +70,7 @@ i32 GizRandom_GetMaxGizmos(void *world_ptr) {
 }
 
 void GizRandom_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused) {
-    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
+    GIZFLOW_LOAD_WORLD *world = world_ptr;
     i32 i;
     for (i = 0; i < world->randoms->count; ++i) {
         if (NuStrLen(world->randoms->randoms[i].name) != 0) {
@@ -108,7 +108,7 @@ void GizRandom_Activate(GIZMO_PC *gizmo, i32 active) {
     if (active != 0) {
         random->flags |= 1;
         random->selected_output = -1;
-        roll = 1 - (i32)((f64)qrand() * PlayerRandomScalePc * -100.0);
+        roll = 1 - (i32)((f64)qrand() * PlayerRandomScale * -100.0);
         for (i = 0; i < random->output_count; ++i) {
             if (roll >= cumulative_weight && roll <= cumulative_weight + random->output_weights[i]) {
                 random->selected_output = i;
@@ -122,7 +122,7 @@ void GizRandom_Activate(GIZMO_PC *gizmo, i32 active) {
 }
 
 void *GizRandom_ReserveBufferSpace(void *world_ptr) {
-    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
+    GIZFLOW_LOAD_WORLD *world = world_ptr;
     world->randoms = NULL;
     if (world->level->max_randoms > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
@@ -137,7 +137,7 @@ void *GizRandom_ReserveBufferSpace(void *world_ptr) {
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 GIZMO_PC *createGizRandom(void *unused, i32 output_count, i32 *weights, char *name) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();
+    GIZFLOW_LOAD_WORLD *world = (GIZFLOW_LOAD_WORLD *)WorldInfo_CurrentlyLoading();
     GIZFLOW_RANDOM *random;
     i32 i;
     if (world == NULL) {

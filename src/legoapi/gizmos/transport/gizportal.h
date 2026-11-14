@@ -17,11 +17,11 @@
 extern "C" {
 #endif
     void PortalGameObject(GAMEOBJECT *, i32, i32, i16, NUGSCN *);
-    extern const char *PortalRegistrationPrefixPc;
+    extern const char *PortalRegistrationPrefix;
     extern i32 portal_gizmotype_id;
     PORTAL_REGISTRATION_PC *Portal_RegisterGizmo(i32 type_id);
     void PortalDoors_Reset(WORLDINFO *world);
-    extern const char *PortalRegistrationPrefixPc;
+    extern const char *PortalRegistrationPrefix;
     extern i32 portal_gizmotype_id;
 #ifdef __cplusplus
 }

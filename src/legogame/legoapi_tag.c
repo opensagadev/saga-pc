@@ -29,7 +29,7 @@ typedef struct TAGFLAGS1FC {
 
 #define TAG_FLAGS(object) ((TAGFLAGS1FC *)&(object)->flags_1fc_word)
 /* Defined in render.c; an empty body in this unit would let the call be dropped. */
-void TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name);
+void TakeOverReleaseDiagnostic(char *rider_name, char *object_name);
 
 void Tag_SetMode(i32 mode) {
     Tag_Mode = mode;
@@ -86,7 +86,7 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
 
 void GetTakeOverPos(GAMEOBJECT *object, NUVEC *position) {
     i32 locator = object->character_data->game_character->ride_locator;
-    CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
+    CHARACTER_MODEL_LAYERS *model = object->character_model;
     if (locator != -1 && model->points_of_interest[locator] != NULL) {
         *position = object->locator_matrices[locator].translation;
     } else {
@@ -189,7 +189,7 @@ void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     i32 i;
     GAMEOBJECT *object = Obj;
     i32 count = HIGHGAMEOBJECT;
-    CHARACTER_MODEL_LAYERS_PC *model;
+    CHARACTER_MODEL_LAYERS *model;
     for (i = 0; i < count; ++i, ++object) {
         if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->character_context == 0x3c &&
             object->force_target == vehicle) {
@@ -363,8 +363,8 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
         }
         if (takeover != 0) {
             if (AIScriptSetBaseScriptStateByName(&destination->ai_packet.script_processor, "JustBeenTakenOver") != 0) {
-                AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)destination, &destination->ai_packet,
-                                &destination->ai_packet.script_processor, FRAMETIME);
+                AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)destination, &destination->ai_packet, &destination->ai_packet.script_processor,
+                                FRAMETIME);
             }
             TAG_SCRIPT_STATE(source) = destination_script;
             TAG_SCRIPT_STATE(destination) = source_script;
@@ -475,7 +475,7 @@ void Tag_Check(GAMEOBJECT *object) {
                                     GameAudio_PlaySfx(0x32, &object->collision_position, 0, 0);
                                     NewRumble(object->pad->bound_pad, 0.5f, 0.0f);
                                     if (AIScriptSetBaseScriptStateByName(&target->ai_packet.script_processor, "MapRunAway") != 0) {
-                                        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
+                                        AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)target, &target->ai_packet,
                                                         &target->ai_packet.script_processor, FRAMETIME);
                                     }
                                     target = NULL;
@@ -580,7 +580,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     TAGSCRIPTSTATE object_script;
     u32 rider_flag;
     u32 object_flag;
-    PLAYERCHARACTERCONFIG_PC *character;
+    PLAYERCHARACTERCONFIG *character;
     (void)unused;
     if (target->rider == NULL) {
         return;
@@ -599,7 +599,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     if ((rider->flags_ef4 & 2) == 0 && TagCode(rider, object, 1, 0, 0) == 0) {
         return;
     }
-    TakeOverReleaseDiagnosticPc(rider->character_data->name, object->character_data->name);
+    TakeOverReleaseDiagnostic(rider->character_data->name, object->character_data->name);
     TAG_SCRIPT_STATE(rider) = object_script;
     TAG_SCRIPT_STATE(object) = rider_script;
     rider->ai_packet.creature_set = rider_script.fields.creature_set;
@@ -642,10 +642,10 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
         GameCam_Blend(GameCam, 0.3f, 0.0f, 1);
     }
     if (AIScriptSetBaseScriptStateByName(&rider->ai_packet.script_processor, "ReleasedTakeOver") != 0) {
-        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)rider, &rider->ai_packet, &rider->ai_packet.script_processor, FRAMETIME);
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)rider, &rider->ai_packet, &rider->ai_packet.script_processor, FRAMETIME);
     }
     if (AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "ReleasedTakeOver") != 0) {
-        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, &object->ai_packet.script_processor, FRAMETIME);
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, &object->ai_packet.script_processor, FRAMETIME);
     }
 }
 
@@ -778,7 +778,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
             object->takeover_timer = 1.0f;
         } else if (object->character_data->game_character->weapon_action == 12) {
             i32 animation = CurrentAnim(&object->anim_packet) == 3 || CurrentAnim(&object->anim_packet) == 0x17 ? 0xc4 : 0xc3;
-            CHARACTER_MODEL_LAYERS_PC *model;
+            CHARACTER_MODEL_LAYERS *model;
             target = object->rider;
             model = target->character_model;
             if (model->action_animations[animation] != NULL) {

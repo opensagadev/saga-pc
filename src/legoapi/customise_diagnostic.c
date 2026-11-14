@@ -9,5 +9,5 @@ void Customiser_Dump(void) {
 /* Also empty on PC; the linker folds it into Customiser_Dump.
    Customiser_LoadAll calls it with the path of each scene or texture it has
    just loaded. */
-void CustomiserLoadTracePc(char *path) {
+void CustomiserLoadTrace(char *path) {
 }

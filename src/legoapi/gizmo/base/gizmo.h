@@ -29,37 +29,37 @@ struct bolt_s;
 struct gameobject_s;
 struct nuspecial_handle_s;
 
-typedef struct gizmo_pc_s { // size 0x8
-    void *object;           // 0x0
-    i16 field_04;           // 0x4
-    u8 type_id;             // 0x6
-    u8 field_07;            // 0x7
+typedef struct gizmo_s { // size 0x8
+    void *object;        // 0x0
+    i16 field_04;        // 0x4
+    u8 type_id;          // 0x6
+    u8 field_07;         // 0x7
 } GIZMO_PC;
 
 struct gizmoset_s;
 
-typedef struct gizmofns_s {                                                        // size 0x70
-    i16 options;                                                                   // 0x00
-    u16 padding;                                                                   // 0x02
-    i32 (*get_max_gizmos_fn)(void *world);                                         // 0x04
-    void *add_gizmos_fn;                                                           // 0x08
-    void (*early_update_fn)(void *world, void *data, f32 delta_time);              // 0x0c
-    void (*late_update_fn)(void *world, void *data, f32 delta_time);               // 0x10
-    void (*draw_fn)(void *world, void *data, f32 delta_time);                      // 0x14
-    void (*panel_draw_fn)(void *world, void *data, f32 delta_time);                // 0x18
-    char *(*get_gizmo_name_fn)(struct gizmo_pc_s *gizmo);                          // 0x1c
-    i32 (*get_output_fn)(struct gizmo_pc_s *gizmo, i32 output, i32 mode);          // 0x20
-    char *(*get_output_name_fn)(struct gizmo_pc_s *gizmo, i32 output);             // 0x24
-    void *get_num_outputs_fn;                                                      // 0x28
-    void (*activate_fn)(struct gizmo_pc_s *gizmo, i32 active);                     // 0x2c
-    i32 (*activate_rev_fn)(struct gizmo_pc_s *gizmo, i32 reverse, i32 visibility); // 0x30
-    void (*set_visibility_fn)(struct gizmo_pc_s *gizmo, i32 visible);              // 0x34
-    i32 (*get_visibility_fn)(struct gizmo_pc_s *gizmo);                            // 0x38
-    void *get_pos_fn;                                                              // 0x3c
-    void *using_special_fn;                                                        // 0x40
-    void *bolt_hit_plat_fn;                                                        // 0x44
-    struct gizmo_pc_s *(*get_best_bolt_target_fn)(struct gizmoset_s *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32,
-                                                  i32, i32);                           // 0x48
+typedef struct gizmofns_s {                                                     // size 0x70
+    i16 options;                                                                // 0x00
+    u16 padding;                                                                // 0x02
+    i32 (*get_max_gizmos_fn)(void *world);                                      // 0x04
+    void *add_gizmos_fn;                                                        // 0x08
+    void (*early_update_fn)(void *world, void *data, f32 delta_time);           // 0x0c
+    void (*late_update_fn)(void *world, void *data, f32 delta_time);            // 0x10
+    void (*draw_fn)(void *world, void *data, f32 delta_time);                   // 0x14
+    void (*panel_draw_fn)(void *world, void *data, f32 delta_time);             // 0x18
+    char *(*get_gizmo_name_fn)(struct gizmo_s *gizmo);                          // 0x1c
+    i32 (*get_output_fn)(struct gizmo_s *gizmo, i32 output, i32 mode);          // 0x20
+    char *(*get_output_name_fn)(struct gizmo_s *gizmo, i32 output);             // 0x24
+    void *get_num_outputs_fn;                                                   // 0x28
+    void (*activate_fn)(struct gizmo_s *gizmo, i32 active);                     // 0x2c
+    i32 (*activate_rev_fn)(struct gizmo_s *gizmo, i32 reverse, i32 visibility); // 0x30
+    void (*set_visibility_fn)(struct gizmo_s *gizmo, i32 visible);              // 0x34
+    i32 (*get_visibility_fn)(struct gizmo_s *gizmo);                            // 0x38
+    void *get_pos_fn;                                                           // 0x3c
+    void *using_special_fn;                                                     // 0x40
+    void *bolt_hit_plat_fn;                                                     // 0x44
+    struct gizmo_s *(*get_best_bolt_target_fn)(struct gizmoset_s *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32,
+                                               i32);                                   // 0x48
     void *bolt_hit_fn;                                                                 // 0x4c
     void *(*allocate_progress_data_fn)(union variptr_u *buffer, union variptr_u *end); // 0x50
     void (*clear_progress_fn)(void *world, void *progress);                            // 0x54
@@ -71,11 +71,11 @@ typedef struct gizmofns_s {                                                     
     void *add_level_sfx_fn;                                                            // 0x6c
 } GIZMOFNS_PC;
 
-typedef struct gizmotype_pc_s { // size 0x9c
-    char name[32];              // 0x00
-    char prefix[8];             // 0x20
-    GIZMOFNS_PC fns;            // 0x28
-    void **progress;            // 0x98
+typedef struct gizmotype_s { // size 0x9c
+    char name[32];           // 0x00
+    char prefix[8];          // 0x20
+    GIZMOFNS_PC fns;         // 0x28
+    void **progress;         // 0x98
 } GIZMOTYPE_PC;
 
 typedef struct gizmotypes_s { // size 0xc
@@ -99,10 +99,10 @@ typedef struct gizmosys_s {
     u16 padding;
 } GIZMOSYS_PC;
 
-typedef struct addgizmotype_pc_s { // size 0x78
-    char *name;                    // 0x00
-    char *prefix;                  // 0x04
-    GIZMOFNS_PC fns;               // 0x08
+typedef struct addgizmotype_s { // size 0x78
+    char *name;                 // 0x00
+    char *prefix;               // 0x04
+    GIZMOFNS_PC fns;            // 0x08
 } ADDGIZMOTYPE_PC;
 
 #ifdef __cplusplus
@@ -129,25 +129,25 @@ extern "C" {
     void GizmoSetVisibility(void *system, void *gizmo, i32 visible, i32 mode);
     void GizmoActivate(void *system, void *gizmo, i32 active, i32 mode);
     void GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name);
-    struct addgizmotype_pc_s;
+    struct addgizmotype_s;
     GIZMO_PC *AddGizmo(void *system, i32 type_id, char *name, void *object);
     /* Original gizmo.c private error caller group; existing local CONFIG_SYSTEM view retained. */
     i32 GizmoFileReadName(char *);
     i32 GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *, char *, char *, char *, i32);
 
-    struct addgizmotype_pc_s;
+    struct addgizmotype_s;
 
-    struct addgizmotype_pc_s;
+    struct addgizmotype_s;
 
-    struct addgizmotype_pc_s;
+    struct addgizmotype_s;
 
-    struct addgizmotype_pc_s;
+    struct addgizmotype_s;
 
-    typedef struct addgizmotype_pc_s TECHNO_REGISTRATION_PC;
-    typedef struct addgizmotype_pc_s PORTAL_REGISTRATION_PC;
-    typedef struct addgizmotype_pc_s SHADOW_REGISTRATION_PC;
+    typedef struct addgizmotype_s TECHNO_REGISTRATION_PC;
+    typedef struct addgizmotype_s PORTAL_REGISTRATION_PC;
+    typedef struct addgizmotype_s SHADOW_REGISTRATION_PC;
     struct nuvec_s *GizmoGetPos(struct gizmosys_s *gizmo_sys, void *gizmo);
-    char *GizmoGetName(struct gizmo_pc_s *gizmo);
+    char *GizmoGetName(struct gizmo_s *gizmo);
     void GizmoSysPanelDraw(void *, void *, f32);
 #ifdef __cplusplus
 }
@@ -161,10 +161,10 @@ extern "C" {
 
 #if SAGA_LEGOAPI_GIZMO_BASE_GIZMO_H_PART == 2 && !defined(SAGA_LEGOAPI_GIZMO_BASE_GIZMO_H_STOP)
 
-typedef struct GIZACTIONDEF_PC { // size 0x8
-    const char *name;            // 0x0
-    GIZACTIONFN_PC action_fn;    // 0x4
-} GIZACTIONDEF_PC;
+typedef struct GIZACTIONDEF { // size 0x8
+    const char *name;         // 0x0
+    GIZACTIONFN_PC action_fn; // 0x4
+} GIZACTIONDEF;
 
 #ifdef __cplusplus
 extern "C" {

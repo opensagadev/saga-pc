@@ -1,9 +1,9 @@
 #include "saga.h"
 
 extern "C" {
-    extern NUMTX PostShadowProjectionPc;
-    extern NUMTX PostShadowViewPc;
-    extern NUCAMERA *EdMainCurrentCameraPc;
+    extern NUMTX PostShadowProjection;
+    extern NUMTX PostShadowView;
+    extern NUCAMERA *EdMainCurrentCamera;
 }
 
 struct SHADOW_PLAYER_BOUNDS { // size 0x60c
@@ -18,8 +18,8 @@ STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) + offsetof(NUMTX, m30) == 0xe8);
 void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const f32 *splits, i32 split_count) {
     f32 aspect = 1.0f / camera->aspect;
     f32 fov = ((f64)camera->fov * 180.0) / 3.1415927410125732;
-    NuMtxSetPerspectiveD3D(&PostShadowProjectionPc, fov, aspect, camera->near_clip, camera->far_clip);
-    NuMtxInv(&PostShadowViewPc, &camera->mtx);
+    NuMtxSetPerspectiveD3D(&PostShadowProjection, fov, aspect, camera->near_clip, camera->far_clip);
+    NuMtxInv(&PostShadowView, &camera->mtx);
     // MATCH-EXCEPTION: the original reads each row into temporaries before storing, as an inlined
     // vec4 setter would (it also keeps that setter's redundant w stores, which a helper here
     // would reproduce but only with an out-of-line copy the original does not have).
@@ -52,11 +52,11 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const
         NURNDRLIGHTRECORD &set = render_sets[i];
         camera->near_clip = splits[i];
         camera->far_clip = splits[i + 1];
-        PostShadowComputeFrustumCubePc(camera, set.corners_pc, &set.far_plane_pc);
-        set.shadow_plane_count = PostShadowComputePlanesPc(&light_direction4_pc, set.corners_pc, set.planes_pc);
+        PostShadowComputeFrustumCube(camera, set.corners_pc, &set.far_plane_pc);
+        set.shadow_plane_count = PostShadowComputePlanes(&light_direction4_pc, set.corners_pc, set.planes_pc);
         set.view_pc = view;
         set.projection_pc = projection;
-        PostShadowComputeCapsulePc(&light_direction4_pc, set.corners_pc, &set.endpoint0_pc, &set.endpoint1_pc, &set.shadow_radius_pc);
+        PostShadowComputeCapsule(&light_direction4_pc, set.corners_pc, &set.endpoint0_pc, &set.endpoint1_pc, &set.shadow_radius_pc);
     }
     for (i32 i = 0; i < set_count; ++i) {
         split_planes_pc[i].x = 0.0f;

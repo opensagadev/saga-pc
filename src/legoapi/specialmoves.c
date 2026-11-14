@@ -1,6 +1,6 @@
 #include "saga.h"
 
-void SpecialMovesConfigMissingPc(char *filename);
+void SpecialMovesConfigMissing(char *filename);
 
 static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 *variant, i16 *animation) {
     while (NuFParGetWord(parser)) {
@@ -27,7 +27,7 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
     SpecialMoveCount = 0;
     parser = NuFParCreate(filename);
     if (parser == NULL) {
-        SpecialMovesConfigMissingPc(filename);
+        SpecialMovesConfigMissing(filename);
         return;
     }
 

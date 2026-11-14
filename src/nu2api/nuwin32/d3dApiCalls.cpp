@@ -4,34 +4,34 @@ extern "C" {
     void PCDeviceBeginScenePc(void);
     void PCGraphicsReleaseFramebuffers(void);
     void PCGraphicsRestoreFramebuffers(void);
-    void NuRndrGeometryBufferReleasePc(void);
-    void NuRndrGeometryBufferRestorePc(void);
-    void NuDebrisReleaseVertexBuffersPc(void);
+    void NuRndrGeometryBufferRelease(void);
+    void NuRndrGeometryBufferRestore(void);
+    void NuDebrisReleaseVertexBuffers(void);
     void debris_InitializeD3D(void);
-    void NuRndrDwaReleasePc(void);
-    void PcGeometryOriginReleasePc(void);
-    void NuPrimReleaseResourcesPc(void);
+    void NuRndrDwaRelease(void);
+    void PcGeometryOriginRelease(void);
+    void NuPrimReleaseResources(void);
     void NuKeyboardWindowStateLeafPc(void);
-    i32 GameReleaseResourcesPc(void);
-    i32 GameRestoreResourcesPc(void);
-    void DebrisReleaseResourcesPc(void);
-    void DebrisRestoreResourcesPc(void);
-    void NuWaterReleaseVertexBufferPc(void);
-    void NuGScnReleaseDynamicBuffersPc(void);
-    void NuGScnRestoreDynamicBuffersPc(void);
-    void NuTexReleaseResourcesPc(void);
-    void NuTexRestoreResourcesPc(void);
+    i32 GameReleaseResources(void);
+    i32 GameRestoreResources(void);
+    void DebrisReleaseResources(void);
+    void DebrisRestoreResources(void);
+    void NuWaterReleaseVertexBuffer(void);
+    void NuGScnReleaseDynamicBuffers(void);
+    void NuGScnRestoreDynamicBuffers(void);
+    void NuTexReleaseResources(void);
+    void NuTexRestoreResources(void);
     void FmvReleasePc(void);
     void FmvRestorePc(void);
     void NuFmvTextureReleasePc(void);
     void NuFmvTextureRestorePc(void);
-    void ResizeStillRenderPc(i32, i32);
-    void PCGraphicsClearFrameTexturesPc(void);
+    void ResizeStillRender(i32, i32);
+    void PCGraphicsClearFrameTextures(void);
     f32 fun_005d0920(void);
     f32 fun_005d0930(void);
     void PCDeviceSetGammaRampPc(const void *ramp);
 }
-extern "C" void NuPostEffectResizePc(void);
+extern "C" void NuPostEffectResize(void);
 extern "C" void fun_006d3120(void);
 extern "C" u32 dat_02974ccc;
 extern "C" u32 dat_02974cd0;
@@ -106,10 +106,10 @@ extern "C" void NuKeyboardCreateWindowState(HWND window, HINSTANCE instance) {
 }
 
 extern "C" void PcRendererCleanup(void) {
-    NuRndrDwaReleasePc();
-    PcGeometryOriginReleasePc();
-    NuPrimReleaseResourcesPc();
-    NuDebrisReleaseVertexBuffersPc();
+    NuRndrDwaRelease();
+    PcGeometryOriginRelease();
+    NuPrimReleaseResources();
+    NuDebrisReleaseVertexBuffers();
 }
 
 extern "C" void PcRendererShutdown(i32 unused) {
@@ -125,17 +125,17 @@ extern "C" void PcRendererShutdown(i32 unused) {
     }
     PCGraphicsReleaseFramebuffers();
     PCDeviceBackend.ReleaseDefaultPoolResources();
-    PC_EFFECT_SURFACE_PC::ReleaseResources();
+    PC_EFFECT_SURFACE::ReleaseResources();
     PCGraphicsReleaseEffectTextures();
-    GameReleaseResourcesPc();
-    PcGeometryOriginReleasePc();
-    NuPrimReleaseResourcesPc();
-    NuRndrGeometryBufferReleasePc();
-    DebrisReleaseResourcesPc();
-    NuDebrisReleaseVertexBuffersPc();
-    NuWaterReleaseVertexBufferPc();
-    NuGScnReleaseDynamicBuffersPc();
-    NuTexReleaseResourcesPc();
+    GameReleaseResources();
+    PcGeometryOriginRelease();
+    NuPrimReleaseResources();
+    NuRndrGeometryBufferRelease();
+    DebrisReleaseResources();
+    NuDebrisReleaseVertexBuffers();
+    NuWaterReleaseVertexBuffer();
+    NuGScnReleaseDynamicBuffers();
+    NuTexReleaseResources();
     FmvReleasePc();
     NuFmvTextureReleasePc();
 }
@@ -178,7 +178,7 @@ extern "C" u32 fun_006df260(void) {
     return PCDeviceBackend.parameters.width;
 }
 
-extern "C" u32 PcGetRefreshRatePc(void) {
+extern "C" u32 PcGetRefreshRate(void) {
     return PCDeviceBackend.parameters.refresh_rate;
 }
 
@@ -412,29 +412,29 @@ extern "C" void fun_006dfb30(f32 gamma) {
     PCDeviceSetGammaRampPc(ramp);
 }
 
-extern "C" void fun_006dfbf0(PC_TEXTURE_RESOURCE_PC *texture, u32 level, const void *rect, u32 flags, PC_LOCKED_RECT *locked) {
+extern "C" void fun_006dfbf0(PC_TEXTURE_RESOURCE *texture, u32 level, const void *rect, u32 flags, PC_LOCKED_RECT *locked) {
     if (texture != NULL) {
         texture->methods->lock_rect(texture, level, locked, rect, flags);
     }
 }
 
-extern "C" void fun_006dfc20(PC_TEXTURE_RESOURCE_PC *texture, u32 level) {
+extern "C" void fun_006dfc20(PC_TEXTURE_RESOURCE *texture, u32 level) {
     if (texture != NULL) {
         texture->methods->unlock_rect(texture, level);
     }
 }
 
-extern "C" void fun_006dfc40(PC_TEXTURE_RESOURCE_PC *texture, u32 level, PC_TEXTURE_RESOURCE_PC **surface) {
+extern "C" void fun_006dfc40(PC_TEXTURE_RESOURCE *texture, u32 level, PC_TEXTURE_RESOURCE **surface) {
     if (texture != NULL) {
         texture->methods->get_surface_level(texture, level, surface);
     }
 }
 
-extern "C" u32 fun_006dfc60(PC_TEXTURE_RESOURCE_PC *texture) {
+extern "C" u32 fun_006dfc60(PC_TEXTURE_RESOURCE *texture) {
     return texture->methods->get_level_count(texture);
 }
 
-extern "C" void fun_006dfc70(i32 format, u32 width, u32 height, u32 levels, i32 render_target, PC_TEXTURE_RESOURCE_PC **texture) {
+extern "C" void fun_006dfc70(i32 format, u32 width, u32 height, u32 levels, i32 render_target, PC_TEXTURE_RESOURCE **texture) {
     if (render_target == 0) {
         PCDeviceCreateTexture(width, height, levels, 0, format, 1, texture);
     } else {
@@ -442,8 +442,8 @@ extern "C" void fun_006dfc70(i32 format, u32 width, u32 height, u32 levels, i32 
     }
 }
 
-extern "C" PC_TEXTURE_LEVEL_DESC_PC *fun_006dfcc0(PC_TEXTURE_RESOURCE_PC *texture, u32 level) {
-    static PC_TEXTURE_LEVEL_DESC_PC description;
+extern "C" PC_TEXTURE_LEVEL_DESC *fun_006dfcc0(PC_TEXTURE_RESOURCE *texture, u32 level) {
+    static PC_TEXTURE_LEVEL_DESC description;
     if (texture != NULL) {
         return FAILED(texture->methods->get_level_desc(texture, level, &description)) ? NULL : &description;
     }
@@ -461,24 +461,24 @@ extern "C" u32 fun_006dfd00(void) {
 extern "C" void fun_006dfd20(void) {
 }
 
-extern "C" i32 PCFrameBeginScenePc(i32 begin) {
+extern "C" i32 PCFrameBeginScene(i32 begin) {
     (void)begin;
     PCDeviceBeginScenePc();
     return 0;
 }
 
-extern "C" i32 PCFramePresentNativePc(i32 mode_unused, i32 flag_unused) {
-    PCFramePresentationStatePc = 0;
+extern "C" i32 PCFramePresentNative(i32 mode_unused, i32 flag_unused) {
+    PCFramePresentationState = 0;
     PCDeviceBackend.Present(NULL, NULL, NULL, NULL);
     PCPresentationPlatformLeafPc();
     return 0;
 }
 
-extern "C" void PCFrameResetTargetsPc(void) {
+extern "C" void PCFrameResetTargets(void) {
     PCDeviceBackend.ResetTargets();
 }
 
-extern "C" void PCFrameConfigureTargetsPc(void) {
+extern "C" void PCFrameConfigureTargets(void) {
     PCDeviceBackend.ConfigureCurrentTargets();
 }
 
@@ -512,23 +512,23 @@ extern "C" void PcDestroyPlatform(void) {
 extern "C" void PCGraphicsRecreateResources(i32 reset_available) {
     PCDeviceBackend.RestoreDefaultPoolResources();
     if (reset_available != 0) {
-        NuPostEffectResizePc();
-        ResizeStillRenderPc(PS2_REZ_W, PS2_REZ_H);
+        NuPostEffectResize();
+        ResizeStillRender(PS2_REZ_W, PS2_REZ_H);
     }
     PCGraphicsRestoreEffectTextures(reset_available == 1);
-    PC_EFFECT_SURFACE_PC::RestoreResources();
+    PC_EFFECT_SURFACE::RestoreResources();
     PCGraphicsRestoreFramebuffers();
     NuKeyboardWindowStateLeafPc();
-    NuRndrGeometryBufferRestorePc();
+    NuRndrGeometryBufferRestore();
     debris_InitializeD3D();
-    DebrisRestoreResourcesPc();
-    GameRestoreResourcesPc();
-    NuTexRestoreResourcesPc();
-    NuGScnRestoreDynamicBuffersPc();
+    DebrisRestoreResources();
+    GameRestoreResources();
+    NuTexRestoreResources();
+    NuGScnRestoreDynamicBuffers();
     PCDeviceResetState();
     FmvRestorePc();
     NuFmvTextureRestorePc();
-    PCGraphicsClearFrameTexturesPc();
+    PCGraphicsClearFrameTextures();
 }
 
 extern "C" void fun_006dfea0(void) {

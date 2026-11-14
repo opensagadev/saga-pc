@@ -3,72 +3,72 @@
 #include <string.h>
 
 extern "C" {
-    extern f32 HudBossIconYPc;
-    extern f32 HudBossIconScalePc;
-    extern f32 MeleeRowsSpacingPc;
-    extern f32 MeleeRowsScalePc;
-    extern f32 MeleeRowsYOffsetPc;
+    extern f32 HudBossIconY;
+    extern f32 HudBossIconScale;
+    extern f32 MeleeRowsSpacing;
+    extern f32 MeleeRowsScale;
+    extern f32 MeleeRowsYOffset;
 }
 extern "C" i32 Arcade_Score[2];
 extern "C" i32 PCArcadePointGoals[5];
-extern "C" f32 HubPromptXPc;
-extern "C" f32 HubPromptSpacingPc;
-extern "C" f32 HubPromptLabelOffsetPc;
-extern "C" f32 HubPromptMaxWidthPc;
-extern "C" i32 HubPromptOffColourPc[3];
-extern "C" i32 HubPromptOnColourPc[3];
-extern "C" i32 HubBuildBarSegmentsPc;
-extern "C" f32 HubBuildBarSpacingPc;
-extern "C" f32 HubBuildBarScalePc;
-extern "C" f32 HubBuildBarOverallScalePc;
+extern "C" f32 HubPromptX;
+extern "C" f32 HubPromptSpacing;
+extern "C" f32 HubPromptLabelOffset;
+extern "C" f32 HubPromptMaxWidth;
+extern "C" i32 HubPromptOffColour[3];
+extern "C" i32 HubPromptOnColour[3];
+extern "C" i32 HubBuildBarSegments;
+extern "C" f32 HubBuildBarSpacing;
+extern "C" f32 HubBuildBarScale;
+extern "C" f32 HubBuildBarOverallScale;
 extern "C" TIMER ChallengeTimer;
 extern "C" {
-    extern f32 STATSPOS2YPc;
-    extern f32 HudCoinAdjustYPc;
-    extern i32 DrawBossHitPointsTwoRowsPc;
-    extern f32 PanelHeartSpacingPc;
-    extern f32 PanelHeartRowOffsetPc;
-    extern f32 PanelHeartWidescreenPc;
-    extern f32 DoubleScoreTextYPc;
-    extern f32 DoubleScoreTextScalePc;
+    extern f32 STATSPOS2Y;
+    extern f32 HudCoinAdjustY;
+    extern i32 DrawBossHitPointsTwoRows;
+    extern f32 PanelHeartSpacing;
+    extern f32 PanelHeartRowOffset;
+    extern f32 PanelHeartWidescreen;
+    extern f32 DoubleScoreTextY;
+    extern f32 DoubleScoreTextScale;
     extern i16 TextIdPc88098c;
-    extern f32 CoinTotalScoreSizePc;
-    extern f32 CoinTotalCoinOffsetPc;
-    extern f32 CoinTotalScoreOffsetYPc;
-    extern f32 CoinTotalTargetOffsetYPc;
-    extern f32 DrawCoinTotalYPc;
-    extern f32 HudBossHeartYPc;
-    extern f32 HudBossHeartScalePc;
-    extern f32 HudBossIconYPc;
-    extern f32 HudBossIconScalePc;
+    extern f32 CoinTotalScoreSize;
+    extern f32 CoinTotalCoinOffset;
+    extern f32 CoinTotalScoreOffsetY;
+    extern f32 CoinTotalTargetOffsetY;
+    extern f32 DrawCoinTotalY;
+    extern f32 HudBossHeartY;
+    extern f32 HudBossHeartScale;
+    extern f32 HudBossIconY;
+    extern f32 HudBossIconScale;
     i32 PcInput_GetFirstKeyboardPort(void);
-    extern i32 NuMainSkipCutBordersPc;
+    extern i32 NuMainSkipCutBorders;
     extern i32 drawautosaveicon;
-    extern f32 HudLevelTitleYPc;
-    extern f32 HudLevelTitleScalePc;
-    extern f32 HudLevelTitleScaleXPc;
-    extern f32 HudLevelTitleWidthPc;
+    extern f32 HudLevelTitleY;
+    extern f32 HudLevelTitleScale;
+    extern f32 HudLevelTitleScaleX;
+    extern f32 HudLevelTitleWidth;
     void CutScene_DrawSubtitles(void);
     extern i32 DRAWBGLOAD;
     extern i32 FPSDISPLAY;
-    extern f32 HudNameScalePc;
-    extern f32 HudNameWidthPc;
-    extern f32 HudNameWideWidthPc;
-    extern f32 HudNameOffsetXPc;
-    extern f32 HudNameOffsetYPc;
-    extern f32 HudPausePromptOffsetYPc;
-    extern f32 HudDropInXPc;
-    extern f32 HudDropInScalePc;
-    extern f32 HudHeartXPc;
-    extern f32 HudHeartYPc;
-    extern f32 HudHeartScalePc;
-    extern i32 HudNameRedPc;
-    extern i32 HudNameGreenPc;
-    extern i32 HudNameBluePc;
-    extern i32 HudPausePromptEnabledPc;
-    extern i32 HudPausePromptRedPc;
-    extern i32 HudPausePromptGreenPc;
-    extern u8 HudPausePromptBluePc;
+    extern f32 HudNameScale;
+    extern f32 HudNameWidth;
+    extern f32 HudNameWideWidth;
+    extern f32 HudNameOffsetX;
+    extern f32 HudNameOffsetY;
+    extern f32 HudPausePromptOffsetY;
+    extern f32 HudDropInX;
+    extern f32 HudDropInScale;
+    extern f32 HudHeartX;
+    extern f32 HudHeartY;
+    extern f32 HudHeartScale;
+    extern i32 HudNameRed;
+    extern i32 HudNameGreen;
+    extern i32 HudNameBlue;
+    extern i32 HudPausePromptEnabled;
+    extern i32 HudPausePromptRed;
+    extern i32 HudPausePromptGreen;
+    extern u8 HudPausePromptBlue;
     void Arcade_ResetPanel(void);
     void Arcade_DrawPanel(i32 paused);
 }
@@ -177,7 +177,7 @@ extern "C" {
                 }
                 if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 &&
                     (Paused != 0 ||
-                     (NetPaused != 0 && (AreaGlobals_PC.field_08 != 0 ||
+                     (NetPaused != 0 && (AreaGlobals.field_08 != 0 ||
                                          (WORLD->area_index != -1 && Game.area_save[WORLD->area_index].red_brick_collected != 0))) ||
                      DrawRedBrickTime > 0.0f) &&
                     screendump == 0) {
@@ -199,7 +199,7 @@ extern "C" {
                 builduptime = SeekLinearF(builduptime, target, FRAMETIME);
                 freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
                 if (WORLD->area != NULL && (WORLD->area->flags & 0x10) != 0) {
-                    if (HubBothTrueJediGoldBricksPc != 0) {
+                    if (HubBothTrueJediGoldBricks != 0) {
                         if (Game.area_save[WORLD->area_index].true_hero_complete[freeplay] != 0) {
                             goto buildup_finished;
                         }
@@ -266,7 +266,7 @@ extern "C" {
 
 extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 other0, i32 back0, i32 alternate0, i32 selecting0,
                                       i32 active1, i32 select1, f32 alpha1, i32 other1, i32 back1, i32 alternate1, i32 selecting1) {
-    if (((FADEINFO_PC *)&FadeSys)->fade != 0.0f) {
+    if (((FADEINFO *)&FadeSys)->fade != 0.0f) {
         return;
     }
     const i32 active[2] = {active0, active1};
@@ -276,9 +276,9 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
     const i32 alternate[2] = {alternate0, alternate1};
     const f32 alpha[2] = {alpha0, alpha1};
     GetMenuID();
-    const f32 max_width = HubPromptMaxWidthPc;
+    const f32 max_width = HubPromptMaxWidth;
     const i32 selecting[2] = {-1, -1};
-    const f32 spacing = HubPromptSpacingPc;
+    const f32 spacing = HubPromptSpacing;
     const i32 last_device = PcInput_GetCtrlStringPlayer();
     for (i32 player = 0; player < 2; ++player) {
         PcInput_PortIsUC(NuPadGetPort(player));
@@ -312,10 +312,10 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
         f32 x;
         i32 align;
         if (player == 0) {
-            x = -HubPromptXPc;
+            x = -HubPromptX;
             align = 2;
         } else {
-            x = HubPromptXPc;
+            x = HubPromptX;
             align = 8;
         }
         if (active[player] == 0) {
@@ -328,7 +328,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
             y -= spacing;
             NuStrCpy(text, "[[accept]]");
             SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
-            y = (f32)(y - (HubPromptLabelOffsetPc - .01));
+            y = (f32)(y - (HubPromptLabelOffset - .01));
             SmartTextEx(TTab[select[player]], x, y, 1.0f, .35f, .25f, .4f, align, 0, green, 0, max_width, 1, NULL, 0,
                         (u8)(i32)(alpha[player] * 128.0));
         }
@@ -338,17 +338,17 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
             i32 green;
             i32 blue;
             if (menu_flash != 0) {
-                red = HubPromptOnColourPc[0];
-                green = HubPromptOnColourPc[1];
-                blue = HubPromptOnColourPc[2];
+                red = HubPromptOnColour[0];
+                green = HubPromptOnColour[1];
+                blue = HubPromptOnColour[2];
             } else {
-                red = HubPromptOffColourPc[0];
-                green = HubPromptOffColourPc[1];
-                blue = HubPromptOffColourPc[2];
+                red = HubPromptOffColour[0];
+                green = HubPromptOffColour[1];
+                blue = HubPromptOffColour[2];
             }
             Text_ExpandButtonString((char *)(alternate[player] == TextIdPc880780 ? "[T]" : "[O]"), text);
             SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
-            y = (f32)(y - (HubPromptLabelOffsetPc - .01));
+            y = (f32)(y - (HubPromptLabelOffset - .01));
             SmartTextEx(TTab[alternate[player]], x, y, 1.0f, .4f, .25f, .4f, align, red, green, blue, max_width, 1, NULL, 0, 128);
         }
         if (other[player] != -1) {
@@ -357,7 +357,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
             y -= spacing;
             Text_ExpandButtonString("[S]", text);
             SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
-            y = (f32)(y - (HubPromptLabelOffsetPc - .01));
+            y = (f32)(y - (HubPromptLabelOffset - .01));
             SmartTextEx(TTab[other[player]], x, y, 1.0f, .4f, .25f, .4f, align, red, green, 0, max_width, 1, NULL, 0,
                         (u8)(i32)(alpha[player] * 128.0));
         }
@@ -366,12 +366,12 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
             y -= spacing;
             NuStrCpy(text, "[[back]]");
             SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
-            y = (f32)(y - (HubPromptLabelOffsetPc - .01));
+            y = (f32)(y - (HubPromptLabelOffset - .01));
             SmartTextEx(TTab[back[player]], x, y, 1.0f, .35f, .25f, .4f, align, red, 0, 0, max_width, 1, NULL, 0, 128);
         }
         if (selecting[player] != -1) {
             y -= spacing;
-            y = (f32)(y - (HubPromptLabelOffsetPc - .01));
+            y = (f32)(y - (HubPromptLabelOffset - .01));
             const u8 colour = menu_flash != 0 ? 196 : 255;
             SmartTextEx(TTab[selecting[player]], x, y, 1.0f, .4f, .25f, .4f, align, colour, 0, colour, max_width, 1, NULL, 0, 128);
         }
@@ -389,13 +389,13 @@ extern "C" {
         i32 angle;
         i32 object;
         Text_MakeScore((u32)total, text);
-        score_scale = CoinTotalScoreSizePc * scale;
-        Text3DEx(text, 0.0f, y + HudCoinAdjustYPc, 1.0f, score_scale, score_scale, score_scale, 0, red, green, blue,
+        score_scale = CoinTotalScoreSize * scale;
+        Text3DEx(text, 0.0f, y + HudCoinAdjustY, 1.0f, score_scale, score_scale, score_scale, 0, red, green, blue,
                  (u8)(i32)((f64)icon_phase * 128.0));
         angle = (i32)((f64)icon_phase * 16384.0);
         icon_scale = COINTOTAL_COINSIZE * scale * NuTrigTable[(angle >> 1) & 0x7fff];
         if (WORLD->level_objects[cointotal_i_obj[0]].active != 0) {
-            x = (f32)(-((f64)text3d_width * 0.5) - (f64)(CoinTotalCoinOffsetPc * scale));
+            x = (f32)(-((f64)text3d_width * 0.5) - (f64)(CoinTotalCoinOffset * scale));
             if (remember_positions != 0) {
                 cointotal_x[0] = x;
             }
@@ -404,7 +404,7 @@ extern "C" {
         }
         object = cointotal_i_obj[1];
         if (WORLD->level_objects[object].active != 0) {
-            x = (f32)((f64)(CoinTotalCoinOffsetPc * scale) + (f64)text3d_width * 0.5);
+            x = (f32)((f64)(CoinTotalCoinOffset * scale) + (f64)text3d_width * 0.5);
             if (remember_positions != 0) {
                 cointotal_x[1] = x;
             } else {
@@ -431,7 +431,7 @@ extern "C" {
             NuStrCpy(auxiliary, const_cast<char *>("("));
             NuStrCat(auxiliary, text);
             NuStrCat(auxiliary, const_cast<char *>(")"));
-            offset = target_above != 0 ? CoinTotalTargetOffsetYPc : -CoinTotalTargetOffsetYPc;
+            offset = target_above != 0 ? CoinTotalTargetOffsetY : -CoinTotalTargetOffsetY;
             Text3DEx(auxiliary, 0.0f, y + offset, 1.0f, 0.35f, 0.35f, 0.35f, 0, 255, 255, 255, 48);
         }
     }
@@ -446,9 +446,9 @@ extern "C" {
             return;
         }
         time = source == 2 ? statstime : cointotaltime;
-        y = (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)time * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
-        y += CoinTotalScoreOffsetYPc;
-        DrawCoinTotalYPc = y;
+        y = (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)time * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y;
+        y += CoinTotalScoreOffsetY;
+        DrawCoinTotalY = y;
         i32 red = 255;
         i32 green = 191;
         i32 blue = 0;
@@ -461,7 +461,7 @@ extern "C" {
                     NuStrCpy(text, const_cast<char *>("("));
                     NuStrCat(text, auxiliary);
                     NuStrCat(text, const_cast<char *>(")"));
-                    Text3DEx(text, 0.0f, y + CoinTotalTargetOffsetYPc, 1.0f, 0.35f, 0.35f, 0.35f, 0, 255, 255, 255, 48);
+                    Text3DEx(text, 0.0f, y + CoinTotalTargetOffsetY, 1.0f, 0.35f, 0.35f, 0.35f, 0, 255, 255, 255, 48);
                 }
                 if (SuperStoryScore > (u32)Game.episode_save[SuperStoryEpisode].superstory_score_target) {
                     red = 63;
@@ -477,13 +477,13 @@ extern "C" {
 }
 
 void DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32 scale_y, f32 alpha, i32 angle) {
-    const f32 progress = (f32)(HubBuildBarSegmentsPc * count) / (f32)total;
+    const f32 progress = (f32)(HubBuildBarSegments * count) / (f32)total;
     const i32 filled = (i32)progress;
     const f32 fraction = NuFmod(progress, 1.0f);
     i32 object = 178 - (i32)(GlobalTimer.time_elapsed_mod_seconds * 10.0);
-    const f32 spacing = HubBuildBarSpacingPc * HubBuildBarOverallScalePc * scale_y * NuTrigTable[((angle + 16384) >> 1) & 0x7fff];
-    f32 cursor = (f32)(x - (HubBuildBarSegmentsPc - 1) * spacing * .5);
-    for (i32 i = 0; i < HubBuildBarSegmentsPc; ++i) {
+    const f32 spacing = HubBuildBarSpacing * HubBuildBarOverallScale * scale_y * NuTrigTable[((angle + 16384) >> 1) & 0x7fff];
+    f32 cursor = (f32)(x - (HubBuildBarSegments - 1) * spacing * .5);
+    for (i32 i = 0; i < HubBuildBarSegments; ++i) {
         if (count == total) {
             ++object;
             if (object > 178) {
@@ -496,8 +496,8 @@ void DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32 scale_y
         } else {
             object = 169;
         }
-        const f32 size = HubBuildBarScalePc * HubBuildBarOverallScalePc * scale_x * scale_y;
-        DrawPanel3DObject(cursor, y, (f32)((HubBuildBarSegmentsPc - i - 1) * .0010000000474974513 + 1.0), size, size, size, 0, 0, 0,
+        const f32 size = HubBuildBarScale * HubBuildBarOverallScale * scale_x * scale_y;
+        DrawPanel3DObject(cursor, y, (f32)((HubBuildBarSegments - i - 1) * .0010000000474974513 + 1.0), size, size, size, 0, 0, 0,
                           &WORLD->level_objects[object].special, 0, alpha);
         cursor += spacing;
     }
@@ -505,8 +505,7 @@ void DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32 scale_y
 
 extern "C" {
 
-    static void DrawHitPointsPc(GAMEOBJECT *object, f32 x, f32 y, f32 scale, f32 scale_factor, i32 alignment, f32 alpha,
-                                i32 pulse_enabled) {
+    static void DrawHitPoints(GAMEOBJECT *object, f32 x, f32 y, f32 scale, f32 scale_factor, i32 alignment, f32 alpha, i32 pulse_enabled) {
         i32 two_rows;
         i32 heart_object;
         i32 hitpoints;
@@ -520,8 +519,8 @@ extern "C" {
         if (SuperStory != 0 && WORLD->current_level == VADERC_LDATA && object->field_107e == 10) {
             two_rows = 1;
         } else if ((object->portal_flags & 0x08000000) != 0) {
-            two_rows = DrawBossHitPointsTwoRowsPc != 0;
-            DrawBossHitPointsTwoRowsPc = 0;
+            two_rows = DrawBossHitPointsTwoRows != 0;
+            DrawBossHitPointsTwoRows = 0;
         } else {
             two_rows = 0;
         }
@@ -532,8 +531,7 @@ extern "C" {
         if (object->field_107e > 0) {
             hitpoints = object->field_107e;
             current_hp = object->current_hp;
-            if ((PlayerHitPointsTwoHeartsPc != 0 && (object->flags_1fc & 0x80) != 0) ||
-                WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA) {
+            if ((PlayerHitPointsTwoHearts != 0 && (object->flags_1fc & 0x80) != 0) || WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA) {
                 odd = (hitpoints & 1) != 0 && hitpoints == current_hp ? 0 : current_hp & 1;
                 current_hp = current_hp / 2 + odd;
                 hitpoints = (hitpoints & 1) != 0 ? hitpoints / 2 + 1 : hitpoints / 2;
@@ -551,13 +549,13 @@ extern "C" {
             transitioning = 1;
             current_hp = (i32)((1.0f - object->field_1010) * (f32)object->field_107e);
         }
-        spacing = PanelHeartSpacingPc * scale;
+        spacing = PanelHeartSpacing * scale;
         if (GetMenuID() == 4) {
             if (TempOptions.widescreen != 0) {
-                spacing *= PanelHeartWidescreenPc;
+                spacing *= PanelHeartWidescreen;
             }
         } else if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
-            spacing *= PanelHeartWidescreenPc;
+            spacing *= PanelHeartWidescreen;
         }
         if (alignment == 0) {
             if (two_rows != 0) {
@@ -578,7 +576,7 @@ extern "C" {
             f32 pulse;
             if (two_rows == 1 && i >= hitpoints / 2) {
                 two_rows = 2;
-                draw_y -= PanelHeartRowOffsetPc * scale;
+                draw_y -= PanelHeartRowOffset * scale;
                 x = start_x;
             }
             object_scale.x = scale;
@@ -665,11 +663,11 @@ extern "C" {
 
     void DrawInDoubleScoreZone(f32 time) {
         i32 alpha = (i32)((f64)DoubleScoreAlpha() * 128.0 * (f64)time);
-        SmartTextEx(TTab[TextIdPc88098c], 0.0f, DoubleScoreTextYPc, 1.0f, DoubleScoreTextScalePc, DoubleScoreTextScalePc,
-                    DoubleScoreTextScalePc, 0, 255, 255, 255, 1.5f, 1, NULL, 0, alpha);
+        SmartTextEx(TTab[TextIdPc88098c], 0.0f, DoubleScoreTextY, 1.0f, DoubleScoreTextScale, DoubleScoreTextScale, DoubleScoreTextScale, 0,
+                    255, 255, 255, 1.5f, 1, NULL, 0, alpha);
     }
 
-    void DrawPlayerHudPc(i32 paused) {
+    void DrawPlayerHud(i32 paused) {
         u32 arcade_flags;
         i32 arcade_mode;
         f32 status_y;
@@ -683,7 +681,7 @@ extern "C" {
             return;
         }
         arcade_mode = Arcade_GetMode(&arcade_flags);
-        status_y = (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
+        status_y = (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y;
         raised_hearts = (WORLD->area != NULL && (WORLD->area == HUB_ADATA || (WORLD->area->flags & 0x100) != 0)) || SuperStory != 0 ||
                         ChallengeMode != 0 || Mission_Active(NULL) != NULL || arcade_mode == 0;
         GetMenuID();
@@ -716,36 +714,36 @@ extern "C" {
                 icon_x = ICONX;
                 frame_model = 165;
             }
-            alpha = ((object->flags_1fc & 0x80) != 0 ? 1.0f : MissionDropInAlphaPc) * base_alpha;
+            alpha = ((object->flags_1fc & 0x80) != 0 ? 1.0f : MissionDropInAlpha) * base_alpha;
             icon_alpha = (i32)((f64)alpha * 128.0);
             drawcharicon_i_panel = player;
             if (WORLD->current_level == LevelFixupSlotPc0087b268 && object->takeover_source != NULL &&
                 object->takeover_source->id == static_cast<u16>(id_YODA)) {
                 visible = object->hud_icon_timer <= 0.0f ||
                           (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
-                DrawCharIcon(static_cast<i16>(object->id), icon_x, status_y, 0.0f, MissionPlayerIconSizePc, frame_model, alpha, alpha,
+                DrawCharIcon(static_cast<i16>(object->id), icon_x, status_y, 0.0f, MissionPlayerIconSize, frame_model, alpha, alpha,
                              visible, NULL);
             } else {
                 visible = object->hud_icon_timer <= 0.0f ||
                           (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
                 DrawCharIcon(static_cast<i16>(object->takeover_source != NULL ? object->takeover_source->id : object->id), icon_x, status_y,
-                             0.0f, MissionPlayerIconSizePc, frame_model, alpha, alpha, visible, NULL);
+                             0.0f, MissionPlayerIconSize, frame_model, alpha, alpha, visible, NULL);
             }
-            name_x = player == 0 ? -(ICONX + HudNameOffsetXPc) : ICONX + HudNameOffsetXPc;
+            name_x = player == 0 ? -(ICONX + HudNameOffsetX) : ICONX + HudNameOffsetX;
             if ((object->flags_1fc & 0x80) != 0 && object->character_data->name_id != -1 &&
                 (paused != 0 || (object->hud_icon_timer > 0.0f && object->hud_icon_timer < 2.0f &&
                                  (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f))) {
-                f32 name_y = status_y + HudNameOffsetYPc;
+                f32 name_y = status_y + HudNameOffsetY;
                 i32 name_alpha = (i32)((f64)base_alpha * 128.0);
-                f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidthPc : HudNameWidthPc;
-                SmartTextEx(GameObj_GetNamePc(-1, object, auxiliary), name_x, name_y, 1.0f, HudNameScalePc, HudNameScalePc, HudNameScalePc,
-                            alignment | 1, (u8)HudNameRedPc, (u8)HudNameGreenPc, (u8)HudNameBluePc, width, 2, NULL, 0, name_alpha);
+                f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidth : HudNameWidth;
+                SmartTextEx(GameObj_GetName(-1, object, auxiliary), name_x, name_y, 1.0f, HudNameScale, HudNameScale, HudNameScale,
+                            alignment | 1, (u8)HudNameRed, (u8)HudNameGreen, (u8)HudNameBlue, width, 2, NULL, 0, name_alpha);
             }
-            if (HudPausePromptEnabledPc != 0 && paused != 0 && player == pause_i_pad) {
-                f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidthPc : HudNameWidthPc;
-                SmartTextEx(TTab[TextIdPc880834], name_x, status_y + HudPausePromptOffsetYPc, 1.0f, HudNameScalePc, HudNameScalePc,
-                            HudNameScalePc, alignment | 1, (u8)HudPausePromptRedPc, (u8)HudPausePromptGreenPc, HudPausePromptBluePc, width,
-                            1, NULL, 0, flash_alpha);
+            if (HudPausePromptEnabled != 0 && paused != 0 && player == pause_i_pad) {
+                f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidth : HudNameWidth;
+                SmartTextEx(TTab[TextIdPc880834], name_x, status_y + HudPausePromptOffsetY, 1.0f, HudNameScale, HudNameScale, HudNameScale,
+                            alignment | 1, (u8)HudPausePromptRed, (u8)HudPausePromptGreen, HudPausePromptBlue, width, 1, NULL, 0,
+                            flash_alpha);
             }
             if (StartupGameFlag1 != 0 && paused == 0 && FadeSys.fade == 0.0f && (object->flags_1fc & 0x80) != 0) {
                 if (ONEPLAYERPOWERUPS != 0 && object->powerup_time > 0.0f) {
@@ -765,22 +763,22 @@ extern "C" {
                     }
                     if (multiplier > 1) {
                         sprintf(text, "x%i", multiplier);
-                        Text3DEx(text, player == 0 ? -ICONX : ICONX, status_y + HudPausePromptOffsetYPc, 1.0f, 0.3f, 0.35f, 0.35f, 1, 255,
-                                 0, 255, (u8)flash_alpha);
+                        Text3DEx(text, player == 0 ? -ICONX : ICONX, status_y + HudPausePromptOffsetY, 1.0f, 0.3f, 0.35f, 0.35f, 1, 255, 0,
+                                 255, (u8)flash_alpha);
                     }
                 }
             }
             if ((object->flags_1fc & 0x80) != 0) {
-                f32 x = player == 0 ? -HudHeartXPc : HudHeartXPc;
-                f32 y = raised_hearts != 0 ? status_y : status_y + HudHeartYPc;
-                DrawHitPointsPc(object, x, y, HudHeartScalePc, 1.0f, alignment, alpha, 1);
+                f32 x = player == 0 ? -HudHeartX : HudHeartX;
+                f32 y = raised_hearts != 0 ? status_y : status_y + HudHeartY;
+                DrawHitPoints(object, x, y, HudHeartScale, 1.0f, alignment, alpha, 1);
             } else if (paused == 0 && CUTSTOPGAME == 0) {
-                i32 drop_alpha = (i32)((f64)MissionDropInAlphaPc * 128.0);
+                i32 drop_alpha = (i32)((f64)MissionDropInAlpha * 128.0);
                 if (drop_alpha > 0) {
-                    f32 x = player == 0 ? -HudDropInXPc : HudDropInXPc;
-                    f32 y = raised_hearts != 0 ? status_y : status_y + HudHeartYPc;
-                    SmartTextEx(player == 0 ? apitxt_PCPRESSSTARTP1 : apitxt_PCPRESSSTARTP2, x, y, 1.0f, HudDropInScalePc, HudDropInScalePc,
-                                HudDropInScalePc, alignment, 255, 255, 255, 0.3f, 2, NULL, 0, drop_alpha);
+                    f32 x = player == 0 ? -HudDropInX : HudDropInX;
+                    f32 y = raised_hearts != 0 ? status_y : status_y + HudHeartY;
+                    SmartTextEx(player == 0 ? apitxt_PCPRESSSTARTP1 : apitxt_PCPRESSSTARTP2, x, y, 1.0f, HudDropInScale, HudDropInScale,
+                                HudDropInScale, alignment, 255, 255, 255, 0.3f, 2, NULL, 0, drop_alpha);
                 }
             }
             if (raised_hearts == 0) {
@@ -791,12 +789,12 @@ extern "C" {
                 f32 y;
                 f32 scale;
                 if ((arcade_flags & 2) != 0) {
-                    sprintf(text, "%i/%i", AreaGlobals_PC.arcade_ai_kills[player], Arcade_Mode[ArcadeItem.mode].target);
-                    score_x = player == 0 ? -HudScoreXPc : HudScoreXPc;
+                    sprintf(text, "%i/%i", AreaGlobals.arcade_ai_kills[player], Arcade_Mode[ArcadeItem.mode].target);
+                    score_x = player == 0 ? -HudScoreX : HudScoreX;
                     coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
-                    scale = ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->scale * HudScoreScalePc;
+                    scale = ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->scale * HudScoreScale;
                     y = status_y + PANEL_COINY;
-                    Text3DEx(text, score_x, y + HudCoinAdjustYPc, 1.0f, scale, scale, scale, alignment, 255, 191, 0, (u8)icon_alpha);
+                    Text3DEx(text, score_x, y + HudCoinAdjustY, 1.0f, scale, scale, scale, alignment, 255, 191, 0, (u8)icon_alpha);
                     model = 53;
                     if (WORLD->level_objects[model].active != 0) {
                         packet = (PLAYER_COIN_PACKET_PC *)object->coin_packet;
@@ -808,11 +806,11 @@ extern "C" {
                         continue;
                     }
                     Text_MakeScore(((PLAYER_COIN_PACKET_PC *)object->coin_packet)->coins, text);
-                    score_x = player == 0 ? -HudScoreXPc : HudScoreXPc;
+                    score_x = player == 0 ? -HudScoreX : HudScoreX;
                     coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
-                    scale = ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->scale * HudScoreScalePc;
+                    scale = ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->scale * HudScoreScale;
                     y = status_y + PANEL_COINY;
-                    Text3DEx(text, score_x, y + HudCoinAdjustYPc, 1.0f, scale, scale, scale, alignment, 255, 191, 0, (u8)icon_alpha);
+                    Text3DEx(text, score_x, y + HudCoinAdjustY, 1.0f, scale, scale, scale, alignment, 255, 191, 0, (u8)icon_alpha);
                     packet = (PLAYER_COIN_PACKET_PC *)object->coin_packet;
                     model = packet->last_coin;
                     if (model >= 183 && model <= 186) {
@@ -837,13 +835,12 @@ extern "C" {
                 i32 freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
                 if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     (WORLD->area->flags & 0x10) != 0 &&
-                    (HubBothTrueJediGoldBricksPc != 0 ? Game.area_save[WORLD->area_index].true_hero_complete[freeplay] == 0
-                                                      : Game.area_save[WORLD->area_index].true_hero_complete[0] == 0 &&
-                                                            Game.area_save[WORLD->area_index].true_hero_complete[1] == 0)) {
+                    (HubBothTrueJediGoldBricks != 0 ? Game.area_save[WORLD->area_index].true_hero_complete[freeplay] == 0
+                                                    : Game.area_save[WORLD->area_index].true_hero_complete[0] == 0 &&
+                                                          Game.area_save[WORLD->area_index].true_hero_complete[1] == 0)) {
                     u32 maximum = WORLD->area->true_hero_targets[freeplay];
                     if (maximum > 0) {
-                        status_y =
-                            (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)builduptime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
+                        status_y = (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)builduptime * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y;
                         DrawBuildUpBar(0.0f, status_y + PANEL_COINY, BuildUpTotal != 0 ? maximum : BuildUpDone, maximum, 1.0f, BuildUpScale,
                                        1.0f, 0);
                     }
@@ -851,13 +848,11 @@ extern "C" {
                 if (SuperStory == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     ((WORLD->area->flags & 0x10) != 0 ||
                      ((WORLD->current_level->flags & 0x200) != 0 && GizmoPickup_NumberOfType(WORLD, 4, 0) > 0))) {
-                    DrawMiniKitCount(minikittime, MiniKitScale,
-                                     ChallengeMode != 0 ? AreaGlobals_PC.field_20 : AreaGlobals_PC.progress_flags, 10);
+                    DrawMiniKitCount(minikittime, MiniKitScale, ChallengeMode != 0 ? AreaGlobals.field_20 : AreaGlobals.progress_flags, 10);
                 }
                 if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     (WORLD->area->flags & 0x10) != 0 &&
-                    (AreaGlobals_PC.field_08 == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) &&
-                    redbrickslidetime > 0.0f) {
+                    (AreaGlobals.field_08 == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) && redbrickslidetime > 0.0f) {
                     f32 factor = NuTrigTable[((i32)((f64)redbrickslidetime * 16384.0) >> 1) & 0x7fff];
                     f32 x = (REDBRICKPOSX - REDBRICKPOS2X) * factor + REDBRICKPOS2X;
                     f32 y = (REDBRICKPOSY - REDBRICKPOS2Y) * factor + REDBRICKPOS2Y;
@@ -877,7 +872,7 @@ extern "C" {
                            Arcade != 0 ? Arcade_Points : BonusScore);
         }
         if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA && goldbricktime > 0.0f) {
-            f32 y = (STATSPOS2YPc - STATSPOSY) * NuTrigTable[((i32)((f64)goldbricktime * 16384.0) >> 1) & 0x7fff] - STATSPOS2YPc;
+            f32 y = (STATSPOS2Y - STATSPOSY) * NuTrigTable[((i32)((f64)goldbricktime * 16384.0) >> 1) & 0x7fff] - STATSPOS2Y;
             Hub_DrawImportantBrick(211, 0.0f, y, 1.0f, Game.gold_bricks, GOLDBRICKPOINTS);
         }
         PcInput_SetCtrlStringPlayer(old_input_device);
@@ -904,11 +899,11 @@ extern "C" {
         if (boss != NULL && boss->dead == 0 && (boss->flags_1fc & 0x80) == 0) {
             if (FadeSys.fade == 0.0f) {
                 f32 alpha = statstime;
-                DrawCharIcon((i16)boss->id, 0.0f, HudBossIconYPc, 0.0f, HudBossIconScalePc, 167, alpha, alpha, 1, NULL);
-                DrawHitPointsPc(boss, 0.0f, HudBossHeartYPc, HudBossHeartScalePc, 1.0f, 0, alpha, 1);
+                DrawCharIcon((i16)boss->id, 0.0f, HudBossIconY, 0.0f, HudBossIconScale, 167, alpha, alpha, 1, NULL);
+                DrawHitPoints(boss, 0.0f, HudBossHeartY, HudBossHeartScale, 1.0f, 0, alpha, 1);
                 return 1;
             }
-            DrawBossHitPointsTwoRowsPc = 0;
+            DrawBossHitPointsTwoRows = 0;
         }
         return 0;
     }
@@ -917,9 +912,9 @@ extern "C" {
         drawbosshitpoints = object;
     }
 
-    f32 MeleeRowsSpacingPc = 0.15f;
+    f32 MeleeRowsSpacing = 0.15f;
 
-    void DrawMeleeTargetsPc(i16 *targets, u8 *status, i32 count) {
+    void DrawMeleeTargets(i16 *targets, u8 *status, i32 count) {
         f32 alpha;
         f32 scale;
         f32 spacing;
@@ -934,8 +929,8 @@ extern "C" {
             return;
         }
         alpha = statstime;
-        scale = HudBossIconScalePc;
-        spacing = MeleeRowsSpacingPc;
+        scale = HudBossIconScale;
+        spacing = MeleeRowsSpacing;
         time = SuperStory != 0 ? 1.0f : minikittime;
         split = (count + 1) / 2;
         half_count = (f32)split;
@@ -962,11 +957,11 @@ extern "C" {
         }
     }
 
-    f32 MeleeRowsScalePc = 0.8f;
-    f32 MeleeRowsYPc = 0.475f;
-    f32 MeleeRowsYOffsetPc = -0.175f;
+    f32 MeleeRowsScale = 0.8f;
+    f32 MeleeRowsY = 0.475f;
+    f32 MeleeRowsYOffset = -0.175f;
 
-    void DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count) {
+    void DrawMeleeTargetsRows(i16 *targets, char *defeated, f32 *values, i32 count) {
         i32 row_counts[3];
         i32 row;
         i32 i;
@@ -987,11 +982,11 @@ extern "C" {
                 ++row_counts[row];
             }
         }
-        size = HudBossIconScalePc * MeleeRowsScalePc;
-        spacing = MeleeRowsSpacingPc * MeleeRowsScalePc;
-        offset = MeleeRowsScalePc * MeleeRowsYOffsetPc;
+        size = HudBossIconScale * MeleeRowsScale;
+        spacing = MeleeRowsSpacing * MeleeRowsScale;
+        offset = MeleeRowsScale * MeleeRowsYOffset;
         x = (f32) - ((row_counts[0] - 1) * (f64)spacing * 0.5);
-        y = MeleeRowsYPc - offset;
+        y = MeleeRowsY - offset;
         row = 0;
         for (i = 0; i < count; ++i) {
             if (targets[i] == -1) {
@@ -1051,11 +1046,11 @@ extern "C" {
         if (FadeSys.fade != 0.0f) {
             return;
         }
-        icon_scale = HudBossIconScalePc * MeleeRowsScalePc;
-        step = MeleeRowsSpacingPc * MeleeRowsScalePc * 2.0f;
-        text_offset = (f32)(MeleeRowsYOffsetPc * MeleeRowsScalePc * 1.0099999904632568);
+        icon_scale = HudBossIconScale * MeleeRowsScale;
+        step = MeleeRowsSpacing * MeleeRowsScale * 2.0f;
+        text_offset = (f32)(MeleeRowsYOffset * MeleeRowsScale * 1.0099999904632568);
         x = (f32) - ((count - 1) * step * 0.5);
-        y = (f32)(0.550000011920929 - MeleeRowsYOffsetPc * 0.6000000238418579 * MeleeRowsScalePc);
+        y = (f32)(0.550000011920929 - MeleeRowsYOffset * 0.6000000238418579 * MeleeRowsScale);
         for (i = 0; i < count; i++) {
             sprintf(text, "%i", meleeTarg_localCount[i]);
             if (counts[i] != meleeTarg_localCount[i] && meleeTarg_flashTime[i] == 0.0f) {
@@ -1103,7 +1098,7 @@ extern "C" {
         }
     }
 
-    void DrawMeleeTargetsAlphaPc(i16 *targets, u8 *dimmed, f32 *values, i32 count) {
+    void DrawMeleeTargetsAlpha(i16 *targets, u8 *dimmed, f32 *values, i32 count) {
         f32 size;
         f32 spacing;
         f32 offset;
@@ -1112,12 +1107,12 @@ extern "C" {
         if (FadeSys.fade != 0.0f || count <= 0) {
             return;
         }
-        size = HudBossIconScalePc * MeleeRowsScalePc;
-        spacing = (f32)((f64)MeleeRowsSpacingPc * 0.5 * (f64)MeleeRowsScalePc);
-        offset = (f32)((f64)MeleeRowsYOffsetPc * 0.5 * (f64)MeleeRowsScalePc);
+        size = HudBossIconScale * MeleeRowsScale;
+        spacing = (f32)((f64)MeleeRowsSpacing * 0.5 * (f64)MeleeRowsScale);
+        offset = (f32)((f64)MeleeRowsYOffset * 0.5 * (f64)MeleeRowsScale);
         x = (f32)((f64)(1 - count) * (f64)spacing * 0.5);
         for (i = 0; i < count; ++i) {
-            f32 y = (i & 1) != 0 ? offset + MeleeRowsYPc : MeleeRowsYPc - offset;
+            f32 y = (i & 1) != 0 ? offset + MeleeRowsY : MeleeRowsY - offset;
             if (values != NULL) {
                 DrawCharIcon(targets[i], x, y, 0.0f, size, 0xa7, values[i], values[i], 1, NULL);
             } else {
@@ -1128,34 +1123,34 @@ extern "C" {
         }
     }
 
-    f32 TimerBaseScalePc = 0.75f;
-    f32 TimerScalePc = 1.0f;
-    f32 TimerAlphaPc = 1.0f;
+    f32 TimerBaseScale = 0.75f;
+    f32 TimerScale = 1.0f;
+    f32 TimerAlpha = 1.0f;
 
     void DrawTimer(i32 time, i32 expanded, i32 reset) {
         char text[16];
         f32 scale;
         if (reset != 0) {
-            TimerScalePc = 1.0f;
-            TimerAlphaPc = 0.0f;
+            TimerScale = 1.0f;
+            TimerAlpha = 0.0f;
             return;
         }
         if (expanded != 0) {
-            TimerScalePc = 2.0f;
+            TimerScale = 2.0f;
         }
-        TimerScalePc = SeekLinearF(TimerScalePc, 1.0f, FRAMETIME * 2.0f);
+        TimerScale = SeekLinearF(TimerScale, 1.0f, FRAMETIME * 2.0f);
         if (FadeSys.fade != 0.0f) {
             return;
         }
-        if (TimerAlphaPc < 1.0f) {
-            TimerAlphaPc += FRAMETIME * 2.0f;
-            if (TimerAlphaPc > 1.0f) {
-                TimerAlphaPc = 1.0f;
+        if (TimerAlpha < 1.0f) {
+            TimerAlpha += FRAMETIME * 2.0f;
+            if (TimerAlpha > 1.0f) {
+                TimerAlpha = 1.0f;
             }
         }
         sprintf(text, "%d", time);
-        scale = TimerBaseScalePc * TimerScalePc;
-        Text3DEx(text, 0.0f, HudBossIconYPc, 1.0f, scale, scale, scale, 0, 255, 0, 255, (u8)((f64)TimerAlphaPc * 128.0));
+        scale = TimerBaseScale * TimerScale;
+        Text3DEx(text, 0.0f, HudBossIconY, 1.0f, scale, scale, scale, 0, 255, 0, 255, (u8)((f64)TimerAlpha * 128.0));
     }
 
     void InitPanel(i32 mode) {
@@ -1174,7 +1169,7 @@ extern "C" {
     }
 
 #pragma data_seg(".data$HudAutoSaveScalePc")
-    f32 HudAutoSaveScalePc = 0.075f;
+    f32 HudAutoSaveScale = 0.075f;
 #pragma data_seg()
 
     void DrawPanel(void) {
@@ -1192,7 +1187,7 @@ extern "C" {
             Customiser_TransformToPanel(CharacterCustomiser);
         }
         paused = screendump != 0 ? save_paused : Paused;
-        if (NuMainSkipCutBordersPc != 0 && paused == 0 && (WORLD->current_level->flags & 2) != 0) {
+        if (NuMainSkipCutBorders != 0 && paused == 0 && (WORLD->current_level->flags & 2) != 0) {
             return;
         }
         const i32 loading_level = waiting_for_level;
@@ -1245,7 +1240,7 @@ extern "C" {
         }
         if (menu != 15 && menu != 16 && menu != 17 && CUTSTOPGAME == 0) {
             if ((menu != 12 || customiser_quit != 0) && (menu != 13 || shop_quit != 0) && menu != 14 && menu != 8) {
-                DrawPlayerHudPc(paused);
+                DrawPlayerHud(paused);
             }
             if (StartupGameFlag1 == 0 && LevelNameTime > 0.0f && (WORLD->current_level->flags & 0xe0) == 0 &&
                 WORLD->current_level != TITLES_LDATA && WORLD->current_level != CREDITS_LDATA) {
@@ -1257,8 +1252,8 @@ extern "C" {
                     if (FadeSys.fade > 0.0f) {
                         alpha = (f32)((1.0 - (f64)FadeSys.fade) * (f64)alpha);
                     }
-                    SmartTextEx(name, 0.0f, HudLevelTitleYPc, 1.0f, HudLevelTitleScalePc * HudLevelTitleScaleXPc, HudLevelTitleScalePc,
-                                HudLevelTitleScalePc, 0, 255, 255, 255, HudLevelTitleWidthPc, 1, NULL, 0, (u8)(i32)((f64)alpha * 64.0));
+                    SmartTextEx(name, 0.0f, HudLevelTitleY, 1.0f, HudLevelTitleScale * HudLevelTitleScaleX, HudLevelTitleScale,
+                                HudLevelTitleScale, 0, 255, 255, 255, HudLevelTitleWidth, 1, NULL, 0, (u8)(i32)((f64)alpha * 64.0));
                 }
             }
             i32 hide_super_story_target = drawbosshitpoints != NULL ? DrawBossHitPointsPc(drawbosshitpoints) : 0;
@@ -1273,18 +1268,18 @@ extern "C" {
             } else if (BonusArea != 0) {
                 if ((WORLD->area->flags & 0x100) != 0) {
                     DrawCoinTotal(2, hide_super_story_target);
-                    if ((f64)DrawCoinTotalYPc != 2000000.0) {
+                    if ((f64)DrawCoinTotalY != 2000000.0) {
                         Text_MakeScore(BonusCoinTarget, bonus_score);
                         NuStrCpy(coordinate_text, const_cast<char *>("("));
                         NuStrCat(coordinate_text, bonus_score);
                         NuStrCat(coordinate_text, const_cast<char *>(")"));
-                        Text3DEx(coordinate_text, 0.0f, DrawCoinTotalYPc + CoinTotalTargetOffsetYPc, 1.0f, 0.35f, 0.35f, 0.35f, 0, 255, 255,
+                        Text3DEx(coordinate_text, 0.0f, DrawCoinTotalY + CoinTotalTargetOffsetY, 1.0f, 0.35f, 0.35f, 0.35f, 0, 255, 255,
                                  255, 48);
                     }
                 }
                 if (FadeSys.fade == 0.0f && (WORLD->current_level->flags & 2) != 0) {
                     DrawSuperStoryTime(
-                        -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc),
+                        -((STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y),
                         BonusTimer.time_elapsed, Game.area_save[WORLD->area_index].challenge_trial_time, 0, 1);
                 }
             } else if (BonusArea == 0 && ChallengeMode != 0) {
@@ -1294,10 +1289,10 @@ extern "C" {
                 }
                 Text_MakeTime(remaining, 0, 1, 1, coordinate_text);
                 Text3D(coordinate_text, 0.0f,
-                       (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc, 1.0f, 0.6f,
+                       (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y, 1.0f, 0.6f,
                        0.6f, 0.6f, 0, 255, 191, 0);
             } else if (BonusArea == 0 && Mission_Active(NULL) != NULL) {
-                f32 mission_y = (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
+                f32 mission_y = (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y;
                 f32 remaining = (f32)MissionSys->missions[(i8)MissionSys->active_mission->index].time - MissionSys->timer.time_elapsed;
                 if (remaining < 0.0f) {
                     remaining = 0.0f;
@@ -1342,7 +1337,7 @@ extern "C" {
         }
         for (player_index = 0; player_index < 8; ++player_index) {
             if (Player[player_index] != NULL && (((GAMEOBJECT *)Player[player_index])->flags_1fc & 0x80) != 0 &&
-                ShowPlayerCoordinatePc != 0) {
+                ShowPlayerCoordinate != 0) {
                 sprintf(coordinate_text, "X:%.2f Y:%.2f Z:%.2f", ((GAMEOBJECT *)Player[player_index])->position.x,
                         ((GAMEOBJECT *)Player[player_index])->position.y, ((GAMEOBJECT *)Player[player_index])->position.z);
                 Text3DEx(coordinate_text, coordinate_positions[player_index].x, coordinate_positions[player_index].y, 1.0f, 0.4f, 0.5f,
@@ -1370,7 +1365,7 @@ extern "C" {
                 (f32)((f64)NuTrigTable[(((u16)(NuFmod(GlobalTimer.time_elapsed, 0.77f) / (f64)0.77f * 65536.0) + 0x4000) >> 1) & 0x7fff] *
                           (f64)0.01f -
                       (f64)0.05f),
-                1.0f, HudAutoSaveScalePc, HudAutoSaveScalePc, HudAutoSaveScalePc, 0, 0, 0, &WORLD->level_objects[0].special, 0, 1.0f);
+                1.0f, HudAutoSaveScale, HudAutoSaveScale, HudAutoSaveScale, 0, 0, 0, &WORLD->level_objects[0].special, 0, 1.0f);
         }
         drawautosaveicon = 0;
         if (GameCam != NULL) {
@@ -1469,12 +1464,12 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     if (object->field_280 == 1) {
         message.unknown_34 += 0.002f;
     }
-    message.text = TagAsciiDownPc;
+    message.text = TagAsciiDown;
     message.scale = 2.0f;
     message.flags = 0x1087;
     AddGameMsg(&message);
     position.y = (f32)((f64)position.y + (f64)0.1175f);
-    message.scale = MissionPlayerIconSizePc + MissionPlayerIconSizePc;
+    message.scale = MissionPlayerIconSize + MissionPlayerIconSize;
     message.text = NULL;
     message.flags = 0x11087;
     message.icon = ((TAG_CHARACTER_DATA_READER *)apicharsys->char_data)[(i16)object->id].icon_model;
@@ -1508,7 +1503,7 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     position.y = (f32)((f64)object->character_top * object->origin_scale + object->position.y + (f64)0.1f);
     position.z = object->collision_position.z;
     message.position = &position;
-    message.scale = MissionPlayerIconSizePc + MissionPlayerIconSizePc;
+    message.scale = MissionPlayerIconSize + MissionPlayerIconSize;
     message.target_is_coin_total = 2;
     message.flags = 0x87;
     message.unknown_34 = 0.0f;

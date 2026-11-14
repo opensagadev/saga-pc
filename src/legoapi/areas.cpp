@@ -3,7 +3,7 @@
 
 extern "C" {
     AREA_DATA_PC *Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
-    void AreasConfigDiagnosticPc(char *message);
+    void AreasConfigDiagnostic(char *message);
 }
 
 typedef struct area_gizmotype_s {         // size 0x9c
@@ -221,7 +221,7 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
 
     parser = NuFParCreate(path);
     if (parser == NULL) {
-        AreasConfigDiagnosticPc(path);
+        AreasConfigDiagnostic(path);
         if (count_out != NULL) {
             *count_out = 0;
         }
@@ -374,7 +374,7 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
         }
         return area_base;
     }
-    AreasConfigDiagnosticPc(path);
+    AreasConfigDiagnostic(path);
     return NULL;
 }
 
@@ -431,8 +431,8 @@ typedef struct AREA_MISSION_DATA_READER { // size 0x2
 
 #define AREA_STORY_MODELS_PC Area_StoryModelList
 
-static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id, i32 load_model,
-                                      AREA_EXTRA_MODEL_PC *extras) {
+static void AreaAddModelListPrivate(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id, i32 load_model,
+                                    AREA_EXTRA_MODEL *extras) {
     if (*count < capacity && InModelList(list, character_id, NULL) == 0) {
         list[*count].model_id = (i16)character_id;
         list[*count].count = (i16)load_model;
@@ -457,7 +457,7 @@ static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i
     }
 }
 
-extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models, i16 *s) {
+extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i16 *s) {
     i32 index;
     Area_PlayerModelCount = 0;
     Area_PlayerModelList[0].model_id = -1;
@@ -617,15 +617,15 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models,
             }
             if (NuStrICmp(fp->word_buffer_ptr, "player") == 0) {
                 if (Area_MissionModelCount == 0) {
-                    AreaAddModelListPrivatePc(reinterpret_cast<APICHARACTERMODELLIST *>(Area_PlayerModelList), &Area_PlayerModelCount, 8,
-                                              character_id, 1, models);
+                    AreaAddModelListPrivate(reinterpret_cast<APICHARACTERMODELLIST *>(Area_PlayerModelList), &Area_PlayerModelCount, 8,
+                                            character_id, 1, models);
                 }
-                AreaAddModelListPrivatePc(AREA_STORY_MODELS_PC, &Area_StoryModelCount, 0x30, character_id, 1, models);
+                AreaAddModelListPrivate(AREA_STORY_MODELS_PC, &Area_StoryModelCount, 0x30, character_id, 1, models);
             } else if (NuStrICmp(fp->word_buffer_ptr, "resident") == 0) {
-                AreaAddModelListPrivatePc(AREA_STORY_MODELS_PC, &Area_StoryModelCount, 0x30, character_id, 1, models);
-                AreaAddModelListPrivatePc(reinterpret_cast<APICHARACTERMODELLIST *>(Area_FreePlayModelList), &Area_FreePlayModelCount, 0x30,
-                                          character_id, 1, models);
-                AreaAddModelListPrivatePc(Area_MissionModelList, &Area_MissionModelCount, 0x30, character_id, 1, models);
+                AreaAddModelListPrivate(AREA_STORY_MODELS_PC, &Area_StoryModelCount, 0x30, character_id, 1, models);
+                AreaAddModelListPrivate(reinterpret_cast<APICHARACTERMODELLIST *>(Area_FreePlayModelList), &Area_FreePlayModelCount, 0x30,
+                                        character_id, 1, models);
+                AreaAddModelListPrivate(Area_MissionModelList, &Area_MissionModelCount, 0x30, character_id, 1, models);
             } else if (NuStrICmp(fp->word_buffer_ptr, "cutscene") == 0) {
                 if (Area_StoryModelCount < 0x30 && InModelList(AREA_STORY_MODELS_PC, character_id, NULL) == 0) {
                     AREA_STORY_MODELS_PC[Area_StoryModelCount].model_id = static_cast<i16>(character_id);
@@ -824,7 +824,7 @@ extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINF
     LEVELSAVE_s *save;
     for (index = 0; index < counter->pickup_count; ++index, ++pickup) {
         if (world->area_index != -1) {
-            for (saved = 0; saved < AreaGlobals_PC.new_minikit_count; ++saved) {
+            for (saved = 0; saved < AreaGlobals.new_minikit_count; ++saved) {
                 if (NewMiniPiece[saved].level == pickup->level_index && NuStrICmp(NewMiniPiece[saved].name, pickup->name) == 0) {
                     return 1;
                 }
@@ -884,7 +884,7 @@ extern "C" AREA_SUPERCOUNTER_PC *SuperCounters_FindPickup(WORLDINFO *world, void
     return NULL;
 }
 
-extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP_PC *gizmo_pickup) {
+extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP *gizmo_pickup) {
     NUVEC position;
     if (Players_AveragePos(&position, NULL) == 0) {
         position = GameCam->position;

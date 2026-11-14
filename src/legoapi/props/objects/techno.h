@@ -23,7 +23,7 @@
 #if SAGA_LEGOAPI_PROPS_OBJECTS_TECHNO_H_PART == 1 && !defined(SAGA_LEGOAPI_PROPS_OBJECTS_TECHNO_H_STOP)
 
 struct GAMEPAD_PC;
-struct addgizmotype_pc_s;
+struct addgizmotype_s;
 struct gameobject_s;
 struct nuspecial_handle_s;
 
@@ -50,12 +50,12 @@ typedef struct techno_config_s { // size 0x4c
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char *TechnoRegistrationNamePc;
-    extern TECHNO_CONFIG_PC TechnoSysPc;
+    extern const char *TechnoRegistrationName;
+    extern TECHNO_CONFIG_PC TechnoSys;
     extern i32 techno_gizmotype_id;
-    struct addgizmotype_pc_s *Technos_RegisterGizmo(i32 type_id);
-    extern TECHNO_CONFIG_PC TechnoSysPc;
-    extern const char *TechnoRegistrationNamePc;
+    struct addgizmotype_s *Technos_RegisterGizmo(i32 type_id);
+    extern TECHNO_CONFIG_PC TechnoSys;
+    extern const char *TechnoRegistrationName;
     extern i32 techno_gizmotype_id;
 #ifdef __cplusplus
 }

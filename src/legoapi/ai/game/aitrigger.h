@@ -30,7 +30,7 @@ extern "C" {
     extern const char DeathStarEscapeBWasher2Pc[9];
     extern const char DeathStarEscapeBWasher1Pc[9];
     void AITriggerSetSysReset(TRIGGER_SYSTEM_PC *);
-    AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *, FLOWBOX_PC *);
+    AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *, FLOWBOX *);
     void AITriggerSysAutoSetUp(WORLDINFO *, AITRIGGERSETSYS_s *);
 #ifdef __cplusplus
 }

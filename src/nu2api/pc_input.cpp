@@ -248,7 +248,7 @@ struct PC_DI_DEVICE_INTERFACE_PC {
     virtual HRESULT __stdcall QueryInterface(REFIID, void **) = 0;
     virtual ULONG __stdcall AddRef(void) = 0;
     virtual ULONG __stdcall Release(void) = 0;
-    virtual HRESULT __stdcall GetCapabilities(PC_DI_CAPS_PC *) = 0;
+    virtual HRESULT __stdcall GetCapabilities(PC_DI_CAPS *) = 0;
     virtual HRESULT __stdcall EnumObjects(void *, void *, DWORD) = 0;
     virtual HRESULT __stdcall GetProperty(REFGUID, PC_DI_PROPERTY *) = 0;
     virtual HRESULT __stdcall SetProperty(REFGUID, const PC_DI_PROPERTY *) = 0;
@@ -256,7 +256,7 @@ struct PC_DI_DEVICE_INTERFACE_PC {
     virtual HRESULT __stdcall Unacquire(void) = 0;
     virtual HRESULT __stdcall GetDeviceState(DWORD, void *) = 0;
     virtual HRESULT __stdcall GetDeviceData(DWORD, void *, DWORD *, DWORD) = 0;
-    virtual HRESULT __stdcall SetDataFormat(const PC_DI_DATA_FORMAT_PC *) = 0;
+    virtual HRESULT __stdcall SetDataFormat(const PC_DI_DATA_FORMAT *) = 0;
     virtual HRESULT __stdcall SetEventNotification(HANDLE) = 0;
     virtual HRESULT __stdcall SetCooperativeLevel(HWND, DWORD) = 0;
 };
@@ -266,7 +266,7 @@ struct PC_DI_FACTORY_INTERFACE {
     virtual ULONG __stdcall AddRef(void) = 0;
     virtual ULONG __stdcall Release(void) = 0;
     virtual HRESULT __stdcall CreateDevice(REFGUID, NuKeyboardDevice_PC **, IUnknown *) = 0;
-    virtual HRESULT __stdcall EnumDevices(DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *, DWORD) = 0;
+    virtual HRESULT __stdcall EnumDevices(DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE *, void *), void *, DWORD) = 0;
 };
 
 extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *device) {
@@ -346,7 +346,7 @@ extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *device) {
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
 }
 
-extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, void *unused) {
+extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE *instance, void *unused) {
     PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     PC_INPUT_DEVICE_PC *devices = state->devices;
     if (IsXInputProductPc(&instance->product)) {
@@ -401,7 +401,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         if (PcInputSelectedPort == -1) {
             PcInputSelectedPort = port;
         }
-        PC_DI_CAPS_PC caps;
+        PC_DI_CAPS caps;
         caps.size = sizeof(caps);
         HRESULT result = ((PC_DI_DEVICE_INTERFACE_PC *)device)->GetCapabilities(&caps);
         record->button_count = (i8)caps.buttons;
@@ -456,7 +456,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
 void NuKeyboardOwner_PC::Setup(HWND window, HINSTANCE instance) {
     DirectInput8Create(instance, 0x800, PcDirectInput8AId, (void **)&factory, NULL);
     factory->methods->create_device(factory, PcSystemMouseId, &mouse, NULL);
-    PC_DI_CAPS_PC capabilities;
+    PC_DI_CAPS capabilities;
     capabilities.size = sizeof(capabilities);
     mouse->methods->get_caps(mouse, &capabilities);
     if (capabilities.flags & 1) {

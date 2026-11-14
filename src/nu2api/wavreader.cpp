@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-extern "C" void PCDecoderDiagnosticNoOpPc(...) {
+extern "C" void PCDecoderDiagnosticNoOp(...) {
 }
 
 WavReader::WavReader(void) {
@@ -59,7 +59,7 @@ i32 WavReader::SeekTime(f32 time) {
 }
 
 /* Uncalled. SetFilePointerEx with an optional result. */
-BOOL __stdcall WavReaderSetFilePointerPc(HANDLE file, LARGE_INTEGER distance, LARGE_INTEGER *new_position, DWORD method) {
+BOOL __stdcall WavReaderSetFilePointer(HANDLE file, LARGE_INTEGER distance, LARGE_INTEGER *new_position, DWORD method) {
     BOOL result = SetFilePointerEx(file, distance, &distance, method);
     if (new_position != NULL) {
         *new_position = distance;
@@ -71,7 +71,7 @@ u32 WavReader::FourCcPc(const char *text) {
     return ((u32)(i32)text[3] << 24) | ((u32)(i32)text[2] << 16) | ((u32)(i32)text[1] << 8) | (u32)(i32)text[0];
 }
 
-i32 WavReader::FindChunkPc(HANDLE input, const char *name, PC_WAVE_CHUNK_PC *chunk) {
+i32 WavReader::FindChunkPc(HANDLE input, const char *name, PC_WAVE_CHUNK *chunk) {
     u32 wanted = FourCcPc(name);
     DWORD bytes;
     LARGE_INTEGER move;
@@ -91,7 +91,7 @@ i32 WavReader::FindChunkPc(HANDLE input, const char *name, PC_WAVE_CHUNK_PC *chu
     return 0;
 }
 
-i32 WavReader::SkipChunkPc(HANDLE input, const PC_WAVE_CHUNK_PC *chunk) {
+i32 WavReader::SkipChunkPc(HANDLE input, const PC_WAVE_CHUNK *chunk) {
     LARGE_INTEGER move;
     LARGE_INTEGER position;
     move.QuadPart = base_position + (i64)(u32)chunk->offset + chunk->bytes;
@@ -111,11 +111,11 @@ HRESULT WavReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
                 move.QuadPart = base_position;
                 SetFilePointerEx(file, move, &position, FILE_BEGIN);
             } else {
-                PCDecoderDiagnosticNoOpPc(header->name);
+                PCDecoderDiagnosticNoOp(header->name);
             }
         }
     } else {
-        PCDecoderDiagnosticNoOpPc(path);
+        PCDecoderDiagnosticNoOp(path);
         file = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0x08000001, NULL);
     }
     if (file != INVALID_HANDLE_VALUE) {
@@ -126,7 +126,7 @@ HRESULT WavReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
         } riff;
 
         DWORD bytes;
-        PC_WAVE_CHUNK_PC chunk;
+        PC_WAVE_CHUNK chunk;
         if (!ReadFile(file, &riff, 12, &bytes, NULL) || bytes != 12 || riff.riff != 0x46464952 || riff.wave != 0x45564157) {
             goto fail;
         }
@@ -161,7 +161,7 @@ HRESULT WavReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
         file = NULL;
         return E_FAIL;
     }
-    PCDecoderDiagnosticNoOpPc(path);
+    PCDecoderDiagnosticNoOp(path);
     return E_FAIL;
 }
 
@@ -174,8 +174,8 @@ HRESULT WavReader::Read(void *output, u32 requested, u32 *read_count) {
         i32 offset = current_sample * format.nBlockAlign;
         i32 amount = count * format.nBlockAlign;
         if ((u32)amount != requested) {
-            PCDecoderDiagnosticNoOpPc();
-            PCDecoderDiagnosticNoOpPc(requested, amount);
+            PCDecoderDiagnosticNoOp();
+            PCDecoderDiagnosticNoOp(requested, amount);
         }
         LARGE_INTEGER move;
         LARGE_INTEGER position;
@@ -189,15 +189,15 @@ HRESULT WavReader::Read(void *output, u32 requested, u32 *read_count) {
                 current_sample += count;
                 return S_OK;
             }
-            PCDecoderDiagnosticNoOpPc();
-            PCDecoderDiagnosticNoOpPc(amount);
-            PCDecoderDiagnosticNoOpPc(bytes);
-            PCDecoderDiagnosticNoOpPc(requested);
+            PCDecoderDiagnosticNoOp();
+            PCDecoderDiagnosticNoOp(amount);
+            PCDecoderDiagnosticNoOp(bytes);
+            PCDecoderDiagnosticNoOp(requested);
         } else {
-            PCDecoderDiagnosticNoOpPc();
-            PCDecoderDiagnosticNoOpPc(offset);
-            PCDecoderDiagnosticNoOpPc(data_offset);
-            PCDecoderDiagnosticNoOpPc(GetSize());
+            PCDecoderDiagnosticNoOp();
+            PCDecoderDiagnosticNoOp(offset);
+            PCDecoderDiagnosticNoOp(data_offset);
+            PCDecoderDiagnosticNoOp(GetSize());
         }
     }
     if (read_count != NULL) {

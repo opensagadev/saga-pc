@@ -47,8 +47,8 @@ extern "C" {
     void GizBlowup_InitTerrain(void);
     void GizBlowup_DeleteTerrain(void);
     void SetLevelExBlowupFlags(u32);
-    extern i32 GizmoBlowupNameCountPc;
-    extern char GizmoBlowupNameTablePc[32][32];
+    extern i32 GizmoBlowupNameCount;
+    extern char GizmoBlowupNameTable[32][32];
     void GizmoBlowupResetNameTable(void);
     i32 GizmoBlowupGetNameTableId(char *);
     void GizmoBlowupLateUpdate(void *, void *, f32);
@@ -69,7 +69,7 @@ extern "C" {
 
 #if SAGA_LEGOAPI_GIZMO_OBJECT_GIZMOBLOWUPS_H_PART == 2 && !defined(SAGA_LEGOAPI_GIZMO_OBJECT_GIZMOBLOWUPS_H_STOP)
 
-typedef struct GIZMOBLOWUPTYPE_PC {        // size 0x100
+typedef struct GIZMOBLOWUPTYPE {           // size 0x100
     NUSPECIALHANDLE alternate_specials[4]; // 0x00
     NUSPECIALHANDLE animated_special;      // 0x30
     NUSPECIALHANDLE decal_special;         // 0x3c
@@ -96,7 +96,7 @@ typedef struct GIZMOBLOWUPTYPE_PC {        // size 0x100
     u8 field_0fb;                          // 0xfb
     u8 animation_runtime_flags;            // 0xfc
     u8 unknown_fd[3];                      // 0xfd
-} GIZMOBLOWUPTYPE_PC;
+} GIZMOBLOWUPTYPE;
 
 typedef struct GIZMOBLOWUP_PC { // size 0x114
 
@@ -137,35 +137,35 @@ typedef struct GIZMOBLOWUP_PC { // size 0x114
         };
     }; // 0x094
 
-    u32 draw_flags;           // 0x098
-    u32 secondary_flags;      // 0x09c
-    u32 score;                // 0x0a0
-    GIZMOBLOWUPTYPE_PC *type; // 0x0a4
-    f32 target_scale;         // 0x0a8
-    f32 proximity_radius;     // 0x0ac
-    f32 effect_delay;         // 0x0b0
-    f32 activation_delay;     // 0x0b4
-    f32 proximity_delay;      // 0x0b8
-    f32 animation_time;       // 0x0bc
-    f32 decal_scale;          // 0x0c0
-    f32 field_0c4;            // 0x0c4
-    f32 animation_offset;     // 0x0c8
-    f32 respawn_timer;        // 0x0cc
-    f32 respawn_period;       // 0x0d0
-    f32 reflection_height;    // 0x0d4
-    void *anti_node;          // 0x0d8
-    u16 decal_rotation_x;     // 0x0dc
-    u16 decal_rotation_y;     // 0x0de
-    u16 decal_rotation_z;     // 0x0e0
-    u16 shadow_rotation_x;    // 0x0e2
-    u16 shadow_rotation_y;    // 0x0e4
-    u16 shadow_rotation_z;    // 0x0e6
-    u16 model_rotation_x;     // 0x0e8
-    u16 model_rotation_y;     // 0x0ea
-    u16 model_rotation_z;     // 0x0ec
-    u16 pickup_x_rotation;    // 0x0ee
-    u16 pickup_y_rotation;    // 0x0f0
-    char name[16];            // 0x0f2
+    u32 draw_flags;        // 0x098
+    u32 secondary_flags;   // 0x09c
+    u32 score;             // 0x0a0
+    GIZMOBLOWUPTYPE *type; // 0x0a4
+    f32 target_scale;      // 0x0a8
+    f32 proximity_radius;  // 0x0ac
+    f32 effect_delay;      // 0x0b0
+    f32 activation_delay;  // 0x0b4
+    f32 proximity_delay;   // 0x0b8
+    f32 animation_time;    // 0x0bc
+    f32 decal_scale;       // 0x0c0
+    f32 field_0c4;         // 0x0c4
+    f32 animation_offset;  // 0x0c8
+    f32 respawn_timer;     // 0x0cc
+    f32 respawn_period;    // 0x0d0
+    f32 reflection_height; // 0x0d4
+    void *anti_node;       // 0x0d8
+    u16 decal_rotation_x;  // 0x0dc
+    u16 decal_rotation_y;  // 0x0de
+    u16 decal_rotation_z;  // 0x0e0
+    u16 shadow_rotation_x; // 0x0e2
+    u16 shadow_rotation_y; // 0x0e4
+    u16 shadow_rotation_z; // 0x0e6
+    u16 model_rotation_x;  // 0x0e8
+    u16 model_rotation_y;  // 0x0ea
+    u16 model_rotation_z;  // 0x0ec
+    u16 pickup_x_rotation; // 0x0ee
+    u16 pickup_y_rotation; // 0x0f0
+    char name[16];         // 0x0f2
 
     union { // size 0x2
         i16 platform_id;
@@ -210,7 +210,7 @@ typedef i32 (*LEVEL_BLOWUP_CALLBACK_PC)(GIZMOBLOWUP_PC *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void SetLevelBlowupCallbackPc(LEVEL_BLOWUP_CALLBACK_PC callback);
+    void SetLevelBlowupCallback(LEVEL_BLOWUP_CALLBACK_PC callback);
 #ifdef __cplusplus
 }
 #endif
@@ -229,15 +229,15 @@ extern "C" {
     void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 add_offset, i32 flags, struct gameobject_s *object);
     i32 GizmoBlowupCheckProximity(struct WORLDINFO_s *, struct gameobject_s *);
     i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *, i32, i32, i32, struct gameobject_s *, i32);
-    GIZMOBLOWUPTYPE_PC *GizmoBlowupTypeAdd(struct WORLDINFO_s *, NUSPECIALHANDLE *, i32, i32 *);
-    void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *, struct WORLDINFO_s *);
+    GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(struct WORLDINFO_s *, NUSPECIALHANDLE *, i32, i32 *);
+    void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE *, struct WORLDINFO_s *);
     void *gizmoblowup_reservebuffers(struct WORLDINFO_s *);
     void GizmoBlowupsFinalSetup(struct WORLDINFO_s *);
     void GizmoBlowupVisibilityOverrides(struct WORLDINFO_s *);
     GIZMOBLOWUP_PC *FindNearestGizmoBlowUp(struct WORLDINFO_s *, NUVEC *, f32);
     void GizmoSortBlowups(struct WORLDINFO_s *);
     i32 GizmoBlowupGetTypeFromNameTableId(struct WORLDINFO_s *, i32);
-    GIZMOBLOWUPTYPE_PC *GizmoBlowup_FindType(char *, struct WORLDINFO_s *);
+    GIZMOBLOWUPTYPE *GizmoBlowup_FindType(char *, struct WORLDINFO_s *);
     void GizmoBlowUpTypeBlowUp(struct WORLDINFO_s *, i32, NUVEC *);
     i32 InitGizmoBlowupTypes(struct WORLDINFO_s *);
     i32 InitGizmoBlowups(struct WORLDINFO_s *);

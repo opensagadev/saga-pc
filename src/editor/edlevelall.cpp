@@ -32,7 +32,7 @@ extern "C" {
     i32 NuFileAlign(NUFILE file, i32 mask);
     eduiitem_s *eduiItemSeparatorCreate(u32 data, const void *colours);
     i32 edmainGetCursorEnabled(void);
-    NUCAMERA *edmainGetCameraPc(void);
+    NUCAMERA *edmainGetCamera(void);
     f32 edcamGetDist(void);
     void EdDrawLineCross(NUVEC *position, f32 size, i32 colour);
     void eduiFlushInteracts(void);
@@ -3350,7 +3350,7 @@ void LevelEditor::Display(ThingRenderData *) {
             eduiFlushInteracts();
         }
         if (field_0x28) {
-            NUCAMERA *camera = edmainGetCameraPc();
+            NUCAMERA *camera = edmainGetCamera();
             f32 distance = edcamGetDist();
             if (global_camera.far_clip < distance + distance) {
                 camera->far_clip = distance + distance;
@@ -5910,12 +5910,12 @@ void LevelEditor::CreateEditorList(eduimenu_s *parent, eduiitem_s *item) {
     eduiMenuAttach(parent, menu);
 }
 
-extern "C" void eduiSetUsingMenuFocusPc(i32 enabled);
+extern "C" void eduiSetUsingMenuFocus(i32 enabled);
 
 /* Gives the editor menus the focus and enters every registered editor. */
 void LevelEditor::Enter() {
     edLevelActiveMenu = NULL;
-    eduiSetUsingMenuFocusPc(1);
+    eduiSetUsingMenuFocus(1);
     editors_entered = 1;
     active = 1;
     for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next) {
@@ -5925,7 +5925,7 @@ void LevelEditor::Enter() {
 
 void LevelEditor::Exit() {
     active = 0;
-    eduiSetUsingMenuFocusPc(0);
+    eduiSetUsingMenuFocus(0);
     if (editors_entered) {
         for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next) {
             editor->Exit();
@@ -9873,7 +9873,7 @@ void ClassEditor::FocusSelected() {
     f32 radius;
     if (selected_objects.GetAveragePosition(position, radius)) {
         theLevelEditor.SetCameraPosition(position);
-        NUCAMERA *camera = edmainGetCameraPc();
+        NUCAMERA *camera = edmainGetCamera();
         f32 half_fov = camera->fov * 0.5;
         i32 angle = static_cast<i32>(half_fov * 10430.3779296875);
         radius = radius * static_cast<f64>(1.2f) * (NuTrigTable[(angle + 0x4000) >> 1 & 0x7fff] / NuTrigTable[angle >> 1 & 0x7fff]);
@@ -10952,7 +10952,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
     }
     NUCAMERA *camera;
     if (field_0x28 != 0) {
-        camera = edmainGetCameraPc();
+        camera = edmainGetCamera();
     } else {
         camera = &global_camera;
     }

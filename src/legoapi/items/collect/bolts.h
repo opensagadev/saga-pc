@@ -43,8 +43,8 @@ extern "C" {
     extern f32 BoltShootParameter;
     extern i32 BoltShootIdScratch;
     extern NUVEC BoltShootPositionScratch;
-    extern i32 BoltNoSfxPc;
-    extern i32 BoltNoObjectMomentumPc;
+    extern i32 BoltNoSfx;
+    extern i32 BoltNoObjectMomentum;
     extern i32 addbolt_nosfx;
 #ifdef __cplusplus
 }
@@ -133,7 +133,7 @@ template <typename T, u32 COUNT> struct TPool {
     void fun_0060f370();
 };
 
-struct NETMESSAGE_PC { // size 0x10
+struct NETMESSAGE { // size 0x10
 
     struct MessageData {
         u32 fun_00617420() const;
@@ -159,7 +159,7 @@ struct NETMESSAGE_PC { // size 0x10
     u32 read_offset;     // 0x8
     u32 write_offset;    // 0xc
 
-    NETMESSAGE_PC(u32 offset) {
+    NETMESSAGE(u32 offset) {
         MessageData *entry;
         for (entry = sm_poolMessageData.items; entry != sm_poolMessageData.items + 512; entry++) {
             if (entry->references <= 0) {
@@ -179,10 +179,10 @@ struct NETMESSAGE_PC { // size 0x10
 
     /* Leaves the message unset; FtpFile embeds one and its constructor does
      * not touch it. */
-    NETMESSAGE_PC() {
+    NETMESSAGE() {
     }
 
-    NETMESSAGE_PC(const NETMESSAGE_PC &other) {
+    NETMESSAGE(const NETMESSAGE &other) {
         data = other.data;
         read_offset = other.read_offset;
         write_offset = other.write_offset;
@@ -196,7 +196,7 @@ struct NETMESSAGE_PC { // size 0x10
 
     /* Drops this message's reference and shares other's buffer; the swap
      * flag is kept. */
-    NETMESSAGE_PC &operator=(const NETMESSAGE_PC &other) {
+    NETMESSAGE &operator=(const NETMESSAGE &other) {
         Release();
         data = other.data;
         read_offset = other.read_offset;
@@ -213,7 +213,7 @@ struct NETMESSAGE_PC { // size 0x10
     }
 
     static void operator delete(void *memory) {
-        theMemoryManager.FreePool(memory, sizeof(NETMESSAGE_PC));
+        theMemoryManager.FreePool(memory, sizeof(NETMESSAGE));
     }
 
     /* Standalone copy at 0x53d640 (likely the destructor in retail). */
@@ -403,14 +403,14 @@ struct NETMESSAGE_PC { // size 0x10
     i32 fun_00613230();
 };
 
-STATIC_ASSERT(sizeof(NETMESSAGE_PC::MessageData) == 0x4b4);
-STATIC_ASSERT(offsetof(NETMESSAGE_PC::MessageData, bytes) == 0);
-STATIC_ASSERT(offsetof(NETMESSAGE_PC::MessageData, references) == 0x4b0);
+STATIC_ASSERT(sizeof(NETMESSAGE::MessageData) == 0x4b4);
+STATIC_ASSERT(offsetof(NETMESSAGE::MessageData, bytes) == 0);
+STATIC_ASSERT(offsetof(NETMESSAGE::MessageData, references) == 0x4b0);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void Bolt_Init(void *, NETMESSAGE_PC &);
-    void Bolt_HitGameObjectRC(NETMESSAGE_PC &);
+    void Bolt_Init(void *, NETMESSAGE &);
+    void Bolt_HitGameObjectRC(NETMESSAGE &);
 #ifdef __cplusplus
 }
 #endif
@@ -421,8 +421,8 @@ class V2Peer { // size 0x2a0
   public:
     virtual ~V2Peer();
     virtual void Disconnect();
-    virtual void Send(NETMESSAGE_PC message);
-    virtual void SendEx(NETMESSAGE_PC message, i32 arg0, i32 arg1);
+    virtual void Send(NETMESSAGE message);
+    virtual void SendEx(NETMESSAGE message, i32 arg0, i32 arg1);
     virtual void unknown_slot_10();
     virtual i32 GetAvailableMessages();
 

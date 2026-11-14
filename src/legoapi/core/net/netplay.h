@@ -13,7 +13,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32 LegoContextNetWaitPc;
+    extern i32 LegoContextNetWait;
     extern f32 LevelHackSendTimer;
     extern APICHARACTERMODELLIST NetFreePlayModelList[49];
     extern u8 net_recievedFreePlayList;

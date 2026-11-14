@@ -1,9 +1,8 @@
 #include "saga.h"
 
-PC_VERTEX_DECL_ENTRY_PC *PCVertexDeclarationFindSlot(const PC_VERTEX_DECL_ENTRY_PC *key, PC_VERTEX_DECL_ENTRY_PC *first, i32 count,
-                                                     u8 *found) {
-    PC_VERTEX_DECL_ENTRY_PC *last = first + count - 1;
-    PC_VERTEX_DECL_ENTRY_PC *middle;
+PC_VERTEX_DECL_ENTRY *PCVertexDeclarationFindSlot(const PC_VERTEX_DECL_ENTRY *key, PC_VERTEX_DECL_ENTRY *first, i32 count, u8 *found) {
+    PC_VERTEX_DECL_ENTRY *last = first + count - 1;
+    PC_VERTEX_DECL_ENTRY *middle;
     while (first <= last) {
         middle = first + (last - first) / 2;
         if (middle->key < key->key) {
@@ -19,16 +18,16 @@ PC_VERTEX_DECL_ENTRY_PC *PCVertexDeclarationFindSlot(const PC_VERTEX_DECL_ENTRY_
     return first;
 }
 
-PC_TEXTURE_RESOURCE_PC *NuGetVertexDeclaration(u32 descriptor) {
-    PC_VERTEX_DECL_ENTRY_PC key;
-    PC_VERTEX_DECL_ENTRY_PC *record;
+PC_TEXTURE_RESOURCE *NuGetVertexDeclaration(u32 descriptor) {
+    PC_VERTEX_DECL_ENTRY key;
+    PC_VERTEX_DECL_ENTRY *record;
     i32 count = PCVertexDeclarationCountPC;
     u8 found = 0;
     key.key = descriptor;
     key.resource = NULL;
     record = PCVertexDeclarationFindSlot(&key, PCVertexDeclarationCachePC, count, &found);
     if (!found) {
-        PC_VERTEX_ELEMENT_PC elements[24];
+        PC_VERTEX_ELEMENT elements[24];
         i32 normal;
         i32 tangent;
         i32 binormal;

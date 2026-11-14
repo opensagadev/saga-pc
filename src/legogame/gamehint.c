@@ -31,10 +31,10 @@ const u8 HintRGB[5][3] = {
 };
 
 /* LoadPermData calls this right after Alt_registerStatusScreen; the body is empty. */
-void Alt_registerStatusScreenExtraPc(void) {
+void Alt_registerStatusScreenExtra(void) {
 }
 
-void DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
+void DrawHint_LSW(HINT *hint, i32 max_lines) {
     f32 alpha;
     f32 text_x;
     f32 text_y;
@@ -86,7 +86,7 @@ void DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
         if (alignment == 0) {
             SmartTextEx(expanded, text_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, red, green, blue, 1.4f, lines, NULL, 0,
                         (u8)(i32)((f64)alpha * 128.0));
-            icon_x = (f32)(-((f64)SmartTextLongestWidthPc * 0.5) - (f64)0.075f);
+            icon_x = (f32)(-((f64)SmartTextLongestWidth * 0.5) - (f64)0.075f);
         } else {
             SmartTextEx(expanded, text_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, alignment, red, green, blue,
                         (f32)(2.0 - (1.0 + (f64)text_x) - (f64)0.15f), lines, NULL, 0, (u8)(i32)((f64)alpha * 128.0));
@@ -107,5 +107,5 @@ void DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
 
 void initGameHintSys_LSW(void) {
     RegisterWithHintSys(DrawHint_LSW, Hints_LSW, Game.hint_completion_bits, 3);
-    LswForceUsedHintFlagsPc &= ~7u;
+    LswForceUsedHintFlags &= ~7u;
 }

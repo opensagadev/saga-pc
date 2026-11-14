@@ -27,7 +27,7 @@
 struct PC_SHADER_FILTER_DESC_VIEW;
 struct PC_SHADER_FILTER_MATERIAL_VIEW;
 struct PC_SHADER_MATERIAL_FILTER_VIEW;
-struct PC_TEXTURE_RESOURCE_PC;
+struct PC_TEXTURE_RESOURCE;
 
 #ifdef __cplusplus
 #ifdef __cplusplus
@@ -74,8 +74,8 @@ class NuShaderObject {
     i32 version;
     u32 field_18;
     PC_SHADER_PARAMETER_LOCAL_PC parameters[100];
-    struct PC_TEXTURE_RESOURCE_PC *vertex_shader;
-    struct PC_TEXTURE_RESOURCE_PC *pixel_shader;
+    struct PC_TEXTURE_RESOURCE *vertex_shader;
+    struct PC_TEXTURE_RESOURCE *pixel_shader;
     u32 unknown_4d4;
 
     void fun_00741250();

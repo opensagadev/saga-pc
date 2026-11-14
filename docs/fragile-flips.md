@@ -6,10 +6,10 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 
 | push | function | unit | before | after |
 |---|---|---|---|---|
-| port round 3 | BoulderSpawnPc | legogame/episodeIII.c | exact | 83.28 % |
-| stack 2 (stubs, port round 4, layout format) | BlockadeRunnerDEjectCreaturePc | legogame/episodeIV.c | exact | 90.97 % |
+| port round 3 | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
+| stack 2 (stubs, port round 4, layout format) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.97 % |
 | stack 2 | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.92 % | 94.77 % |
-| literals at every use | BoulderSpawnPc | legogame/episodeIII.c | 83.28 % | exact |
-| literals at every use | BlockadeRunnerDEjectCreaturePc | legogame/episodeIV.c | 90.97 % | exact |
-| layout asserts to comments | BoulderSpawnPc | legogame/episodeIII.c | exact | different |
-| layout asserts to comments | BlockadeRunnerDEjectCreaturePc | legogame/episodeIV.c | exact | different |
+| literals at every use | BoulderSpawn | legogame/episodeIII.c | 83.28 % | exact |
+| literals at every use | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.97 % | exact |
+| layout asserts to comments | BoulderSpawn | legogame/episodeIII.c | exact | different |
+| layout asserts to comments | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |

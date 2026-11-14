@@ -42,7 +42,7 @@ typedef struct {
     PANEL_PROGRESS_RECORD_PC *records;
 } PANEL_PROGRESS_SYSTEM_PC;
 
-typedef struct panel_movement_pc_s {
+typedef struct panel_movement_s {
     NUMTX matrix;
     char name[16];
     NUVEC position;
@@ -73,12 +73,12 @@ extern const f64 PanelVariantTwoTargetY;
 extern const f64 PanelVariantTwoTargetZ;
 extern const f64 PanelVariantThreeTargetY;
 extern const f64 PanelVariantThreeTargetZ;
-extern f32 GizPanelPictureYPc;
-extern f32 GizPanelPictureZPc;
-extern f32 GizPanelFloorLiftPc;
-extern u8 PanelStormActivePc;
-extern u8 PanelDroidActivePc;
-extern u8 PanelBountyHunterActivePc;
+extern f32 GizPanelPictureY;
+extern f32 GizPanelPictureZ;
+extern f32 GizPanelFloorLift;
+extern u8 PanelStormActive;
+extern u8 PanelDroidActive;
+extern u8 PanelBountyHunterActive;
 void SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
 
 /* Hint updater records keep their packed field offsets. */
@@ -89,7 +89,7 @@ typedef struct HINT_PANEL {
     u8 reserved63[0x29];
     f32 target_scale;
 } HINT_PANEL;
-struct panel_movement_pc_s;
+struct panel_movement_s;
 
 /* Terrain helper private to these callers (panel arrives in ESI). */
 static void GizPanel_CreateTerrain(PANEL_MOVEMENT_PC *panel) {
@@ -130,7 +130,7 @@ void GizPanel_InitTerrain(WORLDINFO *world) {
     }
 }
 
-static NUVEC *PanelGetTrackingPositionPc(PANEL_MOVEMENT_PC *panel, NUVEC *position) {
+static NUVEC *PanelGetTrackingPosition(PANEL_MOVEMENT_PC *panel, NUVEC *position) {
     *position = panel->position;
     switch (panel->model_variant) {
         case 3:
@@ -341,8 +341,8 @@ i32 GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL_PC *panel) {
             if (GCDataList[(i16)object->id].weapon_action == 1 || GCDataList[(i16)object->id].weapon_action == 8) {
                 return 1;
             }
-            if ((i16)object->id == FreePlayId007f199cPc || (i16)object->id == id_THEEMPEROR || (i16)object->id == FreePlayId007f1a4cPc ||
-                (i16)object->id == FreePlayId007f1a48Pc || (i16)object->id == FreePlayId007f1a44Pc) {
+            if ((i16)object->id == FreePlayId007f199c || (i16)object->id == id_THEEMPEROR || (i16)object->id == FreePlayId007f1a4c ||
+                (i16)object->id == FreePlayId007f1a48 || (i16)object->id == FreePlayId007f1a44) {
                 return 1;
             }
             break;
@@ -431,7 +431,7 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
                     NUVEC position;
                     NUVEC direction;
                     f32 distance;
-                    PanelGetTrackingPositionPc(panel, &position);
+                    PanelGetTrackingPosition(panel, &position);
                     distance = NuVecDistSqr(&position, &player->collision_position, &direction);
                     if (distance < nearest_distance && distance < maximum_distance) {
                         nearest_distance = distance;
@@ -490,10 +490,10 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
 }
 
 /* Picture Z and Y offsets. */
-f32 GizPanelPictureZPc = -0.123f;
-f32 GizPanelPictureYPc = 0.0775f;
+f32 GizPanelPictureZ = -0.123f;
+f32 GizPanelPictureY = 0.0775f;
 /* Lift of the panel target above the floor it was dropped onto. */
-f32 GizPanelFloorLiftPc = 0.001f;
+f32 GizPanelFloorLift = 0.001f;
 
 void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
     WORLDINFO *world = world_pointer;
@@ -612,11 +612,11 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             NUMTX animated_matrix;
             f32 frame;
             picture_offset.x = 0.0f;
-            picture_offset.y = GizPanelPictureYPc;
-            picture_offset.z = GizPanelPictureZPc;
+            picture_offset.y = GizPanelPictureY;
+            picture_offset.z = GizPanelPictureZ;
             transition_offset.x = 0.0f;
-            transition_offset.y = GizPanelPictureYPc;
-            transition_offset.z = (f64)GizPanelPictureZPc - (f64)0.0005f;
+            transition_offset.y = GizPanelPictureY;
+            transition_offset.z = (f64)GizPanelPictureZ - (f64)0.0005f;
             NuVecRotateY(&picture_offset, &picture_offset, panel->y_rotation);
             NuVecRotateY(&transition_offset, &transition_offset, panel->y_rotation);
             transition_base = base_matrix;
@@ -821,9 +821,9 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     if (object->field_db0 > 0.0f) {
         object->field_db0 -= FRAMETIME;
     }
-    PanelStormActivePc = 0;
-    PanelDroidActivePc = 0;
-    PanelBountyHunterActivePc = 0;
+    PanelStormActive = 0;
+    PanelDroidActive = 0;
+    PanelBountyHunterActive = 0;
     if (object->character_context == 0x0b && object->grapple != NULL) {
         if (object->character_model->model_data_b[object->field_7aa] == NULL ||
             AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
@@ -862,7 +862,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
                             Hint_SetComplete(0x2b9);
                         } else {
                             Hint_SetComplete(0x25f);
-                            LswForceUsedHintFlagsPc |= 4;
+                            LswForceUsedHintFlags |= 4;
                         }
                     } else if (variant == 3) {
                         Hint_SetComplete(0x260);
@@ -933,7 +933,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
                 }
             }
             Hint_SetComplete(0x25f);
-            LswForceUsedHintFlagsPc |= 4;
+            LswForceUsedHintFlags |= 4;
         }
         {
             f32 duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
@@ -950,7 +950,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     }
 }
 
-i32 GizPanel_UpdateHint(HINT_PC *hint) {
+i32 GizPanel_UpdateHint(HINT *hint) {
     u8 storm = 0;
     u8 droid = 0;
     u8 bountyhunter = 0;
@@ -1004,7 +1004,7 @@ i32 GizPanel_UpdateHint(HINT_PC *hint) {
         return 0;
     }
     if (droid != 0 && (u16)hint->id == 0x25f) {
-        if ((LswForceUsedHintFlagsPc & 2) == 2) {
+        if ((LswForceUsedHintFlags & 2) == 2) {
             return 1;
         }
         return 0;
@@ -1031,7 +1031,7 @@ void GizPanel_Reset(void *context) {
     height = GameShadow(NULL, &probe_position, 0.2f, -1);
     panel->target_offset.y = height;
     if ((f64)height != GameObjectNearFloorNoFloorHeight) {
-        panel->target_offset.y = height + GizPanelFloorLiftPc;
+        panel->target_offset.y = height + GizPanelFloorLift;
         FindAnglesZX(&ShadNorm, &panel->target_pitch, &panel->target_roll);
     }
     panel->flags = (u8)((panel->flags & 0xfcu) | 0x0cu);

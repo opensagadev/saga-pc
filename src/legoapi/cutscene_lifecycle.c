@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <float.h>
 #pragma bss_seg(".bss$CutSceneBackgroundInstancesPc")
-static INSTNUGCUTSCENE *CutSceneBackgroundInstancesPc = 0;
+static INSTNUGCUTSCENE *CutSceneBackgroundInstances = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$active_cutscene_instances")
 static INSTNUGCUTSCENE *active_cutscene_instances = 0;
@@ -11,7 +11,7 @@ static INSTNUGCUTSCENE *active_cutscene_instances = 0;
 struct state_anim_s;
 
 typedef struct cut_rigid_lifecycle_s {    // size 0x5c
-    CUT_RIGID_GENERIC_PC generic;         // 0x00
+    CUT_RIGID_GENERIC generic;            // 0x00
     struct state_anim_s *state_animation; // 0x50
     u8 unknown_54[4];                     // 0x54
     u8 flags;                             // 0x58
@@ -35,7 +35,7 @@ typedef struct cut_rigid_system_lifecycle_s { // size 0x8
 } CUT_RIGID_SYSTEM_LIFECYCLE_PC;
 
 typedef struct cut_character_system_lifecycle_s { // size 0x8
-    CUT_CHARACTER_GENERIC_PC *characters;         // 0x0
+    CUT_CHARACTER_GENERIC *characters;            // 0x0
     u16 count;                                    // 0x4
 } CUT_CHARACTER_SYSTEM_LIFECYCLE_PC;
 
@@ -48,7 +48,7 @@ typedef struct cut_character_instance_system_s { // size 0x4
 } CUT_CHARACTER_INSTANCE_SYSTEM_PC;
 
 typedef struct cut_locator_lifecycle_s { // size 0x64
-    CUT_LOCATOR_GENERIC_PC generic;      // 0x00
+    CUT_LOCATOR_GENERIC generic;         // 0x00
     u8 unknown_54[4];                    // 0x54
     u8 flags;                            // 0x58
     u8 type_index;                       // 0x59
@@ -156,7 +156,7 @@ static void CutSceneDestroyCharactersPC(CUT_INSTANCE_LIFECYCLE_PC *instance) {
     if (system != NULL && system->count != 0) {
         for (i = 0; i < system->count; ++i) {
             CUT_CHARACTER_INSTANCE_PC *state = &characters->characters[i];
-            CUT_CHARACTER_GENERIC_PC *character = &system->characters[i];
+            CUT_CHARACTER_GENERIC *character = &system->characters[i];
             if ((character->flags & 2) != 0 && NuCutSceneCharacterDestroyData != NULL) {
                 NuCutSceneCharacterDestroyData(character, state);
             }
@@ -171,7 +171,7 @@ static void CutSceneEndCharactersPC(INSTNUGCUTSCENE *owner, f32 frame) {
     CUT_CHARACTER_INSTANCE_SYSTEM_PC *characters = instance->character_instance;
     i32 i;
     for (i = 0; i < system->count; ++i) {
-        CUT_CHARACTER_GENERIC_PC *source = &system->characters[i];
+        CUT_CHARACTER_GENERIC *source = &system->characters[i];
         CUT_CHARACTER_INSTANCE_PC *character = &characters->characters[i];
         if (character->model != NULL) {
             if ((source->flags & 2) == 0 && NuCutSceneCharacterEval != NULL) {
@@ -332,7 +332,7 @@ void CalculateLocatorDirection(i32 direction, NUMTX *matrix, NUVEC *out) {
     NuVecMtxRotate(out, out, matrix);
 }
 
-static void CutSceneDestroyCharacterSysPc(CUT_SCENE_LIFECYCLE_PC *scene) {
+static void CutSceneDestroyCharacterSys(CUT_SCENE_LIFECYCLE_PC *scene) {
     if (NuCutSceneDestroyCharacters != NULL) {
         NuCutSceneDestroyCharacters(scene);
     }
@@ -341,7 +341,7 @@ static void CutSceneDestroyCharacterSysPc(CUT_SCENE_LIFECYCLE_PC *scene) {
 void NuGCutSceneDestroy(void *owner) {
     CUT_SCENE_LIFECYCLE_PC *scene = owner;
     if (scene->character_system != NULL) {
-        CutSceneDestroyCharacterSysPc(scene);
+        CutSceneDestroyCharacterSys(scene);
     }
 }
 
@@ -722,7 +722,7 @@ struct cut_locator_function_entry_s { // size 0x14
     u8 unknown_0c[8];                  // 0x0c
 };
 
-static void CutCameraFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
+static void CutCameraFixPtrs(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
     CUT_LOAD_CAMERA_SYSTEM *system;
     if (scene->camera_system != NULL) {
         system = (CUT_LOAD_CAMERA_SYSTEM *)((u32)scene->camera_system + string_delta);
@@ -743,7 +743,7 @@ static void CutCameraFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 r
     }
 }
 
-static void CutLocatorFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
+static void CutLocatorFixPtrs(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
     CUT_LOAD_LOCATOR_SYSTEM *system;
     i32 i;
     if (scene->locator_system != NULL) {
@@ -770,7 +770,7 @@ static void CutLocatorFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 
     }
 }
 
-static void CutRigidFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
+static void CutRigidFixPtrs(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
     CUT_LOAD_RIGID_SYSTEM *system;
     i32 i;
     if (scene->rigid_system != NULL) {
@@ -794,7 +794,7 @@ static void CutRigidFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 re
     }
 }
 
-static void CutCharacterFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
+static void CutCharacterFixPtrs(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
     CUT_LOAD_CHARACTER_SYSTEM *system;
     i32 i;
     if (scene->character_system != NULL) {
@@ -835,7 +835,7 @@ static void CutCharacterFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i3
     }
 }
 
-static void CutTriggerFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta) {
+static void CutTriggerFixPtrs(CUT_SCENE_LOAD_PC *scene, i32 string_delta) {
     CUT_LOAD_TRIGGER_SYSTEM *system = scene->trigger_system;
     i32 i;
     if (system != NULL) {
@@ -855,24 +855,24 @@ static void CutTriggerFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta) {
 static void NuGCutSceneFixPtrs(CUT_SCENE_LOAD_PC *scene, i32 relocation_delta, i32 mode) {
     scene->strings = scene->strings ? (char *)((u32)scene->strings + scene->string_delta) : NULL;
     if (scene->camera_system != NULL) {
-        CutCameraFixPtrsPc(scene, scene->string_delta, relocation_delta, mode);
+        CutCameraFixPtrs(scene, scene->string_delta, relocation_delta, mode);
     }
     if (scene->locator_system != NULL) {
-        CutLocatorFixPtrsPc(scene, scene->string_delta, relocation_delta, mode);
+        CutLocatorFixPtrs(scene, scene->string_delta, relocation_delta, mode);
     }
     if (scene->rigid_system != NULL) {
-        CutRigidFixPtrsPc(scene, scene->string_delta, relocation_delta, mode);
+        CutRigidFixPtrs(scene, scene->string_delta, relocation_delta, mode);
     }
     if (scene->character_system != NULL) {
-        CutCharacterFixPtrsPc(scene, scene->string_delta, relocation_delta, mode);
+        CutCharacterFixPtrs(scene, scene->string_delta, relocation_delta, mode);
     }
     if (scene->trigger_system != NULL) {
-        CutTriggerFixPtrsPc(scene, scene->string_delta);
+        CutTriggerFixPtrs(scene, scene->string_delta);
     }
     scene->bounds = scene->bounds ? (CUT_LOAD_BOUNDS *)((u32)scene->bounds + scene->string_delta) : NULL;
 }
 
-void CutSceneRemapFocusPc(CUT_SCENE_LOAD_PC *scene, VARIPTR *buffer) {
+void CutSceneRemapFocus(CUT_SCENE_LOAD_PC *scene, VARIPTR *buffer) {
     CUT_LOAD_LOCATOR *locator;
     i32 i;
     if ((scene->version & 0xff) < 5 || scene->camera_system == NULL || scene->camera_system->focus_state_animation == NULL ||
@@ -918,12 +918,12 @@ void *NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_stream_b
             NuGCutSceneFixPtrs(scene, scene->relocation_delta, 0);
             if ((scene->flags & 1) == 0 || no_stream_buffers != 0) {
                 buffer->addr += size;
-                CutSceneRemapFocusPc(scene, buffer);
+                CutSceneRemapFocus(scene, buffer);
             } else {
                 addr = scene->stream_buffer_offset + buffer->addr;
                 scene->stream_buffer_0 = (void *)((addr + 15) & ~15);
                 addr = ((addr + 15) & ~15) + scene->stream_buffer_size + 0x400;
-                if (CutSceneSingleStreamBufferPc == 0) {
+                if (CutSceneSingleStreamBuffer == 0) {
                     addr += 15;
                     scene->stream_buffer_1 = (void *)(addr & ~15);
                     addr = (addr & ~15) + scene->stream_buffer_size + 0x400;
@@ -934,19 +934,19 @@ void *NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_stream_b
                 buffer->addr += filename_length + 4;
                 NuStrCpy(filename_destination, path);
                 scene->filename = filename_destination;
-                CutSceneRemapFocusPc(scene, buffer);
+                CutSceneRemapFocus(scene, buffer);
             }
         } else {
             NuGCutSceneFixPtrs(scene, 0, 0);
             buffer->addr += size;
-            CutSceneRemapFocusPc(scene, buffer);
+            CutSceneRemapFocus(scene, buffer);
         }
     } else {
         void *first_animation;
         i32 relocation_delta;
         i32 version;
         if (scene->version > 2) {
-            CutSceneLoadDiagnosticPc(path, scene->version);
+            CutSceneLoadDiagnostic(path, scene->version);
         }
         version = scene->version;
         scene->string_delta = (i32)scene - scene->string_delta;
@@ -977,7 +977,7 @@ void *NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_stream_b
                 addr = (u32)first_animation + 15;
                 scene->stream_buffer_0 = (void *)(addr & ~15);
                 addr = (addr & ~15) + scene->stream_buffer_size + 0x400;
-                if (CutSceneSingleStreamBufferPc == 0) {
+                if (CutSceneSingleStreamBuffer == 0) {
                     addr += 15;
                     scene->stream_buffer_1 = (void *)(addr & ~15);
                     addr = (addr & ~15) + scene->stream_buffer_size + 0x400;
@@ -994,7 +994,7 @@ void *NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_stream_b
         }
     }
     if (buffer->addr > end->addr) {
-        CutSceneLoadDiagnosticPc(path, buffer->addr - end->addr);
+        CutSceneLoadDiagnostic(path, buffer->addr - end->addr);
     }
     return scene;
 }
@@ -1003,7 +1003,7 @@ void *NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_stream_b
 void *NuGCutSceneLoadAddr(char *path, CUT_SCENE_LOAD_PC *scene, i32 loaded_size, VARIPTR *buffer, VARIPTR *end, i32 no_stream_buffers) {
     if (scene->version >= 10) {
         if (scene->string_delta == 0) {
-            ((void (*)(void))CutSceneLoadDiagnosticPc)();
+            ((void (*)(void))CutSceneLoadDiagnostic)();
         }
         scene->loaded_size = loaded_size;
         scene->string_delta = (i32)scene - scene->string_delta;
@@ -1011,23 +1011,23 @@ void *NuGCutSceneLoadAddr(char *path, CUT_SCENE_LOAD_PC *scene, i32 loaded_size,
         if ((scene->flags & 8) == 0) {
             NuGCutSceneFixPtrs(scene, scene->relocation_delta, 0);
             if ((scene->flags & 1) != 0 && no_stream_buffers == 0) {
-                ((void (*)(void))CutSceneLoadDiagnosticPc)();
+                ((void (*)(void))CutSceneLoadDiagnostic)();
             }
         } else {
             NuGCutSceneFixPtrs(scene, 0, 0);
         }
-        CutSceneRemapFocusPc(scene, buffer);
+        CutSceneRemapFocus(scene, buffer);
         if (buffer->addr > end->addr) {
-            CutSceneLoadDiagnosticPc(path, buffer->addr - end->addr);
+            CutSceneLoadDiagnostic(path, buffer->addr - end->addr);
         }
         scene->string_delta = 0;
         return scene;
     }
-    ((void (*)(void))CutSceneLoadDiagnosticPc)();
+    ((void (*)(void))CutSceneLoadDiagnostic)();
     return NULL;
 }
 
-static void CutSceneRigidFixUpPc(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
+static void CutSceneRigidFixUp(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
     CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
     CUT_LOAD_LOCATOR_SYSTEM *locators = scene->locator_system;
     NUSPECIALHANDLE handle;
@@ -1044,7 +1044,7 @@ static void CutSceneRigidFixUpPc(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
                     rigid->special = handle.special;
                 }
             } else {
-                CutSceneMissingObjectDiagnosticPc(rigid->name);
+                CutSceneMissingObjectDiagnostic(rigid->name);
             }
             if (rigid->uses_locator != 0 && rigid->locator.index < 255) {
                 rigid->locator_index = (u8)rigid->locator.index;
@@ -1056,11 +1056,11 @@ static void CutSceneRigidFixUpPc(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
     }
 }
 
-static i32 CutFindLocatorFunctionPc(char *name) {
+static i32 CutFindLocatorFunction(char *name) {
     i32 i = 0;
-    if (CutSceneLocatorFunctionsPc != NULL) {
-        for (; CutSceneLocatorFunctionsPc[i].name != NULL; ++i) {
-            if (NuStrICmp(name, CutSceneLocatorFunctionsPc[i].name) == 0) {
+    if (CutSceneLocatorFunctions != NULL) {
+        for (; CutSceneLocatorFunctions[i].name != NULL; ++i) {
+            if (NuStrICmp(name, CutSceneLocatorFunctions[i].name) == 0) {
                 return i;
             }
         }
@@ -1068,19 +1068,19 @@ static i32 CutFindLocatorFunctionPc(char *name) {
     return -1;
 }
 
-static void CutSceneLocatorFixUpPc(CUT_SCENE_LOAD_PC *scene, i32 page) {
+static void CutSceneLocatorFixUp(CUT_SCENE_LOAD_PC *scene, i32 page) {
     CUT_LOAD_LOCATOR_SYSTEM *system = scene->locator_system;
     u32 i;
     for (i = 0; i < system->type_count; ++i) {
         CUT_LOAD_LOCATOR_TYPE *type = &system->types[i];
         if ((type->flags & 1) != 0) {
-            if (CutSceneLookupAllDebrisPagesPc != 0) {
+            if (CutSceneLookupAllDebrisPages != 0) {
                 type->function_index = (u16)LookupDebrisEffectPage(type->name, (i8)page);
             } else {
                 type->function_index = (u16)LookupDebrisEffectPageOnly(type->name, (i8)page);
             }
         } else if ((type->flags & 2) != 0) {
-            type->function_index = (u16)CutFindLocatorFunctionPc(type->name);
+            type->function_index = (u16)CutFindLocatorFunction(type->name);
         } else if ((type->flags & 16) != 0) {
             if (LookupLocatorVfxFn != NULL) {
                 char *underscore = NuStrRChr(type->name, '_');
@@ -1098,12 +1098,12 @@ static void CutSceneLocatorFixUpPc(CUT_SCENE_LOAD_PC *scene, i32 page) {
             }
         }
         if (type->function_index == 65535) {
-            CutSceneMissingObjectDiagnosticPc(type->name);
+            CutSceneMissingObjectDiagnostic(type->name);
         }
     }
 }
 
-static void CutSceneTriggerFixUpPc(CUT_SCENE_LOAD_PC *scene, CUT_LOAD_TRIGGER_OWNER *owner) {
+static void CutSceneTriggerFixUp(CUT_SCENE_LOAD_PC *scene, CUT_LOAD_TRIGGER_OWNER *owner) {
     CUT_LOAD_TRIGGER_SYSTEM *system = scene->trigger_system;
     i32 i;
     i32 j;
@@ -1117,12 +1117,12 @@ static void CutSceneTriggerFixUpPc(CUT_SCENE_LOAD_PC *scene, CUT_LOAD_TRIGGER_OW
             }
         }
         if (event->index == -1) {
-            CutSceneLoadDiagnosticPc(event->name);
+            CutSceneLoadDiagnostic(event->name);
         }
     }
 }
 
-static void CutSceneFindCharactersPc(CUT_SCENE_LOAD_PC *scene) {
+static void CutSceneFindCharacters(CUT_SCENE_LOAD_PC *scene) {
     if (NuCutSceneFindCharacters != NULL) {
         NuCutSceneFindCharacters(scene);
     }
@@ -1136,21 +1136,21 @@ void NuGCutSceneFixUp(void *asset, NUGSCN *gscene, void *extra_scene, i32 page) 
             scene->extra_scene = extra_scene;
         }
         if (scene->rigid_system != NULL) {
-            CutSceneRigidFixUpPc(scene, gscene);
+            CutSceneRigidFixUp(scene, gscene);
         }
         if (scene->character_system != NULL) {
-            CutSceneFindCharactersPc(scene);
+            CutSceneFindCharacters(scene);
         }
         if (scene->locator_system != NULL) {
-            CutSceneLocatorFixUpPc(scene, page);
+            CutSceneLocatorFixUp(scene, page);
         }
         if (scene->trigger_system != NULL && extra_scene != NULL) {
-            CutSceneTriggerFixUpPc(scene, extra_scene);
+            CutSceneTriggerFixUp(scene, extra_scene);
         }
     }
 }
 
-static void CutSceneRigidFixUpExtraPc(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
+static void CutSceneRigidFixUpExtra(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
     CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
     NUSPECIALHANDLE handle;
     i32 i;
@@ -1167,7 +1167,7 @@ static void CutSceneRigidFixUpExtraPc(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) 
                         rigid->special = handle.special;
                     }
                 } else {
-                    CutSceneMissingObjectDiagnosticPc(rigid->name);
+                    CutSceneMissingObjectDiagnostic(rigid->name);
                 }
             }
         }
@@ -1177,7 +1177,7 @@ static void CutSceneRigidFixUpExtraPc(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) 
 void NuGCutSceneFixUpExtra(void *asset, NUGSCN *gscene) {
     CUT_SCENE_LOAD_PC *scene = asset;
     if (scene != NULL && scene->rigid_system != NULL) {
-        CutSceneRigidFixUpExtraPc(scene, gscene);
+        CutSceneRigidFixUpExtra(scene, gscene);
     }
 }
 
@@ -1207,7 +1207,7 @@ static void NuGCutSceneUpdateMtx(CUT_INSTANCE_LOAD_PC *instance, NUMTX *matrix) 
     }
 }
 
-static CUT_LOAD_CAMERA_INSTANCE *CutCameraInstanceCreatePc(CUT_LOAD_CAMERA_SYSTEM *system, VARIPTR *buffer) {
+static CUT_LOAD_CAMERA_INSTANCE *CutCameraInstanceCreate(CUT_LOAD_CAMERA_SYSTEM *system, VARIPTR *buffer) {
     CUT_LOAD_CAMERA_INSTANCE *instance = NULL;
     if (system != NULL && system->count != 0 && buffer != NULL) {
         buffer->addr = (buffer->addr + 15) & ~15;
@@ -1222,7 +1222,7 @@ static CUT_LOAD_CAMERA_INSTANCE *CutCameraInstanceCreatePc(CUT_LOAD_CAMERA_SYSTE
     return instance;
 }
 
-static CUT_LOAD_RIGID_INSTANCE_SYSTEM *CutRigidInstanceCreatePc(CUT_SCENE_LOAD_PC *scene, VARIPTR *buffer, NUGSCN *gscene) {
+static CUT_LOAD_RIGID_INSTANCE_SYSTEM *CutRigidInstanceCreate(CUT_SCENE_LOAD_PC *scene, VARIPTR *buffer, NUGSCN *gscene) {
     CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
     CUT_LOAD_RIGID_INSTANCE_SYSTEM *instance = NULL;
     i32 i;
@@ -1256,7 +1256,7 @@ static CUT_LOAD_RIGID_INSTANCE_SYSTEM *CutRigidInstanceCreatePc(CUT_SCENE_LOAD_P
                         target->visible = rigid->flags & 1;
                     }
                 } else {
-                    CutSceneMissingObjectDiagnosticPc(rigid->name);
+                    CutSceneMissingObjectDiagnostic(rigid->name);
                 }
             } else {
                 NUGSCN *owner = rigid->scene;
@@ -1274,7 +1274,7 @@ static CUT_LOAD_RIGID_INSTANCE_SYSTEM *CutRigidInstanceCreatePc(CUT_SCENE_LOAD_P
     return instance;
 }
 
-static CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *CutCharacterInstanceCreatePc(CUT_SCENE_LOAD_PC *scene, VARIPTR *buffer) {
+static CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *CutCharacterInstanceCreate(CUT_SCENE_LOAD_PC *scene, VARIPTR *buffer) {
     CUT_LOAD_CHARACTER_SYSTEM *system = scene->character_system;
     CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *instance = NULL;
     i32 i;
@@ -1304,7 +1304,7 @@ static CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *CutCharacterInstanceCreatePc(CUT_SCEN
     return instance;
 }
 
-static CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *CutLocatorInstanceCreatePc(CUT_LOAD_LOCATOR_SYSTEM *system, VARIPTR *buffer) {
+static CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *CutLocatorInstanceCreate(CUT_LOAD_LOCATOR_SYSTEM *system, VARIPTR *buffer) {
     CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *instance = NULL;
     i32 i;
     if (system != NULL && system->count != 0 && buffer != NULL) {
@@ -1347,7 +1347,7 @@ static CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *CutLocatorInstanceCreatePc(CUT_LOAD_LOC
     return instance;
 }
 
-static CUT_LOAD_TRIGGER_INSTANCE *CutTriggerInstanceCreatePc(VARIPTR *buffer, CUT_SCENE_LOAD_PC *scene, CUT_LOAD_TRIGGER_OWNER *owner) {
+static CUT_LOAD_TRIGGER_INSTANCE *CutTriggerInstanceCreate(VARIPTR *buffer, CUT_SCENE_LOAD_PC *scene, CUT_LOAD_TRIGGER_OWNER *owner) {
     i32 count = scene->trigger_system->count;
     CUT_LOAD_TRIGGER_INSTANCE *instance;
     buffer->addr = (buffer->addr + 15) & ~15;
@@ -1361,8 +1361,8 @@ static CUT_LOAD_TRIGGER_INSTANCE *CutTriggerInstanceCreatePc(VARIPTR *buffer, CU
     return instance;
 }
 
-static void CutSceneCreateContentsPc(VARIPTR *buffer, char *name, CUT_INSTANCE_LOAD_PC *instance, CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene,
-                                     CUT_LOAD_TRIGGER_OWNER *extra_scene, VARIPTR *end) {
+static void CutSceneCreateContents(VARIPTR *buffer, char *name, CUT_INSTANCE_LOAD_PC *instance, CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene,
+                                   CUT_LOAD_TRIGGER_OWNER *extra_scene, VARIPTR *end) {
     if (scene != NULL) {
         instance->scene = scene;
         instance->saved_scene = scene;
@@ -1370,19 +1370,19 @@ static void CutSceneCreateContentsPc(VARIPTR *buffer, char *name, CUT_INSTANCE_L
             sprintf(instance->name, name);
         }
         if (scene->camera_system != NULL) {
-            instance->camera_instance = CutCameraInstanceCreatePc(scene->camera_system, buffer);
+            instance->camera_instance = CutCameraInstanceCreate(scene->camera_system, buffer);
         }
         if (scene->rigid_system != NULL) {
-            instance->rigid_instance = CutRigidInstanceCreatePc(scene, buffer, gscene);
+            instance->rigid_instance = CutRigidInstanceCreate(scene, buffer, gscene);
         }
         if (scene->character_system != NULL) {
-            instance->character_instance = CutCharacterInstanceCreatePc(scene, buffer);
+            instance->character_instance = CutCharacterInstanceCreate(scene, buffer);
         }
         if (scene->locator_system != NULL) {
-            instance->locator_instance = CutLocatorInstanceCreatePc(scene->locator_system, buffer);
+            instance->locator_instance = CutLocatorInstanceCreate(scene->locator_system, buffer);
         }
         if (scene->trigger_system != NULL && extra_scene != NULL) {
-            instance->trigger_instance = CutTriggerInstanceCreatePc(buffer, scene, extra_scene);
+            instance->trigger_instance = CutTriggerInstanceCreate(buffer, scene, extra_scene);
         }
         if (instance->scene->bounds != NULL) {
             instance->center.x = (f32)((instance->scene->bounds->min.x + instance->scene->bounds->max.x) * 0.5);
@@ -1395,7 +1395,7 @@ static void CutSceneCreateContentsPc(VARIPTR *buffer, char *name, CUT_INSTANCE_L
         }
         instance->rate = 1.0f;
         if (end != NULL && buffer->addr > end->addr) {
-            ((void (*)(void))CutSceneLoadDiagnosticPc)();
+            ((void (*)(void))CutSceneLoadDiagnostic)();
         }
     }
 }
@@ -1427,14 +1427,14 @@ INSTNUGCUTSCENE *instNuGCutSceneCreate(void *asset, NUGSCN *gscene, void *extra_
         } else {
             instance->flags_88 &= ~0x20000000;
         }
-        CutSceneCreateContentsPc(buffer, name, instance, scene, gscene, extra_scene, NULL);
+        CutSceneCreateContents(buffer, name, instance, scene, gscene, extra_scene, NULL);
         NuThreadDisableThreadSwap();
         if (background != 0) {
-            instance->next = CutSceneBackgroundInstancesPc;
+            instance->next = CutSceneBackgroundInstances;
             if (instance->next != NULL) {
                 ((CUT_INSTANCE_LOAD_PC *)instance->next)->previous = (INSTNUGCUTSCENE *)instance;
             }
-            CutSceneBackgroundInstancesPc = (INSTNUGCUTSCENE *)instance;
+            CutSceneBackgroundInstances = (INSTNUGCUTSCENE *)instance;
         } else {
             instance->next = active_cutscene_instances;
             if (instance->next != NULL) {
@@ -1454,13 +1454,13 @@ typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, NUSPECIALHANDLE *, NUMTX *);
 extern void (*NuCutSceneResetCharacters)(INSTNUGCUTSCENE *);
 
 void fun_005000c0(void) {
-    CutSceneBackgroundInstancesPc = NULL;
+    CutSceneBackgroundInstances = NULL;
 }
 
 void NuGCutSceneSysInit(CUT_LOCATOR_FUNCTION_ENTRY_PC *functions) {
-    CutSceneBackgroundInstancesPc = NULL;
+    CutSceneBackgroundInstances = NULL;
     active_cutscene_instances = NULL;
-    CutSceneLocatorFunctionsPc = functions;
+    CutSceneLocatorFunctions = functions;
 }
 
 void NuGCutSceneSysInitVfx(i32 (*lookup)(char *), i32 (*trigger)(i32, NUMTX *), void (*release)(i32), void (*update)(i32, NUMTX *)) {
@@ -1477,7 +1477,7 @@ void instNuGCutSceneResetCamLock(INSTNUGCUTSCENE *owner) {
     }
 }
 
-void NuSetCutSceneGetHGObjFn(NUHGOBJ_EVAL_PC *(*callback)(INSTNUGCUTSCENE *, i32)) {
+void NuSetCutSceneGetHGObjFn(NUHGOBJ_EVAL *(*callback)(INSTNUGCUTSCENE *, i32)) {
     NuCutSceneGetHGObj = callback;
 }
 
@@ -1569,7 +1569,7 @@ void instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *owner) {
 }
 
 /* Jumps an instance to its last frame and settles the rigid and locator systems there. */
-static void CutSceneJumpToEndPc(CUT_INSTANCE_LIFECYCLE_PC *instance, u16 flag) {
+static void CutSceneJumpToEnd(CUT_INSTANCE_LIFECYCLE_PC *instance, u16 flag) {
     CUT_SCENE_LIFECYCLE_PC *scene;
     u32 flags = (instance->flags_88 & ~2U) | ((flag & 1) << 1) | 0x1001;
     scene = instance->scene;
@@ -1597,11 +1597,11 @@ static void CutSceneJumpToEndPc(CUT_INSTANCE_LIFECYCLE_PC *instance, u16 flag) {
 
 /* Unreferenced; named after what they do. */
 void instNuGCutSceneJumpToEnd(INSTNUGCUTSCENE *owner) {
-    CutSceneJumpToEndPc((CUT_INSTANCE_LIFECYCLE_PC *)owner, 0);
+    CutSceneJumpToEnd((CUT_INSTANCE_LIFECYCLE_PC *)owner, 0);
 }
 
 void instNuGCutSceneJumpToEndFlagged(INSTNUGCUTSCENE *owner) {
-    CutSceneJumpToEndPc((CUT_INSTANCE_LIFECYCLE_PC *)owner, 1);
+    CutSceneJumpToEnd((CUT_INSTANCE_LIFECYCLE_PC *)owner, 1);
 }
 
 void instNuGCutSceneSetTranslation(INSTNUGCUTSCENE *owner, NUVEC *translation) {
@@ -1637,7 +1637,7 @@ void instNuGCutSceneRotateY(INSTNUGCUTSCENE *owner, NUANG angle) {
 
 extern void (*NuCutSceneRigidCollisionCheck)(CUT_LOAD_RIGID *, NUMTX *);
 
-static void CutSceneRigidSysRenderPc(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
+static void CutSceneRigidSysRender(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_SCENE_LOAD_PC *scene = instance->scene;
     CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
@@ -1657,7 +1657,7 @@ static void CutSceneRigidSysRenderPc(INSTNUGCUTSCENE *owner, f32 frame, i32 paus
         if (object->visible == 0) {
             continue;
         }
-        NuGCutRigidCalcMtx((CUT_RIGID_GENERIC_PC *)rigid, frame, &matrix);
+        NuGCutRigidCalcMtx((CUT_RIGID_GENERIC *)rigid, frame, &matrix);
         if ((instance->flags_88 & 0x80) != 0) {
             NuMtxMul(&matrix, &matrix, &instance->matrix);
         }
@@ -1684,7 +1684,7 @@ static void CutSceneRigidSysRenderPc(INSTNUGCUTSCENE *owner, f32 frame, i32 paus
     }
 }
 
-static void CutSceneLocatorSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
+static void CutSceneLocatorSysUpdate(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_LOAD_LOCATOR_SYSTEM *system = instance->scene->locator_system;
     CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *states = instance->locator_instance;
@@ -1701,7 +1701,7 @@ static void CutSceneLocatorSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame, i32 pa
     }
 }
 
-static void CutSceneCharacterSysRenderPc(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
+static void CutSceneCharacterSysRender(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_SCENE_LOAD_PC *scene = instance->scene;
     CUT_LOAD_CHARACTER_SYSTEM *system = scene->character_system;
@@ -1717,17 +1717,17 @@ static void CutSceneCharacterSysRenderPc(INSTNUGCUTSCENE *owner, f32 frame, i32 
     }
 }
 
-static void CutSceneInstanceRenderPc(CUT_INSTANCE_LOAD_PC *instance, i32 paused) {
+static void CutSceneInstanceRender(CUT_INSTANCE_LOAD_PC *instance, i32 paused) {
     INSTNUGCUTSCENE *owner = (INSTNUGCUTSCENE *)instance;
     if ((instance->flags_88 & 0x800) != 0 || (instance->flags_88 & 2) == 0 || (instance->flags_88 & 0x400) == 0) {
         return;
     }
     if ((instance->flags_88 & 0x40000) != 0) {
-        if (CutSceneRenderRigidsPc != 0 && instance->rigid_instance != NULL) {
-            CutSceneRigidSysRenderPc(owner, instance->scene->duration - instance->render_frame, paused);
+        if (CutSceneRenderRigids != 0 && instance->rigid_instance != NULL) {
+            CutSceneRigidSysRender(owner, instance->scene->duration - instance->render_frame, paused);
         }
-        if (CutSceneRenderCharactersPc != 0 && instance->character_instance != NULL) {
-            CutSceneCharacterSysRenderPc(owner, instance->scene->duration - instance->render_frame, paused);
+        if (CutSceneRenderCharacters != 0 && instance->character_instance != NULL) {
+            CutSceneCharacterSysRender(owner, instance->scene->duration - instance->render_frame, paused);
         }
         if ((instance->flags_8c & 0x40) != 0 && instance->current_frame == instance->scene->duration - 1.0f) {
             return;
@@ -1735,15 +1735,15 @@ static void CutSceneInstanceRenderPc(CUT_INSTANCE_LOAD_PC *instance, i32 paused)
         if ((instance->flags_88 & 0x40000000) != 0) {
             return;
         }
-        if (CutSceneRenderLocatorsPc != 0 && instance->locator_instance != NULL) {
-            CutSceneLocatorSysUpdatePc(owner, instance->scene->duration - instance->render_frame, paused);
+        if (CutSceneRenderLocators != 0 && instance->locator_instance != NULL) {
+            CutSceneLocatorSysUpdate(owner, instance->scene->duration - instance->render_frame, paused);
         }
     } else {
-        if (CutSceneRenderRigidsPc != 0 && instance->rigid_instance != NULL) {
-            CutSceneRigidSysRenderPc(owner, instance->render_frame, paused);
+        if (CutSceneRenderRigids != 0 && instance->rigid_instance != NULL) {
+            CutSceneRigidSysRender(owner, instance->render_frame, paused);
         }
-        if (CutSceneRenderCharactersPc != 0 && instance->character_instance != NULL) {
-            CutSceneCharacterSysRenderPc(owner, instance->render_frame, paused);
+        if (CutSceneRenderCharacters != 0 && instance->character_instance != NULL) {
+            CutSceneCharacterSysRender(owner, instance->render_frame, paused);
         }
         if ((instance->flags_8c & 0x40) != 0 && instance->current_frame == instance->scene->duration - 1.0f) {
             return;
@@ -1751,8 +1751,8 @@ static void CutSceneInstanceRenderPc(CUT_INSTANCE_LOAD_PC *instance, i32 paused)
         if ((instance->flags_88 & 0x40000000) != 0) {
             return;
         }
-        if (CutSceneRenderLocatorsPc != 0 && instance->locator_instance != NULL) {
-            CutSceneLocatorSysUpdatePc(owner, instance->render_frame, paused);
+        if (CutSceneRenderLocators != 0 && instance->locator_instance != NULL) {
+            CutSceneLocatorSysUpdate(owner, instance->render_frame, paused);
         }
     }
 }
@@ -1760,14 +1760,14 @@ static void CutSceneInstanceRenderPc(CUT_INSTANCE_LOAD_PC *instance, i32 paused)
 void NuGCutSceneSysRender(i32 paused) {
     INSTNUGCUTSCENE *owner;
     for (owner = active_cutscene_instances; owner != NULL; owner = ((CUT_INSTANCE_LOAD_PC *)owner)->next) {
-        CutSceneInstanceRenderPc((CUT_INSTANCE_LOAD_PC *)owner, paused);
+        CutSceneInstanceRender((CUT_INSTANCE_LOAD_PC *)owner, paused);
     }
 }
 
 void fun_00508f30(void) {
 }
 
-static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
+static void CutSceneCameraSysUpdate(INSTNUGCUTSCENE *owner, f32 frame) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_LOAD_CAMERA_SYSTEM *system = instance->scene->camera_system;
     CUT_LOAD_CAMERA_INSTANCE *state = instance->camera_instance;
@@ -1786,10 +1786,10 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     NUQUAT target_rotation;
     NUQUAT camera_rotation;
     NUQUAT blended_rotation;
-    CutSceneCameraFocalLengthPc = 0.0f;
-    CutSceneFocusDistancePc = 0.0f;
-    CutSceneUseFocusLocationPc = 0;
-    CutSceneFStopPc = 0.0f;
+    CutSceneCameraFocalLength = 0.0f;
+    CutSceneFocusDistance = 0.0f;
+    CutSceneUseFocusLocation = 0;
+    CutSceneFStop = 0.0f;
     if ((instance->scene->version & 0xff) >= 5 && system->focus_state_animation != NULL &&
         StateAnimEvaluate(system->focus_state_animation, &state->focus_state_index, &focus_value, frame) != 0) {
         if (focus_value != 0xff) {
@@ -1802,7 +1802,7 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
         if (StateAnimEvaluate(system->state_animation, &state->state_index, &value, frame) != 0) {
             state->camera_index = (i8)value;
             instance->flags_8c |= 0x1000;
-            CutSceneCameraChangedPc = 1;
+            CutSceneCameraChanged = 1;
         }
         if (state->state_index < system->state_animation->count) {
             if (system->state_animation->times[state->state_index] - frame < 1.0f &&
@@ -1832,7 +1832,7 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     }
     if (state->camera_index >= 0) {
         CutSceneCameraCTRL = 1;
-        CutSceneCameraDofModePc = 2;
+        CutSceneCameraDofMode = 2;
     } else {
         CutSceneCameraCTRL = 0;
     }
@@ -1841,48 +1841,48 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     }
     index = state->camera_index;
     if ((u32)index >= (u32)system->count) {
-        ((void (*)(void))CutSceneLoadDiagnosticPc)();
+        ((void (*)(void))CutSceneLoadDiagnostic)();
     }
     camera = &system->cameras[index];
     camera_state = &state->states[index];
     if ((camera->flags & 1) == 0 || camera->animation_node >= NuAnimNumNodes(system->animation)) {
-        CutSceneCameraMatrixPc = camera->matrix;
+        CutSceneCameraMatrix = camera->matrix;
     } else {
-        ANI3_HEADER_PC *animation;
-        ANI3_HEADER_PC *focus = system->focus_animation;
+        ANI3_HEADER *animation;
+        ANI3_HEADER *focus = system->focus_animation;
         if ((instance->scene->version & 0xff) >= 5 && focus != NULL && (i32)focus->magic >= 0x414e4934 && (i32)focus->magic <= 0x414e4935) {
             f32 *values = NuAnimCurveExtractAllNodeCurves_3(focus, camera->animation_node, instance->render_frame, NULL);
-            CutSceneFStopPc = values[2];
-            CutSceneCameraFocalLengthPc = (f32)(values[0] * (f64)1.3f);
+            CutSceneFStop = values[2];
+            CutSceneCameraFocalLength = (f32)(values[0] * (f64)1.3f);
             if ((camera->focus_flags & 2) != 0) {
-                CutSceneFocusDistancePc = values[1];
+                CutSceneFocusDistance = values[1];
             } else if (system->focus_state_animation != NULL && state->focus_index >= 0) {
                 CUT_LOAD_LOCATOR *locator = &instance->scene->locator_system->locators[state->focus_index];
                 if (locator->animation != NULL) {
                     NUMTX focus_matrix;
-                    NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC_PC *)locator, frame, &focus_matrix, NULL);
+                    NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &focus_matrix, NULL);
                     if ((locator->flags & 4) != 0) {
                         NuMtxPreTranslate(&focus_matrix, &locator->pivot);
                     }
                     if ((instance->flags_88 & 0x80) != 0) {
                         NuMtxMul(&focus_matrix, &focus_matrix, &instance->matrix);
                     }
-                    NuMtxGetTranslation(&focus_matrix, &CutSceneFocusLocationPc);
-                    CutSceneUseFocusLocationPc = 1;
+                    NuMtxGetTranslation(&focus_matrix, &CutSceneFocusLocation);
+                    CutSceneUseFocusLocation = 1;
                 }
             }
         }
         animation = system->animation;
         if ((i32)animation->magic >= 0x414e4934 && (i32)animation->magic <= 0x414e4935) {
-            NuAnimCurve2SetApplyToMatrix_3(animation, camera->animation_node, instance->render_frame, &CutSceneCameraMatrixPc);
+            NuAnimCurve2SetApplyToMatrix_3(animation, camera->animation_node, instance->render_frame, &CutSceneCameraMatrix);
         } else {
-            ((void (*)(void))CutSceneLoadDiagnosticPc)();
+            ((void (*)(void))CutSceneLoadDiagnostic)();
         }
     }
     if ((instance->flags_88 & 0x80) != 0) {
-        NuMtxMul(&CutSceneCameraMatrixPc, &CutSceneCameraMatrixPc, &instance->matrix);
+        NuMtxMul(&CutSceneCameraMatrix, &CutSceneCameraMatrix, &instance->matrix);
     }
-    CutSceneCameraMatrixSetPc = 1;
+    CutSceneCameraMatrixSet = 1;
     if ((camera_state->flags & 2) == 0) {
         return;
     }
@@ -1895,8 +1895,8 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
         camera_state->flags &= ~2;
         return;
     }
-    translation = *(NUVEC *)&CutSceneCameraMatrixPc.m30;
-    look_at = CutSceneCameraMatrixPc;
+    translation = *(NUVEC *)&CutSceneCameraMatrix.m30;
+    look_at = CutSceneCameraMatrix;
     NuMtxLookAtZ(&look_at, target->target);
     blend = 1.0f;
     if (duration > 0.01f) {
@@ -1906,13 +1906,13 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
         blend = 1.0f - blend;
     }
     NuMtxToQuat(&look_at, &target_rotation);
-    NuMtxToQuat(&CutSceneCameraMatrixPc, &camera_rotation);
+    NuMtxToQuat(&CutSceneCameraMatrix, &camera_rotation);
     NuQuatSlerp(&blended_rotation, &camera_rotation, &target_rotation, blend);
-    NuQuatToMtx(&blended_rotation, &CutSceneCameraMatrixPc);
-    *(NUVEC *)&CutSceneCameraMatrixPc.m30 = translation;
+    NuQuatToMtx(&blended_rotation, &CutSceneCameraMatrix);
+    *(NUVEC *)&CutSceneCameraMatrix.m30 = translation;
 }
 
-static void CutSceneRigidSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
+static void CutSceneRigidSysUpdate(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_SCENE_LOAD_PC *scene = instance->scene;
     CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
@@ -1936,7 +1936,7 @@ static void CutSceneRigidSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame, i32 paus
         if (NuSpecialGetVisibilityFn(&object->special) == 0) {
             continue;
         }
-        NuGCutRigidCalcMtx((CUT_RIGID_GENERIC_PC *)rigid, frame, &matrix);
+        NuGCutRigidCalcMtx((CUT_RIGID_GENERIC *)rigid, frame, &matrix);
         if ((instance->flags_88 & 0x80) != 0) {
             NuMtxMul(&matrix, &matrix, &instance->matrix);
         }
@@ -1953,7 +1953,7 @@ static void CutSceneRigidSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame, i32 paus
     }
 }
 
-static void CutSceneTriggerSysUpdatePc(CUT_INSTANCE_LOAD_PC *instance, f32 frame) {
+static void CutSceneTriggerSysUpdate(CUT_INSTANCE_LOAD_PC *instance, f32 frame) {
     CUT_LOAD_TRIGGER_INSTANCE *states = instance->trigger_instance;
     CUT_LOAD_TRIGGER_SYSTEM *system = instance->scene->trigger_system;
     i32 i;
@@ -1973,7 +1973,7 @@ static void CutSceneTriggerSysUpdatePc(CUT_INSTANCE_LOAD_PC *instance, f32 frame
     }
 }
 
-static void CutCameraSysStartPc(CUT_LOAD_CAMERA_INSTANCE *state, CUT_LOAD_CAMERA_SYSTEM *system) {
+static void CutCameraSysStart(CUT_LOAD_CAMERA_INSTANCE *state, CUT_LOAD_CAMERA_SYSTEM *system) {
     u32 i;
     state->state_index = 0;
     state->camera_index = system->starting_camera;
@@ -1985,7 +1985,7 @@ static void CutCameraSysStartPc(CUT_LOAD_CAMERA_INSTANCE *state, CUT_LOAD_CAMERA
     }
 }
 
-static void CutSceneRigidSysStartPc(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_LOAD_RIGID_SYSTEM *system) {
+static void CutSceneRigidSysStart(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_LOAD_RIGID_SYSTEM *system) {
     u32 i;
     for (i = 0; i < system->count; ++i) {
         CUT_LOAD_RIGID *rigid = &system->rigids[i];
@@ -1997,7 +1997,7 @@ static void CutSceneRigidSysStartPc(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_
     }
 }
 
-static void CutSceneLocatorSysStartPc(CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *states, CUT_LOAD_LOCATOR_SYSTEM *system) {
+static void CutSceneLocatorSysStart(CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *states, CUT_LOAD_LOCATOR_SYSTEM *system) {
     u32 i;
     for (i = 0; i < system->count; ++i) {
         CUT_LOAD_LOCATOR_INSTANCE *state = &states->locators[i];
@@ -2008,7 +2008,7 @@ static void CutSceneLocatorSysStartPc(CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *states, 
     }
 }
 
-static void CutTriggerSysStartPc(CUT_INSTANCE_LOAD_PC *instance) {
+static void CutTriggerSysStart(CUT_INSTANCE_LOAD_PC *instance) {
     CUT_LOAD_TRIGGER_INSTANCE *states = instance->trigger_instance;
     CUT_LOAD_TRIGGER_SYSTEM *system = instance->scene->trigger_system;
     i32 i;
@@ -2027,16 +2027,16 @@ void instNuGCutSceneStart(INSTNUGCUTSCENE *owner) {
         instance->rate = -instance->rate;
     }
     if (instance->camera_instance != NULL) {
-        CutCameraSysStartPc(instance->camera_instance, instance->scene->camera_system);
+        CutCameraSysStart(instance->camera_instance, instance->scene->camera_system);
     }
     if (instance->rigid_instance != NULL) {
-        CutSceneRigidSysStartPc(instance->rigid_instance, instance->scene->rigid_system);
+        CutSceneRigidSysStart(instance->rigid_instance, instance->scene->rigid_system);
     }
     if (instance->locator_instance != NULL) {
-        CutSceneLocatorSysStartPc(instance->locator_instance, instance->scene->locator_system);
+        CutSceneLocatorSysStart(instance->locator_instance, instance->scene->locator_system);
     }
     if (instance->trigger_instance != NULL) {
-        CutTriggerSysStartPc(instance);
+        CutTriggerSysStart(instance);
     }
     if (instance->skip_countdown != 0 && instance->stream_index == 0) {
         instance->flags_88 |= 0x40000000;
@@ -2056,7 +2056,7 @@ i32 fun_00502620(CUT_INSTANCE_LOAD_PC *instance) {
     return 0;
 }
 
-static void CutSceneRigidSysResetPc(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_LOAD_RIGID_SYSTEM *system) {
+static void CutSceneRigidSysReset(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_LOAD_RIGID_SYSTEM *system) {
     u32 i;
     for (i = 0; i < system->count; ++i) {
         CUT_LOAD_RIGID *rigid = &system->rigids[i];
@@ -2077,7 +2077,7 @@ static void CutSceneRigidSysResetPc(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_
     }
 }
 
-static void CutSceneLocatorSysResetPc(INSTNUGCUTSCENE *owner) {
+static void CutSceneLocatorSysReset(INSTNUGCUTSCENE *owner) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_LOAD_LOCATOR_SYSTEM *system = instance->scene->locator_system;
     CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *states = instance->locator_instance;
@@ -2086,8 +2086,8 @@ static void CutSceneLocatorSysResetPc(INSTNUGCUTSCENE *owner) {
         CUT_LOAD_LOCATOR_INSTANCE *state = &states->locators[i];
         CUT_LOAD_LOCATOR *locator = &system->locators[i];
         CUT_LOAD_LOCATOR_TYPE *type = &system->types[locator->type_index];
-        if ((type->flags & 2) != 0 && type->function_index != 0xffff && CutSceneLocatorFunctionsPc[type->function_index].reset != NULL) {
-            CutSceneLocatorFunctionsPc[type->function_index].reset(owner, system, state, locator);
+        if ((type->flags & 2) != 0 && type->function_index != 0xffff && CutSceneLocatorFunctions[type->function_index].reset != NULL) {
+            CutSceneLocatorFunctions[type->function_index].reset(owner, system, state, locator);
         }
         if ((type->flags & 0x10) != 0 && type->function_index != 0xffff) {
             state->effect.index = -1;
@@ -2095,7 +2095,7 @@ static void CutSceneLocatorSysResetPc(INSTNUGCUTSCENE *owner) {
     }
 }
 
-static void CutSceneTriggerSysResetPc(CUT_INSTANCE_LOAD_PC *instance) {
+static void CutSceneTriggerSysReset(CUT_INSTANCE_LOAD_PC *instance) {
     CUT_LOAD_TRIGGER_INSTANCE *states = instance->trigger_instance;
     CUT_LOAD_TRIGGER_SYSTEM *system = instance->scene->trigger_system;
     i32 i;
@@ -2130,13 +2130,13 @@ void instNuGCutSceneReset(INSTNUGCUTSCENE *owner) {
     }
     instance->scene = instance->saved_scene;
     if (instance->rigid_instance != NULL) {
-        CutSceneRigidSysResetPc(instance->rigid_instance, instance->scene->rigid_system);
+        CutSceneRigidSysReset(instance->rigid_instance, instance->scene->rigid_system);
     }
     if (instance->locator_instance != NULL) {
-        CutSceneLocatorSysResetPc(owner);
+        CutSceneLocatorSysReset(owner);
     }
     if (instance->trigger_instance != NULL) {
-        CutSceneTriggerSysResetPc(instance);
+        CutSceneTriggerSysReset(instance);
     }
     if (instance->character_instance != NULL && NuCutSceneResetCharacters != NULL) {
         NuCutSceneResetCharacters(owner);
@@ -2146,10 +2146,10 @@ void instNuGCutSceneReset(INSTNUGCUTSCENE *owner) {
     }
 }
 
-i32 CutSceneRenderRigidsPc = 1;
-i32 CutSceneRenderCharactersPc = 1;
-i32 CutSceneRenderLocatorsPc = 1;
-i32 CutSceneUpdateCamerasPc = 1;
+i32 CutSceneRenderRigids = 1;
+i32 CutSceneRenderCharacters = 1;
+i32 CutSceneRenderLocators = 1;
+i32 CutSceneUpdateCameras = 1;
 
 static void copyAnims(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
     i32 i;
@@ -2229,7 +2229,7 @@ static void copyAnims(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
     target->duration = source->duration;
 }
 
-void CutSceneSwapStreamAssetPc(CUT_INSTANCE_LOAD_PC *instance) {
+void CutSceneSwapStreamAsset(CUT_INSTANCE_LOAD_PC *instance) {
     CUT_SCENE_LOAD_PC *saved = instance->saved_scene;
     // MATCH-EXCEPTION: the original reads the buffer select as a signed one-bit field and masks it to index the pair.
     CUT_SCENE_LOAD_PC *scene = instance->stream_buffers[instance->active_stream_buffer & 1];
@@ -2327,19 +2327,19 @@ static void instNuGCutSceneClipTest(CUT_INSTANCE_LOAD_PC *instance) {
     }
 }
 
-static void CutSceneStreamSkipPc(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
+static void CutSceneStreamSkip(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
     if (instance->stream_index == (u8)instance->saved_scene->unknown_40) {
         instance->current_frame = instance->scene->duration - 1.0f;
     }
     instance->current_frame -= instance->rate * elapsed;
-    if (CutSceneLoadingInstancePc != NULL) {
+    if (CutSceneLoadingInstance != NULL) {
         return;
     }
     if (instance->stream_index == (u8)instance->saved_scene->unknown_40 - 1) {
         if ((instance->flags_8c & 0x80) != 0) {
-            CutSceneStreamDiagnosticPc(instance->scene->filename);
+            CutSceneStreamDiagnostic(instance->scene->filename);
         } else if (instance->pending_stream != NULL) {
-            CutSceneStreamDiagnosticPc(instance->scene->filename);
+            CutSceneStreamDiagnostic(instance->scene->filename);
         } else {
             if ((instance->flags_88 & 0x10000000) != 0) {
                 instance->pending_stream = instance->stream_buffer_1;
@@ -2348,12 +2348,12 @@ static void CutSceneStreamSkipPc(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
                 instance->pending_stream = instance->stream_buffer_0;
                 instance->flags_88 |= 0x10000000;
             }
-            CutSceneStreamDiagnosticPc(instance->scene->filename);
+            CutSceneStreamDiagnostic(instance->scene->filename);
         }
-        if (CutSceneSingleStreamBufferPc < 2) {
+        if (CutSceneSingleStreamBuffer < 2) {
             copyAnims(instance->scene, instance->stream_buffers[instance->active_stream_buffer & 1]);
         } else {
-            CutSceneSwapStreamAssetPc(instance);
+            CutSceneSwapStreamAsset(instance);
         }
         instance->stream_index = (u8)instance->scene->unknown_40;
         instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
@@ -2361,19 +2361,19 @@ static void CutSceneStreamSkipPc(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
     } else {
         instance->stream_index = (u8)(instance->scene->unknown_40 - 1);
         instance->pending_stream = (instance->flags_88 & 0x10000000) != 0 ? instance->stream_buffer_0 : instance->stream_buffer_1;
-        CutSceneLoadingInstancePc = (INSTNUGCUTSCENE *)instance;
+        CutSceneLoadingInstance = (INSTNUGCUTSCENE *)instance;
     }
 }
 
 static i32 cutscene_synchro_counter = 0;
-static i32 CutSceneQuitPromptPc = 0;
-static i32 CutSceneHasQuitPc = 0;
-static i32 CutSceneLockPlayerPc = 0;
-static i32 CutSceneTerminateStreamPc = 0;
+static i32 CutSceneQuitPrompt = 0;
+static i32 CutSceneHasQuit = 0;
+static i32 CutSceneLockPlayer = 0;
+static i32 CutSceneTerminateStream = 0;
 extern void (*NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *);
 extern void (*NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
 
-static void CutSceneCharacterSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
+static void CutSceneCharacterSysUpdate(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_SCENE_LOAD_PC *scene = instance->scene;
     CUT_LOAD_CHARACTER_SYSTEM *system = scene->character_system;
@@ -2389,9 +2389,9 @@ static void CutSceneCharacterSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame, i32 
     }
 }
 
-static void CutSceneStreamHoldFramePc(CUT_INSTANCE_LOAD_PC *instance) {
+static void CutSceneStreamHoldFrame(CUT_INSTANCE_LOAD_PC *instance) {
     instance->current_frame = instance->scene->duration - 1.0f;
-    CutSceneMissingObjectDiagnosticPc(instance->scene->filename);
+    CutSceneMissingObjectDiagnostic(instance->scene->filename);
 }
 
 static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i32 skip, f32 elapsed) {
@@ -2428,12 +2428,12 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
         return;
     }
     if (instance->scene->version >= 2) {
-        if ((instance->flags_88 & 0x20000000) != 0 && CutSceneLoadingInstancePc == NULL && (instance->flags_88 & 0x8000000) == 0 &&
+        if ((instance->flags_88 & 0x20000000) != 0 && CutSceneLoadingInstance == NULL && (instance->flags_88 & 0x8000000) == 0 &&
             instance->stream_index != (u8)instance->saved_scene->unknown_40) {
-            CutSceneLoadingInstancePc = (INSTNUGCUTSCENE *)instance;
-        } else if (instance->queued_stream_instance != NULL && CutSceneLoadingInstancePc == NULL &&
+            CutSceneLoadingInstance = (INSTNUGCUTSCENE *)instance;
+        } else if (instance->queued_stream_instance != NULL && CutSceneLoadingInstance == NULL &&
                    instance->stream_index == (u8)instance->saved_scene->unknown_40) {
-            CutSceneLoadingInstancePc = instance->queued_stream_instance;
+            CutSceneLoadingInstance = instance->queued_stream_instance;
             instance->queued_stream_instance = NULL;
         }
     }
@@ -2444,30 +2444,30 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
     if ((instance->flags_88 & 4) != 0) {
         paused = 1;
     }
-    if (CutSceneTerminateStreamPc != 0 || (instance->flags_8c & 0x10) != 0) {
+    if (CutSceneTerminateStream != 0 || (instance->flags_8c & 0x10) != 0) {
         if (scene->version >= 2 && (scene->flags & 1) != 0) {
             if (skip != 0) {
                 instance->flags_8c |= 0x400;
             } else {
-                CutSceneQuitPromptPc = 1;
+                CutSceneQuitPrompt = 1;
             }
         } else if ((instance->flags_8c & 0x10) != 0) {
             if (skip != 0) {
                 instance->current_frame = scene->duration - 1.0f - instance->rate * elapsed;
-                CutSceneHasQuitPc = 1;
+                CutSceneHasQuit = 1;
             } else {
-                CutSceneQuitPromptPc = 1;
+                CutSceneQuitPrompt = 1;
             }
         }
     }
     if ((instance->flags_8c & 0x200) != 0) {
-        CutSceneLockPlayerPc = 1;
+        CutSceneLockPlayer = 1;
     }
     if ((instance->flags_88 & 1) != 0) {
         if (paused == 0) {
             instance->current_frame += instance->rate * elapsed;
             if ((instance->flags_8c & 0x400) != 0) {
-                CutSceneStreamSkipPc(instance, elapsed);
+                CutSceneStreamSkip(instance, elapsed);
             }
             if (instance->current_frame < 1.0f) {
                 if ((instance->flags_88 & 0x10) != 0) {
@@ -2517,7 +2517,7 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
                             instance->accumulated_duration = 0.0f;
                         }
                     } else if ((instance->flags_88 & 0x8000000) == 0) {
-                        CutSceneStreamHoldFramePc(instance);
+                        CutSceneStreamHoldFrame(instance);
                     } else {
                         overflow = instance->current_frame - ((f64)current->duration - 1.0);
                         if (overflow > current->duration) {
@@ -2526,8 +2526,8 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
                         ++instance->stream_index;
                         instance->accumulated_duration += current->duration;
                         if ((instance->flags_8c & 0x80) != 0 || instance->pending_stream != NULL) {
-                            CutSceneStreamDiagnosticPc(instance->scene->filename);
-                            CutSceneStreamHoldFramePc(instance);
+                            CutSceneStreamDiagnostic(instance->scene->filename);
+                            CutSceneStreamHoldFrame(instance);
                             --instance->stream_index;
                         } else {
                             if ((instance->flags_88 & 0x10000000) != 0) {
@@ -2537,12 +2537,12 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
                                 instance->flags_88 |= 0x10000000;
                                 instance->pending_stream = instance->stream_buffer_0;
                             }
-                            CutSceneStreamDiagnosticPc(instance->scene->filename);
-                            if (CutSceneSingleStreamBufferPc < 2) {
+                            CutSceneStreamDiagnostic(instance->scene->filename);
+                            if (CutSceneSingleStreamBuffer < 2) {
                                 copyAnims(instance->scene,
                                           (instance->flags_88 & 0x10000000) != 0 ? instance->stream_buffer_1 : instance->stream_buffer_0);
                             } else {
-                                CutSceneSwapStreamAssetPc(instance);
+                                CutSceneSwapStreamAsset(instance);
                             }
                             instance->flags_88 &= ~0x8000000U;
                             instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
@@ -2611,30 +2611,30 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
     }
     instance->render_frame = instance->current_frame;
     if ((instance->flags_88 & 0x40000) != 0) {
-        if (CutSceneRenderCharactersPc != 0 && instance->character_instance != NULL) {
-            CutSceneCharacterSysUpdatePc((INSTNUGCUTSCENE *)instance, scene->duration - instance->current_frame, paused);
+        if (CutSceneRenderCharacters != 0 && instance->character_instance != NULL) {
+            CutSceneCharacterSysUpdate((INSTNUGCUTSCENE *)instance, scene->duration - instance->current_frame, paused);
         }
-        if (CutSceneUpdateCamerasPc != 0 && instance->camera_instance != NULL) {
-            CutSceneCameraSysUpdatePc((INSTNUGCUTSCENE *)instance, scene->duration - instance->current_frame);
+        if (CutSceneUpdateCameras != 0 && instance->camera_instance != NULL) {
+            CutSceneCameraSysUpdate((INSTNUGCUTSCENE *)instance, scene->duration - instance->current_frame);
         }
         if (instance->trigger_instance != NULL) {
-            CutSceneTriggerSysUpdatePc(instance, scene->duration - instance->render_frame);
+            CutSceneTriggerSysUpdate(instance, scene->duration - instance->render_frame);
         }
-        if (CutSceneRenderRigidsPc != 0 && instance->rigid_instance != NULL) {
-            CutSceneRigidSysUpdatePc((INSTNUGCUTSCENE *)instance, scene->duration - instance->render_frame, paused);
+        if (CutSceneRenderRigids != 0 && instance->rigid_instance != NULL) {
+            CutSceneRigidSysUpdate((INSTNUGCUTSCENE *)instance, scene->duration - instance->render_frame, paused);
         }
     } else {
-        if (CutSceneRenderCharactersPc != 0 && instance->character_instance != NULL) {
-            CutSceneCharacterSysUpdatePc((INSTNUGCUTSCENE *)instance, instance->current_frame, paused);
+        if (CutSceneRenderCharacters != 0 && instance->character_instance != NULL) {
+            CutSceneCharacterSysUpdate((INSTNUGCUTSCENE *)instance, instance->current_frame, paused);
         }
-        if (CutSceneUpdateCamerasPc != 0 && instance->camera_instance != NULL) {
-            CutSceneCameraSysUpdatePc((INSTNUGCUTSCENE *)instance, instance->current_frame);
+        if (CutSceneUpdateCameras != 0 && instance->camera_instance != NULL) {
+            CutSceneCameraSysUpdate((INSTNUGCUTSCENE *)instance, instance->current_frame);
         }
         if (instance->trigger_instance != NULL) {
-            CutSceneTriggerSysUpdatePc(instance, instance->render_frame);
+            CutSceneTriggerSysUpdate(instance, instance->render_frame);
         }
-        if (CutSceneRenderRigidsPc != 0 && instance->rigid_instance != NULL) {
-            CutSceneRigidSysUpdatePc((INSTNUGCUTSCENE *)instance, instance->render_frame, paused);
+        if (CutSceneRenderRigids != 0 && instance->rigid_instance != NULL) {
+            CutSceneRigidSysUpdate((INSTNUGCUTSCENE *)instance, instance->render_frame, paused);
         }
     }
 }
@@ -2644,10 +2644,10 @@ void NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed) {
     if (++cutscene_synchro_counter > 0xff) {
         cutscene_synchro_counter = 1;
     }
-    CutSceneQuitPromptPc = 0;
-    CutSceneHasQuitPc = 0;
-    CutSceneLockPlayerPc = 0;
-    CutSceneCameraChangedPc = 0;
+    CutSceneQuitPrompt = 0;
+    CutSceneHasQuit = 0;
+    CutSceneLockPlayer = 0;
+    CutSceneCameraChanged = 0;
     if (paused != 0) {
         skip = 0;
     }
@@ -2659,7 +2659,7 @@ void NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed) {
     }
 }
 
-static void CutSceneReleaseInstanceCharactersPc(CUT_INSTANCE_LIFECYCLE_PC *instance) {
+static void CutSceneReleaseInstanceCharacters(CUT_INSTANCE_LIFECYCLE_PC *instance) {
     CUT_CHARACTER_SYSTEM_LIFECYCLE_PC *system = instance->scene->character_system;
     CUT_CHARACTER_INSTANCE_SYSTEM_PC *states = instance->character_instance;
     i32 i;
@@ -2675,7 +2675,7 @@ void instNuGCutSceneStop(INSTNUGCUTSCENE *owner) {
     CUT_INSTANCE_LIFECYCLE_PC *instance = (CUT_INSTANCE_LIFECYCLE_PC *)owner;
     instance->flags_88 &= ~0x1006U;
     if (instance->character_instance != NULL) {
-        CutSceneReleaseInstanceCharactersPc(instance);
+        CutSceneReleaseInstanceCharacters(instance);
     }
     if (instance->camera_instance != NULL && instance->camera_instance->camera_index >= 0) {
         CutSceneCameraCTRL = 0;
@@ -2691,7 +2691,7 @@ i32 instNuGCutSceneIsFinished(INSTNUGCUTSCENE *owner) {
     return (i32)(((CUT_INSTANCE_LIFECYCLE_PC *)owner)->flags_88 << 19) >> 31;
 }
 
-static f32 CutSceneFdivPc(f32 a, f32 b) {
+static f32 CutSceneFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
@@ -2718,7 +2718,7 @@ f32 instNuGCutSceneTimeLeft(INSTNUGCUTSCENE *owner) {
             if (instance->rate == 0.0f) {
                 return FLT_MAX;
             }
-            return CutSceneFdivPc(frames_left, instance->rate);
+            return CutSceneFdiv(frames_left, instance->rate);
         }
     }
     return time_left;
@@ -2733,7 +2733,7 @@ f32 instCutSceneTimeElapsed(INSTNUGCUTSCENE *owner) {
     if (instance->rate == 0.0f) {
         return 0.0f;
     }
-    return CutSceneFdivPc(instance->accumulated_stream_duration + instance->current_frame - 1.0, instance->rate);
+    return CutSceneFdiv(instance->accumulated_stream_duration + instance->current_frame - 1.0, instance->rate);
 }
 
 f32 instNuGCutSceneTotalTime(INSTNUGCUTSCENE *owner) {
@@ -2742,7 +2742,7 @@ f32 instNuGCutSceneTotalTime(INSTNUGCUTSCENE *owner) {
     if (instance == NULL || instance->scene == NULL || instance->scene->version < 10 || instance->rate == 0.0f) {
         return 0.0f;
     }
-    return CutSceneFdivPc((f32)instance->saved_scene->total_stream_frames, instance->rate);
+    return CutSceneFdiv((f32)instance->saved_scene->total_stream_frames, instance->rate);
 }
 
 i32 gcutSoundVol = 100;
@@ -2760,7 +2760,7 @@ void instNuGCutScenePause(INSTNUGCUTSCENE *owner, i32 paused) {
 }
 
 void NuGCutSceneSysPostBackgroundLoad(void) {
-    INSTNUGCUTSCENE *next = CutSceneBackgroundInstancesPc;
+    INSTNUGCUTSCENE *next = CutSceneBackgroundInstances;
     INSTNUGCUTSCENE *active;
     if (next != NULL) {
         active = active_cutscene_instances;
@@ -2775,7 +2775,7 @@ void NuGCutSceneSysPostBackgroundLoad(void) {
             active = owner;
         }
         active_cutscene_instances = active;
-        CutSceneBackgroundInstancesPc = NULL;
+        CutSceneBackgroundInstances = NULL;
     }
 }
 
@@ -2784,10 +2784,10 @@ i32 NuGCutSceneIsBackgroundLoading(void) {
 }
 
 i32 instNuGCutScenePreload(INSTNUGCUTSCENE *owner) {
-    if (CutSceneLoadingInstancePc != NULL) {
+    if (CutSceneLoadingInstance != NULL) {
         return 0;
     }
-    CutSceneLoadingInstancePc = owner;
+    CutSceneLoadingInstance = owner;
     return 1;
 }
 
@@ -2798,7 +2798,7 @@ void fun_00500a60(i32 value) {
 i32 instNuGCutSceneSwapBuffers(INSTNUGCUTSCENE *owner, i32 force) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     if (((instance->flags_8c & 0x80) != 0 && force == 0) || instance->pending_stream != NULL) {
-        CutSceneStreamDiagnosticPc(instance->scene->filename);
+        CutSceneStreamDiagnostic(instance->scene->filename);
         return 0;
     }
     if ((instance->flags_88 & 0x10000000) != 0) {
@@ -2808,7 +2808,7 @@ i32 instNuGCutSceneSwapBuffers(INSTNUGCUTSCENE *owner, i32 force) {
         instance->flags_88 |= 0x10000000;
         instance->pending_stream = instance->stream_buffer_0;
     }
-    CutSceneStreamDiagnosticPc(instance->scene->filename);
+    CutSceneStreamDiagnostic(instance->scene->filename);
     return 1;
 }
 
@@ -2821,62 +2821,61 @@ void instNuGCutSceneServiceLoad(void) {
     VARIPTR buffer;
     VARIPTR buffer_end;
     CUT_INSTANCE_LOAD_PC *instance;
-    if (CutSceneLoadingInstancePc == NULL || CutSceneStreamLoadGuardPc != 0 ||
-        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene == NULL) {
+    if (CutSceneLoadingInstance == NULL || CutSceneStreamLoadGuard != 0 ||
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->scene == NULL) {
         return;
     }
-    NuStrCpy(path, ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->filename);
+    NuStrCpy(path, ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->scene->filename);
     dot = NuStrStr(path, ".");
     NuStrCpy(extension, dot);
-    tens = (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->stream_index + 1) / 10;
-    units = (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->stream_index + 1) % 10;
+    tens = (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->stream_index + 1) / 10;
+    units = (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->stream_index + 1) % 10;
     if (tens != 0) {
         *dot++ = (char)('0' + tens);
     }
     *dot++ = (char)('0' + units);
     NuStrCpy(dot, extension);
-    instance = (CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc;
+    instance = (CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance;
     buffer.void_ptr = instance->pending_stream;
     instance->pending_stream = NULL;
     if (buffer.void_ptr == NULL) {
         return;
     }
-    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c = ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c | 0x80;
-    buffer_end.addr = buffer.addr + ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->stream_buffer_size;
-    CutSceneMissingObjectDiagnosticPc(path, buffer.void_ptr);
-    CutSceneStreamDiagnosticPc(path);
+    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->flags_8c = ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->flags_8c | 0x80;
+    buffer_end.addr = buffer.addr + ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->scene->stream_buffer_size;
+    CutSceneMissingObjectDiagnostic(path, buffer.void_ptr);
+    CutSceneStreamDiagnostic(path);
     NuGCutSceneLoad(path, &buffer, &buffer_end, 1);
-    CutSceneStreamDiagnosticPc(path);
-    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 =
-        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 | 0x08000000;
-    if (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->stream_index == 0 &&
-        (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->flags & 8) != 0) {
-        instNuGCutSceneSwapBuffers(CutSceneLoadingInstancePc, 1);
-        if (CutSceneSingleStreamBufferPc < 2) {
-            copyAnims(((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene,
-                      ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->stream_buffer_1);
+    CutSceneStreamDiagnostic(path);
+    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->flags_88 = ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->flags_88 | 0x08000000;
+    if (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->stream_index == 0 &&
+        (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->scene->flags & 8) != 0) {
+        instNuGCutSceneSwapBuffers(CutSceneLoadingInstance, 1);
+        if (CutSceneSingleStreamBuffer < 2) {
+            copyAnims(((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->scene,
+                      ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->scene->stream_buffer_1);
         } else {
-            ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 =
-                ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 | 0x10000000;
-            CutSceneSwapStreamAssetPc((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc);
+            ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->flags_88 =
+                ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->flags_88 | 0x10000000;
+            CutSceneSwapStreamAsset((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance);
         }
-        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->flags &= ~8U;
-        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 =
-            ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 & ~0x08000000U;
-        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->stream_index = 1;
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->scene->flags &= ~8U;
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->flags_88 =
+            ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->flags_88 & ~0x08000000U;
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->stream_index = 1;
     }
-    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c = ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c & ~0x80U;
-    CutSceneLoadingInstancePc = NULL;
+    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->flags_8c = ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstance)->flags_8c & ~0x80U;
+    CutSceneLoadingInstance = NULL;
 }
 
-INSTNUGCUTSCENE *instNuGCutSceneFindActivePc(char *name) {
+INSTNUGCUTSCENE *instNuGCutSceneFindActive(char *name) {
     INSTNUGCUTSCENE *instance;
     for (instance = active_cutscene_instances; instance != NULL; instance = instance->next) {
         if (NuStrICmp(name, instance->name) == 0) {
             return instance;
         }
     }
-    CutSceneMissingObjectDiagnosticPc(name);
+    CutSceneMissingObjectDiagnostic(name);
     return NULL;
 }
 
@@ -2898,7 +2897,7 @@ i32 instNuGCutSceneCharGetStartMtx(INSTNUGCUTSCENE *owner, char *name, NUMTX *ou
     CUT_CHARACTER_SYSTEM_LIFECYCLE_PC *system = ((CUT_INSTANCE_LIFECYCLE_PC *)owner)->scene->character_system;
     i32 i;
     for (i = 0; i < system->count; ++i) {
-        CUT_CHARACTER_GENERIC_PC *character = &system->characters[i];
+        CUT_CHARACTER_GENERIC *character = &system->characters[i];
         if (NuStrICmp(name, character->name) == 0) {
             *out = character->base_matrix;
             return 1;
@@ -3043,9 +3042,9 @@ void *instNuGCutSceneCleanUp(void) {
             DefragInstDestroyedFn(entry->handle);
         }
     }
-    if (CutSceneBackgroundInstancesPc != NULL) {
-        active_cutscene_instances = CutSceneBackgroundInstancesPc;
-        CutSceneBackgroundInstancesPc = NULL;
+    if (CutSceneBackgroundInstances != NULL) {
+        active_cutscene_instances = CutSceneBackgroundInstances;
+        CutSceneBackgroundInstances = NULL;
     }
     return cursor.void_ptr;
 }

@@ -24,19 +24,19 @@
 #if SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP)
 
 struct PART_PC;
-struct addgizmotype_pc_s;
+struct addgizmotype_s;
 struct gameanimobj_s;
 struct gameobject_s;
 struct gizforce_s;
 
-typedef struct addgizmotype_pc_s *(*REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
+typedef struct addgizmotype_s *(*REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
 #ifdef __cplusplus
 extern "C" {
 #endif
 
     extern const char VehicleSmartBombChargeNamePc[10];
     extern const char VehicleShieldOnNamePc[10];
-    i32 GizForce_UpdateHint(HINT_PC *);
+    i32 GizForce_UpdateHint(HINT *);
     extern const char EpisodeVI_electric_off[13];
     extern const char EpisodeVI_elecpad_zero_format[15];
     extern const char EpisodeVI_elecpad_format[14];
@@ -44,7 +44,7 @@ extern "C" {
     extern const char EpisodeVI_eFloor_AlwaysOf[16];
     extern const char EpisodeVI_eFloor_OnOff[13];
     extern i32 force_gizmotype_id;
-    extern NUVEC ForceThrowMaulPositionPc;
+    extern NUVEC ForceThrowMaulPosition;
     extern u32 lightning_col[2];
     extern f32 lightning_endw[2];
     extern f32 lightning_sizel[2];
@@ -98,7 +98,7 @@ typedef struct gizforce_target_record_s { // size 0x10
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[];
+    extern GIZFORCE_TARGET_RECORD_PC PossibleForceTargets[];
     i32 GizForce_FindBestForceTarget(void *, struct gameobject_s *);
 
     i32 GizForce_StoodOnForce(struct gizforce_s *, struct gameobject_s *);

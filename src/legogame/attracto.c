@@ -92,7 +92,7 @@ extern void Shard_Collect(SHARD_s *, GAMEOBJECT *);
 extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static f32 AttractoFabsPc(f32 f) {
+static f32 AttractoFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -177,7 +177,7 @@ void Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 
-static void AttractoInitRecordPc(ATTRACTO_RECORD_PC *attracto) {
+static void AttractoInitRecord(ATTRACTO_RECORD_PC *attracto) {
     f32 height;
     attracto->active_position.y = 0.0f;
     attracto->active_position.x = 0.0f;
@@ -207,7 +207,7 @@ void Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_PC *progr
     }
     attracto = world->attractos;
     for (index = 0; index < world->attracto_count; ++index, ++attracto) {
-        AttractoInitRecordPc(attracto);
+        AttractoInitRecord(attracto);
         if (progress != NULL && index < 32) {
             attracto->collected_count = progress->counts[index];
             attracto->visible = (progress->visible[index / 32] & (1 << (index & 31))) != 0;
@@ -410,46 +410,46 @@ void Attracto_GetPos_Top(ATTRACTO_PC *attracto, NUVEC *position) {
 char *AttractoRegistryNamePc = "Attracto";
 #pragma data_seg()
 #pragma data_seg(".data$AttractoAddTypePc")
-ADDGIZMOTYPE_PC AttractoAddTypePc = {0};
+ADDGIZMOTYPE_PC AttractoAddType = {0};
 #pragma data_seg()
 
 ADDGIZMOTYPE_PC *Attractos_RegisterGizmo(i32 unused_type_id) {
     char *name = AttractoRegistryNamePc;
-    AttractoAddTypePc = Default_ADDGIZMOTYPE;
-    AttractoAddTypePc.name = name;
-    AttractoAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
-    AttractoAddTypePc.fns.options = 0x2c;
-    AttractoAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))Attractos_GetMaxGizmos;
-    AttractoAddTypePc.fns.add_gizmos_fn = (void *)Attractos_AddGizmos;
-    AttractoAddTypePc.fns.early_update_fn = NULL;
-    AttractoAddTypePc.fns.late_update_fn = (void (*)(void *, void *, f32))Attractos_Update;
-    AttractoAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))Attractos_Draw;
-    AttractoAddTypePc.fns.panel_draw_fn = NULL;
-    AttractoAddTypePc.fns.get_gizmo_name_fn = Attracto_GetGizmoName;
-    AttractoAddTypePc.fns.get_output_fn = Attracto_GetOutput;
-    AttractoAddTypePc.fns.get_output_name_fn = Attracto_GetOutputName;
-    AttractoAddTypePc.fns.get_num_outputs_fn = (void *)Attracto_GetNumOutputs;
-    AttractoAddTypePc.fns.activate_fn = Attracto_Activate;
-    AttractoAddTypePc.fns.activate_rev_fn = NULL;
-    AttractoAddTypePc.fns.set_visibility_fn = Attracto_SetVisibility;
-    AttractoAddTypePc.fns.get_visibility_fn = NULL;
-    AttractoAddTypePc.fns.get_pos_fn = (void *)Attracto_GetPos;
-    AttractoAddTypePc.fns.using_special_fn = NULL;
-    AttractoAddTypePc.fns.bolt_hit_plat_fn = NULL;
-    AttractoAddTypePc.fns.get_best_bolt_target_fn = NULL;
-    AttractoAddTypePc.fns.bolt_hit_fn = NULL;
-    AttractoAddTypePc.fns.allocate_progress_data_fn = (void *)Attractos_AllocateProgressData;
-    AttractoAddTypePc.fns.clear_progress_fn = (void *)Attractos_ClearProgress;
-    AttractoAddTypePc.fns.store_progress_fn = (void *)Attractos_StoreProgress;
-    AttractoAddTypePc.fns.reset_fn = (void *)Attractos_Reset;
-    AttractoAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))Attractos_ReserveBufferSpace;
-    AttractoAddTypePc.fns.load_fn = (i32(*)(void *, void *))Attractos_Load;
-    AttractoAddTypePc.fns.post_load_fn = NULL;
-    AttractoAddTypePc.fns.add_level_sfx_fn = NULL;
-    return &AttractoAddTypePc;
+    AttractoAddType = Default_ADDGIZMOTYPE;
+    AttractoAddType.name = name;
+    AttractoAddType.prefix = TextInputKeyNameTextPc7516c0;
+    AttractoAddType.fns.options = 0x2c;
+    AttractoAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Attractos_GetMaxGizmos;
+    AttractoAddType.fns.add_gizmos_fn = (void *)Attractos_AddGizmos;
+    AttractoAddType.fns.early_update_fn = NULL;
+    AttractoAddType.fns.late_update_fn = (void (*)(void *, void *, f32))Attractos_Update;
+    AttractoAddType.fns.draw_fn = (void (*)(void *, void *, f32))Attractos_Draw;
+    AttractoAddType.fns.panel_draw_fn = NULL;
+    AttractoAddType.fns.get_gizmo_name_fn = Attracto_GetGizmoName;
+    AttractoAddType.fns.get_output_fn = Attracto_GetOutput;
+    AttractoAddType.fns.get_output_name_fn = Attracto_GetOutputName;
+    AttractoAddType.fns.get_num_outputs_fn = (void *)Attracto_GetNumOutputs;
+    AttractoAddType.fns.activate_fn = Attracto_Activate;
+    AttractoAddType.fns.activate_rev_fn = NULL;
+    AttractoAddType.fns.set_visibility_fn = Attracto_SetVisibility;
+    AttractoAddType.fns.get_visibility_fn = NULL;
+    AttractoAddType.fns.get_pos_fn = (void *)Attracto_GetPos;
+    AttractoAddType.fns.using_special_fn = NULL;
+    AttractoAddType.fns.bolt_hit_plat_fn = NULL;
+    AttractoAddType.fns.get_best_bolt_target_fn = NULL;
+    AttractoAddType.fns.bolt_hit_fn = NULL;
+    AttractoAddType.fns.allocate_progress_data_fn = (void *)Attractos_AllocateProgressData;
+    AttractoAddType.fns.clear_progress_fn = (void *)Attractos_ClearProgress;
+    AttractoAddType.fns.store_progress_fn = (void *)Attractos_StoreProgress;
+    AttractoAddType.fns.reset_fn = (void *)Attractos_Reset;
+    AttractoAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Attractos_ReserveBufferSpace;
+    AttractoAddType.fns.load_fn = (i32(*)(void *, void *))Attractos_Load;
+    AttractoAddType.fns.post_load_fn = NULL;
+    AttractoAddType.fns.add_level_sfx_fn = NULL;
+    return &AttractoAddType;
 }
 
-static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJECT *object) {
+static ATTRACTO_SHARD_READER_PC *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *object) {
     ATTRACTO_SHARD_READER_PC *shard;
     ATTRACTO_SHARD_READER_PC *nearest;
     ATTRACTO_SHARD_READER_PC *result;
@@ -471,9 +471,9 @@ static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJ
             f32 dx;
             f32 dy;
             f32 distance;
-            dx = AttractoFabsPc(shard->screen_position.x - object->external_force.x);
+            dx = AttractoFabs(shard->screen_position.x - object->external_force.x);
             if (dx < (f64)0.2f) {
-                dy = AttractoFabsPc(shard->screen_position.y - object->external_force.y);
+                dy = AttractoFabs(shard->screen_position.y - object->external_force.y);
                 if (dy < (f64)0.2f) {
                     distance = NuVecDistSqr(&shard->position, &object->collision_position, &delta);
                     if (distance < best) {
@@ -507,7 +507,7 @@ static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJ
     return result;
 }
 
-static void AttractoStartSuctionPc(GAMEOBJECT *object) {
+static void AttractoStartSuction(GAMEOBJECT *object) {
     object->character_context = 0x52;
     object->context_timer = 0.0f;
     object->field_7aa = 0x9a;
@@ -565,7 +565,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->character_context = -1;
         check_context:
             if (object->character_context == -1) {
-                AttractoStartSuctionPc(object);
+                AttractoStartSuction(object);
             }
         } else {
             object->context_duration = (f64)object->context_duration - (f64)FRAMETIME;
@@ -600,7 +600,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->launch_origin.y = SeekValF(object->launch_origin.y, y, 10.0f);
             object->external_force.x = (f64)object->external_force.x + (f64)object->launch_origin.x * (f64)FRAMETIME;
             object->external_force.y = (f64)object->external_force.y + (f64)object->launch_origin.y * (f64)FRAMETIME;
-            nearest = AttractoSelectShardPc(world, object);
+            nearest = AttractoSelectShard(world, object);
             if (nearest != NULL) {
                 object->movement_facing_angle = NuAtan2D((f64)nearest->position.x - (f64)object->collision_position.x,
                                                          (f64)nearest->position.z - (f64)object->collision_position.z);
@@ -634,7 +634,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         if (object->model_draw_result != 0 && object->camera_screen_position.z > 0.0f &&
             (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
-            AttractoStartSuctionPc(object);
+            AttractoStartSuction(object);
         }
     }
 }

@@ -94,8 +94,8 @@ struct AIEDITOR_RENDER_STATE { // size 0xc3940
         NULISTHDR path_walls;
         NULISTHDR shared_path_nodes;
     }; // 0x31b8c
-    struct AIPATHSYS_PC *cached_path_system;    // 0x31b94
-    struct AIPATH_PC *runtime_path;             // 0x31b98
+    struct AIPATHSYS *cached_path_system;       // 0x31b94
+    struct AIPATH *runtime_path;                // 0x31b98
     struct EDAICREATURE_s creature_pool[128];   // 0x31b9c
     NULISTHDR free_creatures;                   // 0x3719c
     NULISTHDR creatures;                        // 0x371a4

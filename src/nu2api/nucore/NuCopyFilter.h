@@ -18,9 +18,9 @@ class NuCopyFilter : public NuPostFilter { // size 0x14
     virtual void initResources();
     virtual void destroyResources();
     virtual void reset();
-    virtual void render(PC_FRAMEBUFFER_PC *);
-    PC_FRAMEBUFFER_PC *copy_fbo;              // 0x0c
-    GRAPHICS_RENDER_TEXTURE_PC *copy_texture; // 0x10
+    virtual void render(PC_FRAMEBUFFER *);
+    PC_FRAMEBUFFER *copy_fbo;              // 0x0c
+    GRAPHICS_RENDER_TEXTURE *copy_texture; // 0x10
 };
 
 #endif

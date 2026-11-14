@@ -33,13 +33,13 @@ struct gameobject_s;
 struct numtx_s;
 struct nuspecial_handle_s;
 
-typedef struct PART_LIGHTING_DATA_PC PART_LIGHTING_DATA_PC;
+typedef struct PART_LIGHTING_DATA PART_LIGHTING_DATA;
 typedef void (*PART_MOVE_PC)(struct PART_PC *, f32);
 typedef i32 (*PART_DRAW_PC)(struct PART_PC *);
 
-struct PART_LIGHTING_DATA_PC { // size 0xcc
-    u8 unknown_0[0x78];        // 0x00
-    NUVEC values[7];           // 0x78
+struct PART_LIGHTING_DATA { // size 0xcc
+    u8 unknown_0[0x78];     // 0x00
+    NUVEC values[7];        // 0x78
 };
 
 #ifdef __cplusplus
@@ -49,20 +49,20 @@ extern "C" {
     extern i32 objhitobj_noattackerrumble;
     extern i32 objhitobj_throwkillpartsup;
     extern u8 objhit_damage_joints[3];
-    extern i32 CombatHitReactionIntervalPc;
-    extern f32 CombatReactionVerticalScalePc;
-    extern f32 CombatReactionDurationPc;
-    extern f32 CombatNpcKillDifficultyAmountPc;
-    extern f32 CombatPlayerDeathDifficultyAmountPc;
+    extern i32 CombatHitReactionInterval;
+    extern f32 CombatReactionVerticalScale;
+    extern f32 CombatReactionDuration;
+    extern f32 CombatNpcKillDifficultyAmount;
+    extern f32 CombatPlayerDeathDifficultyAmount;
     extern i16 id_OBIWANKENOBIEP3;
     extern i16 id_ANAKINJEDI;
     extern const char ShieldHitSfxPc[9];
     extern const char ShieldFlickerSfxPc[13];
-    extern i32 KillPartsPreviousVariantPc;
-    extern char KillPartsTieSpinsTextPc[10];
-    extern f32 KillPartsTieTrailScalePc;
-    extern NUVEC KillPartsTieSpinTranslationPc;
-    extern char KillPartsAtatExplodeTextPc[9];
+    extern i32 KillPartsPreviousVariant;
+    extern char KillPartsTieSpinsText[10];
+    extern f32 KillPartsTieTrailScale;
+    extern NUVEC KillPartsTieSpinTranslation;
+    extern char KillPartsAtatExplodeText[9];
     extern const NUVEC GAMEOBJECT_ROTATION_BUGGY_OFFSETS[4];
     extern const NUVEC GAMEOBJECT_ROTATION_RADIOCAR_OFFSETS[4];
     extern const NUVEC GAMEOBJECT_ROTATION_POLICECAR_OFFSETS[4];
@@ -85,7 +85,7 @@ extern "C" {
     extern f32 BaseCurrentSpeed;
     extern i8 adtabentries[9][4];
 
-    extern f32 InteractionArrowScalePc;
+    extern f32 InteractionArrowScale;
 #ifdef __cplusplus
 }
 #endif
@@ -100,7 +100,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern RTL_DATA_PC KillPartsZeroLightingPc;
+    extern RTL_DATA KillPartsZeroLighting;
 #ifdef __cplusplus
 }
 #endif
@@ -113,61 +113,61 @@ extern "C" {
 
 #if SAGA_LEGOAPI_ITEMS_OBJECTS_GAME_OBJ_H_PART == 3 && !defined(SAGA_LEGOAPI_ITEMS_OBJECTS_GAME_OBJ_H_STOP)
 
-typedef struct ADDPART_PC {               // size 0xc8
-    struct numtx_s *matrix;               // 0x00
-    NUVEC *position;                      // 0x04
-    NUVEC *velocity;                      // 0x08
-    struct gameobject_s *owner;           // 0x0c
-    struct gameobject_s *recipient;       // 0x10
-    f32 field_14;                         // 0x14
-    f32 field_18;                         // 0x18
-    f32 gravity;                          // 0x1c
-    f32 field_20;                         // 0x20
-    struct nuspecial_handle_s *special;   // 0x24
-    i32 part_id;                          // 0x28
-    u32 flags;                            // 0x2c
-    PART_ACTION_PC callback_30;           // 0x30
-    PART_MOVE_PC move_fn;                 // 0x34
-    PART_ACTION_PC deflect_fn;            // 0x38
-    PART_ACTION_PC impact_fn;             // 0x3c
-    PART_ACTION_PC collision_fn;          // 0x40
-    PART_KILL_PC kill_fn;                 // 0x44
-    PART_ACTION_PC update_fn;             // 0x48
-    PART_ACTION_PC stop_fn;               // 0x4c
-    PART_ACTION_PC destroy_fn;            // 0x50
-    PART_DRAW_PC draw_fn;                 // 0x54
-    i32 effect_id_58;                     // 0x58
-    i32 *debris_handle;                   // 0x5c
-    i32 effect_id_60;                     // 0x60
-    i32 effect_id_64;                     // 0x64
-    f32 field_68;                         // 0x68
-    f32 field_6c;                         // 0x6c
-    i32 effect_id_70;                     // 0x70
-    i32 effect_id_74;                     // 0x74
-    i32 effect_id_78;                     // 0x78
-    f32 effect_scale;                     // 0x7c
-    i32 *lighting_handle;                 // 0x80
-    i32 lighting_id;                      // 0x84
-    f32 field_88;                         // 0x88
-    f32 time_step;                        // 0x8c
-    u32 hostility_group;                  // 0x90
-    PART_LIGHTING_DATA_PC *lighting_data; // 0x94
-    f32 lighting_scale_x;                 // 0x98
-    f32 lighting_scale_y;                 // 0x9c
-    f32 lighting_scale_z;                 // 0xa0
-    f32 field_a4;                         // 0xa4
-    u32 field_a8[6];                      // 0xa8
-    f32 field_c0;                         // 0xc0
-    u8 field_c4;                          // 0xc4
-} ADDPART_PC;
+typedef struct ADDPART {                // size 0xc8
+    struct numtx_s *matrix;             // 0x00
+    NUVEC *position;                    // 0x04
+    NUVEC *velocity;                    // 0x08
+    struct gameobject_s *owner;         // 0x0c
+    struct gameobject_s *recipient;     // 0x10
+    f32 field_14;                       // 0x14
+    f32 field_18;                       // 0x18
+    f32 gravity;                        // 0x1c
+    f32 field_20;                       // 0x20
+    struct nuspecial_handle_s *special; // 0x24
+    i32 part_id;                        // 0x28
+    u32 flags;                          // 0x2c
+    PART_ACTION_PC callback_30;         // 0x30
+    PART_MOVE_PC move_fn;               // 0x34
+    PART_ACTION_PC deflect_fn;          // 0x38
+    PART_ACTION_PC impact_fn;           // 0x3c
+    PART_ACTION_PC collision_fn;        // 0x40
+    PART_KILL_PC kill_fn;               // 0x44
+    PART_ACTION_PC update_fn;           // 0x48
+    PART_ACTION_PC stop_fn;             // 0x4c
+    PART_ACTION_PC destroy_fn;          // 0x50
+    PART_DRAW_PC draw_fn;               // 0x54
+    i32 effect_id_58;                   // 0x58
+    i32 *debris_handle;                 // 0x5c
+    i32 effect_id_60;                   // 0x60
+    i32 effect_id_64;                   // 0x64
+    f32 field_68;                       // 0x68
+    f32 field_6c;                       // 0x6c
+    i32 effect_id_70;                   // 0x70
+    i32 effect_id_74;                   // 0x74
+    i32 effect_id_78;                   // 0x78
+    f32 effect_scale;                   // 0x7c
+    i32 *lighting_handle;               // 0x80
+    i32 lighting_id;                    // 0x84
+    f32 field_88;                       // 0x88
+    f32 time_step;                      // 0x8c
+    u32 hostility_group;                // 0x90
+    PART_LIGHTING_DATA *lighting_data;  // 0x94
+    f32 lighting_scale_x;               // 0x98
+    f32 lighting_scale_y;               // 0x9c
+    f32 lighting_scale_z;               // 0xa0
+    f32 field_a4;                       // 0xa4
+    u32 field_a8[6];                    // 0xa8
+    f32 field_c0;                       // 0xc0
+    u8 field_c4;                        // 0xc4
+} ADDPART;
 
-typedef struct KILLPARTS_BIKE_PC { // size 0x34
-    SPLINEPOS spline_position;     // 0x00
-    u8 active;                     // 0x20
-    u8 unknown_21[3];              // 0x21
-    struct gameobject_s *rider;    // 0x24
-    NUVEC rider_position;          // 0x28
-} KILLPARTS_BIKE_PC;
+typedef struct KILLPARTS_BIKE { // size 0x34
+    SPLINEPOS spline_position;  // 0x00
+    u8 active;                  // 0x20
+    u8 unknown_21[3];           // 0x21
+    struct gameobject_s *rider; // 0x24
+    NUVEC rider_position;       // 0x28
+} KILLPARTS_BIKE;
 
 #ifdef __cplusplus
 extern "C" {
@@ -176,20 +176,20 @@ extern "C" {
     void InstantKillParts(struct gameobject_s *, i32, f32);
     void ObjHitShield(struct gameobject_s *, struct gameobject_s *, i32, void *);
     void PlayerTakeHit(struct gameobject_s *, struct gameobject_s *);
-    i32 PlayerTakeHitReactionPc(struct gameobject_s *, struct gameobject_s *, f32, u32);
+    i32 PlayerTakeHitReaction(struct gameobject_s *, struct gameobject_s *, f32, u32);
 
     void LoseHelmet(struct gameobject_s *, i32, i32);
     void SpawnCreatureFromCrate(struct gameobject_s *, f32, f32);
-    void KillParts_TIEFIGHTER(ADDPART_PC *, i32, i32, struct gameobject_s *, i32, u16, u16, NUVEC *);
-    void KillParts_ATAT(ADDPART_PC *, i32, i32, struct gameobject_s *);
+    void KillParts_TIEFIGHTER(ADDPART *, i32, i32, struct gameobject_s *, i32, u16, u16, NUVEC *);
+    void KillParts_ATAT(ADDPART *, i32, i32, struct gameobject_s *);
     i32 KillGameObject(struct gameobject_s *, i32, i32);
-    extern KILLPARTS_BIKE_PC KillPartsBikesPc[4];
+    extern KILLPARTS_BIKE KillPartsBikes[4];
     extern EXPLOSION_PC Explosions[8];
     extern struct gameobject_s *player_tag_to;
     void ClearLastSafeTakeOver(struct gameobject_s *);
     void GameObjectToCameraCode(struct gameobject_s *);
     void CollideGameObjects(struct WORLDINFO_s *);
-    char *GameObj_GetNamePc(i32, struct gameobject_s *, char *);
+    char *GameObj_GetName(i32, struct gameobject_s *, char *);
 #ifdef __cplusplus
 }
 #endif

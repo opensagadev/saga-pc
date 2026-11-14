@@ -24,13 +24,13 @@ extern "C" {
 void NOSTrace(...) {
 }
 
-void NETMESSAGE_PC::fun_00611a00(u32 size) {
+void NETMESSAGE::fun_00611a00(u32 size) {
     if (data != NULL) {
         write_offset += size;
     }
 }
 
-void NETMESSAGE_PC::fun_00611a10(u32 size) {
+void NETMESSAGE::fun_00611a10(u32 size) {
     if (data != NULL) {
         read_offset += size;
     }
@@ -44,7 +44,7 @@ i32 V2Peer::fun_00611a60(i32 time) const {
     return time_offset + time;
 }
 
-/* Serialises replicated members into a NETMESSAGE_PC. */
+/* Serialises replicated members into a NETMESSAGE. */
 class NetOutputStream : public EdOutputStream { // size 0x24
   public:
     NetOutputStream() {
@@ -69,14 +69,14 @@ class NetOutputStream : public EdOutputStream { // size 0x24
     virtual void EndBlock() {
     }
 
-    void SetMessage(NETMESSAGE_PC *new_message) {
+    void SetMessage(NETMESSAGE *new_message) {
         message = new_message;
     }
 
-    NETMESSAGE_PC *message; // 0x20
+    NETMESSAGE *message; // 0x20
 };
 
-/* Reads replicated members back out of a NETMESSAGE_PC. */
+/* Reads replicated members back out of a NETMESSAGE. */
 class NetInputStream : public EdInputStream { // size 0x24
   public:
     NetInputStream() : message(NULL) {
@@ -86,7 +86,7 @@ class NetInputStream : public EdInputStream { // size 0x24
     }
 
     virtual i32 Eat(i32 size, i32 count) {
-        NETMESSAGE_PC *source = message;
+        NETMESSAGE *source = message;
         i32 bytes = size * count;
         if (source->data != NULL) {
             source->read_offset += bytes;
@@ -106,11 +106,11 @@ class NetInputStream : public EdInputStream { // size 0x24
     virtual void EndBlock() {
     }
 
-    void SetMessage(NETMESSAGE_PC *new_message) {
+    void SetMessage(NETMESSAGE *new_message) {
         message = new_message;
     }
 
-    NETMESSAGE_PC *message; // 0x20
+    NETMESSAGE *message; // 0x20
 };
 
 /* Replicator data is a packed run of word-aligned per-object records. */
@@ -410,7 +410,7 @@ void NetworkObjectManager::BindFilter(NOSFilter *filter, const EdClass *object_c
     filters[theRegistry.GetClassId((EdClass *)object_class)] = filter;
 }
 
-i32 NetworkObjectManager::RegisterRemoteCall(void (*callback)(NETMESSAGE_PC &), i32 flags) {
+i32 NetworkObjectManager::RegisterRemoteCall(void (*callback)(NETMESSAGE &), i32 flags) {
     i32 call_id = 0;
     if (registered_call_count < 32) {
         registered_calls[registered_call_count].type = 0;
@@ -421,7 +421,7 @@ i32 NetworkObjectManager::RegisterRemoteCall(void (*callback)(NETMESSAGE_PC &), 
     return call_id;
 }
 
-i32 NetworkObjectManager::RegisterObjectCall(void (*callback)(void *, NETMESSAGE_PC &), i32 flags) {
+i32 NetworkObjectManager::RegisterObjectCall(void (*callback)(void *, NETMESSAGE &), i32 flags) {
     i32 call_id = 0;
     if (registered_call_count < 32) {
         registered_calls[registered_call_count].type = 1;
@@ -641,7 +641,7 @@ void NetworkObjectManager::ChangeContext(NOSContext &new_context) {
     PCByteCopy(&context, &new_context, sizeof(context));
 }
 
-void NetworkObjectManager::ReceiveStopMessage(NETMESSAGE_PC &, const V2Peer &peer) {
+void NetworkObjectManager::ReceiveStopMessage(NETMESSAGE &, const V2Peer &peer) {
     for (i32 i = 0; i < 8; i++) {
         if (peer_push[i].peer != NULL && peer_push[i].peer == &peer) {
             peer_push[i].Stop();
@@ -708,7 +708,7 @@ i32 EdStream::fun_00613050(i32 &value) {
 
 template NetPredictor::PredictorData *ReplicatorData::Allocate<NetPredictor::PredictorData>(u32);
 
-void NETMESSAGE_PC::fun_00613090(const u8 &value) {
+void NETMESSAGE::fun_00613090(const u8 &value) {
     if (data != NULL) {
         read_offset--;
         PCByteCopy(data->bytes + read_offset, &value, 1);
@@ -735,7 +735,7 @@ void NetworkObjectManager::Term() {
     theTTNetwork.RemoveListener(this, 3);
 }
 
-i32 NetworkObjectManager::SendPushMessage(NETMESSAGE_PC *message, const NetPeerPush *push, i32 flags) {
+i32 NetworkObjectManager::SendPushMessage(NETMESSAGE *message, const NetPeerPush *push, i32 flags) {
     V2Peer *peer = (V2Peer *)push->peer;
     i32 available = 1;
     if (message == NULL || message->data == NULL || (i32)(message->write_offset - message->read_offset) <= 0) {
@@ -770,7 +770,7 @@ i32 NetworkObjectManager::SendPushMessage(NETMESSAGE_PC *message, const NetPeerP
 }
 
 void NetworkObjectManager::SendAcquireMessage(NetworkObject *object) {
-    NETMESSAGE_PC message(0x20);
+    NETMESSAGE message(0x20);
     message.Write8(3);
     message.Write16(object->id);
     theTTNetwork.Send(message, 3, (V2Peer *)object->owner);
@@ -778,7 +778,7 @@ void NetworkObjectManager::SendAcquireMessage(NetworkObject *object) {
 }
 
 void NetworkObjectManager::SendAcquiredMessage(i16 id, const V2Peer &peer) {
-    NETMESSAGE_PC message(0x20);
+    NETMESSAGE message(0x20);
     message.Write8(4);
     message.Write16(id);
     theTTNetwork.SendEx(message, 3, (V2Peer *)&peer, 0, 0);
@@ -786,7 +786,7 @@ void NetworkObjectManager::SendAcquiredMessage(i16 id, const V2Peer &peer) {
 }
 
 void NetworkObjectManager::SendAdoptedMessage(i16 id) {
-    NETMESSAGE_PC message(0x20);
+    NETMESSAGE message(0x20);
     message.Write8(5);
     message.Write16(id);
     theTTNetwork.BroadcastEx(message, 3);
@@ -813,7 +813,7 @@ void NetworkObjectManager::PeerJoined(const V2Peer &peer) {
             }
             if (i < 2) {
                 guid_peers[i] = &peer;
-                NETMESSAGE_PC message(0x20);
+                NETMESSAGE message(0x20);
                 message.Write8(0);
                 message.Write32(i);
                 theTTNetwork.SendEx(message, 3, (V2Peer *)&peer, 0, 0);
@@ -827,7 +827,7 @@ void NetworkObjectManager::PeerJoined(const V2Peer &peer) {
         return;
     }
     if (active) {
-        NETMESSAGE_PC message(0x20);
+        NETMESSAGE message(0x20);
         message.Write8(9);
         message.Write(&context, sizeof(context));
         theTTNetwork.SendEx(message, 3, (V2Peer *)&peer, 0, 0);
@@ -914,7 +914,7 @@ i32 NetworkObjectManager::ReleaseObject(void *object, EdClass *, i32 guid) {
     if (active) {
         i16 id = network_object->id;
         i16 class_id = theRegistry.GetClassId(network_object->object_class);
-        NETMESSAGE_PC message(0x20);
+        NETMESSAGE message(0x20);
         message.Write8(6);
         message.Write16(id);
         message.Write16(class_id);
@@ -935,7 +935,7 @@ void NetworkObjectManager::ContinuityBreak(i32 id, f32) {
     }
     object->flags |= 2;
     if (object->owner->local) {
-        NETMESSAGE_PC message(0x20);
+        NETMESSAGE message(0x20);
         i16 object_id = object->id;
         i16 class_id = theRegistry.GetClassId(object->object_class);
         message.Write8(12);
@@ -957,7 +957,7 @@ void NetworkObjectManager::ConstructObject(NetworkObject *object, NetPeerPush *p
     EdClassInterface *object_interface = object->object_class->object_interface;
     i16 size = object_interface->GetConstructorData(object->object, constructor_data, sizeof(constructor_data));
     i16 class_id = theRegistry.GetClassId(object->object_class);
-    NETMESSAGE_PC *message = push->GetReliableMessage(size + 10);
+    NETMESSAGE *message = push->GetReliableMessage(size + 10);
     message->Write8(1);
     message->Write16(object->id);
     message->Write16(class_id);
@@ -970,12 +970,12 @@ void NetworkObjectManager::ConstructObject(NetworkObject *object, NetPeerPush *p
 #pragma push_macro("GetMessage")
 #undef GetMessage
 
-NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetMessage(i32 size) {
+NETMESSAGE *NetworkObjectManager::NetPeerPush::GetMessage(i32 size) {
     if (message != NULL) {
         i32 available = message->data == NULL ? 0 : 0x4af - (i32)message->write_offset;
         if (available < size) {
             theNos->SendPushMessage(message, this, 1);
-            NETMESSAGE_PC *sent = message;
+            NETMESSAGE *sent = message;
             if (sent != NULL) {
                 sent->Release();
                 delete sent;
@@ -984,19 +984,19 @@ NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetMessage(i32 size) {
         }
     }
     if (message == NULL) {
-        message = new NETMESSAGE_PC(0x20);
+        message = new NETMESSAGE(0x20);
     }
     return message;
 }
 
 #pragma pop_macro("GetMessage")
 
-NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetReliableMessage(i32 size) {
+NETMESSAGE *NetworkObjectManager::NetPeerPush::GetReliableMessage(i32 size) {
     if (reliable_message != NULL) {
         i32 available = reliable_message->data == NULL ? 0 : 0x4af - (i32)reliable_message->write_offset;
         if (available < size) {
             theNos->SendPushMessage(reliable_message, this, 0);
-            NETMESSAGE_PC *sent = reliable_message;
+            NETMESSAGE *sent = reliable_message;
             if (sent != NULL) {
                 sent->Release();
                 delete sent;
@@ -1005,7 +1005,7 @@ NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetReliableMessage(i32 size) {
         }
     }
     if (reliable_message == NULL) {
-        reliable_message = new NETMESSAGE_PC(0x20);
+        reliable_message = new NETMESSAGE(0x20);
     }
     return reliable_message;
 }
@@ -1013,7 +1013,7 @@ NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetReliableMessage(i32 size) {
 void NetworkObjectManager::NetPeerPush::FlushMessages() {
     if (message != NULL) {
         theNos->SendPushMessage(message, this, 1);
-        NETMESSAGE_PC *sent = message;
+        NETMESSAGE *sent = message;
         if (sent != NULL) {
             sent->Release();
             delete sent;
@@ -1022,7 +1022,7 @@ void NetworkObjectManager::NetPeerPush::FlushMessages() {
     }
     if (reliable_message != NULL) {
         theNos->SendPushMessage(reliable_message, this, 0);
-        NETMESSAGE_PC *sent = reliable_message;
+        NETMESSAGE *sent = reliable_message;
         if (sent != NULL) {
             sent->Release();
             delete sent;
@@ -1091,7 +1091,7 @@ i32 NetworkObjectManager::Push(const NetworkObject *object, NetReplicator *repli
         push = &default_push;
     }
     i32 size = replicator->message_size + 10;
-    NETMESSAGE_PC *message;
+    NETMESSAGE *message;
     if (replicator->replication_group & 1) {
         message = push->GetMessage(size);
     } else {
@@ -1254,7 +1254,7 @@ bool NOSContext::operator==(const NOSContext &other) const {
     return (bool)(memcmp(bytes, other.bytes, sizeof(bytes)) == 0);
 }
 
-void NetworkObjectManager::ReceiveAcquireMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+void NetworkObjectManager::ReceiveAcquireMessage(NETMESSAGE &message, const V2Peer &peer) {
     i16 id;
     message.Read16(id);
     NetworkObject *object = &objects[id];
@@ -1267,7 +1267,7 @@ void NetworkObjectManager::ReceiveAcquireMessage(NETMESSAGE_PC &message, const V
     }
 }
 
-void NetworkObjectManager::ReceiveAcquiredMessage(NETMESSAGE_PC &message, const V2Peer &) {
+void NetworkObjectManager::ReceiveAcquiredMessage(NETMESSAGE &message, const V2Peer &) {
     i16 id;
     message.Read16(id);
     objects[id].owner = theNetSessionManager->local_peer;
@@ -1277,7 +1277,7 @@ void NetworkObjectManager::ReceiveAcquiredMessage(NETMESSAGE_PC &message, const 
     RemovePendingObject(&objects[id]);
 }
 
-void NetworkObjectManager::ReceiveConstructorMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+void NetworkObjectManager::ReceiveConstructorMessage(NETMESSAGE &message, const V2Peer &peer) {
     i16 guid;
     i16 class_id;
     i16 size;
@@ -1296,7 +1296,7 @@ void NetworkObjectManager::ReceiveConstructorMessage(NETMESSAGE_PC &message, con
     }
 }
 
-void NetworkObjectManager::ReceiveReplicaMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+void NetworkObjectManager::ReceiveReplicaMessage(NETMESSAGE &message, const V2Peer &peer) {
     NetInputStream stream;
     i16 guid;
     i16 class_id;
@@ -1332,7 +1332,7 @@ void NetworkObjectManager::ReceiveReplicaMessage(NETMESSAGE_PC &message, const V
     }
 }
 
-void NetworkObjectManager::ReceiveAdoptedMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+void NetworkObjectManager::ReceiveAdoptedMessage(NETMESSAGE &message, const V2Peer &peer) {
     i16 id;
     message.Read16(id);
     objects[id].flags &= ~0x20u;
@@ -1342,7 +1342,7 @@ void NetworkObjectManager::ReceiveAdoptedMessage(NETMESSAGE_PC &message, const V
     }
 }
 
-void NetworkObjectManager::ReceiveReleaseMessage(NETMESSAGE_PC &message, const V2Peer &) {
+void NetworkObjectManager::ReceiveReleaseMessage(NETMESSAGE &message, const V2Peer &) {
     i16 id;
     i16 class_id;
     message.Read16(id);
@@ -1355,18 +1355,18 @@ void NetworkObjectManager::ReceiveReleaseMessage(NETMESSAGE_PC &message, const V
     }
 }
 
-void NetworkObjectManager::ReceiveRemoteCallMessage(NETMESSAGE_PC &message, const V2Peer &) {
+void NetworkObjectManager::ReceiveRemoteCallMessage(NETMESSAGE &message, const V2Peer &) {
     i8 call_id;
     message.Read8((u8 &)call_id);
     if (call_id > 0) {
         call_id--;
         if (registered_calls[call_id].type == 0) {
-            ((void (*)(NETMESSAGE_PC &))registered_calls[call_id].callback)(message);
+            ((void (*)(NETMESSAGE &))registered_calls[call_id].callback)(message);
         }
     }
 }
 
-void NetworkObjectManager::ReceiveObjectCallMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+void NetworkObjectManager::ReceiveObjectCallMessage(NETMESSAGE &message, const V2Peer &peer) {
     i8 call_id;
     message.Read8((u8 &)call_id);
     if (call_id > 0) {
@@ -1385,13 +1385,13 @@ void NetworkObjectManager::ReceiveObjectCallMessage(NETMESSAGE_PC &message, cons
                 if (object->object_class != object_class) {
                     NetTrace(object->object_class->name, object_class->name, id);
                 }
-                ((void (*)(void *, NETMESSAGE_PC &))registered_calls[call_id].callback)(object->object, message);
+                ((void (*)(void *, NETMESSAGE &))registered_calls[call_id].callback)(object->object, message);
             }
         }
     }
 }
 
-void NetworkObjectManager::ReceiveContinuityBreak(NETMESSAGE_PC &message, const V2Peer &) {
+void NetworkObjectManager::ReceiveContinuityBreak(NETMESSAGE &message, const V2Peer &) {
     i16 id;
     i16 class_id;
     message.Read16(id);
@@ -1403,7 +1403,7 @@ void NetworkObjectManager::ReceiveContinuityBreak(NETMESSAGE_PC &message, const 
     }
 }
 
-void NetworkObjectManager::ReceiveStartMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+void NetworkObjectManager::ReceiveStartMessage(NETMESSAGE &message, const V2Peer &peer) {
     NOSContext received_context;
     message.Read(&received_context, sizeof(received_context));
     if (!active) {
@@ -1419,7 +1419,7 @@ void NetworkObjectManager::ReceiveStartMessage(NETMESSAGE_PC &message, const V2P
                 accepted = 0;
                 peer_push[i].Stop();
             }
-            NETMESSAGE_PC reply(0x20);
+            NETMESSAGE reply(0x20);
             reply.Write8(11);
             reply.Write32(accepted);
             reply.Write(&context, sizeof(context));
@@ -1430,7 +1430,7 @@ void NetworkObjectManager::ReceiveStartMessage(NETMESSAGE_PC &message, const V2P
     }
 }
 
-void NetworkObjectManager::ReceiveStatusMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+void NetworkObjectManager::ReceiveStatusMessage(NETMESSAGE &message, const V2Peer &peer) {
     NOSContext received_context;
     i32 accepted;
     message.Read32(accepted);
@@ -1462,7 +1462,7 @@ void NetworkObjectManager::CalcReplicatorDataSize(NetReplicator *replicator, con
     data.cursor = data_memory;
     replicator->AllowPush(object_class, object_memory, data, 1, 1);
     NetOutputStream stream;
-    NETMESSAGE_PC message(0x20);
+    NETMESSAGE message(0x20);
     i16 flags = 0x10;
     ForceDummySerialise = 1;
     stream.SetMessage(&message);
@@ -1498,7 +1498,7 @@ void NetworkObjectManager::Start(const NOSContext &new_context) {
     if (!active) {
         active = 1;
         PCByteCopy(&context, &new_context, sizeof(context));
-        NETMESSAGE_PC message(0x20);
+        NETMESSAGE message(0x20);
         message.Write8(9);
         message.Write(&context, sizeof(context));
         theTTNetwork.BroadcastEx(message, 3);
@@ -1509,7 +1509,7 @@ void NetworkObjectManager::Start(const NOSContext &new_context) {
 void NetworkObjectManager::Stop() {
     if (active) {
         active = 0;
-        NETMESSAGE_PC message(0x20);
+        NETMESSAGE message(0x20);
         message.Write8(10);
         theTTNetwork.BroadcastEx(message, 3);
         i32 i = 0;
@@ -1522,47 +1522,47 @@ void NetworkObjectManager::Stop() {
     }
 }
 
-i32 NetworkObjectManager::RemoteCall(i32 call_id, NETMESSAGE_PC message, const V2Peer *peer) {
-    NETMESSAGE_PC outgoing(message);
+i32 NetworkObjectManager::RemoteCall(i32 call_id, NETMESSAGE message, const V2Peer *peer) {
+    NETMESSAGE outgoing(message);
     u8 header = call_id;
     outgoing.fun_00613090(header);
     header = 7;
     outgoing.fun_00613090(header);
     if (peer != NULL) {
         if (peer->local) {
-            ((void (*)(NETMESSAGE_PC &))registered_calls[call_id - 1].callback)(message);
+            ((void (*)(NETMESSAGE &))registered_calls[call_id - 1].callback)(message);
         } else {
             theTTNetwork.SendEx(outgoing, 3, (V2Peer *)peer, 0, 0);
         }
     } else {
         theTTNetwork.BroadcastEx(outgoing, 3);
-        ((void (*)(NETMESSAGE_PC &))registered_calls[call_id - 1].callback)(message);
+        ((void (*)(NETMESSAGE &))registered_calls[call_id - 1].callback)(message);
     }
     outgoing.Release();
     message.Release();
     return 1;
 }
 
-i32 NetworkObjectManager::ObjectCall(void *instance, i32 call_id, NETMESSAGE_PC message, const V2Peer *peer) {
+i32 NetworkObjectManager::ObjectCall(void *instance, i32 call_id, NETMESSAGE message, const V2Peer *peer) {
     i32 result = 0;
     NetworkObject *object = FindNetworkObject(instance);
     if (object != NULL) {
         i16 class_id = theRegistry.GetClassId(object->object_class);
         i16 object_id = object->id;
-        NETMESSAGE_PC outgoing(message);
+        NETMESSAGE outgoing(message);
         outgoing.Prepend16(class_id);
         outgoing.Prepend16(object_id);
         outgoing.Prepend8(call_id);
         outgoing.Prepend8(8);
         if (peer != NULL) {
             if (peer->local) {
-                ((void (*)(void *, NETMESSAGE_PC &))registered_calls[call_id - 1].callback)(instance, message);
+                ((void (*)(void *, NETMESSAGE &))registered_calls[call_id - 1].callback)(instance, message);
             } else {
                 theTTNetwork.SendEx(outgoing, 3, (V2Peer *)peer, 0, 0);
             }
         } else {
             theTTNetwork.BroadcastEx(outgoing, 3);
-            ((void (*)(void *, NETMESSAGE_PC &))registered_calls[call_id - 1].callback)(instance, message);
+            ((void (*)(void *, NETMESSAGE &))registered_calls[call_id - 1].callback)(instance, message);
         }
         result = 1;
         outgoing.Release();
@@ -1571,16 +1571,16 @@ i32 NetworkObjectManager::ObjectCall(void *instance, i32 call_id, NETMESSAGE_PC 
     return result;
 }
 
-i32 NetworkObjectManager::ObjectOwnerCall(void *instance, i32 call_id, NETMESSAGE_PC message) {
+i32 NetworkObjectManager::ObjectOwnerCall(void *instance, i32 call_id, NETMESSAGE message) {
     i32 result = 0;
     NetworkObject *object = FindNetworkObject(instance);
     if (object != NULL) {
         if (object->owner->local) {
-            ((void (*)(void *, NETMESSAGE_PC &))registered_calls[call_id - 1].callback)(instance, message);
+            ((void (*)(void *, NETMESSAGE &))registered_calls[call_id - 1].callback)(instance, message);
         } else {
             i16 class_id = theRegistry.GetClassId(object->object_class);
             i16 object_id = object->id;
-            NETMESSAGE_PC outgoing(message);
+            NETMESSAGE outgoing(message);
             outgoing.Prepend16(class_id);
             outgoing.Prepend16(object_id);
             outgoing.Prepend8(call_id);
@@ -1595,14 +1595,14 @@ i32 NetworkObjectManager::ObjectOwnerCall(void *instance, i32 call_id, NETMESSAG
     return result;
 }
 
-i32 NetworkObjectManager::ObjectOtherCall(void *instance, i32 call_id, NETMESSAGE_PC message) {
+i32 NetworkObjectManager::ObjectOtherCall(void *instance, i32 call_id, NETMESSAGE message) {
     i32 result = 0;
     NetworkObject *object = FindNetworkObject(instance);
     if (object != NULL) {
         if (object->owner->local) {
             i16 class_id = theRegistry.GetClassId(object->object_class);
             i16 object_id = object->id;
-            NETMESSAGE_PC outgoing(message);
+            NETMESSAGE outgoing(message);
             outgoing.Prepend16(class_id);
             outgoing.Prepend16(object_id);
             outgoing.Prepend8(call_id);
@@ -1960,7 +1960,7 @@ i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, Replic
     return DoPrediction(object_class, object, data, time, check_only);
 }
 
-void NetworkObjectManager::Receive(NETMESSAGE_PC message, u8, const V2Peer &peer) {
+void NetworkObjectManager::Receive(NETMESSAGE message, u8, const V2Peer &peer) {
     i32 error = 0;
     u8 history[256]; /* message types seen, kept for debugging (never read) */
     u8 *last = history;

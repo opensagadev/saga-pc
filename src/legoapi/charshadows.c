@@ -1,9 +1,9 @@
 #include "saga.h"
 
-extern i32 CharacterBlobShadowsOnPc;
+extern i32 CharacterBlobShadowsOn;
 f32 DropInOutScale(GAMEOBJECT *object);
 
-void CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {
+void CharShadows_Reset(CHARACTER_SHADOW_PACKET *packet) {
     packet->shadows[0].position.y = 2000000.0f;
     packet->shadows[1].position.y = 2000000.0f;
     packet->shadows[2].position.y = 2000000.0f;
@@ -13,7 +13,7 @@ void CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {
 
 void CharShadows_Update(void) {
     GAMEOBJECT *object = Obj;
-    CHARACTER_SHADOW_PACKET_PC *packet;
+    CHARACTER_SHADOW_PACKET *packet;
     CHARACTER_SHADOW_RESET_SLOT *slot;
     NUVEC position;
     NUVEC *locator_position;
@@ -36,7 +36,7 @@ void CharShadows_Update(void) {
         } else {
             object->shadow_radius = object->character_data->collision_radius;
         }
-        packet = (CHARACTER_SHADOW_PACKET_PC *)object->ai_player_packet_pc;
+        packet = (CHARACTER_SHADOW_PACKET *)object->ai_player_packet_pc;
         count = 0;
         for (locator = 0; locator < 16; ++locator) {
             if (count >= 5) {
@@ -85,7 +85,7 @@ void CharShadows_Update(void) {
 
 void CharShadows_Draw(void) {
     GAMEOBJECT *object;
-    CHARACTER_SHADOW_PACKET_PC *packet;
+    CHARACTER_SHADOW_PACKET *packet;
     CHARACTER_SHADOW_RESET_SLOT *slot;
     NUVEC position;
     f32 alpha;
@@ -94,7 +94,7 @@ void CharShadows_Draw(void) {
     i32 locator;
     i32 count;
     i32 level_alpha;
-    if (CharacterBlobShadowsOnPc == 0 || PcWindowOptions.shadowmethod != 1 || PcWindowOptions.shadowsenabled == 0) {
+    if (CharacterBlobShadowsOn == 0 || PcWindowOptions.shadowmethod != 1 || PcWindowOptions.shadowsenabled == 0) {
         return;
     }
     object = Obj;
@@ -125,7 +125,7 @@ void CharShadows_Draw(void) {
         alpha = (f32)level_alpha * object->shadow_opacity;
         radius *= object->origin_scale;
         radius *= DropInOutScale(object);
-        packet = (CHARACTER_SHADOW_PACKET_PC *)object->ai_player_packet_pc;
+        packet = (CHARACTER_SHADOW_PACKET *)object->ai_player_packet_pc;
         slot = packet->shadows;
         count = 0;
         for (locator = 0; locator < 16; ++locator) {

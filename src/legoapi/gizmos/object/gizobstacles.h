@@ -28,7 +28,7 @@ extern "C" {
     void GizObstacle_JumpToEnd(GIZOBSTACLE *);
     void GizObstacle_PlayForwards(GIZOBSTACLE *);
     void GizObstacle_PlayBackwards(GIZOBSTACLE *);
-    struct addgizmotype_pc_s *GizObstacles_RegisterGizmo(i32 type_id);
+    struct addgizmotype_s *GizObstacles_RegisterGizmo(i32 type_id);
     i32 GizObstacle_CheckExcludeFlagsFn_LSW(struct gizobstacle_s *obstacle, struct gameobject_s *object);
     GIZOBSTACLE *GizObstacle_FindByName(GIZOBSTACLESYS_s *system, char *name);
 #ifdef __cplusplus

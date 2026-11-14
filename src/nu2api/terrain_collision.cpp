@@ -7,7 +7,7 @@ extern "C" {
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
     extern TerrainQuery_s *TerI;
     extern void *TerrOverRideScan;
-    extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
+    extern TERRAIN_POLYGON_INFO *ScaleTerrain;
     void TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
@@ -924,7 +924,7 @@ extern "C" {
 
     void TerrainImpact(NUVEC *position, NUVEC *movement, u8 *hit_flags) {
         f32 walkable_normal_y = 0.0f;
-        TERRAIN_TRACK_SLOT_PC *track;
+        TERRAIN_TRACK_SLOT *track;
         TerrainMoveImpactData();
 
         TerrainQuery_s *query = TerI;
@@ -1204,7 +1204,7 @@ extern "C" {
     }
 
     void PlatformConnect(char *track_id, NUVEC *position_delta, NUVEC *movement_delta, i32 platform_index) {
-        TERRAIN_TRACK_SLOT_PC *track = CurTrackInfo;
+        TERRAIN_TRACK_SLOT *track = CurTrackInfo;
         if (track != NULL) {
             track->flags |= TERRAIN_TRACK_FLAG_CONNECTED;
             track->platform_index = static_cast<i16>(platform_index);
@@ -1261,7 +1261,7 @@ extern "C" {
         query->object_scale_sq = old_query->object_scale_sq;
         TerrainQuery_s *current = query;
         current->platform_position = old_query->position;
-        TERRAIN_TRACK_SLOT_PC *track = CurTrackInfo;
+        TERRAIN_TRACK_SLOT *track = CurTrackInfo;
         if (track != NULL && (track->flags & TERRAIN_TRACK_FLAG_CONNECTED)) {
             TERRAIN_PLATFORM *platform = &TERRAIN_PC_TRACK_PLATFORM;
             if (platform->flags & 1) {
@@ -1356,7 +1356,7 @@ extern "C" {
                     }
                     if (current->platform_normal.y * direction.y + current->platform_normal.x * direction.x +
                             current->platform_normal.z * direction.z <
-                        TerrainOpposingContactThresholdPc) {
+                        TerrainOpposingContactThreshold) {
                         clear = 1;
                     }
                 }
@@ -1991,7 +1991,7 @@ extern "C" {
         return 1;
     }
 
-    TERRAIN_TRACK_SLOT_PC *AllocTerrId() {
+    TERRAIN_TRACK_SLOT *AllocTerrId() {
         TERRSET *terrain = ((TERRAIN_SET_PC *)CurrentTerrain);
         if (terrain == NULL) {
             return NULL;
@@ -2181,7 +2181,7 @@ extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_f
     }
 
     TerrLastImpact.hit_type = 0.0f;
-    TERRAIN_TRACK_SLOT_PC *track;
+    TERRAIN_TRACK_SLOT *track;
     for (i32 slot_index = 0; slot_index < 64; ++slot_index) {
         if (((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[slot_index].id == hit_flags) {
             track = &((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[slot_index];

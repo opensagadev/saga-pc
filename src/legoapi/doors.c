@@ -1,7 +1,7 @@
 #include "saga.h"
 
 void Door_Reset(void) {
-    DoorExitNamePc[0] = '\0';
+    DoorExitName[0] = '\0';
     Door_Start = 0;
     Door_NextSock = -1;
 }
@@ -43,7 +43,7 @@ void Doors_Init(WORLDINFO *world) {
     STARTUP_WORLD_DOORS_PC *view = (STARTUP_WORLD_DOORS_PC *)world;
     STARTUP_DOOR_PC *door;
     i32 index;
-    LastDoorPointerPc = NULL;
+    LastDoorPointer = NULL;
     view->start_door = NULL;
     door = view->doors;
     if (door == NULL) {
@@ -146,11 +146,11 @@ i32 StartDoorPositions(void) {
     i32 index;
     i32 point;
     Door_Start = 0;
-    if (DoorExitNamePc[0] != '\0') {
+    if (DoorExitName[0] != '\0') {
         door = ((PLAYER_WORLD_DOORS_PC *)WORLD)->doors;
         if (door != NULL) {
             for (index = 0; index < ((PLAYER_WORLD_DOORS_PC *)WORLD)->door_count; ++index, ++door) {
-                if (door->spline != NULL && NuStrICmp(door->name, DoorExitNamePc) == 0) {
+                if (door->spline != NULL && NuStrICmp(door->name, DoorExitName) == 0) {
                     start = (PLAYER_POSITION_RECORD_PC *)PlayerStart;
                     for (point = 5; point < 21; point += 2, ++start) {
                         NUANG angle;
@@ -174,7 +174,7 @@ i32 StartDoorPositions(void) {
                 }
             }
         }
-        DoorExitNamePc[0] = '\0';
+        DoorExitName[0] = '\0';
     }
     return 0;
 }
@@ -545,14 +545,14 @@ void Door_SetCutCam(DOOR_s *door) {
     Door_UseCutCam = 0;
     if (door->camera_spline != NULL) {
         Door_UseCutCam = 1;
-        DoorCutCameraPosition0Pc = door->camera_spline->pts[0];
-        DoorCutCameraPosition1Pc = door->camera_spline->pts[1];
+        DoorCutCameraPosition0 = door->camera_spline->pts[0];
+        DoorCutCameraPosition1 = door->camera_spline->pts[1];
     } else {
         if (door->camera_spline_name[0] == '\0' || door->level == WORLD->level_idx) {
             return;
         }
         Door_UseCutCam = 1;
-        NuStrCpy(DoorExitCameraSplineNamePc, door->camera_spline_name);
+        NuStrCpy(DoorExitCameraSplineName, door->camera_spline_name);
     }
     Door_CutCamWaitTime = door->camera_wait;
     Door_CutCamWait = Door_CutCamWaitTime;
@@ -573,7 +573,7 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
         return;
     }
     if (door->level != -1) {
-        NuStrCpy(DoorExitNamePc, door->name);
+        NuStrCpy(DoorExitName, door->name);
         if (door->cutscene == NULL || CutScene_HasPlayed(door->cutscene) != 0) {
             door_cutscenesnap = 0;
             cutscene = NULL;
@@ -626,11 +626,11 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     }
     Door_Last = door;
     if (Door_GoThrough_ExtraCodeFn != NULL) {
-        Door_GoThrough_ExtraCodeFn(world, (struct game_door_callback_pc_s *)door);
+        Door_GoThrough_ExtraCodeFn(world, (struct game_door_callback_s *)door);
     }
 }
 
-static __inline f32 DoorsFabsPc(f32 value) {
+static __inline f32 DoorsFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
@@ -688,8 +688,8 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
         if (direction == 0) {
             continue;
         }
-        previous_abs = DoorsFabsPc(previous_distance);
-        current_abs = DoorsFabsPc(current_distance);
+        previous_abs = DoorsFabs(previous_distance);
+        current_abs = DoorsFabs(current_distance);
         ratio = (f32)((f64)previous_abs / ((f64)current_abs + previous_abs));
         intersection.x = (f32)((f64)previous.x + ((f64)current.x - previous.x) * ratio);
         intersection.y = (f32)((f64)previous.y + ((f64)current.y - previous.y) * ratio);
@@ -702,7 +702,7 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
             Door_GoThrough(world, door, 1);
             return;
         }
-        if (!(DoorsFabsPc(door->normal.y) < NuTrigTable[0xaaa])) {
+        if (!(DoorsFabs(door->normal.y) < NuTrigTable[0xaaa])) {
             return;
         }
         object->position = object->start_position;
@@ -717,10 +717,10 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
 }
 
 void Doors_SetLastDoor(DOOR_s *door) {
-    if (door != NULL && door != LastDoorPointerPc) {
-        NuStrCpy(DoorExitNamePc, door->name);
+    if (door != NULL && door != LastDoorPointer) {
+        NuStrCpy(DoorExitName, door->name);
         StartDoorPositions();
-        LastDoorPointerPc = door;
+        LastDoorPointer = door;
         Door_Last = door;
     }
 }

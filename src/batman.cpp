@@ -1,11 +1,11 @@
 #include "saga.h"
 #include <string.h>
 
-extern "C" void NuMainTrailerLeafPc(void);
+extern "C" void NuMainTrailerLeaf(void);
 extern "C" void NuRndrLine3dDbgFlush(void);
 
 extern "C" {
-    extern i32 NuMainRendererControlPc;
+    extern i32 NuMainRendererControl;
     void NuRndrShadowOnOff(i32);
     void Grabber_Update(WORLDINFO *world);
     void Detonators_Update(void);
@@ -20,7 +20,7 @@ extern "C" {
     void DrawCables(void);
     void Detonators_Draw(void);
     void SetDepthOfField(void);
-    void NuMainRenderLeafPc(void);
+    void NuMainRenderLeaf(void);
     void ViewCamDraw(void);
     void SpeedBlur_Update(void);
     void DebrisKillPlayers(void);
@@ -45,7 +45,7 @@ struct FADEINFO_s;
 void legoSetMusicVolume(f32 volume);
 
 extern "C" {
-    extern FADEINFO_PC *pFadeInfo;
+    extern FADEINFO *pFadeInfo;
     void GizmoSysSetGame(void);
     void ResetCharacterBuffer(i32 keep);
     void WorldInfo_Activate(void);
@@ -91,20 +91,20 @@ extern "C" {
     void GizmoSysDraw(void *system, void *world, f32 delta_time);
     void SpeedBlur_Apply(WORLDINFO *world);
 
-    u8 NuAllocDumpOnLevelPc = 0;
-    i32 NuMainSkipCutBordersPc = 0;
+    u8 NuAllocDumpOnLevel = 0;
+    i32 NuMainSkipCutBorders = 0;
     i64 frameout_count = 0;
     char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&TextIdPc8810c0, NULL};
 }
 
 extern "C" {
-    i32 NuMainSplineDebugModePc = 0;
-    i32 NuMainSplineDebugPhasePc = 0;
+    i32 NuMainSplineDebugMode = 0;
+    i32 NuMainSplineDebugPhase = 0;
 }
 
 /* Debug view of the scene splines; NuMainRenderWorld calls it only while
- * NuMainSplineDebugModePc is set, and mode 2 animates the dash pattern. */
-static void NuMainDrawSplinesPc(NUGSCN *gscn) {
+ * NuMainSplineDebugMode is set, and mode 2 animates the dash pattern. */
+static void NuMainDrawSplines(NUGSCN *gscn) {
     i32 colours[8] = {-1, -1, -1, -1, 0, 0, 0, 0};
     NURND_VERTEX3D_PC vertices[2];
     NUGSPLINE *spline;
@@ -118,12 +118,12 @@ static void NuMainDrawSplinesPc(NUGSCN *gscn) {
         return;
     }
     i = gscn->spline_count;
-    NuMainSplineDebugPhasePc--;
-    animate = NuMainSplineDebugModePc > 1;
+    NuMainSplineDebugPhase--;
+    animate = NuMainSplineDebugMode > 1;
     while (i != 0) {
         i--;
         spline = &gscn->splines[i];
-        phase = NuMainSplineDebugPhasePc * animate;
+        phase = NuMainSplineDebugPhase * animate;
         point = spline->pts;
         vertices[0].position = *point;
         vertices[0].colour = 0xffff0000;
@@ -151,7 +151,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
 
     UpdateFrameCounters();
     PortalDoors_Update(world);
-    NuRndrShadowOnOff(NuMainRendererControlPc);
+    NuRndrShadowOnOff(NuMainRendererControl);
     if (Paused == 0) {
         GameAISysStartFrame(world->ai_sys);
     }
@@ -298,7 +298,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             for (i = 0; i < 8; ++i) {
                 object = (GAMEOBJECT *)Player[i];
                 if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
-                    UpdateRumble((RUMBLE_PACKET_RESOURCE_PC *)object->pad->unknown_40);
+                    UpdateRumble((RUMBLE_PACKET_RESOURCE *)object->pad->unknown_40);
                 }
             }
         }
@@ -330,8 +330,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             if (SaberSparksTimer > 0.0f) {
                 SaberSparksTimer -= FRAMETIME;
             }
-            if (TerrainChatterWaitPc > 0.0f) {
-                TerrainChatterWaitPc -= FRAMETIME;
+            if (TerrainChatterWait > 0.0f) {
+                TerrainChatterWait -= FRAMETIME;
             }
             if (tieonsfxwait > 0.0f) {
                 tieonsfxwait -= FRAMETIME;
@@ -353,7 +353,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         if (CUTSTOPGAME == 0) {
             DebrisKillPlayers();
         }
-        UpdateRippleSet(RippleSetPc);
+        UpdateRippleSet(RippleSet);
         AddCameraRain(world, 0x7a);
         NuMtlAnimateSetSpeedScale(1.0f);
         NuMtlAnimateSetMask(0xffff);
@@ -496,7 +496,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     }
     theGameThings->RenderThings(NULL);
     CutScenes_Draw(world);
-    NuRndrShadPolys(PermanentShadowMaterialPc);
+    NuRndrShadPolys(PermanentShadowMaterial);
     NuLgtLaserDraw(paused);
     if (world->current_level == TITLES_LDATA || (world->current_level->flags & 0x400) != 0 || world->current_level == CREDITS_LDATA ||
         (world->current_level == STATUS_LDATA && (StatusPacket.flags_word & 0x400) != 0)) {
@@ -508,18 +508,18 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     NuRndrLine3dDbgFlush();
     DebrisSetCutSceneMode(CUTCAM);
     DebrisDraw(paused ^ editor_active, 1);
-    DrawRippleSet(RippleSetPc);
+    DrawRippleSet(RippleSet);
     SpeedBlur_Apply(world);
     NuRndrEndScene();
     RenderShadowLights(Paused);
     NuRndrBeginScene(1);
     SetDepthOfField();
-    NuMainRenderLeafPc();
+    NuMainRenderLeaf();
     if (BURNOUTON != 0) {
         BurnoutApply(paused);
     }
-    if (NuMainSplineDebugModePc != 0) {
-        NuMainDrawSplinesPc(world->current_gscn);
+    if (NuMainSplineDebugMode != 0) {
+        NuMainDrawSplines(world->current_gscn);
     }
     NuRndrEndScene();
     NuRndrFx(paused, &plr_lastpos);
@@ -545,8 +545,8 @@ typedef struct NU_MAIN_STATUS_PACKET { // size 0xb6
 } NU_MAIN_STATUS_PACKET;
 
 extern "C" {
-    u8 StatusPlayerActivePc[8] = {0};
-    void NuMainStatusHelperPc(STATUSPACKET_s *);
+    u8 StatusPlayerActive[8] = {0};
+    void NuMainStatusHelper(STATUSPACKET_s *);
     void MusicClearAll(void);
     void SoundKillAll(void);
     void ClearUpAreaData(void);
@@ -608,7 +608,7 @@ extern "C" int NuMain(int argc, char **argv) {
         PLAYERCOUNT = 0;
         Movie_Play(Trailer[0], &characterbuffer_ptr, &characterbuffer_end, DEFAULTFRAMETIME, NULL, volume);
         FinishLoop(2);
-        NuMainTrailerLeafPc();
+        NuMainTrailerLeaf();
         WORLD = saved_world;
     }
     if (openlevels != 0) {
@@ -657,7 +657,7 @@ extern "C" int NuMain(int argc, char **argv) {
         if (Area == -1 || current_episode == -1 || (previous_episode != -1 && current_episode != previous_episode)) {
             SuperStory = 0;
         }
-        if (NuAllocDumpOnLevelPc != 0) {
+        if (NuAllocDumpOnLevel != 0) {
             NuAllocDumpRecords(0);
         }
         if (Area != -1 && Area != last_area) {
@@ -813,7 +813,7 @@ extern "C" int NuMain(int argc, char **argv) {
                 InitPanel(GetMenuID() == 4 ? TempOptions.widescreen : Game.options_save.widescreen);
                 saved_frametime = FRAMETIME;
                 if ((waiting_for_level == -1 || gone_through_door_to_new_level == 0) && screendump == 0) {
-                    if (ChallengeMode == 1 && AreaGlobals_PC.field_20 >= 10 && WORLD->current_level != HUB_LDATA && MiniCutCam == 0 &&
+                    if (ChallengeMode == 1 && AreaGlobals.field_20 >= 10 && WORLD->current_level != HUB_LDATA && MiniCutCam == 0 &&
                         CutScene_PlayingOrRequested(NULL) == 0 && FadeSys.fade == 0.0f) {
                         EndChallenge(2, 1);
                     }
@@ -846,7 +846,7 @@ extern "C" int NuMain(int argc, char **argv) {
                         }
                     }
                 }
-                if (NuMainSkipCutBordersPc == 0) {
+                if (NuMainSkipCutBorders == 0) {
                     DrawCutBorders(Game.options_save.widescreen);
                 }
                 if (MainRenderTime != 1.0f) {
@@ -962,12 +962,12 @@ extern "C" int NuMain(int argc, char **argv) {
         if (NewLData == STATUS_LDATA || (NewLData->flags & 0x400) != 0) {
             InitStatusScreen(WORLD);
             if (NewLData != STATUS_LDATA && status->status_flags != 0) {
-                NuMainStatusHelperPc(&StatusPacket);
+                NuMainStatusHelper(&StatusPacket);
             }
         }
         if (netclient != 0) {
             for (player_index = 0; player_index < 8; ++player_index) {
-                PlayerProgress[player_index].active = StatusPlayerActivePc[player_index];
+                PlayerProgress[player_index].active = StatusPlayerActive[player_index];
             }
             UsePlayerList = 2;
         } else if (Area != -1 && Area == last_area) {
@@ -1028,7 +1028,7 @@ extern "C" int NuMain(int argc, char **argv) {
         NuSound3StopRumble();
         FreeGameObjectLights();
         ClearUpAreaData();
-        if (NuAllocDumpOnLevelPc != 0) {
+        if (NuAllocDumpOnLevel != 0) {
             NuAllocDumpRecords(0);
         }
         MenuReset();

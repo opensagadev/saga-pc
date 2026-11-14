@@ -30,11 +30,11 @@
 
 #if SAGA_GLOBALS_H_PART == 1 && !defined(SAGA_GLOBALS_H_STOP)
 
-struct CHARACTER_MODEL_LAYERS_PC;
-struct CUSTOMISER_LAYERS_PC;
+struct CHARACTER_MODEL_LAYERS;
+struct CUSTOMISER_LAYERS;
 struct WORLDINFO_s;
-struct area_data_pc_s;
-struct collection_area_save_pc_s;
+struct area_data_s;
+struct collection_area_save_s;
 struct gameobject_s;
 struct level_data_s;
 struct level_progress_s;
@@ -167,7 +167,7 @@ extern "C" {
     extern i32 LEGOHINT_FREEPLAYTOGGLE;
 // Retain the PC global spellings for these named physical members.
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define LevInstAnim LevInstAnimResetPc.reset_words
+#define LevInstAnim LevInstAnimReset.reset_words
     extern u8 LevLock[5];
     extern i32 SuperStoryEpisode;
     extern i32 LevDeaths;
@@ -179,8 +179,8 @@ extern "C" {
     extern i32 KEEPONSCREEN_SIDESONLY;
     extern f32 fakeanimendframe[1];
     extern i32 pause_i_pad;
-    extern i32 HubCompletionPointsPc;
-    extern struct EPISODESAVE_s *EpisodeSavePc;
+    extern i32 HubCompletionPoints;
+    extern struct EPISODESAVE_s *EpisodeSave;
     extern i32 Area_PlayerModelCount;
     extern i32 FreePlayModelCount;
     extern i32 FreePlayResidentCount;
@@ -239,7 +239,7 @@ extern "C" {
     extern i32 radios_playing;
     extern struct EPISODESAVE_s *Game_EpisodeSave;
     extern void *newmode_cutinfo;
-    extern LEVEL_OBJECT_CONFIG_PC ObjTab[750];
+    extern LEVEL_OBJECT_CONFIG ObjTab[750];
 #ifdef __cplusplus
 }
 #endif
@@ -254,11 +254,11 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern struct collection_area_save_pc_s *Game_AreaSave;
+    extern struct collection_area_save_s *Game_AreaSave;
     extern struct level_progress_s *LevelProgressData;
     extern struct vufnt_s *QFont2D;
     extern struct nucamera_s *pNuCam;
-    extern i32 (*MakeLayerList)(struct CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    extern i32 (*MakeLayerList)(struct CHARACTER_MODEL_LAYERS *, i16 *, u32);
 #ifdef __cplusplus
 }
 #endif
@@ -290,9 +290,9 @@ extern "C" {
 #endif
     /* SuperCarry_PartKill is static original carrying TU callback; no public declaration. */
 
-    extern struct area_data_pc_s *HOTHBATTLE_ADATA;
-    extern struct area_data_pc_s *BOUNTYHUNTERPURSUIT_ADATA;
-    extern struct area_data_pc_s *BATTLEOVERCORUSCANT_ADATA;
+    extern struct area_data_s *HOTHBATTLE_ADATA;
+    extern struct area_data_s *BOUNTYHUNTERPURSUIT_ADATA;
+    extern struct area_data_s *BATTLEOVERCORUSCANT_ADATA;
     extern struct level_data_s *ASTEROIDCHASEC_LDATA;
     extern struct level_data_s *DAGOBAHC_LDATA;
     extern struct level_data_s *ENDORBATTLEC_LDATA;
@@ -338,12 +338,12 @@ extern "C" {
     extern struct level_data_s *ENDORBATTLEC_LDATA;
     extern i32 (*FindSlamOrigin_UseCPosFn)(struct gameobject_s *);
     extern void (*GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
-    extern struct area_data_pc_s *DOGFIGHT_ADATA;
+    extern struct area_data_s *DOGFIGHT_ADATA;
     extern struct level_data_s *SPEEDERCHASEA_LDATA;
     extern struct level_data_s *DEATHSTARBATTLED_LDATA;
     extern struct gameobject_s *CutDeadVehiclePlayer;
     extern i32 (*CanMagnetClimbFn)(struct gameobject_s *);
-    extern struct area_data_pc_s *LOSTTEMPLE_ADATA;
+    extern struct area_data_s *LOSTTEMPLE_ADATA;
     extern struct level_data_s *HUB_LDATA;
     extern struct level_data_s *STATUS_LDATA;
     extern struct level_data_s *CREDITS_LDATA;
@@ -365,13 +365,13 @@ extern "C" {
     extern struct level_data_s *HOTHBATTLEA_LDATA;
     extern struct nugspline_s *ObstacleCamSpl;
 
-    extern struct area_data_pc_s *PODSPRINT_ADATA;
+    extern struct area_data_s *PODSPRINT_ADATA;
     extern struct gameobject_s *BombGenerator_PlayerBomb[2];
     extern struct nugspline_s *script_spline_selected;
     extern struct nugspline_s *script_spline_selected;
     extern CHAR_CATEGORY_RECORD_PC *CharCategory;
     extern APICHARACTERMODELLIST FreePlayModelList[49];
-    extern AREA_LEVEL_LOAD_PC LevelLoad[12];
+    extern AREA_LEVEL_LOAD LevelLoad[12];
     extern APICHARACTERMODELLIST Area_MissionModelList[49];
     extern APICHARACTERMODELLIST *CurrentCList;
     extern APICHARACTERMODELLIST *CurrentStoryCList;
@@ -383,11 +383,11 @@ extern "C" {
     extern struct level_data_s *ASTEROIDCHASEA_LDATA;
     extern struct level_data_s *ASTEROIDCHASEMITRO_LDATA;
 
-    extern struct area_data_pc_s *SENATE_ADATA;
+    extern struct area_data_s *SENATE_ADATA;
     extern i32 (*SetSoundFadeDistCallBackFn)(struct WORLDINFO_s *);
-    extern struct area_data_pc_s *DEATHSTARESCAPE_ADATA;
+    extern struct area_data_s *DEATHSTARESCAPE_ADATA;
     extern DETONATOR_s Detonator[10];
-    extern struct area_data_pc_s *SENATE_ADATA;
+    extern struct area_data_s *SENATE_ADATA;
 #ifdef __cplusplus
 }
 #endif
@@ -403,8 +403,8 @@ extern "C" {
 extern "C" {
 #endif
     extern GAMESAVE Game;
-    extern struct CUSTOMISER_LAYERS_PC *CharacterCustomiser;
-    extern CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSavePc;
+    extern struct CUSTOMISER_LAYERS *CharacterCustomiser;
+    extern CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSave;
 #ifdef __cplusplus
 }
 #endif

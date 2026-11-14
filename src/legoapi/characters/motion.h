@@ -23,7 +23,7 @@
 extern "C" {
 #endif
     void DisorientateCode(GAMEOBJECT *, NUVEC *, f32);
-    /* FloatAdvancePc static same originalTU; no public prototype. */
+    /* FloatAdvance static same originalTU; no public prototype. */
 
     i32 BoltType_FindIDByCreature(GAMEOBJECT *, i32);
     void Move_CANNON(GAMEOBJECT *);
@@ -38,7 +38,7 @@ extern "C" {
     void Move_VEHICLE(GAMEOBJECT *);
     void Move_POD(GAMEOBJECT *);
 
-    f32 AnimEndFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
+    f32 AnimEndFrame(CHARACTER_MODEL_LAYERS *, i32);
     extern i32 GizmoBlowUpOpponent_Behind;
     extern f32 GizmoBlowUpOpponent_Range2;
     void SetHeadTarget(GAMEOBJECT *, NUVEC *, i8, f32, f32, f32);
@@ -73,7 +73,7 @@ extern "C" {
     i32 StartBigJump(GAMEOBJECT *, NUVEC *, i32, f32, f32, i32);
     i32 ObjInTube(GAMEOBJECT *);
     GAMEPAD_PC *ViewCamGetGamePad(void);
-    void CharPivot_Init(struct CHARPIVOT_PC *);
+    void CharPivot_Init(struct CHARPIVOT *);
     void CharPivot_Check(GAMEOBJECT *, NUVEC *);
     f32 SeekLinearF(f32, f32, f32);
     u16 TurnRot(u16, u16, i32, i32 *);
@@ -93,7 +93,7 @@ extern "C" {
     extern const char WorldLevelConfigFormat[7];
     void GameCam_NewShake(GAMECAMERA *, f32, f32, f32);
 
-    GAMEOBJECT *AddDynamicCreature(i32, NUVEC *, i32, char *, AIPATHINFO_PC *, AIGROUP_PC *, i32, NUGSPLINE *, NUVEC *, i32, i32);
+    GAMEOBJECT *AddDynamicCreature(i32, NUVEC *, i32, char *, AIPATHINFO *, AIGROUP *, i32, NUGSPLINE *, NUVEC *, i32, i32);
     void Move_DEFAULT(GAMEOBJECT *);
     void KeepPointOnScreen(NUVEC *, NUVEC *);
 
@@ -115,7 +115,7 @@ extern "C" {
     void Move_DROIDGENERIC(GAMEOBJECT *);
     void Move_JEDI(GAMEOBJECT *);
     void Move_WEIRDO(GAMEOBJECT *);
-    extern struct CHARPIVOT_PC CharPivot_LSW[32];
+    extern struct CHARPIVOT CharPivot_LSW[32];
     extern i32 ForcePush_Waft;
     void GameCam_Reset(GAMECAMERA *camera);
     void StartLaunch(struct gameobject_s *object);

@@ -40,7 +40,7 @@ extern "C" {
 
     extern PC_NUFADEGROUP *NuFadeObjGroup;
     extern PC_NUFADEGROUP *NuFadeObjCurGrp;
-    extern i32 NuFadeObjEnabledPc;
+    extern i32 NuFadeObjEnabled;
     extern i16 *NuFadeData;
     extern i32 NuFadeObjDataIndex;
     extern i32 NuFadeObjWave;

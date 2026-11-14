@@ -37,9 +37,9 @@ typedef struct area_gizmosys_prefix_s {
 
 /* One empty diagnostic entry is called with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
-void GizmoDiagnosticPc(char *format, ...);
-#define GIZMO_DIAGNOSTIC_BARE() ((void (*)())GizmoDiagnosticPc)()
-void GizmoNameDiagnosticPc(char *name);
+void GizmoDiagnostic(char *format, ...);
+#define GIZMO_DIAGNOSTIC_BARE() ((void (*)())GizmoDiagnostic)()
+void GizmoNameDiagnostic(char *name);
 #define GIZMO_BUFFER_ALLOC_CHECKED(result, type, buffer, end, size)                                                                        \
     do {                                                                                                                                   \
         void *allocation_ = NULL;                                                                                                          \
@@ -72,7 +72,7 @@ typedef NUVEC *(*GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
 void EdFileWrite(void *data, i32 len);
 void EdFileWriteInt(i32 value);
 void EdFileWriteChar(char value);
-extern GIZACTIONDEF_PC *gizactiondefs;
+extern GIZACTIONDEF *gizactiondefs;
 
 typedef struct GIZMO_NAME_TYPE {     // size 0x9c
     u8 unknown_00[0x20];             // 0x00
@@ -173,7 +173,7 @@ void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYP
             for (previous = 0; previous < index; ++previous) {
                 GIZMOTYPE_PC *other = &((GIZMOTYPES_PC *)gizmotypes)->types[previous];
                 if (other->prefix[0] != '\0' && NuStrICmp(definition->prefix, other->prefix) == 0) {
-                    GizmoDiagnosticPc(definition->name, other->name);
+                    GizmoDiagnostic(definition->name, other->name);
                 }
             }
         }
@@ -743,7 +743,7 @@ i32 GizmoGetGuid(GIZMOSYS_PC *system, GIZMO_PC *gizmo) {
     return -1;
 }
 
-i32 GizmoInfoVersionPc = 4;
+i32 GizmoInfoVersion = 4;
 
 i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
     NUSPECIALHANDLE special;
@@ -753,7 +753,7 @@ i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
     GIZMO_PC *entry;
-    GIZACTIONDEF_PC *definition;
+    GIZACTIONDEF *definition;
     char *name;
     i32 type_index;
     i32 gizmo_index;
@@ -768,7 +768,7 @@ i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
         }
         EdFileSetMedia(1);
         if (EdFileOpen(path, 1)) {
-            EdFileWriteInt(GizmoInfoVersionPc);
+            EdFileWriteInt(GizmoInfoVersion);
             types = gizmotypes;
             EdFileWriteInt(types->count);
             types = gizmotypes;
@@ -781,7 +781,7 @@ i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
                     if (length != 0) {
                         EdFileWrite(type->name, length);
                     }
-                    if (GizmoInfoVersionPc >= 4) {
+                    if (GizmoInfoVersion >= 4) {
                         length = NuStrLen(type->prefix) + 1;
                         EdFileWriteChar((char)length);
                         if (length != 0) {
@@ -810,11 +810,11 @@ i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
                     }
                 }
             }
-            if (GizmoInfoVersionPc == 1) {
+            if (GizmoInfoVersion == 1) {
                 definition = gizactiondefs;
                 if (definition != NULL) {
                     while (definition->name != NULL) {
-                        GIZACTIONDEF_PC *cursor;
+                        GIZACTIONDEF *cursor;
                         count = 0;
                         for (cursor = gizactiondefs; cursor->name != NULL; ++cursor) {
                             ++count;
@@ -830,8 +830,8 @@ i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
                     }
                 }
             }
-            if (GizmoInfoVersionPc >= 3) {
-                if (GizmoInfoVersionPc >= 4 && gizspecial_gizmotype_id != -1) {
+            if (GizmoInfoVersion >= 3) {
+                if (GizmoInfoVersion >= 4 && gizspecial_gizmotype_id != -1) {
                     type = &((GIZMOTYPES_PC *)gizmotypes)->types[gizspecial_gizmotype_id];
                     length = NuStrLen(type->prefix) + 1;
                     EdFileWriteChar((char)length);
@@ -1017,15 +1017,15 @@ void LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
                 }
                 memset(gizmo_name, 0, sizeof(gizmo_name));
                 EdFileRead(gizmo_name, name_length);
-                GizmoNameDiagnosticPc(gizmo_name);
+                GizmoNameDiagnostic(gizmo_name);
                 data_length = EdFileReadInt();
                 type_id = GizmoGetTypeIDByName(system, gizmo_name);
                 if (type_id >= 0 && data_length > 0 && type_id < ((GIZMOTYPES_PC *)gizmotypes)->count &&
                     ((GIZMOTYPES_PC *)gizmotypes)->types[type_id].fns.load_fn != NULL &&
                     ((GIZMOTYPES_PC *)gizmotypes)->types[type_id].fns.load_fn(world, system->sets[type_id].data) != 0) {
-                    GizmoNameDiagnosticPc(gizmo_name);
+                    GizmoNameDiagnostic(gizmo_name);
                 } else {
-                    GizmoNameDiagnosticPc(gizmo_name);
+                    GizmoNameDiagnostic(gizmo_name);
                     while (data_length != 0) {
                         EdFileReadChar();
                         --data_length;
@@ -1040,7 +1040,7 @@ void LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
     system->flags &= ~4;
 }
 
-void GizmoSysAddGizmos(void *system_ptr, GIZFLOW_PC *flow, void *world) {
+void GizmoSysAddGizmos(void *system_ptr, GIZFLOW *flow, void *world) {
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -1146,6 +1146,6 @@ extern "C" {
 #endif
 
 /* Empty. */
-void GizmoDiagnosticPc(char *format, ...) {
+void GizmoDiagnostic(char *format, ...) {
     (void)format;
 }

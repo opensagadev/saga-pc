@@ -24,36 +24,35 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
         return state->weapon_ammo.type->bolt_override;
     }
     id = (i16)object->id;
-    if (id == VehicleSpecialShooterIdPc) {
+    if (id == VehicleSpecialShooterId) {
         return 43;
     }
-    if (id == VehicleBoltId7f19a4Pc) {
+    if (id == VehicleBoltId7f19a4) {
         result = 7 + 2 * (state->bolt_fire_phase != 0);
         if (result == 7 && world->current_level == ASTEROIDCHASED_LDATA) {
             return 8;
         }
         return result;
     }
-    if (id == VehicleBoltId7f1a9cPc || id == VehicleBoltId7f1aa0Pc) {
+    if (id == VehicleBoltId7f1a9c || id == VehicleBoltId7f1aa0) {
         return 34;
     }
-    if (id == VehicleBoltId7f1b34Pc || id == VehicleBoltId7f1b38Pc || id == id_ZAMSSPEEDER) {
+    if (id == VehicleBoltId7f1b34 || id == VehicleBoltId7f1b38 || id == id_ZAMSSPEEDER) {
         return 11;
     }
     if (id == id_FLASHSPEEDER) {
         return 20;
     }
-    if (id == id_XWING || id == VehicleBoltId7f195cPc) {
+    if (id == id_XWING || id == VehicleBoltId7f195c) {
         return 6;
     }
-    if (id == id_SPEEDERBIKE || id == VehicleBoltId7f19a8Pc) {
+    if (id == id_SPEEDERBIKE || id == VehicleBoltId7f19a8) {
         return 10;
     }
-    if (id == VehicleBoltId7f18b4Pc || id == VehicleBoltId7f1a24Pc) {
+    if (id == VehicleBoltId7f18b4 || id == VehicleBoltId7f1a24) {
         return 11;
     }
-    if (id == id_TIEFIGHTER || id == VehicleBoltId7f1a28Pc || id == VehicleBoltId7f196cPc || id == id_TIEBOMBER ||
-        id == VehicleBoltId7f1a2cPc) {
+    if (id == id_TIEFIGHTER || id == VehicleBoltId7f1a28 || id == VehicleBoltId7f196c || id == id_TIEBOMBER || id == VehicleBoltId7f1a2c) {
         if (world != NULL) {
             if (world->current_level == DEATHSTARBATTLED_LDATA) {
                 return 13;
@@ -64,21 +63,21 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
         }
         return 12;
     }
-    if (id == VehicleBoltId7f1b00Pc || id == VehicleBoltId7f1ad8Pc || id == VehicleBoltId7f1b04Pc || id == id_MINITIEBOMBER ||
-        id == VehicleBoltId7f1aecPc || id == VehicleBoltId7f1b08Pc || id == VehicleBoltId7f1b0cPc || id == id_MINIATAT ||
+    if (id == VehicleBoltId7f1b00 || id == VehicleBoltId7f1ad8 || id == VehicleBoltId7f1b04 || id == id_MINITIEBOMBER ||
+        id == VehicleBoltId7f1aec || id == VehicleBoltId7f1b08 || id == VehicleBoltId7f1b0c || id == id_MINIATAT ||
         id == id_MINISTARDESTROYER) {
         return 23;
     }
-    if (id == VehicleBoltId7f1af0Pc) {
+    if (id == VehicleBoltId7f1af0) {
         return 21 + (state->bolt_fire_phase != 0);
     }
-    if (id == id_JEDISTARFIGHTERYELLOWEP3 || id == VehicleBoltId7f19e8Pc) {
+    if (id == id_JEDISTARFIGHTERYELLOWEP3 || id == VehicleBoltId7f19e8) {
         if (WORLD->area != NULL && WORLD->area == BATTLEOVERCORUSCANT_ADATA && WORLD->level_objects[0x12d].active != 0) {
             return 32;
         }
         return 33;
     }
-    if (id == VehicleBoltId7f17d0Pc || id == VehicleBoltId7f17d4Pc || id == VehicleBoltId7f1aacPc) {
+    if (id == VehicleBoltId7f17d0 || id == VehicleBoltId7f17d4 || id == VehicleBoltId7f1aac) {
         result = 42;
         if (WORLD->level_objects[GlobalBoltType[42].object_ids[0]].active == 0) {
             result = 0;
@@ -100,10 +99,10 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     if (id == id_BIGGUN) {
         return 20;
     }
-    if (id == id_BOBAFETT || id == VehicleBoltId7f190cPc) {
+    if (id == id_BOBAFETT || id == VehicleBoltId7f190c) {
         return 26;
     }
-    if (id == VehicleBoltId7f1910Pc) {
+    if (id == VehicleBoltId7f1910) {
         return 3;
     }
     if (id == id_ATAT) {
@@ -121,10 +120,10 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     if (id == id_STAP || id == id_STAP2) {
         return 0;
     }
-    if (id == VehicleBoltId7f1924Pc) {
+    if (id == VehicleBoltId7f1924) {
         return 27 + (Cheat_IsOn(0x29) != 0 ? 3 : 0);
     }
-    if (id == VehicleBoltId7f1928Pc) {
+    if (id == VehicleBoltId7f1928) {
         return 28 + (Cheat_IsOn(0x29) != 0 ? 3 : 0);
     }
     if (id == id_REPUBLICGUNSHIP || id == id_REPUBLICGUNSHIP_GREEN) {
@@ -148,7 +147,7 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     if (id == id_SENTRYDROID) {
         return 0;
     }
-    if (id == VehicleBoltId7f1a38Pc) {
+    if (id == VehicleBoltId7f1a38) {
         return 0;
     }
     return fallback;
@@ -219,19 +218,19 @@ i32 Bolt_HitPart_LSW(BOLT_PC *bolt, PART_PC *part) {
 
 i32 Bolt_AlternateFire_LSW(GAMEOBJECT *object, i32 index) {
     i16 id = object->id;
-    if (id == id_XWING || id == id_MINIXWING || id == VehicleBoltId7f1ad8Pc || id == id_MINIATAT || id == id_MINIROYALSTARSHIP ||
-        id == VehicleBoltId7f1aecPc) {
+    if (id == id_XWING || id == id_MINIXWING || id == VehicleBoltId7f1ad8 || id == id_MINIATAT || id == id_MINIROYALSTARSHIP ||
+        id == VehicleBoltId7f1aec) {
         if (object->bolt_fire_phase == 0 && (index == 0 || index == 2)) {
             return 0;
         }
         if (object->bolt_fire_phase == 1 && (index == 1 || index == 3)) {
             return 0;
         }
-    } else if (id == VehicleBoltId7f19a4Pc || id == VehicleBoltId7f1af0Pc) {
+    } else if (id == VehicleBoltId7f19a4 || id == VehicleBoltId7f1af0) {
         if (index != object->bolt_fire_phase) {
             return 0;
         }
-    } else if (id == (i16)GameObjectRotationAtstId || id == VehicleBoltId7f19e8Pc || id == id_JEDISTARFIGHTERYELLOWEP3) {
+    } else if (id == (i16)GameObjectRotationAtstId || id == VehicleBoltId7f19e8 || id == id_JEDISTARFIGHTERYELLOWEP3) {
         if (index != object->bolt_fire_phase) {
             return 0;
         }

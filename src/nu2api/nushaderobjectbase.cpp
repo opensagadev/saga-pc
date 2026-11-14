@@ -32,7 +32,7 @@ extern "C" {
 }
 
 extern "C" void NuShaderObjectBaseSetWaterSpeed(f32 speed) {
-    PCShaderWaterThetaStep = (f32)((f64)speed * TerrainScanMargin10Pc);
+    PCShaderWaterThetaStep = (f32)((f64)speed * TerrainScanMargin10);
 }
 
 extern "C" void NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL_VIEW *shader, PC_SHADER_WATER_MATERIAL_VIEW *material) {

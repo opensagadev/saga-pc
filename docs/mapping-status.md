@@ -266,23 +266,23 @@ preceding map row:
 
 | Address | Bytes | Class | Referencing compilands (mapped code) | Preceding map row |
 | --- | ---: | --- | --- | --- |
-| `0x027a84a0` | 267,800 | zero-fill/BSS, referenced | src/legogame/move.c (69), (runtime/SDK) (42) | `_DwaWeightPoolPc` |
-| `0x0280d8c0` | 163,840 | zero-fill/BSS, referenced | src/legogame/move.c (64), src/legogame/creature.c (30) | `_PcGeometryInverseViewProjectionMatrixPc` |
-| `0x027e9eb8` | 132,096 | zero-fill/BSS, referenced | src/gameapi/rtl.c (38), (runtime/SDK) (36) | `_DwaBlockTablePc` |
+| `0x027a84a0` | 267,800 | zero-fill/BSS, referenced | src/legogame/move.c (69), (runtime/SDK) (42) | `_DwaWeightPool` |
+| `0x0280d8c0` | 163,840 | zero-fill/BSS, referenced | src/legogame/move.c (64), src/legogame/creature.c (30) | `_PcGeometryInverseViewProjectionMatrix` |
+| `0x027e9eb8` | 132,096 | zero-fill/BSS, referenced | src/gameapi/rtl.c (38), (runtime/SDK) (36) | `_DwaBlockTable` |
 | `0x028368d0` | 75,776 | zero-fill/BSS, referenced | (runtime/SDK) (17), src/legogame/move.c (13) | `_NuLgtLaserData` |
 | `0x0284931c` | 47,176 | zero-fill/BSS, referenced | src/gameapi/gameliball.cpp (9), (runtime/SDK) (8) | `_NuCameraProjectionGlobalScaleX` |
 | `0x00987530` | 43,152 | zero-fill/BSS, referenced | src/gameapi/gameliball.cpp (71), (runtime/SDK) (66) | `_NuRndr_DebrisPlane` |
-| `0x009821c0` | 17,088 | zero-fill/BSS, referenced | (runtime/SDK) (29), src/editor/edlevelall.cpp (27) | `_RendererClearRecordsPc` |
+| `0x009821c0` | 17,088 | zero-fill/BSS, referenced | (runtime/SDK) (29), src/editor/edlevelall.cpp (27) | `_RendererClearRecords` |
 | `0x0097fa58` | 8,720 | zero-fill/BSS, referenced | (runtime/SDK) (14), src/legoapi/lighting.c (6) | `_PCDeviceSamplerInvalidation` |
-| `0x0280a581` | 7,967 | zero-fill/BSS, referenced | src/legogame/move.c (43), src/legogame/game_obj.c (19) | `_NuPortalVisibilityBitsPc` |
+| `0x0280a581` | 7,967 | zero-fill/BSS, referenced | src/legogame/move.c (43), src/legogame/game_obj.c (19) | `_NuPortalVisibilityBits` |
 | `0x029231d8` | 6,400 | zero-fill/BSS, unreferenced | - | `_TerrWallNorm` |
-| `0x0097e290` | 5,892 | zero-fill/BSS, referenced | src/gamelib/net/?0x6133e0 (1), src/legogame/game.c (1) | `_PcGeometryViewProjectionMatrixPc` |
-| `0x00856064` | 2,052 | zero-fill/BSS, referenced | (runtime/SDK) (2), src/nu2api/nu3d_includes.cpp (2) | `_PcControlTextPc` |
+| `0x0097e290` | 5,892 | zero-fill/BSS, referenced | src/gamelib/net/?0x6133e0 (1), src/legogame/game.c (1) | `_PcGeometryViewProjectionMatrix` |
+| `0x00856064` | 2,052 | zero-fill/BSS, referenced | (runtime/SDK) (2), src/nu2api/nu3d_includes.cpp (2) | `_PcControlText` |
 | `0x007e815c` | 1,932 | unknown data, unreferenced | src/gameapi/aisysall.cpp (4), src/legoapi/gizspinner.c (2) | `?PcMouseDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B` |
 | `0x0097bb58` | 1,652 | zero-fill/BSS, referenced | src/gameapi/gameliball.cpp (1), (runtime/SDK) (1) | `_nurndr_tritot_this_frame` |
 | `0x00973160` | 1,440 | zero-fill/BSS, referenced | - | `_zy` |
 | `0x02974d51` | 1,031 | zero-fill/BSS, unreferenced | - | `_PcCapsConfigured` |
-| `0x0280d400` | 1,024 | zero-fill/BSS, unreferenced | - | `_NuRndrFxColourPc` |
+| `0x0280d400` | 1,024 | zero-fill/BSS, unreferenced | - | `_NuRndrFxColour` |
 | `0x029896a4` | 764 | zero-fill/BSS, referenced | src/gameapi/gameliball.cpp (1) | `_PcExecutableFilename` |
 | `0x02920b10` | 640 | zero-fill/BSS, unreferenced | - | `_edptl_torus_menu` |
 | `0x0280c4e0` | 640 | zero-fill/BSS, referenced | src/legogame/levels.c (1) | `_clip_test_mtx` |

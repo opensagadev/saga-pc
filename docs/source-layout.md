@@ -237,7 +237,7 @@ name or boundary; `config/units.csv` now follows this table instead (below).
   builds them separately and TCS has no marker there.
 - Language of the 155 `c?` compilands.
 - COMDAT inline members: Fade class members at 0x564310 (between `jumping`
-  and `screen`), `NETMESSAGE_PC` at 0x580d50 inside `bolts`, Batman
+  and `screen`), `NETMESSAGE` at 0x580d50 inside `bolts`, Batman
   `supportall` members at 0x60ed30. They prove a C++ compiland next to them,
   but which one emitted them is open.
 - Names: `gamestatus` (Batman `gamestatus_batman`, Android
@@ -263,7 +263,7 @@ is its own commit, verified on its own:
   them.
 - **Fragile functions** that shift with unrelated header or unit changes
   (`FRAGILE` in `tools/unitscore.py`: `SubItemMenu`, `InitGameAfterConfig`,
-  `BlockadeRunnerDEjectCreaturePc`, `NuRndrParticleGroup`) are expected to
+  `BlockadeRunnerDEjectCreature`, `NuRndrParticleGroup`) are expected to
   flicker; compare them separately.
 - **Language**: C and C++ produce different symbols and, in places, different
   code. Changing an extension changes every mangled name in
@@ -338,7 +338,7 @@ into a target file in retail order and rewrites `config/*.json` owners.
    - An empty function that retail folded onto a compiland's leading RET
      (the `*_diagnostic_pc.c`/`*_diagnostic.c` files, `texanim_scripts.c`,
      `rtl_empty.c`, the `nudebug.c` and `pc_fmv_leaves.cpp` leaves,
-     `NuMainTrailerLeafPc`) must stay in another file: visible to its callers,
+     `NuMainTrailerLeaf`) must stay in another file: visible to its callers,
      VC8 drops the calls (`Levels_ConfigureList` 83.9% -> 76.8%).
    - VC8 inlines a function defined later in the same file, so a stray of
      another compiland cannot share a file with a small callee that retail
@@ -370,7 +370,7 @@ into a target file in retail order and rewrites `config/*.json` owners.
    - Folded-RET diagnostics (`*_diagnostic_pc.c`): see the first rule. The
      stub-file pass (cleanup batch 12) moved only stubs without a caller in
      the target file (`fun_005788a0` to `levels.cpp`, `GizmoPickups_PostLoad`
-     to `gizmopickups.c`, `Alt_registerStatusScreenExtraPc` to
+     to `gizmopickups.c`, `Alt_registerStatusScreenExtra` to
      `gamehint.c`); each remaining stub file says why it stays.
    - `creature`: `ResetPlayer` stays in `players.c`. With
      `Player_StartPos` defined out of view it drops from 97.44% to 93.91%.
@@ -438,7 +438,7 @@ into a target file in retail order and rewrites `config/*.json` owners.
    afterwards (`tools/declscan.py`; objects unchanged). Two engine files lost
    strays (`nu2api/nusound.c` 6 audio functions, `gameapi/edspline_load.c` 1
    movies function). Functions in their target file: 5750 -> 6648 of 11496;
-   compilands complete: 39 -> 64. The exact set gained `BoulderSpawnPc`.
+   compilands complete: 39 -> 64. The exact set gained `BoulderSpawn`.
    Second pass (language-blocked pieces and boundaries, listed above):
    functions in their target file 6648 -> 7094; compilands complete
    64 -> 100. The exact set gained `DrawCharIcon` and `TieSpinZPart_Move`.
@@ -451,13 +451,13 @@ into a target file in retail order and rewrites `config/*.json` owners.
    - A C `const` definition moved into C++ gets internal linkage; write it
      `extern const` so other objects still link (`MoviesListPathPc`).
    - A static helper mapped in another compiland (header-static copies such as
-     `PlayersFabsPc`, `CustomiserMtx*Pc`, `LoadPerm*`) must stay with its last
+     `PlayersFabs`, `CustomiserMtx*Pc`, `LoadPerm*`) must stay with its last
      out-of-line user; moving that user drops the mapped copy.
    - `tools/unitize.py` does not copy struct definitions used by the moved
      code; copy or move them by hand. Rebuild (or delete the new objects)
      before each apply, or stale objects make functions look duplicated.
    - Boundaries found while moving: `shop` starts at 0x4c0d50
-     (`ShopMtxCopyPc`), `grabber` at 0x470050 (`GrabberMtx*` helpers),
+     (`ShopMtxCopy`), `grabber` at 0x470050 (`GrabberMtx*` helpers),
      `startup` owns the `LoadPerm*` statics from 0x4c9a40, `gizturret` likely
      starts at 0x5ab2d0, `edgizshadow` at 0x5af4f0 (`Shadow_*`), and `cable`
      at 0x4087a0 (`CableFdiv`).

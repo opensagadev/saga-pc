@@ -38,7 +38,7 @@
  * all parts at once. */
 
 #if SAGA_LEGOAPI_WORLD_LEVELS_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_LEVELS_H_STOP)
-#define AREA_GLOBALS_PROGRESS_FLAGS_PC (AreaGlobals_PC.progress_flags)
+#define AREA_GLOBALS_PROGRESS_FLAGS_PC (AreaGlobals.progress_flags)
 
 typedef struct scene_special_progress_s { // size 0x8
 
@@ -62,19 +62,19 @@ typedef struct scene_progress_s {           // size 0x2800
     SCENESPECIALPROGRESS_PC specials[1280]; // 0x0000
 } SCENEPROGRESS;
 
-typedef struct LEVEL_OBJECT_CONFIG_PC { // size 0x8
-    u8 kind;                            // 0x0
-    u8 unknown_01;                      // 0x1
-    i16 reflection;                     // 0x2
-    char *name;                         // 0x4
-} LEVEL_OBJECT_CONFIG_PC;
+typedef struct LEVEL_OBJECT_CONFIG { // size 0x8
+    u8 kind;                         // 0x0
+    u8 unknown_01;                   // 0x1
+    i16 reflection;                  // 0x2
+    char *name;                      // 0x4
+} LEVEL_OBJECT_CONFIG;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     /* LevelCompletionFallbackFlagPC: reuse existing canonical u32 declaration. */
     extern const char PlayerBeenDeactivatedPc[16];
-    extern i16 VehicleSpecialShooterIdPc;
+    extern i16 VehicleSpecialShooterId;
     void NuWin32SetDFS(i32);
     extern const char LevelAfterLoadName[15];
     extern const char LevelConfigGameKeyword_windsize[9];
@@ -109,7 +109,7 @@ extern "C" {
     extern const f32 PCKeyboardDefaultValue;
     extern i32 MAXLDATA;
     extern i32 LevFlag[4];
-    extern LEVEL_OBJECT_CONFIG_PC *ObjTabList;
+    extern LEVEL_OBJECT_CONFIG *ObjTabList;
     extern i32 LEVELOBJECTCOUNT;
     extern i32 EXTRALEVELOBJECTCOUNT;
     extern i32 LEVOBJREF_FIRSTOBJ;
@@ -141,32 +141,32 @@ extern "C" {
 
     void ClearLevData(void);
     extern i32 KNOBS;
-    extern i32 WorldLightUserIdPc;
+    extern i32 WorldLightUserId;
     extern i32 numtl_force_mipmode;
     extern u64 LevHSpecialExists;
     void LoadAreaCharacters(void);
     extern i32 AreaDataLoaded;
-    extern f32 AreaCrawlSoundWaitTimePc;
-    extern f32 AreaCrawlMaximumTimePc;
-    extern i32 AreaCrawlMusicEnabledPc;
-    extern f32 AreaCrawlPromptYPc;
-    extern f32 AreaCrawlPromptScalePc;
+    extern f32 AreaCrawlSoundWaitTime;
+    extern f32 AreaCrawlMaximumTime;
+    extern i32 AreaCrawlMusicEnabled;
+    extern f32 AreaCrawlPromptY;
+    extern f32 AreaCrawlPromptScale;
     extern i32 CharacterDataLoad;
     extern i32 loadareadata_loadlevel;
     extern i16 tTOUCHTOSTART;
     extern i32 netnewgame;
-    extern i16 FreePlayId007f1a4cPc;
-    extern i16 FreePlayId007f1a48Pc;
-    extern i16 FreePlayId007f1a44Pc;
-    extern i16 FreePlayId007f1ab0Pc;
-    extern i16 FreePlayId007f1ab4Pc;
-    extern i16 FreePlayId007f1abcPc;
+    extern i16 FreePlayId007f1a4c;
+    extern i16 FreePlayId007f1a48;
+    extern i16 FreePlayId007f1a44;
+    extern i16 FreePlayId007f1ab0;
+    extern i16 FreePlayId007f1ab4;
+    extern i16 FreePlayId007f1abc;
     extern i32 FreePlayBonusCount;
-    extern i16 PermanentAllTitleIdPc;
-    extern i16 PermanentJediTitleIdPc;
-    extern i16 PermanentBlasterTitleIdPc;
-    extern i16 PermanentBountyTitleIdPc;
-    extern i16 PermanentCustomiserActionsPc[5];
+    extern i16 PermanentAllTitleId;
+    extern i16 PermanentJediTitleId;
+    extern i16 PermanentBlasterTitleId;
+    extern i16 PermanentBountyTitleId;
+    extern i16 PermanentCustomiserActions[5];
     extern f32 LevAlpha;
     extern f32 TitlesAlpha;
     extern f32 LevTime[5];
@@ -288,21 +288,21 @@ extern "C" {
     extern LEVELSPLINE_PC *LevSplList;
     void LevelSplines_InitForGame(LEVELSPLINE_PC *table);
     extern GIZAIMESSAGE *LevAIMessage[8];
-    extern AIAREA_PC *LevArea[4];
+    extern AIAREA *LevArea[4];
 
     extern NUSPECIALHANDLE LevHSpecial[88];
-    void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *, VARIPTR *, VARIPTR *, i32, i32);
+    void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG *, VARIPTR *, VARIPTR *, i32, i32);
     extern GIZMO_PC *LevGizmo[12];
     extern GIZMOBLOWUP_PC *LevBlowUp[2];
-    extern NUMTL *PermanentEffectsMaterialPc;
-    extern NUMTL *PermanentShadowMaterialPc;
+    extern NUMTL *PermanentEffectsMaterial;
+    extern NUMTL *PermanentShadowMaterial;
 
-    extern AREA_EXTRA_MODEL_PC ExtraModelList[6];
+    extern AREA_EXTRA_MODEL ExtraModelList[6];
 
-    extern struct text_crawl_view_pc_s TextCrawlLswPc;
-    extern COLLECTION_BUILD_PC JediCollectionPc;
-    extern COLLECTION_BUILD_PC BlasterCollectionPc;
-    extern COLLECTION_BUILD_PC BountyHunterCollectionPc;
+    extern struct text_crawl_view_s TextCrawlLsw;
+    extern COLLECTION_BUILD_PC JediCollection;
+    extern COLLECTION_BUILD_PC BlasterCollection;
+    extern COLLECTION_BUILD_PC BountyHunterCollection;
     extern NUMTX LevMtx;
 #ifdef __cplusplus
 }
@@ -352,15 +352,15 @@ extern "C" {
     extern LEVELDATA_PC *MAULF_LDATA;
     extern LEVELDATA_PC *GUNSHIPA_LDATA;
     extern LEVELDATA_PC *UpdateSockets_LDATA;
-    extern LEVELDATA_PC *ObstacleReturnLevelPc;
+    extern LEVELDATA_PC *ObstacleReturnLevel;
     extern PART_PC *LevGamePart[8];
     extern NUGSPLINE *LevelCodeSpline[8];
     void NewLevelFromMenu(LEVELDATA_PC *, i32, i32, i32);
     extern LEVELDATA_PC *JEDI_B_LDATA;
-    extern LEVELDATA_PC *CollisionVehicleExcludedLevelPc;
+    extern LEVELDATA_PC *CollisionVehicleExcludedLevel;
 
-    extern LEVELDATA_PC *WorldArchiveOneLevelsPc[11];
-    extern LEVELDATA_PC *WorldArchiveThreeLevelsPc[4];
+    extern LEVELDATA_PC *WorldArchiveOneLevels[11];
+    extern LEVELDATA_PC *WorldArchiveThreeLevels[4];
 
     extern LEVELDATA_PC *LevelFixupSlotPc0087b0b4;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b0b8;

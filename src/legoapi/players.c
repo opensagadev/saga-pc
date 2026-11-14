@@ -126,8 +126,8 @@ void Players_InitPositions(WORLDINFO *world) {
         spline = world->start_door->spline;
         first_pair = 2;
     } else {
-        if (PlayerStartSplineIndexPc != -1) {
-            spline = world->camera_splines[PlayerStartSplineIndexPc];
+        if (PlayerStartSplineIndex != -1) {
+            spline = world->camera_splines[PlayerStartSplineIndex];
         } else {
             spline = NULL;
         }
@@ -157,15 +157,15 @@ void Players_InitPositions(WORLDINFO *world) {
                 NuAtan2D(spline->pts[start + 3].x - PlayerStart[0].position->x, spline->pts[start + 3].z - PlayerStart[1].position->z);
         }
     }
-    if (HUB_ADATA != NULL && world->area == HUB_ADATA && last_area != world->area_index && RenderHubFromCutscenePlayerPc == 0) {
+    if (HUB_ADATA != NULL && world->area == HUB_ADATA && last_area != world->area_index && RenderHubFromCutscenePlayer == 0) {
         void *door = NULL;
         if (hub_from_superstory != -1) {
             i32 area = Episode_FindAreaFromFlags(&EDataList[hub_from_superstory], 5, 5);
             door = Door_FindByIndex(world, area, -1, NULL);
         } else if (hub_from_mission != -1) {
-            door = Door_FindByName(world, PlayerMissionStartDoorPc);
+            door = Door_FindByName(world, PlayerMissionStartDoor);
         } else if (hub_from_arcade != -1) {
-            door = Door_FindByName(world, PlayerArcadeStartDoorPc);
+            door = Door_FindByName(world, PlayerArcadeStartDoor);
         } else if (hub_startoutsidebonusdoor_area != -1) {
             door = Door_FindByIndex(world, hub_startoutsidebonusdoor_area, -1, NULL);
         } else if (last_area != -1) {
@@ -180,22 +180,22 @@ void Players_InitPositions(WORLDINFO *world) {
             door = Door_FindByIndex(world, area, -1, NULL);
         }
         if (door != NULL) {
-            NuStrCpy(DoorExitNamePc, door);
+            NuStrCpy(DoorExitName, door);
         }
     }
     StartDoorPositions();
-    DoorCutSplinePc = NULL;
-    if (DoorExitCameraSplineNamePc[0] != '\0') {
-        NUGSPLINE *camera = NuSplineFind(world->current_gscn, DoorExitCameraSplineNamePc);
-        DoorCutSplinePc = camera;
+    DoorCutSpline = NULL;
+    if (DoorExitCameraSplineName[0] != '\0') {
+        NUGSPLINE *camera = NuSplineFind(world->current_gscn, DoorExitCameraSplineName);
+        DoorCutSpline = camera;
         if (camera != NULL) {
-            DoorCutCameraPosition0Pc = camera->pts[0];
-            DoorCutCameraPosition1Pc = camera->pts[1];
+            DoorCutCameraPosition0 = camera->pts[0];
+            DoorCutCameraPosition1 = camera->pts[1];
         } else {
             Door_UseCutCam = 0;
         }
     }
-    DoorExitCameraSplineNamePc[0] = '\0';
+    DoorExitCameraSplineName[0] = '\0';
     for (index = 0; index < 8; ++index) {
         PLAYER_POSITION_SOCK_PC position;
         ComplexSockPosition(world->sock_sys, PlayerStart[index].position, -1, -1, &position.sock);
@@ -206,8 +206,8 @@ void Players_InitPositions(WORLDINFO *world) {
         hub_from_superstory = -1;
         hub_from_mission = -1;
         hub_from_arcade = -1;
-        shop_from_cutsceneplayer = RenderHubFromCutscenePlayerPc;
-        RenderHubFromCutscenePlayerPc = 0;
+        shop_from_cutsceneplayer = RenderHubFromCutscenePlayer;
+        RenderHubFromCutscenePlayer = 0;
     }
 }
 
@@ -918,4 +918,4 @@ static i32 Customise_FindLetter(char character) {
 
 /* ResetPlayer shares the light packet at 4d8 with LightGameObject. */
 
-STATIC_ASSERT(offsetof(AIPACKET_PC, creature_index) + offsetof(GAMEOBJECT, ai_packet) == 0x400);
+STATIC_ASSERT(offsetof(AIPACKET, creature_index) + offsetof(GAMEOBJECT, ai_packet) == 0x400);

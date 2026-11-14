@@ -2,8 +2,8 @@
 
 #include <stdlib.h>
 
-extern char **TexAnimScriptTablePc;
-void NuTexAnimScriptMissingPc(char *path);
+extern char **TexAnimScriptTable;
+void NuTexAnimScriptMissing(char *path);
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
@@ -31,17 +31,17 @@ typedef struct USEFUL_MATERIAL {
 extern NUMTL *SolidMtl;
 extern i32 (*MatrixReflection_CanOverrideFn)(void);
 
-static f32 UtilitiesFabsPc(f32 value);
+static f32 UtilitiesFabs(f32 value);
 
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
-static f32 UtilitiesFdivPc(f32 a, f32 b) {
+static f32 UtilitiesFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
     return a / b;
 }
 
-static void ReflectionCopyMatrixPc(NUMTX *result, NUMTX *source) {
+static void ReflectionCopyMatrix(NUMTX *result, NUMTX *source) {
     result->m00 = source->m00;
     result->m01 = source->m01;
     result->m02 = source->m02;
@@ -304,7 +304,7 @@ void CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *velocity, f32
         f32 time;
         NuVecSub(direction, &prediction, origin);
         distance = NuVecMag(direction);
-        time = UtilitiesFdivPc(distance, speed);
+        time = UtilitiesFdiv(distance, speed);
         NuVecAddScale(&prediction, target, velocity, time);
     }
     NuVecSub(direction, &prediction, origin);
@@ -397,7 +397,7 @@ i32 MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMT
     if ((f64)override_plane != 2000000.0 && (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0)) {
         plane = override_plane;
     }
-    ReflectionCopyMatrixPc(result, matrix);
+    ReflectionCopyMatrix(result, matrix);
     result->m01 = -result->m01;
     result->m11 = -result->m11;
     result->m21 = -result->m21;
@@ -613,7 +613,7 @@ f32 SplineLength(NUGSPLINE *spline, i32 closed) {
     return length;
 }
 
-i32 StreamingInsideLineXZPc(f32 x, f32 z, f32 x0, f32 z0, f32 x1, f32 z1) {
+i32 StreamingInsideLineXZ(f32 x, f32 z, f32 x0, f32 z0, f32 x1, f32 z1) {
     return (x - x0) * (z1 - z0) + (z - z0) * (x0 - x1) >= 0.0f;
 }
 
@@ -716,10 +716,10 @@ i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float
         NuVecRotateY(&bc, &bc, -angle);
         if (NuFsign(ac.x) != NuFsign(bc.x)) {
             if (first != NULL) {
-                *first = UtilitiesFabsPc(ac.x) / (UtilitiesFabsPc(ac.x) + UtilitiesFabsPc(bc.x));
+                *first = UtilitiesFabs(ac.x) / (UtilitiesFabs(ac.x) + UtilitiesFabs(bc.x));
             }
             if (second != NULL) {
-                *second = UtilitiesFabsPc(ca.x) / (UtilitiesFabsPc(ca.x) + UtilitiesFabsPc(da.x));
+                *second = UtilitiesFabs(ca.x) / (UtilitiesFabs(ca.x) + UtilitiesFabs(da.x));
             }
             return 1;
         }
@@ -730,7 +730,7 @@ i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float
 /* Original source name unknown. XZ distance from a point, given in the segment's
    rotated frame, to the segment from start to end; also returns the fraction
    along the segment. */
-static f32 XZPointToSegmentPc(NUVEC *point, f32 *fraction, NUVEC *start, NUVEC *end, f32 length) {
+static f32 XZPointToSegment(NUVEC *point, f32 *fraction, NUVEC *start, NUVEC *end, f32 length) {
     if (point->z < 0.0f) {
         *fraction = 0.0f;
         return NuVecXZDist(start, point, NULL);
@@ -740,7 +740,7 @@ static f32 XZPointToSegmentPc(NUVEC *point, f32 *fraction, NUVEC *start, NUVEC *
         return NuVecXZDist(end, point, NULL);
     }
     *fraction = point->z / length;
-    return UtilitiesFabsPc(point->x);
+    return UtilitiesFabs(point->x);
 }
 
 f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second) {
@@ -770,33 +770,33 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
     NuVecRotateY(&bc, &bc, -angle);
 
     if (NuFsign(ca.x) != NuFsign(da.x) && NuFsign(ac.x) != NuFsign(bc.x)) {
-        *first = UtilitiesFabsPc(ac.x) / (UtilitiesFabsPc(ac.x) + UtilitiesFabsPc(bc.x));
-        *second = UtilitiesFabsPc(ca.x) / (UtilitiesFabsPc(ca.x) + UtilitiesFabsPc(da.x));
+        *first = UtilitiesFabs(ac.x) / (UtilitiesFabs(ac.x) + UtilitiesFabs(bc.x));
+        *second = UtilitiesFabs(ca.x) / (UtilitiesFabs(ca.x) + UtilitiesFabs(da.x));
         return 0.0f;
     }
 
     ab_length = NuVecXZDist(b, a, NULL);
     cd_length = NuVecXZDist(d, c, NULL);
 
-    distance = XZPointToSegmentPc(&ca, &fraction, a, b, ab_length);
+    distance = XZPointToSegment(&ca, &fraction, a, b, ab_length);
     if (distance < closest) {
         closest = distance;
         *first = fraction;
         *second = 0.0f;
     }
-    distance = XZPointToSegmentPc(&da, &fraction, a, b, ab_length);
+    distance = XZPointToSegment(&da, &fraction, a, b, ab_length);
     if (distance < closest) {
         closest = distance;
         *first = fraction;
         *second = 1.0f;
     }
-    distance = XZPointToSegmentPc(&ac, &fraction, c, d, cd_length);
+    distance = XZPointToSegment(&ac, &fraction, c, d, cd_length);
     if (distance < closest) {
         closest = distance;
         *second = fraction;
         *first = 0.0f;
     }
-    distance = XZPointToSegmentPc(&bc, &fraction, c, d, cd_length);
+    distance = XZPointToSegment(&bc, &fraction, c, d, cd_length);
     if (distance < closest) {
         closest = distance;
         *second = fraction;
@@ -1227,7 +1227,7 @@ void *GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size) {
 
 void EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update) {
     NUINSTANIM *instance_animation;
-    ANI3_HEADER_PC *animation;
+    ANI3_HEADER *animation;
     NUGSCN *scene;
     NUMTX *instance_matrix;
 
@@ -1260,7 +1260,7 @@ void EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update) {
 
 void EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
     NUINSTANIM *instance_animation;
-    ANI3_HEADER_PC *animation;
+    ANI3_HEADER *animation;
     NUGSCN *scene;
     NUMTX *instance_matrix;
     i32 animation_index;
@@ -1347,7 +1347,7 @@ void DrawRectRGBA(f32 x, f32 y, f32 width, f32 height, i32 colour, NUMTL *materi
 void InitTexAnimScripts(char **table) {
     char path[0x40];
     char **entry;
-    TexAnimScriptTablePc = table;
+    TexAnimScriptTable = table;
     if (table == NULL) {
         return;
     }
@@ -1357,7 +1357,7 @@ void InitTexAnimScripts(char **table) {
         NuStrCat(path, *entry);
         NuStrCat(path, ".ats");
         if (NuTexAnimProgReadScript(path, &permbuffer_ptr, permbuffer_end, (i32)DEFAULTFPS) == NULL) {
-            NuTexAnimScriptMissingPc(path);
+            NuTexAnimScriptMissing(path);
         }
     }
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 15) & ~15u;
@@ -1462,7 +1462,7 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
     i32 hat;
     i32 use_alpha;
     f32 plane;
-    CHARACTER_MODEL_LAYERS_PC *model;
+    CHARACTER_MODEL_LAYERS *model;
     NUMTX matrix;
     NUMTX reflected;
     dco_locatorposonly = 0;
@@ -1575,11 +1575,11 @@ void CreateUsefulMaterials(void) {
     ((USEFUL_MATERIAL *)SolidMtl)->attributes &= 0xfffffff0u;
     ((USEFUL_MATERIAL *)SolidMtl)->attributes |= 0x40000u;
     NuMtlUpdate(SolidMtl);
-    ZipUpLineMaterialPc = NuMtlCreate3D(1);
-    ((USEFUL_MATERIAL *)ZipUpLineMaterialPc)->attributes &= 0xffff3fffu;
-    ((USEFUL_MATERIAL *)ZipUpLineMaterialPc)->attributes &= 0xfffffff0u;
-    ((USEFUL_MATERIAL *)ZipUpLineMaterialPc)->attributes |= 0x40000u;
-    NuMtlUpdate(ZipUpLineMaterialPc);
+    ZipUpLineMaterial = NuMtlCreate3D(1);
+    ((USEFUL_MATERIAL *)ZipUpLineMaterial)->attributes &= 0xffff3fffu;
+    ((USEFUL_MATERIAL *)ZipUpLineMaterial)->attributes &= 0xfffffff0u;
+    ((USEFUL_MATERIAL *)ZipUpLineMaterial)->attributes |= 0x40000u;
+    NuMtlUpdate(ZipUpLineMaterial);
 }
 
 void IncreaseScore(u32 *total, u64 amount, i32 apply_multiplier) {
@@ -1657,7 +1657,7 @@ void SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
     if (NuSpecialExistsFn((NUSPECIALHANDLE *)special) == 0) {
         return;
     }
-    ReflectionCopyMatrixPc(&matrix, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
+    ReflectionCopyMatrix(&matrix, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
     instance_animation = NuSpecialGetInstAnim((NUSPECIALHANDLE *)special);
     if (instance_animation == NULL) {
         return;
@@ -1674,7 +1674,7 @@ void SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
         return;
     }
     if (*animation != NULL) {
-        NuAnimData2CalcMatrix((ANI3_HEADER_PC *)*animation, 0, frame, &matrix);
+        NuAnimData2CalcMatrix((ANI3_HEADER *)*animation, 0, frame, &matrix);
     }
     instance_animation->matrix = matrix;
     instance_matrix = NuSpecialGetInstanceMtx((NUSPECIALHANDLE *)special);
@@ -1687,7 +1687,7 @@ void SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
 void fun_00553700(void) {
 }
 
-static __inline f32 UtilitiesFabsPc(f32 value) {
+static __inline f32 UtilitiesFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }

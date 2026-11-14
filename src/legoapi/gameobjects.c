@@ -9,7 +9,7 @@ typedef struct grapple_rotation_s { // size 0x3c
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) + 2 * sizeof(NUMTX) == 0x884);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) + 2 * sizeof(void *) == 0x1c);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) + 2 * sizeof(void *) == 0x1c);
 
 typedef struct kill_zipup_s { // size 0x6a
     u8 unknown_00[0x68];      // 0x00
@@ -67,7 +67,7 @@ typedef struct GAME_ANTI_NODE_DATA { // size 0x24
     u8 mode;                         // 0x23
 } GAME_ANTI_NODE_DATA;
 
-void ClearGameObjects(APIOBJECTSYS_PC *system) {
+void ClearGameObjects(APIOBJECTSYS *system) {
     memset(Obj, 0, sizeof(GAMEOBJECT) * 64);
     APIObjectDestroyAll(system);
     HIGHGAMEOBJECT = 0;
@@ -104,9 +104,9 @@ GAMEOBJECT *AddGameObject(void) {
         object->field_283 = -1;
         object->jump_animation_state = 0xff;
         RecomputeHighGameObject();
-        ((APIOBJECT_PC *)object)->owner = object;
+        ((APIOBJECT *)object)->owner = object;
         object->ai_packet.owner = object;
-        ((APIOBJECT_PC *)object)->ai = &object->ai_packet;
+        ((APIOBJECT *)object)->ai = &object->ai_packet;
         ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_low = 0;
         ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_high = 0;
         return object;
@@ -143,7 +143,7 @@ void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
 }
 
 void GameObjectDimensions(GAMEOBJECT *object) {
-    PLAYERCHARACTERCONFIG_PC *config;
+    PLAYERCHARACTERCONFIG *config;
     if (object->use_model_origin > 0 && object->origin_scale_override == 1.0f) {
         config = object->character_data->game_character;
         if (config->collision_origin_joint != -1 && object->character_model->points_of_interest[config->collision_origin_joint] != NULL &&
@@ -426,7 +426,7 @@ void PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room
     }
 }
 
-void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO_PC *path_info, i32 set_on_surface) {
+void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO *path_info, i32 set_on_surface) {
     object->position = *position;
     object->field_0x276 = (u16)angle;
     object->facing_angle = (u16)angle;
@@ -447,7 +447,7 @@ void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO_
     if (path_info != NULL) {
         object->ai_packet.path_info = *path_info;
     } else {
-        AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
+        AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, 1);
     }
 }
 
@@ -567,21 +567,21 @@ void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
 /* Bitwise absolute value through a float temporary. */
 
 // Copies the antinode timer and its 0x8000 flag from one creature's packet to the other's.
-typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
+typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
 extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
 
-typedef struct OPPONENT_PACKET_PC {         // size 0x1ec
-    u8 unknown000[0xd4];                    // 0x000
-    APIOBJECT_PC *nearest_opponent_object;  // 0x0d4
-    f32 nearest_opponent_metric;            // 0x0d8
-    APIOBJECT_PC *pending_nearest_opponent; // 0x0dc
-    f32 pending_nearest_metric;             // 0x0e0
-    APIOBJECT_PC *opponent_object;          // 0x0e4
-    f32 opponent_metric;                    // 0x0e8
-    APIOBJECT_PC *pending_opponent;         // 0x0ec
-    f32 pending_opponent_metric;            // 0x0f0
-    u8 unknown0f4[0xf4];                    // 0x0f4
-    u32 flags;                              // 0x1e8
+typedef struct OPPONENT_PACKET_PC {      // size 0x1ec
+    u8 unknown000[0xd4];                 // 0x000
+    APIOBJECT *nearest_opponent_object;  // 0x0d4
+    f32 nearest_opponent_metric;         // 0x0d8
+    APIOBJECT *pending_nearest_opponent; // 0x0dc
+    f32 pending_nearest_metric;          // 0x0e0
+    APIOBJECT *opponent_object;          // 0x0e4
+    f32 opponent_metric;                 // 0x0e8
+    APIOBJECT *pending_opponent;         // 0x0ec
+    f32 pending_opponent_metric;         // 0x0f0
+    u8 unknown0f4[0xf4];                 // 0x0f4
+    u32 flags;                           // 0x1e8
 } OPPONENT_PACKET_PC;
 
 typedef struct OPPONENT_OBJECT_PC { // size 0x2b0
@@ -597,7 +597,7 @@ typedef struct OPPONENT_GAME_PC { // size 0xec8
     u8 unknown000[0xeb0];         // 0x000
     u64 seen;                     // 0xeb0
     u64 exclusion;                // 0xeb8
-    APIOBJECT_PC *alert_target;   // 0xec0
+    APIOBJECT *alert_target;      // 0xec0
     f32 alert_timer;              // 0xec4
 } OPPONENT_GAME_PC;
 

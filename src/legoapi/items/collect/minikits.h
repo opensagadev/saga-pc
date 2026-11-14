@@ -17,8 +17,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32 MiniKitModelId_PC;
-    extern i32 CharKitModelId_PC;
+    extern i32 MiniKitModelId;
+    extern i32 CharKitModelId;
     void CollectMinikit(NUVEC *, char *, i32);
     void MiniKit_GameMsg_Update(GAME_MESSAGE_PC *);
     void MiniKit_GameMsg_End(GAME_MESSAGE_PC *);

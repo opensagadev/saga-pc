@@ -1,27 +1,27 @@
 #include "saga.h"
 
-typedef struct TIGHTROPE_MOTION_PC { // size 0x48
-    char name[16];                   // 0x00
-    NUVEC start;                     // 0x10
-    NUVEC end;                       // 0x1c
-    u16 start_x_rotation;            // 0x28
-    u16 end_x_rotation;              // 0x2a
-    u16 start_y_rotation;            // 0x2c
-    u16 end_y_rotation;              // 0x2e
-    u8 start_model;                  // 0x30
-    u8 end_model;                    // 0x31
-    i8 start_visible;                // 0x32
-    u8 reserved_33;                  // 0x33
-    NUVEC direction;                 // 0x34
-    f32 horizontal_length;           // 0x40
-    u16 rotation;                    // 0x44
-    u8 enabled;                      // 0x46
-    u8 available;                    // 0x47
-} TIGHTROPE_MOTION_PC;
+typedef struct TIGHTROPE_MOTION { // size 0x48
+    char name[16];                // 0x00
+    NUVEC start;                  // 0x10
+    NUVEC end;                    // 0x1c
+    u16 start_x_rotation;         // 0x28
+    u16 end_x_rotation;           // 0x2a
+    u16 start_y_rotation;         // 0x2c
+    u16 end_y_rotation;           // 0x2e
+    u8 start_model;               // 0x30
+    u8 end_model;                 // 0x31
+    i8 start_visible;             // 0x32
+    u8 reserved_33;               // 0x33
+    NUVEC direction;              // 0x34
+    f32 horizontal_length;        // 0x40
+    u16 rotation;                 // 0x44
+    u8 enabled;                   // 0x46
+    u8 available;                 // 0x47
+} TIGHTROPE_MOTION;
 
 typedef struct WORLD_TIGHTROPE_VIEW { // size 0x5060
     u8 unknown_0000[0x5058];          // 0x0000
-    TIGHTROPE_MOTION_PC *tightropes;  // 0x5058
+    TIGHTROPE_MOTION *tightropes;     // 0x5058
     i32 tightrope_count;              // 0x505c
 } WORLD_TIGHTROPE_VIEW;
 
@@ -87,7 +87,7 @@ extern "C" {
         return world->tightropes;
     }
 
-    static void TightRopeInitRecordPc(TIGHTROPE_s *rope) {
+    static void TightRopeInitRecord(TIGHTROPE_s *rope) {
         f32 inverse;
         NuVecSub(&rope->direction, &rope->end_position, &rope->start_position);
         rope->y_rotation = NuAtan2D(rope->direction.x, rope->direction.z);
@@ -106,7 +106,7 @@ extern "C" {
         }
         rope = world->tightropes;
         for (index = 0; index < world->tightrope_count; ++index, ++rope) {
-            TightRopeInitRecordPc(rope);
+            TightRopeInitRecord(rope);
             if (progress != NULL && index < 32) {
                 i32 word = index / 32;
                 u32 mask = 1 << (index & 31);
@@ -148,7 +148,7 @@ extern "C" {
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 extern "C" {
-    static f32 TightropeFabsPc(f32 f) {
+    static f32 TightropeFabs(f32 f) {
         f32 rv;
 
         *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -156,8 +156,8 @@ extern "C" {
     }
 }
 
-extern "C" TIGHTROPE_MOTION_PC *TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {
-    TIGHTROPE_MOTION_PC *rope = ((WORLD_TIGHTROPE_VIEW *)world)->tightropes;
+extern "C" TIGHTROPE_MOTION *TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {
+    TIGHTROPE_MOTION *rope = ((WORLD_TIGHTROPE_VIEW *)world)->tightropes;
     f32 width = 3.0f * object->bounds_radius;
     NUVEC origin = object->collision_position;
     NUVEC offset;
@@ -275,7 +275,7 @@ extern "C" {
             }
             vertices[count + 1].position = rope->end_position;
             for (point = 0; point <= count; ++point) {
-                NuRndrLine3d(&vertices[point], ZipUpLineMaterialPc, NULL);
+                NuRndrLine3d(&vertices[point], ZipUpLineMaterial, NULL);
             }
         }
     }
@@ -361,47 +361,47 @@ extern "C" {
     char *TightRopeRegistryNamePc = "TightRope";
 #pragma data_seg()
 #pragma data_seg(".data$TightRopeAddTypePc")
-    ADDGIZMOTYPE_PC TightRopeAddTypePc = {0};
+    ADDGIZMOTYPE_PC TightRopeAddType = {0};
 #pragma data_seg()
 
     ADDGIZMOTYPE_PC *TightRopes_RegisterGizmo(i32 unused_type_id) {
         char *name = TightRopeRegistryNamePc;
-        TightRopeAddTypePc = Default_ADDGIZMOTYPE;
-        TightRopeAddTypePc.name = name;
-        TightRopeAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
-        TightRopeAddTypePc.fns.options = 8;
-        TightRopeAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))TightRopes_GetMaxGizmos;
-        TightRopeAddTypePc.fns.add_gizmos_fn = (void *)TightRopes_AddGizmos;
-        TightRopeAddTypePc.fns.early_update_fn = NULL;
-        TightRopeAddTypePc.fns.late_update_fn = NULL;
-        TightRopeAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))TightRopes_Draw;
-        TightRopeAddTypePc.fns.panel_draw_fn = NULL;
-        TightRopeAddTypePc.fns.get_gizmo_name_fn = TightRope_GetGizmoName;
-        TightRopeAddTypePc.fns.get_output_fn = TightRope_GetOutput;
-        TightRopeAddTypePc.fns.get_output_name_fn = TightRope_GetOutputName;
-        TightRopeAddTypePc.fns.get_num_outputs_fn = (void *)TightRope_GetNumOutputs;
-        TightRopeAddTypePc.fns.activate_fn = TightRope_Activate;
-        TightRopeAddTypePc.fns.activate_rev_fn = NULL;
-        TightRopeAddTypePc.fns.set_visibility_fn = TightRope_SetVisibility;
-        TightRopeAddTypePc.fns.get_visibility_fn = NULL;
-        TightRopeAddTypePc.fns.get_pos_fn = NULL;
-        TightRopeAddTypePc.fns.using_special_fn = NULL;
-        TightRopeAddTypePc.fns.bolt_hit_plat_fn = NULL;
-        TightRopeAddTypePc.fns.get_best_bolt_target_fn = NULL;
-        TightRopeAddTypePc.fns.bolt_hit_fn = NULL;
-        TightRopeAddTypePc.fns.allocate_progress_data_fn = TightRopes_AllocateProgressData;
-        TightRopeAddTypePc.fns.clear_progress_fn = (void (*)(void *, void *))TightRopes_ClearProgress;
-        TightRopeAddTypePc.fns.store_progress_fn = (void (*)(void *, void *, void *))TightRopes_StoreProgress;
-        TightRopeAddTypePc.fns.reset_fn = (void (*)(void *, void *, void *))TightRopes_Reset;
-        TightRopeAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))TightRopes_ReserveBufferSpace;
-        TightRopeAddTypePc.fns.load_fn = (i32(*)(void *, void *))TightRopes_Load;
-        TightRopeAddTypePc.fns.post_load_fn = NULL;
-        TightRopeAddTypePc.fns.add_level_sfx_fn = NULL;
-        return &TightRopeAddTypePc;
+        TightRopeAddType = Default_ADDGIZMOTYPE;
+        TightRopeAddType.name = name;
+        TightRopeAddType.prefix = TextInputKeyNameTextPc7516c0;
+        TightRopeAddType.fns.options = 8;
+        TightRopeAddType.fns.get_max_gizmos_fn = (i32(*)(void *))TightRopes_GetMaxGizmos;
+        TightRopeAddType.fns.add_gizmos_fn = (void *)TightRopes_AddGizmos;
+        TightRopeAddType.fns.early_update_fn = NULL;
+        TightRopeAddType.fns.late_update_fn = NULL;
+        TightRopeAddType.fns.draw_fn = (void (*)(void *, void *, f32))TightRopes_Draw;
+        TightRopeAddType.fns.panel_draw_fn = NULL;
+        TightRopeAddType.fns.get_gizmo_name_fn = TightRope_GetGizmoName;
+        TightRopeAddType.fns.get_output_fn = TightRope_GetOutput;
+        TightRopeAddType.fns.get_output_name_fn = TightRope_GetOutputName;
+        TightRopeAddType.fns.get_num_outputs_fn = (void *)TightRope_GetNumOutputs;
+        TightRopeAddType.fns.activate_fn = TightRope_Activate;
+        TightRopeAddType.fns.activate_rev_fn = NULL;
+        TightRopeAddType.fns.set_visibility_fn = TightRope_SetVisibility;
+        TightRopeAddType.fns.get_visibility_fn = NULL;
+        TightRopeAddType.fns.get_pos_fn = NULL;
+        TightRopeAddType.fns.using_special_fn = NULL;
+        TightRopeAddType.fns.bolt_hit_plat_fn = NULL;
+        TightRopeAddType.fns.get_best_bolt_target_fn = NULL;
+        TightRopeAddType.fns.bolt_hit_fn = NULL;
+        TightRopeAddType.fns.allocate_progress_data_fn = TightRopes_AllocateProgressData;
+        TightRopeAddType.fns.clear_progress_fn = (void (*)(void *, void *))TightRopes_ClearProgress;
+        TightRopeAddType.fns.store_progress_fn = (void (*)(void *, void *, void *))TightRopes_StoreProgress;
+        TightRopeAddType.fns.reset_fn = (void (*)(void *, void *, void *))TightRopes_Reset;
+        TightRopeAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))TightRopes_ReserveBufferSpace;
+        TightRopeAddType.fns.load_fn = (i32(*)(void *, void *))TightRopes_Load;
+        TightRopeAddType.fns.post_load_fn = NULL;
+        TightRopeAddType.fns.add_level_sfx_fn = NULL;
+        return &TightRopeAddType;
     }
 }
 
-static i32 TightRopeSetPositionPc(TIGHTROPE_MOTION_PC *rope, NUVEC *position, GAMEOBJECT *object) {
+static i32 TightRopeSetPosition(TIGHTROPE_MOTION *rope, NUVEC *position, GAMEOBJECT *object) {
     f32 margin;
     i32 result;
     NuVecSub(position, position, &rope->start);
@@ -433,14 +433,14 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
     i32 result = 1;
     if (object->pad->input_magnitude > 0.0f && object->field_7aa != 0x8f) {
         NUVEC previous = object->launch_origin;
-        TIGHTROPE_MOTION_PC *rope = ((TIGHTROPE_MOTION_PC *)(object->grapple));
+        TIGHTROPE_MOTION *rope = ((TIGHTROPE_MOTION *)(object->grapple));
         f32 input = PushingTowardsAngle(GamePad_InputAngle(object, object->pad), rope->rotation);
         f32 direction;
         f32 speed;
         if (input > NuTrigTable[0x3000]) {
             direction = 1.0f;
             if (jumping == 0) {
-                rope = ((TIGHTROPE_MOTION_PC *)(object->grapple));
+                rope = ((TIGHTROPE_MOTION *)(object->grapple));
                 object->movement_facing_angle = rope->rotation;
                 object->field_7aa = 0x89;
                 speed = AnimSpeed(object->character_model, 0x89);
@@ -450,7 +450,7 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
         } else if (-NuTrigTable[0x3000] > input) {
             direction = -1.0f;
             if (jumping == 0) {
-                rope = ((TIGHTROPE_MOTION_PC *)(object->grapple));
+                rope = ((TIGHTROPE_MOTION *)(object->grapple));
                 object->movement_facing_angle = rope->rotation + 0x8000;
                 object->field_7aa = 0x89;
                 speed = AnimSpeed(object->character_model, 0x89);
@@ -464,11 +464,11 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
             return result;
         }
         NUVEC movement;
-        rope = ((TIGHTROPE_MOTION_PC *)(object->grapple));
+        rope = ((TIGHTROPE_MOTION *)(object->grapple));
         NuVecScale(&movement, &rope->direction, speed * direction * FRAMETIME);
         NuVecAdd(&object->launch_origin, &object->launch_origin, &movement);
-        rope = ((TIGHTROPE_MOTION_PC *)(object->grapple));
-        result = TightRopeSetPositionPc(rope, &object->launch_origin, object);
+        rope = ((TIGHTROPE_MOTION *)(object->grapple));
+        result = TightRopeSetPosition(rope, &object->launch_origin, object);
         if (jumping == 0 && object->launch_origin.x == previous.x && object->launch_origin.y == previous.y &&
             object->launch_origin.z == previous.z) {
             object->field_7aa = 0x88;
@@ -481,7 +481,7 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
 
 static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
     NUVEC position;
-    TIGHTROPE_MOTION_PC *rope = TightRope_InRange(object, world, &position);
+    TIGHTROPE_MOTION *rope = TightRope_InRange(object, world, &position);
     if (rope != NULL) {
         object->character_context = 0x44;
         object->grapple = rope;
@@ -496,19 +496,19 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
             object->field_7aa = 0x88;
         }
         object->launch_origin = position;
-        if (abs(RotDiff(((TIGHTROPE_MOTION_PC *)(object->grapple))->rotation, object->movement_facing_angle)) <= 0x4000) {
-            rope = ((TIGHTROPE_MOTION_PC *)(object->grapple));
+        if (abs(RotDiff(((TIGHTROPE_MOTION *)(object->grapple))->rotation, object->movement_facing_angle)) <= 0x4000) {
+            rope = ((TIGHTROPE_MOTION *)(object->grapple));
             object->movement_facing_angle = rope->rotation;
         } else {
-            rope = ((TIGHTROPE_MOTION_PC *)(object->grapple));
+            rope = ((TIGHTROPE_MOTION *)(object->grapple));
             object->movement_facing_angle = rope->rotation + 0x8000;
         }
         object->context_hover_target_y = NuVecXZDist(&object->collision_position, &rope->start, NULL);
-        rope = ((TIGHTROPE_MOTION_PC *)(object->grapple));
+        rope = ((TIGHTROPE_MOTION *)(object->grapple));
         f32 square = rope->direction.x * rope->direction.x + rope->direction.z * rope->direction.z;
-        i32 slope = NuAtan2D(((TIGHTROPE_MOTION_PC *)(object->grapple))->direction.y, NuFsqrt(square));
+        i32 slope = NuAtan2D(((TIGHTROPE_MOTION *)(object->grapple))->direction.y, NuFsqrt(square));
         NuVecRotateX(&position, &v010, -slope);
-        rope = ((TIGHTROPE_MOTION_PC *)(object->grapple));
+        rope = ((TIGHTROPE_MOTION *)(object->grapple));
         NuVecRotateY(&position, &position, rope->rotation);
         FindAnglesZX(&position, &object->field_7a4, &object->field_7a8);
         if ((object->character_data->game_character->flags_090 & 0x10000000) != 0) {
@@ -584,7 +584,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
             if (object->character_context == 0x44 && object->grapple == rope) {
                 TightRope_MoveUpdate(object, 1);
                 object->context_hover_target_y =
-                    NuVecXZDist(&object->collision_position, &((TIGHTROPE_MOTION_PC *)(object->grapple))->start, NULL);
+                    NuVecXZDist(&object->collision_position, &((TIGHTROPE_MOTION *)(object->grapple))->start, NULL);
             }
             return;
         }
@@ -611,8 +611,8 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 f32 frame = AnimListFrame(object->character_model, object->field_7aa, 0);
 
                 if (frame >= 1.0f && *playing >= frame && object->pad->input_magnitude > 0.0f &&
-                    TightropeFabsPc(PushingTowardsAngle(GamePad_InputAngle(object, object->pad),
-                                                        ((TIGHTROPE_MOTION_PC *)(object->grapple))->rotation)) > NuTrigTable[0x3000]) {
+                    TightropeFabs(PushingTowardsAngle(GamePad_InputAngle(object, object->pad),
+                                                      ((TIGHTROPE_MOTION *)(object->grapple))->rotation)) > NuTrigTable[0x3000]) {
                     TightRope_MoveUpdate(object, 0);
                 } else {
                     object->context_timer -= FRAMETIME;
@@ -629,7 +629,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 object->velocity.y = 1.8f;
             }
         }
-        object->context_hover_target_y = NuVecXZDist(&object->collision_position, &((TIGHTROPE_MOTION_PC *)(object->grapple))->start, NULL);
+        object->context_hover_target_y = NuVecXZDist(&object->collision_position, &((TIGHTROPE_MOTION *)(object->grapple))->start, NULL);
         return;
     }
     if (object->field_281 != 0 || !(object->velocity.y <= 0.0f) || object->character_model->model_data_b[0x88] == NULL) {
@@ -669,10 +669,10 @@ extern "C" {
             fraction = 1.0f;
         }
         amplitude = NuQFntHalfScale * NuTrigTable[(((i32)(fraction * 32768.0)) >> 1) & 0x7fff];
-        object->target_velocity.x += (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * NuTrigTable[rotation >> 1];
-        object->target_velocity.y -= qrand() * PlayerRandomScalePc * amplitude;
+        object->target_velocity.x += (qrand() * PlayerRandomScale - NuQFntHalfScale) * amplitude * NuTrigTable[rotation >> 1];
+        object->target_velocity.y -= qrand() * PlayerRandomScale * amplitude;
         object->target_velocity.z +=
-            (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * NuTrigTable[((rotation + 0x4000) >> 1) & 0x7fff];
+            (qrand() * PlayerRandomScale - NuQFntHalfScale) * amplitude * NuTrigTable[((rotation + 0x4000) >> 1) & 0x7fff];
         return object->field_7aa != 6 && object->field_7aa != 5;
     }
 }

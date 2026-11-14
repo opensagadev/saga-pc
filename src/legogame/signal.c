@@ -1,7 +1,7 @@
 #include "saga.h"
 
 extern char TextInputKeyNameTextPc7516c0[1];
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, capabilities) == 0x4bc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, capabilities) == 0x4bc);
 
 i32 Signals_Load(WORLDINFO *world, void *unused) {
     i32 version;
@@ -66,7 +66,7 @@ i32 Signal_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 reverse) {
     return 0;
 }
 
-static void SignalSetVisiblePc(SIGNAL_s *signal, i32 visible) {
+static void SignalSetVisible(SIGNAL_s *signal, i32 visible) {
     u8 was_visible = signal->visible;
     signal->visible = visible != 0;
     if (signal->visible && !was_visible) {
@@ -78,7 +78,7 @@ static void SignalSetVisiblePc(SIGNAL_s *signal, i32 visible) {
 
 void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        SignalSetVisiblePc(gizmo->object, visible);
+        SignalSetVisible(gizmo->object, visible);
     }
 }
 
@@ -87,7 +87,7 @@ NUVEC *Signal_GetPos(GIZMO_PC *gizmo) {
     return signal != NULL ? &signal->position : NULL;
 }
 
-static void SignalResetRecordPc(SIGNAL_s *signal) {
+static void SignalResetRecord(SIGNAL_s *signal) {
     f32 height;
     NewTerrPlatformsOff();
     height = GameShadow(NULL, &signal->position, 5.0f, -1);
@@ -103,7 +103,7 @@ static void SignalResetRecordPc(SIGNAL_s *signal) {
     NuVecAdd(&signal->target_position, &signal->target_position, &signal->position);
     signal->suit = Suit_FindFromLetter(signal->suit_letter);
     if (signal->suit == NULL) {
-        signal->suit = &SuitRecordInitPc[0];
+        signal->suit = &SuitRecordInit[0];
     }
     signal->character_letter = signal->suit->group;
     signal->suit_letter = signal->suit->letter;
@@ -133,7 +133,7 @@ void Signals_Reset(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *progress) {
     for (index = 0; index < world->signal_count; ++index, ++signal) {
         i32 word;
         u32 bit;
-        SignalResetRecordPc(signal);
+        SignalResetRecord(signal);
         if (progress == NULL || index >= 32) {
             continue;
         }
@@ -142,7 +142,7 @@ void Signals_Reset(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *progress) {
         if (progress->suit_letters[index] != 0) {
             signal->suit = Suit_FindFromLetter(progress->suit_letters[index]);
         }
-        SignalSetVisiblePc(signal, (progress->visible_mask[word] & bit) != 0);
+        SignalSetVisible(signal, (progress->visible_mask[word] & bit) != 0);
         signal->active = (progress->active_mask[word] & bit) != 0;
     }
 }
@@ -359,43 +359,43 @@ void Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *pro
 char *SignalRegistryNamePc = "Signal";
 #pragma data_seg()
 #pragma data_seg(".data$SignalAddTypePc")
-ADDGIZMOTYPE_PC SignalAddTypePc = {0};
+ADDGIZMOTYPE_PC SignalAddType = {0};
 #pragma data_seg()
 
 ADDGIZMOTYPE_PC *Signals_RegisterGizmo(i32 unused_type_id) {
     char *name = SignalRegistryNamePc;
-    SignalAddTypePc = Default_ADDGIZMOTYPE;
-    SignalAddTypePc.name = name;
-    SignalAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
-    SignalAddTypePc.fns.options = 0x28;
-    SignalAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))Signals_GetMaxGizmos;
-    SignalAddTypePc.fns.add_gizmos_fn = (void *)Signals_AddGizmos;
-    SignalAddTypePc.fns.early_update_fn = NULL;
-    SignalAddTypePc.fns.late_update_fn = (void (*)(void *, void *, f32))Signals_Update;
-    SignalAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))Signals_Draw;
-    SignalAddTypePc.fns.panel_draw_fn = NULL;
-    SignalAddTypePc.fns.get_gizmo_name_fn = Signal_GetGizmoName;
-    SignalAddTypePc.fns.get_output_fn = Signal_GetOutput;
-    SignalAddTypePc.fns.get_output_name_fn = Signal_GetOutputName;
-    SignalAddTypePc.fns.get_num_outputs_fn = (void *)Signal_GetNumOutputs;
-    SignalAddTypePc.fns.activate_fn = Signal_Activate;
-    SignalAddTypePc.fns.activate_rev_fn = Signal_ActivateRev;
-    SignalAddTypePc.fns.set_visibility_fn = Signal_SetGizmoVisibility;
-    SignalAddTypePc.fns.get_visibility_fn = NULL;
-    SignalAddTypePc.fns.get_pos_fn = (void *)Signal_GetPos;
-    SignalAddTypePc.fns.using_special_fn = NULL;
-    SignalAddTypePc.fns.bolt_hit_plat_fn = NULL;
-    SignalAddTypePc.fns.get_best_bolt_target_fn = NULL;
-    SignalAddTypePc.fns.bolt_hit_fn = NULL;
-    SignalAddTypePc.fns.allocate_progress_data_fn = Signals_AllocateProgressData;
-    SignalAddTypePc.fns.clear_progress_fn = (void (*)(void *, void *))Signals_ClearProgress;
-    SignalAddTypePc.fns.store_progress_fn = (void (*)(void *, void *, void *))Signals_StoreProgress;
-    SignalAddTypePc.fns.reset_fn = (void (*)(void *, void *, void *))Signals_Reset;
-    SignalAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))Signals_ReserveBufferSpace;
-    SignalAddTypePc.fns.load_fn = (i32(*)(void *, void *))Signals_Load;
-    SignalAddTypePc.fns.post_load_fn = NULL;
-    SignalAddTypePc.fns.add_level_sfx_fn = NULL;
-    return &SignalAddTypePc;
+    SignalAddType = Default_ADDGIZMOTYPE;
+    SignalAddType.name = name;
+    SignalAddType.prefix = TextInputKeyNameTextPc7516c0;
+    SignalAddType.fns.options = 0x28;
+    SignalAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Signals_GetMaxGizmos;
+    SignalAddType.fns.add_gizmos_fn = (void *)Signals_AddGizmos;
+    SignalAddType.fns.early_update_fn = NULL;
+    SignalAddType.fns.late_update_fn = (void (*)(void *, void *, f32))Signals_Update;
+    SignalAddType.fns.draw_fn = (void (*)(void *, void *, f32))Signals_Draw;
+    SignalAddType.fns.panel_draw_fn = NULL;
+    SignalAddType.fns.get_gizmo_name_fn = Signal_GetGizmoName;
+    SignalAddType.fns.get_output_fn = Signal_GetOutput;
+    SignalAddType.fns.get_output_name_fn = Signal_GetOutputName;
+    SignalAddType.fns.get_num_outputs_fn = (void *)Signal_GetNumOutputs;
+    SignalAddType.fns.activate_fn = Signal_Activate;
+    SignalAddType.fns.activate_rev_fn = Signal_ActivateRev;
+    SignalAddType.fns.set_visibility_fn = Signal_SetGizmoVisibility;
+    SignalAddType.fns.get_visibility_fn = NULL;
+    SignalAddType.fns.get_pos_fn = (void *)Signal_GetPos;
+    SignalAddType.fns.using_special_fn = NULL;
+    SignalAddType.fns.bolt_hit_plat_fn = NULL;
+    SignalAddType.fns.get_best_bolt_target_fn = NULL;
+    SignalAddType.fns.bolt_hit_fn = NULL;
+    SignalAddType.fns.allocate_progress_data_fn = Signals_AllocateProgressData;
+    SignalAddType.fns.clear_progress_fn = (void (*)(void *, void *))Signals_ClearProgress;
+    SignalAddType.fns.store_progress_fn = (void (*)(void *, void *, void *))Signals_StoreProgress;
+    SignalAddType.fns.reset_fn = (void (*)(void *, void *, void *))Signals_Reset;
+    SignalAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Signals_ReserveBufferSpace;
+    SignalAddType.fns.load_fn = (i32(*)(void *, void *))Signals_Load;
+    SignalAddType.fns.post_load_fn = NULL;
+    SignalAddType.fns.add_level_sfx_fn = NULL;
+    return &SignalAddType;
 }
 
 void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
@@ -431,22 +431,22 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         if (exchange != 0) {
             SIGNAL_s *signal;
-            SUIT_INITIALIZER_RECORD_PC *old_suit;
-            SUIT_INITIALIZER_RECORD_PC *new_suit;
+            SUIT_INITIALIZER_RECORD *old_suit;
+            SUIT_INITIALIZER_RECORD *new_suit;
             i32 index;
             /* Context 0x4c uses the attachment union and the full 24-byte suit record. */
             ((SIGNAL_s *)object->grapple)->flags |= 4;
             object->context_variant_flags |= 0x40;
-            old_suit = (SUIT_INITIALIZER_RECORD_PC *)object->suit;
+            old_suit = (SUIT_INITIALIZER_RECORD *)object->suit;
             object->ai_packet.capabilities &= ~old_suit->character_flags;
             signal = object->grapple;
             new_suit = signal->suit;
-            object->suit = (SUIT_LAYERS_PC *)new_suit;
+            object->suit = (SUIT_LAYERS *)new_suit;
             signal->suit = old_suit;
-            new_suit = (SUIT_INITIALIZER_RECORD_PC *)object->suit;
+            new_suit = (SUIT_INITIALIZER_RECORD *)object->suit;
             object->ai_packet.capabilities |= new_suit->character_flags;
             for (index = 0; index < 10; ++index) {
-                if (new_suit == &SuitRecordInitPc[index]) {
+                if (new_suit == &SuitRecordInit[index]) {
                     areaSuitBits |= 1u << index;
                     break;
                 }
@@ -481,7 +481,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
 }
 
-void SuitBlowupCodePc(WORLDINFO *world, GAMEOBJECT *object) {
+void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
     GIZMOBLOWUP_PC *candidates[256];
     GIZMOBLOWUP_PC *blowup;
     NUVEC minimum;

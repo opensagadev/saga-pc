@@ -26,7 +26,7 @@
 
 #if SAGA_LEGOAPI_MISC_LEGOAPI_STATUS_H_PART == 1 && !defined(SAGA_LEGOAPI_MISC_LEGOAPI_STATUS_H_STOP)
 
-struct REGISTER_STATUS_PACKET_PC;
+struct REGISTER_STATUS_PACKET;
 struct STATUSPACKET_s;
 struct STATUS_STAGE_s;
 struct WORLDINFO_s;
@@ -37,7 +37,7 @@ typedef struct PAD_INPUT_PC {
     u8 analog_left_y;
 } PAD_INPUT_PC;
 
-typedef struct RUMBLE_PACKET_RESOURCE_PC { // size 0x14
+typedef struct RUMBLE_PACKET_RESOURCE { // size 0x14
 
     union { // size 0x4
         u8 unknown_00[4];
@@ -53,19 +53,19 @@ typedef struct RUMBLE_PACKET_RESOURCE_PC { // size 0x14
 
     f32 duration; // 0x0c
     u8 active;    // 0x10
-} RUMBLE_PACKET_RESOURCE_PC;
+} RUMBLE_PACKET_RESOURCE;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 VehicleBoltId7f17d0Pc;
+    extern i16 VehicleBoltId7f17d0;
 /* Windows SDK commctrl.h aliases DrawStatusText to DrawStatusTextA. */
 #ifdef DrawStatusText
 #undef DrawStatusText
 #endif
     void DrawStatusText(char *, u16, f32, f32, f32, u32, i32);
     extern const char RenderSplineBountyStartPc[13];
-    extern f32 DrawStatusScaleXPc;
-    extern f32 DrawStatusScaleYPc;
+    extern f32 DrawStatusScaleX;
+    extern f32 DrawStatusScaleY;
 
     /* Additive shared contracts only; existing RTL/flight/game/player types reused. */
     extern NUVEC PanelLightingDirectionsPc[3];
@@ -75,20 +75,20 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32 StatusNewMinikitCountPc;
+    extern i32 StatusNewMinikitCount;
     extern i32 currentminikit;
-    extern i16 StatusNewCharacterIdsPc[8];
-    extern u32 StatusCollectedSuitBitsPc;
+    extern i16 StatusNewCharacterIds[8];
+    extern u32 StatusCollectedSuitBits;
     extern f32 StatusMiniKitDirectionOffsetPc;
     extern f32 slideseek;
     void AddStatusMiniKitParts(void);
     extern f32 jibberlen;
     extern f32 slidetime;
     extern f32 pop_timer;
-    extern i32 PauseSaveAndExitPc;
-    f32 StatusScoreRatioPc(f32, f32);
-    extern i32 StatusDemoOptionPc;
-    void StatusRumbleUpdatePc(void);
+    extern i32 PauseSaveAndExit;
+    f32 StatusScoreRatio(f32, f32);
+    extern i32 StatusDemoOption;
+    void StatusRumbleUpdate(void);
     void FinishStatusPacket(i32);
     extern i32 DrawGoldBrick_Stage;
     extern i32 DrawGoldBrick_Phase;
@@ -125,9 +125,9 @@ typedef struct status_minikit_draw_cache_s { // size 0x48
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern COLLECTION_BUILD_PC MasterCollectionPc;
-    extern STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10];
-    extern PART_LIGHTING_DATA_PC StatusMiniKitPartLightingPc;
+    extern COLLECTION_BUILD_PC MasterCollection;
+    extern STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCache[10];
+    extern PART_LIGHTING_DATA StatusMiniKitPartLighting;
 #ifdef __cplusplus
 }
 #endif
@@ -145,7 +145,7 @@ extern "C" {
     extern AREA_DATA_PC *GOTHAMSTREETS_ADATA;
     void StatusStage_Reset(struct STATUS_STAGE_s *stage);
     void NextStatusStage(struct STATUSPACKET_s *);
-    void RegisterStatusScreen(struct STATUS_STAGE_s *, i32 *, const struct REGISTER_STATUS_PACKET_PC *);
+    void RegisterStatusScreen(struct STATUS_STAGE_s *, i32 *, const struct REGISTER_STATUS_PACKET *);
     void DrawStatusMiniKit(f32, f32, f32, f32, f32, i32, struct STATUSPACKET_s *, f32);
     i32 UpdateNewMiniKits(struct STATUSPACKET_s *, struct STATUS_STAGE_s *);
     void StatusPacketReset(struct STATUSPACKET_s *);

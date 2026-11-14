@@ -14,7 +14,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-struct SUIT_LAYERS_PC;
+struct SUIT_LAYERS;
 struct WORLDINFO_s;
 struct bolt_s;
 struct nugspline_s;
@@ -31,31 +31,31 @@ typedef struct playerprogress_s { // size 0x10
     f32 field_c;                  // 0xc
 } PLAYERPROGRESS;
 
-typedef struct DRAW_ATTACHMENTS_MINI_PC { // size 0x24
-    f32 current_time;                     // 0x00
-    f32 previous_time;                    // 0x04
-    f32 blend_elapsed;                    // 0x08
-    f32 blend_duration;                   // 0x0c
-    f32 source_time;                      // 0x10
-    f32 target_time;                      // 0x14
-    u8 flags;                             // 0x18
-    u8 blending;                          // 0x19
-    i16 source_animation;                 // 0x1a
-    i16 target_animation;                 // 0x1c
-    i16 animation;                        // 0x1e
-    i16 previous_animation;               // 0x20
-    i16 requested_animation;              // 0x22
-} DRAW_ATTACHMENTS_MINI_PC;
+typedef struct DRAW_ATTACHMENTS_MINI { // size 0x24
+    f32 current_time;                  // 0x00
+    f32 previous_time;                 // 0x04
+    f32 blend_elapsed;                 // 0x08
+    f32 blend_duration;                // 0x0c
+    f32 source_time;                   // 0x10
+    f32 target_time;                   // 0x14
+    u8 flags;                          // 0x18
+    u8 blending;                       // 0x19
+    i16 source_animation;              // 0x1a
+    i16 target_animation;              // 0x1c
+    i16 animation;                     // 0x1e
+    i16 previous_animation;            // 0x20
+    i16 requested_animation;           // 0x22
+} DRAW_ATTACHMENTS_MINI;
 
-typedef struct BLADE_PC { // size 0x10
-    i16 model_id;         // 0x0
-    i16 glow_model;       // 0x2
-    i16 hit_effect;       // 0x4
-    i16 effect_6;         // 0x6
-    i16 effect_8;         // 0x8
-    u8 colour[3];         // 0xa
-    u8 padding_d[3];      // 0xd
-} BLADE_PC;
+typedef struct BLADE { // size 0x10
+    i16 model_id;      // 0x0
+    i16 glow_model;    // 0x2
+    i16 hit_effect;    // 0x4
+    i16 effect_6;      // 0x6
+    i16 effect_8;      // 0x8
+    u8 colour[3];      // 0xa
+    u8 padding_d[3];   // 0xd
+} BLADE;
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,21 +73,21 @@ extern "C" {
     extern i16 Area_PlayerIDList[9];
     extern APICHARACTERMODELLIST Area_StoryModelList[49];
     extern SOCKPOSITION_PC OldPlrSPos[8];
-    extern struct SUIT_LAYERS_PC *PlayerSuit[8];
+    extern struct SUIT_LAYERS *PlayerSuit[8];
     extern u8 PlayerTorpedoCount[8];
     extern PLAYER_COIN_PACKET_PC CoinPacket[2];
     extern PLAYER_FORCE_LOS_SLOT_PC GizForceLOSInfo[2];
     extern GAMEOBJECT BackUpPlayers[2];
 
-    typedef union LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC { // size 0x4
+    typedef union LEGOOBJ_DEFAULT_LAST_COIN_STORAGE { // size 0x4
         u32 value;
         i16 low_word;
-    } LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC;
+    } LEGOOBJ_DEFAULT_LAST_COIN_STORAGE;
 
-    extern LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC LEGOOBJ_DEFAULTLASTCOIN;
+    extern LEGOOBJ_DEFAULT_LAST_COIN_STORAGE LEGOOBJ_DEFAULTLASTCOIN;
     void RememberPlayerIDs(i32, i32, i32);
     void Players_Init(void);
-    extern i32 RenderHubFromCutscenePlayerPc;
+    extern i32 RenderHubFromCutscenePlayer;
     extern i32 (*IsWearingBackPackFn)(GAMEOBJECT *);
     i32 KillPlayer(GAMEOBJECT *, i32, i32, NUVEC *);
     void ChatterSfx(GAMEOBJECT *, i32, f32);
@@ -131,24 +131,24 @@ extern "C" {
     typedef void (*PLAYER_CLEAR_CONTEXT_CALLBACK_PC)(GAMEOBJECT *, i32);
     extern PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn;
     void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 model_capacity, i32 model_id_capacity,
-                             i32 animation_capacity, APICHARACTERDATA *characters, void (*set_lights)(APIOBJECT_PC *));
-    CHARACTER_MODEL_LAYERS_PC *APICharacterLoaded(i32);
+                             i32 animation_capacity, APICHARACTERDATA *characters, void (*set_lights)(APIOBJECT *));
+    CHARACTER_MODEL_LAYERS *APICharacterLoaded(i32);
     void APIResetCharacterRemap(void);
     i32 NewPlayerCharacter(GAMEOBJECT *, i32, i32, i32);
     i32 CanPullLevers(i32);
     void InitPlayerAI(GAMEOBJECT *);
     GAMEOBJECT *AddCreature(i32, i32);
 
-    typedef struct PLAYER_START_INITIALIZER_RECORD_PC { // size 0x10
-        NUVEC *position;                                // 0x0
-        i32 sock_location;                              // 0x4
-        f32 sock_ratio;                                 // 0x8
-        i16 angle;                                      // 0xc
-        u8 unknown_0e[2];                               // 0xe
-    } PLAYER_START_INITIALIZER_RECORD_PC;
+    typedef struct PLAYER_START_INITIALIZER_RECORD { // size 0x10
+        NUVEC *position;                             // 0x0
+        i32 sock_location;                           // 0x4
+        f32 sock_ratio;                              // 0x8
+        i16 angle;                                   // 0xc
+        u8 unknown_0e[2];                            // 0xe
+    } PLAYER_START_INITIALIZER_RECORD;
 
     NUVEC *Player_StartPos(GAMEOBJECT *);
-    extern PLAYER_START_INITIALIZER_RECORD_PC PlayerStart[8];
+    extern PLAYER_START_INITIALIZER_RECORD PlayerStart[8];
     void Player_ToggleCharacter(GAMEOBJECT *, i32 direction, i32 sound);
     extern f32 TOGGLEREPEATTIME;
     extern i32 FULLDEBUGTOGGLE;
@@ -157,11 +157,11 @@ extern "C" {
     /* Replace existing declarations: LevArea[4], LevSfxFlag[4], LevAIMessage[8]. PodRacePc remains its current
      * canonical owner. */
 
-    extern i32 PlayerStartSplineIndexPc;
-    extern struct nugspline_s *DoorCutSplinePc;
-    extern char PlayerMissionStartDoorPc[13];
-    extern char PlayerArcadeStartDoorPc[16];
-    /* Replace canonical DoorExitNamePc declaration with char[64]; selected copied exit-name length<=63. Remove
+    extern i32 PlayerStartSplineIndex;
+    extern struct nugspline_s *DoorCutSpline;
+    extern char PlayerMissionStartDoor[13];
+    extern char PlayerArcadeStartDoor[16];
+    /* Replace canonical DoorExitName declaration with char[64]; selected copied exit-name length<=63. Remove
      * standalone MiscTime/TargetDeg_Mid/TargetDeg_Far externs before introducing the reviewed member macros. */
 
     void Players_InitPositions(struct WORLDINFO_s *);
@@ -177,10 +177,10 @@ extern "C" {
     void SetPlayer(void);
 
     void APILoadCharacterModels(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR, i32);
-    struct CUT_PLAYER_ACTIVE_PC *CutScenePlayer_Available(void);
+    struct CUT_PLAYER_ACTIVE *CutScenePlayer_Available(void);
     i32 CanWearHatsInFreePlay(i32);
     extern i32 bonusmodearcade;
-    void SetCreatureLights(APIOBJECT_PC *);
+    void SetCreatureLights(APIOBJECT *);
     extern u32 (*CanPushObstaclesFn)(GAMEOBJECT *);
 
     u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared, u8 require_character_flags,
@@ -209,7 +209,7 @@ struct player_item_type_reset_s { // size 0xc
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void APIObjectRegisterAnimRedirect(i32 (*)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *), void *, char *);
+    void APIObjectRegisterAnimRedirect(i32 (*)(char *, void *, CHARACTERANIM_CONFIG *, char *), void *, char *);
     extern i32 makeplayerlist_freeplay;
     i32 PlayersDropInOut(void);
 #ifdef __cplusplus

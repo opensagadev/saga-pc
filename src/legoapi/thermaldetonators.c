@@ -159,7 +159,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     NUVEC velocity;
     NUVEC origin;
     NUVEC centre;
-    ADDPART_PC params = Default_ADDPART;
+    ADDPART params = Default_ADDPART;
     NUMTX matrix;
     i32 blocked;
     i32 locator;
@@ -189,7 +189,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
         origin.y = (object->collision_max.y - object->collision_min.y) * 0.75 + object->collision_min.y;
         origin.z = object->collision_position.z;
         NuVecSub(&movement, &matrix.translation, &origin);
-        if (NewRayCastScaleYMask(&origin, &movement, 0.0f, 1.0f, 0, GetSurfaceInfoDefaultMaskPc.word | 0x1f) != 0) {
+        if (NewRayCastScaleYMask(&origin, &movement, 0.0f, 1.0f, 0, GetSurfaceInfoDefaultMask.word | 0x1f) != 0) {
             blocked = 1;
         }
     } else {
@@ -238,7 +238,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     NUVEC movement;
     NUVEC origin;
     NUVEC centre;
-    ADDPART_PC params = Default_ADDPART;
+    ADDPART params = Default_ADDPART;
     NUMTX matrix;
     i32 locator;
     PART_PC *part;
@@ -262,7 +262,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
         origin.y = (object->collision_max.y - object->collision_min.y) * 0.75 + object->collision_min.y;
         origin.z = object->collision_position.z;
         NuVecSub(&movement, &matrix.translation, &origin);
-        NewRayCastScaleYMask(&origin, &movement, 0.0f, 1.0f, 0, GetSurfaceInfoDefaultMaskPc.word | 0x1f);
+        NewRayCastScaleYMask(&origin, &movement, 0.0f, 1.0f, 0, GetSurfaceInfoDefaultMask.word | 0x1f);
     } else {
         NuMtxSetTranslation(&matrix, &object->collision_position);
     }
@@ -368,7 +368,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     return 0;
 }
 
-i32 ShinyMetal_UpdateHint(HINT_PC *hint) {
+i32 ShinyMetal_UpdateHint(HINT *hint) {
     (void)hint;
     if (JABBASPALACE_ADATA == NULL || WORLD->current_level != JABBASPALACEB_LDATA ||
         Game.area_save[JABBASPALACE_ADATA->index].area_complete != 0 || Mission_Active(NULL) != NULL) {

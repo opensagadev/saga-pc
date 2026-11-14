@@ -12,10 +12,10 @@
 
 struct mission_data_s;
 
-typedef struct MISSION_SAVE_READER_PC { // size 0x64
-    f32 best_times[20];                 // 0x00
-    u8 completed[20];                   // 0x50
-} MISSION_SAVE_READER_PC;
+typedef struct MISSION_SAVE_READER { // size 0x64
+    f32 best_times[20];              // 0x00
+    u8 completed[20];                // 0x50
+} MISSION_SAVE_READER;
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,23 +51,23 @@ extern "C" {
 }
 #endif
 
-struct MISSION_SAVE_READER_PC;
+struct MISSION_SAVE_READER;
 #ifdef __cplusplus
 extern "C" {
 #endif
     i32 Missions_PartyAvailable(MISSIONSYS_PC *);
-    i32 Missions_NumCompleted(MISSIONSYS_PC *, struct MISSION_SAVE_READER_PC *, i32);
-    extern f32 MissionIconGapPc;
-    extern f32 MissionIconStepPc;
-    extern i16 MissionMenuInstructionTextPc;
-    extern f32 MissionIconBaseSizePc;
-    extern f32 MissionIconSelectedSizePc;
-    extern f32 MissionIconYPc;
-    extern f32 MissionNameYPc;
-    extern f32 MissionNameScalePc;
-    extern f32 MissionBestTimeXPc;
-    extern f32 MissionBestTimeYPc;
-    extern f32 MissionBestTimeScalePc;
+    i32 Missions_NumCompleted(MISSIONSYS_PC *, struct MISSION_SAVE_READER *, i32);
+    extern f32 MissionIconGap;
+    extern f32 MissionIconStep;
+    extern i16 MissionMenuInstructionText;
+    extern f32 MissionIconBaseSize;
+    extern f32 MissionIconSelectedSize;
+    extern f32 MissionIconY;
+    extern f32 MissionNameY;
+    extern f32 MissionNameScale;
+    extern f32 MissionBestTimeX;
+    extern f32 MissionBestTimeY;
+    extern f32 MissionBestTimeScale;
 #ifdef __cplusplus
 }
 #endif

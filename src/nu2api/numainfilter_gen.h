@@ -14,9 +14,9 @@
 extern "C" {
 #endif
     void NuDisplayListRecalculateMaterialStartsPC(NUDISPLAY_LIST_PC *);
-    void PCDisplayListCriticalSectionEnterPc(void);
-    void PCDisplayListCriticalSectionLeavePc(void);
-    void NuRndrInitStartupMaterialsPc(void);
+    void PCDisplayListCriticalSectionEnter(void);
+    void PCDisplayListCriticalSectionLeave(void);
+    void NuRndrInitStartupMaterials(void);
 #ifdef __cplusplus
 }
 #endif

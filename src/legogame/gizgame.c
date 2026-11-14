@@ -114,8 +114,8 @@ i32 GizObstacle_CheckExcludeFlagsFn_LSW(GIZOBSTACLE *obstacle, GAMEOBJECT *objec
 
 void GizmoSysSetGame(void) {
     if (StartupGameFlag0 != 0) {
-        GizObstacleExcludeFnPc = NULL;
+        GizObstacleExcludeFn = NULL;
         return;
     }
-    GizObstacleExcludeFnPc = StartupGameFlag1 != 0 ? GizObstacle_CheckExcludeFlagsFn_LSW : NULL;
+    GizObstacleExcludeFn = StartupGameFlag1 != 0 ? GizObstacle_CheckExcludeFlagsFn_LSW : NULL;
 }

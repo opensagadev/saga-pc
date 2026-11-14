@@ -49,17 +49,17 @@ typedef struct add_game_message_s {     // size 0x50
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void Pup_CollectCoin(struct WORLDINFO_s *, GIZMOPICKUP_PC *, i32, struct gameobject_s *, i32);
-    void Pup_UpdateBlueCoin(struct WORLDINFO_s *, GIZMOPICKUP_PC *);
-    void Pup_UpdatePurpleCoin(struct WORLDINFO_s *, GIZMOPICKUP_PC *);
-    void Pup_CollectMinikit(struct WORLDINFO_s *, GIZMOPICKUP_PC *, i32, struct gameobject_s *, i32);
-    void Pup_CollectHeart(struct WORLDINFO_s *, GIZMOPICKUP_PC *, i32, struct gameobject_s *, i32);
-    void Pup_CollectRedBrick(struct WORLDINFO_s *, GIZMOPICKUP_PC *, i32, struct gameobject_s *, i32);
-    void Pup_CollectCharKit(struct WORLDINFO_s *, GIZMOPICKUP_PC *, i32, struct gameobject_s *, i32);
-    void Pup_UpdatePowerUp(struct WORLDINFO_s *, GIZMOPICKUP_PC *);
-    void Pup_CollectPowerUp(struct WORLDINFO_s *, GIZMOPICKUP_PC *, i32, struct gameobject_s *, i32);
+    void Pup_CollectCoin(struct WORLDINFO_s *, GIZMOPICKUP *, i32, struct gameobject_s *, i32);
+    void Pup_UpdateBlueCoin(struct WORLDINFO_s *, GIZMOPICKUP *);
+    void Pup_UpdatePurpleCoin(struct WORLDINFO_s *, GIZMOPICKUP *);
+    void Pup_CollectMinikit(struct WORLDINFO_s *, GIZMOPICKUP *, i32, struct gameobject_s *, i32);
+    void Pup_CollectHeart(struct WORLDINFO_s *, GIZMOPICKUP *, i32, struct gameobject_s *, i32);
+    void Pup_CollectRedBrick(struct WORLDINFO_s *, GIZMOPICKUP *, i32, struct gameobject_s *, i32);
+    void Pup_CollectCharKit(struct WORLDINFO_s *, GIZMOPICKUP *, i32, struct gameobject_s *, i32);
+    void Pup_UpdatePowerUp(struct WORLDINFO_s *, GIZMOPICKUP *);
+    void Pup_CollectPowerUp(struct WORLDINFO_s *, GIZMOPICKUP *, i32, struct gameobject_s *, i32);
     void CollectRedBrick(NUVEC *);
-    void SetCoinType(i32, GIZMOPICKUP_PC *);
+    void SetCoinType(i32, GIZMOPICKUP *);
     extern char PickupTypeLiteral758c00[9];
     extern char PickupTypeLiteral758c0c[8];
     extern char PickupTypeLiteral758c14[10];
@@ -73,7 +73,7 @@ extern "C" {
     extern char PickupTypeLiteral758c68[10];
     extern char PickupTypeLiteral758c74[10];
     extern char PickupTypeLiteral758c80[12];
-    extern GIZMO_PICKUP_TYPE_PC GizmoPickupType[10];
+    extern GIZMO_PICKUP_TYPE GizmoPickupType[10];
 
     void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *position, NUVEC *direction, f32 unused, i32 player_index,
                     f32 speed, f32 lifetime, struct gameobject_s *owner, i32 random_types, i32 panel);
@@ -82,13 +82,13 @@ extern "C" {
     void AddTorpedoAsPart(NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
     void PowerUp_AddPart(NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
     extern f32 PANEL_COINSCALE_START;
-    extern f32 PartExtraCoinRate_PC;
-    extern f32 PartVehicleHeartLifetime_PC;
-    extern f32 PartVehicleHeartPodraceHeight_PC;
-    extern f32 PartVehicleHeartHeight_PC;
-    extern f32 PartVehicleHeartPodraceScale_PC;
-    extern f32 PartVehicleHeartGunshipScale_PC;
-    extern f32 PartVehicleHeartScale_PC;
+    extern f32 PartExtraCoinRate;
+    extern f32 PartVehicleHeartLifetime;
+    extern f32 PartVehicleHeartPodraceHeight;
+    extern f32 PartVehicleHeartHeight;
+    extern f32 PartVehicleHeartPodraceScale;
+    extern f32 PartVehicleHeartGunshipScale;
+    extern f32 PartVehicleHeartScale;
     extern f32 coinimpactwait;
     extern const char PowerUpBounceSfx_PC[21];
     extern const char CoinDropGoldSfx_PC[10];
@@ -96,7 +96,7 @@ extern "C" {
     void AddHeartAsPart(struct gameobject_s *, NUVEC *, NUVEC *, f32, f32);
     void PowerUp_AddPart(NUVEC *, NUVEC *, f32, f32);
     void AddCoinsAsParts(i32, NUVEC *, NUVEC *, f32, f32);
-#define PickupCoinName PickupCoinSfx_PC         // NOLINT(readability-identifier-naming)
+#define PickupCoinName PickupCoinSfx            // NOLINT(readability-identifier-naming)
 #define PickupCoinBName PickupTypeLiteral758c5c // NOLINT(readability-identifier-naming)
     void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player_index, f32 scale, struct gameobject_s *object, i32 mode);
     i32 LoseCoins(struct gameobject_s *object, i32 cause);
@@ -105,10 +105,10 @@ extern "C" {
     extern char PickupCoinsLandName[10];
     extern u8 CoinTab[4];
     extern f32 AddCoinDelay[2];
-    extern const f64 PlayerSlideSpeedPc;
+    extern const f64 PlayerSlideSpeed;
     extern const f64 PlayerTightRopePhasePc;
     void PowerUp_Update(struct gameobject_s *);
-    extern PICKUP_TYPE_SYSTEM_PC GizmoPickupSys_Game;
+    extern PICKUP_TYPE_SYSTEM GizmoPickupSys_Game;
     extern char ScorePanelName[9];
     extern char PickupTypeLiteral758c14[10];
     void GizmoPickups_SetOnOff(void);

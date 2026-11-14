@@ -49,7 +49,7 @@ extern "C" {
     void Set3DGameFont(VUFNT *font);
     void SmartTextSetWidescreen(f32 font_scale_x, f32 coordinate_scale);
     void SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale);
-    void TextCrawl_Init(struct text_crawl_view_pc_s *, i32, i32);
+    void TextCrawl_Init(struct text_crawl_view_s *, i32, i32);
     void TextCrawl_Draw(f32, i32, f32, char *);
 
     /* Append inside saga.h extern "C" block; native C ABI. Existing identical prototypes may be retained once. */

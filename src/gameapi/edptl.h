@@ -35,7 +35,7 @@ struct eduimenu_s;
 extern "C" {
 #endif
     void edppStartPage(i32);
-    extern i32 EdppTypesErrorPc;
+    extern i32 EdppTypesError;
     extern i32 EdppUnresolvedInstancesPc;
     extern i32 debris_rt;
     extern i32 debinf_count;
@@ -94,13 +94,13 @@ extern "C" {
     void DebrisCleanUpDmaDebTypeTables(void);
 
     extern struct debris_collision_entry_s *spherecolldata;
-    extern i32 DebrisProcessingEnabledPc;
+    extern i32 DebrisProcessingEnabled;
     extern i32 debris_sort_delay;
     extern i32 debris_sort_this_stack;
     extern i32 debris_update_delay;
     extern i32 debris_update_this_stack;
-    extern i32 DebrisDmaCleanupDelayPc;
-    extern i32 DebrisDmaCleanupIndexPc;
+    extern i32 DebrisDmaCleanupDelay;
+    extern i32 DebrisDmaCleanupIndex;
     extern i32 edgra_superscale;
     void edbriMakePath(char *path);
 #ifdef __cplusplus

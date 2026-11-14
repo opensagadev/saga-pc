@@ -6,7 +6,7 @@ typedef struct lever_trigger_flags_s { // size 0x95
 } LEVER_TRIGGER_FLAGS_PC;
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static f32 LeverFabsPc(f32 f) {
+static f32 LeverFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -17,7 +17,7 @@ i32 Lever_BeingPulled(void *lever) {
     return (((LEVER_TRIGGER_FLAGS_PC *)lever)->flags >> 1) & 1;
 }
 
-/* GIZMO_LEVER_PC.flags as the u16 bitfields that are read and stored (belongs in saga.h). */
+/* GIZMO_LEVER.flags as the u16 bitfields that are read and stored (belongs in saga.h). */
 typedef struct lever_flag_bits_s { // size 0x2
     u16 interacting : 1;           // 0x0:0
     u16 being_pulled : 1;          // 0x0:1
@@ -39,7 +39,7 @@ typedef struct lever_flag_bits_s { // size 0x2
 
 typedef struct LEVER_WORLD { // size 0x5070
     u8 unknown_000[0x5068];  // 0x0000
-    GIZMO_LEVER_PC *levers;  // 0x5068
+    GIZMO_LEVER *levers;     // 0x5068
     i32 lever_count;         // 0x506c
 } LEVER_WORLD;
 
@@ -50,13 +50,13 @@ typedef struct LEVER_NET_WAIT { // size 0x7a4
 
 void ReleaseLever(GAMEOBJECT *object) {
     if (object->character_context == 0x4a) {
-        if (object->grapple != NULL && !LEVER_BITS((GIZMO_LEVER_PC *)object->grapple)->being_pulled) {
-            LEVER_BITS((GIZMO_LEVER_PC *)object->grapple)->interacting = 0;
+        if (object->grapple != NULL && !LEVER_BITS((GIZMO_LEVER *)object->grapple)->being_pulled) {
+            LEVER_BITS((GIZMO_LEVER *)object->grapple)->interacting = 0;
         }
     }
 }
 
-void Lever_GetAbsTargetPos(GIZMO_LEVER_PC *lever, NUVEC *position) {
+void Lever_GetAbsTargetPos(GIZMO_LEVER *lever, NUVEC *position) {
     if (lever != NULL && position != NULL) {
         NUVEC target = lever->target_offset;
         NuVecRotateY(&target, &target, lever->yaw);
@@ -76,9 +76,9 @@ void Levers_InitTerrain(WORLDINFO *world) {
     }
 }
 
-GIZMO_LEVER_PC *Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
-    GIZMO_LEVER_PC *nearest = NULL;
-    GIZMO_LEVER_PC *lever = ((LEVER_WORLD *)world)->levers;
+GIZMO_LEVER *Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+    GIZMO_LEVER *nearest = NULL;
+    GIZMO_LEVER *lever = ((LEVER_WORLD *)world)->levers;
     f32 nearest_distance = 1.0e9f;
     i32 index;
     for (index = 0; index < ((LEVER_WORLD *)world)->lever_count; ++index, ++lever) {
@@ -105,13 +105,13 @@ GIZMO_LEVER_PC *Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT 
     return nearest;
 }
 
-i32 Lever_FullyPulledDown(GIZMO_LEVER_PC *lever) {
+i32 Lever_FullyPulledDown(GIZMO_LEVER *lever) {
     return (lever->flags & 0x10) != 0 && (lever->flags & 2) != 0 && lever->pull_progress >= 1.0f;
 }
 
 void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 distance = 1.0e9f;
-    GIZMO_LEVER_PC *lever;
+    GIZMO_LEVER *lever;
     if (object->character_context == 0x4a) {
         object->context_hover_target_y += FRAMETIME;
         if (object->context_hover_target_y > 1.0f) {
@@ -140,11 +140,11 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
         }
         if ((object->character_data->model_flags & 4) != 0) {
-            ((GIZMO_LEVER_PC *)object->grapple)->flags |= 8;
+            ((GIZMO_LEVER *)object->grapple)->flags |= 8;
         } else if ((object->character_data->model_flags & 0x200) == 0) {
-            ((GIZMO_LEVER_PC *)object->grapple)->flags |= 4;
+            ((GIZMO_LEVER *)object->grapple)->flags |= 4;
         }
-        ((GIZMO_LEVER_PC *)object->grapple)->flags |= 0x800;
+        ((GIZMO_LEVER *)object->grapple)->flags |= 0x800;
         object->context_variant_flags |= 0x40;
         return;
     }
@@ -181,10 +181,10 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->context_duration = 1.0f;
         }
         object->context_variant_flags &= ~0x40;
-        object->movement_facing_angle = ((GIZMO_LEVER_PC *)object->grapple)->yaw;
-        ((GIZMO_LEVER_PC *)object->grapple)->flags |= 1;
-        ((GIZMO_LEVER_PC *)object->grapple)->pull_progress = 0.0f;
-        ((GIZMO_LEVER_PC *)object->grapple)->auto_reset_timer = 0.0f;
+        object->movement_facing_angle = ((GIZMO_LEVER *)object->grapple)->yaw;
+        ((GIZMO_LEVER *)object->grapple)->flags |= 1;
+        ((GIZMO_LEVER *)object->grapple)->pull_progress = 0.0f;
+        ((GIZMO_LEVER *)object->grapple)->auto_reset_timer = 0.0f;
     }
 }
 
@@ -196,7 +196,7 @@ typedef struct LEVER_PROGRESS { // size 0xc
 
 static void Levers_Draw(void *, void *, f32);
 
-static void Lever_SelectModel(GIZMO_LEVER_PC *lever) {
+static void Lever_SelectModel(GIZMO_LEVER *lever) {
     if (lever->model_variant == 'r') {
         lever->model_special_index = 0x22;
     } else if (lever->model_variant == 'o') {
@@ -218,7 +218,7 @@ static void Lever_SelectModel(GIZMO_LEVER_PC *lever) {
     }
 }
 
-static void Lever_Reset(GIZMO_LEVER_PC *lever) {
+static void Lever_Reset(GIZMO_LEVER *lever) {
     NUVEC target;
     f32 height;
     Lever_SelectModel(lever);
@@ -257,13 +257,13 @@ static i32 Levers_GetMaxGizmos(void *world_ptr) {
 
 static char *Lever_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo != NULL) {
-        return ((GIZMO_LEVER_PC *)gizmo->object)->name;
+        return ((GIZMO_LEVER *)gizmo->object)->name;
     }
     return NULL;
 }
 
 static i32 Lever_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    GIZMO_LEVER_PC *lever;
+    GIZMO_LEVER *lever;
     (void)mode;
     lever = gizmo->object;
     if ((lever->flags & 0x80) != 0) {
@@ -292,7 +292,7 @@ static char *Lever_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
     switch (output) {
         case 0:
-            return LeverOutputDownNamePtrPc;
+            return LeverOutputDownNamePtr;
         case 1:
             return "Down(Goodie)";
         case 2:
@@ -307,7 +307,7 @@ static i32 Lever_GetNumOutputs(GIZMO_PC *gizmo) {
 }
 
 static void Lever_Activate(GIZMO_PC *gizmo, i32 enabled) {
-    GIZMO_LEVER_PC *lever;
+    GIZMO_LEVER *lever;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
@@ -319,7 +319,7 @@ static void Lever_Activate(GIZMO_PC *gizmo, i32 enabled) {
 }
 
 static i32 Lever_ActivateRev(GIZMO_PC *gizmo, i32 value, i32 query) {
-    GIZMO_LEVER_PC *lever;
+    GIZMO_LEVER *lever;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 1;
     }
@@ -332,7 +332,7 @@ static i32 Lever_ActivateRev(GIZMO_PC *gizmo, i32 value, i32 query) {
 }
 
 static void Lever_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-    GIZMO_LEVER_PC *lever;
+    GIZMO_LEVER *lever;
     i32 was_visible;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
@@ -366,7 +366,7 @@ static void Levers_ClearProgress(void *world, void *progress_ptr) {
 static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     LEVER_PROGRESS *progress = progress_ptr;
-    GIZMO_LEVER_PC *lever;
+    GIZMO_LEVER *lever;
     i32 index;
     (void)data;
     if (progress == NULL) {
@@ -398,7 +398,7 @@ static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr
 static void Levers_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     LEVER_PROGRESS *progress = progress_ptr;
-    GIZMO_LEVER_PC *lever;
+    GIZMO_LEVER *lever;
     i32 index;
     (void)data;
     if (world == NULL) {
@@ -431,7 +431,7 @@ static void *Levers_ReserveBufferSpace(void *world_ptr) {
     if (world->current_level->max_levers > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         ((LEVER_WORLD *)world)->levers = world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += world->current_level->max_levers * sizeof(GIZMO_LEVER_PC);
+        world->giz_buffer.addr += world->current_level->max_levers * sizeof(GIZMO_LEVER);
     }
     return ((LEVER_WORLD *)world)->levers;
 }
@@ -497,7 +497,7 @@ static void Levers_AddGizmos(void *system, i32 type_id, void *world_ptr, void *d
 
 static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
     WORLDINFO *world = world_ptr;
-    GIZMO_LEVER_PC *lever = ((LEVER_WORLD *)world)->levers;
+    GIZMO_LEVER *lever = ((LEVER_WORLD *)world)->levers;
     i32 index;
     (void)data;
     (void)elapsed;
@@ -549,7 +549,7 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
 ADDGIZMOTYPE_PC *Levers_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC LeversAddTypePc = {0};
     LeversAddTypePc = Default_ADDGIZMOTYPE;
-    LeversAddTypePc.name = LeverTypeNamePtrPc;
+    LeversAddTypePc.name = LeverTypeNamePtr;
     LeversAddTypePc.prefix = "";
     LeversAddTypePc.fns.options = 12;
     LeversAddTypePc.fns.get_max_gizmos_fn = Levers_GetMaxGizmos;
@@ -587,7 +587,7 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
     LEVER_WORLD *lever_world = (LEVER_WORLD *)world;
     NUSPECIALHANDLE *animated_special;
-    GIZMO_LEVER_PC *lever;
+    GIZMO_LEVER *lever;
     u16 target_spin_angle;
     f32 target_pulse;
     f32 ready_alpha;
@@ -639,7 +639,7 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
                         lever->idle_animation_timer = 0.0f;
                     } else {
                         f32 sine = NuTrigTable[((i32)((f64)lever->idle_animation_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) & 0x7fff];
-                        animation_frame = (f32)((1.0 - LeverFabsPc(sine)) * 1.5 + 16.0);
+                        animation_frame = (f32)((1.0 - LeverFabs(sine)) * 1.5 + 16.0);
                     }
                 } else if (qrand() < 0x800) {
                     lever->idle_animation_timer = 0.15f;

@@ -153,7 +153,7 @@ class NetListenerInterface {
     virtual ~NetListenerInterface() {
     }
 
-    virtual void Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer) {
+    virtual void Receive(NETMESSAGE message, u8 channel, const V2Peer &peer) {
         message.Release();
     }
 
@@ -219,10 +219,10 @@ class NetTransportList {
 
 class NetTransporterInterface {
   public:
-    virtual void Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer) = 0;
-    virtual void SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1) = 0;
-    virtual void Broadcast(NETMESSAGE_PC message, u8 channel) = 0;
-    virtual void BroadcastEx(NETMESSAGE_PC message, u8 channel) = 0;
+    virtual void Send(NETMESSAGE message, u8 channel, V2Peer *peer) = 0;
+    virtual void SendEx(NETMESSAGE message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1) = 0;
+    virtual void Broadcast(NETMESSAGE message, u8 channel) = 0;
+    virtual void BroadcastEx(NETMESSAGE message, u8 channel) = 0;
     virtual void AddListener(NetListenerInterface *client, u8 channel, const char *name) = 0;
     virtual void RemoveListener(NetListenerInterface *client, u8 channel) = 0;
 
@@ -251,7 +251,7 @@ struct FtpFile { // size 0xb0
 
     void Close() {
         if (InUse() && message.data != NULL) {
-            NETMESSAGE_PC::MessageData *data = message.data;
+            NETMESSAGE::MessageData *data = message.data;
             if (data->references > 1) {
                 data->references--;
             } else {
@@ -267,7 +267,7 @@ struct FtpFile { // size 0xb0
     i32 fun_00617240() const;
     char *fun_00617250();
     i32 fun_00617260() const;
-    void RecvData(NETMESSAGE_PC &message);
+    void RecvData(NETMESSAGE &message);
     void fun_006176d0();
     void Init(i32 new_direction, const char *new_name, i32 new_size, const NetAddress &new_address, void *new_buffer, i32 new_capacity);
     i32 Accept(i32 new_capacity, void *new_buffer);
@@ -276,16 +276,16 @@ struct FtpFile { // size 0xb0
     void Term();
     void Update();
 
-    u32 address;           // 0x00
-    i32 direction;         // 0x04
-    i32 accepted;          // 0x08
-    char name[0x80];       // 0x0c
-    i32 size;              // 0x8c
-    void *buffer;          // 0x90
-    i32 capacity;          // 0x94
-    i32 transferred;       // 0x98
-    NETMESSAGE_PC message; // 0x9c
-    u32 transfer;          // 0xac
+    u32 address;        // 0x00
+    i32 direction;      // 0x04
+    i32 accepted;       // 0x08
+    char name[0x80];    // 0x0c
+    i32 size;           // 0x8c
+    void *buffer;       // 0x90
+    i32 capacity;       // 0x94
+    i32 transferred;    // 0x98
+    NETMESSAGE message; // 0x9c
+    u32 transfer;       // 0xac
 };
 
 /* The manager's 32 transfer slots. Retail destroys them through a separate
@@ -310,7 +310,7 @@ class NetFtpManager : public NetListenerInterface { // size 0x1608
   public:
     NetFtpManager();
     ~NetFtpManager();
-    virtual void Receive(NETMESSAGE_PC message, u8 channel, const NetAddress &address);
+    virtual void Receive(NETMESSAGE message, u8 channel, const NetAddress &address);
     virtual void PeerLeft(const NetAddress &address, i32 reason);
     void Init();
     i32 Send(const char *name, const void *data, i32 size, const NetAddress &address);
@@ -391,9 +391,9 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
         void FlushMessages();
 #pragma push_macro("GetMessage")
 #undef GetMessage
-        NETMESSAGE_PC *GetMessage(i32 size);
+        NETMESSAGE *GetMessage(i32 size);
 #pragma pop_macro("GetMessage")
-        NETMESSAGE_PC *GetReliableMessage(i32 size);
+        NETMESSAGE *GetReliableMessage(i32 size);
         void NextStage();
         void Stop();
         void Sync();
@@ -403,11 +403,11 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
         i32 GetNextObject() const;
         void SetNextObject(i32 index);
 
-        const V2Peer *peer;              // 0xd838
-        NETMESSAGE_PC *message;          // 0xd83c
-        NETMESSAGE_PC *reliable_message; // 0xd840
-        i32 stage;                       // 0xd844
-        i32 next_object;                 // 0xd848
+        const V2Peer *peer;           // 0xd838
+        NETMESSAGE *message;          // 0xd83c
+        NETMESSAGE *reliable_message; // 0xd840
+        i32 stage;                    // 0xd844
+        i32 next_object;              // 0xd848
     };
 
     struct PendingObject {     // size 0xc
@@ -436,7 +436,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
 
     NetworkObjectManager();
     ~NetworkObjectManager();
-    virtual void Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer);
+    virtual void Receive(NETMESSAGE message, u8 channel, const V2Peer &peer);
     virtual void PeerJoined(const V2Peer &peer);
     virtual void PeerLeft(const V2Peer &peer, i32 reason);
     virtual void NotifyCreateObject(void *object, EdClass *object_class, void *data, i32 size, i32 guid, i32 flags);
@@ -468,23 +468,23 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     i32 IsPeerReady(const V2Peer &peer) const;
     i32 IsPeerStarted(const V2Peer &peer) const;
     const V2Peer *Owner(i32 id);
-    void ReceiveAcquireMessage(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveAcquiredMessage(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveAdoptedMessage(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveConstructorMessage(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveContinuityBreak(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveObjectCallMessage(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveReleaseMessage(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveReplicaMessage(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveRemoteCallMessage(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveStartMessage(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveStatusMessage(NETMESSAGE_PC &message, const V2Peer &peer);
-    void ReceiveStopMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveAcquireMessage(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveAcquiredMessage(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveAdoptedMessage(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveConstructorMessage(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveContinuityBreak(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveObjectCallMessage(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveReleaseMessage(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveReplicaMessage(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveRemoteCallMessage(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveStartMessage(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveStatusMessage(NETMESSAGE &message, const V2Peer &peer);
+    void ReceiveStopMessage(NETMESSAGE &message, const V2Peer &peer);
     void Recover(NetworkObject *object);
     i32 RegisterObject(void *object, EdClass *object_class, i32 guid);
-    i32 RegisterObjectCall(void (*callback)(void *, NETMESSAGE_PC &), i32 flags);
-    i32 RegisterRemoteCall(void (*callback)(NETMESSAGE_PC &), i32 flags);
-    i32 RemoteCall(i32 call_id, NETMESSAGE_PC message, const V2Peer *peer);
+    i32 RegisterObjectCall(void (*callback)(void *, NETMESSAGE &), i32 flags);
+    i32 RegisterRemoteCall(void (*callback)(NETMESSAGE &), i32 flags);
+    i32 RemoteCall(i32 call_id, NETMESSAGE message, const V2Peer *peer);
     i32 ReleaseObject(void *object, EdClass *object_class, i32 guid);
     void RemoveFromLocalObjectList(NetworkObject *object);
     void RemovePendingObject(NetworkObject *object);
@@ -492,12 +492,12 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void SendAcquireMessage(NetworkObject *object);
     void SendAcquiredMessage(i16 id, const V2Peer &peer);
     void SendAdoptedMessage(i16 id);
-    i32 ObjectCall(void *instance, i32 call_id, NETMESSAGE_PC message, const V2Peer *peer);
-    i32 ObjectOtherCall(void *instance, i32 call_id, NETMESSAGE_PC message);
-    i32 ObjectOwnerCall(void *instance, i32 call_id, NETMESSAGE_PC message);
+    i32 ObjectCall(void *instance, i32 call_id, NETMESSAGE message, const V2Peer *peer);
+    i32 ObjectOtherCall(void *instance, i32 call_id, NETMESSAGE message);
+    i32 ObjectOwnerCall(void *instance, i32 call_id, NETMESSAGE message);
     i32 Push(const NetworkObject *object, NetReplicator *replicator, ReplicatorData &data, NetPeerPush *push);
     i32 PushObject(NetworkObject *object, NetPeerPush *push, i32 force);
-    i32 SendPushMessage(NETMESSAGE_PC *message, const NetPeerPush *push, i32 flags);
+    i32 SendPushMessage(NETMESSAGE *message, const NetPeerPush *push, i32 flags);
     void Start(const NOSContext &new_context);
     PendingObject *StealPendingObject();
     void Stop();

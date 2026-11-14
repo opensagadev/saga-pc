@@ -234,7 +234,7 @@ typedef struct collection_config_entry_s { // size 0x1c
 STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == sizeof(COLLECTID_PC));
 
 /* Native 594220 is an actual RET with no argument reads. */
-void CollectionConfigDiagnosticPc(char *file, ...) {
+void CollectionConfigDiagnostic(char *file, ...) {
     (void)file;
 }
 
@@ -244,7 +244,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
     i32 area;
     (void)end;
     if (parser == NULL) {
-        CollectionConfigDiagnosticPc(file);
+        CollectionConfigDiagnostic(file);
         return;
     }
 
@@ -263,7 +263,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
             continue;
         }
         if (InCollectList_Index(entry->id, CollectList, CollectCount) != -1) {
-            CollectionConfigDiagnosticPc(file, parser->word_buffer_ptr);
+            CollectionConfigDiagnostic(file, parser->word_buffer_ptr);
             continue;
         }
 
@@ -315,7 +315,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
         buffer->void_ptr = entry;
     } else {
         CollectList = NULL;
-        CollectionConfigDiagnosticPc(file);
+        CollectionConfigDiagnostic(file);
     }
 }
 
@@ -362,8 +362,8 @@ COLLECTID *CollectIDUnlocked(i32 id) {
                     }
                     break;
                 case 6:
-                    if (CustomiserCompletionSavePc != NULL &&
-                        ((SHOP_UNLOCK_COMPLETION *)CustomiserCompletionSavePc)->gold_bricks >= entry->field6_0xa) {
+                    if (CustomiserCompletionSave != NULL &&
+                        ((SHOP_UNLOCK_COMPLETION *)CustomiserCompletionSave)->gold_bricks >= entry->field6_0xa) {
                         unlocked = 1;
                     }
                     break;

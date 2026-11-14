@@ -7,9 +7,9 @@
 
 struct NUGSCNROOM_s;
 struct NUPORTAL;
-struct NUPORTALSPHERE_PC;
-struct NUPORTAL_FRUSTUM_PC;
-struct nudisplay_list_pc_s;
+struct NUPORTALSPHERE;
+struct NUPORTAL_FRUSTUM;
+struct nudisplay_list_s;
 struct nuinstance_s;
 struct numtl_s;
 struct nuspecial_handle_s;
@@ -49,17 +49,17 @@ typedef struct NUGSCN_s {                          // size 0x20c
     i32 num_rooms;                                 // 0x074
     struct NUGSCNROOM_s *rooms;                    // 0x078
     u32 unknown_007c[8];                           // 0x07c
-    struct NUPORTAL_FRUSTUM_PC *portal_frusta[16]; // 0x09c
+    struct NUPORTAL_FRUSTUM *portal_frusta[16];    // 0x09c
     i32 num_portal_frusta;                         // 0x0dc
     i32 camera_room;                               // 0x0e0
     i32 portal_depth;                              // 0x0e4
     u32 unknown_e8[2];                             // 0x0e8
     i32 sphere_count;                              // 0x0f0
     i32 portal_instance_count;                     // 0x0f4
-    struct NUPORTALSPHERE_PC *portal_spheres;      // 0x0f8
+    struct NUPORTALSPHERE *portal_spheres;         // 0x0f8
     void *portal_boxes;                            // 0x0fc
     u32 unknown_100[4];                            // 0x100
-    struct nudisplay_list_pc_s *display_list;      // 0x110
+    struct nudisplay_list_s *display_list;         // 0x110
     u32 unknown_0114[10];                          // 0x114
     u8 *instance_visibility_flags;                 // 0x13c
     u32 unknown_0140[10];                          // 0x140

@@ -68,16 +68,16 @@ extern "C" {
     void EvalAnim2(NUSPECIALHANDLE *special, f32 frame);
     extern u8 ForcePlayEndFrame;
     extern u8 ForceEulerToQuat;
-    f32 AnimStopFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
-    i32 AnimMiscFlags(CHARACTER_MODEL_LAYERS_PC *, i32);
-    f32 AnimSpeed(CHARACTER_MODEL_LAYERS_PC *, i32);
-    void EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, DWA_WEIGHT_BLOCK_PC ***, NUVEC *, NUMTX *, u32);
+    f32 AnimStopFrame(CHARACTER_MODEL_LAYERS *, i32);
+    i32 AnimMiscFlags(CHARACTER_MODEL_LAYERS *, i32);
+    f32 AnimSpeed(CHARACTER_MODEL_LAYERS *, i32);
+    void EvalModelAnim(CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *, NUMTX *, NUMTX *, DWA_WEIGHT_BLOCK ***, NUVEC *, NUMTX *, u32);
 
     /* Proposed finite public interfaces; UpdateAnimTimer remains original-TU private. */
     void AnimatePlayer(GAMEOBJECT *);
-    void UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, f32, f32, f32, f32);
-    void UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS_PC *, DRAW_ATTACHMENTS_MINI_PC *, f32, f32, f32);
-    void SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *);
+    void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *, f32, f32, f32, f32);
+    void UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS *, DRAW_ATTACHMENTS_MINI *, f32, f32, f32);
+    void SetAnimTimeRandom(CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *);
     GAMEANIMOBJ *GameAnimSet_AddObjectByName(GAMEANIMSET *, NUGSCN *, char *, f32, f32, i32, void *, char *, char *);
     i32 GizmoFileReadGameAnimSet(GAMEANIMSET *, void *, void (*)(GAMEANIMOBJ *, u8), u8, char *, char *);
     void GameAnimSet_DrawReflection(GAMEANIMSET *, i32, f32, NUMTX *);

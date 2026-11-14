@@ -64,8 +64,8 @@ extern "C" {
     void PlayHurtSfx(struct gameobject_s *object);
     extern void (*ExtraHurtSfxFn)(struct gameobject_s *object);
     void PlayLandSfx(struct gameobject_s *object, i32 variant, i32 ignored);
-    extern i32 TerrainLastChatterSfxPc;
-    extern f32 TerrainChatterWaitPc;
+    extern i32 TerrainLastChatterSfx;
+    extern f32 TerrainChatterWait;
     f32 GameGetMusicVolume(OPTIONSSAVE *options);
     f32 GameSetMusicVolume(OPTIONSSAVE *options);
     f32 GameSetSoundVolume(OPTIONSSAVE *options);
@@ -92,13 +92,13 @@ extern "C" {
     extern i32 RepeatSfxQueueHead;
     void PlayRepeatSfx(char *, i32, f32, char, f32, NUVEC *);
     void UpdateRepeatSfx(void);
-    extern GAMEAUDIO_PC GameAudioStorage;
-    extern GAMEAUDIO_PC *GameAudio;
+    extern GAMEAUDIO GameAudioStorage;
+    extern GAMEAUDIO *GameAudio;
     void SfxSetFileTable(struct sfx_file_info_s *records);
     extern i16 *AmbientPairTab;
     void PlayFootStepSfx(struct gameobject_s *);
-    typedef struct PC_MUSIC_ACTION_PAIR_PC PC_MUSIC_ACTION_PAIR_PC;
-    extern PC_MUSIC_ACTION_PAIR_PC *ActionPairTab;
+    typedef struct PC_MUSIC_ACTION_PAIR PC_MUSIC_ACTION_PAIR;
+    extern PC_MUSIC_ACTION_PAIR *ActionPairTab;
     extern i32 (*CheckMusicOtherFn)(void);
     extern i32 (*GameAudio_ActionMusicFn)(void);
     void GameAudio_PlaySfxAndSetVolume(i32 sfx, NUVEC *position, f32 volume);
@@ -109,9 +109,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern f32 ActionMusicStickyTimeoutPc[2];
+    extern f32 ActionMusicStickyTimeout[2];
     void GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time);
-    extern const char *SfxMusicExtensionPc;
+    extern const char *SfxMusicExtension;
 
     extern i32 CurrentMusicPair_Quiet;
     extern i32 MusicActive;
@@ -130,7 +130,7 @@ extern "C" {
     // Project diagnostics are selected at the end of this header; see debug/diagnostics.h.
     // Kept at the end so Matching line numbers and native declarations stay unchanged.
 
-    void GameAudio_Init(GAMEAUDIO_PC *audio);
+    void GameAudio_Init(GAMEAUDIO *audio);
     extern i32 ticktock;
     void TickTockSfx(void);
 #ifdef __cplusplus

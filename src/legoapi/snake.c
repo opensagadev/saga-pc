@@ -28,13 +28,13 @@ typedef struct snake_body_s {      // size 0x110
 
 typedef struct snake_object_reader_s { // size 0x10b0
     u8 unknown_000[0x4d8];             // 0x0000
-    PART_LIGHTING_DATA_PC lighting;    // 0x04d8
+    PART_LIGHTING_DATA lighting;       // 0x04d8
     u8 unknown_5a4[0x10ac - 0x5a4];    // 0x05a4
     SNAKE_BODY_PC *snake_body;         // 0x10ac
 } SNAKE_OBJECT_READER_PC;
 
-extern f32 SnakeSegmentSpacingPc;
-extern f32 SnakeHeadHeightPc;
+extern f32 SnakeSegmentSpacing;
+extern f32 SnakeHeadHeight;
 extern f32 SnakeYawSeekRatePc;
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -51,7 +51,7 @@ extern f32 SnakeYawSeekRatePc;
 #define POW5(x) (POW2(x) * POW3(x))
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static f32 SnakeFabsPc(f32 f) {
+static f32 SnakeFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -59,7 +59,7 @@ static f32 SnakeFabsPc(f32 f) {
 }
 
 /* Unit-local copy of the NuASin polynomial (the snake unit carries its own instance). */
-i32 SnakeASinPc(f32 sin) {
+i32 SnakeASin(f32 sin) {
     f32 abs;
     f32 sqrt;
     f32 unknown_a;
@@ -67,7 +67,7 @@ i32 SnakeASinPc(f32 sin) {
     f32 unknown_c;
     f32 unknown_d;
 
-    abs = SnakeFabsPc(sin);
+    abs = SnakeFabs(sin);
     sqrt = NuFsqrt(1.0f - sin * sin);
 
     unknown_a = MIN(sqrt, abs);
@@ -100,7 +100,7 @@ i32 SnakeASinPc(f32 sin) {
 #undef POW4
 #undef POW5
 
-static f32 SnakeBodyDefaultScalePc = 1.0f;
+static f32 SnakeBodyDefaultScale = 1.0f;
 
 SNAKE_BODY_PC *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
     SNAKE_BODY_PC *body;
@@ -111,7 +111,7 @@ SNAKE_BODY_PC *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
         body = &((SNAKE_BODY_PC *)snakebodies)[slot];
         if ((body->flags & 1) == 0) {
             ((SNAKE_OBJECT_READER_PC *)object)->snake_body = body;
-            body->scale = SnakeBodyDefaultScalePc;
+            body->scale = SnakeBodyDefaultScale;
             body->flags |= 1;
             body->segment_count = (u16)segment_count;
             for (index = 0; index < body->segment_count; index++) {
@@ -137,7 +137,7 @@ void UpdateSnakeBody(GAMEOBJECT *object) {
     }
     object->collision_scale = reader->snake_body->scale;
     position = object->lower_position;
-    position.y += reader->snake_body->scale * SnakeHeadHeightPc;
+    position.y += reader->snake_body->scale * SnakeHeadHeight;
     for (index = 0; index < reader->snake_body->segment_count; ++index) {
         reader->snake_body->segments[index].position = position;
         reader->snake_body->segments[index].yaw =
@@ -146,7 +146,7 @@ void UpdateSnakeBody(GAMEOBJECT *object) {
         reader->snake_body->segments[index].pitch = 0;
         offset.x = 0.0f;
         offset.y = 0.0f;
-        offset.z = -(reader->snake_body->scale * SnakeSegmentSpacingPc);
+        offset.z = -(reader->snake_body->scale * SnakeSegmentSpacing);
         NuVecRotateY(&offset, &offset, reader->snake_body->segments[index].yaw);
         NuVecAdd(&position, &reader->snake_body->segments[index].position, &offset);
         ground = GameShadow(NULL, &position, 5.0f, 0x1f);
@@ -161,9 +161,9 @@ void UpdateSnakeBody(GAMEOBJECT *object) {
         if (reader->snake_body->segments[index].ground_height != 2000000.0f) {
             position.y = reader->snake_body->segments[index].ground_height;
             length = NuVecDist(&position, &reader->snake_body->segments[index].position, &offset);
-            NuVecScale(&offset, &offset, reader->snake_body->scale * SnakeSegmentSpacingPc / length);
+            NuVecScale(&offset, &offset, reader->snake_body->scale * SnakeSegmentSpacing / length);
             NuVecAdd(&position, &reader->snake_body->segments[index].position, &offset);
-            reader->snake_body->segments[index].pitch = (i16)SnakeASinPc(-offset.y / (reader->snake_body->scale * SnakeSegmentSpacingPc));
+            reader->snake_body->segments[index].pitch = (i16)SnakeASin(-offset.y / (reader->snake_body->scale * SnakeSegmentSpacing));
         }
     }
 }
@@ -177,7 +177,7 @@ void SnakeBeenHit(GAMEOBJECT *object) {
     NUANGVEC angles;
     NUVEC scale;
     NUVEC momentum;
-    ADDPART_PC params;
+    ADDPART params;
     NUSPECIALHANDLE *special;
     if (object == NULL || reader->snake_body == NULL || reader->snake_body->segment_count <= 2) {
         return;
@@ -192,13 +192,13 @@ void SnakeBeenHit(GAMEOBJECT *object) {
             NuMtxPreScale(&matrix, &scale);
         }
         matrix.m30 += reader->snake_body->segments[index].position.x;
-        matrix.m31 += reader->snake_body->segments[index].position.y + reader->snake_body->scale * SnakeSegmentHeightPc;
+        matrix.m31 += reader->snake_body->segments[index].position.y + reader->snake_body->scale * SnakeSegmentHeight;
         matrix.m32 += reader->snake_body->segments[index].position.z;
         special_index = index == reader->snake_body->segment_count - 1 ? 2 : index % 2;
         special = &snake_hspecials[special_index];
         if (NuSpecialExistsFn(special)) {
             SetKillPartMom(&momentum);
-            momentum.y += SnakeDebrisUpwardSpeedPc;
+            momentum.y += SnakeDebrisUpwardSpeed;
             params = Default_ADDPART;
             params.matrix = &matrix;
             params.velocity = &momentum;
@@ -234,7 +234,7 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
     NUANGVEC angles;
     NUVEC scale;
     NUVEC momentum;
-    ADDPART_PC params;
+    ADDPART params;
     NUSPECIALHANDLE *special;
     if (object == NULL || reader->snake_body == NULL) {
         return;
@@ -248,13 +248,13 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
             NuMtxPreScale(&matrix, &scale);
         }
         matrix.m30 = matrix.m30 + reader->snake_body->segments[index].position.x;
-        matrix.m31 = reader->snake_body->scale * SnakeSegmentHeightPc + reader->snake_body->segments[index].position.y + matrix.m31;
+        matrix.m31 = reader->snake_body->scale * SnakeSegmentHeight + reader->snake_body->segments[index].position.y + matrix.m31;
         matrix.m32 = reader->snake_body->segments[index].position.z + matrix.m32;
         special_index = index == reader->snake_body->segment_count - 1 ? 2 : index % 2;
         special = &snake_hspecials[special_index];
         if (NuSpecialExistsFn(special)) {
             SetKillPartMom(&momentum);
-            momentum.y += SnakeDebrisUpwardSpeedPc;
+            momentum.y += SnakeDebrisUpwardSpeed;
             params = Default_ADDPART;
             params.matrix = &matrix;
             params.velocity = &momentum;
@@ -299,7 +299,7 @@ void DrawSnakeBody(GAMEOBJECT *object) {
             NuMtxPreScale(&matrix, &scale);
         }
         matrix.m30 = reader->snake_body->segments[segment_index].position.x + matrix.m30;
-        matrix.m31 = reader->snake_body->scale * SnakeSegmentHeightPc + reader->snake_body->segments[segment_index].position.y + matrix.m31;
+        matrix.m31 = reader->snake_body->scale * SnakeSegmentHeight + reader->snake_body->segments[segment_index].position.y + matrix.m31;
         matrix.m32 = reader->snake_body->segments[segment_index].position.z + matrix.m32;
         special_index = segment_index == reader->snake_body->segment_count - 1 ? 2 : segment_index % 2;
         if (NuSpecialExistsFn(&snake_hspecials[special_index])) {

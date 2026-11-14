@@ -7,22 +7,22 @@ struct RADIO_ENTRY {         // size 0x14
     f32 time;                // 0x10
 };
 
-f32 RadioLifetimePc = 20.0f;
+f32 RadioLifetime = 20.0f;
 
 void ResetRadios(void) {
-    memset(RadioEntriesPc, 0, sizeof(RadioEntriesPc));
+    memset(RadioEntries, 0, sizeof(RadioEntries));
     radios_playing = 0;
 }
 
-f32 RadioPhasePeriodPc = 0.5f;
-f32 RadioScaleFactorPc = 0.1f;
+f32 RadioPhasePeriod = 0.5f;
+f32 RadioScaleFactor = 0.1f;
 
 extern "C" void UpdateRadios(void) {
     if (radios_playing == 0) {
         return;
     }
     radios_playing = 0;
-    RADIO_ENTRY *pool = reinterpret_cast<RADIO_ENTRY *>(RadioEntriesPc);
+    RADIO_ENTRY *pool = reinterpret_cast<RADIO_ENTRY *>(RadioEntries);
     RADIO_ENTRY *radio;
     i32 index;
     NUVEC scale;
@@ -37,11 +37,11 @@ extern "C" void UpdateRadios(void) {
         } else {
             radios_playing = 1;
         }
-        f32 phase = NuFmod(radio->time, RadioPhasePeriodPc);
+        f32 phase = NuFmod(radio->time, RadioPhasePeriod);
         i32 angle = (i32)((f64)phase * 65536.0);
         if (radio->blowup != NULL) {
             GizmoBlowupUpdateMatrix(radio->blowup);
-            scale.x = (f32)((f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)RadioScaleFactorPc + 1.0);
+            scale.x = (f32)((f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)RadioScaleFactor + 1.0);
             scale.y = scale.z = scale.x;
             NuMtxPreScale(&radio->blowup->transform, &scale);
             radio->blowup->status_flags |= 0x10000;
@@ -54,7 +54,7 @@ extern "C" void UpdateRadios(void) {
             NUMTX *matrix = NuSpecialGetDrawMtx(&radio->special);
             *matrix = *source;
             if (angle != 0) {
-                scale.x = (f32)((f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)RadioScaleFactorPc + 1.0);
+                scale.x = (f32)((f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)RadioScaleFactor + 1.0);
                 scale.y = scale.z = scale.x;
                 NuMtxPreScale(matrix, &scale);
                 NuSpecialUpdate(&radio->special);
@@ -65,7 +65,7 @@ extern "C" void UpdateRadios(void) {
 }
 
 void PlayRadio(char *special_name, char *blowup_name, i32 play) {
-    RADIO_ENTRY *pool = reinterpret_cast<RADIO_ENTRY *>(RadioEntriesPc);
+    RADIO_ENTRY *pool = reinterpret_cast<RADIO_ENTRY *>(RadioEntries);
     if (special_name != NULL || blowup_name != NULL) {
         if (play != 0) {
             RADIO_ENTRY *radio;
@@ -81,7 +81,7 @@ void PlayRadio(char *special_name, char *blowup_name, i32 play) {
                     } else if (special_name == NULL || NuSpecialFind(WORLD->current_gscn, &radio->special, special_name, 1) == 0) {
                         return;
                     }
-                    radio->time = RadioLifetimePc;
+                    radio->time = RadioLifetime;
                     radios_playing = 1;
                     return;
                 }

@@ -17,15 +17,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 VehicleBoltId7f1910Pc;
-    extern HUB_AI_MUSIC_VIEW_PC HubAiMusicStatePc;
+    extern i16 VehicleBoltId7f1910;
+    extern HUB_AI_MUSIC_VIEW HubAiMusicState;
     i32 Hub_Outside(void);
     i32 Hub_GetRandomCharType(void);
     void LSW_Hub_InitAI(WORLDINFO *);
     void LSW_Hub_ResetAI(WORLDINFO *);
     void LSW_Hub_UpdateAI(WORLDINFO *);
-    void *Condition_InHubAreaInit(AISYS_PC *, char *, AISCRIPT_PC *);
-    f32 Condition_InHubArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    void *Condition_InHubAreaInit(AISYS_PC *, char *, AISCRIPT *);
+    f32 Condition_InHubArea(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *);
 #ifdef __cplusplus
 }
 #endif

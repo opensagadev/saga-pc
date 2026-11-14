@@ -12,7 +12,7 @@ struct PC_GEOMETRY_PUBLISH_SKIN_REF { // size 0x1c
     u8 unknown_08[0x14];              // 0x08
 };
 
-struct PC_GEOMETRY_PUBLISH_FORMAT_PC {          // size 0x14
+struct PC_GEOMETRY_PUBLISH_FORMAT {             // size 0x14
     u32 kind;                                   // 0x00
     u32 record_count;                           // 0x04
     u32 skin_ref_count;                         // 0x08
@@ -20,17 +20,17 @@ struct PC_GEOMETRY_PUBLISH_FORMAT_PC {          // size 0x14
     PC_GEOMETRY_PUBLISH_SKIN_REF *skin_refs;    // 0x10
 };
 
-struct PC_GEOMETRY_PUBLISH_RECORD_PC {          // size 0x28
-    PC_GEOMETRY_PUBLISH_FORMAT_PC *format;      // 0x00
-    i32 element_count;                          // 0x04
-    u32 unknown_08;                             // 0x08
-    PC_GEOMETRY_SORT_ITEM_PC *sort_items;       // 0x0c
-    u32 unknown_10;                             // 0x10
-    PC_BUFFER_RESOURCE_PC *vertex_buffer;       // 0x14
-    PC_BUFFER_RESOURCE_PC *strip_vertex_buffer; // 0x18
-    PC_BUFFER_RESOURCE_PC *strip_index_buffer;  // 0x1c
-    u32 frame_stamp;                            // 0x20
-    u32 unknown_24;                             // 0x24
+struct PC_GEOMETRY_PUBLISH_RECORD {          // size 0x28
+    PC_GEOMETRY_PUBLISH_FORMAT *format;      // 0x00
+    i32 element_count;                       // 0x04
+    u32 unknown_08;                          // 0x08
+    PC_GEOMETRY_SORT_ITEM *sort_items;       // 0x0c
+    u32 unknown_10;                          // 0x10
+    PC_BUFFER_RESOURCE *vertex_buffer;       // 0x14
+    PC_BUFFER_RESOURCE *strip_vertex_buffer; // 0x18
+    PC_BUFFER_RESOURCE *strip_index_buffer;  // 0x1c
+    u32 frame_stamp;                         // 0x20
+    u32 unknown_24;                          // 0x24
 };
 
 /* The engine's C++ vector and matrix wrappers (the editor registers its types as "NuVec" and
@@ -60,12 +60,12 @@ struct PC_GEOMETRY_PUBLISH_SORT_ITEM { // size 0xc
     u32 unknown_08;                    // 0x8
 };
 
-extern "C" i32 PcGeometryBackendAvailablePc(void) {
+extern "C" i32 PcGeometryBackendAvailable(void) {
     return PCDeviceHardwareVertexProcessingPC >= 4;
 }
 
-extern "C" i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format) {
-    if (!PcGeometryBackendAvailablePc()) {
+extern "C" i32 PcRegisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
+    if (!PcGeometryBackendAvailable()) {
         return 0;
     }
     if (format == NULL || format->kind != 1 || format->record_count == 0) {
@@ -80,10 +80,10 @@ extern "C" i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format
         return 0;
     }
 
-    PC_GEOMETRY_PUBLISH_RECORD_PC *old = PcGeometryRegistryPc;
+    PC_GEOMETRY_PUBLISH_RECORD *old = PcGeometryRegistryPc;
     PcGeometryRegistryPc =
-        (PC_GEOMETRY_PUBLISH_RECORD_PC *)NuAlloc((i32)(((u32)PcGeometryRegistryCountPc + 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD_PC)),
-                                                 "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x7c);
+        (PC_GEOMETRY_PUBLISH_RECORD *)NuAlloc((i32)(((u32)PcGeometryRegistryCountPc + 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD)),
+                                              "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x7c);
     for (i32 i = 0; i < PcGeometryRegistryCountPc; ++i) {
         PcGeometryRegistryPc[i] = old[i];
     }
@@ -91,17 +91,17 @@ extern "C" i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format
         NuFree(old, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x81);
     }
     ++PcGeometryRegistryCountPc;
-    PC_GEOMETRY_PUBLISH_RECORD_PC *record = &PcGeometryRegistryPc[PcGeometryRegistryCountPc - 1];
+    PC_GEOMETRY_PUBLISH_RECORD *record = &PcGeometryRegistryPc[PcGeometryRegistryCountPc - 1];
     record->format = format;
     record->element_count = count;
     record->frame_stamp = 0;
     record->unknown_08 = 0;
     record->unknown_10 = 0;
-    if (!PcInitializeDynamicGeometryBuffersPc((PC_DYNAMIC_GEOMETRY_PC *)record, count)) {
+    if (!PcInitializeDynamicGeometryBuffers((PC_DYNAMIC_GEOMETRY *)record, count)) {
         return 0;
     }
-    record->sort_items = (PC_GEOMETRY_SORT_ITEM_PC *)NuAlloc((i32)((u32)count * sizeof(PC_GEOMETRY_PUBLISH_SORT_ITEM)),
-                                                             "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x91);
+    record->sort_items = (PC_GEOMETRY_SORT_ITEM *)NuAlloc((i32)((u32)count * sizeof(PC_GEOMETRY_PUBLISH_SORT_ITEM)),
+                                                          "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x91);
     for (i32 i = 0; i < count; ++i) {
         ((PC_GEOMETRY_PUBLISH_SORT_ITEM *)record->sort_items)[i].output_index = (u32)i;
     }
@@ -112,40 +112,40 @@ extern "C" i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format
             maximum = format->skin_refs[i].matrix_count;
         }
     }
-    if (PcGeometryMatrixCapacityPc < maximum || PcGeometryTransformsPc == NULL) {
-        PcGeometryMatrixCapacityPc = maximum;
+    if (PcGeometryMatrixCapacity < maximum || PcGeometryTransforms == NULL) {
+        PcGeometryMatrixCapacity = maximum;
         void *raw =
             NuAlloc((i32)(((u32)maximum + 2) * sizeof(NUMTX)), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x9d);
-        PcGeometryTransformsPc = (PC_GEOMETRY_BASIS_PC *)(((u32)raw + 0x7f) & 0xffffff00);
-        if (PcGeometryTransformsPc == NULL) {
-            PcGeometryMatrixCapacityPc = -1;
+        PcGeometryTransforms = (PC_GEOMETRY_BASIS *)(((u32)raw + 0x7f) & 0xffffff00);
+        if (PcGeometryTransforms == NULL) {
+            PcGeometryMatrixCapacity = -1;
         }
     }
-    if (PcGeometryOutputCapacityPc <= count || PcGeometryOutputPc == NULL) {
-        if (PcGeometryOutputPc != NULL) {
-            NuFree(PcGeometryOutputPc, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xaa);
+    if (PcGeometryOutputCapacity <= count || PcGeometryOutput == NULL) {
+        if (PcGeometryOutput != NULL) {
+            NuFree(PcGeometryOutput, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xaa);
         }
-        PcGeometryOutputCapacityPc = count;
+        PcGeometryOutputCapacity = count;
         void *raw = NuAlloc((i32)((u32)count * 0x50 + 0x80), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xae);
-        PcGeometryOutputPc = (PC_GEOMETRY_OUTPUT_PC *)(((u32)raw + 0x7f) & 0xffffff00);
-        if (PcGeometryOutputPc == NULL) {
-            PcGeometryOutputCapacityPc = -1;
+        PcGeometryOutput = (PC_GEOMETRY_OUTPUT *)(((u32)raw + 0x7f) & 0xffffff00);
+        if (PcGeometryOutput == NULL) {
+            PcGeometryOutputCapacity = -1;
         }
     }
     return 1;
 }
 
-extern "C" i32 fun_005fbd40(PC_GEOMETRY_PUBLISH_RECORD_PC *record);
+extern "C" i32 fun_005fbd40(PC_GEOMETRY_PUBLISH_RECORD *record);
 
-extern "C" i32 PcUnregisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format) {
+extern "C" i32 PcUnregisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
     for (i32 i = 0; i < PcGeometryRegistryCountPc; ++i) {
         if (format == PcGeometryRegistryPc[i].format) {
             fun_005fbd40(&PcGeometryRegistryPc[i]);
             if (PcGeometryRegistryCountPc != 0) {
-                PC_GEOMETRY_PUBLISH_RECORD_PC *old = PcGeometryRegistryPc;
+                PC_GEOMETRY_PUBLISH_RECORD *old = PcGeometryRegistryPc;
                 PcGeometryRegistryPc =
-                    (PC_GEOMETRY_PUBLISH_RECORD_PC *)NuAlloc(((PcGeometryRegistryCountPc - 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD_PC)),
-                                                             "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xd0);
+                    (PC_GEOMETRY_PUBLISH_RECORD *)NuAlloc(((PcGeometryRegistryCountPc - 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD)),
+                                                          "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xd0);
                 i32 count = 0;
                 for (i32 j = 0; j < PcGeometryRegistryCountPc; ++j) {
                     if (format != old[j].format) {
@@ -166,7 +166,7 @@ extern "C" i32 PcUnregisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *form
     return 0;
 }
 
-extern "C" PC_GEOMETRY_PUBLISH_RECORD_PC *fun_005c6470(PC_GEOMETRY_PUBLISH_FORMAT_PC *format) {
+extern "C" PC_GEOMETRY_PUBLISH_RECORD *fun_005c6470(PC_GEOMETRY_PUBLISH_FORMAT *format) {
     for (i32 i = 0; i < PcGeometryRegistryCountPc; ++i) {
         if (format == PcGeometryRegistryPc[i].format) {
             return &PcGeometryRegistryPc[i];
@@ -176,7 +176,7 @@ extern "C" PC_GEOMETRY_PUBLISH_RECORD_PC *fun_005c6470(PC_GEOMETRY_PUBLISH_FORMA
 }
 
 extern "C" NUDISPLAYLIST *fun_005c6680(void) {
-    return &PCDisplayList2dPc;
+    return &PCDisplayList2d;
 }
 
 extern "C" VARIPTR *fun_005c6690(void) {

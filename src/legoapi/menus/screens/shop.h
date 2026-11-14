@@ -19,11 +19,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 VehicleBoltId7f17d4Pc;
-    i32 Shop_UpdateHint(HINT_PC *);
+    extern i16 VehicleBoltId7f17d4;
+    i32 Shop_UpdateHint(HINT *);
     extern i32 shop_from_cutsceneplayer;
 #ifdef __cplusplus
-    extern CHEAT_PC ExtrasCheatsPc[46];
+    extern CHEAT_PC ExtrasCheats[46];
 #ifdef __cplusplus
 }
 #endif
@@ -31,13 +31,13 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern COLLECTION_BUILD_PC ShopCollectionPc;
+    extern COLLECTION_BUILD_PC ShopCollection;
     extern i32 POINTS_PER_HINT;
     extern i32 SHOPHINTCOUNT;
-    extern i32 CutScenePlayCountPc;
+    extern i32 CutScenePlayCount;
     extern void (*drawptr)(void);
     extern i32 picked;
-    extern CHEAT_PC ExtrasCheatsPc[46];
+    extern CHEAT_PC ExtrasCheats[46];
     extern struct shopitem_s *BrickItems;
     extern i32 BrickShelfIds[7];
     extern struct shopitem_s *CharItems;
@@ -49,11 +49,11 @@ extern "C" {
     void DrawItemMenu2D(void);
     void DrawCodeMenu3D(void);
     void DrawSubItems(void);
-    extern i32 ShopBrickRotationDegreesPc;
-    extern f32 ShopCharacterPeriodPc;
-    extern f32 ShopCodePulseScalePc;
-    extern f32 ShopCodeArrowBingPc;
-    extern f32 ShopCodeArrowAmplitudePc;
+    extern i32 ShopBrickRotationDegrees;
+    extern f32 ShopCharacterPeriod;
+    extern f32 ShopCodePulseScale;
+    extern f32 ShopCodeArrowBing;
+    extern f32 ShopCodeArrowAmplitude;
     extern i16 TextIdPc88070c;
     extern i16 TextIdPc880800;
     extern i16 TextIdPc8808c4;
@@ -76,10 +76,10 @@ extern "C" {
     extern f32 toppush[6];
     extern f32 topscale[6];
     extern i32 SHOPACTIVE;
-    extern f32 ShopLockedScalePc;
+    extern f32 ShopLockedScale;
     extern i16 TextIdPc8808c0;
     void DrawShopPanel(void);
-    extern void (*ShopDrawPanelFnPc)(void);
+    extern void (*ShopDrawPanelFn)(void);
     void InitShop(WORLDINFO *);
     void DrawShop3D(WORLDINFO *);
 #ifdef __cplusplus

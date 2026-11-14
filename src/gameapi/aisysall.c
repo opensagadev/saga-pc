@@ -28,13 +28,13 @@ enum {
 
 extern void (*GameAISYSRebuildFromEditorDataFn)(AISYS_PC *, VARIPTR *, VARIPTR *);
 
-extern void (*GameAISaveFn)(AIPATHSYS_PC *);
+extern void (*GameAISaveFn)(AIPATHSYS *);
 
 extern void (*AIPathNodeMovedFn)(EDAIPATHNODE_s *node);
 
 extern void (*AIPathDeletedFn)(EDAIPATH_s *path);
 
-extern void (*AiEditorMovePlayersCallbackPc)(NUVEC *);
+extern void (*AiEditorMovePlayersCallback)(NUVEC *);
 
 extern i32 ai_onlyusepackfile;
 
@@ -42,13 +42,13 @@ static const u32 iAISysPathColoursG[5] = {0xffff0000, 0xff00ff00, 0xff00ffff, 0x
 
 extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
 
-/* Path-build view of the runtime path system (AIPATHSYS_PC is opaque here). */
+/* Path-build view of the runtime path system (AIPATHSYS is opaque here). */
 typedef struct AI_PATH_BUILD_SYSTEM {   // size 0x10
     u8 path_count;                      // 0x0
     u8 unknown1;                        // 0x1
     u16 special_route_count;            // 0x2
-    AIPATH_PC **paths;                  // 0x4
-    AIPATH_PC *active_path;             // 0x8
+    AIPATH **paths;                     // 0x4
+    AIPATH *active_path;                // 0x8
     AIPATHSPECIALROUTE *special_routes; // 0xc
 } AI_PATH_BUILD_SYSTEM;
 
@@ -101,25 +101,25 @@ static f32 AIPathFabs(f32 value) {
 
 /* Script message pool (AISYS message system). Records are 0x2c bytes; a
  * process's local messages chain through the word after the record. */
-typedef struct AIMESSAGE_PC { // size 0x2c
-    NULISTLNK links;          // 0x00
-    char name[32];            // 0x08
-    f32 value;                // 0x28
-} AIMESSAGE_PC;
+typedef struct AIMESSAGE { // size 0x2c
+    NULISTLNK links;       // 0x00
+    char name[32];         // 0x08
+    f32 value;             // 0x28
+} AIMESSAGE;
 
-typedef struct AIMESSAGESYS_PC { // size 0x18
-    i32 count;                   // 0x00
-    AIMESSAGE_PC *messages;      // 0x04
-    NULISTHDR free_list;         // 0x08
-    NULISTHDR active_list;       // 0x10
-} AIMESSAGESYS_PC;
+typedef struct AIMESSAGESYS { // size 0x18
+    i32 count;                // 0x00
+    AIMESSAGE *messages;      // 0x04
+    NULISTHDR free_list;      // 0x08
+    NULISTHDR active_list;    // 0x10
+} AIMESSAGESYS;
 
-typedef struct AILOCALMESSAGE_PC {  // size 0x30
-    AIMESSAGE_PC message;           // 0x00
-    struct AILOCALMESSAGE_PC *next; // 0x2c
-} AILOCALMESSAGE_PC;
+typedef struct AILOCALMESSAGE {  // size 0x30
+    AIMESSAGE message;           // 0x00
+    struct AILOCALMESSAGE *next; // 0x2c
+} AILOCALMESSAGE;
 
-void AIRetreatFromDestination2(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
+void AIRetreatFromDestination2(AISYS_PC *, AIPACKET *, APIOBJECT *, i32);
 
 typedef struct INTERACTION_ANTINODE_VIEW { // size 0x58
     u8 unknown[0x50];                      // 0x00
@@ -128,7 +128,7 @@ typedef struct INTERACTION_ANTINODE_VIEW { // size 0x58
 
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 
-typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
+typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
 
 extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
 
@@ -148,10 +148,10 @@ typedef struct INTERACTION_ANTINODE_SHAPE_VIEW { // size 0x48
 
 void AiSysOnlyUsePakFile(i32 enabled);
 
-static void AISysCheckAntinode_Circle(APIOBJECT_PC *object, AIANTINODE_PC *antinode, NUVEC *difference, f32 radius);
+static void AISysCheckAntinode_Circle(APIOBJECT *object, AIANTINODE *antinode, NUVEC *difference, f32 radius);
 
-static void AISysCheckAntinode_Ellipse(APIOBJECT_PC *object, AIANTINODE_PC *antinode, NUVEC *difference, f32 radius);
-static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *antinode, NUVEC *difference, f32 radius);
+static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, NUVEC *difference, f32 radius);
+static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode, NUVEC *difference, f32 radius);
 
 CHECK_ANTINODE_FN_PC checkantinodefns[3] = {AISysCheckAntinode_Circle, AISysCheckAntinode_Ellipse, AISysCheckAntinode_Rectangle};
 
@@ -172,7 +172,7 @@ typedef struct ai_creature_load_s { // size 0xa4
     char script_name[16];           // 0x10
     NUVEC position;                 // 0x20
     i32 y_rotation;                 // 0x2c
-    AIPATHINFO_PC path_info;        // 0x30
+    AIPATHINFO path_info;           // 0x30
     i32 flags;                      // 0x48
     u8 set;                         // 0x4c
     u8 unknown_4d;                  // 0x4d
@@ -184,10 +184,10 @@ typedef struct ai_creature_load_s { // size 0xa4
     f32 x_spacing;                  // 0x5c
     f32 z_spacing;                  // 0x60
     f32 script_params[4];           // 0x64
-    AIAREA_PC *activate_area;       // 0x74
-    AIAREA_PC *area;                // 0x78
-    AILOCATOR_PC *locator;          // 0x7c
-    AILOCATOR_PC *respawn_locator;  // 0x80
+    AIAREA *activate_area;          // 0x74
+    AIAREA *area;                   // 0x78
+    AILOCATOR *locator;             // 0x7c
+    AILOCATOR *respawn_locator;     // 0x80
     u8 activation_difficulty;       // 0x84
     i8 min_respawn_count;           // 0x85
     i8 max_respawn_count;           // 0x86
@@ -226,26 +226,26 @@ typedef struct ai_system_load_s {   // size 0x1398
     VARIPTR storage_end;            // 0x0004
     VARIPTR storage_cursor;         // 0x0008
     i32 storage_size;               // 0x000c
-    AIPATHSYS_PC *path_sys;         // 0x0010
+    AIPATHSYS *path_sys;            // 0x0010
     i32 creature_count;             // 0x0014
     AI_CREATURE_LOAD_PC *creatures; // 0x0018
     NULISTHDR scripts;              // 0x001c
     i32 locator_count;              // 0x0024
-    AILOCATOR_PC *locators;         // 0x0028
+    AILOCATOR *locators;            // 0x0028
     i32 locator_set_count;          // 0x002c
-    AILOCATORSET_PC *locator_sets;  // 0x0030
+    AILOCATORSET *locator_sets;     // 0x0030
     i32 area_count;                 // 0x0034
     AI_AREA_LOAD_PC *areas;         // 0x0038
-    AIGROUP_PC groups[16];          // 0x003c
+    AIGROUP groups[16];             // 0x003c
     i32 antinode_count;             // 0x137c
     AI_ANTINODE_LOAD_PC *antinodes; // 0x1380
     u8 unknown_1384[8];             // 0x1384
-    APIOBJECT_PC *player_1;         // 0x138c
-    APIOBJECT_PC *player_2;         // 0x1390
+    APIOBJECT *player_1;            // 0x138c
+    APIOBJECT *player_2;            // 0x1390
     NUGSCN *scene;                  // 0x1394
 } AI_SYSTEM_LOAD_PC;
 
-static f32 AiLoadStartStaggerPc = 0.0f;
+static f32 AiLoadStartStagger = 0.0f;
 
 extern i32 (*GlobalCharacterTypeIDFn)(char *);
 
@@ -255,8 +255,8 @@ typedef struct ai_path_system_load_s {  // size 0x10
     u8 path_count;                      // 0x0
     u8 unknown_01;                      // 0x1
     u16 special_route_count;            // 0x2
-    AIPATH_PC **paths;                  // 0x4
-    AIPATH_PC *active_path;             // 0x8
+    AIPATH **paths;                     // 0x4
+    AIPATH *active_path;                // 0x8
     AIPATHSPECIALROUTE *special_routes; // 0xc
 } AI_PATH_SYSTEM_LOAD_PC;
 
@@ -282,16 +282,16 @@ typedef struct ai_path_system_load_s {  // size 0x10
         destination = (type)allocation_result;                                                                                             \
     } while (0)
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_set) == 0x378);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_set) == 0x378);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_index) == 0x400);
 
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
 
 typedef struct condition_trigger_process_s { // size 0xa4
     u8 unknown_000[0xa0];                    // 0x00
-    AIAREA_PC *trigger_area;                 // 0xa0
+    AIAREA *trigger_area;                    // 0xa0
 } CONDITION_TRIGGER_PROCESS_PC;
 
 extern char *(*GlobalCharacterNameFn)(i32);
@@ -311,7 +311,7 @@ typedef struct AI_EDITOR_MODE_BANK { // size 0x184
 } AI_EDITOR_MODE_BANK;
 
 /* AI editor settings block (0x200 bytes, zeroed by the editor initializer). */
-typedef struct AIEDITORSETTINGS_PC {                                  // size 0x200
+typedef struct AIEDITORSETTINGS {                                     // size 0x200
     char path_name[16]; /* restored current path on enter */          // 0x000
     char creature_name[16]; /* restored selected creature on enter */ // 0x010
     char locator_set_name[16];                                        // 0x020
@@ -329,20 +329,20 @@ typedef struct AIEDITORSETTINGS_PC {                                  // size 0x
     void *path_scratch_cursor;                                        // 0x074
     void *path_scratch_end;                                           // 0x078
     AI_EDITOR_MODE_BANK modes;                                        // 0x07c
-} AIEDITORSETTINGS_PC;
+} AIEDITORSETTINGS;
 
 #pragma section(".bss$aieditorsettings", read, write)
-__declspec(allocate(".bss$aieditorsettings")) AIEDITORSETTINGS_PC aieditorsettings = {0};
+__declspec(allocate(".bss$aieditorsettings")) AIEDITORSETTINGS aieditorsettings = {0};
 
-AIPATHSYS_PC *pathEditorCreateData(VARIPTR *, VARIPTR *, void **, void **);
+AIPATHSYS *pathEditorCreateData(VARIPTR *, VARIPTR *, void **, void **);
 
 i32 NuFileCopy(char *, char *);
 
-void creatureEditorSaveData(AIPATHSYS_PC *);
+void creatureEditorSaveData(AIPATHSYS *);
 
-static eduiiattr_s AiEditorSaveMessageColoursPc = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+static eduiiattr_s AiEditorSaveMessageColours = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 
-STATIC_ASSERT(sizeof(AiEditorSaveMessageColoursPc) == 16);
+STATIC_ASSERT(sizeof(AiEditorSaveMessageColours) == 16);
 
 #define REBUILD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                                           \
     do {                                                                                                                                   \
@@ -373,9 +373,9 @@ typedef struct AI_PATH_CONNECTION_TYPE {           // size 0x4c
     u32 flags;                                     // 0x48
 } AI_PATH_CONNECTION_TYPE;
 
-extern i32 AIPathConnectionTypeCountPc;
+extern i32 AIPathConnectionTypeCount;
 
-extern AI_PATH_CONNECTION_TYPE AIPathConnectionTypesPc[32];
+extern AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32];
 
 typedef struct AI_EDITOR_SPECIAL_PLATFORM_PC { // size 0x6c
     u8 unknown_00[0x4a];                       // 0x00
@@ -390,17 +390,17 @@ typedef struct AI_EDITOR_SPECIAL_TERRAIN {    // size 0x6c
 
 i16 disable_cylinder_check = 0;
 
-NUCAMERA *edmainGetCameraPc(void);
+NUCAMERA *edmainGetCamera(void);
 
 extern i32 near_clip_at_cursor;
 
-f32 AiEditorNearClipOffsetPc = 5.0f;
+f32 AiEditorNearClipOffset = 5.0f;
 
 extern const char MenuPcString75f2c0[3];
 
 extern const char MenuPcString75f2c4[4];
 
-extern i32 AiEditorRouteModeIdPc;
+extern i32 AiEditorRouteModeId;
 
 void cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 
@@ -424,13 +424,13 @@ extern NUVEC edpath_addoffset;
         }                                                                                                                                  \
     } while (0)
 
-extern i32 AiEditorAntinodeModeIdPc;
+extern i32 AiEditorAntinodeModeId;
 
-static const char *AiEditorAntinodeTypeNamesPc[3] = {"Circle", "Ellipse", "Rectangle"};
+static const char *AiEditorAntinodeTypeNames[3] = {"Circle", "Ellipse", "Rectangle"};
 
-f32 AiEditorPickHeightTolerancePc = 0.1f;
+f32 AiEditorPickHeightTolerance = 0.1f;
 
-extern f32 AiEditorPickHeightTolerancePc;
+extern f32 AiEditorPickHeightTolerance;
 
 extern void *(*GlobalCharacterHGobjFn)(i32);
 
@@ -445,15 +445,15 @@ typedef struct AI_PATH_DRAW_FLAGS { // size 0xc
     i16 flags;                      // 0xa
 } AI_PATH_DRAW_FLAGS;
 
-extern i32 AiEditorPathsModeIdPc;
+extern i32 AiEditorPathsModeId;
 
-extern i32 AiEditorCreaturesModeIdPc;
+extern i32 AiEditorCreaturesModeId;
 
-extern i32 AiEditorLocatorsModeIdPc;
+extern i32 AiEditorLocatorsModeId;
 
-extern f32 AiEditorUpperHeightOverridePc;
+extern f32 AiEditorUpperHeightOverride;
 
-extern f32 AiEditorLowerHeightOverridePc;
+extern f32 AiEditorLowerHeightOverride;
 
 extern void (*GlobalCharacterRenderFn)(NUVEC *, i16, i32, i32, void *);
 
@@ -487,9 +487,9 @@ f32 AiEditorCursorRayScalePc = 1e-17f;
 /* NUL-terminated instruction strings, each in its own section to keep the data layout. */
 
 #pragma section(".data$AiEditorRouteYOffsetPc", read, write)
-__declspec(allocate(".data$AiEditorRouteYOffsetPc")) f32 AiEditorRouteYOffsetPc = 0.1f;
+__declspec(allocate(".data$AiEditorRouteYOffsetPc")) f32 AiEditorRouteYOffset = 0.1f;
 
-extern i32 AiEditorAreasModeIdPc;
+extern i32 AiEditorAreasModeId;
 
 void routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
 
@@ -539,7 +539,7 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad);
 
 #define POW5(x) (POW2(x) * POW3(x))
 
-extern NUFPCOMJMP AIScriptStateCommandsPc[5];
+extern NUFPCOMJMP AIScriptStateCommands[5];
 
 typedef struct aiscript_const_record_s { // size 0x24
     char name[32];                       // 0x00
@@ -550,7 +550,7 @@ static void *load_pakfile = 0;
 
 static char *load_path = 0;
 
-static AISCRIPT_CONST_RECORD_PC AIScriptConstantRecordsPc[8] = {0};
+static AISCRIPT_CONST_RECORD_PC AIScriptConstantRecords[8] = {0};
 
 static i32 AIScriptConstCursorPc = 0;
 
@@ -558,7 +558,7 @@ static char *AIScriptCopyString(char *text, VARIPTR *buffer, VARIPTR *end);
 
 static void *AIScriptBufferAlloc(VARIPTR *buf, VARIPTR *buf_end, u32 size);
 
-static AISCRIPT_PC *AIScriptLoadPakFile(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end);
+static AISCRIPT *AIScriptLoadPakFile(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end);
 
 /* Set by AiSysOnlyUsePakFile; warns when a package lacks a script file. */
 i32 ai_onlyusepackfile = 0;
@@ -573,7 +573,7 @@ void xDeriveFromScript(NUFPAR_PC *parser);
 
 void xInclude(NUFPAR_PC *parser);
 
-static NUFPCOMJMP AIScriptCommandsPc[9] = {
+static NUFPCOMJMP AIScriptCommands[9] = {
     {"STATE",            xState           },
     {"PARAM",            xParam           },
     {"CONST",            xConst           },
@@ -614,17 +614,17 @@ static void *AIScriptBufferAllocOrWarn(VARIPTR *buf, VARIPTR *buf_end, u32 size)
         }                                                                                                                                  \
     } while (0)
 
-void AINetReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
+void AINetReplicateAction(AIACTION *action, AIPACKET *packet);
 
 #pragma bss_seg(".bss$game_aiactiondefs")
-AIACTIONDEF_PC *game_aiactiondefs = 0;
+AIACTIONDEF *game_aiactiondefs = 0;
 #pragma bss_seg(".bss$game_aiconditiondefs")
-AICONDITIONDEF_PC *game_aiconditiondefs = 0;
+AICONDITIONDEF *game_aiconditiondefs = 0;
 #pragma bss_seg()
 
-extern AIACTIONDEF_PC api_aiactiondefs[];
+extern AIACTIONDEF api_aiactiondefs[];
 
-extern AICONDITIONDEF_PC api_aiconditiondefs[];
+extern AICONDITIONDEF api_aiconditiondefs[];
 
 static i32 ExpressionRequiredNameLookup = 0;
 
@@ -683,9 +683,9 @@ typedef void (*AI_GLOBAL_CHARACTER_RENDER_PC)(NUVEC *, i16, i32, i32, void *);
 
 typedef void (*AI_CLEAR_CREATURES_PC)(void);
 
-typedef APIOBJECT_PC *(*AI_GET_NAMED_OBJECT_PC)(void *, char *);
+typedef APIOBJECT *(*AI_GET_NAMED_OBJECT_PC)(void *, char *);
 
-typedef NUVEC *(*AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
+typedef NUVEC *(*AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET *);
 
 extern AI_CHARACTER_NAME_PC LevelCharacterNameFn;
 extern AI_CHARACTER_NAME_PC SpecialRouteCharacterNameFn;
@@ -694,17 +694,17 @@ typedef void (*AI_LOAD_PC)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 
-STATIC_ASSERT(offsetof(AIPACKET_PC, path_info) + offsetof(AIPATHINFO_PC, flags) == 0x166);
+STATIC_ASSERT(offsetof(AIPACKET, path_info) + offsetof(AIPATHINFO, flags) == 0x166);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent_metric) == 0x3b0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent_metric) == 0x3b0);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, flags) == 0x4b0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, flags) == 0x4b0);
 
 typedef struct condition_trigger_process_reader_s { // size 0xa4
     u8 unknown_00[0xa0];                            // 0x00
-    AIAREA_PC *trigger_area;                        // 0xa0
+    AIAREA *trigger_area;                           // 0xa0
 } CONDITION_TRIGGER_PROCESS_READER_PC;
 
 typedef struct condition_trigger_player_reader_s { // size 0x2b8
@@ -725,7 +725,7 @@ static f32 AIPathSafeDivide(f32 numerator, f32 denominator) {
 
 /* Signed 16-bit angle difference; emitted out of line
  * although every use is inlined. */
-static i32 AiAngDiffPc(i32 a, i32 b) {
+static i32 AiAngDiff(i32 a, i32 b) {
     i32 difference = (a - b) & 0xffff;
     if (difference >= 0x8000) {
         difference -= 0x10000;
@@ -773,17 +773,17 @@ static i16 PCPathArcCos(f32 cos) {
     return 0x4000 - PCPathArcSine(cos);
 }
 
-static void AiVecSubPc(NUVEC *dst, NUVEC *a, NUVEC *b) {
+static void AiVecSub(NUVEC *dst, NUVEC *a, NUVEC *b) {
     dst->x = a->x - b->x;
     dst->y = a->y - b->y;
     dst->z = a->z - b->z;
 }
 
-static f32 AiVecMagSqrPc(NUVEC *v) {
+static f32 AiVecMagSqr(NUVEC *v) {
     return v->x * v->x + v->y * v->y + v->z * v->z;
 }
 
-static void AiVecMtxTransformPc(NUVEC *dst, NUVEC *src, NUMTX *mtx) {
+static void AiVecMtxTransform(NUVEC *dst, NUVEC *src, NUMTX *mtx) {
     NuVecMtxTransform(dst, src, mtx);
 }
 
@@ -802,8 +802,8 @@ void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
             matrix_copy = *transform;
             transform = &matrix_copy;
         }
-        AiVecMtxTransformPc(&first, &first, transform);
-        AiVecMtxTransformPc(&second, &second, transform);
+        AiVecMtxTransform(&first, &first, transform);
+        AiVecMtxTransform(&second, &second, transform);
     }
     if (AiRndrCullDistance > 0.0f) {
         __declspec(align(16)) NUVEC position;
@@ -814,10 +814,10 @@ void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
         } else {
             position = *(NUVEC *)&global_camera.mtx.m30;
         }
-        AiVecSubPc(&delta, &position, &first);
-        start_distance = AiVecMagSqrPc(&delta);
-        AiVecSubPc(&delta, &position, &second);
-        if (start_distance > AiRndrCullDistance * AiRndrCullDistance && AiVecMagSqrPc(&delta) > AiRndrCullDistance * AiRndrCullDistance) {
+        AiVecSub(&delta, &position, &first);
+        start_distance = AiVecMagSqr(&delta);
+        AiVecSub(&delta, &position, &second);
+        if (start_distance > AiRndrCullDistance * AiRndrCullDistance && AiVecMagSqr(&delta) > AiRndrCullDistance * AiRndrCullDistance) {
             return;
         }
     }
@@ -872,8 +872,8 @@ static void *AIScriptBufferAlloc(VARIPTR *buf, VARIPTR *buf_end, u32 size) {
     return ret;
 }
 
-static AICONDITIONDEF_PC *AIConditionFind(char *name) {
-    AICONDITIONDEF_PC *definition;
+static AICONDITIONDEF *AIConditionFind(char *name) {
+    AICONDITIONDEF *definition;
 
     if (game_aiconditiondefs != NULL) {
         definition = game_aiconditiondefs;
@@ -898,8 +898,8 @@ static AICONDITIONDEF_PC *AIConditionFind(char *name) {
     return NULL;
 }
 
-static AIACTIONDEF_PC *AIActionFind(char *name) {
-    AIACTIONDEF_PC *definition;
+static AIACTIONDEF *AIActionFind(char *name) {
+    AIACTIONDEF *definition;
 
     if (game_aiactiondefs != NULL) {
         for (definition = game_aiactiondefs; definition->name != NULL; definition++) {
@@ -918,8 +918,8 @@ static AIACTIONDEF_PC *AIActionFind(char *name) {
     return NULL;
 }
 
-void RegisterAIScriptActions(AIACTIONDEF_PC *actions) {
-    AIACTIONDEF_PC *def;
+void RegisterAIScriptActions(AIACTIONDEF *actions) {
+    AIACTIONDEF *def;
     i32 index = 0;
     game_aiactiondefs = actions;
     for (def = actions; def->name != NULL; def++) {
@@ -935,58 +935,58 @@ void RegisterAIScriptActions(AIACTIONDEF_PC *actions) {
     }
 }
 
-void RegisterAIScriptConditions(AICONDITIONDEF_PC *conditions) {
+void RegisterAIScriptConditions(AICONDITIONDEF *conditions) {
     game_aiconditiondefs = conditions;
 }
 
-AISTATE_PC *AIStateFind(const char *name, AISCRIPT_PC *script) {
-    AISTATE_PC *state;
+AISTATE *AIStateFind(const char *name, AISCRIPT *script) {
+    AISTATE *state;
 
-    state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+    state = (AISTATE *)NuLinkedListGetHead(&script->states);
     if (name != NULL) {
         while (state != NULL) {
             if (NuStrICmp(name, state->name) == 0) {
                 return state;
             }
-            state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+            state = (AISTATE *)NuLinkedListGetNext(&script->states, &state->link);
         }
     }
 
     return NULL;
 }
 
-AISCRIPT_PC *AIScriptFind(AISYS_PC *sys, const char *name, i32 can_use_default, i32 check_level_scripts, i32 check_global_scripts) {
-    AISCRIPT_PC *script;
+AISCRIPT *AIScriptFind(AISYS_PC *sys, const char *name, i32 can_use_default, i32 check_level_scripts, i32 check_global_scripts) {
+    AISCRIPT *script;
 
     if (name != NULL) {
         if (check_level_scripts != 0 && sys != NULL) {
-            script = (AISCRIPT_PC *)NuLinkedListGetHead(&sys->scripts);
+            script = (AISCRIPT *)NuLinkedListGetHead(&sys->scripts);
             while (script != NULL) {
                 if (NuStrICmp(name, script->name) == 0) {
                     return script;
                 }
-                script = (AISCRIPT_PC *)NuLinkedListGetNext(&sys->scripts, &script->link);
+                script = (AISCRIPT *)NuLinkedListGetNext(&sys->scripts, &script->link);
             }
         }
 
         if (check_global_scripts != 0) {
-            script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts);
+            script = (AISCRIPT *)NuLinkedListGetHead(&global_aiscripts);
             while (script != NULL) {
                 if (NuStrICmp(name, script->name) == 0) {
                     return script;
                 }
-                script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link);
+                script = (AISCRIPT *)NuLinkedListGetNext(&global_aiscripts, &script->link);
             }
         }
     }
 
     if (can_use_default != 0) {
-        script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts);
+        script = (AISCRIPT *)NuLinkedListGetHead(&global_aiscripts);
         while (script != NULL) {
             if (NuStrICmp("default", script->name) == 0) {
                 return script;
             }
-            script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link);
+            script = (AISCRIPT *)NuLinkedListGetNext(&global_aiscripts, &script->link);
         }
     }
 
@@ -1009,27 +1009,27 @@ static char *AIScriptCopyString(char *text, VARIPTR *buffer, VARIPTR *end) {
 
 char *AIScriptNameFromIx(AISYS_PC *system, i32 index) {
     i32 current = 0;
-    AISCRIPT_PC *script;
+    AISCRIPT *script;
     if (system != NULL) {
-        script = (AISCRIPT_PC *)NuLinkedListGetHead(&system->scripts);
+        script = (AISCRIPT *)NuLinkedListGetHead(&system->scripts);
         while (script != NULL) {
             if (current == index) {
                 return script->name;
             }
             ++current;
-            script = (AISCRIPT_PC *)NuLinkedListGetNext(&system->scripts, &script->link);
+            script = (AISCRIPT *)NuLinkedListGetNext(&system->scripts, &script->link);
         }
     }
-    script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts);
+    script = (AISCRIPT *)NuLinkedListGetHead(&global_aiscripts);
     while (script != NULL) {
-        AISCRIPT_PC *local = NULL;
+        AISCRIPT *local = NULL;
         if (system != NULL) {
-            local = (AISCRIPT_PC *)NuLinkedListGetHead(&system->scripts);
+            local = (AISCRIPT *)NuLinkedListGetHead(&system->scripts);
             while (local != NULL) {
                 if (NuStrICmp(script->name, local->name) == 0) {
                     break;
                 }
-                local = (AISCRIPT_PC *)NuLinkedListGetNext(&system->scripts, &local->link);
+                local = (AISCRIPT *)NuLinkedListGetNext(&system->scripts, &local->link);
             }
         }
         if (local == NULL) {
@@ -1038,7 +1038,7 @@ char *AIScriptNameFromIx(AISYS_PC *system, i32 index) {
             }
             ++current;
         }
-        script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link);
+        script = (AISCRIPT *)NuLinkedListGetNext(&global_aiscripts, &script->link);
     }
     return NULL;
 }
@@ -1110,7 +1110,7 @@ void xEndState(NUFPAR_PC *parser) {
     NuFParPopCom(parser);
 }
 
-static NUFPAR_PC *AIScriptOpenParserPc(void *pak, char *filename, char *path) {
+static NUFPAR_PC *AIScriptOpenParser(void *pak, char *filename, char *path) {
     char script_name[64];
     char filepath[128];
     char *extension;
@@ -1153,7 +1153,7 @@ static NUFPAR_PC *AIScriptOpenParserPc(void *pak, char *filename, char *path) {
 void xState(NUFPAR_PC *parser) {
     VARIPTR *buffer;
     VARIPTR *end_buffer;
-    AISTATE_PC *state;
+    AISTATE *state;
     u32 state_address;
     char *name;
 
@@ -1164,33 +1164,33 @@ void xState(NUFPAR_PC *parser) {
     end_buffer = aiscript_load_end_buffer;
     buffer = aiscript_load_buffer;
     state = NULL;
-    if (buffer != NULL && end_buffer != NULL && buffer->addr + sizeof(AISTATE_PC) < end_buffer->addr) {
-        state = (AISTATE_PC *)((buffer->addr + 15) & ~15u);
-        buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(AISTATE_PC);
-        memset(state, 0, sizeof(AISTATE_PC));
+    if (buffer != NULL && end_buffer != NULL && buffer->addr + sizeof(AISTATE) < end_buffer->addr) {
+        state = (AISTATE *)((buffer->addr + 15) & ~15u);
+        buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(AISTATE);
+        memset(state, 0, sizeof(AISTATE));
     } else {
         AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
     }
     aiscript_load_state = state;
-    aiscript_load_refs = (NULISTHDR *)((u32)state + offsetof(AISTATE_PC, reference_scripts));
+    aiscript_load_refs = (NULISTHDR *)((u32)state + offsetof(AISTATE, reference_scripts));
     if (state == NULL) {
         return;
     }
-    memset(state, 0, sizeof(AISTATE_PC));
+    memset(state, 0, sizeof(AISTATE));
     name = AIScriptCopyString(parser->word_buffer_ptr, buffer, end_buffer);
     aiscript_load_state->name = name;
     if (NuStrICmp(name, "Base") == 0) {
-        NuLinkedListInsert((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT_PC, states)), (NULISTLNK *)aiscript_load_state);
+        NuLinkedListInsert((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT, states)), (NULISTLNK *)aiscript_load_state);
     } else {
-        NuLinkedListAppend((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT_PC, states)), (NULISTLNK *)aiscript_load_state);
+        NuLinkedListAppend((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT, states)), (NULISTLNK *)aiscript_load_state);
     }
 
-    NuFParPushCom(parser, AIScriptStateCommandsPc);
+    NuFParPushCom(parser, AIScriptStateCommands);
     while (NuFParGetLine(parser) != 0) {
         NuFParGetWord(parser);
         state_address = (u32)aiscript_load_state;
-        aiscript_load_conditions = (NULISTHDR *)(state_address + offsetof(AISTATE_PC, conditions));
-        aiscript_load_actions = (NULISTHDR *)(state_address + offsetof(AISTATE_PC, actions));
+        aiscript_load_conditions = (NULISTHDR *)(state_address + offsetof(AISTATE, conditions));
+        aiscript_load_actions = (NULISTHDR *)(state_address + offsetof(AISTATE, actions));
         NuFParInterpretWord(parser);
     }
     NuFParPopCom(parser);
@@ -1219,12 +1219,12 @@ void xConst(NUFPAR_PC *parser) {
         AIScriptMissingStateDiagnostic(parser->word_buffer_ptr);
     }
     NuFParGetWord(parser);
-    NuStrNCpy(AIScriptConstantRecordsPc[AIScriptConstCursorPc].name, parser->word_buffer_ptr, 32);
-    AIScriptConstantRecordsPc[AIScriptConstCursorPc].default_val = NuFParGetFloat(parser);
+    NuStrNCpy(AIScriptConstantRecords[AIScriptConstCursorPc].name, parser->word_buffer_ptr, 32);
+    AIScriptConstantRecords[AIScriptConstCursorPc].default_val = NuFParGetFloat(parser);
     AIScriptConstCursorPc++;
 }
 
-static void AIScriptParseCommandsPc(NUFPAR_PC *parser, VARIPTR *buffer, VARIPTR *end, AISCRIPT_PC *script) {
+static void AIScriptParseCommands(NUFPAR_PC *parser, VARIPTR *buffer, VARIPTR *end, AISCRIPT *script) {
     if (script == NULL) {
         return;
     }
@@ -1232,7 +1232,7 @@ static void AIScriptParseCommandsPc(NUFPAR_PC *parser, VARIPTR *buffer, VARIPTR 
     aiscript_load_end_buffer = end;
     aiscript_load_script = script;
     AIScriptConstCursorPc = 0;
-    NuFParPushCom(parser, AIScriptCommandsPc);
+    NuFParPushCom(parser, AIScriptCommands);
     while (NuFParGetLine(parser) != 0) {
         NuFParGetWord(parser);
         aiscript_load_refs = &script->reference_scripts;
@@ -1299,14 +1299,14 @@ void AIScriptCopyConditions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf, VARIPT
 }
 
 void AIScriptCopyActions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf, VARIPTR *buf_end) {
-    AIACTION_PC *src_action;
+    AIACTION *src_action;
 
-    src_action = (AIACTION_PC *)NuLinkedListGetHead(src);
+    src_action = (AIACTION *)NuLinkedListGetHead(src);
     while (src_action != NULL) {
-        AIACTION_PC *dst_action;
+        AIACTION *dst_action;
         i32 i;
 
-        dst_action = AIScriptBufferAllocOrWarn(buf, buf_end, sizeof(AIACTION_PC));
+        dst_action = AIScriptBufferAllocOrWarn(buf, buf_end, sizeof(AIACTION));
         if (dst_action != NULL) {
             dst_action->params = AIScriptBufferAllocOrWarn(buf, buf_end, src_action->param_count * sizeof(char *));
             dst_action->param_count = src_action->param_count;
@@ -1320,15 +1320,15 @@ void AIScriptCopyActions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf, VARIPTR *
             NuLinkedListAppend(dst, &dst_action->link);
         }
 
-        src_action = (AIACTION_PC *)NuLinkedListGetNext(src, &src_action->link);
+        src_action = (AIACTION *)NuLinkedListGetNext(src, &src_action->link);
     }
 }
 
-static AISTATE_PC *AIScriptCopyStatePc(AISTATE_PC *source_state, VARIPTR *buffer, VARIPTR *end_buffer) {
-    AISTATE_PC *copy;
+static AISTATE *AIScriptCopyState(AISTATE *source_state, VARIPTR *buffer, VARIPTR *end_buffer) {
+    AISTATE *copy;
     AIREFSCRIPT *source_reference;
 
-    copy = AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AISTATE_PC));
+    copy = AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AISTATE));
     if (copy != NULL) {
         copy->name = AIScriptCopyString(source_state->name, buffer, end_buffer);
         AIScriptCopyConditions(&source_state->conditions, &copy->conditions, buffer, end_buffer);
@@ -1351,10 +1351,10 @@ static AISTATE_PC *AIScriptCopyStatePc(AISTATE_PC *source_state, VARIPTR *buffer
     return copy;
 }
 
-i32 AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VARIPTR *end_buffer, AISYS_PC *sys) {
-    AISCRIPT_PC *source_script;
-    AISTATE_PC *source_state;
-    AISTATE_PC *state;
+i32 AIScriptBuildDerivedScript(AISCRIPT *script, VARIPTR *buffer, VARIPTR *end_buffer, AISYS_PC *sys) {
+    AISCRIPT *source_script;
+    AISTATE *source_state;
+    AISTATE *state;
     AICONDITION *condition;
     u32 level_bits;
     i32 i;
@@ -1367,23 +1367,23 @@ i32 AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VARIPTR *en
                 if ((source_script->flags_3c & 2) != 0) {
                     return 0;
                 }
-                source_state = (AISTATE_PC *)NuLinkedListGetHead(&source_script->states);
+                source_state = (AISTATE *)NuLinkedListGetHead(&source_script->states);
                 while (source_state != NULL) {
-                    state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+                    state = (AISTATE *)NuLinkedListGetHead(&script->states);
                     while (state != NULL) {
                         if (NuStrICmp(source_state->name, state->name) == 0) {
                             break;
                         }
-                        state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+                        state = (AISTATE *)NuLinkedListGetNext(&script->states, &state->link);
                     }
                     if (state == NULL) {
-                        AISTATE_PC *copy;
-                        copy = AIScriptCopyStatePc(source_state, buffer, end_buffer);
+                        AISTATE *copy;
+                        copy = AIScriptCopyState(source_state, buffer, end_buffer);
                         if (copy != NULL) {
                             NuLinkedListAppend(&script->states, &copy->link);
                         }
                     }
-                    source_state = (AISTATE_PC *)NuLinkedListGetNext(&source_script->states, &source_state->link);
+                    source_state = (AISTATE *)NuLinkedListGetNext(&source_script->states, &source_state->link);
                 }
 
                 for (i = 0; i < 4; i++) {
@@ -1393,7 +1393,7 @@ i32 AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VARIPTR *en
                     }
                 }
 
-                state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+                state = (AISTATE *)NuLinkedListGetHead(&script->states);
                 while (state != NULL) {
                     condition = (AICONDITION *)NuLinkedListGetHead(&state->conditions);
                     while (condition != NULL) {
@@ -1407,7 +1407,7 @@ i32 AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VARIPTR *en
                         }
                         condition = (AICONDITION *)NuLinkedListGetNext(&state->conditions, &condition->link);
                     }
-                    state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+                    state = (AISTATE *)NuLinkedListGetNext(&script->states, &state->link);
                 }
             }
         } else if (AIActionDiagnosticMode == 1) {
@@ -1420,11 +1420,11 @@ i32 AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VARIPTR *en
     return 1;
 }
 
-static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
+static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT *script) {
     AIREFSCRIPT *ref;
     AIREFSCRIPT *next;
     AICONDITION *condition;
-    AISTATE_PC *state;
+    AISTATE *state;
 
     if (sys == NULL || script == NULL) {
         return;
@@ -1465,7 +1465,7 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
         ref = next;
     }
 
-    state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+    state = (AISTATE *)NuLinkedListGetHead(&script->states);
 
     while (state != NULL) {
         ref = (AIREFSCRIPT *)NuLinkedListGetHead(&state->reference_scripts);
@@ -1503,23 +1503,23 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
             ref = next;
         }
 
-        state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+        state = (AISTATE *)NuLinkedListGetNext(&script->states, &state->link);
     }
 }
 
 void AIScriptInitConditions(AISYS_PC *sys) {
-    AISCRIPT_PC *script;
-    AISTATE_PC *state;
+    AISCRIPT *script;
+    AISTATE *state;
     AICONDITION *condition;
     AICONDITION *parameter_condition;
 
     NuLinkedListGetHead(&global_aiscripts);
 
     if (sys != NULL) {
-        script = (AISCRIPT_PC *)NuLinkedListGetHead(&sys->scripts);
+        script = (AISCRIPT *)NuLinkedListGetHead(&sys->scripts);
 
         while (script != NULL) {
-            state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+            state = (AISTATE *)NuLinkedListGetHead(&script->states);
 
             while (state != NULL) {
                 condition = (AICONDITION *)NuLinkedListGetHead(&state->conditions);
@@ -1544,21 +1544,21 @@ void AIScriptInitConditions(AISYS_PC *sys) {
                     condition = (AICONDITION *)NuLinkedListGetNext(&state->conditions, &condition->link);
                 }
 
-                state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+                state = (AISTATE *)NuLinkedListGetNext(&script->states, &state->link);
             }
 
             script->base_state = AIStateFind("Base", script);
 
             AIScriptFindRefScripts(sys, script);
 
-            script = (AISCRIPT_PC *)NuLinkedListGetNext(&sys->scripts, &script->link);
+            script = (AISCRIPT *)NuLinkedListGetNext(&sys->scripts, &script->link);
         }
     }
 
-    script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts);
+    script = (AISCRIPT *)NuLinkedListGetHead(&global_aiscripts);
 
     while (script != NULL) {
-        state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+        state = (AISTATE *)NuLinkedListGetHead(&script->states);
 
         while (state != NULL) {
             condition = (AICONDITION *)NuLinkedListGetHead(&state->conditions);
@@ -1573,24 +1573,24 @@ void AIScriptInitConditions(AISYS_PC *sys) {
                 condition = (AICONDITION *)NuLinkedListGetNext(&state->conditions, &condition->link);
             }
 
-            state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+            state = (AISTATE *)NuLinkedListGetNext(&script->states, &state->link);
         }
 
         script->base_state = AIStateFind("Base", script);
 
         AIScriptFindRefScripts(sys, script);
 
-        script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link);
+        script = (AISCRIPT *)NuLinkedListGetNext(&global_aiscripts, &script->link);
     }
 }
 
-static i32 AIScriptNextAction(AISCRIPTPROCESS_PC *processor) {
-    AIACTION_PC *action;
+static i32 AIScriptNextAction(AISCRIPTPROCESS *processor) {
+    AIACTION *action;
     if (processor != NULL) {
         if (processor->action_node != NULL) {
-            action = (AIACTION_PC *)NuLinkedListGetNext(&processor->state->actions, &processor->action_node->link);
+            action = (AIACTION *)NuLinkedListGetNext(&processor->state->actions, &processor->action_node->link);
         } else {
-            action = (AIACTION_PC *)NuLinkedListGetHead(&processor->state->actions);
+            action = (AIACTION *)NuLinkedListGetHead(&processor->state->actions);
         }
         if (action != NULL) {
             processor->flags |= 1;
@@ -1603,7 +1603,7 @@ static i32 AIScriptNextAction(AISCRIPTPROCESS_PC *processor) {
     return 0;
 }
 
-void AIScriptSetState(AISCRIPTPROCESS_PC *processor, AISTATE_PC *state) {
+void AIScriptSetState(AISCRIPTPROCESS *processor, AISTATE *state) {
     if (processor != NULL && state != NULL) {
         if ((processor->flags & 4) == 0) {
             processor->unknown_b2 = 0;
@@ -1617,7 +1617,7 @@ void AIScriptSetState(AISCRIPTPROCESS_PC *processor, AISTATE_PC *state) {
     }
 }
 
-void AIScriptForceParamReEval(AISCRIPTPROCESS_PC *processor) {
+void AIScriptForceParamReEval(AISCRIPTPROCESS *processor) {
     i32 index;
     if (processor != NULL) {
         for (index = 0; index < 2; ++index) {
@@ -1626,8 +1626,8 @@ void AIScriptForceParamReEval(AISCRIPTPROCESS_PC *processor) {
     }
 }
 
-i32 AIScriptSetStateByName(AISCRIPTPROCESS_PC *processor, char *name) {
-    AISTATE_PC *state;
+i32 AIScriptSetStateByName(AISCRIPTPROCESS *processor, char *name) {
+    AISTATE *state;
 
     if (name != NULL && processor != NULL && processor->script != NULL) {
         state = AIStateFind(name, processor->script);
@@ -1642,8 +1642,8 @@ i32 AIScriptSetStateByName(AISCRIPTPROCESS_PC *processor, char *name) {
     return 0;
 }
 
-void AIScriptProcessorInit(AISYS_PC *system, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor, AICREATURE_PC *creature, char *script_name,
-                           char *start_state_name, i32 can_use_default, AISCRIPT_PC *script, AISTATE_PC *start_state) {
+void AIScriptProcessorInit(AISYS_PC *system, AIPACKET *packet, AISCRIPTPROCESS *processor, AICREATURE *creature, char *script_name,
+                           char *start_state_name, i32 can_use_default, AISCRIPT *script, AISTATE *start_state) {
     i32 i;
     if (processor == NULL) {
         return;
@@ -1690,7 +1690,7 @@ void AIScriptProcessorInit(AISYS_PC *system, AIPACKET_PC *packet, AISCRIPTPROCES
     processor->return_to_state = NULL;
 }
 
-f32 AIParamToFloat(AISCRIPTPROCESS_PC *processor, char *param) {
+f32 AIParamToFloat(AISCRIPTPROCESS *processor, char *param) {
     char *cursor;
     i32 index;
 
@@ -1751,7 +1751,7 @@ static i32 AiEvalExpressionNameLoopup(char *expression, f32 *float_out, i32 *int
     return 0;
 }
 
-f32 AIParamToFloatEx(AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor, char *param) {
+f32 AIParamToFloatEx(AIPACKET *packet, AISCRIPTPROCESS *processor, char *param) {
     char *cursor;
     f32 result;
     i32 is_number;
@@ -1774,7 +1774,7 @@ f32 AIParamToFloatEx(AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor, char *p
     return result;
 }
 
-f32 Condition_Timer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument, void *initialized_argument) {
+f32 Condition_Timer(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char *argument, void *initialized_argument) {
     (void)sys;
     (void)packet;
     (void)argument;
@@ -1782,7 +1782,7 @@ f32 Condition_Timer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *p
     return processor->script_timer;
 }
 
-f32 Condition_Random(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument, void *initialized_argument) {
+f32 Condition_Random(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char *argument, void *initialized_argument) {
     (void)sys;
     (void)processor;
     (void)packet;
@@ -1791,7 +1791,7 @@ f32 Condition_Random(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *
     return NuRandFloat();
 }
 
-void *Condition_AlwaysTrueInit(AISYS_PC *sys, char *arg, AISCRIPT_PC *script) {
+void *Condition_AlwaysTrueInit(AISYS_PC *sys, char *arg, AISCRIPT *script) {
     f32 value = 1.0f;
 
     if (arg != NULL && NuStrLen(arg) != 0) {
@@ -1800,7 +1800,7 @@ void *Condition_AlwaysTrueInit(AISYS_PC *sys, char *arg, AISCRIPT_PC *script) {
     return *(void **)&value;
 }
 
-f32 Condition_AlwaysTrue(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument, void *initialized_argument) {
+f32 Condition_AlwaysTrue(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char *argument, void *initialized_argument) {
     union {
         void *pointer;
         f32 value;
@@ -1814,8 +1814,8 @@ f32 Condition_AlwaysTrue(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_
     return result.value;
 }
 
-f32 Condition_LocatorRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
-    AILOCATOR_PC *locator;
+f32 Condition_LocatorRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    AILOCATOR *locator;
     NUVEC delta;
     if (packet != NULL && packet->owner != NULL) {
         locator = argument;
@@ -1829,8 +1829,8 @@ f32 Condition_LocatorRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACK
     return FLT_MAX;
 }
 
-f32 Condition_LocatorRangeXZ(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
-    AILOCATOR_PC *locator;
+f32 Condition_LocatorRangeXZ(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    AILOCATOR *locator;
     NUVEC delta;
     if (packet != NULL && packet->owner != NULL) {
         locator = argument;
@@ -1844,8 +1844,8 @@ f32 Condition_LocatorRangeXZ(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     return FLT_MAX;
 }
 
-f32 Condition_LocatorRangeY(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
-    AILOCATOR_PC *locator;
+f32 Condition_LocatorRangeY(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    AILOCATOR *locator;
     if (packet != NULL && packet->owner != NULL) {
         locator = argument;
         if (locator == NULL) {
@@ -1858,64 +1858,64 @@ f32 Condition_LocatorRangeY(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPAC
     return 0.0f;
 }
 
-f32 Condition_GotLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_GotLocator(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (process->locator != NULL) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_GotLocatorSet(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_GotLocatorSet(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (process->locator_set != NULL) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_OnPath(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OnPath(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && (packet->path_info.flags & 1) != 0) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_PlayerOnPath(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
-    APIOBJECT_PC *player = system->player_1;
+f32 Condition_PlayerOnPath(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    APIOBJECT *player = system->player_1;
     if (player != NULL && (player->ai->path_info.flags & 1) != 0) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_OpponentOnPath(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OpponentOnPath(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     (void)system;
     (void)process;
     (void)name;
     (void)argument;
-    if (packet != NULL && packet->opponent != NULL && ((((APIOBJECT_PC *)packet->opponent)->ai->path_info.flags & 1) != 0)) {
+    if (packet != NULL && packet->opponent != NULL && ((((APIOBJECT *)packet->opponent)->ai->path_info.flags & 1) != 0)) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_TimeOffPath(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *parameter, void *argument) {
+f32 Condition_TimeOffPath(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char *parameter, void *argument) {
     if (packet != NULL) {
         return packet->time_off_path;
     }
     return 0.0f;
 }
 
-f32 Condition_CurrentLocatorIs(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_CurrentLocatorIs(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (argument != NULL && process->locator == argument) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_InTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_InTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL) {
         GAMEOBJECT *object = packet->owner;
-        AIAREA_PC *area = argument;
+        AIAREA *area = argument;
         if (area == NULL) {
             area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
         }
@@ -1928,7 +1928,7 @@ f32 Condition_InTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPAC
     return 0.0f;
 }
 
-f32 Condition_PlayerRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_PlayerRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     NUVEC delta;
     if (packet != NULL && packet->owner != NULL && system != NULL && system->player_1 != NULL) {
         return NuVecDist(&system->player_1->position, &packet->owner->position, &delta);
@@ -1936,7 +1936,7 @@ f32 Condition_PlayerRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKE
     return FLT_MAX;
 }
 
-f32 Condition_NearestPlayerRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_NearestPlayerRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     NUVEC difference;
     f32 distance = FLT_MAX;
     if (packet != NULL && packet->owner != NULL && system != NULL) {
@@ -1954,7 +1954,7 @@ f32 Condition_NearestPlayerRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
     return distance;
 }
 
-f32 Condition_NearestPlayerXZRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_NearestPlayerXZRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     NUVEC difference;
     f32 distance = FLT_MAX;
     if (packet != NULL && packet->owner != NULL && system != NULL) {
@@ -1972,40 +1972,40 @@ f32 Condition_NearestPlayerXZRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     return distance;
 }
 
-f32 Condition_InLevelNode(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_InLevelNode(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && argument != NULL && system != NULL) {
-        if (packet->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes) {
+        if (packet->inside_path_node == (AIPATHNODE *)argument - system->path_sys->active_path->nodes) {
             return 1.0f;
         }
     }
     return 0.0f;
 }
 
-f32 Condition_PlayerInLevelNode(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_PlayerInLevelNode(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (system != NULL && system->player_1 != NULL && argument != NULL) {
-        if (system->player_1->ai->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes) {
+        if (system->player_1->ai->inside_path_node == (AIPATHNODE *)argument - system->path_sys->active_path->nodes) {
             return 1.0f;
         }
     }
     return 0.0f;
 }
 
-f32 Condition_EitherPlayerInLevelNode(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_EitherPlayerInLevelNode(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (system != NULL && argument != NULL) {
         if (system->player_1 != NULL &&
-            system->player_1->ai->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes) {
+            system->player_1->ai->inside_path_node == (AIPATHNODE *)argument - system->path_sys->active_path->nodes) {
             return 1.0f;
         }
         if (system->player_2 != NULL &&
-            system->player_2->ai->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes) {
+            system->player_2->ai->inside_path_node == (AIPATHNODE *)argument - system->path_sys->active_path->nodes) {
             return 1.0f;
         }
     }
     return 0.0f;
 }
 
-f32 Condition_NodeRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
-    AIPATHNODE_PC *node = argument;
+f32 Condition_NodeRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    AIPATHNODE *node = argument;
     if (packet != NULL && packet->owner != NULL && node != NULL) {
         NUVEC difference;
         return NuVecDist(&node->position, &packet->owner->position, &difference);
@@ -2013,17 +2013,17 @@ f32 Condition_NodeRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKE
     return FLT_MAX;
 }
 
-f32 Condition_GotTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_GotTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (process->unknown_a0 != 0) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_PlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_PlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (system != NULL && system->player_1 != NULL && system->areas != NULL) {
         GAMEOBJECT *object = (GAMEOBJECT *)system->player_1;
-        AIAREA_PC *area = argument;
+        AIAREA *area = argument;
         if (area == NULL) {
             area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
         }
@@ -2036,11 +2036,11 @@ f32 Condition_PlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
     return 0.0f;
 }
 
-f32 Condition_Player2InTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_Player2InTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (system != NULL) {
         GAMEOBJECT *object = (GAMEOBJECT *)system->player_2;
         if (object != NULL) {
-            AIAREA_PC *area = argument;
+            AIAREA *area = argument;
             if (area == NULL) {
                 area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
             }
@@ -2057,8 +2057,8 @@ f32 Condition_Player2InTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     return 0.0f;
 }
 
-f32 Condition_EitherPlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
-    AIAREA_PC *area;
+f32 Condition_EitherPlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    AIAREA *area;
     GAMEOBJECT *object;
     i32 index;
     i64 mask;
@@ -2090,10 +2090,10 @@ f32 Condition_EitherPlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     return 0.0f;
 }
 
-f32 Condition_BaddyInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
-    AIAREA_PC *area = argument;
+f32 Condition_BaddyInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    AIAREA *area = argument;
     if (area == NULL) {
-        area = (AIAREA_PC *)process->unknown_a0;
+        area = (AIAREA *)process->unknown_a0;
     }
     if (area != NULL && (area->runtime_flags & 4) != 0) {
         return 1.0f;
@@ -2101,10 +2101,10 @@ f32 Condition_BaddyInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
     return 0.0f;
 }
 
-f32 Condition_GoodyInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
-    AIAREA_PC *area = argument;
+f32 Condition_GoodyInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    AIAREA *area = argument;
     if (area == NULL) {
-        area = (AIAREA_PC *)process->unknown_a0;
+        area = (AIAREA *)process->unknown_a0;
     }
     if (area != NULL && (area->runtime_flags & 2) != 0) {
         return 1.0f;
@@ -2112,10 +2112,10 @@ f32 Condition_GoodyInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
     return 0.0f;
 }
 
-f32 Condition_OpponentInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OpponentInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->opponent != NULL && packet->owner != NULL) {
         GAMEOBJECT *object = packet->opponent;
-        AIAREA_PC *area = argument;
+        AIAREA *area = argument;
         if (area == NULL) {
             area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
         }
@@ -2128,14 +2128,14 @@ f32 Condition_OpponentInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     return 0.0f;
 }
 
-f32 Condition_GotOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_GotOpponent(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->opponent != NULL) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_OpponentIsAThreat(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OpponentIsAThreat(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     (void)system;
     (void)process;
     (void)name;
@@ -2146,26 +2146,26 @@ f32 Condition_OpponentIsAThreat(AISYS_PC *system, AISCRIPTPROCESS_PC *process, A
     return 0.0f;
 }
 
-f32 Condition_OpponentOnSamePath(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
-    APIOBJECT_PC *opponent;
+f32 Condition_OpponentOnSamePath(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    APIOBJECT *opponent;
     if (packet == NULL || packet->opponent == NULL || packet->path_info.path == NULL) {
         return 0.0f;
     }
-    opponent = (APIOBJECT_PC *)packet->opponent;
+    opponent = (APIOBJECT *)packet->opponent;
     if (opponent->ai != NULL && packet->path_info.path == opponent->ai->path_info.path) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_OpponentRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OpponentRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->opponent != NULL) {
         return packet->opponent_metric;
     }
     return FLT_MAX;
 }
 
-f32 Condition_NearestOpponentRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_NearestOpponentRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     (void)system;
     (void)process;
     (void)name;
@@ -2176,7 +2176,7 @@ f32 Condition_NearestOpponentRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     return FLT_MAX;
 }
 
-f32 Condition_YawToOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_YawToOpponent(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->opponent != NULL) {
         NUVEC difference;
         difference.x = packet->opponent->position.x - packet->owner->position.x;
@@ -2188,7 +2188,7 @@ f32 Condition_YawToOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPAC
     return -180.0f;
 }
 
-f32 Condition_OpponentBelow(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OpponentBelow(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     (void)system;
     (void)process;
     (void)name;
@@ -2199,7 +2199,7 @@ f32 Condition_OpponentBelow(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPAC
     return 0.0f;
 }
 
-f32 Condition_OriginRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OriginRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     NUVEC *origin;
     (void)process;
     (void)name;
@@ -2210,14 +2210,14 @@ f32 Condition_OriginRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKE
             return NuVecDist(&packet->terrain_origin, origin, NULL);
         }
         if (system != NULL && packet->creature_index != 0xff) {
-            AICREATURE_PC *creature = &system->creatures[packet->creature_index];
+            AICREATURE *creature = &system->creatures[packet->creature_index];
             return NuVecDist(&packet->terrain_origin, &creature->position, NULL);
         }
     }
     return 0.0f;
 }
 
-f32 Condition_OpponentToOrigin(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OpponentToOrigin(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->opponent != NULL) {
         if (GetOriginPositionFn != NULL) {
             NUVEC *origin = GetOriginPositionFn(system, packet);
@@ -2226,31 +2226,31 @@ f32 Condition_OpponentToOrigin(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AI
             }
         }
         if (system != NULL && packet->creature_index != 0xff) {
-            AICREATURE_PC *creature = &system->creatures[packet->creature_index];
+            AICREATURE *creature = &system->creatures[packet->creature_index];
             return NuVecDist(&packet->opponent->position, &creature->position, NULL);
         }
     }
     return FLT_MAX;
 }
 
-f32 Condition_PlayerToOrigin(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *parameter, void *argument) {
+f32 Condition_PlayerToOrigin(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char *parameter, void *argument) {
     if (packet != NULL && system != NULL && system->player_1 != NULL) {
         NUVEC *origin;
         if (GetOriginPositionFn != NULL && (origin = GetOriginPositionFn(system, packet)) != NULL) {
             return NuVecDist(&system->player_1->position, origin, NULL);
         }
         if (packet->creature_index != 0xff) {
-            AICREATURE_PC *creature = &system->creatures[packet->creature_index];
+            AICREATURE *creature = &system->creatures[packet->creature_index];
             return NuVecDist(&system->player_1->position, &creature->position, NULL);
         }
     }
     return FLT_MAX;
 }
 
-f32 Condition_OpponentToLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OpponentToLocator(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     NUVEC difference;
     if (packet != NULL && packet->opponent != NULL) {
-        AILOCATOR_PC *locator = argument;
+        AILOCATOR *locator = argument;
         if (locator == NULL) {
             locator = process->locator;
         }
@@ -2261,10 +2261,10 @@ f32 Condition_OpponentToLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *process, A
     return FLT_MAX;
 }
 
-f32 Condition_OpponentToLocatorXZ(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OpponentToLocatorXZ(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     NUVEC difference;
     if (packet != NULL && packet->opponent != NULL) {
-        AILOCATOR_PC *locator = argument;
+        AILOCATOR *locator = argument;
         if (locator == NULL) {
             locator = process->locator;
         }
@@ -2275,9 +2275,9 @@ f32 Condition_OpponentToLocatorXZ(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
     return FLT_MAX;
 }
 
-f32 Condition_OpponentToLocatorY(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_OpponentToLocatorY(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->opponent != NULL) {
-        AILOCATOR_PC *locator = argument;
+        AILOCATOR *locator = argument;
         if (locator == NULL) {
             locator = process->locator;
         }
@@ -2288,10 +2288,10 @@ f32 Condition_OpponentToLocatorY(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
     return FLT_MAX;
 }
 
-f32 Condition_PlayerToLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_PlayerToLocator(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     NUVEC difference;
     if (packet != NULL && system != NULL && system->player_1 != NULL) {
-        AILOCATOR_PC *locator = argument;
+        AILOCATOR *locator = argument;
         if (locator == NULL) {
             locator = process->locator;
         }
@@ -2302,11 +2302,11 @@ f32 Condition_PlayerToLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIP
     return FLT_MAX;
 }
 
-f32 Condition_NearestPlayerToLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_NearestPlayerToLocator(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     NUVEC difference;
     f32 distance = FLT_MAX;
     if (packet != NULL && system != NULL) {
-        AILOCATOR_PC *locator = argument;
+        AILOCATOR *locator = argument;
         if (locator == NULL) {
             locator = process->locator;
         }
@@ -2328,28 +2328,28 @@ f32 Condition_NearestPlayerToLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
     return distance;
 }
 
-f32 Condition_PathBlocked(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_PathBlocked(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && (packet->flags & 0x400000) != 0) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_InterruptID(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *parameter, void *argument) {
+f32 Condition_InterruptID(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char *parameter, void *argument) {
     if (processor != NULL) {
         return (f32)processor->interrupt_id;
     }
     return -1.0f;
 }
 
-void *Condition_IAmInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_IAmInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     if (name != NULL && GetNamedGameObjectCallback != NULL) {
         return GetNamedGameObjectCallback(system, name);
     }
     return NULL;
 }
 
-f32 Condition_IAm(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *argument) {
+f32 Condition_IAm(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL) {
         if (packet->owner == argument) {
             return 1.0f;
@@ -2362,19 +2362,18 @@ f32 Condition_IAm(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *pa
     return 0.0f;
 }
 
-f32 Condition_StuckTime(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *parameter, void *argument) {
+f32 Condition_StuckTime(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char *parameter, void *argument) {
     if (packet != NULL && packet->owner != NULL) {
         return packet->owner->respawn_timer;
     }
     return 0.0f;
 }
 
-f32 Condition_Param(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *parameter, void *argument) {
+f32 Condition_Param(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char *parameter, void *argument) {
     return AIParamToFloatEx(packet, processor, parameter);
 }
 
-i32 Action_SetState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
-                    f32 elapsed) {
+i32 Action_SetState(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 elapsed) {
     i32 i;
     if (first_time != 0 && count != 0) {
         processor->next_state = AIStateFind(params[0], processor->script);
@@ -2395,7 +2394,7 @@ i32 Action_SetState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
     return 0;
 }
 
-i32 Action_ResetTimer(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_ResetTimer(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                       f32 elapsed) {
     f32 minimum = 0.0f;
     f32 maximum = 0.0f;
@@ -2427,8 +2426,7 @@ i32 Action_ResetTimer(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_
     return 1;
 }
 
-i32 Action_Idle(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
-                f32 elapsed) {
+i32 Action_Idle(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 elapsed) {
     f32 minimum;
     f32 maximum;
     i32 frames;
@@ -2476,7 +2474,7 @@ i32 Action_Idle(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pa
     return 0;
 }
 
-i32 Action_SetCircleDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
+i32 Action_SetCircleDirection(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count,
                               i32 first_time, f32 elapsed) {
     i32 i;
 
@@ -2501,7 +2499,7 @@ i32 Action_SetCircleDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
     return 1;
 }
 
-i32 Action_FacePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_FacePlayer(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                       f32 elapsed) {
     f32 min_time = 0.0f;
     f32 max_time = 0.0f;
@@ -2543,22 +2541,22 @@ i32 Action_FacePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
 
 /* Unreferenced. Tests whether target lies within a
  * cone of the given total width in degrees around the facing angle. */
-i32 AIPointWithinFacingAnglePc(NUVEC *target, NUVEC *origin, i32 facing, i32 degrees) {
+i32 AIPointWithinFacingAngle(NUVEC *target, NUVEC *origin, i32 facing, i32 degrees) {
     NUVEC direction;
     i32 half_angle = (degrees << 15) / 360;
     i32 difference;
     NuVecSub(&direction, target, origin);
-    difference = AiAngDiffPc(NuAtan2D(direction.x, direction.z), facing);
+    difference = AiAngDiff(NuAtan2D(direction.x, direction.z), facing);
     return abs(difference) < half_angle;
 }
 
-i32 Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                         f32 elapsed) {
     f32 min_time = 0.0f;
     f32 max_time = 0.0f;
     i32 index;
     char *value;
-    APIOBJECT_PC *opponent;
+    APIOBJECT *opponent;
 
     (void)sys;
     if (packet == NULL) {
@@ -2587,7 +2585,7 @@ i32 Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
         }
     }
 
-    opponent = processor->action_data_1 != 0 ? ((APIOBJECT_PC *)packet->nearest_opponent) : ((APIOBJECT_PC *)packet->opponent);
+    opponent = processor->action_data_1 != 0 ? ((APIOBJECT *)packet->nearest_opponent) : ((APIOBJECT *)packet->opponent);
     if (opponent != NULL && opponent->ai != NULL) {
         if (processor->action_data_4 == 0.0f) {
             packet->movement_look_target = &opponent->position;
@@ -2614,7 +2612,7 @@ i32 Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
     return 0;
 }
 
-i32 Action_IgnoreWallSplines(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_IgnoreWallSplines(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                              f32 elapsed) {
     i32 i;
 
@@ -2630,7 +2628,7 @@ i32 Action_IgnoreWallSplines(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AI
     return 1;
 }
 
-i32 Action_CheckWallSplines(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_CheckWallSplines(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                             f32 elapsed) {
     i32 i;
 
@@ -2648,7 +2646,7 @@ i32 Action_CheckWallSplines(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
     return 1;
 }
 
-i32 Action_NoTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_NoTerrain(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                      f32 delta_time) {
     (void)sys;
     (void)processor;
@@ -2657,7 +2655,7 @@ i32 Action_NoTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *
     return 1;
 }
 
-i32 Action_NoLosCheck(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_NoLosCheck(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                       f32 delta_time) {
     (void)sys;
     (void)processor;
@@ -2666,7 +2664,7 @@ i32 Action_NoLosCheck(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
     return 1;
 }
 
-i32 Action_FlatTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_FlatTerrain(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                        f32 delta_time) {
     (void)sys;
     (void)processor;
@@ -2675,8 +2673,8 @@ i32 Action_FlatTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
     return 1;
 }
 
-i32 Action_ShadowTerrain(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                         i32 first_time, f32 elapsed) {
+i32 Action_ShadowTerrain(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                         f32 elapsed) {
     i32 i;
 
     if (packet == NULL || packet->owner == NULL || first_time == 0) {
@@ -2691,7 +2689,7 @@ i32 Action_ShadowTerrain(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACK
     return 1;
 }
 
-i32 Action_DontUseShadowTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_DontUseShadowTerrain(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                                 f32 delta_time) {
     (void)sys;
     (void)processor;
@@ -2700,8 +2698,7 @@ i32 Action_DontUseShadowTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     return 1;
 }
 
-i32 Action_DontPush(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
-                    f32 delta_time) {
+i32 Action_DontPush(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 delta_time) {
     (void)sys;
     (void)processor;
     (void)delta_time;
@@ -2709,7 +2706,7 @@ i32 Action_DontPush(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *p
     return 1;
 }
 
-i32 Action_CanSeeBehind(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_CanSeeBehind(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                         f32 delta_time) {
     (void)sys;
     (void)processor;
@@ -2718,7 +2715,7 @@ i32 Action_CanSeeBehind(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
     return 1;
 }
 
-i32 Action_RequiresLOS(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_RequiresLOS(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                        f32 delta_time) {
     (void)sys;
     (void)processor;
@@ -2727,7 +2724,7 @@ i32 Action_RequiresLOS(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
     return 1;
 }
 
-i32 Action_SetFullPathSearch(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_SetFullPathSearch(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                              f32 delta_time) {
     (void)sys;
     (void)processor;
@@ -2736,79 +2733,79 @@ i32 Action_SetFullPathSearch(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     return 1;
 }
 
-i32 Action_SetViewDistance(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_SetViewDistance(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                            f32 elapsed) {
     if (packet == NULL || packet->owner == NULL || first_time == 0) {
         return 1;
     }
     if (packet->creature_index != 0xff) {
-        ((APIOBJECT_PC *)packet->owner)->view_distance = system->creatures[packet->creature_index].view_distance;
+        ((APIOBJECT *)packet->owner)->view_distance = system->creatures[packet->creature_index].view_distance;
     } else if (GetViewRangeFn != NULL) {
-        ((APIOBJECT_PC *)packet->owner)->view_distance = GetViewRangeFn(((APIOBJECT_PC *)packet->owner)->character_model->model_id);
+        ((APIOBJECT *)packet->owner)->view_distance = GetViewRangeFn(((APIOBJECT *)packet->owner)->character_model->model_id);
     } else {
-        ((APIOBJECT_PC *)packet->owner)->view_distance = 1.0f;
+        ((APIOBJECT *)packet->owner)->view_distance = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT_PC *)packet->owner)->view_distance = AIParamToFloatEx(packet, processor, params[0]);
+        ((APIOBJECT *)packet->owner)->view_distance = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
 
-i32 Action_SetMinViewHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_SetMinViewHeight(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                             f32 elapsed) {
     if (packet == NULL || packet->owner == NULL || first_time == 0) {
         return 1;
     }
     if (packet->creature_index != 0xff) {
-        ((APIOBJECT_PC *)packet->owner)->min_view_height = system->creatures[packet->creature_index].min_view_height;
+        ((APIOBJECT *)packet->owner)->min_view_height = system->creatures[packet->creature_index].min_view_height;
     } else if (GetMinViewHeightFn != NULL) {
-        ((APIOBJECT_PC *)packet->owner)->min_view_height = GetMinViewHeightFn(((APIOBJECT_PC *)packet->owner)->character_model->model_id);
+        ((APIOBJECT *)packet->owner)->min_view_height = GetMinViewHeightFn(((APIOBJECT *)packet->owner)->character_model->model_id);
     } else {
-        ((APIOBJECT_PC *)packet->owner)->min_view_height = 1.0f;
+        ((APIOBJECT *)packet->owner)->min_view_height = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT_PC *)packet->owner)->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
+        ((APIOBJECT *)packet->owner)->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
 
-i32 Action_SetMaxViewHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_SetMaxViewHeight(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                             f32 elapsed) {
     if (packet == NULL || packet->owner == NULL || first_time == 0) {
         return 1;
     }
     if (packet->creature_index != 0xff) {
-        ((APIOBJECT_PC *)packet->owner)->max_view_height = system->creatures[packet->creature_index].max_view_height;
+        ((APIOBJECT *)packet->owner)->max_view_height = system->creatures[packet->creature_index].max_view_height;
     } else if (GetMaxViewHeightFn != NULL) {
-        ((APIOBJECT_PC *)packet->owner)->max_view_height = GetMaxViewHeightFn(((APIOBJECT_PC *)packet->owner)->character_model->model_id);
+        ((APIOBJECT *)packet->owner)->max_view_height = GetMaxViewHeightFn(((APIOBJECT *)packet->owner)->character_model->model_id);
     } else {
-        ((APIOBJECT_PC *)packet->owner)->max_view_height = 1.0f;
+        ((APIOBJECT *)packet->owner)->max_view_height = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT_PC *)packet->owner)->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
+        ((APIOBJECT *)packet->owner)->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
 
-i32 Action_SetHearDistance(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_SetHearDistance(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                            f32 elapsed) {
     if (packet == NULL || packet->owner == NULL || first_time == 0) {
         return 1;
     }
     if (packet->creature_index != 0xff) {
-        ((APIOBJECT_PC *)packet->owner)->hear_distance = system->creatures[packet->creature_index].hear_distance;
+        ((APIOBJECT *)packet->owner)->hear_distance = system->creatures[packet->creature_index].hear_distance;
     } else if (GetHearDistanceFn != NULL) {
-        ((APIOBJECT_PC *)packet->owner)->hear_distance = GetHearDistanceFn(((APIOBJECT_PC *)packet->owner)->character_model->model_id);
+        ((APIOBJECT *)packet->owner)->hear_distance = GetHearDistanceFn(((APIOBJECT *)packet->owner)->character_model->model_id);
     } else {
-        ((APIOBJECT_PC *)packet->owner)->hear_distance = 1.0f;
+        ((APIOBJECT *)packet->owner)->hear_distance = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT_PC *)packet->owner)->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
+        ((APIOBJECT *)packet->owner)->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
 
-i32 Action_SetMoveRadius(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_4, i32 param_5,
+i32 Action_SetMoveRadius(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_4, i32 param_5,
                          f32 param_6) {
     (void)sys;
     (void)processor;
@@ -2820,14 +2817,14 @@ i32 Action_SetMoveRadius(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_
     if (packet == NULL || packet->owner == NULL || param_5 == 0) {
         return 1;
     }
-    packet->mover_height = ((APIOBJECT_PC *)packet->owner)->collision_radius + ((APIOBJECT_PC *)packet->owner)->collision_radius;
+    packet->mover_height = ((APIOBJECT *)packet->owner)->collision_radius + ((APIOBJECT *)packet->owner)->collision_radius;
     if (param_4 != 0 && NuStrICmp(params[0], "default") != 0) {
         packet->mover_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
 
-i32 Action_OverrideAnimation(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_OverrideAnimation(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char **params, i32 count, i32 first_time,
                              f32 delta_time) {
     i32 from = -1;
     i32 to = -1;
@@ -2863,7 +2860,7 @@ i32 Action_OverrideAnimation(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     return 1;
 }
 
-i32 Action_ResetToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_4, i32 param_5,
+i32 Action_ResetToOrigin(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_4, i32 param_5,
                          f32 param_6) {
     NUVEC *origin;
 
@@ -2884,16 +2881,16 @@ i32 Action_ResetToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_
     return 1;
 }
 
-i32 Action_SetIgnoreAntinodes(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                              i32 first_time, f32 elapsed) {
-    APIOBJECT_PC *object = NULL;
+i32 Action_SetIgnoreAntinodes(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                              f32 elapsed) {
+    APIOBJECT *object = NULL;
     i32 i;
     i32 ignore = 1;
     char *value;
 
     if (first_time != 0) {
         if (packet != NULL && packet->owner != NULL) {
-            object = (APIOBJECT_PC *)packet->owner;
+            object = (APIOBJECT *)packet->owner;
         }
         for (i = 0; i < param_count; i++) {
             value = NuStrIStr(params[i], "character");
@@ -2913,7 +2910,7 @@ i32 Action_SetIgnoreAntinodes(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     return 1;
 }
 
-i32 Action_NoShadows(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_NoShadows(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                      f32 delta_time) {
     i32 i;
     (void)sys;
@@ -2931,9 +2928,8 @@ i32 Action_NoShadows(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *
     return 1;
 }
 
-i32 Action_SetParam(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
-                    f32 elapsed) {
-    AICREATURE_PC *creature;
+i32 Action_SetParam(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 elapsed) {
+    AICREATURE *creature;
     i32 i;
     i32 index;
     u64 flag;
@@ -2969,10 +2965,10 @@ i32 Action_SetParam(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
     return 1;
 }
 
-i32 Action_SetReturnToState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_SetReturnToState(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                             f32 elapsed) {
     i32 i;
-    AISTATE_PC *state = NULL;
+    AISTATE *state = NULL;
     char *value;
     if (first_time == 0 || processor == NULL) {
         return 1;
@@ -2997,7 +2993,7 @@ i32 Action_SetReturnToState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
     return 1;
 }
 
-i32 Action_ReturnToState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_ReturnToState(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                          f32 elapsed) {
     if (processor != NULL && processor->return_to_state != NULL) {
         processor->next_state = processor->return_to_state;
@@ -3014,7 +3010,7 @@ void AiSysOnlyUsePakFile(i32 enabled) {
     ai_onlyusepackfile = enabled;
 }
 
-void AiSysSetStateDebugee(AISCRIPTPROCESS_PC *processor) {
+void AiSysSetStateDebugee(AISCRIPTPROCESS *processor) {
     AiSysStateDebugee = processor;
 }
 
@@ -3116,8 +3112,8 @@ void AISetPathHeightTol(f32 tolerance) {
     default_path_heighttol = tolerance;
 }
 
-i32 AIScriptSetInterrupt(AISCRIPTPROCESS_PC *processor, u8 priority, u8 id, char *state_name, f32 time) {
-    AISTATE_PC *state;
+i32 AIScriptSetInterrupt(AISCRIPTPROCESS *processor, u8 priority, u8 id, char *state_name, f32 time) {
+    AISTATE *state;
     if (priority >= processor->interrupt_priority) {
         state = AIStateFind(state_name, processor->script);
         if (state != NULL) {
@@ -3131,7 +3127,7 @@ i32 AIScriptSetInterrupt(AISCRIPTPROCESS_PC *processor, u8 priority, u8 id, char
     return 0;
 }
 
-void AIScriptClearInterrupt(AISCRIPTPROCESS_PC *processor, char *state_name) {
+void AIScriptClearInterrupt(AISCRIPTPROCESS *processor, char *state_name) {
     if (processor->interrupt_state != NULL) {
         if (NuStrCmp(state_name, processor->interrupt_state->name) == 0) {
             processor->interrupt_timer = 0.0f;
@@ -3161,7 +3157,7 @@ __declspec(noinline) void *AISysBufferAlloc(VARIPTR *cursor, VARIPTR *end, u32 s
 }
 
 i32 AISysSetLevelPath(AISYS_PC *system, char *name) {
-    AIPATH_PC *path = NULL;
+    AIPATH *path = NULL;
     i32 index;
 
     if (system != NULL && system->path_sys != NULL) {
@@ -3183,7 +3179,7 @@ i32 AISysSetLevelPath(AISYS_PC *system, char *name) {
     return 0;
 }
 
-void AIPathCalcExtents(AIPATH_PC *path) {
+void AIPathCalcExtents(AIPATH *path) {
     NUVEC delta;
     NUVEC corner;
     i32 index;
@@ -3194,7 +3190,7 @@ void AIPathCalcExtents(AIPATH_PC *path) {
     path->bounds_max.y = -FLT_MAX;
     path->bounds_max.z = -FLT_MAX;
     for (index = 0; index < path->node_count; ++index) {
-        AIPATHNODE_PC *node = &path->nodes[index];
+        AIPATHNODE *node = &path->nodes[index];
         corner.x = node->position.x - node->radius;
         corner.y = node->min_height;
         corner.z = node->position.z - node->radius;
@@ -3226,7 +3222,7 @@ void AIPathCalcExtents(AIPATH_PC *path) {
     NuVecAdd(&path->bounds_max, &path->bounds_max, &delta);
 }
 
-i32 AIPathCheckExtents(AIPATH_PC *path, NUVEC *position) {
+i32 AIPathCheckExtents(AIPATH *path, NUVEC *position) {
     if (position->x < path->bounds_min.x || position->y < path->bounds_min.y || position->z < path->bounds_min.z ||
         position->x > path->bounds_max.x || position->y > path->bounds_max.y || position->z > path->bounds_max.z) {
         return 0;
@@ -3234,7 +3230,7 @@ i32 AIPathCheckExtents(AIPATH_PC *path, NUVEC *position) {
     return 1;
 }
 
-static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scene, VARIPTR *end) {
+static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VARIPTR *end) {
     AI_PATH_SYSTEM_LOAD_PC *system = NULL;
     i32 count = EdFileReadInt();
     i32 path_index;
@@ -3248,10 +3244,10 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
         PATH_LOAD_ALLOCATE(AI_PATH_SYSTEM_LOAD_PC *, system, cursor, end, sizeof(*system));
         if (system != NULL) {
             system->path_count = (u8)count;
-            system->paths = AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH_PC *));
+            system->paths = AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH *));
             for (path_index = 0; path_index < system->path_count; ++path_index) {
-                AIPATH_PC *path;
-                PATH_LOAD_ALLOCATE(AIPATH_PC *, system->paths[path_index], cursor, end, sizeof(AIPATH_PC));
+                AIPATH *path;
+                PATH_LOAD_ALLOCATE(AIPATH *, system->paths[path_index], cursor, end, sizeof(AIPATH));
                 path = system->paths[path_index];
                 EdFileRead(path->name, 16);
                 path->node_count = (u8)EdFileReadChar();
@@ -3263,9 +3259,9 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
                     path->connection_count = EdFileReadShort();
                 }
                 if (path->connection_count != 0) {
-                    PATH_LOAD_ALLOCATE(AIPATHCNX_PC *, path->connections, cursor, end, path->connection_count * sizeof(AIPATHCNX_PC));
+                    PATH_LOAD_ALLOCATE(AIPATHCNX *, path->connections, cursor, end, path->connection_count * sizeof(AIPATHCNX));
                     for (index = 0; index < path->connection_count; ++index) {
-                        AIPATHCNX_PC *connection = &path->connections[index];
+                        AIPATHCNX *connection = &path->connections[index];
                         connection->node_indices[0] = (u8)EdFileReadChar();
                         connection->node_indices[1] = (u8)EdFileReadChar();
                         if (version > 11) {
@@ -3293,9 +3289,9 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
                     EdFileReadChar();
                 }
                 if (path->node_count != 0) {
-                    PATH_LOAD_ALLOCATE(AIPATHNODE_PC *, path->nodes, cursor, end, path->node_count * sizeof(AIPATHNODE_PC));
+                    PATH_LOAD_ALLOCATE(AIPATHNODE *, path->nodes, cursor, end, path->node_count * sizeof(AIPATHNODE));
                     for (index = 0; index < path->node_count; ++index) {
-                        AIPATHNODE_PC *node = &path->nodes[index];
+                        AIPATHNODE *node = &path->nodes[index];
                         length = EdFileReadInt();
                         if (length != 0) {
                             PATH_LOAD_ALLOCATE(char *, node->name, cursor, end, length + 1);
@@ -3335,8 +3331,7 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
                             node->special_position.z = EdFileReadFloat();
                         }
                         if (path->connections != NULL && node->connection_count != 0) {
-                            PATH_LOAD_ALLOCATE(AIPATHCNX_PC **, node->connections, cursor, end,
-                                               node->connection_count * sizeof(AIPATHCNX_PC *));
+                            PATH_LOAD_ALLOCATE(AIPATHCNX **, node->connections, cursor, end, node->connection_count * sizeof(AIPATHCNX *));
                             for (row = 0; row < node->connection_count; ++row) {
                                 node->connections[row] = &path->connections[EdFileReadShort()];
                             }
@@ -3431,7 +3426,7 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
                     for (index = 0; index < system->special_route_count; ++index, ++route) {
                         route->path_count = (u8)EdFileReadChar();
                         if (route->path_count != 0) {
-                            PATH_LOAD_ALLOCATE(AIPATH_PC **, route->paths, cursor, end, route->path_count * sizeof(AIPATH_PC *));
+                            PATH_LOAD_ALLOCATE(AIPATH **, route->paths, cursor, end, route->path_count * sizeof(AIPATH *));
                             for (row = 0; row < route->path_count; ++row) {
                                 i32 path_index = EdFileReadChar();
                                 route->paths[row] = system->paths[path_index];
@@ -3442,12 +3437,12 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
             }
         }
     }
-    return (AIPATHSYS_PC *)system;
+    return (AIPATHSYS *)system;
 }
 
-AIGROUP_PC *CreateAIGroup(AISYS_PC *system, i32 count_across, f32 x_spacing, f32 z_spacing, f32 max_speed) {
+AIGROUP *CreateAIGroup(AISYS_PC *system, i32 count_across, f32 x_spacing, f32 z_spacing, f32 max_speed) {
     i32 index;
-    AIGROUP_PC *group;
+    AIGROUP *group;
     if (system == NULL || count_across == 0) {
         return NULL;
     }
@@ -3466,7 +3461,7 @@ AIGROUP_PC *CreateAIGroup(AISYS_PC *system, i32 count_across, f32 x_spacing, f32
     return NULL;
 }
 
-void AddToAIGroup(AIGROUP_PC *group, APIOBJECT_PC *object) {
+void AddToAIGroup(AIGROUP *group, APIOBJECT *object) {
     i32 row_count;
     if (group == NULL || object == NULL || group->member_count >= 16) {
         return;
@@ -3498,7 +3493,7 @@ void AddToAIGroup(AIGROUP_PC *group, APIOBJECT_PC *object) {
     ++group->member_count;
 }
 
-void DestroyAIGroup(AIGROUP_PC *group) {
+void DestroyAIGroup(AIGROUP *group) {
     if (group != NULL) {
         memset(group, 0, sizeof(*group));
     }
@@ -3508,9 +3503,9 @@ void AIScriptSetLevelPath(char *path) {
     AiLevelPathName = path;
 }
 
-void AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC *player_2) {
+void AISysProcess(AISYS_PC *system, APIOBJECT *player_1, APIOBJECT *player_2) {
     i32 index;
-    AILOCATOR_PC *locator;
+    AILOCATOR *locator;
     NUVEC forward = {0.0f, 0.0f, 1.0f};
     NUVEC rotated;
     if (system == NULL) {
@@ -3520,7 +3515,7 @@ void AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC *player
     system->player_2 = player_2;
     for (index = 0; index < system->antinode_count + 64; ++index) {
         i32 antinode_count = system->antinode_count;
-        AIANTINODE_PC *antinode = index < antinode_count ? &system->antinodes[index] : &dynamic_antinodes[index - antinode_count];
+        AIANTINODE *antinode = index < antinode_count ? &system->antinodes[index] : &dynamic_antinodes[index - antinode_count];
         NUMTX *draw_matrix;
         if (antinode->has_special == 0) {
             continue;
@@ -3543,12 +3538,12 @@ void AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC *player
     }
     locator = system->locators;
     for (index = 0; index < system->locator_count; ++index, ++locator) {
-        AIPATH_PC *path = locator->path_info.path;
-        AIPATHCNX_PC *connection = locator->path_info.connection;
+        AIPATH *path = locator->path_info.path;
+        AIPATHCNX *connection = locator->path_info.connection;
         if ((path->nodes[connection->node_indices[0]].runtime_flags & 0x02) != 0 ||
             (path->nodes[connection->node_indices[1]].runtime_flags & 0x02) != 0) {
-            AIPATHNODE_PC *start = &path->nodes[connection->node_indices[0]];
-            AIPATHNODE_PC *end = &path->nodes[connection->node_indices[1]];
+            AIPATHNODE *start = &path->nodes[connection->node_indices[0]];
+            AIPATHNODE *end = &path->nodes[connection->node_indices[1]];
             NUVEC delta;
             NUVEC direction;
             NUVEC offset;
@@ -3577,7 +3572,7 @@ void AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC *player
         }
     }
     for (index = 0; index < 16; ++index) {
-        AIGROUP_PC *group = &system->groups[index];
+        AIGROUP *group = &system->groups[index];
         if ((group->flags & 1) != 0) {
             if (group->member_is_alive != 0) {
                 group->flags &= ~2u;
@@ -3588,10 +3583,10 @@ void AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC *player
     }
 }
 
-AIANTINODE_PC *AIAntinodeCreate(NUVEC *position, f32 radius) {
+AIANTINODE *AIAntinodeCreate(NUVEC *position, f32 radius) {
     i32 index;
     for (index = 0; index < 64; ++index) {
-        AIANTINODE_PC *antinode = &dynamic_antinodes[index];
+        AIANTINODE *antinode = &dynamic_antinodes[index];
         if (antinode->enabled == 0) {
             memset(antinode, 0, sizeof(*antinode));
             antinode->enabled = 1;
@@ -3606,10 +3601,10 @@ AIANTINODE_PC *AIAntinodeCreate(NUVEC *position, f32 radius) {
     return NULL;
 }
 
-AIANTINODE_PC *AIAntinodeCreateSingleFrame(NUVEC *position, f32 radius) {
+AIANTINODE *AIAntinodeCreateSingleFrame(NUVEC *position, f32 radius) {
     i32 index;
     for (index = 0; index < 64; ++index) {
-        AIANTINODE_PC *antinode = &dynamic_antinodes[index];
+        AIANTINODE *antinode = &dynamic_antinodes[index];
         if (antinode->enabled == 0) {
             memset(antinode, 0, sizeof(*antinode));
             antinode->enabled = 1;
@@ -3624,7 +3619,7 @@ AIANTINODE_PC *AIAntinodeCreateSingleFrame(NUVEC *position, f32 radius) {
     return NULL;
 }
 
-void AIAntinodeDestroy(AIANTINODE_PC *antinode) {
+void AIAntinodeDestroy(AIANTINODE *antinode) {
     if ((antinode->game_flags & 1) != 0) {
         memset(antinode, 0, sizeof(*antinode));
     }
@@ -3633,14 +3628,14 @@ void AIAntinodeDestroy(AIANTINODE_PC *antinode) {
 void AIAntinodeCullSingleFrame(void) {
     i32 index;
     for (index = 0; index < 64; ++index) {
-        AIANTINODE_PC *antinode = &dynamic_antinodes[index];
+        AIANTINODE *antinode = &dynamic_antinodes[index];
         if (antinode->enabled != 0 && (antinode->game_flags & 4) != 0) {
             memset(antinode, 0, sizeof(*antinode));
         }
     }
 }
 
-void AIAntinodeMove(AIANTINODE_PC *antinode, NUVEC *position, f32 radius, f32 below, f32 above) {
+void AIAntinodeMove(AIANTINODE *antinode, NUVEC *position, f32 radius, f32 below, f32 above) {
     if (antinode != NULL) {
         antinode->position = *position;
         antinode->radius = radius;
@@ -3649,7 +3644,7 @@ void AIAntinodeMove(AIANTINODE_PC *antinode, NUVEC *position, f32 radius, f32 be
     }
 }
 
-static void AISysCheckAntinode_Circle(APIOBJECT_PC *object, AIANTINODE_PC *antinode, NUVEC *difference, f32 radius) {
+static void AISysCheckAntinode_Circle(APIOBJECT *object, AIANTINODE *antinode, NUVEC *difference, f32 radius) {
     i32 angle;
     i32 turn;
     f32 turn_fraction;
@@ -3707,7 +3702,7 @@ static void AISysCheckAntinode_Circle(APIOBJECT_PC *object, AIANTINODE_PC *antin
     }
 }
 
-static void AISysCheckAntinode_Ellipse(APIOBJECT_PC *object, AIANTINODE_PC *antinode, NUVEC *difference, f32 radius) {
+static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, NUVEC *difference, f32 radius) {
     f32 distance_squared;
     f32 aspect;
     NUVEC local_position;
@@ -3798,7 +3793,7 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT_PC *object, AIANTINODE_PC *anti
     }
 }
 
-static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *antinode, NUVEC *difference, f32 radius) {
+static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode, NUVEC *difference, f32 radius) {
     NUVEC local_object;
     NUVEC local_destination;
     i32 object_angle;
@@ -3907,7 +3902,7 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *an
     }
 }
 
-static void AISysDrawBoxPc(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, u32 colour) {
+static void AISysDrawBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, u32 colour) {
     NURND_VERTEX3D_PC corners[8];
     i32 i;
     corners[0].position.x = minimum->x;
@@ -3958,7 +3953,7 @@ static void AISysDrawBoxPc(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, u32 co
 #undef DRAW_BOX_EDGE
 }
 
-void AISysDrawAntinode_Rectangle(AIANTINODE_PC *node, u32 colour) {
+void AISysDrawAntinode_Rectangle(AIANTINODE *node, u32 colour) {
     NUMTX matrix;
     NUVEC minimum;
     NUVEC maximum;
@@ -3970,16 +3965,16 @@ void AISysDrawAntinode_Rectangle(AIANTINODE_PC *node, u32 colour) {
     maximum.x = node->base_radius;
     maximum.y = node->max_y_offset;
     maximum.z = node->base_height;
-    AISysDrawBoxPc(&minimum, &maximum, &matrix, colour);
+    AISysDrawBox(&minimum, &maximum, &matrix, colour);
 }
 
-void AISysCreatureAntinodeInteraction(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *unused) {
-    AIANTINODE_PC *active[192];
+void AISysCreatureAntinodeInteraction(AISYS_PC *system, i32 object_count, APIOBJECT **objects, i32 *unused) {
+    AIANTINODE *active[192];
     i32 count;
     i32 index;
     i32 obstacle;
-    AIANTINODE_PC *antinode;
-    APIOBJECT_PC *object;
+    AIANTINODE *antinode;
+    APIOBJECT *object;
     NUVEC difference;
     f32 radius;
     if (system != NULL) {
@@ -4038,14 +4033,14 @@ void AISysCreatureAntinodeInteraction(AISYS_PC *system, i32 object_count, APIOBJ
     AIAntinodeCullSingleFrame();
 }
 
-void AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable, f32 delta_time) {
+void AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT **objects, i32 *immovable, f32 delta_time) {
     i32 index;
     i32 first_index;
     i32 second_index;
     i32 first_fixed;
     i32 second_fixed;
-    APIOBJECT_PC *first;
-    APIOBJECT_PC *second;
+    APIOBJECT *first;
+    APIOBJECT *second;
     NUVEC difference;
     f32 radius;
     f32 distance;
@@ -4130,14 +4125,14 @@ void AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC
     AISysCreatureAntinodeInteraction(system, object_count, objects, immovable);
 }
 
-void LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable, f32 delta_time) {
+void LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT **objects, i32 *immovable, f32 delta_time) {
     i32 index;
     i32 first_index;
     i32 second_index;
     i32 first_fixed;
     i32 second_fixed;
-    APIOBJECT_PC *first;
-    APIOBJECT_PC *second;
+    APIOBJECT *first;
+    APIOBJECT *second;
     NUVEC difference;
     f32 radius;
     f32 distance;
@@ -4246,14 +4241,14 @@ void LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJE
     AISysCreatureAntinodeInteraction(system, object_count, objects, immovable);
 }
 
-void AISysCreatureInteraction3D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable, f32 delta_time) {
+void AISysCreatureInteraction3D(AISYS_PC *system, i32 object_count, APIOBJECT **objects, i32 *immovable, f32 delta_time) {
     i32 index;
     i32 first_index;
     i32 second_index;
     i32 first_fixed;
     i32 second_fixed;
-    APIOBJECT_PC *first;
-    APIOBJECT_PC *second;
+    APIOBJECT *first;
+    APIOBJECT *second;
     NUVEC difference;
     f32 radius;
     f32 distance;
@@ -4322,8 +4317,8 @@ void AISysCreatureInteraction3D(AISYS_PC *system, i32 object_count, APIOBJECT_PC
     AISysCreatureAntinodeInteraction(system, object_count, objects, immovable);
 }
 
-static void AISysResetPathSearchConnectionChecks(AIPATH_PC *path) {
-    AIPATHNODE_PC *node;
+static void AISysResetPathSearchConnectionChecks(AIPATH *path) {
+    AIPATHNODE *node;
     i32 connection_index;
     if (path == NULL || path->nodes == NULL || path->node_count == 0) {
         return;
@@ -4342,7 +4337,7 @@ static void AISysResetPathSearchConnectionChecks(AIPATH_PC *path) {
     }
 }
 
-void AISysCharacterSetPath(AIPACKET_PC *packet, AIPATH_PC *path) {
+void AISysCharacterSetPath(AIPACKET *packet, AIPATH *path) {
     i32 route;
 
     if (packet->path_info.path == path) {
@@ -4365,13 +4360,13 @@ void AISysCharacterSetPath(AIPACKET_PC *packet, AIPATH_PC *path) {
     }
 }
 
-f32 AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 destination_node, i32 route_index, u32 excluded_route_mask) {
-    AIPATHNODE_PC *nodes;
-    AIPATHNODE_PC *node;
-    AIPATHNODE_PC *start;
-    AIPATHNODE_PC *destination;
-    AIPATHCNX_PC *connection;
-    AIPATHCNX_PC *previous_connection = NULL;
+f32 AIPathNodeDistanceToPathNode(AIPATH *path, i32 start_node, i32 destination_node, i32 route_index, u32 excluded_route_mask) {
+    AIPATHNODE *nodes;
+    AIPATHNODE *node;
+    AIPATHNODE *start;
+    AIPATHNODE *destination;
+    AIPATHCNX *connection;
+    AIPATHCNX *previous_connection = NULL;
     AIPATHROUTE *route = NULL;
     f32 *cached_distance = NULL;
     f32 distance = 0.0f;
@@ -4484,7 +4479,7 @@ f32 AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 destinatio
     return distance;
 }
 
-AILOCATOR_PC *AIPathFindLocator(AISYS_PC *system, char *name) {
+AILOCATOR *AIPathFindLocator(AISYS_PC *system, char *name) {
     i32 index;
     if (system != NULL) {
         for (index = 0; index < system->locator_count; ++index) {
@@ -4496,7 +4491,7 @@ AILOCATOR_PC *AIPathFindLocator(AISYS_PC *system, char *name) {
     return NULL;
 }
 
-AILOCATORSET_PC *AIPathFindLocatorSet(AISYS_PC *system, char *name) {
+AILOCATORSET *AIPathFindLocatorSet(AISYS_PC *system, char *name) {
     i32 index;
     if (system != NULL) {
         for (index = 0; index < system->locator_set_count; ++index) {
@@ -4508,11 +4503,11 @@ AILOCATORSET_PC *AIPathFindLocatorSet(AISYS_PC *system, char *name) {
     return NULL;
 }
 
-AIAREA_PC *AISysFindArea(AISYS_PC *system, char *name) {
+AIAREA *AISysFindArea(AISYS_PC *system, char *name) {
     i32 index;
     if (system != NULL) {
         for (index = 0; index < system->area_count; ++index) {
-            AIAREA_PC *area = &system->areas[index];
+            AIAREA *area = &system->areas[index];
             if (NuStrICmp(name, area->name) == 0) {
                 return area;
             }
@@ -4521,7 +4516,7 @@ AIAREA_PC *AISysFindArea(AISYS_PC *system, char *name) {
     return NULL;
 }
 
-AIPATH_PC *AISysFindPath(AISYS_PC *system, char *name) {
+AIPATH *AISysFindPath(AISYS_PC *system, char *name) {
     i32 index;
     if (system != NULL && system->path_sys != NULL) {
         for (index = 0; index < system->path_sys->path_count; ++index) {
@@ -4533,7 +4528,7 @@ AIPATH_PC *AISysFindPath(AISYS_PC *system, char *name) {
     return NULL;
 }
 
-AIPATHNODE_PC *AIPathFindNode(AISYS_PC *system, AIPATH_PC *path, char *name) {
+AIPATHNODE *AIPathFindNode(AISYS_PC *system, AIPATH *path, char *name) {
     i32 index;
     if (path == NULL && system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0) {
         path = system->path_sys->active_path;
@@ -4548,9 +4543,9 @@ AIPATHNODE_PC *AIPathFindNode(AISYS_PC *system, AIPATH_PC *path, char *name) {
     return NULL;
 }
 
-void *AIPAthFindPathCnx(AISYS_PC *system, AIPATH_PC *path, char *from_name, char *to_name, i32 *direction) {
-    AIPATHNODE_PC *from;
-    AIPATHNODE_PC *to;
+void *AIPAthFindPathCnx(AISYS_PC *system, AIPATH *path, char *from_name, char *to_name, i32 *direction) {
+    AIPATHNODE *from;
+    AIPATHNODE *to;
     i32 to_index;
     i32 index;
     if (path == NULL) {
@@ -4580,8 +4575,8 @@ void *AIPAthFindPathCnx(AISYS_PC *system, AIPATH_PC *path, char *from_name, char
     return NULL;
 }
 
-AIPATHCNX_PC *AIPathFindPathCnxFromIX(AISYS_PC *system, AIPATH_PC *path, u8 from_index, u8 to_index) {
-    AIPATHNODE_PC *node;
+AIPATHCNX *AIPathFindPathCnxFromIX(AISYS_PC *system, AIPATH *path, u8 from_index, u8 to_index) {
+    AIPATHNODE *node;
     i32 index;
     if (path == NULL) {
         if (system == NULL || system->path_sys == NULL || system->path_sys->path_count == 0) {
@@ -4602,11 +4597,11 @@ AIPATHCNX_PC *AIPathFindPathCnxFromIX(AISYS_PC *system, AIPATH_PC *path, u8 from
     return NULL;
 }
 
-void AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *node) {
+void AIPathNodeUpdatePos(void *context, AIPATH *path, AIPATHNODE *node) {
     i32 node_index;
     i32 connection_index;
-    AIPATHCNX_PC *connection;
-    AIPATHNODE_PC *other;
+    AIPATHCNX *connection;
+    AIPATHNODE *other;
     NUVEC direction;
     NUVEC previous_position;
     NUINSTANIM *animation;
@@ -4685,11 +4680,11 @@ void AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *node) {
 }
 
 // noinline: the original calls WithinConnection out of line from AISysGetPathPosEx; VC8 would inline it there.
-__declspec(noinline) i32 WithinConnection(void *context, NUVEC *position, AIPATH_PC *path, AIPATHCNX_PC *connection, i32 reserved_check,
-                                          AIPATHCNX_PC *previous_connection, i32 route_index, i32 reserved_ground, AIPATHINFO_PC *path_info,
+__declspec(noinline) i32 WithinConnection(void *context, NUVEC *position, AIPATH *path, AIPATHCNX *connection, i32 reserved_check,
+                                          AIPATHCNX *previous_connection, i32 route_index, i32 reserved_ground, AIPATHINFO *path_info,
                                           f32 radius, i32 update_once) {
-    AIPATHNODE_PC *first;
-    AIPATHNODE_PC *second;
+    AIPATHNODE *first;
+    AIPATHNODE *second;
     f32 first_radius;
     f32 second_radius;
     i32 narrow;
@@ -4708,7 +4703,7 @@ __declspec(noinline) i32 WithinConnection(void *context, NUVEC *position, AIPATH
     }
 
     if (route_index != 0xff && previous_connection != NULL && (((i64)1 << route_index) & connection->route_mask) == 0) {
-        AIPATHNODE_PC *shared;
+        AIPATHNODE *shared;
 
         if (previous_connection->node_indices[0] == connection->node_indices[0] ||
             previous_connection->node_indices[0] == connection->node_indices[1]) {
@@ -4867,7 +4862,7 @@ __declspec(noinline) i32 WithinConnection(void *context, NUVEC *position, AIPATH
     return 1;
 }
 
-void AISysFindRoute(AIPACKET_PC *packet) {
+void AISysFindRoute(AIPACKET *packet) {
     u8 route_count = packet->path_info.path->route_count;
     i32 start_route;
     i32 route;
@@ -4897,9 +4892,9 @@ void AISysFindRoute(AIPACKET_PC *packet) {
     } while (route != start_route);
 }
 
-void AISysCharacterSetPathCnx(AIPACKET_PC *packet, NUVEC *position, AIPATHCNX_PC *connection, i32 direction) {
-    AIPACKET_PC *path_packet = packet;
-    AIPATH_PC *path;
+void AISysCharacterSetPathCnx(AIPACKET *packet, NUVEC *position, AIPATHCNX *connection, i32 direction) {
+    AIPACKET *path_packet = packet;
+    AIPATH *path;
     u32 connection_flags;
 
     if (connection == NULL || path_packet->owner == NULL) {
@@ -4926,7 +4921,7 @@ void AISysCharacterSetPathCnx(AIPACKET_PC *packet, NUVEC *position, AIPATHCNX_PC
     }
 
     if (path_packet->path_info.connection != connection || path_packet->path_info.direction != direction) {
-        AIPATHNODE_PC *node;
+        AIPATHNODE *node;
         NUVEC delta;
         NUVEC rotated;
 
@@ -4956,10 +4951,10 @@ void AISysCharacterSetPathCnx(AIPACKET_PC *packet, NUVEC *position, AIPATHCNX_PC
     }
 }
 
-void AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *info, AIPATH_PC *path, i32 checks, i32 search_all_paths,
+void AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO *info, AIPATH *path, i32 checks, i32 search_all_paths,
                        f32 *nearest_distance_squared) {
-    AIPATHCNX_PC *current;
-    AIPATHNODE_PC *node;
+    AIPATHCNX *current;
+    AIPATHNODE *node;
     i32 index;
     i32 remaining;
     info->flags_word &= 0xfffe;
@@ -4991,14 +4986,14 @@ void AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *info, A
         }
         node = &info->path->nodes[current->node_indices[info->direction]];
         for (index = 0; index < node->connection_count; ++index) {
-            AIPATHCNX_PC *candidate = node->connections[index];
+            AIPATHCNX *candidate = node->connections[index];
             if (candidate != current && WithinConnection(system, position, path, candidate, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
                 return;
             }
         }
         node = &info->path->nodes[current->node_indices[info->direction == 0]];
         for (index = 0; index < node->connection_count; ++index) {
-            AIPATHCNX_PC *candidate = node->connections[index];
+            AIPATHCNX *candidate = node->connections[index];
             if (candidate != current && WithinConnection(system, position, path, candidate, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
                 return;
             }
@@ -5012,7 +5007,7 @@ void AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *info, A
         while (remaining != 0) {
             node = &info->path->nodes[info->next_check];
             for (index = 0; index < node->connection_count; ++index) {
-                AIPATHCNX_PC *candidate = node->connections[index];
+                AIPATHCNX *candidate = node->connections[index];
                 if (WithinConnection(system, position, path, candidate, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
                     return;
                 }
@@ -5021,8 +5016,8 @@ void AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *info, A
             --remaining;
         }
     } else {
-        AIPATH_PC *saved_path = info->path;
-        AIPATHCNX_PC *saved_connection = info->connection;
+        AIPATH *saved_path = info->path;
+        AIPATHCNX *saved_connection = info->connection;
         i32 saved_direction = info->direction;
         u8 start_path;
         u16 start_node;
@@ -5050,12 +5045,12 @@ void AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *info, A
             if (inside_extents != 0) {
                 node = &info->path->nodes[info->next_check];
                 for (index = 0; index < node->connection_count; ++index) {
-                    AIPATHCNX_PC *candidate = node->connections[index];
+                    AIPATHCNX *candidate = node->connections[index];
                     if (WithinConnection(system, position, info->path, candidate, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
                         return;
                     }
                     if (nearest_distance_squared != NULL) {
-                        AIPATHCNX_PC *connection = node->connections[index];
+                        AIPATHCNX *connection = node->connections[index];
                         f32 distance = NuLineToPointDistSqrEx(&info->path->nodes[connection->node_indices[0]].position,
                                                               &info->path->nodes[connection->node_indices[1]].position, position, NULL);
                         if (distance < *nearest_distance_squared) {
@@ -5089,11 +5084,11 @@ void AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *info, A
     }
 }
 
-static AIPATHCNX_PC *GetNextConnection(const AIPACKET_PC *packet, i32 *direction) {
+static AIPATHCNX *GetNextConnection(const AIPACKET *packet, i32 *direction) {
     i32 node_index;
-    AIPATHNODE_PC *node;
+    AIPATHNODE *node;
     u32 destination;
-    AIPATHCNX_PC *connection = NULL;
+    AIPATHCNX *connection = NULL;
     i32 connection_index;
     u8 route_index;
     AIPATHROUTE *route;
@@ -5164,9 +5159,8 @@ static AIPATHCNX_PC *GetNextConnection(const AIPACKET_PC *packet, i32 *direction
     return connection;
 }
 
-static u32 CalculateRightIntersection(APIOBJECT_PC *object, AIPATHCNX_PC *first_connection, AIPATHCNX_PC *second_connection,
-                                      i32 first_angle, i32 second_angle, AIPATHNODE_PC *before, AIPATHNODE_PC *shared, AIPATHNODE_PC *after,
-                                      NUVEC *result) {
+static u32 CalculateRightIntersection(APIOBJECT *object, AIPATHCNX *first_connection, AIPATHCNX *second_connection, i32 first_angle,
+                                      i32 second_angle, AIPATHNODE *before, AIPATHNODE *shared, AIPATHNODE *after, NUVEC *result) {
     f32 before_radius;
     f32 shared_radius;
     f32 after_radius;
@@ -5237,12 +5231,12 @@ static u32 CalculateRightIntersection(APIOBJECT_PC *object, AIPATHCNX_PC *first_
     return 0;
 }
 
-static u32 CalculateIntersection(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, AIPATHCNX_PC *current_connection,
-                                 AIPATHCNX_PC *target_connection) {
-    AIPATH_PC *path;
-    AIPATHNODE_PC *before;
-    AIPATHNODE_PC *shared;
-    AIPATHNODE_PC *after;
+static u32 CalculateIntersection(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, AIPATHCNX *current_connection,
+                                 AIPATHCNX *target_connection) {
+    AIPATH *path;
+    AIPATHNODE *before;
+    AIPATHNODE *shared;
+    AIPATHNODE *after;
     i32 first_angle;
     i32 second_angle;
     u32 right;
@@ -5297,7 +5291,7 @@ static u32 CalculateIntersection(AISYS_PC *system, AIPACKET_PC *packet, APIOBJEC
     return ((packet->flags & 0x00000020u) != 0) | ((packet->flags & 0x00000040u) != 0);
 }
 
-static i32 RowMoveWander(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, APIOBJECT_PC *leader) {
+static i32 RowMoveWander(AIGROUP *group, AIROW *row, AIROW *previous, APIOBJECT *leader) {
     i32 i;
     NUVEC offset;
     NUVEC rotated;
@@ -5312,11 +5306,11 @@ static i32 RowMoveWander(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, A
     i32 angle;
     i32 difference;
     i32 step;
-    AIPATHNODE_PC *node;
-    AIPATHCNX_PC *next;
-    AIPATHNODE_PC *other;
-    AIPATHNODE_PC *nodes;
-    APIOBJECT_PC *object;
+    AIPATHNODE *node;
+    AIPATHCNX *next;
+    AIPATHNODE *other;
+    AIPATHNODE *nodes;
+    APIOBJECT *object;
     if (row->path_info.connection == NULL) {
         return 0;
     }
@@ -5472,7 +5466,7 @@ static i32 RowMoveWander(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, A
     return 0;
 }
 
-static i32 RowMoveTowards(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, APIOBJECT_PC *leader) {
+static i32 RowMoveTowards(AIGROUP *group, AIROW *row, AIROW *previous, APIOBJECT *leader) {
     i32 i;
     i32 node_index;
     i32 direction_node;
@@ -5485,12 +5479,12 @@ static i32 RowMoveTowards(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, 
     NUVEC offset;
     NUVEC rotated;
     NUVEC centre;
-    AIPACKET_PC *ai;
-    AIPATHCNX_PC *connection = row->path_info.connection;
-    AIPATHNODE_PC *nodes;
-    AIPATHNODE_PC *node;
-    AIPATHNODE_PC *node1;
-    APIOBJECT_PC *object;
+    AIPACKET *ai;
+    AIPATHCNX *connection = row->path_info.connection;
+    AIPATHNODE *nodes;
+    AIPATHNODE *node;
+    AIPATHNODE *node1;
+    APIOBJECT *object;
     NUVEC *position;
     if (connection == NULL) {
         return 0;
@@ -5663,11 +5657,11 @@ static i32 RowMoveTowards(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, 
     return 0;
 }
 
-static void FormationMove(AIGROUP_PC *group, i32 (*move)(AIGROUP_PC *, AIROW_PC *, AIROW_PC *, APIOBJECT_PC *)) {
+static void FormationMove(AIGROUP *group, i32 (*move)(AIGROUP *, AIROW *, AIROW *, APIOBJECT *)) {
     i32 i;
     i32 turning;
-    AIROW_PC *previous;
-    AIROW_PC *row;
+    AIROW *previous;
+    AIROW *row;
     turning = 0;
     previous = NULL;
     if (move != NULL && (group->flags & 8u)) {
@@ -5702,7 +5696,7 @@ static void FormationMove(AIGROUP_PC *group, i32 (*move)(AIGROUP_PC *, AIROW_PC 
     group->is_row_turning = turning;
 }
 
-static i32 AIMoveFindNearestSpecialRouteNode(AIPATH_PC *path, NUVEC *destination, i32 *nearest_node, f32 *distance) {
+static i32 AIMoveFindNearestSpecialRouteNode(AIPATH *path, NUVEC *destination, i32 *nearest_node, f32 *distance) {
     AIPATHNODELINK *routes = path->special_routes;
     f32 nearest = FLT_MAX;
     i32 node = -1;
@@ -5724,7 +5718,7 @@ static i32 AIMoveFindNearestSpecialRouteNode(AIPATH_PC *path, NUVEC *destination
     return 0;
 }
 
-i32 fun_0051d290(AISYS_PC *system, AIPATH_PC *path, AIPATH_PC *target) {
+i32 fun_0051d290(AISYS_PC *system, AIPATH *path, AIPATH *target) {
     i32 index;
     i32 route_index;
     AIPATHSPECIALROUTE *route;
@@ -5743,7 +5737,7 @@ i32 fun_0051d290(AISYS_PC *system, AIPATH_PC *path, AIPATH_PC *target) {
     return 0;
 }
 
-static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH_PC *path, AIPACKET_PC *packet, NUVEC *destination) {
+static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH *path, AIPACKET *packet, NUVEC *destination) {
     AIPATHNODELINK *links;
     f32 nearest = FLT_MAX;
     i32 count = 4;
@@ -5799,8 +5793,8 @@ static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH_PC *path, AIPACKET_PC 
     }
 }
 
-static i32 AIMoveApplyDivertNode(AIPACKET_PC *packet) {
-    AIPATHNODE_PC *node;
+static i32 AIMoveApplyDivertNode(AIPACKET *packet) {
+    AIPATHNODE *node;
 
     node = &packet->path_info.path->nodes[packet->divert_node_index];
 
@@ -5818,16 +5812,16 @@ static i32 AIMoveApplyDivertNode(AIPACKET_PC *packet) {
     return 0;
 }
 
-static i32 AIMoveChooseExitNodePath(AISYS_PC *system, AIPACKET_PC *packet) {
-    AIPATHNODE_PC *first;
-    AIPATHNODE_PC *second;
+static i32 AIMoveChooseExitNodePath(AISYS_PC *system, AIPACKET *packet) {
+    AIPATHNODE *first;
+    AIPATHNODE *second;
     f32 first_distance;
     f32 second_distance;
-    AIPATHNODE_PC *node;
+    AIPATHNODE *node;
     AIPATHSPECIALROUTE *route;
     i32 index;
     f32 nearest;
-    AIPATH_PC *selected = NULL;
+    AIPATH *selected = NULL;
     i32 nearest_node;
 
     first = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[0]];
@@ -5863,7 +5857,7 @@ static i32 AIMoveChooseExitNodePath(AISYS_PC *system, AIPACKET_PC *packet) {
     return 0;
 }
 
-static i32 AIMoveAdjustDestinationPath(AISYS_PC *system, AIPACKET_PC *packet) {
+static i32 AIMoveAdjustDestinationPath(AISYS_PC *system, AIPACKET *packet) {
     if (packet->path_info.path == packet->fallback_path_info.path && packet->fallback_path_info.connection != NULL) {
         return 0;
     }
@@ -5876,22 +5870,22 @@ static i32 AIMoveAdjustDestinationPath(AISYS_PC *system, AIPACKET_PC *packet) {
     return -1;
 }
 
-void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
-    AIPATHCNX_PC *previous;
+void AIMoveToDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
+    AIPATHCNX *previous;
     i32 direction;
     NUVEC saved_destination;
     f32 saved_stopping_distance;
     f32 saved_parameter;
-    AIPATHINFO_PC saved_path_info;
-    AIPATH_PC *path;
+    AIPATHINFO saved_path_info;
+    AIPATH *path;
     i32 diverted;
-    AIPATHCNX_PC *connection;
-    AIPATHCNX_PC *destination_connection;
+    AIPATHCNX *connection;
+    AIPATHCNX *destination_connection;
     NUVEC difference;
     f32 distance_squared;
     f32 distance;
-    AIPATHCNX_PC *target;
-    AIPATHCNX_PC *current;
+    AIPATHCNX *target;
+    AIPATHCNX *current;
     i32 goal_index;
     f32 current_distance;
     f32 endpoint_distances[2];
@@ -5899,12 +5893,12 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     u32 attempted_routes;
     f32 destination_distance_0;
     f32 destination_distance_1;
-    AIPATHNODE_PC *node;
+    AIPATHNODE *node;
     f32 candidate;
-    AIPATHCNX_PC *next;
+    AIPATHCNX *next;
     i32 flags;
-    AIPATHCNX_PC *current_2;
-    AIPATHNODE_PC *shared;
+    AIPATHCNX *current_2;
+    AIPATHNODE *shared;
     NUVEC target_2;
     i32 use_left;
     i32 angle;
@@ -6261,7 +6255,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     packet->flags |= 0x00400000u;
 }
 
-void AIMoveToDestinationAvoidingCamera(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+void AIMoveToDestinationAvoidingCamera(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
     NUVEC destination;
 
     destination = packet->fallback_destination;
@@ -6269,15 +6263,15 @@ void AIMoveToDestinationAvoidingCamera(AISYS_PC *system, AIPACKET_PC *packet, AP
     packet->fallback_destination = destination;
 }
 
-static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
     NUVEC difference;
-    AIPATHCNX_PC *connection;
-    AIPATH_PC *path;
-    AIPATHCNX_PC *destination_connection;
+    AIPATHCNX *connection;
+    AIPATH *path;
+    AIPATHCNX *destination_connection;
     f32 parameter;
     f32 destination_a;
     f32 destination_b;
-    AIPATHNODE_PC *node;
+    AIPATHNODE *node;
     f32 best_distance;
     i32 direction;
     f32 partial_distance;
@@ -6285,14 +6279,14 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
     f32 partial_distance_2;
     f32 candidate_2;
     i32 end_node;
-    AIPATHNODE_PC *node_2;
+    AIPATHNODE *node_2;
     i32 start;
     i32 index;
-    AIPATHCNX_PC *target;
+    AIPATHCNX *target;
     u8 old_direction;
-    AIPATHNODE_PC *node_3;
+    AIPATHNODE *node_3;
     i32 index_2;
-    AIPATHCNX_PC *target_2;
+    AIPATHCNX *target_2;
     i32 angle;
     i32 angle_2;
 
@@ -6446,7 +6440,7 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
     }
 }
 
-void AICircle(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+void AICircle(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
     f32 radius =
         packet->movement_parameter < packet->fallback_stopping_distance ? packet->fallback_stopping_distance : packet->movement_parameter;
     NUVEC difference;
@@ -6474,15 +6468,15 @@ void AICircle(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
     packet->movement_stopping_distance = 0.0f;
 }
 
-void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+void AIWander(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
     NUVEC difference;
     i32 node_index;
     i32 node_index_2;
-    AIPATHNODE_PC *node;
+    AIPATHNODE *node;
     i32 start;
     i32 index;
-    AIPATHCNX_PC *target;
-    AIPATHNODE_PC *node_2;
+    AIPATHCNX *target;
+    AIPATHNODE *node_2;
     f32 distance;
     i32 angle;
     i32 angle_2;
@@ -6569,7 +6563,7 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
     }
 }
 
-void AIMoveDirectlyToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+void AIMoveDirectlyToDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
     (void)system;
     (void)checks;
     if (packet->movement_parameter > 0.0f) {
@@ -6585,9 +6579,9 @@ void AIMoveDirectlyToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJEC
     packet->movement_stopping_distance = 0.0f;
 }
 
-i32 AISysGetCharacterWaypoint(AIPACKET_PC *packet, NUVEC *position) {
+i32 AISysGetCharacterWaypoint(AIPACKET *packet, NUVEC *position) {
     i32 direction;
-    AIPATHCNX_PC *connection;
+    AIPATHCNX *connection;
     if (packet->path_info.connection != packet->fallback_path_info.connection) {
         connection = GetNextConnection(packet, &direction);
         if (connection != NULL) {
@@ -6693,33 +6687,33 @@ void LocaledbitsDrawCircleXY(NUVEC *centre, f32 radius, u32 colour, i32 unused3,
     }
 }
 
-void ResetAIMessageSys(AIMESSAGESYS_PC *sys) {
+void ResetAIMessageSys(AIMESSAGESYS *sys) {
     i32 index;
     if (sys != NULL) {
         memset(&sys->free_list, 0, sizeof(sys->free_list));
         memset(&sys->active_list, 0, sizeof(sys->active_list));
-        memset(sys->messages, 0, sys->count * sizeof(AIMESSAGE_PC));
+        memset(sys->messages, 0, sys->count * sizeof(AIMESSAGE));
         for (index = 0; index < sys->count; ++index) {
             NuLinkedListAppend(&sys->free_list, &sys->messages[index].links);
         }
     }
 }
 
-void ClearAIMessageSys(AIMESSAGESYS_PC *sys) {
+void ClearAIMessageSys(AIMESSAGESYS *sys) {
     NULISTLNK *link;
     if (sys != NULL) {
         for (link = NuLinkedListGetHead(&sys->active_list); link != NULL; link = NuLinkedListGetNext(&sys->active_list, link)) {
-            ((AIMESSAGE_PC *)link)->value = 0.0f;
+            ((AIMESSAGE *)link)->value = 0.0f;
         }
     }
 }
 
-AIMESSAGE_PC *CheckAIMessage(AIMESSAGESYS_PC *sys, char *name, AIMESSAGE_PC *message) {
-    AIMESSAGE_PC *result = NULL;
+AIMESSAGE *CheckAIMessage(AIMESSAGESYS *sys, char *name, AIMESSAGE *message) {
+    AIMESSAGE *result = NULL;
     if (sys != NULL) {
         if (message == NULL && name != NULL) {
-            for (message = (AIMESSAGE_PC *)NuLinkedListGetHead(&sys->active_list); message != NULL;
-                 message = (AIMESSAGE_PC *)NuLinkedListGetNext(&sys->active_list, &message->links)) {
+            for (message = (AIMESSAGE *)NuLinkedListGetHead(&sys->active_list); message != NULL;
+                 message = (AIMESSAGE *)NuLinkedListGetNext(&sys->active_list, &message->links)) {
                 if (NuStrNICmp(name, message->name, 32) == 0) {
                     break;
                 }
@@ -6727,7 +6721,7 @@ AIMESSAGE_PC *CheckAIMessage(AIMESSAGESYS_PC *sys, char *name, AIMESSAGE_PC *mes
         }
         result = message;
         if (message == NULL) {
-            message = (AIMESSAGE_PC *)NuLinkedListGetHead(&sys->free_list);
+            message = (AIMESSAGE *)NuLinkedListGetHead(&sys->free_list);
             if (message != NULL) {
                 NuLinkedListRemove(&sys->free_list, &message->links);
                 NuLinkedListAppend(&sys->active_list, &message->links);
@@ -6739,21 +6733,21 @@ AIMESSAGE_PC *CheckAIMessage(AIMESSAGESYS_PC *sys, char *name, AIMESSAGE_PC *mes
     return result;
 }
 
-AIMESSAGE_PC *QueryAIMessage(AIMESSAGESYS_PC *sys, AIMESSAGE_PC *message) {
+AIMESSAGE *QueryAIMessage(AIMESSAGESYS *sys, AIMESSAGE *message) {
     if (message == NULL) {
-        return (AIMESSAGE_PC *)NuLinkedListGetHead(&sys->active_list);
+        return (AIMESSAGE *)NuLinkedListGetHead(&sys->active_list);
     }
-    return (AIMESSAGE_PC *)NuLinkedListGetNext(&sys->active_list, &message->links);
+    return (AIMESSAGE *)NuLinkedListGetNext(&sys->active_list, &message->links);
 }
 
-void RemoveAIMessage(AIMESSAGESYS_PC *sys, char *name, AIMESSAGE_PC *message) {
+void RemoveAIMessage(AIMESSAGESYS *sys, char *name, AIMESSAGE *message) {
     if (sys != NULL) {
         if (message == NULL) {
             if (name == NULL) {
                 return;
             }
-            for (message = (AIMESSAGE_PC *)NuLinkedListGetHead(&sys->active_list); message != NULL;
-                 message = (AIMESSAGE_PC *)NuLinkedListGetNext(&sys->active_list, &message->links)) {
+            for (message = (AIMESSAGE *)NuLinkedListGetHead(&sys->active_list); message != NULL;
+                 message = (AIMESSAGE *)NuLinkedListGetNext(&sys->active_list, &message->links)) {
                 if (NuStrNICmp(name, message->name, 32) == 0) {
                     break;
                 }
@@ -6767,8 +6761,8 @@ void RemoveAIMessage(AIMESSAGESYS_PC *sys, char *name, AIMESSAGE_PC *message) {
     }
 }
 
-AILOCALMESSAGE_PC *FindLocalAIMessage(AISCRIPTPROCESS_PC *processor, char *name) {
-    AILOCALMESSAGE_PC *message;
+AILOCALMESSAGE *FindLocalAIMessage(AISCRIPTPROCESS *processor, char *name) {
+    AILOCALMESSAGE *message;
     for (message = processor->local_messages; message != NULL; message = message->next) {
         if (NuStrICmp(message->message.name, name) == 0) {
             return message;
@@ -6777,7 +6771,7 @@ AILOCALMESSAGE_PC *FindLocalAIMessage(AISCRIPTPROCESS_PC *processor, char *name)
     return NULL;
 }
 
-void AddLocalAIMessage(AISCRIPTPROCESS_PC *processor, AILOCALMESSAGE_PC *message, char *name) {
+void AddLocalAIMessage(AISCRIPTPROCESS *processor, AILOCALMESSAGE *message, char *name) {
     NuStrNCpy(message->message.name, name, 32);
     if (processor->local_messages == NULL) {
         processor->local_messages = message;
@@ -6788,21 +6782,21 @@ void AddLocalAIMessage(AISCRIPTPROCESS_PC *processor, AILOCALMESSAGE_PC *message
     }
 }
 
-AILOCALMESSAGE_PC *QueryLocalAIMessage(AISCRIPTPROCESS_PC *processor, AILOCALMESSAGE_PC *message) {
+AILOCALMESSAGE *QueryLocalAIMessage(AISCRIPTPROCESS *processor, AILOCALMESSAGE *message) {
     if (message == NULL) {
         return processor->local_messages;
     }
     return message->next;
 }
 
-void AILocatorSet_CheckLocatorsStillAssigned(AISYS_PC *system, AILOCATORSET_PC *locator_set) {
+void AILocatorSet_CheckLocatorsStillAssigned(AISYS_PC *system, AILOCATORSET *locator_set) {
     i32 index;
     if (locator_set == NULL || APIOBJECTFromObjIDFn == NULL) {
         return;
     }
     for (index = 0; index < locator_set->locator_count; ++index) {
         u8 locator_index;
-        APIOBJECT_PC *object;
+        APIOBJECT *object;
         if (locator_set->assigned[index] == 0xff || locator_set->assigned[index] == 0x80) {
             continue;
         }
@@ -6817,7 +6811,7 @@ void AILocatorSet_CheckLocatorsStillAssigned(AISYS_PC *system, AILOCATORSET_PC *
     }
 }
 
-void AILocatorSet_AssignNearestLocator(AISYS_PC *system, AILOCATORSET_PC *locator_set, APIOBJECT_PC *object, f32 max_range, NUVEC *position,
+void AILocatorSet_AssignNearestLocator(AISYS_PC *system, AILOCATORSET *locator_set, APIOBJECT *object, f32 max_range, NUVEC *position,
                                        NUVEC *second_position, f32 off_screen_radius, i32 ignore_assigned) {
     f32 nearest_distance = FLT_MAX;
     NUVEC difference;
@@ -6831,7 +6825,7 @@ void AILocatorSet_AssignNearestLocator(AISYS_PC *system, AILOCATORSET_PC *locato
             AILocatorSet_CheckLocatorsStillAssigned(system, locator_set);
         }
         for (index = 0; index < locator_set->locator_count; ++index) {
-            AILOCATOR_PC *locator;
+            AILOCATOR *locator;
             f32 first_distance;
             if (ignore_assigned != 0 && locator_set->assigned[index] != 0xff) {
                 continue;
@@ -6861,8 +6855,8 @@ void AILocatorSet_AssignNearestLocator(AISYS_PC *system, AILOCATORSET_PC *locato
     }
 }
 
-void AILocatorSet_AssignFurthestLocator(AISYS_PC *system, AILOCATORSET_PC *locator_set, APIOBJECT_PC *object, f32 max_range,
-                                        NUVEC *position, NUVEC *second_position, f32 off_screen_radius, i32 ignore_assigned) {
+void AILocatorSet_AssignFurthestLocator(AISYS_PC *system, AILOCATORSET *locator_set, APIOBJECT *object, f32 max_range, NUVEC *position,
+                                        NUVEC *second_position, f32 off_screen_radius, i32 ignore_assigned) {
     NUVEC difference;
     f32 furthest_distance = 0.0f;
     i32 furthest_index = -1;
@@ -6872,7 +6866,7 @@ void AILocatorSet_AssignFurthestLocator(AISYS_PC *system, AILOCATORSET_PC *locat
             AILocatorSet_CheckLocatorsStillAssigned(system, locator_set);
         }
         for (index = 0; index < locator_set->locator_count; ++index) {
-            AILOCATOR_PC *locator;
+            AILOCATOR *locator;
             f32 distance;
             if (ignore_assigned != 0 && locator_set->assigned[index] != 0xff) {
                 continue;
@@ -6908,7 +6902,7 @@ void AILocatorSet_AssignFurthestLocator(AISYS_PC *system, AILOCATORSET_PC *locat
     }
 }
 
-void AILocatorSet_AssignRandomLocator(AISYS_PC *system, AILOCATORSET_PC *locator_set, APIOBJECT_PC *object, f32 max_range, NUVEC *position,
+void AILocatorSet_AssignRandomLocator(AISYS_PC *system, AILOCATORSET *locator_set, APIOBJECT *object, f32 max_range, NUVEC *position,
                                       f32 off_screen_radius, i32 ignore_assigned) {
     f32 max_distance = FLT_MAX;
     NUVEC difference;
@@ -6926,7 +6920,7 @@ void AILocatorSet_AssignRandomLocator(AISYS_PC *system, AILOCATORSET_PC *locator
     }
     count = 0;
     for (index = 0; index < locator_set->locator_count; ++index) {
-        AILOCATOR_PC *locator;
+        AILOCATOR *locator;
         if (ignore_assigned != 0 && locator_set->assigned[index] != 0xff) {
             continue;
         }
@@ -6944,7 +6938,7 @@ void AILocatorSet_AssignRandomLocator(AISYS_PC *system, AILOCATORSET_PC *locator
     selected_candidate = NuRandInt() % count;
     count = 0;
     for (index = 0; index < locator_set->locator_count; ++index) {
-        AILOCATOR_PC *locator;
+        AILOCATOR *locator;
         if (ignore_assigned != 0 && locator_set->assigned[index] != 0xff) {
             continue;
         }
@@ -6972,7 +6966,7 @@ void InitFn_GameAISYSRebuildFromEditorData(void (*callback)(AISYS_PC *, VARIPTR 
     GameAISYSRebuildFromEditorDataFn = callback;
 }
 
-void InitFn_GameAISave(void (*callback)(AIPATHSYS_PC *)) {
+void InitFn_GameAISave(void (*callback)(AIPATHSYS *)) {
     GameAISaveFn = callback;
 }
 
@@ -7025,7 +7019,7 @@ i32 aieditor_Register(char *name, void (*enter)(void), eduimenu_s *(*process)(FR
     return index;
 }
 
-void AiEditorChangeModePc(i32 mode) {
+void AiEditorChangeMode(i32 mode) {
     i32 previous = aieditorsettings.modes.current;
     aieditorsettings.modes.current = (i16)mode;
     if (aieditor != NULL && previous != aieditorsettings.modes.current) {
@@ -7085,10 +7079,10 @@ void AISysSetPathCylinderCheck(i32 enabled) {
 }
 
 void aieditor_Render(f32 x_scale, f32 y_scale) {
-    NUCAMERA *camera = edmainGetCameraPc();
+    NUCAMERA *camera = edmainGetCamera();
     void (*draw)(i32, i32, f32, f32);
     if (near_clip_at_cursor != 0) {
-        camera->near_clip = NuVecDist(&aieditor->cursor_position, &camera->mtx.translation, NULL) - AiEditorNearClipOffsetPc;
+        camera->near_clip = NuVecDist(&aieditor->cursor_position, &camera->mtx.translation, NULL) - AiEditorNearClipOffset;
     } else {
         camera->near_clip = 0.15f;
     }
@@ -7136,7 +7130,7 @@ static void fun_005209e0(NUVEC *direction, NUVEC *from, NUVEC *to, f32 length) {
     direction->z = (to->z - from->z) / length;
 }
 
-static i32 fun_00520a00(AIPACKET_PC *packet, AIPATHCNX_PC *connection, AIPATHNODE_PC **start, AIPATHNODE_PC **end, NUVEC *direction) {
+static i32 fun_00520a00(AIPACKET *packet, AIPATHCNX *connection, AIPATHNODE **start, AIPATHNODE **end, NUVEC *direction) {
     *start = &packet->path_info.path->nodes[connection->node_indices[0]];
     *end = &packet->path_info.path->nodes[connection->node_indices[1]];
     if (((*end)->position.z - (*start)->position.z) * direction->z + ((*end)->position.x - (*start)->position.x) * direction->x < 0.0) {
@@ -7147,12 +7141,12 @@ static i32 fun_00520a00(AIPACKET_PC *packet, AIPATHCNX_PC *connection, AIPATHNOD
     return 0;
 }
 
-void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET_PC *packet, NUVEC *position, NUVEC *direction, f32 distance, f32 offset, i32 flags,
+void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET *packet, NUVEC *position, NUVEC *direction, f32 distance, f32 offset, i32 flags,
                                              NUVEC *result) {
-    AIPATHCNX_PC *connection = packet->path_info.connection;
-    AIPATHNODE_PC *start;
-    AIPATHNODE_PC *end;
-    AIPATHNODE_PC *junction;
+    AIPATHCNX *connection = packet->path_info.connection;
+    AIPATHNODE *start;
+    AIPATHNODE *end;
+    AIPATHNODE *junction;
     NUVEC delta;
     f32 along;
     f32 best_dot;
@@ -7184,8 +7178,8 @@ void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET_PC *packet, NUVEC *positio
         count = junction->connection_count;
         for (i = 0; i < count; i++) {
             if (connection != junction->connections[i]) {
-                AIPATHNODE_PC *candidate_start;
-                AIPATHNODE_PC *candidate_end;
+                AIPATHNODE *candidate_start;
+                AIPATHNODE *candidate_end;
                 i32 reverse = fun_00520a00(packet, junction->connections[i], &candidate_start, &candidate_end, direction);
                 fun_005209e0(&delta, &candidate_start->position, &candidate_end->position, junction->connections[i]->horizontal_distance);
                 if ((junction->connections[i]->traversal_flags[reverse] & 0xc0000000) == 0) {
@@ -7308,7 +7302,7 @@ static EDAIAREA_s *areaEditorFindHover(i32 check_inside) {
     return nearest;
 }
 
-static void AiEditorRenameAreaPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRenameArea(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIAREA_s *other;
     (void)menu;
     (void)event;
@@ -7338,7 +7332,7 @@ void areaEditor_cbCylinderToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) 
     }
 }
 
-static void AiEditorRenameAreaCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorRenameAreaCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;
     eduiMenuDestroy(menu);
 }
@@ -7410,7 +7404,7 @@ void areaEditor_Enter(void) {
     }
     if (aieditor->ai_system != NULL) {
         for (i = 0; i < aieditor->ai_system->area_count; ++i) {
-            AIAREA_PC *source = &aieditor->ai_system->areas[i];
+            AIAREA *source = &aieditor->ai_system->areas[i];
             EDAIAREA_s *area =
                 areaEditorCreateArea(&source->position, (NUVEC *)&source->half_width, source->rotation, (i8)source->game_flags);
             NuStrNCpy(area->name, source->name, 16);
@@ -7418,7 +7412,7 @@ void areaEditor_Enter(void) {
     }
 }
 
-static EDLOCATOR_s *AiEditorCreateLocatorPc(const NUVEC *position, i32 direction) {
+static EDLOCATOR_s *AiEditorCreateLocator(const NUVEC *position, i32 direction) {
     EDLOCATOR_s *locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->free_locators);
     if (locator != NULL) {
         NuLinkedListRemove(&aieditor->free_locators, &locator->link);
@@ -7429,7 +7423,7 @@ static EDLOCATOR_s *AiEditorCreateLocatorPc(const NUVEC *position, i32 direction
     return locator;
 }
 
-static EDLOCATORSET_s *AiEditorCreateLocatorSetPc(void) {
+static EDLOCATORSET_s *AiEditorCreateLocatorSet(void) {
     EDLOCATORSET_s *set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->free_locator_sets);
     if (set != NULL) {
         NuLinkedListRemove(&aieditor->free_locator_sets, &set->link);
@@ -7439,7 +7433,7 @@ static EDLOCATORSET_s *AiEditorCreateLocatorSetPc(void) {
     return set;
 }
 
-static void AiEditorDestroyLocatorSetPc(EDLOCATORSET_s *set) {
+static void AiEditorDestroyLocatorSet(EDLOCATORSET_s *set) {
     if (set != NULL) {
         NuLinkedListRemove(&aieditor->locator_sets, &set->link);
         memset(set, 0, sizeof(*set));
@@ -7447,7 +7441,7 @@ static void AiEditorDestroyLocatorSetPc(EDLOCATORSET_s *set) {
     }
 }
 
-static i32 AiEditorRemoveLocatorFromSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator) {
+static i32 AiEditorRemoveLocatorFromSet(EDLOCATORSET_s *set, EDLOCATOR_s *locator) {
     i32 index;
     if (set == NULL || locator == NULL) {
         return 0;
@@ -7470,7 +7464,7 @@ static i32 AiEditorRemoveLocatorFromSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *loca
     return 0;
 }
 
-static i32 AiEditorAddLocatorToSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator, EDLOCATOR_s *before) {
+static i32 AiEditorAddLocatorToSet(EDLOCATORSET_s *set, EDLOCATOR_s *locator, EDLOCATOR_s *before) {
     i32 index;
     i32 move;
     if (set != NULL && locator != NULL && set->locators[63] == NULL) {
@@ -7482,7 +7476,7 @@ static i32 AiEditorAddLocatorToSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator, 
                 break;
             }
             if (locator == set->locators[index]) {
-                AiEditorRemoveLocatorFromSetPc(set, locator);
+                AiEditorRemoveLocatorFromSet(set, locator);
                 break;
             }
         }
@@ -7521,7 +7515,7 @@ static EDLOCATORSET_s *locatorEditor_FindLocatorSet(char *name) {
     return NULL;
 }
 
-void locatorEditorSaveData(AIPATHSYS_PC *path_system) {
+void locatorEditorSaveData(AIPATHSYS *path_system) {
     i32 locator_count = 0;
     EDLOCATOR_s *locator;
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
@@ -7534,7 +7528,7 @@ void locatorEditorSaveData(AIPATHSYS_PC *path_system) {
     EdFileWriteInt(locator_count);
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
          locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
-        AIPATH_PC *path;
+        AIPATH *path;
         i32 connection_index;
         i32 connection_direction;
         i32 index;
@@ -7551,7 +7545,7 @@ void locatorEditorSaveData(AIPATHSYS_PC *path_system) {
         connection_index = 0;
         connection_direction = 0;
         for (index = 0; index < path->connection_count; ++index) {
-            AIPATHCNX_PC *connection = &path->connections[index];
+            AIPATHCNX *connection = &path->connections[index];
             if (connection->node_indices[0] == locator->path_check.first->index &&
                 connection->node_indices[1] == locator->path_check.second->index) {
                 connection_index = index;
@@ -7669,7 +7663,7 @@ void locatorEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
     }
 }
 
-static void AiEditorRenameLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRenameLocator(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDLOCATOR_s *other;
     (void)menu;
     (void)event;
@@ -7687,12 +7681,12 @@ static void AiEditorRenameLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 even
     }
 }
 
-static void AiEditorRenameLocatorCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorRenameLocatorCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;
     eduiMenuDestroy(menu);
 }
 
-static void AiEditorRenameLocatorSetPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRenameLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDLOCATORSET_s *other;
     char *name;
     (void)menu;
@@ -7713,7 +7707,7 @@ static void AiEditorRenameLocatorSetPc(eduimenu_s *menu, eduiitem_s *item, u32 e
     strcpy(aieditor->current_locator_set->name, name);
 }
 
-static void AiEditorSetPendingLocatorNamePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorSetPendingLocatorName(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     AIEDITOR_RENDER_STATE *state = aieditor;
     (void)menu;
     (void)event;
@@ -7730,7 +7724,7 @@ void locatorEditor_cbCancelSelectLocatorSet(eduimenu_s *menu, eduimenu_s *child)
     eduiMenuDestroy(menu);
 }
 
-static EDLOCATOR_s *AiEditorNextLocatorInSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *current) {
+static EDLOCATOR_s *AiEditorNextLocatorInSet(EDLOCATORSET_s *set, EDLOCATOR_s *current) {
     i32 index;
     if (set != NULL) {
         if (current != NULL) {
@@ -7745,7 +7739,7 @@ static EDLOCATOR_s *AiEditorNextLocatorInSetPc(EDLOCATORSET_s *set, EDLOCATOR_s 
     return NULL;
 }
 
-static EDLOCATOR_s *AiEditorPrevLocatorInSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *current) {
+static EDLOCATOR_s *AiEditorPrevLocatorInSet(EDLOCATORSET_s *set, EDLOCATOR_s *current) {
     i32 index;
     if (set != NULL) {
         if (current != NULL) {
@@ -7854,22 +7848,22 @@ void locatorEditorDrawLocators(void) {
 }
 
 void aieditor_ClearAllPathCnxTypes(void) {
-    AIPathConnectionTypeCountPc = 0;
-    memset(AIPathConnectionTypesPc, 0, sizeof(AIPathConnectionTypesPc));
+    AIPathConnectionTypeCount = 0;
+    memset(AIPathConnectionTypes, 0, sizeof(AIPathConnectionTypes));
 }
 
 void aieditor_RegisterPathCnxType(const char *name, u32 connection_flag, void (*draw)(NUVEC *, f32, NUVEC *, u32, i32), u32 flags) {
     i32 i;
     i32 count;
     AI_PATH_CONNECTION_TYPE *type;
-    if (name != NULL && strlen(name) < 64 && connection_flag != 0 && (count = AIPathConnectionTypeCountPc) < 32) {
+    if (name != NULL && strlen(name) < 64 && connection_flag != 0 && (count = AIPathConnectionTypeCount) < 32) {
         for (i = 0; i < count; ++i) {
-            if (AIPathConnectionTypesPc[i].connection_flag & connection_flag) {
+            if (AIPathConnectionTypes[i].connection_flag & connection_flag) {
                 AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
             }
         }
-        type = &AIPathConnectionTypesPc[count];
-        AIPathConnectionTypeCountPc = count + 1;
+        type = &AIPathConnectionTypes[count];
+        AIPathConnectionTypeCount = count + 1;
         strcpy(type->name, name);
         type->connection_flag = connection_flag;
         type->draw = draw;
@@ -7879,7 +7873,7 @@ void aieditor_RegisterPathCnxType(const char *name, u32 connection_flag, void (*
     AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
 }
 
-EDAIPATH_s *pathEditorAllocPathPc(void) {
+EDAIPATH_s *pathEditorAllocPath(void) {
     EDAIPATH_s *path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->free_paths);
     if (path != NULL) {
         NuLinkedListRemove(&aieditor->free_paths, &path->link);
@@ -7981,13 +7975,13 @@ static void pathEditor_SelectNearestPath(void) {
     }
 }
 
-static i32 pathEditor_GetNearestRuntimeNode(AIPATH_PC *runtime) {
+static i32 pathEditor_GetNearestRuntimeNode(AIPATH *runtime) {
     i32 nearest = -1;
     i32 index;
     NUVEC delta;
     f32 best = FLT_MAX;
     f32 distance;
-    AIPATHNODE_PC *node;
+    AIPATHNODE *node;
     if (runtime != NULL) {
         for (index = 0; index < runtime->node_count; ++index) {
             node = &runtime->nodes[index];
@@ -8057,7 +8051,7 @@ static i32 pathEditor_DisconnectNodes(EDAIPATHNODE_s *node, EDAIPATHNODE_s *othe
     return 0;
 }
 
-static void AiPathDrawSolidEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u32 colour) {
+static void AiPathDrawSolidEdge(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u32 colour) {
     NURND_VERTEX3D_PC vertices[2];
     NUVEC direction;
     f32 distance = NuVecXZDist(&first->position, &second->position, &direction);
@@ -8130,7 +8124,7 @@ static void AiPathDrawSolidEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second,
     }
 }
 
-static void AiPathDrawWireEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u32 colour) {
+static void AiPathDrawWireEdge(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u32 colour) {
     NUVEC direction;
     NUVEC side;
     NURND_VERTEX3D_PC vertices[2];
@@ -8195,7 +8189,7 @@ static void AiPathDrawWireEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, 
     }
 }
 
-static void AiPathDrawCrossPc(NUVEC *position, f32 radius, u32 colour) {
+static void AiPathDrawCross(NUVEC *position, f32 radius, u32 colour) {
     NURND_VERTEX3D_PC vertices[2];
     vertices[0].colour = colour;
     vertices[1].colour = colour;
@@ -8237,8 +8231,8 @@ void pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *other, u32
     end.x = other->x;
     end.y = other->y + aiEditor_DrawYOffset;
     end.z = other->z;
-    for (i = 0; i < AIPathConnectionTypeCountPc; ++i) {
-        AI_PATH_CONNECTION_TYPE *type = &AIPathConnectionTypesPc[i];
+    for (i = 0; i < AIPathConnectionTypeCount; ++i) {
+        AI_PATH_CONNECTION_TYPE *type = &AIPathConnectionTypes[i];
         if (type->draw != NULL && (type->connection_flag & flags) != 0) {
             type->draw(&start, radius, &end, flags, colour);
             return;
@@ -8315,9 +8309,9 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
     u32 colour;
     EDAIPATHNODE_s *node;
     solid = (aieditorsettings.display_options & 0x80) &&
-            (aieditorsettings.modes.current == AiEditorPathsModeIdPc || aieditorsettings.modes.current == AiEditorCreaturesModeIdPc ||
-             aieditorsettings.modes.current == AiEditorLocatorsModeIdPc);
-    if (aieditorsettings.modes.current == AiEditorRouteModeIdPc) {
+            (aieditorsettings.modes.current == AiEditorPathsModeId || aieditorsettings.modes.current == AiEditorCreaturesModeId ||
+             aieditorsettings.modes.current == AiEditorLocatorsModeId);
+    if (aieditorsettings.modes.current == AiEditorRouteModeId) {
         if (aieditor->current_path->current_route != NULL) {
             route_index = aieditor->current_path->current_route - aieditor->current_path->routes;
         }
@@ -8331,11 +8325,11 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
             i32 segments;
             u32 node_colour;
             i32 slot;
-            if (AiEditorUpperHeightOverridePc != 0.0f) {
-                node->upper_height = AiEditorUpperHeightOverridePc;
+            if (AiEditorUpperHeightOverride != 0.0f) {
+                node->upper_height = AiEditorUpperHeightOverride;
             }
-            if (AiEditorLowerHeightOverridePc != 0.0f) {
-                node->lower_height = AiEditorLowerHeightOverridePc;
+            if (AiEditorLowerHeightOverride != 0.0f) {
+                node->lower_height = AiEditorLowerHeightOverride;
             }
             first_index = node->index;
             if (path == aieditor->current_path && path->current_node == node) {
@@ -8351,7 +8345,7 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
             pathEditorDrawNode(&node->position, node->radius, node->lower_height + node->position.y, node->upper_height + node->position.y,
                                node_colour, 0, segments, solid);
             if (node->shared_node != NULL && !(node->shared_node->draw_flags & 1)) {
-                AiPathDrawCrossPc(&node->position, node->radius, node_colour);
+                AiPathDrawCross(&node->position, node->radius, node_colour);
                 ((AI_PATH_DRAW_FLAGS *)node->shared_node)->flags |= 1;
             }
             if (node->route_mask & active_route) {
@@ -8397,9 +8391,9 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
                     }
                 }
                 if (solid) {
-                    AiPathDrawSolidEdgePc(node, node->connections[slot].node, edge_colour);
+                    AiPathDrawSolidEdge(node, node->connections[slot].node, edge_colour);
                 } else {
-                    AiPathDrawWireEdgePc(node, node->connections[slot].node, edge_colour);
+                    AiPathDrawWireEdge(node, node->connections[slot].node, edge_colour);
                 }
                 route_colour = 0xffff0000;
                 if ((node == path->current_node && node->connections[slot].node == path->other_node) ||
@@ -8531,12 +8525,12 @@ static void TestPointPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE
 
 /* Establishes a temporary runtime connection, validates it,
  * then calculates editor-space outputs. */
-static i32 TestPointWithinPathCheckPc(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, f32 *fraction, f32 *width, i32 *angle,
-                                      f32 tolerance) {
-    AIPATH_PC path;
-    AIPATHCNX_PC connection;
-    AIPATHNODE_PC nodes[2];
-    AIPATHINFO_PC info;
+static i32 TestPointWithinPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, f32 *fraction, f32 *width, i32 *angle,
+                                    f32 tolerance) {
+    AIPATH path;
+    AIPATHCNX connection;
+    AIPATHNODE nodes[2];
+    AIPATHINFO info;
     NUVEC horizontal;
     memset(&path, 0, sizeof(path));
     memset(&connection, 0, sizeof(connection));
@@ -8572,20 +8566,20 @@ static i32 TestPointWithinPathCheckPc(NUVEC *point, EDAIPATHNODE_s *first, EDAIP
 void pathEditor_QuickOnPathCheck(NUVEC *point, EDAIPATHCHECK_s *previous, EDAIPATHCHECK_s *result) {
     i32 slot;
     result->on_path = 0;
-    if (TestPointWithinPathCheckPc(point, previous->first, previous->second, &result->fraction, &result->width, &result->angle, 0.0f)) {
+    if (TestPointWithinPathCheck(point, previous->first, previous->second, &result->fraction, &result->width, &result->angle, 0.0f)) {
         result->on_path = 1;
         return;
     }
     for (slot = 0; slot < 8; ++slot) {
         if (previous->first->connections[slot].node != NULL &&
-            TestPointWithinPathCheckPc(point, previous->first->connections[slot].node, previous->first, &result->fraction, &result->width,
-                                       &result->angle, 0.0f)) {
+            TestPointWithinPathCheck(point, previous->first->connections[slot].node, previous->first, &result->fraction, &result->width,
+                                     &result->angle, 0.0f)) {
             result->on_path = 1;
             return;
         }
         if (previous->second->connections[slot].node != NULL &&
-            TestPointWithinPathCheckPc(point, previous->second, previous->second->connections[slot].node, &result->fraction, &result->width,
-                                       &result->angle, 0.0f)) {
+            TestPointWithinPathCheck(point, previous->second, previous->second->connections[slot].node, &result->fraction, &result->width,
+                                     &result->angle, 0.0f)) {
             result->on_path = 1;
             return;
         }
@@ -8616,7 +8610,7 @@ void pathEditor_OnPathCheck(NUVEC *point, EDAIPATHCHECK_s *result, EDAIPATH_s *p
                 i32 angle;
                 checked[node_index][other_index / 8] |= 1 << (other_index % 8);
                 checked[other_index][node_index / 8] |= 1 << (node_index % 8);
-                if (TestPointWithinPathCheckPc(point, node, other, &fraction, &width, &angle, tolerance)) {
+                if (TestPointWithinPathCheck(point, node, other, &fraction, &width, &angle, tolerance)) {
                     result->fraction = fraction;
                     result->width = width;
                     result->on_path = 1;
@@ -8643,10 +8637,10 @@ EDAIPATH_s *pathEditor_GetPath(char *name) {
 }
 
 static void pathEditorDrawRoute(void) {
-    AIPATH_PC *path;
-    AIPATHCNX_PC *connection;
-    AIPATHNODE_PC *node;
-    AIPATHNODE_PC *next_node;
+    AIPATH *path;
+    AIPATHCNX *connection;
+    AIPATHNODE *node;
+    AIPATHNODE *next_node;
     i32 current;
     i32 end;
     i32 next;
@@ -8683,8 +8677,8 @@ static void pathEditorDrawRoute(void) {
         next_node = &path->nodes[next];
         vertices[0].position = node->position;
         vertices[1].position = next_node->position;
-        vertices[0].position.y += AiEditorRouteYOffsetPc;
-        vertices[1].position.y += AiEditorRouteYOffsetPc;
+        vertices[0].position.y += AiEditorRouteYOffset;
+        vertices[1].position.y += AiEditorRouteYOffset;
         vertices[0].colour = 0xff0000ff;
         vertices[1].colour = 0xff0000ff;
         AiRndrLine3d(vertices, NULL, NULL);
@@ -8693,10 +8687,10 @@ static void pathEditorDrawRoute(void) {
     } while (current != end);
 }
 
-static void pathEditorCalcRouteIterator(AIPATH_PC *path, f32 *distances, u8 *visited, i32 previous, i32 current, f32 distance,
+static void pathEditorCalcRouteIterator(AIPATH *path, f32 *distances, u8 *visited, i32 previous, i32 current, f32 distance,
                                         i32 route_mask) {
-    AIPATHNODE_PC *previous_node;
-    AIPATHNODE_PC *node;
+    AIPATHNODE *previous_node;
+    AIPATHNODE *node;
     NUVEC difference;
     f32 new_distance;
     i32 index;
@@ -8712,7 +8706,7 @@ static void pathEditorCalcRouteIterator(AIPATH_PC *path, f32 *distances, u8 *vis
     if (new_distance <= distances[current]) {
         distances[current] = new_distance;
         for (index = 0; index < node->connection_count; ++index) {
-            AIPATHCNX_PC *connection = node->connections[index];
+            AIPATHCNX *connection = node->connections[index];
             i32 direction = connection->node_indices[0] != current;
             if ((connection->traversal_flags[direction] & 0x40000000) == 0 &&
                 (route_mask == 0 || (connection->route_mask & route_mask) != 0)) {
@@ -8724,7 +8718,7 @@ static void pathEditorCalcRouteIterator(AIPATH_PC *path, f32 *distances, u8 *vis
     visited[current / 8] &= ~(1 << (current % 8));
 }
 
-static f32 **pathEditorCalculateDistanceTable(AIPATH_PC *path, i32 route_mask, VARIPTR *cursor, VARIPTR *end) {
+static f32 **pathEditorCalculateDistanceTable(AIPATH *path, i32 route_mask, VARIPTR *cursor, VARIPTR *end) {
     i32 i;
     i32 j;
     f32 **distances;
@@ -8750,14 +8744,14 @@ static f32 **pathEditorCalculateDistanceTable(AIPATH_PC *path, i32 route_mask, V
     return distances;
 }
 
-static void pathEditorPopulateRouteMatrix(AIPATH_PC *path, i32 route_mask, f32 **distances, u8 **matrix) {
+static void pathEditorPopulateRouteMatrix(AIPATH *path, i32 route_mask, f32 **distances, u8 **matrix) {
     i32 source;
 
     if (distance_tables == NULL || path == NULL || path->nodes == NULL || distances == NULL) {
         return;
     }
     for (source = 0; source < path->node_count; ++source) {
-        AIPATHNODE_PC *node = &path->nodes[source];
+        AIPATHNODE *node = &path->nodes[source];
         i32 destination;
         for (destination = 0; destination < path->node_count; ++destination) {
             f32 best;
@@ -8768,7 +8762,7 @@ static void pathEditorPopulateRouteMatrix(AIPATH_PC *path, i32 route_mask, f32 *
             }
             best = FLT_MAX;
             for (edge = 0; edge < path->nodes[source].connection_count; ++edge) {
-                AIPATHCNX_PC *connection = node->connections[edge];
+                AIPATHCNX *connection = node->connections[edge];
                 i32 direction = connection->node_indices[0] != source;
                 i32 neighbor;
                 f32 distance;
@@ -8789,7 +8783,7 @@ static void pathEditorPopulateRouteMatrix(AIPATH_PC *path, i32 route_mask, f32 *
     }
 }
 
-void pathEditorSaveData(AIPATHSYS_PC *path_system) {
+void pathEditorSaveData(AIPATHSYS *path_system) {
     AI_PATH_SYSTEM_LOAD_PC *system = (AI_PATH_SYSTEM_LOAD_PC *)path_system;
     i32 path_index;
     i32 index;
@@ -8798,9 +8792,9 @@ void pathEditorSaveData(AIPATHSYS_PC *path_system) {
     i32 character_count;
     u32 length;
     char *text;
-    AIPATH_PC *path;
-    AIPATHCNX_PC *connection;
-    AIPATHNODE_PC *node;
+    AIPATH *path;
+    AIPATHCNX *connection;
+    AIPATHNODE *node;
     AIPATHROUTE *route;
     AIPATHNODELINK *link;
     AIPATHSPECIALROUTE *group;
@@ -8960,7 +8954,7 @@ static void pathEditor_cbCancelSelectMenu(eduimenu_s *menu, eduimenu_s *child) {
     eduiMenuDestroy(menu);
 }
 
-static void AiEditorRenamePathPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRenamePath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATH_s *other;
     (void)menu;
     (void)event;
@@ -8978,7 +8972,7 @@ static void AiEditorRenamePathPc(eduimenu_s *menu, eduiitem_s *item, u32 event) 
     }
 }
 
-static void AiEditorRenamePathCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorRenamePathCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;
     eduiMenuDestroy(menu);
 }
@@ -8990,11 +8984,11 @@ void pathEditor_cbRenamePathMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
     if (aieditor->current_path == NULL || (aieditor->current_path->flags & 1)) {
         return;
     }
-    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenamePathCancelPc, "Rename Path");
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenamePathCancel, "Rename Path");
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenamePathPc, "Path Name"));
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorRenamePath, "Path Name"));
     strcpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->current_path->name);
     ((edui_textpicker_s *)edui_last_item)->max_length = 15;
     eduiMenuAttach(parent, menu);
@@ -9002,7 +8996,7 @@ void pathEditor_cbRenamePathMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
     menu->y = parent->y + 40;
 }
 
-static void AiEditorRenameNodePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRenameNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATH_s *path;
     EDAIPATHNODE_s *node;
     EDAIPATHNODE_s *current;
@@ -9031,7 +9025,7 @@ static void AiEditorRenameNodePc(eduimenu_s *menu, eduiitem_s *item, u32 event) 
     strcpy(aieditor->current_path->current_node->name, name);
 }
 
-static void AiEditorRenameNodeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorRenameNodeCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;
     eduiMenuDestroy(menu);
 }
@@ -9043,11 +9037,11 @@ void pathEditor_cbRenameNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
     if (aieditor->current_path == NULL || aieditor->current_path->current_node == NULL) {
         return;
     }
-    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameNodeCancelPc, "Rename Node");
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameNodeCancel, "Rename Node");
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameNodePc, "Node Name"));
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorRenameNode, "Node Name"));
     strcpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->current_path->current_node->name);
     ((edui_textpicker_s *)edui_last_item)->max_length = 15;
     eduiMenuAttach(parent, menu);
@@ -9062,7 +9056,7 @@ void pathEditor_cbDrawWallsplinesToggle(eduimenu_s *menu, eduiitem_s *item, u32 
 }
 
 void pathEditor_cbCnxFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    AI_PATH_CONNECTION_TYPE *type = &AIPathConnectionTypesPc[item->data];
+    AI_PATH_CONNECTION_TYPE *type = &AIPathConnectionTypes[item->data];
     EDAIPATHNODE_s *node;
     EDAIPATHNODE_s *other;
     EDAIPATHCNX_s *connection;
@@ -9184,10 +9178,10 @@ static __declspec(noinline) void pathEditor_SetSharedNode(EDAIPATHNODE_s *node, 
 
 void pathEditor_Enter(void) {
     EDAISHAREDPATHNODE_s *shared_nodes[64];
-    AIPATHSYS_PC *system = NULL;
-    AIPATH_PC *runtime;
-    AIPATHNODE_PC *source;
-    AIPATHCNX_PC *cnx;
+    AIPATHSYS *system = NULL;
+    AIPATH *runtime;
+    AIPATHNODE *source;
+    AIPATHCNX *cnx;
     EDAIPATH_s *path;
     EDAIPATHNODE_s *node;
     EDAIPATHNODE_s *other;
@@ -9335,7 +9329,7 @@ void pathEditor_Enter(void) {
     }
 }
 
-static void AiEditorRenameRoutePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRenameRoute(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     i32 index;
     (void)menu;
     (void)event;
@@ -9352,7 +9346,7 @@ static void AiEditorRenameRoutePc(eduimenu_s *menu, eduiitem_s *item, u32 event)
     }
 }
 
-static void AiEditorRenameRouteCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorRenameRouteCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;
     eduiMenuDestroy(menu);
 }
@@ -9364,11 +9358,11 @@ void routeEditor_cbRenameRouteMenu(eduimenu_s *parent, eduiitem_s *item, u32 eve
     if (aieditor->current_path == NULL || aieditor->current_path->current_route == NULL) {
         return;
     }
-    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameRouteCancelPc, "Rename Route");
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameRouteCancel, "Rename Route");
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameRoutePc, "Route Name"));
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorRenameRoute, "Route Name"));
     strcpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->current_path->current_route->name);
     ((edui_textpicker_s *)edui_last_item)->max_length = 15;
     eduiMenuAttach(parent, menu);
@@ -9376,12 +9370,12 @@ void routeEditor_cbRenameRouteMenu(eduimenu_s *parent, eduiitem_s *item, u32 eve
     menu->y = parent->y + 40;
 }
 
-static void AiEditorRouteUsersCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorRouteUsersCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;
     eduiMenuDestroy(menu);
 }
 
-static void AiEditorSetRouteUsersPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorSetRouteUsers(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATHROUTE_s *route;
     u64 mask;
     (void)menu;
@@ -9418,7 +9412,7 @@ void routeEditor_cbRouteUsers(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     if (aieditor->current_path == NULL || aieditor->current_path->current_route == NULL) {
         return;
     }
-    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRouteUsersCancelPc, "Select route users");
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRouteUsersCancel, "Select route users");
     if (menu == NULL) {
         return;
     }
@@ -9434,15 +9428,14 @@ void routeEditor_cbRouteUsers(eduimenu_s *parent, eduiitem_s *item, u32 event) {
         path = aieditor->current_path;
         mask = (u64)1 << index;
         selected = (path->current_route->user_mask & mask) != 0;
-        eduiMenuAddItem(menu,
-                        eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, index + 1, AiEditorSetRouteUsersPc, name));
+        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColours, selected, index + 1, AiEditorSetRouteUsers, name));
         eduiMenuAttach(parent, menu);
         ++index;
         name = SpecialRouteCharacterNameFn((u8)index);
     }
     if (index < 64) {
         i32 selected = (aieditor->current_path->current_route->user_mask & ((u64)1 << 63)) != 0;
-        eduiMenuAddItem(menu, eduiItemCheckCreate(63, &AiEditorSaveMessageColoursPc, selected, 64, AiEditorSetRouteUsersPc, "Everyone"));
+        eduiMenuAddItem(menu, eduiItemCheckCreate(63, &AiEditorSaveMessageColours, selected, 64, AiEditorSetRouteUsers, "Everyone"));
     }
 }
 
@@ -9480,7 +9473,7 @@ i32 routeEditor_AddToRoute(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) {
     return 0;
 }
 
-static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor_path, VARIPTR *cursor, VARIPTR *end) {
+static void pathEditorCreateSpecialRouteData(AIPATH *path, EDAIPATH_s *editor_path, VARIPTR *cursor, VARIPTR *end) {
     i32 route_indices[16] = {0};
     u8 route_members[16][32] = {{0}};
     i32 slot;
@@ -9522,7 +9515,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
 
         for (editor_node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&editor_path->nodes); editor_node != NULL;
              editor_node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&editor_path->nodes, &editor_node->link)) {
-            AIPATHNODE_PC *runtime_node = &path->nodes[editor_node->index];
+            AIPATHNODE *runtime_node = &path->nodes[editor_node->index];
             if (editor_node->route_mask != 0) {
                 for (slot = 0; slot != 16; ++slot) {
                     if (editor_node->route_mask & (((u64)1) << slot)) {
@@ -9637,7 +9630,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
     }
 }
 
-static void AiEditorClearMainMenuPc(void) {
+static void AiEditorClearMainMenu(void) {
     if (aieditor->main_menu != NULL) {
         eduiMenuDestroy(aieditor->main_menu);
         aieditor->main_menu = NULL;
@@ -9650,7 +9643,7 @@ void aieditor_cbDrawAllToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     aieditorsettings.display_options = (aieditorsettings.display_options & ~2u) | (((u32)item->flags & 1) << 1);
 }
 
-static void AiEditorDisplayBit4Pc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorDisplayBit4(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     aieditorsettings.display_options = (aieditorsettings.display_options & ~16u) | (((u32)item->flags & 1) << 4);
@@ -9662,13 +9655,13 @@ void aieditor_cbSolidPathDisplayToggle(eduimenu_s *menu, eduiitem_s *item, u32 e
     aieditorsettings.display_options = (aieditorsettings.display_options & ~128u) | (((u32)item->flags & 1) << 7);
 }
 
-static void AiEditorDisplayBit8Pc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorDisplayBit8(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     aieditorsettings.display_options = (aieditorsettings.display_options & ~256u) | (((u32)item->flags & 1) << 8);
 }
 
-static void AiEditorDisplayBit6Pc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorDisplayBit6(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     aieditorsettings.display_options = (aieditorsettings.display_options & ~64u) | (((u32)item->flags & 1) << 6);
@@ -9686,32 +9679,32 @@ void aieditor_cbShowCreaturesSetToggle(eduimenu_s *menu, eduiitem_s *item, u32 e
     aieditorsettings.display_options = (aieditorsettings.display_options & ~1024u) | (((u32)item->flags & 1) << 10);
 }
 
-static void AiEditorModeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorModeCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;
     eduiMenuDestroy(menu);
 }
 
-static void AiEditorModeSelectPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorModeSelect(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     if ((u32)item->data < (u32)(i32)aieditorsettings.modes.count) {
-        AiEditorChangeModePc(item->data);
-        AiEditorClearMainMenuPc();
+        AiEditorChangeMode(item->data);
+        AiEditorClearMainMenu();
     }
 }
 
-static void AiEditorModeMenuPc(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+static void AiEditorModeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
     i32 index;
     (void)item;
     (void)event;
-    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorModeCancelPc, "Select Editor Mode");
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorModeCancel, "Select Editor Mode");
     if (menu == NULL) {
         return;
     }
     for (index = 0; index < aieditorsettings.modes.count; ++index) {
         i32 selected = index == aieditorsettings.modes.current;
-        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1, AiEditorModeSelectPc,
+        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColours, selected, 1, AiEditorModeSelect,
                                                   aieditorsettings.modes.entries[index].name));
         if (selected) {
             menu->selected = edui_last_item;
@@ -9720,7 +9713,7 @@ static void AiEditorModeMenuPc(eduimenu_s *parent, eduiitem_s *item, u32 event) 
     }
 }
 
-static void AiEditorMessageCloseMenuPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorMessageCloseMenu(eduimenu_s *menu, eduimenu_s *child) {
     (void)menu;
     (void)child;
     if (aieditor->main_menu != NULL) {
@@ -9729,7 +9722,7 @@ static void AiEditorMessageCloseMenuPc(eduimenu_s *menu, eduimenu_s *child) {
     }
 }
 
-static void AiEditorSaveCloseSelectionPc(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+static void AiEditorSaveCloseSelection(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     (void)menu;
     (void)item;
     (void)value;
@@ -9739,36 +9732,36 @@ static void AiEditorSaveCloseSelectionPc(eduimenu_s *menu, eduiitem_s *item, u32
     }
 }
 
-static void AiEditorCameraToPlayerPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorCameraToPlayer(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)item;
     (void)event;
     if (aieditor->ai_system != NULL && aieditor->ai_system->player_1 != NULL) {
         edcamSetPos(&aieditor->ai_system->player_1->position);
     }
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void InitFn_AIEditorMovePlayers(void (*callback)(NUVEC *)) {
-    AiEditorMovePlayersCallbackPc = callback;
+    AiEditorMovePlayersCallback = callback;
 }
 
-static void AiEditorMovePlayersPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorMovePlayers(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)item;
     (void)event;
-    if (AiEditorMovePlayersCallbackPc != NULL) {
-        AiEditorMovePlayersCallbackPc(&aieditor->camera_position);
+    if (AiEditorMovePlayersCallback != NULL) {
+        AiEditorMovePlayersCallback(&aieditor->camera_position);
     }
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 eduimenu_s *aieditor_AddMessage(char *title, char *message) {
-    eduimenu_s *outer = eduiMenuCreate(0xc8, 0x46, 0xf0, 0x10e, ed_fnt, AiEditorMessageCloseMenuPc, title);
+    eduimenu_s *outer = eduiMenuCreate(0xc8, 0x46, 0xf0, 0x10e, ed_fnt, AiEditorMessageCloseMenu, title);
     if (outer != NULL) {
         eduimenu_s *inner = eduiMenuCreate(0x78, 0x5a, 0x1b8, 0xfa, ed_fnt, NULL, title);
         if (inner != NULL) {
-            eduiitem_s *item = eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorSaveCloseSelectionPc, message);
+            eduiitem_s *item = eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorSaveCloseSelection, message);
             eduiMenuAddItem(inner, item);
             eduiMenuAttach(outer, inner);
         }
@@ -9798,7 +9791,7 @@ static EDANTINODE_s *CreateAntinode(NUVEC *position) {
     return node;
 }
 
-static void AiEditorFreeAntinodePc(EDANTINODE_s *node) {
+static void AiEditorFreeAntinode(EDANTINODE_s *node) {
     if (node == NULL) {
         return;
     }
@@ -9825,7 +9818,7 @@ static void antinodeEditor_AntinodeMoved(EDANTINODE_s *node) {
     }
 }
 
-static void AiEditorAntinodeGameFlagsPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorAntinodeGameFlags(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     if (aieditor->selected_antinode != NULL) {
@@ -9858,12 +9851,12 @@ void antinodeEditor_UpdateAntiNodesOnPlatforms(void) {
     }
 }
 
-static void AiEditorAntinodeTypeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorAntinodeTypeCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;
     eduiMenuDestroy(menu);
 }
 
-static void AiEditorAntinodeTypeSetterPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorAntinodeTypeSetter(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     i32 previous_type = aieditor->selected_antinode->type;
     (void)menu;
     (void)event;
@@ -9884,7 +9877,7 @@ static void AiEditorAntinodeTypeSetterPc(eduimenu_s *menu, eduiitem_s *item, u32
     }
 }
 
-static void AiEditorAntinodeTypeMenuPc(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+static void AiEditorAntinodeTypeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
     i32 index;
     (void)item;
@@ -9892,14 +9885,14 @@ static void AiEditorAntinodeTypeMenuPc(eduimenu_s *parent, eduiitem_s *item, u32
     if (aieditor->selected_antinode == NULL || LevelCharacterGlobalIDFn == NULL || GlobalCharacterNameFn == NULL) {
         return;
     }
-    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorAntinodeTypeCancelPc, "Select AI Type");
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorAntinodeTypeCancel, "Select AI Type");
     if (menu == NULL) {
         return;
     }
     for (index = 0; index < 3; ++index) {
         i32 selected = aieditor->selected_antinode->type == index;
-        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1, AiEditorAntinodeTypeSetterPc,
-                                                  (char *)AiEditorAntinodeTypeNamesPc[index]));
+        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColours, selected, 1, AiEditorAntinodeTypeSetter,
+                                                  (char *)AiEditorAntinodeTypeNames[index]));
         if (selected) {
             menu->selected = edui_last_item;
         }
@@ -10013,7 +10006,7 @@ EDANTINODE_s *antinodeEditor_GetNearestAntinode(i32 require_inside) {
     return nearest;
 }
 
-static void AiEditorDeleteAntinodeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorDeleteAntinodeCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)menu;
     (void)child;
     if (aieditor->main_menu != NULL) {
@@ -10022,12 +10015,12 @@ static void AiEditorDeleteAntinodeCancelPc(eduimenu_s *menu, eduimenu_s *child) 
     }
 }
 
-static void AiEditorDeleteAntinodeAnswerPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorDeleteAntinodeAnswer(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     if (item != NULL && item->data != 0 && aieditor->selected_antinode != NULL &&
         aieditor->selected_antinode == aieditor->nearest_antinode) {
-        AiEditorFreeAntinodePc(aieditor->selected_antinode);
+        AiEditorFreeAntinode(aieditor->selected_antinode);
         aieditor->selected_antinode = NULL;
     }
     if (aieditor->main_menu != NULL) {
@@ -10039,19 +10032,19 @@ static void AiEditorDeleteAntinodeAnswerPc(eduimenu_s *menu, eduiitem_s *item, u
 eduimenu_s *antinodeEditor_DeleteAntinodeMenu(void) {
     eduimenu_s *menu;
     if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
-        menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteAntinodeCancelPc, "Delete Antinode??");
+        menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteAntinodeCancel, "Delete Antinode??");
         if (menu != NULL) {
-            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorDeleteAntinodeAnswerPc,
-                                                    (char *)MenuPcString75f2c0));
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorDeleteAntinodeAnswerPc,
-                                                    (char *)MenuPcString75f2c4));
+            eduiMenuAddItem(
+                menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)MenuPcString75f2c0));
+            eduiMenuAddItem(
+                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)MenuPcString75f2c4));
             return menu;
         }
     }
     return NULL;
 }
 
-static void antinodeEditorDrawOnePc(EDANTINODE_s *node, i32 segments, u32 colour, i32 solid) {
+static void antinodeEditorDrawOne(EDANTINODE_s *node, i32 segments, u32 colour, i32 solid) {
     switch (node->type) {
         case 0:
             if (solid) {
@@ -10099,7 +10092,7 @@ void antinodeEditorDrawAntinodes(void) {
          node = (EDANTINODE_s *)NuLinkedListGetNext(&aieditor->antinodes, &node->link)) {
         i32 segments = 8;
         i32 colour = 0x50505050;
-        if (aieditorsettings.modes.current == AiEditorAntinodeModeIdPc) {
+        if (aieditorsettings.modes.current == AiEditorAntinodeModeId) {
             if (aieditor->selected_antinode == node) {
                 if (aieditor->selected_antinode == aieditor->nearest_antinode) {
                     colour = NuSpecialExistsFn(&node->special) ? 0xffff0064 : 0xffff0000;
@@ -10114,7 +10107,7 @@ void antinodeEditorDrawAntinodes(void) {
                 colour = 0x80640000;
             }
         }
-        antinodeEditorDrawOnePc(node, segments, colour, solid);
+        antinodeEditorDrawOne(node, segments, colour, solid);
     }
 }
 
@@ -10127,7 +10120,7 @@ void antinodeEditor_Enter(void) {
         NuLinkedListAppend(&aieditor->free_antinodes, &aieditor->antinode_pool[i].link);
     }
     for (i = 0; i < aieditor->ai_system->antinode_count; ++i) {
-        AIANTINODE_PC *source = &aieditor->ai_system->antinodes[i];
+        AIANTINODE *source = &aieditor->ai_system->antinodes[i];
         EDANTINODE_s *node = CreateAntinode(&source->position);
         if (node != NULL) {
             node->position = source->position;
@@ -10220,7 +10213,7 @@ static EDAICREATURE_s *CreateCreature(i32 type, NUVEC *position, i32 angle) {
             creature->across_count = default_nacross;
             creature->x_spacing = default_xspacing;
             creature->z_spacing = default_zspacing;
-            creature->stagger_start = AiLoadStartStaggerPc;
+            creature->stagger_start = AiLoadStartStagger;
             if (GetViewRangeFn != NULL) {
                 creature->view_distance = GetViewRangeFn(type);
             } else {
@@ -10241,11 +10234,11 @@ static EDAICREATURE_s *CreateCreature(i32 type, NUVEC *position, i32 angle) {
             } else {
                 creature->min_view_height = 1.0f;
             }
-            creature->difficulty = AiLoadActivationDifficultyPc;
-            creature->min_respawns = AiLoadMinimumRespawnCountPc;
-            creature->max_respawns = AiLoadMaximumRespawnCountPc;
-            creature->min_respawn_time = AiLoadMinimumRespawnTimePc;
-            creature->max_respawn_time = AiLoadMaximumRespawnTimePc;
+            creature->difficulty = AiLoadActivationDifficulty;
+            creature->min_respawns = AiLoadMinimumRespawnCount;
+            creature->max_respawns = AiLoadMaximumRespawnCount;
+            creature->min_respawn_time = AiLoadMinimumRespawnTime;
+            creature->max_respawn_time = AiLoadMaximumRespawnTime;
             if (position != NULL) {
                 creature->position = *position;
                 creature->angle = angle;
@@ -10263,7 +10256,7 @@ static void creatureEditorDestroyCreature(EDAICREATURE_s *creature) {
     }
 }
 
-void creatureEditorSaveData(AIPATHSYS_PC *system) {
+void creatureEditorSaveData(AIPATHSYS *system) {
     EDAICREATURE_s *creature;
     i32 count = 0;
     if (GlobalCharacterNameFn == NULL) {
@@ -10280,7 +10273,7 @@ void creatureEditorSaveData(AIPATHSYS_PC *system) {
     for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
          creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
         char *character_name = GlobalCharacterNameFn(creature->character_type);
-        AIPATH_PC *path;
+        AIPATH *path;
         i32 index;
         i32 connection_index;
         i32 direction;
@@ -10313,7 +10306,7 @@ void creatureEditorSaveData(AIPATHSYS_PC *system) {
         connection_index = 0;
         direction = 0;
         for (index = 0; index < path->connection_count; index++) {
-            AIPATHCNX_PC *connection = &path->connections[index];
+            AIPATHCNX *connection = &path->connections[index];
             i32 first_index = creature->check.first->index;
             if (connection->node_indices[0] == first_index && (u16)connection->node_indices[1] == creature->check.second->index) {
                 connection_index = index;
@@ -10438,8 +10431,8 @@ EDAICREATURE_s *creatureEditor_GetNearest(i32 use_radius) {
                         extent += lower - creature->position.y;
                         lower = creature->position.y;
                     }
-                    if (distance < radius * radius && aieditor->camera_position.y >= lower - AiEditorPickHeightTolerancePc &&
-                        aieditor->camera_position.y <= lower + extent + AiEditorPickHeightTolerancePc) {
+                    if (distance < radius * radius && aieditor->camera_position.y >= lower - AiEditorPickHeightTolerance &&
+                        aieditor->camera_position.y <= lower + extent + AiEditorPickHeightTolerance) {
                         nearest_distance = distance;
                         nearest = creature;
                     }
@@ -10453,18 +10446,18 @@ EDAICREATURE_s *creatureEditor_GetNearest(i32 use_radius) {
     return nearest;
 }
 
-static void AiEditorRespawnCancelMenuPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorRespawnCancelMenu(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;
     eduiMenuDestroy(menu);
 }
 
-static void AiEditorSetActivationPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorSetActivation(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     aieditor->selected_creature->activation = (u8)item->data;
 }
 
-static void AiEditorSetAreaActivationPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorSetAreaActivation(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     NULISTLNK *link;
     i32 index = 0;
     (void)menu;
@@ -10480,7 +10473,7 @@ static void AiEditorSetAreaActivationPc(eduimenu_s *menu, eduiitem_s *item, u32 
     }
 }
 
-static void AiEditorActivationDifficultyPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorActivationDifficulty(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     edui_slider_s *slider = (edui_slider_s *)item;
     (void)menu;
     (void)event;
@@ -10500,22 +10493,22 @@ void creatureEditor_cbActivationMenu(eduimenu_s *parent, eduiitem_s *item, u32 e
     if (aieditor->selected_creature == NULL) {
         return;
     }
-    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Activation Condition");
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Activation Condition");
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, AiEditorActivationDifficultyPc, 1, 9,
+    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColours, 0, AiEditorActivationDifficulty, 1, 9,
                                                   aieditor->selected_creature->difficulty, "Activation Difficulty"));
     selected = aieditor->selected_creature->activation == 0;
-    eduiMenuAddItem(menu, eduiItemCheckCreate(0, &AiEditorSaveMessageColoursPc, selected, 1, AiEditorSetActivationPc, "AUTOMATIC"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate(0, &AiEditorSaveMessageColours, selected, 1, AiEditorSetActivation, "AUTOMATIC"));
     selected = aieditor->selected_creature->activation == 2;
-    eduiMenuAddItem(menu, eduiItemCheckCreate(2, &AiEditorSaveMessageColoursPc, selected, 1, AiEditorSetActivationPc, "SCRIPT"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate(2, &AiEditorSaveMessageColours, selected, 1, AiEditorSetActivation, "SCRIPT"));
     index = 0;
     for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
          ++index, area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
         selected = aieditor->selected_creature->activation_area == area;
         sprintf(label, "AREA \"%s\"", area->name);
-        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1, AiEditorSetAreaActivationPc, label));
+        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColours, selected, 1, AiEditorSetAreaActivation, label));
         if (selected != 0) {
             menu->selected = edui_last_item;
         }
@@ -10524,7 +10517,7 @@ void creatureEditor_cbActivationMenu(eduimenu_s *parent, eduiitem_s *item, u32 e
     eduiMenuAttach(parent, menu);
 }
 
-static void AiEditorRespawnMinCountPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRespawnMinCount(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     edui_slider_s *slider = (edui_slider_s *)item;
     (void)menu;
     (void)event;
@@ -10537,7 +10530,7 @@ static void AiEditorRespawnMinCountPc(eduimenu_s *menu, eduiitem_s *item, u32 ev
     }
 }
 
-static void AiEditorRespawnMaxCountPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRespawnMaxCount(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     edui_slider_s *slider = (edui_slider_s *)item;
     (void)menu;
     (void)event;
@@ -10550,7 +10543,7 @@ static void AiEditorRespawnMaxCountPc(eduimenu_s *menu, eduiitem_s *item, u32 ev
     }
 }
 
-static void AiEditorRespawnMinTimePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRespawnMinTime(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL) {
@@ -10562,7 +10555,7 @@ static void AiEditorRespawnMinTimePc(eduimenu_s *menu, eduiitem_s *item, u32 eve
     }
 }
 
-static void AiEditorRespawnMaxTimePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRespawnMaxTime(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL) {
@@ -10591,7 +10584,7 @@ void creatureEditor_cb_assigntoset(eduimenu_s *menu, eduiitem_s *item, u32 event
     }
 }
 
-static void AiEditorSetRespawnLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorSetRespawnLocator(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     i32 index = 0;
     EDLOCATOR_s *locator;
     (void)menu;
@@ -10613,8 +10606,8 @@ static void AiEditorSetRespawnLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 
     }
 }
 
-static void AiEditorSelectRespawnLocatorPc(eduimenu_s *parent, eduiitem_s *item, u32 event) {
-    eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select Locator");
+static void AiEditorSelectRespawnLocator(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Select Locator");
     EDLOCATOR_s *locator;
     i32 index;
     (void)item;
@@ -10622,15 +10615,14 @@ static void AiEditorSelectRespawnLocatorPc(eduimenu_s *parent, eduiitem_s *item,
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu,
-                    eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColoursPc, aieditor->selected_creature->respawn_locator == NULL, 1,
-                                        AiEditorSetRespawnLocatorPc, "NONE"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColours, aieditor->selected_creature->respawn_locator == NULL,
+                                              1, AiEditorSetRespawnLocator, "NONE"));
     index = 0;
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
          ++index, locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
         i32 selected = aieditor->selected_creature->respawn_locator == locator;
         eduiMenuAddItem(menu,
-                        eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1, AiEditorSetRespawnLocatorPc, locator->name));
+                        eduiItemCheckCreate(index, &AiEditorSaveMessageColours, selected, 1, AiEditorSetRespawnLocator, locator->name));
         if (selected) {
             menu->selected = edui_last_item;
         }
@@ -10646,7 +10638,7 @@ void creatureEditor_cbRespawnMenu(eduimenu_s *parent, eduiitem_s *item, u32 even
     if (aieditor->selected_creature == NULL) {
         return;
     }
-    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Respawn Values");
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Respawn Values");
     if (menu == NULL) {
         return;
     }
@@ -10657,20 +10649,20 @@ void creatureEditor_cbRespawnMenu(eduimenu_s *parent, eduiitem_s *item, u32 even
         } else {
             sprintf(label, "Respawn Locator NONE");
         }
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorSelectRespawnLocatorPc, label));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorSelectRespawnLocator, label));
     }
-    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, AiEditorRespawnMinCountPc, -1, 33,
+    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColours, 0, AiEditorRespawnMinCount, -1, 33,
                                                   aieditor->selected_creature->min_respawns, "Min Num Respawns"));
-    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, AiEditorRespawnMaxCountPc, -1, 33,
+    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColours, 0, AiEditorRespawnMaxCount, -1, 33,
                                                   aieditor->selected_creature->max_respawns, "Max Num Respawns"));
-    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorRespawnMinTimePc, 0.0f, 60.0f,
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColours, 0, AiEditorRespawnMinTime, 0.0f, 60.0f,
                                                aieditor->selected_creature->min_respawn_time, "Min Respawn Time"));
-    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorRespawnMaxTimePc, 0.0f, 60.0f,
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColours, 0, AiEditorRespawnMaxTime, 0.0f, 60.0f,
                                                aieditor->selected_creature->max_respawn_time, "Max Respawn Time"));
     eduiMenuAttach(parent, menu);
 }
 
-static void AiEditorViewDistancePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorViewDistance(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL) {
@@ -10682,7 +10674,7 @@ static void AiEditorViewDistancePc(eduimenu_s *menu, eduiitem_s *item, u32 event
     }
 }
 
-static void AiEditorHearDistancePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorHearDistance(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL) {
@@ -10694,7 +10686,7 @@ static void AiEditorHearDistancePc(eduimenu_s *menu, eduiitem_s *item, u32 event
     }
 }
 
-static void AiEditorMaxViewHeightPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorMaxViewHeight(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL) {
@@ -10702,7 +10694,7 @@ static void AiEditorMaxViewHeightPc(eduimenu_s *menu, eduiitem_s *item, u32 even
     }
 }
 
-static void AiEditorMinViewHeightPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorMinViewHeight(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL) {
@@ -10717,17 +10709,17 @@ void creatureEditor_cbVisionMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
     if (aieditor->selected_creature == NULL) {
         return;
     }
-    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Vision");
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Vision");
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorViewDistancePc, 0.5f, 49.5f,
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColours, 0, AiEditorViewDistance, 0.5f, 49.5f,
                                                aieditor->selected_creature->view_distance, "View Distance"));
-    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorHearDistancePc, 0.5f, 49.5f,
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColours, 0, AiEditorHearDistance, 0.5f, 49.5f,
                                                aieditor->selected_creature->hear_distance, "Hearing Distance"));
-    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorMaxViewHeightPc, 0.1f, 99.9f,
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColours, 0, AiEditorMaxViewHeight, 0.1f, 99.9f,
                                                aieditor->selected_creature->max_view_height, "Max View Height"));
-    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorMinViewHeightPc, 0.1f, 99.9f,
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColours, 0, AiEditorMinViewHeight, 0.1f, 99.9f,
                                                -aieditor->selected_creature->min_view_height, "Min View Height -"));
     eduiMenuAttach(parent, menu);
 }
@@ -10773,7 +10765,7 @@ void creatureEditor_cbSelectType(eduimenu_s *parent, eduiitem_s *item, u32 event
     if (LevelCharacterGlobalIDFn == NULL || GlobalCharacterNameFn == NULL) {
         return;
     }
-    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select AI Type");
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Select AI Type");
     if (menu == NULL) {
         return;
     }
@@ -10781,7 +10773,7 @@ void creatureEditor_cbSelectType(eduimenu_s *parent, eduiitem_s *item, u32 event
     type = LevelCharacterGlobalIDFn(index);
     while (type != -1) {
         selected = aieditorsettings.character_type == type;
-        eduiMenuAddItem(menu, eduiItemCheckCreate(type, &AiEditorSaveMessageColoursPc, selected, 1, creatureEditor_cbSetType,
+        eduiMenuAddItem(menu, eduiItemCheckCreate(type, &AiEditorSaveMessageColours, selected, 1, creatureEditor_cbSetType,
                                                   GlobalCharacterNameFn(type)));
         if (selected) {
             menu->selected = edui_last_item;
@@ -10792,7 +10784,7 @@ void creatureEditor_cbSelectType(eduimenu_s *parent, eduiitem_s *item, u32 event
 }
 
 void aieditor_SetCurrentScript(char *name, EDAICREATURE_s *creature) {
-    AISCRIPT_PC *script;
+    AISCRIPT *script;
 
     if (NuStrICmp(name, aieditorsettings.script_name) != 0) {
         strcpy(aieditorsettings.script_name, name);
@@ -10847,7 +10839,7 @@ void creatureEditor_cbSelectScript(eduimenu_s *parent, eduiitem_s *item, u32 eve
     i32 selected;
     (void)item;
     (void)event;
-    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select Script");
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Select Script");
     if (menu != NULL) {
         index = 0;
         do {
@@ -10858,7 +10850,7 @@ void creatureEditor_cbSelectScript(eduimenu_s *parent, eduiitem_s *item, u32 eve
                     selected = 1;
                 }
                 eduiMenuAddItem(menu,
-                                eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1, creatureEditor_cbSetScript, name));
+                                eduiItemCheckCreate(index, &AiEditorSaveMessageColours, selected, 1, creatureEditor_cbSetScript, name));
                 if (selected) {
                     menu->selected = edui_last_item;
                 }
@@ -10869,7 +10861,7 @@ void creatureEditor_cbSelectScript(eduimenu_s *parent, eduiitem_s *item, u32 eve
     }
 }
 
-static void AiEditorSetTriggerAreaPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorSetTriggerArea(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIAREA_s *area;
     i32 index = 0;
     (void)menu;
@@ -10891,7 +10883,7 @@ static void AiEditorSetTriggerAreaPc(eduimenu_s *menu, eduiitem_s *item, u32 eve
 }
 
 void creatureEditor_cbSelectTriggerArea(eduimenu_s *parent, eduiitem_s *item, u32 event) {
-    eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select Trigger Area");
+    eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Select Trigger Area");
     EDAIAREA_s *area;
     i32 index;
     i32 selected;
@@ -10901,7 +10893,7 @@ void creatureEditor_cbSelectTriggerArea(eduimenu_s *parent, eduiitem_s *item, u3
         return;
     }
     selected = aieditor->selected_creature->trigger_area == NULL;
-    eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColoursPc, selected, 1, AiEditorSetTriggerAreaPc, "NONE"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColours, selected, 1, AiEditorSetTriggerArea, "NONE"));
     if (selected) {
         menu->selected = edui_last_item;
     }
@@ -10910,7 +10902,7 @@ void creatureEditor_cbSelectTriggerArea(eduimenu_s *parent, eduiitem_s *item, u3
     for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
          ++index, area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
         selected = aieditor->selected_creature->trigger_area == area;
-        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1, AiEditorSetTriggerAreaPc, area->name));
+        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColours, selected, 1, AiEditorSetTriggerArea, area->name));
         if (selected) {
             menu->selected = edui_last_item;
         }
@@ -10918,7 +10910,7 @@ void creatureEditor_cbSelectTriggerArea(eduimenu_s *parent, eduiitem_s *item, u3
     }
 }
 
-static void AiEditorSetLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorSetLocator(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDLOCATOR_s *locator;
     i32 index = 0;
     (void)menu;
@@ -10942,8 +10934,8 @@ static void AiEditorSetLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 event) 
     }
 }
 
-void AiEditorSelectLocatorMenuPc(eduimenu_s *parent, eduiitem_s *item, u32 event) {
-    eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select Locator");
+void AiEditorSelectLocatorMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Select Locator");
     EDLOCATOR_s *locator;
     i32 index;
     (void)item;
@@ -10951,15 +10943,14 @@ void AiEditorSelectLocatorMenuPc(eduimenu_s *parent, eduiitem_s *item, u32 event
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColoursPc, aieditor->selected_creature->locator == NULL, 1,
-                                              AiEditorSetLocatorPc, "NONE"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColours, aieditor->selected_creature->locator == NULL, 1,
+                                              AiEditorSetLocator, "NONE"));
     index = 0;
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
          locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
         if ((void *)aieditor->selected_creature->check.path == (void *)locator->path_check.path) {
             i32 selected = aieditor->selected_creature->locator == locator;
-            eduiMenuAddItem(menu,
-                            eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1, AiEditorSetLocatorPc, locator->name));
+            eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColours, selected, 1, AiEditorSetLocator, locator->name));
             if (selected) {
                 menu->selected = edui_last_item;
             }
@@ -10969,7 +10960,7 @@ void AiEditorSelectLocatorMenuPc(eduimenu_s *parent, eduiitem_s *item, u32 event
     }
 }
 
-static void AiEditorRenameCreaturePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorRenameCreature(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAICREATURE_s *creature;
     (void)menu;
     (void)event;
@@ -10994,11 +10985,11 @@ void creatureEditor_cbRenameCreatureMenu(eduimenu_s *parent, eduiitem_s *item, u
     if (aieditor->selected_creature == NULL) {
         return;
     }
-    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Rename Creature");
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Rename Creature");
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameCreaturePc, "Creature Name"));
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorRenameCreature, "Creature Name"));
     strcpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->selected_creature->name);
     ((edui_textpicker_s *)edui_last_item)->max_length = 15;
     eduiMenuAttach(parent, menu);
@@ -11014,13 +11005,13 @@ void creatureEditor_cbDeleteCreature(eduimenu_s *menu, eduiitem_s *item, u32 eve
         creatureEditorDestroyCreature(aieditor->selected_creature);
         aieditor->selected_creature = NULL;
     }
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void pathEditor_cbCancelDeleteCreatureMenu(eduimenu_s *menu, eduimenu_s *child) {
     (void)menu;
     (void)child;
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void creatureEditor_cbFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
@@ -11296,10 +11287,10 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
 }
 
 void creatureEditor_Enter(void) {
-    AICREATURE_PC *source;
+    AICREATURE *source;
     EDAICREATURE_s *creature;
     EDAIPATH_s *path;
-    AISCRIPT_PC *script;
+    AISCRIPT *script;
     EDAIAREA_s *area;
     EDLOCATOR_s *locator;
     f32 offset;
@@ -11450,7 +11441,7 @@ void xConditions(NUFPAR_PC *parser) {
 
     while (NuFParGetLine(parser) != 0) {
         AICONDITION *cond;
-        AICONDITIONDEF_PC *definition;
+        AICONDITIONDEF *definition;
 
         NuFParGetWord(parser);
 
@@ -11536,10 +11527,10 @@ void xConditions(NUFPAR_PC *parser) {
 
                     if (!(cond->flags & 4)) {
                         for (i = 0; i < AIScriptConstCursorPc; i++) {
-                            char *const_name = AIScriptConstantRecordsPc[i].name;
+                            char *const_name = AIScriptConstantRecords[i].name;
 
                             if (const_name != NULL && NuStrICmp(const_name, parser->word_buffer_ptr) == 0) {
-                                cond->param_value = AIScriptConstantRecordsPc[i].default_val;
+                                cond->param_value = AIScriptConstantRecords[i].default_val;
 
                                 break;
                             }
@@ -11611,7 +11602,7 @@ void xConditions(NUFPAR_PC *parser) {
 
 void xActions(NUFPAR_PC *parser) {
     while (NuFParGetLine(parser) != 0) {
-        AIACTION_PC *action;
+        AIACTION *action;
 
         NuFParGetWord(parser);
 
@@ -11644,7 +11635,7 @@ void xActions(NUFPAR_PC *parser) {
                 }
             }
         } else {
-            AIACTIONDEF_PC *definition;
+            AIACTIONDEF *definition;
             char params[24][128];
 
             definition = AIActionFind(parser->word_buffer_ptr);
@@ -11652,12 +11643,12 @@ void xActions(NUFPAR_PC *parser) {
                 i32 param_count;
                 i32 i;
 
-                action = AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer, sizeof(AIACTION_PC));
+                action = AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer, sizeof(AIACTION));
                 if (action == NULL) {
                     continue;
                 }
 
-                memset(action, 0, sizeof(AIACTION_PC));
+                memset(action, 0, sizeof(AIACTION));
 
                 NuLinkedListAppend(aiscript_load_actions, &action->link);
 
@@ -11696,17 +11687,17 @@ void xActions(NUFPAR_PC *parser) {
     }
 }
 
-void AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end) {
-    NUFPAR_PC *parser = AIScriptOpenParserPc(pak, filename, path);
+void AIScriptOpenPakFileParse(AISCRIPT **script_ref, void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end) {
+    NUFPAR_PC *parser = AIScriptOpenParser(pak, filename, path);
     char script_name[64];
     char *extension;
-    AISCRIPT_PC *script;
+    AISCRIPT *script;
     if (parser != NULL) {
         if (*script_ref == NULL) {
-            PATH_LOAD_ALLOCATE(AISCRIPT_PC *, script, buffer, end, sizeof(AISCRIPT_PC));
+            PATH_LOAD_ALLOCATE(AISCRIPT *, script, buffer, end, sizeof(AISCRIPT));
             *script_ref = script;
             if (script != NULL) {
-                memset(script, 0, sizeof(AISCRIPT_PC));
+                memset(script, 0, sizeof(AISCRIPT));
                 NuStrCpy(script_name, filename);
                 extension = NuStrIStr(script_name, ".scp");
                 if (extension != NULL) {
@@ -11715,7 +11706,7 @@ void AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char *filenam
                 (*script_ref)->name = AIScriptCopyString(script_name, buffer, end);
             }
         }
-        AIScriptParseCommandsPc(parser, buffer, end, *script_ref);
+        AIScriptParseCommands(parser, buffer, end, *script_ref);
         NuFParDestroy(parser);
     } else if (AIActionDiagnosticMode == 1) {
         AIScriptMissingStateDiagnosticAlternate(filename);
@@ -11771,7 +11762,7 @@ void xActionMacro(NUFPAR_PC *parser) {
 void xInclude(NUFPAR_PC *parser) {
     VARIPTR *saved_buffer = aiscript_load_buffer;
     VARIPTR *saved_end = aiscript_load_end_buffer;
-    AISCRIPT_PC *saved_script = aiscript_load_script;
+    AISCRIPT *saved_script = aiscript_load_script;
     NuFParGetWord(parser);
     NuFParSuspend(parser);
     AIScriptOpenPakFileParse(&aiscript_load_script, load_pakfile, parser->word_buffer_ptr, load_path, aiscript_load_buffer,
@@ -11836,10 +11827,10 @@ void xRefScript(NUFPAR_PC *parser) {
     }
 }
 
-static AISCRIPT_PC *AIScriptLoadPakFile(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end) {
-    AISCRIPT_PC *script = NULL;
-    AISTATE_PC *state;
-    AISTATE_PC *later;
+static AISCRIPT *AIScriptLoadPakFile(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end) {
+    AISCRIPT *script = NULL;
+    AISTATE *state;
+    AISTATE *later;
     AICONDITION *condition;
     load_path = path;
     load_pakfile = pak;
@@ -11847,7 +11838,7 @@ static AISCRIPT_PC *AIScriptLoadPakFile(void *pak, char *filename, char *path, V
     load_path = NULL;
     load_pakfile = NULL;
     if (script != NULL) {
-        state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+        state = (AISTATE *)NuLinkedListGetHead(&script->states);
         while (state != NULL) {
             condition = (AICONDITION *)NuLinkedListGetHead(&state->conditions);
             while (condition != NULL) {
@@ -11861,7 +11852,7 @@ static AISCRIPT_PC *AIScriptLoadPakFile(void *pak, char *filename, char *path, V
                 }
                 condition = (AICONDITION *)NuLinkedListGetNext(&state->conditions, &condition->link);
             }
-            later = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+            later = (AISTATE *)NuLinkedListGetNext(&script->states, &state->link);
             while (later != NULL) {
                 if (NuStrICmp(state->name, later->name) == 0) {
                     if (AIActionDiagnosticMode == 1) {
@@ -11870,9 +11861,9 @@ static AISCRIPT_PC *AIScriptLoadPakFile(void *pak, char *filename, char *path, V
                         AIScriptMissingStateDiagnostic(state->name, script->name);
                     }
                 }
-                later = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &later->link);
+                later = (AISTATE *)NuLinkedListGetNext(&script->states, &later->link);
             }
-            state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+            state = (AISTATE *)NuLinkedListGetNext(&script->states, &state->link);
         }
     }
     return script;
@@ -11891,7 +11882,7 @@ void AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARIPTR *end
     char filepath[0x80];
     char message[0x40];
     char script_files[0x80][0x18];
-    AISCRIPT_PC *script;
+    AISCRIPT *script;
 
     file_count = 0;
     scripts = (sys != NULL) ? &sys->scripts : &global_aiscripts;
@@ -11954,12 +11945,12 @@ void AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARIPTR *end
         done = 0;
         while (!done) {
             done = 1;
-            script = (AISCRIPT_PC *)NuLinkedListGetHead(&sys->scripts);
+            script = (AISCRIPT *)NuLinkedListGetHead(&sys->scripts);
             while (script != NULL) {
                 if (AIScriptBuildDerivedScript(script, buffer, end_buffer, sys) == 0) {
                     done = 0;
                 }
-                script = (AISCRIPT_PC *)NuLinkedListGetNext(&sys->scripts, &script->link);
+                script = (AISCRIPT *)NuLinkedListGetNext(&sys->scripts, &script->link);
             }
         }
     }
@@ -11981,8 +11972,8 @@ void AIScriptLoadAll(char *path, VARIPTR *buffer, VARIPTR *end, AISYS_PC *sys) {
     AIScriptLoadAllPakFile(pak, path, buffer, &pak_start, sys);
 }
 
-i32 AIScriptSetBaseScriptStateByName(AISCRIPTPROCESS_PC *processor, char *name) {
-    AISTATE_PC *state;
+i32 AIScriptSetBaseScriptStateByName(AISCRIPTPROCESS *processor, char *name) {
+    AISTATE *state;
     if (name == NULL || processor == NULL || processor->script == NULL) {
         return 0;
     }
@@ -11999,7 +11990,7 @@ i32 AIScriptSetBaseScriptStateByName(AISCRIPTPROCESS_PC *processor, char *name) 
     return 1;
 }
 
-static void AIScriptFillRemainingComplexOperands(NULISTHDR *conditions, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor,
+static void AIScriptFillRemainingComplexOperands(NULISTHDR *conditions, AIPACKET *packet, AISCRIPTPROCESS *processor,
                                                  AICONDITION *condition, i32 stack_index) {
     AICONDITION *remaining;
     if (processor->param_stack[stack_index].force_complex_eval != 0) {
@@ -12017,8 +12008,8 @@ static void AIScriptFillRemainingComplexOperands(NULISTHDR *conditions, AIPACKET
     }
 }
 
-static AICONDITION *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHDR *conditions, AIPACKET_PC *packet,
-                                                   AISCRIPTPROCESS_PC *processor, i32 stack_index) {
+static AICONDITION *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHDR *conditions, AIPACKET *packet, AISCRIPTPROCESS *processor,
+                                                   i32 stack_index) {
     AICONDITION *condition;
     f32 condition_value = 0.0f;
     f32 comparison_value;
@@ -12115,7 +12106,7 @@ static AICONDITION *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHDR *
     return NULL;
 }
 
-static i32 AIScriptProcessReferences(AISYS_PC *system, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor) {
+static i32 AIScriptProcessReferences(AISYS_PC *system, AIPACKET *packet, AISCRIPTPROCESS *processor) {
     NULISTHDR *references;
     AIREFSCRIPT *reference;
     AICONDITION *entry_condition;
@@ -12163,11 +12154,11 @@ found:
     return 1;
 }
 
-void AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor, f32 elapsed) {
+void AIScriptProcess(AISYS_PC *system, APIOBJECT *object, AIPACKET *packet, AISCRIPTPROCESS *processor, f32 elapsed) {
     i32 index;
     AIREFSCRIPT *reference;
-    AICREATURE_PC *creature;
-    AIACTION_PC *action;
+    AICREATURE *creature;
+    AIACTION *action;
     i32 first_time;
     f32 old_interrupt_timer;
     AICONDITION *transition;
@@ -12206,7 +12197,7 @@ void AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet
         AIScriptSetState(processor, processor->next_state);
         processor->next_state = NULL;
     } else if (processor->state == NULL) {
-        AIScriptSetState(processor, (AISTATE_PC *)NuLinkedListGetHead(&processor->script->states));
+        AIScriptSetState(processor, (AISTATE *)NuLinkedListGetHead(&processor->script->states));
     }
     if (processor->state != NULL) {
         while (processor->action_node != NULL) {
@@ -12250,9 +12241,9 @@ void AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet
             }
             action = processor->action_node;
             if (action != NULL) {
-                action = (AIACTION_PC *)NuLinkedListGetNext(&processor->state->actions, &action->link);
+                action = (AIACTION *)NuLinkedListGetNext(&processor->state->actions, &action->link);
             } else {
-                action = (AIACTION_PC *)NuLinkedListGetHead(&processor->state->actions);
+                action = (AIACTION *)NuLinkedListGetHead(&processor->state->actions);
             }
             if (action != NULL) {
                 processor->flags |= 1;
@@ -12284,86 +12275,86 @@ void AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet
     }
 }
 
-void *Condition_LocatorRangeInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_LocatorRangeInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     if (name != NULL) {
         return AIPathFindLocator(system, name);
     }
     return NULL;
 }
 
-void *Condition_CurrentLocatorIsInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_CurrentLocatorIsInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     return name != NULL ? AIPathFindLocator(system, name) : NULL;
 }
 
-void *Condition_InTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_InTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     if (name != NULL) {
         return AISysFindArea(system, name);
     }
     return NULL;
 }
 
-void *Condition_InLevelNodeInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_InLevelNodeInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     if (system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0) {
         return AIPathFindNode(system, system->path_sys->active_path, name);
     }
     return NULL;
 }
 
-void *Condition_PlayerInLevelNodeInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_PlayerInLevelNodeInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     if (system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0) {
         return AIPathFindNode(system, system->path_sys->active_path, name);
     }
     return NULL;
 }
 
-void *Condition_NodeRangeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_NodeRangeInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     if (system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0) {
         return AIPathFindNode(system, system->path_sys->active_path, name);
     }
     return NULL;
 }
 
-void *Condition_PlayerInTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_PlayerInTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     return name != NULL ? AISysFindArea(system, name) : NULL;
 }
 
-void *Condition_BaddyInTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_BaddyInTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     return name != NULL ? AISysFindArea(system, name) : NULL;
 }
 
-void *Condition_GoodyInTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_GoodyInTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     if (name != NULL) {
         return AISysFindArea(system, name);
     }
     return NULL;
 }
 
-void *Condition_OpponentInTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_OpponentInTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     return name != NULL ? AISysFindArea(system, name) : NULL;
 }
 
-void *Condition_OpponentToLocatorInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_OpponentToLocatorInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     if (name != NULL) {
         return AIPathFindLocator(system, name);
     }
     return NULL;
 }
 
-void *Condition_PlayerToLocatorInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_PlayerToLocatorInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     if (name != NULL) {
         return AIPathFindLocator(system, name);
     }
     return NULL;
 }
 
-i32 Action_FaceLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_FaceLocator(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                        f32 elapsed) {
     i32 index;
     char *value;
-    AILOCATOR_PC *locator;
+    AILOCATOR *locator;
 
     (void)elapsed;
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL) {
         return 1;
     }
@@ -12389,7 +12380,7 @@ i32 Action_FaceLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
     return 0;
 }
 
-i32 Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
+i32 Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                       f32 elapsed) {
     char *value;
     char buffer[64];
@@ -12398,7 +12389,7 @@ i32 Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_
     i32 random_count = 0;
     char *name = NULL;
     i32 index;
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL || first_time == 0) {
         return 1;
     }
@@ -12419,10 +12410,10 @@ i32 Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_
         }
     }
     if (name != NULL) {
-        if (indexed != 0 && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
-            sprintf(buffer, "%s_%d", name, ((APIOBJECT_PC *)packet->owner)->locator_name_index);
-        } else if (personal != 0 && ((APIOBJECT_PC *)packet->owner)->character_data != NULL) {
-            sprintf(buffer, "%s_%s", name, ((APIOBJECT_PC *)packet->owner)->character_data->name);
+        if (indexed != 0 && ((APIOBJECT *)packet->owner)->locator_name_index != -1) {
+            sprintf(buffer, "%s_%d", name, ((APIOBJECT *)packet->owner)->locator_name_index);
+        } else if (personal != 0 && ((APIOBJECT *)packet->owner)->character_data != NULL) {
+            sprintf(buffer, "%s_%s", name, ((APIOBJECT *)packet->owner)->character_data->name);
         } else if (random_count != 0) {
             sprintf(buffer, "%s_%d", name, NuRand(NULL) % random_count);
         } else {
@@ -12433,14 +12424,14 @@ i32 Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_
     return 1;
 }
 
-i32 Action_SetRespawnLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                             i32 first_time, f32 elapsed) {
-    AILOCATOR_PC *locators[32];
+i32 Action_SetRespawnLocator(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                             f32 elapsed) {
+    AILOCATOR *locators[32];
     i32 count;
     i32 i;
     char *value;
 
-    if (packet != NULL && packet->owner != NULL && ((APIOBJECT_PC *)packet->owner)->owner != NULL && first_time != 0) {
+    if (packet != NULL && packet->owner != NULL && ((APIOBJECT *)packet->owner)->owner != NULL && first_time != 0) {
         packet->respawn_locator = processor->locator;
         count = 0;
         for (i = 0; i < param_count; i++) {
@@ -12461,10 +12452,10 @@ i32 Action_SetRespawnLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     return 1;
 }
 
-void AIPathCnxSetTemporaryBlock(AIPATH_PC *path, char *from_name, char *to_name, i32 blocked) {
-    AIPATHNODE_PC *from;
-    AIPATHNODE_PC *to;
-    AIPATHCNX_PC *connection;
+void AIPathCnxSetTemporaryBlock(AIPATH *path, char *from_name, char *to_name, i32 blocked) {
+    AIPATHNODE *from;
+    AIPATHNODE *to;
+    AIPATHCNX *connection;
     i32 to_index;
     i32 index;
     i32 direction;
@@ -12497,8 +12488,7 @@ void AIPathCnxSetTemporaryBlock(AIPATH_PC *path, char *from_name, char *to_name,
     }
 }
 
-i32 Action_BlockPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_4, i32 param_5,
-                     f32 param_6) {
+i32 Action_BlockPath(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_4, i32 param_5, f32 param_6) {
     char *from = NULL;
     char *to = NULL;
     i32 blocked = 1;
@@ -12535,7 +12525,7 @@ i32 Action_BlockPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *
     return 1;
 }
 
-i32 Action_PathConnectionMaxLength(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
+i32 Action_PathConnectionMaxLength(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count,
                                    i32 first_time, f32 elapsed) {
     i32 direction;
     char *from = NULL;
@@ -12543,7 +12533,7 @@ i32 Action_PathConnectionMaxLength(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     f32 length = 0.0f;
     i32 i;
     char *value;
-    AIPATHCNX_PC *connection;
+    AIPATHCNX *connection;
 
     direction = 0;
     if (sys != NULL && first_time != 0) {
@@ -12578,7 +12568,7 @@ i32 Action_PathConnectionMaxLength(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     return 1;
 }
 
-i32 Action_PathConnectionObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
+i32 Action_PathConnectionObstacle(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count,
                                   i32 first_time, f32 elapsed) {
     i32 direction;
     char *from = NULL;
@@ -12586,7 +12576,7 @@ i32 Action_PathConnectionObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     i32 open = 0;
     i32 i;
     char *value;
-    AIPATHCNX_PC *connection;
+    AIPATHCNX *connection;
 
     direction = 0;
     if (sys != NULL && first_time != 0) {
@@ -12610,8 +12600,8 @@ i32 Action_PathConnectionObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     return 1;
 }
 
-i32 Action_SetInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                        i32 is_first_time, f32 elapsed) {
+i32 Action_SetInterrupt(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 is_first_time,
+                        f32 elapsed) {
     u8 priority = 0;
     u8 id = 0;
     char *state_name = NULL;
@@ -12638,8 +12628,8 @@ i32 Action_SetInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKE
     return 1;
 }
 
-i32 Action_ClearInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                          i32 is_first_time, f32 elapsed) {
+i32 Action_ClearInterrupt(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 is_first_time,
+                          f32 elapsed) {
     char *state_name = NULL;
     i32 i;
     char *value;
@@ -12663,8 +12653,8 @@ i32 Action_ClearInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
     return 1;
 }
 
-i32 Action_NotifyStateChange(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                             i32 first_time, f32 elapsed) {
+i32 Action_NotifyStateChange(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                             f32 elapsed) {
     i32 enabled;
     i32 i;
 
@@ -12682,8 +12672,8 @@ i32 Action_NotifyStateChange(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AI
     return 1;
 }
 
-static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, VARIPTR *buffer, VARIPTR *buffer_end, i32 storage_size,
-                                    char *name, char *parameter, char *load_directory) {
+static AISYS_PC *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPTR *buffer, VARIPTR *buffer_end, i32 storage_size,
+                                  char *name, char *parameter, char *load_directory) {
     char ai2_path[128];
     char script_path[128];
     char special_name[256];
@@ -12719,7 +12709,7 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
         if (is_open != 0) {
             version = EdFileReadInt();
             system->scene = scene;
-            system->path_sys = AISysLoadPathsPc(&system->storage_cursor, version, scene, &system->storage_end);
+            system->path_sys = AISysLoadPaths(&system->storage_cursor, version, scene, &system->storage_end);
             if (version >= 4) {
                 system->area_count = EdFileReadInt();
                 if (system->area_count != 0) {
@@ -12750,9 +12740,9 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
                     system->locator_count = EdFileReadInt();
                     if (system->locator_count != 0) {
                         system->locators =
-                            AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->locator_count * sizeof(AILOCATOR_PC));
+                            AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->locator_count * sizeof(AILOCATOR));
                         for (index = 0; index < system->locator_count; ++index) {
-                            AILOCATOR_PC *locator = &system->locators[index];
+                            AILOCATOR *locator = &system->locators[index];
                             EdFileRead(locator->name, 16);
                             locator->position.x = EdFileReadFloat();
                             locator->position.y = EdFileReadFloat();
@@ -12773,13 +12763,13 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
                         system->locator_set_count = EdFileReadInt();
                         if (system->locator_set_count != 0) {
                             system->locator_sets = AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
-                                                                    system->locator_set_count * sizeof(AILOCATORSET_PC));
+                                                                    system->locator_set_count * sizeof(AILOCATORSET));
                             for (index = 0; index < system->locator_set_count; ++index) {
-                                AILOCATORSET_PC *set = &system->locator_sets[index];
+                                AILOCATORSET *set = &system->locator_sets[index];
                                 EdFileRead(set->name, 16);
                                 set->locator_count = (i8)EdFileReadInt();
                                 set->locator_entries = AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
-                                                                        set->locator_count * sizeof(AILOCATORSET_PC));
+                                                                        set->locator_count * sizeof(AILOCATORSET));
                                 for (search = 0; search < set->locator_count; ++search) {
                                     set->locator_entries[search] = (u8)EdFileReadChar();
                                 }
@@ -12836,7 +12826,7 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
                             for (search = 0; search < system->area_count; ++search) {
                                 AI_AREA_LOAD_PC *entry = &system->areas[search];
                                 if (NuStrICmp(reference_name, entry->name) == 0) {
-                                    creature->area = (AIAREA_PC *)entry;
+                                    creature->area = (AIAREA *)entry;
                                     break;
                                 }
                             }
@@ -12844,7 +12834,7 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
                         if (version >= 6 && EdFileReadInt() != 0) {
                             EdFileRead(reference_name, 16);
                             for (search = 0; search < system->locator_count; ++search) {
-                                AILOCATOR_PC *entry = &system->locators[search];
+                                AILOCATOR *entry = &system->locators[search];
                                 if (NuStrICmp(reference_name, entry->name) == 0) {
                                     creature->locator = entry;
                                     break;
@@ -12854,7 +12844,7 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
                         if (version > 16 && EdFileReadInt() != 0) {
                             EdFileRead(reference_name, 16);
                             for (search = 0; search < system->locator_count; ++search) {
-                                AILOCATOR_PC *entry = &system->locators[search];
+                                AILOCATOR *entry = &system->locators[search];
                                 if (NuStrICmp(reference_name, entry->name) == 0) {
                                     creature->respawn_locator = entry;
                                     break;
@@ -12869,16 +12859,16 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
                             creature->min_respawn_time = EdFileReadFloat();
                             creature->max_respawn_time = EdFileReadFloat();
                         } else {
-                            creature->activation_difficulty = AiLoadActivationDifficultyPc;
-                            creature->min_respawn_count = AiLoadMinimumRespawnCountPc;
-                            creature->max_respawn_count = AiLoadMaximumRespawnCountPc;
-                            creature->min_respawn_time = AiLoadMinimumRespawnTimePc;
-                            creature->max_respawn_time = AiLoadMaximumRespawnTimePc;
+                            creature->activation_difficulty = AiLoadActivationDifficulty;
+                            creature->min_respawn_count = AiLoadMinimumRespawnCount;
+                            creature->max_respawn_count = AiLoadMaximumRespawnCount;
+                            creature->min_respawn_time = AiLoadMinimumRespawnTime;
+                            creature->max_respawn_time = AiLoadMaximumRespawnTime;
                         }
                         if (version > 9) {
                             creature->start_stagger = EdFileReadFloat();
                         } else {
-                            creature->start_stagger = AiLoadStartStaggerPc;
+                            creature->start_stagger = AiLoadStartStagger;
                         }
                         switch (creature->activation_type) {
                             case 1:
@@ -12886,7 +12876,7 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
                                 for (search = 0; search < system->area_count; ++search) {
                                     AI_AREA_LOAD_PC *entry = &system->areas[search];
                                     if (NuStrICmp(reference_name, entry->name) == 0) {
-                                        creature->activate_area = (AIAREA_PC *)entry;
+                                        creature->activate_area = (AIAREA *)entry;
                                         break;
                                     }
                                 }
@@ -13005,30 +12995,30 @@ AISYS_PC *AISysLoadEx(VARIPTR *buffer, VARIPTR *buffer_end, i32 storage_size, NU
             pak = NuFilePakLoad(path, &pak_start, *buffer_end, 16);
         }
     }
-    return AISysLoadPrivatePc(pak, scene, directory, buffer, buffer_end, storage_size, name, parameter, load_directory);
+    return AISysLoadPrivate(pak, scene, directory, buffer, buffer_end, storage_size, name, parameter, load_directory);
 }
 
 AISYS_PC *AISysLoad(VARIPTR *buffer, VARIPTR *buffer_end, i32 storage_size, NUGSCN *scene, char *directory, char *name, char *parameter) {
     return AISysLoadEx(buffer, buffer_end, storage_size, scene, directory, name, parameter, directory);
 }
 
-void AISysDrawAntinode_Circle(AIANTINODE_PC *node, u32 colour) {
+void AISysDrawAntinode_Circle(AIANTINODE *node, u32 colour) {
     LocaledbitsDrawSolidCircleXY(&node->position, node->radius, node->min_y, node->max_y, colour, 0, 16);
 }
 
-void AISysDrawAntinode_Ellipse(AIANTINODE_PC *node, u32 colour) {
+void AISysDrawAntinode_Ellipse(AIANTINODE *node, u32 colour) {
     LocaledbitsDrawSolidEllipseXY(&node->position, node->base_radius, node->base_height, node->rotation, node->min_y, node->max_y, colour,
                                   0, 16);
 }
 
-static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet, AIPATHCNX_PC *connection, i32 direction,
+static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT *object, AIPACKET *packet, AIPATHCNX *connection, i32 direction,
                                 f32 *nearest_distance) {
-    AIPATH_PC *path;
+    AIPATH *path;
     u32 flags;
-    AIPATHCNX_PC *current;
-    AIPATHNODE_PC *shared;
-    AIPATHNODE_PC *first;
-    AIPATHNODE_PC *second;
+    AIPATHCNX *current;
+    AIPATHNODE *shared;
+    AIPATHNODE *first;
+    AIPATHNODE *second;
     f32 first_radius;
     i32 narrow;
     f32 second_radius;
@@ -13322,21 +13312,21 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
     return 0;
 }
 
-void AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet, i32 checks, i32 ground) {
+void AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT *object, AIPACKET *packet, i32 checks, i32 ground) {
     f32 nearest_distance_squared;
     u16 previous_flags;
-    AIPATH_PC *path;
-    AIPATHCNX_PC *current_connection;
+    AIPATH *path;
+    AIPATHCNX *current_connection;
     i32 current_direction;
     i32 check_adjacent_connections;
-    AIPATHNODE_PC *first_node;
-    AIPATHCNX_PC *candidate;
+    AIPATHNODE *first_node;
+    AIPATHCNX *candidate;
     i32 candidate_direction;
-    AIPATHNODE_PC *second_node;
+    AIPATHNODE *second_node;
     i32 remaining_checks;
-    AIPATHNODE_PC *node;
-    AIPATH_PC *original_path;
-    AIPATHCNX_PC *original_connection;
+    AIPATHNODE *node;
+    AIPATH *original_path;
+    AIPATHCNX *original_connection;
     i32 original_direction;
     i32 position_inside_path_bounds;
     i32 connection_index;
@@ -13488,24 +13478,24 @@ void AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_P
     packet->path_info.direction = original_direction;
 }
 
-void AISysGetPathPos(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *info, AIPATH_PC *path, i32 checks) {
+void AISysGetPathPos(AISYS_PC *system, NUVEC *position, AIPATHINFO *info, AIPATH *path, i32 checks) {
     AISysGetPathPosEx(system, position, info, path, checks, 0, NULL);
 }
 
-void AIMoveInstruction(AIPACKET_PC *packet, NUVEC *destination, f32 stopping_distance, AIPATHINFO_PC *path_info, i32 mode,
+void AIMoveInstruction(AIPACKET *packet, NUVEC *destination, f32 stopping_distance, AIPATHINFO *path_info, i32 mode,
                        f32 movement_parameter) {
-    AIGROUP_PC *group;
+    AIGROUP *group;
     group = packet->group;
     if (group != NULL && (group->flags & 8u)) {
         switch (mode) {
             case 1:
-                if (group->leader == (APIOBJECT_PC *)packet->owner) {
+                if (group->leader == (APIOBJECT *)packet->owner) {
                     FormationMove(group, RowMoveTowards);
                 }
                 AIFormationFollow(packet);
                 return;
             case 4:
-                if (group->leader == (APIOBJECT_PC *)packet->owner) {
+                if (group->leader == (APIOBJECT *)packet->owner) {
                     FormationMove(group, RowMoveWander);
                 }
                 AIFormationFollow(packet);
@@ -13526,14 +13516,14 @@ void AIMoveInstruction(AIPACKET_PC *packet, NUVEC *destination, f32 stopping_dis
     packet->movement_parameter = movement_parameter;
 }
 
-void AIFormationFollow(AIPACKET_PC *packet) {
+void AIFormationFollow(AIPACKET *packet) {
     NUVEC offset;
     u8 column;
     i32 half;
     i32 mode;
     NUVEC destination;
-    AIGROUP_PC *group;
-    AIROW_PC *row;
+    AIGROUP *group;
+    AIROW *row;
     group = packet->group;
     if (packet->group_row < group->row_count) {
         row = &group->rows[packet->group_row];
@@ -13577,12 +13567,12 @@ void AIFormationFollow(AIPACKET_PC *packet) {
     }
 }
 
-void AIRetreatFromDestination2(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+void AIRetreatFromDestination2(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
     NUVEC difference;
     f32 distance;
     NUVEC position;
     NUVEC path_position;
-    AIPATHINFO_PC path_info;
+    AIPATHINFO path_info;
 
     distance = NuVecXZDist(&object->position, &packet->fallback_destination, &difference);
     if (distance == 0.0f) {
@@ -13611,7 +13601,7 @@ void AIRetreatFromDestination2(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_
     packet->last_path_position = path_position;
 }
 
-void AIRetreatFromDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+void AIRetreatFromDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
     NUVEC difference;
     f32 distance;
 
@@ -13635,7 +13625,7 @@ void AIRetreatFromDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_P
     }
 }
 
-void AISysCharacterMovement(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+void AISysCharacterMovement(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
     u32 mode;
 
     packet->flags &= ~0x20000000u;
@@ -13679,12 +13669,12 @@ void AISysCharacterMovement(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC 
     }
 }
 
-AIMESSAGESYS_PC *CreateAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count) {
-    AIMESSAGESYS_PC *sys;
-    PATH_LOAD_ALLOCATE(AIMESSAGESYS_PC *, sys, cursor, end, sizeof(AIMESSAGESYS_PC));
+AIMESSAGESYS *CreateAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count) {
+    AIMESSAGESYS *sys;
+    PATH_LOAD_ALLOCATE(AIMESSAGESYS *, sys, cursor, end, sizeof(AIMESSAGESYS));
     if (sys != NULL) {
         memset(sys, 0, sizeof(*sys));
-        sys->messages = AISysBufferAlloc(cursor, end, count * sizeof(AIMESSAGE_PC));
+        sys->messages = AISysBufferAlloc(cursor, end, count * sizeof(AIMESSAGE));
         if (sys->messages != NULL) {
             sys->count = count;
             ResetAIMessageSys(sys);
@@ -13693,14 +13683,14 @@ AIMESSAGESYS_PC *CreateAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count) {
     return sys;
 }
 
-void SetAIMessage(AIMESSAGESYS_PC *sys, char *name, f32 value, AIMESSAGE_PC *message) {
+void SetAIMessage(AIMESSAGESYS *sys, char *name, f32 value, AIMESSAGE *message) {
     message = CheckAIMessage(sys, name, message);
     if (message != NULL) {
         message->value = value;
     }
 }
 
-f32 GetAIMessage(AIMESSAGESYS_PC *sys, char *name, AIMESSAGE_PC *message) {
+f32 GetAIMessage(AIMESSAGESYS *sys, char *name, AIMESSAGE *message) {
     message = CheckAIMessage(sys, name, message);
     if (message != NULL) {
         return message->value;
@@ -13755,7 +13745,7 @@ i32 aieditor_Proc(f32 menu_delta_time, FRAME_PAD_PC *pad, f32 frame_delta_time, 
     NuSpecialFindByPlatformID(aieditor->enter_context, &aieditor->cursor_platform, platform);
     if (aieditorsettings.display_options & 0x10) {
         ground_height = EShadY;
-        roof_height = GetSurfaceInfoRoofHeightPc;
+        roof_height = GetSurfaceInfoRoofHeight;
         closest = 2000000.0f;
         if (terrain_height != 2000000.0) {
             closest = AIPathFabs(aieditor->cursor_position.y - terrain_height);
@@ -13803,11 +13793,11 @@ void areaEditor_cbRenameAreaMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
     if (aieditor->selected_area == NULL) {
         return;
     }
-    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameAreaCancelPc, "Rename Area");
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameAreaCancel, "Rename Area");
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameAreaPc, "Area Name"));
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorRenameArea, "Area Name"));
     strcpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->selected_area->name);
     ((edui_textpicker_s *)edui_last_item)->max_length = 15;
     eduiMenuAttach(parent, menu);
@@ -13832,13 +13822,13 @@ void areaEditor_cbDeleteArea(eduimenu_s *menu, eduiitem_s *item, u32 event) {
         areaEditorDestroyArea(aieditor->selected_area);
         aieditor->selected_area = NULL;
     }
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void areaEditor_cbCancelDeleteAreaMenu(eduimenu_s *menu, eduimenu_s *child) {
     (void)menu;
     (void)child;
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
@@ -13905,14 +13895,14 @@ void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     locatorEditorDrawLocators();
 }
 
-static void AiEditorDestroyLocatorPc(EDLOCATOR_s *locator) {
+static void AiEditorDestroyLocator(EDLOCATOR_s *locator) {
     EDLOCATORSET_s *set;
     if (locator == NULL) {
         return;
     }
     for (set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets); set != NULL;
          set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link)) {
-        AiEditorRemoveLocatorFromSetPc(set, locator);
+        AiEditorRemoveLocatorFromSet(set, locator);
     }
     NuLinkedListRemove(&aieditor->locators, &locator->link);
     memset(locator, 0, sizeof(*locator));
@@ -13928,7 +13918,7 @@ void locatorEditor_PathNodeDeleted(EDAIPATHNODE_s *node) {
         if (locator->path_check.first == node || locator->path_check.second == node) {
             pathEditor_OnPathCheck(&locator->position, &locator->path_check, aieditor->current_path, 0.0f);
             if (locator->path_check.on_path == 0) {
-                AiEditorDestroyLocatorPc(locator);
+                AiEditorDestroyLocator(locator);
                 if (locator == aieditor->current_locator) {
                     aieditor->current_locator = NULL;
                 }
@@ -13945,7 +13935,7 @@ void locatorEditor_PathDeleted(EDAIPATH_s *path) {
     while (locator != NULL) {
         next = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link);
         if (locator->path_check.path == path) {
-            AiEditorDestroyLocatorPc(locator);
+            AiEditorDestroyLocator(locator);
             if (locator == aieditor->current_locator) {
                 aieditor->current_locator = NULL;
             }
@@ -13961,11 +13951,11 @@ void locatorEditor_cbRenameLocatorMenu(eduimenu_s *parent, eduiitem_s *item, u32
     if (aieditor->current_locator == NULL) {
         return;
     }
-    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameLocatorCancelPc, "Rename Locator");
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameLocatorCancel, "Rename Locator");
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameLocatorPc, "Locator Name"));
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorRenameLocator, "Locator Name"));
     strcpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->current_locator->name);
     ((edui_textpicker_s *)edui_last_item)->max_length = 15;
     eduiMenuAttach(parent, menu);
@@ -13973,7 +13963,7 @@ void locatorEditor_cbRenameLocatorMenu(eduimenu_s *parent, eduiitem_s *item, u32
     menu->y = parent->y + 40;
 }
 
-static void AiEditorDeleteLocatorSelectionPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+static void AiEditorDeleteLocatorSelection(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAICREATURE_s *creature;
     (void)menu;
     (void)event;
@@ -13984,7 +13974,7 @@ static void AiEditorDeleteLocatorSelectionPc(eduimenu_s *menu, eduiitem_s *item,
                 creature->locator = NULL;
             }
         }
-        AiEditorDestroyLocatorPc(aieditor->current_locator);
+        AiEditorDestroyLocator(aieditor->current_locator);
         aieditor->current_locator = NULL;
     }
     if (aieditor->main_menu != NULL) {
@@ -13993,7 +13983,7 @@ static void AiEditorDeleteLocatorSelectionPc(eduimenu_s *menu, eduiitem_s *item,
     }
 }
 
-static void AiEditorDeleteLocatorCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorDeleteLocatorCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)menu;
     (void)child;
     if (aieditor->main_menu != NULL) {
@@ -14003,7 +13993,7 @@ static void AiEditorDeleteLocatorCancelPc(eduimenu_s *menu, eduimenu_s *child) {
 }
 
 void locatorEditor_cbCreateLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    EDLOCATORSET_s *set = AiEditorCreateLocatorSetPc();
+    EDLOCATORSET_s *set = AiEditorCreateLocatorSet();
     EDLOCATORSET_s *other;
     char name[16];
     i32 index = 0;
@@ -14028,7 +14018,7 @@ void locatorEditor_cbCreateLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 ev
     strcpy(set->name, name);
     aieditor->current_locator_set = set;
     aieditor->current_locator = NULL;
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void locatorEditor_cbDeleteLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 event) {
@@ -14041,22 +14031,22 @@ void locatorEditor_cbDeleteLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 
         case 0:
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Delete current locator set?");
             if (menu != NULL) {
-                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbDeleteLocatorSet,
+                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet,
                                                         (char *)MenuPcString75f2c0));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbDeleteLocatorSet,
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet,
                                                         (char *)MenuPcString75f2c4));
                 eduiMenuAttach(parent, menu);
             }
             break;
         case 1:
             if (aieditor->current_locator_set != NULL) {
-                AiEditorDestroyLocatorSetPc(aieditor->current_locator_set);
+                AiEditorDestroyLocatorSet(aieditor->current_locator_set);
                 aieditor->current_locator_set = NULL;
-                AiEditorClearMainMenuPc();
+                AiEditorClearMainMenu();
             }
             break;
         case 2:
-            AiEditorClearMainMenuPc();
+            AiEditorClearMainMenu();
             break;
     }
 }
@@ -14072,9 +14062,9 @@ void locatorEditor_cbEmptyLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 e
         case 0:
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Empty current locator set?");
             if (menu != NULL) {
-                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbEmptyLocatorSet,
+                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet,
                                                         (char *)MenuPcString75f2c0));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbEmptyLocatorSet,
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet,
                                                         (char *)MenuPcString75f2c4));
                 eduiMenuAttach(parent, menu);
             }
@@ -14085,18 +14075,18 @@ void locatorEditor_cbEmptyLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 e
                     aieditor->current_locator_set->locators[index] = NULL;
                 }
             }
-            AiEditorClearMainMenuPc();
+            AiEditorClearMainMenu();
             break;
         case 2:
-            AiEditorClearMainMenuPc();
+            AiEditorClearMainMenu();
             break;
     }
 }
 
-static void AiEditorRenameLocatorSetCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+static void AiEditorRenameLocatorSetCancel(eduimenu_s *menu, eduimenu_s *child) {
     (void)menu;
     (void)child;
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void locatorEditor_cbRenameLocatorSetMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
@@ -14106,12 +14096,12 @@ void locatorEditor_cbRenameLocatorSetMenu(eduimenu_s *parent, eduiitem_s *item, 
     if (aieditor->current_locator_set == NULL) {
         return;
     }
-    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameLocatorSetCancelPc, "Rename Locator Set");
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameLocatorSetCancel, "Rename Locator Set");
     if (menu == NULL) {
         return;
     }
     eduiMenuAddItem(menu,
-                    eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameLocatorSetPc, (char *)GizObstacleActionNamePC));
+                    eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorRenameLocatorSet, (char *)GizObstacleActionNamePC));
     strcpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->current_locator_set->name);
     ((edui_textpicker_s *)edui_last_item)->max_length = 15;
     eduiMenuAttach(parent, menu);
@@ -14132,14 +14122,12 @@ void locatorEditor_cbAddLocatorsByNameYesNo(eduimenu_s *menu, eduiitem_s *item, 
                     if (aieditor->current_locator_set->locators[index] != NULL) {
                         if (NuStrICmp(aieditor->current_locator_set->locators[index]->name, locator->name) > 0 &&
                             NuStrLen(aieditor->current_locator_set->locators[index]->name) >= NuStrLen(locator->name)) {
-                            AiEditorAddLocatorToSetPc(aieditor->current_locator_set, locator,
-                                                      aieditor->current_locator_set->locators[index]);
-                            AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->current_locator_set->locators[index],
-                                                      locator);
+                            AiEditorAddLocatorToSet(aieditor->current_locator_set, locator, aieditor->current_locator_set->locators[index]);
+                            AiEditorAddLocatorToSet(aieditor->current_locator_set, aieditor->current_locator_set->locators[index], locator);
                             break;
                         }
                     } else {
-                        AiEditorAddLocatorToSetPc(aieditor->current_locator_set, locator, NULL);
+                        AiEditorAddLocatorToSet(aieditor->current_locator_set, locator, NULL);
                         break;
                     }
                 }
@@ -14155,7 +14143,7 @@ void locatorEditor_cbAddLocatorsByNameYesNo(eduimenu_s *menu, eduiitem_s *item, 
         }
     }
     memset(aieditor->pending_locator_name, 0, sizeof(aieditor->pending_locator_name));
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void locatorEditor_cbAddLocatorsByName(eduimenu_s *parent, eduiitem_s *item, u32 event) {
@@ -14165,12 +14153,12 @@ void locatorEditor_cbAddLocatorsByName(eduimenu_s *parent, eduiitem_s *item, u32
     if (aieditor->current_locator_set == NULL) {
         return;
     }
-    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameLocatorSetCancelPc, "Add Locators By Name");
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameLocatorSetCancel, "Add Locators By Name");
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(
-        menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorSetPendingLocatorNamePc, (char *)GizObstacleActionNamePC));
+    eduiMenuAddItem(menu,
+                    eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorSetPendingLocatorName, (char *)GizObstacleActionNamePC));
     if (aieditor->current_locator != NULL) {
         strcpy(aieditor->pending_locator_name, aieditor->current_locator->name);
     } else {
@@ -14216,7 +14204,7 @@ void locatorEditor_cbSetLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 event
             }
         }
     }
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void locatorEditor_cbSelectLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 event) {
@@ -14229,11 +14217,11 @@ void locatorEditor_cbSelectLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbSetLocatorSet, "NONE"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbSetLocatorSet, "NONE"));
     index = 1;
     set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets);
     while (set != NULL) {
-        eduiMenuAddItem(menu, eduiItemSelCreate(index, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbSetLocatorSet, set->name));
+        eduiMenuAddItem(menu, eduiItemSelCreate(index, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbSetLocatorSet, set->name));
         ++index;
         set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link);
     }
@@ -14332,8 +14320,8 @@ void locatorEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
 }
 
 void locatorEditor_Enter(void) {
-    AILOCATOR_PC *source;
-    AILOCATORSET_PC *source_set;
+    AILOCATOR *source;
+    AILOCATORSET *source_set;
     EDLOCATOR_s *locator;
     EDLOCATORSET_s *set;
     EDAIPATH_s *path;
@@ -14425,7 +14413,7 @@ void pathEditor_DestroyNode(EDAIPATHNODE_s *node, EDAIPATH_s *path) {
     NuLinkedListAppend(&aieditor->free_path_nodes, &node->link);
 }
 
-AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cursor, void **scratch_end) {
+AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cursor, void **scratch_end) {
     VARIPTR scratch;
     NUVEC difference;
     i32 path_count;
@@ -14469,21 +14457,20 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                     for (shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetHead(&aieditor->shared_path_nodes); shared != NULL;
                          shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetNext(&aieditor->shared_path_nodes, &shared->link)) {
                         AIPATHSPECIALROUTE *route = &system->special_routes[shared->runtime_index];
-                        PATH_BUILD_ALLOCATE(AIPATH_PC **, route->paths, &scratch, scratch_limit,
-                                            shared->reference_count * sizeof(AIPATH_PC));
-                        memset(route->paths, 0, shared->reference_count * sizeof(AIPATH_PC));
+                        PATH_BUILD_ALLOCATE(AIPATH **, route->paths, &scratch, scratch_limit, shared->reference_count * sizeof(AIPATH));
+                        memset(route->paths, 0, shared->reference_count * sizeof(AIPATH));
                     }
                 }
-                system->paths = AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH_PC *));
+                system->paths = AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH *));
                 if (system->paths != NULL) {
-                    memset(system->paths, 0, system->path_count * sizeof(AIPATH_PC *));
+                    memset(system->paths, 0, system->path_count * sizeof(AIPATH *));
                     path_index = 0;
                     for (editor_path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); editor_path != NULL;
                          editor_path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &editor_path->link), ++path_index) {
-                        AIPATH_PC *path;
+                        AIPATH *path;
                         EDAIPATHNODE_s *node;
                         f32 ***distance_slot;
-                        system->paths[path_index] = AISysBufferAlloc(cursor, end, sizeof(AIPATH_PC));
+                        system->paths[path_index] = AISysBufferAlloc(cursor, end, sizeof(AIPATH));
                         if (system->paths[path_index] == NULL) {
                             continue;
                         }
@@ -14507,9 +14494,9 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                         }
                         if (path->connection_count != 0) {
                             path->connection_count /= 2;
-                            path->connections = AISysBufferAlloc(cursor, end, path->connection_count * sizeof(AIPATHCNX_PC));
+                            path->connections = AISysBufferAlloc(cursor, end, path->connection_count * sizeof(AIPATHCNX));
                             if (path->connections != NULL) {
-                                memset(path->connections, 0, path->connection_count * sizeof(AIPATHCNX_PC));
+                                memset(path->connections, 0, path->connection_count * sizeof(AIPATHCNX));
                             }
                         }
                         if (path->special_route_count != 0) {
@@ -14518,15 +14505,15 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                             path->special_route_count = 0;
                         }
                         if (path->node_count != 0) {
-                            path->nodes = AISysBufferAlloc(cursor, end, path->node_count * sizeof(AIPATHNODE_PC));
+                            path->nodes = AISysBufferAlloc(cursor, end, path->node_count * sizeof(AIPATHNODE));
                             if (path->nodes != NULL) {
                                 i32 connection_index;
-                                memset(path->nodes, 0, path->node_count * sizeof(AIPATHNODE_PC));
+                                memset(path->nodes, 0, path->node_count * sizeof(AIPATHNODE));
 
                                 connection_index = 0;
                                 for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&editor_path->nodes); node != NULL;
                                      node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&editor_path->nodes, &node->link)) {
-                                    AIPATHNODE_PC *runtime = &path->nodes[node->index];
+                                    AIPATHNODE *runtime = &path->nodes[node->index];
                                     i32 length = strlen(node->name);
                                     u8 slot;
                                     if (length != 0) {
@@ -14554,14 +14541,14 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                                     if ((path->connections != NULL)) {
                                         if (runtime->connection_count != 0) {
                                             i32 next;
-                                            PATH_BUILD_ALLOCATE(AIPATHCNX_PC **, runtime->connections, cursor, end,
-                                                                runtime->connection_count * sizeof(AIPATHCNX_PC *));
+                                            PATH_BUILD_ALLOCATE(AIPATHCNX **, runtime->connections, cursor, end,
+                                                                runtime->connection_count * sizeof(AIPATHCNX *));
                                             if (runtime->connections != NULL) {
-                                                memset(runtime->connections, 0, runtime->connection_count * sizeof(AIPATHCNX_PC *));
+                                                memset(runtime->connections, 0, runtime->connection_count * sizeof(AIPATHCNX *));
                                             }
                                             next = 0;
                                             for (slot = 0; slot < 8; ++slot) {
-                                                AIPATHNODE_PC *other_runtime;
+                                                AIPATHNODE *other_runtime;
                                                 if (node->connections[slot].node == NULL) {
                                                     continue;
                                                 }
@@ -14578,7 +14565,7 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                                                         }
                                                     }
                                                 } else {
-                                                    AIPATHCNX_PC *connection;
+                                                    AIPATHCNX *connection;
                                                     runtime->connections[next] = &path->connections[connection_index++];
                                                     runtime->connections[next]->node_indices[0] = node->index;
                                                     runtime->connections[next]->node_indices[1] = node->connections[slot].node->index;
@@ -14636,15 +14623,15 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                     }
                 }
                 if (system->path_count > 1) {
-                    AIPATHINFO_PC info;
-                    AIPATH_PC *first_path = system->paths[0];
+                    AIPATHINFO info;
+                    AIPATH *first_path = system->paths[0];
                     i32 info_path_index;
                     memset(&info, 0, sizeof(info));
                     for (info_path_index = 1; info_path_index < system->path_count; ++info_path_index) {
-                        AIPATH_PC *path = system->paths[info_path_index];
+                        AIPATH *path = system->paths[info_path_index];
                         i32 node_index;
                         for (node_index = 0; node_index < path->node_count; ++node_index) {
-                            AIPATHNODE_PC *node = &path->nodes[node_index];
+                            AIPATHNODE *node = &path->nodes[node_index];
                             AISysGetPathPosEx(aieditor->ai_system, &node->position, &info, first_path, 0xff, 0, NULL);
                             if ((info.flags & 1)) {
                                 f64 half = 0.5f;
@@ -14665,7 +14652,7 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                             continue;
                         }
                         for (node_index = 0; node_index < path->node_count; ++node_index) {
-                            AIPATHNODE_PC *node = &path->nodes[node_index];
+                            AIPATHNODE *node = &path->nodes[node_index];
                             f32 nearest;
                             i32 candidate;
                             if (node->runtime_flags & 1) {
@@ -14686,7 +14673,7 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
         }
     }
     distance_tables = NULL;
-    return (AIPATHSYS_PC *)system;
+    return (AIPATHSYS *)system;
 }
 
 static void pathEditor_cbSetCurrentPath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
@@ -14708,7 +14695,7 @@ static void pathEditor_cbSetCurrentPath(eduimenu_s *menu, eduiitem_s *item, u32 
             }
         }
     }
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void pathEditor_cbCreatePath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
@@ -14743,7 +14730,7 @@ void pathEditor_cbCreatePath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     strcpy(path->name, name);
     path->flags &= ~1;
     aieditor->current_path = path;
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void pathEditor_cbSelectPathMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
@@ -14758,7 +14745,7 @@ void pathEditor_cbSelectPathMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
     }
     for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
          path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
-        eduiMenuAddItem(menu, eduiItemSelCreate(index, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbSetCurrentPath, path->name));
+        eduiMenuAddItem(menu, eduiItemSelCreate(index, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbSetCurrentPath, path->name));
         index++;
     }
     eduiMenuAttach(parent, menu);
@@ -14851,7 +14838,7 @@ void pathEditor_cbSetShareNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
         }
     }
     if (item->data == 0) {
-        AiEditorClearMainMenuPc();
+        AiEditorClearMainMenu();
     }
 }
 
@@ -14870,7 +14857,7 @@ void pathEditor_cbShareNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event)
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 1, pathEditor_cbSetShareNode, "All paths"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 1, pathEditor_cbSetShareNode, "All paths"));
     row = 1;
     for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
          path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
@@ -14888,7 +14875,7 @@ void pathEditor_cbShareNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event)
             }
         }
         eduiMenuAddItem(menu,
-                        eduiItemToggleCreate(row, &AiEditorSaveMessageColoursPc, selected, row + 1, pathEditor_cbSetShareNode, path->name));
+                        eduiItemToggleCreate(row, &AiEditorSaveMessageColours, selected, row + 1, pathEditor_cbSetShareNode, path->name));
         ++row;
     }
     eduiMenuAttach(parent, menu);
@@ -14911,13 +14898,13 @@ void pathEditor_cbDeletePathNode(eduimenu_s *menu, eduiitem_s *item, u32 event) 
             aieditor->current_path->current_node = NULL;
         }
     }
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void pathEditor_cbCancelDeleteNodeMenu(eduimenu_s *menu, eduimenu_s *child) {
     (void)menu;
     (void)child;
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void pathEditor_cbDisconnectPathNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
@@ -14932,13 +14919,13 @@ void pathEditor_cbDisconnectPathNode(eduimenu_s *menu, eduiitem_s *item, u32 eve
             AIPathNodeMovedFn(aieditor->current_path->current_node);
         }
     }
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void pathEditor_cbCancelDisconnectNodeMenu(eduimenu_s *menu, eduimenu_s *child) {
     (void)menu;
     (void)child;
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 static void pathEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
@@ -15076,7 +15063,7 @@ found:
         }
     } while (taken);
     strcpy(aieditor->current_path->current_route->name, name);
-    AiEditorClearMainMenuPc();
+    AiEditorClearMainMenu();
 }
 
 void routeEditor_cbDeleteRoute(eduimenu_s *parent, eduiitem_s *item, u32 event) {
@@ -15093,8 +15080,8 @@ void routeEditor_cbDeleteRoute(eduimenu_s *parent, eduiitem_s *item, u32 event) 
         case 0:
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Delete current route??");
             if (menu != NULL) {
-                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbDeleteRoute, "No"));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbDeleteRoute, "Yes"));
+                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, routeEditor_cbDeleteRoute, "No"));
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, routeEditor_cbDeleteRoute, "Yes"));
                 eduiMenuAttach(parent, menu);
             }
             break;
@@ -15123,7 +15110,7 @@ void routeEditor_cbDeleteRoute(eduimenu_s *parent, eduiitem_s *item, u32 event) 
                     aieditor->current_path->current_route = route;
                 }
             }
-            AiEditorClearMainMenuPc();
+            AiEditorClearMainMenu();
             break;
         case 2:
             eduiMenuDestroy(parent);
@@ -15247,8 +15234,8 @@ void creatureEditor_cbResetParams(eduimenu_s *menu, eduiitem_s *item, u32 event)
 
 static void creatureEditorAddResetParamsItem(eduimenu_s *menu) {
     if (menu != NULL && creatureEditor_ResetParamsItem == NULL) {
-        creatureEditor_ResetParamsItem = eduiMenuAddItem(
-            menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, 1, 1, creatureEditor_cbResetParams, "Reset Params"));
+        creatureEditor_ResetParamsItem =
+            eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, 1, 1, creatureEditor_cbResetParams, "Reset Params"));
     }
 }
 
@@ -15267,7 +15254,7 @@ void creatureEditor_cbSetScriptParam(eduimenu_s *menu, eduiitem_s *item, u32 eve
 
 void creatureEditor_cbScriptParams(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    AISCRIPT_PC *script;
+    AISCRIPT *script;
     char text[32];
     i32 index;
     (void)item;
@@ -15275,7 +15262,7 @@ void creatureEditor_cbScriptParams(eduimenu_s *parent, eduiitem_s *item, u32 eve
     if (aieditor->selected_creature == NULL) {
         return;
     }
-    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Script Params");
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Script Params");
     if (menu == NULL) {
         return;
     }
@@ -15285,7 +15272,7 @@ void creatureEditor_cbScriptParams(eduimenu_s *parent, eduiitem_s *item, u32 eve
         } else {
             sprintf(text, "Trigger Area NONE");
         }
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbSelectTriggerArea, text));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbSelectTriggerArea, text));
     }
     if (NuLinkedListGetHead(&aieditor->locators) != NULL) {
         if (aieditor->selected_creature->locator != NULL) {
@@ -15293,7 +15280,7 @@ void creatureEditor_cbScriptParams(eduimenu_s *parent, eduiitem_s *item, u32 eve
         } else {
             sprintf(text, "Locator NONE");
         }
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorSelectLocatorMenuPc, text));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorSelectLocatorMenu, text));
     }
     script = AIScriptFind(aieditor->ai_system, aieditor->selected_creature->script_name, 1, 1, 1);
     for (index = 0; index < 4; ++index) {
@@ -15302,14 +15289,14 @@ void creatureEditor_cbScriptParams(eduimenu_s *parent, eduiitem_s *item, u32 eve
         } else {
             sprintf(text, "Param%d", index);
         }
-        eduiMenuAddItem(menu, eduiItemSliderCreate(index, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cbSetScriptParam, 0.0f, 100.0f,
+        eduiMenuAddItem(menu, eduiItemSliderCreate(index, &AiEditorSaveMessageColours, 0, creatureEditor_cbSetScriptParam, 0.0f, 100.0f,
                                                    aieditorsettings.script_params[index], text));
         eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
     }
     creatureEditor_ResetParamsItem = NULL;
     if (aieditorsettings.script_flags & 0x1e) {
-        creatureEditor_ResetParamsItem = eduiMenuAddItem(
-            menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, 1, 1, creatureEditor_cbResetParams, "Reset Params"));
+        creatureEditor_ResetParamsItem =
+            eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, 1, 1, creatureEditor_cbResetParams, "Reset Params"));
     }
     eduiMenuAttach(parent, menu);
 }
@@ -15359,19 +15346,19 @@ void creatureEditor_cbGroupMenu(eduimenu_s *parent, eduiitem_s *item, u32 event)
     if (aieditor->selected_creature == NULL) {
         return;
     }
-    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Group Values");
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Group Values");
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_ngroup, 1, 31,
+    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColours, 0, creatureEditor_cb_ngroup, 1, 31,
                                                   aieditor->selected_creature->group_count, "Group Size"));
-    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_stagger_start, 0.0f, 60.0f,
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColours, 0, creatureEditor_cb_stagger_start, 0.0f, 60.0f,
                                                aieditor->selected_creature->stagger_start, "Stagger Time"));
-    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_nacross, 1, 31,
+    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColours, 0, creatureEditor_cb_nacross, 1, 31,
                                                   aieditor->selected_creature->across_count, "Formation Width"));
-    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_xspacing, 0.2f, 4.8f,
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColours, 0, creatureEditor_cb_xspacing, 0.2f, 4.8f,
                                                aieditor->selected_creature->x_spacing, "Formation X Spacing"));
-    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_zspacing, 0.2f, 4.8f,
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColours, 0, creatureEditor_cb_zspacing, 0.2f, 4.8f,
                                                aieditor->selected_creature->z_spacing, "Formation Z Spacing"));
     eduiMenuAttach(parent, menu);
 }
@@ -15381,15 +15368,15 @@ eduimenu_s *creatureEditorDeleteMenu(void) {
     if (aieditor->selected_creature != NULL && aieditor->selected_creature == aieditor->nearest_creature) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, pathEditor_cbCancelDeleteCreatureMenu, "Delete creature??");
         if (menu != NULL) {
-            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbDeleteCreature, "No"));
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbDeleteCreature, "Yes"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbDeleteCreature, "No"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbDeleteCreature, "Yes"));
             return menu;
         }
     }
     return NULL;
 }
 
-void FollowAPIObject(APIOBJECT_PC *object, APIOBJECT_PC *target, u8 flags, f32 movement_parameter) {
+void FollowAPIObject(APIOBJECT *object, APIOBJECT *target, u8 flags, f32 movement_parameter) {
     i32 movement_mode;
     NUVEC *destination;
     f32 stopping_distance;
@@ -15421,10 +15408,10 @@ void FollowAPIObject(APIOBJECT_PC *object, APIOBJECT_PC *target, u8 flags, f32 m
     AIMoveInstruction(object->ai, destination, stopping_distance, &target->ai->path_info, movement_mode, movement_parameter);
 }
 
-i32 Action_FollowOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_FollowOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                           f32 elapsed) {
     i32 index;
-    APIOBJECT_PC *target;
+    APIOBJECT *target;
 
     if (packet == NULL) {
         return 1;
@@ -15445,14 +15432,14 @@ i32 Action_FollowOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
         }
     }
 
-    target = (APIOBJECT_PC *)(packet->opponent);
+    target = (APIOBJECT *)(packet->opponent);
     if (target != NULL && target->ai != NULL) {
-        FollowAPIObject(((APIOBJECT_PC *)packet->owner), target, processor->action_data_1, packet->movement_instruction_parameter);
+        FollowAPIObject(((APIOBJECT *)packet->owner), target, processor->action_data_1, packet->movement_instruction_parameter);
     }
     return 0;
 }
 
-i32 Action_FollowPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_FollowPlayer(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                         f32 elapsed) {
     if (packet == NULL) {
         return 1;
@@ -15475,20 +15462,20 @@ i32 Action_FollowPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
     }
 
     if (sys->player_1 != NULL && sys->player_1->ai != NULL) {
-        FollowAPIObject(((APIOBJECT_PC *)packet->owner), sys->player_1, processor->action_data_1, packet->movement_instruction_parameter);
+        FollowAPIObject(((APIOBJECT *)packet->owner), sys->player_1, processor->action_data_1, packet->movement_instruction_parameter);
     }
     return 0;
 }
 
-i32 Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                   f32 elapsed) {
     NUVEC difference;
     i32 i;
     char *value;
     NUVEC *position;
-    AIPATHINFO_PC *path;
-    AILOCATOR_PC *locator;
-    AICREATURE_PC *creature;
+    AIPATHINFO *path;
+    AILOCATOR *locator;
+    AICREATURE *creature;
 
     if (packet == NULL || sys == NULL || sys->player_1 == NULL) {
         return 1;
@@ -15561,7 +15548,7 @@ i32 Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pac
     return 0;
 }
 
-i32 Action_CirclePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_CirclePlayer(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                         f32 elapsed) {
     NUVEC difference;
     i32 i;
@@ -15609,8 +15596,8 @@ i32 Action_CirclePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
     return 0;
 }
 
-i32 Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                          i32 first_time, f32 elapsed) {
+i32 Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                          f32 elapsed) {
     NUVEC difference;
     i32 i;
     NUVEC *position;
@@ -15648,15 +15635,15 @@ i32 Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
             }
         }
     }
-    if (((APIOBJECT_PC *)packet->opponent) != NULL && ((APIOBJECT_PC *)packet->opponent)->ai != NULL) {
+    if (((APIOBJECT *)packet->opponent) != NULL && ((APIOBJECT *)packet->opponent)->ai != NULL) {
         if ((processor->action_data_1 & 4) != 0) {
             packet->movement_instruction_parameter =
-                NuVecXZDist(&packet->terrain_origin, &((APIOBJECT_PC *)packet->opponent)->ai->last_path_position, &difference);
+                NuVecXZDist(&packet->terrain_origin, &((APIOBJECT *)packet->opponent)->ai->last_path_position, &difference);
         }
-        position = (processor->action_data_1 & 2) != 0 ? &((APIOBJECT_PC *)packet->opponent)->ai->terrain_origin
-                                                       : &((APIOBJECT_PC *)packet->opponent)->ai->last_path_position;
-        AIMoveInstruction(packet, position, ((APIOBJECT_PC *)packet->opponent)->ai->mover_height,
-                          &((APIOBJECT_PC *)packet->opponent)->ai->path_info, 3, packet->movement_instruction_parameter);
+        position = (processor->action_data_1 & 2) != 0 ? &((APIOBJECT *)packet->opponent)->ai->terrain_origin
+                                                       : &((APIOBJECT *)packet->opponent)->ai->last_path_position;
+        AIMoveInstruction(packet, position, ((APIOBJECT *)packet->opponent)->ai->mover_height,
+                          &((APIOBJECT *)packet->opponent)->ai->path_info, 3, packet->movement_instruction_parameter);
         if ((processor->action_data_1 & 1) != 0) {
             packet->movement_look_target = position;
         }
@@ -15664,8 +15651,8 @@ i32 Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
     return 0;
 }
 
-i32 Action_MoveAwayFromOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                                i32 first_time, f32 elapsed) {
+i32 Action_MoveAwayFromOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                                f32 elapsed) {
     i32 i;
 
     if (packet == NULL) {
@@ -15683,19 +15670,19 @@ i32 Action_MoveAwayFromOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
             }
         }
     }
-    if (packet->opponent != NULL && ((APIOBJECT_PC *)packet->opponent)->ai != NULL) {
-        AIMoveInstruction(packet, &((APIOBJECT_PC *)packet->opponent)->ai->last_path_position,
-                          ((APIOBJECT_PC *)packet->opponent)->ai->mover_height, &((APIOBJECT_PC *)packet->opponent)->ai->path_info, 2,
+    if (packet->opponent != NULL && ((APIOBJECT *)packet->opponent)->ai != NULL) {
+        AIMoveInstruction(packet, &((APIOBJECT *)packet->opponent)->ai->last_path_position,
+                          ((APIOBJECT *)packet->opponent)->ai->mover_height, &((APIOBJECT *)packet->opponent)->ai->path_info, 2,
                           packet->movement_instruction_parameter);
         if (processor->action_data_1 != 0) {
-            packet->movement_look_target = &((APIOBJECT_PC *)packet->opponent)->position;
+            packet->movement_look_target = &((APIOBJECT *)packet->opponent)->position;
         }
     }
     return 0;
 }
 
-i32 Action_MoveAwayFromPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                              i32 first_time, f32 elapsed) {
+i32 Action_MoveAwayFromPlayer(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                              f32 elapsed) {
     i32 i;
 
     if (packet == NULL) {
@@ -15723,8 +15710,8 @@ i32 Action_MoveAwayFromPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     return 0;
 }
 
-i32 Action_MoveAwayFromPlayer2(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                               i32 first_time, f32 elapsed) {
+i32 Action_MoveAwayFromPlayer2(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                               f32 elapsed) {
     i32 i;
 
     if (packet == NULL) {
@@ -15752,7 +15739,7 @@ i32 Action_MoveAwayFromPlayer2(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
     return 0;
 }
 
-i32 Action_RetreatFromOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
+i32 Action_RetreatFromOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count,
                                i32 first_time, f32 elapsed) {
     i32 i;
 
@@ -15767,18 +15754,18 @@ i32 Action_RetreatFromOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
             }
         }
     }
-    if (packet->opponent != NULL && ((APIOBJECT_PC *)packet->opponent)->ai != NULL) {
-        AIMoveInstruction(packet, &((APIOBJECT_PC *)packet->opponent)->ai->last_path_position,
-                          ((APIOBJECT_PC *)packet->opponent)->ai->mover_height, &((APIOBJECT_PC *)packet->opponent)->ai->path_info, 2,
+    if (packet->opponent != NULL && ((APIOBJECT *)packet->opponent)->ai != NULL) {
+        AIMoveInstruction(packet, &((APIOBJECT *)packet->opponent)->ai->last_path_position,
+                          ((APIOBJECT *)packet->opponent)->ai->mover_height, &((APIOBJECT *)packet->opponent)->ai->path_info, 2,
                           packet->movement_instruction_parameter);
     }
     return 0;
 }
 
-i32 Action_RetreatFromNearestOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
+i32 Action_RetreatFromNearestOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count,
                                       i32 first_time, f32 elapsed) {
     i32 i;
-    AIPACKET_PC *target;
+    AIPACKET *target;
 
     if (packet == NULL) {
         return 1;
@@ -15792,20 +15779,20 @@ i32 Action_RetreatFromNearestOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
         }
     }
     if (packet->nearest_opponent != NULL) {
-        target = ((APIOBJECT_PC *)packet->nearest_opponent)->ai;
+        target = ((APIOBJECT *)packet->nearest_opponent)->ai;
         AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
                           packet->movement_instruction_parameter);
     }
     return 0;
 }
 
-i32 Action_GoToNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_GoToNode(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                     f32 elapsed) {
     NUVEC difference;
     i32 index;
-    AIPATHNODE_PC *node;
+    AIPATHNODE *node;
     i32 node_index;
-    AIPATHNODE_PC *node_2;
+    AIPATHNODE *node_2;
     f32 distance_squared;
 
     (void)elapsed;
@@ -15855,13 +15842,13 @@ i32 Action_GoToNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *p
     return 1;
 }
 
-i32 Action_GoToNodeRandom(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_GoToNodeRandom(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                           f32 elapsed) {
     NUVEC difference;
     i32 selected;
-    AIPATHNODE_PC *node;
+    AIPATHNODE *node;
     i32 node_index;
-    AIPATHNODE_PC *node_2;
+    AIPATHNODE *node_2;
     f32 distance_squared;
 
     (void)elapsed;
@@ -15908,10 +15895,10 @@ i32 Action_GoToNodeRandom(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
     return 1;
 }
 
-i32 Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                       f32 elapsed) {
     NUVEC difference;
-    AICREATURE_PC *creature;
+    AICREATURE *creature;
     NUVEC *origin;
     f32 min_time = 0.0f;
     f32 max_time = 0.0f;
@@ -15988,9 +15975,9 @@ i32 Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
     return 0;
 }
 
-i32 Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 is_first_time,
+i32 Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 is_first_time,
                        f32 elapsed) {
-    AILOCATOR_PC *locator;
+    AILOCATOR *locator;
     NUVEC distance_vector;
     f32 distance_squared;
     f32 reach_distance;
@@ -16001,11 +15988,11 @@ i32 Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
     f32 maximum_time = 0.0f;
     char locator_name[64];
     i32 index;
-    AILOCATOR_PC *locator_2;
+    AILOCATOR *locator_2;
     char *value;
-    AILOCATOR_PC *locator_3;
+    AILOCATOR *locator_3;
 
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL) {
         return 1;
     }
@@ -16023,10 +16010,10 @@ i32 Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
                 if (NuStrIStr(params[index], "name") != NULL || NuStrIStr(params[index], "teleport") != NULL) {
                     ++index;
                     if (index < param_count) {
-                        if (use_indexed_name != 0 && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
-                            sprintf(locator_name, "%s_%d", params[index], ((APIOBJECT_PC *)packet->owner)->locator_name_index);
-                        } else if (use_personal_name != 0 && ((APIOBJECT_PC *)packet->owner)->character_data != NULL) {
-                            sprintf(locator_name, "%s_%s", params[index], ((APIOBJECT_PC *)packet->owner)->character_data->name);
+                        if (use_indexed_name != 0 && ((APIOBJECT *)packet->owner)->locator_name_index != -1) {
+                            sprintf(locator_name, "%s_%d", params[index], ((APIOBJECT *)packet->owner)->locator_name_index);
+                        } else if (use_personal_name != 0 && ((APIOBJECT *)packet->owner)->character_data != NULL) {
+                            sprintf(locator_name, "%s_%s", params[index], ((APIOBJECT *)packet->owner)->character_data->name);
                         } else if (random_locator_count != 0) {
                             sprintf(locator_name, "%s_%d", params[index], NuRand(NULL) % random_locator_count);
                         } else {
@@ -16137,7 +16124,7 @@ i32 Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
     if ((processor->action_data_1 & 4u) != 0 && packet->opponent != NULL) {
         packet->movement_look_target = &packet->opponent->position;
     }
-    if ((processor->action_data_1 & 1u) != 0 && ((APIOBJECT_PC *)packet->owner)->grounded == 0) {
+    if ((processor->action_data_1 & 1u) != 0 && ((APIOBJECT *)packet->owner)->grounded == 0) {
         return 0;
     }
 
@@ -16158,13 +16145,13 @@ i32 Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
             return 1;
         }
     } else if ((packet->flags & 0x400000u) != 0 && (processor->action_data_1 & 16u) != 0 && AIBigJumpToDestinationFn != NULL &&
-               AIBigJumpToDestinationFn(((APIOBJECT_PC *)packet->owner), &locator->position) != 0) {
+               AIBigJumpToDestinationFn(((APIOBJECT *)packet->owner), &locator->position) != 0) {
         return 1;
     }
     return 0;
 }
 
-i32 Action_FollowPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count, i32 is_first_time,
+i32 Action_FollowPath(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 is_first_time,
                       f32 elapsed) {
     f32 completion_time = 0.0f;
     f32 minimum_time = 0.0f;
@@ -16176,7 +16163,7 @@ i32 Action_FollowPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
 
     (void)sys;
 
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL) {
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
     }
     if (packet->path_info.path == NULL || packet->path_info.connection == NULL) {
@@ -16221,13 +16208,13 @@ i32 Action_FollowPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
     return 0;
 }
 
-i32 Action_MoveAwayFromNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                            i32 first_time, f32 elapsed) {
+i32 Action_MoveAwayFromNode(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                            f32 elapsed) {
     NUVEC difference;
     i32 i;
-    AIPATHNODE_PC *node;
+    AIPATHNODE *node;
     i32 index;
-    AIPATHNODE_PC *node_2;
+    AIPATHNODE *node_2;
     f32 distance;
 
     if (packet == NULL || packet->owner == NULL || packet->path_info.path == NULL || packet->path_info.connection == NULL) {
@@ -16271,7 +16258,7 @@ i32 Action_MoveAwayFromNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACK
     return 1;
 }
 
-void AISysUpdateCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet, i32 ground, f32 elapsed) {
+void AISysUpdateCharacterPathPos(AISYS_PC *system, APIOBJECT *object, AIPACKET *packet, i32 ground, f32 elapsed) {
     i32 should_find_path = (packet->flags & 0x02000000) == 0 &&
                            (((object->flags_low & 4) == 0 || (packet->path_info.flags & 1) == 0) || object->supporting_platform_id != -1);
     if (should_find_path) {
@@ -16292,8 +16279,8 @@ void AISysUpdateCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AIPACKE
         }
     } else {
         if (packet->path_info.path != NULL && packet->path_info.connection != NULL) {
-            AIPATHNODE_PC *first = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[0]];
-            AIPATHNODE_PC *second = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[1]];
+            AIPATHNODE *first = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[0]];
+            AIPATHNODE *second = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[1]];
             if (first->has_special != 0 && (packet->path_info.path->updated_node_bits[packet->path_info.connection->node_indices[0] / 8] &
                                             (1 << (packet->path_info.connection->node_indices[0] % 8))) == 0) {
                 AIPathNodeUpdatePos(system, packet->path_info.path, first);
@@ -16311,10 +16298,10 @@ void AISysUpdateCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AIPACKE
     }
 }
 
-void AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet, i32 ground, f32 elapsed, i32 use_three_dimensions,
+void AISysProcessCharacter(AISYS_PC *system, APIOBJECT *object, AIPACKET *packet, i32 ground, f32 elapsed, i32 use_three_dimensions,
                            i32 process_ai) {
-    AISCRIPTPROCESS_PC *primary = &packet->script_processor;
-    AISCRIPTPROCESS_PC *processor = packet->alternate_processor;
+    AISCRIPTPROCESS *primary = &packet->script_processor;
+    AISCRIPTPROCESS *processor = packet->alternate_processor;
     f32 clearance;
     NUVEC delta;
     f32 distance;
@@ -16324,8 +16311,8 @@ void AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *
         processor = primary;
     }
     if ((packet->route_flags & 1) == 0) {
-        AISTATE_PC *saved_state = primary->state;
-        AISTATE_PC *initial_state = primary->script == NULL ? NULL : AIStateFind("Initialise", primary->script);
+        AISTATE *saved_state = primary->state;
+        AISTATE *initial_state = primary->script == NULL ? NULL : AIStateFind("Initialise", primary->script);
         if (initial_state != NULL) {
             AIScriptSetState(primary, initial_state);
             AIScriptProcess(system, object, packet, primary, 0.0f);
@@ -16360,7 +16347,7 @@ void AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *
                 switch ((packet->flags >> 26) & 3) {
                     case 1:
                         if (packet->creature_index != 0xff) {
-                            AICREATURE_PC *creature = &system->creatures[packet->creature_index];
+                            AICREATURE *creature = &system->creatures[packet->creature_index];
                             AIMoveInstruction(packet, &creature->position, 0.0f, &creature->path_info, 1, 0.0f);
                         }
                         break;
@@ -16467,12 +16454,12 @@ void AISYSRebuildFromEditorData(void) {
     }
     if (aieditor->ai_system->area_count != 0) {
         aieditor->ai_system->areas = AISysBufferAlloc(&aieditor->ai_system->storage_cursor, &aieditor->ai_system->storage_end,
-                                                      aieditor->ai_system->area_count * sizeof(AIAREA_PC));
+                                                      aieditor->ai_system->area_count * sizeof(AIAREA));
         index = 0;
         for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
              area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
-            AIAREA_PC *runtime = &aieditor->ai_system->areas[index++];
-            memcpy(runtime, &area->name, sizeof(*runtime)); /* the record is an AIAREA_PC image behind its link */
+            AIAREA *runtime = &aieditor->ai_system->areas[index++];
+            memcpy(runtime, &area->name, sizeof(*runtime)); /* the record is an AIAREA image behind its link */
             runtime->system = aieditor->ai_system;
         }
     }
@@ -16489,11 +16476,11 @@ void AISYSRebuildFromEditorData(void) {
         }
         if (aieditor->ai_system->locator_count != 0) {
             aieditor->ai_system->locators = AISysBufferAlloc(&aieditor->ai_system->storage_cursor, &aieditor->ai_system->storage_end,
-                                                             aieditor->ai_system->locator_count * sizeof(AILOCATOR_PC));
+                                                             aieditor->ai_system->locator_count * sizeof(AILOCATOR));
             index = 0;
             for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
                  locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
-                AILOCATOR_PC *runtime;
+                AILOCATOR *runtime;
                 i32 connection_index;
                 locator->runtime_index = 0xff;
                 if (locator->path_check.path == NULL) {
@@ -16512,7 +16499,7 @@ void AISYSRebuildFromEditorData(void) {
                     continue;
                 }
                 for (connection_index = 0; connection_index < runtime->path_info.path->connection_count; ++connection_index) {
-                    AIPATHCNX_PC *connection = &runtime->path_info.path->connections[connection_index];
+                    AIPATHCNX *connection = &runtime->path_info.path->connections[connection_index];
                     i32 first = locator->path_check.first->index;
                     if (connection->node_indices[0] == first &&
                         (u16)connection->node_indices[1] == (u16)locator->path_check.second->index) {
@@ -16542,7 +16529,7 @@ void AISYSRebuildFromEditorData(void) {
                 index = 0;
                 for (set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets); set != NULL;
                      ++index, set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link)) {
-                    AILOCATORSET_PC *runtime = &aieditor->ai_system->locator_sets[index];
+                    AILOCATORSET *runtime = &aieditor->ai_system->locator_sets[index];
                     i32 member;
                     strcpy(runtime->name, set->name);
                     runtime->locator_count = 0;
@@ -16572,12 +16559,12 @@ void AISYSRebuildFromEditorData(void) {
             ++aieditor->ai_system->creature_count;
         }
         if (aieditor->ai_system->creature_count != 0) {
-            REBUILD_ALLOCATE(AICREATURE_PC *, aieditor->ai_system->creatures, &aieditor->ai_system->storage_cursor,
-                             &aieditor->ai_system->storage_end, aieditor->ai_system->creature_count * sizeof(AICREATURE_PC));
+            REBUILD_ALLOCATE(AICREATURE *, aieditor->ai_system->creatures, &aieditor->ai_system->storage_cursor,
+                             &aieditor->ai_system->storage_end, aieditor->ai_system->creature_count * sizeof(AICREATURE));
             index = 0;
             for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
                  creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
-                AICREATURE_PC *runtime = &aieditor->ai_system->creatures[index++];
+                AICREATURE *runtime = &aieditor->ai_system->creatures[index++];
                 i32 connection_index;
                 i32 item;
                 strcpy(runtime->name, creature->name);
@@ -16600,7 +16587,7 @@ void AISYSRebuildFromEditorData(void) {
                 }
                 if (runtime->path_info.path != NULL) {
                     for (connection_index = 0; connection_index < runtime->path_info.path->connection_count; ++connection_index) {
-                        AIPATHCNX_PC *connection = &runtime->path_info.path->connections[connection_index];
+                        AIPATHCNX *connection = &runtime->path_info.path->connections[connection_index];
                         i32 first = creature->check.first->index;
                         if (connection->node_indices[0] == first &&
                             (u16)connection->node_indices[1] == (u16)creature->check.second->index) {
@@ -16619,7 +16606,7 @@ void AISYSRebuildFromEditorData(void) {
                 }
                 if (creature->trigger_area != NULL) {
                     for (item = 0; item < aieditor->ai_system->area_count; ++item) {
-                        AIAREA_PC *runtime_area = &aieditor->ai_system->areas[item];
+                        AIAREA *runtime_area = &aieditor->ai_system->areas[item];
                         if (NuStrICmp(creature->trigger_area->name, runtime_area->name) == 0) {
                             runtime->area = runtime_area;
                             break;
@@ -16628,7 +16615,7 @@ void AISYSRebuildFromEditorData(void) {
                 }
                 if (creature->locator != NULL) {
                     for (item = 0; item < aieditor->ai_system->locator_count; ++item) {
-                        AILOCATOR_PC *runtime_locator = &aieditor->ai_system->locators[item];
+                        AILOCATOR *runtime_locator = &aieditor->ai_system->locators[item];
                         if (NuStrICmp(creature->locator->name, runtime_locator->name) == 0) {
                             runtime->locator = runtime_locator;
                             break;
@@ -16637,7 +16624,7 @@ void AISYSRebuildFromEditorData(void) {
                 }
                 if (creature->respawn_locator != NULL) {
                     for (item = 0; item < aieditor->ai_system->locator_count; ++item) {
-                        AILOCATOR_PC *runtime_locator = &aieditor->ai_system->locators[item];
+                        AILOCATOR *runtime_locator = &aieditor->ai_system->locators[item];
                         if (NuStrICmp(creature->respawn_locator->name, runtime_locator->name) == 0) {
                             runtime->respawn_locator = runtime_locator;
                             break;
@@ -16660,7 +16647,7 @@ void AISYSRebuildFromEditorData(void) {
                         runtime->activation_type = 0;
                         if (creature->activation_area != NULL) {
                             for (item = 0; item < aieditor->ai_system->area_count; ++item) {
-                                AIAREA_PC *runtime_area = &aieditor->ai_system->areas[item];
+                                AIAREA *runtime_area = &aieditor->ai_system->areas[item];
                                 if (NuStrICmp(creature->activation_area->name, runtime_area->name) == 0) {
                                     runtime->activate_area = runtime_area;
                                     runtime->activation_type = 1;
@@ -16683,12 +16670,12 @@ void AISYSRebuildFromEditorData(void) {
         ++aieditor->ai_system->antinode_count;
     }
     if (aieditor->ai_system->antinode_count != 0) {
-        REBUILD_ALLOCATE(AIANTINODE_PC *, aieditor->ai_system->antinodes, &aieditor->ai_system->storage_cursor,
-                         &aieditor->ai_system->storage_end, aieditor->ai_system->antinode_count * sizeof(AIANTINODE_PC));
+        REBUILD_ALLOCATE(AIANTINODE *, aieditor->ai_system->antinodes, &aieditor->ai_system->storage_cursor,
+                         &aieditor->ai_system->storage_end, aieditor->ai_system->antinode_count * sizeof(AIANTINODE));
         index = 0;
         for (node = (EDANTINODE_s *)NuLinkedListGetHead(&aieditor->antinodes); node != NULL;
              node = (EDANTINODE_s *)NuLinkedListGetNext(&aieditor->antinodes, &node->link)) {
-            AIANTINODE_PC *runtime = &aieditor->ai_system->antinodes[index++];
+            AIANTINODE *runtime = &aieditor->ai_system->antinodes[index++];
             runtime->enabled = 1;
             runtime->position = node->position;
             runtime->radius = node->radius;
@@ -16724,7 +16711,7 @@ void AISYSRebuildFromEditorData(void) {
 i32 aieditor_Save(void) {
     VARIPTR cursor;
     VARIPTR end;
-    AIPATHSYS_PC *paths;
+    AIPATHSYS *paths;
     AI_EDITOR_FILE_INFO info;
     char filename[128];
     char backup[128];
@@ -16779,7 +16766,7 @@ i32 aieditor_Save(void) {
 
 void aieditor_Leave(void) {
     i32 index;
-    edmainGetCameraPc()->near_clip = 0.15f;
+    edmainGetCamera()->near_clip = 0.15f;
     for (index = 0; index < aieditorsettings.modes.count; ++index) {
         if (aieditorsettings.modes.entries[index].leave != NULL) {
             aieditorsettings.modes.entries[index].leave();
@@ -16804,8 +16791,8 @@ eduimenu_s *areaEditorDeleteMenu(void) {
     if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, areaEditor_cbCancelDeleteAreaMenu, "Delete area??");
         if (menu != NULL) {
-            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, areaEditor_cbDeleteArea, "No"));
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, areaEditor_cbDeleteArea, "Yes"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, areaEditor_cbDeleteArea, "No"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, areaEditor_cbDeleteArea, "Yes"));
             return menu;
         }
     }
@@ -16815,12 +16802,12 @@ eduimenu_s *areaEditorDeleteMenu(void) {
 eduimenu_s *locatorEditor_DeleteLocatorMenu(void) {
     eduimenu_s *menu;
     if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
-        menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteLocatorCancelPc, "Delete locator??");
+        menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteLocatorCancel, "Delete locator??");
         if (menu != NULL) {
-            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorDeleteLocatorSelectionPc,
-                                                    (char *)MenuPcString75f2c0));
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorDeleteLocatorSelectionPc,
-                                                    (char *)MenuPcString75f2c4));
+            eduiMenuAddItem(
+                menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)MenuPcString75f2c0));
+            eduiMenuAddItem(
+                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)MenuPcString75f2c4));
             return menu;
         }
     }
@@ -16851,8 +16838,8 @@ void pathEditor_cbDeletePath(eduimenu_s *parent, eduiitem_s *item, u32 event) {
         case 0:
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Delete current path??");
             if (menu != NULL) {
-                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDeletePath, "No"));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDeletePath, "Yes"));
+                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbDeletePath, "No"));
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbDeletePath, "Yes"));
                 eduiMenuAttach(parent, menu);
             }
             break;
@@ -16867,10 +16854,10 @@ void pathEditor_cbDeletePath(eduimenu_s *parent, eduiitem_s *item, u32 event) {
             }
             pathEditor_DestroyPath(aieditor->current_path);
             aieditor->current_path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
-            AiEditorClearMainMenuPc();
+            AiEditorClearMainMenu();
             break;
         case 2:
-            AiEditorClearMainMenuPc();
+            AiEditorClearMainMenu();
             break;
     }
 }
@@ -16880,8 +16867,8 @@ eduimenu_s *pathEditor_DeleteNodeMenu(void) {
     if (aieditor->current_path->current_node != NULL && aieditor->current_path->current_node == aieditor->current_path->nearest_node) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, pathEditor_cbCancelDeleteNodeMenu, "Delete current path node??");
         if (menu != NULL) {
-            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDeletePathNode, "No"));
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDeletePathNode, "Yes"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbDeletePathNode, "No"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbDeletePathNode, "Yes"));
             return menu;
         }
     }
@@ -16894,8 +16881,8 @@ eduimenu_s *pathEditor_DisconnectNodeMenu(void) {
         aieditor->current_path->current_node != aieditor->current_path->nearest_node) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, pathEditor_cbCancelDisconnectNodeMenu, "Disconnect current path node??");
         if (menu != NULL) {
-            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDisconnectPathNode, "No"));
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDisconnectPathNode, "Yes"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbDisconnectPathNode, "No"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbDisconnectPathNode, "Yes"));
             return menu;
         }
     }
@@ -16916,35 +16903,35 @@ void aieditor_cbSave(eduimenu_s *parent, eduiitem_s *item, u32 value) {
         menu = eduiMenuCreate(0x78, 0x5a, 0x1b8, 0xfa, ed_fnt, NULL, "AI Save FAILED");
         if (menu != NULL) {
             sprintf(message, "Make sure there is a folder called \"%s\" in your level directory", aieditor->level_subdirectory);
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorSaveCloseSelectionPc, message));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorSaveCloseSelection, message));
             eduiMenuAttach(parent, menu);
         }
     }
 }
 
 eduimenu_s *antinodeEditor_MainMenu(void) {
-    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenu, "Options");
     if (menu != NULL) {
-        eduiMenuAddItem(menu, eduiItemSelCreate(AiEditorAntinodeModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorModeMenuPc,
-                                                "Select Editor Mode"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(AiEditorAntinodeModeId, &AiEditorSaveMessageColours, 0, 0, AiEditorModeMenu, "Select Editor Mode"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorCameraToPlayer, "Go To Player"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorMovePlayers, "Move Player"));
         if (aieditor->selected_antinode != NULL) {
             eduiMenuAddItem(menu,
-                            eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorAntinodeTypeMenuPc, "Select Antinode Type"));
+                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorAntinodeTypeMenu, "Select Antinode Type"));
         }
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 23) >> 31, 1,
-                                                   AiEditorDisplayBit8Pc, "Solid Antinode Display"));
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 25) >> 31, 2,
-                                                   AiEditorDisplayBit6Pc, "Stop Platforms"));
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 27) >> 31, 3,
-                                                   AiEditorDisplayBit4Pc, "Snap Height"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 23) >> 31, 1,
+                                                   AiEditorDisplayBit8, "Solid Antinode Display"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 25) >> 31, 2,
+                                                   AiEditorDisplayBit6, "Stop Platforms"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 27) >> 31, 3,
+                                                   AiEditorDisplayBit4, "Snap Height"));
         if (aieditor->selected_antinode != NULL) {
-            eduiMenuAddItem(menu, eduiItemToggleCreate(0x80, &AiEditorSaveMessageColoursPc, aieditor->selected_antinode->game_flags >> 7, 4,
-                                                       AiEditorAntinodeGameFlagsPc, "Never On A Platform"));
-            eduiMenuAddItem(menu, eduiItemToggleCreate(2, &AiEditorSaveMessageColoursPc, (aieditor->selected_antinode->game_flags >> 1) & 1,
-                                                       5, AiEditorAntinodeGameFlagsPc, "Disbale direction memory"));
+            eduiMenuAddItem(menu, eduiItemToggleCreate(0x80, &AiEditorSaveMessageColours, aieditor->selected_antinode->game_flags >> 7, 4,
+                                                       AiEditorAntinodeGameFlags, "Never On A Platform"));
+            eduiMenuAddItem(menu, eduiItemToggleCreate(2, &AiEditorSaveMessageColours, (aieditor->selected_antinode->game_flags >> 1) & 1,
+                                                       5, AiEditorAntinodeGameFlags, "Disbale direction memory"));
         }
         return menu;
     }
@@ -17159,43 +17146,41 @@ nearest:
 eduimenu_s *creatureEditorOptionsMenu(void) {
     eduimenu_s *menu;
     i32 group;
-    menu = eduiMenuCreate(200, 70, 240, 330, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    menu = eduiMenuCreate(200, 70, 240, 330, ed_fnt, AiEditorMessageCloseMenu, "Options");
     group = 1;
     if (menu != NULL) {
-        eduiMenuAddItem(
-            menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorModeMenuPc, "Select Editor Mode"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(group, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(group, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(group, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
         eduiMenuAddItem(menu,
-                        eduiItemSelCreate(group, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbSelectType, "Select Creature Type"));
+                        eduiItemSelCreate(AiEditorRouteModeId, &AiEditorSaveMessageColours, 0, 0, AiEditorModeMenu, "Select Editor Mode"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(group, &AiEditorSaveMessageColours, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(group, &AiEditorSaveMessageColours, 0, 0, AiEditorCameraToPlayer, "Go To Player"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(group, &AiEditorSaveMessageColours, 0, 0, AiEditorMovePlayers, "Move Player"));
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(group, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbSelectType, "Select Creature Type"));
         if (aieditor->selected_creature != NULL) {
             if (AIScriptNameFromIx(aieditor->ai_system, 0) != NULL) {
                 eduiMenuAddItem(
-                    menu, eduiItemSelCreate(group, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbSelectScript, "Select Script"));
+                    menu, eduiItemSelCreate(group, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbSelectScript, "Select Script"));
             }
-            eduiMenuAddItem(menu,
-                            eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbScriptParams, "Script Params"));
-            eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_assigntoset, 0,
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbScriptParams, "Script Params"));
+            eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColours, 0, creatureEditor_cb_assigntoset, 0,
                                                           aisys_maxnumcreaturesets, aieditor->selected_creature->set, "Assigned To Set"));
             eduiMenuAddItem(
-                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbRenameCreatureMenu, "Rename Creature"));
+                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbRenameCreatureMenu, "Rename Creature"));
             eduiMenuAddItem(
-                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbActivationMenu, "Activation Conditions"));
-            eduiMenuAddItem(menu,
-                            eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbRespawnMenu, "Respawn Values"));
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbGroupMenu, "Group Values"));
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, creatureEditor_cbVisionMenu, "Vision"));
-            eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, aieditor->selected_creature->flags & 1, 1,
+                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbActivationMenu, "Activation Conditions"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbRespawnMenu, "Respawn Values"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbGroupMenu, "Group Values"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, creatureEditor_cbVisionMenu, "Vision"));
+            eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, aieditor->selected_creature->flags & 1, 1,
                                                        creatureEditor_cbFlagsToggle, "Ignore Wall Splines"));
             group = 2;
         }
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 25) >> 31,
-                                                   group, AiEditorDisplayBit6Pc, "Stop Platforms"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 25) >> 31,
+                                                   group, AiEditorDisplayBit6, "Stop Platforms"));
         ++group;
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 27) >> 31,
-                                                   group, AiEditorDisplayBit4Pc, "Snap Height"));
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 21) >> 31,
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 27) >> 31,
+                                                   group, AiEditorDisplayBit4, "Snap Height"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 21) >> 31,
                                                    group + 1, aieditor_cbShowCreaturesSetToggle, "Show Current Set"));
         return menu;
     }
@@ -17386,25 +17371,25 @@ done:
 }
 
 eduimenu_s *areaEditorOptionsMenu(void) {
-    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenu, "Options");
     if (menu != NULL) {
-        eduiMenuAddItem(
-            menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorModeMenuPc, "Select Editor Mode"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(AiEditorRouteModeId, &AiEditorSaveMessageColours, 0, 0, AiEditorModeMenu, "Select Editor Mode"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorCameraToPlayer, "Go To Player"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorMovePlayers, "Move Player"));
         if (aieditor->selected_area != NULL && AIScriptNameFromIx(aieditor->ai_system, 0) != NULL) {
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, areaEditor_cbRenameAreaMenu, "Rename Area"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, areaEditor_cbRenameAreaMenu, "Rename Area"));
         }
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 25) >> 31, 3,
-                                                   AiEditorDisplayBit6Pc, "Stop Platforms"));
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 27) >> 31, 2,
-                                                   AiEditorDisplayBit4Pc, "Snap Height"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 25) >> 31, 3,
+                                                   AiEditorDisplayBit6, "Stop Platforms"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 27) >> 31, 2,
+                                                   AiEditorDisplayBit4, "Snap Height"));
         if (aieditor->selected_area != NULL) {
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, NULL, "================="));
-            eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, aieditor->selected_area->flags & 1, 4,
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, NULL, "================="));
+            eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, aieditor->selected_area->flags & 1, 4,
                                                        areaEditor_cbCylinderToggle, "Cylinder"));
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, NULL, "================="));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, NULL, "================="));
         }
         return menu;
     }
@@ -17564,37 +17549,37 @@ done:
 }
 
 eduimenu_s *locatorEditor_MainMenu(void) {
-    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenu, "Options");
     if (menu != NULL) {
-        eduiMenuAddItem(
-            menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorModeMenuPc, "Select Editor Mode"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(AiEditorRouteModeId, &AiEditorSaveMessageColours, 0, 0, AiEditorModeMenu, "Select Editor Mode"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorCameraToPlayer, "Go To Player"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorMovePlayers, "Move Player"));
         if (aieditor->current_locator != NULL && AIScriptNameFromIx(aieditor->ai_system, 0) != NULL) {
             eduiMenuAddItem(menu,
-                            eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbRenameLocatorMenu, "Rename Locator"));
+                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbRenameLocatorMenu, "Rename Locator"));
         }
         eduiMenuAddItem(menu,
-                        eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbCreateLocatorSet, "Create Locator Set"));
+                        eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbCreateLocatorSet, "Create Locator Set"));
         if (NuLinkedListGetHead(&aieditor->locator_sets) != NULL) {
             eduiMenuAddItem(
-                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbSelectLocatorSet, "Select Locator Set"));
+                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbSelectLocatorSet, "Select Locator Set"));
             if (aieditor->current_locator_set != NULL) {
-                eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbDeleteLocatorSet,
-                                                        "Delete Locator Set"));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbRenameLocatorSetMenu,
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, "Delete Locator Set"));
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbRenameLocatorSetMenu,
                                                         "Rename Locator Set"));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbAddLocatorsByName,
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByName,
                                                         "Add Locators To Set By Name"));
                 eduiMenuAddItem(
-                    menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbEmptyLocatorSet, "Empty Locator Set"));
+                    menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, "Empty Locator Set"));
             }
         }
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 25) >> 31, 3,
-                                                   AiEditorDisplayBit6Pc, "Stop Platforms"));
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 27) >> 31, 2,
-                                                   AiEditorDisplayBit4Pc, "Snap Height"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 25) >> 31, 3,
+                                                   AiEditorDisplayBit6, "Stop Platforms"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 27) >> 31, 2,
+                                                   AiEditorDisplayBit4, "Snap Height"));
         return menu;
     }
     return NULL;
@@ -17613,11 +17598,11 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
             char title[128];
             eduimenu_s *menu;
             sprintf(title, "Add locators \"%s\" to set \"%s\"?", aieditor->pending_locator_name, aieditor->current_locator_set->name);
-            menu = eduiMenuCreate(100, 70, 440, 270, ed_fnt, AiEditorMessageCloseMenuPc, title);
+            menu = eduiMenuCreate(100, 70, 440, 270, ed_fnt, AiEditorMessageCloseMenu, title);
             if (menu != NULL) {
-                eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
+                eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
                                                         (char *)MenuPcString75f2c0));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
                                                         (char *)MenuPcString75f2c4));
                 return menu;
             }
@@ -17661,7 +17646,7 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
                 NuStrCpy(base, "Locator");
             }
             previous = aieditor->current_locator;
-            created = AiEditorCreateLocatorPc(&aieditor->camera_position, aieditorsettings.locator_rotation);
+            created = AiEditorCreateLocator(&aieditor->camera_position, aieditorsettings.locator_rotation);
             aieditor->current_locator = created;
             if (aieditor->current_locator != NULL) {
                 char name[16];
@@ -17685,9 +17670,9 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
                 angle = NuAngSub(aieditor->current_locator->direction, aieditor->cursor_check.angle);
                 aieditor->current_locator->path_check.angle = angle;
                 if (previous != NULL && previous != aieditor->current_locator) {
-                    AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->current_locator, previous);
+                    AiEditorAddLocatorToSet(aieditor->current_locator_set, aieditor->current_locator, previous);
                 } else {
-                    AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->current_locator, NULL);
+                    AiEditorAddLocatorToSet(aieditor->current_locator_set, aieditor->current_locator, NULL);
                 }
             }
         }
@@ -17700,7 +17685,7 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
         i32 moved = 0;
         if ((pad->digital_buttons_pressed & 8) != 0) {
             if (aieditor->current_locator_set != NULL) {
-                next = AiEditorNextLocatorInSetPc(aieditor->current_locator_set, aieditor->current_locator);
+                next = AiEditorNextLocatorInSet(aieditor->current_locator_set, aieditor->current_locator);
                 aieditor->current_locator = next;
             } else {
                 if (aieditor->current_locator != NULL) {
@@ -17715,7 +17700,7 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
             moved = 1;
         } else if ((pad->digital_buttons_pressed & 2) != 0) {
             if (aieditor->current_locator_set != NULL) {
-                next = AiEditorPrevLocatorInSetPc(aieditor->current_locator_set, aieditor->current_locator);
+                next = AiEditorPrevLocatorInSet(aieditor->current_locator_set, aieditor->current_locator);
                 aieditor->current_locator = next;
             } else {
                 if (aieditor->current_locator != NULL) {
@@ -17810,16 +17795,16 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
             }
         }
         if (!in_set && aieditor->current_locator != NULL && aieditor->current_locator != aieditor->nearest_locator) {
-            added = AiEditorAddLocatorToSetPc(set, nearest, aieditor->current_locator);
+            added = AiEditorAddLocatorToSet(set, nearest, aieditor->current_locator);
         } else if (in_set) {
-            AiEditorRemoveLocatorFromSetPc(set, nearest);
+            AiEditorRemoveLocatorFromSet(set, nearest);
             if (aieditor->current_locator == NULL || aieditor->current_locator == aieditor->nearest_locator) {
                 goto refresh_hover;
             }
             current = aieditor->current_locator;
-            added = AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->nearest_locator, current);
+            added = AiEditorAddLocatorToSet(aieditor->current_locator_set, aieditor->nearest_locator, current);
         } else {
-            added = AiEditorAddLocatorToSetPc(set, nearest, NULL);
+            added = AiEditorAddLocatorToSet(set, nearest, NULL);
         }
         if (added != 0) {
             aieditor->current_locator = aieditor->nearest_locator;
@@ -17837,39 +17822,38 @@ refresh_hover:
 }
 
 eduimenu_s *pathEditor_MainMenu(void) {
-    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenu, "Options");
     EDAIPATHNODE_s *node;
     EDAIPATHNODE_s *other;
     EDAIPATHCNX_s *connection;
     i32 index;
     i32 row;
     if (menu != NULL) {
-        eduiMenuAddItem(
-            menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorModeMenuPc, "Select Editor Mode"));
-        if (aieditor->current_path != NULL && aieditor->current_path->current_node != NULL) {
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbRenameNodeMenu, "Rename Node"));
-        }
         eduiMenuAddItem(menu,
-                        eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbSelectPathMenu, "Select Path Network"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbCreatePath, "Create Path Network"));
+                        eduiItemSelCreate(AiEditorRouteModeId, &AiEditorSaveMessageColours, 0, 0, AiEditorModeMenu, "Select Editor Mode"));
+        if (aieditor->current_path != NULL && aieditor->current_path->current_node != NULL) {
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbRenameNodeMenu, "Rename Node"));
+        }
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbSelectPathMenu, "Select Path Network"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorCameraToPlayer, "Go To Player"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorMovePlayers, "Move Player"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbCreatePath, "Create Path Network"));
         if (aieditor->current_path != NULL) {
             if (aieditor->current_path->current_node != NULL) {
-                eduiMenuAddItem(
-                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbShareNodeMenu, "Share node with..."));
+                eduiMenuAddItem(menu,
+                                eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbShareNodeMenu, "Share node with..."));
             }
             if (aieditor->current_path != NULL && !(aieditor->current_path->flags & 1)) {
                 eduiMenuAddItem(menu,
-                                eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDeletePath, "Delete Path Network"));
+                                eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbDeletePath, "Delete Path Network"));
             }
             if (aieditor->current_path != NULL && !(aieditor->current_path->flags & 1)) {
                 eduiMenuAddItem(
-                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbRenamePathMenu, "Rename Path Network"));
+                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, pathEditor_cbRenamePathMenu, "Rename Path Network"));
             }
         }
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 24) >> 31, 1,
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 24) >> 31, 1,
                                                    aieditor_cbSolidPathDisplayToggle, "Solid Path Display"));
         row = 2;
         if (aieditor->current_path != NULL) {
@@ -17884,42 +17868,42 @@ eduimenu_s *pathEditor_MainMenu(void) {
                     }
                 }
                 {
-                    if (connection != NULL && AIPathConnectionTypeCountPc != 0) {
-                        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, NULL, "================="));
-                        for (index = 0; index < AIPathConnectionTypeCountPc; ++index) {
+                    if (connection != NULL && AIPathConnectionTypeCount != 0) {
+                        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, NULL, "================="));
+                        for (index = 0; index < AIPathConnectionTypeCount; ++index) {
                             eduiMenuAddItem(menu,
-                                            eduiItemToggleCreate(index, &AiEditorSaveMessageColoursPc,
-                                                                 (AIPathConnectionTypesPc[index].connection_flag & connection->flags) != 0,
-                                                                 row, pathEditor_cbCnxFlagsToggle, AIPathConnectionTypesPc[index].name));
+                                            eduiItemToggleCreate(index, &AiEditorSaveMessageColours,
+                                                                 (AIPathConnectionTypes[index].connection_flag & connection->flags) != 0,
+                                                                 row, pathEditor_cbCnxFlagsToggle, AIPathConnectionTypes[index].name));
                             ++row;
                         }
-                        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, NULL, "================="));
+                        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, NULL, "================="));
                     }
                 }
             }
             if (aieditor->current_path->current_node != NULL) {
                 eduiMenuAddItem(menu,
-                                eduiItemToggleCreate(0x80, &AiEditorSaveMessageColoursPc, aieditor->current_path->current_node->flags >> 7,
+                                eduiItemToggleCreate(0x80, &AiEditorSaveMessageColours, aieditor->current_path->current_node->flags >> 7,
                                                      row, pathEditor_cbNodeFlagsToggle, "Never On A Platform"));
                 ++row;
             }
         }
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 25) >> 31,
-                                                   row, AiEditorDisplayBit6Pc, "Stop Platforms"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 25) >> 31, row,
+                                                   AiEditorDisplayBit6, "Stop Platforms"));
         ++row;
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 22) >> 31,
-                                                   row, pathEditor_cbDrawWallsplinesToggle, "Draw Wallsplines"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 22) >> 31, row,
+                                                   pathEditor_cbDrawWallsplinesToggle, "Draw Wallsplines"));
         ++row;
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 30) >> 31,
-                                                   row, aieditor_cbDrawAllToggle, "Draw All Paths"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 30) >> 31, row,
+                                                   aieditor_cbDrawAllToggle, "Draw All Paths"));
         ++row;
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 27) >> 31,
-                                                   row, AiEditorDisplayBit4Pc, "Snap Height"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 27) >> 31, row,
+                                                   AiEditorDisplayBit4, "Snap Height"));
         ++row;
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(aieditorsettings.display_options << 28) >> 31,
-                                                   row, aieditor_cbShowCreaturesToggle, "Show Creatures"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, (i32)(aieditorsettings.display_options << 28) >> 31, row,
+                                                   aieditor_cbShowCreaturesToggle, "Show Creatures"));
         ++row;
-        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, near_clip_at_cursor, row, cbNearClipAtCursor,
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColours, near_clip_at_cursor, row, cbNearClipAtCursor,
                                                    "Near Clip At Cursor"));
         return menu;
     }
@@ -18184,18 +18168,18 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
 }
 
 eduimenu_s *routeEditor_MainMenu(void) {
-    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenu, "Options");
     if (menu != NULL) {
-        eduiMenuAddItem(
-            menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorModeMenuPc, "Select Editor Mode"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbCreateRoute, "Create New Route"));
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(AiEditorRouteModeId, &AiEditorSaveMessageColours, 0, 0, AiEditorModeMenu, "Select Editor Mode"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, routeEditor_cbCreateRoute, "Create New Route"));
         if (aieditor->current_path != NULL && aieditor->current_path->current_route != NULL) {
-            eduiMenuAddItem(
-                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbRenameRouteMenu, "Rename Current Route"));
             eduiMenuAddItem(menu,
-                            eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbDeleteRoute, "Destroy Current Route"));
-            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbRouteUsers, "Route Users"));
+                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, routeEditor_cbRenameRouteMenu, "Rename Current Route"));
+            eduiMenuAddItem(menu,
+                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, routeEditor_cbDeleteRoute, "Destroy Current Route"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, routeEditor_cbRouteUsers, "Route Users"));
         }
         return menu;
     }
@@ -18348,14 +18332,13 @@ void aieditor_Init(AIEDITOR_RENDER_STATE *state, void **scratch_cursor, void **s
     aieditorsettings.script_flags = 0;
     aieditorsettings.modes.count = 0;
     memset(aieditorsettings.modes.entries, 0, sizeof(aieditorsettings.modes.entries));
-    AIEDITOR_REGISTER_PC(AiEditorPathsModeIdPc, "AIEDITOR_PATHS", pathEditor_Enter, pathEditor_Process, pathEditor_Render);
-    AIEDITOR_REGISTER_PC(AiEditorRouteModeIdPc, "AIEDITOR_ROUTES", NULL, routeEditor_Process, routeEditor_Render);
-    AIEDITOR_REGISTER_PC(AiEditorAreasModeIdPc, "AIEDITOR_AREAS", areaEditor_Enter, areaEditor_Process, areaEditor_Render);
-    AIEDITOR_REGISTER_PC(AiEditorLocatorsModeIdPc, "AIEDITOR_LOCATORS", locatorEditor_Enter, locatorEditor_Process, locatorEditor_Render);
-    AIEDITOR_REGISTER_PC(AiEditorCreaturesModeIdPc, "AIEDITOR_CREATURES", creatureEditor_Enter, creatureEditor_Process,
+    AIEDITOR_REGISTER_PC(AiEditorPathsModeId, "AIEDITOR_PATHS", pathEditor_Enter, pathEditor_Process, pathEditor_Render);
+    AIEDITOR_REGISTER_PC(AiEditorRouteModeId, "AIEDITOR_ROUTES", NULL, routeEditor_Process, routeEditor_Render);
+    AIEDITOR_REGISTER_PC(AiEditorAreasModeId, "AIEDITOR_AREAS", areaEditor_Enter, areaEditor_Process, areaEditor_Render);
+    AIEDITOR_REGISTER_PC(AiEditorLocatorsModeId, "AIEDITOR_LOCATORS", locatorEditor_Enter, locatorEditor_Process, locatorEditor_Render);
+    AIEDITOR_REGISTER_PC(AiEditorCreaturesModeId, "AIEDITOR_CREATURES", creatureEditor_Enter, creatureEditor_Process,
                          creatureEditor_Render);
-    AIEDITOR_REGISTER_PC(AiEditorAntinodeModeIdPc, "AIEDITOR_ANTINODES", antinodeEditor_Enter, antinodeEditor_Process,
-                         antinodeEditor_Render);
+    AIEDITOR_REGISTER_PC(AiEditorAntinodeModeId, "AIEDITOR_ANTINODES", antinodeEditor_Enter, antinodeEditor_Process, antinodeEditor_Render);
     aieditor_RegisterDefaultPathCnxTypes();
     aieditorsettings.path_scratch_cursor = *scratch_cursor;
     aieditorsettings.path_scratch_end = *scratch_end;
@@ -18385,7 +18368,7 @@ void AIScriptMissingConditionDiagnostic(const char *format, ...) {
 }
 
 #pragma data_seg(".data$api_aiactiondefs")
-AIACTIONDEF_PC api_aiactiondefs[55] = {
+AIACTIONDEF api_aiactiondefs[55] = {
     {"Idle",                       Action_Idle,                       0, 0, 0},
     {"SetState",                   Action_SetState,                   0, 0, 0},
     {"ResetTimer",                 Action_ResetTimer,                 0, 0, 0},
@@ -18445,7 +18428,7 @@ AIACTIONDEF_PC api_aiactiondefs[55] = {
 #pragma data_seg()
 
 #pragma data_seg(".data$api_aiconditiondefs")
-AICONDITIONDEF_PC api_aiconditiondefs[50] = {
+AICONDITIONDEF api_aiconditiondefs[50] = {
     {"PreviousResult",            NULL,                                NULL                               },
     {"AlwaysTrue",                Condition_AlwaysTrue,                Condition_AlwaysTrueInit           },
     {"LocatorRange",              Condition_LocatorRange,              Condition_LocatorRangeInit         },
@@ -18463,7 +18446,7 @@ AICONDITIONDEF_PC api_aiconditiondefs[50] = {
     {"InLevelNode",               Condition_InLevelNode,               Condition_InLevelNodeInit          },
     {"PlayerInLevelNode",         Condition_PlayerInLevelNode,         Condition_PlayerInLevelNodeInit    },
     {"EitherPlayerInLevelNode",   Condition_EitherPlayerInLevelNode,   Condition_PlayerInLevelNodeInit    },
-    {"NodeRange",                 Condition_NodeRangePc,               Condition_NodeRangeInitPc          },
+    {"NodeRange",                 Condition_NodeRange,                 Condition_NodeRangeInit            },
     {"GotTriggerArea",            Condition_GotTriggerArea,            NULL                               },
     {"PlayerInTriggerArea",       Condition_PlayerInTriggerArea,       Condition_PlayerInTriggerAreaInit  },
     {"Player2InTriggerArea",      Condition_Player2InTriggerArea,      Condition_PlayerInTriggerAreaInit  },

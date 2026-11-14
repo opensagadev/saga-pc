@@ -40,8 +40,8 @@ included `saga.h`.
 Result against 352eb5eb (full build, `match.py --update`):
 
 - Exact set by address: 13,224 before, 13,223 after.
-  `BlockadeRunnerDEjectCreaturePc` (`legogame/episodeIV.c`) drops from
-  exact to 95.18%. `BoulderSpawnPc` and `SubItemMenu` stay exact.
+  `BlockadeRunnerDEjectCreature` (`legogame/episodeIV.c`) drops from
+  exact to 95.18%. `BoulderSpawn` and `SubItemMenu` stay exact.
 - Reproduced data: 970,153 bytes before and after.
 - 366 of 373 objects are identical apart from the COFF timestamp. Of the
   other seven, three differ only in names: `pc_device.obj` and
@@ -51,14 +51,14 @@ Result against 352eb5eb (full build, `match.py --update`):
 
 | unit | function | objdiff before | after |
 |---|---|---:|---:|
-| `legogame/episodeIV.c` | `BlockadeRunnerDEjectCreaturePc` | exact | 95.1754 |
+| `legogame/episodeIV.c` | `BlockadeRunnerDEjectCreature` | exact | 95.1754 |
 | `legogame/shop.c` | `DrawSubItems` | 82.9484 | 82.9811 |
 | `gamelib/net/NetStats.cpp` | `NetStats::Draw` | 99.9353 | 99.9727 |
 | `legogame/game.cpp` | `InitGameAfterConfig` | 82.2397 | 82.2397 (other bytes) |
 
 On the earlier base e4aa6520 (421 vs 420 headers, fewer declarations) the
 same split kept all exact functions and moved `NuRndrParticleGroup` and
-`NuDeferredFilterGen::render` instead of `BlockadeRunnerDEjectCreaturePc`
+`NuDeferredFilterGen::render` instead of `BlockadeRunnerDEjectCreature`
 and `NetStats::Draw`: which fragile function moves depends on the id count
 of the day (section 6, "Files as ids").
 
@@ -113,7 +113,7 @@ So no include list a programmer would write compiles for any of the
 fragile units, and order within the unit cannot fix it: a direct include
 gives all parts of a header at once. What has to come first is step 3's
 ownership work, at least for the headers in the closure of a narrowed
-unit: move the joint types (`WORLDINFO_s`, `AIPACKET_PC`, `gameobject_s`,
+unit: move the joint types (`WORLDINFO_s`, `AIPACKET`, `gameobject_s`,
 the view types of `decomp.h`) to headers both sides include, so the
 headers have one part each and no cycle; give `decomp.h`'s prelude and
 `STATIC_ASSERT` a header that everything includes first. A header that
@@ -176,7 +176,7 @@ types needed by value across headers: the catch-alls
 (`nu3d_includes.h`) inside `world.h`, `level.h` and `apiobject.h`, and the
 save types between `levels.h`, `game.h`, `audio.h` and `hub.h`. Most of the
 230 failing headers fail only because they reach this cycle. The fragile
-units are not ready: `legogame/episodeIII.c` (`BoulderSpawnPc`) uses 55
+units are not ready: `legogame/episodeIII.c` (`BoulderSpawn`) uses 55
 module headers, 39 of them not standalone; `legogame/episodeIV.c` uses 44,
 32 not standalone.
 
@@ -362,7 +362,7 @@ The 50 largest `rule` rows:
 
 | name | kind | lines | target | why |
 |---|---|---:|---|---|
-| `PLAYERCHARACTERCONFIG_PC` | struct | 157 | `legoapi/characters/motion/move.h` | used most in legogame/move.c (25) |
+| `PLAYERCHARACTERCONFIG` | struct | 157 | `legoapi/characters/motion/move.h` | used most in legogame/move.c (25) |
 | `PC_D3D9_METHODS_PC` | struct | 131 | `nu2api/nufmv/pc/Bink/dsplay_bink.h` | used in saga.h only, most by nu2api/nufmv/pc/Bink/dsplay_bink.h (1) |
 | `PC_DEVICE_BACKEND_PC` | struct | 125 | `nu2api/nuwin32/d3dCore.h` | used most in nu2api/nuwin32/d3dCore.cpp (44) |
 | `gamesave_s` | struct | 90 | `legogame/game.h` | used most in legogame/game.c (2) |
@@ -378,20 +378,20 @@ The 50 largest `rule` rows:
 | `parttype_lookup_s` | struct | 53 | `legoapi/items/objects/objectsall.h` | used most in gameapi/objectsall.cpp (9) |
 | `nurndrlibscene_s` | struct | 52 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (3) |
 | `FRAME_SCANNED_PAD_PC` | struct | 52 | `nu2api/huffdecode.h` | used most in nu2api/nucore_includes.cpp[huffdecode.c] (2) |
-| `ADDPART_PC` | struct | 48 | `legoapi/items/objects/game_obj.h` | used most in legogame/game_obj.c (8) |
-| `GIZMOPICKUP_PC` | struct | 46 | `legoapi/gizmos/fx/gizmopickups.h` | used most in legoapi/gizmopickups.c (36) |
-| `GIZMO_LEVER_PC` | struct | 43 | `legoapi/gizmos/object/lever.h` | used most in legogame/lever.c (51) |
-| `nudisplay_list_pc_s` | struct | 42 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (45) |
-| `player_batarang_slot_pc_s` | struct | 41 | `legogame/batman_gameai.h` | used most in legogame/batman_gameai.c (9) |
+| `ADDPART` | struct | 48 | `legoapi/items/objects/game_obj.h` | used most in legogame/game_obj.c (8) |
+| `GIZMOPICKUP` | struct | 46 | `legoapi/gizmos/fx/gizmopickups.h` | used most in legoapi/gizmopickups.c (36) |
+| `GIZMO_LEVER` | struct | 43 | `legoapi/gizmos/object/lever.h` | used most in legogame/lever.c (51) |
+| `nudisplay_list_s` | struct | 42 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (45) |
+| `player_batarang_slot_s` | struct | 41 | `legogame/batman_gameai.h` | used most in legogame/batman_gameai.c (9) |
 | `PC_INPUT_CONFIG_PC` | pack | 40 | `nu2api/PCInput.h` | used most in nu2api/PCInput.cpp (20) |
 | `ShaderCompilerParserPc` | class | 40 | `nu2api/shader_parser.h` | used most in nu2api/shader_parser.cpp (25) |
-| `FLOWBOX_PC` | struct | 39 | `legoapi/gizmo/base/gizflow.h` | used most in legoapi/gizflow.c (36) |
-| `HINT_PC` | struct | 36 | `legoapi/menus/core/hint.h` | used most in legoapi/hint.c (20) |
-| `GRAPPLE_MOTION_PC` | struct | 36 | `legoapi/gizmos/transport/grapples.h` | used most in legoapi/grapples.c (68) |
-| `PC_FRAMEBUFFER_PC` | block | 35 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (30) |
+| `FLOWBOX` | struct | 39 | `legoapi/gizmo/base/gizflow.h` | used most in legoapi/gizflow.c (36) |
+| `HINT` | struct | 36 | `legoapi/menus/core/hint.h` | used most in legoapi/hint.c (20) |
+| `GRAPPLE_MOTION` | struct | 36 | `legoapi/gizmos/transport/grapples.h` | used most in legoapi/grapples.c (68) |
+| `PC_FRAMEBUFFER` | block | 35 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (30) |
 | `EdStream` | class | 35 | `editor/edlevelall.h` | used most in editor/edlevelall.cpp (32) |
-| `CHARACTERANIM_CONFIG_PC` | struct | 34 | `legoapi/items/base/apiobject.h` | used most in gameapi/apiobject.c (19) |
-| `area_data_pc_s` | struct | 32 | `legoapi/lib/hub.h` | used most in legogame/hub.cpp (14) |
+| `CHARACTERANIM_CONFIG` | struct | 34 | `legoapi/items/base/apiobject.h` | used most in gameapi/apiobject.c (19) |
+| `area_data_s` | struct | 32 | `legoapi/lib/hub.h` | used most in legogame/hub.cpp (14) |
 | `WavReader` | pack | 32 | `nu2api/wavreader.h` | used most in nu2api/wavreader.cpp (15) |
 | `TERRAIN_SET_PC` | struct | 31 | `legoapi/render/core/gameliball.h` | used most in gameapi/gameliball.cpp (113) |
 | `PC_SHADER_PARAMETER_LOCAL_PC` | struct | 31 | `nu2api/nu3d/nushaderobject.h` | used most in nu2api/nushaderobject.cpp (14) |
@@ -400,17 +400,17 @@ The 50 largest `rule` rows:
 | `GAMEPAD_PC` | struct | 30 | `legoapi/characters/motion/move.h` | used most in legogame/move.c (18) |
 | `add_game_message_s` | struct | 30 | `legoapi/gizmo/object/gizmopickup.h` | used most in legogame/gizmopickup.c (7) |
 | `NuKeyboardOwner_PC` | struct | 29 | `nu2api/PCInput.h` | used most in nu2api/PCInput.cpp (11) |
-| `GIZMOBLOWUPTYPE_PC` | struct | 29 | `legoapi/gizmo/object/gizmoblowups.h` | used most in legoapi/gizmoblowups.c (45) |
+| `GIZMOBLOWUPTYPE` | struct | 29 | `legoapi/gizmo/object/gizmoblowups.h` | used most in legoapi/gizmoblowups.c (45) |
 | `EdRef` | class | 29 | `editor/edlevelall.h` | used most in editor/edlevelall.cpp (96) |
-| `RTL_DATA_PC` | struct | 27 | `legoapi/render/core/rtl.h` | used most in gameapi/rtl.c (15) |
+| `RTL_DATA` | struct | 27 | `legoapi/render/core/rtl.h` | used most in gameapi/rtl.c (15) |
 | `EdControl` | class | 27 | `editor/edlevelall.h` | used most in editor/edlevelall.cpp (45) |
 | `nuvpcurrent_s` | struct | 26 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (6) |
-| `GRAPHICS_RENDER_TEXTURE_PC` | struct | 26 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (70) |
-| `ANI3_HEADER_PC` | struct | 25 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (41) |
+| `GRAPHICS_RENDER_TEXTURE` | struct | 26 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (70) |
+| `ANI3_HEADER` | struct | 25 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (41) |
 | `mission_sys_s` | struct | 25 | `legoapi/world/missions.h` | used most in legoapi/missions.c (11) |
 | `ARCADE_ITEM_PC_s` | struct | 24 | `legoapi/world/worldinfo.h` | used most in legoapi/worldinfo.cpp (1) |
-| `NUHGOBJ_EVAL_PC` | struct | 24 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (26) |
-| `BURN_PARAMETERS_PC` | struct | 24 | `legoapi/render/fx/game_deb.h` | used most in legogame/game_deb.c (46) |
+| `NUHGOBJ_EVAL` | struct | 24 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (26) |
+| `BURN_PARAMETERS` | struct | 24 | `legoapi/render/fx/game_deb.h` | used most in legogame/game_deb.c (46) |
 | `EdEnumControl` | class | 24 | `editor/edlevelall.h` | used most in editor/edlevelall.cpp (29) |
 
 ### 1.4 libogg and libvorbis
@@ -626,7 +626,7 @@ The fix differs by kind:
   declaration to the original name and keep both declarations: two `extern`
   declarations of one name, so the count stays the same. Where the types
   differ, the Android declaration takes the PC type:
-  - `setlastdoor_last` is `struct DOOR_s *`, but `LastDoorPointerPc` is
+  - `setlastdoor_last` is `struct DOOR_s *`, but `LastDoorPointer` is
     `void *`;
   - `Game_CompletionSave` is `u16 *`, but the PC one is a reader struct
     pointer.
@@ -634,8 +634,8 @@ The fix differs by kind:
   The duplicate goes in step 2 or 3, when its header no longer reaches the
   fragile units, or under the exact-set check.
 - 5 are file statics of their unit: `ForceBackObjPc` and `ForceBackTypePc` in
-  move.c, `IconScenePc` in characters.cpp, `RendererAlphaMaskMaterialPc` and
-  `RendererZClearMaterialPc` in nu3d_includes.cpp. A static cannot follow the
+  move.c, `IconScenePc` in characters.cpp, `RendererAlphaMaskMaterial` and
+  `RendererZClearMaterial` in nu3d_includes.cpp. A static cannot follow the
   `extern` of the same name, so the Android declaration must go with the
   rename. After the split it is in the owning module's header, so the count
   change reaches only units that include that header. Do it in step 2, after
@@ -743,12 +743,12 @@ Why the 74 still need parts:
   header. `--interleaving` names one witness per header. By what the chain
   connects:
   - 31 are type to type, a true type cycle across headers. For example,
-    `struct AIPATHCNX_PC` (aisys.h) → `struct AIPACKET_PC` (apiobject.h) →
-    `struct AILOCATORSET_PC` (aisys.h). `struct WORLDINFO_s` (world.h)
+    `struct AIPATHCNX` (aisys.h) → `struct AIPACKET` (apiobject.h) →
+    `struct AILOCATORSET` (aisys.h). `struct WORLDINFO_s` (world.h)
     is the witness for 9 headers.
   - 29 are type to declaration: a header's prototype or `extern` needs a
     type of another header, which needs a type of the first. For example,
-    `struct PLAYERCHARACTERCONFIG_PC` (move.h) → `characterdata_s`
+    `struct PLAYERCHARACTERCONFIG` (move.h) → `characterdata_s`
     (character.h) → `gameobject_s` (apiobject.h) → `LetGoOfBalloon` (move.h).
   - 6 start at something that is not a type:
     - 5 at a prototype that names a struct before any declaration of it
@@ -763,7 +763,7 @@ Why the 74 still need parts:
   and checks that use the module types.
 
 All of these are ownership questions. Moving the type at the joint
-(`WORLDINFO_s`, `AIPACKET_PC`, `gameobject_s`, the view types) to the header
+(`WORLDINFO_s`, `AIPACKET`, `gameobject_s`, the view types) to the header
 that both sides include removes the parts. The catch-all reviews do most of
 that. Each part is a block of the header's file:
 
@@ -932,10 +932,10 @@ those go last.
    only).
 4. Last, the units of the fragile functions, each alone, retuned as in the
    assert pilot when its count changes:
-   - `legogame/episodeIII.c` (`BoulderSpawnPc`)
+   - `legogame/episodeIII.c` (`BoulderSpawn`)
    - `legogame/shop.c` (`SubItemMenu`)
    - `legogame/game.cpp` (`InitGameAfterConfig`)
-   - `legogame/episodeIV.c` (`BlockadeRunnerDEjectCreaturePc`)
+   - `legogame/episodeIV.c` (`BlockadeRunnerDEjectCreature`)
    - `legoapi/parts.c` (`DebrisSetup2`, `NuRndrParticleGroup`)
    - `nu2api/nu3d_platform.cpp`
 
@@ -1011,7 +1011,7 @@ prototypes are not header material.
   - Confirmation: the original saga.h plus one empty-file `#include` at each
     of the 419 points where the `--exact-order` split first opens a header
     reproduces the split's objects. The match is exact for
-    `episodeIII.obj` (`BoulderSpawnPc`), `game.obj`, `nu3d_includes.obj`
+    `episodeIII.obj` (`BoulderSpawn`), `game.obj`, `nu3d_includes.obj`
     (`NuDeferredFilterGen::render`), `edlevelall.obj` and
     `nu3d_platform.obj`. For `shop.obj` it is one id off (`SubItemMenu`
     there, `DrawSubItems` in the split).

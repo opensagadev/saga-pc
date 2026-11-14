@@ -207,8 +207,8 @@ struct CUSTOMPIECECATEGORY { // size 0xc
     char *shared_scene;      // 0x8
 };
 
-struct rtldata_s {    // size 0x144
-    RTL_DATA_PC base; // 0x000
+struct rtldata_s { // size 0x144
+    RTL_DATA base; // 0x000
 };
 
 struct CHARACTER_SHADOW_s { // size 0x14
@@ -486,7 +486,7 @@ struct LEVEL_PROGRESS_s {              // size 0x2e24
     u32 destroyed_trooper_cannon_mask;        // 0x2818
     u32 played_cutscene_mask;                 // 0x281c
     struct LEVELSCRIPTPROGRESS_s scripts[32]; // 0x2820
-    GIZFLOWPROGRESS_PC giz_flow_progress;     // 0x2c20
+    GIZFLOWPROGRESS giz_flow_progress;        // 0x2c20
     char disabled_effect_names[12][16];       // 0x2d64
 };
 
@@ -634,14 +634,14 @@ struct CLIMBOBJECTSYS_s {          // size 0x8
     u16 capacity;                  // 0x6
 };
 
-struct CLIMBOBJECT_s {               // size 0x20
-    NUVEC normal;                    // 0x00
-    f32 impact_x;                    // 0x0c
-    f32 impact_z;                    // 0x10
-    struct AIPATHCNX_PC *connection; // 0x14
-    struct AIPATH_PC *path;          // 0x18
-    u8 flags;                        // 0x1c
-    u8 field_0x1d[3];                // 0x1d
+struct CLIMBOBJECT_s {            // size 0x20
+    NUVEC normal;                 // 0x00
+    f32 impact_x;                 // 0x0c
+    f32 impact_z;                 // 0x10
+    struct AIPATHCNX *connection; // 0x14
+    struct AIPATH *path;          // 0x18
+    u8 flags;                     // 0x1c
+    u8 field_0x1d[3];             // 0x1d
 };
 
 struct NuPlatform {          // size 0x10
@@ -821,7 +821,7 @@ extern "C" {
     extern i32 TERRAINMASK_NONDROID;
     u32 ParseAIPathCnxFlag(char *name);
     void *CreatePodRaceMine(struct nuvec_s *pos);
-    void HothBattle_AssignSpawnLocator(struct gameobject_s *object, struct AILOCATOR_PC *locator, struct AILOCATORSET_PC *set);
+    void HothBattle_AssignSpawnLocator(struct gameobject_s *object, struct AILOCATOR *locator, struct AILOCATORSET *set);
     extern i16 id_SPEEDERBIKESNOW;
     void eduiMenuEnsureSelection(struct eduimenu_s *menu);
     i32 eduiMenuProcessSelectedItem(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
@@ -830,12 +830,12 @@ extern "C" {
     void edpartRemoveInstance(struct parttype_lookup_s *type, i32 index);
     extern const char NuFileIopImageNamePc[13];
     void MakePlayCorner(struct gamecamera_s *camera, f32 screen_x, f32 screen_y, struct nuvec_s *near_corner, struct nuvec_s *far_corner);
-    void SetPlayPlane(struct KEEP_SCREEN_PLANE_PC *plane, struct nuvec_s *a, struct nuvec_s *b, struct nuvec_s *c, struct nuvec_s *d,
+    void SetPlayPlane(struct KEEP_SCREEN_PLANE *plane, struct nuvec_s *a, struct nuvec_s *b, struct nuvec_s *c, struct nuvec_s *d,
                       struct nuvec_s *edge_a0, struct nuvec_s *edge_a1, struct nuvec_s *edge_b0, struct nuvec_s *edge_b1);
     void edcamSetSpeed(f32 position_x, f32 position_y, f32 position_z, f32 distance);
     extern char nullobjectname[16];
-    extern GRAPPLE_DYNAMIC_PC DynamicGrapple[4];
-    void Grapples_DrawList(struct WORLDINFO_s *world, struct GRAPPLE_DYNAMIC_PC *grapples, i32 grapple_count, u16 target_rotation,
+    extern GRAPPLE_DYNAMIC DynamicGrapple[4];
+    void Grapples_DrawList(struct WORLDINFO_s *world, struct GRAPPLE_DYNAMIC *grapples, i32 grapple_count, u16 target_rotation,
                            f32 target_alpha);
     extern NUVEC edpart_cam_pos;
     extern struct PC_SCENE_MTL_VIEW *SolidMtl3D;

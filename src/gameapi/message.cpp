@@ -4,8 +4,8 @@
  * to map AI packets to network ids. No class derives from it, so
  * AINet::sm_instance stays NULL and replication is a no-op. */
 extern "C" {
-    extern AIACTIONDEF_PC api_aiactiondefs[];
-    extern AIACTIONDEF_PC *game_aiactiondefs;
+    extern AIACTIONDEF api_aiactiondefs[];
+    extern AIACTIONDEF *game_aiactiondefs;
     void AINetTrace(const char *format, ...);
 }
 
@@ -18,12 +18,12 @@ class AINet : NetListenerInterface { // size 0x4
     AINet();
     virtual ~AINet();
     static void operator delete(void *memory);
-    virtual void Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer);
+    virtual void Receive(NETMESSAGE message, u8 channel, const V2Peer &peer);
     virtual AISYS_PC *GetSystem() = 0;
-    virtual u16 GetPacketId(AIPACKET_PC *packet) = 0;
-    virtual AIPACKET_PC *GetPacket(i32 id) = 0;
+    virtual u16 GetPacketId(AIPACKET *packet) = 0;
+    virtual AIPACKET *GetPacket(i32 id) = 0;
     void Register();
-    void ReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
+    void ReplicateAction(AIACTION *action, AIPACKET *packet);
 
     static AINet *sm_instance;
 };
@@ -46,18 +46,18 @@ void AINet::Register() {
     theTTNetwork.AddListener(this, 10, "AINet");
 }
 
-void NETMESSAGE_PC::MessageData::fun_0053d2e0() {
+void NETMESSAGE::MessageData::fun_0053d2e0() {
     references++;
 }
 
-void NETMESSAGE_PC::fun_0053d330(i8 &value) {
+void NETMESSAGE::fun_0053d330(i8 &value) {
     if (data != NULL) {
         PCByteCopy(&value, data->bytes + read_offset, 1);
         read_offset++;
     }
 }
 
-void NETMESSAGE_PC::fun_0053d360(i16 &value) {
+void NETMESSAGE::fun_0053d360(i16 &value) {
     if (data != NULL) {
         PCByteCopy(&value, data->bytes + read_offset, 2);
         if (swap_endianness) {
@@ -67,11 +67,11 @@ void NETMESSAGE_PC::fun_0053d360(i16 &value) {
     }
 }
 
-NETMESSAGE_PC::MessageData *NETMESSAGE_PC::MessageData::fun_0053d420() {
+NETMESSAGE::MessageData *NETMESSAGE::MessageData::fun_0053d420() {
     return this + 512;
 }
 
-i32 NETMESSAGE_PC::MessageData::fun_0053d430() const {
+i32 NETMESSAGE::MessageData::fun_0053d430() const {
     return references > 0;
 }
 
@@ -79,7 +79,7 @@ extern "C" void fun_0053d450(void) {
 }
 
 /* Writes the string with a leading length byte. */
-void NETMESSAGE_PC::fun_0053d4a0(char *text) {
+void NETMESSAGE::fun_0053d4a0(char *text) {
     if (data != NULL) {
         i32 length = NuStrLen(text);
         u8 *destination = data->bytes + write_offset;
@@ -90,7 +90,7 @@ void NETMESSAGE_PC::fun_0053d4a0(char *text) {
 }
 
 /* Reads a string written by fun_0053d4a0 into a cleared buffer. */
-void NETMESSAGE_PC::fun_0053d4e0(char *text, i32 size) {
+void NETMESSAGE::fun_0053d4e0(char *text, i32 size) {
     if (data != NULL) {
         i32 length = (i8)data->bytes[read_offset];
         read_offset++;
@@ -100,13 +100,13 @@ void NETMESSAGE_PC::fun_0053d4e0(char *text, i32 size) {
     }
 }
 
-NETMESSAGE_PC::MessageData *NETMESSAGE_PC::MessageData::fun_0053d560() {
+NETMESSAGE::MessageData *NETMESSAGE::MessageData::fun_0053d560() {
     references = 1;
     return this;
 }
 
 /* Claims the first free entry of the pool starting at this one. */
-NETMESSAGE_PC::MessageData *NETMESSAGE_PC::MessageData::fun_0053d590() {
+NETMESSAGE::MessageData *NETMESSAGE::MessageData::fun_0053d590() {
     for (MessageData *entry = this; entry != this + 512; entry++) {
         if (entry->references <= 0) {
             entry->references = 1;
@@ -116,11 +116,11 @@ NETMESSAGE_PC::MessageData *NETMESSAGE_PC::MessageData::fun_0053d590() {
     return NULL;
 }
 
-void NETMESSAGE_PC::MessageData::fun_0053d5c0() {
+void NETMESSAGE::MessageData::fun_0053d5c0() {
     references = 0;
 }
 
-void NETMESSAGE_PC::MessageData::fun_0053d620() {
+void NETMESSAGE::MessageData::fun_0053d620() {
     u32 count = references;
     if (count > 1) {
         references = count - 1;
@@ -129,7 +129,7 @@ void NETMESSAGE_PC::MessageData::fun_0053d620() {
     }
 }
 
-void NETMESSAGE_PC::fun_00613140(i16 &value) {
+void NETMESSAGE::fun_00613140(i16 &value) {
     if (data != NULL) {
         PCByteCopy(&value, data->bytes + read_offset, 2);
         if (swap_endianness) {
@@ -139,14 +139,14 @@ void NETMESSAGE_PC::fun_00613140(i16 &value) {
     }
 }
 
-void NETMESSAGE_PC::fun_00613180(i8 &value) {
+void NETMESSAGE::fun_00613180(i8 &value) {
     if (data != NULL) {
         PCByteCopy(&value, data->bytes + read_offset, 1);
         read_offset++;
     }
 }
 
-void NETMESSAGE_PC::fun_006131b0(u32 &value) {
+void NETMESSAGE::fun_006131b0(u32 &value) {
     if (data != NULL) {
         PCByteCopy(&value, data->bytes + read_offset, 4);
         if (swap_endianness) {
@@ -157,14 +157,14 @@ void NETMESSAGE_PC::fun_006131b0(u32 &value) {
 }
 
 /* Bytes left in the message buffer after the written data. */
-i32 NETMESSAGE_PC::fun_00613230() {
+i32 NETMESSAGE::fun_00613230() {
     if (data == NULL) {
         return 0;
     }
     return 0x4af - write_offset;
 }
 
-void AINet::Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer) {
+void AINet::Receive(NETMESSAGE message, u8 channel, const V2Peer &peer) {
     char param_text[16][256];
     char *params[16];
     u8 type;
@@ -173,8 +173,8 @@ void AINet::Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer) {
     i16 index;
     u16 id;
     AISYS_PC *system;
-    AIPACKET_PC *packet;
-    AIACTIONDEF_PC *definitions;
+    AIPACKET *packet;
+    AIACTIONDEF *definitions;
 
     if (AINetReceiveFilter != NULL && AINetReceiveFilter() == 0) {
         message.Release();
@@ -214,8 +214,8 @@ void AINet::Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer) {
     message.Release();
 }
 
-void AINet::ReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet) {
-    NETMESSAGE_PC message(0x20);
+void AINet::ReplicateAction(AIACTION *action, AIPACKET *packet) {
+    NETMESSAGE message(0x20);
     i16 id;
     i16 index;
     u8 is_game_action;
@@ -248,7 +248,7 @@ void AINet::ReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet) {
     message.Release();
 }
 
-extern "C" void AINetReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet) {
+extern "C" void AINetReplicateAction(AIACTION *action, AIPACKET *packet) {
     if (AINet::sm_instance != NULL) {
         AINet::sm_instance->ReplicateAction(action, packet);
     }

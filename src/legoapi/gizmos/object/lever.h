@@ -21,9 +21,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-typedef struct GIZMO_LEVER_PC GIZMO_LEVER_PC;
+typedef struct GIZMO_LEVER GIZMO_LEVER;
 
-struct GIZMO_LEVER_PC {         // size 0xa0
+struct GIZMO_LEVER {            // size 0xa0
     NUMTX matrix;               // 0x00
     NUVEC floor_position;       // 0x40
     NUVEC target_offset;        // 0x4c
@@ -71,15 +71,15 @@ extern "C" {
 #endif
     void Levers_InitTerrain(WORLDINFO *);
     void ReleaseLever(GAMEOBJECT *);
-    void Lever_GetAbsTargetPos(GIZMO_LEVER_PC *, NUVEC *);
-    GIZMO_LEVER_PC *Lever_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
-    i32 Lever_FullyPulledDown(GIZMO_LEVER_PC *);
+    void Lever_GetAbsTargetPos(GIZMO_LEVER *, NUVEC *);
+    GIZMO_LEVER *Lever_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    i32 Lever_FullyPulledDown(GIZMO_LEVER *);
     void Lever_MoveCode(WORLDINFO *, GAMEOBJECT *);
-    struct addgizmotype_pc_s *Levers_RegisterGizmo(i32 type_id);
-    extern char *LeverTypeNamePtrPc;
-    extern char *LeverOutputDownNamePtrPc;
-    extern char *LeverTypeNamePtrPc;
-    extern char *LeverOutputDownNamePtrPc;
+    struct addgizmotype_s *Levers_RegisterGizmo(i32 type_id);
+    extern char *LeverTypeNamePtr;
+    extern char *LeverOutputDownNamePtr;
+    extern char *LeverTypeNamePtr;
+    extern char *LeverOutputDownNamePtr;
 #ifdef __cplusplus
 }
 #endif

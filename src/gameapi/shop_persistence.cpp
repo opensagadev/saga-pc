@@ -25,17 +25,17 @@ extern "C" {
 #else
     char SaveCreateFolderPathPc[256] = {0};
 #endif
-    u8 PcSaveHeaderMetadataPc[16] = {0};
+    u8 PcSaveHeaderMetadata[16] = {0};
     i32 saveload_slotid = 0;
-    extern i32 SaveloadPendingPc;
+    extern i32 SaveloadPending;
     extern u32 savetimer;
     extern i32 saveload_slotused[6];
     extern char *fullslotname(i32);
-    extern char SaveSlotNamePc[256];
+    extern char SaveSlotName[256];
 
-    void PcRegisterSaveMetadataPc(const void *metadata) {
+    void PcRegisterSaveMetadata(const void *metadata) {
         if (metadata != NULL) {
-            PCByteCopy(PcSaveHeaderMetadataPc, metadata, 16);
+            PCByteCopy(PcSaveHeaderMetadata, metadata, 16);
         }
     }
 
@@ -69,14 +69,14 @@ extern "C" {
         header.reserved_0c = 0;
         header.reserved_10 = 0;
         header.api_data_size = PcApiGetCallBufferCount();
-        PCByteCopy(header.metadata, PcSaveHeaderMetadataPc, 16);
+        PCByteCopy(header.metadata, PcSaveHeaderMetadata, 16);
         header.reserved_caption[0] = 0;
         GetDateFormatA(LOCALE_USER_DEFAULT, 0, NULL, NULL, date_time, 64);
         strcat(date_time, " ");
         GetTimeFormatA(LOCALE_USER_DEFAULT, 0, NULL, NULL, time, 64);
         strcat(date_time, time);
         MultiByteToWideChar(0, 0, date_time, 1024, header.date_time, 1024);
-        MultiByteToWideChar(0, 0, NuHwDefaultParameterPc, 1024, header.title, 1024);
+        MultiByteToWideChar(0, 0, NuHwDefaultParameter, 1024, header.title, 1024);
         sprintf(date_time, "Save Slot %d", slot);
         MultiByteToWideChar(0, 0, date_time, 1024, header.slot_caption, 1024);
         fwrite(&header, sizeof(header), 1, file);
@@ -110,13 +110,13 @@ extern "C" {
     }
 
     i32 saveloadDeleteSlot(i32 slot) {
-        sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
-        remove(SaveSlotNamePc);
+        sprintf(SaveSlotName, "SaveGame%d.%s_SavedGame", slot, PcProductName);
+        remove(SaveSlotName);
         return 1;
     }
 
     void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash) {
-        SaveloadPendingPc = 1;
+        SaveloadPending = 1;
         savetimer = GetTickCount();
         saveload_status = 11;
         PCSaveSlot(slot, buffer, size, hash);
@@ -127,7 +127,7 @@ extern "C" {
     void saveloadASLoad(i32 slot, void *buffer, i32 size) {
         saveload_status = 7;
         saveloadLoadSlot(slot, buffer, size);
-        SaveloadPendingPc = 1;
+        SaveloadPending = 1;
         u32 tick = GetTickCount();
         saveload_slotid = slot;
         saveload_autosave = slot;
@@ -139,8 +139,8 @@ extern "C" {
     }
 
     void saveloadASDelete(i32 slot) {
-        sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
-        remove(SaveSlotNamePc);
+        sprintf(SaveSlotName, "SaveGame%d.%s_SavedGame", slot, PcProductName);
+        remove(SaveSlotName);
         saveload_slotid = slot;
         if (saveload_autosave == slot) {
             saveload_autosave = -1;

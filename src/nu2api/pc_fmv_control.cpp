@@ -30,7 +30,7 @@ extern "C" i32 FmvStartPc(const char *path, f32 volume, i32 option) {
     FmvState1Pc = 0;
     if (FmvInitializedPc == 0) {
         PC_D3D9_DEVICE_PC *device = PCDeviceBackend.device;
-        GRAPHICS_FACTORY_PC *factory = PCDeviceBackend.factory;
+        GRAPHICS_FACTORY *factory = PCDeviceBackend.factory;
         if (FmvInitializePc(PCInputInstance, factory, device, NuFmvGetSoundFactoryPc()) == 0) {
             FmvClosePc(&FmvMoviePc);
             return 0;

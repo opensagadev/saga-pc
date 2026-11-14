@@ -23,7 +23,7 @@ extern "C" {
         NUVEC *target;               // 0x18
     } MINICAM_COMMAND;
 
-    typedef union MINICAM_PC { // size 0x3fc
+    typedef union MINICAM { // size 0x3fc
 
         struct {                          // size 0x3fc
             MINICAM_COMMAND commands[32]; // 0x000
@@ -61,12 +61,12 @@ extern "C" {
         };
 
         MINICAM_COMMAND duplicate_search[33];
-    } MINICAM_PC;
+    } MINICAM;
 
-    extern MINICAM_PC MiniCam;
+    extern MINICAM MiniCam;
     extern NUGSPLINE ObstacleCamCutSpline;
     extern i32 ObstacleCamTargetGuid;
-    extern u8 ObstacleCamAlwaysSnapAnglesPc;
+    extern u8 ObstacleCamAlwaysSnapAngles;
     void GameCameraMakeMiniCut(NUGSPLINE *, f32, f32, f32, f32, i32, i32);
     void GameCameraMakeMiniCut3(u32, f32, i32, i32, i32, void *, i32, NUVEC *, f32, f32, f32, f32, f32, f32, f32, i32, NUGSPLINE *, i8, i8);
     void Minicam_AddCommand(i32, f32, i32, void *, NUVEC);

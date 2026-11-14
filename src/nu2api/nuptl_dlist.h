@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuDisplayListDrawDebrisPc(void *);
+    void NuDisplayListDrawDebris(void *);
 #ifdef __cplusplus
 }
 #endif

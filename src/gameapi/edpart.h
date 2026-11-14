@@ -15,7 +15,7 @@ extern "C" {
 #endif
     void edpartStartPage(u8 page);
     void edpartStopPage(u8 page);
-    extern char PartNullInstanceNamePc[14];
+    extern char PartNullInstanceName[14];
     void edpartSetParticlePage(i32);
     extern u32 edblack[4];
     extern u32 edgrey[4];

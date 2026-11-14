@@ -105,13 +105,13 @@ done:
    including statics, and name original headers such as `legoapi/legoapi.h`,
    `legoapi/customiser.h`, `nu2api/nu3d/nuprim.h` and
    `gameapi/Support/ThingManager.h`. Measure every move across all units:
-   a change in what a unit sees can change unrelated functions (BoulderSpawnPc,
-   SubItemMenu, InitGameAfterConfig, BlockadeRunnerDEjectCreaturePc,
+   a change in what a unit sees can change unrelated functions (BoulderSpawn,
+   SubItemMenu, InitGameAfterConfig, BlockadeRunnerDEjectCreature,
    NuRndrParticleGroup and DebrisSetup2 are known to be fragile).
 3. Class C: with the units in retail order, most forward declarations can go.
    Keep the 14 whose retail order still needs them.
 4. Classes B and E+: review the 6 B and 4 E+ declarations by hand
-   (`saveload_slotused`, `GizmoSnapOptionNamePc` and `NuPrimCoordSystemStack`
+   (`saveload_slotused`, `GizmoSnapOptionName` and `NuPrimCoordSystemStack`
    have array bounds that saga.h leaves open, and `CustomiserMenu_End` is
    unprototyped. `DXGetErrorString9A`/`DXGetErrorDescription9A` come from
    DxErr9.lib and `__movsd` is an intrinsic).

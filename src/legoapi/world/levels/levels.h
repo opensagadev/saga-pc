@@ -21,7 +21,7 @@
 #ifdef __cplusplus
 extern "C" FadeSystem FadeSys;
 #else
-extern FADEINFO_PC FadeSys;
+extern FADEINFO FadeSys;
 #endif
 #ifdef __cplusplus
 extern "C" {
@@ -59,11 +59,11 @@ extern "C" {
     extern i16 id_ANAKINPADAWAN;
 
     /* The u16 after the buffer at 0x93b0e8 is the separate global temp_yrot. */
-    typedef struct CONFIG_BUFFER_PC { // size 0x10000
-        char bytes[0x10000];          // 0x0000
-    } CONFIG_BUFFER_PC;
+    typedef struct CONFIG_BUFFER { // size 0x10000
+        char bytes[0x10000];       // 0x0000
+    } CONFIG_BUFFER;
 
-    extern CONFIG_BUFFER_PC ConfigBuffer;
+    extern CONFIG_BUFFER ConfigBuffer;
     extern GAMEOBJECT *player2;
     extern i32 nethost;
     extern f32 avg_currentspeed_mul;
@@ -88,7 +88,7 @@ extern "C" {
     extern i32 bonus_gunship_store_progress_flag;
     extern i32 bonus_gunship_store_progress_flag;
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define MiscTime LevInstAnimResetPc.fields.miscellaneous_time
+#define MiscTime LevInstAnimReset.fields.miscellaneous_time
     extern i32 hub_from_superstory;
     extern i32 hub_from_mission;
     extern i32 hub_startoutsidebonusdoor_area;
@@ -110,7 +110,7 @@ extern "C" {
     void MakeFreePlayModelList(i32, i32, i32, i32, i32);
 
     void LoadPerm2(void);
-    extern APICHARACTERMODELLIST PermModelListPc[1];
+    extern APICHARACTERMODELLIST PermModelList[1];
     extern f32 CreditsTime;
     extern f32 CreditsFinishedTime;
     extern i32 CreditsFlag;

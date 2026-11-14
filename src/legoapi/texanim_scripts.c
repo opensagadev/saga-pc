@@ -2,6 +2,6 @@
 
 /* Empty on PC. InitTexAnimScripts (utilities unit) still calls it, so the
    body was not visible there: VC8 drops calls to an empty body it can see. */
-void NuTexAnimScriptMissingPc(char *path) {
+void NuTexAnimScriptMissing(char *path) {
     (void)path;
 }

@@ -105,20 +105,20 @@ typedef struct SoundVoiceManagerPC { // size 0xda8
 #endif
 } SoundVoiceManagerPC;
 
-typedef struct PC_SOUND_COMMIT_PC PC_SOUND_COMMIT_PC;
+typedef struct PC_SOUND_COMMIT PC_SOUND_COMMIT;
 
-typedef struct PC_SOUND_COMMIT_METHODS {                                                                        // size 0x48
-    void *unknown_00[2];                                                                                        // 0x00
-    ULONG(__stdcall *release)(PC_SOUND_COMMIT_PC *);                                                            // 0x08
-    void *unknown_0c[10];                                                                                       // 0x0c
-    HRESULT(__stdcall *set_orientation)(PC_SOUND_COMMIT_PC *, float, float, float, float, float, float, DWORD); // 0x34
-    HRESULT(__stdcall *set_position)(PC_SOUND_COMMIT_PC *, float, float, float, DWORD);                         // 0x38
-    HRESULT(__stdcall *set_rolloff_factor)(PC_SOUND_COMMIT_PC *, float, DWORD);                                 // 0x3c
-    void *unknown_40;                                                                                           // 0x40
-    HRESULT(__stdcall *commit_deferred_settings)(PC_SOUND_COMMIT_PC *);                                         // 0x44
+typedef struct PC_SOUND_COMMIT_METHODS {                                                                     // size 0x48
+    void *unknown_00[2];                                                                                     // 0x00
+    ULONG(__stdcall *release)(PC_SOUND_COMMIT *);                                                            // 0x08
+    void *unknown_0c[10];                                                                                    // 0x0c
+    HRESULT(__stdcall *set_orientation)(PC_SOUND_COMMIT *, float, float, float, float, float, float, DWORD); // 0x34
+    HRESULT(__stdcall *set_position)(PC_SOUND_COMMIT *, float, float, float, DWORD);                         // 0x38
+    HRESULT(__stdcall *set_rolloff_factor)(PC_SOUND_COMMIT *, float, DWORD);                                 // 0x3c
+    void *unknown_40;                                                                                        // 0x40
+    HRESULT(__stdcall *commit_deferred_settings)(PC_SOUND_COMMIT *);                                         // 0x44
 } PC_SOUND_COMMIT_METHODS;
 
-struct PC_SOUND_COMMIT_PC {
+struct PC_SOUND_COMMIT {
     const PC_SOUND_COMMIT_METHODS *vtable;
 };
 
@@ -126,10 +126,10 @@ struct nusound_filename_info_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32 PCSoundStorageLockReadyPc;
-    extern CRITICAL_SECTION PCSoundStorageLockPc;
-    extern i32 PCSoundDrainStartPc;
-    extern i32 PCSoundDrainRemainingPc;
+    extern i32 PCSoundStorageLockReady;
+    extern CRITICAL_SECTION PCSoundStorageLock;
+    extern i32 PCSoundDrainStart;
+    extern i32 PCSoundDrainRemaining;
     i32 NuSound3PlayStereoV(i32 token, ...);
     extern i32 PCStereoChannel0A;
     extern i32 PCStereoChannel0B;
@@ -160,16 +160,16 @@ extern "C" {
     extern const char PCSoundOggExtensionText[5];
     extern const char *PCSoundOggExtension;
     extern i32 PCSoundVolumeMultiplier;
-    extern const IID PCSoundListenerIIDPc;
-    extern const GUID PCSampleBufferAlgorithmPc;
-    extern i32 PCSampleLoadEnabledPc;
-    extern i32 PCSoundSampleLimitPc;
-    extern i32 PCSoundStreamSerialPc;
+    extern const IID PCSoundListenerIID;
+    extern const GUID PCSampleBufferAlgorithm;
+    extern i32 PCSampleLoadEnabled;
+    extern i32 PCSoundSampleLimit;
+    extern i32 PCSoundStreamSerial;
     void PCSoundPlayUnpositioned(i32, i32, i32, i32, f32, i32, f32, f32, i32);
     void PCSoundPlayUnpositionedWrapper(i32, i32, i32, i32, f32, i32, f32, f32);
-    extern i32 PCSoundStartedOneShotCountPc;
-    extern i32 PCSoundStartedLoopCountPc;
-    extern i32 PCSoundUpdatedLoopCountPc;
+    extern i32 PCSoundStartedOneShotCount;
+    extern i32 PCSoundStartedLoopCount;
+    extern i32 PCSoundUpdatedLoopCount;
     void PCSoundPlayPositionedLoop(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32);
     void PCSoundPlayPositioned(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32, i32);
     void PCSoundPlayPositionedWrapper(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32);
@@ -200,7 +200,7 @@ extern "C" {
     extern i32 PCSoundMixSampleCount;
     extern void *PCSoundMixDestination;
     extern HANDLE PCSoundMixEvent;
-    extern PC_SOUND_COMMIT_PC *PCSoundCommitTarget;
+    extern PC_SOUND_COMMIT *PCSoundCommitTarget;
     extern f32 nusound_fade_start;
     extern f32 nusound_fade_end;
     i32 ActionFromQuiet(i32);
@@ -233,18 +233,18 @@ class SoundQueueVolumeSink {
     virtual i32 __stdcall SetVolume(i32 volume) = 0;
 };
 
-extern "C" const IID PCSoundBuffer8IIDPc;
-extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *);
+extern "C" const IID PCSoundBuffer8IID;
+extern "C" DWORD __stdcall PCSoundStreamWorker(void *);
 #endif
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern i32 NuSound3LoadingSfxPc;
     i32 NuSound3LoadingSfx(void);
-    extern CRITICAL_SECTION SoundSampleCriticalSectionPc;
-    extern HANDLE PCSoundSampleWorkerHandlePc;
-    extern volatile u8 PCSoundSampleWorkerStopPc;
-    extern char *PCSampleFilenameExtensionPc;
+    extern CRITICAL_SECTION SoundSampleCriticalSection;
+    extern HANDLE PCSoundSampleWorkerHandle;
+    extern volatile u8 PCSoundSampleWorkerStop;
+    extern char *PCSampleFilenameExtension;
     void NuSound3SetRequestTable(u16 *, i32);
     void NuSound3CancelCheckStereo(void);
 #ifdef __cplusplus
@@ -258,8 +258,8 @@ enum { MUSIC_PLAYBACK_DUAL_STREAM_PENDING = 13 };
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuSound3SuspendForFocusPc(void);
-    void NuSound3ResumeAfterFocusPc(void);
+    void NuSound3SuspendForFocus(void);
+    void NuSound3ResumeAfterFocus(void);
 #ifdef __cplusplus
 }
 #endif
@@ -301,7 +301,7 @@ extern "C" {
 #endif
     void NuSound3SetSampleTable(SFX_FILE_INFO_PC *, VARIPTR *, VARIPTR);
     i32 NuSound3InitV(VARIPTR *, VARIPTR, i32, i32, ...);
-    i32 PCSoundInitializePc(struct PC_SOUND_INIT_CONFIG *);
+    i32 PCSoundInitialize(struct PC_SOUND_INIT_CONFIG *);
     struct nusound_filename_info_s *ConfigureMusic(char *, VARIPTR *, VARIPTR *);
 #ifdef __cplusplus
 }

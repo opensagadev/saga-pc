@@ -2,14 +2,14 @@
 #include <stdio.h>
 
 /* NuFabs: copies the value with the sign bit cleared into a new float. */
-static __inline f32 NuBridgeFabsPc(f32 value) {
+static __inline f32 NuBridgeFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     f32 result = *(f32 *)&bits;
     return result;
 }
 
 /* Builds a scaled frame for each rope segment; the PC build has the draw calls compiled out. */
-void NuBridgeDrawRopeSegmentPc(NUMTL *material, NUVEC *points, i32 count, i32 colour) {
+void NuBridgeDrawRopeSegment(NUMTL *material, NUVEC *points, i32 count, i32 colour) {
     i32 i;
     NUVEC *next;
     NUVEC side;
@@ -67,8 +67,8 @@ void NuBrdigeDrawRope(NUMTL *material, NUVEC *first, NUVEC *second, i32 count, i
     i32 i;
     (void)count;
     for (i = 0; boundaries[i] < boundaries[i + 1]; ++i) {
-        NuBridgeDrawRopeSegmentPc(material, &first[boundaries[i]], boundaries[i + 1] - boundaries[i], colour);
-        NuBridgeDrawRopeSegmentPc(material, &second[boundaries[i]], boundaries[i + 1] - boundaries[i], colour);
+        NuBridgeDrawRopeSegment(material, &first[boundaries[i]], boundaries[i + 1] - boundaries[i], colour);
+        NuBridgeDrawRopeSegment(material, &second[boundaries[i]], boundaries[i + 1] - boundaries[i], colour);
     }
 }
 
@@ -253,73 +253,73 @@ void NuBridgeUpdate(NUVEC *position) {
                                     bridge->edge_motion[i][1].y + (bridge->gravity - bridge->edge_motion[i][1].y * bridge->damping);
                                 bridge->edge_motion[i][1].z = bridge->edge_motion[i][1].z - bridge->edge_motion[i][1].z * bridge->damping;
                                 bridge->edge_motion[i][0].x =
-                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x)) *
+                                    NuBridgeFabs((bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x)) *
                                         (bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].x;
                                 bridge->edge_motion[i][0].y =
-                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y)) *
+                                    NuBridgeFabs((bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y)) *
                                         (bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].y;
                                 bridge->edge_motion[i][0].z =
-                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z)) *
+                                    NuBridgeFabs((bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z)) *
                                         (bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].z;
                                 bridge->edge_motion[i][0].x =
-                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x)) *
+                                    NuBridgeFabs((bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x)) *
                                         (bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].x;
                                 bridge->edge_motion[i][0].y =
-                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y)) *
+                                    NuBridgeFabs((bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y)) *
                                         (bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].y;
                                 bridge->edge_motion[i][0].z =
-                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z)) *
+                                    NuBridgeFabs((bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z)) *
                                         (bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].z;
                                 bridge->edge_motion[i][1].x =
-                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x)) *
+                                    NuBridgeFabs((bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x)) *
                                         (bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].x;
                                 bridge->edge_motion[i][1].y =
-                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y)) *
+                                    NuBridgeFabs((bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y)) *
                                         (bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].y;
                                 bridge->edge_motion[i][1].z =
-                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z)) *
+                                    NuBridgeFabs((bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z)) *
                                         (bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].z;
                                 bridge->edge_motion[i][1].x =
-                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x)) *
+                                    NuBridgeFabs((bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x)) *
                                         (bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].x;
                                 bridge->edge_motion[i][1].y =
-                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y)) *
+                                    NuBridgeFabs((bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y)) *
                                         (bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].y;
                                 bridge->edge_motion[i][1].z =
-                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z)) *
+                                    NuBridgeFabs((bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z)) *
                                         (bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z) * bridge->spring_strength *
                                         0.5f +
                                     (bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z) * bridge->spring_strength +

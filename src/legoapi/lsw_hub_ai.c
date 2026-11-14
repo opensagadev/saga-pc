@@ -6,7 +6,7 @@ extern i16 CharacterFixupIdPc007f18c4;
 
 i32 Hub_CurrentArea(void) {
     if (WORLD->current_level == HUB_LDATA) {
-        return HubAiMusicStatePc.area;
+        return HubAiMusicState.area;
     }
     return -1;
 }
@@ -45,20 +45,20 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
     if (id_BARMAN != -1) {
         characters[id_BARMAN] = -1;
     }
-    if (VehicleBoltId7f1910Pc != -1) {
-        characters[VehicleBoltId7f1910Pc] = -1;
+    if (VehicleBoltId7f1910 != -1) {
+        characters[VehicleBoltId7f1910] = -1;
     }
-    if (DefaultAnimationJabbaIdPc != -1) {
-        characters[DefaultAnimationJabbaIdPc] = -1;
+    if (DefaultAnimationJabbaId != -1) {
+        characters[DefaultAnimationJabbaId] = -1;
     }
     if (CharacterFixupIdPc007f18c4 != -1) {
         characters[CharacterFixupIdPc007f18c4] = -1;
     }
-    if (PermanentWeirdo1IdPc != -1) {
-        characters[PermanentWeirdo1IdPc] = -1;
+    if (PermanentWeirdo1Id != -1) {
+        characters[PermanentWeirdo1Id] = -1;
     }
-    if (PermanentWeirdo2IdPc != -1) {
-        characters[PermanentWeirdo2IdPc] = -1;
+    if (PermanentWeirdo2Id != -1) {
+        characters[PermanentWeirdo2Id] = -1;
     }
     if (id_CANTINABAND != -1) {
         characters[id_CANTINABAND] = -1;
@@ -69,13 +69,13 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
     if (id_BOB != -1) {
         characters[id_BOB] = -1;
     }
-    if (PunchRangeCompanionIdPc != -1) {
-        characters[PunchRangeCompanionIdPc] = -1;
+    if (PunchRangeCompanionId != -1) {
+        characters[PunchRangeCompanionId] = -1;
     }
 }
 
 /* HubAI producer family. */
-extern const char *HubAreaNamesPc[10];
+extern const char *HubAreaNames[10];
 
 void LSW_Hub_InitAI(WORLDINFO *world) {
     i32 area;
@@ -83,43 +83,43 @@ void LSW_Hub_InitAI(WORLDINFO *world) {
     i32 counter;
     i32 index;
     char name[32];
-    memset(&HubAiMusicStatePc, 0, sizeof(HubAiMusicStatePc));
+    memset(&HubAiMusicState, 0, sizeof(HubAiMusicState));
     for (area = 0; area < 10; ++area) {
-        HubAiMusicStatePc.areas[area] = AISysFindArea(world->ai_sys, (char *)HubAreaNamesPc[area]);
-        HubAiMusicStatePc.paths[area] = AISysFindPath(world->ai_sys, (char *)HubAreaNamesPc[area]);
+        HubAiMusicState.areas[area] = AISysFindArea(world->ai_sys, (char *)HubAreaNames[area]);
+        HubAiMusicState.paths[area] = AISysFindPath(world->ai_sys, (char *)HubAreaNames[area]);
         for (locator = 0; locator < 4; ++locator) {
-            sprintf(name, "%s_%d", HubAreaNamesPc[area], locator + 1);
-            HubAiMusicStatePc.area_locators[area][locator] = AIPathFindLocator(world->ai_sys, name);
+            sprintf(name, "%s_%d", HubAreaNames[area], locator + 1);
+            HubAiMusicState.area_locators[area][locator] = AIPathFindLocator(world->ai_sys, name);
         }
     }
-    HubAiMusicStatePc.area = -1;
-    HubAiMusicStatePc.area_message = SetGizAIMessage(gizaimessagesys, "Area", 0.0f, NULL);
-    HubAiMusicStatePc.serving_customer_message = SetGizAIMessage(gizaimessagesys, "ServingCustomer", 0.0f, NULL);
-    HubAiMusicStatePc.counter_count = 0;
+    HubAiMusicState.area = -1;
+    HubAiMusicState.area_message = SetGizAIMessage(gizaimessagesys, "Area", 0.0f, NULL);
+    HubAiMusicState.serving_customer_message = SetGizAIMessage(gizaimessagesys, "ServingCustomer", 0.0f, NULL);
+    HubAiMusicState.counter_count = 0;
     for (counter = 0; counter < 4; ++counter) {
         sprintf(name, "CounterA_%d", counter);
-        HubAiMusicStatePc.counter_a[counter] = AIPathFindLocator(world->ai_sys, name);
+        HubAiMusicState.counter_a[counter] = AIPathFindLocator(world->ai_sys, name);
         sprintf(name, "CounterB_%d", counter);
-        HubAiMusicStatePc.counter_b[counter] = AIPathFindLocator(world->ai_sys, name);
-        if (HubAiMusicStatePc.counter_a[counter] == NULL || HubAiMusicStatePc.counter_b[counter] == NULL) {
+        HubAiMusicState.counter_b[counter] = AIPathFindLocator(world->ai_sys, name);
+        if (HubAiMusicState.counter_a[counter] == NULL || HubAiMusicState.counter_b[counter] == NULL) {
             break;
         }
-        ++HubAiMusicStatePc.counter_count;
+        ++HubAiMusicState.counter_count;
     }
-    HubAiMusicStatePc.serve_player = AIPathFindLocator(world->ai_sys, "ServePlayer");
-    HubAiMusicStatePc.table_count = 0;
+    HubAiMusicState.serve_player = AIPathFindLocator(world->ai_sys, "ServePlayer");
+    HubAiMusicState.table_count = 0;
     for (index = 0; index < 8; ++index) {
-        HubAiMusicStatePc.table_locators[index] = NULL;
+        HubAiMusicState.table_locators[index] = NULL;
     }
 }
 
 void LSW_Hub_ResetAI(WORLDINFO *world) {
-    HubAiMusicStatePc.area = -1;
+    HubAiMusicState.area = -1;
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "BandDoor_Open");
 }
 
 /* Private helper taking its argument in EDX. */
-static i32 HubChooseRandomCharacterPc(i16 *characters) {
+static i32 HubChooseRandomCharacter(i16 *characters) {
     i32 candidates[340];
     i32 count = 0;
     i32 index;
@@ -147,37 +147,37 @@ static i32 HubChooseRandomCharacterPc(i16 *characters) {
 i32 Hub_GetRandomCharType(void) {
     i16 characters[340];
     Hub_MakeListCharactersAvailable(characters);
-    return HubChooseRandomCharacterPc(characters);
+    return HubChooseRandomCharacter(characters);
 }
 
-void HubGoneThroughDoorPc(WORLDINFO *world) {
+void HubGoneThroughDoor(WORLDINFO *world) {
     i32 new_area;
     i32 index;
     i16 characters[340];
     GAMEOBJECT *object;
-    AIPATH_PC *path;
+    AIPATH *path;
     char name[32];
     if (player == NULL) {
         return;
     }
     new_area = -1;
     for (index = 0; index < 10; ++index) {
-        if (CheckPosAIArea(HubAiMusicStatePc.areas[index], PlayerStart[(i8)player->field_280].position, 0.0f) != 0) {
+        if (CheckPosAIArea(HubAiMusicState.areas[index], PlayerStart[(i8)player->field_280].position, 0.0f) != 0) {
             new_area = index;
             break;
         }
     }
-    if (new_area == -1 || new_area == HubAiMusicStatePc.area) {
+    if (new_area == -1 || new_area == HubAiMusicState.area) {
         return;
     }
-    HubAiMusicStatePc.area = (i16)new_area;
-    path = HubAiMusicStatePc.paths[HubAiMusicStatePc.area];
+    HubAiMusicState.area = (i16)new_area;
+    path = HubAiMusicState.paths[HubAiMusicState.area];
     if (path != NULL && AISysSetLevelPath(world->ai_sys, (char *)path) != 0) {
         for (index = 0; index < 8; ++index) {
             object = Player[index];
             if (object != NULL && (object->flags_1fc_half & 1) != 0) {
                 AISysCharacterSetPath(&object->ai_packet, world->ai_sys->path_sys->active_path);
-                AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, (i8)object->field_281);
+                AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, (i8)object->field_281);
             }
         }
     }
@@ -191,25 +191,25 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
         FreeTorpedoPacket(&object->torpedo);
         RemoveGameObject(object, 1);
     }
-    HubAiMusicStatePc.door_state = 0;
-    HubAiMusicStatePc.customer = NULL;
-    HubAiMusicStatePc.serving_object = NULL;
-    SetGizAIMessage(gizaimessagesys, "ServingCustomer", 0.0f, HubAiMusicStatePc.serving_customer_message);
-    if (HubAiMusicStatePc.area_message != NULL) {
-        HubAiMusicStatePc.area_message->value = (f32)HubAiMusicStatePc.area;
+    HubAiMusicState.door_state = 0;
+    HubAiMusicState.customer = NULL;
+    HubAiMusicState.serving_object = NULL;
+    SetGizAIMessage(gizaimessagesys, "ServingCustomer", 0.0f, HubAiMusicState.serving_customer_message);
+    if (HubAiMusicState.area_message != NULL) {
+        HubAiMusicState.area_message->value = (f32)HubAiMusicState.area;
     }
-    HubAiMusicStatePc.table_count = 0;
+    HubAiMusicState.table_count = 0;
     for (index = 0; index < 8; ++index) {
-        if (HubAiMusicStatePc.area != 0) {
-            sprintf(name, "Table%d_%d", HubAiMusicStatePc.area, index);
+        if (HubAiMusicState.area != 0) {
+            sprintf(name, "Table%d_%d", HubAiMusicState.area, index);
         } else {
             sprintf(name, "Table_%d", index);
         }
-        HubAiMusicStatePc.table_locators[index] = AIPathFindLocator(world->ai_sys, name);
-        if (HubAiMusicStatePc.table_locators[index] == NULL) {
+        HubAiMusicState.table_locators[index] = AIPathFindLocator(world->ai_sys, name);
+        if (HubAiMusicState.table_locators[index] == NULL) {
             return;
         }
-        ++HubAiMusicStatePc.table_count;
+        ++HubAiMusicState.table_count;
     }
 }
 
@@ -221,8 +221,8 @@ void LSW_Hub_UpdateAI(WORLDINFO *world) {
     if (netclient != 0) {
         return;
     }
-    if (HubAiMusicStatePc.area == -1) {
-        HubGoneThroughDoorPc(world);
+    if (HubAiMusicState.area == -1) {
+        HubGoneThroughDoor(world);
         if (netclient != 0) {
             return;
         }
@@ -238,11 +238,11 @@ void LSW_Hub_UpdateAI(WORLDINFO *world) {
     }
 }
 
-void *Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     i32 index;
     if (name != NULL) {
         for (index = 0; index < 10; ++index) {
-            if (NuStrICmp(name, HubAreaNamesPc[index]) == 0) {
+            if (NuStrICmp(name, HubAreaNames[index]) == 0) {
                 return (void *)index;
             }
         }
@@ -250,8 +250,8 @@ void *Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script)
     return (void *)-1;
 }
 
-f32 Condition_InHubArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *area) {
-    if (HubAiMusicStatePc.area == (i32)area) {
+f32 Condition_InHubArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *area) {
+    if (HubAiMusicState.area == (i32)area) {
         return 1.0f;
     }
     return 0.0f;

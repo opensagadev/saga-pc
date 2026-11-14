@@ -13,15 +13,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PlayerInitCapabilitiesVariant1Pc(GAMEOBJECT *);
+    void PlayerInitCapabilitiesVariant1(GAMEOBJECT *);
     extern f32 jump_stuck_time;
-    i32 StarWars_PrepareR2D2Glide(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 StarWars_PrepareHatch(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 StarWars_PrepareHoverTube(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 StarWars_PrepareBigJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 StarWars_PrepareTakeOverJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 StarWars_PrepareObstacle(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 StarWars_PrepareJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 StarWars_PrepareR2D2Glide(AIPACKET *, APIOBJECT *, i32);
+    i32 StarWars_PrepareHatch(AIPACKET *, APIOBJECT *, i32);
+    i32 StarWars_PrepareHoverTube(AIPACKET *, APIOBJECT *, i32);
+    i32 StarWars_PrepareBigJump(AIPACKET *, APIOBJECT *, i32);
+    i32 StarWars_PrepareTakeOverJump(AIPACKET *, APIOBJECT *, i32);
+    i32 StarWars_PrepareObstacle(AIPACKET *, APIOBJECT *, i32);
+    i32 StarWars_PrepareJump(AIPACKET *, APIOBJECT *, i32);
 #ifdef __cplusplus
 }
 #endif

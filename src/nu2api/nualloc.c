@@ -59,8 +59,8 @@ typedef struct nualloc_manager_prefix_s { // size 0x10
     u32 used_bytes;                       // 0xc
 } NUALLOC_MANAGER_PREFIX_PC;
 
-void *NuAllocManagerAllocateAlignedPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment);
-void NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *memory);
+void *NuAllocManagerAllocateAligned(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment);
+void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX_PC *manager, void *memory);
 
 static NUALLOC_ARENA NuAllocArenaStorage;
 
@@ -130,7 +130,7 @@ void *NuAllocUntracked(i32 size) {
     }
     NuAllocTrackedBytes += (u32)size;
     if (NuAllocManager != NULL) {
-        user_data = NuAllocManagerAllocateAlignedPc(NuAllocManager, (u32)size, 4);
+        user_data = NuAllocManagerAllocateAligned(NuAllocManager, (u32)size, 4);
     } else {
         user_data = malloc((u32)size);
     }
@@ -147,7 +147,7 @@ void *NuAllocUntracked(i32 size) {
 
 void NuFreeUntracked(void *memory) {
     if (NuAllocManager != NULL) {
-        NuAllocManagerFreePc(NuAllocManager, memory);
+        NuAllocManagerFree(NuAllocManager, memory);
         return;
     }
     free(memory);
@@ -197,7 +197,7 @@ void *NuAlloc(i32 size, const char *file, i32 line) {
     manager = NuAllocManager;
     allocation_size = strlen(file) + (u32)size + 0x2d;
     if (manager != NULL) {
-        record = NuAllocManagerAllocateAlignedPc(manager, allocation_size, 4);
+        record = NuAllocManagerAllocateAligned(manager, allocation_size, 4);
     } else {
         record = malloc(allocation_size);
         if (record != NULL) {
@@ -289,7 +289,7 @@ void NuFree(void *user_data, const char *file, i32 line) {
     record->previous = NULL;
 
     if (NuAllocManager != NULL) {
-        NuAllocManagerFreePc(NuAllocManager, record);
+        NuAllocManagerFree(NuAllocManager, record);
         return;
     }
 

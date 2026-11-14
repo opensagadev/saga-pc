@@ -12,7 +12,7 @@ extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f
     f32 dx = COLLECTION_DX * scale;
     const f32 dy = COLLECTION_DY * scale;
     f32 size = COLLECTION_ICONSIZE * scale;
-    if (collection->list == NULL || ((FADEINFO_PC *)&FadeSys)->fade > 0.0f) {
+    if (collection->list == NULL || ((FADEINFO *)&FadeSys)->fade > 0.0f) {
         return;
     }
     const i32 count = collection->count;

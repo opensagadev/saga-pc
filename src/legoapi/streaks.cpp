@@ -1,10 +1,10 @@
 #include "saga.h"
 #pragma bss_seg(".bss$StreakHeadersUsedPc")
-static STREAK_HEADER_PC *streakhdrs_used = 0;
+static STREAK_HEADER *streakhdrs_used = 0;
 
 /* Moves a header from the free list to the front of the used list. */
-extern "C" STREAK_HEADER_PC *fun_005a35c0(void) {
-    STREAK_HEADER_PC *header = streakhdrs_free;
+extern "C" STREAK_HEADER *fun_005a35c0(void) {
+    STREAK_HEADER *header = streakhdrs_free;
     if (header != NULL) {
         streakhdrs_free = header->next;
         header->next = streakhdrs_used;
@@ -54,7 +54,7 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
     NUVEC outgoing;
     NUVEC edge_a;
     NUVEC edge_b;
-    STREAK_HEADER_PC *header = static_cast<STREAK_HEADER_PC *>(*handle);
+    STREAK_HEADER *header = static_cast<STREAK_HEADER *>(*handle);
     if (header == NULL) {
         header = streakhdrs_free;
         if (header == NULL) {
@@ -77,7 +77,7 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
         header->flags = static_cast<u8>(mode);
         header->owner = owner;
     }
-    STREAK_NODE_PC *node = streaks_free;
+    STREAK_NODE *node = streaks_free;
     header->has_new_node = 1;
     header->colour = colour;
     if (node != NULL) {
@@ -99,14 +99,14 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
         return;
     }
     node = header->nodes;
-    STREAK_NODE_PC *older = node->next;
+    STREAK_NODE *older = node->next;
     NuVecSub(&node->start_tangent, &older->position, &node->position);
     NuVecSub(&header->nodes->end_tangent, &header->nodes->next->previous_position, &header->nodes->previous_position);
     NuVecScale(&header->nodes->start_tangent, &header->nodes->start_tangent, 0.33333334f);
     NuVecScale(&header->nodes->end_tangent, &header->nodes->end_tangent, 0.33333334f);
     node = header->nodes;
     older = node->next;
-    STREAK_NODE_PC *oldest = older->next;
+    STREAK_NODE *oldest = older->next;
     if (oldest != NULL) {
         NuVecSub(&incoming, &older->position, &node->position);
         NuVecSub(&outgoing, &oldest->position, &older->position);
@@ -119,8 +119,8 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
         NuVecScale(&header->nodes->next->start_tangent, &header->nodes->next->start_tangent, 0.33333334f);
         NuVecScale(&header->nodes->next->end_tangent, &header->nodes->next->end_tangent, 0.33333334f);
         for (i32 index = 1; index < header->nodes->next->next->segment_count; ++index) {
-            STREAK_NODE_PC *newer = header->nodes->next;
-            STREAK_NODE_PC *segment = newer->next;
+            STREAK_NODE *newer = header->nodes->next;
+            STREAK_NODE *segment = newer->next;
             StreakBezierPointPrivate(&segment->positions[index - 1], &newer->position, &segment->position, &newer->start_tangent,
                                      &segment->start_tangent, 0, 1,
                                      (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
@@ -145,8 +145,8 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
     count += count;
     header->nodes->next->segment_count = static_cast<i32>(8.0 > count ? count : 8.0);
     for (i32 index = 1; index < header->nodes->next->segment_count; ++index) {
-        STREAK_NODE_PC *newer = header->nodes;
-        STREAK_NODE_PC *segment = newer->next;
+        STREAK_NODE *newer = header->nodes;
+        STREAK_NODE *segment = newer->next;
         StreakBezierPointPrivate(&segment->positions[index - 1], &newer->position, &segment->position, &newer->start_tangent,
                                  &segment->start_tangent, 0, 1,
                                  (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
@@ -161,19 +161,19 @@ extern "C" void UpdateStreaks(f32 elapsed) {
     if (elapsed == 0.0f) {
         return;
     }
-    STREAK_HEADER_PC *header = streakhdrs_used;
+    STREAK_HEADER *header = streakhdrs_used;
     if (header == NULL) {
         return;
     }
-    STREAK_HEADER_PC *free_headers = streakhdrs_free;
+    STREAK_HEADER *free_headers = streakhdrs_free;
     do {
-        STREAK_HEADER_PC *next_header = header->next;
+        STREAK_HEADER *next_header = header->next;
         if (header->has_new_node == 0 && header->owner_slot != NULL && *header->owner_slot == header) {
             *header->owner_slot = NULL;
             header->owner_slot = NULL;
         }
         header->has_new_node = 0;
-        for (STREAK_NODE_PC *node = header->nodes; node != NULL; node = node->next) {
+        for (STREAK_NODE *node = header->nodes; node != NULL; node = node->next) {
             node->remaining_time -= elapsed;
             if (node->remaining_time <= 0.0f && node->next == NULL) {
                 if (node->prev != NULL) {
@@ -206,19 +206,19 @@ extern "C" void UpdateStreaks(f32 elapsed) {
     streakhdrs_free = free_headers;
 }
 
-extern "C" f32 StreakAlphaScalePc;
+extern "C" f32 StreakAlphaScale;
 #define STREAK_FADE(node) MAX(0.0f, (node)->remaining_time)
-#define STREAK_ALPHA(colour, node) ((f64)(i32)((colour) >> 24) * STREAK_FADE(node) * StreakAlphaScalePc)
+#define STREAK_ALPHA(colour, node) ((f64)(i32)((colour) >> 24) * STREAK_FADE(node) * StreakAlphaScale)
 #define STREAK_SET_ALPHA(colour, header, node)                                                                                             \
     (colour) = (header)->colour;                                                                                                           \
     ((u8 *)&(colour))[3] = (u8)(STREAK_ALPHA(colour, node) > 255.0 ? 255.0 : STREAK_ALPHA(colour, node))
 
 extern "C" void DrawStreaks(void) {
-    for (STREAK_HEADER_PC *header = streakhdrs_used; header != NULL; header = header->next) {
+    for (STREAK_HEADER *header = streakhdrs_used; header != NULL; header = header->next) {
         NURND_VERTEX3D_PC vertices[256];
         i32 vertex_count = 0;
         u32 colour;
-        for (STREAK_NODE_PC *node = header->nodes; node != NULL; node = node->next) {
+        for (STREAK_NODE *node = header->nodes; node != NULL; node = node->next) {
             STREAK_SET_ALPHA(colour, header, node);
             vertices[vertex_count].position = node->position;
             vertices[vertex_count].u = 0.01f;
@@ -256,15 +256,15 @@ extern "C" void DrawStreaks(void) {
 #undef STREAK_FADE
 
 extern "C" void ResetStreaks(void) {
-    STREAK_HEADER_PC *header = streakhdrs_used;
+    STREAK_HEADER *header = streakhdrs_used;
     if (header == NULL) {
         return;
     }
-    STREAK_HEADER_PC *free_headers = streakhdrs_free;
-    STREAK_NODE_PC *free_nodes = streaks_free;
+    STREAK_HEADER *free_headers = streakhdrs_free;
+    STREAK_NODE *free_nodes = streaks_free;
     do {
         while (header->nodes != NULL) {
-            STREAK_NODE_PC *node = header->nodes;
+            STREAK_NODE *node = header->nodes;
             if (node->prev != NULL) {
                 node->prev->next = node->next;
             } else {
@@ -276,7 +276,7 @@ extern "C" void ResetStreaks(void) {
             node->next = free_nodes;
             free_nodes = node;
         }
-        STREAK_HEADER_PC *old_header = header;
+        STREAK_HEADER *old_header = header;
         if (old_header->prev != NULL) {
             old_header->prev->next = old_header->next;
         } else {
@@ -301,23 +301,22 @@ struct STREAK_MATERIAL_SCALE { // size 0x68
 extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     i32 i;
     for (i = 0; i < 32; ++i) {
-        StreakHeadersPc[i].index = static_cast<u16>(i);
-        StreakHeadersPc[i].next = &StreakHeadersPc[i + 1];
-        StreakHeadersPc[i].prev =
-            reinterpret_cast<STREAK_HEADER_PC *>(reinterpret_cast<u32>(StreakHeadersPc) + (i - 1) * sizeof(STREAK_HEADER_PC));
+        StreakHeaders[i].index = static_cast<u16>(i);
+        StreakHeaders[i].next = &StreakHeaders[i + 1];
+        StreakHeaders[i].prev = reinterpret_cast<STREAK_HEADER *>(reinterpret_cast<u32>(StreakHeaders) + (i - 1) * sizeof(STREAK_HEADER));
     }
-    StreakHeadersPc[i - 1].next = NULL;
-    StreakHeadersPc[0].prev = NULL;
-    streakhdrs_free = StreakHeadersPc;
+    StreakHeaders[i - 1].next = NULL;
+    StreakHeaders[0].prev = NULL;
+    streakhdrs_free = StreakHeaders;
     streakhdrs_used = NULL;
     for (i = 0; i < 128; ++i) {
-        StreakNodesPc[i].next = &StreakNodesPc[i + 1];
-        StreakNodesPc[i].prev = reinterpret_cast<STREAK_NODE_PC *>(reinterpret_cast<u32>(StreakNodesPc) + (i - 1) * sizeof(STREAK_NODE_PC));
+        StreakNodes[i].next = &StreakNodes[i + 1];
+        StreakNodes[i].prev = reinterpret_cast<STREAK_NODE *>(reinterpret_cast<u32>(StreakNodes) + (i - 1) * sizeof(STREAK_NODE));
     }
-    StreakNodesPc[i - 1].next = NULL;
-    StreakNodesPc[0].prev = NULL;
-    streaks_free = StreakNodesPc;
-    StreakNodesUsedPc = NULL;
+    StreakNodes[i - 1].next = NULL;
+    StreakNodes[0].prev = NULL;
+    streaks_free = StreakNodes;
+    StreakNodesUsed = NULL;
     streakmtl = NuMtlCreate3D(1);
     streakmtl->attribs.unknown_1_1_2 = 0;
     streakmtl->attribs.unknown_1_4_8 = 0;

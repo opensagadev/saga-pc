@@ -5,24 +5,24 @@ extern i32 PcSaveFolderRegisteredPc;
 extern "C" void PcRegisterSaveFolderPc(const char *company, const char *product, const char *parameter, i32 personal) {
     PcCompanyName = company;
     PcProductName = product;
-    NuHwDefaultParameterPc = parameter;
+    NuHwDefaultParameter = parameter;
     PcUsePersonalFolder = personal;
     PcSaveFolderRegisteredPc = 1;
 }
 
-extern "C" void PcSetDefaultParameterPc(const char *parameter) {
-    NuHwDefaultParameterPc = parameter;
+extern "C" void PcSetDefaultParameter(const char *parameter) {
+    NuHwDefaultParameter = parameter;
 }
 
-extern "C" void *NuHwParameter33Pc;
+extern "C" void *NuHwParameter33;
 
-extern "C" void NuHwSetParameter33Pc(void *value) {
-    NuHwParameter33Pc = value;
+extern "C" void NuHwSetParameter33(void *value) {
+    NuHwParameter33 = value;
 }
 
 extern "C" void fun_006dddc0(void) {
-    if (NuHwParameter33Pc != NULL) {
-        ((void (*)(void))NuHwParameter33Pc)();
+    if (NuHwParameter33 != NULL) {
+        ((void (*)(void))NuHwParameter33)();
     }
 }
 

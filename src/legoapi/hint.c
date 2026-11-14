@@ -29,7 +29,7 @@ typedef struct HINT_PANEL { // size 0x90
     f32 target_scale;       // 0x8c
 } HINT_PANEL;
 
-struct panel_movement_pc_s;
+struct panel_movement_s;
 
 typedef struct HINT_ZIPUP { // size 0x7c
     u8 name[16];            // 0x00
@@ -91,8 +91,8 @@ i32 Hint_CurrentId(void) {
     return hintsys.active_hint != NULL ? hintsys.active_hint->id : -1;
 }
 
-HINT_PC *Hint_FindHint(i32 hint_id) {
-    HINT_PC *hint = hintsys.hints;
+HINT *Hint_FindHint(i32 hint_id) {
+    HINT *hint = hintsys.hints;
     if (hint == NULL) {
         return NULL;
     }
@@ -106,8 +106,8 @@ HINT_PC *Hint_FindHint(i32 hint_id) {
 }
 
 i32 Hint_isAvailable(i32 hint_id) {
-    HINT_PC *active_hint = hintsys.active_hint;
-    HINT_PC *hint;
+    HINT *active_hint = hintsys.active_hint;
+    HINT *hint;
     if (active_hint != NULL && active_hint->id == hint_id) {
         return 0;
     }
@@ -124,8 +124,8 @@ i32 Hint_isAvailable(i32 hint_id) {
     return 1;
 }
 
-i32 Hint_isCompleteByIdPc(i32 hint_id) {
-    HINT_PC *hint = hintsys.hints;
+i32 Hint_isCompleteById(i32 hint_id) {
+    HINT *hint = hintsys.hints;
     if (hint == NULL) {
         return 0;
     }
@@ -138,7 +138,7 @@ i32 Hint_isCompleteByIdPc(i32 hint_id) {
     return 0;
 }
 
-i32 Hint_isComplete(HINT_PC *hint) {
+i32 Hint_isComplete(HINT *hint) {
     return hint->completed;
 }
 
@@ -148,7 +148,7 @@ void fun_00576550(void) {
     hintsys.active_hint = NULL;
 }
 
-void RegisterWithHintSys(void (*draw_fn)(HINT_PC *, i32), HINT_PC *hints, u32 *save_bits, i32 save_word_count) {
+void RegisterWithHintSys(void (*draw_fn)(HINT *, i32), HINT *hints, u32 *save_bits, i32 save_word_count) {
     hintsys.display_elapsed = 0.0f;
     hintsys.draw_fn = draw_fn;
     hintsys.hints = hints;
@@ -169,7 +169,7 @@ void Hint_CancelCurrent(void) {
 }
 
 void Hint_Reset(void) {
-    HINT_PC *hint = hintsys.hints;
+    HINT *hint = hintsys.hints;
     if (hint == NULL) {
         return;
     }
@@ -184,7 +184,7 @@ void Hint_Reset(void) {
 }
 
 void Hint_ResetHint(i32 hint_id, i32 reset_completed) {
-    HINT_PC *hint = hintsys.hints;
+    HINT *hint = hintsys.hints;
     if (hint == NULL) {
         return;
     }
@@ -201,7 +201,7 @@ void Hint_ResetHint(i32 hint_id, i32 reset_completed) {
 }
 
 void Hint_ClearHintsAndDoneFlags(void) {
-    HINT_PC *hint = hintsys.hints;
+    HINT *hint = hintsys.hints;
     if (hint == NULL) {
         return;
     }
@@ -223,8 +223,8 @@ void Hint_SaveBits(i32 index, i32 set) {
     }
 }
 
-void Hint_SaveGameState(HINT_PC *hint) {
-    HINT_PC *candidate;
+void Hint_SaveGameState(HINT *hint) {
+    HINT *candidate;
     i32 index;
     if (hintsys.hints == NULL || hintsys.save_bits == NULL) {
         return;
@@ -240,7 +240,7 @@ void Hint_SaveGameState(HINT_PC *hint) {
 }
 
 void Hint_SaveAllGameState(void) {
-    HINT_PC *hint = hintsys.hints;
+    HINT *hint = hintsys.hints;
     i32 index;
     if (hint == NULL || hintsys.save_bits == NULL) {
         return;
@@ -255,7 +255,7 @@ void Hint_SaveAllGameState(void) {
 }
 
 void Hint_LoadAllGameState(void) {
-    HINT_PC *hint = hintsys.hints;
+    HINT *hint = hintsys.hints;
     i32 index;
     if (hint == NULL || hintsys.save_bits == NULL) {
         return;
@@ -278,7 +278,7 @@ void Hint_Draw(i32 viewport) {
     }
 }
 
-void Hint_SetHint(HINT_PC *hint, i32 force, i32 allow_completed) {
+void Hint_SetHint(HINT *hint, i32 force, i32 allow_completed) {
     i32 state;
     if (hintsys.active_hint != NULL && hintsys.active_hint == hint) {
         return;
@@ -311,7 +311,7 @@ void Hint_SetHint(HINT_PC *hint, i32 force, i32 allow_completed) {
 }
 
 void Hint_SetHintFromId(i32 hint_id, i32 force, i32 allow_completed) {
-    HINT_PC *hint;
+    HINT *hint;
     if (hintsys.active_hint != NULL && hintsys.active_hint->id == hint_id) {
         return;
     }
@@ -326,7 +326,7 @@ void Hint_SetHintFromId(i32 hint_id, i32 force, i32 allow_completed) {
 }
 
 void Hint_SetComplete(i32 hint_id) {
-    HINT_PC *hint;
+    HINT *hint;
     if (hint_id == -1) {
         return;
     }
@@ -337,7 +337,7 @@ void Hint_SetComplete(i32 hint_id) {
     }
 }
 
-void Hint_SetCompletePc(HINT_PC *hint) {
+void Hint_SetCompletePc(HINT *hint) {
     if (hint != NULL && hint->completed == 0) {
         hint->completed = 1;
         Hint_SaveGameState(hint);
@@ -347,7 +347,7 @@ void Hint_SetCompletePc(HINT_PC *hint) {
 void Hint_Process(f32 elapsed) {
     i32 available = 1;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    HINT_PC *hint;
+    HINT *hint;
     f32 target;
     f32 step;
     if (hintsys.hints == NULL) {

@@ -1,8 +1,8 @@
 #include "saga.h"
 #include <stdio.h>
 
-typedef struct SARLACC_DISCO_PC {   // size 0x400
-    AIAREA_PC *area;                // 0x000
+typedef struct SARLACC_DISCO {      // size 0x400
+    AIAREA *area;                   // 0x000
     NUSPECIALHANDLE off[16];        // 0x004
     NUSPECIALHANDLE flash[16];      // 0x0c4
     NUSPECIALHANDLE select[16];     // 0x184
@@ -23,25 +23,25 @@ typedef struct SARLACC_DISCO_PC {   // size 0x400
     GIZAIMESSAGE *complete_message; // 0x3f4
     GIZAIMESSAGE *state_message;    // 0x3f8
     NUVEC *last_selected_position;  // 0x3fc
-} SARLACC_DISCO_PC;
+} SARLACC_DISCO;
 
-f32 SarlaccDiscoBaseOffsetPc = -0.12f;
+f32 SarlaccDiscoBaseOffset = -0.12f;
 
-static SARLACC_DISCO_PC sarlaccdisco = {0};
-NUSPECIALHANDLE SarlaccLevSpecialPc[7] = {0};
-void *SarlaccLevelBuilditsPc[2] = {0};
-GIZMO_PC *SarlaccObstMirrorBallPc = NULL;
-GIZMO_PC *SarlaccForceMirrorBallPc = NULL;
+static SARLACC_DISCO sarlaccdisco = {0};
+NUSPECIALHANDLE SarlaccLevSpecial[7] = {0};
+void *SarlaccLevelBuildits[2] = {0};
+GIZMO_PC *SarlaccObstMirrorBall = NULL;
+GIZMO_PC *SarlaccForceMirrorBall = NULL;
 
-f32 DeathStarZapSizeWidthPc = 1.0f;
-f32 DeathStarZapSizeLengthPc = 1.0f;
-f32 DeathStarZapWidthBiasPc = 0.01f;
-f32 DeathStarZapEndWidthPc = 1.5f;
-i32 DeathStarZapLaserTypePc = 0;
+f32 DeathStarZapSizeWidth = 1.0f;
+f32 DeathStarZapSizeLength = 1.0f;
+f32 DeathStarZapWidthBias = 0.01f;
+f32 DeathStarZapEndWidth = 1.5f;
+i32 DeathStarZapLaserType = 0;
 
 /* Private owner of the two player timers. */
 static f32 slowDownTimer[2] = {0};
-f32 FireDeltaPositionPc = 0.0f;
+f32 FireDeltaPosition = 0.0f;
 
 typedef struct emperor_fight_packet_s { // size 0x8
     i32 state;                          // 0x0
@@ -69,7 +69,7 @@ typedef struct sarlacc_panel_s { // size 0x63
     u8 state_flags;              // 0x62
 } SARLACC_PANEL_PC;
 
-extern i32 DrawBossHitPointsTwoRowsPc;
+extern i32 DrawBossHitPointsTwoRows;
 
 /* Emperor floor packet and private controls. */
 typedef struct emperor_update_packet_s { // size 0x8
@@ -83,7 +83,7 @@ typedef struct emperor_update_packet_s { // size 0x8
 void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 #define RANCOR_PLAYER_IN_AREA_PC(player, world, n) (U64_PAIR((player)->ai_area_mask) & (1 << (LevArea[n] - (world)->ai_sys->areas)))
 /* Fairground party split locator. */
-static AILOCATOR_PC *FairgroundSplitPartyLocatorPc;
+static AILOCATOR *FairgroundSplitPartyLocator;
 
 typedef struct JABBA_ANTINODE_VIEW {
     u8 unknown_00[0x40];
@@ -93,16 +93,16 @@ typedef struct JABBA_ANTINODE_VIEW {
     u8 type;
 } JABBA_ANTINODE_VIEW;
 
-STATIC_ASSERT(offsetof(JABBA_ANTINODE_VIEW, type) == offsetof(AIANTINODE_PC, type));
+STATIC_ASSERT(offsetof(JABBA_ANTINODE_VIEW, type) == offsetof(AIANTINODE, type));
 extern i16 CharacterFixupIdPc007f1a7c;
 extern i16 CharacterFixupIdPc007f1a88;
 #pragma section(".sarlrw", read, write)
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, movement_look_target) == 0x4ac);
-extern i32 EmperorFloorRouteOnPc;
-extern f32 EmperorFloorRadiusPc;
-extern f32 EmperorFloorJitterPc;
-extern f32 EmperorFloorPushPc;
-extern f32 EmperorFloorSafeXMinimumPc;
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, movement_look_target) == 0x4ac);
+extern i32 EmperorFloorRouteOn;
+extern f32 EmperorFloorRadius;
+extern f32 EmperorFloorJitter;
+extern f32 EmperorFloorPush;
+extern f32 EmperorFloorSafeXMinimum;
 #define EMPEROR_PACKET ((EMPEROR_UPDATE_PACKET_PC *)emperorfighta_netpacket)
 #define EMPEROR_FLOOR_AREA_MASK(world, area) (1 << ((area) - (world)->ai_sys->areas))
 
@@ -223,8 +223,8 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
         position.z = player->collision_position.z + (f64)delta.z * 0.5;
         rtlDynamicSetPos(player->dynamic_light_id, &position);
         length = NuVecDist(&((GAMEOBJECT *)Player[i])->collision_position, mid, &delta);
-        NuLgtLaser(DeathStarZapLaserTypePc, DeathStarZapSizeWidthPc, DeathStarZapSizeLengthPc, DeathStarZapWidthBiasPc, mid, &delta,
-                   0xff808040, DeathStarZapEndWidthPc, length);
+        NuLgtLaser(DeathStarZapLaserType, DeathStarZapSizeWidth, DeathStarZapSizeLength, DeathStarZapWidthBias, mid, &delta, 0xff808040,
+                   DeathStarZapEndWidth, length);
         NewRumble(((GAMEOBJECT *)Player[i])->pad->bound_pad, (f32)((f64)qrand() * (f64)0.000015259022f * (f64)0.3f), 0);
         if (qrand() < 0x1000) {
             NewBuzzFrames(((GAMEOBJECT *)Player[i])->pad->bound_pad, 1, 0);
@@ -418,7 +418,7 @@ void EmperorFightA_Reset(WORLDINFO *world) {
     }
 }
 
-void EmperorFightA_UpdateFloorObstaclesPc(void) {
+void EmperorFightA_UpdateFloorObstacles(void) {
     EMPEROR_UPDATE_PACKET_PC *packet = emperorfighta_netpacket;
     switch (packet->state) {
         case 1:
@@ -515,7 +515,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
         }
     }
     if (netclient && EMPEROR_PACKET->zap && EMPEROR_PACKET->player_floor_mask && LevGameObject[0] != NULL) {
-        AILOCATOR_PC *locator;
+        AILOCATOR *locator;
         locator = AIPathFindLocator(world->ai_sys, "Zap");
 
         ForceLightning_Origin(LevGameObject[0], &hands[0], &hands[1]);
@@ -546,7 +546,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
             }
             floor_position = NuSpecialGetDrawPos(&hspecial_efloor[floor]);
             floor_active = 1;
-            radius = EmperorFloorRadiusPc;
+            radius = EmperorFloorRadius;
             for (i = 0; i < 2; ++i) {
                 GAMEOBJECT *player;
                 f32 dx;
@@ -574,7 +574,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
                 if ((i8)player->flags_1fc_word < 0) {
                     i32 invincible;
                     invincible = Player_HasInvincibility(player);
-                    radius = EmperorFloorRadiusPc;
+                    radius = EmperorFloorRadius;
                     if (invincible) {
                         continue;
                     }
@@ -601,7 +601,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
                     ObjHitObj(NULL, player, 1, 0, 0, 1);
                 }
                 player = Player[i];
-                push = EmperorFloorPushPc;
+                push = EmperorFloorPush;
                 if (dx > 0.0f) {
                     player->velocity.x += push;
                 } else {
@@ -615,22 +615,22 @@ void EmperorFightA_Update(WORLDINFO *world) {
                 }
 
                 floor_end.x = player->collision_position.x;
-                jitter = EmperorFloorJitterPc;
+                jitter = EmperorFloorJitter;
                 random = NuRandFloat();
                 floor_end.x = (f32)((jitter - (random + random) * jitter) + (f64)floor_end.x);
-                if (floor_end.x > floor_position->x + EmperorFloorRadiusPc) {
-                    floor_end.x = floor_position->x + EmperorFloorRadiusPc;
-                } else if (floor_position->x - EmperorFloorRadiusPc > floor_end.x) {
-                    floor_end.x = floor_position->x - EmperorFloorRadiusPc;
+                if (floor_end.x > floor_position->x + EmperorFloorRadius) {
+                    floor_end.x = floor_position->x + EmperorFloorRadius;
+                } else if (floor_position->x - EmperorFloorRadius > floor_end.x) {
+                    floor_end.x = floor_position->x - EmperorFloorRadius;
                 }
                 floor_y = floor_position->y;
                 jitter_player = Player[i];
                 floor_end.y = (f32)floor_y;
                 floor_end.z = jitter_player->collision_position.z;
-                jitter = EmperorFloorJitterPc;
+                jitter = EmperorFloorJitter;
                 random = NuRandFloat();
                 floor_end.z = (f32)((jitter - (random + random) * jitter) + (f64)floor_end.z);
-                clamp_radius = EmperorFloorRadiusPc;
+                clamp_radius = EmperorFloorRadius;
                 upper = clamp_radius + floor_position->z;
                 if (floor_end.z > upper) {
                     floor_end.z = (f32)upper;
@@ -661,7 +661,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
             GAMEOBJECT *player;
             f64 minimum;
             player = Player[0];
-            minimum = EmperorFloorSafeXMinimumPc;
+            minimum = EmperorFloorSafeXMinimum;
             if (!player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
                 (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
@@ -679,9 +679,9 @@ void EmperorFightA_Update(WORLDINFO *world) {
     }
 
     if (!netclient && routemask_efloor_on && routemask_efloor_off) {
-        if (EMPEROR_PACKET->enabled || (floor_active && !EmperorFloorRouteOnPc)) {
+        if (EMPEROR_PACKET->enabled || (floor_active && !EmperorFloorRouteOn)) {
             EMPEROR_PACKET->enabled = 0;
-            EmperorFloorRouteOnPc = 1;
+            EmperorFloorRouteOn = 1;
             for (i = 0; i < world->ai_sys->path_sys->active_path->connection_count; ++i) {
                 if (world->ai_sys->path_sys->active_path->connections[i].route_mask & routemask_efloor_on) {
                     world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= 0x7fffffff;
@@ -692,10 +692,10 @@ void EmperorFightA_Update(WORLDINFO *world) {
                 }
             }
         } else {
-            if (floor_active || !EmperorFloorRouteOnPc) {
+            if (floor_active || !EmperorFloorRouteOn) {
                 goto emperor_routes_done;
             }
-            EmperorFloorRouteOnPc = 0;
+            EmperorFloorRouteOn = 0;
             for (i = 0; i < world->ai_sys->path_sys->active_path->connection_count; ++i) {
                 if (world->ai_sys->path_sys->active_path->connections[i].route_mask & routemask_efloor_on) {
                     world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= 0x80000000;
@@ -712,17 +712,17 @@ void EmperorFightA_Update(WORLDINFO *world) {
                 GAMEOBJECT *player;
                 player = Player[i];
                 if (player != NULL && (player->flags_1fc_word & 0x1001) == 0x1001) {
-                    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)player, &player->ai_packet, 0xff, 1);
+                    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)player, &player->ai_packet, 0xff, 1);
                 }
             }
             boss = LevGameObject[0];
             if (boss != NULL) {
-                AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)boss, &boss->ai_packet, 0xff, 1);
+                AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)boss, &boss->ai_packet, 0xff, 1);
             }
         }
     }
 emperor_routes_done:
-    EmperorFightA_UpdateFloorObstaclesPc();
+    EmperorFightA_UpdateFloorObstacles();
     if (!((u8 *)LevFlag)[4]) {
         for (i = 1; i < 5; ++i) {
             if (!((u8 *)LevFlag)[i] && NuSpecialGetVisibilityFn(&LevHSpecial[i + 2])) {
@@ -742,7 +742,7 @@ emperor_routes_done:
 }
 
 void EmperorFightA_Panel(WORLDINFO *world) {
-    DrawBossHitPointsTwoRowsPc = 1;
+    DrawBossHitPointsTwoRows = 1;
     if (LevGameObject[0] != NULL && LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f) {
         DrawBossHitPoints(LevGameObject[0]);
     }
@@ -932,7 +932,7 @@ void SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
 #undef SARLACC_SHOW_PANEL_PC
         position = NuSpecialGetDrawPos(&LevHSpecial[1]);
         if (position != NULL) {
-            position->y = SarlaccDiscoBaseOffsetPc + sarlaccdisco.height;
+            position->y = SarlaccDiscoBaseOffset + sarlaccdisco.height;
             NuSpecialSetDrawPos(&LevHSpecial[1], position);
         }
         if (sarlaccb_netpacket->sound_mask & bit) {
@@ -944,27 +944,27 @@ void SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
         PlayRadio("Speaker2", "Speaker21", 1);
         PlayRadio("Speaker1", "Speaker11", 1);
         PlayRadio("decks", "decks", 1);
-        if (SarlaccObstMirrorBallPc != NULL) {
-            GizObstacle_PlayForwards(SarlaccObstMirrorBallPc->object);
+        if (SarlaccObstMirrorBall != NULL) {
+            GizObstacle_PlayForwards(SarlaccObstMirrorBall->object);
         }
-        if (NuSpecialExistsFn(&SarlaccLevSpecialPc[0])) {
-            NuSpecialSetVisibility(&SarlaccLevSpecialPc[0], 1);
+        if (NuSpecialExistsFn(&SarlaccLevSpecial[0])) {
+            NuSpecialSetVisibility(&SarlaccLevSpecial[0], 1);
         }
-        if (NuSpecialExistsFn(&SarlaccLevSpecialPc[1])) {
-            NuSpecialSetVisibility(&SarlaccLevSpecialPc[1], 1);
+        if (NuSpecialExistsFn(&SarlaccLevSpecial[1])) {
+            NuSpecialSetVisibility(&SarlaccLevSpecial[1], 1);
         }
-        if (NuSpecialExistsFn(&SarlaccLevSpecialPc[4])) {
-            animation = NuSpecialGetInstAnim(&SarlaccLevSpecialPc[4]);
+        if (NuSpecialExistsFn(&SarlaccLevSpecial[4])) {
+            animation = NuSpecialGetInstAnim(&SarlaccLevSpecial[4]);
             if (animation != NULL) {
                 animation->flags |= 1;
             }
         }
-        if (NuSpecialExistsFn(&SarlaccLevSpecialPc[5]) && NuSpecialExistsFn(&SarlaccLevSpecialPc[6])) {
-            animation = NuSpecialGetInstAnim(&SarlaccLevSpecialPc[5]);
+        if (NuSpecialExistsFn(&SarlaccLevSpecial[5]) && NuSpecialExistsFn(&SarlaccLevSpecial[6])) {
+            animation = NuSpecialGetInstAnim(&SarlaccLevSpecial[5]);
             if (animation != NULL) {
                 animation->flags |= 1;
             }
-            animation = NuSpecialGetInstAnim(&SarlaccLevSpecialPc[6]);
+            animation = NuSpecialGetInstAnim(&SarlaccLevSpecial[6]);
             if (animation != NULL) {
                 animation->flags |= 1;
             }
@@ -1065,29 +1065,29 @@ void SarlaccPitB_Reset(WORLDINFO *world) {
     sarlaccdisco.state_message = SetGizAIMessage(gizaimessagesys, "DiscoState", 0.0f, NULL);
     sarlaccdisco.off_obstacle = GizObstacle_FindByName(world->giz_obstacle_sys, "disco_off");
     sarlaccdisco.on_obstacle = GizObstacle_FindByName(world->giz_obstacle_sys, "disco_on");
-    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[0], "floor_disco", 1);
-    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[1], "light1_a", 1);
-    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[2], "disco_ball1", 1);
-    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[3], "disco_ball2", 1);
-    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[4], "shutter_1", 1);
-    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[5], "jabba_door1", 1);
-    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[6], "jabba_door2", 1);
-    SarlaccForceMirrorBallPc = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force5");
-    SarlaccObstMirrorBallPc = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle5");
-    SarlaccLevelBuilditsPc[0] = GizBuildIt_Find(world, "buildit6");
-    SarlaccLevelBuilditsPc[1] = GizBuildIt_Find(world, "buildit4");
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecial[0], "floor_disco", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecial[1], "light1_a", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecial[2], "disco_ball1", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecial[3], "disco_ball2", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecial[4], "shutter_1", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecial[5], "jabba_door1", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecial[6], "jabba_door2", 1);
+    SarlaccForceMirrorBall = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force5");
+    SarlaccObstMirrorBall = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle5");
+    SarlaccLevelBuildits[0] = GizBuildIt_Find(world, "buildit6");
+    SarlaccLevelBuildits[1] = GizBuildIt_Find(world, "buildit4");
     LevelLocator = AIPathFindLocator(world->ai_sys, "DiscoHelp");
-    if (NuSpecialExistsFn(&SarlaccLevSpecialPc[3])) {
-        NuSpecialSetVisibility(&SarlaccLevSpecialPc[3], 0);
+    if (NuSpecialExistsFn(&SarlaccLevSpecial[3])) {
+        NuSpecialSetVisibility(&SarlaccLevSpecial[3], 0);
     }
-    if (NuSpecialExistsFn(&SarlaccLevSpecialPc[0])) {
-        NuSpecialSetVisibility(&SarlaccLevSpecialPc[0], 0);
+    if (NuSpecialExistsFn(&SarlaccLevSpecial[0])) {
+        NuSpecialSetVisibility(&SarlaccLevSpecial[0], 0);
     }
-    if (NuSpecialExistsFn(&SarlaccLevSpecialPc[1])) {
-        NuSpecialSetVisibility(&SarlaccLevSpecialPc[1], 0);
+    if (NuSpecialExistsFn(&SarlaccLevSpecial[1])) {
+        NuSpecialSetVisibility(&SarlaccLevSpecial[1], 0);
     }
-    if (GizForce_Complete(SarlaccForceMirrorBallPc->object)) {
-        GizObstacle_Stop(SarlaccObstMirrorBallPc->object);
+    if (GizForce_Complete(SarlaccForceMirrorBall->object)) {
+        GizObstacle_Stop(SarlaccObstMirrorBall->object);
     }
 }
 
@@ -1104,11 +1104,11 @@ static i32 SarlaccDiscoPickPanel(i32 state, i32 exclude) {
     return count != 0 ? candidates[NuRand(NULL) % count] : -1;
 }
 
-f32 SarlaccDiscoHeightPc = 1.27f;
-f32 SarlaccDiscoSeekPc = 2.0f;
-f32 SarlaccDiscoTimePc = 40.0f;
-f32 SarlaccDiscoTimeoutPc = 2.5f;
-f32 SarlaccDiscoRadiusPc = 0.2f;
+f32 SarlaccDiscoHeight = 1.27f;
+f32 SarlaccDiscoSeek = 2.0f;
+f32 SarlaccDiscoTime = 40.0f;
+f32 SarlaccDiscoTimeout = 2.5f;
+f32 SarlaccDiscoRadius = 0.2f;
 __declspec(allocate(".sarlrw")) static NUVEC sarlacc_lump_position = {0};
 __declspec(allocate(".sarlrw")) static f32 sarlacc_engine_timer = 0.0f;
 
@@ -1123,7 +1123,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
         SetGizAIMessage(gizaimessagesys, "DiscoState", (f32)sarlaccdisco.phase, sarlaccdisco.state_message);
         panel = GizmoFindByName(world->gizmo_sys, gizspecial_gizmotype_id, "qaz_panel2");
         GizmoGetOutput(world->gizmo_sys, panel, 0, 0);
-        ready = GizBuildIt_AtEnd(SarlaccLevelBuilditsPc[0]) && GizBuildIt_AtEnd(SarlaccLevelBuilditsPc[1]) &&
+        ready = GizBuildIt_AtEnd(SarlaccLevelBuildits[0]) && GizBuildIt_AtEnd(SarlaccLevelBuildits[1]) &&
                 ((struct GIZSPECIAL_s *)panel->object)->anim_set->state == 2;
         if (ready && sarlaccdisco.complete_message->value == 0.0f) {
             SetGizAIMessage(gizaimessagesys, "discoflooropen", 1.0f, NULL);
@@ -1131,7 +1131,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
         switch (sarlaccdisco.phase) {
             case 0:
                 sarlaccb_netpacket->disco_active = 0;
-                if (NuSpecialExistsFn(&SarlaccLevSpecialPc[0]) && ready &&
+                if (NuSpecialExistsFn(&SarlaccLevSpecial[0]) && ready &&
                     ((player != NULL && (U64_PAIR((player)->ai_area_mask) & (i32)(1u << (sarlaccdisco.area - world->ai_sys->areas)))) ||
                      (player2 != NULL && (U64_PAIR((player2)->ai_area_mask) & (i32)(1u << (sarlaccdisco.area - world->ai_sys->areas)))))) {
                     sarlaccdisco.timer = 0.0f;
@@ -1167,7 +1167,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
                             f32 dx = position->x - object->position.x;
                             f32 dz = position->z - object->position.z;
                             f32 distance = dx * dx + dz * dz;
-                            if (distance < SarlaccDiscoRadiusPc * SarlaccDiscoRadiusPc) {
+                            if (distance < SarlaccDiscoRadius * SarlaccDiscoRadius) {
                                 occupied[pass] = 1;
                                 sarlaccdisco.panel_state[*selected] = 2;
                                 if (object == player) {
@@ -1199,7 +1199,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
                     }
                 } else {
                     sarlaccdisco.timer += FRAMETIME;
-                    if (sarlaccdisco.timer > SarlaccDiscoTimeoutPc) {
+                    if (sarlaccdisco.timer > SarlaccDiscoTimeout) {
                         sarlaccdisco.timer = 0.0f;
                         for (index = 0; index < 2; ++index) {
                             i32 selected = SarlaccDiscoPickPanel(3, -1);
@@ -1222,8 +1222,8 @@ void SarlaccPitB_Update(WORLDINFO *world) {
                             }
                             if (help_position != NULL) {
                                 SetGizAIMessage(gizaimessagesys, "HelpWithDisco", 1.0f, sarlaccdisco.help_message);
-                                ((AILOCATOR_PC *)LevelLocator)->position.x = help_position->x;
-                                ((AILOCATOR_PC *)LevelLocator)->position.z = help_position->z;
+                                ((AILOCATOR *)LevelLocator)->position.x = help_position->x;
+                                ((AILOCATOR *)LevelLocator)->position.z = help_position->z;
                             }
                         }
                     }
@@ -1233,7 +1233,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
             case 2:
                 sarlaccb_netpacket->disco_active = 1;
                 sarlaccdisco.timer += FRAMETIME;
-                if (sarlaccdisco.timer > SarlaccDiscoTimePc || !ready) {
+                if (sarlaccdisco.timer > SarlaccDiscoTime || !ready) {
                     sarlaccb_netpacket->disco_active = 0;
                     SarlaccPitB_Reset(world);
                     return;
@@ -1241,12 +1241,12 @@ void SarlaccPitB_Update(WORLDINFO *world) {
                 break;
         }
         if (sarlaccdisco.phase != 0) {
-            f32 amount = (SarlaccDiscoHeightPc - sarlaccdisco.height) / (SarlaccDiscoHeightPc - sarlaccdisco.initial_height);
+            f32 amount = (SarlaccDiscoHeight - sarlaccdisco.height) / (SarlaccDiscoHeight - sarlaccdisco.initial_height);
             f32 rate;
             amount = amount < 0.0f ? 0.0f : amount > 1.0f ? 1.0f : amount;
             rate = (f32)(1.0 - ((f64)NuTrigTable[((i32)((f64)amount * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5);
-            amount = rate * SarlaccDiscoSeekPc;
-            sarlaccdisco.height = SeekValF(sarlaccdisco.height, SarlaccDiscoHeightPc, amount);
+            amount = rate * SarlaccDiscoSeek;
+            sarlaccdisco.height = SeekValF(sarlaccdisco.height, SarlaccDiscoHeight, amount);
         }
         sarlaccb_netpacket->off_mask = 0;
         sarlaccb_netpacket->flash_mask = 0;
@@ -1294,28 +1294,28 @@ void SarlaccPitB_Update(WORLDINFO *world) {
 }
 
 void SarlaccPitC_Init(WORLDINFO *world) {
-    SarlaccPowerPc = 0;
-    SarlaccRechargingPc = 0;
-    SarlaccTargetShieldPc[0] = 0;
-    SarlaccTargetShieldPc[1] = 0;
+    SarlaccPower = 0;
+    SarlaccRecharging = 0;
+    SarlaccTargetShield[0] = 0;
+    SarlaccTargetShield[1] = 0;
 }
 
 #pragma bss_seg(".bss$SarlaccBlowUpTargetCountPc")
-static i32 SarlaccBlowUpTargetCountPc = 0;
+static i32 SarlaccBlowUpTargetCount = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$SarlaccBlowUpTargetsPc")
-static GIZMOBLOWUP_PC *SarlaccBlowUpTargetsPc[4] = {0};
+static GIZMOBLOWUP_PC *SarlaccBlowUpTargets[4] = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$SarlaccTakenOverPc")
-static i32 SarlaccTakenOverPc = 0;
+static i32 SarlaccTakenOver = 0;
 #pragma bss_seg()
 
 void SarlaccPitC_Reset(WORLDINFO *world) {
     char name[32];
     GIZMO_PC *gizmo;
     i32 i;
-    SarlaccTakenOverPc = 0;
-    SarlaccBlowUpTargetCountPc = 0;
+    SarlaccTakenOver = 0;
+    SarlaccBlowUpTargetCount = 0;
     LevGameObject[0] = GetNamedGameObject(world->ai_sys, "cannon_1");
     for (i = 0; i < 2; ++i) {
         sprintf(name, "cover_%d", i + 1);
@@ -1323,9 +1323,9 @@ void SarlaccPitC_Reset(WORLDINFO *world) {
         sprintf(name, "cover_%d1", i + 1);
         gizmo = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, name);
         if (gizmo != NULL) {
-            SarlaccBlowUpTargetsPc[SarlaccBlowUpTargetCountPc] = gizmo->object;
-            SarlaccBlowUpTargetsPc[SarlaccBlowUpTargetCountPc]->status_flags |= 0x8000000;
-            ++SarlaccBlowUpTargetCountPc;
+            SarlaccBlowUpTargets[SarlaccBlowUpTargetCount] = gizmo->object;
+            SarlaccBlowUpTargets[SarlaccBlowUpTargetCount]->status_flags |= 0x8000000;
+            ++SarlaccBlowUpTargetCount;
             UpdateMidPos(gizmo->object);
         }
     }
@@ -1333,8 +1333,8 @@ void SarlaccPitC_Reset(WORLDINFO *world) {
         sprintf(name, "spinner%d_null_1", i + 1);
         gizmo = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, name);
         if (gizmo != NULL) {
-            SarlaccBlowUpTargetsPc[SarlaccBlowUpTargetCountPc] = gizmo->object;
-            ++SarlaccBlowUpTargetCountPc;
+            SarlaccBlowUpTargets[SarlaccBlowUpTargetCount] = gizmo->object;
+            ++SarlaccBlowUpTargetCount;
             UpdateMidPos(gizmo->object);
         }
     }
@@ -1348,30 +1348,30 @@ void SarlaccPitC_Reset(WORLDINFO *world) {
     }
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, gizpanel_gizmotype_id, "panel2");
     for (i = 0; i < 8; ++i) {
-        NuSpecialSetVisibility(&LevHSpecial[i], i >= SarlaccPowerPc);
-        NuSpecialSetVisibility(&LevHSpecial[i + 8], i < SarlaccPowerPc);
+        NuSpecialSetVisibility(&LevHSpecial[i], i >= SarlaccPower);
+        NuSpecialSetVisibility(&LevHSpecial[i + 8], i < SarlaccPower);
     }
 }
 
 #pragma bss_seg(".bss$SarlaccRechargeTimerPc")
-static f32 SarlaccRechargeTimerPc = 0;
+static f32 SarlaccRechargeTimer = 0;
 #pragma bss_seg()
 
 void SarlaccPitC_Update(WORLDINFO *world) {
     SARLACC_WORLD_PC *script_world = (SARLACC_WORLD_PC *)world;
-    if (LevGameObject[0] != NULL && SarlaccBlowUpTargetCountPc == 4) {
+    if (LevGameObject[0] != NULL && SarlaccBlowUpTargetCount == 4) {
         if (LevGameObject[0]->rider != NULL) {
             script_world->blowup_target_count = 4;
-            script_world->blowup_targets = SarlaccBlowUpTargetsPc;
-            if (!SarlaccTakenOverPc) {
-                SarlaccTakenOverPc = 1;
+            script_world->blowup_targets = SarlaccBlowUpTargets;
+            if (!SarlaccTakenOver) {
+                SarlaccTakenOver = 1;
             }
-            if ((u32)SarlaccPowerPc > 0) {
+            if ((u32)SarlaccPower > 0) {
                 if (LevGameObject[0]->quick_shoot_bolt_id >= 0) {
                     SARLACC_PANEL_PC *panel;
-                    --SarlaccPowerPc;
-                    NuSpecialSetVisibility(&LevHSpecial[SarlaccPowerPc], 1);
-                    NuSpecialSetVisibility(&LevHSpecial[SarlaccPowerPc + 8], 0);
+                    --SarlaccPower;
+                    NuSpecialSetVisibility(&LevHSpecial[SarlaccPower], 1);
+                    NuSpecialSetVisibility(&LevHSpecial[SarlaccPower + 8], 0);
                     panel = LevGizmo[0]->object;
                     if (panel->state_flags & 2) {
                         panel->state_flags &= ~2;
@@ -1380,47 +1380,47 @@ void SarlaccPitC_Update(WORLDINFO *world) {
             } else if (LevGameObject[0]->portal_flags & 8) {
                 LevGameObject[0]->portal_flags &= ~8;
             }
-        } else if (SarlaccTakenOverPc) {
-            SarlaccTakenOverPc = 0;
+        } else if (SarlaccTakenOver) {
+            SarlaccTakenOver = 0;
             script_world->blowup_target_count = 0;
             script_world->blowup_targets = NULL;
         }
-        if (!SarlaccRechargingPc) {
-            if ((u32)SarlaccPowerPc < 8 && LevGizmo[0] != NULL && GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) != 0) {
-                SarlaccRechargingPc = 1;
-                SarlaccRechargeTimerPc = 0.0f;
+        if (!SarlaccRecharging) {
+            if ((u32)SarlaccPower < 8 && LevGizmo[0] != NULL && GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) != 0) {
+                SarlaccRecharging = 1;
+                SarlaccRechargeTimer = 0.0f;
             }
         } else {
-            SarlaccRechargeTimerPc -= FRAMETIME;
-            if (SarlaccRechargeTimerPc <= 0.0f) {
+            SarlaccRechargeTimer -= FRAMETIME;
+            if (SarlaccRechargeTimer <= 0.0f) {
                 LevGameObject[0]->portal_flags |= 8;
-                NuSpecialSetVisibility(&LevHSpecial[SarlaccPowerPc], 0);
-                NuSpecialSetVisibility(&LevHSpecial[SarlaccPowerPc + 8], 1);
-                PlaySfx("imp_c3po_magnet_drop", NuSpecialGetDrawPos(&LevHSpecial[SarlaccPowerPc + 8]));
-                ++SarlaccPowerPc;
-                if (SarlaccPowerPc == 8) {
-                    SarlaccRechargingPc = 0;
+                NuSpecialSetVisibility(&LevHSpecial[SarlaccPower], 0);
+                NuSpecialSetVisibility(&LevHSpecial[SarlaccPower + 8], 1);
+                PlaySfx("imp_c3po_magnet_drop", NuSpecialGetDrawPos(&LevHSpecial[SarlaccPower + 8]));
+                ++SarlaccPower;
+                if (SarlaccPower == 8) {
+                    SarlaccRecharging = 0;
                     PlaySfx("env_magnet_on", NuSpecialGetDrawPos(&LevHSpecial[16]));
                 } else {
-                    SarlaccRechargeTimerPc = 0.25f;
+                    SarlaccRechargeTimer = 0.25f;
                 }
             }
         }
     }
-    if (!SarlaccTargetShieldPc[0]) {
-        GIZMOBLOWUP_PC *target = SarlaccBlowUpTargetsPc[0];
+    if (!SarlaccTargetShield[0]) {
+        GIZMOBLOWUP_PC *target = SarlaccBlowUpTargets[0];
         if (target != NULL && !(target->status_flags & 0x4000)) {
             PlaySfx("ffieldoff", NuSpecialGetDrawPos(&LevHSpecial[16]));
-            SarlaccTargetShieldPc[0] = 1;
+            SarlaccTargetShield[0] = 1;
         } else {
             PlaySfx("ffield", NuSpecialGetDrawPos(&LevHSpecial[16]));
         }
     }
-    if (!SarlaccTargetShieldPc[1]) {
-        GIZMOBLOWUP_PC *target = SarlaccBlowUpTargetsPc[1];
+    if (!SarlaccTargetShield[1]) {
+        GIZMOBLOWUP_PC *target = SarlaccBlowUpTargets[1];
         if (target != NULL && !(target->status_flags & 0x4000)) {
             PlaySfx("ffieldoff", NuSpecialGetDrawPos(&LevHSpecial[17]));
-            SarlaccTargetShieldPc[1] = 1;
+            SarlaccTargetShield[1] = 1;
         } else {
             PlaySfx("ffield", NuSpecialGetDrawPos(&LevHSpecial[17]));
         }
@@ -1433,7 +1433,7 @@ static u8 prevOnTaunTaun = 0;
 static u8 prevOnTownCar = 0;
 
 void LegoCity_Reset(WORLDINFO *world) {
-    GIZMOPICKUP_PC *pickup;
+    GIZMOPICKUP *pickup;
     i32 i;
     prevOnTaunTaun = 0;
     prevOnTractor = 0;
@@ -1456,7 +1456,7 @@ void LegoCity_Reset(WORLDINFO *world) {
 
 void LegoCity_Update(WORLDINFO *world) {
     GIZMOPICKUPRUNTIMESYS_s *pickup_system;
-    GIZMOPICKUP_PC *pickup;
+    GIZMOPICKUP *pickup;
     GAMEOBJECT *object;
     i32 index;
     u8 onTractor;
@@ -1552,7 +1552,7 @@ static u8 prevOnLifeBoat = 0;
 
 void NewTown_Reset(WORLDINFO *world) {
     u32 seed = 17;
-    GIZMOPICKUP_PC *pickup;
+    GIZMOPICKUP *pickup;
     i32 i;
     f32 x;
     f32 z;
@@ -1581,7 +1581,7 @@ void NewTown_Reset(WORLDINFO *world) {
 
 void NewTown_Update(WORLDINFO *world) {
     GIZMOPICKUPRUNTIMESYS_s *pickup_system;
-    GIZMOPICKUP_PC *pickup;
+    GIZMOPICKUP *pickup;
     GAMEOBJECT *object;
     i32 index;
     u8 onTaunTaun;
@@ -1658,24 +1658,24 @@ void EndorBattleA_Init(WORLDINFO *world) {
 }
 
 /* Endor barbecue smoke interval and countdown. */
-static f32 EndorBattleAPartTimePc = 0.75f;
-static f32 EndorBattleAPartTimerPc = 0.75f;
+static f32 EndorBattleAPartTime = 0.75f;
+static f32 EndorBattleAPartTimer = 0.75f;
 
 void EndorBattleA_Update(WORLDINFO *world) {
     NUINSTANIM *animation = NuSpecialGetInstAnim(&LevHSpecial[0]);
     if (animation != NULL && (animation->flags & 1) != 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
-        if (EndorBattleAPartTimerPc >= EndorBattleAPartTimePc) {
+        if (EndorBattleAPartTimer >= EndorBattleAPartTime) {
             AddPartDebris(WORLD->part_debris_sys, 7, NuSpecialGetDrawPos(&LevHSpecial[0]));
         }
-        EndorBattleAPartTimerPc -= FRAMETIME;
-        if (EndorBattleAPartTimerPc <= 0.0f) {
-            EndorBattleAPartTimerPc = EndorBattleAPartTimePc;
+        EndorBattleAPartTimer -= FRAMETIME;
+        if (EndorBattleAPartTimer <= 0.0f) {
+            EndorBattleAPartTimer = EndorBattleAPartTime;
         }
     }
 }
 
 void DeathStar2BattleFire_Init(WORLDINFO *world) {
-    VehicleSlowdownCallbackPc = DeathStar2BattleFire_SetSlowDownMul;
+    VehicleSlowdownCallback = DeathStar2BattleFire_SetSlowDownMul;
     LevelCodeSpline[0] = NuSplineFind(world->current_gscn, "fire");
     NuSpecialFind(WORLD->current_gscn, &LevHSpecial[0], "fire_cube", 0);
     InitSplinePosition(&fireSplinePos, LevelCodeSpline[0], 0.0f, 0);
@@ -1699,9 +1699,9 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
 
     DeathStar2BattleFire_UpdateSlowDownMul(FRAMETIME);
     if (Player[0] != NULL) {
-        FireDeltaPositionPc = (f32)((f64)((GAMEOBJECT *)Player[0])->character_data->game_character->run_speed * 1.25);
+        FireDeltaPosition = (f32)((f64)((GAMEOBJECT *)Player[0])->character_data->game_character->run_speed * 1.25);
     } else {
-        FireDeltaPositionPc = 30.0f;
+        FireDeltaPosition = 30.0f;
     }
 
     choice = (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 4.0);
@@ -1768,10 +1768,10 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
     }
 
     if (WORLD->current_level == DEATHSTAR2BATTLEE_LDATA || LevelTimer.time_elapsed > 0.5f) {
-        distance = (f32)((f64)FRAMETIME * (f64)FireDeltaPositionPc * (f64)fireSpeedScale);
+        distance = (f32)((f64)FRAMETIME * (f64)FireDeltaPosition * (f64)fireSpeedScale);
         MoveSplinePosition(&fireSplinePos, distance);
     }
-    distance = (f32) - ((f64)FRAMETIME * (f64)FireDeltaPositionPc);
+    distance = (f32) - ((f64)FRAMETIME * (f64)FireDeltaPosition);
     MoveSplinePosition(&fireBackPos, distance);
     if ((f64)NuFloatRand((NURAND *)&GAMERAND) > (f64)0.95f) {
         switch ((i32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 3.0)) {
@@ -1793,7 +1793,7 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
 }
 
 void FairgroundbadA_Init(WORLDINFO *world) {
-    FairgroundSplitPartyLocatorPc = AIPathFindLocator(world->ai_sys, "Split_Party");
+    FairgroundSplitPartyLocator = AIPathFindLocator(world->ai_sys, "Split_Party");
 }
 
 /* Moves the split-party locator onto the one player standing in the split area; two or more players there
@@ -1804,7 +1804,7 @@ void FairgroundbadA_Update(WORLDINFO *world) {
     NUVEC *position = NULL;
     GAMEOBJECT *object;
     i32 index;
-    if (FairgroundSplitPartyLocatorPc == NULL) {
+    if (FairgroundSplitPartyLocator == NULL) {
         return;
     }
     for (index = 0; index < 8; ++index) {
@@ -1822,15 +1822,15 @@ void FairgroundbadA_Update(WORLDINFO *world) {
     if (found == NULL) {
         return;
     }
-    FairgroundSplitPartyLocatorPc->position = *position;
+    FairgroundSplitPartyLocator->position = *position;
     if (found->collision_position.y < 1.1f) {
-        FairgroundSplitPartyLocatorPc->position.y = 1.5f;
+        FairgroundSplitPartyLocator->position.y = 1.5f;
     } else {
-        FairgroundSplitPartyLocatorPc->position.y = 0.0f;
+        FairgroundSplitPartyLocator->position.y = 0.0f;
     }
-    FairgroundSplitPartyLocatorPc->position.y = GameShadow(NULL, &FairgroundSplitPartyLocatorPc->position, 0.2f, -1);
-    AISysGetPathPos2(world->ai_sys, &FairgroundSplitPartyLocatorPc->position, &FairgroundSplitPartyLocatorPc->path_info,
-                     &FairgroundSplitPartyLocatorPc->position, NULL, 0xff);
+    FairgroundSplitPartyLocator->position.y = GameShadow(NULL, &FairgroundSplitPartyLocator->position, 0.2f, -1);
+    AISysGetPathPos2(world->ai_sys, &FairgroundSplitPartyLocator->position, &FairgroundSplitPartyLocator->path_info,
+                     &FairgroundSplitPartyLocator->position, NULL, 0xff);
 }
 
 void FairgroundbadA_Draw(WORLDINFO *world) {

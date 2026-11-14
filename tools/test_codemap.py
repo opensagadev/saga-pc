@@ -13,18 +13,18 @@ class NameTests(unittest.TestCase):
         self.assertFalse(codemap.ADDRESS_NAME.fullmatch("_fun_60a1b0"))
 
     def test_copy_names_follow_the_compiland(self):
-        self.assertEqual(codemap.copy_name("Fabs", "@@YAMM@Z", "legogame/attracto.c", "c?"), "_AttractoFabsPc")
+        self.assertEqual(codemap.copy_name("Fabs", "@@YAMM@Z", "legogame/attracto.c", "c?"), "_AttractoFabs")
         self.assertEqual(codemap.copy_name("VuVecCopy", "@@YAXAAUVuVec@@ABU1@@Z", "gameapi/rtl.cpp", "cpp"),
                          "?RtlVuVecCopy@@YAXAAUVuVec@@ABU1@@Z")
         self.assertEqual(codemap.copy_name("Fabs", "@@YAMM@Z", "legoapi/camera.c", "c?", qualified=True),
-                         "_LegoapiCameraFabsPc")
+                         "_LegoapiCameraFabs")
         self.assertEqual(codemap.prefix("legogame/batman_gameai.c"), "BatmanGameai")
         self.assertIsNone(codemap.copy_name("Fabs", "@@YAMM@Z", "", "c?"))
 
     def test_initializer_names_come_from_the_global(self):
         self.assertEqual(codemap.source_name("?music_man@@3VNuMusic@@A"), "music_man")
         self.assertEqual(codemap.source_name("_PcWindowOptions"), "PcWindowOptions")
-        self.assertIsNone(codemap.source_name("?pool@NETMESSAGE_PC@@2PAUMessageData@@A"))
+        self.assertIsNone(codemap.source_name("?pool@NETMESSAGE@@2PAUMessageData@@A"))
 
 
 class CompilandTests(unittest.TestCase):

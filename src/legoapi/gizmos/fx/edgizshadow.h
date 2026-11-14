@@ -8,10 +8,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char *ShadowGizmoNamePc;
-    extern const char *ShadowOutputNamePc;
-    extern const char *ShadowGizmoNamePc;
-    extern const char *ShadowOutputNamePc;
+    extern const char *ShadowGizmoName;
+    extern const char *ShadowOutputName;
+    extern const char *ShadowGizmoName;
+    extern const char *ShadowOutputName;
 #ifdef __cplusplus
 }
 #endif

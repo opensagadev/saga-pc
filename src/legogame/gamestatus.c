@@ -11,14 +11,14 @@ static f32 StatusLerpPc(f32 to, f32 from, f32 blend) {
 }
 
 /* Kept out of line as well; every caller inlines it. */
-static __inline f32 StatusFabsPc(f32 value) {
+static __inline f32 StatusFabs(f32 value) {
     f32 result;
 
     *(i32 *)&result = *(i32 *)&value & 0x7fffffff;
     return result;
 }
 
-static f32 StatusCoinsRatioPc(f32 numerator, f32 denominator) {
+static f32 StatusCoinsRatio(f32 numerator, f32 denominator) {
     f32 result;
     if (numerator == 0.0f || denominator == 0.0f) {
         return 0.0f;
@@ -90,8 +90,8 @@ void TrueHero_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     NextStatusStage(packet);
 }
 
-f32 StatusTrueHeroNextSoundPercentPc = 5.0f;
-f32 StatusTrueHeroSpDelayPc = 0.0f;
+f32 StatusTrueHeroNextSoundPercent = 5.0f;
+f32 StatusTrueHeroSpDelay = 0.0f;
 
 void TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
@@ -107,7 +107,7 @@ void TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
                 stage->field_0x18 = 0.0f;
                 stage->field_0x1c = 3.0f;
                 packet->true_hero_percent = 0.0f;
-                StatusTrueHeroNextSoundPercentPc = 5.0f;
+                StatusTrueHeroNextSoundPercent = 5.0f;
             }
             break;
         }
@@ -126,9 +126,9 @@ void TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
             packet->true_hero_percent = 100.0 / stage->field_0x1c * elapsed + packet->true_hero_percent;
             if (packet->true_hero_percent > percent) {
                 packet->true_hero_percent = percent;
-            } else if (packet->true_hero_percent >= StatusTrueHeroNextSoundPercentPc) {
+            } else if (packet->true_hero_percent >= StatusTrueHeroNextSoundPercent) {
                 PlaySfx("Status_GoldBarDec", NULL);
-                StatusTrueHeroNextSoundPercentPc += 10.0;
+                StatusTrueHeroNextSoundPercent += 10.0;
             }
             if (stage->field_0x18 > stage->field_0x1c) {
                 stage->field_0x18 = 0.0f;
@@ -149,7 +149,7 @@ void TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
                 stage->field_0x14 = 6;
                 stage->field_0x18 = 0.0f;
                 stage->field_0x1c = 1.0f;
-                StatusTrueHeroSpDelayPc = 0.0f;
+                StatusTrueHeroSpDelay = 0.0f;
             }
             break;
         }
@@ -163,12 +163,12 @@ void TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
     }
 }
 
-f32 StatusCoinsTitleScalePc = 0.5f;
-f32 StatusCoinsTitleYPc = 0.5f;
-f32 StatusTrueHeroBarScalePc = 1.75f;
-f32 StatusTrueHeroBarYPc = 0.7f;
-f32 StatusTrueHeroTextScalePc = 0.8f;
-f32 StatusTrueHeroTextYPc = 0.3f;
+f32 StatusCoinsTitleScale = 0.5f;
+f32 StatusCoinsTitleY = 0.5f;
+f32 StatusTrueHeroBarScale = 1.75f;
+f32 StatusTrueHeroBarY = 0.7f;
+f32 StatusTrueHeroTextScale = 0.8f;
+f32 StatusTrueHeroTextY = 0.3f;
 
 void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
@@ -184,11 +184,10 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
             f32 ratio;
             f32 blend;
             alpha = stage->field_0x18;
-            ratio = StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c);
+            ratio = StatusCoinsRatio(stage->field_0x18, stage->field_0x1c);
             blend = 1.0f - (NuTrigTable[((i32)(ratio * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
-            DrawBuildUpBar(0.0f,
-                           (StatusTrueHeroBarYPc - STATSPOS2YPc) * NuTrigTable[((i32)(blend * 16384.0f) >> 1) & 0x7fff] + STATSPOS2YPc, 0,
-                           100, 1.0f, (StatusTrueHeroBarScalePc - 1.0f) * blend + 1.0f, 1.0f, 0);
+            DrawBuildUpBar(0.0f, (StatusTrueHeroBarY - STATSPOS2Y) * NuTrigTable[((i32)(blend * 16384.0f) >> 1) & 0x7fff] + STATSPOS2Y, 0,
+                           100, 1.0f, (StatusTrueHeroBarScale - 1.0f) * blend + 1.0f, 1.0f, 0);
             break;
         }
         case 2: {
@@ -198,10 +197,10 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
                 time = 1.0f;
             }
             blend = 1.0f - (NuTrigTable[((i32)(time * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
-            DrawBuildUpBar(0.0f, StatusTrueHeroBarYPc, packet->true_hero_percent, 100, 1.0f, StatusTrueHeroBarScalePc, 1.0f, 0);
+            DrawBuildUpBar(0.0f, StatusTrueHeroBarY, packet->true_hero_percent, 100, 1.0f, StatusTrueHeroBarScale, 1.0f, 0);
             sprintf(text, "%i%%", (i32)packet->true_hero_percent);
-            Text3DEx(text, 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc, StatusTrueHeroTextScalePc,
-                     StatusTrueHeroTextScalePc, 0, 255, 191, 0, (u8)(blend * 128.0f));
+            Text3DEx(text, 0.0f, StatusTrueHeroTextY, 1.0f, StatusTrueHeroTextScale, StatusTrueHeroTextScale, StatusTrueHeroTextScale, 0,
+                     255, 191, 0, (u8)(blend * 128.0f));
             break;
         }
         case 3: {
@@ -217,12 +216,12 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
                 f32 grow = blend * 0.5f + 1.0f;
                 f32 shrink = 1.0f - blend * 0.5f;
                 i32 opacity = (u8)((1.0f - blend) * 64.0f);
-                Text3DEx("100%", 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc * grow, StatusTrueHeroTextScalePc * grow,
-                         StatusTrueHeroTextScalePc * grow, 0, 255, 191, 0, opacity);
-                Text3DEx("100%", 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc * shrink, StatusTrueHeroTextScalePc * shrink,
-                         StatusTrueHeroTextScalePc * shrink, 0, 255, 191, 0, opacity);
+                Text3DEx("100%", 0.0f, StatusTrueHeroTextY, 1.0f, StatusTrueHeroTextScale * grow, StatusTrueHeroTextScale * grow,
+                         StatusTrueHeroTextScale * grow, 0, 255, 191, 0, opacity);
+                Text3DEx("100%", 0.0f, StatusTrueHeroTextY, 1.0f, StatusTrueHeroTextScale * shrink, StatusTrueHeroTextScale * shrink,
+                         StatusTrueHeroTextScale * shrink, 0, 255, 191, 0, opacity);
             }
-            DrawBuildUpBar(0.0f, StatusTrueHeroBarYPc, packet->true_hero_percent, 100, 1.0f, StatusTrueHeroBarScalePc, 1.0f, 0);
+            DrawBuildUpBar(0.0f, StatusTrueHeroBarY, packet->true_hero_percent, 100, 1.0f, StatusTrueHeroBarScale, 1.0f, 0);
             break;
         }
         case 6: {
@@ -231,8 +230,8 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
             alpha = 1.0f - stage->field_0x18;
             if (stage->type == 2 && alpha > 0.0f) {
                 sprintf(text, "%i%%", (i32)packet->true_hero_percent);
-                Text3DEx(text, 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc, StatusTrueHeroTextScalePc,
-                         StatusTrueHeroTextScalePc, 0, 255, 191, 0, (u8)(alpha * 128.0f));
+                Text3DEx(text, 0.0f, StatusTrueHeroTextY, 1.0f, StatusTrueHeroTextScale, StatusTrueHeroTextScale, StatusTrueHeroTextScale,
+                         0, 255, 191, 0, (u8)(alpha * 128.0f));
             }
             if (stage->field_0x18 < 1.0f) {
                 ratio = 1.0f - stage->field_0x18;
@@ -240,9 +239,8 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
                 ratio = 0.0f;
             }
             blend = 1.0f - (NuTrigTable[((i32)(ratio * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
-            DrawBuildUpBar(0.0f,
-                           (StatusTrueHeroBarYPc - STATSPOS2YPc) * NuTrigTable[((i32)(blend * 16384.0f) >> 1) & 0x7fff] + STATSPOS2YPc,
-                           packet->true_hero_percent, 100, 1.0f, (StatusTrueHeroBarScalePc - 1.0f) * blend + 1.0f, 1.0f, 0);
+            DrawBuildUpBar(0.0f, (StatusTrueHeroBarY - STATSPOS2Y) * NuTrigTable[((i32)(blend * 16384.0f) >> 1) & 0x7fff] + STATSPOS2Y,
+                           packet->true_hero_percent, 100, 1.0f, (StatusTrueHeroBarScale - 1.0f) * blend + 1.0f, 1.0f, 0);
             break;
         }
     }
@@ -252,17 +250,17 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
         alpha = 1.0f;
     }
     NuStrCpy(text, TTab[TextIdPc880f9c]);
-    if (HubBothTrueJediGoldBricksPc != 0) {
+    if (HubBothTrueJediGoldBricks != 0) {
         NuStrCat(text, " ");
         NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4]);
     }
-    Text3DEx(text, 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc, StatusCoinsTitleScalePc, StatusCoinsTitleScalePc, 0, 255, 255,
-             255, (u8)(alpha * 128.0f));
+    Text3DEx(text, 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale, 0, 255, 255, 255,
+             (u8)(alpha * 128.0f));
 }
 
 void MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     if ((packet->field_0xb0 & 2) == 0) {
-        currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCountPc);
+        currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCount);
         if ((packet->field_0xb0 & 0x10) != 0 && (stage->field_0x14 != 6 || !(stage->field_0x18 >= stage->field_0x1c))) {
             IncreaseScore(packet->score, 50000, 0);
         }
@@ -272,16 +270,16 @@ void MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 
 f32 slideseek = 0.0f;
 f32 jibberlen = 0.1f;
-static f32 StatusMiniKitPieceDurationPc = 0.4f;
+static f32 StatusMiniKitPieceDuration = 0.4f;
 
 void MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0:
-            StatusNewMinikitCountPc = packet->new_minikits;
-            if (StatusNewMinikitCountPc <= 0) {
+            StatusNewMinikitCount = packet->new_minikits;
+            if (StatusNewMinikitCount <= 0) {
                 currentminikit = Game.area_save[packet->area->index].minikit_count;
             } else {
-                currentminikit = Game.area_save[packet->area->index].minikit_count - StatusNewMinikitCountPc;
+                currentminikit = Game.area_save[packet->area->index].minikit_count - StatusNewMinikitCount;
             }
             stage->field_0x18 = 0.0f;
             stage->field_0x14 = 1;
@@ -291,7 +289,7 @@ void MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elaps
             stage->field_0x18 += elapsed;
             if (stage->field_0x18 >= stage->field_0x1c) {
                 stage->field_0x18 = 0.0f;
-                if (StatusNewMinikitCountPc == 0) {
+                if (StatusNewMinikitCount == 0) {
                     PlaySfx("TrueJedi_NOT", NULL);
                     stage->field_0x1c = 1.0f;
                     stage->field_0x14 = 4;
@@ -308,13 +306,13 @@ void MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elaps
             if (stage->field_0x18 >= stage->field_0x1c) {
                 stage->field_0x18 = 0.0f;
                 stage->field_0x14 = 3;
-                stage->field_0x1c = StatusMiniKitPieceDurationPc;
+                stage->field_0x1c = StatusMiniKitPieceDuration;
                 PlaySfx("Jp_Ana_Jump", NULL);
             }
             break;
         }
         case 3: {
-            if (StatusNewMinikitCountPc > 0) {
+            if (StatusNewMinikitCount > 0) {
                 f32 sound_start;
                 f32 previous = stage->field_0x18;
                 stage->field_0x18 += elapsed;
@@ -381,20 +379,20 @@ void MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elaps
     }
 }
 
-f32 StatusAllMiniKitsXPc = -0.6f;
-f32 StatusAllMiniKitsYPc = -0.5f;
-f32 StatusAllMiniKitsScalePc = 0.15f;
-f32 StatusAllMiniKitsZPc = 1.1f;
-f32 StatusAllMiniKitsCountYOffsetPc = -0.3f;
-f32 StatusAllMiniKitsCountScalePc = 0.5f;
-f32 StatusAllMiniKitsQuestionScalePc = 1.2f;
-f32 StatusAllMiniKitsQuestionYOffsetPc = -0.1f;
-f32 StatusAllMiniKitsCompleteScalePc = 0.8f;
-f32 StatusAllMiniKitsCompleteYOffsetPc = -0.2f;
-f32 StatusMiniKitEntranceHeightPc = 1.4f;
-f32 StatusMiniKitScalePc = 0.333f;
-f32 StatusMiniKitXPc = 0.0f;
-f32 StatusMiniKitYPc = 0.0f;
+f32 StatusAllMiniKitsX = -0.6f;
+f32 StatusAllMiniKitsY = -0.5f;
+f32 StatusAllMiniKitsScale = 0.15f;
+f32 StatusAllMiniKitsZ = 1.1f;
+f32 StatusAllMiniKitsCountYOffset = -0.3f;
+f32 StatusAllMiniKitsCountScale = 0.5f;
+f32 StatusAllMiniKitsQuestionScale = 1.2f;
+f32 StatusAllMiniKitsQuestionYOffset = -0.1f;
+f32 StatusAllMiniKitsCompleteScale = 0.8f;
+f32 StatusAllMiniKitsCompleteYOffset = -0.2f;
+f32 StatusMiniKitEntranceHeight = 1.4f;
+f32 StatusMiniKitScale = 0.333f;
+f32 StatusMiniKitX = 0.0f;
+f32 StatusMiniKitY = 0.0f;
 
 void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 alpha;
@@ -421,11 +419,11 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
                 }
                 blend = 1.0 - (NuTrigTable[((i32)(blend * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 if (stage->field_0x18 <= stage->field_0x1c) {
-                    DrawStatusMiniKit(StatusMiniKitXPc, StatusLerpPc(StatusMiniKitYPc, StatusMiniKitEntranceHeightPc, blend),
-                                      StatusAllMiniKitsZPc, StatusMiniKitScalePc, 0.0f, currentminikit, packet, 0.0f);
+                    DrawStatusMiniKit(StatusMiniKitX, StatusLerpPc(StatusMiniKitY, StatusMiniKitEntranceHeight, blend), StatusAllMiniKitsZ,
+                                      StatusMiniKitScale, 0.0f, currentminikit, packet, 0.0f);
                 } else {
-                    DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc, 0.0f, currentminikit,
-                                      packet, 0.0f);
+                    DrawStatusMiniKit(StatusMiniKitX, StatusMiniKitY, StatusAllMiniKitsZ, StatusMiniKitScale, 0.0f, currentminikit, packet,
+                                      0.0f);
                 }
                 count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count : currentminikit;
                 if (count < 0) {
@@ -439,13 +437,13 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
                 if (stage->field_0x18 < stage->field_0x1c - 0.25) {
                     f32 duration = stage->field_0x1c - 0.25;
                     blend =
-                        NuTrigTable[((i32)(StatusCoinsRatioPc(stage->field_0x18, duration) * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff] *
-                        StatusMiniKitScalePc;
+                        NuTrigTable[((i32)(StatusCoinsRatio(stage->field_0x18, duration) * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff] *
+                        StatusMiniKitScale;
                 } else {
-                    blend = StatusMiniKitScalePc;
+                    blend = StatusMiniKitScale;
                 }
-                DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc, blend, currentminikit + 1,
-                                  packet, 0.0f);
+                DrawStatusMiniKit(StatusMiniKitX, StatusMiniKitY, StatusAllMiniKitsZ, StatusMiniKitScale, blend, currentminikit + 1, packet,
+                                  0.0f);
                 count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count : currentminikit;
                 if (count < 0) {
                     count = 0;
@@ -463,7 +461,7 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
                 } else {
                     blend = 0.0f;
                 }
-                DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc, StatusMiniKitScalePc,
+                DrawStatusMiniKit(StatusMiniKitX, StatusMiniKitY, StatusAllMiniKitsZ, StatusMiniKitScale, StatusMiniKitScale,
                                   currentminikit + 1, packet, blend);
                 count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count : currentminikit;
                 if (blend >= 0.5f) {
@@ -472,7 +470,7 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
                 if (count < 0) {
                     count = 0;
                 }
-                pulse = StatusFabsPc(NuTrigTable[((i32)(blend * 32768.0 + 16384.0) >> 1) & 0x7fff]);
+                pulse = StatusFabs(NuTrigTable[((i32)(blend * 32768.0 + 16384.0) >> 1) & 0x7fff]);
                 inverse = 1.0f - pulse;
                 size = inverse * 0.25 + 1.0f;
                 DrawMiniKitCount(1.0f, size, count, packet->minikit_max);
@@ -481,13 +479,13 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
             case 4: {
                 f32 count_blend;
                 title_alpha = 1.0f - stage->field_0x18;
-                blend = 1.0 -
-                        (NuTrigTable[((i32)(StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] +
-                         1.0f) *
-                            0.5;
-                DrawStatusMiniKit(StatusLerpPc(StatusAllMiniKitsXPc, StatusMiniKitXPc, blend),
-                                  StatusLerpPc(StatusAllMiniKitsYPc, StatusMiniKitYPc, blend), StatusAllMiniKitsZPc,
-                                  StatusLerpPc(StatusAllMiniKitsScalePc, StatusMiniKitScalePc, blend), 1.0f,
+                blend =
+                    1.0 - (NuTrigTable[((i32)(StatusCoinsRatio(stage->field_0x18, stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] +
+                           1.0f) *
+                              0.5;
+                DrawStatusMiniKit(StatusLerpPc(StatusAllMiniKitsX, StatusMiniKitX, blend),
+                                  StatusLerpPc(StatusAllMiniKitsY, StatusMiniKitY, blend), StatusAllMiniKitsZ,
+                                  StatusLerpPc(StatusAllMiniKitsScale, StatusMiniKitScale, blend), 1.0f,
                                   Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
                 if (stage->field_0x18 < 1.0f) {
                     blend = 1.0f - stage->field_0x18;
@@ -508,7 +506,7 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
                 if (stage->field_0x18 < stage->field_0x1c) {
                     f32 count_blend = 1.0 - (NuTrigTable[((i32)(blend * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                     DrawMiniKitCount(count_blend, 1.0f, Game.area_save[packet->area->index].minikit_count, packet->minikit_max);
-                    DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc, 1.0f,
+                    DrawStatusMiniKit(StatusMiniKitX, StatusMiniKitY, StatusAllMiniKitsZ, StatusMiniKitScale, 1.0f,
                                       Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
                 }
                 break;
@@ -519,8 +517,8 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
         } else if (title_alpha > 1.0f) {
             title_alpha = 1.0f;
         }
-        Text3DEx(TTab[TextIdPc8808d0], 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc, StatusCoinsTitleScalePc,
-                 StatusCoinsTitleScalePc, 0, 255, 255, 255, (u8)(title_alpha * 128.0));
+        Text3DEx(TTab[TextIdPc8808d0], 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale,
+                 0, 255, 255, 255, (u8)(title_alpha * 128.0));
         return;
     }
     if (stage->field_0x12 == 0) {
@@ -533,36 +531,35 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
     if (title_alpha > 0.25f) {
         title_alpha = 0.0f;
     }
-    pulse = StatusFabsPc(NuTrigTable[((i32)(title_alpha * 32768.0 + 16384.0) >> 1) & 0x7fff]);
+    pulse = StatusFabs(NuTrigTable[((i32)(title_alpha * 32768.0 + 16384.0) >> 1) & 0x7fff]);
     inverse_pulse = 1.0f - pulse;
     title_alpha = 1.0f + inverse_pulse;
     if (Game.area_save[packet->area->index].minikit_count > 0) {
         if (alpha > 0.0f) {
-            DrawStatusMiniKit(StatusAllMiniKitsXPc, StatusAllMiniKitsYPc, StatusAllMiniKitsZPc, StatusAllMiniKitsScalePc * reveal, 1.0f,
+            DrawStatusMiniKit(StatusAllMiniKitsX, StatusAllMiniKitsY, StatusAllMiniKitsZ, StatusAllMiniKitsScale * reveal, 1.0f,
                               Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
         }
     } else {
-        f32 size = StatusAllMiniKitsQuestionScalePc * title_alpha;
-        Text3DEx("?", StatusAllMiniKitsXPc, StatusAllMiniKitsQuestionYOffsetPc + StatusAllMiniKitsYPc, StatusAllMiniKitsZPc, size, size,
-                 size, 0, 255, 255, 255, opacity);
+        f32 size = StatusAllMiniKitsQuestionScale * title_alpha;
+        Text3DEx("?", StatusAllMiniKitsX, StatusAllMiniKitsQuestionYOffset + StatusAllMiniKitsY, StatusAllMiniKitsZ, size, size, size, 0,
+                 255, 255, 255, opacity);
     }
     collected = Game.area_save[packet->area->index].minikit_count;
     total = packet->minikit_max;
     if (collected == total) {
-        Text3DEx("$", StatusAllMiniKitsXPc, StatusAllMiniKitsCompleteYOffsetPc + StatusAllMiniKitsYPc, 1.0f,
-                 StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc, 0, 255, 0, 127,
-                 opacity);
+        Text3DEx("$", StatusAllMiniKitsX, StatusAllMiniKitsCompleteYOffset + StatusAllMiniKitsY, 1.0f, StatusAllMiniKitsCompleteScale,
+                 StatusAllMiniKitsCompleteScale, StatusAllMiniKitsCompleteScale, 0, 255, 0, 127, opacity);
     } else {
         char text[64];
         sprintf(text, "%i/%i", collected, total);
-        Text3DEx(text, StatusAllMiniKitsXPc, StatusAllMiniKitsCountYOffsetPc + StatusAllMiniKitsYPc, 1.0f, StatusAllMiniKitsCountScalePc,
-                 StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc, 0, 255, 0, 127, opacity);
+        Text3DEx(text, StatusAllMiniKitsX, StatusAllMiniKitsCountYOffset + StatusAllMiniKitsY, 1.0f, StatusAllMiniKitsCountScale,
+                 StatusAllMiniKitsCountScale, StatusAllMiniKitsCountScale, 0, 255, 0, 127, opacity);
     }
 }
 
 void AllMiniKits_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
-    AddToCollection(VehicleBoltId7f195cPc);
+    AddToCollection(VehicleBoltId7f195c);
     NextStatusStage(packet);
 }
 
@@ -589,11 +586,11 @@ void AllMiniKits_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 e
     }
 }
 
-i32 StatusRedPc = 255;
-i32 StatusGreenPc = 191;
-i32 StatusBluePc = 0;
-f32 StatusAllMiniKitsTitleScalePc = 0.7f;
-f32 StatusAllMiniKitsCharacterTextScalePc = 0.6f;
+i32 StatusRed = 255;
+i32 StatusGreen = 191;
+i32 StatusBlue = 0;
+f32 StatusAllMiniKitsTitleScale = 0.7f;
+f32 StatusAllMiniKitsCharacterTextScale = 0.6f;
 
 void AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 alpha;
@@ -633,16 +630,16 @@ void AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 cur
             }
         }
         if (icon_alpha > 0.0f) {
-            DrawCharIcon(VehicleBoltId7f195cPc, 0.0f,
+            DrawCharIcon(VehicleBoltId7f195c, 0.0f,
                          (sliding ? (1.0f - NuTrigTable[((i32)(icon_alpha * 16384.0f) >> 1) & 0x7fff]) * -0.5f : 0.0f) + 0.225f, 0.0f, 0.4f,
                          0xa7, icon_alpha, icon_alpha, 1, NULL);
-            SmartTextEx(TTab[CDataList[VehicleBoltId7f195cPc].name_id], 0.0f, -0.1f, 1.0f, StatusAllMiniKitsCharacterTextScalePc,
-                        StatusAllMiniKitsCharacterTextScalePc, StatusAllMiniKitsCharacterTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
-                        (u8)StatusBluePc, 1.7f, 1, NULL, 0, (i32)(icon_alpha * 128.0f));
+            SmartTextEx(TTab[CDataList[VehicleBoltId7f195c].name_id], 0.0f, -0.1f, 1.0f, StatusAllMiniKitsCharacterTextScale,
+                        StatusAllMiniKitsCharacterTextScale, StatusAllMiniKitsCharacterTextScale, 0, (u8)StatusRed, (u8)StatusGreen,
+                        (u8)StatusBlue, 1.7f, 1, NULL, 0, (i32)(icon_alpha * 128.0f));
         }
         if (title_alpha > 0.0f) {
-            Text3DEx(TTab[TextIdPc880740], 0.0f, 0.225f, 1.0f, StatusAllMiniKitsTitleScalePc, StatusAllMiniKitsTitleScalePc,
-                     StatusAllMiniKitsTitleScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, (u8)(title_alpha * 128.0f));
+            Text3DEx(TTab[TextIdPc880740], 0.0f, 0.225f, 1.0f, StatusAllMiniKitsTitleScale, StatusAllMiniKitsTitleScale,
+                     StatusAllMiniKitsTitleScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, (u8)(title_alpha * 128.0f));
         }
         return;
     }
@@ -656,29 +653,28 @@ void AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 cur
     if (timer > 0.25f) {
         timer = 0.0f;
     }
-    pulse = StatusFabsPc(NuTrigTable[((i32)(timer * 32768.0f + 16384.0f) >> 1) & 0x7fff]);
+    pulse = StatusFabs(NuTrigTable[((i32)(timer * 32768.0f + 16384.0f) >> 1) & 0x7fff]);
     inverse_pulse = 1.0f - pulse;
     pulse_scale = 1.0f + inverse_pulse;
     if (Game.area_save[packet->area->index].minikit_count > 0) {
-        DrawStatusMiniKit(StatusAllMiniKitsXPc, StatusAllMiniKitsYPc, StatusAllMiniKitsZPc, StatusAllMiniKitsScalePc * reveal, 1.0f,
+        DrawStatusMiniKit(StatusAllMiniKitsX, StatusAllMiniKitsY, StatusAllMiniKitsZ, StatusAllMiniKitsScale * reveal, 1.0f,
                           Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
     } else {
         f32 size;
-        size = StatusAllMiniKitsQuestionScalePc * pulse_scale;
-        Text3DEx("?", StatusAllMiniKitsXPc, StatusAllMiniKitsQuestionYOffsetPc + StatusAllMiniKitsYPc, StatusAllMiniKitsZPc, size, size,
-                 size, 0, 255, 255, 255, opacity);
+        size = StatusAllMiniKitsQuestionScale * pulse_scale;
+        Text3DEx("?", StatusAllMiniKitsX, StatusAllMiniKitsQuestionYOffset + StatusAllMiniKitsY, StatusAllMiniKitsZ, size, size, size, 0,
+                 255, 255, 255, opacity);
     }
     collected = Game.area_save[packet->area->index].minikit_count;
     total = packet->minikit_max;
     if (collected == total) {
-        Text3DEx("$", StatusAllMiniKitsXPc, StatusAllMiniKitsCompleteYOffsetPc + StatusAllMiniKitsYPc, 1.0f,
-                 StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc, 0, 255, 0, 127,
-                 opacity);
+        Text3DEx("$", StatusAllMiniKitsX, StatusAllMiniKitsCompleteYOffset + StatusAllMiniKitsY, 1.0f, StatusAllMiniKitsCompleteScale,
+                 StatusAllMiniKitsCompleteScale, StatusAllMiniKitsCompleteScale, 0, 255, 0, 127, opacity);
     } else {
         char text[64];
         sprintf(text, "%i/%i", collected, total);
-        Text3DEx(text, StatusAllMiniKitsXPc, StatusAllMiniKitsCountYOffsetPc + StatusAllMiniKitsYPc, 1.0f, StatusAllMiniKitsCountScalePc,
-                 StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc, 0, 255, 0, 127, opacity);
+        Text3DEx(text, StatusAllMiniKitsX, StatusAllMiniKitsCountYOffset + StatusAllMiniKitsY, 1.0f, StatusAllMiniKitsCountScale,
+                 StatusAllMiniKitsCountScale, StatusAllMiniKitsCountScale, 0, 255, 0, 127, opacity);
     }
 }
 
@@ -708,7 +704,7 @@ void RedBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
     }
 }
 
-f32 StatusTextScalePc = 0.7f;
+f32 StatusTextScale = 0.7f;
 
 void RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 text_y;
@@ -728,23 +724,23 @@ void RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
             blend = NuTrigTable[((i32)((1.0f - (stage->field_0x18 - fade_start)) * 16384.0f) >> 1) & 0x7fff];
         }
     }
-    SmartTextEx(TTab[TextIdPc880748], 0.0f, 0.05f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc,
-                (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (i32)(blend * 128.0f));
+    SmartTextEx(TTab[TextIdPc880748], 0.0f, 0.05f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
+                (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, (i32)(blend * 128.0f));
     rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25f * 65536.0f);
     panel_y = blend - 1.5f;
     DrawPanel3DObjectNoAlpha(0.0f, panel_y, 1.0f, 1.0f, 1.0f, 1.0f, (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f), rotation,
                              0, &WORLD->level_objects[210].special, 2);
     text_y = ((0.5f - 1.5f) * blend) + 1.5f;
-    SmartTextEx(TTab[*ExtrasCheatsPc[packet->area->cheat].text_id], 0.0f, text_y, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                StatusTextScalePc, 0, 255, 255, 255, 1.7f, 1, NULL, 0, 128);
+    SmartTextEx(TTab[*ExtrasCheats[packet->area->cheat].text_id], 0.0f, text_y, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
+                255, 255, 255, 1.7f, 1, NULL, 0, 128);
 }
 
-f32 StatusIconYPc = 0;
+f32 StatusIconY = 0;
 
 void Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     u32 remaining;
     (void)stage;
-    StatusIconYPc = StatusIconsOnOff(1.0f);
+    StatusIconY = StatusIconsOnOff(1.0f);
     remaining = packet->coins_remaining[0] + packet->coins_remaining[1];
     IncreaseScore(packet->score, remaining, 0);
     packet->coins_remaining[0] = 0;
@@ -752,7 +748,7 @@ void Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     NextStatusStage(packet);
 }
 
-i32 StatusDrawPlayerIconsPc = 0;
+i32 StatusDrawPlayerIcons = 0;
 
 void Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     i32 finished = 0;
@@ -761,7 +757,7 @@ void Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed
             stage->field_0x18 = 0.0f;
             stage->field_0x14 = 1;
             stage->field_0x1c = 1.0f;
-            StatusDrawPlayerIconsPc = 1;
+            StatusDrawPlayerIcons = 1;
             break;
         case 1: {
             f32 accumulated = elapsed + stage->field_0x18;
@@ -820,15 +816,15 @@ void Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed
     }
 }
 
-f32 StatusCoinsTotalYPc = 0.3f;
-f32 StatusCoinsScalePc = 2.0f;
+f32 StatusCoinsTotalY = 0.3f;
+f32 StatusCoinsScale = 2.0f;
 
 void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     if (current != 0) {
         f32 alpha = 1.0f;
-        f32 coin_y = STATSPOS2YPc;
+        f32 coin_y = STATSPOS2Y;
         f32 total_y = coin_y;
-        f32 scale = StatusCoinsScalePc;
+        f32 scale = StatusCoinsScale;
         switch (stage->field_0x14) {
             case 0:
                 alpha = 0.0f;
@@ -839,14 +835,14 @@ void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) 
                 alpha = stage->field_0x18;
                 ratio = stage->field_0x18 / stage->field_0x1c;
                 blend = 1.0f - (NuTrigTable[((i32)(ratio * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
-                StatusIconYPc = StatusIconsOnOff(StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c));
-                total_y = (StatusCoinsTotalYPc - STATSPOS2YPc) * blend + STATSPOS2YPc;
-                coin_y = (STATSPOSY - STATSPOS2YPc) * blend + STATSPOS2YPc;
-                scale = StatusCoinsScalePc;
+                StatusIconY = StatusIconsOnOff(StatusCoinsRatio(stage->field_0x18, stage->field_0x1c));
+                total_y = (StatusCoinsTotalY - STATSPOS2Y) * blend + STATSPOS2Y;
+                coin_y = (STATSPOSY - STATSPOS2Y) * blend + STATSPOS2Y;
+                scale = StatusCoinsScale;
                 break;
             }
             case 2:
-                total_y = StatusCoinsTotalYPc;
+                total_y = StatusCoinsTotalY;
                 coin_y = STATSPOSY;
                 break;
             case 3: {
@@ -855,9 +851,9 @@ void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) 
                 alpha = 1.0f - stage->field_0x18;
                 ratio = 1.0f - stage->field_0x18 / stage->field_0x1c;
                 blend = 1.0f - (NuTrigTable[((i32)(ratio * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
-                total_y = (StatusCoinsTotalYPc - STATSPOSY) * blend + STATSPOSY;
-                coin_y = (STATSPOSY - STATSPOS2YPc) * blend + STATSPOS2YPc;
-                scale = (StatusCoinsScalePc - CoinTotalScale) * blend + CoinTotalScale;
+                total_y = (StatusCoinsTotalY - STATSPOSY) * blend + STATSPOSY;
+                coin_y = (STATSPOSY - STATSPOS2Y) * blend + STATSPOS2Y;
+                scale = (StatusCoinsScale - CoinTotalScale) * blend + CoinTotalScale;
                 break;
             }
         }
@@ -867,18 +863,18 @@ void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) 
                 u32 coins;
                 i32 object_index;
                 char text[256];
-                f32 player_alpha = packet->player_active[player] != 0 ? 1.0f : MissionDropInAlphaPc;
+                f32 player_alpha = packet->player_active[player] != 0 ? 1.0f : MissionDropInAlpha;
                 f32 coin_x;
                 f32 score_x;
                 i32 align;
                 if (player == 0) {
                     coin_x = -PANEL_COINX;
                     align = 2;
-                    score_x = -HudScoreXPc;
+                    score_x = -HudScoreX;
                 } else {
                     coin_x = PANEL_COINX;
                     align = 8;
-                    score_x = HudScoreXPc;
+                    score_x = HudScoreX;
                 }
                 coins = packet->coins_remaining[player];
                 object_index = coins >= 1000u ? 0xc3 : coins >= 100u ? 0xbb : 0xb3;
@@ -887,7 +883,7 @@ void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) 
                                       &WORLD->level_objects[object_index].special, 0, player_alpha);
                 }
                 Text_MakeScore(packet->coins_remaining[player], text);
-                Text3DEx(text, score_x, coin_y, 1.0f, HudScoreScalePc, HudScoreScalePc, HudScoreScalePc, align, 255, 191, 0,
+                Text3DEx(text, score_x, coin_y, 1.0f, HudScoreScale, HudScoreScale, HudScoreScale, align, 255, 191, 0,
                          (u8)(i32)(player_alpha * 128.0f));
             }
             CoinTotal_Draw((i32)*packet->score, total_y, scale, 1, 1.0f, 255, 191, 0);
@@ -897,12 +893,12 @@ void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) 
         } else if (alpha > 1.0f) {
             alpha = 1.0f;
         }
-        Text3DEx(TTab[TextIdPc8808d4], 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc, StatusCoinsTitleScalePc,
-                 StatusCoinsTitleScalePc, 0, 255, 255, 255, (u8)(alpha * 128.0f));
+        Text3DEx(TTab[TextIdPc8808d4], 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale,
+                 0, 255, 255, 255, (u8)(alpha * 128.0f));
     } else if (stage->field_0x12 != 0) {
         CoinTotal_Draw((i32)*packet->score,
-                       (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(getFinishedStatusAlpha(packet) * 16384.0f) >> 1) & 0x7fff] +
-                           STATSPOS2YPc,
+                       (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(getFinishedStatusAlpha(packet) * 16384.0f) >> 1) & 0x7fff] +
+                           STATSPOS2Y,
                        CoinTotalScale, 1, 1.0f, 255, 191, 0);
     }
 }
@@ -951,7 +947,7 @@ void GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
                     position.z = 1.0f;
                     if (message_id == TextIdPc880f9c) {
                         NuStrCpy(text, TTab[message_id]);
-                        if (HubBothTrueJediGoldBricksPc != 0) {
+                        if (HubBothTrueJediGoldBricks != 0) {
                             i16 name_id;
                             NuStrCat(text, " - ");
                             name_id = (packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4;
@@ -1014,7 +1010,7 @@ void GoldBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curre
         DrawPanel3DObjectNoAlpha(0.0f, panel_y, 1.0f, 1.0f, 1.0f, 1.0f, (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f),
                                  rotation, 0, &WORLD->level_objects[211].special, 2);
         if (Game.gold_bricks > 60) {
-            f32 coin_y = (STATSPOSY - STATSPOS2YPc) * blend + STATSPOS2YPc;
+            f32 coin_y = (STATSPOSY - STATSPOS2Y) * blend + STATSPOS2Y;
             CoinTotal_Draw((i32)*packet->score, coin_y, CoinTotalScale, 1, 1.0f, 255, 191, 0);
         }
     }
@@ -1087,7 +1083,7 @@ void Prompt_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 active) 
                 alpha = 1.0 - (f64)alpha;
             }
             Status_DrawPromptMenu(packet, 0, alpha);
-            StatusDrawPlayerIconsPc = 1;
+            StatusDrawPlayerIcons = 1;
         } else {
             Status_DrawPromptMenu(packet, 1, 1.0f);
             DrawPlayerIconPrompts(packet->player_active[0], TextIdPc880888, 1.0f, -1, -1, -1, TextIdPc880eac, packet->player_active[1],
@@ -1100,8 +1096,8 @@ void CollectCharcters_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     if (stage->field_0x14 == 0) {
         stage->field_0x14 = 1;
     }
-    while (StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)] != -1) {
-        AddToCollection(StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)]);
+    while (StatusNewCharacterIds[(i32)((u32)stage->field_0x14 - 1u)] != -1) {
+        AddToCollection(StatusNewCharacterIds[(i32)((u32)stage->field_0x14 - 1u)]);
         stage->field_0x14 = (i32)((u32)stage->field_0x14 + 1u);
     }
     NextStatusStage(packet);
@@ -1113,12 +1109,12 @@ void CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
         i32 index = stage->field_0x14;
         stage->field_0x18 = elapsed + stage->field_0x18;
         if (stage->field_0x18 >= stage->field_0x1c) {
-            AddToCollection(StatusNewCharacterIdsPc[(i32)((u32)index - 1u)]);
+            AddToCollection(StatusNewCharacterIds[(i32)((u32)index - 1u)]);
             PlaySfx("LegoClicks", NULL);
             stage->field_0x14 = (i32)((u32)stage->field_0x14 + 1u);
             stage->field_0x18 = 0.0f;
             stage->field_0x1c = 3.0f;
-            if (StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)] == -1) {
+            if (StatusNewCharacterIds[(i32)((u32)stage->field_0x14 - 1u)] == -1) {
                 NextStatusStage(packet);
             }
         }
@@ -1127,7 +1123,7 @@ void CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
         stage->field_0x18 = elapsed + stage->field_0x18;
         if (stage->field_0x18 >= 1.0f) {
             stage->field_0x14 = 1;
-            if (StatusNewCharacterIdsPc[0] == -1) {
+            if (StatusNewCharacterIds[0] == -1) {
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                 NextStatusStage(packet);
@@ -1139,14 +1135,14 @@ void CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
     }
 }
 
-f32 StatusCollectionIconYPc = 0.5f;
-f32 StatusCollectionTextYPc = 0.025f;
-f32 StatusCollectionYPc = -0.5f;
-i32 StatusCollectionAppearSoundPlayedPc = 0;
-i32 StatusCollectionMoveSoundPlayedPc = 0;
+f32 StatusCollectionIconY = 0.5f;
+f32 StatusCollectionTextY = 0.025f;
+f32 StatusCollectionY = -0.5f;
+i32 StatusCollectionAppearSoundPlayed = 0;
+i32 StatusCollectionMoveSoundPlayed = 0;
 
 void CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-    COLLECTION_BUILD_PC *collection = (packet->field_0xb0 & 0x80) != 0 ? &VehicleCollectionPc : &CharacterCollectionPc;
+    COLLECTION_BUILD_PC *collection = (packet->field_0xb0 & 0x80) != 0 ? &VehicleCollection : &CharacterCollection;
     if (current == 0) {
         return;
     }
@@ -1158,19 +1154,19 @@ void CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 cu
         f32 size;
         f32 icon_alpha;
         f32 text_alpha;
-        i32 id = StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)];
+        i32 id = StatusNewCharacterIds[(i32)((u32)stage->field_0x14 - 1u)];
         if (id == -1) {
             return;
         }
-        Collection_Draw(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, 1.0f, 0);
+        Collection_Draw(collection, 0.0f, StatusCollectionY, collection->scale, NULL, 1.0f, 0);
         x = 0.0f;
-        y = StatusCollectionIconYPc;
+        y = StatusCollectionIconY;
         size = 0.4f;
         if (stage->field_0x18 < 0.5f) {
             f32 time;
-            if (stage->field_0x18 > 0.25f && StatusCollectionAppearSoundPlayedPc == 0) {
+            if (stage->field_0x18 > 0.25f && StatusCollectionAppearSoundPlayed == 0) {
                 PlaySfx("Char_Icon_App", NULL);
-                StatusCollectionAppearSoundPlayedPc = 1;
+                StatusCollectionAppearSoundPlayed = 1;
             }
             target_x = 0.0f;
             time = stage->field_0x18 + stage->field_0x18;
@@ -1178,22 +1174,22 @@ void CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 cu
             text_alpha = NuTrigTable[((i32)(time * 16384.0f) >> 1) & 0x7fff];
         } else if (stage->field_0x18 < 2.0f) {
             text_alpha = 1.0f;
-            StatusCollectionAppearSoundPlayedPc = 0;
-            StatusCollectionMoveSoundPlayedPc = 0;
+            StatusCollectionAppearSoundPlayed = 0;
+            StatusCollectionMoveSoundPlayed = 0;
             icon_alpha = 1.0f;
         } else {
             f32 time = stage->field_0x18 - 2.0f;
             icon_alpha = 1.0f;
             text_alpha = 1.0f - NuTrigTable[((i32)(time * 16384.0f) >> 1) & 0x7fff];
-            if (StatusCollectionMoveSoundPlayedPc == 0) {
+            if (StatusCollectionMoveSoundPlayed == 0) {
                 PlaySfx("Char_Icon_Slide", NULL);
-                StatusCollectionMoveSoundPlayedPc = 1;
+                StatusCollectionMoveSoundPlayed = 1;
             }
             time = 1.0f - (NuTrigTable[((i32)(time * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
             if (InCollectList_Index(id, collection->list, collection->count) != -1) {
                 f32 target_size;
                 Collection_GetPos((COLLECTION_s *)collection, id, &target_x, &target_y);
-                target_size = collection->scale * MissionPlayerIconSizePc;
+                target_size = collection->scale * MissionPlayerIconSize;
                 if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
                     target_size *= 0.875f;
                 }
@@ -1203,11 +1199,11 @@ void CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 cu
             }
         }
         DrawCharIcon(id, x, y, 0.0f, size, 0xa7, icon_alpha, icon_alpha, 1, NULL);
-        SmartTextEx(TTab[CDataList[id].name_id], 0.0f, StatusCollectionTextYPc, 1.0f, StatusAllMiniKitsCharacterTextScalePc,
-                    StatusAllMiniKitsCharacterTextScalePc, StatusAllMiniKitsCharacterTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
-                    (u8)StatusBluePc, 1.7f, 1, NULL, 0, (i32)(text_alpha * 128.0f));
+        SmartTextEx(TTab[CDataList[id].name_id], 0.0f, StatusCollectionTextY, 1.0f, StatusAllMiniKitsCharacterTextScale,
+                    StatusAllMiniKitsCharacterTextScale, StatusAllMiniKitsCharacterTextScale, 0, (u8)StatusRed, (u8)StatusGreen,
+                    (u8)StatusBlue, 1.7f, 1, NULL, 0, (i32)(text_alpha * 128.0f));
     } else {
-        f32 start_y = -((1.0f - StatusFabsPc(StatusCollectionYPc)) + 1.0f);
+        f32 start_y = -((1.0f - StatusFabs(StatusCollectionY)) + 1.0f);
         f32 time = stage->field_0x18;
         f32 duration = stage->field_0x1c;
         f32 ratio;
@@ -1216,7 +1212,7 @@ void CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 cu
         } else {
             ratio = 0.0f;
         }
-        Collection_Draw(collection, 0.0f, (StatusCollectionYPc - start_y) * NuTrigTable[((i32)(ratio * 16384.0f) >> 1) & 0x7fff] + start_y,
+        Collection_Draw(collection, 0.0f, (StatusCollectionY - start_y) * NuTrigTable[((i32)(ratio * 16384.0f) >> 1) & 0x7fff] + start_y,
                         collection->scale, NULL, 1.0f, 0);
     }
 }
@@ -1242,7 +1238,7 @@ void CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
 
 void CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 alpha;
-    COLLECTION_BUILD_PC *collection = (packet->field_0xb0 & 0x80) != 0 ? &VehicleCollectionPc : &CharacterCollectionPc;
+    COLLECTION_BUILD_PC *collection = (packet->field_0xb0 & 0x80) != 0 ? &VehicleCollection : &CharacterCollection;
     if (current == 0) {
         return;
     }
@@ -1259,7 +1255,7 @@ void CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
         }
         alpha = 1.0f - ratio;
     }
-    Collection_Draw(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, alpha, 0);
+    Collection_Draw(collection, 0.0f, StatusCollectionY, collection->scale, NULL, alpha, 0);
 }
 
 void LevelComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
@@ -1318,8 +1314,8 @@ void LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
     }
 }
 
-f32 StatusTitleYPc = 0.1f;
-f32 StatusSecondaryTitleYPc = -0.1f;
+f32 StatusTitleY = 0.1f;
+f32 StatusSecondaryTitleY = -0.1f;
 
 void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
@@ -1342,31 +1338,31 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                 if (stage->type == 14) {
                     f32 scale;
                     sprintf(text, "%s", TTab[EDataList[packet->episode_id].text_id]);
-                    scale = StatusTextScalePc * 0.75f;
-                    SmartTextEx(text, 0.0f, StatusTitleYPc, 1.0f, scale, scale, scale, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
-                                (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
-                    SmartTextEx(TTab[TextIdPc88073c], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                                StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                    scale = StatusTextScale * 0.75f;
+                    SmartTextEx(text, 0.0f, StatusTitleY, 1.0f, scale, scale, scale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue,
+                                1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[TextIdPc88073c], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale,
+                                0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                 } else if (stage->type == 13) {
                     if ((PODRACE_ADATA != NULL && packet->area == PODRACE_ADATA) ||
                         (BONUS_GUNSHIP_ADATA != NULL && packet->area == BONUS_GUNSHIP_ADATA)) {
-                        SmartTextEx(TTab[TextIdPc880728], 0.0f, (StatusSecondaryTitleYPc + StatusTitleYPc) * 0.5f, 1.0f, StatusTextScalePc,
-                                    StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1,
-                                    NULL, 0, opacity);
+                        SmartTextEx(TTab[TextIdPc880728], 0.0f, (StatusSecondaryTitleY + StatusTitleY) * 0.5f, 1.0f, StatusTextScale,
+                                    StatusTextScale, StatusTextScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0,
+                                    opacity);
                     } else {
-                        SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                                    StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
-                        SmartTextEx(TTab[TextIdPc88072c], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                                    StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                        SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
+                                    (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
+                        SmartTextEx(TTab[TextIdPc88072c], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale,
+                                    StatusTextScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                     }
                 } else if (stage->type == 8) {
-                    SmartTextEx(TTab[TextIdPc8810cc], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc,
-                                0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
-                    SmartTextEx(TTab[TextIdPc8810d0], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                                StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[TextIdPc8810cc], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
+                                (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[TextIdPc8810d0], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale,
+                                0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                 } else if (stage->type == 28) {
-                    SmartTextEx(TTab[TextIdPc880710], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0,
-                                (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[TextIdPc880710], 0.0f, 0.0f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
+                                (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                 } else if (stage->type == 23) {
                     i16 label;
                     u32 red;
@@ -1376,13 +1372,13 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                         label = TextIdPc8806e8;
                         red = green = blue = 255;
                     } else {
-                        red = StatusRedPc;
-                        green = StatusGreenPc;
-                        blue = StatusBluePc;
+                        red = StatusRed;
+                        green = StatusGreen;
+                        blue = StatusBlue;
                         label = packet->challenge_state == 3 ? TextIdPc8806f4 : TextIdPc88100c;
                     }
-                    SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0, red, green, blue,
-                                1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, red, green, blue, 1.7f,
+                                1, NULL, 0, opacity);
                 } else if (stage->type == 26) {
                     i16 label;
                     u32 red;
@@ -1392,13 +1388,13 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                         label = TextIdPc8806e4;
                         red = green = blue = 255;
                     } else {
-                        red = StatusRedPc;
-                        green = StatusGreenPc;
-                        blue = StatusBluePc;
+                        red = StatusRed;
+                        green = StatusGreen;
+                        blue = StatusBlue;
                         label = TextIdPc8806f4;
                     }
-                    SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0, red, green, blue,
-                                1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, red, green, blue, 1.7f,
+                                1, NULL, 0, opacity);
                 } else {
                     i16 label;
                     if (stage->type == 29) {
@@ -1414,10 +1410,10 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                     } else {
                         label = TextIdPc88103c;
                     }
-                    SmartTextEx(TTab[label], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0,
-                                (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
-                    SmartTextEx(TTab[TextIdPc880730], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                                StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[label], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
+                                (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[TextIdPc880730], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale,
+                                0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                 }
             }
         }
@@ -1460,7 +1456,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
         }
         score = packet->original_score;
         IncreaseScore(&score, (i32)((packet->reward_score - packet->original_score) * progress), 0);
-        CoinTotal_Draw((i32)score, (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(coin_slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2YPc,
+        CoinTotal_Draw((i32)score, (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(coin_slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2Y,
                        CoinTotalScale, 1, 1.0f, 255, 191, 0);
         if (stage->type == 26) {
             f32 remaining = packet->mission->time - packet->elapsed_time;
@@ -1468,8 +1464,8 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                 remaining = 0.0f;
             }
             Text_MakeTime((1.0f - progress) * remaining, 0, 1, 1, text);
-            Text3D(text, 0.0f, -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2YPc), 1.0f,
-                   0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+            Text3D(text, 0.0f, -((STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2Y), 1.0f, 0.6f,
+                   0.6f, 0.6f, 0, 255, 191, 0);
         }
         if (stage->type == 23) {
             f32 remaining = packet->area->challenge_trial_time - packet->elapsed_time;
@@ -1477,8 +1473,8 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                 remaining = 0.0f;
             }
             Text_MakeTime((1.0f - progress) * remaining, 0, 1, 1, text);
-            Text3D(text, 0.0f, -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2YPc), 1.0f,
-                   0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+            Text3D(text, 0.0f, -((STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2Y), 1.0f, 0.6f,
+                   0.6f, 0.6f, 0, 255, 191, 0);
         }
     } else if (stage->field_0x12 != 0) {
         f32 alpha = getFinishedStatusAlpha(packet);
@@ -1499,7 +1495,7 @@ void BonusComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
             stage->field_0x18 = 0.0f;
             stage->field_0x14 = 1;
             stage->field_0x1c = packet->newly_completed != 0 ? 4.0f : 0.5f;
-            StatusDrawPlayerIconsPc = 1;
+            StatusDrawPlayerIcons = 1;
             break;
         }
         case 1: {
@@ -1534,8 +1530,8 @@ void BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
         }
         if (alpha > 0.0f) {
             i32 opacity = (i32)((f64)alpha * 128.0);
-            SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0,
-                        (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
+            SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
+                        (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, (u32)opacity);
         }
     }
     if (stage->field_0x14 == 0) {
@@ -1696,7 +1692,7 @@ void SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 
     {
         f32 coin_scale = CoinTotalScale;
         i32 angle = (i32)((f64)coin_progress * 16384.0);
-        f32 coin_y = ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
+        f32 coin_y = ((f64)STATSPOSY - (f64)STATSPOS2Y) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2Y;
         CoinTotal_Draw((i32)*packet->score, coin_y, coin_scale, 1, 1.0f, 255, 191, 0);
     }
     if (packet->new_best_time != 0.0f) {
@@ -1848,7 +1844,7 @@ void SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
     {
         f32 coin_scale = CoinTotalScale;
         i32 angle = (i32)((f64)coin_progress * 16384.0);
-        f32 coin_y = ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
+        f32 coin_y = ((f64)STATSPOSY - (f64)STATSPOS2Y) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2Y;
         CoinTotal_Draw((i32)*packet->score, coin_y, coin_scale, 1, 1.0f, 255, 191, 0);
     }
 }
@@ -1859,7 +1855,7 @@ void BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
             stage->field_0x14 = 1;
             stage->field_0x18 = 0.0f;
             stage->field_0x1c = 4.0f;
-            StatusDrawPlayerIconsPc = 1;
+            StatusDrawPlayerIcons = 1;
             break;
         }
         case 1: {
@@ -1987,7 +1983,7 @@ void ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
 }
 
 void ChallangeCash_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-    NUVEC position = {0.0f, StatusAllMiniKitsYPc, 1.0f};
+    NUVEC position = {0.0f, StatusAllMiniKitsY, 1.0f};
     if (current == 0) {
         return;
     }
@@ -2076,14 +2072,14 @@ void Fade_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed)
                 } else {
                     blend = numerator / denominator;
                 }
-                StatusIconYPc = -StatusIconsOnOff(blend);
+                StatusIconY = -StatusIconsOnOff(blend);
             }
             break;
         }
     }
 }
 
-static STATUS_STAGE_s StatusStagesLswPc[34] = {
+static STATUS_STAGE_s StatusStagesLsw[34] = {
     {RedBrick_LSW_Draw,         RedBrick_LSW_Update,         RedBrick_LSW_Skip,         18, 0xffff, 0, 0, 0, 0.0f, 0.0f},
     {CollectCharcters_Draw,     CollectCharcters_Update,     CollectCharcters_Skip,     35, 0xffff, 0, 0, 0, 0.0f, 0.0f},
     {CollectCharactersOff_Draw, CollectCharactersOff_Update, CollectCharactersOff_Skip, 36, 0xffff, 0, 0, 0, 0.0f, 0.0f},
@@ -2119,16 +2115,16 @@ static STATUS_STAGE_s StatusStagesLswPc[34] = {
     {NULL,                      Fade_LSW_Update,             NULL,                      12, 0xffff, 0, 0, 0, 0.0f, 0.0f},
     {NULL,                      NULL,                        NULL,                      -1, 0xffff, 0, 0, 0, 0.0f, 0.0f},
 };
-static struct STATUSPACKET_LSW_s StatusPacketLswPc = {0};
+static struct STATUSPACKET_LSW_s StatusPacketLsw = {0};
 
 void LSW_registerStatusScreen(void) {
-    REGISTER_STATUS_PACKET_PC registration;
+    REGISTER_STATUS_PACKET registration;
     memset(&registration, 0, sizeof(registration));
-    registration.lsw_packet = &StatusPacketLswPc;
+    registration.lsw_packet = &StatusPacketLsw;
     registration.init_callback = InitStatusScreen_LSW;
     registration.reset_callback = ResetStatusPacket_LSW;
     registration.finish_callback = FinishStatusPacket_LSW;
     registration.draw_background_callback = DrawStatusBG_LSW;
     registration.stage_delay = 0.0f;
-    RegisterStatusScreen(StatusStagesLswPc, NULL, &registration);
+    RegisterStatusScreen(StatusStagesLsw, NULL, &registration);
 }

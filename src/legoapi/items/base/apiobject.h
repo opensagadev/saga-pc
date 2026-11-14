@@ -30,15 +30,15 @@
 
 #if SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_PART == 1 && !defined(SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_STOP)
 
-struct AIPATHCNX_PC;
-struct AIPATHNODE_PC;
+struct AIPATHCNX;
+struct AIPATHNODE;
 struct AITRIGGERSET_PARTIAL;
-struct DRAW_ATTACHMENTS_MINI_PC;
+struct DRAW_ATTACHMENTS_MINI;
 struct GAMEDEBRISENTRY;
 struct GAMEPAD_PC;
-struct PLAYERCHARACTERCONFIG_PC;
-struct SUIT_LAYERS_PC;
-struct TUBE_PC;
+struct PLAYERCHARACTERCONFIG;
+struct SUIT_LAYERS;
+struct TUBE;
 struct ai_helper_slot_s;
 struct apicharactermodellist_s;
 struct blowup_target_s;
@@ -52,12 +52,12 @@ struct techno_s;
 struct gameobject_s;
 
 struct gameobject_s;
-typedef struct AIPACKET_PC AIPACKET_PC;
+typedef struct AIPACKET AIPACKET;
 
 struct gameobject_s;
 
 // Only fields with confirmed PC offsets are exposed.
-typedef struct APIOBJECTSYS_PC {  // size 0x218
+typedef struct APIOBJECTSYS {     // size 0x218
     u32 object_size;              // 0x000
     struct gameobject_s *objects; // 0x004
     u64 hostility_masks[64];      // 0x008
@@ -77,7 +77,7 @@ typedef struct APIOBJECTSYS_PC {  // size 0x218
             u8 unknown_214[4]; // 0x214
         };
     }; // 0x210
-} APIOBJECTSYS_PC;
+} APIOBJECTSYS;
 
 typedef struct CHARACTER_ANIMATION_LOCATOR { // size 0x4c
     u8 unknown_00[0x14];                     // 0x00
@@ -96,22 +96,22 @@ typedef struct API_ANIMATION_CACHE { // size 0x34
     void *animation;                 // 0x30
 } API_ANIMATION_CACHE;
 
-typedef struct TORPEDOPACKET_PC { // size 0x88
-    u8 count;                     // 0x00
-    u8 flags;                     // 0x01
-    u8 ricochet_count;            // 0x02
-    u8 pickup_state;              // 0x03
-    u8 target_type;               // 0x04
-    u8 unknown_05[3];             // 0x05
-    f32 steal_timer;              // 0x08
-    f32 ricochet_time;            // 0x0c
-    u8 unknown_10[4];             // 0x10
-    u32 pickup_data[5];           // 0x14
-    u32 pickup_flags[5];          // 0x28
-    NUVEC pickup_positions[5];    // 0x3c
-    NUVEC ricochet_position;      // 0x78
-    void *target;                 // 0x84
-} TORPEDOPACKET_PC;
+typedef struct TORPEDOPACKET { // size 0x88
+    u8 count;                  // 0x00
+    u8 flags;                  // 0x01
+    u8 ricochet_count;         // 0x02
+    u8 pickup_state;           // 0x03
+    u8 target_type;            // 0x04
+    u8 unknown_05[3];          // 0x05
+    f32 steal_timer;           // 0x08
+    f32 ricochet_time;         // 0x0c
+    u8 unknown_10[4];          // 0x10
+    u32 pickup_data[5];        // 0x14
+    u32 pickup_flags[5];       // 0x28
+    NUVEC pickup_positions[5]; // 0x3c
+    NUVEC ricochet_position;   // 0x78
+    void *target;              // 0x84
+} TORPEDOPACKET;
 
 #ifdef __cplusplus
 extern "C" {
@@ -126,21 +126,21 @@ extern "C" {
     extern void (*APIObjResetShadowMapRenderingFn)(void);
     extern void (*APIObjEnableShadowMapRenderingFn)(void);
 
-    typedef struct API_ACTION_INFO_PC { // size 0x8
-        const char *name;               // 0x0
-        u32 flags;                      // 0x4
-    } API_ACTION_INFO_PC;
+    typedef struct API_ACTION_INFO { // size 0x8
+        const char *name;            // 0x0
+        u32 flags;                   // 0x4
+    } API_ACTION_INFO;
 
-    typedef struct API_EXTRA_ACTION_PC { // size 0x8
-        const char *name;                // 0x0
-        i32 action;                      // 0x4
-    } API_EXTRA_ACTION_PC;
+    typedef struct API_EXTRA_ACTION { // size 0x8
+        const char *name;             // 0x0
+        i32 action;                   // 0x4
+    } API_EXTRA_ACTION;
 
     void PCCharacterModelDiagnosticNoOp();
     extern i32 nu_keyboard_no_key_state;
     void *LoadAnimFromPAK(char *path, i32 clip, void *pak, i32 flags);
     void *LoadAnim(char *path, i32 clip, VARIPTR *buffer, VARIPTR end);
-    void APIObjectDestroyAll(APIOBJECTSYS_PC *system);
+    void APIObjectDestroyAll(APIOBJECTSYS *system);
     extern void (*APIObjPlaySfxByIdFn)(i32, NUVEC *);
     extern const char WorldGrassFormat[7];
     extern void *RedirectAnimList;
@@ -169,11 +169,11 @@ enum { CHARACTER_CONTEXT_DROP_OUT = 36 };
 
 #if SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_PART == 2 && !defined(SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_STOP)
 
-typedef struct APIDEBRISSYS_PC {     // size 0xc
+typedef struct APIDEBRISSYS {        // size 0xc
     i32 named_count;                 // 0x0
     i32 capacity;                    // 0x4
     struct GAMEDEBRISENTRY *entries; // 0x8
-} APIDEBRISSYS_PC;
+} APIDEBRISSYS;
 
 #undef SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_PART
 #define SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_PART 3
@@ -184,45 +184,45 @@ typedef struct APIDEBRISSYS_PC {     // size 0xc
 
 #if SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_PART == 3 && !defined(SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_STOP)
 
-struct AIPACKET_PC { // size 0x20c
+struct AIPACKET { // size 0x20c
 
     union { // size 0xd0
-        AISCRIPTPROCESS_PC script_processor;
+        AISCRIPTPROCESS script_processor;
 
-        struct {                                        // size 0xd0
-            struct AISCRIPT_PC *base_script;            // 0x000
-            struct AISCRIPT_PC *script;                 // 0x004
-            struct AISTATE_PC *state;                   // 0x008
-            struct nulistlnk_s *action_node;            // 0x00c
-            struct AISTATE_PC *next_state;              // 0x010
-            f32 params[4];                              // 0x014
-            f32 script_timer;                           // 0x024
-            AISCRIPTPROCESSSTACK param_stack[2];        // 0x028
-            u8 unknown_50[0x4];                         // 0x050
-            struct AIREFSCRIPT *active_refs[4];         // 0x054
-            i32 active_ref_count;                       // 0x064
-            u8 action_data_1;                           // 0x068
-            u8 action_data_2;                           // 0x069
-            u16 action_data_6;                          // 0x06a
-            void *action_data_3;                        // 0x06c
-            f32 action_data_4;                          // 0x070
-            f32 action_data_5;                          // 0x074
-            NUVEC script_action_position;               // 0x078
-            AIPATHINFO_PC script_destination_path_info; // 0x084
-            f32 action_timer;                           // 0x09c
-            u8 unknown_a0[0x4];                         // 0x0a0
-            struct AILOCATOR_PC *locator;               // 0x0a4
-            struct AILOCATORSET_PC *locator_set;        // 0x0a8
-            u8 unknown_ac[0x4];                         // 0x0ac
-            u8 creature_set;                            // 0x0b0
-            u8 unknown_0b1[0x17];                       // 0x0b1
+        struct {                                     // size 0xd0
+            struct AISCRIPT *base_script;            // 0x000
+            struct AISCRIPT *script;                 // 0x004
+            struct AISTATE *state;                   // 0x008
+            struct nulistlnk_s *action_node;         // 0x00c
+            struct AISTATE *next_state;              // 0x010
+            f32 params[4];                           // 0x014
+            f32 script_timer;                        // 0x024
+            AISCRIPTPROCESSSTACK param_stack[2];     // 0x028
+            u8 unknown_50[0x4];                      // 0x050
+            struct AIREFSCRIPT *active_refs[4];      // 0x054
+            i32 active_ref_count;                    // 0x064
+            u8 action_data_1;                        // 0x068
+            u8 action_data_2;                        // 0x069
+            u16 action_data_6;                       // 0x06a
+            void *action_data_3;                     // 0x06c
+            f32 action_data_4;                       // 0x070
+            f32 action_data_5;                       // 0x074
+            NUVEC script_action_position;            // 0x078
+            AIPATHINFO script_destination_path_info; // 0x084
+            f32 action_timer;                        // 0x09c
+            u8 unknown_a0[0x4];                      // 0x0a0
+            struct AILOCATOR *locator;               // 0x0a4
+            struct AILOCATORSET *locator_set;        // 0x0a8
+            u8 unknown_ac[0x4];                      // 0x0ac
+            u8 creature_set;                         // 0x0b0
+            u8 unknown_0b1[0x17];                    // 0x0b1
 
             union { // size 0x4
                 u8 unknown_0c8[4];
                 void *takeover_script_link;
             }; // 0x0c8
 
-            AISCRIPTPROCESS_PC *alternate_processor; // 0x0cc
+            AISCRIPTPROCESS *alternate_processor; // 0x0cc
         };
     }; // 0x000
     struct gameobject_s *owner;                // 0x0d0
@@ -271,45 +271,45 @@ struct AIPACKET_PC { // size 0x20c
     u8 unknown_141;               // 0x141
     u8 divert_search_index;       // 0x142
     u8 divert_node_index;         // 0x143
-    struct AIGROUP_PC *group;     // 0x144
+    struct AIGROUP *group;        // 0x144
     u8 group_member_index;        // 0x148
     u8 group_column;              // 0x149
     u8 group_row;                 // 0x14a
     u8 movement_target_direction; // 0x14b
     NUVEC terrain_origin;         // 0x14c
-    AIPATHINFO_PC path_info;      // 0x158
+    AIPATHINFO path_info;         // 0x158
     NUVEC last_path_position;     // 0x170
 
     union { // size 0x4
         void *current_path_node;
-        struct AIPATHNODE_PC *goal_path_node;
+        struct AIPATHNODE *goal_path_node;
     }; // 0x17c
 
     f32 movement_instruction_parameter; // 0x180
 
     union { // size 0x4
         void *path_target;
-        struct AIPATHNODE_PC *special_move_node;
+        struct AIPATHNODE *special_move_node;
     }; // 0x184
 
-    struct AIPATHCNX_PC *movement_target;                // 0x188
-    f32 antinode_timer;                                  // 0x18c
-    struct AIPATHCNX_PC *intersection_connection;        // 0x190
-    struct AIPATHCNX_PC *intersection_target_connection; // 0x194
-    NUVEC right_diversion;                               // 0x198
-    NUVEC left_diversion;                                // 0x1a4
+    struct AIPATHCNX *movement_target;                // 0x188
+    f32 antinode_timer;                               // 0x18c
+    struct AIPATHCNX *intersection_connection;        // 0x190
+    struct AIPATHCNX *intersection_target_connection; // 0x194
+    NUVEC right_diversion;                            // 0x198
+    NUVEC left_diversion;                             // 0x1a4
 
     union { // size 0x4
         u8 unknown_1b0[4];
-        struct AILOCATOR_PC *respawn_locator;
+        struct AILOCATOR *respawn_locator;
     }; // 0x1b0
 
-    NUVEC fallback_destination;       // 0x1b4
-    f32 fallback_stopping_distance;   // 0x1c0
-    f32 movement_parameter;           // 0x1c4
-    u8 unknown_1c8[4];                // 0x1c8
-    AIPATHINFO_PC fallback_path_info; // 0x1cc
-    NUVEC *movement_look_target;      // 0x1e4
+    NUVEC fallback_destination;     // 0x1b4
+    f32 fallback_stopping_distance; // 0x1c0
+    f32 movement_parameter;         // 0x1c4
+    u8 unknown_1c8[4];              // 0x1c8
+    AIPATHINFO fallback_path_info;  // 0x1cc
+    NUVEC *movement_look_target;    // 0x1e4
 
     union { // size 0x4
         u32 flags;
@@ -338,23 +338,23 @@ struct AIPACKET_PC { // size 0x20c
     f32 time_off_path;          // 0x208
 };
 
-typedef struct APIOBJECT_PC {                          // size 0x29c
-    void *owner;                                       // 0x000
-    AIPACKET_PC *ai;                                   // 0x004
-    u8 unknown_008[0x48];                              // 0x008
-    struct CHARACTER_MODEL_LAYERS_PC *character_model; // 0x050
-    struct characterdata_s *character_data;            // 0x054
-    u16 facing_angle;                                  // 0x058
-    u16 movement_facing_angle;                         // 0x05a
-    NUVEC position;                                    // 0x05c
-    NUVEC velocity;                                    // 0x068
-    NUVEC previous_velocity;                           // 0x074
-    NUVEC collision_position;                          // 0x080
-    NUVEC start_position;                              // 0x08c
-    NUVEC initial_position;                            // 0x098
-    f32 scaled_radius;                                 // 0x0a4
-    u8 unknown_a8[0x4];                                // 0x0a8
-    f32 collision_radius;                              // 0x0ac
+typedef struct APIOBJECT {                          // size 0x29c
+    void *owner;                                    // 0x000
+    AIPACKET *ai;                                   // 0x004
+    u8 unknown_008[0x48];                           // 0x008
+    struct CHARACTER_MODEL_LAYERS *character_model; // 0x050
+    struct characterdata_s *character_data;         // 0x054
+    u16 facing_angle;                               // 0x058
+    u16 movement_facing_angle;                      // 0x05a
+    NUVEC position;                                 // 0x05c
+    NUVEC velocity;                                 // 0x068
+    NUVEC previous_velocity;                        // 0x074
+    NUVEC collision_position;                       // 0x080
+    NUVEC start_position;                           // 0x08c
+    NUVEC initial_position;                         // 0x098
+    f32 scaled_radius;                              // 0x0a4
+    u8 unknown_a8[0x4];                             // 0x0a8
+    f32 collision_radius;                           // 0x0ac
 
     union { // size 0x148
         u8 unknown_0b0[0x148];
@@ -385,56 +385,56 @@ typedef struct APIOBJECT_PC {                          // size 0x29c
         };
     }; // 0x1fc
 
-    u8 unknown_200[0xc];                                             // 0x200
-    NUSPECIALHANDLE collision_special;                               // 0x20c
-    u8 unknown_218_b[0x8];                                           // 0x218
-    f32 water_height;                                                // 0x220
-    u8 unknown_224[0x4];                                             // 0x224
-    f32 velocity_magnitude;                                          // 0x228
-    f32 horizontal_velocity_magnitude;                               // 0x22c
-    f32 view_distance;                                               // 0x230
-    f32 hear_distance;                                               // 0x234
-    f32 max_view_height;                                             // 0x238
-    f32 min_view_height;                                             // 0x23c
-    f32 ai_visibility_extension;                                     // 0x240
-    u8 unknown_244[0x18];                                            // 0x244
-    f32 previous_animation_root_time;                                // 0x25c
-    f32 previous_blend_target_root_time;                             // 0x260
-    struct CHARACTERANIM_CONFIG_PC *previous_animation_root_info;    // 0x264
-    struct CHARACTERANIM_CONFIG_PC *previous_blend_target_root_info; // 0x268
-    u8 unknown_26c[0xc];                                             // 0x26c
-    u16 pitch_angle;                                                 // 0x278
-    u8 unknown_27a[0x2];                                             // 0x27a
-    u16 roll_angle;                                                  // 0x27c
-    i16 supporting_platform_id;                                      // 0x27e
-    i8 locator_name_index;                                           // 0x280
-    u8 grounded;                                                     // 0x281
-    u8 unknown_282[9];                                               // 0x282
-    u8 leader_selection_state;                                       // 0x28b
-    u8 unknown_28c;                                                  // 0x28c
-    u8 object_id;                                                    // 0x28d
-    u8 unknown_28e[0x4];                                             // 0x28e
-    u16 ai_collision_priority_pc;                                    // 0x292
-    u16 ai_resolved_collision_priority_pc;                           // 0x294
-    u8 unknown_296[0x2];                                             // 0x296
-    struct APIOBJECT_PC *collision_link;                             // 0x298
-} APIOBJECT_PC;
+    u8 unknown_200[0xc];                                          // 0x200
+    NUSPECIALHANDLE collision_special;                            // 0x20c
+    u8 unknown_218_b[0x8];                                        // 0x218
+    f32 water_height;                                             // 0x220
+    u8 unknown_224[0x4];                                          // 0x224
+    f32 velocity_magnitude;                                       // 0x228
+    f32 horizontal_velocity_magnitude;                            // 0x22c
+    f32 view_distance;                                            // 0x230
+    f32 hear_distance;                                            // 0x234
+    f32 max_view_height;                                          // 0x238
+    f32 min_view_height;                                          // 0x23c
+    f32 ai_visibility_extension;                                  // 0x240
+    u8 unknown_244[0x18];                                         // 0x244
+    f32 previous_animation_root_time;                             // 0x25c
+    f32 previous_blend_target_root_time;                          // 0x260
+    struct CHARACTERANIM_CONFIG *previous_animation_root_info;    // 0x264
+    struct CHARACTERANIM_CONFIG *previous_blend_target_root_info; // 0x268
+    u8 unknown_26c[0xc];                                          // 0x26c
+    u16 pitch_angle;                                              // 0x278
+    u8 unknown_27a[0x2];                                          // 0x27a
+    u16 roll_angle;                                               // 0x27c
+    i16 supporting_platform_id;                                   // 0x27e
+    i8 locator_name_index;                                        // 0x280
+    u8 grounded;                                                  // 0x281
+    u8 unknown_282[9];                                            // 0x282
+    u8 leader_selection_state;                                    // 0x28b
+    u8 unknown_28c;                                               // 0x28c
+    u8 object_id;                                                 // 0x28d
+    u8 unknown_28e[0x4];                                          // 0x28e
+    u16 ai_collision_priority_pc;                                 // 0x292
+    u16 ai_resolved_collision_priority_pc;                        // 0x294
+    u8 unknown_296[0x2];                                          // 0x296
+    struct APIOBJECT *collision_link;                             // 0x298
+} APIOBJECT;
 
-typedef struct CHARACTERANIM_CONFIG_PC { // size 0x4c
-    char *name;                          // 0x00
-    u32 flags;                           // 0x04
-    i16 action_id;                       // 0x08
-    u8 unknown_0a;                       // 0x0a
-    u8 priority;                         // 0x0b
-    u8 minimum_repetitions;              // 0x0c
-    u8 maximum_repetitions;              // 0x0d
-    u8 unknown_0e[2];                    // 0x0e
-    f32 blend_in_time;                   // 0x10
-    f32 blend_out_time;                  // 0x14
-    f32 playback_rate;                   // 0x18
-    f32 movement_speed;                  // 0x1c
-    f32 movement_rate_cap;               // 0x20
-    f32 action_speed;                    // 0x24
+typedef struct CHARACTERANIM_CONFIG { // size 0x4c
+    char *name;                       // 0x00
+    u32 flags;                        // 0x04
+    i16 action_id;                    // 0x08
+    u8 unknown_0a;                    // 0x0a
+    u8 priority;                      // 0x0b
+    u8 minimum_repetitions;           // 0x0c
+    u8 maximum_repetitions;           // 0x0d
+    u8 unknown_0e[2];                 // 0x0e
+    f32 blend_in_time;                // 0x10
+    f32 blend_out_time;               // 0x14
+    f32 playback_rate;                // 0x18
+    f32 movement_speed;               // 0x1c
+    f32 movement_rate_cap;            // 0x20
+    f32 action_speed;                 // 0x24
 
     union { // size 0x10
 
@@ -453,17 +453,17 @@ typedef struct CHARACTERANIM_CONFIG_PC { // size 0x4c
     u16 misc_flags;         // 0x48
     u8 locator;             // 0x4a
     u8 unknown_4b;          // 0x4b
-} CHARACTERANIM_CONFIG_PC;
+} CHARACTERANIM_CONFIG;
 
-typedef struct CHARACTER_MODEL_LAYERS_PC { // size 0x54
-    i16 model_id;                          // 0x00
-    u8 flags;                              // 0x02
-    u8 state;                              // 0x03
-    struct NUHGOBJ_EVAL_PC *hierarchy;     // 0x04
+typedef struct CHARACTER_MODEL_LAYERS { // size 0x54
+    i16 model_id;                       // 0x00
+    u8 flags;                           // 0x02
+    u8 state;                           // 0x03
+    struct NUHGOBJ_EVAL *hierarchy;     // 0x04
 
     union { // size 0x4
         struct CHARACTER_ANIMATION_LOCATOR **animations;
-        CHARACTERANIM_CONFIG_PC **animation_configs;
+        CHARACTERANIM_CONFIG **animation_configs;
     }; // 0x08
 
     union { // size 0x4
@@ -472,20 +472,20 @@ typedef struct CHARACTER_MODEL_LAYERS_PC { // size 0x54
     }; // 0x0c
     struct NUANIMDATA2 **model_data_c; // 0x10
     void *points_of_interest[16];      // 0x14
-} CHARACTER_MODEL_LAYERS_PC;
+} CHARACTER_MODEL_LAYERS;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32 (*RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *);
-    i32 PCBuildModelLayerList(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
-    void PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS_PC *, NUMTX *, NUMTX *, NUVEC *, NUMTX *);
+    extern i32 (*RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG *, char *);
+    i32 PCBuildModelLayerList(CHARACTER_MODEL_LAYERS *, i16 *, u32);
+    void PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS *, NUMTX *, NUMTX *, NUVEC *, NUMTX *);
 
-    void APIObjectLOSChecks(APIOBJECTSYS_PC *, i32, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **, f32);
+    void APIObjectLOSChecks(APIOBJECTSYS *, i32, i32, APIOBJECT **, i32, APIOBJECT **, f32);
 
-    i32 APIObjectCollision(APIOBJECT_PC *, APIOBJECT_PC *);
-    i32 APIObjectCollision2D(APIOBJECT_PC *, APIOBJECT_PC *);
-    void APIObjectCollisions(i32, APIOBJECT_PC **, NUVEC *, NUVEC *, i32 (*)(APIOBJECT_PC *, APIOBJECT_PC *));
+    i32 APIObjectCollision(APIOBJECT *, APIOBJECT *);
+    i32 APIObjectCollision2D(APIOBJECT *, APIOBJECT *);
+    void APIObjectCollisions(i32, APIOBJECT **, NUVEC *, NUVEC *, i32 (*)(APIOBJECT *, APIOBJECT *));
 #ifdef __cplusplus
 }
 #endif
@@ -498,42 +498,42 @@ extern "C" {
 
 #if SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_PART == 4 && !defined(SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_STOP)
 
-typedef struct apicharacterdata_s {                  // size 0x4c
-    i32 field0_0x0;                                  // 0x00
-    u32 model_flags;                                 // 0x04
-    char *dir;                                       // 0x08
-    char *name;                                      // 0x0c
-    CHARACTERANIM_CONFIG_PC *animations;             // 0x10
-    u8 opaque_14_24[0x10];                           // 0x14
-    struct PLAYERCHARACTERCONFIG_PC *game_character; // 0x24
-    struct CHARACTER_EFFECT_CONFIG_PC *effects;      // 0x28
-    f32 field13_0x2c;                                // 0x2c
-    f32 collision_radius;                            // 0x30
-    f32 bounds_min_y;                                // 0x34
-    f32 bounds_max_y;                                // 0x38
-    f32 field17_0x3c;                                // 0x3c
-    u8 flags;                                        // 0x40
-    u8 field19_0x41;                                 // 0x41
-    i16 field20_0x42;                                // 0x42
-    u32 ai_path_capabilities;                        // 0x44
-    u32 field22_0x48;                                // 0x48
+typedef struct apicharacterdata_s {               // size 0x4c
+    i32 field0_0x0;                               // 0x00
+    u32 model_flags;                              // 0x04
+    char *dir;                                    // 0x08
+    char *name;                                   // 0x0c
+    CHARACTERANIM_CONFIG *animations;             // 0x10
+    u8 opaque_14_24[0x10];                        // 0x14
+    struct PLAYERCHARACTERCONFIG *game_character; // 0x24
+    struct CHARACTER_EFFECT_CONFIG *effects;      // 0x28
+    f32 field13_0x2c;                             // 0x2c
+    f32 collision_radius;                         // 0x30
+    f32 bounds_min_y;                             // 0x34
+    f32 bounds_max_y;                             // 0x38
+    f32 field17_0x3c;                             // 0x3c
+    u8 flags;                                     // 0x40
+    u8 field19_0x41;                              // 0x41
+    i16 field20_0x42;                             // 0x42
+    u32 ai_path_capabilities;                     // 0x44
+    u32 field22_0x48;                             // 0x48
 } APICHARACTERDATA;
 
-typedef struct apicharsys_s {                    // size 0x38
-    i32 character_count;                         // 0x00
-    i32 model_capacity;                          // 0x04
-    i32 model_id_capacity;                       // 0x08
-    i32 permanent_model_count;                   // 0x0c
-    i32 loaded_model_count;                      // 0x10
-    i32 animation_capacity;                      // 0x14
-    CHARACTER_MODEL_LAYERS_PC *models;           // 0x18
-    i16 *playermodelids;                         // 0x1c
-    APICHARACTERDATA *char_data;                 // 0x20
-    API_ANIMATION_CACHE *animations;             // 0x24
-    i32 area_animation_count;                    // 0x28
-    i32 loaded_animation_count;                  // 0x2c
-    i32 animation_load_attempts;                 // 0x30
-    void (*set_creature_lights)(APIOBJECT_PC *); // 0x34
+typedef struct apicharsys_s {                 // size 0x38
+    i32 character_count;                      // 0x00
+    i32 model_capacity;                       // 0x04
+    i32 model_id_capacity;                    // 0x08
+    i32 permanent_model_count;                // 0x0c
+    i32 loaded_model_count;                   // 0x10
+    i32 animation_capacity;                   // 0x14
+    CHARACTER_MODEL_LAYERS *models;           // 0x18
+    i16 *playermodelids;                      // 0x1c
+    APICHARACTERDATA *char_data;              // 0x20
+    API_ANIMATION_CACHE *animations;          // 0x24
+    i32 area_animation_count;                 // 0x28
+    i32 loaded_animation_count;               // 0x2c
+    i32 animation_load_attempts;              // 0x30
+    void (*set_creature_lights)(APIOBJECT *); // 0x34
 } APICHARSYS;
 
 #ifdef __cplusplus
@@ -554,7 +554,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUHGOBJ_EVAL_PC *Temphgobj;
+    extern NUHGOBJ_EVAL *Temphgobj;
     extern struct numtl_s *APITrans_Mtl[2];
 #ifdef __cplusplus
 }
@@ -601,40 +601,40 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x0000
 
-    u8 unknown_004c[4];                         // 0x004c
-    CHARACTER_MODEL_LAYERS_PC *character_model; // 0x0050
-    struct characterdata_s *character_data;     // 0x0054
-    u16 facing_angle;                           // 0x0058
-    u16 movement_facing_angle;                  // 0x005a
-    NUVEC position;                             // 0x005c
-    NUVEC velocity;                             // 0x0068
-    NUVEC previous_velocity;                    // 0x0074
-    NUVEC collision_position;                   // 0x0080
-    NUVEC start_position;                       // 0x008c
-    NUVEC initial_position;                     // 0x0098
-    f32 scaled_radius;                          // 0x00a4
-    f32 origin_scale;                           // 0x00a8
-    f32 collision_radius;                       // 0x00ac
-    f32 field_b0;                               // 0x00b0
-    f32 scaled_height;                          // 0x00b4
-    NUMTX transform;                            // 0x00b8
-    NUMTX draw_secondary_mtx;                   // 0x00f8
-    NUMTX draw_tertiary_mtx;                    // 0x0138
-    NUVEC collision_min;                        // 0x0178
-    NUVEC collision_max;                        // 0x0184
-    NUVEC upper_position;                       // 0x0190
-    NUVEC lower_position;                       // 0x019c
-    NUVEC collision_origin;                     // 0x01a8
-    NUVEC last_safe_position;                   // 0x01b4
-    NUVEC previous_position;                    // 0x01c0
-    NUVEC respawn_position;                     // 0x01cc
-    f32 respawn_timer;                          // 0x01d8
-    f32 bounds_radius;                          // 0x01dc
-    f32 bounds_half_height;                     // 0x01e0
-    u8 unknown_01e4[4];                         // 0x01e4
-    u32 collision_identity_mask[2];             // 0x01e8
-    u32 collision_contact_mask[2];              // 0x01f0
-    u32 flags_1f8;                              // 0x01f8
+    u8 unknown_004c[4];                      // 0x004c
+    CHARACTER_MODEL_LAYERS *character_model; // 0x0050
+    struct characterdata_s *character_data;  // 0x0054
+    u16 facing_angle;                        // 0x0058
+    u16 movement_facing_angle;               // 0x005a
+    NUVEC position;                          // 0x005c
+    NUVEC velocity;                          // 0x0068
+    NUVEC previous_velocity;                 // 0x0074
+    NUVEC collision_position;                // 0x0080
+    NUVEC start_position;                    // 0x008c
+    NUVEC initial_position;                  // 0x0098
+    f32 scaled_radius;                       // 0x00a4
+    f32 origin_scale;                        // 0x00a8
+    f32 collision_radius;                    // 0x00ac
+    f32 field_b0;                            // 0x00b0
+    f32 scaled_height;                       // 0x00b4
+    NUMTX transform;                         // 0x00b8
+    NUMTX draw_secondary_mtx;                // 0x00f8
+    NUMTX draw_tertiary_mtx;                 // 0x0138
+    NUVEC collision_min;                     // 0x0178
+    NUVEC collision_max;                     // 0x0184
+    NUVEC upper_position;                    // 0x0190
+    NUVEC lower_position;                    // 0x019c
+    NUVEC collision_origin;                  // 0x01a8
+    NUVEC last_safe_position;                // 0x01b4
+    NUVEC previous_position;                 // 0x01c0
+    NUVEC respawn_position;                  // 0x01cc
+    f32 respawn_timer;                       // 0x01d8
+    f32 bounds_radius;                       // 0x01dc
+    f32 bounds_half_height;                  // 0x01e0
+    u8 unknown_01e4[4];                      // 0x01e4
+    u32 collision_identity_mask[2];          // 0x01e8
+    u32 collision_contact_mask[2];           // 0x01f0
+    u32 flags_1f8;                           // 0x01f8
 
     union { // size 0x4
         u8 flags_1fc;
@@ -680,24 +680,24 @@ typedef struct gameobject_s { // size 0x10d8
         f32 roof_height_pc;
     }; // 0x0224
 
-    f32 velocity_magnitude;                                          // 0x0228
-    f32 horizontal_velocity_magnitude;                               // 0x022c
-    f32 view_distance;                                               // 0x0230
-    f32 hear_distance;                                               // 0x0234
-    f32 max_view_height;                                             // 0x0238
-    f32 min_view_height;                                             // 0x023c
-    f32 ai_visibility_extension;                                     // 0x0240
-    NUVEC previous_animation_root;                                   // 0x0244
-    NUVEC previous_blend_target_root;                                // 0x0250
-    f32 previous_animation_root_time;                                // 0x025c
-    f32 previous_blend_target_root_time;                             // 0x0260
-    struct CHARACTERANIM_CONFIG_PC *previous_animation_root_info;    // 0x0264
-    struct CHARACTERANIM_CONFIG_PC *previous_blend_target_root_info; // 0x0268
-    NUVEC animation_root_delta;                                      // 0x026c
-    u16 pitch_angle;                                                 // 0x0278
-    u16 field_0x276;                                                 // 0x027a
-    u16 roll_angle;                                                  // 0x027c
-    i16 supporting_platform_id;                                      // 0x027e
+    f32 velocity_magnitude;                                       // 0x0228
+    f32 horizontal_velocity_magnitude;                            // 0x022c
+    f32 view_distance;                                            // 0x0230
+    f32 hear_distance;                                            // 0x0234
+    f32 max_view_height;                                          // 0x0238
+    f32 min_view_height;                                          // 0x023c
+    f32 ai_visibility_extension;                                  // 0x0240
+    NUVEC previous_animation_root;                                // 0x0244
+    NUVEC previous_blend_target_root;                             // 0x0250
+    f32 previous_animation_root_time;                             // 0x025c
+    f32 previous_blend_target_root_time;                          // 0x0260
+    struct CHARACTERANIM_CONFIG *previous_animation_root_info;    // 0x0264
+    struct CHARACTERANIM_CONFIG *previous_blend_target_root_info; // 0x0268
+    NUVEC animation_root_delta;                                   // 0x026c
+    u16 pitch_angle;                                              // 0x0278
+    u16 field_0x276;                                              // 0x027a
+    u16 roll_angle;                                               // 0x027c
+    i16 supporting_platform_id;                                   // 0x027e
 
     union { // size 0x1
         u8 field_280;
@@ -747,9 +747,9 @@ typedef struct gameobject_s { // size 0x10d8
             u8 ai_priority_reserved_296[0x2];      // 0x0296
         };
     }; // 0x028e
-    struct APIOBJECT_PC *collision_link; // 0x0298
-    u8 unknown_29c[0x4];                 // 0x029c
-    u32 collision_exclusion_mask[2];     // 0x02a0
+    struct APIOBJECT *collision_link; // 0x0298
+    u8 unknown_29c[0x4];              // 0x029c
+    u32 collision_exclusion_mask[2];  // 0x02a0
 
     union { // size 0x8
         u32 hostility_mask[2];
@@ -768,7 +768,7 @@ typedef struct gameobject_s { // size 0x10d8
     i16 previous_idle_animation; // 0x02c6
 
     union { // size 0x20c
-        AIPACKET_PC ai_packet;
+        AIPACKET ai_packet;
 
         struct {                     // size 0x158
             u8 unknown_02c8[0x14c];  // 0x02c8
@@ -776,12 +776,12 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x02c8
 
-    u8 unknown_4d4[0x4];         // 0x04d4
-    RTL_DATA_PC lighting_packet; // 0x04d8
-    u8 unknown_61c[0x45];        // 0x061c
-    u8 field_661;                // 0x0661
-    i16 sock_segment;            // 0x0662
-    u8 unknown_664[0xc];         // 0x0664
+    u8 unknown_4d4[0x4];      // 0x04d4
+    RTL_DATA lighting_packet; // 0x04d8
+    u8 unknown_61c[0x45];     // 0x061c
+    u8 field_661;             // 0x0661
+    i16 sock_segment;         // 0x0662
+    u8 unknown_664[0xc];      // 0x0664
 
     union { // size 0x38
         SOCKPOSITION_PC sock_position;
@@ -837,7 +837,7 @@ typedef struct gameobject_s { // size 0x10d8
         struct PART_PC *force_throw_part;
         struct techno_s *techno;
         struct ZIPUP_s *attached_zipup;
-        struct TUBE_PC *attached_tube_pc;
+        struct TUBE *attached_tube_pc;
     }; // 0x0798
 
     i32 panel_use_request; // 0x079c
@@ -972,13 +972,13 @@ typedef struct gameobject_s { // size 0x10d8
     struct PART_PC *incoming_part;           // 0x0cb0
     struct PART_PC *blocked_part;            // 0x0cb4
     struct PART_PC *force_part;              // 0x0cb8
-    struct SUIT_LAYERS_PC *suit;             // 0x0cbc
+    struct SUIT_LAYERS *suit;                // 0x0cbc
 
     union { // size 0x4
         struct gameobject_s *field_cc0;
-        struct player_batarang_slot_pc_s *batarang;
+        struct player_batarang_slot_s *batarang;
     }; // 0x0cc0
-    struct TORPEDOPACKET_PC *torpedo;      // 0x0cc4
+    struct TORPEDOPACKET *torpedo;         // 0x0cc4
     struct gameobject_s *collision_target; // 0x0cc8
     u8 unknown_0ccc[4];                    // 0x0ccc
 
@@ -1269,41 +1269,41 @@ typedef struct gameobject_s { // size 0x10d8
 
     union { // size 0x4
         u32 field_f14;
-        AILOCATOR_PC *doomed_escape_locator;
+        AILOCATOR *doomed_escape_locator;
     }; // 0x0f14
 
-    NUVEC target_velocity;                        // 0x0f18
-    NUVEC surface_normal;                         // 0x0f24
-    NUVEC facing_direction;                       // 0x0f30
-    NUHGOBJ_JOINT_OVERRIDE_PC joint_overrides[3]; // 0x0f3c
-    NUVEC *head_target;                           // 0x0fd8
-    NUVEC head_target_position;                   // 0x0fdc
-    f32 head_target_timer;                        // 0x0fe8
-    f32 head_target_delay;                        // 0x0fec
-    f32 character_bottom;                         // 0x0ff0
-    f32 character_top;                            // 0x0ff4
-    f32 collision_scale;                          // 0x0ff8
-    f32 collision_radius_unscaled;                // 0x0ffc
-    f32 spawn_protection_timer;                   // 0x1000
-    f32 collision_y_scale;                        // 0x1004
-    f32 death_timer;                              // 0x1008
-    f32 death_delay;                              // 0x100c
-    f32 field_1010;                               // 0x1010
-    f32 reflection_height;                        // 0x1014
-    f32 vehicle_hit_timer;                        // 0x1018
-    f32 ai_update_distance;                       // 0x101c
-    f32 shadow_opacity;                           // 0x1020
-    f32 shadow_radius;                            // 0x1024
-    f32 hover_height_override;                    // 0x1028
-    f32 collision_scale_override;                 // 0x102c
-    f32 terrain_impact_speed;                     // 0x1030
-    f32 animation_speed_multiplier;               // 0x1034
-    f32 field_1038;                               // 0x1038
-    f32 fall_acceleration_timer;                  // 0x103c
-    void *cable;                                  // 0x1040
-    u32 flags_1044;                               // 0x1044
-    u32 layer_mask;                               // 0x1048
-    u32 extra_layer_mask;                         // 0x104c
+    NUVEC target_velocity;                     // 0x0f18
+    NUVEC surface_normal;                      // 0x0f24
+    NUVEC facing_direction;                    // 0x0f30
+    NUHGOBJ_JOINT_OVERRIDE joint_overrides[3]; // 0x0f3c
+    NUVEC *head_target;                        // 0x0fd8
+    NUVEC head_target_position;                // 0x0fdc
+    f32 head_target_timer;                     // 0x0fe8
+    f32 head_target_delay;                     // 0x0fec
+    f32 character_bottom;                      // 0x0ff0
+    f32 character_top;                         // 0x0ff4
+    f32 collision_scale;                       // 0x0ff8
+    f32 collision_radius_unscaled;             // 0x0ffc
+    f32 spawn_protection_timer;                // 0x1000
+    f32 collision_y_scale;                     // 0x1004
+    f32 death_timer;                           // 0x1008
+    f32 death_delay;                           // 0x100c
+    f32 field_1010;                            // 0x1010
+    f32 reflection_height;                     // 0x1014
+    f32 vehicle_hit_timer;                     // 0x1018
+    f32 ai_update_distance;                    // 0x101c
+    f32 shadow_opacity;                        // 0x1020
+    f32 shadow_radius;                         // 0x1024
+    f32 hover_height_override;                 // 0x1028
+    f32 collision_scale_override;              // 0x102c
+    f32 terrain_impact_speed;                  // 0x1030
+    f32 animation_speed_multiplier;            // 0x1034
+    f32 field_1038;                            // 0x1038
+    f32 fall_acceleration_timer;               // 0x103c
+    void *cable;                               // 0x1040
+    u32 flags_1044;                            // 0x1044
+    u32 layer_mask;                            // 0x1048
+    u32 extra_layer_mask;                      // 0x104c
 
     union { // size 0x2
         i16 field_1050;
@@ -1407,7 +1407,7 @@ typedef struct gameobject_s { // size 0x10d8
             u8 unknown_1096[2]; // 0x1096
         };
 
-        struct AIPATHNODE_PC *special_move_source_pc;
+        struct AIPATHNODE *special_move_source_pc;
     }; // 0x1094
 
     union { // size 0xc
@@ -1438,13 +1438,13 @@ typedef struct gameobject_s { // size 0x10d8
     struct AITRIGGERSET_PARTIAL *active_trigger_set; // 0x10d4
 } GAMEOBJECT;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, flags) == 0x4b0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, flags) == 0x4b0);
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     void APIObjectVelocities(GAMEOBJECT *);
-    GAMEOBJECT *APIObjectCreate(APIOBJECTSYS_PC *);
+    GAMEOBJECT *APIObjectCreate(APIOBJECTSYS *);
 #ifdef __cplusplus
 }
 #endif
@@ -1468,8 +1468,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target);
-    void APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object);
+    void APIObjectRemoveFromLOSTable(APIOBJECTSYS *system, GAMEOBJECT *source, GAMEOBJECT *target);
+    void APIObjectDestroy(APIOBJECTSYS *system, GAMEOBJECT *object);
 #ifdef __cplusplus
 }
 #endif
@@ -1500,8 +1500,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AnimPacketMiniToFullPc(struct DRAW_ATTACHMENTS_MINI_PC *, ANIMPACKET_PC *);
-    void AnimPacketFullToMiniPc(ANIMPACKET_PC *, struct DRAW_ATTACHMENTS_MINI_PC *);
+    void AnimPacketMiniToFull(struct DRAW_ATTACHMENTS_MINI *, ANIMPACKET_PC *);
+    void AnimPacketFullToMini(ANIMPACKET_PC *, struct DRAW_ATTACHMENTS_MINI *);
 #ifdef __cplusplus
 }
 #endif

@@ -1,37 +1,37 @@
 #include "saga.h"
 
-typedef struct TRAFFICANIM_PC { // size 0x140
-    NUSPECIALHANDLE special;    // 0x000
-    void *animation;            // 0x00c
-    f32 end_frame;              // 0x010
-    f32 tfactor;                // 0x014
-    f32 frame_interval;         // 0x018
-    f32 random_interval;        // 0x01c
-    f32 room_frame_interval;    // 0x020
-    f32 y_offset;               // 0x024
-    i8 vehicle_indices[16];     // 0x028
-    i8 rooms[256];              // 0x038
-    i8 vehicle_count;           // 0x138
-    u8 unknown_139[7];          // 0x139
-} TRAFFICANIM_PC;
+typedef struct TRAFFICANIM { // size 0x140
+    NUSPECIALHANDLE special; // 0x000
+    void *animation;         // 0x00c
+    f32 end_frame;           // 0x010
+    f32 tfactor;             // 0x014
+    f32 frame_interval;      // 0x018
+    f32 random_interval;     // 0x01c
+    f32 room_frame_interval; // 0x020
+    f32 y_offset;            // 0x024
+    i8 vehicle_indices[16];  // 0x028
+    i8 rooms[256];           // 0x038
+    i8 vehicle_count;        // 0x138
+    u8 unknown_139[7];       // 0x139
+} TRAFFICANIM;
 
-typedef struct TRAFFICANIMSYS_PC {    // size 0x77e4
-    TRAFFICANIM_PC animations[64];    // 0x0000
+typedef struct TRAFFICANIMSYS {       // size 0x77e4
+    TRAFFICANIM animations[64];       // 0x0000
     NUSPECIALHANDLE vehicles[16];     // 0x5000
     u8 unknown_50c0[0x77e0 - 0x50c0]; // 0x50c0
     i8 animation_count;               // 0x77e0
     i8 vehicle_count;                 // 0x77e1
     u8 unknown_77e2[2];               // 0x77e2
-} TRAFFICANIMSYS_PC;
+} TRAFFICANIMSYS;
 
-typedef struct TRAFFIC_WORLD_VIEW {     // size 0x516c
-    u8 unknown_000[0x5168];             // 0x0000
-    TRAFFICANIMSYS_PC *trafficanim_sys; // 0x5168
+typedef struct TRAFFIC_WORLD_VIEW {  // size 0x516c
+    u8 unknown_000[0x5168];          // 0x0000
+    TRAFFICANIMSYS *trafficanim_sys; // 0x5168
 } TRAFFIC_WORLD_VIEW;
 
-static TRAFFICANIM_PC reference_trafficanim = {0};
-static TRAFFICANIM_PC *parse_trafficanim = 0;
-static TRAFFICANIMSYS_PC *parse_trafficanimsys = 0;
+static TRAFFICANIM reference_trafficanim = {0};
+static TRAFFICANIM *parse_trafficanim = 0;
+static TRAFFICANIMSYS *parse_trafficanimsys = 0;
 static WORLDINFO *parse_worldinfo = 0;
 
 static void Traffic_tfactor(NUFPAR_PC *parser) {
@@ -52,7 +52,7 @@ static void TrafficAnim_yoffset(NUFPAR_PC *parser) {
     }
 }
 
-static i32 Traffic_FindVehiclePc(char *name) {
+static i32 Traffic_FindVehicle(char *name) {
     i32 i;
     if (name != NULL && parse_worldinfo != NULL && parse_trafficanimsys != NULL) {
         for (i = 0; i < parse_trafficanimsys->vehicle_count; ++i) {
@@ -77,7 +77,7 @@ static void Traffic_vehicle(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) == 0 || parse_trafficanimsys == NULL || reference_trafficanim.vehicle_count >= 16) {
         return;
     }
-    index = Traffic_FindVehiclePc(parser->word_buffer_ptr);
+    index = Traffic_FindVehicle(parser->word_buffer_ptr);
     if (index >= 0) {
         reference_trafficanim.vehicle_indices[reference_trafficanim.vehicle_count++] = (i8)index;
     }
@@ -91,7 +91,7 @@ static NUFPCOMJMP TrafficAnim_ConfigKeywords[] = {
 static void Traffic_animobj(NUFPAR_PC *parser) {
     NUSPECIALHANDLE special;
     NUINSTANIM *instance;
-    TRAFFICANIM_PC *animation;
+    TRAFFICANIM *animation;
     if (NuFParGetWord(parser) == 0) {
         return;
     }
@@ -132,7 +132,7 @@ void TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
     i32 parsing = 0;
     i32 i;
     i32 frame;
-    TRAFFICANIM_PC *animation;
+    TRAFFICANIM *animation;
     NUMTX matrix;
     i16 room;
     f32 end_frame;
@@ -146,7 +146,7 @@ void TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
     }
     old_buffer = world->giz_buffer;
     old_end = world->buffer_end;
-    view->trafficanim_sys = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(TRAFFICANIMSYS_PC));
+    view->trafficanim_sys = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(TRAFFICANIMSYS));
     if (view->trafficanim_sys == NULL) {
         return;
     }

@@ -16,8 +16,8 @@
 extern "C" {
 #endif
     i32 NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);
-    void RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x, f32 dest_y, f32 dest_right,
-                                 f32 dest_bottom);
+    void RenderPostViewportSet(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x, f32 dest_y, f32 dest_right,
+                               f32 dest_bottom);
 #ifdef __cplusplus
 }
 #endif

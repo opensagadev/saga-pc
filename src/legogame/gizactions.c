@@ -1,11 +1,11 @@
 #include "saga.h"
 
-void FollowAPIObject(APIOBJECT_PC *, APIOBJECT_PC *, i32, f32);
-extern i32 Action_HelpWithTriggers(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, locator) == 0x36c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, mover_height) == 0x3e8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, last_path_position) == 0x438);
+void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
+extern i32 Action_HelpWithTriggers(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, locator) == 0x36c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, mover_height) == 0x3e8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, last_path_position) == 0x438);
 i32 GizmoGetTypeIDByName(void *system, char *name);
 SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
 void SockOn(SOCKSYS_PC *system, i32 index);
@@ -27,8 +27,8 @@ const char GizObstacleActionBackwardPC[9];
 const char GizObstacleActionForwardPC[8];
 const char GizObstacleActionStayOpenPC[9];
 const char GizObstacleActionStayShutPC[9];
-const char GizmoSnapOptionNamePc[5];
-GIZMOPICKUP_PC *GizmoPickup_FindByName(WORLDINFO *, char *);
+const char GizmoSnapOptionName[5];
+GIZMOPICKUP *GizmoPickup_FindByName(WORLDINFO *, char *);
 const char GizActionLiteral7589f0[];
 const char GizActionLiteral7589fc[];
 const char GizActionLiteral758a08[];
@@ -52,7 +52,7 @@ GAMEOBJECT *ActivateCharacter(char *, NUVEC *, i32);
 void DeactivateCharacter(char *);
 void GizBuildIt_KillParts(GIZBUILDIT_s *);
 
-void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+void GizAction_ActivateEffect(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int count) {
     char *name;
     i32 visible;
     i32 index;
@@ -72,7 +72,7 @@ void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
     }
 }
 
-void GizAction_ActivatePartEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+void GizAction_ActivatePartEffect(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32 count) {
     i32 i;
     char *name = NULL;
     for (i = 0; i < count; ++i) {
@@ -89,7 +89,7 @@ void GizAction_ActivatePartEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char
     }
 }
 
-void GizActions_SetVisibilityPc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+void GizActions_SetVisibility(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32 count) {
     i32 i;
     NUSPECIALHANDLE special;
     i32 visible = 1;
@@ -107,7 +107,7 @@ void GizActions_SetVisibilityPc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char *
     }
 }
 
-void GizActions_SetGizmoVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+void GizActions_SetGizmoVisibility(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 count) {
     i32 i;
     char *name = NULL;
     i32 type_id = -1;
@@ -133,11 +133,11 @@ void GizActions_SetGizmoVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char 
     }
 }
 
-void GizActions_SetPickupVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **params, i32 count) {
+void GizActions_SetPickupVisibility(GIZFLOW *flow, FLOWBOX *box, char **params, i32 count) {
     i32 i;
     i32 id = -1;
     i32 visible = 1;
-    GIZMOPICKUP_PC *pickup = NULL;
+    GIZMOPICKUP *pickup = NULL;
     for (i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], "name=");
         if (value != NULL) {
@@ -169,7 +169,7 @@ void GizActions_SetPickupVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **
     }
 }
 
-void GizActions_TurnOnFlowBoxPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+void GizActions_TurnOnFlowBox(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 count) {
     char *name = NULL;
     i32 enabled = 1;
     i32 i;
@@ -190,7 +190,7 @@ void GizActions_TurnOnFlowBoxPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **par
     }
 }
 
-void GizActions_ActivateGizmoPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+void GizActions_ActivateGizmo(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 count) {
     i32 i;
     char *name = NULL;
     i32 type_id = -1;
@@ -216,14 +216,14 @@ void GizActions_ActivateGizmoPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **par
     }
 }
 
-void GizActions_ActivateCharPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+void GizActions_ActivateChar(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 count) {
     char *name = NULL;
     i32 active = 1;
     ACTIVATE_CHAR_BUILDIT_VIEW *buildit = NULL;
     i32 index = 0;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEOBJECT *player;
-    AICREATURE_PC *creature;
+    AICREATURE *creature;
     (void)unused;
     for (; index < count; ++index) {
         char *value = NuStrIStr(params[index], "name=");
@@ -269,9 +269,9 @@ void GizActions_ActivateCharPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **para
     }
 }
 
-void GizActions_ChangeObstTriggerType(GIZFLOW_PC *flow, FLOWBOX_PC *unused1, char **params, int count) {
+void GizActions_ChangeObstTriggerType(GIZFLOW *flow, FLOWBOX *unused1, char **params, int count) {
     i32 index;
-    struct gizmo_pc_s *gizmo;
+    struct gizmo_s *gizmo;
     i32 mode = -1;
     char *name = NULL;
     for (index = 0; index < count; ++index) {
@@ -305,7 +305,7 @@ void GizActions_ChangeObstTriggerType(GIZFLOW_PC *flow, FLOWBOX_PC *unused1, cha
     }
 }
 
-void GizAction_ChangeTechnoTgt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+void GizAction_ChangeTechnoTgt(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32 count) {
     char old_name[16];
     void *old_controlled;
     i32 old_complete;
@@ -381,7 +381,7 @@ void GizAction_ChangeTechnoTgt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **
     }
 }
 
-void GizAction_SetAIMessage(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+void GizAction_SetAIMessage(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int count) {
     i32 index;
     struct gizaimessage_s *message;
     f32 value = 0.0f;
@@ -415,7 +415,7 @@ void GizAction_SetAIMessage(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **par
     }
 }
 
-void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+void GizAction_SetAIState(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int count) {
     i32 index;
     i32 object_index;
     f32 range_squared = 0.0f;
@@ -475,8 +475,7 @@ void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
                 }
             }
             if (matching_type != 0 && range_squared > distance_squared) {
-                object->ai_packet.script_processor.next_state =
-                    AIStateFind(state_name, ((APIOBJECT_PC *)object)->ai->script_processor.script);
+                object->ai_packet.script_processor.next_state = AIStateFind(state_name, ((APIOBJECT *)object)->ai->script_processor.script);
             }
         } else if (range_squared > distance_squared) {
             object->ai_packet.script_processor.next_state = AIStateFind(state_name, object->ai_packet.script_processor.script);
@@ -484,7 +483,7 @@ void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
     }
 }
 
-void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+void GizActions_CompleteLevel(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int count) {
     char *cutscene_name = NULL;
     struct level_data_s *level = NULL;
     i32 index;
@@ -510,7 +509,7 @@ void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
     }
 }
 
-void GizActions_GoToNewLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+void GizActions_GoToNewLevel(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32 count) {
     i32 i;
     LEVELDATA_PC *level = NULL;
     char *cutscene_name = NULL;
@@ -536,7 +535,7 @@ void GizActions_GoToNewLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **pa
     }
 }
 
-void GizActions_GoThroughDoor(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int param_count) {
+void GizActions_GoThroughDoor(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int param_count) {
     i32 param_index;
     char *door_name = NULL;
 
@@ -555,7 +554,7 @@ void GizActions_GoThroughDoor(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
     }
 }
 
-void GizActions_PlayObstacle(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **params, i32 count) {
+void GizActions_PlayObstacle(GIZFLOW *flow, FLOWBOX *box, char **params, i32 count) {
     i32 forwards = 1;
     i32 snap = 0;
     i32 stay_open = 0;
@@ -573,7 +572,7 @@ void GizActions_PlayObstacle(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **params, i
             forwards = 0;
         } else if (!NuStrICmp(params[i], GizObstacleActionForwardPC)) {
             forwards = 1;
-        } else if (!NuStrICmp(params[i], GizmoSnapOptionNamePc)) {
+        } else if (!NuStrICmp(params[i], GizmoSnapOptionName)) {
             snap = 1;
         } else if (!NuStrICmp(params[i], GizObstacleActionStayOpenPC)) {
             stay_open = 1;
@@ -607,7 +606,7 @@ void GizActions_PlayObstacle(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **params, i
     obstacle->runtime_flags = flags;
 }
 
-void GizActions_PlaySpecial(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+void GizActions_PlaySpecial(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 count) {
     i32 i;
     char *name = NULL;
     i32 forward = 1;
@@ -620,7 +619,7 @@ void GizActions_PlaySpecial(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params,
             forward = 0;
         } else if (NuStrICmp(params[i], GizObstacleActionForwardPC) == 0) {
             forward = 1;
-        } else if (NuStrICmp(params[i], GizmoSnapOptionNamePc) == 0) {
+        } else if (NuStrICmp(params[i], GizmoSnapOptionName) == 0) {
             snap = 1;
         }
     }
@@ -645,7 +644,7 @@ void GizActions_PlaySpecial(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params,
     }
 }
 
-void GizActions_PlayForce(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+void GizActions_PlayForce(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 count) {
     i32 i;
     char *name = NULL;
     i32 forward = 1;
@@ -658,7 +657,7 @@ void GizActions_PlayForce(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i
             forward = 0;
         } else if (NuStrICmp(params[i], GizObstacleActionForwardPC) == 0) {
             forward = 1;
-        } else if (NuStrICmp(params[i], GizmoSnapOptionNamePc) == 0) {
+        } else if (NuStrICmp(params[i], GizmoSnapOptionName) == 0) {
             snap = 1;
         }
     }
@@ -685,7 +684,7 @@ void GizActions_PlayForce(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i
     }
 }
 
-void GizActions_PlayRadio(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+void GizActions_PlayRadio(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int count) {
     char *special_name;
     char *blowup_name;
     i32 play;
@@ -708,7 +707,7 @@ void GizActions_PlayRadio(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
     }
 }
 
-void GizActions_PlayCutscene(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+void GizActions_PlayCutscene(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32 count) {
     i32 i;
     char *name = NULL;
     for (i = 0; i < count; ++i) {
@@ -720,7 +719,7 @@ void GizActions_PlayCutscene(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **pa
     NewCutScene(NULL, WorldInfo_CurrentlyActive()->cutscene_sys, name, 0);
 }
 
-void GizActions_HitBlowup(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+void GizActions_HitBlowup(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32 count) {
     i32 index;
     i8 gizmo_type = 0;
     char *name = NULL;
@@ -764,7 +763,7 @@ void GizActions_HitBlowup(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
     }
 }
 
-static void GizActions_ActivateBelt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+static void GizActions_ActivateBelt(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int count) {
     i32 index;
     i8 active = 1;
     for (index = 0; index < count; ++index) {
@@ -777,7 +776,7 @@ static void GizActions_ActivateBelt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, ch
     WorldInfo_CurrentlyActive()->progress_flag_5174 = active;
 }
 
-void GizActions_EnableSock(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+void GizActions_EnableSock(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32 count) {
     i32 i;
     i32 enabled = 1;
     i32 index = -1;
@@ -804,13 +803,13 @@ void GizActions_EnableSock(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **para
     }
 }
 
-GIZACTIONDEF_PC game_gizactiondefs[24] = {
-    {"SetVisibility",         GizActions_SetVisibilityPc      },
-    {"SetGizmoVisibility",    GizActions_SetGizmoVisibilityPc },
-    {"SetPickupVisibility",   GizActions_SetPickupVisibilityPc},
-    {"ActivateGizmo",         GizActions_ActivateGizmoPc      },
-    {"ActivateChar",          GizActions_ActivateCharPc       },
-    {"TurnOnFlowBox",         GizActions_TurnOnFlowBoxPc      },
+GIZACTIONDEF game_gizactiondefs[24] = {
+    {"SetVisibility",         GizActions_SetVisibility        },
+    {"SetGizmoVisibility",    GizActions_SetGizmoVisibility   },
+    {"SetPickupVisibility",   GizActions_SetPickupVisibility  },
+    {"ActivateGizmo",         GizActions_ActivateGizmo        },
+    {"ActivateChar",          GizActions_ActivateChar         },
+    {"TurnOnFlowBox",         GizActions_TurnOnFlowBox        },
     {"ActivateEffect",        GizAction_ActivateEffect        },
     {"ActivatePartEffect",    GizAction_ActivatePartEffect    },
     {"ChangeTechnoTarget",    GizAction_ChangeTechnoTgt       },

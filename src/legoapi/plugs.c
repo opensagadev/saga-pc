@@ -193,7 +193,7 @@ static i32 Plug_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 static const char *Plug_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
     (void)output;
-    return PlugOutputNamePc;
+    return PlugOutputName;
 }
 
 static i32 Plug_GetNumOutputs(GIZMO_PC *gizmo) {
@@ -260,7 +260,7 @@ static void Plugs_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
 ADDGIZMOTYPE_PC *Plugs_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC PlugsAddTypePc = {0};
     PlugsAddTypePc = Default_ADDGIZMOTYPE;
-    PlugsAddTypePc.name = PlugGizmoNamePc;
+    PlugsAddTypePc.name = PlugGizmoName;
     PlugsAddTypePc.prefix = "";
     PlugsAddTypePc.fns.options = 12;
     PlugsAddTypePc.fns.get_max_gizmos_fn = Plugs_GetMaxGizmos;

@@ -30,7 +30,7 @@ typedef struct edpp_file_particle_s { // size 0x58
     i16 facing_rotation_y;            // 0x56
 } EDPP_FILE_PARTICLE_PC;
 
-extern const f64 ActionSnapWeightedRandomZeroPc;
+extern const f64 ActionSnapWeightedRandomZero;
 
 static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
     f32 active = 0.0f;
@@ -38,7 +38,7 @@ static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
     f64 emission;
     f32 ratio;
     i32 i;
-    if (effect->particle_lifetime > ActionSnapWeightedRandomZeroPc) {
+    if (effect->particle_lifetime > ActionSnapWeightedRandomZero) {
         emission = (f64)effect->emission_period_random + effect->emission_period;
         do {
             f32 remaining = effect->particle_lifetime - elapsed;
@@ -204,7 +204,7 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
                     DebrisSetFacing(edpp_ptls[index].instance_id, edpp_ptls[index].facing_mode, edpp_ptls[index].facing_rotation_x,
                                     edpp_ptls[index].facing_rotation_y);
                     edppLoadDebrisSetGroupID(edpp_ptls[index].instance_id, edpp_ptls[index].render_group);
-                    DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenesPc[edpp_ptls[index].page]);
+                    DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenes[edpp_ptls[index].page]);
                 } else {
                     edpp_ptls[index].instance_id = 99999;
                 }
@@ -383,7 +383,7 @@ i32 edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
         }
     }
 
-    if (EdppUseMemcardPc) {
+    if (EdppUseMemcard) {
         EdFileSetMedia(2);
     } else {
         EdFileSetMedia(1);
@@ -401,13 +401,13 @@ i32 edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     }
 
     edpp_page_used[page_index] = 1;
-    EdppPageScenesPc[page_index] = scene;
+    EdppPageScenes[page_index] = scene;
 
     requested = EdFileReadInt();
     if (requested + edpp_types_used > debinf_count) {
         skipped = requested + edpp_types_used - debinf_count;
         requested = debinf_count - edpp_types_used;
-        EdppTypesErrorPc = 300;
+        EdppTypesError = 300;
     }
 
     for (n = 0; n < requested; n++) {

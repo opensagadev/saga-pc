@@ -113,14 +113,14 @@ extern "C" {
 extern "C" {
 #endif
     extern const char NuHwDefaultConfigNamePc[10];
-    extern const char *NuHwSoundDfsNamePc;
-    extern const char *NuHwDfsNamePc;
-    extern i32 NuHwShowCommandPc;
-    extern u32 NuHwParameter19Pc;
-    extern u32 NuHwParameter4fPc;
+    extern const char *NuHwSoundDfsName;
+    extern const char *NuHwDfsName;
+    extern i32 NuHwShowCommand;
+    extern u32 NuHwParameter19;
+    extern u32 NuHwParameter4f;
     i32 PublishWindowPc(HWND, i32);
     i32 PCDeviceIsAbsent(void);
-    i32 NuInitHardwarePc(VARIPTR *, VARIPTR *, i32, ...);
+    i32 NuInitHardware(VARIPTR *, VARIPTR *, i32, ...);
 #ifdef __cplusplus
 }
 #endif
@@ -131,7 +131,7 @@ extern "C" {
 extern "C" {
 #endif
     i32 PcNativeSelectLanguage(const char *);
-    extern u32 PcUseUserGeoRegionPc;
+    extern u32 PcUseUserGeoRegion;
 #ifdef __cplusplus
 }
 #endif

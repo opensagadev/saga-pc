@@ -746,7 +746,7 @@ SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotatio
 void fun_0053e800(void) {
 }
 
-f32 SockSplineLengthPc(NUGSPLINE *spline, i32 closed) {
+f32 SockSplineLength(NUGSPLINE *spline, i32 closed) {
     i32 segment_count;
     i32 segment;
     i32 next;
@@ -909,7 +909,7 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
         }
 
         if (sock->mid != NULL) {
-            sock->unknown_98 = SockSplineLengthPc(sock->mid, sock->unknown_33);
+            sock->unknown_98 = SockSplineLength(sock->mid, sock->unknown_33);
         } else {
             i32 segment_count;
 
@@ -986,7 +986,7 @@ i32 complexsockposition_forcesock = -1;
 static NUVEC temp_sockmidpos = {0};
 static NUVEC temp_sockcampos = {0};
 
-static i32 SockOnOrOutsidePlanePc(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
+static i32 SockOnOrOutsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
     return normal->x * (point->x - plane_point->x) + normal->y * (point->y - plane_point->y) + normal->z * (point->z - plane_point->z) >=
            0.0f;
 }
@@ -1192,12 +1192,12 @@ static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC 
                 d1 = &sock->d->pts[next];
                 if (point->x >= segment_data->min.x && point->x <= segment_data->max.x && point->y >= segment_data->min.y &&
                     point->y <= segment_data->max.y && point->z >= segment_data->min.z && point->z <= segment_data->max.z) {
-                    if (SockOnOrOutsidePlanePc(point, a0, &segment_data->planes[0]) &&
-                        SockOnOrOutsidePlanePc(point, a1, &segment_data->planes[1]) &&
-                        SockOnOrOutsidePlanePc(point, b1, &segment_data->planes[2]) &&
-                        SockOnOrOutsidePlanePc(point, c1, &segment_data->planes[3]) &&
-                        SockOnOrOutsidePlanePc(point, d1, &segment_data->planes[4]) &&
-                        SockOnOrOutsidePlanePc(point, b1, &segment_data->planes[5])) {
+                    if (SockOnOrOutsidePlane(point, a0, &segment_data->planes[0]) &&
+                        SockOnOrOutsidePlane(point, a1, &segment_data->planes[1]) &&
+                        SockOnOrOutsidePlane(point, b1, &segment_data->planes[2]) &&
+                        SockOnOrOutsidePlane(point, c1, &segment_data->planes[3]) &&
+                        SockOnOrOutsidePlane(point, d1, &segment_data->planes[4]) &&
+                        SockOnOrOutsidePlane(point, b1, &segment_data->planes[5])) {
                         inside = 1;
                     }
                 }
@@ -2336,7 +2336,7 @@ typedef struct SOCK_CAMERA_RESULT { // size 0x64
     f32 separation;                 // 0x60
 } SOCK_CAMERA_RESULT;
 
-i32 LastSingleSockWeWereInPc = -1;
+i32 LastSingleSockWeWereIn = -1;
 
 f32 CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
     SOCK_PC *sock;
@@ -2445,7 +2445,7 @@ i32 SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_p
                           &second.socket, &second.position, &second.target, &second.blend, &second.position_seek, &second.angle_seek,
                           &second.shake, &second.separation);
             RestoreLastSocksTurnoff(sock_sys);
-            reverse = LastSingleSockWeWereInPc != first_index;
+            reverse = LastSingleSockWeWereIn != first_index;
             blend = distances[reverse] / (distances[1] + distances[0]);
             if (blend < 0.5f) {
                 blend = (blend * blend) * 2.0f;
@@ -2476,7 +2476,7 @@ i32 SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_p
             return 1;
         }
     }
-    LastSingleSockWeWereInPc = TempSPosCount > 0 ? TempSPosList[0].sock_index : -1;
+    LastSingleSockWeWereIn = TempSPosCount > 0 ? TempSPosList[0].sock_index : -1;
     return SockSysCamera(sock_sys, fallback_camera_position, socket_changed, player_camera_positions, player_positions, player_count,
                          camera_socket_position, camera_position, camera_target, overlap_blend, position_seek, angle_seek, camera_shake,
                          separation_scale);

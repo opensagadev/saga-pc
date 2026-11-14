@@ -32,9 +32,9 @@ extern "C" {
     void BackDrop_Draw(f32, i32);
     void DrawParallax(NUSPECIALHANDLE *);
     void NoRender(void);
-    extern NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
+    extern NUSPECIALHANDLE RenderBackdropSpecials[4];
     extern struct NUGSCN_s *backdrop_scene;
-    extern void (*RenderBackdropAlphaFnPc)(f32 *);
+    extern void (*RenderBackdropAlphaFn)(f32 *);
     void UpdateCutBorders(void);
     void GrabStillScreen(void);
     extern u8 ScreenGrabNeeded;
@@ -43,13 +43,13 @@ extern "C" {
     extern i32 clear_screen_onstill;
     void CreateFadeMaterials(void);
 
-    extern f32 RenderBackdropTopRPc;
-    extern f32 RenderBackdropTopGPc;
-    extern f32 RenderBackdropTopBPc;
-    extern f32 RenderBackdropBottomRPc;
-    extern f32 RenderBackdropBottomGPc;
-    extern f32 RenderBackdropBottomBPc;
-    extern i32 RenderBackdropBlackPc;
+    extern f32 RenderBackdropTopR;
+    extern f32 RenderBackdropTopG;
+    extern f32 RenderBackdropTopB;
+    extern f32 RenderBackdropBottomR;
+    extern f32 RenderBackdropBottomG;
+    extern f32 RenderBackdropBottomB;
+    extern i32 RenderBackdropBlack;
     void BackDrop_ClearColourTargets(void);
     void BackDrop_UpdateColours(i32);
     void BackDrop_Init(char *, VARIPTR *, VARIPTR *);

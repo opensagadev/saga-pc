@@ -25,28 +25,28 @@ extern "C" {
     i32 ParticlesPerFrame(f32, f32);
     void KillPart(PART_PC *, i32);
     i32 ParticlesPerSecond(f32, f32);
-    i32 FindGameDebris(APIDEBRISSYS_PC *, char *);
+    i32 FindGameDebris(APIDEBRISSYS *, char *);
     void AddDebrisEffect(i32 *, i32, f32, f32, f32);
     void AddFiniteShotDebrisEffect2(i32 *, i32, NUVEC *, NUVEC *, NUVEC *, i32);
     void AddFiniteShotDebrisEffect(i32 *, i32, NUVEC *, i32);
     void AddVariableShotDebrisEffectMtx3(i32, NUVEC *, NUVEC *, i32, NUMTX *, NUMTX *);
     void AddVariableShotDebrisEffect(i32, NUVEC *, i32, i16, i16);
-    i32 AddGameDebris(APIDEBRISSYS_PC *, i32, NUVEC *);
+    i32 AddGameDebris(APIDEBRISSYS *, i32, NUVEC *);
     i32 LookupDebrisEffectPageIgnore(char *, i8, i32);
     i32 LookupDebrisEffectPage(char *, i8);
     i32 PARTLookupType(char *name);
 
-    i32 AddGameDebrisMomentum(APIDEBRISSYS_PC *, i32, NUVEC *, NUVEC *, NUVEC *);
-    i32 AddGameDebrisXYZ(APIDEBRISSYS_PC *, i32, f32, f32, f32);
-    i32 AddGameDebrisRot(APIDEBRISSYS_PC *, i32, NUVEC *, i32, u16, u16);
-    i32 AddGameDebrisMtx(APIDEBRISSYS_PC *, i32, NUVEC *, i32, NUMTX *);
-    i32 AddGameDebrisMom(APIDEBRISSYS_PC *, i32, NUVEC *, i32, NUVEC *);
+    i32 AddGameDebrisMomentum(APIDEBRISSYS *, i32, NUVEC *, NUVEC *, NUVEC *);
+    i32 AddGameDebrisXYZ(APIDEBRISSYS *, i32, f32, f32, f32);
+    i32 AddGameDebrisRot(APIDEBRISSYS *, i32, NUVEC *, i32, u16, u16);
+    i32 AddGameDebrisMtx(APIDEBRISSYS *, i32, NUVEC *, i32, NUMTX *);
+    i32 AddGameDebrisMom(APIDEBRISSYS *, i32, NUVEC *, i32, NUVEC *);
     i32 AddFiniteShotPART(i32, NUVEC *, i32);
     void DebFreeInstantly(i32 *);
     i32 PARTLookupTypePageOnly(char *, i32);
     i32 LookupDebrisEffect(char *);
 
-    APIDEBRISSYS_PC *InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
+    APIDEBRISSYS *InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
 #ifdef __cplusplus
 }
 #endif

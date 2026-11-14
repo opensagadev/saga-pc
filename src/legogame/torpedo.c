@@ -109,14 +109,14 @@ typedef struct torpedo_packet_alloc_s { // size 0x88
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static f32 TorpedoFabsPc(f32 f) {
+static f32 TorpedoFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
     return rv;
 }
 
-f32 TorpedoRatioPc(f32 numerator, f32 denominator) {
+f32 TorpedoRatio(f32 numerator, f32 denominator) {
     if (numerator != 0.0f && denominator != 0.0f) {
         return numerator / denominator;
     }
@@ -124,7 +124,7 @@ f32 TorpedoRatioPc(f32 numerator, f32 denominator) {
 }
 
 /* NuASin polynomial; this unit carries its own instance. */
-i16 TorpedoArcSinePc(f32 sin) {
+i16 TorpedoArcSine(f32 sin) {
     f32 abs;
     f32 sqrt;
     f32 unknown_a;
@@ -132,7 +132,7 @@ i16 TorpedoArcSinePc(f32 sin) {
     f32 unknown_c;
     f32 unknown_d;
 
-    abs = TorpedoFabsPc(sin);
+    abs = TorpedoFabs(sin);
     sqrt = NuFsqrt(1.0f - sin * sin);
 
     unknown_a = MIN(sqrt, abs);
@@ -152,11 +152,11 @@ i16 TorpedoArcSinePc(f32 sin) {
            10430.4f;
 }
 
-static i16 TorpedoACosPc(f32 cos) {
-    return 0x4000 - TorpedoArcSinePc(cos);
+static i16 TorpedoACos(f32 cos) {
+    return 0x4000 - TorpedoArcSine(cos);
 }
 
-static void TorpedoSetRotationYPc(NUMTX *matrix, NUANG angle) {
+static void TorpedoSetRotationY(NUMTX *matrix, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     matrix->m00 = cosine;
@@ -177,7 +177,7 @@ static void TorpedoSetRotationYPc(NUMTX *matrix, NUANG angle) {
     matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
 }
 
-static void TorpedoRotateYPc(NUMTX *m, NUANG angle) {
+static void TorpedoRotateY(NUMTX *m, NUANG angle) {
     f32 cos_y = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sin_y = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m00 = m->m00;
@@ -201,24 +201,24 @@ void fun_004d2290(void) {
     memset(TorpedoPackets, 0, sizeof(TorpedoPackets));
 }
 
-TORPEDOPACKET_PC *GetTorpedoPacket(void) {
+TORPEDOPACKET *GetTorpedoPacket(void) {
     i32 index;
     for (index = 0; index < 16; ++index) {
         if ((TorpedoPackets[index].flags & 1) == 0) {
             TorpedoPackets[index].flags |= 1;
-            return (TORPEDOPACKET_PC *)&TorpedoPackets[index];
+            return (TORPEDOPACKET *)&TorpedoPackets[index];
         }
     }
     return NULL;
 }
 
-void FreeTorpedoPacket(TORPEDOPACKET_PC **packet) {
+void FreeTorpedoPacket(TORPEDOPACKET **packet) {
     i32 index;
     if (packet == NULL || *packet == NULL) {
         return;
     }
     for (index = 0; index < 16; ++index) {
-        if (*packet == (TORPEDOPACKET_PC *)&TorpedoPackets[index] && (TorpedoPackets[index].flags & 1) != 0) {
+        if (*packet == (TORPEDOPACKET *)&TorpedoPackets[index] && (TorpedoPackets[index].flags & 1) != 0) {
             memset(&TorpedoPackets[index], 0, sizeof(TorpedoPackets[index]));
             *packet = NULL;
             return;
@@ -226,7 +226,7 @@ void FreeTorpedoPacket(TORPEDOPACKET_PC **packet) {
     }
 }
 
-void DropTorpedoPickups(TORPEDOPACKET_PC *packet, i32 count) {
+void DropTorpedoPickups(TORPEDOPACKET *packet, i32 count) {
     TORPEDO_PICKUP_POSITIONS_PC *view = (TORPEDO_PICKUP_POSITIONS_PC *)packet;
     i32 index;
     if (packet == NULL || count == 0) {
@@ -274,7 +274,7 @@ static NUVEC *GetTorpTargetPositionAndRadius(void *target, u8 target_type, f32 *
     return NULL;
 }
 
-static void TorpedoHitDispatchPc(void *target, NUVEC *position, i32 player, u8 target_type) {
+static void TorpedoHitDispatch(void *target, NUVEC *position, i32 player, u8 target_type) {
     if (target == NULL) {
         return;
     }
@@ -363,7 +363,7 @@ void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
         }
         distance = NuVecXZDistSqr(&TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count - 1],
                                   &player->collision_position, &direction);
-        if (distance < TorpedoStealRangePc * TorpedoStealRangePc) {
+        if (distance < TorpedoStealRange * TorpedoStealRange) {
             TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->pickup_positions[TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->count] =
                 TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count - 1];
             TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->pickup_data[TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->count] =
@@ -374,7 +374,7 @@ void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
             TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->pickup_timer = 0.0f;
             TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->pickup_state = 1;
             --TORPEDO_PACKET_PC(object)->count;
-            TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->steal_timer = TorpedoStealTimerPc;
+            TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->steal_timer = TorpedoStealTimer;
             return;
         }
     }
@@ -445,7 +445,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
     return NULL;
 }
 
-void HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
+void HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET *packet) {
     BOLTTYPE_PC *type = BoltType_FindByID(15, WORLD);
     void *target;
     u8 target_type;
@@ -523,7 +523,7 @@ void HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
 
 void Torpedo_InitRicochet(BOLT_PC *bolt, NUVEC *position) {
     if (bolt != NULL && bolt->owner != NULL && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL) {
-        TORPEDOPACKET_PC *packet = ((GAMEOBJECT *)bolt->owner)->torpedo;
+        TORPEDOPACKET *packet = ((GAMEOBJECT *)bolt->owner)->torpedo;
         if (packet->target != NULL) {
             if (packet->ricochet_count > 4) {
                 packet->flags |= 0x10;
@@ -537,7 +537,7 @@ void Torpedo_InitRicochet(BOLT_PC *bolt, NUVEC *position) {
     }
 }
 
-void Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
+void Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET *packet) {
     NUVEC axis;
     NUMTX matrix;
     f32 lengths;
@@ -557,8 +557,8 @@ void Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
         velocity_length = NuVecMag(&bolt->velocity);
         lengths = (f32)(NuVecMag(&packet->ricochet_position) * velocity_length);
         dot = NuVecDot(&packet->ricochet_position, &bolt->velocity);
-        ratio = TorpedoRatioPc(dot, lengths);
-        angle = TorpedoACosPc(ratio);
+        ratio = TorpedoRatio(dot, lengths);
+        angle = TorpedoACos(ratio);
         NuMtxSetRotationAxis(&matrix, 2 * (0x4000 - angle), &axis);
         NuVecMtxRotate(&bolt->velocity, &bolt->velocity, &matrix);
         NuVecScale(&bolt->velocity, &bolt->velocity, 0.8f);
@@ -576,7 +576,7 @@ void Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
 }
 
 void TorpedoHitTarget(BOLT_PC *bolt) {
-    TORPEDOPACKET_PC *packet;
+    TORPEDOPACKET *packet;
     NUVEC *target_position;
     NUVEC delta;
     f32 radius;
@@ -592,8 +592,8 @@ void TorpedoHitTarget(BOLT_PC *bolt) {
             NuVecSub(&delta, target_position, &bolt->position);
             if (NuVecMagSqr(&delta) < radius * radius) {
                 player = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
-                TorpedoHitDispatchPc(((GAMEOBJECT *)bolt->owner)->torpedo->target, &bolt->position, player,
-                                     ((GAMEOBJECT *)bolt->owner)->torpedo->target_type);
+                TorpedoHitDispatch(((GAMEOBJECT *)bolt->owner)->torpedo->target, &bolt->position, player,
+                                   ((GAMEOBJECT *)bolt->owner)->torpedo->target_type);
             }
         }
     }
@@ -681,7 +681,7 @@ void Torpedo_Shoot(GAMEOBJECT *object) {
     NUVEC direction;
     u16 angle = BoltSys->shoot_direction(object, &direction);
     NUMTX matrix;
-    TorpedoSetRotationYPc(&matrix, angle);
+    TorpedoSetRotationY(&matrix, angle);
     if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0) {
         Bolt_Add(object, &position, &matrix, 16, 0);
     } else {
@@ -768,7 +768,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
             TORPEDO_PACKET_PC(object)->pickup_state = 0;
         }
     } else {
-        if (TorpedoFillEnabledPc != 0 && (object->flags_1fc & 0x80) != 0 && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
+        if (TorpedoFillEnabled != 0 && (object->flags_1fc & 0x80) != 0 && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
             (TORPEDO_PACKET_PC(object)->flags & 2) == 0 && TORPEDO_PACKET_PC(object)->count < maximum) {
             TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count] = object->position;
             ++TORPEDO_PACKET_PC(object)->count;
@@ -781,8 +781,8 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
             TORPEDO_PACKET_PC(object)->pickup_state = 0;
         } else if (TORPEDO_PACKET_PC(object)->count < maximum) {
             machine = GizTorpMachine_FindNearest(WORLD, &object->collision_position, &distance);
-            if (machine != NULL && (machine->flags & 1) != 0 && distance < TorpedoGrabRangeSquaredPc) {
-                NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f), 0);
+            if (machine != NULL && (machine->flags & 1) != 0 && distance < TorpedoGrabRangeSquared) {
+                NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * PlayerRandomScale * (f64)0.4f), 0);
                 if (TORPEDO_PACKET_PC(object)->count < maximum) {
                     NewBuzz(object->pad->bound_pad, 0.1f, 0);
                     TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count] = machine->position;
@@ -896,7 +896,7 @@ void DrawTorpedos(GAMEOBJECT *object) {
         matrix.m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
         matrix.m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
         NuMtxPreRotateX(&matrix, pitch);
-        TorpedoRotateYPc(&matrix, TORPEDO_PACKET_PC(object)->pickup_data[index]);
+        TorpedoRotateY(&matrix, TORPEDO_PACKET_PC(object)->pickup_data[index]);
         NuMtxTranslate(&matrix, &TORPEDO_PACKET_PC(object)->pickup_positions[index]);
         if (TORPEDO_PACKET_PC(object)->pickup_state == 0 && index + 1 == TORPEDO_PACKET_PC(object)->count) {
             blend =

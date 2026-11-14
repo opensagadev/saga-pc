@@ -46,7 +46,7 @@ typedef struct customiser_config_s {
     i32 piece_counts[9];
     i16 character_ids[2];
     u8 unknown_70[0x100];
-    i32 (*piece_available)(CUSTOMPIECE_LAYERS_PC *);
+    i32 (*piece_available)(CUSTOMPIECE_LAYERS *);
     CUSTOM_SAVE_CONFIG_PC *save;
     u8 unknown_178[0xd8];
     i8 locator_indices[9];
@@ -60,7 +60,7 @@ typedef struct customiser_config_s {
     f32 locator_y_offsets[9];
 } CUSTOMISER_CONFIG_PC;
 
-void CustomiserLoadTracePc(char *path);
+void CustomiserLoadTrace(char *path);
 
 typedef struct custom_accessory_resource_s {
     NUGSCN *scene;
@@ -68,7 +68,7 @@ typedef struct custom_accessory_resource_s {
     i32 original_texture_id;
     i32 texture_id;
     i32 material_index;
-    CHARACTER_MODEL_LAYERS_PC *character_model;
+    CHARACTER_MODEL_LAYERS *character_model;
 } CUSTOM_ACCESSORY_RESOURCE_PC;
 
 typedef struct custom_accessory_hierarchy_s {
@@ -86,7 +86,7 @@ typedef struct custom_accessory_material_s {
 
 typedef struct KILLPARTS_OBJECT_LIGHT {
     u8 unknown_0[0x4d8];
-    PART_LIGHTING_DATA_PC lighting;
+    PART_LIGHTING_DATA lighting;
 } KILLPARTS_OBJECT_LIGHT;
 
 typedef struct KILLPARTS_SAVED_PIECES {
@@ -96,15 +96,15 @@ typedef struct KILLPARTS_SAVED_PIECES {
 
 typedef struct KILLPARTS_CUSTOMISER {
     u8 unknown_0[0x24];
-    CUSTOMPIECE_LAYERS_PC *head_pieces;
-    CUSTOMPIECE_LAYERS_PC *helmet_pieces;
+    CUSTOMPIECE_LAYERS *head_pieces;
+    CUSTOMPIECE_LAYERS *helmet_pieces;
     u8 unknown_2c[0x40];
     i16 character_ids[2];
     u8 unknown_70[0x104];
     KILLPARTS_SAVED_PIECES *save;
 } KILLPARTS_CUSTOMISER;
 
-static i32 CustomiserPieceAvailableDefaultPrivatePc(CUSTOMPIECE_LAYERS_PC *input) {
+static i32 CustomiserPieceAvailableDefaultPrivate(CUSTOMPIECE_LAYERS *input) {
     CUSTOM_PIECE_CONFIG_PC *piece = (CUSTOM_PIECE_CONFIG_PC *)input;
     if ((piece->availability_flags & 0x180) != 0 && Game_100PercentComplete() == 0) {
         return 0;
@@ -112,7 +112,7 @@ static i32 CustomiserPieceAvailableDefaultPrivatePc(CUSTOMPIECE_LAYERS_PC *input
     return 1;
 }
 
-static i32 CustomiserFindSetFromNamePrivatePc(char *name) {
+static i32 CustomiserFindSetFromNamePrivate(char *name) {
     if (NuStrICmp(name, "hathair") == 0) {
         return 0;
     }
@@ -143,14 +143,14 @@ static i32 CustomiserFindSetFromNamePrivatePc(char *name) {
     return -1;
 }
 
-void Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS_PC *input, i32 enabled) {
+void Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS *input, i32 enabled) {
     CUSTOMISER_ANIMS_LOAD_PC *customiser = (CUSTOMISER_ANIMS_LOAD_PC *)input;
     i32 character;
     if (customiser == NULL) {
         return;
     }
     for (character = 0; character < 2; ++character) {
-        CHARACTERANIM_CONFIG_PC *animation = CDataList[customiser->character_ids[character]].animations;
+        CHARACTERANIM_CONFIG *animation = CDataList[customiser->character_ids[character]].animations;
         if (animation == NULL) {
             continue;
         }
@@ -175,7 +175,7 @@ void Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS_PC *input, i32 enabled) {
 }
 
 /* Includes a separate NULL return. */
-i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category) {
+i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS *input, i32 index, i32 count, i32 unused, i32 category) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 attempts;
     (void)unused;
@@ -203,7 +203,7 @@ i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, 
                 }
             }
             if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 || Game_100PercentComplete() != 0) &&
-                customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][index]) != 0) {
+                customiser->piece_available((CUSTOMPIECE_LAYERS *)&customiser->piece_sets[category][index]) != 0) {
                 break;
             }
         }
@@ -211,7 +211,7 @@ i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, 
     return index;
 }
 
-i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category) {
+i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS *input, i32 index, i32 count, i32 unused, i32 category) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 attempts;
     (void)unused;
@@ -240,20 +240,20 @@ i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count,
             }
         }
         if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 || Game_100PercentComplete() != 0) &&
-            customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][index]) != 0) {
+            customiser->piece_available((CUSTOMPIECE_LAYERS *)&customiser->piece_sets[category][index]) != 0) {
             break;
         }
     }
     return index;
 }
 
-void Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTERMODELLIST *models) {
+void Customiser_LoadAccessories(CUSTOMISER_LAYERS *input, APICHARACTERMODELLIST *models) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 side;
     i32 category;
     i32 material_index;
     i32 id;
-    CHARACTER_MODEL_LAYERS_PC *model;
+    CHARACTER_MODEL_LAYERS *model;
     CUSTOM_ACCESSORY_RESOURCE_PC *resource;
     char piece_name[0x80];
     char path[0x80];
@@ -270,7 +270,7 @@ void Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTERMODELLI
             continue;
         }
         model = &apicharsys->models[apicharsys->playermodelids[id]];
-        resource = (CUSTOM_ACCESSORY_RESOURCE_PC *)KillPartsAccessoriesPc[side];
+        resource = (CUSTOM_ACCESSORY_RESOURCE_PC *)KillPartsAccessories[side];
         for (category = 0; category < 9; ++category, ++resource) {
             u16 piece_index;
             memset(resource, 0, sizeof(*resource));
@@ -318,20 +318,20 @@ void Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTERMODELLI
     }
 }
 
-void CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *input, GAMEOBJECT *object, NUMTX *matrices) {
+void CustomiserDrawAccessories(CUSTOMISER_LAYERS *input, GAMEOBJECT *object, NUMTX *matrices) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 joint = object->character_data->game_character->helmet_locator;
     i32 side;
     i32 category;
     const u16 *pieces;
-    KILLPARTS_ACCESSORY_PC *resource;
+    KILLPARTS_ACCESSORY *resource;
     NUMTX matrix;
     NUMTX reflection;
     if (customiser == NULL || joint == -1 || object->character_model->points_of_interest[joint] == NULL) {
         return;
     }
     side = object->id != (u16)customiser->character_ids[0];
-    resource = KillPartsAccessoriesPc[side];
+    resource = KillPartsAccessories[side];
     for (category = 0; category < 9; ++category, ++resource) {
         if (customiser->piece_counts[category] <= 0 || category == 2) {
             continue;
@@ -361,10 +361,10 @@ void CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *input, GAMEOBJECT *object
     }
 }
 
-void Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAMEOBJECT *object, i32 animation, i32 mode, f32 scale) {
+void Customiser_AddPartAccessories(CUSTOMISER_LAYERS *customiser, GAMEOBJECT *object, i32 animation, i32 mode, f32 scale) {
     KILLPARTS_CUSTOMISER *accessories;
     i32 side;
-    KILLPARTS_ACCESSORY_PC *resource;
+    KILLPARTS_ACCESSORY *resource;
     i32 category;
     i32 joint;
     joint = object->character_data->game_character->helmet_locator;
@@ -373,11 +373,11 @@ void Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAMEOBJECT 
     }
     accessories = ((KILLPARTS_CUSTOMISER *)customiser);
     side = ((i16)object->id) != accessories->character_ids[0];
-    resource = KillPartsAccessoriesPc[side];
+    resource = KillPartsAccessories[side];
     for (category = 0; category < 9; ++category, ++resource) {
         NUSPECIALHANDLE *special;
         NUVEC momentum;
-        ADDPART_PC params;
+        ADDPART params;
         if (category == 2) {
             continue;
         }
@@ -402,7 +402,7 @@ void Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAMEOBJECT 
         params.velocity = &momentum;
         params.special = special;
         params.lighting_data =
-            Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc)) : &((KILLPARTS_OBJECT_LIGHT *)object)->lighting;
+            Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting)) : &((KILLPARTS_OBJECT_LIGHT *)object)->lighting;
         params.time_step = FRAMETIME;
         params.flags = mode == 0 ? 0x480 : 0x90;
         params.stop_fn = PartStop_Flickerer;
@@ -424,7 +424,7 @@ void Customiser_DumpAccessories(void *input) {
         if (apicharsys->playermodelids[customiser->character_ids[side]] == -1) {
             continue;
         }
-        resource = (CUSTOM_ACCESSORY_RESOURCE_PC *)KillPartsAccessoriesPc[side];
+        resource = (CUSTOM_ACCESSORY_RESOURCE_PC *)KillPartsAccessories[side];
         for (category = 0; category < 9; ++category, ++resource) {
             if (customiser->categories[category]->name == NULL) {
                 continue;
@@ -445,10 +445,10 @@ void Customiser_DumpAccessories(void *input) {
     }
 }
 
-static i32 CustomiserUseBigScenesPc = 1;
+static i32 CustomiserUseBigScenes = 1;
 
 /* Ignored extra arguments remain explicit calls. */
-void Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
+void Customiser_LoadAll(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     char converted_path[0x80];
     char piece_name[0x80];
@@ -477,11 +477,11 @@ void Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
         if (resources == NULL) {
             continue;
         }
-        if (CustomiserUseBigScenesPc != 0 && customiser->categories[category]->uses_special != 0 &&
+        if (CustomiserUseBigScenes != 0 && customiser->categories[category]->uses_special != 0 &&
             customiser->categories[category]->scene_file != NULL) {
             world->customiser_shared_scenes[category] =
                 NuGScnRead(&world->giz_buffer, world->buffer_end, customiser->categories[category]->scene_file);
-            CustomiserLoadTracePc(customiser->categories[category]->scene_file);
+            CustomiserLoadTrace(customiser->categories[category]->scene_file);
         }
         for (piece = 0; piece < customiser->piece_counts[category]; ++piece) {
             CUSTOM_ACCESSORY_RESOURCE_PC *resource = &resources[piece];
@@ -497,7 +497,7 @@ void Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
                     NuStrCat(path, ".gsc");
                     world->giz_buffer.addr = (world->giz_buffer.addr + 0x3f) & ~0x3fu;
                     resource->scene = NuGScnRead(&world->giz_buffer, world->buffer_end, path);
-                    CustomiserLoadTracePc(path);
+                    CustomiserLoadTrace(path);
                 }
                 if (resource->scene != NULL) {
                     NuSpecialFind(resource->scene, &resource->special, piece_name, 1);
@@ -513,12 +513,12 @@ void Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
                     if (item != -1 && NuFilePakGetItemInfo(texture_pack, item, &data, &size) != 0) {
                         data = NuPtrBlockFix(data);
                         resource->texture_id = NuTexCreateNative(data);
-                        CustomiserLoadTracePc(path);
+                        CustomiserLoadTrace(path);
                     }
                 }
                 if (resource->texture_id == 0) {
                     resource->texture_id = NuTexRead(path, &world->giz_buffer, world->buffer_end);
-                    CustomiserLoadTracePc(path);
+                    CustomiserLoadTrace(path);
                 }
             }
         }
@@ -555,7 +555,7 @@ void Customiser_DumpAll(void *input, WORLDINFO *world) {
     }
 }
 
-void Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *input) {
+void Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS *input) {
     CUSTOMISER_ANIMS_LOAD_PC *customiser = (CUSTOMISER_ANIMS_LOAD_PC *)input;
     i32 side;
     i32 category;
@@ -569,7 +569,7 @@ void Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *input) {
     }
 }
 
-void Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS_PC *model) {
+void Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS *model) {
     CUSTOMISER_CONFIG_PC *customiser = input;
     CUSTOMISER_ANIMS_LOAD_PC *textures = input;
     i32 side;
@@ -603,7 +603,7 @@ void Customiser_RestoreModelTextureIDs(void *input) {
         return;
     }
     for (side = 0; side < 2; ++side) {
-        CHARACTER_MODEL_LAYERS_PC *model = APICharacterLoaded(customiser->character_ids[side]);
+        CHARACTER_MODEL_LAYERS *model = APICharacterLoaded(customiser->character_ids[side]);
         if (model == NULL) {
             continue;
         }
@@ -623,7 +623,7 @@ void Customiser_RestoreModelTextureIDs(void *input) {
     }
 }
 
-void Customiser_Set100PercentPieces(CUSTOMISER_LAYERS_PC *input) {
+void Customiser_Set100PercentPieces(CUSTOMISER_LAYERS *input) {
     // MATCH-EXCEPTION: the cast is repeated at each use; a cast local changes register choice (U3)
     i32 category;
     i32 index;
@@ -645,7 +645,7 @@ void Customiser_Set100PercentPieces(CUSTOMISER_LAYERS_PC *input) {
     }
 }
 
-void Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS_PC *input, void *save_input) {
+void Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS *input, void *save_input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOM_SAVE_CONFIG_PC *save;
     if (customiser == NULL) {
@@ -670,7 +670,7 @@ void Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS_PC *input, void *save_
     }
 }
 
-CUSTOMPIECE_LAYERS_PC *Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *input, char *name, i32 *category, i32 *index) {
+CUSTOMPIECE_LAYERS *Customiser_FindPieceByName(CUSTOMISER_LAYERS *input, char *name, i32 *category, i32 *index) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 category_index;
     i32 piece_index;
@@ -687,7 +687,7 @@ CUSTOMPIECE_LAYERS_PC *Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *input, c
                 if (index_local != NULL) {
                     *index_local = piece_index;
                 }
-                return (CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category_index][piece_index];
+                return (CUSTOMPIECE_LAYERS *)&customiser->piece_sets[category_index][piece_index];
             }
         }
     }
@@ -695,7 +695,7 @@ CUSTOMPIECE_LAYERS_PC *Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *input, c
 }
 
 /* Does not check the customiser/save arguments. */
-i32 Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_input, i32 unused) {
+i32 Customiser_GetIcon(CUSTOMISER_LAYERS *input, const void *save_input, i32 unused) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     const CUSTOM_SAVE_CONFIG_PC *save = save_input;
     CUSTOM_PIECE_CONFIG_PC *hat = &customiser->piece_sets[0][save->pieces[0]];
@@ -728,7 +728,7 @@ i32 Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_input, i32 
     return PCArcadeUnpairedIconModel;
 }
 
-static CUSTOM_CATEGORY_CONFIG_PC CustomiserSetDataPrivatePc[9] = {
+static CUSTOM_CATEGORY_CONFIG_PC CustomiserSetDataPrivate[9] = {
     {"hat_hair",    1, -1, {1, 0}, "chars\\weirdo\\all\\hat_hair_all.gsc"},
     {"head",        1, -1, {0, 0}, "chars\\weirdo\\all\\head_all.gsc"    },
     {NULL,          0, -1, {0, 0}, NULL                                  },
@@ -740,10 +740,9 @@ static CUSTOM_CATEGORY_CONFIG_PC CustomiserSetDataPrivatePc[9] = {
     {"leg",         0, 5,  {2, 0}, NULL                                  }
 };
 
-CUSTOMISER_LAYERS_PC *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR *buffer_end, i32 first_character, i32 second_character,
-                                           i32 (*available)(CUSTOMPIECE_LAYERS_PC *),
-                                           void (*configure_piece)(CUSTOMPIECE_LAYERS_PC *, NUFPAR_PC *), i32 (*weapon_from_name)(char *),
-                                           void *save_input, i16 *animations) {
+CUSTOMISER_LAYERS *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR *buffer_end, i32 first_character, i32 second_character,
+                                        i32 (*available)(CUSTOMPIECE_LAYERS *), void (*configure_piece)(CUSTOMPIECE_LAYERS *, NUFPAR_PC *),
+                                        i32 (*weapon_from_name)(char *), void *save_input, i16 *animations) {
     NUFPAR_PC *parser;
     CUSTOMISER_CONFIG_PC *customiser;
     CUSTOM_SAVE_CONFIG_PC *save = save_input;
@@ -785,7 +784,7 @@ CUSTOMISER_LAYERS_PC *Customiser_Configure(char *filename, VARIPTR *buffer, VARI
         if (NuFParGetWord(parser) == 0) {
             break;
         }
-        category = CustomiserFindSetFromNamePrivatePc(parser->word_buffer_ptr);
+        category = CustomiserFindSetFromNamePrivate(parser->word_buffer_ptr);
         if (category != -1 && NuFParGetWord(parser) != 0) {
             CUSTOM_PIECE_CONFIG_PC *piece;
             piece = &pieces[count];
@@ -805,7 +804,7 @@ CUSTOMISER_LAYERS_PC *Customiser_Configure(char *filename, VARIPTR *buffer, VARI
             NuStrCpy(names, parser->word_buffer_ptr);
             names += NuStrLen(parser->word_buffer_ptr) + 1;
             NuStrLen(parser->word_buffer_ptr);
-            if (CustomiserSetDataPrivatePc[category].name == NULL && weapon_from_name != NULL) {
+            if (CustomiserSetDataPrivate[category].name == NULL && weapon_from_name != NULL) {
                 piece->weapon_model = weapon_from_name(piece->name);
             }
             while (NuFParGetWord(parser) != 0) {
@@ -854,13 +853,13 @@ CUSTOMISER_LAYERS_PC *Customiser_Configure(char *filename, VARIPTR *buffer, VARI
                         }
                     }
                 } else if (configure_piece != NULL) {
-                    configure_piece((CUSTOMPIECE_LAYERS_PC *)piece, parser);
+                    configure_piece((CUSTOMPIECE_LAYERS *)piece, parser);
                 }
             }
             ++count;
         } else if (NuStrICmp(parser->word_buffer_ptr, "locator") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                category = CustomiserFindSetFromNamePrivatePc(parser->word_buffer_ptr);
+                category = CustomiserFindSetFromNamePrivate(parser->word_buffer_ptr);
                 if (category != -1) {
                     locators[category] = NuFParGetInt(parser);
                     if (locators[category] < 0 || locators[category] >= 16) {
@@ -878,7 +877,7 @@ CUSTOMISER_LAYERS_PC *Customiser_Configure(char *filename, VARIPTR *buffer, VARI
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "layer") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                category = CustomiserFindSetFromNamePrivatePc(parser->word_buffer_ptr);
+                category = CustomiserFindSetFromNamePrivate(parser->word_buffer_ptr);
                 if (category != -1) {
                     layers[category] = NuFParGetInt(parser);
                     if (layers[category] < 0 || layers[category] >= 32) {
@@ -896,12 +895,12 @@ CUSTOMISER_LAYERS_PC *Customiser_Configure(char *filename, VARIPTR *buffer, VARI
         buffer->addr = (buffer->addr + sizeof(*customiser) + 3) & ~3u;
         customiser->character_ids[0] = first_character;
         customiser->character_ids[1] = second_character;
-        customiser->piece_available = available != NULL ? available : CustomiserPieceAvailableDefaultPrivatePc;
+        customiser->piece_available = available != NULL ? available : CustomiserPieceAvailableDefaultPrivate;
         customiser->save = save;
         customiser->animation_ids_to_load = (u16 *)animations;
         for (category = 0; category < 9; ++category) {
             CUSTOM_PIECE_CONFIG_PC *output;
-            customiser->categories[category] = &CustomiserSetDataPrivatePc[category];
+            customiser->categories[category] = &CustomiserSetDataPrivate[category];
             customiser->piece_sets[category] = buffer->void_ptr;
             customiser->piece_counts[category] = 0;
             customiser->locator_indices[category] = locators[category];
@@ -941,9 +940,9 @@ CUSTOMISER_LAYERS_PC *Customiser_Configure(char *filename, VARIPTR *buffer, VARI
                 }
             }
         }
-        Customiser_CopyDefaultPiecesToSave((CUSTOMISER_LAYERS_PC *)customiser, NULL);
+        Customiser_CopyDefaultPiecesToSave((CUSTOMISER_LAYERS *)customiser, NULL);
         Game_Customiser = customiser;
-        return (CUSTOMISER_LAYERS_PC *)customiser;
+        return (CUSTOMISER_LAYERS *)customiser;
     }
     return NULL;
 }

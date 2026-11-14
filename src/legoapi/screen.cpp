@@ -33,9 +33,9 @@ extern "C" NUMTL *FadeMtl;
 extern "C" NUMTL *FadeMtl2;
 extern "C" NUMTL *ScreenFadeMtl;
 extern "C" {
-    extern void (*RenderBackdropAlphaFnPc)(f32 *);
+    extern void (*RenderBackdropAlphaFn)(f32 *);
 }
-extern "C" GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsFrameRenderTexturePc(i32);
+extern "C" GRAPHICS_RENDER_TEXTURE *PCGraphicsFrameRenderTexture(i32);
 
 typedef struct CUT_DISPLAY_VIEW { // size 0xec
     u8 unknown_00[0x6c];          // 0x00
@@ -44,7 +44,7 @@ typedef struct CUT_DISPLAY_VIEW { // size 0xec
     u16 camera_far_clip;          // 0xe8
 } CUT_DISPLAY_VIEW;
 
-extern "C" f32 CutSceneCameraFocalLengthPc;
+extern "C" f32 CutSceneCameraFocalLength;
 
 typedef struct CUT_BORDER_RECORD { // size 0x54
     u8 unknown_00[0x50];           // 0x00
@@ -58,11 +58,11 @@ extern "C" {
 extern "C" u8 ScreenGrabNeeded;
 extern "C" f32 pause_fade;
 extern "C" NUVPCURRENT *NuVpGetCurrentViewport(void);
-extern "C" i32 ScreenStillXPc;
-extern "C" i32 ScreenStillYPc;
-extern "C" i32 ScreenStillWidthPc;
-extern "C" i32 ScreenStillHeightPc;
-extern "C" f32 ScreenPauseFadeSpeedPc;
+extern "C" i32 ScreenStillX;
+extern "C" i32 ScreenStillY;
+extern "C" i32 ScreenStillWidth;
+extern "C" i32 ScreenStillHeight;
+extern "C" f32 ScreenPauseFadeSpeed;
 
 extern "C" {
 
@@ -130,76 +130,76 @@ extern "C" void CreateFadeMaterials(void) {
 }
 
 extern "C" {
-    static f32 RenderBackdropTargetTopRPc = 0.0f;
-    static f32 RenderBackdropTargetTopGPc = 0.0f;
-    static f32 RenderBackdropTargetTopBPc = 0.0f;
-    static f32 RenderBackdropTargetBottomRPc = 0.0f;
-    static f32 RenderBackdropTargetBottomGPc = 0.0f;
-    static f32 RenderBackdropTargetBottomBPc = 24.0f;
+    static f32 RenderBackdropTargetTopR = 0.0f;
+    static f32 RenderBackdropTargetTopG = 0.0f;
+    static f32 RenderBackdropTargetTopB = 0.0f;
+    static f32 RenderBackdropTargetBottomR = 0.0f;
+    static f32 RenderBackdropTargetBottomG = 0.0f;
+    static f32 RenderBackdropTargetBottomB = 24.0f;
 
     void BackDrop_ClearColourTargets(void) {
-        RenderBackdropTargetTopRPc = 0.0f;
-        RenderBackdropTargetTopGPc = 0.0f;
-        RenderBackdropTargetTopBPc = 0.0f;
-        RenderBackdropTargetBottomRPc = 0.0f;
-        RenderBackdropTargetBottomGPc = 0.0f;
-        RenderBackdropTargetBottomBPc = 0.0f;
+        RenderBackdropTargetTopR = 0.0f;
+        RenderBackdropTargetTopG = 0.0f;
+        RenderBackdropTargetTopB = 0.0f;
+        RenderBackdropTargetBottomR = 0.0f;
+        RenderBackdropTargetBottomG = 0.0f;
+        RenderBackdropTargetBottomB = 0.0f;
     }
 
-    static f32 RenderBackdropWaitPc = 0.0f;
+    static f32 RenderBackdropWait = 0.0f;
 
     void BackDrop_ResetColours(void) {
-        RenderBackdropTopRPc = 0.0f;
-        RenderBackdropTopGPc = 0.0f;
-        RenderBackdropTopBPc = 0.0f;
-        RenderBackdropBottomRPc = 0.0f;
-        RenderBackdropBottomGPc = 0.0f;
-        RenderBackdropBottomBPc = 0.0f;
-        RenderBackdropWaitPc = 0.0001f;
+        RenderBackdropTopR = 0.0f;
+        RenderBackdropTopG = 0.0f;
+        RenderBackdropTopB = 0.0f;
+        RenderBackdropBottomR = 0.0f;
+        RenderBackdropBottomG = 0.0f;
+        RenderBackdropBottomB = 0.0f;
+        RenderBackdropWait = 0.0001f;
         BackDrop_ClearColourTargets();
     }
 
     void BackDrop_UpdateColours(i32 instant) {
-        if (RenderBackdropBlackPc) {
-            RenderBackdropTopRPc = 0.0f;
-            RenderBackdropTopGPc = 0.0f;
-            RenderBackdropTopBPc = 0.0f;
-            RenderBackdropBottomRPc = 0.0f;
-            RenderBackdropBottomGPc = 0.0f;
-            RenderBackdropBottomBPc = 0.0f;
+        if (RenderBackdropBlack) {
+            RenderBackdropTopR = 0.0f;
+            RenderBackdropTopG = 0.0f;
+            RenderBackdropTopB = 0.0f;
+            RenderBackdropBottomR = 0.0f;
+            RenderBackdropBottomG = 0.0f;
+            RenderBackdropBottomB = 0.0f;
             return;
         }
-        if (RenderBackdropWaitPc > 0.0f) {
-            RenderBackdropWaitPc -= FRAMETIME;
-            if (!(RenderBackdropWaitPc <= 0.0f)) {
+        if (RenderBackdropWait > 0.0f) {
+            RenderBackdropWait -= FRAMETIME;
+            if (!(RenderBackdropWait <= 0.0f)) {
                 return;
             }
             if (instant) {
-                RenderBackdropTargetTopBPc = 0.0f;
-                RenderBackdropTargetTopGPc = 0.0f;
-                RenderBackdropTargetTopRPc = 0.0f;
-                RenderBackdropTargetBottomBPc = 0.0f;
-                RenderBackdropTargetBottomGPc = 0.0f;
-                RenderBackdropTargetBottomRPc = 0.0f;
+                RenderBackdropTargetTopB = 0.0f;
+                RenderBackdropTargetTopG = 0.0f;
+                RenderBackdropTargetTopR = 0.0f;
+                RenderBackdropTargetBottomB = 0.0f;
+                RenderBackdropTargetBottomG = 0.0f;
+                RenderBackdropTargetBottomR = 0.0f;
             } else {
                 BackDrop_ClearColourTargets();
             }
             return;
         }
-        if (RenderBackdropTopRPc == RenderBackdropTargetTopRPc && RenderBackdropTopGPc == RenderBackdropTargetTopGPc &&
-            RenderBackdropTopBPc == RenderBackdropTargetTopBPc && RenderBackdropBottomRPc == RenderBackdropTargetBottomRPc &&
-            RenderBackdropBottomGPc == RenderBackdropTargetBottomGPc && RenderBackdropBottomBPc == RenderBackdropTargetBottomBPc) {
-            RenderBackdropWaitPc = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.5 + 2.5);
+        if (RenderBackdropTopR == RenderBackdropTargetTopR && RenderBackdropTopG == RenderBackdropTargetTopG &&
+            RenderBackdropTopB == RenderBackdropTargetTopB && RenderBackdropBottomR == RenderBackdropTargetBottomR &&
+            RenderBackdropBottomG == RenderBackdropTargetBottomG && RenderBackdropBottomB == RenderBackdropTargetBottomB) {
+            RenderBackdropWait = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.5 + 2.5);
             return;
         }
         {
             f32 step = (f32)(FRAMETIME * 10.0);
-            RenderBackdropTopRPc = SeekLinearF(RenderBackdropTopRPc, RenderBackdropTargetTopRPc, step);
-            RenderBackdropTopGPc = SeekLinearF(RenderBackdropTopGPc, RenderBackdropTargetTopGPc, step);
-            RenderBackdropTopBPc = SeekLinearF(RenderBackdropTopBPc, RenderBackdropTargetTopBPc, step);
-            RenderBackdropBottomRPc = SeekLinearF(RenderBackdropBottomRPc, RenderBackdropTargetBottomRPc, step);
-            RenderBackdropBottomGPc = SeekLinearF(RenderBackdropBottomGPc, RenderBackdropTargetBottomGPc, step);
-            RenderBackdropBottomBPc = SeekLinearF(RenderBackdropBottomBPc, RenderBackdropTargetBottomBPc, step);
+            RenderBackdropTopR = SeekLinearF(RenderBackdropTopR, RenderBackdropTargetTopR, step);
+            RenderBackdropTopG = SeekLinearF(RenderBackdropTopG, RenderBackdropTargetTopG, step);
+            RenderBackdropTopB = SeekLinearF(RenderBackdropTopB, RenderBackdropTargetTopB, step);
+            RenderBackdropBottomR = SeekLinearF(RenderBackdropBottomR, RenderBackdropTargetBottomR, step);
+            RenderBackdropBottomG = SeekLinearF(RenderBackdropBottomG, RenderBackdropTargetBottomG, step);
+            RenderBackdropBottomB = SeekLinearF(RenderBackdropBottomB, RenderBackdropTargetBottomB, step);
         }
     }
 
@@ -209,14 +209,14 @@ extern "C" {
             scene = NuGScnRead(buffer, *end, path);
             backdrop_scene = scene;
         }
-        memset(RenderBackdropSpecialsPc, 0, sizeof(RenderBackdropSpecialsPc));
+        memset(RenderBackdropSpecials, 0, sizeof(RenderBackdropSpecials));
         if (scene == NULL) {
             return;
         }
-        NuSpecialFind(backdrop_scene, &RenderBackdropSpecialsPc[0], "ball1", 1);
-        NuSpecialFind(backdrop_scene, &RenderBackdropSpecialsPc[1], "ball2", 1);
-        NuSpecialFind(backdrop_scene, &RenderBackdropSpecialsPc[2], "ball3", 1);
-        NuSpecialFind(backdrop_scene, &RenderBackdropSpecialsPc[3], "ball4", 1);
+        NuSpecialFind(backdrop_scene, &RenderBackdropSpecials[0], "ball1", 1);
+        NuSpecialFind(backdrop_scene, &RenderBackdropSpecials[1], "ball2", 1);
+        NuSpecialFind(backdrop_scene, &RenderBackdropSpecials[2], "ball3", 1);
+        NuSpecialFind(backdrop_scene, &RenderBackdropSpecials[3], "ball4", 1);
     }
 
     void BackDrop_Update(f32 dt) {
@@ -230,14 +230,14 @@ extern "C" {
         if (backdrop_scene == NULL) {
             return;
         }
-        if (flags == 0 && RenderBackdropAlphaFnPc != NULL) {
-            RenderBackdropAlphaFnPc(&alpha);
+        if (flags == 0 && RenderBackdropAlphaFn != NULL) {
+            RenderBackdropAlphaFn(&alpha);
         }
         if (!(alpha > 0.0f)) {
             return;
         }
         for (special_index = 0; special_index < 4; ++special_index) {
-            NUSPECIALHANDLE *special = &RenderBackdropSpecialsPc[special_index];
+            NUSPECIALHANDLE *special = &RenderBackdropSpecials[special_index];
             if (NuSpecialExistsFn(special) != 0) {
                 NUMTX matrix = *NuSpecialGetDrawMtx(special);
                 NUVEC position;
@@ -266,7 +266,7 @@ extern "C" {
     void DrawParallax(NUSPECIALHANDLE *special) {
         NUVEC scale;
         NUMTX matrix;
-        scale.x = scale.y = scale.z = (f32)((f64)pNuCam->far_clip * TerrainScanMargin10Pc * 0.5);
+        scale.x = scale.y = scale.z = (f32)((f64)pNuCam->far_clip * TerrainScanMargin10 * 0.5);
         NuMtxSetScale(&matrix, &scale);
         matrix.m30 = pNuCam->mtx.m30;
         matrix.m31 = pNuCam->mtx.m31;
@@ -286,7 +286,7 @@ extern "C" {
         GameFogTime = 0.0f;
     }
 
-    static f32 GameFogDefaultFStopPc = 22.0f;
+    static f32 GameFogDefaultFStop = 22.0f;
     static GAMEFOG_STATE_PC GameFogNew = {{0}};
     static f32 dof_fstop = 0;
 
@@ -295,7 +295,7 @@ extern "C" {
         RTL_FOG_MIGRATION_PC *fog;
         f32 blend;
         if (world->rtl_set != NULL && !(CUTSTOPGAME != 0 && CutStopInfo != NULL && (((CUTINFO *)CutStopInfo)->flags & 4) != 0)) {
-            fog = rtlGetFogSet((RTL_SET_PC *)world->rtl_set, &pNuCam->mtx.translation);
+            fog = rtlGetFogSet((RTL_SET *)world->rtl_set, &pNuCam->mtx.translation);
         } else {
             fog = NULL;
         }
@@ -333,10 +333,10 @@ extern "C" {
         if (fog != NULL) {
             dof_fstop = (f32)((f64)fog->depth_of_field_fstop / 10.0);
             if (dof_fstop == 0.0f) {
-                dof_fstop = GameFogDefaultFStopPc;
+                dof_fstop = GameFogDefaultFStop;
             }
         } else {
-            dof_fstop = GameFogDefaultFStopPc;
+            dof_fstop = GameFogDefaultFStop;
         }
         if (GameFogSnap != 0) {
             GameFog = GameFogNew;
@@ -420,15 +420,15 @@ extern "C" void GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
         return;
     }
     BackDrop_UpdateColours(0);
-    top_r = (i32)RenderBackdropTopRPc;
-    top_g = (i32)RenderBackdropTopGPc;
-    top_b = (i32)RenderBackdropTopBPc;
-    bottom_r = (i32)RenderBackdropBottomRPc;
-    bottom_g = (i32)RenderBackdropBottomGPc;
-    bottom_b = (i32)RenderBackdropBottomBPc;
+    top_r = (i32)RenderBackdropTopR;
+    top_g = (i32)RenderBackdropTopG;
+    top_b = (i32)RenderBackdropTopB;
+    bottom_r = (i32)RenderBackdropBottomR;
+    bottom_g = (i32)RenderBackdropBottomG;
+    bottom_b = (i32)RenderBackdropBottomB;
     alpha = 1.0f;
-    if (RenderBackdropAlphaFnPc != NULL) {
-        RenderBackdropAlphaFnPc(&alpha);
+    if (RenderBackdropAlphaFn != NULL) {
+        RenderBackdropAlphaFn(&alpha);
         if (alpha != 1.0f) {
             top_r = (i32)(top_r * alpha);
             top_g = (i32)(top_g * alpha);
@@ -451,20 +451,20 @@ extern "C" void WidescreenCode(i32 widescreen) {
         pNuCam->aspect = aspect;
         if (!CutSceneCameraCTRL) {
             pNuCam->fov = (f32)((aspect + 0.75) * 0.5);
-        } else if (CutSceneCameraFocalLengthPc == 0.0f) {
+        } else if (CutSceneCameraFocalLength == 0.0f) {
             pNuCam->fov = aspect;
         } else {
-            pNuCam->fov = (f32)(NuCameraFocalLenToFOV(CutSceneCameraFocalLengthPc) * (aspect / 0.75));
+            pNuCam->fov = (f32)(NuCameraFocalLenToFOV(CutSceneCameraFocalLength) * (aspect / 0.75));
         }
         SmartTextSetWidescreen(0.75f, 1.0f);
     } else {
         pNuCam->aspect = 0.75f;
         if (!CutSceneCameraCTRL) {
             pNuCam->fov = 0.75f;
-        } else if (CutSceneCameraFocalLengthPc == 0.0f) {
+        } else if (CutSceneCameraFocalLength == 0.0f) {
             pNuCam->fov = 0.75f;
         } else {
-            pNuCam->fov = NuCameraFocalLenToFOV(CutSceneCameraFocalLengthPc);
+            pNuCam->fov = NuCameraFocalLenToFOV(CutSceneCameraFocalLength);
         }
         SmartTextSetWidescreen(1.0f, 1.0f);
     }
@@ -554,8 +554,8 @@ extern "C" void InitStillRender(VARIPTR *buffer, VARIPTR end) {
 }
 
 /* Resizes the pause-screen still to a new backbuffer size after a D3D reset. */
-extern "C" void ResizeStillRenderPc(i32 width, i32 height) {
-    GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsFrameRenderTexturePc(pause_rt);
+extern "C" void ResizeStillRender(i32 width, i32 height) {
+    GRAPHICS_RENDER_TEXTURE *texture = PCGraphicsFrameRenderTexture(pause_rt);
     PCGraphicsResizeEffectTexture(texture, width, height, -1);
 }
 
@@ -657,10 +657,10 @@ extern "C" void DrawStillScreen(i32 clear) {
     if (MainRenderTime < 1.0f) {
         const i32 colour = (((i32)(MainRenderTime * 128.0f)) << 24) | 0x00808080;
         u32 colours[4] = {colour, colour, colour, colour};
-        NuRndrGradRectUV2di(ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc, 0.0f, 0.0f, 1.0f, 1.0f, colours,
+        NuRndrGradRectUV2di(ScreenStillX, ScreenStillY, ScreenStillWidth, ScreenStillHeight, 0.0f, 0.0f, 1.0f, 1.0f, colours,
                             (NUMTL *)pause_rndr_mtl);
     } else {
-        NuRndrRectUV2di(ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc, 0.0f, 0.0f, 1.0f, 1.0f, 0x80808080u,
+        NuRndrRectUV2di(ScreenStillX, ScreenStillY, ScreenStillWidth, ScreenStillHeight, 0.0f, 0.0f, 1.0f, 1.0f, 0x80808080u,
                         (NUMTL *)pause_rndr_mtl);
     }
     NuRndrEndScene();
@@ -671,9 +671,9 @@ extern "C" void DrawPauseFade(void) {
         return;
     }
     if (Paused == 0 && NetPaused == 0) {
-        pause_fade = MAX(pause_fade - FRAMETIME * ScreenPauseFadeSpeedPc, 0.0f);
+        pause_fade = MAX(pause_fade - FRAMETIME * ScreenPauseFadeSpeed, 0.0f);
     } else {
-        pause_fade = MIN(FRAMETIME * ScreenPauseFadeSpeedPc + pause_fade, 1.0f);
+        pause_fade = MIN(FRAMETIME * ScreenPauseFadeSpeed + pause_fade, 1.0f);
     }
 }
 

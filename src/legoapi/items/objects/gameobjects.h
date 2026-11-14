@@ -29,7 +29,7 @@ extern "C" {
     GAMEOBJECT *FindGameObject(i32, u32, i32, i32, i32);
     void ScaleGameObject(GAMEOBJECT *);
     void GetTopBot(GAMEOBJECT *);
-    void SnapCreaturePos(GAMEOBJECT *, NUVEC *, i32, AIPATHINFO_PC *, i32);
+    void SnapCreaturePos(GAMEOBJECT *, NUVEC *, i32, AIPATHINFO *, i32);
     void GameObjectOrigin(GAMEOBJECT *);
     extern i32 timebase_updates;
     extern i32 addcreature_override_id_check;

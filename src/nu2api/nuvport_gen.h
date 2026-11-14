@@ -13,8 +13,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuRndrSetBurnoutParametersPc(i32, const BURN_PARAMETERS_PC *);
-    void NuRndrSetShadowCoefficientPc(i32, f32);
+    void NuRndrSetBurnoutParameters(i32, const BURN_PARAMETERS *);
+    void NuRndrSetShadowCoefficient(i32, f32);
 #ifdef __cplusplus
 }
 #endif

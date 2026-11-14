@@ -80,8 +80,8 @@ void SetLevelSfxBits(WORLDINFO *world) {
     LEVELDATA_PC *level;
     i16 model_id;
     CHARACTERDATA_PC *character;
-    PLAYERCHARACTERCONFIG_PC *game_character;
-    CHARACTER_EFFECT_CONFIG_PC *effect;
+    PLAYERCHARACTERCONFIG *game_character;
+    CHARACTER_EFFECT_CONFIG *effect;
     i32 double_score_sfx;
     i32 sfx_ids[1024];
     i32 sfx_count = 0;
@@ -522,7 +522,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("veh_tie_by");
             ADD_SFX("Tie_Spins");
         }
-        if (character_id == VehicleBoltId7f1924Pc || character_id == VehicleBoltId7f1928Pc) {
+        if (character_id == VehicleBoltId7f1924 || character_id == VehicleBoltId7f1928) {
             ADD_SFX("wpn_bomb_drop");
             ADD_SFX("exp_bomb");
         }

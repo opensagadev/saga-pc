@@ -22,18 +22,18 @@
 
 #if SAGA_LEGOAPI_CHARACTERS_CORE_CUSTOMISER_H_PART == 1 && !defined(SAGA_LEGOAPI_CHARACTERS_CORE_CUSTOMISER_H_STOP)
 
-struct CHARACTER_MODEL_LAYERS_PC;
-struct CUSTOMISER_LAYERS_PC;
+struct CHARACTER_MODEL_LAYERS;
+struct CUSTOMISER_LAYERS;
 struct WORLDINFO_s;
 struct apicharactermodellist_s;
 struct gameobject_s;
-struct nufpar_pc_s;
+struct nufpar_s;
 
-typedef struct CUSTOMPIECE_LAYERS_PC { // size 0x28
-    u8 unknown_00[0x12];               // 0x00
-    u8 layer_flags;                    // 0x12
-    u8 unknown_13[0x15];               // 0x13
-} CUSTOMPIECE_LAYERS_PC;
+typedef struct CUSTOMPIECE_LAYERS { // size 0x28
+    u8 unknown_00[0x12];            // 0x00
+    u8 layer_flags;                 // 0x12
+    u8 unknown_13[0x15];            // 0x13
+} CUSTOMPIECE_LAYERS;
 
 #ifdef __cplusplus
 extern "C" {
@@ -55,18 +55,18 @@ extern "C" {
 
 #if SAGA_LEGOAPI_CHARACTERS_CORE_CUSTOMISER_H_PART == 2 && !defined(SAGA_LEGOAPI_CHARACTERS_CORE_CUSTOMISER_H_STOP)
 
-typedef struct KILLPARTS_ACCESSORY_PC { // size 0x20
-    void *scene;                        // 0x00
-    NUSPECIALHANDLE special;            // 0x04
-    u8 unknown_10[0x10];                // 0x10
-} KILLPARTS_ACCESSORY_PC;
+typedef struct KILLPARTS_ACCESSORY { // size 0x20
+    void *scene;                     // 0x00
+    NUSPECIALHANDLE special;         // 0x04
+    u8 unknown_10[0x10];             // 0x10
+} KILLPARTS_ACCESSORY;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern KILLPARTS_ACCESSORY_PC KillPartsAccessoriesPc[2][9];
+    extern KILLPARTS_ACCESSORY KillPartsAccessories[2][9];
     void Customiser_DumpAll(void *, struct WORLDINFO_s *);
-    void Customiser_SaveModelTextureIDs(void *customiser, struct CHARACTER_MODEL_LAYERS_PC *model);
+    void Customiser_SaveModelTextureIDs(void *customiser, struct CHARACTER_MODEL_LAYERS *model);
 #ifdef __cplusplus
 }
 #endif
@@ -82,22 +82,21 @@ extern "C" {
 extern "C" {
 #endif
 
-    void Customiser_SetAnimsToLoad(struct CUSTOMISER_LAYERS_PC *, i32);
-    void Customiser_ResetModelTextureIDs(struct CUSTOMISER_LAYERS_PC *);
+    void Customiser_SetAnimsToLoad(struct CUSTOMISER_LAYERS *, i32);
+    void Customiser_ResetModelTextureIDs(struct CUSTOMISER_LAYERS *);
 
-    void Customiser_InitNames(struct CUSTOMISER_LAYERS_PC *);
-    void Customiser_AddPartAccessories(struct CUSTOMISER_LAYERS_PC *, struct gameobject_s *, i32, i32, f32);
+    void Customiser_InitNames(struct CUSTOMISER_LAYERS *);
+    void Customiser_AddPartAccessories(struct CUSTOMISER_LAYERS *, struct gameobject_s *, i32, i32, f32);
 
-    struct CUSTOMISER_LAYERS_PC *Customiser_Configure(char *, VARIPTR *, VARIPTR *, i32, i32, i32 (*)(CUSTOMPIECE_LAYERS_PC *),
-                                                      void (*)(CUSTOMPIECE_LAYERS_PC *, struct nufpar_pc_s *), i32 (*)(char *), void *,
-                                                      i16 *);
-    void Customiser_CopyDefaultPiecesToSave(struct CUSTOMISER_LAYERS_PC *, void *);
-    void Customiser_LoadAccessories(struct CUSTOMISER_LAYERS_PC *, struct apicharactermodellist_s *);
-    void Customiser_Set100PercentPieces(struct CUSTOMISER_LAYERS_PC *);
-    CUSTOMPIECE_LAYERS_PC *Customiser_FindPieceByName(struct CUSTOMISER_LAYERS_PC *, char *, i32 *, i32 *);
-    void Customiser_LoadAll(struct CUSTOMISER_LAYERS_PC *, struct WORLDINFO_s *);
-    void Customiser_TransformToPanel(struct CUSTOMISER_LAYERS_PC *);
-    i32 Customiser_NextPieceLeft(struct CUSTOMISER_LAYERS_PC *, i32, i32, i32, i32);
+    struct CUSTOMISER_LAYERS *Customiser_Configure(char *, VARIPTR *, VARIPTR *, i32, i32, i32 (*)(CUSTOMPIECE_LAYERS *),
+                                                   void (*)(CUSTOMPIECE_LAYERS *, struct nufpar_s *), i32 (*)(char *), void *, i16 *);
+    void Customiser_CopyDefaultPiecesToSave(struct CUSTOMISER_LAYERS *, void *);
+    void Customiser_LoadAccessories(struct CUSTOMISER_LAYERS *, struct apicharactermodellist_s *);
+    void Customiser_Set100PercentPieces(struct CUSTOMISER_LAYERS *);
+    CUSTOMPIECE_LAYERS *Customiser_FindPieceByName(struct CUSTOMISER_LAYERS *, char *, i32 *, i32 *);
+    void Customiser_LoadAll(struct CUSTOMISER_LAYERS *, struct WORLDINFO_s *);
+    void Customiser_TransformToPanel(struct CUSTOMISER_LAYERS *);
+    i32 Customiser_NextPieceLeft(struct CUSTOMISER_LAYERS *, i32, i32, i32, i32);
 #ifdef __cplusplus
 }
 #endif

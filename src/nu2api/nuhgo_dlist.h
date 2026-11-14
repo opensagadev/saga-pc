@@ -14,26 +14,26 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsCreateColourTarget(i32, i32);
-    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsCreateColourTargetFormat(i32, i32, i32);
+    GRAPHICS_RENDER_TEXTURE *PCGraphicsCreateColourTarget(i32, i32);
+    GRAPHICS_RENDER_TEXTURE *PCGraphicsCreateColourTargetFormat(i32, i32, i32);
     void PCGraphicsInitRenderTexturePool(VARIPTR *buffer, VARIPTR end);
-    void NuRndrGeometryBuffersInitPc(void);
-    void NuRndrBufferDescriptorsInitPc(VARIPTR *, VARIPTR);
+    void NuRndrGeometryBuffersInit(void);
+    void NuRndrBufferDescriptorsInit(VARIPTR *, VARIPTR);
 
-    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsCreateEffectTexture(i32, i32, i32, i32, i32);
+    GRAPHICS_RENDER_TEXTURE *PCGraphicsCreateEffectTexture(i32, i32, i32, i32, i32);
 #ifdef __cplusplus
 }
 #endif
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define PcBootSecondaryFramebuffer (PcBootFramebuffersPc.fields.secondary_framebuffer)
+#define PcBootSecondaryFramebuffer (PcBootFramebuffers.fields.secondary_framebuffer)
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUVEC4 NuDisplayHandlerTintPc;
-    extern i32 NuDisplayHandlerReflectionPc;
+    extern NUVEC4 NuDisplayHandlerTint;
+    extern i32 NuDisplayHandlerReflection;
 
-    extern f32 NuDisplayHandlerOpacityPc;
-    extern i32 NuDisplayHandlerZModePc;
+    extern f32 NuDisplayHandlerOpacity;
+    extern i32 NuDisplayHandlerZMode;
     extern i32 PCGraphicsFrameState;
 #ifdef __cplusplus
 }
@@ -42,8 +42,8 @@ struct PC_DL_SHADER_PROGRAM_PAIR_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void *NuDisplayMaterialLastPc;
-    extern NUVEC4 NuDisplayHandlerDefaultTintPc;
+    extern void *NuDisplayMaterialLast;
+    extern NUVEC4 NuDisplayHandlerDefaultTint;
 #ifdef __cplusplus
 }
 #endif

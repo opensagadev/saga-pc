@@ -23,7 +23,7 @@ extern "C" {
     void NuRndrParticleSetRepeat(NUVEC *);
     void BuildDebrisVerts(DEBRIS_PART_HEADER_PC *, DEBRIS_PARTICLE_CHUNK_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32);
     void NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *, DEBRIS_PART_HEADER_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32);
-    void AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET_PC *);
+    void AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET *);
 
     void GenericDebinfoDmaTypeUpdate(DEBRIS_INFO_PC *effect);
     DEBRIS_PARTICLE_CHUNK_PC *CreateDmaParticleSet(void *, i32 *);

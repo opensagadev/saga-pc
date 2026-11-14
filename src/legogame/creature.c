@@ -182,7 +182,7 @@ typedef struct moveplayer_pad_bits_pc_s {
     u16 high : 12;
 } MOVEPLAYER_PAD_BITS_PC;
 
-static __inline f32 PlayersFabsPc(f32 value) {
+static __inline f32 PlayersFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
@@ -202,9 +202,9 @@ typedef struct CHARACTER_IDLE_POLICY {
 } CHARACTER_IDLE_POLICY;
 
 f32 animduration_blendouttime;
-i32 CharacterLoadAreaModelsPc;
+i32 CharacterLoadAreaModels;
 i16 CharacterFixupIdPc007f18c4;
-i32 AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id);
+i32 AnimPacketModelsCompatible(ANIMPACKET_PC *packet, i32 source_id, i32 target_id);
 
 typedef struct SPECIAL_LAYER_PC_s {
     i16 *character_id;
@@ -259,7 +259,7 @@ typedef struct PLAYER_ROUTE_MASK_WORDS {
     u32 high;
 } PLAYER_ROUTE_MASK_WORDS;
 
-extern u64 CharacterMaskAllPc;
+extern u64 CharacterMaskAll;
 extern i32 complexsockposition_forcesock;
 
 typedef struct CREATURE_RESET_PACKET_VIEW {
@@ -295,8 +295,8 @@ typedef struct draw_objects_flags_s {
     u32 locators_updated : 1;
 } DRAW_OBJECTS_FLAGS_PC;
 
-extern f32 DrawGameObjectsFarClipPc;
-extern f32 DrawGameObjectsVehicleFarClipPc;
+extern f32 DrawGameObjectsFarClip;
+extern f32 DrawGameObjectsVehicleFarClip;
 
 typedef struct new_player_flags_s {
     u8 unknown_000[0xef0];
@@ -348,9 +348,9 @@ typedef struct CHARACTER_DRAW_HIERARCHY {
     u8 suppress_shadow_surface_points;
 } CHARACTER_DRAW_HIERARCHY;
 
-extern i32 GameKeepMergeActionPc;
-extern i32 CharacterBlobShadowsOnPc;
-extern i32 GameDrawCharacterModelFlagPc;
+extern i32 GameKeepMergeAction;
+extern i32 CharacterBlobShadowsOn;
+extern i32 GameDrawCharacterModelFlag;
 
 typedef struct DRAW_PREPASS_TELEPORT {
     u8 unknown_00[0x4c];
@@ -375,14 +375,14 @@ typedef struct draw_process_flags_s {
     u32 previous_model_draw_result : 1;
 } DRAW_PROCESS_FLAGS_PC;
 
-extern i32 DrawParaphernaliaEnabledPc;
+extern i32 DrawParaphernaliaEnabled;
 extern i16 CharacterFixupIdPc007f1820;
-void CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *, GAMEOBJECT *, NUMTX *);
+void CustomiserDrawAccessories(CUSTOMISER_LAYERS *, GAMEOBJECT *, NUMTX *);
 void Grapple_DrawLine(GAMEOBJECT *);
 void SuperCarry_DrawObject(GAMEOBJECT *);
 void DrawTorpedos(GAMEOBJECT *);
 void GizDrawBuildItPiece(GAMEOBJECT *, i32);
-void TransformDrawTargetPc(NUVEC *, f32, f32);
+void TransformDrawTarget(NUVEC *, f32, f32);
 
 typedef struct ai_creature_init_packet_s {
     u8 unknown_000[0xa0];
@@ -390,7 +390,7 @@ typedef struct ai_creature_init_packet_s {
     void *locator;
 } AI_CREATURE_INIT_PACKET_PC;
 
-static void GameDrawMtxCopyPc(NUMTX *destination, const NUMTX *source) {
+static void GameDrawMtxCopy(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
     destination->m02 = source->m02;
@@ -409,7 +409,7 @@ static void GameDrawMtxCopyPc(NUMTX *destination, const NUMTX *source) {
     destination->m33 = source->m33;
 }
 
-static void GameDrawMtxSetYRotationPc(NUMTX *matrix, NUANG angle) {
+static void GameDrawMtxSetYRotation(NUMTX *matrix, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     matrix->m00 = cosine;
@@ -430,7 +430,7 @@ static void GameDrawMtxSetYRotationPc(NUMTX *matrix, NUANG angle) {
     matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
 }
 
-static void GameDrawMtxRotateXPc(NUMTX *matrix, NUANG angle) {
+static void GameDrawMtxRotateX(NUMTX *matrix, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m01 = matrix->m01;
@@ -448,7 +448,7 @@ static void GameDrawMtxRotateXPc(NUMTX *matrix, NUANG angle) {
     matrix->m32 = (m31 * sine) + (matrix->m32 * cosine);
 }
 
-static void GameDrawMtxRotateYPc(NUMTX *matrix, NUANG angle) {
+static void GameDrawMtxRotateY(NUMTX *matrix, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m00 = matrix->m00;
@@ -466,7 +466,7 @@ static void GameDrawMtxRotateYPc(NUMTX *matrix, NUANG angle) {
     matrix->m32 = matrix->m32 * cosine - m30 * sine;
 }
 
-static void GameDrawMtxRotateZPc(NUMTX *matrix, NUANG angle) {
+static void GameDrawMtxRotateZ(NUMTX *matrix, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m00 = matrix->m00;
@@ -569,8 +569,8 @@ void ExtraCharacterFixUpAfterConfig(void) {
         CDataList[id_SPEEDERBIKE].move_fn = Move_SPEEDERBIKE;
         CDataList[id_SPEEDERBIKE].animate_fn = Animate_SPEEDERBIKE;
     }
-    if (VehicleBoltId7f18b4Pc != -1) {
-        CDataList[VehicleBoltId7f18b4Pc].animate_fn = Animate_DEFAULT;
+    if (VehicleBoltId7f18b4 != -1) {
+        CDataList[VehicleBoltId7f18b4].animate_fn = Animate_DEFAULT;
     }
     if (id_BODYGUARD != -1) {
         CDataList[id_BODYGUARD].move_fn = Move_JEDI;
@@ -611,7 +611,7 @@ void ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character) {
     packet->secondary_flags &= ~0x400u;
     packet->input_state = 0;
     packet->gamepad->operator_data = NULL;
-    CharShadows_Reset((CHARACTER_SHADOW_PACKET_PC *)packet);
+    CharShadows_Reset((CHARACTER_SHADOW_PACKET *)packet);
     for (i = 0; i < 8; ++i) {
         packet->field_614[i] = 0;
     }
@@ -668,7 +668,7 @@ void ResetPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.inside_path_node = -1;
     object->ai_packet.current_route = 0xff;
     object->ai_packet.next_route = 0;
-    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
+    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, 1);
 }
 
 void DeactivateGameObject(GAMEOBJECT *object) {
@@ -712,8 +712,8 @@ void SetGameObjectCharacterData(GAMEOBJECT *object) {
     ScaleGameObject(object);
 }
 
-// noinline: the original calls InitCreatureModelFlagsPc out of line from InitCreature; VC8 would inline it there.
-static __declspec(noinline) void InitCreatureModelFlagsPc(GAMEOBJECT *object) {
+// noinline: the original calls InitCreatureModelFlags out of line from InitCreature; VC8 would inline it there.
+static __declspec(noinline) void InitCreatureModelFlags(GAMEOBJECT *object) {
     if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
         object->flags_1f8 |= 0x20000;
     } else {
@@ -723,7 +723,7 @@ static __declspec(noinline) void InitCreatureModelFlagsPc(GAMEOBJECT *object) {
 
 /* Placed with the game object code; PlayersDropInOut calls it rather than
    inlining it, so the definition lives in its own unit. */
-void PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints) {
+void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints) {
     object->current_hp = hitpoints;
     if (hitpoints > object->field_107e) {
         object->current_hp = object->field_107e;
@@ -827,7 +827,7 @@ void StoreProgressAICharacter(LEVEL_PROGRESS *progress) {
 }
 
 void AICreatureResumeScript(GAMEOBJECT *object) {
-    AISCRIPT_PC *script = object->ai_packet.script_processor.base_script;
+    AISCRIPT *script = object->ai_packet.script_processor.base_script;
     if (script != NULL) {
         AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, NULL, NULL, NULL, 0, script,
                               script->base_state);
@@ -867,7 +867,7 @@ i32 GetDefaultIdle(GAMEOBJECT *object) {
 }
 
 void ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
-    CHARACTERANIM_CONFIG_PC *info;
+    CHARACTERANIM_CONFIG *info;
     i32 minimum;
     i32 maximum;
     if (animation == 0x97) {
@@ -909,7 +909,7 @@ static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
     i32 repetitions;
     i32 minimum;
     i32 maximum;
-    CHARACTERANIM_CONFIG_PC *info;
+    CHARACTERANIM_CONFIG *info;
     for (animation = 0; animation < 233; ++animation) {
         if (object->character_model->action_animations[animation] == NULL) {
             continue;
@@ -1008,33 +1008,33 @@ void UpdateCharacterIdle(GAMEOBJECT *object) {
     ResetCharacterIdle(object, 1, GetDefaultIdle(object));
 }
 
-static void GunshipKeepOnScreenPc(GAMEOBJECT *object) {
+static void GunshipKeepOnScreen(GAMEOBJECT *object) {
     f32 push_speed = (f32)((f64)object->character_data->game_character->run_speed * 5.0);
     f32 count = 0.0f;
     NUVEC normal;
     NUVEC response;
-    if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[3].point, &PlayPlanePc[3].normal, NULL, 0.0f, NULL)) {
+    if (OnOrInsidePlane(&object->collision_position, &PlayPlane[3].point, &PlayPlane[3].normal, NULL, 0.0f, NULL)) {
         NuVecRotateY(&normal, &GunshipANorm, 0x6000);
         Surface_Deflect(&normal, &object->velocity, &response, 0);
         response.x += normal.x * push_speed;
         response.z += normal.z * push_speed;
         count += 1.0f;
     }
-    if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.0f, NULL)) {
+    if (OnOrInsidePlane(&object->collision_position, &PlayPlane[2].point, &PlayPlane[2].normal, NULL, 0.0f, NULL)) {
         NuVecRotateY(&normal, &GunshipANorm, 0xa000);
         Surface_Deflect(&normal, &object->velocity, &response, 0);
         response.x += normal.x * push_speed;
         response.z += normal.z * push_speed;
         count += 1.0f;
     }
-    if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.0f, NULL)) {
+    if (OnOrInsidePlane(&object->collision_position, &PlayPlane[1].point, &PlayPlane[1].normal, NULL, 0.0f, NULL)) {
         NuVecRotateY(&normal, &GunshipANorm, 0x2000);
         Surface_Deflect(&normal, &object->velocity, &response, 0);
         response.x += normal.x * push_speed;
         response.z += normal.z * push_speed;
         count += 1.0f;
     }
-    if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[4].point, &PlayPlanePc[4].normal, NULL, 0.0f, NULL)) {
+    if (OnOrInsidePlane(&object->collision_position, &PlayPlane[4].point, &PlayPlane[4].normal, NULL, 0.0f, NULL)) {
         NuVecRotateY(&normal, &GunshipANorm, 0xe000);
         Surface_Deflect(&normal, &object->velocity, &response, 0);
         response.x += normal.x * push_speed;
@@ -1054,7 +1054,7 @@ void KeepOnScreen(GAMEOBJECT *object) {
     i32 index;
     i32 two_players;
     i32 constrained;
-    PLAYERCHARACTERCONFIG_PC *character;
+    PLAYERCHARACTERCONFIG *character;
     f32 push_distance;
     NUVEC movement;
     object->field_da8 = 0.0f;
@@ -1085,7 +1085,7 @@ void KeepOnScreen(GAMEOBJECT *object) {
         return;
     }
     if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && GameCam->mode == 0x0b) {
-        GunshipKeepOnScreenPc(object);
+        GunshipKeepOnScreen(object);
         return;
     }
     if (VehicleArea == 0) {
@@ -1104,39 +1104,39 @@ void KeepOnScreen(GAMEOBJECT *object) {
     push_distance = VehicleArea != 0 ? character->walk_speed : character->run_speed;
     movement = object->velocity;
     constrained = 0;
-    if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[0].point, &PlayPlanePc[0].normal, NULL, 0.0f, NULL)) {
-        Surface_Deflect(&PlayPlanePc[0].normal, &movement, &movement, 0);
-        movement.x += PlayPlanePc[0].normal.x * push_distance;
-        movement.z += PlayPlanePc[0].normal.z * push_distance;
+    if (OnOrInsidePlane(&object->collision_position, &PlayPlane[0].point, &PlayPlane[0].normal, NULL, 0.0f, NULL)) {
+        Surface_Deflect(&PlayPlane[0].normal, &movement, &movement, 0);
+        movement.x += PlayPlane[0].normal.x * push_distance;
+        movement.z += PlayPlane[0].normal.z * push_distance;
         constrained = 1;
     }
-    if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, -object->bounds_radius, NULL)) {
-        Surface_Deflect(&PlayPlanePc[2].normal, &object->velocity, &movement, 0);
-        movement.x += PlayPlanePc[2].normal.x * push_distance;
-        movement.z += PlayPlanePc[2].normal.z * push_distance;
+    if (OnOrInsidePlane(&object->collision_position, &PlayPlane[2].point, &PlayPlane[2].normal, NULL, -object->bounds_radius, NULL)) {
+        Surface_Deflect(&PlayPlane[2].normal, &object->velocity, &movement, 0);
+        movement.x += PlayPlane[2].normal.x * push_distance;
+        movement.z += PlayPlane[2].normal.z * push_distance;
         constrained = 1;
-    } else if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, -object->bounds_radius,
+    } else if (OnOrInsidePlane(&object->collision_position, &PlayPlane[1].point, &PlayPlane[1].normal, NULL, -object->bounds_radius,
                                NULL)) {
-        Surface_Deflect(&PlayPlanePc[1].normal, &object->velocity, &movement, 0);
-        movement.x += PlayPlanePc[1].normal.x * push_distance;
-        movement.z += PlayPlanePc[1].normal.z * push_distance;
+        Surface_Deflect(&PlayPlane[1].normal, &object->velocity, &movement, 0);
+        movement.x += PlayPlane[1].normal.x * push_distance;
+        movement.z += PlayPlane[1].normal.z * push_distance;
         constrained = 1;
     }
     if ((VehicleArea != 0 && (WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA)) || KEEPONSCREEN_SIDESONLY == 0 ||
         (two_players && abs(RotDiff(0, ((KEEP_SCREEN_CAMERA_FIELDS *)GameCam)->pitch)) > 0x2000)) {
-        if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[4].point, &PlayPlanePc[4].normal, NULL, -object->bounds_half_height,
+        if (OnOrInsidePlane(&object->collision_position, &PlayPlane[4].point, &PlayPlane[4].normal, NULL, -object->bounds_half_height,
                             NULL)) {
             index = !(((KEEP_SCREEN_CAMERA_FIELDS *)GameCam)->direction.y <= 0.0f) ? 5 : 0;
-        } else if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[3].point, &PlayPlanePc[3].normal, NULL,
+        } else if (OnOrInsidePlane(&object->collision_position, &PlayPlane[3].point, &PlayPlane[3].normal, NULL,
                                    -object->bounds_half_height, NULL)) {
             index = !(((KEEP_SCREEN_CAMERA_FIELDS *)GameCam)->direction.y <= 0.0f) ? 0 : 5;
         } else {
             index = -1;
         }
         if (index != -1) {
-            Surface_Deflect(&PlayPlanePc[index].normal, &object->velocity, &movement, 0);
-            movement.x += PlayPlanePc[index].normal.x * push_distance;
-            movement.z += PlayPlanePc[index].normal.z * push_distance;
+            Surface_Deflect(&PlayPlane[index].normal, &object->velocity, &movement, 0);
+            movement.x += PlayPlane[index].normal.x * push_distance;
+            movement.z += PlayPlane[index].normal.z * push_distance;
             constrained = 1;
         }
     }
@@ -1345,7 +1345,7 @@ void MovePlayer(GAMEOBJECT *object) {
                     z = (f32)(z * (f64)0.007843138f);
                     angle = NuAtan2D(x, z);
                     axis.x = axis.y = 0.0f;
-                    axis.z = PlayersFabsPc(x) > PlayersFabsPc(z) ? PlayersFabsPc(x) : PlayersFabsPc(z);
+                    axis.z = PlayersFabs(x) > PlayersFabs(z) ? PlayersFabs(x) : PlayersFabs(z);
                     NuVecRotateY(&input, &axis, angle);
                     magnitude = NuFsqrt(input.x * input.x + input.z * input.z);
                     if (object == Player[0]) {
@@ -1514,7 +1514,7 @@ void MovePlayer(GAMEOBJECT *object) {
     }
 }
 
-static void TerrainPlayerResetContactPc(GAMEOBJECT *object) {
+static void TerrainPlayerResetContact(GAMEOBJECT *object) {
     object->jump_animation_state = 0;
     object->raw_surface_id_pc = 0;
     object->surface_normal = v010;
@@ -1575,7 +1575,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
             GAMEOBJECT *api;
             i32 terrain_mask;
             f32 entry_vertical_velocity;
-            const AIPATHINFO_PC *path_info;
+            const AIPATHINFO *path_info;
             i32 ai_controlled;
             i32 special_path_endpoints;
             i32 shadow_grounding;
@@ -1586,9 +1586,9 @@ void TerrainPlayer(GAMEOBJECT *object) {
             f32 speed_squared;
 
             api = object;
-            terrain_mask = GetSurfaceInfoDefaultMaskPc.word;
+            terrain_mask = GetSurfaceInfoDefaultMask.word;
             if ((api->character_data->model_flags & 0x10) == 0 && (api->character_data->game_character->flags_090 & 0x8000) == 0) {
-                terrain_mask |= GetSurfaceInfoRuntimeMaskPc.word;
+                terrain_mask |= GetSurfaceInfoRuntimeMask.word;
             }
             ai_controlled = api->flags_1f8 & 0x400;
             if (ai_controlled && object->id != id_DRAGBOMB &&
@@ -1600,7 +1600,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
             path_info = &object->ai_packet.path_info;
             special_path_endpoints = 0;
             if (path_info->path != NULL && path_info->connection != NULL) {
-                const AIPATHNODE_PC *nodes;
+                const AIPATHNODE *nodes;
 
                 nodes = path_info->path->nodes;
                 if ((nodes[path_info->connection->node_indices[path_info->direction == 0]].runtime_flags |
@@ -1722,7 +1722,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         if (object == CarWashHack) {
                             NewTerrPlatformsOff();
                         }
-                        if (TerrainPlayerShadowFixPc != 0) {
+                        if (TerrainPlayerShadowFix != 0) {
                             NUVEC shadow_position;
 
                             shadow_position = api->collision_position;
@@ -1737,7 +1737,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                             GetSurfaceInfo(object, 1, api->floor_height);
                         } else {
                             GetSurfaceInfo(object, 0, api->floor_height);
-                            TerrainPlayerResetContactPc(object);
+                            TerrainPlayerResetContact(object);
                         }
                         api->is_underwater = ((u8)(UnderWater(object)));
                         api->water_intersects = ((u8)(IntersectWater(object)));
@@ -1821,7 +1821,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                             }
                         }
                     }
-                    TerrainSetPlatConnectTol((api->character_data->model_flags & 0x800) != 0 ? 0.0f : TerrainPlayerPlatConnectTolerancePc);
+                    TerrainSetPlatConnectTol((api->character_data->model_flags & 0x800) != 0 ? 0.0f : TerrainPlayerPlatConnectTolerance);
                     if ((object->ai_packet.flags & 0x80) != 0) {
                         IgnoreWallSplines = 1;
                     }
@@ -1829,14 +1829,14 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     if ((object->flags_ef0 & 0x400) != 0) {
                         if (object->id == (u16)id_SPEEDERBIKE) {
                             if (object->ai_packet.goal_speed_mode == 1) {
-                                movement_scale = TerrainPlayerBikeMovementScalePc / api->character_data->game_character->walk_speed;
+                                movement_scale = TerrainPlayerBikeMovementScale / api->character_data->game_character->walk_speed;
                             } else if (object->ai_packet.goal_speed_mode == 2) {
-                                movement_scale = TerrainPlayerBikeMovementScalePc / api->character_data->game_character->tiptoe_speed;
+                                movement_scale = TerrainPlayerBikeMovementScale / api->character_data->game_character->tiptoe_speed;
                             } else {
-                                movement_scale = TerrainPlayerBikeMovementScalePc / api->character_data->game_character->run_speed;
+                                movement_scale = TerrainPlayerBikeMovementScale / api->character_data->game_character->run_speed;
                             }
                         } else {
-                            movement_scale = TerrainPlayerOtherMovementScalePc / api->character_data->game_character->run_speed;
+                            movement_scale = TerrainPlayerOtherMovementScale / api->character_data->game_character->run_speed;
                         }
                         movement.x *= movement_scale;
                         movement.z *= movement_scale;
@@ -2074,7 +2074,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 platform_owner = CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS_PC *)(WORLD->shadow_platform_list_pc)),
                                                                 api->supporting_platform_id);
                 if (platform_owner != NULL) {
-                    const PLAYERCHARACTERCONFIG_PC *data;
+                    const PLAYERCHARACTERCONFIG *data;
 
                     data = platform_owner->character_data->game_character;
                     if ((data->flags_090 & 0x1000) != 0 && api->position.y < platform_owner->position.y &&
@@ -2340,7 +2340,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
 
 void AnimatePlayer(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
-    CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
+    CHARACTER_MODEL_LAYERS *model = object->character_model;
     i16 override_from;
     f32 direction;
     f32 movement_speed;
@@ -2481,7 +2481,7 @@ i32 AnakinGreenSabre(GAMEOBJECT *object) {
     return 0;
 }
 
-static f32 ParaphernaliaWeaponScalePc(GAMEOBJECT *object) {
+static f32 ParaphernaliaWeaponScale(GAMEOBJECT *object) {
     f32 *frame;
     if (object->character_data->game_character->hover_fall_mode == 9) {
         frame = AnimPlaying(&object->anim_packet, 0x5e, 1, 0);
@@ -2498,8 +2498,8 @@ static f32 ParaphernaliaWeaponScalePc(GAMEOBJECT *object) {
     return 0.0f;
 }
 
-static void ParaphernaliaShieldPc(GAMEOBJECT *object, i32 reflection) {
-    PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
+static void ParaphernaliaShield(GAMEOBJECT *object, i32 reflection) {
+    PLAYERCHARACTERCONFIG *config = object->character_data->game_character;
     i32 locator = config->shield_locator;
     NUVEC scaling;
     NUMTX matrix;
@@ -2531,7 +2531,7 @@ static void ParaphernaliaShieldPc(GAMEOBJECT *object, i32 reflection) {
     }
 }
 
-static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
+static void ParaphernaliaThrust(GAMEOBJECT *object, i32 reflection) {
     i32 locator;
     i32 effect_index;
     if (WORLD->level_objects[0x77].active == 0 || WORLD->level_objects[0x78].active == 0) {
@@ -2578,8 +2578,8 @@ static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
     }
 }
 
-void ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
-    PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
+void ParaphernaliaCommunicate(GAMEOBJECT *object, i32 reflection) {
+    PLAYERCHARACTERCONFIG *config = object->character_data->game_character;
     i32 locator = config->thingy_locator;
     i32 model;
     i32 reflection_model;
@@ -2595,7 +2595,7 @@ void ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
         scaling.z = object->communicate_blend * object->origin_scale;
         scaling.x = scaling.y = scaling.z;
         NuMtxSetScale(&matrix, &scaling);
-        GameDrawMtxRotateYPc(&matrix, object->field_0x276 + 0x8000);
+        GameDrawMtxRotateY(&matrix, object->field_0x276 + 0x8000);
         matrix.m30 = object->locator_matrices[locator].m30;
         matrix.m31 = object->locator_matrices[locator].m31;
         matrix.m32 = object->locator_matrices[locator].m32;
@@ -2630,7 +2630,7 @@ void ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
     }
 }
 
-static void ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
+static void ParaphernaliaPlace(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
     NUVEC scaling;
     NUMTX matrix;
     NUMTX reflected;
@@ -2692,7 +2692,7 @@ static void ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection, 
     }
 }
 
-static void ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
+static void ParaphernaliaRemove(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
     NUVEC scaling;
     NUMTX matrix;
     NUMTX reflected;
@@ -2765,7 +2765,7 @@ static void ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection,
     }
 }
 
-static void ParaphernaliaHandPc(GAMEOBJECT *object, i32 reflection) {
+static void ParaphernaliaHand(GAMEOBJECT *object, i32 reflection) {
     NUMTX matrix;
     NUMTX reflected;
     i32 locator;
@@ -2795,7 +2795,7 @@ void ConfigureComplexShadow(GAMEOBJECT *object) {
         direction.z = (f32)((f64)object->floor_height - (f64)0.1f);
     } else {
         direction.x = 0.0f;
-        direction.y = -ComplexShadowBasePc * 0.25;
+        direction.y = -ComplexShadowBase * 0.25;
         direction.z = 0.0f;
     }
     distance = VehicleArea != 0 ? 150.0f : 30.0f;
@@ -2811,7 +2811,7 @@ void LoadSingleCharacter(BGPROCINFO *info) {
     i32 i;
     append = 1;
     nopakfile = CHARPAK == 0;
-    APILoadCharacterModels(list, 0, &characterbuffer_ptr, characterbuffer_end, CharacterLoadAreaModelsPc);
+    APILoadCharacterModels(list, 0, &characterbuffer_ptr, characterbuffer_end, CharacterLoadAreaModels);
     IconScenes_Load(list, 0, &characterbuffer_ptr, &characterbuffer_end);
     scene = IconScene_FindById(list[0].model_id);
     if (scene != NULL) {
@@ -2847,19 +2847,19 @@ void UpdateCharacterLoad(void) {
         return;
     }
     count = 0;
-    if (VehicleBoltId7f17d4Pc != -1 && APICharacterLoaded(VehicleBoltId7f17d4Pc) != NULL && PunchRangeCompanionIdPc != -1 &&
-        APICharacterLoaded(PunchRangeCompanionIdPc) == NULL) {
-        candidates[count++] = PunchRangeCompanionIdPc;
+    if (VehicleBoltId7f17d4 != -1 && APICharacterLoaded(VehicleBoltId7f17d4) != NULL && PunchRangeCompanionId != -1 &&
+        APICharacterLoaded(PunchRangeCompanionId) == NULL) {
+        candidates[count++] = PunchRangeCompanionId;
     } else if (id_BARMAN != -1 && APICharacterLoaded(id_BARMAN) == NULL) {
         candidates[count++] = id_BARMAN;
     } else if (id_CANTINABAND != -1 && APICharacterLoaded(id_CANTINABAND) == NULL) {
         candidates[count++] = id_CANTINABAND;
-    } else if (PermanentWeirdo1IdPc != -1 && APICharacterLoaded(PermanentWeirdo1IdPc) == NULL) {
-        candidates[count++] = PermanentWeirdo1IdPc;
-    } else if (PermanentWeirdo2IdPc != -1 && APICharacterLoaded(PermanentWeirdo2IdPc) == NULL) {
-        candidates[count++] = PermanentWeirdo2IdPc;
-    } else if (DefaultAnimationJabbaIdPc != -1 && APICharacterLoaded(DefaultAnimationJabbaIdPc) == NULL) {
-        candidates[count++] = DefaultAnimationJabbaIdPc;
+    } else if (PermanentWeirdo1Id != -1 && APICharacterLoaded(PermanentWeirdo1Id) == NULL) {
+        candidates[count++] = PermanentWeirdo1Id;
+    } else if (PermanentWeirdo2Id != -1 && APICharacterLoaded(PermanentWeirdo2Id) == NULL) {
+        candidates[count++] = PermanentWeirdo2Id;
+    } else if (DefaultAnimationJabbaId != -1 && APICharacterLoaded(DefaultAnimationJabbaId) == NULL) {
+        candidates[count++] = DefaultAnimationJabbaId;
     } else if (id_MOSEISLEYCITIZEN != -1 && APICharacterLoaded(id_MOSEISLEYCITIZEN) == NULL) {
         candidates[count++] = id_MOSEISLEYCITIZEN;
     } else if (id_CANTINAALIEN != -1 && APICharacterLoaded(id_CANTINAALIEN) == NULL) {
@@ -3037,12 +3037,12 @@ static SPECIAL_LAYER_PC SpecialLayer[42] = {
 #pragma data_seg()
 
 u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
-    PLAYERCHARACTERCONFIG_PC *data = object->character_data->game_character;
+    PLAYERCHARACTERCONFIG *data = object->character_data->game_character;
     i32 cape_layer = data->cape_layer;
     u32 cape = cape_layer != -1 ? 1u << cape_layer : 0;
     i32 hair_layer = data->hair_layer;
     u32 hair = hair_layer != -1 ? 1u << hair_layer : 0;
-    SUIT_LAYERS_PC *suit;
+    SUIT_LAYERS *suit;
     if (object->helmet != 0) {
         mask &= ~hair;
     }
@@ -3149,49 +3149,49 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
     return mask;
 }
 
-static const u8 CreatureMosHatPc[5] = {0, 0, 0, 7, 14};
-static const u8 CreatureMosHeadPc[5] = {20, 20, 8, 8, 4};
-static const u8 CreatureMosBodyPc[3] = {3, 9, 19};
-static const u8 CreatureMosArmsPc[3] = {1, 12, 15};
-static const u8 CreatureMosHandsPc[3] = {2, 13, 16};
-static const u8 CreatureMosWaistPc[3] = {6, 10, 17};
-static const u8 CreatureMosLegsPc[3] = {5, 11, 18};
+static const u8 CreatureMosHat[5] = {0, 0, 0, 7, 14};
+static const u8 CreatureMosHead[5] = {20, 20, 8, 8, 4};
+static const u8 CreatureMosBody[3] = {3, 9, 19};
+static const u8 CreatureMosArms[3] = {1, 12, 15};
+static const u8 CreatureMosHands[3] = {2, 13, 16};
+static const u8 CreatureMosWaist[3] = {6, 10, 17};
+static const u8 CreatureMosLegs[3] = {5, 11, 18};
 
-static void SetLayersMosPc(GAMEOBJECT *object) {
+static void SetLayersMos(GAMEOBJECT *object) {
     object->layer_mask = 0;
-    object->layer_mask |= 1u << CreatureMosHatPc[qrand() / 0x3334];
-    object->layer_mask |= 1u << CreatureMosHeadPc[qrand() / 0x3334];
-    object->layer_mask |= 1u << CreatureMosBodyPc[qrand() / 0x5556];
-    object->layer_mask |= 1u << CreatureMosArmsPc[qrand() / 0x5556];
-    object->layer_mask |= 1u << CreatureMosHandsPc[qrand() / 0x5556];
-    object->layer_mask |= 1u << CreatureMosWaistPc[qrand() / 0x5556];
-    object->layer_mask |= 1u << CreatureMosLegsPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureMosHat[qrand() / 0x3334];
+    object->layer_mask |= 1u << CreatureMosHead[qrand() / 0x3334];
+    object->layer_mask |= 1u << CreatureMosBody[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureMosArms[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureMosHands[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureMosWaist[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureMosLegs[qrand() / 0x5556];
 }
 
-static const u8 CreatureCantinaHeadPc[3] = {0, 3, 6};
-static const u8 CreatureCantinaBodyPc[3] = {1, 4, 7};
-static const u8 CreatureCantinaLegsPc[3] = {2, 5, 8};
+static const u8 CreatureCantinaHead[3] = {0, 3, 6};
+static const u8 CreatureCantinaBody[3] = {1, 4, 7};
+static const u8 CreatureCantinaLegs[3] = {2, 5, 8};
 
-static void SetLayersCantinaPc(GAMEOBJECT *object) {
+static void SetLayersCantina(GAMEOBJECT *object) {
     object->layer_mask = 0;
-    object->layer_mask |= 1u << CreatureCantinaHeadPc[qrand() / 0x5556];
-    object->layer_mask |= 1u << CreatureCantinaBodyPc[qrand() / 0x5556];
-    object->layer_mask |= 1u << CreatureCantinaLegsPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureCantinaHead[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureCantinaBody[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureCantinaLegs[qrand() / 0x5556];
 }
 
-static const u8 CreatureCloudHeadPc[3] = {1, 5, 7};
-static const u8 CreatureCloudBodyPc[3] = {2, 3, 6};
-static const u8 CreatureCloudLegsPc[3] = {0, 4, 8};
+static const u8 CreatureCloudHead[3] = {1, 5, 7};
+static const u8 CreatureCloudBody[3] = {2, 3, 6};
+static const u8 CreatureCloudLegs[3] = {0, 4, 8};
 
-static void SetLayersCloudPc(GAMEOBJECT *object) {
+static void SetLayersCloud(GAMEOBJECT *object) {
     object->layer_mask = 0;
-    object->layer_mask |= 1u << CreatureCloudHeadPc[qrand() / 0x5556];
-    object->layer_mask |= 1u << CreatureCloudBodyPc[qrand() / 0x5556];
-    object->layer_mask |= 1u << CreatureCloudLegsPc[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureCloudHead[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureCloudBody[qrand() / 0x5556];
+    object->layer_mask |= 1u << CreatureCloudLegs[qrand() / 0x5556];
     object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((object->layer_mask << 4) & 0x800);
 }
 
-static void SetLayersBobPc(GAMEOBJECT *object) {
+static void SetLayersBob(GAMEOBJECT *object) {
     i32 head[6] = {1, 2, 3, 21, 22, 23};
     i32 body[8] = {5, 6, 7, 8, 9, 10, 16, 17};
     i32 legs[3] = {11, 12, 15};
@@ -3213,8 +3213,8 @@ void FixUpLayers(void) {
     i32 model_index;
     i32 id;
     for (model_index = 0; model_index < apicharsys->loaded_model_count; ++model_index) {
-        CHARACTER_MODEL_LAYERS_PC *model = &apicharsys->models[model_index];
-        PLAYERCHARACTERCONFIG_PC *character = &GCDataList[model->model_id];
+        CHARACTER_MODEL_LAYERS *model = &apicharsys->models[model_index];
+        PLAYERCHARACTERCONFIG *character = &GCDataList[model->model_id];
         i32 layer_index;
         for (layer_index = 0; layer_index < character->layer_count; ++layer_index) {
             character->layers[layer_index].hierarchy_layer_index =
@@ -3289,11 +3289,11 @@ void InitPlayerAI(GAMEOBJECT *object) {
     u64 route_mask;
     u32 route_mask_word;
     if (StartupGameFlag0 != 0) {
-        PlayerInitCapabilitiesVariant0Pc(object);
+        PlayerInitCapabilitiesVariant0(object);
     } else if (StartupGameFlag1 != 0) {
-        PlayerInitCapabilitiesVariant1Pc(object);
+        PlayerInitCapabilitiesVariant1(object);
     } else {
-        PlayerInitCapabilitiesDefaultPc(object);
+        PlayerInitCapabilitiesDefault(object);
     }
     can_pull_levers = CanPullLevers((i16)object->id);
     object->ai_packet.flags &= ~0x10000u;
@@ -3301,9 +3301,9 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.route_mask_low = 0;
     object->ai_packet.route_mask_high = 0;
     if (FreePlay != 0 && (object->flags_1f8 & 0x400) == 0) {
-        memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS, low), sizeof(route_mask_word));
+        memcpy(&route_mask_word, (u8 *)&CharacterMaskAll + offsetof(PLAYER_ROUTE_MASK_WORDS, low), sizeof(route_mask_word));
         object->ai_packet.route_mask_low = route_mask_word;
-        memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS, high), sizeof(route_mask_word));
+        memcpy(&route_mask_word, (u8 *)&CharacterMaskAll + offsetof(PLAYER_ROUTE_MASK_WORDS, high), sizeof(route_mask_word));
         object->ai_packet.route_mask_high = route_mask_word;
     } else if (SpecialRouteCharacterTypeIDFn != NULL) {
         name = object->suit != NULL ? ((PLAYER_SUIT_NAME_PC *)object->suit)->name : object->character_data->name;
@@ -3314,9 +3314,9 @@ void InitPlayerAI(GAMEOBJECT *object) {
                 object->ai_packet.route_mask_low = (u32)route_mask;
                 object->ai_packet.route_mask_high = (u32)(route_mask >> 32);
             } else {
-                memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS, low), sizeof(route_mask_word));
+                memcpy(&route_mask_word, (u8 *)&CharacterMaskAll + offsetof(PLAYER_ROUTE_MASK_WORDS, low), sizeof(route_mask_word));
                 object->ai_packet.route_mask_low = route_mask_word;
-                memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS, high), sizeof(route_mask_word));
+                memcpy(&route_mask_word, (u8 *)&CharacterMaskAll + offsetof(PLAYER_ROUTE_MASK_WORDS, high), sizeof(route_mask_word));
                 object->ai_packet.route_mask_high = route_mask_word;
             }
         }
@@ -3423,10 +3423,10 @@ void SetPlayerGroupPosition(f32 x, f32 y, f32 z) {
 }
 
 i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
-    PLAYERCHARACTERCONFIG_PC *config;
+    PLAYERCHARACTERCONFIG *config;
     NUVEC velocity;
-    AIPATHINFO_PC path;
-    AILOCATOR_PC *saved_locator;
+    AIPATHINFO path;
+    AILOCATOR *saved_locator;
     u32 saved_f08;
     u32 saved_frame_state;
     u32 saved_ai_flag;
@@ -3523,24 +3523,24 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     config = object->character_data->game_character;
     object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((config->flags_090 >> 6) & 0x800);
     if (object->id == (u16)id_MOSEISLEYCITIZEN) {
-        SetLayersMosPc(object);
+        SetLayersMos(object);
     } else if (object->id == (u16)id_CANTINAALIEN) {
-        SetLayersCantinaPc(object);
+        SetLayersCantina(object);
     } else if (object->id == (u16)id_CLOUDCITYCITIZEN) {
-        SetLayersCloudPc(object);
+        SetLayersCloud(object);
     } else if (object->id == (u16)id_BOB) {
-        SetLayersBobPc(object);
+        SetLayersBob(object);
     } else if (object->id == (u16)id_GEONOSIAN) {
         ((NEW_PLAYER_FLAGS_PC *)object)->geonosian_variant = qrand() < 0x8000;
     }
-    InitCreatureModelFlagsPc(object);
+    InitCreatureModelFlags(object);
     return 1;
 }
 
 void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
-    AICREATURE_PC *creature;
-    AIPATHINFO_PC *path_info;
-    AIROW_PC *row;
+    AICREATURE *creature;
+    AIPATHINFO *path_info;
+    AIROW *row;
     NUVEC offset;
     i32 angle;
     if (object == NULL) {
@@ -3608,7 +3608,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     object->ai_packet.inside_path_node = -1;
     object->ai_packet.current_route = 0xff;
     object->ai_packet.next_route = 0;
-    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, (i8)object->field_281);
+    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, (i8)object->field_281);
     ResetAnimPacket(&object->anim_packet, 1);
     SetAnimTimeRandom(object->character_model, &object->anim_packet);
     object->ai_packet.movement_stopping_distance = 0.0f;
@@ -3647,7 +3647,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
 
 void ResetAICreatures(AISYS_PC *system) {
     GAMEOBJECT *object;
-    AICREATURE_PC *creature;
+    AICREATURE *creature;
     i32 index;
     if (system == NULL || (((AI_CREATURE_RESET_FLAGS *)system)->reset_flags & 1) != 0) {
         return;
@@ -3759,21 +3759,21 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     object->ai_update_position = object->position;
     object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((object->character_data->game_character->flags_090 >> 6) & 0x800);
     if (object->id == (u16)id_MOSEISLEYCITIZEN) {
-        SetLayersMosPc(object);
+        SetLayersMos(object);
     } else if (object->id == (u16)id_CANTINAALIEN) {
-        SetLayersCantinaPc(object);
+        SetLayersCantina(object);
     } else if (object->id == (u16)id_CLOUDCITYCITIZEN) {
-        SetLayersCloudPc(object);
+        SetLayersCloud(object);
     } else if (object->id == (u16)id_BOB) {
-        SetLayersBobPc(object);
+        SetLayersBob(object);
     } else if (object->id == (u16)id_GEONOSIAN) {
         ((PLAYER_LAYER_FLAGS *)&object->flags_ef0)->bob = qrand() < 0x8000;
     }
-    InitCreatureModelFlagsPc(object);
+    InitCreatureModelFlags(object);
     return 1;
 }
 
-i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *animation, NUMTX *matrix, NUMTX *secondary_matrix,
+i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *animation, NUMTX *matrix, NUMTX *secondary_matrix,
                            NUMTX *reflection_matrix, NUMTX *auxiliary_matrix, GAMEOBJECT *object, u32 flags) {
     NUMTX special_matrix;
     NUMTX scaled_matrix;
@@ -3818,13 +3818,13 @@ i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *anim
     } else {
         ((CHARACTER_DRAW_HIERARCHY *)model->hierarchy)->suppress_shadow_surface_points = 1;
     }
-    drawcharactermodel_keepmergeaction = GameKeepMergeActionPc;
+    drawcharactermodel_keepmergeaction = GameKeepMergeAction;
     MakeLayerList = GCDataList[model->model_id].make_layer_list;
     result = APIDrawCharacterModel(model, object != NULL ? (APICHARACTERDATA *)object->character_data : NULL, animation, matrix,
                                    secondary_matrix, reflection_matrix, NULL, auxiliary_matrix, object, flags,
-                                   object != NULL && GameDrawCharacterModelFlagPc != 0 ? object->joint_overrides : NULL,
-                                   object != NULL && GameDrawCharacterModelFlagPc != 0 ? object->joint_override_count : 0, Paused,
-                                   FRAMETIME, output_matrices, NULL, WORLD->game_debris_sys);
+                                   object != NULL && GameDrawCharacterModelFlag != 0 ? object->joint_overrides : NULL,
+                                   object != NULL && GameDrawCharacterModelFlag != 0 ? object->joint_override_count : 0, Paused, FRAMETIME,
+                                   output_matrices, NULL, WORLD->game_debris_sys);
     if (result == 0) {
         if (object != NULL && auxiliary_matrix != NULL) {
             for (i = 0; i < 16; ++i) {
@@ -3849,8 +3849,8 @@ i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *anim
                 special_matrix = *secondary_matrix;
                 opacity = object->shadow_opacity * object->surface_normal.y;
                 NuSpecialDrawAtAlpha(&WORLD->level_objects[0xa2].special, &special_matrix, opacity);
-            } else if (CharacterBlobShadowsOnPc != 0) {
-                PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
+            } else if (CharacterBlobShadowsOn != 0) {
+                PLAYERCHARACTERCONFIG *config = object->character_data->game_character;
                 i32 alpha = config->blob_shadow_alpha < 255 ? config->blob_shadow_alpha : level_alpha;
                 f32 radius;
                 if (alpha > 0) {
@@ -3922,42 +3922,42 @@ i32 DrawGameObjectsProcess(void) {
         NuMtxSetScale(&matrix, &scale);
         switch ((u8)object->movement_mode) {
             case 0:
-                GameDrawMtxSetYRotationPc(&orientation, 0x8000);
+                GameDrawMtxSetYRotation(&orientation, 0x8000);
                 if (object->pitch_angle != 0) {
-                    GameDrawMtxRotateXPc(&orientation, object->pitch_angle);
+                    GameDrawMtxRotateX(&orientation, object->pitch_angle);
                 }
                 angle = object->field_0x276;
                 if (angle != 0) {
-                    GameDrawMtxRotateYPc(&orientation, angle);
+                    GameDrawMtxRotateY(&orientation, angle);
                 }
                 if (object->roll_angle != 0) {
-                    GameDrawMtxRotateZPc(&orientation, object->roll_angle);
+                    GameDrawMtxRotateZ(&orientation, object->roll_angle);
                 }
                 NuMtxMulVU0(&matrix, &matrix, &orientation);
                 NuMtxTranslate(&matrix, &position);
                 break;
             case 1:
-                GameDrawMtxSetYRotationPc(&orientation, object->field_0x276 + 0x8000);
+                GameDrawMtxSetYRotation(&orientation, object->field_0x276 + 0x8000);
                 if (object->pitch_angle != 0) {
-                    GameDrawMtxRotateXPc(&orientation, object->pitch_angle);
+                    GameDrawMtxRotateX(&orientation, object->pitch_angle);
                 }
                 if (object->roll_angle != 0) {
-                    GameDrawMtxRotateZPc(&orientation, object->roll_angle);
+                    GameDrawMtxRotateZ(&orientation, object->roll_angle);
                 }
                 NuMtxMulVU0(&matrix, &matrix, &orientation);
                 NuMtxTranslate(&matrix, &position);
                 break;
             case 3:
-                GameDrawMtxSetYRotationPc(&orientation, 0x8000);
+                GameDrawMtxSetYRotation(&orientation, 0x8000);
                 if (object->roll_angle != 0) {
-                    GameDrawMtxRotateZPc(&orientation, object->roll_angle);
+                    GameDrawMtxRotateZ(&orientation, object->roll_angle);
                 }
                 if (object->pitch_angle != 0) {
-                    GameDrawMtxRotateXPc(&orientation, object->pitch_angle);
+                    GameDrawMtxRotateX(&orientation, object->pitch_angle);
                 }
                 angle = object->field_0x276;
                 if (angle != 0) {
-                    GameDrawMtxRotateYPc(&orientation, angle);
+                    GameDrawMtxRotateY(&orientation, angle);
                 }
                 NuMtxMulVU0(&matrix, &matrix, &orientation);
                 NuMtxTranslate(&matrix, &position);
@@ -3975,12 +3975,12 @@ i32 DrawGameObjectsProcess(void) {
                 break;
             default:
             case 2:
-                GameDrawMtxSetYRotationPc(&orientation, object->field_0x276 + 0x8000);
+                GameDrawMtxSetYRotation(&orientation, object->field_0x276 + 0x8000);
                 if (object->roll_angle != 0) {
-                    GameDrawMtxRotateZPc(&orientation, object->roll_angle);
+                    GameDrawMtxRotateZ(&orientation, object->roll_angle);
                 }
                 if (object->pitch_angle != 0) {
-                    GameDrawMtxRotateXPc(&orientation, object->pitch_angle);
+                    GameDrawMtxRotateX(&orientation, object->pitch_angle);
                 }
                 NuMtxMulVU0(&matrix, &matrix, &orientation);
                 NuMtxTranslate(&matrix, &position);
@@ -4033,13 +4033,13 @@ i32 DrawGameObjectsProcess(void) {
         }
         if (object->dead == 0 && (f64)object->floor_height != 2000000.0 && (object->flags_1f8 & 0x40) != 0 &&
             object->character_data->game_character->shadow_locators == 0) {
-            GameDrawMtxCopyPc(&shadow, &ANI3_EVAL_IDENTITY_MATRIX);
-            GameDrawMtxRotateYPc(&shadow, object->field_0x276 + 0x8000);
+            GameDrawMtxCopy(&shadow, &ANI3_EVAL_IDENTITY_MATRIX);
+            GameDrawMtxRotateY(&shadow, object->field_0x276 + 0x8000);
             if (object->field_1054 != 0) {
-                GameDrawMtxRotateZPc(&shadow, object->field_1054);
+                GameDrawMtxRotateZ(&shadow, object->field_1054);
             }
             if (object->field_1052 != 0) {
-                GameDrawMtxRotateXPc(&shadow, object->field_1052);
+                GameDrawMtxRotateX(&shadow, object->field_1052);
             }
             shadow.m30 = object->position.x;
             object->flags_ef0 |= 0x20000;
@@ -4052,7 +4052,7 @@ i32 DrawGameObjectsProcess(void) {
 }
 
 void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
-    PLAYERCHARACTERCONFIG_PC *data;
+    PLAYERCHARACTERCONFIG *data;
     NUMTX blade_matrix;
     NUMTX hilt_matrix;
     NUMTX reflected;
@@ -4244,7 +4244,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
 static void DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 character_id, NUMTX *joint_matrices, ANIMPACKET_PC *animation, i32 locator,
                                         NUMTX *override_matrix) {
     i16 model_index;
-    CHARACTER_MODEL_LAYERS_PC *model;
+    CHARACTER_MODEL_LAYERS *model;
     NUMTX matrix;
     NUMTX reflected;
     NUMTX *reflection;
@@ -4280,26 +4280,26 @@ void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
         if (object->id != (u16)ID_DEFAULTCHARACTER_A) {
             return;
         }
-        character_id = AreaExtraTargetId7f17bcPc;
-        AnimPacketMiniToFullPc((DRAW_ATTACHMENTS_MINI_PC *)object->mini_anim_packet, &animation.packet);
-    } else if (object->id == (u16)PunchRangeUnitIdPc &&
+        character_id = AreaExtraTargetId7f17bc;
+        AnimPacketMiniToFull((DRAW_ATTACHMENTS_MINI *)object->mini_anim_packet, &animation.packet);
+    } else if (object->id == (u16)PunchRangeUnitId &&
                (AnimPlaying(&object->anim_packet, 0x51, 1, 1) != NULL || AnimPlaying(&object->anim_packet, 0x55, 1, 1) != NULL ||
                 AnimPlaying(&object->anim_packet, 0x56, 1, 1) != NULL || AnimPlaying(&object->anim_packet, 0x94, 1, 1) != NULL)) {
-        character_id = PunchRangeCompanionIdPc;
+        character_id = PunchRangeCompanionId;
         memcpy(&animation, (u8 *)object + offsetof(GAMEOBJECT, anim_packet), sizeof(animation));
         if (animation.packet.blending != 0 && animation.packet.blend_target_animation != 0x51 &&
             animation.packet.blend_target_animation != 0x55 && animation.packet.blend_target_animation != 0x56 &&
             animation.packet.blend_target_animation != 0x94) {
             return;
         }
-    } else if (object->id == (u16)AreaExtraSourceId7f17c8Pc) {
-        character_id = AreaExtraTargetId7f17ccPc;
-        AnimPacketMiniToFullPc((DRAW_ATTACHMENTS_MINI_PC *)object->mini_anim_packet, &animation.packet);
-    } else if (object->id == (u16)VehicleBoltId7f17d0Pc || object->id == (u16)VehicleBoltId7f17d4Pc) {
-        if (AnimPacketModelsCompatiblePc(&object->anim_packet, (i16)object->id, PunchRangeCompanionIdPc) == 0) {
+    } else if (object->id == (u16)AreaExtraSourceId7f17c8) {
+        character_id = AreaExtraTargetId7f17cc;
+        AnimPacketMiniToFull((DRAW_ATTACHMENTS_MINI *)object->mini_anim_packet, &animation.packet);
+    } else if (object->id == (u16)VehicleBoltId7f17d0 || object->id == (u16)VehicleBoltId7f17d4) {
+        if (AnimPacketModelsCompatible(&object->anim_packet, (i16)object->id, PunchRangeCompanionId) == 0) {
             return;
         }
-        character_id = PunchRangeCompanionIdPc;
+        character_id = PunchRangeCompanionId;
         memcpy(&animation, (u8 *)object + offsetof(GAMEOBJECT, anim_packet), sizeof(animation));
         override_matrix = &object->transform;
     } else {
@@ -4317,7 +4317,7 @@ void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
                                 object->character_data->game_character->extra_character_locator, override_matrix);
 }
 
-void DrawParaphernaliaPc(GAMEOBJECT *object) {
+void DrawParaphernalia(GAMEOBJECT *object) {
     i32 i;
     NUMTX matrix;
     NUMTX reflected;
@@ -4333,7 +4333,7 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
     GAMEOBJECT *passenger;
     i32 passenger_locator;
     NUANGVEC passenger_rotation;
-    PLAYERCHARACTERCONFIG_PC *config;
+    PLAYERCHARACTERCONFIG *config;
     i32 scene_locator;
     NUVEC glow_position;
     f32 glow_radius;
@@ -4355,7 +4355,7 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
     i32 special_phase;
 
     extra = ((PARAPHERNALIA_EXTRA *)(object));
-    if (DrawParaphernaliaEnabledPc == 0) {
+    if (DrawParaphernaliaEnabled == 0) {
         return;
     }
 
@@ -4396,8 +4396,8 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
                                       carried_extra->draw_reflection, carried_layers, NULL, NULL, 1.0f, 1.0f);
             }
             DrawCharacterAttachments(carried, attachments);
-            if (((i16)(carried->id)) == PermanentWeirdo1IdPc || ((i16)(carried->id)) == PermanentWeirdo2IdPc) {
-                CustomiserDrawAccessoriesPc(CharacterCustomiser, carried, attachments);
+            if (((i16)(carried->id)) == PermanentWeirdo1Id || ((i16)(carried->id)) == PermanentWeirdo2Id) {
+                CustomiserDrawAccessories(CharacterCustomiser, carried, attachments);
             }
         }
     } else if ((object->flags_e24 & 1) != 0 && object->force_target != NULL) {
@@ -4447,15 +4447,15 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
                                   object->locator_matrices, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
         }
     } else {
-        DrawWeapons(object, extra->draw_reflection, ParaphernaliaWeaponScalePc(object));
+        DrawWeapons(object, extra->draw_reflection, ParaphernaliaWeaponScale(object));
     }
     if (object->origin_scale_override > 0.0f || object->timer_d34 > 0.0f) {
         ResetShadowMapRendering();
-        ParaphernaliaShieldPc(object, extra->draw_reflection);
+        ParaphernaliaShield(object, extra->draw_reflection);
         EnableShadowMapRendering(0);
     }
     if (object->communicate_blend > 0.0f) {
-        ParaphernaliaCommunicatePc(object, extra->draw_reflection);
+        ParaphernaliaCommunicate(object, extra->draw_reflection);
     }
     if (object->character_context == 0x22) {
         if ((WORLD->area != NULL && WORLD->area == HUB_ADATA) || WORLD->current_level == LevelFixupSlotPc0087b194 ||
@@ -4496,20 +4496,20 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
     }
     if (object->model_draw_result != 0 && object->character_data->game_character->thrust_locators != 0 &&
         object->thrust_effect_scale > 0.0f) {
-        ParaphernaliaThrustPc(object, extra->draw_reflection);
+        ParaphernaliaThrust(object, extra->draw_reflection);
     }
     if (object->character_context == 0x2d) {
         GizDrawBuildItPiece(object, extra->draw_reflection);
     }
     if (object->character_context == 0x48 && object->character_model->model_data_b[object->field_7aa] != NULL && object->field_7b3 == 0) {
-        ParaphernaliaPlacePc(object, 0xec, extra->draw_reflection, object->character_data->game_character->place_locator);
+        ParaphernaliaPlace(object, 0xec, extra->draw_reflection, object->character_data->game_character->place_locator);
     } else if (object->character_context == 0x49 && object->character_model->model_data_b[object->field_7aa] != NULL &&
                object->field_7b3 != 0) {
-        ParaphernaliaRemovePc(object, 0xec, extra->draw_reflection, object->character_data->game_character->place_locator);
+        ParaphernaliaRemove(object, 0xec, extra->draw_reflection, object->character_data->game_character->place_locator);
     }
     if ((object->flags_e20 & 0x400000) != 0) {
         dco_prerotatez = 0x4000;
-        DrawObjectOnCharacter(WORLD, object, BatarangGetObjectFromCharIdPc(((i16)(object->id))), NULL,
+        DrawObjectOnCharacter(WORLD, object, BatarangGetObjectFromCharId(((i16)(object->id))), NULL,
                               object->character_data->game_character->throw_locator, -1, object->locator_matrices, extra->draw_reflection,
                               object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     }
@@ -4521,18 +4521,18 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
     }
     DrawCharacterAttachments(object, object->locator_matrices);
     if (object->character_context == 0x5d) {
-        ParaphernaliaHandPc(object, extra->draw_reflection);
+        ParaphernaliaHand(object, extra->draw_reflection);
     }
     if (object->torpedo != NULL && object->torpedo->count > 0) {
         DrawTorpedos(object);
     }
     if (object->character_data->game_character->weapon_action == 0) {
-        CustomiserDrawAccessoriesPc(CharacterCustomiser, object, NULL);
+        CustomiserDrawAccessories(CharacterCustomiser, object, NULL);
     }
     if ((object->character_data->game_character->flags_090 & 0x1000000) != 0 && extra->force_alpha > 0.0f && extra->force_radius > 0.0f) {
         transform_alpha = ((f32)(extra->force_alpha * 0.6000000238418579 + 0.4000000059604645));
         transform_radius = ((f32)((extra->force_alpha * 0.20000004768371582 + 1.399999976158142) * extra->force_radius));
-        TransformDrawTargetPc(&extra->force_position, transform_radius, transform_alpha);
+        TransformDrawTarget(&extra->force_position, transform_radius, transform_alpha);
     }
     config = object->character_data->game_character;
 
@@ -4616,7 +4616,7 @@ void DrawGameObjectsDraw(i32 pass) {
         object->model_draw_result = drawn;
         ((DRAW_OBJECTS_FLAGS_PC *)object)->locators_updated = drawcharactermodel_locatorsupdated;
         if (drawn != 0) {
-            DrawParaphernaliaPc(object);
+            DrawParaphernalia(object);
         } else if (((object->flags_e20 & 0x400) != 0 || object->character_context == 8) && object->transform_alpha > 0.0f &&
                    object->transform_target_scale > 0.0f && WORLD->level_objects[object->field_e1e].active != 0 &&
                    (object->character_data->game_character->flags_090 & 0x400) == 0) {
@@ -4639,7 +4639,7 @@ void DrawGameObjectsDraw(i32 pass) {
 
 void DrawGameObjects() {
     const f32 saved_far_clip = global_camera.unknown_64;
-    global_camera.unknown_64 = VehicleArea != 0 ? DrawGameObjectsVehicleFarClipPc : DrawGameObjectsFarClipPc;
+    global_camera.unknown_64 = VehicleArea != 0 ? DrawGameObjectsVehicleFarClip : DrawGameObjectsFarClip;
     if (global_camera.unknown_64 > saved_far_clip) {
         global_camera.unknown_64 = saved_far_clip;
     }
@@ -4662,7 +4662,7 @@ GAMEOBJECT *ActivateCharacter(char *name, NUVEC *position, i32 angle) {
             if (position != NULL) {
                 object->position = *position;
                 object->movement_facing_angle = object->facing_angle = object->field_0x276 = (u16)angle;
-                AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
+                AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, 1);
                 object->initial_position = object->position;
                 object->collision_position = object->position;
                 plr_lastpos = object->collision_position;
@@ -4728,7 +4728,7 @@ void Players_Init(void) {
             i32 id = list[index];
             GAMEOBJECT *object;
             PLAYER_INIT_EXTRA_PC *extra;
-            APIOBJECT_PC *api;
+            APIOBJECT *api;
             if ((u32)id > 0x153 || apicharsys->playermodelids[id] == -1) {
                 continue;
             }
@@ -4740,11 +4740,11 @@ void Players_Init(void) {
             PreResetCode(object);
             PostResetCode(object);
             extra = (PLAYER_INIT_EXTRA_PC *)object;
-            api = (APIOBJECT_PC *)object;
+            api = (APIOBJECT *)object;
             players[PLAYERCOUNT] = object;
             object->previous_sock_position = &OldPlrSPos[PLAYERCOUNT];
             players[PLAYERCOUNT]->field_280 = (u8)PLAYERCOUNT;
-            ((PLAYER_INIT_EXTRA_PC *)players[PLAYERCOUNT])->batarang = &BatarangPacketsPc[PLAYERCOUNT];
+            ((PLAYER_INIT_EXTRA_PC *)players[PLAYERCOUNT])->batarang = &BatarangPackets[PLAYERCOUNT];
             players[PLAYERCOUNT]->torpedo = GetTorpedoPacket();
             ++PLAYERCOUNT;
             object->flags_1044 |= 1;
@@ -4827,9 +4827,9 @@ void InitAICreatures(AISYS_PC *system) {
     i32 creature_index;
     i32 member;
     i32 type;
-    AICREATURE_PC *creature;
+    AICREATURE *creature;
     GAMEOBJECT *object;
-    AIGROUP_PC *group;
+    AIGROUP *group;
     u32 model_flags;
     if (NOAICREATURES != 0 || Mission_Active(NULL) != NULL || netclient != 0 || system == NULL) {
         return;
@@ -4868,7 +4868,7 @@ void InitAICreatures(AISYS_PC *system) {
                                       object->character_data->game_character->run_speed);
             }
             if (group != NULL) {
-                AddToAIGroup(group, (APIOBJECT_PC *)object);
+                AddToAIGroup(group, (APIOBJECT *)object);
             }
             ((AI_CREATURE_INIT_PACKET_PC *)&object->ai_packet)->area = creature->area;
             ((AI_CREATURE_INIT_PACKET_PC *)&object->ai_packet)->locator = creature->locator;

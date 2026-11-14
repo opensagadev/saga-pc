@@ -3,7 +3,7 @@
 #include <shlobj.h>
 #include <string.h>
 
-GRAPHICS_DISPLAY_MODE_PC *PC_DEVICE_BACKEND_PC::fun_006daee0() {
+GRAPHICS_DISPLAY_MODE *PC_DEVICE_BACKEND_PC::fun_006daee0() {
     return &desktop_mode;
 }
 

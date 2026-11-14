@@ -14,13 +14,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuWaterClearPc(void);
-    i32 NuTexPixelBitsPc(i32 type);
-    i32 NuTexImageSizePc(i32 type, i32 width, i32 height);
-    i32 NuTexImageSizeMipsPc(i32 type, i32 width, i32 height, i32 mips);
-    i32 NuTexLoadBmpPc(const char *path, i32 mips, NUTEXBMP_PC *bitmap);
-    NUTEXBMP_PC *NuTexCreateBmpPc(const char *path);
-    void PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *, u32);
+    void NuWaterClear(void);
+    i32 NuTexPixelBits(i32 type);
+    i32 NuTexImageSize(i32 type, i32 width, i32 height);
+    i32 NuTexImageSizeMips(i32 type, i32 width, i32 height, i32 mips);
+    i32 NuTexLoadBmp(const char *path, i32 mips, NUTEXBMP_PC *bitmap);
+    NUTEXBMP_PC *NuTexCreateBmp(const char *path);
+    void PCGraphicsBindTextureDimensions(NUTEXDIM_PC *, u32);
 #ifdef __cplusplus
 }
 #endif

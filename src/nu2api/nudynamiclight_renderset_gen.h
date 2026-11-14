@@ -14,9 +14,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PostShadowComputeFrustumCubePc(const NUCAMERA *, NUVEC4 *, NUVEC4 *);
-    i32 PostShadowComputePlanesPc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *);
-    void PostShadowComputeCapsulePc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *, NUVEC4 *, f32 *);
+    void PostShadowComputeFrustumCube(const NUCAMERA *, NUVEC4 *, NUVEC4 *);
+    i32 PostShadowComputePlanes(const NUVEC4 *, const NUVEC4 *, NUVEC4 *);
+    void PostShadowComputeCapsule(const NUVEC4 *, const NUVEC4 *, NUVEC4 *, NUVEC4 *, f32 *);
 #ifdef __cplusplus
 }
 #endif

@@ -12,19 +12,19 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct HATMACHINE_PC HATMACHINE_PC;
+typedef struct HATMACHINE HATMACHINE;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void Hat_GetAbsTargetPos(HATMACHINE_PC *, NUVEC *);
+    void Hat_GetAbsTargetPos(HATMACHINE *, NUVEC *);
     void HatMachines_InitTerrain(WORLDINFO *);
-    HATMACHINE_PC *HatMachine_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
-    i32 HatMachine_BeingUsed(HATMACHINE_PC *);
+    HATMACHINE *HatMachine_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    i32 HatMachine_BeingUsed(HATMACHINE *);
     extern i32 hatmachine_gizmotype_id;
 
-    /* Within the existing extern C declaration block; current HATMACHINE_PC is already forward-declared. */
+    /* Within the existing extern C declaration block; current HATMACHINE is already forward-declared. */
     void HatMachine_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
-    struct addgizmotype_pc_s *HatMachine_RegisterGizmo(i32);
+    struct addgizmotype_s *HatMachine_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

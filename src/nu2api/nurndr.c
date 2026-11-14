@@ -6,7 +6,7 @@
 NURNDRLIBSCENE currentScene = {0};
 NUVPCURRENT vpCurrent = {0};
 i32 sceneParametersCount = 0;
-NUDISPLAYLIST PCDisplayList2dPc = {0};
+NUDISPLAYLIST PCDisplayList2d = {0};
 i32 nused_sort_pris = 0;
 NUSORTPRI *sort_list = 0;
 i32 render_scene_index = 0;
@@ -150,7 +150,7 @@ i32 NuDisplayListAddRenderScene(void) {
         }
     }
 
-    if (count == 0 && PCDisplayList2dPc.mtl_last == PCDisplayList2dPc.first) {
+    if (count == 0 && PCDisplayList2d.mtl_last == PCDisplayList2d.first) {
         return -1;
     }
 
@@ -159,14 +159,14 @@ i32 NuDisplayListAddRenderScene(void) {
     render_scene_ptrs[render_scene_index]->nsort_pris = count;
     render_scene_ptrs[render_scene_index]->sort_pris = pris;
 
-    if (PCDisplayList2dPc.mtl_last != PCDisplayList2dPc.first) {
-        item = PCDisplayList2dPc.mtl_last;
+    if (PCDisplayList2d.mtl_last != PCDisplayList2d.first) {
+        item = PCDisplayList2d.mtl_last;
         item->type = 0x84;
         item->next = NULL;
         item->id = 4;
-        render_scene_ptrs[render_scene_index]->render_2d_first = *PCDisplayList2dPc.first;
-        NuDisplayListResetStateCache(PCDisplayList2dPc.state);
-        PCDisplayList2dPc.mtl_last = PCDisplayList2dPc.first;
+        render_scene_ptrs[render_scene_index]->render_2d_first = *PCDisplayList2d.first;
+        NuDisplayListResetStateCache(PCDisplayList2d.state);
+        PCDisplayList2d.mtl_last = PCDisplayList2d.first;
     } else {
         item = &render_scene_ptrs[render_scene_index]->render_2d_first;
         item->type = 0x84;
@@ -316,14 +316,14 @@ void NuRndrGlobalFrameCountPause(i32 paused) {
     global_frame_count_paused = paused;
 }
 
-void NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *parameters) {
+void NuRndrSetBurnoutParameters(i32 view, const BURN_PARAMETERS *parameters) {
     currentScene.burnout_parameters_pc = *parameters;
 }
 
 /* View of the scene's post-effect block at 0xac..0x187 (depth of field,
  * texture blend, camera and accumulation motion blur). */
 typedef struct NURNDR_EFFECTS_VIEW { // size 0xdc
-    NU_POST_DOF_PARAMETERS_PC dof;   // 0x00
+    NU_POST_DOF_PARAMETERS dof;      // 0x00
     u32 texture_blend_enabled;       // 0x18
     i32 texture_blend_arg0;          // 0x1c
     i32 texture_blend_arg1;          // 0x20
@@ -346,7 +346,7 @@ typedef struct NURNDR_EFFECTS_VIEW { // size 0xdc
 
 extern i32 NuRndrDoingScreenGrab;
 
-void NuDepthOfFieldEffectEx(const NU_POST_DOF_PARAMETERS_PC *parameters) {
+void NuDepthOfFieldEffectEx(const NU_POST_DOF_PARAMETERS *parameters) {
     NURNDR_EFFECTS->dof = *parameters;
     if (NuRndrDoingScreenGrab != 0) {
         NURNDR_EFFECTS->dof.enabled = 0;
@@ -420,7 +420,7 @@ void NuDeferredShadingRender(void) {
     currentScene.unknown_48 = 1;
 }
 
-void NuRndrSetShadowCoefficientPc(i32 index, f32 value) {
+void NuRndrSetShadowCoefficient(i32 index, f32 value) {
     switch (index) {
         case 0:
             currentScene.shadow_coefficients_pc[0] = value;
@@ -432,7 +432,7 @@ void NuRndrSetShadowCoefficientPc(i32 index, f32 value) {
             currentScene.shadow_coefficients_pc[2] = value;
             break;
         default:
-            AnimationDiagnosticNoOpPc();
+            AnimationDiagnosticNoOp();
             break;
     }
 }
@@ -449,13 +449,13 @@ void NuDynamicLightingGetParameterfv(i32 parameter, f32 *out) {
             *out = currentScene.shadow_coefficients_pc[2];
             break;
         default:
-            AnimationDiagnosticNoOpPc();
+            AnimationDiagnosticNoOp();
             break;
     }
 }
 
 void NuLightSpeedBlurOldCameraPos(NUMTX *camera) {
-    NU_POST_SPEED_PARAMETERS_PC *parameters = (NU_POST_SPEED_PARAMETERS_PC *)&currentScene.unknown_188;
+    NU_POST_SPEED_PARAMETERS *parameters = (NU_POST_SPEED_PARAMETERS *)&currentScene.unknown_188;
     parameters->current = *camera;
     NuMtxInv(&parameters->current, &parameters->current);
 }
@@ -1124,7 +1124,7 @@ void NuRndrSphereEx(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale, i
 extern i32 NuPrimCoordSystemStack[];
 
 /* Native EAX-colour calls require the existing genuine private colour/caller owner. */
-void RenderPostClearScreenPc(void) {
+void RenderPostClearScreen(void) {
     i32 restore_mode;
     LOCATOR_PRIM_VERTEX_PC *vertex;
     ++NuPrimCSPos;
@@ -1172,7 +1172,7 @@ void RenderPostClearScreenPc(void) {
 #define POST_IMAGE_DIRECTIONAL(brightness)                                                                                                 \
     do {                                                                                                                                   \
         f32 dot = NuVecDot(&parameters->direction, (NUVEC *)&direction);                                                                   \
-        f32 angle = (i16)(0x4000 - RenderPostASinPc(dot)) * 0.0054931640625;                                                               \
+        f32 angle = (i16)(0x4000 - RenderPostASin(dot)) * 0.0054931640625;                                                                 \
         if (angle < parameters->direction_near_angle) {                                                                                    \
             (brightness) += parameters->direction_far_scale * 128.0;                                                                       \
         } else if (!(angle > parameters->direction_far_angle)) {                                                                           \
@@ -1203,7 +1203,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
     f32 far_angle = parameters->far_angle / 180.0f;
     f32 scale_delta = far_scale - near_scale;
     f32 angle_delta = far_angle - near_angle;
-    RENDER_POST_VIEWPORT_PREFIX_PC saved_prefix = RenderPostViewportPrefixPc;
+    RENDER_POST_VIEWPORT_PREFIX_PC saved_prefix = RenderPostViewportPrefix;
     PC_SPECIAL_PROJECTION_ADJUST saved_adjust = PCSpecialProjectionAdjust;
     __declspec(align(16)) NUCAMERA camera;
     static f32 pixelOffsetX = 0;
@@ -1213,11 +1213,11 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
     static f32 adjacent = 0;
     static i32 row = 0;
     static i32 col = 0;
-    RenderPostViewportResetPc();
+    RenderPostViewportReset();
 
     camera = global_camera;
     if (parameters->clear_screen != 0) {
-        RenderPostClearScreenPc();
+        RenderPostClearScreen();
     }
     if (parameters->directional) {
         NuVecNorm(&parameters->direction, &parameters->direction);
@@ -1320,7 +1320,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
         --NuPrimCSPos;
         NuPrimSetCoordinateSystem(restore_mode);
     }
-    RenderPostViewportPrefixPc = saved_prefix;
+    RenderPostViewportPrefix = saved_prefix;
     PCSpecialProjectionAdjust = saved_adjust;
 }
 
@@ -1330,8 +1330,8 @@ u8 NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value) {
     return (u8)MIN(255.0f, MAX(0.0f, value));
 }
 
-PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc = 0;
-PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc = 0;
+PC_TEXTURE_RESOURCE *RendererVertexDeclaration = 0;
+PC_BUFFER_RESOURCE *RendererQuadVertexBuffer = 0;
 
 /* Stencil shadow-volume arena vertex: D3DDECLTYPE_FLOAT3 position and D3DCOLOR. */
 typedef struct RENDERER_ARENA_VERTEX { // size 0x10
@@ -1339,12 +1339,12 @@ typedef struct RENDERER_ARENA_VERTEX { // size 0x10
     u32 colour;                        // 0xc
 } RENDERER_ARENA_VERTEX;
 
-RENDERER_ARENA_VERTEX *RendererArenaDataPc = 0;
-u32 *RendererArenaOffsetsPc = 0;
-i32 *RendererArenaTypesPc = 0;
-i32 RendererArenaCountPc = 0;
-i32 RendererArenaVertexCountPc = 0;
-i32 RendererArenaIndexCountPc = 0;
+RENDERER_ARENA_VERTEX *RendererArenaData = 0;
+u32 *RendererArenaOffsets = 0;
+i32 *RendererArenaTypes = 0;
+i32 RendererArenaCount = 0;
+i32 RendererArenaVertexCount = 0;
+i32 RendererArenaIndexCount = 0;
 
 /* Shadow outline records: a direction or point with a count (or a -1 marker in the arena) in the fourth word. */
 typedef struct pc_shadow_edge_s { // size 0x10
@@ -1352,23 +1352,23 @@ typedef struct pc_shadow_edge_s { // size 0x10
     i32 count;                    // 0xc
 } PC_SHADOW_EDGE_PC;
 
-void NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
-    RendererArenaDataPc = (RENDERER_ARENA_VERTEX *)((buffer->addr + 3) & ~3u);
+void NuRndrArenaInit(VARIPTR *buffer, VARIPTR end) {
+    RendererArenaData = (RENDERER_ARENA_VERTEX *)((buffer->addr + 3) & ~3u);
     buffer->addr = ((buffer->addr + 3) & ~3u) + 0x36b00;
-    RendererArenaOffsetsPc = (u32 *)((buffer->addr + 3) & ~3u);
+    RendererArenaOffsets = (u32 *)((buffer->addr + 3) & ~3u);
     buffer->addr = ((buffer->addr + 3) & ~3u) + 0x7d0;
-    RendererArenaTypesPc = (i32 *)((buffer->addr + 3) & ~3u);
+    RendererArenaTypes = (i32 *)((buffer->addr + 3) & ~3u);
     buffer->addr = ((buffer->addr + 3) & ~3u) + 0x7d0;
 }
 
-void NuRndrAnglesBetweenPointsPc(NUVEC *direction, f32 *pitch, f32 *yaw) {
+void NuRndrAnglesBetweenPoints(NUVEC *direction, f32 *pitch, f32 *yaw) {
     *yaw = (f32)NuAtan2D(direction->x, direction->z);
     *pitch = (f32)NuAtan2D(-direction->y, NuFsqrt(direction->x * direction->x + direction->z * direction->z));
 }
 
 NUVEC NuRndrShadowDirectionsPc[8] = {0};
 
-void NuRndrRotateVecPc(NUVEC *vector, f32 pitch, f32 yaw) {
+void NuRndrRotateVec(NUVEC *vector, f32 pitch, f32 yaw) {
     f32 sin_pitch = NuTrigTable[((i32)pitch >> 1) & 0x7fff];
     f32 cos_pitch = NuTrigTable[((i32)(pitch + 16384.0) >> 1) & 0x7fff];
     f32 sin_yaw = NuTrigTable[((i32)yaw >> 1) & 0x7fff];
@@ -1383,7 +1383,7 @@ void NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
     NUVEC angles; /* x: pitch, y: yaw */
     f32 length;
     i32 i;
-    NuRndrAnglesBetweenPointsPc(direction, &angles.x, &angles.y);
+    NuRndrAnglesBetweenPoints(direction, &angles.x, &angles.y);
     if (angles.x < 8192.0f) {
         angles.x = 8192.0f;
     }
@@ -1391,19 +1391,19 @@ void NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
     direction->x = 0.0f;
     direction->y = 0.0f;
     direction->z = length;
-    NuRndrRotateVecPc(direction, angles.x, angles.y);
+    NuRndrRotateVec(direction, angles.x, angles.y);
     for (i = 0; i < 8; i++) {
         i32 angle = i * 0x10000 / 8;
         NuRndrShadowDirectionsPc[i].x = NU_COS_LUT(angle);
         NuRndrShadowDirectionsPc[i].y = -NU_SIN_LUT(angle);
         NuRndrShadowDirectionsPc[i].z = 0.0f;
-        NuRndrRotateVecPc(&NuRndrShadowDirectionsPc[i], angles.x, angles.y);
+        NuRndrRotateVec(&NuRndrShadowDirectionsPc[i], angles.x, angles.y);
     }
 }
 
 /* Shadow cylinder records: a centre, the axis and two side vectors in object space. Bit 0 of the first word selects a
  * rounded (capsule) outline instead of a box. */
-typedef struct PC_SHADOW_CYLINDER_PC { // size 0x40
+typedef struct PC_SHADOW_CYLINDER { // size 0x40
 
     union { // size 0xc
         NUVEC centre;
@@ -1415,11 +1415,11 @@ typedef struct PC_SHADOW_CYLINDER_PC { // size 0x40
     f32 unknown_24;    // 0x24
     NUVEC up;          // 0x28
     f32 unknown_34[3]; // 0x34
-} PC_SHADOW_CYLINDER_PC;
+} PC_SHADOW_CYLINDER;
 
 /* Extrudes the silhouette of a queued cylinder along the light offset into arena quads: ten edges of a capsule outline
  * when bit 0 of the record is set, otherwise the four edges of a box. */
-void NuRndrArenaAddCylinderVolumePc(PC_SHADOW_CYLINDER_PC *cylinder, PC_HG_SHADOW_PACKET *packet, NUVEC *offset) {
+void NuRndrArenaAddCylinderVolume(PC_SHADOW_CYLINDER *cylinder, PC_HG_SHADOW_PACKET *packet, NUVEC *offset) {
     NUVEC axis[3];
     VuVec v[32];
     NUVEC4 centre;
@@ -1431,10 +1431,10 @@ void NuRndrArenaAddCylinderVolumePc(PC_SHADOW_CYLINDER_PC *cylinder, PC_HG_SHADO
     i32 i;
 
     if (cylinder->flags & 1) {
-        if ((u32)RendererArenaCountPc < 250) {
-            RendererArenaOffsetsPc[RendererArenaCountPc] = RendererArenaVertexCountPc;
-            RendererArenaTypesPc[RendererArenaCountPc] = 10;
-            RendererArenaCountPc++;
+        if ((u32)RendererArenaCount < 250) {
+            RendererArenaOffsets[RendererArenaCount] = RendererArenaVertexCount;
+            RendererArenaTypes[RendererArenaCount] = 10;
+            RendererArenaCount++;
         }
         v[4].x = cylinder->centre.x;
         v[4].y = cylinder->centre.y;
@@ -1487,7 +1487,7 @@ void NuRndrArenaAddCylinderVolumePc(PC_SHADOW_CYLINDER_PC *cylinder, PC_HG_SHADO
         dot2 = dot2 * dot2 + scale * scale;
         scale = NuFsqrt(dot2);
         for (i = 0; i < 10; i++) {
-            RendererArenaIndexCountPc += 2;
+            RendererArenaIndexCount += 2;
             switch (i) {
                 case 0:
                     v[0].x = perp.x * scale + length.x;
@@ -1582,29 +1582,29 @@ void NuRndrArenaAddCylinderVolumePc(PC_SHADOW_CYLINDER_PC *cylinder, PC_HG_SHADO
             v[3].x = v[1].x + offset->x * 5.0;
             v[3].y = v[1].y + offset->y * 5.0;
             v[3].z = v[1].z + offset->z * 5.0;
-            RendererArenaDataPc[RendererArenaVertexCountPc].position.x = v[0].x;
-            RendererArenaDataPc[RendererArenaVertexCountPc].position.y = v[0].y;
-            RendererArenaDataPc[RendererArenaVertexCountPc].position.z = v[0].z;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.x = v[2].x;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.y = v[2].y;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.z = v[2].z;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.x = v[3].x;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.y = v[3].y;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.z = v[3].z;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.x = v[1].x;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.y = v[1].y;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.z = v[1].z;
-            RendererArenaDataPc[RendererArenaVertexCountPc].colour = 0xffffffff;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 1].colour = 0xffffffff;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 2].colour = 0xffffffff;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 3].colour = 0xffffffff;
-            RendererArenaVertexCountPc += 4;
+            RendererArenaData[RendererArenaVertexCount].position.x = v[0].x;
+            RendererArenaData[RendererArenaVertexCount].position.y = v[0].y;
+            RendererArenaData[RendererArenaVertexCount].position.z = v[0].z;
+            RendererArenaData[RendererArenaVertexCount + 1].position.x = v[2].x;
+            RendererArenaData[RendererArenaVertexCount + 1].position.y = v[2].y;
+            RendererArenaData[RendererArenaVertexCount + 1].position.z = v[2].z;
+            RendererArenaData[RendererArenaVertexCount + 2].position.x = v[3].x;
+            RendererArenaData[RendererArenaVertexCount + 2].position.y = v[3].y;
+            RendererArenaData[RendererArenaVertexCount + 2].position.z = v[3].z;
+            RendererArenaData[RendererArenaVertexCount + 3].position.x = v[1].x;
+            RendererArenaData[RendererArenaVertexCount + 3].position.y = v[1].y;
+            RendererArenaData[RendererArenaVertexCount + 3].position.z = v[1].z;
+            RendererArenaData[RendererArenaVertexCount].colour = 0xffffffff;
+            RendererArenaData[RendererArenaVertexCount + 1].colour = 0xffffffff;
+            RendererArenaData[RendererArenaVertexCount + 2].colour = 0xffffffff;
+            RendererArenaData[RendererArenaVertexCount + 3].colour = 0xffffffff;
+            RendererArenaVertexCount += 4;
         }
     } else {
-        if ((u32)RendererArenaCountPc < 250) {
-            RendererArenaOffsetsPc[RendererArenaCountPc] = RendererArenaVertexCountPc;
-            RendererArenaTypesPc[RendererArenaCountPc] = 4;
-            RendererArenaCountPc++;
+        if ((u32)RendererArenaCount < 250) {
+            RendererArenaOffsets[RendererArenaCount] = RendererArenaVertexCount;
+            RendererArenaTypes[RendererArenaCount] = 4;
+            RendererArenaCount++;
         }
         v[4].x = cylinder->centre.x;
         v[4].y = cylinder->centre.y;
@@ -1706,30 +1706,30 @@ void NuRndrArenaAddCylinderVolumePc(PC_SHADOW_CYLINDER_PC *cylinder, PC_HG_SHADO
             v[3].x = v[1].x + offset->x * 5.0;
             v[3].y = v[1].y + offset->y * 5.0;
             v[3].z = v[1].z + offset->z * 5.0;
-            RendererArenaDataPc[RendererArenaVertexCountPc].position.x = v[0].x;
-            RendererArenaDataPc[RendererArenaVertexCountPc].position.y = v[0].y;
-            RendererArenaDataPc[RendererArenaVertexCountPc].position.z = v[0].z;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.x = v[2].x;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.y = v[2].y;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.z = v[2].z;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.x = v[3].x;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.y = v[3].y;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.z = v[3].z;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.x = v[1].x;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.y = v[1].y;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.z = v[1].z;
-            RendererArenaDataPc[RendererArenaVertexCountPc].colour = 0xffffffff;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 1].colour = 0xffffffff;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 2].colour = 0xffffffff;
-            RendererArenaDataPc[RendererArenaVertexCountPc + 3].colour = 0xffffffff;
-            RendererArenaVertexCountPc += 4;
+            RendererArenaData[RendererArenaVertexCount].position.x = v[0].x;
+            RendererArenaData[RendererArenaVertexCount].position.y = v[0].y;
+            RendererArenaData[RendererArenaVertexCount].position.z = v[0].z;
+            RendererArenaData[RendererArenaVertexCount + 1].position.x = v[2].x;
+            RendererArenaData[RendererArenaVertexCount + 1].position.y = v[2].y;
+            RendererArenaData[RendererArenaVertexCount + 1].position.z = v[2].z;
+            RendererArenaData[RendererArenaVertexCount + 2].position.x = v[3].x;
+            RendererArenaData[RendererArenaVertexCount + 2].position.y = v[3].y;
+            RendererArenaData[RendererArenaVertexCount + 2].position.z = v[3].z;
+            RendererArenaData[RendererArenaVertexCount + 3].position.x = v[1].x;
+            RendererArenaData[RendererArenaVertexCount + 3].position.y = v[1].y;
+            RendererArenaData[RendererArenaVertexCount + 3].position.z = v[1].z;
+            RendererArenaData[RendererArenaVertexCount].colour = 0xffffffff;
+            RendererArenaData[RendererArenaVertexCount + 1].colour = 0xffffffff;
+            RendererArenaData[RendererArenaVertexCount + 2].colour = 0xffffffff;
+            RendererArenaData[RendererArenaVertexCount + 3].colour = 0xffffffff;
+            RendererArenaVertexCount += 4;
         }
     }
 }
 
 /* Extrudes the eight-direction silhouette of a queued ellipsoid (centre and three axes) along the light offset into
  * arena quads. */
-void NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUVEC *offset, f32 near_value, f32 far_value) {
+void NuRndrArenaAddEllipsoidVolume(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUVEC *offset, f32 near_value, f32 far_value) {
     VuVec v[32];
     NUVEC4 centre;
     NUVEC axis[3];
@@ -1769,13 +1769,13 @@ void NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, N
     scale[0] = NuFdiv(1.0f, NuFsqrt((axis[0].x * axis[0].x) + (axis[0].y * axis[0].y) + (axis[0].z * axis[0].z)));
     scale[1] = NuFdiv(1.0f, NuFsqrt(axis[1].x * axis[1].x + axis[1].y * axis[1].y + axis[1].z * axis[1].z));
     scale[2] = NuFdiv(1.0f, NuFsqrt(axis[2].x * axis[2].x + axis[2].y * axis[2].y + axis[2].z * axis[2].z));
-    if ((u32)RendererArenaCountPc < 250) {
-        RendererArenaOffsetsPc[RendererArenaCountPc] = RendererArenaVertexCountPc;
-        RendererArenaTypesPc[RendererArenaCountPc] = 8;
-        RendererArenaCountPc++;
+    if ((u32)RendererArenaCount < 250) {
+        RendererArenaOffsets[RendererArenaCount] = RendererArenaVertexCount;
+        RendererArenaTypes[RendererArenaCount] = 8;
+        RendererArenaCount++;
     }
     for (i = 0; i < 8; i++) {
-        RendererArenaIndexCountPc += 2;
+        RendererArenaIndexCount += 2;
         local.x = (NuRndrShadowDirectionsPc[i].x * axis[0].x + NuRndrShadowDirectionsPc[i].y * axis[0].y +
                    NuRndrShadowDirectionsPc[i].z * axis[0].z) *
                   scale[0];
@@ -1812,27 +1812,27 @@ void NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, N
         v[3].x = v[1].x + offset->x * 5.0;
         v[3].y = v[1].y + offset->y * 5.0;
         v[3].z = v[1].z + offset->z * 5.0;
-        RendererArenaDataPc[RendererArenaVertexCountPc].colour = PCShadowState.packed_colour;
-        RendererArenaDataPc[RendererArenaVertexCountPc].position.x = v[0].x;
-        RendererArenaDataPc[RendererArenaVertexCountPc].position.y = v[0].y;
-        RendererArenaDataPc[RendererArenaVertexCountPc].position.z = v[0].z;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 1].colour = PCShadowState.packed_colour;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.x = v[2].x;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.y = v[2].y;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.z = v[2].z;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 2].colour = PCShadowState.packed_colour;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.x = v[3].x;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.y = v[3].y;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.z = v[3].z;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 3].colour = PCShadowState.packed_colour;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.x = v[1].x;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.y = v[1].y;
-        RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.z = v[1].z;
-        RendererArenaVertexCountPc += 4;
+        RendererArenaData[RendererArenaVertexCount].colour = PCShadowState.packed_colour;
+        RendererArenaData[RendererArenaVertexCount].position.x = v[0].x;
+        RendererArenaData[RendererArenaVertexCount].position.y = v[0].y;
+        RendererArenaData[RendererArenaVertexCount].position.z = v[0].z;
+        RendererArenaData[RendererArenaVertexCount + 1].colour = PCShadowState.packed_colour;
+        RendererArenaData[RendererArenaVertexCount + 1].position.x = v[2].x;
+        RendererArenaData[RendererArenaVertexCount + 1].position.y = v[2].y;
+        RendererArenaData[RendererArenaVertexCount + 1].position.z = v[2].z;
+        RendererArenaData[RendererArenaVertexCount + 2].colour = PCShadowState.packed_colour;
+        RendererArenaData[RendererArenaVertexCount + 2].position.x = v[3].x;
+        RendererArenaData[RendererArenaVertexCount + 2].position.y = v[3].y;
+        RendererArenaData[RendererArenaVertexCount + 2].position.z = v[3].z;
+        RendererArenaData[RendererArenaVertexCount + 3].colour = PCShadowState.packed_colour;
+        RendererArenaData[RendererArenaVertexCount + 3].position.x = v[1].x;
+        RendererArenaData[RendererArenaVertexCount + 3].position.y = v[1].y;
+        RendererArenaData[RendererArenaVertexCount + 3].position.z = v[1].z;
+        RendererArenaVertexCount += 4;
     }
 }
 
-void NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *groups, PC_SHADOW_EDGE_PC *points, NUVEC *offset) {
+void NuRndrArenaAddEdgeVolumes(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *groups, PC_SHADOW_EDGE_PC *points, NUVEC *offset) {
     f32 buffer[256];
     NUMTX *matrix = (NUMTX *)(((u32)buffer + 15) & ~15u);
     VuVec *v;
@@ -1846,13 +1846,13 @@ void NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC 
         if (!(v[0].x * offset->x + v[0].y * offset->y + v[0].z * offset->z > 0.0)) {
             PC_SHADOW_EDGE_PC *point = points;
             i32 remaining;
-            if ((u32)RendererArenaCountPc < 250) {
-                RendererArenaOffsetsPc[RendererArenaCountPc] = RendererArenaVertexCountPc;
-                RendererArenaTypesPc[RendererArenaCountPc] = groups->count;
-                RendererArenaCountPc++;
+            if ((u32)RendererArenaCount < 250) {
+                RendererArenaOffsets[RendererArenaCount] = RendererArenaVertexCount;
+                RendererArenaTypes[RendererArenaCount] = groups->count;
+                RendererArenaCount++;
             }
             for (remaining = groups->count; remaining > 0; remaining--) {
-                RendererArenaIndexCountPc += 6;
+                RendererArenaIndexCount += 6;
                 v[0].xyz = point->v;
                 v[0].w = 1.0f;
                 NuVec4MtxTransformVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], matrix);
@@ -1871,23 +1871,23 @@ void NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC 
                 v[3].y = v[1].y + offset->y;
                 v[3].z = v[1].z + offset->z;
                 v[3].w = 1.0f;
-                RendererArenaDataPc[RendererArenaVertexCountPc].colour = 0xffffffff;
-                RendererArenaDataPc[RendererArenaVertexCountPc].position.x = v[0].x;
-                RendererArenaDataPc[RendererArenaVertexCountPc].position.y = v[0].y;
-                RendererArenaDataPc[RendererArenaVertexCountPc].position.z = v[0].z;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 1].colour = 0xffffffff;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.x = v[2].x;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.y = v[2].y;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.z = v[2].z;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 2].colour = 0xffffffff;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.x = v[3].x;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.y = v[3].y;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.z = v[3].z;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 3].colour = 0xffffffff;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.x = v[1].x;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.y = v[1].y;
-                RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.z = v[1].z;
-                RendererArenaVertexCountPc += 4;
+                RendererArenaData[RendererArenaVertexCount].colour = 0xffffffff;
+                RendererArenaData[RendererArenaVertexCount].position.x = v[0].x;
+                RendererArenaData[RendererArenaVertexCount].position.y = v[0].y;
+                RendererArenaData[RendererArenaVertexCount].position.z = v[0].z;
+                RendererArenaData[RendererArenaVertexCount + 1].colour = 0xffffffff;
+                RendererArenaData[RendererArenaVertexCount + 1].position.x = v[2].x;
+                RendererArenaData[RendererArenaVertexCount + 1].position.y = v[2].y;
+                RendererArenaData[RendererArenaVertexCount + 1].position.z = v[2].z;
+                RendererArenaData[RendererArenaVertexCount + 2].colour = 0xffffffff;
+                RendererArenaData[RendererArenaVertexCount + 2].position.x = v[3].x;
+                RendererArenaData[RendererArenaVertexCount + 2].position.y = v[3].y;
+                RendererArenaData[RendererArenaVertexCount + 2].position.z = v[3].z;
+                RendererArenaData[RendererArenaVertexCount + 3].colour = 0xffffffff;
+                RendererArenaData[RendererArenaVertexCount + 3].position.x = v[1].x;
+                RendererArenaData[RendererArenaVertexCount + 3].position.y = v[1].y;
+                RendererArenaData[RendererArenaVertexCount + 3].position.z = v[1].z;
+                RendererArenaVertexCount += 4;
                 point++;
             }
             v[8] = v[1];
@@ -1904,7 +1904,7 @@ typedef struct PC_SHADOW_EDGE_SET {
 } PC_SHADOW_EDGE_SET;
 
 /* Builds the shadow-volume arena from the queued hierarchy shadow packets, one light setup per packet sequence. */
-void NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1) {
+void NuRndrArenaBuildShadowVolumes(i32 unused0, i32 unused1) {
     PC_HG_SHADOW_PACKET *packet;
     NUVEC *direction;
     NUVEC offset;
@@ -1919,7 +1919,7 @@ void NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1) {
     i32 i;
     i32 j;
 
-    RendererArenaIndexCountPc = 0;
+    RendererArenaIndexCount = 0;
     for (i = 0; i < PCShadowPacketCount; i++) {
         packet = &PCShadowPackets[i];
         if (packet->sequence != sequence) {
@@ -1968,18 +1968,18 @@ void NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1) {
         }
         if (packet->cylinder != NULL) {
             for (j = 0; j < packet->cylinder_count; j++) {
-                NuRndrArenaAddCylinderVolumePc((PC_SHADOW_CYLINDER_PC *)packet->cylinder + j, packet, &offset);
+                NuRndrArenaAddCylinderVolume((PC_SHADOW_CYLINDER *)packet->cylinder + j, packet, &offset);
             }
         }
         if (packet->ellipse != NULL) {
             for (j = 0; j < packet->ellipse_count; j++) {
-                NuRndrArenaAddEllipsoidVolumePc(((NUVEC(*)[4])packet->ellipse)[j], packet, &offset, low, high);
+                NuRndrArenaAddEllipsoidVolume(((NUVEC(*)[4])packet->ellipse)[j], packet, &offset, low, high);
             }
         }
         if (packet->third_shape != NULL) {
             for (j = 0; j < packet->third_count; j++) {
-                NuRndrArenaAddEdgeVolumesPc(packet, ((PC_SHADOW_EDGE_SET *)packet->third_shape)->groups,
-                                            ((PC_SHADOW_EDGE_SET *)packet->third_shape)->points, &offset);
+                NuRndrArenaAddEdgeVolumes(packet, ((PC_SHADOW_EDGE_SET *)packet->third_shape)->groups,
+                                          ((PC_SHADOW_EDGE_SET *)packet->third_shape)->points, &offset);
             }
         }
     }
@@ -2008,16 +2008,16 @@ void NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material) 
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-typedef struct NULINEVERTEX2D_PC { // size 0x1c
-    f32 x;                         // 0x00
-    f32 y;                         // 0x04
-    f32 unused[2];                 // 0x08
-    i32 colour;                    // 0x10
-    f32 u;                         // 0x14
-    f32 v;                         // 0x18
-} NULINEVERTEX2D_PC;
+typedef struct NULINEVERTEX2D { // size 0x1c
+    f32 x;                      // 0x00
+    f32 y;                      // 0x04
+    f32 unused[2];              // 0x08
+    i32 colour;                 // 0x10
+    f32 u;                      // 0x14
+    f32 v;                      // 0x18
+} NULINEVERTEX2D;
 
-i32 NuRndrLine2d(NULINEVERTEX2D_PC *vertices, NUMTL *material) {
+i32 NuRndrLine2d(NULINEVERTEX2D *vertices, NUMTL *material) {
     f32 u;
     f32 v;
     NuPrim2DBegin(14, 7, material);
@@ -2158,24 +2158,24 @@ void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *m
 i32 dat_0080b6e4 = 13;
 
 /* Native speed-blur state has distinct writable storage. */
-i32 NuLightSpeedBlurEnabledPc = 1;
-static NUMTX NuLightSpeedBlurViewProjectionPc = {0};
-static NUMTX NuLightSpeedBlurPreviousViewProjectionPc = {0};
+i32 NuLightSpeedBlurEnabled = 1;
+static NUMTX NuLightSpeedBlurViewProjection = {0};
+static NUMTX NuLightSpeedBlurPreviousViewProjection = {0};
 
 void NuLightSpeedBlur(i32 reuse_camera, f32 scale) {
-    NU_POST_SPEED_PARAMETERS_PC *parameters = (NU_POST_SPEED_PARAMETERS_PC *)&currentScene.unknown_188;
+    NU_POST_SPEED_PARAMETERS *parameters = (NU_POST_SPEED_PARAMETERS *)&currentScene.unknown_188;
     f32 frame_time;
-    if (NuLightSpeedBlurEnabledPc == 0) {
+    if (NuLightSpeedBlurEnabled == 0) {
         return;
     }
     parameters->enabled = 1;
     if (reuse_camera == 0) {
-        NuMtxMulH(&NuLightSpeedBlurPreviousViewProjectionPc, &parameters->current, &pmtx);
-        NuMtxMulH(&NuLightSpeedBlurViewProjectionPc, &vmtx, &pmtx);
+        NuMtxMulH(&NuLightSpeedBlurPreviousViewProjection, &parameters->current, &pmtx);
+        NuMtxMulH(&NuLightSpeedBlurViewProjection, &vmtx, &pmtx);
     }
     frame_time = nuapi.frame_time;
-    parameters->previous = NuLightSpeedBlurViewProjectionPc;
-    parameters->current = NuLightSpeedBlurPreviousViewProjectionPc;
+    parameters->previous = NuLightSpeedBlurViewProjection;
+    parameters->current = NuLightSpeedBlurPreviousViewProjection;
     parameters->frame_time = frame_time;
     parameters->scale = scale;
 }
@@ -2229,7 +2229,7 @@ void NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *m
 }
 
 void fun_005dc3e0(void) {
-    AnimationDiagnosticNoOpPc();
+    AnimationDiagnosticNoOp();
 }
 
 void NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, NUMTL *material) {

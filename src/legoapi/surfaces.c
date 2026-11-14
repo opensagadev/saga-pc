@@ -85,9 +85,9 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
             if (material < 0 || material >= 17) {
                 object->field_283 = 0;
             }
-            material_mask = GetSurfaceInfoDefaultMaskPc.low | GetSurfaceInfoRuntimeMaskPc.low | 0x40u;
+            material_mask = GetSurfaceInfoDefaultMask.low | GetSurfaceInfoRuntimeMask.low | 0x40u;
             object->field_283 = (i8)((u8)object->field_283 & (u8)~material_mask);
-            FindAnglesZX(&GetSurfaceInfoWaterNormalPc, NULL, NULL);
+            FindAnglesZX(&GetSurfaceInfoWaterNormal, NULL, NULL);
             object->field_105c = temp_zrot;
             object->field_105e = temp_xrot;
         }
@@ -97,7 +97,7 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
         object->field_283 = -1;
     }
 
-    object->roof_height_pc = GetSurfaceInfoRoofHeightPc;
+    object->roof_height_pc = GetSurfaceInfoRoofHeight;
     if (object->roof_height_pc != GameObjectNearFloorNoFloorHeight) {
         roof_surface = (i8)ShadowRoofInfo();
         object->roof_surface_id_pc = (u8)roof_surface;

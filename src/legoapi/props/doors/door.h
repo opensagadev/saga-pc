@@ -30,13 +30,13 @@ extern "C" {
 #endif
     extern i32 gone_through_door_to_new_level;
     extern i32 Door_UseCutCam;
-    extern char DoorExitNamePc[64];
+    extern char DoorExitName[64];
     extern i32 Door_Start;
     extern i32 Door_NextSock;
-    extern void *LastDoorPointerPc;
-    extern char DoorExitCameraSplineNamePc[32];
-    extern NUVEC DoorCutCameraPosition0Pc;
-    extern NUVEC DoorCutCameraPosition1Pc;
+    extern void *LastDoorPointer;
+    extern char DoorExitCameraSplineName[32];
+    extern NUVEC DoorCutCameraPosition0;
+    extern NUVEC DoorCutCameraPosition1;
     i32 StartDoorPositions(void);
     void Door_Reset(void);
     extern f32 Door_CutCamBlendTime;
@@ -86,7 +86,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_pc_s *door);
+    extern void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_s *door);
 #ifdef __cplusplus
 }
 #endif

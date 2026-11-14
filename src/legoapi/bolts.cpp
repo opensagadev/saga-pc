@@ -20,7 +20,7 @@ extern "C" {
 
     typedef i32 (*BOLT_HIT_PART_FN_PC)(BOLT_PC *, PART_PC *);
 
-    typedef struct BOLT_CONFIG_PC {  // size 0xa4
+    typedef struct BOLT_CONFIG {     // size 0xa4
         char name[16];               // 0x00
         f32 field_10;                // 0x10
         f32 field_14;                // 0x14
@@ -50,9 +50,9 @@ extern "C" {
             NUSPECIALHANDLE reference_glow_special;   // 0x8c
             NUSPECIALHANDLE shadow_special;           // 0x98
         } specials;                                   // 0x68
-    } BOLT_CONFIG_PC;
+    } BOLT_CONFIG;
 
-    static BOLT_CONFIG_PC *BT_bolttype = 0;
+    static BOLT_CONFIG *BT_bolttype = 0;
     static WORLDINFO *BT_worldinfo = 0;
     static NUGSCN *BT_scene = 0;
     static i32 BT_gdeb_moving_count = 0;
@@ -405,7 +405,7 @@ extern "C" void Bolt_AddDeflectedBolt(BOLT_PC *bolt, NUVEC *incoming, NUVEC *nor
     position.x = (f32)(position.x + reflected.x * offset);
     position.y = (f32)(position.y + reflected.y * offset);
     position.z = (f32)(position.z + reflected.z * offset);
-    BoltNoSfxPc = 1;
+    BoltNoSfx = 1;
     BOLT_PC *created = Bolt_Add(NULL, &position, &matrix, type_id, bolt->hit_flags);
     if (created) {
         created->flags |= 0x10000000;
@@ -497,7 +497,7 @@ extern "C" void Bolt_End(BOLT_PC *bolt, i32 run_callback) {
 }
 
 extern "C" {
-    static void BoltTypeStoreConfigPrivatePc(BOLT_CONFIG_PC *type, WORLDINFO *world) {
+    static void BoltTypeStoreConfigPrivate(BOLT_CONFIG *type, WORLDINFO *world) {
         i32 index;
         if (type == NULL) {
             return;
@@ -710,7 +710,7 @@ extern "C" {
     }
 
     void BoltTypes_Init(WORLDINFO *world) {
-        BOLT_CONFIG_PC *type = (BOLT_CONFIG_PC *)BoltSys->types;
+        BOLT_CONFIG *type = (BOLT_CONFIG *)BoltSys->types;
         i32 index;
         for (index = 0; index < BoltSys->count; ++index, ++type) {
             i32 reflected;
@@ -929,7 +929,7 @@ static i32 Bolt_HitBlowupPrivate(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, N
     return 0;
 }
 
-extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
+extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
     u16 bolt_index;
     u16 object_index;
     NUVEC points[3];
@@ -975,8 +975,8 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
             NewBlockAction(object);
         }
         GameAudio_PlaySfx(42, &points[hit], 0, 0);
-        BoltNoSfxPc = 1;
-        if ((BoltBlockContextPc == -1 || object->character_context != BoltBlockContextPc) && !deflect && !(bolt->time >= 0.1f)) {
+        BoltNoSfx = 1;
+        if ((BoltBlockContext == -1 || object->character_context != BoltBlockContext) && !deflect && !(bolt->time >= 0.1f)) {
             goto finish;
         }
         if (bolt->owner != NULL && (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 1) != 0) {
@@ -987,7 +987,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
         }
         FindAnglesXY(&direction, NULL, NULL);
         if (((bolt->flags & 0x40) == 0 || deflect) && (object->flags_1fc & 0x80) != 0 &&
-            ((BoltBlockContextPc != -1 && object->character_context == BoltBlockContextPc) || cheat_deflect) &&
+            ((BoltBlockContext != -1 && object->character_context == BoltBlockContext) || cheat_deflect) &&
             (object->character_data->model_flags & 8) != 0) {
             if (bolt->owner == NULL || (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc_word & 1) == 0 ||
                 ((static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc_word & 1) != 0 &&
@@ -1036,7 +1036,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
                 angles.x = temp_zrot;
                 angles.y = temp_yrot;
                 NuMtxSetRotationXYVU0(&matrix, &angles);
-                BoltNoSfxPc = 1;
+                BoltNoSfx = 1;
                 BOLT_PC *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
                 if (reflected_bolt != NULL) {
                     reflected_bolt->flags |= 0x10000000;
@@ -1065,8 +1065,8 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
         if ((bolt->flags & 0x800000) != 0 &&
             (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x10000000) == 0 &&
             (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x8000) == 0 &&
-            (object->character_data->model_flags & 0x10) != 0 && BoltDeactivatedActionPc != -1 &&
-            object->character_model->model_data_b[BoltDeactivatedActionPc] != NULL) {
+            (object->character_data->model_flags & 0x10) != 0 && BoltDeactivatedAction != -1 &&
+            object->character_model->model_data_b[BoltDeactivatedAction] != NULL) {
             DeactivatePlayer(object, DEACTIVATEDTIME, NULL);
             if (bolt->owner != NULL) {
                 NewBuzz(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, 0.1f, 0);
@@ -1166,7 +1166,7 @@ extern "C" {
         }
 
         NuFParPushCom(parser, BoltType_ConfigKeywords);
-        BOLT_CONFIG_PC type;
+        BOLT_CONFIG type;
         i32 reading_type = 0;
         while (NuFParGetLine(parser) != 0) {
             if (NuFParGetWord(parser) == 0) {
@@ -1177,7 +1177,7 @@ extern "C" {
                 if (NuStrICmp(parser->word_buffer_ptr, ("bolttype_end")) == 0) {
                     reading_type = 0;
                     if (type.name[0] != '\0') {
-                        BoltTypeStoreConfigPrivatePc(&type, world);
+                        BoltTypeStoreConfigPrivate(&type, world);
                     }
                 } else {
                     NuFParInterpretWord(parser);
@@ -1218,7 +1218,7 @@ extern "C" i32 Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUVEC *poin
         if (SphereSphereOverlapScaleY(&center, object->bounds_radius, object->bounds_half_height, &point, radius, radius)) {
             u16 bolt_index = static_cast<u16>(bolt - Bolt);
             u16 object_index = static_cast<u16>(object - Obj);
-            NETMESSAGE_PC message(0x20);
+            NETMESSAGE message(0x20);
             message.Write16(bolt_index);
             message.Write16(object_index);
             message.Write(&points[0], 4, 3);
@@ -1278,7 +1278,7 @@ extern "C" i32 Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum,
     return 0;
 }
 
-extern "C" void Bolt_Init(void *storage, NETMESSAGE_PC &message) {
+extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     BOLT_PC *bolt = static_cast<BOLT_PC *>(storage);
     i16 owner_index;
     NUVEC position;
@@ -1303,10 +1303,10 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     }
     NUVEC momentum = APIObjectZeroMomentumPC;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    i32 no_sfx = BoltNoSfxPc;
-    BoltNoSfxPc = 0;
-    i32 no_momentum = BoltNoObjectMomentumPc;
-    BoltNoObjectMomentumPc = 0;
+    i32 no_sfx = BoltNoSfx;
+    BoltNoSfx = 0;
+    i32 no_momentum = BoltNoObjectMomentum;
+    BoltNoObjectMomentum = 0;
     i32 shoot_id = -1;
     BoltShootIdScratch = -1;
     if (type == NULL || !NuSpecialExistsFn(reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68))) {
@@ -1510,7 +1510,7 @@ extern "C" BOLT_PC *Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, 
         bolt = Bolt_Alloc();
         if (bolt != NULL) {
             u16 owner_index = owner ? (u16)(owner - Obj) : 0xffff;
-            NETMESSAGE_PC message(32);
+            NETMESSAGE message(32);
             message.Write16(owner_index);
             message.Write(position, 4, 3);
             message.Write(matrix, 4, 16);
@@ -1838,7 +1838,7 @@ extern "C" {
                 }
                 shot_position = &origin;
             } else {
-                PLAYERCHARACTERCONFIG_PC *data;
+                PLAYERCHARACTERCONFIG *data;
                 i32 locator;
                 if (object->model_draw_result == 0) {
                     continue;
@@ -1898,7 +1898,7 @@ extern "C" {
             } else {
                 NuMtxSetRotationYInline(&matrix, heading);
             }
-            BoltNoSfxPc = 1;
+            BoltNoSfx = 1;
             bolt = Bolt_Add(object, shot_position, &matrix, type_id, 0);
             if (bolt != NULL) {
                 bolts[bolt_count++] = bolt->index;

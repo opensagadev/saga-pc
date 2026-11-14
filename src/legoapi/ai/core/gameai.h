@@ -25,16 +25,16 @@
 
 #if SAGA_LEGOAPI_AI_CORE_GAMEAI_H_PART == 1 && !defined(SAGA_LEGOAPI_AI_CORE_GAMEAI_H_STOP)
 
-struct AIAREA_PC;
-struct AIPACKET_PC;
+struct AIAREA;
+struct AIPACKET;
 struct AISYS_PC;
-struct APIOBJECT_PC;
+struct APIOBJECT;
 struct gameobject_s;
 struct gizmosys_s;
 
 typedef struct level_script_process_s { // size 0xdc
     char name[16];                      // 0x00
-    AISCRIPTPROCESS_PC processor;       // 0x10
+    AISCRIPTPROCESS processor;          // 0x10
     u8 unknown_d8[4];                   // 0xd8
 } LEVEL_SCRIPT_PROCESS_PC;
 #ifdef __cplusplus
@@ -65,17 +65,17 @@ extern "C" {
     void oneAtOnce_SetInitDistPerRow(f32);
     void GameAIProcess(void);
     extern f32 draw_attention_distance;
-    extern f32 GameAiPartyFollowSpacingPc;
+    extern f32 GameAiPartyFollowSpacing;
     extern i32 drop_in_teleport;
     extern i32 teleport_all_freeplay_modes;
     extern f32 DEFENDTIME;
     extern i32 debug_ignore_players;
     extern i32 WALKSTEALTH;
     extern i32 active_goody_count;
-    extern i32 GameAiLosDivisorPc;
+    extern i32 GameAiLosDivisor;
     extern f32 timetogetlos;
     extern i32 test_new_interaction;
-    extern f32 OpponentSelectionHysteresisPc;
+    extern f32 OpponentSelectionHysteresis;
     extern i32 nbaddies_can_see_players;
     extern f32 fakeanimframe[1];
     void AI_Activate(void *gizmo, i32 active);
@@ -92,7 +92,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 CheckPosAIArea(struct AIAREA_PC *, NUVEC *, f32);
+    i32 CheckPosAIArea(struct AIAREA *, NUVEC *, f32);
 #ifdef __cplusplus
 }
 #endif
@@ -107,17 +107,17 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef i32 (*AI_BIG_JUMP_TO_DESTINATION_PC)(struct APIOBJECT_PC *, NUVEC *);
-    struct APIOBJECT_PC *GameAPIOBJECTFromObjID(u8);
-    f32 GetCharacterGoalSpeed(struct APIOBJECT_PC *);
-    typedef i32 (*AI_RESPAWN_ON_PATH_PC)(struct APIOBJECT_PC *);
-    struct APIOBJECT_PC *GetNamedAPIObject(void *, char *);
-    NUVEC *GetAICreatureOrigin(struct AISYS_PC *, struct AIPACKET_PC *);
+    typedef i32 (*AI_BIG_JUMP_TO_DESTINATION_PC)(struct APIOBJECT *, NUVEC *);
+    struct APIOBJECT *GameAPIOBJECTFromObjID(u8);
+    f32 GetCharacterGoalSpeed(struct APIOBJECT *);
+    typedef i32 (*AI_RESPAWN_ON_PATH_PC)(struct APIOBJECT *);
+    struct APIOBJECT *GetNamedAPIObject(void *, char *);
+    NUVEC *GetAICreatureOrigin(struct AISYS_PC *, struct AIPACKET *);
 
-    void GameCreatureInteraction2D(struct AISYS_PC *, i32, struct APIOBJECT_PC **, i32 *, f32);
+    void GameCreatureInteraction2D(struct AISYS_PC *, i32, struct APIOBJECT **, i32 *, f32);
 
-    void GameCreatureOpponentSelection(struct AISYS_PC *, i32, struct APIOBJECT_PC **, i32, struct APIOBJECT_PC **, i32,
-                                       struct APIOBJECT_PC **, u64, f32);
+    void GameCreatureOpponentSelection(struct AISYS_PC *, i32, struct APIOBJECT **, i32, struct APIOBJECT **, i32, struct APIOBJECT **, u64,
+                                       f32);
     void GameAISysReset(struct AISYS_PC *);
     void GameAISysStartFrame(struct AISYS_PC *);
 #ifdef __cplusplus
@@ -163,7 +163,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern ADAPTIVEDIFFICULTY_PC adaptivedifficulty;
+    extern ADAPTIVEDIFFICULTY adaptivedifficulty;
 #ifdef __cplusplus
 }
 #endif

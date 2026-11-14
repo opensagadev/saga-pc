@@ -23,11 +23,11 @@
 
 #if SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART == 1 && !defined(SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_STOP)
 
-struct ANI3_HEADER_PC;
-struct CUT_LOOKAT_STATE_PC;
+struct ANI3_HEADER;
+struct CUT_LOOKAT_STATE;
 union DWA_CURVE_CELL;
 struct NUANIMDATA2_SKELETAL;
-struct NUHGOBJ_EVAL_PC;
+struct NUHGOBJ_EVAL;
 struct cut_load_locator_instance_s;
 struct instnugcutscene_s;
 struct numtl_s;
@@ -53,31 +53,31 @@ typedef struct NUANIMDATA2 {      // size 0x14
     i8 *curve_types;              // 0x10
 } NUANIMDATA2;
 
-typedef struct CUT_LOCATOR_ANIMATION_PC { // size 0x54
-    NUMTX base_matrix;                    // 0x00
-    NUVEC pivot;                          // 0x40
-    f32 locator_scale;                    // 0x4c
-    struct ANI3_HEADER_PC *animation;     // 0x50
-} CUT_LOCATOR_ANIMATION_PC;
+typedef struct CUT_LOCATOR_ANIMATION { // size 0x54
+    NUMTX base_matrix;                 // 0x00
+    NUVEC pivot;                       // 0x40
+    f32 locator_scale;                 // 0x4c
+    struct ANI3_HEADER *animation;     // 0x50
+} CUT_LOCATOR_ANIMATION;
 
-typedef struct CUT_CHARACTER_ANIMATION_PC { // size 0x64
-    NUMTX base_matrix;                      // 0x00
-    u8 unknown_40[4];                       // 0x40
-    struct ANI3_HEADER_PC *animation;       // 0x44
-    struct NUANIMDATA2 *face_animation;     // 0x48
-    struct NUANIMDATA2 *extra_animation;    // 0x4c
-    u8 unknown_50[0x4];                     // 0x50
-    void *locator;                          // 0x54
-    f32 animation_rate;                     // 0x58
-    u8 flags;                               // 0x5c
-    u8 animation_index;                     // 0x5d
-    u8 has_locator;                         // 0x5e
-    u8 field_5f;                            // 0x5f
-    u8 locator_index;                       // 0x60
-    u8 blend_time;                          // 0x61
-    u8 unknown_62;                          // 0x62
-    i8 start_frame;                         // 0x63
-} CUT_CHARACTER_ANIMATION_PC;
+typedef struct CUT_CHARACTER_ANIMATION { // size 0x64
+    NUMTX base_matrix;                   // 0x00
+    u8 unknown_40[4];                    // 0x40
+    struct ANI3_HEADER *animation;       // 0x44
+    struct NUANIMDATA2 *face_animation;  // 0x48
+    struct NUANIMDATA2 *extra_animation; // 0x4c
+    u8 unknown_50[0x4];                  // 0x50
+    void *locator;                       // 0x54
+    f32 animation_rate;                  // 0x58
+    u8 flags;                            // 0x5c
+    u8 animation_index;                  // 0x5d
+    u8 has_locator;                      // 0x5e
+    u8 field_5f;                         // 0x5f
+    u8 locator_index;                    // 0x60
+    u8 blend_time;                       // 0x61
+    u8 unknown_62;                       // 0x62
+    i8 start_frame;                      // 0x63
+} CUT_CHARACTER_ANIMATION;
 
 typedef struct cut_scene_load_s CUT_SCENE_LOAD_PC;
 typedef struct cut_load_character_s CUT_LOAD_CHARACTER;
@@ -86,7 +86,7 @@ typedef struct cut_locator_function_entry_s CUT_LOCATOR_FUNCTION_ENTRY_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern f32 CutSceneCameraFocalLengthPc;
+    extern f32 CutSceneCameraFocalLength;
 
     typedef struct cut_load_locator_s CUT_LOAD_LOCATOR;
     typedef struct cut_load_locator_type_s CUT_LOAD_LOCATOR_TYPE;
@@ -95,14 +95,14 @@ extern "C" {
     typedef void (*CUT_DRAW_RENDER_CALLBACK_PC)(struct instnugcutscene_s *, void *, void *, void *, f32, i32);
     typedef void (*CUT_DRAW_EVAL_CALLBACK_PC)(struct instnugcutscene_s *, void *, void *, void *, f32);
     typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, struct nuspecial_handle_s *, NUMTX *);
-    void instGetLookAtLocatorInfo(struct instnugcutscene_s *, struct CUT_LOOKAT_STATE_PC *);
+    void instGetLookAtLocatorInfo(struct instnugcutscene_s *, struct CUT_LOOKAT_STATE *);
     void instNuGCutLocatorUpdate(struct instnugcutscene_s *, CUT_LOAD_LOCATOR_SYSTEM *, struct cut_load_locator_instance_s *,
                                  CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
-    extern i32 CutSceneSingleStreamBufferPc;
-    extern CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctionsPc;
-    f32 *PCCutLocatorAni3(CUT_LOCATOR_ANIMATION_PC *, NUMTX *, f32);
-    void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *);
-    i32 PCCutAni3CurveInteger(struct ANI3_HEADER_PC *, f32 *, i32);
+    extern i32 CutSceneSingleStreamBuffer;
+    extern CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctions;
+    f32 *PCCutLocatorAni3(CUT_LOCATOR_ANIMATION *, NUMTX *, f32);
+    void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *);
+    i32 PCCutAni3CurveInteger(struct ANI3_HEADER *, f32 *, i32);
     extern const f64 AIPathAngularScale;
 
     typedef struct state_anim_s { // size 0xc
@@ -118,30 +118,30 @@ extern "C" {
     void instNuGCutSceneEndFirstFrame(struct instnugcutscene_s *);
     void instNuGCutSceneStart(struct instnugcutscene_s *);
     void instNuGCutSceneReset(struct instnugcutscene_s *);
-    struct instnugcutscene_s *instNuGCutSceneFindActivePc(char *name);
+    struct instnugcutscene_s *instNuGCutSceneFindActive(char *name);
     void NuGCutSceneSysRender(i32);
     struct cut_load_rigid_s;
-    extern i32 CutSceneRenderRigidsPc;
-    extern i32 CutSceneRenderCharactersPc;
-    extern i32 CutSceneRenderLocatorsPc;
+    extern i32 CutSceneRenderRigids;
+    extern i32 CutSceneRenderCharacters;
+    extern i32 CutSceneRenderLocators;
 
     void NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed);
-    extern NUMTX CutSceneCameraMatrixPc;
-    extern NUVEC CutSceneFocusLocationPc;
-    extern u8 CutSceneUseFocusLocationPc;
-    extern f32 CutSceneFocusDistancePc;
-    extern f32 CutSceneFStopPc;
-    extern i32 CutSceneCameraChangedPc;
-    extern i32 CutSceneCameraDofModePc;
-    extern struct instnugcutscene_s *CutSceneLoadingInstancePc;
-    extern i32 CutSceneUpdateCamerasPc;
+    extern NUMTX CutSceneCameraMatrix;
+    extern NUVEC CutSceneFocusLocation;
+    extern u8 CutSceneUseFocusLocation;
+    extern f32 CutSceneFocusDistance;
+    extern f32 CutSceneFStop;
+    extern i32 CutSceneCameraChanged;
+    extern i32 CutSceneCameraDofMode;
+    extern struct instnugcutscene_s *CutSceneLoadingInstance;
+    extern i32 CutSceneUpdateCameras;
     i32 instNuGCutSceneIsFinished(struct instnugcutscene_s *);
     void instNuGCutScenePause(struct instnugcutscene_s *, i32 paused);
     void instNuGCutSceneStop(struct instnugcutscene_s *);
     void NuGCutSceneSysPostBackgroundLoad(void);
     i32 instNuGCutSceneSwapBuffers(struct instnugcutscene_s *, i32 force);
     void instNuGCutSceneServiceLoad(void);
-    extern i32 CutSceneStreamLoadGuardPc;
+    extern i32 CutSceneStreamLoadGuard;
     extern void *cutscene_load_instance;
 #ifdef __cplusplus
 }
@@ -155,20 +155,20 @@ extern "C" {
 
 #if SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART == 2 && !defined(SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_STOP)
 
-typedef struct CUT_RIGID_ANIMATION_PC { // size 0x50
-    NUMTX base_matrix;                  // 0x00
-    char *name;                         // 0x40
-    struct NUGSCN_s *scene;             // 0x44
-    void *special_object;               // 0x48
-    struct ANI3_HEADER_PC *animation;   // 0x4c
-} CUT_RIGID_ANIMATION_PC;
+typedef struct CUT_RIGID_ANIMATION { // size 0x50
+    NUMTX base_matrix;               // 0x00
+    char *name;                      // 0x40
+    struct NUGSCN_s *scene;          // 0x44
+    void *special_object;            // 0x48
+    struct ANI3_HEADER *animation;   // 0x4c
+} CUT_RIGID_ANIMATION;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 FindTexAnimFromMtl(struct NUHGOBJ_EVAL_PC *, struct numtl_s *);
-    void CutGetJointOverrideMatrixPc(struct NUHGOBJ_EVAL_PC *, i32, NUMTX *);
-    void PCCutRigidAni3(CUT_RIGID_ANIMATION_PC *, f32, NUMTX *);
+    i32 FindTexAnimFromMtl(struct NUHGOBJ_EVAL *, struct numtl_s *);
+    void CutGetJointOverrideMatrix(struct NUHGOBJ_EVAL *, i32, NUMTX *);
+    void PCCutRigidAni3(CUT_RIGID_ANIMATION *, f32, NUMTX *);
 #ifdef __cplusplus
 }
 #endif
@@ -181,19 +181,19 @@ extern "C" {
 
 #if SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART == 3 && !defined(SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_STOP)
 
-typedef struct CUT_LOCATOR_GENERIC_PC {     // size 0x54
+typedef struct CUT_LOCATOR_GENERIC {        // size 0x54
     NUMTX base_matrix;                      // 0x00
     u8 unknown_40_4f[16];                   // 0x40
     struct NUANIMDATA2_SKELETAL *animation; // 0x50
-} CUT_LOCATOR_GENERIC_PC;
+} CUT_LOCATOR_GENERIC;
 
-typedef struct CUT_RIGID_GENERIC_PC {       // size 0x50
+typedef struct CUT_RIGID_GENERIC {          // size 0x50
     NUMTX base_matrix;                      // 0x00
     u8 unknown_40_4b[12];                   // 0x40
     struct NUANIMDATA2_SKELETAL *animation; // 0x4c
-} CUT_RIGID_GENERIC_PC;
+} CUT_RIGID_GENERIC;
 
-typedef struct CUT_CHARACTER_GENERIC_PC {   // size 0x64
+typedef struct CUT_CHARACTER_GENERIC {      // size 0x64
     NUMTX base_matrix;                      // 0x00
     char *name;                             // 0x40
     struct NUANIMDATA2_SKELETAL *animation; // 0x44
@@ -210,12 +210,12 @@ typedef struct CUT_CHARACTER_GENERIC_PC {   // size 0x64
     u8 blend_time;                          // 0x61
     u8 unknown_62;                          // 0x62
     i8 start_frame;                         // 0x63
-} CUT_CHARACTER_GENERIC_PC;
+} CUT_CHARACTER_GENERIC;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *, f32, NUMTX *);
+    void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC *, f32, NUMTX *);
 #ifdef __cplusplus
 }
 #endif

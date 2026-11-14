@@ -59,11 +59,11 @@ the same file that take such a parameter are named).
 - Struct definitions differ little where both games have the struct (149
   same-named structs, 16 field type differences, mostly PS2-specific). The
   useful part is bitfield names for words we treat as masks:
-  `APIOBJECT_PC.flags_low` is the object flag bitfield (`ignore_antinodes` is
+  `APIOBJECT.flags_low` is the object flag bitfield (`ignore_antinodes` is
   bit 17), and retail stores it with the bitfield xor/and/xor sequence. With
   the bits declared as an anonymous union member, `Action_SetIgnoreAntinodes`
   went from 87.56 to 99.06, but the same header change moved code in two
-  functions of unrelated units (`BoulderSpawnPc` left exact,
+  functions of unrelated units (`BoulderSpawn` left exact,
   `GameCameraMakeMiniCut3` 85.75 -> 74.79), so it was reverted. Header struct
   changes need a full build and match before they are kept.
 - Parameter type hints (44 over the 648 non-exact functions in both) look

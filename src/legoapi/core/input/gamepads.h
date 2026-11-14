@@ -43,13 +43,13 @@ extern "C" {
     extern u32 GAMEPAD_SPECIAL;
     extern u32 GAMEPAD_TAG;
     extern void NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index);
-    void ResetRumble(RUMBLE_PACKET_RESOURCE_PC *);
+    void ResetRumble(RUMBLE_PACKET_RESOURCE *);
     GAMEPAD_PC *GamePad_Allocate(void);
     extern u32 GAMEPAD_TOGGLELEFT;
     extern u32 GAMEPAD_TOGGLERIGHT;
     extern u32 GAMEPAD_START;
     void ConstantRumble(GAMEOBJECT *, f32, f32);
-    void UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *);
+    void UpdateRumble(RUMBLE_PACKET_RESOURCE *);
     extern u32 GAMEPAD_MENUSELECT;
     extern u32 GAMEPAD_MENUCANCEL;
     extern u32 GAMEPAD_SELECT;

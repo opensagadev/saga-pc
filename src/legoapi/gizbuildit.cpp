@@ -108,7 +108,7 @@ typedef struct buildit_reset_progress_s { // size 0x60
 
 extern "C" {}
 extern "C" {
-    extern f32 BuilditHopSfxWaitPc;
+    extern f32 BuilditHopSfxWait;
     extern f32 GIZBUILDITWOBBLEJUMPHEIGHT;
 }
 STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) + offsetof(NUMTX, m30) == 0xb0);
@@ -176,24 +176,24 @@ typedef struct {
 extern "C" {
     extern i32 gizbuildit_gizmotype_id;
 }
-struct GIZBUILDIT_PC;
+struct GIZBUILDIT;
 
 typedef struct hub_buildit_sys_s {
-    GIZBUILDIT_PC *buildits;
+    GIZBUILDIT *buildits;
     u16 count;
 } HUB_BUILDIT_SYS_PC;
 
 extern "C" {
 
     /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-    static f32 GizbuilditFabsPc(f32 f) {
+    static f32 GizbuilditFabs(f32 f) {
         f32 rv;
 
         *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
         return rv;
     }
 
-    static f32 BuildItSafeRatioPc(f32 numerator, f32 denominator) {
+    static f32 BuildItSafeRatio(f32 numerator, f32 denominator) {
         if (numerator != 0.0f && denominator != 0.0f) {
             f32 ratio = numerator / denominator;
             return ratio;
@@ -218,7 +218,7 @@ extern "C" void *GizBuildIt_Find(WORLDINFO *world, char *name) {
 
 extern "C" {
 
-    static GAMEOBJECT *BuildItFindActiveBuilderPc(BUILDIT_RESET_PC *buildit) {
+    static GAMEOBJECT *BuildItFindActiveBuilder(BUILDIT_RESET_PC *buildit) {
         i32 index;
         if (LEGOCONTEXT_BUILDIT == -1) {
             return NULL;
@@ -233,7 +233,7 @@ extern "C" {
         return NULL;
     }
 
-    static f32 BuildItAxisWobbleFactorPc(NUVEC *axis) {
+    static f32 BuildItAxisWobbleFactor(NUVEC *axis) {
         NUVEC normal;
         f32 dot;
         f32 vertical;
@@ -242,7 +242,7 @@ extern "C" {
         f32 sine;
         NuVecNorm(&normal, axis);
         dot = NuVecDot(&normal, &v010);
-        vertical = GizbuilditFabsPc(dot);
+        vertical = GizbuilditFabs(dot);
         sine = NU_SIN_LUT((f64)vertical * 16384.0 + 16384.0);
         product = (1.0f - sine) * vertical;
         factor = 1.0f - product;
@@ -250,7 +250,7 @@ extern "C" {
     }
 }
 
-extern "C" GIZBUILDIT_PC *GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *player, i32 mode, i32 shadow) {
+extern "C" GIZBUILDIT *GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *player, i32 mode, i32 shadow) {
     if (world->giz_buildit_sys == NULL || player == NULL) {
         return NULL;
     }
@@ -258,8 +258,8 @@ extern "C" GIZBUILDIT_PC *GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *p
     f32 lower_y = player->lower_position.y;
     f32 upper_y = player->upper_position.y;
     f32 nearest_distance = 1000000.0f;
-    GIZBUILDIT_PC *nearest = NULL;
-    GIZBUILDIT_PC *buildit = ((HUB_BUILDIT_SYS_PC *)world->giz_buildit_sys)->buildits;
+    GIZBUILDIT *nearest = NULL;
+    GIZBUILDIT *buildit = ((HUB_BUILDIT_SYS_PC *)world->giz_buildit_sys)->buildits;
     for (i32 i = 0; i < ((HUB_BUILDIT_SYS_PC *)world->giz_buildit_sys)->count; i++, buildit++) {
         if (mode != 2) {
             if ((buildit->availability_flags & 2) == 0 || (buildit->availability_flags & 1) == 0) {
@@ -301,10 +301,10 @@ extern "C" GIZBUILDIT_PC *GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *p
 
 extern "C" {
 
-    GIZBUILDIT_PC *GizBuildIt_AnyReacting(WORLDINFO *world) {
+    GIZBUILDIT *GizBuildIt_AnyReacting(WORLDINFO *world) {
         struct GIZBUILDITSYS_s *system = world->giz_buildit_sys;
         if (system != NULL) {
-            GIZBUILDIT_PC *buildit = (GIZBUILDIT_PC *)system->buildits;
+            GIZBUILDIT *buildit = (GIZBUILDIT *)system->buildits;
             i32 count = system->count;
             i32 index;
             for (index = 0; index < count; ++index, ++buildit) {
@@ -343,7 +343,7 @@ extern "C" {
 }
 
 extern "C" void GizBuildIt_SetHeadTarget(GIZBUILDIT_s *buildit_pointer, GAMEOBJECT *player) {
-    GIZBUILDIT_PC *buildit = reinterpret_cast<GIZBUILDIT_PC *>(buildit_pointer);
+    GIZBUILDIT *buildit = reinterpret_cast<GIZBUILDIT *>(buildit_pointer);
     if (buildit->anim_object_count != 0) {
         i32 index = buildit->built_object_count;
         if (index >= buildit->anim_object_count) {
@@ -391,7 +391,7 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEA
 }
 
 extern "C" void GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
-    GIZBUILDIT_PC *buildit = static_cast<GIZBUILDIT_PC *>(object->grapple);
+    GIZBUILDIT *buildit = static_cast<GIZBUILDIT *>(object->grapple);
     GAMEANIMOBJ *piece;
     GIZBUILDITANIMDATA_s *data;
     f32 progress;
@@ -572,7 +572,7 @@ extern "C" {
     }
 
     void GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
-        GIZBUILDIT_PC *buildit;
+        GIZBUILDIT *buildit;
         GIZBUILDITANIMDATA_s *data;
         NUVEC centre;
         NUVEC end_position;
@@ -595,7 +595,7 @@ extern "C" {
             return;
         }
         player_position = player->collision_position;
-        buildit = (GIZBUILDIT_PC *)WORLD->giz_buildit_sys->buildits;
+        buildit = (GIZBUILDIT *)WORLD->giz_buildit_sys->buildits;
         for (i = 0; i < WORLD->giz_buildit_sys->count; ++i, ++buildit) {
             centre = v000;
             if ((buildit->state_flags & 8) == 0 || (buildit->availability_flags & 2) == 0 || buildit->built_object_count <= 0) {
@@ -918,7 +918,7 @@ extern "C" {
         (void)delta_time;
     }
 
-    i32 GizBuildIts_UpdateHint(HINT_PC *hint) {
+    i32 GizBuildIts_UpdateHint(HINT *hint) {
         if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
             return 0;
         }
@@ -941,7 +941,7 @@ extern "C" {
         object = buildit->anim_set->objects;
         while (object != NULL) {
             struct PART_PC *part;
-            ADDPART_PC params = Default_ADDPART;
+            ADDPART params = Default_ADDPART;
             NUMTX matrix;
             GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)object->object_data;
             matrix = data->end_mtx;
@@ -1142,7 +1142,7 @@ extern "C" {
             buildit->availability_flags &= (u16)~2u;
         }
         if (GizBuildIt_FinishFn != NULL) {
-            GizBuildIt_FinishFn((struct GIZBUILDIT_PC *)buildit);
+            GizBuildIt_FinishFn((struct GIZBUILDIT *)buildit);
         }
     }
 
@@ -1202,7 +1202,7 @@ extern "C" {
     }
 }
 
-extern "C" void GizBuildIt_SetToEnd(GIZBUILDIT_PC *buildit) {
+extern "C" void GizBuildIt_SetToEnd(GIZBUILDIT *buildit) {
     if (buildit == NULL) {
         return;
     }
@@ -1398,8 +1398,8 @@ extern "C" {
         if (system == NULL) {
             return;
         }
-        if (BuilditHopSfxWaitPc > 0.0f) {
-            BuilditHopSfxWaitPc -= FRAMETIME;
+        if (BuilditHopSfxWait > 0.0f) {
+            BuilditHopSfxWait -= FRAMETIME;
         }
         buildit = system->buildits;
         for (index = 0; index < system->count; ++index, ++buildit) {
@@ -1479,7 +1479,7 @@ extern "C" {
                             i32 piece_index;
                             angle = (u16)(facing - 0x4000);
                             if (buildit->reset_step_timer > 4.5f) {
-                                angle_step = (u16)(i32)BuildItSafeRatioPc(65536.0f, buildit->anim_object_count);
+                                angle_step = (u16)(i32)BuildItSafeRatio(65536.0f, buildit->anim_object_count);
                                 radius = 0.5f;
                             } else {
                                 f32 phase = (4.5 - (f64)buildit->reset_step_timer) / 4.5;
@@ -1487,7 +1487,7 @@ extern "C" {
                                 f64 progress = (f64)sine + 1.0;
                                 f32 turns = progress * 5.0;
                                 angle = (u16)(i32)((f64)turns * 360.0 * 65536.0 / 360.0 + (facing - 0x4000));
-                                angle_step = (u16)(i32)BuildItSafeRatioPc(65536.0f, buildit->anim_object_count);
+                                angle_step = (u16)(i32)BuildItSafeRatio(65536.0f, buildit->anim_object_count);
                                 radius = 0.5 - progress * (f64)0.3f;
                             }
                             for (piece_index = buildit->anim_object_count - 1; piece_index >= buildit->built_object_count; --piece_index) {
@@ -1550,7 +1550,7 @@ extern "C" {
                         GizMoveAttractoBuildItPiece((GIZBUILDIT_s *)buildit, piece);
                     }
                 } else if (buildit->builders_active != 0) {
-                    GAMEOBJECT *builder = BuildItFindActiveBuilderPc(buildit);
+                    GAMEOBJECT *builder = BuildItFindActiveBuilder(buildit);
                     previous_timer = buildit->reset_step_timer;
                     timer = buildit->reset_step_timer - FRAMETIME;
                     buildit->reset_step_timer = timer;
@@ -1642,10 +1642,10 @@ extern "C" {
                     if (data->wobble_time > 0.0f) {
                         f32 wobble_time = data->wobble_time - FRAMETIME;
                         data->wobble_time = wobble_time;
-                        if (wobble_time <= 0.0f && BuilditHopSfxWaitPc <= 0.0f &&
+                        if (wobble_time <= 0.0f && BuilditHopSfxWait <= 0.0f &&
                             ((buildit->availability_flags & 4) != 0 || qrand() < 32768)) {
                             GameAudio_PlaySfx(0x3c, &buildit->start_position, 0, 0);
-                            BuilditHopSfxWaitPc = (f64)qrand() * 1.5259021893143654e-05 * (f64)0.2f + (f64)0.1f;
+                            BuilditHopSfxWait = (f64)qrand() * 1.5259021893143654e-05 * (f64)0.2f + (f64)0.1f;
                         }
                     } else if (piece_index >= buildit->built_object_count &&
                                ((buildit->linked_buildit != NULL && data->was_drawn != 0) ||
@@ -1664,13 +1664,13 @@ extern "C" {
                         }
                         if (data->wobble_axis == 0 || data->wobble_axis == 1) {
                             NuMtxGetXAxis(&matrix, &axis);
-                            NuMtxPreRotateX(&matrix, (i32)(angle * BuildItAxisWobbleFactorPc(&axis)));
+                            NuMtxPreRotateX(&matrix, (i32)(angle * BuildItAxisWobbleFactor(&axis)));
                         } else if (data->wobble_axis == 2 || data->wobble_axis == 3) {
                             NuMtxGetYAxis(&matrix, &axis);
-                            NuMtxPreRotateY(&matrix, (i32)(angle * BuildItAxisWobbleFactorPc(&axis)));
+                            NuMtxPreRotateY(&matrix, (i32)(angle * BuildItAxisWobbleFactor(&axis)));
                         } else {
                             NuMtxGetZAxis(&matrix, &axis);
-                            NuMtxPreRotateZ(&matrix, (i32)(angle * BuildItAxisWobbleFactorPc(&axis)));
+                            NuMtxPreRotateZ(&matrix, (i32)(angle * BuildItAxisWobbleFactor(&axis)));
                         }
                         matrix.m31 += (f64)NU_SIN_LUT((f64)phase * 32768.0) * GIZBUILDITWOBBLEJUMPHEIGHT * buildit->interaction_radius;
                     }
@@ -1726,7 +1726,7 @@ extern "C" {
     }
 
     void BuildIt_MoveCode(GAMEOBJECT *player) {
-        GIZBUILDIT_PC *buildit;
+        GIZBUILDIT *buildit;
         i32 animation;
         f32 timer;
         if (LEGOCONTEXT_BUILDIT == -1) {
@@ -1739,22 +1739,22 @@ extern "C" {
             if (BoltSys->stop_targeting != NULL) {
                 BoltSys->stop_targeting(player, &player->collision_position);
             }
-            buildit = (GIZBUILDIT_PC *)player->grapple;
+            buildit = (GIZBUILDIT *)player->grapple;
             if (buildit == NULL) {
                 return;
             }
             GizBuildIt_SetHeadTarget((GIZBUILDIT_s *)buildit, player);
-            buildit = (GIZBUILDIT_PC *)player->grapple;
+            buildit = (GIZBUILDIT *)player->grapple;
             if ((buildit->state_flags & 0x80) != 0 && ShadowMode == 0) {
                 player->character_context = -1;
                 buildit->builders_active = 1;
-                ((GIZBUILDIT_PC *)player->grapple)->availability_flags |= 4;
+                ((GIZBUILDIT *)player->grapple)->availability_flags |= 4;
             }
             animation = player->field_7aa;
             if (player->character_model->model_data_b[animation] != NULL && AnimPlaying(&player->anim_packet, animation, 1, 0) == NULL) {
                 return;
             }
-            buildit = (GIZBUILDIT_PC *)player->grapple;
+            buildit = (GIZBUILDIT *)player->grapple;
             if (buildit->build_state == 0 && (player->pad->buttons_held & GAMEPAD_SPECIAL) != 0 && (f64)player->context_timer < (f64)0.2f) {
                 player->context_timer = 0.2f;
             } else {
@@ -1766,7 +1766,7 @@ extern "C" {
             }
             if (player->character_context != -1) {
                 buildit->builders_active = 1;
-                ((GIZBUILDIT_PC *)player->grapple)->availability_flags |= 4;
+                ((GIZBUILDIT *)player->grapple)->availability_flags |= 4;
             }
             return;
         }

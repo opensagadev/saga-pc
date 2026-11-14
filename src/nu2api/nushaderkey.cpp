@@ -25,7 +25,7 @@ extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FI
     u64 layer_word;
     u32 layer_low;
     i32 vertex_flags;
-    PC_TEXTURE_LEVEL_DESC_PC dimensions;
+    PC_TEXTURE_LEVEL_DESC dimensions;
     memset(&block, 0, sizeof(block));
     block.bytes[0x14] = 1;
     if (pixel_stage) {

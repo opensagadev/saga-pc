@@ -10,15 +10,15 @@ extern "C" void NuFileWriteString(NUFILE file, const char *text);
 /* Empty hook that receives each runtime error report. PCNativeErrorPrint
  * still calls it, which suggests it was compiled in another unit; here the
  * compiler drops the call to the empty body. */
-extern "C" void PCNativeErrorHookPc(char *text) {
+extern "C" void PCNativeErrorHook(char *text) {
     (void)text;
 }
 
-PC_NATIVE_DEBUG_STATE_PC *PC_NATIVE_DEBUG_STATE_PC::fun_006dff70() {
+PC_NATIVE_DEBUG_STATE *PC_NATIVE_DEBUG_STATE::fun_006dff70() {
     return this;
 }
 
-void PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+void PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...) {
     va_list args;
     if (format != NULL) {
         va_start(args, format);
@@ -31,7 +31,7 @@ void PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...
     }
 }
 
-void PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+void PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE *state, const char *format, ...) {
     va_list arguments;
     if (format != NULL) {
         va_start(arguments, format);
@@ -44,7 +44,7 @@ void PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *form
     _exit(3);
 }
 
-extern "C" void PCNativeMessagePrintPc(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+extern "C" void PCNativeMessagePrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...) {
     va_list arguments;
     (void)state;
     if (format != NULL) {
@@ -56,7 +56,7 @@ extern "C" void PCNativeMessagePrintPc(PC_NATIVE_DEBUG_STATE_PC *state, const ch
     MessageBoxA(PCInputInstance, PCNativeDebugOutputBuffer, "", 0x30);
 }
 
-extern "C" void PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+extern "C" void PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...) {
     va_list arguments;
     if (format != NULL) {
         va_start(arguments, format);
@@ -65,7 +65,7 @@ extern "C" void PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *
     }
     sprintf(PCNativeDebugOutputBuffer, "Important. Do not ignore!\n\n%s\n\n(Your application has generated an error message)\n\n",
             PCNativeDebugFormatBuffer);
-    PCNativeErrorHookPc(PCNativeDebugOutputBuffer);
+    PCNativeErrorHook(PCNativeDebugOutputBuffer);
     switch (MessageBoxA(PCInputInstance, PCNativeDebugOutputBuffer, "Nu2Api Runtime Error!", 0x12)) {
         case IDABORT:
             raise(22);
@@ -81,7 +81,7 @@ extern "C" void PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *
     }
 }
 
-extern "C" void PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+extern "C" void PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...) {
     va_list arguments;
     if (format != NULL) {
         va_start(arguments, format);
@@ -96,7 +96,7 @@ extern "C" void PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char
 }
 
 /* Only format the text; the PC build draws nothing. */
-extern "C" void PCNativeDebugPrintAtPc(PC_NATIVE_DEBUG_STATE_PC *state, i32 x, i32 y, u32 colour, const char *format, ...) {
+extern "C" void PCNativeDebugPrintAt(PC_NATIVE_DEBUG_STATE *state, i32 x, i32 y, u32 colour, const char *format, ...) {
     va_list arguments;
     (void)state;
     (void)x;
@@ -109,7 +109,7 @@ extern "C" void PCNativeDebugPrintAtPc(PC_NATIVE_DEBUG_STATE_PC *state, i32 x, i
     }
 }
 
-extern "C" void PCNativeDebugFormatPc(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+extern "C" void PCNativeDebugFormat(PC_NATIVE_DEBUG_STATE *state, const char *format, ...) {
     va_list arguments;
     (void)state;
     if (format != NULL) {
@@ -123,7 +123,7 @@ extern "C" void PCNativeDebugFormatPc(PC_NATIVE_DEBUG_STATE_PC *state, const cha
 extern "C" const char *WINAPI DXGetErrorString9A(HRESULT result);
 extern "C" const char *WINAPI DXGetErrorDescription9A(HRESULT result);
 
-extern "C" void PCNativeD3DWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, HRESULT result, const char *format, ...) {
+extern "C" void PCNativeD3DWarningPrint(PC_NATIVE_DEBUG_STATE *state, HRESULT result, const char *format, ...) {
     va_list arguments;
     if (format != NULL) {
         va_start(arguments, format);
@@ -138,7 +138,7 @@ extern "C" void PCNativeD3DWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, HRESULT
     }
 }
 
-void PC_NATIVE_DEBUG_STATE_PC::InitializeHeader() {
+void PC_NATIVE_DEBUG_STATE::InitializeHeader() {
     header.third = header.first = header.second = -1;
     header.font_size = 12;
     strcat(header.label, "Arial");
@@ -173,7 +173,7 @@ struct PC_NATIVE_DEBUG_POSITION {
     DEBUG_POINT_PC(start + 4, r, b);                                                                                                       \
     DEBUG_POINT_PC(start + 5, l, b)
 
-void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {
+void PC_NATIVE_DEBUG_STATE::UpdateGeometry() {
     PC_NATIVE_DEBUG_POSITION position;
     PC_NATIVE_DEBUG_VERTEX *vertex = vertices;
     DEBUG_RECT_PC(0, left + 1, top + 1, right, bottom);
@@ -217,7 +217,7 @@ void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {
 #undef DEBUG_RECT_PC
 #undef DEBUG_POINT_PC
 
-PC_NATIVE_DEBUG_STATE_PC::PC_NATIVE_DEBUG_STATE_PC() {
+PC_NATIVE_DEBUG_STATE::PC_NATIVE_DEBUG_STATE() {
     enabled = 1;
     write_log = 0;
     unknown_004 = 0;
@@ -226,11 +226,11 @@ PC_NATIVE_DEBUG_STATE_PC::PC_NATIVE_DEBUG_STATE_PC() {
     log_file = 0;
 }
 
-PC_NATIVE_DEBUG_STATE_PC::~PC_NATIVE_DEBUG_STATE_PC() {
+PC_NATIVE_DEBUG_STATE::~PC_NATIVE_DEBUG_STATE() {
     Shutdown();
 }
 
-void PC_NATIVE_DEBUG_STATE_PC::Initialize() {
+void PC_NATIVE_DEBUG_STATE::Initialize() {
     unknown_0 = 1;
     left = top = 100.0f;
     right = 600.0f;
@@ -248,7 +248,7 @@ void PC_NATIVE_DEBUG_STATE_PC::Initialize() {
     }
 }
 
-void PC_NATIVE_DEBUG_STATE_PC::Shutdown() {
+void PC_NATIVE_DEBUG_STATE::Shutdown() {
     if (unknown_0) {
         unknown_0 = 0;
         if (write_log) {
@@ -257,7 +257,7 @@ void PC_NATIVE_DEBUG_STATE_PC::Shutdown() {
     }
 }
 
-void PC_NATIVE_DEBUG_STATE_PC::fun_006dffa0(u8 value) {
+void PC_NATIVE_DEBUG_STATE::fun_006dffa0(u8 value) {
     enabled = value;
 }
 

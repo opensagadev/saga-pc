@@ -22,7 +22,7 @@ extern "C" {
     void DrawExplosions(void);
     void UpdateExplosions(void);
     void UpdateExplosion_Generic(EXPLOSION_PC *);
-    extern f32 ExplosionKnockbackScalePc;
+    extern f32 ExplosionKnockbackScale;
 #ifdef __cplusplus
 }
 #endif

@@ -39,13 +39,13 @@
 
 #if SAGA_DECOMP_H_PART == 1 && !defined(SAGA_DECOMP_H_STOP)
 
-struct AIAREA_PC;
-struct AIPATH_PC;
-struct NU_POST_BLOOM_PARAMETERS_PC;
-struct NU_POST_SPEED_PARAMETERS_PC;
+struct AIAREA;
+struct AIPATH;
+struct NU_POST_BLOOM_PARAMETERS;
+struct NU_POST_SPEED_PARAMETERS;
 struct NuDynamicLight;
-struct PC_FRAMEBUFFER_PC;
-struct PC_TEXTURE_RESOURCE_PC;
+struct PC_FRAMEBUFFER;
+struct PC_TEXTURE_RESOURCE;
 struct nudathdr_s;
 struct nudisplaylistitem_s;
 struct nurndrlibstate_s;
@@ -81,14 +81,14 @@ STATIC_ASSERT(sizeof(LARGE_INTEGER) == 8);
 
 #if SAGA_DECOMP_H_PART == 2 && !defined(SAGA_DECOMP_H_STOP)
 
-typedef struct NU_LIGHT_SHADOW_LIST_VIEW_PC {  // size 0x44
+typedef struct NU_LIGHT_SHADOW_LIST_VIEW {     // size 0x44
     u8 unknown_000[8];                         // 0x00
     struct nurndrlibstate_s *state;            // 0x08
     u8 unknown_00c[4];                         // 0x0c
     struct nudisplaylistitem_s *first;         // 0x10
     struct nudisplaylistitem_s *material_last; // 0x14
     u8 unknown_018[0x2c];                      // 0x18
-} NU_LIGHT_SHADOW_LIST_VIEW_PC;
+} NU_LIGHT_SHADOW_LIST_VIEW;
 
 typedef struct PC_MATERIAL_SHADER_DESC_VIEW { // size 0x208
     u32 flags;                                // 0x000
@@ -143,22 +143,22 @@ extern "C" {
         AI_SPECIAL_TERRAIN_PLATFORM_PC *platforms; // 0x68
     } AI_SPECIAL_TERRAIN_VIEW_PC;
 
-    typedef struct PC_GSCN_GEOMETRY_VIEW {       // size 0x34
-        u8 unknown_0[0x28];                      // 0x00
-        u32 vertex_format;                       // 0x28
-        u8 unknown_2c[4];                        // 0x2c
-        struct PC_TEXTURE_RESOURCE_PC *resource; // 0x30
+    typedef struct PC_GSCN_GEOMETRY_VIEW {    // size 0x34
+        u8 unknown_0[0x28];                   // 0x00
+        u32 vertex_format;                    // 0x28
+        u8 unknown_2c[4];                     // 0x2c
+        struct PC_TEXTURE_RESOURCE *resource; // 0x30
     } PC_GSCN_GEOMETRY_VIEW;
 
-    typedef struct PC_GSCN_NATIVE_VIEW {                // size 0x18
-        u16 vertex_buffer_count;                        // 0x00
-        u8 unknown_2[2];                                // 0x02
-        struct PC_TEXTURE_RESOURCE_PC **vertex_buffers; // 0x04
-        u16 index_buffer_count;                         // 0x08
-        u8 unknown_a[2];                                // 0x0a
-        struct PC_TEXTURE_RESOURCE_PC **index_buffers;  // 0x0c
-        PC_GSCN_GEOMETRY_VIEW **geometries;             // 0x10
-        i32 geometry_count;                             // 0x14
+    typedef struct PC_GSCN_NATIVE_VIEW {             // size 0x18
+        u16 vertex_buffer_count;                     // 0x00
+        u8 unknown_2[2];                             // 0x02
+        struct PC_TEXTURE_RESOURCE **vertex_buffers; // 0x04
+        u16 index_buffer_count;                      // 0x08
+        u8 unknown_a[2];                             // 0x0a
+        struct PC_TEXTURE_RESOURCE **index_buffers;  // 0x0c
+        PC_GSCN_GEOMETRY_VIEW **geometries;          // 0x10
+        i32 geometry_count;                          // 0x14
     } PC_GSCN_NATIVE_VIEW;
 
     typedef struct PC_SHADER_RECORD_VIEW { // size 0x8
@@ -326,10 +326,10 @@ STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, second_path) == 0x18);
 STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, layer_count) == 0x1c);
 #endif
 
-typedef struct HUB_AI_MUSIC_VIEW_PC {       // size 0x150
-    struct AIAREA_PC *areas[10];            // 0x000
-    struct AIPATH_PC *paths[10];            // 0x028
-    AILOCATOR_PC *area_locators[10][4];     // 0x050
+typedef struct HUB_AI_MUSIC_VIEW {          // size 0x150
+    struct AIAREA *areas[10];               // 0x000
+    struct AIPATH *paths[10];               // 0x028
+    AILOCATOR *area_locators[10][4];        // 0x050
     i16 area;                               // 0x0f0
     i16 door_state;                         // 0x0f2
     i16 table_count;                        // 0x0f4
@@ -339,17 +339,17 @@ typedef struct HUB_AI_MUSIC_VIEW_PC {       // size 0x150
     void *serving_object;                   // 0x100
     GIZAIMESSAGE *area_message;             // 0x104
     GIZAIMESSAGE *serving_customer_message; // 0x108
-    AILOCATOR_PC *counter_a[4];             // 0x10c
-    AILOCATOR_PC *counter_b[4];             // 0x11c
-    AILOCATOR_PC *table_locators[8];        // 0x12c
-    AILOCATOR_PC *serve_player;             // 0x14c
-} HUB_AI_MUSIC_VIEW_PC;
+    AILOCATOR *counter_a[4];                // 0x10c
+    AILOCATOR *counter_b[4];                // 0x11c
+    AILOCATOR *table_locators[8];           // 0x12c
+    AILOCATOR *serve_player;                // 0x14c
+} HUB_AI_MUSIC_VIEW;
 
-typedef struct KAMINO_DISCO_MUSIC_VIEW_PC { // size 0x3e8
-    u8 unknown_00[0x3d5];                   // 0x000
-    u8 mode;                                // 0x3d5
-    u8 unknown_3d6[0x12];                   // 0x3d6
-} KAMINO_DISCO_MUSIC_VIEW_PC;
+typedef struct KAMINO_DISCO_MUSIC_VIEW { // size 0x3e8
+    u8 unknown_00[0x3d5];                // 0x000
+    u8 mode;                             // 0x3d5
+    u8 unknown_3d6[0x12];                // 0x3d6
+} KAMINO_DISCO_MUSIC_VIEW;
 
 typedef struct ANIM_REDIRECT_VIEW_PC { // size 0x8
     const char *name;                  // 0x0
@@ -358,65 +358,65 @@ typedef struct ANIM_REDIRECT_VIEW_PC { // size 0x8
 } ANIM_REDIRECT_VIEW_PC;
 
 /* Refine the existing single DWORD owner; do not create another address alias. */
-typedef union PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC { // size 0x4
+typedef union PC_GRAPHICS_FRAME_SCRATCH_VIEW { // size 0x4
     i32 reset_word;
     void *lightmap_packet;
-} PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC;
+} PC_GRAPHICS_FRAME_SCRATCH_VIEW;
 
-typedef struct NU_POST_MAIN_VIEW_PC {                // size 0x128
-    void *vtable;                                    // 0x000
-    u8 enabled;                                      // 0x004
-    u8 unknown_005[0x63];                            // 0x005
-    const struct NU_POST_BLOOM_PARAMETERS_PC *bloom; // 0x068
-    f32 blur_radius;                                 // 0x06c
-    f32 dof_strength;                                // 0x070
-    f32 dof_near;                                    // 0x074
-    f32 dof_far;                                     // 0x078
-    f32 dof_blur;                                    // 0x07c
-    i32 dof_mode;                                    // 0x080
-    i32 dof_bias;                                    // 0x084
-    u8 dof_enabled;                                  // 0x088
-    u8 bloom_enabled;                                // 0x089
-    u8 unknown_08a[2];                               // 0x08a
-    i32 active_filter_count;                         // 0x08c
-    NUMTX motion_previous;                           // 0x090
-    NUMTX motion_current;                            // 0x0d0
-    f32 motion_scale;                                // 0x110
-    f32 motion_maximum;                              // 0x114
-    f32 motion_falloff;                              // 0x118
-    i32 accumulation_frames;                         // 0x11c
-    f32 accumulation_blend;                          // 0x120
-    f32 accumulation_mode_pc;                        // 0x124
-} NU_POST_MAIN_VIEW_PC;
+typedef struct NU_POST_MAIN_VIEW {                // size 0x128
+    void *vtable;                                 // 0x000
+    u8 enabled;                                   // 0x004
+    u8 unknown_005[0x63];                         // 0x005
+    const struct NU_POST_BLOOM_PARAMETERS *bloom; // 0x068
+    f32 blur_radius;                              // 0x06c
+    f32 dof_strength;                             // 0x070
+    f32 dof_near;                                 // 0x074
+    f32 dof_far;                                  // 0x078
+    f32 dof_blur;                                 // 0x07c
+    i32 dof_mode;                                 // 0x080
+    i32 dof_bias;                                 // 0x084
+    u8 dof_enabled;                               // 0x088
+    u8 bloom_enabled;                             // 0x089
+    u8 unknown_08a[2];                            // 0x08a
+    i32 active_filter_count;                      // 0x08c
+    NUMTX motion_previous;                        // 0x090
+    NUMTX motion_current;                         // 0x0d0
+    f32 motion_scale;                             // 0x110
+    f32 motion_maximum;                           // 0x114
+    f32 motion_falloff;                           // 0x118
+    i32 accumulation_frames;                      // 0x11c
+    f32 accumulation_blend;                       // 0x120
+    f32 accumulation_mode_pc;                     // 0x124
+} NU_POST_MAIN_VIEW;
 
 /* 32 slots are the bounded pointer region58..d8; no native upper-bound
  * guard is added and no full class allocation/capacity is credited. */
-typedef struct NU_POST_MOTION_VIEW_PC { // size 0xa0
-    void *vtable;                       // 0x00
-    u8 enabled;                         // 0x04
-    u8 unknown_005[0xf];                // 0x05
-    NUMTX previous;                     // 0x14
-    NUMTX current;                      // 0x54
-    f32 scale;                          // 0x94
-    f32 maximum;                        // 0x98
-    f32 falloff;                        // 0x9c
-} NU_POST_MOTION_VIEW_PC;
+typedef struct NU_POST_MOTION_VIEW { // size 0xa0
+    void *vtable;                    // 0x00
+    u8 enabled;                      // 0x04
+    u8 unknown_005[0xf];             // 0x05
+    NUMTX previous;                  // 0x14
+    NUMTX current;                   // 0x54
+    f32 scale;                       // 0x94
+    f32 maximum;                     // 0x98
+    f32 falloff;                     // 0x9c
+} NU_POST_MOTION_VIEW;
 
-typedef struct NU_POST_ACCUM_VIEW_PC { // size 0x24
-    void *vtable;                      // 0x00
-    u8 enabled;                        // 0x04
-    u8 unknown_005[0x13];              // 0x05
-    i32 frames;                        // 0x18
-    f32 blend;                         // 0x1c
-    f32 mode_pc;                       // 0x20
-} NU_POST_ACCUM_VIEW_PC;
+typedef struct NU_POST_ACCUM_VIEW { // size 0x24
+    void *vtable;                   // 0x00
+    u8 enabled;                     // 0x04
+    u8 unknown_005[0x13];           // 0x05
+    i32 frames;                     // 0x18
+    f32 blend;                      // 0x1c
+    f32 mode_pc;                    // 0x20
+} NU_POST_ACCUM_VIEW;
 
-typedef struct NU_POST_SPEED_VIEW_PC {                    // size 0x20
-    void *vtable;                                         // 0x00
-    u8 enabled;                                           // 0x04
-    u8 unknown_005[0x17];                                 // 0x05
-    const struct NU_POST_SPEED_PARAMETERS_PC *parameters; // 0x1c
-} NU_POST_SPEED_VIEW_PC;
+typedef struct NU_POST_SPEED_VIEW {                    // size 0x20
+    void *vtable;                                      // 0x00
+    u8 enabled;                                        // 0x04
+    u8 unknown_005[0x17];                              // 0x05
+    const struct NU_POST_SPEED_PARAMETERS *parameters; // 0x1c
+} NU_POST_SPEED_VIEW;
 
 #include "debug/diagnostics.h"
 #undef SAGA_DECOMP_H_PART
@@ -498,7 +498,7 @@ extern "C" {
         u16 filler5;                          // 0x2c2
     } PC_SCENE_MTL_VIEW;
 
-    typedef union LEVEL_INST_ANIM_RESET_VIEW_PC { // size 0x30
+    typedef union LEVEL_INST_ANIM_RESET_VIEW { // size 0x30
         u32 reset_words[12];
         NUINSTANIM *animations[12];
 
@@ -510,7 +510,7 @@ extern "C" {
             u16 target_deg_far;     // 0x28
             u8 unknown_2a[6];       // 0x2a
         } fields;
-    } LEVEL_INST_ANIM_RESET_VIEW_PC;
+    } LEVEL_INST_ANIM_RESET_VIEW;
 
 #ifdef __cplusplus
 }
@@ -559,8 +559,8 @@ extern "C" {
         i32 version;
         u32 field_18;
         PC_SHADER_PARAMETER_LOCAL_PC parameters[100];
-        struct PC_TEXTURE_RESOURCE_PC *vertex_shader;
-        struct PC_TEXTURE_RESOURCE_PC *pixel_shader;
+        struct PC_TEXTURE_RESOURCE *vertex_shader;
+        struct PC_TEXTURE_RESOURCE *pixel_shader;
         u32 stage_flags;
     };
 
@@ -636,17 +636,17 @@ extern "C" {
 }
 #endif
 
-typedef union PC_BOOT_FRAMEBUFFER_VIEW_PC { // size 0x8
+typedef union PC_BOOT_FRAMEBUFFER_VIEW { // size 0x8
 
-    struct {                                             // size 0x8
-        struct PC_FRAMEBUFFER_PC *default_framebuffer;   // 0x0
-        struct PC_FRAMEBUFFER_PC *secondary_framebuffer; // 0x4
+    struct {                                          // size 0x8
+        struct PC_FRAMEBUFFER *default_framebuffer;   // 0x0
+        struct PC_FRAMEBUFFER *secondary_framebuffer; // 0x4
     } fields;
 
-    struct PC_FRAMEBUFFER_PC *slots[2];
-} PC_BOOT_FRAMEBUFFER_VIEW_PC;
+    struct PC_FRAMEBUFFER *slots[2];
+} PC_BOOT_FRAMEBUFFER_VIEW;
 
-typedef struct NU_POST_DEFERRED_VIEW_PC {      // size 0xdc
+typedef struct NU_POST_DEFERRED_VIEW {         // size 0xdc
     void *vtable;                              // 0x00
     u8 enabled;                                // 0x04
     u8 unknown_005[0x3f];                      // 0x05
@@ -654,7 +654,7 @@ typedef struct NU_POST_DEFERRED_VIEW_PC {      // size 0xdc
     i32 dynamic_light_count;                   // 0x54
     struct NuDynamicLight *dynamic_lights[32]; // 0x58
     i32 deferred_geometry_count;               // 0xd8
-} NU_POST_DEFERRED_VIEW_PC;
+} NU_POST_DEFERRED_VIEW;
 
 #undef SAGA_DECOMP_H_PART
 #define SAGA_DECOMP_H_PART 8

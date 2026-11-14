@@ -16,9 +16,9 @@ extern "C" {
 #endif
     void Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress);
 
-    extern i16 GrabMachineIdPc;
-    extern i16 GrabMagnetIdPc;
-    extern i16 RobotBaseIdPc;
+    extern i16 GrabMachineId;
+    extern i16 GrabMagnetId;
+    extern i16 RobotBaseId;
     void Grabber_Configure(WORLDINFO *, char *);
 #ifdef __cplusplus
 }

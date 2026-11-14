@@ -1,13 +1,13 @@
 #include "saga.h"
 #include <string.h>
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, script_processor) + offsetof(AISCRIPTPROCESS_PC, script) == 0x2cc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, script_processor) + offsetof(AISCRIPTPROCESS, script) == 0x2cc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_index) == 0x400);
 extern void *Door_Last;
-extern u64 CharacterMaskAllPc;
+extern u64 CharacterMaskAll;
 i8 Area_CharIDInCurrentList(i32 character_id);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode) == 0x406);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, reset_mode) == 0x406);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
 
 void ClearTakeOverObjectSys(void) {
     memset(takeoverobjects, 0, sizeof(takeoverobjects));
@@ -16,7 +16,7 @@ void ClearTakeOverObjectSys(void) {
 
 void RegisterTakeOverObject(GAMEOBJECT *object) {
     i32 index;
-    AISCRIPT_PC *script;
+    AISCRIPT *script;
     i32 level;
     if ((object->character_data->game_character->flags_090 & 0x80) != 0 || (object->flags_1f8 & 0x4000) == 0 ||
         (WORLD->current_level->flags & 0x100000) != 0) {
@@ -61,7 +61,7 @@ void StoreStatusTakeOverObjectSys(void) {
         takeoverobjects[index].heading = object->field_0x276;
         if (object->rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 && object->rider->character_context == LEGOCONTEXT_BEENTAKENOVER &&
             object->field_280 != 0xff && Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
-            (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAllPc ||
+            (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAll ||
              ((character_index = (u8)Area_CharIDInCurrentList((i16)object->id)) < 63 &&
               (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0))) {
             takeoverobjects[index].contact_index = takeoverobjects[index].object->field_280;
@@ -142,8 +142,8 @@ void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
 }
 
 void Tag_ResetTransfers(void) {
-    TagTransfersPc[0].elapsed = 0.5f;
-    TagTransfersPc[1].elapsed = 0.5f;
+    TagTransfers[0].elapsed = 0.5f;
+    TagTransfers[1].elapsed = 0.5f;
 }
 
 void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
@@ -152,12 +152,12 @@ void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
     f32 lower;
     NUVEC *previous;
     if (target->field_280 == 0 || target->field_280 == 1) {
-        TagTransfersPc[(i8)target->field_280].source = source;
-        TagTransfersPc[(i8)target->field_280].elapsed = 0.0f;
+        TagTransfers[(i8)target->field_280].source = source;
+        TagTransfers[(i8)target->field_280].elapsed = 0.0f;
         for (particle = 0; particle < 3; ++particle) {
-            height = TagTransfersPc[(i8)target->field_280].height_fraction[particle] =
-                (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.4f);
-            previous = &TagTransfersPc[(i8)target->field_280].previous[particle];
+            height = TagTransfers[(i8)target->field_280].height_fraction[particle] =
+                (f32)((f64)qrand() * PlayerRandomScale * (f64)0.4f + (f64)0.4f);
+            previous = &TagTransfers[(i8)target->field_280].previous[particle];
             previous->x = source->collision_position.x;
             previous->z = source->collision_position.z;
             lower = source->collision_min.y;
@@ -189,7 +189,7 @@ void Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count) {
     NUVEC to;
     NUVEC position;
     for (player = 0; player < 2; ++player) {
-        transfer = &TagTransfersPc[player];
+        transfer = &TagTransfers[player];
         if (Player[player] == NULL) {
             transfer->elapsed = 0.5f;
             continue;
@@ -243,7 +243,7 @@ void Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
     u16 angle = (u16)qrand();
     f32 speed = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.09f + (f64)0.01f);
     f32 clearance;
-    PLAYERCHARACTERCONFIG_PC *character;
+    PLAYERCHARACTERCONFIG *character;
     rider->velocity.x = NuTrigTable[angle >> 1] * speed;
     rider->velocity.z = speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     StartJump(rider, 0);
@@ -266,7 +266,7 @@ void Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
 }
 
 void Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
-    CHARACTER_MODEL_LAYERS_PC *model;
+    CHARACTER_MODEL_LAYERS *model;
     if (LEGOCONTEXT_BUCK == -1 || LEGOACT_BUCK == -1) {
         return;
     }

@@ -27,7 +27,7 @@ extern "C" {
 #endif
     i32 CreateWindowPc(HINSTANCE, i32, u16);
     void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC);
-    void SetAccessibilityPc(u8);
+    void SetAccessibility(u8);
     void ParsePlatformArgumentsPc(char *);
 #ifdef __cplusplus
     void PcRelaunchMediaCenter(void);

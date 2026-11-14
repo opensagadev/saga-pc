@@ -361,8 +361,7 @@ i32 NewBlockAction(GAMEOBJECT *object) {
     i32 count = 0;
     i32 action;
     for (action = 0; count < 3 && action < apicharsys->model_id_capacity; ++action) {
-        if ((((API_ACTION_INFO_PC *)PlayerBlockActionInfoPc)[action].flags & 8) != 0 &&
-            object->character_model->model_data_b[action] != NULL) {
+        if ((((API_ACTION_INFO *)PlayerBlockActionInfo)[action].flags & 8) != 0 && object->character_model->model_data_b[action] != NULL) {
             actions[count++] = action;
         }
     }
@@ -417,8 +416,8 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
         target_position = &blowup->mid_position;
         if ((LEGOCONTEXT_COMBO != -1 && object->character_context == LEGOCONTEXT_COMBO) ||
             (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->action_movement_state == 3)) {
-            inner_distance = object->collision_radius * PlayerStepInnerActionPc + blowup->target_radius;
-            outer_distance = object->collision_radius * PlayerStepOuterActionPc + blowup->target_radius;
+            inner_distance = object->collision_radius * PlayerStepInnerAction + blowup->target_radius;
+            outer_distance = object->collision_radius * PlayerStepOuterAction + blowup->target_radius;
         } else {
             inner_distance = object->collision_radius * 0.75 + blowup->target_radius;
             outer_distance = object->collision_radius * 1.25 + blowup->target_radius;
@@ -432,8 +431,8 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
             return 0;
         }
         target_position = &object->force_target->collision_position;
-        inner_distance = object->bounds_radius * PlayerStepInnerActionPc + object->force_target->bounds_radius;
-        outer_distance = object->bounds_radius * PlayerStepOuterActionPc + object->force_target->bounds_radius;
+        inner_distance = object->bounds_radius * PlayerStepInnerAction + object->force_target->bounds_radius;
+        outer_distance = object->bounds_radius * PlayerStepOuterAction + object->force_target->bounds_radius;
     }
     if (target_position == NULL) {
         return 0;

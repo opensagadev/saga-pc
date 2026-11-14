@@ -1,8 +1,8 @@
 #include "saga.h"
 #include <string.h>
 
-extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC;
-extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
+extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
+extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
 
 typedef struct movement_model_s {
     u8 unknown_00[0xc];
@@ -11,7 +11,7 @@ typedef struct movement_model_s {
 
 extern i32 (*CanMagnetClimbFn)(GAMEOBJECT *);
 
-static __inline f32 ClimbingFabsPc(f32 value) {
+static __inline f32 ClimbingFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
@@ -31,7 +31,7 @@ static i32 LedgeTerrain_Attach(GAMEOBJECT *object, u16 facing, NUVEC *position, 
         return 0;
     }
     if (object->contact_position.y <= object->collision_position.y - (f64)0.05f ||
-        ClimbingFabsPc(object->contact_normal.y) > NuTrigTable[0x3000]) {
+        ClimbingFabs(object->contact_normal.y) > NuTrigTable[0x3000]) {
         return 0;
     }
     *wall_angle = NuAtan2D(object->contact_normal.x, object->contact_normal.z);
@@ -326,7 +326,7 @@ void Climb_MoveCode(GAMEOBJECT *object) {
         if (object->character_context == -1) {
             goto enter_climb;
         }
-        if (ZipUpWallShuffleContextPc != -1 && object->character_context == ZipUpWallShuffleContextPc) {
+        if (ZipUpWallShuffleContext != -1 && object->character_context == ZipUpWallShuffleContext) {
             goto enter_climb;
         }
         if (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP) {
@@ -493,16 +493,16 @@ void *CreateClimbObjectSys(VARIPTR *buffer, VARIPTR *end, i32 count) {
     return system;
 }
 
-i32 ClimbNormalProbeCountPc = 8;
+i32 ClimbNormalProbeCount = 8;
 
-void ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
-    AIPATHNODE_PC *first = &object->path->nodes[object->connection->node_indices[0]];
-    AIPATHNODE_PC *second = &object->path->nodes[object->connection->node_indices[1]];
-    AIPATHNODE_PC *node = first->position.y < second->position.y ? first : second;
+void ClimbObject_FindNormal(CLIMB_SLOT_PC *object) {
+    AIPATHNODE *first = &object->path->nodes[object->connection->node_indices[0]];
+    AIPATHNODE *second = &object->path->nodes[object->connection->node_indices[1]];
+    AIPATHNODE *node = first->position.y < second->position.y ? first : second;
     NUVEC displacement;
     NUVEC origin;
     i32 index;
-    for (index = 0; index < ClimbNormalProbeCountPc; ++index) {
+    for (index = 0; index < ClimbNormalProbeCount; ++index) {
         displacement.x = (f32)(node->radius + 0.5);
         displacement.y = 0;
         displacement.z = 0;
@@ -511,7 +511,7 @@ void ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
         origin.y = (f32)((node->max_height + node->min_height) * 0.5);
         origin.z = node->position.z;
         if (NewRayCastScaleYMask(&origin, &displacement, 0.0f, 1.0f, 0,
-                                 GetSurfaceInfoDefaultMaskPc.word | GetSurfaceInfoRuntimeMaskPc.word | 0x5f) != 0 &&
+                                 GetSurfaceInfoDefaultMask.word | GetSurfaceInfoRuntimeMask.word | 0x5f) != 0 &&
             (TerSurface[(i8)NewRayCastGetImpactTerrainType()].flags & 0x10000) != 0) {
             object->flags |= 1;
             object->normal = ShadNorm;
@@ -525,8 +525,8 @@ void ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
 void InitClimbObjectSys(WORLDINFO *world) {
     i32 index;
     i32 connection_index;
-    AIPATH_PC *path;
-    AIPATHCNX_PC *connection;
+    AIPATH *path;
+    AIPATHCNX *connection;
     CLIMB_SLOT_PC *object;
     if (world == NULL || world->ai_sys == NULL || world->ai_sys->path_sys == NULL || world->climb_objects == NULL) {
         return;
@@ -541,17 +541,17 @@ void InitClimbObjectSys(WORLDINFO *world) {
         connection = path->connections;
         for (connection_index = 0; connection_index < path->connection_count; ++connection_index, ++connection) {
             if (world->climb_objects->count < world->climb_objects->capacity &&
-                (connection->traversal_flags[0] & (LEGO_AIPATHCNX_VARIANT_FLAG0_PC | LEGO_AIPATHCNX_VARIANT_FLAG1_PC)) != 0) {
+                (connection->traversal_flags[0] & (LEGO_AIPATHCNX_VARIANT_FLAG0 | LEGO_AIPATHCNX_VARIANT_FLAG1)) != 0) {
                 object = &world->climb_objects->objects[world->climb_objects->count++];
                 object->connection = connection;
                 object->path = path;
-                ClimbObject_FindNormalPc(object);
+                ClimbObject_FindNormal(object);
             }
         }
     }
 }
 
-CLIMB_SLOT_PC *FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection) {
+CLIMB_SLOT_PC *FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX *connection) {
     i32 index;
     CLIMB_SLOT_PC *object;
     if (system != NULL) {
@@ -566,7 +566,7 @@ CLIMB_SLOT_PC *FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection
             if (object->flags & 1) {
                 return object;
             }
-            ClimbObject_FindNormalPc(object);
+            ClimbObject_FindNormal(object);
             if (object->flags & 1) {
                 return object;
             }

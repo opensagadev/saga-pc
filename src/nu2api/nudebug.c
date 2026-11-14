@@ -14,24 +14,24 @@ void PCAnimationLoadFailureNoOp(char *path) {
 void PCCharacterSystemExistingNoOp() {
 }
 
-void NuPtlDmaSlotsExhaustedPc(void) {
+void NuPtlDmaSlotsExhausted(void) {
 }
 
 void PCClipScreenUnsupported(void) {
 }
 
-void NuQFntAtlasErrorPc(void) {
+void NuQFntAtlasError(void) {
 }
 
 void PCGraphicsRenderTextureAllocationError(void) {
 }
 
-void NuTexBmpUnsupportedDepthPc(i32 bit_count, const char *path) {
+void NuTexBmpUnsupportedDepth(i32 bit_count, const char *path) {
     (void)bit_count;
     (void)path;
 }
 
-void NuFrameEndLeafPc(void) {
+void NuFrameEndLeaf(void) {
 }
 
 void fun_005c6110(void) {
@@ -50,7 +50,7 @@ void fun_005c6110(void) {
     dat_00806b84 = enabled;
 }
 
-void DisplayListSpecialTransformNoOpPc(NUSPECIALHANDLE *special, NUMTX *matrix) {
+void DisplayListSpecialTransformNoOp(NUSPECIALHANDLE *special, NUMTX *matrix) {
     (void)special;
     (void)matrix;
 }
@@ -145,15 +145,15 @@ void fun_006dec00(void) {
 void PCCharacterModelDiagnosticNoOp() {
 }
 
-void CutSceneLoadDiagnosticPc(void *unused, ...) {
+void CutSceneLoadDiagnostic(void *unused, ...) {
     (void)unused;
 }
 
-void CutSceneConfigMissingPc(char *unused) {
+void CutSceneConfigMissing(char *unused) {
     (void)unused;
 }
 
-void CutSceneStreamDiagnosticPc(char *unused) {
+void CutSceneStreamDiagnostic(char *unused) {
     (void)unused;
 }
 
@@ -168,14 +168,14 @@ void fun_004ef7c0(void) {
 
 /* Empty release diagnostics with an argument; the linker folds them into
    NuFileError and NuFileRetry. */
-void NuRDPIVariableErrorPc(char *name) {
+void NuRDPIVariableError(char *name) {
     (void)name;
 }
 
 void fun_004ef7a0(void) {
 }
 
-void NuDatFileMissingPc(char *filepath) {
+void NuDatFileMissing(char *filepath) {
     (void)filepath;
 }
 

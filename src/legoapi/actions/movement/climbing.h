@@ -22,27 +22,27 @@
 
 #if SAGA_LEGOAPI_ACTIONS_MOVEMENT_CLIMBING_H_PART == 1 && !defined(SAGA_LEGOAPI_ACTIONS_MOVEMENT_CLIMBING_H_STOP)
 
-struct AIPATHCNX_PC;
-struct AIPATH_PC;
+struct AIPATHCNX;
+struct AIPATH;
 struct WORLDINFO_s;
 struct climb_system_s;
 struct gameobject_s;
 
-typedef struct climb_slot_s {        // size 0x20
-    NUVEC normal;                    // 0x00
-    f32 impact_x;                    // 0x0c
-    f32 impact_z;                    // 0x10
-    struct AIPATHCNX_PC *connection; // 0x14
-    struct AIPATH_PC *path;          // 0x18
-    u32 flags;                       // 0x1c
+typedef struct climb_slot_s {     // size 0x20
+    NUVEC normal;                 // 0x00
+    f32 impact_x;                 // 0x0c
+    f32 impact_z;                 // 0x10
+    struct AIPATHCNX *connection; // 0x14
+    struct AIPATH *path;          // 0x18
+    u32 flags;                    // 0x1c
 } CLIMB_SLOT_PC;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern i32 LedgeTerrain_CheckAnims;
-    extern i32 ClimbNormalProbeCountPc;
-    void ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object);
+    extern i32 ClimbNormalProbeCount;
+    void ClimbObject_FindNormal(CLIMB_SLOT_PC *object);
 #ifdef __cplusplus
 }
 #endif
@@ -80,7 +80,7 @@ extern "C" {
     void WeaponScalingCode(struct gameobject_s *);
     void LedgeTerrain_MoveCode(struct gameobject_s *);
     void InitClimbObjectSys(struct WORLDINFO_s *world);
-    CLIMB_SLOT_PC *FindClimbObject(struct climb_system_s *system, struct AIPATHCNX_PC *connection);
+    CLIMB_SLOT_PC *FindClimbObject(struct climb_system_s *system, struct AIPATHCNX *connection);
 #ifdef __cplusplus
 }
 #endif

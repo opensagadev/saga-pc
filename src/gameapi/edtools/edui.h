@@ -87,7 +87,7 @@ typedef struct FRAME_PAD_PC {     // size 0xa4
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const f64 TerrainScanMargin10Pc;
+    extern const f64 TerrainScanMargin10;
     extern i32 nu_keyboard_previous_key_index;
     extern HINSTANCE PCInputWindow;
     i32 NuKeyboardPlatformStartup(void);

@@ -20,11 +20,11 @@ typedef struct {      // size 0x70
 extern "C" {
     extern char *GizmoRegistryGizTurretsNamePtrPc;
     extern i32 turret_gizmotype_id;
-    extern char TurretOutputBufferPc[32];
-    i32 GizTurretAnimDataVersionPc = 7;
+    extern char TurretOutputBuffer[32];
+    i32 GizTurretAnimDataVersion = 7;
     ADDGIZMOTYPE_PC GizmoRegistryGizTurretsAddTypePc = {0};
 
-    static void GizTurretClearPc(GIZTURRET_s *turret) {
+    static void GizTurretClear(GIZTURRET_s *turret) {
         GAMEANIMSET *set;
         if (turret == NULL) {
             return;
@@ -52,7 +52,7 @@ extern "C" {
         }
     }
 
-    static void GizTurretReadAnimSetDataPc(GAMEANIMOBJ *object, u8 version) {
+    static void GizTurretReadAnimSetData(GAMEANIMOBJ *object, u8 version) {
         TURRET_ANIM_DATA scratch;
         TURRET_ANIM_DATA *data;
         if (object == NULL || version <= 2) {
@@ -62,7 +62,7 @@ extern "C" {
         if (data == NULL) {
             data = &scratch;
         }
-        if ((u8)GizTurretAnimDataVersionPc > 4) {
+        if ((u8)GizTurretAnimDataVersion > 4) {
             data->flags = (u8)EdFileReadChar();
             data->role = (u8)EdFileReadChar();
         } else {
@@ -85,9 +85,9 @@ extern "C" {
         }
         turret = system->turrets;
         for (index = 0; index < system->count; ++index, ++turret) {
-            GizTurretClearPc(turret);
+            GizTurretClear(turret);
             EdFileRead(turret->name, 16);
-            GizmoFileReadGameAnimSet(turret->anim_set, world, GizTurretReadAnimSetDataPc, version, "GizTurret", turret->name);
+            GizmoFileReadGameAnimSet(turret->anim_set, world, GizTurretReadAnimSetData, version, "GizTurret", turret->name);
             EdFileReadNuVec(&turret->position);
             EdFileReadNuVec(&turret->opponent_origin);
             EdFileReadNuVec(&turret->initial_origin);
@@ -688,7 +688,7 @@ extern "C" {
                                 if (should_fire && bolt_type != NULL && MiniCutCam == 0 && (turret->behavior_flags & 0x4000) == 0) {
                                     if (turret->fire_sfx != -1) {
                                         GameAudio_PlaySfxById(turret->fire_sfx, reinterpret_cast<NUVEC *>(&reference->m30), 0, 0);
-                                        BoltNoSfxPc = 1;
+                                        BoltNoSfx = 1;
                                     }
                                     i32 scatter_pitch = 0;
                                     i32 scatter_yaw = 0;
@@ -734,7 +734,7 @@ extern "C" {
                                         }
                                         i32 flags = turret->controller != NULL ? 4 : 2;
                                         if (muzzle != sound_muzzle) {
-                                            BoltNoSfxPc = 1;
+                                            BoltNoSfx = 1;
                                         }
                                         BOLT *bolt = Bolt_Add(NULL, reinterpret_cast<NUVEC *>(&muzzle_matrix.m30), &direction_matrix,
                                                               turret->bolt_type_id, flags);
@@ -751,7 +751,7 @@ extern "C" {
         }
     }
 
-    i32 GizTurrets_UpdateHint(HINT_PC *hint) {
+    i32 GizTurrets_UpdateHint(HINT *hint) {
         WORLDINFO *world = WorldInfo_CurrentlyActive();
         struct GIZTURRETSYS_s *system = world->giz_turret_sys;
         GIZTURRET_s *turret;
@@ -775,7 +775,7 @@ extern "C" {
         return 0;
     }
 
-    static i32 GizTurretPointWithinBoundsPc(GIZTURRET_s *turret, NUVEC *position) {
+    static i32 GizTurretPointWithinBounds(GIZTURRET_s *turret, NUVEC *position) {
         NUVEC local;
         if (turret->behavior_flags & 1) {
             NuVecSub(&local, position, &turret->opponent_origin);
@@ -802,10 +802,9 @@ extern "C" {
         return 1;
     }
 
-    void GizTurrets_OpponentSelection(GIZTURRETSYS_s *system, i32 goody_count, APIOBJECT_PC **goodies, i32 baddy_count,
-                                      APIOBJECT_PC **baddies) {
+    void GizTurrets_OpponentSelection(GIZTURRETSYS_s *system, i32 goody_count, APIOBJECT **goodies, i32 baddy_count, APIOBJECT **baddies) {
         GIZTURRET_s *turret;
-        APIOBJECT_PC **candidates;
+        APIOBJECT **candidates;
         GAMEOBJECT *candidate;
         GAMEOBJECT *selected;
         i32 count;
@@ -853,7 +852,7 @@ extern "C" {
             if (!(distance < turret->opponent_range * turret->opponent_range)) {
                 continue;
             }
-            if (!GizTurretPointWithinBoundsPc(turret, &candidate->collision_position)) {
+            if (!GizTurretPointWithinBounds(turret, &candidate->collision_position)) {
                 continue;
             }
             flags = turret->behavior_flags;
@@ -1001,8 +1000,8 @@ extern "C" {
             case 2: {
                 GIZTURRET_s *turret = (GIZTURRET_s *)gizmo->object;
                 if (turret != NULL) {
-                    sprintf(TurretOutputBufferPc, "Fired %d Shots", turret->shots_required);
-                    return TurretOutputBufferPc;
+                    sprintf(TurretOutputBuffer, "Fired %d Shots", turret->shots_required);
+                    return TurretOutputBuffer;
                 }
             }
         }

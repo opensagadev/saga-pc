@@ -22,7 +22,7 @@
 
 #if SAGA_NU2API_NU3D_NUDLIST_H_PART == 1 && !defined(SAGA_NU2API_NU3D_NUDLIST_H_STOP)
 
-struct nudisplay_list_pc_s;
+struct nudisplay_list_s;
 struct numtl_s;
 struct numtx_s;
 struct nurndrlibstate_s;
@@ -122,7 +122,7 @@ extern "C" {
 #if SAGA_NU2API_NU3D_NUDLIST_H_PART == 3 && !defined(SAGA_NU2API_NU3D_NUDLIST_H_STOP)
 
 typedef struct nudisplaylist_s {         // size 0x38
-    struct nudisplay_list_pc_s *scene;   // 0x00
+    struct nudisplay_list_s *scene;      // 0x00
     i32 material_id;                     // 0x04
     struct nurndrlibstate_s *state;      // 0x08
     NUDISPLAYLISTITEM *mtl_item;         // 0x0c
@@ -154,7 +154,7 @@ typedef struct nusortpri_s {      // size 0x24
     u32 sort_flags;               // 0x18
 
     union { // size 0x4
-        struct nudisplay_list_pc_s *display_scene;
+        struct nudisplay_list_s *display_scene;
         struct nudisplayscene_s *legacy_display_scene;
     }; // 0x1c
 
@@ -171,17 +171,17 @@ typedef struct nudisplaylistrenderscene_s { // size 0x18
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct nudisplay_list_pc_s *NuDisplaySceneClone(struct nudisplay_list_pc_s *, VARIPTR *);
-    void NuDisplaySceneClonePS(struct nudisplay_list_pc_s *, struct nudisplay_list_pc_s *, VARIPTR *);
-    void NuDisplaySceneDestroy(struct nudisplay_list_pc_s *);
-    void NuDisplaySceneDestroyPS(struct nudisplay_list_pc_s *);
-    void NuDisplaySceneAdd(struct nudisplay_list_pc_s *);
-    void NuDisplaySceneAddPS(struct nudisplay_list_pc_s *);
+    struct nudisplay_list_s *NuDisplaySceneClone(struct nudisplay_list_s *, VARIPTR *);
+    void NuDisplaySceneClonePS(struct nudisplay_list_s *, struct nudisplay_list_s *, VARIPTR *);
+    void NuDisplaySceneDestroy(struct nudisplay_list_s *);
+    void NuDisplaySceneDestroyPS(struct nudisplay_list_s *);
+    void NuDisplaySceneAdd(struct nudisplay_list_s *);
+    void NuDisplaySceneAddPS(struct nudisplay_list_s *);
     /* New public original-source routines; original private colour helper remains local. */
-    void NuDisplayListCreate(struct nudisplay_list_pc_s *, VARIPTR *, VARIPTR, i32, i32, i32, i32, i32, i32, i32);
-    void DisplayListCreatePS(struct nudisplay_list_pc_s *, VARIPTR *, VARIPTR);
+    void NuDisplayListCreate(struct nudisplay_list_s *, VARIPTR *, VARIPTR, i32, i32, i32, i32, i32, i32, i32);
+    void DisplayListCreatePS(struct nudisplay_list_s *, VARIPTR *, VARIPTR);
 
-    void NuDisplaySceneRndr(struct nudisplay_list_pc_s *);
+    void NuDisplaySceneRndr(struct nudisplay_list_s *);
     void NuDisplayListBurstRndrSpecial(struct nuhspecial_s *handle, u32 count, struct numtx_s *matrices, i32 clip);
 #ifdef __cplusplus
 }

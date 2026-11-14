@@ -30,33 +30,33 @@ typedef struct GIZFLOW_RANDOM_SYSTEM { // size 0x8
     i32 count;                         // 0x4
 } GIZFLOW_RANDOM_SYSTEM;
 
-typedef struct GIZFLOW_SPECIAL_PC { // size 0x28
-    char name[32];                  // 0x00
-    GAMEANIMSET *anim_set;          // 0x20
-    u8 unknown_024[4];              // 0x24
-} GIZFLOW_SPECIAL_PC;
+typedef struct GIZFLOW_SPECIAL { // size 0x28
+    char name[32];               // 0x00
+    GAMEANIMSET *anim_set;       // 0x20
+    u8 unknown_024[4];           // 0x24
+} GIZFLOW_SPECIAL;
 
 typedef struct GIZFLOW_SPECIAL_SYSTEM { // size 0x8
-    GIZFLOW_SPECIAL_PC *specials;       // 0x0
+    GIZFLOW_SPECIAL *specials;          // 0x0
     i32 count;                          // 0x4
 } GIZFLOW_SPECIAL_SYSTEM;
 
-typedef struct GIZFLOW_LOAD_WORLD_PC { // size 0x510c
-    u8 unknown_000[0x104];             // 0x0000
-    VARIPTR giz_buffer;                // 0x0104
-    u8 unknown_108[0x20];              // 0x0108
-    GIZFLOW_LOAD_LEVEL *level;         // 0x0128
-    u8 unknown_12c[0x10];              // 0x012c
-    NUGSCN *current_gscn;              // 0x013c
-    u8 unknown_140[0x2988];            // 0x0140
-    void *gizmo_sys;                   // 0x2ac8
-    u8 unknown_2acc[0x262c];           // 0x2acc
-    GIZFLOW_TIMER *timers;             // 0x50f8
-    i32 timer_count;                   // 0x50fc
-    u8 unknown_5100[4];                // 0x5100
-    GIZFLOW_RANDOM_SYSTEM *randoms;    // 0x5104
-    GIZFLOW_SPECIAL_SYSTEM *specials;  // 0x5108
-} GIZFLOW_LOAD_WORLD_PC;
+typedef struct GIZFLOW_LOAD_WORLD {   // size 0x510c
+    u8 unknown_000[0x104];            // 0x0000
+    VARIPTR giz_buffer;               // 0x0104
+    u8 unknown_108[0x20];             // 0x0108
+    GIZFLOW_LOAD_LEVEL *level;        // 0x0128
+    u8 unknown_12c[0x10];             // 0x012c
+    NUGSCN *current_gscn;             // 0x013c
+    u8 unknown_140[0x2988];           // 0x0140
+    void *gizmo_sys;                  // 0x2ac8
+    u8 unknown_2acc[0x262c];          // 0x2acc
+    GIZFLOW_TIMER *timers;            // 0x50f8
+    i32 timer_count;                  // 0x50fc
+    u8 unknown_5100[4];               // 0x5100
+    GIZFLOW_RANDOM_SYSTEM *randoms;   // 0x5104
+    GIZFLOW_SPECIAL_SYSTEM *specials; // 0x5108
+} GIZFLOW_LOAD_WORLD;
 
 i32 GizTimer_GetMaxGizmos(void *world_info) {
     WORLDINFO *world = world_info;
@@ -69,7 +69,7 @@ i32 GizTimer_GetMaxGizmos(void *world_info) {
 }
 
 void GizTimer_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_info, void *unused) {
-    GIZFLOW_LOAD_WORLD_PC *world = world_info;
+    GIZFLOW_LOAD_WORLD *world = world_info;
     i32 i;
     for (i = 0; i < world->timer_count; ++i) {
         if (NuStrLen(world->timers[i].name) != 0) {
@@ -79,7 +79,7 @@ void GizTimer_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_i
 }
 
 void GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
-    GIZFLOW_LOAD_WORLD_PC *world = world_info;
+    GIZFLOW_LOAD_WORLD *world = world_info;
     i32 i;
     for (i = 0; i < world->timer_count; ++i) {
         GIZFLOW_TIMER *timer = &world->timers[i];
@@ -124,7 +124,7 @@ void GizTimer_Activate(GIZMO_PC *gizmo, i32 active) {
 }
 
 void *GizTimer_ReserveBufferSpace(void *world_info) {
-    GIZFLOW_LOAD_WORLD_PC *world = world_info;
+    GIZFLOW_LOAD_WORLD *world = world_info;
     world->timers = NULL;
     world->timer_count = 0;
     if (world->level->max_timers > 0) {
@@ -137,7 +137,7 @@ void *GizTimer_ReserveBufferSpace(void *world_info) {
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 GIZMO_PC *createGizTimer(void *unused, f32 time, i32 random_time, char *name) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();
+    GIZFLOW_LOAD_WORLD *world = (GIZFLOW_LOAD_WORLD *)WorldInfo_CurrentlyLoading();
     GIZFLOW_TIMER *timer;
     if (world == NULL || world->timers == NULL || world->timer_count == world->level->max_timers) {
         return NULL;

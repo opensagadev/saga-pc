@@ -69,7 +69,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
     radius = explosion->radius * progress;
     angle = explosion->random_angle;
     if ((explosion->flags & 0x10) != 0) {
-        vertical_offset = (f64)progress * TerrainScanMargin10Pc;
+        vertical_offset = (f64)progress * TerrainScanMargin10;
         for (i = 0; i < 5; ++i) {
             count = ParticlesPerSecond(40.0f, FRAMETIME);
             position.x = radius * NU_SIN_LUT(angle) + explosion->position.x;
@@ -121,15 +121,15 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 x = object->collision_position.x - explosion->position.x;
                 z = object->collision_position.z - explosion->position.z;
                 if (z == 0.0f && x == 0.0f) {
-                    x = (f64)qrand() * PlayerRandomScalePc - 0.5;
-                    z = (f64)qrand() * PlayerRandomScalePc - 0.5;
+                    x = (f64)qrand() * PlayerRandomScale - 0.5;
+                    z = (f64)qrand() * PlayerRandomScale - 0.5;
                 }
                 squared = x * x + z * z;
                 inverse = 1.0f / NuFsqrt(squared);
                 normalized = x * inverse;
-                object->movement_direction_x = normalized * ExplosionKnockbackScalePc;
+                object->movement_direction_x = normalized * ExplosionKnockbackScale;
                 normalized = (f32)(z * inverse);
-                object->movement_direction_z = normalized * ExplosionKnockbackScalePc;
+                object->movement_direction_z = normalized * ExplosionKnockbackScale;
             }
             if (hit_character || (explosion->flags & 1) == 0) {
                 continue;

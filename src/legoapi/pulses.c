@@ -4,14 +4,14 @@
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. This
  * unit keeps its own out-of-line copy. */
-static f32 PulsesFabsPc(f32 f) {
+static f32 PulsesFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
     return rv;
 }
 
-typedef struct PULSE_PC {    // size 0x34
+typedef struct PULSE {       // size 0x34
     NUSPECIALHANDLE special; // 0x00
     f32 on_time;             // 0x0c
     f32 off_time;            // 0x10
@@ -21,10 +21,10 @@ typedef struct PULSE_PC {    // size 0x34
     u16 disabled;            // 0x1e
     char gizmo_name[16];     // 0x20
     void *gizmo;             // 0x30
-} PULSE_PC;
+} PULSE;
 
 struct level_sfx_pulse_prefix_s {    // size 0x20
-    PULSE_PC *pulses;                // 0x00
+    PULSE *pulses;                   // 0x00
     u16 pulse_count;                 // 0x04
     i16 sfx_turn_on;                 // 0x06
     i16 sfx_turn_off;                // 0x08
@@ -68,7 +68,7 @@ void Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32 capacit
 void Pulses_Configure(WORLDINFO *world, char *config) {
     NUFPAR_PC *parser;
     LEVEL_SFX_PULSE_PC pulse_sys;
-    PULSE_PC *pulse;
+    PULSE *pulse;
     ((PULSE_WORLD_VIEW *)world)->pulses_sys = NULL;
     if (world->current_gscn == NULL) {
         return;
@@ -82,7 +82,7 @@ void Pulses_Configure(WORLDINFO *world, char *config) {
     world->giz_buffer.addr = ((world->giz_buffer.addr + 3U) & ~3U);
     memset(&pulse_sys, 0, sizeof(pulse_sys));
 
-    pulse = (PULSE_PC *)world->giz_buffer.addr;
+    pulse = (PULSE *)world->giz_buffer.addr;
     pulse_sys.pulses = pulse;
     pulse_sys.sfx_turn_on = -1;
     pulse_sys.sfx_turn_off = -1;
@@ -293,7 +293,7 @@ void Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
                 NuVecRotateY(&offset, &offset, 0x4000);
                 distance = direction.x * offset.x + direction.z * offset.z;
             }
-            if (!(PulsesFabsPc(distance) < collide_radius)) {
+            if (!(PulsesFabs(distance) < collide_radius)) {
                 continue;
             }
             if (system->radial_hit_direction == 0) {

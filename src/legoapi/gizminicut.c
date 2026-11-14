@@ -176,7 +176,7 @@ void GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
             GAMEOBJECT *object = GetNamedGameObject(world->ai_sys, part->name);
             if (object == NULL) {
                 NUSPECIALHANDLE special;
-                AILOCATOR_PC *locator;
+                AILOCATOR *locator;
                 NuSpecialFind(world->current_gscn, &special, part->name, 0);
                 if (NuSpecialExistsFn(&special) == 0) {
                     locator = AIPathFindLocator(world->ai_sys, part->name);

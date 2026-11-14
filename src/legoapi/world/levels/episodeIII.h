@@ -16,7 +16,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern LEVEL_INST_ANIM_RESET_VIEW_PC LevInstAnimResetPc;
+    extern LEVEL_INST_ANIM_RESET_VIEW LevInstAnimReset;
     extern struct gameobject_s *Grievous_obj;
     extern struct gizaimessage_s *KashyyykA_msg_TotalWookies;
     extern struct gizaimessage_s *KashyyykA_msg_WookiesToRescue;

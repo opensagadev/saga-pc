@@ -30,21 +30,21 @@ extern "C" {
 
     void NewScan(NUVEC *position, i32 terrain_mask, i32 scan_platforms);
     void ScanTerrainHandel(i32 terrain_mask, i16 *handle);
-    i32 HitTerrPoly(TERRAIN_POLYGON_INFO_PC *surface, i32 group_index);
+    i32 HitTerrPoly(TERRAIN_POLYGON_INFO *surface, i32 group_index);
     void TerrainSetImpactData(void *records, i32 *count, i32 max_records);
     void TerrainSetPlatConnectTol(f32 tolerance);
     void DerotateMovementVector(void);
     void RotateVec(NUVEC *, NUVEC *);
-    void DeRotateTerrain(TERRAIN_POLYGON_INFO_PC *);
+    void DeRotateTerrain(TERRAIN_POLYGON_INFO *);
     void CubeImpact(NUMTX *, NUMTX *, NUVEC *, f32, NUVEC *);
     void DeRotatePoint(NUVEC *);
     i32 CheckCylinder(i32, i32, i32 *, i32);
     i32 CheckSphere(i32);
     i32 CheckSphereTer(NUVEC *, f32);
-    i32 HitPoly(f32, f32, f32, f32, TERRAIN_POLYGON_INFO_PC *);
+    i32 HitPoly(f32, f32, f32, f32, TERRAIN_POLYGON_INFO *);
     void NewTerrainScaleYMask(NUVEC *, NUVEC *, u8 *, i32, f32, f32, f32, i32, i32, i32);
     i32 HitTerrain(void);
-    TERRAIN_TRACK_SLOT_PC *AllocTerrId(void);
+    TERRAIN_TRACK_SLOT *AllocTerrId(void);
     void FullDeflect(NUVEC *, NUVEC *, NUVEC *);
     void FullDeflectSmallY(NUVEC *, NUVEC *, NUVEC *);
     void PlatformConnect(char *, NUVEC *, NUVEC *, i32);

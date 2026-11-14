@@ -26,13 +26,13 @@ class NuPostFilterGen { // size 0xc
     virtual void reset();
     virtual void resetAll();
     virtual bool isEnabled();
-    virtual PC_FRAMEBUFFER_PC *getInputFbo();
+    virtual PC_FRAMEBUFFER *getInputFbo();
     void fun_005c22b0();
-    static void copy(GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *);
-    static void copy(GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *);
-    bool enabled;                 // 0x4
-    u8 unknown_005[3];            // 0x5
-    PC_FRAMEBUFFER_PC *input_fbo; // 0x8
+    static void copy(GRAPHICS_RENDER_TEXTURE *, PC_FRAMEBUFFER *);
+    static void copy(GRAPHICS_RENDER_TEXTURE *, GRAPHICS_RENDER_TEXTURE *, PC_FRAMEBUFFER *);
+    bool enabled;              // 0x4
+    u8 unknown_005[3];         // 0x5
+    PC_FRAMEBUFFER *input_fbo; // 0x8
 };
 
 #endif

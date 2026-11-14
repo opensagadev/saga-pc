@@ -30,8 +30,7 @@ void AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *system) {
     }
 }
 
-AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX_PC *connection, u8 direction, void *target,
-                                                u8 type) {
+AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX *connection, u8 direction, void *target, u8 type) {
     AI_HELPER_SLOT_PC *helper = NULL;
     if (system != NULL) {
         if (system->count < system->capacity && connection != NULL && target != NULL) {
@@ -56,7 +55,7 @@ AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIP
     return helper;
 }
 
-AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object, AIPATHCNX_PC *connection, u8 direction, u8 type,
+AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object, AIPATHCNX *connection, u8 direction, u8 type,
                                            AI_HELPER_FILTER_PC filter) {
     AI_HELPER_SLOT_PC *helper;
     i32 index;

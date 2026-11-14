@@ -4,7 +4,7 @@
 #include <float.h>
 
 #pragma data_seg(".data$PartVectorSpreadDegrees_PC")
-static i32 PartVectorSpreadDegrees_PC = 30;
+static i32 PartVectorSpreadDegrees = 30;
 #pragma data_seg()
 
 void InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
@@ -217,7 +217,7 @@ void NewPartOrderedRotation(PART_PC *part) {
         part->rotation_parameters[2] + (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * part->rotation_parameters[5]);
 }
 
-PART_PC *AddPart(ADDPART_PC *parameters) {
+PART_PC *AddPart(ADDPART *parameters) {
     NUVEC forward = {0.0f, 0.0f, -1.0f};
     PART_PC *part;
     i32 scanned;
@@ -368,7 +368,7 @@ PART_PC *AddPart(ADDPART_PC *parameters) {
     part->field_204 = 1;
     if ((part->flags & 0x2000) != 0 && parameters->lighting_handle != NULL && PartRTL != NULL) {
         part->lighting_handle = parameters->lighting_handle;
-        *parameters->lighting_handle = rtlDynamicAllocTemplate((RTL_SET_PC *)PartRTL, parameters->lighting_id);
+        *parameters->lighting_handle = rtlDynamicAllocTemplate((RTL_SET *)PartRTL, parameters->lighting_id);
     }
     if (++part_slot_cursor == MAXPARTS) {
         part_slot_cursor = 0;
@@ -1040,7 +1040,7 @@ void PartImpact_Brick(PART_PC *part) {
             }
             angle = ((i32)((1.0 - speed) * 16384.0 + 16384.0));
             volume = NuTrigTable[(angle >> 1) & 0x7fff];
-            sound_id = GetSfxId(KillPartsLegoSingleTextPc);
+            sound_id = GetSfxId(KillPartsLegoSingleText);
             PlaySfxByIdAndSetVolume(sound_id, &part->position, volume);
             brickimpactwait = 0.1f;
         }
@@ -1113,9 +1113,9 @@ void MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
         u16 x_random;
         FindAnglesZX(direction, NULL, NULL);
         *velocity = v010;
-        divisor = 65535 / (((PartVectorSpreadDegrees_PC * 2 + 1) << 16) / 360) + 1;
-        z_random = (u16)(qrand() / divisor - ((PartVectorSpreadDegrees_PC << 16) / 360));
-        x_random = (u16)(qrand() / divisor - ((PartVectorSpreadDegrees_PC << 16) / 360));
+        divisor = 65535 / (((PartVectorSpreadDegrees * 2 + 1) << 16) / 360) + 1;
+        z_random = (u16)(qrand() / divisor - ((PartVectorSpreadDegrees << 16) / 360));
+        x_random = (u16)(qrand() / divisor - ((PartVectorSpreadDegrees << 16) / 360));
         NuVecRotateZ(velocity, velocity, (u16)(z_random + temp_xrot));
         NuVecRotateX(velocity, velocity, (u16)(x_random + temp_zrot));
         NuVecScale(velocity, velocity, scale);
@@ -2228,7 +2228,7 @@ void AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 
     aligned_time = (i32)emission_time * interval;
     emission_time = aligned_time + interval;
     for (count = 0; end_time >= emission_time && ++count < 100;) {
-        ADDPART_PC params = Default_ADDPART;
+        ADDPART params = Default_ADDPART;
         NUVEC part_position;
         NUVEC velocity;
         NUSPECIALHANDLE special;
@@ -2480,7 +2480,7 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     debris_setup_called = 1;
     maxdebkeys = key_count;
     debinf_count = effect_count;
-    DebrisArenaInitializedPc = 1;
+    DebrisArenaInitialized = 1;
     NuRegisterEndFrameCallBackFn(DebrisProcessTimeSlip);
     buffer->addr = (buffer->addr + 15) & ~15u;
     debris_chunk_controls = (DEBRIS_CHUNK_CONTROL_PC *)buffer->addr;
@@ -2521,7 +2521,7 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
         toruscolldata[i].key_index = i;
         toruscolldata[i].flags = 3;
     }
-    effecttypes[0] = DebrisNullEffectPc;
+    effecttypes[0] = DebrisNullEffect;
     debtab[0] = effecttypes;
     edpp_types_used = 1;
     numspherecolldata = maxdebkeys;
@@ -2776,7 +2776,7 @@ i32 edpartLookupObjectInScene(char *name, NUGSCN *scene) {
     if (name[0] == 0) {
         return -1;
     }
-    if (NuStrNCmp(name, PartNullInstanceNamePc, 16) == 0) {
+    if (NuStrNCmp(name, PartNullInstanceName, 16) == 0) {
         return 9999;
     }
     if (scene == NULL) {
@@ -3040,7 +3040,7 @@ void edpartDetermineNearest(f32 distance) {
     f32 squared_distance;
     i32 i;
     if (edpart_nearest != -1 && part_emits[edpart_nearest].effect_id != -1) {
-        NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[edpart_nearest].position);
+        NuVecSub(&delta, &PartEditorCameraPos, &part_emits[edpart_nearest].position);
         squared_distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         if (squared_distance == 0.0f) {
             return;
@@ -3049,7 +3049,7 @@ void edpartDetermineNearest(f32 distance) {
     edpart_nearest = -1;
     for (i = 0; i < 40; ++i) {
         if (part_emits[i].effect_id != -1) {
-            NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[i].position);
+            NuVecSub(&delta, &PartEditorCameraPos, &part_emits[i].position);
             squared_distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
             if (distance < 0.0f || squared_distance < distance) {
                 distance = squared_distance;
@@ -3235,7 +3235,7 @@ void edpartMultipleCopyCopy(void) {
         if (part_emits[index].instance_id == -1 || part_emits[index].instance_id == 99999) {
             continue;
         }
-        NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[index].position);
+        NuVecSub(&delta, &PartEditorCameraPos, &part_emits[index].position);
         temp.value = delta.x;
         abs_delta.bits[0] = temp.bits & 0x7fffffff;
         if (!(abs_delta.value[0] <= edpart_copy_size)) {
@@ -3256,7 +3256,7 @@ void edpartMultipleCopyCopy(void) {
             break;
         }
     }
-    edpart_copy_source_vec = PartEditorCameraPosPc;
+    edpart_copy_source_vec = PartEditorCameraPos;
     edpart_copyroty = 0;
 }
 
@@ -3286,7 +3286,7 @@ void edpartHighlightNearest(void) {
             if (part_emits[index].instance_id == -1 || part_emits[index].instance_id == 99999) {
                 continue;
             }
-            NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[index].position);
+            NuVecSub(&delta, &PartEditorCameraPos, &part_emits[index].position);
             temp.value = delta.x;
             abs_delta.bits[0] = temp.bits & 0x7fffffff;
             if (!(abs_delta.value[0] <= edpart_copy_size)) {
@@ -3310,7 +3310,7 @@ void edpartHighlightNearest(void) {
             for (index = 0; index < edpart_copy_source_count; ++index) {
                 NuVecSub(&offset, &part_emits[edpart_copy_source[index]].position, &edpart_copy_source_vec);
                 NuVecRotateY(&offset, &offset, edpart_copyroty);
-                NuVecAdd(&destination, &PartEditorCameraPosPc, &offset);
+                NuVecAdd(&destination, &PartEditorCameraPos, &offset);
                 edbitsDrawDiagonalCross(destination.x, destination.y, destination.z, 0.05f, 0xff808080,
                                         (struct PC_SCENE_MTL_VIEW *)edpart_mtl);
             }
@@ -3465,9 +3465,9 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
                 part_page_on[0] = 1;
             }
             if (mode == 0) {
-                PartGeneralPagePc = page;
+                PartGeneralPage = page;
             } else if (mode == 1) {
-                PartLevelPagePc = page;
+                PartLevelPage = page;
             }
             return page;
         }
@@ -3508,7 +3508,7 @@ void UpdatePartEmits(f32 time) {
     i32 variant;
     PART_EMIT_PC *emitter;
     PART_RUNTIME_TYPE_PC *type;
-    ADDPART_PC params;
+    ADDPART params;
     NUVEC position;
     NUVEC velocity;
     NUMTX matrix;
@@ -3929,9 +3929,9 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
         }
     }
     if (edpart_snap_enabled) {
-        edcamGetPosAngSnap(&PartEditorCameraPosPc, &edpart_cam_ax, &edpart_cam_ay);
+        edcamGetPosAngSnap(&PartEditorCameraPos, &edpart_cam_ax, &edpart_cam_ay);
     } else {
-        edcamGetPosAng(&PartEditorCameraPosPc, &edpart_cam_ax, &edpart_cam_ay);
+        edcamGetPosAng(&PartEditorCameraPos, &edpart_cam_ax, &edpart_cam_ay);
     }
     if ((pad->digital_buttons & 0x100) == 0) {
         if (pad->digital_buttons_pressed & 0x80) {
@@ -3939,17 +3939,17 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
             edpart_active_menu = edpart_opt_menu;
         }
         if ((pad->digital_buttons_pressed & 0x40) && edpart_copy_mode == 0 && edpart_create_type != -1) {
-            AddPARTEffect(edpart_create_type, &PartEditorCameraPosPc);
+            AddPARTEffect(edpart_create_type, &PartEditorCameraPos);
         }
         if (pad->digital_buttons & 0x20) {
             if (edpart_copy_mode != 0) {
                 edpartMultipleCopyCopy();
             } else if (edpart_nearest != -1) {
-                edpartPlace(edpart_nearest, &PartEditorCameraPosPc);
+                edpartPlace(edpart_nearest, &PartEditorCameraPos);
             }
         }
         if ((pad->digital_buttons & 0x400) && edpart_copy_mode == 0 && edpart_nearest != -1) {
-            edpartPlace(edpart_nearest, &PartEditorCameraPosPc);
+            edpartPlace(edpart_nearest, &PartEditorCameraPos);
         }
         if (pad->digital_buttons_pressed & 0x10) {
             if (edpart_copy_mode != 0) {
@@ -4125,22 +4125,22 @@ void edpartDrawCursor(void) {
     vector.z = 0.0f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x - vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y - vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z - vector.z;
+    line[0].position.x = PartEditorCameraPos.x - vector.x;
+    line[0].position.y = PartEditorCameraPos.y - vector.y;
+    line[0].position.z = PartEditorCameraPos.z - vector.z;
     line[0].colour = 0xffffffff;
-    line[1].position.x = PartEditorCameraPosPc.x;
-    line[1].position.y = PartEditorCameraPosPc.y;
-    line[1].position.z = PartEditorCameraPosPc.z;
+    line[1].position.x = PartEditorCameraPos.x;
+    line[1].position.y = PartEditorCameraPos.y;
+    line[1].position.z = PartEditorCameraPos.z;
     line[1].colour = 0xffffffff;
     NuRndrLine3d(line, edpart_mtl, NULL);
-    line[0].position.x = PartEditorCameraPosPc.x;
-    line[0].position.y = PartEditorCameraPosPc.y;
-    line[0].position.z = PartEditorCameraPosPc.z;
+    line[0].position.x = PartEditorCameraPos.x;
+    line[0].position.y = PartEditorCameraPos.y;
+    line[0].position.z = PartEditorCameraPos.z;
     line[0].colour = 0xff00ff00;
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
     vector.x = 0.0f;
@@ -4148,22 +4148,22 @@ void edpartDrawCursor(void) {
     vector.z = 0.0f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x - vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y - vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z - vector.z;
+    line[0].position.x = PartEditorCameraPos.x - vector.x;
+    line[0].position.y = PartEditorCameraPos.y - vector.y;
+    line[0].position.z = PartEditorCameraPos.z - vector.z;
     line[0].colour = 0xffffffff;
-    line[1].position.x = PartEditorCameraPosPc.x;
-    line[1].position.y = PartEditorCameraPosPc.y;
-    line[1].position.z = PartEditorCameraPosPc.z;
+    line[1].position.x = PartEditorCameraPos.x;
+    line[1].position.y = PartEditorCameraPos.y;
+    line[1].position.z = PartEditorCameraPos.z;
     line[1].colour = 0xffffffff;
     NuRndrLine3d(line, edpart_mtl, NULL);
-    line[0].position.x = PartEditorCameraPosPc.x;
-    line[0].position.y = PartEditorCameraPosPc.y;
-    line[0].position.z = PartEditorCameraPosPc.z;
+    line[0].position.x = PartEditorCameraPos.x;
+    line[0].position.y = PartEditorCameraPos.y;
+    line[0].position.z = PartEditorCameraPos.z;
     line[0].colour = 0xff00ff00;
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
     vector.x = 0.0f;
@@ -4171,22 +4171,22 @@ void edpartDrawCursor(void) {
     vector.z = 0.5f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x - vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y - vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z - vector.z;
+    line[0].position.x = PartEditorCameraPos.x - vector.x;
+    line[0].position.y = PartEditorCameraPos.y - vector.y;
+    line[0].position.z = PartEditorCameraPos.z - vector.z;
     line[0].colour = 0xffffffff;
-    line[1].position.x = PartEditorCameraPosPc.x;
-    line[1].position.y = PartEditorCameraPosPc.y;
-    line[1].position.z = PartEditorCameraPosPc.z;
+    line[1].position.x = PartEditorCameraPos.x;
+    line[1].position.y = PartEditorCameraPos.y;
+    line[1].position.z = PartEditorCameraPos.z;
     line[1].colour = 0xffffffff;
     NuRndrLine3d(line, edpart_mtl, NULL);
-    line[0].position.x = PartEditorCameraPosPc.x;
-    line[0].position.y = PartEditorCameraPosPc.y;
-    line[0].position.z = PartEditorCameraPosPc.z;
+    line[0].position.x = PartEditorCameraPos.x;
+    line[0].position.y = PartEditorCameraPos.y;
+    line[0].position.z = PartEditorCameraPos.z;
     line[0].colour = 0xff00ff00;
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
     vector.x = 0.55f;
@@ -4194,18 +4194,18 @@ void edpartDrawCursor(void) {
     vector.z = 0.0f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[0].position.x = PartEditorCameraPos.x + vector.x;
+    line[0].position.y = PartEditorCameraPos.y + vector.y;
+    line[0].position.z = PartEditorCameraPos.z + vector.z;
     line[0].colour = 0xff00ff00;
     vector.x = 0.6f;
     vector.y = -0.05f;
     vector.z = 0.0f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
     vector.x = 0.6f;
@@ -4213,18 +4213,18 @@ void edpartDrawCursor(void) {
     vector.z = 0.0f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[0].position.x = PartEditorCameraPos.x + vector.x;
+    line[0].position.y = PartEditorCameraPos.y + vector.y;
+    line[0].position.z = PartEditorCameraPos.z + vector.z;
     line[0].colour = 0xff00ff00;
     vector.x = 0.55f;
     vector.y = -0.05f;
     vector.z = 0.0f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
     vector.x = 0.0f;
@@ -4232,18 +4232,18 @@ void edpartDrawCursor(void) {
     vector.z = -0.025f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[0].position.x = PartEditorCameraPos.x + vector.x;
+    line[0].position.y = PartEditorCameraPos.y + vector.y;
+    line[0].position.z = PartEditorCameraPos.z + vector.z;
     line[0].colour = 0xff00ff00;
     vector.x = 0.0f;
     vector.y = 0.6f;
     vector.z = 0.0f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
     vector.x = 0.0f;
@@ -4251,18 +4251,18 @@ void edpartDrawCursor(void) {
     vector.z = 0.025f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[0].position.x = PartEditorCameraPos.x + vector.x;
+    line[0].position.y = PartEditorCameraPos.y + vector.y;
+    line[0].position.z = PartEditorCameraPos.z + vector.z;
     line[0].colour = 0xff00ff00;
     vector.x = 0.0f;
     vector.y = 0.6f;
     vector.z = 0.0f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
     vector.x = 0.0f;
@@ -4270,18 +4270,18 @@ void edpartDrawCursor(void) {
     vector.z = 0.0f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[0].position.x = PartEditorCameraPos.x + vector.x;
+    line[0].position.y = PartEditorCameraPos.y + vector.y;
+    line[0].position.z = PartEditorCameraPos.z + vector.z;
     line[0].colour = 0xff00ff00;
     vector.x = 0.0f;
     vector.y = 0.55f;
     vector.z = 0.0f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
     vector.x = 0.0f;
@@ -4289,18 +4289,18 @@ void edpartDrawCursor(void) {
     vector.z = 0.55f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[0].position.x = PartEditorCameraPos.x + vector.x;
+    line[0].position.y = PartEditorCameraPos.y + vector.y;
+    line[0].position.z = PartEditorCameraPos.z + vector.z;
     line[0].colour = 0xff00ff00;
     vector.x = 0.0f;
     vector.y = 0.05f;
     vector.z = 0.6f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
     vector.x = 0.0f;
@@ -4308,18 +4308,18 @@ void edpartDrawCursor(void) {
     vector.z = 0.6f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[0].position.x = PartEditorCameraPos.x + vector.x;
+    line[0].position.y = PartEditorCameraPos.y + vector.y;
+    line[0].position.z = PartEditorCameraPos.z + vector.z;
     line[0].colour = 0xff00ff00;
     vector.x = 0.0f;
     vector.y = -0.05f;
     vector.z = 0.55f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
     vector.x = 0.0f;
@@ -4327,23 +4327,23 @@ void edpartDrawCursor(void) {
     vector.z = 0.55f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[0].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[0].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[0].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[0].position.x = PartEditorCameraPos.x + vector.x;
+    line[0].position.y = PartEditorCameraPos.y + vector.y;
+    line[0].position.z = PartEditorCameraPos.z + vector.z;
     line[0].colour = 0xff00ff00;
     vector.x = 0.0f;
     vector.y = -0.05f;
     vector.z = 0.6f;
     NuVecRotateZ(&vector, &vector, rotation_z);
     NuVecRotateY(&vector, &vector, rotation_y);
-    line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-    line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-    line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+    line[1].position.x = PartEditorCameraPos.x + vector.x;
+    line[1].position.y = PartEditorCameraPos.y + vector.y;
+    line[1].position.z = PartEditorCameraPos.z + vector.z;
     line[1].colour = 0xff00ff00;
     NuRndrLine3d(line, edpart_mtl, NULL);
 
     if (edpart_copy_mode != 0) {
-        edbitsDrawCube(PartEditorCameraPosPc.x, PartEditorCameraPosPc.y, PartEditorCameraPosPc.z, edpart_copy_size, edpart_copy_size,
+        edbitsDrawCube(PartEditorCameraPos.x, PartEditorCameraPos.y, PartEditorCameraPos.z, edpart_copy_size, edpart_copy_size,
                        edpart_copy_size, 0, 0, 0, 0, 0, 0xffffffff, edpart_mtl);
     } else {
         vector.x = 0.0f;
@@ -4354,12 +4354,12 @@ void edpartDrawCursor(void) {
         NuVecRotateX(&vector, &vector, edpart_emitrotx);
         NuVecRotateZ(&vector, &vector, rotation_z);
         NuVecRotateY(&vector, &vector, rotation_y);
-        line[0].position.x = PartEditorCameraPosPc.x;
-        line[0].position.y = PartEditorCameraPosPc.y;
-        line[0].position.z = PartEditorCameraPosPc.z;
-        line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-        line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-        line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+        line[0].position.x = PartEditorCameraPos.x;
+        line[0].position.y = PartEditorCameraPos.y;
+        line[0].position.z = PartEditorCameraPos.z;
+        line[1].position.x = PartEditorCameraPos.x + vector.x;
+        line[1].position.y = PartEditorCameraPos.y + vector.y;
+        line[1].position.z = PartEditorCameraPos.z + vector.z;
         line[0].colour = 0xff0000ff;
         line[1].colour = 0xff0000ff;
         NuRndrLine3d(line, edpart_mtl, NULL);
@@ -4371,9 +4371,9 @@ void edpartDrawCursor(void) {
         NuVecRotateX(&vector, &vector, edpart_emitrotx);
         NuVecRotateZ(&vector, &vector, rotation_z);
         NuVecRotateY(&vector, &vector, rotation_y);
-        line[0].position.x = PartEditorCameraPosPc.x + vector.x;
-        line[0].position.y = PartEditorCameraPosPc.y + vector.y;
-        line[0].position.z = PartEditorCameraPosPc.z + vector.z;
+        line[0].position.x = PartEditorCameraPos.x + vector.x;
+        line[0].position.y = PartEditorCameraPos.y + vector.y;
+        line[0].position.z = PartEditorCameraPos.z + vector.z;
         line[0].colour = 0xff0000ff;
         NuRndrLine3d(line, edpart_mtl, NULL);
         if (edpart_dpad_mode == 3) {
@@ -4384,12 +4384,12 @@ void edpartDrawCursor(void) {
             NuVecRotateY(&vector, &vector, edpart_refroty);
             NuVecRotateZ(&vector, &vector, rotation_z);
             NuVecRotateY(&vector, &vector, rotation_y);
-            line[0].position.x = PartEditorCameraPosPc.x;
-            line[0].position.y = PartEditorCameraPosPc.y;
-            line[0].position.z = PartEditorCameraPosPc.z;
-            line[1].position.x = PartEditorCameraPosPc.x + vector.x;
-            line[1].position.y = PartEditorCameraPosPc.y + vector.y;
-            line[1].position.z = PartEditorCameraPosPc.z + vector.z;
+            line[0].position.x = PartEditorCameraPos.x;
+            line[0].position.y = PartEditorCameraPos.y;
+            line[0].position.z = PartEditorCameraPos.z;
+            line[1].position.x = PartEditorCameraPos.x + vector.x;
+            line[1].position.y = PartEditorCameraPos.y + vector.y;
+            line[1].position.z = PartEditorCameraPos.z + vector.z;
             line[0].colour = 0xffff0000;
             line[1].colour = 0xffff0000;
             NuRndrLine3d(line, edpart_mtl, NULL);
@@ -4401,8 +4401,8 @@ void edpartDrawCursor(void) {
                 NuVecRotateY(&vector, &vector, edpart_refroty);
                 NuVecRotateZ(&vector, &vector, rotation_z);
                 NuVecRotateY(&vector, &vector, rotation_y);
-                edbitsDrawCube(PartEditorCameraPosPc.x + vector.x, PartEditorCameraPosPc.y + vector.y, PartEditorCameraPosPc.z + vector.z,
-                               0.25f, 0.0f, 0.25f, edpart_refrotz, edpart_refroty, 0, rotation_z, rotation_y, 0xffff0000, edpart_mtl);
+                edbitsDrawCube(PartEditorCameraPos.x + vector.x, PartEditorCameraPos.y + vector.y, PartEditorCameraPos.z + vector.z, 0.25f,
+                               0.0f, 0.25f, edpart_refrotz, edpart_refroty, 0, rotation_z, rotation_y, 0xffff0000, edpart_mtl);
             }
         }
     }
@@ -4455,10 +4455,9 @@ void edpartDrawCursor(void) {
             if (edpart_nearest == -1) {
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Highlight: <none>");
             } else {
-                edbitsDrawCube(PartEditorCameraPosPc.x, PartEditorCameraPosPc.y, PartEditorCameraPosPc.z,
-                               edpart_nearest_type->position_random.x, edpart_nearest_type->position_random.y,
-                               edpart_nearest_type->position_random.z, edpart_emitrotz, edpart_emitroty, edpart_emitrotx, rotation_z,
-                               rotation_y, 0xff0000ff, edpart_mtl);
+                edbitsDrawCube(PartEditorCameraPos.x, PartEditorCameraPos.y, PartEditorCameraPos.z, edpart_nearest_type->position_random.x,
+                               edpart_nearest_type->position_random.y, edpart_nearest_type->position_random.z, edpart_emitrotz,
+                               edpart_emitroty, edpart_emitrotx, rotation_z, rotation_y, 0xff0000ff, edpart_mtl);
                 NuQFntSet(system_qfont);
                 NuQFntSetColour(system_qfont, 0x80000000);
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Highlight: %s", edpart_nearest_type->name);
@@ -4658,7 +4657,7 @@ void UpdateParts(f32 time) {
                                 part->velocity.y *= part->field_ec;
                                 if (part->velocity.x * part->velocity.x + part->velocity.y * part->velocity.y +
                                         part->velocity.z * part->velocity.z <
-                                    PartStopSpeedSquaredPc) {
+                                    PartStopSpeedSquared) {
                                     part->active |= 2;
                                     if (part->stop_fn != NULL) {
                                         part->stop_fn(part);
@@ -4687,7 +4686,7 @@ void UpdateParts(f32 time) {
                         }
                     }
                     if (PartRaycastsEnabledPrivate != 0) {
-                        CastPart(part, PartCollisionIntervalPc);
+                        CastPart(part, PartCollisionInterval);
                     }
                     if ((part->active & 4) != 0 && part->field_f4 <= movement_time) {
                         movement_time = 0.0f;

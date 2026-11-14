@@ -216,7 +216,7 @@ i32 AllMiniKitsDone(AREASAVE_s *save) {
 }
 
 void DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
-    i32 model = ChallengeMode != 0 ? CharKitModelId_PC : MiniKitModelId_PC;
+    i32 model = ChallengeMode != 0 ? CharKitModelId : MiniKitModelId;
     f32 factor;
     f32 x;
     f32 y;
@@ -248,14 +248,14 @@ void MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {
 void MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
     MiniKitScale = 2.0f;
     if (WorldInfo_CurrentlyActive()->area != NULL && (i16)message->icon != -1) {
-        if ((i16)message->icon == MiniKitModelId_PC) {
-            ++AreaGlobals_PC.progress_flags;
-            if (AreaGlobals_PC.progress_flags > AreaGlobals_PC.area_phase) {
-                AreaGlobals_PC.progress_flags = AreaGlobals_PC.area_phase;
+        if ((i16)message->icon == MiniKitModelId) {
+            ++AreaGlobals.progress_flags;
+            if (AreaGlobals.progress_flags > AreaGlobals.area_phase) {
+                AreaGlobals.progress_flags = AreaGlobals.area_phase;
             }
-        } else if ((i16)message->icon == CharKitModelId_PC && AreaGlobals_PC.field_20 < AreaGlobals_PC.field_1c) {
-            ++AreaGlobals_PC.field_20;
-            if (AreaGlobals_PC.field_20 == AreaGlobals_PC.field_1c && AreaGlobals_PC.field_1c >= 10) {
+        } else if ((i16)message->icon == CharKitModelId && AreaGlobals.field_20 < AreaGlobals.field_1c) {
+            ++AreaGlobals.field_20;
+            if (AreaGlobals.field_20 == AreaGlobals.field_1c && AreaGlobals.field_1c >= 10) {
                 EndChallenge(2, 1);
             }
         }
@@ -267,7 +267,7 @@ void MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
 
 typedef struct HOTH_WORLD_SCRIPT { // size 0x2bc8
     u8 reserved[0x2b00];           // 0x0000
-    AISCRIPTPROCESS_PC processor;  // 0x2b00
+    AISCRIPTPROCESS processor;     // 0x2b00
 } HOTH_WORLD_SCRIPT;
 
 typedef struct HOTH_ANTINODE {    // size 0x58

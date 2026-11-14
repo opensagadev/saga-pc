@@ -20,7 +20,7 @@ extern "C" {
     extern i32 test_ai_combo;
     extern i32 CanPunchGirls;
     extern i32 objopponent_ignoreaiopponent;
-    void KillParts_SpeederBike(ADDPART_PC *, i32, i32, GAMEOBJECT *);
+    void KillParts_SpeederBike(ADDPART *, i32, i32, GAMEOBJECT *);
     i32 ObjIsTargetSpeeder(GAMEOBJECT *object);
     f32 SpeederChaseATATInOutMul(NUVEC *, NUVEC *);
 #ifdef __cplusplus
@@ -61,23 +61,23 @@ extern "C" {
 }
 #endif
 
-typedef struct SPEEDERCHASE_NETPACKET_PC { // size 0x7
-    u8 reserved_0;                         // 0x0
-    u8 target_count;                       // 0x1
-    u8 killed_count;                       // 0x2
-    u8 reserved_3;                         // 0x3
-    u8 phase;                              // 0x4
-    u8 reserved_5[2];                      // 0x5
-} SPEEDERCHASE_NETPACKET_PC;
+typedef struct SPEEDERCHASE_NETPACKET { // size 0x7
+    u8 reserved_0;                      // 0x0
+    u8 target_count;                    // 0x1
+    u8 killed_count;                    // 0x2
+    u8 reserved_3;                      // 0x3
+    u8 phase;                           // 0x4
+    u8 reserved_5[2];                   // 0x5
+} SPEEDERCHASE_NETPACKET;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern SPEEDERCHASE_NETPACKET_PC *SpeederChaseNetPacketPc;
-    extern i32 SpeederChaseState0Pc;
-    extern i32 SpeederChaseState1Pc;
-    extern f32 SpeederChaseTime0Pc;
-    extern f32 SpeederChaseTime1Pc;
+    extern SPEEDERCHASE_NETPACKET *SpeederChaseNetPacket;
+    extern i32 SpeederChaseState0;
+    extern i32 SpeederChaseState1;
+    extern f32 SpeederChaseTime0;
+    extern f32 SpeederChaseTime1;
     i32 SpeederBlowupHack(GIZMOBLOWUP_PC *, i32);
 #ifdef __cplusplus
 }

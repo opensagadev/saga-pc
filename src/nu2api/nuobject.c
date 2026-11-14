@@ -185,7 +185,7 @@ void NuFadeObjUpdateArray(NUVEC **positions) {
     NuFadeObjWave += 501;
     NuFadeObjDir += 133;
     NuFadeObjDir2 += 377;
-    if (NuFadeObjEnabledPc == 0) {
+    if (NuFadeObjEnabled == 0) {
         return;
     }
     terrain = TerrainGetCur();
@@ -255,7 +255,7 @@ void NuFadeObjDraw(void) {
     f32 distance_squared;
     NUSPECIALHANDLE special;
     special.special = NULL;
-    if (NuFadeObjEnabledPc == 0) {
+    if (NuFadeObjEnabled == 0) {
         return;
     }
     group = NuFadeObjGroup;

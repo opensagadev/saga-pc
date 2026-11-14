@@ -105,9 +105,9 @@ extern "C" {
 }
 
 extern "C" {
-    f32 DetonatorHitScaleArmedPc = 0.75f;
-    f32 DetonatorHitScaleIdlePc = 0.08f;
-    f32 BatarangDetonatorHitDelayPc = 2.0f;
+    f32 DetonatorHitScaleArmed = 0.75f;
+    f32 DetonatorHitScaleIdle = 0.08f;
+    f32 BatarangDetonatorHitDelay = 2.0f;
 }
 
 extern "C" void Detonator_Detonate(DETONATOR_s *detonator) {
@@ -116,7 +116,7 @@ extern "C" void Detonator_Detonate(DETONATOR_s *detonator) {
     BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->field_0x34);
     detonator->active = 0;
     if (hit_data != NULL) {
-        hit_data->delay = BatarangDetonatorHitDelayPc;
+        hit_data->delay = BatarangDetonatorHitDelay;
         detonator->field_0x34 = NULL;
     }
 }
@@ -137,9 +137,9 @@ extern "C" void Detonators_Update(void) {
             BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->field_0x34);
             if (!(detonator->timer >= 10.0f) &&
                 (detonator->object == NULL || detonator->object->dead != 0 || !(detonator->object->field_de0 >= 0.3f))) {
-                hit_data->scale = DetonatorHitScaleIdlePc;
+                hit_data->scale = DetonatorHitScaleIdle;
             } else {
-                hit_data->scale = DetonatorHitScaleArmedPc;
+                hit_data->scale = DetonatorHitScaleArmed;
             }
         }
     }

@@ -37,11 +37,11 @@
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 1 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
 struct BOLTTYPE_PC_s;
-struct FLOWBOX_PC;
+struct FLOWBOX;
 struct FORCE_RESET_GROUP;
 struct FRAME_PAD_PC;
-struct GIZFLOW_PC;
-struct GIZMOPICKUP_PC;
+struct GIZFLOW;
+struct GIZMOPICKUP;
 struct NUGSCN_s;
 struct PART_PC;
 struct VuMtx;
@@ -55,16 +55,16 @@ struct gameobject_s;
 struct mission_data_s;
 struct numtl_s;
 
-typedef void (*GIZACTIONFN_PC)(struct GIZFLOW_PC *, struct FLOWBOX_PC *, char **, i32);
+typedef void (*GIZACTIONFN_PC)(struct GIZFLOW *, struct FLOWBOX *, char **, i32);
 
-typedef struct TERRAIN_TRACK_SLOT_PC { // size 0x18
-    void *id;                          // 0x00
-    i16 platform_index;                // 0x04
-    u16 flags;                         // 0x06
-    i16 platform_contact_state;        // 0x08
-    i16 wall_contact_state;            // 0x0a
-    NUVEC impact_normal;               // 0x0c
-} TERRAIN_TRACK_SLOT_PC;
+typedef struct TERRAIN_TRACK_SLOT { // size 0x18
+    void *id;                       // 0x00
+    i16 platform_index;             // 0x04
+    u16 flags;                      // 0x06
+    i16 platform_contact_state;     // 0x08
+    i16 wall_contact_state;         // 0x0a
+    NUVEC impact_normal;            // 0x0c
+} TERRAIN_TRACK_SLOT;
 
 typedef struct TERRAIN_SPHERE_PC { // size 0x10
     NUVEC position;                // 0x0
@@ -112,7 +112,7 @@ typedef struct TERRAIN_CELL_PC { // size 0x14
 
 typedef TERRAIN_GROUP_PC TERRAIN_GROUP;
 typedef TERRAIN_CELL_PC TERRAIN_CELL;
-typedef TERRAIN_POLYGON_INFO_PC TERRAIN_SHAPE;
+typedef TERRAIN_POLYGON_INFO TERRAIN_SHAPE;
 
 typedef struct TerrainQuery_s {     // size 0x948
     u32 flags;                      // 0x000
@@ -292,12 +292,12 @@ typedef struct SoundTable { // size 0xc8
     u16 bits[100];          // 0x00
 } SoundTable;
 
-typedef struct GAMEAUDIO_PC {                                // size 0x200
+typedef struct GAMEAUDIO {                                   // size 0x200
     i32 (*override_footstep_fn)(struct gameobject_s *, i32); // 0x000
     i32 (*check_reverb_fn)(void);                            // 0x004
     char *sfx_names[84];                                     // 0x008
     i16 sfx_ids[84];                                         // 0x158
-} GAMEAUDIO_PC;
+} GAMEAUDIO;
 
 typedef struct cutinfo_s { // size 0xf0
     u8 opaque_00_04[0x4];  // 0x00
@@ -377,7 +377,7 @@ extern "C" {
         }; // 0x08
     } BATARANG_TARGET_s;
 
-    struct CHARPIVOT_PC;
+    struct CHARPIVOT;
 
     typedef struct debris_process_sphere_s { // size 0x1c
         NUVEC position;                      // 0x00
@@ -421,7 +421,7 @@ extern "C" {
 }
 #endif
 
-struct CHARPIVOT_PC {      // size 0x14
+struct CHARPIVOT {         // size 0x14
     const char *name;      // 0x00
     i16 animation;         // 0x04
     i16 point_of_interest; // 0x06
@@ -431,7 +431,7 @@ struct CHARPIVOT_PC {      // size 0x14
     u8 unknown_12[2];      // 0x12
 };
 
-typedef struct CHARPIVOT_PC CHARPIVOT_PC;
+typedef struct CHARPIVOT CHARPIVOT;
 typedef struct AIPATHCNXCONTROLLER_s AIPATHCNXCONTROLLER_s;
 typedef struct AITRIGGERSETSYS_s AITRIGGERSETSYS_s;
 typedef struct AITRIGGERSET_TARGET AITRIGGERSET_TARGET;
@@ -761,7 +761,7 @@ struct AITRIGGERSET_TARGET { // size 0x3c
     u8 reserved_00[16];      // 0x00
     NUVEC position;          // 0x10
     u8 reserved_1c[4];       // 0x1c
-    AIPATHINFO_PC path;      // 0x20
+    AIPATHINFO path;         // 0x20
     u8 reserved_38[4];       // 0x38
 };
 
@@ -968,17 +968,17 @@ struct AITRIGGERSET_s { // size 0x214
 
             union { // size 0x4
                 u32 reserved_000;
-                struct FLOWBOX_PC *flowbox;
+                struct FLOWBOX *flowbox;
             }; // 0x000
 
             union { // size 0x20
-                struct gizmo_pc_s *triggers[8];
-                struct gizmo_pc_s *gizmos[8];
+                struct gizmo_s *triggers[8];
+                struct gizmo_s *gizmos[8];
             }; // 0x004
 
             union { // size 0x1e0
                 struct AITRIGGERSET_TARGET targets[8];
-                AILOCATOR_PC locators[8];
+                AILOCATOR locators[8];
             }; // 0x024
         };
     }; // 0x000
@@ -1026,9 +1026,9 @@ struct shopitem_s {              // size 0x74
     struct nuhspecial_s special; // 0x68
 };
 
-struct AIPATHCNXCONTROLLER_s {       // size 0xa8
-    NULISTLNK links;                 // 0x00
-    struct AIPATHCNX_PC *connection; // 0x08
+struct AIPATHCNXCONTROLLER_s {    // size 0xa8
+    NULISTLNK links;              // 0x00
+    struct AIPATHCNX *connection; // 0x08
 
     union { // size 0xc
         void *target;
@@ -1200,7 +1200,7 @@ struct cutsys_s {      // size 0x8
 };
 
 typedef struct gameanimobjpool_s GAMEANIMOBJPOOL;
-typedef void (*PICKUP_UPDATE_FN_PC)(struct WORLDINFO_s *, struct GIZMOPICKUP_PC *);
+typedef void (*PICKUP_UPDATE_FN_PC)(struct WORLDINFO_s *, struct GIZMOPICKUP *);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1278,14 +1278,14 @@ struct TRAFFICANIMSYS_s {                        // size 0x77e4
     u8 reserved_77e2[2];                         // 0x77e2
 };
 
-struct GIZMOPICKUPRUNTIMESYS_s {              // size 0x1c
-    struct GIZMOPICKUP_PC *pickups;           // 0x00
-    struct GIZMOPICKUP_PC *temporary_pickups; // 0x04
-    i32 pickup_count;                         // 0x08
-    i32 temporary_cursor;                     // 0x0c
-    i32 total_score;                          // 0x10
-    f32 draw_distance;                        // 0x14
-    f32 pickup_scale;                         // 0x18
+struct GIZMOPICKUPRUNTIMESYS_s {           // size 0x1c
+    struct GIZMOPICKUP *pickups;           // 0x00
+    struct GIZMOPICKUP *temporary_pickups; // 0x04
+    i32 pickup_count;                      // 0x08
+    i32 temporary_cursor;                  // 0x0c
+    i32 total_score;                       // 0x10
+    f32 draw_distance;                     // 0x14
+    f32 pickup_scale;                      // 0x18
 };
 
 struct SPECIALMINIKITSYS_s {        // size 0x8
@@ -1293,16 +1293,16 @@ struct SPECIALMINIKITSYS_s {        // size 0x8
     i32 count;                      // 0x4
 };
 
-struct SPECIALMINIKIT_s {             // size 0x3c
-    struct nuhspecial_s special;      // 0x00
-    void *inst_anim;                  // 0x0c
-    void *anim_data;                  // 0x10
-    f32 end_frame;                    // 0x14
-    char special_name[16];            // 0x18
-    char pickup_name[8];              // 0x28
-    struct gizmo_pc_s *special_gizmo; // 0x30
-    struct gizmo_pc_s *pickup_gizmo;  // 0x34
-    u8 flags;                         // 0x38
+struct SPECIALMINIKIT_s {          // size 0x3c
+    struct nuhspecial_s special;   // 0x00
+    void *inst_anim;               // 0x0c
+    void *anim_data;               // 0x10
+    f32 end_frame;                 // 0x14
+    char special_name[16];         // 0x18
+    char pickup_name[8];           // 0x28
+    struct gizmo_s *special_gizmo; // 0x30
+    struct gizmo_s *pickup_gizmo;  // 0x34
+    u8 flags;                      // 0x38
 };
 
 struct FADER_s {                         // size 0x18
@@ -1454,29 +1454,29 @@ typedef struct gizobstacle_s {              // size 0xa0
     u32 runtime_flags;                      // 0x9c
 } GIZOBSTACLE;
 
-typedef void (*PICKUP_COLLECT_FN_PC)(struct WORLDINFO_s *, struct GIZMOPICKUP_PC *, i32, struct gameobject_s *, i32);
+typedef void (*PICKUP_COLLECT_FN_PC)(struct WORLDINFO_s *, struct GIZMOPICKUP *, i32, struct gameobject_s *, i32);
 
-typedef struct GIZMO_PICKUP_TYPE_PC { // size 0x38
-    char *name;                       // 0x00
-    char *activation_sfx_name;        // 0x04
-    char *collection_sfx_name;        // 0x08
-    u8 field_c;                       // 0x0c
-    u8 random_model_count;            // 0x0d
-    u8 flags;                         // 0x0e
-    u8 field_0f;                      // 0x0f
-    i16 first_model_id;               // 0x10
-    u16 score;                        // 0x12
-    f32 shadow_radius_x;              // 0x14
-    f32 shadow_radius_z;              // 0x18
-    f32 draw_distance;                // 0x1c
-    f32 bob_height;                   // 0x20
-    PICKUP_UPDATE_FN_PC update_fn;    // 0x24
-    PICKUP_COLLECT_FN_PC collect_fn;  // 0x28
-    i16 debris_id;                    // 0x2c
-    i16 overlay_model_id;             // 0x2e
-    f32 shadow_extent_x;              // 0x30
-    f32 shadow_extent_z;              // 0x34
-} GIZMO_PICKUP_TYPE_PC;
+typedef struct GIZMO_PICKUP_TYPE {   // size 0x38
+    char *name;                      // 0x00
+    char *activation_sfx_name;       // 0x04
+    char *collection_sfx_name;       // 0x08
+    u8 field_c;                      // 0x0c
+    u8 random_model_count;           // 0x0d
+    u8 flags;                        // 0x0e
+    u8 field_0f;                     // 0x0f
+    i16 first_model_id;              // 0x10
+    u16 score;                       // 0x12
+    f32 shadow_radius_x;             // 0x14
+    f32 shadow_radius_z;             // 0x18
+    f32 draw_distance;               // 0x1c
+    f32 bob_height;                  // 0x20
+    PICKUP_UPDATE_FN_PC update_fn;   // 0x24
+    PICKUP_COLLECT_FN_PC collect_fn; // 0x28
+    i16 debris_id;                   // 0x2c
+    i16 overlay_model_id;            // 0x2e
+    f32 shadow_extent_x;             // 0x30
+    f32 shadow_extent_z;             // 0x34
+} GIZMO_PICKUP_TYPE;
 
 struct gizforce_s {                    // size 0xa4
     char name[16];                     // 0x00
@@ -1783,7 +1783,7 @@ struct STATUSPACKET_s {                                                         
     i32 (*finish_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2); // 0x008
     void (*reset_callback)(struct STATUSPACKET_s *arg0);                                     // 0x00c
     void (*draw_background_callback)(struct STATUSPACKET_s *arg0);                           // 0x010
-    struct area_data_pc_s *area;                                                             // 0x014
+    struct area_data_s *area;                                                                // 0x014
     struct episode_data_s *episode;                                                          // 0x018
     u32 *score;                                                                              // 0x01c
     struct mission_data_s *mission;                                                          // 0x020
@@ -2011,7 +2011,7 @@ struct GIZFORCEGROUP_s {          // size 0x28
 struct GIZFORCESYS_s {                   // size 0x158
     struct GIZFORCE_s *forces;           // 0x000
     struct GIZFORCE_s **visible_forces;  // 0x004
-    struct gizmo_pc_s **hit_test_gizmos; // 0x008
+    struct gizmo_s **hit_test_gizmos;    // 0x008
     u16 capacity;                        // 0x00c
     u16 count;                           // 0x00e
     u16 visible_force_count;             // 0x010
@@ -2095,7 +2095,7 @@ struct GIZSPECIAL_s {               // size 0x28
 
 struct GIZOBSTACLESYS_s {                // size 0x14
     struct gizobstacle_s *obstacles;     // 0x00
-    struct gizmo_pc_s **active_gizmos;   // 0x04
+    struct gizmo_s **active_gizmos;      // 0x04
     u16 count;                           // 0x08
     u16 capacity;                        // 0x0a
     u16 active_gizmo_count;              // 0x0c
@@ -2845,10 +2845,10 @@ class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
     void Start();
     void Update();
     void Shutdown();
-    virtual void Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer);
-    virtual void SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1);
-    virtual void Broadcast(NETMESSAGE_PC message, u8 channel);
-    virtual void BroadcastEx(NETMESSAGE_PC message, u8 channel);
+    virtual void Send(NETMESSAGE message, u8 channel, V2Peer *peer);
+    virtual void SendEx(NETMESSAGE message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1);
+    virtual void Broadcast(NETMESSAGE message, u8 channel);
+    virtual void BroadcastEx(NETMESSAGE message, u8 channel);
     virtual char const *GetName();
     i32 PeerRequest(const V2Peer &peer);
     void PeerJoined(const V2Peer &peer);
@@ -2860,9 +2860,9 @@ class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
     i32 NosAcquire(NetworkObject *object, const V2Peer &peer);
     void NosAdopted(NetworkObject *object, const V2Peer &peer);
     void UpdateClientStats();
-    void DeliverMessage(NETMESSAGE_PC &message, u8 channel, const V2Peer &peer);
-    void RecordSent(NETMESSAGE_PC message, u8 channel);
-    void RecordReceived(NETMESSAGE_PC message, u8 channel);
+    void DeliverMessage(NETMESSAGE &message, u8 channel, const V2Peer &peer);
+    void RecordSent(NETMESSAGE message, u8 channel);
+    void RecordReceived(NETMESSAGE message, u8 channel);
     void Resume();
     i32 Suspend();
     NetAddress *GetMyAddress();

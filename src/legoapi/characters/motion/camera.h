@@ -15,7 +15,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern VIEWCAM_PC ViewCam;
+    extern VIEWCAM ViewCam;
     i32 GoingForwardsAlongNarrowSock(GAMEOBJECT *);
     extern NUVEC ObstacleCamCutPts[2];
 #ifdef __cplusplus

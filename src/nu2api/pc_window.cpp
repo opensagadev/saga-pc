@@ -115,7 +115,7 @@ extern "C" i32 CreateWindowPc(HINSTANCE instance, i32 show, u16 icon_resource) {
     if (y < 0) {
         y = (i32)((PCDeviceBackend.desktop_mode.height - height) >> 1);
     }
-    HWND window = CreateWindowExA(0, "TTalesWindow", NuHwDefaultParameterPc, style, x, y, width, height, NULL, NULL, instance, NULL);
+    HWND window = CreateWindowExA(0, "TTalesWindow", NuHwDefaultParameter, style, x, y, width, height, NULL, NULL, instance, NULL);
     if (!window) {
         MessageBoxA(window, "Window Creation Failed!", "Error!", 0x30);
         return 0;
@@ -136,7 +136,7 @@ extern "C" void fun_006de680(void) {
 extern "C" void fun_006de690(void) {
 }
 
-extern "C" void SetAccessibilityPc(u8 restore) {
+extern "C" void SetAccessibility(u8 restore) {
     if (restore) {
         SystemParametersInfoA(SPI_SETSTICKYKEYS, sizeof(PcStickyKeys), &PcStickyKeys, 0);
         SystemParametersInfoA(SPI_SETTOGGLEKEYS, sizeof(PcToggleKeys), &PcToggleKeys, 0);
@@ -162,14 +162,14 @@ extern "C" void SetAccessibilityPc(u8 restore) {
 
 // Standalone cdecl copies of both tokenizer helpers are kept next to ParsePlatformArgumentsPc, which
 // inlines them.
-char *SkipArgumentSpacesPc(char *cursor) {
+char *SkipArgumentSpaces(char *cursor) {
     while (*cursor == ' ') {
         ++cursor;
     }
     return cursor;
 }
 
-char *ParseArgumentTokenPc(char *cursor, char terminator, char **argument) {
+char *ParseArgumentToken(char *cursor, char terminator, char **argument) {
     i32 length = 0;
     if (*cursor == terminator) {
         ++cursor;
@@ -198,11 +198,11 @@ extern "C" void ParsePlatformArgumentsPc(char *command_line) {
     PcNoFocusPolicy = 0;
     char *cursor = command_line;
     while (*cursor != 0) {
-        cursor = SkipArgumentSpacesPc(cursor);
+        cursor = SkipArgumentSpaces(cursor);
         if (*cursor == '"') {
-            cursor = ParseArgumentTokenPc(cursor, '"', &PcArgv[PcArgc]);
+            cursor = ParseArgumentToken(cursor, '"', &PcArgv[PcArgc]);
         } else {
-            cursor = ParseArgumentTokenPc(cursor, ' ', &PcArgv[PcArgc]);
+            cursor = ParseArgumentToken(cursor, ' ', &PcArgv[PcArgc]);
         }
         if (NuStrICmp(PcArgv[PcArgc], "-RelaunchMCE") == 0) {
             PcRelaunchMce = 1;
@@ -234,15 +234,15 @@ extern "C" u8 PcPlatformPolicy(u8 enabled);
 
 extern "C" i32 __stdcall WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line, i32 show) {
     PCInputWindow = instance;
-    NuHwShowCommandPc = show;
+    NuHwShowCommand = show;
     SystemParametersInfoA(SPI_GETSTICKYKEYS, sizeof(PcStickyKeys), &PcStickyKeys, 0);
     SystemParametersInfoA(SPI_GETTOGGLEKEYS, sizeof(PcToggleKeys), &PcToggleKeys, 0);
     SystemParametersInfoA(SPI_GETFILTERKEYS, sizeof(PcFilterKeys), &PcFilterKeys, 0);
-    SetAccessibilityPc(0);
+    SetAccessibility(0);
     SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &PcScreenSaverEnabled, 2);
     SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, NULL, 2);
     SetThreadExecutionState(0x80000003);
-    CpuDetectFeaturesPc();
+    CpuDetectFeatures();
     CoInitializeEx(NULL, 2);
     NuLanguageSet(1);
     ParsePlatformArgumentsPc(command_line);

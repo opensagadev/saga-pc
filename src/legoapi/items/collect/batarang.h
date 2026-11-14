@@ -17,7 +17,7 @@
 extern "C" {
 #endif
     i32 Batarang_StartTargetting(GAMEOBJECT *);
-    i32 BatarangGetObjectFromCharIdPc(i32 character);
+    i32 BatarangGetObjectFromCharId(i32 character);
     void Batarangs_CheckLostData(void *);
     void Batarangs_Reset(void);
 

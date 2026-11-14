@@ -8,10 +8,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern f32 HeadMovementThresholdPc;
-    extern f32 CloakMovementRecoverRatePc;
-    extern f32 CloakMovementFallRatePc;
-    extern f32 HairMovementRestAnglePc;
+    extern f32 HeadMovementThreshold;
+    extern f32 CloakMovementRecoverRate;
+    extern f32 CloakMovementFallRate;
+    extern f32 HairMovementRestAngle;
 #ifdef __cplusplus
 }
 #endif

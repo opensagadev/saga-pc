@@ -10,19 +10,19 @@ extern "C" {
     static i32 trooperteamcount = 0;
     i8 trooper_side[10] = {0};
     f32 teamswitchtimer = 0.0f;
-    f32 MiniTrooperTurnRatePc = 3.0f;
-    f32 MiniTrooperHopHeightPc = 0.04f;
-    i32 MiniTrooperGroundRefreshMaskPc = 15;
+    f32 MiniTrooperTurnRate = 3.0f;
+    f32 MiniTrooperHopHeight = 0.04f;
+    i32 MiniTrooperGroundRefreshMask = 15;
 
     /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-    static f32 SimpletonsFabsPc(f32 f) {
+    static f32 SimpletonsFabs(f32 f) {
         f32 rv;
 
         *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
         return rv;
     }
 
-    static void MiniTrooperPitchMatrixPc(NUMTX *matrix, i32 angle) {
+    static void MiniTrooperPitchMatrix(NUMTX *matrix, i32 angle) {
         const f32 cosine = NU_COS_LUT(angle);
         const f32 sine = NU_SIN_LUT(angle);
         matrix->m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
@@ -43,7 +43,7 @@ extern "C" {
         matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
     }
 
-    static void MiniTrooperYawMatrixPc(NUMTX *matrix, i32 angle) {
+    static void MiniTrooperYawMatrix(NUMTX *matrix, i32 angle) {
         const f32 cosine = NU_COS_LUT(angle);
         const f32 sine = NU_SIN_LUT(angle);
         matrix->m00 = cosine;
@@ -64,7 +64,7 @@ extern "C" {
         matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
     }
 
-    static void MiniTrooperRotateYawPc(NUMTX *matrix, i32 angle) {
+    static void MiniTrooperRotateYaw(NUMTX *matrix, i32 angle) {
         f32 cosine = NU_COS_LUT(angle);
         f32 sine = NU_SIN_LUT(angle);
         f32 x0 = matrix->m00;
@@ -81,7 +81,7 @@ extern "C" {
         matrix->m32 = cosine * matrix->m32 - x3 * sine;
     }
 
-    static minitrooperteam_s *MiniTrooperFindTargetTeamPc(WORLDINFO *world, minitrooperteam_s *team, i32 team_index, f32 *distance) {
+    static minitrooperteam_s *MiniTrooperFindTargetTeam(WORLDINFO *world, minitrooperteam_s *team, i32 team_index, f32 *distance) {
         f32 nearest = 1.0e9f;
         minitrooperteam_s *result = NULL;
         *distance = 0.0f;
@@ -107,7 +107,7 @@ extern "C" {
         return result;
     }
 
-    static i32 MiniTrooperCheckFormationPc(minitrooperteam_s *team, minisnowtrooper_s *trooper) {
+    static i32 MiniTrooperCheckFormation(minitrooperteam_s *team, minisnowtrooper_s *trooper) {
         NUVEC delta;
         delta.x = trooper->shot_position.x - (team->origin_x + team->troopers[trooper->formation_index].formation_x);
         delta.z = trooper->shot_position.z - (team->origin_z + team->troopers[trooper->formation_index].formation_z);
@@ -118,7 +118,7 @@ extern "C" {
         return 0;
     }
 
-    static void MiniTrooperMovePc(minisnowtrooper_s *trooper) {
+    static void MiniTrooperMove(minisnowtrooper_s *trooper) {
         if ((trooper->state_flags & 0x40) == 0) {
             NUVEC movement = v001;
             movement.z = movement.z * FRAMETIME * trooperspeedtab[(trooper->state_flags >> 4) & 3];
@@ -128,7 +128,7 @@ extern "C" {
         }
     }
 
-    static void MiniTrooperStepPc(minisnowtrooper_s *trooper) {
+    static void MiniTrooperStep(minisnowtrooper_s *trooper) {
         f32 step_time = 1.0f / (f32)(i32)trooper->speed_divisor;
         if (trooper->timer >= step_time) {
             trooper->step_frame = trooper->step_frame + 1;
@@ -140,22 +140,22 @@ extern "C" {
         trooper->timer += FRAMETIME;
     }
 
-    static void MiniTrooperDebrisPc(WORLDINFO *world, minitrooperteam_s *team, i32 trooper_index) {
+    static void MiniTrooperDebris(WORLDINFO *world, minitrooperteam_s *team, i32 trooper_index) {
         if (team->state_flags & 1) {
             NUVEC position = {team->troopers[trooper_index].shot_position.x, team->height, team->troopers[trooper_index].shot_position.z};
-            i32 effect_index = TrooperGameDebrisPc[0];
+            i32 effect_index = TrooperGameDebris[0];
             if (effect_index >= 0 && effect_index < world->game_debris_sys->capacity &&
                 world->game_debris_sys->entries[effect_index].effect != -1) {
                 AddVariableShotDebrisEffect(world->game_debris_sys->entries[effect_index].effect, &position, 80, 0, 0);
             }
-            AddGameDebris(world->game_debris_sys, TrooperGameDebrisPc[1], &position);
-            AddGameDebris(world->game_debris_sys, TrooperGameDebrisPc[2], &position);
-            AddGameDebris(world->game_debris_sys, TrooperGameDebrisPc[3], &position);
+            AddGameDebris(world->game_debris_sys, TrooperGameDebris[1], &position);
+            AddGameDebris(world->game_debris_sys, TrooperGameDebris[2], &position);
+            AddGameDebris(world->game_debris_sys, TrooperGameDebris[3], &position);
         }
         team->debris_timer = (f32)qrand() * (4.0f / 65535.0f) + 2.0f;
     }
 
-    static GAMEOBJECT *MiniTrooperNearestPlayerPc(minitrooperteam_s *team) {
+    static GAMEOBJECT *MiniTrooperNearestPlayer(minitrooperteam_s *team) {
         if (player != NULL) {
             NUVEC second;
             NUVEC first;
@@ -447,7 +447,7 @@ extern "C" {
         NUVEC direction;
 
         if (droid_hack == 0) {
-            minitrooperteam_s *target = MiniTrooperFindTargetTeamPc(world, team, team_index, &nearest_distance_squared);
+            minitrooperteam_s *target = MiniTrooperFindTargetTeam(world, team, team_index, &nearest_distance_squared);
             if (!(nearest_distance_squared < (f64)1.0e9f) || target == NULL || nearest_distance_squared == (f64)1.0e9f) {
                 goto fail;
             }
@@ -478,8 +478,8 @@ extern "C" {
         FindAnglesXY(&direction, &pitch, shot_angle);
 
         NUMTX matrix;
-        MiniTrooperPitchMatrixPc(&matrix, pitch);
-        MiniTrooperRotateYawPc(&matrix, *shot_angle);
+        MiniTrooperPitchMatrix(&matrix, pitch);
+        MiniTrooperRotateYaw(&matrix, *shot_angle);
 
         BOLT_PC *bolt = Bolt_Add(NULL, &shot_position, &matrix, team->bolt_type, 0);
         if (bolt != NULL) {
@@ -545,7 +545,7 @@ extern "C" {
                 if (team->formation_mode == 3 || team->formation_mode == 2) {
                     team->formation_mode = 1;
                 }
-                GAMEOBJECT *nearest = MiniTrooperNearestPlayerPc(team);
+                GAMEOBJECT *nearest = MiniTrooperNearestPlayer(team);
                 if (nearest != NULL && NuVecDist(team->route_point, &nearest->collision_position, NULL) < 40.0f) {
                     team->formation_mode = 0;
                 }
@@ -563,7 +563,7 @@ extern "C" {
 
                         trooper->state_flags = (trooper->state_flags & ~0xc) | 4;
                         trooper->rotation =
-                            SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
+                            SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRate / 65535.0f)));
                         if (trooper->rotation - trooper->target_rotation <= 0x16c) {
                             if (shot != 0) {
                                 trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
@@ -589,13 +589,13 @@ extern "C" {
                         }
 
                         if ((trooper->state_flags & 0x40) == 0) {
-                            if (MiniTrooperCheckFormationPc(team, trooper)) {
+                            if (MiniTrooperCheckFormation(team, trooper)) {
                                 ++stopped_count;
                             }
                         } else {
                             ++stopped_count;
                             trooper->rotation =
-                                SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
+                                SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRate / 65535.0f)));
                             if (trooper->rotation - trooper->target_rotation <= 0x16c) {
                                 if (shot != 0) {
                                     trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
@@ -609,10 +609,10 @@ extern "C" {
                             const f32 to_x = (team->origin_x + slot->formation_x) - trooper->shot_position.x;
                             trooper->target_rotation = NuAtan2D(to_x, (team->origin_z + slot->formation_z) - trooper->shot_position.z);
                             trooper->rotation =
-                                SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
+                                SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRate / 65535.0f)));
                             if (((trooper->state_flags & 0x40) == 0)) {
-                                MiniTrooperMovePc(trooper);
-                                MiniTrooperStepPc(trooper);
+                                MiniTrooperMove(trooper);
+                                MiniTrooperStep(trooper);
                             }
                         }
                         total.x += trooper->shot_position.x;
@@ -651,13 +651,13 @@ extern "C" {
                         }
 
                         if ((trooper->state_flags & 0x40) == 0) {
-                            if (MiniTrooperCheckFormationPc(team, trooper)) {
+                            if (MiniTrooperCheckFormation(team, trooper)) {
                                 ++stopped_count;
                             }
                         } else {
                             ++stopped_count;
                             trooper->rotation =
-                                SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
+                                SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRate / 65535.0f)));
                             if ((trooper->rotation - trooper->target_rotation <= 0x16c)) {
                                 if (shot != 0) {
                                     trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
@@ -672,7 +672,7 @@ extern "C" {
                             const f32 to_x = (team->origin_x + slot->formation_x) - trooper->shot_position.x;
                             trooper->target_rotation = NuAtan2D(to_x, (team->origin_z + slot->formation_z) - trooper->shot_position.z);
                             trooper->rotation =
-                                SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
+                                SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRate / 65535.0f)));
                         }
 
                         if (((trooper->state_flags & 0x80) != 0)) {
@@ -685,8 +685,8 @@ extern "C" {
                         }
 
                         if (((trooper->state_flags & 0x40) == 0)) {
-                            MiniTrooperMovePc(trooper);
-                            MiniTrooperStepPc(trooper);
+                            MiniTrooperMove(trooper);
+                            MiniTrooperStep(trooper);
                         }
                         total.x += trooper->shot_position.x;
                         total.z += trooper->shot_position.z;
@@ -715,15 +715,15 @@ extern "C" {
                         const f32 to_x = (team->origin_x + slot->formation_x) - trooper->shot_position.x;
                         trooper->target_rotation = NuAtan2D(to_x, (team->origin_z + slot->formation_z) - trooper->shot_position.z);
                         trooper->rotation =
-                            SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
+                            SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRate / 65535.0f)));
                         if ((trooper->state_flags & 0x40) == 0) {
                             {
-                                MiniTrooperMovePc(trooper);
-                                MiniTrooperStepPc(trooper);
+                                MiniTrooperMove(trooper);
+                                MiniTrooperStep(trooper);
                             }
                         } else {
                             trooper->rotation =
-                                SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
+                                SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRate / 65535.0f)));
                             if ((trooper->rotation - trooper->target_rotation <= 0x16c)) {
                                 if (shot != 0) {
                                     trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
@@ -752,7 +752,7 @@ extern "C" {
                 team->debris_timer -= FRAMETIME;
                 if (team->debris_timer <= 0.0f) {
                     const i32 debris_trooper = (qrand() / (0xffff / team->trooper_count + 1));
-                    MiniTrooperDebrisPc(world, team, debris_trooper);
+                    MiniTrooperDebris(world, team, debris_trooper);
                 }
             }
 
@@ -793,7 +793,7 @@ extern "C" {
                 position.z = trooper->shot_position.z;
 
                 f32 ground;
-                if (((i + GameTimer.update_count) & MiniTrooperGroundRefreshMaskPc) == 0) {
+                if (((i + GameTimer.update_count) & MiniTrooperGroundRefreshMask) == 0) {
                     if (team->reserved_02c == 2000000.0f) {
                         position.y = 10.0f;
                         ground = GameShadow(NULL, &position, 5.0f, -1);
@@ -810,7 +810,7 @@ extern "C" {
                 const i32 frame = TrooperStepFrames[trooper->step_frame];
                 const i32 draw_rotation = trooper->rotation + 0x8000;
                 NUMTX *matrix = next[frame];
-                MiniTrooperYawMatrixPc(matrix, draw_rotation);
+                MiniTrooperYawMatrix(matrix, draw_rotation);
 
                 const u16 frame_phase = static_cast<u16>(trooper->step_frame << 14);
                 const f32 step_time = 1.0f / static_cast<f32>(static_cast<i32>(trooper->speed_divisor));
@@ -819,8 +819,8 @@ extern "C" {
                     (1.0 - (NU_SIN_LUT(static_cast<i32>(trooper->timer * (1.0f / step_time) * 32768.0f + 16384.0f)) + 1.0) * 0.5) *
                         16384.0);
                 const f32 hop = NuTrigTable[static_cast<u16>(phase / 2)];
-                f32 hop_magnitude = SimpletonsFabsPc(hop);
-                position.y = ground + hop_magnitude * MiniTrooperHopHeightPc;
+                f32 hop_magnitude = SimpletonsFabs(hop);
+                position.y = ground + hop_magnitude * MiniTrooperHopHeight;
                 NuMtxTranslate(matrix, &position);
 
                 next[frame] = matrix + 1;

@@ -15,11 +15,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 NuCameraClipHGobj(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *);
+    i32 NuCameraClipHGobj(NUHGOBJ_EVAL *, NUMTX *, NUMTX *);
     i32 NuGScnNumSpecials(NUGSCN *);
     void NuGScnGetSpecial(NUSPECIALHANDLE *, NUGSCN *, i32);
-    void NuVpSetIdentityPc(NUMTX *matrix);
-    void RenderPostViewportResetPc(void);
+    void NuVpSetIdentity(NUMTX *matrix);
+    void RenderPostViewportReset(void);
 #ifdef __cplusplus
 }
 #endif

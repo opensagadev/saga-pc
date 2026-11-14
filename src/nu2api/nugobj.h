@@ -15,8 +15,8 @@
 extern "C" {
 #endif
     void PCGraphicsInitializeFramebuffers(u32, i32, VARIPTR *, VARIPTR);
-    void PCGraphicsCopyFramebufferTex2DPc(i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32);
-    void NuGobjReleaseChildPc(PC_GOBJ_REGISTRY_CHILD_PC *);
+    void PCGraphicsCopyFramebufferTex2D(i32, GRAPHICS_RENDER_TEXTURE *, i32, i32, i32, i32, i32);
+    void NuGobjReleaseChild(PC_GOBJ_REGISTRY_CHILD_PC *);
 #ifdef __cplusplus
 }
 #endif

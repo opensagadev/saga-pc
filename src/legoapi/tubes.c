@@ -1,15 +1,15 @@
 #include "saga.h"
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static f32 TubesFabsPc(f32 f) {
+static f32 TubesFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
     return rv;
 }
 
-TUBE_PC *Tube_InAnyCylinder(WORLDINFO *world, GAMEOBJECT *object, i32 ignore_height) {
-    TUBE_PC *tube = world->tubes;
+TUBE *Tube_InAnyCylinder(WORLDINFO *world, GAMEOBJECT *object, i32 ignore_height) {
+    TUBE *tube = world->tubes;
     i32 index;
 
     if (tube != NULL) {
@@ -24,7 +24,7 @@ TUBE_PC *Tube_InAnyCylinder(WORLDINFO *world, GAMEOBJECT *object, i32 ignore_hei
 }
 
 /* Inlined into Tube_MoveCode but called from Tube_InAnyCylinder. */
-i32 Tube_InCylinder(GAMEOBJECT *object, TUBE_PC *tube, f32 *horizontal_distance_squared, i32 ignore_height) {
+i32 Tube_InCylinder(GAMEOBJECT *object, TUBE *tube, f32 *horizontal_distance_squared, i32 ignore_height) {
     f32 delta_x;
     f32 delta_z;
     f32 distance_squared;
@@ -69,10 +69,10 @@ typedef struct TUBE_ENTRY_VIEW { // size 0x7a4
 } TUBE_ENTRY_VIEW;
 
 void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
-    TUBE_PC *tube;
+    TUBE *tube;
     i32 index;
     if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE && object->techno != NULL) {
-        if (Tube_InCylinder(object, (TUBE_PC *)object->techno, NULL, 0) == 0) {
+        if (Tube_InCylinder(object, (TUBE *)object->techno, NULL, 0) == 0) {
             object->techno = NULL;
         }
         return;
@@ -81,7 +81,7 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
         return;
     }
     if (object->character_context == LEGOCONTEXT_TUBE) {
-        if (Tube_InCylinder(object, (TUBE_PC *)object->techno, NULL, 0) == 0) {
+        if (Tube_InCylinder(object, (TUBE *)object->techno, NULL, 0) == 0) {
             object->character_context = -1;
         }
         return;
@@ -153,7 +153,7 @@ static void *Tubes_ReserveBufferSpace(void *world_ptr) {
     world->tube_count = 0;
     if (world->current_level->max_tubes > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-        world->tubes = (TUBE_PC *)world->giz_buffer.addr;
+        world->tubes = (TUBE *)world->giz_buffer.addr;
         world->giz_buffer.addr += world->current_level->max_tubes * sizeof(TUBE_CALLBACKS_PC);
     }
     return world->tubes;
@@ -191,7 +191,7 @@ static void Tube_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 }
 
 /* Derived cylinder values; an out-of-line copy is kept before Tubes_Reset. */
-static void Tube_ResetDerivedPc(TUBE_CALLBACKS_PC *tube) {
+static void Tube_ResetDerived(TUBE_CALLBACKS_PC *tube) {
     tube->top = tube->position.y + tube->height;
     tube->radius_squared = tube->radius * tube->radius;
     tube->flags |= 3;
@@ -208,7 +208,7 @@ static void Tubes_Reset(void *world_ptr, void *data, void *progress_ptr) {
     }
     tube = (TUBE_CALLBACKS_PC *)world->tubes;
     for (i = 0; i < world->tube_count; ++i, ++tube) {
-        Tube_ResetDerivedPc(tube);
+        Tube_ResetDerived(tube);
         if (progress != NULL && i < 32) {
             i32 word = i / 32;
             u32 bit = 1u << (i & 31);
@@ -380,7 +380,7 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                     !(object->character_data->model_flags & 0x10) || (GCDataList[(i16)object->id].flags_094 & 0x100)) {
                     continue;
                 }
-                if (Tube_InCylinder(object, (TUBE_PC *)tube, &distance, 0) == 0) {
+                if (Tube_InCylinder(object, (TUBE *)tube, &distance, 0) == 0) {
                     continue;
                 }
                 tx = tube->position.x - object->collision_position.x;
@@ -393,7 +393,7 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                     !(distance < 0.1224999949336052)) {
                     continue;
                 }
-                if (TubesFabsPc(object->contact_normal.y) < NuTrigTable[0x3c71]) {
+                if (TubesFabs(object->contact_normal.y) < NuTrigTable[0x3c71]) {
                     inverse = 1.0f / NuFsqrt(distance);
                     tx *= inverse;
                     tz *= inverse;
@@ -411,7 +411,7 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
 ADDGIZMOTYPE_PC *Tubes_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC TubesAddTypePc = {0};
     TubesAddTypePc = Default_ADDGIZMOTYPE;
-    TubesAddTypePc.name = TubeGizmoNamePc;
+    TubesAddTypePc.name = TubeGizmoName;
     TubesAddTypePc.prefix = "";
     TubesAddTypePc.fns.options = 8;
     TubesAddTypePc.fns.get_max_gizmos_fn = Tubes_GetMaxGizmos;

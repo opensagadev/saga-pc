@@ -21,7 +21,7 @@ extern "C" {
     void NuTrigInit(void);
     f32 NuAtan2(f32, f32);
 
-    f32 RenderPostLogPc(f32);
+    f32 RenderPostLog(f32);
 
     i32 NuAtani(i32, i32);
     f32 NuAtanf(i32, i32);

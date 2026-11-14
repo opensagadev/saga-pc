@@ -17,10 +17,10 @@ struct cutsys_s;
 
 typedef NUANIMDATA2_SKELETAL CUT_ANIMATION_PC;
 
-typedef struct CUT_LOAD_RECORD_PC CUT_LOAD_RECORD_PC;
+typedef struct CUT_LOAD_RECORD CUT_LOAD_RECORD;
 
-typedef struct CUT_LOAD_SYS_PC CUT_LOAD_SYS_PC;
-typedef struct CUT_LOAD_LIST_ENTRY_PC CUT_LOAD_LIST_ENTRY_PC;
+typedef struct CUT_LOAD_SYS CUT_LOAD_SYS;
+typedef struct CUT_LOAD_LIST_ENTRY CUT_LOAD_LIST_ENTRY;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -36,13 +36,13 @@ extern "C" {
     extern u8 CUTSUBTITLEDEFAULT_ALIGN;
     extern f32 CUTSUBTITLEDEFAULT_X;
 
-    extern CUT_LOAD_LIST_ENTRY_PC *CutList;
+    extern CUT_LOAD_LIST_ENTRY *CutList;
     extern i32 CUTCOUNT;
     extern void (*CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
-    void CutSceneConfigMissingPc(char *);
-    extern CUT_DRAW_SETTINGS_PC CutSceneDrawSettingsPc;
-    extern CUT_DRAW_SETTINGS_PC *CutSceneSys;
-    void CutScenes_InitSystem(CUT_DRAW_SETTINGS_PC *);
+    void CutSceneConfigMissing(char *);
+    extern CUT_DRAW_SETTINGS CutSceneDrawSettings;
+    extern CUT_DRAW_SETTINGS *CutSceneSys;
+    void CutScenes_InitSystem(CUT_DRAW_SETTINGS *);
     struct cutinfo_s *CutScene_Find(struct cutsys_s *system, char *name);
     extern struct cutinfo_s *NewCutInfo[8];
     extern i32 NewCutInfoCount;
@@ -69,30 +69,30 @@ extern "C" {
 }
 #endif
 
-typedef struct cut_player_clip_config_pc_s { // size 0x44
-    i16 level_id;                            // 0x00
-    u8 type;                                 // 0x02
-    i8 guest_episode;                        // 0x03
-    char name[64];                           // 0x04
+typedef struct cut_player_clip_config_s { // size 0x44
+    i16 level_id;                         // 0x00
+    u8 type;                              // 0x02
+    i8 guest_episode;                     // 0x03
+    char name[64];                        // 0x04
 } CUT_PLAYER_CLIP_CONFIG_PC;
 
-typedef struct CUT_PLAYER_ACTIVE_PC { // size 0x20
-    void *clips;                      // 0x00
-    void *active;                     // 0x04
-    u16 clip_count;                   // 0x08
-    i16 return_door;                  // 0x0a
-    i16 *clip_text;                   // 0x0c
-    i16 *intro_text;                  // 0x10
-    i16 *midtro_text;                 // 0x14
-    i16 *outro_text;                  // 0x18
-    i16 *ending_text;                 // 0x1c
-} CUT_PLAYER_ACTIVE_PC;
+typedef struct CUT_PLAYER_ACTIVE { // size 0x20
+    void *clips;                   // 0x00
+    void *active;                  // 0x04
+    u16 clip_count;                // 0x08
+    i16 return_door;               // 0x0a
+    i16 *clip_text;                // 0x0c
+    i16 *intro_text;               // 0x10
+    i16 *midtro_text;              // 0x14
+    i16 *outro_text;               // 0x18
+    i16 *ending_text;              // 0x1c
+} CUT_PLAYER_ACTIVE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     void *CutScenePlayer_Active(void);
-    extern struct CUT_PLAYER_ACTIVE_PC *CutScenePlayer;
+    extern struct CUT_PLAYER_ACTIVE *CutScenePlayer;
     void CutScenePlayer_Reset(void);
     i32 CutScenePlayer_CanStart(i32 clip_id);
     void CutScenePlayer_Start(i32 clip_id);
@@ -106,7 +106,7 @@ extern "C" {
     void CutScenes_Update(struct WORLDINFO_s *world, i32 paused);
     void CutScenes_Draw(struct WORLDINFO_s *world);
     void CutScenePlayer_SetObjects(struct cutinfo_s *cut);
-    extern i32 CutSceneMusicStartFramePc;
+    extern i32 CutSceneMusicStartFrame;
     extern i32 CUTNOFOG;
     extern i32 CUTDRAWWORLD;
     extern i32 CUTCAMONLY;
@@ -116,11 +116,11 @@ extern "C" {
 }
 #endif
 
-struct cut_player_clip_config_pc_s;
+struct cut_player_clip_config_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32 (*CutScenePlayer_AcceptFn)(struct cut_player_clip_config_pc_s *);
+    extern i32 (*CutScenePlayer_AcceptFn)(struct cut_player_clip_config_s *);
     extern i32 stream_cut_issued;
     void CutScene_SnapToEnd(void *cut);
     i32 CutScene_IsSkippable(struct cutinfo_s *cut);

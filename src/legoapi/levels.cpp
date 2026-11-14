@@ -5,7 +5,7 @@
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 typedef void (*LEVELSETDEFAULTS_PC)(LEVELDATA_PC *level);
 extern "C" {
-    void LevelsConfigDiagnosticPc(char *message);
+    void LevelsConfigDiagnostic(char *message);
 }
 
 typedef struct level_script_progress_s { // size 0x20
@@ -19,7 +19,7 @@ typedef struct ai_script_progress_view_s { // size 0x2c24
 } AI_SCRIPT_PROGRESS_VIEW_PC;
 
 extern "C" {
-    void LevelObjectsArenaDiagnosticPc(i32 size);
+    void LevelObjectsArenaDiagnostic(i32 size);
 }
 
 typedef struct startup_level_object_s { // size 0x10
@@ -59,7 +59,7 @@ extern "C" {
 
         parser = NuFParCreate(path);
         if (parser == NULL) {
-            LevelsConfigDiagnosticPc(path);
+            LevelsConfigDiagnostic(path);
         }
         MAXLDATA = max_count;
         level_data = (LEVELDATA_PC *)((buffer->addr + 3) & ~3u);
@@ -210,7 +210,7 @@ extern "C" {
             }
             return level_data;
         }
-        LevelsConfigDiagnosticPc(path);
+        LevelsConfigDiagnostic(path);
         return NULL;
     }
 
@@ -651,7 +651,7 @@ extern "C" {
                 name[0] = '\0';
                 if (Mission_Active(NULL) != NULL) {
                     NuStrCpy(name, "bounty_start");
-                } else if (world->area_index != -1 && (ADataList[world->area_index].flags & 0x40) && RenderHubFromCutscenePlayerPc != 0) {
+                } else if (world->area_index != -1 && (ADataList[world->area_index].flags & 0x40) && RenderHubFromCutscenePlayer != 0) {
                     NuStrCpy(name, "shop_start");
                 }
                 if (name[0] != '\0') {
@@ -667,7 +667,7 @@ extern "C" {
         }
     }
 
-    LEVEL_OBJECT_CONFIG_PC *ObjTabList = 0;
+    LEVEL_OBJECT_CONFIG *ObjTabList = 0;
     i32 LEVELOBJECTCOUNT = 0;
     static i32 LEVELOBJECTMAX = 0;
     static char *ExtraLevelObject_NameTable = 0;
@@ -677,7 +677,7 @@ extern "C" {
     i32 LEVOBJREF_FIRSTREFOBJ = -1;
     i32 LEVOBJREF_LASTREFOBJ = -1;
 
-    void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *table, VARIPTR *buffer, VARIPTR *buffer_end, i32 maximum, i32 name_table_size) {
+    void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG *table, VARIPTR *buffer, VARIPTR *buffer_end, i32 maximum, i32 name_table_size) {
         i32 reflection_range;
         i32 object_range;
         LEVOBJREF_FIRSTOBJ = -1;
@@ -714,7 +714,7 @@ extern "C" {
             ExtraLevelObject_NameTableSize = name_table_size;
             buffer->addr += name_table_size;
             if (buffer->addr >= buffer_end->addr) {
-                LevelObjectsArenaDiagnosticPc(name_table_size);
+                LevelObjectsArenaDiagnostic(name_table_size);
             }
         }
     }
@@ -912,8 +912,8 @@ extern "C" {
         if (DoubleScoreTime > 0.0f && (i32)((f64)GameTimer.time_elapsed * 2.0) != (i32)((f64)GameTimer.last_time_elapsed * 2.0)) {
             GameAudio_PlaySfxAndSetVolume(0x35, NULL, DoubleScoreTime);
         }
-        if (AreaGlobals_PC.field_00 == 0 && Cheats_CheckFlags(0x2000) != 0) {
-            AreaGlobals_PC.field_00 = 1;
+        if (AreaGlobals.field_00 == 0 && Cheats_CheckFlags(0x2000) != 0) {
+            AreaGlobals.field_00 = 1;
         }
     }
 

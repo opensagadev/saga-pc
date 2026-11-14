@@ -13,7 +13,7 @@ typedef struct MISSION_SYSTEM_READER { // size 0x30
     MISSIONDATA_PC *missions;          // 0x00
     MISSIONDATA_PC *active_mission;    // 0x04
     TIMER timer;                       // 0x08
-    MISSION_SAVE_READER_PC *save;      // 0x18
+    MISSION_SAVE_READER *save;         // 0x18
     u8 count;                          // 0x1c
     u8 state;                          // 0x1d
 
@@ -32,10 +32,10 @@ typedef struct MISSION_SYSTEM_READER { // size 0x30
 
 /* Original name unknown. Empty on PC; called when the file cannot be
    opened. VC8 drops calls to an empty body it can see, so the definition lives outside this file
-   (see SpecialMovesConfigMissingPc). */
-void MissionsConfigMissingPc(char *filename);
+   (see SpecialMovesConfigMissing). */
+void MissionsConfigMissing(char *filename);
 
-MISSIONSYS_PC *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, MISSION_SAVE_READER_PC *save) {
+MISSIONSYS_PC *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, MISSION_SAVE_READER *save) {
     NUFPAR_PC *parser;
     MISSION_SYSTEM_READER temporary;
     MISSION_SYSTEM_READER *destination;
@@ -43,7 +43,7 @@ MISSIONSYS_PC *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *bu
     i32 character;
     parser = NuFParCreate(file);
     if (parser == NULL) {
-        MissionsConfigMissingPc(file);
+        MissionsConfigMissing(file);
         return NULL;
     }
     memset(&temporary, 0, sizeof(temporary));
@@ -177,7 +177,7 @@ i32 Missions_PartyAvailable(MISSIONSYS_PC *system) {
     return 1;
 }
 
-i32 Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER_PC *save, i32 complete) {
+i32 Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER *save, i32 complete) {
     MISSION_SYSTEM_READER *reader;
     i32 index;
     i32 total = 0;

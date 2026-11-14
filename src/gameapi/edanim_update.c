@@ -2,7 +2,7 @@
 #include <math.h>
 #include <string.h>
 
-extern i32 EdAnimLocalFrameCountPc;
+extern i32 EdAnimLocalFrameCount;
 f32 edanimPlayerAnimDistance(i32 parameter_index);
 void edanimParticleDestroy(i32 parameter_index, i32 particle_index);
 
@@ -133,8 +133,8 @@ void edanimUpdateObjects(f32 elapsed) {
                 if (AnimParams[index].sound_ids[sound_index] != -1) {
                     play = -1;
                     if (AnimParams[index].sound_flags[sound_index] == 1) {
-                        if ((i32)((f64)EdAnimLocalFrameCountPc + (f64)elapsed) / (i32)AnimParams[index].sound_values[sound_index] >
-                            EdAnimLocalFrameCountPc / (i32)AnimParams[index].sound_values[sound_index]) {
+                        if ((i32)((f64)EdAnimLocalFrameCount + (f64)elapsed) / (i32)AnimParams[index].sound_values[sound_index] >
+                            EdAnimLocalFrameCount / (i32)AnimParams[index].sound_values[sound_index]) {
                             play = AnimParams[index].sound_ids[sound_index];
                         }
                     } else if (animation != NULL) {
@@ -171,5 +171,5 @@ void edanimUpdateObjects(f32 elapsed) {
             }
         }
     }
-    EdAnimLocalFrameCountPc += (i32)elapsed;
+    EdAnimLocalFrameCount += (i32)elapsed;
 }

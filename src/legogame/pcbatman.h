@@ -20,11 +20,11 @@ extern "C" {
     extern VARIPTR original_permbuffer_base;
     extern const char InitOnceAllocSource[15];
     extern char InitOnceCurrentDirectory[1];
-    extern const char *SaveIconNamePc;
-    extern char SaveUnicodeNamePc[20];
+    extern const char *SaveIconName;
+    extern char SaveUnicodeName[20];
     extern i32 CHARACTERBUFFERSIZE;
 #ifdef __cplusplus
-    void PcControlPlaySoundPc(i32);
+    void PcControlPlaySound(i32);
 #ifdef __cplusplus
 }
 #endif
@@ -34,14 +34,14 @@ extern "C" {
 #endif
     extern const char InitOnceCompanyPc[10];
     extern const char InitOnceProductPc[35];
-    extern i32 InitOnceFileModePc;
-    extern i32 InitOnceSelector34Pc;
-    extern i32 InitOnceDvdPc;
-    extern i32 InitOnceHostFsPc;
-    extern i32 InitOnceEjectPc;
+    extern i32 InitOnceFileMode;
+    extern i32 InitOnceSelector34;
+    extern i32 InitOnceDvd;
+    extern i32 InitOnceHostFs;
+    extern i32 InitOnceEject;
 
-    extern LEVELFIXUP_PC LevelFixupStartupPc[2];
-    extern char HubButtonStringBufferPc[];
+    extern LEVELFIXUP_PC LevelFixupStartup[2];
+    extern char HubButtonStringBuffer[];
 #ifdef __cplusplus
 }
 #endif

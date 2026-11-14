@@ -36,7 +36,7 @@ void DrawForceBackEffect(NUSPECIALHANDLE *special);
 void GizPanel_Reset(void *panel);
 
 typedef struct kaminodisco_s {
-    AIAREA_PC *area;
+    AIAREA *area;
     NUSPECIALHANDLE off[16];
     NUSPECIALHANDLE pending[16];
     NUSPECIALHANDLE occupied[16];
@@ -95,7 +95,7 @@ typedef struct kamino_e_s {
     GIZAIMESSAGE *show_hearts;
     GIZAIMESSAGE *minicut_started;
     CUTINFO *intro_cutscene;
-    AIAREA_PC *landing_area;
+    AIAREA *landing_area;
     NUSPECIALHANDLE slave1;
     KAMINOE_TURRET_READER_PC *turrets[4];
     KAMINOE_TURRET_READER_PC *active_turret;
@@ -115,17 +115,17 @@ typedef struct kamino_e_s {
 
 extern i32 turret_gizmotype_id;
 void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
-void KaminoEGizmoMissingPc(char *name);
+void KaminoEGizmoMissing(char *name);
 #define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                                         \
     ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
 #define KAMINO_DISCO_PLAYER_IN_AREA_PC(world, who, area) ((who) != NULL && (area) != NULL && KAMINO_DISCO_AREA_MASK_SET_PC(world, area))
 
-typedef struct KAMINO_SHIP_ZERO_ANGLES_PC {
+typedef struct KAMINO_SHIP_ZERO_ANGLES {
     u16 pitch;
     i32 yaw;
-} KAMINO_SHIP_ZERO_ANGLES_PC;
+} KAMINO_SHIP_ZERO_ANGLES;
 
-static i32 PaintMixColourPc(i32 first, i32 second) {
+static i32 PaintMixColour(i32 first, i32 second) {
     if ((first == 0 && second == 1) || (first == 1 && second == 0)) {
         return 3;
     }
@@ -140,7 +140,7 @@ static i32 PaintMixColourPc(i32 first, i32 second) {
 
 i32 randpaints[3] = {0};
 
-static void RandomisePaintsPc(void) {
+static void RandomisePaints(void) {
     i32 i = 0;
     do {
         randpaints[i] = qrand() / 21846;
@@ -177,7 +177,7 @@ void DrawPaintLights(void) {
 
 i32 PAINTPUZZLESTAGE = 0;
 i32 painttry = 0;
-struct gizmo_pc_s *paintobst[6] = {0};
+struct gizmo_s *paintobst[6] = {0};
 
 void ResetPaintPuzzle(WORLDINFO *world) {
     i32 i;
@@ -186,14 +186,14 @@ void ResetPaintPuzzle(WORLDINFO *world) {
     }
     painttry = 0;
     PAINTPUZZLESTAGE = 1;
-    RandomisePaintsPc();
+    RandomisePaints();
 }
 
 i32 paintmixed = 0;
 i32 painttarget = 0;
 i32 paintsused[2] = {0};
 i32 played_sound = 0;
-struct gizmo_pc_s *paintpanel[3] = {0};
+struct gizmo_s *paintpanel[3] = {0};
 
 void UpdatePaintPuzzle(WORLDINFO *world) {
     i32 i;
@@ -221,7 +221,7 @@ void UpdatePaintPuzzle(WORLDINFO *world) {
                 }
             }
             if (used == 2) {
-                paintmixed = PaintMixColourPc(paintsused[0], paintsused[1]);
+                paintmixed = PaintMixColour(paintsused[0], paintsused[1]);
                 PAINTPUZZLESTAGE = 3;
             } else {
                 for (i = 0; i < 3; i++) {
@@ -248,7 +248,7 @@ void UpdatePaintPuzzle(WORLDINFO *world) {
                         PAINTPUZZLESTAGE = 4;
                     }
                 } else {
-                    RandomisePaintsPc();
+                    RandomisePaints();
                     painttry = 0;
                     PAINTPUZZLESTAGE = 0;
                 }
@@ -271,14 +271,14 @@ void UpdatePaintPuzzle(WORLDINFO *world) {
     }
 }
 
-static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC *locator, f32 radius) {
+static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR *locator, f32 radius) {
     f32 floor_y;
     if (netclient == 0) {
         AISYS_PC *ai = world->ai_sys;
         if (ai != NULL) {
             i32 index;
             i32 count = ai->antinode_count;
-            AIANTINODE_PC *node = ai->antinodes;
+            AIANTINODE *node = ai->antinodes;
             for (index = 0; index < count; index++, node++) {
                 if (node->radius != 0.0f) {
                     f32 dx = position->x - node->position.x;
@@ -296,7 +296,7 @@ static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCA
                 }
             }
         }
-        memset(locator, 0, sizeof(AILOCATOR_PC));
+        memset(locator, 0, sizeof(AILOCATOR));
         if (position->x * position->x + position->z * position->z < radius * radius) {
             floor_y = GameShadow(NULL, position, 5.0f, 0);
             if (floor_y != 2000000.0f) {
@@ -313,7 +313,7 @@ static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCA
     return 0;
 }
 
-static void JediBResetRecordPc(JEDIB_CREATURE_PC *record) {
+static void JediBResetRecord(JEDIB_CREATURE *record) {
     if (record == NULL) {
         return;
     }
@@ -348,9 +348,9 @@ static i32 jedib_seed = 17;
 void JediB_Init(WORLDINFO *world) {
     NUVEC position;
     NUVEC offset;
-    AILOCATOR_PC locator;
-    JEDIB_CREATURE_PC *goody;
-    JEDIB_CREATURE_PC *baddie;
+    AILOCATOR locator;
+    JEDIB_CREATURE *goody;
+    JEDIB_CREATURE *baddie;
     f32 step;
     f32 x;
     f32 z;
@@ -463,7 +463,7 @@ void JediB_Reset(WORLDINFO *world) {
     jedi_b.unique_spawned &= ~3u;
 }
 
-static void JediBKilledCallbackPc(GAMEOBJECT *object) {
+static void JediBKilledCallback(GAMEOBJECT *object) {
     i32 index;
     i32 other;
     i32 wave;
@@ -496,16 +496,16 @@ static void JediBKilledCallbackPc(GAMEOBJECT *object) {
             }
             jedi_b.baddies[index].object = NULL;
             jedi_b.baddies[index].flags = (jedi_b.baddies[index].flags & ~0x18u) | 1;
-            JediBResetRecordPc(&jedi_b.baddies[index]);
+            JediBResetRecord(&jedi_b.baddies[index]);
             return;
         }
     }
 }
 
-static void JediBStartPhasePc(WORLDINFO *world) {
-    JEDIB_PHASE_PC *phase_lists[3] = {jedi_b_phase1, jedi_b_phase2, jedi_b_phase3};
-    JEDIB_PHASE_PC *entry;
-    AILOCATOR_PC *locator;
+static void JediBStartPhase(WORLDINFO *world) {
+    JEDIB_PHASE *phase_lists[3] = {jedi_b_phase1, jedi_b_phase2, jedi_b_phase3};
+    JEDIB_PHASE *entry;
+    AILOCATOR *locator;
     GAMEOBJECT *spawned;
     char name[16];
     i32 i;
@@ -543,7 +543,7 @@ static void JediBStartPhasePc(WORLDINFO *world) {
                 jedi_b.goodies[jedi_b.goody_count].id = *entry->id;
                 jedi_b.goodies[jedi_b.goody_count].object->ai_packet.locator = locator;
                 jedi_b.goodies[jedi_b.goody_count].object->portal_flags |= 0x1000000;
-                jedi_b.goodies[jedi_b.goody_count].object->tag_object_callback = JediBKilledCallbackPc;
+                jedi_b.goodies[jedi_b.goody_count].object->tag_object_callback = JediBKilledCallback;
                 jedi_b.goody_count++;
             }
             break;
@@ -614,7 +614,7 @@ static void JediBStartPhasePc(WORLDINFO *world) {
     jedi_b.state = 1;
 }
 
-static void JediBTickPhasePc(void) {
+static void JediBTickPhase(void) {
     i32 done;
     i32 i;
     i32 release;
@@ -678,7 +678,7 @@ static void JediBTickPhasePc(void) {
     }
 }
 
-static void JediBEndPhasePc(WORLDINFO *world) {
+static void JediBEndPhase(WORLDINFO *world) {
     if (jedi_b.timer < (f64)0.1f) {
         jedi_b.timer += FRAMETIME;
         return;
@@ -703,7 +703,7 @@ void JediB_Update(WORLDINFO *world) {
     u64 mask;
     GAMEOBJECT *target;
     GAMEOBJECT *object;
-    JEDIB_CREATURE_PC *baddie;
+    JEDIB_CREATURE *baddie;
     NUVEC spawn_position;
     NUVEC *pos;
     if (Mission_Active(MissionSys) != NULL || netclient != 0) {
@@ -779,16 +779,16 @@ void JediB_Update(WORLDINFO *world) {
     }
     switch (jedi_b.state) {
         case 0:
-            JediBStartPhasePc(world);
+            JediBStartPhase(world);
             break;
         case 1:
-            JediBTickPhasePc();
+            JediBTickPhase();
             break;
         case 2:
-            JediBEndPhasePc(world);
+            JediBEndPhase(world);
             break;
     }
-    JediBActiveCountPc = 0;
+    JediBActiveCount = 0;
     for (i = 0; i < jedi_b.baddie_count; i++) {
         baddie = &jedi_b.baddies[i];
         if (baddie->object != NULL) {
@@ -819,11 +819,10 @@ void JediB_Update(WORLDINFO *world) {
                     baddie->object->ai_packet.opponent = target;
                 }
             } else {
-                in_range =
-                    (OnOrInsidePlane(&baddie->object->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 2.0f, NULL) == 0 &&
-                     OnOrInsidePlane(&baddie->object->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 2.0f, NULL) == 0) ||
-                    (OnOrInsidePlane(&baddie->locator.position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 2.0f, NULL) == 0 &&
-                     OnOrInsidePlane(&baddie->locator.position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 2.0f, NULL) == 0);
+                in_range = (OnOrInsidePlane(&baddie->object->position, &PlayPlane[1].point, &PlayPlane[1].normal, NULL, 2.0f, NULL) == 0 &&
+                            OnOrInsidePlane(&baddie->object->position, &PlayPlane[2].point, &PlayPlane[2].normal, NULL, 2.0f, NULL) == 0) ||
+                           (OnOrInsidePlane(&baddie->locator.position, &PlayPlane[1].point, &PlayPlane[1].normal, NULL, 2.0f, NULL) == 0 &&
+                            OnOrInsidePlane(&baddie->locator.position, &PlayPlane[2].point, &PlayPlane[2].normal, NULL, 2.0f, NULL) == 0);
                 if (in_range == 0) {
                     baddie->position = baddie->object->position;
                     baddie->angle = baddie->object->field_0x276;
@@ -834,24 +833,24 @@ void JediB_Update(WORLDINFO *world) {
                 if (baddie->object == NULL) {
                     continue;
                 }
-                if (((APIOBJECT_PC *)baddie->object)->ai->opponent == NULL && baddie->partner != NULL && baddie->partner->object != NULL) {
-                    ((APIOBJECT_PC *)baddie->object)->ai->opponent = baddie->partner->object;
+                if (((APIOBJECT *)baddie->object)->ai->opponent == NULL && baddie->partner != NULL && baddie->partner->object != NULL) {
+                    ((APIOBJECT *)baddie->object)->ai->opponent = baddie->partner->object;
                 }
             }
         } else if ((baddie->flags & 0x10) == 0 &&
-                   (OnOrInsidePlane(&baddie->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 1.5f, NULL) != 0 ||
-                    OnOrInsidePlane(&baddie->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 1.5f, NULL) != 0)) {
+                   (OnOrInsidePlane(&baddie->position, &PlayPlane[1].point, &PlayPlane[1].normal, NULL, 1.5f, NULL) != 0 ||
+                    OnOrInsidePlane(&baddie->position, &PlayPlane[2].point, &PlayPlane[2].normal, NULL, 1.5f, NULL) != 0)) {
         } else {
             if ((baddie->flags & 1) != 0 &&
-                OnOrInsidePlane(&baddie->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.5f, NULL) == 0 &&
-                OnOrInsidePlane(&baddie->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.5f, NULL) == 0) {
+                OnOrInsidePlane(&baddie->position, &PlayPlane[1].point, &PlayPlane[1].normal, NULL, 0.5f, NULL) == 0 &&
+                OnOrInsidePlane(&baddie->position, &PlayPlane[2].point, &PlayPlane[2].normal, NULL, 0.5f, NULL) == 0) {
                 spawn_position = baddie->position;
                 NuVecRotateY(&spawn_position, &spawn_position, 0x8000);
             } else {
                 spawn_position = baddie->position;
             }
             if (baddie->id == -1) {
-                JediBResetRecordPc(baddie);
+                JediBResetRecord(baddie);
             }
             baddie->object = AddDynamicCreature(baddie->id, &spawn_position, baddie->angle, "gen_bdroids", &baddie->locator.path_info, NULL,
                                                 1, NULL, NULL, 0, 0);
@@ -859,7 +858,7 @@ void JediB_Update(WORLDINFO *world) {
                 continue;
             }
             baddie->object->ai_packet.locator = &baddie->locator;
-            baddie->object->tag_object_callback = JediBKilledCallbackPc;
+            baddie->object->tag_object_callback = JediBKilledCallback;
             if (baddie->id == id_BOB) {
                 if (baddie->field_0x58 == 0) {
                     baddie->field_0x58 = baddie->object->layer_mask;
@@ -882,7 +881,7 @@ void JediB_Update(WORLDINFO *world) {
         if (object == NULL) {
             continue;
         }
-        JediBActiveCountPc++;
+        JediBActiveCount++;
         if ((baddie->flags & 0x10) == 0) {
             object->ai_opponent_exclusion_mask[0] |= jedi_b.exclusion_mask_low;
             object->ai_opponent_exclusion_mask[1] |= jedi_b.exclusion_mask_high;
@@ -890,7 +889,7 @@ void JediB_Update(WORLDINFO *world) {
     }
 }
 
-void JediB_DrawPanelPc(WORLDINFO *world) {
+void JediB_DrawPanel(WORLDINFO *world) {
     i16 ids[8];
     i32 count;
     i32 index;
@@ -932,7 +931,7 @@ void JediB_DrawPanelPc(WORLDINFO *world) {
                             ids[0] = CharacterFixupIdPc007f19d0;
                         }
                     }
-                    DrawMeleeTargetsAlphaPc(ids, spawned, NULL, count);
+                    DrawMeleeTargetsAlpha(ids, spawned, NULL, count);
                     if (nethost != 0) {
                         PCByteCopy(jedib_netpacket->ids, ids, count * 2);
                         PCByteCopy(jedib_netpacket->spawned, spawned, count);
@@ -942,7 +941,7 @@ void JediB_DrawPanelPc(WORLDINFO *world) {
                 case 4:
                 case 5:
                 case 6:
-                    DrawMeleeTargetsAlphaPc(jedi_b.wave_ids, jedi_b.wave_spawned, NULL, 6);
+                    DrawMeleeTargetsAlpha(jedi_b.wave_ids, jedi_b.wave_spawned, NULL, 6);
                     if (nethost != 0) {
                         PCByteCopy(jedib_netpacket->ids, jedi_b.wave_ids, 12);
                         PCByteCopy(jedib_netpacket->spawned, jedi_b.wave_spawned, 6);
@@ -962,12 +961,12 @@ void JediB_DrawPanelPc(WORLDINFO *world) {
                 case 1:
                 case 2:
                 case 3:
-                    DrawMeleeTargetsAlphaPc(jedib_netpacket->ids, jedib_netpacket->spawned, NULL, jedib_netpacket->count);
+                    DrawMeleeTargetsAlpha(jedib_netpacket->ids, jedib_netpacket->spawned, NULL, jedib_netpacket->count);
                     break;
                 case 4:
                 case 5:
                 case 6:
-                    DrawMeleeTargetsAlphaPc(jedib_netpacket->ids, jedib_netpacket->spawned, NULL, 6);
+                    DrawMeleeTargetsAlpha(jedib_netpacket->ids, jedib_netpacket->spawned, NULL, 6);
                     break;
                 case 7:
                     if (jedi_b.boss == NULL) {
@@ -1057,7 +1056,7 @@ void DookuC_DrawPanel(WORLDINFO *world) {
 }
 
 void FactoryG_Init(WORLDINFO *world) {
-    struct gizmo_pc_s *g;
+    struct gizmo_s *g;
     if (netclient != 0) {
         return;
     }
@@ -1236,7 +1235,7 @@ void KaminoC_Reset(WORLDINFO *world) {
     }
 }
 
-static i32 KaminoDiscoChooseTilePc(i32 state, i32 excluded) {
+static i32 KaminoDiscoChooseTile(i32 state, i32 excluded) {
     i32 candidates[16];
     i32 count = 0;
     i32 i;
@@ -1248,7 +1247,7 @@ static i32 KaminoDiscoChooseTilePc(i32 state, i32 excluded) {
     return count != 0 ? candidates[NuRand(NULL) % count] : -1;
 }
 
-static void KaminoDiscoUpdateVisualsPc(WORLDINFO *world) {
+static void KaminoDiscoUpdateVisuals(WORLDINFO *world) {
     i32 i;
     for (i = 0; i < kaminodisco.tile_count; i++) {
         i32 bit = 1 << i;
@@ -1298,8 +1297,8 @@ static void KaminoDiscoUpdateVisualsPc(WORLDINFO *world) {
     }
 }
 
-static f32 KaminoDiscoTileTimePc = 2.5f;
-static f32 KaminoDiscoTileRadiusPc = 0.2f;
+static f32 KaminoDiscoTileTime = 2.5f;
+static f32 KaminoDiscoTileRadius = 0.2f;
 
 void KaminoC_Update(WORLDINFO *world) {
     KAMINO_PROGRESS_GIZMO_READER_PC *progress = LevGizmo[0]->object;
@@ -1324,8 +1323,8 @@ void KaminoC_Update(WORLDINFO *world) {
                 kaminoc_netpacket->complete = 0;
                 kaminodisco.timer = 0.0f;
                 kaminodisco.phase = 1;
-                kaminodisco.tile[0] = (i8)KaminoDiscoChooseTilePc(0, -1);
-                kaminodisco.tile[1] = (i8)KaminoDiscoChooseTilePc(0, kaminodisco.tile[0]);
+                kaminodisco.tile[0] = (i8)KaminoDiscoChooseTile(0, -1);
+                kaminodisco.tile[1] = (i8)KaminoDiscoChooseTile(0, kaminodisco.tile[0]);
                 if (kaminodisco.tile[0] != -1 && kaminodisco.tile[1] != -1) {
                     kaminodisco.tile_state[kaminodisco.tile[0]] = 1;
                     kaminodisco.tile_state[kaminodisco.tile[1]] = 1;
@@ -1350,7 +1349,7 @@ void KaminoC_Update(WORLDINFO *world) {
                         f32 dy = position->y - object->position.y;
                         f32 dz = position->z - object->position.z;
                         f32 dist = dx * dx + dy * dy + dz * dz;
-                        if (dist < KaminoDiscoTileRadiusPc * KaminoDiscoTileRadiusPc) {
+                        if (dist < KaminoDiscoTileRadius * KaminoDiscoTileRadius) {
                             occupied[k] = 1;
                             kaminodisco.tile_state[kaminodisco.tile[k]] = 2;
                             if (object == player) {
@@ -1368,8 +1367,8 @@ void KaminoC_Update(WORLDINFO *world) {
                 kaminodisco.timer = 0.0f;
                 kaminodisco.tile_state[kaminodisco.tile[0]] = 3;
                 kaminodisco.tile_state[kaminodisco.tile[1]] = 3;
-                kaminodisco.tile[0] = (i8)KaminoDiscoChooseTilePc(0, -1);
-                kaminodisco.tile[1] = (i8)KaminoDiscoChooseTilePc(0, kaminodisco.tile[0]);
+                kaminodisco.tile[0] = (i8)KaminoDiscoChooseTile(0, -1);
+                kaminodisco.tile[1] = (i8)KaminoDiscoChooseTile(0, kaminodisco.tile[0]);
                 if (kaminodisco.tile[0] != -1 && kaminodisco.tile[1] != -1) {
                     kaminodisco.tile_state[kaminodisco.tile[0]] = 1;
                     kaminodisco.tile_state[kaminodisco.tile[1]] = 1;
@@ -1382,10 +1381,10 @@ void KaminoC_Update(WORLDINFO *world) {
                 break;
             }
             kaminodisco.timer += FRAMETIME;
-            if (kaminodisco.timer > KaminoDiscoTileTimePc) {
+            if (kaminodisco.timer > KaminoDiscoTileTime) {
                 kaminodisco.timer = 0.0f;
                 for (i = 0; i < 2; i++) {
-                    i32 tile = KaminoDiscoChooseTilePc(3, -1);
+                    i32 tile = KaminoDiscoChooseTile(3, -1);
                     if (tile != -1) {
                         kaminodisco.tile_state[tile] = 0;
                     }
@@ -1452,7 +1451,7 @@ void KaminoC_Update(WORLDINFO *world) {
                 break;
         }
     }
-    KaminoDiscoUpdateVisualsPc(world);
+    KaminoDiscoUpdateVisuals(world);
 }
 
 void KaminoE_Init(WORLDINFO *world) {
@@ -1484,14 +1483,14 @@ void KaminoE_Reset(WORLDINFO *world) {
             kamino_e.turrets[i]->field_12c = 2;
             kamino_e.turrets[i]->flags_13a |= 1;
         } else {
-            KaminoEGizmoMissingPc(name);
+            KaminoEGizmoMissing(name);
         }
         sprintf(name, "R4_t%d", i + 1);
         gizmo = GizmoFindByName(world->gizmo_sys, gizpanel_gizmotype_id, name);
         if (gizmo != NULL) {
             kamino_e.panels[i] = gizmo->object;
         } else {
-            KaminoEGizmoMissingPc(name);
+            KaminoEGizmoMissing(name);
         }
     }
     kamino_e.jango_fight = SetGizAIMessage(gizaimessagesys, "JangoFight", 0.0f, NULL);
@@ -1549,7 +1548,7 @@ i32 KaminoE_CheckPlatHit(BOLT *bolt) {
     return 0;
 }
 
-static void KaminoEResetTurretsPc(void) {
+static void KaminoEResetTurrets(void) {
     i32 i;
     kamino_e.active_turret = NULL;
     for (i = 0; i < 4; i++) {
@@ -1559,30 +1558,30 @@ static void KaminoEResetTurretsPc(void) {
     }
 }
 
-NUVEC KaminoShipCentrePc = {56.5f, -2.89f, 8.0f};
-f32 KaminoShipRadiusPc = 6.5f;
-i32 KaminoShipOrbitPitchPc = -3640;
-i32 KaminoShipOrbitYawPc = 0x4000;
-NUVEC KaminoShipGunOffsetPc[2] = {
+NUVEC KaminoShipCentre = {56.5f, -2.89f, 8.0f};
+f32 KaminoShipRadius = 6.5f;
+i32 KaminoShipOrbitPitch = -3640;
+i32 KaminoShipOrbitYaw = 0x4000;
+NUVEC KaminoShipGunOffset[2] = {
     {0.2f,  -1.1f, 0.9f},
     {-0.2f, -1.1f, 0.9f}
 };
-f32 KaminoShipFireIntervalPc = 0.15f;
-f32 KaminoShipSeekRatePc = 1.0f;
-f32 KaminoShipAimScalePc = 30.0f;
-f32 KaminoShipAimLiftPc = 0.5f;
-i32 KaminoShipTargetPitchPc = 0xb60;
-i32 KaminoShipTargetYawPc = -0x4000;
-f32 KaminoShipYawRatePc = 4.0f;
-f32 KaminoShipPitchRatePc = 4.0f;
-f32 KaminoShipLiftTimePc = 4.0f;
-i32 KaminoShipStartPitchPc = -0x4000;
-f32 KaminoShipStartHeightPc = -2.8f;
-f32 KaminoShipZAmplitudePc = 0.2f;
-f32 KaminoShipZPeriodPc = 4.0f;
-f32 KaminoShipYAmplitudePc = 0.2f;
-f32 KaminoShipYPeriodPc = 3.0f;
-KAMINO_SHIP_ZERO_ANGLES_PC KaminoShipZeroAnglesPc = {0};
+f32 KaminoShipFireInterval = 0.15f;
+f32 KaminoShipSeekRate = 1.0f;
+f32 KaminoShipAimScale = 30.0f;
+f32 KaminoShipAimLift = 0.5f;
+i32 KaminoShipTargetPitch = 0xb60;
+i32 KaminoShipTargetYaw = -0x4000;
+f32 KaminoShipYawRate = 4.0f;
+f32 KaminoShipPitchRate = 4.0f;
+f32 KaminoShipLiftTime = 4.0f;
+i32 KaminoShipStartPitch = -0x4000;
+f32 KaminoShipStartHeight = -2.8f;
+f32 KaminoShipZAmplitude = 0.2f;
+f32 KaminoShipZPeriod = 4.0f;
+f32 KaminoShipYAmplitude = 0.2f;
+f32 KaminoShipYPeriod = 3.0f;
+KAMINO_SHIP_ZERO_ANGLES KaminoShipZeroAngles = {0};
 
 void KaminoE_Update(WORLDINFO *world) {
     f32 best_distance = 1000000000.0f;
@@ -1599,20 +1598,20 @@ void KaminoE_Update(WORLDINFO *world) {
     matrix = NuSpecialGetDrawMtx(&kamino_e.slave1);
     desired.x = 0.0f;
     desired.y = 0.0f;
-    desired.z = KaminoShipRadiusPc;
+    desired.z = KaminoShipRadius;
     NuVecRotateX(&desired, &desired, kamino_e.orbit_pitch);
     NuVecRotateY(&desired, &desired, kamino_e.orbit_yaw);
-    NuVecAdd(&desired, &desired, &KaminoShipCentrePc);
+    NuVecAdd(&desired, &desired, &KaminoShipCentre);
     kamino_e.elapsed_time += FRAMETIME;
     degrees = (f64)kamino_e.elapsed_time * 360.0;
-    phase = degrees / KaminoShipYPeriodPc;
+    phase = degrees / KaminoShipYPeriod;
     angle = (i32)((f64)phase * 182.04444885253906);
     wave = (f32)(((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
-    desired.y = wave * KaminoShipYAmplitudePc + desired.y;
-    phase = degrees / KaminoShipZPeriodPc;
+    desired.y = wave * KaminoShipYAmplitude + desired.y;
+    phase = degrees / KaminoShipZPeriod;
     angle = (i32)((f64)phase * 182.04444885253906);
     wave = (f32)(((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
-    desired.z = wave * KaminoShipZAmplitudePc + desired.z;
+    desired.z = wave * KaminoShipZAmplitude + desired.z;
     if (kamino_e.minicut_started != NULL && kamino_e.minicut_started->value > 0.0f) {
         NuSpecialSetVisibility(&kamino_e.slave1, 1);
     }
@@ -1626,18 +1625,18 @@ void KaminoE_Update(WORLDINFO *world) {
                 kamino_e.departing = 1;
                 GizObstacle_FindByName(world->giz_obstacle_sys, "slave1_debris");
             }
-            kamino_e.position = KaminoShipCentrePc;
-            kamino_e.position.y = KaminoShipStartHeightPc;
-            kamino_e.pitch = KaminoShipStartPitchPc;
-            kamino_e.yaw = KaminoShipZeroAnglesPc.yaw;
-            kamino_e.orbit_pitch = KaminoShipOrbitPitchPc;
-            kamino_e.orbit_yaw = KaminoShipOrbitYawPc;
+            kamino_e.position = KaminoShipCentre;
+            kamino_e.position.y = KaminoShipStartHeight;
+            kamino_e.pitch = KaminoShipStartPitch;
+            kamino_e.yaw = KaminoShipZeroAngles.yaw;
+            kamino_e.orbit_pitch = KaminoShipOrbitPitch;
+            kamino_e.orbit_yaw = KaminoShipOrbitYaw;
             break;
         case 1: {
             f32 ratio;
             kamino_e.departure_timer += FRAMETIME;
-            if (kamino_e.departure_timer < KaminoShipLiftTimePc) {
-                phase = kamino_e.departure_timer / KaminoShipLiftTimePc;
+            if (kamino_e.departure_timer < KaminoShipLiftTime) {
+                phase = kamino_e.departure_timer / KaminoShipLiftTime;
                 phase = (f32)((f64)phase * 180.0 - 90.0);
                 angle = (i32)((f64)phase * 182.04444885253906);
                 ratio = (f32)(((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
@@ -1646,35 +1645,35 @@ void KaminoE_Update(WORLDINFO *world) {
                 ratio = 1.0f;
                 kamino_e.departure_timer = 0.0f;
             }
-            kamino_e.position.y = ratio * desired.y + (1.0f - ratio) * KaminoShipStartHeightPc;
+            kamino_e.position.y = ratio * desired.y + (1.0f - ratio) * KaminoShipStartHeight;
             break;
         }
         case 2:
             kamino_e.departure_timer += FRAMETIME;
-            if (kamino_e.departure_timer < KaminoShipPitchRatePc) {
-                kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAnglesPc.pitch, kamino_e.departure_timer);
+            if (kamino_e.departure_timer < KaminoShipPitchRate) {
+                kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAngles.pitch, kamino_e.departure_timer);
             } else {
-                kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAnglesPc.pitch, KaminoShipPitchRatePc);
+                kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAngles.pitch, KaminoShipPitchRate);
                 kamino_e.departure_timer = 0.0f;
                 kamino_e.departing = 3;
             }
             break;
         case 3:
             kamino_e.departure_timer += FRAMETIME;
-            if (kamino_e.departure_timer < KaminoShipYawRatePc) {
-                kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, kamino_e.departure_timer);
+            if (kamino_e.departure_timer < KaminoShipYawRate) {
+                kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYaw, kamino_e.departure_timer);
             } else {
-                kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, KaminoShipYawRatePc);
+                kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYaw, KaminoShipYawRate);
                 kamino_e.departure_timer = 0.0f;
                 kamino_e.departing = 4;
             }
-            kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAnglesPc.pitch, KaminoShipPitchRatePc);
+            kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAngles.pitch, KaminoShipPitchRate);
             break;
         case 4: {
             f32 ratio;
             kamino_e.departure_timer += FRAMETIME;
-            if (kamino_e.departure_timer < KaminoShipLiftTimePc) {
-                phase = kamino_e.departure_timer / KaminoShipLiftTimePc;
+            if (kamino_e.departure_timer < KaminoShipLiftTime) {
+                phase = kamino_e.departure_timer / KaminoShipLiftTime;
                 phase = (f32)((f64)phase * 180.0 - 90.0);
                 angle = (i32)((f64)phase * 182.04444885253906);
                 ratio = (f32)(((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
@@ -1683,10 +1682,10 @@ void KaminoE_Update(WORLDINFO *world) {
                 ratio = 1.0f;
                 kamino_e.departure_timer = 0.0f;
             }
-            kamino_e.position.x = desired.x * ratio + KaminoShipCentrePc.x * (1.0f - ratio);
-            kamino_e.position.z = desired.z * ratio + KaminoShipCentrePc.z * (1.0f - ratio);
-            kamino_e.pitch = SeekRot((u16)kamino_e.pitch, (u16)KaminoShipTargetPitchPc, KaminoShipPitchRatePc);
-            kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, KaminoShipYawRatePc);
+            kamino_e.position.x = desired.x * ratio + KaminoShipCentre.x * (1.0f - ratio);
+            kamino_e.position.z = desired.z * ratio + KaminoShipCentre.z * (1.0f - ratio);
+            kamino_e.pitch = SeekRot((u16)kamino_e.pitch, (u16)KaminoShipTargetPitch, KaminoShipPitchRate);
+            kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYaw, KaminoShipYawRate);
             break;
         }
         case 5: {
@@ -1698,7 +1697,7 @@ void KaminoE_Update(WORLDINFO *world) {
             f32 distance;
             if (kamino_e.active_turret != NULL) {
                 aim = *NuSpecialGetDrawPos(&kamino_e.active_turret->primary_anim_obj->special);
-                aim.y = KaminoShipAimLiftPc + aim.y;
+                aim.y = KaminoShipAimLift + aim.y;
                 have_target = 1;
             } else if (kamino_e.can_fire->value == 1.0f) {
                 i32 i;
@@ -1725,10 +1724,10 @@ void KaminoE_Update(WORLDINFO *world) {
                     have_target = 1;
                 }
             }
-            kamino_e.orbit_pitch = KaminoShipOrbitPitchPc;
+            kamino_e.orbit_pitch = KaminoShipOrbitPitch;
             if (have_target != 0) {
                 NUVEC offset;
-                f32 z = aim.z - KaminoShipCentrePc.z;
+                f32 z = aim.z - KaminoShipCentre.z;
                 f32 horizontal;
                 if (z > 2.5f) {
                     z = 2.5f;
@@ -1736,11 +1735,11 @@ void KaminoE_Update(WORLDINFO *world) {
                     z = -2.5f;
                 }
                 phase = (f32)((f64)z / 2.5);
-                phase = phase * KaminoShipAimScalePc;
-                kamino_e.orbit_yaw = KaminoShipOrbitYawPc - (i32)(phase * -182.04445f);
+                phase = phase * KaminoShipAimScale;
+                kamino_e.orbit_yaw = KaminoShipOrbitYaw - (i32)(phase * -182.04445f);
                 offset.x = 0.0f;
-                offset.y = -KaminoShipGunOffsetPc[0].y;
-                offset.z = -KaminoShipGunOffsetPc[0].z;
+                offset.y = -KaminoShipGunOffset[0].y;
+                offset.z = -KaminoShipGunOffset[0].z;
                 NuVecMtxRotate(&offset, &offset, matrix);
                 NuVecAdd(&offset, &offset, &aim);
                 NuVecSub(&delta, &offset, &kamino_e.position);
@@ -1748,7 +1747,7 @@ void KaminoE_Update(WORLDINFO *world) {
                 horizontal = NuFsqrt(delta.z * delta.z + delta.x * delta.x);
                 target_pitch = (i32)((f64)NuAtan2(-delta.y, horizontal) * 10430.3779296875);
                 kamino_e.departure_timer += FRAMETIME;
-                if (kamino_e.departure_timer > KaminoShipFireIntervalPc) {
+                if (kamino_e.departure_timer > KaminoShipFireInterval) {
                     NUMTX bolt_matrix;
                     NUVEC origin;
                     i32 i;
@@ -1757,13 +1756,13 @@ void KaminoE_Update(WORLDINFO *world) {
                         BOLT_PC *bolt;
                         i32 adjustment;
                         bolt_matrix = *matrix;
-                        NuVecMtxTransform(&origin, &KaminoShipGunOffsetPc[kamino_e.fire_index], matrix);
+                        NuVecMtxTransform(&origin, &KaminoShipGunOffset[kamino_e.fire_index], matrix);
                         if (i == 0) {
                             distance = NuVecDist(&origin, &aim, NULL);
                         }
-                        adjustment = (i32)((f64)NuAtan2(-KaminoShipGunOffsetPc[kamino_e.fire_index].x, distance) * 10430.3779296875);
+                        adjustment = (i32)((f64)NuAtan2(-KaminoShipGunOffset[kamino_e.fire_index].x, distance) * 10430.3779296875);
                         NuMtxPreRotateY(&bolt_matrix, adjustment);
-                        BoltNoSfxPc = 1;
+                        BoltNoSfx = 1;
                         bolt = Bolt_Add(NULL, &origin, &bolt_matrix, 0x27, 0x800);
                         if (bolt != NULL) {
                             bolt->flags |= 0x10;
@@ -1773,13 +1772,13 @@ void KaminoE_Update(WORLDINFO *world) {
                     PlaySfx("Kam_Slave1BlasterFire", &origin);
                 }
             } else {
-                kamino_e.orbit_yaw = KaminoShipOrbitYawPc;
-                target_yaw = KaminoShipTargetYawPc;
-                target_pitch = KaminoShipTargetPitchPc;
+                kamino_e.orbit_yaw = KaminoShipOrbitYaw;
+                target_yaw = KaminoShipTargetYaw;
+                target_pitch = KaminoShipTargetPitch;
             }
-            SeekVec(&kamino_e.position, &kamino_e.position, &desired, KaminoShipSeekRatePc);
-            kamino_e.pitch = SeekRot((u16)kamino_e.pitch, (u16)target_pitch, KaminoShipSeekRatePc);
-            kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)target_yaw, KaminoShipSeekRatePc);
+            SeekVec(&kamino_e.position, &kamino_e.position, &desired, KaminoShipSeekRate);
+            kamino_e.pitch = SeekRot((u16)kamino_e.pitch, (u16)target_pitch, KaminoShipSeekRate);
+            kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)target_yaw, KaminoShipSeekRate);
             break;
         }
     }
@@ -1798,11 +1797,11 @@ void KaminoE_UpdatePc(WORLDINFO *world) {
     GAMEOBJECT *target;
     i32 direction;
     u32 *connection;
-    AIAREA_PC *fight_area;
-    AILOCATOR_PC *wait;
+    AIAREA *fight_area;
+    AILOCATOR *wait;
     AISYS_PC *ai;
     if (kamino_e.reset_turrets != NULL && kamino_e.reset_turrets->value == 1.0f) {
-        KaminoEResetTurretsPc();
+        KaminoEResetTurrets();
         kamino_e.reset_turrets->value = 0.0f;
     }
     if (netclient != 0) {
@@ -1896,21 +1895,21 @@ i32 fun_004e2370(void) {
 }
 
 i32 KaminoDiscoOn(void) {
-    return KaminoDiscoMusicStatePc.mode == 2;
+    return KaminoDiscoMusicState.mode == 2;
 }
 
 void KaminoOutro_Init(WORLDINFO *world) {
     debris_object_switches[1] = CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
 }
 
-static const char GunshipAGreenBoltPc[16] = "trooper_green";
-static const char GunshipAPowerA11Pc[12] = "power_a11";
-static const char GunshipAPowerB11Pc[12] = "power_b11";
-static const char GunshipAPowerA21Pc[12] = "power_a21";
-static const char GunshipAPowerB21Pc[12] = "power_b21";
+static const char GunshipAGreenBolt[16] = "trooper_green";
+static const char GunshipAPowerA11[12] = "power_a11";
+static const char GunshipAPowerB11[12] = "power_b11";
+static const char GunshipAPowerA21[12] = "power_a21";
+static const char GunshipAPowerB21[12] = "power_b21";
 
 void GunshipA_Init(WORLDINFO *world) {
-    gunship_bolts[1] = BoltType_FindIDByName(GunshipAGreenBoltPc, world);
+    gunship_bolts[1] = BoltType_FindIDByName(GunshipAGreenBolt, world);
     gunship_bolts[0] = BoltType_FindIDByName("trooper_red", world);
     trooper_side[0] = 0;
     trooper_side[1] = 0;
@@ -1923,17 +1922,17 @@ void GunshipA_Init(WORLDINFO *world) {
     trooper_side[8] = 1;
     trooper_side[9] = 1;
     InitMiniSnowTroopers(world, 10, 32, 0);
-    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, (char *)GunshipAPowerA11Pc);
-    LevGizmo[1] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, (char *)GunshipAPowerB11Pc);
-    LevGizmo[2] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, (char *)GunshipAPowerA21Pc);
-    LevGizmo[3] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, (char *)GunshipAPowerB21Pc);
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, (char *)GunshipAPowerA11);
+    LevGizmo[1] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, (char *)GunshipAPowerB11);
+    LevGizmo[2] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, (char *)GunshipAPowerA21);
+    LevGizmo[3] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, (char *)GunshipAPowerB21);
 }
 
 void GunshipA_Update(WORLDINFO *world) {
     UpdateMiniSnowTroopers(world);
 }
 
-void GunshipA_DrawPc(WORLDINFO *world) {
+void GunshipA_Draw(WORLDINFO *world) {
     DrawMiniSnowTroopers(world);
 }
 
@@ -1993,10 +1992,10 @@ void GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
     object->velocity.z = SeekValF(object->velocity.z, direction.z, gunshipb_seekmomseek);
 }
 
-i32 GunshipPlayerDeadPc = 0;
+i32 GunshipPlayerDead = 0;
 
-void BonusGunshipA_ResetPc(WORLDINFO *world) {
-    GunshipPlayerDeadPc = 0;
+void BonusGunshipA_Reset(WORLDINFO *world) {
+    GunshipPlayerDead = 0;
     BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = 0;
     bonus_gunship_store_progress_flag = 0;
     if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1) {
@@ -2004,7 +2003,7 @@ void BonusGunshipA_ResetPc(WORLDINFO *world) {
     }
 }
 
-void BonusGunshipA_UpdatePc(WORLDINFO *world) {
+void BonusGunshipA_Update(WORLDINFO *world) {
     GAMEOBJECT *first = Player[0];
     GAMEOBJECT *second = Player[1];
     if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 0) {
@@ -2021,32 +2020,32 @@ void BonusGunshipA_UpdatePc(WORLDINFO *world) {
             BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 1;
         }
     }
-    if (GunshipPlayerDeadPc == 0 && ((first != NULL && first->dead != 0) || (second != NULL && second->dead != 0))) {
-        GunshipPlayerDeadPc = 1;
+    if (GunshipPlayerDead == 0 && ((first != NULL && first->dead != 0) || (second != NULL && second->dead != 0))) {
+        GunshipPlayerDead = 1;
         ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
     }
 }
 
-BONUS_GUNSHIP_B_NETPACKET_PC *BonusGunshipBNetPacketPc = NULL;
+BONUS_GUNSHIP_B_NETPACKET *BonusGunshipBNetPacket = NULL;
 
-void BonusGunshipB_InitPc(WORLDINFO *world) {
-    BonusGunshipBNetPacketPc = SetLevelHack(12);
+void BonusGunshipB_Init(WORLDINFO *world) {
+    BonusGunshipBNetPacket = SetLevelHack(12);
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "obstacle9");
 }
 
-void BonusGunshipB_ResetPc(WORLDINFO *world) {
+void BonusGunshipB_Reset(WORLDINFO *world) {
     MiscTime = 0.0f;
     BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 0;
     BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = 0;
-    GunshipPlayerDeadPc = 0;
+    GunshipPlayerDead = 0;
     bonus_gunship_store_progress_flag = 0;
 }
 
-void BonusGunshipB_UpdatePc(WORLDINFO *world) {
+void BonusGunshipB_Update(WORLDINFO *world) {
     if (netclient == 0) {
-        if (GunshipPlayerDeadPc == 0 &&
+        if (GunshipPlayerDead == 0 &&
             ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0) || (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0))) {
-            GunshipPlayerDeadPc = 1;
+            GunshipPlayerDead = 1;
             ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
         }
         if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 0) {
@@ -2063,8 +2062,8 @@ void BonusGunshipB_UpdatePc(WORLDINFO *world) {
                     LevGizObst[0]->runtime_flags |= 4;
                 }
                 MiscTime = 45.0f;
-                TimerScalePc = 1.0f;
-                TimerAlphaPc = 0.0f;
+                TimerScale = 1.0f;
+                TimerAlpha = 0.0f;
             }
         } else if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1) {
             f32 previous_time;
@@ -2078,27 +2077,27 @@ void BonusGunshipB_UpdatePc(WORLDINFO *world) {
                 if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
                     LoseCoins(Player[1], 1);
                 }
-                if (GunshipPlayerDeadPc == 0) {
-                    GunshipPlayerDeadPc = 1;
+                if (GunshipPlayerDead == 0) {
+                    GunshipPlayerDead = 1;
                     ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
                 }
                 BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 2;
             } else if (MiscTime > 0.0f && (i32)MiscTime != (i32)previous_time) {
-                TimerScalePc = 1.25f;
+                TimerScale = 1.25f;
                 TickTockSfx();
             }
         }
-        BonusGunshipBNetPacketPc->progress = BONUS_GUNSHIP_FLAGS_PC_VIEW->progress;
-        BonusGunshipBNetPacketPc->secondary = BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary;
-        BonusGunshipBNetPacketPc->time = MiscTime;
+        BonusGunshipBNetPacket->progress = BONUS_GUNSHIP_FLAGS_PC_VIEW->progress;
+        BonusGunshipBNetPacket->secondary = BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary;
+        BonusGunshipBNetPacket->time = MiscTime;
     } else {
-        BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = BonusGunshipBNetPacketPc->progress;
-        BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = BonusGunshipBNetPacketPc->secondary;
-        MiscTime = BonusGunshipBNetPacketPc->time;
+        BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = BonusGunshipBNetPacket->progress;
+        BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = BonusGunshipBNetPacket->secondary;
+        MiscTime = BonusGunshipBNetPacket->time;
     }
 }
 
-void BonusGunshipB_PanelPc(WORLDINFO *world) {
+void BonusGunshipB_Panel(WORLDINFO *world) {
     if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1) {
         if (MiscTime > 0.0f) {
             DrawTimer((i32)MiscTime + 1, 0, 0);

@@ -1,30 +1,30 @@
 #include "saga.h"
 #include <string.h>
 
-static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemTypePc = 0;
-static i32 PlayerItemTypeCountPc = 0;
+static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType = 0;
+static i32 PlayerItemTypeCount = 0;
 
 void PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *types) {
-    PlayerItemTypePc = NULL;
-    PlayerItemTypeCountPc = 0;
+    PlayerItemType = NULL;
+    PlayerItemTypeCount = 0;
     if (types == NULL) {
         return;
     }
-    PlayerItemTypePc = types;
+    PlayerItemType = types;
     while (types->id != -1) {
         ++types;
-        ++PlayerItemTypeCountPc;
+        ++PlayerItemTypeCount;
     }
-    if (PlayerItemTypeCountPc == 0) {
-        PlayerItemTypePc = NULL;
+    if (PlayerItemTypeCount == 0) {
+        PlayerItemType = NULL;
     }
 }
 
 void PlayerItemTypes_Reset(WORLDINFO *world) {
     i32 index;
-    if (PlayerItemTypePc != NULL) {
-        for (index = 0; index < PlayerItemTypeCountPc; ++index) {
-            PlayerItemTypePc[index].bolt_id = BoltType_FindIDByName(PlayerItemTypePc[index].bolt_name, world);
+    if (PlayerItemType != NULL) {
+        for (index = 0; index < PlayerItemTypeCount; ++index) {
+            PlayerItemType[index].bolt_id = BoltType_FindIDByName(PlayerItemType[index].bolt_name, world);
         }
     }
 }
@@ -42,12 +42,12 @@ void PlayerItem_Set(WEAPON_AMMO_PC *item, VEHICLE_WEAPON_ITEM_PC *type) {
 
 PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType_Find(i32 id) {
     i32 index;
-    if (PlayerItemTypePc == NULL) {
+    if (PlayerItemType == NULL) {
         return NULL;
     }
-    for (index = 0; index < PlayerItemTypeCountPc; ++index) {
-        if (PlayerItemTypePc[index].id == id) {
-            return &PlayerItemTypePc[index];
+    for (index = 0; index < PlayerItemTypeCount; ++index) {
+        if (PlayerItemType[index].id == id) {
+            return &PlayerItemType[index];
         }
     }
     return NULL;

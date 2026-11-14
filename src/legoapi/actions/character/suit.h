@@ -10,20 +10,20 @@
 #include "legoapi/props/objects/legoapi_signal.h"
 #endif
 
-typedef struct SUIT_LAYERS_PC { // size 0xe
-    u8 unknown_00[0xc];         // 0x0
-    u16 flags;                  // 0xc
-} SUIT_LAYERS_PC;
+typedef struct SUIT_LAYERS { // size 0xe
+    u8 unknown_00[0xc];      // 0x0
+    u16 flags;               // 0xc
+} SUIT_LAYERS;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    SUIT_LAYERS_PC *Suit_GetDefault(i32);
-    extern SUIT_INITIALIZER_RECORD_PC SuitRecordInitPc[10];
-    i32 Suit_GetIndex(SUIT_LAYERS_PC *);
+    SUIT_LAYERS *Suit_GetDefault(i32);
+    extern SUIT_INITIALIZER_RECORD SuitRecordInit[10];
+    i32 Suit_GetIndex(SUIT_LAYERS *);
     void Suits_Init(void);
-    SUIT_LAYERS_PC *Suit_GetLast(i32, i32);
-    struct SUIT_INITIALIZER_RECORD_PC *Suit_FindFromLetter(char letter);
+    SUIT_LAYERS *Suit_GetLast(i32, i32);
+    struct SUIT_INITIALIZER_RECORD *Suit_FindFromLetter(char letter);
 #ifdef __cplusplus
 }
 #endif

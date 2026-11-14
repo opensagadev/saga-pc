@@ -5,7 +5,7 @@ extern "C" {
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
     extern TerrainQuery_s *TerI;
     extern void *TerrOverRideScan;
-    extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
+    extern TERRAIN_POLYGON_INFO *ScaleTerrain;
 
     void TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 

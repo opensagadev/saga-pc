@@ -82,7 +82,7 @@ typedef struct GAME_ANTI_NODE_DATA {
 #define GAME_ANTI_NODE_ABS(destination, expression) (temporary = (expression), *(u32 *)&(destination) = *(u32 *)&temporary & 0x7fffffff)
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static f32 GameantinodeFabsPc(f32 f) {
+static f32 GameantinodeFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -90,7 +90,7 @@ static f32 GameantinodeFabsPc(f32 f) {
 }
 
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
-static f32 GameantinodeFdivPc(f32 a, f32 b) {
+static f32 GameantinodeFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
@@ -157,7 +157,7 @@ void GameAntinode_FindGridPosition(WORLDINFO *world, NUVEC *position, f32 radius
     f32 offset;
     if (min_x != NULL) {
         offset = position->x - radius_x - view->level_min.x;
-        offset = GameantinodeFdivPc(offset, cell_x);
+        offset = GameantinodeFdiv(offset, cell_x);
         *min_x = (u8)offset;
         if (*min_x > 63) {
             *min_x = 63;
@@ -220,7 +220,7 @@ void GameAntinode_Update(void *opaque_system) {
     if (!system) {
         return;
     }
-    memset(GameAntinodeGridPc, 0, 64 * sizeof(u64));
+    memset(GameAntinodeGrid, 0, 64 * sizeof(u64));
     object_count = HIGHGAMEOBJECT;
     object = Obj;
     for (i = 0; i < object_count; ++i, ++object) {
@@ -231,7 +231,7 @@ void GameAntinode_Update(void *opaque_system) {
                                       object->collision_radius_unscaled, &min_x, &min_z, &max_x, &max_z);
         for (x = 0; x < max_x - min_x + 1; ++x) {
             for (z = 0; z < max_z - min_z + 1; ++z) {
-                GameAntinodeGridPc[min_x + x] |= (u64)1 << (min_z + z);
+                GameAntinodeGrid[min_x + x] |= (u64)1 << (min_z + z);
             }
         }
     }
@@ -240,7 +240,7 @@ void GameAntinode_Update(void *opaque_system) {
         GameAntinode_FindGridPosition(system->world, target, .1f, .1f, &min_x, &min_z, &max_x, &max_z);
         for (x = 0; x < max_x - min_x + 1; ++x) {
             for (z = 0; z < max_z - min_z + 1; ++z) {
-                GameAntinodeGridPc[min_x + x] |= (u64)1 << (min_z + z);
+                GameAntinodeGrid[min_x + x] |= (u64)1 << (min_z + z);
             }
         }
     }
@@ -257,7 +257,7 @@ void GameAntinode_Update(void *opaque_system) {
         found = 0;
         for (x = 0; x < node->grid_max_x - node->grid_min_x + 1 && !found; ++x) {
             for (z = 0; z < node->grid_max_z - node->grid_min_z + 1 && !found; ++z) {
-                if (GameAntinodeGridPc[node->grid_min_x + x] & ((u64)1 << (node->grid_min_z + z))) {
+                if (GameAntinodeGrid[node->grid_min_x + x] & ((u64)1 << (node->grid_min_z + z))) {
                     found = 1;
                 }
             }
@@ -297,7 +297,7 @@ void GameAntiNodeData_Init(void *opaque_data, NUSPECIALHANDLE *special) {
             NuVecMtxTransform(&maximum, &maximum, matrix);
             GAME_ANTI_NODE_ABS(x, (maximum.x - minimum.x) * 0.5);
             GAME_ANTI_NODE_ABS(z, (maximum.z - minimum.z) * 0.5);
-            difference = GameantinodeFabsPc(x - z);
+            difference = GameantinodeFabs(x - z);
             if (difference < 0.01f) {
                 data->shape = 0;
                 data->radius = x;

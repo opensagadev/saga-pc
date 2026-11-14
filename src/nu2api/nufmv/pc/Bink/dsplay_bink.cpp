@@ -23,19 +23,19 @@ struct RADFMV_DEVICE_METHODS_PC {                                               
     HRESULT(__stdcall *set_fvf)(PC_D3D9_DEVICE_PC *, u32);                                   // 0x164
 };
 
-struct RADFMV_FACTORY_METHODS_PC {                                                         // size 0x2c
-    void *unknown_000[10];                                                                 // 0x00
-    HRESULT(__stdcall *check_format)(GRAPHICS_FACTORY_PC *, u32, u32, u32, u32, u32, u32); // 0x28
+struct RADFMV_FACTORY_METHODS_PC {                                                      // size 0x2c
+    void *unknown_000[10];                                                              // 0x00
+    HRESULT(__stdcall *check_format)(GRAPHICS_FACTORY *, u32, u32, u32, u32, u32, u32); // 0x28
 };
 
 #define RAD_DEVICE_METHODS(device) reinterpret_cast<const RADFMV_DEVICE_METHODS_PC *>((device)->methods)
 #define RAD_FACTORY_METHODS(factory) reinterpret_cast<const RADFMV_FACTORY_METHODS_PC *>((factory)->methods)
 
-extern "C" i32 RadFmvCheckFormatPc(GRAPHICS_FACTORY_PC *factory, u32 format, u32 display_format) {
+extern "C" i32 RadFmvCheckFormatPc(GRAPHICS_FACTORY *factory, u32 format, u32 display_format) {
     return RAD_FACTORY_METHODS(factory)->check_format(factory, 0, 1, display_format, 0, 3, format) >= 0;
 }
 
-extern "C" i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY_PC *factory, u32 display_format, RADFMV_CONTEXT_PC *context) {
+extern "C" i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY *factory, u32 display_format, RADFMV_CONTEXT_PC *context) {
     const u32 formats[7][4] = {
         {22, 0, 4, 0},
         {20, 8, 3, 0},
@@ -69,13 +69,13 @@ extern "C" i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY_PC *factory, u32 displ
 }
 
 extern "C" RADFMV_CONTEXT_PC *RadFmvOpenPc(HWND window) {
-    GRAPHICS_PRESENT_PARAMETERS_PC present = {0};
-    GRAPHICS_DISPLAY_MODE_PC mode;
-    GRAPHICS_CAPS_PC caps;
-    GRAPHICS_FACTORY_PC *factory;
+    GRAPHICS_PRESENT_PARAMETERS present = {0};
+    GRAPHICS_DISPLAY_MODE mode;
+    GRAPHICS_CAPS caps;
+    GRAPHICS_FACTORY *factory;
     PC_D3D9_DEVICE_PC *device;
     RADFMV_CONTEXT_PC *context;
-    factory = reinterpret_cast<GRAPHICS_FACTORY_PC *>(Direct3DCreate9(32));
+    factory = reinterpret_cast<GRAPHICS_FACTORY *>(Direct3DCreate9(32));
     if (factory == NULL) {
         return NULL;
     }
@@ -143,7 +143,7 @@ extern "C" void RadFmvEndScenePc(RADFMV_CONTEXT_PC *context) {
 }
 
 extern "C" void RadFmvResizePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height) {
-    PC_VIEWPORT_PC viewport;
+    PC_VIEWPORT viewport;
     if (width < 1) {
         width = 1;
     }

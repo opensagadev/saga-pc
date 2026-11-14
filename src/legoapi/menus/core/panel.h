@@ -34,7 +34,7 @@ extern "C" {
     extern f32 POWERUPYPOS1;
     extern f32 POWERUPYPOS2;
     extern u16 PowerUp_PanelYRot[2];
-    i32 Tag_UpdateHint(HINT_PC *);
+    i32 Tag_UpdateHint(HINT *);
     f32 PowerUp_GetPanelY(i32);
     extern f32 POWERUPYPOS1;
     extern f32 POWERUPYPOS2;
@@ -61,27 +61,27 @@ extern "C" {
     void DrawBonusScore(f32, i32, i32, f32, i32 *);
     void CoinTotal_Draw(i32, f32, f32, i32, f32, i32, i32, i32);
     void DrawBuildUpBar(f32, f32, i32, i32, f32, f32, f32, i32);
-    extern f32 HudScoreXPc;
-    extern f32 HubPromptXPc;
-    extern f32 HubPromptSpacingPc;
-    extern f32 HubPromptLabelOffsetPc;
-    extern f32 HubPromptMaxWidthPc;
-    extern f32 HubBuildBarSpacingPc;
-    extern f32 HubBuildBarScalePc;
-    extern f32 HubBuildBarOverallScalePc;
-    extern i32 HubBuildBarSegmentsPc;
-    extern i32 HubPromptOffColourPc[3];
-    extern i32 HubPromptOnColourPc[3];
+    extern f32 HudScoreX;
+    extern f32 HubPromptX;
+    extern f32 HubPromptSpacing;
+    extern f32 HubPromptLabelOffset;
+    extern f32 HubPromptMaxWidth;
+    extern f32 HubBuildBarSpacing;
+    extern f32 HubBuildBarScale;
+    extern f32 HubBuildBarOverallScale;
+    extern i32 HubBuildBarSegments;
+    extern i32 HubPromptOffColour[3];
+    extern i32 HubPromptOnColour[3];
     void DrawPlayerIconPrompts(i32, i32, f32, i32, i32, i32, i32, i32, i32, f32, i32, i32, i32, i32);
-    extern i32 ShowPlayerCoordinatePc;
+    extern i32 ShowPlayerCoordinate;
     void UpdateStats(void);
     extern i16 TextIdPc880834;
-    extern f32 TimerBaseScalePc;
-    extern f32 TimerScalePc;
-    extern f32 TimerAlphaPc;
+    extern f32 TimerBaseScale;
+    extern f32 TimerScale;
+    extern f32 TimerAlpha;
     void DrawTimer(i32 time, i32 expanded, i32 reset);
-    void DrawMeleeTargetsPc(i16 *, u8 *, i32);
-    void DrawMeleeTargetsAlphaPc(i16 *, u8 *, f32 *, i32);
+    void DrawMeleeTargets(i16 *, u8 *, i32);
+    void DrawMeleeTargetsAlpha(i16 *, u8 *, f32 *, i32);
 #ifdef __cplusplus
 }
 #endif

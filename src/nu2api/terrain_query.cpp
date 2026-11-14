@@ -7,7 +7,7 @@ extern "C" {
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
     extern TerrainQuery_s *TerI;
     extern void *TerrOverRideScan;
-    extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
+    extern TERRAIN_POLYGON_INFO *ScaleTerrain;
     void TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
@@ -1299,7 +1299,7 @@ extern "C" i32 NewRayCastSetMask(NUVEC *position, NUVEC *movement, f32 radius, f
     return TerI->hit_type;
 }
 
-static u8 *TempStackPtrPc = 0;
+static u8 *TempStackPtr = 0;
 
 struct TERRAIN_HANDLE_WALL_PAIR { // size 0x8
     TERRAIN_WALL_POINT *first;    // 0x0
@@ -1307,7 +1307,7 @@ struct TERRAIN_HANDLE_WALL_PAIR { // size 0x8
 };
 
 extern "C" void NewScanInit(void) {
-    TempStackPtrPc = static_cast<u8 *>(TempScanStack);
+    TempStackPtr = static_cast<u8 *>(TempScanStack);
     TerrPlatDis = -1;
 }
 
@@ -1350,7 +1350,7 @@ extern "C" void NewScanInit(void) {
         }                                                                                                                                  \
     } while (0)
 
-i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 radius, i32 terrain_mask) {
+i16 *NewScanHandelSubset(i16 *subset, NUVEC *position, NUVEC *movement, f32 radius, i32 terrain_mask) {
     TERRAIN_SCAN_WORD *group_header;
     TERRAIN_SCAN_WORD *cursor;
     TERRAIN_SCAN_WORD *limit;
@@ -1369,8 +1369,8 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     if (subset == NULL) {
         return NULL;
     }
-    group_header = reinterpret_cast<TERRAIN_SCAN_WORD *>(TempStackPtrPc);
-    cursor = reinterpret_cast<TERRAIN_SCAN_WORD *>(TempStackPtrPc) + 1;
+    group_header = reinterpret_cast<TERRAIN_SCAN_WORD *>(TempStackPtr);
+    cursor = reinterpret_cast<TERRAIN_SCAN_WORD *>(TempStackPtr) + 1;
     result = group_header;
     limit = cursor + 508;
     if (reinterpret_cast<u8 *>(cursor) > reinterpret_cast<u8 *>(ScaleTerrainT1) + 0x63c18) {
@@ -1510,7 +1510,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     group_header = reinterpret_cast<TERRAIN_SCAN_WORD *>(walls);
     group_header->header.shape_count = 0;
     group_header->header.terrain_group = 0;
-    TempStackPtrPc = reinterpret_cast<u8 *>(group_header + 1);
+    TempStackPtr = reinterpret_cast<u8 *>(group_header + 1);
     return reinterpret_cast<i16 *>(result);
 }
 
@@ -1567,7 +1567,7 @@ struct TERRAIN_HANDLE_END {       // size 0x8
         (result_arg) = cross;                                                                                                              \
     } while (0)
 
-i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_type, i32 terrain_mask) {
+i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_type, i32 terrain_mask) {
     TERRAIN_SCAN_WORD *group_header;
     TERRAIN_SCAN_WORD *cursor;
     TERRAIN_SCAN_WORD *limit;
@@ -1581,7 +1581,7 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
     NUVEC4 *vertices;
     TERRAIN_HANDLE_END *end_header;
 
-    group_header = reinterpret_cast<TERRAIN_SCAN_WORD *>(TempStackPtrPc);
+    group_header = reinterpret_cast<TERRAIN_SCAN_WORD *>(TempStackPtr);
     cursor = group_header + 1;
     scaled_count = 0;
     ScaleTerrain = ScaleTerrainT1;
@@ -1907,7 +1907,7 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
     }
     end_header->wall_end.shape_count = 0;
     end_header->wall_end.terrain_group = 0;
-    TempStackPtrPc = reinterpret_cast<u8 *>(end_header + 1);
+    TempStackPtr = reinterpret_cast<u8 *>(end_header + 1);
     NuScratchRelease();
     return reinterpret_cast<i16 *>(result);
 }
@@ -1950,9 +1950,9 @@ extern "C" i16 *NewScanHandel(NUVEC *position, NUVEC *movement, f32 radius, i32 
     query->scan_result = 1;
     i16 *handle;
     if (subset == NULL) {
-        handle = NewScanHandelFullPc(position, movement, radius, scan_type, 0xff);
+        handle = NewScanHandelFull(position, movement, radius, scan_type, 0xff);
     } else {
-        handle = NewScanHandelSubsetPc(subset, position, movement, radius, 0xff);
+        handle = NewScanHandelSubset(subset, position, movement, radius, 0xff);
     }
     NuScratchRelease();
     return handle;
@@ -2106,7 +2106,7 @@ extern "C" void DrawHitTerrain(void) {
             TERRAIN_SCAN_WORD *shape = word + 1;
             for (i32 count = word->header.shape_count; count > 0; --count, ++shape) {
                 i16 group = word->header.terrain_group;
-                TERRAIN_POLYGON_INFO_PC *surface = shape->shape;
+                TERRAIN_POLYGON_INFO *surface = shape->shape;
                 if (static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[group].chunk_type == 0) {
                     TerrDraw(surface, group);
                 } else {
@@ -2126,12 +2126,12 @@ extern "C" void DrawHitTerrain(void) {
 }
 
 extern "C" {
-    extern f32 TerrainShadowHeightPc;
-    extern i16 TerrainShadowFloorIndexPc;
-    extern u16 TerrainWaterCastIndexPc;
-    extern u16 TerrainSurfaceClassPc;
+    extern f32 TerrainShadowHeight;
+    extern i16 TerrainShadowFloorIndex;
+    extern u16 TerrainWaterCastIndex;
+    extern u16 TerrainSurfaceClass;
     extern u16 NuTerrPlatsOff;
-    extern TERRAIN_SHAPE *TerrainCastAuxPolygonPc;
+    extern TERRAIN_SHAPE *TerrainCastAuxPolygon;
     f32 NewCast(NUVEC *, f32, f32);
 }
 
@@ -2143,19 +2143,19 @@ extern "C" f32 NewShadowHandelEx(NUVEC *position, f32 unused, f32 height_above, 
     if (handle == NULL) {
         return 0.0f;
     }
-    TerrainShadowHeightPc = LevelConfigFarDistance;
+    TerrainShadowHeight = LevelConfigFarDistance;
     EShadY = LevelConfigFarDistance;
-    GetSurfaceInfoWaterNormalPc.y = 1.0f;
+    GetSurfaceInfoWaterNormal.y = 1.0f;
     TerrPolyObj = -1;
-    GetSurfaceInfoRoofHeightPc = LevelConfigFarDistance;
+    GetSurfaceInfoRoofHeight = LevelConfigFarDistance;
     castnum = -1;
-    TerrainShadowFloorIndexPc = -1;
+    TerrainShadowFloorIndex = -1;
     ShadNorm.y = 1.0f;
-    TerrainCastAuxPolygonPc = NULL;
-    TerrainWaterCastIndexPc = 0;
+    TerrainCastAuxPolygon = NULL;
+    TerrainWaterCastIndex = 0;
     EShadPoly = NULL;
     ShadRoofPoly = NULL;
-    TerrainSurfaceClassPc = 0;
+    TerrainSurfaceClass = 0;
     ShadPoly = NULL;
     TerI = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
     TerrainQuery_s *query = TerI;
@@ -2343,7 +2343,7 @@ extern "C" void TerrainWallSideSlide(NUVEC *movement, void *id, f32 speed, f32 u
     if (terrain == NULL) {
         return;
     }
-    TERRAIN_TRACK_SLOT_PC *track;
+    TERRAIN_TRACK_SLOT *track;
     for (i32 index = 0; index < 64; ++index) {
         if (terrain->track_slots[index].id == id) {
             track = &terrain->track_slots[index];

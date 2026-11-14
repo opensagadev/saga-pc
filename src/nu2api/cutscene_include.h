@@ -8,9 +8,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void CutSceneLoadDiagnosticPc(void *unused, ...);
-    void CutSceneMissingObjectDiagnosticPc(char *format, ...);
-    void CutSceneStreamDiagnosticPc(char *);
+    void CutSceneLoadDiagnostic(void *unused, ...);
+    void CutSceneMissingObjectDiagnostic(char *format, ...);
+    void CutSceneStreamDiagnostic(char *);
 #ifdef __cplusplus
 }
 #endif

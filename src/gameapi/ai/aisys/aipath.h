@@ -22,13 +22,13 @@
 
 #if SAGA_GAMEAPI_AI_AISYS_AIPATH_H_PART == 1 && !defined(SAGA_GAMEAPI_AI_AISYS_AIPATH_H_STOP)
 
-typedef struct AIPATHINFO_PC {       // size 0x18
-    struct AIPATH_PC *path;          // 0x00
-    struct AIPATHCNX_PC *connection; // 0x04
-    u8 direction;                    // 0x08
-    u8 path_index;                   // 0x09
-    u16 game_flags;                  // 0x0a
-    u16 next_check;                  // 0x0c
+typedef struct AIPATHINFO {       // size 0x18
+    struct AIPATH *path;          // 0x00
+    struct AIPATHCNX *connection; // 0x04
+    u8 direction;                 // 0x08
+    u8 path_index;                // 0x09
+    u16 game_flags;               // 0x0a
+    u16 next_check;               // 0x0c
 
     union { // size 0x2
 
@@ -49,7 +49,7 @@ typedef struct AIPATHINFO_PC {       // size 0x18
 
     f32 distance; // 0x10
     f32 width;    // 0x14
-} AIPATHINFO_PC;
+} AIPATHINFO;
 
 /* Not converted: these asserts balance VC8 symbol ids for fragile functions (docs/cleanup-audit.md, section 6). */
 
@@ -64,22 +64,22 @@ enum { AIPATHINFO_FLAG_ON_PATH = 1 };
 
 #if SAGA_GAMEAPI_AI_AISYS_AIPATH_H_PART == 2 && !defined(SAGA_GAMEAPI_AI_AISYS_AIPATH_H_STOP)
 
-typedef struct AILOCATOR_PC { // size 0x3c
-    char name[0x10];          // 0x00
-    NUVEC position;           // 0x10
+typedef struct AILOCATOR { // size 0x3c
+    char name[0x10];       // 0x00
+    NUVEC position;        // 0x10
 
     union { // size 0x4
         i32 rotation;
         u32 flags;
     }; // 0x1c
 
-    AIPATHINFO_PC path_info; // 0x20
+    AIPATHINFO path_info; // 0x20
 
     union { // size 0x4
         i32 rotation_offset;
         u32 locator_flags;
     }; // 0x38
-} AILOCATOR_PC;
+} AILOCATOR;
 
 #undef SAGA_GAMEAPI_AI_AISYS_AIPATH_H_PART
 #define SAGA_GAMEAPI_AI_AISYS_AIPATH_H_PART 3

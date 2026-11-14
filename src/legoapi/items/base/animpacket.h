@@ -5,7 +5,7 @@
 
 #include "nu2api/nucore/common.h"
 
-struct CHARACTER_MODEL_LAYERS_PC;
+struct CHARACTER_MODEL_LAYERS;
 
 typedef struct animpacket_s {   // size 0x44
     f32 current_time;           // 0x00
@@ -38,7 +38,7 @@ extern "C" {
 
     void ResetMiniAnimPacket(MINIANIMPACKET_PC *, i32);
     f32 *AnimPlaying(ANIMPACKET_PC *, i32, i32, i32);
-    i32 AnimBlendingFromTo(struct CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, i32, i32);
+    i32 AnimBlendingFromTo(struct CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *, i32, i32);
 #ifdef __cplusplus
 }
 #endif

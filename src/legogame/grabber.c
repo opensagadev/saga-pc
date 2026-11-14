@@ -21,36 +21,36 @@ typedef struct level_grabber_progress_s { // size 0x281c
     f32 stored_parameter;                 // 0x2818
 } LEVEL_GRABBER_PROGRESS_PC;
 
-typedef struct grabber_s {                      // size 0x568
-    NUMTX matrix;                               // 0x000
-    NUMTX grab_matrix;                          // 0x040
-    u8 unknown_080[0x440 - 0x80];               // 0x080
-    NUMTX carried_matrix;                       // 0x440
-    NUVEC initial_position;                     // 0x480
-    NUVEC grab_position;                        // 0x48c
-    NUVEC velocity;                             // 0x498
-    NUVEC target_velocity;                      // 0x4a4
-    CHARACTER_MODEL_LAYERS_PC *character_model; // 0x4b0
-    ANIMPACKET_PC animation;                    // 0x4b4
-    u8 unknown_4f8[4];                          // 0x4f8
-    NUSPECIALHANDLE special;                    // 0x4fc
-    NUSPECIALHANDLE shadow_special;             // 0x508
-    GAMEOBJECT *victim;                         // 0x514
-    GIZOBSTACLE *action_switch;                 // 0x518
-    GIZOBSTACLE *direction_switches[4];         // 0x51c
-    GIZMOBLOWUP_PC *carried_blowup;             // 0x52c
-    f32 scale;                                  // 0x530
-    f32 speed;                                  // 0x534
-    f32 radius;                                 // 0x538
-    f32 stuck_timer;                            // 0x53c
-    f32 shadow_height;                          // 0x540
-    f32 carried_height_offset;                  // 0x544
-    u16 shadow_z_angle;                         // 0x548
-    u16 shadow_x_angle;                         // 0x54a
-    f32 floor_height;                           // 0x54c
-    f32 animation_timer;                        // 0x550
-    f32 platform_contact_timer;                 // 0x554
-    u8 state;                                   // 0x558
+typedef struct grabber_s {                   // size 0x568
+    NUMTX matrix;                            // 0x000
+    NUMTX grab_matrix;                       // 0x040
+    u8 unknown_080[0x440 - 0x80];            // 0x080
+    NUMTX carried_matrix;                    // 0x440
+    NUVEC initial_position;                  // 0x480
+    NUVEC grab_position;                     // 0x48c
+    NUVEC velocity;                          // 0x498
+    NUVEC target_velocity;                   // 0x4a4
+    CHARACTER_MODEL_LAYERS *character_model; // 0x4b0
+    ANIMPACKET_PC animation;                 // 0x4b4
+    u8 unknown_4f8[4];                       // 0x4f8
+    NUSPECIALHANDLE special;                 // 0x4fc
+    NUSPECIALHANDLE shadow_special;          // 0x508
+    GAMEOBJECT *victim;                      // 0x514
+    GIZOBSTACLE *action_switch;              // 0x518
+    GIZOBSTACLE *direction_switches[4];      // 0x51c
+    GIZMOBLOWUP_PC *carried_blowup;          // 0x52c
+    f32 scale;                               // 0x530
+    f32 speed;                               // 0x534
+    f32 radius;                              // 0x538
+    f32 stuck_timer;                         // 0x53c
+    f32 shadow_height;                       // 0x540
+    f32 carried_height_offset;               // 0x544
+    u16 shadow_z_angle;                      // 0x548
+    u16 shadow_x_angle;                      // 0x54a
+    f32 floor_height;                        // 0x54c
+    f32 animation_timer;                     // 0x550
+    f32 platform_contact_timer;              // 0x554
+    u8 state;                                // 0x558
 
     union { // size 0x1
         u8 flags;
@@ -99,8 +99,8 @@ typedef struct grabber_antinode_view_s { // size 0x58
     i64 object_mask;                     // 0x50
 } GRABBER_ANTINODE_VIEW_PC;
 
-GIZMOPICKUP_PC *GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
-extern i32 CharacterBlobShadowsOnPc;
+GIZMOPICKUP *GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
+extern i32 CharacterBlobShadowsOn;
 i32 MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result);
 #define GRABBER_FIND_SWITCH(field, name)                                                                                                   \
     gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);                                                \
@@ -194,11 +194,11 @@ static void Grab_type(NUFPAR_PC *parser) {
         return;
     }
     if (NuStrICmp(parser->word_buffer_ptr, "GRABMAGNET") == 0) {
-        Grab_grabber->character_id = GrabMagnetIdPc;
+        Grab_grabber->character_id = GrabMagnetId;
     } else if (NuStrICmp(parser->word_buffer_ptr, "ROBOTBASE") == 0) {
-        Grab_grabber->character_id = RobotBaseIdPc;
+        Grab_grabber->character_id = RobotBaseId;
     } else {
-        Grab_grabber->character_id = GrabMachineIdPc;
+        Grab_grabber->character_id = GrabMachineId;
     }
 }
 
@@ -209,7 +209,7 @@ static void Grab_shadow(NUFPAR_PC *parser) {
     }
 }
 
-static GRAB_CONFIG_DATA_PC GrabConfigDataPc = {
+static GRAB_CONFIG_DATA_PC GrabConfigData = {
     -0.3f,
     {{"radius", Grab_radius},
           {"speed", Grab_speed},
@@ -241,7 +241,7 @@ void Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     if (parser == NULL) {
         return;
     }
-    NuFParPushCom(parser, GrabConfigDataPc.keywords);
+    NuFParPushCom(parser, GrabConfigData.keywords);
     active = 0;
     while (NuFParGetLine(parser) != 0) {
         if (NuFParGetWord(parser) != 0) {
@@ -253,7 +253,7 @@ void Grabber_Configure(WORLDINFO *world_ptr, char *config) {
                 Grab_grabber->scale = 1.0f;
                 Grab_grabber->invert_x = 0;
                 Grab_grabber->flags |= 0x10;
-                Grab_grabber->character_id = GrabMachineIdPc;
+                Grab_grabber->character_id = GrabMachineId;
                 active = 1;
             } else if (NuStrICmp(parser->word_buffer_ptr, "grabber_end") == 0) {
                 break;
@@ -276,7 +276,7 @@ void Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     }
     Grab_grabber->matrix = *NuSpecialGetDrawMtx(&Grab_grabber->special);
     if (world->current_level == DEATHSTARRESCUEA_LDATA) {
-        Grab_grabber->matrix.m31 += GrabConfigDataPc.level_y_offset;
+        Grab_grabber->matrix.m31 += GrabConfigData.level_y_offset;
     }
     PCByteCopy(&Grab_grabber->initial_position, &Grab_grabber->matrix.m30, sizeof(NUVEC));
     NuSpecialFind(world->scene, &Grab_grabber->shadow_special, "grabber_shadow", 1);
@@ -370,7 +370,7 @@ void Grabber_Draw(WORLDINFO *world) {
     NUMTX matrix;
     NUMTX reflection;
     NUVEC position;
-    RTL_DATA_PC lights;
+    RTL_DATA lights;
     NUMTX joints[256];
     f32 distance;
 
@@ -388,14 +388,14 @@ void Grabber_Draw(WORLDINFO *world) {
         return;
     }
     matrix = *NuSpecialGetDrawMtx(&grabber->special);
-    if (world->current_level == ObstacleReturnLevelPc) {
+    if (world->current_level == ObstacleReturnLevel) {
         distance = NuVecXZDist(&GameCam->position, (NUVEC *)&matrix.m30, NULL);
         if (distance < 2.0f) {
             matrix.m31 += (1.0f - (NU_SIN_LUT((i32)((1.0f - distance * 0.5f) * 32768.0f + 16384.0f)) + 1.0f) * 0.5f) * 1.25f;
         }
     }
     if (grabber->shadow_height != 2000000.0f) {
-        if ((grabber->flags & 0x10) != 0 && CharacterBlobShadowsOnPc != 0 &&
+        if ((grabber->flags & 0x10) != 0 && CharacterBlobShadowsOn != 0 &&
             (grabber->character_model == NULL || ((GRABBER_HG_VIEW_PC *)grabber->character_model->hierarchy)->shadow_surface_points == 0)) {
             position.x = grabber->grab_position.x;
             position.y = grabber->shadow_height + 0.005f;
@@ -476,7 +476,7 @@ static void Grabber_SetVictimPos(GRABBER_PC *grabber) {
         return;
     }
     position = *Grabber_GetGrabPos(grabber, NULL);
-    if (grabber->character_id == GrabMagnetIdPc) {
+    if (grabber->character_id == GrabMagnetId) {
         fraction = victim->context_timer / victim->context_duration;
         start = victim->external_force;
         if (fraction > 1.0f) {
@@ -548,7 +548,7 @@ void Grabber_Reset(WORLDINFO *world) {
 }
 
 void Grabber_Drop(GRABBER_PC *grabber, NUVEC *previous) {
-    ADDPART_PC params;
+    ADDPART params;
     NUMTX matrix;
     NUVEC velocity;
     NUVEC centre;
@@ -556,12 +556,12 @@ void Grabber_Drop(GRABBER_PC *grabber, NUVEC *previous) {
 
     grabber->flags |= 2;
     if (grabber->victim != NULL) {
-        if (grabber->character_id == GrabMagnetIdPc && grabber->victim->field_7b3 != 0) {
+        if (grabber->character_id == GrabMagnetId && grabber->victim->field_7b3 != 0) {
             PlaySfx("imp_C3PO_magnet_drop", Grabber_GetGrabPos(grabber, NULL));
         }
         Grabber_SetVictimPos(grabber);
         grabber->victim->velocity.x = (grabber->grab_position.x - previous->x) / FRAMETIME * 0.5f;
-        if (grabber->character_id == GrabMagnetIdPc) {
+        if (grabber->character_id == GrabMagnetId) {
             grabber->victim->velocity.y = -1.0f;
         }
         grabber->victim->velocity.z = (grabber->grab_position.z - previous->z) / FRAMETIME * 0.5f;
@@ -598,8 +598,8 @@ void Grabber_Update(WORLDINFO *world) {
     GAMEOBJECT *control;
     GAMEOBJECT *object;
     GAMEPAD_PC *pad;
-    GIZMOPICKUP_PC *pickup;
-    AIANTINODE_PC *node;
+    GIZMOPICKUP *pickup;
+    AIANTINODE *node;
     NUVEC *position;
     NUVEC next;
     NUVEC previous;
@@ -737,7 +737,7 @@ void Grabber_Update(WORLDINFO *world) {
             grabber->grab_position.z = next.z;
             if ((grabber->target_velocity.x != 0.0f || grabber->target_velocity.y != 0.0f || grabber->target_velocity.z != 0.0f) &&
                 Cheat_PowerUpActive(-1) == 0) {
-                ConstantRumble(NULL, (f32)qrand() * PlayerRandomScalePc * 0.4f * (NuVecMag(&grabber->velocity) / grabber->speed), 0.15f);
+                ConstantRumble(NULL, (f32)qrand() * PlayerRandomScale * 0.4f * (NuVecMag(&grabber->velocity) / grabber->speed), 0.15f);
             }
         } else {
             grabber->target_velocity = v000;
@@ -926,7 +926,7 @@ void Grabber_Update(WORLDINFO *world) {
                     grabber->flags |= 4;
                 }
                 NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
-            } else if (grabber->character_id == GrabMagnetIdPc) {
+            } else if (grabber->character_id == GrabMagnetId) {
                 grabber->victim =
                     FindNearestGameObject(Grabber_GetGrabPos(grabber, NULL), NULL, 0x10, 0.5f, 0.0f, -1, -1, -1, NULL, 1, IsGrabbable);
                 if (grabber->victim != NULL) {
@@ -967,7 +967,7 @@ void Grabber_Update(WORLDINFO *world) {
         grabber->victim->velocity.y = -0.1f;
         grabber->victim->field_281 = 0;
     }
-    if (grabber->character_id == GrabMachineIdPc) {
+    if (grabber->character_id == GrabMachineId) {
         mask = 0;
         found = 0;
         object = Obj;

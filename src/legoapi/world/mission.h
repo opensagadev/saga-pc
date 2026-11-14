@@ -22,7 +22,7 @@
 
 #if SAGA_LEGOAPI_WORLD_MISSION_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_MISSION_H_STOP)
 
-struct MISSION_SAVE_READER_PC;
+struct MISSION_SAVE_READER;
 struct gameobject_s;
 struct mission_sys_s;
 
@@ -68,7 +68,7 @@ extern "C" {
     extern struct mission_sys_s *MissionSys;
     MISSIONDATA_PC *Mission_Active(struct mission_sys_s *);
     void CheckMissionEnd(struct mission_sys_s *system);
-    struct mission_sys_s *Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER_PC *);
+    struct mission_sys_s *Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER *);
     void EndMission(struct mission_sys_s *, i32, i32);
     i32 Mission_CurrentState(struct mission_sys_s *);
     i32 Missions_PickupsOff(struct mission_sys_s *);
@@ -76,16 +76,16 @@ extern "C" {
 }
 #endif
 
-struct MISSIONSYS_s {                            // size 0x30
-    struct MISSIONDATA_s *missions;              // 0x00
-    struct MISSIONDATA_s *mission;               // 0x04
-    TIMER timer;                                 // 0x08
-    struct MISSION_SAVE_READER_PC *mission_save; // 0x18
-    u8 count;                                    // 0x1c
-    u8 field8_0x1d;                              // 0x1d
-    u8 flags;                                    // 0x1e
-    u8 character_count;                          // 0x1f
-    i16 character_ids[8];                        // 0x20
+struct MISSIONSYS_s {                         // size 0x30
+    struct MISSIONDATA_s *missions;           // 0x00
+    struct MISSIONDATA_s *mission;            // 0x04
+    TIMER timer;                              // 0x08
+    struct MISSION_SAVE_READER *mission_save; // 0x18
+    u8 count;                                 // 0x1c
+    u8 field8_0x1d;                           // 0x1d
+    u8 flags;                                 // 0x1e
+    u8 character_count;                       // 0x1f
+    i16 character_ids[8];                     // 0x20
 };
 
 #undef SAGA_LEGOAPI_WORLD_MISSION_H_PART

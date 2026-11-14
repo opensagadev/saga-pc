@@ -153,22 +153,22 @@ i32 Game_Exit(i32 last_area) {
 extern "C" LEVELDATA_PC *CanSaveAndExit(WORLDINFO *world) {
     if (GAMEDEMO == 0 && SuperStory == 0 && world->area != NULL && world->area != HUB_ADATA && (world->area->flags & 0x146) == 0 &&
         Mission_Active(NULL) == NULL && ChallengeMode == 0 && Arcade == 0 && CutScenePlayer_Active() == NULL && Game_AreaSave != NULL &&
-        reinterpret_cast<AREASAVE_s *>(Game_AreaSave)[world->area_index].area_complete != 0 && AreaGlobals_PC.field_18 > 0) {
+        reinterpret_cast<AREASAVE_s *>(Game_AreaSave)[world->area_index].area_complete != 0 && AreaGlobals.field_18 > 0) {
         return Area_FindStatusLevel(world->area, NULL);
     }
     return NULL;
 }
 
 extern "C" void AddToCompletionPoints(u32 points) {
-    if (CustomiserCompletionSavePc != NULL && ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points < HubCompletionPointsPc) {
-        ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points += points;
-        if (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points >= HubCompletionPointsPc) {
-            ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points = (u16)HubCompletionPointsPc;
-            if ((((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags & SAVE_REWARD_100_PERCENT) == 0) {
+    if (CustomiserCompletionSave != NULL && ((STATUSCOLLECT_s *)CustomiserCompletionSave)->completion_points < HubCompletionPoints) {
+        ((STATUSCOLLECT_s *)CustomiserCompletionSave)->completion_points += points;
+        if (((STATUSCOLLECT_s *)CustomiserCompletionSave)->completion_points >= HubCompletionPoints) {
+            ((STATUSCOLLECT_s *)CustomiserCompletionSave)->completion_points = (u16)HubCompletionPoints;
+            if ((((STATUSCOLLECT_s *)CustomiserCompletionSave)->flags & SAVE_REWARD_100_PERCENT) == 0) {
                 if (Game_100PercentFn != NULL) {
                     Game_100PercentFn();
                 }
-                ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags |= SAVE_REWARD_100_PERCENT;
+                ((STATUSCOLLECT_s *)CustomiserCompletionSave)->flags |= SAVE_REWARD_100_PERCENT;
             }
         }
     }
@@ -177,7 +177,7 @@ extern "C" void AddToCompletionPoints(u32 points) {
 extern "C" {
 
     i32 Game_100PercentComplete(void) {
-        if (CustomiserCompletionSavePc != NULL && (CustomiserCompletionSavePc->flags & 1) != 0) {
+        if (CustomiserCompletionSave != NULL && (CustomiserCompletionSave->flags & 1) != 0) {
             return 1;
         }
         return 0;
@@ -185,20 +185,20 @@ extern "C" {
 }
 
 extern "C" void AddToGoldBricks() {
-    if (CustomiserCompletionSavePc != NULL && ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks < GOLDBRICKPOINTS) {
-        ++((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks;
-        if (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks == GOLDBRICKPOINTS &&
-            (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags & SAVE_REWARD_ALL_GOLD_BRICKS) == 0) {
+    if (CustomiserCompletionSave != NULL && ((STATUSCOLLECT_s *)CustomiserCompletionSave)->gold_bricks < GOLDBRICKPOINTS) {
+        ++((STATUSCOLLECT_s *)CustomiserCompletionSave)->gold_bricks;
+        if (((STATUSCOLLECT_s *)CustomiserCompletionSave)->gold_bricks == GOLDBRICKPOINTS &&
+            (((STATUSCOLLECT_s *)CustomiserCompletionSave)->flags & SAVE_REWARD_ALL_GOLD_BRICKS) == 0) {
             if (Game_AllGoldBricksFn != NULL) {
                 Game_AllGoldBricksFn();
             }
-            ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags |= SAVE_REWARD_ALL_GOLD_BRICKS;
+            ((STATUSCOLLECT_s *)CustomiserCompletionSave)->flags |= SAVE_REWARD_ALL_GOLD_BRICKS;
         }
     }
 }
 
 extern "C" i32 fun_0055c8f0() {
-    if (CustomiserCompletionSavePc != NULL && (CustomiserCompletionSavePc->flags & 2) != 0) {
+    if (CustomiserCompletionSave != NULL && (CustomiserCompletionSave->flags & 2) != 0) {
         return 1;
     }
     return 0;

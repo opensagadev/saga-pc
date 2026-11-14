@@ -19,7 +19,7 @@ typedef struct vadera_s {                   // size 0x30
     i16 count;                              // 0x10
     i16 subtitle;                           // 0x12
     GIZFORCE_PC *forces[4];                 // 0x14
-    AILOCATOR_PC *big_jump_locator;         // 0x24
+    AILOCATOR *big_jump_locator;            // 0x24
     i32 collapse_started;                   // 0x28
     u8 reset_flag;                          // 0x2c
     u8 reserved_2d[3];                      // 0x2d

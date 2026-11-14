@@ -1,8 +1,8 @@
 #include "saga.h"
 
-static CHARPIVOT_PC *CharPivot = 0;
+static CHARPIVOT *CharPivot = 0;
 
-void CharPivot_Init(CHARPIVOT_PC *table) {
+void CharPivot_Init(CHARPIVOT *table) {
     CharPivot = table;
     if (table != NULL) {
         for (; table->name != NULL; ++table) {
@@ -12,8 +12,8 @@ void CharPivot_Init(CHARPIVOT_PC *table) {
 }
 
 void CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
-    CHARPIVOT_PC *pivot;
-    CHARACTER_MODEL_LAYERS_PC *model;
+    CHARPIVOT *pivot;
+    CHARACTER_MODEL_LAYERS *model;
     f32 *frame;
     i32 rotation;
     NUVEC point;
@@ -56,7 +56,7 @@ void CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
 }
 
 // Proposed original CharPivot owner definitions; true selected sentinel domain.
-struct CHARPIVOT_PC CharPivot_LSW[32] = {
+struct CHARPIVOT CharPivot_LSW[32] = {
     {"atst",        0,  -1, 7.0f,  11.0f,  0, {0, 0}},
     {"atst",        0,  -1, 21.0f, 25.0f,  0, {0, 0}},
     {"atst",        0,  2,  8.0f,  25.0f,  0, {0, 0}},
@@ -90,6 +90,6 @@ struct CHARPIVOT_PC CharPivot_LSW[32] = {
     {"clonewalker", 0,  1,  0.0f,  4.0f,   0, {0, 0}},
     {NULL,          0,  0,  0.0f,  0.0f,   0, {0, 0}},
 };
-struct CHARPIVOT_PC CharPivot_Batman = {
+struct CHARPIVOT CharPivot_Batman = {
     NULL, 0, 0, 0.0f, 0.0f, 0, {0, 0}
 };

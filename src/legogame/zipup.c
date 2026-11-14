@@ -4,10 +4,10 @@
 static char GrapSwing_text[10] = "GrapSwing";
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpRiderHeightPc")
-static f32 ZipUpRiderHeightPc = 0.5f;
+static f32 ZipUpRiderHeight = 0.5f;
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpRiderOffsetScalePc")
-static f32 ZipUpRiderOffsetScalePc = 0.9f;
+static f32 ZipUpRiderOffsetScale = 0.9f;
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpSwingDurationPc")
 static f32 ZipUpSwingDurationPc = 1.5f;
@@ -117,9 +117,9 @@ typedef struct zipup_transport_view_s { // size 0xdb0
 #define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
 
-typedef struct zipup_progress_pc_s { // size 0x8
-    u32 active_mask[1];              // 0x0
-    u32 visible_mask[1];             // 0x4
+typedef struct zipup_progress_s { // size 0x8
+    u32 active_mask[1];           // 0x0
+    u32 visible_mask[1];          // 0x4
 } ZIPUP_PROGRESS_PC;
 
 enum ZIPUP_FLAGS {
@@ -146,9 +146,9 @@ typedef struct zipup_rope_material_s { // size 0x74
     f32 opacity;                       // 0x70
 } ZIPUP_ROPE_MATERIAL_PC;
 
-static f32 ZipUpFabsPc(f32 value);
+static f32 ZipUpFabs(f32 value);
 
-static i32 ZipUpArcSinePc(f32 sin) {
+static i32 ZipUpArcSine(f32 sin) {
     f32 abs;
     f32 sqrt;
     f32 unknown_a;
@@ -156,7 +156,7 @@ static i32 ZipUpArcSinePc(f32 sin) {
     f32 unknown_c;
     f32 unknown_d;
 
-    abs = ZipUpFabsPc(sin);
+    abs = ZipUpFabs(sin);
     sqrt = NuFsqrt(1.0f - sin * sin);
 
     unknown_a = MIN(sqrt, abs);
@@ -347,8 +347,8 @@ extern void *ZipUps_ReserveBufferSpace(WORLDINFO *world) {
     return world->zipups;
 }
 
-static void ZipUpResetSinglePc(ZIPUP_PC *zipup) {
-    NuVecRotateX(&zipup->hook_position, (NUVEC *)&ZipUpHookOffsetPc, zipup->hook_x_rotation);
+static void ZipUpResetSingle(ZIPUP_PC *zipup) {
+    NuVecRotateX(&zipup->hook_position, (NUVEC *)&ZipUpHookOffset, zipup->hook_x_rotation);
     NuVecRotateY(&zipup->hook_position, &zipup->hook_position, zipup->hook_y_rotation);
     NuVecAdd(&zipup->hook_position, &zipup->hook_origin, &zipup->hook_position);
     NewTerrPlatformsOff();
@@ -380,7 +380,7 @@ extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *prog
         i32 index;
 
         for (index = 0; index < WORLD->zipup_count; ++index, ++zipup) {
-            ZipUpResetSinglePc(zipup);
+            ZipUpResetSingle(zipup);
             if (progress != NULL && index < 32) {
                 i32 word = index / 32;
                 u32 mask = 1 << (index & 31);
@@ -531,7 +531,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                         object->velocity.y = -2.0f;
                         object->velocity.z = 0.0f;
                         object->character_context = -1;
-                        StartFallLand(object, BigJumpLandFallbackPc);
+                        StartFallLand(object, BigJumpLandFallback);
                     }
                     break;
             }
@@ -601,7 +601,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
 
                 axis = NuAtan2D(zipup->rider_start_offset.x, zipup->rider_start_offset.z);
                 NuVecSub(&end_offset, destination, hook);
-                end_offset.y += ZipUpRiderHeightPc;
+                end_offset.y += ZipUpRiderHeight;
                 end_angle = NuAtan2D(end_offset.x, end_offset.z);
                 difference = abs(0x8000 - (u16)RotDiff(axis, end_angle));
                 half = (u16)(difference * 0.5);
@@ -755,8 +755,8 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             }
             NuVecSub(&zipup->rider_start_offset, start, hook);
             NuVecSub(&end_offset, destination, hook);
-            rider_height = ZipUpRiderHeightPc;
-            scale = ZipUpRiderOffsetScalePc;
+            rider_height = ZipUpRiderHeight;
+            scale = ZipUpRiderOffsetScale;
             end_offset.y += rider_height;
             ((ZIPUP_PC *)object->grapple)->rider_start_offset.x *= scale;
             ((ZIPUP_PC *)object->grapple)->rider_start_offset.y *= scale;
@@ -770,7 +770,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             NuVecNorm(&start_offset, &start_offset);
             NuVecNorm(&end_offset, &end_offset);
             ((ZIPUP_PC *)object->grapple)->pitch_adjustment =
-                (u16)(0x4000 - ZipUpArcSinePc(start_offset.z * end_offset.z + start_offset.y * end_offset.y));
+                (u16)(0x4000 - ZipUpArcSine(start_offset.z * end_offset.z + start_offset.y * end_offset.y));
             ((ZIPUP_PC *)object->grapple)->rider_target_position = ((ZIPUP_PC *)object->grapple)->rider_start_offset;
             NuVecAdd(&((ZIPUP_PC *)object->grapple)->rider_target_position, hook, &((ZIPUP_PC *)object->grapple)->rider_target_position);
         }
@@ -782,7 +782,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
 static void ZipUp_GetStartPoint(GAMEOBJECT *object, NUVEC *position) {
     i32 joint;
 
-    PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
+    PLAYERCHARACTERCONFIG *character = object->character_data->game_character;
     if ((joint = character->grapple_locators[0]) != -1 && object->character_model->points_of_interest[joint] != NULL &&
         object->origin_joint_ready != 0) {
         *position = object->locator_matrices[joint].translation;
@@ -825,7 +825,7 @@ extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
     }
 }
 
-i32 ZipUps_UpdateHint(HINT_PC *hint) {
+i32 ZipUps_UpdateHint(HINT *hint) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     HINT_ZIPUP *zipups;
     i32 index;
@@ -896,8 +896,8 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
             if ((flags & ZIPUP_FLAG_CONFIG_5) != 0) {
                 if (world->level_objects[ZIPUP_SPECIAL_HOOK].active != 0) {
                     offset.x = 0.0f;
-                    offset.y = ZipUpMarkerOffsetYPc;
-                    offset.z = ZipUpMarkerOffsetZPc;
+                    offset.y = ZipUpMarkerOffsetY;
+                    offset.z = ZipUpMarkerOffsetZ;
 
                     NuVecRotateY(&offset, &offset, zipup->facing_angle);
                     NuVecAdd(&endpoint_position, &zipup->lower_position, &offset);
@@ -1041,10 +1041,10 @@ static i32 ZipUp_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return 0;
 }
 
-static char ZipUpOutputNamePc[] = "Active";
+static char ZipUpOutputName[] = "Active";
 
 static char *ZipUp_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return ZipUpOutputNamePc;
+    return ZipUpOutputName;
 }
 
 static i32 ZipUp_GetNumOutputs(GIZMO_PC *gizmo) {
@@ -1055,7 +1055,7 @@ static ADDGIZMOTYPE_PC ZipUpAddTypePc = {0};
 
 extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddTypePc = Default_ADDGIZMOTYPE;
-    ZipUpAddTypePc.name = ZipUpTypeNamePtrPc;
+    ZipUpAddTypePc.name = ZipUpTypeNamePtr;
     ZipUpAddTypePc.prefix = "";
     ZipUpAddTypePc.fns.options = 8;
     ZipUpAddTypePc.fns.get_max_gizmos_fn = ZipUps_GetMaxGizmos;
@@ -1131,8 +1131,8 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
 
     static f32 ROPELEN = 0;
     static u32 ropedif = 0xff505050;
-    ROPELEN = ZipUpRopeHalfWidthPc * 4.0;
-    ropedif = Cheat_IsOn(3) ? ZipUpRopeCheatColourPc : 0xff505050;
+    ROPELEN = ZipUpRopeHalfWidth * 4.0;
+    ropedif = Cheat_IsOn(3) ? ZipUpRopeCheatColour : 0xff505050;
     if (material == NULL) {
         material = ropemtl;
     }
@@ -1146,90 +1146,90 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
     length = NuVecMag(&direction) * amount;
     repeats = length / ROPELEN;
 
-    vertices[0].position.x = -ZipUpRopeHalfWidthPc;
+    vertices[0].position.x = -ZipUpRopeHalfWidth;
     vertices[0].position.y = 0.0f;
-    vertices[0].position.z = ZipUpRopeHalfWidthPc;
+    vertices[0].position.z = ZipUpRopeHalfWidth;
     vertices[0].normal.x = -0.7071068f;
     vertices[0].normal.y = 0.0f;
     vertices[0].normal.z = 0.7071068f;
     vertices[0].colour = ropedif;
     vertices[0].u = 0.0f;
     vertices[0].v = 0.0f;
-    vertices[1].position.x = -ZipUpRopeHalfWidthPc;
+    vertices[1].position.x = -ZipUpRopeHalfWidth;
     vertices[1].position.y = length;
-    vertices[1].position.z = ZipUpRopeHalfWidthPc;
+    vertices[1].position.z = ZipUpRopeHalfWidth;
     vertices[1].normal.x = -0.7071068f;
     vertices[1].normal.y = 0.0f;
     vertices[1].normal.z = 0.7071068f;
     vertices[1].colour = ropedif;
     vertices[1].u = repeats;
     vertices[1].v = 0.0f;
-    vertices[2].position.x = ZipUpRopeHalfWidthPc;
+    vertices[2].position.x = ZipUpRopeHalfWidth;
     vertices[2].position.y = 0.0f;
-    vertices[2].position.z = ZipUpRopeHalfWidthPc;
+    vertices[2].position.z = ZipUpRopeHalfWidth;
     vertices[2].normal.x = 0.7071068f;
     vertices[2].normal.y = 0.0f;
     vertices[2].normal.z = 0.7071068f;
     vertices[2].colour = ropedif;
     vertices[2].u = 0.0f;
     vertices[2].v = 1.0f;
-    vertices[3].position.x = ZipUpRopeHalfWidthPc;
+    vertices[3].position.x = ZipUpRopeHalfWidth;
     vertices[3].position.y = length;
-    vertices[3].position.z = ZipUpRopeHalfWidthPc;
+    vertices[3].position.z = ZipUpRopeHalfWidth;
     vertices[3].normal.x = 0.7071068f;
     vertices[3].normal.y = 0.0f;
     vertices[3].normal.z = 0.7071068f;
     vertices[3].colour = ropedif;
     vertices[3].u = repeats;
     vertices[3].v = 1.0f;
-    vertices[4].position.x = ZipUpRopeHalfWidthPc;
+    vertices[4].position.x = ZipUpRopeHalfWidth;
     vertices[4].position.y = 0.0f;
-    vertices[4].position.z = -ZipUpRopeHalfWidthPc;
+    vertices[4].position.z = -ZipUpRopeHalfWidth;
     vertices[4].normal.x = 0.7071068f;
     vertices[4].normal.y = 0.0f;
     vertices[4].normal.z = -0.7071068f;
     vertices[4].colour = ropedif;
     vertices[4].u = 0.0f;
     vertices[4].v = 2.0f;
-    vertices[5].position.x = ZipUpRopeHalfWidthPc;
+    vertices[5].position.x = ZipUpRopeHalfWidth;
     vertices[5].position.y = length;
-    vertices[5].position.z = -ZipUpRopeHalfWidthPc;
+    vertices[5].position.z = -ZipUpRopeHalfWidth;
     vertices[5].normal.x = 0.7071068f;
     vertices[5].normal.y = 0.0f;
     vertices[5].normal.z = -0.7071068f;
     vertices[5].colour = ropedif;
     vertices[5].u = repeats;
     vertices[5].v = 2.0f;
-    vertices[6].position.x = -ZipUpRopeHalfWidthPc;
+    vertices[6].position.x = -ZipUpRopeHalfWidth;
     vertices[6].position.y = 0.0f;
-    vertices[6].position.z = -ZipUpRopeHalfWidthPc;
+    vertices[6].position.z = -ZipUpRopeHalfWidth;
     vertices[6].normal.x = -0.7071068f;
     vertices[6].normal.y = 0.0f;
     vertices[6].normal.z = -0.7071068f;
     vertices[6].colour = ropedif;
     vertices[6].u = 0.0f;
     vertices[6].v = 3.0f;
-    vertices[7].position.x = -ZipUpRopeHalfWidthPc;
+    vertices[7].position.x = -ZipUpRopeHalfWidth;
     vertices[7].position.y = length;
-    vertices[7].position.z = -ZipUpRopeHalfWidthPc;
+    vertices[7].position.z = -ZipUpRopeHalfWidth;
     vertices[7].normal.x = -0.7071068f;
     vertices[7].normal.y = 0.0f;
     vertices[7].normal.z = -0.7071068f;
     vertices[7].colour = ropedif;
     vertices[7].u = repeats;
     vertices[7].v = 3.0f;
-    vertices[8].position.x = -ZipUpRopeHalfWidthPc;
+    vertices[8].position.x = -ZipUpRopeHalfWidth;
     vertices[8].position.y = 0.0f;
-    vertices[8].position.z = ZipUpRopeHalfWidthPc;
+    vertices[8].position.z = ZipUpRopeHalfWidth;
     vertices[8].normal.x = -0.7071068f;
     vertices[8].normal.y = 0.0f;
     vertices[8].normal.z = 0.7071068f;
     vertices[8].colour = ropedif;
     vertices[8].u = 0.0f;
     vertices[8].v = 4.0f;
-    vertices[9].position.x = -ZipUpRopeHalfWidthPc;
+    vertices[9].position.x = -ZipUpRopeHalfWidth;
     vertices[9].position.y = length;
-    vertices[9].position.z = ZipUpRopeHalfWidthPc;
+    vertices[9].position.z = ZipUpRopeHalfWidth;
     vertices[9].normal.x = -0.7071068f;
     vertices[9].normal.y = 0.0f;
     vertices[9].normal.z = 0.7071068f;
@@ -1256,7 +1256,7 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
     while (position.y < length) {
         f32 magnitude;
 
-        if (ZipUpRopeModulationPc == 1 && segment_count > 0) {
+        if (ZipUpRopeModulation == 1 && segment_count > 0) {
             f32 fraction;
             i32 angle;
 
@@ -1320,9 +1320,9 @@ void ZipUps_DrawLines() {
             start->colour = 0xffffffff;
             end->colour = 0xff808080;
             end->position = ((ZIPUP_TRANSPORT_VIEW_PC *)object)->entry;
-            if (object->id == (u16)ZipUpLineCharacterIdPc) {
+            if (object->id == (u16)ZipUpLineCharacterId) {
                 start->position = object->position;
-                NuRndrLine3d((NURND_VERTEX3D_PC *)start, ZipUpLineMaterialPc, NULL);
+                NuRndrLine3d((NURND_VERTEX3D_PC *)start, ZipUpLineMaterial, NULL);
                 continue;
             }
             ZipUp_GetStartPoint(object, &start->position);
@@ -1331,7 +1331,7 @@ void ZipUps_DrawLines() {
     }
 }
 
-static __inline f32 ZipUpFabsPc(f32 value) {
+static __inline f32 ZipUpFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }

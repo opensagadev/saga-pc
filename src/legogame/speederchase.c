@@ -21,16 +21,16 @@ i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
     return 1;
 }
 
-SPEEDERCHASE_NETPACKET_PC *SpeederChaseNetPacketPc = NULL;
-i32 SpeederChaseState0Pc = 0;
-i32 SpeederChaseState1Pc = 0;
-f32 SpeederChaseTime0Pc = 0.0f;
-f32 SpeederChaseTime1Pc = 0.0f;
+SPEEDERCHASE_NETPACKET *SpeederChaseNetPacket = NULL;
+i32 SpeederChaseState0 = 0;
+i32 SpeederChaseState1 = 0;
+f32 SpeederChaseTime0 = 0.0f;
+f32 SpeederChaseTime1 = 0.0f;
 
 void SpeederChaseA_Init(WORLDINFO *world) {
-    SpeederChaseNetPacketPc = SetLevelHack(7);
+    SpeederChaseNetPacket = SetLevelHack(7);
     SetLevelExBlowupFlags(3);
-    SetLevelBlowupCallbackPc(SpeederBlowupHack);
+    SetLevelBlowupCallback(SpeederBlowupHack);
     InitTrooperCannons(world);
     players_cannot_exit_speeder = 0;
     InitBikeParts();
@@ -43,10 +43,10 @@ void SpeederChaseA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[6], "clear3_ffield2", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[7], "clear4_ffield1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[8], "clear4_ffield2", 1);
-    SpeederChaseTime0Pc = SpeederChaseTime1Pc = 0.0f;
+    SpeederChaseTime0 = SpeederChaseTime1 = 0.0f;
     LevSfxFlag[1] = LevSfxFlag[0] = 0;
     ((u8 *)LevSfxFlag)[8] = 0;
-    SpeederChaseState0Pc = SpeederChaseState1Pc = 0;
+    SpeederChaseState0 = SpeederChaseState1 = 0;
 }
 
 void SpeederChaseA_Reset(WORLDINFO *unused0) {
@@ -138,16 +138,16 @@ void SpeederChaseA_Panel(WORLDINFO *world) {
     i32 i;
     (void)world;
     if (netclient != 0) {
-        if (SpeederChaseNetPacketPc == NULL || SpeederChaseNetPacketPc->phase != 1 || SpeederChaseNetPacketPc->target_count == 0) {
+        if (SpeederChaseNetPacket == NULL || SpeederChaseNetPacket->phase != 1 || SpeederChaseNetPacket->target_count == 0) {
             return;
         }
-        for (i = 0; i < SpeederChaseNetPacketPc->target_count; ++i) {
+        for (i = 0; i < SpeederChaseNetPacket->target_count; ++i) {
             targets[i] = id_SPEEDERBIKE;
-            if (i >= SpeederChaseNetPacketPc->target_count - SpeederChaseNetPacketPc->killed_count) {
+            if (i >= SpeederChaseNetPacket->target_count - SpeederChaseNetPacket->killed_count) {
                 defeated[i] = 1;
             }
         }
-        DrawMeleeTargetsPc(targets, defeated, SpeederChaseNetPacketPc->target_count);
+        DrawMeleeTargets(targets, defeated, SpeederChaseNetPacket->target_count);
     } else {
         if (LevAIMessage[0] == NULL || LevAIMessage[1] == NULL || LevAIMessage[3] == NULL || LevAIMessage[3]->value != 1.0f ||
             !(LevAIMessage[0]->value > 0.0f)) {
@@ -164,7 +164,7 @@ void SpeederChaseA_Panel(WORLDINFO *world) {
                 defeated[i] = 1;
             }
         }
-        DrawMeleeTargetsPc(targets, defeated, count);
+        DrawMeleeTargets(targets, defeated, count);
     }
 }
 
@@ -195,7 +195,7 @@ i32 fun_004c9230(void) {
 i32 set_speedermode = 0;
 f32 speeder_mode_ahead_timer = 0.0f;
 
-static void SpeederChase_SetMode(AISCRIPTPROCESS_PC *processor, i32 mode) {
+static void SpeederChase_SetMode(AISCRIPTPROCESS *processor, i32 mode) {
     set_speedermode = mode;
     processor->action_timer = 0.0f;
     processor->action_data_1 = (u8)mode;
@@ -220,7 +220,7 @@ f32 speeder_level_height_lerpf = 5.0f;
 f32 zoom_ahead_extra_time = 5.0f;
 f32 zoom_ahead_extra = 3.0f;
 
-i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
+i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count,
                               i32 first_time, f32 elapsed) {
     SOCK_PC *sock = &WORLD->sock_sys->socks[1];
     GAMEOBJECT *object;
@@ -231,8 +231,8 @@ i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
     f32 seek;
     i32 can_fire = 0;
 
-    if (packet != NULL && packet->owner != NULL && ((APIOBJECT_PC *)packet->owner)->owner != NULL) {
-        object = ((APIOBJECT_PC *)packet->owner)->owner;
+    if (packet != NULL && packet->owner != NULL && ((APIOBJECT *)packet->owner)->owner != NULL) {
+        object = ((APIOBJECT *)packet->owner)->owner;
         if (first_time != 0) {
             object->run_speed_override = object->character_data->game_character->run_speed;
             set_speedermode = 0;

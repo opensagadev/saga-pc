@@ -2,12 +2,12 @@
 #include <vector>
 
 struct POST_VERTEX_SHADER_CACHE_ENTRY_PC { // size 0x8
-    PC_TEXTURE_RESOURCE_PC *shader;        // 0x0
+    PC_TEXTURE_RESOURCE *shader;           // 0x0
     const DWORD *tokens;                   // 0x4
 };
 
 struct POST_PIXEL_SHADER_CACHE_ENTRY_PC { // size 0x8
-    PC_TEXTURE_RESOURCE_PC *shader;       // 0x0
+    PC_TEXTURE_RESOURCE *shader;          // 0x0
     const DWORD *tokens;                  // 0x4
 };
 
@@ -50,13 +50,13 @@ found:
     return &programs[index];
 }
 
-FRAME_NATIVE_TEXTURE_POOL_PC *FRAME_NATIVE_TEXTURE_POOL_PC::fun_00605150() {
+FRAME_NATIVE_TEXTURE_POOL *FRAME_NATIVE_TEXTURE_POOL::fun_00605150() {
     memset(occupied, 0, sizeof(occupied));
     cursor = 0;
     return this;
 }
 
-i32 FRAME_NATIVE_TEXTURE_POOL_PC::fun_00605170(FRAME_NATIVE_TEXTURE_PC *record) {
+i32 FRAME_NATIVE_TEXTURE_POOL::fun_00605170(FRAME_NATIVE_TEXTURE *record) {
     u32 index = record - records;
     return index <= 15;
 }
@@ -67,7 +67,7 @@ POST_SHADER_PROGRAM_POOL_PC *POST_SHADER_PROGRAM_POOL_PC::fun_006051a0() {
     return this;
 }
 
-void FRAME_NATIVE_TEXTURE_POOL_PC::fun_00605300(i32 index, bool set) {
+void FRAME_NATIVE_TEXTURE_POOL::fun_00605300(i32 index, bool set) {
     if (set) {
         occupied[index >> 3] |= 1 << (index & 7);
     } else {
@@ -75,7 +75,7 @@ void FRAME_NATIVE_TEXTURE_POOL_PC::fun_00605300(i32 index, bool set) {
     }
 }
 
-i32 FRAME_NATIVE_TEXTURE_POOL_PC::fun_00605460(i32 index) {
+i32 FRAME_NATIVE_TEXTURE_POOL::fun_00605460(i32 index) {
     return occupied[index >> 3] >> (index & 7) & 1;
 }
 
@@ -91,7 +91,7 @@ void POST_SHADER_PROGRAM_POOL_PC::fun_006054a0(i32 index, bool set) {
     }
 }
 
-void FRAME_NATIVE_TEXTURE_POOL_PC::fun_0060a010(FRAME_NATIVE_TEXTURE_PC *record) {
+void FRAME_NATIVE_TEXTURE_POOL::fun_0060a010(FRAME_NATIVE_TEXTURE *record) {
     i32 index = record - records;
     occupied[index >> 3] &= ~(1 << (index & 7));
     cursor = index;
@@ -131,7 +131,7 @@ extern "C" POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32 mode, const DWO
     return NULL;
 }
 
-extern "C" void PostFilterInitSharedResourcesPc(void);
+extern "C" void PostFilterInitSharedResources(void);
 extern "C" {
     extern const DWORD PostShaderTokens7656f0[];
     extern const DWORD PostShaderTokens765798[];
@@ -143,35 +143,35 @@ extern "C" {
     extern const DWORD PostShaderTokens765f30[];
     extern const DWORD PostShaderTokens7660d0[];
 #pragma bss_seg(".bss$PostCopyTexProgramPc")
-    POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc = 0;
+    POST_SHADER_PROGRAM_PC *PostCopyTexProgram = 0;
 #pragma bss_seg(".bss$PostCopyTexLodProgramPc")
-    POST_SHADER_PROGRAM_PC *PostCopyTexLodProgramPc = 0;
+    POST_SHADER_PROGRAM_PC *PostCopyTexLodProgram = 0;
 #pragma bss_seg(".bss$PostBlendTexProgramPc")
-    POST_SHADER_PROGRAM_PC *PostBlendTexProgramPc = 0;
+    POST_SHADER_PROGRAM_PC *PostBlendTexProgram = 0;
 #pragma bss_seg(".bss$PostBlur5x5ProgramPc")
-    POST_SHADER_PROGRAM_PC *PostBlur5x5ProgramPc = 0;
+    POST_SHADER_PROGRAM_PC *PostBlur5x5Program = 0;
 #pragma bss_seg(".bss$PostBlur7x7ProgramPc")
-    POST_SHADER_PROGRAM_PC *PostBlur7x7ProgramPc = 0;
+    POST_SHADER_PROGRAM_PC *PostBlur7x7Program = 0;
 #pragma bss_seg(".bss$PostCopyAuxProgramPc")
-    POST_SHADER_PROGRAM_PC *PostCopyAuxProgramPc = 0;
+    POST_SHADER_PROGRAM_PC *PostCopyAuxProgram = 0;
 #pragma bss_seg(".bss$PostBlurAuxProgramPc")
-    POST_SHADER_PROGRAM_PC *PostBlurAuxProgramPc = 0;
+    POST_SHADER_PROGRAM_PC *PostBlurAuxProgram = 0;
 #pragma bss_seg()
 }
 
-extern "C" void PostFilterInitProgramsPc(i32 width, i32 height) {
+extern "C" void PostFilterInitPrograms(i32 width, i32 height) {
     (void)width;
     (void)height;
-    PostFilterInitSharedResourcesPc();
-    PostCopyTexProgramPc = PostShaderProgramCreatePc(2, PostShaderTokens7656f0, PostShaderTokens765798);
-    PostCopyTexLodProgramPc = NULL;
-    PostBlendTexProgramPc = NULL;
+    PostFilterInitSharedResources();
+    PostCopyTexProgram = PostShaderProgramCreatePc(2, PostShaderTokens7656f0, PostShaderTokens765798);
+    PostCopyTexLodProgram = NULL;
+    PostBlendTexProgram = NULL;
     if (PCDeviceHardwareVertexProcessingPC > 1) {
-        PostBlur5x5ProgramPc = PostShaderProgramCreatePc(2, PostShaderTokens765848, PostShaderTokens765aa8);
-        PostBlur7x7ProgramPc = PostShaderProgramCreatePc(2, PostShaderTokens765ca0, PostShaderTokens765d90);
+        PostBlur5x5Program = PostShaderProgramCreatePc(2, PostShaderTokens765848, PostShaderTokens765aa8);
+        PostBlur7x7Program = PostShaderProgramCreatePc(2, PostShaderTokens765ca0, PostShaderTokens765d90);
     }
-    PostCopyAuxProgramPc = PostShaderProgramCreatePc(2, PostShaderTokens765f30, PostShaderTokens7660d0);
-    PostBlurAuxProgramPc = PostShaderProgramCreatePc(2, PostShaderTokens765e40, PostShaderTokens765d90);
+    PostCopyAuxProgram = PostShaderProgramCreatePc(2, PostShaderTokens765f30, PostShaderTokens7660d0);
+    PostBlurAuxProgram = PostShaderProgramCreatePc(2, PostShaderTokens765e40, PostShaderTokens765d90);
 }
 
 extern "C" void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *program) {
@@ -201,7 +201,7 @@ extern "C" void fun_00605510(void) {
 extern "C" void fun_00605540(void) {
 }
 
-extern "C" FRAME_NATIVE_TEXTURE_PC *fun_0060bf20(void *, FRAME_NATIVE_TEXTURE_POOL_PC *pool) {
+extern "C" FRAME_NATIVE_TEXTURE *fun_0060bf20(void *, FRAME_NATIVE_TEXTURE_POOL *pool) {
     return pool->Allocate();
 }
 

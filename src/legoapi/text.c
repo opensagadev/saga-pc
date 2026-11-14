@@ -770,7 +770,7 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
     if (x < -2.0f || x > 2.0f || y < -2.0f || y > 2.0f) {
         return;
     }
-    if (TextPrintModePc != 0) {
+    if (TextPrintMode != 0) {
         NuQFntPushPrintMode(3);
     } else {
         NuQFntPushPrintMode(2);
@@ -1039,7 +1039,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     NuQFntBaseline(TEXT3D_FONT());
 
     if (max_width <= 0.0f) {
-        max_width = SmartTextDefaultWidthPc;
+        max_width = SmartTextDefaultWidth;
     }
 
     explicit_breaks = 0;
@@ -1188,10 +1188,10 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     if (lines[last_line][0] == '\0') {
         --last_line;
     }
-    SmartTextLongestWidthPc = longest;
+    SmartTextLongestWidth = longest;
     if (max_width < longest) {
         draw_x_scale = max_width / longest * x_scale;
-        SmartTextLongestWidthPc = max_width;
+        SmartTextLongestWidth = max_width;
     } else {
         draw_x_scale = x_scale;
     }
@@ -1252,7 +1252,7 @@ void SmartTextExDrop(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, 
 }
 
 void fun_0050e510(i32 mode) {
-    TextPrintModePc = mode;
+    TextPrintMode = mode;
 }
 
 void MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green, u8 blue, f32 max_width,
@@ -1265,13 +1265,13 @@ void MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u3
     SmartTextEx(text, x, y, z, sx, sy, sz, alignment, red, green, blue, max_width, max_lines, box, suppress, alpha);
 }
 
-typedef struct text_crawl_view_pc_s { // size 0x10
-    i16 *heading_text;                // 0x0
-    i16 *vehicle_bonus_text;          // 0x4
-    i16 *character_bonus_text;        // 0x8
-    u8 paragraph_count;               // 0xc
-    i8 area;                          // 0xd
-    u8 unknown_0e[2];                 // 0xe
+typedef struct text_crawl_view_s { // size 0x10
+    i16 *heading_text;             // 0x0
+    i16 *vehicle_bonus_text;       // 0x4
+    i16 *character_bonus_text;     // 0x8
+    u8 paragraph_count;            // 0xc
+    i8 area;                       // 0xd
+    u8 unknown_0e[2];              // 0xe
 } TEXT_CRAWL_VIEW_PC;
 
 typedef struct text_crawl_mission_view_s { // size 0x8
@@ -1280,22 +1280,22 @@ typedef struct text_crawl_mission_view_s { // size 0x8
     i16 text_id;                           // 0x6
 } TEXT_CRAWL_MISSION_VIEW_PC;
 
-static TEXT_CRAWL_VIEW_PC *TextCrawlCurrentPc = 0;
-static NUMTX TextCrawlMatrixPc = {0};
-static NUVEC TextCrawlOffsetPc = {0.0f, -1.0f, 10.0f};
+static TEXT_CRAWL_VIEW_PC *TextCrawlCurrent = 0;
+static NUMTX TextCrawlMatrix = {0};
+static NUVEC TextCrawlOffset = {0.0f, -1.0f, 10.0f};
 
 void TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
     if (crawl == NULL || QFont3DZ == NULL) {
         return;
     }
-    TextCrawlCurrentPc = crawl;
+    TextCrawlCurrent = crawl;
     crawl->area = (i8)(id >= 0 && id < AREACOUNT ? id : -1);
-    NuMtxSetRotationX(&TextCrawlMatrixPc, TextCrawlRotateXPc);
-    NuMtxRotateY(&TextCrawlMatrixPc, TextCrawlRotateYPc);
-    NuMtxRotateZ(&TextCrawlMatrixPc, TextCrawlRotateZPc);
-    NuMtxTranslate(&TextCrawlMatrixPc, &TextCrawlOffsetPc);
+    NuMtxSetRotationX(&TextCrawlMatrix, TextCrawlRotateX);
+    NuMtxRotateY(&TextCrawlMatrix, TextCrawlRotateY);
+    NuMtxRotateZ(&TextCrawlMatrix, TextCrawlRotateZ);
+    NuMtxTranslate(&TextCrawlMatrix, &TextCrawlOffset);
     if (reset != 0) {
-        TextCrawlTimePc = 0.0f;
+        TextCrawlTime = 0.0f;
     }
 }
 
@@ -1323,14 +1323,14 @@ void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     u32 colour;
     u16 encoded[1024];
     i32 i;
-    if (TextCrawlCurrentPc == NULL || QFont3DZ == NULL) {
+    if (TextCrawlCurrent == NULL || QFont3DZ == NULL) {
         return;
     }
     NuQFntSetJustifiedTolerances(1.2f, 1.2f);
-    if (paragraphs == 0 && TextCrawlTimePc >= 60.0) {
+    if (paragraphs == 0 && TextCrawlTime >= 60.0) {
         return;
     }
-    crawl_area = TextCrawlCurrentPc->area;
+    crawl_area = TextCrawlCurrent->area;
     if (crawl_area != -1) {
         area = &ADataList[crawl_area];
         body_text_id = area->text_id;
@@ -1375,17 +1375,17 @@ void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
             if (area_index != -1) {
                 if (area->flags & 4) {
                     if (area->flags & 1) {
-                        if (TextCrawlCurrentPc->vehicle_bonus_text != NULL) {
-                            chapter_text = TTab[*TextCrawlCurrentPc->vehicle_bonus_text];
+                        if (TextCrawlCurrent->vehicle_bonus_text != NULL) {
+                            chapter_text = TTab[*TextCrawlCurrent->vehicle_bonus_text];
                         }
                     } else {
-                        if (TextCrawlCurrentPc->character_bonus_text != NULL) {
-                            chapter_text = TTab[*TextCrawlCurrentPc->character_bonus_text];
+                        if (TextCrawlCurrent->character_bonus_text != NULL) {
+                            chapter_text = TTab[*TextCrawlCurrent->character_bonus_text];
                         }
                     }
                 } else {
-                    if (TextCrawlCurrentPc->heading_text != NULL) {
-                        sprintf(chapter_buffer, "%s %i", TTab[*TextCrawlCurrentPc->heading_text], area_index + 1);
+                    if (TextCrawlCurrent->heading_text != NULL) {
+                        sprintf(chapter_buffer, "%s %i", TTab[*TextCrawlCurrent->heading_text], area_index + 1);
                         chapter_text = chapter_buffer;
                     }
                 }
@@ -1399,32 +1399,32 @@ void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
             }
         }
     }
-    TextCrawlTimePc += dt;
-    if (TextCrawlTimePc >= 60.0) {
+    TextCrawlTime += dt;
+    if (TextCrawlTime >= 60.0) {
         if (paragraphs == 0) {
             return;
         }
-        TextCrawlTimePc = 0.0f;
+        TextCrawlTime = 0.0f;
     }
-    NuMtxMul(&matrix, &TextCrawlMatrixPc, NuCameraGetMtx());
+    NuMtxMul(&matrix, &TextCrawlMatrix, NuCameraGetMtx());
     NuQFntSet(QFont3DZ);
     NuQFntSetMtx(QFont3DZ, &matrix);
     NuQFntPushPrintMode(4);
     NuQFntSetCoordinateSystem(4);
     alpha_scale = 128.0f;
-    red = TextCrawlRedPc;
-    green = TextCrawlGreenPc;
-    if (paragraphs == 0 && TextCrawlTimePc >= 55.0) {
-        colour_scale = (f32)(1.0 - ((f64)TextCrawlTimePc - 55.0) / 5.0);
+    red = TextCrawlRed;
+    green = TextCrawlGreen;
+    if (paragraphs == 0 && TextCrawlTime >= 55.0) {
+        colour_scale = (f32)(1.0 - ((f64)TextCrawlTime - 55.0) / 5.0);
         alpha_scale = (f32)(128.0 * colour_scale);
-        green = (i32)(TextCrawlGreenPc * colour_scale);
-        red = (i32)(TextCrawlRedPc * colour_scale);
+        green = (i32)(TextCrawlGreen * colour_scale);
+        red = (i32)(TextCrawlRed * colour_scale);
     }
-    colour = ((u32)(alpha_scale * alpha) << 24) | ((red & 0xff) << 16) | ((green & 0xff) << 8) | TextCrawlBluePc;
+    colour = ((u32)(alpha_scale * alpha) << 24) | ((red & 0xff) << 16) | ((green & 0xff) << 8) | TextCrawlBlue;
     NuQFntSetColour(QFont3DZ, colour);
-    y = (f32)(TextCrawlTimePc * (f64)0.4f - 4.5);
-    x_scale = TextCrawlScaleXPc * TextScaleX;
-    y_scale = TextCrawlScaleYPc * TextScaleY;
+    y = (f32)(TextCrawlTime * (f64)0.4f - 4.5);
+    x_scale = TextCrawlScaleX * TextScaleX;
+    y_scale = TextCrawlScaleY * TextScaleY;
     if (episode_name != NULL) {
         if (text != NULL && NuStrCmp(text, "?") == 0) {
             NuQFntSetScale(QFont3DZ, (f32)(x_scale * 2.0), (f32)(y_scale * 3.0));
@@ -1460,7 +1460,7 @@ void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     if (body_text_id != -1) {
         NuQFntSetScale(QFont3DZ, x_scale, y_scale);
         if (paragraph_count == 0) {
-            paragraph_count = area == NULL ? TextCrawlCurrentPc->paragraph_count : area->text_id_value;
+            paragraph_count = area == NULL ? TextCrawlCurrent->paragraph_count : area->text_id_value;
         }
         for (i = 0; i < paragraph_count; ++i) {
             char *paragraph = TTab[body_text_id + i];
@@ -1468,8 +1468,8 @@ void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
                 break;
             }
             Text3DStringEncode(paragraph, encoded);
-            y += NuQFntPrintJustifiedW(QFont3DZ, encoded, (f32)(-TextCrawlLineWidthPc * 0.5), y, 0.0f, x_scale, y_scale,
-                                       TextCrawlLineWidthPc, TextCrawlLineSpacingPc, colour, &matrix);
+            y += NuQFntPrintJustifiedW(QFont3DZ, encoded, (f32)(-TextCrawlLineWidth * 0.5), y, 0.0f, x_scale, y_scale, TextCrawlLineWidth,
+                                       TextCrawlLineSpacing, colour, &matrix);
             y += NuQFntHeight(QFont3DZ);
         }
     }
@@ -1548,7 +1548,7 @@ void Text_LoadFont(char *path, VARIPTR *buffer, VARIPTR *end) {
     LoadButtonFont("stuff\\text\\Buttons", NULL, buffer, end, 0);
 }
 
-f32 MatrixTextScalePc = 0.004f;
+f32 MatrixTextScale = 0.004f;
 
 void MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, u32 alignment, u32 colour, NUMTX *matrix,
                 i32 camera_relative) {
@@ -1569,7 +1569,7 @@ void MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_sca
     NuQFntPushCoordinateSystem(4);
     NuQFntSet(font);
     MatrixTextStringEncode(font, text, encoded);
-    NuQFntSetScale(font, x_scale * MatrixTextScalePc, y_scale * MatrixTextScalePc);
+    NuQFntSetScale(font, x_scale * MatrixTextScale, y_scale * MatrixTextScale);
     width = NuQFntPrintLenW(font, encoded);
     height = NuQFntHeight(font);
     y -= height * 0.5;
@@ -1665,13 +1665,12 @@ void MenuDrawViewTextStrings(MENU *menu) {
         dme_b = (u8)blue;
         dme_rgb = 1;
         sprintf(text, "%i", i);
-        SmartTextEx(text, -0.76f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 8, red, green, blue, 0.09000003f, 1, NULL, 0,
+        SmartTextEx(text, -0.76f, y, 1.0f, MenuTextScale, MenuTextScale, MenuTextScale, 8, red, green, blue, 0.09000003f, 1, NULL, 0,
                     MenuA);
         if (TTab[i] != NULL) {
             dme_rgb = 1;
             Text_ExpandAllButtonStrings(TTab[i], text);
-            SmartTextEx(text, -0.74f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 2, red, green, blue, 1.59f, 2, NULL, 0,
-                        MenuA);
+            SmartTextEx(text, -0.74f, y, 1.0f, MenuTextScale, MenuTextScale, MenuTextScale, 2, red, green, blue, 1.59f, 2, NULL, 0, MenuA);
         }
     }
 }

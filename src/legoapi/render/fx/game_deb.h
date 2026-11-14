@@ -31,29 +31,29 @@ struct numtl_s;
 struct numtx_s;
 struct ripple_set_s;
 
-typedef struct BURN_PARAMETERS_PC { // size 0x54
-    i32 field_00;                   // 0x00
-    f32 field_04;                   // 0x04
-    f32 field_08;                   // 0x08
-    f32 field_0c;                   // 0x0c
-    f32 field_10;                   // 0x10
-    f32 field_14;                   // 0x14
-    i32 field_18;                   // 0x18
-    f32 field_1c;                   // 0x1c
-    f32 field_20;                   // 0x20
-    f32 field_24;                   // 0x24
-    i32 field_28;                   // 0x28
-    f32 field_2c;                   // 0x2c
-    f32 field_30;                   // 0x30
-    f32 field_34;                   // 0x34
-    f32 field_38;                   // 0x38
-    f32 field_3c;                   // 0x3c
-    f32 field_40;                   // 0x40
-    f32 field_44;                   // 0x44
-    f32 field_48;                   // 0x48
-    f32 field_4c;                   // 0x4c
-    f32 field_50;                   // 0x50
-} BURN_PARAMETERS_PC;
+typedef struct BURN_PARAMETERS { // size 0x54
+    i32 field_00;                // 0x00
+    f32 field_04;                // 0x04
+    f32 field_08;                // 0x08
+    f32 field_0c;                // 0x0c
+    f32 field_10;                // 0x10
+    f32 field_14;                // 0x14
+    i32 field_18;                // 0x18
+    f32 field_1c;                // 0x1c
+    f32 field_20;                // 0x20
+    f32 field_24;                // 0x24
+    i32 field_28;                // 0x28
+    f32 field_2c;                // 0x2c
+    f32 field_30;                // 0x30
+    f32 field_34;                // 0x34
+    f32 field_38;                // 0x38
+    f32 field_3c;                // 0x3c
+    f32 field_40;                // 0x40
+    f32 field_44;                // 0x44
+    f32 field_48;                // 0x48
+    f32 field_4c;                // 0x4c
+    f32 field_50;                // 0x50
+} BURN_PARAMETERS;
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,12 +90,12 @@ extern "C" {
     void Debris(i32);
     void BuildRippleMtx(struct numtx_s *, NUVEC *, NUVEC *, u16, u16);
 
-    extern struct ripple_set_s *RippleSetPc;
-    extern f32 RipplePerturbationPc;
-    extern f32 RippleSfxCooldownPc;
-    extern f32 ForceFieldRippleRatePc;
+    extern struct ripple_set_s *RippleSet;
+    extern f32 RipplePerturbation;
+    extern f32 RippleSfxCooldown;
+    extern f32 ForceFieldRippleRate;
     extern const char RippleForceFieldSoundNamePc[10];
-    extern f32 GunshipDustEmissionRatePc;
+    extern f32 GunshipDustEmissionRate;
     void InitRippleMtl(char *, struct numtl_s **, VARIPTR *, VARIPTR *);
     void BurnoutApply(i32);
 #ifdef __cplusplus

@@ -7,12 +7,12 @@
 #undef _ov_header_fseek_wrap
 #include <stdio.h>
 
-struct PC_OGG_CACHE_RECORD_PC { // size 0x114
-    char path[0x104];           // 0x000
-    u8 *data;                   // 0x104
-    i32 bytes;                  // 0x108
-    u32 last_used;              // 0x10c
-    i32 references;             // 0x110
+struct PC_OGG_CACHE_RECORD { // size 0x114
+    char path[0x104];        // 0x000
+    u8 *data;                // 0x104
+    i32 bytes;               // 0x108
+    u32 last_used;           // 0x10c
+    i32 references;          // 0x110
 };
 
 #pragma pack(push, 4)
@@ -37,7 +37,7 @@ class OggReader : public WavReader { // size 0x338
     u8 compressed;                  // 0x040
     u8 unknown_041[7];              // 0x041
     OggVorbis_File vorbis_state;    // 0x048
-    PC_OGG_CACHE_RECORD_PC *cache;  // 0x318
+    PC_OGG_CACHE_RECORD *cache;     // 0x318
     i32 position;                   // 0x31c
     WAVEFORMATEX compressed_format; // 0x320
     u8 unknown_332[6];              // 0x332
@@ -114,7 +114,7 @@ SoundVoiceManagerPC::~SoundVoiceManagerPC() {
             voices[i].voice = NULL;
         }
     }
-    for (i = 0; i < PCSoundSampleLimitPc; i++) {
+    for (i = 0; i < PCSoundSampleLimit; i++) {
         if (samples[i].buffer != NULL) {
             samples[i].buffer->vtable->release(samples[i].buffer);
             samples[i].buffer = NULL;
@@ -438,7 +438,7 @@ i32 SoundQueue::SetFormatPc(const WAVEFORMATEX *format) {
         IDirectSoundBuffer *temporary = NULL;
         volume_sink = NULL;
         if (SUCCEEDED(factory->vtable->create_sound_buffer(factory, &descriptor, &temporary, NULL))) {
-            if (SUCCEEDED(temporary->vtable->query_interface(temporary, PCSoundBuffer8IIDPc, (void **)&volume_sink))) {
+            if (SUCCEEDED(temporary->vtable->query_interface(temporary, PCSoundBuffer8IID, (void **)&volume_sink))) {
                 buffer = (IDirectSoundBuffer *)volume_sink;
                 buffer->vtable->set_volume(buffer, requested_volume);
                 applied_volume = requested_volume;
@@ -554,18 +554,18 @@ i32 SoundQueue::FillBufferPc(i32 bytes, u32 flags) {
             memset((u8 *)data + decoded, 0, requested - decoded);
             total = buffer_seconds * wave_format.nAvgBytesPerSec;
             if (decoded != 0) {
-                PCSoundDrainRemainingPc = total;
-                PCSoundDrainStartPc = play_cursor;
+                PCSoundDrainRemaining = total;
+                PCSoundDrainStart = play_cursor;
             } else {
                 i32 elapsed;
-                if ((i32)play_cursor >= PCSoundDrainStartPc) {
-                    elapsed = (i32)play_cursor - PCSoundDrainStartPc;
+                if ((i32)play_cursor >= PCSoundDrainStart) {
+                    elapsed = (i32)play_cursor - PCSoundDrainStart;
                 } else {
-                    elapsed = total - PCSoundDrainStartPc + play_cursor;
+                    elapsed = total - PCSoundDrainStart + play_cursor;
                 }
-                PCSoundDrainRemainingPc -= elapsed;
-                PCSoundDrainStartPc = play_cursor;
-                if (PCSoundDrainRemainingPc <= 0) {
+                PCSoundDrainRemaining -= elapsed;
+                PCSoundDrainStart = play_cursor;
+                if (PCSoundDrainRemaining <= 0) {
                     ++pending_bytes;
                 }
             }
@@ -761,12 +761,12 @@ DWORD SoundQueue::Run(void) {
     return 0;
 }
 
-extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *context) {
+extern "C" DWORD __stdcall PCSoundStreamWorker(void *context) {
     return ((SoundQueue *)context)->Run();
 }
 
 SoundQueue::SoundQueue(IDirectSound8 *factory_value, i32 mode) {
-    serial = PCSoundStreamSerialPc++;
+    serial = PCSoundStreamSerial++;
     factory = factory_value;
     active = 0;
     format_mode = mode;
@@ -856,11 +856,11 @@ SoundQueue::SoundQueue(IDirectSound8 *factory_value, i32 mode) {
     InitializeCriticalSection(&operation_lock);
     InitializeCriticalSection(&volume_lock);
     if (SUCCEEDED(factory_value->vtable->create_sound_buffer(factory_value, &descriptor, &temporary, NULL))) {
-        if (SUCCEEDED(temporary->vtable->query_interface(temporary, PCSoundBuffer8IIDPc, (void **)&volume_sink))) {
+        if (SUCCEEDED(temporary->vtable->query_interface(temporary, PCSoundBuffer8IID, (void **)&volume_sink))) {
             timer_callback = (LPTIMECALLBACK)CreateEvent(NULL, FALSE, FALSE, NULL);
             event = CreateEvent(NULL, TRUE, FALSE, NULL);
             if ((HANDLE)timer_callback != INVALID_HANDLE_VALUE && event != INVALID_HANDLE_VALUE) {
-                thread = CreateThread(NULL, 0, PCSoundStreamWorkerPc, this, CREATE_SUSPENDED, &thread_id);
+                thread = CreateThread(NULL, 0, PCSoundStreamWorker, this, CREATE_SUSPENDED, &thread_id);
                 if (thread != NULL) {
                     ResumeThread(thread);
                     active = 1;
@@ -885,7 +885,7 @@ void SoundQueue::SuspendForFocusPc(void) {
     unknown_03f4 = 1;
 }
 
-extern "C" void NuSound3SuspendForFocusPc(void) {
+extern "C" void NuSound3SuspendForFocus(void) {
     if (NuSound3Initialized != 0) {
         SoundVoiceManager.StopAllVoices();
         NuSound3StereoStreams[0]->SuspendForFocusPc();
@@ -906,14 +906,14 @@ i32 SoundQueue::fun_00699040(const WAVEFORMATEX *format) {
     return wave_format.nChannels != format->nChannels;
 }
 
-extern "C" void NuSound3ResumeAfterFocusPc(void) {
+extern "C" void NuSound3ResumeAfterFocus(void) {
     if (NuSound3Initialized != 0) {
         NuSound3StereoStreams[0]->CancelPausePc();
         NuSound3StereoStreams[1]->CancelPausePc();
     }
 }
 
-extern "C" void PCSoundStopStereoChannelPc(i32 channel) {
+extern "C" void PCSoundStopStereoChannel(i32 channel) {
     char message[64];
     sprintf(message, ">>> NuSoundStopStereo %d", channel);
     SoundQueue *stream = NuSound3StereoStreams[0];
@@ -926,8 +926,8 @@ extern "C" void PCSoundStopStereoChannelPc(i32 channel) {
 extern "C" void NuFmvStopSoundPc(i32 wait) {
     SoundVoiceManager.StopAllVoices();
     if (wait != 0) {
-        PCSoundStopStereoChannelPc(PCStereoChannel0A);
-        PCSoundStopStereoChannelPc(PCStereoChannel1A);
+        PCSoundStopStereoChannel(PCStereoChannel0A);
+        PCSoundStopStereoChannel(PCStereoChannel1A);
         while (NuSound3GetStereoStreamStatus(PCStereoChannel0A) != 0 || NuSound3GetStereoStreamStatus(PCStereoChannel1A) != 0) {
             Sleep(10);
         }

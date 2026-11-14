@@ -21,7 +21,7 @@ extern "C" {
 
     void StartJump(GAMEOBJECT *, i32);
 
-    extern f32 JumpFailedLandChainTimePc;
+    extern f32 JumpFailedLandChainTime;
     extern f32 SLAMJUMPSPEED;
     extern i32 DoubleJump_AlwaysReachJump2Height;
     extern i32 DoubleJump_JediSlam;

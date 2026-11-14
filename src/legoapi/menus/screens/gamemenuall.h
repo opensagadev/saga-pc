@@ -12,18 +12,18 @@
 #include "nu2api/nu3d/nuqfnt.h"
 #endif
 
-typedef struct MENU_VIDEO_OPTIONS_PC { // size 0x14
-    i32 aspect_mode;                   // 0x00
-    i32 shadows_enabled;               // 0x04
-    i32 bloom_enabled;                 // 0x08
-    i32 speed_blur_enabled;            // 0x0c
-    i32 hires_enabled;                 // 0x10
+typedef struct MENU_VIDEO_OPTIONS { // size 0x14
+    i32 aspect_mode;                // 0x00
+    i32 shadows_enabled;            // 0x04
+    i32 bloom_enabled;              // 0x08
+    i32 speed_blur_enabled;         // 0x0c
+    i32 hires_enabled;              // 0x10
 #ifdef __cplusplus
     u8 ChangedPc();
     void fun_005091f0();
     void ApplyPc();
 #endif
-} MENU_VIDEO_OPTIONS_PC;
+} MENU_VIDEO_OPTIONS;
 
 #ifdef __cplusplus
 extern "C" {
@@ -197,11 +197,11 @@ extern "C" {
     extern char *apitxt_NOTENOUGHSPACE;
     extern i32 newgamefade;
     void MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry);
-    extern MENU_VIDEO_OPTIONS_PC MenuVideoOptionsPc;
-    extern i32 MenuAppliedAspectPc;
+    extern MENU_VIDEO_OPTIONS MenuVideoOptions;
+    extern i32 MenuAppliedAspect;
 #ifdef __cplusplus
-    bool MenuCanChangeMultisamplePc(void);
-    bool MenuCanChangeShadowsPc(void);
+    bool MenuCanChangeMultisample(void);
+    bool MenuCanChangeShadows(void);
 #ifdef __cplusplus
 }
 #endif
@@ -209,24 +209,24 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void MenuEnterVideoPc(MENU *);
-    void MenuDrawVideoPc(MENU *);
-    void MenuExitVideoPc(MENU *);
-    void MenuEnterEffectsPc(MENU *);
-    void MenuDrawEffectsPc(MENU *);
-    void MenuExitEffectsPc(MENU *);
-    extern f32 MenuVideoConfirmDurationPc;
-    extern i32 MenuVideoConfirmWaitPc;
-    void MenuEnterVideoConfirmPc(MENU *);
-    void MenuDrawVideoConfirmPc(MENU *);
-    void MenuExitVideoConfirmPc(MENU *);
-    void MenuDrawNoticePc(char *, u32, u32, u32);
-    void MenuEnterHiresNoticePc(MENU *);
-    void MenuDrawHiresNoticePc(MENU *);
-    void MenuExitHiresNoticePc(MENU *);
-    void MenuEnterQuitPc(MENU *);
-    void MenuDrawQuitPc(MENU *);
-    void MenuExitQuitPc(MENU *);
+    void MenuEnterVideo(MENU *);
+    void MenuDrawVideo(MENU *);
+    void MenuExitVideo(MENU *);
+    void MenuEnterEffects(MENU *);
+    void MenuDrawEffects(MENU *);
+    void MenuExitEffects(MENU *);
+    extern f32 MenuVideoConfirmDuration;
+    extern i32 MenuVideoConfirmWait;
+    void MenuEnterVideoConfirm(MENU *);
+    void MenuDrawVideoConfirm(MENU *);
+    void MenuExitVideoConfirm(MENU *);
+    void MenuDrawNotice(char *, u32, u32, u32);
+    void MenuEnterHiresNotice(MENU *);
+    void MenuDrawHiresNotice(MENU *);
+    void MenuExitHiresNotice(MENU *);
+    void MenuEnterQuit(MENU *);
+    void MenuDrawQuit(MENU *);
+    void MenuExitQuit(MENU *);
     void MenuDrawAutoSaveCancel(MENU *);
     void MenuUpdateAutoSaveCancel(MENU *);
 

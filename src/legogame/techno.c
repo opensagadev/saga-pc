@@ -42,8 +42,8 @@ TECHNO_PC *Technos_FindControllingTechno(GAMEOBJECT *object) {
 /* A call to this empty diagnostic is kept for each failed target lookup; it
  * is defined in techno_diagnostic.c because VC8 drops calls to an empty
  * body it can see. */
-void TechnoTargetDiagnosticPc(char *name);
-void TechnoMoveSpecialTargetPc(void);
+void TechnoTargetDiagnostic(char *name);
+void TechnoMoveSpecialTarget(void);
 
 void *Technos_FindTgt(TECHNO_s *techno) {
     void *target;
@@ -60,7 +60,7 @@ void *Technos_FindTgt(TECHNO_s *techno) {
             techno->controlled_object = GetNamedGameObject(WORLD->ai_sys, techno->target_name);
             if (techno->controlled_object == NULL) {
                 techno->target_mode = 0;
-                TechnoTargetDiagnosticPc(techno->target_name);
+                TechnoTargetDiagnostic(techno->target_name);
                 return NULL;
             }
             return techno->controlled_object;
@@ -69,7 +69,7 @@ void *Technos_FindTgt(TECHNO_s *techno) {
             if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage), techno->target_name, 0) == 0) {
                 techno->controlled_object = NULL;
                 techno->target_mode = 0;
-                TechnoTargetDiagnosticPc(techno->target_name);
+                TechnoTargetDiagnostic(techno->target_name);
                 return NULL;
             }
             return techno->controlled_object;
@@ -77,7 +77,7 @@ void *Technos_FindTgt(TECHNO_s *techno) {
             techno->controlled_object = GizmoFindByName(WORLD->gizmo_sys, -1, techno->target_name);
             if (techno->controlled_object == NULL) {
                 techno->target_mode = 0;
-                TechnoTargetDiagnosticPc(techno->target_name);
+                TechnoTargetDiagnostic(techno->target_name);
                 return NULL;
             }
             return techno->controlled_object;
@@ -104,7 +104,7 @@ void *Technos_FindTgt(TECHNO_s *techno) {
             return target;
         default:
             techno->target_mode = 0;
-            TechnoTargetDiagnosticPc(NULL);
+            TechnoTargetDiagnostic(NULL);
             return NULL;
     }
 }
@@ -163,7 +163,7 @@ static void Techno_ResetFields(TECHNO_CALLBACK_PC *techno) {
     f32 floor_height;
     techno->ground_position.y = 0.0f;
     techno->ground_position.x = 0.0f;
-    techno->ground_position.z = TechnoSysPc.interaction_time;
+    techno->ground_position.z = TechnoSys.interaction_time;
     NuVecRotateY(&techno->ground_position, &techno->ground_position, techno->y_rotation);
     NuVecAdd(&techno->ground_position, &techno->ground_position, &techno->position);
     NewTerrPlatformsOff();
@@ -262,7 +262,7 @@ static void Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
     i32 hand_angle;
     u16 spin_angle;
     f32 pulse;
-    if (TechnoSysPc.idle_object_ids[1] == -1 || world->level_objects[TechnoSysPc.idle_object_ids[1]].active == 0) {
+    if (TechnoSys.idle_object_ids[1] == -1 || world->level_objects[TechnoSys.idle_object_ids[1]].active == 0) {
         return;
     }
     techno = (TECHNO_CALLBACK_PC *)world->technos;
@@ -277,29 +277,29 @@ static void Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
             continue;
         }
         for (slot = 0; slot < 3; ++slot) {
-            if (TechnoSysPc.idle_object_ids[slot + 1] == -1) {
+            if (TechnoSys.idle_object_ids[slot + 1] == -1) {
                 continue;
             }
-            NuMtxSetTranslation(&matrix, &TechnoSysPc.idle_offsets[slot]);
+            NuMtxSetTranslation(&matrix, &TechnoSys.idle_offsets[slot]);
             NuMtxRotateY(&matrix, techno->y_rotation);
             NuMtxTranslate(&matrix, &techno->position);
-            NuSpecialDrawAt(&world->level_objects[TechnoSysPc.idle_object_ids[slot + 1]].special, &matrix);
+            NuSpecialDrawAt(&world->level_objects[TechnoSys.idle_object_ids[slot + 1]].special, &matrix);
         }
         for (slot = 0; slot < 2; ++slot) {
-            if (world->level_objects[TechnoSysPc.hand_object_ids[slot]].active == 0) {
+            if (world->level_objects[TechnoSys.hand_object_ids[slot]].active == 0) {
                 continue;
             }
             hand_angle =
                 (i32)((1.0 - ((f64)NuTrigTable[((i32)((f64)techno->ground_offset * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5) *
                       29127.0);
             NuMtxSetRotationY(&matrix, slot != 0 ? -hand_angle : hand_angle);
-            NuMtxTranslate(&matrix, &TechnoSysPc.hand_offsets[slot]);
+            NuMtxTranslate(&matrix, &TechnoSys.hand_offsets[slot]);
             NuMtxRotateY(&matrix, techno->y_rotation);
             NuVecAdd(&matrix.translation, &matrix.translation, &techno->position);
-            NuSpecialDrawAt(&world->level_objects[TechnoSysPc.hand_object_ids[slot]].special, &matrix);
+            NuSpecialDrawAt(&world->level_objects[TechnoSys.hand_object_ids[slot]].special, &matrix);
         }
         if ((techno->flags & 1) != 0 && techno->ground_position.y != 2000000.0f &&
-            world->level_objects[TechnoSysPc.idle_object_ids[0]].active != 0 && pulse > 0.0f) {
+            world->level_objects[TechnoSys.idle_object_ids[0]].active != 0 && pulse > 0.0f) {
             NuMtxSetRotationY(&matrix, spin_angle);
             if (techno->ground_z_rotation != 0) {
                 NuMtxRotateZ(&matrix, techno->ground_z_rotation);
@@ -308,7 +308,7 @@ static void Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
                 NuMtxRotateX(&matrix, techno->ground_x_rotation);
             }
             NuMtxTranslate(&matrix, &techno->ground_position);
-            NuSpecialDrawAtAlpha(&world->level_objects[TechnoSysPc.idle_object_ids[0]].special, &matrix, pulse);
+            NuSpecialDrawAtAlpha(&world->level_objects[TechnoSys.idle_object_ids[0]].special, &matrix, pulse);
         }
     }
 }
@@ -471,7 +471,7 @@ static i32 Technos_Load(void *world_ptr, void *data) {
 ADDGIZMOTYPE_PC *Technos_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
-    addtype.name = TechnoRegistrationNamePc;
+    addtype.name = TechnoRegistrationName;
     addtype.prefix = "";
     addtype.fns.options = 8;
     addtype.fns.get_max_gizmos_fn = Technos_GetMaxGizmos;
@@ -555,7 +555,7 @@ NUVEC *Technos_TgtPos(TECHNO_s *techno) {
 }
 
 #pragma data_seg(".data$TechnoMoveSpeedPc")
-f32 TechnoMoveSpeedPc[2] = {0.0f, 0.0f};
+f32 TechnoMoveSpeed[2] = {0.0f, 0.0f};
 #pragma data_seg()
 
 TECHNO_PC *Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
@@ -612,7 +612,7 @@ void Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
     }
     switch (techno->target_mode) {
         case 2:
-            TechnoMoveSpecialTargetPc();
+            TechnoMoveSpecialTarget();
             return;
         case 3:
             break;
@@ -625,8 +625,8 @@ void Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
     obstacle = techno->controlled_object->object;
     if ((techno->enabled & 2) != 0 && object != NULL && (object->field_280 == 0 || object->field_280 == 1)) {
         rate = object->pad->waggle_magnitude != 0.0f ? (f32)(3.0 * FRAMETIME) : (f32)(2.0 * FRAMETIME);
-        TechnoMoveSpeedPc[(i8)object->field_280] = SeekLinearF(TechnoMoveSpeedPc[(i8)object->field_280], speed, rate);
-        GizObstacle_SetTechnoControlled(obstacle, TechnoMoveSpeedPc[(i8)object->field_280]);
+        TechnoMoveSpeed[(i8)object->field_280] = SeekLinearF(TechnoMoveSpeed[(i8)object->field_280], speed, rate);
+        GizObstacle_SetTechnoControlled(obstacle, TechnoMoveSpeed[(i8)object->field_280]);
     } else {
         GizObstacle_SetTechnoControlled(obstacle, speed);
     }
@@ -679,7 +679,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->movement_facing_angle = techno->y_rotation + 0x8000;
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             if (object->field_280 == 0 || object->field_280 == 1) {
-                TechnoMoveSpeedPc[(i8)object->field_280] = 0.0f;
+                TechnoMoveSpeed[(i8)object->field_280] = 0.0f;
             }
         } else {
             GameAudio_PlaySfx(0x32, &techno->position, 0, 0);

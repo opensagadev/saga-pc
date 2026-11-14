@@ -18,16 +18,16 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern f32 ComplexShadowBasePc;
+    extern f32 ComplexShadowBase;
     void ConfigureComplexShadow(GAMEOBJECT *object);
     void TerrainPlayer(GAMEOBJECT *);
     extern i32 NOTERRAINSTOP;
-    extern i16 PunchRangeCompanionIdPc;
+    extern i16 PunchRangeCompanionId;
     extern i32 NOTERRAINSTOP;
-    extern f32 TerrainPlayerOtherMovementScalePc;
-    extern f32 TerrainPlayerBikeMovementScalePc;
-    extern f32 TerrainPlayerPlatConnectTolerancePc;
-    extern i32 TerrainPlayerShadowFixPc;
+    extern f32 TerrainPlayerOtherMovementScale;
+    extern f32 TerrainPlayerBikeMovementScale;
+    extern f32 TerrainPlayerPlatConnectTolerance;
+    extern i32 TerrainPlayerShadowFix;
     extern i16 ID_DEFAULTCHARACTER_A;
     extern i16 ID_DEFAULTCHARACTER_B;
     extern f32 WaitingForCharacterTime;
@@ -47,7 +47,7 @@ extern "C" {
 
     void StoreProgressAICharacter(LEVEL_PROGRESS *progress);
     void AICreatureResumeScript(GAMEOBJECT *);
-    void PlayerInitCapabilitiesVariant0Pc(GAMEOBJECT *);
+    void PlayerInitCapabilitiesVariant0(GAMEOBJECT *);
     void ResetPlayerPacket(void *, CHARACTERDATA_PC *);
     void SetGameObjectCharacterData(GAMEOBJECT *);
     void ResetCharacterIdle(GAMEOBJECT *, i32, i32);
@@ -58,15 +58,15 @@ extern "C" {
     void ResetAICreatures(AISYS_PC *);
     void KeepOnScreen(GAMEOBJECT *);
 
-    extern KEEP_SCREEN_PLANE_PC PlayPlanePc[6];
-    extern i16 AreaExtraTargetId7f17bcPc;
-    extern i16 AreaExtraSourceId7f17c8Pc;
-    extern i16 AreaExtraTargetId7f17ccPc;
-    extern i16 PermanentWeirdo1IdPc;
-    extern i16 PermanentWeirdo2IdPc;
-    extern i16 DefaultAnimationJabbaIdPc;
+    extern KEEP_SCREEN_PLANE PlayPlane[6];
+    extern i16 AreaExtraTargetId7f17bc;
+    extern i16 AreaExtraSourceId7f17c8;
+    extern i16 AreaExtraTargetId7f17cc;
+    extern i16 PermanentWeirdo1Id;
+    extern i16 PermanentWeirdo2Id;
+    extern i16 DefaultAnimationJabbaId;
     void UpdateCharacterIdle(GAMEOBJECT *);
-    extern i16 DefaultAnimationJabbaIdPc;
+    extern i16 DefaultAnimationJabbaId;
     void FixUpCharacters(CHARFIXUP_PC *);
     void ExtraCharacterFixUpAfterConfig(void);
     void MovePlayer(struct gameobject_s *object);
@@ -75,8 +75,8 @@ extern "C" {
     void DrawGameObjectsDraw(i32 pass);
     void ResetPlayer(struct gameobject_s *arg0, i32 arg1, struct nuvec_s *arg2, i32 arg3);
     void DrawWeapon_SetSabreObjects(struct gameobject_s *object, i32 red, i32 green, i32 blue, i32 purple, i32 *models, i32 *hilt);
-    struct AILOCATOR_PC *getSpawnLocator(f32 clip_radius, char *name);
-    extern i32 CharacterLoadAreaModelsPc;
+    struct AILOCATOR *getSpawnLocator(f32 clip_radius, char *name);
+    extern i32 CharacterLoadAreaModels;
     void InitAICreatures(AISYS_PC *);
 #ifdef __cplusplus
 }

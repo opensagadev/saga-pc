@@ -11,12 +11,12 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-struct AIPACKET_PC;
+struct AIPACKET;
 struct AISYS_PC;
-struct APIOBJECT_PC;
+struct APIOBJECT;
 struct gameobject_s;
 
-typedef i32 (*AI_PREPARING_SPECIAL_MOVE_PC)(struct AIPACKET_PC *, struct APIOBJECT_PC *, i32);
+typedef i32 (*AI_PREPARING_SPECIAL_MOVE_PC)(struct AIPACKET *, struct APIOBJECT *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -38,7 +38,7 @@ extern "C" {
 
 #pragma pack(pop)
 
-    typedef struct player_batarang_slot_pc_s { // size 0xb4
+    typedef struct player_batarang_slot_s { // size 0xb4
 
         union { // size 0xb4
             u8 unknown_00[0xb4];
@@ -81,15 +81,15 @@ extern "C" {
         }; // 0x00
     } PLAYER_BATARANG_SLOT_PC;
 
-    extern PLAYER_BATARANG_SLOT_PC BatarangPacketsPc[8];
-    extern i16 PunchRangeUnitIdPc;
-    typedef i32 (*AI_MID_SPECIAL_MOVE_PC)(struct AISYS_PC *, struct AIPACKET_PC *, struct APIOBJECT_PC *);
+    extern PLAYER_BATARANG_SLOT_PC BatarangPackets[8];
+    extern i16 PunchRangeUnitId;
+    typedef i32 (*AI_MID_SPECIAL_MOVE_PC)(struct AISYS_PC *, struct AIPACKET *, struct APIOBJECT *);
     extern const f64 PCPathArcSineCoefficient3;
     extern const f64 PCPathArcSineCoefficient5;
     extern const f64 PCPathArcSineCoefficient7;
     extern const f64 PCPathArcSineCoefficient9;
-    void PlayerInitCapabilitiesDefaultPc(struct gameobject_s *);
-    extern f32 BatarangCatwomanStunTimePc;
+    void PlayerInitCapabilitiesDefault(struct gameobject_s *);
+    extern f32 BatarangCatwomanStunTime;
 #ifdef __cplusplus
 }
 #endif

@@ -1,6 +1,6 @@
 #include "saga.h"
 
-static void EdsplinesNuErrorPc(const char *format, ...) {
+static void EdsplinesNuError(const char *format, ...) {
 }
 
 i32 LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
@@ -104,13 +104,13 @@ void edSpline_SplineList(NUGSCN *scene) {
         spline = splineStore;
         count = numSplinesLoaded;
         for (index = 0; index < count; ++index, ++spline) {
-            EdsplinesNuErrorPc("%d: %s\n", index, spline->name);
+            EdsplinesNuError("%d: %s\n", index, spline->name);
         }
     }
     if (scene != NULL) {
         spline = scene->splines;
         for (index = 0; index < scene->spline_count; ++index, ++spline) {
-            EdsplinesNuErrorPc("%d: %s\n", index, spline->name);
+            EdsplinesNuError("%d: %s\n", index, spline->name);
         }
     }
 }

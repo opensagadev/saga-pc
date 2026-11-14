@@ -22,7 +22,7 @@ void MenuSetPlatformState(i32 state) {
 void PCPresentationPlatformLeafPc(void) {
 }
 
-void NuMainTrailerLeafPc(void) {
+void NuMainTrailerLeaf(void) {
 }
 
 i32 NuKeyboard(i32 key) {

@@ -189,7 +189,7 @@ __declspec(noinline) void TTNetwork::UpdateClientStats() {
     }
 }
 
-void TTNetwork::DeliverMessage(NETMESSAGE_PC &message, u8 channel, const V2Peer &peer) {
+void TTNetwork::DeliverMessage(NETMESSAGE &message, u8 channel, const V2Peer &peer) {
     TT_FOR_EACH_CLIENT(entry) {
         if (entry->channel == channel) {
             entry->stats.totals.values[1] += message.GetSize();
@@ -199,7 +199,7 @@ void TTNetwork::DeliverMessage(NETMESSAGE_PC &message, u8 channel, const V2Peer 
     }
 }
 
-void TTNetwork::RecordSent(NETMESSAGE_PC message, u8 channel) {
+void TTNetwork::RecordSent(NETMESSAGE message, u8 channel) {
     TT_FOR_EACH_CLIENT(entry) {
         if (entry->channel == channel) {
             entry->stats.totals.values[0] += message.GetSize();
@@ -210,7 +210,7 @@ void TTNetwork::RecordSent(NETMESSAGE_PC message, u8 channel) {
     message.Release();
 }
 
-void TTNetwork::RecordReceived(NETMESSAGE_PC message, u8 channel) {
+void TTNetwork::RecordReceived(NETMESSAGE message, u8 channel) {
     TT_FOR_EACH_CLIENT(entry) {
         if (entry->channel == channel) {
             entry->stats.totals.values[1] += message.GetSize();
@@ -250,7 +250,7 @@ i32 NetLogFile::Flush() {
     return 0;
 }
 
-void NETMESSAGE_PC::fun_0060ea60(const u8 &value) {
+void NETMESSAGE::fun_0060ea60(const u8 &value) {
     if (data != NULL) {
         read_offset--;
         PCByteCopy(data->bytes + read_offset, &value, 1);
@@ -265,7 +265,7 @@ char const *TTNetwork::GetName() {
     return "Network";
 }
 
-void NETMESSAGE_PC::MakeUnique() {
+void NETMESSAGE::MakeUnique() {
     MessageData *entry;
     for (MessageData *candidate = sm_poolMessageData.items; candidate != sm_poolMessageData.items + 512; ++candidate) {
         if (candidate->references <= 0) {
@@ -285,7 +285,7 @@ found:
     data = entry;
 }
 
-void TTNetwork::Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer) {
+void TTNetwork::Send(NETMESSAGE message, u8 channel, V2Peer *peer) {
     if (message.GetSize() > 0) {
         PCByteCopy(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
@@ -294,7 +294,7 @@ void TTNetwork::Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer) {
     message.Release();
 }
 
-void TTNetwork::SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1) {
+void TTNetwork::SendEx(NETMESSAGE message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1) {
     if (message.GetSize() > 0) {
         PCByteCopy(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
@@ -303,7 +303,7 @@ void TTNetwork::SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0
     message.Release();
 }
 
-void TTNetwork::Broadcast(NETMESSAGE_PC message, u8 channel) {
+void TTNetwork::Broadcast(NETMESSAGE message, u8 channel) {
     if (message.GetSize() > 0) {
         PCByteCopy(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
@@ -315,7 +315,7 @@ void TTNetwork::Broadcast(NETMESSAGE_PC message, u8 channel) {
     message.Release();
 }
 
-void TTNetwork::BroadcastEx(NETMESSAGE_PC message, u8 channel) {
+void TTNetwork::BroadcastEx(NETMESSAGE message, u8 channel) {
     if (message.GetSize() > 0) {
         PCByteCopy(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
@@ -508,12 +508,12 @@ TTNetwork::~TTNetwork() {
 
 TTNetwork theTTNetwork;
 #pragma bss_seg(".bss$sm_poolMessageData")
-TPool<NETMESSAGE_PC::MessageData, 512> NETMESSAGE_PC::sm_poolMessageData;
+TPool<NETMESSAGE::MessageData, 512> NETMESSAGE::sm_poolMessageData;
 #pragma bss_seg()
 
 /* Drops every outstanding reference of the message pool. */
-template <> void TPool<NETMESSAGE_PC::MessageData, 512>::fun_0060f370() {
-    for (NETMESSAGE_PC::MessageData *entry = items; entry != items + 512; ++entry) {
+template <> void TPool<NETMESSAGE::MessageData, 512>::fun_0060f370() {
+    for (NETMESSAGE::MessageData *entry = items; entry != items + 512; ++entry) {
         if (entry->references > 0) {
             entry->references = 0;
         }

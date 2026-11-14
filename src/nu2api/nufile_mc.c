@@ -10,7 +10,7 @@ i32 NuMcCheckCardPresent(i32 port, i32 slot) {
     return 0;
 }
 
-i32 NuMcCheckCardChangedPc(i32 port, i32 slot) {
+i32 NuMcCheckCardChanged(i32 port, i32 slot) {
     (void)port;
     (void)slot;
     return 0;

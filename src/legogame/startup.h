@@ -30,8 +30,8 @@ extern "C" {
     extern i16 ID_DEFAULTCHARACTER_LSW_A;
     extern i16 ID_DEFAULTCHARACTER_LSW_B;
     void LoadPerm(void);
-    extern API_EXTRA_ACTION_PC PlayerExtraActionInfoPc[33];
-    extern void *PlayerBlockActionInfoPc;
+    extern API_EXTRA_ACTION PlayerExtraActionInfo[33];
+    extern void *PlayerBlockActionInfo;
     f32 LoadPermFadeAlpha(f32 t, f32 duration);
     extern const f32 PermLegalScale;
     extern const char PermLegalSpanish[11];
@@ -49,7 +49,7 @@ extern "C" {
     extern const char NuFileExt_hx2_PC[5];
     extern const char NuFileExt_h4m_PC[5];
 #ifdef __cplusplus
-    void PcControlRegisterPc(PC_CONTROL_CONFIG_PC *, VARIPTR *, VARIPTR *);
+    void PcControlRegister(PC_CONTROL_CONFIG *, VARIPTR *, VARIPTR *);
     void LoadPermProgressDraw(f32, f32, f32);
 #ifdef __cplusplus
 }
@@ -58,7 +58,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern CHARFIXUP_PC CharacterFixupTablePc[219];
+    extern CHARFIXUP_PC CharacterFixupTable[219];
 
     extern TEXTENTRY Text_TableMenu[167];
     extern TEXTENTRY Text_TableGame[347];

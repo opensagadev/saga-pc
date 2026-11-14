@@ -4,16 +4,16 @@
 
 extern "C" {
     extern char SaveFolderPathPc[256];
-    extern char SaveFullSlotPathPc[256];
-    extern char SaveFullCodePathPc[256];
-    extern char SaveSlotNamePc[256];
+    extern char SaveFullSlotPath[256];
+    extern char SaveFullCodePath[256];
+    extern char SaveSlotName[256];
     extern i32 saveload_slotcode[6];
     void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
     /* the file name of a save slot. */
     char *slotname(i32 slot) {
-        sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
-        return SaveSlotNamePc;
+        sprintf(SaveSlotName, "SaveGame%d.%s_SavedGame", slot, PcProductName);
+        return SaveSlotName;
     }
 
     /* the folder holding every save slot. */
@@ -30,12 +30,12 @@ extern "C" {
 #endif
         i32 i = 0;
         do {
-            SaveFullSlotPathPc[i] = SaveFolderPathPc[i];
+            SaveFullSlotPath[i] = SaveFolderPathPc[i];
         } while (SaveFolderPathPc[i++] != 0);
-        strcat(SaveFullSlotPathPc, "\\");
-        sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
-        strcat(SaveFullSlotPathPc, SaveSlotNamePc);
-        return SaveFullSlotPathPc;
+        strcat(SaveFullSlotPath, "\\");
+        sprintf(SaveSlotName, "SaveGame%d.%s_SavedGame", slot, PcProductName);
+        strcat(SaveFullSlotPath, SaveSlotName);
+        return SaveFullSlotPath;
     }
 
     /* the path of the slot's code file. */
@@ -46,11 +46,11 @@ extern "C" {
 #endif
         i32 i = 0;
         do {
-            SaveFullCodePathPc[i] = SaveFolderPathPc[i];
+            SaveFullCodePath[i] = SaveFolderPathPc[i];
         } while (SaveFolderPathPc[i++] != 0);
-        strcat(SaveFullCodePathPc, "\\");
-        strcat(SaveFullCodePathPc, "code.bin");
-        return SaveFullCodePathPc;
+        strcat(SaveFullCodePath, "\\");
+        strcat(SaveFullCodePath, "code.bin");
+        return SaveFullCodePath;
     }
 
     i32 saveload_getinfo(void) {

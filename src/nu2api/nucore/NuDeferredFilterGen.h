@@ -28,17 +28,17 @@ class NuDeferredFilterGen : public NuPostFilter { // size 0x2f8
     virtual void render();
     virtual void resetAll();
     virtual bool isEnabled();
-    i32 sample_count;                        // 0x00c
-    void *programs[6];                       // 0x010
-    GRAPHICS_RENDER_TEXTURE_PC *textures[6]; // 0x028
-    u32 unknown_040;                         // 0x040
-    f32 parameters[4];                       // 0x044
-    i32 dynamic_light_count;                 // 0x054
-    NuDynamicLight *dynamic_lights[32];      // 0x058
-    i32 deferred_geometry_count;             // 0x0d8
-    void *geometry[128];                     // 0x0dc
-    PC_FRAMEBUFFER_PC *shadow_fbos[6];       // 0x2dc
-    PC_FRAMEBUFFER_PC *light_fbo;            // 0x2f4
+    i32 sample_count;                     // 0x00c
+    void *programs[6];                    // 0x010
+    GRAPHICS_RENDER_TEXTURE *textures[6]; // 0x028
+    u32 unknown_040;                      // 0x040
+    f32 parameters[4];                    // 0x044
+    i32 dynamic_light_count;              // 0x054
+    NuDynamicLight *dynamic_lights[32];   // 0x058
+    i32 deferred_geometry_count;          // 0x0d8
+    void *geometry[128];                  // 0x0dc
+    PC_FRAMEBUFFER *shadow_fbos[6];       // 0x2dc
+    PC_FRAMEBUFFER *light_fbo;            // 0x2f4
 };
 
 #endif

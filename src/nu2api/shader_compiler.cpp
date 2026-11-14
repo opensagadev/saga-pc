@@ -314,7 +314,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     if (filter->material != NULL && filter->material->texture_id != 0) {
         NUTEXDIM_PC *texture = NuTextureGetDimensions(filter->material->texture_id);
         if (texture != NULL && texture->resource != NULL) {
-            PC_TEXTURE_LEVEL_DESC_PC dimensions;
+            PC_TEXTURE_LEVEL_DESC dimensions;
             texture->resource->methods->get_level_desc(texture->resource, 0, &dimensions);
             if (dimensions.format == 0x31545844) {
                 swizzle = false;
@@ -611,19 +611,19 @@ STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, parameter_150) == 0x150 - 0xb
 STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, parameter_1b4) == 0x1b4 - 0xb4);
 STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, uv_upload_lanes) == 0x1d0 - 0xb4);
 
-static void FormatFloatPc(char *out, f32 value) {
+static void FormatFloat(char *out, f32 value) {
     sprintf(out, "%f", value);
 }
 
-static void FormatFloat2Pc(char *out, const f32 *value) {
+static void FormatFloat2(char *out, const f32 *value) {
     sprintf(out, "float2(%f, %f)", value[0], value[1]);
 }
 
-static void FormatFloat4Pc(char *out, f32 x, f32 y, f32 z, f32 w) {
+static void FormatFloat4(char *out, f32 x, f32 y, f32 z, f32 w) {
     sprintf(out, "float4(%f, %f, %f, %f)", x, y, z, w);
 }
 
-static void FormatColourPc(i32 colour, char *out) {
+static void FormatColour(i32 colour, char *out) {
     sprintf(out, "float4(%f, %f, %f, %f)", (f32)(colour & 0xff) / 255.0f, (f32)((colour >> 8) & 0xff) / 255.0f,
             (f32)((colour >> 16) & 0xff) / 255.0f, (f32)((colour >> 24) & 0xff) / 255.0f);
 }
@@ -632,70 +632,70 @@ static void FormatColourPc(i32 colour, char *out) {
 void __stdcall ShaderParameterDefaultPc(const PC_SHADER_DEFAULTS_VIEW_PC *material, i32 id, char *out, i32 unused) {
     switch (id) {
         case 0:
-            FormatColourPc(material->diffuse_colour, out);
+            FormatColour(material->diffuse_colour, out);
             break;
         case 2: {
             i32 colour = material->specular_colour;
-            FormatFloat4Pc(out, (f32)(colour & 0xff) / 255.0f, (f32)((colour >> 8) & 0xff) / 255.0f, (f32)((colour >> 16) & 0xff) / 255.0f,
-                           material->parameter_1b4);
+            FormatFloat4(out, (f32)(colour & 0xff) / 255.0f, (f32)((colour >> 8) & 0xff) / 255.0f, (f32)((colour >> 16) & 0xff) / 255.0f,
+                         material->parameter_1b4);
             break;
         }
         case 9:
-            FormatFloatPc(out, material->flip_sign ? 1.0f : 0.0f);
+            FormatFloat(out, material->flip_sign ? 1.0f : 0.0f);
             break;
         case 10:
-            FormatFloat4Pc(out, material->parameter_134, 0.0f, material->parameter_138, material->parameter_14c);
+            FormatFloat4(out, material->parameter_134, 0.0f, material->parameter_138, material->parameter_14c);
             break;
         case 11:
-            FormatFloat4Pc(out, material->texture_lerp, 0.0f, 0.0f, 0.0f);
+            FormatFloat4(out, material->texture_lerp, 0.0f, 0.0f, 0.0f);
             break;
         case 12:
-            FormatFloat4Pc(out, material->parameter_130, material->parameter_12c, material->parameter_144, material->parameter_148);
+            FormatFloat4(out, material->parameter_130, material->parameter_12c, material->parameter_144, material->parameter_148);
             break;
         case 13:
-            FormatFloat4Pc(out, material->parameter_13c, material->parameter_140, 0.0f, 0.0f);
+            FormatFloat4(out, material->parameter_13c, material->parameter_140, 0.0f, 0.0f);
             break;
         case 15:
-            FormatFloatPc(out, material->parameter_118);
+            FormatFloat(out, material->parameter_118);
             break;
         case 51:
-            FormatColourPc(material->channel_colours[0], out);
+            FormatColour(material->channel_colours[0], out);
             break;
         case 52:
-            FormatColourPc(material->channel_colours[1], out);
+            FormatColour(material->channel_colours[1], out);
             break;
         case 53:
-            FormatColourPc(material->channel_colours[2], out);
+            FormatColour(material->channel_colours[2], out);
             break;
         case 54:
-            FormatColourPc(material->channel_colours[3], out);
+            FormatColour(material->channel_colours[3], out);
             break;
         case 55:
-            FormatFloat4Pc(out, material->parameter_d8, material->parameter_dc, material->parameter_e0, material->parameter_e4);
+            FormatFloat4(out, material->parameter_d8, material->parameter_dc, material->parameter_e0, material->parameter_e4);
             break;
         case 57:
-            FormatColourPc(material->shadow_colour, out);
+            FormatColour(material->shadow_colour, out);
             break;
         case 59:
-            FormatColourPc(material->tint_colour, out);
+            FormatColour(material->tint_colour, out);
             break;
         case 60:
-            FormatFloatPc(out, (material->parameter_150 - 1.0) * (f64)0.1f);
+            FormatFloat(out, (material->parameter_150 - 1.0) * (f64)0.1f);
             break;
         case 64:
-            FormatFloat2Pc(out, &material->uv_upload_lanes[0]);
+            FormatFloat2(out, &material->uv_upload_lanes[0]);
             break;
         case 65:
-            FormatFloat2Pc(out, &material->uv_upload_lanes[2]);
+            FormatFloat2(out, &material->uv_upload_lanes[2]);
             break;
         case 66:
-            FormatFloat2Pc(out, &material->uv_upload_lanes[4]);
+            FormatFloat2(out, &material->uv_upload_lanes[4]);
             break;
         case 67:
-            FormatFloat2Pc(out, &material->uv_upload_lanes[6]);
+            FormatFloat2(out, &material->uv_upload_lanes[6]);
             break;
         case 16:
-            FormatFloat4Pc(out, material->parameter_1b8, material->parameter_1bc, 0.0f, 0.0f);
+            FormatFloat4(out, material->parameter_1b8, material->parameter_1bc, 0.0f, 0.0f);
             break;
     }
 }

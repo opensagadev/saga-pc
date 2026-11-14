@@ -15,8 +15,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 GizTurrets_UpdateHint(HINT_PC *);
-    void GizTurrets_OpponentSelection(struct GIZTURRETSYS_s *, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **);
+    i32 GizTurrets_UpdateHint(HINT *);
+    void GizTurrets_OpponentSelection(struct GIZTURRETSYS_s *, i32, APIOBJECT **, i32, APIOBJECT **);
     extern i32 gizturret_test_ang;
     extern f32 gizturret_rapid_fire_rate;
 #ifdef __cplusplus

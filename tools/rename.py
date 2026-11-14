@@ -175,11 +175,12 @@ def word_pattern(names):
 
 def decorated_pattern(names):
     # A decorated occurrence: preceded by a non-identifier character, optionally
-    # through leading underscores or __imp_ (C linker names), and not followed by
+    # through leading underscores or __imp_ (C linker names) or a ??__E/??__F dynamic
+    # initializer or destructor prefix, and not followed by
     # an identifier character.
     names = sorted(names, key=len, reverse=True)
     return re.compile(r"(?:(?<![A-Za-z0-9_])|(?<=(?<![A-Za-z0-9_])_)|(?<=(?<![A-Za-z0-9_])__)"
-                      r"|(?<=(?<![A-Za-z0-9_])___)|(?<=__imp__))("
+                      r"|(?<=(?<![A-Za-z0-9_])___)|(?<=__imp__)|(?<=\?\?__[A-Z]))("
                       + "|".join(map(re.escape, names)) + r")(?![A-Za-z0-9_])")
 
 

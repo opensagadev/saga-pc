@@ -11,44 +11,44 @@
 #include "nu2api/nustencilshadows_PC.h"
 #endif
 
-struct PC_TEXTURE_RESOURCE_PC;
+struct PC_TEXTURE_RESOURCE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    HRESULT PCDeviceCreateVertexShader(const DWORD *, struct PC_TEXTURE_RESOURCE_PC **);
-    HRESULT PCDeviceCreatePixelShader(const DWORD *, struct PC_TEXTURE_RESOURCE_PC **);
+    HRESULT PCDeviceCreateVertexShader(const DWORD *, struct PC_TEXTURE_RESOURCE **);
+    HRESULT PCDeviceCreatePixelShader(const DWORD *, struct PC_TEXTURE_RESOURCE **);
 #ifdef __cplusplus
 }
 #endif
 
-typedef struct FRAME_NATIVE_TEXTURE_POOL_PC { // size 0x308
-    FRAME_NATIVE_TEXTURE_PC records[16];      // 0x000
-    i8 occupied[2];                           // 0x300
-    u8 unknown_302[2];                        // 0x302
-    i32 cursor;                               // 0x304
+typedef struct FRAME_NATIVE_TEXTURE_POOL { // size 0x308
+    FRAME_NATIVE_TEXTURE records[16];      // 0x000
+    i8 occupied[2];                        // 0x300
+    u8 unknown_302[2];                     // 0x302
+    i32 cursor;                            // 0x304
 #ifdef __cplusplus
-    FRAME_NATIVE_TEXTURE_PC *Allocate();
-    FRAME_NATIVE_TEXTURE_POOL_PC *fun_00605150();
-    i32 fun_00605170(FRAME_NATIVE_TEXTURE_PC *record);
+    FRAME_NATIVE_TEXTURE *Allocate();
+    FRAME_NATIVE_TEXTURE_POOL *fun_00605150();
+    i32 fun_00605170(FRAME_NATIVE_TEXTURE *record);
     void fun_00605300(i32 index, bool set);
     i32 fun_00605460(i32 index);
-    void fun_0060a010(FRAME_NATIVE_TEXTURE_PC *record);
+    void fun_0060a010(FRAME_NATIVE_TEXTURE *record);
 #endif
-} FRAME_NATIVE_TEXTURE_POOL_PC;
+} FRAME_NATIVE_TEXTURE_POOL;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern f32 RenderFrameShaderTimePc;
-    extern void (*RenderFrameCallbackPc)(void);
+    extern void (*RenderFrameCallback)(void);
     HRESULT PCDeviceEndScenePc(void);
-    i32 NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *target);
+    i32 NuTexRegisterRenderTarget(GRAPHICS_RENDER_TEXTURE *target);
     void NuGobjRegistryCleanupPc(void);
     void NuGobjRegistryInitPc(void);
 #ifdef __cplusplus
-    void PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, POST_SHADER_PROGRAM_PC *,
-                                 GRAPHICS_RENDER_TEXTURE_PC *);
+    void PostFilterCopyTexture(GRAPHICS_RENDER_TEXTURE *, i32, GRAPHICS_RENDER_TEXTURE *, i32, POST_SHADER_PROGRAM_PC *,
+                               GRAPHICS_RENDER_TEXTURE *);
 #ifdef __cplusplus
 }
 #endif

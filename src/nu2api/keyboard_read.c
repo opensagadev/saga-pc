@@ -3,7 +3,7 @@
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. Retail keeps this
  * TU's out-of-line copy at 0x617c20. */
-static f32 EdcamFabsPc(f32 f) {
+static f32 EdcamFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -101,7 +101,7 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     i32 yaw_delta;
 
     if (camera->auto_zoom_dist_scale != 0.0f) {
-        zoom_scale = EdcamFabsPc(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base;
+        zoom_scale = EdcamFabs(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base;
     } else {
         zoom_scale = 1.0f;
     }
@@ -259,13 +259,13 @@ void edcamMtx(NUMTX *matrix) {
     }
 }
 
-extern NUCAMERA *EdMainCurrentCameraPc;
+extern NUCAMERA *EdMainCurrentCamera;
 
 void edcamSet(void) {
     NUMTX matrix;
     NUCAMERA *camera;
     edcamMtx(&matrix);
-    camera = EdMainCurrentCameraPc;
+    camera = EdMainCurrentCamera;
     camera->mtx = matrix;
     NuCameraSet(camera);
 }
@@ -322,12 +322,12 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
     i32 pitch_delta;
 
     if (camera->auto_move_dist_scale != 0.0f) {
-        move_speed = EdcamFabsPc(camera->distance) * camera->auto_move_dist_scale + camera->auto_move_base;
+        move_speed = EdcamFabs(camera->distance) * camera->auto_move_dist_scale + camera->auto_move_base;
     } else {
         move_speed = 1.0f;
     }
     if (camera->auto_zoom_dist_scale != 0.0f) {
-        zoom_speed = camera->auto_zoom_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_zoom_base;
+        zoom_speed = camera->auto_zoom_dist_scale * EdcamFabs(camera->distance) + camera->auto_zoom_base;
     } else {
         zoom_speed = 1.0f;
     }
@@ -408,12 +408,12 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
 
     frame_scale = (f32)(delta_time / (f64)(1.0f / 60.0f));
     if (camera->auto_move_dist_scale != 0.0f) {
-        move_speed = camera->auto_move_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_move_base;
+        move_speed = camera->auto_move_dist_scale * EdcamFabs(camera->distance) + camera->auto_move_base;
     } else {
         move_speed = 1.0f;
     }
     if (camera->auto_zoom_dist_scale != 0.0f) {
-        zoom_speed = camera->auto_zoom_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_zoom_base;
+        zoom_speed = camera->auto_zoom_dist_scale * EdcamFabs(camera->distance) + camera->auto_zoom_base;
     } else {
         zoom_speed = 1.0f;
     }
@@ -463,24 +463,24 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
 
 /* PC Maya drag angles are observed through DWORD reads and low-WORD writes.
  * The upper halves remain part of each view and are preserved by updates. */
-typedef union EdcamMayaAngleObservedPc { // size 0x4
+typedef union EdcamMayaAngleObserved { // size 0x4
     u32 word;
 
     struct {       // size 0x4
         u16 angle; // 0x0
         u16 upper; // 0x2
     } parts;
-} EdcamMayaAngleObservedPc;
+} EdcamMayaAngleObserved;
 
 #pragma section(".bss$EdcamMayaSmoothedAnglePc", read, write)
 #pragma section(".bss$EdcamMayaRawAnglePc", read, write)
 
 void do_maya_mouse_camera(edcam_s *camera) {
     /* The historical mapped name TargetAng denotes the smoothed PC slot. */
-    __declspec(allocate(".bss$EdcamMayaSmoothedAnglePc")) static EdcamMayaAngleObservedPc TargetAng = {0};
-    __declspec(allocate(".bss$EdcamMayaRawAnglePc")) static EdcamMayaAngleObservedPc RawTargetAngPc = {0};
+    __declspec(allocate(".bss$EdcamMayaSmoothedAnglePc")) static EdcamMayaAngleObserved TargetAng = {0};
+    __declspec(allocate(".bss$EdcamMayaRawAnglePc")) static EdcamMayaAngleObserved RawTargetAngPc = {0};
     f32 zoom_scale =
-        camera->auto_zoom_dist_scale != 0.0f ? EdcamFabsPc(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base : 1.0f;
+        camera->auto_zoom_dist_scale != 0.0f ? EdcamFabs(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base : 1.0f;
     NUVEC movement;
     f32 mouse_x;
     f32 mouse_y;
@@ -516,7 +516,7 @@ void do_maya_mouse_camera(edcam_s *camera) {
                 TargetAng.parts.angle += difference / 4;
             }
             sine = NuTrigTable[((i32)(TargetAng.word + 0x2000) >> 1) & 0x7fff];
-            if (EdcamFabsPc(sine) > (f64)0.1f) {
+            if (EdcamFabs(sine) > (f64)0.1f) {
                 f32 length_squared;
                 f32 zoom_delta;
                 if (sine > 0.0f) {

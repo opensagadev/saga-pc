@@ -6,9 +6,9 @@ extern "C" {
     extern char AreaFixUpName_Jedi[8];
 }
 
-typedef struct CHARACTER_SCENE_WORLD {        // size 0x2984
-    u8 unknown_0000[0x2980];                  // 0x0000
-    KILLPARTS_CHARSCENE_PC *character_scenes; // 0x2980
+typedef struct CHARACTER_SCENE_WORLD {     // size 0x2984
+    u8 unknown_0000[0x2980];               // 0x0000
+    KILLPARTS_CHARSCENE *character_scenes; // 0x2980
 } CHARACTER_SCENE_WORLD;
 
 typedef struct CHARACTER_SCENE_CUTSYS { // size 0xc
@@ -32,12 +32,12 @@ typedef struct character_callback_writer_s {
 
 struct KILLPARTS_WORLD_SCENES {
     u8 unknown_0[0x2980];
-    KILLPARTS_CHARSCENE_PC *character_scenes;
+    KILLPARTS_CHARSCENE *character_scenes;
 };
 
 extern "C" {
 #pragma data_seg(".data$StartupCharCategoriesDefaultPc")
-    CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefaultPc[6] = {
+    CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefault[6] = {
         {"SuperJump",        0x0u, 0x400000u },
         {"SuperStrength",    0x0u, 0x800000u },
         {"Transformatron",   0x0u, 0x1000000u},
@@ -47,7 +47,7 @@ extern "C" {
     };
 #pragma data_seg()
 #pragma data_seg(".data$StartupCharCategoriesLswPc")
-    CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLswPc[10] = {
+    CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLsw[10] = {
         {(char *)AreaFixUpName_Jedi, 0x8u,       0x0u     },
         {"JediBaddie",               0xcu,       0x0u     },
         {"BountyHunter",             0x1100080u, 0x0u     },
@@ -61,7 +61,7 @@ extern "C" {
     };
 #pragma data_seg()
 #pragma data_seg(".data$StartupCharVariantNamesPc")
-    char *StartupCharVariantNamesPc[23] = {
+    char *StartupCharVariantNames[23] = {
         "weirdo",       "stormtrooper", "fett",       "macewindu", "battledroid",
         "wookiee",      "obiwankenobi", "leia",       "clone",     "rebel",
         "tie",          "lando",        "luke",       "hansolo",   "padme",
@@ -94,7 +94,7 @@ extern "C" CHARACTERDATA_PC *CDataFromName(const char *name) {
 }
 
 // Character subsystem callback.
-i32 RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *animation, char *output_path) {
+i32 RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG *animation, char *output_path) {
     const ANIM_REDIRECT_VIEW_PC *redirect;
     const char *name;
     if (list == NULL) {
@@ -112,14 +112,14 @@ i32 RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *animation
 }
 
 extern "C" void CharScenes_Init(VARIPTR *buffer, VARIPTR *end) {
-    u32 size = CHARCOUNT * sizeof(*KillPartsCharSceneAreaPc);
-    KILLPARTS_CHARSCENE_PC *scenes = (KILLPARTS_CHARSCENE_PC *)((buffer->addr + 3) & ~3u);
-    KillPartsCharSceneAreaPc = scenes;
+    u32 size = CHARCOUNT * sizeof(*KillPartsCharSceneArea);
+    KILLPARTS_CHARSCENE *scenes = (KILLPARTS_CHARSCENE *)((buffer->addr + 3) & ~3u);
+    KillPartsCharSceneArea = scenes;
     buffer->addr = (u32)scenes + size;
     memset(scenes, 0, size);
 }
 
-static void CharScene_Load(KILLPARTS_CHARSCENE_PC *entry, i32 model_id, VARIPTR *buffer, VARIPTR end) {
+static void CharScene_Load(KILLPARTS_CHARSCENE *entry, i32 model_id, VARIPTR *buffer, VARIPTR end) {
     char path[128];
     sprintf(path, "chars\\%s\\%s.gsc", CDataList[model_id].dir, CDataList[model_id].name);
     entry->scene = NuGScnRead(buffer, end, path);
@@ -133,7 +133,7 @@ extern "C" {
     void CharScenes_LevelLoad(WORLDINFO *world) {
         for (i32 i = 0; i < CHARCOUNT; ++i) {
             ((CHARACTER_SCENE_WORLD *)world)->character_scenes[i].scene = NULL;
-            if ((KillPartsCharSceneAreaPc == NULL || KillPartsCharSceneAreaPc[i].scene == NULL) && (CDataList[i].flags & 1) != 0 &&
+            if ((KillPartsCharSceneArea == NULL || KillPartsCharSceneArea[i].scene == NULL) && (CDataList[i].flags & 1) != 0 &&
                 world->cutscene_sys != NULL &&
                 ((((CHARACTER_SCENE_CUTSYS *)world->cutscene_sys)->character_flags[i / 32] & (1 << (i & 31))) != 0)) {
                 CharScene_Load(&((CHARACTER_SCENE_WORLD *)world)->character_scenes[i], i, &world->giz_buffer, world->buffer_end);
@@ -142,15 +142,15 @@ extern "C" {
     }
 
     void CharScenes_AreaLoad(APICHARACTERMODELLIST *list, VARIPTR *buffer, VARIPTR end) {
-        if (KillPartsCharSceneAreaPc == NULL) {
+        if (KillPartsCharSceneArea == NULL) {
             return;
         }
         for (i32 i = 0; i < apicharsys->loaded_model_count; ++i) {
             const i32 model_id = apicharsys->models[i].model_id;
-            if (KillPartsCharSceneAreaPc[model_id].scene == NULL && (CDataList[model_id].flags & 1) != 0) {
+            if (KillPartsCharSceneArea[model_id].scene == NULL && (CDataList[model_id].flags & 1) != 0) {
                 /* Reuses the loop counter as InModelList's output index. */
                 if (InModelList(list, model_id, &i) != 0 && list[i].count != 0) {
-                    CharScene_Load(&KillPartsCharSceneAreaPc[model_id], model_id, buffer, end);
+                    CharScene_Load(&KillPartsCharSceneArea[model_id], model_id, buffer, end);
                 }
             }
         }
@@ -159,8 +159,8 @@ extern "C" {
     NUSPECIALHANDLE *CharScene_FindHSpecial(WORLDINFO *world, i32 character_id) {
         KILLPARTS_WORLD_SCENES *scenes = reinterpret_cast<KILLPARTS_WORLD_SCENES *>(world);
         NUSPECIALHANDLE *special;
-        if (KillPartsCharSceneAreaPc != NULL && KillPartsCharSceneAreaPc[character_id].scene != NULL) {
-            special = &KillPartsCharSceneAreaPc[character_id].special_scene;
+        if (KillPartsCharSceneArea != NULL && KillPartsCharSceneArea[character_id].scene != NULL) {
+            special = &KillPartsCharSceneArea[character_id].special_scene;
         } else if (scenes->character_scenes[character_id].scene != NULL) {
             special = &scenes->character_scenes[character_id].special_scene;
         } else {
@@ -202,14 +202,14 @@ extern "C" {
 }
 
 extern "C" void CharScenes_AreaDump() {
-    if (KillPartsCharSceneAreaPc == NULL) {
+    if (KillPartsCharSceneArea == NULL) {
         return;
     }
     for (i32 i = 0; i < CHARCOUNT; ++i) {
-        if (KillPartsCharSceneAreaPc[i].scene != NULL) {
-            NuGScnRemove(KillPartsCharSceneAreaPc[i].scene);
+        if (KillPartsCharSceneArea[i].scene != NULL) {
+            NuGScnRemove(KillPartsCharSceneArea[i].scene);
         }
-        KillPartsCharSceneAreaPc[i].scene = NULL;
+        KillPartsCharSceneArea[i].scene = NULL;
     }
 }
 
@@ -308,7 +308,7 @@ extern "C" {
             } else {
                 i32 icon_object_id;
                 if (character_id == -1) {
-                    icon_object_id = LegoObjectIconQuestionPc;
+                    icon_object_id = LegoObjectIconQuestion;
                 } else {
                     icon_object_id = CDataList[character_id].icon_model;
                     if (icon_object_id != -1 && GCDataList[character_id].hover_fall_mode == 0 &&
@@ -337,7 +337,7 @@ extern "C" {
         drawcharicon_i_panel = -1;
     }
 
-    i32 LayerFromName(PLAYERCHARACTERCONFIG_PC *character, const char *name) {
+    i32 LayerFromName(PLAYERCHARACTERCONFIG *character, const char *name) {
         i32 i;
         for (i = 0; i < character->layer_count; ++i) {
             if (NuStrICmp(name, character->layers[i].name) == 0) {
@@ -347,8 +347,8 @@ extern "C" {
         return -1;
     }
 
-    i32 MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *model, i16 *output, u32 mask) {
-        PLAYERCHARACTERCONFIG_PC *character;
+    i32 MakeLayerList_Name(CHARACTER_MODEL_LAYERS *model, i16 *output, u32 mask) {
+        PLAYERCHARACTERCONFIG *character;
         i32 count;
         i32 bit;
         u32 flag;
@@ -492,12 +492,12 @@ extern "C" {
         i32 id;
         CHARACTERDATA_PC *character = CDataList;
         for (id = 0; id < CHARCOUNT; ++id, ++character) {
-            PLAYERCHARACTERCONFIG_PC *runtime;
+            PLAYERCHARACTERCONFIG *runtime;
             if (excluded != NULL && InModelList(excluded, id, NULL) != 0) {
                 continue;
             }
-            if (Game_Customiser != NULL && (id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[0] ||
-                                            id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[1])) {
+            if (Game_Customiser != NULL && (id == ((CUSTOMISER_LAYERS *)Game_Customiser)->character_ids[0] ||
+                                            id == ((CUSTOMISER_LAYERS *)Game_Customiser)->character_ids[1])) {
                 continue;
             }
             runtime = character->game_character;

@@ -209,16 +209,16 @@ typedef struct level_data_s { // size 0x130
     i32 music_tracks[6];           // 0x118
 } LEVELDATA_PC;
 
-typedef struct level_fixup_pc_s { // size 0x24
-    char *name;                   // 0x00
-    LEVELDATA_PC **level;         // 0x04
-    void *load;                   // 0x08
-    void *init;                   // 0x0c
-    void *reset;                  // 0x10
-    void *update;                 // 0x14
-    void *always_update;          // 0x18
-    void *draw;                   // 0x1c
-    void *draw_status;            // 0x20
+typedef struct level_fixup_s { // size 0x24
+    char *name;                // 0x00
+    LEVELDATA_PC **level;      // 0x04
+    void *load;                // 0x08
+    void *init;                // 0x0c
+    void *reset;               // 0x10
+    void *update;              // 0x14
+    void *always_update;       // 0x18
+    void *draw;                // 0x1c
+    void *draw_status;         // 0x20
 } LEVELFIXUP_PC;
 
 #ifdef __cplusplus
@@ -226,7 +226,7 @@ extern "C" {
 #endif
     extern LEVELDATA_PC *TITLES_LDATA;
     struct cutinfo_s *NewCutScene(struct cutinfo_s *cutscene, struct cutsys_s *system, char *name, i32 unused_4);
-    void Levels_FixUp(struct level_fixup_pc_s *levels);
+    void Levels_FixUp(struct level_fixup_s *levels);
     LEVELDATA_PC *Level_FindByName(char *name, i32 *index);
     extern LEVELDATA_PC *LDataList;
     extern LEVELDATA_PC *NEWGAME_LDATA;
@@ -241,7 +241,7 @@ extern "C" {
     i32 BoltType_FindIDByName(const char *, struct WORLDINFO_s *);
     void Level_Update(struct WORLDINFO_s *world);
     void Level_Draw(struct WORLDINFO_s *world);
-    void FixUpLevels(struct level_fixup_pc_s *fixup);
+    void FixUpLevels(struct level_fixup_s *fixup);
 #ifdef __cplusplus
 }
 #endif

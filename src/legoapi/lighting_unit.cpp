@@ -20,7 +20,7 @@ typedef struct GAME_LIGHT_VIEW {
     u8 unknown000[0x285];
     i8 floor_surface;
     u8 unknown286[0x4d8 - 0x286];
-    RTL_DATA_PC light_data;
+    RTL_DATA light_data;
     OBJECT_LIGHT_STATE_GAME lighting_state;
 } GAME_LIGHT_VIEW;
 
@@ -34,9 +34,9 @@ typedef struct BURN_OUT {
     f32 field_20;
 } BURN_OUT;
 
-typedef struct BURN_SET_PC {
-    BURN_PARAMETERS_PC parameters;
-    BURN_PARAMETERS_PC parameters_copy;
+typedef struct BURN_SET {
+    BURN_PARAMETERS parameters;
+    BURN_PARAMETERS parameters_copy;
     i32 field_a8;
     i32 field_ac;
     i32 field_b0;
@@ -53,29 +53,29 @@ typedef struct BURN_SET_PC {
     f32 field_558;
     f32 field_55c;
     i32 field_560;
-} BURN_SET_PC;
+} BURN_SET;
 
 typedef struct LIGHTING_LOAD_WORLD {
     u8 unknown_000[0x104];
     VARIPTR buffer;
     VARIPTR end_buffer;
     u8 unknown_10c[0x2aac - 0x10c];
-    BURN_SET_PC *burnset;
+    BURN_SET *burnset;
     u8 unknown_2ab0[4];
-    RTL_SET_PC *rtl_set;
+    RTL_SET *rtl_set;
 } LIGHTING_LOAD_WORLD;
 
 extern "C" {
     void NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
-    extern f32 ShadowLightSplitScalePc;
-    extern f32 ShadowLightWarpPc;
-    extern f32 ShadowLightNearOffsetPc;
-    extern f32 ShadowLightBlendPowerPc;
-    extern f32 ShadowLightFallbackHeightPc;
-    extern f32 ShadowLightEyeDistancePc;
-    extern f32 ShadowLightFocusHeightPc;
-    extern NUVEC ShadowLightUpPc;
-    extern i32 ShadowLightSplitCountPc;
+    extern f32 ShadowLightSplitScale;
+    extern f32 ShadowLightWarp;
+    extern f32 ShadowLightNearOffset;
+    extern f32 ShadowLightBlendPower;
+    extern f32 ShadowLightFallbackHeight;
+    extern f32 ShadowLightEyeDistance;
+    extern f32 ShadowLightFocusHeight;
+    extern NUVEC ShadowLightUp;
+    extern i32 ShadowLightSplitCount;
 }
 
 struct SHADOW_PLAYER_BOUNDS {
@@ -84,13 +84,13 @@ struct SHADOW_PLAYER_BOUNDS {
     f32 radius;
 };
 
-extern "C" NUCAMERA *edmainGetCameraPc(void);
+extern "C" NUCAMERA *edmainGetCamera(void);
 extern "C" void NuLightSpotFadeSet(u32 fade);
 
 extern "C" {
 
-    static void ZeroLightSetupPrivatePc(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1, NUVEC *direction2,
-                                        NUVEC *colour2) {
+    static void ZeroLightSetupPrivate(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1, NUVEC *direction2,
+                                      NUVEC *colour2) {
         PCGlobalLightingState.direction[0] = *direction0;
         PCGlobalLightingState.direction[1] = *direction1;
         PCGlobalLightingState.direction[2] = *direction2;
@@ -209,13 +209,13 @@ extern "C" {
 
     void SetLights(NUVEC *colour0, NUVEC *direction0, NUVEC *colour1, NUVEC *direction1, NUVEC *colour2, NUVEC *direction2,
                    NUVEC *ambient) {
-        ZeroLightSetupPrivatePc(direction0, colour0, direction1, colour1, direction2, colour2);
+        ZeroLightSetupPrivate(direction0, colour0, direction1, colour1, direction2, colour2);
         PCGlobalLightingState.ambient = *ambient;
         NuRndrSetAmbientLightPS(ambient);
     }
 
-    void SetLights_RTLDATA(RTL_DATA_PC *data, f32 scale) {
-        RTL_DATA_PC scaled;
+    void SetLights_RTLDATA(RTL_DATA *data, f32 scale) {
+        RTL_DATA scaled;
         if (scale == 1.0f) {
             rtlSetLights(data);
             return;
@@ -237,18 +237,18 @@ extern "C" {
     }
 
     void SetLevelLights(void *set, f32 scale) {
-        f32 old_specular = rtlSpecularValue(&LevelLightingDataPc);
+        f32 old_specular = rtlSpecularValue(&LevelLightingData);
         NUVEC4 ambient;
-        rtlResetEx(&LevelLightingDataPc, 1);
-        rtlApplySetScale(set, &LevelLightingDataPc, (NUVEC *)&global_camera.mtx.m30, NULL, 0x10, 1.0f);
-        if (rtlSpecularValue(&LevelLightingDataPc) == 0.0f) {
-            rtlSetSpecularValue(&LevelLightingDataPc, old_specular);
+        rtlResetEx(&LevelLightingData, 1);
+        rtlApplySetScale(set, &LevelLightingData, (NUVEC *)&global_camera.mtx.m30, NULL, 0x10, 1.0f);
+        if (rtlSpecularValue(&LevelLightingData) == 0.0f) {
+            rtlSetSpecularValue(&LevelLightingData, old_specular);
         }
-        SetLights_RTLDATA(&LevelLightingDataPc, scale);
-        rtlSetSpecularLight(&LevelLightingDataPc);
-        ambient.x = LevelLightingDataPc.ambient.x;
-        ambient.y = LevelLightingDataPc.ambient.y;
-        ambient.z = LevelLightingDataPc.ambient.z;
+        SetLights_RTLDATA(&LevelLightingData, scale);
+        rtlSetSpecularLight(&LevelLightingData);
+        ambient.x = LevelLightingData.ambient.x;
+        ambient.y = LevelLightingData.ambient.y;
+        ambient.z = LevelLightingData.ambient.z;
         ambient.w = 128.0f;
         NuRndrSetAmbientLightSpecular(&ambient);
     }
@@ -260,31 +260,31 @@ extern "C" {
         NUVEC *selected_ambient;
         intensity *= 0.5;
         if (intensity != 1.0f) {
-            colours[0].x = PanelLightingColoursPc[0].x * intensity;
-            colours[0].y = PanelLightingColoursPc[0].y * intensity;
-            colours[0].z = PanelLightingColoursPc[0].z * intensity;
-            colours[1].x = PanelLightingColoursPc[1].x * intensity;
-            colours[1].y = PanelLightingColoursPc[1].y * intensity;
-            colours[1].z = PanelLightingColoursPc[1].z * intensity;
-            colours[2].x = PanelLightingColoursPc[2].x * intensity;
-            colours[2].y = PanelLightingColoursPc[2].y * intensity;
-            colours[2].z = PanelLightingColoursPc[2].z * intensity;
-            ambient.x = PanelLightingAmbientPc.x * intensity;
-            ambient.y = PanelLightingAmbientPc.y * intensity;
-            ambient.z = PanelLightingAmbientPc.z * intensity;
+            colours[0].x = PanelLightingColours[0].x * intensity;
+            colours[0].y = PanelLightingColours[0].y * intensity;
+            colours[0].z = PanelLightingColours[0].z * intensity;
+            colours[1].x = PanelLightingColours[1].x * intensity;
+            colours[1].y = PanelLightingColours[1].y * intensity;
+            colours[1].z = PanelLightingColours[1].z * intensity;
+            colours[2].x = PanelLightingColours[2].x * intensity;
+            colours[2].y = PanelLightingColours[2].y * intensity;
+            colours[2].z = PanelLightingColours[2].z * intensity;
+            ambient.x = PanelLightingAmbient.x * intensity;
+            ambient.y = PanelLightingAmbient.y * intensity;
+            ambient.z = PanelLightingAmbient.z * intensity;
             selected_colours = colours;
             selected_ambient = &ambient;
         } else {
-            selected_colours = PanelLightingColoursPc;
-            selected_ambient = &PanelLightingAmbientPc;
+            selected_colours = PanelLightingColours;
+            selected_ambient = &PanelLightingAmbient;
         }
-        ZeroLightSetupPrivatePc(&PanelLightingDirectionsPc[0], &selected_colours[0], &PanelLightingDirectionsPc[1], &selected_colours[1],
-                                &PanelLightingDirectionsPc[2], &selected_colours[2]);
+        ZeroLightSetupPrivate(&PanelLightingDirectionsPc[0], &selected_colours[0], &PanelLightingDirectionsPc[1], &selected_colours[1],
+                              &PanelLightingDirectionsPc[2], &selected_colours[2]);
         PCGlobalLightingState.ambient = *selected_ambient;
         NuRndrSetAmbientLightPS(selected_ambient);
     }
 
-    void ResetLights(NUVEC *position, RTL_DATA_PC *packet, void *set) {
+    void ResetLights(NUVEC *position, RTL_DATA *packet, void *set) {
         rtlResetEx(packet, 1);
         if (position != NULL) {
             rtlApplySetScale(set, packet, position, NULL, -1, 1.0f);
@@ -302,19 +302,19 @@ extern "C" {
         return address.char_ptr;
     }
 
-    RTL_SET_PC *rtlGetEnvSet(void) {
-        return (RTL_SET_PC *)WORLD->rtl_set;
+    RTL_SET *rtlGetEnvSet(void) {
+        return (RTL_SET *)WORLD->rtl_set;
     }
 
     void SetZeroLights(void) {
         NUVEC black = {0, 0, 0};
-        ZeroLightSetupPrivatePc(&LightingUnitDirectionPc, &black, &LightingUnitDirectionPc, &black, &LightingUnitDirectionPc, &black);
+        ZeroLightSetupPrivate(&LightingUnitDirectionPc, &black, &LightingUnitDirectionPc, &black, &LightingUnitDirectionPc, &black);
         PCGlobalLightingState.ambient = APIObjectZeroMomentumPC;
         NuRndrSetAmbientLightPS(&APIObjectZeroMomentumPC);
     }
 
     void FindAndSetLights(NUVEC *position, f32 scale, void *set) {
-        RTL_DATA_PC lights;
+        RTL_DATA lights;
         rtlResetEx(&lights, 1);
         rtlDynamicMasterEnable(0);
         rtlApplySetScale(set, &lights, position, NULL, -1, scale);
@@ -407,13 +407,13 @@ extern "C" {
         object->flags_ef0 &= ~0x80u;
     }
 
-    void SetCreatureLights(APIOBJECT_PC *object) {
+    void SetCreatureLights(APIOBJECT *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         GAME_LIGHT_VIEW *view = (GAME_LIGHT_VIEW *)owner;
         NUVEC ambient;
         NUVEC intensity[3];
         NUVEC direction[3];
-        PLAYERCHARACTERCONFIG_PC *character;
+        PLAYERCHARACTERCONFIG *character;
         f32 red;
         f32 green;
         f32 blue;
@@ -438,9 +438,9 @@ extern "C" {
         direction[2] = view->lighting_state.direction[2];
         if (owner->vehicle_hit_timer > 0.0f) {
             f32 flash = (f32)(owner->vehicle_hit_timer / (f64)0.4f);
-            red = (f32)(((f64)Lighting_RedFlashRedPc - 1.0) * flash + 1.0);
-            green = (f32)(((f64)Lighting_RedFlashGreenPc - 1.0) * flash + 1.0);
-            blue = (f32)(((f64)Lighting_RedFlashBluePc - 1.0) * flash + 1.0);
+            red = (f32)(((f64)Lighting_RedFlashRed - 1.0) * flash + 1.0);
+            green = (f32)(((f64)Lighting_RedFlashGreen - 1.0) * flash + 1.0);
+            blue = (f32)(((f64)Lighting_RedFlashBlue - 1.0) * flash + 1.0);
         } else if (Lighting_HighlightFlash != 0 && (owner->flags_1fc_word & 0x80) && owner->hud_icon_timer > 0.0f &&
                    (owner->hud_icon_timer >= 2.0f || (f64)NuFmod(owner->hud_icon_timer, 0.4f) >= (f64)0.2f)) {
             if (owner->field_280 == 1) {
@@ -462,9 +462,9 @@ extern "C" {
             if (character->flags_094_bytes[2] & 1) {
                 red = green = blue = flicker + flicker;
             } else {
-                red = Lighting_BlueFlickerRedPc * flicker;
-                green = Lighting_BlueFlickerGreenPc * flicker;
-                blue = Lighting_BlueFlickerBluePc * flicker;
+                red = Lighting_BlueFlickerRed * flicker;
+                green = Lighting_BlueFlickerGreen * flicker;
+                blue = Lighting_BlueFlickerBlue * flicker;
             }
         } else if (owner->arrow_blend > 0.0f) {
             i32 angle = (i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
@@ -474,15 +474,15 @@ extern "C" {
             // MATCH-EXCEPTION: the original negates the (negative) timer and subtracts it rather than adding.
             i32 angle = (i32)((1.0 - (-owner->vehicle_hit_timer)) * 2.0 * 65536.0 + 16384.0);
             f32 flash = (f32)((1.0 - NuTrigTable[((u32)(angle >> 1)) & 0x7fff]) * 0.5 * (f64)0.333f);
-            red = (f32)(((f64)Lighting_RedFlashRedPc - 1.0) * flash + 1.0);
-            green = (f32)(((f64)Lighting_RedFlashGreenPc - 1.0) * flash + 1.0);
-            blue = (f32)(((f64)Lighting_RedFlashBluePc - 1.0) * flash + 1.0);
+            red = (f32)(((f64)Lighting_RedFlashRed - 1.0) * flash + 1.0);
+            green = (f32)(((f64)Lighting_RedFlashGreen - 1.0) * flash + 1.0);
+            blue = (f32)(((f64)Lighting_RedFlashBlue - 1.0) * flash + 1.0);
         } else if (owner->spawn_protection_timer > 0.0f && owner->field_280 != 0xff) {
             u16 angle = (u16)(i32)((f64)NuFmod((f32)(2.5 - owner->spawn_protection_timer), 0.5f) * 2.0 * 65536.0);
             red = green = blue = NuTrigTable[angle >> 1] + 1.0f;
         }
         if (owner->surface_flag8_scale_pc > 0.0f) {
-            f32 scale = (f32)((f64)owner->surface_flag8_scale_pc * LightingSurfaceFadeSlopePc + 1.0);
+            f32 scale = (f32)((f64)owner->surface_flag8_scale_pc * LightingSurfaceFadeSlope + 1.0);
             red *= scale;
             green *= scale;
             blue *= scale;
@@ -568,7 +568,7 @@ extern "C" {
     }
 
     /* File-local, so VC8 passes center in EDI; radius stays on the stack. */
-    static i32 ShadowAveragePlayerBoundsPc(NUVEC *center, f32 *radius) {
+    static i32 ShadowAveragePlayerBounds(NUVEC *center, f32 *radius) {
         *center = APIObjectZeroMomentumPC;
         *radius = -1.0f;
         i32 count = 0;
@@ -593,7 +593,7 @@ extern "C" void RenderShadowLights(i32 paused) {
         PCShadowCurrentLight->enabled != 0) {
         i32 previous = NuSpecialSetClipping(1, 1);
         NuSpecialClearShadowLights();
-        ShadowMapEnablePc(PCShadowCurrentLight);
+        ShadowMapEnable(PCShadowCurrentLight);
         NuSpecialClearShadowClipTestResults();
         NuRndrBeginScene(1);
         currentScene.dyn_light_count = 1;
@@ -610,7 +610,7 @@ extern "C" void RenderShadowLights(i32 paused) {
 
 void EnableShadowMapRendering(i32 unused) {
     if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2) {
-        ShadowMapEnablePc(PCShadowCurrentLight);
+        ShadowMapEnable(PCShadowCurrentLight);
     }
 }
 
@@ -648,19 +648,19 @@ extern "C" void fun_005969c0(void *set) {
 
 extern "C" {
 #pragma data_seg(".data$ShadowLightParametersPc")
-    f32 ShadowLightSplitScalePc = 0.9f;
-    f32 ShadowLightWarpPc = 5.0f;
-    NUVEC ShadowLightUpPc = {0.0f, 1.0f, 0.0f};
-    f32 ShadowLightNearOffsetPc = 1.5f;
-    f32 ShadowLightBlendPowerPc = 3.0f;
-    f32 ShadowLightFallbackHeightPc = 5.0f;
-    f32 ShadowLightEyeDistancePc = 20.0f;
-    f32 ShadowLightFocusHeightPc = -2.0f;
+    f32 ShadowLightSplitScale = 0.9f;
+    f32 ShadowLightWarp = 5.0f;
+    NUVEC ShadowLightUp = {0.0f, 1.0f, 0.0f};
+    f32 ShadowLightNearOffset = 1.5f;
+    f32 ShadowLightBlendPower = 3.0f;
+    f32 ShadowLightFallbackHeight = 5.0f;
+    f32 ShadowLightEyeDistance = 20.0f;
+    f32 ShadowLightFocusHeight = -2.0f;
 #pragma data_seg()
 #pragma bss_seg(".bss$ShadowLightSplitCountPc")
-    i32 ShadowLightSplitCountPc = 0;
+    i32 ShadowLightSplitCount = 0;
 #pragma bss_seg(".bss$EdMainCurrentCameraPc")
-    NUCAMERA *EdMainCurrentCameraPc = 0;
+    NUCAMERA *EdMainCurrentCamera = 0;
 #pragma bss_seg()
 }
 
@@ -679,46 +679,46 @@ extern "C" void SetShadowLight(void) {
         center.x = (f64)current->mtx.m20 * 2.0 + current->mtx.m30;
         center.y = (f64)current->mtx.m21 * 2.0 + current->mtx.m31;
         center.z = (f64)current->mtx.m22 * 2.0 + current->mtx.m32;
-        ShadowLightFocusHeightPc = -2.0f;
+        ShadowLightFocusHeight = -2.0f;
     } else {
         if (Players_AveragePos(&center, NULL) == 0) {
             return;
         }
-        ShadowLightFocusHeightPc = WORLD->shadow_editor->field_30;
+        ShadowLightFocusHeight = WORLD->shadow_editor->field_30;
     }
     if (WORLD->shadow_editor == NULL) {
         return;
     }
     target.x = center.x;
-    target.y = ShadowLightFocusHeightPc + center.y;
+    target.y = ShadowLightFocusHeight + center.y;
     target.z = center.z;
     i32 alternate = WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0 && (WORLD->current_level->flags & 0x400) == 0;
     if (CutStopInfo != NULL) {
         direction = WORLD->shadow_editor->direction;
         secondary_strength = WORLD->shadow_editor->field_0c;
         eye = center;
-        eye.x -= ShadowLightEyeDistancePc * direction.x;
-        eye.y -= ShadowLightEyeDistancePc * direction.y;
-        eye.z -= ShadowLightEyeDistancePc * direction.z;
+        eye.x -= ShadowLightEyeDistance * direction.x;
+        eye.y -= ShadowLightEyeDistance * direction.y;
+        eye.z -= ShadowLightEyeDistance * direction.z;
         secondary_eye = center;
-        secondary_eye.x += (f64)ShadowLightEyeDistancePc * 2.0;
-        secondary_eye.y += (f64)ShadowLightEyeDistancePc * 10.0;
-        secondary_eye.z += (f64)ShadowLightEyeDistancePc * 2.0;
-    } else if (ShadowAveragePlayerBoundsPc(&direction, &secondary_strength) != 0 && secondary_strength >= 0.0f) {
+        secondary_eye.x += (f64)ShadowLightEyeDistance * 2.0;
+        secondary_eye.y += (f64)ShadowLightEyeDistance * 10.0;
+        secondary_eye.z += (f64)ShadowLightEyeDistance * 2.0;
+    } else if (ShadowAveragePlayerBounds(&direction, &secondary_strength) != 0 && secondary_strength >= 0.0f) {
         NuVecAdd(&direction, &direction, &WORLD->shadow_editor->direction);
         NuVecNorm(&direction, &direction);
         eye = center;
-        eye.x -= ShadowLightEyeDistancePc * direction.x;
-        eye.y -= ShadowLightEyeDistancePc * direction.y;
-        eye.z -= ShadowLightEyeDistancePc * direction.z;
+        eye.x -= ShadowLightEyeDistance * direction.x;
+        eye.y -= ShadowLightEyeDistance * direction.y;
+        eye.z -= ShadowLightEyeDistance * direction.z;
         secondary_eye = center;
-        secondary_eye.x += ShadowLightEyeDistancePc * 2.0f;
-        secondary_eye.y += (f64)ShadowLightEyeDistancePc * 10.0;
-        secondary_eye.z += ShadowLightEyeDistancePc * 2.0f;
+        secondary_eye.x += ShadowLightEyeDistance * 2.0f;
+        secondary_eye.y += (f64)ShadowLightEyeDistance * 10.0;
+        secondary_eye.z += ShadowLightEyeDistance * 2.0f;
     } else {
         eye = GameCam->position;
         eye.x = (f64)eye.x - 1.2000000476837158;
-        eye.y = ShadowLightFallbackHeightPc;
+        eye.y = ShadowLightFallbackHeight;
         eye.z = (f64)eye.z - 1.5;
         secondary_eye = eye;
     }
@@ -743,7 +743,7 @@ extern "C" void SetShadowLight(void) {
         view_direction.z = forward_z;
         view_direction.w = 1.0f;
         camera_position = *(NUVEC *)&NuCameraGetCam()->mtx.m30;
-        camera = edmainGetCameraPc();
+        camera = edmainGetCamera();
     } else {
         NuVecSub((NUVEC *)&view_direction, &GameCam->target, &GameCam->position);
         camera_position = GameCam->position;
@@ -755,7 +755,7 @@ extern "C" void SetShadowLight(void) {
     f32 distance = NuVecDist(&camera_position, &target, NULL);
     f32 range = WORLD->shadow_editor->field_20;
     f32 weight32 = weight;
-    f32 interpolation = NuPow(weight32, ShadowLightBlendPowerPc);
+    f32 interpolation = NuPow(weight32, ShadowLightBlendPower);
     if (alternate) {
         range = 16.0f;
     }
@@ -764,13 +764,13 @@ extern "C" void SetShadowLight(void) {
     if (CutStopInfo != NULL) {
         splits[0] = pNuCam->near_clip;
         split_count = 3;
-        splits[1] = pNuCam->near_clip + ShadowLightNearOffsetPc;
-        ShadowLightSplitCountPc = split_count;
+        splits[1] = pNuCam->near_clip + ShadowLightNearOffset;
+        ShadowLightSplitCount = split_count;
         splits[2] = distance + (range - distance) * interpolation;
     } else {
         splits[0] = pNuCam->near_clip;
         split_count = 2;
-        ShadowLightSplitCountPc = 1;
+        ShadowLightSplitCount = 1;
         splits[1] = distance + (range - distance) * interpolation;
     }
     f32 parameter = WORLD->shadow_editor->field_0c;
@@ -782,15 +782,15 @@ extern "C" void SetShadowLight(void) {
     PCShadowCurrentLight->SetParameterfPc(2, WORLD->shadow_editor->field_14);
     PCShadowCurrentLight->SetParameterfPc(12, WORLD->shadow_editor->field_1c);
     PCShadowCurrentLight->SetParameterfPc(9, WORLD->shadow_editor->field_18);
-    PCShadowCurrentLight->SetParameterfPc(6, ShadowLightWarpPc);
+    PCShadowCurrentLight->SetParameterfPc(6, ShadowLightWarp);
     PCShadowCurrentLight->SetParameterfPc(17, WORLD->shadow_editor->field_1c);
     PCShadowCurrentLight->SetParameterfPc(15, WORLD->shadow_editor->field_18);
-    PCShadowCurrentLight->SetParameterfPc(8, ShadowLightWarpPc);
-    PCShadowCurrentLight->SetParameterfPc(19, splits[split_count - 1] * ShadowLightSplitScalePc);
+    PCShadowCurrentLight->SetParameterfPc(8, ShadowLightWarp);
+    PCShadowCurrentLight->SetParameterfPc(19, splits[split_count - 1] * ShadowLightSplitScale);
     PCShadowCurrentLight->SetParameterfPc(20, splits[split_count - 1]);
-    PCShadowCurrentLight->LookAtPc(&eye, &center, &ShadowLightUpPc);
+    PCShadowCurrentLight->LookAtPc(&eye, &center, &ShadowLightUp);
     PCShadowCurrentLight->SetupCustomCameraFrustumPc(camera, splits, split_count);
     PCShadowSecondaryLight->parameter_0 = secondary_strength;
-    PCShadowSecondaryLight->LookAtPc(&secondary_eye, &center, &ShadowLightUpPc);
+    PCShadowSecondaryLight->LookAtPc(&secondary_eye, &center, &ShadowLightUp);
     PCShadowSecondaryLight->SetupCustomCameraFrustumPc(camera, splits, split_count);
 }

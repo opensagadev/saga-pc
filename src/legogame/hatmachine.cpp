@@ -1,6 +1,6 @@
 #include "saga.h"
 
-struct HATMACHINE_PC {      // size 0xa0
+struct HATMACHINE {         // size 0xa0
     NUMTX matrix;           // 0x00
     char name[16];          // 0x40
     NUVEC position;         // 0x50
@@ -38,11 +38,11 @@ struct HATMACHINE_PC {      // size 0xa0
     u8 reserved_9c[4];     // 0x9c
 };
 
-struct HATMACHINE_SYS {      // size 0x10
-    i32 count;               // 0x0
-    i32 reserved_04;         // 0x4
-    i32 reserved_08;         // 0x8
-    HATMACHINE_PC *machines; // 0xc
+struct HATMACHINE_SYS {   // size 0x10
+    i32 count;            // 0x0
+    i32 reserved_04;      // 0x4
+    i32 reserved_08;      // 0x8
+    HATMACHINE *machines; // 0xc
 };
 
 struct HATMACHINE_WORLD {            // size 0x5078
@@ -52,7 +52,7 @@ struct HATMACHINE_WORLD {            // size 0x5078
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 extern "C" {
-    static f32 HatmachineFabsPc(f32 f) {
+    static f32 HatmachineFabs(f32 f) {
         f32 rv;
 
         *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -60,7 +60,7 @@ extern "C" {
     }
 }
 
-extern "C" void Hat_GetAbsTargetPos(HATMACHINE_PC *machine, NUVEC *position) {
+extern "C" void Hat_GetAbsTargetPos(HATMACHINE *machine, NUVEC *position) {
     if (machine != NULL && position != NULL) {
         NUVEC offset = machine->target_offset;
         NuVecRotateY(&offset, &offset, machine->yaw);
@@ -73,21 +73,21 @@ extern "C" void Hat_GetAbsTargetPos(HATMACHINE_PC *machine, NUVEC *position) {
 extern "C" void HatMachines_InitTerrain(WORLDINFO *world) {
     if (((HATMACHINE_WORLD *)world)->hat_machine_sys != NULL) {
         for (i32 index = 0; index < ((HATMACHINE_WORLD *)world)->hat_machine_sys->count; ++index) {
-            HATMACHINE_PC *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
+            HATMACHINE *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
             ((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index].platform_id = NewPlatPickupInst(machine, 2);
             PlatInstRotate(((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index].platform_id, 1);
         }
     }
 }
 
-extern "C" HATMACHINE_PC *HatMachine_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+extern "C" HATMACHINE *HatMachine_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     f32 nearest_distance = 1.0e9f;
-    HATMACHINE_PC *nearest = NULL;
+    HATMACHINE *nearest = NULL;
     if (world == NULL || ((HATMACHINE_WORLD *)world)->hat_machine_sys == NULL) {
         return NULL;
     }
     for (i32 index = 0; index < ((HATMACHINE_WORLD *)world)->hat_machine_sys->count; ++index) {
-        HATMACHINE_PC *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
+        HATMACHINE *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
         f32 candidate_distance;
         if (object != NULL) {
             if ((machine->flags & 8) == 0 || (machine->flags & 4) == 0 || (machine->flags & 3) != 0 ||
@@ -111,7 +111,7 @@ extern "C" HATMACHINE_PC *HatMachine_FindNearest(WORLDINFO *world, NUVEC *positi
     return nearest;
 }
 
-extern "C" i32 HatMachine_BeingUsed(HATMACHINE_PC *machine) {
+extern "C" i32 HatMachine_BeingUsed(HATMACHINE *machine) {
     return machine->flags & 1;
 }
 
@@ -124,7 +124,7 @@ struct HAT_USE_REQUEST {   // size 0x7a4
 extern "C" i16 id_PRINCESSLEIABOUSHH;
 
 extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 special_pressed) {
-    HATMACHINE_PC *machine = (HATMACHINE_PC *)object->grapple;
+    HATMACHINE *machine = (HATMACHINE *)object->grapple;
     if (object->field_db0 > 0.0f) {
         object->field_db0 -= FRAMETIME;
     }
@@ -169,7 +169,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             }
             AlertSurroundingCreatures(object, &object->collision_position);
             object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
-            ((HATMACHINE_PC *)object->grapple)->state_duration = object->context_timer;
+            ((HATMACHINE *)object->grapple)->state_duration = object->context_timer;
             if (object->context_timer <= 0.0f) {
                 object->context_timer = 2.0f;
             }
@@ -234,7 +234,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                 if ((object->character_data->game_character->flags_090 & 0x10) == 0 &&
                     (object->id != (u16)id_PRINCESSLEIABOUSHH || FreePlay == 0)) {
                     PlaySfx("HatOn", &object->upper_position);
-                    object->helmet = ((HATMACHINE_PC *)object->grapple)->displayed_hat;
+                    object->helmet = ((HATMACHINE *)object->grapple)->displayed_hat;
                     if (object->helmet == 5) {
                         MakeBaddiesForgetAboutParty(1);
                     }
@@ -255,14 +255,14 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         }
         object->character_context = -1;
         object->context_timer = 0.0f;
-        machine = (HATMACHINE_PC *)object->grapple;
+        machine = (HATMACHINE *)object->grapple;
         if (machine == NULL) {
             return;
         }
         if (machine->configured_hat == 6) {
             PlaySfx("Hunter_Granted", &object->collision_position);
         }
-        if (((HATMACHINE_PC *)object->grapple)->configured_hat == 5) {
+        if (((HATMACHINE *)object->grapple)->configured_hat == 5) {
             PlaySfx("Trooper_Granted", &object->collision_position);
         }
         object->grapple = NULL;
@@ -273,11 +273,11 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         }
         if (object->grapple != NULL) {
             NewBuzz(object->pad->bound_pad, 0.1f, 0);
-            ((HATMACHINE_PC *)object->grapple)->hat_delay = 0.6f;
-            if (((HATMACHINE_PC *)object->grapple)->configured_hat == 6) {
+            ((HATMACHINE *)object->grapple)->hat_delay = 0.6f;
+            if (((HATMACHINE *)object->grapple)->configured_hat == 6) {
                 PlaySfx("Hunter_Granted", &object->collision_position);
             }
-            if (((HATMACHINE_PC *)object->grapple)->configured_hat == 5) {
+            if (((HATMACHINE *)object->grapple)->configured_hat == 5) {
                 PlaySfx("Trooper_Granted", &object->collision_position);
             }
         } else {
@@ -309,11 +309,11 @@ extern "C" {
         if (gizmo == NULL || gizmo->object == NULL) {
             return NULL;
         }
-        return ((HATMACHINE_PC *)gizmo->object)->name;
+        return ((HATMACHINE *)gizmo->object)->name;
     }
 
     static i32 HatMachine_GetOutput(GIZMO_PC *gizmo, i32, i32) {
-        return (((HATMACHINE_PC *)gizmo->object)->flags >> 1) & 1;
+        return (((HATMACHINE *)gizmo->object)->flags >> 1) & 1;
     }
 
     static char *HatMachine_GetOutputName(GIZMO_PC *, i32 output_index) {
@@ -372,10 +372,9 @@ extern "C" {
             world->giz_buffer.addr += sizeof(HATMACHINE_SYS);
             memset(((HATMACHINE_WORLD *)world)->hat_machine_sys, 0, sizeof(HATMACHINE_SYS));
             world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-            ((HATMACHINE_WORLD *)world)->hat_machine_sys->machines = (HATMACHINE_PC *)world->giz_buffer.void_ptr;
-            world->giz_buffer.addr += world->current_level->max_hatmachines * sizeof(HATMACHINE_PC);
-            memset(((HATMACHINE_WORLD *)world)->hat_machine_sys->machines, 0,
-                   world->current_level->max_hatmachines * sizeof(HATMACHINE_PC));
+            ((HATMACHINE_WORLD *)world)->hat_machine_sys->machines = (HATMACHINE *)world->giz_buffer.void_ptr;
+            world->giz_buffer.addr += world->current_level->max_hatmachines * sizeof(HATMACHINE);
+            memset(((HATMACHINE_WORLD *)world)->hat_machine_sys->machines, 0, world->current_level->max_hatmachines * sizeof(HATMACHINE));
         }
         return ((HATMACHINE_WORLD *)world)->hat_machine_sys;
     }
@@ -396,7 +395,7 @@ extern "C" {
         if (gizmo == NULL || gizmo->object == NULL) {
             return;
         }
-        HATMACHINE_PC *machine = (HATMACHINE_PC *)gizmo->object;
+        HATMACHINE *machine = (HATMACHINE *)gizmo->object;
         const i32 was_visible = (machine->flags >> 2) & 1;
         machine->visible = visible != 0;
         if (machine->visible && was_visible == 0) {
@@ -432,7 +431,7 @@ extern "C" {
             return;
         }
         for (i32 index = 0; index < ((HATMACHINE_WORLD *)world)->hat_machine_sys->count && index < 32; ++index) {
-            HATMACHINE_PC *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
+            HATMACHINE *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
             const i32 word = index / 32;
             const u32 mask = 1u << (index % 32);
             if ((machine->flags & 4) == 0) {
@@ -444,7 +443,7 @@ extern "C" {
         }
     }
 
-    static void HatMachine_Reset(HATMACHINE_PC *machine) {
+    static void HatMachine_Reset(HATMACHINE *machine) {
         machine->player_position.y = 0.0f;
         machine->player_position.x = 0.0f;
         machine->player_position.z = 0.1441f;
@@ -490,7 +489,7 @@ extern "C" {
         }
         HATMACHINE_PROGRESS *progress = (HATMACHINE_PROGRESS *)progress_ptr;
         for (i32 index = 0; index < system->count; ++index) {
-            HATMACHINE_PC *machine = &system->machines[index];
+            HATMACHINE *machine = &system->machines[index];
             HatMachine_Reset(machine);
             if (progress != NULL && index < 32) {
                 const i32 word = index / 32;
@@ -505,7 +504,7 @@ extern "C" {
         if (gizmo == NULL || gizmo->object == NULL) {
             return;
         }
-        HATMACHINE_PC *machine = (HATMACHINE_PC *)gizmo->object;
+        HATMACHINE *machine = (HATMACHINE *)gizmo->object;
         machine->enabled = enabled != 0;
         if (enabled != 0) {
             HatMachine_Reset(machine);
@@ -519,7 +518,7 @@ extern "C" {
             return;
         }
         for (i32 index = 0; index < system->count; ++index) {
-            HATMACHINE_PC *machine = &system->machines[index];
+            HATMACHINE *machine = &system->machines[index];
             if (machine->hat_delay > 0.0f) {
                 machine->hat_delay -= FRAMETIME;
                 if (machine->hat_delay <= 0.0f && machine->displayed_hat == 0) {
@@ -564,13 +563,13 @@ extern "C" ADDGIZMOTYPE_PC *HatMachine_RegisterGizmo(i32 type_id) {
     HatMachineAddTypePc.fns.late_update_fn = HatMachine_Update;
     HatMachineAddTypePc.fns.draw_fn = HatMachine_Draw;
     HatMachineAddTypePc.fns.panel_draw_fn = NULL;
-    HatMachineAddTypePc.fns.get_gizmo_name_fn = (char *(*)(struct gizmo_pc_s *))HatMachine_GetGizmoName;
-    HatMachineAddTypePc.fns.get_output_fn = (i32(*)(struct gizmo_pc_s *, i32, i32))HatMachine_GetOutput;
-    HatMachineAddTypePc.fns.get_output_name_fn = (char *(*)(struct gizmo_pc_s *, i32))HatMachine_GetOutputName;
+    HatMachineAddTypePc.fns.get_gizmo_name_fn = (char *(*)(struct gizmo_s *))HatMachine_GetGizmoName;
+    HatMachineAddTypePc.fns.get_output_fn = (i32(*)(struct gizmo_s *, i32, i32))HatMachine_GetOutput;
+    HatMachineAddTypePc.fns.get_output_name_fn = (char *(*)(struct gizmo_s *, i32))HatMachine_GetOutputName;
     HatMachineAddTypePc.fns.get_num_outputs_fn = (void *)HatMachine_GetNumOutputs;
-    HatMachineAddTypePc.fns.activate_fn = (void (*)(struct gizmo_pc_s *, i32))HatMachine_Activate;
+    HatMachineAddTypePc.fns.activate_fn = (void (*)(struct gizmo_s *, i32))HatMachine_Activate;
     HatMachineAddTypePc.fns.activate_rev_fn = NULL;
-    HatMachineAddTypePc.fns.set_visibility_fn = (void (*)(struct gizmo_pc_s *, i32))HatMachine_SetVisibility;
+    HatMachineAddTypePc.fns.set_visibility_fn = (void (*)(struct gizmo_s *, i32))HatMachine_SetVisibility;
     HatMachineAddTypePc.fns.get_visibility_fn = NULL;
     HatMachineAddTypePc.fns.get_pos_fn = NULL;
     HatMachineAddTypePc.fns.using_special_fn = NULL;
@@ -590,7 +589,7 @@ extern "C" ADDGIZMOTYPE_PC *HatMachine_RegisterGizmo(i32 type_id) {
 }
 
 static const NUVEC HatMachine_HatOffset = {0.0f, 0.3f, 0.0f};
-static const i32 HatMachineDrawSpecialIndicesPc[4] = {288, 285, 289, 284};
+static const i32 HatMachineDrawSpecialIndices[4] = {288, 285, 289, 284};
 
 static inline f32 NuFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
@@ -619,7 +618,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
     f32 end_frames[4];
     if (StartupGameFlag1 != 0) {
         for (i32 effect = 0; effect < 4; ++effect) {
-            specials[effect] = &world->level_objects[HatMachineDrawSpecialIndicesPc[effect]].special;
+            specials[effect] = &world->level_objects[HatMachineDrawSpecialIndices[effect]].special;
             animations[effect] = (NUINSTANIM *)NuSpecialGetInstAnim(specials[effect]);
             if (specials[effect] != NULL && animations[effect] != NULL) {
                 end_frames[effect] =
@@ -628,7 +627,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
         }
     }
     for (i32 index = 0; index < system->count; ++index) {
-        HATMACHINE_PC *machine = &system->machines[index];
+        HATMACHINE *machine = &system->machines[index];
         if ((machine->flags & 4) == 0 && editor_active == 0) {
             continue;
         }
@@ -693,7 +692,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                             } else {
                                 frame =
                                     NuTrigTable[((i32)((f64)machine->idle_bounce_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) & 0x7fff];
-                                magnitude.value = HatmachineFabsPc(frame);
+                                magnitude.value = HatmachineFabs(frame);
                                 frame = (1.0 - magnitude.value) * 1.5 + 16.0;
                             }
                         } else if (qrand() < 0x800) {

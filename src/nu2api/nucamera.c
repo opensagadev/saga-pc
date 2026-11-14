@@ -310,8 +310,8 @@ rejected:
     return 1;
 }
 
-extern i32 NuCameraScissorWidthPc;
-extern i32 NuCameraScissorHeightPc;
+extern i32 NuCameraScissorWidth;
+extern i32 NuCameraScissorHeight;
 i32 NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip);
 void FaceYDirStream(i32 angle);
 
@@ -372,8 +372,8 @@ void NuCameraSetEx(NUCAMERA *camera, i32 fast) {
         f32 reciprocal;
         zy = NuTrigTable[(angle >> 1) & 0x7fff] / NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         zx = zy / global_camera.aspect;
-        zxs = zx * NuCameraScissorWidthPc / PS2_REZ_W;
-        zys = zy * NuCameraScissorHeightPc / PS2_REZ_H;
+        zxs = zx * NuCameraScissorWidth / PS2_REZ_W;
+        zys = zy * NuCameraScissorHeight / PS2_REZ_H;
         clip_planes.m02 = 0.0f;
         clip_planes.m12 = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         clip_planes.m22 = NuTrigTable[(angle >> 1) & 0x7fff];
@@ -694,7 +694,7 @@ i32 NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_mtx, f32
     return 2;
 }
 
-void NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *clip, NUCAMERA *camera, i32 use_cached_projection) {
+void NuCameraCalcClipMtx(CAMERA_CLIP_PACKET *clip, NUCAMERA *camera, i32 use_cached_projection) {
     static NUMTX clip_inverse = {0};
     if (use_cached_projection == 0 || (clip->flags & 1) == 0) {
         i32 angle;
@@ -789,9 +789,9 @@ void NuCameraTransformScreenVU0(NUVEC4 *screen, NUVEC4 *world, i32 count, NUMTX 
 i32 NuCameraSaveState(void) {
     i32 index = -1;
     if (cam_state_count < 16) {
-        CAMERA_SAVED_STATE_PC *state;
+        CAMERA_SAVED_STATE *state;
         index = cam_state_count++;
-        state = &CameraSavedStatesPc[index];
+        state = &CameraSavedStates[index];
         state->zx = zx;
         state->camera = global_camera;
         state->zy = zy;
@@ -807,7 +807,7 @@ i32 NuCameraSaveState(void) {
         state->view_projection_screen = vpsmtx;
         state->projection_screen = psmtx;
         state->effects = NuCameraMode;
-        state->planes = CameraClipPlanesPc;
+        state->planes = CameraClipPlanes;
     }
     return index + 1;
 }

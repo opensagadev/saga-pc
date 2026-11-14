@@ -28,9 +28,9 @@ typedef struct trigger_force_s { // size 0xa4
 } TRIGGER_FORCE_PC;
 
 typedef struct trigger_set_s { // size 0x214
-    FLOWBOX_PC *flowbox;       // 0x000
+    FLOWBOX *flowbox;          // 0x000
     GIZMO_PC *gizmos[8];       // 0x004
-    AILOCATOR_PC locators[8];  // 0x024
+    AILOCATOR locators[8];     // 0x024
     i8 trigger_indices[8];     // 0x204
     u8 trigger_count;          // 0x20c
     u8 unknown20d;             // 0x20d
@@ -51,9 +51,9 @@ typedef struct trigger_object_force_s { // size 0x10d0
     GIZFORCE_PC *force;                 // 0x10cc
 } TRIGGER_OBJECT_FORCE_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, route_mask_low) == 0x3f8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, terrain_origin) == 0x414);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) + offsetof(AIPATHINFO_PC, connection) == 0x424);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, route_mask_low) == 0x3f8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, terrain_origin) == 0x414);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) + offsetof(AIPATHINFO, connection) == 0x424);
 
 #define AITRIGGER_RELEASE(system, set, index)                                                                                              \
     if ((set)->trigger_indices[index] != -1) {                                                                                             \
@@ -77,7 +77,7 @@ void AITriggerSetSysReset(TRIGGER_SYSTEM_PC *system) {
     }
 }
 
-AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *system, FLOWBOX_PC *box) {
+AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *system, FLOWBOX *box) {
     i32 index;
     if (system != NULL) {
         for (index = 0; index < 32; ++index) {
@@ -93,7 +93,7 @@ AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *system, FLOWBOX_PC *box) {
 
 i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizmo) {
     char *name;
-    struct AILOCATOR_PC *locator = NULL;
+    struct AILOCATOR *locator = NULL;
     if (system == NULL || set == NULL || !(set->flags & 1) || set->trigger_count >= 8 || gizmo == NULL) {
         return 0;
     }
@@ -103,7 +103,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
         locator = AIPathFindLocator(system, name);
     }
     if (gizmo->type_id == lever_gizmotype_id) {
-        GIZMO_LEVER_PC *lever = gizmo->object;
+        GIZMO_LEVER *lever = gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
         if (locator != NULL) {
             set->locators[set->trigger_count] = *locator;
@@ -173,7 +173,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
         ++set->trigger_count;
         return 1;
     } else if (gizmo->type_id == grapple_gizmotype_id) {
-        GRAPPLE_DYNAMIC_PC *grapple = gizmo->object;
+        GRAPPLE_DYNAMIC *grapple = gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
         if (locator != NULL) {
             set->locators[set->trigger_count] = *locator;
@@ -197,7 +197,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
     return 0;
 }
 
-static i32 TriggerGizmoAvailablePc(GIZMO_PC *gizmo) {
+static i32 TriggerGizmoAvailable(GIZMO_PC *gizmo) {
     if (gizmo->type_id == lever_gizmotype_id) {
         TRIGGER_LEVER_PC *lever = gizmo->object;
         if ((lever->flags & 0x80) && !(lever->flags & 2)) {
@@ -348,15 +348,14 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
             }
             count = player_count;
             for (index = 0; index < set->trigger_count && set->trigger_count > count; ++index) {
-                if ((set->occupied & (1 << index)) == 0 && set->trigger_indices[index] == -1 &&
-                    TriggerGizmoAvailablePc(set->gizmos[index])) {
-                    AILOCATOR_PC *locator = &set->locators[index];
+                if ((set->occupied & (1 << index)) == 0 && set->trigger_indices[index] == -1 && TriggerGizmoAvailable(set->gizmos[index])) {
+                    AILOCATOR *locator = &set->locators[index];
                     f32 best_distance = 1000000000.0f;
                     u16 routes = locator->path_info.connection->route_mask;
                     i32 best = -1;
                     i32 object_index;
                     if (routes != 0) {
-                        AIPATH_PC *path = locator->path_info.path;
+                        AIPATH *path = locator->path_info.path;
                         i32 route;
                         for (route = 0; route < path->route_count; ++route) {
                             if (((i64)routes & ((i64)1 << route)) != 0) {
@@ -438,8 +437,8 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
 
 void AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) {
     AITRIGGERSET_s *groups[32] = {0};
-    GIZFLOW_PC *flow;
-    FLOWBOX_PC *box;
+    GIZFLOW *flow;
+    FLOWBOX *box;
     FLOWBOXGIZMODATA *data;
     AITRIGGERSET_s *set;
     i32 index;

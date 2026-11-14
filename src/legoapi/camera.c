@@ -11,7 +11,7 @@ typedef struct LEVEL_JUDDER_FIELDS { // size 0xce
 } LEVEL_JUDDER_FIELDS;
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static f32 LegoapiCameraFabsPc(f32 f) {
+static f32 LegoapiCameraFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -29,7 +29,7 @@ void GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *source) {
     if (camera == NULL) {
         camera = GameCam;
     }
-    magnitude.value = LegoapiCameraFabsPc(amount);
+    magnitude.value = LegoapiCameraFabs(amount);
     if (magnitude.value > camera->judder_time) {
         if (source != NULL) {
             distance = NuVecDist(&((CAMERA_JUDDER_FIELDS *)camera)->position, source, NULL);
@@ -113,15 +113,15 @@ void GameCam_HitJudder(void) {
     GameCam_Judder(GameCam, amount, qrand() / 0x5556, NULL);
 }
 
-static i32 GameCamLookRotXPc = 10;
-static i32 GameCamLookRotYPc = 15;
-extern NUVEC PlayPlaneCornersPc[4];
+static i32 GameCamLookRotX = 10;
+static i32 GameCamLookRotY = 15;
+extern NUVEC PlayPlaneCorners[4];
 extern f32 PP_dist;
-extern f32 GameCamShakeRadiusPc;
-extern f32 GameCamShakeRetargetPc;
-extern f32 GameCamShakeDirSeekPc;
-extern f32 GameCamShakeOffsetSeekPc;
-extern i32 PlayPlanesUseRenderMtxPc;
+extern f32 GameCamShakeRadius;
+extern f32 GameCamShakeRetarget;
+extern f32 GameCamShakeDirSeek;
+extern f32 GameCamShakeOffsetSeek;
+extern i32 PlayPlanesUseRenderMtx;
 
 void GameCam_ResetLookRot(GAMECAMERA *camera) {
     if (camera == NULL) {
@@ -151,8 +151,8 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                 i32 look = 1;
                 f32 x;
                 f32 y;
-                if (AlternateGameCallbackPc != NULL) {
-                    look = AlternateGameCallbackPc(Player[i]);
+                if (AlternateGameCallback != NULL) {
+                    look = AlternateGameCallback(Player[i]);
                 }
                 if (look == 2) {
                     GAMEPAD_PC *pad = ((GAMEOBJECT *)Player[i])->pad;
@@ -181,8 +181,8 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                         y = (f32)((GAMEOBJECT *)Player[i])->pad->bound_pad->analog_left_y - 127.5f;
                         y *= 1.0f / 127.5f;
                     }
-                    camera->field_204 += (f32)((GameCamLookRotXPc << 16) / 360) * y;
-                    camera->field_208 += (f32)((GameCamLookRotYPc << 16) / 360) * x;
+                    camera->field_204 += (f32)((GameCamLookRotX << 16) / 360) * y;
+                    camera->field_208 += (f32)((GameCamLookRotY << 16) / 360) * x;
                     players += 1.0f;
                 } else if (look == 1) {
                     FRAME_PAD_PC *bound_pad = ((GAMEOBJECT *)Player[i])->pad->bound_pad;
@@ -190,8 +190,8 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                     x *= 1.0f / 127.5f;
                     y = (f32)bound_pad->analog_right_y - 127.5f;
                     y *= 1.0f / 127.5f;
-                    camera->field_204 += y * (f32)((GameCamLookRotXPc << 16) / 360);
-                    camera->field_208 += (f32)((GameCamLookRotYPc << 16) / 360) * x;
+                    camera->field_204 += y * (f32)((GameCamLookRotX << 16) / 360);
+                    camera->field_208 += (f32)((GameCamLookRotY << 16) / 360) * x;
                     players += 1.0f;
                 }
             }
@@ -202,8 +202,8 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
             }
         }
     }
-    camera->field_20c = SeekLinearF(camera->field_20c, camera->field_204, (f32)((GameCamLookRotXPc << 16) / 360) * FRAMETIME * 2.0f);
-    camera->field_210 = SeekLinearF(camera->field_210, camera->field_208, (f32)((GameCamLookRotYPc << 16) / 360) * FRAMETIME * 2.0f);
+    camera->field_20c = SeekLinearF(camera->field_20c, camera->field_204, (f32)((GameCamLookRotX << 16) / 360) * FRAMETIME * 2.0f);
+    camera->field_210 = SeekLinearF(camera->field_210, camera->field_208, (f32)((GameCamLookRotY << 16) / 360) * FRAMETIME * 2.0f);
     camera->field_214 = SeekValF(camera->field_214, camera->field_20c, 3.0f);
     camera->adjusted_yaw_offset = SeekValF(camera->adjusted_yaw_offset, camera->field_210, 3.0f);
 }
@@ -213,7 +213,7 @@ typedef struct PLAY_CORNER {
     NUVEC far_point;
 } PLAY_CORNER;
 
-static void MakePlayPlane(KEEP_SCREEN_PLANE_PC *plane, NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d) {
+static void MakePlayPlane(KEEP_SCREEN_PLANE *plane, NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d) {
     NUVEC first_edge;
     NUVEC second_edge;
     plane->point.x = (a->x + b->x + c->x + d->x) * 0.25f;
@@ -230,10 +230,10 @@ void MakePlayPlanes(GAMECAMERA *camera) {
     PLAY_CORNER corners[4];
     i32 i;
     for (i = 0; i < 4; i++) {
-        ray.x = PlayPlaneCornersPc[i].x * PANEL3DMULX;
-        ray.y = PlayPlaneCornersPc[i].y * PANEL3DMULY;
-        ray.z = PlayPlaneCornersPc[i].z;
-        NuVecMtxRotate(&ray, &ray, PlayPlanesUseRenderMtxPc != 0 ? &camera->render_mtx : &camera->target_mtx);
+        ray.x = PlayPlaneCorners[i].x * PANEL3DMULX;
+        ray.y = PlayPlaneCorners[i].y * PANEL3DMULY;
+        ray.z = PlayPlaneCorners[i].z;
+        NuVecMtxRotate(&ray, &ray, PlayPlanesUseRenderMtx != 0 ? &camera->render_mtx : &camera->target_mtx);
         NuVecAdd(&corners[i].near_point, &ray, &camera->position);
         NuVecNorm(&ray, &ray);
         corners[i].far_point.x = corners[i].near_point.x + PP_dist * ray.x;
@@ -241,12 +241,12 @@ void MakePlayPlanes(GAMECAMERA *camera) {
         corners[i].far_point.z = corners[i].near_point.z + PP_dist * ray.z;
     }
     // Plane order is near, left, right, top, bottom, far.
-    MakePlayPlane(&PlayPlanePc[1], &corners[0].near_point, &corners[0].far_point, &corners[2].far_point, &corners[2].near_point);
-    MakePlayPlane(&PlayPlanePc[2], &corners[1].far_point, &corners[1].near_point, &corners[3].near_point, &corners[3].far_point);
-    MakePlayPlane(&PlayPlanePc[3], &corners[0].near_point, &corners[1].near_point, &corners[1].far_point, &corners[0].far_point);
-    MakePlayPlane(&PlayPlanePc[4], &corners[2].near_point, &corners[2].far_point, &corners[3].far_point, &corners[3].near_point);
-    MakePlayPlane(&PlayPlanePc[0], &corners[0].near_point, &corners[2].near_point, &corners[3].near_point, &corners[1].near_point);
-    MakePlayPlane(&PlayPlanePc[5], &corners[0].far_point, &corners[1].far_point, &corners[3].far_point, &corners[2].far_point);
+    MakePlayPlane(&PlayPlane[1], &corners[0].near_point, &corners[0].far_point, &corners[2].far_point, &corners[2].near_point);
+    MakePlayPlane(&PlayPlane[2], &corners[1].far_point, &corners[1].near_point, &corners[3].near_point, &corners[3].far_point);
+    MakePlayPlane(&PlayPlane[3], &corners[0].near_point, &corners[1].near_point, &corners[1].far_point, &corners[0].far_point);
+    MakePlayPlane(&PlayPlane[4], &corners[2].near_point, &corners[2].far_point, &corners[3].far_point, &corners[3].near_point);
+    MakePlayPlane(&PlayPlane[0], &corners[0].near_point, &corners[2].near_point, &corners[3].near_point, &corners[1].near_point);
+    MakePlayPlane(&PlayPlane[5], &corners[0].far_point, &corners[1].far_point, &corners[3].far_point, &corners[2].far_point);
 }
 
 void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount) {
@@ -265,26 +265,26 @@ void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount) {
         amount = ambient_amount > 0.0f ? ambient_amount : 0.0f;
     }
     camera->shake_amplitude = SeekLinearF(camera->shake_amplitude, amount, FRAMETIME * 2.0f);
-    if (NuVecDistSqr(&camera->shake_direction, &camera->shake_target, NULL) < GameCamShakeRetargetPc * GameCamShakeRetargetPc) {
+    if (NuVecDistSqr(&camera->shake_direction, &camera->shake_target, NULL) < GameCamShakeRetarget * GameCamShakeRetarget) {
         camera->shake_target.x = 0.0f;
-        camera->shake_target.y = qrand() * (1.0f / 65535.0f) * GameCamShakeRadiusPc;
+        camera->shake_target.y = qrand() * (1.0f / 65535.0f) * GameCamShakeRadius;
         camera->shake_target.z = 0.0f;
         NuVecRotateZ(&camera->shake_target, &camera->shake_target, qrand());
         camera->shake_target.x *= 4.0f / 3.0f;
     }
-    rate = GameCamShakeDirSeekPc;
+    rate = GameCamShakeDirSeek;
     if (camera->shake_decay > 0.0f) {
-        rate = GameCamShakeDirSeekPc * camera->shake_freq;
+        rate = GameCamShakeDirSeek * camera->shake_freq;
     }
     SeekVec(&camera->shake_direction, &camera->shake_direction, &camera->shake_target, rate);
-    rate = GameCamShakeOffsetSeekPc;
+    rate = GameCamShakeOffsetSeek;
     if (camera->shake_decay > 0.0f) {
-        rate = GameCamShakeOffsetSeekPc * camera->shake_freq;
+        rate = GameCamShakeOffsetSeek * camera->shake_freq;
     }
     SeekVec(&camera->shake_offset, &camera->shake_offset, &camera->shake_direction, rate);
     NuVecScale(&offset, &camera->shake_offset, camera->shake_amplitude);
-    NuMtxPreRotateX(&camera->render_mtx, (i32)(offset.y / GameCamShakeRadiusPc * (camera->shake_amplitude * 910.0f)));
-    NuMtxPreRotateY(&camera->render_mtx, (i32)(offset.x / GameCamShakeRadiusPc * (camera->shake_amplitude * 910.0f)));
+    NuMtxPreRotateX(&camera->render_mtx, (i32)(offset.y / GameCamShakeRadius * (camera->shake_amplitude * 910.0f)));
+    NuMtxPreRotateY(&camera->render_mtx, (i32)(offset.x / GameCamShakeRadius * (camera->shake_amplitude * 910.0f)));
 }
 
 void CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVEC *reference) {
@@ -381,7 +381,7 @@ typedef struct CAMERA_GRABBER { // size 0x498
         (destination) = storage.value;                                                                                                     \
     } while (0)
 
-static void SetCameraEffectMatrixPc(void) {
+static void SetCameraEffectMatrix(void) {
     NUMTX effect_matrix;
     NUVEC scale;
     scale.x = 0.5f;
@@ -403,7 +403,7 @@ void SetCameraMatrices(void) {
     PCGlobalLightingState.specular_direction_missing = 1;
     PCGlobalLightingState.specular_intensity_present = 0;
     NuRndrSetSpecularLightPS(NULL, NULL);
-    SetCameraEffectMatrixPc();
+    SetCameraEffectMatrix();
 }
 
 #undef GAME_CAMERA_ABSOLUTE_PC

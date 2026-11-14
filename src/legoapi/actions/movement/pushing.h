@@ -14,7 +14,7 @@
 extern "C" {
 #endif
     void ReleasePush(GAMEOBJECT *);
-    extern i32 PlayerPushSpinnerDegreesPc;
+    extern i32 PlayerPushSpinnerDegrees;
     void PushCode(GAMEOBJECT *, i32);
 #ifdef __cplusplus
 }

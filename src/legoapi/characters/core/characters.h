@@ -28,17 +28,17 @@ typedef struct apicharactermodellist_s { // size 0x4
     i16 count;                           // 0x2
 } APICHARACTERMODELLIST;
 
-typedef struct KILLPARTS_CHARSCENE_PC { // size 0x10
-    struct NUGSCN_s *scene;             // 0x0
-    NUSPECIALHANDLE special_scene;      // 0x4
-} KILLPARTS_CHARSCENE_PC;
+typedef struct KILLPARTS_CHARSCENE { // size 0x10
+    struct NUGSCN_s *scene;          // 0x0
+    NUSPECIALHANDLE special_scene;   // 0x4
+} KILLPARTS_CHARSCENE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     void CharScene_Draw(struct WORLDINFO_s *, i32, struct numtx_s *, struct numtx_s *);
     NUSPECIALHANDLE *CharScene_FindHSpecial(struct WORLDINFO_s *, i32);
-    extern KILLPARTS_CHARSCENE_PC *KillPartsCharSceneAreaPc;
+    extern KILLPARTS_CHARSCENE *KillPartsCharSceneArea;
     void HeadMovement(struct gameobject_s *);
     void HairMovement(struct gameobject_s *);
     void CharScenes_LevelDump(struct WORLDINFO_s *);
@@ -52,7 +52,7 @@ extern "C" {
     void CharScenes_Init(VARIPTR *, VARIPTR *);
     void CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);
     extern void *IconScene;
-    extern struct KILLPARTS_CHARSCENE_PC *CharScene_Area;
+    extern struct KILLPARTS_CHARSCENE *CharScene_Area;
 #ifdef __cplusplus
 }
 #endif

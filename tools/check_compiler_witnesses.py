@@ -20,9 +20,9 @@ WITNESSES = [
     ('switch', 'src/legoapi/gameobjects.c', '_GetCharacterGoalSpeed'),
     ('struct-loop-call', 'src/legoapi/parts.c', '_Part_FindFromHSpecial'),
     ('private-call', 'src/legogame/move.c', '_DodgeCode'),
-    ('private-esi', 'src/legogame/move.c', '_BlockFindAttackPc'),
-    ('private-esi', 'src/legogame/move.c', '_BlockFindSpecialAttackPc'),
-    ('private-ecx-x87', 'src/legogame/move.c', '_BlockFindIncomingPartPc'),
+    ('private-esi', 'src/legogame/move.c', '_BlockFindAttack'),
+    ('private-esi', 'src/legogame/move.c', '_BlockFindSpecialAttack'),
+    ('private-ecx-x87', 'src/legogame/move.c', '_BlockFindIncomingPart'),
 ]
 
 
@@ -68,8 +68,8 @@ def negative_controls(pe, objects, records, bindings, directory):
         raise ValueError('Dodge immediate mutation precondition changed')
     immediate = mutated_object(dodge, '_DodgeCode', 14, 0x24, directory / 'immediate.obj')
     results = [{'name': 'wrong-immediate', 'rejected': not compare(pe, immediate, record, bindings)['exact_match']}]
-    # BlockFindAttackPc takes its object in ESI: [ESI+50h] becomes [ECX+50h].
-    symbol = '_BlockFindAttackPc'
+    # BlockFindAttack takes its object in ESI: [ESI+50h] becomes [ECX+50h].
+    symbol = '_BlockFindAttack'
     if dodge.extract_function(symbol)['bytes'][:3] != b'\x8b\x46\x50':
         raise ValueError('Private ESI ABI mutation precondition changed')
     abi = mutated_object(dodge, symbol, 1, 0x41, directory / 'abi.obj')

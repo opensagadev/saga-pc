@@ -15,14 +15,14 @@
 struct PART_PC;
 struct WORLDINFO_s;
 struct gameobject_s;
-struct gizmo_pc_s;
+struct gizmo_s;
 struct level_data_s;
 
 typedef void (*PART_KILL_PC)(struct PART_PC *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 VehicleBoltId7f18b4Pc;
+    extern i16 VehicleBoltId7f18b4;
     i32 TakeOverYodaSeekDistanceHack(struct gameobject_s *, struct gameobject_s *, NUVEC *);
     extern i32 dagobah_training;
     extern u8 minikitCounter_C;
@@ -33,12 +33,12 @@ extern "C" {
 }
 #endif
 
-typedef struct HOTHBATTLEE_NETPACKET_PC { // size 0x58
-    i16 targets[12];                      // 0x00
-    i8 defeated[12];                      // 0x18
-    f32 alpha[12];                        // 0x24
-    i32 count;                            // 0x54
-} HOTHBATTLEE_NETPACKET_PC;
+typedef struct HOTHBATTLEE_NETPACKET { // size 0x58
+    i16 targets[12];                   // 0x00
+    i8 defeated[12];                   // 0x18
+    f32 alpha[12];                     // 0x24
+    i32 count;                         // 0x54
+} HOTHBATTLEE_NETPACKET;
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,19 +66,19 @@ extern "C" {
 }
 #endif
 
-typedef struct TROOPERCANNON_PC { // size 0x30
-    struct gizmo_pc_s *base;      // 0x00
-    GIZBUILDIT_s *buildit;        // 0x04
-    struct gameobject_s *object;  // 0x08
-    char character_name[32];      // 0x0c
-    u8 rebuilding;                // 0x2c
-    u8 padding[3];                // 0x2d
-} TROOPERCANNON_PC;
+typedef struct TROOPERCANNON {   // size 0x30
+    struct gizmo_s *base;        // 0x00
+    GIZBUILDIT_s *buildit;       // 0x04
+    struct gameobject_s *object; // 0x08
+    char character_name[32];     // 0x0c
+    u8 rebuilding;               // 0x2c
+    u8 padding[3];               // 0x2d
+} TROOPERCANNON;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern TROOPERCANNON_PC troopercannons[4];
+    extern TROOPERCANNON troopercannons[4];
 #ifdef __cplusplus
 }
 #endif

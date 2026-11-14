@@ -25,7 +25,7 @@ extern "C" {
     extern u32 current_rgba;
     extern i32 apitext_half_rgb;
     extern i32 followon_line;
-    extern i32 TextPrintModePc;
+    extern i32 TextPrintMode;
     extern i32 create_qfont2dlower;
     extern i32 create_qfont2dz;
     extern i32 create_qfont3d;
@@ -34,8 +34,8 @@ extern "C" {
     extern struct vufnt_s *QFont3D;
     void UnloadGameFont(i32 unused);
     extern struct vufnt_s *QFont2DLower;
-    extern f32 SmartTextDefaultWidthPc;
-    extern f32 SmartTextLongestWidthPc;
+    extern f32 SmartTextDefaultWidth;
+    extern f32 SmartTextLongestWidth;
     extern struct numtl_s *MessageMtl;
     extern i32 MessageMtlInit;
     extern struct vufnt_s *QFont2DButtons;
@@ -72,10 +72,10 @@ extern "C" {
 #ifdef __cplusplus
 
 /* Private PC contract proposal. Include after saga.h. */
-struct PC_CONTROL_ITEM_PC { // size 0x8
-    u8 kind;                // 0x0
-    u8 command;             // 0x1
-    u8 label;               // 0x2
+struct PC_CONTROL_ITEM { // size 0x8
+    u8 kind;             // 0x0
+    u8 command;          // 0x1
+    u8 label;            // 0x2
 
     union { // size 0x1
         u8 flags;
@@ -93,10 +93,10 @@ struct PC_CONTROL_ITEM_PC { // size 0x8
     f32 pulse; // 0x4
 };
 
-struct PC_CONTROL_ROW_PC {     // size 0xc
-    i32 count;                 // 0x0
-    i32 selected;              // 0x4
-    PC_CONTROL_ITEM_PC *items; // 0x8
+struct PC_CONTROL_ROW {     // size 0xc
+    i32 count;              // 0x0
+    i32 selected;           // 0x4
+    PC_CONTROL_ITEM *items; // 0x8
 };
 
 struct PC_CONTROL_TEXT { // size 0x128
@@ -115,15 +115,15 @@ struct PC_CONTROL_TEXT { // size 0x128
     u8 unknown126[2];    // 0x126
 };
 
-struct PC_CONTROL_CONFIG_PC {               // size 0x14
+struct PC_CONTROL_CONFIG {                  // size 0x14
     struct vufnt_s *font;                   // 0x00
     void (*draw_background)(f32, f32, f32); // 0x04
-    PC_CONTROL_ITEM_PC **rows;              // 0x08
+    PC_CONTROL_ITEM **rows;                 // 0x08
     void (*play_sound)(i32);                // 0x0c
     const char *blocked_keys;               // 0x10
 };
 
-struct PC_CONTROL_SCREEN_PC {               // size 0xec4
+struct PC_CONTROL_SCREEN {                  // size 0xec4
     i32 result;                             // 0x000
     i32 player_count;                       // 0x004
     u8 drop_in;                             // 0x008
@@ -154,22 +154,22 @@ struct PC_CONTROL_SCREEN_PC {               // size 0xec4
     f32 keyboard_deadzone;                  // 0x098
     f32 saved_keyboard_deadzone;            // 0x09c
     struct vufnt_s *font;                   // 0x0a0
-    PC_CONTROL_ROW_PC rows[4];              // 0x0a4
+    PC_CONTROL_ROW rows[4];                 // 0x0a4
     u8 unknownd4[4];                        // 0x0d4
     PC_CONTROL_TEXT text[12];               // 0x0d8
     f32 elapsed;                            // 0xeb8
     struct numtl_s *material;               // 0xebc
     void (*play_sound)(i32);                // 0xec0
-    i32 ItemAllowsBinding(PC_CONTROL_ROW_PC *, i32, i32);
-    void AdvanceSelection(PC_CONTROL_ROW_PC *);
-    i32 CountPlayerRows(PC_CONTROL_ROW_PC *);
+    i32 ItemAllowsBinding(PC_CONTROL_ROW *, i32, i32);
+    void AdvanceSelection(PC_CONTROL_ROW *);
+    i32 CountPlayerRows(PC_CONTROL_ROW *);
     u32 ScaleAlpha(f32, u32);
     u32 ScaleColour(f32, f32, u32);
     u32 HashString(const char *);
     u8 PortAllowed(i32, i32, i32);
     u8 HasMissingBindings(void);
     void RefreshItems(void);
-    void Register(PC_CONTROL_CONFIG_PC *, VARIPTR *, VARIPTR *);
+    void Register(PC_CONTROL_CONFIG *, VARIPTR *, VARIPTR *);
     void Initialize(i32, i32, i32, u8);
     i32 HashConfiguration(void);
     void SaveConfiguration(void);
@@ -182,7 +182,7 @@ struct PC_CONTROL_SCREEN_PC {               // size 0xec4
     i32 fun_00420160(void);
     i32 fun_00420170(i32);
     void fun_00420180(void (*)(i32));
-    PC_CONTROL_SCREEN_PC *fun_00420190(void);
+    PC_CONTROL_SCREEN *fun_00420190(void);
     void fun_00420320(i32);
     void fun_00420420(i32);
     void fun_00420440(void);
@@ -195,12 +195,12 @@ struct PC_CONTROL_SCREEN_PC {               // size 0xec4
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern PC_CONTROL_SCREEN_PC PcControlScreenPc;
-    extern PC_CONTROL_ITEM_PC PcControlItemsPc[25];
-    extern PC_CONTROL_ITEM_PC *PcControlRowsPc[2];
-    extern i16 *PcControlTextIdsPc[45];
-    extern char *PcControlTextPc[45];
-    extern f32 PcControlBaselineAdjustPc;
+    extern PC_CONTROL_SCREEN PcControlScreen;
+    extern PC_CONTROL_ITEM PcControlItems[25];
+    extern PC_CONTROL_ITEM *PcControlRows[2];
+    extern i16 *PcControlTextIds[45];
+    extern char *PcControlText[45];
+    extern f32 PcControlBaselineAdjust;
 #ifdef __cplusplus
 }
 #endif
@@ -208,26 +208,26 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern u16 TextCrawlRotateXPc;
-    extern u16 TextCrawlRotateYPc;
-    extern u16 TextCrawlRotateZPc;
-    extern f32 TextCrawlTimePc;
-    extern f32 TextCrawlScaleXPc;
-    extern f32 TextCrawlScaleYPc;
-    extern f32 TextCrawlLineWidthPc;
-    extern f32 TextCrawlLineSpacingPc;
-    extern u32 TextCrawlRedPc;
-    extern u32 TextCrawlGreenPc;
-    extern u8 TextCrawlBluePc;
-    struct text_crawl_view_pc_s;
-    void MenuUpdateVideoPc(MENU *);
-    void MenuUpdateEffectsPc(MENU *);
-    void MenuApplyVideoPc(void);
-    void MenuCancelVideoPc(void);
-    void MenuUpdateVideoConfirmPc(MENU *);
-    void MenuUpdateHiresNoticePc(MENU *);
-    void MenuUpdateQuitPc(MENU *);
-    char *TextButtonStringPc(i32, const char *, const char *);
+    extern u16 TextCrawlRotateX;
+    extern u16 TextCrawlRotateY;
+    extern u16 TextCrawlRotateZ;
+    extern f32 TextCrawlTime;
+    extern f32 TextCrawlScaleX;
+    extern f32 TextCrawlScaleY;
+    extern f32 TextCrawlLineWidth;
+    extern f32 TextCrawlLineSpacing;
+    extern u32 TextCrawlRed;
+    extern u32 TextCrawlGreen;
+    extern u8 TextCrawlBlue;
+    struct text_crawl_view_s;
+    void MenuUpdateVideo(MENU *);
+    void MenuUpdateEffects(MENU *);
+    void MenuApplyVideo(void);
+    void MenuCancelVideo(void);
+    void MenuUpdateVideoConfirm(MENU *);
+    void MenuUpdateHiresNotice(MENU *);
+    void MenuUpdateQuit(MENU *);
+    char *TextButtonString(i32, const char *, const char *);
 #ifdef __cplusplus
 }
 #endif

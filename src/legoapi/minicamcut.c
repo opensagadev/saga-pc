@@ -18,7 +18,7 @@ typedef struct MINICAM_CAMERA { // size 0x230
 #define MINI_CAM_CAMERA (*(MINICAM_CAMERA *)GameCam)
 
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
-static f32 MinicamcutFdivPc(f32 a, f32 b) {
+static f32 MinicamcutFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
@@ -178,7 +178,7 @@ void MiniCam_ChangeMode(i32 mode) {
 
 void Minicam_AddDeltas(float duration) {
     f32 fraction;
-    fraction = MinicamcutFdivPc(MiniCam.delta_time, duration);
+    fraction = MinicamcutFdiv(MiniCam.delta_time, duration);
     if (fraction < 0.0f) {
         fraction = 0.0f;
     } else if (fraction > 1.0f) {
@@ -311,7 +311,7 @@ void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, 
         GameCam->blend_time = GameCam->blend_duration;
     }
     Hint_CancelCurrent();
-    ObstacleCamAlwaysSnapAnglesPc = 0;
+    ObstacleCamAlwaysSnapAngles = 0;
 }
 
 void GameCameraMakeMiniCut2(NUVEC *camera, NUVEC *target, i32 target_guid, float start, float end, float blend_in, float blend_out,
@@ -479,7 +479,7 @@ void Minicam_Update(void) {
             Minicam_CalcCamPos();
             return;
         }
-        ObstacleCamAlwaysSnapAnglesPc = 0;
+        ObstacleCamAlwaysSnapAngles = 0;
         Minicam_CalcCamPos();
         ObstacleCamEnd = 0.0f;
         if (ObstacleCamBlendOutTime == 0.0f) {

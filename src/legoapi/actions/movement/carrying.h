@@ -20,12 +20,12 @@ extern "C" {
     void SuperCarry_Throw(GAMEOBJECT *, i32);
     void SuperCarry_Release(GAMEOBJECT *);
     void SuperCarry_GetObjectPos(GAMEOBJECT *, NUVEC *, NUVEC *);
-    extern const f64 TerrainSkinSampleCountPc;
+    extern const f64 TerrainSkinSampleCount;
     struct carry_plug_s;
     struct carry_plug_sys_s;
     void SuperCarry_PartImpact(PART_PC *);
     i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *, NUVEC *, u16, i32);
-    extern f32 SuperCarryImpactSpeedPc;
+    extern f32 SuperCarryImpactSpeed;
     i32 SuperCarry_SetTargetMom(GAMEOBJECT *, float);
     i32 SuperCarry_YRotation(GAMEOBJECT *, u16);
     i32 SuperCarry_Carrying(GAMEOBJECT *);
@@ -35,8 +35,8 @@ extern "C" {
     extern i32 SuperCarry_KeepObjectLevel;
     extern i32 SuperCarry_AlignObject;
 
-    extern char SuitMetadataName0075314cPc[7];
-    extern char SuitMetadataName00753144Pc[6];
+    extern char SuitMetadataName0075314c[7];
+    extern char SuitMetadataName00753144[6];
     extern u32 (*CanSuperCarryFn)(GAMEOBJECT *);
 #ifdef __cplusplus
 }

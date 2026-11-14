@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char *NuHwDefaultParameterPc;
+    extern const char *NuHwDefaultParameter;
 #ifdef __cplusplus
 }
 #endif

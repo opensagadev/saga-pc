@@ -31,7 +31,7 @@ typedef struct dooku_c_s {       // size 0x14
 } DOOKU_C_PC;
 
 typedef struct kaminodisco_s {       // size 0x3e8
-    AIAREA_PC *area;                 // 0x000
+    AIAREA *area;                    // 0x000
     NUSPECIALHANDLE off[16];         // 0x004
     NUSPECIALHANDLE pending[16];     // 0x0c4
     NUSPECIALHANDLE occupied[16];    // 0x184
@@ -80,7 +80,7 @@ typedef struct kamino_e_s {                  // size 0x78
     GIZAIMESSAGE *show_hearts;               // 0x0c
     GIZAIMESSAGE *minicut_started;           // 0x10
     CUTINFO *intro_cutscene;                 // 0x14
-    AIAREA_PC *landing_area;                 // 0x18
+    AIAREA *landing_area;                    // 0x18
     NUSPECIALHANDLE slave1;                  // 0x1c
     KAMINOE_TURRET_READER_PC *turrets[4];    // 0x28
     KAMINOE_TURRET_READER_PC *active_turret; // 0x38
@@ -101,10 +101,10 @@ typedef struct kamino_e_s {                  // size 0x78
 #define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                                         \
     ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
 
-typedef struct KAMINO_SHIP_ZERO_ANGLES_PC { // size 0x8
-    u16 pitch;                              // 0x0
-    i32 yaw;                                // 0x4
-} KAMINO_SHIP_ZERO_ANGLES_PC;
+typedef struct KAMINO_SHIP_ZERO_ANGLES { // size 0x8
+    u16 pitch;                           // 0x0
+    i32 yaw;                             // 0x4
+} KAMINO_SHIP_ZERO_ANGLES;
 
 extern NUVEC boulder_old_pos[2];
 extern f32 boulder_wait;
@@ -121,7 +121,7 @@ typedef struct cruiserc_s {
     GAMEOBJECT *count_dooku;
     GIZAIMESSAGE *free_palpatine;
     GAMEOBJECT *palpatine;
-    AILOCATOR_PC *palpatine_locator;
+    AILOCATOR *palpatine_locator;
 } CRUISERC_PC;
 
 typedef struct cruiserc_netpacket_s {
@@ -155,7 +155,7 @@ typedef struct vadera_netpacket_s {
 
 typedef struct vaderc_s {
     GIZAIMESSAGE *final_fight_message;
-    AILOCATOR_PC *big_jump_locator;
+    AILOCATOR *big_jump_locator;
     NUSPECIALHANDLE rocks[10];
     i16 platform_ids[10];
     u8 progress_mask;
@@ -265,7 +265,7 @@ void CruiserDInit(WORLDINFO *world) {
     cruiserd_netpacket = SetLevelHack(12);
 }
 
-static f32 CruiserD_LiftSpeedPc = 0.1f;
+static f32 CruiserD_LiftSpeed = 0.1f;
 static f32 CruiserD_frame = 1.0f;
 static i32 CruiserD_direction = 1;
 static GIZAIMESSAGE *CruiserD_LiftChase_msg = NULL;
@@ -279,22 +279,22 @@ void CruiserDReset(WORLDINFO *world) {
             CruiserD_LiftAnim->ltime = 1.0f;
             CruiserD_direction = 1;
             CruiserD_frame = 1.0f;
-            CruiserD_LiftAnim->tfactor = CruiserD_LiftSpeedPc;
+            CruiserD_LiftAnim->tfactor = CruiserD_LiftSpeed;
         } else if (CruiserD_direction >= 0) {
             f32 *end_frame = ((NUGSCN *)CruiserD_Lift.scene)->instance_animation_data[CruiserD_LiftAnim->animation_index];
             CruiserD_LiftAnim->ltime = *end_frame;
             CruiserD_LiftAnim->playing = 0;
-            CruiserD_LiftAnim->tfactor = CruiserD_LiftSpeedPc;
+            CruiserD_LiftAnim->tfactor = CruiserD_LiftSpeed;
         } else {
             CruiserD_LiftAnim->ltime = CruiserD_frame;
             CruiserD_LiftAnim->playing = 1;
-            CruiserD_LiftAnim->tfactor = -CruiserD_LiftSpeedPc;
+            CruiserD_LiftAnim->tfactor = -CruiserD_LiftSpeed;
         }
     }
     CruiserD_LiftChase = 0;
 }
 
-static f32 CruiserD_ResetTimePc = 1.0f;
+static f32 CruiserD_ResetTime = 1.0f;
 
 void CruiserDUpdate(WORLDINFO *world) {
     CruiserD_LiftChase = 0;
@@ -306,7 +306,7 @@ void CruiserDUpdate(WORLDINFO *world) {
         if (CruiserD_direction >= 0 && LevGizmo[0] != NULL && LevGizmo[0]->object != NULL &&
             (((GIZPANEL_s *)LevGizmo[0]->object)->field_0x62[0] & 2) != 0) {
             CruiserD_LiftAnim->playing = 1;
-            CruiserD_LiftAnim->tfactor = -CruiserD_LiftSpeedPc;
+            CruiserD_LiftAnim->tfactor = -CruiserD_LiftSpeed;
             CruiserD_direction = -1;
         }
         if (CruiserD_LiftAnim->playing && CruiserD_Lift_plat_id != -1) {
@@ -324,7 +324,7 @@ void CruiserDUpdate(WORLDINFO *world) {
                     ObjHitObj(NULL, victim, -1, 0, 0, 1);
                     KillGameObject(victim, 2, 0);
                     if (CruiserD_direction >= 0 && MiscTime == 0.0f) {
-                        MiscTime = CruiserD_ResetTimePc;
+                        MiscTime = CruiserD_ResetTime;
                     }
                 }
             }
@@ -405,7 +405,7 @@ void KashyyykA_Panel(WORLDINFO *world) {
                 for (i = 0; i < remaining; i++) {
                     rescued[i] = 0;
                 }
-                DrawMeleeTargetsAlphaPc(characters, rescued, NULL, total);
+                DrawMeleeTargetsAlpha(characters, rescued, NULL, total);
             }
         }
     }
@@ -429,9 +429,9 @@ void KashyyykD_Reset(WORLDINFO *world) {
         sprintf(name, "ball%i", i + 1);
         if (NuSpecialFind(world->current_gscn, &LevHSpecial[i], name, 1)) {
             NuSpecialSetVisibility(&LevHSpecial[i], 0);
-            LevInstAnimResetPc.animations[i] = NuSpecialGetInstAnim(&LevHSpecial[i]);
-            LevInstAnimResetPc.animations[i]->ltime = 0.0f;
-            LevInstAnimResetPc.animations[i]->flags &= ~1u;
+            LevInstAnimReset.animations[i] = NuSpecialGetInstAnim(&LevHSpecial[i]);
+            LevInstAnimReset.animations[i]->ltime = 0.0f;
+            LevInstAnimReset.animations[i]->flags &= ~1u;
         }
     }
 }
@@ -459,7 +459,7 @@ void Boulder_Move(PART_PC *part, f32 unused) {
         reciprocal = 1.0f / FRAMETIME;
         NuVecScale(&part->velocity, &part->velocity, reciprocal);
     }
-    if (LevInstAnimResetPc.animations[index]->ltime > 1.0f && !(LevInstAnimResetPc.animations[index]->flags & 1)) {
+    if (LevInstAnimReset.animations[index]->ltime > 1.0f && !(LevInstAnimReset.animations[index]->flags & 1)) {
         KillPart(part, 0);
     } else if (part->active & 1) {
         PlaySfx("Kas_BoulderLoop", &part->position);
@@ -482,15 +482,15 @@ void Boulder_Kill(PART_PC *part, i32 unused) {
         GizmoBlowUpTypeBlowUp(WORLD, boulder_blowup_type, &part->position);
     }
     NuSpecialSetVisibility(&LevHSpecial[index], 0);
-    LevInstAnimResetPc.animations[index]->ltime = 0.0f;
-    LevInstAnimResetPc.animations[index]->flags &= ~1u;
+    LevInstAnimReset.animations[index]->ltime = 0.0f;
+    LevInstAnimReset.animations[index]->flags &= ~1u;
     boulder_part[index] = NULL;
 }
 
-static void BoulderSpawnPc(i32 index) {
-    ADDPART_PC params;
+static void BoulderSpawn(i32 index) {
+    ADDPART params;
     PART_PC *part;
-    NUINSTANIM **animation = &LevInstAnimResetPc.animations[index];
+    NUINSTANIM **animation = &LevInstAnimReset.animations[index];
     if (*animation != NULL && LevHSpecial[index].display_special != NULL) {
         params = Default_ADDPART;
         params.matrix = &NuMtxSetIdentityTemplate;
@@ -524,7 +524,7 @@ void KashyyykD_Update(WORLDINFO *world) {
         if (boulder_part[i_boulder] != NULL) {
             return;
         }
-        BoulderSpawnPc(i_boulder);
+        BoulderSpawn(i_boulder);
         ++i_boulder;
         if (i_boulder == 2) {
             i_boulder = 0;
@@ -535,8 +535,8 @@ void KashyyykD_Update(WORLDINFO *world) {
     }
 }
 
-i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                          i32 first_time, f32 unused6) {
+i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                          f32 unused6) {
     GAMEOBJECT *object;
     PART_PC *nearest = NULL;
     i32 can_attack = 1;
@@ -589,7 +589,7 @@ i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
             object->pad->buttons_pressed |= GAMEPAD_ACTION;
         }
     } else {
-        AIPACKET_PC *player_packet = system->player_1->ai;
+        AIPACKET *player_packet = system->player_1->ai;
         AIMoveInstruction(packet, &player_packet->last_path_position, player_packet->mover_height, &player_packet->path_info, 1,
                           packet->movement_instruction_parameter);
     }
@@ -606,7 +606,7 @@ void TempleC_AlwaysUpdate(WORLDINFO *unused0) {
     }
 }
 
-static f32 VaderA_TimeLimitsPc[3] = {30.0f, 15.0f, 0.0f};
+static f32 VaderA_TimeLimits[3] = {30.0f, 15.0f, 0.0f};
 VADERA_PC vader_a = {0};
 
 static void VaderA_StartCollapseStage(WORLDINFO *world) {
@@ -622,7 +622,7 @@ static void VaderA_StartCollapseStage(WORLDINFO *world) {
     vader_a.forces[1] = GizForces_FindForce(world, "force2");
     vader_a.forces[2] = GizForces_FindForce(world, "force3");
     vader_a.forces[3] = GizForces_FindForce(world, "force4");
-    vader_a.timer = VaderA_TimeLimitsPc[0];
+    vader_a.timer = VaderA_TimeLimits[0];
     vader_a.count = 1;
     SetGizAIMessage(gizaimessagesys, "InControlRoom", 1.0f, vader_a.in_control_room_message);
     SetGizAIMessage(gizaimessagesys, "ceiling_collapse", 1.0f, vader_a.ceiling_collapse_message);
@@ -655,7 +655,7 @@ void VaderA_Reset(WORLDINFO *world) {
     vader_a.reset_flag = 0;
 }
 
-static f32 VaderA_TimeBonusPc = 20.0f;
+static f32 VaderA_TimeBonus = 20.0f;
 static NUVEC vadar_cam_pos = {0.0f, 0.88f, -12.4f};
 static NUVEC vadar_cam_tgt = {0.0f, 2.0f, -17.4f};
 
@@ -684,12 +684,12 @@ void VaderA_Update(WORLDINFO *world) {
         if (vader_a.count < 3) {
             for (i = 0; i < 4; i++) {
                 if (vader_a.forces[i] != NULL && GizForce_Complete(vader_a.forces[i]) != 0) {
-                    vader_a.timer += VaderA_TimeBonusPc;
+                    vader_a.timer += VaderA_TimeBonus;
                     vader_a.subtitle = 1;
                     vader_a.forces[i] = NULL;
                 }
             }
-            if (vader_a.timer < VaderA_TimeLimitsPc[vader_a.count]) {
+            if (vader_a.timer < VaderA_TimeLimits[vader_a.count]) {
                 switch (vader_a.count) {
                     case 1:
                         SetGizAIMessage(gizaimessagesys, "ceiling_collapse", 2.0f, vader_a.ceiling_collapse_message);
@@ -834,7 +834,7 @@ void VaderC_Update(WORLDINFO *world) {
         }
     }
     if (netclient != 0 && GameTimer.time_elapsed < 5.0f) {
-        struct gizmo_pc_s *gizmo = GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, "obstacle20");
+        struct gizmo_s *gizmo = GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, "obstacle20");
         if (gizmo != NULL && gizmo->object != NULL) {
             ((GIZOBSTACLE *)gizmo->object)->progress_flags &= ~1u;
         }
@@ -858,7 +858,7 @@ void VaderC_Update(WORLDINFO *world) {
              (second != NULL && (second->flags_1fc & 0x80) != 0 && second->dead != 0 && (second->flags_1f8 & 0x40000) == 0)) &&
             (((u8 *)vaderc_netpacket)[0] == 0 || first == NULL || (first->flags_1fc & 0x80) == 0 || second == NULL ||
              (second->flags_1fc & 0x80) == 0) &&
-            (ChallengeMode == 0 || AreaGlobals_PC.field_1c < 10)) {
+            (ChallengeMode == 0 || AreaGlobals.field_1c < 10)) {
             vader_c.players_dead = 1;
             ResetLevel(NULL, NULL, 1);
         }

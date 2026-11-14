@@ -4,8 +4,8 @@
 
 /* Native autosave-cancel child1011 reached by PauseGame; save1000 child already implemented. */
 extern "C" {
-    extern u8 MenuAutoSaveCancelFirstPc;
-    extern i32 SaveloadPendingPc;
+    extern u8 MenuAutoSaveCancelFirst;
+    extern i32 SaveloadPending;
     extern u32 savetimer;
     i32 saveload_getinfo(void);
 
@@ -23,8 +23,8 @@ extern "C" {
             return;
         }
         if (memcard_savefailed) {
-            if (MenuAutoSaveCancelFirstPc) {
-                MenuAutoSaveCancelFirstPc = 0;
+            if (MenuAutoSaveCancelFirst) {
+                MenuAutoSaveCancelFirst = 0;
                 memcard_autosavecanceldelay = 5.0f;
                 g_enableButtonPrompts = 0;
                 return;
@@ -36,7 +36,7 @@ extern "C" {
             NewMenu(1000, -1, -1);
             memcard_autosavecanceldelay = 5.0f;
             MenuASCancelFinished = 1;
-            MenuAutoSaveCancelFirstPc = 1;
+            MenuAutoSaveCancelFirst = 1;
         }
         if (menu->confirm_pressed || menu->cancel_pressed) {
             MenuSFX = MENUSFX_MENUSELECT;
@@ -45,8 +45,8 @@ extern "C" {
     }
 
     void saveloadASCallEachFrame(void) {
-        if (SaveloadPendingPc && (i32)(GetTickCount() - savetimer) > 1000) {
-            SaveloadPendingPc = 0;
+        if (SaveloadPending && (i32)(GetTickCount() - savetimer) > 1000) {
+            SaveloadPending = 0;
             saveload_getinfo();
             saveload_status = 1;
         }

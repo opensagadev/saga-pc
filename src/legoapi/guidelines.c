@@ -182,43 +182,43 @@ void GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS
 char *GuideLineRegistryNamePc = "GuideLine";
 #pragma data_seg()
 #pragma data_seg(".data$GuideLineAddTypePc")
-ADDGIZMOTYPE_PC GuideLineAddTypePc = {0};
+ADDGIZMOTYPE_PC GuideLineAddType = {0};
 #pragma data_seg()
 
 ADDGIZMOTYPE_PC *GuideLines_RegisterGizmo(i32 unused_type_id) {
     char *name = GuideLineRegistryNamePc;
-    GuideLineAddTypePc = Default_ADDGIZMOTYPE;
-    GuideLineAddTypePc.name = name;
-    GuideLineAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
-    GuideLineAddTypePc.fns.options = 8;
-    GuideLineAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))GuideLines_GetMaxGizmos;
-    GuideLineAddTypePc.fns.add_gizmos_fn = (void *)GuideLines_AddGizmos;
-    GuideLineAddTypePc.fns.early_update_fn = NULL;
-    GuideLineAddTypePc.fns.late_update_fn = NULL;
-    GuideLineAddTypePc.fns.draw_fn = GuideLines_Draw;
-    GuideLineAddTypePc.fns.panel_draw_fn = NULL;
-    GuideLineAddTypePc.fns.get_gizmo_name_fn = GuideLine_GetGizmoName;
-    GuideLineAddTypePc.fns.get_output_fn = GuideLine_GetOutput;
-    GuideLineAddTypePc.fns.get_output_name_fn = GuideLine_GetOutputName;
-    GuideLineAddTypePc.fns.get_num_outputs_fn = (void *)GuideLine_GetNumOutputs;
-    GuideLineAddTypePc.fns.activate_fn = GuideLine_Activate;
-    GuideLineAddTypePc.fns.activate_rev_fn = NULL;
-    GuideLineAddTypePc.fns.set_visibility_fn = GuideLine_SetVisibility;
-    GuideLineAddTypePc.fns.get_visibility_fn = NULL;
-    GuideLineAddTypePc.fns.get_pos_fn = NULL;
-    GuideLineAddTypePc.fns.using_special_fn = NULL;
-    GuideLineAddTypePc.fns.bolt_hit_plat_fn = NULL;
-    GuideLineAddTypePc.fns.get_best_bolt_target_fn = NULL;
-    GuideLineAddTypePc.fns.bolt_hit_fn = NULL;
-    GuideLineAddTypePc.fns.allocate_progress_data_fn = GuideLines_AllocateProgressData;
-    GuideLineAddTypePc.fns.clear_progress_fn = (void (*)(void *, void *))GuideLines_ClearProgress;
-    GuideLineAddTypePc.fns.store_progress_fn = (void (*)(void *, void *, void *))GuideLines_StoreProgress;
-    GuideLineAddTypePc.fns.reset_fn = (void (*)(void *, void *, void *))GuideLines_Reset;
-    GuideLineAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))GuideLines_ReserveBufferSpace;
-    GuideLineAddTypePc.fns.load_fn = GuideLines_Load;
-    GuideLineAddTypePc.fns.post_load_fn = NULL;
-    GuideLineAddTypePc.fns.add_level_sfx_fn = NULL;
-    return &GuideLineAddTypePc;
+    GuideLineAddType = Default_ADDGIZMOTYPE;
+    GuideLineAddType.name = name;
+    GuideLineAddType.prefix = TextInputKeyNameTextPc7516c0;
+    GuideLineAddType.fns.options = 8;
+    GuideLineAddType.fns.get_max_gizmos_fn = (i32(*)(void *))GuideLines_GetMaxGizmos;
+    GuideLineAddType.fns.add_gizmos_fn = (void *)GuideLines_AddGizmos;
+    GuideLineAddType.fns.early_update_fn = NULL;
+    GuideLineAddType.fns.late_update_fn = NULL;
+    GuideLineAddType.fns.draw_fn = GuideLines_Draw;
+    GuideLineAddType.fns.panel_draw_fn = NULL;
+    GuideLineAddType.fns.get_gizmo_name_fn = GuideLine_GetGizmoName;
+    GuideLineAddType.fns.get_output_fn = GuideLine_GetOutput;
+    GuideLineAddType.fns.get_output_name_fn = GuideLine_GetOutputName;
+    GuideLineAddType.fns.get_num_outputs_fn = (void *)GuideLine_GetNumOutputs;
+    GuideLineAddType.fns.activate_fn = GuideLine_Activate;
+    GuideLineAddType.fns.activate_rev_fn = NULL;
+    GuideLineAddType.fns.set_visibility_fn = GuideLine_SetVisibility;
+    GuideLineAddType.fns.get_visibility_fn = NULL;
+    GuideLineAddType.fns.get_pos_fn = NULL;
+    GuideLineAddType.fns.using_special_fn = NULL;
+    GuideLineAddType.fns.bolt_hit_plat_fn = NULL;
+    GuideLineAddType.fns.get_best_bolt_target_fn = NULL;
+    GuideLineAddType.fns.bolt_hit_fn = NULL;
+    GuideLineAddType.fns.allocate_progress_data_fn = GuideLines_AllocateProgressData;
+    GuideLineAddType.fns.clear_progress_fn = (void (*)(void *, void *))GuideLines_ClearProgress;
+    GuideLineAddType.fns.store_progress_fn = (void (*)(void *, void *, void *))GuideLines_StoreProgress;
+    GuideLineAddType.fns.reset_fn = (void (*)(void *, void *, void *))GuideLines_Reset;
+    GuideLineAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))GuideLines_ReserveBufferSpace;
+    GuideLineAddType.fns.load_fn = GuideLines_Load;
+    GuideLineAddType.fns.post_load_fn = NULL;
+    GuideLineAddType.fns.add_level_sfx_fn = NULL;
+    return &GuideLineAddType;
 }
 
 void GuideLines_Draw(void *world, void *unused, f32 delta_time) {

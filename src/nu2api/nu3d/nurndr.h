@@ -11,17 +11,17 @@
 #include "nu2api/nustencilshadows_PC.h"
 #endif
 
-struct DWA_WEIGHT_BLOCK_PC;
+struct DWA_WEIGHT_BLOCK;
 struct NUVEC4;
 struct numtl_s;
 struct numtx_s;
 
-typedef struct nurnd_vertex3d_pc_s { // size 0x24
-    NUVEC position;                  // 0x00
-    NUVEC normal;                    // 0x0c
-    u32 colour;                      // 0x18
-    f32 u;                           // 0x1c
-    f32 v;                           // 0x20
+typedef struct nurnd_vertex3d_s { // size 0x24
+    NUVEC position;               // 0x00
+    NUVEC normal;                 // 0x0c
+    u32 colour;                   // 0x18
+    f32 u;                        // 0x1c
+    f32 v;                        // 0x20
 } NURND_VERTEX3D_PC;
 
 #ifdef __cplusplus
@@ -62,8 +62,8 @@ extern "C" {
     extern i32 PS2_REZ_H;
     extern i32 rndr_blend_shape_deformer_wt_cnt;
     extern i32 rndr_blend_shape_deformer_wt_ptrs_cnt;
-    struct DWA_WEIGHT_BLOCK_PC *NuRndrCreateBlendShapeDeformerWeightsArray(i32);
-    struct DWA_WEIGHT_BLOCK_PC **NuRndrCreateBlendShapeDWAPointers(i32);
+    struct DWA_WEIGHT_BLOCK *NuRndrCreateBlendShapeDeformerWeightsArray(i32);
+    struct DWA_WEIGHT_BLOCK **NuRndrCreateBlendShapeDWAPointers(i32);
     i32 NuRndrGobj(void *object, struct numtx_s *matrix);
     i32 NuRndrSetSpecularLightPS(const NUVEC *, const struct NUVEC4 *);
     i32 NuRndrSetFxMtx(struct numtx_s *);

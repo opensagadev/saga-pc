@@ -12,7 +12,7 @@
 #endif
 
 typedef struct EDAIAREA_s { // size 0x48
-    /* Editor area record: a list link ahead of an AIAREA_PC image (rebuild copies it). */
+    /* Editor area record: a list link ahead of an AIAREA image (rebuild copies it). */
     NULISTLNK link;    // 0x00
     char name[16];     // 0x08
     NUVEC position;    // 0x18

@@ -21,18 +21,18 @@ extern "C" {
 
     void GizBuildIt_SetToStart(void *, i32, i32);
     void ReleaseBuildIt(GAMEOBJECT *, i32);
-    i32 GizBuildIts_UpdateHint(HINT_PC *);
+    i32 GizBuildIts_UpdateHint(HINT *);
     extern i16 GizBuilditGDeb[6];
     void GizGetBuildItPlayerPos(GAMEOBJECT *, NUVEC *, NUVEC *);
     void GizBuildItPushAwayFromStart(GAMEOBJECT *, void *);
     f32 GizBuildItMul(GAMEOBJECT *);
     void *GizBuildIt_Find(WORLDINFO *, char *);
     extern i32 (*GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle);
-    extern i32 (*GizBuildIt_CanStartBuildingFn)(struct GIZBUILDIT_PC *input, GAMEOBJECT *object);
-    extern void (*GizBuildIt_FinishFn)(struct GIZBUILDIT_PC *input);
+    extern i32 (*GizBuildIt_CanStartBuildingFn)(struct GIZBUILDIT *input, GAMEOBJECT *object);
+    extern void (*GizBuildIt_FinishFn)(struct GIZBUILDIT *input);
     void GizBuildIt_Finish(struct GIZBUILDIT_s *buildit);
-    void GizBuildIt_SetToEnd(GIZBUILDIT_PC *);
-    GIZBUILDIT_PC *GizBuildIt_FindNearest(WORLDINFO *, GAMEOBJECT *, i32, i32);
+    void GizBuildIt_SetToEnd(GIZBUILDIT *);
+    GIZBUILDIT *GizBuildIt_FindNearest(WORLDINFO *, GAMEOBJECT *, i32, i32);
 
     void BuildIt_MoveCode(GAMEOBJECT *);
     void GizBuildItPushAwayFromEnd(GAMEOBJECT *);

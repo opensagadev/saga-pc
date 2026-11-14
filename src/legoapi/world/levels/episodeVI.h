@@ -29,9 +29,9 @@ extern "C" {
     extern u64 routemask_efloor_off;
     extern f32 eFloor_timer;
     extern NUSPECIALHANDLE *hspecial_efloor;
-    extern i32 SarlaccPowerPc;
-    extern i32 SarlaccRechargingPc;
-    extern i32 SarlaccTargetShieldPc[2];
+    extern i32 SarlaccPower;
+    extern i32 SarlaccRecharging;
+    extern i32 SarlaccTargetShield[2];
     extern const char EpisodeVI_magnet_drop[21];
     extern const char EpisodeVI_magnet_on[14];
     extern const char EpisodeVI_cannon_1[9];

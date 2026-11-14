@@ -80,7 +80,7 @@ typedef struct {         // size 0x3c
 typedef struct ai_gizmo_name_process_s { // size 0xdc
     char name[16];                       // 0x00
     u8 unknown_10[4];                    // 0x10
-    AISCRIPT_PC *script;                 // 0x14
+    AISCRIPT *script;                    // 0x14
     u8 unknown_18[0x98];                 // 0x18
     char *context_name;                  // 0xb0
     char *locator_name;                  // 0xb4
@@ -89,8 +89,8 @@ typedef struct ai_gizmo_name_process_s { // size 0xdc
 } AI_GIZMO_NAME_PROCESS_PC;
 
 extern char TextInputKeyNameTextPc7516c0[1];
-extern char *BlowupOutputNamesPc[3];
-extern char SpinnerOutputBufferPc[14];
+extern char *BlowupOutputNames[3];
+extern char SpinnerOutputBuffer[14];
 
 typedef struct {         // size 0x60
     u32 built[2];        // 0x00
@@ -287,10 +287,10 @@ typedef struct {        // size 0x48
 } BLOWUP_ANIM_FIRST_DRAW_PC;
 
 #pragma data_seg(".data$SpinnerOutputBufferPc")
-char SpinnerOutputBufferPc[14] = "100% Complete";
+char SpinnerOutputBuffer[14] = "100% Complete";
 #pragma data_seg()
 #pragma data_seg(".data$TurretOutputBufferPc")
-char TurretOutputBufferPc[32] = {0};
+char TurretOutputBuffer[32] = {0};
 #pragma data_seg()
 char *GizmoRegistryGizTurretsNamePtrPc = "GizTurret";
 
@@ -298,7 +298,7 @@ void SetLevelExBlowupFlags(u32 flags) {
     EXBLOWUPFLAGS = flags;
 }
 
-void SetLevelBlowupCallbackPc(LEVEL_BLOWUP_CALLBACK_PC callback) {
+void SetLevelBlowupCallback(LEVEL_BLOWUP_CALLBACK_PC callback) {
     if (callback != NULL) {
         BlowupExFunc = callback;
     }
@@ -368,8 +368,8 @@ i32 InitGizmoBlowupTypes(WORLDINFO *world) {
     if ((u16)world->current_level->max_gizmoblowuptypes == 0) {
         return 0;
     }
-    world->gizmo_blowup_types = GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                (u16)world->current_level->max_gizmoblowuptypes * sizeof(GIZMOBLOWUPTYPE_PC));
+    world->gizmo_blowup_types =
+        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, (u16)world->current_level->max_gizmoblowuptypes * sizeof(GIZMOBLOWUPTYPE));
     return world->gizmo_blowup_types != NULL;
 }
 
@@ -446,12 +446,12 @@ i32 Blowup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignored) {
 }
 
 #pragma data_seg(".data$BlowupOutputNamesPc")
-char *BlowupOutputNamesPc[3] = {"Blownup", "Punched", "Plugging"};
+char *BlowupOutputNames[3] = {"Blownup", "Punched", "Plugging"};
 #pragma data_seg()
 
 char *Blowup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     if ((u32)output <= 2) {
-        return BlowupOutputNamesPc[output];
+        return BlowupOutputNames[output];
     }
     return NULL;
 }
@@ -617,9 +617,9 @@ u32 GizmoBlowups_TotalScore(WORLDINFO *world) {
     return total;
 }
 
-GIZMOBLOWUPTYPE_PC *GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *special, i32 flags, i32 *result) {
+GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *special, i32 flags, i32 *result) {
     i32 i;
-    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUPTYPE *type;
     NUINSTANIM *animation;
     for (i = 0; i < world->gizmo_blowup_type_count; ++i) {
         if (NuSpecialCompare(&world->gizmo_blowup_types[i].animated_special, special) &&
@@ -661,11 +661,11 @@ GIZMOBLOWUPTYPE_PC *GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *specia
     return type;
 }
 
-void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *type, WORLDINFO *world) {
-    GIZMOBLOWUPTYPE_PC *types;
-    GIZMOBLOWUPTYPE_PC *last_allocated_type;
-    GIZMOBLOWUPTYPE_PC *moved_type;
-    GIZMOBLOWUPTYPE_PC *slot;
+void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE *type, WORLDINFO *world) {
+    GIZMOBLOWUPTYPE *types;
+    GIZMOBLOWUPTYPE *last_allocated_type;
+    GIZMOBLOWUPTYPE *moved_type;
+    GIZMOBLOWUPTYPE *slot;
     i32 i;
     if (world == NULL || world->gizmo_blowup_type_count <= 0 || type == NULL) {
         return;
@@ -682,7 +682,7 @@ void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *type, WORLDINFO *world) {
         for (moved_type = type + 1; moved_type <= last_allocated_type; ++moved_type) {
             for (i = 0; i < world->gizmo_blowup_count; ++i) {
                 GIZMOBLOWUP_PC *instance = &world->gizmo_blowups[i];
-                GIZMOBLOWUPTYPE_PC *assigned = instance->type;
+                GIZMOBLOWUPTYPE *assigned = instance->type;
                 if (assigned == moved_type) {
                     instance->type = assigned - 1;
                 }
@@ -724,7 +724,7 @@ void GizmoSwapBlowups(GIZMOBLOWUP_PC *first, GIZMOBLOWUP_PC *second) {
 void GizmoSortBlowups(WORLDINFO *world) {
     i32 blowup_index = 0;
     i32 type_index;
-    GIZMOBLOWUPTYPE_PC *type = world->gizmo_blowup_types;
+    GIZMOBLOWUPTYPE *type = world->gizmo_blowup_types;
     GIZMOBLOWUP_PC *blowup;
     GIZMOBLOWUP_PC *candidate;
     GIZMOBLOWUP_PC *end;
@@ -765,7 +765,7 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 offset,
     NUVEC direction;
     NUVEC velocity;
     NUMTX matrix;
-    ADDPART_PC part;
+    ADDPART part;
     if (offset) {
         effect_position.x += instance->effect_offset.x;
         effect_position.y += instance->effect_offset.y;
@@ -807,11 +807,11 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 offset,
                 NuMtxSetIdentity(&matrix);
                 *(NUVEC *)&matrix.m30 = *position;
                 velocity = v010;
-                random = (i16)(qrand() * PlayerRandomScalePc * ((MAXBLOWUPRANDSPANG << 16) / 360) -
-                               ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360);
+                random =
+                    (i16)(qrand() * PlayerRandomScale * ((MAXBLOWUPRANDSPANG << 16) / 360) - ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360);
                 NuVecRotateX(&velocity, &velocity, instance->launch_pitch + random);
-                random = (i16)(qrand() * PlayerRandomScalePc * ((MAXBLOWUPRANDSPANG << 16) / 360) -
-                               ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360);
+                random =
+                    (i16)(qrand() * PlayerRandomScale * ((MAXBLOWUPRANDSPANG << 16) / 360) - ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360);
                 NuVecRotateY(&velocity, &velocity, instance->launch_yaw + random);
                 NuVecScale(&velocity, &velocity, type->fragment_speed);
                 if (object != NULL) {
@@ -850,7 +850,7 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 offset,
 i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type, i32 damage, GAMEOBJECT *object, i32 hit_context) {
     NUINSTANIM *animation;
     NUINSTANIM *burst;
-    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUPTYPE *type;
     i32 has_burst;
     i32 destroyed = 0;
     i32 effect_flags = 0;
@@ -1207,7 +1207,7 @@ void PlayAnim(NUINSTANIM *animation, f32 *playback, f32 speed, i32 backwards) {
 
 void GizmoBlowupLateUpdate(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
-    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUPTYPE *type;
     i32 index;
     if (!world) {
         return;
@@ -1346,7 +1346,7 @@ void GizmoBlowupGenShadowMatrix(GIZMOBLOWUP_PC *blowup, NUMTX *matrix) {
         return;
     }
     NuMtxSetIdentity(matrix);
-    NuMtxSetScale(matrix, &GizmoBlowupUnitScalePc);
+    NuMtxSetScale(matrix, &GizmoBlowupUnitScale);
     matrix->translation.x = 0.0f;
     matrix->translation.y = 0.0f;
     matrix->translation.z = 0.0f;
@@ -1359,7 +1359,7 @@ void GizmoBlowupGenShadowMatrix(GIZMOBLOWUP_PC *blowup, NUMTX *matrix) {
     NuMtxTranslate(matrix, &position);
 }
 
-GIZMOBLOWUPTYPE_PC *GizmoBlowup_FindType(char *name, WORLDINFO *world) {
+GIZMOBLOWUPTYPE *GizmoBlowup_FindType(char *name, WORLDINFO *world) {
     i32 i;
     if (world == NULL) {
         return NULL;
@@ -1379,9 +1379,9 @@ GIZMOBLOWUPTYPE_PC *GizmoBlowup_FindType(char *name, WORLDINFO *world) {
 
 i32 gizmoblowup_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
-    GIZMOBLOWUPTYPE_PC type;
+    GIZMOBLOWUPTYPE type;
     GIZMOBLOWUP_PC blowup;
-    GIZMOBLOWUPTYPE_PC *output_type;
+    GIZMOBLOWUPTYPE *output_type;
     GIZMOBLOWUP_PC *output_blowup;
     char text[256];
     char lookup_text[256];
@@ -1398,12 +1398,12 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
     i32 added_types = 0;
     NUINSTANIM *animation;
     NUVEC position;
-    GIZMOBLOWUPTYPE_PC *found_type;
+    GIZMOBLOWUPTYPE *found_type;
     (void)data;
     if (world->gizmo_blowup_types == NULL || world->gizmo_blowups == NULL) {
         return 0;
     }
-    memset(world->gizmo_blowup_types, 0, (u16)world->current_level->max_gizmoblowuptypes * sizeof(GIZMOBLOWUPTYPE_PC));
+    memset(world->gizmo_blowup_types, 0, (u16)world->current_level->max_gizmoblowuptypes * sizeof(GIZMOBLOWUPTYPE));
     if (world->gizmo_blowup_count != 0) {
         return 0;
     }
@@ -1705,7 +1705,7 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
 }
 
 void GizmoBlowupsFinalSetup(WORLDINFO *world) {
-    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUPTYPE *type;
     GIZMOBLOWUP_PC *blowup;
     NUINSTANIM *animation;
     NUVEC centre;
@@ -1757,7 +1757,7 @@ void GizmoBlowupsFinalSetup(WORLDINFO *world) {
             blowup->bounds_min = blowup->bounds_max;
         }
         GizmoBlowupUpdateMatrix(blowup);
-        blowup->initial_health = (u8)(blowup->initial_health * GizmoBlowupHitMultiplierPc.low_byte);
+        blowup->initial_health = (u8)(blowup->initial_health * GizmoBlowupHitMultiplier.low_byte);
     }
     GizBlowup_DeleteTerrain();
     GizBlowup_InitTerrain();
@@ -1840,7 +1840,7 @@ GIZMOBLOWUP_PC *GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 extra_rad
         NuVecRotateY(&delta, &delta, -object->movement_facing_angle);
         if (delta.z >= 0.0f) {
             behind = 1;
-            if (mode != 4 || LegoActPunchBehindPc == -1 || object->character_model->model_data_b[LegoActPunchBehindPc] == NULL) {
+            if (mode != 4 || LegoActPunchBehind == -1 || object->character_model->model_data_b[LegoActPunchBehind] == NULL) {
                 continue;
             }
         } else {
@@ -2172,7 +2172,7 @@ i32 GizmoBlowupCheckProximity(WORLDINFO *world, GAMEOBJECT *object) {
 
 void GizmoBlowupVisibilityOverrides(WORLDINFO *world) {
     GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
-    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUPTYPE *type;
     i32 index;
     for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
         if ((blowup->type->animation_flags & 0x2000) && !(blowup->draw_flags & 0x800000)) {
@@ -2195,7 +2195,7 @@ i32 GizmoBlowupTypeGetCount(WORLDINFO *world) {
 }
 
 char *GizmoBlowupTypeGetNameFromIndex(WORLDINFO *world, i32 index) {
-    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUPTYPE *type;
     if (world == NULL || index == -1 || index > world->gizmo_blowup_type_count) {
         return NULL;
     }
@@ -2204,7 +2204,7 @@ char *GizmoBlowupTypeGetNameFromIndex(WORLDINFO *world, i32 index) {
 }
 
 void GizmoBlowUpTypeBlowUp(WORLDINFO *world, i32 index, NUVEC *position) {
-    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUPTYPE *type;
     GIZMOBLOWUP_PC temporary;
     i32 flags;
     if (!world || index == -1 || index > world->gizmo_blowup_type_count) {
@@ -2229,30 +2229,30 @@ void GizmoBlowUpTypeBlowUp(WORLDINFO *world, i32 index, NUVEC *position) {
 }
 
 void GizmoBlowupResetNameTable(void) {
-    memset(GizmoBlowupNameTablePc, 0, sizeof(GizmoBlowupNameTablePc));
-    GizmoBlowupNameCountPc = 0;
+    memset(GizmoBlowupNameTable, 0, sizeof(GizmoBlowupNameTable));
+    GizmoBlowupNameCount = 0;
 }
 
 i32 GizmoBlowupGetNameTableId(char *name) {
     i32 i;
-    for (i = 0; i < GizmoBlowupNameCountPc; ++i) {
-        if (!NuStrICmp(GizmoBlowupNameTablePc[i], name)) {
+    for (i = 0; i < GizmoBlowupNameCount; ++i) {
+        if (!NuStrICmp(GizmoBlowupNameTable[i], name)) {
             return i;
         }
     }
-    if (GizmoBlowupNameCountPc < 32) {
-        NuStrNCpy(GizmoBlowupNameTablePc[GizmoBlowupNameCountPc], name, 32);
-        GizmoBlowupNameCountPc++;
-        return GizmoBlowupNameCountPc - 1;
+    if (GizmoBlowupNameCount < 32) {
+        NuStrNCpy(GizmoBlowupNameTable[GizmoBlowupNameCount], name, 32);
+        GizmoBlowupNameCount++;
+        return GizmoBlowupNameCount - 1;
     }
     return -1;
 }
 
 i32 GizmoBlowupGetTypeFromNameTableId(WORLDINFO *world, i32 id) {
     char *name;
-    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUPTYPE *type;
     i32 i;
-    if (id >= 0 && id < GizmoBlowupNameCountPc && (name = GizmoBlowupNameTablePc[id]) != NULL) {
+    if (id >= 0 && id < GizmoBlowupNameCount && (name = GizmoBlowupNameTable[id]) != NULL) {
         type = world->gizmo_blowup_types;
         for (i = 0; i < world->gizmo_blowup_type_count; ++i, ++type) {
             if (!NuStrICmp(type->name, name)) {
@@ -2401,7 +2401,7 @@ void GizmoBlowupDraw(void *world_ptr, void *data, f32 delta_time) {
 void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
     WORLDINFO *world = world_pointer;
     GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
-    GIZMOBLOWUPTYPE_PC *type;
+    GIZMOBLOWUPTYPE *type;
     NUSPECIALHANDLE *special;
     NUINSTANIM *animation;
     NUMTX animated_matrix;

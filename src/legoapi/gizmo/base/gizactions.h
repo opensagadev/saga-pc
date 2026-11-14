@@ -22,26 +22,26 @@
 
 #if SAGA_LEGOAPI_GIZMO_BASE_GIZACTIONS_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMO_BASE_GIZACTIONS_H_STOP)
 
-struct AIPACKET_PC;
-struct AISCRIPTPROCESS_PC;
+struct AIPACKET;
+struct AISCRIPTPROCESS;
 struct AISYS_PC;
-struct API_ACTION_INFO_PC;
-struct API_EXTRA_ACTION_PC;
-struct FLOWBOX_PC;
+struct API_ACTION_INFO;
+struct API_EXTRA_ACTION;
+struct FLOWBOX;
 
-typedef struct GIZFLOW_PC {       // size 0x10
-    void *gizmo_sys;              // 0x0
-    i32 flowbox_count;            // 0x4
-    struct FLOWBOX_PC *flowboxes; // 0x8
-    u8 frame;                     // 0xc
-    u8 pointers_need_reset;       // 0xd
-} GIZFLOW_PC;
+typedef struct GIZFLOW {       // size 0x10
+    void *gizmo_sys;           // 0x0
+    i32 flowbox_count;         // 0x4
+    struct FLOWBOX *flowboxes; // 0x8
+    u8 frame;                  // 0xc
+    u8 pointers_need_reset;    // 0xd
+} GIZFLOW;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const f32 PlayerBuildItNegativeLimitPc;
-    void SetActionInfo(struct API_ACTION_INFO_PC *, struct API_EXTRA_ACTION_PC *);
+    extern const f32 PlayerBuildItNegativeLimit;
+    void SetActionInfo(struct API_ACTION_INFO *, struct API_EXTRA_ACTION *);
     i32 ActionFromName(const char *);
     extern const char AICameraLiteral7580f0[12];
     extern const char AICameraLiteral7580e4[12];
@@ -86,10 +86,10 @@ extern "C" {
 extern "C" {
 #endif
 
-    i32 Action_CameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS_PC *, struct AIPACKET_PC *, char **, i32, i32, f32);
-    i32 Action_EndCameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS_PC *, struct AIPACKET_PC *, char **, i32, i32, f32);
-    void RegisterGizActions(GIZACTIONDEF_PC *definitions);
-    extern GIZACTIONDEF_PC game_gizactiondefs[24];
+    i32 Action_CameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_EndCameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    void RegisterGizActions(GIZACTIONDEF *definitions);
+    extern GIZACTIONDEF game_gizactiondefs[24];
 #ifdef __cplusplus
 }
 #endif

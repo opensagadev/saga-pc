@@ -27,7 +27,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 # Functions whose code shifts with unrelated header or unit changes.
-FRAGILE = {"SubItemMenu", "InitGameAfterConfig", "BlockadeRunnerDEjectCreaturePc", "NuRndrParticleGroup"}
+FRAGILE = {"SubItemMenu", "InitGameAfterConfig", "BlockadeRunnerDEjectCreature", "NuRndrParticleGroup"}
 OUT = ROOT / "build/unitscore"
 
 

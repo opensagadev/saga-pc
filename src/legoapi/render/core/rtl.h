@@ -11,51 +11,51 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-struct BURN_PARAMETERS_PC;
+struct BURN_PARAMETERS;
 struct numtx_s;
 
-typedef struct RTL_DATA_PC {                    // size 0x144
-    struct RTL_LIGHT_PC *directional_lights[3]; // 0x000
-    f32 directional_strengths[3];               // 0x00c
-    struct RTL_LIGHT_PC *ambient_lights[3];     // 0x018
-    f32 ambient_strengths[3];                   // 0x024
-    struct RTL_LIGHT_PC *anti_lights[3];        // 0x030
-    f32 anti_strengths[3];                      // 0x03c
-    i32 anti_light_count;                       // 0x048
-    struct RTL_LIGHT_PC *cached_light;          // 0x04c
-    NUVEC shadow_direction;                     // 0x050
-    f32 cached_value;                           // 0x05c
-    NUVEC previous_shadow_direction;            // 0x060
-    f32 previous_shadow_value;                  // 0x06c
-    f32 shadow_blend;                           // 0x070
-    u16 cached_light_uid;                       // 0x074
-    u16 unknown_76;                             // 0x076
-    NUVEC intensity_vectors[3];                 // 0x078
-    NUVEC direction[3];                         // 0x09c
-    NUVEC ambient;                              // 0x0c0
-    u32 unknown_cc[0x15];                       // 0x0cc
-    f32 field_120;                              // 0x120
-    NUVEC blended_shadow_direction;             // 0x124
-    f32 blended_shadow_value;                   // 0x130
-    NUVEC field_134;                            // 0x134
-    f32 specular_value;                         // 0x140
-} RTL_DATA_PC;
+typedef struct RTL_DATA {                    // size 0x144
+    struct RTL_LIGHT *directional_lights[3]; // 0x000
+    f32 directional_strengths[3];            // 0x00c
+    struct RTL_LIGHT *ambient_lights[3];     // 0x018
+    f32 ambient_strengths[3];                // 0x024
+    struct RTL_LIGHT *anti_lights[3];        // 0x030
+    f32 anti_strengths[3];                   // 0x03c
+    i32 anti_light_count;                    // 0x048
+    struct RTL_LIGHT *cached_light;          // 0x04c
+    NUVEC shadow_direction;                  // 0x050
+    f32 cached_value;                        // 0x05c
+    NUVEC previous_shadow_direction;         // 0x060
+    f32 previous_shadow_value;               // 0x06c
+    f32 shadow_blend;                        // 0x070
+    u16 cached_light_uid;                    // 0x074
+    u16 unknown_76;                          // 0x076
+    NUVEC intensity_vectors[3];              // 0x078
+    NUVEC direction[3];                      // 0x09c
+    NUVEC ambient;                           // 0x0c0
+    u32 unknown_cc[0x15];                    // 0x0cc
+    f32 field_120;                           // 0x120
+    NUVEC blended_shadow_direction;          // 0x124
+    f32 blended_shadow_value;                // 0x130
+    NUVEC field_134;                         // 0x134
+    f32 specular_value;                      // 0x140
+} RTL_DATA;
 #ifdef __cplusplus
 extern "C" {
 #endif
 
     /* Private-register helpers remain local; no public stack prototypes. */
-    typedef struct RTL_LIGHT_PC { // size 0x8c
-        NUVEC position;           // 0x00
-        NUVEC direction;          // 0x0c
-        NUVEC ambient;            // 0x18
-        NUVEC colour;             // 0x24
-        NUVEC secondary_colour;   // 0x30
-        f32 inner_radius;         // 0x3c
-        f32 outer_radius;         // 0x40
-        f32 parameters[4];        // 0x44
-        f32 parameter_54;         // 0x54
-        u8 type;                  // 0x58
+    typedef struct RTL_LIGHT {  // size 0x8c
+        NUVEC position;         // 0x00
+        NUVEC direction;        // 0x0c
+        NUVEC ambient;          // 0x18
+        NUVEC colour;           // 0x24
+        NUVEC secondary_colour; // 0x30
+        f32 inner_radius;       // 0x3c
+        f32 outer_radius;       // 0x40
+        f32 parameters[4];      // 0x44
+        f32 parameter_54;       // 0x54
+        u8 type;                // 0x58
 
         union { // size 0x1
             u8 flags;
@@ -83,16 +83,16 @@ extern "C" {
         i8 field_79;                                                             // 0x79
         i8 field_7a;                                                             // 0x7a
         i8 field_7b;                                                             // 0x7b
-        struct RTL_LIGHT_PC *field_7c;                                           // 0x7c
+        struct RTL_LIGHT *field_7c;                                              // 0x7c
         i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */ // 0x80
         u8 unknown_82[10];                                                       // 0x82
-    } RTL_LIGHT_PC;
+    } RTL_LIGHT;
 
-    typedef struct RTL_SET_PC {   // size 0x4f84
-        u32 header;               // 0x0000
-        RTL_LIGHT_PC lights[128]; // 0x0004
-        u8 fog[0x980];            // 0x4604
-    } RTL_SET_PC;
+    typedef struct RTL_SET {   // size 0x4f84
+        u32 header;            // 0x0000
+        RTL_LIGHT lights[128]; // 0x0004
+        u8 fog[0x980];         // 0x4604
+    } RTL_SET;
 
     typedef struct rtl_fog_migration_s {                                         // size 0x4c
         f32 start;                                                               // 0x00
@@ -114,34 +114,34 @@ extern "C" {
         u8 unknown_40[0xc];                                                      // 0x40
     } RTL_FOG_MIGRATION_PC;
 
-    RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET_PC *set, NUVEC *position);
+    RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET *set, NUVEC *position);
 
-    typedef struct RTL_INDEX_PC { // size 0x28
-        i32 enabled;              // 0x00
-        u8 unknown_04[8];         // 0x04
-        i32 width;                // 0x0c
-        i32 depth;                // 0x10
-        f32 scale;                // 0x14
-        f32 offset_x;             // 0x18
-        f32 offset_z;             // 0x1c
-        i8 **cells;               // 0x20
-        u8 unknown_24[4];         // 0x24
-    } RTL_INDEX_PC;
+    typedef struct RTL_INDEX { // size 0x28
+        i32 enabled;           // 0x00
+        u8 unknown_04[8];      // 0x04
+        i32 width;             // 0x0c
+        i32 depth;             // 0x10
+        f32 scale;             // 0x14
+        f32 offset_x;          // 0x18
+        f32 offset_z;          // 0x1c
+        i8 **cells;            // 0x20
+        u8 unknown_24[4];      // 0x24
+    } RTL_INDEX;
 
     /* The editor keeps a set's light index directly behind it: the
-     * RTL_INDEX_PC header, then IndexLights' cell table and index lists, in
-     * one 0x2028-byte area (0x6fac bytes with the set). rtlLoadSet still advances by sizeof(RTL_SET_PC)
+     * RTL_INDEX header, then IndexLights' cell table and index lists, in
+     * one 0x2028-byte area (0x6fac bytes with the set). rtlLoadSet still advances by sizeof(RTL_SET)
      * only; the game builds the index from its own buffer. */
-#define RTL_SET_INDEX_PC(set) ((RTL_INDEX_PC *)((set) + 1))
+#define RTL_SET_INDEX_PC(set) ((RTL_INDEX *)((set) + 1))
 #define RTL_SET_INDEX_AREA_SIZE_PC 0x2028
-#define RTL_EDITOR_SET_SIZE_PC (sizeof(RTL_SET_PC) + RTL_SET_INDEX_AREA_SIZE_PC)
+#define RTL_EDITOR_SET_SIZE_PC (sizeof(RTL_SET) + RTL_SET_INDEX_AREA_SIZE_PC)
 
-    struct RTL_DATA_PC;
-    struct RTL_INDEX_PC;
-    void rtlResetEx(struct RTL_DATA_PC *, i32);
+    struct RTL_DATA;
+    struct RTL_INDEX;
+    void rtlResetEx(struct RTL_DATA *, i32);
     i32 rtlDynamicMasterEnable(i32);
-    void rtlSetLights(struct RTL_DATA_PC *);
-    void rtlApplySetScale(void *, struct RTL_DATA_PC *, NUVEC *, struct numtx_s *, i32, f32);
+    void rtlSetLights(struct RTL_DATA *);
+    void rtlApplySetScale(void *, struct RTL_DATA *, NUVEC *, struct numtx_s *, i32, f32);
     extern i32 rtl_dynamic_lights_enabled;
     extern i32 rtl_error;
     extern f32 rtl_frametime;
@@ -154,39 +154,39 @@ extern "C" {
     extern i32 rtltimer1;
     extern f32 rtltimer1adv;
     void rtlFrameUpdate(f32 frame_time);
-    extern struct RTL_INDEX_PC *dbg_rtlindex;
+    extern struct RTL_INDEX *dbg_rtlindex;
     extern const char RtlSearchTimebarNamePc[];
     i32 rtlDynamicEnable(i32 id, i32 enabled);
     extern NULSTHDR *rtl_dynamic_pool;
     extern i32 rtl_dynamic_max;
     i32 rtlDynamicAlloc(void);
-    i32 rtlFindByUserId(RTL_SET_PC *, i32);
+    i32 rtlFindByUserId(RTL_SET *, i32);
     void rtlDynamicFree(i32);
-    i32 rtlDynamicAllocTemplate(RTL_SET_PC *, i32);
+    i32 rtlDynamicAllocTemplate(RTL_SET *, i32);
     i32 rtlDynamicSetType(i32, i32);
     i32 rtlDynamicSetPos(i32 id, NUVEC *position);
     i32 rtlDynamicSetRadii(i32, f32, f32);
     i32 rtlDynamicSetColours(i32, NUVEC *, NUVEC *);
     i32 rtlDynamicSetDirection(i32, NUVEC *);
-    void IndexLights(RTL_SET_PC *, VARIPTR *, i32);
+    void IndexLights(RTL_SET *, VARIPTR *, i32);
     void rtlProcessLights(void *, f32);
     void rtlSwapSetEndianess(void *);
-    RTL_SET_PC *rtlLoadSet(char *, VARIPTR *, i32);
+    RTL_SET *rtlLoadSet(char *, VARIPTR *, i32);
     i32 rtlInitDynamic(VARIPTR *, VARIPTR, i32);
 
-    typedef struct BURN_SET_PC BURN_SET_PC;
+    typedef struct BURN_SET BURN_SET;
 
-    void edrtlInitBurnset(BURN_SET_PC *);
-    void edrtlDetermineNearestBurn(f32, BURN_SET_PC *);
-    i32 edrtlBurnoutLoadSet(char *, BURN_SET_PC *);
-    BURN_SET_PC *edrtlBurnoutLoad(char *, VARIPTR *, i32);
-    void edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32);
-    void edrtlCalculateBurnoutEx(BURN_SET_PC *, struct BURN_PARAMETERS_PC *, NUVEC *, f32);
+    void edrtlInitBurnset(BURN_SET *);
+    void edrtlDetermineNearestBurn(f32, BURN_SET *);
+    i32 edrtlBurnoutLoadSet(char *, BURN_SET *);
+    BURN_SET *edrtlBurnoutLoad(char *, VARIPTR *, i32);
+    void edrtlCalculateBurnout(BURN_SET *, f32 *, f32 *, f32 *, NUVEC *, f32);
+    void edrtlCalculateBurnoutEx(BURN_SET *, struct BURN_PARAMETERS *, NUVEC *, f32);
     void edrtlDrawLightEx(i32 index, i32 style);
-    i32 rtlGetDirection(RTL_SET_PC *, i32, NUVEC **);
-    f32 rtlSpecularValue(RTL_DATA_PC *);
-    void rtlSetSpecularValue(RTL_DATA_PC *, f32);
-    void rtlSetSpecularLight(RTL_DATA_PC *);
+    i32 rtlGetDirection(RTL_SET *, i32, NUVEC **);
+    f32 rtlSpecularValue(RTL_DATA *);
+    void rtlSetSpecularValue(RTL_DATA *, f32);
+    void rtlSetSpecularLight(RTL_DATA *);
 #ifdef __cplusplus
 }
 #endif

@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuLgtInitializeStatePc(void);
+    void NuLgtInitializeState(void);
 #ifdef __cplusplus
 }
 #endif

@@ -28,7 +28,7 @@ typedef void (*PART_ACTION_PC)(struct PART_PC *);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 ShinyMetal_UpdateHint(HINT_PC *);
+    i32 ShinyMetal_UpdateHint(HINT *);
 #ifdef __cplusplus
 }
 #endif

@@ -33,8 +33,8 @@ extern "C" {
     void *PcApiGetCallBuffer(void);
     void PCFrameSetLoadingYieldEnabled(i32 enabled);
 
-    extern i32 PCFramePresentationStatePc;
-    i32 PCFramePresentNativePc(i32, i32);
+    extern i32 PCFramePresentationState;
+    i32 PCFramePresentNative(i32, i32);
     void PCDeviceResetSamplerDefaultsPc(void);
     f32 PcInputAspectRatioPc(void);
 #ifdef __cplusplus

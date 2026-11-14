@@ -25,7 +25,7 @@
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct TUBE_PC {          // size 0x40
+typedef struct TUBE {             // size 0x40
     u8 unknown_00[0x10];          // 0x00
     NUVEC position;               // 0x10
     f32 height;                   // 0x1c
@@ -37,14 +37,14 @@ typedef struct TUBE_PC {          // size 0x40
     u8 flags;                     // 0x34
     u8 unknown_35_b[0x3];         // 0x35
     u32 occupied_object_masks[2]; // 0x38
-} TUBE_PC;
+} TUBE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char *TubeGizmoNamePc;
+    extern const char *TubeGizmoName;
     extern const char *Tube_OutputName;
-    struct addgizmotype_pc_s *Tubes_RegisterGizmo(i32);
+    struct addgizmotype_s *Tubes_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

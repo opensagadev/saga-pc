@@ -2,7 +2,7 @@
 #include <string.h>
 #include "saga.h"
 
-void GameAnimMissingAnimDiagnosticPc(char *name);
+void GameAnimMissingAnimDiagnostic(char *name);
 
 void GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i32 capacity, i32 level_count) {
     i32 i;
@@ -573,7 +573,7 @@ GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f
             } else {
                 name = NuSpecialGetName(&object->special);
                 if (name != NULL) {
-                    GameAnimMissingAnimDiagnosticPc(name);
+                    GameAnimMissingAnimDiagnostic(name);
                 }
             }
         }

@@ -13,8 +13,8 @@ extern "C" {
     extern i32 PCThreadCriticalSectionCount;
     extern CRITICAL_SECTION PCThreadCriticalSections[13];
     i32 PCThreadCriticalSectionCreate_candidate(void);
-    i64 PCThreadMillisecondsPc(void);
-    void PCThreadCriticalSectionDeleteNoOpPc(i32);
+    i64 PCThreadMilliseconds(void);
+    void PCThreadCriticalSectionDeleteNoOp(i32);
     void PcInitializePerformanceTiming(void);
     extern i32 PcStartupCriticalSectionInitialized;
     extern CRITICAL_SECTION PcStartupCriticalSection;

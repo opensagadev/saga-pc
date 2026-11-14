@@ -26,7 +26,7 @@ typedef struct PC_NATIVE_DEBUG_VERTEX { // size 0x14
     u32 colour;                         // 0x10
 } PC_NATIVE_DEBUG_VERTEX;
 
-typedef struct PC_NATIVE_DEBUG_STATE_PC {   // size 0x508
+typedef struct PC_NATIVE_DEBUG_STATE {      // size 0x508
     u8 unknown_0;                           // 0x000
     u8 enabled;                             // 0x001
     u8 unknown_002[2];                      // 0x002
@@ -44,18 +44,18 @@ typedef struct PC_NATIVE_DEBUG_STATE_PC {   // size 0x508
     u8 write_log;                           // 0x504
     u8 unknown_505[3];                      // 0x505
 #ifdef __cplusplus
-    PC_NATIVE_DEBUG_STATE_PC();
-    ~PC_NATIVE_DEBUG_STATE_PC();
+    PC_NATIVE_DEBUG_STATE();
+    ~PC_NATIVE_DEBUG_STATE();
     void InitializeHeader();
     void UpdateGeometry();
     void Initialize();
     void Shutdown();
-    PC_NATIVE_DEBUG_STATE_PC *fun_006dff70();
+    PC_NATIVE_DEBUG_STATE *fun_006dff70();
     void fun_006dffa0(u8 value);
 #endif
-} PC_NATIVE_DEBUG_STATE_PC;
+} PC_NATIVE_DEBUG_STATE;
 
-#define PlayerCarryRotationScalePc TerrainSkinSampleCountPc // NOLINT(readability-identifier-naming)
+#define PlayerCarryRotationScalePc TerrainSkinSampleCount // NOLINT(readability-identifier-naming)
 
 #define PCWarningPrefix NuBlankStringValue            // NOLINT(readability-identifier-naming)
 #define PCWarningNativeFormat GizAIMessage_NameFormat // NOLINT(readability-identifier-naming)
@@ -63,7 +63,7 @@ typedef struct PC_NATIVE_DEBUG_STATE_PC {   // size 0x508
 extern "C" {
 #endif
     extern i32 bHaveErr;
-    void PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...);
+    void PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...);
     extern char PCWarningFormatBuffer[];
     extern char PCWarningOutputBuffer[];
     extern char PCWarningMessages[];

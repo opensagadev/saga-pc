@@ -24,16 +24,16 @@
 
 #if SAGA_LEGOAPI_GIZMOS_FX_GIZMOPICKUPS_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMOS_FX_GIZMOPICKUPS_H_STOP)
 
-struct GIZMO_PICKUP_TYPE_PC;
+struct GIZMO_PICKUP_TYPE;
 struct WORLDINFO_s;
 struct gameobject_s;
 struct player_coin_packet_s;
 
-typedef struct game_message_pc_s GAME_MESSAGE_PC;
+typedef struct game_message_s GAME_MESSAGE_PC;
 
-typedef struct GIZMOPICKUP_PC { // size 0x2c
-    char name[8];               // 0x00
-    NUVEC position;             // 0x08
+typedef struct GIZMOPICKUP { // size 0x2c
+    char name[8];            // 0x00
+    NUVEC position;          // 0x08
 
     union { // size 0x2
         u8 unknown_14[2];
@@ -75,7 +75,7 @@ typedef struct GIZMOPICKUP_PC { // size 0x2c
     u8 type_index; // 0x25
     u16 rotation;  // 0x26
     f32 timer;     // 0x28
-} GIZMOPICKUP_PC;
+} GIZMOPICKUP;
 
 #ifdef __cplusplus
 extern "C" {
@@ -111,24 +111,24 @@ extern "C" {
 }
 #endif
 
-typedef struct PICKUP_TYPE_SYSTEM_PC {  // size 0x10
-    struct GIZMO_PICKUP_TYPE_PC *types; // 0x0
-    u8 *random_coin_types;              // 0x4
-    u16 type_count;                     // 0x8
-    i8 minikit_type;                    // 0xa
-    i8 gizmo_type_id;                   // 0xb
-    i8 alternate_type;                  // 0xc
-    i8 unknown_0d;                      // 0xd
-    i16 unknown_0e;                     // 0xe
-} PICKUP_TYPE_SYSTEM_PC;
+typedef struct PICKUP_TYPE_SYSTEM {  // size 0x10
+    struct GIZMO_PICKUP_TYPE *types; // 0x0
+    u8 *random_coin_types;           // 0x4
+    u16 type_count;                  // 0x8
+    i8 minikit_type;                 // 0xa
+    i8 gizmo_type_id;                // 0xb
+    i8 alternate_type;               // 0xc
+    i8 unknown_0d;                   // 0xd
+    i16 unknown_0e;                  // 0xe
+} PICKUP_TYPE_SYSTEM;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern f32 (*GizmoPickups_Collide2DFn)(struct gameobject_s *);
     void UpdateCoinPacket(struct player_coin_packet_s *packet, i32 active, i32 player_index);
-    void GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system);
-    GIZMOPICKUP_PC *GizmoPickups_Collide(struct WORLDINFO_s *world, struct gameobject_s *object, i32 unused);
+    void GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM *system);
+    GIZMOPICKUP *GizmoPickups_Collide(struct WORLDINFO_s *world, struct gameobject_s *object, i32 unused);
     i32 GizmoPickup_NumberOfType(struct WORLDINFO_s *, i32, u8);
 #ifdef __cplusplus
 }
@@ -142,7 +142,7 @@ extern "C" {
 
 #if SAGA_LEGOAPI_GIZMOS_FX_GIZMOPICKUPS_H_PART == 3 && !defined(SAGA_LEGOAPI_GIZMOS_FX_GIZMOPICKUPS_H_STOP)
 
-struct game_message_pc_s {              // size 0x114
+struct game_message_s {                 // size 0x114
     const char *text;                   // 0x000
     char text_buffer[0x78];             // 0x004
     NUVEC position_a;                   // 0x07c
@@ -185,7 +185,7 @@ struct game_message_pc_s {              // size 0x114
 
     union { // size 0x4
         void *parameter_10c;
-        void (*draw_fn)(struct game_message_pc_s *, NUVEC *, f32);
+        void (*draw_fn)(struct game_message_s *, NUVEC *, f32);
     }; // 0x10c
 
     GAME_MESSAGE_CALLBACK_PC end_fn; // 0x110
@@ -194,7 +194,7 @@ struct game_message_pc_s {              // size 0x114
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void GameMsg_Draw_MiniKitDetector(struct game_message_pc_s *arg0, struct nuvec_s *arg1, f32 arg2);
+    void GameMsg_Draw_MiniKitDetector(struct game_message_s *arg0, struct nuvec_s *arg1, f32 arg2);
 #ifdef __cplusplus
 }
 #endif

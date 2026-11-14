@@ -19,7 +19,7 @@ extern "C" {
     void SockOff(SOCKSYS_PC *sys, i32 index);
 }
 
-static i32 NuSpecialFindMultiDisplayPc(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
+static i32 NuSpecialFindMultiDisplay(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
     i32 count = 0;
     NUDISPLAY_SPECIAL_PC *special = scene->display_list->specials;
     for (i32 index = 0; index < scene->display_list->special_count; ++index, ++special) {
@@ -44,7 +44,7 @@ extern "C" i32 NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, char *na
     i32 count = 0;
     if (scene != NULL) {
         if (scene->display_list != NULL) {
-            return NuSpecialFindMultiDisplayPc(scene, dest, name, capacity, flags);
+            return NuSpecialFindMultiDisplay(scene, dest, name, capacity, flags);
         }
         NUSPECIAL_LEGACY_PC *special = scene->specials;
         for (i32 index = 0; index < scene->special_count; ++index, ++special, ++display_special) {
@@ -100,5 +100,5 @@ extern "C" {
 }
 extern "C" void StartBallooning(GAMEOBJECT *, i32);
 
-extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH_PC *, char *, char *, i32,
+extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH *, char *, char *, i32,
                                                                    char *, i32, i32);

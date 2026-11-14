@@ -780,7 +780,7 @@ void NuMusic::Process(f32 delta) {
     }
 }
 
-static char NuMusicLanguageTokenPc[6] = "$lang";
+static char NuMusicLanguageToken[6] = "$lang";
 
 void NuMusic::InitVoiceManager(void) {
     Voice *voice;
@@ -1013,7 +1013,7 @@ void NuMusic::ParseTrack(u32 category, NUFPAR_PC *parser) {
     NuFParGetWord(parser);
     NuStrCpy(path, current_path);
     NuStrCat(path, parser->word_buffer_ptr);
-    SubstituteString(substituted, path, NuMusicLanguageTokenPc, language);
+    SubstituteString(substituted, path, NuMusicLanguageToken, language);
     current_track->filenames[0] = AllocString(substituted);
     current_track->ident = RemovePath(current_track->filenames[0]);
     if (strict_mode != 0) {
@@ -1058,7 +1058,7 @@ void NuMusic::xIndex(NUFPAR_PC *parser) {
 void NuMusic::xNoMusic(NUFPAR_PC *parser) {
     char substituted[256];
     NuFParGetWord(parser);
-    SubstituteString(substituted, parser->word_buffer_ptr, NuMusicLanguageTokenPc, language);
+    SubstituteString(substituted, parser->word_buffer_ptr, NuMusicLanguageToken, language);
     current_track->filenames[1] = AllocString(substituted);
 }
 
@@ -1116,7 +1116,7 @@ f32 NuMusicGainToDecibels(f32 gain) {
     if (gain >= 1.0f) {
         return 0.0f;
     }
-    return RenderPostLogPc(gain) * 20.0;
+    return RenderPostLog(gain) * 20.0;
 }
 
 /* Converts a decibel attenuation to a linear gain: -100 dB and below is silence. */
@@ -1533,17 +1533,17 @@ extern "C" i32 NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_parameter,
         token = va_arg(args, i32);
     }
     va_end(args);
-    return PCSoundInitializePc(&config);
+    return PCSoundInitialize(&config);
 }
 
 /* Both wrappers are uncalled. */
-extern "C" i32 NuSound3InitTablePc(SFX_FILE_INFO_PC *samples, i32 sample_count, i32 device_parameter) {
+extern "C" i32 NuSound3InitTable(SFX_FILE_INFO_PC *samples, i32 sample_count, i32 device_parameter) {
     VARIPTR end;
     end.void_ptr = NULL;
     return NuSound3InitV(NULL, end, device_parameter, 1, samples, 2, sample_count, 0);
 }
 
-extern "C" i32 NuSound3InitDefaultPc(SFX_FILE_INFO_PC *samples) {
+extern "C" i32 NuSound3InitDefault(SFX_FILE_INFO_PC *samples) {
     VARIPTR end;
     end.void_ptr = NULL;
     return NuSound3InitV(NULL, end, 3, 1, samples, 2, 400, 0);

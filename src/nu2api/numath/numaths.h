@@ -9,7 +9,7 @@
 extern "C" {
 #endif
     void PCAnimationLoadFailureNoOp(char *);
-    void AnimationDiagnosticNoOpPc(void);
+    void AnimationDiagnosticNoOp(void);
 #ifdef __cplusplus
 }
 #endif

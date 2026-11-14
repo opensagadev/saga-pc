@@ -1,16 +1,16 @@
 #include "saga.h"
 
 extern "C" {
-    i32 PCFrameBeginScenePc(i32 begin);
-    void PCFrameResetTargetsPc(void);
-    void PCFrameConfigureTargetsPc(void);
-    void NuDisplayListHtmlEndPc(void);
+    i32 PCFrameBeginScene(i32 begin);
+    void PCFrameResetTargets(void);
+    void PCFrameConfigureTargets(void);
+    void NuDisplayListHtmlEnd(void);
 }
 
-extern "C" PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256];
+extern "C" PC_EFFECT_SURFACE *PcSurfaceRegistry[256];
 
 /* Header-inline: the swap loop's local target expands the destructor. */
-inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
+inline PC_EFFECT_SURFACE::~PC_EFFECT_SURFACE() {
     Reset();
     PcSurfaceRegistry[registry_index] = NULL;
 }
@@ -20,7 +20,7 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
     RenderFrameShaderTimePc += nuapi.frame_time;
     rndr_blend_shape_deformer_wt_cnt = 0xef00;
     rndr_blend_shape_deformer_wt_ptrs_cnt = 0x800;
-    PCFrameBeginScenePc(1);
+    PCFrameBeginScene(1);
     NudxFw_D3DBeginCriticalSection();
     PCDeviceSetTexture(0, NULL);
     PCDeviceSetTexture(1, NULL);
@@ -65,8 +65,8 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
     for (i32 i = 0; i < sceneParametersCount; ++i) {
         NURNDRLIBSCENE *scene = &sceneParameters[i];
         i32 rendered_effect = 0;
-        PC_FRAMEBUFFER_PC *destination = PcBootFramebuffersPc.slots[i >= last_effect_scene];
-        RenderFrameSceneFlagsPc = scene->unknown_24;
+        PC_FRAMEBUFFER *destination = PcBootFramebuffers.slots[i >= last_effect_scene];
+        RenderFrameSceneFlags = scene->unknown_24;
         NUVEC4 dimensions;
         dimensions.x = (f32)PS2_REZ_W;
         dimensions.y = (f32)PS2_REZ_H;
@@ -89,7 +89,7 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
         }
         if (scene->unknown_58 != 0 && NuPostEffectIsInitialised(4)) {
             NuPostEffectEnable(4);
-            NuPostEffectBloom(reinterpret_cast<const NU_POST_BLOOM_PARAMETERS_PC *>(&scene->burnout_parameters_pc));
+            NuPostEffectBloom(reinterpret_cast<const NU_POST_BLOOM_PARAMETERS *>(&scene->burnout_parameters_pc));
             scene->unknown_58 = 0;
             rendered_effect = 1;
         }
@@ -101,13 +101,13 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
         }
         if (scene->unknown_188 != 0) {
             NuPostEffectEnable(0x80);
-            NuPostEffectSpeedBlur(reinterpret_cast<const NU_POST_SPEED_PARAMETERS_PC *>(&scene->unknown_188));
+            NuPostEffectSpeedBlur(reinterpret_cast<const NU_POST_SPEED_PARAMETERS *>(&scene->unknown_188));
             rendered_effect = 1;
         }
         if (i <= last_effect_scene) {
-            PCFrameConfigureTargetsPc();
+            PCFrameConfigureTargets();
         } else {
-            PCFrameResetTargetsPc();
+            PCFrameResetTargets();
         }
         NuShaderManagerSetfv(0x3e, &dimensions.x);
         if (scene->clear_flags_08 != 0) {
@@ -145,15 +145,15 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             PCDeviceResetSamplerDefaultsPc();
         }
         if (scene->unknown_214 != 0) {
-            FRAME_NATIVE_TEXTURE_PC *texture = reinterpret_cast<FRAME_NATIVE_TEXTURE_PC *>(NuTextureGetDimensions((i32)scene->unknown_214));
-            i32 index = (i32)((u32)texture - (u32)&FrameNativeTexturePoolPc.records[0]) / (i32)sizeof(FRAME_NATIVE_TEXTURE_PC);
+            FRAME_NATIVE_TEXTURE *texture = reinterpret_cast<FRAME_NATIVE_TEXTURE *>(NuTextureGetDimensions((i32)scene->unknown_214));
+            i32 index = (i32)((u32)texture - (u32)&FrameNativeTexturePool.records[0]) / (i32)sizeof(FRAME_NATIVE_TEXTURE);
             if ((u32)index <= 15u) {
-                GRAPHICS_RENDER_TEXTURE_PC *render_texture = texture->render_texture;
+                GRAPHICS_RENDER_TEXTURE *render_texture = texture->render_texture;
                 if (render_texture != NULL) {
                     i32 width = NuTexGetWidth((i32)scene->unknown_214);
                     i32 height = NuTexGetHeight((i32)scene->unknown_214);
                     bool resize = width != PS2_REZ_W || height != PS2_REZ_H;
-                    PC_EFFECT_SURFACE_PC target;
+                    PC_EFFECT_SURFACE target;
                     target.Attach(render_texture, 0, false);
                     PCDeviceBackend.CopySurfaceTargetPc(&target, resize ? 2 : 1, 0);
                 }
@@ -161,23 +161,23 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
         }
     }
     sceneParametersCount = 0;
-    NuRndrEndFrameActionPc();
+    NuRndrEndFrameAction();
     NuPostEffectEnd();
     _NuTimeBarSlotEnd(-1, 4);
-    NuDisplayListHtmlEndPc();
+    NuDisplayListHtmlEnd();
     NuDisplayListBeginFrame();
     NuDisplayListStreamCursor = &nudlist_stream_cursor;
     nudlist_field_1598 = nuprim_field_ba8;
     if (global_frame_count_paused == 0) {
         ++PCWindFrameCount;
     }
-    if (RenderFrameCallbackPc != NULL) {
-        RenderFrameCallbackPc();
+    if (RenderFrameCallback != NULL) {
+        RenderFrameCallback();
     }
     NuRndrEndSceneEx(0);
     PCDeviceEndScenePc();
     PcInputEndFramePc();
-    PCFramePresentNativePc(mode, 1);
+    PCFramePresentNative(mode, 1);
     NudxFw_D3DEndCriticalSection();
     NuTimeBarSlotReset(-1, 0);
     _NuTimeBarSlotBegin(-1, 0, "CPU");

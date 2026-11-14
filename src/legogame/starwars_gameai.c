@@ -1,6 +1,6 @@
 #include "saga.h"
 
-extern f32 StarWarsJumpDistancePc[3];
+extern f32 StarWarsJumpDistance[3];
 
 typedef struct STARWARS_PREPARE {         // size 0x8
     u32 capabilities;                     // 0x0
@@ -23,14 +23,14 @@ typedef struct character_ai_capabilities_s {
     u32 path_capabilities;
 } CHARACTER_AI_CAPABILITIES_PC;
 
-i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
     u32 capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
-    AIPATHNODE_PC *nodes = packet->path_info.path->nodes;
-    AIPATHNODE_PC *destination = &nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-    AIPATHNODE_PC *source = &nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
-    AIPATHNODE_PC *node;
-    AIPATH_PC *path;
+    AIPATHNODE *nodes = packet->path_info.path->nodes;
+    AIPATHNODE *destination = &nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+    AIPATHNODE *source = &nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+    AIPATHNODE *node;
+    AIPATH *path;
     i32 skip_inside;
     i32 index;
     NuVecSub(&owner->special_move_look_position_pc, &destination->position, &source->position);
@@ -87,7 +87,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packet, APIOB
     return 0;
 }
 
-i32 StarWars_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+i32 StarWars_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
     if (owner->character_context == 0) {
         SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
@@ -100,11 +100,11 @@ i32 StarWars_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET_PC *packet, API
     return 1;
 }
 
-i32 StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
+i32 StarWars_PrepareR2D2Glide(AIPACKET *packet, APIOBJECT *object, i32 checks_unused) {
     GAMEOBJECT *owner;
-    AIPATHCNX_PC *connection;
-    AIPATHNODE_PC *destination;
-    AIPATHNODE_PC *source;
+    AIPATHCNX *connection;
+    AIPATHNODE *destination;
+    AIPATHNODE *source;
     NUVEC offset;
     f32 radius;
 
@@ -153,11 +153,11 @@ i32 StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 che
     return 1;
 }
 
-i32 StarWars_PrepareHatch(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
+i32 StarWars_PrepareHatch(AIPACKET *packet, APIOBJECT *object, i32 checks_unused) {
     GAMEOBJECT *owner;
-    AIPATHNODE_PC *destination;
-    AIPATHCNX_PC *connection;
-    AIPATHNODE_PC *source;
+    AIPATHNODE *destination;
+    AIPATHCNX *connection;
+    AIPATHNODE *source;
     u32 capabilities;
 
     owner = object->owner;
@@ -196,7 +196,7 @@ i32 StarWars_PrepareHatch(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_
     }
 }
 
-i32 StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+i32 StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
     switch ((i8)owner->field_1087) {
         case 0:
@@ -223,12 +223,12 @@ i32 StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET_PC *packet, APIO
     return 0;
 }
 
-i32 StarWars_PrepareHoverTube(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
+i32 StarWars_PrepareHoverTube(AIPACKET *packet, APIOBJECT *apiobject, i32 checks_unused) {
     GAMEOBJECT *object;
-    AIPATHCNX_PC *connection;
+    AIPATHCNX *connection;
     i32 from;
     i32 to;
-    AIPATHNODE_PC *target;
+    AIPATHNODE *target;
 
     object = apiobject->owner;
     connection = packet->path_info.connection;
@@ -272,11 +272,11 @@ i32 StarWars_PrepareHoverTube(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 
     return 1;
 }
 
-i32 StarWars_PrepareBigJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
+i32 StarWars_PrepareBigJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unused) {
     GAMEOBJECT *owner;
     i32 destination_index;
-    AIPATHNODE_PC *destination;
-    AIPATHNODE_PC *alternate;
+    AIPATHNODE *destination;
+    AIPATHNODE *alternate;
 
     owner = object->owner;
     destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
@@ -306,7 +306,7 @@ i32 StarWars_PrepareBigJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 check
     return 0;
 }
 
-i32 StarWars_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+i32 StarWars_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
     if (owner->character_context == 0x1f) {
         owner->launch_origin = owner->ai_packet.special_move_node->position;
@@ -317,10 +317,10 @@ i32 StarWars_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET_PC *packet, APIOB
     return 0;
 }
 
-i32 StarWars_PrepareTakeOverJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
+i32 StarWars_PrepareTakeOverJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unused) {
     GAMEOBJECT *owner;
     GAMEOBJECT *participant;
-    AIPATHNODE_PC *destination;
+    AIPATHNODE *destination;
 
     owner = object->owner;
     if ((owner->character_data->game_character->flags_090 & 0x40) != 0) {
@@ -336,15 +336,15 @@ i32 StarWars_PrepareTakeOverJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 
     return 0;
 }
 
-i32 StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
+i32 StarWars_PrepareObstacle(AIPACKET *packet, APIOBJECT *object, i32 checks_unused) {
     i32 far_index;
-    AIPATHNODE_PC *near_node;
-    AIPATHNODE_PC *far_node;
+    AIPATHNODE *near_node;
+    AIPATHNODE *far_node;
     NUVEC offset;
     f32 radius;
     f32 distance;
-    AIPATHCNX_PC *destination;
-    AIPATHCNX_PC *current;
+    AIPATHCNX *destination;
+    AIPATHCNX *current;
     f32 edge;
 
     if (packet->path_info.distance > 0.5f) {
@@ -407,7 +407,7 @@ i32 StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 chec
     return 1;
 }
 
-i32 StarWars_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks) {
+i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32 checks) {
     GAMEOBJECT *owner = apiobject->owner;
     u32 flags;
     u32 capabilities;
@@ -447,7 +447,7 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobjec
     return 0;
 }
 
-i32 StarWars_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *apiobject) {
+i32 StarWars_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     GAMEOBJECT *owner = object->objptr;
     AI_MID_SPECIAL_MOVE_PC function;
@@ -480,12 +480,12 @@ void StarWars_GameAISysInit(void) {
     LEGO_AIPATHCNX_DONT_JUMP_NOW = 0x800;
     InitFn_PreparingForSpecialMove(StarWars_PreparingForSpecialMove);
     InitFn_MidSpecialMove(StarWars_MidSpecialMove);
-    HubInitAIFnPc = LSW_Hub_InitAI;
-    HubResetAIFnPc = LSW_Hub_ResetAI;
-    HubUpdateAIFnPc = LSW_Hub_UpdateAI;
+    HubInitAIFn = LSW_Hub_InitAI;
+    HubResetAIFn = LSW_Hub_ResetAI;
+    HubUpdateAIFn = LSW_Hub_UpdateAI;
 }
 
-void PlayerInitCapabilitiesVariant1Pc(GAMEOBJECT *object) {
+void PlayerInitCapabilitiesVariant1(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
     object->ai_packet.capabilities = ((CHARACTER_AI_CAPABILITIES_PC *)character)->path_capabilities | 0x20180040;
     if ((object->flags_1f8 & 1) != 0) {
@@ -528,7 +528,7 @@ void PlayerInitCapabilitiesVariant1Pc(GAMEOBJECT *object) {
     }
 }
 
-u32 AIPathParseStarWarsFlagPc(char *name) {
+u32 AIPathParseStarWarsFlag(char *name) {
     if (NuStrICmp(name, "DBLJUMP") == 0) {
         return 2;
     }
@@ -589,15 +589,15 @@ u32 AIPathParseStarWarsFlagPc(char *name) {
     return 0;
 }
 
-i32 StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+i32 StarWars_PrepareJump(AIPACKET *packet, APIOBJECT *object, i32 checks) {
     i32 index;
     GAMEOBJECT *owner;
     u32 flags;
     i32 destination_index = 0;
-    AIPATHNODE_PC *source = NULL;
-    AIPATHNODE_PC *destination = NULL;
+    AIPATHNODE *source = NULL;
+    AIPATHNODE *destination = NULL;
     NUVEC offset;
-    AIPATHCNX_PC *connection;
+    AIPATHCNX *connection;
     f32 distance;
     f32 radius;
     i32 ready = 0;
@@ -657,7 +657,7 @@ check:
         }
         packet->movement_stopping_distance = 0.0f;
         jump_distance =
-            (flags & 0x20) != 0 ? StarWarsJumpDistancePc[2] : ((flags & 2) != 0 ? StarWarsJumpDistancePc[1] : StarWarsJumpDistancePc[0]);
+            (flags & 0x20) != 0 ? StarWarsJumpDistance[2] : ((flags & 2) != 0 ? StarWarsJumpDistance[1] : StarWarsJumpDistance[0]);
         if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
             packet->flags |= 0x800000;
             packet->path_connection_state = 1;
@@ -783,7 +783,7 @@ check:
     return 0;
 }
 
-f32 StarWarsJumpDistancePc[3] = {0.8f, 1.2f, 1.5f};
+f32 StarWarsJumpDistance[3] = {0.8f, 1.2f, 1.5f};
 AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4] = {
     StarWars_MidSpecialMove_Default,
     StarWars_MidSpecialMove_StartJump,

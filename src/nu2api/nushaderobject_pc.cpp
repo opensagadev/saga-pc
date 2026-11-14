@@ -738,12 +738,12 @@ extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *shad
                 break;
             }
             case 46: {
-                PC_TEXTURE_RESOURCE_PC *texture;
+                PC_TEXTURE_RESOURCE *texture;
                 if (PCDeviceHardwareVertexProcessingPC == 1 &&
                     ((material->texture_flags & 8u) != 0 || (material->texture_flags & 0x50000u) != 0)) {
-                    texture = NuTexturePhongCubePc;
+                    texture = NuTexturePhongCube;
                 } else if (PCDeviceHardwareVertexProcessingPC != 1 && (material->texture_flags & 0x50000u) != 0) {
-                    texture = NuTextureEnvironmentCubePc;
+                    texture = NuTextureEnvironmentCube;
                 } else {
                     texture = material->cube_texture_id > 0 ? NuTextureGetDimensions(material->cube_texture_id)->resource : NULL;
                 }
@@ -810,7 +810,7 @@ extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *shad
                 break;
             }
             case 61: {
-                GRAPHICS_RENDER_TEXTURE_PC *texture = NuPostEffectGetBackBuffer(nuapi.frame_count);
+                GRAPHICS_RENDER_TEXTURE *texture = NuPostEffectGetBackBuffer(nuapi.frame_count);
                 PCGraphicsBindEffectTexture(texture, parameter->register_index);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 3);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 3);
@@ -844,7 +844,7 @@ extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *shad
             case 86: {
                 if (NuWindCurrent(static_cast<NUWIND *>(nuapi.wind)) >= 0) {
                     const i32 id = NuWindCurrent(static_cast<NUWIND *>(nuapi.wind));
-                    PCGraphicsBindTextureDimensionsPc(NuTextureGetDimensions(id), parameter->register_index);
+                    PCGraphicsBindTextureDimensions(NuTextureGetDimensions(id), parameter->register_index);
                     PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                     PCDeviceSetSamplerState(parameter->register_index, 2, 1);
                     PCDeviceSetSamplerState(parameter->register_index, 3, 1);

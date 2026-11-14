@@ -12,10 +12,10 @@
 
 #ifdef __cplusplus
 
-struct PC_WAVE_CHUNK_PC { // size 0xc
-    u32 kind;             // 0x0
-    u32 bytes;            // 0x4
-    i32 offset;           // 0x8
+struct PC_WAVE_CHUNK { // size 0xc
+    u32 kind;          // 0x0
+    u32 bytes;         // 0x4
+    i32 offset;        // 0x8
 };
 
 #pragma pack(push, 4)
@@ -33,8 +33,8 @@ class WavReader { // size 0x40
     virtual HRESULT Read(void *, u32, u32 *);
     virtual i32 SeekTime(f32);
     u32 FourCcPc(const char *);
-    i32 FindChunkPc(HANDLE, const char *, PC_WAVE_CHUNK_PC *);
-    i32 SkipChunkPc(HANDLE, const PC_WAVE_CHUNK_PC *);
+    i32 FindChunkPc(HANDLE, const char *, PC_WAVE_CHUNK *);
+    i32 SkipChunkPc(HANDLE, const PC_WAVE_CHUNK *);
     u32 unknown_004;     // 0x04
     HANDLE file;         // 0x08
     u32 unknown_00c;     // 0x0c

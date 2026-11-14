@@ -60,15 +60,15 @@ typedef struct podrace_levflag_s { // size 0x10
     u8 remaining[14];              // 0x2
 } PODRACE_LEVFLAG_PC;
 
-typedef struct gungan_a_s {    // size 0x114
-    i16 unknown_000;           // 0x000
-    i16 count;                 // 0x002
-    AILOCATOR_PC *origins[32]; // 0x004
-    AILOCATOR_PC *targets[32]; // 0x084
-    f32 spawn_timer;           // 0x104
-    i16 model_index;           // 0x108
-    i16 unknown_10a;           // 0x10a
-    i16 models[4];             // 0x10c
+typedef struct gungan_a_s { // size 0x114
+    i16 unknown_000;        // 0x000
+    i16 count;              // 0x002
+    AILOCATOR *origins[32]; // 0x004
+    AILOCATOR *targets[32]; // 0x084
+    f32 spawn_timer;        // 0x104
+    i16 model_index;        // 0x108
+    i16 unknown_10a;        // 0x10a
+    i16 models[4];          // 0x10c
 } GUNGAN_A_PC;
 
 typedef struct mine_entry_s { // size 0x1c
@@ -85,7 +85,7 @@ typedef struct minesys_s {        // size 0x748
     MINE_ENTRY_PC mines[64];      // 0x00c
     f32 mine_radius;              // 0x70c
     f32 spawn_timer;              // 0x710
-    AIAREA_PC *nomine_areas[10];  // 0x714
+    AIAREA *nomine_areas[10];     // 0x714
     i16 nomine_count;             // 0x73c
     i16 mine_debris;              // 0x73e
     i32 mine_part;                // 0x740
@@ -134,7 +134,7 @@ void AnakinsFlightB_Draw(WORLDINFO *world) {
 }
 
 /* Empty level debug hook shared with the Episode II callbacks. */
-void KaminoEGizmoMissingPc(char *name) {
+void KaminoEGizmoMissing(char *name) {
 }
 
 typedef struct podrace_netpacket_reader_s { // size 0x14
@@ -149,13 +149,13 @@ typedef struct podrace_netpacket_reader_s { // size 0x14
 typedef struct PODSPRINT_VIEW {   // size 0x94
     NUGSPLINE *finish_line;       // 0x00
     NUGSPLINE *halfway;           // 0x04
-    PODSPRINT_AI_PC ai[6];        // 0x08
+    PODSPRINT_AI ai[6];           // 0x08
     GIZAIMESSAGE *lap_msg;        // 0x68
     GIZAIMESSAGE *max_speed_msg;  // 0x6c
     GIZAIMESSAGE *min_speed_msg;  // 0x70
     GIZAIMESSAGE *speed_step_msg; // 0x74
     GAMEOBJECT *pacemaker;        // 0x78
-    AIAREA_PC *boulders;          // 0x7c
+    AIAREA *boulders;             // 0x7c
     f32 arrow_timer;              // 0x80
     f32 countdown;                // 0x84
     f32 lap_time;                 // 0x88

@@ -11,17 +11,17 @@
 #include "legogame/game.h"
 #endif
 
-struct CUSTOMPIECE_LAYERS_PC;
+struct CUSTOMPIECE_LAYERS;
 struct FRAME_PAD_PC;
 struct WORLDINFO_s;
-struct nufpar_pc_s;
+struct nufpar_s;
 
-typedef struct CUSTOMISER_LAYERS_PC {     // size 0x70
-    u8 unknown_00[0x38];                  // 0x00
-    struct CUSTOMPIECE_LAYERS_PC *pieces; // 0x38
-    u8 unknown_3c[0x30];                  // 0x3c
-    i16 character_ids[2];                 // 0x6c
-} CUSTOMISER_LAYERS_PC;
+typedef struct CUSTOMISER_LAYERS {     // size 0x70
+    u8 unknown_00[0x38];               // 0x00
+    struct CUSTOMPIECE_LAYERS *pieces; // 0x38
+    u8 unknown_3c[0x30];               // 0x3c
+    i16 character_ids[2];              // 0x6c
+} CUSTOMISER_LAYERS;
 
 typedef struct GAMEPAD_RUNTIME_INPUT_PC { // size 0x60
     struct FRAME_PAD_PC *bound_pad;       // 0x00
@@ -41,25 +41,25 @@ typedef struct GAMEPAD_RUNTIME_INPUT_PC { // size 0x60
 extern "C" {
 #endif
     extern i32 PCArcadeUnpairedIconModel;
-    void PermanentCustomPieceConfigPc(struct CUSTOMPIECE_LAYERS_PC *, struct nufpar_pc_s *);
-    i32 PermanentCustomPieceAvailablePc(struct CUSTOMPIECE_LAYERS_PC *);
-    extern f32 MissionPlayerIconSizePc;
-    extern const char *TagAsciiDownPc;
-    extern const char *InitAsciiUpPc;
-    extern const char *InitAsciiLeftPc;
+    void PermanentCustomPieceConfig(struct CUSTOMPIECE_LAYERS *, struct nufpar_s *);
+    i32 PermanentCustomPieceAvailable(struct CUSTOMPIECE_LAYERS *);
+    extern f32 MissionPlayerIconSize;
+    extern const char *TagAsciiDown;
+    extern const char *InitAsciiUp;
+    extern const char *InitAsciiLeft;
     extern i32 CustomiseMode[2];
     extern char CustomiseLetter[39];
-    void Customiser_Update(CUSTOMISER_LAYERS_PC *, struct WORLDINFO_s *);
-    i32 Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *);
-    void Customiser_Update(CUSTOMISER_LAYERS_PC *, struct WORLDINFO_s *);
+    void Customiser_Update(CUSTOMISER_LAYERS *, struct WORLDINFO_s *);
+    i32 Customiser_MenuAvailable(CUSTOMISER_LAYERS *);
+    void Customiser_Update(CUSTOMISER_LAYERS *, struct WORLDINFO_s *);
     extern i32 customiser_save_done;
     extern i32 customiser_changed;
     extern GAMESAVE OldCustomiseGame; /* 85ea98, native0x7e4c owner. */
-    void Customiser_Init(CUSTOMISER_LAYERS_PC *);
-    void Customiser_Reset(CUSTOMISER_LAYERS_PC *);
-    void Customiser_Draw3D(CUSTOMISER_LAYERS_PC *);
-    void MenuDrawCustomiserPc(MENU *);
-    void MenuUpdateCustomiserPc(MENU *);
+    void Customiser_Init(CUSTOMISER_LAYERS *);
+    void Customiser_Reset(CUSTOMISER_LAYERS *);
+    void Customiser_Draw3D(CUSTOMISER_LAYERS *);
+    void MenuDrawCustomiser(MENU *);
+    void MenuUpdateCustomiser(MENU *);
     i32 CustomiserMenu_Update(void);
     extern i16 TextIdPc880890;
     extern u8 downrepeatcount[2];

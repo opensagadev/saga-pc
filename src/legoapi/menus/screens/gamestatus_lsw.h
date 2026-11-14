@@ -11,17 +11,17 @@
 #include "legoapi/world/world.h"
 #endif
 
-typedef struct NEW_MINI_PIECE_PC { // size 0xc
-    char name[8];                  // 0x0
-    i16 level;                     // 0x8
-    u8 padding_a[2];               // 0xa
-} NEW_MINI_PIECE_PC;
+typedef struct NEW_MINI_PIECE { // size 0xc
+    char name[8];               // 0x0
+    i16 level;                  // 0x8
+    u8 padding_a[2];            // 0xa
+} NEW_MINI_PIECE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    extern NEW_MINI_PIECE_PC NewMiniPiece[10];
+    extern NEW_MINI_PIECE NewMiniPiece[10];
     void SetBonusWinner(i32 player_index);
 #ifdef __cplusplus
 }

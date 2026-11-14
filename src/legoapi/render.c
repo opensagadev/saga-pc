@@ -56,7 +56,7 @@ typedef struct render_post_prim_vertex_s { // size 0x18
         else                                                                                                                               \
             brightness = ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity;                     \
         if (parameters->directional) {                                                                                                     \
-            f32 angle = (i16)(0x4000 - RenderPostASinPc(NuVecDot(&parameters->direction, (NUVEC *)&direction))) * 0.005493164f;            \
+            f32 angle = (i16)(0x4000 - RenderPostASin(NuVecDot(&parameters->direction, (NUVEC *)&direction))) * 0.005493164f;              \
             if (angle < parameters->direction_near_angle) {                                                                                \
                 brightness += 128.0f * parameters->direction_far_scale;                                                                    \
             } else if (!(angle > parameters->direction_far_angle)) {                                                                       \
@@ -158,7 +158,7 @@ void CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 
 /* Native walks the two adjacent 0x14-byte rumble records. */
 typedef struct STATUS_RUMBLE_PAIR {
-    RUMBLE_PACKET_RESOURCE_PC players[2];
+    RUMBLE_PACKET_RESOURCE players[2];
 } STATUS_RUMBLE_PAIR;
 
 typedef struct StatusPlayerModelPair { // size 0x4
@@ -186,19 +186,19 @@ void BonusWin_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 
 /* Original source name unknown. The native entry is exactly RET; ReleaseTakeOver passes it the rider and
  * vehicle character names. */
-void TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name) {
+void TakeOverReleaseDiagnostic(char *rider_name, char *object_name) {
     (void)rider_name;
     (void)object_name;
 }
 
 /* Original source name unknown. The native entry is exactly RET; GameAnimSet_AddObject passes it the name of a
  * special whose animation has no frames. */
-void GameAnimMissingAnimDiagnosticPc(char *name) {
+void GameAnimMissingAnimDiagnostic(char *name) {
     (void)name;
 }
 
 /* Original source name unknown. The native entry is exactly RET; LoadGizmoSys passes it each gizmo type name it
  * reads, loads or skips. */
-void GizmoNameDiagnosticPc(char *name) {
+void GizmoNameDiagnostic(char *name) {
     (void)name;
 }

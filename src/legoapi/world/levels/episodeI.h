@@ -15,14 +15,14 @@
 #include "nu2api/nu3d/nuspline.h"
 #endif
 
-typedef struct PODSPRINT_AI_PC { // size 0x10
-    NUGSPLINE *spline;           // 0x0
-    i16 vals[6];                 // 0x4
-} PODSPRINT_AI_PC;
+typedef struct PODSPRINT_AI { // size 0x10
+    NUGSPLINE *spline;        // 0x0
+    i16 vals[6];              // 0x4
+} PODSPRINT_AI;
 
 typedef struct PODSPRINT_PC {              // size 0x94
     u8 unknown_0[8];                       // 0x00
-    PODSPRINT_AI_PC ai[6];                 // 0x08
+    PODSPRINT_AI ai[6];                    // 0x08
     struct gizaimessage_s *lap_msg;        // 0x68
     struct gizaimessage_s *max_speed_msg;  // 0x6c
     struct gizaimessage_s *min_speed_msg;  // 0x70
@@ -46,10 +46,10 @@ extern "C" {
 
     f32 PodSprint_InStartCountdown(WORLDINFO *);
     extern i32 Lap;
-    i32 Action_CreatePod(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_CreatePod(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
     /* PodRacePc is a private static of episodeI.c. */
-    extern GAMEOBJECT *PodPacemakerPc;
-    extern f32 PodRaceSplineIncrementPc;
+    extern GAMEOBJECT *PodPacemaker;
+    extern f32 PodRaceSplineIncrement;
     extern char PodCreateSplineKeywordPc[11];
     extern char PodCreateStartKeywordPc[14];
     extern char PodCreateEndKeywordPc[12];
@@ -57,16 +57,16 @@ extern "C" {
     extern char PodCreatePacemakerKeywordPc[10];
     extern char PodCreateDamagedKeywordPc[8];
 
-    extern GAMEOBJECT *PodPacemakerPc;
+    extern GAMEOBJECT *PodPacemaker;
     extern char PodRaceMaxLapTimeKeywordPc[12];
     extern char PodRaceLapTimeKeywordPc[9];
     extern char PodRaceAttemptsKeywordPc[25];
     extern char PodRaceIncrementKeywordPc[11];
-    i32 Action_SetLapTime(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetLapTime(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
     void PodDust(WORLDINFO *, GAMEOBJECT *);
-    extern i32 PodDustLocatorIndicesPc[2];
-    extern f32 PodDustEmissionRatePc;
-    extern f32 PodDustHeightScalePc;
+    extern i32 PodDustLocatorIndices[2];
+    extern f32 PodDustEmissionRate;
+    extern f32 PodDustHeightScale;
     i32 PodRace_InStartCountdown(WORLDINFO *);
     void SetPodMergeAnims(ANIMPACKET_PC *, i32);
     extern u8 gunship_flags[10];

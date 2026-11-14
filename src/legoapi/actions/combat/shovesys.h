@@ -17,8 +17,8 @@ extern "C" {
     void AddShoveObject(NUSPECIALHANDLE *, i16);
     void ShoveObjectSysReset(void);
     void ShoveSystemCheckGameObject(GAMEOBJECT *);
-    extern f32 ShoveMaximumSpeedPc;
-    extern f32 ShoveMaximumPenetrationPc;
+    extern f32 ShoveMaximumSpeed;
+    extern f32 ShoveMaximumPenetration;
 #ifdef __cplusplus
 }
 #endif

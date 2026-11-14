@@ -13,7 +13,7 @@ typedef struct episode_area_save_reader_s { // size 0xc
 } EPISODE_AREA_SAVE_READER_PC;
 
 extern "C" {
-    void EpisodesConfigDiagnosticPc(char *path);
+    void EpisodesConfigDiagnostic(char *path);
 
     EPISODEDATA_PC *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out) {
         NUFPAR_PC *parser = NuFParCreate(path);
@@ -23,7 +23,7 @@ extern "C" {
         i32 in_episode;
 
         if (parser == NULL) {
-            EpisodesConfigDiagnosticPc(path);
+            EpisodesConfigDiagnostic(path);
             if (count_out != NULL) {
                 *count_out = 0;
             }
@@ -109,7 +109,7 @@ extern "C" {
             }
             return episode_base;
         }
-        EpisodesConfigDiagnosticPc(path);
+        EpisodesConfigDiagnostic(path);
         return NULL;
     }
 }
@@ -211,9 +211,9 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
     if (episode_index == -1) {
         return 0;
     }
-    if (EpisodeGoldBrickForSuperStoryPc != 0) {
+    if (EpisodeGoldBrickForSuperStory != 0) {
         EpGoldBrickTotal = 1;
-        if (EpisodeSavePc != NULL && EpisodeSavePc[episode_index].superstory_complete != 0) {
+        if (EpisodeSave != NULL && EpisodeSave[episode_index].superstory_complete != 0) {
             EpGoldBrickCount = 1;
         }
     }
@@ -227,7 +227,7 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
             continue;
         }
         if ((ADataList[id].flags & 0x100) != 0) {
-            if (EpisodeGoldBrickForSuperBonusPc != 0) {
+            if (EpisodeGoldBrickForSuperBonus != 0) {
                 ++EpGoldBrickTotal;
                 if (saves[i].area_complete != 0) {
                     ++EpGoldBrickCount;
@@ -263,7 +263,7 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
         EpMiniKitCount += save->minikit_count;
         ++EpBuildUpTotal;
         ++EpGoldBrickTotal;
-        if (HubBothTrueJediGoldBricksPc != 0) {
+        if (HubBothTrueJediGoldBricks != 0) {
             if (save->story_complete != 0) {
                 ++EpBuildUpCount;
                 ++EpGoldBrickCount;
@@ -285,12 +285,12 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
             ++EpRedBrickCount;
         }
         ++EpCharKitTotal;
-        if (EpisodeGoldBrickForChallengePc != 0) {
+        if (EpisodeGoldBrickForChallenge != 0) {
             ++EpGoldBrickTotal;
         }
         if (save->challenge_complete != 0) {
             ++EpCharKitCount;
-            if (EpisodeGoldBrickForChallengePc != 0) {
+            if (EpisodeGoldBrickForChallenge != 0) {
                 ++EpGoldBrickCount;
             }
         }

@@ -1,12 +1,12 @@
 #include "saga.h"
 
-static f32 HairMovementFallAnglePc = -1.8325958f;
-static f32 HairMovementFallRatePc = 2.0f;
-static f32 HairMovementRecoverRatePc = 2.0f;
+static f32 HairMovementFallAngle = -1.8325958f;
+static f32 HairMovementFallRate = 2.0f;
+static f32 HairMovementRecoverRate = 2.0f;
 
 typedef struct character_joint_movement_s { // size 0x1080
     u8 unknown_000[0xf3c];                  // 0x0000
-    NUHGOBJ_JOINT_OVERRIDE_PC overrides[3]; // 0x0f3c
+    NUHGOBJ_JOINT_OVERRIDE overrides[3];    // 0x0f3c
     u8 unknown_fd8[0x107d - 0xfd8];         // 0x0fd8
     u8 count;                               // 0x107d
 } CHARACTER_JOINT_MOVEMENT_PC;
@@ -27,7 +27,7 @@ typedef struct character_joint_movement_s { // size 0x1080
 
 void AddFootSteps(GAMEOBJECT *object) {
     ANIMPACKET_PC *packet = &object->anim_packet;
-    CHARACTERANIM_CONFIG_PC *config;
+    CHARACTERANIM_CONFIG *config;
     i32 valid_interval;
     i32 crossed;
     f32 frame;
@@ -111,7 +111,7 @@ void SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priori
     }
 }
 
-static void HeadMovementLegacyPc(GAMEOBJECT *object) {
+static void HeadMovementLegacy(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
     f32 first;
     f32 second;
@@ -183,10 +183,10 @@ static void HeadMovementLegacyPc(GAMEOBJECT *object) {
     joints->overrides[joints->count].rotation_max_pc[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
     joints->overrides[joints->count].rotation_min_pc[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
     joints->overrides[joints->count].rotation.z = 0.0f;
-    if (joints->overrides[joints->count].rotation.x > HeadMovementThresholdPc ||
-        joints->overrides[joints->count].rotation.x < -HeadMovementThresholdPc ||
-        joints->overrides[joints->count].rotation.y > HeadMovementThresholdPc ||
-        joints->overrides[joints->count].rotation.y < -HeadMovementThresholdPc) {
+    if (joints->overrides[joints->count].rotation.x > HeadMovementThreshold ||
+        joints->overrides[joints->count].rotation.x < -HeadMovementThreshold ||
+        joints->overrides[joints->count].rotation.y > HeadMovementThreshold ||
+        joints->overrides[joints->count].rotation.y < -HeadMovementThreshold) {
         joints->overrides[joints->count].flags_pc = 1;
         if (allowed) {
             if (joints->overrides[joints->count].rotation.x != 0.0f) {
@@ -209,7 +209,7 @@ static void HeadMovementLegacyPc(GAMEOBJECT *object) {
     joints->count = joints->count + 1;
 }
 
-static void HeadMovementAlternatePc(GAMEOBJECT *object) {
+static void HeadMovementAlternate(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
     f32 first;
     f32 second;
@@ -285,10 +285,10 @@ static void HeadMovementAlternatePc(GAMEOBJECT *object) {
         joints->overrides[joints->count].rotation.z = second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
         joints->overrides[joints->count].rotation_max_pc[2] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
         joints->overrides[joints->count].rotation_min_pc[2] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
-        if (joints->overrides[joints->count].rotation.y > HeadMovementThresholdPc ||
-            joints->overrides[joints->count].rotation.y < -HeadMovementThresholdPc ||
-            joints->overrides[joints->count].rotation.z > HeadMovementThresholdPc ||
-            joints->overrides[joints->count].rotation.z < -HeadMovementThresholdPc) {
+        if (joints->overrides[joints->count].rotation.y > HeadMovementThreshold ||
+            joints->overrides[joints->count].rotation.y < -HeadMovementThreshold ||
+            joints->overrides[joints->count].rotation.z > HeadMovementThreshold ||
+            joints->overrides[joints->count].rotation.z < -HeadMovementThreshold) {
             joints->overrides[joints->count].flags_pc = 1;
             if (allowed) {
                 if (joints->overrides[joints->count].rotation.y != 0.0f) {
@@ -312,7 +312,7 @@ static void HeadMovementAlternatePc(GAMEOBJECT *object) {
     }
 }
 
-static void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
+static void HeadMovementOrdinary(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
     f32 first;
     f32 second;
@@ -388,10 +388,10 @@ static void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
         joints->overrides[joints->count].rotation.z = second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
         joints->overrides[joints->count].rotation_max_pc[2] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
         joints->overrides[joints->count].rotation_min_pc[2] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
-        if (joints->overrides[joints->count].rotation.y > HeadMovementThresholdPc ||
-            joints->overrides[joints->count].rotation.y < -HeadMovementThresholdPc ||
-            joints->overrides[joints->count].rotation.z > HeadMovementThresholdPc ||
-            joints->overrides[joints->count].rotation.z < -HeadMovementThresholdPc) {
+        if (joints->overrides[joints->count].rotation.y > HeadMovementThreshold ||
+            joints->overrides[joints->count].rotation.y < -HeadMovementThreshold ||
+            joints->overrides[joints->count].rotation.z > HeadMovementThreshold ||
+            joints->overrides[joints->count].rotation.z < -HeadMovementThreshold) {
             joints->overrides[joints->count].flags_pc = 1;
             if (allowed) {
                 if (joints->overrides[joints->count].rotation.y != 0.0f) {
@@ -420,11 +420,11 @@ void HeadMovement(GAMEOBJECT *object) {
         return;
     }
     if ((object->character_data->game_character->flags_094 & 0x40000000) != 0) {
-        HeadMovementAlternatePc(object);
+        HeadMovementAlternate(object);
     } else if ((object->character_data->model_flags & 0x20000) != 0) {
-        HeadMovementLegacyPc(object);
+        HeadMovementLegacy(object);
     } else {
-        HeadMovementOrdinaryPc(object);
+        HeadMovementOrdinary(object);
     }
 }
 
@@ -439,12 +439,12 @@ void CloakMovement(GAMEOBJECT *object) {
                     (object->character_data->game_character->field_05c - object->character_data->game_character->field_060));
     if (LEGOACT_FALL != -1 && ((object->anim_packet.blending && object->anim_packet.blend_target_animation == LEGOACT_FALL) ||
                                (!object->anim_packet.blending && object->anim_packet.animation_index == LEGOACT_FALL))) {
-        phase += FRAMETIME * CloakMovementFallRatePc;
+        phase += FRAMETIME * CloakMovementFallRate;
         if (phase > 1.0f) {
             phase = 1.0f;
         }
     } else {
-        phase -= CloakMovementRecoverRatePc * FRAMETIME;
+        phase -= CloakMovementRecoverRate * FRAMETIME;
         if (phase < 0.0f) {
             phase = 0.0f;
         }
@@ -479,32 +479,32 @@ void HairMovement(GAMEOBJECT *object) {
     if (joints->count >= 3 || object->character_data->game_character->cloak_joint_2 == -1) {
         return;
     }
-    phase = NuFsqrt((joints->overrides[joints->count].rotation.z - HairMovementRestAnglePc) /
-                    (HairMovementFallAnglePc - HairMovementRestAnglePc));
+    phase =
+        NuFsqrt((joints->overrides[joints->count].rotation.z - HairMovementRestAngle) / (HairMovementFallAngle - HairMovementRestAngle));
     if (LEGOACT_FALL != -1 && ((object->anim_packet.blending && object->anim_packet.blend_target_animation == LEGOACT_FALL) ||
                                (!object->anim_packet.blending && object->anim_packet.animation_index == LEGOACT_FALL))) {
-        phase += FRAMETIME * HairMovementFallRatePc;
+        phase += FRAMETIME * HairMovementFallRate;
         if (phase > 1.0f) {
             phase = 1.0f;
         }
     } else {
-        phase -= HairMovementRecoverRatePc * FRAMETIME;
+        phase -= HairMovementRecoverRate * FRAMETIME;
         if (phase < 0.0f) {
             phase = 0.0f;
         }
     }
     phase *= phase;
-    phase = (1.0f - phase) * HairMovementRestAnglePc + phase * HairMovementFallAnglePc;
+    phase = (1.0f - phase) * HairMovementRestAngle + phase * HairMovementFallAngle;
     joints->overrides[joints->count].joint_index = object->character_data->game_character->cloak_joint_2;
     joints->overrides[joints->count].rotation.z = phase;
     if (joints->overrides[joints->count].rotation.z != 0.0f) {
         joints->overrides[joints->count].flags_pc = 0x21;
-        if (HairMovementRestAnglePc > HairMovementFallAnglePc) {
-            joints->overrides[joints->count].rotation_max_pc[2] = (i32)((f64)HairMovementRestAnglePc * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min_pc[2] = (i32)((f64)HairMovementFallAnglePc * AIPathAngularScale);
+        if (HairMovementRestAngle > HairMovementFallAngle) {
+            joints->overrides[joints->count].rotation_max_pc[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_min_pc[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);
         } else {
-            joints->overrides[joints->count].rotation_max_pc[2] = (i32)((f64)HairMovementFallAnglePc * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min_pc[2] = (i32)((f64)HairMovementRestAnglePc * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_max_pc[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_min_pc[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
         }
     }
     joints->count++;

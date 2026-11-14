@@ -68,7 +68,7 @@ void FtpFile::Term() {
 /* Once an accepted send's message is no longer shared, start a fresh one. */
 void FtpFile::Update() {
     if (direction == 1 && message.data != NULL && message.data->references == 1 && accepted == 1) {
-        NETMESSAGE_PC next(0xc);
+        NETMESSAGE next(0xc);
         message = next;
         next.Release();
     }
@@ -99,10 +99,10 @@ i32 FtpFile::Accept(i32 new_capacity, void *new_buffer) {
 extern "C" void fun_00617400() {
 }
 
-void FtpFile::RecvData(NETMESSAGE_PC &message) {
+void FtpFile::RecvData(NETMESSAGE &message) {
 }
 
-u32 NETMESSAGE_PC::MessageData::fun_00617420() const {
+u32 NETMESSAGE::MessageData::fun_00617420() const {
     return references;
 }
 
@@ -117,7 +117,7 @@ const FtpFile *FtpFileArray::fun_00617490() const {
 extern "C" void fun_006174b0() {
 }
 
-u32 NETMESSAGE_PC::fun_006174c0() const {
+u32 NETMESSAGE::fun_006174c0() const {
     if (data == NULL) {
         return 0;
     }
@@ -158,7 +158,7 @@ const FtpFile *NetFtpManager::FindTransfer(const char *name, const NetAddress &a
     return NULL;
 }
 
-void NetFtpManager::Receive(NETMESSAGE_PC message, u8 channel, const NetAddress &address) {
+void NetFtpManager::Receive(NETMESSAGE message, u8 channel, const NetAddress &address) {
     message.Release();
 }
 

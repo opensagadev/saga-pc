@@ -3,12 +3,12 @@
 
 /* Episode III FixUpLevels callbacks (Cruiser_A/C/D, Grievous_A, Kashyyyk_A/B/C, Vader_A/B/C). */
 
-typedef struct cruiserc_s {          // size 0x14
-    GIZAIMESSAGE *dooku_fight;       // 0x00
-    GAMEOBJECT *count_dooku;         // 0x04
-    GIZAIMESSAGE *free_palpatine;    // 0x08
-    GAMEOBJECT *palpatine;           // 0x0c
-    AILOCATOR_PC *palpatine_locator; // 0x10
+typedef struct cruiserc_s {       // size 0x14
+    GIZAIMESSAGE *dooku_fight;    // 0x00
+    GAMEOBJECT *count_dooku;      // 0x04
+    GIZAIMESSAGE *free_palpatine; // 0x08
+    GAMEOBJECT *palpatine;        // 0x0c
+    AILOCATOR *palpatine_locator; // 0x10
 } CRUISERC_PC;
 
 typedef struct cruiserd_lift_anim_s { // size 0x60
@@ -25,7 +25,7 @@ typedef struct cruiserd_lift_anim_s { // size 0x60
 
 typedef struct vaderc_s {              // size 0x98
     GIZAIMESSAGE *final_fight_message; // 0x00
-    AILOCATOR_PC *big_jump_locator;    // 0x04
+    AILOCATOR *big_jump_locator;       // 0x04
     NUSPECIALHANDLE rocks[10];         // 0x08
     i16 platform_ids[10];              // 0x80
     u8 progress_mask;                  // 0x94

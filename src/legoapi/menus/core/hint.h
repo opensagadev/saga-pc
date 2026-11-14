@@ -5,7 +5,7 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct HINT_PC { // size 0x1c
+typedef struct HINT { // size 0x1c
 
     union { // size 0xc
 
@@ -34,48 +34,48 @@ typedef struct HINT_PC { // size 0x1c
     f32 repeat_delay; // 0x0c
 
     union { // size 0x4
-        i32 (*update_fn)(struct HINT_PC *);
+        i32 (*update_fn)(struct HINT *);
         u8 unknown10[4];
     }; // 0x10
 
     u8 completed;    // 0x14
     u8 unknown15[3]; // 0x15
     f32 cooldown;    // 0x18
-} HINT_PC;
+} HINT;
 
-typedef struct HINTSYS_PC { // size 0x20
+typedef struct HINTSYS { // size 0x20
 
     union { // size 0x4
         u8 unknown0[4];
-        void (*draw_fn)(HINT_PC *, i32);
+        void (*draw_fn)(HINT *, i32);
     }; // 0x00
 
-    HINT_PC *hints;       // 0x04
-    HINT_PC *active_hint; // 0x08
-    u8 unknownc;          // 0x0c
-    u8 state;             // 0x0d
-    u8 unknowne[2];       // 0x0e
-    u32 *save_bits;       // 0x10
-    i32 save_word_count;  // 0x14
-    f32 display_elapsed;  // 0x18
-    f32 alpha;            // 0x1c
-} HINTSYS_PC;
+    HINT *hints;         // 0x04
+    HINT *active_hint;   // 0x08
+    u8 unknownc;         // 0x0c
+    u8 state;            // 0x0d
+    u8 unknowne[2];      // 0x0e
+    u32 *save_bits;      // 0x10
+    i32 save_word_count; // 0x14
+    f32 display_elapsed; // 0x18
+    f32 alpha;           // 0x1c
+} HINTSYS;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    extern HINTSYS_PC hintsys;
+    extern HINTSYS hintsys;
     void Hint_SetComplete(i32);
-    i32 Hint_isComplete(HINT_PC *);
-    void Hint_SetCompletePc(HINT_PC *);
-    void RegisterWithHintSys(void (*draw_fn)(HINT_PC *, i32), HINT_PC *hints, u32 *save_bits, i32 save_word_count);
+    i32 Hint_isComplete(HINT *);
+    void Hint_SetCompletePc(HINT *);
+    void RegisterWithHintSys(void (*draw_fn)(HINT *, i32), HINT *hints, u32 *save_bits, i32 save_word_count);
     i32 Hint_CurrentId(void);
     void Hint_SetHintFromId(i32, i32, i32);
-    HINT_PC *Hint_FindHint(i32);
+    HINT *Hint_FindHint(i32);
     void Hint_ResetHint(i32 hint_id, i32 reset_completed);
-    void Hint_SetHint(HINT_PC *, i32, i32);
-    void Hint_SaveGameState(HINT_PC *);
+    void Hint_SetHint(HINT *, i32, i32);
+    void Hint_SaveGameState(HINT *);
     void Hint_LoadAllGameState(void);
     void Hint_CancelCurrent(void);
     void Hint_ClearHintsAndDoneFlags(void);

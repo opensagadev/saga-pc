@@ -2,7 +2,7 @@
 #include <math.h>
 #include <string.h>
 
-struct CABLE_RECORD_PC {     // size 0x1ec
+struct CABLE_RECORD {        // size 0x1ec
     GAMEOBJECT *source;      // 0x000
     GAMEOBJECT *target;      // 0x004
     NUVEC points[16];        // 0x008
@@ -53,11 +53,11 @@ void InitCables(WORLDINFO *world) {
     }
 }
 
-CABLE_RECORD_PC *CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32 sound) {
+CABLE_RECORD *CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32 sound) {
     i32 i;
-    CABLE_RECORD_PC *cable;
+    CABLE_RECORD *cable;
     if (source != NULL && target != NULL) {
-        cable = (CABLE_RECORD_PC *)cables;
+        cable = (CABLE_RECORD *)cables;
         for (i = 0; i < 8; ++i, ++cable) {
             if ((cable->flags & 1) == 0) {
                 cable->flags |= 1;
@@ -85,7 +85,7 @@ void DestroyCable(CABLE_s *cable) {
     }
 }
 
-static void ReleaseCable(CABLE_RECORD_PC *cable, i32 snapped) {
+static void ReleaseCable(CABLE_RECORD *cable, i32 snapped) {
     i32 i;
     cable->flags |= 4;
     if (cable->target != NULL) {
@@ -125,14 +125,14 @@ static void CableAtstToppled(GAMEOBJECT *target) {
     object = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
         if ((object->flags_1fc_word & 0x1000) && object->dead == 0 && object->cable != NULL &&
-            ((CABLE_RECORD_PC *)object->cable)->target == target) {
+            ((CABLE_RECORD *)object->cable)->target == target) {
             ReleaseCable(object->cable, 1);
         }
     }
 }
 
 void UpdateCables(void) {
-    CABLE_RECORD_PC *cable = (CABLE_RECORD_PC *)cables;
+    CABLE_RECORD *cable = (CABLE_RECORD *)cables;
     NUVEC closest;
     NUVEC delta;
     NUVEC path[16];
@@ -215,7 +215,7 @@ void UpdateCables(void) {
                     i32 last;
                     NUVEC *last_position;
                     if (cable->wrap_count == 0) {
-                        f32 nearest = AIPositionUnsetPc;
+                        f32 nearest = AIPositionUnset;
                         i32 selected = 0;
                         for (i = 0; i < 4; ++i) {
                             f32 distance =
@@ -307,7 +307,7 @@ void UpdateCables(void) {
                         release = 1;
                     } else {
                         f32 distance_sq = NuVecDistSqr(&path[0], &path[1], &delta);
-                        if (NewRayCastScaleYMask(&path[1], &delta, 0.0f, 1.0f, 0, GetSurfaceInfoRuntimeMaskPc.word | 0x1f)) {
+                        if (NewRayCastScaleYMask(&path[1], &delta, 0.0f, 1.0f, 0, GetSurfaceInfoRuntimeMask.word | 0x1f)) {
                             release = 1;
                             snapped = 1;
                         } else {
@@ -325,8 +325,8 @@ void UpdateCables(void) {
                                     object->id != (u16)id_ATST_LOWRES) {
                                     continue;
                                 }
-                                if (object->cable != NULL && (((CABLE_RECORD_PC *)object->cable)->target == cable->target ||
-                                                              ((CABLE_RECORD_PC *)object->cable)->target == cable->source)) {
+                                if (object->cable != NULL && (((CABLE_RECORD *)object->cable)->target == cable->target ||
+                                                              ((CABLE_RECORD *)object->cable)->target == cable->source)) {
                                     continue;
                                 }
                                 if (object == cable->source || object == cable->target) {
@@ -427,7 +427,7 @@ void UpdateCables(void) {
                                             remaining -= length;
                                             ++cable->point_count;
                                             if (i == count - 2) {
-                                                cable->max_length = AIPositionUnsetPc;
+                                                cable->max_length = AIPositionUnset;
                                                 PlaySfx("TowCable_Latch", &path[i + 1]);
                                             }
                                         }
@@ -459,7 +459,7 @@ void UpdateCables(void) {
 }
 
 void DrawCables(void) {
-    CABLE_RECORD_PC *cable = (CABLE_RECORD_PC *)cables;
+    CABLE_RECORD *cable = (CABLE_RECORD *)cables;
     NURND_VERTEX3D_PC vertices[2];
     NUVEC step;
     i32 index;
@@ -504,7 +504,7 @@ void DrawCables(void) {
                 if (solid_cable != 0) {
                     DrawRopeSingle(&vertices[0].position, &vertices[1].position, 1.0f, ropemtl, end_fraction, end_fraction, 10.0f, 5.0f);
                 } else {
-                    NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
+                    NuRndrLine3d(vertices, ZipUpLineMaterial, NULL);
                 }
             }
         } else {
@@ -573,7 +573,7 @@ void DrawCables(void) {
                     if (solid_cable != 0) {
                         DrawRopeSingle(&vertices[0].position, &vertices[1].position, 1.0f, ropemtl, end_sag, end_sag, 10.0f, 5.0f);
                     } else {
-                        NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
+                        NuRndrLine3d(vertices, ZipUpLineMaterial, NULL);
                     }
                     ++nsegments_drawn;
                 }

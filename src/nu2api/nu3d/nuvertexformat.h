@@ -13,7 +13,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    PC_TEXTURE_RESOURCE_PC *NuGetVertexDeclaration(u32);
+    PC_TEXTURE_RESOURCE *NuGetVertexDeclaration(u32);
 #ifdef __cplusplus
 }
 #endif

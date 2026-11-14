@@ -6,5 +6,5 @@ void rtlSwapSetEndianess(void *unused) {
 }
 
 // Called by InitUI when a debug menu cannot be created.
-void RtlUiCreateFailedPc(void) {
+void RtlUiCreateFailed(void) {
 }

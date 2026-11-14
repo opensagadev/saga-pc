@@ -148,7 +148,7 @@ void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     s->progress = progress;
 }
 
-static void BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system, BOMB_GENERATOR_PROGRESS_PC *progress) {
+static void BombGeneratorsApplyReset(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system, BOMB_GENERATOR_PROGRESS_PC *progress) {
     BOMB_GENERATOR_RUNTIME_PC *generator = system->items;
     i32 index;
     i32 shared_bomb;
@@ -201,7 +201,7 @@ static void BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system,
             bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, "dragbomb", NULL, NULL, 0, NULL, NULL, 0, 0);
         }
         if (bomb != NULL) {
-            CABLE_RECORD_PC *created = CreateCable(Player[index], bomb, 0);
+            CABLE_RECORD *created = CreateCable(Player[index], bomb, 0);
             ((GAMEOBJECT *)Player[index])->cable = created;
             cable = ((GAMEOBJECT *)Player[index])->cable;
             if (cable != NULL) {
@@ -222,7 +222,7 @@ void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_tim
         BOMB_GENERATOR_RUNTIME_PC *generator;
         i32 index;
         if ((system->flags & 1) != 0) {
-            BombGeneratorsApplyResetPc(system, system->progress);
+            BombGeneratorsApplyReset(system, system->progress);
             system->flags &= (u16)~1u;
         }
         generator = system->items;

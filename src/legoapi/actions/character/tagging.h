@@ -33,7 +33,7 @@ typedef struct tag_transfer_s { // size 0x38
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern TAG_TRANSFER_PC TagTransfersPc[2];
+    extern TAG_TRANSFER_PC TagTransfers[2];
     void Tag_ResetTransfers(void);
     void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target);
     void Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count);

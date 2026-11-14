@@ -17,8 +17,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern u32 LswForceUsedHintFlagsPc;
-    i32 GizPanel_UpdateHint(HINT_PC *);
+    extern u32 LswForceUsedHintFlags;
+    i32 GizPanel_UpdateHint(HINT *);
     extern const char EpisodeVI_shot_format[9];
     extern const char EpisodeVI_shot_a_format[10];
     extern const char EpisodeVI_panel2[7];

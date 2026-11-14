@@ -44,16 +44,16 @@ extern "C" {
     extern i16 tMAGNETSUIT;
     extern i16 tATTRACTSUIT;
 #ifdef __cplusplus
-    void MenuEnterControlSetupPc(MENU *);
+    void MenuEnterControlSetup(MENU *);
     void MenuDrawSelectLanguage(MENU *);
     void MenuUpdateSelectLanguage(MENU *);
     void MenuDrawExtras(MENU *);
     void MenuUpdateExtras(MENU *);
-    void MenuDrawControlSetupPc(MENU *);
-    void MenuUpdateControlSetupPc(MENU *);
-    void MenuEnterSelectControlsPc(MENU *);
-    void MenuUpdateSelectControlsPc(MENU *);
-    void MenuExitSelectControlsPc(MENU *);
+    void MenuDrawControlSetup(MENU *);
+    void MenuUpdateControlSetup(MENU *);
+    void MenuEnterSelectControls(MENU *);
+    void MenuUpdateSelectControls(MENU *);
+    void MenuExitSelectControls(MENU *);
 #ifdef __cplusplus
 }
 #endif
@@ -66,8 +66,8 @@ extern "C" {
     void UpdateGameMenu(GAMEPAD_PC *, i32);
     extern char *apitxt_PCPRESSSTARTFE;
     extern f32 newgamewait;
-    extern u8 AlternateHudColourBytesPc[8];
-    extern u8 AlternateHudRgbPc[3];
+    extern u8 AlternateHudColourBytes[8];
+    extern u8 AlternateHudRgb[3];
     void MenuDrawShop(MENU *menu);
     void MenuUpdateShop(MENU *menu);
     extern i16 TextIdPc88090c;

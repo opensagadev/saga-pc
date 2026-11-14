@@ -1,21 +1,21 @@
 #include "saga.h"
 
 extern "C" {
-    void NuRndrConfigureLeafPc(f32 a, f32 b, i32 c);
-    void NuRndrInitLeafPc(VARIPTR *buffer, VARIPTR end);
+    void NuRndrConfigureLeaf(f32 a, f32 b, i32 c);
+    void NuRndrInitLeaf(VARIPTR *buffer, VARIPTR end);
     i32 PCDeviceShowCursorPc(i32 show);
-    void NuRndrDwaInitPc(void);
+    void NuRndrDwaInit(void);
     void NuQFntInit(VARIPTR *buffer, VARIPTR end);
     void PcCreateCursorMaterialPc(void);
-    void NuHwSetParameter33Pc(void *value);
+    void NuHwSetParameter33(void *value);
 }
 
-extern "C" void PcRegisterSaveMetadataPc(const void *);
-extern "C" void PcSetDefaultParameterPc(const char *);
+extern "C" void PcRegisterSaveMetadata(const void *);
+extern "C" void PcSetDefaultParameter(const char *);
 
 /* Incomplete entry-connected reconstruction. Every skipped native call remains
  * marked at its actual site; this is not a complete dispatcher implementation. */
-extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) {
+extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) {
     i32 animation_count = 160;
     i32 dat_count = 0;
     i32 hostfs = 0;
@@ -36,7 +36,7 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
     void *audio_parameter = NULL;
     void **pads[4] = {NULL, NULL, NULL, NULL};
     const char **dat_names = NULL;
-    const char *parameter_2e = NuHwDefaultParameterPc;
+    const char *parameter_2e = NuHwDefaultParameter;
     const char *config_name = "TTalesKey";
     void *parameter_2d = NULL;
     void *parameter_30 = NULL;
@@ -54,7 +54,7 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
         end->addr = buffer->addr + 0x4000000;
     }
     PcInitializeStartupCriticalSection();
-    NuRndrConfigureLeafPc(1.0f, 0.5f, 0);
+    NuRndrConfigureLeaf(1.0f, 0.5f, 0);
     va_start(args, allocate);
     do {
         selector = va_arg(args, i32);
@@ -95,17 +95,17 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
                 va_arg(args, i32);
                 break;
             case 22:
-                NuHwDfsNamePc = va_arg(args, const char *);
+                NuHwDfsName = va_arg(args, const char *);
                 break;
             case 23:
-                NuHwSoundDfsNamePc = va_arg(args, const char *);
+                NuHwSoundDfsName = va_arg(args, const char *);
                 break;
             case 24:
                 dat_names = va_arg(args, const char **);
                 dat_count = va_arg(args, i32);
                 break;
             case 25:
-                NuHwParameter19Pc = va_arg(args, u32);
+                NuHwParameter19 = va_arg(args, u32);
                 break;
             case 8:
                 stream_size = va_arg(args, i32);
@@ -220,7 +220,7 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
                 occlusion_capacity = va_arg(args, u32);
                 break;
             case 79:
-                NuHwParameter4fPc = va_arg(args, u32);
+                NuHwParameter4f = va_arg(args, u32);
                 /* fall through */
             case 83:
                 icon = va_arg(args, u32);
@@ -239,13 +239,13 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
     PcNativeSelectLanguage(config_name);
     PcConfigureInputGraphicsCaps();
     if (parameter_32) {
-        PcRegisterSaveMetadataPc(parameter_32);
+        PcRegisterSaveMetadata(parameter_32);
     }
     if (parameter_2d) {
-        PcSetDefaultParameterPc((const char *)parameter_2d);
+        PcSetDefaultParameter((const char *)parameter_2d);
     }
     if (parameter_33) {
-        NuHwSetParameter33Pc(parameter_33);
+        NuHwSetParameter33(parameter_33);
     }
     PCDeviceBackend.requested_windowed = show == 1;
     NuFileInitEx(hostfs, file_mode, eject);
@@ -317,13 +317,13 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
     NuFileInitEx(hostfs, file_mode, eject);
     if (supplied_window == NULL) {
         if (show == 0) {
-            NuHwShowCommandPc = 0;
+            NuHwShowCommand = 0;
         }
-        if (!CreateWindowPc(PCInputWindow, NuHwShowCommandPc, (u16)icon)) {
+        if (!CreateWindowPc(PCInputWindow, NuHwShowCommand, (u16)icon)) {
             exit(1);
         }
     } else {
-        if (!PublishWindowPc(supplied_window, NuHwShowCommandPc)) {
+        if (!PublishWindowPc(supplied_window, NuHwShowCommand)) {
             exit(1);
         }
     }
@@ -335,26 +335,26 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
     if (!PCDeviceIsAbsent()) {
         PCDeviceShowCursorPc(0);
     }
-    NuRndrDwaInitPc();
-    NuLgtInitializeStatePc();
+    NuRndrDwaInit();
+    NuLgtInitializeState();
     NuTrigInit();
     NuVpInit();
     NuDisplayListInit(buffer, (i32)end->addr);
     NuShaderManagerInit(buffer, *end);
-    if ((NuHwDfsNamePc && *NuHwDfsNamePc) || (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc)) {
+    if ((NuHwDfsName && *NuHwDfsName) || (NuHwSoundDfsName && *NuHwSoundDfsName)) {
         i32 count = dat_count;
-        if (NuHwDfsNamePc && *NuHwDfsNamePc) {
+        if (NuHwDfsName && *NuHwDfsName) {
             ++count;
         }
-        if (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc) {
+        if (NuHwSoundDfsName && *NuHwSoundDfsName) {
             ++count;
         }
         const char **names = (const char **)NuAlloc(count * 4, ".\\pcapi.cpp", 0x2a0);
-        if (NuHwDfsNamePc && *NuHwDfsNamePc) {
-            PCByteCopy(names, &NuHwDfsNamePc, 4);
+        if (NuHwDfsName && *NuHwDfsName) {
+            PCByteCopy(names, &NuHwDfsName, 4);
         }
-        if (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc) {
-            PCByteCopy(names + 1, &NuHwSoundDfsNamePc, 4);
+        if (NuHwSoundDfsName && *NuHwSoundDfsName) {
+            PCByteCopy(names + 1, &NuHwSoundDfsName, 4);
         }
         dat_names = names;
         dat_count = count;
@@ -364,14 +364,14 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
     NuTexInitEx(buffer, texture_count);
     NuMtlInitEx(buffer, material_count);
     NuRndrInitEx(stream_size, buffer, *end);
-    NuRndrInitStartupMaterialsPc();
+    NuRndrInitStartupMaterials();
     NuGobjRegistryInitPc();
-    NuRndrInitLeafPc(buffer, *end);
+    NuRndrInitLeaf(buffer, *end);
     NuInitDebrisRenderer(buffer, *end);
     PCGraphicsInitializeFramebuffers(PCDeviceBackend.render_target_flags, 0, buffer, *end);
     NuPostEffectInit(PCDeviceBackend.shader_flags, buffer, *end);
-    NuRndrBufferDescriptorsInitPc(buffer, *end);
-    PcResetGeometryOriginStatePc();
+    NuRndrBufferDescriptorsInit(buffer, *end);
+    PcResetGeometryOriginState();
     NuQFntInit(buffer, *end);
     PcInitializePerformanceTiming();
     NuTimeBarInit();
@@ -454,7 +454,7 @@ extern "C" i32 PcNativeSelectLanguage(const char *configuration_name) {
     } else {
         language = GetUserDefaultLangID();
     }
-    if (NuHwParameter4fPc == 0 && language == 0x409) {
+    if (NuHwParameter4f == 0 && language == 0x409) {
         language = 0x809;
     }
     NuRegionSet(3);
@@ -590,7 +590,7 @@ extern "C" i32 PcNativeSelectLanguage(const char *configuration_name) {
                     return 1;
             }
     }
-    if (PcUseUserGeoRegionPc != 0) {
+    if (PcUseUserGeoRegion != 0) {
         switch (GetUserGeoID((GEOCLASS)16)) {
             case 0x27:
             case 0xa6:

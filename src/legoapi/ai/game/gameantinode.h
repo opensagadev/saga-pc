@@ -20,7 +20,7 @@ extern "C" {
     void GameAntinode_Update(void *);
     void GameAntinode_UnregisterAntiNode(void *, void *);
     void *GameAntinode_UpdateAntiNodeUsingData(void *, void *, NUVEC *, u16, void *, f32, i32);
-    extern u64 GameAntinodeGridPc[64];
+    extern u64 GameAntinodeGrid[64];
 #ifdef __cplusplus
 }
 #endif

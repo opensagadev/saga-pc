@@ -19,16 +19,16 @@ void *memorymanager_s::AllocLinear(u32 bytes, u32 alignment, i32 clear) {
 
 /* Refpack hash and link tables, allocated once by refpack_init. */
 extern "C" {
-    static i32 *RefpackHashTablePc = NULL;
-    static i32 *RefpackLinkArrayPc = NULL;
+    static i32 *RefpackHashTable = NULL;
+    static i32 *RefpackLinkArray = NULL;
 
     void refpack_init(void) {
-        RefpackHashTablePc = (i32 *)theMemoryManager.AllocLinear(0x40000, 16, 1);
-        RefpackLinkArrayPc = (i32 *)theMemoryManager.AllocLinear(0x10000, 16, 1);
+        RefpackHashTable = (i32 *)theMemoryManager.AllocLinear(0x40000, 16, 1);
+        RefpackLinkArray = (i32 *)theMemoryManager.AllocLinear(0x10000, 16, 1);
     }
 }
 
-extern "C" u32 RefpackGetMatchLengthPc(u8 *first, u8 *second, u32 maximum) {
+extern "C" u32 RefpackGetMatchLength(u8 *first, u8 *second, u32 maximum) {
     u32 length;
     for (length = 0; length < maximum; ++length) {
         if (*first++ != *second++) {
@@ -38,14 +38,14 @@ extern "C" u32 RefpackGetMatchLengthPc(u8 *first, u8 *second, u32 maximum) {
     return length;
 }
 
-extern "C" u32 RefpackHashStringPc(u8 *string) {
+extern "C" u32 RefpackHashString(u8 *string) {
     u32 hash = crctab[string[0]];
     hash = (hash >> 8) ^ crctab[(u8)(hash ^ string[1])];
     return (hash >> 8) ^ crctab[(u8)(hash ^ string[2])];
 }
 
 extern "C" i32 refpack(u8 *source, i32 source_size, u8 *destination) {
-    i32 *clear_table = RefpackHashTablePc;
+    i32 *clear_table = RefpackHashTable;
     u32 index;
     u8 *output = destination;
     u8 *input = source;
@@ -60,8 +60,8 @@ extern "C" i32 refpack(u8 *source, i32 source_size, u8 *destination) {
         u32 match_offset = 0;
         u32 command_size = 2;
         u32 maximum = source_size < 0x404 ? (u32)source_size : 0x404u;
-        u32 hash = RefpackHashStringPc(input);
-        i32 initial_candidate = RefpackHashTablePc[hash];
+        u32 hash = RefpackHashString(input);
+        i32 initial_candidate = RefpackHashTable[hash];
         i32 candidate_index = initial_candidate;
         i32 input_index = input - source;
         i32 chain_limit = input_index - 0x3fff > 0 ? input_index - 0x3fff : 0;
@@ -70,7 +70,7 @@ extern "C" i32 refpack(u8 *source, i32 source_size, u8 *destination) {
             do {
                 u8 *candidate = source + candidate_index;
                 if (input[match_length] == candidate[match_length]) {
-                    u32 length = RefpackGetMatchLengthPc(input, candidate, maximum);
+                    u32 length = RefpackGetMatchLength(input, candidate, maximum);
                     if (length > match_length) {
                         u32 offset = (u32)(input - candidate) - 1u;
                         u32 size;
@@ -91,13 +91,13 @@ extern "C" i32 refpack(u8 *source, i32 source_size, u8 *destination) {
                         }
                     }
                 }
-                candidate_index = RefpackLinkArrayPc[(u32)candidate_index & 0x3fffu];
+                candidate_index = RefpackLinkArray[(u32)candidate_index & 0x3fffu];
             } while (candidate_index >= chain_limit);
         }
 
         if (command_size >= match_length) {
-            RefpackLinkArrayPc[(u32)input_index & 0x3fffu] = initial_candidate;
-            RefpackHashTablePc[hash] = input_index;
+            RefpackLinkArray[(u32)input_index & 0x3fffu] = initial_candidate;
+            RefpackHashTable[hash] = input_index;
             ++input;
             source_size = (i32)((u32)source_size - 1u);
             ++literal_count;
@@ -132,8 +132,8 @@ extern "C" i32 refpack(u8 *source, i32 source_size, u8 *destination) {
                 output += literal_count;
                 literal_count = 0;
             }
-            RefpackLinkArrayPc[(u32)input_index & 0x3fffu] = RefpackHashTablePc[hash];
-            RefpackHashTablePc[hash] = input_index;
+            RefpackLinkArray[(u32)input_index & 0x3fffu] = RefpackHashTable[hash];
+            RefpackHashTable[hash] = input_index;
             input += match_length;
             source_size = (i32)((u32)source_size - match_length);
             literal_start = input;

@@ -31,47 +31,47 @@ typedef struct GIZFLOW_RANDOM_SYSTEM { // size 0x8
     i32 count;                         // 0x4
 } GIZFLOW_RANDOM_SYSTEM;
 
-typedef struct GIZFLOW_SPECIAL_PC { // size 0x28
-    char name[32];                  // 0x00
-    GAMEANIMSET *anim_set;          // 0x20
-    u8 unknown_024[4];              // 0x24
-} GIZFLOW_SPECIAL_PC;
+typedef struct GIZFLOW_SPECIAL { // size 0x28
+    char name[32];               // 0x00
+    GAMEANIMSET *anim_set;       // 0x20
+    u8 unknown_024[4];           // 0x24
+} GIZFLOW_SPECIAL;
 
 typedef struct GIZFLOW_SPECIAL_SYSTEM { // size 0x8
-    GIZFLOW_SPECIAL_PC *specials;       // 0x0
+    GIZFLOW_SPECIAL *specials;          // 0x0
     i32 count;                          // 0x4
 } GIZFLOW_SPECIAL_SYSTEM;
 
-typedef struct GIZFLOW_LOAD_WORLD_PC { // size 0x510c
-    u8 unknown_000[0x128];             // 0x0000
-    GIZFLOW_LOAD_LEVEL *level;         // 0x0128
-    u8 unknown_12c[0x10];              // 0x012c
-    NUGSCN *current_gscn;              // 0x013c
-    u8 unknown_140[0x2988];            // 0x0140
-    void *gizmo_sys;                   // 0x2ac8
-    u8 unknown_2acc[0x262c];           // 0x2acc
-    GIZFLOW_TIMER *timers;             // 0x50f8
-    i32 timer_count;                   // 0x50fc
-    u8 unknown_5100[4];                // 0x5100
-    GIZFLOW_RANDOM_SYSTEM *randoms;    // 0x5104
-    GIZFLOW_SPECIAL_SYSTEM *specials;  // 0x5108
-} GIZFLOW_LOAD_WORLD_PC;
+typedef struct GIZFLOW_LOAD_WORLD {   // size 0x510c
+    u8 unknown_000[0x128];            // 0x0000
+    GIZFLOW_LOAD_LEVEL *level;        // 0x0128
+    u8 unknown_12c[0x10];             // 0x012c
+    NUGSCN *current_gscn;             // 0x013c
+    u8 unknown_140[0x2988];           // 0x0140
+    void *gizmo_sys;                  // 0x2ac8
+    u8 unknown_2acc[0x262c];          // 0x2acc
+    GIZFLOW_TIMER *timers;            // 0x50f8
+    i32 timer_count;                  // 0x50fc
+    u8 unknown_5100[4];               // 0x5100
+    GIZFLOW_RANDOM_SYSTEM *randoms;   // 0x5104
+    GIZFLOW_SPECIAL_SYSTEM *specials; // 0x5108
+} GIZFLOW_LOAD_WORLD;
 
-static char gizspecial_prefix_pc[8] = "qaz_";
+static char gizspecial_prefix[8] = "qaz_";
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
 GIZMO_PC *createGizSpecial(void *unused, char *name) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();
+    GIZFLOW_LOAD_WORLD *world = (GIZFLOW_LOAD_WORLD *)WorldInfo_CurrentlyLoading();
     NUSPECIALHANDLE scene_special;
     char gizmo_name[32];
     GIZMO_PC *gizmo;
-    GIZFLOW_SPECIAL_PC *special;
+    GIZFLOW_SPECIAL *special;
     if (world == NULL || name == NULL) {
         return NULL;
     }
     NuSpecialFind(world->current_gscn, &scene_special, name, 0);
-    NuStrCpy(gizmo_name, gizspecial_prefix_pc);
-    NuStrNCat(gizmo_name, name, 32 - NuStrLen(gizspecial_prefix_pc));
+    NuStrCpy(gizmo_name, gizspecial_prefix);
+    NuStrNCat(gizmo_name, name, 32 - NuStrLen(gizspecial_prefix));
     if (!NuSpecialExistsFn(&scene_special)) {
         return NULL;
     }
@@ -85,16 +85,16 @@ GIZMO_PC *createGizSpecial(void *unused, char *name) {
     special = &world->specials->specials[world->specials->count];
     GameAnimSet_AddObject(special->anim_set, &scene_special, 1.0f, 1000000000.0f, 0);
     ++world->specials->count;
-    NuStrCpy(special->name, gizspecial_prefix_pc);
-    NuStrNCat(special->name, name, 32 - NuStrLen(gizspecial_prefix_pc));
+    NuStrCpy(special->name, gizspecial_prefix);
+    NuStrNCat(special->name, name, 32 - NuStrLen(gizspecial_prefix));
     return AddGizmo(world->gizmo_sys, gizspecial_gizmotype_id, NULL, special);
 }
 
-char *GizSpecial_GetName(GIZFLOW_SPECIAL_PC *special) {
+char *GizSpecial_GetName(GIZFLOW_SPECIAL *special) {
     return special->name;
 }
 
-GIZFLOW_SPECIAL_PC *GizSpecial_FindByName(char *name, GIZFLOW_LOAD_WORLD_PC *world) {
+GIZFLOW_SPECIAL *GizSpecial_FindByName(char *name, GIZFLOW_LOAD_WORLD *world) {
     i32 index;
     for (index = 0; index < world->specials->count; ++index) {
         if (NuStrICmp(GizSpecial_GetName(&world->specials->specials[index]), name) == 0) {
@@ -134,12 +134,12 @@ typedef struct gizspecial_progress_s { // size 0x40
 } GIZSPECIAL_PROGRESS_PC;
 
 static i32 GizSpecial_GetMaxGizmos(void *world_ptr) {
-    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
+    GIZFLOW_LOAD_WORLD *world = world_ptr;
     return world->level->max_specials;
 }
 
 static void GizSpecial_AddGizmos(void *gizmo_sys, i32 type_id, void *world_ptr, void *data) {
-    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
+    GIZFLOW_LOAD_WORLD *world = world_ptr;
     i32 index;
     if (world != NULL) {
         for (index = 0; index < world->specials->count; ++index) {
@@ -247,10 +247,10 @@ static NUVEC *GizSpecial_GetPos(GIZMO_PC *gizmo) {
 }
 
 static i32 GizSpecial_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, const char *name) {
-    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
+    GIZFLOW_LOAD_WORLD *world = world_ptr;
     i32 index;
     i32 count = 0;
-    GIZFLOW_SPECIAL_PC *special;
+    GIZFLOW_SPECIAL *special;
     if (world == NULL || world->specials->specials == NULL) {
         return 0;
     }
@@ -282,7 +282,7 @@ static void GizSpecial_ClearProgress(void *world_ptr, void *progress_ptr) {
 }
 
 static void GizSpecial_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
+    GIZFLOW_LOAD_WORLD *world = world_ptr;
     GIZSPECIAL_PROGRESS_PC *progress = progress_ptr;
     GIZSPECIAL_CALLBACK_PC *special;
     i32 index;
@@ -309,7 +309,7 @@ static void GizSpecial_StoreProgress(void *world_ptr, void *data, void *progress
 }
 
 static void GizSpecial_Reset(void *world_ptr, void *data, void *progress_ptr) {
-    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
+    GIZFLOW_LOAD_WORLD *world = world_ptr;
     GIZSPECIAL_PROGRESS_PC *progress = progress_ptr;
     GIZSPECIAL_CALLBACK_PC *special;
     i32 index;
@@ -333,7 +333,7 @@ static void GizSpecial_Reset(void *world_ptr, void *data, void *progress_ptr) {
 
 static void *GizSpecial_ReserveBuffer(void *world_ptr) {
     WORLDINFO *world = world_ptr;
-    GIZFLOW_LOAD_WORLD_PC *fields = world_ptr;
+    GIZFLOW_LOAD_WORLD *fields = world_ptr;
     GIZSPECIAL_SYSTEM_CALLBACK_PC *system;
     i32 index;
     if (fields->level->max_specials != 0) {
@@ -359,7 +359,7 @@ ADDGIZMOTYPE_PC *GizSpecial_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "NuSpecial";
-    addtype.prefix = gizspecial_prefix_pc;
+    addtype.prefix = gizspecial_prefix;
     addtype.fns.options = 0;
     addtype.fns.get_max_gizmos_fn = GizSpecial_GetMaxGizmos;
     addtype.fns.add_gizmos_fn = GizSpecial_AddGizmos;

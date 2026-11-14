@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct addgizmotype_pc_s *MiniCut_RegisterGizmo(i32);
+    struct addgizmotype_s *MiniCut_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

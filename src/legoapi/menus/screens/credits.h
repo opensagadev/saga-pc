@@ -10,7 +10,7 @@
 #include "legoapi/world/world.h"
 #endif
 
-typedef struct credit_record_pc_s CREDIT_RECORD_PC;
+typedef struct credit_record_s CREDIT_RECORD_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif

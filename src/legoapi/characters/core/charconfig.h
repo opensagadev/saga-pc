@@ -22,9 +22,9 @@
 
 #if SAGA_LEGOAPI_CHARACTERS_CORE_CHARCONFIG_H_PART == 1 && !defined(SAGA_LEGOAPI_CHARACTERS_CORE_CHARCONFIG_H_STOP)
 
-struct APIDEBRISSYS_PC;
-struct CHARACTER_MODEL_LAYERS_PC;
-struct PLAYERCHARACTERCONFIG_PC;
+struct APIDEBRISSYS;
+struct CHARACTER_MODEL_LAYERS;
+struct PLAYERCHARACTERCONFIG;
 struct animpacket_s;
 struct apicharacterdata_s;
 struct apicharactermodellist_s;
@@ -38,26 +38,26 @@ typedef struct GAMECHARACTERLAYER { // size 0x1c
     i16 hierarchy_layer_index;      // 0x1a
 } GAMECHARACTERLAYER;
 
-typedef struct CHARACTER_EFFECT_CONFIG_PC { // size 0x34
-    i16 character_id;                       // 0x00
-    i16 debris_id;                          // 0x02
-    i16 action_id;                          // 0x04
-    u8 bits_on;                             // 0x06
-    u8 bits_off;                            // 0x07
-    f32 frame[2];                           // 0x08
-    f32 particle_rate;                      // 0x10
-    u32 flags;                              // 0x14
-    u16 locators;                           // 0x18
-    u8 random;                              // 0x1a
-    u8 particle_count;                      // 0x1b
-    f32 rumble;                             // 0x1c
-    f32 shake;                              // 0x20
-    f32 judder;                             // 0x24
-    i16 sound_id;                           // 0x28
-    u16 surfaces;                           // 0x2a
-    f32 minimum;                            // 0x2c
-    f32 maximum;                            // 0x30
-} CHARACTER_EFFECT_CONFIG_PC;
+typedef struct CHARACTER_EFFECT_CONFIG { // size 0x34
+    i16 character_id;                    // 0x00
+    i16 debris_id;                       // 0x02
+    i16 action_id;                       // 0x04
+    u8 bits_on;                          // 0x06
+    u8 bits_off;                         // 0x07
+    f32 frame[2];                        // 0x08
+    f32 particle_rate;                   // 0x10
+    u32 flags;                           // 0x14
+    u16 locators;                        // 0x18
+    u8 random;                           // 0x1a
+    u8 particle_count;                   // 0x1b
+    f32 rumble;                          // 0x1c
+    f32 shake;                           // 0x20
+    f32 judder;                          // 0x24
+    i16 sound_id;                        // 0x28
+    u16 surfaces;                        // 0x2a
+    f32 minimum;                         // 0x2c
+    f32 maximum;                         // 0x30
+} CHARACTER_EFFECT_CONFIG;
 
 #ifdef __cplusplus
 extern "C" {
@@ -80,8 +80,8 @@ extern "C" {
 extern "C" {
 #endif
     void CharConfig_ConfigureAll(i32, struct nufpcomjmp_s *);
-    i32 LayerFromName(struct PLAYERCHARACTERCONFIG_PC *, const char *);
-    i32 MakeLayerList_Name(struct CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    i32 LayerFromName(struct PLAYERCHARACTERCONFIG *, const char *);
+    i32 MakeLayerList_Name(struct CHARACTER_MODEL_LAYERS *, i16 *, u32);
 #ifdef __cplusplus
 }
 #endif
@@ -97,9 +97,9 @@ extern "C" {
 extern "C" {
 #endif
     extern BOLTSYS_PC GlobalBoltSystem_Default;
-    void AddAnimEffects(struct CHARACTER_MODEL_LAYERS_PC *, struct apicharacterdata_s *, struct animpacket_s *, struct numtx_s *,
-                        struct gameobject_s *, CHARACTER_EFFECT_CONFIG_PC *, i32, f32, void (*)(void *, struct gameobject_s *, i32, i32),
-                        struct APIDEBRISSYS_PC *);
+    void AddAnimEffects(struct CHARACTER_MODEL_LAYERS *, struct apicharacterdata_s *, struct animpacket_s *, struct numtx_s *,
+                        struct gameobject_s *, CHARACTER_EFFECT_CONFIG *, i32, f32, void (*)(void *, struct gameobject_s *, i32, i32),
+                        struct APIDEBRISSYS *);
     i32 CharCategory_IsCategory(struct gameobject_s *, i32);
     void GameLoadCharacterModels(struct apicharactermodellist_s *, i32, VARIPTR *, VARIPTR *, i32, i32);
     i32 InModelListDataFlags(struct apicharactermodellist_s *, u32, u32, i32, i32);

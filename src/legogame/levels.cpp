@@ -42,8 +42,8 @@ extern "C" {
     void PermanentGraphicsResourceSetup(void);
     void NuRndrShadowInit(u8 *random);
     void InitTexAnimScripts(char **table);
-    extern char *TexAnimScriptNamesTitlePc[3];
-    extern char *TexAnimScriptNamesGamePc[32];
+    extern char *TexAnimScriptNamesTitle[3];
+    extern char *TexAnimScriptNamesGame[32];
 }
 extern "C" void CreateUsefulMaterials(void);
 extern "C" void edbitsRegisterThingsScene(NUGSCN *scene);
@@ -78,7 +78,7 @@ typedef struct permanent_customiser_game_s {
 
 extern "C" {
     extern NUFPCOMJMP ConfigChar_GameKeywords[2];
-    extern f32 PermCollectionScalePc;
+    extern f32 PermCollectionScale;
 }
 #define LEVEL_BYTE_CALLBACK(name, field)                                                                                                   \
     void name(NUFPAR_PC *parser) {                                                                                                         \
@@ -93,20 +93,20 @@ extern "C" void KashyyykD_Reset(WORLDINFO *);
 extern "C" void KashyyykD_Update(WORLDINFO *);
 extern "C" void GunshipA_Init(WORLDINFO *);
 extern "C" void GunshipA_Update(WORLDINFO *);
-extern "C" void GunshipA_DrawPc(WORLDINFO *);
+extern "C" void GunshipA_Draw(WORLDINFO *);
 extern "C" void GunshipB_Reset(WORLDINFO *);
 extern "C" void HothBattleE_Init(WORLDINFO *);
 extern "C" void HothBattleE_Update(WORLDINFO *);
-extern "C" void HothBattleE_DrawPc(WORLDINFO *);
-extern "C" void HothBattleE_PanelPc(WORLDINFO *);
+extern "C" void HothBattleE_Draw(WORLDINFO *);
+extern "C" void HothBattleE_Panel(WORLDINFO *);
 extern "C" void HothBattleA_Init(WORLDINFO *);
 extern "C" void HothBattleA_Reset(WORLDINFO *);
 extern "C" void HothBattleA_Update(WORLDINFO *);
-extern "C" void HothBattleA_DrawPc(WORLDINFO *);
+extern "C" void HothBattleA_Draw(WORLDINFO *);
 extern "C" void HothBattleC_Init(WORLDINFO *);
 extern "C" void HothBattleC_Reset(WORLDINFO *);
 extern "C" void HothBattleC_Update(WORLDINFO *);
-extern "C" void HothBattleC_DrawPc(WORLDINFO *);
+extern "C" void HothBattleC_Draw(WORLDINFO *);
 extern "C" void CloudCityEscapeA_Init(WORLDINFO *);
 extern "C" void CloudCityEscapeA_Reset(WORLDINFO *);
 extern "C" void CloudCityEscapeA_Update(WORLDINFO *);
@@ -116,8 +116,8 @@ extern "C" void CloudCityTrapA_Reset(WORLDINFO *);
 extern "C" void CloudCityTrapA_Update(WORLDINFO *);
 /* Per-level callbacks installed by FixUpLevels. */
 extern "C" void DrawStatusScreen(WORLDINFO *);
-extern "C" void LostTempleC_ResetPc(WORLDINFO *);
-extern "C" void LostTempleC_UpdatePc(WORLDINFO *);
+extern "C" void LostTempleC_Reset(WORLDINFO *);
+extern "C" void LostTempleC_Update(WORLDINFO *);
 extern "C" void GunganA_Init(WORLDINFO *);
 extern "C" void GunganA_Update(WORLDINFO *);
 extern "C" void PodRaceBInit(WORLDINFO *);
@@ -344,7 +344,7 @@ extern "C" {
         u32 flags;
         u8 unknown_2804[0x20];
         WORLD_SCRIPT_PROGRESS_PC scripts[32];
-        GIZFLOWPROGRESS_PC giz_flow_progress;
+        GIZFLOWPROGRESS giz_flow_progress;
         char disabled_effect_names[12][16];
     } LEVEL_PROGRESS_TRANSFER_PC;
 
@@ -373,7 +373,7 @@ typedef struct world_load_reader_s {
     i32 light_index;
     NUVEC *light_direction;
     u8 unknown_2ac0[0xc];
-    GIZFLOW_PC *giz_flow;
+    GIZFLOW *giz_flow;
     u8 unknown_2ad0[0x14];
     i32 ai_loaded;
     u8 unknown_2ae8[0x4670 - 0x2ae8];
@@ -402,8 +402,8 @@ static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {
         if (Collection_Got(list->model_id) != 0) {
             i16 id = list->model_id;
             i8 action = GCDataList[id].weapon_action;
-            if (action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR || id == FreePlayId007f1a4cPc ||
-                id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc) {
+            if (action == 1 || action == 8 || id == FreePlayId007f199c || id == id_THEEMPEROR || id == FreePlayId007f1a4c ||
+                id == FreePlayId007f1a48 || id == FreePlayId007f1a44) {
                 return 1;
             }
         }
@@ -420,16 +420,16 @@ static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
         if (excluded != NULL && InModelList(excluded, id, NULL) != 0) {
             continue;
         }
-        if (Game_Customiser != NULL && (id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[0] ||
-                                        id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[1])) {
+        if (Game_Customiser != NULL && (id == ((CUSTOMISER_LAYERS *)Game_Customiser)->character_ids[0] ||
+                                        id == ((CUSTOMISER_LAYERS *)Game_Customiser)->character_ids[1])) {
             continue;
         }
         if (CDataList[id].move_fn == Move_DEFAULT || Collection_Got(id) == 0) {
             continue;
         }
         action = GCDataList[id].weapon_action;
-        if ((action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR || id == FreePlayId007f1a4cPc ||
-             id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc) &&
+        if ((action == 1 || action == 8 || id == FreePlayId007f199c || id == id_THEEMPEROR || id == FreePlayId007f1a4c ||
+             id == FreePlayId007f1a48 || id == FreePlayId007f1a44) &&
             count < 500) {
             candidates[count++] = (i16)id;
         }
@@ -485,12 +485,12 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
     models[1] = model2;
     lost_temple = LOSTTEMPLE_ADATA;
     if (StartupGameFlag1 != 0 && lost_temple != NULL && area == lost_temple->index) {
-        World_AppendFreePlayPrivate(VehicleBoltId7f17d0Pc);
-        World_AppendFreePlayPrivate(VehicleBoltId7f1aacPc);
-        World_AppendFreePlayPrivate(FreePlayId007f1ab0Pc);
-        World_AppendFreePlayPrivate(FreePlayId007f1ab4Pc);
-        World_AppendFreePlayPrivate(VehicleSpecialShooterIdPc);
-        World_AppendFreePlayPrivate(FreePlayId007f1abcPc);
+        World_AppendFreePlayPrivate(VehicleBoltId7f17d0);
+        World_AppendFreePlayPrivate(VehicleBoltId7f1aac);
+        World_AppendFreePlayPrivate(FreePlayId007f1ab0);
+        World_AppendFreePlayPrivate(FreePlayId007f1ab4);
+        World_AppendFreePlayPrivate(VehicleSpecialShooterId);
+        World_AppendFreePlayPrivate(FreePlayId007f1abc);
     } else if ((ADataList[area].flags & 5) == 5) {
         for (index = 0; index < 2; ++index) {
             if (models[index] != -1) {
@@ -548,25 +548,25 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
             if (StartupGameFlag1 != 0) {
                 ids[0] = id_XWING;
                 ids[1] = id_YWING;
-                ids[2] = VehicleBoltId7f1a24Pc;
-                ids[3] = VehicleBoltId7f19a4Pc;
+                ids[2] = VehicleBoltId7f1a24;
+                ids[3] = VehicleBoltId7f19a4;
                 ids[4] = id_TIEFIGHTER;
-                ids[5] = VehicleBoltId7f1a28Pc;
-                ids[6] = VehicleBoltId7f196cPc;
+                ids[5] = VehicleBoltId7f1a28;
+                ids[6] = VehicleBoltId7f196c;
                 ids[7] = id_TIEBOMBER;
-                ids[8] = VehicleBoltId7f1a2cPc;
-                ids[9] = VehicleBoltId7f195cPc;
+                ids[8] = VehicleBoltId7f1a2c;
+                ids[9] = VehicleBoltId7f195c;
                 ids[10] = id_ANAKINSNEWPOD;
-                ids[11] = VehicleBoltId7f1a9cPc;
-                ids[12] = VehicleBoltId7f1b34Pc;
+                ids[11] = VehicleBoltId7f1a9c;
+                ids[12] = VehicleBoltId7f1b34;
                 ids[13] = id_NEW_REPUBLIC_GUNSHIP;
                 ids[14] = id_JEDISTARFIGHTERYELLOWEP3;
-                ids[15] = VehicleBoltId7f19e8Pc;
+                ids[15] = VehicleBoltId7f19e8;
                 ids[16] = id_SEBULBASPOD;
                 ids[17] = id_ZAMSSPEEDER;
-                ids[18] = FreePlayId007f1b44Pc;
-                ids[19] = FreePlayId007f1b40Pc;
-                ids[20] = FreePlayId007f1a98Pc;
+                ids[18] = FreePlayId007f1b44;
+                ids[19] = FreePlayId007f1b40;
+                ids[20] = FreePlayId007f1a98;
                 index = 21;
             }
             ids[index] = -1;
@@ -616,7 +616,7 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
         }
     }
 extras:
-    for (AREA_EXTRA_MODEL_PC *extra = ExtraModelList; extra->model_list != NULL; ++extra) {
+    for (AREA_EXTRA_MODEL *extra = ExtraModelList; extra->model_list != NULL; ++extra) {
         i32 source = *extra->model_list;
         if (source != -1) {
             for (index = 0; index < FreePlayModelCount; ++index) {
@@ -678,39 +678,39 @@ extern "C" {
         return 0;
     }
 }
-static i32 PicturesNumLevelsPc = 0;
+static i32 PicturesNumLevels = 0;
 
-static void PicturesFixUpPc(WORLDINFO *world) {
+static void PicturesFixUp(WORLDINFO *world) {
     if (world->secondary_gscn != NULL) {
-        PicturesNumLevelsPc = 0;
+        PicturesNumLevels = 0;
         char name[64];
         for (i32 episode = 0; episode < EPISODECOUNT; ++episode) {
             sprintf(name, "EP_%i", episode + 1);
             NuSpecialFind(world->secondary_gscn, &LevHSpecial[10 + episode], name, 1);
             for (i32 chapter = 0; chapter < 8; ++chapter) {
                 sprintf(name, "EP_%i_CH_%i", episode + 1, chapter + 1);
-                NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], name, 1);
-                ++PicturesNumLevelsPc;
+                NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevels], name, 1);
+                ++PicturesNumLevels;
             }
         }
-        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "pod_race", 1);
-        ++PicturesNumLevelsPc;
-        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "anakin_flight", 1);
-        ++PicturesNumLevelsPc;
-        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "gunship", 1);
-        ++PicturesNumLevelsPc;
-        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "new_hope", 1);
-        ++PicturesNumLevelsPc;
-        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "lego_city", 1);
-        ++PicturesNumLevelsPc;
-        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "new_town", 1);
-        ++PicturesNumLevelsPc;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevels], "pod_race", 1);
+        ++PicturesNumLevels;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevels], "anakin_flight", 1);
+        ++PicturesNumLevels;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevels], "gunship", 1);
+        ++PicturesNumLevels;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevels], "new_hope", 1);
+        ++PicturesNumLevels;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevels], "lego_city", 1);
+        ++PicturesNumLevels;
+        NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevels], "new_town", 1);
+        ++PicturesNumLevels;
     }
     LevTime[1] = 0.0f;
     LevTime[0] = 0.0f;
 }
 
-static void WorldGetTitlesNamePrivatePc(char *titles) {
+static void WorldGetTitlesNamePrivate(char *titles) {
     switch (Text_Language) {
         case 2:
             NuStrCpy(titles, "titles_french");
@@ -741,20 +741,20 @@ static void WorldGetTitlesNamePrivatePc(char *titles) {
     }
 }
 
-static NUVEC TitlesStartPositionPc = {0};
+static NUVEC TitlesStartPosition = {0};
 
 extern "C" void Titles_Init(WORLDINFO *world) {
     char title_name[64];
     NewGame();
-    WorldGetTitlesNamePrivatePc(title_name);
+    WorldGetTitlesNamePrivate(title_name);
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], title_name, 1);
     LevAlpha = 1.0f;
     if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
         LevMtx = *NuSpecialGetDrawMtx(&LevHSpecial[0]);
         NuSpecialSetVisibility(&LevHSpecial[0], 0);
-        TitlesStartPositionPc.x = LevMtx.m30;
-        TitlesStartPositionPc.y = 0.0f;
-        TitlesStartPositionPc.z = (f32)((f64)LevMtx.m32 - 0.5);
+        TitlesStartPosition.x = LevMtx.m30;
+        TitlesStartPosition.y = 0.0f;
+        TitlesStartPosition.z = (f32)((f64)LevMtx.m32 - 0.5);
     }
     TitlesAlpha = 1.0f;
     if (GAMEDEMO != 0) {
@@ -774,7 +774,7 @@ extern "C" void Titles_Init(WORLDINFO *world) {
         newgame_menudrawoff = 0;
     }
     BackDrop_ResetColours();
-    PicturesFixUpPc(world);
+    PicturesFixUp(world);
 }
 
 extern "C" void Titles_Update(WORLDINFO *world) {
@@ -789,8 +789,8 @@ extern "C" void Titles_Update(WORLDINFO *world) {
 }
 
 extern "C" {
-    f32 TitleScalePc = 0.825f;
-    f32 TitlePictureYPc = -0.15f;
+    f32 TitleScale = 0.825f;
+    f32 TitlePictureY = -0.15f;
 }
 
 extern "C" void Titles_Draw(WORLDINFO *world) {
@@ -799,14 +799,14 @@ extern "C" void Titles_Draw(WORLDINFO *world) {
         matrix = LevMtx;
         if (GameTimer.time_elapsed < 4.0f) {
             f32 t = NuTrigTable[((i32)((f64)GameTimer.time_elapsed * 0.25 * 16384.0) >> 1) & 0x7fff];
-            matrix.m30 = TitlesStartPositionPc.x + (LevMtx.m30 - TitlesStartPositionPc.x) * t;
-            matrix.m31 = TitlesStartPositionPc.y + (LevMtx.m31 - TitlesStartPositionPc.y) * t;
-            matrix.m32 = TitlesStartPositionPc.z + (LevMtx.m32 - TitlesStartPositionPc.z) * t;
+            matrix.m30 = TitlesStartPosition.x + (LevMtx.m30 - TitlesStartPosition.x) * t;
+            matrix.m31 = TitlesStartPosition.y + (LevMtx.m31 - TitlesStartPosition.y) * t;
+            matrix.m32 = TitlesStartPosition.z + (LevMtx.m32 - TitlesStartPosition.z) * t;
         }
         NUVEC scale;
-        scale.x = TitleScalePc;
-        scale.y = TitleScalePc;
-        scale.z = TitleScalePc;
+        scale.x = TitleScale;
+        scale.y = TitleScale;
+        scale.z = TitleScale;
         NuMtxPreScale(&matrix, &scale);
         NuSpecialDrawAtAlpha(
             &LevHSpecial[0], &matrix,
@@ -836,7 +836,7 @@ extern "C" void Titles_Draw(WORLDINFO *world) {
                 }
             }
             if (alpha > 0.0f && NuSpecialExistsFn(&LevHSpecial[10 + index]) != 0) {
-                matrix.m31 = TitlePictureYPc;
+                matrix.m31 = TitlePictureY;
                 NuSpecialDrawAtAlpha(&LevHSpecial[10 + index], &matrix, (f32)((f64)newgamealpha * 0.5 * alpha * LevTime[0]));
             }
         }
@@ -962,21 +962,21 @@ extern "C" {
 void NewArea_ResetGlobalsPC(void) {
     i32 phase;
 
-    AreaGlobals_PC.new_minikit_count = 0;
+    AreaGlobals.new_minikit_count = 0;
     phase = Area != -1 ? Game.area_save[Area].minikit_count : 0;
-    AreaGlobals_PC.area_phase = phase;
-    AreaGlobals_PC.progress_flags = phase;
-    AreaGlobals_PC.field_1c = 0;
+    AreaGlobals.area_phase = phase;
+    AreaGlobals.progress_flags = phase;
+    AreaGlobals.field_1c = 0;
     Door_UseCutCam = 0;
     BuildUpDone = 0;
     BuildUpTotal = 0;
-    AreaGlobals_PC.field_00 = 0;
-    AreaGlobals_PC.field_08 = 0;
-    AreaGlobals_PC.arcade_player_kills[0] = 0;
-    AreaGlobals_PC.arcade_ai_kills[0] = 0;
-    AreaGlobals_PC.arcade_player_kills[1] = 0;
-    AreaGlobals_PC.arcade_ai_kills[1] = 0;
-    AreaGlobals_PC.field_18 = 0;
+    AreaGlobals.field_00 = 0;
+    AreaGlobals.field_08 = 0;
+    AreaGlobals.arcade_player_kills[0] = 0;
+    AreaGlobals.arcade_ai_kills[0] = 0;
+    AreaGlobals.arcade_player_kills[1] = 0;
+    AreaGlobals.arcade_ai_kills[1] = 0;
+    AreaGlobals.field_18 = 0;
     if (WORLD->area == HOTHBATTLE_ADATA) {
         ResetMinikitCounter();
     }
@@ -989,7 +989,7 @@ extern "C" {
         memset(LevSfxFlag, 0, sizeof(LevSfxFlag));
         memset(LevHSpecial, 0, sizeof(LevHSpecial));
         memset(dynamic_antinodes, 0, 0x1600);
-        memset(&LevInstAnimResetPc, 0, sizeof(LevInstAnimResetPc));
+        memset(&LevInstAnimReset, 0, sizeof(LevInstAnimReset));
         memset(LevArea, 0, sizeof(LevArea));
         memset(LevPathNodes, 0, sizeof(LevPathNodes));
         memset(LevPathCnx, 0, sizeof(LevPathCnx));
@@ -1030,8 +1030,8 @@ void LoadPerm1(void) {
     if (Grass_Available != 0) {
         edgraSetup(&permbuffer_ptr, permbuffer_end, 0x200, 0x20, 0x40);
     }
-    PermanentEffectsMaterialPc = NuMtlCreateEx(1, 10);
-    material = (PERMANENT_MATERIAL_READER_PC *)PermanentEffectsMaterialPc;
+    PermanentEffectsMaterial = NuMtlCreateEx(1, 10);
+    material = (PERMANENT_MATERIAL_READER_PC *)PermanentEffectsMaterial;
     material->diffuse[2] = 1.0f;
     material->diffuse[1] = 1.0f;
     material->diffuse[0] = 1.0f;
@@ -1044,8 +1044,8 @@ void LoadPerm1(void) {
     material->attributes = (material->attributes & ~0x800u) | 0x400u;
     material->texture_id = ((PERMANENT_MATERIAL_READER_PC *)DebMat[5])->texture_id;
     material->shader_flags = (material->shader_flags & ~2u) | 1u;
-    NuMtlUpdate(PermanentEffectsMaterialPc);
-    NuLgtSetArcMat(PermanentEffectsMaterialPc, 0.0f, 0.50390625f, 0.25f, 0.5625f);
+    NuMtlUpdate(PermanentEffectsMaterial);
+    NuLgtSetArcMat(PermanentEffectsMaterial, 0.0f, 0.50390625f, 0.25f, 0.5625f);
     PermanentGraphicsResourceSetup();
     NuBridgeInit();
     native_end_address.void_ptr = &permbuffer_end;
@@ -1064,10 +1064,10 @@ void LoadPerm1(void) {
     InitStreaks(&permbuffer_ptr, permbuffer_end, "stuff\\streak.pnt");
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     InitRopeMtl("rope", &permbuffer_ptr, &permbuffer_end);
-    InitRipples(&RippleSetPc, &permbuffer_ptr, &permbuffer_end, 0x40);
+    InitRipples(&RippleSet, &permbuffer_ptr, &permbuffer_end, 0x40);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xff) & ~0xffu;
-    PermanentShadowMaterialPc = NuMtlCreate3D(1);
-    material = (PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterialPc;
+    PermanentShadowMaterial = NuMtlCreate3D(1);
+    material = (PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterial;
     material->diffuse[0] = 1.0f;
     material->diffuse[1] = 1.0f;
     material->diffuse[2] = 1.0f;
@@ -1079,8 +1079,8 @@ void LoadPerm1(void) {
     material->sort_priority = 0xff;
     material->attributes = (material->attributes & ~0x10000u) | 0x20000u;
     texture_id = NuTexRead("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
-    ((PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterialPc)->texture_id = (i16)texture_id;
-    NuMtlUpdate(PermanentShadowMaterialPc);
+    ((PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterial)->texture_id = (i16)texture_id;
+    NuMtlUpdate(PermanentShadowMaterial);
     for (index = 0; index < 0x800; ++index) {
         shadow_random[index] = (u8)(qrand() >> 8);
     }
@@ -1091,9 +1091,9 @@ void LoadPerm1(void) {
     edanimParamReset();
     NuTexAnimProgSysInit();
     if (StartupGameFlag1 != 0) {
-        InitTexAnimScripts(TexAnimScriptNamesGamePc);
+        InitTexAnimScripts(TexAnimScriptNamesGame);
     } else {
-        InitTexAnimScripts(TexAnimScriptNamesTitlePc);
+        InitTexAnimScripts(TexAnimScriptNamesTitle);
     }
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     things_scene = NuGScnRead(&permbuffer_ptr, permbuffer_end, "stuff\\things.gsc");
@@ -1126,27 +1126,26 @@ extern "C" {
         CharConfig_ConfigureAll(1, ConfigChar_GameKeywords);
         ExtraCharacterFixUpAfterConfig();
         nopakfile = CHARPAK == 0;
-        APILoadCharacterModels(PermModelListPc, 1, &permbuffer_ptr, permbuffer_end, 1);
-        Collection_CreateMaster("All", NULL, &MasterCollectionPc, 15, PermCollectionScalePc);
-        Collection_CreateCustom("Characters", &PermanentAllTitleIdPc, &CharacterCollectionPc, 0, 0x04002000, 0, 0, 22, &permbuffer_ptr,
+        APILoadCharacterModels(PermModelList, 1, &permbuffer_ptr, permbuffer_end, 1);
+        Collection_CreateMaster("All", NULL, &MasterCollection, 15, PermCollectionScale);
+        Collection_CreateCustom("Characters", &PermanentAllTitleId, &CharacterCollection, 0, 0x04002000, 0, 0, 22, &permbuffer_ptr,
                                 &permbuffer_end, 0, 0.515f);
-        Collection_CreateCustom("Vehicles", NULL, &VehicleCollectionPc, 0x2000, 0x04000000, 0, 0, 7, &permbuffer_ptr, &permbuffer_end, 0,
-                                PermCollectionScalePc);
+        Collection_CreateCustom("Vehicles", NULL, &VehicleCollection, 0x2000, 0x04000000, 0, 0, 7, &permbuffer_ptr, &permbuffer_end, 0,
+                                PermCollectionScale);
         Collection_CreateCustom("Minikits", NULL, &MiniKitCollection, 0x04000000, 0, 0, 0, 12, &permbuffer_ptr, &permbuffer_end, 0,
-                                PermCollectionScalePc);
-        Collection_CreateCustom("Shop", NULL, &ShopCollectionPc, 0, 0, 0, 1, 10, &permbuffer_ptr, &permbuffer_end, 0,
-                                PermCollectionScalePc);
-        Collection_CreateCustom("Jedi", &PermanentJediTitleIdPc, &JediCollectionPc, 8, 0, 0, 0, 7, &permbuffer_ptr, &permbuffer_end, 0,
-                                PermCollectionScalePc);
-        Collection_CreateCustom("BlasterZipUps", &PermanentBlasterTitleIdPc, &BlasterCollectionPc, 0x100080, 0x01000000, 0, 0, 11,
-                                &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
-        Collection_CreateCustom("BountyHunters", &PermanentBountyTitleIdPc, &BountyHunterCollectionPc, 0x01000000, 0, 0, 0, 4,
-                                &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
+                                PermCollectionScale);
+        Collection_CreateCustom("Shop", NULL, &ShopCollection, 0, 0, 0, 1, 10, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScale);
+        Collection_CreateCustom("Jedi", &PermanentJediTitleId, &JediCollection, 8, 0, 0, 0, 7, &permbuffer_ptr, &permbuffer_end, 0,
+                                PermCollectionScale);
+        Collection_CreateCustom("BlasterZipUps", &PermanentBlasterTitleId, &BlasterCollection, 0x100080, 0x01000000, 0, 0, 11,
+                                &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScale);
+        Collection_CreateCustom("BountyHunters", &PermanentBountyTitleId, &BountyHunterCollection, 0x01000000, 0, 0, 0, 4, &permbuffer_ptr,
+                                &permbuffer_end, 0, PermCollectionScale);
         Areas_ConfigureResidents(&permbuffer_ptr, &permbuffer_end);
         CharacterCustomiser =
-            Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1IdPc, PermanentWeirdo2IdPc,
-                                 PermanentCustomPieceAvailablePc, PermanentCustomPieceConfigPc, LevelObject_FindIndexFromName,
-                                 &((PERMANENT_CUSTOMISER_GAME_PC *)&Game)->customiser, PermanentCustomiserActionsPc);
+            Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1Id, PermanentWeirdo2Id,
+                                 PermanentCustomPieceAvailable, PermanentCustomPieceConfig, LevelObject_FindIndexFromName,
+                                 &((PERMANENT_CUSTOMISER_GAME_PC *)&Game)->customiser, PermanentCustomiserActions);
         SpecialMoves_Configure("chars\\specialmoves.txt", &permbuffer_ptr, &permbuffer_end);
         for (i32 index = 0; index < LEVELCOUNT; ++index) {
             if ((LDataList[index].flags & 0x400) != 0) {
@@ -1165,7 +1164,7 @@ extern "C" {
     }
 
     /* Original area.cpp helper. */
-    static void AreaSelectModelListsPrivatePc(i32 area, APICHARACTERMODELLIST **list, APICHARACTERMODELLIST **story) {
+    static void AreaSelectModelListsPrivate(i32 area, APICHARACTERMODELLIST **list, APICHARACTERMODELLIST **story) {
         if (StartupGameFlag1 != 0 && HUB_ADATA != NULL && area == HUB_ADATA->index) {
             *list = Hub_ModelList;
         } else if (FreePlay != 0) {
@@ -1240,7 +1239,7 @@ extern "C" {
             CharacterDataLoad = 2;
             goto done;
         } else {
-            AreaSelectModelListsPrivatePc(area, &list, &story);
+            AreaSelectModelListsPrivate(area, &list, &story);
             if (list == NULL) {
                 CharacterDataLoad = 2;
                 goto done;
@@ -1341,7 +1340,7 @@ void LoadAreaCharacters(void) {
     saved_override = AreaGetKeyboardOverridePc();
     VehicleArea = Area != -1 && (ADataList[Area].flags & 1) != 0;
     BonusArea = -1 != Area && (ADataList[Area].flags & 4) != 0;
-    AreaGlobals_PC.field_04 = VehicleArea != 0 && BonusArea == 0;
+    AreaGlobals.field_04 = VehicleArea != 0 && BonusArea == 0;
     AreaDataLoaded = 0;
     loadareadata_loadlevel = 0;
     loadareacharacters_loadedlevel = 0;
@@ -1380,13 +1379,13 @@ void LoadAreaCharacters(void) {
     if (loadareacharacters_no_backdrop_reset == 0) {
         BackDrop_ResetColours();
     }
-    TextCrawl_Init(&TextCrawlLswPc, Area, 1);
+    TextCrawl_Init(&TextCrawlLsw, Area, 1);
     icon_stage = HUB_ADATA != NULL && HUB_ADATA->index == Area ? 0 : 2;
     icon_time = 0.0f;
     loadareadata_loadlevel = 1;
     WorldInfo_ReArrangeBuffers(Area, last_area);
     SetBackgroundMusic(1);
-    if (load_type == 2 && AreaCrawlMusicEnabledPc != 0 && Game.options_save.music_enabled != 0 && NOSOUND == 0 && 0 == NOMUSIC) {
+    if (load_type == 2 && AreaCrawlMusicEnabled != 0 && Game.options_save.music_enabled != 0 && NOSOUND == 0 && 0 == NOMUSIC) {
         if (Arcade == 0 && Area != -1 && -1 != ADataList[Area].episode_index) {
             i32 handle = music_man.GetTrackHandle(1, crawl_music[ADataList[Area].episode_index]);
             music_man.SelectTrackByHandle(1, handle);
@@ -1412,8 +1411,8 @@ void LoadAreaCharacters(void) {
             if (AreaDataLoaded != 0) {
                 skip_text_scroll = 1;
             }
-        } else if (AreaDataLoaded != 0 && LoadWait == LOADWAITTIME && LoadTime < AreaCrawlMaximumTimePc && skip_text_scroll == 0 &&
-                   (NuSound3LoadingSfx() == 0 || !(LoadTime < AreaCrawlSoundWaitTimePc))) {
+        } else if (AreaDataLoaded != 0 && LoadWait == LOADWAITTIME && LoadTime < AreaCrawlMaximumTime && skip_text_scroll == 0 &&
+                   (NuSound3LoadingSfx() == 0 || !(LoadTime < AreaCrawlSoundWaitTime))) {
             AREA_LOADING_PAD_READER_PC *pads = (AREA_LOADING_PAD_READER_PC *)GamePadStorage;
             if ((pads[0].buttons_pressed & GAMEPAD_START) != 0 || (pads[1].buttons_pressed & GAMEPAD_START) != 0 || NuKeyboard_db(1) != 0) {
                 skip_text_scroll = 1;
@@ -1448,7 +1447,7 @@ void LoadAreaCharacters(void) {
                 }
             }
         } else {
-            if (AreaDataLoaded != 0 && LoadWait > 0.0f && (LoadTime >= AreaCrawlMaximumTimePc || skip_text_scroll != 0)) {
+            if (AreaDataLoaded != 0 && LoadWait > 0.0f && (LoadTime >= AreaCrawlMaximumTime || skip_text_scroll != 0)) {
                 LoadWait -= FRAMETIME;
                 if (LoadWait < 0.0f) {
                     LoadWait = 0.0f;
@@ -1524,12 +1523,12 @@ void LoadAreaCharacters(void) {
                 }
             }
         } else {
-            i32 top_r = (i32)RenderBackdropTopRPc;
-            i32 top_g = (i32)RenderBackdropTopGPc;
-            i32 top_b = (i32)RenderBackdropTopBPc;
-            i32 bottom_r = (i32)RenderBackdropBottomRPc;
-            i32 bottom_g = (i32)RenderBackdropBottomGPc;
-            i32 bottom_b = (i32)RenderBackdropBottomBPc;
+            i32 top_r = (i32)RenderBackdropTopR;
+            i32 top_g = (i32)RenderBackdropTopG;
+            i32 top_b = (i32)RenderBackdropTopB;
+            i32 bottom_r = (i32)RenderBackdropBottomR;
+            i32 bottom_g = (i32)RenderBackdropBottomG;
+            i32 bottom_b = (i32)RenderBackdropBottomB;
             i32 top = ((-128 << 8 | (top_b & 0xff)) << 8 | (top_g & 0xff)) << 8 | (top_r & 0xff);
             i32 bottom = ((-128 << 8 | (bottom_b & 0xff)) << 8 | (bottom_g & 0xff)) << 8 | (bottom_r & 0xff);
             NuRndrGradClear(0xf00, top, bottom, 1.0f);
@@ -1547,8 +1546,8 @@ void LoadAreaCharacters(void) {
                 f32 wave = NuTrigTable[(((u16)phase + 0x4000) >> 1) & 0x7fff];
                 i32 prompt_alpha = (i32)(32.0 - wave * 32.0);
                 SetQFont2D();
-                Text3DEx(TTab[tTOUCHTOSTART], 0.0f, AreaCrawlPromptYPc, 1.0f, AreaCrawlPromptScalePc, AreaCrawlPromptScalePc,
-                         AreaCrawlPromptScalePc, 0, 255, 255, 255, prompt_alpha);
+                Text3DEx(TTab[tTOUCHTOSTART], 0.0f, AreaCrawlPromptY, 1.0f, AreaCrawlPromptScale, AreaCrawlPromptScale,
+                         AreaCrawlPromptScale, 0, 255, 255, 255, prompt_alpha);
             }
         }
         if (fade_scene_active != 0) {
@@ -1647,7 +1646,7 @@ void ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
     i32 i;
     NUSPECIALHANDLE special;
     NUINSTANIM *animation;
-    ANI3_HEADER_PC *data;
+    ANI3_HEADER *data;
     NUMTX *base;
     u32 packed;
     if (scene == NULL || progress == NULL) {
@@ -1675,7 +1674,7 @@ void ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
         if (animation == NULL) {
             continue;
         }
-        data = (ANI3_HEADER_PC *)scene->instance_animation_data[animation->animation_index];
+        data = (ANI3_HEADER *)scene->instance_animation_data[animation->animation_index];
         if (data == NULL) {
             continue;
         }
@@ -1919,7 +1918,7 @@ void WorldInfo_Load(WORLDINFO *world) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         if (world->current_level == TITLES_LDATA) {
             NuStrCpy(path, "levels\\titles\\");
-            WorldGetTitlesNamePrivatePc(titles);
+            WorldGetTitlesNamePrivate(titles);
             NuStrCat(path, titles);
         } else {
             NuStrCpy(path, world->config_file);
@@ -1928,13 +1927,13 @@ void WorldInfo_Load(WORLDINFO *world) {
         numtl_force_mipmode = world->current_level->mipmap_mode + 1;
         LOG_INFO("Scene load begin: path=%s shadowmethod=%d", path, PcWindowOptions.shadowmethod);
         for (index = 0; index != 11; ++index) {
-            if (world->current_level == WorldArchiveOneLevelsPc[index]) {
+            if (world->current_level == WorldArchiveOneLevels[index]) {
                 NuWin32SetDFS(1);
                 goto archive_selected;
             }
         }
         for (index = 0; index != 4; ++index) {
-            if (world->current_level == WorldArchiveThreeLevelsPc[index]) {
+            if (world->current_level == WorldArchiveThreeLevels[index]) {
                 NuWin32SetDFS(3);
                 goto archive_selected;
             }
@@ -2088,11 +2087,11 @@ void WorldInfo_Load(WORLDINFO *world) {
     }
     if ((world->current_level->flags & 4) != 0) {
         LoadLights(world, world->current_level == TITLES_LDATA ? title_light_path : world->config_file);
-        resource->light_index = rtlFindByUserId((RTL_SET_PC *)world->rtl_set, WorldLightUserIdPc);
+        resource->light_index = rtlFindByUserId((RTL_SET *)world->rtl_set, WorldLightUserId);
         if (resource->light_index == -1) {
             resource->light_direction = NULL;
         } else {
-            rtlGetDirection((RTL_SET_PC *)world->rtl_set, resource->light_index, &resource->light_direction);
+            rtlGetDirection((RTL_SET *)world->rtl_set, resource->light_index, &resource->light_direction);
         }
     } else {
         resource->light_index = -1;
@@ -2114,7 +2113,7 @@ void WorldInfo_Load(WORLDINFO *world) {
     }
     NuStrCpy(path, world->config_file);
     NuStrCat(path, ".git");
-    resource->giz_flow = (GIZFLOW_PC *)LoadGizFlow(world, world->gizmo_sys, path, &world->giz_buffer, &world->buffer_end);
+    resource->giz_flow = (GIZFLOW *)LoadGizFlow(world, world->gizmo_sys, path, &world->giz_buffer, &world->buffer_end);
     if (abort_load != 0) {
         goto abort;
     }
@@ -2138,19 +2137,19 @@ abort:
 }
 
 extern "C" {
-    f32 CreditsPictureScalePc = 2.5f;
-    f32 CreditsPictureBaseYPc = 0.0f;
-    f32 CreditsPictureBaseZPc = 1.0f;
+    f32 CreditsPictureScale = 2.5f;
+    f32 CreditsPictureBaseY = 0.0f;
+    f32 CreditsPictureBaseZ = 1.0f;
 }
-static const char *const CreditsEpisodeMusicPc[6] = {"Ep1_EndCredits", "Ep2_EndCredits", "Ep3_EndCredits",
-                                                     "Ep4_EndCredits", "Ep5_EndCredits", "Ep6_EndCredits"};
+static const char *const CreditsEpisodeMusic[6] = {"Ep1_EndCredits", "Ep2_EndCredits", "Ep3_EndCredits",
+                                                   "Ep4_EndCredits", "Ep5_EndCredits", "Ep6_EndCredits"};
 
 extern "C" void Credits_Init_Game(WORLDINFO *world) {
     i32 episode = LastAData != NULL ? LastAData->episode_index : 0;
     if (episode < 0 || episode > 5) {
         episode = 0;
     }
-    const char *music_name = CreditsEpisodeMusicPc[episode];
+    const char *music_name = CreditsEpisodeMusic[episode];
     world->current_level->music_index = GetMusicIndex((char *)music_name, MusicInfo, -1);
     world->current_level->music_tracks[1] = music_man.GetTrackHandle(1, music_name);
     world->current_level->music_tracks[0] = world->current_level->music_tracks[1];
@@ -2159,14 +2158,14 @@ extern "C" void Credits_Init_Game(WORLDINFO *world) {
     world->current_level->music_tracks[5] = music_man.GetTrackHandle(32, music_name);
     world->current_level->music_tracks[4] = world->current_level->music_tracks[5];
     Credits_Init(world);
-    PicturesFixUpPc(world);
+    PicturesFixUp(world);
     NUVEC scale;
-    scale.z = CreditsPictureScalePc;
-    scale.y = CreditsPictureScalePc;
-    scale.x = CreditsPictureScalePc;
+    scale.z = CreditsPictureScale;
+    scale.y = CreditsPictureScale;
+    scale.x = CreditsPictureScale;
     NuMtxSetScale(&LevMtx, &scale);
-    LevMtx.m31 = CreditsPictureBaseYPc;
-    LevMtx.m32 = CreditsPictureBaseZPc;
+    LevMtx.m31 = CreditsPictureBaseY;
+    LevMtx.m32 = CreditsPictureBaseZ;
 }
 
 extern "C" void Credits_Update_Game(WORLDINFO *world) {
@@ -2178,7 +2177,7 @@ extern "C" void Credits_Update_Game(WORLDINFO *world) {
 }
 
 extern "C" {
-    f32 CreditsPictureAlphaPc = 0.5f;
+    f32 CreditsPictureAlpha = 0.5f;
 }
 
 extern "C" void Credits_Draw_Game(WORLDINFO *world) {
@@ -2187,11 +2186,11 @@ extern "C" void Credits_Draw_Game(WORLDINFO *world) {
         f32 duration;
         f32 alpha;
         Credits_GetInfo(&duration, NULL, &alpha);
-        alpha = (f32)((f64)CreditsPictureAlphaPc * LevTime[0] * alpha);
+        alpha = (f32)((f64)CreditsPictureAlpha * LevTime[0] * alpha);
         duration -= 1.0f;
-        f32 interval = (f32)(((f64)duration - 1.0) / PicturesNumLevelsPc);
+        f32 interval = (f32)(((f64)duration - 1.0) / PicturesNumLevels);
         f32 picture_duration = interval + 1.0f;
-        for (i32 index = 0; index < PicturesNumLevelsPc; ++index) {
+        for (i32 index = 0; index < PicturesNumLevels; ++index) {
             f64 hold_duration = (f64)picture_duration - 1.0;
             f32 start = (f32)((f64)interval * index + 1.0);
             f32 hold_end = (f32)((f64)start + hold_duration);
@@ -2251,7 +2250,7 @@ extern "C" {
     static LEVELDATA_PC *LevelFixupSlotPc0087af60 = NULL;
 }
 
-extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
+extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
     LEVELDATA_PC *level;
     i32 index;
     Levels_FixUp(fixup);
@@ -2292,8 +2291,8 @@ extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("losttemple_c", NULL);
             UpdateSockets_LDATA = level;
             if (level != NULL) {
-                UpdateSockets_LDATA->callbacks[2] = (void *)LostTempleC_ResetPc;
-                UpdateSockets_LDATA->callbacks[3] = (void *)LostTempleC_UpdatePc;
+                UpdateSockets_LDATA->callbacks[2] = (void *)LostTempleC_Reset;
+                UpdateSockets_LDATA->callbacks[3] = (void *)LostTempleC_Update;
             }
             level = Level_FindByName("losttemple_d", NULL);
             LevelFixupSlotPc0087b2cc = level;
@@ -2338,35 +2337,35 @@ extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("rescue_c", NULL);
             RESCUEC_LDATA = level;
             level = Level_FindByName("PodRace_Arrival1", NULL);
-            WorldArchiveOneLevelsPc[0] = level;
+            WorldArchiveOneLevels[0] = level;
             level = Level_FindByName("PodRace_Arrival2", NULL);
-            WorldArchiveOneLevelsPc[1] = level;
+            WorldArchiveOneLevels[1] = level;
             level = Level_FindByName("PodRace_Arrival3", NULL);
-            WorldArchiveOneLevelsPc[2] = level;
+            WorldArchiveOneLevels[2] = level;
             level = Level_FindByName("PodRace_Arrival4", NULL);
-            WorldArchiveOneLevelsPc[3] = level;
+            WorldArchiveOneLevels[3] = level;
             level = Level_FindByName("PodRace_Intro", NULL);
-            WorldArchiveOneLevelsPc[4] = level;
+            WorldArchiveOneLevels[4] = level;
             level = Level_FindByName("PodRace_B", NULL);
-            WorldArchiveOneLevelsPc[5] = level;
+            WorldArchiveOneLevels[5] = level;
             level = Level_FindByName("PodRace_C", NULL);
-            WorldArchiveOneLevelsPc[6] = level;
+            WorldArchiveOneLevels[6] = level;
             level = Level_FindByName("PodRace_A", NULL);
-            WorldArchiveOneLevelsPc[7] = level;
+            WorldArchiveOneLevels[7] = level;
             level = Level_FindByName("PodRace_Outro1", NULL);
-            WorldArchiveOneLevelsPc[8] = level;
+            WorldArchiveOneLevels[8] = level;
             level = Level_FindByName("PodRace_Outro2", NULL);
-            WorldArchiveOneLevelsPc[9] = level;
+            WorldArchiveOneLevels[9] = level;
             level = Level_FindByName("PodRace_Status", NULL);
-            WorldArchiveOneLevelsPc[10] = level;
+            WorldArchiveOneLevels[10] = level;
             level = Level_FindByName("ANewHope_Intro", NULL);
-            WorldArchiveThreeLevelsPc[0] = level;
+            WorldArchiveThreeLevels[0] = level;
             level = Level_FindByName("ANewHope_A", NULL);
-            WorldArchiveThreeLevelsPc[1] = level;
+            WorldArchiveThreeLevels[1] = level;
             level = Level_FindByName("ANewHope_B", NULL);
-            WorldArchiveThreeLevelsPc[2] = level;
+            WorldArchiveThreeLevels[2] = level;
             level = Level_FindByName("ANewHope_Status", NULL);
-            WorldArchiveThreeLevelsPc[3] = level;
+            WorldArchiveThreeLevels[3] = level;
             level = Level_FindByName("podrace_b", NULL);
             PODRACEB_LDATA = level;
             if (level != NULL) {
@@ -2459,7 +2458,7 @@ extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
                 JEDI_B_LDATA->callbacks[1] = (void *)JediB_Init;
                 JEDI_B_LDATA->callbacks[2] = (void *)JediB_Reset;
                 JEDI_B_LDATA->callbacks[3] = (void *)JediB_Update;
-                JEDI_B_LDATA->callbacks[6] = (void *)JediB_DrawPanelPc;
+                JEDI_B_LDATA->callbacks[6] = (void *)JediB_DrawPanel;
             }
             level = Level_FindByName("Jedi_Outro", NULL);
             LevelFixupSlotPc0087b0f0 = level;
@@ -2468,7 +2467,7 @@ extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
             if (level != NULL) {
                 GUNSHIPA_LDATA->callbacks[1] = (void *)GunshipA_Init;
                 GUNSHIPA_LDATA->callbacks[3] = (void *)GunshipA_Update;
-                GUNSHIPA_LDATA->callbacks[5] = (void *)GunshipA_DrawPc;
+                GUNSHIPA_LDATA->callbacks[5] = (void *)GunshipA_Draw;
             }
             level = Level_FindByName("gunship_b", NULL);
             GUNSHIPB_LDATA = level;
@@ -2478,23 +2477,23 @@ extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("bonus_gunship_a", NULL);
             BONUS_GUNSHIPA_LDATA = level;
             if (level != NULL) {
-                BONUS_GUNSHIPA_LDATA->callbacks[2] = (void *)BonusGunshipA_ResetPc;
-                BONUS_GUNSHIPA_LDATA->callbacks[3] = (void *)BonusGunshipA_UpdatePc;
+                BONUS_GUNSHIPA_LDATA->callbacks[2] = (void *)BonusGunshipA_Reset;
+                BONUS_GUNSHIPA_LDATA->callbacks[3] = (void *)BonusGunshipA_Update;
             }
             level = Level_FindByName("bonus_gunship_b", NULL);
             BONUS_GUNSHIPB_LDATA = level;
             if (level != NULL) {
-                BONUS_GUNSHIPB_LDATA->callbacks[1] = (void *)BonusGunshipB_InitPc;
-                BONUS_GUNSHIPB_LDATA->callbacks[2] = (void *)BonusGunshipB_ResetPc;
-                BONUS_GUNSHIPB_LDATA->callbacks[3] = (void *)BonusGunshipB_UpdatePc;
-                BONUS_GUNSHIPB_LDATA->callbacks[6] = (void *)BonusGunshipB_PanelPc;
+                BONUS_GUNSHIPB_LDATA->callbacks[1] = (void *)BonusGunshipB_Init;
+                BONUS_GUNSHIPB_LDATA->callbacks[2] = (void *)BonusGunshipB_Reset;
+                BONUS_GUNSHIPB_LDATA->callbacks[3] = (void *)BonusGunshipB_Update;
+                BONUS_GUNSHIPB_LDATA->callbacks[6] = (void *)BonusGunshipB_Panel;
             }
             level = Level_FindByName("pursuit_a", NULL);
-            CollisionVehicleExcludedLevelPc = level;
+            CollisionVehicleExcludedLevel = level;
             if (level != NULL) {
-                CollisionVehicleExcludedLevelPc->callbacks[1] = (void *)BountyHunterPursuitA_Init;
-                CollisionVehicleExcludedLevelPc->callbacks[2] = (void *)BountyHunterPursuitA_Reset;
-                CollisionVehicleExcludedLevelPc->callbacks[3] = (void *)BountyHunterPursuitA_Update;
+                CollisionVehicleExcludedLevel->callbacks[1] = (void *)BountyHunterPursuitA_Init;
+                CollisionVehicleExcludedLevel->callbacks[2] = (void *)BountyHunterPursuitA_Reset;
+                CollisionVehicleExcludedLevel->callbacks[3] = (void *)BountyHunterPursuitA_Update;
             }
             level = Level_FindByName("pursuit_b", NULL);
             LevelFixupSlotPc0087b108 = level;
@@ -2685,9 +2684,9 @@ extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
                 LevelFixupSlotPc0087b194->callbacks[3] = (void *)BlockadeRunnerB_Update;
             }
             level = Level_FindByName("BlockadeRunner_C", NULL);
-            ObstacleReturnLevelPc = level;
+            ObstacleReturnLevel = level;
             if (level != NULL) {
-                ObstacleReturnLevelPc->callbacks[1] = (void *)BlockadeRunnerC_Init;
+                ObstacleReturnLevel->callbacks[1] = (void *)BlockadeRunnerC_Init;
             }
             level = Level_FindByName("BlockadeRunner_D", NULL);
             LevelFixupSlotPc0087b19c = level;
@@ -2790,7 +2789,7 @@ extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
                 HOTHBATTLEA_LDATA->callbacks[1] = (void *)HothBattleA_Init;
                 HOTHBATTLEA_LDATA->callbacks[2] = (void *)HothBattleA_Reset;
                 HOTHBATTLEA_LDATA->callbacks[3] = (void *)HothBattleA_Update;
-                HOTHBATTLEA_LDATA->callbacks[5] = (void *)HothBattleA_DrawPc;
+                HOTHBATTLEA_LDATA->callbacks[5] = (void *)HothBattleA_Draw;
             }
             level = Level_FindByName("hothbattle_b", NULL);
             LevelFixupSlotPc0087b200 = level;
@@ -2800,7 +2799,7 @@ extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
                 LevelFixupSlotPc0087b204->callbacks[1] = (void *)HothBattleC_Init;
                 LevelFixupSlotPc0087b204->callbacks[2] = (void *)HothBattleC_Reset;
                 LevelFixupSlotPc0087b204->callbacks[3] = (void *)HothBattleC_Update;
-                LevelFixupSlotPc0087b204->callbacks[5] = (void *)HothBattleC_DrawPc;
+                LevelFixupSlotPc0087b204->callbacks[5] = (void *)HothBattleC_Draw;
             }
             level = Level_FindByName("hothbattle_d", NULL);
             LevelFixupSlotPc0087b208 = level;
@@ -2809,8 +2808,8 @@ extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
             if (level != NULL) {
                 LevelFixupSlotPc0087b20c->callbacks[1] = (void *)HothBattleE_Init;
                 LevelFixupSlotPc0087b20c->callbacks[3] = (void *)HothBattleE_Update;
-                LevelFixupSlotPc0087b20c->callbacks[5] = (void *)HothBattleE_DrawPc;
-                LevelFixupSlotPc0087b20c->callbacks[6] = (void *)HothBattleE_PanelPc;
+                LevelFixupSlotPc0087b20c->callbacks[5] = (void *)HothBattleE_Draw;
+                LevelFixupSlotPc0087b20c->callbacks[6] = (void *)HothBattleE_Panel;
             }
             level = Level_FindByName("HothBattle_Outro", NULL);
             LevelFixupSlotPc0087b210 = level;

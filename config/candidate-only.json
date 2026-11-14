@@ -263,17 +263,17 @@
   },
   {
    "unit": "src/gamelib/net/NetworkObjectManager.cpp",
-   "symbol": "?Write@NETMESSAGE_PC@@QAEXPBXI@Z",
+   "symbol": "?Write@NETMESSAGE@@QAEXPBXI@Z",
    "kind": "function"
   },
   {
    "unit": "src/gamelib/net/NetworkObjectManager.cpp",
-   "symbol": "?Read@NETMESSAGE_PC@@QAEXPAXI@Z",
+   "symbol": "?Read@NETMESSAGE@@QAEXPAXI@Z",
    "kind": "function"
   },
   {
    "unit": "src/gamelib/net/NetworkObjectManager.cpp",
-   "symbol": "?Prepend8@NETMESSAGE_PC@@QAEXE@Z",
+   "symbol": "?Prepend8@NETMESSAGE@@QAEXE@Z",
    "kind": "function"
   },
   {
@@ -348,7 +348,7 @@
   },
   {
    "unit": "src/gamelib/net/Ftp.cpp",
-   "symbol": "??0NETMESSAGE_PC@@QAE@XZ",
+   "symbol": "??0NETMESSAGE@@QAE@XZ",
    "kind": "function"
   },
   {

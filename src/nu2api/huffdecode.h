@@ -158,8 +158,8 @@ typedef struct FRAME_PAD_RECORD_PC { // size 0x28
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern char UiSelectPromptLiteralPc[7];
-    extern char UiBackPromptLiteralPc[5];
+    extern char UiSelectPromptLiteral[7];
+    extern char UiBackPromptLiteral[5];
     extern NUDATHDR *curr_dat;
     extern const f64 NuTime_LowScale;
     extern const f64 NuTime_MicroScale;
@@ -221,7 +221,7 @@ extern "C" {
     extern PC_FILEEXTINFO extensions[64];
     extern i32 num_extensions;
     i32 NuFileUseHiresPC(void);
-    extern void (*NuApiEndFrameCallbackPc)(void);
+    extern void (*NuApiEndFrameCallback)(void);
     extern const char NuTextureDdsExtensionPc[4];
     extern i32 gExplodeInitialised;
     extern i32 FramePadProfilePortPc;

@@ -17,7 +17,7 @@ i32 PCThreadCriticalSectionCreate_candidate(void) {
 }
 
 // noinline: the original calls NuThreadCriticalSectionBegin out of line from
-// PCDisplayListCriticalSectionEnterPc; VC8 would inline it there.
+// PCDisplayListCriticalSectionEnter; VC8 would inline it there.
 __declspec(noinline) void NuThreadCriticalSectionBegin(i32 section_index) {
     if (section_index >= 1 && section_index <= 12) {
         EnterCriticalSection(&PCThreadCriticalSections[section_index - 1]);
@@ -25,18 +25,18 @@ __declspec(noinline) void NuThreadCriticalSectionBegin(i32 section_index) {
 }
 
 // noinline: the original calls NuThreadCriticalSectionEnd out of line from
-// PCDisplayListCriticalSectionLeavePc; VC8 would inline it there.
+// PCDisplayListCriticalSectionLeave; VC8 would inline it there.
 __declspec(noinline) void NuThreadCriticalSectionEnd(i32 section_index) {
     if (section_index >= 1 && section_index <= 12) {
         LeaveCriticalSection(&PCThreadCriticalSections[section_index - 1]);
     }
 }
 
-void PCDisplayListCriticalSectionEnterPc(void) {
+void PCDisplayListCriticalSectionEnter(void) {
     NuThreadCriticalSectionBegin(nudlist_field_fc4);
 }
 
-void PCDisplayListCriticalSectionLeavePc(void) {
+void PCDisplayListCriticalSectionLeave(void) {
     NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
@@ -44,20 +44,20 @@ void fun_005de1c0(NUMTL *material) {
     NuThreadCriticalSectionBegin(nudlist_field_fc4);
     if (PCDisplayMaterialAddCount == 600) {
         NuThreadCriticalSectionEnd(nudlist_field_fc4);
-        AnimationDiagnosticNoOpPc();
+        AnimationDiagnosticNoOp();
         return;
     }
     PCDisplayMaterialAddQueue[PCDisplayMaterialAddCount++] = material;
     NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
-i64 PCThreadMillisecondsPc(void) {
+i64 PCThreadMilliseconds(void) {
     NuTime time;
     NuTimeGet(&time);
     return (((i64)time.high << 32) | time.low) / 1000;
 }
 
-void PCThreadCriticalSectionDeleteNoOpPc(i32 index) {
+void PCThreadCriticalSectionDeleteNoOp(i32 index) {
     (void)index;
 }
 

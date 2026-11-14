@@ -128,7 +128,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
 }
 
-void TransformDrawTargetPc(NUVEC *position, f32 radius, f32 alpha) {
+void TransformDrawTarget(NUVEC *position, f32 radius, f32 alpha) {
     NUVEC direction;
     NUVEC draw_position;
     NUVEC scale;
@@ -186,6 +186,6 @@ GAMEOBJECT *Transform_TargettedByObj(void *target) {
 
 void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target) {
     if (Transform_TargettedByObj(target) == NULL) {
-        TransformDrawTargetPc(&target->mid_position, target->target_scale * 1.4f, 0.4f);
+        TransformDrawTarget(&target->mid_position, target->target_scale * 1.4f, 0.4f);
     }
 }

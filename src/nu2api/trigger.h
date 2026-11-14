@@ -16,13 +16,13 @@ struct instnugcutscene_s;
 extern "C" {
 #endif
     typedef struct cut_load_locator_instance_s CUT_LOAD_LOCATOR_INSTANCE;
-    extern f32 CutSceneDebrisAxisSizePc;
-    extern i32 CutSceneDebrisProcessModePc;
+    extern f32 CutSceneDebrisAxisSize;
+    extern i32 CutSceneDebrisProcessMode;
     /* Minimal public contracts; complete field views stay in their source owners.
      * Registration callbacks currently use concrete local views in scratch. On shared
      * promotion cast the installed callback addresses to these canonical ABI typedefs
      * and recompile full contexts. Do not publish private helper prototypes. */
-    typedef struct CUT_LOOKAT_STATE_PC CUT_LOOKAT_STATE_PC;
+    typedef struct CUT_LOOKAT_STATE CUT_LOOKAT_STATE;
     void instNuGCutSceneEnd(struct instnugcutscene_s *);
     void instNuGCutScenePlay(struct instnugcutscene_s *owner, i32 forward);
 #ifdef __cplusplus

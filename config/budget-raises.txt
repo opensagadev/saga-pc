@@ -74,7 +74,7 @@ config/oddscan-budget.json stdcall 289 port batch 2: get_level_count, a COM slot
 config/oddscan-budget.json undef-in-unit 220 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
 config/oddscan-budget.json view-type 186 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
 config/oddscan-budget.json view-use 1049 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
-config/castscan-budget.json codegen-steering 58 port batch 2: the float cast in PC_CONTROL_SCREEN_PC::fun_00420d30 (config/castscan-keep.csv)
+config/castscan-budget.json codegen-steering 58 port batch 2: the float cast in PC_CONTROL_SCREEN::fun_00420d30 (config/castscan-keep.csv)
 config/castscan-budget.json declaration-type 1741 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
 config/castscan-budget.json duplicate-type 1651 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
 config/castscan-budget.json field-address 344 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
@@ -139,9 +139,10 @@ config/literalscan-budget.json kept 7 the scan also counts constants read severa
 config/oddscan-budget.json view-use 1052 the class counts lines: clang-format splits one NuAlloc(sizeof(EduiSeparatorView), ...) call in edui_widget_render_pc.cpp over two lines once its source path is written inline (no new view use)
 config/castscan-budget.json duplicate-type 1647 a type renamed from ...ViewPc to ...View no longer reads as a view to castscan (view-type 532 -> 531); the same cast moved class
 config/castscan-budget.json declaration-type 1759 17 existing casts move here from byte-pointer, record-pun and signedness once the layout asserts that castscan read their types from are comments (same casts, total unchanged)
-config/oddscan-budget.json format-off 3 GlobalBoltType (bolts.cpp), ExtrasCheatsPc (data.cpp) and the rtl.c table: clang-format writes a row that holds a nested {...} one value per line once it is wider than 120 columns (no option changes it); the rows are packed by hand between off/on markers
+config/oddscan-budget.json format-off 3 GlobalBoltType (bolts.cpp), ExtrasCheats (data.cpp) and the rtl.c table: clang-format writes a row that holds a nested {...} one value per line once it is wider than 120 columns (no option changes it); the rows are packed by hand between off/on markers
 config/castscan-budget.json declaration-type 1769 10 existing casts change class once the remaining layout asserts go (null-pointer drops by 108 with the removed ((T *)0)->member asserts)
 config/oddscan-budget.json format-off 4 four initializer tables are still wider than 140 columns once aligned (GlobalBoltType, GizmoPickupType, PcStaticInputConfigs, the rtl.c table): aligned by script between off/on markers
 config/oddscan-budget.json magic-flag 7567 the 140-column reformat joins lines; oddscan counts per line (no new literal)
 config/oddscan-budget.json magic-state 8727 the 140-column reformat joins lines; oddscan counts per line (no new literal)
 config/oddscan-budget.json stdcall-definition 6 the 140-column reformat joins a wrapped declaration; oddscan counts per line (no new attribute)
+config/oddscan-budget.json hex-name 9428 address-named globals (TextIdPc8810c0 style) were hidden from the hex-name pattern by a trailing Pc; dropping the pc marker shows 447 of them (no new address name)

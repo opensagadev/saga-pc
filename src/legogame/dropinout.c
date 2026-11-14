@@ -1,10 +1,10 @@
 #include "saga.h"
 
-void PcControlInitializePc(i32, i32, i32, u8);
+void PcControlInitialize(i32, i32, i32, u8);
 u8 PcInput_MappingIsGood(i32 port, i32 player_index);
 i32 PcInput_GetFirstKeyboardPort(void);
 i32 PC_CtrlConfigGetPlayerPort(i32 player_index);
-void PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints);
+void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints);
 #define DROPIN_SCREEN_INSIDE(object)                                                                                                       \
     ((object)->camera_screen_position.x > -0.8500000238418579 && (object)->camera_screen_position.x < 0.8500000238418579 &&                \
      (object)->camera_screen_position.y > -0.8500000238418579 && (object)->camera_screen_position.y < 0.8500000238418579)
@@ -194,20 +194,20 @@ void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
 }
 
 #pragma data_seg(".data$DropInPendingPlayerPc")
-i8 DropInPendingPlayerPc = -1;
+i8 DropInPendingPlayer = -1;
 #pragma data_seg(".data$DropInConfigurationPlayerPc")
-i8 DropInConfigurationPlayerPc = -1;
+i8 DropInConfigurationPlayer = -1;
 #pragma data_seg(".data$DropInCaptureDelayPc")
-u8 DropInCaptureDelayPc[2] = {5, 5};
+u8 DropInCaptureDelay[2] = {5, 5};
 #pragma data_seg(".data$DropInCapturePortPc")
-i16 DropInCapturePortPc[2] = {-1, -1};
+i16 DropInCapturePort[2] = {-1, -1};
 #pragma data_seg(".data$DropBackInDelayPc")
-f32 DropBackInDelayPc = 2.0f;
+f32 DropBackInDelay = 2.0f;
 #pragma data_seg(".data$PlayerDevicePortsPc")
 i32 PlayerDevicePortsPc[2] = {-1, -1};
 #pragma data_seg()
-STATIC_ASSERT(sizeof(DropInPendingPlayerPc) == 1);
-STATIC_ASSERT(sizeof(DropInConfigurationPlayerPc) == 1);
+STATIC_ASSERT(sizeof(DropInPendingPlayer) == 1);
+STATIC_ASSERT(sizeof(DropInConfigurationPlayer) == 1);
 
 i32 PlayersDropInOut(void) {
     i32 force_join = 0;
@@ -255,22 +255,22 @@ i32 PlayersDropInOut(void) {
         input_join = 0;
         port0 = NuPadGetPort(0);
         if (port0 >= 0) {
-            DropInCapturePortPc[0] = (i16)port0;
+            DropInCapturePort[0] = (i16)port0;
         }
         port = NuPadGetPort(1);
         if (port >= 0) {
-            DropInCapturePortPc[1] = (i16)port;
+            DropInCapturePort[1] = (i16)port;
         }
         if (GetMenuID() == -1) {
             i32 kind;
             i32 value;
             i32 off = (object->flags_1fc_word >> 7) & 1;
-            if (off == 0 && DropInCaptureDelayPc[index]) {
-                --DropInCaptureDelayPc[index];
-                if (DropInCapturePortPc[index] >= 0) {
-                    port = PcInput_ScanForAnyInput(~(1u << DropInCapturePortPc[index]), 0x1a, &kind, &value, 1);
+            if (off == 0 && DropInCaptureDelay[index]) {
+                --DropInCaptureDelay[index];
+                if (DropInCapturePort[index] >= 0) {
+                    port = PcInput_ScanForAnyInput(~(1u << DropInCapturePort[index]), 0x1a, &kind, &value, 1);
                     if (port >= 0) {
-                        DropInCaptureDelayPc[index] = 5;
+                        DropInCaptureDelay[index] = 5;
                     }
                 }
             } else if (off == 0) {
@@ -287,8 +287,8 @@ i32 PlayersDropInOut(void) {
                 excluded &= ~(1u << PcInput_GetFirstKeyboardPort());
                 port = PcInput_ScanForAnyInput(excluded, 0x1a, &kind, &value, 1);
                 if (port >= 0 && port != port0 && port != port1) {
-                    DropInCapturePortPc[index] = (i16)port;
-                    DropInCaptureDelayPc[index] = 5;
+                    DropInCapturePort[index] = (i16)port;
+                    DropInCaptureDelay[index] = 5;
                     input_join = 1;
                     if (PcInput_PortIsKeyboard(port)) {
                         port = PcInput_RemapVirtualKeyboard(port, index);
@@ -296,19 +296,19 @@ i32 PlayersDropInOut(void) {
                         if (input_join && !PcInput_MappingIsGood(port, index)) {
                             NuPadMapPlayerToPort(index, port);
                             PauseGame(index);
-                            PcControlInitializePc(2, index, index, 0);
+                            PcControlInitialize(2, index, index, 0);
                             NewMenu(0x15, 0, -1);
                             input_join = 0;
-                            DropInConfigurationPlayerPc = (i8)index;
+                            DropInConfigurationPlayer = (i8)index;
                         }
                     }
                 }
             }
         }
-        if (index == DropInPendingPlayerPc) {
+        if (index == DropInPendingPlayer) {
             input_join = 1;
             port = PC_CtrlConfigGetPlayerPort(index);
-            DropInPendingPlayerPc = -1;
+            DropInPendingPlayer = -1;
         }
         if (!((input_join && MiniCutCam == 0) || drop_back_in_timer > 0.0f || force_join || index == -1)) {
             continue;
@@ -356,7 +356,7 @@ i32 PlayersDropInOut(void) {
             if (!join) {
                 if (VehicleArea == 0) {
                     if (drop_back_in_timer == 0.0f && !force_join) {
-                        drop_back_in_timer = DropBackInDelayPc;
+                        drop_back_in_timer = DropBackInDelay;
                     }
                     object->flags_ef0 |= 0x200000;
                 }
@@ -370,7 +370,7 @@ i32 PlayersDropInOut(void) {
         ResetTimer(&JoinInTimer, 0.0f);
         changed = 1;
         if (WORLD->current_level != VADERC_LDATA) {
-            PlayerSetCurrentHpPc(object, (i8)PlayerProgress[index].hitpoints);
+            PlayerSetCurrentHp(object, (i8)PlayerProgress[index].hitpoints);
         }
         GizForce_ResetLOS(object);
         object->flags_ef0 &= ~0x180000;
@@ -424,7 +424,7 @@ i32 PlayersDropInOut(void) {
         }
     }
     if (drop_index != -1 && BonusWinner == -1) {
-        drop_back_in_timer = DropBackInDelayPc;
+        drop_back_in_timer = DropBackInDelay;
         DropOut(drop_index, 0, 1, 0);
     }
     return changed;

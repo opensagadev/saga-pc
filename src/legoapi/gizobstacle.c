@@ -1,6 +1,6 @@
 #include "saga.h"
 
-extern const char GizmoSnapOptionNamePc[5];
+extern const char GizmoSnapOptionName[5];
 
 void GizObstacle_JumpToStart(GIZOBSTACLE *obstacle) {
     if (obstacle && obstacle->anim_set) {
@@ -36,7 +36,7 @@ void GizObstacle_PlayBackwards(GIZOBSTACLE *obstacle) {
     }
 }
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_index) == 0x400);
 
 typedef struct gizobstacle_system_s { // size 0x14
     GIZOBSTACLE *obstacles;           // 0x00
@@ -496,7 +496,7 @@ typedef struct gizobstacle_object_data_s { // size 0x4
     i16 platform_id;                       // 0x2
 } GIZOBSTACLE_OBJECT_DATA_PC;
 
-extern i32 (*GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
+extern i32 (*GizObstacleExcludeFn)(GIZOBSTACLE *, GAMEOBJECT *);
 
 void GizObstacle_Stop(GIZOBSTACLE *obstacle) {
     if (obstacle) {
@@ -576,9 +576,9 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
             }
             if (!(obstacle->config_flags & 1)) {
                 for (i = 0; i < ngizobstacletriggers; ++i) {
-                    distance = NuVecDistSqr(&obstacle->secondary_position, GizObstacleTriggersPc[i], NULL);
-                    if (distance < closest && GizObstacle_PosWithinBox(obstacle, GizObstacleTriggersPc[i])) {
-                        closest_position = GizObstacleTriggersPc[i];
+                    distance = NuVecDistSqr(&obstacle->secondary_position, GizObstacleTriggers[i], NULL);
+                    if (distance < closest && GizObstacle_PosWithinBox(obstacle, GizObstacleTriggers[i])) {
+                        closest_position = GizObstacleTriggers[i];
                         closest = distance;
                     }
                 }
@@ -602,7 +602,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                 (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) || ((obstacle->config_flags & 0x400) && !object->rider) ||
                 ((obstacle->config_flags & 0x4000) && !(object->character_data->model_flags & 4)) ||
                 ((obstacle->config_flags & 8) && !(object->character_data->model_flags & 0x2000)) ||
-                (GizObstacleExcludeFnPc && GizObstacleExcludeFnPc(obstacle, object))) {
+                (GizObstacleExcludeFn && GizObstacleExcludeFn(obstacle, object))) {
                 continue;
             }
             if ((obstacle->mode == 2 || obstacle->mode == 6) && !object->field_281 && !(object->flags_ef4 & 0x20000000) &&
@@ -648,7 +648,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         }
     }
     state = obstacle->anim_set->state;
-    if (state != 0 && state != 2 && !(WORLD->current_level == ObstacleReturnLevelPc && obstacle == LevGizObst[0] && state == 4)) {
+    if (state != 0 && state != 2 && !(WORLD->current_level == ObstacleReturnLevel && obstacle == LevGizObst[0] && state == 4)) {
         return;
     }
     if (state == 2 && !obstacle->playback_state) {
@@ -695,7 +695,7 @@ static void GizObstacleUpdate_AutoStart(GIZOBSTACLE *obstacle) {
     }
 }
 
-static void (*GizObstacleUpdateFnsPc[8])(GIZOBSTACLE *) = {
+static void (*GizObstacleUpdateFns[8])(GIZOBSTACLE *) = {
     GizObstacleUpdate_AutoStart,  GizObstacleUpdate_Proximity, GizObstacleUpdate_Proximity, GizObstacleUpdate_NoTrigger,
     GizObstacleUpdate_TechnoOnly, GizObstacleUpdate_Proximity, GizObstacleUpdate_Proximity, GizObstacleUpdate_PushOnly};
 
@@ -741,8 +741,8 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
             GizObstacle_PlayForwards(obstacle);
         } else if ((obstacle->progress_flags & 4) && obstacle->animation_speed == 0.0f) {
             GizObstacle_Stop(obstacle);
-        } else if (GizObstacleUpdateFnsPc[obstacle->mode]) {
-            GizObstacleUpdateFnsPc[obstacle->mode](obstacle);
+        } else if (GizObstacleUpdateFns[obstacle->mode]) {
+            GizObstacleUpdateFns[obstacle->mode](obstacle);
         }
         // MATCH-EXCEPTION: the original tests the three low GAMEANIMSET flag bits one by one (word load, test al,
         // 7); a single `flags & 7` compiles to a byte test.
@@ -819,7 +819,7 @@ void GizObstacles_AddTrigger(NUVEC *position) {
         return;
     }
     if (ngizobstacletriggers < 16) {
-        GizObstacleTriggersPc[ngizobstacletriggers++] = position;
+        GizObstacleTriggers[ngizobstacletriggers++] = position;
     } else {
         message_position = v001;
         AddGameMessage("MAXGIZOBSTACLETRIGGERS needs increasing, ask a programmer!", &message_position, 0.4f, NULL, 0.4f, 200, 200, 200,
@@ -1187,7 +1187,7 @@ ADDGIZMOTYPE_PC *GizObstacles_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC GizObstaclesAddTypePc = {0};
     ADDGIZMOTYPE_PC *addtype = &GizObstaclesAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
-    addtype->name = GizObstacleRegistrationNamePtrPc;
+    addtype->name = GizObstacleRegistrationNamePtr;
     addtype->prefix = "";
     addtype->fns.options = 0x70;
     addtype->fns.early_update_fn = NULL;

@@ -216,7 +216,7 @@ void DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u3
         sprintf(axes_text, "~0$s~~ %s ~0$s", left, apitxt_SELECT, right);
     }
 
-    row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScalePc;
+    row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScale;
     y = (f32)(row_delta - (f64)0.85f);
     y = (f32)((f64)y + row_delta);
     y = (f32)((f64)y - (f64)0.05f);
@@ -231,21 +231,21 @@ void DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u3
     }
     if (confirm) {
         x = enabled ? 0.85f : -0.85f;
-        scale = (f32)((f64)0.8f * MenuTextScalePc);
+        scale = (f32)((f64)0.8f * MenuTextScale);
         MenuText3DEx(accept_text, x, y, 1, scale, scale, scale, enabled ? 12 : 6, red, green, blue, alpha);
-        row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScalePc;
+        row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScale;
         y = (f32)((f64)y + row_delta);
     }
     if (cancel) {
         x = enabled ? 0.85f : -0.85f;
-        scale = (f32)((f64)0.8f * MenuTextScalePc);
+        scale = (f32)((f64)0.8f * MenuTextScale);
         MenuText3DEx(cancel_text, x, y, 1, scale, scale, scale, enabled ? 12 : 6, red, green, blue, alpha);
-        row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScalePc;
+        row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScale;
         y = (f32)((f64)y + row_delta);
     }
     if (flags) {
         x = enabled ? 0.85f : -0.85f;
-        scale = (f32)((f64)0.8f * MenuTextScalePc);
+        scale = (f32)((f64)0.8f * MenuTextScale);
         MenuText3DEx(axes_text, x, y, 1, scale, scale, scale, enabled ? 12 : 6, red, green, blue, alpha);
     }
 }
@@ -336,14 +336,13 @@ void DrawMenu(i32 paused) {
 
 void DrawMenuHeader(void) {
     if (MenuDisableHeaders == 0) {
-        MenuSmartTextEx(MenuHeader, 0, MenuTopYPc, 1, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, (u8)header_r, (u8)header_g,
+        MenuSmartTextEx(MenuHeader, 0, MenuTopY, 1, MenuTextScale, MenuTextScale, MenuTextScale, 0, (u8)header_r, (u8)header_g,
                         (u8)header_b, 1.2f, 1, NULL, 0, MenuA);
     }
 }
 
 void fun_0050f620(char *text, u32 red, u32 green, u32 blue) {
-    MenuSmartTextEx(text, 0.0f, MenuTopYPc, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 1, red, green, blue, 1.5f, 3, NULL, 0,
-                    MenuA);
+    MenuSmartTextEx(text, 0.0f, MenuTopY, 1.0f, MenuTextScale, MenuTextScale, MenuTextScale, 1, red, green, blue, 1.5f, 3, NULL, 0, MenuA);
 }
 
 void MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *buffer, VARIPTR buffer_end) {
@@ -555,35 +554,35 @@ i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 al
     left_pressed = pressed & 0x8000;
     right_pressed = pressed & 0x2000;
     up_held = held & 0x1000;
-    if (MenuSuppressUpHeldPc != 0) {
+    if (MenuSuppressUpHeld != 0) {
         if (up_held != 0) {
             up_held = 0;
         } else {
-            MenuSuppressUpHeldPc = 0;
+            MenuSuppressUpHeld = 0;
         }
     }
     down_held = held & 0x4000;
-    if (MenuSuppressDownHeldPc != 0) {
+    if (MenuSuppressDownHeld != 0) {
         if (down_held != 0) {
             down_held = 0;
         } else {
-            MenuSuppressDownHeldPc = 0;
+            MenuSuppressDownHeld = 0;
         }
     }
     left_held = held & 0x8000;
-    if (MenuSuppressLeftHeldPc != 0) {
+    if (MenuSuppressLeftHeld != 0) {
         if (left_held != 0) {
             left_held = 0;
         } else {
-            MenuSuppressLeftHeldPc = 0;
+            MenuSuppressLeftHeld = 0;
         }
     }
     right_held = held & 0x2000;
-    if (MenuSuppressRightHeldPc != 0) {
+    if (MenuSuppressRightHeld != 0) {
         if (right_held != 0) {
             right_held = 0;
         } else {
-            MenuSuppressRightHeldPc = 0;
+            MenuSuppressRightHeld = 0;
         }
     }
 
@@ -863,7 +862,7 @@ void DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     } red, green, blue;
 
     alpha = alpha > 128 ? 128 : alpha;
-    scale = (view->item_scale_x == 0.0f ? MenuTextScalePc : view->item_scale_x) * dme_sy;
+    scale = (view->item_scale_x == 0.0f ? MenuTextScale : view->item_scale_x) * dme_sy;
     spacing = (view->item_spacing == 0.0f ? MENUDY : view->item_spacing) * dme_sy;
     if (view->item_offsets != NULL) {
         f32 offset_x = view->item_offsets[0];
@@ -939,7 +938,7 @@ void fun_00509710(f32 speed) {
 }
 
 void fun_00509720(f32 top, f32 bottom) {
-    MenuTopYPc = top;
+    MenuTopY = top;
     MENUBOTY = bottom;
 }
 

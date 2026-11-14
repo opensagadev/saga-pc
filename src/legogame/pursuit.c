@@ -21,10 +21,10 @@ typedef struct PURSUIT_TRAFFIC {       // size 0x77e4
     i8 side;                           // 0x77e3
 } PURSUIT_TRAFFIC;
 
-typedef struct ZAMARROW_PC {
+typedef struct ZAMARROW {
     GAMEOBJECT *object;
     f32 timer;
-} ZAMARROW_PC;
+} ZAMARROW;
 
 /* Pursuit tuning values. */
 static f32 pursuit_laser_range = 1000.0f;
@@ -38,7 +38,7 @@ f32 traffic_test_z = -360.0f;
 static i32 pursuit_c_hack = 1;
 
 /* Zam Wesell locator arrow. */
-static ZAMARROW_PC zamarrow;
+static ZAMARROW zamarrow;
 /* Generator laser type. */
 static i32 pursuit_laser_type;
 

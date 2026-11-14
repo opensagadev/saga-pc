@@ -182,14 +182,14 @@ The 20 most-used resolved fields (the pilot batch, section 8):
 | 10 | `gameobject_s.portal_flags` | u32 | flags | 154 | 31 | - |
 | 11 | `GIZMOBLOWUP_PC.status_flags` | u32 | flags | 153 | 26 | - |
 | 12 | `FRAME_PAD_PC.digital_buttons_pressed` | u32 | flags | 151 | 14 | `PAD_BUTTON_*` |
-| 13 | `PLAYERCHARACTERCONFIG_PC.flags_090` | u32 | flags | 147 | 30 | - |
+| 13 | `PLAYERCHARACTERCONFIG.flags_090` | u32 | flags | 147 | 30 | - |
 | 14 | `gameobject_s.flags_ef0` | u32 | flags | 143 | 32 | - |
-| 15 | `AIPACKET_PC.flags` | u32 | flags | 140 | 24 | - |
+| 15 | `AIPACKET.flags` | u32 | flags | 140 | 24 | - |
 | 16 | `gameobject_s.flags_ef4` | u32 | flags | 126 | 32 | - |
 | 17 | `debris_info_s.generator_type` | i8 | enum | 120 | 7 | - |
 | 18 | `animpacket_s.requested_animation` | i16 | enum | 110 | 36 | animation ids |
 | 19 | `FRAME_PAD_PC.digital_buttons` | u32 | flags | 110 | 14 | `PAD_BUTTON_*` names 6 |
-| 20 | `area_data_pc_s.flags` | u16 | flags | 89 | 14 | Android `enum AREA_FLAGS` (value overlap 0.93) |
+| 20 | `area_data_s.flags` | u16 | flags | 89 | 14 | Android `enum AREA_FLAGS` (value overlap 0.93) |
 
 Ambiguous member names (`*.flags`, `*.type`, `*.state`: 43 fields, 1,269
 uses) and plain variables (`flags`, `mode`, `state`: 3,362 uses) follow once
@@ -568,7 +568,7 @@ built. Converted:
 | total | 77 | 691 | 601 (saga.h 293) |
 
 No assert disagreed with the computed layout. The one sizeof assert with a
-note (`AIAREA_PC`, "PC differs from Android's 0x3c") became `// size 0x40
+note (`AIAREA`, "PC differs from Android's 0x3c") became `// size 0x40
 (Android: 0x3c)`. The diff is -1,583/+814 lines.
 
 *Mechanism.* VC8 numbers every symbol it creates in a translation unit from
@@ -580,13 +580,13 @@ number of ids, leaves every object identical; renaming the typedefs does too.
 So the fragile functions depend on the id counter (with a period of about 64
 ids), not on which struct is asserted. Removing even one assert at the end of
 saga.h changes `InitGameAfterConfig`; removing 12 to 18 changes
-`BlockadeRunnerDEjectCreaturePc`.
+`BlockadeRunnerDEjectCreature`.
 
 *Result.* The full AI block (C ids -887, C++ ids -1,164 for every unit after
-it) lost the exact `DebrisSetup2` (parts.c), `BlockadeRunnerDEjectCreaturePc`
-(episodeIV.c) and `BoulderSpawnPc` (episodeIII.c). Adding back ids after the
+it) lost the exact `DebrisSetup2` (parts.c), `BlockadeRunnerDEjectCreature`
+(episodeIV.c) and `BoulderSpawn` (episodeIII.c). Adding back ids after the
 block keeps all three at +34 or +46 C ids and loses at least one at most other
-values. The pilot therefore keeps the asserts of `AIPATHINFO_PC` (11 in
+values. The pilot therefore keeps the asserts of `AIPATHINFO` (11 in
 saga.h) and `AISCRIPTPROCESSSTACK` (1); together they cost 34 C ids. Both
 groups are marked with a comment that points here. With them, all 337 units
 compile to the same code and data as before except four functions that
@@ -622,7 +622,7 @@ comment that points here:
 
 | unit | kept (`--skip`) | assert lines | reacts |
 |---|---|---:|---|
-| `legogame/episodeIV.c` | `CLOUDCITY_PANEL_FLAGS_VIEW`, `TORPEDO_MUSIC_FLAGS_VIEW` | 3 | `BlockadeRunnerDEjectCreaturePc` loses exact with any one struct kept or with none; this pair keeps it |
+| `legogame/episodeIV.c` | `CLOUDCITY_PANEL_FLAGS_VIEW`, `TORPEDO_MUSIC_FLAGS_VIEW` | 3 | `BlockadeRunnerDEjectCreature` loses exact with any one struct kept or with none; this pair keeps it |
 | `nu2api/nu3d_includes.cpp` | `PC_SPECIAL_RENDER_SCENE` | 1 | `NuDeferredFilterGen::render` (93.89 % vs 93.90 %) |
 
 With them every object is byte-identical to the build before the conversion.
@@ -727,8 +727,8 @@ uses it and the prototypes that take it (`AREA_FLAGS` with `AREA_DATA` in
 
 **Migration order and the declaration-count risk.** The number and kind of
 declarations a unit sees perturbs VC8 code generation of a few fragile
-functions (`BoulderSpawnPc`, `SubItemMenu`, `InitGameAfterConfig`,
-`BlockadeRunnerDEjectCreaturePc`, `NuRndrParticleGroup`, `DebrisSetup2`;
+functions (`BoulderSpawn`, `SubItemMenu`, `InitGameAfterConfig`,
+`BlockadeRunnerDEjectCreature`, `NuRndrParticleGroup`, `DebrisSetup2`;
 `FRAGILE` in `tools/unitscore.py`). So:
 
 1. Split saga.h into the module headers in the same order as today, and make

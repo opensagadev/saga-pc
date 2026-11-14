@@ -23,8 +23,8 @@
 
 #if SAGA_NU2API_NUCORE_NUGCUTSCENE_H_PART == 1 && !defined(SAGA_NU2API_NUCORE_NUGCUTSCENE_H_STOP)
 
-struct NUANIM_TIME2_PC;
-struct NUHGOBJ_EVAL_PC;
+struct NUANIM_TIME2;
+struct NUHGOBJ_EVAL;
 struct cut_load_locator_instance_s;
 struct nuspecial_handle_s;
 
@@ -80,7 +80,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern struct NUHGOBJ_EVAL_PC *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
+    extern struct NUHGOBJ_EVAL *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
     extern void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, struct cut_load_locator_instance_s *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
                                        i32);
     void NuGCutSceneSysInit(CUT_LOCATOR_FUNCTION_ENTRY_PC *);
@@ -89,7 +89,7 @@ extern "C" {
     void NuSetCutSceneFindCharactersFn(void (*)(CUT_SCENE_LOAD_PC *));
     void NuSetCutSceneCharacterCreateDataFn(void (*)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *));
     void NuSetCutSceneRigidPostRenderFn(CUT_DRAW_RIGID_CALLBACK_PC);
-    i32 FindMtlInHGObj(struct NUHGOBJ_EVAL_PC *, i32);
+    i32 FindMtlInHGObj(struct NUHGOBJ_EVAL *, i32);
     extern void (*NuCutSceneFindCharacters)(CUT_SCENE_LOAD_PC *);
     extern void (*NuCutSceneCharacterCreateData)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *);
     extern void (*NuCutSceneRigidCollisionCheck)(struct cut_load_rigid_s *, NUMTX *);
@@ -107,10 +107,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 NuGCutLocatorIsVisble_3(CUT_LOCATOR_GENERIC_PC *, f32, f32 *, f32 *);
-    i32 NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC_PC *, f32, struct NUANIM_TIME2_PC *, f32 *, f32 *);
-    f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *, f32, NUMTX *, struct NUANIM_TIME2_PC *);
-    void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *);
+    i32 NuGCutLocatorIsVisble_3(CUT_LOCATOR_GENERIC *, f32, f32 *, f32 *);
+    i32 NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC *, f32, struct NUANIM_TIME2 *, f32 *, f32 *);
+    f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC *, f32, NUMTX *, struct NUANIM_TIME2 *);
+    void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *);
 #ifdef __cplusplus
 }
 #endif

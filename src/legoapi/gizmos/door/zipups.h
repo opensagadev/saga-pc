@@ -30,7 +30,7 @@ typedef struct zipup_s ZIPUP_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct addgizmotype_pc_s *ZipUps_RegisterGizmo(i32 type_id);
+    struct addgizmotype_s *ZipUps_RegisterGizmo(i32 type_id);
     void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end);
     extern i32 zipup_gizmotype_id;
 #ifdef __cplusplus

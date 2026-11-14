@@ -41,7 +41,7 @@ class UnitMapTests(unittest.TestCase):
         self.assertEqual(unitmap.source_name("_Bolt_Add"), ("Bolt_Add", None))
         self.assertEqual(unitmap.source_name("_DirectInputCreate@20"), ("DirectInputCreate", None))
         self.assertEqual(unitmap.source_name("?Push_Reset@@YAXPAX00@Z"), ("Push_Reset", None))
-        self.assertEqual(unitmap.source_name("?Read@NETMESSAGE_PC@@QAEXPAXHH@Z"), ("Read", "NETMESSAGE_PC"))
+        self.assertEqual(unitmap.source_name("?Read@NETMESSAGE@@QAEXPAXHH@Z"), ("Read", "NETMESSAGE"))
 
     def test_definitions_in(self):
         text = ("static int helper(int x) {\n  return x;\n}\n"

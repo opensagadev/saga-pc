@@ -22,7 +22,7 @@ typedef struct GAME_LIGHT_VIEW {            // size 0x670
     u8 unknown000[0x285];                   // 0x000
     i8 floor_surface;                       // 0x285
     u8 unknown286[0x4d8 - 0x286];           // 0x286
-    RTL_DATA_PC light_data;                 // 0x4d8
+    RTL_DATA light_data;                    // 0x4d8
     OBJECT_LIGHT_STATE_GAME lighting_state; // 0x61c
 } GAME_LIGHT_VIEW;
 
@@ -36,35 +36,35 @@ typedef struct BURN_OUT { // size 0x24
     f32 field_20;         // 0x20
 } BURN_OUT;
 
-typedef struct BURN_SET_PC {            // size 0x564
-    BURN_PARAMETERS_PC parameters;      // 0x000
-    BURN_PARAMETERS_PC parameters_copy; // 0x054
-    i32 field_a8;                       // 0x0a8
-    i32 field_ac;                       // 0x0ac
-    i32 field_b0;                       // 0x0b0
-    i32 field_b4;                       // 0x0b4
-    f32 field_b8;                       // 0x0b8
-    f32 field_bc;                       // 0x0bc
-    f32 field_c0;                       // 0x0c0
-    f32 field_c4;                       // 0x0c4
-    f32 field_c8;                       // 0x0c8
-    f32 field_cc;                       // 0x0cc
-    BURN_OUT burnouts[32];              // 0x0d0
-    i32 active_count;                   // 0x550
-    i32 selected_index;                 // 0x554
-    f32 field_558;                      // 0x558
-    f32 field_55c;                      // 0x55c
-    i32 field_560;                      // 0x560
-} BURN_SET_PC;
+typedef struct BURN_SET {            // size 0x564
+    BURN_PARAMETERS parameters;      // 0x000
+    BURN_PARAMETERS parameters_copy; // 0x054
+    i32 field_a8;                    // 0x0a8
+    i32 field_ac;                    // 0x0ac
+    i32 field_b0;                    // 0x0b0
+    i32 field_b4;                    // 0x0b4
+    f32 field_b8;                    // 0x0b8
+    f32 field_bc;                    // 0x0bc
+    f32 field_c0;                    // 0x0c0
+    f32 field_c4;                    // 0x0c4
+    f32 field_c8;                    // 0x0c8
+    f32 field_cc;                    // 0x0cc
+    BURN_OUT burnouts[32];           // 0x0d0
+    i32 active_count;                // 0x550
+    i32 selected_index;              // 0x554
+    f32 field_558;                   // 0x558
+    f32 field_55c;                   // 0x55c
+    i32 field_560;                   // 0x560
+} BURN_SET;
 
 typedef struct LIGHTING_LOAD_WORLD { // size 0x2ab8
     u8 unknown_000[0x104];           // 0x0000
     VARIPTR buffer;                  // 0x0104
     VARIPTR end_buffer;              // 0x0108
     u8 unknown_10c[0x2aac - 0x10c];  // 0x010c
-    BURN_SET_PC *burnset;            // 0x2aac
+    BURN_SET *burnset;               // 0x2aac
     u8 unknown_2ab0[4];              // 0x2ab0
-    RTL_SET_PC *rtl_set;             // 0x2ab4
+    RTL_SET *rtl_set;                // 0x2ab4
 } LIGHTING_LOAD_WORLD;
 
 /* Cut resource access prefix; the cut loader owns the resource. */
@@ -191,7 +191,7 @@ void AddSurfaceDebris(GAMEOBJECT *object) {
         effect = 141;
         speed = object->horizontal_velocity_magnitude;
         run_speed = object->character_data->game_character->run_speed;
-        rate = GunshipDustEmissionRatePc;
+        rate = GunshipDustEmissionRate;
     } else {
         return;
     }
@@ -305,25 +305,25 @@ void BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 unused_x,
 }
 
 void BurnoutApply(i32 view) {
-    BURN_PARAMETERS_PC parameters;
+    BURN_PARAMETERS parameters;
     NUVEC average;
     parameters.field_00 = 0;
     memset(&parameters.field_04, 0, 0x50);
     if ((CutStopInfo == NULL || (((BURNOUT_CUT_PREFIX *)CutStopInfo)->flags & 0x80) == 0) && WORLD->page_unknown != 0) {
-        edrtlCalculateBurnoutEx((BURN_SET_PC *)WORLD->page_unknown, &parameters, (NUVEC *)&global_camera.mtx.m30, FRAMETIME);
+        edrtlCalculateBurnoutEx((BURN_SET *)WORLD->page_unknown, &parameters, (NUVEC *)&global_camera.mtx.m30, FRAMETIME);
     }
     if (parameters.field_14 > 0.0f) {
-        NuRndrSetBurnoutParametersPc(view, &parameters);
+        NuRndrSetBurnoutParameters(view, &parameters);
     }
     if ((Players_AveragePos(&average, NULL) != 0 || netclient != 0) && PCShadowCurrentLight->enabled != 0) {
-        NuRndrSetShadowCoefficientPc(0, WORLD->shadow_editor->field_24);
-        NuRndrSetShadowCoefficientPc(1, WORLD->shadow_editor->field_28);
-        NuRndrSetShadowCoefficientPc(2, WORLD->shadow_editor->field_2c);
+        NuRndrSetShadowCoefficient(0, WORLD->shadow_editor->field_24);
+        NuRndrSetShadowCoefficient(1, WORLD->shadow_editor->field_28);
+        NuRndrSetShadowCoefficient(2, WORLD->shadow_editor->field_2c);
         NuDeferredShadingRender();
     }
 }
 
-static f32 RippleRandomRadiusPc = 0.15f;
+static f32 RippleRandomRadius = 0.15f;
 
 void AddSurfaceRipples(GAMEOBJECT *object) {
     RIPPLE_CONTACT_TIMER_VIEW_PC *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW_PC *)object;
@@ -343,7 +343,7 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
     }
     if (object->contact_count == 1) {
         if (object->contact_material[0] == 13 || object->contact_material[0] == 12) {
-            rate = object->pad->input_magnitude / object->character_data->game_character->run_speed * ForceFieldRippleRatePc;
+            rate = object->pad->input_magnitude / object->character_data->game_character->run_speed * ForceFieldRippleRate;
             if (rate < .5f) {
                 rate = .5f;
             }
@@ -365,7 +365,7 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
                     u16 angle = (u16)qrand();
                     velocity = seed;
                     VecRotateAxis(&velocity, angle, &normal);
-                    AddRipple(RippleSetPc, &matrix, RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].initial_size,
+                    AddRipple(RippleSet, &matrix, RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].initial_size,
                               RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].end_size,
                               RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].lifetime, 0.0f,
                               RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].start_color,
@@ -376,7 +376,7 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
             /* The sound position stays unwritten when no particles are emitted. */
             if (contact_timer->timer <= 0) {
                 PlaySfx("SabFField", &position);
-                contact_timer->timer = RippleSfxCooldownPc;
+                contact_timer->timer = RippleSfxCooldown;
             }
         }
         if (contact_timer->timer > 0) {
@@ -400,11 +400,11 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
         BuildRippleMtx(&matrix, &v010, &position, 0, 0);
         size = (f32)(object->bounds_radius * .5);
         for (i = 0; i < count; ++i) {
-            matrix.m30 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbationPc + object->collision_position.x);
+            matrix.m30 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbation + object->collision_position.x);
             matrix.m31 = (f32)(object->water_height + (f64).001f);
-            matrix.m32 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbationPc + object->collision_position.z);
-            RippleRandomRadiusPc = object->bounds_radius + object->bounds_radius + object->bounds_radius;
-            AddRipple(RippleSetPc, &matrix, size, RippleRandomRadiusPc, RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].lifetime, 0.0f,
+            matrix.m32 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbation + object->collision_position.z);
+            RippleRandomRadius = object->bounds_radius + object->bounds_radius + object->bounds_radius;
+            AddRipple(RippleSet, &matrix, size, RippleRandomRadius, RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].lifetime, 0.0f,
                       RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].start_color,
                       RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].end_color, 7,
                       RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].material, NULL);

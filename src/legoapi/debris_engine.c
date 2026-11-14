@@ -1700,10 +1700,10 @@ void DebrisGlassClose(void) {
 }
 
 /* Empty hooks; the D3D release and restore paths call them for debris. */
-void DebrisReleaseResourcesPc(void) {
+void DebrisReleaseResources(void) {
 }
 
-void DebrisRestoreResourcesPc(void) {
+void DebrisRestoreResources(void) {
 }
 
 extern f32 DebrisGlassU1;
@@ -1941,12 +1941,12 @@ void fun_006904d0(i32 *handle, i32 effect, NUVEC *position, i32 count, void *use
 }
 
 void DebrisCleanUpDmaDebTypeTables(void) {
-    if (++DebrisDmaCleanupDelayPc > 5) {
-        i32 index = DebrisDmaCleanupIndexPc;
+    if (++DebrisDmaCleanupDelay > 5) {
+        i32 index = DebrisDmaCleanupIndex;
         DEBRIS_INFO_PC **table = debtab;
         if (table[index] != NULL) {
             DEBRIS_INFO_PC *effect;
-            DebrisDmaCleanupDelayPc = 0;
+            DebrisDmaCleanupDelay = 0;
             effect = table[index];
             if (effect->native_data != NULL) {
                 f32 now = effect->time_group == 4 ? panelglobaltime : globaltime;
@@ -1955,22 +1955,22 @@ void DebrisCleanUpDmaDebTypeTables(void) {
                     debtab[index]->native_data = NULL;
                     if (debtab[index]->scale != 1.0f) {
                         edppDeleteEffect(index);
-                        index = DebrisDmaCleanupIndexPc;
+                        index = DebrisDmaCleanupIndex;
                     }
                 }
             }
         } else {
-            DebrisDmaCleanupDelayPc = 0;
+            DebrisDmaCleanupDelay = 0;
         }
-        DebrisDmaCleanupIndexPc = ++index;
+        DebrisDmaCleanupIndex = ++index;
         if (index >= debinf_count) {
-            DebrisDmaCleanupIndexPc = 1;
+            DebrisDmaCleanupIndex = 1;
         }
     }
 }
 
 void Debris(i32 update_panel_time) {
-    if (update_debris_enabled == 0 || DebrisProcessingEnabledPc == 0 || debris_suspended != 0) {
+    if (update_debris_enabled == 0 || DebrisProcessingEnabled == 0 || debris_suspended != 0) {
         return;
     }
     panelglobaltime += debris_time_increment;

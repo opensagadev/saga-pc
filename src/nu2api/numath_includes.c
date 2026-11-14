@@ -6,10 +6,10 @@
 #include <xmmintrin.h>
 
 static f32 fetol = 0.01f;
-static i32 NuExp10FirstTimePc = 1;
-static f32 *NuExp10TablePc = 0;
-static i32 RenderPostLogFirstPc = 1;
-static f32 *RenderPostLogTablePc = 0;
+static i32 NuExp10FirstTime = 1;
+static f32 *NuExp10Table = 0;
+static i32 RenderPostLogFirst = 1;
+static f32 *RenderPostLogTable = 0;
 
 typedef struct NuMtxIndexedView { // size 0x40
     f32 elements[4][4];           // 0x00
@@ -20,14 +20,14 @@ STATIC_ASSERT(2 * sizeof(((NuMtxIndexedView *)0)->elements[0]) + 2 * sizeof(f32)
 #define NU_SIN_PC(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define NU_COS_PC(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 
-static f32 NumathIncludesFdivPc(f32 a, f32 b) {
+static f32 NumathIncludesFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
     return a / b;
 }
 
-static f32 NumathIncludesFabsPc(f32 f) {
+static f32 NumathIncludesFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -136,7 +136,7 @@ void NuVecMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
 }
 
 f32 NuVecMtxTransformH(NUVEC *out, NUVEC *v, NUMTX *m) {
-    f32 reciprocal_w = NumathIncludesFdivPc(1.0f, v->x * m->m03 + v->y * m->m13 + v->z * m->m23 + m->m33);
+    f32 reciprocal_w = NumathIncludesFdiv(1.0f, v->x * m->m03 + v->y * m->m13 + v->z * m->m23 + m->m33);
     f32 y = (v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31) * reciprocal_w;
     f32 z = (v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + m->m32) * reciprocal_w;
     out->x = (v->x * m->m00 + v->y * m->m10 + v->z * m->m20 + m->m30) * reciprocal_w;
@@ -847,8 +847,8 @@ void NuHalfVec4ToNuVec4(NUHALFVEC4 *v, NUVEC4 *out) {
     out->w = NuHalfToFloat(v->w);
 }
 
-void VisibilityZeroMatrixPc(NUMTX *matrix) {
-    *matrix = VisibilityZeroMatrixTemplatePc;
+void VisibilityZeroMatrix(NUMTX *matrix) {
+    *matrix = VisibilityZeroMatrixTemplate;
 }
 
 void NuMtxSetIdentity(NUMTX *matrix) {
@@ -1471,10 +1471,10 @@ void NuMtxInvH(NUMTX *mi, NUMTX *m0) {
             local_1c = 0.0f;
 
             for (k = i; k < n; k++) {
-                local_1c += NumathIncludesFabsPc(a[j][k]);
+                local_1c += NumathIncludesFabs(a[j][k]);
             }
 
-            localm28 = NumathIncludesFdivPc(NumathIncludesFabsPc(a[j][i]), local_1c);
+            localm28 = NumathIncludesFdiv(NumathIncludesFabs(a[j][i]), local_1c);
 
             if (localm20 < localm28) {
                 localm20 = localm28;
@@ -1556,7 +1556,7 @@ void NuMtxAlignX(NUMTX *m, NUVEC *v) {
     m->m22 = (m->m00 * m->m11) - (m->m01 * m->m10);
 
     s = NuFsqrt(m->m20 * m->m20 + m->m21 * m->m21 + m->m22 * m->m22);
-    s = NumathIncludesFdivPc(1.0f, s);
+    s = NumathIncludesFdiv(1.0f, s);
 
     m->m20 = m->m20 * s;
     m->m21 = m->m21 * s;
@@ -1576,7 +1576,7 @@ void NuMtxAlignY(NUMTX *m, NUVEC *v) {
     m->m02 = (m->m10 * m->m21) - (m->m11 * m->m20);
 
     s = NuFsqrt(m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02);
-    s = NumathIncludesFdivPc(1.0f, s);
+    s = NumathIncludesFdiv(1.0f, s);
 
     m->m00 = m->m00 * s;
     m->m01 = m->m01 * s;
@@ -1591,30 +1591,30 @@ void NuMtxAlignZ(NUMTX *m, NUVEC *v) {
     f32 yLenSq = (m->m10 * m->m10) + (m->m11 * m->m11) + (m->m12 * m->m12);
     f32 zLenSq = (m->m20 * m->m20) + (m->m21 * m->m21) + (m->m22 * m->m22);
 
-    f32 len = NuFsqrt(NumathIncludesFdivPc(zLenSq, v->x * v->x + v->y * v->y + v->z * v->z));
+    f32 len = NuFsqrt(NumathIncludesFdiv(zLenSq, v->x * v->x + v->y * v->y + v->z * v->z));
     m->m20 = v->x * len;
     m->m21 = v->y * len;
     m->m22 = v->z * len;
 
-    if (NumathIncludesFabsPc(NuVecDot(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2))) > 0.86602540378f /* cos(30 deg) */) {
+    if (NumathIncludesFabs(NuVecDot(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2))) > 0.86602540378f /* cos(30 deg) */) {
         NuVecCross(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2), NUMTX_GET_ROW_VEC(m, 0));
-        len = NuFsqrt(NumathIncludesFdivPc(yLenSq, (m->m10 * m->m10) + (m->m11 * m->m11) + (m->m12 * m->m12)));
+        len = NuFsqrt(NumathIncludesFdiv(yLenSq, (m->m10 * m->m10) + (m->m11 * m->m11) + (m->m12 * m->m12)));
         m->m10 = m->m10 * len;
         m->m11 = m->m11 * len;
         m->m12 = m->m12 * len;
         NuVecCross(NUMTX_GET_ROW_VEC(m, 0), NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2));
-        len = NuFsqrt(NumathIncludesFdivPc(xLenSq, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
+        len = NuFsqrt(NumathIncludesFdiv(xLenSq, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
         m->m00 = m->m00 * len;
         m->m01 = m->m01 * len;
         m->m02 = m->m02 * len;
     } else {
         NuVecCross(NUMTX_GET_ROW_VEC(m, 0), NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2));
-        len = NuFsqrt(NumathIncludesFdivPc(xLenSq, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
+        len = NuFsqrt(NumathIncludesFdiv(xLenSq, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
         m->m00 = m->m00 * len;
         m->m01 = m->m01 * len;
         m->m02 = m->m02 * len;
         NuVecCross(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2), NUMTX_GET_ROW_VEC(m, 0));
-        len = NuFsqrt(NumathIncludesFdivPc(yLenSq, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
+        len = NuFsqrt(NumathIncludesFdiv(yLenSq, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
         m->m10 = m->m10 * len;
         m->m11 = m->m11 * len;
         m->m12 = m->m12 * len;
@@ -2215,7 +2215,7 @@ f32 NuFsign(f32 value) {
 }
 
 i32 NuEquiv(f32 a, f32 b) {
-    return NumathIncludesFabsPc(a - b) < fetol;
+    return NumathIncludesFabs(a - b) < fetol;
 }
 
 void NuEquivTollerance(f32 tolerance) {
@@ -2425,7 +2425,7 @@ void NuQuatInv(NUQUAT *out, NUQUAT *quat) {
 void NuQuatNormalise(NUQUAT *out, NUQUAT *q) {
     f32 magnitude_squared = q->w * q->w + q->x * q->x + q->y * q->y + q->z * q->z;
     if (magnitude_squared > 0.0f) {
-        f32 inverse_magnitude = NumathIncludesFdivPc(1.0, NuFsqrt(magnitude_squared));
+        f32 inverse_magnitude = NumathIncludesFdiv(1.0, NuFsqrt(magnitude_squared));
         out->w = q->w * inverse_magnitude;
         out->x = q->x * inverse_magnitude;
         out->y = q->y * inverse_magnitude;
@@ -2551,8 +2551,8 @@ void NuQuatSlerp(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
         omega = NuACos(scale);
 
         sin_omega = NU_SIN_LUT((i32)omega);
-        from_factor = NumathIncludesFdivPc(NU_SIN_LUT((i32)((1.0f - t) * omega)), sin_omega);
-        to_factor = NumathIncludesFdivPc(NU_SIN_LUT((i32)(t * omega)), sin_omega);
+        from_factor = NumathIncludesFdiv(NU_SIN_LUT((i32)((1.0f - t) * omega)), sin_omega);
+        to_factor = NumathIncludesFdiv(NU_SIN_LUT((i32)(t * omega)), sin_omega);
     } else {
         from_factor = 1.0f - t;
         to_factor = t;
@@ -2909,11 +2909,11 @@ i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *dire
     normal.z = cross_z;
     NuVecNorm(&normal, &normal);
     *direction = normal;
-    normal.x = NumathIncludesFabsPc(normal.x);
-    normal.y = NumathIncludesFabsPc(normal.y);
-    normal.z = NumathIncludesFabsPc(normal.z);
+    normal.x = NumathIncludesFabs(normal.x);
+    normal.y = NumathIncludesFabs(normal.y);
+    normal.z = NumathIncludesFabs(normal.z);
     if (normal.z >= normal.x && normal.z >= normal.y) {
-        if (NumathIncludesFabsPc(second->a) < 0.0001f) {
+        if (NumathIncludesFabs(second->a) < 0.0001f) {
             point->y = (first->d * second->a / first->a - second->d) / (-second->a * first->b / first->a + second->b);
             point->x = (-first->d - first->b * point->y) / first->a;
             point->z = 0.0f;
@@ -2923,7 +2923,7 @@ i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *dire
             point->z = 0.0f;
         }
     } else if (normal.y >= normal.x && normal.y >= normal.z) {
-        if (NumathIncludesFabsPc(second->a) < 0.0001f) {
+        if (NumathIncludesFabs(second->a) < 0.0001f) {
             point->z = (first->d * second->a / first->a - second->d) / (-second->a * first->c / first->a + second->c);
             point->x = (-first->d - first->c * point->z) / first->a;
             point->y = 0.0f;
@@ -2933,7 +2933,7 @@ i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *dire
             point->y = 0.0f;
         }
     } else {
-        if (NumathIncludesFabsPc(second->b) < 0.0001f) {
+        if (NumathIncludesFabs(second->b) < 0.0001f) {
             point->z = (first->d * second->b / first->b - second->d) / (-second->b * first->c / first->b + second->c);
             point->y = (-first->d - first->c * point->z) / first->b;
             point->x = 0.0f;
@@ -4415,22 +4415,22 @@ f32 NuPow(f32 base, f32 exponent) {
     if (base == 0.0f) {
         return 0.0f;
     }
-    if (NuPowFirstTimePc != 0) {
-        NuPowFirstTimePc = 0;
+    if (NuPowFirstTime != 0) {
+        NuPowFirstTime = 0;
         for (i = 0; i < 32; ++i) {
-            NuPowBasesPc[i] = FLT_MAX;
+            NuPowBases[i] = FLT_MAX;
         }
     }
     for (i = 0; i < 32; ++i) {
-        if (NuPowBasesPc[i] == base && NuPowExponentsPc[i] == exponent) {
-            return NuPowResultsPc[i];
+        if (NuPowBases[i] == base && NuPowExponents[i] == exponent) {
+            return NuPowResults[i];
         }
     }
     result = (f32)exp((double)exponent * log(base));
-    NuPowBasesPc[NuPowCacheIndexPc] = base;
-    NuPowExponentsPc[NuPowCacheIndexPc] = exponent;
-    NuPowResultsPc[NuPowCacheIndexPc] = result;
-    NuPowCacheIndexPc = (NuPowCacheIndexPc + 1) & 31;
+    NuPowBases[NuPowCacheIndex] = base;
+    NuPowExponents[NuPowCacheIndex] = exponent;
+    NuPowResults[NuPowCacheIndex] = result;
+    NuPowCacheIndex = (NuPowCacheIndex + 1) & 31;
     return result;
 }
 
@@ -4439,7 +4439,7 @@ f32 NuPowFast(f32 base, f32 exponent) {
     if (base == 0.0) {
         return 0.0;
     }
-    result = NuExp10(RenderPostLogPc(base) * exponent);
+    result = NuExp10(RenderPostLog(base) * exponent);
     return result;
 }
 
@@ -4506,21 +4506,21 @@ f32 fun_005c0200(f32 value) {
     return sqrtf(value);
 }
 
-f32 RenderPostLogPc(f32 value) {
+f32 RenderPostLog(f32 value) {
     f32 exponent;
     f32 counter;
     f32 position;
     f32 fraction;
     i32 index;
-    if (RenderPostLogFirstPc) {
-        RenderPostLogTablePc = NuAlloc(36000, "d:\\projects\\game_saga\\nu2api.saga\\numath\\nutrig.c", 805);
-        if (RenderPostLogTablePc == NULL) {
+    if (RenderPostLogFirst) {
+        RenderPostLogTable = NuAlloc(36000, "d:\\projects\\game_saga\\nu2api.saga\\numath\\nutrig.c", 805);
+        if (RenderPostLogTable == NULL) {
             return 0.0f;
         }
         for (counter = 1000.0f; counter <= 9999.0f; counter += 1.0f) {
-            RenderPostLogTablePc[(i32)counter - 1000] = (f32)log10(counter / 1000.0);
+            RenderPostLogTable[(i32)counter - 1000] = (f32)log10(counter / 1000.0);
         }
-        RenderPostLogFirstPc = 0;
+        RenderPostLogFirst = 0;
     }
     if (value <= 0.0f) {
         return FLT_MAX;
@@ -4541,9 +4541,9 @@ f32 RenderPostLogPc(f32 value) {
     index = (i32)position;
     fraction = position - index;
     if (index < 8999) {
-        return RenderPostLogTablePc[index + 1] * fraction + RenderPostLogTablePc[index] * (1.0f - fraction) + exponent;
+        return RenderPostLogTable[index + 1] * fraction + RenderPostLogTable[index] * (1.0f - fraction) + exponent;
     }
-    return RenderPostLogTablePc[index] + exponent;
+    return RenderPostLogTable[index] + exponent;
 }
 
 f32 NuExp10(f32 value) {
@@ -4553,15 +4553,15 @@ f32 NuExp10(f32 value) {
     f32 fraction;
     i32 exponent;
     i32 index;
-    if (NuExp10FirstTimePc) {
-        NuExp10TablePc = NuAlloc(40000, "d:\\projects\\game_saga\\nu2api.saga\\numath\\nutrig.c", 866);
-        if (NuExp10TablePc == NULL) {
+    if (NuExp10FirstTime) {
+        NuExp10Table = NuAlloc(40000, "d:\\projects\\game_saga\\nu2api.saga\\numath\\nutrig.c", 866);
+        if (NuExp10Table == NULL) {
             return 0.0f;
         }
         for (counter = 0.0f; counter <= 9999.0f; counter += 1.0f) {
-            NuExp10TablePc[(i32)counter] = (f32)pow(10.0, counter / 10000.0);
+            NuExp10Table[(i32)counter] = (f32)pow(10.0, counter / 10000.0);
         }
-        NuExp10FirstTimePc = 0;
+        NuExp10FirstTime = 0;
     }
     if (value == FLT_MAX) {
         return FLT_MAX;
@@ -4576,9 +4576,9 @@ f32 NuExp10(f32 value) {
     index = (i32)position;
     fraction = position - index;
     if (index < 9999) {
-        result = NuExp10TablePc[index + 1] * fraction + NuExp10TablePc[index] * (1.0f - fraction);
+        result = NuExp10Table[index + 1] * fraction + NuExp10Table[index] * (1.0f - fraction);
     } else {
-        result = NuExp10TablePc[index];
+        result = NuExp10Table[index];
     }
     if (exponent > 0) {
         while (exponent > 0) {

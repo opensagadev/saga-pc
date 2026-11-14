@@ -21,17 +21,17 @@ extern "C" {
     u16 GameCam_GetAdjustedYRot(GAMECAMERA *);
     void GameCam_HitRoll(void);
 
-    typedef struct VIEWCAM_PC { // size 0x28
-        i32 mode;               // 0x00
-        NUVEC target;           // 0x04
-        i16 pitch;              // 0x10
-        i16 yaw;                // 0x12
-        f32 distance;           // 0x14
-        f32 height;             // 0x18
-        f32 zoom_step;          // 0x1c
-        u32 unknown_20;         // 0x20
-        GAMEPAD_PC *gamepad;    // 0x24
-    } VIEWCAM_PC;
+    typedef struct VIEWCAM { // size 0x28
+        i32 mode;            // 0x00
+        NUVEC target;        // 0x04
+        i16 pitch;           // 0x10
+        i16 yaw;             // 0x12
+        f32 distance;        // 0x14
+        f32 height;          // 0x18
+        f32 zoom_step;       // 0x1c
+        u32 unknown_20;      // 0x20
+        GAMEPAD_PC *gamepad; // 0x24
+    } VIEWCAM;
 
     extern i32 GUNSHIPAHACK;
 
@@ -39,13 +39,13 @@ extern "C" {
     i32 ObjInNarrowSock(GAMEOBJECT *, SOCKSYS_PC *, i32);
     void SetCameraMatrices(void);
 
-    typedef struct KEEP_SCREEN_PLANE_PC { // size 0x18
-        NUVEC point;                      // 0x00
-        NUVEC normal;                     // 0x0c
-    } KEEP_SCREEN_PLANE_PC;
+    typedef struct KEEP_SCREEN_PLANE { // size 0x18
+        NUVEC point;                   // 0x00
+        NUVEC normal;                  // 0x0c
+    } KEEP_SCREEN_PLANE;
 
-    extern u8 CutSceneCameraMatrixSetPc;
-    extern i32 (*AlternateGameCallbackPc)(GAMEOBJECT *object);
+    extern u8 CutSceneCameraMatrixSet;
+    extern i32 (*AlternateGameCallback)(GAMEOBJECT *object);
 #ifdef __cplusplus
 }
 #endif

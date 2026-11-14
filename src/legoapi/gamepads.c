@@ -3,7 +3,7 @@
 #include <string.h>
 
 /* Empty hook; NuMainRenderWorld calls it after SetDepthOfField. */
-void NuMainRenderLeafPc(void) {
+void NuMainRenderLeaf(void) {
 }
 
 void GamePad_InitButtons(void) {
@@ -24,16 +24,16 @@ void GameFog_Set(void) {
 }
 
 /* Return 0 only; the D3D restore and release paths call them for the game layer. */
-i32 GameRestoreResourcesPc(void) {
+i32 GameRestoreResources(void) {
     return 0;
 }
 
-i32 GameReleaseResourcesPc(void) {
+i32 GameReleaseResources(void) {
     return 0;
 }
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static f32 HitsFabsPc(f32 f) {
+static f32 HitsFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -116,13 +116,13 @@ i32 GamePad_Waggle(GAMEPAD_PC *pad) {
     return 0;
 }
 
-void ResetRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
+void ResetRumble(RUMBLE_PACKET_RESOURCE *packet) {
     packet->duration = 0.0f;
     packet->amount = 0.0f;
     packet->active = 0;
 }
 
-void UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
+void UpdateRumble(RUMBLE_PACKET_RESOURCE *packet) {
     if (packet->duration > 0.0f) {
         packet->duration -= FRAMETIME;
     }
@@ -219,7 +219,7 @@ void FloatRumble(GAMEOBJECT *object) {
     f32 strength;
     FRAME_PAD_PC *pad;
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-        strength = HitsFabsPc(object->velocity.y);
+        strength = HitsFabs(object->velocity.y);
         strength = (f32)((f64)strength / object->character_data->game_character->run_speed * (f64)0.15f + 0.25);
         if (strength > 1.0f) {
             strength = 1.0f;

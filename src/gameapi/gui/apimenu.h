@@ -74,24 +74,24 @@ typedef struct menufninfo_s {  // size 0x1c
     u8 unknown_001b;           // 0x1b
 } MENUFNINFO;
 
-typedef struct MISSION_MENU_PACKET_PC { // size 0xa
-    i16 player_model[2];                // 0x0
-    u8 active_player[2];                // 0x4
-    u8 customise_other_player[2];       // 0x6
-    u8 selected[2];                     // 0x8
-} MISSION_MENU_PACKET_PC;
+typedef struct MISSION_MENU_PACKET { // size 0xa
+    i16 player_model[2];             // 0x0
+    u8 active_player[2];             // 0x4
+    u8 customise_other_player[2];    // 0x6
+    u8 selected[2];                  // 0x8
+} MISSION_MENU_PACKET;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern char *apitxt_SELECT;
     extern char *apitxt_BACK;
-    extern f32 MenuTextScalePc;
-    extern f32 MenuPromptPositionScalePc;
+    extern f32 MenuTextScale;
+    extern f32 MenuPromptPositionScale;
     extern f32 MENUDY;
     void DrawMenuHeader(void);
     extern i32 g_enableButtonPrompts;
-    extern f32 MenuTopYPc;
+    extern f32 MenuTopY;
     extern u8 MENUNORMALR;
     extern u8 MENUNORMALG;
     extern u8 MENUNORMALB;
@@ -124,10 +124,10 @@ extern "C" {
     extern i32 menu_pulsate_angle;
     extern f32 menu_pulsate_speed;
     extern f32 menu_pulsate;
-    extern i32 MenuSuppressUpHeldPc;
-    extern i32 MenuSuppressDownHeldPc;
-    extern i32 MenuSuppressLeftHeldPc;
-    extern i32 MenuSuppressRightHeldPc;
+    extern i32 MenuSuppressUpHeld;
+    extern i32 MenuSuppressDownHeld;
+    extern i32 MenuSuppressLeftHeld;
+    extern i32 MenuSuppressRightHeld;
     i32 UpdateMenu(u32, u32, u32, u32, f32, u32, u32, u32, u32);
     extern u8 MENUENTRYR;
     extern u8 MENUENTRYG;

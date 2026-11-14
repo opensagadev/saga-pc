@@ -24,10 +24,10 @@ class NuMainFilter : public NuMainFilterGen { // size 0x160
     virtual void destroyResources();
     virtual void destroyTextureResources();
     virtual void render();
-    PC_EFFECT_SURFACE_PC texture_surface; // 0x128
-    PC_FRAMEBUFFER_PC *platform_fbo;      // 0x144
-    void *platform_programs[2];           // 0x148
-    i32 platform_uniforms[4];             // 0x150
+    PC_EFFECT_SURFACE texture_surface; // 0x128
+    PC_FRAMEBUFFER *platform_fbo;      // 0x144
+    void *platform_programs[2];        // 0x148
+    i32 platform_uniforms[4];          // 0x150
 };
 
 #endif

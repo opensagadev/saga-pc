@@ -1,8 +1,8 @@
 #include "saga.h"
 
-typedef struct CHARCONFIG_PC {
+typedef struct CHARCONFIG {
     CHARACTERDATA_PC *character;
-    PLAYERCHARACTERCONFIG_PC *runtime;
+    PLAYERCHARACTERCONFIG *runtime;
     GAMECHARACTERLAYER *layer_scratch;
 
     union {
@@ -18,15 +18,15 @@ typedef struct CHARCONFIG_PC {
     u8 named_layers;
     u8 unknown_11[3];
     i32 effect_count;
-    struct CHARACTER_EFFECT_CONFIG_PC *effect_scratch;
+    struct CHARACTER_EFFECT_CONFIG *effect_scratch;
     i16 character_id;
     u16 animation_count;
     VARIPTR *arena;
     VARIPTR *arena_end;
     char animation_names[100][40];
-} CHARCONFIG_PC;
+} CHARCONFIG;
 
-extern CHARCONFIG_PC charconfig;
+extern CHARCONFIG charconfig;
 
 typedef struct charconfig_variant_reader_s {
     u8 unknown_000[0x116];

@@ -63,7 +63,7 @@ typedef struct NuKeyboardOwner_PC { // size 0x44
 #endif
 } NuKeyboardOwner_PC;
 
-typedef struct GRAPHICS_CAPS_PC {    // size 0x130
+typedef struct GRAPHICS_CAPS {       // size 0x130
     i32 device_type;                 // 0x000
     u32 adapter_ordinal;             // 0x004
     u32 unknown_008[3];              // 0x008
@@ -81,7 +81,7 @@ typedef struct GRAPHICS_CAPS_PC {    // size 0x130
     u32 unknown_0d0[8];              // 0x0d0
     u32 simultaneous_render_targets; // 0x0f0
     u32 unknown_0f4[0xf];            // 0x0f4
-} GRAPHICS_CAPS_PC;
+} GRAPHICS_CAPS;
 
 #pragma pack(push, 4)
 
@@ -152,7 +152,7 @@ extern "C" {
     char **PcInput_GetKeyNameTable(void);
     i32 PcInput_PortIsUC(i32);
     void MenuSetPlatformState(i32 state);
-    extern PC_NATIVE_DEBUG_STATE_PC PCNativeWarningDebugState;
+    extern PC_NATIVE_DEBUG_STATE PCNativeWarningDebugState;
     extern NUFILE_DEVICE devices[16];
     extern NuKeyboardState_PC *nu_input_state;
     extern NuKeyboardOwner_PC nu_keyboard_owner;
@@ -165,13 +165,13 @@ extern "C" {
     extern i32 PCDeviceHardwareVertexProcessingPC;
     void NuPadAutoConfigurePc(i32 count);
     void PcInput_DisableAllKeyboards(void);
-    void PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...);
+    void PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE *state, const char *format, ...);
 #ifdef __cplusplus
 }
 #endif
 #ifdef __cplusplus
 
-struct PC_DI_CAPS_PC {            // size 0x2c
+struct PC_DI_CAPS {               // size 0x2c
     DWORD size;                   // 0x00
     DWORD flags;                  // 0x04
     DWORD device_type;            // 0x08
@@ -193,23 +193,23 @@ struct PC_DI_PROPERTY { // size 0x14
     DWORD data;         // 0x10
 };
 
-struct PC_DI_OBJECT_FORMAT_PC { // size 0x10
-    const GUID *guid;           // 0x0
-    DWORD offset;               // 0x4
-    DWORD type;                 // 0x8
-    DWORD flags;                // 0xc
+struct PC_DI_OBJECT_FORMAT { // size 0x10
+    const GUID *guid;        // 0x0
+    DWORD offset;            // 0x4
+    DWORD type;              // 0x8
+    DWORD flags;             // 0xc
 };
 
-struct PC_DI_DATA_FORMAT_PC {              // size 0x18
-    DWORD size;                            // 0x00
-    DWORD object_size;                     // 0x04
-    DWORD flags;                           // 0x08
-    DWORD data_size;                       // 0x0c
-    DWORD object_count;                    // 0x10
-    const PC_DI_OBJECT_FORMAT_PC *objects; // 0x14
+struct PC_DI_DATA_FORMAT {              // size 0x18
+    DWORD size;                         // 0x00
+    DWORD object_size;                  // 0x04
+    DWORD flags;                        // 0x08
+    DWORD data_size;                    // 0x0c
+    DWORD object_count;                 // 0x10
+    const PC_DI_OBJECT_FORMAT *objects; // 0x14
 };
 
-struct PC_DI_INSTANCE_PC {   // size 0x244
+struct PC_DI_INSTANCE {      // size 0x244
     DWORD size;              // 0x000
     GUID instance;           // 0x004
     GUID product;            // 0x014
@@ -223,7 +223,7 @@ struct PC_DI_DEVICE_METHODS_PC {                                                
     void *unknown_00;                                                                         // 0x00
     void *unknown_04;                                                                         // 0x04
     ULONG(__stdcall *release)(NuKeyboardDevice_PC *);                                         // 0x08
-    HRESULT(__stdcall *get_caps)(NuKeyboardDevice_PC *, PC_DI_CAPS_PC *);                     // 0x0c
+    HRESULT(__stdcall *get_caps)(NuKeyboardDevice_PC *, PC_DI_CAPS *);                        // 0x0c
     void *unknown_10;                                                                         // 0x10
     void *unknown_14;                                                                         // 0x14
     HRESULT(__stdcall *set_property)(NuKeyboardDevice_PC *, REFGUID, const PC_DI_PROPERTY *); // 0x18
@@ -231,7 +231,7 @@ struct PC_DI_DEVICE_METHODS_PC {                                                
     HRESULT(__stdcall *unacquire)(NuKeyboardDevice_PC *);                                     // 0x20
     HRESULT(__stdcall *get_state)(NuKeyboardDevice_PC *, DWORD, void *);                      // 0x24
     void *unknown_28;                                                                         // 0x28
-    HRESULT(__stdcall *set_format)(NuKeyboardDevice_PC *, const PC_DI_DATA_FORMAT_PC *);      // 0x2c
+    HRESULT(__stdcall *set_format)(NuKeyboardDevice_PC *, const PC_DI_DATA_FORMAT *);         // 0x2c
     void *unknown_30;                                                                         // 0x30
     HRESULT(__stdcall *set_cooperative_level)(NuKeyboardDevice_PC *, HWND, DWORD);            // 0x34
     void *unknown_38_60[11];                                                                  // 0x38
@@ -248,7 +248,7 @@ struct PC_DI_FACTORY_METHODS {                                                  
     ULONG(__stdcall *release)(PC_DI_FACTORY *);                                                      // 0x08
     HRESULT(__stdcall *create_device)(PC_DI_FACTORY *, REFGUID, NuKeyboardDevice_PC **, IUnknown *); // 0x0c
     HRESULT(__stdcall *enum_devices)                                                                 // 0x10
-    (PC_DI_FACTORY *, DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *, DWORD);
+    (PC_DI_FACTORY *, DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE *, void *), void *, DWORD);
 };
 
 struct PC_DI_FACTORY {
@@ -258,11 +258,11 @@ struct PC_DI_FACTORY {
 extern const GUID PcDirectInput8AId;
 extern const GUID PcSystemMouseId;
 extern const GUID PcSystemKeyboardId;
-extern const PC_DI_DATA_FORMAT_PC PcMouseDataFormat;
-extern const PC_DI_DATA_FORMAT_PC PcKeyboardDataFormat;
-extern const PC_DI_DATA_FORMAT_PC PcJoystickDataFormat;
+extern const PC_DI_DATA_FORMAT PcMouseDataFormat;
+extern const PC_DI_DATA_FORMAT PcKeyboardDataFormat;
+extern const PC_DI_DATA_FORMAT PcJoystickDataFormat;
 extern i32 PcInputSelectedPort;
-extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *, void *);
+extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE *, void *);
 
 struct PC_INPUT_SAMPLE_PC { // size 0xc
     u8 analog[8];           // 0x0
@@ -624,7 +624,7 @@ extern "C" void PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key);
 extern "C" void PcInputSaveConfigurationPc();
 
 extern PC_INPUT_CONFIG_PC PcStaticInputConfigs[24];
-extern PC_DI_CAPS_PC PcKeyboardCapabilities;
+extern PC_DI_CAPS PcKeyboardCapabilities;
 extern "C" BOOL IsXInputProductPc(const GUID *);
 extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *);
 

@@ -73,16 +73,16 @@ a NULL test) gets its own register. Retail tests the global/field itself:
 `if (scene->camera_system != NULL) { system = ... scene->camera_system + delta; }`.
 In the second case retail loads the field into eax before the prologue pushes;
 ours loaded it into a callee-saved register after them. Examples:
-`RemoveDebrisEffectFromStack`, `CutCameraFixPtrsPc` (also closed
-`CutRigidFixPtrsPc` and improved `CutLocatorFixPtrsPc` 82.23 -> 98.43,
-`CutCharacterFixPtrsPc` 92.42 -> 98.98). Sample: 2.
+`RemoveDebrisEffectFromStack`, `CutCameraFixPtrs` (also closed
+`CutRigidFixPtrs` and improved `CutLocatorFixPtrs` 82.23 -> 98.43,
+`CutCharacterFixPtrs` 92.42 -> 98.98). Sample: 2.
 
 ### I6: local vector type (NUVEC4 vs NUVEC) changes the frame layout
 
 `stack` diffs where every `[esp+N]` offset of a vector local is off by 4 or a
 multiple of 16: the original declared `NUVEC4` (16 bytes, often
 `__declspec(align(16))`) where we used `NUVEC` (12 bytes). Examples:
-`NuFadeObjAngleTerrain` (`NuFadeObjCreateMtx` locals), `FlightSplineLegacyLengthPc`.
+`NuFadeObjAngleTerrain` (`NuFadeObjCreateMtx` locals), `FlightSplineLegacyLength`.
 Sample: 2.
 
 ### I7: float temporaries in locals instead of chained assignment
@@ -147,7 +147,7 @@ Example: `Plugs_AddGizmos`. Sample: 1.
 
 ### I15: direct indexed access instead of a pointer temporary
 
-`PULSE_PC *pulse = &system->pulses[i]; pulse->a = ...` vs
+`PULSE *pulse = &system->pulses[i]; pulse->a = ...` vs
 `system->pulses[i].a = ...`: different addressing (`[eax+ecx*8+N]` vs a
 separate `lea`). Example: `Pulses_Reset`. Sample: 1.
 
@@ -165,7 +165,7 @@ The SDK's `NuFabs` macro copies the masked bits into another float
 (`*(i32 *)&out = *(i32 *)&in & 0x7fffffff`). A union with `bits &= mask`
 masks in place. A `static inline` helper is not an option in C++ units: it
 leaves a standalone COMDAT copy and `check-objects` fails. Example:
-`BuildItAxisWobbleFactorPc`. Sample: 1.
+`BuildItAxisWobbleFactor`. Sample: 1.
 
 ### I17: an early-return guard shares one epilogue
 
@@ -187,7 +187,7 @@ Sample: 1 (+8).
 
 ```
 retail
-  mov   ecx, 0x23          ; sizeof(RTL_LIGHT_PC) / 4
+  mov   ecx, 0x23          ; sizeof(RTL_LIGHT) / 4
   mov   esi, ebx
   lea   edi, [esp+0x10]
   rep movsd
@@ -218,7 +218,7 @@ retail                                   ours
 A ternary or `return a <= b;` lets VC8 go branchless (`sbb/neg/and`, `setcc`)
 and widen to `eax`; retail had `if (...) return 2; return 0;`. In an `i16`
 function the constants then become `mov ax, 1` / `xor ax, ax` like retail.
-Examples: `NuStrToL`, `Collection_Got`, `PortalPointInRoomPc` (partly).
+Examples: `NuStrToL`, `Collection_Got`, `PortalPointInRoom` (partly).
 Sample: 3.
 
 ### I21: if/else assignment instead of init plus conditional update
@@ -420,7 +420,7 @@ VC8 sees an empty function defined anywhere in the same translation unit
 together with the test that guarded the call. Retail keeps the calls, so the
 hook lived in another unit: move the definition to the file of the unit
 retail placed it in (the unit's first or last function in address order).
-Examples: `PCSoundFailure` (to `nusound.c`), `MoviesListNoOpPc` (to
+Examples: `PCSoundFailure` (to `nusound.c`), `MoviesListNoOp` (to
 `movies.cpp`), `FileDirectoryErrorPc` (next to `bgProcDataOversize` in
 `nuvideo.c`), `SaveCreateDirectoryPc` (to `nufile_pc.c`). A C++ varargs hook
 (`PCSpecialEmptyHandler(...)`) only loses argument-less calls that
@@ -444,7 +444,7 @@ same holds when the source copies a field into a local first
 ### I37: return width
 
 `xor eax, eax`/`mov eax, 1` in the callee with `test al, al` in a caller of
-the same unit is a `bool` return in C++ (`MenuCanChangeShadowsPc`); `xor al, al`
+the same unit is a `bool` return in C++ (`MenuCanChangeShadows`); `xor al, al`
 where retail has `xor eax, eax` and no caller narrows the value is an `int`
 return (`HasAnisoFlip`, `HasPhongLighting`, which also changes the mangled
 name). A `char` return of a `u8` field needs `if`/`return` rather than a
@@ -487,7 +487,7 @@ Register choice (U3) often follows the expression tree: a field or global read
 directly inside a compare or an argument list gets a different register than
 the same value first held in a local. Retail sometimes has the local
 (`GIZFORCE_PC *top = ...->forces[count - 1]; GizForce_GetHeight(top);` in
-`ForceGroupPopPc`, `u16 heading` and `i32 context` in
+`ForceGroupPop`, `u16 heading` and `i32 context` in
 `GoingForwardsAlongNarrowSock`, `f32 length_squared` in
 `edbriDetermineNearest`, `f32 timer = detonator->timer` re-read after a call in
 `Detonators_Update`), and sometimes not (`CalcSplinePointFromDist` reads
@@ -499,7 +499,7 @@ registers but is not accepted as natural source (see U20).
 
 `a != b` and `b != a` emit `cmp` with the operands swapped, which changes the
 register that holds the loaded global. `ObjLandReady` needs
-`context != ZipUpLandCombatRollContextPc` and `context == ZipUpWallShuffleContextPc`
+`context != ZipUpLandCombatRollContext` and `context == ZipUpWallShuffleContext`
 (local first; a constant still goes on the right).
 
 ### I43: order of initialised declarations
@@ -508,8 +508,8 @@ Unlike plain declarations (no effect, see the U3 investigation), initialised
 declarations are statements and their order sets the load order:
 `Lever_FindNearest` initialises `lever = world->levers` before
 `nearest_distance = 1.0e9f`, which moves the stack-slot packing (U7).
-More: `RenderPostViewportResetPc` (`height` before `width`: the `fild` order),
-`CutSceneRebindPlayerCharactersPrivatePc` and `CutSceneEndCharactersPC`
+More: `RenderPostViewportReset` (`height` before `width`: the `fild` order),
+`CutSceneRebindPlayerCharactersPrivate` and `CutSceneEndCharactersPC`
 (two element pointers `&a[j]`, `&b[j]`: their order picks the registers of
 the strength-reduced pointers).
 
@@ -573,7 +573,7 @@ as recorded differences.
 - U3 register choice with identical instruction shape (sometimes a different
   encoding size, so short/near branches and alignment change). Declaration
   order, statement order and permute.py did not move it (but see I41).
-  `TextureAnimationCrossReferencePrivatePc`, `NuTexAnimEnvCreate`,
+  `TextureAnimationCrossReferencePrivate`, `NuTexAnimEnvCreate`,
   `Arcade_CoinCollected`, `antinodeEditor_UpdateAntiNodesOnPlatforms`,
   `NuPadRecordSave`.
 - U4 store sunk past a load that may alias. `MaulF_Init`.
@@ -582,7 +582,7 @@ as recorded differences.
   closed with I41).
 - U7 which temporary is packed into a dead parameter slot / stack-slot
   assignment. `SplinePointAngles`, `NuRndrLine2di`, `FindIncomingBolt`,
-  `AiEditorRespawnMinCountPc` (`Lever_FindNearest` closed with I43).
+  `AiEditorRespawnMinCount` (`Lever_FindNearest` closed with I43).
 - U8 an immediate replaced by a register known to hold the value:
   `or eax, eax` after `memset(..., 0xff, ...)` instead of `or eax, -1`,
   `lea ebp, [edi+1]`, `lea edx, [ecx+0xe]`. Micro-tests with many memset and
@@ -590,7 +590,7 @@ as recorded differences.
   `DrawShopPrompts`, `LoadAnimFromPAK`, `Ledges_StoreProgress`,
   `RecomputeHighGameObject`.
 - U9 operand order of a commutative `fadd`/`fmul` not controlled by source
-  order. `EduiExpanderOverButtonPc`, `MiniTrooperMovePc` (`NuMtxOrth`, once
+  order. `EduiExpanderOverButton`, `MiniTrooperMove` (`NuMtxOrth`, once
   listed here, closed with I31 parentheses).
 - U10 argument evaluation order. `GizObstacle_PlayForwards`.
 - U11 scheduling of a global store. `InitStillRender`.
@@ -600,10 +600,10 @@ as recorded differences.
 - U13 hoisting of a return constant / epilogue sharing. `Action_ReleaseLocator`.
 - U14 jump threading of a `break` into the post-loop test: retail re-tests
   `distance <= 0` after the loop, ours jumps straight to `return 0` and needs
-  two `fstp st(0)`. `PortalPointInRoomPc` (95.73).
+  two `fstp st(0)`. `PortalPointInRoom` (95.73).
 - U15 placement of a tail-merged `return 5` block shared by two switch cases;
   no case order or switch/if form reproduced retail's block order.
-  `TextureAnimationReadComparisonPrivatePc`.
+  `TextureAnimationReadComparisonPrivate`.
 - U16 x87 stack position of a dead value: retail pops with `fstp st(0)`, ours
   with `fstp st(1)` (or the reverse). `LevelComplete_LSW_Update`.
 - U17 a loop over a known-range `u32` compiled to a signed compare (`jl`) in
@@ -623,7 +623,7 @@ as recorded differences.
 - U20 exact only with an unnatural change found by `tools/permute2.py`
   (recorded, not committed): a copy of a parameter into a local
   (`Customiser_FindPieceByName` `index`, `NuRndrLine2di` `colour`,
-  `EduiExpanderOverButtonPc` `expander` plus mirrored compares,
+  `EduiExpanderOverButton` `expander` plus mirrored compares,
   `StatusPacketReset` `packet` plus a different store order,
   `DisplayListCreateSkinTransformPS` `skin` plus a `while` loop,
   `GetBladeJoints` several copies and narrowed temporaries); the cast repeated

@@ -7,7 +7,7 @@
  * beside the C rtl.c code. Editor-only and unreachable. */
 
 extern "C" {
-    extern RTL_SET_PC *curr_set;
+    extern RTL_SET *curr_set;
     extern f32 rtl_helper_radius;
     extern i32 rtl_helper_radius_mode;
     extern f32 min_r;
@@ -20,8 +20,8 @@ extern "C" {
     extern i32 modifier_cnt;
     extern char **modifier_names;
     void eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding);
-    extern RTL_LIGHT_PC *rtl_locked;
-    void rtlFree(RTL_LIGHT_PC *light);
+    extern RTL_LIGHT *rtl_locked;
+    void rtlFree(RTL_LIGHT *light);
     void fogFree(RTL_FOG_MIGRATION_PC *fog);
 }
 
@@ -286,7 +286,7 @@ class RTLHelper : public EdClassInterface { // size 0xc
     virtual void *CreateObject(void *data, i32 guid, i32 flags);
 
     virtual void DestroyObject(void *object, i32) {
-        rtlFree(static_cast<RTL_LIGHT_PC *>(object));
+        rtlFree(static_cast<RTL_LIGHT *>(object));
     }
 
     virtual void Process(void *object, EdInputContext &input);
@@ -307,10 +307,10 @@ class RTLHelper : public EdClassInterface { // size 0xc
     }
 
     virtual void AddMenuItems(eduimenu_s *menu);
-    RTL_SET_PC *GetIndexedSet();
+    RTL_SET *GetIndexedSet();
     void Initialise();
 
-    RTL_SET_PC *set; // 0x8
+    RTL_SET *set; // 0x8
 };
 
 RTLHelper::RTLHelper() : set(NULL) {
@@ -328,13 +328,13 @@ i32 RTLHelper::GetNumObjects() {
 }
 
 void *RTLHelper::GetNextObject(void *object) {
-    RTL_SET_PC *rtl_set = curr_set;
+    RTL_SET *rtl_set = curr_set;
     i32 i;
     if (rtl_set != NULL) {
         if (object == NULL) {
             return &rtl_set->lights[0];
         }
-        for (i = static_cast<RTL_LIGHT_PC *>(object) - rtl_set->lights + 1; i < 128; i++) {
+        for (i = static_cast<RTL_LIGHT *>(object) - rtl_set->lights + 1; i < 128; i++) {
             if (rtl_set->lights[i].type != 0) {
                 return &rtl_set->lights[i];
             }
@@ -346,7 +346,7 @@ void *RTLHelper::GetNextObject(void *object) {
 /* A new light: the first free slot of the current set with the editor's
  * default radii, colours and direction, tagged with the current LED file. */
 void *RTLHelper::CreateObject(void *, i32, i32) {
-    RTL_LIGHT_PC *light;
+    RTL_LIGHT *light;
     i32 i;
     /* rtlAlloc, inlined here in the single C++ rtl unit. */
     if (curr_set != NULL) {
@@ -437,7 +437,7 @@ static f32 rtl_helper_grab_distance = 0.5f;
  * through the light; the ring nearest the cursor on screen is grabbed when
  * the drag starts. */
 void RTLHelper::Process(void *object, EdInputContext &input) {
-    RTL_LIGHT_PC *light = static_cast<RTL_LIGHT_PC *>(object);
+    RTL_LIGHT *light = static_cast<RTL_LIGHT *>(object);
     if (input.GetHold(22) != 0.0f) {
         VuVec position;
         VuVec direction;
@@ -535,10 +535,10 @@ void RTLHelper::EnterEditor() {
 void RTLHelper::PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
     if (set == NULL) {
         MEMORYMANAGER *manager = &theMemoryManager;
-        RTL_SET_PC *fresh = NULL;
+        RTL_SET *fresh = NULL;
         if (RTL_EDITOR_SET_SIZE_PC < *manager->end_anchor - *manager->start_anchor) {
             *manager->start_anchor = (*manager->start_anchor + 15) & ~15;
-            fresh = reinterpret_cast<RTL_SET_PC *>(*manager->start_anchor);
+            fresh = reinterpret_cast<RTL_SET *>(*manager->start_anchor);
             *manager->start_anchor += RTL_EDITOR_SET_SIZE_PC;
             memset(fresh, 0, RTL_EDITOR_SET_SIZE_PC);
             manager->unknown_14 += RTL_EDITOR_SET_SIZE_PC;
@@ -575,7 +575,7 @@ static void RtlHelperCopyMtx(NUMTX *dst, const NUMTX *src) {
      ((static_cast<i32>((c).y * (scale)) & 0xff) << 8) | (static_cast<i32>((c).x * (scale)) & 0xff))
 
 void RTLHelper::Render(void *object, i32) {
-    RTL_LIGHT_PC *light = static_cast<RTL_LIGHT_PC *>(object);
+    RTL_LIGHT *light = static_cast<RTL_LIGHT *>(object);
     i32 colour = RTLHELPER_COLOUR(light->colour, 255.0);
     i32 dark_colour = RTLHELPER_COLOUR(light->colour, 128.0);
     VuVec position;
@@ -619,11 +619,11 @@ void RTLHelper::Render(void *object, i32) {
 
 /* Makes this helper's set current and builds its light index on first use;
  * returns NULL while the set is missing or empty. */
-RTL_SET_PC *RTLHelper::GetIndexedSet() {
+RTL_SET *RTLHelper::GetIndexedSet() {
     if (set != NULL) {
         curr_set = set;
         if (GetNumObjects() > 0) {
-            RTL_INDEX_PC *index = RTL_SET_INDEX_PC(set);
+            RTL_INDEX *index = RTL_SET_INDEX_PC(set);
             if (index->enabled == 0) {
                 VARIPTR buffer;
                 buffer.void_ptr = index;
@@ -675,7 +675,7 @@ i32 FogHelper::GetNumObjects() {
 }
 
 void *FogHelper::GetNextObject(void *object) {
-    RTL_SET_PC *rtl_set = curr_set;
+    RTL_SET *rtl_set = curr_set;
     i32 i;
     if (rtl_set != NULL) {
         if (object == NULL) {
@@ -753,7 +753,7 @@ class EdRefRTL : public EdRef {
 };
 
 void EdRefRTL::GetMemberData(void *object, i32 requested_type, void *data, i32) {
-    RTL_LIGHT_PC *light = static_cast<RTL_LIGHT_PC *>(object);
+    RTL_LIGHT *light = static_cast<RTL_LIGHT *>(object);
     CheckType(requested_type);
     switch (member_offset) {
         case 0x80000002:
@@ -803,7 +803,7 @@ void EdRefRTL::GetMemberData(void *object, i32 requested_type, void *data, i32) 
 }
 
 void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, i16 *) {
-    RTL_LIGHT_PC *light = static_cast<RTL_LIGHT_PC *>(object);
+    RTL_LIGHT *light = static_cast<RTL_LIGHT *>(object);
     f32 radius;
     CheckType(requested_type);
     switch (member_offset) {

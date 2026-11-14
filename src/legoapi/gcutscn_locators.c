@@ -272,8 +272,8 @@ typedef struct CUT_LOOKAT_LOCATOR_INFO { // size 0x60
     u8 tertiary_material;                // 0x5f
 } CUT_LOOKAT_LOCATOR_INFO;
 
-typedef struct CUT_LOOKAT_STATE_PC {  // size 0x18
-    NUHGOBJ_EVAL_PC *hierarchy;       // 0x00
+typedef struct CUT_LOOKAT_STATE {     // size 0x18
+    NUHGOBJ_EVAL *hierarchy;          // 0x00
     f32 blend;                        // 0x04
     u16 character;                    // 0x08
     u16 material;                     // 0x0a
@@ -282,11 +282,11 @@ typedef struct CUT_LOOKAT_STATE_PC {  // size 0x18
     u16 tertiary_material;            // 0x10
     u16 joint;                        // 0x12
     CUT_LOOKAT_LOCATOR_INFO *locator; // 0x14
-} CUT_LOOKAT_STATE_PC;
+} CUT_LOOKAT_STATE;
 
-extern NUHGOBJ_EVAL_PC *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
+extern NUHGOBJ_EVAL *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
 
-i32 FindMtlInHGObj(NUHGOBJ_EVAL_PC *hierarchy, i32 material_type) {
+i32 FindMtlInHGObj(NUHGOBJ_EVAL *hierarchy, i32 material_type) {
     CUT_LOOKAT_HIERARCHY *view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
     i32 index;
     for (index = 0; index < view->material_count; ++index) {
@@ -298,7 +298,7 @@ i32 FindMtlInHGObj(NUHGOBJ_EVAL_PC *hierarchy, i32 material_type) {
     return 0;
 }
 
-i32 FindTexAnimFromMtl(NUHGOBJ_EVAL_PC *hierarchy, NUMTL *material) {
+i32 FindTexAnimFromMtl(NUHGOBJ_EVAL *hierarchy, NUMTL *material) {
     CUT_LOOKAT_HIERARCHY *view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
     i32 index;
     for (index = 0; index < view->texture_count; ++index) {
@@ -309,12 +309,12 @@ i32 FindTexAnimFromMtl(NUHGOBJ_EVAL_PC *hierarchy, NUMTL *material) {
     return 0;
 }
 
-void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE_PC *state) {
+void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE *state) {
     CUT_LOOKAT_LOCATOR_INFO *locator = state->locator;
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_SCENE_LOAD_PC *scene;
     CUT_LOAD_CHARACTER_ANIMATION *animations;
-    NUHGOBJ_EVAL_PC *hierarchy;
+    NUHGOBJ_EVAL *hierarchy;
     i32 i;
     i32 character_id;
     i32 joint;
@@ -351,8 +351,8 @@ void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE_PC *state
     state->tertiary_material = (u16)FindMtlInHGObj(hierarchy, locator->tertiary_material);
 }
 
-void CutGetJointOverrideMatrixPc(NUHGOBJ_EVAL_PC *hierarchy, i32 index, NUMTX *matrix) {
-    NUHGOBJ_EVAL_JOINT_PC *joint = &hierarchy->joints[index];
+void CutGetJointOverrideMatrix(NUHGOBJ_EVAL *hierarchy, i32 index, NUMTX *matrix) {
+    NUHGOBJ_EVAL_JOINT *joint = &hierarchy->joints[index];
     *matrix = NuMtxSetIdentityTemplate;
     for (;;) {
         if (joint->bind_matrix.m00 != 1.0f || joint->bind_matrix.m11 != 1.0f || joint->bind_matrix.m22 != 1.0f) {
@@ -398,10 +398,10 @@ extern i32 (*TriggerLocatorVfxFn)(i32, NUMTX *);
 extern void (*UpdateLocatorVfxFn)(i32, NUMTX *);
 extern void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
 
-static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR_SYSTEM *system, CUT_LOAD_LOCATOR_INSTANCE *instance,
-                                          f32 frame, NUMTX *parent) {
+static void CutSceneLocatorDebrisUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR_SYSTEM *system, CUT_LOAD_LOCATOR_INSTANCE *instance,
+                                        f32 frame, NUMTX *parent) {
     u16 effect = system->types[locator->type_index].function_index;
-    NUANIM_TIME2_PC time;
+    NUANIM_TIME2 time;
     f32 scale;
     f32 rate;
     NUMTX matrix;
@@ -413,7 +413,7 @@ static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LO
     if (locator->animation != NULL) {
         NuAnimData2CalcTime(locator->animation, frame, &time);
     }
-    if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC_PC *)locator, frame, &time, &scale, &rate) != 0) {
+    if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC *)locator, frame, &time, &scale, &rate) != 0) {
         if (scale < 0.0f && (locator->flags & 0x10) == 0) {
             // MATCH-EXCEPTION: the original negates with fldz/fsubrp (0 - scale), unary minus gives fchs.
             scale = (f32)debtab[effect]->frequency * (0.0f - scale);
@@ -422,7 +422,7 @@ static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LO
             if ((locator->flags & 0x10) != 0 && instance->effect.index != 0) {
                 return;
             }
-            NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC_PC *)locator, frame, &matrix, &time);
+            NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &matrix, &time);
             if ((locator->flags & 4) != 0) {
                 NuMtxPreTranslate(&matrix, &locator->pivot);
             }
@@ -441,16 +441,16 @@ static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LO
                     DebrisPopulateInstance(instance->effect.index, 0.0f);
                 }
                 if (instance->effect.index > -1) {
-                    if (CutSceneDebrisProcessModePc == 1) {
+                    if (CutSceneDebrisProcessMode == 1) {
                         DebrisEmitterPos(instance->effect.index, position->x, position->y, position->z);
-                    } else if (CutSceneDebrisProcessModePc == 2) {
+                    } else if (CutSceneDebrisProcessMode == 2) {
                         DebrisOrientationMtx(instance->effect.index, &matrix);
                     } else {
                         DebrisPosOrientationMtx(instance->effect.index, &matrix);
                     }
                 }
-                if (CutSceneDebrisAxisSizePc > 0.0f) {
-                    NuRndrAxisArrowsMtx(&matrix, CutSceneDebrisAxisSizePc, 0);
+                if (CutSceneDebrisAxisSize > 0.0f) {
+                    NuRndrAxisArrowsMtx(&matrix, CutSceneDebrisAxisSize, 0);
                 }
             } else {
                 AddScaledVariableShotDebrisEffect2(effect, position, (i32)scale, debris_time_increment, &matrix, 0, rate);
@@ -468,7 +468,7 @@ static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LO
     instance->frame = 0.0f;
 }
 
-static void CutMatrixAssignPrivatePc(NUMTX *destination, NUMTX *source) {
+static void CutMatrixAssignPrivate(NUMTX *destination, NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
     destination->m02 = source->m02;
@@ -487,10 +487,10 @@ static void CutMatrixAssignPrivatePc(NUMTX *destination, NUMTX *source) {
     destination->m33 = source->m33;
 }
 
-static void CutSceneLocatorVfxUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR_SYSTEM *system, CUT_LOAD_LOCATOR_INSTANCE *instance,
-                                       f32 frame, NUMTX *parent) {
+static void CutSceneLocatorVfxUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR_SYSTEM *system, CUT_LOAD_LOCATOR_INSTANCE *instance,
+                                     f32 frame, NUMTX *parent) {
     i32 effect = system->types[locator->type_index].function_index;
-    NUANIM_TIME2_PC time;
+    NUANIM_TIME2 time;
     f32 scale = 0.0f;
     NUMTX matrix;
     __declspec(align(16)) NUMTX aligned_matrix;
@@ -500,15 +500,15 @@ static void CutSceneLocatorVfxUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCAT
     if (locator->animation != NULL) {
         NuAnimData2CalcTime(locator->animation, frame, &time);
     }
-    if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC_PC *)locator, frame, &time, &scale, NULL) != 0 && (f64)scale > 0.10000000149011612) {
-        NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC_PC *)locator, frame, &matrix, &time);
+    if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC *)locator, frame, &time, &scale, NULL) != 0 && (f64)scale > 0.10000000149011612) {
+        NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &matrix, &time);
         if ((locator->flags & 4) != 0) {
             NuMtxPreTranslate(&matrix, &locator->pivot);
         }
         if (parent != NULL) {
             NuMtxMul(&matrix, &matrix, parent);
         }
-        CutMatrixAssignPrivatePc(&aligned_matrix, &matrix);
+        CutMatrixAssignPrivate(&aligned_matrix, &matrix);
         if (instance->effect.index >= 0 && UpdateLocatorVfxFn != NULL) {
             UpdateLocatorVfxFn(instance->effect.index, &aligned_matrix);
         } else {
@@ -528,11 +528,11 @@ typedef struct CUT_LOOKAT_MATERIAL_VALUES { // size 0x88
     f32 look_y;                             // 0x84
 } CUT_LOOKAT_MATERIAL_VALUES;
 
-static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT_LOAD_LOCATOR *locator, f32 frame, NUMTX *parent,
-                                          INSTNUGCUTSCENE *owner) {
-    CUT_LOOKAT_STATE_PC *state;
+static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT_LOAD_LOCATOR *locator, f32 frame, NUMTX *parent,
+                                        INSTNUGCUTSCENE *owner) {
+    CUT_LOOKAT_STATE *state;
     CUT_INSTANCE_LOAD_PC *owner_view = (CUT_INSTANCE_LOAD_PC *)owner;
-    NUHGOBJ_EVAL_PC *hierarchy;
+    NUHGOBJ_EVAL *hierarchy;
     CUT_LOOKAT_HIERARCHY *hierarchy_view;
     CUT_LOOKAT_MATERIAL_VALUES *eye_material;
     CUT_LOAD_CHARACTER *character;
@@ -568,14 +568,14 @@ static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, C
     if ((i32)magic < 0x414e4934 || (i32)magic > 0x414e4935) {
         return;
     }
-    state = (CUT_LOOKAT_STATE_PC *)instance->effect.index;
+    state = (CUT_LOOKAT_STATE *)instance->effect.index;
     instGetLookAtLocatorInfo(owner, state);
     if (state->character == 0 || state->hierarchy == NULL) {
         return;
     }
     hierarchy = state->hierarchy;
     hierarchy_view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
-    values = NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC_PC *)locator, frame, &locator_matrix, NULL);
+    values = NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &locator_matrix, NULL);
     if ((locator->flags & 4) != 0) {
         NuMtxPreTranslate(&locator_matrix, &locator->pivot);
     }
@@ -588,13 +588,13 @@ static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, C
         if (first != 0) {
             character = &owner_view->scene->character_system->characters[state->character - 1];
             character_instance = &owner_view->character_instance->characters[state->character - 1];
-            NuGCutCharAnimProcess((CUT_CHARACTER_GENERIC_PC *)character, character_instance->frame_a, &character_matrix, &visible,
+            NuGCutCharAnimProcess((CUT_CHARACTER_GENERIC *)character, character_instance->frame_a, &character_matrix, &visible,
                                   &animation_index, &animation_rate, &blend, &start, &layers);
             if (visible == 0) {
                 return;
             }
             NuHGobjEvalAnim2(hierarchy, character->face_animation, character_instance->frame_a, 0, NULL, joints);
-            CutGetJointOverrideMatrixPc(hierarchy, state->joint - 1, &joint_offset);
+            CutGetJointOverrideMatrix(hierarchy, state->joint - 1, &joint_offset);
             NuMtxMulVU0(&joint_world, &joint_offset, &joints[state->joint - 1]);
             NuMtxMulVU0(&joint_world, &joint_world, &character_matrix);
             direction.x = joint_world.m30 - locator_matrix.m30;
@@ -665,18 +665,18 @@ void instNuGCutLocatorUpdate(INSTNUGCUTSCENE *owner, CUT_LOAD_LOCATOR_SYSTEM *sy
     CUT_LOAD_LOCATOR_TYPE *type = &system->types[locator->type_index];
     if ((type->flags & 1) != 0) {
         if (paused == 0) {
-            CutSceneLocatorDebrisUpdatePc(locator, system, instance, frame, parent);
+            CutSceneLocatorDebrisUpdate(locator, system, instance, frame, parent);
         }
     } else if ((type->flags & 2) != 0) {
         if (type->function_index != 0xffff) {
-            CUT_UPDATE_ENTRY *entry = &((CUT_UPDATE_ENTRY *)CutSceneLocatorFunctionsPc)[type->function_index];
+            CUT_UPDATE_ENTRY *entry = &((CUT_UPDATE_ENTRY *)CutSceneLocatorFunctions)[type->function_index];
             if (entry->update != NULL) {
                 entry->update(owner, system, instance, locator, frame, parent, paused);
             }
         }
     } else if ((type->flags & 0x10) != 0) {
         if (paused == 0) {
-            CutSceneLocatorVfxUpdatePc(locator, system, instance, frame, parent);
+            CutSceneLocatorVfxUpdate(locator, system, instance, frame, parent);
         }
     } else if ((type->flags & 4) != 0) {
         if (NuCutSceneSFXUpdate != NULL && ((CUT_INSTANCE_LOAD_PC *)owner)->rate != 0.0f) {
@@ -684,7 +684,7 @@ void instNuGCutLocatorUpdate(INSTNUGCUTSCENE *owner, CUT_LOAD_LOCATOR_SYSTEM *sy
         }
     } else if ((type->flags & 8) != 0) {
         if (paused == 0) {
-            CutSceneLocatorLookAtUpdatePc(instance, locator, frame, parent, owner);
+            CutSceneLocatorLookAtUpdate(instance, locator, frame, parent, owner);
         }
     }
 }

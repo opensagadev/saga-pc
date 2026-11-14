@@ -27,7 +27,7 @@
 
 #if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 1 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 
-struct APIDEBRISSYS_PC;
+struct APIDEBRISSYS;
 struct FRAME_PAD_PC;
 struct NUGSCN_s;
 struct PC_SCENE_MTL_VIEW;
@@ -39,27 +39,27 @@ struct debris_render_chunk_s;
 struct debris_scale_cache_s;
 struct eduiitem_s;
 struct eduimenu_s;
-struct nufpar_pc_s;
+struct nufpar_s;
 struct numtl_s;
 
-typedef struct SFX_GROUP_PC { // size 0x8
-    i16 first_sample;         // 0x0
-    i16 sample_count;         // 0x2
-    i16 cursor;               // 0x4
-    i16 unknown_0006;         // 0x6
-} SFX_GROUP_PC;
+typedef struct SFX_GROUP { // size 0x8
+    i16 first_sample;      // 0x0
+    i16 sample_count;      // 0x2
+    i16 cursor;            // 0x4
+    i16 unknown_0006;      // 0x6
+} SFX_GROUP;
 
-typedef struct TERRAIN_POLYGON_INFO_PC TERRAIN_POLYGON_INFO_PC;
+typedef struct TERRAIN_POLYGON_INFO TERRAIN_POLYGON_INFO;
 
-struct TERRAIN_POLYGON_INFO_PC { // size 0x64
-    f32 min_x;                   // 0x00
-    f32 max_x;                   // 0x04
-    f32 min_y;                   // 0x08
-    f32 max_y;                   // 0x0c
-    f32 min_z;                   // 0x10
-    f32 max_z;                   // 0x14
-    NUVEC vertices[4];           // 0x18
-    NUVEC normals[2];            // 0x48
+struct TERRAIN_POLYGON_INFO { // size 0x64
+    f32 min_x;                // 0x00
+    f32 max_x;                // 0x04
+    f32 min_y;                // 0x08
+    f32 max_y;                // 0x0c
+    f32 min_z;                // 0x10
+    f32 max_z;                // 0x14
+    NUVEC vertices[4];        // 0x18
+    NUVEC normals[2];         // 0x48
 
     union { // size 0x4
         u32 packed_metadata;
@@ -88,7 +88,7 @@ typedef union TERRAIN_SCAN_WORD { // size 0x4
         i16 terrain_group; // 0x2
     } header;
 
-    TERRAIN_POLYGON_INFO_PC *shape;
+    TERRAIN_POLYGON_INFO *shape;
     u32 opaque_bits;
 } TERRAIN_SCAN_WORD;
 
@@ -220,21 +220,21 @@ extern "C" {
     void PlaySfxByIdAndSetPitch(i32, NUVEC *, f32);
     void DebFreeAllCreatedEffects(void);
 
-    typedef struct TERRAIN_CALLBACK_LIFECYCLE_PC { // size 0x8
-        void (*function)(void *argument);          // 0x0
-        void *argument;                            // 0x4
-    } TERRAIN_CALLBACK_LIFECYCLE_PC;
+    typedef struct TERRAIN_CALLBACK_LIFECYCLE { // size 0x8
+        void (*function)(void *argument);       // 0x0
+        void *argument;                         // 0x4
+    } TERRAIN_CALLBACK_LIFECYCLE;
 
     extern f32 TerrPlatScanDist;
     extern i32 PlatCodeCallback;
     extern i32 cntrots;
-    extern TERRAIN_CALLBACK_LIFECYCLE_PC PlatCallback[8];
+    extern TERRAIN_CALLBACK_LIFECYCLE PlatCallback[8];
     extern i32 DEBPAGE_GENERAL;
     extern i32 DEBPAGE_CHARACTER;
     extern i32 DEBPAGE_AREA;
     void DebrisSetFacing(i32, u8, i16, i16);
     void edppStartSingleEffect(i32);
-    extern i32 EdppUseMemcardPc;
+    extern i32 EdppUseMemcard;
     void DebrisPopulateInstance(i32, f32);
     i32 CreateScaledEffect(i32, f32);
     void DebrisReScale(i32, f32);
@@ -247,7 +247,7 @@ extern "C" {
     extern f32 debris_render_global_time;
     extern f32 debris_render_panel_time;
     extern u8 TerrWallTab[4];
-    void RotateTerrain(TERRAIN_POLYGON_INFO_PC *);
+    void RotateTerrain(TERRAIN_POLYGON_INFO *);
     void FullDeflectSize(NUVEC *, NUVEC *, NUVEC *);
     void FullReflectTest(NUVEC *, NUVEC *, NUVEC *);
     void TerrainWallSideSlide(NUVEC *, void *, f32, f32, NUANG);
@@ -268,14 +268,14 @@ extern "C" {
     i32 TerrainImpactPlatform(u8 *);
     i32 TerrainPlatformMoveCheck(NUVEC *, NUVEC *, i32, i32, i32);
     void AddCollisionSphere(NUVEC *, f32);
-    extern const f64 TerrainOpposingContactThresholdPc;
+    extern const f64 TerrainOpposingContactThreshold;
     extern f32 TerConTol;
     extern f32 TerrWallDeflectYScale;
     extern i32 PlatCrush;
     extern NUVEC TerrWallNorm;
     extern i32 plathitid;
-    extern TERRAIN_POLYGON_INFO_PC PlatImpactTer;
-    extern TERRAIN_POLYGON_INFO_PC TerrPolyInfo;
+    extern TERRAIN_POLYGON_INFO PlatImpactTer;
+    extern TERRAIN_POLYGON_INFO TerrPolyInfo;
     extern f32 wallover;
     extern i32 TerImpactDataMax;
     extern i32 *TerImpactDataCount;
@@ -290,30 +290,30 @@ extern "C" {
     void DebrisTimeSlip(i32);
     void DebrisProcessTimeSlip(void);
     void TerrainDiagnosticNoOpPC(const void *context, ...);
-    extern const f32 TerrainUnusedSpatialBlockPc;
-    extern const f32 TerrainBoundsMinimumPc;
-    extern const f32 TerrainBoundsMaximumPc;
+    extern const f32 TerrainUnusedSpatialBlock;
+    extern const f32 TerrainBoundsMinimum;
+    extern const f32 TerrainBoundsMaximum;
     extern const f32 TerrainSteepNormalYPc;
     extern void *ScaleTerrainT2;
     extern void *TempScanStack;
     extern void *WallSplList;
-    extern TERRAIN_POLYGON_INFO_PC *ScaleTerrainT1;
+    extern TERRAIN_POLYGON_INFO *ScaleTerrainT1;
     extern i32 terraincnt;
     extern i32 curSphereter;
     extern i32 platinrange;
     extern i32 PlatImpactId;
     extern i32 TerrShapeAdjCnt;
-    extern TERRAIN_POLYGON_INFO_PC *TerrPoly;
+    extern TERRAIN_POLYGON_INFO *TerrPoly;
     extern u8 TerrWallInfo;
     extern GAMEANIMPROGRESS gameanimsysprogress;
     i32 ShadowRoofInfo(void);
     i32 NewShadowOnPlatform(void);
-    extern TERRAIN_POLYGON_INFO_PC *ShadPoly;
-    extern TERRAIN_POLYGON_INFO_PC *EShadPoly;
-    extern TERRAIN_POLYGON_INFO_PC *ShadRoofPoly;
+    extern TERRAIN_POLYGON_INFO *ShadPoly;
+    extern TERRAIN_POLYGON_INFO *EShadPoly;
+    extern TERRAIN_POLYGON_INFO *ShadRoofPoly;
     extern i16 castnum;
-    extern f32 GetSurfaceInfoRoofHeightPc;
-    extern NUVEC GetSurfaceInfoWaterNormalPc;
+    extern f32 GetSurfaceInfoRoofHeight;
+    extern NUVEC GetSurfaceInfoWaterNormal;
     void edanimStartPage(i32 page);
     void edanimStopPage(i32 page);
     void edanimClearPage(i32 page);
@@ -357,7 +357,7 @@ extern "C" {
     extern i32 freedebchkptrg;
 
     void edbriStopPage(i8 page);
-    extern SFX_GROUP_PC NuSound3Groups[128];
+    extern SFX_GROUP NuSound3Groups[128];
     extern i16 NuSound3GroupSampleIds[512];
     extern i32 NuSound3GroupSampleCount;
     extern i32 NuSound3GroupCount;
@@ -408,7 +408,7 @@ extern "C" {
     extern void *CurrentTerrain;
     i32 PlatInstGetHit(i32);
     void ScanTerrIDRemovePlat(i32);
-    extern NUVEC PCSoundListenerLoopPositionPc;
+    extern NUVEC PCSoundListenerLoopPosition;
     extern u32 nusound_seed;
     extern u32 *SfxCRCTable;
     extern i32 SfxCRCTableInitialized;
@@ -476,12 +476,12 @@ extern "C" {
     void NewScanInit(void);
     f32 NewShadowHandelEx(NUVEC *, f32, f32, f32, i32, i16 *);
     i32 TerrainTrackBack(NUVEC *, NUVEC *, f32, f32, NUVEC *);
-    void TerrDraw(TERRAIN_POLYGON_INFO_PC *, i16);
-    void TerrDrawSitu(TERRAIN_POLYGON_INFO_PC *, NUVEC *);
-    void TerrDrawPlat(TERRAIN_POLYGON_INFO_PC *, i16);
-    void TerrDrawPlatCol(TERRAIN_POLYGON_INFO_PC *, i16, i32);
+    void TerrDraw(TERRAIN_POLYGON_INFO *, i16);
+    void TerrDrawSitu(TERRAIN_POLYGON_INFO *, NUVEC *);
+    void TerrDrawPlat(TERRAIN_POLYGON_INFO *, i16);
+    void TerrDrawPlatCol(TERRAIN_POLYGON_INFO *, i16, i32);
     void TerrDrawImpactPol(void);
-    void DrawMPlatPc(i32);
+    void DrawMPlat(i32);
     void DrawMSitu(i32);
     void SphereDrawEx(NUVEC *, f32, f32, i32);
     void SphereDraw(NUVEC *, f32, f32);
@@ -489,24 +489,24 @@ extern "C" {
     struct TERRAIN_SKIN_STREAM;
     struct TERRAIN_SKIN_INFO;
     struct TERRAIN_SKIN_BLEND;
-    void TerrainSkinPrepareGroupPc(i32 group_index, struct TERRAIN_SKIN_STREAM *output, const struct TERRAIN_SKIN_INFO *info);
-    void TerrainSkinInitArenaPc(struct TERRAIN_SKIN_INFO *base, u8 *end, i32 capacity);
-    void TerrainSkinResetArenaPc(void);
-    u8 *TerrainSkinRebuildIndexPc(i32 pool_slots);
+    void TerrainSkinPrepareGroup(i32 group_index, struct TERRAIN_SKIN_STREAM *output, const struct TERRAIN_SKIN_INFO *info);
+    void TerrainSkinInitArena(struct TERRAIN_SKIN_INFO *base, u8 *end, i32 capacity);
+    void TerrainSkinResetArena(void);
+    u8 *TerrainSkinRebuildIndex(i32 pool_slots);
 
     void terrainpickupinit(char *, void **);
     void AddPickupTerr(i32, NUVEC *);
     void ReassignPickupInst(i32, i32);
 
-    extern SFX_FILE_INFO_PC *SfxFileInfoPc;
-    extern SFX_RECORD_PC *SfxRevertInfoPc;
+    extern SFX_FILE_INFO_PC *SfxFileInfo;
+    extern SFX_RECORD_PC *SfxRevertInfo;
     extern i32 NumSfx;
     extern i32 NumSfxNames;
-    extern char SfxNameSlotsPc[1601][32];
-    extern char SfxFilenameSlotsPc[1601][64];
-    extern i32 SfxRefCountsPc[1601];
-    extern char SfxConfigFilenamePc[256];
-    extern f32 SfxAudioVersionPc;
+    extern char SfxNameSlots[1601][32];
+    extern char SfxFilenameSlots[1601][64];
+    extern i32 SfxRefCounts[1601];
+    extern char SfxConfigFilename[256];
+    extern f32 SfxAudioVersion;
     extern i32 edSfxAllCount;
     void edgraDetermineNearestInstance(f32 distance);
     extern i32 edgra_mode;
@@ -563,7 +563,7 @@ extern "C" {
     void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE_PC *, NUVEC *);
     extern TERRAIN_SPHERE_PC SphereData[16];
     extern TERRAIN_AXIS_FREEDOM_SHAPE_PC *TerrShape;
-    extern TERRAIN_TRACK_SLOT_PC *CurTrackInfo;
+    extern TERRAIN_TRACK_SLOT *CurTrackInfo;
     void DebrisReserveTrashableSpace(VARIPTR *, VARIPTR, i32, i32);
     void DebrisTrashableSetup(VARIPTR *, VARIPTR *);
     void SfxBitsRestore(SoundTable *table);
@@ -601,7 +601,7 @@ typedef struct TERRAIN_SET_PC {                 // size 0xa490
     i32 group_index_count;                      // 0x0150
     i32 removed_platform_count;                 // 0x0154
     i16 removed_platforms[32];                  // 0x0158
-    TERRAIN_TRACK_SLOT_PC track_slots[64];      // 0x0198
+    TERRAIN_TRACK_SLOT track_slots[64];         // 0x0198
     TERRAIN_CELL_PC cells[256];                 // 0x0798
     TERRAIN_CELL_PC platform_cell;              // 0x1b98
     i32 minimum_height;                         // 0x1bac
@@ -625,14 +625,14 @@ extern "C" {
     struct TERRAIN_SET_PC;
     extern NUVEC4 tertempvec4;
     extern NUMTX tertempmat;
-    extern struct APIDEBRISSYS_PC *perm_debrissys;
+    extern struct APIDEBRISSYS *perm_debrissys;
     void DebrisEmitterOrientationMtx(i32, NUMTX *);
     void DebrisShift(NUMTX *);
     extern struct debris_collision_entry_s *toruscolldata;
     i32 AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y, NUMTX *orientation, f32 scale);
     struct TERRAIN_SET_PC;
-    i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const struct TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale,
-                                i32 source_scene_index, i16 mode, struct TERRAIN_SET_PC *source_terrain);
+    i32 TerrainSkinCreateInfo(NUMTX *matrix, const struct TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale,
+                              i32 source_scene_index, i16 mode, struct TERRAIN_SET_PC *source_terrain);
     i32 AddPickupTerrRot(i32, NUMTX *, NUMTX *, i32);
 #ifdef __cplusplus
 }
@@ -671,7 +671,7 @@ extern "C" {
 extern "C" {
 #endif
     void DebrisSetRoomID(i32, struct NUGSCN_s *);
-    extern struct NUGSCN_s *EdppPageScenesPc[8];
+    extern struct NUGSCN_s *EdppPageScenes[8];
     extern struct numtl_s *DebMat[9];
     extern struct NUGSCN_s *edbri_page_scene[8];
 
@@ -700,7 +700,7 @@ extern "C" {
 extern "C" {
 #endif
     extern struct debris_key_s *debkeydata;
-    void AudioGroup_Parse(struct nufpar_pc_s *);
+    void AudioGroup_Parse(struct nufpar_s *);
     void edbitsDrawCircleTilted(struct nuvec_s *arg0, f32 arg1, i32 arg2, struct PC_SCENE_MTL_VIEW *arg3, i32 arg4, i32 arg5);
 #ifdef __cplusplus
 }

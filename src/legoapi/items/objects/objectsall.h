@@ -118,7 +118,7 @@ extern "C" {
         f32 scale;                        // 0x8
     } DEBRIS_SCALE_CACHE_PC;
 
-    extern char KillPartsLegoSingleTextPc[11];
+    extern char KillPartsLegoSingleText[11];
     extern PART_EMIT_PC part_emits[40];
     extern i32 part_page_on[8];
     extern f32 debris_render_scale;
@@ -145,24 +145,24 @@ extern "C" {
     extern i32 part_platimpactcnt;
     void InitParts(i32, VARIPTR *, VARIPTR);
     void edpartClearPage(i8);
-    extern i32 DebrisArenaInitializedPc;
+    extern i32 DebrisArenaInitialized;
     void edpartScaleType(i32, f32);
     void PartTimeSlip(void);
     i32 CreateScaledPARTEffect(i32, f32);
     void PartCleanupTypes(void);
 
     extern i32 edpart_load_particle_page;
-    extern NUVEC PartEditorCameraPosPc;
-    extern i32 PartGeneralPagePc;
-    extern i32 PartLevelPagePc;
+    extern NUVEC PartEditorCameraPos;
+    extern i32 PartGeneralPage;
+    extern i32 PartLevelPage;
     void edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page);
     void edpartDetermineNearest(f32 distance);
     void UpdatePartEmits(f32 time);
     i32 PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags);
 
     extern i16 PartPlatformImpactListPc[4];
-    extern f32 PartCollisionIntervalPc;
-    extern f32 PartStopSpeedSquaredPc;
+    extern f32 PartCollisionInterval;
+    extern f32 PartStopSpeedSquared;
 
     void UpdateParts(f32 time);
     void DrawParts(i32 keep_offscreen);
@@ -191,7 +191,7 @@ extern "C" {
     extern i32 edpart_set_debris;
     extern i32 edpart_set_part;
     extern i32 edpart_snap_enabled;
-    extern char KillPartsLegoSingleTextPc[11];
+    extern char KillPartsLegoSingleText[11];
 #ifdef __cplusplus
 }
 #endif
@@ -342,7 +342,7 @@ extern "C" {
 #endif
     extern DEBRISGENERATOR_PC gensorttab[13];
     extern DEBRISMOMENTUMADJUSTER_PC gencodetab[7];
-    extern DEBRIS_INFO_PC DebrisNullEffectPc;
+    extern DEBRIS_INFO_PC DebrisNullEffect;
     extern struct eduimenu_s *edpart_cutoff_menu;
     extern struct eduimenu_s *edpart_scaletype_menu;
     extern struct eduimenu_s *edpart_type_menu;

@@ -18,8 +18,8 @@
 extern "C" {
 #endif
     /* Inside the existing C public declaration section; definition remains owner-local. */
-    typedef struct TIGHTROPE_MOTION_PC TIGHTROPE_MOTION_PC;
-    TIGHTROPE_MOTION_PC *TightRope_InRange(GAMEOBJECT *, WORLDINFO *, NUVEC *);
+    typedef struct TIGHTROPE_MOTION TIGHTROPE_MOTION;
+    TIGHTROPE_MOTION *TightRope_InRange(GAMEOBJECT *, WORLDINFO *, NUVEC *);
     void TightRope_MoveCode(GAMEOBJECT *, i32);
 #ifdef __cplusplus
 }

@@ -84,14 +84,14 @@ typedef struct pc_display_clip_object_s { // size 0xc
     i32 *item_indices;                    // 0x8
 } PC_DISPLAY_CLIP_OBJECT_PC;
 
-typedef struct NUPORTAL_FRUSTUM_PC { // size 0xa0
-    f32 transposed_planes[32];       // 0x00
-    NUPLANE *planes;                 // 0x80
-    NUVEC minimum;                   // 0x84
-    NUVEC maximum;                   // 0x90
-    i16 plane_count;                 // 0x9c
-    i16 room_id;                     // 0x9e
-} NUPORTAL_FRUSTUM_PC;
+typedef struct NUPORTAL_FRUSTUM { // size 0xa0
+    f32 transposed_planes[32];    // 0x00
+    NUPLANE *planes;              // 0x80
+    NUVEC minimum;                // 0x84
+    NUVEC maximum;                // 0x90
+    i16 plane_count;              // 0x9c
+    i16 room_id;                  // 0x9e
+} NUPORTAL_FRUSTUM;
 
 typedef struct nugscn_anim_lookup_s { // size 0xc
     u16 count;                        // 0x0
@@ -100,65 +100,65 @@ typedef struct nugscn_anim_lookup_s { // size 0xc
     u8 *values;                       // 0x8
 } NUGSCN_ANIM_LOOKUP_PC;
 
-typedef struct NUHGOBJ_JOINT_OVERRIDE_PC { // size 0x34
-    NUVEC rotation;                        // 0x00
-    NUVEC translation;                     // 0x0c
-    NUVEC scale_pc;                        // 0x18
-    i16 rotation_max_pc[3];                // 0x24
-    i16 rotation_min_pc[3];                // 0x2a
-    u8 joint_index;                        // 0x30
-    u8 flags_pc;                           // 0x31
-    u8 unknown_32[2];                      // 0x32
-} NUHGOBJ_JOINT_OVERRIDE_PC;
+typedef struct NUHGOBJ_JOINT_OVERRIDE { // size 0x34
+    NUVEC rotation;                     // 0x00
+    NUVEC translation;                  // 0x0c
+    NUVEC scale_pc;                     // 0x18
+    i16 rotation_max_pc[3];             // 0x24
+    i16 rotation_min_pc[3];             // 0x2a
+    u8 joint_index;                     // 0x30
+    u8 flags_pc;                        // 0x31
+    u8 unknown_32[2];                   // 0x32
+} NUHGOBJ_JOINT_OVERRIDE;
 
-typedef struct ANI3_SCALEMIN_PC { // size 0x8
-    f32 scale;                    // 0x0
-    f32 minimum;                  // 0x4
-} ANI3_SCALEMIN_PC;
+typedef struct ANI3_SCALEMIN { // size 0x8
+    f32 scale;                 // 0x0
+    f32 minimum;               // 0x4
+} ANI3_SCALEMIN;
 
-typedef struct ANI3_HEADER_PC {  // size 0x3c
-    u32 magic;                   // 0x00
-    u16 node_count;              // 0x04
-    u16 key_count;               // 0x06
-    u16 key_stride;              // 0x08
-    u16 frame_count;             // 0x0a
-    u16 curve_count;             // 0x0c
-    u16 first_frame;             // 0x0e
-    u8 end_frame;                // 0x10
-    u8 constant_index;           // 0x11
-    u8 field_12_low;             // 0x12
-    u8 format_flags;             // 0x13
-    u16 next_block;              // 0x14
-    u16 declared_end_frame;      // 0x16
-    u8 pad_18[4];                // 0x18
-    f32 minimum;                 // 0x1c
-    f32 scale;                   // 0x20
-    ANI3_SCALEMIN_PC *scale_min; // 0x24
-    i16 *constants;              // 0x28
-    u16 *curve_types;            // 0x2c
-    u8 *keys;                    // 0x30
-    u8 *node_flags;              // 0x34
-    void *field_38;              // 0x38
-} ANI3_HEADER_PC;
+typedef struct ANI3_HEADER {  // size 0x3c
+    u32 magic;                // 0x00
+    u16 node_count;           // 0x04
+    u16 key_count;            // 0x06
+    u16 key_stride;           // 0x08
+    u16 frame_count;          // 0x0a
+    u16 curve_count;          // 0x0c
+    u16 first_frame;          // 0x0e
+    u8 end_frame;             // 0x10
+    u8 constant_index;        // 0x11
+    u8 field_12_low;          // 0x12
+    u8 format_flags;          // 0x13
+    u16 next_block;           // 0x14
+    u16 declared_end_frame;   // 0x16
+    u8 pad_18[4];             // 0x18
+    f32 minimum;              // 0x1c
+    f32 scale;                // 0x20
+    ANI3_SCALEMIN *scale_min; // 0x24
+    i16 *constants;           // 0x28
+    u16 *curve_types;         // 0x2c
+    u8 *keys;                 // 0x30
+    u8 *node_flags;           // 0x34
+    void *field_38;           // 0x38
+} ANI3_HEADER;
 
 typedef union DWA_CURVE_CELL { // size 0x4
     f32 constant;
     void *encoded;
 } DWA_CURVE_CELL;
 
-typedef struct NUANIM_TIME2_PC { // size 0x18
-    f32 time;                    // 0x00
-    f32 time_offset;             // 0x04
-    i32 chunk;                   // 0x08
-    u32 time_mask;               // 0x0c
-    u32 time_byte;               // 0x10
-    i32 chunk_frame;             // 0x14
-} NUANIM_TIME2_PC;
+typedef struct NUANIM_TIME2 { // size 0x18
+    f32 time;                 // 0x00
+    f32 time_offset;          // 0x04
+    i32 chunk;                // 0x08
+    u32 time_mask;            // 0x0c
+    u32 time_byte;            // 0x10
+    i32 chunk_frame;          // 0x14
+} NUANIM_TIME2;
 
-typedef struct DWA_WEIGHT_BLOCK_PC { // size 0x208
-    u32 unknown_00[2];               // 0x000
-    f32 values[128];                 // 0x008
-} DWA_WEIGHT_BLOCK_PC;
+typedef struct DWA_WEIGHT_BLOCK { // size 0x208
+    u32 unknown_00[2];            // 0x000
+    f32 values[128];              // 0x008
+} DWA_WEIGHT_BLOCK;
 
 typedef struct nuprim_vertex_group_source_s { // size 0x8
     u8 count;                                 // 0x0
@@ -183,8 +183,8 @@ typedef struct nurndrlibstate_s { // size 0x34
     u8 opaque_30_34[0x4];         // 0x30
 } NURNDRLIBSTATE;
 
-typedef struct GRAPHICS_RENDER_TEXTURE_PC GRAPHICS_RENDER_TEXTURE_PC;
-typedef struct PC_FRAMEBUFFER_PC PC_FRAMEBUFFER_PC;
+typedef struct GRAPHICS_RENDER_TEXTURE GRAPHICS_RENDER_TEXTURE;
+typedef struct PC_FRAMEBUFFER PC_FRAMEBUFFER;
 
 struct PC_SPECIAL_SHADOW_LIGHT;
 
@@ -210,7 +210,7 @@ extern "C" {
     i32 NuSpecialClipTestShadowLights(NUVEC *, NUVEC *, i32);
     /* Forward view remains local to the original material group. */
     typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
-    extern i32 PCMaterialPoolCountPc;
+    extern i32 PCMaterialPoolCount;
     extern i32 PCShadowSurfaceSamplingEnabled;
     extern i32 PCSpecialForceMaterialCount;
     extern u8 CutSceneBoundingBoxTrackRoot;
@@ -288,34 +288,34 @@ extern "C" {
 // Native SaveState copies this complete 0x150-byte working view.
 // The original allocation extent remains unknown.
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define AxisClipFrustumPlanesPc CameraClipPlanesPc.frustum
+#define AxisClipFrustumPlanesPc CameraClipPlanes.frustum
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define AxisClipScissorPlanesPc CameraClipPlanesPc.scissor
+#define AxisClipScissorPlanesPc CameraClipPlanes.scissor
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define AxisClipNearFarPlanesPc CameraClipPlanesPc.near_far
+#define AxisClipNearFarPlanesPc CameraClipPlanes.near_far
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define CameraNearClipPlanePc CameraClipPlanesPc.near_plane
+#define CameraNearClipPlanePc CameraClipPlanes.near_plane
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define AxisClipAbsFrustumPlanesPc CameraClipPlanesPc.abs_frustum
+#define AxisClipAbsFrustumPlanesPc CameraClipPlanes.abs_frustum
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define AxisClipAbsScissorPlanesPc CameraClipPlanesPc.abs_scissor
+#define AxisClipAbsScissorPlanesPc CameraClipPlanes.abs_scissor
     extern i32 NuTextureCapacityPC;
     extern i32 NuTextureLoadCountPC;
     extern i32 *NuTextureLoadOrderPC;
     extern i32 nuspecial_draw_state;
     extern u8 fstackmem[NU_PORTAL_STACK_SIZE];
-    extern NUPORTAL_FRUSTUM_PC **NuPortalFrustaPc;
-    extern i32 *NuPortalFrustumCountPc;
-    extern const NUVEC NuPortalBoundsOnePc;
-    extern const NUVEC NuPortalBoundsMinusOnePc;
-    extern NUVEC NuPortalWorldCameraPc;
-    extern NUVEC *NuPortalOverrideCameraPc;
-    extern i16 NuPortalCameraRoomPc;
-    extern i16 NuPortalRoomsVisitedPc[16];
-    extern i32 NuPortalDebugDrawPc;
-    extern NUPLANE NuPortalNearPlanePc;
-    extern i32 NuPortalDebugEnabledPc;
-    extern i32 NuPortalCameraSelectPc;
+    extern NUPORTAL_FRUSTUM **NuPortalFrusta;
+    extern i32 *NuPortalFrustumCount;
+    extern const NUVEC NuPortalBoundsOne;
+    extern const NUVEC NuPortalBoundsMinusOne;
+    extern NUVEC NuPortalWorldCamera;
+    extern NUVEC *NuPortalOverrideCamera;
+    extern i16 NuPortalCameraRoom;
+    extern i16 NuPortalRoomsVisited[16];
+    extern i32 NuPortalDebugDraw;
+    extern NUPLANE NuPortalNearPlane;
+    extern i32 NuPortalDebugEnabled;
+    extern i32 NuPortalCameraSelect;
     void NuPause(i32 paused);
     extern i32 NuCameraMode;
     extern i32 NuCameraClipScissorToViewport;
@@ -333,7 +333,7 @@ extern "C" {
     extern NUVEC ANI3_EVAL_SCALE_ARRAY[256];
     extern i32 ddmaxjoints;
     extern i32 NumQuatPushes;
-    extern u8 AnimQuatSavedPc[4];
+    extern u8 AnimQuatSaved[4];
     extern NUPRIM_VERTEX_GROUP_SOURCE_PC *NuPrimVertexGroupSource;
     void NuTexAnimRemoveList(void *);
     i32 NuTexGetUnresolvedTextureTIDPS(void);
@@ -342,23 +342,23 @@ extern "C" {
 #define PCDisplayMaterialCount (PCDynamicDisplayScene.material_count)       // NOLINT(readability-identifier-naming)
     extern u32 numtl_renderplane;
     extern const char *PCDynamicDisplaySceneNamePointer;
-    extern i32 VisibilityEvaluateEnabledPc;
-    extern i32 VisibilityOcclusionEnabledPc;
+    extern i32 VisibilityEvaluateEnabled;
+    extern i32 VisibilityOcclusionEnabled;
     extern i32 do_InstTree;
-    extern i32 VisibilityCameraLockPc;
-    extern i32 VisibilityLoadedOcclusionPc;
-    extern i32 VisibilityUsingOcclusionPc;
-    extern i32 VisibilityCurrentViewBoxPc;
-    extern NUPLANE VisibilityDepthPlanePc;
-    extern NUPLANE VisibilityAbsoluteDepthPlanePc;
+    extern i32 VisibilityCameraLock;
+    extern i32 VisibilityLoadedOcclusion;
+    extern i32 VisibilityUsingOcclusion;
+    extern i32 VisibilityCurrentViewBox;
+    extern NUPLANE VisibilityDepthPlane;
+    extern NUPLANE VisibilityAbsoluteDepthPlane;
     extern u8 cacheValues[256];
     extern u8 OcclusionBitArray[0x320];
 #define VISIBILITY_ALTERNATE_WIDTH_PC zxs
 #define VISIBILITY_OCCLUSION_OUTPUT_PC OcclusionBitArray
     void NuCameraLock(i32);
-    extern i32 DisplaySceneRenderDisabledPc;
+    extern i32 DisplaySceneRenderDisabled;
     extern i32 noscenespecials;
-    extern i32 VisibilityPortalFilterEnabledPc;
+    extern i32 VisibilityPortalFilterEnabled;
 
     typedef struct render_post_bloom_reader_s { // size 0x4c
         u8 unknown_00[4];                       // 0x00
@@ -380,7 +380,7 @@ extern "C" {
         f32 direction_bias;                     // 0x48
     } RENDER_POST_BLOOM_READER_PC;
 
-    i16 RenderPostASinPc(f32);
+    i16 RenderPostASin(f32);
     void DrawAlphaGrid(i32, i32, RENDER_POST_BLOOM_READER_PC *);
 
     void NuTexAnimSetSignals(u32 signals);
@@ -414,47 +414,47 @@ extern "C" {
         f32 value;                     // 0xc
     } NUANIM_LEGACY_KEY;
 
-    typedef struct NUANIM_LEGACY_CURVE_PC { // size 0x10
-        u8 key_mask[4];                     // 0x0
-        NUANIM_LEGACY_KEY *keys;            // 0x4
-        i32 key_count;                      // 0x8
-        u32 flags;                          // 0xc
-    } NUANIM_LEGACY_CURVE_PC;
+    typedef struct NUANIM_LEGACY_CURVE { // size 0x10
+        u8 key_mask[4];                  // 0x0
+        NUANIM_LEGACY_KEY *keys;         // 0x4
+        i32 key_count;                   // 0x8
+        u32 flags;                       // 0xc
+    } NUANIM_LEGACY_CURVE;
 
-    typedef struct NUANIM_LEGACY_SET_PC { // size 0x10
-        u32 flags;                        // 0x0
-        f32 *constants;                   // 0x4
-        NUANIM_LEGACY_CURVE_PC **curves;  // 0x8
-        i8 curve_count;                   // 0xc
-        u8 unknown_0d[3];                 // 0xd
-    } NUANIM_LEGACY_SET_PC;
+    typedef struct NUANIM_LEGACY_SET { // size 0x10
+        u32 flags;                     // 0x0
+        f32 *constants;                // 0x4
+        NUANIM_LEGACY_CURVE **curves;  // 0x8
+        i8 curve_count;                // 0xc
+        u8 unknown_0d[3];              // 0xd
+    } NUANIM_LEGACY_SET;
 
-    typedef struct NUANIM_LEGACY_HEADER_PC { // size 0x10
-        f32 duration;                        // 0x0
-        u32 unknown_04;                      // 0x4
-        i32 chunk_count;                     // 0x8
-        void **chunks;                       // 0xc
-    } NUANIM_LEGACY_HEADER_PC;
+    typedef struct NUANIM_LEGACY_HEADER { // size 0x10
+        f32 duration;                     // 0x0
+        u32 unknown_04;                   // 0x4
+        i32 chunk_count;                  // 0x8
+        void **chunks;                    // 0xc
+    } NUANIM_LEGACY_HEADER;
 
-    typedef struct NUANIM_LEGACY_CHUNK {   // size 0xc
-        i32 node_count;                    // 0x0
-        u32 unknown_04;                    // 0x4
-        NUANIM_LEGACY_SET_PC **curve_sets; // 0x8
+    typedef struct NUANIM_LEGACY_CHUNK { // size 0xc
+        i32 node_count;                  // 0x0
+        u32 unknown_04;                  // 0x4
+        NUANIM_LEGACY_SET **curve_sets;  // 0x8
     } NUANIM_LEGACY_CHUNK;
 
-    void NuAnimDataCalcTime(NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *);
-    DWA_WEIGHT_BLOCK_PC **NuHGobjEvalDwa(i32, i16 *, NUANIM_LEGACY_HEADER_PC *, f32);
-    extern f32 FrameMaterialAnimationSpeedPc;
+    void NuAnimDataCalcTime(NUANIM_LEGACY_HEADER *, f32, NUANIM_TIME2 *);
+    DWA_WEIGHT_BLOCK **NuHGobjEvalDwa(i32, i16 *, NUANIM_LEGACY_HEADER *, f32);
+    extern f32 FrameMaterialAnimationSpeed;
     void NuDisplayListAnimateMtls(f32 frame_time);
     extern i32 nuspecial_vertex_noffsets;
     extern f32 (*nuspecial_vertex_offsets)[4];
-    extern u32 NuPostEffectInitialisedFlagsPc;
+    extern u32 NuPostEffectInitialisedFlags;
     extern char *PCDisplayCaptureCursorPc;
     extern char *nudlist_field_18b0;
-    extern char PCDisplayCaptureBufferPc[0x1000];
+    extern char PCDisplayCaptureBuffer[0x1000];
     i32 NuTexGetWidth(i32 id);
     i32 NuTexGetHeight(i32 id);
-    extern i32 NuPostEffectBackBufferFramePc;
+    extern i32 NuPostEffectBackBufferFrame;
 #ifdef __cplusplus
 }
 #endif
@@ -463,28 +463,28 @@ typedef void (*PC_DISPLAY_ITEM_HANDLER_PC)(void *);
 STATIC_ASSERT(sizeof(PC_DISPLAY_ITEM_HANDLER_PC) == 4);
 /* Working accessed-field views only, not original allocation extents.
  * Pointer-only parameter types remain opaque until an actual read is consumed. */
-typedef struct NU_POST_BLOOM_PARAMETERS_PC NU_POST_BLOOM_PARAMETERS_PC;
+typedef struct NU_POST_BLOOM_PARAMETERS NU_POST_BLOOM_PARAMETERS;
 
-struct NU_POST_BLOOM_PARAMETERS_PC { // size 0x54
-    i32 enabled;                     // 0x00
-    f32 near_angle;                  // 0x04
-    f32 near_scale;                  // 0x08
-    f32 far_angle;                   // 0x0c
-    f32 far_scale;                   // 0x10
-    f32 intensity;                   // 0x14
-    f32 unknown_18;                  // 0x18
-    f32 blur_iterations;             // 0x1c
-    f32 blend;                       // 0x20
-    f32 threshold;                   // 0x24
-    i32 directional;                 // 0x28
-    NUVEC direction;                 // 0x2c
-    f32 direction_near_angle;        // 0x38
-    f32 direction_far_scale;         // 0x3c
-    f32 direction_far_angle;         // 0x40
-    f32 direction_near_scale;        // 0x44
-    f32 direction_bias;              // 0x48
-    f32 unknown_4c;                  // 0x4c
-    f32 unknown_50;                  // 0x50
+struct NU_POST_BLOOM_PARAMETERS { // size 0x54
+    i32 enabled;                  // 0x00
+    f32 near_angle;               // 0x04
+    f32 near_scale;               // 0x08
+    f32 far_angle;                // 0x0c
+    f32 far_scale;                // 0x10
+    f32 intensity;                // 0x14
+    f32 unknown_18;               // 0x18
+    f32 blur_iterations;          // 0x1c
+    f32 blend;                    // 0x20
+    f32 threshold;                // 0x24
+    i32 directional;              // 0x28
+    NUVEC direction;              // 0x2c
+    f32 direction_near_angle;     // 0x38
+    f32 direction_far_scale;      // 0x3c
+    f32 direction_far_angle;      // 0x40
+    f32 direction_near_scale;     // 0x44
+    f32 direction_bias;           // 0x48
+    f32 unknown_4c;               // 0x4c
+    f32 unknown_50;               // 0x50
 };
 
 #ifdef __cplusplus
@@ -522,34 +522,34 @@ struct PC_POST_DATA_PORT {              // size 0x8
     }
 };
 
-extern "C" PC_POST_DATA_PORT PostPortOutFramebufferPc;
-extern "C" PC_POST_DATA_PORT PostPortColorBufferPc;
-extern "C" PC_POST_DATA_PORT PostPortNormalBufferPc;
-extern "C" PC_POST_DATA_PORT PostPortVelocityBufferPc;
-extern "C" PC_POST_DATA_PORT PostPortDepthRTBufferPc;
-extern "C" PC_POST_DATA_PORT PostPortDepthBufferPc;
+extern "C" PC_POST_DATA_PORT PostPortOutFramebuffer;
+extern "C" PC_POST_DATA_PORT PostPortColorBuffer;
+extern "C" PC_POST_DATA_PORT PostPortNormalBuffer;
+extern "C" PC_POST_DATA_PORT PostPortVelocityBuffer;
+extern "C" PC_POST_DATA_PORT PostPortDepthRTBuffer;
+extern "C" PC_POST_DATA_PORT PostPortDepthBuffer;
 #endif
 
-typedef struct NU_POST_DOF_PARAMETERS_PC { // size 0x18
-    i32 enabled;                           // 0x00
-    f32 strength;                          // 0x04
-    f32 near_distance;                     // 0x08
-    f32 far_distance;                      // 0x0c
-    i32 mode;                              // 0x10
-    i32 bias;                              // 0x14
-} NU_POST_DOF_PARAMETERS_PC;
+typedef struct NU_POST_DOF_PARAMETERS { // size 0x18
+    i32 enabled;                        // 0x00
+    f32 strength;                       // 0x04
+    f32 near_distance;                  // 0x08
+    f32 far_distance;                   // 0x0c
+    i32 mode;                           // 0x10
+    i32 bias;                           // 0x14
+} NU_POST_DOF_PARAMETERS;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32 NuPostEffectsRanPc;
-    extern u8 NuPostLastFrameEffectPc;
+    extern i32 NuPostEffectsRan;
+    extern u8 NuPostLastFrameEffect;
     extern f32 aiEditor_LocatorWidth;
     void NuLightSpeedBlur(i32 reuse_camera, f32 scale);
     void NuSpeedBlurSetMotionFactors(f32 pan, f32 pull, f32 clamp);
     extern i32 kPRIM_COORD_LOOKUP[3];
 #ifdef __cplusplus
-    void NuRndrEndFrameActionPc(void);
+    void NuRndrEndFrameAction(void);
 #ifdef __cplusplus
 }
 #endif
@@ -558,10 +558,10 @@ extern "C" {
 extern "C" {
 #endif
     void NuDeferredShadingRender(void);
-    extern i32 PostShadowCubeFaceIndicesPc[6][4];
-    extern f32 PostShadowPlaneExtrusionPc;
+    extern i32 PostShadowCubeFaceIndices[6][4];
+    extern f32 PostShadowPlaneExtrusion;
     extern f32 PostBlurHighInputBiasPc;
-    extern f32 PostBlurHighOutputBiasPc;
+    extern f32 PostBlurHighOutputBias;
 #ifdef __cplusplus
 }
 #endif
@@ -574,20 +574,20 @@ extern "C" {
 
 #if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 2 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
-typedef struct nutexdim_s {           // size 0x28
-    i32 width;                        // 0x00
-    i32 height;                       // 0x04
-    u8 checksum[0x10];                // 0x08
-    i32 ref_count;                    // 0x18
-    void *image_data;                 // 0x1c
-    u32 image_size;                   // 0x20
-    PC_TEXTURE_RESOURCE_PC *resource; // 0x24
+typedef struct nutexdim_s {        // size 0x28
+    i32 width;                     // 0x00
+    i32 height;                    // 0x04
+    u8 checksum[0x10];             // 0x08
+    i32 ref_count;                 // 0x18
+    void *image_data;              // 0x1c
+    u32 image_size;                // 0x20
+    PC_TEXTURE_RESOURCE *resource; // 0x24
 } NUTEXDIM_PC;
 
 typedef struct nuvpcurrent_s { // size 0x40
 
     union { // size 0x18
-        PC_VIEWPORT_PC viewport;
+        PC_VIEWPORT viewport;
 
         struct {        // size 0x18
             i32 x;      // 0x00
@@ -627,18 +627,18 @@ extern "C" {
     extern VARIPTR fstack_limit;
     void NuDisplayListCreateDynMtlList_candidate(VARIPTR *, VARIPTR);
 
-    void NuRndrArenaInitPc(VARIPTR *, VARIPTR);
-    i32 NuTexRegisterDimensionsPc(NUTEXDIM_PC *texture);
+    void NuRndrArenaInit(VARIPTR *, VARIPTR);
+    i32 NuTexRegisterDimensions(NUTEXDIM_PC *texture);
 
 #ifdef __cplusplus
 }
 #endif
 #ifdef __cplusplus
 
-struct POST_SHADER_PROGRAM_PC {            // size 0x10
-    PC_TEXTURE_RESOURCE_PC *vertex_shader; // 0x0
-    PC_TEXTURE_RESOURCE_PC *pixel_shader;  // 0x4
-    u32 unknown_08[2];                     // 0x8
+struct POST_SHADER_PROGRAM_PC {         // size 0x10
+    PC_TEXTURE_RESOURCE *vertex_shader; // 0x0
+    PC_TEXTURE_RESOURCE *pixel_shader;  // 0x4
+    u32 unknown_08[2];                  // 0x8
 };
 
 #endif
@@ -705,16 +705,16 @@ typedef struct ANI3_JOINT { // size 0x30
     NUVEC4 scale;           // 0x20
 } ANI3_JOINT;
 
-typedef struct ANI3_BUFFER_PC { // size 0x10
-    i32 joint_count;            // 0x0
-    i16 max_joints;             // 0x4
-    u8 use_quaternions;         // 0x6
-    u8 pad_07;                  // 0x7
-    ANI3_JOINT *joints;         // 0x8
-    u8 *joint_flags;            // 0xc
-} ANI3_BUFFER_PC;
+typedef struct ANI3_BUFFER { // size 0x10
+    i32 joint_count;         // 0x0
+    i16 max_joints;          // 0x4
+    u8 use_quaternions;      // 0x6
+    u8 pad_07;               // 0x7
+    ANI3_JOINT *joints;      // 0x8
+    u8 *joint_flags;         // 0xc
+} ANI3_BUFFER;
 
-typedef struct ANI3_GLOBALBUFFER_PC { // size 0x10
+typedef struct ANI3_GLOBALBUFFER { // size 0x10
 
     union { // size 0x4
         u8 unknown_00[4];
@@ -730,19 +730,19 @@ typedef struct ANI3_GLOBALBUFFER_PC { // size 0x10
     }; // 0x8
 
     u8 *joint_flags; // 0xc
-} ANI3_GLOBALBUFFER_PC;
+} ANI3_GLOBALBUFFER;
 
 typedef void (*ANI3_ROOT_CALLBACK_PC)(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
 typedef void (*ANI3_EVAL_CALLBACK_PC)(NUMTX *, void *, NUQUAT *);
 
-typedef struct NUHGOBJ_EVAL_JOINT_PC { // size 0x60
-    NUMTX bind_matrix;                 // 0x00
-    NUVEC pivot_pc;                    // 0x40
-    u8 unknown_4c_4f[4];               // 0x4c
-    u8 parent_index;                   // 0x50
-    u8 flags_pc;                       // 0x51
-    u8 unknown_52_5f[14];              // 0x52
-} NUHGOBJ_EVAL_JOINT_PC;
+typedef struct NUHGOBJ_EVAL_JOINT { // size 0x60
+    NUMTX bind_matrix;              // 0x00
+    NUVEC pivot_pc;                 // 0x40
+    u8 unknown_4c_4f[4];            // 0x4c
+    u8 parent_index;                // 0x50
+    u8 flags_pc;                    // 0x51
+    u8 unknown_52_5f[14];           // 0x52
+} NUHGOBJ_EVAL_JOINT;
 
 typedef struct NUHGOBJ_RENDER_PART {   // size 0x14
     const char *name;                  // 0x00
@@ -752,12 +752,12 @@ typedef struct NUHGOBJ_RENDER_PART {   // size 0x14
     NUSPECIALHANDLE *alternate_smooth; // 0x10
 } NUHGOBJ_RENDER_PART;
 
-typedef struct NUHGOBJ_POI_PC { // size 0x50
-    NUMTX matrix;               // 0x00
-    u8 unknown_40[4];           // 0x40
-    u8 joint_index;             // 0x44
-    u8 field_45[11];            // 0x45
-} NUHGOBJ_POI_PC;
+typedef struct NUHGOBJ_POI { // size 0x50
+    NUMTX matrix;            // 0x00
+    u8 unknown_40[4];        // 0x40
+    u8 joint_index;          // 0x44
+    u8 field_45[11];         // 0x45
+} NUHGOBJ_POI;
 
 typedef struct nuqfnt_render_data_s { // size 0x50
     u32 colour;                       // 0x00
@@ -819,21 +819,21 @@ extern "C" {
     f32 NuQFntPrintJustifiedRSW(void *, VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *);
     extern NUMTX debris_box_camera_cache;
 
-    typedef struct CAMERA_CLIP_PLANES_PC { // size 0x150
-        NUMTX frustum;                     // 0x000
-        NUMTX scissor;                     // 0x040
-        NUMTX near_far;                    // 0x080
-        NUVEC4 near_plane;                 // 0x0c0
-        NUMTX abs_frustum;                 // 0x0d0
-        NUMTX abs_scissor;                 // 0x110
-    } CAMERA_CLIP_PLANES_PC;
+    typedef struct CAMERA_CLIP_PLANES { // size 0x150
+        NUMTX frustum;                  // 0x000
+        NUMTX scissor;                  // 0x040
+        NUMTX near_far;                 // 0x080
+        NUVEC4 near_plane;              // 0x0c0
+        NUMTX abs_frustum;              // 0x0d0
+        NUMTX abs_scissor;              // 0x110
+    } CAMERA_CLIP_PLANES;
 
-    extern CAMERA_CLIP_PLANES_PC CameraClipPlanesPc;
+    extern CAMERA_CLIP_PLANES CameraClipPlanes;
     void NuSpecialUpdate(NUSPECIALHANDLE *special);
     f32 NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special);
-    extern NUMTX NuPortalLocalViewPc;
-    extern NUMTX NuPortalProjectionScratchPc;
-    extern NUMTX NuPortalProjectionInversePc;
+    extern NUMTX NuPortalLocalView;
+    extern NUMTX NuPortalProjectionScratch;
+    extern NUMTX NuPortalProjectionInverse;
 
     typedef struct nucamerareflect_s { // size 0x84
         u32 unknown_00;                // 0x00
@@ -842,41 +842,41 @@ extern "C" {
     } NUCAMERAREFLECT;
 
     extern NUCAMERAREFLECT global_reflect;
-    extern NUMTX NuVpIdentityMatrixPc;
+    extern NUMTX NuVpIdentityMatrix;
     extern NUMTX NuCameraScissorProjectionScratch;
     i32 NuSpecialDrawAt(NUSPECIALHANDLE *, NUMTX *);
-    void __fastcall NuQuatMulAlignedPc(const NUQUAT *parent, const NUQUAT *rotation, NUQUAT *out);
+    void __fastcall NuQuatMulAligned(const NUQUAT *parent, const NUQUAT *rotation, NUQUAT *out);
     void NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix);
-    extern NUMTX VisibilityPrimaryPlaneMatrixPc;
-    extern NUMTX VisibilityAlternatePlaneMatrixPc;
-    extern NUMTX VisibilityPrimaryWorldMatrixPc;
-    extern NUMTX VisibilityAlternateWorldMatrixPc;
-    extern NUMTX VisibilityPrimaryAbsoluteMatrixPc;
-    extern NUMTX VisibilityAlternateAbsoluteMatrixPc;
-    void NuAnimBuffCreateScratch(ANI3_BUFFER_PC *buffer);
+    extern NUMTX VisibilityPrimaryPlaneMatrix;
+    extern NUMTX VisibilityAlternatePlaneMatrix;
+    extern NUMTX VisibilityPrimaryWorldMatrix;
+    extern NUMTX VisibilityAlternateWorldMatrix;
+    extern NUMTX VisibilityPrimaryAbsoluteMatrix;
+    extern NUMTX VisibilityAlternateAbsoluteMatrix;
+    void NuAnimBuffCreateScratch(ANI3_BUFFER *buffer);
 
-    typedef struct CAMERA_CLIP_PACKET_PC { // size 0x94
-        NUMTX clip;                        // 0x00
-        NUMTX projection;                  // 0x40
-        u32 flags;                         // 0x80
-        f32 far_clip;                      // 0x84
-        f32 near_clip;                     // 0x88
-        f32 x_scale;                       // 0x8c
-        f32 y_scale;                       // 0x90
-    } CAMERA_CLIP_PACKET_PC;
+    typedef struct CAMERA_CLIP_PACKET { // size 0x94
+        NUMTX clip;                     // 0x00
+        NUMTX projection;               // 0x40
+        u32 flags;                      // 0x80
+        f32 far_clip;                   // 0x84
+        f32 near_clip;                  // 0x88
+        f32 x_scale;                    // 0x8c
+        f32 y_scale;                    // 0x90
+    } CAMERA_CLIP_PACKET;
 
     void NuCameraTransformScissorClip(NUVEC *, NUVEC *, i32, NUMTX *);
 #ifdef __cplusplus
 }
 #endif
 
-typedef struct NU_POST_SPEED_PARAMETERS_PC { // size 0x8c
-    i32 enabled;                             // 0x00
-    NUMTX previous;                          // 0x04
-    NUMTX current;                           // 0x44
-    f32 frame_time;                          // 0x84
-    f32 scale;                               // 0x88
-} NU_POST_SPEED_PARAMETERS_PC;
+typedef struct NU_POST_SPEED_PARAMETERS { // size 0x8c
+    i32 enabled;                          // 0x00
+    NUMTX previous;                       // 0x04
+    NUMTX current;                        // 0x44
+    f32 frame_time;                       // 0x84
+    f32 scale;                            // 0x88
+} NU_POST_SPEED_PARAMETERS;
 
 #undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
 #define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 4
@@ -895,36 +895,36 @@ typedef struct NUANIMDATA2_SKELETAL { // size 0x18
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUCAMERA *NuPortalCameraPc;
-    extern NUCAMERA NuPortalDebugCameraPc;
-    extern NUCAMERA NuPortalRestoreCameraPc;
-    void NuAnimData2CalcTime(NUANIMDATA2 *, f32, NUANIM_TIME2_PC *);
+    extern NUCAMERA *NuPortalCamera;
+    extern NUCAMERA NuPortalDebugCamera;
+    extern NUCAMERA NuPortalRestoreCamera;
+    void NuAnimData2CalcTime(NUANIMDATA2 *, f32, NUANIM_TIME2 *);
     /* C extern declarations: */
     i32 StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
     i32 StateAnimEvaluate(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
     STATE_ANIM_PC *StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta);
 
-    typedef struct CAMERA_SAVED_STATE_PC { // size 0x420
-        NUCAMERA camera;                   // 0x000
-        NUMTX view;                        // 0x078
-        NUMTX projection;                  // 0x0b8
-        NUMTX screen;                      // 0x0f8
-        NUMTX view_projection;             // 0x138
-        NUMTX view_projection_scissor;     // 0x178
-        NUMTX view_projection_viewport;    // 0x1b8
-        NUMTX viewport;                    // 0x1f8
-        NUMTX view_projection_screen;      // 0x238
-        NUMTX projection_screen;           // 0x278
-        i32 effects;                       // 0x2b8
-        f32 zx;                            // 0x2bc
-        f32 zy;                            // 0x2c0
-        f32 zxs;                           // 0x2c4
-        f32 zys;                           // 0x2c8
-        u32 unknown_2cc;                   // 0x2cc
-        CAMERA_CLIP_PLANES_PC planes;      // 0x2d0
-    } CAMERA_SAVED_STATE_PC;
+    typedef struct CAMERA_SAVED_STATE { // size 0x420
+        NUCAMERA camera;                // 0x000
+        NUMTX view;                     // 0x078
+        NUMTX projection;               // 0x0b8
+        NUMTX screen;                   // 0x0f8
+        NUMTX view_projection;          // 0x138
+        NUMTX view_projection_scissor;  // 0x178
+        NUMTX view_projection_viewport; // 0x1b8
+        NUMTX viewport;                 // 0x1f8
+        NUMTX view_projection_screen;   // 0x238
+        NUMTX projection_screen;        // 0x278
+        i32 effects;                    // 0x2b8
+        f32 zx;                         // 0x2bc
+        f32 zy;                         // 0x2c0
+        f32 zxs;                        // 0x2c4
+        f32 zys;                        // 0x2c8
+        u32 unknown_2cc;                // 0x2cc
+        CAMERA_CLIP_PLANES planes;      // 0x2d0
+    } CAMERA_SAVED_STATE;
 
-    extern CAMERA_SAVED_STATE_PC CameraSavedStatesPc[16];
+    extern CAMERA_SAVED_STATE CameraSavedStates[16];
 #ifdef __cplusplus
 }
 #endif
@@ -937,7 +937,7 @@ extern "C" {
 
 #if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 5 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
-typedef struct nudisplay_list_pc_s {         // size 0x90
+typedef struct nudisplay_list_s {            // size 0x90
     void *allocation;                        // 0x00
     i32 item_count;                          // 0x04
     void *items;                             // 0x08
@@ -984,18 +984,18 @@ typedef struct nudisplay_list_pc_s {         // size 0x90
     struct PC_MATERIAL_ANIM_SET *material_animations; // 0x8c
 } NUDISPLAY_LIST_PC;
 
-typedef struct NUHGOBJ_EVAL_PC {              // size 0x1c4
+typedef struct NUHGOBJ_EVAL {                 // size 0x1c4
     u8 unknown_0[0x110];                      // 0x000
-    struct nudisplay_list_pc_s *display_list; // 0x110
+    struct nudisplay_list_s *display_list;    // 0x110
     u8 data_0x114[84];                        // 0x114
     i32 joint_count;                          // 0x168
-    NUHGOBJ_EVAL_JOINT_PC *joints;            // 0x16c
+    NUHGOBJ_EVAL_JOINT *joints;               // 0x16c
     NUMTX *bind_matrices;                     // 0x170
     NUMTX *inverse_bind;                      // 0x174
     i32 joint_override_map_count;             // 0x178
     u8 *joint_override_map;                   // 0x17c
     u8 data_0x180[4];                         // 0x180
-    NUHGOBJ_POI_PC *points;                   // 0x184
+    NUHGOBJ_POI *points;                      // 0x184
     i32 point_index_count;                    // 0x188
     u8 *point_index_map;                      // 0x18c
     i32 render_count;                         // 0x190
@@ -1006,35 +1006,35 @@ typedef struct NUHGOBJ_EVAL_PC {              // size 0x1c4
     u8 unknown_1a1[11];                       // 0x1a1
     NUVEC bounds_min;                         // 0x1ac
     NUVEC bounds_max;                         // 0x1b8
-} NUHGOBJ_EVAL_PC;
+} NUHGOBJ_EVAL;
 
 /* PC NuDynamicLight::RenderSet. */
-typedef struct nurndrlightrecord_s {                 // size 0x380
-    NUMTX view_pc;                                   // 0x000
-    NUMTX projection_pc;                             // 0x040
-    NUMTX shadow_matrix_pc;                          // 0x080
-    NUMTX texture_matrix_pc;                         // 0x0c0
-    f32 parameter_100;                               // 0x100
-    f32 parameter_104;                               // 0x104
-    i32 enabled;                                     // 0x108
-    f32 parameter_10c;                               // 0x10c
-    f32 parameter_110;                               // 0x110
-    u8 opaque_114_120[0xc];                          // 0x114
-    NUVEC4 corners_pc[8];                            // 0x120
-    NUVEC4 planes_pc[12];                            // 0x1a0
-    i32 shadow_plane_count;                          // 0x260
-    u8 opaque_264_270[0xc];                          // 0x264
-    NUVEC4 far_plane_pc;                             // 0x270
-    NUVEC4 endpoint0_pc;                             // 0x280
-    NUVEC4 endpoint1_pc;                             // 0x290
-    f32 shadow_radius_pc;                            // 0x2a0
-    NU_LIGHT_SHADOW_LIST_VIEW_PC shadow_lists_pc[2]; // 0x2a4
-    NURNDRLIBSTATE *render_states[2];                // 0x32c
-    NUDISPLAYLISTITEM *list_items[2];                // 0x334
-    u32 unknown_33c[6];                              // 0x33c
-    i32 pending[8];                                  // 0x354
-    i32 count;                                       // 0x374
-    u8 opaque_378_380[0x8];                          // 0x378
+typedef struct nurndrlightrecord_s {              // size 0x380
+    NUMTX view_pc;                                // 0x000
+    NUMTX projection_pc;                          // 0x040
+    NUMTX shadow_matrix_pc;                       // 0x080
+    NUMTX texture_matrix_pc;                      // 0x0c0
+    f32 parameter_100;                            // 0x100
+    f32 parameter_104;                            // 0x104
+    i32 enabled;                                  // 0x108
+    f32 parameter_10c;                            // 0x10c
+    f32 parameter_110;                            // 0x110
+    u8 opaque_114_120[0xc];                       // 0x114
+    NUVEC4 corners_pc[8];                         // 0x120
+    NUVEC4 planes_pc[12];                         // 0x1a0
+    i32 shadow_plane_count;                       // 0x260
+    u8 opaque_264_270[0xc];                       // 0x264
+    NUVEC4 far_plane_pc;                          // 0x270
+    NUVEC4 endpoint0_pc;                          // 0x280
+    NUVEC4 endpoint1_pc;                          // 0x290
+    f32 shadow_radius_pc;                         // 0x2a0
+    NU_LIGHT_SHADOW_LIST_VIEW shadow_lists_pc[2]; // 0x2a4
+    NURNDRLIBSTATE *render_states[2];             // 0x32c
+    NUDISPLAYLISTITEM *list_items[2];             // 0x334
+    u32 unknown_33c[6];                           // 0x33c
+    i32 pending[8];                               // 0x354
+    i32 count;                                    // 0x374
+    u8 opaque_378_380[0x8];                       // 0x378
 #ifdef __cplusplus
     nurndrlightrecord_s();
     nurndrlightrecord_s &operator=(const nurndrlightrecord_s &other);
@@ -1046,20 +1046,20 @@ extern "C" {
 #endif
     extern NUMTL **PCSpecialForcedMaterialTable;
     extern NUMTL *PCSpecialForcedMaterial;
-    extern NUMTL *PCMaterialPoolPc;
+    extern NUMTL *PCMaterialPool;
     void NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material, i32 z);
 
-    typedef struct FONT_LEGACY_READER_PC { // size 0x1520
-        u8 unknown00[12];                  // 0x0000
-        i16 height;                        // 0x000c
-        u8 unknown0e[6];                   // 0x000e
-        i16 baseline;                      // 0x0014
-        i16 ic_gap;                        // 0x0016
-        NUMTL *material;                   // 0x0018
-        i32 glyph_count;                   // 0x001c
-        u8 character_map[256];             // 0x0020
-        FONT_LEGACY_GLYPH glyphs[256];     // 0x0120
-    } FONT_LEGACY_READER_PC;
+    typedef struct FONT_LEGACY_READER { // size 0x1520
+        u8 unknown00[12];               // 0x0000
+        i16 height;                     // 0x000c
+        u8 unknown0e[6];                // 0x000e
+        i16 baseline;                   // 0x0014
+        i16 ic_gap;                     // 0x0016
+        NUMTL *material;                // 0x0018
+        i32 glyph_count;                // 0x001c
+        u8 character_map[256];          // 0x0020
+        FONT_LEGACY_GLYPH glyphs[256];  // 0x0120
+    } FONT_LEGACY_READER;
 
     extern NUMTL **PCDisplayMaterialAddQueue;
     NUDISPLAYLISTITEM *NuDisplayListCreateMtlDlist(NUDISPLAYLISTITEM *, NUMTL *, VARIPTR *, VARIPTR);
@@ -1084,14 +1084,14 @@ extern "C" {
 #endif
     i32 NuDynamicLightIsEnabled(NURNDRLIGHTRECORD *records);
 
-    extern NU_POST_MAIN_VIEW_PC *mainFilter;
-    extern NU_POST_MOTION_VIEW_PC *motionFilter;
-    extern NU_POST_ACCUM_VIEW_PC *motionAccumFilter;
-    extern NU_POST_SPEED_VIEW_PC *speedBlurFilter;
+    extern NU_POST_MAIN_VIEW *mainFilter;
+    extern NU_POST_MOTION_VIEW *motionFilter;
+    extern NU_POST_ACCUM_VIEW *motionAccumFilter;
+    extern NU_POST_SPEED_VIEW *speedBlurFilter;
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW_PC) == 0x2e8);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW) == 0x2e8);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1149,7 +1149,7 @@ typedef struct nurndrlibscene_s { // size 0x218
             u8 opaque_5c_ac[0x50]; // 0x05c
         };
 
-        BURN_PARAMETERS_PC burnout_parameters_pc;
+        BURN_PARAMETERS burnout_parameters_pc;
     }; // 0x058
 
     u32 unknown_ac;          // 0x0ac
@@ -1172,7 +1172,7 @@ extern "C" {
 #endif
     extern PC_GLOBAL_LIGHTING_STATE PCGlobalLightingState;
     extern NURNDRLIBSCENE currentScene;
-    extern NUDISPLAYLIST PCDisplayList2dPc;
+    extern NUDISPLAYLIST PCDisplayList2d;
     extern NUSORTPRI *sort_list;
     extern NUDISPLAYLISTRENDERSCENE *PCSafeRenderScenes[24];
 
@@ -1180,18 +1180,18 @@ extern "C" {
     void SetProceduralAnimationFn(NUJOINTPROCANIMFN_PC callback);
 
     /* Qualified CPU visibility/tree views; original owning extents remain unknown. */
-    typedef struct visibility_result_reader_pc_s { // size 0x2c
-        i32 instance_count;                        // 0x00
-        u8 unknown_04[4];                          // 0x04
-        NUGSCN *source_scene;                      // 0x08
-        void *occlusion_data;                      // 0x0c
-        u8 unknown_10[4];                          // 0x10
-        void *instance_tree;                       // 0x14
-        void *portal_marker;                       // 0x18
-        u8 *portal_bits;                           // 0x1c
-        void *context;                             // 0x20
-        u8 *instance_tree_bits;                    // 0x24
-        u32 flags;                                 // 0x28
+    typedef struct visibility_result_reader_s { // size 0x2c
+        i32 instance_count;                     // 0x00
+        u8 unknown_04[4];                       // 0x04
+        NUGSCN *source_scene;                   // 0x08
+        void *occlusion_data;                   // 0x0c
+        u8 unknown_10[4];                       // 0x10
+        void *instance_tree;                    // 0x14
+        void *portal_marker;                    // 0x18
+        u8 *portal_bits;                        // 0x1c
+        void *context;                          // 0x20
+        u8 *instance_tree_bits;                 // 0x24
+        u32 flags;                              // 0x28
     } VISIBILITY_RESULT_READER_PC;
 
     extern VISIBILITY_RESULT_READER_PC *myvisi;
@@ -1214,12 +1214,12 @@ extern "C" {
 
 #if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 7 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
-struct GRAPHICS_RENDER_TEXTURE_PC {   // size 0x30
-    PC_TEXTURE_RESOURCE_PC *resource; // 0x00
-    u16 width;                        // 0x04
-    u16 height;                       // 0x06
-    u16 unknown_08;                   // 0x08
-    u16 mip_count;                    // 0x0a
+struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
+    PC_TEXTURE_RESOURCE *resource; // 0x00
+    u16 width;                     // 0x04
+    u16 height;                    // 0x06
+    u16 unknown_08;                // 0x08
+    u16 mip_count;                 // 0x0a
 
     union { // size 0x1c
         u8 unknown_0c[0x1c];
@@ -1251,14 +1251,14 @@ struct GRAPHICS_RENDER_TEXTURE_PC {   // size 0x30
         };
     }; // 0x0c
 
-    PC_TEXTURE_RESOURCE_PC *surface; // 0x28
-    i32 external_id;                 // 0x2c
+    PC_TEXTURE_RESOURCE *surface; // 0x28
+    i32 external_id;              // 0x2c
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuTexAnimResetList(TEXTURE_ANIMATION_PC *animation);
+    void NuTexAnimResetList(TEXTURE_ANIMATION *animation);
 #ifdef __cplusplus
 }
 #endif
@@ -1268,31 +1268,31 @@ extern "C" {
 #endif
     extern NUFILE nudlist_field_958;
     extern NUFILE nudlist_field_988;
-    extern GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferTexturePc;
-    extern GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferCopyPc;
+    extern GRAPHICS_RENDER_TEXTURE *NuPostEffectBackBufferTexture;
+    extern GRAPHICS_RENDER_TEXTURE *NuPostEffectBackBufferCopy;
 #ifdef __cplusplus
 }
 #endif
 
 /* Native 80bb38 proxy array: five 12-byte records. */
-typedef struct PC_POST_BUFFER_PROXY_PC { // size 0xc
-    GRAPHICS_RENDER_TEXTURE_PC *texture; // 0x0
-    i32 kind;                            // 0x4
-    u8 enabled;                          // 0x8
-    u8 resolved;                         // 0x9
-    u8 unknown_0a[2];                    // 0xa
+typedef struct PC_POST_BUFFER_PROXY { // size 0xc
+    GRAPHICS_RENDER_TEXTURE *texture; // 0x0
+    i32 kind;                         // 0x4
+    u8 enabled;                       // 0x8
+    u8 resolved;                      // 0x9
+    u8 unknown_0a[2];                 // 0xa
 #ifdef __cplusplus
-    void fun_005c21c0(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 kind, u8 enabled, u8 resolved);
+    void fun_005c21c0(GRAPHICS_RENDER_TEXTURE *texture, i32 kind, u8 enabled, u8 resolved);
     u8 fun_005c21e0();
     void fun_005c21f0();
-    GRAPHICS_RENDER_TEXTURE_PC *fun_005c2210();
+    GRAPHICS_RENDER_TEXTURE *fun_005c2210();
 #endif
-} PC_POST_BUFFER_PROXY_PC;
+} PC_POST_BUFFER_PROXY;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern PC_POST_BUFFER_PROXY_PC PostProxyBuffersPc[5];
+    extern PC_POST_BUFFER_PROXY PostProxyBuffers[5];
 #ifdef __cplusplus
 }
 #endif
@@ -1355,13 +1355,13 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     void RenderSceneShadowPc(NUGSCN *scene);
     void ComputeShadowMatrixPc(NURNDRLIGHTRECORD *);
     void SetupShadowPc(NURNDRLIGHTRECORD *);
-    void RenderShadowPc(i32, PC_FRAMEBUFFER_PC *);
+    void RenderShadowPc(i32, PC_FRAMEBUFFER *);
     void RenderConstantsPc(void *);
     void SetEnabledPc(i32 enabled);
     void SetParameterfPc(i32 parameter, f32 value);
     i32 fun_005c2eb0();
     void fun_005c2ec0(i32 used);
-    NU_LIGHT_SHADOW_LIST_VIEW_PC *fun_005c2ee0(i32 set, NUMTL *material);
+    NU_LIGHT_SHADOW_LIST_VIEW *fun_005c2ee0(i32 set, NUMTL *material);
     void fun_005c6d90(NUMTX *view, NUMTX *projection);
     i32 fun_005c2f20();
     NUMTX *fun_005c2f30();
@@ -1391,21 +1391,21 @@ extern "C" {
 /* Proposed working fields only. Original PC class name/TU visibility stays qualified.
    Keep the pool and its real static constructor/destructor in one C++ owner. */
 
-struct PC_FRAMEBUFFER_PC {           // size 0xa4
-    PC_EFFECT_SURFACE_PC targets[5]; // 0x00
-    u32 clear_colour[5];             // 0x8c
-    i32 changed;                     // 0xa0
+struct PC_FRAMEBUFFER {           // size 0xa4
+    PC_EFFECT_SURFACE targets[5]; // 0x00
+    u32 clear_colour[5];          // 0x8c
+    i32 changed;                  // 0xa0
 #ifdef __cplusplus
-    PC_FRAMEBUFFER_PC();
-    ~PC_FRAMEBUFFER_PC();
+    PC_FRAMEBUFFER();
+    ~PC_FRAMEBUFFER();
 #endif
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *);
-    i32 PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *);
+    i32 PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE *);
+    i32 PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE *);
     void PCDeviceClear(u32, const RECT *, u32, u32, f32, u32);
 #ifdef __cplusplus
 }
@@ -1433,7 +1433,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NU_POST_DEFERRED_VIEW_PC *deferredFilter;
+    extern NU_POST_DEFERRED_VIEW *deferredFilter;
 #ifdef __cplusplus
 }
 #endif

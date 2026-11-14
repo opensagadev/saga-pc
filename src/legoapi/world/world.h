@@ -17,13 +17,13 @@
 #endif
 
 struct AISYS_PC;
-struct APIDEBRISSYS_PC;
-struct APIOBJECTSYS_PC;
-struct GIZMOBLOWUPTYPE_PC;
+struct APIDEBRISSYS;
+struct APIOBJECTSYS;
+struct GIZMOBLOWUPTYPE;
 struct GIZMOBLOWUP_PC;
 struct LEVEL_OBJECT_RUNTIME;
 struct NUGSCN_s;
-struct TUBE_PC;
+struct TUBE;
 struct ai_helper_system_s;
 struct bolt_s;
 struct climb_system_s;
@@ -131,9 +131,9 @@ typedef struct WORLDINFO_s { // size 0x51ac
     i32 area_index;                                            // 0x0120
     i32 episode_index;                                         // 0x0124
     struct level_data_s *current_level;                        // 0x0128
-    struct area_data_pc_s *area;                               // 0x012c
+    struct area_data_s *area;                                  // 0x012c
     struct level_progress_s *level_progress;                   // 0x0130
-    struct APIDEBRISSYS_PC *game_debris_sys;                   // 0x0134
+    struct APIDEBRISSYS *game_debris_sys;                      // 0x0134
     struct partdebrissys_s *part_debris_sys;                   // 0x0138
     struct NUGSCN_s *current_gscn;                             // 0x013c
     struct NUGSCN_s *secondary_gscn;                           // 0x0140
@@ -144,7 +144,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct gameanimsys_s *game_anim_sys;                       // 0x2960
     u32 unknown_2964[9];                                       // 0x2964
     struct socksys_s *sock_sys;                                // 0x2988
-    struct APIOBJECTSYS_PC *object_sys;                        // 0x298c
+    struct APIOBJECTSYS *object_sys;                           // 0x298c
     u8 room_visibility_flag;                                   // 0x2990
     u8 rooms_visible[0x100];                                   // 0x2991
     u8 unknown_2a91[3];                                        // 0x2a91
@@ -162,7 +162,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct LEVEL_OBJECT_RUNTIME *level_objects;                // 0x2ac0
     struct nugspline_s **camera_splines;                       // 0x2ac4
     void *gizmo_sys;                                           // 0x2ac8
-    struct GIZFLOW_PC *giz_flow;                               // 0x2acc
+    struct GIZFLOW *giz_flow;                                  // 0x2acc
     char filler4[12];                                          // 0x2ad0
     struct shadow_platform_list_pc_s *shadow_platform_list_pc; // 0x2adc
     struct HUBMINIKIT_s *hub_minikits;                         // 0x2ae0
@@ -177,7 +177,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     u8 unknown_4680[8];                                        // 0x4680
     struct zipup_s *zipups;                                    // 0x4688
     i32 zipup_count;                                           // 0x468c
-    struct TUBE_PC *tubes;                                     // 0x4690
+    struct TUBE *tubes;                                        // 0x4690
     i32 tube_count;                                            // 0x4694
     struct DOOR_s *doors;                                      // 0x4698
     i32 door_count;                                            // 0x469c
@@ -229,7 +229,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     void *hat_machine_sys;                                     // 0x5074
     struct techno_s *technos;                                  // 0x5078
     i32 techno_count;                                          // 0x507c
-    struct GRAPPLE_DYNAMIC_PC *grapples;                       // 0x5080
+    struct GRAPPLE_DYNAMIC *grapples;                          // 0x5080
     i32 grapple_count;                                         // 0x5084
     u8 unknown_5088[0x8];                                      // 0x5088
     void *shards;                                              // 0x5090
@@ -245,7 +245,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct GIZMOPICKUPRUNTIMESYS_s *pickup_runtime_sys;        // 0x50b8
     i32 gizmo_blowup_type_count;                               // 0x50bc
     i32 gizmo_blowup_count;                                    // 0x50c0
-    struct GIZMOBLOWUPTYPE_PC *gizmo_blowup_types;             // 0x50c4
+    struct GIZMOBLOWUPTYPE *gizmo_blowup_types;                // 0x50c4
     struct GIZMOBLOWUP_PC *gizmo_blowups;                      // 0x50c8
     i32 blowup_target_candidate_count;                         // 0x50cc
     struct GIZMOBLOWUP_PC **blowup_target_candidates;          // 0x50d0
@@ -264,7 +264,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct GIZBOMBGENSYS_s *giz_bombgen_sys;                   // 0x5114
     i32 has_level_specific_data;                               // 0x5118
     void *level_specific_data;                                 // 0x511c
-    struct KILLPARTS_ACCESSORY_PC *customiser_resources[9];    // 0x5120
+    struct KILLPARTS_ACCESSORY *customiser_resources[9];       // 0x5120
     struct NUGSCN_s *customiser_shared_scenes[9];              // 0x5144
     struct TRAFFICANIMSYS_s *trafficanim_sys;                  // 0x5168
     void *plug_sys;                                            // 0x516c
@@ -308,8 +308,8 @@ extern "C" {
 
     /* WORLDINFO existing unknown_2960 first DWORD -> struct gameanimsys_s *game_anim_sys @2960; retain next9 unknown
      * DWORDs. Existing unknown_4698 split at46a4 -> void *giz_obstacle_sys; retain preceding0xc/following0x68 opaque.
-     * Existing unknown_50bc -> i32 gizmo_blowup_type_count; unknown_50c4 -> struct GIZMOBLOWUPTYPE_PC
-     * *gizmo_blowup_types. Existing GIZMOBLOWUPTYPE_PC tail90..d8 opaque, char name[32]@d8, tailf8..100 opaque,
+     * Existing unknown_50bc -> i32 gizmo_blowup_type_count; unknown_50c4 -> struct GIZMOBLOWUPTYPE
+     * *gizmo_blowup_types. Existing GIZMOBLOWUPTYPE tail90..d8 opaque, char name[32]@d8, tailf8..100 opaque,
      * sizeof100. Preserve all previously asserted offsets. Authoritative actual reader/store spans in full ASM. */
 
     extern void (*WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *);

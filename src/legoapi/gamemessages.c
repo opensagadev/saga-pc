@@ -21,14 +21,14 @@ typedef struct game_save_score_s { // size 0x7c18
 } GAME_SAVE_SCORE_PC;
 
 /* Out-of-line copies of the SDK's static float helpers (nufloat.h). */
-static f32 GameMessagesFabsPc(f32 f) {
+static f32 GameMessagesFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
     return rv;
 }
 
-static f32 GameMessagesFdivPc(f32 a, f32 b) {
+static f32 GameMessagesFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
@@ -63,7 +63,7 @@ GAME_MESSAGE_PC *AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
             if (slot->expired != 0) {
                 value = 1.0f;
             } else {
-                value = GameMessagesFdivPc(slot->elapsed, slot->duration);
+                value = GameMessagesFdiv(slot->elapsed, slot->duration);
             }
             if (slot_index == -1 || value > best) {
                 best = value;
@@ -311,7 +311,7 @@ void TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *c
                 target.y = message->position.y + camera_right->y * message->scale_initial;
                 target.z = message->position.z + camera_right->z * message->scale_initial;
                 NuCameraTransformScreenClip(&transformed, &target, 1, NULL);
-                width = GameMessagesFabsPc(message->start_position.x - transformed.x);
+                width = GameMessagesFabs(message->start_position.x - transformed.x);
                 message->scale_current = (f32)(width * 0.5249999761581421);
             }
         }

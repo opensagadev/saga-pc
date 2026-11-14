@@ -47,28 +47,28 @@ extern "C" {
     extern PC_TEXTURE_ANIM_LIST *ntal_first;
     PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *, struct numtl_s *, u16 *, void *);
 
-    typedef struct TEXTURE_ANIM_PROGRAM_PC TEXTURE_ANIM_PROGRAM_PC;
-    typedef struct TEXTURE_ANIMATION_PC TEXTURE_ANIMATION_PC;
+    typedef struct TEXTURE_ANIM_PROGRAM TEXTURE_ANIM_PROGRAM;
+    typedef struct TEXTURE_ANIMATION TEXTURE_ANIMATION;
     void NuTexAnimSetMask(i32 mask);
     void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment);
     void NuTexAnimEnvReset(PC_TEXTURE_ANIM_ENV *environment);
-    void NuTexAnimProcessList(TEXTURE_ANIMATION_PC *animation);
+    void NuTexAnimProcessList(TEXTURE_ANIMATION *animation);
     void NuTexAnimInitMutex(void);
     void NuTexAnimRestart(void);
-    TEXTURE_ANIMATION_PC *NuTexAnimFind(TEXTURE_ANIMATION_PC *animation, const char *name);
-    void NuTexAnimDestroy(TEXTURE_ANIMATION_PC *animation);
-    TEXTURE_ANIMATION_PC *NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *program, struct numtl_s *material, u16 *texture_ids,
-                                          i32 texture_count);
-    TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgFind(const char *name);
-    void NuTexAnimProgDestroy(TEXTURE_ANIM_PROGRAM_PC *program);
+    TEXTURE_ANIMATION *NuTexAnimFind(TEXTURE_ANIMATION *animation, const char *name);
+    void NuTexAnimDestroy(TEXTURE_ANIMATION *animation);
+    TEXTURE_ANIMATION *NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM *program, struct numtl_s *material, u16 *texture_ids,
+                                       i32 texture_count);
+    TEXTURE_ANIM_PROGRAM *NuTexAnimProgFind(const char *name);
+    void NuTexAnimProgDestroy(TEXTURE_ANIM_PROGRAM *program);
     void NuTexAnimProgRelease(void);
-    void NuTexAnimProgInit(TEXTURE_ANIM_PROGRAM_PC *program);
-    TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgCreate(VARIPTR *buffer, i32 extra_bytes, const char *name);
-    void NuTexAnimProgWrite(char *path, TEXTURE_ANIM_PROGRAM_PC *program);
-    TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgRead(VARIPTR *buffer, char *path);
-    void NuTexAnimProgAssembleEnd(TEXTURE_ANIM_PROGRAM_PC *program);
-    TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgParseFile(NUFILE file, VARIPTR *buffer, VARIPTR end, i32 fps_unused);
-    TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIPTR end, i32 fps_unused);
+    void NuTexAnimProgInit(TEXTURE_ANIM_PROGRAM *program);
+    TEXTURE_ANIM_PROGRAM *NuTexAnimProgCreate(VARIPTR *buffer, i32 extra_bytes, const char *name);
+    void NuTexAnimProgWrite(char *path, TEXTURE_ANIM_PROGRAM *program);
+    TEXTURE_ANIM_PROGRAM *NuTexAnimProgRead(VARIPTR *buffer, char *path);
+    void NuTexAnimProgAssembleEnd(TEXTURE_ANIM_PROGRAM *program);
+    TEXTURE_ANIM_PROGRAM *NuTexAnimProgParseFile(NUFILE file, VARIPTR *buffer, VARIPTR end, i32 fps_unused);
+    TEXTURE_ANIM_PROGRAM *NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIPTR end, i32 fps_unused);
 
     extern NURAND texanim_rand;
     extern u16 script_mask;

@@ -36,9 +36,9 @@ extern "C" {
     void PartCollide_3D(PART_PC *);
     PART_PC *Part_FindFromHSpecial(NUSPECIALHANDLE *);
     void PartKill_ForceThrow(PART_PC *, i32);
-    PART_PC *AddPart(ADDPART_PC *);
+    PART_PC *AddPart(ADDPART *);
     PART_PC *FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range);
-    extern ADDPART_PC Default_ADDPART;
+    extern ADDPART Default_ADDPART;
     PART_PC *HitParts(GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32);
     void AddVariableShotDebrisEffectTimed5(i32, NUVEC *, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *, u16, i8);
     void SetPartRTLSet(RTLSET_PC *rtl_set);

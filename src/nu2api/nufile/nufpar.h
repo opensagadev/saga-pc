@@ -51,7 +51,7 @@ extern "C" {
 
 #if SAGA_NU2API_NUFILE_NUFPAR_H_PART == 2 && !defined(SAGA_NU2API_NUFILE_NUFPAR_H_STOP)
 
-typedef struct nufpar_pc_s { // size 0x584
+typedef struct nufpar_s {    // size 0x584
     char *file_buffer;       // 0x000
     NUFILE file_handle;      // 0x004
     char file_name[0x100];   // 0x008

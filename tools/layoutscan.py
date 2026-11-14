@@ -114,10 +114,10 @@ REVIEW = {
     0x408800: dict(name="cable", join=True, why="continues 0x4087a0"),
     0x40e700: dict(name="chris", conf="medium",
                    why="TCS only (no Batman counterpart); marker; Android chris.c fits between camera and config"),
-    0x4200c0: dict(name=None, lang="cpp", why="PC control screen (C++ PC_CONTROL_SCREEN_PC thiscall methods) after "
+    0x4200c0: dict(name=None, lang="cpp", why="PC control screen (C++ PC_CONTROL_SCREEN thiscall methods) after "
                    "creature's last Batman function; no marker; alphabetically between creature and customise"),
-    0x421050: dict(name=None, join=True, why="PC_CONTROL_SCREEN_PC methods, continues 0x4200c0"),
-    0x4234b0: dict(name=None, join=True, why="PC_CONTROL_SCREEN_PC methods, continues 0x4200c0"),
+    0x421050: dict(name=None, join=True, why="PC_CONTROL_SCREEN methods, continues 0x4200c0"),
+    0x4234b0: dict(name=None, join=True, why="PC_CONTROL_SCREEN methods, continues 0x4200c0"),
     0x423670: dict(name="customise", conf="medium",
                    why="TCS only; Android customise.c; alphabetical position fits; the three CustomiserMtx* "
                    "statics are called only by CustomiserMenu_Update, so customise starts with them"),
@@ -146,7 +146,7 @@ REVIEW = {
     0x4bc2f0: dict(name="pursuit", conf="medium", why="TCS only; Android pursuit.c fits panel < pursuit < radio"),
     0x4c00c0: dict(name=None, join=True, why="one function between sfx and shard"),
     0x4c0d50: dict(name="shop", conf="medium",
-                   why="ShopMtxCopyPc, the NuMtxRotate*Inline copies, Shop_CharacterUnlockedPc and Shop_GetInput are "
+                   why="ShopMtxCopy, the NuMtxRotate*Inline copies, Shop_CharacterUnlocked and Shop_GetInput are "
                    "called only by shop code, so shop starts with them; shard ends with Shards_HandleLostObj"),
     0x4c11c0: dict(name="shop", join=True, why="continues 0x4c0d50"),
     0x4c8bd0: dict(name="speederchase", conf="medium", why="TCS only; Android speederchase; signal < sp < startup"),
@@ -185,11 +185,11 @@ REVIEW = {
     0x5925c0: dict(name="customiser", conf="medium", why="marker; TCS only; Android customiser.c"),
     0x5a86d0: dict(name="simpletons", conf="medium", why="marker; TCS only; Android simpletons.c"),
     0x59cb90: dict(name="credits", conf="medium",
-                   why="CreditsFindTypePc, CreditsReadColourPc and CreditsInitCreditPc are called only by "
+                   why="CreditsFindType, CreditsReadColour and CreditsInitCredit are called only by "
                    "Credits_Load, so credits starts with them; pushing ends with ReleasePush"),
     0x59cd50: dict(name="credits", join=True, why="continues 0x59cb90"),
     0x5ab2d0: dict(name="gizturret", conf="medium",
-                   why="GizTurretClearPc and GizTurretReadAnimSetDataPc (no Batman counterpart) are called only "
+                   why="GizTurretClear and GizTurretReadAnimSetData (no Batman counterpart) are called only "
                    "by GizTurrets_Load; no marker at 0x5ab2d0 or 0x5ab3d0, so gizturret starts here"),
     0x5af4f0: dict(name="edgizshadow", conf="medium",
                    why="the Shadow_* gizmo callbacks are referenced only by EdGizShadowMachine_RegisterGizmo, so "
@@ -226,7 +226,7 @@ REVIEW = {
     0x697580: dict(name="nusound", join=True, why="continues nusound"),
     0x697a50: dict(name="nusound", join=True, why="continues nusound"),
     0x6dbab0: dict(name="pcapi", area="nu2api/nuwin32", lang="cpp", conf="high",
-                   why="marker; retail .\\pcapi.cpp from NuInitHardwarePc (Mac nuwin32/pcapi.cpp)"),
+                   why="marker; retail .\\pcapi.cpp from NuInitHardware (Mac nuwin32/pcapi.cpp)"),
     0x6dddf0: dict(name="windows", area="nu2api/nuwin32", lang="cpp", conf="medium",
                    why="retail .\\windows.cpp from PcCreateCursorMaterialPc, Batman WinMain in windows.cpp; "
                    "start between 0x6ddd40 and 0x6ddec0 (no marker)"),

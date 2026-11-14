@@ -27,7 +27,7 @@ uses. Classes:
   multi-use    several uses, each one a value; a floating constant counts only
                when its name restates the value (NuPrimTwo, InitOnceHalf,
                NuScale1000): a name that says what the quantity is
-               (AIPositionUnsetPc) is a meaning beyond the text
+               (AIPositionUnset) is a meaning beyond the text
   kept         a constant of either class listed in config/literalscan-keep.csv
                (file, name, reason): retail evidence that the text is a data
                object of its own, a match that needs the name, or a meaning
@@ -70,8 +70,8 @@ KEEP = ROOT / "config/literalscan-keep.csv"
 SYMBOLS = ROOT / "config/symbols.csv"
 SUFFIXES = {".c", ".cpp", ".h", ".inc"}
 CLASSES = ("single-use", "multi-use", "kept")
-# `extern` declarations that --fix leaves: VC8 code generation of a few units (BoulderSpawnPc,
-# BlockadeRunnerDEjectCreaturePc) depends on the number of declarations saga.h gives them, so
+# `extern` declarations that --fix leaves: VC8 code generation of a few units (BoulderSpawn,
+# BlockadeRunnerDEjectCreature) depends on the number of declarations saga.h gives them, so
 # saga.h loses its unused declarations header by header (docs/header-plan.md, step 2).
 HELD_DECLARATIONS = ("src/saga.h",)
 

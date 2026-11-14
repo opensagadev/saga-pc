@@ -15,8 +15,8 @@
 extern "C" {
 #endif
     void SnakeBeenHit(GAMEOBJECT *);
-    extern f32 SnakeSegmentHeightPc;
-    extern f32 SnakeDebrisUpwardSpeedPc;
+    extern f32 SnakeSegmentHeight;
+    extern f32 SnakeDebrisUpwardSpeed;
     void InitSnakes(WORLDINFO *world);
     void DestroySnakeBody(GAMEOBJECT *);
     void BlowUpSnakeBody(GAMEOBJECT *);

@@ -16,7 +16,7 @@ static void Shadow_AddGizmos(void *system, i32 type_id, void *world_ptr, void *d
 }
 
 static char *Shadow_GetGizmoName(GIZMO_PC *gizmo) {
-    return ShadowGizmoNamePc;
+    return ShadowGizmoName;
 }
 
 static i32 Shadow_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
@@ -24,7 +24,7 @@ static i32 Shadow_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
 }
 
 static char *Shadow_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return ShadowOutputNamePc;
+    return ShadowOutputName;
 }
 
 static i32 Shadow_GetNumOutputs(GIZMO_PC *gizmo) {

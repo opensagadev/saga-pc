@@ -17,17 +17,17 @@
 
 #if SAGA_LEGOAPI_AI_GAME_AIPATHCNXHELPER_H_PART == 1 && !defined(SAGA_LEGOAPI_AI_GAME_AIPATHCNXHELPER_H_STOP)
 
-struct AIPATHCNX_PC;
+struct AIPATHCNX;
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct ai_helper_slot_s {    // size 0x10
-    struct AIPATHCNX_PC *connection; // 0x0
-    void *target;                    // 0x4
-    u8 direction;                    // 0x8
-    u8 type;                         // 0x9
-    u8 padding[2];                   // 0xa
-    f32 jump_off_dy;                 // 0xc
+typedef struct ai_helper_slot_s { // size 0x10
+    struct AIPATHCNX *connection; // 0x0
+    void *target;                 // 0x4
+    u8 direction;                 // 0x8
+    u8 type;                      // 0x9
+    u8 padding[2];                // 0xa
+    f32 jump_off_dy;              // 0xc
 } AI_HELPER_SLOT_PC;
 
 typedef struct ai_helper_system_s { // size 0x8
@@ -39,7 +39,7 @@ typedef struct ai_helper_system_s { // size 0x8
 #ifdef __cplusplus
 extern "C" {
 #endif
-    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *, struct AIPATHCNX_PC *, u8, void *, u8);
+    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *, struct AIPATHCNX *, u8, void *, u8);
 #ifdef __cplusplus
 }
 #endif
@@ -60,11 +60,11 @@ extern "C" {
 #endif
 
 /* Native Indy path-connection movement and lookup ABI. */
-typedef i32 (*AI_HELPER_FILTER_PC)(AI_HELPER_SLOT_PC *, struct gameobject_s *, struct AIPATHCNX_PC *, u8, u8);
+typedef i32 (*AI_HELPER_FILTER_PC)(AI_HELPER_SLOT_PC *, struct gameobject_s *, struct AIPATHCNX *, u8, u8);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, struct gameobject_s *object, struct AIPATHCNX_PC *connection,
+    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, struct gameobject_s *object, struct AIPATHCNX *connection,
                                                u8 direction, u8 type, AI_HELPER_FILTER_PC filter);
 #ifdef __cplusplus
 }

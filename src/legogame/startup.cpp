@@ -2,17 +2,17 @@
 
 extern "C" char *lsw_memcard_objname;
 extern "C" void TextInputGlyphNamePc(i32, char *);
-extern "C" void RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);
-extern "C" void RegisterAlternateGizmoTypesPc(VARIPTR *, VARIPTR *);
-extern "C" void RegisterDefaultGizmoTypesPc(VARIPTR *, VARIPTR *);
+extern "C" void RegisterLswGizmoTypes(VARIPTR *, VARIPTR *);
+extern "C" void RegisterAlternateGizmoTypes(VARIPTR *, VARIPTR *);
+extern "C" void RegisterDefaultGizmoTypes(VARIPTR *, VARIPTR *);
 extern "C" void Alt_registerStatusScreen(void);
-extern "C" void Alt_registerStatusScreenExtraPc(void);
+extern "C" void Alt_registerStatusScreenExtra(void);
 extern "C" {
     void MiniKits_Init(VARIPTR *, VARIPTR *);
     void CharCategories_Init(CHAR_CATEGORY_RECORD_PC *);
-    extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefaultPc[6];
-    extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLswPc[10];
-    extern char *StartupCharVariantNamesPc[23];
+    extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefault[6];
+    extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLsw[10];
+    extern char *StartupCharVariantNames[23];
 }
 extern "C" void PcInput_SetStringUCGfxRemapFn(void (*)(i32, char *));
 
@@ -234,7 +234,7 @@ extern "C" {
         }
 
         void LoadPermData(void *process) {
-            PC_CONTROL_CONFIG_PC control_config;
+            PC_CONTROL_CONFIG control_config;
             char blocked_keys[4];
 
             LoadPermLoadFonts();
@@ -284,12 +284,12 @@ extern "C" {
             CreateThingManager();
 
             if (StartupGameFlag0 != 0) {
-                RegisterDefaultGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
+                RegisterDefaultGizmoTypes(&permbuffer_ptr, &permbuffer_end);
                 GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
                 Alt_registerStatusScreen();
-                Alt_registerStatusScreenExtraPc();
+                Alt_registerStatusScreenExtra();
             } else if (StartupGameFlag1 != 0) {
-                RegisterLswGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
+                RegisterLswGizmoTypes(&permbuffer_ptr, &permbuffer_end);
                 GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
                 LSW_registerStatusScreen();
                 initGameHintSys_LSW();
@@ -304,10 +304,10 @@ extern "C" {
                 GameBlowUpBlownUpFn = GameBlowUpBlownUpFn_LSW;
                 GizObstacle_SetDefaultSFXFn = GizObstacle_SetDefaultSFXFn_LSW;
             } else {
-                RegisterAlternateGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
+                RegisterAlternateGizmoTypes(&permbuffer_ptr, &permbuffer_end);
                 GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
                 Alt_registerStatusScreen();
-                Alt_registerStatusScreenExtraPc();
+                Alt_registerStatusScreenExtra();
             }
 
             Movies_ConfigureList("movies\\movies.txt", &permbuffer_ptr, &permbuffer_end);
@@ -315,26 +315,26 @@ extern "C" {
             CDataList = ConfigureCharacterList("chars\\chars.txt", &permbuffer_ptr, &permbuffer_end, 0x154, &CHARCOUNT, 0x120, &GCDataList);
             CharScenes_Init(&permbuffer_ptr, &permbuffer_end);
             IconScenes_Init("stuff\\icons\\", &permbuffer_ptr, &permbuffer_end);
-            FixUpCharacters(CharacterFixupTablePc);
+            FixUpCharacters(CharacterFixupTable);
             MiniKits_Init(&permbuffer_ptr, &permbuffer_end);
 
             if (StartupGameFlag1 != 0) {
                 id_DEFAULTCHARACTER[0] = ID_DEFAULTCHARACTER_LSW_A;
                 id_DEFAULTCHARACTER[1] = ID_DEFAULTCHARACTER_LSW_B;
-                CharCategories_Init(StartupCharCategoriesLswPc);
-                Cheats_Init(ExtrasCheatsPc);
+                CharCategories_Init(StartupCharCategoriesLsw);
+                Cheats_Init(ExtrasCheats);
             } else {
                 id_DEFAULTCHARACTER[0] = ID_DEFAULTCHARACTER_A;
                 id_DEFAULTCHARACTER[1] = ID_DEFAULTCHARACTER_B;
-                CharCategories_Init(StartupCharCategoriesDefaultPc);
-                Cheats_Init(ExtrasCheatsPc);
+                CharCategories_Init(StartupCharCategoriesDefault);
+                Cheats_Init(ExtrasCheats);
             }
             PlayerID[0] = id_DEFAULTCHARACTER[0];
             PlayerID[1] = id_DEFAULTCHARACTER[1];
-            CharVariants_Init(StartupCharVariantNamesPc, 0x17);
+            CharVariants_Init(StartupCharVariantNames, 0x17);
 
             LDataList = Levels_ConfigureList("levels\\levels.txt", &permbuffer_ptr, &permbuffer_end, 0x16d, &LEVELCOUNT, Level_SetDefaults);
-            FixUpLevels(LevelFixupStartupPc);
+            FixUpLevels(LevelFixupStartup);
 
             ADataList = Areas_ConfigureList("levels\\areas.txt", &permbuffer_ptr, &permbuffer_end, 0x48, &AREACOUNT);
             FixUpAreas();
@@ -350,7 +350,7 @@ extern "C" {
 
             APICharacterSysInit(&permbuffer_ptr, permbuffer_end, CHARCOUNT, 0x30, 0xe9, 0x400, (APICHARACTERDATA *)CDataList,
                                 SetCreatureLights);
-            SetActionInfo((API_ACTION_INFO_PC *)PlayerBlockActionInfoPc, PlayerExtraActionInfoPc);
+            SetActionInfo((API_ACTION_INFO *)PlayerBlockActionInfo, PlayerExtraActionInfo);
             gizaimessagesys = CreateGizAIMessageSys(&permbuffer_ptr, &permbuffer_end, 0x40);
 
             permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xfU) & ~0xfU;
@@ -371,9 +371,9 @@ extern "C" {
             control_config.font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
             control_config.draw_background = LoadPermProgressDraw;
             control_config.rows = NULL;
-            control_config.play_sound = PcControlPlaySoundPc;
+            control_config.play_sound = PcControlPlaySound;
             control_config.blocked_keys = blocked_keys;
-            PcControlRegisterPc(&control_config, &permbuffer_ptr, &permbuffer_end);
+            PcControlRegister(&control_config, &permbuffer_ptr, &permbuffer_end);
 
             PcInput_SetStringUCGfxRemapFn(TextInputGlyphNamePc);
             PcInput_SetIsUsedCallBack(PcInputCommandAllowedPc);

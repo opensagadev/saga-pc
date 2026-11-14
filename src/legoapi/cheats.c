@@ -181,7 +181,7 @@ void Cheats_Update(void) {
             GameAudio_PlaySfx(0x52, NULL, 0, 0);
         } else {
             GameAudio_PlaySfx(0x51, NULL, 0, 0);
-            ConstantRumble(NULL, (f32)((f64)qrand() * PlayerRandomScalePc * NuQFntHalfScale), 0.0f);
+            ConstantRumble(NULL, (f32)((f64)qrand() * PlayerRandomScale * NuQFntHalfScale), 0.0f);
         }
     }
 }
