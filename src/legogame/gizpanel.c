@@ -31,8 +31,8 @@ typedef struct panel_movement_s {
     u8 draw_flags;
     NUVEC floor_position;
     NUVEC target_offset;
-    u16 field_7c;
-    u16 field_7e;
+    u16 unknown_7c;
+    u16 unknown_7e;
     u16 arm_x_rotation;
     u16 target_pitch;
     u16 target_roll;
@@ -412,8 +412,8 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
             }
         }
         if (nearest_player != NULL) {
-            u16 previous_x = panel->field_7c;
-            u16 previous_y = panel->field_7e;
+            u16 previous_x = panel->unknown_7c;
+            u16 previous_y = panel->unknown_7e;
             u16 target_x;
             u16 target_y;
             FindAnglesXY(&nearest_direction, &target_x, &target_y);
@@ -428,8 +428,8 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
             } else if (previous_x >= 0xc000 && target_x > 0x4000 && target_x < 0xc000) {
                 target_x = 0xc000;
             }
-            panel->field_7c = SeekRot(panel->field_7c, target_x, 5.0f);
-            panel->field_7e = SeekRot(panel->field_7e, target_y, 5.0f);
+            panel->unknown_7c = SeekRot(panel->unknown_7c, target_x, 5.0f);
+            panel->unknown_7e = SeekRot(panel->unknown_7e, target_y, 5.0f);
             if ((panel->flags & 0x10) == 0) {
                 panel->activation_time = 0.0f;
                 panel->flags |= 0x10;
@@ -442,8 +442,8 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
                 }
             }
         } else {
-            panel->field_7c = SeekRot(panel->field_7c, 0xe000, 10.0f);
-            panel->field_7e = SeekRot(panel->field_7e, 0, 10.0f);
+            panel->unknown_7c = SeekRot(panel->unknown_7c, 0xe000, 10.0f);
+            panel->unknown_7e = SeekRot(panel->unknown_7e, 0, 10.0f);
             if ((panel->flags & 0x10) != 0) {
                 PlaySfx("DPanelDis", &panel->position);
             }
@@ -644,8 +644,8 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             NuVecRotateY(&arm_offset, &arm_offset, panel->y_rotation);
             NuMtxSetRotationX(&base_matrix, panel->arm_x_rotation);
             NuMtxRotateY(&base_matrix, panel->y_rotation);
-            NuMtxPreRotateX(&base_matrix, panel->field_7c);
-            NuMtxRotateY(&base_matrix, panel->field_7e);
+            NuMtxPreRotateX(&base_matrix, panel->unknown_7c);
+            NuMtxRotateY(&base_matrix, panel->unknown_7e);
             NuMtxTranslate(&base_matrix, &panel->position);
             NuMtxTranslate(&base_matrix, &arm_offset);
             NuSpecialDrawAt(&world->level_objects[arm].special, &base_matrix);
@@ -788,8 +788,8 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     f32 radius;
     f32 radius_squared;
     (void)world;
-    if (object->field_db0 > 0.0f) {
-        object->field_db0 -= FRAMETIME;
+    if (object->unknown_db0 > 0.0f) {
+        object->unknown_db0 -= FRAMETIME;
     }
     PanelStormActive = 0;
     PanelDroidActive = 0;
@@ -911,12 +911,12 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             if (duration <= 0.0f) {
                 object->context_timer = 2.0f;
             }
-            object->field_db0 = 0.0f;
+            object->unknown_db0 = 0.0f;
         }
     } else if (use != 0 && (object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & 0x20) != 0 &&
-               object->field_db0 <= 0.0f) {
+               object->unknown_db0 <= 0.0f) {
         GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->unknown_280);
-        object->field_db0 = 0.5f;
+        object->unknown_db0 = 0.5f;
     }
 }
 

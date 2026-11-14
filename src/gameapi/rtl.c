@@ -67,7 +67,7 @@ void rtlResetEx(RTL_DATA *data, i32 reset_cached) {
         lighting_data->directional_strengths[index] = lighting_data->ambient_strengths[index];
     }
     lighting_data->anti_light_count = 0;
-    lighting_data->field_120 = 1.0f;
+    lighting_data->unknown_120 = 1.0f;
     lighting_data->ambient = black;
     lighting_data->intensity_vectors[2] = lighting_data->ambient;
     lighting_data->intensity_vectors[1] = lighting_data->intensity_vectors[2];
@@ -75,9 +75,9 @@ void rtlResetEx(RTL_DATA *data, i32 reset_cached) {
     lighting_data->direction[2] = LightingUnitDirectionPc;
     lighting_data->direction[1] = lighting_data->direction[2];
     lighting_data->direction[0] = lighting_data->direction[1];
-    lighting_data->field_134.x = 1.0f;
-    lighting_data->field_134.y = 0.0f;
-    lighting_data->field_134.z = 0.0f;
+    lighting_data->unknown_134.x = 1.0f;
+    lighting_data->unknown_134.y = 0.0f;
+    lighting_data->unknown_134.z = 0.0f;
     if (reset_cached != 0) {
         lighting_data->cached_light = NULL;
         lighting_data->cached_value = 0.0f;
@@ -129,8 +129,8 @@ static f32 ApplyAntilights(RTL_LIGHT *light, RTL_DATA *lighting_data, f32 streng
     i32 index;
     f32 anti_strength = 0.0f;
     for (index = 0; index < lighting_data->anti_light_count; ++index) {
-        if (lighting_data->anti_lights[index]->field_5e == 0 ||
-            ((u16)(lighting_data->anti_lights[index]->field_5e) & (u16)(light->field_5e)) != 0) {
+        if (lighting_data->anti_lights[index]->unknown_5e == 0 ||
+            ((u16)(lighting_data->anti_lights[index]->unknown_5e) & (u16)(light->unknown_5e)) != 0) {
             anti_strength = (anti_strength > lighting_data->anti_strengths[index] ? anti_strength : lighting_data->anti_strengths[index]);
         }
     }
@@ -308,7 +308,7 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA 
     if (scale != 1.0f) {
         NuVecScale(&lighting_data->ambient, &lighting_data->ambient, scale);
     }
-    NuVecNorm(&lighting_data->field_134, &lighting_data->field_134);
+    NuVecNorm(&lighting_data->unknown_134, &lighting_data->unknown_134);
 }
 
 static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *position, i32 identity) {
@@ -360,28 +360,28 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                                    ? 0.0f                                                                                                  \
                                    : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));                                           \
         }                                                                                                                                  \
-        if (light->field_79 == -1 && light->field_7a == -1)                                                                                \
-            strength *= modifiers[light->field_7b];                                                                                        \
+        if (light->unknown_79 == -1 && light->unknown_7a == -1)                                                                            \
+            strength *= modifiers[light->unknown_7b];                                                                                      \
     } while (0)
     if (light != NULL) {
         while (light != NULL) {
             if (light->type == 0) {
                 break;
             }
-            if (light->field_7a != -1) {
+            if (light->unknown_7a != -1) {
                 light = GetNextRTL(set, light, indices, &index);
                 continue;
             }
             if (identity >= 0 && light->type != 7) {
-                if ((1 << identity) & (u16)light->field_60) {
+                if ((1 << identity) & (u16)light->unknown_60) {
                     light = GetNextRTL(set, light, indices, &index);
                     continue;
                 }
-                if (light->field_5e != 0 && light->type == 5 && (identity == -1 || !((1 << identity) & (u16)light->field_5e))) {
+                if (light->unknown_5e != 0 && light->type == 5 && (identity == -1 || !((1 << identity) & (u16)light->unknown_5e))) {
                     light = GetNextRTL(set, light, indices, &index);
                     continue;
                 }
-                if (restricted != 0 && light->field_5e == 0) {
+                if (restricted != 0 && light->unknown_5e == 0) {
                     light = GetNextRTL(set, light, indices, &index);
                     continue;
                 }
@@ -421,17 +421,17 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                                 InsertLight(light, lighting_data, strength);
                             }
                             if (position != NULL && (light->flags & 4)) {
-                                lighting_data->field_134.x += light->direction.x * strength;
-                                lighting_data->field_134.y += light->direction.y * strength;
-                                lighting_data->field_134.z += light->direction.z * strength;
+                                lighting_data->unknown_134.x += light->direction.x * strength;
+                                lighting_data->unknown_134.y += light->direction.y * strength;
+                                lighting_data->unknown_134.z += light->direction.z * strength;
                                 lighting_data->specular_value += strength;
                                 if (light->intensity > 16.0f) {
-                                    lighting_data->field_134.x += NU_SIN_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
-                                                                  (f32)((i32)(light->intensity) & 15) * rtlwob;
-                                    lighting_data->field_134.y += NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
-                                                                  (f32)((i32)(light->intensity) & 15) * rtlwob;
-                                    lighting_data->field_134.z += NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
-                                                                  (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->unknown_134.x += NU_SIN_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
+                                                                    (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->unknown_134.y += NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
+                                                                    (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->unknown_134.z += NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
+                                                                    (f32)((i32)(light->intensity) & 15) * rtlwob;
                                 }
                             }
                             if (position != NULL && (light->flags & 2)) {
@@ -477,7 +477,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
             light = GetNextRTL(set, light, indices, &index);
         }
         if (lighting_data->specular_value != 0.0f) {
-            NuVecNorm(&lighting_data->field_134, &lighting_data->field_134);
+            NuVecNorm(&lighting_data->unknown_134, &lighting_data->unknown_134);
         }
     }
 #undef RTL_FALLOFF
@@ -568,8 +568,8 @@ i32 rtlDynamicAlloc(void) {
         light->secondary_colour.z = 0.5f;
         light->type = 2;
         light->disabled = 0;
-        light->field_5e = 0;
-        light->field_60 = 0;
+        light->unknown_5e = 0;
+        light->unknown_60 = 0;
         light->parameters[0] = 0.1f;
         light->parameters[1] = 0.1f;
         light->parameters[2] = 0.1f;
@@ -580,12 +580,12 @@ i32 rtlDynamicAlloc(void) {
         light->direction.x = 0.0f;
         light->direction.y = 0.0f;
         light->direction.z = 1.0f;
-        light->field_64 = 0.0f;
+        light->unknown_64 = 0.0f;
         light->intensity = 1.0f;
-        light->field_7a = -1;
-        light->field_79 = -1;
-        light->field_7b = 0;
-        light->field_7c = NULL;
+        light->unknown_7a = -1;
+        light->unknown_79 = -1;
+        light->unknown_7b = 0;
+        light->unknown_7c = NULL;
         NuVecRotateX(&light->direction, &light->direction, light->pitch);
         NuVecRotateY(&light->direction, &light->direction, light->yaw);
         light->uid = (i16)rtl_uid++;
@@ -630,7 +630,7 @@ i32 rtlFindByUserId(RTL_SET *set, i32 user_id) {
     i32 index;
     if (set != NULL) {
         for (index = 0; index < 128; ++index) {
-            if (set->lights[index].type != 0 && set->lights[index].field_68 == user_id) {
+            if (set->lights[index].type != 0 && set->lights[index].unknown_68 == user_id) {
                 return index;
             }
         }
@@ -671,13 +671,13 @@ i32 rtlDynamicAllocTemplate(RTL_SET *set, i32 user_id) {
 static void RtlApplyModifiersToChainPrivate(RTL_LIGHT *light) {
     const NUVEC zero = {0.0f, 0.0f, 0.0f};
     RTL_LIGHT *source;
-    if (light->field_7c != NULL && light->field_79 != -1) {
+    if (light->unknown_7c != NULL && light->unknown_79 != -1) {
         light->colour = zero;
         light->secondary_colour = zero;
         NuVecClear(&light->direction);
-        source = &light->field_7c[light->field_79];
+        source = &light->unknown_7c[light->unknown_79];
         for (;;) {
-            f32 scale = modifiers[source->field_7b];
+            f32 scale = modifiers[source->unknown_7b];
             light->colour.x += source->colour.x * scale;
             light->colour.y += source->colour.y * scale;
             light->colour.z += source->colour.z * scale;
@@ -687,10 +687,10 @@ static void RtlApplyModifiersToChainPrivate(RTL_LIGHT *light) {
             light->direction.x += source->direction.x * scale;
             light->direction.y += source->direction.y * scale;
             light->direction.z += source->direction.z * scale;
-            if (source->field_79 == -1) {
+            if (source->unknown_79 == -1) {
                 break;
             }
-            source = &light->field_7c[source->field_79];
+            source = &light->unknown_7c[source->unknown_79];
         }
         NuVecNorm(&light->direction, &light->direction);
     }
@@ -698,10 +698,10 @@ static void RtlApplyModifiersToChainPrivate(RTL_LIGHT *light) {
 
 static void RtlApplyModifiersToSinglePrivate(RTL_LIGHT *light) {
     f32 scale;
-    if (light->field_79 == -1 && light->field_7a == -1) {
+    if (light->unknown_79 == -1 && light->unknown_7a == -1) {
         return;
     }
-    scale = modifiers[light->field_7b];
+    scale = modifiers[light->unknown_7b];
     light->ambient.x += light->colour.x * scale;
     light->ambient.y += light->colour.y * scale;
     light->ambient.z += light->colour.z * scale;
@@ -709,7 +709,7 @@ static void RtlApplyModifiersToSinglePrivate(RTL_LIGHT *light) {
 
 static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
     f32 blend;
-    if (light->field_79 != -1 && light->field_7a == -1) {
+    if (light->unknown_79 != -1 && light->unknown_7a == -1) {
         RtlApplyModifiersToChainPrivate(light);
     }
 
@@ -732,30 +732,30 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
             }
             break;
         case 6:
-            if (light->field_64 == 0.0f) {
+            if (light->unknown_64 == 0.0f) {
                 light->ambient.x = light->colour.x;
                 light->ambient.y = light->colour.y;
                 light->ambient.z = light->colour.z;
                 break;
             }
-            if (light->field_64 > 0.0f) {
+            if (light->unknown_64 > 0.0f) {
                 light->parameter_54 += elapsed;
-                blend = RTL_MIN(1.0f, RTL_MAX(0.0f, light->parameter_54 / light->field_64));
+                blend = RTL_MIN(1.0f, RTL_MAX(0.0f, light->parameter_54 / light->unknown_64));
                 light->ambient.x = light->colour.x * blend + light->secondary_colour.x * (1.0f - blend);
                 light->ambient.y = light->colour.y * blend + light->secondary_colour.y * (1.0f - blend);
                 light->ambient.z = light->colour.z * blend + light->secondary_colour.z * (1.0f - blend);
-                if (light->parameter_54 >= light->field_64) {
-                    light->field_64 = -light->parameters[2] - (NuRandFloat() * light->parameters[3]);
+                if (light->parameter_54 >= light->unknown_64) {
+                    light->unknown_64 = -light->parameters[2] - (NuRandFloat() * light->parameters[3]);
                     light->parameter_54 = 0.0f;
                 }
             } else {
                 light->parameter_54 -= elapsed;
-                blend = RTL_MIN(1.0f, RTL_MAX(0.0f, light->parameter_54 / light->field_64));
+                blend = RTL_MIN(1.0f, RTL_MAX(0.0f, light->parameter_54 / light->unknown_64));
                 light->ambient.x = light->secondary_colour.x * blend + light->colour.x * (1.0f - blend);
                 light->ambient.y = light->secondary_colour.y * blend + light->colour.y * (1.0f - blend);
                 light->ambient.z = light->secondary_colour.z * blend + light->colour.z * (1.0f - blend);
-                if (light->parameter_54 <= light->field_64) {
-                    light->field_64 = light->parameters[0] + NuRandFloat() * light->parameters[1];
+                if (light->parameter_54 <= light->unknown_64) {
+                    light->unknown_64 = light->parameters[0] + NuRandFloat() * light->parameters[1];
                     light->parameter_54 = 0.0f;
                 }
             }
@@ -781,7 +781,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
             break;
     }
 
-    if (light->field_79 == -1 && light->field_7a == -1) {
+    if (light->unknown_79 == -1 && light->unknown_7a == -1) {
         RtlApplyModifiersToSinglePrivate(light);
     }
 }
@@ -805,7 +805,7 @@ void rtlProcessLights(void *set, f32 frame_time) {
             if (light->type == 0) {
                 break;
             }
-            if (light->field_7a == -1) {
+            if (light->unknown_7a == -1) {
                 RtlProcessLightPrivate(light, frame_time);
             }
             ++light;
@@ -973,9 +973,9 @@ RTL_SET *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
             }
         case 4:
             for (i = 0; i < 128; ++i) {
-                set->lights[i].field_79 = -1;
-                set->lights[i].field_7a = -1;
-                set->lights[i].field_7b = 0;
+                set->lights[i].unknown_79 = -1;
+                set->lights[i].unknown_7a = -1;
+                set->lights[i].unknown_7b = 0;
                 set->lights[i].intensity = 1.0f;
             }
         default:
@@ -984,7 +984,7 @@ RTL_SET *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
                 if (rtl_uid == 0) {
                     rtl_uid = 1;
                 }
-                set->lights[i].field_7c = set->lights;
+                set->lights[i].unknown_7c = set->lights;
             }
             break;
     }
@@ -1027,20 +1027,20 @@ void fun_00635b00(void) {
 struct BURN_SET {                    // size 0x564
     BURN_PARAMETERS parameters;      // 0x000
     BURN_PARAMETERS parameters_copy; // 0x054
-    i32 field_a8;                    // 0x0a8
+    i32 unknown_a8;                  // 0x0a8
     i32 field_ac;                    // 0x0ac
-    i32 field_b0;                    // 0x0b0
-    i32 field_b4;                    // 0x0b4
-    f32 field_b8;                    // 0x0b8
+    i32 unknown_b0;                  // 0x0b0
+    i32 unknown_b4;                  // 0x0b4
+    f32 unknown_b8;                  // 0x0b8
     f32 field_bc;                    // 0x0bc
     f32 unknown_c0;                  // 0x0c0
-    f32 field_c4;                    // 0x0c4
+    f32 unknown_c4;                  // 0x0c4
     f32 unknown_c8;                  // 0x0c8
     f32 field_cc;                    // 0x0cc
     BURN_OUT burnouts[32];           // 0x0d0
     i32 active_count;                // 0x550
     i32 selected_index;              // 0x554
-    f32 field_558;                   // 0x558
+    f32 unknown_558;                 // 0x558
     f32 unknown_55c;                 // 0x55c
     i32 unknown_560;                 // 0x560
 };
@@ -1052,41 +1052,41 @@ BURN_SET *edrtl_edit_burnset = 0;
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 void edrtlInitBurnset(BURN_SET *set) {
     i32 i;
-    set->parameters.field_00 = 1;
-    set->parameters.field_04 = 0.0f;
-    set->parameters.field_08 = 0.0f;
-    set->parameters.field_0c = 180.0f;
-    set->parameters.field_10 = 1.0f;
-    set->parameters.field_14 = 0.0f;
-    set->parameters.field_18 = 0;
-    set->parameters.field_1c = 0.0f;
-    set->parameters.field_20 = 4.0f;
-    set->parameters.field_24 = 0.0f;
-    set->parameters.field_28 = 0;
-    set->parameters.field_2c = 0.577f;
-    set->parameters.field_30 = 0.577f;
-    set->parameters.field_34 = 0.577f;
-    set->parameters.field_38 = 0.0f;
-    set->parameters.field_3c = 1.0f;
-    set->parameters.field_40 = 180.0f;
-    set->parameters.field_44 = 0.0f;
-    set->parameters.field_48 = 1.0f;
-    set->parameters.field_4c = 0.0f;
-    set->parameters.field_50 = 0.0f;
+    set->parameters.unknown_00 = 1;
+    set->parameters.unknown_04 = 0.0f;
+    set->parameters.unknown_08 = 0.0f;
+    set->parameters.unknown_0c = 180.0f;
+    set->parameters.unknown_10 = 1.0f;
+    set->parameters.unknown_14 = 0.0f;
+    set->parameters.unknown_18 = 0;
+    set->parameters.unknown_1c = 0.0f;
+    set->parameters.unknown_20 = 4.0f;
+    set->parameters.unknown_24 = 0.0f;
+    set->parameters.unknown_28 = 0;
+    set->parameters.unknown_2c = 0.577f;
+    set->parameters.unknown_30 = 0.577f;
+    set->parameters.unknown_34 = 0.577f;
+    set->parameters.unknown_38 = 0.0f;
+    set->parameters.unknown_3c = 1.0f;
+    set->parameters.unknown_40 = 180.0f;
+    set->parameters.unknown_44 = 0.0f;
+    set->parameters.unknown_48 = 1.0f;
+    set->parameters.unknown_4c = 0.0f;
+    set->parameters.unknown_50 = 0.0f;
     set->parameters_copy = set->parameters;
-    set->field_a8 = 0;
+    set->unknown_a8 = 0;
     set->field_ac = 0;
-    set->field_b0 = 0;
-    set->field_b4 = 1;
-    set->field_b8 = 1.0f;
+    set->unknown_b0 = 0;
+    set->unknown_b4 = 1;
+    set->unknown_b8 = 1.0f;
     set->field_bc = 4.0f;
     set->unknown_c0 = 0.2f;
-    set->field_c4 = 0.5f;
+    set->unknown_c4 = 0.5f;
     set->unknown_c8 = 1.9f;
     set->field_cc = 0.0f;
     set->active_count = 0;
     set->selected_index = -1;
-    set->field_558 = 1.0f;
+    set->unknown_558 = 1.0f;
     set->unknown_55c = 0.2f;
     set->unknown_560 = 0;
     for (i = 0; i < 32; ++i) {
@@ -1140,24 +1140,24 @@ i32 edrtlBurnoutLoadSet(char *filename, BURN_SET *set) {
             return 0;
         }
         count = EdFileReadInt();
-        set->parameters.field_24 = EdFileReadFloat();
-        set->parameters.field_14 = EdFileReadFloat();
-        set->parameters.field_1c = EdFileReadFloat();
+        set->parameters.unknown_24 = EdFileReadFloat();
+        set->parameters.unknown_14 = EdFileReadFloat();
+        set->parameters.unknown_1c = EdFileReadFloat();
         if (version >= 2) {
-            set->field_b8 = EdFileReadFloat();
+            set->unknown_b8 = EdFileReadFloat();
             set->field_bc = EdFileReadFloat();
             set->unknown_c0 = EdFileReadFloat();
-            set->field_c4 = EdFileReadFloat();
+            set->unknown_c4 = EdFileReadFloat();
             if (version == 2) {
-                set->field_c4 = set->field_c4 - 1.0f;
+                set->unknown_c4 = set->unknown_c4 - 1.0f;
             }
             set->unknown_c8 = EdFileReadFloat();
             set->field_cc = EdFileReadFloat();
         } else {
-            set->field_b8 = 1.0f;
+            set->unknown_b8 = 1.0f;
             set->field_bc = 4.0f;
             set->unknown_c0 = 0.2f;
-            set->field_c4 = 0.5f;
+            set->unknown_c4 = 0.5f;
             set->unknown_c8 = 1.9f;
             set->field_cc = 0.0f;
         }
@@ -1172,35 +1172,35 @@ i32 edrtlBurnoutLoadSet(char *filename, BURN_SET *set) {
             if (slot < 32) {
                 set->burnouts[slot].active = 1;
                 EdFileReadNuVec(&set->burnouts[slot].position);
-                set->burnouts[slot].field_10 = EdFileReadFloat();
-                set->burnouts[slot].field_14 = EdFileReadFloat();
-                set->burnouts[slot].field_18 = EdFileReadFloat();
-                set->burnouts[slot].field_1c = EdFileReadFloat();
-                set->burnouts[slot].field_20 = EdFileReadFloat();
+                set->burnouts[slot].unknown_10 = EdFileReadFloat();
+                set->burnouts[slot].unknown_14 = EdFileReadFloat();
+                set->burnouts[slot].unknown_18 = EdFileReadFloat();
+                set->burnouts[slot].unknown_1c = EdFileReadFloat();
+                set->burnouts[slot].unknown_20 = EdFileReadFloat();
                 set->active_count = set->active_count + 1;
             }
         }
         if (version >= 5) {
-            set->parameters.field_04 = EdFileReadFloat();
-            set->parameters.field_08 = EdFileReadFloat();
-            set->parameters.field_0c = EdFileReadFloat();
-            set->parameters.field_10 = EdFileReadFloat();
-            set->parameters.field_20 = EdFileReadFloat();
-            set->parameters.field_28 = EdFileReadInt();
-            set->parameters.field_2c = EdFileReadFloat();
-            set->parameters.field_30 = EdFileReadFloat();
-            set->parameters.field_34 = EdFileReadFloat();
-            set->parameters.field_38 = EdFileReadFloat();
-            set->parameters.field_3c = EdFileReadFloat();
-            set->parameters.field_40 = EdFileReadFloat();
-            set->parameters.field_44 = EdFileReadFloat();
-            set->parameters.field_48 = EdFileReadFloat();
+            set->parameters.unknown_04 = EdFileReadFloat();
+            set->parameters.unknown_08 = EdFileReadFloat();
+            set->parameters.unknown_0c = EdFileReadFloat();
+            set->parameters.unknown_10 = EdFileReadFloat();
+            set->parameters.unknown_20 = EdFileReadFloat();
+            set->parameters.unknown_28 = EdFileReadInt();
+            set->parameters.unknown_2c = EdFileReadFloat();
+            set->parameters.unknown_30 = EdFileReadFloat();
+            set->parameters.unknown_34 = EdFileReadFloat();
+            set->parameters.unknown_38 = EdFileReadFloat();
+            set->parameters.unknown_3c = EdFileReadFloat();
+            set->parameters.unknown_40 = EdFileReadFloat();
+            set->parameters.unknown_44 = EdFileReadFloat();
+            set->parameters.unknown_48 = EdFileReadFloat();
         }
         EdFileSetReadWrongEndianess(0);
         EdFileClose();
         set->selected_index = -1;
         edrtlDetermineNearestBurn(1.0f, set);
-        set->field_b4 = 1;
+        set->unknown_b4 = 1;
         return 1;
     }
     return 0;
@@ -1239,7 +1239,7 @@ void edrtlCalculateBurnout(BURN_SET *set, f32 *threshold, f32 *intensity, f32 *d
     for (i = 0; i < 32; ++i) {
         if (set->burnouts[i].active) {
             f32 distance = NuVecDist(camera_position, &set->burnouts[i].position, NULL);
-            if (distance < set->burnouts[i].field_1c + set->burnouts[i].field_20 &&
+            if (distance < set->burnouts[i].unknown_1c + set->burnouts[i].unknown_20 &&
                 (nearest_distance < 0.0f || distance < nearest_distance)) {
                 nearest_index = i;
                 nearest_distance = distance;
@@ -1248,97 +1248,99 @@ void edrtlCalculateBurnout(BURN_SET *set, f32 *threshold, f32 *intensity, f32 *d
     }
 
     if (nearest_index != -1) {
-        if (nearest_distance > set->burnouts[nearest_index].field_1c) {
-            f32 fraction = (nearest_distance - set->burnouts[nearest_index].field_1c) / set->burnouts[nearest_index].field_20;
-            desired_threshold = (set->burnouts[nearest_index].field_10 * (1.0f - fraction)) + (set->parameters.field_24 * fraction);
-            desired_intensity = set->burnouts[nearest_index].field_14 * (1.0f - fraction) + set->parameters.field_14 * fraction;
-            desired_dispersion = set->burnouts[nearest_index].field_18 * (1.0f - fraction) + set->parameters.field_1c * fraction;
+        if (nearest_distance > set->burnouts[nearest_index].unknown_1c) {
+            f32 fraction = (nearest_distance - set->burnouts[nearest_index].unknown_1c) / set->burnouts[nearest_index].unknown_20;
+            desired_threshold = (set->burnouts[nearest_index].unknown_10 * (1.0f - fraction)) + (set->parameters.unknown_24 * fraction);
+            desired_intensity = set->burnouts[nearest_index].unknown_14 * (1.0f - fraction) + set->parameters.unknown_14 * fraction;
+            desired_dispersion = set->burnouts[nearest_index].unknown_18 * (1.0f - fraction) + set->parameters.unknown_1c * fraction;
         } else {
-            desired_threshold = set->burnouts[nearest_index].field_10;
-            desired_intensity = set->burnouts[nearest_index].field_14;
-            desired_dispersion = set->burnouts[nearest_index].field_18;
+            desired_threshold = set->burnouts[nearest_index].unknown_10;
+            desired_intensity = set->burnouts[nearest_index].unknown_14;
+            desired_dispersion = set->burnouts[nearest_index].unknown_18;
         }
     } else {
-        desired_threshold = set->parameters.field_24;
-        desired_intensity = set->parameters.field_14;
-        desired_dispersion = set->parameters.field_1c;
+        desired_threshold = set->parameters.unknown_24;
+        desired_intensity = set->parameters.unknown_14;
+        desired_dispersion = set->parameters.unknown_1c;
     }
 
-    if (set->field_b4) {
-        set->parameters_copy.field_24 = desired_threshold;
-        *threshold = set->parameters_copy.field_24;
-        set->parameters_copy.field_14 = desired_intensity;
-        *intensity = set->parameters_copy.field_14;
-        set->parameters_copy.field_1c = desired_dispersion;
-        *dispersion = set->parameters_copy.field_1c;
-        set->field_b4 = 0;
+    if (set->unknown_b4) {
+        set->parameters_copy.unknown_24 = desired_threshold;
+        *threshold = set->parameters_copy.unknown_24;
+        set->parameters_copy.unknown_14 = desired_intensity;
+        *intensity = set->parameters_copy.unknown_14;
+        set->parameters_copy.unknown_1c = desired_dispersion;
+        *dispersion = set->parameters_copy.unknown_1c;
+        set->unknown_b4 = 0;
         return;
     } else {
-        f32 step = set->field_b8 * frame_time;
-        if (desired_threshold > set->parameters_copy.field_24) {
-            set->parameters_copy.field_24 =
-                (set->parameters_copy.field_24 + step) > desired_threshold ? desired_threshold : (set->parameters_copy.field_24 + step);
-        } else if (desired_threshold < set->parameters_copy.field_24) {
-            set->parameters_copy.field_24 =
-                desired_threshold > (set->parameters_copy.field_24 - step) ? desired_threshold : (set->parameters_copy.field_24 - step);
+        f32 step = set->unknown_b8 * frame_time;
+        if (desired_threshold > set->parameters_copy.unknown_24) {
+            set->parameters_copy.unknown_24 =
+                (set->parameters_copy.unknown_24 + step) > desired_threshold ? desired_threshold : (set->parameters_copy.unknown_24 + step);
+        } else if (desired_threshold < set->parameters_copy.unknown_24) {
+            set->parameters_copy.unknown_24 =
+                desired_threshold > (set->parameters_copy.unknown_24 - step) ? desired_threshold : (set->parameters_copy.unknown_24 - step);
         }
-        if (desired_dispersion > set->parameters_copy.field_1c) {
-            set->parameters_copy.field_1c =
-                desired_dispersion > (set->parameters_copy.field_1c + step) ? desired_dispersion : (set->parameters_copy.field_1c + step);
-        } else if (desired_dispersion < set->parameters_copy.field_1c) {
-            set->parameters_copy.field_1c =
-                (set->parameters_copy.field_1c - step) > desired_dispersion ? desired_dispersion : (set->parameters_copy.field_1c - step);
+        if (desired_dispersion > set->parameters_copy.unknown_1c) {
+            set->parameters_copy.unknown_1c = desired_dispersion > (set->parameters_copy.unknown_1c + step)
+                                                  ? desired_dispersion
+                                                  : (set->parameters_copy.unknown_1c + step);
+        } else if (desired_dispersion < set->parameters_copy.unknown_1c) {
+            set->parameters_copy.unknown_1c = (set->parameters_copy.unknown_1c - step) > desired_dispersion
+                                                  ? desired_dispersion
+                                                  : (set->parameters_copy.unknown_1c - step);
         }
 
-        if (!set->field_b0 && !set->field_a8 && !set->field_ac) {
-            if (desired_intensity >= set->unknown_c0 + set->parameters_copy.field_14) {
-                set->field_a8 = 1;
-            } else if (set->parameters_copy.field_14 - set->unknown_c0 >= desired_intensity) {
+        if (!set->unknown_b0 && !set->unknown_a8 && !set->field_ac) {
+            if (desired_intensity >= set->unknown_c0 + set->parameters_copy.unknown_14) {
+                set->unknown_a8 = 1;
+            } else if (set->parameters_copy.unknown_14 - set->unknown_c0 >= desired_intensity) {
                 set->field_ac = 1;
             }
         }
 
-        if (set->field_a8 || set->field_ac) {
+        if (set->unknown_a8 || set->field_ac) {
             f32 intensity_target;
             step = set->field_bc * frame_time;
-            if (set->field_a8) {
-                intensity_target = desired_intensity + set->field_c4;
+            if (set->unknown_a8) {
+                intensity_target = desired_intensity + set->unknown_c4;
                 if (intensity_target > set->unknown_c8) {
                     intensity_target = desired_intensity > set->unknown_c8 ? desired_intensity : set->unknown_c8;
                 }
             } else {
-                intensity_target = desired_intensity - set->field_c4;
+                intensity_target = desired_intensity - set->unknown_c4;
                 if (intensity_target < set->field_cc) {
                     intensity_target = set->field_cc > desired_intensity ? desired_intensity : set->field_cc;
                 }
             }
             desired_intensity = intensity_target;
         }
-        if (desired_intensity > set->parameters_copy.field_14) {
-            set->parameters_copy.field_14 =
-                (set->parameters_copy.field_14 + step) > desired_intensity ? desired_intensity : (set->parameters_copy.field_14 + step);
-        } else if (desired_intensity < set->parameters_copy.field_14) {
-            set->parameters_copy.field_14 =
-                desired_intensity > (set->parameters_copy.field_14 - step) ? desired_intensity : (set->parameters_copy.field_14 - step);
+        if (desired_intensity > set->parameters_copy.unknown_14) {
+            set->parameters_copy.unknown_14 =
+                (set->parameters_copy.unknown_14 + step) > desired_intensity ? desired_intensity : (set->parameters_copy.unknown_14 + step);
+        } else if (desired_intensity < set->parameters_copy.unknown_14) {
+            set->parameters_copy.unknown_14 =
+                desired_intensity > (set->parameters_copy.unknown_14 - step) ? desired_intensity : (set->parameters_copy.unknown_14 - step);
         }
-        if (set->field_b0 && desired_intensity == set->parameters_copy.field_14) {
-            set->field_b0 = 0;
+        if (set->unknown_b0 && desired_intensity == set->parameters_copy.unknown_14) {
+            set->unknown_b0 = 0;
         }
-        if ((set->field_a8 || set->field_ac) && desired_intensity == set->parameters_copy.field_14) {
-            set->field_a8 = 0;
+        if ((set->unknown_a8 || set->field_ac) && desired_intensity == set->parameters_copy.unknown_14) {
+            set->unknown_a8 = 0;
             set->field_ac = 0;
-            set->field_b0 = 1;
+            set->unknown_b0 = 1;
         }
     }
-    *threshold = set->parameters_copy.field_24;
-    *intensity = set->parameters_copy.field_14;
-    *dispersion = set->parameters_copy.field_1c;
+    *threshold = set->parameters_copy.unknown_24;
+    *intensity = set->parameters_copy.unknown_14;
+    *dispersion = set->parameters_copy.unknown_1c;
 }
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 void edrtlCalculateBurnoutEx(BURN_SET *set, BURN_PARAMETERS *parameters, NUVEC *camera_position, f32 frame_time) {
     memcpy(parameters, &set->parameters, sizeof(*parameters));
-    edrtlCalculateBurnout(set, &parameters->field_24, &parameters->field_14, &parameters->field_1c, camera_position, frame_time);
+    edrtlCalculateBurnout(set, &parameters->unknown_24, &parameters->unknown_14, &parameters->unknown_1c, camera_position, frame_time);
 }
 
 typedef struct rtl_direction_lookup_pc_s { // size 0x4690
@@ -1369,7 +1371,7 @@ void rtlSetSpecularValue(RTL_DATA *data, f32 value) {
 
 void rtlSetSpecularLight(RTL_DATA *data) {
     if (data->specular_value > 0.0f) {
-        RtlSpecularState(&data->field_134, NULL);
+        RtlSpecularState(&data->unknown_134, NULL);
     }
 }
 
@@ -1476,8 +1478,8 @@ void edrtlDrawRTLInfo(void) {
         y += height;
         for (i = 0; i < 10; i++) {
             NuQFntSet(system_qfont);
-            NuQFntPrintEx(system_qfont, x, y, 16, "%02d - %02d - %02d : %02d", i, curr_set->lights[i].type, curr_set->lights[i].field_79,
-                          curr_set->lights[i].field_7a);
+            NuQFntPrintEx(system_qfont, x, y, 16, "%02d - %02d - %02d : %02d", i, curr_set->lights[i].type, curr_set->lights[i].unknown_79,
+                          curr_set->lights[i].unknown_7a);
             y += height;
         }
     }
@@ -1495,13 +1497,13 @@ void edrtlDrawRTLInfo(void) {
     y = 512;
     if (curr_rtl) {
         lines = 8;
-        if (curr_rtl->field_68 != 0) {
+        if (curr_rtl->unknown_68 != 0) {
             lines++;
         }
-        if (curr_rtl->type == 5 && curr_rtl->field_5e != 0) {
+        if (curr_rtl->type == 5 && curr_rtl->unknown_5e != 0) {
             lines++;
         }
-        if (curr_rtl->field_60 != 0) {
+        if (curr_rtl->unknown_60 != 0) {
             lines++;
         }
         if (curr_rtl->group_id != 0) {
@@ -1536,19 +1538,19 @@ void edrtlDrawRTLInfo(void) {
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "SPECULAR: %s", (curr_rtl->flags & 4) ? "YES" : "NO");
         y += height;
-        if (curr_rtl->field_68 != 0) {
-            NuQFntPrintEx(system_qfont, x, y, 16, "USER ID: (%d)%s", curr_rtl->field_68, userid_names[curr_rtl->field_68]);
+        if (curr_rtl->unknown_68 != 0) {
+            NuQFntPrintEx(system_qfont, x, y, 16, "USER ID: (%d)%s", curr_rtl->unknown_68, userid_names[curr_rtl->unknown_68]);
             y += height;
         }
-        if (curr_rtl->field_7a != -1 || (curr_rtl->field_7a == -1 && curr_rtl->field_79 == -1)) {
-            NuQFntPrintEx(system_qfont, x, y, 16, "MODIFIER: %s", modifier_names[MAX(0, MIN(modifier_cnt - 1, curr_rtl->field_7b))]);
+        if (curr_rtl->unknown_7a != -1 || (curr_rtl->unknown_7a == -1 && curr_rtl->unknown_79 == -1)) {
+            NuQFntPrintEx(system_qfont, x, y, 16, "MODIFIER: %s", modifier_names[MAX(0, MIN(modifier_cnt - 1, curr_rtl->unknown_7b))]);
             y += height;
         }
-        if (curr_rtl->type == 5 && curr_rtl->field_5e != 0) {
+        if (curr_rtl->type == 5 && curr_rtl->unknown_5e != 0) {
             NuQFntPrintEx(system_qfont, x, y, 16, "[HAS ASSOCS]");
             y += height;
         }
-        if (curr_rtl->field_60 != 0) {
+        if (curr_rtl->unknown_60 != 0) {
             NuQFntPrintEx(system_qfont, x, y, 16, "[HAS EXCLUSIONS]");
             y += height;
         }
@@ -1556,20 +1558,20 @@ void edrtlDrawRTLInfo(void) {
             NuQFntPrintEx(system_qfont, x, y, 16, "GROUP ID: (%d)", curr_rtl->group_id);
             y += height;
         }
-        if (curr_rtl->field_79 != -1 && curr_rtl->field_7a == -1) {
+        if (curr_rtl->unknown_79 != -1 && curr_rtl->unknown_7a == -1) {
             count = 0;
-            for (light = curr_rtl; light->field_79 != -1; light = &light->field_7c[light->field_79]) {
+            for (light = curr_rtl; light->unknown_79 != -1; light = &light->unknown_7c[light->unknown_79]) {
                 count++;
             }
             NuQFntPrintEx(system_qfont, x, y, 16, "[HAS %d ALTERNATE SETTINGS]", count);
             y += height;
         }
-        if (curr_rtl->field_7a != -1) {
+        if (curr_rtl->unknown_7a != -1) {
             forward = 0;
-            for (alternate = curr_rtl; alternate->field_7a != -1; alternate = &curr_set->lights[alternate->field_7a]) {
+            for (alternate = curr_rtl; alternate->unknown_7a != -1; alternate = &curr_set->lights[alternate->unknown_7a]) {
                 forward++;
             }
-            for (backward = 0; alternate->field_79 != -1; alternate = &curr_set->lights[alternate->field_79]) {
+            for (backward = 0; alternate->unknown_79 != -1; alternate = &curr_set->lights[alternate->unknown_79]) {
                 backward++;
             }
             NuQFntPrintEx(system_qfont, x, y, 16, "[ALTERNATE SETTING %d/%d]", forward, backward);
@@ -1617,39 +1619,39 @@ i32 edrtlBurnoutSave(char *filename, BURN_SET *set) {
             EdFileSetReadWrongEndianess(1);
             EdFileWriteInt(5);
             EdFileWriteInt(count);
-            EdFileWriteFloat(set->parameters.field_24);
-            EdFileWriteFloat(set->parameters.field_14);
-            EdFileWriteFloat(set->parameters.field_1c);
-            EdFileWriteFloat(set->field_b8);
+            EdFileWriteFloat(set->parameters.unknown_24);
+            EdFileWriteFloat(set->parameters.unknown_14);
+            EdFileWriteFloat(set->parameters.unknown_1c);
+            EdFileWriteFloat(set->unknown_b8);
             EdFileWriteFloat(set->field_bc);
             EdFileWriteFloat(set->unknown_c0);
-            EdFileWriteFloat(set->field_c4);
+            EdFileWriteFloat(set->unknown_c4);
             EdFileWriteFloat(set->unknown_c8);
             EdFileWriteFloat(set->field_cc);
             for (index = 0; index < 32; ++index) {
                 if (set->burnouts[index].active) {
                     EdFileWriteNuVec(&set->burnouts[index].position);
-                    EdFileWriteFloat(set->burnouts[index].field_10);
-                    EdFileWriteFloat(set->burnouts[index].field_14);
-                    EdFileWriteFloat(set->burnouts[index].field_18);
-                    EdFileWriteFloat(set->burnouts[index].field_1c);
-                    EdFileWriteFloat(set->burnouts[index].field_20);
+                    EdFileWriteFloat(set->burnouts[index].unknown_10);
+                    EdFileWriteFloat(set->burnouts[index].unknown_14);
+                    EdFileWriteFloat(set->burnouts[index].unknown_18);
+                    EdFileWriteFloat(set->burnouts[index].unknown_1c);
+                    EdFileWriteFloat(set->burnouts[index].unknown_20);
                 }
             }
-            EdFileWriteFloat(set->parameters.field_04);
-            EdFileWriteFloat(set->parameters.field_08);
-            EdFileWriteFloat(set->parameters.field_0c);
-            EdFileWriteFloat(set->parameters.field_10);
-            EdFileWriteFloat(set->parameters.field_20);
-            EdFileWriteInt(set->parameters.field_28);
-            EdFileWriteFloat(set->parameters.field_2c);
-            EdFileWriteFloat(set->parameters.field_30);
-            EdFileWriteFloat(set->parameters.field_34);
-            EdFileWriteFloat(set->parameters.field_38);
-            EdFileWriteFloat(set->parameters.field_3c);
-            EdFileWriteFloat(set->parameters.field_40);
-            EdFileWriteFloat(set->parameters.field_44);
-            EdFileWriteFloat(set->parameters.field_48);
+            EdFileWriteFloat(set->parameters.unknown_04);
+            EdFileWriteFloat(set->parameters.unknown_08);
+            EdFileWriteFloat(set->parameters.unknown_0c);
+            EdFileWriteFloat(set->parameters.unknown_10);
+            EdFileWriteFloat(set->parameters.unknown_20);
+            EdFileWriteInt(set->parameters.unknown_28);
+            EdFileWriteFloat(set->parameters.unknown_2c);
+            EdFileWriteFloat(set->parameters.unknown_30);
+            EdFileWriteFloat(set->parameters.unknown_34);
+            EdFileWriteFloat(set->parameters.unknown_38);
+            EdFileWriteFloat(set->parameters.unknown_3c);
+            EdFileWriteFloat(set->parameters.unknown_40);
+            EdFileWriteFloat(set->parameters.unknown_44);
+            EdFileWriteFloat(set->parameters.unknown_48);
             EdFileClose();
             EdFileSetReadWrongEndianess(0);
             return 1;
@@ -1733,7 +1735,7 @@ eduimenu_s *edrtl_burn_transitions_menu = NULL;
 void edrtlSetBurnoutNormalRate(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->field_b8 = slider->value;
+        edrtl_edit_burnset->unknown_b8 = slider->value;
     }
 }
 
@@ -1754,7 +1756,7 @@ void edrtlSetBurnoutOvershootCutin(eduimenu_s *unused_menu, eduiitem_s *item, u3
 void edrtlSetBurnoutOvershootAmount(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->field_c4 = slider->value;
+        edrtl_edit_burnset->unknown_c4 = slider->value;
     }
 }
 
@@ -1783,13 +1785,13 @@ void edrtlBurnTransitionsMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 u
     edrtl_burn_transitions_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edrtlCancelBurnTransitionsMenu, "Transitions");
     if (edrtl_edit_burnset != NULL && edrtl_burn_transitions_menu != NULL) {
         eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutNormalRate, 0.01f, 4.99f,
-                                                                          edrtl_edit_burnset->field_b8, "Normal Rate"));
+                                                                          edrtl_edit_burnset->unknown_b8, "Normal Rate"));
         eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootRate, 0.01f, 4.99f,
                                                                           edrtl_edit_burnset->field_bc, "Overshoot Rate"));
         eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootCutin, 0.0f, 2.0f,
                                                                           edrtl_edit_burnset->unknown_c0, "Overshoot Cutin"));
         eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootAmount, 0.0f, 2.0f,
-                                                                          edrtl_edit_burnset->field_c4, "Overshoot Amount"));
+                                                                          edrtl_edit_burnset->unknown_c4, "Overshoot Amount"));
         eduiMenuAddItem(edrtl_burn_transitions_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOverbrightCap, 0.0f, 2.0f, edrtl_edit_burnset->unknown_c8,
                                              "edrtl_edit_burnset->Overbright Cap"));
@@ -1809,118 +1811,118 @@ eduimenu_s *edrtl_burn_set_menu = NULL;
 void edrtlSetBurnoutStartAngle(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_04 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_04 = slider->value;
     }
 }
 
 void edrtlSetBurnoutMinIntensity(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_08 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_08 = slider->value;
     }
 }
 
 void edrtlSetBurnoutEndAngle(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_0c = slider->value;
+        edrtl_edit_burnset->parameters.unknown_0c = slider->value;
     }
 }
 
 void edrtlSetBurnoutMaxIntensity(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_10 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_10 = slider->value;
     }
 }
 
 void edrtlSetBurnoutGlobalScale(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_14 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_14 = slider->value;
     }
 }
 
 void edrtlSetBurnoutDispersion(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_1c = slider->value;
+        edrtl_edit_burnset->parameters.unknown_1c = slider->value;
     }
 }
 
 void edrtlSetBurnoutFragmentGlowFactor(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_20 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_20 = slider->value;
     }
 }
 
 void edrtlSetBurnoutThreshold(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_24 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_24 = slider->value;
     }
 }
 
 void edrtlSetBurnoutSourceAvailable(eduimenu_s *unused_menu, eduiitem_s *unused_item, u32 unused_value) {
     if (edrtl_edit_burnset) {
-        edrtl_edit_burnset->parameters.field_28 = !edrtl_edit_burnset->parameters.field_28;
+        edrtl_edit_burnset->parameters.unknown_28 = !edrtl_edit_burnset->parameters.unknown_28;
     }
 }
 
 void edrtlSetBurnoutSourceDirectionX(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_2c = slider->value;
+        edrtl_edit_burnset->parameters.unknown_2c = slider->value;
     }
 }
 
 void edrtlSetBurnoutSourceDirectionY(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_30 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_30 = slider->value;
     }
 }
 
 void edrtlSetBurnoutSourceDirectionZ(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_34 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_34 = slider->value;
     }
 }
 
 void edrtlSetBurnoutSourceInnerRadius(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_38 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_38 = slider->value;
     }
 }
 
 void edrtlSetBurnoutSourceInnerIntensity(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_3c = slider->value;
+        edrtl_edit_burnset->parameters.unknown_3c = slider->value;
     }
 }
 
 void edrtlSetBurnoutSourceOuterRadius(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_40 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_40 = slider->value;
     }
 }
 
 void edrtlSetBurnoutSourceOuterIntensity(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_44 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_44 = slider->value;
     }
 }
 
 void edrtlSetBurnoutSourceFallOffPower(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->parameters.field_48 = slider->value;
+        edrtl_edit_burnset->parameters.unknown_48 = slider->value;
     }
 }
 
@@ -1934,40 +1936,43 @@ void edrtlCancelBurnDefaultsMenu(eduimenu_s *unused_menu, eduimenu_s *unused_par
 void edrtlBurnDefaultsMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_value) {
     edrtl_burn_defaults_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edrtlCancelBurnDefaultsMenu, "Level Defaults");
     if (edrtl_edit_burnset != NULL && edrtl_burn_defaults_menu != NULL) {
-        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutGlobalScale, 0.0f, 4.0f,
-                                                                       edrtl_edit_burnset->parameters.field_14, "Global Scale/Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutGlobalScale, 0.0f, 4.0f,
+                                             edrtl_edit_burnset->parameters.unknown_14, "Global Scale/Intensity"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutStartAngle, 0.0f, 180.0f,
-                                                                       edrtl_edit_burnset->parameters.field_04, "Start Angle"));
+                                                                       edrtl_edit_burnset->parameters.unknown_04, "Start Angle"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutMinIntensity, 0.0f, 1.0f,
-                                                                       edrtl_edit_burnset->parameters.field_08, "Min Intensity"));
+                                                                       edrtl_edit_burnset->parameters.unknown_08, "Min Intensity"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutEndAngle, 0.0f, 180.0f,
-                                                                       edrtl_edit_burnset->parameters.field_0c, "End Angle"));
+                                                                       edrtl_edit_burnset->parameters.unknown_0c, "End Angle"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutMaxIntensity, 0.0f, 1.0f,
-                                                                       edrtl_edit_burnset->parameters.field_10, "Max Intensity"));
+                                                                       edrtl_edit_burnset->parameters.unknown_10, "Max Intensity"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutDispersion, 0.0f, 4.0f,
-                                                                       edrtl_edit_burnset->parameters.field_1c, "Flare/Dispersion"));
+                                                                       edrtl_edit_burnset->parameters.unknown_1c, "Flare/Dispersion"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutFragmentGlowFactor, 0.0f, 10.0f,
-                                                                       edrtl_edit_burnset->parameters.field_20, "Fragment Glow Factor"));
+                                                                       edrtl_edit_burnset->parameters.unknown_20, "Fragment Glow Factor"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutThreshold, 0.0f, 2.0f,
-                                                                       edrtl_edit_burnset->parameters.field_24, "Threshold"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemToggleCreate(0, edblack, edrtl_edit_burnset->parameters.field_28 != 0, 1,
+                                                                       edrtl_edit_burnset->parameters.unknown_24, "Threshold"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemToggleCreate(0, edblack, edrtl_edit_burnset->parameters.unknown_28 != 0, 1,
                                                                        edrtlSetBurnoutSourceAvailable, "Source Available"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionX, -1.0f, 2.0f,
-                                                                       edrtl_edit_burnset->parameters.field_2c, "Source Direction X"));
+                                                                       edrtl_edit_burnset->parameters.unknown_2c, "Source Direction X"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionY, -1.0f, 2.0f,
-                                                                       edrtl_edit_burnset->parameters.field_30, "Source Direction Y"));
+                                                                       edrtl_edit_burnset->parameters.unknown_30, "Source Direction Y"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionZ, -1.0f, 2.0f,
-                                                                       edrtl_edit_burnset->parameters.field_34, "Source Direction Z"));
+                                                                       edrtl_edit_burnset->parameters.unknown_34, "Source Direction Z"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceInnerRadius, 0.0f, 180.0f,
-                                                                       edrtl_edit_burnset->parameters.field_38, "Source Inner Radius"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceInnerIntensity, 0.0f, 1.0f,
-                                                                       edrtl_edit_burnset->parameters.field_3c, "Source Inner Intensity"));
+                                                                       edrtl_edit_burnset->parameters.unknown_38, "Source Inner Radius"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceInnerIntensity, 0.0f, 1.0f,
+                                             edrtl_edit_burnset->parameters.unknown_3c, "Source Inner Intensity"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceOuterRadius, 0.0f, 180.0f,
-                                                                       edrtl_edit_burnset->parameters.field_40, "Source Outer Radius"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceOuterIntensity, 0.0f, 1.0f,
-                                                                       edrtl_edit_burnset->parameters.field_44, "Source Outer Intensity"));
+                                                                       edrtl_edit_burnset->parameters.unknown_40, "Source Outer Radius"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceOuterIntensity, 0.0f, 1.0f,
+                                             edrtl_edit_burnset->parameters.unknown_44, "Source Outer Intensity"));
         eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceFallOffPower, 0.0f, 10.0f,
-                                                                       edrtl_edit_burnset->parameters.field_48, "Source FallOff Power"));
+                                                                       edrtl_edit_burnset->parameters.unknown_48, "Source FallOff Power"));
 
         eduiMenuAttach(parent, edrtl_burn_defaults_menu);
         edrtl_burn_defaults_menu->x = parent->x + 10;
@@ -1978,7 +1983,7 @@ void edrtlBurnDefaultsMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unus
 void edrtlSetBurnRadius(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->field_558 = slider->value;
+        edrtl_edit_burnset->unknown_558 = slider->value;
     }
 }
 
@@ -2000,7 +2005,7 @@ void edrtlBurnRadiusMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused
     edrtl_burn_radius_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edrtlCancelBurnRadiusMenu, "Radius Defaults");
     if (edrtl_edit_burnset != NULL && edrtl_burn_radius_menu != NULL) {
         eduiMenuAddItem(edrtl_burn_radius_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnRadius, 0.2f, 19.8f, edrtl_edit_burnset->field_558, "Radius"));
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnRadius, 0.2f, 19.8f, edrtl_edit_burnset->unknown_558, "Radius"));
         eduiMenuAddItem(edrtl_burn_radius_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnFalloff, 0.0f, 10.0f, edrtl_edit_burnset->unknown_55c, "Falloff"));
         eduiMenuAttach(parent, edrtl_burn_radius_menu);
@@ -2012,35 +2017,35 @@ void edrtlBurnRadiusMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused
 void edrtlSetBurnsetThreshold(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_10 = slider->value;
+        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_10 = slider->value;
     }
 }
 
 void edrtlSetBurnsetIntensity(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_14 = slider->value;
+        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_14 = slider->value;
     }
 }
 
 void edrtlSetBurnsetFlare(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_18 = slider->value;
+        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_18 = slider->value;
     }
 }
 
 void edrtlSetBurnsetRadius(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c = slider->value;
+        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_1c = slider->value;
     }
 }
 
 void edrtlSetBurnsetFalloff(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20 = slider->value;
+        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_20 = slider->value;
     }
 }
 
@@ -2056,19 +2061,19 @@ void edrtlBurnSetMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_va
     if (edrtl_edit_burnset != NULL && edrtl_burn_set_menu != NULL) {
         eduiMenuAddItem(edrtl_burn_set_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetThreshold, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_10, "Threshold"));
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_10, "Threshold"));
         eduiMenuAddItem(edrtl_burn_set_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetIntensity, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_14, "Intensity"));
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_14, "Intensity"));
         eduiMenuAddItem(edrtl_burn_set_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetFlare, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_18, "Flare"));
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_18, "Flare"));
         eduiMenuAddItem(edrtl_burn_set_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetRadius, 0.2f, 19.8f,
-                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c, "Radius"));
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_1c, "Radius"));
         eduiMenuAddItem(edrtl_burn_set_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetFalloff, 0.0f, 10.0f,
-                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20, "Falloff"));
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_20, "Falloff"));
 
         eduiMenuAttach(parent, edrtl_burn_set_menu);
         edrtl_burn_set_menu->x = parent->x + 10;
@@ -2111,11 +2116,11 @@ i32 edrtlAddBurnout(NUVEC *position) {
         }
         edrtl_edit_burnset->burnouts[index].active = 1;
         edrtl_edit_burnset->burnouts[index].position = *position;
-        edrtl_edit_burnset->burnouts[index].field_1c = edrtl_edit_burnset->field_558;
-        edrtl_edit_burnset->burnouts[index].field_20 = edrtl_edit_burnset->unknown_55c;
-        edrtl_edit_burnset->burnouts[index].field_10 = edrtl_edit_burnset->parameters.field_24;
-        edrtl_edit_burnset->burnouts[index].field_14 = edrtl_edit_burnset->parameters.field_14;
-        edrtl_edit_burnset->burnouts[index].field_18 = edrtl_edit_burnset->parameters.field_1c;
+        edrtl_edit_burnset->burnouts[index].unknown_1c = edrtl_edit_burnset->unknown_558;
+        edrtl_edit_burnset->burnouts[index].unknown_20 = edrtl_edit_burnset->unknown_55c;
+        edrtl_edit_burnset->burnouts[index].unknown_10 = edrtl_edit_burnset->parameters.unknown_24;
+        edrtl_edit_burnset->burnouts[index].unknown_14 = edrtl_edit_burnset->parameters.unknown_14;
+        edrtl_edit_burnset->burnouts[index].unknown_18 = edrtl_edit_burnset->parameters.unknown_1c;
         ++edrtl_edit_burnset->active_count;
         return index;
     }
@@ -2154,24 +2159,24 @@ void rtlFree(RTL_LIGHT *light) {
     i32 index;
     RTL_LIGHT *entry;
     RTL_LIGHT *next;
-    if (light->field_79 != -1 && light->field_7a == -1) {
-        while (light->field_79 != -1) {
-            rtlFree(&curr_set->lights[light->field_79]);
+    if (light->unknown_79 != -1 && light->unknown_7a == -1) {
+        while (light->unknown_79 != -1) {
+            rtlFree(&curr_set->lights[light->unknown_79]);
         }
     }
-    if (light->field_7a != -1) {
-        curr_set->lights[light->field_7a].field_79 = light->field_79;
-        if (light->field_79 != -1) {
-            curr_set->lights[light->field_79].field_7a = light->field_7a;
+    if (light->unknown_7a != -1) {
+        curr_set->lights[light->unknown_7a].unknown_79 = light->unknown_79;
+        if (light->unknown_79 != -1) {
+            curr_set->lights[light->unknown_79].unknown_7a = light->unknown_7a;
         }
     }
     index = light - curr_set->lights;
     for (entry = curr_set->lights; entry < &curr_set->lights[128]; ++entry) {
-        if (entry->field_79 >= index) {
-            --entry->field_79;
+        if (entry->unknown_79 >= index) {
+            --entry->unknown_79;
         }
-        if (entry->field_7a >= index) {
-            --entry->field_7a;
+        if (entry->unknown_7a >= index) {
+            --entry->unknown_7a;
         }
     }
     next = light + 1;
@@ -2243,13 +2248,13 @@ RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET *set, NUVEC *position) {
 void SelectNextRTL(void) {
     RTL_LIGHT *light;
     if (base_rtl != NULL) {
-        if (curr_rtl->field_79 != -1) {
-            curr_rtl = &curr_set->lights[curr_rtl->field_79];
+        if (curr_rtl->unknown_79 != -1) {
+            curr_rtl = &curr_set->lights[curr_rtl->unknown_79];
         } else {
             light = curr_rtl;
-            while (light->field_7a != -1) {
+            while (light->unknown_7a != -1) {
                 curr_rtl = light;
-                light = &curr_set->lights[light->field_7a];
+                light = &curr_set->lights[light->unknown_7a];
             }
         }
     } else {
@@ -2260,7 +2265,7 @@ void SelectNextRTL(void) {
             if (light >= &curr_set->lights[128]) {
                 light = curr_set->lights;
             }
-            if (light->type != 0 && light->field_7a == -1) {
+            if (light->type != 0 && light->unknown_7a == -1) {
                 break;
             }
             ++count;
@@ -2272,12 +2277,12 @@ void SelectNextRTL(void) {
 void SelectPrevRTL(void) {
     RTL_LIGHT *light;
     if (base_rtl != NULL) {
-        light = &curr_set->lights[curr_rtl->field_7a];
-        if (light->field_7a != -1) {
+        light = &curr_set->lights[curr_rtl->unknown_7a];
+        if (light->unknown_7a != -1) {
             curr_rtl = light;
         } else {
-            while (curr_rtl->field_79 != -1) {
-                curr_rtl = &curr_set->lights[curr_rtl->field_79];
+            while (curr_rtl->unknown_79 != -1) {
+                curr_rtl = &curr_set->lights[curr_rtl->unknown_79];
             }
         }
     } else {
@@ -2288,7 +2293,7 @@ void SelectPrevRTL(void) {
             if (light < curr_set->lights) {
                 light = &curr_set->lights[127];
             }
-            if (light->type != 0 && light->field_7a == -1) {
+            if (light->type != 0 && light->unknown_7a == -1) {
                 break;
             }
             ++count;
@@ -2478,11 +2483,11 @@ void edrtlDrawBurnInfo(void) {
     if (edrtl_edit_burnset != NULL) {
         NuQFntPrintEx(system_qfont, x, y, 16, "Used: %d / %d", edrtl_edit_burnset->active_count, 32);
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "Default Radius: %0.2f", edrtl_edit_burnset->field_558);
+        NuQFntPrintEx(system_qfont, x, y, 16, "Default Radius: %0.2f", edrtl_edit_burnset->unknown_558);
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "Default Falloff: %0.2f", edrtl_edit_burnset->unknown_55c);
         y += 2 * height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "Current Global Scale/Intensity: %0.2f", edrtl_edit_burnset->parameters_copy.field_14);
+        NuQFntPrintEx(system_qfont, x, y, 16, "Current Global Scale/Intensity: %0.2f", edrtl_edit_burnset->parameters_copy.unknown_14);
     } else {
         NuQFntPrintEx(system_qfont, x, y, 16, "NO BURNSET LOADED");
     }
@@ -2678,14 +2683,14 @@ void cbPasteLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
         if (curr_rtl != NULL) {
             *curr_rtl = clipboard_light;
             if (base_rtl != NULL) {
-                curr_rtl->field_79 = base_rtl->field_79;
-                if (curr_rtl->field_79 != -1) {
-                    curr_set->lights[curr_rtl->field_79].field_7a = (i8)(curr_rtl - curr_set->lights);
+                curr_rtl->unknown_79 = base_rtl->unknown_79;
+                if (curr_rtl->unknown_79 != -1) {
+                    curr_set->lights[curr_rtl->unknown_79].unknown_7a = (i8)(curr_rtl - curr_set->lights);
                 }
-                curr_rtl->field_7a = (i8)(base_rtl - curr_set->lights);
-                base_rtl->field_79 = (i8)(curr_rtl - curr_set->lights);
+                curr_rtl->unknown_7a = (i8)(base_rtl - curr_set->lights);
+                base_rtl->unknown_79 = (i8)(curr_rtl - curr_set->lights);
             } else {
-                curr_rtl->field_79 = curr_rtl->field_7a = -1;
+                curr_rtl->unknown_79 = curr_rtl->unknown_7a = -1;
             }
             curr_rtl->position = burn_editor_position;
         }
@@ -2714,14 +2719,14 @@ void cbPasteIntoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
             position = curr_rtl->position;
             *curr_rtl = clipboard_light;
             if (base_rtl != NULL) {
-                curr_rtl->field_79 = base_rtl->field_79;
-                if (curr_rtl->field_79 != -1) {
-                    curr_set->lights[curr_rtl->field_79].field_7a = (i8)(curr_rtl - curr_set->lights);
+                curr_rtl->unknown_79 = base_rtl->unknown_79;
+                if (curr_rtl->unknown_79 != -1) {
+                    curr_set->lights[curr_rtl->unknown_79].unknown_7a = (i8)(curr_rtl - curr_set->lights);
                 }
-                curr_rtl->field_7a = (i8)(base_rtl - curr_set->lights);
-                base_rtl->field_79 = (i8)(curr_rtl - curr_set->lights);
+                curr_rtl->unknown_7a = (i8)(base_rtl - curr_set->lights);
+                base_rtl->unknown_79 = (i8)(curr_rtl - curr_set->lights);
             } else {
-                curr_rtl->field_79 = curr_rtl->field_7a = -1;
+                curr_rtl->unknown_79 = curr_rtl->unknown_7a = -1;
             }
             curr_rtl->position = position;
         } else {
@@ -2754,11 +2759,11 @@ void cbCopyToGroup(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
                 }
                 position = curr_set->lights[i].position;
                 uid = curr_set->lights[i].uid;
-                user_id = curr_set->lights[i].field_68;
+                user_id = curr_set->lights[i].unknown_68;
                 curr_set->lights[i] = *curr_rtl;
                 curr_set->lights[i].position = position;
                 curr_set->lights[i].uid = uid;
-                curr_set->lights[i].field_68 = user_id;
+                curr_set->lights[i].unknown_68 = user_id;
             }
         }
     }
@@ -3366,12 +3371,12 @@ void edrtlDrawLight(i32 index) {
 void edrtlDrawLights(void) {
     i32 index;
     if (base_rtl != NULL) {
-        for (index = base_rtl->field_79; index != -1; index = curr_set->lights[index].field_79) {
+        for (index = base_rtl->unknown_79; index != -1; index = curr_set->lights[index].unknown_79) {
             edrtlDrawLight(index);
         }
     } else {
         for (index = 0; index < 128; ++index) {
-            if (hide_types[curr_set->lights[index].type] == 0 && curr_set->lights[index].field_7a == -1) {
+            if (hide_types[curr_set->lights[index].type] == 0 && curr_set->lights[index].unknown_7a == -1) {
                 edrtlDrawLight(index);
             }
         }
@@ -3408,7 +3413,7 @@ void RefreshUI(void) {
     if (curr_rtl != NULL) {
         prop_item->disabled = 0;
         copy_item->disabled = 0;
-        if (curr_rtl->field_79 != -1 && curr_rtl->field_7a == -1) {
+        if (curr_rtl->unknown_79 != -1 && curr_rtl->unknown_7a == -1) {
             colour_item->disabled = 1;
         } else {
             colour_item->disabled = 0;
@@ -3449,19 +3454,19 @@ void RefreshUI(void) {
         }
         castshadow_item->highlighted = curr_rtl->flags >> 1;
         hasspecular_item->highlighted = curr_rtl->flags >> 2;
-        eduiMenuHighlight(modifier_menu, modifier_items[modifier_cnt - 1 < curr_rtl->field_7b ? modifier_cnt - 1 : curr_rtl->field_7b]);
+        eduiMenuHighlight(modifier_menu, modifier_items[modifier_cnt - 1 < curr_rtl->unknown_7b ? modifier_cnt - 1 : curr_rtl->unknown_7b]);
         for (i = 0; i < 16; i++) {
-            if ((((u16)curr_rtl->field_5e & (1 << i)) != 0) ^ associd_items[i]->highlighted) {
+            if ((((u16)curr_rtl->unknown_5e & (1 << i)) != 0) ^ associd_items[i]->highlighted) {
                 eduiMenuHighlight(associd_menu, associd_items[i]);
             }
         }
         for (i = 0; i < 16; i++) {
-            if ((((u16)curr_rtl->field_60 & (1 << i)) != 0) ^ excludeid_items[i]->highlighted) {
+            if ((((u16)curr_rtl->unknown_60 & (1 << i)) != 0) ^ excludeid_items[i]->highlighted) {
                 eduiMenuHighlight(excludeid_menu, excludeid_items[i]);
             }
         }
         for (i = 0; i < 16; i++) {
-            if (i == curr_rtl->field_68) {
+            if (i == curr_rtl->unknown_68) {
                 eduiMenuHighlight(userid_menu, userid_items[i]);
             }
         }
@@ -3619,7 +3624,7 @@ void cbGroupID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 
 void cbModifierType(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
-        curr_rtl->field_7b = (i8)item->data;
+        curr_rtl->unknown_7b = (i8)item->data;
         RefreshUI();
     }
 }
@@ -3651,29 +3656,29 @@ void cbLightType(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 
 void cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
-        curr_rtl->field_5e &= (i16) ~(1 << item->data);
+        curr_rtl->unknown_5e &= (i16) ~(1 << item->data);
         if (item->highlighted) {
-            curr_rtl->field_5e |= (i16)(1 << item->data);
+            curr_rtl->unknown_5e |= (i16)(1 << item->data);
         }
-        curr_rtl->field_60 &= (i16) ~(u16)curr_rtl->field_5e;
+        curr_rtl->unknown_60 &= (i16) ~(u16)curr_rtl->unknown_5e;
         RefreshUI();
     }
 }
 
 void cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
-        curr_rtl->field_60 &= (i16) ~(1 << item->data);
+        curr_rtl->unknown_60 &= (i16) ~(1 << item->data);
         if (item->highlighted) {
-            curr_rtl->field_60 |= (i16)(1 << item->data);
+            curr_rtl->unknown_60 |= (i16)(1 << item->data);
         }
-        curr_rtl->field_5e &= (i16) ~(u16)curr_rtl->field_60;
+        curr_rtl->unknown_5e &= (i16) ~(u16)curr_rtl->unknown_60;
         RefreshUI();
     }
 }
 
 void cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
-        curr_rtl->field_68 = (u16)item->data;
+        curr_rtl->unknown_68 = (u16)item->data;
         RefreshUI();
     }
 }
@@ -3736,9 +3741,9 @@ static i32 rtlCmp(RTL_LIGHT *first, RTL_LIGHT *second) {
     different |= (first->flags & 1) != (second->flags & 1);
     different |= first->pitch != second->pitch;
     different |= first->yaw != second->yaw;
-    different |= first->field_5e != second->field_5e;
-    different |= first->field_60 != second->field_60;
-    different |= first->field_68 != second->field_68;
+    different |= first->unknown_5e != second->unknown_5e;
+    different |= first->unknown_60 != second->unknown_60;
+    different |= first->unknown_68 != second->unknown_68;
     different |= first->intensity == second->intensity ? 0 : 1;
     return different;
 }
@@ -3907,7 +3912,7 @@ static RTL_LIGHT *FindNearestRTL(NUVEC *position, int ignore_radius) {
     f32 nearest_distance = FLT_MAX;
     f32 distance;
     if (base_rtl != NULL) {
-        i = base_rtl->field_79;
+        i = base_rtl->unknown_79;
         while (i != -1) {
             distance = (curr_set->lights[i].position.x - position->x) * (curr_set->lights[i].position.x - position->x) +
                        (curr_set->lights[i].position.y - position->y) * (curr_set->lights[i].position.y - position->y) +
@@ -3917,14 +3922,14 @@ static RTL_LIGHT *FindNearestRTL(NUVEC *position, int ignore_radius) {
                 nearest_distance = distance;
                 nearest = i;
             }
-            i = curr_set->lights[i].field_79;
+            i = curr_set->lights[i].unknown_79;
         }
     } else {
         for (i = 0; i < 128; ++i) {
             if (hide_types[curr_set->lights[i].type]) {
                 continue;
             }
-            if (curr_set->lights[i].field_7a != -1) {
+            if (curr_set->lights[i].unknown_7a != -1) {
                 continue;
             }
             distance = (curr_set->lights[i].position.x - position->x) * (curr_set->lights[i].position.x - position->x) +
@@ -4058,8 +4063,8 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
                     curr_rtl->secondary_colour.z = 0.5f;
                     curr_rtl->type = 2;
                     curr_rtl->flags &= (u8)~1u;
-                    curr_rtl->field_5e = 0;
-                    curr_rtl->field_60 = 0;
+                    curr_rtl->unknown_5e = 0;
+                    curr_rtl->unknown_60 = 0;
                     curr_rtl->parameters[0] = 0.1f;
                     curr_rtl->parameters[1] = 0.1f;
                     curr_rtl->parameters[2] = 0.1f;
@@ -4070,25 +4075,25 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
                     curr_rtl->direction.x = 0.0f;
                     curr_rtl->direction.y = 0.0f;
                     curr_rtl->direction.z = 1.0f;
-                    curr_rtl->field_64 = 0.0f;
+                    curr_rtl->unknown_64 = 0.0f;
                     NuVecRotateX(&curr_rtl->direction, &curr_rtl->direction, curr_rtl->pitch);
                     NuVecRotateY(&curr_rtl->direction, &curr_rtl->direction, curr_rtl->yaw);
-                    curr_rtl->field_79 = -1;
-                    curr_rtl->field_7a = -1;
-                    curr_rtl->field_7b = 0;
-                    curr_rtl->field_7c = curr_set->lights;
+                    curr_rtl->unknown_79 = -1;
+                    curr_rtl->unknown_7a = -1;
+                    curr_rtl->unknown_7b = 0;
+                    curr_rtl->unknown_7c = curr_set->lights;
                     if (base_rtl) {
                         *curr_rtl = *base_rtl;
-                        curr_rtl->field_79 = base_rtl->field_79;
-                        if (curr_rtl->field_79 != -1) {
-                            curr_set->lights[curr_rtl->field_79].field_7a = (i8)(curr_rtl - curr_set->lights);
+                        curr_rtl->unknown_79 = base_rtl->unknown_79;
+                        if (curr_rtl->unknown_79 != -1) {
+                            curr_set->lights[curr_rtl->unknown_79].unknown_7a = (i8)(curr_rtl - curr_set->lights);
                         }
-                        curr_rtl->field_7a = (i8)(base_rtl - curr_set->lights);
-                        base_rtl->field_79 = (i8)(curr_rtl - curr_set->lights);
+                        curr_rtl->unknown_7a = (i8)(base_rtl - curr_set->lights);
+                        base_rtl->unknown_79 = (i8)(curr_rtl - curr_set->lights);
                     }
                 }
             } else if (curr_rtl) {
-                if (curr_rtl->field_7a != -1) {
+                if (curr_rtl->unknown_7a != -1) {
                     helpmode = 4;
                 } else {
                     helpmode = 3;
@@ -4359,8 +4364,8 @@ static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
             }
             if (edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
                 edcamSetPos(&edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].position);
-                edrtl_edit_burnset->field_558 = edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c;
-                edrtl_edit_burnset->unknown_55c = edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20;
+                edrtl_edit_burnset->unknown_558 = edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_1c;
+                edrtl_edit_burnset->unknown_55c = edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].unknown_20;
             }
         }
 
@@ -4435,12 +4440,12 @@ void edrtlDrawBurnouts(void) {
             segments = 16;
         }
         if (edrtl_edit_burnset->burnouts[index].active) {
-            RndrOSphere(&edrtl_edit_burnset->burnouts[index].position, edrtl_edit_burnset->burnouts[index].field_1c, colour, segments,
+            RndrOSphere(&edrtl_edit_burnset->burnouts[index].position, edrtl_edit_burnset->burnouts[index].unknown_1c, colour, segments,
                         NULL);
-            if (edrtl_edit_burnset->burnouts[index].field_20 > 0.0f) {
+            if (edrtl_edit_burnset->burnouts[index].unknown_20 > 0.0f) {
                 RndrOSphere(&edrtl_edit_burnset->burnouts[index].position,
-                            edrtl_edit_burnset->burnouts[index].field_1c + edrtl_edit_burnset->burnouts[index].field_20, colour, segments,
-                            NULL);
+                            edrtl_edit_burnset->burnouts[index].unknown_1c + edrtl_edit_burnset->burnouts[index].unknown_20, colour,
+                            segments, NULL);
             }
         }
     }

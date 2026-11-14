@@ -231,7 +231,7 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
         AnimParams[slot].control_mode = EdFileReadInt();
         AnimParams[slot].control_switch = EdFileReadInt();
         AnimParams[slot].control_distance = EdFileReadFloat();
-        AnimParams[slot].field_018 = EdFileReadFloat();
+        AnimParams[slot].unknown_018 = EdFileReadFloat();
         extra = 0;
         if (AnimParams[slot].effect_count > 8) {
             extra = 8 - AnimParams[slot].effect_count;

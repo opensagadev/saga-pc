@@ -340,7 +340,7 @@ NUVEC *Grabber_GetGrabPos(void *context, NUMTX *matrix) {
 }
 
 void PartKill_Grabber(PART_PC *part, i32 unused1) {
-    GIZMOBLOWUP_PC *blowup = (GIZMOBLOWUP_PC *)part->field_210;
+    GIZMOBLOWUP_PC *blowup = (GIZMOBLOWUP_PC *)part->unknown_210;
     NUVEC *position = &part->position;
     i32 i;
     PlaySfx("Explode2", position);
@@ -577,17 +577,17 @@ void Grabber_Drop(GRABBER_PC *grabber, NUVEC *previous) {
         velocity.y = -0.1f;
         velocity.z = (grabber->grab_position.z - previous->z) / FRAMETIME * 0.5f;
         params.velocity = &velocity;
-        NuSpecialGetRadius(&grabber->carried_blowup->type->animated_special, &centre, &params.field_14);
-        params.field_18 = params.field_14;
+        NuSpecialGetRadius(&grabber->carried_blowup->type->animated_special, &centre, &params.unknown_14);
+        params.unknown_18 = params.unknown_14;
         params.gravity = -6.0f;
         params.special = &grabber->carried_blowup->type->animated_special;
         params.time_step = FRAMETIME;
-        params.field_a4 = 3.0f;
+        params.unknown_a4 = 3.0f;
         params.flags = 0x311;
         params.kill_fn = PartKill_Grabber;
         part = AddPart(&params);
         if (part != NULL) {
-            part->field_210 = (u32)grabber->carried_blowup;
+            part->unknown_210 = (u32)grabber->carried_blowup;
         }
         grabber->carried_blowup = NULL;
     }

@@ -250,7 +250,7 @@ void UpdatePlayerCameraOcclusion(void) {
                 continue;
             }
             if (FadeSys.fade != 0.0f || object->dead != 0 || object->character_context == 0x2b || object->hud_icon_timer > 0.0f ||
-                GetMenuID() != -1 || object->character_context == 0x0f || object->rider != NULL || (object->field_e24 & 8) == 0 ||
+                GetMenuID() != -1 || object->character_context == 0x0f || object->rider != NULL || (object->unknown_e24 & 8) == 0 ||
                 ((object->character_data->model_flags & 0x40) != 0 && object->communicate_blend > 0.0f)) {
                 object->tag_reset_timer = 0.0f;
                 object->pause_context_state = 0.0f;
@@ -1250,7 +1250,7 @@ mode_selected:
             camera->target_mtx = camera->render_mtx;
         } else {
             NuMtxSetRotationZ(&camera->mtx, roll);
-            NuMtxRotateX(&camera->mtx, pitch + ((u16)(camera->field_214)));
+            NuMtxRotateX(&camera->mtx, pitch + ((u16)(camera->unknown_214)));
             NuMtxRotateY(&camera->mtx, yaw + ((u16)(camera->adjusted_yaw_offset)));
             NuMtxTranslate(&camera->mtx, &camera->position);
             camera->render_mtx = camera->mtx;

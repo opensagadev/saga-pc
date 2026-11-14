@@ -204,12 +204,12 @@ typedef struct TimeBarSet {  // size 0x2c
     i32 slot_count;          // 0x04
     i32 *accumulators[2];    // 0x08
     NuTime *start_times;     // 0x10
-    i32 *field_14;           // 0x14
-    i32 *field_18;           // 0x18
+    i32 *unknown_14;         // 0x14
+    i32 *unknown_18;         // 0x18
     i32 *colours;            // 0x1c
     i32 *toggle_flags;       // 0x20
     const char **slot_names; // 0x24
-    i32 field_28;            // 0x28
+    i32 unknown_28;          // 0x28
 } TimeBarSet;
 
 /* Original source: nu2api/nucore/nuapi.cpp; PC initializes only the fields
@@ -9326,7 +9326,7 @@ void ImplodeMakeTable(i32 size, u8 *len, i32 unknown, u16 *table) {
     u32 j;
     u32 k;
     u32 unknown2;
-    u32 unknown3;
+    u32 unknown_3;
     u32 unknown4;
     u16 *cursor;
 
@@ -9367,7 +9367,7 @@ void ImplodeMakeTable(i32 size, u8 *len, i32 unknown, u16 *table) {
     }
 
     unknown2 = size;
-    unknown3 = 1 << (0xf - unknown);
+    unknown_3 = 1 << (0xf - unknown);
 
     for (symbol = 0; symbol < size; symbol++) {
         if ((length = len[symbol]) == 0) {
@@ -9392,7 +9392,7 @@ void ImplodeMakeTable(i32 size, u8 *len, i32 unknown, u16 *table) {
                     unknown2++;
                 }
 
-                if ((j & unknown3) != 0) {
+                if ((j & unknown_3) != 0) {
                     cursor = implode_right + *cursor;
                 } else {
                     cursor = implode_left + *cursor;

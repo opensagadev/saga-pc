@@ -296,7 +296,7 @@ struct PC_INPUT_MOUSE_RUNTIME_PC { // size 0x5c
     u8 unknown_48;                 // 0x48
     u8 port_activity[14];          // 0x49
     u8 unknown_57;                 // 0x57
-    i32 field_58;                  // 0x58
+    i32 unknown_58;                // 0x58
 };
 
 #pragma pack(push, 2)
@@ -435,7 +435,7 @@ struct PC_INPUT_RUNTIME_PC {          // size 0x68b4
             union { // size 0x21
 
                 struct {                   // size 0x21
-                    u8 field_4e13;         // 0x4e13
+                    u8 unknown_4e13;       // 0x4e13
                     u8 unknown_4e14[0x20]; // 0x4e14
                 };
 
@@ -584,8 +584,8 @@ struct PC_INPUT_RUNTIME_PC {          // size 0x68b4
     i32 GetInputRecordCount();
     i32 fun_006d4e40();
     i32 fun_006d4e50();
-    void InsertInputRecord(i32 index, i32 field_00, i32 field_01, i32 field_02, u16 field_04);
-    void AddInputRecord(i32 field_00, i32 field_01, i32 field_02, u16 field_04);
+    void InsertInputRecord(i32 index, i32 unknown_00, i32 field_01, i32 unknown_02, u16 unknown_04);
+    void AddInputRecord(i32 unknown_00, i32 field_01, i32 unknown_02, u16 unknown_04);
     void InitializeDefaultRecords();
 };
 

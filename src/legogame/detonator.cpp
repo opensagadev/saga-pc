@@ -2,9 +2,9 @@
 #include <string.h>
 
 struct BATARANG_DETONATOR_HIT_VIEW { // size 0x24
-    u8 unknown00[0xc];               // 0x00
+    u8 unknown_00[0xc];              // 0x00
     f32 scale;                       // 0x0c
-    u8 unknown10[0x10];              // 0x10
+    u8 unknown_10[0x10];             // 0x10
     f32 delay;                       // 0x20
 };
 
@@ -112,12 +112,12 @@ extern "C" {
 
 extern "C" void Detonator_Detonate(DETONATOR_s *detonator) {
     Batarangs_CheckLostData(detonator);
-    Detonate(&detonator->field_0x0c, 0);
-    BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->field_0x34);
+    Detonate(&detonator->unknown_0c, 0);
+    BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->unknown_34);
     detonator->active = 0;
     if (hit_data != NULL) {
         hit_data->delay = BatarangDetonatorHitDelay;
-        detonator->field_0x34 = NULL;
+        detonator->unknown_34 = NULL;
     }
 }
 
@@ -129,12 +129,12 @@ extern "C" void Detonators_Update(void) {
             continue;
         }
         detonator->timer += FRAMETIME;
-        NuCameraTransformScreenClip(&detonator->field_0x18, &detonator->field_0x0c, 1, NULL);
+        NuCameraTransformScreenClip(&detonator->unknown_18, &detonator->unknown_0c, 1, NULL);
         timer = detonator->timer;
         if (timer >= 10.7f) {
             Detonator_Detonate(detonator);
-        } else if (detonator->field_0x34 != NULL) {
-            BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->field_0x34);
+        } else if (detonator->unknown_34 != NULL) {
+            BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->unknown_34);
             if (!(detonator->timer >= 10.0f) &&
                 (detonator->object == NULL || detonator->object->dead != 0 || !(detonator->object->unknown_de0 >= 0.3f))) {
                 hit_data->scale = DetonatorHitScaleIdle;
@@ -288,9 +288,9 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
         DETONATOR_s *detonator = (DETONATOR_s *)object->grapple;
         if (detonator != NULL) {
             detonator->active = 0;
-            if (((DETONATOR_s *)object->grapple)->field_0x34 != NULL) {
-                GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, ((DETONATOR_s *)object->grapple)->field_0x34);
-                ((DETONATOR_s *)object->grapple)->field_0x34 = NULL;
+            if (((DETONATOR_s *)object->grapple)->unknown_34 != NULL) {
+                GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, ((DETONATOR_s *)object->grapple)->unknown_34);
+                ((DETONATOR_s *)object->grapple)->unknown_34 = NULL;
             }
         }
         return;
@@ -303,15 +303,15 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
         detonator->rotation_x = object->unknown_7a4;
         detonator->rotation_y = (u16)(object->takeover_start_angle + object->unknown_276);
         detonator->rotation_z = object->unknown_7a8;
-        detonator->field_0x0c.z = 0.0f;
-        detonator->field_0x0c.x = 0.0f;
-        detonator->field_0x0c.y = 0.0775f;
-        NuVecRotateZ(&detonator->field_0x0c, &detonator->field_0x0c, detonator->rotation_z);
-        NuVecRotateX(&detonator->field_0x0c, &detonator->field_0x0c, detonator->rotation_x);
-        NuVecAdd(&detonator->field_0x0c, &detonator->field_0x0c, &detonator->position);
+        detonator->unknown_0c.z = 0.0f;
+        detonator->unknown_0c.x = 0.0f;
+        detonator->unknown_0c.y = 0.0775f;
+        NuVecRotateZ(&detonator->unknown_0c, &detonator->unknown_0c, detonator->rotation_z);
+        NuVecRotateX(&detonator->unknown_0c, &detonator->unknown_0c, detonator->rotation_x);
+        NuVecAdd(&detonator->unknown_0c, &detonator->unknown_0c, &detonator->position);
         detonator->timer = 0.0f;
-        detonator->field_0x34 =
-            GameAntinode_RegisterAntiNode(WORLD->game_antinode_sys, &detonator->field_0x0c, 1.0f, 1.0f, 1.0f, 0, 0, 0.0f);
+        detonator->unknown_34 =
+            GameAntinode_RegisterAntiNode(WORLD->game_antinode_sys, &detonator->unknown_0c, 1.0f, 1.0f, 1.0f, 0, 0, 0.0f);
         PlaySfx((char *)"imp_thermalDet_attach", &detonator->position);
     } else {
         GameAudio_PlaySfx(0x32, NULL, 0, 0);

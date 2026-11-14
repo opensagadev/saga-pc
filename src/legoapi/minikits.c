@@ -244,9 +244,9 @@ void MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
             if (AreaGlobals.progress_flags > AreaGlobals.area_phase) {
                 AreaGlobals.progress_flags = AreaGlobals.area_phase;
             }
-        } else if ((i16)message->icon == CharKitModelId && AreaGlobals.field_20 < AreaGlobals.field_1c) {
-            ++AreaGlobals.field_20;
-            if (AreaGlobals.field_20 == AreaGlobals.field_1c && AreaGlobals.field_1c >= 10) {
+        } else if ((i16)message->icon == CharKitModelId && AreaGlobals.unknown_20 < AreaGlobals.unknown_1c) {
+            ++AreaGlobals.unknown_20;
+            if (AreaGlobals.unknown_20 == AreaGlobals.unknown_1c && AreaGlobals.unknown_1c >= 10) {
                 EndChallenge(2, 1);
             }
         }

@@ -245,7 +245,7 @@ void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     params.velocity = &velocity;
     blowup = object->grapple;
     params.special = &((GIZMOBLOWUP_PC *)blowup)->type->animated_special;
-    params.field_14 = params.field_18 = (f32)(0.5 * blowup->target_scale);
+    params.unknown_14 = params.unknown_18 = (f32)(0.5 * blowup->target_scale);
     params.flags = 0x8011;
     if (!(blowup->secondary_flags & 4)) {
         params.flags = 0x8111;
@@ -254,7 +254,7 @@ void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     params.time_step = FRAMETIME;
     params.gravity = SUPERCARRY_OBJGRAVITY;
     params.impact_fn = SuperCarry_PartImpact;
-    params.field_a4 = 3.0f;
+    params.unknown_a4 = 3.0f;
     params.kill_fn = SuperCarry_PartKill;
     params.lighting_data = &basis->lighting;
     part = AddPart(&params);

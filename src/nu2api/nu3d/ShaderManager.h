@@ -72,7 +72,7 @@ class NuShaderObject {
     u32 unknown_c;
     PC_SHADER_PARAMETER_LOCAL_PC *active_parameters;
     i32 version;
-    u32 field_18;
+    u32 unknown_18;
     PC_SHADER_PARAMETER_LOCAL_PC parameters[100];
     struct PC_TEXTURE_RESOURCE *vertex_shader;
     struct PC_TEXTURE_RESOURCE *pixel_shader;

@@ -317,8 +317,8 @@ void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS *input, i32 index) {
                 continue;
             }
             piece = &customiser->piece_sets[category][selection[category]];
-            if (piece->field_10 != -1) {
-                counts[piece->field_10] += (i8)customiser->categories[category]->material_indices[0];
+            if (piece->unknown_10 != -1) {
+                counts[piece->unknown_10] += (i8)customiser->categories[category]->material_indices[0];
             }
             if (parts[0].piece == NULL && piece->unknown_indices_0a[0] != 0) {
                 parts[0].piece = piece;

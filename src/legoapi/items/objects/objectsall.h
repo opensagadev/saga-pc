@@ -79,7 +79,7 @@ typedef struct parttype_lookup_s { // size 0x178
         struct {             // size 0xc
             f32 unknown_160; // 0x160
             f32 unknown_164; // 0x164
-            f32 field_168;   // 0x168
+            f32 unknown_168; // 0x168
         };
     }; // 0x160
 
@@ -249,12 +249,12 @@ struct PART_PC { // size 0x220
     struct gameobject_s *owner;     // 0x0d4
     struct gameobject_s *recipient; // 0x0d8
     f32 radius;                     // 0x0dc
-    f32 field_e0;                   // 0x0e0
-    f32 field_e4;                   // 0x0e4
+    f32 unknown_e0;                 // 0x0e0
+    f32 unknown_e4;                 // 0x0e4
     f32 gravity;                    // 0x0e8
     f32 field_ec;                   // 0x0ec
-    f32 field_f0;                   // 0x0f0
-    f32 field_f4;                   // 0x0f4
+    f32 unknown_f0;                 // 0x0f0
+    f32 unknown_f4;                 // 0x0f4
     f32 time_step;                  // 0x0f8
     f32 scale_time;                 // 0x0fc
     f32 time_remaining;             // 0x100
@@ -262,16 +262,16 @@ struct PART_PC { // size 0x220
     u32 flags;                      // 0x108
 
     union { // size 0x18
-        u32 field_10c[6];
+        u32 unknown_10c[6];
         i32 rotation_parameters[6];
     }; // 0x10c
 
-    i32 field_124[5];                // 0x124
+    i32 unknown_124[5];              // 0x124
     u16 rotation_x;                  // 0x138
     u16 rotation_y;                  // 0x13a
     u16 rotation_z;                  // 0x13c
     i16 part_id;                     // 0x13e
-    u16 field_140;                   // 0x140
+    u16 unknown_140;                 // 0x140
     u8 rotation_axes[2];             // 0x142
     u32 active;                      // 0x144
     NUSPECIALHANDLE special;         // 0x148
@@ -298,17 +298,17 @@ struct PART_PC { // size 0x220
     i32 effect_id_1f4;               // 0x1f4
     i32 effect_id_1f8;               // 0x1f8
     f32 effect_scale;                // 0x1fc
-    u32 field_200;                   // 0x200
-    u16 field_204;                   // 0x204
+    u32 unknown_200;                 // 0x200
+    u16 unknown_204;                 // 0x204
     i8 unknown_206;                  // 0x206
     u8 hostility_group;              // 0x207
-    u8 field_208;                    // 0x208
+    u8 unknown_208;                  // 0x208
     u8 unknown_209;                  // 0x209
     u8 flicker_flags;                // 0x20a
     i8 unknown_20b;                  // 0x20b
     f32 crate_spawn_delay;           // 0x20c
-    u32 field_210;                   // 0x210
-    f32 field_214;                   // 0x214
+    u32 unknown_210;                 // 0x210
+    f32 unknown_214;                 // 0x214
     u32 force_flags;                 // 0x218
 
     union { // size 0x4

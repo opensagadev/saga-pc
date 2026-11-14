@@ -68,9 +68,9 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
     group->far_distance = far_distance;
     group->extended_radius_squared = far_distance * far_distance;
     group->distance_range = group->far_distance - group->near_distance;
-    group->field_48 = 0.2f;
-    group->field_40 = 0.025f;
-    group->field_44 = 0.00062500004f;
+    group->unknown_48 = 0.2f;
+    group->unknown_40 = 0.025f;
+    group->unknown_44 = 0.00062500004f;
 
     min_x = min_y = min_z = 10000000.0f;
     max_x = max_y = max_z = -10000000.0f;
@@ -241,11 +241,11 @@ void NuWindUpdateArray(NUVEC **positions) {
                                     contact_x *= scale;
                                     contact_z *= scale;
                                 }
-                                contact_x = (contact_x - matrix->m10) * group->field_48;
-                                contact_z = (contact_z - matrix->m12) * group->field_48;
+                                contact_x = (contact_x - matrix->m10) * group->unknown_48;
+                                contact_z = (contact_z - matrix->m12) * group->unknown_48;
                                 scale = contact_x * contact_x + contact_z * contact_z;
-                                if (scale > group->field_44) {
-                                    scale = group->field_40 / NuFsqrt(scale);
+                                if (scale > group->unknown_44) {
+                                    scale = group->unknown_40 / NuFsqrt(scale);
                                     contact_x *= scale;
                                     contact_z *= scale;
                                 }

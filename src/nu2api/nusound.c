@@ -649,7 +649,7 @@ void MusicPreSeek(i32 track) {
         Music.resume_track = (i16)track;
         Music.queued_track = (i16)track;
         Music.requested_track = (i16)track;
-        (&Music.field_0012)[Music.primary_stream] = 0;
+        (&Music.unknown_0012)[Music.primary_stream] = 0;
         if (Music.transition_frames < 0x40 && Music.state != 0) {
             Music.pause_requested = 1;
         } else {
@@ -664,7 +664,7 @@ void MusicPreSeek(i32 track) {
         Music.queued_track = (i16)track;
         Music.requested_track = (i16)track;
         Music.state = 11;
-        (&Music.field_0012)[Music.primary_stream] = 0;
+        (&Music.unknown_0012)[Music.primary_stream] = 0;
         if (Music.transition_frames >= 0x40) {
             Music.pause_requested = 0;
             MusicPlayStream(Music.primary_stream, track, 0, Music.seek_offset, 1);
@@ -816,7 +816,7 @@ void SoundStopMusic(void) {
         Music.transition_frames = 0;
         Music.pause_requested = 0;
         Music.resume_frames = 0;
-        Music.field_0012 = 0;
+        Music.unknown_0012 = 0;
         Music.unknown_0013 = 0;
         Music.update_delay = 0;
         Music.restore_requested = 0;
@@ -1437,7 +1437,7 @@ void MusicPreSeekNow(i32 track) {
     }
     Music.queued_track = (i16)track;
     Music.requested_track = (i16)track;
-    (&Music.field_0012)[Music.primary_stream] = 0;
+    (&Music.unknown_0012)[Music.primary_stream] = 0;
     Music.pause_requested = 0;
     MusicPlayStream(1 - Music.primary_stream, track, 0, Music.seek_offset, 1);
     Music.seek_offset = 0.0f;
@@ -1456,7 +1456,7 @@ void MusicSeekOffset(i32 track, f32 seek_offset) {
             Music.queued_track = (i16)track;
             Music.requested_track = -1;
             Music.state = 11;
-            (&Music.field_0012)[Music.primary_stream] = 0;
+            (&Music.unknown_0012)[Music.primary_stream] = 0;
             if (Music.transition_frames >= 0x40) {
                 Music.pause_requested = 0;
                 MusicPlayStream(Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * MusicVolume), seek_offset, 1);
@@ -1475,13 +1475,13 @@ void MusicSeekOffset(i32 track, f32 seek_offset) {
         Music.state = 4;
         Music.pause_requested = 0;
         Music.transition_frames = 0;
-        (&Music.field_0012)[Music.primary_stream] = 0;
+        (&Music.unknown_0012)[Music.primary_stream] = 0;
         MusicPlayStream(Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * MusicVolume), seek_offset, 1);
     }
 }
 
 i32 PlayingCutMusic(void) {
-    u8 *delay = &(&Music.field_0012)[1 - Music.primary_stream];
+    u8 *delay = &(&Music.unknown_0012)[1 - Music.primary_stream];
     if (*delay != 0) {
         --*delay;
         return 0;
@@ -1500,7 +1500,7 @@ i32 PlayCutMusic(i32 track, i32 state, void *context) {
     if (track >= 0 && track <= SfxFileCount - 1) {
         Music.transition_frames = 0;
         Music.queued_track = (i16)track;
-        (&Music.field_0012)[1 - Music.primary_stream] = 6;
+        (&Music.unknown_0012)[1 - Music.primary_stream] = 6;
         NuSound3CancelCheckStereo();
         NuSound3PauseStereoStream(Music.primary_stream);
         NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[track].index * CutVolume));
@@ -1592,7 +1592,7 @@ void PlayMusic(i32 track, i32 mode) {
     Music.transition_frames = 0;
     if (Music.state != 0 && mode != 1 && PCStereoChannel1B != -1) {
         Music.primary_stream = (i16)(1 - Music.primary_stream);
-        (&Music.field_0012)[Music.primary_stream] = 0;
+        (&Music.unknown_0012)[Music.primary_stream] = 0;
         if (Music.requested_track == track && Music.pause_requested == 0) {
             Music.state = mode == 3 ? 9 : 7;
             NuSound3ResumeStereoStream(Music.primary_stream);
@@ -1608,7 +1608,7 @@ void PlayMusic(i32 track, i32 mode) {
         Music.requested_track = -1;
         return;
     }
-    (&Music.field_0012)[Music.primary_stream] = 0;
+    (&Music.unknown_0012)[Music.primary_stream] = 0;
     if (Music.requested_track == track && Music.state != 11) {
         Music.primary_stream = (i16)(1 - Music.primary_stream);
     }

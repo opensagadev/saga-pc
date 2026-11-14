@@ -60,7 +60,7 @@ struct NuNetEmu {
     PackStats *fun_0060e770();
     i32 fun_00611dd0() const;
 
-    i32 field_00;
+    i32 unknown_00;
     EmuPacket *first_packet;
     EmuPacket *last_packet;
     i32 packet_count;

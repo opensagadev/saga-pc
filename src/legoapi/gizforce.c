@@ -28,7 +28,7 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
                    &primary, &delta, lightning_col[lightning_index], lightning_endw[lightning_index], distance);
         PlaySfx("ForceLightningLp", &target->collision_position);
 
-        if (object->field_1088 != 0 && object->unknown_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
+        if (object->unknown_1088 != 0 && object->unknown_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
             NUVEC reflected_target;
             f32 plane;
             reflected_origin = primary;
@@ -58,7 +58,7 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
                &secondary, &delta, lightning_col[lightning_index], lightning_endw[lightning_index], distance);
     PlaySfx("ForceLightningLp", &target->collision_position);
 
-    if (object->field_1088 != 0 && object->unknown_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
+    if (object->unknown_1088 != 0 && object->unknown_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
         NUVEC reflected_origin = secondary;
         NUVEC reflected_target = target_position;
         f32 plane = WORLD->current_level->reflection_y;
@@ -152,7 +152,7 @@ static void *GizForces_ReserveBufferSpace(void *world_ptr) {
 }
 
 typedef struct trigger_force_object_s { // size 0x10d0
-    u8 unknown000[0x10cc];              // 0x0000
+    u8 unknown_000[0x10cc];             // 0x0000
     GIZFORCE_PC *force;                 // 0x10cc
 } TRIGGER_FORCE_OBJECT;
 

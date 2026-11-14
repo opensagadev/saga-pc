@@ -227,16 +227,16 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
             if (target < batarang->active) {
                 continue;
             }
-            if (((absolute.value = (detonator->field_0x18.x - batarang->sight_position.x)),
+            if (((absolute.value = (detonator->unknown_18.x - batarang->sight_position.x)),
                  (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f &&
-                ((absolute.value = (detonator->field_0x18.y - batarang->sight_position.y)),
+                ((absolute.value = (detonator->unknown_18.y - batarang->sight_position.y)),
                  (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f) {
-                distance = NuVecDistSqr(&detonator->field_0x0c, &object->collision_position, NULL);
+                distance = NuVecDistSqr(&detonator->unknown_0c, &object->collision_position, NULL);
                 if (distance < selected_distance) {
                     selected_distance = distance;
                     selected = detonator;
                     selected_type = 1;
-                    selected_position = detonator->field_0x0c;
+                    selected_position = detonator->unknown_0c;
                     platform = -1;
                 }
             }
@@ -358,7 +358,7 @@ extern "C" {
         if (target->type == 0) {
             *position = static_cast<GAMEOBJECT *>(target->object)->collision_position;
         } else if (target->type == 1) {
-            *position = static_cast<DETONATOR_s *>(target->object)->field_0x0c;
+            *position = static_cast<DETONATOR_s *>(target->object)->unknown_0c;
         } else if (target->type == 2) {
             *position = static_cast<GIZMOBLOWUP_PC *>(target->object)->mid_position;
         } else if (target->type == 3) {

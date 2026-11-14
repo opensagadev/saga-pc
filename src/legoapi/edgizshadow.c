@@ -41,16 +41,16 @@ static void *Shadow_ReserveBufferSpace(void *world_ptr) {
     view->shadow_editor->direction.x = -2.0f;
     view->shadow_editor->direction.y = -10.0f;
     view->shadow_editor->direction.z = -2.0f;
-    view->shadow_editor->field_0c = 0.3f;
-    view->shadow_editor->field_10 = 2.0f;
-    view->shadow_editor->field_14 = 0.5f;
-    view->shadow_editor->field_18 = 0.0005f;
-    view->shadow_editor->field_1c = 0.01f;
-    view->shadow_editor->field_20 = 22.0f;
-    view->shadow_editor->field_24 = 0.5f;
-    view->shadow_editor->field_28 = 0.0f;
-    view->shadow_editor->field_2c = 0.0f;
-    view->shadow_editor->field_30 = -2.0f;
+    view->shadow_editor->unknown_0c = 0.3f;
+    view->shadow_editor->unknown_10 = 2.0f;
+    view->shadow_editor->unknown_14 = 0.5f;
+    view->shadow_editor->unknown_18 = 0.0005f;
+    view->shadow_editor->unknown_1c = 0.01f;
+    view->shadow_editor->unknown_20 = 22.0f;
+    view->shadow_editor->unknown_24 = 0.5f;
+    view->shadow_editor->unknown_28 = 0.0f;
+    view->shadow_editor->unknown_2c = 0.0f;
+    view->shadow_editor->unknown_30 = -2.0f;
     view->shadow_editor->preset = 0;
     return view->shadow_editor;
 }
@@ -62,27 +62,27 @@ static void Shadow_ApplyPreset(EDGIZSHADOW *shadow, i32 preset) {
             break;
         case 1:
             shadow->preset = 1;
-            shadow->field_10 = 2.0f;
-            shadow->field_14 = 0.1f;
-            shadow->field_18 = 0.0005f;
-            shadow->field_1c = 0.01f;
-            shadow->field_20 = 6.0f;
-            shadow->field_24 = 1.3f;
-            shadow->field_28 = 0.0f;
-            shadow->field_2c = 0.75f;
-            shadow->field_30 = -2.0f;
+            shadow->unknown_10 = 2.0f;
+            shadow->unknown_14 = 0.1f;
+            shadow->unknown_18 = 0.0005f;
+            shadow->unknown_1c = 0.01f;
+            shadow->unknown_20 = 6.0f;
+            shadow->unknown_24 = 1.3f;
+            shadow->unknown_28 = 0.0f;
+            shadow->unknown_2c = 0.75f;
+            shadow->unknown_30 = -2.0f;
             break;
         case 2:
             shadow->preset = 2;
-            shadow->field_10 = 2.0f;
-            shadow->field_14 = 0.1f;
-            shadow->field_18 = 0.0005f;
-            shadow->field_1c = 0.01f;
-            shadow->field_20 = 25.0f;
-            shadow->field_24 = 0.5f;
-            shadow->field_28 = 0.0f;
-            shadow->field_2c = 0.5f;
-            shadow->field_30 = -15.0f;
+            shadow->unknown_10 = 2.0f;
+            shadow->unknown_14 = 0.1f;
+            shadow->unknown_18 = 0.0005f;
+            shadow->unknown_1c = 0.01f;
+            shadow->unknown_20 = 25.0f;
+            shadow->unknown_24 = 0.5f;
+            shadow->unknown_28 = 0.0f;
+            shadow->unknown_2c = 0.5f;
+            shadow->unknown_30 = -15.0f;
             break;
     }
 }
@@ -102,37 +102,37 @@ static i32 Shadow_Load(void *world_ptr, void *data) {
     count = EdFileReadChar();
     for (record = 0; record < count; ++record) {
         EdFileReadNuVec(&shadow->direction);
-        shadow->field_0c = EdFileReadFloat();
+        shadow->unknown_0c = EdFileReadFloat();
         if (version >= 2) {
-            shadow->field_10 = EdFileReadFloat();
-            shadow->field_14 = EdFileReadFloat();
+            shadow->unknown_10 = EdFileReadFloat();
+            shadow->unknown_14 = EdFileReadFloat();
         } else {
-            shadow->field_10 = 2.0f;
-            shadow->field_14 = 0.5f;
+            shadow->unknown_10 = 2.0f;
+            shadow->unknown_14 = 0.5f;
         }
         if (version >= 3) {
-            shadow->field_18 = EdFileReadFloat();
-            shadow->field_1c = EdFileReadFloat();
+            shadow->unknown_18 = EdFileReadFloat();
+            shadow->unknown_1c = EdFileReadFloat();
         } else {
-            shadow->field_18 = 0.0005f;
-            shadow->field_1c = 0.01f;
+            shadow->unknown_18 = 0.0005f;
+            shadow->unknown_1c = 0.01f;
         }
         if (version >= 4) {
-            shadow->field_20 = EdFileReadFloat();
+            shadow->unknown_20 = EdFileReadFloat();
         } else {
-            shadow->field_20 = 22.0f;
+            shadow->unknown_20 = 22.0f;
         }
         if (version >= 5) {
             (void)EdFileReadFloat();
             (void)EdFileReadFloat();
         }
         if (version >= 6) {
-            shadow->field_24 = EdFileReadFloat();
-            shadow->field_28 = EdFileReadFloat();
-            shadow->field_2c = EdFileReadFloat();
+            shadow->unknown_24 = EdFileReadFloat();
+            shadow->unknown_28 = EdFileReadFloat();
+            shadow->unknown_2c = EdFileReadFloat();
         }
         if (version >= 7) {
-            shadow->field_30 = EdFileReadFloat();
+            shadow->unknown_30 = EdFileReadFloat();
         }
         if (version >= 8) {
             shadow->preset = EdFileReadInt();

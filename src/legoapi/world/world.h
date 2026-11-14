@@ -48,20 +48,20 @@ typedef struct level_sfx_entry_s { // size 0x10
 
 typedef struct BOLTTYPE_PC_s { // size 0xa4
     char name[16];             // 0x00
-    f32 field_10;              // 0x10
-    f32 field_14;              // 0x14
-    f32 field_18;              // 0x18
-    f32 field_1c;              // 0x1c
-    f32 field_20;              // 0x20
-    f32 field_24;              // 0x24
+    f32 unknown_10;            // 0x10
+    f32 unknown_14;            // 0x14
+    f32 unknown_18;            // 0x18
+    f32 unknown_1c;            // 0x1c
+    f32 unknown_20;            // 0x20
+    f32 unknown_24;            // 0x24
 
     union { // size 0x10
 
-        struct {          // size 0x10
-            i32 field_28; // 0x28
-            i32 field_2c; // 0x2c
-            i32 field_30; // 0x30
-            i32 field_34; // 0x34
+        struct {            // size 0x10
+            i32 unknown_28; // 0x28
+            i32 unknown_2c; // 0x2c
+            i32 unknown_30; // 0x30
+            i32 unknown_34; // 0x34
         };
 
         struct {                         // size 0x10
@@ -72,12 +72,12 @@ typedef struct BOLTTYPE_PC_s { // size 0xa4
         };
     }; // 0x28
 
-    i16 field_38;                                                  // 0x38
-    i16 field_3a;                                                  // 0x3a
-    u8 field_3c;                                                   // 0x3c
-    i8 field_3d;                                                   // 0x3d
-    u16 field_3e;                                                  // 0x3e
-    u32 field_40;                                                  // 0x40
+    i16 unknown_38;                                                // 0x38
+    i16 unknown_3a;                                                // 0x3a
+    u8 unknown_3c;                                                 // 0x3c
+    i8 unknown_3d;                                                 // 0x3d
+    u16 unknown_3e;                                                // 0x3e
+    u32 unknown_40;                                                // 0x40
     void (*init_callback)(struct bolt_s *bolt);                    // 0x44
     void (*update_callback)(struct bolt_s *bolt);                  // 0x48
     void (*end_callback)(struct bolt_s *bolt);                     // 0x4c
@@ -86,23 +86,23 @@ typedef struct BOLTTYPE_PC_s { // size 0xa4
 
     union { // size 0x4
         const char *shoot_sound;
-        void *field_58;
+        void *unknown_58;
     }; // 0x58
 
     union { // size 0x4
         const char *hit_sound;
-        void *field_5c;
+        void *unknown_5c;
     }; // 0x5c
 
     u32 flags_60; // 0x60
 
     union { // size 0x2
-        i16 field_64;
+        i16 unknown_64;
         i16 shoot_sound_id;
     }; // 0x64
 
     union { // size 0x2
-        i16 field_66;
+        i16 unknown_66;
         i16 hit_sound_id;
     }; // 0x66
 
@@ -273,7 +273,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
 } WORLDINFO;
 
 typedef struct TORPEDO_MACHINE_SYS { // size 0xc
-    u8 unknown0[8];                  // 0x0
+    u8 unknown_0[8];                 // 0x0
     f32 scale;                       // 0x8
 } TORPEDO_MACHINE_SYS;
 
@@ -343,7 +343,7 @@ typedef struct PORTALDOOR_s PORTALDOOR_s;
 struct HUBMINIKIT_s {         // size 0x7c
     NUVEC position;           // 0x00
     f32 scale;                // 0x0c
-    f32 field_0x10;           // 0x10
+    f32 unknown_10;           // 0x10
     i32 phase_x;              // 0x14
     i32 rate_x;               // 0x18
     i32 phase_y;              // 0x1c

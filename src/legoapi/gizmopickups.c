@@ -238,7 +238,7 @@ static void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 cou
         } else {
             type = &GizmoPickupSys->types[pickup->type_index];
         }
-        if (type->field_0f != 0) {
+        if (type->unknown_0f != 0) {
             continue;
         }
         dx = pickup->position.x - GameCam->position.x;
@@ -735,7 +735,7 @@ GIZMOPICKUP *GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum,
         return NULL;
     }
     type = &GizmoPickupSys->types[type_index];
-    if (type->field_0f != 0) {
+    if (type->unknown_0f != 0) {
         return NULL;
     }
     radius = type->shadow_extent_x * AreaPickupScale;
@@ -814,7 +814,7 @@ static GIZMOPICKUP *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP *pi
         if ((pickup->flags & 0x40) != 0 && GizmoPickupSys->alternate_type != -1) {
             type = &GizmoPickupSys->types[GizmoPickupSys->alternate_type];
         }
-        if (type->field_0f != 0) {
+        if (type->unknown_0f != 0) {
             continue;
         }
         if ((pickup->unknown_14[1] & 4) != 0) {
@@ -882,7 +882,7 @@ GIZMOPICKUP *GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unus
             GizmoPickupSys->types[type_index].collect_fn(world, pickup, type_index, object, 0);
         }
         if ((GizmoPickupSys->types[type_index].flags & 0x40) != 0) {
-            ++AreaGlobals.field_18;
+            ++AreaGlobals.unknown_18;
         }
         return pickup;
     }
@@ -1157,7 +1157,7 @@ void SpecialMiniKits_Draw(WORLDINFO *world) {
     scale.y = AreaPickupScale;
     scale.z = AreaPickupScale;
     if (view->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1 ||
-        GizmoPickupSys->types[GizmoPickupSys->gizmo_type_id].field_0f != 0) {
+        GizmoPickupSys->types[GizmoPickupSys->gizmo_type_id].unknown_0f != 0) {
         return;
     }
     spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
@@ -1259,7 +1259,7 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
         } else {
             type = &GizmoPickupSys->types[pickup->type_index];
         }
-        if (!(pickup->flags & 8) && type->field_0f == 0) {
+        if (!(pickup->flags & 8) && type->unknown_0f == 0) {
             effect_flags = type->flags;
             if (effect_flags & 0x2c) {
                 eligible = 1;
@@ -1322,7 +1322,7 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
                 }
             }
         }
-        if (type->field_0f == 0 && !(pickup->flags & 8) && (pickup->flags & 2) && (pickup->flags & 4) && type->update_fn != NULL) {
+        if (type->unknown_0f == 0 && !(pickup->flags & 8) && (pickup->flags & 2) && (pickup->flags & 4) && type->update_fn != NULL) {
             type->update_fn(world, pickup);
         }
     }

@@ -902,7 +902,7 @@ extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *shad
         }
         if (shader->version != 4) {
             ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
-            if (uniform->field_18 != 0) {
+            if (uniform->unknown_18 != 0) {
                 switch ((i32)(parameter->metadata << 4) >> 28) {
                     case 1:
                         parameter->SetValues(0, 1, uniform->values);

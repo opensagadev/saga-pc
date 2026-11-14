@@ -158,7 +158,7 @@ void Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32
     i32 effect;
     if (world->current_level == DOGFIGHTA_LDATA) {
         effect = 0x2e;
-        if (bolt->field_104 != -1) {
+        if (bolt->unknown_104 != -1) {
             points = &bolt->dogfight_hit_position;
         }
     } else {

@@ -372,8 +372,8 @@ found:
         light->secondary_colour.z = 0.5f;
         light->type = 2;
         light->flags &= static_cast<u8>(~1u);
-        light->field_5e = 0;
-        light->field_60 = 0;
+        light->unknown_5e = 0;
+        light->unknown_60 = 0;
         light->parameters[0] = 0.1f;
         light->parameters[1] = 0.1f;
         light->parameters[2] = 0.1f;
@@ -382,13 +382,13 @@ found:
         light->pitch = 0;
         light->yaw = 0;
         light->direction = RtlUnitDirectionZPc;
-        light->field_64 = 0.0f;
+        light->unknown_64 = 0.0f;
         NuVecRotateX(&light->direction, &light->direction, light->pitch);
         NuVecRotateY(&light->direction, &light->direction, light->yaw);
-        light->field_79 = -1;
-        light->field_7a = -1;
-        light->field_7b = 0;
-        light->field_7c = curr_set->lights;
+        light->unknown_79 = -1;
+        light->unknown_7a = -1;
+        light->unknown_7b = 0;
+        light->unknown_7c = curr_set->lights;
         light->led_file = Placeable::CurrentLedFile;
     }
     return light;
@@ -785,19 +785,19 @@ void EdRefRTL::GetMemberData(void *object, i32 requested_type, void *data, i32) 
             *static_cast<f32 *>(data) = light->outer_radius;
             break;
         case 0x8000000a:
-            *static_cast<i32 *>(data) = static_cast<u16>(light->field_5e);
+            *static_cast<i32 *>(data) = static_cast<u16>(light->unknown_5e);
             break;
         case 0x8000000b:
-            *static_cast<i32 *>(data) = static_cast<u16>(light->field_60);
+            *static_cast<i32 *>(data) = static_cast<u16>(light->unknown_60);
             break;
         case 0x8000000c:
-            *static_cast<i32 *>(data) = light->field_68;
+            *static_cast<i32 *>(data) = light->unknown_68;
             break;
         case 0x8000000d:
             *static_cast<i32 *>(data) = light->group_id;
             break;
         case 0x8000000e:
-            *static_cast<i32 *>(data) = light->field_7b;
+            *static_cast<i32 *>(data) = light->unknown_7b;
             break;
     }
 }
@@ -846,21 +846,21 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
             }
             break;
         case 0x8000000a:
-            light->field_5e = *static_cast<i16 *>(data);
-            light->field_60 &= ~light->field_5e;
+            light->unknown_5e = *static_cast<i16 *>(data);
+            light->unknown_60 &= ~light->unknown_5e;
             break;
         case 0x8000000b:
-            light->field_60 = *static_cast<i16 *>(data);
-            light->field_5e &= ~light->field_60;
+            light->unknown_60 = *static_cast<i16 *>(data);
+            light->unknown_5e &= ~light->unknown_60;
             break;
         case 0x8000000c:
-            light->field_68 = *static_cast<u16 *>(data);
+            light->unknown_68 = *static_cast<u16 *>(data);
             break;
         case 0x8000000d:
             light->group_id = *static_cast<u8 *>(data);
             break;
         case 0x8000000e:
-            light->field_7b = *static_cast<i8 *>(data);
+            light->unknown_7b = *static_cast<i8 *>(data);
             break;
     }
 }

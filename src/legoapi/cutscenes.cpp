@@ -1803,8 +1803,8 @@ extern "C" {
             if (shadow_alpha > 0) {
                 f32 shadow_radius;
                 if (game_data->shadow_locators != 0) {
-                    shadow_radius = game_data->field_08c < 99.0f ? game_data->field_08c
-                                                                 : character_data->model_scale * character_data->collision_radius;
+                    shadow_radius = game_data->unknown_08c < 99.0f ? game_data->unknown_08c
+                                                                   : character_data->model_scale * character_data->collision_radius;
                     if (shadow_radius > 0.0f) {
                         f32 alpha =
                             BlobShadowFade(reinterpret_cast<NUVEC *>(&world_matrix.m30), CutBlobShadowFadeNear, CutBlobShadowFadeFar, 1.0f);
@@ -1829,8 +1829,8 @@ extern "C" {
                         }
                     }
                 } else {
-                    shadow_radius = game_data->field_08c < 99.0f ? game_data->field_08c
-                                                                 : character_data->model_scale * character_data->collision_radius * 2.0f;
+                    shadow_radius = game_data->unknown_08c < 99.0f ? game_data->unknown_08c
+                                                                   : character_data->model_scale * character_data->collision_radius * 2.0f;
                     if (shadow_radius > 0.0f) {
                         ground_height = GameShadow(NULL, reinterpret_cast<NUVEC *>(&world_matrix.m30), 5.0f, -1);
                         shadow_sampled = 1;

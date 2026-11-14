@@ -39,7 +39,7 @@ typedef struct shader_uniform_record_pc_s { // size 0x5c
     i32 field_c;                            // 0x0c
     i32 stage_mask;                         // 0x10
     i32 register_index;                     // 0x14
-    i32 field_18;                           // 0x18
+    i32 unknown_18;                         // 0x18
     f32 values[16];                         // 0x1c
 } ShaderUniformRecordPc;
 

@@ -19,7 +19,7 @@ struct GIZBOMBGEN_s {                    // size 0x2c
     struct gameanimset_s *anim_set;      // 0x1c
     i32 interval;                        // 0x20
     struct gameobject_s *generated_bomb; // 0x24
-    i16 field_0x28;                      // 0x28
+    i16 unknown_28;                      // 0x28
 
     union { // size 0x2
         u16 flags;

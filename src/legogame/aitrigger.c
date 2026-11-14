@@ -2,28 +2,28 @@
 #include <string.h>
 
 typedef struct trigger_lever_s { // size 0x96
-    u8 unknown000[0x94];         // 0x00
+    u8 unknown_000[0x94];        // 0x00
     u16 flags;                   // 0x94
 } TRIGGER_LEVER;
 
 typedef struct trigger_spinner_s { // size 0xb0
-    u8 unknown000[0x70];           // 0x00
+    u8 unknown_000[0x70];          // 0x00
     f32 progress;                  // 0x70
     u8 unknown_074[0x10];          // 0x74
     u8 state_flags;                // 0x84
     u8 unknown_085[4];             // 0x85
     i8 room_index;                 // 0x89
-    u8 unknown08a[0x22];           // 0x8a
+    u8 unknown_08a[0x22];          // 0x8a
     u8 flags;                      // 0xac
 } TRIGGER_SPINNER;
 
 typedef struct trigger_force_s { // size 0xa4
-    u8 unknown000[0x38];         // 0x00
+    u8 unknown_000[0x38];        // 0x00
     GAMEOBJECT *using_object;    // 0x38
     i32 active_state;            // 0x3c
-    u8 unknown040[0x34];         // 0x40
+    u8 unknown_040[0x34];        // 0x40
     u32 config_flags;            // 0x74
-    u8 unknown078[0x28];         // 0x78
+    u8 unknown_078[0x28];        // 0x78
     u32 progress_flags;          // 0xa0
 } TRIGGER_FORCE;
 
@@ -33,7 +33,7 @@ typedef struct trigger_set_s { // size 0x214
     AILOCATOR locators[8];     // 0x024
     i8 trigger_indices[8];     // 0x204
     u8 trigger_count;          // 0x20c
-    u8 unknown20d;             // 0x20d
+    u8 unknown_20d;            // 0x20d
     u16 occupied;              // 0x20e
     u16 flags;                 // 0x210
     u8 unknown_212[2];         // 0x212
@@ -43,11 +43,11 @@ typedef struct trigger_system_s { // size 0x4304
     TRIGGER_SET sets[32];         // 0x0000
     i8 assigned_set[64];          // 0x4280
     i8 assigned_trigger[64];      // 0x42c0
-    i32 unknown4300;              // 0x4300
+    i32 unknown_4300;             // 0x4300
 } TRIGGER_SYSTEM_PC;
 
 typedef struct trigger_object_force_s { // size 0x10d0
-    u8 unknown000[0x10cc];              // 0x0000
+    u8 unknown_000[0x10cc];             // 0x0000
     GIZFORCE_PC *force;                 // 0x10cc
 } TRIGGER_OBJECT_FORCE;
 

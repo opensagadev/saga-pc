@@ -78,7 +78,7 @@ extern "C" {
     void Save_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void Fade_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
 
-    /* field_0x10 is the panel object drawn for the stage on the background grid. */
+    /* unknown_10 is the panel object drawn for the stage on the background grid. */
     STATUS_STAGE_s StatusStagesAlt[20] = {
         {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 13, 3,      0, 0, 0, 0.0f, 0.0f},
         {RedBrick_Alt_Draw,      RedBrick_Alt_Update,      RedBrick_Alt_Skip,      18, 4,      0, 0, 0, 0.0f, 0.0f},
@@ -141,7 +141,7 @@ extern "C" {
     }
 
     void ResetStatusPacket_Alt(STATUSPACKET_s *packet) {
-        packet->lsw_packet->field_0x00 = 0;
+        packet->lsw_packet->unknown_00 = 0;
     }
 
     /* Stage types 1 and 2. */
@@ -152,9 +152,9 @@ extern "C" {
 
     /* Stage type 4. */
     void MiniKit_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        if ((packet->field_0xb0 & 2) == 0) {
+        if ((packet->unknown_b0 & 2) == 0) {
             currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCount);
-            if ((packet->field_0xb0 & 0x10) != 0 && (stage->field_0x14 != 6 || !(stage->field_0x18 >= stage->field_0x1c))) {
+            if ((packet->unknown_b0 & 0x10) != 0 && (stage->unknown_14 != 6 || !(stage->unknown_18 >= stage->unknown_1c))) {
                 IncreaseScore(packet->score, 50000, 0);
             }
         }
@@ -169,21 +169,21 @@ extern "C" {
     }
 
     void AllMiniKits_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 0:
-                stage->field_0x14 = 1;
-                stage->field_0x18 = 0.0f;
-                stage->field_0x1c = 6.5f;
+                stage->unknown_14 = 1;
+                stage->unknown_18 = 0.0f;
+                stage->unknown_1c = 6.5f;
                 break;
             case 1: {
-                f32 previous = stage->field_0x18;
-                stage->field_0x18 = stage->field_0x18 + elapsed;
-                if (stage->field_0x18 >= stage->field_0x1c) {
+                f32 previous = stage->unknown_18;
+                stage->unknown_18 = stage->unknown_18 + elapsed;
+                if (stage->unknown_18 >= stage->unknown_1c) {
                     NextStatusStage(packet);
-                } else if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
+                } else if (previous < 0.5f && stage->unknown_18 >= 0.5f) {
                     PlaySfx("StatusAward", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                } else if (previous < 4.0f && stage->field_0x18 >= 4.0f) {
+                } else if (previous < 4.0f && stage->unknown_18 >= 4.0f) {
                     PlaySfx("Char_Icon_App", NULL);
                 }
                 break;
@@ -207,10 +207,10 @@ extern "C" {
 
     /* Stage type 9. */
     void Prompt_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        if (stage->field_0x14 == 0) {
-            f32 accumulated = (f64)elapsed + (f64)stage->field_0x18;
-            stage->field_0x18 = accumulated;
-            if (stage->field_0x18 >= 0.5f) {
+        if (stage->unknown_14 == 0) {
+            f32 accumulated = (f64)elapsed + (f64)stage->unknown_18;
+            stage->unknown_18 = accumulated;
+            if (stage->unknown_18 >= 0.5f) {
                 i32 player = 0;
                 i32 selected = 0;
                 i32 moved_up = 0;
@@ -255,15 +255,15 @@ extern "C" {
                         packet->prompt_choice = (u8)status_prompt;
                     }
                     GameAudio_PlaySfx(0x30, NULL, 0, 0);
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 1;
-                    stage->field_0x1c = 0.5f;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 1;
+                    stage->unknown_1c = 0.5f;
                 }
             }
-        } else if (stage->field_0x14 == 1) {
-            f32 accumulated = (f64)elapsed + (f64)stage->field_0x18;
-            stage->field_0x18 = accumulated;
-            if (stage->field_0x18 > stage->field_0x1c) {
+        } else if (stage->unknown_14 == 1) {
+            f32 accumulated = (f64)elapsed + (f64)stage->unknown_18;
+            stage->unknown_18 = accumulated;
+            if (stage->unknown_18 > stage->unknown_1c) {
                 NextStatusStage(packet);
             }
         }
@@ -294,13 +294,13 @@ extern "C" {
 
     /* Stage type 10. */
     void Exit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        if (stage->field_0x14 >= 0) {
-            stage->field_0x18 = (f64)elapsed + (f64)stage->field_0x18;
+        if (stage->unknown_14 >= 0) {
+            stage->unknown_18 = (f64)elapsed + (f64)stage->unknown_18;
         }
-        if (stage->field_0x18 >= stage->field_0x1c) {
+        if (stage->unknown_18 >= stage->unknown_1c) {
             NextStatusStage(packet);
             if (packet->current_gold_brick < packet->stage_count - 1) {
-                stage->field_0x1c = 0.1f;
+                stage->unknown_1c = 0.1f;
             } else {
                 FinishStatusPacket(packet->prompt_choice);
             }
@@ -309,8 +309,8 @@ extern "C" {
 
     /* Stage type 6. */
     void Stage6_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        if (stage->field_0x14 == 0) {
-            stage->field_0x14 = 1;
+        if (stage->unknown_14 == 0) {
+            stage->unknown_14 = 1;
         }
         NextStatusStage(packet);
         if (packet->stage->type == 7) {
@@ -334,9 +334,9 @@ extern "C" {
        screen here instead of setting flag 0x1000, and there is no memory-card menu state. */
     void Save_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         if (packet->save_state == 3) {
-            f32 accumulated = elapsed + stage->field_0x18;
-            stage->field_0x18 = accumulated;
-            if (stage->field_0x18 >= stage->field_0x1c) {
+            f32 accumulated = elapsed + stage->unknown_18;
+            stage->unknown_18 = accumulated;
+            if (stage->unknown_18 >= stage->unknown_1c) {
                 u32 flags = packet->flags_word;
                 if ((flags & 0x400) == 0 && packet->prompt_choice == 0 && (flags & 0x40) == 0 && packet->mission_state == 0 &&
                     packet->challenge_state == 0) {
@@ -359,17 +359,17 @@ extern "C" {
 
     /* Stage type 12. */
     void Fade_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 0:
-                stage->field_0x14 = 1;
-                stage->field_0x18 = 0.0f;
-                stage->field_0x1c = 0.6f;
+                stage->unknown_14 = 1;
+                stage->unknown_18 = 0.0f;
+                stage->unknown_1c = 0.6f;
                 break;
             case 1: {
-                f32 accumulated = stage->field_0x18;
+                f32 accumulated = stage->unknown_18;
                 accumulated += elapsed;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x18 >= stage->field_0x1c) {
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_18 >= stage->unknown_1c) {
                     FinishStatusPacket(packet->prompt_choice);
                 }
                 break;
@@ -390,19 +390,19 @@ extern "C" {
 
     /* Stage type 22: the LSW update without the gold-brick draw. */
     void BonusComplete_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 0: {
-                stage->field_0x18 = 0.0f;
-                stage->field_0x14 = 1;
-                stage->field_0x1c = packet->newly_completed != 0 ? 4.0f : 0.5f;
+                stage->unknown_18 = 0.0f;
+                stage->unknown_14 = 1;
+                stage->unknown_1c = packet->newly_completed != 0 ? 4.0f : 0.5f;
                 StatusDrawPlayerIcons = 1;
                 break;
             }
             case 1: {
-                f32 previous = stage->field_0x18;
-                f32 accumulated = stage->field_0x18 + elapsed;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated) {
+                f32 previous = stage->unknown_18;
+                f32 accumulated = stage->unknown_18 + elapsed;
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_1c <= accumulated) {
                     NextStatusStage(packet);
                 } else if (packet->newly_completed != 0 && previous < 0.5f && accumulated >= 0.5f) {
                     PlaySfx("StatusAward", NULL);
@@ -424,12 +424,12 @@ extern "C" {
     /* Stage type 9. */
     void Prompt_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 active) {
         if (active != 0) {
-            switch (stage->field_0x14) {
+            switch (stage->unknown_14) {
                 case -1:
                     return;
                 case 0:
-                    if (stage->field_0x18 < 0.5f) {
-                        i32 angle = (i32)(((f64)stage->field_0x18 + (f64)stage->field_0x18) * 16384.0);
+                    if (stage->unknown_18 < 0.5f) {
+                        i32 angle = (i32)(((f64)stage->unknown_18 + (f64)stage->unknown_18) * 16384.0);
                         Status_DrawPromptMenu(packet, 0, NuTrigTable[(angle >> 1) & 0x7fff]);
                     } else {
                         Status_DrawPromptMenu(packet, 1, 1.0f);
@@ -439,7 +439,7 @@ extern "C" {
                     return;
                 case 1:
                 case 2: {
-                    i32 angle = (i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 16384.0);
+                    i32 angle = (i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 16384.0);
                     f32 alpha = 1.0f - NuTrigTable[(angle >> 1) & 0x7fff];
                     Status_DrawPromptMenu(packet, 0, alpha);
                     return;
@@ -452,14 +452,14 @@ extern "C" {
         if (current == 0) {
             return;
         }
-        if (stage->field_0x14 > 0 && packet->newly_completed != 0) {
+        if (stage->unknown_14 > 0 && packet->newly_completed != 0) {
             f32 alpha;
-            if (stage->field_0x18 < 0.5f) {
-                alpha = (f64)stage->field_0x18 * 2.0;
-            } else if (stage->field_0x18 < 3.5) {
+            if (stage->unknown_18 < 0.5f) {
+                alpha = (f64)stage->unknown_18 * 2.0;
+            } else if (stage->unknown_18 < 3.5) {
                 alpha = 1.0f;
             } else {
-                alpha = 1.0 - ((f64)stage->field_0x18 - 3.5) * 2.0;
+                alpha = 1.0 - ((f64)stage->unknown_18 - 3.5) * 2.0;
             }
             if (alpha > 0.0f) {
                 i32 opacity = (i32)((f64)alpha * 128.0);
@@ -472,7 +472,7 @@ extern "C" {
     i32 InitStatusScreen_Alt(WORLDINFO *world, STATUSPACKET_s *packet) {
         (void)world;
         /* Sets bit 24 of the packet word with a byte OR on its top byte. */
-        ((u8 *)&packet->lsw_packet->field_0x00)[3] |= 1;
+        ((u8 *)&packet->lsw_packet->unknown_00)[3] |= 1;
         StatusAltBgPos.x = -StatusAltGridStepX;
         StatusAltBgPos.y = -StatusAltGridStepY * 2.0f;
         StatusAltBgPos.z = -3.0f;
@@ -493,41 +493,41 @@ extern "C" {
         if (packet == NULL || packet->stage == NULL) {
             return;
         }
-        if (packet->stage->field_0x14 == -1) {
-            packet->stage->field_0x18 += FRAMETIME;
+        if (packet->stage->unknown_14 == -1) {
+            packet->stage->unknown_18 += FRAMETIME;
             stage = packet->stage;
-            if (stage->field_0x18 < 1.0f) {
+            if (stage->unknown_18 < 1.0f) {
                 x = StatusAltGridStepX;
                 if (StatusAltZoom == 1.5f) {
-                    stage->field_0x18 = 1.0f;
+                    stage->unknown_18 = 1.0f;
                 } else {
-                    speed = 1.0 - ((f64)NuTrigTable[((i32)((f64)stage->field_0x18 * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
+                    speed = 1.0 - ((f64)NuTrigTable[((i32)((f64)stage->unknown_18 * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
                     speed = (f64)speed * 0.25;
                     StatusAltZoom = SeekLinearF(StatusAltZoom, 1.5f, speed);
                 }
             } else {
-                if (stage->field_0x18 < 2.0f) {
-                    w = stage->field_0x18 - 1.0f;
+                if (stage->unknown_18 < 2.0f) {
+                    w = stage->unknown_18 - 1.0f;
                     w = 1.0f - w;
                     x = NuTrigTable[((i32)((f64)w * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f;
                     x = ((f64)StatusAltGridStepX + (f64)0.1f) * (f64)x - (f64)0.1f;
-                } else if (stage->field_0x18 < 2.1f && (packet->field_0xb0 & 2) == 0) {
-                    w = (f64)stage->field_0x18 - 2.0;
+                } else if (stage->unknown_18 < 2.1f && (packet->unknown_b0 & 2) == 0) {
+                    w = (f64)stage->unknown_18 - 2.0;
                     w = 1.0 - (f64)w / (f64)0.1f;
                     x = (f64)NuTrigTable[((i32)((f64)w * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff] * -(f64)0.1f;
-                } else if (stage->field_0x18 < 3.1f && (packet->field_0xb0 & 2) == 0) {
-                    speed = (f64)stage->field_0x18 - (f64)2.1f;
+                } else if (stage->unknown_18 < 3.1f && (packet->unknown_b0 & 2) == 0) {
+                    speed = (f64)stage->unknown_18 - (f64)2.1f;
                     x = 0.0f;
                     if (StatusAltZoom == 1.1f) {
-                        stage->field_0x18 = 3.1f;
+                        stage->unknown_18 = 3.1f;
                     } else {
                         speed = 1.0 - ((f64)NuTrigTable[((i32)((f64)speed * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
                         speed = (f64)speed * 0.25;
                         StatusAltZoom = SeekLinearF(StatusAltZoom, 1.1f, speed);
                     }
                 } else {
-                    stage->field_0x18 = 0.0f;
-                    packet->stage->field_0x14 = 0;
+                    stage->unknown_18 = 0.0f;
+                    packet->stage->unknown_14 = 0;
                     packet->previous_stage_2 = NULL;
                     x = 0.0f;
                 }
@@ -536,32 +536,32 @@ extern "C" {
             previous_x = x - StatusAltGridStepX;
             previous_2_x = previous_x - StatusAltGridStepX;
             DrawPanel3DObjectNoAlpha(x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                     &WORLD->level_objects[(i16)stage->field_0x10].special, 0);
+                                     &WORLD->level_objects[(i16)stage->unknown_10].special, 0);
             if (packet->previous_stage_2 != NULL) {
                 DrawPanel3DObjectNoAlpha(previous_2_x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->previous_stage_2->field_0x10].special, 0);
+                                         &WORLD->level_objects[(i16)packet->previous_stage_2->unknown_10].special, 0);
             }
             if (packet->previous_stage != NULL) {
                 DrawPanel3DObjectNoAlpha(previous_x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->previous_stage->field_0x10].special, 0);
+                                         &WORLD->level_objects[(i16)packet->previous_stage->unknown_10].special, 0);
             }
             if (packet->next_stage != NULL) {
                 x = StatusAltGridStepX + x;
                 DrawPanel3DObjectNoAlpha(x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->next_stage->field_0x10].special, 0);
+                                         &WORLD->level_objects[(i16)packet->next_stage->unknown_10].special, 0);
             }
         } else {
             if (packet->previous_stage != NULL) {
                 DrawPanel3DObjectNoAlpha(-StatusAltGridStepX, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->previous_stage->field_0x10].special, 0);
+                                         &WORLD->level_objects[(i16)packet->previous_stage->unknown_10].special, 0);
             }
             if (packet->stage != NULL) {
                 DrawPanel3DObjectNoAlpha(0.0f, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->stage->field_0x10].special, 0);
+                                         &WORLD->level_objects[(i16)packet->stage->unknown_10].special, 0);
             }
             if (packet->next_stage != NULL) {
                 DrawPanel3DObjectNoAlpha(StatusAltGridStepX, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->next_stage->field_0x10].special, 0);
+                                         &WORLD->level_objects[(i16)packet->next_stage->unknown_10].special, 0);
             }
         }
     }
@@ -577,45 +577,45 @@ extern "C" {
             }
             DrawPanel3DObjectNoAlpha((f32)(i % StatusAltColumns) * StatusAltGridStepX + StatusAltBgPos.x,
                                      (f32) - (i / StatusAltColumns) * StatusAltGridStepY - StatusAltBgPos.y, 1.5 - StatusAltBgPos.z, 3.0f,
-                                     3.0f, 3.0f, 0xc000, 0, 0, &WORLD->level_objects[(i16)StatusStagesAlt[i].field_0x10].special, 0);
+                                     3.0f, 3.0f, 0xc000, 0, 0, &WORLD->level_objects[(i16)StatusStagesAlt[i].unknown_10].special, 0);
         }
         stage = packet->stage;
-        if (stage->field_0x14 != -1) {
+        if (stage->unknown_14 != -1) {
             return;
         }
-        stage->field_0x18 += FRAMETIME;
+        stage->unknown_18 += FRAMETIME;
         stage = packet->stage;
-        if (stage->field_0x18 < 1.0f) {
+        if (stage->unknown_18 < 1.0f) {
             if (StatusAltBgPos.z == 1.5f) {
-                stage->field_0x18 = 1.0f;
+                stage->unknown_18 = 1.0f;
             } else {
-                f32 speed = 1.0 - ((f64)NuTrigTable[((i32)((f64)stage->field_0x18 * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
+                f32 speed = 1.0 - ((f64)NuTrigTable[((i32)((f64)stage->unknown_18 * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
                 speed = (f64)speed * 0.25;
                 StatusAltBgPos.z = SeekLinearF(StatusAltBgPos.z, 0.0f, speed);
             }
-        } else if (stage->field_0x18 < 2.0f) {
-            w = stage->field_0x18 - 1.0f;
+        } else if (stage->unknown_18 < 2.0f) {
+            w = stage->unknown_18 - 1.0f;
             w = NuTrigTable[((i32)((f64)w * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f;
             StatusAltBgPos.x += ((f32)(-selected % StatusAltColumns) * StatusAltGridStepX - StatusAltBgPos.x) * w;
             StatusAltBgPos.y += ((f32) - (selected / StatusAltColumns) * StatusAltGridStepY - StatusAltBgPos.y) * w;
-        } else if (stage->field_0x18 < 2.1f && (packet->field_0xb0 & 2) == 0) {
-            w = (f64)stage->field_0x18 - 2.0;
+        } else if (stage->unknown_18 < 2.1f && (packet->unknown_b0 & 2) == 0) {
+            w = (f64)stage->unknown_18 - 2.0;
             w = 1.0 - (f64)w / (f64)0.1f;
             w = NuTrigTable[((i32)((f64)w * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
             StatusAltBgPos.x += ((f32)(-selected % StatusAltColumns) * StatusAltGridStepX - StatusAltBgPos.x) * w;
             StatusAltBgPos.y += ((f32) - (selected / StatusAltColumns) * StatusAltGridStepY - StatusAltBgPos.y) * w;
-        } else if (stage->field_0x18 < 3.1f && (packet->field_0xb0 & 2) == 0) {
-            f32 u = (f64)stage->field_0x18 - (f64)2.1f;
+        } else if (stage->unknown_18 < 3.1f && (packet->unknown_b0 & 2) == 0) {
+            f32 u = (f64)stage->unknown_18 - (f64)2.1f;
             if (StatusAltZoom == 1.1f) {
-                stage->field_0x18 = 3.1f;
+                stage->unknown_18 = 3.1f;
             } else {
                 f32 speed = 1.0 - ((f64)NuTrigTable[((i32)((f64)u * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
                 speed = (f64)speed * 0.25;
                 StatusAltBgPos.z = SeekLinearF(StatusAltBgPos.z, 0.5f, speed);
             }
         } else {
-            stage->field_0x18 = 0.0f;
-            packet->stage->field_0x14 = 0;
+            stage->unknown_18 = 0.0f;
+            packet->stage->unknown_14 = 0;
             packet->previous_stage_2 = NULL;
         }
     }
@@ -643,7 +643,7 @@ extern "C" {
         u16 count_angle;
         u16 rotation;
         i32 displayed;
-        if (current == 0 || stage->field_0x14 <= 0) {
+        if (current == 0 || stage->unknown_14 <= 0) {
             return;
         }
         brick_scale = 0.0f;
@@ -653,11 +653,11 @@ extern "C" {
         title_alpha = 0.0f;
         count_angle = 0;
         title_angle = 0;
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 1:
                 brick_scale =
                     1.0 -
-                    (NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
+                    (NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 count_angle = 0;
                 title_angle = 0;
                 title_alpha = 0.0f;
@@ -669,7 +669,7 @@ extern "C" {
                 brick_scale = 1.0f;
                 title_alpha =
                     1.0 -
-                    (NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
+                    (NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 title_angle = StatusAltSpin;
                 count_angle = 0;
                 title_scale = title_alpha;
@@ -691,7 +691,7 @@ extern "C" {
                 title_scale = 1.0f;
                 count_alpha =
                     1.0 -
-                    (NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
+                    (NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 title_angle = 0;
                 count_angle = (u16)-StatusAltSpin;
                 count_scale = count_alpha;
@@ -713,8 +713,8 @@ extern "C" {
                 title_angle = 0;
                 count_alpha = 1.0f;
                 count_scale = 1.0f;
-                if (stage->field_0x18 < dat_007f8224) {
-                    brick_scale = NuTrigTable[((i32)((f64)(stage->field_0x18 / dat_007f8224) * 32768.0) >> 1) & 0x7fff] * 0.25 + 1.0;
+                if (stage->unknown_18 < dat_007f8224) {
+                    brick_scale = NuTrigTable[((i32)((f64)(stage->unknown_18 / dat_007f8224) * 32768.0) >> 1) & 0x7fff] * 0.25 + 1.0;
                 } else {
                     brick_scale = 1.0f;
                 }
@@ -723,7 +723,7 @@ extern "C" {
                 count_alpha =
                     1.0f -
                     (1.0 -
-                     (NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5);
+                     (NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5);
                 title_angle = StatusAltSpin;
                 count_angle = (u16)-StatusAltSpin;
                 title_alpha = count_alpha;
@@ -744,9 +744,9 @@ extern "C" {
         DrawPanel3DObjectNoAlpha(0.0f, 0.0f, 1.0f, brick_scale, brick_scale, brick_scale,
                                  (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f), rotation, 0,
                                  &WORLD->level_objects[211].special, 2);
-        if (stage->field_0x14 == 6 && stage->field_0x18 < 1.0f) {
+        if (stage->unknown_14 == 6 && stage->unknown_18 < 1.0f) {
             DrawStatusTextFraction(displayed, GOLDBRICKPOINTS, 0.0f, -StatusCoinsTitleY * count_scale, count_angle,
-                                   StatusAltScale * count_scale, 0xbf00c8ff, stage->field_0x18, 1.0f);
+                                   StatusAltScale * count_scale, 0xbf00c8ff, stage->unknown_18, 1.0f);
         } else {
             DrawStatusTextFraction(displayed, GOLDBRICKPOINTS, 0.0f, -StatusCoinsTitleY * count_scale, count_angle,
                                    StatusAltScale * count_scale, ((u32)(count_alpha * 255.0) << 24) | 0xc8ff, 0.0f, 0.0f);
@@ -758,70 +758,70 @@ extern "C" {
 
     /* Stage type 19. Awards the level's gold bricks one at a time. */
     void GoldBrick_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        f32 previous = stage->field_0x18;
+        f32 previous = stage->unknown_18;
         char text[256];
         NUVEC position;
-        f32 accumulated = elapsed + stage->field_0x18;
-        stage->field_0x18 = accumulated;
-        switch (stage->field_0x14) {
+        f32 accumulated = elapsed + stage->unknown_18;
+        stage->unknown_18 = accumulated;
+        switch (stage->unknown_14) {
             case 0:
                 StatusAltSpin = 0;
-                stage->field_0x18 = pop_timer = 0.0f;
-                stage->field_0x14 = 1;
-                stage->field_0x1c = dat_007f8220;
+                stage->unknown_18 = pop_timer = 0.0f;
+                stage->unknown_14 = 1;
+                stage->unknown_1c = dat_007f8220;
                 break;
             case 1:
                 StatusAltSpin = 0;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 2;
-                    stage->field_0x1c = dat_007f8220;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 2;
+                    stage->unknown_1c = dat_007f8220;
                 }
                 break;
             case 2:
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x1c <= accumulated) {
+                if (stage->unknown_1c <= accumulated) {
                     PlaySfx("TrueJedi_100pc", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = dat_007f8224;
-                    stage->field_0x14 = 3;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = dat_007f8224;
+                    stage->unknown_14 = 3;
                 }
                 break;
             case 3:
                 StatusAltSpin = 0;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 4;
-                    stage->field_0x1c = dat_007f8220;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 4;
+                    stage->unknown_1c = dat_007f8220;
                 }
                 break;
             case 4:
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 5;
-                    stage->field_0x1c = dat_007f8224;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 5;
+                    stage->unknown_1c = dat_007f8224;
                 }
                 break;
             case 5:
                 StatusAltSpin = 0;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 6;
-                    stage->field_0x1c = 2.5f;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 6;
+                    stage->unknown_1c = 2.5f;
                 }
                 break;
             case 6:
                 StatusAltSpin = 0;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x18 = 0.0f;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_18 = 0.0f;
                     if (packet->displayed_gold_bricks < Game.gold_bricks) {
-                        stage->field_0x1c = 2.5f;
-                        stage->field_0x14 = 6;
+                        stage->unknown_1c = 2.5f;
+                        stage->unknown_14 = 6;
                     } else {
-                        stage->field_0x1c = dat_007f8224;
-                        stage->field_0x14 = 7;
+                        stage->unknown_1c = dat_007f8224;
+                        stage->unknown_14 = 7;
                     }
                 } else if (previous == 0.0f) {
                     i16 message_id;
@@ -832,11 +832,11 @@ extern "C" {
                     position.x = 0.0f;
                     position.y = 0.0375f;
                     position.z = 1.0f;
-                    message_id = ((i16 *)packet->field_0x12c)[packet->displayed_gold_bricks];
+                    message_id = ((i16 *)packet->unknown_12c)[packet->displayed_gold_bricks];
                     if (message_id == dat_00880818) {
                         NuStrCpy(text, TTab[message_id]);
                         NuStrCat(text, " - ");
-                        NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? dat_008808a8 : dat_008808a4]);
+                        NuStrCat(text, TTab[(packet->unknown_b0 & 0x40) != 0 ? dat_008808a8 : dat_008808a4]);
                         message = text;
                     } else {
                         message = TTab[message_id];
@@ -853,14 +853,14 @@ extern "C" {
                 break;
             case 7:
                 StatusAltSpin = 0;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x14 = 8;
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = dat_007f8220;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_14 = 8;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = dat_007f8220;
                 }
             case 8:
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x18 >= stage->field_0x1c) {
+                if (stage->unknown_18 >= stage->unknown_1c) {
                     NextStatusStage(packet);
                 }
                 break;
@@ -869,19 +869,19 @@ extern "C" {
 
     /* Stage type 3. Counts the remaining coins into the score. */
     void Coins_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 0:
-                stage->field_0x18 = 0.0f;
-                stage->field_0x14 = 1;
+                stage->unknown_18 = 0.0f;
+                stage->unknown_14 = 1;
                 StatusAltSpin = 0;
-                stage->field_0x1c = dat_007f8220 + dat_007f8220 + dat_007f8224;
+                stage->unknown_1c = dat_007f8220 + dat_007f8220 + dat_007f8224;
                 StatusDrawPlayerIcons = 1;
                 break;
             case 1: {
-                f32 accumulated = elapsed + stage->field_0x18;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x14 = 2;
+                f32 accumulated = elapsed + stage->unknown_18;
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_14 = 2;
                 }
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 8.0);
                 break;
@@ -917,9 +917,9 @@ extern "C" {
                 }
                 PlaySfx((char *)PickupCoinSfx, NULL);
                 if (StatusAltCoinsDone == 2) {
-                    stage->field_0x14 = 3;
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = 1.0f;
+                    stage->unknown_14 = 3;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = 1.0f;
                     if (packet->coins_collected[0] + packet->coins_collected[1] == 0) {
                         GameAudio_PlaySfx(0x32, NULL, 0, 0);
                     } else {
@@ -930,20 +930,20 @@ extern "C" {
                 break;
             }
             case 3: {
-                f32 accumulated = elapsed + stage->field_0x18;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x14 = 4;
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = dat_007f8220;
+                f32 accumulated = elapsed + stage->unknown_18;
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_14 = 4;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = dat_007f8220;
                 }
                 break;
             }
             case 4: {
-                f32 accumulated = elapsed + stage->field_0x18;
-                stage->field_0x18 = accumulated;
+                f32 accumulated = elapsed + stage->unknown_18;
+                stage->unknown_18 = accumulated;
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x1c <= accumulated) {
+                if (stage->unknown_1c <= accumulated) {
                     NextStatusStage(packet);
                 }
                 break;
@@ -953,71 +953,71 @@ extern "C" {
 
     /* Stage type 18. */
     void RedBrick_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        if (stage->field_0x14 >= 0) {
-            stage->field_0x18 = elapsed + stage->field_0x18;
+        if (stage->unknown_14 >= 0) {
+            stage->unknown_18 = elapsed + stage->unknown_18;
         }
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 0:
                 StatusAltSpin = 0;
-                stage->field_0x18 = 0.0f;
-                stage->field_0x14 = 1;
-                stage->field_0x1c = dat_007f8220;
+                stage->unknown_18 = 0.0f;
+                stage->unknown_14 = 1;
+                stage->unknown_1c = dat_007f8220;
                 break;
             case 1:
                 StatusAltSpin = 0;
-                if (stage->field_0x18 >= stage->field_0x1c) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 2;
-                    stage->field_0x1c = dat_007f8220;
+                if (stage->unknown_18 >= stage->unknown_1c) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 2;
+                    stage->unknown_1c = dat_007f8220;
                 }
                 break;
             case 2:
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x18 >= stage->field_0x1c) {
+                if (stage->unknown_18 >= stage->unknown_1c) {
                     PlaySfx("TrueJedi_100pc", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = dat_007f8224;
-                    stage->field_0x14 = 3;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = dat_007f8224;
+                    stage->unknown_14 = 3;
                 }
                 break;
             case 3:
                 StatusAltSpin = 0;
-                if (stage->field_0x18 >= stage->field_0x1c) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 4;
-                    stage->field_0x1c = dat_007f8220;
+                if (stage->unknown_18 >= stage->unknown_1c) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 4;
+                    stage->unknown_1c = dat_007f8220;
                 }
                 break;
             case 4:
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x18 >= stage->field_0x1c) {
+                if (stage->unknown_18 >= stage->unknown_1c) {
                     PlaySfx("TrueJedi_100pc", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = dat_007f8224;
-                    stage->field_0x14 = 5;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = dat_007f8224;
+                    stage->unknown_14 = 5;
                 }
                 break;
             case 5:
                 StatusAltSpin = 0;
-                if (stage->field_0x18 >= stage->field_0x1c) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 6;
-                    stage->field_0x1c = dat_007f8224;
+                if (stage->unknown_18 >= stage->unknown_1c) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 6;
+                    stage->unknown_1c = dat_007f8224;
                 }
                 break;
             case 6:
                 StatusAltSpin = 0;
-                if (stage->field_0x18 >= stage->field_0x1c) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 7;
-                    stage->field_0x1c = dat_007f8220;
+                if (stage->unknown_18 >= stage->unknown_1c) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 7;
+                    stage->unknown_1c = dat_007f8220;
                 }
                 break;
             case 7:
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x18 >= stage->field_0x1c) {
+                if (stage->unknown_18 >= stage->unknown_1c) {
                     NextStatusStage(packet);
                 }
                 break;
@@ -1026,68 +1026,68 @@ extern "C" {
 
     /* Stage types 1 and 2. Fills the true-hero bar up to the collected percentage. */
     void TrueHero_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case -1:
                 return;
             case 0:
-                stage->field_0x18 = 0.0f;
-                stage->field_0x14 = 1;
-                stage->field_0x1c = dat_007f8220;
+                stage->unknown_18 = 0.0f;
+                stage->unknown_14 = 1;
+                stage->unknown_1c = dat_007f8220;
                 StatusAltSpin = 0;
                 packet->true_hero_percent = 0.0f;
                 return;
             case 1: {
-                f32 accumulated = stage->field_0x18 + elapsed;
-                stage->field_0x18 = accumulated;
+                f32 accumulated = stage->unknown_18 + elapsed;
+                stage->unknown_18 = accumulated;
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x14 = 2;
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = dat_007f8220;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_14 = 2;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = dat_007f8220;
                 }
                 return;
             }
             case 2: {
-                f32 accumulated = stage->field_0x18 + elapsed;
-                stage->field_0x18 = accumulated;
+                f32 accumulated = stage->unknown_18 + elapsed;
+                stage->unknown_18 = accumulated;
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x1c <= accumulated) {
+                if (stage->unknown_1c <= accumulated) {
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = dat_007f8224;
-                    stage->field_0x14 = 3;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = dat_007f8224;
+                    stage->unknown_14 = 3;
                     packet->true_hero_percent = 0.0f;
                     dat_007f8268 = 5.0f;
                 }
                 return;
             }
             case 3: {
-                f32 accumulated = stage->field_0x18 + elapsed;
+                f32 accumulated = stage->unknown_18 + elapsed;
                 StatusAltSpin = 0;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x14 = 4;
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = dat_007f8220;
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_14 = 4;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = dat_007f8220;
                 }
                 return;
             }
             case 4: {
-                f32 accumulated = stage->field_0x18 + elapsed;
-                stage->field_0x18 = accumulated;
+                f32 accumulated = stage->unknown_18 + elapsed;
+                stage->unknown_18 = accumulated;
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x1c <= accumulated) {
+                if (stage->unknown_1c <= accumulated) {
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 5;
-                    stage->field_0x1c = 3.0f;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 5;
+                    stage->unknown_1c = 3.0f;
                 }
                 return;
             }
             case 5: {
                 f32 target;
                 SetDrawGoldBrick(packet, 3);
-                if ((packet->field_0xb0 & 4) == 0) {
+                if ((packet->unknown_b0 & 4) == 0) {
                     target = (f64)packet->collected_score * 100.0 / (f64)packet->true_hero_target;
                     if (target > 99.0f) {
                         target = 99.0f;
@@ -1095,22 +1095,22 @@ extern "C" {
                 } else {
                     target = 100.0f;
                 }
-                stage->field_0x18 += elapsed;
-                packet->true_hero_percent = (f64)elapsed * (100.0 / (f64)stage->field_0x1c) + (f64)packet->true_hero_percent;
+                stage->unknown_18 += elapsed;
+                packet->true_hero_percent = (f64)elapsed * (100.0 / (f64)stage->unknown_1c) + (f64)packet->true_hero_percent;
                 if (packet->true_hero_percent > target) {
                     packet->true_hero_percent = target;
                 } else if (packet->true_hero_percent >= dat_007f8268) {
                     PlaySfx("Status_GoldBarDec", NULL);
                     dat_007f8268 = (f64)dat_007f8268 + 10.0;
                 }
-                if (stage->field_0x18 > stage->field_0x1c) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = 1.0f;
+                if (stage->unknown_18 > stage->unknown_1c) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = 1.0f;
                     if (packet->stage->type == 2) {
-                        stage->field_0x14 = 7;
+                        stage->unknown_14 = 7;
                         PlaySfx("TrueJedi_NOT", NULL);
                     } else {
-                        stage->field_0x14 = 6;
+                        stage->unknown_14 = 6;
                         PlaySfx("TrueJedi_100pc", NULL);
                     }
                 }
@@ -1118,35 +1118,35 @@ extern "C" {
             }
             case 6: {
                 f32 accumulated;
-                if (stage->field_0x18 == 0.0f) {
+                if (stage->unknown_18 == 0.0f) {
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                 }
                 StatusAltSpin = 0;
-                accumulated = stage->field_0x18 + elapsed;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x14 = 8;
-                    stage->field_0x1c = 1.0f;
+                accumulated = stage->unknown_18 + elapsed;
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_14 = 8;
+                    stage->unknown_1c = 1.0f;
                 }
                 return;
             }
             case 7: {
-                f32 accumulated = stage->field_0x18 + elapsed;
+                f32 accumulated = stage->unknown_18 + elapsed;
                 StatusAltSpin = 0;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x14 = 8;
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = 1.0f;
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_14 = 8;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = 1.0f;
                 }
                 return;
             }
             case 8: {
-                f32 accumulated = stage->field_0x18 + elapsed;
-                stage->field_0x18 = accumulated;
+                f32 accumulated = stage->unknown_18 + elapsed;
+                stage->unknown_18 = accumulated;
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x1c <= accumulated) {
+                if (stage->unknown_1c <= accumulated) {
                     NextStatusStage(packet);
                 }
                 return;
@@ -1159,7 +1159,7 @@ extern "C" {
         if (pop_timer > 0.0f) {
             pop_timer -= elapsed;
         }
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 0:
                 StatusNewMinikitCount = packet->new_minikits;
                 if (StatusNewMinikitCount <= 0) {
@@ -1167,76 +1167,76 @@ extern "C" {
                 } else {
                     currentminikit = Game.area_save[packet->area->index].minikit_count - StatusNewMinikitCount;
                 }
-                stage->field_0x18 = 0.0f;
-                stage->field_0x14 = 1;
-                stage->field_0x1c = 1.0f;
+                stage->unknown_18 = 0.0f;
+                stage->unknown_14 = 1;
+                stage->unknown_1c = 1.0f;
                 StatusAltSpin = 0;
                 break;
             case 1: {
                 f32 accumulated;
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                accumulated = elapsed + stage->field_0x18;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x18 = 0.0f;
+                accumulated = elapsed + stage->unknown_18;
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_18 = 0.0f;
                     if (StatusNewMinikitCount == 0 && Game.area_save[packet->area->index].minikit_complete == 0) {
                         PlaySfx("TrueJedi_NOT", NULL);
-                        stage->field_0x1c = 1.0f;
-                        stage->field_0x14 = 4;
+                        stage->unknown_1c = 1.0f;
+                        stage->unknown_14 = 4;
                         dat_00876df4 = 0.0f;
                     } else {
-                        stage->field_0x14 = 2;
-                        stage->field_0x1c = 0.5f;
+                        stage->unknown_14 = 2;
+                        stage->unknown_1c = 0.5f;
                         slideseek = 1.0f;
                     }
                 }
                 break;
             }
             case 2: {
-                f32 accumulated = elapsed + stage->field_0x18;
+                f32 accumulated = elapsed + stage->unknown_18;
                 StatusAltSpin = 0;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated) {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = dat_007f8248;
-                    stage->field_0x14 = 3;
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_1c <= accumulated) {
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = dat_007f8248;
+                    stage->unknown_14 = 3;
                     PlaySfx("Jump", NULL);
                 }
                 break;
             }
             case 3:
                 if (StatusNewMinikitCount > 0) {
-                    f32 previous = stage->field_0x18;
-                    f32 accumulated = elapsed + stage->field_0x18;
+                    f32 previous = stage->unknown_18;
+                    f32 accumulated = elapsed + stage->unknown_18;
                     f32 sound_start;
-                    stage->field_0x18 = accumulated;
-                    sound_start = stage->field_0x1c - jibberlen;
+                    stage->unknown_18 = accumulated;
+                    sound_start = stage->unknown_1c - jibberlen;
                     if (previous < sound_start && accumulated >= sound_start) {
                         NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
                         PlaySfx(ScorePanelName, NULL);
                     }
                     if (UpdateNewMiniKits(packet, stage) == 1) {
                         if (currentminikit >= packet->minikit_count + packet->new_minikits) {
-                            stage->field_0x1c = 1.0f;
-                            stage->field_0x18 = 0.0f;
+                            stage->unknown_1c = 1.0f;
+                            stage->unknown_18 = 0.0f;
                             dat_00876df4 = 0.0f;
-                            stage->field_0x14 = 4;
+                            stage->unknown_14 = 4;
                         } else {
-                            stage->field_0x14 = 2;
-                            stage->field_0x1c = 0.5f;
-                            stage->field_0x18 = 0.0f;
+                            stage->unknown_14 = 2;
+                            stage->unknown_1c = 0.5f;
+                            stage->unknown_18 = 0.0f;
                         }
                     }
                 } else {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = 3.0f;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = 3.0f;
                     dat_00876df4 = 0.0f;
-                    stage->field_0x14 = 4;
+                    stage->unknown_14 = 4;
                 }
-                if (stage->field_0x14 == 4) {
-                    if ((packet->field_0xb0 & 0x10) != 0) {
-                        stage->field_0x1c = 1.0f;
-                        stage->field_0x14 = 5;
+                if (stage->unknown_14 == 4) {
+                    if ((packet->unknown_b0 & 0x10) != 0) {
+                        stage->unknown_1c = 1.0f;
+                        stage->unknown_14 = 5;
                     } else {
                         PlaySfx("TrueJedi_NOT", NULL);
                     }
@@ -1245,9 +1245,9 @@ extern "C" {
             case 4: {
                 f32 accumulated;
                 StatusAltSpin = 0;
-                accumulated = elapsed + stage->field_0x18;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated) {
+                accumulated = elapsed + stage->unknown_18;
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_1c <= accumulated) {
                     NextStatusStage(packet);
                 }
                 break;
@@ -1256,11 +1256,11 @@ extern "C" {
                 f32 previous;
                 f32 accumulated;
                 SetDrawGoldBrick(packet, 5);
-                previous = stage->field_0x18;
-                accumulated = stage->field_0x18 + elapsed;
-                stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated) {
-                    if (previous < stage->field_0x1c) {
+                previous = stage->unknown_18;
+                accumulated = stage->unknown_18 + elapsed;
+                stage->unknown_18 = accumulated;
+                if (stage->unknown_1c <= accumulated) {
+                    if (previous < stage->unknown_1c) {
                         AddStatusMiniKitParts();
                         NewStatusRumbleBuzz(-1, 1.0f, 0.1f, 0);
                         PlaySfx("Explode1", NULL);
@@ -1307,7 +1307,7 @@ extern "C" {
         mode_angle = 0;
         title_angle = 0;
         percent_angle = 0;
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case -1:
                 return;
             case 0:
@@ -1325,7 +1325,7 @@ extern "C" {
             case 1:
                 bar_alpha =
                     1.0 -
-                    (NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->field_0x18, stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] +
+                    (NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->unknown_18, stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] +
                      1.0f) *
                         0.5;
                 percent_angle = StatusAltSpin;
@@ -1341,7 +1341,7 @@ extern "C" {
                 title_alpha = 1.0f;
                 percent_scale = 1.0f;
                 title_scale =
-                    NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f;
+                    NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f;
                 title_angle = StatusAltSpin;
                 mode_angle = 0;
                 percent_angle = 0;
@@ -1363,7 +1363,7 @@ extern "C" {
                 percent_scale = 1.0f;
                 title_scale = 1.0f;
                 mode_scale =
-                    NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f;
+                    NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f;
                 percent_angle = 0;
                 title_angle = 0;
                 mode_angle = (u16)-StatusAltSpin;
@@ -1377,7 +1377,7 @@ extern "C" {
                 percent_scale = 1.0f;
                 mode_scale = 1.0f;
                 title_scale = 1.0f;
-                full_fade = stage->field_0x18;
+                full_fade = stage->unknown_18;
                 if (full_fade > 1.0f) {
                     full_fade = 1.0f;
                 }
@@ -1392,10 +1392,10 @@ extern "C" {
                 percent_scale = 1.0f;
                 mode_scale = 1.0f;
                 title_scale = 1.0f;
-                if (stage->field_0x18 < 1.0f) {
-                    full_fade = stage->field_0x18;
+                if (stage->unknown_18 < 1.0f) {
+                    full_fade = stage->unknown_18;
                 } else {
-                    full_fade = stage->field_0x18 < stage->field_0x1c ? 1.0f : 1.0f;
+                    full_fade = stage->unknown_18 < stage->unknown_1c ? 1.0f : 1.0f;
                 }
                 full_fade = 1.0 - (NuTrigTable[((i32)((f64)full_fade * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 if (full_fade < 1.0f) {
@@ -1415,11 +1415,11 @@ extern "C" {
                 percent_alpha =
                     1.0f -
                     (1.0 -
-                     (NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5);
+                     (NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5);
                 break;
             case 8:
-                if (stage->field_0x18 < 1.0f) {
-                    full_fade = 1.0f - stage->field_0x18;
+                if (stage->unknown_18 < 1.0f) {
+                    full_fade = 1.0f - stage->unknown_18;
                 } else {
                     full_fade = 0.0f;
                 }
@@ -1434,7 +1434,7 @@ extern "C" {
                 title_scale = full_fade;
                 break;
         }
-        if (stage->field_0x14 <= 0) {
+        if (stage->unknown_14 <= 0) {
             return;
         }
         title_scale = StatusAltScale * title_scale;
@@ -1443,16 +1443,16 @@ extern "C" {
         NuStrCpy(text, TTab[dat_00880818]);
         colour = ((u8)(title_alpha * 128.0) << 24) | 0xffffff;
         DrawStatusText(text, title_angle, title_scale * StatusAltTrueHeroX, StatusCoinsTitleY * title_scale, title_scale, colour, 0);
-        NuStrCpy(text, TTab[(packet->field_0xb0 & 0x40) ? dat_008808a8 : dat_008808a4]);
+        NuStrCpy(text, TTab[(packet->unknown_b0 & 0x40) ? dat_008808a8 : dat_008808a4]);
         DrawStatusText(text, mode_angle, mode_scale * StatusAltTrueHeroX, -StatusCoinsTitleY * mode_scale, mode_scale, colour, 0);
-        if (stage->field_0x14 == 6) {
+        if (stage->unknown_14 == 6) {
             colour = ((u8)((1.0f - full_fade) * 64.0) << 24) | 0xbfff;
             DrawStatusText("100%", 0, 0.0f, -0.2f, StatusAltScale * full_scale_in, colour, 0);
             DrawStatusText("100%", 0, 0.0f, -0.2f, StatusAltScale * full_scale_out, colour, 0);
-        } else if (stage->field_0x14 == 7) {
+        } else if (stage->unknown_14 == 7) {
             sprintf(text, "%i%%", (i32)packet->true_hero_percent);
             DrawStatusText(text, percent_angle, 0.0f, -0.2f, percent_scale, ((u8)(percent_alpha * 255.0) << 24) | 0xbfff, 0);
-        } else if (stage->field_0x14 < 6) {
+        } else if (stage->unknown_14 < 6) {
             sprintf(text, "%i%%", (i32)packet->true_hero_percent);
             DrawStatusText(text, percent_angle, 0.0f, -0.2f, percent_scale, ((u8)(title_alpha * 255.0) << 24) | 0xbfff, 0);
         }
@@ -1476,26 +1476,26 @@ extern "C" {
         if (current == 0) {
             return;
         }
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 0:
                 title_alpha = 0.0f;
                 break;
             case 1:
-                if (stage->field_0x18 < dat_007f8220) {
+                if (stage->unknown_18 < dat_007f8220) {
                     total_scale =
                         1.0 -
-                        (NuTrigTable[((i32)((f64)(stage->field_0x18 / dat_007f8220) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
+                        (NuTrigTable[((i32)((f64)(stage->unknown_18 / dat_007f8220) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                     title_angle = StatusAltSpin;
                     angle1 = 0;
                     angle0 = 0;
                     title_alpha = total_scale;
                     players_scale = 0.0f;
                 } else {
-                    if (stage->field_0x18 < dat_007f8220 * 2.0f) {
+                    if (stage->unknown_18 < dat_007f8220 * 2.0f) {
                         total_scale = 1.0f;
                         title_alpha = 1.0f;
                         players_scale =
-                            1.0 - (NuTrigTable[((i32)((f64)((stage->field_0x18 - dat_007f8220) / dat_007f8220) * 32768.0 + 16384.0) >> 1) &
+                            1.0 - (NuTrigTable[((i32)((f64)((stage->unknown_18 - dat_007f8220) / dat_007f8220) * 32768.0 + 16384.0) >> 1) &
                                                0x7fff] +
                                    1.0f) *
                                       0.5;
@@ -1510,7 +1510,7 @@ extern "C" {
                     }
                     title_angle = 0;
                 }
-                StatusIconY = StatusIconsOnOff(StatusCoinsRatioAlt(stage->field_0x18, stage->field_0x1c));
+                StatusIconY = StatusIconsOnOff(StatusCoinsRatioAlt(stage->unknown_18, stage->unknown_1c));
                 y_offset = -StatusCoinsTitleY;
                 break;
             case 2:
@@ -1528,22 +1528,22 @@ extern "C" {
                 y_offset = -StatusCoinsTitleY;
                 players_scale = 1.0f;
                 total_scale = 1.0f;
-                total_ratio = stage->field_0x18 / stage->field_0x1c;
+                total_ratio = stage->unknown_18 / stage->unknown_1c;
                 break;
             case 4:
                 angle1 = StatusAltSpin;
-                title_alpha = 1.0f - stage->field_0x18;
+                title_alpha = 1.0f - stage->unknown_18;
                 title_angle = StatusAltSpin;
                 angle0 = (u16)-StatusAltSpin;
                 players_scale =
                     1.0 -
-                    (NuTrigTable[((i32)((f64)(1.0f - stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) *
+                    (NuTrigTable[((i32)((f64)(1.0f - stage->unknown_18 / stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) *
                         0.5;
                 total_scale = players_scale;
                 y_offset = -StatusCoinsTitleY;
                 break;
         }
-        if (stage->field_0x14 <= 0) {
+        if (stage->unknown_14 <= 0) {
             return;
         }
         players_y = y_offset * players_scale;
@@ -1569,7 +1569,7 @@ extern "C" {
             DrawStatusText(text, player == 0 ? angle0 : angle1, players_scale * text_x, players_y, StatusAltScale * players_scale,
                            ((u32)(alpha * 255.0) << 24) | 0xbfff, player == 0 ? 2 : 8);
         }
-        if (stage->field_0x14 == 3) {
+        if (stage->unknown_14 == 3) {
             char total[32];
             f32 size;
             f32 grow;
@@ -1615,7 +1615,7 @@ extern "C" {
         if (current == 0) {
             return;
         }
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case -1:
                 return;
             case 0:
@@ -1626,14 +1626,14 @@ extern "C" {
                 dat_007f8274 = dat_007f826c;
                 break;
             case 1:
-                count_alpha = stage->field_0x18 / stage->field_0x1c;
+                count_alpha = stage->unknown_18 / stage->unknown_1c;
                 title_alpha = count_alpha;
                 count_alpha = 1.0 - (NuTrigTable[((i32)((f64)count_alpha * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 size = count_alpha;
                 dat_007f8274 =
                     (1.0f -
                      (1.0 -
-                      (NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->field_0x18, stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] +
+                      (NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->unknown_18, stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] +
                        1.0f) *
                           0.5)) *
                         dat_007f826c +
@@ -1643,10 +1643,10 @@ extern "C" {
                 count_alpha = 1.0f;
                 title_alpha = 1.0f;
                 size = 1.0f;
-                if (stage->field_0x18 < stage->field_0x1c - 0.25) {
-                    f32 duration = stage->field_0x1c - 0.25;
+                if (stage->unknown_18 < stage->unknown_1c - 0.25) {
+                    f32 duration = stage->unknown_1c - 0.25;
                     dat_007f8274 =
-                        NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->field_0x18, duration) * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff] *
+                        NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->unknown_18, duration) * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff] *
                         dat_007f8228;
                 } else {
                     dat_007f8274 = dat_007f8228;
@@ -1658,8 +1658,8 @@ extern "C" {
                 size = 1.0f;
                 count_alpha = 1.0f;
                 title_alpha = 1.0f;
-                if (stage->field_0x18 > stage->field_0x1c - jibberlen) {
-                    dat_007f8274 = (stage->field_0x18 - (stage->field_0x1c - jibberlen)) / jibberlen;
+                if (stage->unknown_18 > stage->unknown_1c - jibberlen) {
+                    dat_007f8274 = (stage->unknown_18 - (stage->unknown_1c - jibberlen)) / jibberlen;
                 } else {
                     dat_007f8274 = 0.0f;
                 }
@@ -1671,7 +1671,7 @@ extern "C" {
             case 4: {
                 f32 phase;
                 title_alpha = 1.0f;
-                phase = stage->field_0x18 / (stage->field_0x1c * 0.5);
+                phase = stage->unknown_18 / (stage->unknown_1c * 0.5);
                 count_alpha = StatusAltFabs(phase - 1.0);
                 size = 1.0f;
                 if (currentminikit == 0) {
@@ -1679,7 +1679,7 @@ extern "C" {
                 } else {
                     dat_007f8274 =
                         1.0 -
-                        (NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->field_0x18, stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] +
+                        (NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->unknown_18, stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] +
                          1.0f) *
                             0.5;
                 }
@@ -1688,15 +1688,15 @@ extern "C" {
             case 5:
                 count_alpha = 1.0f;
                 size = 1.0f;
-                title_alpha = 1.0f - stage->field_0x18 / stage->field_0x1c;
+                title_alpha = 1.0f - stage->unknown_18 / stage->unknown_1c;
                 dat_007f8274 = 1.0f;
-                if (stage->field_0x18 < stage->field_0x1c) {
+                if (stage->unknown_18 < stage->unknown_1c) {
                     DrawStatusMiniKit(StatusAltMiniKitX, StatusAltMiniKitY, dat_007f8234, dat_007f8228, 1.0f,
                                       Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
                 }
                 break;
         }
-        if (stage->field_0x14 <= 0) {
+        if (stage->unknown_14 <= 0) {
             return;
         }
         colour = ((u8)(title_alpha * 255.0) << 24) | 0xffffff;
@@ -1728,7 +1728,7 @@ extern "C" {
         if (current == 0) {
             return;
         }
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case -1:
             case 0:
                 return;
@@ -1736,7 +1736,7 @@ extern "C" {
                 for (i = 0; i <= StatusAltSuitIndex; i++) {
                     i32 shown = StatusAltSuitsShown & (1 << i);
                     if (i == StatusAltSuitIndex) {
-                        radius = blend = stage->field_0x18 / stage->field_0x1c;
+                        radius = blend = stage->unknown_18 / stage->unknown_1c;
                         radius = (1.0 - (NuTrigTable[((i32)((f64)radius * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5) *
                                  StatusAltSuitRadius;
                         angle = (f64)i / 10.0 * 65536.0;
@@ -1758,16 +1758,16 @@ extern "C" {
                     angle = (f64)i / 10.0 * 65536.0;
                     x = NuTrigTable[((i32)angle >> 1) & 0x7fff] * radius;
                     y = NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff] * radius;
-                    if (i != StatusAltSuitIndex || stage->field_0x18 < 1.0f) {
+                    if (i != StatusAltSuitIndex || stage->unknown_18 < 1.0f) {
                         DrawCharIcon(shown ? i : -1, x, y, 0.0f, 0.3f, 0xa7, 1.0f, 1.0f, 1, NULL);
                     }
                 }
-                if (stage->field_0x18 < 0.5f) {
-                    blend = stage->field_0x18 + stage->field_0x18;
+                if (stage->unknown_18 < 0.5f) {
+                    blend = stage->unknown_18 + stage->unknown_18;
                     y = blend;
                     blend = NuTrigTable[((i32)((f64)y * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0;
                     DrawCharIcon(StatusAltSuitIndex, 0.0f, 0.0f, 0.0f, (f64)y * 0.3f, 0xa7, blend, blend, 1, NULL);
-                    title_alpha = stage->field_0x18 / (f64)0.833333373f;
+                    title_alpha = stage->unknown_18 / (f64)0.833333373f;
                     title_alpha = 1.0f - title_alpha;
                     if (title_alpha < 0.0f) {
                         title_alpha = 0.0f;
@@ -1775,14 +1775,14 @@ extern "C" {
                     SmartTextEx(TTab[*SuitRecordInit[StatusAltSuitIndex].text_id], 0.0f, dat_007f8238, 1.0f, dat_007f823c, dat_007f823c,
                                 dat_007f823c, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0,
                                 (u16)(title_alpha * 128.0));
-                } else if (stage->field_0x18 < 1.0f) {
-                    y = stage->field_0x18 - 0.5;
+                } else if (stage->unknown_18 < 1.0f) {
+                    y = stage->unknown_18 - 0.5;
                     y = y + y;
                     radius = (1.0 - (NuTrigTable[((i32)((f64)y * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5) * StatusAltSuitRadius;
                     angle = (f64)StatusAltSuitIndex / 10.0 * 65536.0;
                     DrawCharIcon(StatusAltSuitIndex, radius * NuTrigTable[((i32)angle >> 1) & 0x7fff],
                                  NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff] * radius, 0.0f, 0.3f, 0xa7, 1.0f, 1.0f, 1, NULL);
-                    title_alpha = stage->field_0x18 / (f64)0.833333373f;
+                    title_alpha = stage->unknown_18 / (f64)0.833333373f;
                     title_alpha = 1.0f - title_alpha;
                     if (title_alpha < 0.0f) {
                         title_alpha = 0.0f;
@@ -1799,7 +1799,7 @@ extern "C" {
                     angle = (f64)StatusAltSuitIndex / 10.0 * 65536.0;
                     x = NuTrigTable[((i32)angle >> 1) & 0x7fff] * StatusAltSuitRadius;
                     y = StatusAltSuitRadius * NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff];
-                    blend = stage->field_0x18 - 1.0f;
+                    blend = stage->unknown_18 - 1.0f;
                     blend = blend + blend;
                     pulse = StatusAltFabs(NuTrigTable[((i32)((f64)blend * 32768.0 + 16384.0) >> 1) & 0x7fff]);
                     blend = 1.0f - pulse;
@@ -1813,7 +1813,7 @@ extern "C" {
                 break;
             case 3:
                 for (i = 0; i < 10; i++) {
-                    blend = 1.0f - stage->field_0x18 / stage->field_0x1c;
+                    blend = 1.0f - stage->unknown_18 / stage->unknown_1c;
                     angle = (f64)i / 10.0 * 65536.0;
                     x = NuTrigTable[((i32)angle >> 1) & 0x7fff] * StatusAltSuitRadius;
                     y = StatusAltSuitRadius * NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff];
@@ -1825,28 +1825,28 @@ extern "C" {
 
     /* Stage type 5. Reveals the suits unlocked in this area one by one. */
     void Stage5_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        f32 previous = stage->field_0x18;
-        if (stage->field_0x14 >= 0) {
-            stage->field_0x18 = elapsed + stage->field_0x18;
+        f32 previous = stage->unknown_18;
+        if (stage->unknown_14 >= 0) {
+            stage->unknown_18 = elapsed + stage->unknown_18;
         }
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 0:
-                stage->field_0x1c = 0.15f;
+                stage->unknown_1c = 0.15f;
                 StatusAltSuitIndex = 0;
-                stage->field_0x14 = 1;
+                stage->unknown_14 = 1;
             case 1:
                 if (StatusAltSuitIndex < 10) {
-                    if (stage->field_0x18 >= stage->field_0x1c) {
-                        stage->field_0x18 = 0.0f;
+                    if (stage->unknown_18 >= stage->unknown_1c) {
+                        stage->unknown_18 = 0.0f;
                         StatusAltSuitIndex++;
                     }
                 } else {
-                    stage->field_0x18 = 0.0f;
-                    stage->field_0x1c = 1.5f;
-                    stage->field_0x14 = 2;
+                    stage->unknown_18 = 0.0f;
+                    stage->unknown_1c = 1.5f;
+                    stage->unknown_14 = 2;
                     for (StatusAltSuitIndex = 0; StatusAltSuitIndex < 10; StatusAltSuitIndex++) {
                         if ((StatusAltSuitsShown & (1 << StatusAltSuitIndex)) == 0 && (areaSuitBits & (1 << StatusAltSuitIndex)) != 0) {
-                            stage->field_0x18 = 0.0f;
+                            stage->unknown_18 = 0.0f;
                             PlaySfx("LegoClicks", NULL);
                             dat_00876de4 = 0;
                             break;
@@ -1855,13 +1855,13 @@ extern "C" {
                 }
                 break;
             case 2:
-                if (previous < 1.0f && stage->field_0x18 >= 1.0f) {
+                if (previous < 1.0f && stage->unknown_18 >= 1.0f) {
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                } else if (stage->field_0x18 > stage->field_0x1c) {
+                } else if (stage->unknown_18 > stage->unknown_1c) {
                     StatusAltSuitsShown |= 1 << StatusAltSuitIndex;
                     for (StatusAltSuitIndex++; StatusAltSuitIndex < 10; StatusAltSuitIndex++) {
                         if ((StatusAltSuitsShown & (1 << StatusAltSuitIndex)) == 0 && (areaSuitBits & (1 << StatusAltSuitIndex)) != 0) {
-                            stage->field_0x18 = 0.0f;
+                            stage->unknown_18 = 0.0f;
                             PlaySfx("LegoClicks", NULL);
                             dat_00876de4 = 0;
                             break;
@@ -1869,13 +1869,13 @@ extern "C" {
                     }
                 }
                 if (StatusAltSuitIndex == 10) {
-                    stage->field_0x1c = 1.0f;
-                    stage->field_0x14 = 3;
-                    stage->field_0x18 = 0.0f;
+                    stage->unknown_1c = 1.0f;
+                    stage->unknown_14 = 3;
+                    stage->unknown_18 = 0.0f;
                 }
                 break;
             case 3:
-                if (stage->field_0x18 > stage->field_0x1c) {
+                if (stage->unknown_18 > stage->unknown_1c) {
                     NextStatusStage(packet);
                 }
                 break;
@@ -1888,34 +1888,34 @@ extern "C" {
         if (current == 0) {
             return;
         }
-        if (stage->field_0x14 > 0) {
+        if (stage->unknown_14 > 0) {
             f32 alpha1;
             f32 scale1;
             f32 alpha2;
             f32 scale2;
             u16 angle1;
             u16 angle2;
-            if (stage->field_0x18 < dat_007f8220) {
-                scale1 = alpha1 = stage->field_0x18 / dat_007f8220;
+            if (stage->unknown_18 < dat_007f8220) {
+                scale1 = alpha1 = stage->unknown_18 / dat_007f8220;
                 angle1 = StatusAltSpin;
                 angle2 = 0;
                 alpha2 = 0.0f;
                 scale2 = 0.0f;
-            } else if (stage->field_0x18 < dat_007f8220 + dat_007f8224) {
+            } else if (stage->unknown_18 < dat_007f8220 + dat_007f8224) {
                 angle1 = 0;
                 angle2 = 0;
                 alpha1 = 1.0f;
                 scale1 = 1.0f;
                 alpha2 = 0.0f;
                 scale2 = 0.0f;
-            } else if (stage->field_0x18 < dat_007f8220 * 2.0f + dat_007f8224) {
+            } else if (stage->unknown_18 < dat_007f8220 * 2.0f + dat_007f8224) {
                 alpha1 = 1.0f;
                 angle1 = 0;
                 scale1 = 1.0f;
                 angle2 = (u16)-StatusAltSpin;
-                scale2 = alpha2 = (stage->field_0x18 - (dat_007f8220 + dat_007f8224)) / dat_007f8220;
-            } else if (stage->field_0x18 > stage->field_0x1c - dat_007f8220) {
-                alpha2 = stage->field_0x1c - stage->field_0x18;
+                scale2 = alpha2 = (stage->unknown_18 - (dat_007f8220 + dat_007f8224)) / dat_007f8220;
+            } else if (stage->unknown_18 > stage->unknown_1c - dat_007f8220) {
+                alpha2 = stage->unknown_1c - stage->unknown_18;
                 angle1 = StatusAltSpin;
                 angle2 = (u16)-StatusAltSpin;
                 alpha2 = alpha2 / dat_007f8220;
@@ -1985,21 +1985,21 @@ extern "C" {
                 f32 slide;
                 f32 coin_slide;
                 u32 score;
-                if (stage->field_0x18 < 0.75f) {
-                    slide = stage->field_0x18 / 0.7f;
+                if (stage->unknown_18 < 0.75f) {
+                    slide = stage->unknown_18 / 0.7f;
                     progress = 0.0f;
                 } else {
-                    f32 end = stage->field_0x1c - 0.75f;
-                    if (stage->field_0x18 < end) {
+                    f32 end = stage->unknown_1c - 0.75f;
+                    if (stage->unknown_18 < end) {
                         slide = 1.0f;
-                        progress = (stage->field_0x18 - 0.75f) / (end - 0.75f);
+                        progress = (stage->unknown_18 - 0.75f) / (end - 0.75f);
                     } else {
-                        slide = 1.0f - (stage->field_0x18 - end) / 0.75f;
+                        slide = 1.0f - (stage->unknown_18 - end) / 0.75f;
                         progress = 1.0f;
                     }
                 }
                 coin_slide = slide;
-                if (stage->field_0x18 >= 0.75f) {
+                if (stage->unknown_18 >= 0.75f) {
                     coin_slide = 1.0f;
                 }
                 score = packet->original_score;
@@ -2031,26 +2031,26 @@ extern "C" {
 
     /* Stage types 8, 13, 14, 23 and 26. */
     void LevelComplete_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 0:
-                stage->field_0x14 = 1;
-                stage->field_0x18 = 0.0f;
+                stage->unknown_14 = 1;
+                stage->unknown_18 = 0.0f;
                 StatusAltSpin = 0;
-                stage->field_0x1c = (f64)dat_007f8220 * 3.0 + 3.0;
+                stage->unknown_1c = (f64)dat_007f8220 * 3.0 + 3.0;
                 break;
             case 1: {
                 f32 previous;
                 f32 accumulated;
                 SetDrawGoldBrick(packet, 1);
-                previous = stage->field_0x18;
-                accumulated = stage->field_0x18 + elapsed;
-                stage->field_0x18 = accumulated;
+                previous = stage->unknown_18;
+                accumulated = stage->unknown_18 + elapsed;
+                stage->unknown_18 = accumulated;
                 if (accumulated < dat_007f8220) {
                     StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
                 } else if (accumulated >= dat_007f8220 + dat_007f8224) {
-                    if (stage->field_0x18 < (f64)dat_007f8220 * 2.0 + dat_007f8224) {
+                    if (stage->unknown_18 < (f64)dat_007f8220 * 2.0 + dat_007f8224) {
                         StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                    } else if (stage->field_0x18 > stage->field_0x1c - dat_007f8224) {
+                    } else if (stage->unknown_18 > stage->unknown_1c - dat_007f8224) {
                         StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
                     } else {
                         StatusAltSpin = 0;
@@ -2058,7 +2058,7 @@ extern "C" {
                 } else {
                     StatusAltSpin = 0;
                 }
-                if (stage->field_0x18 >= stage->field_0x1c) {
+                if (stage->unknown_18 >= stage->unknown_1c) {
                     if (packet->stage->type == 26 && packet->mission_state == 2) {
                         *packet->score = packet->reward_score;
                     }
@@ -2068,8 +2068,8 @@ extern "C" {
                     NextStatusStage(packet);
                     return;
                 }
-                if ((previous < dat_007f8220 && stage->field_0x18 >= dat_007f8220) ||
-                    (previous < (f64)dat_007f8220 * 2.0 + dat_007f8224 && stage->field_0x18 >= (f64)dat_007f8220 * 2.0 + dat_007f8224)) {
+                if ((previous < dat_007f8220 && stage->unknown_18 >= dat_007f8220) ||
+                    (previous < (f64)dat_007f8220 * 2.0 + dat_007f8224 && stage->unknown_18 >= (f64)dat_007f8220 * 2.0 + dat_007f8224)) {
                     if ((packet->stage->type == 23 && packet->challenge_state == 3) ||
                         (packet->stage->type == 26 && packet->mission_state == 3)) {
                         GameAudio_PlaySfx(0x32, NULL, 0, 0);
@@ -2080,12 +2080,12 @@ extern "C" {
                     return;
                 }
                 if ((packet->stage->type == 26 && packet->mission_state == 2) || (stage->type == 23 && packet->challenge_state == 2)) {
-                    f32 reward_end = stage->field_0x1c - 0.75;
-                    if (previous < reward_end && stage->field_0x18 >= reward_end) {
+                    f32 reward_end = stage->unknown_1c - 0.75;
+                    if (previous < reward_end && stage->unknown_18 >= reward_end) {
                         CoinTotalScale = 1.5f;
                         NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
                         PlaySfx("Shop_BuyCheat", NULL);
-                    } else if (stage->field_0x18 >= 0.75f && stage->field_0x18 < reward_end) {
+                    } else if (stage->unknown_18 >= 0.75f && stage->unknown_18 < reward_end) {
                         PlaySfx((char *)PickupCoinSfx, NULL);
                     }
                 }
@@ -2100,23 +2100,23 @@ extern "C" {
         f32 title_alpha;
         i32 sliding;
         (void)packet;
-        if (current == 0 || stage->field_0x14 <= 0) {
+        if (current == 0 || stage->unknown_14 <= 0) {
             return;
         }
         sliding = 1;
-        if (stage->field_0x18 < 0.5f) {
-            title_alpha = stage->field_0x18 * 2.0f;
-        } else if (stage->field_0x18 < 3.5) {
+        if (stage->unknown_18 < 0.5f) {
+            title_alpha = stage->unknown_18 * 2.0f;
+        } else if (stage->unknown_18 < 3.5) {
             title_alpha = 1.0f;
-        } else if (stage->field_0x18 < 4.0f) {
-            icon_alpha = (stage->field_0x18 - 3.5) * 2.0;
+        } else if (stage->unknown_18 < 4.0f) {
+            icon_alpha = (stage->unknown_18 - 3.5) * 2.0;
             title_alpha = 1.0f - icon_alpha;
         } else {
             title_alpha = 0.0f;
-            if (stage->field_0x18 < 6.0f) {
+            if (stage->unknown_18 < 6.0f) {
                 icon_alpha = 1.0f;
-            } else if (stage->field_0x18 < 6.5) {
-                icon_alpha = 1.0f - (stage->field_0x18 - 6.0) * 2.0;
+            } else if (stage->unknown_18 < 6.5) {
+                icon_alpha = 1.0f - (stage->unknown_18 - 6.0) * 2.0;
                 sliding = 0;
             } else {
                 return;
@@ -2145,7 +2145,7 @@ extern "C" {
         u16 cheat_angle;
         u16 title_angle;
         u16 rotation;
-        if (current == 0 || stage->field_0x14 <= 0) {
+        if (current == 0 || stage->unknown_14 <= 0) {
             return;
         }
         cheat_scale = 0.0f;
@@ -2155,13 +2155,13 @@ extern "C" {
         title_angle = 0;
         cheat_angle = 0;
         brick_scale = 1.0f;
-        switch (stage->field_0x14) {
+        switch (stage->unknown_14) {
             case 1:
                 title_angle = 0;
                 cheat_angle = 0;
                 brick_scale =
                     1.0 -
-                    ((f64)NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
+                    ((f64)NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
                 cheat_alpha = 0.0f;
                 cheat_scale = 0.0f;
                 title_alpha = 0.0f;
@@ -2172,7 +2172,7 @@ extern "C" {
                 title_angle = 0;
                 cheat_alpha =
                     1.0 -
-                    ((f64)NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
+                    ((f64)NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
                 cheat_scale = cheat_alpha;
                 title_alpha = 0.0f;
                 title_scale = 0.0f;
@@ -2192,7 +2192,7 @@ extern "C" {
                 title_angle = (u16)-StatusAltSpin;
                 title_alpha =
                     1.0 -
-                    ((f64)NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
+                    ((f64)NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
                 title_scale = title_alpha;
                 break;
             case 5:
@@ -2210,7 +2210,7 @@ extern "C" {
                 cheat_angle = 0;
                 cheat_alpha = 1.0f;
                 cheat_scale = 1.0f;
-                brick_scale = (f64)NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0) >> 1) & 0x7fff] * 0.25 + 1.0;
+                brick_scale = (f64)NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 32768.0) >> 1) & 0x7fff] * 0.25 + 1.0;
                 break;
             case 7: {
                 f32 blend;
@@ -2218,7 +2218,7 @@ extern "C" {
                 title_angle = (u16)-StatusAltSpin;
                 blend = 1.0 -
                         (1.0 -
-                         ((f64)NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) *
+                         ((f64)NuTrigTable[((i32)((f64)(stage->unknown_18 / stage->unknown_1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) *
                              0.5);
                 title_alpha = blend;
                 cheat_alpha = blend;

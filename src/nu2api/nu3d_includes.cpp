@@ -540,8 +540,8 @@ extern "C" {
             if (anim->node_flags != NULL) {
                 anim->node_flags = (u8 *)((u32)anim->node_flags + delta);
             }
-            if (anim->field_38 != NULL) {
-                anim->field_38 = (void *)((u32)anim->field_38 + delta);
+            if (anim->unknown_38 != NULL) {
+                anim->unknown_38 = (void *)((u32)anim->unknown_38 + delta);
             }
             if (anim->next_block == 0) {
                 break;
@@ -797,8 +797,8 @@ extern "C" {
             if (anim->node_flags != NULL) {
                 anim->node_flags = (u8 *)NUANIM_REBASE_POINTER(anim->node_flags, delta);
             }
-            if (anim->field_38 != NULL) {
-                anim->field_38 = NUANIM_REBASE_POINTER(anim->field_38, delta);
+            if (anim->unknown_38 != NULL) {
+                anim->unknown_38 = NUANIM_REBASE_POINTER(anim->unknown_38, delta);
             }
             if (anim->next_block == 0) {
                 break;
@@ -5179,7 +5179,7 @@ extern "C" {
     };
 
     typedef struct FONT_LOAD_READER {      // size 0x4c
-        u8 unknown00[6];                   // 0x00
+        u8 unknown_00[6];                  // 0x00
         u16 flags;                         // 0x06
         i32 size;                          // 0x08
         i32 glyph_count;                   // 0x0c
@@ -8758,12 +8758,12 @@ extern "C" {
         i32 slot_count;          // 0x04
         i32 *accumulators[2];    // 0x08
         NuTime *start_times;     // 0x10
-        i32 *field_14;           // 0x14
-        i32 *field_18;           // 0x18
+        i32 *unknown_14;         // 0x14
+        i32 *unknown_18;         // 0x18
         i32 *colours;            // 0x1c
         i32 *toggle_flags;       // 0x20
         const char **slot_names; // 0x24
-        i32 field_28;            // 0x28
+        i32 unknown_28;          // 0x28
     } TimeBarSet;
 
     static i32 TimeBarAddSet(TimeBarSet *timebar) {
@@ -8825,8 +8825,8 @@ extern "C" {
             NuFree(timebar->accumulators[0], "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x169);
             NuFree(timebar->accumulators[1], "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16a);
             NuFree(timebar->start_times, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16b);
-            NuFree(timebar->field_14, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16c);
-            NuFree(timebar->field_18, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16d);
+            NuFree(timebar->unknown_14, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16c);
+            NuFree(timebar->unknown_18, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16d);
             NuFree(timebar->colours, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16e);
             NuFree(timebar->toggle_flags, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16f);
             NuFree(timebar->slot_names, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x170);
@@ -8928,9 +8928,9 @@ extern "C" {
             buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(i32);
             timebar->start_times = (NuTime *)TIMEBAR_ALIGNED(buffer);
             buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(NuTime);
-            timebar->field_14 = (i32 *)TIMEBAR_ALIGNED(buffer);
+            timebar->unknown_14 = (i32 *)TIMEBAR_ALIGNED(buffer);
             buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(i32);
-            timebar->field_18 = (i32 *)TIMEBAR_ALIGNED(buffer);
+            timebar->unknown_18 = (i32 *)TIMEBAR_ALIGNED(buffer);
             buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(i32);
             timebar->colours = (i32 *)TIMEBAR_ALIGNED(buffer);
             buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(i32);
@@ -8949,8 +8949,8 @@ extern "C" {
                 (i32 *)NuAlloc(slot_count * sizeof(i32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf6);
             timebar->start_times =
                 (NuTime *)NuAlloc(slot_count * sizeof(NuTime), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf7);
-            timebar->field_14 = (i32 *)NuAlloc(slot_count * sizeof(i32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf8);
-            timebar->field_18 = (i32 *)NuAlloc(slot_count * sizeof(i32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf9);
+            timebar->unknown_14 = (i32 *)NuAlloc(slot_count * sizeof(i32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf8);
+            timebar->unknown_18 = (i32 *)NuAlloc(slot_count * sizeof(i32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf9);
             timebar->colours = (i32 *)NuAlloc(slot_count * sizeof(i32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xfa);
             timebar->toggle_flags =
                 (i32 *)NuAlloc(slot_count * sizeof(i32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xfb);
@@ -8962,8 +8962,8 @@ extern "C" {
         memset(timebar->accumulators[1], 0, slot_count * sizeof(i32));
         /* PC clears four bytes per slot despite allocating an eight-byte NuTime. */
         memset(timebar->start_times, 0, slot_count * sizeof(i32));
-        memset(timebar->field_14, 0, slot_count * sizeof(i32));
-        memset(timebar->field_18, 0, slot_count * sizeof(i32));
+        memset(timebar->unknown_14, 0, slot_count * sizeof(i32));
+        memset(timebar->unknown_18, 0, slot_count * sizeof(i32));
         memset(timebar->colours, 0, slot_count * sizeof(i32));
         memset(timebar->toggle_flags, 0, slot_count * sizeof(i32));
         memset(timebar->slot_names, 0, slot_count * sizeof(const char *));
@@ -8976,7 +8976,7 @@ extern "C" {
             memcpy(timebar->colours, NuTimeBar_DefaultColours, slot_count * sizeof(i32));
         }
         timebar->slot_count = slot_count;
-        timebar->field_28 = set > 0;
+        timebar->unknown_28 = set > 0;
         return set;
     }
 
@@ -8984,10 +8984,10 @@ extern "C" {
         return CreateTimeBar(buffer, unused_buffer, colours, 16);
     }
 
-    i32 NuTimeBarCreateSetEx2(VARIPTR *buffer, VARIPTR unused_buffer, i32 field_28) {
+    i32 NuTimeBarCreateSetEx2(VARIPTR *buffer, VARIPTR unused_buffer, i32 unknown_28) {
         i32 set = CreateTimeBar(buffer, unused_buffer, NULL, 16);
         TimeBarSet *timebar = TimeBarGetSet(set);
-        timebar->field_28 = field_28;
+        timebar->unknown_28 = unknown_28;
         return set;
     }
 
@@ -9073,21 +9073,21 @@ extern "C" {
 
         for (slot = 0; slot < timebar->slot_count; ++slot) {
             u32 value = (u32)timebar->accumulators[timebar->toggle_flags[slot]][slot];
-            if (value > (u32)timebar->field_14[slot]) {
-                timebar->field_14[slot] = (i32)value;
+            if (value > (u32)timebar->unknown_14[slot]) {
+                timebar->unknown_14[slot] = (i32)value;
             }
             if (NuTimeBarHorizontalPeakReset == 0) {
-                timebar->field_18[slot] = 0;
+                timebar->unknown_18[slot] = 0;
             }
             value = (u32)timebar->accumulators[timebar->toggle_flags[slot]][slot];
-            if (value > (u32)timebar->field_18[slot]) {
-                timebar->field_18[slot] = (i32)value;
+            if (value > (u32)timebar->unknown_18[slot]) {
+                timebar->unknown_18[slot] = (i32)value;
             }
 
-            if (timebar->field_18[slot] != 0) {
+            if (timebar->unknown_18[slot] != 0) {
                 f32 left = (f32)(name_width + 0.044999999925494194);
                 f32 top = (f32)((slot + 1) * NuTimeBarSlotWidth * 2.0 + 0.15000000596046448);
-                f32 elapsed_frames = (f32)((f64)(u32)timebar->field_18[slot] * NuTime_RefreshRate / NuTime_MicroScale);
+                f32 elapsed_frames = (f32)((f64)(u32)timebar->unknown_18[slot] * NuTime_RefreshRate / NuTime_MicroScale);
                 f32 right = left + elapsed_frames * vertical_scale;
                 f32 bottom = (f32)(top + NuTimeBarSlotWidth);
                 f32 screen_width = (f32)(PS2_VREZ_W << 4);
@@ -9128,12 +9128,12 @@ extern "C" {
                 if (timebar->slot_names[slot] != NULL) {
                     NuQFntPrintEx(system_qfont, (i32)(NuTimeBarSlotWidth * (PS2_VREZ_W << 4)), text_y, 0x10, timebar->slot_names[slot]);
                 }
-                if (timebar->field_18[slot] != 0) {
-                    f32 lines = (f32)((f64)(u32)timebar->field_18[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
+                if (timebar->unknown_18[slot] != 0) {
+                    f32 lines = (f32)((f64)(u32)timebar->unknown_18[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
                     NuQFntPrintEx(system_qfont, x, text_y, 0x10, "%i", (i32)lines);
                 }
-                if (timebar->field_14[slot] != 0) {
-                    f32 lines = (f32)((f64)(u32)timebar->field_14[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
+                if (timebar->unknown_14[slot] != 0) {
+                    f32 lines = (f32)((f64)(u32)timebar->unknown_14[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
                     NuQFntPrintEx(system_qfont, (i32)(0.974999999627471 * (PS2_VREZ_W << 4)), text_y, 0x20, "%i", (i32)lines);
                 }
                 {
@@ -9145,11 +9145,11 @@ extern "C" {
                     }
                 }
             }
-            if (timebar->field_28 != 0) {
+            if (timebar->unknown_28 != 0) {
                 NuTimeBarSlotReset(set, slot);
             }
             if (NuTimeBar_PeakReset != 0) {
-                timebar->field_14[slot] = 0;
+                timebar->unknown_14[slot] = 0;
             }
         }
         NuTimeBar_PeakReset = 0;
@@ -9179,22 +9179,22 @@ extern "C" {
             f32 vertical_scale = (f32)(120.0 / PS2_VREZ_H);
             for (slot = 0; slot < timebar->slot_count; ++slot) {
                 u32 value = (u32)timebar->accumulators[timebar->toggle_flags[slot]][slot];
-                if (value > (u32)timebar->field_14[slot]) {
-                    timebar->field_14[slot] = (i32)value;
+                if (value > (u32)timebar->unknown_14[slot]) {
+                    timebar->unknown_14[slot] = (i32)value;
                 }
                 if (NuTimeBarRenderPeakReset == 0) {
-                    timebar->field_18[slot] = 0;
+                    timebar->unknown_18[slot] = 0;
                 }
                 value = (u32)timebar->accumulators[timebar->toggle_flags[slot]][slot];
-                if (value > (u32)timebar->field_18[slot]) {
-                    timebar->field_18[slot] = (i32)value;
+                if (value > (u32)timebar->unknown_18[slot]) {
+                    timebar->unknown_18[slot] = (i32)value;
                 }
 
-                if (timebar->field_18[slot] != 0) {
+                if (timebar->unknown_18[slot] != 0) {
                     f32 left = (f32)((slot + 1) * 0.025f * 3.0);
                     f32 screen_height = (f32)(PS2_VREZ_H << 4);
                     f32 screen_width = (f32)(PS2_VREZ_W << 4);
-                    f32 elapsed_frames = (f32)((f32)(u32)timebar->field_18[slot] * 60.0 / NuTime_MicroScale);
+                    f32 elapsed_frames = (f32)((f32)(u32)timebar->unknown_18[slot] * 60.0 / NuTime_MicroScale);
                     f32 bottom = elapsed_frames * vertical_scale + 0.05f;
                     f32 right = left + 0.025f;
                     f32 vrez_w;
@@ -9210,8 +9210,8 @@ extern "C" {
                     NuQFntSetColour(system_qfont, 0xe0e0e0e0);
                     vrez_w = (f32)PS2_VREZ_W;
                     text_x = (i32)(vrez_w * 0.025f * 0.5) - (i32)(vrez_w * -0.025f) * (slot + 1) * 3;
-                    if (timebar->field_18[slot] != 0) {
-                        i32 digits = (i32)(f32)((f32)(u32)timebar->field_18[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
+                    if (timebar->unknown_18[slot] != 0) {
+                        i32 digits = (i32)(f32)((f32)(u32)timebar->unknown_18[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
                         if (digits >= 10000) {
                             digits = 9999;
                         }
@@ -9235,7 +9235,7 @@ extern "C" {
                             NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, "%d", digits % 10);
                         }
                     }
-                    if (timebar->field_14[slot] != 0) {
+                    if (timebar->unknown_14[slot] != 0) {
                         vrez_w = (f32)PS2_VREZ_W;
                         text_x = (i32)(vrez_w * 0.025f * 0.5) - (i32)(vrez_w * -0.025f) * (slot + 1) * 3;
                         text_y = (PS2_VREZ_H << 4) - (i32)NuQFntHeight(system_qfont) * 2;
@@ -9244,7 +9244,7 @@ extern "C" {
                             text_y -= 320;
                         }
                         NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, "%d",
-                                      (i32)(f32)((f32)(u32)timebar->field_14[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale));
+                                      (i32)(f32)((f32)(u32)timebar->unknown_14[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale));
                     }
                     if (timebar->slot_names[slot] != NULL) {
                         vrez_w = (f32)PS2_VREZ_W;
@@ -9259,11 +9259,11 @@ extern "C" {
                     NuQFntPopPrintMode();
                     NuQFntPopCoordinateSystem();
                 }
-                if (timebar->field_28 != 0) {
+                if (timebar->unknown_28 != 0) {
                     NuTimeBarSlotReset(set, slot);
                 }
                 if (NuTimeBar_PeakReset != 0) {
-                    timebar->field_14[slot] = 0;
+                    timebar->unknown_14[slot] = 0;
                 }
             }
             if (--NuTimeBarRenderPeakReset, NuTimeBar_PeakReset = 0, NuTimeBarRenderPeakReset < 0) {
@@ -13955,14 +13955,14 @@ extern "C" void NuDynamicLightSetUsedOnSpecials(PC_SPECIAL_SHADOW_LIGHT *light, 
 
 /* Access-only views; storage remains PC_SPECIAL_SHADOW_LIGHT/NUGSCN. */
 struct SHADOW_PRODUCER_SET { // size 0x380
-    u8 unknown000[0x280];    // 0x000
+    u8 unknown_000[0x280];   // 0x000
     NUVEC4 endpoint0;        // 0x280
     NUVEC4 endpoint1;        // 0x290
     f32 radius;              // 0x2a0
 
     struct List {              // size 0x44
         NUDISPLAYLIST_PC list; // 0x2a4
-        u8 unknown028[0x1c];   // 0x2cc
+        u8 unknown_028[0x1c];  // 0x2cc
     } lists[2];                // 0x2a4
 
     u8 unknown_32c[0x10];         // 0x32c
@@ -13978,7 +13978,7 @@ struct SHADOW_PRODUCER_BOUNDS { // size 0x20
 };
 
 struct SHADOW_PRODUCER_MATERIAL { // size 0x269
-    u8 unknown000[0x268];         // 0x000
+    u8 unknown_000[0x268];        // 0x000
     u8 alternate;                 // 0x268
 };
 
@@ -17618,17 +17618,17 @@ extern "C" {
         currentScene.burnout_intensity = intensity <= 2.0f ? (u8)(127.0 * intensity) : 255;
         currentScene.burnout_flare = flare;
         currentScene.burnout_threshold = threshold;
-        currentScene.burnout_parameters.field_00 = 1;
-        currentScene.burnout_parameters.field_18 = 0;
-        currentScene.burnout_parameters.field_28 = 0;
-        currentScene.burnout_parameters.field_04 = 0.0f;
-        currentScene.burnout_parameters.field_08 = 0.0f;
-        currentScene.burnout_parameters.field_0c = 180.0f;
-        currentScene.burnout_parameters.field_10 = intensity;
-        currentScene.burnout_parameters.field_14 = 1.0f;
-        currentScene.burnout_parameters.field_1c = flare;
-        currentScene.burnout_parameters.field_20 = 0.0f;
-        currentScene.burnout_parameters.field_24 = threshold;
+        currentScene.burnout_parameters.unknown_00 = 1;
+        currentScene.burnout_parameters.unknown_18 = 0;
+        currentScene.burnout_parameters.unknown_28 = 0;
+        currentScene.burnout_parameters.unknown_04 = 0.0f;
+        currentScene.burnout_parameters.unknown_08 = 0.0f;
+        currentScene.burnout_parameters.unknown_0c = 180.0f;
+        currentScene.burnout_parameters.unknown_10 = intensity;
+        currentScene.burnout_parameters.unknown_14 = 1.0f;
+        currentScene.burnout_parameters.unknown_1c = flare;
+        currentScene.burnout_parameters.unknown_20 = 0.0f;
+        currentScene.burnout_parameters.unknown_24 = threshold;
     }
 
     i32 NuCameraClipHGobj(NUHGOBJ_EVAL *hierarchy, NUMTX *world, NUMTX *root) {

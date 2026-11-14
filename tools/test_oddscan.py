@@ -11,9 +11,9 @@ static const char Name[5] = "name";
 #define CALL_BARE() ((void(__cdecl *)())Target)()
 #undef LOCAL_LIMIT
 typedef struct THING_VIEW_PC {
-    i32 field_0x10;
+    i32 unknown_10;
 } THING_VIEW_PC;
-STATIC_ASSERT(offsetof(THING_VIEW_PC, field_0x10) == 0);
+STATIC_ASSERT(offsetof(THING_VIEW_PC, unknown_10) == 0);
 enum { MODE_0x10 = 16, MODE_OTHER };
 typedef enum NAMED_MODE { NAMED_IDLE, NAMED_RUN = 5 } NAMED_MODE;
 

@@ -206,8 +206,8 @@ static void BlockadeRunnerDEjectCreature(i32 eject_index) {
             params = Default_ADDPART;
             params.matrix = &matrix;
             params.velocity = &BlockadeRunnerDEjectMom;
-            params.field_14 = 0.15f;
-            params.field_18 = 0.15f;
+            params.unknown_14 = 0.15f;
+            params.unknown_18 = 0.15f;
             params.gravity = 0.0f;
             params.special = &WORLD->level_objects[254].special;
             params.flags = 0x8698;
@@ -454,7 +454,7 @@ void TrenchMove(GAMEOBJECT *object) {
     pad = object->pad;
     object->start_position = object->position;
     object->initial_position = object->collision_position;
-    object->field_282 = object->unknown_281;
+    object->unknown_282 = object->unknown_281;
     input_magnitude = pad->input_magnitude;
     input_angle = pad->input_angle;
     pad->previous_input_magnitude = input_magnitude;

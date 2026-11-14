@@ -8,15 +8,15 @@ EXPLOSION_PC *AddExplosion(NUVEC *position, f32 radius, f32 duration, GAMEOBJECT
     explosion->time = 0.0f;
     explosion->duration = duration;
     explosion->owner = owner;
-    explosion->field_00 = 0;
-    explosion->field_04 = 0;
+    explosion->unknown_00 = 0;
+    explosion->unknown_04 = 0;
     explosion->random_angle = (u16)qrand();
     explosion->effect_id = (i16)effect;
     explosion->flags = flags;
     explosion->hit_flags = ObjHitObj_Flags(owner);
-    explosion->field_30 = 0;
-    explosion->field_32 = 1;
-    explosion->field_33 = -1;
+    explosion->unknown_30 = 0;
+    explosion->unknown_32 = 1;
+    explosion->unknown_33 = -1;
     if (++i_explosion == 8) {
         i_explosion = 0;
     }
@@ -106,7 +106,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 continue;
             }
             if ((explosion->flags & 8) == 0 &&
-                ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->field_00)) != 0 || explosion->owner == target)) {
+                ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->unknown_00)) != 0 || explosion->owner == target)) {
                 continue;
             }
             if (object->collision_min.x > maximum.x || object->collision_max.x < minimum.x || object->collision_min.y > maximum.y ||
@@ -134,7 +134,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             if (hit_character || (explosion->flags & 1) == 0) {
                 continue;
             }
-            if ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->field_00)) != 0 || target == explosion->owner ||
+            if ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->unknown_00)) != 0 || target == explosion->owner ||
                 target->spawn_protection_timer > 0.0f || (target->flags_ef0 & 0x400000) != 0) {
                 continue;
             }
@@ -151,8 +151,8 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                     continue;
                 }
             }
-            explosion->field_00 |= object->collision_identity_mask[0];
-            explosion->field_04 |= object->collision_identity_mask[1];
+            explosion->unknown_00 |= object->collision_identity_mask[0];
+            explosion->unknown_04 |= object->collision_identity_mask[1];
             if ((f64)target->origin_scale_override >= (f64)0.99f) {
                 ObjHitShield(explosion->owner, target, target->shield_hitpoints, NULL);
                 if ((explosion->flags & 0x20) == 0) {
@@ -171,13 +171,13 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             } else if ((explosion->flags & 0x20) != 0 && (target->portal_flags & 0x8000000) == 0 && target->current_hp > 0) {
                 damage = -1;
             } else {
-                damage = explosion->field_32;
+                damage = explosion->unknown_32;
             }
             source = explosion->owner;
             if (source == NULL) {
-                if (explosion->field_33 == 0) {
+                if (explosion->unknown_33 == 0) {
                     source = Player[0];
-                } else if (explosion->field_33 == 1) {
+                } else if (explosion->unknown_33 == 1) {
                     source = Player[1];
                 }
             }
@@ -186,12 +186,12 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 if (source != NULL) {
                     NewRumble(source->pad->bound_pad, 0.5f, 0);
                 }
-                ++explosion->field_30;
-                if ((explosion->flags & 0x200) != 0 && (explosion->field_33 == 0 || explosion->field_33 == 1) && Arcade != 0) {
+                ++explosion->unknown_30;
+                if ((explosion->flags & 0x200) != 0 && (explosion->unknown_33 == 0 || explosion->unknown_33 == 1) && Arcade != 0) {
                     if (object->unknown_280 <= 1) {
                         Arcade_PlayerKilled((object->unknown_280 ^ 1) & 1, 0);
                     } else if (object->unknown_280 == 0xff) {
-                        Arcade_AIKilled(explosion->field_33);
+                        Arcade_AIKilled(explosion->unknown_33);
                     }
                 }
             }

@@ -72,7 +72,7 @@ typedef struct CUT_CHARACTER_ANIMATION { // size 0x64
     u8 flags;                            // 0x5c
     u8 animation_index;                  // 0x5d
     u8 has_locator;                      // 0x5e
-    u8 field_5f;                         // 0x5f
+    u8 unknown_5f;                       // 0x5f
     u8 locator_index;                    // 0x60
     u8 blend_time;                       // 0x61
     u8 unknown_62;                       // 0x62
@@ -205,7 +205,7 @@ typedef struct CUT_CHARACTER_GENERIC {      // size 0x64
     u8 flags;                               // 0x5c
     u8 animation_index;                     // 0x5d
     u8 has_locator;                         // 0x5e
-    u8 field_5f;                            // 0x5f
+    u8 unknown_5f;                          // 0x5f
     u8 locator_index;                       // 0x60
     u8 blend_time;                          // 0x61
     u8 unknown_62;                          // 0x62

@@ -598,7 +598,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                     goto next_character;
                 }
                 if (object->unknown_283 >= 0 && object->unknown_283 < 17 && (TerLayer[object->unknown_283].flags & 1) != 0 &&
-                    GCDataList[id].field_028 <= 0.0f) {
+                    GCDataList[id].unknown_028 <= 0.0f) {
                     goto next_character;
                 }
             }
@@ -854,7 +854,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
             if (PlayerProgress[player_index].field_b != 0) {
                 object->jump_variant_state = 1;
             }
-            object->vehicle_secondary_hp = PlayerProgress[player_index].field_9;
+            object->vehicle_secondary_hp = PlayerProgress[player_index].unknown_9;
         }
         ResetPlayerAI(object);
         object->last_safe_position = object->position;

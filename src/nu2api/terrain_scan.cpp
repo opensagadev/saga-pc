@@ -528,7 +528,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
         for (; node != NULL;
              node = reinterpret_cast<TERRAIN_SPATIAL_CHUNK *>(reinterpret_cast<u8 *>(node) - offsetof(TERRAIN_SPATIAL_CHUNK, node))
                         ->previous) {
-            const u8 *material_bytes = reinterpret_cast<const u8 *>(&node->field_02);
+            const u8 *material_bytes = reinterpret_cast<const u8 *>(&node->unknown_02);
             if (material_bytes[1] != 0 && (material_bytes[1] & terrain_mask) == 0) {
                 continue;
             }
@@ -610,7 +610,7 @@ extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_
     i32 wall_count = 0;
     for (TERRAIN_SPATIAL_NODE *node = TERRAIN_SET_CURRENT->spatial_nodes; node != NULL;
          node = reinterpret_cast<TERRAIN_SPATIAL_CHUNK *>(reinterpret_cast<u8 *>(node) - offsetof(TERRAIN_SPATIAL_CHUNK, node))->previous) {
-        const u8 *material_bytes = reinterpret_cast<const u8 *>(&node->field_02);
+        const u8 *material_bytes = reinterpret_cast<const u8 *>(&node->unknown_02);
         if (material_bytes[1] != 0 && (material_bytes[1] & terrain_mask) == 0) {
             continue;
         }

@@ -226,15 +226,15 @@ typedef struct part_emit_s {     // size 0x6c
     i16 rotation_2e;             // 0x2e
     i16 rotation_30;             // 0x30
     i8 page;                     // 0x32
-    u8 field_33;                 // 0x33
+    u8 unknown_33;               // 0x33
     i32 shots_remaining;         // 0x34
     f32 time_38;                 // 0x38
-    u8 field_3c;                 // 0x3c
-    u8 field_3d;                 // 0x3d
-    u8 field_3e;                 // 0x3e
-    u8 field_3f;                 // 0x3f
+    u8 unknown_3c;               // 0x3c
+    u8 unknown_3d;               // 0x3d
+    u8 unknown_3e;               // 0x3e
+    u8 unknown_3f;               // 0x3f
     f32 camera_distance;         // 0x40
-    i16 field_44;                // 0x44
+    i16 unknown_44;              // 0x44
     i16 unknown_46;              // 0x46
     i32 instance_id;             // 0x48
     i32 trailing_state_words[8]; // 0x4c
@@ -245,7 +245,7 @@ typedef struct terrain_surface_s { // size 0xc
     u32 flags;                     // 0x4
 
     union { // size 0x4
-        u32 field_08;
+        u32 unknown_08;
 
         struct {                          // size 0x4
             u16 object_id;                // 0x8
@@ -476,7 +476,7 @@ struct AREASAVE_s {           // size 0xc
     u8 minikit_complete;      // 0x4
 
     union { // size 0x3
-        u8 field_0x5[3];
+        u8 unknown_5[3];
 
         struct {                    // size 0x3
             u8 minikit_count;       // 0x5
@@ -489,7 +489,7 @@ struct AREASAVE_s {           // size 0xc
 };
 
 struct STATUSPACKET_LSW_s { // size 0x4
-    i32 field_0x00;         // 0x0
+    i32 unknown_00;         // 0x0
 };
 
 struct GIZFORCEANIMDATA_s { // size 0x8
@@ -497,7 +497,7 @@ struct GIZFORCEANIMDATA_s { // size 0x8
     i16 platform_id;        // 0x2
 
     union { // size 0x4
-        u32 field_0x04;
+        u32 unknown_04;
 
         struct {                       // size 0x4
             u32 force_glow_active : 1; // 0x4:0
@@ -523,7 +523,7 @@ struct SNIPER_s {   // size 0x20
 
 struct PODSPRINTNETPACKET_s { // size 0xa
     i16 ai_state;             // 0x0
-    char pad_0x02[4];         // 0x2
+    char pad_02[4];           // 0x2
     i16 speed;                // 0x6
     i16 speed2;               // 0x8
 };
@@ -729,11 +729,11 @@ typedef struct gamecamera_s { // size 0x230
     }; // 0x1fc
 
     i32 roll;                // 0x200
-    f32 field_204;           // 0x204
-    f32 field_208;           // 0x208
-    f32 field_20c;           // 0x20c
-    f32 field_210;           // 0x210
-    f32 field_214;           // 0x214
+    f32 unknown_204;         // 0x204
+    f32 unknown_208;         // 0x208
+    f32 unknown_20c;         // 0x20c
+    f32 unknown_210;         // 0x210
+    f32 unknown_214;         // 0x214
     f32 adjusted_yaw_offset; // 0x218
     u16 blend_start_pitch;   // 0x21c
     u16 desired_pitch;       // 0x21e
@@ -768,7 +768,7 @@ struct AITRIGGERSET_TARGET { // size 0x3c
 struct GIZSPINNERARM_s { // size 0x44
     NUMTX matrix;        // 0x00
     i16 platform_id;     // 0x40
-    u8 field_0x42[2];    // 0x42
+    u8 unknown_42[2];    // 0x42
 };
 
 struct GIZPANEL_s {   // size 0x9c
@@ -776,9 +776,9 @@ struct GIZPANEL_s {   // size 0x9c
     char name[16];    // 0x40
     NUVEC position;   // 0x50
     u16 y_rotation;   // 0x5c
-    u8 field_0x5e[3]; // 0x5e
+    u8 unknown_5e[3]; // 0x5e
     u8 model_variant; // 0x61
-    u8 field_0x62[2]; // 0x62
+    u8 unknown_62[2]; // 0x62
     f32 flash_timer;  // 0x64
 
     union { // size 0x1
@@ -797,7 +797,7 @@ struct GIZPANEL_s {   // size 0x9c
     }; // 0x68
 
     u8 draw_flags;                                     // 0x69
-    u8 field_0x6a[2];                                  // 0x6a
+    u8 unknown_6a[2];                                  // 0x6a
     NUVEC floor_position;                              // 0x6c
     NUVEC target_offset;                               // 0x78
     u16 target_x_rotation;                             // 0x84
@@ -835,7 +835,7 @@ typedef TERRAIN_SET_PC TERRSET;
 
 struct TERRAIN_SPATIAL_NODE { // size 0x10
     u16 point_count;          // 0x0
-    u16 field_02;             // 0x2
+    u16 unknown_02;           // 0x2
     NUVEC points[1];          // 0x4
 };
 #ifdef __cplusplus
@@ -992,7 +992,7 @@ struct AITRIGGERSET_s { // size 0x214
 
         struct {              // size 0x8
             u8 trigger_count; // 0x20c
-            u8 field_20d;     // 0x20d
+            u8 unknown_20d;   // 0x20d
             u16 field_0x20e;  // 0x20e
 
             union { // size 0x2
@@ -1013,7 +1013,7 @@ struct AITRIGGERSETSYS_s {          // size 0x4304
     struct AITRIGGERSET_s sets[32]; // 0x0000
     i8 unknown_4280[64];            // 0x4280
     i8 unknown_42c0[64];            // 0x42c0
-    i32 field_0x4300;               // 0x4300
+    i32 unknown_4300;               // 0x4300
 };
 
 struct shopitem_s {              // size 0x74
@@ -1113,7 +1113,7 @@ struct FADEINFO_s {              // size 0x2c
     i32 stage;                   // 0x10
     FadeBase *fades[4];          // 0x14
     FADETYPE_VALUE pending_type; // 0x24
-    i32 field_28;                // 0x28
+    i32 unknown_28;              // 0x28
 };
 
 class FadeSystem : public FADEINFO_s { // size 0x2c
@@ -1165,7 +1165,7 @@ typedef struct bolt_s {         // size 0x138
     f32 collision_radius;       // 0x0d8
     f32 ray_time;               // 0x0dc
     f32 ray_radius;             // 0x0e0
-    f32 field_e4;               // 0x0e4
+    f32 unknown_e4;             // 0x0e4
     f32 reflection_height;      // 0x0e8
     f32 acceleration_y;         // 0x0ec
     u32 flags;                  // 0x0f0
@@ -1182,9 +1182,9 @@ typedef struct bolt_s {         // size 0x138
     i16 hit_part_debris;         // 0x0fe
     u8 active;                   // 0x100
     u8 type_id;                  // 0x101
-    u8 field_102;                // 0x102
+    u8 unknown_102;              // 0x102
     u8 index;                    // 0x103
-    i8 field_104;                // 0x104
+    i8 unknown_104;              // 0x104
     i8 unknown_105;              // 0x105
     u16 unknown_106;             // 0x106
     NUVEC bounds_min;            // 0x108
@@ -1463,7 +1463,7 @@ typedef struct GIZMO_PICKUP_TYPE { // size 0x38
     u8 field_c;                    // 0x0c
     u8 random_model_count;         // 0x0d
     u8 flags;                      // 0x0e
-    u8 field_0f;                   // 0x0f
+    u8 unknown_0f;                 // 0x0f
     i16 first_model_id;            // 0x10
     u16 score;                     // 0x12
     f32 shadow_radius_x;           // 0x14
@@ -1488,9 +1488,9 @@ struct gizforce_s {                    // size 0xa4
     u32 reset_word;                    // 0x3c
     struct FORCE_RESET_GROUP *group;   // 0x40
     f32 force_strength;                // 0x44
-    f32 field_48;                      // 0x48
+    f32 unknown_48;                    // 0x48
     f32 force_range;                   // 0x4c
-    f32 field_50;                      // 0x50
+    f32 unknown_50;                    // 0x50
     f32 interaction_radius;            // 0x54
     f32 animation_speed;               // 0x58
     f32 start_frame;                   // 0x5c
@@ -1541,8 +1541,8 @@ extern "C" {
 #endif
 
     typedef struct EXPLOSION_PC {   // size 0x38
-        i32 field_00;               // 0x00
-        i32 field_04;               // 0x04
+        i32 unknown_00;             // 0x00
+        i32 unknown_04;             // 0x04
         struct gameobject_s *owner; // 0x08
         NUVEC position;             // 0x0c
         f32 radius;                 // 0x18
@@ -1553,9 +1553,9 @@ extern "C" {
         u16 random_angle;           // 0x2a
         i16 effect_id;              // 0x2c
         u16 hit_flags;              // 0x2e
-        u16 field_30;               // 0x30
-        u8 field_32;                // 0x32
-        i8 field_33;                // 0x33
+        u16 unknown_30;             // 0x30
+        u8 unknown_32;              // 0x32
+        i8 unknown_33;              // 0x33
         u8 unknown_34[4];           // 0x34
     } EXPLOSION_PC;
 
@@ -1572,14 +1572,14 @@ struct GIZFORCE_s {                    // size 0xac
     struct gameobject_s *using_object; // 0x38
 
     union { // size 0x4
-        f32 field_0x3c;
+        f32 unknown_3c;
         u32 field_0x3c_bits;
     }; // 0x3c
     struct GIZFORCEGROUP_s *group; // 0x40
     f32 force_strength;            // 0x44
-    f32 field_0x48;                // 0x48
+    f32 unknown_48;                // 0x48
     f32 force_range;               // 0x4c
-    f32 field_0x50;                // 0x50
+    f32 unknown_50;                // 0x50
     f32 interaction_radius;        // 0x54
     f32 animation_speed;           // 0x58
     f32 start_frame;               // 0x5c
@@ -1590,11 +1590,11 @@ struct GIZFORCE_s {                    // size 0xac
     f32 vertical_range;            // 0x70
     f32 horizontal_range;          // 0x74
     u32 config_flags;              // 0x78
-    u32 field_0x7c;                // 0x7c
+    u32 unknown_7c;                // 0x7c
     u8 group_index;                // 0x80
     u8 collision_mask;             // 0x81
     u8 activation_mode;            // 0x82
-    u8 field_0x83;                 // 0x83
+    u8 unknown_83;                 // 0x83
     i16 room_id;                   // 0x84
     i16 start_sfx_id;              // 0x86
     i16 loop_sfx_id;               // 0x88
@@ -1630,7 +1630,7 @@ struct GIZFORCE_s {                    // size 0xac
     }; // 0xa0
 
     union { // size 0x4
-        u32 field_0xa4;
+        u32 unknown_a4;
         struct MechObjectInterface *mech_object_interface;
     }; // 0xa4
 
@@ -1689,8 +1689,8 @@ struct GIZFORCE_s {                    // size 0xac
 
 struct DETONATOR_s {             // size 0x38
     NUVEC position;              // 0x00
-    NUVEC field_0x0c;            // 0x0c
-    NUVEC field_0x18;            // 0x18
+    NUVEC unknown_0c;            // 0x0c
+    NUVEC unknown_18;            // 0x18
     struct gameobject_s *object; // 0x24
     u8 active;                   // 0x28
     u8 draw_result;              // 0x29
@@ -1698,25 +1698,25 @@ struct DETONATOR_s {             // size 0x38
     u16 rotation_y;              // 0x2c
     u16 rotation_z;              // 0x2e
     f32 timer;                   // 0x30
-    void *field_0x34;            // 0x34
+    void *unknown_34;            // 0x34
 };
 
 struct EXPLOSION {               // size 0x34
-    i32 field_0x00;              // 0x00
-    i32 field_0x04;              // 0x04
+    i32 unknown_00;              // 0x00
+    i32 unknown_04;              // 0x04
     struct gameobject_s *object; // 0x08
     NUVEC position;              // 0x0c
-    f32 field_0x18;              // 0x18
-    f32 field_0x1c;              // 0x1c
-    f32 field_0x20;              // 0x20
-    i32 field_0x24;              // 0x24
-    u16 field_0x28;              // 0x28
-    u16 field_0x2a;              // 0x2a
-    u16 field_0x2c;              // 0x2c
-    u16 field_0x2e;              // 0x2e
-    u16 field_0x30;              // 0x30
-    u8 field_0x32;               // 0x32
-    u8 field_0x33;               // 0x33
+    f32 unknown_18;              // 0x18
+    f32 unknown_1c;              // 0x1c
+    f32 unknown_20;              // 0x20
+    i32 unknown_24;              // 0x24
+    u16 unknown_28;              // 0x28
+    u16 unknown_2a;              // 0x2a
+    u16 unknown_2c;              // 0x2c
+    u16 unknown_2e;              // 0x2e
+    u16 unknown_30;              // 0x30
+    u8 unknown_32;               // 0x32
+    u8 unknown_33;               // 0x33
 };
 
 struct CABLE_s {                 // size 0x1ec
@@ -1750,31 +1750,31 @@ struct GIZBUILDIT_s {                                  // size 0x84
     f32 step_timer;                                    // 0x48
     f32 step_duration;                                 // 0x4c
     f32 interaction_radius;                            // 0x50
-    f32 field_0x54;                                    // 0x54
+    f32 unknown_54;                                    // 0x54
     f32 radius_scale;                                  // 0x58
-    i16 field_0x5c;                                    // 0x5c
+    i16 unknown_5c;                                    // 0x5c
 
     union { // size 0x2
-        i16 field_0x5e;
+        i16 unknown_5e;
         u16 completion_score;
     }; // 0x5e
 
-    i16 field_0x60;        // 0x60
-    i16 field_0x62;        // 0x62
+    i16 unknown_60;        // 0x60
+    i16 unknown_62;        // 0x62
     NUVEC effect_position; // 0x64
     f32 activation_radius; // 0x70
     u8 anim_object_count;  // 0x74
     u8 build_state;        // 0x75
     u8 builders_active;    // 0x76
     u8 built_object_count; // 0x77
-    u8 field_0x78;         // 0x78
+    u8 unknown_78;         // 0x78
     u8 progress;           // 0x79
     u16 state_flags;       // 0x7a
-    u16 field_0x7c;        // 0x7c
+    u16 unknown_7c;        // 0x7c
     i16 room_index;        // 0x7e
     i16 blowup_type;       // 0x80
     u8 availability_flags; // 0x82
-    u8 field_0x83;         // 0x83
+    u8 unknown_83;         // 0x83
 };
 
 struct STATUSPACKET_s {                                                                      // size 0x14c
@@ -1792,7 +1792,7 @@ struct STATUSPACKET_s {                                                         
     f32 player0_rumble_duration;                                                             // 0x02c
     f32 player0_buzz_amount;                                                                 // 0x030
     u8 player0_rumble_priority;                                                              // 0x034
-    u8 field_0x35[3];                                                                        // 0x035
+    u8 unknown_35[3];                                                                        // 0x035
     f32 player1_rumble_amount;                                                               // 0x038
     f32 player1_rumble_time;                                                                 // 0x03c
     f32 player1_rumble_duration;                                                             // 0x040
@@ -1806,7 +1806,7 @@ struct STATUSPACKET_s {                                                         
     f32 previous_best_time;                                                                  // 0x05c
     f32 new_best_time;                                                                       // 0x060
     f32 elapsed_time;                                                                        // 0x064
-    f32 field_0x68;                                                                          // 0x068
+    f32 unknown_68;                                                                          // 0x068
     u32 previous_best_score;                                                                 // 0x06c
     u32 new_best_score;                                                                      // 0x070
     u32 original_score;                                                                      // 0x074
@@ -1816,7 +1816,7 @@ struct STATUSPACKET_s {                                                         
     u32 coins_remaining[2];                                                                  // 0x084
     u32 coins_collected[2];                                                                  // 0x08c
     i32 new_minikits;                                                                        // 0x094
-    u32 field_0x98;                                                                          // 0x098
+    u32 unknown_98;                                                                          // 0x098
     u16 player0_model;                                                                       // 0x09c
     u16 player1_model;                                                                       // 0x09e
     i16 area_id;                                                                             // 0x0a0
@@ -1843,7 +1843,7 @@ struct STATUSPACKET_s {                                                         
         struct { // size 0x4
 
             union { // size 0x1
-                u8 field_0xb0;
+                u8 unknown_b0;
 
                 struct {                         // size 0x1
                     u8 : 2;                      // 0x0b0:0
@@ -1896,7 +1896,7 @@ struct STATUSPACKET_s {                                                         
     struct STATUS_STAGE_s *previous_stage;   // 0x120
     struct STATUS_STAGE_s *stage;            // 0x124
     struct STATUS_STAGE_s *next_stage;       // 0x128
-    u8 field_0x12c[32];                      // 0x12c
+    u8 unknown_12c[32];                      // 0x12c
 };
 
 struct STATUS_STAGE_s {                                                                          // size 0x20
@@ -1904,16 +1904,16 @@ struct STATUS_STAGE_s {                                                         
     void (*update_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, f32 arg2); // 0x04
     void (*skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);             // 0x08
     i32 type;                                                                                    // 0x0c
-    u16 field_0x10;                                                                              // 0x10
-    u8 field_0x12;                                                                               // 0x12
+    u16 unknown_10;                                                                              // 0x10
+    u8 unknown_12;                                                                               // 0x12
     u8 pad_13;                                                                                   // 0x13
-    i32 field_0x14;                                                                              // 0x14
-    f32 field_0x18;                                                                              // 0x18
-    f32 field_0x1c;                                                                              // 0x1c
+    i32 unknown_14;                                                                              // 0x14
+    f32 unknown_18;                                                                              // 0x18
+    f32 unknown_1c;                                                                              // 0x1c
 };
 
 struct GIZTURRET_s {                          // size 0x13c
-    u8 field_0x00[8];                         // 0x000
+    u8 unknown_00[8];                         // 0x000
     char name[16];                            // 0x008
     struct gameanimset_s *anim_set;           // 0x018
     struct gameanimobj_s *primary_anim_obj;   // 0x01c
@@ -1953,7 +1953,7 @@ struct GIZTURRET_s {                          // size 0x13c
     }; // 0x108
 
     union { // size 0x2
-        i16 field_0x10c;
+        i16 unknown_10c;
         u16 completion_score;
     }; // 0x10c
 
@@ -2002,7 +2002,7 @@ struct GIZTURRET_s {                          // size 0x13c
 struct GIZFORCEGROUP_s {          // size 0x28
     struct GIZFORCE_s *forces[8]; // 0x00
     f32 combined_height;          // 0x20
-    u8 field_0x24;                // 0x24
+    u8 unknown_24;                // 0x24
     u8 count;                     // 0x25
     u8 configured_count;          // 0x26
     u8 unknown_27;                // 0x27
@@ -2027,12 +2027,12 @@ struct HOTHBATTLE_MELEE_WAVE_s {       // size 0x28
 
     union { // size 0x1
         u8 remaining_count;
-        u8 field_0x18;
+        u8 unknown_18;
     }; // 0x14
 
     union { // size 0x1
         u8 initial_count;
-        u8 field_0x19;
+        u8 unknown_19;
     }; // 0x15
 
     union { // size 0x1
@@ -2048,27 +2048,27 @@ struct HOTHBATTLE_MELEE_s { // size 0xc8
 
     union { // size 0x1
         u8 current_wave;
-        u8 field_0x0;
+        u8 unknown_0;
     }; // 0x00
 
     union { // size 0x1
         u8 next_wave;
-        u8 field_0x1;
+        u8 unknown_1;
     }; // 0x01
 
     union { // size 0x1
         u8 initialize_wave;
-        u8 field_0x2;
+        u8 unknown_2;
     }; // 0x02
 
-    u8 field_0x3; // 0x03
+    u8 unknown_3; // 0x03
 
     union { // size 0x1
         i8 transition_phase;
-        i8 field_0x4;
+        i8 unknown_4;
     }; // 0x04
 
-    u8 field_0x5[3];                              // 0x05
+    u8 unknown_5[3];                              // 0x05
     f32 wave_delay;                               // 0x08
     struct HOTHBATTLE_MELEE_WAVE_s waves[4];      // 0x0c
     struct gameobject_s *background_creatures[6]; // 0xac
@@ -2090,7 +2090,7 @@ struct GIZSPECIAL_s {               // size 0x28
         };
     }; // 0x24
 
-    u8 field_0x25[3]; // 0x25
+    u8 unknown_25[3]; // 0x25
 };
 
 struct GIZOBSTACLESYS_s {                // size 0x14
@@ -2099,7 +2099,7 @@ struct GIZOBSTACLESYS_s {                // size 0x14
     u16 count;                           // 0x08
     u16 capacity;                        // 0x0a
     u16 active_gizmo_count;              // 0x0c
-    u16 field_0x0e;                      // 0x0e
+    u16 unknown_0e;                      // 0x0e
     struct gameanimobjpool_s *anim_pool; // 0x10
 };
 
@@ -2111,7 +2111,7 @@ struct CHARPLATFORM_s {          // size 0x14
 };
 
 struct CHARPLATFORMSYS_s {              // size 0x1c
-    i32 field_0x00;                     // 0x00
+    i32 unknown_00;                     // 0x00
     i32 platform_count;                 // 0x04
     struct CHARPLATFORM_s platforms[1]; // 0x08
 };
@@ -2121,7 +2121,7 @@ struct GIZBUILDITSYS_s {                 // size 0x14
     u16 count;                           // 0x04
     u16 capacity;                        // 0x06
     u16 max_animation_objects;           // 0x08
-    u16 field_0x0a;                      // 0x0a
+    u16 unknown_0a;                      // 0x0a
     struct gameanimobjpool_s *anim_pool; // 0x0c
     struct gameanimobj_s **anim_objects; // 0x10
 };
@@ -2209,7 +2209,7 @@ struct GIZTURRETSYS_s {                  // size 0x10
     u16 count;                           // 0x8
     u16 capacity;                        // 0xa
     i8 opponent_cursor;                  // 0xc
-    i8 field_0x0d[3];                    // 0xd
+    i8 unknown_0d[3];                    // 0xd
 };
 
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
@@ -2231,11 +2231,11 @@ struct GIZSPINNER_s {                       // size 0x304
     struct gameanimobj_s *primary_anim_obj; // 0x06c
 
     union { // size 0x8
-        u8 field_0x070[8];
+        u8 unknown_070[8];
 
-        struct {          // size 0x8
-            f32 field_70; // 0x070
-            u32 field_74; // 0x074
+        struct {            // size 0x8
+            f32 unknown_70; // 0x070
+            u32 unknown_74; // 0x074
         };
     }; // 0x070
 
@@ -2245,23 +2245,23 @@ struct GIZSPINNER_s {                       // size 0x304
     u16 previous_rotation;          // 0x080
     u16 initial_rotation;           // 0x082
     u32 state_flags;                // 0x084
-    u8 field_0x088;                 // 0x088
+    u8 unknown_088;                 // 0x088
     i8 room_index;                  // 0x089
     u8 state;                       // 0x08a
     u8 type;                        // 0x08b
-    u16 field_0x08c;                // 0x08c
+    u16 unknown_08c;                // 0x08c
     u8 unknown_08e[2];              // 0x08e
     f32 spin_timer;                 // 0x090
-    f32 field_0x094;                // 0x094
-    f32 field_0x098;                // 0x098
-    f32 field_0x09c;                // 0x09c
+    f32 unknown_094;                // 0x094
+    f32 unknown_098;                // 0x098
+    f32 unknown_09c;                // 0x09c
     f32 ground_height;              // 0x0a0
     u8 output_count;                // 0x0a4
     u8 unknown_0a5[7];              // 0x0a5
     u8 flags;                       // 0x0ac
     u8 unknown_0ad;                 // 0x0ad
     i16 platform_id;                // 0x0ae
-    u8 field_0x0b0[4];              // 0x0b0
+    u8 unknown_0b0[4];              // 0x0b0
     struct GIZSPINNERARM_s arms[8]; // 0x0b4
 
     union { // size 0x4
@@ -2345,7 +2345,7 @@ extern "C" {
         i32 particle_index;                             // 0x14
         f32 collision_time;                             // 0x18
         i16 effect_index;                               // 0x1c
-        i16 field_01e;                                  // 0x1e
+        i16 unknown_01e;                                // 0x1e
         i16 rotation_y;                                 // 0x20
         i16 unknown_022;                                // 0x22
         f32 collision_plane;                            // 0x24
@@ -2626,7 +2626,7 @@ class ClassEditor : public BaseEditor { // size 0x70
     EdManipulator *manipulator;       // 0x20
     ClassObjectList selected_objects; // 0x24
     ClassObject current_object;       // 0x30
-    i32 field_3c;                     // 0x3c
+    i32 unknown_3c;                   // 0x3c
     ClassObject pending_object;       // 0x40
     struct eduimenu_s *menu;          // 0x4c
     VuVec snap_ray;                   // 0x50
@@ -2773,13 +2773,13 @@ class LevelEditor : public BaseThing { // size 0x10b0
     char *fun_006bc9e0(char *text);
 
     f32 background_colour[4];     // 0x0010
-    i32 field_0x20;               // 0x0020
-    i32 field_0x24;               // 0x0024
-    i32 field_0x28;               // 0x0028
-    i32 field_0x2c;               // 0x002c
-    i32 field_0x30;               // 0x0030
+    i32 unknown_20;               // 0x0020
+    i32 unknown_24;               // 0x0024
+    i32 unknown_28;               // 0x0028
+    i32 unknown_2c;               // 0x002c
+    i32 unknown_30;               // 0x0030
     f32 overlay_alpha;            // 0x0034
-    i32 field_0x38;               // 0x0038
+    i32 unknown_38;               // 0x0038
     i32 editor_buffer_from_front; // 0x003c
     EdInputContext input;         // 0x0040
     u8 loading;                   // 0x02a0

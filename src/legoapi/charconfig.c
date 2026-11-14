@@ -892,11 +892,11 @@ static void CC_clear_sfx_misc(NUFPAR_PC *parser) {
 }
 
 static void CC_cloak_up_angle(NUFPAR_PC *parser) {
-    charconfig.runtime->field_05c = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+    charconfig.runtime->unknown_05c = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
 static void CC_cloak_down_angle(NUFPAR_PC *parser) {
-    charconfig.runtime->field_060 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+    charconfig.runtime->unknown_060 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
 static void CC_viewrange(NUFPAR_PC *parser) {
@@ -983,7 +983,7 @@ static void CC_jump_move_speed_scale(NUFPAR_PC *parser) {
 }
 
 static void CC_loop_height(NUFPAR_PC *parser) {
-    charconfig.runtime->field_088 = NuFParGetFloat(parser);
+    charconfig.runtime->unknown_088 = NuFParGetFloat(parser);
 }
 
 static void CC_no_tiptoe(NUFPAR_PC *parser) {
@@ -1462,7 +1462,7 @@ static void CC_no_shoot(NUFPAR_PC *parser) {
 }
 
 static void CC_blobshadow_size(NUFPAR_PC *parser) {
-    charconfig.runtime->field_08c = CharConfigAbsFloat(NuFParGetFloat(parser));
+    charconfig.runtime->unknown_08c = CharConfigAbsFloat(NuFParGetFloat(parser));
 }
 
 static void CC_blobshadow_alpha(NUFPAR_PC *parser) {
@@ -1470,7 +1470,7 @@ static void CC_blobshadow_alpha(NUFPAR_PC *parser) {
 }
 
 static void CC_hover_height(NUFPAR_PC *parser) {
-    charconfig.runtime->field_028 = NuFParGetFloat(parser);
+    charconfig.runtime->unknown_028 = NuFParGetFloat(parser);
 }
 
 static void CC_hover_time(NUFPAR_PC *parser) {
@@ -1478,7 +1478,7 @@ static void CC_hover_time(NUFPAR_PC *parser) {
 }
 
 static void CC_maxheadturn(NUFPAR_PC *parser) {
-    charconfig.runtime->field_050 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+    charconfig.runtime->unknown_050 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
 static void CC_maxheadtilt(NUFPAR_PC *parser) {
@@ -1486,7 +1486,7 @@ static void CC_maxheadtilt(NUFPAR_PC *parser) {
 }
 
 static void CC_headrotrate(NUFPAR_PC *parser) {
-    charconfig.runtime->field_058 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+    charconfig.runtime->unknown_058 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
 static void CC_coin_value(NUFPAR_PC *parser) {

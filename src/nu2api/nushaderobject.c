@@ -7,7 +7,7 @@ void NuShaderObjectUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
 void NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     NuShaderObjectBaseCreate(shader);
     shader->active_parameters = 0;
-    shader->field_18 = 0;
+    shader->unknown_18 = 0;
 }
 
 void NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *shader) {
@@ -82,7 +82,7 @@ void PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *shader, ID3DXConstan
                                                description.type_kind == 13 || description.type_kind == 14)) {
             parameter->register_index = (i16)(description.register_index + 0x101);
         }
-        if ((PCDeviceHardwareVertexProcessingPC != 4 && uniform->field_18 != 0) || uniform->register_index < 0) {
+        if ((PCDeviceHardwareVertexProcessingPC != 4 && uniform->unknown_18 != 0) || uniform->register_index < 0) {
             PC_SHADER_PARAMETER_LOCAL_PC *previous = shader->active_parameters;
             if (previous != NULL && parameter->register_index > previous->register_index) {
                 while (previous->next != NULL && previous->next->register_index <= parameter->register_index) {

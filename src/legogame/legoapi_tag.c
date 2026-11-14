@@ -378,7 +378,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             if (blend_camera != 0) {
                 GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             }
-            if (destination->character_data->game_character->field_028 > 0.0f) {
+            if (destination->character_data->game_character->unknown_028 > 0.0f) {
                 destination->velocity.y -= (f64)source->character_data->game_character->jump_speed * 0.5;
             }
         }
@@ -614,7 +614,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
         Buck_StartRiderJump(rider, object);
     }
     character = object->character_data->game_character;
-    if (character->field_028 > 0.0f) {
+    if (character->unknown_028 > 0.0f) {
         object->velocity.y -= (f64)rider->velocity.y * 0.5;
     } else if ((character->flags_094 & 0x20000) != 0) {
         Buck_Start(object, rider);

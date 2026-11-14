@@ -130,8 +130,8 @@ void SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     parameters = Default_ADDPART;
     parameters.matrix = &matrix;
     parameters.velocity = &velocity;
-    parameters.field_14 = 0.1f;
-    parameters.field_18 = 0.1f;
+    parameters.unknown_14 = 0.1f;
+    parameters.unknown_18 = 0.1f;
     parameters.special = &WORLD->level_objects[0xe6].special;
     parameters.time_step = FRAMETIME;
     parameters.gravity = -2.0f;
@@ -552,7 +552,7 @@ void CollideGameObjects(WORLDINFO *world) {
         if (object->unknown_280 != 0xff) {
             player_slot_mask |= bit;
         }
-        if (object->character_data->game_character->field_028 > 0) {
+        if (object->character_data->game_character->unknown_028 > 0) {
             vertical_movement_mask |= bit;
         } else {
             no_vertical_movement_mask |= bit;
@@ -631,13 +631,13 @@ void CollideGameObjects(WORLDINFO *world) {
         }
         if (VehicleArea != 0 && WORLD->current_level != CollisionVehicleExcludedLevel && WORLD->current_level != DOGFIGHTA_LDATA) {
             if (object->unknown_280 != 0xff) {
-                if (object->character_data->game_character->field_028 != 0) {
+                if (object->character_data->game_character->unknown_028 != 0) {
                     exclusion->exclusion_mask |= vertical_movement_mask;
                 } else {
                     exclusion->exclusion_mask |= (~player_slot_mask) & vertical_movement_mask;
                 }
             } else {
-                if (object->character_data->game_character->field_028 != 0) {
+                if (object->character_data->game_character->unknown_028 != 0) {
                     exclusion->exclusion_mask |= (vertical_movement_mask & player_slot_mask) | no_vertical_movement_mask;
                 } else {
                     exclusion->exclusion_mask |= (~player_slot_mask) & vertical_movement_mask;
@@ -764,7 +764,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     grapple = object->character_context == 0x46 && object->unknown_7b3 == 0;
 
     if (object->flags_107a == 2 && ((object->character_data->model_flags & 0x100) != 0 || (flags & 0x200000) != 0 || sliding)) {
-        f32 hover = (object->character_data->model_flags & 0x2000) != 0 ? GetVehicleHoverHeight(object, NULL) : game->field_028;
+        f32 hover = (object->character_data->model_flags & 0x2000) != 0 ? GetVehicleHoverHeight(object, NULL) : game->unknown_028;
         if (hover > 0.0f) {
             if (GameObjectNearFloorNoFloorHeight != object->floor_height) {
                 f32 limit = 2.5 * hover;
@@ -786,7 +786,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
             alignment = 2;
         } else if (object->unknown_281 != 0 || (object->character_data->game_character->flags_090 & 0x200000) != 0 || sliding) {
             alignment = 1;
-        } else if ((object->character_data->model_flags & 0x100) != 0 && 0.0f == object->character_data->game_character->field_028 &&
+        } else if ((object->character_data->model_flags & 0x100) != 0 && 0.0f == object->character_data->game_character->unknown_028 &&
                    (object->character_data->game_character->flags_090 & 0x100) != 0 &&
                    GameObjectNearFloorNoFloorHeight != object->floor_height) {
             f32 vertical_gap = object->collision_min.y - object->floor_height;
@@ -801,7 +801,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         }
     }
 
-    reflection = 0 != (0x2000 & object->character_data->model_flags) && object->character_data->game_character->field_028 > 0.0f &&
+    reflection = 0 != (0x2000 & object->character_data->model_flags) && object->character_data->game_character->unknown_028 > 0.0f &&
                  (object->unknown_283 == 7 || object->unknown_283 == 0x10) && object->unknown_280 == 0xff;
 
     if (mode == 1) {
@@ -1183,7 +1183,7 @@ static i32 KillPartsTieSpinRate = 200000;
 
 void TieSpinZPart_Move(PART_PC *part, f32 time) {
     NUVEC trail;
-    part->field_124[3] = KillPartsTieSpinRate;
+    part->unknown_124[3] = KillPartsTieSpinRate;
     part->rotation_z = ((u16)(((i32)(((f64)KillPartsTieSpinRate) * FRAMETIME))));
     NuMtxPreTranslate(&part->transform, &KillPartsTieSpinTranslation);
     TiePart_MoveCorePC(part, time);
@@ -1194,7 +1194,7 @@ void TieSpinZPart_Move(PART_PC *part, f32 time) {
 }
 
 void TiePart_Move(PART_PC *part, f32 time) {
-    part->field_124[3] = -32768;
+    part->unknown_124[3] = -32768;
     part->rotation_z = ((u16)(((i32)(-32768.0 * FRAMETIME))));
     TiePart_MoveCorePC(part, time);
 }
@@ -1217,7 +1217,7 @@ void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJE
     }
     switch (mode) {
         default: {
-            params->field_20 = 0.5f;
+            params->unknown_20 = 0.5f;
             params->flags = 0x91;
             params->kill_fn = TiePart_Kill;
             params->draw_fn = PartDraw_Flickerer;
@@ -1240,7 +1240,7 @@ void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJE
                 NuVecRotateY(&spin_velocity, &spin_velocity, xrot);
                 params->move_fn = TieSpinZPart_Move;
             }
-            params->field_a4 = 2.0f;
+            params->unknown_a4 = 2.0f;
             params->kill_fn = TiePart_Kill;
             params->impact_fn = TiePart_Impact;
             params->velocity = &spin_velocity;
@@ -1250,7 +1250,7 @@ void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJE
         case 0: {
             params->flags = 0x111;
             params->kill_fn = TiePart_KillExplode;
-            params->field_a4 = FRAMETIME;
+            params->unknown_a4 = FRAMETIME;
             params->velocity = &v000;
             break;
         }
@@ -1416,13 +1416,13 @@ void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
         params = Default_ADDPART;
         params.matrix = &object->locator_matrices[locator];
         params.velocity = &velocity;
-        params.field_14 = 0.1f;
-        params.field_18 = 0.1f;
+        params.unknown_14 = 0.1f;
+        params.unknown_18 = 0.1f;
         params.gravity = -5.0f;
         params.special = &WORLD->level_objects[object->helmet + 0xf9].special;
         params.flags = 0x90;
         params.time_step = FRAMETIME;
-        params.field_c4 = 1;
+        params.unknown_c4 = 1;
         params.stop_fn = PartStop_Flickerer;
         params.draw_fn = PartDraw_Flickerer;
         params.impact_fn = PartImpact_Brick;
@@ -2463,7 +2463,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         reason = 4;
     }
     if ((object->flags_1fc_word & 0x80) != 0) {
-        ++AreaGlobals.field_00;
+        ++AreaGlobals.unknown_00;
         ++LevDeaths;
     }
     NuSound3ClearLoopHold(&object->upper_position, 0);
@@ -2970,15 +2970,15 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             momentum.z += object->velocity.z * 0.75f;
             params.matrix = &matrix;
             params.velocity = &momentum;
-            params.field_14 = 0.2f;
-            params.field_18 = 0.2f;
+            params.unknown_14 = 0.2f;
+            params.unknown_18 = 0.2f;
             params.gravity = -10.0f;
             params.special = &pieces->pieces[i].special;
             params.lighting_data =
                 Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting)) : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
             params.time_step = FRAMETIME;
             params.flags = mode == 0 ? 0x480 : 0x90;
-            params.field_c4 = 1;
+            params.unknown_c4 = 1;
             params.stop_fn = PartStop_Flickerer;
             params.draw_fn = PartDraw_Flickerer;
             params.impact_fn = PartImpact_Brick;
@@ -3029,7 +3029,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
                 continue;
             }
             if (VehicleArea != 0 && (object->character_data->model_flags & 0x2000) != 0 &&
-                object->character_data->game_character->field_028 > 0.0f) {
+                object->character_data->game_character->unknown_028 > 0.0f) {
                 NuMtxMul(&matrix, &joint_matrices[joint], &object->transform);
                 SetKillPartMom(&momentum);
                 NuVecScale(&momentum, &momentum, 4.0f);
@@ -3038,8 +3038,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
                 momentum.x += object->velocity.x * 0.75f;
                 momentum.y += object->velocity.y * 0.75f;
                 momentum.z += object->velocity.z * 0.75f;
-                params.field_14 = 0.4f;
-                params.field_18 = 0.4f;
+                params.unknown_14 = 0.4f;
+                params.unknown_18 = 0.4f;
                 params.gravity = -10.0f;
             } else {
                 SetKillPartMom(&momentum);
@@ -3061,8 +3061,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
                 }
                 NuMtxMul(&matrix, &joint_matrices[joint], &object->transform);
                 params = Default_ADDPART;
-                params.field_14 = 0.1f;
-                params.field_18 = 0.1f;
+                params.unknown_14 = 0.1f;
+                params.unknown_18 = 0.1f;
                 params.gravity = -5.0f;
             }
             params.matrix = &matrix;
@@ -3083,7 +3083,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
                 params.stop_fn = PartStop_Flickerer;
                 params.draw_fn = PartDraw_Flickerer;
                 params.time_step = FRAMETIME;
-                params.field_c4 = 1;
+                params.unknown_c4 = 1;
                 part = AddPart(&params);
                 if (part != NULL) {
                     part->time_remaining = ((f64)(qrand())) * PlayerRandomScale * 2.0f + 7.0f;
@@ -3093,7 +3093,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
     }
 
     if ((object->character_data->flags & 1) != 0 && VehicleArea != 0 && (object->character_data->model_flags & 0x2000) != 0 &&
-        object->character_data->game_character->field_028 > 0.0f) {
+        object->character_data->game_character->unknown_028 > 0.0f) {
         NUSPECIALHANDLE *special = CharScene_FindHSpecial(WORLD, ((i16)object->id));
         if (special != NULL) {
             ADDPART params;
@@ -3109,15 +3109,15 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             momentum.z += object->velocity.z * 0.75f;
             params.matrix = &matrix;
             params.velocity = &momentum;
-            params.field_14 = 0.8f;
-            params.field_18 = 0.4f;
+            params.unknown_14 = 0.8f;
+            params.unknown_18 = 0.4f;
             params.gravity = -10.0f;
             params.special = special;
             params.lighting_data =
                 Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting)) : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
             params.time_step = FRAMETIME;
             params.flags = mode == 0 ? 0x480 : 0x90;
-            params.field_c4 = 1;
+            params.unknown_c4 = 1;
             params.stop_fn = PartStop_Flickerer;
             params.draw_fn = PartDraw_Flickerer;
             params.impact_fn = PartImpact_Brick;

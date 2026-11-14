@@ -127,12 +127,12 @@ void GameCam_ResetLookRot(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;
     }
-    camera->field_214 = 0.0f;
+    camera->unknown_214 = 0.0f;
     camera->adjusted_yaw_offset = 0.0f;
-    camera->field_20c = 0.0f;
-    camera->field_210 = 0.0f;
-    camera->field_204 = 0.0f;
-    camera->field_208 = 0.0f;
+    camera->unknown_20c = 0.0f;
+    camera->unknown_210 = 0.0f;
+    camera->unknown_204 = 0.0f;
+    camera->unknown_208 = 0.0f;
 }
 
 void GameCam_UpdateLookRot(GAMECAMERA *camera) {
@@ -141,8 +141,8 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;
     }
-    camera->field_204 = 0.0f;
-    camera->field_208 = 0.0f;
+    camera->unknown_204 = 0.0f;
+    camera->unknown_208 = 0.0f;
     if (MiniCutCam == 0) {
         players = 0.0f;
         for (i = 0; i < 2; i++) {
@@ -181,8 +181,8 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                         y = (f32)((GAMEOBJECT *)Player[i])->pad->bound_pad->analog_left_y - 127.5f;
                         y *= 1.0f / 127.5f;
                     }
-                    camera->field_204 += (f32)((GameCamLookRotX << 16) / 360) * y;
-                    camera->field_208 += (f32)((GameCamLookRotY << 16) / 360) * x;
+                    camera->unknown_204 += (f32)((GameCamLookRotX << 16) / 360) * y;
+                    camera->unknown_208 += (f32)((GameCamLookRotY << 16) / 360) * x;
                     players += 1.0f;
                 } else if (look == 1) {
                     FRAME_PAD_PC *bound_pad = ((GAMEOBJECT *)Player[i])->pad->bound_pad;
@@ -190,22 +190,22 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                     x *= 1.0f / 127.5f;
                     y = (f32)bound_pad->analog_right_y - 127.5f;
                     y *= 1.0f / 127.5f;
-                    camera->field_204 += y * (f32)((GameCamLookRotX << 16) / 360);
-                    camera->field_208 += (f32)((GameCamLookRotY << 16) / 360) * x;
+                    camera->unknown_204 += y * (f32)((GameCamLookRotX << 16) / 360);
+                    camera->unknown_208 += (f32)((GameCamLookRotY << 16) / 360) * x;
                     players += 1.0f;
                 }
             }
             if (players > 1.0f) {
                 f32 scale = 1.0f / players;
-                camera->field_204 *= scale;
-                camera->field_208 *= scale;
+                camera->unknown_204 *= scale;
+                camera->unknown_208 *= scale;
             }
         }
     }
-    camera->field_20c = SeekLinearF(camera->field_20c, camera->field_204, (f32)((GameCamLookRotX << 16) / 360) * FRAMETIME * 2.0f);
-    camera->field_210 = SeekLinearF(camera->field_210, camera->field_208, (f32)((GameCamLookRotY << 16) / 360) * FRAMETIME * 2.0f);
-    camera->field_214 = SeekValF(camera->field_214, camera->field_20c, 3.0f);
-    camera->adjusted_yaw_offset = SeekValF(camera->adjusted_yaw_offset, camera->field_210, 3.0f);
+    camera->unknown_20c = SeekLinearF(camera->unknown_20c, camera->unknown_204, (f32)((GameCamLookRotX << 16) / 360) * FRAMETIME * 2.0f);
+    camera->unknown_210 = SeekLinearF(camera->unknown_210, camera->unknown_208, (f32)((GameCamLookRotY << 16) / 360) * FRAMETIME * 2.0f);
+    camera->unknown_214 = SeekValF(camera->unknown_214, camera->unknown_20c, 3.0f);
+    camera->adjusted_yaw_offset = SeekValF(camera->adjusted_yaw_offset, camera->unknown_210, 3.0f);
 }
 
 typedef struct PLAY_CORNER {
@@ -322,9 +322,9 @@ void GameCam_Reset(GAMECAMERA *camera) {
     camera->unknown_1b8 = 0;
     camera->unknown_1e8 = camera->unknown_1ec = 0.0f;
     camera->unknown_1f0 = camera->unknown_1f4 = 0.0f;
-    camera->adjusted_yaw_offset = camera->field_214 = 0.0f;
-    camera->field_210 = camera->field_20c = 0.0f;
-    camera->field_208 = camera->field_204 = 0.0f;
+    camera->adjusted_yaw_offset = camera->unknown_214 = 0.0f;
+    camera->unknown_210 = camera->unknown_20c = 0.0f;
+    camera->unknown_208 = camera->unknown_204 = 0.0f;
     Minicam_InitSystem();
 }
 

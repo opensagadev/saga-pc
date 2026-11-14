@@ -446,7 +446,7 @@ f32 GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
         for (i = 0; i < handle_count; ++i) {
             PlatOnOff(handles[i], 0);
         }
-        if (LAYER_HOVERIGNORE != 0xffffffffu && object->character_data->game_character->field_028 == 0.0f) {
+        if (LAYER_HOVERIGNORE != 0xffffffffu && object->character_data->game_character->unknown_028 == 0.0f) {
             mask &= (i32)~LAYER_HOVERIGNORE;
         }
     }

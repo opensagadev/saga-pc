@@ -112,20 +112,20 @@ extern "C" {
         x_extent = maximum.x - minimum.x;
         z_extent = maximum.z - minimum.z;
         if (x_extent > z_extent) {
-            spinner->field_0x094 = x_extent;
+            spinner->unknown_094 = x_extent;
         } else {
-            spinner->field_0x094 = z_extent;
+            spinner->unknown_094 = z_extent;
         }
         spinner->state_flags |= 8;
         spinner->animation_speed = 1.0f;
         spinner->type = 4;
         spinner->animation_points[0] = 1.0f;
-        spinner->field_0x08c = 0;
+        spinner->unknown_08c = 0;
         spinner->rotation = spinner->initial_rotation;
         spinner->output_count = 1;
-        spinner->field_0x09c = (f32)((f64)spinner->field_0x094 * 0.5);
-        spinner->field_0x094 = (f32)((f64)spinner->field_0x094 * (f64)0.4f);
-        spinner->field_0x098 = 0.0f;
+        spinner->unknown_09c = (f32)((f64)spinner->unknown_094 * 0.5);
+        spinner->unknown_094 = (f32)((f64)spinner->unknown_094 * (f64)0.4f);
+        spinner->unknown_098 = 0.0f;
     }
 }
 
@@ -282,7 +282,7 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
                 world->spinners[index].output_count = (u8)output_points;
                 world->spinners[index].state_flags = spinner_state_flags;
                 world->spinners[index].flags = spinner_flags;
-                world->spinners[index].field_0x098 = spinner_field_98;
+                world->spinners[index].unknown_098 = spinner_field_98;
                 world->spinners[index].flags |= 1;
                 world->spinners[index].flags &= 0xddu;
             }
@@ -520,7 +520,7 @@ static void SpinnerSeekOutput(GIZSPINNER_s *spinner, i32 output) {
     }
     f32 duration = SpinnerFabs(length / ((f64)spinner->animation_speed * rate * 60.0));
     f32 frequency = SpinnerFabs(60.0 * spinner->animation_speed * rate / length);
-    f32 difference = SpinnerFabs((f64)target - spinner->field_70);
+    f32 difference = SpinnerFabs((f64)target - spinner->unknown_70);
     if (difference < 0.001f) {
         GameAnimSet_Stop(spinner->anim_set);
         GameAnimSet_JumpToAnimPos(spinner->anim_set, target);
@@ -528,10 +528,10 @@ static void SpinnerSeekOutput(GIZSPINNER_s *spinner, i32 output) {
         rotation = rotation / length;
         rotation = rotation * (length / 100.0);
         spinner->rotation = (u16)((i32)(direction * ((f64)target * 100.0 * rotation * 65536.0 / 360.0)) + spinner->initial_rotation);
-    } else if (spinner->field_70 > target) {
+    } else if (spinner->unknown_70 > target) {
         GameAnimSet_Play(spinner->anim_set, -0.25f, 1);
         spinner->rotation -= (i32)(direction * ((f64)frequency * difference * 5461.0));
-    } else if (target > spinner->field_70) {
+    } else if (target > spinner->unknown_70) {
         GameAnimSet_Play(spinner->anim_set, 0.25f, 1);
         spinner->rotation += (i32)(direction * ((f64)frequency * difference * 5461.0));
     }
@@ -718,8 +718,8 @@ extern "C" i32 GizSpinner_GetTargetPoints(GIZSPINNER_s *spinner, NUVEC *position
         return 0;
     }
     i32 step = 65536 / spinner->type;
-    f32 y = spinner->position.y + spinner->field_0x098;
-    u16 position_angle = spinner->field_0x08c + spinner->initial_rotation + spinner->rotation + 0x8000;
+    f32 y = spinner->position.y + spinner->unknown_098;
+    u16 position_angle = spinner->unknown_08c + spinner->initial_rotation + spinner->rotation + 0x8000;
     u16 direction_angle = (flags == 0 || flags == 6) ? position_angle + 0x4000 : position_angle - 0x4000;
     i32 count = 0;
     for (; count < spinner->type; ++count) {
@@ -729,9 +729,9 @@ extern "C" i32 GizSpinner_GetTargetPoints(GIZSPINNER_s *spinner, NUVEC *position
             directions[count].z = NuTrigTable[((direction_angle + 0x4000) >> 1) & 0x7fff];
         }
         if (positions != NULL) {
-            positions[count].x = spinner->field_0x094 * NuTrigTable[position_angle >> 1] + spinner->position.x;
+            positions[count].x = spinner->unknown_094 * NuTrigTable[position_angle >> 1] + spinner->position.x;
             positions[count].y = y;
-            positions[count].z = spinner->field_0x094 * NuTrigTable[((position_angle + 0x4000) >> 1) & 0x7fff] + spinner->position.z;
+            positions[count].z = spinner->unknown_094 * NuTrigTable[((position_angle + 0x4000) >> 1) & 0x7fff] + spinner->position.z;
         }
         direction_angle += step;
         position_angle += step;
@@ -951,7 +951,7 @@ extern "C" {
         if (spinner == NULL || (spinner->state_flags & 8) != 0) {
             return;
         }
-        i32 state = GizSpinner_Spin(spinner, bolt->field_104);
+        i32 state = GizSpinner_Spin(spinner, bolt->unknown_104);
         if ((state == 2 || state == 1) && hit_flags != NULL) {
             GameAudio_PlaySfx(0x29, &bolt->position, 0, 0);
             Bolt_AddDeflectedBolt(bolt, &bolt->velocity, &bolt->hit_normal, hit_flags);
@@ -1007,13 +1007,13 @@ extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *result
             spinner->position.x > maximum.x || spinner->position.z < minimum.z || spinner->position.z > maximum.z) {
             continue;
         }
-        target_position.y = spinner->position.y + spinner->field_0x098;
+        target_position.y = spinner->position.y + spinner->unknown_098;
         u16 step = spinner->type != 0 ? (u16)(0x10000 / spinner->type) : 0x4000;
-        u16 angle = (u16)(spinner->rotation + spinner->initial_rotation + spinner->field_0x08c);
+        u16 angle = (u16)(spinner->rotation + spinner->initial_rotation + spinner->unknown_08c);
         u16 tangent_angle = (u16)(angle + 0x4000);
         for (i32 arm = 0; arm < spinner->type; ++arm, angle += step, tangent_angle += step) {
-            target_position.x = spinner->position.x + NuTrigTable[angle >> 1] * spinner->field_0x094;
-            target_position.z = spinner->position.z + NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * spinner->field_0x094;
+            target_position.x = spinner->position.x + NuTrigTable[angle >> 1] * spinner->unknown_094;
+            target_position.z = spinner->position.z + NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * spinner->unknown_094;
             NUVEC tangent;
             tangent.x = NuTrigTable[tangent_angle >> 1];
             tangent.z = NuTrigTable[((tangent_angle + 0x4000) >> 1) & 0x7fff];
@@ -1139,10 +1139,10 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
     }
     NUVEC minimum;
     NUVEC maximum;
-    minimum.x = spinner->position.x - spinner->field_0x09c;
-    maximum.x = spinner->field_0x09c + spinner->position.x;
-    minimum.z = spinner->position.z - spinner->field_0x09c;
-    maximum.z = spinner->field_0x09c + spinner->position.z;
+    minimum.x = spinner->position.x - spinner->unknown_09c;
+    maximum.x = spinner->unknown_09c + spinner->position.x;
+    minimum.z = spinner->position.z - spinner->unknown_09c;
+    maximum.z = spinner->unknown_09c + spinner->position.z;
     if ((spinner->state_flags & 0x0c) == 0) {
         GAMEOBJECT *object = Obj;
         for (i32 index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
@@ -1152,7 +1152,7 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
                 maximum.x < object->collision_min.x || minimum.z > object->collision_max.z || maximum.z < object->collision_min.z) {
                 continue;
             }
-            f32 radius = (f64)spinner->field_0x09c + 0.5 + object->bounds_radius;
+            f32 radius = (f64)spinner->unknown_09c + 0.5 + object->bounds_radius;
             f32 dx = (f64)object->position.x - spinner->position.x;
             f32 dz = (f64)object->position.z - spinner->position.z;
             f32 radius_squared = radius * radius;
@@ -1186,7 +1186,7 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
     }
     if (stopped) {
         spinner->room_index = -1;
-        spinner->field_70 = GameAnimSet_GetCompletionRatio(spinner->anim_set);
+        spinner->unknown_70 = GameAnimSet_GetCompletionRatio(spinner->anim_set);
         return;
     }
     i32 previous_state = spinner->state;
@@ -1269,7 +1269,7 @@ animation_updated:
         spinner->state_flags |= 0x2000;
     }
     spinner->room_index = -1;
-    spinner->field_70 = GameAnimSet_GetCompletionRatio(spinner->anim_set);
+    spinner->unknown_70 = GameAnimSet_GetCompletionRatio(spinner->anim_set);
 }
 
 extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused_time) {
@@ -1368,7 +1368,7 @@ extern "C" f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *spinner, NUVEC *or
     for (i32 i = 0; i < count; ++i) {
         f32 distance = NuVecDistSqr(origin, &positions[i], NULL);
         if (check_direction != 0) {
-            u16 angle = spinner->field_0x08c - (0x10000 / spinner->type) * i - spinner->rotation - spinner->initial_rotation + 0x4000;
+            u16 angle = spinner->unknown_08c - (0x10000 / spinner->type) * i - spinner->rotation - spinner->initial_rotation + 0x4000;
             NUVEC offset;
             in_front = 0;
             NuVecSub(&offset, origin, &spinner->position);

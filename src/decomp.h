@@ -557,7 +557,7 @@ extern "C" {
         u32 unknown_c;
         PC_SHADER_PARAMETER_LOCAL_PC *active_parameters;
         i32 version;
-        u32 field_18;
+        u32 unknown_18;
         PC_SHADER_PARAMETER_LOCAL_PC parameters[100];
         struct PC_TEXTURE_RESOURCE *vertex_shader;
         struct PC_TEXTURE_RESOURCE *pixel_shader;
@@ -600,7 +600,7 @@ STATIC_ASSERT(sizeof(PC_SHADER_MANAGER_VIEW) == 0x7918c);
 #ifdef __cplusplus
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, active_parameters) == 0x10);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, version) == 0x14);
-STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, field_18) == 0x18);
+STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, unknown_18) == 0x18);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) == 0x1c);
 #endif
 #undef SAGA_DECOMP_H_PART

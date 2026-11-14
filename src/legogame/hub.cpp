@@ -4251,9 +4251,9 @@ extern "C" {
                 owner->ai_packet.movement_destination = owner->position;
                 owner->ai_packet.movement_stopping_distance = 0;
                 SetSpecialMove(owner, destination, source, 7);
-                if (owner->field_1088) {
+                if (owner->unknown_1088) {
                     owner->unknown_1087 = 50;
-                    owner->field_1088 = 0;
+                    owner->unknown_1088 = 0;
                 }
                 return 1;
             }
@@ -4381,7 +4381,7 @@ extern "C" {
             ClearSpecialMove(owner);
             return 0;
         }
-        if (grapple->field_4c == 0.0f) {
+        if (grapple->unknown_4c == 0.0f) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
             ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
         } else {

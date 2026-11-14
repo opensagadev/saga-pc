@@ -540,14 +540,14 @@ void ShaderManagerHLSL::fun_007459a0(i32 flags, i32 selector, const char *vertex
 void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
     ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
     if (compiler->dictionary.profile != 4) {
-        if (uniform->field_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
+        if (uniform->unknown_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
                 PCShaderCurrentObjectPc();
             }
         }
-        if ((uniform->field_18 == 0 || uniform->field_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
+        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
             PC_SHADER_OBJECT_FULL_VIEW *bound = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
             if (bound->parameters[semantic].register_index >= 0) {
                 NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), semantic, 0, 1, values);
@@ -656,14 +656,14 @@ extern "C" void NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end) {
 void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *values) {
     ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
     if (compiler->dictionary.profile != 4) {
-        if (uniform->field_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
+        if (uniform->unknown_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
                 PCShaderCurrentObjectPc();
             }
         }
-        if ((uniform->field_18 == 0 || uniform->field_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
+        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
             PC_SHADER_OBJECT_FULL_VIEW *bound = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
             if (bound->parameters[semantic].register_index >= 0) {
                 NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), semantic, element, 1, values);
@@ -696,14 +696,14 @@ void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *value
 void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values) {
     ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
     if (compiler->dictionary.profile != 4) {
-        if (uniform->field_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
+        if (uniform->unknown_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
                 PCShaderCurrentObjectPc();
             }
         }
-        if ((uniform->field_18 == 0 || uniform->field_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
+        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
             PC_SHADER_OBJECT_FULL_VIEW *bound = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
             if (bound->parameters[semantic].register_index >= 0) {
                 NuShaderObjectSetElementsfv_transpose((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), semantic, first_element,
@@ -729,14 +729,14 @@ void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element,
 void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values) {
     ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
     if (compiler->dictionary.profile != 4) {
-        if (uniform->field_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
+        if (uniform->unknown_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
                 PCShaderCurrentObjectPc();
             }
         }
-        if ((uniform->field_18 == 0 || uniform->field_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
+        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
             PC_SHADER_OBJECT_FULL_VIEW *bound = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
             if (bound->parameters[semantic].register_index >= 0) {
                 NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), semantic, first_element, count,

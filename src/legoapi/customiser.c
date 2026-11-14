@@ -361,8 +361,8 @@ void Customiser_AddPartAccessories(CUSTOMISER_LAYERS *customiser, GAMEOBJECT *ob
             momentum.y += 1.0f;
         }
         params = Default_ADDPART;
-        params.field_14 = 0.1f;
-        params.field_18 = 0.1f;
+        params.unknown_14 = 0.1f;
+        params.unknown_18 = 0.1f;
         params.gravity = -5.0f;
         params.matrix = &object->locator_matrices[joint];
         params.velocity = &momentum;
@@ -760,7 +760,7 @@ CUSTOMISER_LAYERS *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR
             piece->unknown_indices_0a[0] = -1;
             piece->unknown_indices_0a[1] = -1;
             piece->unknown_indices_0a[2] = -1;
-            piece->field_10 = -1;
+            piece->unknown_10 = -1;
             piece->collection_type = -1;
             piece->name = names;
             piece->availability_flags = 0;

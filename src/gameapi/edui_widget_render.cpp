@@ -774,7 +774,7 @@ extern "C" {
 }
 
 static void EduiAddInteraction(f32 x, f32 y, f32 width, f32 height, eduimenu_s *menu, eduiitem_s *item, i32 (*callback)(edui_interact_s *),
-                               u32 buttons, i32 field_20) {
+                               u32 buttons, i32 unknown_20) {
     if (numInteracts < 64 && eduiInteractLocked == NULL) {
         eduiInteracts[numInteracts].x = x;
         eduiInteracts[numInteracts].y = (f32)(y * 0.5);
@@ -784,7 +784,7 @@ static void EduiAddInteraction(f32 x, f32 y, f32 width, f32 height, eduimenu_s *
         eduiInteracts[numInteracts].item = item;
         eduiInteracts[numInteracts].callback = callback;
         eduiInteracts[numInteracts].buttons = buttons;
-        eduiInteracts[numInteracts].field_20 = field_20;
+        eduiInteracts[numInteracts].unknown_20 = unknown_20;
         ++numInteracts;
     }
 }
@@ -858,7 +858,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
         EduiPrintClippedText(edui_font, (x + 1) << 4, (y << 3) + baseline, 16, x << 4, menu->width << 4, menu->title);
         y += title_height;
     }
-    eduiitem_s *item = menu->field_0c;
+    eduiitem_s *item = menu->unknown_0c;
     if (item != NULL) {
         i32 find_selected = menu->selected != NULL;
         if (item != menu->first) {
@@ -882,7 +882,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
             y += scroll_height;
         }
         while (item != NULL) {
-            menu->field_10 = item;
+            menu->unknown_10 = item;
             if (item == menu->selected) {
                 find_selected = 0;
             }
@@ -924,8 +924,8 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
             }
             break;
         }
-        if (find_selected && menu->field_0c->next != NULL) {
-            menu->field_0c = menu->field_0c->next;
+        if (find_selected && menu->unknown_0c->next != NULL) {
+            menu->unknown_0c = menu->unknown_0c->next;
         }
     }
     if ((menu->flags & 2) == 0) {
@@ -933,21 +933,21 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
     } else {
         y += max_item_height;
     }
-    menu->field_24 = x - menu->x;
-    menu->field_28 = y - menu->y;
+    menu->unknown_24 = x - menu->x;
+    menu->unknown_28 = y - menu->y;
     if (active_menu == menu) {
         if (edui_donotdraw == 0) {
-            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->field_24 + 2) << 4, (menu->field_28 << 3) + 16,
+            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->unknown_24 + 2) << 4, (menu->unknown_28 << 3) + 16,
                               eduimenu_selected_outline_colour, (NUMTL *)uimtls[EduiSelectionMaterial]);
         }
     } else {
         if (edui_donotdraw == 0) {
-            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->field_24 + 2) << 4, (menu->field_28 << 3) + 16,
+            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->unknown_24 + 2) << 4, (menu->unknown_28 << 3) + 16,
                               eduimenu_outline_colour, (NUMTL *)uimtls[EduiSelectionMaterial]);
         }
     }
     if (menu->child != NULL) {
-        EduiAddInteraction((f32)menu->x, (f32)menu->y, (f32)menu->field_24, (f32)menu->field_28, menu, NULL, cbInteractMenuCancelChild,
+        EduiAddInteraction((f32)menu->x, (f32)menu->y, (f32)menu->unknown_24, (f32)menu->unknown_28, menu, NULL, cbInteractMenuCancelChild,
                            0x40, 1);
         eduiMenuRender(menu->child);
     }
@@ -1105,9 +1105,9 @@ extern "C" void CreateColourPicker(void) {
         item->previous = colourmenu->last;
         item->next = NULL;
         colourmenu->last = item;
-        colourmenu->field_0c = colourmenu->first;
+        colourmenu->unknown_0c = colourmenu->first;
         edui_last_item = item;
-        colourmenu->field_10 = NULL;
+        colourmenu->unknown_10 = NULL;
         cp_item = (edui_colour_pick_s *)item;
         cp_process = item->process;
         item->process = cbProcessColourPick;
@@ -1120,9 +1120,9 @@ extern "C" void CreateColourPicker(void) {
         item->previous = colourmenu->last;
         item->next = NULL;
         colourmenu->last = item;
-        colourmenu->field_0c = colourmenu->first;
+        colourmenu->unknown_0c = colourmenu->first;
         edui_last_item = item;
-        colourmenu->field_10 = NULL;
+        colourmenu->unknown_10 = NULL;
         cp_info = item;
         item = eduiItemSelCreate(1, colours, 0, 0, cbCopy, "Copy To Clipboard");
         if (colourmenu->last != NULL) {
@@ -1133,9 +1133,9 @@ extern "C" void CreateColourPicker(void) {
         item->previous = colourmenu->last;
         item->next = NULL;
         colourmenu->last = item;
-        colourmenu->field_0c = colourmenu->first;
+        colourmenu->unknown_0c = colourmenu->first;
         edui_last_item = item;
-        colourmenu->field_10 = NULL;
+        colourmenu->unknown_10 = NULL;
         cp_copy = item;
         item = eduiItemSelCreate(1, colours, 0, 0, cbPaste, "Paste From Clipboard");
         if (colourmenu->last != NULL) {
@@ -1146,9 +1146,9 @@ extern "C" void CreateColourPicker(void) {
         item->previous = colourmenu->last;
         item->next = NULL;
         colourmenu->last = item;
-        colourmenu->field_0c = colourmenu->first;
+        colourmenu->unknown_0c = colourmenu->first;
         edui_last_item = item;
-        colourmenu->field_10 = NULL;
+        colourmenu->unknown_10 = NULL;
         cp_paste = item;
     }
 }

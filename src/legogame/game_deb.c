@@ -7,20 +7,20 @@ STATIC_ASSERT(sizeof(STARTUP_OBJECT_LIGHT) == sizeof(GAMEOBJECT));
 typedef struct BURN_SET {            // size 0x564
     BURN_PARAMETERS parameters;      // 0x000
     BURN_PARAMETERS parameters_copy; // 0x054
-    i32 field_a8;                    // 0x0a8
+    i32 unknown_a8;                  // 0x0a8
     i32 field_ac;                    // 0x0ac
-    i32 field_b0;                    // 0x0b0
-    i32 field_b4;                    // 0x0b4
-    f32 field_b8;                    // 0x0b8
+    i32 unknown_b0;                  // 0x0b0
+    i32 unknown_b4;                  // 0x0b4
+    f32 unknown_b8;                  // 0x0b8
     f32 field_bc;                    // 0x0bc
     f32 unknown_c0;                  // 0x0c0
-    f32 field_c4;                    // 0x0c4
+    f32 unknown_c4;                  // 0x0c4
     f32 unknown_c8;                  // 0x0c8
     f32 field_cc;                    // 0x0cc
     BURN_OUT burnouts[32];           // 0x0d0
     i32 active_count;                // 0x550
     i32 selected_index;              // 0x554
-    f32 field_558;                   // 0x558
+    f32 unknown_558;                 // 0x558
     f32 unknown_55c;                 // 0x55c
     i32 unknown_560;                 // 0x560
 } BURN_SET;
@@ -191,7 +191,7 @@ void AddSlamDebris(GAMEOBJECT *object) {
     }
     explosion = AddExplosion(&position, radius, strength, object, object->slam_effect, flags);
     if (explosion != NULL) {
-        explosion->field_0x32 = damage;
+        explosion->unknown_32 = damage;
     }
 }
 
@@ -232,18 +232,18 @@ void BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 unused_x,
 void BurnoutApply(i32 view) {
     BURN_PARAMETERS parameters;
     NUVEC average;
-    parameters.field_00 = 0;
-    memset(&parameters.field_04, 0, 0x50);
+    parameters.unknown_00 = 0;
+    memset(&parameters.unknown_04, 0, 0x50);
     if ((CutStopInfo == NULL || (((BURNOUT_CUT_PREFIX *)CutStopInfo)->flags & 0x80) == 0) && WORLD->page_unknown != 0) {
         edrtlCalculateBurnoutEx((BURN_SET *)WORLD->page_unknown, &parameters, (NUVEC *)&global_camera.mtx.m30, FRAMETIME);
     }
-    if (parameters.field_14 > 0.0f) {
+    if (parameters.unknown_14 > 0.0f) {
         NuRndrSetBurnoutParameters(view, &parameters);
     }
     if ((Players_AveragePos(&average, NULL) != 0 || netclient != 0) && PCShadowCurrentLight->enabled != 0) {
-        NuRndrSetShadowCoefficient(0, WORLD->shadow_editor->field_24);
-        NuRndrSetShadowCoefficient(1, WORLD->shadow_editor->field_28);
-        NuRndrSetShadowCoefficient(2, WORLD->shadow_editor->field_2c);
+        NuRndrSetShadowCoefficient(0, WORLD->shadow_editor->unknown_24);
+        NuRndrSetShadowCoefficient(1, WORLD->shadow_editor->unknown_28);
+        NuRndrSetShadowCoefficient(2, WORLD->shadow_editor->unknown_2c);
         NuDeferredShadingRender();
     }
 }

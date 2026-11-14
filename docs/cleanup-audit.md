@@ -84,7 +84,7 @@ dropping it is codegen-neutral cosmetics and low priority.
 | `assert-offsetof-header` | 4,714 | 2 | saga.h 4,698, pc_fmv_native.h 16 | see section 6 |
 | `assert-offsetof-unit` | 6,609 | 203 | nu3d_includes.cpp 384, players.c 368, aisysall.c 328, nu3d_platform.cpp 286 | block (overlay scaffolding) |
 | `assert-sizeof` | 1,804 | 180 | saga.h 751, nu3d_includes.cpp 74, edlevelall.cpp 55 | see section 6 |
-| `placeholder-field` (`field_0x14`, `unknown_102`, `pad_`) | 9,785 | 232 | saga.h 1,689, move.c 737, rtl.c 531 | block (naming; neutral) |
+| `placeholder-field` (`unknown_14`, `unknown_102`, `pad_`) | 9,785 | 232 | saga.h 1,689, move.c 737, rtl.c 531 | block (naming; neutral) |
 | `hex-name` (`dat_008808e4`, `FUN_`, `data_0x`) | 12,063 | 110 | data.cpp 8,105, text_tables.cpp 1,482, ai_registry_pc.c 717, saga.h 335 | block (naming; neutral) |
 | `candidate-name` (`_candidate`) | 439 | 63 | nu3d_includes.cpp 45, saga.h 41, nu3d_platform.cpp 31 | block (naming; neutral) |
 | `pc-suffix` (accepted, count only) | 52,581 | 323 | saga.h 8,981 | ok |
@@ -175,7 +175,7 @@ The 20 most-used resolved fields (the pilot batch, section 8):
 | 3 | `characterdata_s.model_flags` | u32 | flags | 258 | 26 | - |
 | 4 | `gameobject_s.flags_e20` | u32 | flags | 248 | 32 | - |
 | 5 | `gameobject_s.flags_1fc` | u8 | flags | 239 | 4 | - |
-| 6 | `STATUS_STAGE_s.field_0x14` | i32 | enum | 207 | 10 | - |
+| 6 | `STATUS_STAGE_s.unknown_14` | i32 | enum | 207 | 10 | - |
 | 7 | `gameobject_s.unknown_7aa` | i16 | enum | 206 | 104 | 78 named uses (animation ids) |
 | 8 | `gameobject_s.context_variant_flags` | u32 | flags | 206 | 18 | - |
 | 9 | `gameobject_s.flags_1f8` | u32 | flags | 175 | 15 | - |
@@ -212,7 +212,7 @@ their owners are typed.
    across 143 files, 60 of them with different bodies; 168 repeated macros, 16
    conflicting (`NU_SIN_LUT`/`NU_COS_LUT` cause C4005 in three units).
 5. **Address and placeholder names**: 12,063 address-named identifiers (8,105 in
-   data.cpp), 9,785 `field_0x14`/`unknown_102` fields, 439 `_candidate` names.
+   data.cpp), 9,785 `unknown_14`/`unknown_102` fields, 439 `_candidate` names.
 6. **Magic numbers**: 17,282 state, flag and mask literals; 585 fields are enum
    or flag candidates, and the top 20 fields alone carry 4,281 literal uses.
 7. **Inlining steered by hand**: 367 `__declspec(noinline)`, 36

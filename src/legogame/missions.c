@@ -6,7 +6,7 @@ typedef struct MENU_INPUT_PAD_PC {
     u32 pressed;
     u32 alternate_held;
     u32 alternate_pressed;
-    u8 unknown14[0x4c];
+    u8 unknown_14[0x4c];
 } MENU_INPUT_PAD_PC;
 
 typedef struct MISSION_SYSTEM_READER {

@@ -14,15 +14,15 @@ extern "C" {
 }
 
 struct EXTRAS_AREA_SAVE_READER { // size 0xc
-    u8 unknown0[6];              // 0x0
+    u8 unknown_0[6];             // 0x0
     u8 red_brick_unlocked;       // 0x6
-    u8 unknown7[5];              // 0x7
+    u8 unknown_7[5];             // 0x7
 };
 
 struct EXTRAS_SAVE_READER {            // size 0x7c08
-    u8 unknown0[0x782c];               // 0x0000
+    u8 unknown_0[0x782c];              // 0x0000
     EXTRAS_AREA_SAVE_READER areas[72]; // 0x782c
-    u8 unknown7b8c[0x74];              // 0x7b8c
+    u8 unknown_7b8c[0x74];             // 0x7b8c
     u32 unlocked[2];                   // 0x7c00
 };
 
@@ -94,7 +94,7 @@ typedef struct MENU_INPUT_PAD_PC {
     u32 pressed;
     u32 alternate_held;
     u32 alternate_pressed;
-    u8 unknown14[0x4c];
+    u8 unknown_14[0x4c];
 } MENU_INPUT_PAD_PC;
 
 extern "C" {

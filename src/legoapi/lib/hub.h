@@ -49,7 +49,7 @@ typedef struct FADEINFO { // size 0x2c
     i32 stage;            // 0x10
     FadeBase *fades[4];   // 0x14
     i32 pending_type;     // 0x24
-    i32 field_28;         // 0x28
+    i32 unknown_28;       // 0x28
 } FADEINFO;
 
 #ifdef __cplusplus

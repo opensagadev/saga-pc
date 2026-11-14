@@ -87,7 +87,7 @@ extern i32 complexsockposition_forcesock;
     (target)->ai->flags ^= ((source)->ai->flags ^ (target)->ai->flags) & 0x8000
 
 typedef struct OPPONENT_PACKET_PC {
-    u8 unknown000[0xd4];
+    u8 unknown_000[0xd4];
     APIOBJECT *nearest_opponent_object;
     f32 nearest_opponent_metric;
     APIOBJECT *pending_nearest_opponent;
@@ -96,12 +96,12 @@ typedef struct OPPONENT_PACKET_PC {
     f32 opponent_metric;
     APIOBJECT *pending_opponent;
     f32 pending_opponent_metric;
-    u8 unknown0f4[0xf4];
+    u8 unknown_0f4[0xf4];
     u32 flags;
 } OPPONENT_PACKET_PC;
 
 typedef struct OPPONENT_GAME_PC {
-    u8 unknown000[0xeb0];
+    u8 unknown_000[0xeb0];
     u64 seen;
     u64 exclusion;
     APIOBJECT *alert_target;
@@ -2284,8 +2284,8 @@ void GameAIProcess(void) {
             object->can_use_object = NULL;
             object->unknown_f00 = 0;
         }
-        if (object->field_1088 != 0) {
-            --object->field_1088;
+        if (object->unknown_1088 != 0) {
+            --object->unknown_1088;
         }
         if ((object->ai_packet.flags & 0x4000) != 0) {
             object->ai_visibility_extension = draw_attention_distance;
@@ -2620,7 +2620,7 @@ void GameAIProcess(void) {
             defend = 0;
             if ((object->combat_flags & 0x80) != 0 && (APIOBJECT *)object->ai_packet.opponent != NULL) {
                 bolt = BoltType_FindByID(0, WORLD);
-                if (bolt->field_10 * bolt->field_14 > object->ai_packet.opponent_metric) {
+                if (bolt->unknown_10 * bolt->unknown_14 > object->ai_packet.opponent_metric) {
                     NuVecSub(&direction, &object->ai_packet.opponent->collision_position, &object->collision_position);
                     scale = object->ai_packet.opponent_metric == 0.0f ? 0.0f : 1.0f / object->ai_packet.opponent_metric;
                     NuVecScale(&direction, &direction, scale);

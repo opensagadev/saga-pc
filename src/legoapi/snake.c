@@ -202,8 +202,8 @@ void SnakeBeenHit(GAMEOBJECT *object) {
             params = Default_ADDPART;
             params.matrix = &matrix;
             params.velocity = &momentum;
-            params.field_14 = 0.1f;
-            params.field_18 = 0.1f;
+            params.unknown_14 = 0.1f;
+            params.unknown_18 = 0.1f;
             params.gravity = -5.0f;
             params.special = special;
             params.time_step = FRAMETIME;
@@ -258,8 +258,8 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
             params = Default_ADDPART;
             params.matrix = &matrix;
             params.velocity = &momentum;
-            params.field_14 = 0.1f;
-            params.field_18 = 0.1f;
+            params.unknown_14 = 0.1f;
+            params.unknown_18 = 0.1f;
             params.gravity = -5.0f;
             params.special = special;
             params.time_step = FRAMETIME;

@@ -179,7 +179,7 @@ struct CUSTOMPIECE {       // size 0x28
         struct {                       // size 0xa
             i16 weapon_model;          // 0x08
             i16 unknown_indices_0a[3]; // 0x0a
-            i8 field_0x10;             // 0x10
+            i8 unknown_10;             // 0x10
             i8 collection_type;        // 0x11
         };
     }; // 0x08
@@ -237,20 +237,20 @@ struct PLAYERPACKET_s {                             // size 0x798
     NUVEC reset_up_direction;                       // 0x5d4
     struct GAMEPAD_PC *gamepad;                     // 0x5e0
     u8 pad_5e4[32];                                 // 0x5e4
-    void *field_0x604;                              // 0x604
+    void *unknown_604;                              // 0x604
     u8 pad_608[4];                                  // 0x608
     struct gameobject_s *linked_object;             // 0x60c
     u8 pad_610[4];                                  // 0x610
-    u32 field_0x614;                                // 0x614
+    u32 unknown_614;                                // 0x614
     u32 unknown_618;                                // 0x618
-    u32 field_0x61c;                                // 0x61c
+    u32 unknown_61c;                                // 0x61c
     u32 unknown_620;                                // 0x620
     u32 unknown_624;                                // 0x624
     u32 unknown_628;                                // 0x628
     u32 unknown_62c;                                // 0x62c
     u32 unknown_630;                                // 0x630
     u8 pad_634[20];                                 // 0x634
-    u32 field_0x648;                                // 0x648
+    u32 unknown_648;                                // 0x648
     u8 pad_64c[8];                                  // 0x64c
 
     union { // size 0x4
@@ -265,47 +265,47 @@ struct PLAYERPACKET_s {                             // size 0x798
 
     u8 pad_65c[4];            // 0x65c
     u32 input_state;          // 0x660
-    u32 field_0x664;          // 0x664
-    u32 field_0x668;          // 0x668
+    u32 unknown_664;          // 0x664
+    u32 unknown_668;          // 0x668
     u8 pad_66c[4];            // 0x66c
-    u32 field_0x670;          // 0x670
-    u32 field_0x674;          // 0x674
+    u32 unknown_670;          // 0x670
+    u32 unknown_674;          // 0x674
     u32 unknown_678;          // 0x678
     f32 context_blend;        // 0x67c
     f32 context_distance;     // 0x680
     u8 pad_684[4];            // 0x684
-    u32 field_0x688;          // 0x688
+    u32 unknown_688;          // 0x688
     f32 delayed_turn_timer;   // 0x68c
-    u32 field_0x690;          // 0x690
-    u32 field_0x694;          // 0x694
+    u32 unknown_690;          // 0x690
+    u32 unknown_694;          // 0x694
     u8 pad_698[4];            // 0x698
-    u32 field_0x69c;          // 0x69c
+    u32 unknown_69c;          // 0x69c
     u32 unknown_6a0;          // 0x6a0
     u32 unknown_6a4;          // 0x6a4
     u8 pad_6a8[32];           // 0x6a8
-    u32 field_0x6c8;          // 0x6c8
+    u32 unknown_6c8;          // 0x6c8
     f32 force_glow_x;         // 0x6cc
     f32 force_glow_y;         // 0x6d0
     f32 force_glow_intensity; // 0x6d4
     u8 pad_6d8[4];            // 0x6d8
     f32 force_glow_z;         // 0x6dc
-    u32 field_0x6e0;          // 0x6e0
+    u32 unknown_6e0;          // 0x6e0
     u8 pad_6e4[4];            // 0x6e4
-    u32 field_0x6e8;          // 0x6e8
+    u32 unknown_6e8;          // 0x6e8
     f32 ground_height;        // 0x6ec
     u8 pad_6f0[8];            // 0x6f0
     u32 unknown_6f8;          // 0x6f8
     u32 unknown_6fc;          // 0x6fc
     u8 pad_700[16];           // 0x700
-    u32 field_0x710;          // 0x710
+    u32 unknown_710;          // 0x710
     u8 pad_714[4];            // 0x714
-    u32 field_0x718;          // 0x718
-    u32 field_0x71c;          // 0x71c
-    u32 field_0x720;          // 0x720
-    u32 field_0x724;          // 0x724
-    u32 field_0x728;          // 0x728
+    u32 unknown_718;          // 0x718
+    u32 unknown_71c;          // 0x71c
+    u32 unknown_720;          // 0x720
+    u32 unknown_724;          // 0x724
+    u32 unknown_728;          // 0x728
     u8 pad_72c[4];            // 0x72c
-    u32 field_0x730;          // 0x730
+    u32 unknown_730;          // 0x730
     u32 unknown_734;          // 0x734
     u8 pad_738[4];            // 0x738
     u32 unknown_73c;          // 0x73c
@@ -352,25 +352,25 @@ struct HINT_s {              // size 0x24
 
     void (*on_display)(struct HINT_s *arg0); // 0x18
     u8 completion_flags[4];                  // 0x1c
-    f32 field_0x20;                          // 0x20
+    f32 unknown_20;                          // 0x20
 };
 
 struct AREA_GLOBAL_VALUES { // size 0x34
-    i32 field_0x00;         // 0x00
-    i32 field_0x04;         // 0x04
-    i32 field_0x08;         // 0x08
-    i32 field_0x0c;         // 0x0c
-    i32 field_0x10;         // 0x10
-    i32 field_0x14;         // 0x14
-    i32 field_0x18;         // 0x18
-    i32 field_0x1c;         // 0x1c
-    i32 field_0x20;         // 0x20
+    i32 unknown_00;         // 0x00
+    i32 unknown_04;         // 0x04
+    i32 unknown_08;         // 0x08
+    i32 unknown_0c;         // 0x0c
+    i32 unknown_10;         // 0x10
+    i32 unknown_14;         // 0x14
+    i32 unknown_18;         // 0x18
+    i32 unknown_1c;         // 0x1c
+    i32 unknown_20;         // 0x20
 
     union { // size 0x8
 
         struct {            // size 0x8
-            i32 field_0x24; // 0x24
-            i32 field_0x28; // 0x28
+            i32 unknown_24; // 0x24
+            i32 unknown_28; // 0x28
         };
 
         u32 arcade_player_kills[2];
@@ -379,8 +379,8 @@ struct AREA_GLOBAL_VALUES { // size 0x34
     union { // size 0x8
 
         struct {            // size 0x8
-            i32 field_0x2c; // 0x2c
-            i32 field_0x30; // 0x30
+            i32 unknown_2c; // 0x2c
+            i32 unknown_30; // 0x30
         };
 
         u32 arcade_ai_kills[2];
@@ -491,13 +491,13 @@ struct LEVEL_PROGRESS_s {              // size 0x2e24
 };
 
 struct RUMBLEPACKET {  // size 0x14
-    u32 field_0x00;    // 0x00
+    u32 unknown_00;    // 0x00
     f32 rumble_amount; // 0x04
-    u32 field_0x08;    // 0x08
+    u32 unknown_08;    // 0x08
     f32 rumble_time;   // 0x0c
 
     union { // size 0x4
-        u32 field_0x10;
+        u32 unknown_10;
 
         struct {          // size 0x4
             u8 active;    // 0x10
@@ -514,7 +514,7 @@ struct PARTLIGHTSOURCE_s { // size 0xcc
 struct PLAYERITEM_s {              // size 0x8
     struct PLAYERITEMTYPE_s *type; // 0x0
     u8 ammunition;                 // 0x4
-    u8 field_0x5;                  // 0x5
+    u8 unknown_5;                  // 0x5
     u8 reserved[2];                // 0x6
 };
 
@@ -604,13 +604,13 @@ struct SOCKSYS {         // size 0x8
 };
 
 struct PLAYERSUBOBJ2_s { // size 0x20
-    char pad_0x00[28];   // 0x00
+    char pad_00[28];     // 0x00
     f32 value;           // 0x1c
 };
 
 struct PLAYERSUBOBJ_s { // size 0x28
-    char pad_0x00[36];  // 0x00
-    void *field_0x24;   // 0x24
+    char pad_00[36];    // 0x00
+    void *unknown_24;   // 0x24
 };
 
 struct instNUGCUTRIGID_s {  // size 0x10
@@ -641,7 +641,7 @@ struct CLIMBOBJECT_s {            // size 0x20
     struct AIPATHCNX *connection; // 0x14
     struct AIPATH *path;          // 0x18
     u8 flags;                     // 0x1c
-    u8 field_0x1d[3];             // 0x1d
+    u8 unknown_1d[3];             // 0x1d
 };
 
 struct NuPlatform {          // size 0x10

@@ -51,16 +51,16 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_set)
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_index) == 0x400);
 
 typedef struct ai_force_fields_s { // size 0xa4
-    u8 unknown000[0x1c];           // 0x00
+    u8 unknown_000[0x1c];          // 0x00
     NUVEC position;                // 0x1c
-    u8 unknown028[0x74 - 0x28];    // 0x28
+    u8 unknown_028[0x74 - 0x28];   // 0x28
     u32 config_flags;              // 0x74
-    u8 unknown078[0xa0 - 0x78];    // 0x78
+    u8 unknown_078[0xa0 - 0x78];   // 0x78
     u32 runtime_flags;             // 0xa0
 } AI_FORCE_FIELDS;
 
 typedef struct ai_force_object_s { // size 0x10d0
-    u8 unknown000[0x10cc];         // 0x0000
+    u8 unknown_000[0x10cc];        // 0x0000
     GIZFORCE_PC *force;            // 0x10cc
 } AI_FORCE_OBJECT;
 
@@ -115,7 +115,7 @@ typedef struct ai_cable_head_s { // size 0x8
 } AI_CABLE_HEAD;
 
 typedef struct ai_cable_object_s { // size 0x1044
-    u8 unknown000[0x1040];         // 0x0000
+    u8 unknown_000[0x1040];        // 0x0000
     CABLE_RECORD *cable;           // 0x1040
 } AI_CABLE_OBJECT;
 
@@ -960,7 +960,7 @@ f32 Condition_OnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACK
         return 0.0f;
     }
     object = packet->owner->objptr;
-    if (object->unknown_281 == 0 && object->field_282 == 0) {
+    if (object->unknown_281 == 0 && object->unknown_282 == 0) {
         return 0.0f;
     }
     platform_id = object->supporting_platform_id;
@@ -991,7 +991,7 @@ f32 Condition_PlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, 
         return 0.0f;
     }
     object = player;
-    if (object == NULL || (object->unknown_281 == 0 && object->field_282 == 0)) {
+    if (object == NULL || (object->unknown_281 == 0 && object->unknown_282 == 0)) {
         return 0.0f;
     }
     platform_id = object->supporting_platform_id;
@@ -1025,14 +1025,14 @@ f32 Condition_EitherPlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *pro
         if (first != NULL) {
             terrain = CurrentTerrain;
             eligible = 0;
-            if (first->unknown_281 != 0 || first->field_282 != 0) {
+            if (first->unknown_281 != 0 || first->unknown_282 != 0) {
                 platform_id = first->supporting_platform_id;
                 if (platform_id != -1 && (f64)first->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31) {
                     eligible = 1;
                 }
             }
             second = player2;
-            if (second != NULL && (second->unknown_281 != 0 || second->field_282 != 0)) {
+            if (second != NULL && (second->unknown_281 != 0 || second->unknown_282 != 0)) {
                 platform_id = second->supporting_platform_id;
                 if (platform_id != -1 && (f64)second->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31) {
                     eligible |= 2;
@@ -1267,7 +1267,7 @@ f32 Condition_OffScreenTimer(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKE
 }
 
 f32 Condition_PlayerOnGround(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (player != NULL && (player->unknown_281 != 0 || player->field_282 != 0)) {
+    if (player != NULL && (player->unknown_281 != 0 || player->unknown_282 != 0)) {
         return 1.0f;
     }
     return 0.0f;
@@ -1277,7 +1277,7 @@ f32 Condition_OnGround(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *pac
     GAMEOBJECT *object;
     if (packet != NULL && packet->owner != NULL) {
         object = packet->owner->objptr;
-        if (object != NULL && (object->unknown_281 != 0 || object->field_282 != 0)) {
+        if (object != NULL && (object->unknown_281 != 0 || object->unknown_282 != 0)) {
             return 1.0f;
         }
     }
@@ -1306,7 +1306,7 @@ void *Condition_OnObjectInit(AISYS_PC *system, char *name, AISCRIPT *script) {
 
 f32 Condition_PlayerOnObject(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     i32 platform = (i32)argument;
-    if (player != NULL && platform != -1 && (player->unknown_281 != 0 || player->field_282 != 0) &&
+    if (player != NULL && platform != -1 && (player->unknown_281 != 0 || player->unknown_282 != 0) &&
         player->supporting_platform_id == platform) {
         NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[player->supporting_platform_id].scene_object;
         if (player->position.y >= transform->m31) {
@@ -1319,14 +1319,14 @@ f32 Condition_PlayerOnObject(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKE
 f32 Condition_EitherPlayerOnObject(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     i32 platform = (i32)argument;
 
-    if (player != NULL && platform != -1 && (player->unknown_281 != 0 || player->field_282 != 0) &&
+    if (player != NULL && platform != -1 && (player->unknown_281 != 0 || player->unknown_282 != 0) &&
         player->supporting_platform_id == platform) {
         NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[player->supporting_platform_id].scene_object;
         if (player->position.y >= transform->m31) {
             return 1.0f;
         }
     }
-    if (player2 != NULL && platform != -1 && (player2->unknown_281 != 0 || player2->field_282 != 0) &&
+    if (player2 != NULL && platform != -1 && (player2->unknown_281 != 0 || player2->unknown_282 != 0) &&
         player2->supporting_platform_id == platform) {
         NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[player2->supporting_platform_id].scene_object;
         if (player2->position.y >= transform->m31) {
@@ -1366,7 +1366,7 @@ f32 Condition_OnObject(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *pac
     if (packet != NULL && packet->owner != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
         i32 platform = (i32)argument;
-        if (object != NULL && platform != -1 && (object->unknown_281 != 0 || object->field_282 != 0) &&
+        if (object != NULL && platform != -1 && (object->unknown_281 != 0 || object->unknown_282 != 0) &&
             object->supporting_platform_id == platform) {
             NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[object->supporting_platform_id].scene_object;
             if (object->position.y >= transform->m31) {
@@ -1380,7 +1380,7 @@ f32 Condition_OnObject(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *pac
 f32 Condition_OnSameObjectAsPlayer(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL && player != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
-        if ((object->unknown_281 != 0 || object->field_282 != 0) && (player->unknown_281 != 0 || player->field_282 != 0) &&
+        if ((object->unknown_281 != 0 || object->unknown_282 != 0) && (player->unknown_281 != 0 || player->unknown_282 != 0) &&
             object->supporting_platform_id != -1 && object->supporting_platform_id == player->supporting_platform_id) {
             return 1.0f;
         }
@@ -6218,7 +6218,7 @@ i32 Action_AddPart(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packe
                             GameDeflectPartGravity);
             NuMtxSetTranslation(&matrix, &position);
             part = Default_ADDPART;
-            part.field_18 = part.field_14 = 0.1f;
+            part.unknown_18 = part.unknown_14 = 0.1f;
             part.gravity = GameDeflectPartGravity;
             part.time_step = FRAMETIME;
             part.matrix = &matrix;
@@ -6285,7 +6285,7 @@ void GuidedMissile_Move(PART_PC *part, f32 time) {
     GAMEOBJECT *recipient = part->recipient;
     f32 rotate_speed;
     if (part->scale_time > guided_life) {
-        part->field_124[3] = (i32)SeekValF((f32)part->field_124[3], 0.0f, 2.0f);
+        part->unknown_124[3] = (i32)SeekValF((f32)part->unknown_124[3], 0.0f, 2.0f);
     } else if (recipient != NULL && part->scale_time > guided_start_time) {
         NUVEC direction;
         i32 yaw;
@@ -6297,11 +6297,11 @@ void GuidedMissile_Move(PART_PC *part, f32 time) {
         pitch = -NuAtan2D(direction.y, direction.z);
         part->rotation_x = SeekRot(part->rotation_x, (u16)pitch, 1.0f);
         part->rotation_y = SeekRot(part->rotation_y, (u16)yaw, 3.0f);
-        part->field_124[3] = guided_rotate_speed;
+        part->unknown_124[3] = guided_rotate_speed;
     } else {
-        part->field_124[3] = guided_rotate_speed;
+        part->unknown_124[3] = guided_rotate_speed;
     }
-    rotate_speed = (f32)part->field_124[3];
+    rotate_speed = (f32)part->unknown_124[3];
     part->rotation_z += (i32)(rotate_speed * FRAMETIME);
     part->velocity.x = 0.0f;
     part->velocity.y = 0.0f;
@@ -6386,10 +6386,10 @@ i32 Action_LaunchGuidedMissile(AISYS_PC *system, AISCRIPTPROCESS *processor, AIP
             part = Default_ADDPART;
             part.matrix = &matrix;
             part.velocity = &direction;
-            NuSpecialGetRadius(&WORLD->level_objects[232].special, &centre, &part.field_14);
+            NuSpecialGetRadius(&WORLD->level_objects[232].special, &centre, &part.unknown_14);
             part.part_id = 232;
-            part.field_14 *= test_missile_scale;
-            part.field_18 = part.field_14;
+            part.unknown_14 *= test_missile_scale;
+            part.unknown_18 = part.unknown_14;
             part.special = &WORLD->level_objects[232].special;
             part.time_step = FRAMETIME;
             part.gravity = 0.0f;
@@ -9740,7 +9740,7 @@ i32 Action_HelpWithTriggers(AISYS_PC *unused0, AISCRIPTPROCESS *processor, AIPAC
             if (object->character_context == LEGOCONTEXT_GRAPPLE && object->grapple == grapple) {
                 GAMEOBJECT *found;
                 i32 i;
-                object->field_1088 = 5;
+                object->unknown_1088 = 5;
                 GameObjectSetCanUse(object, grapple, 1, 50, 0.0f);
                 ClearSpecialMove(object);
                 found = NULL;

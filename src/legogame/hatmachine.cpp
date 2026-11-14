@@ -125,8 +125,8 @@ extern "C" i16 id_PRINCESSLEIABOUSHH;
 
 extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 special_pressed) {
     HATMACHINE *machine = (HATMACHINE *)object->grapple;
-    if (object->field_db0 > 0.0f) {
-        object->field_db0 -= FRAMETIME;
+    if (object->unknown_db0 > 0.0f) {
+        object->unknown_db0 -= FRAMETIME;
     }
     if (object->character_context != 0x61 || machine == NULL) {
         if (object->character_model->model_data_b[0x5d] == NULL || object->unknown_281 == 0 || ObjLandReady(object) == 0) {
@@ -173,12 +173,12 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             if (object->context_timer <= 0.0f) {
                 object->context_timer = 2.0f;
             }
-            object->field_db0 = 0.0f;
+            object->unknown_db0 = 0.0f;
             return;
         }
-        if ((object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & 0x20) != 0 && object->field_db0 <= 0.0f) {
+        if ((object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & 0x20) != 0 && object->unknown_db0 <= 0.0f) {
             PlaySfx("TC14_VLN", &object->collision_position);
-            object->field_db0 = 0.5f;
+            object->unknown_db0 = 0.5f;
         }
         return;
     }

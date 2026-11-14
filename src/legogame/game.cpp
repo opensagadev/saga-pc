@@ -197,7 +197,7 @@ GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, flags_word) == 0xb0);
 GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, status_flags) == 0xb4);
 GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, stage) == 0x124);
 GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, type) == 0xc);
-GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, field_0x18) == 0x18);
+GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, unknown_18) == 0x18);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
 GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
@@ -1029,8 +1029,8 @@ static void BackDrop_Alpha(f32 *alpha) {
         }
         if ((WORLD->current_level->flags & 0x400) != 0 && StatusPacket.status_flags != 0 && StatusPacket.stage->type == 12 &&
             (StatusPacket.flags_word & 0x1000) == 0) {
-            if (StatusPacket.stage->field_0x18 < 0.5f) {
-                *alpha = 1.0f - StatusPacket.stage->field_0x18 * 2.0f;
+            if (StatusPacket.stage->unknown_18 < 0.5f) {
+                *alpha = 1.0f - StatusPacket.stage->unknown_18 * 2.0f;
             } else {
                 *alpha = 0.0f;
             }
@@ -1528,7 +1528,7 @@ extern "C" void InitChallenge(i32 area) {
     ChallengeMode = 1;
     ResetTimer(&ChallengeTimer, 0);
     Cheats_TurnOff(0);
-    AreaGlobals.field_1c = 0;
+    AreaGlobals.unknown_1c = 0;
 }
 
 extern "C" void MenuUpdateEndChallenge(MENU *menu) {
@@ -1564,7 +1564,7 @@ extern "C" {
                 }
                 SmartText(TTab[dat_008806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
             }
-            DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobals.field_20, 10);
+            DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobals.unknown_20, 10);
         }
     }
 
@@ -1614,7 +1614,7 @@ extern "C" void InitGameMode(void) {
     AveragePlayerCurrentSpeedMul();
     SetPlayer();
     AreaGlobals.progress_flags = WORLD->area != NULL ? AreaGlobals.area_phase : 0;
-    AreaGlobals.field_20 = AreaGlobals.field_1c;
+    AreaGlobals.unknown_20 = AreaGlobals.unknown_1c;
     NewLData = NULL;
     NewMode = 0;
     for (i = 0; i < 2; ++i) {
@@ -1924,7 +1924,7 @@ extern "C" {
         i32 type = part->part_id;
         GAMEOBJECT *owner = part->owner;
         NUSPECIALHANDLE *special = part->source_special;
-        f32 radius = part->field_e4;
+        f32 radius = part->unknown_e4;
         NUVEC velocity;
         ADDPART params;
         PART_PC *deflected;
@@ -1943,7 +1943,7 @@ extern "C" {
             params.matrix = &matrix;
             params.velocity = &velocity;
             params.special = special;
-            params.field_14 = radius;
+            params.unknown_14 = radius;
             params.gravity = gravity;
             params.part_id = type;
             params.flags = flags;
@@ -1987,12 +1987,12 @@ extern "C" {
         i32 effect;
         f32 speed;
         u16 angle;
-        minimum.x = part->position.x - part->field_e4;
-        maximum.x = part->field_e4 + part->position.x;
-        minimum.y = part->position.y - part->field_e4;
-        maximum.y = part->field_e4 + part->position.y;
-        minimum.z = part->position.z - part->field_e4;
-        maximum.z = part->field_e4 + part->position.z;
+        minimum.x = part->position.x - part->unknown_e4;
+        maximum.x = part->unknown_e4 + part->position.x;
+        minimum.y = part->position.y - part->unknown_e4;
+        maximum.y = part->unknown_e4 + part->position.y;
+        minimum.z = part->position.z - part->unknown_e4;
+        maximum.z = part->unknown_e4 + part->position.z;
         object = Obj;
         api = Obj;
         slot = (i32)(((u8 *)part - (u8 *)Part) / sizeof(PART_PC));
@@ -2041,7 +2041,7 @@ extern "C" {
                 if ((character->flags_090 & 0x8000) != 0) {
                     continue;
                 }
-                if (!SphereSphereOverlapScaleY(&part->position, part->field_e4, part->field_e4, &api->collision_position,
+                if (!SphereSphereOverlapScaleY(&part->position, part->unknown_e4, part->unknown_e4, &api->collision_position,
                                                api->collision_radius, api->bounds_half_height)) {
                     continue;
                 }
@@ -2070,8 +2070,8 @@ extern "C" {
                             NewRumble(part->owner->pad->bound_pad, 0.5f, 0);
                             NewRumble(object->pad->bound_pad, 0.5f, 0);
                         } else {
-                            ObjHitObj((part->flags & 0x10000) != 0 ? NULL : part->owner, object, part->field_204, (u16)(part->force_flags),
-                                      0, 1);
+                            ObjHitObj((part->flags & 0x10000) != 0 ? NULL : part->owner, object, part->unknown_204,
+                                      (u16)(part->force_flags), 0, 1);
                         }
                     }
                 }
@@ -2127,8 +2127,8 @@ extern "C" {
                     packet = object->torpedo;
                     if (count < getMaxTorpedos(object)) {
                         packet->pickup_positions[count] = part->position;
-                        object->torpedo->pickup_data[object->torpedo->count] = part->field_10c[0];
-                        object->torpedo->pickup_flags[object->torpedo->count] = part->field_10c[1];
+                        object->torpedo->pickup_data[object->torpedo->count] = part->unknown_10c[0];
+                        object->torpedo->pickup_flags[object->torpedo->count] = part->unknown_10c[1];
                         ++object->torpedo->count;
                         object->torpedo->steal_timer = 0.0f;
                         object->torpedo->pickup_state = 0;

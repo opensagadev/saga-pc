@@ -304,8 +304,8 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
         params = Default_ADDPART;
         params.matrix = &matrix;
         params.velocity = &velocity;
-        NuSpecialGetRadius(special, &centre, &params.field_14);
-        params.field_18 = params.field_14;
+        NuSpecialGetRadius(special, &centre, &params.unknown_14);
+        params.unknown_18 = params.unknown_14;
         params.gravity = 0.0f;
         params.special = special;
         params.flags = 0x8000193;
@@ -315,7 +315,7 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
         params.time_step = FRAMETIME;
         params.collision_fn = (PART_ACTION)PartCollide_3D;
         params.kill_fn = (PART_KILL)Asteroid_PartKill;
-        params.field_a4 = (f32)(qrand() * PlayerRandomScale * NuTimeBarColumnStep + 7.0);
+        params.unknown_a4 = (f32)(qrand() * PlayerRandomScale * NuTimeBarColumnStep + 7.0);
         part = AddPart(&params);
         if (part != NULL) {
             part->unknown_206 = (index != 0) + 1;
@@ -1452,47 +1452,47 @@ void HothBattleE_Init(WORLDINFO *world) {
 
 i32 HothBattle_StartNewWave() {
     i32 type;
-    if (melee.field_0x2 != 0) {
-        switch (melee.field_0x1) {
+    if (melee.unknown_2 != 0) {
+        switch (melee.unknown_1) {
             case 1:
                 melee.waves[0].character_id = dat_007f18b4;
-                melee.waves[0].field_0x18 = 11;
-                melee.waves[0].field_0x19 = 11;
+                melee.waves[0].unknown_18 = 11;
+                melee.waves[0].unknown_19 = 11;
                 NuStrCpy(melee.waves[0].name, "Probe");
                 melee.creature_count = 1;
                 break;
             case 2:
                 melee.waves[0].character_id = id_ATST_LOWRES;
-                melee.waves[0].field_0x18 = 11;
-                melee.waves[0].field_0x19 = 11;
+                melee.waves[0].unknown_18 = 11;
+                melee.waves[0].unknown_19 = 11;
                 NuStrCpy(melee.waves[0].name, "rider");
                 melee.creature_count = 1;
                 break;
             case 3:
                 melee.waves[0].character_id = id_ATAT;
-                melee.waves[0].field_0x18 = 2;
-                melee.waves[0].field_0x19 = 2;
+                melee.waves[0].unknown_18 = 2;
+                melee.waves[0].unknown_19 = 2;
                 NuStrCpy(melee.waves[0].name, "ATAT");
                 melee.creature_count = 1;
                 break;
             case 4:
                 melee.waves[0].character_id = dat_007f18b4;
-                melee.waves[0].field_0x18 = 4;
-                melee.waves[0].field_0x19 = 4;
+                melee.waves[0].unknown_18 = 4;
+                melee.waves[0].unknown_19 = 4;
                 NuStrCpy(melee.waves[0].name, "Probe");
                 melee.waves[1].character_id = id_ATST_LOWRES;
-                melee.waves[1].field_0x18 = 6;
-                melee.waves[1].field_0x19 = 6;
+                melee.waves[1].unknown_18 = 6;
+                melee.waves[1].unknown_19 = 6;
                 NuStrCpy(melee.waves[1].name, "rider");
                 melee.waves[2].character_id = id_ATAT;
-                melee.waves[2].field_0x18 = 1;
-                melee.waves[2].field_0x19 = 1;
+                melee.waves[2].unknown_18 = 1;
+                melee.waves[2].unknown_19 = 1;
                 NuStrCpy(melee.waves[2].name, "ATAT");
                 melee.creature_count = 3;
                 break;
         }
     }
-    melee.field_0x2 = 0;
+    melee.unknown_2 = 0;
     if (MiniCutCam != 0) {
         return 0;
     }

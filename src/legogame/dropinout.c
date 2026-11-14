@@ -25,7 +25,7 @@ void CheckForPlayersTurnedOff(void) {
                     continue;
                 }
                 if (target->unknown_281 != 0 ||
-                    (target->jump_variant_state == 1 && target->character_data->game_character->field_028 > 0.0f)) {
+                    (target->jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) {
                     TagCharacter(Player[source_index], target, 1);
                 }
             }
@@ -325,7 +325,7 @@ i32 PlayersDropInOut(void) {
             object->character_context != 0x24 && object->character_context != 0x1f) {
             if (DROPIN_SCREEN_INSIDE(object) &&
                 (force_join || object->unknown_281 != 0 || object->id == (u16)id_SPEEDERBIKE ||
-                 (object->jump_variant_state == 1 && object->character_data->game_character->field_028 > 0.0f))) {
+                 (object->jump_variant_state == 1 && object->character_data->game_character->unknown_028 > 0.0f))) {
                 join = 1;
             } else if (force_join) {
                 join = 1;
@@ -343,7 +343,7 @@ i32 PlayersDropInOut(void) {
                 if (!tag && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(target->tag_flags & 2) && !(target->portal_flags & 0x4000000) &&
                     target->character_context != 0x24 && target->character_context != 0x1f && target->model_draw_result != 0 &&
                     (target->unknown_281 != 0 ||
-                     (target->jump_variant_state == 1 && target->character_data->game_character->field_028 > 0.0f)) &&
+                     (target->jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) &&
                     DROPIN_SCREEN_INSIDE(target)) {
                     tag = 1;
                 }

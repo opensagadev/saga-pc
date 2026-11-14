@@ -93,7 +93,7 @@ extern "C" {
 
 typedef struct PC_GRAPHICS_GPU_RECORD { // size 0x10
     u32 device_id;                      // 0x0
-    u32 field_04;                       // 0x4
+    u32 unknown_04;                     // 0x4
     const char *name0;                  // 0x8
     const char *name1;                  // 0xc
 } PC_GRAPHICS_GPU_RECORD;

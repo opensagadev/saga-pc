@@ -927,17 +927,17 @@ void NewArea_ResetGlobalsPC(void) {
     phase = Area != -1 ? Game.area_save[Area].minikit_count : 0;
     AreaGlobals.area_phase = phase;
     AreaGlobals.progress_flags = phase;
-    AreaGlobals.field_1c = 0;
+    AreaGlobals.unknown_1c = 0;
     Door_UseCutCam = 0;
     BuildUpDone = 0;
     BuildUpTotal = 0;
-    AreaGlobals.field_00 = 0;
-    AreaGlobals.field_08 = 0;
+    AreaGlobals.unknown_00 = 0;
+    AreaGlobals.unknown_08 = 0;
     AreaGlobals.arcade_player_kills[0] = 0;
     AreaGlobals.arcade_ai_kills[0] = 0;
     AreaGlobals.arcade_player_kills[1] = 0;
     AreaGlobals.arcade_ai_kills[1] = 0;
-    AreaGlobals.field_18 = 0;
+    AreaGlobals.unknown_18 = 0;
     if (WORLD->area == HOTHBATTLE_ADATA) {
         ResetMinikitCounter();
     }
@@ -1301,7 +1301,7 @@ void LoadAreaCharacters(void) {
     saved_override = AreaGetKeyboardOverridePc();
     VehicleArea = Area != -1 && (ADataList[Area].flags & 1) != 0;
     BonusArea = -1 != Area && (ADataList[Area].flags & 4) != 0;
-    AreaGlobals.field_04 = VehicleArea != 0 && BonusArea == 0;
+    AreaGlobals.unknown_04 = VehicleArea != 0 && BonusArea == 0;
     AreaDataLoaded = 0;
     loadareadata_loadlevel = 0;
     loadareacharacters_loadedlevel = 0;

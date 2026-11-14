@@ -3,11 +3,11 @@
 #include <string.h>
 
 typedef struct MINICAM_CAMERA { // size 0x230
-    u8 unknown000[0xe8];        // 0x000
+    u8 unknown_000[0xe8];       // 0x000
     NUVEC render_position;      // 0x0e8
-    u8 unknown0f4[0x28];        // 0x0f4
+    u8 unknown_0f4[0x28];       // 0x0f4
     NUVEC position;             // 0x11c
-    u8 unknown128[0xd0];        // 0x128
+    u8 unknown_128[0xd0];       // 0x128
     u16 pitch;                  // 0x1f8
     u8 unknown_1fa[2];          // 0x1fa
     u16 yaw;                    // 0x1fc

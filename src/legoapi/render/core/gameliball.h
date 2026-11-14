@@ -98,22 +98,22 @@ struct TERRAIN_FILE_CHUNK { // size 0x34
     u32 data_word_count;    // 0x04
     NUVEC origin;           // 0x08
     i16 chunk_type;         // 0x14
-    u16 field_16;           // 0x16
+    u16 unknown_16;         // 0x16
     u8 unknown_18[0x14];    // 0x18
     u32 platform_flags;     // 0x2c
-    u16 field_30;           // 0x30
+    u16 unknown_30;         // 0x30
     u16 group_info;         // 0x32
 };
 
 struct TERRAIN_SCENE_OBJECT { // size 0x50
-    u8 pad_0x00[0x44];        // 0x00
+    u8 pad_00[0x44];          // 0x00
     u32 flags;                // 0x44
     void *object;             // 0x48
-    u8 pad_0x4c[4];           // 0x4c
+    u8 pad_4c[4];             // 0x4c
 };
 
 struct TERRAIN_DISPLAY_OBJECT { // size 0xd0
-    u8 pad_0x00[0x40];          // 0x00
+    u8 pad_00[0x40];            // 0x00
     u8 embedded_object[0x78];   // 0x40
     u32 flags;                  // 0xb8
     u32 unknown_bc;             // 0xbc
@@ -123,13 +123,13 @@ struct TERRAIN_DISPLAY_OBJECT { // size 0xd0
 };
 
 struct TERRAIN_DISPLAY_SCENE {       // size 0x74
-    u8 pad_0x00[0x6c];               // 0x00
+    u8 pad_00[0x6c];                 // 0x00
     i32 object_count;                // 0x6c
     TERRAIN_DISPLAY_OBJECT *objects; // 0x70
 };
 
 struct TERRAIN_GSCENE {                   // size 0x114
-    u8 pad_0x00[0x1c];                    // 0x000
+    u8 pad_00[0x1c];                      // 0x000
     i32 object_count;                     // 0x01c
     TERRAIN_SCENE_OBJECT *objects;        // 0x020
     u8 pad_24[0x34];                      // 0x024
@@ -166,7 +166,7 @@ typedef struct music_playback_s { // size 0x24
     i16 resume_frames;            // 0x0e
     u8 pause_requested;           // 0x10
     u8 restore_requested;         // 0x11
-    u8 field_0012;                // 0x12
+    u8 unknown_0012;              // 0x12
     u8 unknown_0013;              // 0x13
     f32 seek_offset;              // 0x14
     f32 transition;               // 0x18
@@ -585,7 +585,7 @@ extern "C" {
 typedef struct TERRAIN_SET_PC {                 // size 0xa490
     TERRAIN_GROUP_PC *groups;                   // 0x0000
     u8 unknown_004[0x60];                       // 0x0004
-    void *field_064;                            // 0x0064
+    void *unknown_064;                          // 0x0064
     TERRAIN_PLATFORM_PC *platforms;             // 0x0068
     i16 active_platform_groups[96];             // 0x006c
     i32 active_platform_count;                  // 0x012c

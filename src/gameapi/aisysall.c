@@ -45,7 +45,7 @@ extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
 /* Path-build view of the runtime path system (AIPATHSYS is opaque here). */
 typedef struct AI_PATH_BUILD_SYSTEM {   // size 0x10
     u8 path_count;                      // 0x0
-    u8 unknown1;                        // 0x1
+    u8 unknown_1;                       // 0x1
     u16 special_route_count;            // 0x2
     AIPATH **paths;                     // 0x4
     AIPATH *active_path;                // 0x8

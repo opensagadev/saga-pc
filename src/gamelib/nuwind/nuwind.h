@@ -45,9 +45,9 @@ extern "C" {
         f32 far_distance;            // 0x34
         f32 extended_radius_squared; // 0x38
         f32 distance_range;          // 0x3c
-        f32 field_40;                // 0x40
-        f32 field_44;                // 0x44
-        f32 field_48;                // 0x48
+        f32 unknown_40;              // 0x40
+        f32 unknown_44;              // 0x44
+        f32 unknown_48;              // 0x48
     } PC_NUWINDGROUP;
 
     extern PC_NUWINDGROUP *NuWindGroup;

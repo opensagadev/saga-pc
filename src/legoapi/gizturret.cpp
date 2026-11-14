@@ -571,7 +571,7 @@ extern "C" {
                                         }
                                         if ((turret->behavior_flags & 0x200) && target_velocity != NULL && bolt_type != NULL) {
                                             GizTurret_CalculateInterceptVector(reinterpret_cast<NUVEC *>(&reference->m30), primary_draw,
-                                                                               target_position, target_velocity, bolt_type->field_10,
+                                                                               target_position, target_velocity, bolt_type->unknown_10,
                                                                                &direction, NULL, turret->controller != NULL);
                                         } else {
                                             NuVecSub(&direction, target_position, reinterpret_cast<NUVEC *>(&reference->m30));
@@ -692,11 +692,11 @@ extern "C" {
                                     }
                                     i32 scatter_pitch = 0;
                                     i32 scatter_yaw = 0;
-                                    if (bolt_type->field_40 != 0) {
-                                        f32 spread = static_cast<f32>(static_cast<i32>(bolt_type->field_40));
+                                    if (bolt_type->unknown_40 != 0) {
+                                        f32 spread = static_cast<f32>(static_cast<i32>(bolt_type->unknown_40));
                                         f32 random = NuRandFloat();
                                         scatter_pitch = static_cast<i32>(spread - ((random * spread) + (random * spread))) / 2;
-                                        spread = static_cast<f32>(static_cast<i32>(bolt_type->field_40));
+                                        spread = static_cast<f32>(static_cast<i32>(bolt_type->unknown_40));
                                         random = NuRandFloat();
                                         scatter_yaw = static_cast<i32>(spread - ((random * spread) + (random * spread)));
                                     }
@@ -717,14 +717,14 @@ extern "C" {
                                             NuMtxPreRotateX(&direction_matrix, turret->pitch);
                                         }
                                         NuMtxPreRotateY(&direction_matrix, 0x8000);
-                                        if (bolt_type->field_40 != 0) {
+                                        if (bolt_type->unknown_40 != 0) {
                                             NuMtxPreRotateX(&direction_matrix, scatter_pitch);
                                             NuMtxPreRotateY(&direction_matrix, scatter_yaw);
                                         }
                                         if (autoaim_target != NULL) {
                                             GizTurret_CalculateInterceptVector(reinterpret_cast<NUVEC *>(&muzzle_matrix.m30), primary_draw,
                                                                                &autoaim_target->collision_position,
-                                                                               &autoaim_target->velocity, bolt_type->field_10, &direction,
+                                                                               &autoaim_target->velocity, bolt_type->unknown_10, &direction,
                                                                                NULL, turret->controller != NULL);
                                             FindAnglesXY(&direction, NULL, NULL);
                                             NUANGVEC angles;
@@ -1177,7 +1177,7 @@ extern "C" {
                         } else if (owner != NULL && (turret->behavior_flags & 0x20000) != 0 && (owner->flags_1fc_word & 0x80) == 0) {
                             damage = 0;
                         } else {
-                            damage = type->field_3c;
+                            damage = type->unknown_3c;
                         }
                         player = owner != NULL ? (i8)owner->unknown_280 : -1;
                         GizTurrets_Hit(world, turret, &bolt->position, player, damage);
@@ -1364,7 +1364,7 @@ extern "C" {
             type = BoltType_FindByID(bolt->type_id, world);
             owner = (GAMEOBJECT *)bolt->owner;
             player = owner != NULL ? (i8)owner->unknown_280 : -1;
-            if (GizTurrets_Hit(world, best, &bolt->position, player, type->field_3c) != 0) {
+            if (GizTurrets_Hit(world, best, &bolt->position, player, type->unknown_3c) != 0) {
                 if (object != NULL) {
                     NewRumble(object->pad->bound_pad, 0.4f, 0);
                     GameCam_HitJudder();

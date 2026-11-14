@@ -145,10 +145,10 @@ void FadeStillWipe::InitFade() {
         pause_rndr_on = 0;
         info->fade = 1.0f;
         info->rate = 2.0f;
-        if (FadeSys.field_28 != 0) {
+        if (FadeSys.unknown_28 != 0) {
             NeedScreenGrab(1);
         } else {
-            FadeSys.field_28 = 1;
+            FadeSys.unknown_28 = 1;
         }
         wait_till_next_frame = FRAMES_TO_WAIT;
     }
@@ -243,7 +243,7 @@ void FadeSystem::Init() {
     fades[1] = 0;
     fades[2] = 0;
     fades[3] = 0;
-    field_28 = 1;
+    unknown_28 = 1;
     pending_type = FADE_TYPE_NONE;
 }
 

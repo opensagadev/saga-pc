@@ -77,7 +77,7 @@ typedef struct JEDIB_CREATURE {     // size 0x60
     GAMEOBJECT *object;             // 0x14
     struct JEDIB_CREATURE *partner; // 0x18
     AILOCATOR locator;              // 0x1c
-    i32 field_0x58;                 // 0x58
+    i32 unknown_58;                 // 0x58
     u32 flags;                      // 0x5c
 } JEDIB_CREATURE;
 
@@ -123,7 +123,7 @@ typedef struct JEDIB_NETPACKET { // size 0x20
     i16 state;                   // 0x00
     i16 phase;                   // 0x02
     i16 count;                   // 0x04
-    i16 pad_0x06;                // 0x06
+    i16 pad_06;                  // 0x06
     i16 ids[8];                  // 0x08
     u8 spawned[8];               // 0x18
 } JEDIB_NETPACKET;

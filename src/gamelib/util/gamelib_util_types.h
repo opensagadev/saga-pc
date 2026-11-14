@@ -506,7 +506,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void UpdateLocalObjectList();
     NetStats *fun_0060e740(i32 class_id);
 
-    i32 field_08;                        // 0x0008
+    i32 unknown_08;                      // 0x0008
     i32 active;                          // 0x000c
     NOSContext context;                  // 0x0010
     const V2Peer *guid_peers[2];         // 0x0020
@@ -632,9 +632,9 @@ class V2SessionManager { // size 0x2c0
     f32 timer_6c;          // 0x06c
     u32 unknown_70;        // 0x070
     f32 timer_74;          // 0x074
-    u8 field_78;           // 0x078
+    u8 unknown_78;         // 0x078
     u8 unknown_79[3];      // 0x079
-    i32 field_7c;          // 0x07c
+    i32 unknown_7c;        // 0x07c
     u32 unknown_80;        // 0x080
     V2Peer *local_peer;    // 0x084
     V2HostList host_list;  // 0x088

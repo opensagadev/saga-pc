@@ -51,9 +51,9 @@ void PartImpact_ThermalDetonator(PART_PC *part) {
         PlaySfx("ThermalDet_Bnce", &part->position);
     }
     if ((part->active & 1) != 0 && (part->active & 2) == 0) {
-        trail.x = part->impact_position.x - part->impact_normal.x * part->field_e0;
-        trail.y = part->impact_position.y - part->impact_normal.y * part->field_e0;
-        trail.z = part->impact_position.z - part->impact_normal.z * part->field_e0;
+        trail.x = part->impact_position.x - part->impact_normal.x * part->unknown_e0;
+        trail.y = part->impact_position.y - part->impact_normal.y * part->unknown_e0;
+        trail.z = part->impact_position.z - part->impact_normal.z * part->unknown_e0;
         AddGameDebris(WORLD->game_debris_sys, 1, &trail);
     }
 }
@@ -92,7 +92,7 @@ void PartUpdate_ThermalDetonator(PART_PC *part) {
     if ((u32)layer > 16) {
         return;
     }
-    if ((part->active & 0x8000) == 0 && part->position.y + part->field_e0 < water &&
+    if ((part->active & 0x8000) == 0 && part->position.y + part->unknown_e0 < water &&
         ((TerLayer[layer].flags & 1) != 0 || layer == 1 || layer == 9)) {
         part->active |= 0x8000;
     }
@@ -150,7 +150,7 @@ void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
 
     explosion = Detonate(&part->position, flags);
     if (explosion != NULL && part->owner != NULL && (part->owner->unknown_280 == 0 || part->owner->unknown_280 == 1)) {
-        explosion->field_0x33 = part->owner->unknown_280;
+        explosion->unknown_33 = part->owner->unknown_280;
     }
 }
 
@@ -207,16 +207,16 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     }
     params.matrix = &matrix;
     params.velocity = &velocity;
-    NuSpecialGetRadius(&WORLD->level_objects[0xe9].special, &centre, &params.field_14);
-    params.field_18 = params.field_14;
-    params.field_14 *= 0.75;
+    NuSpecialGetRadius(&WORLD->level_objects[0xe9].special, &centre, &params.unknown_14);
+    params.unknown_18 = params.unknown_14;
+    params.unknown_14 *= 0.75;
     params.gravity = -5.0f;
     params.special = &WORLD->level_objects[0xe9].special;
     params.time_step = FRAMETIME;
     params.flags = 0x08000292;
-    params.field_a4 = 10.0f;
+    params.unknown_a4 = 10.0f;
     params.owner = object;
-    params.field_c4 = 1;
+    params.unknown_c4 = 1;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PartDraw_ThermalDetonator;
     params.impact_fn = PartImpact_ThermalDetonator;
@@ -268,16 +268,16 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     }
     params.matrix = &matrix;
     params.velocity = velocity;
-    NuSpecialGetRadius(&WORLD->level_objects[0xe9].special, &centre, &params.field_14);
-    params.field_18 = params.field_14;
-    params.field_14 *= 0.75;
+    NuSpecialGetRadius(&WORLD->level_objects[0xe9].special, &centre, &params.unknown_14);
+    params.unknown_18 = params.unknown_14;
+    params.unknown_14 *= 0.75;
     params.gravity = -5.0f;
     params.special = &WORLD->level_objects[0xe9].special;
     params.time_step = FRAMETIME;
     params.flags = 0x08000292;
-    params.field_a4 = 10.0f;
+    params.unknown_a4 = 10.0f;
     params.owner = object;
-    params.field_c4 = 1;
+    params.unknown_c4 = 1;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PartDraw_ThermalDetonator;
     params.impact_fn = PartImpact_ThermalDetonator;
@@ -401,14 +401,14 @@ static i32 TightRopes_Load(void *world_info, void *unused1) {
         EdFileReadNuVec(&world->tightropes[i].start_position);
         EdFileReadNuVec(&world->tightropes[i].end_position);
         if (version > 1) {
-            world->tightropes[i].field_0x28 = EdFileReadUnsignedShort();
-            world->tightropes[i].field_0x2a = EdFileReadUnsignedShort();
-            world->tightropes[i].field_0x2c = EdFileReadUnsignedShort();
-            world->tightropes[i].field_0x2e = EdFileReadUnsignedShort();
-            world->tightropes[i].field_0x30 = EdFileReadUnsignedChar();
+            world->tightropes[i].unknown_28 = EdFileReadUnsignedShort();
+            world->tightropes[i].unknown_2a = EdFileReadUnsignedShort();
+            world->tightropes[i].unknown_2c = EdFileReadUnsignedShort();
+            world->tightropes[i].unknown_2e = EdFileReadUnsignedShort();
+            world->tightropes[i].unknown_30 = EdFileReadUnsignedChar();
             world->tightropes[i].unknown_31 = EdFileReadUnsignedChar();
             if (version != 2) {
-                world->tightropes[i].field_0x32 = EdFileReadChar();
+                world->tightropes[i].unknown_32 = EdFileReadChar();
             }
         }
     }

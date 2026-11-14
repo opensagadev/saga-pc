@@ -48,28 +48,28 @@ i32 edgraFileSave(char *path) {
             EdFileWriteInt(GrassClumps[i].element_count);
             EdFileWriteNuVec(&GrassClumps[i].position);
             EdFileWriteFloat(GrassClumps[i].size);
-            EdFileWriteFloat(GrassClumps[i].field_18);
+            EdFileWriteFloat(GrassClumps[i].unknown_18);
             EdFileWriteInt(GrassClumps[i].flags);
-            EdFileWriteFloat(GrassClumps[i].field_20);
+            EdFileWriteFloat(GrassClumps[i].unknown_20);
             EdFileWriteChar(GrassClumps[i].unknown_25);
             EdFileWriteChar(GrassClumps[i].unknown_26);
             EdFileWriteChar(GrassClumps[i].kind);
             EdFileWriteInt(GrassClumps[i].seed);
-            EdFileWriteFloat(GrassClumps[i].field_2c);
-            EdFileWriteFloat(GrassClumps[i].field_30);
+            EdFileWriteFloat(GrassClumps[i].unknown_2c);
+            EdFileWriteFloat(GrassClumps[i].unknown_30);
             EdFileWriteShort(GrassClumps[i].rotation_z);
             EdFileWriteShort(GrassClumps[i].rotation_y);
             EdFileWriteFloat(GrassClumps[i].near_distance);
             EdFileWriteFloat(GrassClumps[i].far_distance);
-            EdFileWriteChar(GrassClumps[i].field_42);
+            EdFileWriteChar(GrassClumps[i].unknown_42);
             EdFileWriteChar(GrassClumps[i].unknown_43);
-            EdFileWriteFloat(GrassClumps[i].field_44);
+            EdFileWriteFloat(GrassClumps[i].unknown_44);
             if (GrassClumps[i].kind == 3) {
                 for (j = 0; j < GrassClumps[i].element_count; ++j) {
                     EdFileWriteNuVec(&EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->position);
-                    EdFileWriteFloat(EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->field_0c);
-                    EdFileWriteShort(EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->field_10);
-                    EdFileWriteShort(EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->field_12);
+                    EdFileWriteFloat(EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->unknown_0c);
+                    EdFileWriteShort(EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->unknown_10);
+                    EdFileWriteShort(EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->unknown_12);
                 }
             }
             for (j = 0; j < GrassClumps[i].element_count; ++j) {

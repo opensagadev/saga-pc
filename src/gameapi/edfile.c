@@ -596,9 +596,9 @@ eduiitem_s *eduiMenuAddItem(eduimenu_s *menu, eduiitem_s *item) {
     item->previous = menu->last;
     item->next = NULL;
     menu->last = item;
-    menu->field_0c = menu->first;
+    menu->unknown_0c = menu->first;
     edui_last_item = item;
-    menu->field_10 = NULL;
+    menu->unknown_10 = NULL;
     return item;
 }
 
@@ -617,8 +617,8 @@ eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void
         menu->y = y;
         menu->width = width;
         menu->height = height;
-        menu->field_24 = -1;
-        menu->field_28 = -1;
+        menu->unknown_24 = -1;
+        menu->unknown_28 = -1;
         menu->font = font;
         menu->callback = (EdUiMenuCallback)callback;
         menu->flags = 0;
@@ -675,8 +675,8 @@ void eduiMenuDestroyItems(eduimenu_s *menu) {
         }
         menu->last = NULL;
         menu->selected = NULL;
-        menu->field_0c = NULL;
-        menu->field_10 = NULL;
+        menu->unknown_0c = NULL;
+        menu->unknown_10 = NULL;
     }
 }
 
@@ -736,8 +736,8 @@ void eduiMenuSortItemsByTxt(eduimenu_s *menu) {
                         }
                         next->previous = previous;
                         next->next = item;
-                        menu->field_0c = menu->first;
-                        menu->field_10 = NULL;
+                        menu->unknown_0c = menu->first;
+                        menu->unknown_10 = NULL;
                     }
                     if (item == first) {
                         first = item->previous;
@@ -764,7 +764,7 @@ void cbInteractMenuScrollTo(eduimenu_s *menu, char *text) {
     if (menu->first != NULL && menu->first->text != NULL) {
         comparison = NuStrICmp(menu->first->text, text);
     }
-    menu->field_0c = menu->first;
+    menu->unknown_0c = menu->first;
     menu->selected = menu->first;
     while (menu->selected->next != NULL && comparison < 0) {
         menu->selected = menu->selected->next;
@@ -774,7 +774,7 @@ void cbInteractMenuScrollTo(eduimenu_s *menu, char *text) {
             comparison = -1;
         }
     }
-    menu->field_10 = menu->selected;
+    menu->unknown_10 = menu->selected;
 }
 
 static i32 eduicbProcessSel(eduimenu_s *menu, eduiitem_s *item, f32 unused2, FRAME_PAD_PC *pad) {
@@ -828,20 +828,20 @@ __declspec(noinline) void cbInteractMenuKeySelect(eduimenu_s *menu) {
 }
 
 void eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding) {
-    if (menu->field_24 < 0) {
+    if (menu->unknown_24 < 0) {
         i32 saved = edui_donotdraw;
         edui_donotdraw = 1;
         eduiMenuRender(menu);
         edui_donotdraw = saved;
     }
-    if (menu->x + menu->field_24 > 640 - padding) {
-        menu->x -= menu->field_24;
+    if (menu->x + menu->unknown_24 > 640 - padding) {
+        menu->x -= menu->unknown_24;
     }
     if (menu->x < padding) {
         menu->x = padding;
     }
-    if (menu->y + menu->field_28 > 448 - padding) {
-        menu->y -= menu->field_28;
+    if (menu->y + menu->unknown_28 > 448 - padding) {
+        menu->y -= menu->unknown_28;
     }
     if (menu->y < padding) {
         menu->y = padding;
@@ -1138,10 +1138,10 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
     if (up && (pad->digital_buttons & 2)) {
         page_up = 1;
     }
-    if (down && (pad->digital_buttons & 2) && menu->field_10) {
+    if (down && (pad->digital_buttons & 2) && menu->unknown_10) {
         eduiitem_s *item;
         i32 count = 1;
-        for (item = menu->field_0c; item && item != menu->field_10; item = item->next) {
+        for (item = menu->unknown_0c; item && item != menu->unknown_10; item = item->next) {
             ++count;
         }
         while (count && menu->selected->next) {
@@ -1150,25 +1150,25 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
         }
         return 0;
     }
-    if (page_up && menu->field_10) {
+    if (page_up && menu->unknown_10) {
         eduiitem_s *item;
         i32 count = 1;
-        for (item = menu->field_0c; item && item != menu->field_10; item = item->next) {
+        for (item = menu->unknown_0c; item && item != menu->unknown_10; item = item->next) {
             ++count;
         }
-        menu->selected = menu->field_0c;
+        menu->selected = menu->unknown_0c;
         while (count && menu->selected->previous) {
             --count;
             menu->selected = menu->selected->previous;
-            menu->field_0c = menu->selected;
+            menu->unknown_0c = menu->selected;
         }
         return 0;
     }
     if (up && menu->selected && menu->selected->previous) {
         do {
             eduiitem_s *item;
-            if (menu->selected == menu->field_0c) {
-                menu->field_0c = menu->selected->previous;
+            if (menu->selected == menu->unknown_0c) {
+                menu->unknown_0c = menu->selected->previous;
             }
             item = menu->selected->previous;
             while (item->type == 18) {
@@ -1189,13 +1189,13 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
         if (to_last) {
             eduiitem_s *item;
             i32 count = 1;
-            for (item = menu->field_0c; item && item != menu->field_10; item = item->next) {
+            for (item = menu->unknown_0c; item && item != menu->unknown_10; item = item->next) {
                 ++count;
             }
-            menu->field_0c = menu->selected;
-            while (count && menu->field_0c->previous) {
+            menu->unknown_0c = menu->selected;
+            while (count && menu->unknown_0c->previous) {
                 --count;
-                menu->field_0c = menu->field_0c->previous;
+                menu->unknown_0c = menu->unknown_0c->previous;
             }
         }
         return 0;
@@ -1473,9 +1473,9 @@ void eduiMenuAddItemFirst(eduimenu_s *menu, eduiitem_s *item) {
     item->previous = NULL;
     item->next = menu->first;
     menu->first = item;
-    menu->field_0c = item;
+    menu->unknown_0c = item;
     edui_last_item = item;
-    menu->field_10 = NULL;
+    menu->unknown_10 = NULL;
 }
 
 eduiitem_s *eduiMenuAddItemLast(eduimenu_s *menu, eduiitem_s *item) {
@@ -1487,9 +1487,9 @@ eduiitem_s *eduiMenuAddItemLast(eduimenu_s *menu, eduiitem_s *item) {
     item->next = NULL;
     item->previous = menu->last;
     menu->last = item;
-    menu->field_0c = item;
+    menu->unknown_0c = item;
     edui_last_item = item;
-    menu->field_10 = NULL;
+    menu->unknown_10 = NULL;
     return item;
 }
 
@@ -1506,8 +1506,8 @@ eduiitem_s *eduiMenuAddItemAfter(eduimenu_s *menu, eduiitem_s *item, eduiitem_s 
     } else {
         item->next->previous = item;
     }
-    menu->field_0c = menu->first;
-    menu->field_10 = NULL;
+    menu->unknown_0c = menu->first;
+    menu->unknown_10 = NULL;
     edui_last_item = item;
     return item;
 }
@@ -1523,8 +1523,8 @@ eduiitem_s *eduiMenuAddItemBefore(eduimenu_s *menu, eduiitem_s *item, eduiitem_s
     if (item->previous == NULL) {
         menu->first = item;
     }
-    menu->field_0c = menu->first;
-    menu->field_10 = NULL;
+    menu->unknown_0c = menu->first;
+    menu->unknown_10 = NULL;
     edui_last_item = item;
     return item;
 }
@@ -1551,8 +1551,8 @@ i32 eduiMenuItemMoveUp(eduimenu_s *menu, eduiitem_s *item) {
     }
     previous->previous = item;
     previous->next = next;
-    menu->field_0c = menu->first;
-    menu->field_10 = NULL;
+    menu->unknown_0c = menu->first;
+    menu->unknown_10 = NULL;
     return 1;
 }
 
@@ -1578,8 +1578,8 @@ i32 eduiMenuItemMoveDown(eduimenu_s *menu, eduiitem_s *item) {
     }
     next->previous = previous;
     next->next = item;
-    menu->field_0c = menu->first;
-    menu->field_10 = NULL;
+    menu->unknown_0c = menu->first;
+    menu->unknown_10 = NULL;
     return 1;
 }
 
@@ -1608,7 +1608,7 @@ void eduicbItemDestroy(eduimenu_s *menu, eduiitem_s *item) {
         item->text = NULL;
     }
     NuFree(item, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x2a2);
-    menu->field_0c = menu->first;
+    menu->unknown_0c = menu->first;
 }
 
 void eduicbItemSliderDestroy(eduimenu_s *menu, eduiitem_s *item) {
@@ -2553,7 +2553,7 @@ static void eduicbItemDestroyProp(eduimenu_s *menu, eduiitem_s *item) {
         property->property_text = NULL;
     }
     NuFree(item, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x131c);
-    menu->field_0c = menu->first;
+    menu->unknown_0c = menu->first;
 }
 
 static void EduiDrawLine(f32 x0, f32 y0, f32 x1, f32 y1, u32 colour, NUMTL *material) {
@@ -2932,8 +2932,8 @@ void eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item) {
     if (menu->selected == item) {
         menu->selected = item->next ? item->next : item->previous;
     }
-    menu->field_0c = menu->first;
-    menu->field_10 = NULL;
+    menu->unknown_0c = menu->first;
+    menu->unknown_10 = NULL;
     if (item->next) {
         item->next->previous = item->previous;
     }
@@ -4407,7 +4407,7 @@ f32 edui_cursor_y = 50.0f;
 
 /* Drops a locked interaction whose owner went away. */
 static void EduiReleaseStaleInteract(void) {
-    if (eduiInteractLocked && (!eduiInteractLocked->menu || !eduiInteractLocked->item) && eduiInteractLocked->field_20) {
+    if (eduiInteractLocked && (!eduiInteractLocked->menu || !eduiInteractLocked->item) && eduiInteractLocked->unknown_20) {
         eduiInteractLocked = NULL;
     }
 }
@@ -4450,7 +4450,7 @@ static i32 fun_006272a0(eduimenu_s *menu, edui_interact_s *interact) {
         if (EduiInteractPressed(interact) && EduiInteractionContainsCursorPc(interact)) {
             result = 1;
             EduiInteractSelectItem(interact);
-            if (interact->field_20 != 0) {
+            if (interact->unknown_20 != 0) {
                 if ((interact->buttons & edui_cursor_buttons_db) == 0) {
                     return result;
                 }
@@ -4477,7 +4477,7 @@ i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD_PC *pad) {
     (void)pad;
     if (edmain_cursor_enabled) {
         if (eduiInteractLocked != NULL) {
-            if ((eduiInteractLocked->menu == NULL || eduiInteractLocked->item == NULL) && eduiInteractLocked->field_20) {
+            if ((eduiInteractLocked->menu == NULL || eduiInteractLocked->item == NULL) && eduiInteractLocked->unknown_20) {
                 eduiInteractLocked = NULL;
             }
         }

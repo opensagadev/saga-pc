@@ -2671,7 +2671,7 @@ extern "C" {
         SpaceResetAudioPoint();
         ProcessCurrentSpeed(world, DogfightSpeedList);
         ProcessSpaceLevel((DOGFIGHT_SPACE_PC *)world->level_specific_data);
-        if (AreaGlobals.field_00 != 0 || flags->first != 0 || BATTLEOVERCORUSCANT_ADATA == NULL) {
+        if (AreaGlobals.unknown_00 != 0 || flags->first != 0 || BATTLEOVERCORUSCANT_ADATA == NULL) {
             return;
         }
         if (Game.area_save[BATTLEOVERCORUSCANT_ADATA->index].area_complete != 0) {

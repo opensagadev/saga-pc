@@ -49,7 +49,7 @@ typedef struct kaminoe_turret_reader_s {
     u8 opaque_20_e4[0xc4];
     NUVEC *target_position;
     u8 opaque_e8_12c[0x44];
-    u8 field_12c;
+    u8 unknown_12c;
     u8 opaque_12d;
     u8 unknown_12e;
     u8 opaque_12f_13a[0xb];
@@ -297,7 +297,7 @@ static void JediBResetRecord(JEDIB_CREATURE *record) {
         record->id = id_BOB;
     }
     record->flags &= ~0x1cu;
-    record->field_0x58 = 0;
+    record->unknown_58 = 0;
 }
 
 static f32 jedib_create_step_Normal = 2.0f;
@@ -824,15 +824,15 @@ void JediB_Update(WORLDINFO *world) {
             baddie->object->ai_packet.locator = &baddie->locator;
             baddie->object->tag_object_callback = JediBKilledCallback;
             if (baddie->id == id_BOB) {
-                if (baddie->field_0x58 == 0) {
-                    baddie->field_0x58 = baddie->object->layer_mask;
+                if (baddie->unknown_58 == 0) {
+                    baddie->unknown_58 = baddie->object->layer_mask;
                     if (baddie->object->flags_ef0 & 0x200) {
                         baddie->flags |= 4;
                     } else {
                         baddie->flags &= ~4u;
                     }
                 } else {
-                    baddie->object->layer_mask = baddie->field_0x58;
+                    baddie->object->layer_mask = baddie->unknown_58;
                     if (baddie->flags & 4) {
                         baddie->object->flags_ef0 |= 0x200;
                     } else {
@@ -1444,7 +1444,7 @@ void KaminoE_Reset(WORLDINFO *world) {
         if (gizmo != NULL) {
             kamino_e.turrets[i] = gizmo->object;
             kamino_e.turrets[i]->target_position = &kamino_e.position;
-            kamino_e.turrets[i]->field_12c = 2;
+            kamino_e.turrets[i]->unknown_12c = 2;
             kamino_e.turrets[i]->flags_13a |= 1;
         } else {
             KaminoEGizmoMissing(name);

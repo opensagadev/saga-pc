@@ -171,16 +171,16 @@ struct MUSIC_PAIR_ARENA {
 };
 
 typedef struct OPPONENT_OBJECT_PC { // size 0x2b0
-    u8 unknown000[0x230];           // 0x000
+    u8 unknown_000[0x230];          // 0x000
     f32 view_distance;              // 0x230
     u8 unknown_234[0xc];            // 0x234
     f32 visibility_range_extension; // 0x240
-    u8 unknown244[0x64];            // 0x244
+    u8 unknown_244[0x64];           // 0x244
     u64 awareness;                  // 0x2a8
 } OPPONENT_OBJECT_PC;
 
 typedef struct OPPONENT_SYS_PC { // size 0x1388
-    u8 unknown000[0x1385];       // 0x0000
+    u8 unknown_000[0x1385];      // 0x0000
     u8 goody_cursor;             // 0x1385
     u16 assignment_flags;        // 0x1386
 } OPPONENT_SYS_PC;
@@ -321,14 +321,14 @@ struct cut_load_character_instance_s { // size 0x18
 };
 
 typedef struct force_glow_packet_s { // size 0x6d0
-    u8 unknown000[0x650];            // 0x000
+    u8 unknown_000[0x650];           // 0x000
     void *object;                    // 0x650
     void *candidate;                 // 0x654
     u8 unknown_658[0x6bc - 0x658];   // 0x658
     f32 alpha;                       // 0x6bc
     f32 target;                      // 0x6c0
     f32 recovery;                    // 0x6c4
-    f32 unknown6c8;                  // 0x6c8
+    f32 unknown_6c8;                 // 0x6c8
     f32 hold;                        // 0x6cc
 } FORCE_GLOW_PACKET;
 
@@ -454,9 +454,9 @@ typedef struct {       // size 0x90
 typedef union TAGSCRIPTSTATE { // size 0xcc
     u32 words[0x33];
 
-    struct {                  // size 0xb4
-        u32 unknown000[0x2c]; // 0x00
-        u8 creature_set;      // 0xb0
+    struct {                   // size 0xb4
+        u32 unknown_000[0x2c]; // 0x00
+        u8 creature_set;       // 0xb0
     } fields;
 } TAGSCRIPTSTATE;
 

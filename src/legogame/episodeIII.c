@@ -34,7 +34,7 @@ typedef struct kaminoe_turret_reader_s { // size 0x140
     u8 opaque_20_e4[0xc4];               // 0x020
     NUVEC *target_position;              // 0x0e4
     u8 opaque_e8_12c[0x44];              // 0x0e8
-    u8 field_12c;                        // 0x12c
+    u8 unknown_12c;                      // 0x12c
     u8 opaque_12d;                       // 0x12d
     u8 unknown_12e;                      // 0x12e
     u8 opaque_12f_13a[0xb];              // 0x12f
@@ -245,7 +245,7 @@ void CruiserDUpdate(WORLDINFO *world) {
     if (netclient == 0) {
         CruiserD_LiftChase_msg->value = 0.0f;
         if (CruiserD_direction >= 0 && LevGizmo[0] != NULL && LevGizmo[0]->object != NULL &&
-            (((GIZPANEL_s *)LevGizmo[0]->object)->field_0x62[0] & 2) != 0) {
+            (((GIZPANEL_s *)LevGizmo[0]->object)->unknown_62[0] & 2) != 0) {
             CruiserD_LiftAnim->playing = 1;
             CruiserD_LiftAnim->tfactor = -CruiserD_LiftSpeed;
             CruiserD_direction = -1;
@@ -436,8 +436,8 @@ static void BoulderSpawn(i32 index) {
         params = Default_ADDPART;
         params.matrix = &NuMtxSetIdentityTemplate;
         params.velocity = &v000;
-        params.field_18 = boulder_radius;
-        params.field_14 = boulder_radius;
+        params.unknown_18 = boulder_radius;
+        params.unknown_14 = boulder_radius;
         params.gravity = 0.0f;
         params.special = &LevHSpecial[index];
         params.flags = 0x80861a;
@@ -798,7 +798,7 @@ void VaderC_Update(WORLDINFO *world) {
              (second != NULL && (second->flags_1fc & 0x80) != 0 && second->dead != 0 && (second->flags_1f8 & 0x40000) == 0)) &&
             (((u8 *)vaderc_netpacket)[0] == 0 || first == NULL || (first->flags_1fc & 0x80) == 0 || second == NULL ||
              (second->flags_1fc & 0x80) == 0) &&
-            (ChallengeMode == 0 || AreaGlobals.field_1c < 10)) {
+            (ChallengeMode == 0 || AreaGlobals.unknown_1c < 10)) {
             vader_c.players_dead = 1;
             ResetLevel(NULL, NULL, 1);
         }

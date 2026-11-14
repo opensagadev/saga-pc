@@ -499,7 +499,7 @@ extern "C" void PostBlur7x7High(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod,
     } while (0)
 #define POST_BLUR_LOW_BIND_INPUT(stage)                                                                                                    \
     do {                                                                                                                                   \
-        if ((u32)PCDeviceSamplerInvalidation[stage][0] != input->flags || (u32)PCDeviceSamplerInvalidation[stage][1] != input->field_24)   \
+        if ((u32)PCDeviceSamplerInvalidation[stage][0] != input->flags || (u32)PCDeviceSamplerInvalidation[stage][1] != input->unknown_24) \
             PCGraphicsSetSamplerTuple(stage, &input->flags);                                                                               \
         PCDeviceSetTexture(stage, input->resource);                                                                                        \
     } while (0)

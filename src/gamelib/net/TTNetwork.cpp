@@ -384,7 +384,7 @@ void TTNetwork::Start() {
     }
     unknown_2148 = -1;
     ftp.unknown_1604 = -1;
-    nos.field_08 = -1;
+    nos.unknown_08 = -1;
     theNetSessionManager = (NetSessionManager *)V2SessionManager::mpSessionManager;
     session_manager = theNetSessionManager;
     frame_count = 0;

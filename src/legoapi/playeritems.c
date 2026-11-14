@@ -33,10 +33,10 @@ void PlayerItem_Set(WEAPON_AMMO_PC *item, VEHICLE_WEAPON_ITEM *type) {
     item->type = type;
     if (type != NULL) {
         item->ammo = type->start_ammo;
-        item->field_05 = type->start_field_03;
+        item->unknown_05 = type->start_field_03;
     } else {
         item->ammo = 0;
-        item->field_05 = 0;
+        item->unknown_05 = 0;
     }
 }
 

@@ -615,7 +615,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 scaled_radius;                       // 0x00a4
     f32 origin_scale;                        // 0x00a8
     f32 collision_radius;                    // 0x00ac
-    f32 field_b0;                            // 0x00b0
+    f32 unknown_b0;                          // 0x00b0
     f32 scaled_height;                       // 0x00b4
     NUMTX transform;                         // 0x00b8
     NUMTX draw_secondary_mtx;                // 0x00f8
@@ -705,7 +705,7 @@ typedef struct gameobject_s { // size 0x10d8
     }; // 0x0280
 
     u8 unknown_281; // 0x0281
-    u8 field_282;   // 0x0282
+    u8 unknown_282; // 0x0282
     i8 unknown_283; // 0x0283
 
     union { // size 0x1
@@ -792,7 +792,7 @@ typedef struct gameobject_s { // size 0x10d8
             u8 unknown_672[0x14]; // 0x0672
             u16 yrot;             // 0x0686
             u8 unknown_688[0x4];  // 0x0688
-            f32 field_68c;        // 0x068c
+            f32 unknown_68c;      // 0x068c
             u8 unknown_690[0x6];  // 0x0690
             u16 sock_heading;     // 0x0696
             u8 unknown_0698[8];   // 0x0698
@@ -821,11 +821,11 @@ typedef struct gameobject_s { // size 0x10d8
     NUVEC launch_origin;                   // 0x0754
     NUVEC context_position_offset;         // 0x0760
     f32 context_animation_timer;           // 0x076c
-    f32 field_770;                         // 0x0770
+    f32 unknown_770;                       // 0x0770
     u8 unknown_774[0x4];                   // 0x0774
     f32 context_hover_target_y;            // 0x0778
     f32 context_timer;                     // 0x077c
-    f32 field_780;                         // 0x0780
+    f32 unknown_780;                       // 0x0780
     f32 context_duration;                  // 0x0784
     f32 airborne_action_timer;             // 0x0788
     f32 jump_start_height;                 // 0x078c
@@ -1054,7 +1054,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 input_toggle_hold_time;      // 0x0da4
     f32 unknown_da8;                 // 0x0da8
     f32 fall_animation_timer;        // 0x0dac
-    f32 field_db0;                   // 0x0db0
+    f32 unknown_db0;                 // 0x0db0
     f32 fall_hover_height;           // 0x0db4
     f32 pre_reset_hover_height;      // 0x0db8
     f32 field_dbc;                   // 0x0dbc
@@ -1105,7 +1105,7 @@ typedef struct gameobject_s { // size 0x10d8
 
     union { // size 0x4
         u32 flags_e24;
-        u8 field_e24;
+        u8 unknown_e24;
 
         struct {                                                                            // size 0x4
             u32 : 3;                                                                        // 0x0e24:0
@@ -1372,7 +1372,7 @@ typedef struct gameobject_s { // size 0x10d8
     u8 attack_override;      // 0x1085
     u8 unknown_1086;         // 0x1086
     u8 unknown_1087;         // 0x1087
-    u8 field_1088;           // 0x1088
+    u8 unknown_1088;         // 0x1088
     u8 route_search_index;   // 0x1089
     u8 unknown_108a[2];      // 0x108a
 

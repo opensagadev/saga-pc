@@ -27,11 +27,11 @@ typedef struct PODSPRINT_PC {              // size 0x94
     struct gizaimessage_s *max_speed_msg;  // 0x6c
     struct gizaimessage_s *min_speed_msg;  // 0x70
     struct gizaimessage_s *speed_step_msg; // 0x74
-    void *field_78;                        // 0x78
+    void *unknown_78;                      // 0x78
     void *boulders;                        // 0x7c
-    f32 field_80;                          // 0x80
+    f32 unknown_80;                        // 0x80
     f32 speed;                             // 0x84
-    f32 field_88;                          // 0x88
+    f32 unknown_88;                        // 0x88
     u8 unknown_8c[0x2];                    // 0x8c
     u8 ai_state;                           // 0x8e
     i8 ai_index;                           // 0x8f

@@ -83,14 +83,14 @@ typedef struct GIZMOBLOWUPTYPE {           // size 0x100
     f32 animation_start_frame;             // 0x88
     f32 animation_end_frame;               // 0x8c
     f32 animation_base_frame;              // 0x90
-    f32 field_094;                         // 0x94
-    f32 field_098;                         // 0x98
-    f32 field_09c;                         // 0x9c
+    f32 unknown_094;                       // 0x94
+    f32 unknown_098;                       // 0x98
+    f32 unknown_09c;                       // 0x9c
     i16 particle_types[9];                 // 0xa0
     u16 instance_count;                    // 0xb2
     GAMEANTINODEDATA anti_node_data;       // 0xb4
     char name[32];                         // 0xd8
-    u8 field_0f8;                          // 0xf8
+    u8 unknown_0f8;                        // 0xf8
     u8 unknown_0f9;                        // 0xf9
     u8 unknown_0fa;                        // 0xfa
     u8 unknown_0fb;                        // 0xfb
@@ -106,7 +106,7 @@ typedef struct GIZMOBLOWUP_PC { // size 0x114
         struct {                 // size 0x40
             u8 unknown_00[0x30]; // 0x000
             NUVEC position;      // 0x030
-            u32 field_3c;        // 0x03c
+            u32 unknown_3c;      // 0x03c
         };
     }; // 0x000
 
@@ -178,7 +178,7 @@ typedef struct GIZMOBLOWUP_PC { // size 0x114
 
     i16 burst_platform_id; // 0x104
     u8 unknown_106[6];     // 0x106
-    u8 field_10c;          // 0x10c
+    u8 unknown_10c;        // 0x10c
     u8 score_multiplier;   // 0x10d
     u8 damage;             // 0x10e
     u8 initial_state;      // 0x10f

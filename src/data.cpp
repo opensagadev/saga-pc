@@ -6919,10 +6919,10 @@ extern "C" {
         0, // velocity
         0, // owner
         0, // recipient
-        0.1f, // field_14
-        0.1f, // field_18
+        0.1f, // unknown_14
+        0.1f, // unknown_18
         -5.0f, // gravity
-        0.75f, // field_20
+        0.75f, // unknown_20
         0, // special
         -1, // part_id
         0x00000000u, // flags
@@ -6940,25 +6940,25 @@ extern "C" {
         0, // debris_handle
         -1, // effect_id_60
         -1, // effect_id_64
-        60.0f, // field_68
-        60.0f, // field_6c
+        60.0f, // unknown_68
+        60.0f, // unknown_6c
         -1, // effect_id_70
         -1, // effect_id_74
         -1, // effect_id_78
         1.0f, // effect_scale
         0, // lighting_handle
         -1, // lighting_id
-        2000000.0f, // field_88
+        2000000.0f, // unknown_88
         0.016666668f, // time_step
         0xffffffffu, // hostility_group
         0, // lighting_data
         1.0f, // lighting_scale_x
         1.0f, // lighting_scale_y
         1.0f, // lighting_scale_z
-        0.0f, // field_a4
-        {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // field_a8
+        0.0f, // unknown_a4
+        {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // unknown_a8
         1.0f, // unknown_c0
-        0, // field_c4
+        0, // unknown_c4
     };
 #pragma data_seg()
 
@@ -13425,7 +13425,7 @@ extern "C" {
         3.0f, /* 0x1c run_speed */
         0.75f, /* 0x20 backwards_factor */
         -5.0f, /* 0x24 gravity */
-        0.0f, /* 0x28 field_028 */
+        0.0f, /* 0x28 unknown_028 */
         2.0f, /* 0x2c jump_speed */
         1.0f, /* 0x30 jump_duration */
         1.0f, /* 0x34 jump_height */
@@ -13435,11 +13435,11 @@ extern "C" {
         {5.0f}, /* 0x44 velocity_seek_rate */
         0.0f, /* 0x48 jump_hold_duration */
         0.3375f, /* 0x4c collision_origin_radius */
-        1.0471976f, /* 0x50 field_050 */
+        1.0471976f, /* 0x50 unknown_050 */
         0.34906587f, /* 0x54 unknown_054 */
-        10.0f, /* 0x58 field_058 */
-        -1.8325958f, /* 0x5c field_05c */
-        0.0f, /* 0x60 field_060 */
+        10.0f, /* 0x58 unknown_058 */
+        -1.8325958f, /* 0x5c unknown_05c */
+        0.0f, /* 0x60 unknown_060 */
         6.0f, /* 0x64 viewdistance */
         3.0f, /* 0x68 heardistance */
         0.5f, /* 0x6c maxviewheight */
@@ -13449,8 +13449,8 @@ extern "C" {
         {1.0f}, /* 0x7c vehicle_acceleration_time */
         {1.0f}, /* 0x80 vehicle_deceleration_time */
         1.0f, /* 0x84 jump_move_speed_scale */
-        0.0f, /* 0x88 field_088 */
-        99.0f, /* 0x8c field_08c */
+        0.0f, /* 0x88 unknown_088 */
+        99.0f, /* 0x8c unknown_08c */
         0x0u, /* 0x90 flags_090 */
         {0x0u}, /* 0x94 flags_094 */
         {0, 0, 0, 0}, /* 0x98 flags_098 */

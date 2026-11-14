@@ -39,10 +39,10 @@ struct COLLECTION_s {       // size 0x18
     struct COLLECTID *list; // 0x00
     u16 count_x;            // 0x04
     u16 count_y;            // 0x06
-    void *field_8;          // 0x08
+    void *unknown_8;        // 0x08
     void *field_c;          // 0x0c
-    f32 field_10;           // 0x10
-    f32 field_14;           // 0x14
+    f32 unknown_10;         // 0x10
+    f32 unknown_14;         // 0x14
 };
 
 #ifdef __cplusplus

@@ -285,7 +285,7 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         effect->camera_facing = (u8)(EdFileReadChar());
     }
 
-    effect->field_030 = EdFileReadFloat();
+    effect->unknown_030 = EdFileReadFloat();
     if (version < 6) {
         effect->cut_on = 0.0f;
         effect->clip_extent = 25.0f;
@@ -304,9 +304,9 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         effect->sound_range_override = EdFileReadFloat();
     }
     if (version >= 24) {
-        effect->field_044 = EdFileReadFloat();
+        effect->unknown_044 = EdFileReadFloat();
     } else {
-        effect->field_044 = 0.5f;
+        effect->unknown_044 = 0.5f;
     }
     if (version < 7) {
         EdFileReadInt();

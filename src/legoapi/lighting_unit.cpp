@@ -5,20 +5,20 @@
 typedef struct BURN_SET {
     BURN_PARAMETERS parameters;
     BURN_PARAMETERS parameters_copy;
-    i32 field_a8;
+    i32 unknown_a8;
     i32 field_ac;
-    i32 field_b0;
-    i32 field_b4;
-    f32 field_b8;
+    i32 unknown_b0;
+    i32 unknown_b4;
+    f32 unknown_b8;
     f32 field_bc;
     f32 unknown_c0;
-    f32 field_c4;
+    f32 unknown_c4;
     f32 unknown_c8;
     f32 field_cc;
     BURN_OUT burnouts[32];
     i32 active_count;
     i32 selected_index;
-    f32 field_558;
+    f32 unknown_558;
     f32 unknown_55c;
     i32 unknown_560;
 } BURN_SET;
@@ -646,7 +646,7 @@ extern "C" void SetShadowLight(void) {
         if (Players_AveragePos(&center, NULL) == 0) {
             return;
         }
-        ShadowLightFocusHeight = WORLD->shadow_editor->field_30;
+        ShadowLightFocusHeight = WORLD->shadow_editor->unknown_30;
     }
     if (WORLD->shadow_editor == NULL) {
         return;
@@ -657,7 +657,7 @@ extern "C" void SetShadowLight(void) {
     i32 alternate = WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0 && (WORLD->current_level->flags & 0x400) == 0;
     if (CutStopInfo != NULL) {
         direction = WORLD->shadow_editor->direction;
-        secondary_strength = WORLD->shadow_editor->field_0c;
+        secondary_strength = WORLD->shadow_editor->unknown_0c;
         eye = center;
         eye.x -= ShadowLightEyeDistance * direction.x;
         eye.y -= ShadowLightEyeDistance * direction.y;
@@ -715,7 +715,7 @@ extern "C" void SetShadowLight(void) {
     view_direction.w = 1.0f;
     f64 weight = 1.0 < 1.0 + (f64)view_direction.y ? 1.0 : 1.0 + (f64)view_direction.y;
     f32 distance = NuVecDist(&camera_position, &target, NULL);
-    f32 range = WORLD->shadow_editor->field_20;
+    f32 range = WORLD->shadow_editor->unknown_20;
     f32 weight32 = weight;
     f32 interpolation = NuPow(weight32, ShadowLightBlendPower);
     if (alternate) {
@@ -735,18 +735,18 @@ extern "C" void SetShadowLight(void) {
         ShadowLightSplitCount = 1;
         splits[1] = distance + (range - distance) * interpolation;
     }
-    f32 parameter = WORLD->shadow_editor->field_0c;
+    f32 parameter = WORLD->shadow_editor->unknown_0c;
     if (alternate) {
         parameter = secondary_strength;
     }
     PCShadowCurrentLight->SetParameterf(0, parameter);
-    PCShadowCurrentLight->SetParameterf(1, WORLD->shadow_editor->field_10);
-    PCShadowCurrentLight->SetParameterf(2, WORLD->shadow_editor->field_14);
-    PCShadowCurrentLight->SetParameterf(12, WORLD->shadow_editor->field_1c);
-    PCShadowCurrentLight->SetParameterf(9, WORLD->shadow_editor->field_18);
+    PCShadowCurrentLight->SetParameterf(1, WORLD->shadow_editor->unknown_10);
+    PCShadowCurrentLight->SetParameterf(2, WORLD->shadow_editor->unknown_14);
+    PCShadowCurrentLight->SetParameterf(12, WORLD->shadow_editor->unknown_1c);
+    PCShadowCurrentLight->SetParameterf(9, WORLD->shadow_editor->unknown_18);
     PCShadowCurrentLight->SetParameterf(6, ShadowLightWarp);
-    PCShadowCurrentLight->SetParameterf(17, WORLD->shadow_editor->field_1c);
-    PCShadowCurrentLight->SetParameterf(15, WORLD->shadow_editor->field_18);
+    PCShadowCurrentLight->SetParameterf(17, WORLD->shadow_editor->unknown_1c);
+    PCShadowCurrentLight->SetParameterf(15, WORLD->shadow_editor->unknown_18);
     PCShadowCurrentLight->SetParameterf(8, ShadowLightWarp);
     PCShadowCurrentLight->SetParameterf(19, splits[split_count - 1] * ShadowLightSplitScale);
     PCShadowCurrentLight->SetParameterf(20, splits[split_count - 1]);

@@ -171,7 +171,7 @@ extern "C" {
                 }
                 if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 &&
                     (Paused != 0 ||
-                     (NetPaused != 0 && (AreaGlobals.field_08 != 0 ||
+                     (NetPaused != 0 && (AreaGlobals.unknown_08 != 0 ||
                                          (WORLD->area_index != -1 && Game.area_save[WORLD->area_index].red_brick_collected != 0))) ||
                      DrawRedBrickTime > 0.0f) &&
                     screendump == 0) {
@@ -842,11 +842,13 @@ extern "C" {
                 if (SuperStory == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     ((WORLD->area->flags & 0x10) != 0 ||
                      ((WORLD->current_level->flags & 0x200) != 0 && GizmoPickup_NumberOfType(WORLD, 4, 0) > 0))) {
-                    DrawMiniKitCount(minikittime, MiniKitScale, ChallengeMode != 0 ? AreaGlobals.field_20 : AreaGlobals.progress_flags, 10);
+                    DrawMiniKitCount(minikittime, MiniKitScale, ChallengeMode != 0 ? AreaGlobals.unknown_20 : AreaGlobals.progress_flags,
+                                     10);
                 }
                 if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     (WORLD->area->flags & 0x10) != 0 &&
-                    (AreaGlobals.field_08 == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) && redbrickslidetime > 0.0f) {
+                    (AreaGlobals.unknown_08 == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) &&
+                    redbrickslidetime > 0.0f) {
                     f32 factor = NuTrigTable[((i32)((f64)redbrickslidetime * 16384.0) >> 1) & 0x7fff];
                     f32 x = (REDBRICKPOSX - REDBRICKPOS2X) * factor + REDBRICKPOS2X;
                     f32 y = (REDBRICKPOSY - REDBRICKPOS2Y) * factor + REDBRICKPOS2Y;

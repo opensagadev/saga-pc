@@ -290,8 +290,8 @@ void PodRaceSnipersUpdate(void) {
                     if (player_ix == 0) {
                         target = player;
                     }
-                    CalculateInterceptVector(&PodRace_snipers[i].prev, &target->collision_position, &target->velocity, type->field_10, &aim,
-                                             NULL);
+                    CalculateInterceptVector(&PodRace_snipers[i].prev, &target->collision_position, &target->velocity, type->unknown_10,
+                                             &aim, NULL);
                     NuVecAdd(&aim, &aim, &PodRace_snipers[i].prev);
                     PodRace_snipers[i].state -= FRAMETIME;
                     if (PodRace_snipers[i].state < 0.0f) {
@@ -786,15 +786,15 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
                     part = Default_ADDPART;
                     part.matrix = &matrix;
                     part.velocity = &velocity;
-                    part.field_14 = NuSpecialGetOriginRadius(&minesys.mine_special);
-                    part.field_18 = part.field_14;
+                    part.unknown_14 = NuSpecialGetOriginRadius(&minesys.mine_special);
+                    part.unknown_18 = part.unknown_14;
                     part.special = &minesys.mine_special;
                     part.flags = 0x29a;
                     part.gravity = PodSebulbaThrowGravity;
                     part.collision_fn = PartCollide_3D;
                     part.kill_fn = PodRaceMineKill;
                     part.time_step = FRAMETIME;
-                    part.field_a4 = 5.0f;
+                    part.unknown_a4 = 5.0f;
                     AddPart(&part);
                     {
                         const f64 random = NuRandFloat();
@@ -1344,8 +1344,8 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS *process, AIPACKET *packet
                 part.matrix = &matrix;
                 part.velocity = &throw_velocity;
                 part.special = &SebulbaMineSpecial;
-                part.field_14 = 0.1f;
-                part.field_18 = 0.1f;
+                part.unknown_14 = 0.1f;
+                part.unknown_18 = 0.1f;
                 part.gravity = PodSebulbaThrowGravity;
                 part.flags = 0x29b;
                 part.collision_fn = PartCollide_3D;

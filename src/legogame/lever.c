@@ -1,7 +1,7 @@
 #include "saga.h"
 
 typedef struct lever_trigger_flags_s { // size 0x95
-    u8 unknown000[0x94];               // 0x00
+    u8 unknown_000[0x94];              // 0x00
     u8 flags;                          // 0x94
 } LEVER_TRIGGER_FLAGS;
 

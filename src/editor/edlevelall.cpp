@@ -1750,7 +1750,7 @@ void ClassEditor::fun_006b8c30(ClassObject &object) {
 }
 
 void ClassEditor::fun_006b8c50(i32 value) {
-    field_3c = value;
+    unknown_3c = value;
 }
 
 i32 ClassEditor::fun_006b8c60(ClassObject &object) {
@@ -1880,19 +1880,19 @@ f32 *LevelEditor::fun_006b9080() {
 }
 
 void LevelEditor::fun_006b9090(i32 value) {
-    field_0x2c = value;
+    unknown_2c = value;
 }
 
 i32 LevelEditor::fun_006b90a0() {
-    return field_0x30;
+    return unknown_30;
 }
 
 void LevelEditor::fun_006b90b0(i32 value) {
-    field_0x30 = value;
+    unknown_30 = value;
 }
 
 void LevelEditor::fun_006b90c0(i32 value) {
-    field_0x38 = value;
+    unknown_38 = value;
 }
 
 extern "C" i32 fun_006b90d0(void) {
@@ -1900,7 +1900,7 @@ extern "C" i32 fun_006b90d0(void) {
 }
 
 i32 LevelEditor::fun_006b90e0() {
-    return field_0x28;
+    return unknown_28;
 }
 
 void LevelEditor::fun_006b90f0(BaseEditor *editor) {
@@ -3349,7 +3349,7 @@ void LevelEditor::Display(ThingRenderData *) {
         if (edmainGetCursorEnabled()) {
             eduiFlushInteracts();
         }
-        if (field_0x28) {
+        if (unknown_28) {
             NUCAMERA *camera = edmainGetCamera();
             f32 distance = edcamGetDist();
             if (global_camera.far_clip < distance + distance) {
@@ -3382,7 +3382,7 @@ void LevelEditor::Display(ThingRenderData *) {
             NuFntScale(EdLevelFntScale, EdLevelFntScale);
             eduiMenuRender(edLevelPinnedMenu);
         }
-        eduiSetCursorColour(field_0x2c);
+        eduiSetCursorColour(unknown_2c);
         if (edmainGetCursorEnabled()) {
             eduiRenderCursor();
         }
@@ -3649,12 +3649,12 @@ void PlaceableNameControl::Process(EdInputContext &input) {
     if (input.GetHold(22) != 0.0f) {
         ClassObject object = theClassEditor.current_object;
         if (thePlaceableHelper.IsEditorObject(object)) {
-            theClassEditor.field_3c = 0xff008000;
+            theClassEditor.unknown_3c = 0xff008000;
             if (input.GetPress(25) != 0.0f) {
                 SetVal(static_cast<Placeable *>(object.object)->GetName());
             }
         } else {
-            theClassEditor.field_3c = 0xff000080;
+            theClassEditor.unknown_3c = 0xff000080;
         }
     }
 }
@@ -3714,7 +3714,7 @@ void PropertyTool::Initialise(variptr_u &, variptr_u &, i32) {
 }
 
 void PropertyTool::RefreshMenuControls(PropertyMenu *property_menu) {
-    eduiitem_s *item = property_menu->menu->field_0c;
+    eduiitem_s *item = property_menu->menu->unknown_0c;
     NuFntSet(EdLevelFnt);
     NuFntScale(EdLevelFntScale, EdLevelFntScale);
     for (; item != NULL; item = item->next) {
@@ -3722,7 +3722,7 @@ void PropertyTool::RefreshMenuControls(PropertyMenu *property_menu) {
         if (control != NULL) {
             control->Refresh();
         }
-        if (item == property_menu->menu->field_10) {
+        if (item == property_menu->menu->unknown_10) {
             break;
         }
     }
@@ -8318,7 +8318,7 @@ void EdClassObjectNameControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u3
 void EdClassObjectNameControl::Process(EdInputContext &input) {
     if (input.GetHold(22) != 0.0f) {
         ClassObject hovered = theClassEditor.current_object;
-        theClassEditor.field_3c = 0xff008000;
+        theClassEditor.unknown_3c = 0xff008000;
         if (input.GetPress(25) != 0.0f) {
             char name[128];
             hovered.GetName(name, sizeof(name));
@@ -8484,11 +8484,11 @@ LevelEditor::LevelEditor() : first_editor(NULL), last_editor(NULL), editor_count
     background_colour[2] = 0.0f;
     background_colour[3] = 1.0f;
     overlay_alpha = 0.6f;
-    field_0x20 = 0;
-    field_0x24 = 0;
-    field_0x28 = 1;
-    field_0x30 = 1;
-    field_0x38 = 1;
+    unknown_20 = 0;
+    unknown_24 = 0;
+    unknown_28 = 1;
+    unknown_30 = 1;
+    unknown_38 = 1;
     info_x = 0;
     info_y = 0;
     info_width = 640;
@@ -8731,7 +8731,7 @@ i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
         VuVec first;
         VuVec second;
         i32 axis = SelectAxis(input, position, first, second, NULL);
-        theLevelEditor.field_0x2c = AxisColour[axis];
+        theLevelEditor.unknown_2c = AxisColour[axis];
         if (input.GetHold(3) == 0.0f && input.GetHold(38) == 0.0f) {
             return axis != 0;
         }
@@ -8884,7 +8884,7 @@ i32 EdManRotate::Process(EdInputContext &input, ClassObjectList &objects) {
     }
     __declspec(align(16)) VuVec plane;
     i32 axis = SelectRotator(input, position, plane);
-    theLevelEditor.field_0x2c = AxisColour[axis];
+    theLevelEditor.unknown_2c = AxisColour[axis];
     return RotateItem(input, objects, angle_delta, axis);
 }
 
@@ -8911,7 +8911,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
     __declspec(align(16)) VuVec first;
     VuVec second;
     i32 axis = SelectAxis(input, position, first, second, &transform);
-    theLevelEditor.field_0x2c = AxisColour[axis];
+    theLevelEditor.unknown_2c = AxisColour[axis];
     if (input.GetHold(3) == 0.0f) {
         return axis != 0;
     }
@@ -10785,7 +10785,7 @@ void ClassEditor::Render() {
         active_tool->Render();
     }
     if (current_object.object != NULL && !IsSelectedObject(current_object)) {
-        DrawObjectSphere(current_object, field_3c);
+        DrawObjectSphere(current_object, unknown_3c);
     }
     if (selected_objects.count > 0) {
         ClassObjectListEntry *entry;
@@ -10893,7 +10893,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
     memset(info_text, 0, sizeof(info_text));
     memset(reserved_0xf00, 0, 0x80);
     memset(reserved_0xf00 + 0x80, 0, 0x80);
-    field_0x2c = -1;
+    unknown_2c = -1;
     editable_scene_count = 0;
     if (scenes[0].editable) {
         editable_scene_count++;
@@ -10925,7 +10925,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
     if (scenes[9].editable) {
         editable_scene_count++;
     }
-    if (edLevelActiveMenu == NULL && field_0x38 != 0 && input.GetPress(4) != 0.0f) {
+    if (edLevelActiveMenu == NULL && unknown_38 != 0 && input.GetPress(4) != 0.0f) {
         eduiSetCameraEnabled(0);
         eduiSetDefaultActiveMenu(eduiGetActiveMenu());
         theLevelEditor.CreateMenu();
@@ -10951,7 +10951,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
         edLevelNextMenu = NULL;
     }
     NUCAMERA *camera;
-    if (field_0x28 != 0) {
+    if (unknown_28 != 0) {
         camera = edmainGetCamera();
     } else {
         camera = &global_camera;
@@ -10960,13 +10960,13 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
     if (edmainGetCursorEnabled()) {
         eduiProcessCursor(0.0f, pad);
     }
-    if (field_0x28 != 0 && eduiGetCameraEnabled()) {
+    if (unknown_28 != 0 && eduiGetCameraEnabled()) {
         if (edlevel_mouseandkeyboard != 0) {
             edcamMove(NULL);
         } else {
             edcamMove(pad);
         }
-        edcamGetPosAng(reinterpret_cast<NUVEC *>(background_colour), &field_0x20, &field_0x24);
+        edcamGetPosAng(reinterpret_cast<NUVEC *>(background_colour), &unknown_20, &unknown_24);
     }
     if (input.GetPress(17) != 0.0f) {
         overlay_alpha += 0.1f;
@@ -11168,7 +11168,7 @@ i32 CursorTool::Process(EdInputContext &input) {
         }
         NewPrim = 0;
     }
-    if (theLevelEditor.field_0x30 == 0) {
+    if (theLevelEditor.unknown_30 == 0) {
         return 0;
     }
     ClassObject after;
@@ -11221,8 +11221,8 @@ void ClassEditor::Process(EdInputContext &input) {
     UpdateSelectedObjects(input);
     UpdateClassFilter(input);
     if (menu != NULL) {
-        theLevelEditor.field_0x30 = 0;
-        theLevelEditor.field_0x38 = 0;
+        theLevelEditor.unknown_30 = 0;
+        theLevelEditor.unknown_38 = 0;
         NuFntSet(EdLevelFnt);
         NuFntScale(EdLevelFntScale, EdLevelFntScale);
         eduiMenuProcess(menu, input.delta_time, input.pad);
@@ -11233,9 +11233,9 @@ void ClassEditor::Process(EdInputContext &input) {
     if (input.GetHold(13) != 0.0f) {
         return;
     }
-    theLevelEditor.field_0x30 = 1;
-    theLevelEditor.field_0x38 = 1;
-    field_3c = 0xff808080;
+    theLevelEditor.unknown_30 = 1;
+    theLevelEditor.unknown_38 = 1;
+    unknown_3c = 0xff808080;
     i32 handled = thePropertyTool.Process(input);
     if (!handled) {
         if (input.GetPress(5) != 0.0f) {

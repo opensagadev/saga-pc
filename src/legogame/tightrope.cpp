@@ -59,14 +59,14 @@ extern "C" {
                 EdFileReadNuVec(&world->tightropes[index].start_position);
                 EdFileReadNuVec(&world->tightropes[index].end_position);
                 if (version >= 2) {
-                    world->tightropes[index].field_0x28 = EdFileReadUnsignedShort();
-                    world->tightropes[index].field_0x2a = EdFileReadUnsignedShort();
-                    world->tightropes[index].field_0x2c = EdFileReadUnsignedShort();
-                    world->tightropes[index].field_0x2e = EdFileReadUnsignedShort();
-                    world->tightropes[index].field_0x30 = EdFileReadUnsignedChar();
+                    world->tightropes[index].unknown_28 = EdFileReadUnsignedShort();
+                    world->tightropes[index].unknown_2a = EdFileReadUnsignedShort();
+                    world->tightropes[index].unknown_2c = EdFileReadUnsignedShort();
+                    world->tightropes[index].unknown_2e = EdFileReadUnsignedShort();
+                    world->tightropes[index].unknown_30 = EdFileReadUnsignedChar();
                     world->tightropes[index].unknown_31 = EdFileReadUnsignedChar();
                     if (version >= 3) {
-                        world->tightropes[index].field_0x32 = EdFileReadChar();
+                        world->tightropes[index].unknown_32 = EdFileReadChar();
                     }
                 }
             }
@@ -218,22 +218,22 @@ extern "C" {
             i32 point;
             GAMEOBJECT *object;
             for (endpoint = 0; endpoint < 2; ++endpoint) {
-                if (rope->visible != 0 || (rope->field_0x32 != 0 && endpoint < 1)) {
+                if (rope->visible != 0 || (rope->unknown_32 != 0 && endpoint < 1)) {
                     i32 model;
                     u16 angle_x;
                     NUVEC *position;
                     if (endpoint == 0) {
-                        model = rope->field_0x30 != 0 ? 64 : 63;
-                        angle_x = rope->field_0x28;
+                        model = rope->unknown_30 != 0 ? 64 : 63;
+                        angle_x = rope->unknown_28;
                         position = &rope->start_position;
                     } else {
                         model = rope->unknown_31 != 0 ? 64 : 63;
-                        angle_x = rope->field_0x2a;
+                        angle_x = rope->unknown_2a;
                         position = &rope->end_position;
                     }
                     if (WORLD->level_objects[model].active != 0) {
                         NuMtxSetRotationX(&matrix, angle_x);
-                        NuMtxRotateY(&matrix, endpoint == 0 ? rope->field_0x2c : (NUANG)rope->field_0x2e);
+                        NuMtxRotateY(&matrix, endpoint == 0 ? rope->unknown_2c : (NUANG)rope->unknown_2e);
                         NuMtxTranslate(&matrix, position);
                         NuSpecialDrawAt(&WORLD->level_objects[model].special, &matrix);
                     }

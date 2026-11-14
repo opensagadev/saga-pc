@@ -31,9 +31,9 @@ struct nuspecial_handle_s;
 
 typedef struct gizmo_s { // size 0x8
     void *object;        // 0x0
-    i16 field_04;        // 0x4
+    i16 unknown_04;      // 0x4
     u8 type_id;          // 0x6
-    u8 field_07;         // 0x7
+    u8 unknown_07;       // 0x7
 } GIZMO_PC;
 
 struct gizmoset_s;

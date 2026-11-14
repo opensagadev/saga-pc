@@ -123,15 +123,15 @@ STATIC_ASSERT(offsetof(GAMESAVE, mission_save) + offsetof(MISSION_SAVE_READER, c
 
 // Access prefix only; the original allocation extent remains unknown.
 typedef struct area_globals_s { // size 0x34
-    i32 field_00;               // 0x00
-    i32 field_04;               // 0x04
-    i32 field_08;               // 0x08
+    i32 unknown_00;             // 0x00
+    i32 unknown_04;             // 0x04
+    i32 unknown_08;             // 0x08
     i32 area_phase;             // 0x0c
     i32 new_minikit_count;      // 0x10
     i32 progress_flags;         // 0x14
-    i32 field_18;               // 0x18
-    i32 field_1c;               // 0x1c
-    i32 field_20;               // 0x20
+    i32 unknown_18;             // 0x18
+    i32 unknown_1c;             // 0x1c
+    i32 unknown_20;             // 0x20
     u32 arcade_player_kills[2]; // 0x24
     u32 arcade_ai_kills[2];     // 0x2c
 } AREA_GLOBALS_PC;
@@ -432,7 +432,7 @@ typedef struct custom_piece_config_s {
     i16 icon_character_id;
     i16 weapon_model;
     i16 unknown_indices_0a[3];
-    i8 field_10;
+    i8 unknown_10;
     i8 collection_type;
     u16 availability_flags;
     u32 model_flags;

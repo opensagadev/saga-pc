@@ -34,7 +34,7 @@ typedef struct menu_s {       // size 0xe0
     u32 buttons_pressed;      // 0x44
     i32 column_count;         // 0x48
     i32 row_count;            // 0x4c
-    i32 field_50;             // 0x50
+    i32 unknown_50;           // 0x50
     i32 up_pressed;           // 0x54
     i32 down_pressed;         // 0x58
     i32 left_pressed;         // 0x5c
@@ -202,7 +202,7 @@ struct MENU_s {                     // size 0x2678
     u32 buttons_pressed;            // 0x0044
     i32 column_count;               // 0x0048
     i32 row_count;                  // 0x004c
-    i32 field_50;                   // 0x0050
+    i32 unknown_50;                 // 0x0050
     i32 up_pressed;                 // 0x0054
     i32 down_pressed;               // 0x0058
     i32 left_pressed;               // 0x005c
@@ -222,13 +222,13 @@ struct MENU_s {                     // size 0x2678
     f32 draw_x;                     // 0x0094
     f32 draw_y;                     // 0x0098
     f32 draw_z;                     // 0x009c
-    f32 field_a0;                   // 0x00a0
+    f32 unknown_a0;                 // 0x00a0
     f32 centre_offset;              // 0x00a4
     u8 pad_a8[4];                   // 0x00a8
     i32 paused;                     // 0x00ac
-    i32 field_b0;                   // 0x00b0
-    i32 field_b4;                   // 0x00b4
-    i32 field_b8;                   // 0x00b8
+    i32 unknown_b0;                 // 0x00b0
+    i32 unknown_b4;                 // 0x00b4
+    i32 unknown_b8;                 // 0x00b8
     i32 field_bc;                   // 0x00bc
     i32 unknown_c0;                 // 0x00c0
     f32 *item_offsets;              // 0x00c4

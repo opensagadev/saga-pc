@@ -498,7 +498,7 @@ void HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET *packet) {
             delta.y = height;
             NuVecNorm(&delta, &delta);
             FindAnglesXY(&delta, &target_x, &target_y);
-            seek = (f32)((NuTrigTable[((i32)((bolt->time / type->field_14) * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 15.0);
+            seek = (f32)((NuTrigTable[((i32)((bolt->time / type->unknown_14) * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 15.0);
             target_x = SeekRot(current_x, target_x, seek);
             target_y = SeekRot(current_y, target_y, seek);
             NuMtxSetIdentity(&matrix);
@@ -798,7 +798,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     }
     type =
         WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0 ? BoltType_FindByID(16, WORLD) : BoltType_FindByID(15, WORLD);
-    range = type->field_14 * type->field_10;
+    range = type->unknown_14 * type->unknown_10;
     range *= range;
     if ((TORPEDO_PACKET(object)->flags & 2) != 0 && TORPEDO_PACKET(object)->target != NULL) {
         target = TORPEDO_PACKET(object)->target;

@@ -902,8 +902,8 @@ extern "C" {
         if (DoubleScoreTime > 0.0f && (i32)((f64)GameTimer.time_elapsed * 2.0) != (i32)((f64)GameTimer.last_time_elapsed * 2.0)) {
             GameAudio_PlaySfxAndSetVolume(0x35, NULL, DoubleScoreTime);
         }
-        if (AreaGlobals.field_00 == 0 && Cheats_CheckFlags(0x2000) != 0) {
-            AreaGlobals.field_00 = 1;
+        if (AreaGlobals.unknown_00 == 0 && Cheats_CheckFlags(0x2000) != 0) {
+            AreaGlobals.unknown_00 = 1;
         }
     }
 

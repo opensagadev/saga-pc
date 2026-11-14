@@ -231,7 +231,7 @@ void edpartInitType(i32 index) {
     ((PART_RUNTIME_TYPE *)part_types)[index].impact_effect = -1;
     ((PART_RUNTIME_TYPE *)part_types)[index].impact_part = -1;
     ((PART_RUNTIME_TYPE *)part_types)[index].last_used_time = 0.0f;
-    ((PART_RUNTIME_TYPE *)part_types)[index].field_174 = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].unknown_174 = -1;
     ((PART_RUNTIME_TYPE *)part_types)[index].scale = 1.0f;
     for (i = 0; i < 4; ++i) {
         ((PART_RUNTIME_TYPE *)part_types)[index].sounds[i] = -1;
@@ -263,7 +263,7 @@ void edpartInitType(i32 index) {
                     }                                                                                                                      \
                     ((PART_RUNTIME_TYPE *)part_types)[index].unknown_160 = 1.0f;                                                           \
                     ((PART_RUNTIME_TYPE *)part_types)[index].unknown_164 = 1.0f;                                                           \
-                    ((PART_RUNTIME_TYPE *)part_types)[index].field_168 = 1.0f;                                                             \
+                    ((PART_RUNTIME_TYPE *)part_types)[index].unknown_168 = 1.0f;                                                           \
                     break;                                                                                                                 \
                 }                                                                                                                          \
             }                                                                                                                              \
@@ -1036,11 +1036,11 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *item, u32 value);
 #define EDPART_REFRESH_EMITTER_SOUNDS()                                                                                                    \
     for (emitter = 0; emitter < 40; ++emitter) {                                                                                           \
         if (part_emits[emitter].effect_id == edpart_nearest_emit->effect_id) {                                                             \
-            part_emits[emitter].field_3c = 0;                                                                                              \
+            part_emits[emitter].unknown_3c = 0;                                                                                            \
             for (sound = 0; emitter < 4; ++sound) {                                                                                        \
                 if (part_types[part_emits[emitter].effect_id].sounds[sound] != -1 &&                                                       \
                     part_types[part_emits[emitter].effect_id].sound_modes[sound] != 0) {                                                   \
-                    part_emits[emitter].field_3c = 1;                                                                                      \
+                    part_emits[emitter].unknown_3c = 1;                                                                                    \
                     break;                                                                                                                 \
                 }                                                                                                                          \
             }                                                                                                                              \
@@ -1189,9 +1189,9 @@ void edpartSoundsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 void edpartSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edpart_switchtype_menu = NULL;
     if (edpart_nearest_emit != NULL) {
-        edpart_nearest_emit->field_44 = item->data;
-        if (edpart_nearest_emit->field_44 == 0) {
-            edpart_nearest_emit->field_3d = 1;
+        edpart_nearest_emit->unknown_44 = item->data;
+        if (edpart_nearest_emit->unknown_44 == 0) {
+            edpart_nearest_emit->unknown_3d = 1;
         }
     }
     eduiMenuDetach(menu);
@@ -1213,9 +1213,9 @@ void edpartSwitchTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_switchtype_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelSwitchTypeMenu, "Switch Type");
     if (edpart_switchtype_menu != NULL) {
         eduiMenuAddItem(edpart_switchtype_menu,
-                        eduiItemCheckCreate(0, edblack, part_emits[edpart_nearest].field_44 == 0, 1, edpartSetSwitchType, "None"));
-        eduiMenuAddItem(edpart_switchtype_menu,
-                        eduiItemCheckCreate(1, edblack, part_emits[edpart_nearest].field_44 == 1, 1, edpartSetSwitchType, "Global Switch"));
+                        eduiItemCheckCreate(0, edblack, part_emits[edpart_nearest].unknown_44 == 0, 1, edpartSetSwitchType, "None"));
+        eduiMenuAddItem(edpart_switchtype_menu, eduiItemCheckCreate(1, edblack, part_emits[edpart_nearest].unknown_44 == 1, 1,
+                                                                    edpartSetSwitchType, "Global Switch"));
         eduiMenuAttach(menu, edpart_switchtype_menu);
         edpart_switchtype_menu->x = menu->x + 10;
         edpart_switchtype_menu->y = menu->y + 40;
@@ -1420,7 +1420,7 @@ i32 edpartSaveEffects(char *filename, u8 page) {
             EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].maximum_distance);
             EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].unknown_160);
             EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].unknown_164);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].field_168);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].unknown_168);
         }
 
         if (page == 1) {
@@ -1439,7 +1439,7 @@ i32 edpartSaveEffects(char *filename, u8 page) {
                 EdFileWriteShort(part_emits[index].rotation_30);
                 EdFileWriteShort(part_emits[index].rotation_2e);
                 EdFileWriteShort(part_emits[index].rotation_2c);
-                EdFileWriteShort(part_emits[index].field_44);
+                EdFileWriteShort(part_emits[index].unknown_44);
                 EdFileWriteShort(part_emits[index].unknown_46);
             }
         } else {

@@ -6,7 +6,7 @@
 void PartUpdate_Heart(PART_PC *part);
 
 typedef struct coinpacket_pickup_s {
-    u8 unknown0[0xa];
+    u8 unknown_0[0xa];
     u8 multiplier;
     u8 unknown_b;
     f32 timer;
@@ -156,8 +156,8 @@ void Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJ
         queued->target_is_coin_total = 6;
     }
     DrawMiniKitTime = 2.0f;
-    if (AreaGlobals.field_1c < 10) {
-        ++AreaGlobals.field_1c;
+    if (AreaGlobals.unknown_1c < 10) {
+        ++AreaGlobals.unknown_1c;
     }
 }
 
@@ -390,8 +390,8 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
 
 static void EndRedBrickMessage(GAME_MESSAGE_PC *message) {
     (void)message;
-    if (AreaGlobals.field_08 != 0) {
-        AreaGlobals.field_08 = 2;
+    if (AreaGlobals.unknown_08 != 0) {
+        AreaGlobals.unknown_08 = 2;
     }
     RedBrickScale = 2.0f;
     GameAudio_PlaySfx(0x26, NULL, 0, 0);
@@ -423,7 +423,7 @@ void CollectRedBrick(NUVEC *position) {
         AddGameMsg(&message);
         DrawRedBrickTime = 2.0f;
         if (WORLD->area_index != -1) {
-            AreaGlobals.field_08 = 1;
+            AreaGlobals.unknown_08 = 1;
         }
     }
 }
@@ -595,13 +595,13 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
     PART_PC *part;
     params.position = position;
     params.velocity = velocity;
-    params.field_14 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_radius_x);
-    params.field_18 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_extent_x);
+    params.unknown_14 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_radius_x);
+    params.unknown_18 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_extent_x);
     params.part_id = 0x79;
     params.special = &world->level_objects[0x79].special;
     params.gravity = AreaPickupGravity;
     if (params.gravity == 0.0f) {
-        params.field_a4 = 5.0f;
+        params.unknown_a4 = 5.0f;
     } else {
         params.stop_fn = PartStop_Flickerer;
     }
@@ -609,7 +609,7 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
     params.draw_fn = PartDraw_Torp;
     params.update_fn = NULL;
     params.flags = 0x256;
-    params.field_88 = lifetime;
+    params.unknown_88 = lifetime;
     if (params.gravity == 0.0f) {
         params.move_fn = PartMove_VehiclePickup;
     }
@@ -619,7 +619,7 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
     if (part != NULL) {
         part->rotation_y = (u16)qrand();
         part->unknown_206 = 3;
-        part->field_214 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)NuTrigTable[0x2000]);
+        part->unknown_214 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)NuTrigTable[0x2000]);
     }
 }
 
@@ -634,15 +634,15 @@ void AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *velocity, f32
     params.position = position;
     params.velocity = velocity;
     params.part_id = 0xcb;
-    params.field_18 = params.field_14 = scale * GizmoPickupType[5].shadow_radius_x;
+    params.unknown_18 = params.unknown_14 = scale * GizmoPickupType[5].shadow_radius_x;
     params.gravity = AreaPickupGravity;
     params.special = &world->level_objects[0xcb].special;
-    params.field_88 = lifetime;
+    params.unknown_88 = lifetime;
     params.collision_fn = PartCollide_3D;
     params.update_fn = PartUpdate_Heart;
     params.flags = 0x256;
     if ((world->current_level->flags & 0x80000) != 0) {
-        params.field_a4 = PartVehicleHeartLifetime;
+        params.unknown_a4 = PartVehicleHeartLifetime;
         params.move_fn = PartMove_VehicleHeart;
         params.recipient = recipient;
         params.draw_fn = PartDraw_VehicleHeart;
@@ -702,7 +702,7 @@ void PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) 
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     ADDPART params = Default_ADDPART;
     PART_PC *part;
-    params.field_18 = params.field_14 = scale * GizmoPickupType[9].shadow_radius_x;
+    params.unknown_18 = params.unknown_14 = scale * GizmoPickupType[9].shadow_radius_x;
     params.gravity = AreaPickupGravity;
     params.position = position;
     params.velocity = velocity;
@@ -714,7 +714,7 @@ void PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) 
     params.flags = 0x256;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PowerUp_DrawPart;
-    params.field_88 = lifetime;
+    params.unknown_88 = lifetime;
     if (params.gravity == 0.0f) {
         params.move_fn = PartMove_VehiclePickup;
     }
@@ -956,7 +956,7 @@ void GizmoPickups_SetOnOff(void) {
                 off = 0;
             }
         }
-        GizmoPickupType[index].field_0f = off == 0;
+        GizmoPickupType[index].unknown_0f = off == 0;
     }
 }
 
@@ -1056,7 +1056,7 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
     params.position = position;
     params.velocity = velocity;
     params.part_id = model;
-    params.field_18 = params.field_14 = scale * type->shadow_radius_x;
+    params.unknown_18 = params.unknown_14 = scale * type->shadow_radius_x;
     params.gravity = AreaPickupGravity;
     params.special = &world->level_objects[model].special;
     params.flags = 0x56;
@@ -1071,7 +1071,7 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
     } else {
         params.destroy_fn = PartStolen_Coin;
     }
-    params.field_88 = lifetime;
+    params.unknown_88 = lifetime;
     params.collision_fn = PartCollide_3D;
     params.stop_fn = PartStop_Coin;
     params.impact_fn = PartImpact_Coin;

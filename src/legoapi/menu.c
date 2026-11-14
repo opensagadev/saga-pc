@@ -434,7 +434,7 @@ typedef struct PC_MENU_UPDATE_VIEW { // size 0xe0
     u32 buttons_pressed;             // 0x44
     i32 column_count;                // 0x48
     i32 row_count;                   // 0x4c
-    i32 unknown50;                   // 0x50
+    i32 unknown_50;                  // 0x50
     i32 up_pressed;                  // 0x54
     i32 down_pressed;                // 0x58
     i32 left_pressed;                // 0x5c
@@ -449,7 +449,7 @@ typedef struct PC_MENU_UPDATE_VIEW { // size 0xe0
     u32 select_pressed;              // 0x80
     u32 action_04_pressed;           // 0x84
     u32 action_08_pressed;           // 0x88
-    u8 unknown8c[0x4c];              // 0x8c
+    u8 unknown_8c[0x4c];             // 0x8c
     i32 input_disabled;              // 0xd8
     i32 state;                       // 0xdc
 } PC_MENU_UPDATE_VIEW;

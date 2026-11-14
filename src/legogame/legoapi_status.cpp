@@ -106,7 +106,7 @@ extern "C" {
         if (packet->gold_brick_enabled[index] != 0) {
             STATUS_STAGE_s *stage = packet->stage;
             DrawGoldBrick_Stage = index;
-            DrawGoldBrick_Phase = stage->field_0x14;
+            DrawGoldBrick_Phase = stage->unknown_14;
         }
     }
 
@@ -230,10 +230,10 @@ extern "C" {
 
     void StatusStage_Reset(STATUS_STAGE_s *stage) {
         if (stage != NULL) {
-            stage->field_0x14 = -1;
-            stage->field_0x18 = 0.0f;
-            stage->field_0x12 = 0;
-            stage->field_0x1c = 1.0f;
+            stage->unknown_14 = -1;
+            stage->unknown_18 = 0.0f;
+            stage->unknown_12 = 0;
+            stage->unknown_1c = 1.0f;
         }
     }
 
@@ -278,12 +278,12 @@ extern "C" {
     }
 
     void NextStatusStage(STATUSPACKET_s *packet) {
-        if (packet->stage != NULL && packet->stage->field_0x14 == -1 && packet->stage->field_0x18 < packet->field_0x68) {
+        if (packet->stage != NULL && packet->stage->unknown_14 == -1 && packet->stage->unknown_18 < packet->unknown_68) {
             packet->flags_word |= 2;
             return;
         }
         if (packet->stage != NULL) {
-            packet->stage->field_0x12 = 1;
+            packet->stage->unknown_12 = 1;
         }
         packet->previous_stage_2 = packet->previous_stage;
         packet->current_gold_brick = (i8)((u8)packet->current_gold_brick + 1);
@@ -316,7 +316,7 @@ extern "C" {
 
     i32 AddGoldBrickMessage(STATUSPACKET_s *packet, i16 brick) {
         if (goldbrickmsgcount < 16) {
-            ((i16 *)(packet->field_0x12c))[goldbrickmsgcount] = brick;
+            ((i16 *)(packet->unknown_12c))[goldbrickmsgcount] = brick;
             ++goldbrickmsgcount;
         }
         AddToGoldBricks();
@@ -335,7 +335,7 @@ extern "C" {
     i32 newCharactersCollected(STATUSPACKET_s *packet) {
         i32 count = 0;
         if (StartupGameFlag1 == 0) {
-            if ((((u8 *)&packet->lsw_packet->field_0x00)[3] & 1) != 0 && Game.initial_store_pack_flags != areaSuitBits) {
+            if ((((u8 *)&packet->lsw_packet->unknown_00)[3] & 1) != 0 && Game.initial_store_pack_flags != areaSuitBits) {
                 return 1;
             }
         } else {
@@ -375,14 +375,14 @@ extern "C" {
         i32 (*init)(WORLDINFO *, STATUSPACKET_s *) = packet->init_callback;
         i32 (*finish)(WORLDINFO *, STATUSPACKET_s *, i32) = packet->finish_callback;
         void (*draw)(STATUSPACKET_s *) = packet->draw_background_callback;
-        f32 delay = packet->field_0x68;
+        f32 delay = packet->unknown_68;
         reset(packet);
         memset(packet, 0, sizeof(*packet));
         packet->lsw_packet = lsw;
         packet->finish_callback = finish;
         packet->reset_callback = reset;
         packet->draw_background_callback = draw;
-        packet->field_0x68 = delay;
+        packet->unknown_68 = delay;
         packet->init_callback = init;
     }
 
@@ -703,7 +703,7 @@ extern "C" {
             p->collected_score = (f32)(p->coins_remaining[0] + p->coins_remaining[1]);
         }
         p->newly_completed = 0;
-        if ((p->field_0xb0 & 4) != 0) {
+        if ((p->unknown_b0 & 4) != 0) {
             p->true_hero_percent = 100.0f;
         } else {
             f32 target = p->true_hero_target;
@@ -715,7 +715,7 @@ extern "C" {
         }
         p->coins_collected[0] = p->coins_remaining[0];
         p->coins_collected[1] = p->coins_remaining[1];
-        if (area != -1 && (p->field_0xb0 & 0x40) == 0 && p->episode != NULL && p->chapter < p->episode->regular_areas) {
+        if (area != -1 && (p->unknown_b0 & 0x40) == 0 && p->episode != NULL && p->chapter < p->episode->regular_areas) {
             p->next_area = p->episode->area_ids[p->chapter + 1];
             if (p->chapter < p->episode->regular_areas - 1) {
                 p->flags_word |= 8;
@@ -737,7 +737,7 @@ extern "C" {
         {
             i32 gold = 0;
             i32 completed_episode = 0;
-            if (area != -1 && (p->field_0xb0 & 0x40) == 0 && Game.area_save[area].area_complete == 0 && (p->area->flags & 0x26) == 0) {
+            if (area != -1 && (p->unknown_b0 & 0x40) == 0 && Game.area_save[area].area_complete == 0 && (p->area->flags & 0x26) == 0) {
                 p->newly_completed = 1;
                 Game.area_save[area].area_complete = 1;
                 AddToCompletionPoints(POINTS_PER_STORY);
@@ -752,7 +752,7 @@ extern "C" {
                         Game.area_save[EDataList[i].area_ids[0]].complete = 1;
                     }
                 }
-                if ((p->field_0xb0 & 8) != 0) {
+                if ((p->unknown_b0 & 8) != 0) {
                     Game.area_save[p->next_area].complete = 1;
                 } else if (p->episode != NULL) {
                     i32 bonus = Episode_FindAreaFromFlags(p->episode, 5, 4);
@@ -776,14 +776,14 @@ extern "C" {
         if (GOTHAMSTREETS_ADATA != NULL && p->newly_completed != 0 && p->area == GOTHAMSTREETS_ADATA) {
             AddStatusStage(p, 8, 0);
         }
-        if (p->area != NULL && (u8)p->area->cheat != 0xff && Game.area_save[area].red_brick_collected == 0 && AreaGlobals.field_08 != 0) {
+        if (p->area != NULL && (u8)p->area->cheat != 0xff && Game.area_save[area].red_brick_collected == 0 && AreaGlobals.unknown_08 != 0) {
             AddToCompletionPoints(POINTS_PER_REDBRICK);
             Game.area_save[area].red_brick_collected = 1;
             AddStatusStage(p, 18, 0);
         }
         if (p->newly_completed != 0 && newCharactersCollected(p) > 0) {
             if (StartupGameFlag1 == 0) {
-                if (((u32)p->lsw_packet->field_0x00 & 0x01000000u) != 0) {
+                if (((u32)p->lsw_packet->unknown_00 & 0x01000000u) != 0) {
                     AddStatusStage(p, 5, 0);
                 } else {
                     AddStatusStage(p, 6, 0);
@@ -799,7 +799,7 @@ extern "C" {
             if (HubBothTrueJediGoldBricks != 0) {
                 u8 *complete = &Game.area_save[area].true_hero_complete[(p->flags_word >> 6) & 1];
                 if (*complete == 0) {
-                    if ((p->field_0xb0 & 4) != 0) {
+                    if ((p->unknown_b0 & 4) != 0) {
                         *complete = 1;
                         AddToCompletionPoints(POINTS_PER_TRUEJEDI);
                         AddStatusStage(p, 1, AddGoldBrickMessage(p, dat_00880818));
@@ -808,7 +808,7 @@ extern "C" {
                     }
                 }
             } else if (Game.area_save[area].true_hero_complete[0] == 0 && Game.area_save[area].true_hero_complete[1] == 0) {
-                if ((p->field_0xb0 & 4) != 0) {
+                if ((p->unknown_b0 & 4) != 0) {
                     Game.area_save[area].true_hero_complete[1] = 1;
                     Game.area_save[area].true_hero_complete[0] = 1;
                     AddToCompletionPoints(POINTS_PER_TRUEJEDI);
@@ -834,7 +834,7 @@ extern "C" {
             if (PauseSaveAndExit == 0 || p->new_minikits != 0) {
                 AddStatusStage(p, 4, gold);
             }
-            if ((p->field_0xb0 & 0x10) != 0 && AllMiniKitsDone((AREASAVE_s *)Game.area_save) != 0) {
+            if ((p->unknown_b0 & 0x10) != 0 && AllMiniKitsDone((AREASAVE_s *)Game.area_save) != 0) {
                 AddToCollection(dat_007f195c);
                 AddStatusStage(p, 17, 0);
             }
@@ -898,15 +898,15 @@ extern "C" {
 
 i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
     (void)packet;
-    if (stage->field_0x18 > stage->field_0x1c) {
-        stage->field_0x18 = 0.0f;
+    if (stage->unknown_18 > stage->unknown_1c) {
+        stage->unknown_18 = 0.0f;
         currentminikit = (i32)((u32)currentminikit + 1u);
         pop_timer = 0.5f;
         slideseek = 1.0f;
         return 1;
     }
-    if (stage->field_0x18 > stage->field_0x1c - jibberlen - slidetime && stage->field_0x18 <= stage->field_0x1c - jibberlen) {
-        slideseek = (stage->field_0x1c - stage->field_0x18 - jibberlen) / slidetime;
+    if (stage->unknown_18 > stage->unknown_1c - jibberlen - slidetime && stage->unknown_18 <= stage->unknown_1c - jibberlen) {
+        slideseek = (stage->unknown_1c - stage->unknown_18 - jibberlen) / slidetime;
     }
     return 0;
 }
@@ -1280,29 +1280,29 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
         if (StatusPacket.draw_background_callback != NULL) {
             StatusPacket.draw_background_callback(&StatusPacket);
         }
-        if (DrawGoldBrick_Phase != -1 && DrawGoldBrick_Stage != -1 && StatusPacket.stage->field_0x14 == DrawGoldBrick_Phase &&
+        if (DrawGoldBrick_Phase != -1 && DrawGoldBrick_Stage != -1 && StatusPacket.stage->unknown_14 == DrawGoldBrick_Phase &&
             StatusPacket.current_gold_brick == DrawGoldBrick_Stage) {
             f32 duration;
             if (DrawGoldBrick_Phase == 4) {
                 duration = 5.5f;
-                if (StatusPacket.stage->field_0x18 >= duration) {
+                if (StatusPacket.stage->unknown_18 >= duration) {
                     goto draw_stages;
                 }
             } else {
-                duration = StatusPacket.stage->field_0x1c;
+                duration = StatusPacket.stage->unknown_1c;
             }
             u16 rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25f * 65536.0f);
             u16 tilt = (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f);
             f32 quarter = duration * 0.25f;
             f32 three_quarters = duration * 0.75f;
             f32 alpha;
-            if (StatusPacket.stage->field_0x18 < quarter) {
-                alpha = NuTrigTable[((i32)(StatusPacket.stage->field_0x18 / quarter * 16384.0f) >> 1) & 0x7fff];
-            } else if (StatusPacket.stage->field_0x18 < three_quarters) {
+            if (StatusPacket.stage->unknown_18 < quarter) {
+                alpha = NuTrigTable[((i32)(StatusPacket.stage->unknown_18 / quarter * 16384.0f) >> 1) & 0x7fff];
+            } else if (StatusPacket.stage->unknown_18 < three_quarters) {
                 alpha = 1.0f;
             } else {
                 alpha = NuTrigTable
-                    [((i32)((1.0f - (StatusPacket.stage->field_0x18 - three_quarters) / (duration - three_quarters)) * 16384.0f) >> 1) &
+                    [((i32)((1.0f - (StatusPacket.stage->unknown_18 - three_quarters) / (duration - three_quarters)) * 16384.0f) >> 1) &
                      0x7fff];
             }
             f32 scale = StatusGoldBrickScale * alpha;
@@ -1331,14 +1331,14 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
         if (StatusPacket.stage->type == 12) {
             alpha = 0.0f;
         } else if (StatusPacket.stage->type == 10) {
-            alpha = StatusPacket.stage->field_0x18 < 1.0f ? 1.0f - StatusPacket.stage->field_0x18 : 0.0f;
-        } else if (StatusPacket.stage->type == 19 && StatusPacket.stage->field_0x14 != 0) {
-            if (StatusPacket.stage->field_0x18 < 1.0f) {
-                alpha = 1.0f - StatusPacket.stage->field_0x18;
+            alpha = StatusPacket.stage->unknown_18 < 1.0f ? 1.0f - StatusPacket.stage->unknown_18 : 0.0f;
+        } else if (StatusPacket.stage->type == 19 && StatusPacket.stage->unknown_14 != 0) {
+            if (StatusPacket.stage->unknown_18 < 1.0f) {
+                alpha = 1.0f - StatusPacket.stage->unknown_18;
             } else {
-                f32 fade_start = StatusPacket.stage->field_0x1c - 1.0;
-                if (StatusPacket.stage->field_0x18 >= fade_start) {
-                    alpha = (StatusPacket.stage->field_0x18 - fade_start) / (StatusPacket.stage->field_0x1c - fade_start);
+                f32 fade_start = StatusPacket.stage->unknown_1c - 1.0;
+                if (StatusPacket.stage->unknown_18 >= fade_start) {
+                    alpha = (StatusPacket.stage->unknown_18 - fade_start) / (StatusPacket.stage->unknown_1c - fade_start);
                 } else {
                     alpha = 0.0f;
                 }
@@ -1436,7 +1436,7 @@ extern "C" {
         StatusPacket.finish_callback = registration->finish_callback;
         StatusPacket.reset_callback = registration->reset_callback;
         StatusPacket.draw_background_callback = registration->draw_background_callback;
-        StatusPacket.field_0x68 = registration->stage_delay;
+        StatusPacket.unknown_68 = registration->stage_delay;
     }
 
     void UpdateStatusScreen(WORLDINFO *world) {
@@ -1519,7 +1519,7 @@ extern "C" {
             u32 button = Text_Language != 0 ? GAMEPAD_JUMP : GAMEPAD_MENUSELECT;
             if ((StatusPacket.player0_active != 0 && (GamePadStorage[0].menu_buttons_pressed & button) != 0) ||
                 (StatusPacket.player1_active != 0 && (GamePadStorage[1].menu_buttons_pressed & button) != 0) ||
-                (StatusPacket.field_0xb0 & 2) != 0) {
+                (StatusPacket.unknown_b0 & 2) != 0) {
                 STATUS_STAGE_s *stage = StatusPacket.stage;
                 if (stage == NULL) {
                     goto status_done;

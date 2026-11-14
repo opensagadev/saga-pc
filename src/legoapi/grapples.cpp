@@ -81,9 +81,9 @@ extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
                 world->grapples[index].y_rotation = EdFileReadUnsignedShort();
             }
             if (version >= 3) {
-                world->grapples[index].field_4c = EdFileReadFloat();
+                world->grapples[index].unknown_4c = EdFileReadFloat();
             } else {
-                world->grapples[index].field_4c = 1.0f;
+                world->grapples[index].unknown_4c = 1.0f;
             }
             if (version >= 4) {
                 ((GRAPPLE_MOTION *)world->grapples)[index].disabled = EdFileReadChar() != 0;

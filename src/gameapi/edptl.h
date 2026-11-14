@@ -46,33 +46,33 @@ extern "C" {
         i32 element_count;         // 0x04
         NUVEC position;            // 0x08
         f32 size;                  // 0x14
-        f32 field_18;              // 0x18
+        f32 unknown_18;            // 0x18
         i32 flags;                 // 0x1c
-        f32 field_20;              // 0x20
+        f32 unknown_20;            // 0x20
         u8 page;                   // 0x24
         u8 unknown_25;             // 0x25
         u8 unknown_26;             // 0x26
         u8 kind;                   // 0x27
         i32 seed;                  // 0x28
-        f32 field_2c;              // 0x2c
-        f32 field_30;              // 0x30
+        f32 unknown_2c;            // 0x2c
+        f32 unknown_30;            // 0x30
         i16 rotation_z;            // 0x34
         i16 rotation_y;            // 0x36
         f32 near_distance;         // 0x38
         f32 far_distance;          // 0x3c
         i16 individual_index;      // 0x40
-        u8 field_42;               // 0x42
+        u8 unknown_42;             // 0x42
         u8 unknown_43;             // 0x43
-        f32 field_44;              // 0x44
+        f32 unknown_44;            // 0x44
         NUMTX *matrices;           // 0x48
         void *vector_buffer;       // 0x4c
     } PC_EDGRACLUMP;
 
     typedef struct PC_EDGRAINDIVIDUAL { // size 0x20
         NUVEC position;                 // 0x00
-        f32 field_0c;                   // 0x0c
-        i16 field_10;                   // 0x10
-        i16 field_12;                   // 0x12
+        f32 unknown_0c;                 // 0x0c
+        i16 unknown_10;                 // 0x10
+        i16 unknown_12;                 // 0x12
         u8 unknown_14[0xc];             // 0x14
     } PC_EDGRAINDIVIDUAL;
 

@@ -57,22 +57,22 @@ i32 cbInteractMenuTitle(edui_interact_s *interact) {
 
 i32 cbInteractMenuScrollUp(edui_interact_s *interact) {
     eduimenu_s *menu = interact->menu;
-    if (menu->field_0c) {
-        if (menu->field_0c->previous) {
-            menu->field_0c = menu->field_0c->previous;
+    if (menu->unknown_0c) {
+        if (menu->unknown_0c->previous) {
+            menu->unknown_0c = menu->unknown_0c->previous;
         }
-        menu->selected = menu->field_0c;
+        menu->selected = menu->unknown_0c;
     }
     return 0;
 }
 
 i32 cbInteractMenuScrollDown(edui_interact_s *interact) {
     eduimenu_s *menu = interact->menu;
-    if (menu->field_10) {
-        if (menu->field_10->next) {
-            menu->field_10 = menu->field_10->next;
+    if (menu->unknown_10) {
+        if (menu->unknown_10->next) {
+            menu->unknown_10 = menu->unknown_10->next;
         }
-        menu->selected = menu->field_10;
+        menu->selected = menu->unknown_10;
     }
     return 0;
 }

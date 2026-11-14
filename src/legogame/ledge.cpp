@@ -19,8 +19,8 @@ typedef struct LEDGE_MOTION { // size 0x38
     u8 type_index;     // 0x18
     u8 flags;          // 0x19
     u8 unknown_01a[2]; // 0x1a
-    i16 field_1c;      // 0x1c
-    i16 field_1e;      // 0x1e
+    i16 unknown_1c;    // 0x1c
+    i16 unknown_1e;    // 0x1e
     NUVEC bounds_min;  // 0x20
     NUVEC bounds_max;  // 0x2c
 } LEDGE_MOTION;
@@ -353,11 +353,11 @@ extern "C" {
                 ((LEDGE_MOTION *)world->ledges)[i].y_rotation = EdFileReadShort();
                 ((LEDGE_MOTION *)world->ledges)[i].type_code = EdFileReadChar();
                 if (version >= 2) {
-                    ((LEDGE_MOTION *)world->ledges)[i].field_1c = EdFileReadShort();
-                    ((LEDGE_MOTION *)world->ledges)[i].field_1e = EdFileReadShort();
+                    ((LEDGE_MOTION *)world->ledges)[i].unknown_1c = EdFileReadShort();
+                    ((LEDGE_MOTION *)world->ledges)[i].unknown_1e = EdFileReadShort();
                 } else {
-                    ((LEDGE_MOTION *)world->ledges)[i].field_1c = -1;
-                    ((LEDGE_MOTION *)world->ledges)[i].field_1e = -1;
+                    ((LEDGE_MOTION *)world->ledges)[i].unknown_1c = -1;
+                    ((LEDGE_MOTION *)world->ledges)[i].unknown_1e = -1;
                 }
                 if (version >= 3) {
                     ((LEDGE_MOTION *)world->ledges)[i].flags = EdFileReadUnsignedChar();

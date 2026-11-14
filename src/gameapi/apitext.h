@@ -129,9 +129,9 @@ struct PC_CONTROL_SCREEN {                  // size 0xec4
     u8 drop_in;                             // 0x008
     u8 active;                              // 0x009
     u8 initialized;                         // 0x00a
-    u8 unknown0b;                           // 0x00b
+    u8 unknown_0b;                          // 0x00b
     f32 opacity;                            // 0x00c
-    f32 unknown10;                          // 0x010
+    f32 unknown_10;                         // 0x010
     f32 fade;                               // 0x014
     i32 phase;                              // 0x018
     i32 row_count;                          // 0x01c
@@ -147,7 +147,7 @@ struct PC_CONTROL_SCREEN {                  // size 0xec4
     i32 saved_ports[4];                     // 0x05c
     u32 config_hash;                        // 0x06c
     u8 missing_binding;                     // 0x070
-    u8 unknown71[3];                        // 0x071
+    u8 unknown_71[3];                       // 0x071
     void (*draw_background)(f32, f32, f32); // 0x074
     f32 deadzone[4];                        // 0x078
     f32 saved_deadzone[4];                  // 0x088
@@ -155,7 +155,7 @@ struct PC_CONTROL_SCREEN {                  // size 0xec4
     f32 saved_keyboard_deadzone;            // 0x09c
     struct vufnt_s *font;                   // 0x0a0
     PC_CONTROL_ROW rows[4];                 // 0x0a4
-    u8 unknownd4[4];                        // 0x0d4
+    u8 unknown_d4[4];                       // 0x0d4
     PC_CONTROL_TEXT text[12];               // 0x0d8
     f32 elapsed;                            // 0xeb8
     struct numtl_s *material;               // 0xebc

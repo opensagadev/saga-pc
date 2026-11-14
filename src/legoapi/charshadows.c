@@ -31,8 +31,8 @@ void CharShadows_Update(void) {
             continue;
         }
         object->shadow_joint_mask = object->character_data->game_character->shadow_locators;
-        if (object->character_data->game_character->field_08c < 99.0f) {
-            object->shadow_radius = object->character_data->game_character->field_08c;
+        if (object->character_data->game_character->unknown_08c < 99.0f) {
+            object->shadow_radius = object->character_data->game_character->unknown_08c;
         } else {
             object->shadow_radius = object->character_data->collision_radius;
         }

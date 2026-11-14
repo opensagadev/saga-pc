@@ -226,7 +226,7 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
     f32 run_speed;                                                       // 0x01c
     f32 backwards_factor;                                                // 0x020
     f32 gravity;                                                         // 0x024
-    f32 field_028;                                                       // 0x028
+    f32 unknown_028;                                                     // 0x028
     f32 jump_speed;                                                      // 0x02c
     f32 jump_duration;                                                   // 0x030
     f32 jump_height;                                                     // 0x034
@@ -241,11 +241,11 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
 
     f32 jump_hold_duration;      // 0x048
     f32 collision_origin_radius; // 0x04c
-    f32 field_050;               // 0x050
+    f32 unknown_050;             // 0x050
     f32 unknown_054;             // 0x054
-    f32 field_058;               // 0x058
-    f32 field_05c;               // 0x05c
-    f32 field_060;               // 0x060
+    f32 unknown_058;             // 0x058
+    f32 unknown_05c;             // 0x05c
+    f32 unknown_060;             // 0x060
     f32 viewdistance;            // 0x064
     f32 heardistance;            // 0x068
     f32 maxviewheight;           // 0x06c
@@ -268,8 +268,8 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
     }; // 0x080
 
     f32 jump_move_speed_scale; // 0x084
-    f32 field_088;             // 0x088
-    f32 field_08c;             // 0x08c
+    f32 unknown_088;           // 0x088
+    f32 unknown_08c;           // 0x08c
     u32 flags_090;             // 0x090
 
     union { // size 0x4

@@ -18,7 +18,7 @@ typedef struct edanim_param_s { // size 0x2d4
     i32 control_mode;           // 0x00c
     i32 control_switch;         // 0x010
     f32 control_distance;       // 0x014
-    f32 field_018;              // 0x018
+    f32 unknown_018;            // 0x018
     char effect_names[8][16];   // 0x01c
     i32 effect_ids[8];          // 0x09c
     i32 effect_intervals[8];    // 0x0bc

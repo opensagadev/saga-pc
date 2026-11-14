@@ -786,7 +786,7 @@ static void ZipUp_GetStartPoint(GAMEOBJECT *object, NUVEC *position) {
         *position = object->locator_matrices[joint].translation;
     } else {
         position->x = object->collision_position.x;
-        position->y = object->collision_position.y + object->field_b0;
+        position->y = object->collision_position.y + object->unknown_b0;
         position->z = object->collision_position.z;
     }
 }

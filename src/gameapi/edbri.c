@@ -188,12 +188,12 @@ i32 edbriLoadPage(char *path, void *scene) {
             edBridges[index].instance_id = -1;
             EdFileReadNuVec(&edBridges[index].position);
             edBridges[index].length = EdFileReadFloat();
-            edBridges[index].field_14 = EdFileReadFloat();
+            edBridges[index].unknown_14 = EdFileReadFloat();
             edBridges[index].rotation_z = EdFileReadShort();
             edBridges[index].rotation_y = EdFileReadShort();
             edBridges[index].connection_index = page;
-            edBridges[index].field_1d = EdFileReadChar();
-            edBridges[index].field_1e = EdFileReadChar();
+            edBridges[index].unknown_1d = EdFileReadChar();
+            edBridges[index].unknown_1e = EdFileReadChar();
             EdFileRead(name, sizeof(name));
             if (name[0] == '\0') {
                 edBridges[index].special_20 = -1;
@@ -206,12 +206,12 @@ i32 edbriLoadPage(char *path, void *scene) {
             } else {
                 edBridges[index].special_24 = edbitsLookupInstance(name, scene);
             }
-            edBridges[index].field_28 = EdFileReadFloat();
-            edBridges[index].field_2c = EdFileReadFloat();
-            edBridges[index].field_30 = EdFileReadFloat();
-            edBridges[index].field_34 = EdFileReadFloat();
-            edBridges[index].field_38 = EdFileReadFloat();
-            edBridges[index].field_3c = EdFileReadFloat();
+            edBridges[index].unknown_28 = EdFileReadFloat();
+            edBridges[index].unknown_2c = EdFileReadFloat();
+            edBridges[index].unknown_30 = EdFileReadFloat();
+            edBridges[index].unknown_34 = EdFileReadFloat();
+            edBridges[index].unknown_38 = EdFileReadFloat();
+            edBridges[index].unknown_3c = EdFileReadFloat();
             edBridges[index].red = (u8)EdFileReadChar();
             edBridges[index].green = (u8)EdFileReadChar();
             edBridges[index].blue = (u8)EdFileReadChar();
@@ -253,10 +253,10 @@ void edbriBridgeUpdate(i32 index, NUGSCN *scene) {
     if (edBridges[index].special_24 != -1) {
         NuGScnGetSpecial(&second, edbits_base_scene, edBridges[index].special_24);
     }
-    edBridges[index].instance_id =
-        NuBridgeCreate(scene, &first, &second, &edBridges[index].position, &end, edBridges[index].field_3c, edBridges[index].rotation_y,
-                       edBridges[index].field_28, edBridges[index].field_2c, edBridges[index].field_30, edBridges[index].field_34,
-                       edBridges[index].field_1d, edBridges[index].field_14, edBridges[index].field_38, edBridges[index].field_1e, colour);
+    edBridges[index].instance_id = NuBridgeCreate(
+        scene, &first, &second, &edBridges[index].position, &end, edBridges[index].unknown_3c, edBridges[index].rotation_y,
+        edBridges[index].unknown_28, edBridges[index].unknown_2c, edBridges[index].unknown_30, edBridges[index].unknown_34,
+        edBridges[index].unknown_1d, edBridges[index].unknown_14, edBridges[index].unknown_38, edBridges[index].unknown_1e, colour);
 }
 
 void edbriBridgePlace(i32 index, NUVEC *position) {
@@ -264,9 +264,9 @@ void edbriBridgePlace(i32 index, NUVEC *position) {
     edBridges[index].rotation_z = edbri_rotz;
     edBridges[index].rotation_y = edbri_roty;
     edBridges[index].length = edbri_length;
-    edBridges[index].field_14 = edbri_width;
-    edBridges[index].field_1d = edbri_planks;
-    edBridges[index].field_1e = edbri_post_interval;
+    edBridges[index].unknown_14 = edbri_width;
+    edBridges[index].unknown_1d = edbri_planks;
+    edBridges[index].unknown_1e = edbri_post_interval;
     edBridges[index].special_20 = edbri_plank_instance_type;
     edBridges[index].special_24 = edbri_post_instance_type;
     edbriBridgeUpdate(index, edbits_base_scene);
@@ -343,32 +343,32 @@ static void edbricbRopeColourMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
 }
 
 void edbricbSetBridgeTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].field_28 = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].unknown_28 = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
 void edbricbSetBridgeDamp(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].field_2c = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].unknown_2c = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
 void edbricbSetBridgeGravity(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].field_30 = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].unknown_30 = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
 void edbricbSetBridgePlrweight(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].field_34 = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].unknown_34 = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
 void edbricbSetBridgeRopeheight(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].field_38 = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].unknown_38 = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
 void edbricbSetBridgeStability(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].field_3c = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].unknown_3c = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
@@ -380,18 +380,18 @@ static void edbricbBridgePropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1,
     if (!edbri_bridgeproperties_menu) {
         return;
     }
+    eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeTension, 0.0f, 1.0f,
+                                                                      edBridges[edbri_nearest].unknown_28, "Tension"));
     eduiMenuAddItem(edbri_bridgeproperties_menu,
-                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeTension, 0.0f, 1.0f, edBridges[edbri_nearest].field_28, "Tension"));
-    eduiMenuAddItem(edbri_bridgeproperties_menu,
-                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeDamp, 0.0f, 1.0f, edBridges[edbri_nearest].field_2c, "Damp"));
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeDamp, 0.0f, 1.0f, edBridges[edbri_nearest].unknown_2c, "Damp"));
     eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeGravity, -0.1f, 0.2f,
-                                                                      edBridges[edbri_nearest].field_30, "Gravity"));
+                                                                      edBridges[edbri_nearest].unknown_30, "Gravity"));
     eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgePlrweight, 0.0f, 10.0f,
-                                                                      edBridges[edbri_nearest].field_34, "Plrweight"));
+                                                                      edBridges[edbri_nearest].unknown_34, "Plrweight"));
     eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeRopeheight, 0.0f, 2.0f,
-                                                                      edBridges[edbri_nearest].field_38, "Rope Height"));
+                                                                      edBridges[edbri_nearest].unknown_38, "Rope Height"));
     eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeStability, 0.0f, 10.0f,
-                                                                      edBridges[edbri_nearest].field_3c, "Stability"));
+                                                                      edBridges[edbri_nearest].unknown_3c, "Stability"));
     eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbRopeColourMenu, "Rope Colour..."));
     eduiMenuAttach(parent, edbri_bridgeproperties_menu);
     edbri_bridgeproperties_menu->x = parent->x + 10;
@@ -418,11 +418,11 @@ i32 edbriFileSave(char *path) {
             }
             EdFileWriteNuVec(&edBridges[i].position);
             EdFileWriteFloat(edBridges[i].length);
-            EdFileWriteFloat(edBridges[i].field_14);
+            EdFileWriteFloat(edBridges[i].unknown_14);
             EdFileWriteShort(edBridges[i].rotation_z);
             EdFileWriteShort(edBridges[i].rotation_y);
-            EdFileWriteChar(edBridges[i].field_1d);
-            EdFileWriteChar(edBridges[i].field_1e);
+            EdFileWriteChar(edBridges[i].unknown_1d);
+            EdFileWriteChar(edBridges[i].unknown_1e);
             if (edBridges[i].special_20 == -1) {
                 name[0] = 0;
             } else {
@@ -439,12 +439,12 @@ i32 edbriFileSave(char *path) {
             }
             name[19] = 0;
             EdFileWrite(name, 20);
-            EdFileWriteFloat(edBridges[i].field_28);
-            EdFileWriteFloat(edBridges[i].field_2c);
-            EdFileWriteFloat(edBridges[i].field_30);
-            EdFileWriteFloat(edBridges[i].field_34);
-            EdFileWriteFloat(edBridges[i].field_38);
-            EdFileWriteFloat(edBridges[i].field_3c);
+            EdFileWriteFloat(edBridges[i].unknown_28);
+            EdFileWriteFloat(edBridges[i].unknown_2c);
+            EdFileWriteFloat(edBridges[i].unknown_30);
+            EdFileWriteFloat(edBridges[i].unknown_34);
+            EdFileWriteFloat(edBridges[i].unknown_38);
+            EdFileWriteFloat(edBridges[i].unknown_3c);
             EdFileWriteChar(edBridges[i].red);
             EdFileWriteChar(edBridges[i].green);
             EdFileWriteChar(edBridges[i].blue);
@@ -564,12 +564,12 @@ i32 edbriBridgeCreate(NUVEC *position) {
     }
     edBridges[index].connection_index = edbri_pageid;
     ++edbri_bridges_used;
-    edBridges[index].field_28 = 0.18f;
-    edBridges[index].field_2c = 0.1f;
-    edBridges[index].field_30 = -0.01f;
-    edBridges[index].field_34 = 4.0f;
-    edBridges[index].field_38 = 0.5f;
-    edBridges[index].field_3c = 0.5f;
+    edBridges[index].unknown_28 = 0.18f;
+    edBridges[index].unknown_2c = 0.1f;
+    edBridges[index].unknown_30 = -0.01f;
+    edBridges[index].unknown_34 = 4.0f;
+    edBridges[index].unknown_38 = 0.5f;
+    edBridges[index].unknown_3c = 0.5f;
     edBridges[index].red = 0x50;
     edBridges[index].green = 0x50;
     edBridges[index].blue = 0x30;
@@ -639,9 +639,9 @@ void edbriDoInput(FRAME_PAD_PC *pad) {
             edbri_rotz = edBridges[edbri_nearest].rotation_z;
             edbri_roty = edBridges[edbri_nearest].rotation_y;
             edbri_length = edBridges[edbri_nearest].length;
-            edbri_width = edBridges[edbri_nearest].field_14;
-            edbri_planks = edBridges[edbri_nearest].field_1d;
-            edbri_post_interval = edBridges[edbri_nearest].field_1e;
+            edbri_width = edBridges[edbri_nearest].unknown_14;
+            edbri_planks = edBridges[edbri_nearest].unknown_1d;
+            edbri_post_interval = edBridges[edbri_nearest].unknown_1e;
             edbri_plank_instance_type = edBridges[edbri_nearest].special_20;
             edbri_post_instance_type = edBridges[edbri_nearest].special_24;
         }

@@ -34,7 +34,7 @@ typedef struct GAMEPAD_RUNTIME_INPUT_PC { // size 0x60
     u32 right_pressed;                    // 0x1c
     u32 right_previous;                   // 0x20
     u8 input_ready;                       // 0x24
-    u8 unknown25[0x60 - 0x25];            // 0x25
+    u8 unknown_25[0x60 - 0x25];           // 0x25
 } GAMEPAD_RUNTIME_INPUT_PC;
 
 #ifdef __cplusplus

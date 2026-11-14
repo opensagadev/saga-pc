@@ -1855,11 +1855,11 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
     scan->max_z = scan->max_z + 0.02f;
     for (TERRAIN_SPATIAL_NODE *node = TERRAIN_NSF_SET->spatial_nodes; node != NULL;
          node = reinterpret_cast<TERRAIN_SPATIAL_CHUNK *>(reinterpret_cast<u8 *>(node) - offsetof(TERRAIN_SPATIAL_CHUNK, node))->previous) {
-        const u8 mask = static_cast<u8>(node->field_02 >> 8);
+        const u8 mask = static_cast<u8>(node->unknown_02 >> 8);
         if (mask != 0 && (mask & terrain_mask) == 0) {
             continue;
         }
-        const u8 material = static_cast<u8>(node->field_02);
+        const u8 material = static_cast<u8>(node->unknown_02);
         for (i32 first = 0; first < node->point_count; first += 16) {
             NUVEC *points = &node->points[first];
             i32 end;

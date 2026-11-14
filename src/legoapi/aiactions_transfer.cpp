@@ -82,16 +82,16 @@ extern "C" {
             ledge->y_rotation = EdFileReadShort();
             ledge->type_code = EdFileReadChar();
             if (version > 1) {
-                ledge->field_0x1c = EdFileReadShort();
-                ledge->field_0x1e = EdFileReadShort();
+                ledge->unknown_1c = EdFileReadShort();
+                ledge->unknown_1e = EdFileReadShort();
                 if (version == 2) {
                     ledge->flags = 0;
                 } else {
                     ledge->flags = EdFileReadUnsignedChar();
                 }
             } else {
-                ledge->field_0x1c = -1;
-                ledge->field_0x1e = -1;
+                ledge->unknown_1c = -1;
+                ledge->unknown_1e = -1;
                 ledge->flags = 0;
             }
         }

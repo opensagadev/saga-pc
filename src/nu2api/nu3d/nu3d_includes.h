@@ -138,7 +138,7 @@ typedef struct ANI3_HEADER {  // size 0x3c
     u16 *curve_types;         // 0x2c
     u8 *keys;                 // 0x30
     u8 *node_flags;           // 0x34
-    void *field_38;           // 0x38
+    void *unknown_38;         // 0x38
 } ANI3_HEADER;
 
 typedef union DWA_CURVE_CELL { // size 0x4
@@ -220,7 +220,7 @@ extern "C" {
         f32 v0;                        // 0x04
         f32 u1;                        // 0x08
         f32 v1;                        // 0x0c
-        u32 unknown10;                 // 0x10
+        u32 unknown_10;                // 0x10
     } FONT_LEGACY_GLYPH;
 
     extern const char RenderSplineShopStart[11];
@@ -1050,9 +1050,9 @@ extern "C" {
     void NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material, i32 z);
 
     typedef struct FONT_LEGACY_READER { // size 0x1520
-        u8 unknown00[12];               // 0x0000
+        u8 unknown_00[12];              // 0x0000
         i16 height;                     // 0x000c
-        u8 unknown0e[6];                // 0x000e
+        u8 unknown_0e[6];               // 0x000e
         i16 baseline;                   // 0x0014
         i16 ic_gap;                     // 0x0016
         NUMTL *material;                // 0x0018
@@ -1227,7 +1227,7 @@ struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
         struct {                    // size 0x1c
             u16 original_mip_count; // 0x0c
             u16 reserved_0e;        // 0x0e
-            u32 field_10;           // 0x10
+            u32 unknown_10;         // 0x10
             i32 format;             // 0x14
             i32 usage;              // 0x18
             i32 pool;               // 0x1c
@@ -1247,7 +1247,7 @@ struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
                 };
             }; // 0x20
 
-            u32 field_24; // 0x24
+            u32 unknown_24; // 0x24
         };
     }; // 0x0c
 

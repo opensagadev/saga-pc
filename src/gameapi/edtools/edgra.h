@@ -32,12 +32,12 @@ typedef struct debris_info_s {   // size 0x428
     i8 momentum_adjustment_type; // 0x02d
     i8 particle_type;            // 0x02e
     u8 status;                   // 0x02f
-    f32 field_030;               // 0x030
+    f32 unknown_030;             // 0x030
     f32 cut_on;                  // 0x034
     f32 clip_extent;             // 0x038
     f32 sound_range;             // 0x03c
     f32 sound_range_override;    // 0x040
-    f32 field_044;               // 0x044
+    f32 unknown_044;             // 0x044
     f32 momentum_base;           // 0x048
     f32 momentum_random_x;       // 0x04c
     f32 rotor_speed_x;           // 0x050

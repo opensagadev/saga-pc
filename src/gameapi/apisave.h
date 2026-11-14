@@ -90,8 +90,8 @@ typedef struct part_runtime_type_s { // size 0x178
     f32 maximum_distance;            // 0x15c
     f32 unknown_160;                 // 0x160
     f32 unknown_164;                 // 0x164
-    f32 field_168;                   // 0x168
+    f32 unknown_168;                 // 0x168
     f32 last_used_time;              // 0x16c
     f32 scale;                       // 0x170
-    u32 field_174;                   // 0x174
+    u32 unknown_174;                 // 0x174
 } PART_RUNTIME_TYPE;

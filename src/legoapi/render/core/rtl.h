@@ -34,10 +34,10 @@ typedef struct RTL_DATA {                    // size 0x144
     NUVEC direction[3];                      // 0x09c
     NUVEC ambient;                           // 0x0c0
     u32 unknown_cc[0x15];                    // 0x0cc
-    f32 field_120;                           // 0x120
+    f32 unknown_120;                         // 0x120
     NUVEC blended_shadow_direction;          // 0x124
     f32 blended_shadow_value;                // 0x130
-    NUVEC field_134;                         // 0x134
+    NUVEC unknown_134;                       // 0x134
     f32 specular_value;                      // 0x140
 } RTL_DATA;
 #ifdef __cplusplus
@@ -70,20 +70,20 @@ extern "C" {
 
         i16 pitch;                                                               // 0x5a
         i16 yaw;                                                                 // 0x5c
-        i16 field_5e;                                                            // 0x5e
-        i16 field_60;                                                            // 0x60
+        i16 unknown_5e;                                                          // 0x5e
+        i16 unknown_60;                                                          // 0x60
         u8 unknown_62[2];                                                        // 0x62
-        f32 field_64;                                                            // 0x64
-        u16 field_68;                                                            // 0x68
+        f32 unknown_64;                                                          // 0x64
+        u16 unknown_68;                                                          // 0x68
         i16 uid;                                                                 // 0x6a
         f32 intensity;                                                           // 0x6c
         f32 blend_rate;                                                          // 0x70
         f32 blend;                                                               // 0x74
         u8 group_id;                                                             // 0x78
-        i8 field_79;                                                             // 0x79
-        i8 field_7a;                                                             // 0x7a
-        i8 field_7b;                                                             // 0x7b
-        struct RTL_LIGHT *field_7c;                                              // 0x7c
+        i8 unknown_79;                                                           // 0x79
+        i8 unknown_7a;                                                           // 0x7a
+        i8 unknown_7b;                                                           // 0x7b
+        struct RTL_LIGHT *unknown_7c;                                            // 0x7c
         i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */ // 0x80
         u8 unknown_82[10];                                                       // 0x82
     } RTL_LIGHT;
@@ -192,7 +192,7 @@ extern "C" {
 #endif
 
 typedef struct GAME_LIGHT_VIEW {
-    u8 unknown000[0x285];
+    u8 unknown_000[0x285];
     i8 floor_surface;
     u8 unknown_286[0x4d8 - 0x286];
     RTL_DATA light_data;

@@ -451,7 +451,7 @@ extern "C" {
         struct PC_TEXTURE_RESOURCE *surface;                                                               // 0x08
         u16 level;                                                                                         // 0x0c
         u16 unknown_0e;                                                                                    // 0x0e
-        u32 field_10;                                                                                      // 0x10
+        u32 unknown_10;                                                                                    // 0x10
         u16 width;                                                                                         // 0x14
         u16 height;                                                                                        // 0x16
         i16 registry_index; /* 0x1a..0x1b alignment padding */                                             // 0x18
@@ -529,8 +529,8 @@ extern "C" {
         u8 fields_001[3];                     // 0x001
         struct debris_particle_chunk_s *next; // 0x004
         u8 fields_008[12];                    // 0x008
-        u32 field_014;                        // 0x014
-        u32 field_018;                        // 0x018
+        u32 unknown_014;                      // 0x014
+        u32 unknown_018;                      // 0x018
         u32 unknown_01c;                      // 0x01c
         DEBRISPARTICLE_PC particles[32];      // 0x020
         u32 end_command;                      // 0x420

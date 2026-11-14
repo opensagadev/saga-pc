@@ -32,27 +32,27 @@ struct numtx_s;
 struct ripple_set_s;
 
 typedef struct BURN_PARAMETERS { // size 0x54
-    i32 field_00;                // 0x00
-    f32 field_04;                // 0x04
-    f32 field_08;                // 0x08
-    f32 field_0c;                // 0x0c
-    f32 field_10;                // 0x10
-    f32 field_14;                // 0x14
-    i32 field_18;                // 0x18
-    f32 field_1c;                // 0x1c
-    f32 field_20;                // 0x20
-    f32 field_24;                // 0x24
-    i32 field_28;                // 0x28
-    f32 field_2c;                // 0x2c
-    f32 field_30;                // 0x30
-    f32 field_34;                // 0x34
-    f32 field_38;                // 0x38
-    f32 field_3c;                // 0x3c
-    f32 field_40;                // 0x40
-    f32 field_44;                // 0x44
-    f32 field_48;                // 0x48
-    f32 field_4c;                // 0x4c
-    f32 field_50;                // 0x50
+    i32 unknown_00;              // 0x00
+    f32 unknown_04;              // 0x04
+    f32 unknown_08;              // 0x08
+    f32 unknown_0c;              // 0x0c
+    f32 unknown_10;              // 0x10
+    f32 unknown_14;              // 0x14
+    i32 unknown_18;              // 0x18
+    f32 unknown_1c;              // 0x1c
+    f32 unknown_20;              // 0x20
+    f32 unknown_24;              // 0x24
+    i32 unknown_28;              // 0x28
+    f32 unknown_2c;              // 0x2c
+    f32 unknown_30;              // 0x30
+    f32 unknown_34;              // 0x34
+    f32 unknown_38;              // 0x38
+    f32 unknown_3c;              // 0x3c
+    f32 unknown_40;              // 0x40
+    f32 unknown_44;              // 0x44
+    f32 unknown_48;              // 0x48
+    f32 unknown_4c;              // 0x4c
+    f32 unknown_50;              // 0x50
 } BURN_PARAMETERS;
 
 #ifdef __cplusplus

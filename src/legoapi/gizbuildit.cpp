@@ -60,11 +60,11 @@ typedef struct buildit_reset_s {            // size 0x7c
     f32 reset_step_timer;                   // 0x44
     f32 reset_step_duration;                // 0x48
     f32 interaction_radius;                 // 0x4c
-    f32 field_50;                           // 0x50
+    f32 unknown_50;                         // 0x50
     i16 wobble_parameter;                   // 0x54
     i16 completion_score;                   // 0x56
-    i16 field_58;                           // 0x58
-    i16 field_5a;                           // 0x5a
+    i16 unknown_58;                         // 0x58
+    i16 unknown_5a;                         // 0x5a
     NUVEC effect_position;                  // 0x5c
     f32 activation_radius;                  // 0x68
     u8 anim_object_count;                   // 0x6c
@@ -926,11 +926,11 @@ extern "C" {
             params.matrix = &matrix;
             params.velocity = &velocity;
             params.special = &object->special;
-            params.field_14 = 0.2f;
-            params.field_18 = 0.2f;
+            params.unknown_14 = 0.2f;
+            params.unknown_18 = 0.2f;
             params.gravity = -4.0f;
             params.flags = 0x90;
-            params.field_c4 = 1;
+            params.unknown_c4 = 1;
             params.stop_fn = PartStop_Flickerer;
             params.draw_fn = PartDraw_Flickerer;
             params.impact_fn = PartImpact_Brick;
@@ -974,7 +974,7 @@ extern "C" {
                 reflection_height = 0.0f;
                 if ((buildit->state_flags & 0x100) && set->objects != NULL && set->objects->object_data != NULL) {
                     data = (GIZBUILDITANIMDATA_s *)set->objects->object_data;
-                    reflection_height = buildit->field_50 + data->start_mtx.m31;
+                    reflection_height = buildit->unknown_50 + data->start_mtx.m31;
                 }
                 for (object = set->objects; object != NULL; object = object->next) {
                     data = (GIZBUILDITANIMDATA_s *)object->object_data;
@@ -988,7 +988,7 @@ extern "C" {
             } else {
                 ResetShadowMapRendering();
                 if (buildit->state_flags & 0x100) {
-                    GameAnimSet_DrawReflection(buildit->anim_set, 2, buildit->field_50, NULL);
+                    GameAnimSet_DrawReflection(buildit->anim_set, 2, buildit->unknown_50, NULL);
                 }
             }
         }
@@ -1245,7 +1245,7 @@ extern "C" {
                 buildit->batch_size = (u8)EdFileReadChar();
                 buildit->progress = (u8)EdFileReadChar();
                 if (version >= 6) {
-                    buildit->field_50 = EdFileReadFloat();
+                    buildit->unknown_50 = EdFileReadFloat();
                 }
                 buildit->blowup_type = -1;
                 if (version >= 7) {
@@ -1261,8 +1261,8 @@ extern "C" {
                     } else {
                         buildit->blowup_type = EdFileReadShort();
                     }
-                    buildit->field_58 = EdFileReadShort();
-                    buildit->field_5a = EdFileReadShort();
+                    buildit->unknown_58 = EdFileReadShort();
+                    buildit->unknown_5a = EdFileReadShort();
                     EdFileReadNuVec(&buildit->effect_position);
                 }
                 if (version >= 9) {
@@ -1402,8 +1402,8 @@ extern "C" {
                         buildit->availability_flags |= 0x200;
                         hearts = ReleaseHearts();
                         if ((u16)buildit->completion_score > 0 || hearts != 0) {
-                            NuVecRotateX(&reward_direction, &v010, (u16)buildit->field_58);
-                            NuVecRotateY(&reward_direction, &reward_direction, (u16)buildit->field_5a);
+                            NuVecRotateX(&reward_direction, &v010, (u16)buildit->unknown_58);
+                            NuVecRotateY(&reward_direction, &reward_direction, (u16)buildit->unknown_5a);
                             AddPickups((u16)buildit->completion_score, hearts, 0, 0, &finish_position, &reward_direction, 2.0f, -1, 1.75f,
                                        2000000.0f, NULL, 1, 0);
                         }

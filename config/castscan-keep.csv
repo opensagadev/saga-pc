@@ -1,7 +1,7 @@
 file,function,cast,occurrence,reason
 src/gamelib/net/NetworkObjectManager.cpp,NOSContext::operator==,"(bool)(memcmp(bytes, other.bytes, sizeof(bytes)) == 0)",1,without it NOSContext::operator== is no longer exact (91.53 %)
 src/legoapi/explosions.c,UpdateExplosion_Generic,(f32)(z * inverse),1,float cast of a float expression: without it the function's x87 code changes (score drops)
-src/legogame/tightrope.cpp,TightRopes_Draw,(NUANG)rope->field_0x2e,1,without it TightRopes_Draw changes (81.29 -> 80.91 %)
+src/legogame/tightrope.cpp,TightRopes_Draw,(NUANG)rope->unknown_2e,1,without it TightRopes_Draw changes (81.29 -> 80.91 %)
 src/nu2api/nu3d_includes.cpp,NuSpecialGetDrawMtx,(NUINSTANCE *)legacy->instance,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
 src/nu2api/nu3d_includes.cpp,NuSpecialGetNoVisiTestFn,(NUINSTANCE *)legacy->instance,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
 src/nu2api/nu3d_includes.cpp,NuSpecialGetOnScreenFn,(NUINSTANCE *)legacy->instance,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)

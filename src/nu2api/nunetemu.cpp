@@ -206,7 +206,7 @@ NuNetEmu::NuNetEmu() : first_packet(NULL), last_packet(NULL), packet_count(0), r
     unpacked_size = 0;
     packed_size = 0;
     SetConditions(CONDITIONS_NORMAL);
-    field_00 = 0x200;
+    unknown_00 = 0x200;
 }
 
 i32 NuNetEmu::SplitSendPacket(EmuPacket *packet) {

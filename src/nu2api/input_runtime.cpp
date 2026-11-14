@@ -1369,7 +1369,7 @@ void PC_INPUT_RUNTIME_PC::ResetInputRecords() {
 }
 
 void PC_INPUT_RUNTIME_PC::fun_006d4e20(i32 value) {
-    mouse.field_58 = value;
+    mouse.unknown_58 = value;
 }
 
 i32 PC_INPUT_RUNTIME_PC::GetInputRecordCount() {
@@ -1384,24 +1384,24 @@ i32 PC_INPUT_RUNTIME_PC::fun_006d4e50() {
     return unknown_67ec;
 }
 
-void PC_INPUT_RUNTIME_PC::InsertInputRecord(i32 index, i32 field_00, i32 field_01, i32 field_02, u16 field_04) {
+void PC_INPUT_RUNTIME_PC::InsertInputRecord(i32 index, i32 unknown_00, i32 field_01, i32 unknown_02, u16 unknown_04) {
     if ((u32)index > 31) {
         return;
     }
     for (i32 i = 0; i < 32; ++i) {
-        if (field_00 == commands[i].active) {
+        if (unknown_00 == commands[i].active) {
             if (field_01 >= 0 && field_01 == commands[i].axis) {
                 return;
             }
-            if (field_02 >= 0 && field_02 == commands[i].button) {
+            if (unknown_02 >= 0 && unknown_02 == commands[i].button) {
                 return;
             }
         }
     }
-    commands[index].active = (i8)field_00;
+    commands[index].active = (i8)unknown_00;
     commands[index].axis = (i8)field_01;
-    commands[index].button = (i8)field_02;
-    commands[index].unknown_04 = field_04;
+    commands[index].button = (i8)unknown_02;
+    commands[index].unknown_04 = unknown_04;
 }
 
 i32 PC_INPUT_RUNTIME_PC::fun_006d4ef0(i32 action, i32 *active, i32 *axis, i32 *button, i32 *value) {
@@ -1640,7 +1640,7 @@ extern "C" void PcInputSuppressKeyOnePc(i32 value) {
 }
 
 extern "C" void PcInputSetMouseFieldPc(i32 value) {
-    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->mouse.field_58 = value;
+    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->mouse.unknown_58 = value;
 }
 
 extern "C" void PcInputSetCapturedPortPc(i32 port) {
@@ -1899,9 +1899,9 @@ i32 PC_INPUT_RUNTIME_PC::fun_006d6db0(i32 port, i32 index) {
     return port;
 }
 
-void PC_INPUT_RUNTIME_PC::AddInputRecord(i32 field_00, i32 field_01, i32 field_02, u16 field_04) {
+void PC_INPUT_RUNTIME_PC::AddInputRecord(i32 unknown_00, i32 field_01, i32 unknown_02, u16 unknown_04) {
     if (shutdown_state < 32) {
-        InsertInputRecord(shutdown_state, field_00, field_01, field_02, field_04);
+        InsertInputRecord(shutdown_state, unknown_00, field_01, unknown_02, unknown_04);
         ++shutdown_state;
     }
 }

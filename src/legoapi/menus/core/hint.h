@@ -22,7 +22,7 @@ typedef struct HINT { // size 0x1c
 
         struct {                   // size 0xc
             u8 unknown3_prefix[3]; // 0x00
-            u8 unknown3[9];        // 0x03
+            u8 unknown_3[9];       // 0x03
         };
 
         struct {                           // size 0xc
@@ -35,18 +35,18 @@ typedef struct HINT { // size 0x1c
 
     union { // size 0x4
         i32 (*update_fn)(struct HINT *);
-        u8 unknown10[4];
+        u8 unknown_10[4];
     }; // 0x10
 
-    u8 completed;    // 0x14
-    u8 unknown15[3]; // 0x15
-    f32 cooldown;    // 0x18
+    u8 completed;     // 0x14
+    u8 unknown_15[3]; // 0x15
+    f32 cooldown;     // 0x18
 } HINT;
 
 typedef struct HINTSYS { // size 0x20
 
     union { // size 0x4
-        u8 unknown0[4];
+        u8 unknown_0[4];
         void (*draw_fn)(HINT *, i32);
     }; // 0x00
 

@@ -119,7 +119,7 @@ void GameObjectDimensions(GAMEOBJECT *object) {
         }
     }
     object->bounds_radius = object->collision_radius;
-    object->bounds_half_height = object->field_b0;
+    object->bounds_half_height = object->unknown_b0;
 extra:
     if (GameObjectDimensionsExtraFn != NULL) {
         GameObjectDimensionsExtraFn(object);
@@ -130,7 +130,7 @@ void ScaleGameObject(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
     object->scaled_radius = character->scaled_radius * object->origin_scale;
     object->collision_radius = object->collision_radius_unscaled * object->origin_scale;
-    object->field_b0 = object->collision_radius * object->collision_y_scale;
+    object->unknown_b0 = object->collision_radius * object->collision_y_scale;
     object->scaled_height = (character->top - character->bottom) * object->collision_scale;
 }
 
@@ -436,7 +436,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
         if ((surface != -1 && (TerSurface[surface].flags & 0xc041) != 0) ||
             ((layer = terrain_object->unknown_283) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
             unsafe = 1;
-            if (VehicleArea && BonusArea && terrain_object->character_data->game_character->field_028 > 0.0f) {
+            if (VehicleArea && BonusArea && terrain_object->character_data->game_character->unknown_028 > 0.0f) {
                 unsafe = 0;
             }
         } else {
@@ -454,7 +454,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                 (context == -1 || (context != LEGOCONTEXT_BEENTAKENOVER && context != LEGOCONTEXT_EATEN && context != LEGOCONTEXT_GETIN)) &&
                 !VehicleArea) {
                 model_flags = object->character_data->model_flags;
-                if (((model_flags & 0x2000) == 0 || !(object->character_data->game_character->field_028 > 0.0f)) &&
+                if (((model_flags & 0x2000) == 0 || !(object->character_data->game_character->unknown_028 > 0.0f)) &&
                     ((model_flags & 0x8000) == 0 || object->jump_variant_state != 1)) {
                     break;
                 }
@@ -535,7 +535,7 @@ typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
 extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
 
 typedef struct OPPONENT_PACKET_PC {      // size 0x1ec
-    u8 unknown000[0xd4];                 // 0x000
+    u8 unknown_000[0xd4];                // 0x000
     APIOBJECT *nearest_opponent_object;  // 0x0d4
     f32 nearest_opponent_metric;         // 0x0d8
     APIOBJECT *pending_nearest_opponent; // 0x0dc
@@ -544,12 +544,12 @@ typedef struct OPPONENT_PACKET_PC {      // size 0x1ec
     f32 opponent_metric;                 // 0x0e8
     APIOBJECT *pending_opponent;         // 0x0ec
     f32 pending_opponent_metric;         // 0x0f0
-    u8 unknown0f4[0xf4];                 // 0x0f4
+    u8 unknown_0f4[0xf4];                // 0x0f4
     u32 flags;                           // 0x1e8
 } OPPONENT_PACKET_PC;
 
 typedef struct OPPONENT_GAME_PC { // size 0xec8
-    u8 unknown000[0xeb0];         // 0x000
+    u8 unknown_000[0xeb0];        // 0x000
     u64 seen;                     // 0xeb0
     u64 exclusion;                // 0xeb8
     APIOBJECT *alert_target;      // 0xec0

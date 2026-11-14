@@ -544,7 +544,7 @@ void cbPtlChangeCameraCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2)
         return;
     }
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-    effect->field_044 = ((edui_slider_s *)item)->value;
+    effect->unknown_044 = ((edui_slider_s *)item)->value;
 }
 
 void cbPtlChangeRepeatFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -666,7 +666,7 @@ static void cbPtlCutOffMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeSoundCutOff, 0.0f, 25.0f * edptl_superscale,
                                                         effect->sound_range_override, "SoundCutOff Rad"));
     eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCameraCutOff, 0.0f, 5.0f * edptl_superscale,
-                                                        effect->field_044, "CameraCutOff Rad"));
+                                                        effect->unknown_044, "CameraCutOff Rad"));
     eduiMenuAttach(parent, ptlcutoffmenu);
     ptlcutoffmenu->x = parent->x + 10;
     ptlcutoffmenu->y = parent->y + 40;
@@ -1763,12 +1763,12 @@ i32 edppSaveEffects(char *filename, u8 page) {
             EdFileWriteChar(effecttypes[index].cutscene_only);
             EdFileWriteChar(effecttypes[index].particle_type);
             EdFileWriteChar(effecttypes[index].camera_facing);
-            EdFileWriteFloat(effecttypes[index].field_030);
+            EdFileWriteFloat(effecttypes[index].unknown_030);
             EdFileWriteFloat(effecttypes[index].cut_on);
             EdFileWriteFloat(effecttypes[index].clip_extent);
             EdFileWriteFloat(effecttypes[index].sound_range);
             EdFileWriteFloat(effecttypes[index].sound_range_override);
-            EdFileWriteFloat(effecttypes[index].field_044);
+            EdFileWriteFloat(effecttypes[index].unknown_044);
             EdFileWriteFloat(effecttypes[index].momentum_base);
             EdFileWriteNuVec((NUVEC *)&effecttypes[index].momentum_random_x);
             EdFileWriteNuVec(&effecttypes[index].emitter_random_extent);
@@ -2307,7 +2307,7 @@ void cbPtlTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     ptltypemenu->x = parent->x + 10;
     ptltypemenu->y = parent->y + 40;
     if (found_selected) {
-        ptltypemenu->field_0c = ptltypemenu->selected;
+        ptltypemenu->unknown_0c = ptltypemenu->selected;
     }
 }
 

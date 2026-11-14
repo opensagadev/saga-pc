@@ -45,14 +45,14 @@ typedef struct SoundVoiceSlotPC { // size 0x34
     u32 is_spatial;               // 0x0c
     i32 sample_id;                // 0x10
     i32 sound_key;                // 0x14
-    u8 field_18;                  // 0x18
-    u8 field_19;                  // 0x19
+    u8 unknown_18;                // 0x18
+    u8 unknown_19;                // 0x19
     u8 unknown_1a[2];             // 0x1a
-    f32 field_1c;                 // 0x1c
-    f32 field_20;                 // 0x20
+    f32 unknown_1c;               // 0x1c
+    f32 unknown_20;               // 0x20
     i32 volume_index;             // 0x24
-    i32 field_28;                 // 0x28
-    i32 field_2c;                 // 0x2c
+    i32 unknown_28;               // 0x28
+    i32 unknown_2c;               // 0x2c
     i32 parameter;                // 0x30
 } SoundVoiceSlotPC;
 
@@ -101,7 +101,7 @@ typedef struct SoundVoiceManagerPC { // size 0xda8
     void Setup3DVoice(i32, const NUVEC *, i32);
     u8 fun_00697360(i32 sample_index);
     u8 fun_00697390(i32 sample_index);
-    void fun_00697700(i32 voice_id, i32 sound_key, i32, f32 field_1c, f32 field_20, i32 volume_index);
+    void fun_00697700(i32 voice_id, i32 sound_key, i32, f32 unknown_1c, f32 unknown_20, i32 volume_index);
 #endif
 } SoundVoiceManagerPC;
 

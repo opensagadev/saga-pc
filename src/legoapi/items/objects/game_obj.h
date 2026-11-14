@@ -119,10 +119,10 @@ typedef struct ADDPART {                // size 0xc8
     NUVEC *velocity;                    // 0x08
     struct gameobject_s *owner;         // 0x0c
     struct gameobject_s *recipient;     // 0x10
-    f32 field_14;                       // 0x14
-    f32 field_18;                       // 0x18
+    f32 unknown_14;                     // 0x14
+    f32 unknown_18;                     // 0x18
     f32 gravity;                        // 0x1c
-    f32 field_20;                       // 0x20
+    f32 unknown_20;                     // 0x20
     struct nuspecial_handle_s *special; // 0x24
     i32 part_id;                        // 0x28
     u32 flags;                          // 0x2c
@@ -140,25 +140,25 @@ typedef struct ADDPART {                // size 0xc8
     i32 *debris_handle;                 // 0x5c
     i32 effect_id_60;                   // 0x60
     i32 effect_id_64;                   // 0x64
-    f32 field_68;                       // 0x68
-    f32 field_6c;                       // 0x6c
+    f32 unknown_68;                     // 0x68
+    f32 unknown_6c;                     // 0x6c
     i32 effect_id_70;                   // 0x70
     i32 effect_id_74;                   // 0x74
     i32 effect_id_78;                   // 0x78
     f32 effect_scale;                   // 0x7c
     i32 *lighting_handle;               // 0x80
     i32 lighting_id;                    // 0x84
-    f32 field_88;                       // 0x88
+    f32 unknown_88;                     // 0x88
     f32 time_step;                      // 0x8c
     u32 hostility_group;                // 0x90
     PART_LIGHTING_DATA *lighting_data;  // 0x94
     f32 lighting_scale_x;               // 0x98
     f32 lighting_scale_y;               // 0x9c
     f32 lighting_scale_z;               // 0xa0
-    f32 field_a4;                       // 0xa4
-    u32 field_a8[6];                    // 0xa8
+    f32 unknown_a4;                     // 0xa4
+    u32 unknown_a8[6];                  // 0xa8
     f32 unknown_c0;                     // 0xc0
-    u8 field_c4;                        // 0xc4
+    u8 unknown_c4;                      // 0xc4
 } ADDPART;
 
 typedef struct KILLPARTS_BIKE { // size 0x34
