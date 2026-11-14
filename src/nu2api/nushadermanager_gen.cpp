@@ -11,7 +11,7 @@ template <>
 void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *,
                                              const PC_SHADER_FILTER_MATERIAL_VIEW *);
 
-template <> PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
+template <> PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
     i32 i;
     for (i = last_allocated + 1; i < 400; ++i) {
         if (slots[i].ref_count <= 0) {
@@ -89,9 +89,9 @@ template <> PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::FindShader(const
 }
 
 template <>
-PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC_SHADER_FILTER_DESC_VIEW *desc,
-                                                                        const PC_SHADER_FILTER_MATERIAL_VIEW *material,
-                                                                        i32 variant, i32 flags, bool pixel_stage) {
+PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::Retrieve(const PC_SHADER_FILTER_DESC_VIEW *desc,
+                                                             const PC_SHADER_FILTER_MATERIAL_VIEW *material,
+                                                             i32 variant, i32 flags, bool pixel_stage) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     u32 key;
     PC_SHADER_OBJECT_FULL_VIEW *shader;
@@ -118,13 +118,14 @@ PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC
     return NULL;
 }
 
-extern "C" PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShader(
-    const PC_SHADER_FILTER_DESC_VIEW *desc, const PC_SHADER_FILTER_MATERIAL_VIEW *material) {
+extern "C" PC_SHADER_OBJECT_FULL_VIEW *NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *desc,
+                                                                     const PC_SHADER_FILTER_MATERIAL_VIEW *material) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, 0, 0, false);
 }
 
-extern "C" PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShaderVariant(
-    const PC_SHADER_FILTER_DESC_VIEW *desc, const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 variant) {
+extern "C" PC_SHADER_OBJECT_FULL_VIEW *
+NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *desc,
+                                     const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 variant) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, variant, 0, false);
 }
 
@@ -132,28 +133,27 @@ extern "C" i32 fun_00741860(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 
-extern "C" void *__cdecl PCShaderCurrentObjectPc(void) {
+extern "C" void *PCShaderCurrentObjectPc(void) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->bound_slot;
 }
 
-extern "C" void __cdecl NuShaderManagerSetfv(i32 semantic, const f32 *values) {
+extern "C" void NuShaderManagerSetfv(i32 semantic, const f32 *values) {
     ((ShaderManagerHLSL *)PCShaderSlots)->SetUniformValues(semantic, values);
 }
 
-extern "C" void __cdecl NuShaderManagerSetElementfv(i32 semantic, i32 element, const f32 *values) {
+extern "C" void NuShaderManagerSetElementfv(i32 semantic, i32 element, const f32 *values) {
     ((ShaderManagerHLSL *)PCShaderSlots)->setElementfv(semantic, element, values);
 }
 
-extern "C" void __cdecl NuShaderManagerSetElementsfv_transpose(i32 semantic, i32 first_element, i32 count,
-                                                               const f32 *values) {
+extern "C" void NuShaderManagerSetElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values) {
     ((ShaderManagerHLSL *)PCShaderSlots)->setElementsfv_transpose(semantic, first_element, count, values);
 }
 
-extern "C" void __cdecl NuShaderManagerSetElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values) {
+extern "C" void NuShaderManagerSetElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values) {
     ((ShaderManagerHLSL *)PCShaderSlots)->setElementsfv(semantic, first_element, count, values);
 }
 
-extern "C" void __cdecl NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+extern "C" void NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     PC_SHADER_MANAGER_VIEW *manager = reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots);
     if (manager->bound_slot != shader) {
         manager->bound_slot = shader;
@@ -166,34 +166,34 @@ extern "C" void __cdecl NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *sh
 
 extern "C" f32 PCShaderShininessFactorStorage;
 
-extern "C" f32 __cdecl NuShaderManagerGetShininessFactor(void) {
+extern "C" f32 NuShaderManagerGetShininessFactor(void) {
     return PCShaderShininessFactorStorage;
 }
 
-extern "C" void *__cdecl NuShaderManagerGetInstance(void) {
+extern "C" void *NuShaderManagerGetInstance(void) {
     return PCShaderSlots;
 }
 
-extern "C" void __cdecl NuShaderManagerSetShaderSaveFolder(const char *folder) {
+extern "C" void NuShaderManagerSetShaderSaveFolder(const char *folder) {
     strcpy(g_shaderSaveFolder, folder);
 }
 
-extern "C" void __cdecl NuShaderManagerDestroy(void) {
+extern "C" void NuShaderManagerDestroy(void) {
     reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->DestroyShaders();
     PCShaderSlots = NULL;
 }
 
-extern "C" void __cdecl NuShaderManagerLoadCompiledShaders(void) {
+extern "C" void NuShaderManagerLoadCompiledShaders(void) {
 }
 
-extern "C" void __cdecl NuShaderManagerDestroyShaders(void) {
+extern "C" void NuShaderManagerDestroyShaders(void) {
     reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->DestroyShaders();
 }
 
-extern "C" void __cdecl NuShaderManagerSetCurrentShader(PC_SHADER_OBJECT_FULL_VIEW *slot) {
+extern "C" void NuShaderManagerSetCurrentShader(PC_SHADER_OBJECT_FULL_VIEW *slot) {
     reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->SetCurrentShader(slot);
 }
 
-extern "C" void __cdecl NuShaderManagerSetShininessFactor(f32 shininess) {
+extern "C" void NuShaderManagerSetShininessFactor(f32 shininess) {
     PC_SHADER_MANAGER_VIEW::SetShininessFactor(shininess);
 }

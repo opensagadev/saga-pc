@@ -22,7 +22,7 @@ typedef struct PUSH_OBJECT_LOCAL_PC {
     u8 landing_followup;            // 0x7b1
 } PUSH_OBJECT_LOCAL_PC;             // size 0x7b4
 
-extern u32(__cdecl *CanPushObstaclesFn)(GAMEOBJECT *);
+extern u32 (*CanPushObstaclesFn)(GAMEOBJECT *);
 
 typedef struct PUSH_OBSTACLE_WORLD_PC {
     u8 unknown_000[0x46a4]; // 0x0000
@@ -39,7 +39,7 @@ static __inline f32 PlayersFabsPc(f32 value) {
     return *(f32 *)&bits;
 }
 
-i32 __cdecl Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_difference) {
+i32 Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_difference) {
     i32 pushing_obstacle;
     i32 difference;
     u16 input_angle;
@@ -80,7 +80,7 @@ i32 __cdecl Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *an
     return 0;
 }
 
-void __cdecl SetPushAngle(GAMEOBJECT *object) {
+void SetPushAngle(GAMEOBJECT *object) {
     SPINNER_MOVEMENT_PC *spinner;
     u16 angle;
     i32 adjustment;
@@ -98,7 +98,7 @@ void __cdecl SetPushAngle(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
+void PushCode(GAMEOBJECT *object, i32 allow_push) {
     i32 saved_context;
     f32 saved_push_timer;
     u16 wall_angle;
@@ -374,7 +374,7 @@ finalize:
     }
 }
 
-i32 __cdecl WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
+i32 WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     u16 sideways_angle;
     f32 direction;
     f32 speed;
@@ -408,7 +408,7 @@ i32 __cdecl WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     return 0;
 }
 
-void __cdecl ReleasePush(GAMEOBJECT *object) {
+void ReleasePush(GAMEOBJECT *object) {
     i32 context = object->character_context;
     if ((((PUSH_CONTEXT_INFO_PC *)CInfo)[context].flags & 0x2000) != 0) {
         if (LEGOCONTEXT_PUSHOBSTACLE != -1 && context == LEGOCONTEXT_PUSHOBSTACLE) {

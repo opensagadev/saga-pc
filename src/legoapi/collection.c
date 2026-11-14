@@ -4,7 +4,7 @@ static i32 CollectCount = 0;
 static COLLECTID_PC *CollectList = 0;
 COLLECTID_PC *TempCollectID = 0;
 
-i32 __cdecl InCollectList_Index(i32 id, COLLECTID_PC *list, i32 count) {
+i32 InCollectList_Index(i32 id, COLLECTID_PC *list, i32 count) {
     i32 index;
     TempCollectID = NULL;
     if (list == NULL) {
@@ -32,7 +32,7 @@ typedef struct coin_reset_packet_pc_s {
     f32 double_score_timer; // 0xc
 } COIN_RESET_PACKET_PC;     // size 0x10
 
-i32 __cdecl Collection_Got(i32 id) {
+i32 Collection_Got(i32 id) {
     i32 area;
     if (InCollectList_Index(id, NULL, 0) == -1) {
         return 0;
@@ -62,7 +62,7 @@ STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
 STATIC_ASSERT(offsetof(COLLECTID_PC, id) == 0);
 
-i32 __cdecl Collection_GotAnyOfType(i32 type, u32 flags) {
+i32 Collection_GotAnyOfType(i32 type, u32 flags) {
     i32 index;
     if (CollectList == NULL) {
         return 0;
@@ -125,8 +125,7 @@ STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
 
-void __cdecl Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, i32 columns,
-                                     f32 scale) {
+void Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, i32 columns, f32 scale) {
     collection->list = CollectList;
     collection->columns = (u16)columns;
     collection->count = (u16)CollectCount;
@@ -135,10 +134,9 @@ void __cdecl Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD
     collection->scale = scale;
 }
 
-void __cdecl Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection,
-                                     u32 required_model_flags, u32 excluded_model_flags, u32 required_game_flags,
-                                     i32 require_buyable, i32 columns, VARIPTR *buffer, VARIPTR *buffer_end,
-                                     i32 use_all_characters, f32 scale) {
+void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, u32 required_model_flags,
+                             u32 excluded_model_flags, u32 required_game_flags, i32 require_buyable, i32 columns,
+                             VARIPTR *buffer, VARIPTR *buffer_end, i32 use_all_characters, f32 scale) {
     i32 index;
     (void)buffer_end;
     collection->list = (COLLECTID_PC *)((buffer->addr + 3) & ~3u);
@@ -214,8 +212,8 @@ extern "C" {
 }
 #endif
 
-i32 __cdecl Collection_GetIDList(COLLECTION_BUILD_PC *collection, u32 mask, u32 required, i16 *out, i32 *first,
-                                 i32 *second, i32 unused) {
+i32 Collection_GetIDList(COLLECTION_BUILD_PC *collection, u32 mask, u32 required, i16 *out, i32 *first, i32 *second,
+                         i32 unused) {
     i32 index;
     i32 count = 0;
     if (first != NULL) {
@@ -262,11 +260,11 @@ STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == sizeof(COLLECTID_PC));
 STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
 
 /* Native 594220 is an actual RET with no argument reads. */
-void __cdecl CollectionConfigDiagnosticPc(char *file, ...) {
+void CollectionConfigDiagnosticPc(char *file, ...) {
     (void)file;
 }
 
-void __cdecl Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
+void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
     NUFPAR_PC *parser = NuFParCreate(file);
     COLLECTION_CONFIG_ENTRY_PC *entry;
     i32 area;
@@ -366,10 +364,10 @@ typedef struct SHOP_UNLOCK_COMPLETION_PC {
     u8 gold_bricks;          // 0x2
 } SHOP_UNLOCK_COMPLETION_PC; // size 0x3
 
-i32 __cdecl Episodes_Completed(void);
-i32 __cdecl AllMiniKitsDone(AREASAVE_s *);
+i32 Episodes_Completed(void);
+i32 AllMiniKitsDone(AREASAVE_s *);
 
-COLLECTID *__cdecl CollectIDUnlocked(i32 id) {
+COLLECTID *CollectIDUnlocked(i32 id) {
     COLLECTID *entry;
     COLLECTID_PC *list = CollectList;
     i32 index = InCollectList_Index(id, list, CollectCount);

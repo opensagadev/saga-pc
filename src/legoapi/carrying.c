@@ -88,7 +88,7 @@ extern u8 SuperCarryPlayerRgbPc[2][3];
         }                                                                                                              \
     } while (0)
 
-i32 __cdecl SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position, u16 angle, i32 keep_matrix) {
+i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position, u16 angle, i32 keep_matrix) {
     CARRY_BLOWUP_PC *view = (CARRY_BLOWUP_PC *)blowup;
     CARRY_PLUG_PC *plug;
     f32 distance;
@@ -113,7 +113,7 @@ i32 __cdecl SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position,
     return 0;
 }
 
-void __cdecl SuperCarry_PartImpact(PART_PC *part) {
+void SuperCarry_PartImpact(PART_PC *part) {
     f32 amount = NuVecMag(&part->velocity);
     if (amount >= SuperCarryImpactSpeedPc) {
         amount = 1.0f;
@@ -125,7 +125,7 @@ void __cdecl SuperCarry_PartImpact(PART_PC *part) {
     }
 }
 
-static void __cdecl SuperCarry_PartKill(PART_PC *part, i32 unused) {
+static void SuperCarry_PartKill(PART_PC *part, i32 unused) {
     GIZMOBLOWUP_PC *blowup = ((CARRY_PART_PC *)part)->blowup;
     CARRY_BLOWUP_PC *view = (CARRY_BLOWUP_PC *)blowup;
     (void)unused;
@@ -136,7 +136,7 @@ static void __cdecl SuperCarry_PartKill(PART_PC *part, i32 unused) {
     }
 }
 
-void __cdecl SuperCarry_DrawObject(struct gameobject_s *object) {
+void SuperCarry_DrawObject(struct gameobject_s *object) {
     NUMTX matrix;
     NUVEC offset;
     struct nuvec_s *translation;
@@ -172,7 +172,7 @@ void __cdecl SuperCarry_DrawObject(struct gameobject_s *object) {
     }
 }
 
-void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC *secondary_position) {
+void SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC *secondary_position) {
     i32 first;
     i32 second;
     NUVEC offset;
@@ -197,7 +197,7 @@ void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC 
     }
 }
 
-void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
+void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
     CARRY_BASIS_PC *basis = (CARRY_BASIS_PC *)object;
     CARRY_BLOWUP_PC *blowup;
@@ -286,7 +286,7 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     }
 }
 
-i32 __cdecl SuperCarry_Possible(GAMEOBJECT *object, i32 require_grounded) {
+i32 SuperCarry_Possible(GAMEOBJECT *object, i32 require_grounded) {
     if (CanSuperCarryFn == NULL || CanSuperCarryFn(object) == 0) {
         return 0;
     }
@@ -299,7 +299,7 @@ i32 __cdecl SuperCarry_Possible(GAMEOBJECT *object, i32 require_grounded) {
     return 1;
 }
 
-void __cdecl SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 immediate) {
+void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 immediate) {
     object->character_context = ((i8)(LEGOCONTEXT_SUPERCARRY));
     object->context_variant_flags &= ~0x40u;
     object->action_movement_state = 0;
@@ -369,7 +369,7 @@ void __cdecl SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowu
     object->context_hover_target_y = 0.5f;
 }
 
-void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
+void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
     if (LEGOCONTEXT_SUPERCARRY == -1) {
         return;
     }
@@ -754,7 +754,7 @@ void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) 
     }
 }
 
-i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
+i32 SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
     f32 speed = 0.0f;
     object->target_velocity.x = 0.0f;
     object->target_velocity.z = 0.0f;
@@ -778,7 +778,7 @@ i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
     return 0;
 }
 
-i32 __cdecl SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
+i32 SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
     if (object->field_7b3 == 0) {
         object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 12.0f);
         object->field_0x276 = object->facing_angle;
@@ -802,7 +802,7 @@ i32 __cdecl SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
     return 1;
 }
 
-i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *object) {
+i32 SuperCarry_Carrying(GAMEOBJECT *object) {
     if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY) {
         if (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6) {
             return 1;
@@ -811,7 +811,7 @@ i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *object) {
     return 0;
 }
 
-void __cdecl SuperCarry_Release(GAMEOBJECT *object) {
+void SuperCarry_Release(GAMEOBJECT *object) {
     if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
         (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6)) {
         SuperCarry_Throw(object, 1);

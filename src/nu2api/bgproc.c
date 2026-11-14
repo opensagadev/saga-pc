@@ -4,16 +4,16 @@ NULSTHDR *bgproc_procinfo_pool = 0;
 volatile u32 nu_current_thread_id = 0;
 
 /* The PC build has no debug-print lock; both halves are empty. */
-void __cdecl PcDebugPrintUnlock(void) {
+void PcDebugPrintUnlock(void) {
 }
 
-void __cdecl PcDebugPrintLock(void) {
+void PcDebugPrintLock(void) {
 }
 
-void __cdecl PcEnableThreadSwap(void) {
+void PcEnableThreadSwap(void) {
 }
 
-void __cdecl PcDisableThreadSwap(void) {
+void PcDisableThreadSwap(void) {
 }
 
 void fun_006de770(void) {
@@ -43,10 +43,10 @@ void fun_006de8a0(void) {
 void fun_006de8b0(void) {
 }
 
-void(__cdecl *NuThreadDisableThreadSwap)(void) = PcDisableThreadSwap;
-void(__cdecl *NuThreadEnableThreadSwap)(void) = PcEnableThreadSwap;
+void (*NuThreadDisableThreadSwap)(void) = PcDisableThreadSwap;
+void (*NuThreadEnableThreadSwap)(void) = PcEnableThreadSwap;
 
-BGPROCINFO *__cdecl bgPostRequestV(bgprocdofn *do_fn, bgprocdofn *ack_fn, i32 first_type, ...) {
+BGPROCINFO *bgPostRequestV(bgprocdofn *do_fn, bgprocdofn *ack_fn, i32 first_type, ...) {
     BGPROCINFO *info;
     BGVAR *var;
     u8 *string_end;
@@ -100,7 +100,7 @@ BGPROCINFO *__cdecl bgPostRequestV(bgprocdofn *do_fn, bgprocdofn *ack_fn, i32 fi
         va_end(args);
     }
     if (info == NULL || (u8 *)var > string_end) {
-        ((void(__cdecl *)(void))bgProcDataOversize)();
+        ((void (*)(void))bgProcDataOversize)();
     }
     LeaveCriticalSection(&bgproc_critical_section);
     if (info != NULL) {
@@ -109,7 +109,7 @@ BGPROCINFO *__cdecl bgPostRequestV(bgprocdofn *do_fn, bgprocdofn *ack_fn, i32 fi
     return info;
 }
 
-BGPROCINFO *__cdecl bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32 data_size) {
+BGPROCINFO *bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32 data_size) {
     BGPROCINFO *info;
 
     EnterCriticalSection(&bgproc_critical_section);
@@ -177,7 +177,7 @@ static DWORD WINAPI bgProcWorkerPc(void *unused) {
     }
 }
 
-void __cdecl bgProcInit(void) {
+void bgProcInit(void) {
     if (bgproc_initialized == 0) {
         bgproc_initialized = 1;
         bgproc_procinfo_pool = NuLstCreate(0x10, sizeof(BGPROCINFO));
@@ -192,26 +192,26 @@ void __cdecl bgProcInit(void) {
     }
 }
 
-void __cdecl bgprocFreeze(void) {
+void bgprocFreeze(void) {
     bgproc_freeze = 1;
     ResetEvent(bgproc_resume_event);
     SetEvent(bgproc_work_event);
 }
 
-void __cdecl bgprocUnFreeze(void) {
+void bgprocUnFreeze(void) {
     bgproc_freeze = 0;
     SetEvent(bgproc_resume_event);
 }
 
-i32 __cdecl bgprocIsFrozen(void) {
+i32 bgprocIsFrozen(void) {
     return bgproc_frozen != 0;
 }
 
-i32 __cdecl bgprocIsFreezing(void) {
+i32 bgprocIsFreezing(void) {
     return bgproc_frozen != 0 || bgproc_freeze != 0;
 }
 
-i32 __cdecl bgProcIsBgThread(void) {
+i32 bgProcIsBgThread(void) {
     i32 result = 0;
     if (GetCurrentThreadId() == bgproc_thread_id) {
         result = 1;
@@ -219,14 +219,14 @@ i32 __cdecl bgProcIsBgThread(void) {
     return result;
 }
 
-BGPROCINFO *__cdecl bgGetProcActive(void) {
+BGPROCINFO *bgGetProcActive(void) {
     if (bgproc_active != NULL) {
         return bgproc_active;
     }
     return (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, NULL);
 }
 
-void __cdecl bgprocFrameSleepPc(i32 milliseconds) {
+void bgprocFrameSleepPc(i32 milliseconds) {
     if (bgproc_procinfo_pool != NULL) {
         if (bgproc_active != NULL || NuLstGetNext(bgproc_procinfo_pool, NULL) != NULL) {
             Sleep(milliseconds);

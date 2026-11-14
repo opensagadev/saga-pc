@@ -60,10 +60,10 @@ STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
 /* Original name unknown. Empty on PC (a bare RET at 0x58a510); called when the file cannot be
    opened. VC8 drops calls to an empty body it can see, so the definition lives outside this file
    (see SpecialMovesConfigMissingPc). */
-void __cdecl MissionsConfigMissingPc(char *filename);
+void MissionsConfigMissingPc(char *filename);
 
-MISSIONSYS_PC *__cdecl Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end,
-                                          MISSION_SAVE_READER_PC *save) {
+MISSIONSYS_PC *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end,
+                                  MISSION_SAVE_READER_PC *save) {
     NUFPAR_PC *parser;
     MISSION_SYSTEM_READER_PC temporary;
     MISSION_SYSTEM_READER_PC *destination;
@@ -160,7 +160,7 @@ void Mission_Clear(MISSIONSYS_s *ms) {
     ResetTimer(&ms->timer, 0.0f);
 }
 
-MISSIONDATA_PC *__cdecl Mission_Active(MISSIONSYS_PC *system) {
+MISSIONDATA_PC *Mission_Active(MISSIONSYS_PC *system) {
     if (system == NULL) {
         system = MissionSys;
         if (system == NULL) {
@@ -173,7 +173,7 @@ MISSIONDATA_PC *__cdecl Mission_Active(MISSIONSYS_PC *system) {
     return NULL;
 }
 
-i32 __cdecl Mission_CurrentState(MISSIONSYS_PC *system) {
+i32 Mission_CurrentState(MISSIONSYS_PC *system) {
     MISSION_SYSTEM_READER_PC *reader;
     if (system == NULL) {
         system = MissionSys;
@@ -188,7 +188,7 @@ i32 __cdecl Mission_CurrentState(MISSIONSYS_PC *system) {
     return 0;
 }
 
-i32 __cdecl Missions_PartyAvailable(MISSIONSYS_PC *system) {
+i32 Missions_PartyAvailable(MISSIONSYS_PC *system) {
     MISSION_SYSTEM_READER_PC *reader;
     i32 index;
     if (system == NULL) {
@@ -205,7 +205,7 @@ i32 __cdecl Missions_PartyAvailable(MISSIONSYS_PC *system) {
     return 1;
 }
 
-i32 __cdecl Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER_PC *save, i32 complete) {
+i32 Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER_PC *save, i32 complete) {
     MISSION_SYSTEM_READER_PC *reader;
     i32 index;
     i32 total = 0;
@@ -229,7 +229,7 @@ i32 __cdecl Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER_PC 
     return total;
 }
 
-GAMEOBJECT *__cdecl Mission_FindTarget(MISSIONSYS_PC *system, u64 *identity) {
+GAMEOBJECT *Mission_FindTarget(MISSIONSYS_PC *system, u64 *identity) {
     MISSION_SYSTEM_READER_PC *reader;
     GAMEOBJECT *target;
     if (system == NULL) {
@@ -249,7 +249,7 @@ GAMEOBJECT *__cdecl Mission_FindTarget(MISSIONSYS_PC *system, u64 *identity) {
     return NULL;
 }
 
-i32 __cdecl Missions_PickupsOff(MISSIONSYS_PC *system) {
+i32 Missions_PickupsOff(MISSIONSYS_PC *system) {
     MISSION_SYSTEM_READER_PC *reader;
     if (system == NULL) {
         system = MissionSys;

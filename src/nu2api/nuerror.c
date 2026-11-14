@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-void __cdecl NuSevereWarning(const char *format, ...) {
+void NuSevereWarning(const char *format, ...) {
     va_list args;
     char *message;
     sprintf(PCWarningOutputBuffer, PCWarningPrefix);
@@ -22,11 +22,11 @@ void __cdecl NuSevereWarning(const char *format, ...) {
     PCWarningMessages[bHaveErr++] = '\0';
 }
 
-i32 __cdecl NuHasError(void) {
+i32 NuHasError(void) {
     return bHaveErr;
 }
 
-void __cdecl NuClearError(void) {
+void NuClearError(void) {
     bHaveErr = 0;
 }
 

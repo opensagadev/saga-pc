@@ -11,9 +11,9 @@ STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
 STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
 
 /* Native 0x005ab0f0, 66 bytes. */
-extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
+extern void (*AIPathCnxHelperSysInitFn)(WORLDINFO *);
 
-void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
+void *AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
     AI_HELPER_SYSTEM_PC *system = NULL;
     if (count != 0) {
         system = AISysBufferAlloc(buffer, end, sizeof(*system));
@@ -27,7 +27,7 @@ void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count)
     return system;
 }
 
-void __cdecl AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *system) {
+void AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *system) {
     if (system != NULL) {
         if (system->count != 0) {
             memset(system->helpers, 0, system->count * sizeof(AI_HELPER_SLOT_PC));
@@ -39,8 +39,8 @@ void __cdecl AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *syst
     }
 }
 
-AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX_PC *connection,
-                                                        u8 direction, void *target, u8 type) {
+AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX_PC *connection, u8 direction,
+                                                void *target, u8 type) {
     AI_HELPER_SLOT_PC *helper = NULL;
     if (system != NULL) {
         if (system->count < system->capacity && connection != NULL && target != NULL) {
@@ -65,9 +65,8 @@ AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *sys
     return helper;
 }
 
-AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object,
-                                                   AIPATHCNX_PC *connection, u8 direction, u8 type,
-                                                   AI_HELPER_FILTER_PC filter) {
+AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object, AIPATHCNX_PC *connection,
+                                           u8 direction, u8 type, AI_HELPER_FILTER_PC filter) {
     AI_HELPER_SLOT_PC *helper;
     i32 index;
     if (connection == NULL && object != NULL) {

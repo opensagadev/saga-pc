@@ -57,7 +57,7 @@ void Text_DecodeButtons(char *source, char *destination) {
     }
 }
 
-void __cdecl Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
+void Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
     char language[32];
     char path[256];
     u8 *string_buffer = buffer->void_ptr;

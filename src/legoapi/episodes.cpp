@@ -20,10 +20,10 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, challenge_trial_time) == 0x84);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, regular_areas) == 0x19);
 extern "C" {
-    void __cdecl EpisodesConfigDiagnosticPc(char *path);
+    void EpisodesConfigDiagnosticPc(char *path);
 
-    EPISODEDATA_PC *__cdecl Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                                   i32 *count_out) {
+    EPISODEDATA_PC *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
+                                           i32 *count_out) {
         NUFPAR_PC *parser = NuFParCreate(path);
         EPISODEDATA_PC *episode_base;
         EPISODEDATA_PC *episode;
@@ -125,7 +125,7 @@ extern "C" {
     }
 }
 
-i32 __cdecl Episode_ContainsArea(i32 area_id, i32 *area_index) {
+i32 Episode_ContainsArea(i32 area_id, i32 *area_index) {
     i32 i;
     i32 j;
     for (i = 0; i < EPISODECOUNT; ++i) {
@@ -147,7 +147,7 @@ i32 __cdecl Episode_ContainsArea(i32 area_id, i32 *area_index) {
 
 extern "C" {
 
-    u32 __cdecl Episode_FindAreaFromFlags(EPISODEDATA_PC *episode, u32 flags, u32 wanted) {
+    u32 Episode_FindAreaFromFlags(EPISODEDATA_PC *episode, u32 flags, u32 wanted) {
         i32 index;
         for (index = 0; index < episode->area_count; ++index) {
             AREA_DATA_PC *area = &ADataList[episode->area_ids[index]];
@@ -160,7 +160,7 @@ extern "C" {
 }
 
 /* 59b700/86. Native early NULL save guard does not initialize output count. */
-extern "C" i32 __cdecl Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
+extern "C" i32 Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
     COLLECTION_AREA_SAVE_PC *saves = Game_AreaSave;
     i32 completed = 0;
     if (saves == NULL) {
@@ -177,7 +177,7 @@ extern "C" i32 __cdecl Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
     return completed == episode->regular_areas;
 }
 
-extern "C" i32 __cdecl Episodes_Completed(void) {
+extern "C" i32 Episodes_Completed(void) {
     i32 completed = 0;
     for (i32 i = 0; i < EPISODECOUNT; ++i) {
         EPISODEDATA_PC *episode = &EDataList[i];

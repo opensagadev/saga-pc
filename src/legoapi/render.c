@@ -167,7 +167,7 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
 #undef ALPHA_GRID_INLINE_COLOUR
 #undef ALPHA_GRID_CLAMP_COLOUR
 
-void __cdecl CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     (void)packet;
 }
@@ -200,31 +200,31 @@ STATIC_ASSERT(offsetof(STATUSPACKET_s, area_id) ==
 
 #undef STATUS_APPEND_STAGE_INLINE_PC
 
-void __cdecl BonusTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void BonusTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     (void)packet;
 }
 
-void __cdecl BonusWin_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void BonusWin_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     (void)packet;
 }
 
 /* Original source name unknown. The native entry is exactly RET; ReleaseTakeOver passes it the rider and
  * vehicle character names. */
-void __cdecl TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name) {
+void TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name) {
     (void)rider_name;
     (void)object_name;
 }
 
 /* Original source name unknown. The native entry is exactly RET; GameAnimSet_AddObject passes it the name of a
  * special whose animation has no frames. */
-void __cdecl GameAnimMissingAnimDiagnosticPc(char *name) {
+void GameAnimMissingAnimDiagnosticPc(char *name) {
     (void)name;
 }
 
 /* Original source name unknown. The native entry is exactly RET; LoadGizmoSys passes it each gizmo type name it
  * reads, loads or skips. */
-void __cdecl GizmoNameDiagnosticPc(char *name) {
+void GizmoNameDiagnosticPc(char *name) {
     (void)name;
 }

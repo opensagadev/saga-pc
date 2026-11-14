@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 extern char **TexAnimScriptTablePc;
-void __cdecl NuTexAnimScriptMissingPc(char *path);
+void NuTexAnimScriptMissingPc(char *path);
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
@@ -23,7 +23,7 @@ struct shadow_platform_list_pc_s {
     SHADOW_PLATFORM_ENTRY_PC entries[1];
 };
 
-extern void(__cdecl *DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
+extern void (*DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
 
 typedef struct USEFUL_MATERIAL_PC {
     u8 unknown_00[0x40];
@@ -31,7 +31,7 @@ typedef struct USEFUL_MATERIAL_PC {
 } USEFUL_MATERIAL_PC;
 
 extern NUMTL *SolidMtl;
-extern i32(__cdecl *MatrixReflection_CanOverrideFn)(void);
+extern i32 (*MatrixReflection_CanOverrideFn)(void);
 
 static __inline f32 UtilitiesFabsPc(f32 value);
 
@@ -77,7 +77,7 @@ void ResetSeeds(void) {
     NuPartSetSeed(0);
 }
 
-f32 __cdecl SeekLinearF(f32 current, f32 target, f32 step) {
+f32 SeekLinearF(f32 current, f32 target, f32 step) {
     if (current > target) {
         current -= step;
         if (current < target) {
@@ -92,7 +92,7 @@ f32 __cdecl SeekLinearF(f32 current, f32 target, f32 step) {
     return current;
 }
 
-f32 __cdecl SeekValF(f32 current, f32 target, f32 rate) {
+f32 SeekValF(f32 current, f32 target, f32 rate) {
     f32 blend;
 
     blend = rate * FRAMETIME;
@@ -102,7 +102,7 @@ f32 __cdecl SeekValF(f32 current, f32 target, f32 rate) {
     return current + (target - current) * blend;
 }
 
-void __cdecl SeekVec(NUVEC *result, NUVEC *current, NUVEC *target, f32 rate) {
+void SeekVec(NUVEC *result, NUVEC *current, NUVEC *target, f32 rate) {
     f32 blend;
 
     blend = rate * FRAMETIME;
@@ -114,7 +114,7 @@ void __cdecl SeekVec(NUVEC *result, NUVEC *current, NUVEC *target, f32 rate) {
     result->z = current->z + (target->z - current->z) * blend;
 }
 
-void __cdecl CapVec(NUVEC *input, f32 maximum, NUVEC *output) {
+void CapVec(NUVEC *input, f32 maximum, NUVEC *output) {
     f32 length_squared = input->x * input->x + input->y * input->y + input->z * input->z;
     if (length_squared > maximum * maximum) {
         f32 factor = maximum / NuFsqrt(length_squared);
@@ -124,7 +124,7 @@ void __cdecl CapVec(NUVEC *input, f32 maximum, NUVEC *output) {
     }
 }
 
-i32 __cdecl SphereSphereOverlap(NUVEC *a, f32 radius_a, NUVEC *b, f32 radius_b) {
+i32 SphereSphereOverlap(NUVEC *a, f32 radius_a, NUVEC *b, f32 radius_b) {
     f32 x = b->x - a->x;
     f32 y = b->y - a->y;
     f32 z = b->z - a->z;
@@ -132,8 +132,8 @@ i32 __cdecl SphereSphereOverlap(NUVEC *a, f32 radius_a, NUVEC *b, f32 radius_b) 
     return x * x + y * y + z * z <= radius * radius;
 }
 
-i32 __cdecl SphereSphereOverlapScaleY(NUVEC *position_a, f32 radius_a, f32 y_radius_a, NUVEC *position_b, f32 radius_b,
-                                      f32 y_radius_b) {
+i32 SphereSphereOverlapScaleY(NUVEC *position_a, f32 radius_a, f32 y_radius_a, NUVEC *position_b, f32 radius_b,
+                              f32 y_radius_b) {
     f32 dx = position_b->x - position_a->x;
     f32 dz = position_b->z - position_a->z;
     f32 dy = position_b->y - position_a->y;
@@ -145,8 +145,8 @@ i32 __cdecl SphereSphereOverlapScaleY(NUVEC *position_a, f32 radius_a, f32 y_rad
     return dx * dx + dy * dy + dz * dz <= radius * radius;
 }
 
-i32 __cdecl OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_normal, NUVEC *corrected_point,
-                            f32 normal_offset, f32 *distance_out) {
+i32 OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_normal, NUVEC *corrected_point, f32 normal_offset,
+                    f32 *distance_out) {
     NUVEC test_point;
     f32 distance;
     f32 correction;
@@ -173,13 +173,13 @@ i32 __cdecl OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_norma
     return 0;
 }
 
-i32 __cdecl OnOrOutsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
+i32 OnOrOutsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
     return (point->y - plane_point->y) * normal->y + (point->x - plane_point->x) * normal->x +
                (point->z - plane_point->z) * normal->z >=
            0.0;
 }
 
-void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
+void FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
     u16 x_angle = (u16)NuAtan2D(normal->z, normal->y);
     NUVEC rotated;
     u16 z_angle;
@@ -196,7 +196,7 @@ void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
     temp_xrot = (u16)-z_angle;
 }
 
-void __cdecl FindAnglesXY(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
+void FindAnglesXY(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
     f32 horizontal_squared;
     temp_yrot = (u16)NuAtan2D(direction->x, direction->z);
     if (y_rotation) {
@@ -210,7 +210,7 @@ void __cdecl FindAnglesXY(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
     }
 }
 
-void __cdecl GetRotationAngles(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
+void GetRotationAngles(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
     NUVEC rotated;
     NUVEC copy = *direction;
     u16 y_angle = (u16)-NuAtan2D(copy.z, copy.x);
@@ -219,7 +219,7 @@ void __cdecl GetRotationAngles(NUVEC *direction, u16 *x_rotation, u16 *y_rotatio
     *y_rotation = y_angle;
 }
 
-i32 __cdecl RotDiff(u16 current, u16 target) {
+i32 RotDiff(u16 current, u16 target) {
     i32 difference = target - current;
 
     if (difference > 0x8000) {
@@ -230,7 +230,7 @@ i32 __cdecl RotDiff(u16 current, u16 target) {
     return difference;
 }
 
-u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
+u16 SeekRot(u16 current, u16 target, f32 rate) {
     f32 blend;
     i32 difference;
     i32 angle;
@@ -249,7 +249,7 @@ u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
     return (u16)angle;
 }
 
-u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
+u16 TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
     i32 step;
     i32 difference;
     if (target == current) {
@@ -277,7 +277,7 @@ u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
     return (u16)(current - step);
 }
 
-f32 __cdecl PushingTowardsAngle(u16 input_angle, u16 direction) {
+f32 PushingTowardsAngle(u16 input_angle, u16 direction) {
     NUVEC input;
     NUVEC target;
     NuVecRotateY(&input, &v001, input_angle);
@@ -285,7 +285,7 @@ f32 __cdecl PushingTowardsAngle(u16 input_angle, u16 direction) {
     return input.x * target.x + input.z * target.z;
 }
 
-void __cdecl AnglesBetweenPoints(NUVEC *from, NUVEC *to, u16 *vertical, u16 *horizontal) {
+void AnglesBetweenPoints(NUVEC *from, NUVEC *to, u16 *vertical, u16 *horizontal) {
     f32 x = to->x - from->x;
     f32 y = to->y - from->y;
     f32 z = to->z - from->z;
@@ -293,8 +293,8 @@ void __cdecl AnglesBetweenPoints(NUVEC *from, NUVEC *to, u16 *vertical, u16 *hor
     *horizontal = NuAtan2D(x, z);
 }
 
-void __cdecl CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *velocity, f32 speed, NUVEC *direction,
-                                      NUVEC *intercept) {
+void CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *velocity, f32 speed, NUVEC *direction,
+                              NUVEC *intercept) {
     NUVEC prediction = *target;
     i32 i;
     for (i = 0; i < 3; ++i) {
@@ -315,7 +315,7 @@ void __cdecl CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *veloc
     }
 }
 
-void __cdecl RotateGameMatrix(NUMTX *matrix, i32 order, u16 x, u16 y, u16 z) {
+void RotateGameMatrix(NUMTX *matrix, i32 order, u16 x, u16 y, u16 z) {
     switch (order) {
         case 0:
             if (x != 0) {
@@ -364,7 +364,7 @@ void __cdecl RotateGameMatrix(NUMTX *matrix, i32 order, u16 x, u16 y, u16 z) {
     }
 }
 
-i32 __cdecl MatrixReflection(NUMTX *matrix, i32 axis, f32 plane, f32 override_plane, NUMTX *result) {
+i32 MatrixReflection(NUMTX *matrix, i32 axis, f32 plane, f32 override_plane, NUMTX *result) {
     switch (axis) {
         case 1:
             *result = *matrix;
@@ -396,7 +396,7 @@ i32 __cdecl MatrixReflection(NUMTX *matrix, i32 axis, f32 plane, f32 override_pl
     }
 }
 
-i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result) {
+i32 MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result) {
     if ((f64)override_plane != 2000000.0 &&
         (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0)) {
         plane = override_plane;
@@ -418,7 +418,7 @@ void InterpolateRotationMatrix(NUMTX *result, NUMTX *first, NUMTX *second, float
     NuVecNorm(NUMTX_GET_ROW_VEC(result, 2), NUMTX_GET_ROW_VEC(result, 2));
 }
 
-void __cdecl QuatInterpolateRotationMatrix(NUMTX *out, NUMTX *left, NUMTX *right, f32 fraction) {
+void QuatInterpolateRotationMatrix(NUMTX *out, NUMTX *left, NUMTX *right, f32 fraction) {
     NUQUAT a;
     NUQUAT b;
     NUQUAT value;
@@ -428,7 +428,7 @@ void __cdecl QuatInterpolateRotationMatrix(NUMTX *out, NUMTX *left, NUMTX *right
     NuQuatToMtx(&value, out);
 }
 
-f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
+f32 GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
     i32 handles[16];
     i32 handle_count = 0;
     i32 i;
@@ -466,7 +466,7 @@ f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask)
     return height;
 }
 
-f32 __cdecl BlobShadowFade(NUVEC *position, f32 fade_start, f32 fade_end, f32 alpha) {
+f32 BlobShadowFade(NUVEC *position, f32 fade_start, f32 fade_end, f32 alpha) {
     NUVEC delta;
     f32 distance_squared;
     if (alpha <= 0.0f) {
@@ -530,7 +530,7 @@ static void SplinePointAngles(NUGSPLINE *spline, i32 index, i32 looping, u16 *pi
     }
 }
 
-void __cdecl PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *position, u16 *angle, u16 *pitch, i32 looping) {
+void PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *position, u16 *angle, u16 *pitch, i32 looping) {
     u32 extent;
     u32 fixed;
     i32 index;
@@ -595,7 +595,7 @@ void __cdecl PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *position, u16
     }
 }
 
-f32 __cdecl SplineLength(NUGSPLINE *spline, i32 closed) {
+f32 SplineLength(NUGSPLINE *spline, i32 closed) {
     i32 segment_count;
     i32 segment;
     f32 length;
@@ -619,11 +619,11 @@ f32 __cdecl SplineLength(NUGSPLINE *spline, i32 closed) {
     return length;
 }
 
-i32 __cdecl StreamingInsideLineXZPc(f32 x, f32 z, f32 x0, f32 z0, f32 x1, f32 z1) {
+i32 StreamingInsideLineXZPc(f32 x, f32 z, f32 x0, f32 z0, f32 x1, f32 z1) {
     return (x - x0) * (z1 - z0) + (z - z0) * (x0 - x1) >= 0.0f;
 }
 
-i32 __cdecl LineCrossedXZ(f32 ax, f32 az, f32 bx, f32 bz, f32 cx, f32 cz, f32 dx, f32 dz) {
+i32 LineCrossedXZ(f32 ax, f32 az, f32 bx, f32 bz, f32 cx, f32 cz, f32 dx, f32 dz) {
     i32 result = 0;
     if (!((bx - cx) * (dz - cz) + (bz - cz) * (cx - dx) >= 0.0f) &&
         (ax - cx) * (dz - cz) + (az - cz) * (cx - dx) >= 0.0f) {
@@ -636,7 +636,7 @@ i32 __cdecl LineCrossedXZ(f32 ax, f32 az, f32 bx, f32 bz, f32 cx, f32 cz, f32 dx
     return result;
 }
 
-f32 __cdecl RatioAlongLineXZ(NUVEC *point, NUVEC *start, NUVEC *end) {
+f32 RatioAlongLineXZ(NUVEC *point, NUVEC *start, NUVEC *end) {
     f32 dx = end->x - start->x;
     f32 dz = end->z - start->z;
     u16 angle = (u16)-NuAtan2D(dx, dz);
@@ -654,7 +654,7 @@ f32 __cdecl RatioAlongLineXZ(NUVEC *point, NUVEC *start, NUVEC *end) {
     return along / length;
 }
 
-f32 __cdecl DistanceToLineXZ(NUVEC *position, NUVEC *first, NUVEC *second) {
+f32 DistanceToLineXZ(NUVEC *position, NUVEC *first, NUVEC *second) {
     u16 angle;
 
     union {
@@ -669,13 +669,13 @@ f32 __cdecl DistanceToLineXZ(NUVEC *position, NUVEC *first, NUVEC *second) {
     return absolute.value;
 }
 
-f32 __cdecl RatioBetweenEdgesXZ(NUVEC *point, NUVEC *edge_a0, NUVEC *edge_a1, NUVEC *edge_b0, NUVEC *edge_b1) {
+f32 RatioBetweenEdgesXZ(NUVEC *point, NUVEC *edge_a0, NUVEC *edge_a1, NUVEC *edge_b0, NUVEC *edge_b1) {
     f32 distance_a = DistanceToLineXZ(point, edge_a0, edge_a1);
     f32 distance_b = DistanceToLineXZ(point, edge_b0, edge_b1);
     return distance_a / (distance_a + distance_b);
 }
 
-i32 __cdecl LineIntersectXY(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, NUVEC *first, NUVEC *second) {
+i32 LineIntersectXY(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, NUVEC *first, NUVEC *second) {
     f32 t_numerator = (d->x - c->x) * (a->y - c->y) - (d->y - c->y) * (a->x - c->x);
     f32 t_denominator = (d->y - c->y) * (b->x - a->x) - (d->x - c->x) * (b->y - a->y);
     f32 u_numerator = (b->x - a->x) * (a->y - c->y) - (b->y - a->y) * (a->x - c->x);
@@ -813,8 +813,7 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
     return closest;
 }
 
-i32 __cdecl LineIntersectSphere(NUVEC *origin, NUVEC *direction, NUVEC *center, f32 radius_squared,
-                                f32 *distance_squared) {
+i32 LineIntersectSphere(NUVEC *origin, NUVEC *direction, NUVEC *center, f32 radius_squared, f32 *distance_squared) {
     NUVEC delta;
     f32 projection;
     f32 point_squared;
@@ -839,7 +838,7 @@ i32 __cdecl LineIntersectSphere(NUVEC *origin, NUVEC *direction, NUVEC *center, 
     return 0;
 }
 
-i32 __cdecl LineIntersectCircle(NUVEC *origin, NUVEC *direction, NUVEC *center, f32 radius_squared) {
+i32 LineIntersectCircle(NUVEC *origin, NUVEC *direction, NUVEC *center, f32 radius_squared) {
     NUVEC delta;
     f32 projection;
     f32 point_squared;
@@ -860,7 +859,7 @@ i32 __cdecl LineIntersectCircle(NUVEC *origin, NUVEC *direction, NUVEC *center, 
     return 0;
 }
 
-void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance) {
+void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
     i32 points;
     NUVEC offset;
     NUVEC *current;
@@ -954,8 +953,8 @@ void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance) {
     position->along = (fraction + position->segment) / (points - 1);
 }
 
-void __cdecl GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i32 looping, i16 first_point,
-                                 i16 last_point) {
+void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i32 looping, i16 first_point,
+                         i16 last_point) {
     f32 nearest = 1000000000.0f;
     i16 point_count;
     i32 logical_count;
@@ -1073,7 +1072,7 @@ void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS
     MoveSplinePosition(second_position, 0.00001f);
 }
 
-i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_end, NUVEC *edge_start, i32 inside) {
+i32 OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_end, NUVEC *edge_start, i32 inside) {
     f32 best = 1000000000.0f;
     i32 closest_index;
     i32 count;
@@ -1181,7 +1180,7 @@ i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_en
     return 1;
 }
 
-void __cdecl VecRotateAxis(NUVEC *vector, u16 angle, NUVEC *axis) {
+void VecRotateAxis(NUVEC *vector, u16 angle, NUVEC *axis) {
     f32 cosine;
     f32 sine;
     f32 partial;
@@ -1224,7 +1223,7 @@ void __cdecl VecRotateAxis(NUVEC *vector, u16 angle, NUVEC *axis) {
 }
 
 /* PC animation constructors call the shared game allocator out of line. */
-void *__cdecl GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size) {
+void *GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size) {
     void *ptr = NULL;
 
     if (buf != NULL && end != NULL && buf->addr + (u32)size < end->addr) {
@@ -1237,7 +1236,7 @@ void *__cdecl GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size) {
     return ptr;
 }
 
-void __cdecl EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update) {
+void EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update) {
     NUINSTANIM *instance_animation;
     ANI3_HEADER_PC *animation;
     NUGSCN *scene;
@@ -1270,7 +1269,7 @@ void __cdecl EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 up
     }
 }
 
-void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
+void EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
     NUINSTANIM *instance_animation;
     ANI3_HEADER_PC *animation;
     NUGSCN *scene;
@@ -1313,7 +1312,7 @@ f32 NuSpecialGetAnimPos(nuhspecial_s *special) {
     return position;
 }
 
-void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
+void SaveSceneObjectAnimTFactors(NUGSCN *scene) {
     NUINSTANCE *instance;
     i32 count;
 
@@ -1357,7 +1356,7 @@ void DrawRectRGBA(f32 x, f32 y, f32 width, f32 height, i32 colour, NUMTL *materi
                   material);
 }
 
-void __cdecl InitTexAnimScripts(char **table) {
+void InitTexAnimScripts(char **table) {
     char path[0x40];
     char **entry;
     TexAnimScriptTablePc = table;
@@ -1380,8 +1379,8 @@ void SetTexAnimSignals() {
     NuTexAnimSetSignals(texanimbits);
 }
 
-i32 __cdecl Draw3DObject(WORLDINFO *world, i32 object_index, NUVEC *position, u16 x_rotation, u16 y_rotation,
-                         u16 z_rotation, float scale_x, float scale_y, float scale_z, i32 rotate_order) {
+i32 Draw3DObject(WORLDINFO *world, i32 object_index, NUVEC *position, u16 x_rotation, u16 y_rotation, u16 z_rotation,
+                 float scale_x, float scale_y, float scale_z, i32 rotate_order) {
     if (object_index == -1) {
         return 1;
     }
@@ -1402,7 +1401,7 @@ i32 __cdecl Draw3DObject(WORLDINFO *world, i32 object_index, NUVEC *position, u1
     return 0;
 }
 
-i32 __cdecl Draw3DObjectMtx(WORLDINFO *world, i32 object_id, NUMTX *matrix) {
+i32 Draw3DObjectMtx(WORLDINFO *world, i32 object_id, NUMTX *matrix) {
     if (object_id == -1) {
         return 1;
     }
@@ -1418,8 +1417,8 @@ i32 __cdecl Draw3DObjectMtx(WORLDINFO *world, i32 object_id, NUMTX *matrix) {
     return 0;
 }
 
-i32 __cdecl DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y,
-                              u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order, f32 alpha) {
+i32 DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y,
+                      u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order, f32 alpha) {
     if (alpha > 0.0f && special != NULL && NuSpecialExistsFn(special) != 0 &&
         (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
         NUVEC scale = {scale_x, scale_y, scale_z};
@@ -1436,8 +1435,8 @@ i32 __cdecl DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32
 }
 
 /* Append to render.c. Native PC 552d10, 229 bytes, cdecl full stack ABI. */
-i32 __cdecl DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x,
-                                     u16 rotate_y, u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order) {
+i32 DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y,
+                             u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order) {
     if (special != NULL && NuSpecialExistsFn(special) != 0 && (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
         NUVEC scale = {scale_x, scale_y, scale_z};
         NUMTX matrix;
@@ -1453,7 +1452,7 @@ i32 __cdecl DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale
 }
 
 /* Add to render.c. Native PC 552e00/78; cdecl (special,matrix,alpha). */
-i32 __cdecl DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 alpha) {
+i32 DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 alpha) {
     if (!(alpha <= 0.0f) && special != NULL && NuSpecialExistsFn(special) != 0) {
         NuMtxMulVU0(matrix, matrix, NuCameraGetMtx());
         NuSpecialDrawAtAlpha(special, matrix, alpha);
@@ -1586,7 +1585,7 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
     }
 }
 
-void __cdecl CreateUsefulMaterials(void) {
+void CreateUsefulMaterials(void) {
     SolidMtl = NuMtlCreate(1);
     ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes &= 0xffff3fffu;
     ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes &= 0xfffffff0u;
@@ -1599,7 +1598,7 @@ void __cdecl CreateUsefulMaterials(void) {
     NuMtlUpdate(ZipUpLineMaterialPc);
 }
 
-void __cdecl IncreaseScore(u32 *total, u64 amount, i32 apply_multiplier) {
+void IncreaseScore(u32 *total, u64 amount, i32 apply_multiplier) {
     u64 score;
     if (apply_multiplier != 0 && BonusArea == 0) {
         if (Cheats_CheckFlags(4) != 0) {
@@ -1626,7 +1625,7 @@ void __cdecl IncreaseScore(u32 *total, u64 amount, i32 apply_multiplier) {
     *total = (u32)score;
 }
 
-f32 __cdecl FindReflectionNoPlatforms(NUVEC *position) {
+f32 FindReflectionNoPlatforms(NUVEC *position) {
     f32 height;
     i32 material;
     NewTerrPlatformsOff();
@@ -1640,7 +1639,7 @@ f32 __cdecl FindReflectionNoPlatforms(NUVEC *position) {
     return LevelConfigFarDistance;
 }
 
-void __cdecl InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping) {
+void InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping) {
     NUVEC offset;
     NUVEC *first;
     NUVEC *second;
@@ -1665,7 +1664,7 @@ void __cdecl InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 dist
     }
 }
 
-void __cdecl SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
+void SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
     NUMTX matrix;
     NUINSTANIM *instance_animation;
     f32 **animation;

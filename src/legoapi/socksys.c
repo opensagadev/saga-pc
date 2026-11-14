@@ -436,7 +436,7 @@ typedef struct SOCKPAR_CONTEXT_PC {
 
 // RET-only in retail (0x0053db50), like SockSysMissingCameraDiagnostic: the warning for a
 // sock block without sock_end was compiled out.
-void __cdecl SockSysMissingSockEndDiagnostic(char *file_name);
+void SockSysMissingSockEndDiagnostic(char *file_name);
 
 void SockSysConfigureNuFPar(NUFPAR_PC *parser, void *data) {
     SOCKPAR_CONTEXT_PC *context;
@@ -519,7 +519,7 @@ static void AdjustMinMaxBox(NUVEC *pnt, NUVEC *min, NUVEC *max) {
     }
 }
 
-void __cdecl SockSysMissingCameraDiagnostic(char *name);
+void SockSysMissingCameraDiagnostic(char *name);
 
 void SockSysFindInScene(SOCKSYS_PC *sock_sys, NUGSCN *gscn) {
     i32 i;
@@ -1732,13 +1732,13 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *ou
     }
 }
 
-void __cdecl SockOn(SOCKSYS_PC *sys, i32 index) {
+void SockOn(SOCKSYS_PC *sys, i32 index) {
     if (sys != NULL && (u32)index <= 63 && (sys->socks[index].flags & 0x100) != 0) {
         sys->socks[index].flags &= ~0x100;
     }
 }
 
-void __cdecl SockOff(SOCKSYS_PC *sys, i32 index) {
+void SockOff(SOCKSYS_PC *sys, i32 index) {
     if (sys != NULL && (u32)index <= 63 && (sys->socks[index].flags & 0x100) == 0) {
         sys->socks[index].flags |= 0x100;
     }
@@ -1807,7 +1807,7 @@ STATIC_ASSERT(offsetof(SOCK_PC, length) == 0x30);
 STATIC_ASSERT(offsetof(SOCK_PC, looping) == 0x33);
 STATIC_ASSERT(offsetof(SOCK_PC, look_ahead_segments) == 0x6d);
 
-void __cdecl PerspectMidPoint(NUVEC *result, NUVEC *first, NUVEC *second, NUVEC *camera_position) {
+void PerspectMidPoint(NUVEC *result, NUVEC *first, NUVEC *second, NUVEC *camera_position) {
     f32 distance[2];
     f32 ratio;
 
@@ -1819,7 +1819,7 @@ void __cdecl PerspectMidPoint(NUVEC *result, NUVEC *first, NUVEC *second, NUVEC 
     result->z = (second->z - first->z) * ratio + first->z;
 }
 
-i32 __cdecl SockSegmentsAhead(SOCK_PC *sock, i32 segment, i32 *from_segment, i32 *to_segment) {
+i32 SockSegmentsAhead(SOCK_PC *sock, i32 segment, i32 *from_segment, i32 *to_segment) {
     i32 advanced = 0;
     i32 segments_ahead;
     if (sock->look_ahead_segments > 0) {
@@ -1861,11 +1861,10 @@ f32 EnforceSockYLimits(f32 y, SOCKPOSITION_PC *position, SOCKSYS_PC *sock_sys) {
     return y;
 }
 
-i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed,
-                          NUVEC *player_camera_positions, NUVEC *player_positions, i32 player_count,
-                          SOCKPOSITION_PC *camera_socket_position, NUVEC *camera_position, NUVEC *camera_target,
-                          f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake,
-                          f32 *separation_scale) {
+i32 SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed,
+                  NUVEC *player_camera_positions, NUVEC *player_positions, i32 player_count,
+                  SOCKPOSITION_PC *camera_socket_position, NUVEC *camera_position, NUVEC *camera_target,
+                  f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake, f32 *separation_scale) {
     NUVEC average_camera_position;
     NUVEC average_player_position;
     NUVEC accumulated_target;
@@ -2277,9 +2276,9 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
 
 #undef SOCK_CAMERA_CLAMP_Y
 
-f32 __cdecl NuVecMagVU0(NUVEC *);
+f32 NuVecMagVU0(NUVEC *);
 
-f32 __cdecl CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
+f32 CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
     NUVEC flat = *position;
     SOCK_PC *sock = &system->socks[resolved->sock_index];
     f32 distance = 0.0f;
@@ -2353,7 +2352,7 @@ f32 __cdecl CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *reso
 
 u32 SocksOnPreviousStatus[2] = {0};
 
-void __cdecl TurnOffAllSocksExcept(SOCKSYS_PC *system, i32 exception) {
+void TurnOffAllSocksExcept(SOCKSYS_PC *system, i32 exception) {
     i32 word;
     i32 index;
     for (word = 0; word < 2; ++word) {
@@ -2368,7 +2367,7 @@ void __cdecl TurnOffAllSocksExcept(SOCKSYS_PC *system, i32 exception) {
     system->socks[exception].flags &= ~0x100;
 }
 
-void __cdecl RestoreLastSocksTurnoff(SOCKSYS_PC *system) {
+void RestoreLastSocksTurnoff(SOCKSYS_PC *system) {
     i32 index;
     for (index = 0; index < 64; ++index) {
         if (SocksOnPreviousStatus[index / 32] & (1 << (index & 31))) {
@@ -2390,7 +2389,7 @@ typedef struct SOCK_CAMERA_RESULT_PC {
 
 i32 LastSingleSockWeWereInPc = -1;
 
-f32 __cdecl CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
+f32 CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
     SOCK_PC *sock;
     f32 distance;
     NUVEC *a0;
@@ -2442,8 +2441,8 @@ f32 __cdecl CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION_PC *res
     return distance > 0.0f ? NuFsqrt(distance) : 0.0f;
 }
 
-f32 __cdecl CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused,
-                                                 SOCKSYS_PC *system) {
+f32 CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused,
+                                         SOCKSYS_PC *system) {
     switch (side) {
         case 0:
             return CalculateDistanceToNearestSide(position, resolved, unused, system);
@@ -2454,11 +2453,11 @@ f32 __cdecl CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCK
     }
 }
 
-i32 __cdecl SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed,
-                                          NUVEC *player_camera_positions, NUVEC *player_positions, i32 player_count,
-                                          SOCKPOSITION_PC *camera_socket_position, NUVEC *camera_position,
-                                          NUVEC *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
-                                          f32 *camera_shake, f32 *separation_scale) {
+i32 SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed,
+                                  NUVEC *player_camera_positions, NUVEC *player_positions, i32 player_count,
+                                  SOCKPOSITION_PC *camera_socket_position, NUVEC *camera_position, NUVEC *camera_target,
+                                  f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake,
+                                  f32 *separation_scale) {
     f32 blend;
     SOCK_CAMERA_RESULT_PC *from;
     SOCK_CAMERA_RESULT_PC *to;

@@ -42,7 +42,7 @@ typedef struct HOLD_RUNTIME_VIEW_PC {
     f32 hold_timer;        // 0xde4
 } HOLD_RUNTIME_VIEW_PC;    // size 0xde8
 
-i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
+i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
     NUVEC forward;
     NUVEC difference;
     f32 distance;
@@ -67,7 +67,7 @@ i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 
     return 0;
 }
 
-void __cdecl SetWeaponOut(GAMEOBJECT *object) {
+void SetWeaponOut(GAMEOBJECT *object) {
     i8 context = object->character_context;
     if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
         object->character_context = -1;
@@ -77,7 +77,7 @@ void __cdecl SetWeaponOut(GAMEOBJECT *object) {
     object->field_e33 = 0;
 }
 
-void __cdecl FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
+void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
     if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
@@ -100,7 +100,7 @@ void __cdecl FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
     object->field_e33 = 1;
 }
 
-void __cdecl SlowWeaponOut(GAMEOBJECT *object) {
+void SlowWeaponOut(GAMEOBJECT *object) {
     i32 action;
     f32 end;
     f32 start;
@@ -131,7 +131,7 @@ void __cdecl SlowWeaponOut(GAMEOBJECT *object) {
     FastWeaponOut(object, 1);
 }
 
-void __cdecl WeaponOutCode(GAMEOBJECT *object) {
+void WeaponOutCode(GAMEOBJECT *object) {
     f32 start;
     f32 end;
     f32 *time;
@@ -182,14 +182,14 @@ void __cdecl WeaponOutCode(GAMEOBJECT *object) {
     ResetCharacterIdle(object, 1, GetDefaultIdle(object));
 }
 
-void __cdecl KeepWeaponOut(GAMEOBJECT *object) {
+void KeepWeaponOut(GAMEOBJECT *object) {
     object->weapon_scale = 1.0f;
     object->flags_e20 |= 0x10000;
     object->portal_flags |= 0x10;
     object->field_e33 = 0;
 }
 
-void __cdecl SetWeaponIn(GAMEOBJECT *object) {
+void SetWeaponIn(GAMEOBJECT *object) {
     i8 context = object->character_context;
     if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
         object->character_context = -1;
@@ -199,7 +199,7 @@ void __cdecl SetWeaponIn(GAMEOBJECT *object) {
     object->field_e33 = 0;
 }
 
-void __cdecl FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
+void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
     if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
@@ -222,7 +222,7 @@ void __cdecl FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
     object->field_e33 = 2;
 }
 
-void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
+void SlowWeaponIn(GAMEOBJECT *object) {
     i32 action = -1;
     f32 end;
     f32 start;
@@ -256,7 +256,7 @@ void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
     FastWeaponIn(object, 1);
 }
 
-void __cdecl WeaponInCode(GAMEOBJECT *object) {
+void WeaponInCode(GAMEOBJECT *object) {
     f32 start;
     f32 end;
     f32 *time;
@@ -307,14 +307,14 @@ void __cdecl WeaponInCode(GAMEOBJECT *object) {
     ResetCharacterIdle(object, 1, GetDefaultIdle(object));
 }
 
-void __cdecl KeepWeaponIn(GAMEOBJECT *object) {
+void KeepWeaponIn(GAMEOBJECT *object) {
     object->flags_e20 &= ~0x10000u;
     object->weapon_scale = 0.0f;
     object->portal_flags &= ~0x10u;
     object->field_e33 = 0;
 }
 
-void __cdecl AutoWeaponOnOff(GAMEOBJECT *object) {
+void AutoWeaponOnOff(GAMEOBJECT *object) {
     i32 animation;
     u32 flags;
     i8 context = object->character_context;
@@ -351,7 +351,7 @@ void __cdecl AutoWeaponOnOff(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl WeaponScalingCode(GAMEOBJECT *object) {
+void WeaponScalingCode(GAMEOBJECT *object) {
     switch (object->field_e33) {
         case 1:
             object->weapon_scale =
@@ -372,7 +372,7 @@ void __cdecl WeaponScalingCode(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl NewBlockAction(GAMEOBJECT *object) {
+i32 NewBlockAction(GAMEOBJECT *object) {
     i32 actions[3];
     i32 count = 0;
     i32 action;
@@ -397,7 +397,7 @@ i32 __cdecl NewBlockAction(GAMEOBJECT *object) {
     return 1;
 }
 
-void __cdecl BlockSfx(GAMEOBJECT *object) {
+void BlockSfx(GAMEOBJECT *object) {
     GAMEOBJECT *target = object->force_target;
     if (target != NULL) {
         if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x4000000) != 0 ||
@@ -408,7 +408,7 @@ void __cdecl BlockSfx(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl CanStepBack(GAMEOBJECT *object) {
+i32 CanStepBack(GAMEOBJECT *object) {
     i8 context = object->character_context;
     if ((U64_PAIR(&CInfo[context].flags) & 0x10000) != 0) {
         return 1;
@@ -423,7 +423,7 @@ i32 __cdecl CanStepBack(GAMEOBJECT *object) {
     return 0;
 }
 
-i32 __cdecl StepBackFromTarget(GAMEOBJECT *object) {
+i32 StepBackFromTarget(GAMEOBJECT *object) {
     NUVEC *target_position;
     BLOWUP_MOVEMENT_PC *blowup = (BLOWUP_MOVEMENT_PC *)object->blowup_target;
     f32 inner_distance;
@@ -477,7 +477,7 @@ i32 __cdecl StepBackFromTarget(GAMEOBJECT *object) {
     return 1;
 }
 
-void __cdecl ComboHitFrame(GAMEOBJECT *object, i32 damage) {
+void ComboHitFrame(GAMEOBJECT *object, i32 damage) {
     object->context_variant_flags |= 0x40;
     object->sabre_flags |= 5;
     object->sabre_damage = (u8)damage;
@@ -487,7 +487,7 @@ void __cdecl ComboHitFrame(GAMEOBJECT *object, i32 damage) {
     BlockSfx(object);
 }
 
-void __cdecl StartHold(GAMEOBJECT *object) {
+void StartHold(GAMEOBJECT *object) {
     if (CanStartHoldFn == NULL) {
         return;
     }
@@ -505,7 +505,7 @@ void __cdecl StartHold(GAMEOBJECT *object) {
     object->character_context = -1;
 }
 
-void __cdecl HoldCode(GAMEOBJECT *object) {
+void HoldCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_HOLD != -1 && object->character_context == LEGOCONTEXT_HOLD) {
         if (object->context_timer > 0.0f) {
             object->context_timer -= FRAMETIME;
@@ -525,7 +525,7 @@ void fun_0058e480(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
+void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     NUVEC *hit_position = NULL;
     u64 flags;
     f32 impulse;

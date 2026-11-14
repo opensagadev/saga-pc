@@ -165,7 +165,7 @@ void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
                         item->label = 0x2a;
                     }
                 }
-                i32(__cdecl * filter)(i32, i32) = PcInputGetCommandFilterPc();
+                i32 (*filter)(i32, i32) = PcInputGetCommandFilterPc();
                 if (filter) {
                     if (!filter(ports[0], item->command)) {
                         item->flags |= 0x20;
@@ -206,7 +206,7 @@ void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
 }
 
 extern "C" {
-    i32 __cdecl NuMtlSetCurrentRenderPlane(i32);
+    i32 NuMtlSetCurrentRenderPlane(i32);
 }
 
 void PC_CONTROL_SCREEN_PC::Register(PC_CONTROL_CONFIG_PC *config, VARIPTR *, VARIPTR *) {
@@ -336,7 +336,7 @@ void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u
 extern "C" {
     extern const char PcControlMissingTextPc[];
 
-    void __cdecl PcControlRegisterPc(PC_CONTROL_CONFIG_PC *config, VARIPTR *buffer, VARIPTR *end) {
+    void PcControlRegisterPc(PC_CONTROL_CONFIG_PC *config, VARIPTR *buffer, VARIPTR *end) {
         if (!config->rows) {
             config->rows = PcControlRowsPc;
         }
@@ -349,19 +349,19 @@ extern "C" {
         PcControlScreenPc.Register(config, buffer, end);
     }
 
-    void __cdecl PcControlInitializePc(i32 players, i32 player, i32 resolve_bank, u8 drop_in) {
+    void PcControlInitializePc(i32 players, i32 player, i32 resolve_bank, u8 drop_in) {
         PcControlScreenPc.Initialize(players, player, resolve_bank, drop_in);
     }
 
-    i32 __cdecl PcControlUpdatePc(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 elapsed) {
+    i32 PcControlUpdatePc(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 elapsed) {
         return PcControlScreenPc.Update(first, second, elapsed);
     }
 
-    void __cdecl PcControlDrawPc(void) {
+    void PcControlDrawPc(void) {
         PcControlScreenPc.Draw();
     }
 
-    void __cdecl PcControlPlaySoundPc(i32 sound) {
+    void PcControlPlaySoundPc(i32 sound) {
         switch (sound) {
             case 6:
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
@@ -841,8 +841,8 @@ struct PC_CONTROL_VERTEX_PC {
     f32 v;      // 0x14
 }; // size 0x18
 
-extern "C" i32 __cdecl PcControlWrapTextPc(char *, f32);
-extern "C" void __cdecl PcControlFontScalePc(VUFNT *, f32, f32, f32 *, f32 *);
+extern "C" i32 PcControlWrapTextPc(char *, f32);
+extern "C" void PcControlFontScalePc(VUFNT *, f32, f32, f32 *, f32 *);
 
 static void PcControlPrimColourPc(u32 colour) {
     u32 converted;
@@ -928,7 +928,7 @@ u32 PC_CONTROL_SCREEN_PC::HashString(const char *string) {
     return hash;
 }
 
-extern "C" void __cdecl PcControlFontScalePc(VUFNT *font, f32 width, f32 height, f32 *sx, f32 *sy) {
+extern "C" void PcControlFontScalePc(VUFNT *font, f32 width, f32 height, f32 *sx, f32 *sy) {
     if (!font) {
         font = system_qfont;
     }
@@ -1390,7 +1390,7 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
     TextScaleY = old_y;
 }
 
-extern "C" i32 __cdecl PcControlWrapTextPc(char *string, f32 max_width) {
+extern "C" i32 PcControlWrapTextPc(char *string, f32 max_width) {
     u8 *text = (u8 *)string;
     i32 line_start = 0;
     i32 line_count = 1;

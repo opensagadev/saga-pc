@@ -520,7 +520,7 @@ STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, devices) == 0x4e34);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
 STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, release) == 8);
 
-extern "C" void __cdecl PcInput_DisableAllKeyboards(void) {
+extern "C" void PcInput_DisableAllKeyboards(void) {
     PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     for (i32 device = 10; device < 14; ++device) {
         state->devices[device].action_keys_active = 0;
@@ -551,11 +551,11 @@ void PC_INPUT_RUNTIME_PC::AutoConfigurePadsPc(i32 count) {
     }
 }
 
-extern "C" void __cdecl NuPadAutoConfigurePc(i32 count) {
+extern "C" void NuPadAutoConfigurePc(i32 count) {
     ((PC_INPUT_RUNTIME_PC *)nu_input_state)->AutoConfigurePadsPc(count);
 }
 
-extern "C" i32 __cdecl GamePadReadBackendPc(FRAME_PAD_PC *pad, i32 ignored) {
+extern "C" i32 GamePadReadBackendPc(FRAME_PAD_PC *pad, i32 ignored) {
     (void)ignored;
     return NuPadRead(pad);
 }
@@ -708,7 +708,7 @@ NuKeyboardOwner_PC::~NuKeyboardOwner_PC() {
     device_count = 0;
 }
 
-void __thiscall NuKeyboardOwner_PC::SetMouseEnabledPc(u8 enabled) {
+void NuKeyboardOwner_PC::SetMouseEnabledPc(u8 enabled) {
     mouse_enabled = enabled;
 }
 
@@ -716,7 +716,7 @@ STATIC_ASSERT(offsetof(NuKeyboardState_PC, mouse_delta) == 0x6314);
 STATIC_ASSERT(offsetof(NuKeyboardState_PC, mouse_smoothed) == 0x6320);
 
 /* Eases the smoothed mouse axis towards the latest delta and returns it scaled, with a small dead zone. */
-extern "C" f32 __cdecl NuMouseSmoothAxisPc(i32 axis) {
+extern "C" f32 NuMouseSmoothAxisPc(i32 axis) {
     f32 value = nu_input_state->mouse_delta[axis] - nu_input_state->mouse_smoothed[axis];
     f32 magnitude;
     u32 magnitude_bits;
@@ -731,27 +731,27 @@ extern "C" f32 __cdecl NuMouseSmoothAxisPc(i32 axis) {
     return value;
 }
 
-extern "C" f32 __cdecl NuMouseReadXRel(void) {
+extern "C" f32 NuMouseReadXRel(void) {
     return NuMouseSmoothAxisPc(0);
 }
 
-extern "C" f32 __cdecl NuMouseReadYRel(void) {
+extern "C" f32 NuMouseReadYRel(void) {
     return NuMouseSmoothAxisPc(1);
 }
 
-extern "C" f32 __cdecl NuMouseReadZRel(void) {
+extern "C" f32 NuMouseReadZRel(void) {
     return (f32)(nu_input_state->mouse_delta[2] * -4.0);
 }
 
-extern "C" f32 __cdecl NuMouseReadXVel(void) {
+extern "C" f32 NuMouseReadXVel(void) {
     return (f32)(nu_input_state->mouse_delta[0] * -4.0);
 }
 
-extern "C" f32 __cdecl NuMouseReadYVel(void) {
+extern "C" f32 NuMouseReadYVel(void) {
     return (f32)(nu_input_state->mouse_delta[1] * -4.0);
 }
 
-extern "C" f32 __cdecl NuMouseReadZVel(void) {
+extern "C" f32 NuMouseReadZVel(void) {
     return (f32)(nu_input_state->mouse_delta[2] * -4.0);
 }
 

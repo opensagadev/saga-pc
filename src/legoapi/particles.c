@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <stdio.h>
 
-void __cdecl Particles_Stop(WORLDINFO *world) {
+void Particles_Stop(WORLDINFO *world) {
     if (world->page_anim != -1) {
         edanimStopPage(world->page_anim);
     }
@@ -20,7 +20,7 @@ void __cdecl Particles_Stop(WORLDINFO *world) {
     DebFreeAllCreatedEffects();
 }
 
-void __cdecl SetEffectVisibility(char *name, i32 visible) {
+void SetEffectVisibility(char *name, i32 visible) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 type = LookupDebrisEffectPageOnly(name, (i8)world->page_pp);
 
@@ -33,7 +33,7 @@ void __cdecl SetEffectVisibility(char *name, i32 visible) {
     }
 }
 
-void __cdecl AddCameraRain(WORLDINFO *world, i32 mode) {
+void AddCameraRain(WORLDINFO *world, i32 mode) {
     NUVEC position;
     if ((world->current_level->flags & 0x4000) != 0) {
         position = GameCam->position;
@@ -45,7 +45,7 @@ void __cdecl AddCameraRain(WORLDINFO *world, i32 mode) {
     }
 }
 
-void __cdecl Particles_Start(WORLDINFO *world) {
+void Particles_Start(WORLDINFO *world) {
     if (DEBPAGE_AREA != -1) {
         edppStartPage(DEBPAGE_AREA);
     }
@@ -58,7 +58,7 @@ void __cdecl Particles_Start(WORLDINFO *world) {
     }
 }
 
-void __cdecl Particles_Load(WORLDINFO *world, char **names, i32 count, i32 named_count) {
+void Particles_Load(WORLDINFO *world, char **names, i32 count, i32 named_count) {
     char path[256];
     VARIPTR end;
     world->page_pp = -1;

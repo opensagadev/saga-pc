@@ -1,7 +1,7 @@
 #include "saga.h"
 
-PC_VERTEX_DECL_ENTRY_PC *__cdecl PCVertexDeclarationFindSlot(const PC_VERTEX_DECL_ENTRY_PC *key,
-                                                             PC_VERTEX_DECL_ENTRY_PC *first, i32 count, u8 *found) {
+PC_VERTEX_DECL_ENTRY_PC *PCVertexDeclarationFindSlot(const PC_VERTEX_DECL_ENTRY_PC *key, PC_VERTEX_DECL_ENTRY_PC *first,
+                                                     i32 count, u8 *found) {
     PC_VERTEX_DECL_ENTRY_PC *last = first + count - 1;
     PC_VERTEX_DECL_ENTRY_PC *middle;
     while (first <= last) {
@@ -19,7 +19,7 @@ PC_VERTEX_DECL_ENTRY_PC *__cdecl PCVertexDeclarationFindSlot(const PC_VERTEX_DEC
     return first;
 }
 
-PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
+PC_TEXTURE_RESOURCE_PC *NuGetVertexDeclaration(u32 descriptor) {
     PC_VERTEX_DECL_ENTRY_PC key;
     PC_VERTEX_DECL_ENTRY_PC *record;
     i32 count = PCVertexDeclarationCountPC;

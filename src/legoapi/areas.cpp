@@ -2,15 +2,15 @@
 #include <string.h>
 
 extern "C" {
-    AREA_DATA_PC *__cdecl Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
-    void __cdecl AreasConfigDiagnosticPc(char *message);
+    AREA_DATA_PC *Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
+    void AreasConfigDiagnosticPc(char *message);
 }
 
 typedef struct area_gizmotype_pc_s {
-    u8 unknown_0000[0x44];                        // 0x00
-    char *(__cdecl *get_gizmo_name)(void *gizmo); // 0x44
-    u8 unknown_0048[0x54];                        // 0x48
-} AREA_GIZMOTYPE_PC;                              // size 0x9c
+    u8 unknown_0000[0x44];                // 0x00
+    char *(*get_gizmo_name)(void *gizmo); // 0x44
+    u8 unknown_0048[0x54];                // 0x48
+} AREA_GIZMOTYPE_PC;                      // size 0x9c
 
 typedef struct area_gizmotypes_pc_s {
     i32 count;                // 0x0
@@ -37,7 +37,7 @@ typedef struct area_gizmosys_prefix_pc_s {
     AREA_GIZMOSET_PC *sets; // 0x0
 } AREA_GIZMOSYS_PREFIX_PC;  // size 0x4
 
-AREA_DATA_PC *__cdecl Area_FindByName(char *name, i32 *index_out) {
+AREA_DATA_PC *Area_FindByName(char *name, i32 *index_out) {
     i32 index;
 
     for (index = 0; index < AREACOUNT; ++index) {
@@ -55,7 +55,7 @@ AREA_DATA_PC *__cdecl Area_FindByName(char *name, i32 *index_out) {
     return NULL;
 }
 
-void __cdecl Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
+void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
     AREA_DATA_PC *area;
     i32 area_index;
 
@@ -118,7 +118,7 @@ void __cdecl Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
     buffer->addr = (buffer->addr + 3) & ~3u;
 }
 
-void __cdecl Areas_FixUp(AREAFIXUP_PC *fixup) {
+void Areas_FixUp(AREAFIXUP_PC *fixup) {
     if (fixup != NULL) {
         while (fixup->name != NULL) {
             if (fixup->area != NULL) {
@@ -129,7 +129,7 @@ void __cdecl Areas_FixUp(AREAFIXUP_PC *fixup) {
     }
 }
 
-LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
+LEVELDATA_PC *Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
     i32 index;
 
     if (index_out != NULL) {
@@ -148,7 +148,7 @@ LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
     return NULL;
 }
 
-LEVELDATA_PC *__cdecl Area_FindNextPlayLevel(i32 level_index) {
+LEVELDATA_PC *Area_FindNextPlayLevel(i32 level_index) {
     i32 area_index;
     i32 area_level_index;
 
@@ -168,7 +168,7 @@ LEVELDATA_PC *__cdecl Area_FindNextPlayLevel(i32 level_index) {
     return &LDataList[level_index];
 }
 
-void __cdecl SuperCounters_Reset(i32 area_index) {
+void SuperCounters_Reset(i32 area_index) {
     if (area_index != -1) {
         i32 index;
 
@@ -180,8 +180,8 @@ void __cdecl SuperCounters_Reset(i32 area_index) {
     }
 }
 
-AREA_SUPERCOUNTER_PC *__cdecl SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world,
-                                                                AREA_SUPERCOUNTER_PICKUP_PC **pickup_out) {
+AREA_SUPERCOUNTER_PC *SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world,
+                                                        AREA_SUPERCOUNTER_PICKUP_PC **pickup_out) {
     if (world->area != NULL && world->area->super_counters != NULL) {
         AREA_SUPERCOUNTER_PC *counter = world->area->super_counters;
         for (i32 counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index, ++counter) {
@@ -203,7 +203,7 @@ AREA_SUPERCOUNTER_PC *__cdecl SuperCounter_FindFromNameAndLevel(char *name, WORL
     return NULL;
 }
 
-void __cdecl SuperCounters_ResetProcessed(WORLDINFO *world) {
+void SuperCounters_ResetProcessed(WORLDINFO *world) {
     i32 index;
 
     if (world->area != NULL && world->area->super_counters != NULL) {
@@ -213,8 +213,7 @@ void __cdecl SuperCounters_ResetProcessed(WORLDINFO *world) {
     }
 }
 
-AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                          i32 *count_out) {
+AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out) {
     NUFPAR_PC *parser;
     i32 index;
     i32 area_count;
@@ -388,7 +387,7 @@ typedef struct player_progress_hp_pc_s {
     u8 unknown_0009[7];  // 0x9
 } PLAYER_PROGRESS_HP_PC; // size 0x10
 
-i32 __cdecl AreaFromMiniKitID(i32 id) {
+i32 AreaFromMiniKitID(i32 id) {
     i32 index;
     for (index = 0; index < AREACOUNT; ++index) {
         if (ADataList[index].minikit_id == id) {
@@ -398,7 +397,7 @@ i32 __cdecl AreaFromMiniKitID(i32 id) {
     return -1;
 }
 
-extern "C" i8 __cdecl Area_CharIDInCurrentList(i32 character_id) {
+extern "C" i8 Area_CharIDInCurrentList(i32 character_id) {
     i32 index;
     if (CurrentCList != NULL) {
         for (index = 0; CurrentStoryCList[index].model_id != -1; ++index) {
@@ -455,7 +454,7 @@ static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i
     }
 }
 
-extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models, i16 *s) {
+extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models, i16 *s) {
     i32 index;
     Area_PlayerModelCount = 0;
     Area_PlayerModelList[0].model_id = -1;
@@ -819,7 +818,7 @@ typedef struct area_loading_pad_reader_pc_s {
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_04) == 4);
 extern "C" u8 *Game_LevelSave;
 
-extern "C" i32 __cdecl SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINFO *world) {
+extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINFO *world) {
     AREA_SUPERCOUNTER_PICKUP_PC *pickup = counter->pickups;
     i32 index;
     i32 saved;
@@ -861,8 +860,8 @@ STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, green) == 0x1e5);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, blue) == 0x1e6);
 STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
 
-extern "C" AREA_SUPERCOUNTER_PC *__cdecl SuperCounters_FindPickup(WORLDINFO *world, void *gizmo, NUVEC *position,
-                                                                  void *output_pointer) {
+extern "C" AREA_SUPERCOUNTER_PC *SuperCounters_FindPickup(WORLDINFO *world, void *gizmo, NUVEC *position,
+                                                          void *output_pointer) {
     AREA_SUPERCOUNTER_PICKUP_PC **output = (AREA_SUPERCOUNTER_PICKUP_PC **)output_pointer;
     if (world->area != NULL && world->area->super_counters != NULL) {
         AREA_SUPERCOUNTER_PC *counter = world->area->super_counters;
@@ -902,7 +901,7 @@ extern "C" AREA_SUPERCOUNTER_PC *__cdecl SuperCounters_FindPickup(WORLDINFO *wor
     return NULL;
 }
 
-extern "C" void __cdecl SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP_PC *gizmo_pickup) {
+extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP_PC *gizmo_pickup) {
     NUVEC position;
     if (Players_AveragePos(&position, NULL) == 0) {
         position = GameCam->position;
@@ -936,7 +935,7 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counters) == 0x80);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, position_special) == 8);
 STATIC_ASSERT(sizeof(((AREA_SUPERCOUNTER_PICKUP_PC *)0)->position_special) == 12);
 
-extern "C" void __cdecl SuperCounters_FixUpGizmos(WORLDINFO *world) {
+extern "C" void SuperCounters_FixUpGizmos(WORLDINFO *world) {
     if (world->area == NULL || world->area->super_counters == NULL) {
         return;
     }

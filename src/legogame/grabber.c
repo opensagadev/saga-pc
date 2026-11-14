@@ -99,9 +99,9 @@ typedef struct grabber_antinode_view_pc_s {
     i64 object_mask;        // 0x50
 } GRABBER_ANTINODE_VIEW_PC; // size 0x58
 
-GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
+GIZMOPICKUP_PC *GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
 extern i32 CharacterBlobShadowsOnPc;
-i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result);
+i32 MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result);
 #define GRABBER_FIND_SWITCH(field, name)                                                                               \
     gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);                            \
     if (gizmo != NULL) {                                                                                               \
@@ -164,33 +164,33 @@ static void GrabberMtxRotateX(NUMTX *m, NUANG a) {
 
 GRABBER_PC *Grab_grabber = 0;
 
-static void __cdecl Grab_radius(NUFPAR_PC *parser) {
+static void Grab_radius(NUFPAR_PC *parser) {
     Grab_grabber->radius = NuFParGetFloat(parser);
 }
 
-static void __cdecl Grab_speed(NUFPAR_PC *parser) {
+static void Grab_speed(NUFPAR_PC *parser) {
     Grab_grabber->speed = NuFParGetFloat(parser);
 }
 
-static void __cdecl Grab_rotate(NUFPAR_PC *parser) {
+static void Grab_rotate(NUFPAR_PC *parser) {
     Grab_grabber->bits.rotate = NuFParGetInt(parser);
 }
 
-static void __cdecl Grab_scale(NUFPAR_PC *parser) {
+static void Grab_scale(NUFPAR_PC *parser) {
     Grab_grabber->scale = NuFParGetFloat(parser);
 }
 
-static void __cdecl Grab_move_xy(NUFPAR_PC *parser) {
+static void Grab_move_xy(NUFPAR_PC *parser) {
     if (NuFParGetInt(parser) != 0) {
         Grab_grabber->move_xy = 1;
     }
 }
 
-static void __cdecl Grab_invert_x(NUFPAR_PC *parser) {
+static void Grab_invert_x(NUFPAR_PC *parser) {
     Grab_grabber->invert_x = 1;
 }
 
-static void __cdecl Grab_type(NUFPAR_PC *parser) {
+static void Grab_type(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) == 0) {
         return;
     }
@@ -203,7 +203,7 @@ static void __cdecl Grab_type(NUFPAR_PC *parser) {
     }
 }
 
-static void __cdecl Grab_shadow(NUFPAR_PC *parser) {
+static void Grab_shadow(NUFPAR_PC *parser) {
     Grab_grabber->flags |= 0x10;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         Grab_grabber->flags &= ~0x10;
@@ -221,7 +221,7 @@ static GRAB_CONFIG_DATA_PC GrabConfigDataPc = {-0.3f,
                                                 {"shadow", Grab_shadow},
                                                 {NULL, NULL}}};
 
-void __cdecl Grabber_Configure(WORLDINFO *world_ptr, char *config) {
+void Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_GRABBER_PC *world = (WORLD_GRABBER_PC *)world_ptr;
     NUSPECIALHANDLE special;
     NUFPAR_PC *parser;
@@ -324,7 +324,7 @@ static void GrabberGrabVictim(GAMEOBJECT *victim) {
     Hint_SetComplete(0x28b);
 }
 
-NUVEC *__cdecl Grabber_GetGrabPos(void *context, NUMTX *matrix) {
+NUVEC *Grabber_GetGrabPos(void *context, NUMTX *matrix) {
     GRABBER_PC *grabber = context;
     if (grabber->character_model != NULL && (grabber->flags & 1) != 0 &&
         grabber->character_model->points_of_interest[0] != NULL) {
@@ -360,11 +360,11 @@ void PartKill_Grabber(PART_PC *part, i32 unused1) {
     NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
 }
 
-static i32 __cdecl IsGrabbable(GAMEOBJECT *object) {
+static i32 IsGrabbable(GAMEOBJECT *object) {
     return (object->character_data->game_character->flags_090 & 0x8000) == 0;
 }
 
-void __cdecl Grabber_Draw(WORLDINFO *world) {
+void Grabber_Draw(WORLDINFO *world) {
     GRABBER_PC *grabber;
     NUVEC *grab_position;
     NUMTX matrix;
@@ -454,7 +454,7 @@ void __cdecl Grabber_Draw(WORLDINFO *world) {
     }
 }
 
-void __cdecl Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress) {
+void Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress) {
     if (world != NULL && progress != NULL) {
         GRABBER_PROGRESS_SOURCE_PC *grabber = ((WORLD_GRABBER_PROGRESS_PC *)world)->grabber;
         LEVEL_GRABBER_PROGRESS_PC *saved = (LEVEL_GRABBER_PROGRESS_PC *)progress;
@@ -508,7 +508,7 @@ static void Grabber_SetVictimPos(GRABBER_PC *grabber) {
     grabber->victim->ai_update_position = grabber->victim->position;
 }
 
-void __cdecl Grabber_Reset(WORLDINFO *world) {
+void Grabber_Reset(WORLDINFO *world) {
     GRABBER_PC *grabber;
     GIZOBSTACLE **gizmo;
 
@@ -551,7 +551,7 @@ void __cdecl Grabber_Reset(WORLDINFO *world) {
     }
 }
 
-void __cdecl Grabber_Drop(GRABBER_PC *grabber, NUVEC *previous) {
+void Grabber_Drop(GRABBER_PC *grabber, NUVEC *previous) {
     ADDPART_PC params;
     NUMTX matrix;
     NUVEC velocity;
@@ -597,7 +597,7 @@ void __cdecl Grabber_Drop(GRABBER_PC *grabber, NUVEC *previous) {
     }
 }
 
-void __cdecl Grabber_Update(WORLDINFO *world) {
+void Grabber_Update(WORLDINFO *world) {
     GRABBER_PC *grabber;
     GAMEOBJECT *control;
     GAMEOBJECT *object;

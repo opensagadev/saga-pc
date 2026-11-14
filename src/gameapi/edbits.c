@@ -43,7 +43,7 @@ void edbitsRegisterDataPath(char *path) {
     }
 }
 
-void __cdecl edbitsRegisterBaseScene(NUGSCN *scene) {
+void edbitsRegisterBaseScene(NUGSCN *scene) {
     edbits_base_scene = scene;
 }
 
@@ -51,7 +51,7 @@ void edbitsRegisterThingsScene(NUGSCN *scene) {
     edbits_things_scene = scene;
 }
 
-void __cdecl edbitsRegisterBaseTerrain(void *terrain) {
+void edbitsRegisterBaseTerrain(void *terrain) {
     edbits_base_terrain = terrain;
 }
 
@@ -147,7 +147,7 @@ void edbitsDrawBBox(NUVEC *minimum, NUVEC *maximum, i32 colour, NUMTL *material)
                    0, 0, 0, 0, colour, material);
 }
 
-i32 __cdecl edbitsLookupInstance(char *name, NUGSCN *scene) {
+i32 edbitsLookupInstance(char *name, NUGSCN *scene) {
     i32 index;
     NUSPECIALHANDLE special;
     if (scene != NULL) {
@@ -182,7 +182,7 @@ void edbitsDoSingleDump(i32 face) {
 extern i32 edbits_cubecount;
 extern i32 NuRndrDoingScreenGrab;
 
-i32 __cdecl edbitsStartCubemapDump(void) {
+i32 edbitsStartCubemapDump(void) {
     if (edbits_cubecount != 0) {
         return 0;
     }
@@ -197,7 +197,7 @@ extern f32 edbits_cubemap_aspect;
 void edcamSetAng(i32 pitch, i32 yaw);
 void edcamSetDist(f32 distance);
 
-i32 __cdecl edbitsProcessCubemapDump(void) {
+i32 edbitsProcessCubemapDump(void) {
     if (edbits_cubecount != 0) {
         if (cubemapcam == NULL) {
             cubemapcam = NuCameraCreate();
@@ -259,7 +259,7 @@ i32 __cdecl edbitsProcessCubemapDump(void) {
     return edbits_cubecount;
 }
 
-void __cdecl edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
+void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
     f32 axes[9] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     NURND_VERTEX3D_PC vertices[2];
     i32 i;
@@ -287,7 +287,7 @@ i32 fun_0065c150(void) {
     return 0;
 }
 
-void __cdecl edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
+void edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
     f32 axes[12] = {1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f};
     NURND_VERTEX3D_PC vertices[2];
     i32 i;
@@ -304,8 +304,8 @@ void __cdecl edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour
     }
 }
 
-void __cdecl edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
-                                  struct PC_SCENE_MTL_VIEW *material, i32 rotation_z, i32 rotation_y) {
+void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct PC_SCENE_MTL_VIEW *material,
+                          i32 rotation_z, i32 rotation_y) {
     NUVEC vertices[2];
     i32 i;
     i32 angle;
@@ -341,22 +341,20 @@ void __cdecl edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32
     }
 }
 
-void __cdecl edbitsDrawCircleTilted(NUVEC *centre, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material,
-                                    i32 rotation_z, i32 rotation_y) {
+void edbitsDrawCircleTilted(NUVEC *centre, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material, i32 rotation_z,
+                            i32 rotation_y) {
     edbitsDrawOvalTilted(centre, radius, radius, colour, material, rotation_z, rotation_y);
 }
 
-void __cdecl edbitsDrawOvalXY(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
-                              struct PC_SCENE_MTL_VIEW *material) {
+void edbitsDrawOvalXY(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
     edbitsDrawOvalTilted(centre, radius_x, radius_z, colour, material, 0, 0);
 }
 
-void __cdecl edbitsDrawCircleXY(NUVEC *centre, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
+void edbitsDrawCircleXY(NUVEC *centre, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
     edbitsDrawOvalXY(centre, radius, radius, colour, material);
 }
 
-void __cdecl edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_extent, i32 colour,
-                             NUMTL *material) {
+void edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_extent, i32 colour, NUMTL *material) {
     NUVEC offset;
     NUVEC point;
     i32 i;
@@ -381,7 +379,7 @@ void __cdecl edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 v
     }
 }
 
-void __cdecl edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, NUMTL *material) {
+void edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, NUMTL *material) {
     struct PC_SCENE_MTL_VIEW *view = (struct PC_SCENE_MTL_VIEW *)material;
     edbitsDrawCircleXY(centre, radius, colour, view);
     edbitsDrawCircleTilted(centre, radius, colour, view, 0x2000, 0);
@@ -693,7 +691,7 @@ void edgracbCancelDpadModeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edgra_dpadmode_menu = NULL;
 }
 
-void __cdecl edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 selected_found;
     i32 added;
     i32 count;

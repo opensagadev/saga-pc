@@ -89,7 +89,7 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, max_spinneranim_objs) == 0x105);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_turrets) == 0x106);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_bombgens) == 0x107);
 
-void __cdecl GizmoPickups_PostLoad(void *world, void *system) {
+void GizmoPickups_PostLoad(void *world, void *system) {
     (void)world;
     (void)system;
 }

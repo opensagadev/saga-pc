@@ -1,6 +1,6 @@
 #include "saga.h"
 
-i32 __cdecl Techno_FindOperator(void *target, GAMEPAD_PC **pad, GAMEOBJECT **operator_object) {
+i32 Techno_FindOperator(void *target, GAMEPAD_PC **pad, GAMEOBJECT **operator_object) {
     i32 index;
     TECHNO_PC *techno;
     for (index = 0; index < 8; ++index) {
@@ -22,7 +22,7 @@ i32 __cdecl Techno_FindOperator(void *target, GAMEPAD_PC **pad, GAMEOBJECT **ope
     return 0;
 }
 
-TECHNO_PC *__cdecl Technos_FindControllingTechno(GAMEOBJECT *object) {
+TECHNO_PC *Technos_FindControllingTechno(GAMEOBJECT *object) {
     TECHNO_PC *techno;
     i32 i;
     i32 count;
@@ -42,8 +42,8 @@ TECHNO_PC *__cdecl Technos_FindControllingTechno(GAMEOBJECT *object) {
 /* Original source name unknown. Retail keeps a call to this empty (RET-only)
  * diagnostic for each failed target lookup; it is defined in
  * techno_diagnostic_pc.c because VC8 drops calls to an empty body it can see. */
-void __cdecl TechnoTargetDiagnosticPc(char *name);
-void __cdecl TechnoMoveSpecialTargetPc(void);
+void TechnoTargetDiagnosticPc(char *name);
+void TechnoMoveSpecialTargetPc(void);
 
 void *Technos_FindTgt(TECHNO_s *techno) {
     void *target;
@@ -187,7 +187,7 @@ static void Techno_ResetFields(TECHNO_CALLBACK_PC *techno) {
     NuStrCpy(techno->target_name, techno->target_object_name);
 }
 
-static void __cdecl Techno_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void Techno_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     TECHNO_CALLBACK_PC *techno;
     if (gizmo == NULL) {
         return;
@@ -196,7 +196,7 @@ static void __cdecl Techno_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     techno->bits.visible = visible != 0;
 }
 
-static void __cdecl Techno_Activate(GIZMO_PC *gizmo, i32 active) {
+static void Techno_Activate(GIZMO_PC *gizmo, i32 active) {
     TECHNO_CALLBACK_PC *techno;
     if (gizmo == NULL) {
         return;
@@ -205,7 +205,7 @@ static void __cdecl Techno_Activate(GIZMO_PC *gizmo, i32 active) {
     techno->bits.active = active != 0;
 }
 
-static void __cdecl Technos_Reset(void *world_ptr, void *data, void *progress_ptr) {
+static void Technos_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     TECHNO_PROGRESS_PC *progress = progress_ptr;
     TECHNO_CALLBACK_PC *techno;
@@ -226,13 +226,13 @@ static void __cdecl Technos_Reset(void *world_ptr, void *data, void *progress_pt
     }
 }
 
-i32 __cdecl GizTechno_CanUseTechno(GAMEOBJECT *object, TECHNO_s *techno) {
+i32 GizTechno_CanUseTechno(GAMEOBJECT *object, TECHNO_s *techno) {
     (void)object;
     (void)techno;
     return 1;
 }
 
-static void __cdecl Technos_EarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
+static void Technos_EarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
     TECHNO_CALLBACK_PC *techno;
     i32 index;
@@ -245,7 +245,7 @@ static void __cdecl Technos_EarlyUpdate(void *world_ptr, void *data, f32 delta_t
     }
 }
 
-static void __cdecl Technos_LateUpdate(void *world_ptr, void *data, f32 delta_time) {
+static void Technos_LateUpdate(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
     TECHNO_CALLBACK_PC *techno;
     i32 index;
@@ -262,7 +262,7 @@ static void __cdecl Technos_LateUpdate(void *world_ptr, void *data, f32 delta_ti
     }
 }
 
-static void __cdecl Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
+static void Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
     TECHNO_CALLBACK_PC *techno;
     NUMTX matrix;
@@ -324,12 +324,12 @@ static void __cdecl Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
     }
 }
 
-static i32 __cdecl Technos_GetMaxGizmos(void *world_ptr) {
+static i32 Technos_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     return world != NULL ? ((TECHNO_LEVEL_VIEW_PC *)world->current_level)->max_technos : 0;
 }
 
-static void __cdecl Technos_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
+static void Technos_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     i32 index;
     for (index = 0; index < world->techno_count; ++index) {
@@ -339,11 +339,11 @@ static void __cdecl Technos_AddGizmos(void *system, i32 type_id, void *world_ptr
     }
 }
 
-static char *__cdecl Techno_GetGizmoName(GIZMO_PC *gizmo) {
+static char *Techno_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((TECHNO_CALLBACK_PC *)gizmo->object)->name : NULL;
 }
 
-static i32 __cdecl Techno_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
+static i32 Techno_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
     TECHNO_CALLBACK_PC *techno;
     GIZMO_PC *target;
     if (gizmo == NULL || gizmo->object == NULL) {
@@ -372,26 +372,26 @@ static i32 __cdecl Techno_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_ina
     return 0;
 }
 
-static char *__cdecl Techno_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *Techno_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return "Active";
 }
 
-static i32 __cdecl Techno_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 Techno_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
 
-static NUVEC *__cdecl Techno_GetPos(GIZMO_PC *gizmo) {
+static NUVEC *Techno_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
     return &((TECHNO_CALLBACK_PC *)gizmo->object)->position;
 }
 
-static void *__cdecl Technos_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+static void *Technos_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 8);
 }
 
-static void __cdecl Technos_ClearProgress(void *world, void *progress_ptr) {
+static void Technos_ClearProgress(void *world, void *progress_ptr) {
     TECHNO_PROGRESS_PC *progress = progress_ptr;
     if (progress != NULL) {
         progress->active[0] = 0xffffffff;
@@ -399,7 +399,7 @@ static void __cdecl Technos_ClearProgress(void *world, void *progress_ptr) {
     }
 }
 
-static void __cdecl Technos_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+static void Technos_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     TECHNO_PROGRESS_PC *progress = progress_ptr;
     TECHNO_CALLBACK_PC *techno;
@@ -430,7 +430,7 @@ static void __cdecl Technos_StoreProgress(void *world_ptr, void *data, void *pro
     }
 }
 
-static void *__cdecl Technos_ReserveBufferSpace(void *world_ptr) {
+static void *Technos_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     TECHNO_LEVEL_VIEW_PC *level = (TECHNO_LEVEL_VIEW_PC *)world->current_level;
     world->technos = NULL;
@@ -443,7 +443,7 @@ static void *__cdecl Technos_ReserveBufferSpace(void *world_ptr) {
     return world->technos;
 }
 
-static i32 __cdecl Technos_Load(void *world_ptr, void *data) {
+static i32 Technos_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     i32 version;
     i32 index;
@@ -481,7 +481,7 @@ static i32 __cdecl Technos_Load(void *world_ptr, void *data) {
     return 0;
 }
 
-ADDGIZMOTYPE_PC *__cdecl Technos_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *Technos_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = TechnoRegistrationNamePc;
@@ -549,7 +549,7 @@ i32 Techno_isReady(TECHNO_s *techno) {
     return 0;
 }
 
-NUVEC *__cdecl Technos_TgtPos(TECHNO_s *techno) {
+NUVEC *Technos_TgtPos(TECHNO_s *techno) {
     if (techno == NULL) {
         return NULL;
     }
@@ -586,7 +586,7 @@ STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
 f32 TechnoMoveSpeedPc[2] = {0.0f, 0.0f};
 #pragma data_seg()
 
-TECHNO_PC *__cdecl Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+TECHNO_PC *Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     TECHNO_CALLBACK_PC *nearest = NULL;
     TECHNO_CALLBACK_PC *techno = (TECHNO_CALLBACK_PC *)world->technos;
     f32 nearest_distance = 1000000000.0f;
@@ -612,7 +612,7 @@ TECHNO_PC *__cdecl Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJ
     return (TECHNO_PC *)nearest;
 }
 
-void __cdecl Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
+void Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
     TECHNO_CALLBACK_PC *techno = (TECHNO_CALLBACK_PC *)techno_pointer;
     f32 speed;
     f32 rate;
@@ -660,7 +660,7 @@ void __cdecl Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
+void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     TECHNO_CALLBACK_PC *techno;
     f32 distance;
     f32 range;

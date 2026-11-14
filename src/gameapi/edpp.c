@@ -18,7 +18,7 @@ static struct edui_slider_s *grad_jib_y_freq_item = 0;
 struct eduimenu_s *ptljibmenu = 0;
 #pragma bss_seg()
 
-void __cdecl edppPtlDestroy(i32 index) {
+void edppPtlDestroy(i32 index) {
     if (edpp_ptls[index].instance_id != -1) {
         if (edpp_ptls[index].instance_id != 99999) {
             DebFreeInstantly(&edpp_ptls[index].instance_id);
@@ -28,14 +28,14 @@ void __cdecl edppPtlDestroy(i32 index) {
     }
 }
 
-void __cdecl edppPtlShelve(i32 index) {
+void edppPtlShelve(i32 index) {
     if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999) {
         DebFreeInstantly(&edpp_ptls[index].instance_id);
         edpp_ptls[index].instance_id = 99999;
     }
 }
 
-void __cdecl cbCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void cbCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(messagemenu);
     messagemenu = NULL;
 }
@@ -54,7 +54,7 @@ static void edppShowMessagePc(eduimenu_s *parent, char *text, i32 ok) {
     }
 }
 
-void __cdecl cbCancelChangeNameMenu(eduimenu_s *menu, eduimenu_s *unused1) {
+void cbCancelChangeNameMenu(eduimenu_s *menu, eduimenu_s *unused1) {
     if (edpp_create_type == -1 || debtab[edpp_create_type] == NULL) {
         return;
     }
@@ -66,7 +66,7 @@ void __cdecl cbCancelChangeNameMenu(eduimenu_s *menu, eduimenu_s *unused1) {
     }
 }
 
-void __cdecl cbChangeName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void cbChangeName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpp_create_type != -1 && debtab[edpp_create_type] != NULL) {
         strcpy(debtab[edpp_create_type]->name, ((edui_textpicker_s *)item)->value);
     }
@@ -110,7 +110,7 @@ i32 edppProc(f32 delta_time, FRAME_PAD_PC *pad) {
     return (pad->digital_buttons_pressed >> 11) & 1;
 }
 
-void __cdecl edppStopPage(i8 page) {
+void edppStopPage(i8 page) {
     i32 index;
     i32 key;
     i32 handle;
@@ -143,7 +143,7 @@ void __cdecl edppStopPage(i8 page) {
     }
 }
 
-void __cdecl edppClearPage(i8 page) {
+void edppClearPage(i8 page) {
     i32 index;
     i32 key;
     i32 handle;
@@ -179,7 +179,7 @@ void __cdecl edppClearPage(i8 page) {
     }
 }
 
-void __cdecl edppStartSingleEffect(i32 index) {
+void edppStartSingleEffect(i32 index) {
     if (edpp_ptls[index].instance_id != -1) {
         return;
     }
@@ -207,7 +207,7 @@ void __cdecl edppStartSingleEffect(i32 index) {
     debkeydata[edpp_ptls[index].instance_id].orientation_flags = (u8)edpp_ptls[index].detail_levels;
 }
 
-void __cdecl edppStartPage(i32 page) {
+void edppStartPage(i32 page) {
     i32 index;
     for (index = 0; index < 512; ++index) {
         EDPP_PARTICLE_PC *particle = &edpp_ptls[index];
@@ -223,7 +223,7 @@ void __cdecl edppStartPage(i32 page) {
     edpp_page_on[(i8)page] = 1;
 }
 
-void __cdecl edppDetermineNearest(f32 max_distance_squared) {
+void edppDetermineNearest(f32 max_distance_squared) {
     NUVEC delta;
     i32 i;
     f32 distance;
@@ -791,7 +791,7 @@ void cbPtlDamageMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edptl_damage_menu->y = menu->y + 40;
 }
 
-void __cdecl edppDeleteEffect(i32 index) {
+void edppDeleteEffect(i32 index) {
     i32 replacement;
     i32 i;
     if (edpp_ptls[edpp_nearest].effect_index == index) {
@@ -889,15 +889,14 @@ extern i32 edpp_copy_enclosed;
 extern i32 edpp_copyrotz;
 extern i32 edpp_copyroty;
 extern f32 edpp_offset;
-void __cdecl edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
-                            i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
-void __cdecl edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x,
-                                 i32 rotation_y, i32 rotation_z, i32 colour, NUMTL *material);
-void __cdecl edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, NUMTL *material);
-void __cdecl edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_extent, i32 colour,
-                             NUMTL *material);
+void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
+                    i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
+void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x, i32 rotation_y,
+                         i32 rotation_z, i32 colour, NUMTL *material);
+void edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, NUMTL *material);
+void edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_extent, i32 colour, NUMTL *material);
 
-void __cdecl edppDrawSpheres(DEBRIS_INFO_PC *effect, i32 key_index) {
+void edppDrawSpheres(DEBRIS_INFO_PC *effect, i32 key_index) {
     i32 sphere_index;
     i32 first;
     f32 time;
@@ -933,7 +932,7 @@ void __cdecl edppDrawSpheres(DEBRIS_INFO_PC *effect, i32 key_index) {
     }
 }
 
-void __cdecl edppDrawTorus(DEBRIS_INFO_PC *effect, i32 key_index) {
+void edppDrawTorus(DEBRIS_INFO_PC *effect, i32 key_index) {
     f32 time;
     f32 radius;
     f32 radial_extent;
@@ -1044,7 +1043,7 @@ void __cdecl edppDrawTorus(DEBRIS_INFO_PC *effect, i32 key_index) {
     line[1].colour = 0xff00ff00;                                                                                       \
     NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL)
 
-void __cdecl edppDrawCursor(void) {
+void edppDrawCursor(void) {
     i32 rotation_z;
     i32 rotation_y;
     NUVEC vector;
@@ -1260,9 +1259,9 @@ extern i32 edpp_snap_enabled;
 extern i32 edpp_cam_ax;
 extern i32 edpp_cam_ay;
 extern eduimenu_s *ptloptmenu;
-void __cdecl edcamMove(FRAME_PAD_PC *pad);
-void __cdecl edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
-void __cdecl edcamGetPosAngSnap(NUVEC *position, i32 *angle_x, i32 *angle_y);
+void edcamMove(FRAME_PAD_PC *pad);
+void edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
+void edcamGetPosAngSnap(NUVEC *position, i32 *angle_x, i32 *angle_y);
 
 typedef union EDPP_FLOAT_BITS_PC {
     f32 value;
@@ -1325,7 +1324,7 @@ static __inline void edppDebrisReflectionOrientation(i32 handle, i16 x, i16 y, f
     }
 }
 
-i32 __cdecl edppPtlCreate(NUVEC *position, i32 effect_index) {
+i32 edppPtlCreate(NUVEC *position, i32 effect_index) {
     i32 index = 0;
     u8 particle_type;
     if (edpp_instances_used == 512) {
@@ -1393,7 +1392,7 @@ i32 __cdecl edppPtlCreate(NUVEC *position, i32 effect_index) {
     return -1;
 }
 
-i32 __cdecl edppPtlCreateCopy(NUVEC *position, i32 source_index) {
+i32 edppPtlCreateCopy(NUVEC *position, i32 source_index) {
     i32 index = 0;
     if (edpp_instances_used == 512) {
         return -1;
@@ -1442,7 +1441,7 @@ i32 __cdecl edppPtlCreateCopy(NUVEC *position, i32 source_index) {
     return -1;
 }
 
-i32 __cdecl edppPtlPlace(i32 index, NUVEC *position) {
+i32 edppPtlPlace(i32 index, NUVEC *position) {
     edppDebrisEmitterPos(edpp_ptls[index].instance_id, position->x, position->y, position->z);
     DebrisOrientation(edpp_ptls[index].instance_id, edpp_rotz, edpp_roty);
     DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_emitrotz, edpp_emitroty, edpp_emitrotx);
@@ -1465,7 +1464,7 @@ i32 __cdecl edppPtlPlace(i32 index, NUVEC *position) {
     return index;
 }
 
-void __cdecl edppMultipleCopyCopy(void) {
+void edppMultipleCopyCopy(void) {
     i32 index;
     NUVEC delta;
     edpp_copy_source_count = 0;
@@ -1486,7 +1485,7 @@ void __cdecl edppMultipleCopyCopy(void) {
     edpp_copyroty = 0;
 }
 
-void __cdecl edppMultipleCopyPaste(void) {
+void edppMultipleCopyPaste(void) {
     i32 source;
     i32 index;
     NUVEC offset;
@@ -1507,7 +1506,7 @@ void __cdecl edppMultipleCopyPaste(void) {
     }
 }
 
-void __cdecl edppDoInput(FRAME_PAD_PC *pad) {
+void edppDoInput(FRAME_PAD_PC *pad) {
     if ((pad->digital_buttons & 0x100) == 0) {
         edcamMove(pad);
     }
@@ -1677,7 +1676,7 @@ void __cdecl edppDoInput(FRAME_PAD_PC *pad) {
     }
 }
 
-void __cdecl edppHighlightNearest(void) {
+void edppHighlightNearest(void) {
     i32 index;
     i32 source;
     NUVEC delta;
@@ -1735,7 +1734,7 @@ void EdFileWriteUnsignedChar(u8 value);
 void EdFileWriteNuVec(NUVEC *value);
 i32 EdFileBackup(char *source, char *destination);
 
-i32 __cdecl edppSaveEffects(char *filename, u8 page) {
+i32 edppSaveEffects(char *filename, u8 page) {
     i32 effect_count = 0;
     i32 instance_count = 0;
     u8 list = page;
@@ -1968,7 +1967,7 @@ i32 __cdecl edppSaveEffects(char *filename, u8 page) {
     return 0;
 }
 
-void __cdecl cbFileSaveEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbFileSaveEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 valid_page = 1;
     i32 backup_succeeded = 1;
     char original_directory[64] = "";
@@ -2061,19 +2060,19 @@ void __cdecl cbFileSaveEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     }
 }
 
-void __cdecl cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-void __cdecl cbPtlReadoutMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
+void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
+void cbPtlReadoutMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 
-void __cdecl cbPtlCancelDataMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void cbPtlCancelDataMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptldatamenu);
     ptldatamenu = NULL;
 }
 
-void __cdecl cbPtlShowAll(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
+void cbPtlShowAll(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     edpp_showAllPlaced = !edpp_showAllPlaced;
 }
 
-void __cdecl cbPtlCopyEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void cbPtlCopyEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     eduimenu_s *parent = NULL;
     i32 index;
     char short_name[16];
@@ -2116,7 +2115,7 @@ void __cdecl cbPtlCopyEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     }
 }
 
-void __cdecl edptlcbDeleteOrphans(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edptlcbDeleteOrphans(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     eduimenu_s *parent = NULL;
     i32 index;
     for (index = 0; index < 512; ++index) {
@@ -2140,7 +2139,7 @@ void __cdecl edptlcbDeleteOrphans(eduimenu_s *menu, eduiitem_s *unused1, u32 unu
     }
 }
 
-void __cdecl edppRestartAllEffectsInLevel(void) {
+void edppRestartAllEffectsInLevel(void) {
     i32 index;
     for (index = 0; index < 512; ++index) {
         if (edpp_ptls[index].instance_id == -1) {
@@ -2174,7 +2173,7 @@ void __cdecl edppRestartAllEffectsInLevel(void) {
     edppDetermineNearest(1.0f);
 }
 
-void __cdecl cbFileLoadEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbFileLoadEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     char original_directory[64] = "";
     char path[256];
     char general_directory[256];
@@ -2242,7 +2241,7 @@ void __cdecl cbFileLoadEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     }
 }
 
-void __cdecl cbPtlDataMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlDataMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     ptldatamenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelDataMenu, "Data Menu");
     if (ptldatamenu != NULL) {
@@ -2277,9 +2276,9 @@ void __cdecl cbPtlDataMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
     }
 }
 
-void __cdecl cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
+void cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 
-void __cdecl cbPtlTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 count = 0;
     i32 found_selected;
     i32 index;
@@ -2350,12 +2349,12 @@ void __cdecl cbPtlTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
     }
 }
 
-void __cdecl cbPtlCancelEmitMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void cbPtlCancelEmitMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlemitmenu);
     ptlemitmenu = NULL;
 }
 
-void __cdecl cbPtlEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     u32 disabled_colours[4] = {0x80303030, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
@@ -2407,7 +2406,7 @@ void __cdecl cbPtlEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
 extern struct eduimenu_s *ptlemitvelmenu;
 extern struct eduimenu_s *ptlgravmenu;
 extern struct eduimenu_s *edptl_ghost_menu;
-void __cdecl edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
+void edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
 
 static void cbPtlCancelEmitVelMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlemitvelmenu);
@@ -2424,12 +2423,12 @@ static void edptlcbCancelGhostMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edptl_ghost_menu = NULL;
 }
 
-void __cdecl edptlcbCancelStarMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edptlcbCancelStarMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edptl_star_menu);
     edptl_star_menu = NULL;
 }
 
-void __cdecl edptlcbApplyStarPoints(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edptlcbApplyStarPoints(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1) {
         return;
@@ -2441,7 +2440,7 @@ void __cdecl edptlcbApplyStarPoints(eduimenu_s *unused0, eduiitem_s *item, u32 u
     effect->radial_segments = (i8)((edui_slider_s *)item)->value;
 }
 
-void __cdecl edptlcbApplyStarRatio(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edptlcbApplyStarRatio(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     i32 instance_id;
     if (edpp_nearest == -1) {
@@ -2494,7 +2493,7 @@ static void edptlcbApplyGhostTime(eduimenu_s *unused0, eduiitem_s *item, u32 unu
     effect->trail_time = ((edui_slider_s *)item)->value;
 }
 
-void __cdecl cbPtlEmitVelMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void cbPtlEmitVelMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
@@ -2512,7 +2511,7 @@ void __cdecl cbPtlEmitVelMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
     }
 }
 
-void __cdecl cbPtlGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void cbPtlGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
@@ -2529,7 +2528,7 @@ void __cdecl cbPtlGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-void __cdecl edptlcbGhostMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edptlcbGhostMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
@@ -2694,7 +2693,7 @@ static void cbPtlChangeZ(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     }
 }
 
-void __cdecl cbPtlVarEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlVarEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
@@ -2763,7 +2762,7 @@ void __cdecl cbPtlVarEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unuse
     }
 }
 
-void __cdecl cbPtlVarStartMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlVarStartMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
@@ -2828,7 +2827,7 @@ void __cdecl cbPtlVarStartMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     }
 }
 
-void __cdecl cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
@@ -2916,26 +2915,25 @@ typedef struct edui_gradient_stage_pc_s {
     u32 metadata;         // 0x20
 } EDUI_GRADIENT_STAGE_PC; // size 0x24
 
-i32 __cdecl eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE_PC *stages, i32 capacity);
-struct edui_gradient_node_s *__cdecl eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green,
-                                                         f32 blue);
+i32 eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE_PC *stages, i32 capacity);
+struct edui_gradient_node_s *eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green, f32 blue);
 
-void __cdecl edppClose(void) {
+void edppClose(void) {
     eduiMenuDestroy(ptloptmenu);
     eduiMenuDestroy(ptlgcodemenu);
 }
 
-void __cdecl edptlcbCancelDetailMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edptlcbCancelDetailMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edptl_detail_menu);
     edptl_detail_menu = NULL;
 }
 
-void __cdecl edptlcbCancelDrawflagMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edptlcbCancelDrawflagMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edptl_drawflag_menu);
     edptl_drawflag_menu = NULL;
 }
 
-void __cdecl edptlcbCancelGroupMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edptlcbCancelGroupMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edptl_group_menu);
     edptl_group_menu = NULL;
 }
@@ -2962,21 +2960,21 @@ static void cbPtlCancelRotMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     grad_rot_max_item = NULL;
 }
 
-void __cdecl cbPtlCancelGSortMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void cbPtlCancelGSortMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlgsortmenu);
     ptlgsortmenu = NULL;
 }
 
-void __cdecl edptlcbCancelClipboardMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edptlcbCancelClipboardMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlclipmenu);
     ptlclipmenu = NULL;
 }
 
-void __cdecl edptlcbSetMasterGroup(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edptlcbSetMasterGroup(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     debris_render_group = (i32)((edui_slider_s *)item)->value;
 }
 
-void __cdecl edptlcbSetGroup(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edptlcbSetGroup(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpp_nearest == -1) {
         return;
     }
@@ -2987,7 +2985,7 @@ void __cdecl edptlcbSetGroup(eduimenu_s *unused0, eduiitem_s *item, u32 unused2)
     debkeydata[edpp_ptls[edpp_nearest].instance_id].render_group = (i16)(i32)((edui_slider_s *)item)->value;
 }
 
-void __cdecl edptlcbChangeCSDisable(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edptlcbChangeCSDisable(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1) {
         return;
@@ -2999,7 +2997,7 @@ void __cdecl edptlcbChangeCSDisable(eduimenu_s *unused0, eduiitem_s *item, u32 u
     effect->cutscene_only = item->highlighted;
 }
 
-void __cdecl edptlcbSetMaxThin(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edptlcbSetMaxThin(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1) {
         return;
@@ -3011,7 +3009,7 @@ void __cdecl edptlcbSetMaxThin(eduimenu_s *unused0, eduiitem_s *item, u32 unused
     effect->thinning = ((edui_slider_s *)item)->value;
 }
 
-void __cdecl edptlcbSetDetail(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edptlcbSetDetail(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     i32 instance_id;
     if (edpp_nearest == 0) {
         return;
@@ -3031,7 +3029,7 @@ void __cdecl edptlcbSetDetail(eduimenu_s *unused0, eduiitem_s *item, u32 unused2
     edppDebrisSetDetailLevels(instance_id, edpp_ptls[edpp_nearest].detail_levels);
 }
 
-void __cdecl edptlcbSetDrawflag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edptlcbSetDrawflag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1) {
         return;
@@ -3254,7 +3252,7 @@ static void cbPtlDefaultCollEnv(eduimenu_s *menu, eduiitem_s *unused1, u32 unuse
     }
 }
 
-void __cdecl edptlcbCutClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edptlcbCutClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent = NULL;
     debtab[edpp_create_type]->category = 4;
     edptl_clipboard_entry = edpp_create_type;
@@ -3267,7 +3265,7 @@ void __cdecl edptlcbCutClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unus
     }
 }
 
-void __cdecl edptlcbPasteClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edptlcbPasteClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent = NULL;
     DEBRIS_INFO_PC *effect = debtab[edptl_clipboard_entry];
     effect->category = edpp_effect_list;
@@ -3281,7 +3279,7 @@ void __cdecl edptlcbPasteClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 un
     }
 }
 
-void __cdecl cbPtlSelGSort(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+void cbPtlSelGSort(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     eduiMenuDetach(menu);
     edpp_active_menu = NULL;
@@ -3311,7 +3309,7 @@ void __cdecl cbPtlSelGSort(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     debkeydata[edpp_ptls[edpp_nearest].instance_id].generator = gensorttab[item->data];
 }
 
-void __cdecl edptlcbClipboardMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edptlcbClipboardMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     char list_name[32];
     char label[64];
@@ -3344,7 +3342,7 @@ void __cdecl edptlcbClipboardMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     ptlclipmenu->y = parent->y + 40;
 }
 
-void __cdecl edptlcbDrawflagMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edptlcbDrawflagMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
@@ -3367,7 +3365,7 @@ void __cdecl edptlcbDrawflagMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
     edptl_drawflag_menu->y = parent->y + 40;
 }
 
-void __cdecl edptlcbGroupMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edptlcbGroupMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     edptl_group_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edptlcbCancelGroupMenu, "Render Settings");
     if (edptl_group_menu == NULL) {
@@ -3392,7 +3390,7 @@ void __cdecl edptlcbGroupMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unuse
     edptl_group_menu->y = parent->y + 40;
 }
 
-void __cdecl edptlcbDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edptlcbDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     edptl_detail_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edptlcbCancelDetailMenu, "Detail Level Settings");
     if (edptl_detail_menu == NULL) {
@@ -3418,7 +3416,7 @@ void __cdecl edptlcbDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     edptl_detail_menu->y = parent->y + 40;
 }
 
-void __cdecl cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
@@ -3461,7 +3459,7 @@ void __cdecl cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
     ptlgsortmenu->y = menu->y + 40;
 }
 
-void __cdecl cbPtlRotMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlRotMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
     f32 value;
@@ -3508,7 +3506,7 @@ extern struct eduiitem_s *grad_size_w_item;
 extern struct eduiitem_s *grad_size_h_item;
 extern struct edui_slider_s *grad_size_min_item;
 extern struct edui_slider_s *grad_size_max_item;
-void __cdecl eduiGradStageDelete(edui_gradient_pick_s *item, struct edui_gradient_node_s *stage);
+void eduiGradStageDelete(edui_gradient_pick_s *item, struct edui_gradient_node_s *stage);
 
 static void cbPtlCancelSizeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlsizemenu);
@@ -3612,7 +3610,7 @@ static void cbPtlCopySize(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     GenericDebinfoDmaTypeUpdate(effect);
 }
 
-void __cdecl cbPtlSizeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlSizeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
     f32 value;
@@ -3668,7 +3666,7 @@ void __cdecl cbPtlSizeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
     ptlsizemenu->y = parent->y + 40;
 }
 
-void __cdecl cbPtlCollMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlCollMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
     f32 value;
@@ -3703,7 +3701,7 @@ void __cdecl cbPtlCollMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
     collmenu->y = parent->y + 40;
 }
 
-void __cdecl cbPtlTorusMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlTorusMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
     f32 value;
@@ -3763,7 +3761,7 @@ void __cdecl cbPtlTorusMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
 extern i32 edpp_first_time_this_level;
 extern NUVEC entry_position;
 extern struct eduimenu_s *edptl_page_menu;
-void __cdecl edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw);
+void edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw);
 
 void cbPtlSelGCode(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     eduiMenuDetach(menu);
@@ -4335,7 +4333,7 @@ void NewTerrain(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_inde
     }
 }
 
-void __cdecl edmainSetLocVec(NUVEC *position);
+void edmainSetLocVec(NUVEC *position);
 
 void edppRegisterPointerToGameCharLocation(NUVEC *position) {
     edmainSetLocVec(position);

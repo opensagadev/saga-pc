@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "saga.h"
 
-void __cdecl edgraClumpsReset(void) {
+void edgraClumpsReset(void) {
     i32 i;
     for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
         GrassClumps[i].element_count = 0;
@@ -33,7 +33,7 @@ void edgraEnter(void) {
     edgra_clump_size = 64;
 }
 
-void __cdecl edgraDetermineNearestInstance(f32 distance) {
+void edgraDetermineNearestInstance(f32 distance) {
     NUVEC delta;
     i32 individual;
     i32 i;
@@ -69,7 +69,7 @@ PC_EDGRAINDIVIDUAL *GetIndGrassClump(i32 clump, i32 element) {
     return &IndGrassClumps[clump * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element];
 }
 
-void __cdecl edgraSetup(VARIPTR *buffer, VARIPTR end, i32 clumps, i32 individual_clumps, i32 units_per_clump) {
+void edgraSetup(VARIPTR *buffer, VARIPTR end, i32 clumps, i32 individual_clumps, i32 units_per_clump) {
     EDGRA_MAX_CLUMPS = clumps;
     EDGRA_MAX_INDIVIDUAL_CLUMPS = individual_clumps;
     EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP = units_per_clump;
@@ -87,7 +87,7 @@ void __cdecl edgraSetup(VARIPTR *buffer, VARIPTR end, i32 clumps, i32 individual
     NuFadeObjSetup(buffer, end, 0x3000, clumps);
 }
 
-void __cdecl edgraStartPage(i8 page) {
+void edgraStartPage(i8 page) {
     i32 i;
     void *saved_terrain;
     if (!edgra_page_used[page] || !edgra_page_scene[page] || edgra_page_on[page]) {
@@ -137,7 +137,7 @@ void __cdecl edgraStartPage(i8 page) {
     PCGrassTerrainScene = saved_terrain;
 }
 
-void __cdecl edgraInitAllClumps(void) {
+void edgraInitAllClumps(void) {
     i32 page;
     edgra_units_used = 0;
     NuWindInit();
@@ -545,7 +545,7 @@ static void edgracbGlobalsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     edgra_globals_menu->y = parent->y + 40;
 }
 
-void __cdecl edgraStopPage(i8 page) {
+void edgraStopPage(i8 page) {
     i32 i;
     if (edgra_page_on[page]) {
         edgra_page_on[page] = 0;
@@ -561,7 +561,7 @@ void __cdecl edgraStopPage(i8 page) {
     }
 }
 
-void __cdecl edgraClearPage(i8 page) {
+void edgraClearPage(i8 page) {
     i32 i;
     edgraStopPage(page);
     for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
@@ -581,7 +581,7 @@ void __cdecl edgraClearPage(i8 page) {
     edgra_page_calculate_done[page] = 0;
 }
 
-void __cdecl edgraSortVectorBuffer(i32 index) {
+void edgraSortVectorBuffer(i32 index) {
     NUVEC temporary[256];
     if (index != -1 && index != edgra_last_clump_in_buffer && GrassClumps[index].vector_buffer != NULL) {
         u32 bytes = GrassClumps[index].element_count * sizeof(NUVEC);
@@ -603,7 +603,7 @@ void __cdecl edgraSortVectorBuffer(i32 index) {
     }
 }
 
-void __cdecl edgraDetermineNearestClump(f32 distance) {
+void edgraDetermineNearestClump(f32 distance) {
     NUVEC delta;
     f32 magnitude_sq;
     i32 i;
@@ -631,7 +631,7 @@ void __cdecl edgraDetermineNearestClump(f32 distance) {
     }
 }
 
-i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer, VARIPTR *buffer_end) {
+i32 edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer, VARIPTR *buffer_end) {
     i32 page;
     i32 version;
     i32 clump_count;
@@ -875,14 +875,14 @@ void edgracbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     eduiCreateMessageMenu(menu, "Loaded OK", 1);
 }
 
-void __cdecl edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
+void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
 void edgracbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
 
 #define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
 
 extern i32 edgra_pageid;
 
-void __cdecl edgraClumpPlace(i32 index, NUVEC *position) {
+void edgraClumpPlace(i32 index, NUVEC *position) {
     GrassClumps[index].position = *position;
     GrassClumps[index].size = edgra_size;
     GrassClumps[index].rotation_z = (i16)edgra_rotz;
@@ -896,7 +896,7 @@ void __cdecl edgraClumpPlace(i32 index, NUVEC *position) {
     edgraInitAllClumps();
 }
 
-void __cdecl edgraInstancePlace(i32 index, NUVEC *position) {
+void edgraInstancePlace(i32 index, NUVEC *position) {
     GetIndGrassClump(GrassClumps[edgra_nearest].individual_index, index)->position.x =
         position->x - GrassClumps[edgra_nearest].position.x;
     GetIndGrassClump(GrassClumps[edgra_nearest].individual_index, index)->position.y =
@@ -909,7 +909,7 @@ void __cdecl edgraInstancePlace(i32 index, NUVEC *position) {
     edgraInitAllClumps();
 }
 
-i32 __cdecl edgraClumpCreate(NUVEC *position) {
+i32 edgraClumpCreate(NUVEC *position) {
     i32 index = 0;
     i32 individual = 0;
     if (edgra_clumps_used == EDGRA_MAX_CLUMPS) {
@@ -995,7 +995,7 @@ i32 __cdecl edgraClumpCreate(NUVEC *position) {
     return index;
 }
 
-void __cdecl edgraInstanceCreate(NUVEC *position) {
+void edgraInstanceCreate(NUVEC *position) {
     i32 index;
     if (edgra_nearest != -1 && GrassClumps[edgra_nearest].element_count != EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP) {
         index = GrassClumps[edgra_nearest].element_count++;
@@ -1003,7 +1003,7 @@ void __cdecl edgraInstanceCreate(NUVEC *position) {
     }
 }
 
-void __cdecl edgraClumpDestroy(i32 index) {
+void edgraClumpDestroy(i32 index) {
     GrassClumps[index].element_count = 0;
     edgra_free_vecbuffer = GrassClumps[index].vector_buffer;
     GrassClumps[index].vector_buffer = NULL;
@@ -1015,7 +1015,7 @@ void __cdecl edgraClumpDestroy(i32 index) {
     edgraInitAllClumps();
 }
 
-void __cdecl edgraInstanceDestroy(i32 index) {
+void edgraInstanceDestroy(i32 index) {
     i32 i;
     if (edgra_nearest != -1 && GrassClumps[edgra_nearest].element_count != 1) {
         if (index != GrassClumps[edgra_nearest].element_count - 1) {
@@ -1035,7 +1035,7 @@ void __cdecl edgraInstanceDestroy(i32 index) {
     }
 }
 
-void __cdecl edgraCreateOptionsMenu(void) {
+void edgraCreateOptionsMenu(void) {
     edgra_options_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edgracbCancelOptMenu, "Options");
     if (edgra_options_menu == NULL) {
         return;
@@ -1077,7 +1077,7 @@ void __cdecl edgraCreateOptionsMenu(void) {
     eduiMenuAddItem(edgra_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edgracbGlobalsMenu, "Global Options..."));
 }
 
-void __cdecl edgraDoInput(FRAME_PAD_PC *pad) {
+void edgraDoInput(FRAME_PAD_PC *pad) {
     if ((pad->digital_buttons & 0x100) == 0) {
         edcamMove(pad);
     }

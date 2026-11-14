@@ -24,7 +24,7 @@ static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *positi
     return 1;
 }
 
-i32 __cdecl ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
+i32 ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
     GAMEOBJECT *other = NULL;
     if ((WORLD->current_level->flags & 0x200000) == 0 && VehicleArea == 0) {
         return 0;

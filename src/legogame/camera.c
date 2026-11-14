@@ -2,11 +2,11 @@
 
 /* Retail unit 0x40a4b0-0x40e6fa: definitions in retail address order. */
 
-void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera);
-void __cdecl GameCam_UpdateLookRot(GAMECAMERA *camera);
-void __cdecl MakePlayPlanes(GAMECAMERA *camera);
-void __cdecl GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount);
-void __cdecl CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVEC *reference);
+void GameCam_ResetLookRot(GAMECAMERA *camera);
+void GameCam_UpdateLookRot(GAMECAMERA *camera);
+void MakePlayPlanes(GAMECAMERA *camera);
+void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount);
+void CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVEC *reference);
 extern NUMTX CutCamMtx;
 extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
 extern struct nuvec_s *shopcamlookat;
@@ -34,15 +34,15 @@ extern f32 CamWalkerRadiusPc;
 extern f32 CamWalkerLiftPc;
 extern f32 CamDewbackRadiusPc;
 extern f32 CamDewbackLiftPc;
-void __cdecl Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
-void __cdecl GetShopCamLookPos(struct nuvec_s *position);
-i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed,
-                          struct nuvec_s *player_camera_positions, struct nuvec_s *player_positions, i32 player_count,
-                          struct sockposition_pc_s *camera_socket_position, struct nuvec_s *camera_position,
-                          struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
-                          f32 *camera_shake, f32 *separation_scale);
-struct nuvec_s *__cdecl Technos_TgtPos(struct TECHNO_s *techno);
-f32 __cdecl getPodRoll(i32 arg0);
+void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
+void GetShopCamLookPos(struct nuvec_s *position);
+i32 SockSysCamera(SOCKSYS_PC *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed,
+                  struct nuvec_s *player_camera_positions, struct nuvec_s *player_positions, i32 player_count,
+                  struct sockposition_pc_s *camera_socket_position, struct nuvec_s *camera_position,
+                  struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
+                  f32 *camera_shake, f32 *separation_scale);
+struct nuvec_s *Technos_TgtPos(struct TECHNO_s *techno);
+f32 getPodRoll(i32 arg0);
 
 typedef struct CAMERA_CONTEXT_PATH_PC {
     u8 unknown_00[0x40];
@@ -76,8 +76,8 @@ typedef struct CAMERA_GRABBER_PC {
     NUVEC grab_position;
 } CAMERA_GRABBER_PC;
 
-i32 __cdecl Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
-f32 __cdecl NuVecMagVU0(NUVEC *v);
+i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
+f32 NuVecMagVU0(NUVEC *v);
 #define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                   \
     do {                                                                                                               \
         union {                                                                                                        \
@@ -218,7 +218,7 @@ VIEWCAM_PC ViewCam = {0,   {1000000000.0f, 0.0f, 0.0f}, -8192, -29500, 2.6600000
                       NULL};
 #pragma data_seg()
 
-void __cdecl ViewCamSetActive(i32 mode, GAMEPAD_PC *gamepad) {
+void ViewCamSetActive(i32 mode, GAMEPAD_PC *gamepad) {
     if (player != NULL) {
         ViewCam.mode = mode;
         if (mode != 0) {
@@ -230,15 +230,15 @@ void __cdecl ViewCamSetActive(i32 mode, GAMEPAD_PC *gamepad) {
     }
 }
 
-i32 __cdecl ViewCamGetMode(void) {
+i32 ViewCamGetMode(void) {
     return ViewCam.mode;
 }
 
-GAMEPAD_PC *__cdecl ViewCamGetGamePad(void) {
+GAMEPAD_PC *ViewCamGetGamePad(void) {
     return ViewCam.gamepad;
 }
 
-NUVEC *__cdecl ViewCamGetTgt(void) {
+NUVEC *ViewCamGetTgt(void) {
     return &ViewCam.target;
 }
 
@@ -1379,7 +1379,7 @@ void fun_0040e670(void) {
 void fun_0040e680(void) {
 }
 
-i32 __cdecl GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
+i32 GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
     i32 forwards;
     if (object->in_narrow_socket != 0) {
         i32 context;

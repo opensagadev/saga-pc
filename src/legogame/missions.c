@@ -31,7 +31,7 @@ typedef struct MISSION_SYSTEM_READER_PC {
 } MISSION_SYSTEM_READER_PC;
 
 // noinline: the original calls EndMissionsMenu out of line from MenuUpdateMissions; VC8 would inline it there.
-__declspec(noinline) void __cdecl EndMissionsMenu(void) {
+__declspec(noinline) void EndMissionsMenu(void) {
     LevLock[3] = 1;
     LevTime[3] = 0.6f;
     MenuRememberCursor(&GameMenu[GameMenuLevel]);
@@ -68,7 +68,7 @@ static void UpdateMissionIconX(MISSION_SYSTEM_READER_PC *system, i32 initialize)
 static f32 MissionsAlphaPc = 0;
 static f32 MissionIconScalePc[20] = {0};
 
-void __cdecl MenuInitMissions(MENU *menu) {
+void MenuInitMissions(MENU *menu) {
     MISSION_SYSTEM_READER_PC *system = (MISSION_SYSTEM_READER_PC *)MissionSys;
     i32 index;
     MissionsAlphaPc = 0.0f;
@@ -83,7 +83,7 @@ void __cdecl MenuInitMissions(MENU *menu) {
 
 f32 MissionBestBrickXPc = -0.15f;
 
-void __cdecl MenuDrawMissions(MENU *menu) {
+void MenuDrawMissions(MENU *menu) {
     f32 alpha;
     f32 opacity;
     f32 size;
@@ -180,7 +180,7 @@ void __cdecl MenuDrawMissions(MENU *menu) {
                           MissionMenuPacketPc.active_player[1], select1, 1.0f, -1, back1, -1, status1);
 }
 
-void __cdecl MenuUpdateEndMission(MENU *menu) {
+void MenuUpdateEndMission(MENU *menu) {
     if (menu->menu_time >= 5.0f) {
         CompleteLevel(WORLD);
     } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
@@ -189,7 +189,7 @@ void __cdecl MenuUpdateEndMission(MENU *menu) {
     }
 }
 
-void __cdecl MenuDrawEndMission(MENU *menu) {
+void MenuDrawEndMission(MENU *menu) {
     char text[32];
     i32 index;
     f32 remaining;
@@ -218,14 +218,14 @@ void __cdecl MenuDrawEndMission(MENU *menu) {
     }
 }
 
-void __cdecl InitMission(MISSIONSYS_PC *system, i32 index) {
+void InitMission(MISSIONSYS_PC *system, i32 index) {
     system->active_mission = &system->missions[index];
     system->state = 1;
     ResetTimer(&system->timer, 0.0f);
     Cheats_TurnOff(0);
 }
 
-void __cdecl EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
+void EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
     if (netclient == 0 || show_message == 0) {
         system->state = (u8)state;
         SetBonusWinner(qrand() / 0x8000);
@@ -241,7 +241,7 @@ void __cdecl EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
     }
 }
 
-void __cdecl CheckMissionEnd(MISSIONSYS_PC *system) {
+void CheckMissionEnd(MISSIONSYS_PC *system) {
     GAMEOBJECT *target;
     GAMEOBJECT *candidate;
     u64 mask;
@@ -285,7 +285,7 @@ void __cdecl CheckMissionEnd(MISSIONSYS_PC *system) {
     }
 }
 
-void __cdecl MenuUpdateMissions(MENU *menu) {
+void MenuUpdateMissions(MENU *menu) {
     i32 previous = MissionMenuSelectionPc;
     i32 start = 0;
     i32 cancel = 0;

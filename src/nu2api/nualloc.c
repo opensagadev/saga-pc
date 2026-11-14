@@ -38,8 +38,8 @@ extern NUALLOC_RECORD *NuAllocRecordHead;
 extern u32 NuAllocHeaderMetadata[3];
 
 /* Retail diagnostic hooks compiled out to a bare RET; defined in nudebug.c. */
-void __cdecl NuAllocBadPointer(void);
-void __cdecl NuAllocReport(const void *message, ...);
+void NuAllocBadPointer(void);
+void NuAllocReport(const void *message, ...);
 
 /* PC manager prefix and block header touched by the retail allocator. */
 typedef struct nualloc_manager_block_pc_s {
@@ -59,24 +59,24 @@ typedef struct nualloc_manager_prefix_pc_s {
     u32 used_bytes;          // 0xc
 } NUALLOC_MANAGER_PREFIX_PC; // size 0x10
 
-void *__cdecl NuAllocManagerAllocateAlignedPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment);
-void __cdecl NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *memory);
+void *NuAllocManagerAllocateAlignedPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment);
+void NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *memory);
 
 static NUALLOC_ARENA NuAllocArenaStorage;
 
-void __cdecl NuAllocSetManager(void *manager) {
+void NuAllocSetManager(void *manager) {
     NuAllocManager = manager;
 }
 
 /* Installs a bump pool and returns the previous one. */
-NUALLOC_POOL *__cdecl NuAllocSetPool(NUALLOC_POOL *pool) {
+NUALLOC_POOL *NuAllocSetPool(NUALLOC_POOL *pool) {
     NUALLOC_POOL *previous = NuAllocPool;
     NuAllocPool = pool;
     return previous;
 }
 
 /* Resets a pool so its storage starts right after the header. */
-void __cdecl NuAllocPoolReset(NUALLOC_POOL *pool) {
+void NuAllocPoolReset(NUALLOC_POOL *pool) {
     if (pool != NULL) {
         pool->cursor = (u32)(pool + 1);
         pool->remaining = pool->capacity;
@@ -84,7 +84,7 @@ void __cdecl NuAllocPoolReset(NUALLOC_POOL *pool) {
 }
 
 /* Routes allocations through a caller-owned cursor until it is cleared with NULL. */
-void __cdecl NuAllocSetArena(u32 *cursor, u32 *end) {
+void NuAllocSetArena(u32 *cursor, u32 *end) {
     if (cursor != NULL) {
         NuAllocArenaStorage.cursor = cursor;
         NuAllocArena = &NuAllocArenaStorage;
@@ -96,12 +96,12 @@ void __cdecl NuAllocSetArena(u32 *cursor, u32 *end) {
     }
 }
 
-void *__cdecl NuAllocGetPeakEnd(void) {
+void *NuAllocGetPeakEnd(void) {
     return NuAllocPeakEnd1;
 }
 
 /* Allocates zeroed storage without a tracking record. */
-void *__cdecl NuAllocUntracked(i32 size) {
+void *NuAllocUntracked(i32 size) {
     void *user_data;
     void *allocation_end;
     NUALLOC_ARENA *arena;
@@ -145,7 +145,7 @@ void *__cdecl NuAllocUntracked(i32 size) {
     return user_data;
 }
 
-void __cdecl NuFreeUntracked(void *memory) {
+void NuFreeUntracked(void *memory) {
     if (NuAllocManager != NULL) {
         NuAllocManagerFreePc(NuAllocManager, memory);
         return;
@@ -153,7 +153,7 @@ void __cdecl NuFreeUntracked(void *memory) {
     free(memory);
 }
 
-void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
+void *NuAlloc(i32 size, const char *file, i32 line) {
     NUALLOC_ARENA *arena;
     NUALLOC_POOL *pool;
     NUALLOC_RECORD *record;
@@ -250,7 +250,7 @@ void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
     return user_data;
 }
 
-void __cdecl NuFree(void *user_data, const char *file, i32 line) {
+void NuFree(void *user_data, const char *file, i32 line) {
     NUALLOC_RECORD *record;
     NUALLOC_TAIL *tail;
 
@@ -299,7 +299,7 @@ void __cdecl NuFree(void *user_data, const char *file, i32 line) {
 }
 
 /* Resizes a tracked allocation in place through the CRT, re-linking its record at the list head. */
-void *__cdecl NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
+void *NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
     NUALLOC_RECORD *record;
     NUALLOC_RECORD *old_head;
     NUALLOC_TAIL *tail;
@@ -383,7 +383,7 @@ void *__cdecl NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
 }
 
 /* Walks every tracked allocation and returns the first guard block that no longer matches. */
-void *__cdecl NuAllocCheckRecords(void) {
+void *NuAllocCheckRecords(void) {
     NUALLOC_RECORD *record;
     NUALLOC_TAIL *tail;
     char *file;
@@ -406,7 +406,7 @@ void *__cdecl NuAllocCheckRecords(void) {
 }
 
 /* Lists every tracked allocation of at least min_size bytes, then the running total. */
-void __cdecl NuAllocDumpRecords(i32 min_size) {
+void NuAllocDumpRecords(i32 min_size) {
     NUALLOC_RECORD *record = NuAllocRecordHead;
 
     while (record != NULL) {
@@ -429,7 +429,7 @@ void __cdecl NuAllocDumpRecords(i32 min_size) {
 }
 
 /* Releases every tracked record straight to the CRT. */
-void __cdecl NuAllocFreeRecords(void) {
+void NuAllocFreeRecords(void) {
     NUALLOC_RECORD *record = NuAllocRecordHead;
     NUALLOC_RECORD *next;
 

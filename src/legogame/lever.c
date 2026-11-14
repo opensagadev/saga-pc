@@ -5,7 +5,7 @@ typedef struct lever_trigger_flags_pc_s {
     u8 flags;             // 0x94
 } LEVER_TRIGGER_FLAGS_PC; // size 0x95
 
-i32 __cdecl Lever_BeingPulled(void *lever) {
+i32 Lever_BeingPulled(void *lever) {
     return (((LEVER_TRIGGER_FLAGS_PC *)lever)->flags >> 1) & 1;
 }
 
@@ -56,7 +56,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
 
-void __cdecl ReleaseLever(GAMEOBJECT *object) {
+void ReleaseLever(GAMEOBJECT *object) {
     if (object->character_context == 0x4a) {
         if (object->grapple != NULL && !LEVER_BITS((GIZMO_LEVER_PC *)object->grapple)->being_pulled) {
             LEVER_BITS((GIZMO_LEVER_PC *)object->grapple)->interacting = 0;
@@ -64,7 +64,7 @@ void __cdecl ReleaseLever(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Lever_GetAbsTargetPos(GIZMO_LEVER_PC *lever, NUVEC *position) {
+void Lever_GetAbsTargetPos(GIZMO_LEVER_PC *lever, NUVEC *position) {
     if (lever != NULL && position != NULL) {
         NUVEC target = lever->target_offset;
         NuVecRotateY(&target, &target, lever->yaw);
@@ -74,7 +74,7 @@ void __cdecl Lever_GetAbsTargetPos(GIZMO_LEVER_PC *lever, NUVEC *position) {
     }
 }
 
-void __cdecl Levers_InitTerrain(WORLDINFO *world) {
+void Levers_InitTerrain(WORLDINFO *world) {
     if (((LEVER_WORLD_PC *)world)->levers != NULL) {
         i32 i;
         for (i = 0; i < ((LEVER_WORLD_PC *)world)->lever_count; ++i) {
@@ -85,7 +85,7 @@ void __cdecl Levers_InitTerrain(WORLDINFO *world) {
     }
 }
 
-GIZMO_LEVER_PC *__cdecl Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+GIZMO_LEVER_PC *Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     GIZMO_LEVER_PC *nearest = NULL;
     GIZMO_LEVER_PC *lever = ((LEVER_WORLD_PC *)world)->levers;
     f32 nearest_distance = 1.0e9f;
@@ -114,11 +114,11 @@ GIZMO_LEVER_PC *__cdecl Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAM
     return nearest;
 }
 
-i32 __cdecl Lever_FullyPulledDown(GIZMO_LEVER_PC *lever) {
+i32 Lever_FullyPulledDown(GIZMO_LEVER_PC *lever) {
     return (lever->flags & 0x10) != 0 && (lever->flags & 2) != 0 && lever->pull_progress >= 1.0f;
 }
 
-void __cdecl Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
+void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 distance = 1.0e9f;
     GIZMO_LEVER_PC *lever;
     if (object->character_context == 0x4a) {
@@ -211,7 +211,7 @@ STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, animation_frame) == 0x8e);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, terrain_pitch) == 0x90);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, terrain_roll) == 0x92);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, model_variant) == 0x96);
-static void __cdecl Levers_Draw(void *, void *, f32);
+static void Levers_Draw(void *, void *, f32);
 
 static void Lever_SelectModel(GIZMO_LEVER_PC *lever) {
     if (lever->model_variant == 'r') {
@@ -609,7 +609,7 @@ STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
 
-static void __cdecl Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
+static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
     LEVER_WORLD_PC *lever_world = (LEVER_WORLD_PC *)world;
     NUSPECIALHANDLE *animated_special;

@@ -284,9 +284,9 @@ typedef struct CUT_LOOKAT_STATE_PC {
     CUT_LOOKAT_LOCATOR_INFO_PC *locator; // 0x14
 } CUT_LOOKAT_STATE_PC;                   // size 0x18
 
-extern NUHGOBJ_EVAL_PC *(__cdecl *NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
+extern NUHGOBJ_EVAL_PC *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
 
-i32 __cdecl FindMtlInHGObj(NUHGOBJ_EVAL_PC *hierarchy, i32 material_type) {
+i32 FindMtlInHGObj(NUHGOBJ_EVAL_PC *hierarchy, i32 material_type) {
     CUT_LOOKAT_HIERARCHY_PC *view = (CUT_LOOKAT_HIERARCHY_PC *)hierarchy;
     i32 index;
     for (index = 0; index < view->material_count; ++index) {
@@ -298,7 +298,7 @@ i32 __cdecl FindMtlInHGObj(NUHGOBJ_EVAL_PC *hierarchy, i32 material_type) {
     return 0;
 }
 
-i32 __cdecl FindTexAnimFromMtl(NUHGOBJ_EVAL_PC *hierarchy, NUMTL *material) {
+i32 FindTexAnimFromMtl(NUHGOBJ_EVAL_PC *hierarchy, NUMTL *material) {
     CUT_LOOKAT_HIERARCHY_PC *view = (CUT_LOOKAT_HIERARCHY_PC *)hierarchy;
     i32 index;
     for (index = 0; index < view->texture_count; ++index) {
@@ -309,7 +309,7 @@ i32 __cdecl FindTexAnimFromMtl(NUHGOBJ_EVAL_PC *hierarchy, NUMTL *material) {
     return 0;
 }
 
-void __cdecl instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE_PC *state) {
+void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE_PC *state) {
     CUT_LOOKAT_LOCATOR_INFO_PC *locator = state->locator;
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_SCENE_LOAD_PC *scene;
@@ -352,7 +352,7 @@ void __cdecl instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE_P
     state->tertiary_material = (u16)FindMtlInHGObj(hierarchy, locator->tertiary_material);
 }
 
-void __cdecl CutGetJointOverrideMatrixPc(NUHGOBJ_EVAL_PC *hierarchy, i32 index, NUMTX *matrix) {
+void CutGetJointOverrideMatrixPc(NUHGOBJ_EVAL_PC *hierarchy, i32 index, NUMTX *matrix) {
     NUHGOBJ_EVAL_JOINT_PC *joint = &hierarchy->joints[index];
     *matrix = NuMtxSetIdentityTemplate;
     for (;;) {
@@ -387,19 +387,19 @@ typedef struct CUT_UPDATE_LOCATOR_MATRIX_PC {
 } CUT_UPDATE_LOCATOR_MATRIX_PC; // size 0x64
 
 typedef struct CUT_UPDATE_ENTRY_PC {
-    char *name;            // 0x00
-    u32 unknown_04;        // 0x04
-    u32 unknown_08;        // 0x08
-    u32 unknown_0c;        // 0x0c
-    void(__cdecl *update)( // 0x10
+    char *name;     // 0x00
+    u32 unknown_04; // 0x04
+    u32 unknown_08; // 0x08
+    u32 unknown_0c; // 0x0c
+    void (*update)( // 0x10
         INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
         i32);
 } CUT_UPDATE_ENTRY_PC; // size 0x14
 
-extern i32(__cdecl *TriggerLocatorVfxFn)(i32, NUMTX *);
-extern void(__cdecl *UpdateLocatorVfxFn)(i32, NUMTX *);
-extern void(__cdecl *NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *,
-                                          f32, NUMTX *, i32);
+extern i32 (*TriggerLocatorVfxFn)(i32, NUMTX *);
+extern void (*UpdateLocatorVfxFn)(i32, NUMTX *);
+extern void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32,
+                                   NUMTX *, i32);
 
 static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR_SYSTEM *system,
                                           CUT_LOAD_LOCATOR_INSTANCE *instance, f32 frame, NUMTX *parent) {
@@ -665,9 +665,9 @@ static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, C
     }
 }
 
-void __cdecl instNuGCutLocatorUpdate(INSTNUGCUTSCENE *owner, CUT_LOAD_LOCATOR_SYSTEM *system,
-                                     CUT_LOAD_LOCATOR_INSTANCE *instance, CUT_LOAD_LOCATOR *locator, f32 frame,
-                                     NUMTX *parent, i32 paused) {
+void instNuGCutLocatorUpdate(INSTNUGCUTSCENE *owner, CUT_LOAD_LOCATOR_SYSTEM *system,
+                             CUT_LOAD_LOCATOR_INSTANCE *instance, CUT_LOAD_LOCATOR *locator, f32 frame, NUMTX *parent,
+                             i32 paused) {
     CUT_LOAD_LOCATOR_TYPE *type = &system->types[locator->type_index];
     if ((type->flags & 1) != 0) {
         if (paused == 0) {

@@ -14,7 +14,7 @@ extern "C" const f64 GameObjectNearFloorNoFloorHeight;
 
 extern "C" {
 
-    void __cdecl Detonators_Reset(void) {
+    void Detonators_Reset(void) {
         memset(Detonator, 0, sizeof(Detonator));
     }
 
@@ -37,7 +37,7 @@ extern "C" {
     }
 }
 
-extern "C" DETONATOR_s *__cdecl Detonator_FindNearest(NUVEC *position, f32 radius, GAMEOBJECT *owner) {
+extern "C" DETONATOR_s *Detonator_FindNearest(NUVEC *position, f32 radius, GAMEOBJECT *owner) {
     DETONATOR_s *detonator = Detonator;
     DETONATOR_s *nearest = NULL;
     f32 nearest_distance = radius != 0.0f ? radius * radius : 1000000000.0;
@@ -80,7 +80,7 @@ extern "C" {
         return oldest;
     }
 
-    EXPLOSION_PC *__cdecl Detonate(NUVEC *position, u16 flags) {
+    EXPLOSION_PC *Detonate(NUVEC *position, u16 flags) {
         f32 radius;
         f32 duration;
         f32 amount;
@@ -112,7 +112,7 @@ extern "C" {
     f32 BatarangDetonatorHitDelayPc = 2.0f;
 }
 
-extern "C" void __cdecl Detonator_Detonate(DETONATOR_s *detonator) {
+extern "C" void Detonator_Detonate(DETONATOR_s *detonator) {
     Batarangs_CheckLostData(detonator);
     Detonate(&detonator->field_0x0c, 0);
     BATARANG_DETONATOR_HIT_VIEW_PC *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW_PC *>(detonator->field_0x34);
@@ -123,7 +123,7 @@ extern "C" void __cdecl Detonator_Detonate(DETONATOR_s *detonator) {
     }
 }
 
-extern "C" void __cdecl Detonators_Update(void) {
+extern "C" void Detonators_Update(void) {
     DETONATOR_s *detonator = Detonator;
     for (i32 index = 0; index < 10; ++index, ++detonator) {
         f32 timer;
@@ -148,7 +148,7 @@ extern "C" void __cdecl Detonators_Update(void) {
     }
 }
 
-extern "C" void __cdecl Detonators_Draw(void) {
+extern "C" void Detonators_Draw(void) {
     if (!WORLD->level_objects[0xec].active) {
         return;
     }
@@ -178,7 +178,7 @@ extern "C" void __cdecl Detonators_Draw(void) {
     }
 }
 
-extern "C" void __cdecl Detonator_MoveCode(GAMEOBJECT *object) {
+extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
     if (object->character_context != 0x49 && object->character_context != 0x48) {
         if (WORLD->level_objects[0xec].active == 0 || (object->flags_1fc & 0x80) == 0 ||
             (object->field_281 == 0 && object->jump_variant_state != 1) ||

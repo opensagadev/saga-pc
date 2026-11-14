@@ -51,7 +51,7 @@ typedef struct part_runtime_type_pc_s {
     u32 field_174;              // 0x174
 } PART_RUNTIME_TYPE_PC;         // size 0x178
 
-void __cdecl edpartScaleType(i32 index, f32 scale) {
+void edpartScaleType(i32 index, f32 scale) {
     PART_RUNTIME_TYPE_PC *type = &((PART_RUNTIME_TYPE_PC *)part_types)[index];
     type->particle_scale *= scale;
     type->effect_scale *= scale;
@@ -260,7 +260,7 @@ void edpartScaleTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 
 extern i8 edpart_effect_list;
 
-void __cdecl edpartInitType(i32 index) {
+void edpartInitType(i32 index) {
     i32 i;
     for (i = 0; i < 8; ++i) {
         ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_ids[i] = -1;
@@ -331,16 +331,16 @@ void __cdecl edpartInitType(i32 index) {
             (menu)->callback(menu, parent);                                                                            \
     } while (0)
 
-void __cdecl edpartAddGeneralType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartAddGeneralType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     EDPART_ADD_TYPE(menu, 0);
 }
 
-void __cdecl edpartCancelGeneralTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelGeneralTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_generaltype_menu);
     edpart_generaltype_menu = NULL;
 }
 
-void __cdecl edpartSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+void edpartSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edpart_type_menu = NULL;
     edpart_active_menu = NULL;
     edpart_create_type = item->data;
@@ -349,7 +349,7 @@ void __cdecl edpartSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     eduiMenuDestroy(menu);
 }
 
-void __cdecl edpartGeneralTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartGeneralTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     i32 index;
     i32 selected;
     edpart_generaltype_menu =
@@ -379,16 +379,16 @@ void __cdecl edpartGeneralTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 un
     edpart_generaltype_menu->y = menu->y + 40;
 }
 
-void __cdecl edpartAddLevelType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartAddLevelType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     EDPART_ADD_TYPE(menu, 1);
 }
 
-void __cdecl edpartCancelLevelTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelLevelTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_leveltype_menu);
     edpart_leveltype_menu = NULL;
 }
 
-void __cdecl edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     i32 index;
     i32 selected;
     edpart_leveltype_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelLevelTypeMenu, "Emitter Type (Level)");
@@ -417,19 +417,19 @@ void __cdecl edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unus
     edpart_leveltype_menu->y = menu->y + 40;
 }
 
-void __cdecl edpartChangeGenRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeGenRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     edui_slider_s *slider = (edui_slider_s *)item;
     if (edpart_nearest_type) {
         edpart_nearest_type->emission_rate = (f32)(i32)slider->value;
     }
 }
 
-void __cdecl edpartCancelChangeGenRateMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelChangeGenRateMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_changegenrate_menu);
     edpart_changegenrate_menu = NULL;
 }
 
-void __cdecl edpartChangeGenRateMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartChangeGenRateMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL) {
         return;
     }
@@ -446,19 +446,19 @@ void __cdecl edpartChangeGenRateMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 
     edpart_changegenrate_menu->y = menu->y + 40;
 }
 
-void __cdecl edpartChangeMaxLife(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeMaxLife(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type) {
         edpart_nearest_type->lifetime = ((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl edpartChangeRanMaxLife(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeRanMaxLife(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type) {
         edpart_nearest_type->lifetime_random = ((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl edpartCancelChangeMaxLifeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelChangeMaxLifeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_maxlife_menu);
     edpart_maxlife_menu = NULL;
 }
@@ -591,7 +591,7 @@ extern i32 edpart_nearest_duplicates;
     edpart_nearest_type->effect_pages[7] = -1;                                                                         \
     --edpart_nearest_type->variant_count
 
-void __cdecl edpartSetInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartSetInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     i32 index;
     i32 slot;
     if (edpart_nearest_type == NULL) {
@@ -628,7 +628,7 @@ void __cdecl edpartSetInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 un
     }
 }
 
-void __cdecl edpartCancelWorldInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelWorldInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_worldinstance_menu);
     edpart_worldinstance_menu = NULL;
 }
@@ -669,7 +669,7 @@ static void edpartDeleteAllInstanceOrphans(eduimenu_s *menu, eduiitem_s *unused1
     }
 }
 
-void __cdecl edpartDeleteAllInstanceDuplicates(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartDeleteAllInstanceDuplicates(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     i32 index;
     i32 previous;
@@ -712,7 +712,7 @@ static void edpartCancelInstanceOrphansMenu(eduimenu_s *unused0, eduimenu_s *unu
     edpart_instanceorphans_menu = NULL;
 }
 
-void __cdecl edpartInstanceOrphansMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edpartInstanceOrphansMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 group;
     i32 index;
     char effect_name[20];
@@ -753,19 +753,19 @@ void __cdecl edpartInstanceOrphansMenu(eduimenu_s *parent, eduiitem_s *unused1, 
     }
 }
 
-void __cdecl edpartSetDistribution(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartSetDistribution(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         EDPART_RUNTIME_NEAREST->variant_mode = item->data;
     }
 }
 
-void __cdecl edpartCancelInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_instance_menu);
     edpart_instance_menu = NULL;
     edpart_nullobject_highlight = NULL;
 }
 
-void __cdecl edpartInstanceMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartInstanceMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     i32 selected;
     selected = 0;
     edpart_instance_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelInstanceMenu, "Instance Select");

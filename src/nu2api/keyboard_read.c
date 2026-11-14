@@ -87,7 +87,7 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
     return page;
 }
 
-void __cdecl NuKeyboardRead(void) {
+void NuKeyboardRead(void) {
     NuKeyboardState_PC *state = nu_input_state;
 
     if (!nu_input_state->keyboard_polled) {
@@ -117,8 +117,8 @@ void cbSel(eduimenu_s *unused0, eduiitem_s *item) {
 void cbGradChange(void) {
 }
 
-f32 __cdecl NuMouseReadX(void);
-f32 __cdecl NuMouseReadY(void);
+f32 NuMouseReadX(void);
+f32 NuMouseReadY(void);
 
 i32 cbInteractMenuTitle(edui_interact_s *interact) {
     static f32 offsetx = 0;
@@ -360,9 +360,9 @@ NUVEC *edcamGetPosPointer(void) {
 /* PC input startup remains structurally incomplete at the marked platform
  * dependencies; these candidates preserve the verified wrapper ABI/order. */
 extern HINSTANCE PCInputWindow;
-i32 __cdecl PCDeviceShowCursorPc(i32 show);
+i32 PCDeviceShowCursorPc(i32 show);
 
-i32 __cdecl NuKeyboardPlatformStartup(void) {
+i32 NuKeyboardPlatformStartup(void) {
     PcConfigureInputGraphicsCaps();
     NuKeyboardCreateWindowState(PCInputInstance, PCInputWindow);
     SetCursor(NULL);
@@ -375,7 +375,7 @@ i32 fun_006d3410(void) {
     return 0;
 }
 
-i32 __cdecl NuKeyboard_db(i32 key) {
+i32 NuKeyboard_db(i32 key) {
     i32 page = (i8)nu_keyboard_page_index;
     u8 current = nu_keyboard_pages[(page << 8) + key];
     if (current != 0 && (current ^ nu_keyboard_pages[((page ^ 1) << 8) + key]) != 0) {
@@ -661,7 +661,7 @@ void do_maya_mouse_camera(edcam_s *camera) {
     }
 }
 
-f32 __cdecl edcamGetDist(void) {
+f32 edcamGetDist(void) {
     return gp_cam->distance;
 }
 

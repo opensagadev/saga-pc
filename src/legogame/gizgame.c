@@ -5,16 +5,14 @@
 
 typedef struct bolt_gizmo_type_pc_s {
     u8 unknown_00[0x6c];
-    i32(__cdecl *hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *);
+    i32 (*hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *);
     u8 unknown_70[4];
-    i32(__cdecl *hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32,
-                           u8 *);
+    i32 (*hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *);
     u8 unknown_78[0x24];
 } BOLT_GIZMO_TYPE_PC;
 
-i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *object, NUVEC *position,
-                                       NUVEC *direction, f32 radius, f32 range_squared, i32 directional, i32 planar,
-                                       i32 bolt_id) {
+i32 GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *object, NUVEC *position, NUVEC *direction,
+                               f32 radius, f32 range_squared, i32 directional, i32 planar, i32 bolt_id) {
     GIZMOTYPES_PC *registry = gizmotypes;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -74,8 +72,8 @@ i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJEC
     return 0;
 }
 
-i32 __cdecl GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVEC *points, NUVEC *minimum,
-                             NUVEC *maximum, f32 radius, u8 *hit_flags) {
+i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum,
+                     f32 radius, u8 *hit_flags) {
     NUVEC *hit_points;
     i32 mode;
     i32 i;
@@ -107,7 +105,7 @@ i32 __cdecl GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVE
     return 0;
 }
 
-i32 __cdecl GizObstacle_CheckExcludeFlagsFn_LSW(GIZOBSTACLE *obstacle, GAMEOBJECT *object) {
+i32 GizObstacle_CheckExcludeFlagsFn_LSW(GIZOBSTACLE *obstacle, GAMEOBJECT *object) {
     if ((obstacle->exclude_flags & 1) != 0 && object->character_data->game_character->weapon_action != 10) {
         return 1;
     }
@@ -117,7 +115,7 @@ i32 __cdecl GizObstacle_CheckExcludeFlagsFn_LSW(GIZOBSTACLE *obstacle, GAMEOBJEC
     return 0;
 }
 
-void __cdecl GizmoSysSetGame(void) {
+void GizmoSysSetGame(void) {
     if (StartupGameFlag0 != 0) {
         GizObstacleExcludeFnPc = NULL;
         return;

@@ -22,7 +22,7 @@ STATIC_ASSERT(offsetof(GIZFORCE_PC, file_position) == 0x10);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, using_object) == 0x38);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, horizontal_range) == 0x70);
-typedef void(__cdecl *CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
+typedef void (*CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
@@ -148,7 +148,7 @@ typedef struct player_reset_packet_pc_s {
 STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
 /* Two-DWORD consumer view of the existing genuine mutable default mask. */
 /* Genuine original call declarations: no placeholder implementations. */
-GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
+GAMEOBJECT *AddCreature(i32 model, i32 mode);
 
 typedef struct CREATURE_RESET_PACKET_VIEW_PC {
     u8 unknown_000[0x6c4];       // 0x000
@@ -180,13 +180,13 @@ STATIC_ASSERT(sizeof(PLAYER_ITEM_TYPE_RESET_PC) == 12);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, id) == 0);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_name) == 4);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_id) == 9);
-extern i32(__cdecl *Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
-extern void(__cdecl *Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
+extern i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
+extern void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, powerup_time) == 0xdec);
 extern i32 complexsockposition_forcesock;
 extern i32 movegamecamera_forcesock;
 
-void __cdecl Players_InitPositions(WORLDINFO *world) {
+void Players_InitPositions(WORLDINFO *world) {
     i32 bonus = world->area != NULL && (world->area->flags & 4) != 0;
     NUGSPLINE *spline;
     i32 first_pair;
@@ -285,7 +285,7 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
     }
 }
 
-void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
+void RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     i32 ids[2];
     i32 index;
     if (VehicleArea != 0 || GAMEDEMO != 0) {
@@ -322,7 +322,7 @@ GAMEOBJECT *fun_0055e2b0(i32 id) {
     return NULL;
 }
 
-NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object) {
+NUVEC *Player_StartPos(GAMEOBJECT *object) {
     i32 index;
     NUVEC *position;
     if ((i8)object->field_280 < 0 || (i8)object->field_280 >= 8) {
@@ -335,7 +335,7 @@ NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object) {
     return position != NULL ? position : PlayerStart[0].position;
 }
 
-i32 __cdecl Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position) {
+i32 Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position) {
     NUVEC total = {0.0f, 0.0f, 0.0f};
     f32 count = 0.0f;
     i32 i;
@@ -360,7 +360,7 @@ i32 __cdecl Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position
     return 0;
 }
 
-void __cdecl SetPlayer(void) {
+void SetPlayer(void) {
     if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) != 0) {
         player = Player[0];
         if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) != 0) {
@@ -376,7 +376,7 @@ void __cdecl SetPlayer(void) {
     player2 = NULL;
 }
 
-i32 __cdecl CanPullLevers(i32 id) {
+i32 CanPullLevers(i32 id) {
     u32 flags = CDataList[id].model_flags;
     if ((flags & 0x1000010) == 0x1000010) {
         return 0;
@@ -384,7 +384,7 @@ i32 __cdecl CanPullLevers(i32 id) {
     return (flags & 0x40088) != 0;
 }
 
-void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
+void Player_ClearContext(GAMEOBJECT *object, i32 mode) {
     if (Player_ClearContextFn != NULL) {
         Player_ClearContextFn(object, mode);
     }
@@ -394,7 +394,7 @@ void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
     object->flags_e24 &= ~0xc00;
 }
 
-void __cdecl Player_ResetContexts(void *packet_ptr) {
+void Player_ResetContexts(void *packet_ptr) {
     PLAYER_RESET_PACKET_PC *packet = packet_ptr;
     packet->context_animation_time = 0.0f;
     packet->context_target = -1;
@@ -435,7 +435,7 @@ void __cdecl Player_ResetContexts(void *packet_ptr) {
     packet->movement_angle_3 = -1;
 }
 
-i32 __cdecl MovingBackwards(GAMEOBJECT *object) {
+i32 MovingBackwards(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     i32 difference;
     if (pad->operator_data != NULL && pad->input_magnitude != 0.0f) {
@@ -447,8 +447,8 @@ i32 __cdecl MovingBackwards(GAMEOBJECT *object) {
     return 0;
 }
 
-void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEOBJECT *object,
-                      GAMEOBJECT *excluded, f32 speed_multiplier, u32 flags) {
+void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEOBJECT *object, GAMEOBJECT *excluded,
+              f32 speed_multiplier, u32 flags) {
     i32 count;
     i32 i;
     NUVEC bounds_min;
@@ -520,8 +520,8 @@ void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximu
     }
 }
 
-u8 __cdecl FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared,
-                                  u8 require_character_flags, u32 character_flags) {
+u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared,
+                          u8 require_character_flags, u32 character_flags) {
     i32 index;
     *nearest_player = NULL;
     *distance_squared = 0.0f;
@@ -569,7 +569,7 @@ u8 FindFurthestPlayerFromVec(NUVEC *position, GAMEOBJECT **furthest_player, f32 
     return 0;
 }
 
-void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
+void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
     f32 hold_time = object->input_toggle_hold_time;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 old_id;
@@ -750,26 +750,26 @@ void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound
     }
 }
 
-i32 __cdecl Arcade_BothPlayersActive(void) {
+i32 Arcade_BothPlayersActive(void) {
     return Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
            (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
 }
 
-i32 __cdecl Player_HasInvincibility(GAMEOBJECT *object) {
+i32 Player_HasInvincibility(GAMEOBJECT *object) {
     if (Cheats_CheckFlags(0x80) != 0) {
         return 1;
     }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
-i32 __cdecl Player_HasFastBuild(GAMEOBJECT *object) {
+i32 Player_HasFastBuild(GAMEOBJECT *object) {
     if (Cheats_CheckFlags(0x4000) != 0) {
         return 1;
     }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
-i32 __cdecl Player_HasDeflectBolts(GAMEOBJECT *object) {
+i32 Player_HasDeflectBolts(GAMEOBJECT *object) {
     if (Cheats_CheckFlags(0x80000) != 0) {
         return 1;
     }
@@ -786,7 +786,7 @@ i32 fun_0055f290(GAMEOBJECT *object) {
     return 0;
 }
 
-i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {
+i32 Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {
     GAMEOBJECT *object;
     i32 player;
     if (bolt->flags & 1) {
@@ -803,14 +803,14 @@ i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {
     return object != NULL && object->powerup_time > 0.0f;
 }
 
-i32 __cdecl Player_HasDoubleWeaponDamage(GAMEOBJECT *object) {
+i32 Player_HasDoubleWeaponDamage(GAMEOBJECT *object) {
     if (Cheats_CheckFlags(0x400) != 0) {
         return 1;
     }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
-i32 __cdecl CanWearHatsInFreePlay(i32 id) {
+i32 CanWearHatsInFreePlay(i32 id) {
     u32 flags;
     if ((GCDataList[id].flags_090 & 0x10) != 0) {
         return 0;
@@ -825,7 +825,7 @@ i32 __cdecl CanWearHatsInFreePlay(i32 id) {
     return 1;
 }
 
-void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_to_surface) {
+void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_to_surface) {
     f32 surface_y = 2000000.0f;
     i32 restore_hitpoints;
     i32 player_index;

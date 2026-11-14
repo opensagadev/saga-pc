@@ -38,9 +38,9 @@ static f32 CutBlobShadowFadeNear = 0;
 #pragma bss_seg(".bss$CutReflectRange2")
 static f32 CutReflectRange2 = 0;
 #pragma bss_seg()
-extern "C" void __cdecl GameFog_Reset(void);
-extern "C" void __cdecl Panel_Clear(void);
-extern "C" void __cdecl PauseGameCut(void);
+extern "C" void GameFog_Reset(void);
+extern "C" void Panel_Clear(void);
+extern "C" void PauseGameCut(void);
 
 typedef struct cut_record_cleanup_pc_s {
     void *scene;               // 0x0
@@ -157,7 +157,7 @@ typedef struct CUT_LOAD_INSTANCE_RATE_PC {
 } CUT_LOAD_INSTANCE_RATE_PC; // size 0x9c
 
 extern "C" {
-    extern void(__cdecl *CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
+    extern void (*CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
 }
 typedef struct CUT_DRAW_LOCATOR_PC CUT_DRAW_LOCATOR_PC;
 
@@ -296,12 +296,12 @@ typedef struct CUT_DRAW_RIGID_PC {
 } CUT_DRAW_RIGID_PC;
 
 typedef struct CUT_DRAW_LOCATOR_ENTRY_PC {
-    char *name;                                                                                         // 0x00
-    u32 unknown_04;                                                                                     // 0x04
-    u32 unknown_08;                                                                                     // 0x08
-    u32 unknown_0c;                                                                                     // 0x0c
-    void(__cdecl *update)(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS_PC *, CUT_DRAW_LOCATOR_INSTANCE_PC *, // 0x10
-                          CUT_DRAW_LOCATOR_PC *, f32, NUMTX *, i32);
+    char *name;                                                                                  // 0x00
+    u32 unknown_04;                                                                              // 0x04
+    u32 unknown_08;                                                                              // 0x08
+    u32 unknown_0c;                                                                              // 0x0c
+    void (*update)(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS_PC *, CUT_DRAW_LOCATOR_INSTANCE_PC *, // 0x10
+                   CUT_DRAW_LOCATOR_PC *, f32, NUMTX *, i32);
 } CUT_DRAW_LOCATOR_ENTRY_PC; // size 0x14
 
 typedef struct CUT_CONTROLLER_INSTANCE_PC {
@@ -338,7 +338,7 @@ struct FADEINFO_s;
 STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 STATIC_ASSERT(sizeof(FADETYPE) == 4);
 extern "C" {
-    void __cdecl GizmoSysDraw(void *, WORLDINFO *, f32);
+    void GizmoSysDraw(void *, WORLDINFO *, f32);
 }
 
 typedef struct CUT_PLAYER_STATE_PC {
@@ -372,7 +372,7 @@ typedef struct cut_player_config_pc_s {
 } CUT_PLAYER_CONFIG_PC;
 
 extern "C" {
-    extern i32(__cdecl *CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG_PC *);
+    extern i32 (*CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG_PC *);
     extern const char Text_UnknownText[2];
     extern const char CutPlayerClipFormatPc[8];
     extern const char CutPlayerTextSeparatorPc[4];
@@ -384,7 +384,7 @@ extern "C" {
 }
 extern "C" {
 
-    void __cdecl CutScenes_ConfigureList(char *filename, VARIPTR *buffer, VARIPTR end) {
+    void CutScenes_ConfigureList(char *filename, VARIPTR *buffer, VARIPTR end) {
         CUT_LOAD_LIST_ENTRY_PC entries[1000];
         char file[128];
         char path[128];
@@ -429,7 +429,7 @@ extern "C" {
                         }
                     }
                     if (duplicate != 0) {
-                        reinterpret_cast<void(__cdecl *)(char *, char *, char *)>(CutSceneConfigMissingPc)(
+                        reinterpret_cast<void (*)(char *, char *, char *)>(CutSceneConfigMissingPc)(
                             path, file, LDataList[entries[CUTCOUNT].level].name);
                     } else {
                         entries[CUTCOUNT].directory = cursor;
@@ -1085,8 +1085,8 @@ extern "C" {
     }
 }
 
-extern "C" CUT_LOAD_SYS_PC *__cdecl CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gscn2, i32 param1, VARIPTR *buf,
-                                                   VARIPTR *buf_end, i32 param2, i32 param3, WORLDINFO *world) {
+extern "C" CUT_LOAD_SYS_PC *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gscn2, i32 param1, VARIPTR *buf,
+                                           VARIPTR *buf_end, i32 param2, i32 param3, WORLDINFO *world) {
     NUFPAR_PC *fp;
     CUT_LOAD_SYS_PC *sys;
     void *initial;
@@ -1202,7 +1202,7 @@ extern "C" CUT_LOAD_SYS_PC *__cdecl CutScenes_Load(char *config, NUGSCN *gscn1, 
 
 extern "C" {
 
-    void *__cdecl CutScene_FindInst(CUTSYS_PC *system, char *name) {
+    void *CutScene_FindInst(CUTSYS_PC *system, char *name) {
         if (system == NULL) {
             return NULL;
         }
@@ -1215,7 +1215,7 @@ extern "C" {
     }
 }
 
-CUTINFO *__cdecl CutScene_Find(CUTSYS_PC *system, char *name) {
+CUTINFO *CutScene_Find(CUTSYS_PC *system, char *name) {
     i32 index;
 
     if (system != NULL && name != NULL) {
@@ -1331,7 +1331,7 @@ extern "C" {
     }
 }
 
-CUTINFO *__cdecl NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i32 unused_4) {
+CUTINFO *NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i32 unused_4) {
     i32 count;
 
     if (cutscene == NULL) {
@@ -1370,7 +1370,7 @@ extern "C" i32 CutScene_PlayingOrRequested(CUTINFO *cut) {
 
 extern "C" {
 
-    i32 __cdecl CutScene_HasPlayed(CUTINFO *cutscene) {
+    i32 CutScene_HasPlayed(CUTINFO *cutscene) {
         CUTSYS_PC *system = WorldInfo_CurrentlyActive()->cutscene_sys;
         i32 found;
         i32 index;
@@ -1400,7 +1400,7 @@ extern "C" {
     }
 }
 
-void __cdecl CutScene_SnapToEnd(void *cut) {
+void CutScene_SnapToEnd(void *cut) {
     if (cut != NULL) {
         instNuGCutSceneEnd((INSTNUGCUTSCENE *)((CUTINFO *)cut)->instance);
     }
@@ -1408,7 +1408,7 @@ void __cdecl CutScene_SnapToEnd(void *cut) {
 
 extern "C" {
 
-    void __cdecl CutScenes_Stop(CUTSYS_PC *system) {
+    void CutScenes_Stop(CUTSYS_PC *system) {
         if (system == NULL) {
             return;
         }
@@ -1421,7 +1421,7 @@ extern "C" {
     }
 }
 
-void __cdecl CutScenes_Destroy(CUTSYS_PC *system) {
+void CutScenes_Destroy(CUTSYS_PC *system) {
     i32 i;
     if (system == NULL) {
         return;
@@ -1441,7 +1441,7 @@ void __cdecl CutScenes_Destroy(CUTSYS_PC *system) {
 }
 
 /* PC never lets a cutscene be skipped here: both outcomes of the Android test return 0. */
-i32 __cdecl CutScene_IsSkippable(CUTINFO *cut) {
+i32 CutScene_IsSkippable(CUTINFO *cut) {
     if (FadeSys.fade == 0.0f && cut != NULL && cut != (CUTINFO *)CutStopInfo) {
         return 0;
     }
@@ -1483,7 +1483,7 @@ extern "C" {
 
     static f32 CutReflectRange = 0;
 
-    void __cdecl CutScenes_Draw(WORLDINFO *world) {
+    void CutScenes_Draw(WORLDINFO *world) {
         if (world->cutscene_sys == NULL || ACTIVECUTCOUNT <= 0) {
             return;
         }
@@ -1585,9 +1585,9 @@ extern "C" {
         NuRndrEndReflectionRender();
     }
 
-    static void __cdecl CutScene_DrawCharacter(INSTNUGCUTSCENE *cutscene_instance, CUT_DRAW_SCENE_PC *cutscene,
-                                               CUT_DRAW_CHAR_INSTANCE_PC *instance, CUT_DRAW_CHARACTER_PC *character,
-                                               f32 frame, i32 paused) {
+    static void CutScene_DrawCharacter(INSTNUGCUTSCENE *cutscene_instance, CUT_DRAW_SCENE_PC *cutscene,
+                                       CUT_DRAW_CHAR_INSTANCE_PC *instance, CUT_DRAW_CHARACTER_PC *character, f32 frame,
+                                       i32 paused) {
         f32 reflection_height = 2000000.0f;
         i32 visible;
         i32 layer_mask = -1;
@@ -1986,13 +1986,13 @@ extern "C" {
     static CUT_DRAW_LOCATOR_ENTRY_PC cutscene_locatorfns[] = {
         {const_cast<char *>("blaster"), 0, 0, 0, LocatorFunction_Blaster}, {NULL, 0, 0, 0, NULL}};
 
-    void __cdecl CutScenes_InitSystem(CUT_DRAW_SETTINGS_PC *system) {
+    void CutScenes_InitSystem(CUT_DRAW_SETTINGS_PC *system) {
         CutSceneSys = system;
         NuGCutSceneSysInit(reinterpret_cast<CUT_LOCATOR_FUNCTION_ENTRY_PC *>(cutscene_locatorfns));
         NuSetCutSceneCharacterRenderFn(reinterpret_cast<CUT_DRAW_RENDER_CALLBACK_PC>(CutScene_DrawCharacter));
-        NuSetCutSceneFindCharactersFn(reinterpret_cast<void(__cdecl *)(CUT_SCENE_LOAD_PC *)>(CutScene_FindCharacters));
+        NuSetCutSceneFindCharactersFn(reinterpret_cast<void (*)(CUT_SCENE_LOAD_PC *)>(CutScene_FindCharacters));
         NuSetCutSceneCharacterCreateDataFn(
-            reinterpret_cast<void(__cdecl *)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *)>(
+            reinterpret_cast<void (*)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *)>(
                 CutScene_CreateCharacterInstance));
         NuSetCutSceneResetCharactersFn(CutScene_ResetCharacters);
         NuSetCutSceneCharacterEvalFn(reinterpret_cast<CUT_DRAW_EVAL_CALLBACK_PC>(CutScene_EvalCharacter));
@@ -2000,7 +2000,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl CutScene_DrawSubtitles(void) {
+extern "C" void CutScene_DrawSubtitles(void) {
     CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(CutStopInfo);
     if (cut == NULL) {
         return;
@@ -2033,8 +2033,8 @@ extern "C" void __cdecl CutScene_DrawSubtitles(void) {
 
 extern "C" {
 
-    void __cdecl CutScenePlayer_Configure(char *file, VARIPTR *buffer, VARIPTR *end, i16 *clip_text, i16 *intro,
-                                          i16 *midtro, i16 *outro, i16 *ending) {
+    void CutScenePlayer_Configure(char *file, VARIPTR *buffer, VARIPTR *end, i16 *clip_text, i16 *intro, i16 *midtro,
+                                  i16 *outro, i16 *ending) {
         NUFPAR_PC *fp;
         CUT_PLAYER_CONFIG_PC player;
         CUT_PLAYER_CLIP_CONFIG_PC *clip;
@@ -2100,22 +2100,22 @@ extern "C" {
         }
     }
 
-    void __cdecl CutScenePlayer_Reset(void) {
+    void CutScenePlayer_Reset(void) {
         if (CutScenePlayer != NULL) {
             CutScenePlayer->active = NULL;
         }
     }
 
-    CUT_PLAYER_ACTIVE_PC *__cdecl CutScenePlayer_Available(void) {
+    CUT_PLAYER_ACTIVE_PC *CutScenePlayer_Available(void) {
         return CutScenePlayer;
     }
 
-    void *__cdecl CutScenePlayer_Active(void) {
+    void *CutScenePlayer_Active(void) {
         return CutScenePlayer != NULL ? CutScenePlayer->active : NULL;
     }
 
     /* 0057e720..0057e7d2, ordinary one-argument cdecl. */
-    i32 __cdecl CutScenePlayer_CanStart(i32 clip_id) {
+    i32 CutScenePlayer_CanStart(i32 clip_id) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         i32 area_id;
         i32 episode;
@@ -2138,7 +2138,7 @@ extern "C" {
 
     /* 0057e7e0..0057e849. The following 0057e850 text function is a separate
      * native owner. PC accepts one argument and does not write return_door. */
-    void __cdecl CutScenePlayer_Start(i32 clip_id) {
+    void CutScenePlayer_Start(i32 clip_id) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         if (CutScenePlayer != NULL && clip_id >= 0 && clip_id < CutScenePlayer->clip_count) {
             clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;
@@ -2151,7 +2151,7 @@ extern "C" {
 
     /* 0057e850..0057ea41 instructions, alignment to0057ea44, four-entry table
      *0057ea44..0057ea54. PC mode is only a boolean controlling the type suffix. */
-    void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode) {
+    void CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         LEVELDATA_PC *level;
         i32 area_id;
@@ -2222,7 +2222,7 @@ extern "C" {
         }
     }
 
-    void __cdecl CutScenePlayer_SetObjects(CUTINFO *owner) {
+    void CutScenePlayer_SetObjects(CUTINFO *owner) {
         // MATCH-EXCEPTION: cast at each use (I45); a cast local lets VC8 pack the end frame into the dead parameter
         // slot.
         i32 i;
@@ -2283,8 +2283,7 @@ extern "C" {
             if (status != 1) {
                 // MATCH-EXCEPTION: retail tests status == 1 below on the eax this diagnostic stub returns (the
                 // empty stub leaves the status there), so the status is read back from the call.
-                status =
-                    reinterpret_cast<i32(__cdecl *)(char *)>(CutSceneConfigMissingPc)(reinterpret_cast<char *>(status));
+                status = reinterpret_cast<i32 (*)(char *)>(CutSceneConfigMissingPc)(reinterpret_cast<char *>(status));
             }
             reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
             if ((cut->flags & 1) != 0 && status == 1) {
@@ -2341,14 +2340,14 @@ extern "C" {
         return 1;
     }
 
-    void __cdecl CutScenes_Start(WORLDINFO *world) {
+    void CutScenes_Start(WORLDINFO *world) {
         for (i32 i = 0; i < NewCutInfoCount; ++i) {
             CutScene_Start(world, reinterpret_cast<CUT_LOAD_RECORD_PC *>(NewCutInfo[i]));
         }
         NewCutInfoCount = 0;
     }
 
-    void __cdecl CutScenes_Reset(WORLDINFO *world) {
+    void CutScenes_Reset(WORLDINFO *world) {
         CutSceneRebindPlayerCharactersPrivatePc(world->cutscene_sys);
         CutBorderScale = 0.0f;
         CutStopInfo = NULL;
@@ -2393,7 +2392,7 @@ extern "C" {
     static INSTNUGCUTSCENE *CutInstEnd[4] = {0};
     static i32 CutInstEndStop = 0;
 
-    void __cdecl CutScenes_End(void) {
+    void CutScenes_End(void) {
         if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayer)->active != NULL &&
             NewLData != NULL && NewLData == HUB_LDATA) {
             PCFrameSetLoadingYieldEnabled(0);
@@ -2413,7 +2412,7 @@ extern "C" {
         }
     }
 
-    void __cdecl CutScenes_Update(WORLDINFO *world, i32 paused) {
+    void CutScenes_Update(WORLDINFO *world, i32 paused) {
         i32 active_before[32];
         if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayer)->active != NULL &&
             CutStopInfo != NULL) {
@@ -2618,7 +2617,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl CutScene_StartAudio(void) {
+extern "C" void CutScene_StartAudio(void) {
 }
 
 extern "C" {

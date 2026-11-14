@@ -1,6 +1,6 @@
 #include "saga.h"
 
-u8 __thiscall MENU_VIDEO_OPTIONS_PC::ChangedPc() {
+u8 MENU_VIDEO_OPTIONS_PC::ChangedPc() {
     if (aspect_mode != PcWindowOptions.aspect_mode) {
         return 1;
     }
@@ -12,7 +12,7 @@ u8 __thiscall MENU_VIDEO_OPTIONS_PC::ChangedPc() {
     return (hires_enabled == 1) != PcWindowOptions.usehirespending;
 }
 
-void __thiscall MENU_VIDEO_OPTIONS_PC::ApplyPc() {
+void MENU_VIDEO_OPTIONS_PC::ApplyPc() {
     PcWindowOptions.SetAspectModePc(aspect_mode);
     PcWindowOptions.Save();
     i32 aspect = PcWindowOptions.aspect_mode;
@@ -27,7 +27,7 @@ void __thiscall MENU_VIDEO_OPTIONS_PC::ApplyPc() {
     PcWindowOptions.Save();
 }
 
-extern "C" bool __cdecl MenuCanChangeMultisamplePc(void) {
+extern "C" bool MenuCanChangeMultisamplePc(void) {
     for (i32 i = 0; i != 5; ++i) {
         if (i != 0 && PCDeviceBackend.multisample_tested != 0 && PCDeviceBackend.quality[i] != -1) {
             if (PCDeviceBackend.multisample_index == 6) {
@@ -39,11 +39,11 @@ extern "C" bool __cdecl MenuCanChangeMultisamplePc(void) {
     return false;
 }
 
-extern "C" bool __cdecl MenuCanChangeShadowsPc(void) {
+extern "C" bool MenuCanChangeShadowsPc(void) {
     return PCDeviceBackend.requested_multisample == 0 || PcWindowOptions.shadowmethod == 1;
 }
 
-extern "C" void __cdecl MenuEnterVideoPc(MENU *) {
+extern "C" void MenuEnterVideoPc(MENU *) {
     MenuVideoOptionsPc.aspect_mode = PcWindowOptions.aspect_mode;
     MenuVideoOptionsPc.shadows_enabled = PcWindowOptions.shadowsenabled != 0;
     MenuVideoOptionsPc.bloom_enabled = PcWindowOptions.bloomenabled != 0;
@@ -51,7 +51,7 @@ extern "C" void __cdecl MenuEnterVideoPc(MENU *) {
     MenuVideoOptionsPc.hires_enabled = PcWindowOptions.usehirespending != 0;
 }
 
-extern "C" void __cdecl MenuEnterEffectsPc(MENU *) {
+extern "C" void MenuEnterEffectsPc(MENU *) {
     MenuVideoOptionsPc.aspect_mode = PcWindowOptions.aspect_mode;
     MenuVideoOptionsPc.shadows_enabled = PcWindowOptions.shadowsenabled != 0;
     MenuVideoOptionsPc.bloom_enabled = PcWindowOptions.bloomenabled != 0;
@@ -59,13 +59,13 @@ extern "C" void __cdecl MenuEnterEffectsPc(MENU *) {
     MenuVideoOptionsPc.hires_enabled = PcWindowOptions.usehirespending != 0;
 }
 
-extern "C" void __cdecl MenuExitVideoPc(MENU *) {
+extern "C" void MenuExitVideoPc(MENU *) {
 }
 
-extern "C" void __cdecl MenuExitEffectsPc(MENU *) {
+extern "C" void MenuExitEffectsPc(MENU *) {
 }
 
-extern "C" void __cdecl MenuApplyVideoPc(void) {
+extern "C" void MenuApplyVideoPc(void) {
     if (PCDeviceBackend.HasRequestedModeChangedPc()) {
         MenuSFX = MENUSFX_MENUSELECT;
         MenuVideoOptionsPc.ApplyPc();
@@ -88,7 +88,7 @@ extern "C" void __cdecl MenuApplyVideoPc(void) {
     BackupMenu();
 }
 
-extern "C" void __cdecl MenuCancelVideoPc(void) {
+extern "C" void MenuCancelVideoPc(void) {
     PCDeviceBackend.ResetRequestedMode();
     MenuVideoOptionsPc.aspect_mode = PcWindowOptions.aspect_mode;
     MenuVideoOptionsPc.shadows_enabled = PcWindowOptions.shadowsenabled != 0;
@@ -99,7 +99,7 @@ extern "C" void __cdecl MenuCancelVideoPc(void) {
     BackupMenu();
 }
 
-extern "C" void __cdecl MenuUpdateVideoPc(MENU *menu) {
+extern "C" void MenuUpdateVideoPc(MENU *menu) {
     if (menu->cancel_pressed) {
         MenuCancelVideoPc();
         return;
@@ -154,7 +154,7 @@ extern "C" void __cdecl MenuUpdateVideoPc(MENU *menu) {
     }
 }
 
-extern "C" void __cdecl MenuUpdateEffectsPc(MENU *menu) {
+extern "C" void MenuUpdateEffectsPc(MENU *menu) {
     if (menu->cancel_pressed) {
         MenuCancelVideoPc();
         return;
@@ -222,7 +222,7 @@ extern "C" void __cdecl MenuUpdateEffectsPc(MENU *menu) {
     }
 }
 
-extern "C" void __cdecl MenuDrawVideoPc(MENU *menu) {
+extern "C" void MenuDrawVideoPc(MENU *menu) {
     char text[256];
     GRAPHICS_DISPLAY_MODE_PC *mode = &PCDeviceBackend.modes[PCDeviceBackend.requested_mode];
     if (!MenuPcStringsInitialized) {
@@ -305,7 +305,7 @@ extern "C" void __cdecl MenuDrawVideoPc(MENU *menu) {
     }
 }
 
-extern "C" void __cdecl MenuDrawEffectsPc(MENU *menu) {
+extern "C" void MenuDrawEffectsPc(MENU *menu) {
     char text[256];
     const char *value;
     if (PcWindowOptions.usehires) {
@@ -441,7 +441,7 @@ extern "C" void __cdecl MenuDrawEffectsPc(MENU *menu) {
     }
 }
 
-void __thiscall PC_DEVICE_BACKEND_PC::RestoreSavedModePc() {
+void PC_DEVICE_BACKEND_PC::RestoreSavedModePc() {
     requested_windowed = saved_windowed;
     if (saved_mode < mode_count) {
         requested_mode = saved_mode;
@@ -461,13 +461,13 @@ void __thiscall PC_DEVICE_BACKEND_PC::RestoreSavedModePc() {
     CreateOrResetDevice(1);
 }
 
-extern "C" void __cdecl MenuEnterVideoConfirmPc(MENU *menu) {
+extern "C" void MenuEnterVideoConfirmPc(MENU *menu) {
     MenuVideoConfirmDurationPc = 15.0f;
     MenuVideoConfirmWaitPc = 3;
     menu->selected_row = 1;
 }
 
-extern "C" void __cdecl MenuDrawVideoConfirmPc(MENU *menu) {
+extern "C" void MenuDrawVideoConfirmPc(MENU *menu) {
     char text[256];
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
@@ -481,7 +481,7 @@ extern "C" void __cdecl MenuDrawVideoConfirmPc(MENU *menu) {
     DrawMenuEntryEx(menu, text, (u8)MenuA);
 }
 
-extern "C" void __cdecl MenuUpdateVideoConfirmPc(MENU *menu) {
+extern "C" void MenuUpdateVideoConfirmPc(MENU *menu) {
     if (MenuVideoConfirmWaitPc != 0) {
         --MenuVideoConfirmWaitPc;
         menu->menu_time = 0.0f;
@@ -507,19 +507,19 @@ extern "C" void __cdecl MenuUpdateVideoConfirmPc(MENU *menu) {
     }
 }
 
-extern "C" void __cdecl MenuExitVideoConfirmPc(MENU *) {
+extern "C" void MenuExitVideoConfirmPc(MENU *) {
 }
 
-extern "C" void __cdecl MenuDrawNoticePc(char *text, u32 red, u32 green, u32 blue) {
+extern "C" void MenuDrawNoticePc(char *text, u32 red, u32 green, u32 blue) {
     MenuSmartTextEx(text, 0.0f, 0.15f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue,
                     1.5f, 4, NULL, 0, MenuA);
 }
 
-extern "C" void __cdecl MenuEnterHiresNoticePc(MENU *menu) {
+extern "C" void MenuEnterHiresNoticePc(MENU *menu) {
     menu->selected_row = 0;
 }
 
-extern "C" void __cdecl MenuDrawHiresNoticePc(MENU *menu) {
+extern "C" void MenuDrawHiresNoticePc(MENU *menu) {
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
@@ -530,37 +530,37 @@ extern "C" void __cdecl MenuDrawHiresNoticePc(MENU *menu) {
     DrawMenuEntryEx(menu, (char *)MenuPcStrings[13], (u8)MenuA);
 }
 
-extern "C" void __cdecl MenuUpdateHiresNoticePc(MENU *menu) {
+extern "C" void MenuUpdateHiresNoticePc(MENU *menu) {
     if (menu->confirm_pressed || menu->cancel_pressed) {
         MenuSFX = MENUSFX_MENUBACK;
         BackupMenu();
     }
 }
 
-extern "C" void __cdecl MenuExitHiresNoticePc(MENU *) {
+extern "C" void MenuExitHiresNoticePc(MENU *) {
 }
 
-extern "C" void __cdecl MenuEnterQuitPc(MENU *menu) {
+extern "C" void MenuEnterQuitPc(MENU *menu) {
     menu->selected_row = 0;
 }
 
-extern "C" void __cdecl MenuExitQuitPc(MENU *) {
+extern "C" void MenuExitQuitPc(MENU *) {
 }
 
 /* Menu 1024 has empty enter, draw, update and exit steps on PC. */
-extern "C" void __cdecl fun_00509470(MENU *) {
+extern "C" void fun_00509470(MENU *) {
 }
 
-extern "C" void __cdecl fun_00509480(MENU *) {
+extern "C" void fun_00509480(MENU *) {
 }
 
-extern "C" void __cdecl fun_00509490(MENU *) {
+extern "C" void fun_00509490(MENU *) {
 }
 
-extern "C" void __cdecl fun_005094a0(MENU *) {
+extern "C" void fun_005094a0(MENU *) {
 }
 
-extern "C" void __cdecl MenuDrawQuitPc(MENU *menu) {
+extern "C" void MenuDrawQuitPc(MENU *menu) {
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
@@ -571,7 +571,7 @@ extern "C" void __cdecl MenuDrawQuitPc(MENU *menu) {
     DrawMenuEntryEx(menu, (char *)MenuPcStrings[1], (u8)MenuA);
 }
 
-extern "C" void __cdecl MenuUpdateQuitPc(MENU *menu) {
+extern "C" void MenuUpdateQuitPc(MENU *menu) {
     if ((menu->selected_row == 0 && menu->confirm_pressed != 0) || menu->cancel_pressed != 0) {
         MenuSFX = MENUSFX_MENUBACK;
         BackupMenu();

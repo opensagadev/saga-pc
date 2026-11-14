@@ -1,9 +1,9 @@
 #include "saga.h"
 
-extern "C" void __cdecl NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL_VIEW *shader,
-                                                           PC_SHADER_WATER_MATERIAL_VIEW *material);
+extern "C" void NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL_VIEW *shader,
+                                                   PC_SHADER_WATER_MATERIAL_VIEW *material);
 
-void __cdecl PCShaderNativeUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+void PCShaderNativeUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     if (shader->vertex_shader != NULL) {
         shader->vertex_shader->methods->release(shader->vertex_shader);
         shader->vertex_shader = NULL;
@@ -15,9 +15,8 @@ void __cdecl PCShaderNativeUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     NuShaderObjectUnInit(shader);
 }
 
-void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index,
-                                      const char *vertex_source, i32 vertex_length, const char *pixel_source,
-                                      i32 pixel_length, i32 version) {
+void PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index, const char *vertex_source,
+                              i32 vertex_length, const char *pixel_source, i32 pixel_length, i32 version) {
     NuShaderObjectInit(shader, key, index, vertex_source, vertex_length, pixel_source, pixel_length, version);
     ID3DXBuffer *vertex_code = NULL;
     ID3DXBuffer *pixel_code = NULL;
@@ -159,8 +158,8 @@ extern "C" i32 fun_007421c0(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 
-extern "C" void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element,
-                                                    i32 count, const f32 *values) {
+extern "C" void NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element,
+                                            i32 count, const f32 *values) {
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
     if (parameter->register_index < 0) {
         return;
@@ -180,8 +179,8 @@ extern "C" void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *
     }
 }
 
-extern "C" void __cdecl NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic,
-                                                              i32 first_element, i32 count, const f32 *values) {
+extern "C" void NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic,
+                                                      i32 first_element, i32 count, const f32 *values) {
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
     if (parameter->register_index < 0) {
         return;
@@ -341,7 +340,7 @@ extern "C" const f32 PCSamplerBiasMinimum;
 extern "C" const f32 PCSamplerBiasMaximum;
 extern "C" const f64 PCSamplerBiasMaximumComparison;
 
-extern "C" u32 __cdecl PCShaderSamplerBiasBitsPc(f32 bias) {
+extern "C" u32 PCShaderSamplerBiasBitsPc(f32 bias) {
     f32 value = PCSamplerBiasMinimum > bias             ? PCSamplerBiasMinimum
                 : bias > PCSamplerBiasMaximumComparison ? PCSamplerBiasMaximum
                                                         : bias;
@@ -413,7 +412,7 @@ static void PCShaderSamplerWrapPc(i32 u_mode, u32 stage, i32 v_mode) {
     }
 }
 
-extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *shader, NUMTL *original_material) {
+extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *shader, NUMTL *original_material) {
     PC_SHADER_MATERIAL_DISPATCH_VIEW *material =
         reinterpret_cast<PC_SHADER_MATERIAL_DISPATCH_VIEW *>(original_material);
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = shader->active_parameters;

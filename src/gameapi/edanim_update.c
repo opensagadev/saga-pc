@@ -3,11 +3,11 @@
 #include <string.h>
 
 extern i32 EdAnimLocalFrameCountPc;
-f32 __cdecl edanimPlayerAnimDistance(i32 parameter_index);
-void __cdecl edanimParticleDestroy(i32 parameter_index, i32 particle_index);
+f32 edanimPlayerAnimDistance(i32 parameter_index);
+void edanimParticleDestroy(i32 parameter_index, i32 particle_index);
 
 /* Native 659860/172: flags are deliberately not compacted by this helper. */
-void __cdecl edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
+void edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
     i32 i;
     for (i = sound_index; i < AnimParams[parameter_index].sound_count - 1; ++i) {
         AnimParams[parameter_index].sound_ids[i] = AnimParams[parameter_index].sound_ids[i + 1];
@@ -28,7 +28,7 @@ static f32 EdAnimFabsPc(f32 value) {
     return result;
 }
 
-void __cdecl edanimUpdateObjects(f32 elapsed) {
+void edanimUpdateObjects(f32 elapsed) {
     NUINSTANIM *animation;
     NUSPECIALHANDLE special;
     f32 seconds;

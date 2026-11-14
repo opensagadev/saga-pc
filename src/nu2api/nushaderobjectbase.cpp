@@ -12,33 +12,33 @@ typedef struct PC_SHADER_WATER_MATERIAL_VIEW {
 
 extern "C" {
 
-    void __cdecl NuShaderObjectBaseCreate(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+    void NuShaderObjectBaseCreate(PC_SHADER_OBJECT_FULL_VIEW *shader) {
         shader->marker = -1;
         shader->ref_count = 0;
         shader->unknown_c = 0;
         shader->key = 0;
     }
 
-    void __cdecl NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+    void NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *shader) {
         shader->ref_count = 0;
     }
 
-    void __cdecl NuShaderObjectBaseInit(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index) {
+    void NuShaderObjectBaseInit(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index) {
         shader->key = *key;
         shader->marker = index;
     }
 
-    void __cdecl NuShaderObjectBaseUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+    void NuShaderObjectBaseUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
         shader->marker = -1;
     }
 }
 
-extern "C" void __cdecl NuShaderObjectBaseSetWaterSpeed(f32 speed) {
+extern "C" void NuShaderObjectBaseSetWaterSpeed(f32 speed) {
     PCShaderWaterThetaStep = (f32)((f64)speed * TerrainScanMargin10Pc);
 }
 
-extern "C" void __cdecl NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL_VIEW *shader,
-                                                           PC_SHADER_WATER_MATERIAL_VIEW *material) {
+extern "C" void NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL_VIEW *shader,
+                                                   PC_SHADER_WATER_MATERIAL_VIEW *material) {
     if (shader->parameters[23].register_index < 0) {
         return;
     }
@@ -92,7 +92,7 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetTransposedMatrixValues(i32 first_element, 
     }
 }
 
-void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+void PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     i32 i;
     NuShaderObjectCreate(shader);
     shader->vertex_shader = NULL;
@@ -102,11 +102,11 @@ void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     }
 }
 
-void __cdecl PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+void PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     NuShaderObjectDestroy(shader);
 }
 
-PC_SHADER_PARAMETER_LOCAL_PC *__cdecl PCShaderAllocateParameter(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 index) {
+PC_SHADER_PARAMETER_LOCAL_PC *PCShaderAllocateParameter(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 index) {
     return &shader->parameters[index];
 }
 

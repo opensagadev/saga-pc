@@ -3,10 +3,10 @@
 #include <string.h>
 
 extern "C" {
-    extern i32 HubDoorNewLevelPc;             /* 8795a8, data.obj, existing genuine owner. */
-    extern void *Door_Last;                   /* 9513d0, data.obj, existing canonical void* type. */
-    void __cdecl NewGameMode(void);           /* 55c5f0/16, gamestructure.obj. */
-    void __cdecl InitSuperStory(i32 episode); /* 55c650/64, menu.obj. */
+    extern i32 HubDoorNewLevelPc;     /* 8795a8, data.obj, existing genuine owner. */
+    extern void *Door_Last;           /* 9513d0, data.obj, existing canonical void* type. */
+    void NewGameMode(void);           /* 55c5f0/16, gamestructure.obj. */
+    void InitSuperStory(i32 episode); /* 55c650/64, menu.obj. */
 }
 
 typedef struct hub_minikit_runtime_pc_s {
@@ -75,7 +75,7 @@ extern "C" char AreaFixUpName_Pursuit[];
 extern "C" char AreaFixUpName_Podsprint[];
 extern "C" char AreaFixUpName_Negotiations[];
 extern "C" {
-    void __cdecl ClearSpecialMove(GAMEOBJECT *);
+    void ClearSpecialMove(GAMEOBJECT *);
     extern const char LostTempleExitObstacleNamePc[] = "obstacle1";
 }
 
@@ -85,7 +85,7 @@ typedef struct ARCADE_COIN_PACKET_PC {
 } ARCADE_COIN_PACKET_PC;
 
 extern "C" {
-    extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
+    extern void (*AIPathCnxHelperSysInitFn)(WORLDINFO *);
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC;
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
     extern u32 LEGO_AIPATHCNX_BIGJUMP;
@@ -93,8 +93,8 @@ extern "C" {
     extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
     extern u32 LEGO_AIPATHCNX_JUMP_NOW;
     extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
-    void __cdecl InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
-    void __cdecl InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
+    void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
+    void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
 }
 
 typedef struct HINT_COMPLETION_PC {
@@ -155,7 +155,7 @@ typedef struct hub_init_world_reader_pc_s {
     void *gizmo_system;
 } HUB_INIT_WORLD_READER_PC;
 
-extern void(__cdecl *HubInitAIFnPc)(WORLDINFO *);
+extern void (*HubInitAIFnPc)(WORLDINFO *);
 
 typedef struct hub_door_object_reader_pc_s {
     u8 unknown_00[0x9c];
@@ -166,7 +166,7 @@ typedef struct hub_door_reader_pc_s {
     HUB_DOOR_OBJECT_READER_PC *object;
 } HUB_DOOR_READER_PC;
 
-extern void(__cdecl *HubResetAIFnPc)(WORLDINFO *);
+extern void (*HubResetAIFnPc)(WORLDINFO *);
 // Add only to the genuine Hub owner, after its existing private table definition.
 struct GIZBUILDIT_PC;
 #define HUB_PC_MENU_PLAYER(p, mode)                                                                                    \
@@ -1195,7 +1195,7 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
     {NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f, 0, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
 };
 
-extern "C" i32 __cdecl Hub_BonusBuildIt(GIZBUILDIT_PC *buildit) {
+extern "C" i32 Hub_BonusBuildIt(GIZBUILDIT_PC *buildit) {
     if (HubAreaInfoPc[0].area_name != NULL) {
         HUB_AREA_INFO_PC *info = HubAreaInfoPc;
         do {
@@ -1286,7 +1286,7 @@ static void HubResolveEpisodeInfoPc(HUB_EPISODE_INFO_PC *info, WORLDINFO *world)
 }
 
 /* 474fd0/79, all direct dependencies already owned. */
-extern "C" void __cdecl WipeBackToHub(void) {
+extern "C" void WipeBackToHub(void) {
     NewMenu(-1, -1, -1);
     ResetTimer(&JoinInTimer, 0);
     NuStrCpy(DoorExitNamePc, ((DOOR_s *)Door_Last)->name);
@@ -1486,7 +1486,7 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
 
 extern "C" {
 
-    i32 __cdecl Arcade_GetMode(u32 *flags) {
+    i32 Arcade_GetMode(u32 *flags) {
         if (Arcade == 0) {
             if (flags != NULL) {
                 *flags = 0;
@@ -1564,7 +1564,7 @@ extern "C" {
         }
     }
 
-    void __cdecl Arcade_DrawPanel(i32 paused) {
+    void Arcade_DrawPanel(i32 paused) {
         f32 alpha;
         f32 scale;
         f32 size;
@@ -1583,7 +1583,7 @@ extern "C" {
                     (f32)((f64)scale * (f64)1.7f), 1, NULL, 0, (i32)((f64)alpha * 128.0));
     }
 
-    void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
+    void Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
         ADD_GAME_MESSAGE_PC message = PCArcadeMessageTemplate;
         NUVEC position;
         char text[32];
@@ -1677,7 +1677,7 @@ extern "C" {
         }
     }
 
-    void __cdecl Arcade_PlayerKilled(i32 player_index, i32 extra) {
+    void Arcade_PlayerKilled(i32 player_index, i32 extra) {
         if ((player_index != 0 && player_index != 1) || (Arcade_Mode[ArcadeItem.mode].flags & 1) == 0) {
             return;
         }
@@ -1689,7 +1689,7 @@ extern "C" {
         }
     }
 
-    void __cdecl Arcade_AIKilled(i32 player_index) {
+    void Arcade_AIKilled(i32 player_index) {
         GAMEOBJECT *object;
         if ((player_index != 0 && player_index != 1) || (Arcade_Mode[ArcadeItem.mode].flags & 2) == 0) {
             return;
@@ -1720,7 +1720,7 @@ extern "C" {
         }
     }
 
-    void __cdecl Arcade_CoinCollected(i32 player_index, u32 *score, u32 previous_score) {
+    void Arcade_CoinCollected(i32 player_index, u32 *score, u32 previous_score) {
         GAMEOBJECT *object;
         ARCADE_COIN_PACKET_PC *packet;
         if ((player_index != 0 && player_index != 1) || (Arcade_Mode[ArcadeItem.mode].flags & 4) == 0) {
@@ -1762,7 +1762,7 @@ extern "C" {
         }
     }
 
-    void __cdecl Arcade_Kill(i32 player_index, i32 killed_player) {
+    void Arcade_Kill(i32 player_index, i32 killed_player) {
         if (Arcade != 0 && (player_index == 0 || player_index == 1)) {
             if ((killed_player == 0 || killed_player == 1)) {
                 Arcade_PlayerKilled(player_index, 0);
@@ -1773,7 +1773,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl Arcade_UpdateEndMenu(MENU *menu) {
+extern "C" void Arcade_UpdateEndMenu(MENU *menu) {
     if (menu->menu_time >= 5.0f) {
         NewLData = HUB_LDATA;
     } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
@@ -1782,7 +1782,7 @@ extern "C" void __cdecl Arcade_UpdateEndMenu(MENU *menu) {
     }
 }
 
-extern "C" void __cdecl Arcade_DrawEndMenu(MENU *menu) {
+extern "C" void Arcade_DrawEndMenu(MENU *menu) {
     if (MenuStopDraw != 0) {
         return;
     }
@@ -2061,7 +2061,7 @@ static i32 hub_freeplay_area = 0;
 #pragma bss_seg()
 
 /* 476da0/2192, nativePC control excludesAndroidtouch/autoconfirm logic. */
-extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
+extern "C" void Hub_UpdateFreePlaySelect(void) {
     COLLECTION_BUILD_PC *collection;
     if ((ADataList[hub_freeplay_area].flags & 1) != 0) {
         collection = (ADataList[hub_freeplay_area].flags & 4) != 0 ? &MiniKitCollection : &VehicleCollectionPc;
@@ -2326,13 +2326,13 @@ static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cur
     }
 }
 
-extern "C" void __cdecl Hub_Load(WORLDINFO *world, VARIPTR *, VARIPTR *) {
+extern "C" void Hub_Load(WORLDINFO *world, VARIPTR *, VARIPTR *) {
     Customiser_LoadAll(CharacterCustomiser, world);
 }
 
 extern "C" {
 
-    void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
+    void Hub_LoadAndFixUpMiniKits(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
         WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
         i32 i;
         i32 size;
@@ -2365,7 +2365,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl Hub_InitMiniKits(WORLDINFO *world) {
+extern "C" void Hub_InitMiniKits(WORLDINFO *world) {
     HUB_MINIKIT_RUNTIME_PC *kit = ((HUB_WORLD_READER_PC *)world)->minikits;
     i32 i;
     if (kit != NULL) {
@@ -2450,7 +2450,7 @@ static i32 hub_minikitviewer_area = 0;
 static NUVEC hub_minikitviewer_pos = {-27.0f, 0.10000000149011612f, -22.125f};
 static f32 HubMiniKitViewerAlphaPc = 0.0f;
 
-extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
+extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
     i32 count[72];
     f32 speed = 0.0f;
     u16 angle = 0;
@@ -2603,7 +2603,7 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
 static f32 HubMiniKitViewerStepPc = 2.0f;
 static f32 HubMiniKitViewerBaseYPc = 0.14300000667572021f;
 
-extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
+extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
     if (((HUB_WORLD_READER_PC *)world)->pieces == NULL || ((HUB_WORLD_READER_PC *)world)->minikits == NULL) {
         return;
     }
@@ -2855,7 +2855,7 @@ static void HubDrawMiniKitStatsPc(i32 index, f32 phase) {
     }
 }
 
-extern "C" void __cdecl Hub_UpdateKit(void) {
+extern "C" void Hub_UpdateKit(void) {
     i32 left = 0;
     i32 right = 0;
     i32 cancel = 0;
@@ -2934,7 +2934,7 @@ static HUB_EPISODE_INFO_PC HubEpisodeInfoPc[10] = {
     {-1, 0, NULL, NULL, 0, 0, NULL, NULL, {NULL, NULL, 0}},
 };
 
-extern "C" void __cdecl Hub_Reset(WORLDINFO *world) {
+extern "C" void Hub_Reset(WORLDINFO *world) {
     Customiser_Reset(CharacterCustomiser);
     if (HubResetAIFnPc != NULL) {
         HubResetAIFnPc(world);
@@ -2981,7 +2981,7 @@ extern "C" void __cdecl Hub_Reset(WORLDINFO *world) {
     HubPreventDropOutTimePc = 0.0f;
 }
 
-extern "C" void __cdecl Hub_ClearStats(void) {
+extern "C" void Hub_ClearStats(void) {
     statstime = 0.0f;
     cointotaltime = 0.0f;
     goldbricktime = 0.0f;
@@ -2990,7 +2990,7 @@ extern "C" void __cdecl Hub_ClearStats(void) {
 extern "C" {
     NUVEC PercentHint_TriggerPos = {-28.421f, 0.0f, -52.462f};
 
-    i32 __cdecl Percent_UpdateHint(HINT_PC *hint) {
+    i32 Percent_UpdateHint(HINT_PC *hint) {
         if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
             CustomiserCompletionSavePc != NULL &&
             ((HINT_COMPLETION_PC *)CustomiserCompletionSavePc)->points >= HubCompletionPointsPc) {
@@ -3014,7 +3014,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl IndyUnlocked_UpdateHint(HINT_PC *hint) {
+    i32 IndyUnlocked_UpdateHint(HINT_PC *hint) {
         if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
             Game.losttemple_trailer_watched != 0) {
             hint->colour_index = 4;
@@ -3030,7 +3030,7 @@ static u32 HubStatsHighColourPc = 255;
 static u32 HubStatsMiddleColourPc = 127;
 static u8 HubStatsLowColourPc = 0;
 
-extern "C" void __cdecl Hub_Draw3D(WORLDINFO *world) {
+extern "C" void Hub_Draw3D(WORLDINFO *world) {
     Customiser_Draw3D(CharacterCustomiser);
     DrawShop3D(world);
     Hub_DrawMiniKits(world);
@@ -3141,13 +3141,13 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
 
 extern "C" {
 
-    i32 __cdecl Hub_InMenu(void) {
+    i32 Hub_InMenu(void) {
         i32 id = GetMenuID();
         return id == 13 || id == 12 || id == 14 || id == 15 || id == 16 || id == 17 || id == 8;
     }
 }
 
-extern "C" void __cdecl Hub_ResetPanel(void) {
+extern "C" void Hub_ResetPanel(void) {
     HubAreaTimePc = 0.0f;
     HubAreaPc = -1;
     HubEpisodeTimePc = 0.0f;
@@ -3159,21 +3159,21 @@ extern "C" void __cdecl Hub_ResetPanel(void) {
 }
 
 /* Six native wrapper bodies. They must be mapped independently from helpers. */
-extern "C" void __cdecl MenuInitSelectMode(MENU *) {
+extern "C" void MenuInitSelectMode(MENU *) {
     HubInitSelectModePc();
 } /*47a950/5*/
 
-extern "C" void __cdecl MenuInitBonusMode(MENU *) {
+extern "C" void MenuInitBonusMode(MENU *) {
     HubInitBonusModePc();
 } /*47a960/5*/
 
-extern "C" void __cdecl MenuUpdateFreePlay(MENU *) {
+extern "C" void MenuUpdateFreePlay(MENU *) {
     Hub_UpdateFreePlaySelect();
 } /*47a980/5*/
 
 extern "C" {
 
-    void __cdecl Hub_ActivateDoorMenu(void *argument) {
+    void Hub_ActivateDoorMenu(void *argument) {
         LEVELDATA_PC **level = (LEVELDATA_PC **)argument;
         i32 area = (*level)->area_index;
         i32 menu;
@@ -3197,7 +3197,7 @@ extern "C" {
         NewMenu(menu, -1, -1);
     }
 
-    void __cdecl Hub_MakeModelList(void) {
+    void Hub_MakeModelList(void) {
         i32 count;
         i16 *model_id;
 
@@ -3226,7 +3226,7 @@ extern "C" {
     }
 }
 
-extern "C" i32 __cdecl Hub_PanelBusy(void) {
+extern "C" i32 Hub_PanelBusy(void) {
     return HubAreaPc != -1 || HubLastAreaPc != -1 || HubMiniKitAreaPc != -1 || HubEpisodePc != -1;
 }
 
@@ -3841,7 +3841,7 @@ static void Hub_DrawFreePlaySelect(void) {
 
 static void *HubMiniKitViewerGizmoPc = NULL;
 
-extern "C" void __cdecl Hub_Init(WORLDINFO *world) {
+extern "C" void Hub_Init(WORLDINFO *world) {
     HUB_INIT_WORLD_READER_PC *w = (HUB_INIT_WORLD_READER_PC *)world;
     HubAreaPanelXPc = HubBothTrueJediGoldBricksPc != 0 ? HubAreaPanelOnePc : HubAreaPanelTwoPc;
     HubResolveAreaInfoPc(HubAreaInfoPc, world);
@@ -3897,7 +3897,7 @@ extern "C" void __cdecl Hub_Init(WORLDINFO *world) {
     Arcade = 0;
 }
 
-extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
+extern "C" void Hub_Update(WORLDINFO *world) {
     const i32 menu = GetMenuID();
     if (HubBuildItsResetPc == 0) {
         HubRestoreBuildItsPc();
@@ -4425,19 +4425,19 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
     }
 }
 
-extern "C" void __cdecl MenuDrawSelectMode(MENU *) {
+extern "C" void MenuDrawSelectMode(MENU *) {
     if (MenuStopDraw == 0) {
         HubDrawSelectModePc();
     }
 } /*47e780/15*/
 
-extern "C" void __cdecl MenuDrawBonusMode(MENU *) {
+extern "C" void MenuDrawBonusMode(MENU *) {
     if (MenuStopDraw == 0) {
         HubDrawBonusModePc();
     }
 } /*47e790/15*/
 
-extern "C" void __cdecl MenuDrawFreePlay(MENU *) {
+extern "C" void MenuDrawFreePlay(MENU *) {
     if (MenuStopDraw == 0) {
         Hub_DrawFreePlaySelect();
     }
@@ -4903,18 +4903,18 @@ static void HubUpdateBonusModePc(void) {
     }
 }
 
-extern "C" void __cdecl MenuUpdateSelectMode(MENU *) {
+extern "C" void MenuUpdateSelectMode(MENU *) {
     HubUpdateSelectModePc();
 } /*47f5e0/5*/
 
-extern "C" void __cdecl MenuUpdateBonusMode(MENU *) {
+extern "C" void MenuUpdateBonusMode(MENU *) {
     HubUpdateBonusModePc();
 } /*47f5f0/5*/
 
 extern "C" {
 
     /* Original name unknown; retail keeps it uncalled at the head of the unit (0x47f620). */
-    i32 __cdecl IndyConnectionHelperIsTypePc(GAMEOBJECT *owner, u8 type) {
+    i32 IndyConnectionHelperIsTypePc(GAMEOBJECT *owner, u8 type) {
         AI_HELPER_SLOT_PC *helper = owner->indy_connection_helper;
         if (helper != NULL && owner->ai_packet.path_info.connection == helper->connection &&
             (helper->direction == 0xff || owner->ai_packet.path_info.direction == helper->direction)) {
@@ -4923,7 +4923,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         AIPATHNODE_PC *destination =
             &packet->path_info.path
@@ -4989,7 +4989,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Indy_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+    i32 Indy_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         AIPATHNODE_PC *source;
         AIPATHNODE_PC *destination;
@@ -5016,7 +5016,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl Indy_MidSpecialMove_ClimbUpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 Indy_MidSpecialMove_ClimbUpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         INDY_GUIDELINE_PC *guide;
         i32 endpoint;
@@ -5071,7 +5071,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl Indy_MidSpecialMove_ClimbDownPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 Indy_MidSpecialMove_ClimbDownPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         INDY_GUIDELINE_PC *guide;
         i32 endpoint;
@@ -5129,13 +5129,13 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl IndyGrappleHelperOccupiedPc(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX_PC *connection,
-                                            u8 direction, u8 type) {
+    i32 IndyGrappleHelperOccupiedPc(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX_PC *connection,
+                                    u8 direction, u8 type) {
         GRAPPLE_DYNAMIC_PC *grapple = (GRAPPLE_DYNAMIC_PC *)helper->target;
         return Grapple_Occupied(grapple, owner, owner->ai_packet.path_info.connection) != NULL;
     }
 
-    i32 __cdecl Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+    i32 Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         AIPATHNODE_PC *source =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
@@ -5209,7 +5209,7 @@ extern "C" {
 
     f32 IndyGrappleTimeoutPc = -2.0f;
 
-    i32 __cdecl Indy_MidSpecialMove_GrappleStartPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 Indy_MidSpecialMove_GrappleStartPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         GRAPPLE_DYNAMIC_PC *grapple = (GRAPPLE_DYNAMIC_PC *)owner->indy_connection_helper->target;
         GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
@@ -5237,7 +5237,7 @@ extern "C" {
 
     f32 IndyGrappleHeightTolerancePc = 0.1f;
 
-    i32 __cdecl Indy_MidSpecialMove_GrappleClimbPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 Indy_MidSpecialMove_GrappleClimbPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         GRAPPLE_DYNAMIC_PC *grapple = (GRAPPLE_DYNAMIC_PC *)owner->indy_connection_helper->target;
         f32 difference;
@@ -5288,7 +5288,7 @@ extern "C" {
 
     f32 IndyGrappleReleaseRadiusPc = 1.0f;
 
-    i32 __cdecl Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         GRAPPLE_DYNAMIC_PC *grapple = (GRAPPLE_DYNAMIC_PC *)owner->indy_connection_helper->target;
         f32 distance;
@@ -5317,7 +5317,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         if (owner->character_context == 0x46) {
             if (owner->ai_packet.special_move_node->position.y > owner->special_move_source_pc->position.y) {
@@ -5348,7 +5348,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Indy_MidSpecialMove_StartJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 Indy_MidSpecialMove_StartJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         if (owner->character_context == 0) {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
@@ -5363,7 +5363,7 @@ extern "C" {
 
     f32 IndyJumpDistancePc[2] = {0.8f, 1.2f};
 
-    i32 __cdecl Indy_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+    i32 Indy_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
         i32 index;
         GAMEOBJECT *owner;
         u32 flags;
@@ -5562,7 +5562,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Indy_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
+    i32 Indy_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
         AIPATHNODE_PC *destination =
             &packet->path_info.path
@@ -5584,7 +5584,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Indy_MidSpecialMove_BigJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 Indy_MidSpecialMove_BigJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         if (owner->character_context == 0x1f) {
             owner->launch_origin = owner->ai_packet.special_move_node->position;
@@ -5595,7 +5595,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Indy_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
+    i32 Indy_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
         i32 far_index;
         AIPATHNODE_PC *nodes;
         AIPATHNODE_PC *near_node;
@@ -5666,7 +5666,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl Indy_PrepareWhipSwingPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
+    i32 Indy_PrepareWhipSwingPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
         GAMEOBJECT *owner;
         AIPATHNODE_PC *destination;
         AIPATHCNX_PC *connection;
@@ -5703,7 +5703,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         switch ((i8)owner->field_1087) {
             case 0:
@@ -5738,7 +5738,7 @@ extern "C" {
                                                                 {0x400, Indy_PrepareWhipSwingPc},
                                                                 {0, NULL}};
 
-    i32 __cdecl Indy_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks) {
+    i32 Indy_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
         INDY_PREPARE_SPECIAL_MOVE_PC *entry;
         u32 flags;
@@ -5783,7 +5783,7 @@ extern "C" {
         Indy_MidSpecialMove_GrappleStartPc, Indy_MidSpecialMove_GrappleClimbPc, Indy_MidSpecialMove_GrappleEndPc,
         Indy_MidSpecialMove_WhipSwingPc};
 
-    i32 __cdecl Indy_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *apiobject) {
+    i32 Indy_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *apiobject) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
         AI_MID_SPECIAL_MOVE_PC callback;
         owner->special_move_timer_pc -= FRAMETIME;
@@ -5800,7 +5800,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl Indy_AIPathCnxHelperSysInit(WORLDINFO *world) {
+    void Indy_AIPathCnxHelperSysInit(WORLDINFO *world) {
         i32 path_index;
         i32 connection_index;
         i16 direction;
@@ -5844,7 +5844,7 @@ extern "C" {
     i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC = 0;
     i32 LEGO_AIPATHCNX_VARIANT_FLAG1_PC = 0;
 
-    void __cdecl Indy_GameAISysInit(void) {
+    void Indy_GameAISysInit(void) {
         LEGO_AIPATHCNX_JUMP = 0x1;
         LEGO_AIPATHCNX_FORGOODIES = 0x100;
         LEGO_AIPATHCNX_FORBADDIES = 0x200;
@@ -5861,7 +5861,7 @@ extern "C" {
         AIPathCnxHelperSysInitFn = Indy_AIPathCnxHelperSysInit;
     }
 
-    void __cdecl PlayerInitCapabilitiesVariant0Pc(GAMEOBJECT *object) {
+    void PlayerInitCapabilitiesVariant0Pc(GAMEOBJECT *object) {
         object->ai_packet.capabilities = 0x20000000;
         if ((object->flags_1f8 & 1) != 0) {
             object->ai_packet.capabilities |= 0x200;
@@ -5885,7 +5885,7 @@ extern "C" {
         }
     }
 
-    u32 __cdecl AIPathParseIndyFlagPc(char *name) {
+    u32 AIPathParseIndyFlagPc(char *name) {
         if (NuStrICmp(name, "DBLJUMP") == 0) {
             return 2;
         }
@@ -5928,14 +5928,14 @@ extern "C" {
     SOCKPOSITION_PC LostTempleExitSockPositionPc = {0};
 }
 
-extern "C" void __cdecl LostTempleC_ResetPc(WORLDINFO *world) {
+extern "C" void LostTempleC_ResetPc(WORLDINFO *world) {
     LevGizObst[0] =
         GizObstacle_FindByName((GIZOBSTACLESYS_s *)world->giz_obstacle_sys, (char *)LostTempleExitObstacleNamePc);
     LostTempleExitSockPositionPc.sock_index = -1;
     LostTempleExitSockPositionPc.segment = -1;
 }
 
-extern "C" void __cdecl LostTempleC_UpdatePc(WORLDINFO *world) {
+extern "C" void LostTempleC_UpdatePc(WORLDINFO *world) {
     i32 inside = 0;
     if (LevGizObst[0] == NULL || (LevGizObst[0]->anim_set->flags & 1) == 0) {
         return;

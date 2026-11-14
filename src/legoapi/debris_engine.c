@@ -3,17 +3,17 @@
 #include <stdio.h>
 #include <string.h>
 
-void __cdecl DebrisGetControlStackLock(void) {
+void DebrisGetControlStackLock(void) {
     while (debris_control_stack_lock != 0) {
     }
     debris_control_stack_lock = 1;
 }
 
-void __cdecl DebrisReleaseControlStackLock(void) {
+void DebrisReleaseControlStackLock(void) {
     debris_control_stack_lock = 0;
 }
 
-void __cdecl AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *control, DEBRIS_CHUNK_CONTROL_PC **stack) {
+void AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *control, DEBRIS_CHUNK_CONTROL_PC **stack) {
     while (*stack != NULL && control->expiry_time > (*stack)->expiry_time) {
         stack = &(*stack)->next;
     }
@@ -21,7 +21,7 @@ void __cdecl AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *control, DEBRIS_CHU
     *stack = control;
 }
 
-void __cdecl DebrisReserveTrashableSpace(VARIPTR *buffer, VARIPTR end, i32 chunk_count, i32 glass_chunk_count) {
+void DebrisReserveTrashableSpace(VARIPTR *buffer, VARIPTR end, i32 chunk_count, i32 glass_chunk_count) {
     if (debris_trash_space == 0) {
         u32 start = (buffer->addr + 0x7f) & ~0x7f;
         buffer->addr = start;
@@ -33,7 +33,7 @@ void __cdecl DebrisReserveTrashableSpace(VARIPTR *buffer, VARIPTR end, i32 chunk
     }
 }
 
-void __cdecl DebrisTrashableSetup(VARIPTR *buffer, VARIPTR *end) {
+void DebrisTrashableSetup(VARIPTR *buffer, VARIPTR *end) {
     u32 cursor;
     i32 i;
     i32 size;
@@ -90,7 +90,7 @@ void __cdecl DebrisTrashableSetup(VARIPTR *buffer, VARIPTR *end) {
     }
 }
 
-void __cdecl AddChunkToRenderStack(DEBRIS_RENDER_CHUNK_PC *chunk, DEBRIS_RENDER_CHUNK_PC **stack) {
+void AddChunkToRenderStack(DEBRIS_RENDER_CHUNK_PC *chunk, DEBRIS_RENDER_CHUNK_PC **stack) {
     DEBRIS_RENDER_CHUNK_PC *current;
     DEBRIS_RENDER_CHUNK_PC *next;
     chunk->next = NULL;
@@ -128,7 +128,7 @@ void __cdecl AddChunkToRenderStack(DEBRIS_RENDER_CHUNK_PC *chunk, DEBRIS_RENDER_
     }
 }
 
-void __cdecl RemoveChunkFromRenderStack(DEBRIS_RENDER_CHUNK_PC *chunk, DEBRIS_RENDER_CHUNK_PC **stack) {
+void RemoveChunkFromRenderStack(DEBRIS_RENDER_CHUNK_PC *chunk, DEBRIS_RENDER_CHUNK_PC **stack) {
     if (*stack == chunk) {
         DEBRIS_RENDER_CHUNK_PC *next = chunk->next;
         *stack = next;
@@ -145,7 +145,7 @@ void __cdecl RemoveChunkFromRenderStack(DEBRIS_RENDER_CHUNK_PC *chunk, DEBRIS_RE
     chunk->next = NULL;
 }
 
-void __cdecl RemoveChunkControlFromStack(DEBRIS_CHUNK_CONTROL_PC *control, DEBRIS_CHUNK_CONTROL_PC **stack) {
+void RemoveChunkControlFromStack(DEBRIS_CHUNK_CONTROL_PC *control, DEBRIS_CHUNK_CONTROL_PC **stack) {
     DEBRIS_CHUNK_CONTROL_PC **link = stack;
     while (*link != NULL) {
         if (*link == control) {
@@ -157,7 +157,7 @@ void __cdecl RemoveChunkControlFromStack(DEBRIS_CHUNK_CONTROL_PC *control, DEBRI
     control->next = NULL;
 }
 
-void __cdecl RemoveAnyChunkControls(DEBRIS_PARTICLE_CHUNK_PC *chunk) {
+void RemoveAnyChunkControls(DEBRIS_PARTICLE_CHUNK_PC *chunk) {
     i32 i;
     for (i = 0; i < 2; ++i) {
         DEBRIS_CHUNK_CONTROL_PC *control = debris_chunk_control_stack[i];
@@ -173,8 +173,8 @@ void __cdecl RemoveAnyChunkControls(DEBRIS_PARTICLE_CHUNK_PC *chunk) {
     }
 }
 
-void __cdecl DebrisProcessSpheres(DEBRISPARTICLE_PC *particle, f32 time, DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key,
-                                  i32 finite) {
+void DebrisProcessSpheres(DEBRISPARTICLE_PC *particle, f32 time, DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key,
+                          i32 finite) {
     if (time >= key->sphere_next_time) {
         if (key->sphere_skip_count > 0) {
             --key->sphere_skip_count;
@@ -195,7 +195,7 @@ void __cdecl DebrisProcessSpheres(DEBRISPARTICLE_PC *particle, f32 time, DEBRIS_
     }
 }
 
-void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
+void DebReAlloc2(DEBRISKEY_PC *key) {
     DEBRIS_INFO_PC *effect = debtab[key->effect_index];
     i32 extra = key->previous_allocated_chunk_count - key->allocated_chunk_count;
     i32 i;
@@ -345,7 +345,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
     }
 }
 
-void __cdecl DebReAlloc(DEBRISKEY_PC *key, i32 particle_count) {
+void DebReAlloc(DEBRISKEY_PC *key, i32 particle_count) {
     DEBRIS_INFO_PC *effect = debtab[key->effect_index];
     key->previous_particle_count = (i16)particle_count;
     if (effect->particle_type == 7) {
@@ -366,7 +366,7 @@ void __cdecl DebReAlloc(DEBRISKEY_PC *key, i32 particle_count) {
 
 #define DEBRIS_ENGINE_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
 
-void __cdecl RemoveDebrisEffectFromStack(DEBRISKEY_PC *key) {
+void RemoveDebrisEffectFromStack(DEBRISKEY_PC *key) {
     if (key->next == NULL) {
         debris_keystack = key->previous;
         if (debris_keystack != NULL) {
@@ -382,7 +382,7 @@ void __cdecl RemoveDebrisEffectFromStack(DEBRISKEY_PC *key) {
     key->previous = NULL;
 }
 
-void __cdecl DebFreeChunksInstantly(i32 *handle) {
+void DebFreeChunksInstantly(i32 *handle) {
     DEBRIS_INFO_PC *effect;
     i32 i;
     i32 panel_time;
@@ -434,7 +434,7 @@ void __cdecl DebFreeChunksInstantly(i32 *handle) {
     DEBRIS_ENGINE_KEYS_PC[*handle].particle_cursor = 0;
 }
 
-void __cdecl DebFreeOrphansInstantly(DEBRIS_INFO_PC *effect) {
+void DebFreeOrphansInstantly(DEBRIS_INFO_PC *effect) {
     i32 i;
     i32 panel_time;
     DebrisGetControlStackLock();
@@ -480,7 +480,7 @@ void DebFreeAllChunksInstantly(void) {
     }
 }
 
-void __cdecl DebFreeInstantly(i32 *handle) {
+void DebFreeInstantly(i32 *handle) {
     DEBRIS_INFO_PC *effect;
     i32 i;
     i32 linked;
@@ -526,7 +526,7 @@ void fun_00684560(DEBRISKEY_PC *key) {
     DebFree(&handle);
 }
 
-void __cdecl DebFree(i32 *handle) {
+void DebFree(i32 *handle) {
     DEBRIS_INFO_PC *effect;
     i32 i;
     i32 linked;
@@ -611,7 +611,7 @@ void __cdecl DebFree(i32 *handle) {
     *handle = -1;
 }
 
-void __cdecl DebrisProcessControlChunks(i32 panel_time) {
+void DebrisProcessControlChunks(i32 panel_time) {
     const f32 now = panel_time == 1 ? panelglobaltime : globaltime;
     DEBRIS_CHUNK_CONTROL_PC *control = debris_chunk_control_stack[panel_time];
     i32 i;
@@ -822,14 +822,14 @@ void __cdecl DebrisProcessControlChunks(i32 panel_time) {
         }                                                                                                              \
     } while (0)
 
-f32 __cdecl CameraEmitterDistance(NUVEC *position) {
+f32 CameraEmitterDistance(NUVEC *position) {
     if (debris_cutoff_camera_vec == NULL) {
         return 0.0f;
     }
     return NuVecDist(position, debris_cutoff_camera_vec, NULL);
 }
 
-void __cdecl DebrisProcessAllocation(void) {
+void DebrisProcessAllocation(void) {
     DEBRISKEY_PC *key = debris_keystack;
     while (key != NULL) {
         DEBRISKEY_PC *next = key->previous;
@@ -855,7 +855,7 @@ void __cdecl DebrisProcessAllocation(void) {
         }                                                                                                              \
     } while (0)
 
-void __cdecl DebrisProcessGeneration(void) {
+void DebrisProcessGeneration(void) {
     DEBRISKEY_PC *next;
     DEBRIS_INFO_PC *effect;
     f32 now;
@@ -1004,7 +1004,7 @@ void __cdecl DebrisProcessGeneration(void) {
     }
 }
 
-void __cdecl DebrisProcessTriggers(void) {
+void DebrisProcessTriggers(void) {
     i32 last_switch_change;
     DEBRIS_INFO_PC *effect;
     DEBRISKEY_PC *next;
@@ -1086,7 +1086,7 @@ void __cdecl DebrisProcessTriggers(void) {
     }
 }
 
-void __cdecl DebrisTimeSlip(i32 group) {
+void DebrisTimeSlip(i32 group) {
     DEBRIS_CHUNK_CONTROL_PC *control;
     i32 i;
     i32 chunk_index;
@@ -1144,7 +1144,7 @@ void __cdecl DebrisTimeSlip(i32 group) {
     }
 }
 
-void __cdecl DebrisProcessTimeSlip(void) {
+void DebrisProcessTimeSlip(void) {
     if (debris_render_global_time < globaltime - 1.0) {
         DebrisTimeSlip(0);
     } else if (globaltime > 900.0) {
@@ -1157,7 +1157,7 @@ void __cdecl DebrisProcessTimeSlip(void) {
     }
 }
 
-void __cdecl DebrisFreeOldestDmaDebTypeTable(void) {
+void DebrisFreeOldestDmaDebTypeTable(void) {
     i32 i;
     i32 oldest = 0;
     f32 oldest_age = 0.0f;
@@ -1185,7 +1185,7 @@ void fun_006580b0(void) {
     debris_render_global_time = 0.0f;
 }
 
-void __cdecl DebFreeAllCreatedEffects(void) {
+void DebFreeAllCreatedEffects(void) {
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {
         DEBRISKEY_PC *key = &debkeydata[i];
@@ -1196,7 +1196,7 @@ void __cdecl DebFreeAllCreatedEffects(void) {
     }
 }
 
-i32 __cdecl CreateScaledEffect(i32 effect_index, f32 requested_scale) {
+i32 CreateScaledEffect(i32 effect_index, f32 requested_scale) {
     i32 i;
     i32 result;
     i32 closest_index;
@@ -1296,7 +1296,7 @@ i32 __cdecl CreateScaledEffect(i32 effect_index, f32 requested_scale) {
     return result;
 }
 
-void __cdecl DebrisReScale(i32 effect_index, f32 scale) {
+void DebrisReScale(i32 effect_index, f32 scale) {
     DEBRIS_INFO_PC *effect;
     i32 i;
     u8 generator;
@@ -1348,7 +1348,7 @@ f32 fun_006582f0(i32 index) {
     return 0.0f;
 }
 
-void __cdecl DebrisPopulateInstance(i32 handle, f32 duration) {
+void DebrisPopulateInstance(i32 handle, f32 duration) {
     DEBRISKEY_PC *key;
     DEBRIS_INFO_PC *effect;
     f32 end_time;
@@ -1418,7 +1418,7 @@ typedef struct debris_collision_effect_pc_s {
     u8 unknown_3d0[0x58];                  // 0x3d0
 } DEBRIS_COLLISION_EFFECT_PC;              // size 0x428
 
-i32 __cdecl DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
+i32 DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     DEBRIS_INFO_PC *effect;
     DEBRIS_COLLISION_EFFECT_PC *collision;
     i32 i;
@@ -1481,8 +1481,7 @@ i32 __cdecl DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position,
     return 0;
 }
 
-i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale,
-                                                      u8 flags) {
+i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     DEBRIS_INFO_PC *effect;
     DEBRIS_COLLISION_EFFECT_PC *collision;
     f32 age;
@@ -1579,7 +1578,7 @@ i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *posi
     return (dy * dy) + (dx * dx) + dz * dz < (radius + horizontal_radius) * (radius + horizontal_radius);
 }
 
-i32 __cdecl DebrisCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
+i32 DebrisCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     i32 i;
     for (i = 0; i < numspherecolldata; ++i) {
         if ((spherecolldata[i].flags & flags) != 0 &&
@@ -1590,7 +1589,7 @@ i32 __cdecl DebrisCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_sc
     return -1;
 }
 
-i32 __cdecl DebrisTorusCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
+i32 DebrisTorusCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     i32 i;
     for (i = 0; i < numtoruscolldata; ++i) {
         if ((toruscolldata[i].flags & flags) != 0 &&
@@ -1602,7 +1601,7 @@ i32 __cdecl DebrisTorusCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32
     return -1;
 }
 
-i32 __cdecl DebrisPreCheckCollisions(NUVEC *position, f32 radius) {
+i32 DebrisPreCheckCollisions(NUVEC *position, f32 radius) {
     DEBRISKEY_PC *key = debris_keystack;
     numspherecolldata = 0;
     numtoruscolldata = 0;
@@ -1672,7 +1671,7 @@ i32 edanimParamCreate(i32 instance_id) {
     return index;
 }
 
-i32 __cdecl DebrisTorusCollisionCheckScaleY(NUVEC *p, f32 r, f32 y) {
+i32 DebrisTorusCollisionCheckScaleY(NUVEC *p, f32 r, f32 y) {
     return DebrisTorusCollisionCheckScaleYFlag(p, r, y, 3);
 }
 
@@ -1684,19 +1683,19 @@ i32 fun_00658d30(NUVEC *position, f32 radius) {
     return DebrisTorusCollisionCheckScaleYFlag(position, radius, 1.0f, 3);
 }
 
-i32 __cdecl DebrisCollisionCheckScaleY(NUVEC *p, f32 r, f32 y) {
+i32 DebrisCollisionCheckScaleY(NUVEC *p, f32 r, f32 y) {
     return DebrisCollisionCheckScaleYFlag(p, r, y, 3);
 }
 
-i32 __cdecl DebrisCollisionCheckFlag(NUVEC *p, f32 r, u8 f) {
+i32 DebrisCollisionCheckFlag(NUVEC *p, f32 r, u8 f) {
     return DebrisCollisionCheckScaleYFlag(p, r, 1.0f, f);
 }
 
-i32 __cdecl DebrisCollisionCheck(NUVEC *p, f32 r) {
+i32 DebrisCollisionCheck(NUVEC *p, f32 r) {
     return DebrisCollisionCheckScaleYFlag(p, r, 1.0f, 3);
 }
 
-i32 __cdecl DebrisAllCollisionCheckScaleYFlag(NUVEC *p, f32 r, f32 y, u8 f) {
+i32 DebrisAllCollisionCheckScaleYFlag(NUVEC *p, f32 r, f32 y, u8 f) {
     i32 result = DebrisCollisionCheckScaleYFlag(p, r, y, f);
     if (result == -1) {
         DebrisTorusCollisionCheckScaleYFlag(p, r, y, f);
@@ -1711,19 +1710,19 @@ i32 fun_006590e0(void) {
 
 /* Native PC entries 0x00659140 and 0x00659150 are RET-only; the D3D release and
  * restore paths call them for debris. Their historical names are unknown. */
-void __cdecl DebrisReleaseResourcesPc(void) {
+void DebrisReleaseResourcesPc(void) {
 }
 
-void __cdecl DebrisRestoreResourcesPc(void) {
+void DebrisRestoreResourcesPc(void) {
 }
 
 extern i32 DebrisGlassInitialized;
 extern void *DebrisGlassCopyMaterial;
 extern f32 DebrisGlassU1;
 extern f32 DebrisGlassV1;
-i32 __cdecl NuPower2(i32 value);
+i32 NuPower2(i32 value);
 
-void __cdecl DebrisGlassInit(void) {
+void DebrisGlassInit(void) {
     NUMTL *material;
     f32 size;
 
@@ -1755,13 +1754,13 @@ void __cdecl DebrisGlassInit(void) {
     DebrisGlassInitialized = 1;
 }
 
-i32 __cdecl NuRndrBeginSceneEx(i32 flags, i32 layer, i32 mode);
-i32 __cdecl NuTexGetReqSize(i32 tex_id, i32 level);
-i32 __cdecl NuTexReserve(i32 size);
-void __cdecl NuTexUnReserve(void);
-void __cdecl NuRainDraw(i32 reserved);
+i32 NuRndrBeginSceneEx(i32 flags, i32 layer, i32 mode);
+i32 NuTexGetReqSize(i32 tex_id, i32 level);
+i32 NuTexReserve(i32 size);
+void NuTexUnReserve(void);
+void NuRainDraw(i32 reserved);
 
-void __cdecl DebrisDrawGlass(void) {
+void DebrisDrawGlass(void) {
     i32 reserved;
     if (DebrisGlassInitialized == 0) {
         return;
@@ -1776,7 +1775,7 @@ void __cdecl DebrisDrawGlass(void) {
     NuTexUnReserve();
 }
 
-void __cdecl SortDebrisRenderStack(void) {
+void SortDebrisRenderStack(void) {
     i32 stack_index;
     i32 start;
     DEBRIS_RENDER_CHUNK_PC *chunk;
@@ -1819,7 +1818,7 @@ void __cdecl SortDebrisRenderStack(void) {
     }
 }
 
-void __cdecl UpdateDebrisRenderStackPriority(void) {
+void UpdateDebrisRenderStackPriority(void) {
     i32 stack_index;
     i32 start;
     DEBRIS_RENDER_CHUNK_PC *chunk;
@@ -1859,8 +1858,8 @@ void __cdecl UpdateDebrisRenderStackPriority(void) {
     }
 }
 
-void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z);
-void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z);
+void DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z);
+void DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z);
 
 void AddFiniteShotDebrisEffect2(i32 *handle, i32 effect, NUVEC *position, NUVEC *emitter_momentum,
                                 NUVEC *particle_momentum, i32 count) {
@@ -1927,8 +1926,8 @@ void AddFiniteShotDebrisEffect(i32 *handle, i32 effect, NUVEC *position, i32 cou
     AddFiniteShotDebrisEffect2(handle, effect, position, NULL, NULL, count);
 }
 
-void __cdecl AddScaledFiniteShotDebrisEffect(i32 *key, i32 effect, NUVEC *position, NUVEC *orientation, NUVEC *momentum,
-                                             i32 count, f32 scale) {
+void AddScaledFiniteShotDebrisEffect(i32 *key, i32 effect, NUVEC *position, NUVEC *orientation, NUVEC *momentum,
+                                     i32 count, f32 scale) {
     i32 scaled = CreateScaledEffect(effect, scale);
     if (scaled != -1) {
         AddFiniteShotDebrisEffect2(key, scaled, position, orientation, momentum, count);
@@ -1942,7 +1941,7 @@ void fun_006904d0(i32 *handle, i32 effect, NUVEC *position, i32 count, void *use
     }
 }
 
-void __cdecl DebrisCleanUpDmaDebTypeTables(void) {
+void DebrisCleanUpDmaDebTypeTables(void) {
     if (++DebrisDmaCleanupDelayPc > 5) {
         i32 index = DebrisDmaCleanupIndexPc;
         DEBRIS_INFO_PC **table = debtab;
@@ -1971,7 +1970,7 @@ void __cdecl DebrisCleanUpDmaDebTypeTables(void) {
     }
 }
 
-void __cdecl Debris(i32 update_panel_time) {
+void Debris(i32 update_panel_time) {
     if (update_debris_enabled == 0 || DebrisProcessingEnabledPc == 0 || debris_suspended != 0) {
         return;
     }
@@ -2012,7 +2011,7 @@ static void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
     eduiCreateMessageMenu(menu, "Loaded OK", 1);
 }
 
-void __cdecl DebrisShift(NUMTX *transform) {
+void DebrisShift(NUMTX *transform) {
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {
         DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[i];
@@ -2064,8 +2063,7 @@ void __cdecl DebrisShift(NUMTX *transform) {
     }
 }
 
-i32 __cdecl DebrisFindAllOfType(i32 effect_index, NUVEC *positions, i32 *handles, i32 capacity, i32 skip,
-                                i32 active_only) {
+i32 DebrisFindAllOfType(i32 effect_index, NUVEC *positions, i32 *handles, i32 capacity, i32 skip, i32 active_only) {
     i32 count = 0;
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {
@@ -2087,7 +2085,7 @@ i32 __cdecl DebrisFindAllOfType(i32 effect_index, NUVEC *positions, i32 *handles
     return count - skip;
 }
 
-i32 __cdecl DebrisGetRingProperties(i32 handle, NUVEC *origin, NUVEC *direction, f32 *radius) {
+i32 DebrisGetRingProperties(i32 handle, NUVEC *origin, NUVEC *direction, f32 *radius) {
     DEBRIS_INFO_PC *effect = debtab[DEBRIS_ENGINE_KEYS_PC[handle].effect_index];
     DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[handle];
     NUVEC axis;
@@ -2118,8 +2116,8 @@ i32 __cdecl DebrisGetRingProperties(i32 handle, NUVEC *origin, NUVEC *direction,
     return 1;
 }
 
-i32 __cdecl DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *start_radius, f32 *end_radius,
-                                    NUVEC *direction, f32 *length, f32 *speed) {
+i32 DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *start_radius, f32 *end_radius, NUVEC *direction,
+                            f32 *length, f32 *speed) {
     DEBRIS_INFO_PC *effect = debtab[DEBRIS_ENGINE_KEYS_PC[handle].effect_index];
     DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[handle];
     NUVEC axis;
@@ -2155,7 +2153,7 @@ i32 __cdecl DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *
     return 1;
 }
 
-void __cdecl DebrisStatusAlwaysOff(i32 *handle) {
+void DebrisStatusAlwaysOff(i32 *handle) {
     if (*handle != -1) {
         debkeydata[*handle].field_2f4 = 0;
     }

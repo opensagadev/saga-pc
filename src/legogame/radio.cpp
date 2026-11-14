@@ -9,7 +9,7 @@ struct RADIO_ENTRY_PC {
 
 f32 RadioLifetimePc = 20.0f;
 
-void __cdecl ResetRadios(void) {
+void ResetRadios(void) {
     memset(RadioEntriesPc, 0, sizeof(RadioEntriesPc));
     radios_playing = 0;
 }
@@ -17,7 +17,7 @@ void __cdecl ResetRadios(void) {
 f32 RadioPhasePeriodPc = 0.5f;
 f32 RadioScaleFactorPc = 0.1f;
 
-extern "C" void __cdecl UpdateRadios(void) {
+extern "C" void UpdateRadios(void) {
     if (radios_playing == 0) {
         return;
     }
@@ -64,7 +64,7 @@ extern "C" void __cdecl UpdateRadios(void) {
     }
 }
 
-void __cdecl PlayRadio(char *special_name, char *blowup_name, i32 play) {
+void PlayRadio(char *special_name, char *blowup_name, i32 play) {
     RADIO_ENTRY_PC *pool = reinterpret_cast<RADIO_ENTRY_PC *>(RadioEntriesPc);
     if (special_name != NULL || blowup_name != NULL) {
         if (play != 0) {

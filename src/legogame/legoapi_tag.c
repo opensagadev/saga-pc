@@ -39,13 +39,13 @@ typedef struct TAGFLAGS1FC_PC {
 
 #define TAG_FLAGS(object) ((TAGFLAGS1FC_PC *)&(object)->flags_1fc_word)
 /* Defined in render.c, the TU that owns 0x486f20; an in-TU empty body lets the call be dropped. */
-void __cdecl TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name);
+void TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name);
 
-void __cdecl Tag_SetMode(i32 mode) {
+void Tag_SetMode(i32 mode) {
     Tag_Mode = mode;
 }
 
-i32 __cdecl Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
+i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
     i32 remaining = HIGHGAMEOBJECT - 1;
     i32 index = object->hostility_group;
     GAMEOBJECT *candidate;
@@ -95,7 +95,7 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
     return nearest;
 }
 
-void __cdecl GetTakeOverPos(GAMEOBJECT *object, NUVEC *position) {
+void GetTakeOverPos(GAMEOBJECT *object, NUVEC *position) {
     i32 locator = object->character_data->game_character->ride_locator;
     CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
     if (locator != -1 && model->points_of_interest[locator] != NULL) {
@@ -170,7 +170,7 @@ no_action:
     rider->field_7aa = 0x6c;
 }
 
-i32 __cdecl TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 unused) {
+i32 TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 unused) {
     (void)unused;
     ReleaseForce(rider, 0);
     ReleaseBuildIt(rider, 0);
@@ -197,7 +197,7 @@ i32 __cdecl TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camer
     return 1;
 }
 
-void __cdecl TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
+void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     i32 i;
     GAMEOBJECT *object = Obj;
     i32 count = HIGHGAMEOBJECT;
@@ -236,7 +236,7 @@ void __cdecl TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     PlayJumpSfx(rider, 0);
 }
 
-i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused) {
+i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused) {
     GAMEPAD_PC *source_pad;
     GAMEPAD_PC *destination_pad;
     f32 source_da8;
@@ -254,7 +254,7 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
     u32 source_flags;
     u32 saved_flags;
     u32 mask;
-    void(__cdecl * callback)(GAMEOBJECT *);
+    void (*callback)(GAMEOBJECT *);
     (void)unused;
     if (CUTSKIPLOCK == 0) {
         source_pad = source->pad;
@@ -414,7 +414,7 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
     return 0;
 }
 
-i32 __cdecl TagCharacter(GAMEOBJECT *source, GAMEOBJECT *target, i32 mode) {
+i32 TagCharacter(GAMEOBJECT *source, GAMEOBJECT *target, i32 mode) {
     i32 index;
     u32 source_active;
     u32 target_active;
@@ -446,7 +446,7 @@ found:
     return 1;
 }
 
-void __cdecl Tag_Check(GAMEOBJECT *object) {
+void Tag_Check(GAMEOBJECT *object) {
     GAMEOBJECT *target;
     i32 result;
     if (Arcade != 0 || (object->tag_flags & 1) != 0 || object->character_context == 0x51) {
@@ -588,7 +588,7 @@ draw_icon:
     }
 }
 
-void __cdecl ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
+void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     GAMEOBJECT *rider;
     GAMEOBJECT *object;
     TAGSCRIPTSTATE_PC rider_script;
@@ -668,7 +668,7 @@ void __cdecl ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     }
 }
 
-void __cdecl ReleaseAllTakeOvers(void) {
+void ReleaseAllTakeOvers(void) {
     i32 index;
     for (index = 0; index < 8; ++index) {
         if (Player[index] != NULL) {
@@ -677,7 +677,7 @@ void __cdecl ReleaseAllTakeOvers(void) {
     }
 }
 
-void __cdecl TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera) {
+void TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera) {
     i32 result;
     if (rider == NULL || (rider->flags_1fc_word & 1) == 0 || vehicle == NULL || (vehicle->flags_1fc_word & 1) == 0 ||
         rider->rider != NULL || vehicle->rider != NULL) {
@@ -700,7 +700,7 @@ void __cdecl TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 ble
     }
 }
 
-void __cdecl TakeOverGameObject(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 immediate) {
+void TakeOverGameObject(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 immediate) {
     if (immediate != 0) {
         TakeOverGameObject2(rider, vehicle, blend_camera);
     } else {
@@ -708,7 +708,7 @@ void __cdecl TakeOverGameObject(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blen
     }
 }
 
-void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
+void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
     GAMEOBJECT *target;
     if (object->character_context == 0x3c) {
         f32 fraction;

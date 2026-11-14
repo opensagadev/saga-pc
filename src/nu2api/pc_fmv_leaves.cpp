@@ -1,6 +1,6 @@
 #include "pc_fmv_native.h"
 
-extern "C" void __cdecl FmvOptionErrorPc(i32, const char *, i32) {
+extern "C" void FmvOptionErrorPc(i32, const char *, i32) {
 }
 
 extern "C" void NuFntSet(i32 font);
@@ -21,10 +21,10 @@ extern "C" i32 fun_00630db0(void) {
     return 1;
 }
 
-extern "C" void __cdecl FmvPlatformUpdatePc(void) {
+extern "C" void FmvPlatformUpdatePc(void) {
 }
 
-extern "C" void __cdecl FmvPlatformFinishPc(void) {
+extern "C" void FmvPlatformFinishPc(void) {
 }
 
 extern "C" void fun_006d6b60(void) {

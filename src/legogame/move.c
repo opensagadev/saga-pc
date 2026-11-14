@@ -78,17 +78,17 @@ typedef struct BALLOON_HEIGHT_VIEW_PC {
     f32 height;
 } BALLOON_HEIGHT_VIEW_PC;
 
-void __cdecl SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void __cdecl Techno_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void __cdecl Signal_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void __cdecl KeepWeaponIn(GAMEOBJECT *);
-void __cdecl Attracto_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
-void __cdecl SuperCarry_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void __cdecl Detonator_MoveCode(GAMEOBJECT *);
-void __cdecl Transform_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void __cdecl Whip_MoveCode(GAMEOBJECT *);
-void __cdecl TakeOverCode(GAMEOBJECT *, i32);
+void SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
+void Techno_MoveCode(WORLDINFO *, GAMEOBJECT *);
+void Signal_MoveCode(WORLDINFO *, GAMEOBJECT *);
+void KeepWeaponIn(GAMEOBJECT *);
+void Attracto_MoveCode(WORLDINFO *, GAMEOBJECT *);
+void GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
+void SuperCarry_MoveCode(WORLDINFO *, GAMEOBJECT *);
+void Detonator_MoveCode(GAMEOBJECT *);
+void Transform_MoveCode(WORLDINFO *, GAMEOBJECT *);
+void Whip_MoveCode(GAMEOBJECT *);
+void TakeOverCode(GAMEOBJECT *, i32);
 
 typedef struct movement_suit_pc_s {
     u8 unknown_00[0xc];
@@ -100,7 +100,7 @@ typedef struct movement_model_pc_s {
     void **model_data_b;
 } MOVEMENT_MODEL_PC;
 
-TUBE_PC *__cdecl Tube_InAnyCylinder(WORLDINFO *, GAMEOBJECT *, i32);
+TUBE_PC *Tube_InAnyCylinder(WORLDINFO *, GAMEOBJECT *, i32);
 #define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
 #define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
 #define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
@@ -243,7 +243,7 @@ typedef struct COMBO_AI_VIEW_PC {
     f32 nearest_opponent_metric;
 } COMBO_AI_VIEW_PC;
 
-extern void(__cdecl *VehicleSlowdownCallbackPc)(GAMEOBJECT *);
+extern void (*VehicleSlowdownCallbackPc)(GAMEOBJECT *);
 extern AREA_DATA_PC *DEATHSTARBATTLE_ADATA;
 extern AREA_DATA_PC *ANAKINSFLIGHT_ADATA;
 extern AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA;
@@ -364,7 +364,7 @@ typedef struct cable_view_pc_s {
 
 typedef struct message_draw_view_pc_s {
     u8 unknown_000[0x10c];
-    void(__cdecl *draw)(GAME_MESSAGE_PC *, NUVEC *, f32);
+    void (*draw)(GAME_MESSAGE_PC *, NUVEC *, f32);
 } MESSAGE_DRAW_VIEW_PC;
 
 typedef struct default_motion_batarang_pointer_pc_s {
@@ -372,7 +372,7 @@ typedef struct default_motion_batarang_pointer_pc_s {
     void *batarang;
 } DEFAULT_MOTION_BATARANG_POINTER_PC;
 
-void __cdecl SuitBlowupCodePc(WORLDINFO *, GAMEOBJECT *);
+void SuitBlowupCodePc(WORLDINFO *, GAMEOBJECT *);
 
 typedef struct MOTION_PLATFORM_CONTACT_READER_PC {
     u8 unknown_000[0x27e];
@@ -431,8 +431,8 @@ typedef struct critter_object_reader_pc_s {
     void *snake_body;
 } CRITTER_OBJECT_READER_PC;
 
-void *__cdecl CreateSnakeBody(GAMEOBJECT *object, i32 segment_count);
-void __cdecl UpdateSnakeBody(GAMEOBJECT *object);
+void *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count);
+void UpdateSnakeBody(GAMEOBJECT *object);
 
 /* Retail-private helpers and combo provider; keep in move.c with native callers. */
 typedef struct COMBO_STATE_VIEW_PC {
@@ -663,7 +663,7 @@ static i32 PreResetCanAccelerateFallPc(GAMEOBJECT *object) {
     return delta_x * direction.x + delta_z * direction.z > 0.0;
 }
 
-i32 __cdecl ObjZappedBlue(GAMEOBJECT *object) {
+i32 ObjZappedBlue(GAMEOBJECT *object) {
     if (object->character_context == 0x42) {
         return 1;
     }
@@ -692,7 +692,7 @@ static i32 IsAFallAnim(i32 animation) {
     return animation == 0x74;
 }
 
-f32 __cdecl VehicleTurnOrLoopOffset(GAMEOBJECT *object) {
+f32 VehicleTurnOrLoopOffset(GAMEOBJECT *object) {
     f32 phase;
     f32 sine;
     f32 half;
@@ -718,7 +718,7 @@ f32 __cdecl VehicleTurnOrLoopOffset(GAMEOBJECT *object) {
     return 0.0f;
 }
 
-f32 __cdecl GetHoverPosY(GAMEOBJECT *object) {
+f32 GetHoverPosY(GAMEOBJECT *object) {
     f32 offset;
     f32 height;
     if ((object->character_data->model_flags & 0x2000) != 0 &&
@@ -742,7 +742,7 @@ f32 __cdecl GetHoverPosY(GAMEOBJECT *object) {
     return LevelConfigFarDistance;
 }
 
-f32 __cdecl GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
+f32 GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
     f32 height;
     f32 combined_height;
     f32 combined_radius;
@@ -821,7 +821,7 @@ f32 __cdecl GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
     return height;
 }
 
-void __cdecl DrawOffsetCode(GAMEOBJECT *object, i32 reset) {
+void DrawOffsetCode(GAMEOBJECT *object, i32 reset) {
     NUVEC target = v000;
     NUVEC delta;
     f32 distance;
@@ -857,7 +857,7 @@ void __cdecl DrawOffsetCode(GAMEOBJECT *object, i32 reset) {
     NuVecAdd(&object->render_offset, &object->render_offset, &delta);
 }
 
-void __cdecl PreResetCode(GAMEOBJECT *object) {
+void PreResetCode(GAMEOBJECT *object) {
     PLAYER_RESET_FIELDS_PC *reset = (PLAYER_RESET_FIELDS_PC *)object;
     PLAYERCHARACTERCONFIG_PC *character;
     object->flags_e24 &= 0xffffafcf;
@@ -934,7 +934,7 @@ void __cdecl PreResetCode(GAMEOBJECT *object) {
     }
 }
 
-f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
+f32 ForceTowardsMid(GAMEOBJECT *object) {
     SOCKSYS_PC *system = WorldInfo_CurrentlyActive()->sock_sys;
     SOCK_PC *sock;
     f32 inner;
@@ -1043,7 +1043,7 @@ done:
     return amount;
 }
 
-void __cdecl MoveInactiveVehicle(GAMEOBJECT *object, i32 mode, GAMEOBJECT **followed_object) {
+void MoveInactiveVehicle(GAMEOBJECT *object, i32 mode, GAMEOBJECT **followed_object) {
     GAMEOBJECT *other;
     NUVEC position;
     f32 count;
@@ -1084,7 +1084,7 @@ void __cdecl MoveInactiveVehicle(GAMEOBJECT *object, i32 mode, GAMEOBJECT **foll
     object->field_ddc = 0.0f;
 }
 
-void __cdecl KeepVehicleOnScreen(GAMEOBJECT *object, i32 sides, i32 top, i32 bottom) {
+void KeepVehicleOnScreen(GAMEOBJECT *object, i32 sides, i32 top, i32 bottom) {
     f32 margin;
     f32 distance;
     object->flags_ef4 |= 0x10000000;
@@ -1128,7 +1128,7 @@ void __cdecl KeepVehicleOnScreen(GAMEOBJECT *object, i32 sides, i32 top, i32 bot
     }
 }
 
-i32 __cdecl FaceOpponent(GAMEOBJECT *object, NUVEC *position) {
+i32 FaceOpponent(GAMEOBJECT *object, NUVEC *position) {
     GAMEOBJECT *target;
     if (position == NULL) {
         target = object->force_target;
@@ -1167,7 +1167,7 @@ static f32 MovementWalkingSpeedPC(GAMEOBJECT *object, f32 scale) {
 
 static f32 magdif = 0;
 
-void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
+void VehicleCollisionCode(GAMEOBJECT *object) {
     i32 speeder_level;
     i32 debris_type;
     i32 effect;
@@ -1244,7 +1244,7 @@ void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
     }
 }
 
-f32 __cdecl GetVehicleAreaRememberSpeed(void) {
+f32 GetVehicleAreaRememberSpeed(void) {
     f32 speed = 0.0f;
     f32 count;
     GAMEOBJECT *first;
@@ -1271,7 +1271,7 @@ f32 __cdecl GetVehicleAreaRememberSpeed(void) {
     return speed;
 }
 
-f32 __cdecl GetVehicleSpeedMul(GAMEOBJECT *object, f32 speed) {
+f32 GetVehicleSpeedMul(GAMEOBJECT *object, f32 speed) {
     if (object->character_context == 0x2a || object->character_context == 0x36 || object->character_context == 0x3a) {
         speed = object->character_data->game_character->run_speed;
     } else if ((object->flags_1fc_word & 0x80) != 0 && WORLD->current_level == DEATHSTARBATTLED_LDATA &&
@@ -1300,11 +1300,11 @@ f32 __cdecl GetVehicleSpeedMul(GAMEOBJECT *object, f32 speed) {
     return speed / object->character_data->game_character->run_speed;
 }
 
-i32 __cdecl TwistLevel(LEVELDATA_PC *level) {
+i32 TwistLevel(LEVELDATA_PC *level) {
     return DOGFIGHTA_LDATA != NULL && level == DOGFIGHTA_LDATA;
 }
 
-void __cdecl AveragePlayerCurrentSpeedMul(void) {
+void AveragePlayerCurrentSpeedMul(void) {
     i32 count = 0;
     avg_currentspeed_mul = 0.0f;
     if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) != 0) {
@@ -1320,7 +1320,7 @@ void __cdecl AveragePlayerCurrentSpeedMul(void) {
     }
 }
 
-f32 __cdecl ForceAlongSock(GAMEOBJECT *object) {
+f32 ForceAlongSock(GAMEOBJECT *object) {
     NUVEC force;
     f32 speed = 0.0f;
     if (object->sock_index != 0xff && CurrentSpeed != 0.0f) {
@@ -1335,7 +1335,7 @@ f32 __cdecl ForceAlongSock(GAMEOBJECT *object) {
     return speed;
 }
 
-void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation) {
+void CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation) {
     WORLDINFO *world;
     SOCK_PC *sock;
     NUVEC current;
@@ -1393,7 +1393,7 @@ i32 fun_00499e00(AREA_DATA_PC *area) {
     return 0;
 }
 
-i32 __cdecl MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
+i32 MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEPAD_PC *pad = object->pad;
     PLAYERCHARACTERCONFIG_PC *data;
@@ -1486,7 +1486,7 @@ i32 __cdecl MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
     return 1;
 }
 
-i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
+i32 MovePlayer_CIRCLE(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEPAD_PC *pad = object->pad;
     GAMEOBJECT *vehicle;
@@ -1568,7 +1568,7 @@ i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
     return 1;
 }
 
-void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object) {
+void MovePlayer_ROLLING(GAMEOBJECT *object) {
     f32 seek_rate;
     f32 displacement;
     i32 effect;
@@ -1648,7 +1648,7 @@ static f32 PodRollInputRate = 6.0f;
 static f32 PodRollReleaseRate = 3.0f;
 #pragma data_seg()
 
-i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
+i32 MovePlayer_POD(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEPAD_PC *pad = object->pad;
     f32 input = pad->input_direction_z;
@@ -1734,7 +1734,7 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
     return 1;
 }
 
-void __cdecl StartTurn(GAMEOBJECT *object) {
+void StartTurn(GAMEOBJECT *object) {
     object->character_context = 0x2a;
     object->field_7aa = 1;
     object->context_duration = TURNTIME;
@@ -1743,7 +1743,7 @@ void __cdecl StartTurn(GAMEOBJECT *object) {
     PlaySfx((char *)TurnLoopSfx, &object->collision_position);
 }
 
-void __cdecl LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad, i32 allow_loop) {
+void LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad, i32 allow_loop) {
     GAMEOBJECT *other;
     i32 index;
     i32 angle_difference;
@@ -1902,7 +1902,7 @@ static void IsTurnRequested(GAMEOBJECT *object, u16 input_angle, i32 *turn, i32 
     }
 }
 
-void __cdecl TurnCode(GAMEOBJECT *object, i32 mode, GAMEPAD_PC *pad) {
+void TurnCode(GAMEOBJECT *object, i32 mode, GAMEPAD_PC *pad) {
     if (WORLD->area != NULL && (WORLD->area == BATTLEOVERCORUSCANT_ADATA || WORLD->area == PODSPRINT_ADATA)) {
         return;
     }
@@ -2067,7 +2067,7 @@ static void VehicleThrustPc(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl StartLaunch(GAMEOBJECT *object) {
+void StartLaunch(GAMEOBJECT *object) {
     if (object->character_context == 0x2c) {
         return;
     }
@@ -2142,7 +2142,7 @@ static void VehicleLaunchPc(GAMEOBJECT *object) {
     NuVecRotateY(&object->velocity, &object->velocity, object->field_0x276);
 }
 
-void __cdecl StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
+void StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
     PLAYERCHARACTERCONFIG_PC *data;
     NUVEC direction;
     u16 angle;
@@ -2185,7 +2185,7 @@ void __cdecl StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
     NewBuzz(target->pad->bound_pad, 0.1f, 0);
 }
 
-void __cdecl FlattenCode(GAMEOBJECT *object) {
+void FlattenCode(GAMEOBJECT *object) {
     GAMEOBJECT *nearest = NULL;
     GAMEOBJECT *candidate;
     f32 nearest_distance;
@@ -2240,7 +2240,7 @@ static void WalkerDelayedKillPc(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl TakeHitCode(GAMEOBJECT *object) {
+void TakeHitCode(GAMEOBJECT *object) {
     i32 active = 0;
     i32 mode;
     i32 coins;
@@ -2371,7 +2371,7 @@ static i32 DeactivatedMindTrickFilterPc(GAMEOBJECT *target, GAMEOBJECT *owner) {
     return (data->flags_094 & 0x200) == 0;
 }
 
-void __cdecl ReleaseEat(GAMEOBJECT *object) {
+void ReleaseEat(GAMEOBJECT *object) {
     GAMEOBJECT *eaten = object->force_target;
     if (eaten != NULL && (object->flags_e24 & 1) != 0) {
         KillGameObject(eaten, 2, 0);
@@ -2384,7 +2384,7 @@ void __cdecl ReleaseEat(GAMEOBJECT *object) {
     object->flags_e24 &= ~1u;
 }
 
-void __cdecl GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
+void GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
     f32 zero;
     if (object->character_context != -1) {
         return;
@@ -2541,8 +2541,8 @@ void EatVictim(GAMEOBJECT *object) {
     object->context_variant_flags &= ~0x40u;
 }
 
-GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 allow_untargeted, i32 mode,
-                                i32 player_filter) {
+GAMEOBJECT *ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 allow_untargeted, i32 mode,
+                        i32 player_filter) {
     f32 range_squared = range * range;
     i32 ignore_ai = objopponent_ignoreaiopponent;
     GAMEPAD_PC *pad;
@@ -2825,13 +2825,13 @@ void StartBallooning(GAMEOBJECT *object, i32 movement_state) {
     object->context_hover_target_y = 1000000000.0f;
 }
 
-void __cdecl SetBallooningHeight(GAMEOBJECT *object, f32 height) {
+void SetBallooningHeight(GAMEOBJECT *object, f32 height) {
     if (object->character_context == 0x5d) {
         ((BALLOON_HEIGHT_VIEW_PC *)object)->height = height;
     }
 }
 
-void __cdecl LetGoOfBalloon(GAMEOBJECT *object) {
+void LetGoOfBalloon(GAMEOBJECT *object) {
     i32 hand;
     NUMTX matrix;
     NUVEC velocity;
@@ -2873,12 +2873,12 @@ void __cdecl LetGoOfBalloon(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl PopBalloon(GAMEOBJECT *object) {
+void PopBalloon(GAMEOBJECT *object) {
     LetGoOfBalloon(object);
 }
 
 /* Native 49d6d0: genuine guard then fixed PC context/action and pointer member. */
-i32 __cdecl Glide_Start(GAMEOBJECT *object) {
+i32 Glide_Start(GAMEOBJECT *object) {
     if (LEGOCONTEXT_GLIDE != -1) {
         object->context_timer = 0.0f;
         object->character_context = 0x4f;
@@ -2891,7 +2891,7 @@ i32 __cdecl Glide_Start(GAMEOBJECT *object) {
     return 0;
 }
 
-void __cdecl Glide_MoveCode(GAMEOBJECT *object) {
+void Glide_MoveCode(GAMEOBJECT *object) {
     i32 can_glide;
 
     if (object->character_context == 0x4f) {
@@ -2943,7 +2943,7 @@ void __cdecl Glide_MoveCode(GAMEOBJECT *object) {
     Glide_Start(object);
 }
 
-i32 __cdecl Glide_SetTargetMom(GAMEOBJECT *object) {
+i32 Glide_SetTargetMom(GAMEOBJECT *object) {
     f32 speed;
     if (((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[object->field_7aa] != NULL) {
         speed = AnimSpeed(object->character_model, object->field_7aa);
@@ -2968,7 +2968,7 @@ i32 __cdecl Glide_SetTargetMom(GAMEOBJECT *object) {
     return 1;
 }
 
-void __cdecl StartLunge(GAMEOBJECT *object, f32 speed, f32 height) {
+void StartLunge(GAMEOBJECT *object, f32 speed, f32 height) {
     LUNGE_TARGET_SLOTS_PC *targets = (LUNGE_TARGET_SLOTS_PC *)object;
     object->context_variant_flags &= ~0x80;
     object->context_timer = 0.0f;
@@ -3029,7 +3029,7 @@ static void JetPackUp(GAMEOBJECT *object) {
     object->jump_variant_timer = 0.0f;
 }
 
-void __cdecl StartJetPackFall(GAMEOBJECT *object, i32 fall) {
+void StartJetPackFall(GAMEOBJECT *object, i32 fall) {
     object->context_timer = 0.0f;
     object->context_variant_flags &= 0xfffeafff;
     object->jump_variant_state = 0;
@@ -3051,7 +3051,7 @@ void __cdecl StartJetPackFall(GAMEOBJECT *object, i32 fall) {
     }
 }
 
-void __cdecl JetPackCode(GAMEOBJECT *object, i32 jump_pressed, i32 fall, i32 unused) {
+void JetPackCode(GAMEOBJECT *object, i32 jump_pressed, i32 fall, i32 unused) {
     i8 context = object->character_context;
     if (context == 2 || context == 0x19 ||
         (object->character_data->game_character->hover_fall_mode == 2 && context == 1)) {
@@ -3427,7 +3427,7 @@ static void StartDodgePc(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl Dodge_UpdateHint(HINT_PC *hint) {
+i32 Dodge_UpdateHint(HINT_PC *hint) {
     i32 index;
     (void)hint;
     if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
@@ -3814,8 +3814,7 @@ start_attack:
     }
 }
 
-void __cdecl MakeThrowVector(NUVEC *result, NUVEC *origin, NUVEC *target, NUVEC *target_velocity, f32 speed,
-                             f32 gravity) {
+void MakeThrowVector(NUVEC *result, NUVEC *origin, NUVEC *target, NUVEC *target_velocity, f32 speed, f32 gravity) {
     NUVEC predicted = *target;
     NUVEC horizontal_origin;
     NUVEC delta;
@@ -3886,7 +3885,7 @@ i32 LightSabre_ColourFromObj(i32 model, i32 *glow_model) {
     return colour;
 }
 
-void __cdecl LightSabreDebris(GAMEOBJECT *object) {
+void LightSabreDebris(GAMEOBJECT *object) {
     i32 hit_effect;
     i32 blade_count;
     i32 blade;
@@ -4736,7 +4735,7 @@ static void SwipeCode(GAMEOBJECT *object, i32 pressed, i32 held) {
     }
 }
 
-void __cdecl EndForce(GAMEOBJECT *object, i32 mode) {
+void EndForce(GAMEOBJECT *object, i32 mode) {
     if (object != NULL && !(object->flags_1f8 & 0x40000)) {
         FORCE_GLOW_READER_PC *glow = (FORCE_GLOW_READER_PC *)object;
         object->flags_e20 &= ~0x20000;
@@ -4872,7 +4871,7 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
     }
 }
 
-void __cdecl ForceLightning_Origin(GAMEOBJECT *object, NUVEC *primary, NUVEC *secondary) {
+void ForceLightning_Origin(GAMEOBJECT *object, NUVEC *primary, NUVEC *secondary) {
     i32 joint;
     *primary = object->collision_position;
     if (secondary != NULL) {
@@ -4895,7 +4894,7 @@ void __cdecl ForceLightning_Origin(GAMEOBJECT *object, NUVEC *primary, NUVEC *se
     }
 }
 
-void __cdecl ReleaseForce(GAMEOBJECT *object, i32 mode) {
+void ReleaseForce(GAMEOBJECT *object, i32 mode) {
     switch (object->character_context) {
         case 0x1b: {
             GAMEOBJECT *target = object->force_target;
@@ -5177,7 +5176,7 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
     }
 }
 
-void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter) {
+void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter) {
     NUVEC delta;
     i32 index;
     i32 choke_style;
@@ -5524,7 +5523,7 @@ static void ForcePushed_MoveCode(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
+i32 ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
     GAMEOBJECT *source = object->force_target;
     GAMEOBJECT *nearest;
     GAMEOBJECT *candidate;
@@ -5611,7 +5610,7 @@ i32 __cdecl ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
     return 0;
 }
 
-i32 __cdecl ForcePushed_YRotation(GAMEOBJECT *object) {
+i32 ForcePushed_YRotation(GAMEOBJECT *object) {
     GAMEOBJECT *source = object->force_target;
     if (source != NULL && source->character_context == 0x1b && (source->flags_e20 & 0x80) == 0 &&
         (source->flags_e20 & 0x300) == 0 && (object->velocity.x != 0.0f || object->velocity.z != 0.0f)) {
@@ -5625,7 +5624,7 @@ i32 __cdecl ForcePushed_YRotation(GAMEOBJECT *object) {
     return 0;
 }
 
-i32 __cdecl ForcePushed_SuperPush_Occurring(GAMEOBJECT *first, GAMEOBJECT *second) {
+i32 ForcePushed_SuperPush_Occurring(GAMEOBJECT *first, GAMEOBJECT *second) {
     GAMEOBJECT *source;
     if (first->character_context == 0x1c) {
         if (first->action_movement_state == 0) {
@@ -5778,7 +5777,7 @@ static GAMEOBJECT *ForceBackObjPc = 0;
 static NUVEC *ForceBackPosPc = 0;
 #pragma bss_seg()
 
-void __cdecl ResetForceBack(void) {
+void ResetForceBack(void) {
     ForceBackObjPc = NULL;
     ForceBackPosPc = NULL;
 }
@@ -5790,7 +5789,7 @@ static f32 ForceBackRadiusPc = 0;
 static i32 ForceBackTypePc = 0;
 #pragma bss_seg()
 
-void __cdecl SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 type) {
+void SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 type) {
     ForceBackObjPc = object;
     ForceBackPosPc = object != NULL ? &object->collision_position : position;
     ForceBackRadiusPc = radius;
@@ -5823,7 +5822,7 @@ void DrawForceBackEffect(nuhspecial_s *special) {
     }
 }
 
-void __cdecl ForcedBackCode(GAMEOBJECT *object) {
+void ForcedBackCode(GAMEOBJECT *object) {
     f32 radius;
     f32 distance;
     if (ForceBackPosPc != NULL && (object->flags_ef0 & 0x10000000) == 0) {
@@ -5874,7 +5873,7 @@ void __cdecl ForcedBackCode(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl ResetForceGlow(void *packet) {
+void ResetForceGlow(void *packet) {
     FORCE_GLOW_PACKET_PC *view = packet;
     view->alpha = 0.0f;
     view->target = 0.0f;
@@ -5884,7 +5883,7 @@ void __cdecl ResetForceGlow(void *packet) {
     view->recovery = 0.2f;
 }
 
-void __cdecl DrawForceGlowSprite(NUVEC *position, f32 radius, i32 model, f32 alpha, GAMEOBJECT *object) {
+void DrawForceGlowSprite(NUVEC *position, f32 radius, i32 model, f32 alpha, GAMEOBJECT *object) {
     WORLDINFO *world;
     NUVEC direction;
     NUVEC draw_position;
@@ -6125,7 +6124,7 @@ void fun_004a5690(void) {
 static f32 rocket_lock_distance = 1.0f;
 #pragma data_seg()
 
-void __cdecl BobaRocket_Move(PART_PC *part, f32 elapsed) {
+void BobaRocket_Move(PART_PC *part, f32 elapsed) {
     NUVEC delta;
     NUVEC next;
     NUVEC scale;
@@ -6192,7 +6191,7 @@ void __cdecl BobaRocket_Move(PART_PC *part, f32 elapsed) {
     }
 }
 
-void __cdecl BobaRocket_Kill(PART_PC *part, i32 reason) {
+void BobaRocket_Kill(PART_PC *part, i32 reason) {
     EXPLOSION_PC *explosion = Detonate(&part->position, 0);
     GAMEOBJECT *owner;
     (void)reason;
@@ -6207,12 +6206,12 @@ void __cdecl BobaRocket_Kill(PART_PC *part, i32 reason) {
     }
 }
 
-void __cdecl BobaRocket_Deflect(PART_PC *part) {
+void BobaRocket_Deflect(PART_PC *part) {
     part->flags = (part->flags & ~0x4000u) | 0x80;
     NewPartRotation(part);
 }
 
-void __cdecl PartUpdate_Basketball(PART_PC *part) {
+void PartUpdate_Basketball(PART_PC *part) {
     GIZMOBLOWUP_PC *blowup;
     if (LevGizmo[0] == NULL) {
         return;
@@ -6225,7 +6224,7 @@ void __cdecl PartUpdate_Basketball(PART_PC *part) {
     }
 }
 
-void __cdecl PartImpact_Basketball(PART_PC *part) {
+void PartImpact_Basketball(PART_PC *part) {
     f32 volume = NuVecMag(&part->velocity);
     if (volume >= 2.5f) {
         volume = 1.0f;
@@ -6239,7 +6238,7 @@ void __cdecl PartImpact_Basketball(PART_PC *part) {
     }
 }
 
-u16 __cdecl GetShootDirection_LSW(GAMEOBJECT *object, NUVEC *direction) {
+u16 GetShootDirection_LSW(GAMEOBJECT *object, NUVEC *direction) {
     NUVEC temporary;
     CHARACTERDATA_PC *model;
     PLAYERCHARACTERCONFIG_PC *data;
@@ -6283,7 +6282,7 @@ u16 __cdecl GetShootDirection_LSW(GAMEOBJECT *object, NUVEC *direction) {
     return angle;
 }
 
-u16 __cdecl GetShootDirection_Batman(GAMEOBJECT *object, NUVEC *direction) {
+u16 GetShootDirection_Batman(GAMEOBJECT *object, NUVEC *direction) {
     NUVEC temporary;
     u16 angle;
     if (direction == NULL) {
@@ -6315,7 +6314,7 @@ u16 __cdecl GetShootDirection_Batman(GAMEOBJECT *object, NUVEC *direction) {
     return angle;
 }
 
-i32 __cdecl SetObjTarget(GAMEOBJECT *object, GAMEOBJECT *target) {
+i32 SetObjTarget(GAMEOBJECT *object, GAMEOBJECT *target) {
     object->attack_target_position = target->collision_position;
     if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0) {
         object->attack_target_position.y += Bolt_ObjTargetPosYAdjust(target);
@@ -6326,7 +6325,7 @@ i32 __cdecl SetObjTarget(GAMEOBJECT *object, GAMEOBJECT *target) {
     return 1;
 }
 
-i32 __cdecl SetGizmoBlowUpTarget(GAMEOBJECT *object, GIZMOBLOWUP_PC *target) {
+i32 SetGizmoBlowUpTarget(GAMEOBJECT *object, GIZMOBLOWUP_PC *target) {
     object->attack_target_position = target->mid_position;
     *(NUVEC *)&object->field_c8c = v000;
     object->flags_e20 |= 0x800;
@@ -6334,7 +6333,7 @@ i32 __cdecl SetGizmoBlowUpTarget(GAMEOBJECT *object, GIZMOBLOWUP_PC *target) {
     return 1;
 }
 
-i32 __cdecl SetPartTarget(GAMEOBJECT *object, PART_PC *target) {
+i32 SetPartTarget(GAMEOBJECT *object, PART_PC *target) {
     object->attack_target_position = target->position;
     *(NUVEC *)&object->field_c8c = target->velocity;
     object->flags_e20 |= 0x800;
@@ -6357,7 +6356,7 @@ NUVEC *GetZapOrigin(GAMEOBJECT *object) {
     return &object->collision_position;
 }
 
-i32 __cdecl ZapTarget(GAMEOBJECT *object) {
+i32 ZapTarget(GAMEOBJECT *object) {
     u32 flags;
     void **animations;
     i8 context;
@@ -6614,7 +6613,7 @@ static void FireBountyHunterRocket(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl GetShootOrigin_LSW(GAMEOBJECT *object, NUVEC *position) {
+void GetShootOrigin_LSW(GAMEOBJECT *object, NUVEC *position) {
     *position = object->collision_position;
     if (object->id == (u16)id_ATAT) {
         position->x += NU_SIN_LUT(object->field_0x276) * object->bounds_radius * 1.5;
@@ -6750,7 +6749,7 @@ static void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay, 
     state->bolt_fire_phase = state->bolt_fire_phase == 0;
 }
 
-void __cdecl CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
+void CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
     CABLE_VIEW_PC *view = (CABLE_VIEW_PC *)object;
     GAMEOBJECT *target;
     GAME_MESSAGE_PC *message;
@@ -6821,7 +6820,7 @@ static void JumpAnimCode(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl CanObjSlide(GAMEOBJECT *object, i32 unused_surface) {
+i32 CanObjSlide(GAMEOBJECT *object, i32 unused_surface) {
     i8 surface = (i8)object->jump_animation_state;
     (void)unused_surface;
     if (surface < 0) {
@@ -6836,7 +6835,7 @@ i32 __cdecl CanObjSlide(GAMEOBJECT *object, i32 unused_surface) {
     return 1;
 }
 
-i32 __cdecl StartSlide(GAMEOBJECT *object, i32 check_contact) {
+i32 StartSlide(GAMEOBJECT *object, i32 check_contact) {
     i32 can_slide;
     i32 result = 0;
     u16 id;
@@ -6862,7 +6861,7 @@ i32 __cdecl StartSlide(GAMEOBJECT *object, i32 check_contact) {
     return result;
 }
 
-void __cdecl SlideCode(GAMEOBJECT *object) {
+void SlideCode(GAMEOBJECT *object) {
     if (object->character_context == 0x33) {
         if (object->field_281 != 0 && CanObjSlide(object, (i8)object->jump_animation_state) != 0) {
             object->context_duration = 0.25f;
@@ -6880,7 +6879,7 @@ void __cdecl SlideCode(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *object, u16 input_angle, f32 input_speed) {
+i32 Slide_SetTargetMom(GAMEOBJECT *object, u16 input_angle, f32 input_speed) {
     u16 direction;
     NUVEC lateral;
 
@@ -6919,7 +6918,7 @@ static void FloatAdvancePc(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl FloatCode(GAMEOBJECT *object) {
+void FloatCode(GAMEOBJECT *object) {
     f32 surface_fraction;
     f32 jump_fraction;
     f32 sink_fraction;
@@ -7022,7 +7021,7 @@ static void BeastStartFallCodePc(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl PooCode(GAMEOBJECT *object) {
+void PooCode(GAMEOBJECT *object) {
     NUVEC position;
     i32 locator;
     BEAST_POO_VOLUME_VIEW_PC *volume_view = (BEAST_POO_VOLUME_VIEW_PC *)object;
@@ -7116,7 +7115,7 @@ void __cdecl PooCode(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl AwkwardShapeCode(GAMEOBJECT *object, i32 forced) {
+void AwkwardShapeCode(GAMEOBJECT *object, i32 forced) {
     f32 radii[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
     NUVEC *positions[8] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     i32 joints[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -7320,7 +7319,7 @@ static void DodgemCode(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Disorientate(GAMEOBJECT *object, NUVEC *unused) {
+void Disorientate(GAMEOBJECT *object, NUVEC *unused) {
     i32 elapsed_seconds = (i32)object->context_timer;
     NUVEC delta;
     NUVEC velocity;
@@ -7372,7 +7371,7 @@ void __cdecl Disorientate(GAMEOBJECT *object, NUVEC *unused) {
     object->movement_direction = velocity;
 }
 
-void __cdecl DisorientateCode(GAMEOBJECT *object, NUVEC *target, f32 distance) {
+void DisorientateCode(GAMEOBJECT *object, NUVEC *target, f32 distance) {
     if (target != NULL) {
         if (object->character_context != 0x40) {
             object->context_timer = 0.0f;
@@ -7392,7 +7391,7 @@ void __cdecl DisorientateCode(GAMEOBJECT *object, NUVEC *target, f32 distance) {
     }
 }
 
-void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
+void Animate_CHARACTER(GAMEOBJECT *object) {
     DEFAULT_ANIMATION_TIMERS_PC *timers = (DEFAULT_ANIMATION_TIMERS_PC *)object;
     DEFAULT_ANIMATION_MINI_REQUEST_PC *mini = (DEFAULT_ANIMATION_MINI_REQUEST_PC *)object;
     i16 animation;
@@ -7493,7 +7492,7 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl PostAnimate_FETT(GAMEOBJECT *object) {
+void PostAnimate_FETT(GAMEOBJECT *object) {
     i32 count;
     i32 first_joint;
     if (object->dead == 0 &&
@@ -7516,7 +7515,7 @@ void __cdecl PostAnimate_FETT(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl TractorBeamCode(GAMEOBJECT *object) {
+void TractorBeamCode(GAMEOBJECT *object) {
     f32 range;
     f32 range_squared;
     i32 index;
@@ -7577,7 +7576,7 @@ void __cdecl TractorBeamCode(GAMEOBJECT *object) {
     PlaySfx("env_tractorbeam_lp", &object->collision_position);
 }
 
-void __cdecl Animate_VEHICLE(GAMEOBJECT *object) {
+void Animate_VEHICLE(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
         return;
@@ -7594,7 +7593,7 @@ void __cdecl Animate_VEHICLE(GAMEOBJECT *object) {
     object->anim_packet.requested_animation = 1;
 }
 
-void __cdecl Animate_SPEEDERBIKE(GAMEOBJECT *object) {
+void Animate_SPEEDERBIKE(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
     } else {
@@ -7602,7 +7601,7 @@ void __cdecl Animate_SPEEDERBIKE(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_BEAST(GAMEOBJECT *object) {
+void Animate_BEAST(GAMEOBJECT *object) {
     // MATCH-EXCEPTION: the fall-timer cast is repeated at each use; a cast local at the top changes
     // register choice (U3)
     GAMEPAD_PC *pad = object->pad;
@@ -7634,7 +7633,7 @@ void __cdecl Animate_BEAST(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_CANNON(GAMEOBJECT *object) {
+void Animate_CANNON(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
     } else {
@@ -7642,7 +7641,7 @@ void __cdecl Animate_CANNON(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
+void Animate_WEIRDO(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
     i32 weapon;
@@ -7705,11 +7704,11 @@ void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_DEFAULT(GAMEOBJECT *object) {
+void Animate_DEFAULT(GAMEOBJECT *object) {
     object->anim_packet.requested_animation = 1;
 }
 
-void __cdecl Animate_JEDI(GAMEOBJECT *object) {
+void Animate_JEDI(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
     if ((object->flags_e20 & 0x1000000) != 0) {
@@ -7788,7 +7787,7 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
     AnimationWeaponEffectPc(object);
 }
 
-void __cdecl Animate_ASTROMECH(GAMEOBJECT *object) {
+void Animate_ASTROMECH(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
@@ -7827,7 +7826,7 @@ void __cdecl Animate_ASTROMECH(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl PostAnimate_ASTROMECH(GAMEOBJECT *object) {
+void PostAnimate_ASTROMECH(GAMEOBJECT *object) {
     CHARACTER_COMMUNICATE_READER_PC *state = (CHARACTER_COMMUNICATE_READER_PC *)object;
     i32 count;
     i32 effect;
@@ -7875,7 +7874,7 @@ void __cdecl PostAnimate_ASTROMECH(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl SetProtocolDroidDeactivatedAction(GAMEOBJECT *object) {
+void SetProtocolDroidDeactivatedAction(GAMEOBJECT *object) {
     if (object->saved_hitpoints == 3) {
         object->field_7aa = 0x42;
     } else if (object->saved_hitpoints == 2) {
@@ -7885,7 +7884,7 @@ void __cdecl SetProtocolDroidDeactivatedAction(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl SetProtocolDroidInterfaceAction(GAMEOBJECT *object) {
+void SetProtocolDroidInterfaceAction(GAMEOBJECT *object) {
     if (object->protocol_interface_action == 3) {
         object->field_7aa = 0x45;
     } else if (object->protocol_interface_action == 2) {
@@ -7895,7 +7894,7 @@ void __cdecl SetProtocolDroidInterfaceAction(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *object) {
+i32 SetProtocolDroidFallAnim(GAMEOBJECT *object) {
     switch (object->saved_hitpoints) {
         case 1:
             return 76;
@@ -7908,7 +7907,7 @@ i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_PROTOCOL(GAMEOBJECT *object) {
+void Animate_PROTOCOL(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i32 falling = 0;
     i16 animation;
@@ -7969,7 +7968,7 @@ void __cdecl Animate_PROTOCOL(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_BATTLEDROID(GAMEOBJECT *object) {
+void Animate_BATTLEDROID(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
@@ -8000,7 +7999,7 @@ void __cdecl Animate_BATTLEDROID(GAMEOBJECT *object) {
     }
 }
 
-f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *object) {
+f32 FindGunshipHoverHeight(GAMEOBJECT *object) {
     f32 height = VehicleGunshipHoverBasePc;
     if (object->player_index >= 2) {
         return height;
@@ -8018,7 +8017,7 @@ f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *object) {
     return height;
 }
 
-void __cdecl Animate_REPUBLICGUNSHIP(GAMEOBJECT *object) {
+void Animate_REPUBLICGUNSHIP(GAMEOBJECT *object) {
     object->anim_packet.requested_animation = 1;
     if (object->character_context == 35) {
         object->anim_packet.requested_animation = 44;
@@ -8028,7 +8027,7 @@ void __cdecl Animate_REPUBLICGUNSHIP(GAMEOBJECT *object) {
     UpdateCharacterIdle(object);
 }
 
-void __cdecl Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
+void Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
@@ -8118,7 +8117,7 @@ void PeriscodeCode(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_WALKER(GAMEOBJECT *object) {
+void Animate_WALKER(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
@@ -8130,7 +8129,7 @@ void __cdecl Animate_WALKER(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_HOVERDROID(GAMEOBJECT *object) {
+void Animate_HOVERDROID(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
     } else if (object->character_context == 30 && object->character_model->action_animations[5] != NULL) {
@@ -8140,7 +8139,7 @@ void __cdecl Animate_HOVERDROID(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_CRITTER(GAMEOBJECT *object) {
+void Animate_CRITTER(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
         return;
@@ -8158,7 +8157,7 @@ void __cdecl Animate_CRITTER(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_BARMAN(GAMEOBJECT *object) {
+void Animate_BARMAN(GAMEOBJECT *object) {
     object->anim_packet.requested_animation = 1;
     if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
         object->anim_packet.requested_animation = 0;
@@ -8166,7 +8165,7 @@ void __cdecl Animate_BARMAN(GAMEOBJECT *object) {
     UpdateCharacterIdle(object);
 }
 
-void __cdecl Animate_ATAT(GAMEOBJECT *object) {
+void Animate_ATAT(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
@@ -8254,7 +8253,7 @@ static void ShieldCode(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_DROIDEKA(GAMEOBJECT *object) {
+void Animate_DROIDEKA(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
@@ -8282,7 +8281,7 @@ void __cdecl Animate_DROIDEKA(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Animate_GEONOSIAN(GAMEOBJECT *object) {
+void Animate_GEONOSIAN(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
@@ -8312,7 +8311,7 @@ void __cdecl Animate_GEONOSIAN(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl CatchUpCode(GAMEOBJECT *object, f32 divisor, f32 maximum, i32 mode) {
+void CatchUpCode(GAMEOBJECT *object, f32 divisor, f32 maximum, i32 mode) {
     i32 socket_index;
     i32 looping;
     GAMEOBJECT *other;
@@ -8430,7 +8429,7 @@ void PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble) {
     }
 }
 
-void __cdecl PodCollisionCode(GAMEOBJECT *object) {
+void PodCollisionCode(GAMEOBJECT *object) {
     if (GamePlayTimer.time_elapsed < 1.0f || object->player_index == -1 || (object->flags_1fc & 0x80) == 0 ||
         object->contact_count == 0 || !(object->contact_normal.y <= 0.574f) || !(object->contact_normal.y >= -0.574f)) {
         return;
@@ -8455,7 +8454,7 @@ void __cdecl PodCollisionCode(GAMEOBJECT *object) {
     }
 }
 
-f32 __cdecl FindPodHoverHeight(GAMEOBJECT *object) {
+f32 FindPodHoverHeight(GAMEOBJECT *object) {
     f32 height = 0.15f;
     if (object == Player[1] && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
         f32 distance_squared =
@@ -8478,7 +8477,7 @@ f32 __cdecl FindPodHoverHeight(GAMEOBJECT *object) {
     return height;
 }
 
-void __cdecl SetPodMergeAnims(ANIMPACKET_PC *packet, i32 index) {
+void SetPodMergeAnims(ANIMPACKET_PC *packet, i32 index) {
     POD_MERGE_PACKET_READER_PC *reader = (POD_MERGE_PACKET_READER_PC *)packet;
     f32 roll = pod_roll[index];
 
@@ -8501,7 +8500,7 @@ void __cdecl SetPodMergeAnims(ANIMPACKET_PC *packet, i32 index) {
     reader->overlay_weight = absolute.value;
 }
 
-void __cdecl Animate_POD(GAMEOBJECT *object) {
+void Animate_POD(GAMEOBJECT *object) {
     i8 index;
     f32 delta;
     f32 time;
@@ -8543,11 +8542,11 @@ void __cdecl Animate_POD(GAMEOBJECT *object) {
     }
 }
 
-f32 __cdecl getPodRoll(i32 index) {
+f32 getPodRoll(i32 index) {
     return pod_roll[index];
 }
 
-i32 __cdecl Shop_UpdateHint(HINT_PC *hint) {
+i32 Shop_UpdateHint(HINT_PC *hint) {
     (void)hint;
     return 0;
 }
@@ -8574,7 +8573,7 @@ static f32 SLAMGRAVITY = -15.0f;
 static f32 applygravity_extrahoveroffset = 0;
 #pragma bss_seg()
 
-void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_rate, f32 *ground_height) {
+void ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_rate, f32 *ground_height) {
     CHARACTERDATA_PC *character;
     GAMEOBJECT *target;
     TUBE_PC *tube;
@@ -8844,7 +8843,7 @@ void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f3
     }
 }
 
-void __cdecl ApplyGravity_Network(GAMEOBJECT *object) {
+void ApplyGravity_Network(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
     PLAYERCHARACTERCONFIG_PC *data;
     f32 height;
@@ -8889,7 +8888,7 @@ static f32 PlayerSecondBackwardMomentumScalePc = 1.2000000476837158f;
 static f32 VEHICLE_WATER_SPEED_MUL = 0.699999988079071f;
 #pragma data_seg()
 
-void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
+void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     GAMEPAD_PC *pad;
     GAMEOBJECT *operator_object;
     i32 current_animation;
@@ -9885,7 +9884,7 @@ static f32 VEHICLE_SUBMARINE_DEPTH = 0.20000000298023224f;
 static f32 VEHICLE_TUBE_UPSPEED = 5.0f;
 #pragma data_seg()
 
-void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
+void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     NUVEC carwash_delta;
     NUVEC a;
     NUVEC b;
@@ -10399,7 +10398,7 @@ vehicle_collision:
     }
 }
 
-i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object) {
+i32 MovePlayer_TWIST(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEPAD_PC *pad = object->pad;
     GAMEOBJECT *vehicle;
@@ -10636,7 +10635,7 @@ static void DeactivatedCode(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl StartQuickShoot(GAMEOBJECT *object, i32 action) {
+void StartQuickShoot(GAMEOBJECT *object, i32 action) {
     i32 bolt_id;
     NUVEC direction;
     f32 range;
@@ -10850,7 +10849,7 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
     PlaySfx("JForcePush", &object->collision_position);
 }
 
-void __cdecl GameObjectStuffAfterAnimation(void) {
+void GameObjectStuffAfterAnimation(void) {
     GAMEOBJECT *object = Obj;
 
     union POST_ANIMATION_EFFECT_SCRATCH_PC {
@@ -11252,7 +11251,7 @@ static void CommunicateCode(GAMEOBJECT *object, i32 pressed, i32 mode) {
     }
 }
 
-void __cdecl Move_SPEEDERBIKE(GAMEOBJECT *object) {
+void Move_SPEEDERBIKE(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     PLAYERCHARACTERCONFIG_PC *vehicle;
     i32 effect;
@@ -11329,7 +11328,7 @@ void __cdecl Move_SPEEDERBIKE(GAMEOBJECT *object) {
     EngineNoiseCode(object, 0);
 }
 
-void __cdecl Move_BEAST(GAMEOBJECT *object) {
+void Move_BEAST(GAMEOBJECT *object) {
     DropInOutCode(object);
     if ((object->flags_e20 & 0x20) != 0) {
         return;
@@ -11354,7 +11353,7 @@ void __cdecl Move_BEAST(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-void __cdecl Move_CANNON(GAMEOBJECT *object) {
+void Move_CANNON(GAMEOBJECT *object) {
     KeepWeaponOut(object);
     ApplyGravity(object, NULL,
                  object->character_context == 0x17 ? 0.0f : object->character_data->game_character->field_028, 8.0f,
@@ -11377,7 +11376,7 @@ void __cdecl Move_CANNON(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Move_DRAGBOMB(GAMEOBJECT *object) {
+void Move_DRAGBOMB(GAMEOBJECT *object) {
     f32 timer;
     u32 player_mask0;
     u32 player_mask1;
@@ -11412,14 +11411,14 @@ void __cdecl Move_DRAGBOMB(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Move_DEFAULT(GAMEOBJECT *object) {
+void Move_DEFAULT(GAMEOBJECT *object) {
     DropInOutCode(object);
     if ((object->flags_e20 & 0x20) == 0) {
         ApplyGravity(object, NULL, 0.0f, 0.0f, NULL);
     }
 }
 
-void __cdecl Move_JEDI(GAMEOBJECT *object) {
+void Move_JEDI(GAMEOBJECT *object) {
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
     u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
     u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
@@ -11545,7 +11544,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Move_HOVERDROID(GAMEOBJECT *object) {
+void Move_HOVERDROID(GAMEOBJECT *object) {
     f32 hover;
     DropInOutCode(object);
     FlattenCode(object);
@@ -11565,7 +11564,7 @@ void __cdecl Move_HOVERDROID(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-void __cdecl Move_CRITTER(GAMEOBJECT *object) {
+void Move_CRITTER(GAMEOBJECT *object) {
     CRITTER_OBJECT_READER_PC *reader = (CRITTER_OBJECT_READER_PC *)object;
     if ((object->flags_e20 & 0x20) != 0) {
         return;
@@ -11602,12 +11601,12 @@ void __cdecl Move_CRITTER(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-void __cdecl Move_BARMAN(GAMEOBJECT *object) {
+void Move_BARMAN(GAMEOBJECT *object) {
     DropInOutCode(object);
     ApplyGravity(object, NULL, 0.0f, 0.0f, NULL);
 }
 
-void __cdecl Move_JAWA(GAMEOBJECT *object) {
+void Move_JAWA(GAMEOBJECT *object) {
     u32 tag_pressed = object->pad->buttons_pressed & GAMEPAD_TAG;
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
     u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
@@ -11654,8 +11653,8 @@ void __cdecl Move_JAWA(GAMEOBJECT *object) {
     ChatterSfx(object, 0, 0.0f);
 }
 
-i32 __cdecl ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_mode, i32 allow_airborne,
-                      i32 fire_mode) {
+i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_mode, i32 allow_airborne,
+              i32 fire_mode) {
     GAMEOBJECT *target = NULL;
     i32 bolt_id;
     i32 ammunition;
@@ -11977,7 +11976,7 @@ static f32 DefaultMotionSpiderFarSpeedPc = -2.0f;
 static f32 DefaultMotionSpiderNearSpeedPc = -0.4f;
 static f32 DefaultMotionSpiderRangePc = 1.0f;
 
-void __cdecl Move_CHARACTER(GAMEOBJECT *object) {
+void Move_CHARACTER(GAMEOBJECT *object) {
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
@@ -12139,7 +12138,7 @@ after_gravity:
     (void)jump_held;
 }
 
-void __cdecl Move_VEHICLE(GAMEOBJECT *object) {
+void Move_VEHICLE(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     PLAYERCHARACTERCONFIG_PC *character;
     VEHICLE_JOINT_VIEW_PC *joint_view;
@@ -12280,7 +12279,7 @@ gravity_done:
     }
 }
 
-void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
+void Move_WEIRDO(GAMEOBJECT *object) {
     u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
@@ -12405,7 +12404,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     HairMovement(object);
 }
 
-void __cdecl Move_REPUBLICGUNSHIP(GAMEOBJECT *object) {
+void Move_REPUBLICGUNSHIP(GAMEOBJECT *object) {
     GAMEPAD_PC *pad;
     if (WORLD->area == NULL || (WORLD->area != GUNSHIP_ADATA && WORLD->area != BONUS_GUNSHIP_ADATA)) {
         Move_VEHICLE(object);
@@ -12426,7 +12425,7 @@ void __cdecl Move_REPUBLICGUNSHIP(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Move_SUPERBATTLEDROID(GAMEOBJECT *object) {
+void Move_SUPERBATTLEDROID(GAMEOBJECT *object) {
     DropInOutCode(object);
     if ((object->flags_e20 & 0x20) != 0) {
         return;
@@ -12449,7 +12448,7 @@ void __cdecl Move_SUPERBATTLEDROID(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-void __cdecl Move_DROIDGENERIC(GAMEOBJECT *object) {
+void Move_DROIDGENERIC(GAMEOBJECT *object) {
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
     u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
     u32 zap_pressed = object->pad->buttons_pressed & (GAMEPAD_ACTION | GAMEPAD_SPECIAL);
@@ -12537,7 +12536,7 @@ zap:
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-void __cdecl Move_WALKER(GAMEOBJECT *object) {
+void Move_WALKER(GAMEOBJECT *object) {
     MOTION_SHOOT_PHASE_READER_PC *state = (MOTION_SHOOT_PHASE_READER_PC *)object;
     GAMEPAD_PC *pad = object->pad;
     KeepWeaponOut(object);
@@ -12569,7 +12568,7 @@ void __cdecl Move_WALKER(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-void __cdecl Move_ATAT(GAMEOBJECT *object) {
+void Move_ATAT(GAMEOBJECT *object) {
     MOTION_SHOOT_PHASE_READER_PC *state = (MOTION_SHOOT_PHASE_READER_PC *)object;
     GAMEPAD_PC *pad = object->pad;
     KeepWeaponOut(object);
@@ -12594,7 +12593,7 @@ void __cdecl Move_ATAT(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-void __cdecl Move_DROIDEKA(GAMEOBJECT *object) {
+void Move_DROIDEKA(GAMEOBJECT *object) {
     u32 action = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 special = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
     KeepWeaponOut(object);
@@ -12621,7 +12620,7 @@ void __cdecl Move_DROIDEKA(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-void __cdecl Move_GEONOSIAN(GAMEOBJECT *object) {
+void Move_GEONOSIAN(GAMEOBJECT *object) {
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
     u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
@@ -12671,7 +12670,7 @@ void __cdecl Move_GEONOSIAN(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Move_POD(GAMEOBJECT *object) {
+void Move_POD(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *vehicle;
     i32 sound;
     i32 player_index;
@@ -12742,7 +12741,7 @@ void __cdecl Move_POD(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-void __cdecl PostResetCode(GAMEOBJECT *object) {
+void PostResetCode(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *character;
     object->attack_override = 0;
     if (object->character_data->game_character->sfx_chatter != -1) {
@@ -12757,7 +12756,7 @@ void __cdecl PostResetCode(GAMEOBJECT *object) {
 
 i32 NetworkTurnScalePc = 3;
 
-void __cdecl MovePlayer_NETWORK(GAMEOBJECT *object) {
+void MovePlayer_NETWORK(GAMEOBJECT *object) {
     f32 turn_override = 0.0f;
     f32 turn_rate = 8.0f;
     i32 direct_turn;

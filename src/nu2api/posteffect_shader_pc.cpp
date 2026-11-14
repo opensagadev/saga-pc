@@ -15,7 +15,7 @@ struct POST_SHADER_PROGRAM_POOL_PC {
     POST_SHADER_PROGRAM_PC programs[64]; // 0x000
     u8 occupied[8];                      // 0x400
     i32 cursor;                          // 0x408
-    POST_SHADER_PROGRAM_PC *__thiscall Allocate(void);
+    POST_SHADER_PROGRAM_PC *Allocate(void);
 }; // size 0x40c
 
 STATIC_ASSERT(sizeof(std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC>) == 16);
@@ -31,7 +31,7 @@ extern "C" {
 #pragma bss_seg()
 }
 
-POST_SHADER_PROGRAM_PC *__thiscall POST_SHADER_PROGRAM_POOL_PC::Allocate(void) {
+POST_SHADER_PROGRAM_PC *POST_SHADER_PROGRAM_POOL_PC::Allocate(void) {
     i32 index = cursor;
     for (; index < 64; ++index) {
         if (((i8)occupied[index >> 3] >> (index & 7) & 1) == 0) {
@@ -50,8 +50,8 @@ found:
     return &programs[index];
 }
 
-extern "C" POST_SHADER_PROGRAM_PC *__cdecl PostShaderProgramCreatePc(i32 mode, const DWORD *vertex_tokens,
-                                                                     const DWORD *pixel_tokens) {
+extern "C" POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32 mode, const DWORD *vertex_tokens,
+                                                             const DWORD *pixel_tokens) {
     POST_VERTEX_SHADER_CACHE_ENTRY_PC vertex = {NULL, vertex_tokens};
     POST_PIXEL_SHADER_CACHE_ENTRY_PC pixel = {NULL, pixel_tokens};
     std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC>::iterator vertex_it = PostVertexShaderCachePc.begin();
@@ -85,7 +85,7 @@ extern "C" POST_SHADER_PROGRAM_PC *__cdecl PostShaderProgramCreatePc(i32 mode, c
     return NULL;
 }
 
-extern "C" void __cdecl PostFilterInitSharedResourcesPc(void);
+extern "C" void PostFilterInitSharedResourcesPc(void);
 extern "C" {
     extern const DWORD PostShaderTokens7656f0[];
     extern const DWORD PostShaderTokens765798[];
@@ -113,7 +113,7 @@ extern "C" {
 #pragma bss_seg()
 }
 
-extern "C" void __cdecl PostFilterInitProgramsPc(i32 width, i32 height) {
+extern "C" void PostFilterInitProgramsPc(i32 width, i32 height) {
     (void)width;
     (void)height;
     PostFilterInitSharedResourcesPc();
@@ -128,7 +128,7 @@ extern "C" void __cdecl PostFilterInitProgramsPc(i32 width, i32 height) {
     PostBlurAuxProgramPc = PostShaderProgramCreatePc(2, PostShaderTokens765e40, PostShaderTokens765d90);
 }
 
-extern "C" void __cdecl NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *program) {
+extern "C" void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *program) {
     if (program != NULL) {
         if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
             PCDeviceSetVertexShaderPc(program->vertex_shader);

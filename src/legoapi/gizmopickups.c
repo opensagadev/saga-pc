@@ -42,7 +42,7 @@ typedef struct {
     u32 reserved[16];
 } PICKUP_PROGRESS_PC;
 
-void __cdecl GizmoPickups_PostLoad(void *, void *);
+void GizmoPickups_PostLoad(void *, void *);
 
 typedef struct lose_coins_packet_pc_s {
     u32 coins;          // 0x0
@@ -137,7 +137,7 @@ extern u8 *Game_LevelSave;
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern i32 turret_gizmotype_id;
 extern i32 gizbuildit_gizmotype_id;
-i32 __cdecl SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *, WORLDINFO *);
+i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *, WORLDINFO *);
 
 typedef struct pickup_counter_turret_pc_s {
     u8 unknown_000[0x13a];  // 0x000
@@ -159,7 +159,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 /* Append to gizmopickups.c: share its actual private GizmoPickupSys pointer. */
 STATIC_ASSERT(sizeof(GIZMOPICKUP_PC) == 0x2c);
 STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
-void __cdecl SuperCounter_ActivateGizmoPickup(GIZMO_PC *, GIZMOPICKUP_PC *);
+void SuperCounter_ActivateGizmoPickup(GIZMO_PC *, GIZMOPICKUP_PC *);
 
 typedef struct PICKUP_VISIBILITY_VIEW_PC {
     u8 unknown_00[0x17]; // 0x00
@@ -249,7 +249,7 @@ static NUMTX *PickupRotateYPc(NUMTX *matrix, i32 angle) {
 
 static PICKUP_TYPE_SYSTEM_PC *GizmoPickupSys = &GizmoPickupSys_Game;
 
-void __cdecl GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system) {
+void GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system) {
     GizmoPickupSys = system;
 }
 
@@ -368,7 +368,7 @@ static void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 
     }
 }
 
-void __cdecl GizmoPickups_Draw(void *world_pointer, void *unused_system, f32 unused_time) {
+void GizmoPickups_Draw(void *world_pointer, void *unused_system, f32 unused_time) {
     WORLDINFO *world = world_pointer;
     struct GIZMOPICKUPRUNTIMESYS_s *system;
     (void)unused_system;
@@ -384,7 +384,7 @@ void __cdecl GizmoPickups_Draw(void *world_pointer, void *unused_system, f32 unu
     ResetShadowMapRendering();
 }
 
-i32 __cdecl GizmoPickups_GetMaxGizmos(void *world_ptr) {
+i32 GizmoPickups_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     if (world != NULL) {
         return (u16)world->current_level->max_pickups;
@@ -392,7 +392,7 @@ i32 __cdecl GizmoPickups_GetMaxGizmos(void *world_ptr) {
     return 0;
 }
 
-void __cdecl GizmoPickups_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+void GizmoPickups_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     i32 i;
     (void)data;
@@ -404,11 +404,11 @@ void __cdecl GizmoPickups_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr,
     }
 }
 
-char *__cdecl GizmoPickup_GetGizmoName(GIZMO_PC *gizmo) {
+char *GizmoPickup_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? (char *)gizmo->object : NULL;
 }
 
-i32 __cdecl GizmoPickup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+i32 GizmoPickup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     (void)output;
     (void)mode;
     return (((GIZMOPICKUP_PC *)gizmo->object)->flags >> 3) & 1;
@@ -418,16 +418,16 @@ i32 __cdecl GizmoPickup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 char *GizmoPickup_OutputName = (char *)PickupCollectedOutputTextPc;
 #pragma data_seg()
 
-char *__cdecl GizmoPickup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+char *GizmoPickup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return GizmoPickup_OutputName;
 }
 
-i32 __cdecl GizmoPickup_GetNumOutputs(GIZMO_PC *unused) {
+i32 GizmoPickup_GetNumOutputs(GIZMO_PC *unused) {
     (void)unused;
     return 1;
 }
 
-void __cdecl GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
+void GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GIZMOPICKUP_PC *pickup;
     GIZMOPICKUP_PC *group_pickup;
@@ -476,11 +476,11 @@ void __cdecl GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
-void *__cdecl GizmoPickups_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+void *GizmoPickups_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 0x100);
 }
 
-void __cdecl GizmoPickups_ClearProgress(void *owner, void *progress_ptr) {
+void GizmoPickups_ClearProgress(void *owner, void *progress_ptr) {
     PICKUP_PROGRESS_PC *progress = progress_ptr;
     if (progress == NULL) {
         return;
@@ -491,7 +491,7 @@ void __cdecl GizmoPickups_ClearProgress(void *owner, void *progress_ptr) {
     memset(progress->reserved, 0, 64);
 }
 
-void __cdecl GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+void GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     PICKUP_PROGRESS_PC *progress = progress_ptr;
     WORLDINFO *world = world_ptr;
     GIZMOPICKUP_PC *record;
@@ -559,7 +559,7 @@ static void AdjustPickupDrawDistancePc(i32 version, i32 area, f32 *distance) {
     }
 }
 
-void __cdecl SetAreaPickupGravity(i32 area, i32 level) {
+void SetAreaPickupGravity(i32 area, i32 level) {
     u16 flags;
     AreaPickupGravity = -6.0f;
     if (area < 0 || area >= AREACOUNT) {
@@ -575,7 +575,7 @@ void __cdecl SetAreaPickupGravity(i32 area, i32 level) {
     }
 }
 
-void *__cdecl GizmoPickups_ReserveBufferSpace(void *world_ptr) {
+void *GizmoPickups_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
     world->pickup_runtime_sys = (struct GIZMOPICKUPRUNTIMESYS_s *)world->giz_buffer.addr;
@@ -596,7 +596,7 @@ void *__cdecl GizmoPickups_ReserveBufferSpace(void *world_ptr) {
     return world->pickup_runtime_sys;
 }
 
-void __cdecl GizmoPickup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void GizmoPickup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     PICKUP_VISIBILITY_VIEW_PC *pickup;
     if (gizmo != NULL) {
         pickup = gizmo->object;
@@ -631,7 +631,7 @@ static void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD_PC *pickup)
     pickup->flags = (pickup->flags & ~0x40) | 0x20;
 }
 
-void __cdecl GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_ptr) {
+void GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     PICKUP_RESET_PROGRESS_PC *progress = progress_ptr;
     struct GIZMOPICKUPRUNTIMESYS_s *system;
@@ -691,14 +691,14 @@ void __cdecl GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_
     }
 }
 
-NUVEC *__cdecl GizmoPickup_GetPos(GIZMO_PC *gizmo) {
+NUVEC *GizmoPickup_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
     return &((GIZMOPICKUP_PC *)gizmo->object)->position;
 }
 
-i32 __cdecl GizmoPickups_Load(void *world_ptr, void *unused) {
+i32 GizmoPickups_Load(void *world_ptr, void *unused) {
     WORLDINFO *world = world_ptr;
     GIZMOPICKUP_PC *pickup;
     i32 version;
@@ -743,7 +743,7 @@ i32 __cdecl GizmoPickups_Load(void *world_ptr, void *unused) {
 }
 
 /* Studs the level's placed pickups are worth (TotalLevelCoinTally). */
-u32 __cdecl GizmoPickups_TotalScore(WORLDINFO *world) {
+u32 GizmoPickups_TotalScore(WORLDINFO *world) {
     struct GIZMOPICKUPRUNTIMESYS_s *system = world->pickup_runtime_sys;
     GIZMOPICKUP_PC *pickup = system->pickups;
     u32 score = 0;
@@ -757,7 +757,7 @@ u32 __cdecl GizmoPickups_TotalScore(WORLDINFO *world) {
 }
 
 /* Complete native00570030..00570082. */
-i32 __cdecl GizmoPickup_NumberOfType(WORLDINFO *world, i32 type, u8 filter) {
+i32 GizmoPickup_NumberOfType(WORLDINFO *world, i32 type, u8 filter) {
     GIZMOPICKUPRUNTIMESYS_s *system = world->pickup_runtime_sys;
     GIZMOPICKUP_PC *pickup = system->pickups;
     i32 count = 0;
@@ -781,7 +781,7 @@ i32 __cdecl GizmoPickup_NumberOfType(WORLDINFO *world, i32 type, u8 filter) {
     return count;
 }
 
-GIZMOPICKUP_PC *__cdecl GizmoPickup_FindByName(WORLDINFO *world, char *name) {
+GIZMOPICKUP_PC *GizmoPickup_FindByName(WORLDINFO *world, char *name) {
     GIZMOPICKUP_PC *pickup;
     i32 index;
     if (world != NULL && name != NULL) {
@@ -797,17 +797,17 @@ GIZMOPICKUP_PC *__cdecl GizmoPickup_FindByName(WORLDINFO *world, char *name) {
     return NULL;
 }
 
-void __cdecl GizmoPickup_TurnOnPickup(GIZMOPICKUP_PC *pickup) {
+void GizmoPickup_TurnOnPickup(GIZMOPICKUP_PC *pickup) {
     if (pickup != NULL) {
         pickup->flags |= 0x86;
     }
 }
 
-i32 __cdecl GizmoPickup_BeenTurnedOn(GIZMOPICKUP_PC *pickup) {
+i32 GizmoPickup_BeenTurnedOn(GIZMOPICKUP_PC *pickup) {
     return pickup != NULL ? pickup->flags >> 7 : 0;
 }
 
-GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum) {
+GIZMOPICKUP_PC *GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum) {
     GIZMOPICKUPRUNTIMESYS_s *runtime = world->pickup_runtime_sys;
     GIZMOPICKUP_PC *pickup = runtime->pickups;
     GIZMO_PICKUP_TYPE_PC *type;
@@ -940,7 +940,7 @@ static GIZMOPICKUP_PC *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP_
     return NULL;
 }
 
-GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unused) {
+GIZMOPICKUP_PC *GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unused) {
     GIZMOPICKUP_PC *pickup;
     i32 temporary;
     i32 type_index;
@@ -978,7 +978,7 @@ GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *objec
     return NULL;
 }
 
-void __cdecl GameMsg_Draw_MiniKitDetector(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale) {
+void GameMsg_Draw_MiniKitDetector(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale) {
     f32 excess = 1.0e9f;
     NUVEC screen = *position;
     i32 clipped = 0;
@@ -1061,7 +1061,7 @@ void MiniKitDetector(NUVEC *position) {
     AddGameMsg(&message);
 }
 
-void __cdecl ResetCoinPacket(void *packet) {
+void ResetCoinPacket(void *packet) {
     COIN_RESET_PACKET_PC *view = packet;
     if (packet != NULL) {
         view->scale = 1.0f;
@@ -1070,7 +1070,7 @@ void __cdecl ResetCoinPacket(void *packet) {
     }
 }
 
-void __cdecl UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 player_index) {
+void UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 player_index) {
     u32 decrement;
     if (packet == NULL) {
         return;
@@ -1111,7 +1111,7 @@ void __cdecl UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 pla
     }
 }
 
-i32 __cdecl CoinsGoToMainTotal(void) {
+i32 CoinsGoToMainTotal(void) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     if (HUB_ADATA != NULL && world->area == HUB_ADATA) {
         return 1;
@@ -1128,14 +1128,14 @@ i32 __cdecl CoinsGoToMainTotal(void) {
     return 0;
 }
 
-void __cdecl PartUpdate_Heart(PART_PC *part) {
+void PartUpdate_Heart(PART_PC *part) {
     NUVEC position = part->position;
     part->rotation_y = (u16)(i32)((f64)part->rotation_y + (f64)FRAMETIME * 16384.0);
     NuMtxSetRotationY(&part->transform, part->rotation_y);
     NuMtxTranslate(&part->transform, &position);
 }
 
-void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
+void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
     SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
     SPECIAL_MINIKIT_PC *items;
     SPECIAL_MINIKIT_PC *cursor;
@@ -1216,7 +1216,7 @@ void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
     world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(*system) + 3U) & ~3U;
 }
 
-void __cdecl SpecialMiniKits_Reset(WORLDINFO *world) {
+void SpecialMiniKits_Reset(WORLDINFO *world) {
     SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
     SPECIAL_MINIKIT_PC *item;
     i32 index;
@@ -1232,7 +1232,7 @@ void __cdecl SpecialMiniKits_Reset(WORLDINFO *world) {
     }
 }
 
-void __cdecl SpecialMiniKits_Draw(WORLDINFO *world) {
+void SpecialMiniKits_Draw(WORLDINFO *world) {
     SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
     SPECIAL_MINIKIT_PC *item;
     GIZMOPICKUP_PC *pickup;
@@ -1423,7 +1423,7 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i3
     }
 }
 
-void __cdecl GizmoPickups_Update(void *world_pointer, void *unused_system, f32 unused_time) {
+void GizmoPickups_Update(void *world_pointer, void *unused_system, f32 unused_time) {
     WORLDINFO *world = world_pointer;
     struct GIZMOPICKUPRUNTIMESYS_s *system;
     (void)unused_system;
@@ -1440,7 +1440,7 @@ void __cdecl GizmoPickups_Update(void *world_pointer, void *unused_system, f32 u
 char *GizmoRegistryGizmoPickupsNamePtrPc = (char *)GizmoRegistryGizmoPickupsNamePc;
 static ADDGIZMOTYPE_PC GizmoRegistryGizmoPickupsAddTypePc = {0};
 
-ADDGIZMOTYPE_PC *__cdecl GizmoPickups_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *GizmoPickups_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizmoPickupsAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->name = GizmoRegistryGizmoPickupsNamePtrPc;
@@ -1455,24 +1455,24 @@ ADDGIZMOTYPE_PC *__cdecl GizmoPickups_RegisterGizmo(i32 type_id) {
     addtype->fns.add_level_sfx_fn = NULL;
     addtype->prefix = "";
     addtype->fns.options = 0x100;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizmoPickups_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizmoPickups_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizmoPickups_AddGizmos;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizmoPickups_Update;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizmoPickups_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizmoPickup_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizmoPickup_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizmoPickup_GetOutputName;
+    addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizmoPickups_Update;
+    addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizmoPickups_Draw;
+    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizmoPickup_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoPickup_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizmoPickup_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizmoPickup_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoPickup_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoPickup_SetVisibility;
+    addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizmoPickup_Activate;
+    addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizmoPickup_SetVisibility;
     addtype->fns.get_pos_fn = (void *)GizmoPickup_GetPos;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizmoPickups_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizmoPickups_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizmoPickups_StoreProgress;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizmoPickups_ResetPc;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizmoPickups_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizmoPickups_Load;
-    addtype->fns.post_load_fn = (void(__cdecl *)(void *, void *))GizmoPickups_PostLoad;
+    addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizmoPickups_AllocateProgressData;
+    addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizmoPickups_ClearProgress;
+    addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizmoPickups_StoreProgress;
+    addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizmoPickups_ResetPc;
+    addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizmoPickups_ReserveBufferSpace;
+    addtype->fns.load_fn = (i32(*)(void *, void *))GizmoPickups_Load;
+    addtype->fns.post_load_fn = (void (*)(void *, void *))GizmoPickups_PostLoad;
     gizmopickup_typeid = type_id;
     return addtype;
 }

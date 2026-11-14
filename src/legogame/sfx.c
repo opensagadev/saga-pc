@@ -35,7 +35,7 @@ typedef struct level_sfx_cut_s {
 /* Original static game.cpp settings/items. Proposal only, no production data. */
 AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
 
-i32 __cdecl GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
+i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     AREA_DATA_PC *area = world->area;
     if ((area == HOTHESCAPE_ADATA || world->current_level == JABBASPALACEE_LDATA) && on_platform == 0) {
@@ -62,7 +62,7 @@ i32 __cdecl GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) 
     return -1;
 }
 
-i32 __cdecl GameAudio_CheckReverb_LSW(void) {
+i32 GameAudio_CheckReverb_LSW(void) {
     LEVELDATA_PC *level = WorldInfo_CurrentlyActive()->current_level;
     if (level == LevelFixupSlotPc0087b200) {
         return 1;
@@ -76,7 +76,7 @@ i32 __cdecl GameAudio_CheckReverb_LSW(void) {
     return 0;
 }
 
-void __cdecl SetLevelSfxBits(WORLDINFO *world) {
+void SetLevelSfxBits(WORLDINFO *world) {
     LEVEL_SFX_WORLD_VIEW_PC *view = (LEVEL_SFX_WORLD_VIEW_PC *)world;
     i32 i;
     i32 j;
@@ -594,7 +594,7 @@ void __cdecl SetLevelSfxBits(WORLDINFO *world) {
 #undef ADD_SFX
 }
 
-void __cdecl Shadow_SetMode(void) {
+void Shadow_SetMode(void) {
     i32 i;
     ShadowMode = 0;
     for (i = 0; i < 8; ++i) {

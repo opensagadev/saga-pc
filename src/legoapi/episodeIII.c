@@ -44,34 +44,34 @@ typedef struct terrain_set_reader_pc_s {
     TERRAIN_PLATFORM_READER_PC *platforms; // 0x68
 } TERRAIN_SET_READER_PC;                   // size 0x6c
 
-void __cdecl GrievousA_Init(WORLDINFO *world) {
+void GrievousA_Init(WORLDINFO *world) {
 }
 
-void __cdecl KashyyykA_Init(WORLDINFO *world) {
+void KashyyykA_Init(WORLDINFO *world) {
 }
 
-void __cdecl KashyyykA_Update(WORLDINFO *world) {
+void KashyyykA_Update(WORLDINFO *world) {
 }
 
-void __cdecl KashyyykB_Init(WORLDINFO *world) {
+void KashyyykB_Init(WORLDINFO *world) {
 }
 
-void __cdecl KashyyykB_Reset(WORLDINFO *world) {
+void KashyyykB_Reset(WORLDINFO *world) {
 }
 
-void __cdecl KashyyykB_Update(WORLDINFO *world) {
+void KashyyykB_Update(WORLDINFO *world) {
 }
 
-void __cdecl KashyyykC_Init(WORLDINFO *world) {
+void KashyyykC_Init(WORLDINFO *world) {
 }
 
-void __cdecl KashyyykC_Update(WORLDINFO *world) {
+void KashyyykC_Update(WORLDINFO *world) {
 }
 
-void __cdecl VaderB_Init(WORLDINFO *world) {
+void VaderB_Init(WORLDINFO *world) {
 }
 
-void __cdecl VaderB_DrawPanel(WORLDINFO *world) {
+void VaderB_DrawPanel(WORLDINFO *world) {
 }
 
 STATIC_ASSERT(offsetof(DOOR_s, name) == 0);

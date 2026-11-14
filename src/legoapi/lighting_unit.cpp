@@ -68,7 +68,7 @@ typedef struct LIGHTING_LOAD_WORLD_PC {
 } LIGHTING_LOAD_WORLD_PC;
 
 extern "C" {
-    void __cdecl NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
+    void NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
     extern f32 ShadowLightSplitScalePc;
     extern f32 ShadowLightWarpPc;
     extern f32 ShadowLightNearOffsetPc;
@@ -86,8 +86,8 @@ struct SHADOW_PLAYER_BOUNDS_PC {
     f32 radius;
 };
 
-extern "C" NUCAMERA *__cdecl edmainGetCameraPc(void);
-extern "C" void __cdecl NuLightSpotFadeSet(u32 fade);
+extern "C" NUCAMERA *edmainGetCameraPc(void);
+extern "C" void NuLightSpotFadeSet(u32 fade);
 
 extern "C" {
 
@@ -175,14 +175,14 @@ extern "C" void fun_005954e0() {
 
 extern "C" {
 
-    void __cdecl SetLights(NUVEC *colour0, NUVEC *direction0, NUVEC *colour1, NUVEC *direction1, NUVEC *colour2,
-                           NUVEC *direction2, NUVEC *ambient) {
+    void SetLights(NUVEC *colour0, NUVEC *direction0, NUVEC *colour1, NUVEC *direction1, NUVEC *colour2,
+                   NUVEC *direction2, NUVEC *ambient) {
         ZeroLightSetupPrivatePc(direction0, colour0, direction1, colour1, direction2, colour2);
         PCGlobalLightingState.ambient = *ambient;
         NuRndrSetAmbientLightPS(ambient);
     }
 
-    void __cdecl SetLights_RTLDATA(RTL_DATA_PC *data, f32 scale) {
+    void SetLights_RTLDATA(RTL_DATA_PC *data, f32 scale) {
         RTL_DATA_PC scaled;
         if (scale == 1.0f) {
             rtlSetLights(data);
@@ -204,7 +204,7 @@ extern "C" {
         rtlSetLights(&scaled);
     }
 
-    void __cdecl SetLevelLights(void *set, f32 scale) {
+    void SetLevelLights(void *set, f32 scale) {
         f32 old_specular = rtlSpecularValue(&LevelLightingDataPc);
         NUVEC4 ambient;
         rtlResetEx(&LevelLightingDataPc, 1);
@@ -221,7 +221,7 @@ extern "C" {
         NuRndrSetAmbientLightSpecular(&ambient);
     }
 
-    void __cdecl SetPanelLights(f32 intensity) {
+    void SetPanelLights(f32 intensity) {
         NUVEC colours[3];
         NUVEC ambient;
         NUVEC *selected_colours;
@@ -252,29 +252,29 @@ extern "C" {
         NuRndrSetAmbientLightPS(selected_ambient);
     }
 
-    void __cdecl ResetLights(NUVEC *position, RTL_DATA_PC *packet, void *set) {
+    void ResetLights(NUVEC *position, RTL_DATA_PC *packet, void *set) {
         rtlResetEx(packet, 1);
         if (position != NULL) {
             rtlApplySetScale(set, packet, position, NULL, -1, 1.0f);
         }
     }
 
-    char *__cdecl rtlGetEnvPath(void) {
+    char *rtlGetEnvPath(void) {
         return "";
     }
 
-    char *__cdecl rtlGetEnvSceneName(void) {
+    char *rtlGetEnvSceneName(void) {
         VARIPTR address;
         address.void_ptr = WORLD;
         address.addr += offsetof(WORLDINFO, config_file);
         return address.char_ptr;
     }
 
-    RTL_SET_PC *__cdecl rtlGetEnvSet(void) {
+    RTL_SET_PC *rtlGetEnvSet(void) {
         return (RTL_SET_PC *)WORLD->rtl_set;
     }
 
-    void __cdecl SetZeroLights(void) {
+    void SetZeroLights(void) {
         NUVEC black = {0, 0, 0};
         ZeroLightSetupPrivatePc(&LightingUnitDirectionPc, &black, &LightingUnitDirectionPc, &black,
                                 &LightingUnitDirectionPc, &black);
@@ -282,7 +282,7 @@ extern "C" {
         NuRndrSetAmbientLightPS(&APIObjectZeroMomentumPC);
     }
 
-    void __cdecl FindAndSetLights(NUVEC *position, f32 scale, void *set) {
+    void FindAndSetLights(NUVEC *position, f32 scale, void *set) {
         RTL_DATA_PC lights;
         rtlResetEx(&lights, 1);
         rtlDynamicMasterEnable(0);
@@ -291,7 +291,7 @@ extern "C" {
         rtlSetLights(&lights);
     }
 
-    void __cdecl LoadLights(void *world_ptr, char *path) {
+    void LoadLights(void *world_ptr, char *path) {
         LIGHTING_LOAD_WORLD_PC *world = (LIGHTING_LOAD_WORLD_PC *)world_ptr;
         char filename[256];
         sprintf(filename, "%s.rtl", path);
@@ -300,7 +300,7 @@ extern "C" {
         world->burnset = edrtlBurnoutLoad(filename, &world->buffer, world->end_buffer.addr);
     }
 
-    void __cdecl InitGameObjectLights(void) {
+    void InitGameObjectLights(void) {
         STARTUP_OBJECT_LIGHT_PC *objects;
         i32 index;
         for (index = 0; index < 64; ++index) {
@@ -318,7 +318,7 @@ extern "C" {
         }
     }
 
-    void __cdecl FreeGameObjectLights(void) {
+    void FreeGameObjectLights(void) {
         STARTUP_OBJECT_LIGHT_PC *objects = (STARTUP_OBJECT_LIGHT_PC *)Obj;
         i32 i;
         for (i = 0; i < HIGHGAMEOBJECT; ++i) {
@@ -329,7 +329,7 @@ extern "C" {
         }
     }
 
-    void __cdecl LightGameObject(GAMEOBJECT *object, void *set) {
+    void LightGameObject(GAMEOBJECT *object, void *set) {
         GAME_LIGHT_VIEW_PC *view = (GAME_LIGHT_VIEW_PC *)object;
         f32 surface_fade;
         i32 index;
@@ -378,7 +378,7 @@ extern "C" {
         object->flags_ef0 &= ~0x80u;
     }
 
-    void __cdecl SetCreatureLights(APIOBJECT_PC *object) {
+    void SetCreatureLights(APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         GAME_LIGHT_VIEW_PC *view = (GAME_LIGHT_VIEW_PC *)owner;
         NUVEC ambient;
@@ -508,7 +508,7 @@ extern "C" {
         light->enabled = enabled;
     }
 
-    void __cdecl InitShadowLights(void) {
+    void InitShadowLights(void) {
         struct PC_SPECIAL_SHADOW_LIGHT *light;
 
         PCShadowCurrentLight = NuDynamicLightCreate();
@@ -561,7 +561,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl RenderShadowLights(i32 paused) {
+extern "C" void RenderShadowLights(i32 paused) {
     if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2 && PCShadowCurrentLight != NULL &&
         PCShadowCurrentLight->enabled != 0) {
         i32 previous = NuSpecialSetClipping(1, 1);
@@ -581,26 +581,26 @@ extern "C" void __cdecl RenderShadowLights(i32 paused) {
     }
 }
 
-void __cdecl EnableShadowMapRendering(i32 unused) {
+void EnableShadowMapRendering(i32 unused) {
     if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2) {
         ShadowMapEnablePc(PCShadowCurrentLight);
     }
 }
 
-void __cdecl ResetShadowMapRendering(void) {
+void ResetShadowMapRendering(void) {
     NuSpecialClearShadowLights();
 }
 
-extern "C" void __cdecl SetSpotLightMode(void) {
+extern "C" void SetSpotLightMode(void) {
     NuLightSpotFadeSet(0x80808080);
 }
 
 // Append to the current shadowmap.cpp owner; real existing definitions above.
-void __cdecl ResetShadowMapRenderingFn(void) {
+void ResetShadowMapRenderingFn(void) {
     ResetShadowMapRendering();
 }
 
-void __cdecl EnableShadowMapRenderingFn(void) {
+void EnableShadowMapRenderingFn(void) {
     EnableShadowMapRendering(0);
 }
 
@@ -638,7 +638,7 @@ extern "C" {
 #pragma bss_seg()
 }
 
-extern "C" void __cdecl SetShadowLight(void) {
+extern "C" void SetShadowLight(void) {
     NUVEC center;
     NUVEC target;
     NUVEC eye;

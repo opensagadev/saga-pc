@@ -101,7 +101,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
 STATIC_ASSERT(offsetof(GAMEOBJECT, lighting_packet) == 0x4d8);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, rumble) == 0x40);
 
-void __cdecl ClearGameObjects(APIOBJECTSYS_PC *system) {
+void ClearGameObjects(APIOBJECTSYS_PC *system) {
     memset(Obj, 0, sizeof(GAMEOBJECT) * 64);
     APIObjectDestroyAll(system);
     HIGHGAMEOBJECT = 0;
@@ -117,7 +117,7 @@ static void RecomputeHighGameObject(void) {
     }
 }
 
-GAMEOBJECT *__cdecl AddGameObject(void) {
+GAMEOBJECT *AddGameObject(void) {
     GAMEOBJECT *object = APIObjectCreate(WORLD->object_sys);
     u64 identity;
     if (object != NULL) {
@@ -148,7 +148,7 @@ GAMEOBJECT *__cdecl AddGameObject(void) {
     return NULL;
 }
 
-void __cdecl RemoveGameObject(GAMEOBJECT *object, i32 unused) {
+void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     GAMEOBJECT *other;
     i32 i;
     (void)unused;
@@ -176,7 +176,7 @@ void __cdecl RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     }
 }
 
-void __cdecl GameObjectDimensions(GAMEOBJECT *object) {
+void GameObjectDimensions(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *config;
     if (object->use_model_origin > 0 && object->origin_scale_override == 1.0f) {
         config = object->character_data->game_character;
@@ -197,7 +197,7 @@ extra:
     }
 }
 
-void __cdecl ScaleGameObject(GAMEOBJECT *object) {
+void ScaleGameObject(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
     object->scaled_radius = character->scaled_radius * object->origin_scale;
     object->collision_radius = object->collision_radius_unscaled * object->origin_scale;
@@ -205,7 +205,7 @@ void __cdecl ScaleGameObject(GAMEOBJECT *object) {
     object->scaled_height = (character->top - character->bottom) * object->collision_scale;
 }
 
-void __cdecl GetTopBot(GAMEOBJECT *object) {
+void GetTopBot(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
     object->character_bottom = character->bottom;
     object->character_top = character->top;
@@ -217,13 +217,13 @@ void __cdecl GetTopBot(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl SetToLastSafePos(GAMEOBJECT *object) {
+void SetToLastSafePos(GAMEOBJECT *object) {
     object->start_position = object->last_safe_position;
     object->position = object->last_safe_position;
     object->ai_update_position = object->last_safe_position;
 }
 
-i32 __cdecl UnderPlayerControl(GAMEOBJECT *object) {
+i32 UnderPlayerControl(GAMEOBJECT *object) {
     if ((object->flags_1fc_word & 0x80) != 0) {
         return 1;
     }
@@ -233,8 +233,7 @@ i32 __cdecl UnderPlayerControl(GAMEOBJECT *object) {
     return 0;
 }
 
-GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 required_flags, i32 alive_only, i32 vehicle_only,
-                                   i32 non_level_only) {
+GAMEOBJECT *FindGameObject(i32 character_id, u32 required_flags, i32 alive_only, i32 vehicle_only, i32 non_level_only) {
     GAMEOBJECT *object = Obj;
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
@@ -262,9 +261,9 @@ GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 required_flags, i32 ali
     return NULL;
 }
 
-GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, u32 required_flags, f32 radius,
-                                          f32 extra_radius, i32 animation, i32 character_id, i32 player_index,
-                                          f32 *distance_squared, i32 horizontal_only, i32 (*filter)(GAMEOBJECT *)) {
+GAMEOBJECT *FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, u32 required_flags, f32 radius,
+                                  f32 extra_radius, i32 animation, i32 character_id, i32 player_index,
+                                  f32 *distance_squared, i32 horizontal_only, i32 (*filter)(GAMEOBJECT *)) {
     f32 radius_squared = radius * radius;
     GAMEOBJECT *nearest = NULL;
     f32 nearest_distance = 100000000.0f;
@@ -332,7 +331,7 @@ GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, 
     return nearest;
 }
 
-i32 __cdecl GameObjectNearFloor(GAMEOBJECT *object, f32 height, f32 *distance) {
+i32 GameObjectNearFloor(GAMEOBJECT *object, f32 height, f32 *distance) {
     f32 tolerance;
     f32 floor_distance;
 
@@ -380,7 +379,7 @@ void GameObjectToCameraDistances() {
     }
 }
 
-void __cdecl GameObjectOrigin(GAMEOBJECT *object) {
+void GameObjectOrigin(GAMEOBJECT *object) {
     f32 min_y;
     f32 max_y;
     f32 height;
@@ -452,7 +451,7 @@ void __cdecl GameObjectOrigin(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room, NUGSCN *scene) {
+void PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room, NUGSCN *scene) {
     if (enabled != 0) {
         object->portal_flags = ((object->portal_flags ^ ((update_room & 1) << 23)) & 0x00800000) ^ object->portal_flags;
         object->portal_flags |= 0x00400000;
@@ -469,8 +468,7 @@ void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, 
     }
 }
 
-void __cdecl SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO_PC *path_info,
-                             i32 set_on_surface) {
+void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO_PC *path_info, i32 set_on_surface) {
     object->position = *position;
     object->field_0x276 = (u16)angle;
     object->facing_angle = (u16)angle;
@@ -495,7 +493,7 @@ void __cdecl SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIP
     }
 }
 
-void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
+void UpdateLastSafePosition(GAMEOBJECT *object) {
     GAMEOBJECT *terrain_object;
     i32 unsafe;
     i8 surface;
@@ -608,7 +606,7 @@ safe_position_done:
     object->flags_ef4 &= ~4;
 }
 
-void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused, f32 parameter) {
+void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused, f32 parameter) {
     object->can_use_object = target;
     object->field_f00 = action;
     object->use_action_frames = grapple_attach_frames;
@@ -626,7 +624,7 @@ void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8
 /* Bitwise absolute value through a float temporary, as retail does. */
 
 // Copies the antinode timer and its 0x8000 flag from one creature's packet to the other's.
-typedef void(__cdecl *CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
+typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
 /* The genuine callback definitions and initializer remain in the original aisys owner. */
 extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
 

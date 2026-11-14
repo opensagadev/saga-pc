@@ -33,9 +33,9 @@ extern "C" NUMTL *FadeMtl;
 extern "C" NUMTL *FadeMtl2;
 extern "C" NUMTL *ScreenFadeMtl;
 extern "C" {
-    extern void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
+    extern void (*RenderBackdropAlphaFnPc)(f32 *);
 }
-extern "C" GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsFrameRenderTexturePc(i32);
+extern "C" GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsFrameRenderTexturePc(i32);
 
 typedef struct CUT_DISPLAY_VIEW_PC {
     u8 unknown_00[0x6c];  // 0x00
@@ -53,11 +53,11 @@ typedef struct CUT_BORDER_RECORD_PC {
 
 extern "C" NUMTL *FadeMtl;
 extern "C" {
-    void __cdecl NuRndrGradRect2di(i32, i32, i32, i32, u32 *, NUMTL *);
+    void NuRndrGradRect2di(i32, i32, i32, i32, u32 *, NUMTL *);
 }
 extern "C" u8 ScreenGrabNeeded;
 extern "C" f32 pause_fade;
-extern "C" NUVPCURRENT *__cdecl NuVpGetCurrentViewport(void);
+extern "C" NUVPCURRENT *NuVpGetCurrentViewport(void);
 extern "C" i32 ScreenStillXPc;
 extern "C" i32 ScreenStillYPc;
 extern "C" i32 ScreenStillWidthPc;
@@ -88,7 +88,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl CreateFadeMaterials(void) {
+extern "C" void CreateFadeMaterials(void) {
     FadeMtl = NuMtlCreate(1);
     ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes |= 0xc000;
     ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
@@ -146,7 +146,7 @@ extern "C" {
     static f32 RenderBackdropTargetBottomGPc = 0.0f;
     static f32 RenderBackdropTargetBottomBPc = 24.0f;
 
-    void __cdecl BackDrop_ClearColourTargets(void) {
+    void BackDrop_ClearColourTargets(void) {
         RenderBackdropTargetTopRPc = 0.0f;
         RenderBackdropTargetTopGPc = 0.0f;
         RenderBackdropTargetTopBPc = 0.0f;
@@ -157,7 +157,7 @@ extern "C" {
 
     static f32 RenderBackdropWaitPc = 0.0f;
 
-    void __cdecl BackDrop_ResetColours(void) {
+    void BackDrop_ResetColours(void) {
         RenderBackdropTopRPc = 0.0f;
         RenderBackdropTopGPc = 0.0f;
         RenderBackdropTopBPc = 0.0f;
@@ -168,7 +168,7 @@ extern "C" {
         BackDrop_ClearColourTargets();
     }
 
-    void __cdecl BackDrop_UpdateColours(i32 instant) {
+    void BackDrop_UpdateColours(i32 instant) {
         if (RenderBackdropBlackPc) {
             RenderBackdropTopRPc = 0.0f;
             RenderBackdropTopGPc = 0.0f;
@@ -214,7 +214,7 @@ extern "C" {
         }
     }
 
-    void __cdecl BackDrop_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
+    void BackDrop_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
         NUGSCN *scene = backdrop_scene;
         if (scene == NULL) {
             scene = NuGScnRead(buffer, *end, path);
@@ -230,13 +230,13 @@ extern "C" {
         NuSpecialFind(backdrop_scene, &RenderBackdropSpecialsPc[3], "ball4", 1);
     }
 
-    void __cdecl BackDrop_Update(f32 dt) {
+    void BackDrop_Update(f32 dt) {
         if (backdrop_scene != NULL) {
             NuGScnUpdate(backdrop_scene, (f32)(dt * 60.0));
         }
     }
 
-    void __cdecl BackDrop_Draw(f32 alpha, i32 flags) {
+    void BackDrop_Draw(f32 alpha, i32 flags) {
         i32 special_index;
         if (backdrop_scene == NULL) {
             return;
@@ -268,13 +268,13 @@ extern "C" {
         }
     }
 
-    void __cdecl BackDrop_Dump(void) {
+    void BackDrop_Dump(void) {
         if (backdrop_scene != NULL) {
             NuGScnRemove(backdrop_scene);
         }
     }
 
-    void __cdecl DrawParallax(NUSPECIALHANDLE *special) {
+    void DrawParallax(NUSPECIALHANDLE *special) {
         NUVEC scale;
         NUMTX matrix;
         scale.x = scale.y = scale.z = (f32)((f64)pNuCam->far_clip * TerrainScanMargin10Pc * 0.5);
@@ -301,7 +301,7 @@ extern "C" {
     static GAMEFOG_STATE_PC GameFogNew = {{0}};
     static f32 dof_fstop = 0;
 
-    void __cdecl GameFog_Update(WORLDINFO *world) {
+    void GameFog_Update(WORLDINFO *world) {
         RTL_FOG_MIGRATION_PC *previous = (RTL_FOG_MIGRATION_PC *)GameFogSet;
         RTL_FOG_MIGRATION_PC *fog;
         f32 blend;
@@ -406,7 +406,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
+extern "C" void GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
     CUT_DISPLAY_VIEW_PC *cut = (CUT_DISPLAY_VIEW_PC *)CutStopInfo;
     i32 top_r;
     i32 top_g;
@@ -457,7 +457,7 @@ extern "C" void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colo
     colours[1] = (((0xffff8000 | (bottom_b & 0xff)) << 8 | (bottom_g & 0xff)) << 8) | (bottom_r & 0xff);
 }
 
-extern "C" void __cdecl WidescreenCode(i32 widescreen) {
+extern "C" void WidescreenCode(i32 widescreen) {
     f32 aspect = 0.5625f;
     if (PcWindowOptions.aspect_mode == 2) {
         aspect = 0.625f;
@@ -487,7 +487,7 @@ extern "C" void __cdecl WidescreenCode(i32 widescreen) {
 
 extern "C" {
 
-    void __cdecl KeepPointOnScreen(NUVEC *position, NUVEC *velocity) {
+    void KeepPointOnScreen(NUVEC *position, NUVEC *velocity) {
         if ((f64)position->x < (f64)-0.85f) {
             position->x = -0.85f;
             if (velocity != NULL) {
@@ -513,7 +513,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl UpdateCutBorders(void) {
+extern "C" void UpdateCutBorders(void) {
     f32 target_scale;
     if (CUTSTOPGAME != 0 || (LEGOCAMMODE_DOORCUT != -1 && GameCam->mode == LEGOCAMMODE_DOORCUT) ||
         (LEGOCAMMODE_OBSTACLE != -1 && GameCam->mode == LEGOCAMMODE_OBSTACLE && ObstacleCamBorders != 0)) {
@@ -524,7 +524,7 @@ extern "C" void __cdecl UpdateCutBorders(void) {
     CutBorderScale = SeekLinearF(CutBorderScale, target_scale, FRAMETIME + FRAMETIME);
 }
 
-extern "C" void __cdecl DrawCutBorders(i32 widescreen) {
+extern "C" void DrawCutBorders(i32 widescreen) {
     f32 border_scale;
     i32 height;
     if (!(CutBorderScale > 0.0f)) {
@@ -550,7 +550,7 @@ extern "C" void __cdecl DrawCutBorders(i32 widescreen) {
     NuRndrEndScene();
 }
 
-extern "C" void __cdecl InitStillRender(VARIPTR *buffer, VARIPTR end) {
+extern "C" void InitStillRender(VARIPTR *buffer, VARIPTR end) {
     pause_rt = NuTexCreateFramebufferCopy(buffer, end);
     STILL_RENDER_MATERIAL_PC *material = (STILL_RENDER_MATERIAL_PC *)NuMtlCreate3D(1);
     material->texture_id = (i16)pause_rt;
@@ -569,12 +569,12 @@ extern "C" void __cdecl InitStillRender(VARIPTR *buffer, VARIPTR end) {
 }
 
 /* Resizes the pause-screen still to a new backbuffer size after a D3D reset. */
-extern "C" void __cdecl ResizeStillRenderPc(i32 width, i32 height) {
+extern "C" void ResizeStillRenderPc(i32 width, i32 height) {
     GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsFrameRenderTexturePc(pause_rt);
     PCGraphicsResizeEffectTexture(texture, width, height, -1);
 }
 
-extern "C" void __cdecl DrawPauseScreenWipe(void) {
+extern "C" void DrawPauseScreenWipe(void) {
     i32 x;
     i32 y;
     i32 width;
@@ -649,7 +649,7 @@ extern "C" void __cdecl DrawPauseScreenWipe(void) {
 extern "C" void fun_00565b90() {
 }
 
-extern "C" void __cdecl GrabStillScreen(void) {
+extern "C" void GrabStillScreen(void) {
     if (ScreenGrabNeeded != 0) {
         ScreenGrabNeeded = 0;
         NuRndrBeginScene(1);
@@ -685,7 +685,7 @@ extern "C" void DrawStillScreen(i32 clear) {
     NuRndrEndScene();
 }
 
-extern "C" void __cdecl DrawPauseFade(void) {
+extern "C" void DrawPauseFade(void) {
     if (editor_active != 0 || screendump != 0) {
         return;
     }
@@ -701,7 +701,7 @@ extern "C" void fun_00565d80() {
     old_pause_state = 0;
 }
 
-extern "C" void __cdecl HandleStillRender(void) {
+extern "C" void HandleStillRender(void) {
     GetMenuID();
     if (pause_rndr_on != 0 && FadeSys.pending_type == -1) {
         NuRndrBeginScene(1);
@@ -763,7 +763,7 @@ extern "C" {
     NUMTL *SolidMtl = 0;
 }
 
-extern "C" void __cdecl DrawFadeScreenWipe(void) {
+extern "C" void DrawFadeScreenWipe(void) {
     i32 x = 0;
     i32 y = 0;
     i32 width;
@@ -870,7 +870,7 @@ extern "C" void __cdecl DrawFadeScreenWipe(void) {
     NuRndrEndScene();
 }
 
-extern "C" void __cdecl NoRender(void) {
+extern "C" void NoRender(void) {
     pNuCam->mtx = NuMtxSetIdentityTemplate;
     NuCameraSet(pNuCam);
     NuRndrBeginScene(1);
@@ -887,7 +887,7 @@ extern "C" void __cdecl NoRender(void) {
 
 extern "C" {
 
-    void __cdecl FinishLoop(i32 frames) {
+    void FinishLoop(i32 frames) {
         if (FinishLoop_On == 0) {
             return;
         }
@@ -975,7 +975,7 @@ extern "C" {
     }
 }
 
-void __cdecl ChallangeCash_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void ChallangeCash_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     (void)packet;
 }

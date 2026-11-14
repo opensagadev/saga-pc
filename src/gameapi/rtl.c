@@ -23,12 +23,12 @@ typedef union RTL_FRAME_TIMER_VIEW_PC {
 
 STATIC_ASSERT(sizeof(RTL_FRAME_TIMER_VIEW_PC) == sizeof(i32));
 
-void __cdecl rtlFrameUpdate(f32 frame_time) {
+void rtlFrameUpdate(f32 frame_time) {
     ((RTL_FRAME_TIMER_VIEW_PC *)&rtltimer1)->words.low += (u16)(i32)(rtltimer1adv * frame_time);
     NuTimeBarSlotReset(0, 6);
 }
 
-i32 __cdecl rtlResetDynamic(void) {
+i32 rtlResetDynamic(void) {
     if (rtl_dynamic_pool != NULL) {
         NULNKHDR *entry = NuLstGetNext(rtl_dynamic_pool, NULL);
         while (entry != NULL) {
@@ -41,7 +41,7 @@ i32 __cdecl rtlResetDynamic(void) {
     return rtl_dynamic_max;
 }
 
-i32 __cdecl rtlDynamicEnable(i32 id, i32 enabled) {
+i32 rtlDynamicEnable(i32 id, i32 enabled) {
     RTL_LIGHT_PC *light;
     i32 previous;
     if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max) {
@@ -202,13 +202,13 @@ static void RtlSpecularStatePc(const NUVEC *direction, const NUVEC4 *intensity) 
     NuRndrSetSpecularLightPS(direction, intensity);
 }
 
-void __cdecl rtlSetLights(RTL_DATA_PC *data) {
+void rtlSetLights(RTL_DATA_PC *data) {
     RtlDirectionStatePc(&data->direction[0], &data->intensity_vectors[0], &data->direction[1],
                         &data->intensity_vectors[1], &data->direction[2], &data->intensity_vectors[2]);
     RtlAmbientStatePc(&data->ambient);
 }
 
-i32 __cdecl rtlDynamicMasterEnable(i32 enabled) {
+i32 rtlDynamicMasterEnable(i32 enabled) {
     i32 old = rtl_dynamic_lights_enabled;
     rtl_dynamic_lights_enabled = enabled;
     return old;
@@ -569,7 +569,7 @@ void rtlApplySetScale(void *set, RTL_DATA_PC *data, NUVEC *position, NUMTX *rota
     _NuTimeBarSlotEnd(0, 6);
 }
 
-i32 __cdecl rtlDynamicAlloc(void) {
+i32 rtlDynamicAlloc(void) {
     RTL_LIGHT_PC *light;
     if (rtl_dynamic_pool == NULL) {
         return -1;
@@ -618,7 +618,7 @@ i32 __cdecl rtlDynamicAlloc(void) {
     return -1;
 }
 
-i32 __cdecl rtlDynamicSetType(i32 id, i32 type) {
+i32 rtlDynamicSetType(i32 id, i32 type) {
     RTL_LIGHT_PC *light;
     if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max) {
         return 0;
@@ -633,7 +633,7 @@ i32 __cdecl rtlDynamicSetType(i32 id, i32 type) {
     return 0;
 }
 
-i32 __cdecl rtlDynamicSetPos(i32 id, NUVEC *position) {
+i32 rtlDynamicSetPos(i32 id, NUVEC *position) {
     RTL_LIGHT_PC *light;
     if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max) {
         return 0;
@@ -646,7 +646,7 @@ i32 __cdecl rtlDynamicSetPos(i32 id, NUVEC *position) {
     return 1;
 }
 
-i32 __cdecl rtlFindByUserId(RTL_SET_PC *set, i32 user_id) {
+i32 rtlFindByUserId(RTL_SET_PC *set, i32 user_id) {
     i32 index;
     if (set != NULL) {
         for (index = 0; index < 128; ++index) {
@@ -658,7 +658,7 @@ i32 __cdecl rtlFindByUserId(RTL_SET_PC *set, i32 user_id) {
     return -1;
 }
 
-void __cdecl rtlDynamicFree(i32 id) {
+void rtlDynamicFree(i32 id) {
     NULNKHDR *light;
     if (rtl_dynamic_pool != NULL && id >= 0 && id < rtl_dynamic_max) {
         light = NuLstGetByIdx(rtl_dynamic_pool, id);
@@ -669,7 +669,7 @@ void __cdecl rtlDynamicFree(i32 id) {
     }
 }
 
-i32 __cdecl rtlDynamicAllocTemplate(RTL_SET_PC *set, i32 user_id) {
+i32 rtlDynamicAllocTemplate(RTL_SET_PC *set, i32 user_id) {
     i32 template_id;
     i32 id;
     RTL_LIGHT_PC *light;
@@ -806,7 +806,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT_PC *light, f32 elapsed) {
     }
 }
 
-void __cdecl rtlProcessLights(void *set, f32 frame_time) {
+void rtlProcessLights(void *set, f32 frame_time) {
     RTL_LIGHT_PC *light;
     i32 i;
     RTL_SET_PC *light_set;
@@ -966,7 +966,7 @@ i32 rtlDynamicSetDirection(i32 id, NUVEC *direction) {
 #define RTL_OLD_FOG_PC(set) ((RTL_FOG_MIGRATION_PC *)&(set)->lights[64])
 #define RTL_FOG_PC(set) ((RTL_FOG_MIGRATION_PC *)(set)->fog)
 
-RTL_SET_PC *__cdecl rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
+RTL_SET_PC *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
     RTL_SET_PC *set;
     i32 i;
     buffer->addr = (buffer->addr + 3) & ~3u;
@@ -1015,7 +1015,7 @@ RTL_SET_PC *__cdecl rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
     return set;
 }
 
-void __cdecl rtlSaveSet(char *path, RTL_SET_PC *set) {
+void rtlSaveSet(char *path, RTL_SET_PC *set) {
     NUFILE file = NuFileOpen(path, 1);
     if (file != 0) {
         NuFileWrite(file, set, sizeof(RTL_SET_PC));
@@ -1023,18 +1023,18 @@ void __cdecl rtlSaveSet(char *path, RTL_SET_PC *set) {
     }
 }
 
-i32 __cdecl rtlInitDynamic(VARIPTR *buffer, VARIPTR end, i32 max_lights) {
+i32 rtlInitDynamic(VARIPTR *buffer, VARIPTR end, i32 max_lights) {
     rtl_dynamic_pool = NuLstCreateBuff(max_lights, sizeof(RTL_LIGHT_PC), buffer, end, 0x10);
     rtl_dynamic_max = max_lights;
     rtl_dynamic_cnt = 0;
     return max_lights;
 }
 
-void __cdecl rtlSetShadowFlickerScale(NUVEC *scale) {
+void rtlSetShadowFlickerScale(NUVEC *scale) {
     rtl_shadow_flicker = *scale;
 }
 
-void __cdecl rtlSetShadowFlickerBlendTime(f32 time) {
+void rtlSetShadowFlickerBlendTime(f32 time) {
     if (time != 0.0f) {
         rtl_shadow_blend_rate = 1.0f / time;
     } else {
@@ -1435,7 +1435,7 @@ typedef struct rtl_direction_lookup_pc_s {
 
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, direction) == 0xc);
 
-i32 __cdecl rtlGetDirection(RTL_SET_PC *set, i32 index, NUVEC **out) {
+i32 rtlGetDirection(RTL_SET_PC *set, i32 index, NUVEC **out) {
     if (set == NULL || out == NULL || (u32)index > 128u) {
         return 0;
     }
@@ -1443,20 +1443,20 @@ i32 __cdecl rtlGetDirection(RTL_SET_PC *set, i32 index, NUVEC **out) {
     return 1;
 }
 
-f32 __cdecl rtlSpecularValue(RTL_DATA_PC *data) {
+f32 rtlSpecularValue(RTL_DATA_PC *data) {
     if (data != NULL) {
         return data->specular_value;
     }
     return 0.0f;
 }
 
-void __cdecl rtlSetSpecularValue(RTL_DATA_PC *data, f32 value) {
+void rtlSetSpecularValue(RTL_DATA_PC *data, f32 value) {
     if (data != NULL) {
         data->specular_value = value;
     }
 }
 
-void __cdecl rtlSetSpecularLight(RTL_DATA_PC *data) {
+void rtlSetSpecularLight(RTL_DATA_PC *data) {
     if (data->specular_value > 0.0f) {
         RtlSpecularStatePc(&data->field_134, NULL);
     }
@@ -1471,7 +1471,7 @@ f32 edrtl_text_scale = 1.0f;
 i32 rtl_debug = 0;
 RTL_SET_PC *curr_set = NULL;
 
-RTL_SET_PC *__cdecl rtlGetCurrentSet(void) {
+RTL_SET_PC *rtlGetCurrentSet(void) {
     return curr_set;
 }
 
@@ -1483,7 +1483,7 @@ i32 modifier_cnt = 1;
 static char *default_modifier_names[1] = {"default"};
 char **modifier_names = default_modifier_names;
 
-void __cdecl rtlSetModifiers(f32 *values, char **names, i32 count) {
+void rtlSetModifiers(f32 *values, char **names, i32 count) {
     modifiers = values;
     modifier_names = names;
     modifier_cnt = count > 32 ? 32 : count;
@@ -1500,7 +1500,7 @@ i32 help_line = 190;
 char *userid_names[16] = {"NO ID", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
                           "ID 8",  "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
 
-void __cdecl rtlSetUserIdName(i32 index, char *name) {
+void rtlSetUserIdName(i32 index, char *name) {
     if (index < 16 && index > 0) {
         userid_names[index] = name;
     }
@@ -1558,7 +1558,7 @@ static void edrtlDrawHelp(void) {
     }
 }
 
-void __cdecl edrtlDrawRTLInfo(void) {
+void edrtlDrawRTLInfo(void) {
     const char *light_types[10] = {
         "INVALID", "AMBIENT",     "POINT",     "POINT FLICKER", "DIRECTIONAL",
         "CAMDIR",  "POINT BLEND", "ANTILIGHT", "JON FLICKER",   "ALSO INVALID",
@@ -2471,7 +2471,7 @@ static __forceinline void edrtlRndrLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vert
     NuRndrLine3dDbg(first.x, first.y, first.z, second.x, second.y, second.z, vertices[0].colour);
 }
 
-void __cdecl edrtlDrawCursor(void) {
+void edrtlDrawCursor(void) {
     /* Retail's frame (0x90) holds three vertices; only two are used. */
     NURND_VERTEX3D_PC line[3];
     line[0].position.x = burn_editor_position_pc.x - cursor_size;
@@ -2516,7 +2516,7 @@ extern i32 rtl_zoff;
     if (&(light) == curr_rtl)                                                                                          \
     RndrOSquare(&(light).position, (light).outer_radius, -1, EDRTL_LIGHT_MTL())
 
-void __cdecl edrtlDrawLightEx(i32 index, i32 style) {
+void edrtlDrawLightEx(i32 index, i32 style) {
     u32 colour;
     u32 inner_colour;
     u32 outer_colour;
@@ -2569,7 +2569,7 @@ void __cdecl edrtlDrawLightEx(i32 index, i32 style) {
 #undef EDRTL_LIGHT_MTL
 #undef EDRTL_RNDR_VTX_LINE
 
-void __cdecl edrtlDrawFogInfo(void) {
+void edrtlDrawFogInfo(void) {
     const char *fog_types[3] = {"INVALID", "SPHERICAL", "ALSO INVALID"};
     i32 x;
     i32 y;
@@ -2663,16 +2663,16 @@ STATIC_ASSERT(sizeof(hide_types) == 8 * sizeof(i32));
 STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
 
-void __cdecl edrtlcbCancelMenu(eduimenu_s *menu, eduimenu_s *parent) {
+void edrtlcbCancelMenu(eduimenu_s *menu, eduimenu_s *parent) {
     rtled_menu_active = 0;
 }
 
-void __cdecl edrtlcbDeleteNo(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
+void edrtlcbDeleteNo(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
     delete_menu_active = 0;
     item->highlighted = 0;
 }
 
-void __cdecl edrtlcbToggleCastShadow(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
+void edrtlcbToggleCastShadow(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
     u8 highlighted = item->highlighted;
     curr_rtl->flags = (curr_rtl->flags & ~2u) | (highlighted << 1);
 }
@@ -2680,7 +2680,7 @@ void __cdecl edrtlcbToggleCastShadow(eduimenu_s *menu, eduiitem_s *item, u32 fla
 STATIC_ASSERT(offsetof(struct eduiitem_s, flags) == 0x11);
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
 
-void __cdecl rtlCbToggleHasSpecularPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+void rtlCbToggleHasSpecularPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     u8 highlighted = item->highlighted;
     RTL_LIGHT_PC *light = curr_rtl;
     light->flags = (light->flags & ~4u) | ((u32)highlighted << 2);
@@ -2689,7 +2689,7 @@ void __cdecl rtlCbToggleHasSpecularPc(struct eduimenu_s *menu, struct eduiitem_s
 /* Native 0x00639130..0x0063914b: three unused cdecl UI callback arguments. */
 extern RTL_LIGHT_PC clipboard_light;
 
-void __cdecl cbCopyLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbCopyLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
         clipboard_light = *curr_rtl;
     }
@@ -2704,25 +2704,25 @@ STATIC_ASSERT(offsetof(eduiitem_s, data) == 0x0c);
 STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
 STATIC_ASSERT(sizeof(RTL_FOG_MIGRATION_PC) == 0x4c);
 
-void __cdecl cbSetControls(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+void cbSetControls(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     (void)menu;
     (void)value;
     ctl_ix = item->data;
 }
 
-void __cdecl cbNoZBuffer(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+void cbNoZBuffer(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     (void)menu;
     (void)value;
     rtl_zoff = item->flags & 1u;
 }
 
-void __cdecl cbHideType(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+void cbHideType(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     (void)menu;
     (void)value;
     hide_types[item->data] = item->flags & 1u;
 }
 
-void __cdecl cbCopyFog(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+void cbCopyFog(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     (void)menu;
     (void)item;
     (void)value;
@@ -2734,28 +2734,28 @@ void __cdecl cbCopyFog(eduimenu_s *menu, eduiitem_s *item, u32 value) {
 STATIC_ASSERT(offsetof(struct edui_slider_s, value) == 0x54);
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, parameters) == 0x44);
 
-void __cdecl rtlCbHighTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+void rtlCbHighTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     RTL_LIGHT_PC *light = curr_rtl;
     if (light != NULL) {
         light->parameters[0] = ((struct edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl rtlCbRHighTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+void rtlCbRHighTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     RTL_LIGHT_PC *light = curr_rtl;
     if (light != NULL) {
         light->parameters[1] = ((struct edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl rtlCbLowTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+void rtlCbLowTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     RTL_LIGHT_PC *light = curr_rtl;
     if (light != NULL) {
         light->parameters[2] = ((struct edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl rtlCbRLowTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+void rtlCbRLowTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     RTL_LIGHT_PC *light = curr_rtl;
     if (light != NULL) {
         light->parameters[3] = ((struct edui_slider_s *)item)->value;
@@ -2780,14 +2780,14 @@ __declspec(allocate(".bss$RtlUndoItemPc")) eduiitem_s *undo_item = NULL;
 #pragma section(".bss$RtlRedoItemPc", read, write)
 __declspec(allocate(".bss$RtlRedoItemPc")) eduiitem_s *redo_item = NULL;
 
-void __cdecl edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
+void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
 STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(sizeof(u32) == 4);
 STATIC_ASSERT(sizeof(RTL_LIGHT_PC) == 0x8c);
 STATIC_ASSERT(offsetof(RTL_SET_PC, lights) == 4);
 STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
 
-void __cdecl edrtlSaveUndo(void) {
+void edrtlSaveUndo(void) {
     if (maxundo != 0 && curr_set != NULL) {
         PCByteCopy(rtl_undo + rtl_undo_ix * 128, curr_set->lights, sizeof(curr_set->lights));
         edcamGetPosAng(&curpos_undo[rtl_undo_ix], NULL, NULL);
@@ -2813,17 +2813,17 @@ static void edrtlInvalidateUndo(void) {
 extern f32 min_r;
 extern f32 def_fr;
 
-void __cdecl rtlSetMinR(f32 radius) {
+void rtlSetMinR(f32 radius) {
     min_r = radius;
     def_fr = min_r * 2.0f;
 }
 
-i32 __cdecl NuMiscNextPow2(i32 value);
-void __cdecl RtlUiCreateFailedPc(void);
+i32 NuMiscNextPow2(i32 value);
+void RtlUiCreateFailedPc(void);
 
 /* Carves the undo snapshots (128 lights each), the per-snapshot light pointers and camera positions from the
    editor buffer; at least two snapshots. */
-void __cdecl rtlSetUndoBuffer(VARIPTR *buffer, VARIPTR end, i32 count) {
+void rtlSetUndoBuffer(VARIPTR *buffer, VARIPTR end, i32 count) {
     maxundo = NuMiscNextPow2(count) < 2 ? 2 : NuMiscNextPow2(count);
     rtl_undo = (RTL_LIGHT_PC *)((buffer->addr + 3) & ~3);
     buffer->addr = (buffer->addr + 3) & ~3;
@@ -2845,7 +2845,7 @@ void __cdecl rtlSetUndoBuffer(VARIPTR *buffer, VARIPTR end, i32 count) {
     }
 }
 
-void __cdecl cbPasteLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbPasteLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (clipboard_light.type != 0) {
         edrtlSaveUndo();
         curr_rtl = rtlAlloc();
@@ -2870,7 +2870,7 @@ void __cdecl cbPasteLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 __declspec(allocate(".bss$RtlMenuUndoPc")) RTL_LIGHT_PC menu_undo = {0};
 STATIC_ASSERT(sizeof(menu_undo) == 35 * sizeof(u32));
 
-void __cdecl cbDeleteYes(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
+void cbDeleteYes(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
     if (curr_rtl != NULL) {
         edrtlSaveUndo();
         rtlFree(curr_rtl);
@@ -2880,7 +2880,7 @@ void __cdecl cbDeleteYes(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
     item->highlighted = 0;
 }
 
-void __cdecl cbPasteIntoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbPasteIntoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     NUVEC position;
     if (clipboard_light.type != 0) {
         edrtlSaveUndo();
@@ -2904,13 +2904,13 @@ void __cdecl cbPasteIntoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbTriggerSubMenu(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbTriggerSubMenu(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 
-void __cdecl edrtlcbCancelDeleteMenu(eduimenu_s *menu, eduimenu_s *parent) {
+void edrtlcbCancelDeleteMenu(eduimenu_s *menu, eduimenu_s *parent) {
     delete_menu_active = 0;
 }
 
-void __cdecl cbCopyToGroup(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbCopyToGroup(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     i32 save_undo = 1;
     i32 i;
     NUVEC position;
@@ -2938,78 +2938,78 @@ void __cdecl cbCopyToGroup(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbLightProperties(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbLightProperties(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     menu_undo = *curr_rtl;
     cbTriggerSubMenu(menu, item, buttons);
 }
 
-void __cdecl rtlCbFogAlphaPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+void rtlCbFogAlphaPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     if (curr_fog != NULL) {
         curr_fog->colour &= 0x00ffffffu;
         curr_fog->colour |= (u32)((struct edui_slider_s *)item)->value << 24;
     }
 }
 
-void __cdecl rtlCbFogDensityPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+void rtlCbFogDensityPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->density = ((struct edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl rtlCbFogDensityWiiPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+void rtlCbFogDensityWiiPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->density_wii = ((struct edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl rtlCbHazeDensityPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+void rtlCbHazeDensityPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     if (curr_fog != NULL) {
         curr_fog->low_quality_colour &= 0x00ffffffu;
         curr_fog->low_quality_colour |= (u32)((struct edui_slider_s *)item)->value << 24;
     }
 }
 
-void __cdecl rtlCbBlurDensityPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+void rtlCbBlurDensityPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->low_quality_density = (i32)(((struct edui_slider_s *)item)->value * 128.0);
     }
 }
 
-void __cdecl CreateColourPicker(void);
-void __cdecl cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbLightType(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbModifierType(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbLowColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbHighColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbMultiplier(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbGroupID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbCancelSubMenuFromItem(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbScaleAllMultipliersUp(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbScaleAllMultipliersDown(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbUndoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbSave(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbFogColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbFogStart(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbFogEnd(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbFogStartPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbFogEndPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbHazeColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbFogAdjRng(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbFogAdjNear(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbFogAdjFar(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbDOFFStop(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbPasteFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbPasteIntoFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent);
+void CreateColourPicker(void);
+void cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbLightType(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbModifierType(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbLowColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbHighColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbMultiplier(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbGroupID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbCancelSubMenuFromItem(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbScaleAllMultipliersUp(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbScaleAllMultipliersDown(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbUndoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbSave(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbFogColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbFogStart(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbFogEnd(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbFogStartPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbFogEndPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbHazeColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbFogAdjRng(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbFogAdjNear(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbFogAdjFar(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbDOFFStop(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbPasteFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbPasteIntoFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent);
 
 #pragma section(".bss$RtlUI_associd_menu", read, write)
 __declspec(allocate(".bss$RtlUI_associd_menu")) static eduimenu_s *associd_menu = NULL;
@@ -3173,7 +3173,7 @@ __declspec(allocate(".data$RtlUICamdirNamesPc")) static char *camdir_id_names[16
     "ID 0", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
     "ID 8", "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
 
-void __cdecl rtlSetAssocName(i32 index, char *name) {
+void rtlSetAssocName(i32 index, char *name) {
     if (index < 16) {
         camdir_id_names[index] = name;
     }
@@ -3183,7 +3183,7 @@ STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
 STATIC_ASSERT(offsetof(edui_slider_s, granularity) == 0x68);
 
-void __cdecl InitUI(void) {
+void InitUI(void) {
     i32 i;
     eduimenu_s *menu;
     eduiitem_s *created;
@@ -3516,7 +3516,7 @@ void __cdecl InitUI(void) {
 #pragma section(".bss$RtlUsrCamPc", read, write)
 __declspec(allocate(".bss$RtlUsrCamPc")) static NUCAMERA *usr_cam = 0;
 
-void __cdecl edrtlInit(void) {
+void edrtlInit(void) {
     usr_cam = NuCameraCreate();
     clipboard_light.type = 0;
     mtls[0] = NuMtlCreate3D(1);
@@ -3540,11 +3540,11 @@ void __cdecl edrtlInit(void) {
     InitUI();
 }
 
-void __cdecl edrtlDrawLight(i32 index) {
+void edrtlDrawLight(i32 index) {
     edrtlDrawLightEx(index, 0);
 }
 
-void __cdecl edrtlDrawLights(void) {
+void edrtlDrawLights(void) {
     i32 index;
     if (base_rtl != NULL) {
         for (index = base_rtl->field_79; index != -1; index = curr_set->lights[index].field_79) {
@@ -3565,9 +3565,9 @@ __declspec(allocate(".bss$RtlEditorFarClip")) static f32 game_farclip = 0.0f;
 #pragma section(".bss$RtlEditorNearClip", read, write)
 __declspec(allocate(".bss$RtlEditorNearClip")) static f32 game_nearclip = 0.0f;
 
-void __cdecl eduiItemSliderSetValEx(edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
+void eduiItemSliderSetValEx(edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
 
-void __cdecl RefreshUI(void) {
+void RefreshUI(void) {
     i32 i;
 
     NuQFntPushCoordinateSystem(1);
@@ -3691,7 +3691,7 @@ void __cdecl RefreshUI(void) {
     NuQFntPopCoordinateSystem();
 }
 
-void __cdecl cbScaleAllMultipliersUp(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbScaleAllMultipliersUp(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     eduimenu_s *confirmation;
     i32 i;
     edrtlSaveUndo();
@@ -3705,7 +3705,7 @@ void __cdecl cbScaleAllMultipliersUp(eduimenu_s *menu, eduiitem_s *item, u32 but
     RefreshUI();
 }
 
-void __cdecl cbScaleAllMultipliersDown(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbScaleAllMultipliersDown(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     edui_slider_s *slider;
     eduimenu_s *confirmation;
     i32 i;
@@ -3721,7 +3721,7 @@ void __cdecl cbScaleAllMultipliersDown(eduimenu_s *menu, eduiitem_s *item, u32 b
     RefreshUI();
 }
 
-void __cdecl rtlScaleSetMultipliers(f32 scale, RTL_SET_PC *set_ptr) {
+void rtlScaleSetMultipliers(f32 scale, RTL_SET_PC *set_ptr) {
     RTL_SET_PC *set = set_ptr;
     i32 i;
     for (i = 0; i < 128; ++i) {
@@ -3729,7 +3729,7 @@ void __cdecl rtlScaleSetMultipliers(f32 scale, RTL_SET_PC *set_ptr) {
     }
 }
 
-void __cdecl cbFogAdjRng(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbFogAdjRng(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     f32 range = ((edui_slider_s *)item)->value;
     edui_slider_s *target = (edui_slider_s *)fogstart_item;
     if (target != NULL) {
@@ -3753,7 +3753,7 @@ void __cdecl cbFogAdjRng(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbFogAdjNear(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbFogAdjNear(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     edui_slider_s *target = (edui_slider_s *)fogadjfar_item;
     f32 near_clip;
     game_nearclip = ((edui_slider_s *)item)->value;
@@ -3765,7 +3765,7 @@ void __cdecl cbFogAdjNear(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbFogAdjFar(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbFogAdjFar(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     edui_slider_s *target = (edui_slider_s *)fogadjnear_item;
     f32 far_clip;
     game_farclip = ((edui_slider_s *)item)->value;
@@ -3779,46 +3779,46 @@ void __cdecl cbFogAdjFar(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbDOFFStop(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbDOFFStop(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->depth_of_field_fstop = (u8)(i32)(((edui_slider_s *)item)->value * 10.0);
     }
 }
 
-void __cdecl AddColourPick(eduimenu_s *menu, eduiitem_s *item, f32 *red, f32 *green, f32 *blue, u32 *rgba);
+void AddColourPick(eduimenu_s *menu, eduiitem_s *item, f32 *red, f32 *green, f32 *blue, u32 *rgba);
 
-void __cdecl cbMultiplier(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbMultiplier(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
         curr_rtl->intensity = ((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl cbGroupID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbGroupID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
         curr_rtl->group_id = (u8)(i32)((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl cbModifierType(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbModifierType(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
         curr_rtl->field_7b = (i8)item->data;
         RefreshUI();
     }
 }
 
-void __cdecl cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     modifiers[item->data] = ((edui_slider_s *)item)->value;
 }
 
-void __cdecl cbHighColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbHighColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RTL_LIGHT_PC *light = curr_rtl;
     if (light != NULL) {
         AddColourPick(menu, item, &light->colour.x, &light->colour.y, &light->colour.z, NULL);
     }
 }
 
-void __cdecl cbLowColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbLowColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RTL_LIGHT_PC *light = curr_rtl;
     if (light != NULL) {
         AddColourPick(menu, item, &light->secondary_colour.x, &light->secondary_colour.y, &light->secondary_colour.z,
@@ -3826,14 +3826,14 @@ void __cdecl cbLowColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbLightType(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbLightType(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
         curr_rtl->type = (u8)item->data;
         RefreshUI();
     }
 }
 
-void __cdecl cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
         curr_rtl->field_5e &= (i16) ~(1 << item->data);
         if (item->highlighted) {
@@ -3844,7 +3844,7 @@ void __cdecl cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
         curr_rtl->field_60 &= (i16) ~(1 << item->data);
         if (item->highlighted) {
@@ -3855,49 +3855,49 @@ void __cdecl cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
         curr_rtl->field_68 = (u16)item->data;
         RefreshUI();
     }
 }
 
-void __cdecl cbFogColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbFogColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         AddColourPick(menu, item, NULL, NULL, NULL, &fog->colour);
     }
 }
 
-void __cdecl cbHazeColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbHazeColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         AddColourPick(menu, item, NULL, NULL, NULL, &fog->low_quality_colour);
     }
 }
 
-void __cdecl cbFogStart(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbFogStart(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->start = ((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl cbFogEnd(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbFogEnd(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->end = ((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl cbFogStartPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbFogStartPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->start_psp = ((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl cbFogEndPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbFogEndPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->end_psp = ((edui_slider_s *)item)->value;
@@ -3951,7 +3951,7 @@ __declspec(allocate(".rdata$RtlFilePathFormat")) const char RtlFilePathFormatPc[
 #pragma section(".data$RtlExtensionPointer", read, write)
 __declspec(allocate(".data$RtlExtensionPointer")) char *rtl_ext = (char *)RtlFileExtensionTextPc;
 
-void __cdecl edrtlUndo(void) {
+void edrtlUndo(void) {
     if (maxundo != 0 && curr_set != NULL && rtl_undo_cnt != 0) {
         PCByteCopy(rtl_undo + rtl_undo_ix * 128, curr_set->lights, sizeof(curr_set->lights));
         edcamGetPosAng(&curpos_undo[rtl_undo_ix], NULL, NULL);
@@ -3974,7 +3974,7 @@ void __cdecl edrtlUndo(void) {
     }
 }
 
-void __cdecl edrtlRedo(void) {
+void edrtlRedo(void) {
     if (maxundo != 0 && curr_set != NULL && rtl_undo_cnt < rtl_undo_maxcnt) {
         rtl_undo_ix = (rtl_undo_ix + 1) & (maxundo - 1);
         ++rtl_undo_cnt;
@@ -3994,14 +3994,14 @@ void __cdecl edrtlRedo(void) {
 
 /* Genuine rtlCmp is defined by the separately frozen same-TU component. */
 static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second);
-char *__cdecl rtlGetEnvPath(void);
-char *__cdecl rtlGetEnvSceneName(void);
+char *rtlGetEnvPath(void);
+char *rtlGetEnvSceneName(void);
 
 void rtlSetExt(char *extension) {
     rtl_ext = extension;
 }
 
-void __cdecl cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     char path[256];
     VARIPTR buffer;
     buffer.void_ptr = curr_set;
@@ -4013,7 +4013,7 @@ void __cdecl cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RefreshUI();
 }
 
-void __cdecl cbSave(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbSave(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     char path[256];
     RTL_SET_PC *set;
     NUFILE file;
@@ -4026,7 +4026,7 @@ void __cdecl cbSave(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent) {
+void cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent) {
     RTL_LIGHT_PC saved;
     if (rtlCmp(curr_rtl, &menu_undo) != 0) {
         saved = *curr_rtl;
@@ -4037,7 +4037,7 @@ void __cdecl cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent) {
     eduiMenuDetach(menu);
 }
 
-void __cdecl cbPasteFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbPasteFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (clipboard_fog.type != 0) {
         curr_fog = fogAlloc();
         if (curr_fog != NULL) {
@@ -4047,7 +4047,7 @@ void __cdecl cbPasteFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbPasteIntoFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbPasteIntoFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     NUVEC position;
     if (clipboard_fog.type != 0) {
         if (curr_fog != NULL) {
@@ -4060,11 +4060,11 @@ void __cdecl cbPasteIntoFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void __cdecl cbUndoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbUndoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     edrtlUndo();
 }
 
-void __cdecl cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     edrtlRedo();
 }
 
@@ -4103,8 +4103,8 @@ __declspec(allocate(".bss$RtlProc_edrtl_dragstart_pc")) NUVEC edrtl_dragstart_pc
 #pragma section(".bss$RtlProc_edrtl_dragoff_pc", read, write)
 __declspec(allocate(".bss$RtlProc_edrtl_dragoff_pc")) NUVEC edrtl_dragoff_pc = {0};
 
-void __cdecl edcamSetAng(i32 pitch, i32 yaw);
-f32 __cdecl edcamGetDist(void);
+void edcamSetAng(i32 pitch, i32 yaw);
+f32 edcamGetDist(void);
 STATIC_ASSERT(offsetof(eduimenu_s, first) == 0);
 STATIC_ASSERT(offsetof(eduimenu_s, selected) == 8);
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, position) == 0);
@@ -4152,7 +4152,7 @@ static RTL_LIGHT_PC *FindNearestRTL(NUVEC *position, int ignore_radius) {
     return nearest != -1 ? &curr_set->lights[nearest] : NULL;
 }
 
-i32 __cdecl edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
+i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
     f32 dist;
     i16 previous_yaw;
     i16 previous_pitch;
@@ -4372,7 +4372,7 @@ static RTL_FOG_MIGRATION_PC *FindNearestFog(NUVEC *position) {
     return NULL;
 }
 
-RTL_FOG_MIGRATION_PC *__cdecl edrtlGetFogSet(void) {
+RTL_FOG_MIGRATION_PC *edrtlGetFogSet(void) {
     if (fogmode == 0) {
         return curr_fog;
     }
@@ -4619,7 +4619,7 @@ static i32 edrtlProc(f32 delta_time, FRAME_PAD_PC *pad) {
     return 1;
 }
 
-void __cdecl edrtlDrawFog(RTL_FOG_MIGRATION_PC *fog) {
+void edrtlDrawFog(RTL_FOG_MIGRATION_PC *fog) {
     if (fog != NULL) {
         i32 colour = (fog->colour & 0xffffff) | 0x80000000;
         switch (fog->type) {
@@ -4632,14 +4632,14 @@ void __cdecl edrtlDrawFog(RTL_FOG_MIGRATION_PC *fog) {
     }
 }
 
-void __cdecl edrtlDrawFogs(void) {
+void edrtlDrawFogs(void) {
     i32 index;
     for (index = 0; index < 32; ++index) {
         edrtlDrawFog(&RTL_FOG_PC(curr_set)[index]);
     }
 }
 
-void __cdecl edrtlDrawBurnouts(void) {
+void edrtlDrawBurnouts(void) {
     i32 index;
     if (edrtl_edit_burnset == NULL) {
         return;

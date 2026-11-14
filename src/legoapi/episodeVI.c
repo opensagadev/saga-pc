@@ -88,7 +88,7 @@ typedef struct emperor_update_packet_pc_s {
     u8 reserved;            // 0x7
 } EMPEROR_UPDATE_PACKET_PC; // size 0x8
 
-void __cdecl KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
+void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_opponent_exclusion_mask) == 0xeb8);
 #define RANCOR_PLAYER_IN_AREA_PC(player, world, n)                                                                     \
@@ -124,13 +124,13 @@ extern f32 EmperorFloorSafeXMinimumPc;
 #define EMPEROR_PACKET ((EMPEROR_UPDATE_PACKET_PC *)emperorfighta_netpacket)
 #define EMPEROR_FLOOR_AREA_MASK(world, area) (1 << ((area) - (world)->ai_sys->areas))
 
-void __cdecl DeathStar2BattleA_AlwaysUpdate(WORLDINFO *world) {
+void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *world) {
     if (FreePlay == 0 && LevelFixupSlotPc0087b284 != NULL) {
         other_level_override = LevelFixupSlotPc0087b284->index;
     }
 }
 
-void __cdecl DeathStar2BattleD_Init(WORLDINFO *world) {
+void DeathStar2BattleD_Init(WORLDINFO *world) {
     char name[256];
     i32 i;
     GIZMO_PC *obstacle;
@@ -148,7 +148,7 @@ void __cdecl DeathStar2BattleD_Init(WORLDINFO *world) {
     ((u8 *)LevFlag)[5] = 0;
 }
 
-GIZMOBLOWUP_PC *__cdecl DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
+GIZMOBLOWUP_PC *DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
     GIZMOBLOWUP_PC *nearest = NULL;
     f32 nearest_distance;
     i32 i;
@@ -176,7 +176,7 @@ GIZMOBLOWUP_PC *__cdecl DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
     return nearest;
 }
 
-void __cdecl DeathStar2BattleD_Update(WORLDINFO *world) {
+void DeathStar2BattleD_Update(WORLDINFO *world) {
     GIZMO_PC *shield_gizmo;
     GIZMOBLOWUP_PC *shield;
     GIZMOBLOWUP_PC *blowup;
@@ -315,7 +315,7 @@ void DeathStar2BattleFire_Draw(WORLDINFO *world) {
     }
 }
 
-void __cdecl DeathStar2BattleFire_SetSlowDownMul(GAMEOBJECT *object) {
+void DeathStar2BattleFire_SetSlowDownMul(GAMEOBJECT *object) {
     i8 index;
     if (WORLD->current_level == DEATHSTAR2BATTLEE_LDATA || WORLD->current_level == DEATHSTAR2BATTLEF_LDATA ||
         WORLD->current_level == DEATHSTAR2BATTLEG_LDATA) {
@@ -338,7 +338,7 @@ static void DeathStar2BattleFire_UpdateSlowDownMul(f32 dt) {
     }
 }
 
-f32 __cdecl DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
+f32 DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
     // MATCH-EXCEPTION: retail reads field_280 as a signed char (movsx) at each use; saga.h declares it u8
     if (object == NULL || (object->field_280 != 0 && object->field_280 != 1)) {
         return 1.0f;
@@ -349,7 +349,7 @@ f32 __cdecl DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
     return (f32)((3.0 - (f64)slowDownTimer[(i8)object->field_280]) / 3.0);
 }
 
-void __cdecl EmperorFightA_Init(WORLDINFO *world) {
+void EmperorFightA_Init(WORLDINFO *world) {
     LEVEL_SCRIPT_FLAGS_PC *flags = (LEVEL_SCRIPT_FLAGS_PC *)&LevFlag;
     i32 i;
     emperorfighta_netpacket = SetLevelHack(8);
@@ -384,7 +384,7 @@ void __cdecl EmperorFightA_Init(WORLDINFO *world) {
     memset(LevSfxFlag, 0, 3 * sizeof(LevSfxFlag[0]));
 }
 
-void __cdecl EmperorFightA_Reset(WORLDINFO *world) {
+void EmperorFightA_Reset(WORLDINFO *world) {
     GIZMO_PC *gizmo;
     i32 i;
     char name[32];
@@ -438,7 +438,7 @@ void __cdecl EmperorFightA_Reset(WORLDINFO *world) {
     }
 }
 
-void __cdecl EmperorFightA_UpdateFloorObstaclesPc(void) {
+void EmperorFightA_UpdateFloorObstaclesPc(void) {
     EMPEROR_UPDATE_PACKET_PC *packet = emperorfighta_netpacket;
     switch (packet->state) {
         case 1:
@@ -465,7 +465,7 @@ void __cdecl EmperorFightA_UpdateFloorObstaclesPc(void) {
     }
 }
 
-void __cdecl EmperorFightA_Update(WORLDINFO *world) {
+void EmperorFightA_Update(WORLDINFO *world) {
     i32 i;
     i32 floor;
     i32 floor_active;
@@ -763,23 +763,23 @@ emperor_routes_done:
     }
 }
 
-void __cdecl EmperorFightA_Panel(WORLDINFO *world) {
+void EmperorFightA_Panel(WORLDINFO *world) {
     DrawBossHitPointsTwoRowsPc = 1;
     if (LevGameObject[0] != NULL && LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f) {
         DrawBossHitPoints(LevGameObject[0]);
     }
 }
 
-void __cdecl JabbasPalaceA_Init(WORLDINFO *world) {
+void JabbasPalaceA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "grill_02", 1);
 }
 
-void __cdecl JabbasPalaceA_Reset(WORLDINFO *world) {
+void JabbasPalaceA_Reset(WORLDINFO *world) {
     TerSurface[14].flags = 0xa040;
     TerSurface[9].flags = 0x2040;
 }
 
-void __cdecl JabbasPalaceA_Update(WORLDINFO *world) {
+void JabbasPalaceA_Update(WORLDINFO *world) {
     NUVEC position = {-0.01503f, 0.7414f, 11.5824f};
     JABBA_ANTINODE_VIEW_PC *antinode;
     if (NuSpecialExistsFn(&LevHSpecial[0]) != 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) == 0) {
@@ -792,22 +792,22 @@ void __cdecl JabbasPalaceA_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl JabbasPalaceB_Init(WORLDINFO *world) {
+void JabbasPalaceB_Init(WORLDINFO *world) {
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "obstacle5");
     LevBlowUp[0] = GizmoBlowUp_FindByName(world, "prison_stone1");
 }
 
-void __cdecl JabbasPalaceB_Reset(WORLDINFO *world) {
+void JabbasPalaceB_Reset(WORLDINFO *world) {
     TerSurface[14].flags = 0xa040;
     TerSurface[9].flags = 0x2040;
 }
 
-void __cdecl JabbasPalaceD_Reset(WORLDINFO *world) {
+void JabbasPalaceD_Reset(WORLDINFO *world) {
     TerSurface[14].flags = 0xa040;
     TerSurface[9].flags = 0x2040;
 }
 
-void __cdecl JabbasPalaceE_Init(WORLDINFO *world) {
+void JabbasPalaceE_Init(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "prox_explo1");
     LevGizmo[1] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "prox_explo2");
     ((u8 *)LevFlag)[6] = 0;
@@ -824,7 +824,7 @@ void JabbasPalaceE_Reset(WORLDINFO *world) {
     TerSurface[9].flags = 0x2040;
 }
 
-void __cdecl JabbasPalaceE_Update(WORLDINFO *world) {
+void JabbasPalaceE_Update(WORLDINFO *world) {
     i32 i;
     GAMEOBJECT *player;
     GIZMOBLOWUP_PC *blowup;
@@ -877,7 +877,7 @@ void __cdecl JabbasPalaceE_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl JabbasPalaceE_Panel(WORLDINFO *world) {
+void JabbasPalaceE_Panel(WORLDINFO *world) {
     if (netclient == 0) {
         if (LevGameObject[0] != NULL && LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f) {
             DrawBossHitPoints(LevGameObject[0]);
@@ -887,7 +887,7 @@ void __cdecl JabbasPalaceE_Panel(WORLDINFO *world) {
     }
 }
 
-void __cdecl SarlaccPitA_Reset(WORLDINFO *world) {
+void SarlaccPitA_Reset(WORLDINFO *world) {
     LevSafePlatID[0] = -1;
     if (NuSpecialFind(world->current_gscn, &LevHSpecial[0], "float_skiff_2", 1) != 0 && world->terrain != NULL) {
         LevSafePlatID[0] = FindPlatInst(NuSpecialGetInstanceix(&LevHSpecial[0]));
@@ -912,7 +912,7 @@ void SarlaccPitA_Draw(WORLDINFO *unused0) {
     }
 }
 
-void __cdecl SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
+void SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
     i32 index;
     u32 bit;
     NUVEC *position;
@@ -1003,11 +1003,11 @@ void __cdecl SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
     }
 }
 
-i32 __cdecl SarlaccPitDiscoActive(WORLDINFO *world) {
+i32 SarlaccPitDiscoActive(WORLDINFO *world) {
     return world->current_level == SARLACCPITB_LDATA && sarlaccb_netpacket->disco_active != 0;
 }
 
-void __cdecl SarlaccPitB_Init(WORLDINFO *world) {
+void SarlaccPitB_Init(WORLDINFO *world) {
     char name[32];
     i8 *index;
     NUVEC *position;
@@ -1069,7 +1069,7 @@ void __cdecl SarlaccPitB_Init(WORLDINFO *world) {
     NuSpecialFind(WORLD->current_gscn, &LevHSpecial[1], "disco_base", 1);
 }
 
-void __cdecl SarlaccPitB_Reset(WORLDINFO *world) {
+void SarlaccPitB_Reset(WORLDINFO *world) {
     i32 index;
     sarlaccdisco.timer = 0.0f;
     memset(sarlaccdisco.panel_state, 0, sizeof(sarlaccdisco.panel_state));
@@ -1134,7 +1134,7 @@ f32 SarlaccDiscoRadiusPc = 0.2f;
 __declspec(allocate(".sarlrw")) static NUVEC sarlacc_lump_position = {0};
 __declspec(allocate(".sarlrw")) static f32 sarlacc_engine_timer = 0.0f;
 
-void __cdecl SarlaccPitB_Update(WORLDINFO *world) {
+void SarlaccPitB_Update(WORLDINFO *world) {
     i32 index;
     if (netclient == 0) {
         GIZMO_PC *panel;
@@ -1324,7 +1324,7 @@ void __cdecl SarlaccPitB_Update(WORLDINFO *world) {
     SarlaccPitB_SpecialUpdate(world);
 }
 
-void __cdecl SarlaccPitC_Init(WORLDINFO *world) {
+void SarlaccPitC_Init(WORLDINFO *world) {
     SarlaccPowerPc = 0;
     SarlaccRechargingPc = 0;
     SarlaccTargetShieldPc[0] = 0;
@@ -1341,7 +1341,7 @@ static GIZMOBLOWUP_PC *SarlaccBlowUpTargetsPc[4] = {0};
 static i32 SarlaccTakenOverPc = 0;
 #pragma bss_seg()
 
-void __cdecl SarlaccPitC_Reset(WORLDINFO *world) {
+void SarlaccPitC_Reset(WORLDINFO *world) {
     char name[32];
     GIZMO_PC *gizmo;
     i32 i;
@@ -1388,7 +1388,7 @@ void __cdecl SarlaccPitC_Reset(WORLDINFO *world) {
 static f32 SarlaccRechargeTimerPc = 0;
 #pragma bss_seg()
 
-void __cdecl SarlaccPitC_Update(WORLDINFO *world) {
+void SarlaccPitC_Update(WORLDINFO *world) {
     SARLACC_WORLD_PC *script_world = (SARLACC_WORLD_PC *)world;
     if (LevGameObject[0] != NULL && SarlaccBlowUpTargetCountPc == 4) {
         if (LevGameObject[0]->rider != NULL) {
@@ -1464,7 +1464,7 @@ static u8 prevOnTractor = 0;
 static u8 prevOnTaunTaun = 0;
 static u8 prevOnTownCar = 0;
 
-void __cdecl LegoCity_Reset(WORLDINFO *world) {
+void LegoCity_Reset(WORLDINFO *world) {
     GIZMOPICKUP_PC *pickup;
     i32 i;
     prevOnTaunTaun = 0;
@@ -1574,7 +1574,7 @@ void LegoCity_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl NewTown_Init(WORLDINFO *world) {
+void NewTown_Init(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "dummy_exp8");
 }
 
@@ -1582,7 +1582,7 @@ void __cdecl NewTown_Init(WORLDINFO *world) {
 static u8 prevOnFireTruck = 0;
 static u8 prevOnLifeBoat = 0;
 
-void __cdecl NewTown_Reset(WORLDINFO *world) {
+void NewTown_Reset(WORLDINFO *world) {
     u32 seed = 17;
     GIZMOPICKUP_PC *pickup;
     i32 i;
@@ -1685,7 +1685,7 @@ void NewTown_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl EndorBattleA_Init(WORLDINFO *world) {
+void EndorBattleA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "bbq_popnull", 1);
 }
 
@@ -1693,7 +1693,7 @@ void __cdecl EndorBattleA_Init(WORLDINFO *world) {
 static f32 EndorBattleAPartTimePc = 0.75f;
 static f32 EndorBattleAPartTimerPc = 0.75f;
 
-void __cdecl EndorBattleA_Update(WORLDINFO *world) {
+void EndorBattleA_Update(WORLDINFO *world) {
     NUINSTANIM *animation = NuSpecialGetInstAnim(&LevHSpecial[0]);
     if (animation != NULL && (animation->flags & 1) != 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
         if (EndorBattleAPartTimerPc >= EndorBattleAPartTimePc) {
@@ -1706,7 +1706,7 @@ void __cdecl EndorBattleA_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl DeathStar2BattleFire_Init(WORLDINFO *world) {
+void DeathStar2BattleFire_Init(WORLDINFO *world) {
     VehicleSlowdownCallbackPc = DeathStar2BattleFire_SetSlowDownMul;
     LevelCodeSpline[0] = NuSplineFind(world->current_gscn, "fire");
     NuSpecialFind(WORLD->current_gscn, &LevHSpecial[0], "fire_cube", 0);
@@ -1716,7 +1716,7 @@ void __cdecl DeathStar2BattleFire_Init(WORLDINFO *world) {
     fireSpeedScale = 1.0f;
 }
 
-void __cdecl DeathStar2BattleFire_Update(WORLDINFO *world) {
+void DeathStar2BattleFire_Update(WORLDINFO *world) {
     u16 yaw = 0;
     u16 pitch = 0;
     NUVEC point = v000;
@@ -1825,13 +1825,13 @@ void __cdecl DeathStar2BattleFire_Update(WORLDINFO *world) {
     PlaySfx("env_lantern_lp", &fireSplinePos.position);
 }
 
-void __cdecl FairgroundbadA_Init(WORLDINFO *world) {
+void FairgroundbadA_Init(WORLDINFO *world) {
     FairgroundSplitPartyLocatorPc = AIPathFindLocator(world->ai_sys, "Split_Party");
 }
 
 /* Moves the split-party locator onto the one player standing in the split area; two or more players there
    leave it alone. */
-void __cdecl FairgroundbadA_Update(WORLDINFO *world) {
+void FairgroundbadA_Update(WORLDINFO *world) {
     i32 count = 0;
     GAMEOBJECT *found = NULL;
     NUVEC *position = NULL;
@@ -1867,7 +1867,7 @@ void __cdecl FairgroundbadA_Update(WORLDINFO *world) {
                      &FairgroundSplitPartyLocatorPc->position, NULL, 0xff);
 }
 
-void __cdecl FairgroundbadA_Draw(WORLDINFO *world) {
+void FairgroundbadA_Draw(WORLDINFO *world) {
 }
 
 #undef EMPEROR_FLOOR_AREA_MASK

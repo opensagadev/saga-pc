@@ -3,7 +3,7 @@
 static void EdsplinesNuErrorPc(const char *format, ...) {
 }
 
-i32 __cdecl LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
+i32 LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
     i32 count;
     i32 points;
     i32 string_bytes;
@@ -84,7 +84,7 @@ i32 __cdecl LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
     return 0;
 }
 
-NUGSPLINE *__cdecl edSpline_SplineFind(NUGSCN *scene, char *name) {
+NUGSPLINE *edSpline_SplineFind(NUGSCN *scene, char *name) {
     i32 index;
     if (splineStore != NULL) {
         for (index = 0; index < numSplinesLoaded; ++index) {

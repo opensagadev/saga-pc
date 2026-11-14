@@ -17,7 +17,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 extern void *Door_Last;
 extern u64 CharacterMaskAllPc;
-i8 __cdecl Area_CharIDInCurrentList(i32 character_id);
+i8 Area_CharIDInCurrentList(i32 character_id);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode) == 0x406);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
@@ -25,12 +25,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 
-void __cdecl ClearTakeOverObjectSys(void) {
+void ClearTakeOverObjectSys(void) {
     memset(takeoverobjects, 0, sizeof(takeoverobjects));
     num_takeoverobjects = 0;
 }
 
-void __cdecl RegisterTakeOverObject(GAMEOBJECT *object) {
+void RegisterTakeOverObject(GAMEOBJECT *object) {
     i32 index;
     AISCRIPT_PC *script;
     i32 level;
@@ -59,7 +59,7 @@ void __cdecl RegisterTakeOverObject(GAMEOBJECT *object) {
     ++num_takeoverobjects;
 }
 
-void __cdecl StoreStatusTakeOverObjectSys(void) {
+void StoreStatusTakeOverObjectSys(void) {
     i32 index;
     i32 level;
     u8 character_index;
@@ -93,7 +93,7 @@ void __cdecl StoreStatusTakeOverObjectSys(void) {
     }
 }
 
-void __cdecl ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
+void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
     i32 level;
     i32 index;
     i32 object_index;
@@ -160,12 +160,12 @@ void __cdecl ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
     }
 }
 
-void __cdecl Tag_ResetTransfers(void) {
+void Tag_ResetTransfers(void) {
     TagTransfersPc[0].elapsed = 0.5f;
     TagTransfersPc[1].elapsed = 0.5f;
 }
 
-void __cdecl Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
+void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
     i32 particle;
     f32 height;
     f32 lower;
@@ -193,7 +193,7 @@ void __cdecl Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
     }
 }
 
-void __cdecl Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count) {
+void Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count) {
     i32 player;
     i32 particle;
     i32 angle;
@@ -258,7 +258,7 @@ void __cdecl Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count) {
     }
 }
 
-void __cdecl Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
+void Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
     u16 angle = (u16)qrand();
     f32 speed = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.09f + (f64)0.01f);
     f32 clearance;
@@ -284,7 +284,7 @@ void __cdecl Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
     }
 }
 
-void __cdecl Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
+void Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
     CHARACTER_MODEL_LAYERS_PC *model;
     if (LEGOCONTEXT_BUCK == -1 || LEGOACT_BUCK == -1) {
         return;
@@ -304,7 +304,7 @@ void __cdecl Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
     }
 }
 
-void __cdecl Buck_MoveCode(GAMEOBJECT *object, i32 start) {
+void Buck_MoveCode(GAMEOBJECT *object, i32 start) {
     if (LEGOCONTEXT_BUCK != -1 && object->character_context == LEGOCONTEXT_BUCK) {
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {

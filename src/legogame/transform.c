@@ -35,7 +35,7 @@ static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
     matrix->m31 = x3 * sine + cosine * matrix->m31;
 }
 
-void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
+void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     TRANSFORM_GLOW_PC *glow = (TRANSFORM_GLOW_PC *)object;
     GIZMOBLOWUP_PC *target;
     ResetForceGlow(object->ai_player_packet_pc);
@@ -140,7 +140,7 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
 }
 
-void __cdecl TransformDrawTargetPc(NUVEC *position, f32 radius, f32 alpha) {
+void TransformDrawTargetPc(NUVEC *position, f32 radius, f32 alpha) {
     NUVEC direction;
     NUVEC draw_position;
     NUVEC scale;
@@ -182,7 +182,7 @@ void __cdecl TransformDrawTargetPc(NUVEC *position, f32 radius, f32 alpha) {
     }
 }
 
-GAMEOBJECT *__cdecl Transform_TargettedByObj(void *target) {
+GAMEOBJECT *Transform_TargettedByObj(void *target) {
     GAMEOBJECT *object = Obj;
     i32 count = HIGHGAMEOBJECT;
     i32 index;
@@ -196,7 +196,7 @@ GAMEOBJECT *__cdecl Transform_TargettedByObj(void *target) {
     return NULL;
 }
 
-void __cdecl GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target) {
+void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target) {
     if (Transform_TargettedByObj(target) == NULL) {
         TransformDrawTargetPc(&target->mid_position, target->target_scale * 1.4f, 0.4f);
     }

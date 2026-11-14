@@ -119,7 +119,7 @@ static NUFPCOMJMP Traffic_ConfigKeywords[] = {{"animobj", Traffic_animobj},
                                               {"vehicle", Traffic_vehicle},
                                               {NULL, NULL}};
 
-void __cdecl TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
+void TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
     TRAFFIC_WORLD_VIEW_PC *view = (TRAFFIC_WORLD_VIEW_PC *)world;
     NUFPAR_PC *parser;
     VARIPTR old_buffer;

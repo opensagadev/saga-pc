@@ -29,7 +29,7 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, max_shards) == 0xf1);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *Shard_OutputName;
-void __cdecl Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
+void Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
 
 typedef struct SHARD_LOST_OWNER_PC {
     u8 unknown_00[0x3c];
@@ -53,7 +53,7 @@ const char PCContextName_Shard[6] = "Shard";
 const char PCShardOutputTextPc[4] = "Got";
 #pragma const_seg()
 
-i32 __cdecl Shards_Load(WORLDINFO *world, void *unused) {
+i32 Shards_Load(WORLDINFO *world, void *unused) {
     i32 index;
     i32 version;
     if (world->shard_count == 0) {
@@ -75,7 +75,7 @@ i32 __cdecl Shards_Load(WORLDINFO *world, void *unused) {
     return 0;
 }
 
-void *__cdecl Shards_ReserveBufferSpace(WORLDINFO *world) {
+void *Shards_ReserveBufferSpace(WORLDINFO *world) {
     LEVELDATA_PC *level = world->current_level;
     world->shards = NULL;
     world->shard_count = 0;
@@ -108,7 +108,7 @@ static void ShardInitRecordPc(WORLDINFO *world, SHARD_s *shard) {
     shard->collector = NULL;
 }
 
-void __cdecl Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
+void Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
     SHARD_s *progress_record;
     i32 index;
     if (world == NULL || world->shards == NULL) {
@@ -127,21 +127,21 @@ void __cdecl Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *pro
     }
 }
 
-void __cdecl Shard_Activate(GIZMO_PC *gizmo, i32 active) {
+void Shard_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         SHARD_s *shard = gizmo->object;
         shard->active = active != 0;
     }
 }
 
-void __cdecl Shard_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void Shard_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
         SHARD_s *shard = gizmo->object;
         shard->visible = visible != 0;
     }
 }
 
-void __cdecl Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_time) {
+void Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_time) {
     WORLDINFO *world = data;
     i32 index;
     for (index = 0; index < world->shard_count; ++index) {
@@ -149,7 +149,7 @@ void __cdecl Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_t
     }
 }
 
-void __cdecl Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time) {
+void Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time) {
     SHARD_s *shard = world->shards;
     NUVEC target;
     NUVEC velocity;
@@ -228,7 +228,7 @@ SHARD_s *Shard_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object
     return nearest;
 }
 
-void __cdecl Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
+void Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     SHARD_s *shard = world->shards;
     NUMTX matrix;
     i32 index;
@@ -277,11 +277,11 @@ void __cdecl Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     }
 }
 
-i32 __cdecl Shards_GetMaxGizmos(WORLDINFO *world) {
+i32 Shards_GetMaxGizmos(WORLDINFO *world) {
     return world != NULL ? world->current_level->max_shards : 0;
 }
 
-void __cdecl Shards_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, void *unused) {
+void Shards_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->shard_count; ++index) {
         if (NuStrLen(((SHARD_s *)world->shards)[index].name) != 0) {
@@ -290,11 +290,11 @@ void __cdecl Shards_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, v
     }
 }
 
-char *__cdecl Shard_GetGizmoName(GIZMO_PC *gizmo) {
+char *Shard_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((SHARD_s *)gizmo->object)->name : NULL;
 }
 
-i32 __cdecl Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+i32 Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return ((SHARD_s *)gizmo->object)->collected;
 }
 
@@ -302,19 +302,19 @@ i32 __cdecl Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 char *Shard_OutputName = (char *)PCShardOutputTextPc;
 #pragma data_seg()
 
-char *__cdecl Shard_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+char *Shard_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return Shard_OutputName;
 }
 
-i32 __cdecl Shard_GetNumOutputs(GIZMO_PC *gizmo) {
+i32 Shard_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
 
-void *__cdecl Shards_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
+void *Shards_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
     return GizmoBufferAlloc(start, end, sizeof(SHARD_PROGRESS_PC));
 }
 
-void __cdecl Shards_ClearProgress(void *world, SHARD_PROGRESS_PC *progress) {
+void Shards_ClearProgress(void *world, SHARD_PROGRESS_PC *progress) {
     if (progress != NULL) {
         memset(progress->collected, 0, 16);
         memset(progress->active, 0xff, 16);
@@ -322,7 +322,7 @@ void __cdecl Shards_ClearProgress(void *world, SHARD_PROGRESS_PC *progress) {
     }
 }
 
-void __cdecl Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
+void Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
     SHARD_s *shard;
     i32 index;
     if (progress == NULL) {
@@ -355,17 +355,17 @@ char *ShardRegistryNamePc = (char *)PCContextName_Shard;
 ADDGIZMOTYPE_PC ShardAddTypePc = {0};
 #pragma data_seg()
 
-ADDGIZMOTYPE_PC *__cdecl Shards_RegisterGizmo(i32 unused_type_id) {
+ADDGIZMOTYPE_PC *Shards_RegisterGizmo(i32 unused_type_id) {
     char *name = ShardRegistryNamePc;
     ShardAddTypePc = Default_ADDGIZMOTYPE;
     ShardAddTypePc.name = name;
     ShardAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
     ShardAddTypePc.fns.options = 0x30;
-    ShardAddTypePc.fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Shards_GetMaxGizmos;
+    ShardAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))Shards_GetMaxGizmos;
     ShardAddTypePc.fns.add_gizmos_fn = (void *)Shards_AddGizmos;
     ShardAddTypePc.fns.early_update_fn = Shards_UpdateBeforeCharacters;
-    ShardAddTypePc.fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))Shards_UpdateAfterCharacters;
-    ShardAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))Shards_Draw;
+    ShardAddTypePc.fns.late_update_fn = (void (*)(void *, void *, f32))Shards_UpdateAfterCharacters;
+    ShardAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))Shards_Draw;
     ShardAddTypePc.fns.panel_draw_fn = NULL;
     ShardAddTypePc.fns.get_gizmo_name_fn = Shard_GetGizmoName;
     ShardAddTypePc.fns.get_output_fn = Shard_GetOutput;
@@ -384,8 +384,8 @@ ADDGIZMOTYPE_PC *__cdecl Shards_RegisterGizmo(i32 unused_type_id) {
     ShardAddTypePc.fns.clear_progress_fn = (void *)Shards_ClearProgress;
     ShardAddTypePc.fns.store_progress_fn = (void *)Shards_StoreProgress;
     ShardAddTypePc.fns.reset_fn = (void *)Shards_Reset;
-    ShardAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))Shards_ReserveBufferSpace;
-    ShardAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))Shards_Load;
+    ShardAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))Shards_ReserveBufferSpace;
+    ShardAddTypePc.fns.load_fn = (i32(*)(void *, void *))Shards_Load;
     ShardAddTypePc.fns.post_load_fn = NULL;
     ShardAddTypePc.fns.add_level_sfx_fn = NULL;
     return &ShardAddTypePc;
@@ -402,7 +402,7 @@ void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {
     shard->tumble_x = qrand() < 0x8000;
 }
 
-void __cdecl Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
+void Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
     WORLD_SHARDS_READER_PC *world = (WORLD_SHARDS_READER_PC *)opaque_world;
     SHARD_LOST_OWNER_PC *shard = world->shards;
     i32 i;

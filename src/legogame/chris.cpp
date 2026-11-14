@@ -150,7 +150,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(FLIGHT_SPLINE_RESOURCE_PC, point_count) == 0x400);
     STATIC_ASSERT(sizeof(FLIGHT_SPLINE_RESOURCE_PC) == sizeof(DOGFIGHT_SPLINE_HISTORY_PC));
 
-    extern void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
+    extern void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
 
     typedef struct DOGFIGHT_SPEEDUP_PC {
         f32 distance;      // 0x0
@@ -284,7 +284,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(WORLDINFO, doors) == 0x4698);
     STATIC_ASSERT(offsetof(WORLDINFO, door_count) == 0x469c);
     STATIC_ASSERT(sizeof(DOOR_s) == 0x128);
-    extern void __cdecl SpaceResetAudioPoint(void);
+    extern void SpaceResetAudioPoint(void);
 
 /* PC drawing controls are distinct owners; AnakinC occupies the intervening slot. */
 #pragma data_seg(push, ".data$DogfightSelectedSockPc")
@@ -312,8 +312,8 @@ extern "C" {
     i32 DogfightBoltModelsSecondPc[4] = {304, 306, 302, 302};
 #pragma data_seg(pop)
     extern i32 DogfightDebrisKeysPc[4];
-    extern i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *,
-                                              NUMTX *, GAMEOBJECT *, u32);
+    extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
+                                      GAMEOBJECT *, u32);
     STATIC_ASSERT(sizeof(NUVEC) == 12);
     STATIC_ASSERT(offsetof(NUGSPLINE, pts) == 8);
     STATIC_ASSERT(offsetof(APICHARSYS, models) == 0x18);
@@ -389,7 +389,7 @@ extern "C" {
     f32 FlightSplineDefaultIncrementPc = 0.009999999776482582f;
 #pragma data_seg()
 
-    void __cdecl FlightSplineCapacityDiagnosticPc(char *filename);
+    void FlightSplineCapacityDiagnosticPc(char *filename);
 
     STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, seek_offset) == 0x14);
     void SetPreSeekStartPoint(f32 offset);
@@ -403,7 +403,7 @@ extern "C" {
     void ChrisAnakinCUpdate();
     static void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
     static void DrawQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
-    DOGFIGHT_QUICK_BOLT_PC *__cdecl QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
+    DOGFIGHT_QUICK_BOLT_PC *QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
     static i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration,
                                  i32 type, i32 model_id);
     static void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count);
@@ -419,22 +419,22 @@ extern "C" {
     static void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode);
     static i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix, f32 shot_speed);
     static void StarFighterTargetPc(starfighter_s *fighter);
-    i32 __cdecl ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFER_PC *info);
+    i32 ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFER_PC *info);
     static void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record);
     static DOGFIGHT_GROUP_PC *SelectFreeFlightGroupPc(void);
     static void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer);
-    void __cdecl NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale);
+    void NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale);
     void SpaceAudioPoint(void);
     static void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
     void SpaceRumbleProcess(void);
     static void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space);
     void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP_PC *entry);
-    void __cdecl ResetSpaceFromWorldPc(WORLDINFO *world);
+    void ResetSpaceFromWorldPc(WORLDINFO *world);
     void ChrisAnakinBInit();
     void ChrisDogFightAReset(WORLDINFO *world);
-    void __cdecl ChrisAllocLevelStuff(WORLDINFO *world);
+    void ChrisAllocLevelStuff(WORLDINFO *world);
     static i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position, NUVEC *velocity);
-    i32 __cdecl ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
+    i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
     static void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode, i32 count);
     void ChrisAnakinCInit();
     static void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_FIGHTER_PC *record);
@@ -442,9 +442,9 @@ extern "C" {
     void MakeWingFormation(NUVEC4 *start, NUVEC4 *target, f32 duration, i32 mode);
     static void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state);
     static void ProcessSpaceLevelPc(DOGFIGHT_SPACE_PC *space);
-    void __cdecl ChrisDogFightAInit(WORLDINFO *world);
-    void __cdecl ChrisDogFightAUpdate(WORLDINFO *world);
-    void __cdecl ChrisDogFightADraw(WORLDINFO *world);
+    void ChrisDogFightAInit(WORLDINFO *world);
+    void ChrisDogFightAUpdate(WORLDINFO *world);
+    void ChrisDogFightADraw(WORLDINFO *world);
 
     static void CopyFlightMatrixPc(NUMTX *destination, const NUMTX *source) {
 #define DOGFIGHT_SPACE ((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)
@@ -637,7 +637,7 @@ extern "C" {
     }
 
     /* This allocator has a genuine public stack entry in the PC executable. */
-    DOGFIGHT_QUICK_BOLT_PC *__cdecl QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
+    DOGFIGHT_QUICK_BOLT_PC *QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
         DOGFIGHT_QUICK_BOLT_PC *start = buffer->records + buffer->used;
         DOGFIGHT_QUICK_BOLT_PC *end = buffer->records + buffer->capacity;
         DOGFIGHT_QUICK_BOLT_PC *record;
@@ -692,7 +692,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along) {
+    void CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along) {
         f32 scaled = (spline->point_count - 1) * along;
         i32 index = (i32)scaled;
         f32 fraction = scaled - index;
@@ -815,7 +815,7 @@ extern "C" {
         result->w = (next->w - current->w) * fraction + current->w;
     }
 
-    void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance) {
+    void CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance) {
         i32 index;
         if (distance >= spline->length) {
             distance = 1.0f;
@@ -935,7 +935,7 @@ extern "C" {
         }
     }
 
-    void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity) {
+    void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity) {
         char filename[256];
         i32 version;
         i32 count;
@@ -1357,7 +1357,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFER_PC *info) {
+    i32 ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFER_PC *info) {
         starfighter_s *fighter = &record->fields;
         DOGFIGHT_GROUP_PC *parent;
         DOGFIGHT_FIGHTER_PC *missile;
@@ -1989,7 +1989,7 @@ extern "C" {
 
     /* Original source name unknown: one of four identical native WORLD adapters.
      * No callback registration is enabled by this prerequisite translation unit. */
-    void __cdecl ResetSpaceFromWorldPc(WORLDINFO *world) {
+    void ResetSpaceFromWorldPc(WORLDINFO *world) {
         DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
     }
 
@@ -2059,7 +2059,7 @@ extern "C" {
     void fun_00412570() {
     }
 
-    void __cdecl ChrisAllocLevelStuff(WORLDINFO *world) {
+    void ChrisAllocLevelStuff(WORLDINFO *world) {
         world->has_level_specific_data = 1;
         if (world->current_level == DOGFIGHTA_LDATA) {
             DOGFIGHT_SPACE_PC *space;
@@ -2082,7 +2082,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl ShipDropCoins(starfighter_s *fighter) {
+    i32 ShipDropCoins(starfighter_s *fighter) {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
         i32 index;
         for (index = 0; index < space->coin_history_count; ++index) {
@@ -2193,7 +2193,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points) {
+    i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points) {
         DOGFIGHT_SPACE_PC *space;
         DOGFIGHT_COLLISION_VECTOR_PC position;
         DOGFIGHT_COLLISION_VECTOR_PC velocity;
@@ -2603,7 +2603,7 @@ extern "C" {
     }
 
     /* This entry is implemented without installing its original level callback. */
-    void __cdecl ChrisDogFightAInit(WORLDINFO *world) {
+    void ChrisDogFightAInit(WORLDINFO *world) {
         i32 i;
         ChrisAllocLevelStuff(world);
         DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
@@ -2618,7 +2618,7 @@ extern "C" {
         DogfightResetSplineHistoryPc(((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->splines, 256);
     }
 
-    void __cdecl ChrisDogFightAUpdate(WORLDINFO *world) {
+    void ChrisDogFightAUpdate(WORLDINFO *world) {
         DOGFIGHT_LEVEL_FLAGS_PC *flags = (DOGFIGHT_LEVEL_FLAGS_PC *)&LevFlag;
         SpaceResetAudioPoint();
         ProcessCurrentSpeed(world, DogfightSpeedListPc);
@@ -2634,7 +2634,7 @@ extern "C" {
         }
     }
 
-    void __cdecl ChrisDogFightADraw(WORLDINFO *world) {
+    void ChrisDogFightADraw(WORLDINFO *world) {
         DrawSpaceLevelPc((DOGFIGHT_SPACE_PC *)world->level_specific_data);
         if (DogfightDrawSelectedSockPc != 0 && DogfightSelectedSockPc != NULL) {
             DrawSelectedSockPc(world->sock_sys, 4, DogfightSelectedSockPc, 5, 8);

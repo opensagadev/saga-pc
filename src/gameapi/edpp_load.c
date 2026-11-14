@@ -265,7 +265,7 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     }
 }
 
-eduiitem_s *__cdecl eduiItemTexturePickCreate(u32 data, void *colours, void *callback, char *text);
+eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, char *text);
 
 /* Stores the picked texture corners in the effect (biased by 524288 so the
  * coordinates keep 1/256 steps) and closes the selector. */
@@ -405,7 +405,7 @@ void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 extern i32 edbits_particle_general_page;
 extern i32 edbits_particle_char_page;
 
-i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
+i32 edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     i32 page;
     i32 n;
     i32 version;
@@ -605,7 +605,7 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     return page_index;
 }
 
-void __cdecl cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     eduimenu_s *parent = NULL;
     i32 index;
     if (edpp_types_used >= debinf_count) {
@@ -753,7 +753,7 @@ static void cbPtlChangeIvalOffRan(eduimenu_s *unused0, eduiitem_s *item, u32 unu
     UpdateTotalPtls(effect);
 }
 
-void __cdecl edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     i32 instance_id;
     if (edpp_nearest == -1) {
@@ -768,7 +768,7 @@ void __cdecl edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 un
     UpdateTotalPtls(effect);
 }
 
-void __cdecl cbChangeGenRateMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbChangeGenRateMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
@@ -785,7 +785,7 @@ void __cdecl cbChangeGenRateMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
     }
 }
 
-void __cdecl cbChangeETimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbChangeETimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
@@ -801,7 +801,7 @@ void __cdecl cbChangeETimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     }
 }
 
-void __cdecl cbPtlEmitTimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlEmitTimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
@@ -833,9 +833,9 @@ __declspec(allocate(".data$EdPpScaleFactorPc")) f32 edpp_scale_factor = 1.0f;
 #pragma section(".bss$EdPtlScaleEffectMenuPc", read, write)
 __declspec(allocate(".bss$EdPtlScaleEffectMenuPc")) eduimenu_s *edptl_scaleeffect_menu = NULL;
 
-void __cdecl edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent);
-void __cdecl edptlcbSetScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void __cdecl edptlcbApplyScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent);
+void edptlcbSetScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void edptlcbApplyScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 STATIC_ASSERT(sizeof(EDPP_PARTICLE_PC) == 0x58);
 STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, instance_id) == 0x10);
 STATIC_ASSERT(offsetof(eduimenu_s, x) == 0x14);
@@ -847,11 +847,11 @@ STATIC_ASSERT(offsetof(DEBRISKEY_PC, effect_index) == 0x182);
 STATIC_ASSERT(offsetof(eduimenu_s, parent) == 0x40);
 STATIC_ASSERT(offsetof(eduimenu_s, callback) == 0x30);
 
-void __cdecl edptlcbSetScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void edptlcbSetScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     edpp_scale_factor = ((edui_slider_s *)item)->value;
 }
 
-void __cdecl edptlcbApplyScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void edptlcbApplyScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     eduimenu_s *parent = NULL;
     if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
         DebrisReScale(debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index, edpp_scale_factor);
@@ -865,12 +865,12 @@ void __cdecl edptlcbApplyScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 but
     }
 }
 
-void __cdecl edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent) {
+void edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent) {
     eduiMenuDestroy(edptl_scaleeffect_menu);
     edptl_scaleeffect_menu = NULL;
 }
 
-void __cdecl edptlcbScaleEffectMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons) {
+void edptlcbScaleEffectMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons) {
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
     }

@@ -7,7 +7,7 @@ STATIC_ASSERT(sizeof(CRITICAL_SECTION) == 0x18);
 extern i32 PCThreadCriticalSectionCount;
 STATIC_ASSERT(sizeof(PCThreadCriticalSections) == 0x138);
 
-i32 __cdecl PCThreadCriticalSectionCreate_candidate(void) {
+i32 PCThreadCriticalSectionCreate_candidate(void) {
     if (PCThreadCriticalSectionCount <= 12) {
         ++PCThreadCriticalSectionCount;
         InitializeCriticalSection(&PCThreadCriticalSections[PCThreadCriticalSectionCount - 1]);
@@ -19,7 +19,7 @@ i32 __cdecl PCThreadCriticalSectionCreate_candidate(void) {
 
 // noinline: the original calls NuThreadCriticalSectionBegin out of line from
 // PCDisplayListCriticalSectionEnterPc; VC8 would inline it there.
-__declspec(noinline) void __cdecl NuThreadCriticalSectionBegin(i32 section_index) {
+__declspec(noinline) void NuThreadCriticalSectionBegin(i32 section_index) {
     if (section_index >= 1 && section_index <= 12) {
         EnterCriticalSection(&PCThreadCriticalSections[section_index - 1]);
     }
@@ -27,17 +27,17 @@ __declspec(noinline) void __cdecl NuThreadCriticalSectionBegin(i32 section_index
 
 // noinline: the original calls NuThreadCriticalSectionEnd out of line from
 // PCDisplayListCriticalSectionLeavePc; VC8 would inline it there.
-__declspec(noinline) void __cdecl NuThreadCriticalSectionEnd(i32 section_index) {
+__declspec(noinline) void NuThreadCriticalSectionEnd(i32 section_index) {
     if (section_index >= 1 && section_index <= 12) {
         LeaveCriticalSection(&PCThreadCriticalSections[section_index - 1]);
     }
 }
 
-void __cdecl PCDisplayListCriticalSectionEnterPc(void) {
+void PCDisplayListCriticalSectionEnterPc(void) {
     NuThreadCriticalSectionBegin(nudlist_field_fc4);
 }
 
-void __cdecl PCDisplayListCriticalSectionLeavePc(void) {
+void PCDisplayListCriticalSectionLeavePc(void) {
     NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
@@ -52,17 +52,17 @@ void fun_005de1c0(NUMTL *material) {
     NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
-i64 __cdecl PCThreadMillisecondsPc(void) {
+i64 PCThreadMillisecondsPc(void) {
     NuTime time;
     NuTimeGet(&time);
     return (((i64)time.high << 32) | time.low) / 1000;
 }
 
-void __cdecl PCThreadCriticalSectionDeleteNoOpPc(i32 index) {
+void PCThreadCriticalSectionDeleteNoOpPc(i32 index) {
     (void)index;
 }
 
-void __cdecl NuTimeGetTicksPerSecondPS(u32 *low, u32 *high) {
+void NuTimeGetTicksPerSecondPS(u32 *low, u32 *high) {
     *low = (u32)NuTime_PerformanceFrequency;
     *high = (u32)(NuTime_PerformanceFrequency >> 32);
 }

@@ -10,8 +10,8 @@ extern "C" {
 }
 #endif
 STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_look_position_pc) == 0x1098);
-extern "C" void __cdecl LostTempleC_ResetPc(WORLDINFO *);
-extern "C" void __cdecl LostTempleC_UpdatePc(WORLDINFO *);
+extern "C" void LostTempleC_ResetPc(WORLDINFO *);
+extern "C" void LostTempleC_UpdatePc(WORLDINFO *);
 /* Original level.cpp FixUpLevels family; PC-specific startup gates verified. */
 STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) == 0x68);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
@@ -66,7 +66,7 @@ extern "C" {
 /* Research-only declarations of genuine original Hub state; native initializer
  * and canonical/private ownership verification pending sole writer. */
 
-extern "C" void __cdecl Hub_LockUnlockDoors(WORLDINFO *world) {
+extern "C" void Hub_LockUnlockDoors(WORLDINFO *world) {
     (void)world;
 }
 
@@ -131,7 +131,7 @@ extern "C" i32 Text_ExpandButtonString(char *command, char *output) {
     return 0;
 }
 
-extern "C" void __cdecl MenuInitFreePlay(MENU *) {
+extern "C" void MenuInitFreePlay(MENU *) {
 } /*47a970/1 genuineRET*/
 
 /* Five reviewed providers: append these four to existing hub.cpp. */

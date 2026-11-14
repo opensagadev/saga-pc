@@ -22,8 +22,7 @@ union PC_SHADER_KEY_BLOCK_PC {
     } words;
 };
 
-extern "C" void __cdecl NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FILTER_VIEW *filter,
-                                                   i32 pixel_stage) {
+extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FILTER_VIEW *filter, i32 pixel_stage) {
     const PC_SHADER_FILTER_DESC_VIEW *desc = filter->descriptor;
     PC_SHADER_KEY_BLOCK_PC block;
     u64 layer_word;
@@ -114,16 +113,16 @@ extern "C" void __cdecl NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MAT
 }
 
 /* Native 0x745070: builds the filter view for a descriptor and generates its key. No retail caller. */
-extern "C" void __cdecl NuShaderObjectKeyGeneratePc(u32 *key, const PC_SHADER_FILTER_DESC_VIEW *desc,
-                                                    const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 flags,
-                                                    i32 variant, i32 pixel_stage) {
+extern "C" void NuShaderObjectKeyGeneratePc(u32 *key, const PC_SHADER_FILTER_DESC_VIEW *desc,
+                                            const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 flags, i32 variant,
+                                            i32 pixel_stage) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     filter.Initialize(desc, material, flags, variant);
     NuShaderObjectKeyGenerate3(key, &filter, pixel_stage);
 }
 
 /* The key of a program described by flags alone. No retail caller. */
-extern "C" void __cdecl NuShaderObjectKeyGenerate4(u32 *key, u32 flags) {
+extern "C" void NuShaderObjectKeyGenerate4(u32 *key, u32 flags) {
     PC_SHADER_KEY_BLOCK_PC block;
     memset(&block, 0, sizeof(block));
     block.bytes[0x14] = 1;

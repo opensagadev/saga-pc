@@ -47,7 +47,7 @@ extern "C" PC_FRAMEBUFFER_PC *fun_005f8a40(void) {
     return PcDefaultFramebuffer;
 }
 
-extern "C" void __cdecl NuDisplayListTransformPc(void *arg) {
+extern "C" void NuDisplayListTransformPc(void *arg) {
     NUMTX *matrix = (NUMTX *)arg;
     NUVEC4 tint = NuDisplayHandlerTintPc;
     f32 opacity = matrix->m33;
@@ -81,7 +81,7 @@ extern "C" void __cdecl NuDisplayListTransformPc(void *arg) {
     matrix->m23 = shadow;
 }
 
-extern "C" void __cdecl NuDisplayListTransformTransposePc(void *arg) {
+extern "C" void NuDisplayListTransformTransposePc(void *arg) {
     NUMTX *matrix = (NUMTX *)arg;
     NUVEC4 tint = NuDisplayHandlerTintPc;
     f32 opacity = matrix->m33;
@@ -118,7 +118,7 @@ extern "C" void __cdecl NuDisplayListTransformTransposePc(void *arg) {
 }
 
 // Packet: NUMTX world, f32 magnitude, NUMTX face_on (0x84 bytes), read with a moving cursor.
-extern "C" void __cdecl NuDisplayListFaceOnTransformPc(void *arg) {
+extern "C" void NuDisplayListFaceOnTransformPc(void *arg) {
     VARIPTR packet;
     NUVEC4 values;
     NUVEC4 tint;
@@ -189,7 +189,7 @@ STATIC_ASSERT(offsetof(ShaderUniformRecordPc, values) == 0x1c);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, unknown_4d4) == 0x4d4);
 
 extern "C" {
-    static void __cdecl PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    static void PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE_PC *texture) {
         if (texture != NULL) {
             const u32 *tuple = &texture->flags;
             if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] ||
@@ -205,7 +205,7 @@ extern "C" {
 
 /* Genuine separate provider remains held until the full4472 dispatcher closes.
    Name/signature is a conditional prototype; no implementation is fabricated. */
-extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *, NUMTL *);
+extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *, NUMTL *);
 static void PCDisplayHandlerBindProgramsPc(PC_DL_SHADER_PROGRAM_PAIR_PC *);
 
 static void PCDisplayHandlerBindProgramsPc(PC_DL_SHADER_PROGRAM_PAIR_PC *programs) {
@@ -248,7 +248,7 @@ extern "C" void fun_005fa620(i32 mode) {
     PCDisplayHandlerSetZMode(mode);
 }
 
-extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
+extern "C" void NuDisplayListMaterialPc(void *arg) {
     PC_DL_E_MATERIAL_READER *material = (PC_DL_E_MATERIAL_READER *)arg;
     PC_SHADER_OBJECT_FULL_VIEW *shader =
         (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderRecordFromHandle((u32)(i32)material->shader_id);
@@ -373,7 +373,7 @@ typedef struct PC_DL_MATERIAL_STATES_READER {
 } PC_DL_MATERIAL_STATES_READER; // size 0x1f4
 
 /* PCDisplayHandlerSetZMode is the real private helper already in the BC cohort. */
-extern "C" void __cdecl NuMtlSetRenderStatesPS(NUMTL *arg) {
+extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
     PC_DL_MATERIAL_STATES_READER *material = (PC_DL_MATERIAL_STATES_READER *)arg;
     i32 write_colour = 1;
     i32 write_alpha = 1;
@@ -477,15 +477,15 @@ extern "C" {
     extern POST_SHADER_PROGRAM_PC *PostCopyAuxProgramPc;
     extern POST_SHADER_PROGRAM_PC *PostBlurAuxProgramPc;
     extern f32 PostBlurInputBiasPc;
-    void __cdecl NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *);
-    void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);
-    void __cdecl PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
-    void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
-    void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
+    void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *);
+    void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);
+    void PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
+    void PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
+    void PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
 }
-extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
-                                          GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
-                                          i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program);
+extern "C" void PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
+                                  GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations, i32 levels,
+                                  bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program);
 
 // NuShaderProgramMakeCurrent and the per-stage sampler binds, as retail inlines them here.
 #define POST_BLUR_BIND_PROGRAM(bound_program)                                                                          \
@@ -550,9 +550,9 @@ struct __declspec(align(16)) POST_BLUR_LOW_OFFSET_PC {
         (offset).y = set_y;                                                                                            \
     } while (0)
 
-extern "C" void __cdecl PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
-                                         GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
-                                         i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
+extern "C" void PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
+                                 GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations, i32 levels,
+                                 bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
     f32 weights[4] = {.25f, .25f, .25f, .25f};
     f32 rounded_radius = (f32)ceil((f64)radius);
     i32 guard = (i32)rounded_radius * 3;
@@ -687,9 +687,9 @@ extern "C" void __cdecl PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32
     }
 }
 
-extern "C" void __cdecl PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
-                                              GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
-                                              i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
+extern "C" void PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
+                                      GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations, i32 levels,
+                                      bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
     if (PCDeviceHardwareVertexProcessingPC >= 2) {
         PostBlur7x7HighPc(source, source_lod, textures, first_lod, iterations, levels, mip_chain, radius, program);
     } else {
@@ -728,8 +728,8 @@ inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
 inline NuPostFilterGen::~NuPostFilterGen() {
 }
 
-extern "C" void __cdecl PCGraphicsCopyFramebufferTex2DPc(i32 attachment, GRAPHICS_RENDER_TEXTURE_PC *texture, i32 level,
-                                                         i32 x, i32 y, i32 width, i32 height) {
+extern "C" void PCGraphicsCopyFramebufferTex2DPc(i32 attachment, GRAPHICS_RENDER_TEXTURE_PC *texture, i32 level, i32 x,
+                                                 i32 y, i32 width, i32 height) {
     (void)x;
     (void)y;
     if (attachment == 0) {
@@ -911,9 +911,9 @@ void NuPostFilterGen::copy(GRAPHICS_RENDER_TEXTURE_PC *color, PC_FRAMEBUFFER_PC 
 }
 
 /* Same unit as ??_GNuMainFilter: the atexit thunks for its static surfaces expand the inline destructor. */
-extern "C" void __cdecl PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *destination, i32 destination_level,
-                                                GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_level,
-                                                POST_SHADER_PROGRAM_PC *program, GRAPHICS_RENDER_TEXTURE_PC *extra) {
+extern "C" void PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *destination, i32 destination_level,
+                                        GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_level,
+                                        POST_SHADER_PROGRAM_PC *program, GRAPHICS_RENDER_TEXTURE_PC *extra) {
     if (program == PostCopyTexProgramPc) {
         static PC_EFFECT_SURFACE_PC source_surface;
         static PC_EFFECT_SURFACE_PC destination_surface;
@@ -927,7 +927,7 @@ extern "C" void __cdecl PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *dest
     PostFilterBlitTexturePc(destination, destination_level, source, source_level, program, extra);
 }
 
-extern "C" void __cdecl PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *);
+extern "C" void PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *);
 
 void NuMainFilter::destroyResources() {
     NuMainFilterGen::destroyResources();

@@ -9,10 +9,10 @@
 
 extern "C" {
 
-    void __cdecl Text_FillInExtendedSaveInfo(void);
-    i32 __cdecl TriggerAutoSave(void);
+    void Text_FillInExtendedSaveInfo(void);
+    i32 TriggerAutoSave(void);
     extern const char Text_UnknownText[];
-    void __cdecl DrawStatusTextFraction(i32, i32, f32, f32, u16, f32, u32, f32, f32);
+    void DrawStatusTextFraction(i32, i32, f32, f32, u16, f32, u32, f32, f32);
     extern f32 CoinTotalScoreSizePc;
     extern f32 CoinTotalCoinOffsetPc;
     extern i16 TextIdPc880778;
@@ -45,41 +45,41 @@ extern "C" {
     f32 StatusAlt7f8278Pc = 0.7f;
     f32 StatusAltSuitRadiusPc = 0.75f;
 
-    void __cdecl TrueHero_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl TrueHero_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl TrueHero_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl MiniKit_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl MiniKit_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl MiniKit_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl AllMiniKits_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl AllMiniKits_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl AllMiniKits_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl RedBrick_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl RedBrick_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl RedBrick_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl Coins_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl Coins_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl Coins_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl GoldBrick_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl GoldBrick_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl GoldBrick_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl Prompt_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl Prompt_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl Stage5_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl Stage5_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl Stage5_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl Stage6_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl Stage6_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl Stage6_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl LevelComplete_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl LevelComplete_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl LevelComplete_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl BonusComplete_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl BonusComplete_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl BonusComplete_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl Exit_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl Save_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl Fade_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void TrueHero_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void TrueHero_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void TrueHero_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void MiniKit_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void MiniKit_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void MiniKit_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void AllMiniKits_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void AllMiniKits_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void AllMiniKits_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void RedBrick_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void RedBrick_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void RedBrick_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void Coins_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void Coins_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void Coins_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void GoldBrick_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void GoldBrick_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void GoldBrick_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void Prompt_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void Prompt_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void Stage5_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void Stage5_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void Stage5_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void Stage6_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void Stage6_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void Stage6_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void LevelComplete_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void LevelComplete_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void LevelComplete_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void BonusComplete_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void BonusComplete_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void BonusComplete_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void Exit_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void Save_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void Fade_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
 
     /* field_0x10 is the panel object drawn for the stage on the background grid. */
     STATUS_STAGE_s StatusStagesAltPc[20] = {
@@ -124,13 +124,13 @@ extern "C" {
     f32 StatusAltTextScalePc = StatusAltScalePc;
 
     /* Retail keeps an out-of-line copy at 0x458470; the draws inline it. */
-    f32 __cdecl StatusAltFabsPc(f32 value) {
+    f32 StatusAltFabsPc(f32 value) {
         i32 bits = *(i32 *)&value;
         bits &= 0x7fffffff;
         return *(f32 *)&bits;
     }
 
-    f32 __cdecl StatusCoinsRatioAltPc(f32 numerator, f32 denominator) {
+    f32 StatusCoinsRatioAltPc(f32 numerator, f32 denominator) {
         if (numerator == 0.0f || denominator == 0.0f) {
             return 0.0f;
         }
@@ -140,18 +140,18 @@ extern "C" {
         }
     }
 
-    void __cdecl ResetStatusPacket_Alt(STATUSPACKET_s *packet) {
+    void ResetStatusPacket_Alt(STATUSPACKET_s *packet) {
         packet->lsw_packet->field_0x00 = 0;
     }
 
     /* Stage types 1 and 2. */
-    void __cdecl TrueHero_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    void TrueHero_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         (void)stage;
         NextStatusStage(packet);
     }
 
     /* Stage type 4. */
-    void __cdecl MiniKit_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    void MiniKit_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         if ((packet->field_0xb0 & 2) == 0) {
             currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCountPc);
             if ((packet->field_0xb0 & 0x10) != 0 &&
@@ -163,13 +163,13 @@ extern "C" {
     }
 
     /* Stage type 17. */
-    void __cdecl AllMiniKits_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    void AllMiniKits_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         (void)stage;
         AddToCollection(VehicleBoltId7f195cPc);
         NextStatusStage(packet);
     }
 
-    void __cdecl AllMiniKits_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void AllMiniKits_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         switch (stage->field_0x14) {
             case 0:
                 stage->field_0x14 = 1;
@@ -193,13 +193,13 @@ extern "C" {
     }
 
     /* Stage type 18. */
-    void __cdecl RedBrick_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    void RedBrick_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         (void)stage;
         NextStatusStage(packet);
     }
 
     /* Stage type 19. */
-    void __cdecl GoldBrick_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    void GoldBrick_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         (void)stage;
         if (Game.gold_bricks <= 60) {
             NextStatusStage(packet);
@@ -207,7 +207,7 @@ extern "C" {
     }
 
     /* Stage type 9. */
-    void __cdecl Prompt_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void Prompt_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         if (stage->field_0x14 == 0) {
             f32 accumulated = (f64)elapsed + (f64)stage->field_0x18;
             stage->field_0x18 = accumulated;
@@ -272,13 +272,13 @@ extern "C" {
     }
 
     /* Stage type 5. */
-    void __cdecl Stage5_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    void Stage5_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         (void)stage;
         NextStatusStage(packet);
     }
 
     /* Stage types 8, 13, 14, 23 and 26. */
-    void __cdecl LevelComplete_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    void LevelComplete_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         if (stage->type == 26 && packet->mission_state == 2) {
             *packet->score = packet->reward_score;
         }
@@ -289,13 +289,13 @@ extern "C" {
     }
 
     /* Stage type 22. */
-    void __cdecl BonusComplete_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    void BonusComplete_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         (void)stage;
         NextStatusStage(packet);
     }
 
     /* Stage type 10. */
-    void __cdecl Exit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void Exit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         if (stage->field_0x14 >= 0) {
             stage->field_0x18 = (f64)elapsed + (f64)stage->field_0x18;
         }
@@ -310,7 +310,7 @@ extern "C" {
     }
 
     /* Stage type 6. */
-    void __cdecl Stage6_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    void Stage6_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         if (stage->field_0x14 == 0) {
             stage->field_0x14 = 1;
         }
@@ -320,13 +320,13 @@ extern "C" {
         }
     }
 
-    void __cdecl Stage6_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void Stage6_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         (void)stage;
         (void)packet;
         (void)elapsed;
     }
 
-    void __cdecl Stage6_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 player) {
+    void Stage6_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 player) {
         (void)stage;
         (void)packet;
         (void)player;
@@ -334,7 +334,7 @@ extern "C" {
 
     /* Stage type 11. Unlike the LSW save stage, a plain level exit finishes the status
        screen here instead of setting flag 0x1000, and there is no memory-card menu state. */
-    void __cdecl Save_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void Save_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         if (packet->save_state == 3) {
             f32 accumulated = elapsed + stage->field_0x18;
             stage->field_0x18 = accumulated;
@@ -360,7 +360,7 @@ extern "C" {
     }
 
     /* Stage type 12. */
-    void __cdecl Fade_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void Fade_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         switch (stage->field_0x14) {
             case 0:
                 stage->field_0x14 = 1;
@@ -380,7 +380,7 @@ extern "C" {
     }
 
     /* Stage type 3. */
-    void __cdecl Coins_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    void Coins_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         u32 remaining;
         (void)stage;
         remaining = packet->coins_remaining[0] + packet->coins_remaining[1];
@@ -391,7 +391,7 @@ extern "C" {
     }
 
     /* Stage type 22: the LSW update without the gold-brick draw. */
-    void __cdecl BonusComplete_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void BonusComplete_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         switch (stage->field_0x14) {
             case 0: {
                 stage->field_0x18 = 0.0f;
@@ -414,17 +414,17 @@ extern "C" {
         }
     }
 
-    i32 __cdecl FinishStatusPacket_Alt(WORLDINFO *world, STATUSPACKET_s *packet, i32 result) {
+    i32 FinishStatusPacket_Alt(WORLDINFO *world, STATUSPACKET_s *packet, i32 result) {
         (void)world;
         (void)packet;
         (void)result;
         return 0;
     }
 
-    void __cdecl Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
+    void Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
 
     /* Stage type 9. */
-    void __cdecl Prompt_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 active) {
+    void Prompt_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 active) {
         if (active != 0) {
             switch (stage->field_0x14) {
                 case -1:
@@ -450,7 +450,7 @@ extern "C" {
         }
     }
 
-    void __cdecl BonusComplete_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    void BonusComplete_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         if (current == 0) {
             return;
         }
@@ -472,7 +472,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl InitStatusScreen_Alt(WORLDINFO *world, STATUSPACKET_s *packet) {
+    i32 InitStatusScreen_Alt(WORLDINFO *world, STATUSPACKET_s *packet) {
         (void)world;
         /* Retail sets bit 24 of the packet word with a byte OR on its top byte. */
         ((u8 *)&packet->lsw_packet->field_0x00)[3] |= 1;
@@ -484,7 +484,7 @@ extern "C" {
 
     /* Unreferenced in retail: the three-panel variant of DrawStatusBG_Alt. It slides the
        previous, current and next stage panels along x and seeks the shared zoom. */
-    void __cdecl StatusAltDrawStagePanelsPc(STATUSPACKET_s *packet) {
+    void StatusAltDrawStagePanelsPc(STATUSPACKET_s *packet) {
         NUMTX mtx;
         STATUS_STAGE_s *stage;
         f32 x;
@@ -575,7 +575,7 @@ extern "C" {
         }
     }
 
-    void __cdecl DrawStatusBG_Alt(STATUSPACKET_s *packet) {
+    void DrawStatusBG_Alt(STATUSPACKET_s *packet) {
         i32 selected = -1;
         f32 w;
         i32 i = 0;
@@ -637,10 +637,10 @@ extern "C" {
     }
 
     /* 0x457f60: LoadPermData calls this right after Alt_registerStatusScreen; retail's body is empty. */
-    void __cdecl Alt_registerStatusScreenExtraPc(void) {
+    void Alt_registerStatusScreenExtraPc(void) {
     }
 
-    void __cdecl Alt_registerStatusScreen(void) {
+    void Alt_registerStatusScreen(void) {
         REGISTER_STATUS_PACKET_PC registration;
         memset(&registration, 0, sizeof(registration));
         registration.lsw_packet = &StatusPacketAltPc;
@@ -653,7 +653,7 @@ extern "C" {
     }
 
     /* Stage type 19. Draws the gold-brick title, the spinning brick and the brick count. */
-    void __cdecl GoldBrick_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    void GoldBrick_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         f32 title_alpha;
         f32 count_alpha;
         f32 title_scale;
@@ -790,7 +790,7 @@ extern "C" {
     }
 
     /* Stage type 19. Awards the level's gold bricks one at a time. */
-    void __cdecl GoldBrick_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void GoldBrick_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         f32 previous = stage->field_0x18;
         char text[256];
         NUVEC position;
@@ -901,7 +901,7 @@ extern "C" {
     }
 
     /* Stage type 3. Counts the remaining coins into the score. */
-    void __cdecl Coins_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void Coins_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         switch (stage->field_0x14) {
             case 0:
                 stage->field_0x18 = 0.0f;
@@ -985,7 +985,7 @@ extern "C" {
     }
 
     /* Stage type 18. */
-    void __cdecl RedBrick_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void RedBrick_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         if (stage->field_0x14 >= 0) {
             stage->field_0x18 = elapsed + stage->field_0x18;
         }
@@ -1058,7 +1058,7 @@ extern "C" {
     }
 
     /* Stage types 1 and 2. Fills the true-hero bar up to the collected percentage. */
-    void __cdecl TrueHero_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void TrueHero_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         switch (stage->field_0x14) {
             case -1:
                 return;
@@ -1189,7 +1189,7 @@ extern "C" {
     }
 
     /* Stage type 4. */
-    void __cdecl MiniKit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void MiniKit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         if (pop_timer > 0.0f) {
             pop_timer -= elapsed;
         }
@@ -1314,7 +1314,7 @@ extern "C" {
     }
 
     /* Stage types 1 and 2. Draws the true-hero titles, the percentage and the bar. */
-    void __cdecl TrueHero_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    void TrueHero_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         char text[32];
         f32 full_fade = 1.0f;
         f32 full_scale_in = 1.0f;
@@ -1511,7 +1511,7 @@ extern "C" {
     }
 
     /* Stage type 3. Draws both players' coin counts and the score total. */
-    void __cdecl Coins_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    void Coins_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         f32 total_scale = 0.0f;
         f32 players_scale = 0.0f;
         f32 total_ratio = 0.0f;
@@ -1670,7 +1670,7 @@ extern "C" {
     }
 
     /* Stage type 4. Pops the new minikits into the count under the title. */
-    void __cdecl MiniKit_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    void MiniKit_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         f32 title_alpha = 1.0f;
         f32 count_alpha = 1.0f;
         f32 size = 0.0f;
@@ -1791,7 +1791,7 @@ extern "C" {
     }
 
     /* Stage type 5. Draws the suit icons on a ring and brings the newest one to the centre. */
-    void __cdecl Stage5_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    void Stage5_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         f32 x;
         f32 y;
         f32 blend;
@@ -1903,7 +1903,7 @@ extern "C" {
     }
 
     /* Stage type 5. Reveals the suits unlocked in this area one by one. */
-    void __cdecl Stage5_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void Stage5_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         f32 previous = stage->field_0x18;
         if (stage->field_0x14 >= 0) {
             stage->field_0x18 = elapsed + stage->field_0x18;
@@ -1964,7 +1964,7 @@ extern "C" {
     }
 
     /* Stage types 8, 13, 23 and 26. Draws the level-complete titles, then the score and time bonus. */
-    void __cdecl LevelComplete_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    void LevelComplete_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         char text[256];
         if (current == 0) {
             return;
@@ -2121,7 +2121,7 @@ extern "C" {
     }
 
     /* Stage types 8, 13, 14, 23 and 26. */
-    void __cdecl LevelComplete_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    void LevelComplete_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         switch (stage->field_0x14) {
             case 0:
                 stage->field_0x14 = 1;
@@ -2188,7 +2188,7 @@ extern "C" {
     }
 
     /* Stage type 17. */
-    void __cdecl AllMiniKits_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    void AllMiniKits_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         f32 icon_alpha = 0.0f;
         f32 title_alpha;
         i32 sliding;
@@ -2233,7 +2233,7 @@ extern "C" {
     }
 
     /* Stage type 18. Shows the red brick's cheat name, the spinning brick and the title. */
-    void __cdecl RedBrick_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    void RedBrick_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         f32 cheat_alpha;
         f32 cheat_scale;
         f32 title_alpha;

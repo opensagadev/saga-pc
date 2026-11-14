@@ -60,7 +60,7 @@ typedef struct GIZFLOW_LOAD_WORLD_PC {
 static char gizspecial_prefix_pc[8] = "qaz_";
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
-GIZMO_PC *__cdecl createGizSpecial(void *unused, char *name) {
+GIZMO_PC *createGizSpecial(void *unused, char *name) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();
     NUSPECIALHANDLE scene_special;
     char gizmo_name[32];
@@ -90,11 +90,11 @@ GIZMO_PC *__cdecl createGizSpecial(void *unused, char *name) {
     return AddGizmo(world->gizmo_sys, gizspecial_gizmotype_id, NULL, special);
 }
 
-char *__cdecl GizSpecial_GetName(GIZFLOW_SPECIAL_PC *special) {
+char *GizSpecial_GetName(GIZFLOW_SPECIAL_PC *special) {
     return special->name;
 }
 
-GIZFLOW_SPECIAL_PC *__cdecl GizSpecial_FindByName(char *name, GIZFLOW_LOAD_WORLD_PC *world) {
+GIZFLOW_SPECIAL_PC *GizSpecial_FindByName(char *name, GIZFLOW_LOAD_WORLD_PC *world) {
     i32 index;
     for (index = 0; index < world->specials->count; ++index) {
         if (NuStrICmp(GizSpecial_GetName(&world->specials->specials[index]), name) == 0) {
@@ -133,12 +133,12 @@ typedef struct gizspecial_progress_pc_s {
     u32 reversed[8];      // 0x20
 } GIZSPECIAL_PROGRESS_PC; // size 0x40
 
-static i32 __cdecl GizSpecial_GetMaxGizmos(void *world_ptr) {
+static i32 GizSpecial_GetMaxGizmos(void *world_ptr) {
     GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
     return world->level->max_specials;
 }
 
-static void __cdecl GizSpecial_AddGizmos(void *gizmo_sys, i32 type_id, void *world_ptr, void *data) {
+static void GizSpecial_AddGizmos(void *gizmo_sys, i32 type_id, void *world_ptr, void *data) {
     GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
     i32 index;
     if (world != NULL) {
@@ -150,11 +150,11 @@ static void __cdecl GizSpecial_AddGizmos(void *gizmo_sys, i32 type_id, void *wor
     }
 }
 
-static char *__cdecl GizSpecial_GetGizmoName(GIZMO_PC *gizmo) {
+static char *GizSpecial_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((GIZSPECIAL_CALLBACK_PC *)gizmo->object)->name : NULL;
 }
 
-static i32 __cdecl GizSpecial_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
+static i32 GizSpecial_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
     GIZSPECIAL_CALLBACK_PC *special;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
@@ -176,7 +176,7 @@ static i32 __cdecl GizSpecial_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include
     return 0;
 }
 
-static char *__cdecl GizSpecial_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *GizSpecial_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     switch (output) {
         case 0:
             return "AtEnd";
@@ -186,11 +186,11 @@ static char *__cdecl GizSpecial_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return NULL;
 }
 
-static i32 __cdecl GizSpecial_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 GizSpecial_GetNumOutputs(GIZMO_PC *gizmo) {
     return 2;
 }
 
-static void __cdecl GizSpecial_Activate(GIZMO_PC *gizmo, i32 active) {
+static void GizSpecial_Activate(GIZMO_PC *gizmo, i32 active) {
     GIZSPECIAL_CALLBACK_PC *special;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
@@ -206,7 +206,7 @@ static void __cdecl GizSpecial_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
-static i32 __cdecl GizSpecial_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check) {
+static i32 GizSpecial_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check) {
     GIZSPECIAL_CALLBACK_PC *special;
     if (gizmo == NULL) {
         return 0;
@@ -228,13 +228,13 @@ static i32 __cdecl GizSpecial_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 chec
     return 1;
 }
 
-static void __cdecl GizSpecial_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void GizSpecial_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL && gizmo->object != NULL) {
         GameAnimSet_SetVisibility(((GIZSPECIAL_CALLBACK_PC *)gizmo->object)->anim_set, visible);
     }
 }
 
-static NUVEC *__cdecl GizSpecial_GetPos(GIZMO_PC *gizmo) {
+static NUVEC *GizSpecial_GetPos(GIZMO_PC *gizmo) {
     GIZSPECIAL_CALLBACK_PC *special;
     if (gizmo != NULL) {
         special = gizmo->object;
@@ -247,7 +247,7 @@ static NUVEC *__cdecl GizSpecial_GetPos(GIZMO_PC *gizmo) {
     return NULL;
 }
 
-static i32 __cdecl GizSpecial_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, const char *name) {
+static i32 GizSpecial_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, const char *name) {
     GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
     i32 index;
     i32 count = 0;
@@ -269,11 +269,11 @@ static i32 __cdecl GizSpecial_UsingSpecial(GIZMO_PC **results, void *world_ptr, 
     return count;
 }
 
-static void *__cdecl GizSpecial_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+static void *GizSpecial_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 64);
 }
 
-static void __cdecl GizSpecial_ClearProgress(void *world_ptr, void *progress_ptr) {
+static void GizSpecial_ClearProgress(void *world_ptr, void *progress_ptr) {
     GIZSPECIAL_PROGRESS_PC *progress = progress_ptr;
     if (progress == NULL) {
         return;
@@ -282,7 +282,7 @@ static void __cdecl GizSpecial_ClearProgress(void *world_ptr, void *progress_ptr
     memset(progress->reversed, 0, sizeof(progress->reversed));
 }
 
-static void __cdecl GizSpecial_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+static void GizSpecial_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
     GIZSPECIAL_PROGRESS_PC *progress = progress_ptr;
     GIZSPECIAL_CALLBACK_PC *special;
@@ -309,7 +309,7 @@ static void __cdecl GizSpecial_StoreProgress(void *world_ptr, void *data, void *
     }
 }
 
-static void __cdecl GizSpecial_Reset(void *world_ptr, void *data, void *progress_ptr) {
+static void GizSpecial_Reset(void *world_ptr, void *data, void *progress_ptr) {
     GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
     GIZSPECIAL_PROGRESS_PC *progress = progress_ptr;
     GIZSPECIAL_CALLBACK_PC *special;
@@ -332,7 +332,7 @@ static void __cdecl GizSpecial_Reset(void *world_ptr, void *data, void *progress
     }
 }
 
-static void *__cdecl GizSpecial_ReserveBuffer(void *world_ptr) {
+static void *GizSpecial_ReserveBuffer(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     GIZFLOW_LOAD_WORLD_PC *fields = world_ptr;
     GIZSPECIAL_SYSTEM_CALLBACK_PC *system;
@@ -357,7 +357,7 @@ static void *__cdecl GizSpecial_ReserveBuffer(void *world_ptr) {
     return fields->specials;
 }
 
-ADDGIZMOTYPE_PC *__cdecl GizSpecial_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *GizSpecial_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "NuSpecial";
@@ -409,7 +409,7 @@ i32 GetAnimDirection(NUINSTANIM *animation) {
     return -1;
 }
 
-void __cdecl DrawCross(NUVEC *position, f32 size, NUMTL *material, i32 colour) {
+void DrawCross(NUVEC *position, f32 size, NUMTL *material, i32 colour) {
     if (material != NULL) {
         colour = ((u8)(i32)(material->diffuse_b * 255.0) << 8 | (u8)(i32)(material->diffuse_g * 255.0)) << 8 |
                  (u8)(i32)(material->diffuse_r * 255.0);
@@ -419,7 +419,7 @@ void __cdecl DrawCross(NUVEC *position, f32 size, NUMTL *material, i32 colour) {
     NuRndrLine3dDbg(position->x, position->y, position->z - size, position->x, position->y, position->z + size, colour);
 }
 
-void __cdecl edbobsDrawBox(NUVEC *minimum, NUVEC *maximum, i32 colour) {
+void edbobsDrawBox(NUVEC *minimum, NUVEC *maximum, i32 colour) {
     NuRndrLine3dDbg(minimum->x, minimum->y, minimum->z, maximum->x, minimum->y, minimum->z, colour);
     NuRndrLine3dDbg(maximum->x, minimum->y, minimum->z, maximum->x, minimum->y, maximum->z, colour);
     NuRndrLine3dDbg(maximum->x, minimum->y, maximum->z, minimum->x, minimum->y, maximum->z, colour);
@@ -441,8 +441,8 @@ void edbobs_DrawCoordinateInfo(NUVEC *position, i32 x, i32 y) {
     NuQFntPrintEx(system_qfont, (x + 150) * 16, row, 0x10, "%.3f", position->z);
 }
 
-i32 __cdecl GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void(__cdecl *read_data)(GAMEANIMOBJ *, u8),
-                                     u8 version, char *prefix, char *suffix) {
+i32 GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void (*read_data)(GAMEANIMOBJ *, u8), u8 version,
+                             char *prefix, char *suffix) {
     WORLDINFO *world = world_ptr;
     i32 success = 1;
     i32 i;

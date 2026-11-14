@@ -1,22 +1,22 @@
 #include "saga.h"
 
 extern "C" {
-    void __cdecl NuRndrConfigureLeafPc(f32 a, f32 b, i32 c);
-    void __cdecl NuRndrInitLeafPc(VARIPTR *buffer, VARIPTR end);
+    void NuRndrConfigureLeafPc(f32 a, f32 b, i32 c);
+    void NuRndrInitLeafPc(VARIPTR *buffer, VARIPTR end);
     extern const f32 InitOnceHalf;
-    i32 __cdecl PCDeviceShowCursorPc(i32 show);
-    void __cdecl NuRndrDwaInitPc(void);
-    void __cdecl NuQFntInit(VARIPTR *buffer, VARIPTR end);
-    void __cdecl PcCreateCursorMaterialPc(void);
-    void __cdecl NuHwSetParameter33Pc(void *value);
+    i32 PCDeviceShowCursorPc(i32 show);
+    void NuRndrDwaInitPc(void);
+    void NuQFntInit(VARIPTR *buffer, VARIPTR end);
+    void PcCreateCursorMaterialPc(void);
+    void NuHwSetParameter33Pc(void *value);
 }
 
-extern "C" void __cdecl PcRegisterSaveMetadataPc(const void *);
-extern "C" void __cdecl PcSetDefaultParameterPc(const char *);
+extern "C" void PcRegisterSaveMetadataPc(const void *);
+extern "C" void PcSetDefaultParameterPc(const char *);
 
 /* Incomplete entry-connected reconstruction. Every skipped native call remains
  * marked at its actual site; this is not a complete dispatcher implementation. */
-extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) {
+extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) {
     i32 animation_count = 160;
     i32 dat_count = 0;
     i32 hostfs = 0;
@@ -422,7 +422,7 @@ extern "C" void fun_006dc6f0(void) {
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
-extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
+extern "C" i32 PcNativeSelectLanguage(const char *configuration_name) {
     char path[256];
     DWORD language;
     DWORD bytes = 4;

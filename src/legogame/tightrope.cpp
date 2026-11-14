@@ -92,7 +92,7 @@ extern "C" {
 }
 extern "C" {
 
-    i32 __cdecl TightRopes_Load(WORLDINFO *world, void *unused) {
+    i32 TightRopes_Load(WORLDINFO *world, void *unused) {
         i32 version;
         i32 index;
         if (world->tightrope_count == 0) {
@@ -119,7 +119,7 @@ extern "C" {
         return 0;
     }
 
-    void *__cdecl TightRopes_ReserveBufferSpace(WORLDINFO *world) {
+    void *TightRopes_ReserveBufferSpace(WORLDINFO *world) {
         LEVELDATA_PC *level = world->current_level;
         world->tightropes = NULL;
         world->tightrope_count = 0;
@@ -142,7 +142,7 @@ extern "C" {
         rope->active = 1;
     }
 
-    void __cdecl TightRopes_Reset(WORLDINFO *world, void *unused, TIGHTROPE_PROGRESS_PC *progress) {
+    void TightRopes_Reset(WORLDINFO *world, void *unused, TIGHTROPE_PROGRESS_PC *progress) {
         TIGHTROPE_s *rope;
         i32 index;
         if (world == NULL || world->tightropes == NULL) {
@@ -190,7 +190,7 @@ extern "C" {
     }
 }
 
-extern "C" TIGHTROPE_MOTION_PC *__cdecl TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {
+extern "C" TIGHTROPE_MOTION_PC *TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {
     TIGHTROPE_MOTION_PC *rope = ((WORLD_TIGHTROPE_VIEW_PC *)world)->tightropes;
     f32 width = 3.0f * object->bounds_radius;
     NUVEC origin = object->collision_position;
@@ -232,7 +232,7 @@ extern "C" TIGHTROPE_MOTION_PC *__cdecl TightRope_InRange(GAMEOBJECT *object, WO
 
 extern "C" {
 
-    void __cdecl TightRopes_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
+    void TightRopes_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
         TIGHTROPE_s *rope = world->tightropes;
         NUMTX matrix;
         NUVEC *positions[64];
@@ -316,23 +316,23 @@ extern "C" {
         }
     }
 
-    void __cdecl TightRope_Activate(GIZMO_PC *gizmo, i32 active) {
+    void TightRope_Activate(GIZMO_PC *gizmo, i32 active) {
         if (gizmo != NULL) {
             ((TIGHTROPE_s *)gizmo->object)->active = active != 0;
         }
     }
 
-    void __cdecl TightRope_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    void TightRope_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         if (gizmo != NULL) {
             ((TIGHTROPE_s *)gizmo->object)->visible = visible != 0;
         }
     }
 
-    i32 __cdecl TightRopes_GetMaxGizmos(WORLDINFO *world) {
+    i32 TightRopes_GetMaxGizmos(WORLDINFO *world) {
         return world != NULL ? world->current_level->max_tightropes : 0;
     }
 
-    void __cdecl TightRopes_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
+    void TightRopes_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
         i32 index;
         for (index = 0; index < world->tightrope_count; ++index) {
             if (NuStrLen(world->tightropes[index].name) != 0) {
@@ -341,35 +341,35 @@ extern "C" {
         }
     }
 
-    char *__cdecl TightRope_GetGizmoName(GIZMO_PC *gizmo) {
+    char *TightRope_GetGizmoName(GIZMO_PC *gizmo) {
         return gizmo != NULL ? (char *)gizmo->object : NULL;
     }
 
-    i32 __cdecl TightRope_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    i32 TightRope_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
         TIGHTROPE_s *rope = (TIGHTROPE_s *)gizmo->object;
         return rope->visible != 0 && rope->active != 0;
     }
 
-    char *__cdecl TightRope_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    char *TightRope_GetOutputName(GIZMO_PC *gizmo, i32 output) {
         return AIRegistryTextPc007575bc;
     }
 
-    i32 __cdecl TightRope_GetNumOutputs(GIZMO_PC *gizmo) {
+    i32 TightRope_GetNumOutputs(GIZMO_PC *gizmo) {
         return 1;
     }
 
-    void *__cdecl TightRopes_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    void *TightRopes_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
         return GizmoBufferAlloc(buffer, end, sizeof(TIGHTROPE_PROGRESS_PC));
     }
 
-    void __cdecl TightRopes_ClearProgress(void *world, TIGHTROPE_PROGRESS_PC *progress) {
+    void TightRopes_ClearProgress(void *world, TIGHTROPE_PROGRESS_PC *progress) {
         if (progress != NULL) {
             progress->active_mask[0] = 0xffffffffu;
             progress->visible_mask[0] = 0xffffffffu;
         }
     }
 
-    void __cdecl TightRopes_StoreProgress(WORLDINFO *world, void *unused, TIGHTROPE_PROGRESS_PC *progress) {
+    void TightRopes_StoreProgress(WORLDINFO *world, void *unused, TIGHTROPE_PROGRESS_PC *progress) {
         TIGHTROPE_s *rope;
         i32 index;
         if (progress == NULL) {
@@ -400,17 +400,17 @@ extern "C" {
     ADDGIZMOTYPE_PC TightRopeAddTypePc = {0};
 #pragma data_seg()
 
-    ADDGIZMOTYPE_PC *__cdecl TightRopes_RegisterGizmo(i32 unused_type_id) {
+    ADDGIZMOTYPE_PC *TightRopes_RegisterGizmo(i32 unused_type_id) {
         char *name = TightRopeRegistryNamePc;
         TightRopeAddTypePc = Default_ADDGIZMOTYPE;
         TightRopeAddTypePc.name = name;
         TightRopeAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
         TightRopeAddTypePc.fns.options = 8;
-        TightRopeAddTypePc.fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))TightRopes_GetMaxGizmos;
+        TightRopeAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))TightRopes_GetMaxGizmos;
         TightRopeAddTypePc.fns.add_gizmos_fn = (void *)TightRopes_AddGizmos;
         TightRopeAddTypePc.fns.early_update_fn = NULL;
         TightRopeAddTypePc.fns.late_update_fn = NULL;
-        TightRopeAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))TightRopes_Draw;
+        TightRopeAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))TightRopes_Draw;
         TightRopeAddTypePc.fns.panel_draw_fn = NULL;
         TightRopeAddTypePc.fns.get_gizmo_name_fn = TightRope_GetGizmoName;
         TightRopeAddTypePc.fns.get_output_fn = TightRope_GetOutput;
@@ -426,11 +426,11 @@ extern "C" {
         TightRopeAddTypePc.fns.get_best_bolt_target_fn = NULL;
         TightRopeAddTypePc.fns.bolt_hit_fn = NULL;
         TightRopeAddTypePc.fns.allocate_progress_data_fn = TightRopes_AllocateProgressData;
-        TightRopeAddTypePc.fns.clear_progress_fn = (void(__cdecl *)(void *, void *))TightRopes_ClearProgress;
-        TightRopeAddTypePc.fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))TightRopes_StoreProgress;
-        TightRopeAddTypePc.fns.reset_fn = (void(__cdecl *)(void *, void *, void *))TightRopes_Reset;
-        TightRopeAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))TightRopes_ReserveBufferSpace;
-        TightRopeAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))TightRopes_Load;
+        TightRopeAddTypePc.fns.clear_progress_fn = (void (*)(void *, void *))TightRopes_ClearProgress;
+        TightRopeAddTypePc.fns.store_progress_fn = (void (*)(void *, void *, void *))TightRopes_StoreProgress;
+        TightRopeAddTypePc.fns.reset_fn = (void (*)(void *, void *, void *))TightRopes_Reset;
+        TightRopeAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))TightRopes_ReserveBufferSpace;
+        TightRopeAddTypePc.fns.load_fn = (i32(*)(void *, void *))TightRopes_Load;
         TightRopeAddTypePc.fns.post_load_fn = NULL;
         TightRopeAddTypePc.fns.add_level_sfx_fn = NULL;
         return &TightRopeAddTypePc;
@@ -585,7 +585,7 @@ extern "C" i32 TightRope_SnapTo(GAMEOBJECT *object, NUVEC *position) {
     return 0;
 }
 
-extern "C" void __cdecl TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
+extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
     if (object->character_context == 0x44) {
         u16 state = object->field_7aa;
         if (state != 0x8f) {
@@ -699,7 +699,7 @@ extern "C" void __cdecl TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed)
 
 extern "C" {
 
-    i32 __cdecl TightRope_SetTargetMom(GAMEOBJECT *object) {
+    i32 TightRope_SetTargetMom(GAMEOBJECT *object) {
         NUVEC *anchor;
         TIGHTROPE_MOVEMENT_PC *rope;
         u16 rotation;

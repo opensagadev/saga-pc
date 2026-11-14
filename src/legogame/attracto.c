@@ -102,8 +102,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
 STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
 extern char TextInputKeyNameTextPc7516c0[1];
-extern void __cdecl Shard_Collect(SHARD_s *, GAMEOBJECT *);
-extern void __cdecl Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
+extern void Shard_Collect(SHARD_s *, GAMEOBJECT *);
+extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
 #pragma const_seg(".rdata$PCContextName_Attracto")
 const char PCContextName_Attracto[9] = "Attracto";
 #pragma const_seg()
@@ -119,7 +119,7 @@ static f32 AttractoFabsPc(f32 f) {
     return rv;
 }
 
-i32 __cdecl Attractos_Load(WORLDINFO *world, void *unused) {
+i32 Attractos_Load(WORLDINFO *world, void *unused) {
     ATTRACTO_RECORD_PC *attracto;
     i32 version;
     i32 index;
@@ -148,7 +148,7 @@ i32 __cdecl Attractos_Load(WORLDINFO *world, void *unused) {
     return 0;
 }
 
-void __cdecl Attractos_InitTerrain(WORLDINFO *world) {
+void Attractos_InitTerrain(WORLDINFO *world) {
     i32 index;
     for (index = 0; index < world->attracto_count; ++index) {
         ((ATTRACTO_RECORD_PC *)world->attractos)[index].platform_id =
@@ -156,7 +156,7 @@ void __cdecl Attractos_InitTerrain(WORLDINFO *world) {
     }
 }
 
-void *__cdecl Attractos_ReserveBufferSpace(WORLDINFO *world) {
+void *Attractos_ReserveBufferSpace(WORLDINFO *world) {
     LEVELDATA_PC *level = world->current_level;
     world->attractos = NULL;
     world->attracto_count = 0;
@@ -168,14 +168,14 @@ void *__cdecl Attractos_ReserveBufferSpace(WORLDINFO *world) {
     return world->attractos;
 }
 
-void __cdecl Attracto_Activate(GIZMO_PC *gizmo, i32 active) {
+void Attracto_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         ATTRACTO_RECORD_PC *attracto = gizmo->object;
         attracto->active = active != 0;
     }
 }
 
-void __cdecl Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     ATTRACTO_RECORD_PC *attracto;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
@@ -219,7 +219,7 @@ static void AttractoInitRecordPc(ATTRACTO_RECORD_PC *attracto) {
     NuMtxTranslate(&attracto->transform, &attracto->position);
 }
 
-void __cdecl Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_PC *progress) {
+void Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_PC *progress) {
     ATTRACTO_RECORD_PC *attracto;
     i32 index;
     if (world == NULL || world->attractos == NULL) {
@@ -237,7 +237,7 @@ void __cdecl Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_P
     }
 }
 
-void __cdecl Attractos_Update(WORLDINFO *world, void *unused, f32 delta_time) {
+void Attractos_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     ATTRACTO_RECORD_PC *attracto;
     i32 index;
     i32 alpha;
@@ -264,7 +264,7 @@ void __cdecl Attractos_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     }
 }
 
-ATTRACTO_PC *__cdecl Attracto_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+ATTRACTO_PC *Attracto_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     ATTRACTO_WORLD_READER_PC *reader = (ATTRACTO_WORLD_READER_PC *)world;
     ATTRACTO_PC *attracto = reader->attractos;
     ATTRACTO_PC *nearest = NULL;
@@ -291,7 +291,7 @@ ATTRACTO_PC *__cdecl Attracto_FindNearest(WORLDINFO *world, NUVEC *position, GAM
     return nearest;
 }
 
-void __cdecl Attractos_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
+void Attractos_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     ATTRACTO_RECORD_PC *attracto;
     GAMEOBJECT *nearest_player = NULL;
     i32 index;
@@ -338,11 +338,11 @@ void __cdecl Attractos_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     }
 }
 
-i32 __cdecl Attractos_GetMaxGizmos(WORLDINFO *world) {
+i32 Attractos_GetMaxGizmos(WORLDINFO *world) {
     return world != NULL ? world->current_level->max_attractos : 0;
 }
 
-void __cdecl Attractos_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, void *unused) {
+void Attractos_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->attracto_count; ++index) {
         if (NuStrLen(((ATTRACTO_RECORD_PC *)world->attractos)[index].name) != 0) {
@@ -351,11 +351,11 @@ void __cdecl Attractos_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world
     }
 }
 
-char *__cdecl Attracto_GetGizmoName(GIZMO_PC *gizmo) {
+char *Attracto_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((ATTRACTO_RECORD_PC *)gizmo->object)->name : NULL;
 }
 
-i32 __cdecl Attracto_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+i32 Attracto_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return ((ATTRACTO_RECORD_PC *)gizmo->object)->filled;
 }
 
@@ -363,19 +363,19 @@ i32 __cdecl Attracto_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 char *Attracto_OutputName = (char *)PCAttractoOutputTextPc;
 #pragma data_seg()
 
-char *__cdecl Attracto_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+char *Attracto_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return Attracto_OutputName;
 }
 
-i32 __cdecl Attracto_GetNumOutputs(GIZMO_PC *gizmo) {
+i32 Attracto_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
 
-void *__cdecl Attractos_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
+void *Attractos_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
     return GizmoBufferAlloc(start, end, sizeof(ATTRACTO_PROGRESS_PC));
 }
 
-void __cdecl Attractos_ClearProgress(void *world, ATTRACTO_PROGRESS_PC *progress) {
+void Attractos_ClearProgress(void *world, ATTRACTO_PROGRESS_PC *progress) {
     if (progress != NULL) {
         memset(progress->counts, 0, 32);
         progress->visible[0] = 0xffffffffu;
@@ -384,7 +384,7 @@ void __cdecl Attractos_ClearProgress(void *world, ATTRACTO_PROGRESS_PC *progress
     }
 }
 
-void __cdecl Attractos_StoreProgress(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_PC *progress) {
+void Attractos_StoreProgress(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_PC *progress) {
     ATTRACTO_RECORD_PC *attracto;
     i32 index;
     if (progress == NULL) {
@@ -412,14 +412,14 @@ void __cdecl Attractos_StoreProgress(WORLDINFO *world, void *unused, ATTRACTO_PR
     }
 }
 
-NUVEC *__cdecl Attracto_GetPos(GIZMO_PC *gizmo) {
+NUVEC *Attracto_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
     return &((ATTRACTO_RECORD_PC *)gizmo->object)->position;
 }
 
-void __cdecl Attracto_GetPos_Top(ATTRACTO_PC *attracto, NUVEC *position) {
+void Attracto_GetPos_Top(ATTRACTO_PC *attracto, NUVEC *position) {
     if (attracto != NULL && position != NULL) {
         *position = attracto->position;
         position->y = position->y + 1.0;
@@ -433,17 +433,17 @@ char *AttractoRegistryNamePc = (char *)PCContextName_Attracto;
 ADDGIZMOTYPE_PC AttractoAddTypePc = {0};
 #pragma data_seg()
 
-ADDGIZMOTYPE_PC *__cdecl Attractos_RegisterGizmo(i32 unused_type_id) {
+ADDGIZMOTYPE_PC *Attractos_RegisterGizmo(i32 unused_type_id) {
     char *name = AttractoRegistryNamePc;
     AttractoAddTypePc = Default_ADDGIZMOTYPE;
     AttractoAddTypePc.name = name;
     AttractoAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
     AttractoAddTypePc.fns.options = 0x2c;
-    AttractoAddTypePc.fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Attractos_GetMaxGizmos;
+    AttractoAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))Attractos_GetMaxGizmos;
     AttractoAddTypePc.fns.add_gizmos_fn = (void *)Attractos_AddGizmos;
     AttractoAddTypePc.fns.early_update_fn = NULL;
-    AttractoAddTypePc.fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))Attractos_Update;
-    AttractoAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))Attractos_Draw;
+    AttractoAddTypePc.fns.late_update_fn = (void (*)(void *, void *, f32))Attractos_Update;
+    AttractoAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))Attractos_Draw;
     AttractoAddTypePc.fns.panel_draw_fn = NULL;
     AttractoAddTypePc.fns.get_gizmo_name_fn = Attracto_GetGizmoName;
     AttractoAddTypePc.fns.get_output_fn = Attracto_GetOutput;
@@ -462,8 +462,8 @@ ADDGIZMOTYPE_PC *__cdecl Attractos_RegisterGizmo(i32 unused_type_id) {
     AttractoAddTypePc.fns.clear_progress_fn = (void *)Attractos_ClearProgress;
     AttractoAddTypePc.fns.store_progress_fn = (void *)Attractos_StoreProgress;
     AttractoAddTypePc.fns.reset_fn = (void *)Attractos_Reset;
-    AttractoAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))Attractos_ReserveBufferSpace;
-    AttractoAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))Attractos_Load;
+    AttractoAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))Attractos_ReserveBufferSpace;
+    AttractoAddTypePc.fns.load_fn = (i32(*)(void *, void *))Attractos_Load;
     AttractoAddTypePc.fns.post_load_fn = NULL;
     AttractoAddTypePc.fns.add_level_sfx_fn = NULL;
     return &AttractoAddTypePc;
@@ -542,7 +542,7 @@ static void AttractoStartSuctionPc(GAMEOBJECT *object) {
 NUVEC AttractoBackPackCountPos = {0.0f, 0.45f, 0.15f};
 #pragma data_seg()
 
-void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
+void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     i32 available = 0;
     char text[32];
     NUVEC position;
@@ -660,6 +660,6 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position) {
+void Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position) {
     *position = object->collision_position;
 }

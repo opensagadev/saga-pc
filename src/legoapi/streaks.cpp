@@ -36,8 +36,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **handle, i32 mode,
-                                        GAMEOBJECT *owner) {
+extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **handle, i32 mode, GAMEOBJECT *owner) {
     NUVEC incoming;
     NUVEC outgoing;
     NUVEC edge_a;
@@ -146,7 +145,7 @@ extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour,
     }
 }
 
-extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
+extern "C" void UpdateStreaks(f32 elapsed) {
     if (elapsed == 0.0f) {
         return;
     }
@@ -202,7 +201,7 @@ extern "C" f32 StreakAlphaScalePc;
     (colour) = (header)->colour;                                                                                       \
     ((u8 *)&(colour))[3] = (u8)(STREAK_ALPHA(colour, node) > 255.0 ? 255.0 : STREAK_ALPHA(colour, node))
 
-extern "C" void __cdecl DrawStreaks(void) {
+extern "C" void DrawStreaks(void) {
     for (STREAK_HEADER_PC *header = streakhdrs_used; header != NULL; header = header->next) {
         NURND_VERTEX3D_PC vertices[256];
         i32 vertex_count = 0;
@@ -244,7 +243,7 @@ extern "C" void __cdecl DrawStreaks(void) {
 #undef STREAK_ALPHA
 #undef STREAK_FADE
 
-extern "C" void __cdecl ResetStreaks(void) {
+extern "C" void ResetStreaks(void) {
     STREAK_HEADER_PC *header = streakhdrs_used;
     if (header == NULL) {
         return;
@@ -289,7 +288,7 @@ struct STREAK_MATERIAL_SCALE_PC {
 
 STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, sort_pri) == 0x76);
 
-extern "C" void __cdecl InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
+extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     i32 i;
     for (i = 0; i < 32; ++i) {
         StreakHeadersPc[i].index = static_cast<u16>(i);

@@ -2,9 +2,9 @@
 
 /* Retail unit 0x561ba0-0x564310 (legoapi/jumping.c): definitions in retail address order. */
 extern i32 LEGOCONTEXT_JUMP;
-extern i32(__cdecl *FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
-extern void(__cdecl *BigJump_EndOfLandFn)(GAMEOBJECT *);
-extern i32(__cdecl *BigJump_LandActionFn)(GAMEOBJECT *);
+extern i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
+extern void (*BigJump_EndOfLandFn)(GAMEOBJECT *);
+extern i32 (*BigJump_LandActionFn)(GAMEOBJECT *);
 
 struct minianimpacket_pc_s {
     f32 current_time;           // 0x00
@@ -26,8 +26,8 @@ typedef struct beast_fall_land_view_pc_s {
     f32 fall_animation_time;          // 0xdac
 } BEAST_FALL_LAND_VIEW_PC;            // size 0xdb0
 
-extern i32(__cdecl *IsWearingBackPackFn)(GAMEOBJECT *);
-extern i32(__cdecl *UsingExtraActionsFn)(GAMEOBJECT *);
+extern i32 (*IsWearingBackPackFn)(GAMEOBJECT *);
+extern i32 (*UsingExtraActionsFn)(GAMEOBJECT *);
 
 typedef struct BALLOON_HEIGHT_VIEW_PC {
     u8 unknown[0x778];    // 0x000
@@ -52,12 +52,12 @@ typedef struct jump_auxiliary_fields_pc_s {
     u8 action_suppressed;
 } JUMP_AUXILIARY_FIELDS_PC;
 
-extern i32(__cdecl *Jump_PreventJumpFn)(GAMEOBJECT *);
-extern void(__cdecl *Jump_EndOfLandContextFn)(GAMEOBJECT *);
-extern i32(__cdecl *Slam_GetDebrisFn)(GAMEOBJECT *, i32);
-extern i32(__cdecl *CanGlideFn)(GAMEOBJECT *);
+extern i32 (*Jump_PreventJumpFn)(GAMEOBJECT *);
+extern void (*Jump_EndOfLandContextFn)(GAMEOBJECT *);
+extern i32 (*Slam_GetDebrisFn)(GAMEOBJECT *, i32);
+extern i32 (*CanGlideFn)(GAMEOBJECT *);
 
-void __cdecl StartJump(GAMEOBJECT *object, i32 movement_state) {
+void StartJump(GAMEOBJECT *object, i32 movement_state) {
     if (LEGOCONTEXT_JUMP != -1) {
         u32 attack_jump;
         object->character_context = (i8)LEGOCONTEXT_JUMP;
@@ -87,7 +87,7 @@ void __cdecl StartJump(GAMEOBJECT *object, i32 movement_state) {
     object->flags_107a = 2;
 }
 
-void __cdecl MakeJumpReachHeight(GAMEOBJECT *object, f32 height, i32 force) {
+void MakeJumpReachHeight(GAMEOBJECT *object, f32 height, i32 force) {
     f32 remaining_height = height - ((f64)object->collision_min.y - object->jump_start_height);
     if (remaining_height > 0.0f) {
         f32 radicand = (f64)object->character_data->game_character->gravity * -2.0 * remaining_height;
@@ -100,7 +100,7 @@ void __cdecl MakeJumpReachHeight(GAMEOBJECT *object, f32 height, i32 force) {
     }
 }
 
-void __cdecl StartEndOfJump(GAMEOBJECT *object) {
+void StartEndOfJump(GAMEOBJECT *object) {
     if (LEGOCONTEXT_JUMP != -1) {
         object->character_context = (i8)LEGOCONTEXT_JUMP;
         object->action_movement_state = 0;
@@ -111,7 +111,7 @@ void __cdecl StartEndOfJump(GAMEOBJECT *object) {
     object->airborne_collision_target = NULL;
 }
 
-static i32 __cdecl BigJump_JumpAction_Default(GAMEOBJECT *object) {
+static i32 BigJump_JumpAction_Default(GAMEOBJECT *object) {
     CHARACTER_MODEL_LAYERS_PC *model;
     if (LEGOACT_COMBOJUMP != -1) {
         model = object->character_model;
@@ -128,7 +128,7 @@ static i32 __cdecl BigJump_JumpAction_Default(GAMEOBJECT *object) {
     return LEGOACT_JUMP;
 }
 
-static i32 __cdecl BigJump_LandAction_Default(GAMEOBJECT *object) {
+static i32 BigJump_LandAction_Default(GAMEOBJECT *object) {
     if (BigJumpLandPreferredPc != -1 && object->character_model->model_data_b[BigJumpLandPreferredPc] != NULL) {
         return BigJumpLandPreferredPc;
     }
@@ -138,10 +138,9 @@ static i32 __cdecl BigJump_LandAction_Default(GAMEOBJECT *object) {
     return BigJumpLandFallbackPc;
 }
 
-i32(__cdecl *BigJump_JumpActionFn)(GAMEOBJECT *) = BigJump_JumpAction_Default;
+i32 (*BigJump_JumpActionFn)(GAMEOBJECT *) = BigJump_JumpAction_Default;
 
-i32 __cdecl StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 height, f32 duration_scale,
-                         i32 animation) {
+i32 StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 height, f32 duration_scale, i32 animation) {
     if (LEGOCONTEXT_BIGJUMP == -1) {
         return 0;
     }
@@ -180,7 +179,7 @@ i32 __cdecl StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 h
     return 1;
 }
 
-void __cdecl FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end) {
+void FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end) {
     i32 joint;
     if (FindSlamOrigin_UseCPosFn != NULL && FindSlamOrigin_UseCPosFn(object)) {
         start->x = object->collision_position.x;
@@ -208,7 +207,7 @@ void __cdecl FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end) {
     }
 }
 
-i32 __cdecl ObjLandReady(GAMEOBJECT *object) {
+i32 ObjLandReady(GAMEOBJECT *object) {
     i32 context = object->character_context;
     if ((U64_PAIR(&CInfo[context].flags) & 0x1004) != 0 &&
         (ZipUpLandCombatRollContextPc == -1 || context != ZipUpLandCombatRollContextPc || object->field_7b3 >= 1)) {
@@ -220,7 +219,7 @@ i32 __cdecl ObjLandReady(GAMEOBJECT *object) {
     return 0;
 }
 
-i32 __cdecl UseFallAnim(GAMEOBJECT *object) {
+i32 UseFallAnim(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 8) != 0 && LEGOACT_FALL != -1 &&
         object->character_model->model_data_b[LEGOACT_FALL] != NULL) {
         return 1;
@@ -228,7 +227,7 @@ i32 __cdecl UseFallAnim(GAMEOBJECT *object) {
     return 0;
 }
 
-i32 __cdecl StartFallLand(GAMEOBJECT *object, i32 action) {
+i32 StartFallLand(GAMEOBJECT *object, i32 action) {
     BEAST_FALL_LAND_VIEW_PC *view = (BEAST_FALL_LAND_VIEW_PC *)object;
     PlayLandSfx(object, 0, 0);
     if (LEGOCONTEXT_LAND_JUMP != -1) {
@@ -262,7 +261,7 @@ i32 __cdecl StartFallLand(GAMEOBJECT *object, i32 action) {
     return 0;
 }
 
-i32 __cdecl StartBackFlip(GAMEOBJECT *object) {
+i32 StartBackFlip(GAMEOBJECT *object) {
     if (JumpBackFlipContextPc == -1 || JumpBackFlipActionPc == -1 ||
         object->character_model->model_data_b[JumpBackFlipActionPc] == NULL) {
         return 0;
@@ -282,7 +281,7 @@ i32 __cdecl StartBackFlip(GAMEOBJECT *object) {
     return 1;
 }
 
-void __cdecl BackFlipCode(GAMEOBJECT *object) {
+void BackFlipCode(GAMEOBJECT *object) {
     if (JumpBackFlipContextPc == -1 || object->character_context != JumpBackFlipContextPc) {
         return;
     }
@@ -307,7 +306,7 @@ void __cdecl BackFlipCode(GAMEOBJECT *object) {
 }
 
 /* Native 5624d0: ordinary cdecl(object,vertical_speed), returning genuine success. */
-i32 __cdecl Slam_Start(GAMEOBJECT *object, f32 speed) {
+i32 Slam_Start(GAMEOBJECT *object, f32 speed) {
     if (LEGOCONTEXT_JUMP != -1) {
         object->character_context = (i8)LEGOCONTEXT_JUMP;
         object->action_movement_state = 4;
@@ -326,8 +325,8 @@ i32 __cdecl Slam_Start(GAMEOBJECT *object, f32 speed) {
     return 0;
 }
 
-void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation_set, i32 action_pressed,
-                      i32 action_held, i32 hit_effect) {
+void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation_set, i32 action_pressed,
+              i32 action_held, i32 hit_effect) {
     JUMP_AUXILIARY_FIELDS_PC *aux = (JUMP_AUXILIARY_FIELDS_PC *)object;
     WORLDINFO *world;
     i32 player_flag;
@@ -924,10 +923,10 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
 }
 
 #pragma data_seg(".data$BigJump_LandActionFn")
-i32(__cdecl *BigJump_LandActionFn)(GAMEOBJECT *) = BigJump_LandAction_Default;
+i32 (*BigJump_LandActionFn)(GAMEOBJECT *) = BigJump_LandAction_Default;
 #pragma data_seg()
 
-void __cdecl BigJumpCode(GAMEOBJECT *object) {
+void BigJumpCode(GAMEOBJECT *object) {
     WORLDINFO *world;
     f32 fraction;
     f32 height;

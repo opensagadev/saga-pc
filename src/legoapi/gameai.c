@@ -6,16 +6,16 @@ STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) + offsetof(AISCRIPTPR
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 
 /* Native PC startup and callback providers; insert in gameai.c before GameAISysSetGame. */
-typedef char *(__cdecl *AI_CHARACTER_NAME_PC)(u8);
-typedef char *(__cdecl *AI_GLOBAL_CHARACTER_NAME_PC)(i32);
-typedef void *(__cdecl *AI_GLOBAL_CHARACTER_HGOBJ_PC)(i32);
-typedef void(__cdecl *AI_GLOBAL_CHARACTER_RENDER_PC)(NUVEC *, i16, i32, i32, void *);
-typedef void(__cdecl *AI_CLEAR_CREATURES_PC)(void);
-typedef APIOBJECT_PC *(__cdecl *AI_GET_NAMED_OBJECT_PC)(void *, char *);
-typedef NUVEC *(__cdecl *AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
+typedef char *(*AI_CHARACTER_NAME_PC)(u8);
+typedef char *(*AI_GLOBAL_CHARACTER_NAME_PC)(i32);
+typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ_PC)(i32);
+typedef void (*AI_GLOBAL_CHARACTER_RENDER_PC)(NUVEC *, i16, i32, i32, void *);
+typedef void (*AI_CLEAR_CREATURES_PC)(void);
+typedef APIOBJECT_PC *(*AI_GET_NAMED_OBJECT_PC)(void *, char *);
+typedef NUVEC *(*AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
 
-i32 __cdecl StarWars_PreparingForSpecialMove(AIPACKET_PC *, APIOBJECT_PC *, i32);
-i32 __cdecl StarWars_MidSpecialMove(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
+i32 StarWars_PreparingForSpecialMove(AIPACKET_PC *, APIOBJECT_PC *, i32);
+i32 StarWars_MidSpecialMove(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
 
 AI_CHARACTER_NAME_PC LevelCharacterNameFn = 0;
 AI_CHARACTER_NAME_PC SpecialRouteCharacterNameFn = 0;
@@ -33,7 +33,7 @@ typedef struct EQUIVALENTOBJECTGROUP_PC {
 STATIC_ASSERT(offsetof(WORLDINFO, equivalent_groups) == 0x46b0);
 STATIC_ASSERT(offsetof(WORLDINFO, equivalent_group_count) == 0x46b4);
 
-i32 __cdecl NuHGobjRndr(NUHGOBJ_EVAL_PC *object, NUMTX *matrix, i32 count, i16 *layers) {
+i32 NuHGobjRndr(NUHGOBJ_EVAL_PC *object, NUMTX *matrix, i32 count, i16 *layers) {
     __declspec(align(16)) NUMTX matrices[256];
     NuHGobjEval(object, 0, NULL, matrices);
     return NuHGobjRndrMtxDwa(object, matrix, count, layers, matrices, NULL, 0);

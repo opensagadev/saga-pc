@@ -7,7 +7,7 @@
 static i32 PartVectorSpreadDegrees_PC = 30;
 #pragma data_seg()
 
-void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
+void InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     i32 i;
     i32 j;
     MAXPARTS = count;
@@ -44,7 +44,7 @@ void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     part_platimpactcnt = 0;
 }
 
-void __cdecl KillPartsByScene(NUGSCN *scene) {
+void KillPartsByScene(NUGSCN *scene) {
     PART_PC *part = Part;
     i32 index;
     for (index = 0; index < MAXPARTS; ++index, ++part) {
@@ -88,7 +88,7 @@ void edpartDeleteType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_create_type = -1;
 }
 
-void __cdecl edpartClearPage(i8 page) {
+void edpartClearPage(i8 page) {
     i32 index;
     NuThreadDisableThreadSwap();
     if (part_page_on[page] != 0) {
@@ -118,7 +118,7 @@ void __cdecl edpartClearPage(i8 page) {
     part_page_used[page] = 0;
 }
 
-i32 __cdecl PARTLookupTypePageOnly(char *name, i32 page) {
+i32 PARTLookupTypePageOnly(char *name, i32 page) {
     i32 i;
     if (name == NULL || name[0] == 0) {
         return -1;
@@ -138,7 +138,7 @@ i32 __cdecl PARTLookupTypePageOnly(char *name, i32 page) {
     return -1;
 }
 
-i32 __cdecl GetPartCount(void) {
+i32 GetPartCount(void) {
     i32 n;
     i32 used = 0;
     for (n = 0; n < 40; ++n) {
@@ -149,11 +149,11 @@ i32 __cdecl GetPartCount(void) {
     return used;
 }
 
-i32 __cdecl GetMaxPartTypes(void) {
+i32 GetMaxPartTypes(void) {
     return 128;
 }
 
-char *__cdecl GetPartName(i32 type) {
+char *GetPartName(i32 type) {
     if (part_types[type].name[0] == 0) {
         return NULL;
     }
@@ -163,21 +163,21 @@ char *__cdecl GetPartName(i32 type) {
 void fun_0064b150(void) {
 }
 
-f32 __cdecl PARTGetTotalOnTime(i32 type) {
+f32 PARTGetTotalOnTime(i32 type) {
     if (type >= 0) {
         return part_types[type].emission_period + part_types[type].emission_period_random;
     }
     return 0.0f;
 }
 
-f32 __cdecl PARTGetTotalOffTime(i32 type) {
+f32 PARTGetTotalOffTime(i32 type) {
     if (type >= 0) {
         return part_types[type].emission_pause + part_types[type].emission_pause_random;
     }
     return 0.0f;
 }
 
-void __cdecl KillPart(PART_PC *part, i32 reason) {
+void KillPart(PART_PC *part, i32 reason) {
     if ((part->active & 1) == 0) {
         return;
     }
@@ -199,7 +199,7 @@ void __cdecl KillPart(PART_PC *part, i32 reason) {
     }
 }
 
-void __cdecl NewPartRotation(PART_PC *part) {
+void NewPartRotation(PART_PC *part) {
     i32 index;
     for (index = 0; index < 2; ++index) {
         do {
@@ -209,7 +209,7 @@ void __cdecl NewPartRotation(PART_PC *part) {
     }
 }
 
-void __cdecl NewPartOrderedRotation(PART_PC *part) {
+void NewPartOrderedRotation(PART_PC *part) {
     part->field_124[0] = part->rotation_parameters[0] +
                          (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * part->rotation_parameters[3]);
     part->field_124[1] = part->rotation_parameters[1] +
@@ -218,7 +218,7 @@ void __cdecl NewPartOrderedRotation(PART_PC *part) {
                          (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * part->rotation_parameters[5]);
 }
 
-PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
+PART_PC *AddPart(ADDPART_PC *parameters) {
     NUVEC forward = {0.0f, 0.0f, -1.0f};
     PART_PC *part;
     i32 scanned;
@@ -379,8 +379,8 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
     return part;
 }
 
-PART_PC *__cdecl HitParts(GAMEOBJECT *excluded_owner, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum,
-                          NUVEC *maximum, u32 flags) {
+PART_PC *HitParts(GAMEOBJECT *excluded_owner, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum,
+                  NUVEC *maximum, u32 flags) {
     PART_PC *part = Part;
     i32 index;
 
@@ -989,7 +989,7 @@ void edcamMove(FRAME_PAD_PC *pad);
 void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
 void edcamGetPosAngSnap(NUVEC *position, i32 *pitch, i32 *yaw);
 void edpartOptMenu(void);
-void __cdecl edmainSetLocVec(NUVEC *location);
+void edmainSetLocVec(NUVEC *location);
 STATIC_ASSERT(offsetof(PART_PC, field_e0) == 0xe0);
 STATIC_ASSERT(offsetof(PART_PC, gravity) == 0xe8);
 STATIC_ASSERT(offsetof(PART_PC, field_f4) == 0xf4);
@@ -1018,7 +1018,7 @@ static i32 PartCleanupFramesPrivate = 0;
 static NUVEC PartImpactNormalPrivate = {0};
 static i32 PartRaycastsEnabledPrivate = 1;
 
-void __cdecl InitPartTable(char **names) {
+void InitPartTable(char **names) {
     i32 count = 0;
     part_debris_count = count;
     PDebNameList = names;
@@ -1031,8 +1031,7 @@ void __cdecl InitPartTable(char **names) {
     }
 }
 
-PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *buffer, VARIPTR *end, i32 capacity, i32 named_count, char **names,
-                                      i32 page) {
+PARTDEBRISSYS *InitPartDebris(VARIPTR *buffer, VARIPTR *end, i32 capacity, i32 named_count, char **names, i32 page) {
     PARTDEBRISSYS *system;
     i32 i;
     i32 type;
@@ -1071,7 +1070,7 @@ PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *buffer, VARIPTR *end, i32 capacit
     return NULL;
 }
 
-i32 __cdecl FindPartDebris(PARTDEBRISSYS *system, char *name) {
+i32 FindPartDebris(PARTDEBRISSYS *system, char *name) {
     i32 index;
     if (system != NULL) {
         for (index = system->named_count; index < system->capacity; ++index) {
@@ -1095,7 +1094,7 @@ void Parts_Stop(WORLDINFO *world) {
     }
 }
 
-void __cdecl AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
+void AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
     i32 effect;
 
     if (sys == NULL || index < 0 || index >= part_debris_count) {
@@ -1108,7 +1107,7 @@ void __cdecl AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
     AddFiniteShotPART(effect, position, 1);
 }
 
-void __cdecl PartImpact_Brick(PART_PC *part) {
+void PartImpact_Brick(PART_PC *part) {
     if (brickimpactwait <= 0.0f) {
         f32 speed = NuVecMag(&part->velocity);
         if (speed > 0.0f) {
@@ -1127,14 +1126,14 @@ void __cdecl PartImpact_Brick(PART_PC *part) {
     }
 }
 
-void __cdecl PartStop_Flickerer(PART_PC *part) {
+void PartStop_Flickerer(PART_PC *part) {
     part->time_remaining = 5.0f;
     if ((part->flicker_flags & 1) != 0) {
         part->time_remaining = 2.5f;
     }
 }
 
-i32 __cdecl PartDraw_Flickerer(PART_PC *part) {
+i32 PartDraw_Flickerer(PART_PC *part) {
     i32 draw = 1;
     if (part->time_remaining > 0.0f && GameTimer.update_count % 6 >= 3) {
         f32 threshold = 2.0f;
@@ -1148,7 +1147,7 @@ i32 __cdecl PartDraw_Flickerer(PART_PC *part) {
     return draw;
 }
 
-PART_PC *__cdecl FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range) {
+PART_PC *FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range) {
     f32 radius_squared = radius * radius;
     PART_PC *nearest = NULL;
     PART_PC *part = Part;
@@ -1187,7 +1186,7 @@ PART_PC *__cdecl FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 
     return nearest;
 }
 
-void __cdecl MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
+void MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
     if (direction != NULL) {
         i32 divisor;
         u16 z_random;
@@ -1210,8 +1209,8 @@ void __cdecl MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
     }
 }
 
-PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared,
-                            i32 directional, i32 bolt_id) {
+PART_PC *TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared,
+                    i32 directional, i32 bolt_id) {
     NUVEC aim = *direction;
     NUVEC delta;
     NUVEC minimum;
@@ -1282,7 +1281,7 @@ PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *directio
     return NULL;
 }
 
-PART_PC *__cdecl Part_FindFromHSpecial(NUSPECIALHANDLE *special) {
+PART_PC *Part_FindFromHSpecial(NUSPECIALHANDLE *special) {
     PART_PC *part;
     i32 index;
     if (special == NULL) {
@@ -1313,7 +1312,7 @@ void NuPartResetGlobalTime(void) {
     partglobaltime = 0.0f;
 }
 
-void __cdecl KillAllParts(void) {
+void KillAllParts(void) {
     PART_PC *part = Part;
     i32 i;
     if (part != NULL) {
@@ -1325,7 +1324,7 @@ void __cdecl KillAllParts(void) {
     }
 }
 
-void __cdecl ResetParts(void) {
+void ResetParts(void) {
     if (Part != NULL) {
         memset(Part, 0, MAXPARTS * sizeof(PART_PC));
     }
@@ -1333,7 +1332,7 @@ void __cdecl ResetParts(void) {
 }
 
 // MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
-__declspec(noinline) void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z) {
+__declspec(noinline) void DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
         debkeydata[handle].position.x = x;
         debkeydata[handle].position.y = y;
@@ -1342,7 +1341,7 @@ __declspec(noinline) void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32
     }
 }
 
-void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z) {
+void DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
         debkeydata[handle].emitter_momentum.x = x;
         debkeydata[handle].emitter_momentum.y = y;
@@ -1350,7 +1349,7 @@ void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z) {
     }
 }
 
-void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z) {
+void DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
         debkeydata[handle].momentum.x = x;
         debkeydata[handle].momentum.y = y;
@@ -1358,7 +1357,7 @@ void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z) {
     }
 }
 
-i32 __cdecl PARTLookupType(char *name) {
+i32 PARTLookupType(char *name) {
     i32 index;
     if (name == NULL || name[0] == 0) {
         return -1;
@@ -1473,7 +1472,7 @@ void DebFreeAllPanelEffects(void) {
     }
 }
 
-void __cdecl DebrisOrientation(i32 handle, i16 z, i16 y) {
+void DebrisOrientation(i32 handle, i16 z, i16 y) {
     if (handle == -1) {
         return;
     }
@@ -1483,7 +1482,7 @@ void __cdecl DebrisOrientation(i32 handle, i16 z, i16 y) {
     debkeydata[handle].orientation_dirty = 0.0f;
 }
 
-void __cdecl DebrisEmitterOrientation(i32 handle, i16 z, i16 y, i16 x) {
+void DebrisEmitterOrientation(i32 handle, i16 z, i16 y, i16 x) {
     if (handle == -1) {
         return;
     }
@@ -1518,13 +1517,13 @@ void DebrisSetTrigger(i32 handle, i32 first, i32 second, f32 third) {
     }
 }
 
-void __cdecl DebrisSetGroupID(i32 handle, i16 group) {
+void DebrisSetGroupID(i32 handle, i16 group) {
     if (handle != -1) {
         debkeydata[handle].render_group = group;
     }
 }
 
-void __cdecl DebrisSetPriority(i32 handle, i16 priority, u8 automatic) {
+void DebrisSetPriority(i32 handle, i16 priority, u8 automatic) {
     if (handle != -1) {
         debkeydata[handle].timed_flags = automatic;
         if (automatic == 0) {
@@ -1759,7 +1758,7 @@ static f32 DebrisDivide(f32 a, f32 b) {
     return a / b;
 }
 
-void __cdecl DebrisEmitterOrientationMtx(i32 handle, NUMTX *source) {
+void DebrisEmitterOrientationMtx(i32 handle, NUMTX *source) {
     if (handle != -1) {
         debkeydata[handle].emitter_orientation = *source;
         debkeydata[handle].emitter_orientation.m30 = 0.0f;
@@ -1769,10 +1768,9 @@ void __cdecl DebrisEmitterOrientationMtx(i32 handle, NUMTX *source) {
     }
 }
 
-void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position, NUVEC *momentum,
-                                               NUVEC *position_delta, i32 count, f32 duration,
-                                               NUMTX *emitter_orientation, NUMTX *particle_orientation,
-                                               u16 render_priority, i8 timed_flags) {
+void AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position, NUVEC *momentum, NUVEC *position_delta,
+                                       i32 count, f32 duration, NUMTX *emitter_orientation, NUMTX *particle_orientation,
+                                       u16 render_priority, i8 timed_flags) {
     DEBRIS_INFO_PC *effect;
     NUVEC clipped_position;
 
@@ -2034,8 +2032,8 @@ void AddVariableShotDebrisEffectMtx4(i32 effect, NUVEC *position, NUVEC *momentu
                                       emitter_orientation, particle_orientation, priority, flags);
 }
 
-void __cdecl AddVariableShotDebrisEffectMtx3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count,
-                                             NUMTX *emitter_orientation, NUMTX *particle_orientation) {
+void AddVariableShotDebrisEffectMtx3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count,
+                                     NUMTX *emitter_orientation, NUMTX *particle_orientation) {
     u16 priority;
     if (effect < 0 || debtab[effect] == NULL) {
         return;
@@ -2068,7 +2066,7 @@ void AddVariableShotDebrisEffectMtx(i32 effect, NUVEC *position, i32 count, i16 
                                     particle_orientation);
 }
 
-void __cdecl AddVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, i16 z_rotation, i16 y_rotation) {
+void AddVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, i16 z_rotation, i16 y_rotation) {
     AddVariableShotDebrisEffectMtx(effect, position, count, z_rotation, y_rotation, NULL);
 }
 
@@ -2081,7 +2079,7 @@ i32 AddScaledVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, f3
     return scaled;
 }
 
-void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
+void DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
     NUMTX matrix;
     f32 padding;
     f32 radius;
@@ -2131,7 +2129,7 @@ void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *
     DebrisMtxCopyPrivate(&key->clip_matrix, &matrix);
 }
 
-void __cdecl DebrisDraw(i32 unused, i32 pass) {
+void DebrisDraw(i32 unused, i32 pass) {
     DEBRIS_RENDER_CHUNK_PC *chunk;
     i32 drawn = 0;
     (void)unused;
@@ -2258,8 +2256,8 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
     _NuTimeBarSlotEnd(0, 12);
 }
 
-void __cdecl AddVariableShotDebrisEffectTimed3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count, f32 time,
-                                               NUMTX *emitter_orientation, NUMTX *particle_orientation) {
+void AddVariableShotDebrisEffectTimed3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count, f32 time,
+                                       NUMTX *emitter_orientation, NUMTX *particle_orientation) {
     u16 priority;
     if (effect < 0 || debtab[effect] == NULL) {
         return;
@@ -2282,8 +2280,8 @@ void __cdecl AddVariableShotDebrisEffectTimed3(i32 effect, NUVEC *position, NUVE
                                       particle_orientation, priority, 0);
 }
 
-void __cdecl AddVariableShotDebrisEffectTimed1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z_rotation,
-                                               i16 y_rotation, NUMTX *particle_orientation) {
+void AddVariableShotDebrisEffectTimed1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z_rotation, i16 y_rotation,
+                                       NUMTX *particle_orientation) {
     NUMTX orientation;
     DebrisMtxCopyPrivate(&orientation, &ANI3_EVAL_IDENTITY_MATRIX);
     DebrisMtxRotateZPrivate(&orientation, z_rotation);
@@ -2292,7 +2290,7 @@ void __cdecl AddVariableShotDebrisEffectTimed1(i32 effect, NUVEC *position, i32 
                                       particle_orientation);
 }
 
-void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 duration, NUMTX *orientation) {
+void AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 duration, NUMTX *orientation) {
     PARTTYPE_LOOKUP_PC *type = &part_types[effect_index];
     f32 interval;
     f32 aligned_time;
@@ -2417,7 +2415,7 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
     }
 }
 
-PART_PC *__cdecl FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
+PART_PC *FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
     PART_PC *part;
     f32 nearest;
     PART_PC *result;
@@ -2445,7 +2443,7 @@ PART_PC *__cdecl FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
     return result;
 }
 
-void __cdecl DebrisSetFacing(i32 handle, u8 enabled, i16 x_angle, i16 y_angle) {
+void DebrisSetFacing(i32 handle, u8 enabled, i16 x_angle, i16 y_angle) {
     if (handle != -1) {
         debkeydata[handle].field_2fa = enabled;
         DebrisMtxCopyPrivate(&debkeydata[handle].particle_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
@@ -2454,7 +2452,7 @@ void __cdecl DebrisSetFacing(i32 handle, u8 enabled, i16 x_angle, i16 y_angle) {
     }
 }
 
-void __cdecl DebrisSetRoomID(i32 handle, NUGSCN *scene) {
+void DebrisSetRoomID(i32 handle, NUGSCN *scene) {
     if (scene != NULL) {
         debkeydata[handle].field_2f2 = NuPortalWhichRoom(scene, &debkeydata[handle].position);
         debkeydata[handle].gscene = debkeydata[handle].field_2f2 != -1 ? scene : NULL;
@@ -2464,7 +2462,7 @@ void __cdecl DebrisSetRoomID(i32 handle, NUGSCN *scene) {
     }
 }
 
-void __cdecl DebrisSetDetailLevels(i32 handle, i32 detail_levels) {
+void DebrisSetDetailLevels(i32 handle, i32 detail_levels) {
     debkeydata[handle].orientation_flags = (u8)detail_levels;
 }
 
@@ -2477,7 +2475,7 @@ void AddDebrisEffectToStack(DEBRISKEY_PC *key) {
 }
 
 // MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
-__declspec(noinline) void __cdecl DebrisOrientationMtx(i32 handle, NUMTX *source) {
+__declspec(noinline) void DebrisOrientationMtx(i32 handle, NUMTX *source) {
     if (handle != -1) {
         debkeydata[handle].effect_orientation = *source;
         debkeydata[handle].effect_orientation.m30 = 0.0f;
@@ -2487,7 +2485,7 @@ __declspec(noinline) void __cdecl DebrisOrientationMtx(i32 handle, NUMTX *source
     }
 }
 
-void __cdecl DebrisPosOrientationMtx(i32 handle, NUMTX *source) {
+void DebrisPosOrientationMtx(i32 handle, NUMTX *source) {
     if (handle != -1) {
         debkeydata[handle].effect_orientation = *source;
         debkeydata[handle].position.x = source->m30;
@@ -2500,8 +2498,8 @@ void __cdecl DebrisPosOrientationMtx(i32 handle, NUMTX *source) {
     }
 }
 
-i32 __cdecl AddScaledVariableShotDebrisEffect2(i32 effect, NUVEC *position, i32 count, f32 time, NUMTX *emitter,
-                                               NUMTX *particle, f32 scale) {
+i32 AddScaledVariableShotDebrisEffect2(i32 effect, NUVEC *position, i32 count, f32 time, NUMTX *emitter,
+                                       NUMTX *particle, f32 scale) {
     i32 scaled = CreateScaledEffect(effect, scale);
     if (scaled != -1) {
         AddVariableShotDebrisEffectTimed3(scaled, position, &APIObjectZeroMomentumPC, count, time, emitter, particle);
@@ -2541,7 +2539,7 @@ i32 AddScaledVariableShotDebrisEffect5(i32 effect, NUVEC *position, NUVEC *momen
     return scaled;
 }
 
-NUMTL *__cdecl CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 depth_mode, i32 filter_mode) {
+NUMTL *CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 depth_mode, i32 filter_mode) {
     DEBRIS_MATERIAL_PC *material;
     DEBRIS_MATERIAL_PC *original = (DEBRIS_MATERIAL_PC *)source;
     if (source == NULL) {
@@ -2568,8 +2566,8 @@ NUMTL *__cdecl CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, 
     return (NUMTL *)material;
 }
 
-void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VARIPTR trash_end,
-                          char *texture_name, i32 chunk_count, i32 glass_chunk_count, i32 key_count, i32 effect_count) {
+void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VARIPTR trash_end, char *texture_name,
+                  i32 chunk_count, i32 glass_chunk_count, i32 key_count, i32 effect_count) {
     i32 i;
     i32 texture_id;
     if (debris_trash_space == 0) {
@@ -2731,7 +2729,7 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     DebrisMtxRotateXPrivate(&xzfacingmtx, -0x4000);
 }
 
-void __cdecl PartTimeSlip(void) {
+void PartTimeSlip(void) {
     i32 i;
     PART_RUNTIME_TYPE_PC *types = (PART_RUNTIME_TYPE_PC *)part_types;
     for (i = 0; i < 40; ++i) {
@@ -2749,7 +2747,7 @@ void __cdecl PartTimeSlip(void) {
     partglobaltime -= 800.0f;
 }
 
-void __cdecl PartCleanupTypes(void) {
+void PartCleanupTypes(void) {
     i32 i;
     if (++PartCleanupFramesPrivate > 5) {
         PartCleanupFramesPrivate = 0;
@@ -2774,7 +2772,7 @@ void __cdecl PartCleanupTypes(void) {
     }
 }
 
-i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
+i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     i32 closest_index;
     i32 i;
     i32 result = 0;
@@ -2859,7 +2857,7 @@ i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     return result;
 }
 
-i32 __cdecl AddScaledFiniteShotPART(i32 effect, NUVEC *position, i32 count, f32 scale) {
+i32 AddScaledFiniteShotPART(i32 effect, NUVEC *position, i32 count, f32 scale) {
     i32 scaled = CreateScaledPARTEffect(effect, scale);
     if (scaled != -1) {
         AddFiniteShotPART(scaled, position, count);
@@ -2867,7 +2865,7 @@ i32 __cdecl AddScaledFiniteShotPART(i32 effect, NUVEC *position, i32 count, f32 
     return scaled;
 }
 
-i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
+i32 edpartLookupObjectInScene(char *name, NUGSCN *scene) {
     NUSPECIALHANDLE special;
     i32 count;
     i32 i;
@@ -2901,7 +2899,7 @@ i32 fun_006489a0(char *name) {
     return LookupDebrisEffectPageOnly(name, edpart_load_particle_page);
 }
 
-void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page) {
+void edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page) {
     PART_RUNTIME_TYPE_PC *type = (PART_RUNTIME_TYPE_PC *)record;
     char name[16];
     i32 i;
@@ -3143,7 +3141,7 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
     type->field_174 = 0;
 }
 
-void __cdecl edpartDetermineNearest(f32 distance) {
+void edpartDetermineNearest(f32 distance) {
     NUVEC delta;
     f32 squared_distance;
     i32 i;
@@ -3236,36 +3234,36 @@ void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-void __cdecl edpartChangeTintR(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeTintR(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type) {
         edpart_nearest_type->field_160 = ((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl edpartChangeTintG(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeTintG(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type) {
         edpart_nearest_type->field_164 = ((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl edpartChangeTintB(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeTintB(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type) {
         edpart_nearest_type->field_168 = ((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl edpartCancelTintMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelTintMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_tint_menu);
     edpart_tint_menu = NULL;
 }
 
-void __cdecl edpartChangeInstanceScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeInstanceScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type) {
         edpart_nearest_type->particle_scale = ((edui_slider_s *)item)->value;
     }
 }
 
-void __cdecl edpartCancelInstanceScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelInstanceScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_instancescale_menu);
     edpart_instancescale_menu = NULL;
 }
@@ -3300,12 +3298,12 @@ void edpartInstanceScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     }
 }
 
-void __cdecl edpartCancelInstanceSettingsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelInstanceSettingsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_instancesettings_menu);
     edpart_instancesettings_menu = NULL;
 }
 
-void __cdecl edpartInstanceSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartInstanceSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL) {
         return;
     }
@@ -3463,7 +3461,7 @@ void edpartCancelChangeNameMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_name_menu = NULL;
 }
 
-i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
+i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
     i32 page;
     i32 scene_slot;
     i32 i;
@@ -3592,14 +3590,14 @@ i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_cou
     return -1;
 }
 
-void __cdecl RemovePARTEffect(i32 index) {
+void RemovePARTEffect(i32 index) {
     if (index != -1 && part_emits[index].effect_id != -1) {
         --part_emits_used;
         part_emits[index].effect_id = -1;
     }
 }
 
-void __cdecl PARTEmitterPos(i32 index, f32 x, f32 y, f32 z) {
+void PARTEmitterPos(i32 index, f32 x, f32 y, f32 z) {
     if (index != -1 && part_emits[index].effect_id != -1) {
         part_emits[index].position.x = x;
         part_emits[index].position.y = y;
@@ -3607,7 +3605,7 @@ void __cdecl PARTEmitterPos(i32 index, f32 x, f32 y, f32 z) {
     }
 }
 
-void __cdecl PARTEmitterOrientation(i32 index, i16 emitrotz, i16 emitroty, i16 emitrotx) {
+void PARTEmitterOrientation(i32 index, i16 emitrotz, i16 emitroty, i16 emitrotx) {
     if (index != -1 && part_emits[index].effect_id != -1) {
         part_emits[index].rotation_30 = emitrotx;
         part_emits[index].rotation_2e = emitroty;
@@ -3615,7 +3613,7 @@ void __cdecl PARTEmitterOrientation(i32 index, i16 emitrotz, i16 emitroty, i16 e
     }
 }
 
-void __cdecl UpdatePartEmits(f32 time) {
+void UpdatePartEmits(f32 time) {
     i32 switch_changes[32][2];
     i32 i;
     i32 sound;
@@ -3853,7 +3851,7 @@ void __cdecl UpdatePartEmits(f32 time) {
     }
 }
 
-i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags) {
+i32 PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags) {
     i32 hit = NewRayCast(position, movement, radius, flags);
     NewRayCastGetImpactNormal(&PART_NORM);
     return hit;
@@ -3863,7 +3861,7 @@ i32 PartPlatId(void) {
     return TerrainPlatId();
 }
 
-void __cdecl CastPart(PART_PC *part, f32 time) {
+void CastPart(PART_PC *part, f32 time) {
     PART_TERRAIN_STATE_PC *state = (PART_TERRAIN_STATE_PC *)part;
     i32 hit;
     f32 distance;
@@ -3960,7 +3958,7 @@ void edpartDestroy(i32 index) {
     }
 }
 
-void __cdecl edpartCreate(NUVEC *position, i32 type) {
+void edpartCreate(NUVEC *position, i32 type) {
     AddPARTEffect(type, position);
 }
 
@@ -4650,7 +4648,7 @@ static void PartRuntimeDirectionalLightsPrivate(NUVEC *direction0, NUVEC *colour
     NuRndrSetDirectionalLightsPS(direction0, colour0, direction1, colour1, direction2, colour2);
 }
 
-void __cdecl DrawParts(i32 keep_offscreen) {
+void DrawParts(i32 keep_offscreen) {
     PART_PC *part = Part;
     i32 i;
     NUMTX scaled;
@@ -4957,9 +4955,9 @@ void UpdateParts(f32 time) {
 }
 
 // MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
-__declspec(noinline) i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time,
-                                                                    i16 z_rotation, i16 y_rotation, NUMTX *orientation,
-                                                                    f32 scale) {
+__declspec(noinline) i32 AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time,
+                                                            i16 z_rotation, i16 y_rotation, NUMTX *orientation,
+                                                            f32 scale) {
     i32 scaled = CreateScaledEffect(effect, scale);
     if (scaled != -1) {
         AddVariableShotDebrisEffectTimed1(scaled, position, count, time, z_rotation, y_rotation, orientation);
@@ -4967,11 +4965,11 @@ __declspec(noinline) i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, 
     return scaled;
 }
 
-void __cdecl NuPartEnableRayCasts(i32 enabled) {
+void NuPartEnableRayCasts(i32 enabled) {
     PartRaycastsEnabledPrivate = enabled;
 }
 
-void __cdecl edpartSetParticlePage(i32 page) {
+void edpartSetParticlePage(i32 page) {
     edpart_load_particle_page = page;
 }
 
@@ -4982,11 +4980,11 @@ i32 edpartLookupObject(char *name) {
     return edpartLookupObjectInScene(name, edbits_base_scene);
 }
 
-i32 __cdecl edpartLoadPage(char *path, i8 mode, NUGSCN *scene) {
+i32 edpartLoadPage(char *path, i8 mode, NUGSCN *scene) {
     return edpartLoadPageEx(path, mode, &scene, 1);
 }
 
-void __cdecl DebrisSetup(VARIPTR *buffer, VARIPTR buffer_end, char *texture_name, i32 chunk_count, i32 key_count,
-                         i32 effect_count) {
+void DebrisSetup(VARIPTR *buffer, VARIPTR buffer_end, char *texture_name, i32 chunk_count, i32 key_count,
+                 i32 effect_count) {
     DebrisSetup2(buffer, buffer_end, buffer, buffer_end, texture_name, chunk_count, 0x20, key_count, effect_count);
 }

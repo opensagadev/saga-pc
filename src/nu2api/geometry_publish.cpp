@@ -39,11 +39,11 @@ struct PC_GEOMETRY_PUBLISH_SORT_ITEM_PC {
     u32 unknown_08;       // 0x8
 }; // size 0xc
 
-extern "C" i32 __cdecl PcGeometryBackendAvailablePc(void) {
+extern "C" i32 PcGeometryBackendAvailablePc(void) {
     return PCDeviceHardwareVertexProcessingPC >= 4;
 }
 
-extern "C" i32 __cdecl PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format) {
+extern "C" i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format) {
     if (!PcGeometryBackendAvailablePc()) {
         return 0;
     }

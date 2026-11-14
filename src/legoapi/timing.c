@@ -77,7 +77,7 @@ typedef struct GAME_TIMING_AREA_SAVE_PC {
 
 STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
 
-void __cdecl GameTiming(WORLDINFO *world, f32 *game_time) {
+void GameTiming(WORLDINFO *world, f32 *game_time) {
     f32 target;
     f32 time_limit;
     /* Existing PC owner names are reversed: Mul is the countdown, Time the fade. */

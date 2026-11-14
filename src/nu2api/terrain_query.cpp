@@ -8,7 +8,7 @@ extern "C" {
     extern TerrainQuery_s *TerI;
     extern void *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
-    void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);
+    void TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
@@ -1114,17 +1114,17 @@ extern "C" i32 NewRayCastScaleYMask(NUVEC *position, NUVEC *movement, f32 radius
     return TerI->hit_type;
 }
 
-extern "C" i32 __cdecl TerrainPlatId(void) {
+extern "C" i32 TerrainPlatId(void) {
     return plathitid;
 }
 
 STATIC_ASSERT(offsetof(TERRAIN_SHAPE, material) == 0x60);
 
-extern "C" f32 __cdecl NewRayCastGetTOFI(void) {
+extern "C" f32 NewRayCastGetTOFI(void) {
     return TerI->hit_time;
 }
 
-extern "C" i32 __cdecl NewRayCastGetImpactTerrainType(void) {
+extern "C" i32 NewRayCastGetImpactTerrainType(void) {
     TERRAIN_SHAPE *surface = TerI->surface;
     return surface ? surface->material[0] : 0;
 }
@@ -1133,25 +1133,25 @@ STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, material) == 0x60);
 STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, flags) == 0x62);
 STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normal_flags) == 0x63);
 
-extern "C" void __cdecl NewTerrHitInfo(u8 *info) {
+extern "C" void NewTerrHitInfo(u8 *info) {
     info[0] = TerrPolyInfo.material[0];
     info[1] = TerrPolyInfo.material[1];
     info[2] = TerrPolyInfo.flags;
     info[3] = TerrPolyInfo.normal_flags;
 }
 
-extern "C" void __cdecl NewRayCastGetImpactNormal(NUVEC *normal) {
+extern "C" void NewRayCastGetImpactNormal(NUVEC *normal) {
     TerrainQuery_s *query = TerI;
     if (query != NULL) {
         *normal = query->movement_normal;
     }
 }
 
-extern "C" f32 __cdecl NewRayCastGetEmbedDist(void) {
+extern "C" f32 NewRayCastGetEmbedDist(void) {
     return TerI->unclamped_hit_time;
 }
 
-extern "C" i32 __cdecl NewRayCastHitWallSpline(void) {
+extern "C" i32 NewRayCastHitWallSpline(void) {
     return TerI->shape_adjusted;
 }
 

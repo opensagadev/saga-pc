@@ -268,7 +268,7 @@ STATIC_ASSERT(offsetof(GIZSPINNER_s, primary_anim_obj) == 0x6c);
 STATIC_ASSERT(offsetof(GAMEANIMSET, state) == 0xc);
 #pragma const_seg(".rdata$GizmoRegistryGizPanelNamePc")
 #pragma const_seg()
-void __cdecl GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *);
+void GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, anti_node_data) == 0xb4);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, anti_node) == 0xd8);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_y) == 0xea);
@@ -309,7 +309,7 @@ typedef struct blowup_effect_type_pc_s {
     u8 fragment_count;                     // 0xfa
 } BLOWUP_EFFECT_TYPE_PC;                   // size 0xfc
 
-extern void(__cdecl *GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
+extern void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c8c) == 0xc8c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == 0xc90);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c94) == 0xc94);
@@ -361,7 +361,7 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, score_multiplier) == 0x10d);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, initial_state) == 0x10f);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, initial_health) == 0x111);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, burst_platform_id) == 0x104);
-extern i32(__cdecl *BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
+extern i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_028) == 0x28);
 STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
 STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
@@ -456,7 +456,7 @@ void SetLevelExBlowupFlags(u32 flags) {
     EXBLOWUPFLAGS = flags;
 }
 
-void __cdecl SetLevelBlowupCallbackPc(LEVEL_BLOWUP_CALLBACK_PC callback) {
+void SetLevelBlowupCallbackPc(LEVEL_BLOWUP_CALLBACK_PC callback) {
     if (callback != NULL) {
         BlowupExFunc = callback;
     }
@@ -473,7 +473,7 @@ u32 flagremaptab[32][2] = {
     {0x01000000, 0x02000000}, {0x02000000, 0x04000000}, {0x04000000, 0x10000000}, {0x08000000, 0x40000000},
     {0x10000000, 0x00004000}, {0x20000000, 0x08000000}, {0x40000000, 0x00002000}, {0x80000000, 0x80000000}};
 
-u32 __cdecl RemapTypeFlagToBlowupFlag(u32 flag) {
+u32 RemapTypeFlagToBlowupFlag(u32 flag) {
     i32 i;
     for (i = 0; i < 32; ++i) {
         if (flagremaptab[i][0] == flag) {
@@ -483,7 +483,7 @@ u32 __cdecl RemapTypeFlagToBlowupFlag(u32 flag) {
     return 0;
 }
 
-u32 __cdecl RemapAllTypeFlagsToBlowupFlags(u32 flags) {
+u32 RemapAllTypeFlagsToBlowupFlags(u32 flags) {
     u32 result = 0;
     i32 bit;
     for (bit = 0; bit < 32; ++bit) {
@@ -495,7 +495,7 @@ u32 __cdecl RemapAllTypeFlagsToBlowupFlags(u32 flags) {
     return result;
 }
 
-i32 __cdecl InitGizmoBlowupTypes(WORLDINFO *world) {
+i32 InitGizmoBlowupTypes(WORLDINFO *world) {
     world->gizmo_blowup_types = NULL;
     world->gizmo_blowup_type_count = 0;
     if ((u16)world->current_level->max_gizmoblowuptypes == 0) {
@@ -507,7 +507,7 @@ i32 __cdecl InitGizmoBlowupTypes(WORLDINFO *world) {
     return world->gizmo_blowup_types != NULL;
 }
 
-i32 __cdecl InitGizmoBlowups(WORLDINFO *world) {
+i32 InitGizmoBlowups(WORLDINFO *world) {
     world->gizmo_blowups = NULL;
     world->gizmo_blowup_count = 0;
     if ((u16)world->current_level->max_gizmoblowups == 0) {
@@ -519,21 +519,21 @@ i32 __cdecl InitGizmoBlowups(WORLDINFO *world) {
     return world->gizmo_blowups != NULL;
 }
 
-i32 __cdecl InitGizmoBlowupsMtxBuffer(WORLDINFO *world) {
+i32 InitGizmoBlowupsMtxBuffer(WORLDINFO *world) {
     world->gizmo_blowup_mtx_buffer = NULL;
     world->giz_buffer.addr = (world->giz_buffer.addr + 0x7f) & ~0x7fu;
     world->gizmo_blowup_mtx_buffer = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 0x8000);
     return world->gizmo_blowup_mtx_buffer != NULL;
 }
 
-void *__cdecl gizmoblowup_reservebuffers(WORLDINFO *world) {
+void *gizmoblowup_reservebuffers(WORLDINFO *world) {
     InitGizmoBlowupTypes(world);
     InitGizmoBlowups(world);
     InitGizmoBlowupsMtxBuffer(world);
     return world->gizmo_blowups;
 }
 
-i32 __cdecl Blowup_GetMaxGizmos(void *world_ptr) {
+i32 Blowup_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     if (world != NULL) {
         return (u16)world->current_level->max_gizmoblowups;
@@ -541,7 +541,7 @@ i32 __cdecl Blowup_GetMaxGizmos(void *world_ptr) {
     return 0;
 }
 
-void __cdecl Blowup_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+void Blowup_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     i32 i;
     (void)data;
@@ -552,11 +552,11 @@ void __cdecl Blowup_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void 
     }
 }
 
-char *__cdecl Blowup_GetGizmoName(GIZMO_PC *gizmo) {
+char *Blowup_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((GIZMOBLOWUP_PC *)gizmo->object)->name : NULL;
 }
 
-i32 __cdecl Blowup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignored) {
+i32 Blowup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignored) {
     GIZMOBLOWUP_PC *blowup = gizmo->object;
     (void)ignored;
     switch (output) {
@@ -584,19 +584,19 @@ char *BlowupOutputNamesPc[3] = {(char *)BlowupBlownupOutputTextPc, (char *)Blowu
                                 (char *)BlowupPluggingOutputTextPc};
 #pragma data_seg()
 
-char *__cdecl Blowup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+char *Blowup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     if ((u32)output <= 2) {
         return BlowupOutputNamesPc[output];
     }
     return NULL;
 }
 
-i32 __cdecl Blowup_GetNumOutputs(GIZMO_PC *unused) {
+i32 Blowup_GetNumOutputs(GIZMO_PC *unused) {
     (void)unused;
     return 3;
 }
 
-void __cdecl Blowup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void Blowup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     GIZMOBLOWUP_PC *blowup;
     if (gizmo == NULL) {
         return;
@@ -614,22 +614,22 @@ void __cdecl Blowup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 
-i32 __cdecl Blowup_GetVisibility(GIZMO_PC *gizmo) {
+i32 Blowup_GetVisibility(GIZMO_PC *gizmo) {
     return gizmo != NULL && (((GIZMOBLOWUP_PC *)gizmo->object)->status_flags & 0x4000) != 0;
 }
 
-NUVEC *__cdecl GizmoBlowup_GetPos(GIZMO_PC *gizmo) {
+NUVEC *GizmoBlowup_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
     return &((FLOW_BLOWUP_POSITION_PC *)gizmo->object)->position;
 }
 
-void *__cdecl Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+void *Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 0x100);
 }
 
-void __cdecl Blowup_ClearProgress(void *owner, void *progress_ptr) {
+void Blowup_ClearProgress(void *owner, void *progress_ptr) {
     BLOWUP_PROGRESS_PC *progress = progress_ptr;
     if (progress == NULL) {
         return;
@@ -640,7 +640,7 @@ void __cdecl Blowup_ClearProgress(void *owner, void *progress_ptr) {
     memset(progress->completed, 0, 64);
 }
 
-void __cdecl Blowup_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+void Blowup_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     BLOWUP_PROGRESS_PC *progress = progress_ptr;
     WORLDINFO *world = world_ptr;
     GIZMOBLOWUP_PC *record;
@@ -696,7 +696,7 @@ static void Blowup_Reset(GIZMOBLOWUP_PC *blowup) {
     blowup->status_flags |= 0x10000;
 }
 
-void __cdecl GizBlowup_Respawn(GIZMOBLOWUP_PC *blowup) {
+void GizBlowup_Respawn(GIZMOBLOWUP_PC *blowup) {
     RESPAWN_INITIAL_PC *initial = (RESPAWN_INITIAL_PC *)blowup;
     NUINSTANIM *animation;
     i32 i;
@@ -740,7 +740,7 @@ void __cdecl GizBlowup_Respawn(GIZMOBLOWUP_PC *blowup) {
 }
 
 /* Studs the level's blowups release (TotalLevelCoinTally). */
-u32 __cdecl GizmoBlowups_TotalScore(WORLDINFO *world) {
+u32 GizmoBlowups_TotalScore(WORLDINFO *world) {
     GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
     u32 total = 0;
     i32 i;
@@ -752,7 +752,7 @@ u32 __cdecl GizmoBlowups_TotalScore(WORLDINFO *world) {
     return total;
 }
 
-GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *special, i32 flags, i32 *result) {
+GIZMOBLOWUPTYPE_PC *GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *special, i32 flags, i32 *result) {
     i32 i;
     GIZMOBLOWUPTYPE_PC *type;
     NUINSTANIM *animation;
@@ -796,7 +796,7 @@ GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE
     return type;
 }
 
-void __cdecl GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *type, WORLDINFO *world) {
+void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *type, WORLDINFO *world) {
     GIZMOBLOWUPTYPE_PC *types;
     GIZMOBLOWUPTYPE_PC *last_allocated_type;
     GIZMOBLOWUPTYPE_PC *moved_type;
@@ -850,13 +850,13 @@ f32 GizmoBlowup_SetAutoSetReflectY(GIZMOBLOWUP_PC *blowup, NUVEC *position) {
     return 0.0f;
 }
 
-void __cdecl GizmoSwapBlowups(GIZMOBLOWUP_PC *first, GIZMOBLOWUP_PC *second) {
+void GizmoSwapBlowups(GIZMOBLOWUP_PC *first, GIZMOBLOWUP_PC *second) {
     GIZMOBLOWUP_PC temporary = *first;
     *first = *second;
     *second = temporary;
 }
 
-void __cdecl GizmoSortBlowups(WORLDINFO *world) {
+void GizmoSortBlowups(WORLDINFO *world) {
     i32 blowup_index = 0;
     i32 type_index;
     GIZMOBLOWUPTYPE_PC *type = world->gizmo_blowup_types;
@@ -886,8 +886,7 @@ void __cdecl GizmoSortBlowups(WORLDINFO *world) {
     }
 }
 
-void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 offset, i32 flags,
-                                    GAMEOBJECT *object) {
+void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 offset, i32 flags, GAMEOBJECT *object) {
     BLOWUP_EFFECT_TYPE_PC *type = (BLOWUP_EFFECT_TYPE_PC *)blowup->type;
     BLOWUP_EFFECT_INSTANCE_PC *instance = (BLOWUP_EFFECT_INSTANCE_PC *)blowup;
     NUVEC effect_position = *position;
@@ -985,8 +984,8 @@ void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32
     }
 }
 
-i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type, i32 damage, GAMEOBJECT *object,
-                              i32 hit_context) {
+i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type, i32 damage, GAMEOBJECT *object,
+                      i32 hit_context) {
     NUINSTANIM *animation;
     NUINSTANIM *burst;
     GIZMOBLOWUPTYPE_PC *type;
@@ -1168,7 +1167,7 @@ i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type,
     return 1;
 }
 
-void __cdecl UpdateMidPos(GIZMOBLOWUP_PC *blowup) {
+void UpdateMidPos(GIZMOBLOWUP_PC *blowup) {
     NUVEC minimum;
     NUVEC maximum;
     NUVEC corners[8];
@@ -1228,7 +1227,7 @@ void __cdecl UpdateMidPos(GIZMOBLOWUP_PC *blowup) {
     blowup->status_flags &= ~0x10000;
 }
 
-void __cdecl GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
+void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
     GIZMOBLOWUP_PC *blowup;
     NUINSTANIM *animation;
@@ -1337,7 +1336,7 @@ void __cdecl GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time)
     (void)delta_time;
 }
 
-void __cdecl PlayAnim(NUINSTANIM *animation, f32 *playback, f32 speed, i32 backwards) {
+void PlayAnim(NUINSTANIM *animation, f32 *playback, f32 speed, i32 backwards) {
     animation->flags |= 1;
     if (speed >= 0.0f) {
         *playback = SeekLinearF(*playback, backwards != 0 ? 1.0f : -1.0f, speed);
@@ -1345,7 +1344,7 @@ void __cdecl PlayAnim(NUINSTANIM *animation, f32 *playback, f32 speed, i32 backw
     animation->tfactor = animation->fparam1 * *playback;
 }
 
-void __cdecl GizmoBlowupLateUpdate(void *world_ptr, void *data, f32 delta_time) {
+void GizmoBlowupLateUpdate(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
     GIZMOBLOWUPTYPE_PC *type;
     i32 index;
@@ -1363,7 +1362,7 @@ void __cdecl GizmoBlowupLateUpdate(void *world_ptr, void *data, f32 delta_time) 
     (void)delta_time;
 }
 
-i32 __cdecl GizmoBlowupTypeNameBlank(char *name) {
+i32 GizmoBlowupTypeNameBlank(char *name) {
     i32 i;
     for (i = 0; i < 8; ++i) {
         if (((i32 *)name)[i] != 0) {
@@ -1373,7 +1372,7 @@ i32 __cdecl GizmoBlowupTypeNameBlank(char *name) {
     return 1;
 }
 
-i32 __cdecl GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *blowup) {
+i32 GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *blowup) {
     i32 instance;
     if (!blowup || (blowup->status_flags & 1) || !(blowup->draw_flags & 4)) {
         return 0;
@@ -1404,7 +1403,7 @@ i32 __cdecl GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *blowup) {
     return 1;
 }
 
-void __cdecl GizBlowup_InitTerrain(void) {
+void GizBlowup_InitTerrain(void) {
     GIZMOBLOWUP_PC *blowup;
     i32 index;
     if (WORLD->gizmo_blowups && WORLD->gizmo_blowup_count > 0) {
@@ -1419,7 +1418,7 @@ void __cdecl GizBlowup_InitTerrain(void) {
     }
 }
 
-void __cdecl GizBlowup_DeleteSingleTerrain(GIZMOBLOWUP_PC *blowup) {
+void GizBlowup_DeleteSingleTerrain(GIZMOBLOWUP_PC *blowup) {
     if (!blowup) {
         return;
     }
@@ -1433,7 +1432,7 @@ void __cdecl GizBlowup_DeleteSingleTerrain(GIZMOBLOWUP_PC *blowup) {
     }
 }
 
-void __cdecl GizBlowup_DeleteTerrain(void) {
+void GizBlowup_DeleteTerrain(void) {
     GIZMOBLOWUP_PC *blowup;
     i32 index;
     if (WORLD->gizmo_blowups && WORLD->gizmo_blowup_count > 0) {
@@ -1444,7 +1443,7 @@ void __cdecl GizBlowup_DeleteTerrain(void) {
     }
 }
 
-void __cdecl GizmoBlowupUpdateMatrix(GIZMOBLOWUP_PC *blowup) {
+void GizmoBlowupUpdateMatrix(GIZMOBLOWUP_PC *blowup) {
     NUVEC position;
     if (!blowup) {
         return;
@@ -1458,7 +1457,7 @@ void __cdecl GizmoBlowupUpdateMatrix(GIZMOBLOWUP_PC *blowup) {
     NuMtxTranslate(&blowup->transform, &position);
 }
 
-void __cdecl GizmoBlowupGenDecalMatrix(GIZMOBLOWUP_PC *blowup, NUMTX *matrix, i32 alternate) {
+void GizmoBlowupGenDecalMatrix(GIZMOBLOWUP_PC *blowup, NUMTX *matrix, i32 alternate) {
     NUVEC position;
     if (!blowup) {
         return;
@@ -1481,7 +1480,7 @@ void __cdecl GizmoBlowupGenDecalMatrix(GIZMOBLOWUP_PC *blowup, NUMTX *matrix, i3
     NuMtxTranslate(matrix, &position);
 }
 
-void __cdecl GizmoBlowupGenShadowMatrix(GIZMOBLOWUP_PC *blowup, NUMTX *matrix) {
+void GizmoBlowupGenShadowMatrix(GIZMOBLOWUP_PC *blowup, NUMTX *matrix) {
     NUVEC position;
     if (!blowup) {
         return;
@@ -1500,7 +1499,7 @@ void __cdecl GizmoBlowupGenShadowMatrix(GIZMOBLOWUP_PC *blowup, NUMTX *matrix) {
     NuMtxTranslate(matrix, &position);
 }
 
-GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowup_FindType(char *name, WORLDINFO *world) {
+GIZMOBLOWUPTYPE_PC *GizmoBlowup_FindType(char *name, WORLDINFO *world) {
     i32 i;
     if (world == NULL) {
         return NULL;
@@ -1518,7 +1517,7 @@ GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowup_FindType(char *name, WORLDINFO *world) {
     return NULL;
 }
 
-i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
+i32 gizmoblowup_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     GIZMOBLOWUPTYPE_PC type;
     GIZMOBLOWUP_PC blowup;
@@ -1851,7 +1850,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
     return 1;
 }
 
-void __cdecl GizmoBlowupsFinalSetup(WORLDINFO *world) {
+void GizmoBlowupsFinalSetup(WORLDINFO *world) {
     GIZMOBLOWUPTYPE_PC *type;
     GIZMOBLOWUP_PC *blowup;
     NUINSTANIM *animation;
@@ -1910,8 +1909,8 @@ void __cdecl GizmoBlowupsFinalSetup(WORLDINFO *world) {
     GizBlowup_InitTerrain();
 }
 
-GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, f32 minimum_radius,
-                                            i32 mode, u32 mask, u32 value, u32 secondary_mask) {
+GIZMOBLOWUP_PC *GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, f32 minimum_radius, i32 mode,
+                                    u32 mask, u32 value, u32 secondary_mask) {
     GIZMOBLOWUP_PC *target = WORLD->gizmo_blowups;
     GIZMOBLOWUP_PC *nearest = NULL;
     f32 nearest_distance;
@@ -2006,12 +2005,12 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 e
     return nearest;
 }
 
-u32 __cdecl GetLevelExBlowupFlags(void) {
+u32 GetLevelExBlowupFlags(void) {
     return EXBLOWUPFLAGS;
 }
 
-GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum,
-                                        NUVEC *maximum, BOLT_PC *bolt, u32 hit_type, u8 *flags) {
+GIZMOBLOWUP_PC *GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum,
+                                NUVEC *maximum, BOLT_PC *bolt, u32 hit_type, u8 *flags) {
     i32 airborne_damage = 0;
     u32 exclude_flag_2 = EXBLOWUPFLAGS & 2;
     u32 exclude_flag_1 = EXBLOWUPFLAGS & 1;
@@ -2111,8 +2110,8 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 p
     return nearest;
 }
 
-void __cdecl GizmoBlowup_HitBlowup(GAMEOBJECT *object, GIZMOBLOWUP_PC *blowup, i32 hit_type, BOLT_PC *bolt,
-                                   NUVEC *position, u8 *hit_data, u32 mode, i32 unused) {
+void GizmoBlowup_HitBlowup(GAMEOBJECT *object, GIZMOBLOWUP_PC *blowup, i32 hit_type, BOLT_PC *bolt, NUVEC *position,
+                           u8 *hit_data, u32 mode, i32 unused) {
     (void)unused;
     if (GizmoBlowupBlowup(blowup, 1, hit_type, 1, NULL, 1)) {
         if (object != NULL) {
@@ -2140,7 +2139,7 @@ void __cdecl GizmoBlowup_HitBlowup(GAMEOBJECT *object, GIZMOBLOWUP_PC *blowup, i
     }
 }
 
-GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindFromPlatID(WORLDINFO *world, i32 platform) {
+GIZMOBLOWUP_PC *GizmoBlowUp_FindFromPlatID(WORLDINFO *world, i32 platform) {
     GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
     i32 index;
     if (blowup) {
@@ -2153,7 +2152,7 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindFromPlatID(WORLDINFO *world, i32 platfor
     return NULL;
 }
 
-GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindByName(WORLDINFO *world, char *name) {
+GIZMOBLOWUP_PC *GizmoBlowUp_FindByName(WORLDINFO *world, char *name) {
     GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
     i32 index;
     if (blowup) {
@@ -2166,8 +2165,8 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindByName(WORLDINFO *world, char *name) {
     return NULL;
 }
 
-GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius,
-                                           f32 range_squared, i32 directional, i32 planar, i32 bolt_id) {
+GIZMOBLOWUP_PC *GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared,
+                                   i32 directional, i32 planar, i32 bolt_id) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     BOLTTYPE_PC *bolt = BoltType_FindByID(bolt_id, world);
     u16 near_angle = TargetDeg_Near;
@@ -2266,7 +2265,7 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, 
     return nearest;
 }
 
-i32 __cdecl GizmoBlowupCheckProximity(WORLDINFO *world, GAMEOBJECT *object) {
+i32 GizmoBlowupCheckProximity(WORLDINFO *world, GAMEOBJECT *object) {
     i32 count = 0;
     i32 special = 0;
     i32 normal = 0;
@@ -2325,7 +2324,7 @@ i32 __cdecl GizmoBlowupCheckProximity(WORLDINFO *world, GAMEOBJECT *object) {
     return count;
 }
 
-void __cdecl GizmoBlowupVisibilityOverrides(WORLDINFO *world) {
+void GizmoBlowupVisibilityOverrides(WORLDINFO *world) {
     GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
     GIZMOBLOWUPTYPE_PC *type;
     i32 index;
@@ -2342,14 +2341,14 @@ void __cdecl GizmoBlowupVisibilityOverrides(WORLDINFO *world) {
     }
 }
 
-i32 __cdecl GizmoBlowupTypeGetCount(WORLDINFO *world) {
+i32 GizmoBlowupTypeGetCount(WORLDINFO *world) {
     if (world == NULL) {
         return -1;
     }
     return world->gizmo_blowup_type_count;
 }
 
-char *__cdecl GizmoBlowupTypeGetNameFromIndex(WORLDINFO *world, i32 index) {
+char *GizmoBlowupTypeGetNameFromIndex(WORLDINFO *world, i32 index) {
     GIZMOBLOWUPTYPE_PC *type;
     if (world == NULL || index == -1 || index > world->gizmo_blowup_type_count) {
         return NULL;
@@ -2358,7 +2357,7 @@ char *__cdecl GizmoBlowupTypeGetNameFromIndex(WORLDINFO *world, i32 index) {
     return NuStrLen(type->name) != 0 ? type->name : NULL;
 }
 
-void __cdecl GizmoBlowUpTypeBlowUp(WORLDINFO *world, i32 index, NUVEC *position) {
+void GizmoBlowUpTypeBlowUp(WORLDINFO *world, i32 index, NUVEC *position) {
     GIZMOBLOWUPTYPE_PC *type;
     GIZMOBLOWUP_PC temporary;
     i32 flags;
@@ -2383,12 +2382,12 @@ void __cdecl GizmoBlowUpTypeBlowUp(WORLDINFO *world, i32 index, NUVEC *position)
     GameAudio_PlaySfx(0x33, position, 0, 0);
 }
 
-void __cdecl GizmoBlowupResetNameTable(void) {
+void GizmoBlowupResetNameTable(void) {
     memset(GizmoBlowupNameTablePc, 0, sizeof(GizmoBlowupNameTablePc));
     GizmoBlowupNameCountPc = 0;
 }
 
-i32 __cdecl GizmoBlowupGetNameTableId(char *name) {
+i32 GizmoBlowupGetNameTableId(char *name) {
     i32 i;
     for (i = 0; i < GizmoBlowupNameCountPc; ++i) {
         if (!NuStrICmp(GizmoBlowupNameTablePc[i], name)) {
@@ -2403,7 +2402,7 @@ i32 __cdecl GizmoBlowupGetNameTableId(char *name) {
     return -1;
 }
 
-i32 __cdecl GizmoBlowupGetTypeFromNameTableId(WORLDINFO *world, i32 id) {
+i32 GizmoBlowupGetTypeFromNameTableId(WORLDINFO *world, i32 id) {
     char *name;
     GIZMOBLOWUPTYPE_PC *type;
     i32 i;
@@ -2418,7 +2417,7 @@ i32 __cdecl GizmoBlowupGetTypeFromNameTableId(WORLDINFO *world, i32 id) {
     return -1;
 }
 
-GIZMOBLOWUP_PC *__cdecl FindNearestGizmoBlowUp(WORLDINFO *world, NUVEC *position, f32 max_distance_squared) {
+GIZMOBLOWUP_PC *FindNearestGizmoBlowUp(WORLDINFO *world, NUVEC *position, f32 max_distance_squared) {
     GIZMOBLOWUP_PC *nearest;
     f32 nearest_distance;
     i32 index;
@@ -2452,7 +2451,7 @@ GIZMOBLOWUP_PC *__cdecl FindNearestGizmoBlowUp(WORLDINFO *world, NUVEC *position
     return nearest;
 }
 
-void __cdecl Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
+void Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
     GIZMOBLOWUP_PC *blowup;
     NUINSTANIM *animation;
     if (gizmo == NULL) {
@@ -2475,7 +2474,7 @@ void __cdecl Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
-void __cdecl Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
+void Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     BLOWUP_RESET_PROGRESS_PC *progress = progress_ptr;
     GIZMOBLOWUP_PC *blowup;
@@ -2517,7 +2516,7 @@ void __cdecl Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
     GizBlowup_InitTerrain();
 }
 
-void __cdecl GizmoBlowupDraw(void *world_ptr, void *data, f32 delta_time) {
+void GizmoBlowupDraw(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
     GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
     NUMTX matrix;
@@ -2556,7 +2555,7 @@ void __cdecl GizmoBlowupDraw(void *world_ptr, void *data, f32 delta_time) {
     }
 }
 
-void __cdecl GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
+void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
     WORLDINFO *world = world_pointer;
     GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
     GIZMOBLOWUPTYPE_PC *type;
@@ -2671,7 +2670,7 @@ void __cdecl GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_tim
 char *GizmoRegistryNewBlowupNamePtrPc = (char *)GizmoRegistryNewBlowupNamePc;
 static ADDGIZMOTYPE_PC GizmoRegistryNewBlowupAddTypePc = {0};
 
-ADDGIZMOTYPE_PC *__cdecl NewBlowup_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *NewBlowup_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryNewBlowupAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->name = GizmoRegistryNewBlowupNamePtrPc;
@@ -2685,28 +2684,28 @@ ADDGIZMOTYPE_PC *__cdecl NewBlowup_RegisterGizmo(i32 type_id) {
     addtype->fns.add_level_sfx_fn = NULL;
     addtype->prefix = "";
     addtype->fns.options = 0x100;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Blowup_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))Blowup_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)Blowup_AddGizmos;
-    addtype->fns.early_update_fn = (void(__cdecl *)(void *, void *, f32))GizmoBlowupEarlyUpdate;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizmoBlowupLateUpdate;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizmoBlowupBurstDraw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))Blowup_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))Blowup_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))Blowup_GetOutputName;
+    addtype->fns.early_update_fn = (void (*)(void *, void *, f32))GizmoBlowupEarlyUpdate;
+    addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizmoBlowupLateUpdate;
+    addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizmoBlowupBurstDraw;
+    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))Blowup_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))Blowup_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))Blowup_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)Blowup_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))Blowup_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))Blowup_SetVisibility;
-    addtype->fns.get_visibility_fn = (i32(__cdecl *)(GIZMO_PC *))Blowup_GetVisibility;
+    addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))Blowup_Activate;
+    addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))Blowup_SetVisibility;
+    addtype->fns.get_visibility_fn = (i32(*)(GIZMO_PC *))Blowup_GetVisibility;
     addtype->fns.get_pos_fn = (void *)GizmoBlowup_GetPos;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))Blowup_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))Blowup_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))Blowup_StoreProgress;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))Blowups_Reset;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))gizmoblowup_reservebuffers;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))gizmoblowup_Load;
+    addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))Blowup_AllocateProgressData;
+    addtype->fns.clear_progress_fn = (void (*)(void *, void *))Blowup_ClearProgress;
+    addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))Blowup_StoreProgress;
+    addtype->fns.reset_fn = (void (*)(void *, void *, void *))Blowups_Reset;
+    addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))gizmoblowup_reservebuffers;
+    addtype->fns.load_fn = (i32(*)(void *, void *))gizmoblowup_Load;
     blowup_gizmotype_id = type_id;
     return addtype;
 }
 
-void __cdecl BlowupObjEmit_Stop(struct PART_PC *part) {
+void BlowupObjEmit_Stop(struct PART_PC *part) {
 }

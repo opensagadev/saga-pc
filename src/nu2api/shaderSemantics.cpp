@@ -5,7 +5,7 @@
 
 extern "C" {
 
-    ShaderUniformRecordPc *__cdecl NuShaderUniformGetByString(const char *name) {
+    ShaderUniformRecordPc *NuShaderUniformGetByString(const char *name) {
         i32 i;
         for (i = 0; i < 100; ++i) {
             if ((ShaderUniformRecordsPc[i].fragment_name != NULL &&

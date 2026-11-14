@@ -29,7 +29,7 @@ STATIC_ASSERT(sizeof(NUHGOBJ_JOINT_OVERRIDE_PC) == 0x34);
         }                                                                                                              \
     }
 
-void __cdecl AddFootSteps(GAMEOBJECT *object) {
+void AddFootSteps(GAMEOBJECT *object) {
     ANIMPACKET_PC *packet = &object->anim_packet;
     CHARACTERANIM_CONFIG_PC *config;
     i32 valid_interval;
@@ -79,8 +79,7 @@ void __cdecl AddFootSteps(GAMEOBJECT *object) {
 
 #undef FOOTSTEP_CHECK
 
-void __cdecl SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32 time, f32 minimum_delay,
-                           f32 maximum_delay) {
+void SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32 time, f32 minimum_delay, f32 maximum_delay) {
     i32 random;
     f32 fraction;
     f32 delay;
@@ -104,8 +103,8 @@ void __cdecl SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32
     }
 }
 
-void __cdecl SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priority, f32 unused_time,
-                                f32 unused_minimum_delay, f32 unused_maximum_delay) {
+void SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priority, f32 unused_time,
+                        f32 unused_minimum_delay, f32 unused_maximum_delay) {
     i32 joint;
     if (object != NULL && target != NULL && target->character_data != NULL) {
         joint = target->character_data->game_character->head_locator;
@@ -446,7 +445,7 @@ static void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl HeadMovement(GAMEOBJECT *object) {
+void HeadMovement(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x200000) != 0) {
         return;
     }
@@ -459,7 +458,7 @@ void __cdecl HeadMovement(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl CloakMovement(GAMEOBJECT *object) {
+void CloakMovement(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
     f32 phase;
 
@@ -506,7 +505,7 @@ void __cdecl CloakMovement(GAMEOBJECT *object) {
     joints->count++;
 }
 
-void __cdecl HairMovement(GAMEOBJECT *object) {
+void HairMovement(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
     f32 phase;
 

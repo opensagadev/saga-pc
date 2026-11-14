@@ -36,11 +36,11 @@ typedef struct minicut_world_pc_s {
     i32 count;              // 0x50f4
 } MINICUT_WORLD_PC;         // size 0x50f8
 
-static i32 __cdecl GizMiniCut_GetMaxGizmos(void *world) {
+static i32 GizMiniCut_GetMaxGizmos(void *world) {
     return ((WORLDINFO *)world)->current_level->max_minicuts;
 }
 
-static void __cdecl GizMiniCut_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
+static void GizMiniCut_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     MINICUT_WORLD_PC *world = world_ptr;
     i32 i;
     (void)data;
@@ -52,11 +52,11 @@ static void __cdecl GizMiniCut_AddGizmos(void *system, i32 type_id, void *world_
     }
 }
 
-static char *__cdecl GizMiniCut_GetGizmoName(GIZMO_PC *gizmo) {
+static char *GizMiniCut_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((MINICUT_PC *)gizmo->object)->name : NULL;
 }
 
-static i32 __cdecl GizMiniCut_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+static i32 GizMiniCut_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     MINICUT_PC *cut;
     (void)mode;
     if (gizmo == NULL || gizmo->object == NULL) {
@@ -75,7 +75,7 @@ static i32 __cdecl GizMiniCut_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return 0;
 }
 
-static const char *__cdecl GizMiniCut_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static const char *GizMiniCut_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
     switch (output) {
         case 0:
@@ -86,7 +86,7 @@ static const char *__cdecl GizMiniCut_GetOutputName(GIZMO_PC *gizmo, i32 output)
     return "Unknown!";
 }
 
-static i32 __cdecl GizMiniCut_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 GizMiniCut_GetNumOutputs(GIZMO_PC *gizmo) {
     (void)gizmo;
     return 2;
 }
@@ -125,13 +125,13 @@ static void GizMiniCut_Play(MINICUT_PC *cut) {
     }
 }
 
-void __cdecl GizMiniCut_Activate(GIZMO_PC *gizmo, i32 active) {
+void GizMiniCut_Activate(GIZMO_PC *gizmo, i32 active) {
     if (active != 0) {
         GizMiniCut_Play(gizmo->object);
     }
 }
 
-static NUVEC *__cdecl GizMiniCut_GetPos(GIZMO_PC *gizmo) {
+static NUVEC *GizMiniCut_GetPos(GIZMO_PC *gizmo) {
     MINICUT_PC *cut;
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
@@ -140,7 +140,7 @@ static NUVEC *__cdecl GizMiniCut_GetPos(GIZMO_PC *gizmo) {
     return cut->part_count != 0 ? cut->parts[0].resolved_position : NULL;
 }
 
-static i32 __cdecl GizMiniCut_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, char *name) {
+static i32 GizMiniCut_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, char *name) {
     MINICUT_WORLD_PC *world = world_ptr;
     i32 i;
     i32 j;
@@ -162,7 +162,7 @@ static i32 __cdecl GizMiniCut_UsingSpecial(GIZMO_PC **results, void *world_ptr, 
     return count;
 }
 
-void __cdecl GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
+void GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
     WORLDINFO *world = world_ptr;
     MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
     i32 i;
@@ -196,7 +196,7 @@ void __cdecl GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
     }
 }
 
-static void *__cdecl GizMiniCut_ReserveBufferSpace(WORLDINFO *world) {
+static void *GizMiniCut_ReserveBufferSpace(WORLDINFO *world) {
     MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
     i32 i;
     view->minicuts = NULL;
@@ -226,7 +226,7 @@ static void *__cdecl GizMiniCut_ReserveBufferSpace(WORLDINFO *world) {
     return view->minicuts;
 }
 
-i32 __cdecl GizMiniCut_Load(void *world_ptr, void *data) {
+i32 GizMiniCut_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
     i32 i;
@@ -263,7 +263,7 @@ i32 __cdecl GizMiniCut_Load(void *world_ptr, void *data) {
     return 1;
 }
 
-ADDGIZMOTYPE_PC *__cdecl MiniCut_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *MiniCut_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC MiniCutAddTypePc = {0};
     (void)type_id;
     MiniCutAddTypePc = Default_ADDGIZMOTYPE;
@@ -293,7 +293,7 @@ ADDGIZMOTYPE_PC *__cdecl MiniCut_RegisterGizmo(i32 type_id) {
     MiniCutAddTypePc.fns.clear_progress_fn = NULL;
     MiniCutAddTypePc.fns.store_progress_fn = NULL;
     MiniCutAddTypePc.fns.reset_fn = GizMiniCut_Reset;
-    MiniCutAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizMiniCut_ReserveBufferSpace;
+    MiniCutAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))GizMiniCut_ReserveBufferSpace;
     MiniCutAddTypePc.fns.load_fn = GizMiniCut_Load;
     MiniCutAddTypePc.fns.post_load_fn = NULL;
     MiniCutAddTypePc.fns.add_level_sfx_fn = NULL;

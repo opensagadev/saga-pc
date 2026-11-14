@@ -33,9 +33,9 @@ typedef struct dooku_c_pc_s {
     NUSPECIALHANDLE node;
 } DOOKU_C_PC;
 
-void __cdecl KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
-void __cdecl DrawForceBackEffect(NUSPECIALHANDLE *special);
-void __cdecl GizPanel_Reset(void *panel);
+void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
+void DrawForceBackEffect(NUSPECIALHANDLE *special);
+void GizPanel_Reset(void *panel);
 
 typedef struct kaminodisco_pc_s {
     AIAREA_PC *area;
@@ -116,8 +116,8 @@ typedef struct kamino_e_pc_s {
 } KAMINO_E_PC;
 
 extern i32 turret_gizmotype_id;
-void *__cdecl GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
-void __cdecl KaminoEGizmoMissingPc(char *name);
+void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
+void KaminoEGizmoMissingPc(char *name);
 #define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                     \
     ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask &                                                \
       (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
@@ -162,7 +162,7 @@ static void RandomisePaintsPc(void) {
 nuhspecial_s paintlights[3] = {0};
 nuhspecial_s painttargetcolour[3] = {0};
 
-void __cdecl DrawPaintLights(void) {
+void DrawPaintLights(void) {
     i32 i;
     for (i = 0; i < ((i8 *)factoryb_netpacket)[1]; i++) {
         if (NuSpecialExistsFn((NUSPECIALHANDLE *)&paintlights[i]) != 0) {
@@ -183,7 +183,7 @@ i32 PAINTPUZZLESTAGE = 0;
 i32 painttry = 0;
 struct gizmo_pc_s *paintobst[6] = {0};
 
-void __cdecl ResetPaintPuzzle(WORLDINFO *world) {
+void ResetPaintPuzzle(WORLDINFO *world) {
     i32 i;
     for (i = 0; i < 6; i++) {
         GizObstacle_JumpToStart(paintobst[i]->object);
@@ -199,7 +199,7 @@ i32 paintsused[2] = {0};
 i32 played_sound = 0;
 struct gizmo_pc_s *paintpanel[3] = {0};
 
-void __cdecl UpdatePaintPuzzle(WORLDINFO *world) {
+void UpdatePaintPuzzle(WORLDINFO *world) {
     i32 i;
     i32 used = 0;
     switch (PAINTPUZZLESTAGE) {
@@ -350,7 +350,7 @@ static f32 jedib_outer_r = 8.0f;
 static f32 jedib_proximity = 0.5f;
 static i32 jedib_seed = 17;
 
-void __cdecl JediB_Init(WORLDINFO *world) {
+void JediB_Init(WORLDINFO *world) {
     NUVEC position;
     NUVEC offset;
     AILOCATOR_PC locator;
@@ -423,7 +423,7 @@ void __cdecl JediB_Init(WORLDINFO *world) {
     }
 }
 
-void __cdecl JediB_Reset(WORLDINFO *world) {
+void JediB_Reset(WORLDINFO *world) {
     i32 index;
     i32 hero;
     i32 slot;
@@ -470,7 +470,7 @@ void __cdecl JediB_Reset(WORLDINFO *world) {
     jedi_b.unique_spawned &= ~3u;
 }
 
-static void __cdecl JediBKilledCallbackPc(GAMEOBJECT *object) {
+static void JediBKilledCallbackPc(GAMEOBJECT *object) {
     i32 index;
     i32 other;
     i32 wave;
@@ -701,7 +701,7 @@ static void JediBEndPhasePc(WORLDINFO *world) {
     jedi_b.timer = 0.0f;
 }
 
-void __cdecl JediB_Update(WORLDINFO *world) {
+void JediB_Update(WORLDINFO *world) {
     i32 hero;
     i32 spawn;
     i32 slot;
@@ -908,7 +908,7 @@ void __cdecl JediB_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl JediB_DrawPanelPc(WORLDINFO *world) {
+void JediB_DrawPanelPc(WORLDINFO *world) {
     i16 ids[8];
     i32 count;
     i32 index;
@@ -1004,7 +1004,7 @@ void __cdecl JediB_DrawPanelPc(WORLDINFO *world) {
 CUTINFO *factoryb_cut = NULL;
 GIZAIMESSAGE *factoryb_conveyor_stopped_msg = NULL;
 
-void __cdecl FactoryB_Reset(WORLDINFO *world) {
+void FactoryB_Reset(WORLDINFO *world) {
     ResetPaintPuzzle(world);
     factoryb_cut = NewCutScene(NULL, world->cutscene_sys, "ep2_droidfactory_conveyor", 0);
     if (factoryb_cut != NULL && factoryb_cut->instance != NULL) {
@@ -1018,7 +1018,7 @@ f32 FactoryBConveyorStopFrame = 28.0f;
 static f32 FactoryBConveyorXSpeed = 0.0f;
 static f32 FactoryBConveyorZSpeed = 0.0f;
 
-void __cdecl FactoryB_Update(WORLDINFO *world) {
+void FactoryB_Update(WORLDINFO *world) {
     GIZAIMESSAGE *message;
     UpdatePaintPuzzle(world);
     message = factoryb_conveyor_stopped_msg;
@@ -1038,13 +1038,13 @@ void __cdecl FactoryB_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl FactoryB_Draw(WORLDINFO *world) {
+void FactoryB_Draw(WORLDINFO *world) {
     DrawPaintLights();
 }
 
 static DOOKU_C_PC dooku_c = {0};
 
-void __cdecl DookuC_Reset(WORLDINFO *world) {
+void DookuC_Reset(WORLDINFO *world) {
     memset(&dooku_c, 0, sizeof(dooku_c));
     if (netclient == 0) {
         dooku_c.total_message = SetGizAIMessage(gizaimessagesys, "DookuFight", 0.0f, NULL);
@@ -1053,7 +1053,7 @@ void __cdecl DookuC_Reset(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &dooku_c.node, "dooku_force", 1);
 }
 
-void __cdecl DookuC_Update(WORLDINFO *world) {
+void DookuC_Update(WORLDINFO *world) {
     if (netclient == 0) {
         if (FreePlay != 0) {
             KillBossCompleteLevel(id_DOOKU, 0, 0.0f);
@@ -1064,7 +1064,7 @@ void __cdecl DookuC_Update(WORLDINFO *world) {
     DrawForceBackEffect(&dooku_c.node);
 }
 
-void __cdecl DookuC_DrawPanel(WORLDINFO *world) {
+void DookuC_DrawPanel(WORLDINFO *world) {
     GAMEOBJECT *dooku;
     if (netclient != 0) {
         return;
@@ -1100,7 +1100,7 @@ void FactoryG_Init(WORLDINFO *world) {
 
 GAMEOBJECT *ObiWan = NULL;
 
-void __cdecl FactoryG_Update(WORLDINFO *world) {
+void FactoryG_Update(WORLDINFO *world) {
     i32 complete = 0;
     i32 i;
     if (netclient != 0) {
@@ -1135,7 +1135,7 @@ void __cdecl FactoryG_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl KaminoA_AlwaysUpdate(WORLDINFO *world) {
+void KaminoA_AlwaysUpdate(WORLDINFO *world) {
     debris_object_switches[1] =
         CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
 }
@@ -1153,7 +1153,7 @@ NUSPECIALHANDLE discorm_wall_off = {0};
 GIZMO_PC *gizTurrets[2] = {0};
 i32 last = 0;
 
-void __cdecl KaminoC_Init(WORLDINFO *world) {
+void KaminoC_Init(WORLDINFO *world) {
     char name[32];
     i32 i;
     memset(&kaminodisco, 0, sizeof(kaminodisco));
@@ -1226,7 +1226,7 @@ void __cdecl KaminoC_Init(WORLDINFO *world) {
     last = 0;
 }
 
-void __cdecl KaminoC_Reset(WORLDINFO *world) {
+void KaminoC_Reset(WORLDINFO *world) {
     i32 i;
     memset(kaminodisco.tile_state, 0, sizeof(kaminodisco.tile_state));
     kaminodisco.phase = 0;
@@ -1323,7 +1323,7 @@ static void KaminoDiscoUpdateVisualsPc(WORLDINFO *world) {
 static f32 KaminoDiscoTileTimePc = 2.5f;
 static f32 KaminoDiscoTileRadiusPc = 0.2f;
 
-void __cdecl KaminoC_Update(WORLDINFO *world) {
+void KaminoC_Update(WORLDINFO *world) {
     KAMINO_PROGRESS_GIZMO_READER_PC *progress = LevGizmo[0]->object;
     i32 i;
     if (GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) == 0) {
@@ -1492,7 +1492,7 @@ void KaminoE_Init(WORLDINFO *world) {
 
 KAMINO_E_PC kamino_e = {0};
 
-void __cdecl KaminoE_Reset(WORLDINFO *world) {
+void KaminoE_Reset(WORLDINFO *world) {
     char name[16];
     i32 i;
     memset(&kamino_e, 0, sizeof(kamino_e));
@@ -1540,7 +1540,7 @@ static i32 kamino_plate_4_active = 0;
 static KAMINOEPLATE *kamino_plate_hit = 0;
 static u16 kamino_plate_id = 0;
 
-i32 __cdecl KaminoE_CheckPlatHit(BOLT *bolt) {
+i32 KaminoE_CheckPlatHit(BOLT *bolt) {
     if (bolt->unknown_fa == kamino_plate_id) {
         if (kamino_plate_1 != NULL && kamino_plate_1_active != 0) {
             if ((kamino_plate_1->flags_13a & 0x30) == 0 && (kamino_plate_1->flags_13a & 0x2) != 0) {
@@ -1608,7 +1608,7 @@ f32 KaminoShipYAmplitudePc = 0.2f;
 f32 KaminoShipYPeriodPc = 3.0f;
 KAMINO_SHIP_ZERO_ANGLES_PC KaminoShipZeroAnglesPc = {0};
 
-void __cdecl KaminoE_Update(WORLDINFO *world) {
+void KaminoE_Update(WORLDINFO *world) {
     f32 best_distance = 1000000000.0f;
     GAMEOBJECT *nearest = NULL;
     NUMTX *matrix;
@@ -1814,11 +1814,11 @@ void __cdecl KaminoE_Update(WORLDINFO *world) {
     NuMtxPreRotateX(matrix, kamino_e.pitch);
 }
 
-void __cdecl KaminoE_AlwaysUpdate(WORLDINFO *world) {
+void KaminoE_AlwaysUpdate(WORLDINFO *world) {
     debris_object_switches[1] = CUTSTOPGAME != 0 || GameCam->sock_position.sock_index == 0x1e;
 }
 
-void __cdecl KaminoE_UpdatePc(WORLDINFO *world) {
+void KaminoE_UpdatePc(WORLDINFO *world) {
     GAMEOBJECT *jango;
     GAMEOBJECT *other;
     GAMEOBJECT *target;
@@ -1889,7 +1889,7 @@ void __cdecl KaminoE_UpdatePc(WORLDINFO *world) {
 }
 
 /* Reads the Kamino_E state block (show_hearts at 0x88903c, slave1 at 0x88904c). */
-void __cdecl KaminoE_Draw(WORLDINFO *world) {
+void KaminoE_Draw(WORLDINFO *world) {
     if (netclient == 0 && kamino_e.show_hearts->value > 0.0f) {
         GAMEOBJECT *jango = FindGameObject(id_JANGOFETT, 1, 1, 1, 0);
         if (jango != NULL && kamino_e.show_hearts != NULL && kamino_e.show_hearts->value == 1.0f) {
@@ -1900,7 +1900,7 @@ void __cdecl KaminoE_Draw(WORLDINFO *world) {
     NuSpecialSetVisibility(&kamino_e.slave1, 1);
 }
 
-i32 __cdecl KaminoInside(void) {
+i32 KaminoInside(void) {
     if (WORLD->area != NULL && WORLD->area == KAMINO_ADATA) {
         if (WORLD->current_level == LevelFixupSlotPc0087b12c) {
             if (CUTSTOPGAME != 0 || GameCam->sock_position.sock_index == 5 || GameCam->sock_position.sock_index == 6) {
@@ -1922,11 +1922,11 @@ i32 fun_004e2370(void) {
     return 0;
 }
 
-i32 __cdecl KaminoDiscoOn(void) {
+i32 KaminoDiscoOn(void) {
     return KaminoDiscoMusicStatePc.mode == 2;
 }
 
-void __cdecl KaminoOutro_Init(WORLDINFO *world) {
+void KaminoOutro_Init(WORLDINFO *world) {
     debris_object_switches[1] =
         CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
 }
@@ -1938,7 +1938,7 @@ static const char GunshipAPowerB11Pc[12] = "power_b11";
 static const char GunshipAPowerA21Pc[12] = "power_a21";
 static const char GunshipAPowerB21Pc[12] = "power_b21";
 
-void __cdecl GunshipA_Init(WORLDINFO *world) {
+void GunshipA_Init(WORLDINFO *world) {
     gunship_bolts[1] = BoltType_FindIDByName(GunshipAGreenBoltPc, world);
     gunship_bolts[0] = BoltType_FindIDByName(GunshipARedBoltPc, world);
     trooper_side[0] = 0;
@@ -1958,11 +1958,11 @@ void __cdecl GunshipA_Init(WORLDINFO *world) {
     LevGizmo[3] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, (char *)GunshipAPowerB21Pc);
 }
 
-void __cdecl GunshipA_Update(WORLDINFO *world) {
+void GunshipA_Update(WORLDINFO *world) {
     UpdateMiniSnowTroopers(world);
 }
 
-void __cdecl GunshipA_DrawPc(WORLDINFO *world) {
+void GunshipA_DrawPc(WORLDINFO *world) {
     DrawMiniSnowTroopers(world);
 }
 
@@ -1981,7 +1981,7 @@ f32 gunshipb_seekrange = 4.0f;
 f32 gunshipb_seekmom = 5.0f;
 f32 gunshipb_seekmomseek = 5.0f;
 
-void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
+void GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
     GIZMOBLOWUP_PC *nearest = NULL;
     f32 nearest_distance;
     NUVEC offset;
@@ -2024,7 +2024,7 @@ void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
 
 i32 GunshipPlayerDeadPc = 0;
 
-void __cdecl BonusGunshipA_ResetPc(WORLDINFO *world) {
+void BonusGunshipA_ResetPc(WORLDINFO *world) {
     GunshipPlayerDeadPc = 0;
     BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = 0;
     bonus_gunship_store_progress_flag = 0;
@@ -2033,7 +2033,7 @@ void __cdecl BonusGunshipA_ResetPc(WORLDINFO *world) {
     }
 }
 
-void __cdecl BonusGunshipA_UpdatePc(WORLDINFO *world) {
+void BonusGunshipA_UpdatePc(WORLDINFO *world) {
     GAMEOBJECT *first = Player[0];
     GAMEOBJECT *second = Player[1];
     if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 0) {
@@ -2058,12 +2058,12 @@ void __cdecl BonusGunshipA_UpdatePc(WORLDINFO *world) {
 
 BONUS_GUNSHIP_B_NETPACKET_PC *BonusGunshipBNetPacketPc = NULL;
 
-void __cdecl BonusGunshipB_InitPc(WORLDINFO *world) {
+void BonusGunshipB_InitPc(WORLDINFO *world) {
     BonusGunshipBNetPacketPc = SetLevelHack(12);
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "obstacle9");
 }
 
-void __cdecl BonusGunshipB_ResetPc(WORLDINFO *world) {
+void BonusGunshipB_ResetPc(WORLDINFO *world) {
     MiscTime = 0.0f;
     BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 0;
     BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = 0;
@@ -2071,7 +2071,7 @@ void __cdecl BonusGunshipB_ResetPc(WORLDINFO *world) {
     bonus_gunship_store_progress_flag = 0;
 }
 
-void __cdecl BonusGunshipB_UpdatePc(WORLDINFO *world) {
+void BonusGunshipB_UpdatePc(WORLDINFO *world) {
     if (netclient == 0) {
         if (GunshipPlayerDeadPc == 0 && ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0) ||
                                          (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0))) {
@@ -2127,7 +2127,7 @@ void __cdecl BonusGunshipB_UpdatePc(WORLDINFO *world) {
     }
 }
 
-void __cdecl BonusGunshipB_PanelPc(WORLDINFO *world) {
+void BonusGunshipB_PanelPc(WORLDINFO *world) {
     if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1) {
         if (MiscTime > 0.0f) {
             DrawTimer((i32)MiscTime + 1, 0, 0);
@@ -2140,7 +2140,7 @@ char *paint_panel_name[3] = {"redp", "yellp", "bluep"};
 char *paint_target_colour[3] = {"but_orange", "but_green", "but_purple"};
 char *paint_light_name[3] = {"off_purple", "off_green", "off_orange"};
 
-void __cdecl InitPaintPuzzle(WORLDINFO *world) {
+void InitPaintPuzzle(WORLDINFO *world) {
     i32 i;
     ((u8 *)factoryb_netpacket)[2] = 0;
     for (i = 0; i < 6; i++) {
@@ -2160,7 +2160,7 @@ void __cdecl InitPaintPuzzle(WORLDINFO *world) {
     ResetPaintPuzzle(world);
 }
 
-void __cdecl FactoryB_Init(WORLDINFO *world) {
+void FactoryB_Init(WORLDINFO *world) {
     factoryb_netpacket = SetLevelHack(4);
     InitPaintPuzzle(world);
     if (FactoryBConveyorXSpeed == 0.0f && FactoryBConveyorZSpeed == 0.0f) {

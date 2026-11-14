@@ -20,7 +20,7 @@ typedef struct torpedo_machine_query_sys_pc_s {
 } TORPEDO_MACHINE_QUERY_SYS_PC;         // size 0xc
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-i32 __cdecl Draw3DObject(WORLDINFO *, i32, NUVEC *, u16, u16, u16, f32, f32, f32, i32);
+i32 Draw3DObject(WORLDINFO *, i32, NUVEC *, u16, u16, u16, f32, f32, f32, i32);
 
 typedef struct {
     char name[16];
@@ -34,7 +34,7 @@ typedef struct {
     f32 scale;
 } ADD_TORP_SYS_PC;
 
-i32 __cdecl GizTorp_Load(void *world_pointer, void *unused) {
+i32 GizTorp_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = world_pointer;
     TORPEDO_MACHINE_QUERY_SYS_PC *system;
     i32 version;
@@ -70,7 +70,7 @@ i32 __cdecl GizTorp_Load(void *world_pointer, void *unused) {
 
 /* MATCH-EXCEPTION: retail re-reads world->torpedo_machine_sys at each use; the casts stand in for its
  * GIZTORPMACHINESYS_s type (saga.h has the narrower TORPEDO_MACHINE_SYS_PC view). */
-void *__cdecl GizTorps_ReserveBufferSpace(void *pointer) {
+void *GizTorps_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = pointer;
     world->torpedo_machine_sys = NULL;
     if (world->current_level->max_torpmachines > 0) {
@@ -88,7 +88,7 @@ void *__cdecl GizTorps_ReserveBufferSpace(void *pointer) {
     return world->torpedo_machine_sys;
 }
 
-void __cdecl GizTorp_SetVisibility(void *input, i32 visible) {
+void GizTorp_SetVisibility(void *input, i32 visible) {
     GIZMO_PC *gizmo = input;
     TORPEDO_MACHINE_QUERY_PC *machine;
     if (gizmo != NULL) {
@@ -97,7 +97,7 @@ void __cdecl GizTorp_SetVisibility(void *input, i32 visible) {
     }
 }
 
-void __cdecl GizTorp_Activate(void *input, i32 active) {
+void GizTorp_Activate(void *input, i32 active) {
     GIZMO_PC *gizmo = input;
     TORPEDO_MACHINE_QUERY_PC *machine;
     if (gizmo != NULL) {
@@ -106,7 +106,7 @@ void __cdecl GizTorp_Activate(void *input, i32 active) {
     }
 }
 
-void __cdecl GizTorps_Reset(void *world_ptr, void *data, void *progress) {
+void GizTorps_Reset(void *world_ptr, void *data, void *progress) {
     WORLDINFO *w = world_ptr;
     ADD_TORP_SYS_PC *s;
     i32 i;
@@ -125,7 +125,7 @@ void __cdecl GizTorps_Reset(void *world_ptr, void *data, void *progress) {
     }
 }
 
-void *__cdecl GizTorpMachine_FindNearest(WORLDINFO *world, NUVEC *position, f32 *distance_squared) {
+void *GizTorpMachine_FindNearest(WORLDINFO *world, NUVEC *position, f32 *distance_squared) {
     TORPEDO_MACHINE_QUERY_PC *nearest = NULL;
     f32 nearest_distance = 1000000000.0f;
     i32 index;
@@ -151,7 +151,7 @@ void *__cdecl GizTorpMachine_FindNearest(WORLDINFO *world, NUVEC *position, f32 
     return nearest;
 }
 
-void __cdecl GizTorp_Update(void *world_ptr, void *unused, f32 elapsed) {
+void GizTorp_Update(void *world_ptr, void *unused, f32 elapsed) {
     WORLDINFO *world = world_ptr;
     TORPEDO_MACHINE_QUERY_SYS_PC *system = (TORPEDO_MACHINE_QUERY_SYS_PC *)world->torpedo_machine_sys;
     i32 index;
@@ -172,7 +172,7 @@ void __cdecl GizTorp_Update(void *world_ptr, void *unused, f32 elapsed) {
     }
 }
 
-void __cdecl GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
+void GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
     WORLDINFO *world = world_ptr;
     TORPEDO_MACHINE_QUERY_SYS_PC *system;
     NUMTX matrix;
@@ -216,7 +216,7 @@ void __cdecl GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
     ResetShadowMapRendering();
 }
 
-i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr) {
+i32 GizTorp_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     if (world != NULL) {
         return world->current_level->max_torpmachines;
@@ -224,7 +224,7 @@ i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr) {
     return 0;
 }
 
-void __cdecl GizTorp_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+void GizTorp_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     ADD_TORP_SYS_PC *s;
     i32 i;
@@ -241,7 +241,7 @@ void __cdecl GizTorp_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void
     }
 }
 
-char *__cdecl GizTorp_GetGizmoName(void *input) {
+char *GizTorp_GetGizmoName(void *input) {
     GIZMO_PC *gizmo = input;
     if (gizmo != NULL && gizmo->object != NULL) {
         return ((TORPEDO_MACHINE_QUERY_PC *)gizmo->object)->name;
@@ -249,18 +249,18 @@ char *__cdecl GizTorp_GetGizmoName(void *input) {
     return NULL;
 }
 
-i32 __cdecl GizTorp_GetOutput(void *input, i32 output, i32 mode) {
+i32 GizTorp_GetOutput(void *input, i32 output, i32 mode) {
     (void)input;
     (void)output;
     (void)mode;
     return 0;
 }
 
-char *__cdecl GizTorp_GetOutputName(GIZMO_PC *unused0, i32 output_index) {
+char *GizTorp_GetOutputName(GIZMO_PC *unused0, i32 output_index) {
     return output_index == 0 ? ((char *)("Ready")) : NULL;
 }
 
-i32 __cdecl GizTorp_GetNumOutputs(void *unused) {
+i32 GizTorp_GetNumOutputs(void *unused) {
     return 1;
 }
 
@@ -270,7 +270,7 @@ i32 giztorpmachine_gizmotype_id = 0;
 const char GizmoRegistryGizTorpMachineNamePc[] = "Torp Machine";
 #pragma const_seg()
 
-ADDGIZMOTYPE_PC *__cdecl GizTorpMachine_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *GizTorpMachine_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizTorpMachineAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->fns.options = 0x0;
@@ -289,18 +289,18 @@ ADDGIZMOTYPE_PC *__cdecl GizTorpMachine_RegisterGizmo(i32 type_id) {
     giztorpmachine_gizmotype_id = type_id;
     addtype->name = (char *)GizmoRegistryGizTorpMachineNamePc;
     addtype->prefix = "";
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizTorp_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizTorp_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizTorp_AddGizmos;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizTorp_Update;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizTorp_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizTorp_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizTorp_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizTorp_GetOutputName;
+    addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizTorp_Update;
+    addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizTorp_Draw;
+    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizTorp_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizTorp_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizTorp_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizTorp_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizTorp_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizTorp_SetVisibility;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizTorps_Reset;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizTorps_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizTorp_Load;
+    addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizTorp_Activate;
+    addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizTorp_SetVisibility;
+    addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizTorps_Reset;
+    addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizTorps_ReserveBufferSpace;
+    addtype->fns.load_fn = (i32(*)(void *, void *))GizTorp_Load;
     return addtype;
 }

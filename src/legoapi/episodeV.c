@@ -11,12 +11,12 @@ AILOCATOR_PC *HothEscapeBLocatorPc = NULL;
 GAMEOBJECT *HothEscapeBSnowmobPc = NULL;
 
 extern i32 gizbuildit_gizmotype_id;
-GIZMO_PC *__cdecl GizmoFindByData(void *, i32, void *);
-i32 __cdecl GizBuildIt_AtEnd(void *);
-void __cdecl GizBuildIt_KillParts(GIZBUILDIT_s *);
-void __cdecl GizBuildit_SetVisibility(GIZBUILDIT_s *, i32);
+GIZMO_PC *GizmoFindByData(void *, i32, void *);
+i32 GizBuildIt_AtEnd(void *);
+void GizBuildIt_KillParts(GIZBUILDIT_s *);
+void GizBuildit_SetVisibility(GIZBUILDIT_s *, i32);
 struct panel_movement_pc_s;
-struct panel_movement_pc_s *__cdecl GizPanel_FindByName(WORLDINFO *, char *);
+struct panel_movement_pc_s *GizPanel_FindByName(WORLDINFO *, char *);
 
 typedef struct CLOUDCITY_PANEL_FLAGS_VIEW_PC {
     u8 unknown_00[0x62];
@@ -28,7 +28,7 @@ typedef struct CLOUDCITY_LEVEL_FLAG_VIEW_PC {
 } CLOUDCITY_LEVEL_FLAG_VIEW_PC;
 
 extern i32 turret_gizmotype_id;
-void __cdecl DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special);
+void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special);
 #define FALCON_SLOT(object) ((i8)(object)->field_280)
 
 /* PC 0x00889660: asteroid field (original episodeV.cpp). */
@@ -61,7 +61,7 @@ typedef struct ASTEROIDC_NETPACKET_PC {
 } ASTEROIDC_NETPACKET_PC;
 
 #define PLAYER_OBJ(i) ((GAMEOBJECT *)Player[i])
-void __cdecl LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
+void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
 extern u32 LEGO_AIPATHCNX_BIGJUMP;
 #define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw) \
     do {                                                                                                               \
@@ -101,7 +101,7 @@ typedef struct HOTH_ANTINODE_PC {
     i64 excluded_character_types;
 } HOTH_ANTINODE_PC;
 
-void __cdecl DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count);
+void DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count);
 
 static void AsteroidChaseD_SetTurretTarget(i32 index, NUVEC *position) {
     if (StarDestroyerTurrets[index] != NULL && StarDestroyerTurrets[index]->opponent == NULL) {
@@ -118,7 +118,7 @@ static void AsteroidSetAngVec(NUANGVEC *out, NUANG x, NUANG y, NUANG z) {
 
 TROOPERCANNON_PC troopercannons[4] = {0};
 
-static void __cdecl KilledTrooperCannon(GAMEOBJECT *object) {
+static void KilledTrooperCannon(GAMEOBJECT *object) {
     i32 index;
     if (netclient != 0) {
         return;
@@ -138,7 +138,7 @@ static void __cdecl KilledTrooperCannon(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl InitTrooperCannons(WORLDINFO *unused) {
+void InitTrooperCannons(WORLDINFO *unused) {
     (void)unused;
     memset(troopercannons, 0, sizeof(troopercannons));
 }
@@ -148,7 +148,7 @@ const char TrooperCannonCharacterFormatPc[17] = "troopercannon_%d";
 const char TrooperCannonBaseFormatPc[7] = "BASE%d";
 const char TrooperCannonAINamePc[14] = "CannonTrooper";
 
-void __cdecl ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
+void ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
     i32 cannon;
     i32 index = 0;
     char name[32];
@@ -203,7 +203,7 @@ void __cdecl ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
     troopercannons_beenReset = 1;
 }
 
-void __cdecl UpdateTrooperCannons(WORLDINFO *unused) {
+void UpdateTrooperCannons(WORLDINFO *unused) {
     i32 index;
     (void)unused;
     for (index = 0; index < 4; ++index) {
@@ -235,20 +235,20 @@ void __cdecl UpdateTrooperCannons(WORLDINFO *unused) {
     }
 }
 
-void __cdecl HothEscapeA_Init(WORLDINFO *world) {
+void HothEscapeA_Init(WORLDINFO *world) {
     memset(troopercannons, 0, sizeof(troopercannons));
     troopercannons_beenReset = 0;
 }
 
-void __cdecl HothEscapeA_Reset(WORLDINFO *world) {
+void HothEscapeA_Reset(WORLDINFO *world) {
 }
 
-void __cdecl HothEscapeA_Update(WORLDINFO *world) {
+void HothEscapeA_Update(WORLDINFO *world) {
     ResetTrooperCannons(world, id_SNOWTROOPER);
     UpdateTrooperCannons(world);
 }
 
-void __cdecl HothEscapeB_Init(WORLDINFO *world) {
+void HothEscapeB_Init(WORLDINFO *world) {
     if (netclient == 0) {
         HothEscapeBLocatorPc = AIPathFindLocator(world->ai_sys, "snow_mob");
         HothEscapeBSnowmobPc = GetNamedGameObject(world->ai_sys, "snowmob_1");
@@ -257,14 +257,14 @@ void __cdecl HothEscapeB_Init(WORLDINFO *world) {
     troopercannons_beenReset = 0;
 }
 
-void __cdecl HothEscapeB_Reset(WORLDINFO *world) {
+void HothEscapeB_Reset(WORLDINFO *world) {
     HothEscapeBLocatorPc = AIPathFindLocator(world->ai_sys, "snow_mob");
     HothEscapeBSnowmobPc = GetNamedGameObject(world->ai_sys, "snowmob_1");
     TerSurface[9].movement_scale = TerSurface[17].movement_scale;
     TerSurface[9].flags = TerSurface[17].flags & ~2u;
 }
 
-void __cdecl HothEscapeB_Update(WORLDINFO *world) {
+void HothEscapeB_Update(WORLDINFO *world) {
     ResetTrooperCannons(world, id_SNOWTROOPER);
     UpdateTrooperCannons(world);
     if (netclient == 0 && HothEscapeBLocatorPc != NULL && HothEscapeBSnowmobPc != NULL) {
@@ -272,32 +272,32 @@ void __cdecl HothEscapeB_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl HothEscapeC_Init(WORLDINFO *world) {
+void HothEscapeC_Init(WORLDINFO *world) {
     memset(troopercannons, 0, sizeof(troopercannons));
     troopercannons_beenReset = 0;
 }
 
-void __cdecl HothEscapeC_Reset(WORLDINFO *world) {
+void HothEscapeC_Reset(WORLDINFO *world) {
 }
 
-void __cdecl HothEscapeC_Update(WORLDINFO *world) {
+void HothEscapeC_Update(WORLDINFO *world) {
     ResetTrooperCannons(world, id_SNOWTROOPER);
     UpdateTrooperCannons(world);
 }
 
-void __cdecl HothEscapeC_AlwaysUpdate(WORLDINFO *world) {
+void HothEscapeC_AlwaysUpdate(WORLDINFO *world) {
     LevelStreaming_DoorOverride(world, LevelFixupSlotPc0087b220, 7.5f, NULL);
 }
 
-void __cdecl HothEscapeD_Init(WORLDINFO *world) {
+void HothEscapeD_Init(WORLDINFO *world) {
     memset(troopercannons, 0, sizeof(troopercannons));
     troopercannons_beenReset = 0;
 }
 
-void __cdecl HothEscapeD_Reset(WORLDINFO *world) {
+void HothEscapeD_Reset(WORLDINFO *world) {
 }
 
-void __cdecl HothEscapeD_Update(WORLDINFO *world) {
+void HothEscapeD_Update(WORLDINFO *world) {
     ResetTrooperCannons(world, id_SNOWTROOPER);
     UpdateTrooperCannons(world);
 }
@@ -329,7 +329,7 @@ void Asteroid_PartKill(PART_PC *part, i32 reason) {
     }
 }
 
-void __cdecl Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
+void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
     i32 special_indices[4] = {0, -1, -1, -1};
     i32 index;
     i32 part_count;
@@ -382,7 +382,7 @@ i32 nasteroids = 0;
 /* PC 0x00800290. */
 i32 maxrotspd[3] = {0x1555, 0x38e, 0x16c};
 
-void __cdecl Asteroids_Reset(WORLDINFO *world) {
+void Asteroids_Reset(WORLDINFO *world) {
     NUSPECIALHANDLE specials[128];
     ASTEROID_PC *asteroid;
     GIZMOBLOWUP_PC *blowup;
@@ -450,7 +450,7 @@ void __cdecl Asteroids_Reset(WORLDINFO *world) {
     }
 }
 
-void __cdecl Asteroids_Update(void) {
+void Asteroids_Update(void) {
     ASTEROID_PC *asteroid;
     NUMTX *matrix;
     i32 i;
@@ -492,7 +492,7 @@ f32 spotLightA_zrot[2] = {0};
 f32 spotLightB_yrot[2] = {0.5f, 0.5f};
 f32 spotLightB_zrot[2] = {0.5f, 0.5f};
 
-void __cdecl DrawFalconSpotLights(GAMEOBJECT *object) {
+void DrawFalconSpotLights(GAMEOBJECT *object) {
     NUMTX matrix;
     if ((object->field_280 != 0 && object->field_280 != 1) || (i16)object->id != VehicleBoltId7f19a4Pc ||
         WORLD->level_objects[0x127].active == 0) {
@@ -524,22 +524,22 @@ void __cdecl DrawFalconSpotLights(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl AsteroidChaseA_Init(WORLDINFO *world) {
+void AsteroidChaseA_Init(WORLDINFO *world) {
     AsteroidChase_FindPopBits(world);
 }
 
-void __cdecl AsteroidChaseA_Reset(WORLDINFO *world) {
+void AsteroidChaseA_Reset(WORLDINFO *world) {
     Asteroids_Reset(world);
 }
 
-void __cdecl AsteroidChaseA_Update(WORLDINFO *world) {
+void AsteroidChaseA_Update(WORLDINFO *world) {
     Asteroids_Update();
 }
 
 GIZMOBLOWUP_PC *classicBlowups[8] = {0};
 u8 drawLights = 0;
 
-void __cdecl AsteroidChaseB_Init(WORLDINFO *world) {
+void AsteroidChaseB_Init(WORLDINFO *world) {
     GIZMOBLOWUP_PC *blowup;
     i32 count;
     i32 i;
@@ -567,11 +567,11 @@ void __cdecl AsteroidChaseB_Init(WORLDINFO *world) {
     spotLightB_zrot[0] = 0.5f;
 }
 
-void __cdecl AsteroidChaseB_Reset(WORLDINFO *world) {
+void AsteroidChaseB_Reset(WORLDINFO *world) {
     Asteroids_Reset(world);
 }
 
-void __cdecl AsteroidChaseB_Update(WORLDINFO *world) {
+void AsteroidChaseB_Update(WORLDINFO *world) {
     i32 i;
     Asteroids_Update();
     for (i = 0; i < 4; i++) {
@@ -609,7 +609,7 @@ void __cdecl AsteroidChaseB_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl AsteroidChaseB_Draw(WORLDINFO *world) {
+void AsteroidChaseB_Draw(WORLDINFO *world) {
     i32 i;
     for (i = 0; i < 2; i++) {
         if (drawLights != 0 && Player[i] != NULL) {
@@ -621,7 +621,7 @@ void __cdecl AsteroidChaseB_Draw(WORLDINFO *world) {
 FINAL_ASTEROID_PC finalAsteroid = {0};
 ASTEROIDC_NETPACKET_PC *asteroidc_netpacket = NULL;
 
-void __cdecl AsteroidChaseC_Init(WORLDINFO *world) {
+void AsteroidChaseC_Init(WORLDINFO *world) {
     GIZMOBLOWUP_PC *blowup;
     i32 i;
     asteroidc_netpacket = SetLevelHack(8);
@@ -651,13 +651,13 @@ void __cdecl AsteroidChaseC_Init(WORLDINFO *world) {
     }
 }
 
-void __cdecl AsteroidChaseC_Reset(WORLDINFO *world) {
+void AsteroidChaseC_Reset(WORLDINFO *world) {
     Asteroids_Reset(world);
 }
 
 NUMTX *mtxOrig = NULL;
 
-void __cdecl AsteroidChaseC_Update(WORLDINFO *world) {
+void AsteroidChaseC_Update(WORLDINFO *world) {
     NUMTX matrix;
     NUVEC position;
     i32 i;
@@ -704,7 +704,7 @@ void __cdecl AsteroidChaseC_Update(WORLDINFO *world) {
 i32 lastPlaying = 0;
 NUSPECIALHANDLE specialIcon = {0};
 
-void __cdecl AsteroidChaseD_Init(WORLDINFO *world) {
+void AsteroidChaseD_Init(WORLDINFO *world) {
     i16 targets = -1;
     char name[16];
     GIZMO_PC *gizmo;
@@ -799,14 +799,14 @@ void AsteroidChaseD_Update(WORLDINFO *unused0) {
     }
 }
 
-void __cdecl AsteroidChaseD_Panel(WORLDINFO *world) {
+void AsteroidChaseD_Panel(WORLDINFO *world) {
     i16 targets = -1;
     DrawMeleeTargetsNumber(&targets, &turretAliveCount, 1, 0, &specialIcon);
 }
 
 static const char CloudCityTrapAForceNamePc[7] = "force3";
 
-void __cdecl CloudCityTrapA_Init(WORLDINFO *world) {
+void CloudCityTrapA_Init(WORLDINFO *world) {
     if (netclient == 0) {
         memset(troopercannons, 0, sizeof(troopercannons));
     }
@@ -814,7 +814,7 @@ void __cdecl CloudCityTrapA_Init(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, (char *)CloudCityTrapAForceNamePc);
 }
 
-void __cdecl CloudCityTrapA_Reset(WORLDINFO *world) {
+void CloudCityTrapA_Reset(WORLDINFO *world) {
     if (netclient == 0) {
         troopercannons_beenReset = 0;
     }
@@ -844,7 +844,7 @@ void CloudCityTrapA_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl CloudCityTrapB_Init(WORLDINFO *world) {
+void CloudCityTrapB_Init(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
     LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, "TrapBEndFight", NULL);
     LevGameObject[0] = FindGameObject(FreePlayId007f199cPc, 1, 1, 1, 0);
@@ -894,7 +894,7 @@ void CloudCityTrapC_Reset(WORLDINFO *world) {
     }
 }
 
-void __cdecl CloudCityTrapC_Update(WORLDINFO *world) {
+void CloudCityTrapC_Update(WORLDINFO *world) {
     u32 active = 0;
     if (netclient != 0 || LevPathCnx[0] == NULL) {
         return;
@@ -914,7 +914,7 @@ void __cdecl CloudCityTrapC_Update(WORLDINFO *world) {
     ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[LevPathCnxDir] |= active;
 }
 
-void __cdecl CloudCityTrapC_Panel(WORLDINFO *world) {
+void CloudCityTrapC_Panel(WORLDINFO *world) {
     if (netclient == 0 && LevGameObject[0] != NULL && LevAIMessage[0] != NULL) {
         if (LevAIMessage[0]->value == 1.0f) {
             DrawBossHitPoints(LevGameObject[0]);
@@ -930,7 +930,7 @@ static const char CloudCityEscapeGas2Pc[8] = "gas_2";
 static const char CloudCityEscapeGas1Pc[8] = "gas_1";
 static const char CloudCityEscapeFightMessagePc[20] = "BobaFightStarted";
 
-void __cdecl CloudCityEscapeA_Init(WORLDINFO *world) {
+void CloudCityEscapeA_Init(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)CloudCityEscapeFightMessagePc, NULL);
     ((CLOUDCITY_LEVEL_FLAG_VIEW_PC *)LevFlag)->started = 0;
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)CloudCityEscapeGas1Pc, 1);
@@ -942,7 +942,7 @@ void __cdecl CloudCityEscapeA_Init(WORLDINFO *world) {
 static const char CloudCityEscapeBuilditNamePc[12] = "buildit2";
 static const char CloudCityEscapeBuiltMessagePc[12] = "Built_C3PO";
 
-void __cdecl CloudCityEscapeA_Reset(WORLDINFO *world) {
+void CloudCityEscapeA_Reset(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)CloudCityEscapeFightMessagePc, NULL);
     LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, (char *)CloudCityEscapeBuiltMessagePc, NULL);
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, gizbuildit_gizmotype_id, (char *)CloudCityEscapeBuilditNamePc);
@@ -951,7 +951,7 @@ void __cdecl CloudCityEscapeA_Reset(WORLDINFO *world) {
 static const char CloudCityEscapeDeskSfxPc[20] = "env_ctrl_desk_on";
 static const char CloudCityEscapeSteamSfxPc[16] = "env_steam_lp";
 
-void __cdecl CloudCityEscapeA_Update(WORLDINFO *world) {
+void CloudCityEscapeA_Update(WORLDINFO *world) {
     i32 i;
     NUINSTANIM *animation;
     if (((CLOUDCITY_LEVEL_FLAG_VIEW_PC *)LevFlag)->started == 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
@@ -976,7 +976,7 @@ void __cdecl CloudCityEscapeA_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl CloudCityEscapeA_Panel(WORLDINFO *world) {
+void CloudCityEscapeA_Panel(WORLDINFO *world) {
     GAMEOBJECT *boba;
     if (netclient == 0) {
         boba = FindGameObject(id_BOBAFETT, 1, 1, 1, 0);
@@ -994,7 +994,7 @@ void CloudCityEscapeC_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], "gas_3_animin", 1);
 }
 
-void __cdecl CloudCityEscapeC_Update(WORLDINFO *world) {
+void CloudCityEscapeC_Update(WORLDINFO *world) {
     i32 i;
     TerSurface[14].flags = 0x2002;
     for (i = 0; i < 3; i++) {
@@ -1008,7 +1008,7 @@ void __cdecl CloudCityEscapeC_Update(WORLDINFO *world) {
     }
 }
 
-i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *offset) {
+i32 TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *offset) {
     if ((object->flags_ef4 & 2) == 0 || dagobah_training == 0 || object->rider != NULL || luke == NULL ||
         (luke->flags_1fc_word & 0x80) == 0 ||
         !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
@@ -1018,7 +1018,7 @@ i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, N
     return offset->z > 0.0f;
 }
 
-void __cdecl DagobahB_Init(WORLDINFO *world) {
+void DagobahB_Init(WORLDINFO *world) {
     dagobah_training = 0;
 }
 
@@ -1039,7 +1039,7 @@ void DagobahB_Reset(WORLDINFO *world) {
     }
 }
 
-void __cdecl DagobahE_Init(WORLDINFO *world) {
+void DagobahE_Init(WORLDINFO *world) {
     GIZAIMESSAGE *completed = CheckGizAIMessage(gizaimessagesys, "CompletedTraining", NULL);
     DOOR_s *door;
     if (FreePlay == 0 && completed != NULL && completed->value == 0.0f) {
@@ -1067,12 +1067,12 @@ void __cdecl DagobahE_Init(WORLDINFO *world) {
     SetGizAIMessage(gizaimessagesys, NULL, 1.0f, completed);
 }
 
-void __cdecl DagobahC_Init(WORLDINFO *world) {
+void DagobahC_Init(WORLDINFO *world) {
     Vader_obj = FindGameObject(FreePlayId007f199cPc, 1, 1, 0, 0);
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force20");
 }
 
-void __cdecl DagobahC_Panel(WORLDINFO *world) {
+void DagobahC_Panel(WORLDINFO *world) {
     if (netclient == 0) {
         Vader_ai_message = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
         if (Vader_obj != NULL && Vader_ai_message != NULL && Vader_ai_message->value == 1.0f) {
@@ -1081,12 +1081,12 @@ void __cdecl DagobahC_Panel(WORLDINFO *world) {
     }
 }
 
-void __cdecl ResetMinikitCounter(void) {
+void ResetMinikitCounter(void) {
     minikitCounter_C = 0;
     minikitCounter_A = 0;
 }
 
-void __cdecl IncrementMinikitCounter(GAMEOBJECT *unused) {
+void IncrementMinikitCounter(GAMEOBJECT *unused) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     NUVEC average;
     Players_AveragePos(&average, NULL);
@@ -1107,7 +1107,7 @@ static const char HothBattleCMinifig22Pc[12] = "minifig_2_2";
 static const char HothBattleCMinifig23Pc[12] = "minifig_2_3";
 static const char HothBattleAPickupPc[8] = "m_pup3";
 
-void __cdecl HothBattleA_Init(WORLDINFO *world) {
+void HothBattleA_Init(WORLDINFO *world) {
     i32 count;
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, (char *)HothBattleAPickupPc);
     GizmoSetVisibility(world->gizmo_sys, LevGizmo[0], 0, 1);
@@ -1127,7 +1127,7 @@ void __cdecl HothBattleA_Init(WORLDINFO *world) {
     }
 }
 
-void __cdecl HothBattleA_Reset(WORLDINFO *world) {
+void HothBattleA_Reset(WORLDINFO *world) {
     GIZMO_PC *gizmo = LevGizmo[0];
     GIZMOPICKUP_PC *pickup;
     if (gizmo == NULL || gizmo->object == NULL) {
@@ -1141,11 +1141,11 @@ void __cdecl HothBattleA_Reset(WORLDINFO *world) {
     GizmoSetVisibility(world->gizmo_sys, gizmo, 0, 1);
 }
 
-void __cdecl HothBattleA_Update(WORLDINFO *world) {
+void HothBattleA_Update(WORLDINFO *world) {
     UpdateMiniSnowTroopers(world);
 }
 
-void __cdecl HothBattleA_DrawPc(WORLDINFO *world) {
+void HothBattleA_DrawPc(WORLDINFO *world) {
     DrawMiniSnowTroopers(world);
 }
 
@@ -1162,7 +1162,7 @@ static const char HothBattleCIceAPc[8] = "ice_a";
 static const char HothBattleCObstaclePc[12] = "obstacle3";
 static const char HothBattleCPickupPc[8] = "m_pup7";
 
-void __cdecl HothBattleC_Init(WORLDINFO *world) {
+void HothBattleC_Init(WORLDINFO *world) {
     i32 direction;
     i32 count;
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)HothBattleCBombMessagePc, NULL);
@@ -1216,7 +1216,7 @@ void HothBattleC_Update(WORLDINFO *world) {
     UpdateMiniSnowTroopers(world);
 }
 
-void __cdecl HothBattleC_DrawPc(WORLDINFO *world) {
+void HothBattleC_DrawPc(WORLDINFO *world) {
     DrawMiniSnowTroopers(world);
 }
 
@@ -1230,14 +1230,14 @@ void fun_004e8d20(HOTHBATTLE_MELEE_s *battle) {
     }
 }
 
-void __cdecl HothBattleE_DrawPc(WORLDINFO *world) {
+void HothBattleE_DrawPc(WORLDINFO *world) {
     DrawMiniSnowTroopers(world);
 }
 
 f32 HothBattleEPanelAlphaPc[16] = {0};
 HOTHBATTLEE_NETPACKET_PC *HothBattleENetPacketPc = NULL;
 
-void __cdecl HothBattleE_PanelPc(WORLDINFO *world) {
+void HothBattleE_PanelPc(WORLDINFO *world) {
     i16 targets[16];
     char defeated[16];
     i32 count;
@@ -1324,7 +1324,7 @@ AILOCATOR_PC *getSpawnLocator(float clip_radius, char *name) {
     return NULL;
 }
 
-void __cdecl HothBattle_ManageBackgroundCreatures(void) {
+void HothBattle_ManageBackgroundCreatures(void) {
     u8 wave_types = 0;
     AILOCATORSET_PC *set = AIPathFindLocatorSet(WORLD->ai_sys, "spawn");
     i32 type;
@@ -1411,7 +1411,7 @@ void __cdecl HothBattle_ManageBackgroundCreatures(void) {
     }
 }
 
-i32 __cdecl SpawnMeleeCreatureType(i32 type) {
+i32 SpawnMeleeCreatureType(i32 type) {
     i32 index;
     i32 slot;
     i32 attempts;
@@ -1491,7 +1491,7 @@ i32 __cdecl SpawnMeleeCreatureType(i32 type) {
     return 1;
 }
 
-void __cdecl HothBattleE_Init(WORLDINFO *world) {
+void HothBattleE_Init(WORLDINFO *world) {
     i32 count;
     gunship_bolts[1] = (i16)BoltType_FindIDByName("trooper_green", world);
     gunship_bolts[0] = (i16)BoltType_FindIDByName("trooper_red", world);
@@ -1579,7 +1579,7 @@ i32 HothBattle_StartNewWave() {
     return 1;
 }
 
-void __cdecl HothBattleE_UpdateWave(void) {
+void HothBattleE_UpdateWave(void) {
     i32 pending = 0;
     i32 type;
     i32 wave_index;
@@ -1678,7 +1678,7 @@ void __cdecl HothBattleE_UpdateWave(void) {
     }
 }
 
-void __cdecl HothBattleE_Update(WORLDINFO *world) {
+void HothBattleE_Update(WORLDINFO *world) {
     UpdateMiniSnowTroopers(world);
     if (netclient == 0) {
         HothBattleE_UpdateWave();

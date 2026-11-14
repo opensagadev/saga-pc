@@ -189,7 +189,7 @@ static LEDGE_MOTION_PC *LedgeAttachPointPc(WORLDINFO *world, NUVEC *position, NU
     return NULL;
 }
 
-extern "C" void __cdecl Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
+extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     NUVEC minimum;
     NUVEC maximum;
     NUVEC position;
@@ -351,7 +351,7 @@ extern "C" {
         ledge->state_flags |= 3;
     }
 
-    i32 __cdecl Ledges_Load(WORLDINFO *world, void *unused) {
+    i32 Ledges_Load(WORLDINFO *world, void *unused) {
         if (world->ledge_count == 0) {
             i32 version = EdFileReadInt();
             world->ledge_count = EdFileReadInt();
@@ -378,7 +378,7 @@ extern "C" {
         return 0;
     }
 
-    void *__cdecl Ledges_ReserveBufferSpace(WORLDINFO *world) {
+    void *Ledges_ReserveBufferSpace(WORLDINFO *world) {
         LEVELDATA_PC *level = world->current_level;
         world->ledges = NULL;
         world->ledge_count = 0;
@@ -390,21 +390,21 @@ extern "C" {
         return world->ledges;
     }
 
-    void __cdecl Ledge_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    void Ledge_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         if (gizmo != NULL) {
             LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)gizmo->object;
             ledge->state_bits.visible = visible != 0;
         }
     }
 
-    void __cdecl Ledge_Activate(GIZMO_PC *gizmo, i32 active) {
+    void Ledge_Activate(GIZMO_PC *gizmo, i32 active) {
         if (gizmo != NULL) {
             LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)gizmo->object;
             ledge->state_bits.active = active != 0;
         }
     }
 
-    void __cdecl Ledges_Reset(WORLDINFO *world, void *unused, LEDGE_PROGRESS_PC *progress) {
+    void Ledges_Reset(WORLDINFO *world, void *unused, LEDGE_PROGRESS_PC *progress) {
         if (world == NULL || world->ledges == NULL) {
             return;
         }
@@ -448,7 +448,7 @@ extern "C" {
         return nearest;
     }
 
-    void __cdecl Ledges_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
+    void Ledges_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
         LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)world->ledges;
         NUMTX matrix;
         if (ledge == NULL) {
@@ -464,11 +464,11 @@ extern "C" {
         }
     }
 
-    i32 __cdecl Ledges_GetMaxGizmos(WORLDINFO *world) {
+    i32 Ledges_GetMaxGizmos(WORLDINFO *world) {
         return world != NULL ? world->current_level->max_ledges : 0;
     }
 
-    void __cdecl Ledges_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
+    void Ledges_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
         for (i32 i = 0; i < world->ledge_count; ++i) {
             if (NuStrLen(((LEDGE_MOTION_PC *)world->ledges)[i].name) != 0) {
                 AddGizmo(system, type_id, NULL, &((LEDGE_MOTION_PC *)world->ledges)[i]);
@@ -476,35 +476,35 @@ extern "C" {
         }
     }
 
-    char *__cdecl Ledge_GetGizmoName(GIZMO_PC *gizmo) {
+    char *Ledge_GetGizmoName(GIZMO_PC *gizmo) {
         return gizmo != NULL ? (char *)gizmo->object : NULL;
     }
 
-    i32 __cdecl Ledge_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
+    i32 Ledge_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
         LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)gizmo->object;
         return (ledge->state_flags & 2) != 0 && (ledge->state_flags & 1) != 0;
     }
 
-    char *__cdecl Ledge_GetOutputName(GIZMO_PC *gizmo, i32 unused) {
+    char *Ledge_GetOutputName(GIZMO_PC *gizmo, i32 unused) {
         return LedgeOutputNamePc;
     }
 
-    i32 __cdecl Ledge_GetNumOutputs(GIZMO_PC *gizmo) {
+    i32 Ledge_GetNumOutputs(GIZMO_PC *gizmo) {
         return 1;
     }
 
-    void *__cdecl Ledges_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    void *Ledges_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
         return GizmoBufferAlloc(buffer, end, 0x20);
     }
 
-    void __cdecl Ledges_ClearProgress(void *unused, LEDGE_PROGRESS_PC *progress) {
+    void Ledges_ClearProgress(void *unused, LEDGE_PROGRESS_PC *progress) {
         if (progress != NULL) {
             memset(progress->active, 0xff, sizeof(progress->active));
             memset(progress->visible, 0xff, sizeof(progress->visible));
         }
     }
 
-    void __cdecl Ledges_StoreProgress(WORLDINFO *world, void *unused, LEDGE_PROGRESS_PC *progress) {
+    void Ledges_StoreProgress(WORLDINFO *world, void *unused, LEDGE_PROGRESS_PC *progress) {
         if (progress == NULL) {
             return;
         }
@@ -544,17 +544,17 @@ extern "C" {
     ADDGIZMOTYPE_PC LedgeAddTypePc = {0};
 #pragma data_seg()
 
-    ADDGIZMOTYPE_PC *__cdecl Ledges_RegisterGizmo(i32 unused_type_id) {
+    ADDGIZMOTYPE_PC *Ledges_RegisterGizmo(i32 unused_type_id) {
         char *name = LedgeRegistryNamePc;
         LedgeAddTypePc = Default_ADDGIZMOTYPE;
         LedgeAddTypePc.name = name;
         LedgeAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
         LedgeAddTypePc.fns.options = 0x20;
-        LedgeAddTypePc.fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Ledges_GetMaxGizmos;
+        LedgeAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))Ledges_GetMaxGizmos;
         LedgeAddTypePc.fns.add_gizmos_fn = (void *)Ledges_AddGizmos;
         LedgeAddTypePc.fns.early_update_fn = NULL;
         LedgeAddTypePc.fns.late_update_fn = NULL;
-        LedgeAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))Ledges_Draw;
+        LedgeAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))Ledges_Draw;
         LedgeAddTypePc.fns.panel_draw_fn = NULL;
         LedgeAddTypePc.fns.get_gizmo_name_fn = Ledge_GetGizmoName;
         LedgeAddTypePc.fns.get_output_fn = Ledge_GetOutput;
@@ -570,11 +570,11 @@ extern "C" {
         LedgeAddTypePc.fns.get_best_bolt_target_fn = NULL;
         LedgeAddTypePc.fns.bolt_hit_fn = NULL;
         LedgeAddTypePc.fns.allocate_progress_data_fn = Ledges_AllocateProgressData;
-        LedgeAddTypePc.fns.clear_progress_fn = (void(__cdecl *)(void *, void *))Ledges_ClearProgress;
-        LedgeAddTypePc.fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))Ledges_StoreProgress;
-        LedgeAddTypePc.fns.reset_fn = (void(__cdecl *)(void *, void *, void *))Ledges_Reset;
-        LedgeAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))Ledges_ReserveBufferSpace;
-        LedgeAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))Ledges_Load;
+        LedgeAddTypePc.fns.clear_progress_fn = (void (*)(void *, void *))Ledges_ClearProgress;
+        LedgeAddTypePc.fns.store_progress_fn = (void (*)(void *, void *, void *))Ledges_StoreProgress;
+        LedgeAddTypePc.fns.reset_fn = (void (*)(void *, void *, void *))Ledges_Reset;
+        LedgeAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))Ledges_ReserveBufferSpace;
+        LedgeAddTypePc.fns.load_fn = (i32(*)(void *, void *))Ledges_Load;
         LedgeAddTypePc.fns.post_load_fn = NULL;
         LedgeAddTypePc.fns.add_level_sfx_fn = NULL;
         return &LedgeAddTypePc;

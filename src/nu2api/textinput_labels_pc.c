@@ -58,7 +58,7 @@ const char *TextInputAxisGlyphsPc[4] = {
     TextInputGlyphBBPc,
 };
 
-void __cdecl TextInputGlyphNamePc(i32 code, char *destination) {
+void TextInputGlyphNamePc(i32 code, char *destination) {
     if ((u32)code <= 11U) {
         NuStrCpy(destination, (char *)TextInputButtonGlyphsPc[code]);
     } else if ((u32)code - 128U <= 3U) {
@@ -68,6 +68,6 @@ void __cdecl TextInputGlyphNamePc(i32 code, char *destination) {
     }
 }
 
-void __cdecl PcInput_SetStringUCGfxRemapFn(void(__cdecl *callback)(i32, char *)) {
+void PcInput_SetStringUCGfxRemapFn(void (*callback)(i32, char *)) {
     TextInputNameCallbackPc = callback;
 }

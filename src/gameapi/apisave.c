@@ -1,13 +1,13 @@
 #include "saga.h"
 #include <stdio.h>
 
-void __cdecl saveloadASFormat(void);
-void __cdecl saveloadASDelete(i32 slot);
+void saveloadASFormat(void);
+void saveloadASDelete(i32 slot);
 extern i32 saveload_slotused[];
-void __cdecl saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
+void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
-void __cdecl SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, i32 autosave,
-                                  SAVE_VOID_FN_PC draw_save_icon) {
+void SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, i32 autosave,
+                          SAVE_VOID_FN_PC draw_save_icon) {
     SAVESLOTS = slots;
     if (slots >= 6) {
         SAVESLOTS = 6;
@@ -21,8 +21,8 @@ void __cdecl SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save,
     memcard_drawasiconfn = draw_save_icon;
 }
 
-void __cdecl SaveSystemInitialiseEx(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, void *header,
-                                    i32 header_size, i32 autosave, SAVE_VOID_FN_PC draw_save_icon) {
+void SaveSystemInitialiseEx(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, void *header, i32 header_size,
+                            i32 autosave, SAVE_VOID_FN_PC draw_save_icon) {
     memcard_hashfn = hashfn;
     memcard_savedata = save;
     memcard_savedatasize = save_size;
@@ -41,11 +41,11 @@ void __cdecl SaveSystemInitialiseEx(i32 slots, SAVE_HASH_FN_PC hashfn, void *sav
     }
 }
 
-void __cdecl SetSaveSuccessFn(SAVE_VOID_FN_PC callback) {
+void SetSaveSuccessFn(SAVE_VOID_FN_PC callback) {
     savesuccessfn = callback;
 }
 
-i32 __cdecl ChecksumSaveData(void *buffer, i32 size) {
+i32 ChecksumSaveData(void *buffer, i32 size) {
     u32 sum;
     i32 i;
     sum = 0x5c0999;
@@ -229,7 +229,7 @@ void UpdateSaveSlots(void) {
     }
 }
 
-void __cdecl loadsaveCallEachFrame(void) {
+void loadsaveCallEachFrame(void) {
     saveloadASCallEachFrame();
     if (saveload_cardchanged != 0) {
         memcard_cardchanged = 1;
@@ -254,19 +254,19 @@ void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_sca
 STATIC_ASSERT(offsetof(MENU, state) == 0xdc);
 STATIC_ASSERT(offsetof(MENUFNINFO, cancel_prompt) == 0x1a);
 
-void __cdecl MenuEnterSaveConfirm(MENU *menu) {
+void MenuEnterSaveConfirm(MENU *menu) {
     i32 slot = Menu_InHeaderSave != 0 ? SAVESLOTS : memcard_slot;
     (void)menu;
     Menu_Overwriteflag = saveload_slotused[slot] != 0;
 }
 
-void __cdecl MenuEnterAutoSaveWarning(MENU *menu) {
+void MenuEnterAutoSaveWarning(MENU *menu) {
     (void)menu;
     memcard_autosaveenabled = 1;
     memcard_autosavedisabled = 0;
 }
 
-void __cdecl MenuEnterAutoSaveCancel(MENU *menu) {
+void MenuEnterAutoSaveCancel(MENU *menu) {
     if (MenuASCancelFinished == 0) {
         memcard_autosaveenabled = 0;
         memcard_autosavedisabled = 0;
@@ -274,37 +274,37 @@ void __cdecl MenuEnterAutoSaveCancel(MENU *menu) {
     }
 }
 
-void __cdecl MenuEnterCardWarning(MENU *menu) {
+void MenuEnterCardWarning(MENU *menu) {
     (void)menu;
     MenuCardWarningState = 0;
     memcard_cardchanged = 0;
 }
 
-void __cdecl MenuEnterHeaderSave(MENU *menu) {
+void MenuEnterHeaderSave(MENU *menu) {
     (void)menu;
     Menu_InHeaderSave = 1;
     BackupMenuNoFn();
     NewMenu(1000, -1, -1);
 }
 
-void __cdecl MenuEnterStartNewGame(MENU *menu) {
+void MenuEnterStartNewGame(MENU *menu) {
     (void)menu;
     memcard_autosaveenabled = 0;
     saveload_autosave = -1;
     BackupMenu();
 }
 
-void __cdecl MenuExitSave(MENU *menu) {
+void MenuExitSave(MENU *menu) {
     (void)menu;
     Menu_InSaveFlow = 0;
 }
 
-void __cdecl MenuExitLoad(MENU *menu) {
+void MenuExitLoad(MENU *menu) {
     (void)menu;
     Menu_InLoadFlow = 0;
 }
 
-void __cdecl MenuExitCardWarning(MENU *menu) {
+void MenuExitCardWarning(MENU *menu) {
     (void)menu;
     Menu_InWarningFlow = 0;
 }
@@ -324,10 +324,10 @@ void fun_0050a7d0(MENU *menu) {
 void fun_0050a7e0(MENU *menu) {
 }
 
-void __cdecl MenuDrawDoNotRemoveCard(MENU *menu) {
+void MenuDrawDoNotRemoveCard(MENU *menu) {
 }
 
-void __cdecl MenuUpdateSave(MENU *menu) {
+void MenuUpdateSave(MENU *menu) {
     i32 slot;
     if (Menu_DisableCancel != 0) {
         MenuInfo[menu->menu].cancel_prompt = 0;
@@ -356,13 +356,13 @@ void __cdecl MenuUpdateSave(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateDoNotRemoveCard(MENU *menu) {
+void MenuUpdateDoNotRemoveCard(MENU *menu) {
     if (menu->menu_time > 2.0f && saveload_status == 1) {
         BackupMenu();
     }
 }
 
-void __cdecl MenuUpdateInsertCard(MENU *menu) {
+void MenuUpdateInsertCard(MENU *menu) {
     if (menu->cancel_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenuNoFn();
@@ -375,7 +375,7 @@ void __cdecl MenuUpdateInsertCard(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateNoMemoryCard(MENU *menu) {
+void MenuUpdateNoMemoryCard(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         if (menu->selected_row == 0) {
@@ -392,7 +392,7 @@ void __cdecl MenuUpdateNoMemoryCard(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateNotEnoughSpace(MENU *menu) {
+void MenuUpdateNotEnoughSpace(MENU *menu) {
     if (menu->cancel_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenuNoFn();
@@ -400,7 +400,7 @@ void __cdecl MenuUpdateNotEnoughSpace(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateNoData(MENU *menu) {
+void MenuUpdateNoData(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenuNoFn();
@@ -413,7 +413,7 @@ void __cdecl MenuUpdateNoData(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateFormatConfirm(MENU *menu) {
+void MenuUpdateFormatConfirm(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
     } else if (menu->cancel_pressed != 0 && MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != 1019) {
@@ -423,7 +423,7 @@ void __cdecl MenuUpdateFormatConfirm(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateFileCorrupt(MENU *menu) {
+void MenuUpdateFileCorrupt(MENU *menu) {
     i32 cancel;
     if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1019) {
         MenuInfo[menu->menu].cancel_prompt = 0;
@@ -453,7 +453,7 @@ void __cdecl MenuUpdateFileCorrupt(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateFormatting(MENU *menu) {
+void MenuUpdateFormatting(MENU *menu) {
     (void)menu;
     if (memcard_formatme != 0) {
         memcard_formatmessage_delay = 1.5f;
@@ -470,7 +470,7 @@ void __cdecl MenuUpdateFormatting(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateDeleteConfirm(MENU *menu) {
+void MenuUpdateDeleteConfirm(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         if (menu->selected_row == 1) {
@@ -489,7 +489,7 @@ void __cdecl MenuUpdateDeleteConfirm(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateDeleting(MENU *menu) {
+void MenuUpdateDeleting(MENU *menu) {
     (void)menu;
     if (memcard_deleteneeded != 0 || memcard_deletemessage_delay > 0.0f) {
         memcard_deleteresult_delay = 1.5f;
@@ -503,7 +503,7 @@ void __cdecl MenuUpdateDeleting(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateSaveConfirm(MENU *menu) {
+void MenuUpdateSaveConfirm(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         if (menu->selected_row == 1) {
@@ -521,7 +521,7 @@ void __cdecl MenuUpdateSaveConfirm(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateSaving(MENU *menu) {
+void MenuUpdateSaving(MENU *menu) {
     (void)menu;
     if (memcard_saveneeded != 0) {
         memcard_savemessage_delay = 1.5f;
@@ -547,7 +547,7 @@ void __cdecl MenuUpdateSaving(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateAutoSaveWarning(MENU *menu) {
+void MenuUpdateAutoSaveWarning(MENU *menu) {
     if (memcard_cardchanged != 0) {
         BackupMenu();
     }
@@ -557,7 +557,7 @@ void __cdecl MenuUpdateAutoSaveWarning(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateLoad(MENU *menu) {
+void MenuUpdateLoad(MENU *menu) {
     if (memcard_cardchanged != 0 || saveload_cardtype != 2) {
         MenuEnterLoad(menu);
         return;
@@ -580,7 +580,7 @@ void __cdecl MenuUpdateLoad(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateLoadConfirm(MENU *menu) {
+void MenuUpdateLoadConfirm(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         if (menu->selected_row == 1) {
@@ -600,7 +600,7 @@ void __cdecl MenuUpdateLoadConfirm(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateLoading(MENU *menu) {
+void MenuUpdateLoading(MENU *menu) {
     (void)menu;
     if (memcard_loadneeded != 0) {
         memcard_loadmessage_delay = 1.5f;
@@ -626,7 +626,7 @@ void __cdecl MenuUpdateLoading(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateSaveCancel(MENU *menu) {
+void MenuUpdateSaveCancel(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         if (menu->selected_row == 0) {
             BackupMenuNoFn();
@@ -642,7 +642,7 @@ void __cdecl MenuUpdateSaveCancel(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateLoadCancel(MENU *menu) {
+void MenuUpdateLoadCancel(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         if (menu->selected_row == 0) {
             BackupMenuNoFn();
@@ -658,7 +658,7 @@ void __cdecl MenuUpdateLoadCancel(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateFormatCancel(MENU *menu) {
+void MenuUpdateFormatCancel(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         if (menu->selected_row == 0) {
             MenuSFX = MENUSFX_MENUSELECT;
@@ -683,7 +683,7 @@ void __cdecl MenuUpdateFormatCancel(MENU *menu) {
     }
 }
 
-void __cdecl MenuUpdateCardWarning(MENU *menu) {
+void MenuUpdateCardWarning(MENU *menu) {
     menu->previous_item = MenuCardWarningState;
     switch (MenuCardWarningState) {
         case 7:
@@ -725,7 +725,7 @@ static i32 lastslot = 0;
 static i32 slideleft = 0;
 static i32 slideright = 0;
 
-void __cdecl MenuEnterLoad(MENU *menu) {
+void MenuEnterLoad(MENU *menu) {
     i32 last_column = SAVESLOTS;
     memcard_cardchanged = 0;
     if (last_column > 6) {
@@ -748,7 +748,7 @@ void __cdecl MenuEnterLoad(MENU *menu) {
     }
 }
 
-void __cdecl MenuEnterSave(MENU *menu) {
+void MenuEnterSave(MENU *menu) {
     MenuSaveOccurred = 0;
     memcard_cardchanged = 0;
     Menu_DisableCancel = 0;
@@ -783,7 +783,7 @@ void __cdecl MenuEnterSave(MENU *menu) {
     }
 }
 
-void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
+void APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     i32 count;
     i32 first;
     i32 last;
@@ -907,7 +907,7 @@ void fun_005108c0(MENU *menu) {
 void fun_005108e0(MENU *menu) {
 }
 
-void __cdecl MenuDrawSave(MENU *menu) {
+void MenuDrawSave(MENU *menu) {
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
@@ -922,7 +922,7 @@ void __cdecl MenuDrawSave(MENU *menu) {
     }
 }
 
-void __cdecl MenuDrawLoad(MENU *menu) {
+void MenuDrawLoad(MENU *menu) {
     NuStrCpy(MenuHeader, apitxt_LOADGAME);
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
@@ -935,13 +935,13 @@ void __cdecl MenuDrawLoad(MENU *menu) {
     DrawMenuEntryEx(menu, apitxt_CANCEL, (u8)MenuA);
 }
 
-void __cdecl MenuDrawNoMemoryCard(MENU *menu) {
+void MenuDrawNoMemoryCard(MENU *menu) {
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_RETRY, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_CANCEL, (u8)MenuA);
 }
 
-void __cdecl MenuDrawDeleteConfirm(MENU *menu) {
+void MenuDrawDeleteConfirm(MENU *menu) {
     MenuSmartTextEx(apitxt_CONFIRMDELETE, 0.0f, 0.0f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
                     MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
     menu->draw_y = MENUBOTY - MENUDY;
@@ -949,7 +949,7 @@ void __cdecl MenuDrawDeleteConfirm(MENU *menu) {
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
 
-void __cdecl MenuDrawSaveConfirm(MENU *menu) {
+void MenuDrawSaveConfirm(MENU *menu) {
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
@@ -966,7 +966,7 @@ void __cdecl MenuDrawSaveConfirm(MENU *menu) {
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
 
-void __cdecl MenuDrawSaveCancel(MENU *menu) {
+void MenuDrawSaveCancel(MENU *menu) {
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
@@ -978,7 +978,7 @@ void __cdecl MenuDrawSaveCancel(MENU *menu) {
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
 
-void __cdecl MenuDrawLoadCancel(MENU *menu) {
+void MenuDrawLoadCancel(MENU *menu) {
     NuStrCpy(MenuHeader, apitxt_LOADGAME);
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
@@ -990,7 +990,7 @@ void __cdecl MenuDrawLoadCancel(MENU *menu) {
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
 
-void __cdecl MenuDrawFormatCancel(MENU *menu) {
+void MenuDrawFormatCancel(MENU *menu) {
     MenuSmartTextEx(apitxt_DOYOUWANTTOABORTFORMAT, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc,
                     0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
     menu->draw_y = MENUBOTY - MENUDY;
@@ -998,7 +998,7 @@ void __cdecl MenuDrawFormatCancel(MENU *menu) {
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
 
-void __cdecl MenuDrawCardWarning(MENU *menu) {
+void MenuDrawCardWarning(MENU *menu) {
     /* The shipping build draws no warning text; the buffer it was formatted in still gives the
        function its security cookie. */
     char text[8];
@@ -1007,7 +1007,7 @@ void __cdecl MenuDrawCardWarning(MENU *menu) {
     }
 }
 
-void __cdecl MenuDrawLoadConfirm(MENU *menu) {
+void MenuDrawLoadConfirm(MENU *menu) {
     NuStrCpy(MenuHeader, apitxt_LOADGAME);
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
@@ -1019,7 +1019,7 @@ void __cdecl MenuDrawLoadConfirm(MENU *menu) {
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
 
-void __cdecl MenuDrawFileCorrupt(MENU *menu) {
+void MenuDrawFileCorrupt(MENU *menu) {
     char message[1024];
     (void)menu;
     sprintf(message, apitxt_CORRUPTLOAD);
@@ -1027,7 +1027,7 @@ void __cdecl MenuDrawFileCorrupt(MENU *menu) {
                     MENUNORMALG, MENUNORMALB, 1.3f, 3, NULL, 0, MenuA);
 }
 
-void __cdecl APIMenuDrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
+void APIMenuDrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     char label[32];
     i32 red;
     i32 green;
@@ -1074,11 +1074,11 @@ static void Draw_NODATAAVAILABLE(void) {
                     NULL, 0, MenuA);
 }
 
-void __cdecl MenuEnterNoMemoryCard(MENU *menu) {
+void MenuEnterNoMemoryCard(MENU *menu) {
     (void)menu;
 }
 
-void __cdecl MenuDrawNoData(MENU *menu) {
+void MenuDrawNoData(MENU *menu) {
     Draw_NODATAAVAILABLE();
     menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_CANCEL, (u8)MenuA);
@@ -1122,7 +1122,7 @@ static void MenuDrawFormattedMessagePc(void) {
 
 static i32 MenuLoadResultShownPc = 0;
 
-void __cdecl MenuDrawLoading(MENU *menu) {
+void MenuDrawLoading(MENU *menu) {
     (void)menu;
     NuStrCpy(MenuHeader, apitxt_LOADGAME);
     header_r = MENUHEADERR;
@@ -1155,11 +1155,11 @@ void __cdecl MenuDrawLoading(MENU *menu) {
     }
 }
 
-void __cdecl MenuEnterInsertCard(MENU *menu) {
+void MenuEnterInsertCard(MENU *menu) {
     (void)menu;
 }
 
-void __cdecl MenuDrawInsertCard(MENU *menu) {
+void MenuDrawInsertCard(MENU *menu) {
     char message[1024];
     (void)menu;
     if (0) {
@@ -1167,7 +1167,7 @@ void __cdecl MenuDrawInsertCard(MENU *menu) {
     }
 }
 
-void __cdecl MenuDrawFormatConfirm(MENU *menu) {
+void MenuDrawFormatConfirm(MENU *menu) {
     (void)menu;
 }
 
@@ -1223,7 +1223,7 @@ static void Draw_AUTOSAVEWARNING(void) {
                     NULL, 0, MenuA);
 }
 
-void __cdecl MenuDrawNotEnoughSpace(MENU *menu) {
+void MenuDrawNotEnoughSpace(MENU *menu) {
     char message[1024];
     (void)menu;
     if (0) {
@@ -1234,7 +1234,7 @@ void __cdecl MenuDrawNotEnoughSpace(MENU *menu) {
 
 static i32 MenuFormattingResultShownPc = 0;
 
-void __cdecl MenuDrawFormatting(MENU *menu) {
+void MenuDrawFormatting(MENU *menu) {
     if (memcard_formatting != 0 || memcard_formatme != 0 || memcard_formatmessage_delay > 0.0f) {
         MenuFormattingResultShownPc = 0;
         MenuDrawFormattingMessagePc();
@@ -1258,7 +1258,7 @@ void __cdecl MenuDrawFormatting(MENU *menu) {
 
 static i32 MenuSaveResultShownPc = 0;
 
-void __cdecl MenuDrawSaving(MENU *menu) {
+void MenuDrawSaving(MENU *menu) {
     (void)menu;
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
     header_r = MENUHEADERR;
@@ -1286,7 +1286,7 @@ void __cdecl MenuDrawSaving(MENU *menu) {
 
 static i32 MenuDeleteResultShownPc = 0;
 
-void __cdecl MenuDrawDeleting(MENU *menu) {
+void MenuDrawDeleting(MENU *menu) {
     (void)menu;
     NuStrCpy(MenuHeader, apitxt_DELETEGAME);
     header_r = MENUHEADERR;
@@ -1311,7 +1311,7 @@ void __cdecl MenuDrawDeleting(MENU *menu) {
     }
 }
 
-void __cdecl MenuDrawAutoSaveWarning(MENU *menu) {
+void MenuDrawAutoSaveWarning(MENU *menu) {
     Draw_AUTOSAVEWARNING();
     menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_OK, (u8)MenuA);

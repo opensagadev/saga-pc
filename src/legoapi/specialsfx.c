@@ -13,7 +13,7 @@ STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_ENTRY_PC) == 20);
 STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, special) == 4);
 STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, events) == 16);
 
-i32 __cdecl InitSpecialSfx(void *world_ptr) {
+i32 InitSpecialSfx(void *world_ptr) {
     SPECIAL_RESOURCE_WORLD_PC *world = world_ptr;
     if (!world) {
         return 0;
@@ -34,7 +34,7 @@ i32 __cdecl InitSpecialSfx(void *world_ptr) {
 void fun_005b1800(void) {
 }
 
-i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
+i32 SpecialSfxLoad(char *path, void *world_ptr) {
     WORLDINFO *world = world_ptr;
     i32 version;
     i32 count;
@@ -114,7 +114,7 @@ i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
     return 1;
 }
 
-i32 __cdecl SpecialSfxAdd(i32 special_index) {
+i32 SpecialSfxAdd(i32 special_index) {
     NUSPECIALHANDLE special;
     SPECIAL_RESOURCE_ENTRY_PC *entry;
     if (WORLD->special_sfx_count < 192) {
@@ -131,7 +131,7 @@ i32 __cdecl SpecialSfxAdd(i32 special_index) {
     return -1;
 }
 
-void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
+void UpdateSpecialSfx(WORLDINFO *world_info) {
     WORLDINFO *world = world_info;
     i32 i;
     i32 j;
@@ -219,7 +219,7 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
     }
 }
 
-void __cdecl SetSpecialSfxBits(i32 *ids, i32 *count, WORLDINFO *world) {
+void SetSpecialSfxBits(i32 *ids, i32 *count, WORLDINFO *world) {
     i32 i;
     if (world == NULL || world->special_sfx_event_count <= 0) {
         return;
@@ -232,7 +232,7 @@ void __cdecl SetSpecialSfxBits(i32 *ids, i32 *count, WORLDINFO *world) {
     }
 }
 
-void __cdecl LoadSpecialSfxFile(void *world_ptr) {
+void LoadSpecialSfxFile(void *world_ptr) {
     SPECIAL_RESOURCE_WORLD_PC *world = world_ptr;
     char path[256];
     sprintf(path, "%s.sfx", world->config_file);

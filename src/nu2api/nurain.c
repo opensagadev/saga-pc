@@ -22,7 +22,7 @@ static f32 NuRainFabsPc(f32 value) {
     return result;
 }
 
-void __cdecl NuRainProcess(i32 paused) {
+void NuRainProcess(i32 paused) {
     _NuTimeBarSlotBegin(0, 3, "cre");
     if (NuRainOldCameraMtx.m00 == 123456.0) {
         NuRainOldCameraMtx = global_camera.mtx;
@@ -141,7 +141,7 @@ done:
     _NuTimeBarSlotEnd(0, 3);
 }
 
-void __cdecl NuRainSetTexture(f32 u0, f32 v0, f32 u1, f32 v1) {
+void NuRainSetTexture(f32 u0, f32 v0, f32 u1, f32 v1) {
     f32 left = u0 * 0.00390625;
     f32 right;
     f32 middle;
@@ -157,7 +157,7 @@ void __cdecl NuRainSetTexture(f32 u0, f32 v0, f32 u1, f32 v1) {
     NuRainUVs[7] = (v1 - v0) * 0.00048828125;
 }
 
-void __cdecl NuRainDrawDrop(i32 a, i32 b, f32 c, f32 d, i32 e) {
+void NuRainDrawDrop(i32 a, i32 b, f32 c, f32 d, i32 e) {
     (void)a;
     (void)b;
     (void)c;
@@ -165,12 +165,12 @@ void __cdecl NuRainDrawDrop(i32 a, i32 b, f32 c, f32 d, i32 e) {
     (void)e;
 }
 
-void __cdecl NuRainDrawShape(f32 size) {
+void NuRainDrawShape(f32 size) {
     (void)size;
 }
 
 /* PC draws no rain; the debris glass pass still hands it the reserved texture. */
-void __cdecl NuRainDraw(i32 reserved) {
+void NuRainDraw(i32 reserved) {
     (void)reserved;
 }
 

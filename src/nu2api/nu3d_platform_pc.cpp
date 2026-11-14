@@ -26,7 +26,7 @@ extern "C" {
 
     // @@PREAMBLE
     struct POST_SHADER_PROGRAM_PC;
-    POST_SHADER_PROGRAM_PC *__cdecl PostShaderProgramCreatePc(i32, const DWORD *, const DWORD *);
+    POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32, const DWORD *, const DWORD *);
     extern const DWORD PostShaderTokens7662d8[168];
     extern const DWORD PostShaderTokens766578[94];
     extern const DWORD PostShaderTokens7666f0[75];
@@ -45,8 +45,8 @@ extern "C" {
     extern const DWORD PostShaderTokens7690b0[131];
     extern const DWORD PostShaderTokens7692c0[175];
     extern const DWORD PostShaderTokens769580[100];
-    PC_FRAMEBUFFER_PC *__cdecl PCGraphicsCreateFramebuffer(void);
-    void __cdecl NuPostEffectReleasePortsPc(void);
+    PC_FRAMEBUFFER_PC *PCGraphicsCreateFramebuffer(void);
+    void NuPostEffectReleasePortsPc(void);
     void fun_005f83a0(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 texture_id);
     void fun_005f1f50(i32 texture_id);
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
@@ -148,8 +148,8 @@ extern "C" {
     u32 RendererStencilRefPc = 0x60;
 #pragma data_seg()
 
-    void __cdecl PCDeviceSetWorldIdentityPc(void);
-    void __cdecl NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1);
+    void PCDeviceSetWorldIdentityPc(void);
+    void NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1);
 
     typedef struct CAMERA_RENDER_SPECULAR_READER_PC {
         u8 unknown_0000[0xdc];          // 0x00
@@ -417,8 +417,8 @@ extern "C" {
     struct PC_MATERIAL_DEVICE_CAPS_VIEW {
         u8 unknown_000[0x654]; // 0x000
         u8 shader_caps;        // 0x654
-        i32 __thiscall ShaderVariant16();
-        i32 __thiscall ShaderVariant1();
+        i32 ShaderVariant16();
+        i32 ShaderVariant1();
     }; // size 0x655
 
     typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
@@ -656,7 +656,7 @@ extern "C" {
         extern const char NuMaterialSourcePathPc[] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\numtl_dlist.c";
     }
 
-    extern "C" void __cdecl Nu360MtlInit(void) {
+    extern "C" void Nu360MtlInit(void) {
         NuDisplayMaterialDebrisProgramsPc = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
             PostShaderProgramCreatePc(2, NuMaterialShaderTokens769710Pc, NuMaterialShaderTokens769840Pc));
         if (PCDeviceHardwareVertexProcessingPC > 1) {
@@ -869,7 +869,7 @@ extern "C" {
     /* Existing canonical integer slot holds the native 32-bit packet identity. */
     extern i32 PCGraphicsBoundShader;
 
-    extern "C" void __cdecl NuStrFixExt(char *, char *, char *, i32);
+    extern "C" void NuStrFixExt(char *, char *, char *, i32);
 
     /* The leading pad keeps the 14-byte file header's 32-bit fields naturally aligned. */
     typedef struct nutexbmp_file_header_pc_s {
@@ -1002,9 +1002,9 @@ extern "C" {
     STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, material) == 0x0);
     STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, u0) == 0x4);
     STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, u1) == 0xc);
-    void __cdecl NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);
-    void __cdecl NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
-    i32 __cdecl NuRndrBeginSceneEx(i32, i32, i32);
+    void NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);
+    void NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
+    i32 NuRndrBeginSceneEx(i32, i32, i32);
 #define NU_LGT_RAND() ((i32)(NuLgtSeed = (NuLgtSeed * 0x24cd + 1) & 0xffff))
 #define NU_LGT_ARC_VERTEX(position, colour, tex_u, tex_v)                                                              \
     do {                                                                                                               \
@@ -1019,11 +1019,11 @@ extern "C" {
     extern f32 FrameStartupDelayPc;
     extern i32 NuApiTextLinePc;
     extern f32 NuFrameAccumulatedTimePc;
-    extern const char *__cdecl GetPCStartupMessage(void);
-    extern u32 __cdecl PcGetRefreshRatePc(void);
-    extern void __cdecl bgprocFrameSleepPc(i32 milliseconds);
-    extern void __cdecl NuFrameEndLeafPc(void);
-    extern void __cdecl FmvPlatformUpdatePc(void);
+    extern const char *GetPCStartupMessage(void);
+    extern u32 PcGetRefreshRatePc(void);
+    extern void bgprocFrameSleepPc(i32 milliseconds);
+    extern void NuFrameEndLeafPc(void);
+    extern void FmvPlatformUpdatePc(void);
 
 #define NUFRAME_ELAPSED(elapsed, now, start)                                                                           \
     if ((now).low >= (start).low) {                                                                                    \
@@ -1035,7 +1035,7 @@ extern "C" {
         (elapsed).high -= 1;                                                                                           \
     }
 
-    extern void(__cdecl *NuApiEndFrameCallbackPc)(void);
+    extern void (*NuApiEndFrameCallbackPc)(void);
 
     STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
     STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_x) == 0);
@@ -1149,7 +1149,7 @@ extern "C" {
 
     /* The PC backend has no special-transform work: the leaf forwards to the shared empty
      * diagnostic (0x603a10 is a lone jmp to it). */
-    void __cdecl DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    void DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix) {
         DisplayListSpecialTransformNoOpPc(special, matrix);
     }
 
@@ -1227,12 +1227,12 @@ extern "C" {
         }
     }
 
-    void __cdecl NuEffectTexLockVP(VARIPTR *buffer, VARIPTR end) {
+    void NuEffectTexLockVP(VARIPTR *buffer, VARIPTR end) {
         (void)buffer;
         (void)end;
     }
 
-    i32 __cdecl NuEffectTexUnlockVP(void) {
+    i32 NuEffectTexUnlockVP(void) {
         return 0;
     }
 
@@ -1252,7 +1252,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    void PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
         i32 i;
         i32 memory_delta;
         f32 multiplier;
@@ -1281,21 +1281,20 @@ extern "C" {
         }
     }
 
-    i32 __cdecl PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    i32 PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *texture) {
         return texture->width;
     }
 
-    i32 __cdecl PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    i32 PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *texture) {
         return texture->height;
     }
 
-    void __cdecl PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTURE_PC *texture, u16 level, i32 *width,
-                                                   i32 *height) {
+    void PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTURE_PC *texture, u16 level, i32 *width, i32 *height) {
         *width = (texture->width >> level) & ~1;
         *height = (texture->height >> level) & ~1;
     }
 
-    i32 __cdecl PCGraphicsEffectTextureMipCount(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    i32 PCGraphicsEffectTextureMipCount(GRAPHICS_RENDER_TEXTURE_PC *texture) {
         return texture->mip_count;
     }
 
@@ -1307,11 +1306,11 @@ extern "C" {
         return texture->format;
     }
 
-    void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 low, i32 high) {
+    void PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 low, i32 high) {
         texture->flags = (texture->flags & ~0xffu) | (((u32)high & 0xfu) << 4) | ((u32)low & 0xfu);
     }
 
-    void __cdecl PCGraphicsEffectTextureSetField24(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 value) {
+    void PCGraphicsEffectTextureSetField24(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 value) {
         texture->field_24 = (u32)value;
     }
 
@@ -1331,8 +1330,7 @@ extern "C" {
         } bits;
     } PC_SAMPLER_FLAGS_PC; // size 0x4
 
-    void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second,
-                                                        i32 third) {
+    void PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second, i32 third) {
         i32 value;
         switch (first) {
             case 0:
@@ -1390,7 +1388,7 @@ extern "C" {
         ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.mip_filter = value;
     }
 
-    void __cdecl PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second) {
+    void PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second) {
         i32 value;
         switch (first) {
             case 0:
@@ -1441,7 +1439,7 @@ extern "C" {
         return NULL;
     }
 
-    void __cdecl PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    void PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
         i32 memory_delta;
         f32 multiplier;
         multiplier = texture->mip_count != 1 ? 1.5f : 1.0f;
@@ -1486,9 +1484,8 @@ extern "C" {
     /* Retail calls this from PCGraphicsCreatePostEffectTextures rather than inlining it. */
     // noinline: the original calls PCGraphicsInitRenderTexture out of line from PCGraphicsCreatePostEffectTextures; VC8
     // would inline it there.
-    __declspec(noinline) void __cdecl PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width,
-                                                                  i32 height, i32 levels, i32 usage, i32 pool,
-                                                                  i32 format) {
+    __declspec(noinline) void PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height,
+                                                          i32 levels, i32 usage, i32 pool, i32 format) {
         u32 d3d_usage;
         i32 memory_delta;
         f32 multiplier;
@@ -1529,13 +1526,13 @@ extern "C" {
         }
     }
 
-    u32 *__cdecl PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    u32 *PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *texture) {
         return &texture->flags;
     }
 
     /* Retail calls this from NuDeferredFilter::ResizeTexturesPc instead of inlining it: its x87
      * byte-count conversion (an inline fnstcw/fistp for the unsigned cast) keeps it above VC8's inline limit. */
-    void __cdecl PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height, i32 levels) {
+    void PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height, i32 levels) {
         if (texture == NULL) {
             return;
         }
@@ -1555,7 +1552,7 @@ extern "C" {
                                     texture->format);
     }
 
-    void __cdecl PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, u32 stage) {
+    void PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, u32 stage) {
         if (texture != NULL) {
             PCDeviceSetTexture(stage, texture->resource);
         } else {
@@ -1563,7 +1560,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PCGraphicsReleaseEffectTextures(void) {
+    void PCGraphicsReleaseEffectTextures(void) {
         for (i32 index = 0; index != 32; ++index) {
             if (PCGraphicsRenderTextureActive[index] && PCGraphicsRenderTextures[index].external_id == -1) {
                 if (PCGraphicsRenderTextures[index].resource != NULL) {
@@ -1584,7 +1581,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PCGraphicsRestoreEffectTextures(i32 unused) {
+    void PCGraphicsRestoreEffectTextures(i32 unused) {
         (void)unused;
         for (i32 index = 0; index != 32; ++index) {
             GRAPHICS_RENDER_TEXTURE_PC *texture = &PCGraphicsRenderTextures[index];
@@ -1631,11 +1628,11 @@ extern "C" {
 
     /* Two additional genuine original leaves, proposed in existing effect_surface.cpp.
      * Complete native entries are6B and1B; neither replaces the held copy operation. */
-    PC_FRAMEBUFFER_PC *__cdecl PCGraphicsGetBoundFramebufferPc(void) {
+    PC_FRAMEBUFFER_PC *PCGraphicsGetBoundFramebufferPc(void) {
         return PcBoundFramebuffer;
     }
 
-    PC_FRAMEBUFFER_PC *__cdecl NuFramebufferGetObject(i32 index) {
+    PC_FRAMEBUFFER_PC *NuFramebufferGetObject(i32 index) {
         return PcBootFramebuffersPc.slots[index];
     }
 
@@ -1643,8 +1640,8 @@ extern "C" {
         return 0;
     }
 
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuFramebufferGetAttachedTex(PC_FRAMEBUFFER_PC *framebuffer, i32 index,
-                                                                    i32 *level, i32 *field) {
+    GRAPHICS_RENDER_TEXTURE_PC *NuFramebufferGetAttachedTex(PC_FRAMEBUFFER_PC *framebuffer, i32 index, i32 *level,
+                                                            i32 *field) {
         PC_EFFECT_SURFACE_PC *target = &framebuffer->targets[index];
         GRAPHICS_RENDER_TEXTURE_PC *texture = target->texture;
         if (texture == NULL) {
@@ -1666,14 +1663,14 @@ extern "C" {
         return texture;
     }
 
-    i32 __cdecl NuFramebufferGetWidth(PC_FRAMEBUFFER_PC *framebuffer) {
+    i32 NuFramebufferGetWidth(PC_FRAMEBUFFER_PC *framebuffer) {
         if (framebuffer == PcDefaultFramebuffer || framebuffer == PcSecondaryFramebuffer) {
             return PCDeviceBackend.parameters.width;
         }
         return framebuffer != NULL ? framebuffer->targets[0].width : 0;
     }
 
-    i32 __cdecl NuFramebufferGetHeight(PC_FRAMEBUFFER_PC *framebuffer) {
+    i32 NuFramebufferGetHeight(PC_FRAMEBUFFER_PC *framebuffer) {
         if (framebuffer == PcDefaultFramebuffer || framebuffer == PcSecondaryFramebuffer) {
             return PCDeviceBackend.parameters.height;
         }
@@ -1693,22 +1690,22 @@ extern "C" {
     void fun_005f8b90(void) {
     }
 
-    void __cdecl PCGraphicsFramebufferBarrierPc(i32, i32) {
+    void PCGraphicsFramebufferBarrierPc(i32, i32) {
     }
 
-    void __cdecl PCGraphicsFramebufferActionPc(i32) {
+    void PCGraphicsFramebufferActionPc(i32) {
     }
 
     i32 fun_005f8bd0(void) {
         return 1;
     }
 
-    void __cdecl PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *frame, i32 enabled) {
+    void PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *frame, i32 enabled) {
         (void)frame;
         (void)enabled;
     }
 
-    void __cdecl PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *frame) {
+    void PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *frame) {
         if (PcBoundFramebuffer == frame && (frame == NULL || frame->changed == 0)) {
             return;
         }
@@ -1729,11 +1726,11 @@ extern "C" {
         }
     }
 
-    void __cdecl PCGraphicsBindDefaultFramebuffer(void) {
+    void PCGraphicsBindDefaultFramebuffer(void) {
         PCGraphicsBindFramebuffer(PcDefaultFramebuffer);
     }
 
-    void __cdecl PCGraphicsClearFramebuffer(u32 mask, i32 colour) {
+    void PCGraphicsClearFramebuffer(u32 mask, i32 colour) {
         u32 flags = 0;
         if (PcBoundFramebuffer->targets[0].texture != NULL && (mask & 0x100)) {
             flags = 1;
@@ -1748,7 +1745,7 @@ extern "C" {
         }
     }
 
-    PC_EFFECT_SURFACE_PC *__cdecl PCGraphicsFramebufferTarget(PC_FRAMEBUFFER_PC *frame, i32 index) {
+    PC_EFFECT_SURFACE_PC *PCGraphicsFramebufferTarget(PC_FRAMEBUFFER_PC *frame, i32 index) {
         return &frame->targets[index];
     }
 
@@ -1758,7 +1755,7 @@ extern "C" {
     void fun_005f8d50(void) {
     }
 
-    i32 __cdecl NuTexRead(char *name, VARIPTR *buffer, VARIPTR end) {
+    i32 NuTexRead(char *name, VARIPTR *buffer, VARIPTR end) {
         char filename[1024];
         NUFILE file;
         i32 size;
@@ -1785,7 +1782,7 @@ extern "C" {
         return id;
     }
 
-    void __cdecl NuTexCreatePS(NUTEXDIM_PC *texture) {
+    void NuTexCreatePS(NUTEXDIM_PC *texture) {
         PC_TEXTURE_LEVEL_DESC_PC description;
         if (texture != NULL && texture->image_data != NULL && texture->image_size != 0) {
             NudxFw_D3DBeginCriticalSection();
@@ -1802,7 +1799,7 @@ extern "C" {
     void fun_005f8ec0(void) {
     }
 
-    void __cdecl NuTexDestroyPS(NUTEXDIM_PC *texture) {
+    void NuTexDestroyPS(NUTEXDIM_PC *texture) {
         if (texture != NULL) {
             NudxFw_D3DBeginCriticalSection();
             PCDeviceReleaseTexture(&texture->resource);
@@ -1814,21 +1811,21 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl NuTexGetReqSize(i32, i32) {
+    i32 NuTexGetReqSize(i32, i32) {
         return 0;
     }
 
-    i32 __cdecl NuTexReserve(i32) {
+    i32 NuTexReserve(i32) {
         return -1;
     }
 
-    void __cdecl NuTexUnReserve(void) {
+    void NuTexUnReserve(void) {
     }
 
     void fun_005f8f40(void) {
     }
 
-    void __cdecl PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *texture, u32 stage) {
+    void PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *texture, u32 stage) {
         PCDeviceSetTexture(stage, texture->resource);
     }
 
@@ -1836,7 +1833,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl NuTexInitExPS(VARIPTR *buffer) {
+    void NuTexInitExPS(VARIPTR *buffer) {
         (void)buffer;
         PCDeviceCreateCubeTextureFromFile((char *)NuTextureEnvironmentCubePathPc, &NuTextureEnvironmentCubePc);
         PCDeviceCreateCubeTextureFromFile((char *)NuTexturePhongCubePathPc, &NuTexturePhongCubePc);
@@ -1844,10 +1841,10 @@ extern "C" {
 
     /* Native PC entries 0x005f8fb0 and 0x005f8fc0 are RET-only; the D3D release and
      * restore paths call them for textures. Their historical names are unknown. */
-    void __cdecl NuTexReleaseResourcesPc(void) {
+    void NuTexReleaseResourcesPc(void) {
     }
 
-    void __cdecl NuTexRestoreResourcesPc(void) {
+    void NuTexRestoreResourcesPc(void) {
     }
 
     /* Creates, once, the placeholder texture used for references that fail to resolve. */
@@ -1863,7 +1860,7 @@ extern "C" {
     }
 
     /* Bits per texel of a source image type. */
-    i32 __cdecl NuTexPixelBitsPc(i32 type) {
+    i32 NuTexPixelBitsPc(i32 type) {
         switch (type) {
             case 0:
             case 1:
@@ -1882,11 +1879,11 @@ extern "C" {
         }
     }
 
-    i32 __cdecl NuTexImageSizePc(i32 type, i32 width, i32 height) {
+    i32 NuTexImageSizePc(i32 type, i32 width, i32 height) {
         return NuTexPixelBitsPc(type) * width * height / 8;
     }
 
-    i32 __cdecl NuTexImageSizeMipsPc(i32 type, i32 width, i32 height, i32 mips) {
+    i32 NuTexImageSizeMipsPc(i32 type, i32 width, i32 height, i32 mips) {
         i32 bits = NuTexPixelBitsPc(type);
         i32 size = (bits * width * height) >> 3;
         i32 level;
@@ -1899,7 +1896,7 @@ extern "C" {
     }
 
     /* Loads an uncompressed BMP into a bitmap record, flipping it top to bottom. */
-    i32 __cdecl NuTexLoadBmpPc(const char *path, i32 mips, NUTEXBMP_PC *bitmap) {
+    i32 NuTexLoadBmpPc(const char *path, i32 mips, NUTEXBMP_PC *bitmap) {
         NUFILE file;
         NUTEXBMP_FILE_HEADER_PC file_header;
         NUTEXBMP_INFO_HEADER_PC info_header;
@@ -2002,7 +1999,7 @@ extern "C" {
         return 0;
     }
 
-    NUTEXBMP_PC *__cdecl NuTexCreateBmpPc(const char *path) {
+    NUTEXBMP_PC *NuTexCreateBmpPc(const char *path) {
         NUTEXBMP_PC *bitmap = (NUTEXBMP_PC *)NuAlloc(sizeof(NUTEXBMP_PC), NuTextureSourcePathPC, 0x1e1);
         if (!NuTexLoadBmpPc(path, 0, bitmap)) {
             NuFree(bitmap, NuTextureSourcePathPC, 0x1e5);
@@ -2011,18 +2008,18 @@ extern "C" {
         return bitmap;
     }
 
-    void __cdecl NuWaterClearPc(void) {
+    void NuWaterClearPc(void) {
         nu_water_flow_state = 0;
         nu_water_reset_status = 0;
     }
 
-    void __cdecl NuWaterReset(void) {
+    void NuWaterReset(void) {
         nu_water_reset_state = 1;
         nu_water_reset_status = 0;
     }
 
     /* Releases the water vertex buffer before the D3D device is reset or destroyed. */
-    void __cdecl NuWaterReleaseVertexBufferPc(void) {
+    void NuWaterReleaseVertexBufferPc(void) {
         if (NuWaterVertexBufferPc != NULL) {
             NuWaterVertexBufferPc->methods->release(NuWaterVertexBufferPc);
             NuWaterVertexBufferPc = NULL;
@@ -2033,14 +2030,14 @@ extern "C" {
         NuPtlDmaSlotsExhaustedPc();
     }
 
-    void __cdecl NuWaterSpeed(f32 speed) {
+    void NuWaterSpeed(f32 speed) {
         NuShaderObjectBaseSetWaterSpeed(speed);
     }
 
     void fun_005f9950(void) {
     }
 
-    void __cdecl NuRndrShadowVolumeFinishPc(void) {
+    void NuRndrShadowVolumeFinishPc(void) {
         PCDeviceSetVertexShaderPc(NULL);
         PCDeviceSetPixelShaderPc(NULL);
         PCDeviceSetRenderState(27, 1);
@@ -2067,7 +2064,7 @@ extern "C" {
         PCDeviceDrawPrimitivePc(6, 0, 2);
     }
 
-    void __cdecl NuRndrShadowVolumeDrawPc(void) {
+    void NuRndrShadowVolumeDrawPc(void) {
         i32 i;
         u32 n;
         PCDeviceSetVertexDeclarationPc(RendererVertexDeclarationPc);
@@ -2101,7 +2098,7 @@ extern "C" {
     }
 
     /* Renders the queued hierarchy shadow packets as stencil shadow volumes; retail never calls it. */
-    void __cdecl NuRndrShadowVolumesPc(void) {
+    void NuRndrShadowVolumesPc(void) {
         if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 1 && PCShadowPacketCount != 0) {
             PCDeviceSetVertexShaderPc(NULL);
             PCDeviceSetPixelShaderPc(NULL);
@@ -2123,7 +2120,7 @@ extern "C" {
         PCShadowPacketCount = 0;
     }
 
-    void __cdecl NuRndrShadowOnOff(i32 value) {
+    void NuRndrShadowOnOff(i32 value) {
         NuRndrControlStatePc = value;
     }
 
@@ -2141,13 +2138,13 @@ extern "C" {
 
     /* Native PC entry 0x005fa220 is RET-only; the D3D release paths call it for the
      * geometry origin state. Its historical name is unknown. */
-    void __cdecl PcGeometryOriginReleasePc(void) {
+    void PcGeometryOriginReleasePc(void) {
     }
 
     void fun_005fa230(void) {
     }
 
-    void __cdecl PcResetGeometryOriginStatePc(void) {
+    void PcResetGeometryOriginStatePc(void) {
         PcGeometryViewMatrixPc = NuMtxSetIdentityTemplate;
         PcGeometryProjectionMatrixPc = NuMtxSetIdentityTemplate;
         PcGeometryViewProjectionMatrixPc = NuMtxSetIdentityTemplate;
@@ -2160,7 +2157,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PCGraphicsSubmitViewportPc(i32 x, i32 y, i32 width, i32 height) {
+    void PCGraphicsSubmitViewportPc(i32 x, i32 y, i32 width, i32 height) {
         PC_VIEWPORT_PC viewport;
         viewport.x = x;
         viewport.y = y;
@@ -2171,7 +2168,7 @@ extern "C" {
         NuVpSubmitPc(&viewport);
     }
 
-    void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *view, NUMTX *projection) {
+    void PcUpdateGeometryCameraOriginPc(NUMTX *view, NUMTX *projection) {
         NUVEC scale;
         NUVEC translation;
         scale.z = 1.0f;
@@ -2219,7 +2216,7 @@ extern "C" {
         return value;
     }
 
-    void __cdecl PCGraphicsSetSamplerTuplePc(u32 stage, const u32 *tuple) {
+    void PCGraphicsSetSamplerTuplePc(u32 stage, const u32 *tuple) {
         union {
             f32 value;
             u32 bits;
@@ -2249,7 +2246,7 @@ extern "C" {
     }
 
     /* Converts a byte string into glyph indices of the font. */
-    void __cdecl NuQFntAsciiToQCodePc(VUFNT *font, u16 *encoded, const char *text) {
+    void NuQFntAsciiToQCodePc(VUFNT *font, u16 *encoded, const char *text) {
         while (*text != '\0') {
             *encoded = UnicodeToIndexFast(font->unicode_map, font->unicode_count, (u16)(i16)*text);
             text++;
@@ -2259,7 +2256,7 @@ extern "C" {
     }
 
     /* Nonzero when any texel of the 8-bit column at (x, y) differs from the key value. */
-    static i32 __cdecl NuQFntColumnDiffers8Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count, i32 value) {
+    static i32 NuQFntColumnDiffers8Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count, i32 value) {
         i32 width = bitmap->width;
         u8 *texel = bitmap->data + width * y + x;
         i32 i;
@@ -2273,11 +2270,11 @@ extern "C" {
         return 0;
     }
 
-    static i32 __cdecl NuQFntColumnOpaque32Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count) {
+    static i32 NuQFntColumnOpaque32Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count) {
         return NuQFntColumnOpaque32Inline(bitmap, x, y, count);
     }
 
-    static i32 __cdecl NuQFntFindGlyphStart8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
+    static i32 NuQFntFindGlyphStart8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
         do {
             do {
                 if (NuQFntColumnDiffers8Pc(bitmap, *x, *y, count, value)) {
@@ -2291,7 +2288,7 @@ extern "C" {
         return 0;
     }
 
-    static i32 __cdecl NuQFntFindGlyphEnd8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
+    static i32 NuQFntFindGlyphEnd8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
         do {
             do {
                 if (!NuQFntColumnDiffers8Pc(bitmap, *x, *y, count, value)) {
@@ -2305,7 +2302,7 @@ extern "C" {
         return 0;
     }
 
-    static i32 __cdecl NuQFntFindGlyphStart32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
+    static i32 NuQFntFindGlyphStart32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
         do {
             do {
                 if (NuQFntColumnOpaque32Pc(bitmap, *x, *y, count)) {
@@ -2319,7 +2316,7 @@ extern "C" {
         return 0;
     }
 
-    static i32 __cdecl NuQFntFindGlyphEnd32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
+    static i32 NuQFntFindGlyphEnd32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
         do {
             do {
                 if (!NuQFntColumnOpaque32Pc(bitmap, *x, *y, count)) {
@@ -2333,13 +2330,13 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl NuQFntScanResetPc(void) {
+    void NuQFntScanResetPc(void) {
         NuQFntScanYPc = 0;
         NuQFntScanXPc = 0;
     }
 
     /* Finds the next glyph cell in an 8-bit strip; returns nonzero once the strip is exhausted. */
-    i32 __cdecl NuQFntNextGlyph8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 value, f32 *x, f32 *y, f32 *width) {
+    i32 NuQFntNextGlyph8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 value, f32 *x, f32 *y, f32 *width) {
         i32 exhausted = 0;
         i32 start;
 
@@ -2361,7 +2358,7 @@ extern "C" {
     }
 
     /* Finds the next glyph cell in a 32-bit strip; returns nonzero once the strip is exhausted. */
-    i32 __cdecl NuQFntNextGlyph32Pc(NUTEXBMP_PC *bitmap, i32 count, f32 *x, f32 *y, f32 *width) {
+    i32 NuQFntNextGlyph32Pc(NUTEXBMP_PC *bitmap, i32 count, f32 *x, f32 *y, f32 *width) {
         i32 exhausted = 0;
         i32 start;
 
@@ -2382,7 +2379,7 @@ extern "C" {
         return exhausted;
     }
 
-    static u16 __cdecl NuQFntMapLookupPc(VUCHARIDX *map, i32 count, u16 unicode) {
+    static u16 NuQFntMapLookupPc(VUCHARIDX *map, i32 count, u16 unicode) {
         u16 i;
 
         for (i = 0; i < count; i++) {
@@ -2393,7 +2390,7 @@ extern "C" {
         return 0xffff;
     }
 
-    i32 __cdecl NuQFntMapAddPc(VUCHARIDX *map, i32 slot, u16 unicode, u16 index) {
+    i32 NuQFntMapAddPc(VUCHARIDX *map, i32 slot, u16 unicode, u16 index) {
         if (slot > 808 || slot < 0) {
             NuQFntAtlasErrorPc();
         }
@@ -2403,8 +2400,7 @@ extern "C" {
     }
 
     /* Font material set-up used by the atlas builder; mirrors NuQFntReadPS. */
-    static i32 __cdecl NuQFntAtlasReadPSPc(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer,
-                                           VARIPTR end) {
+    static i32 NuQFntAtlasReadPSPc(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
         NUQFNT_RENDER_DATA_PC *platform;
         NUQFNT_ATLAS_MATERIAL_PC *material;
 
@@ -2468,7 +2464,7 @@ extern "C" {
         return 0;
     }
 
-    int __cdecl NuQFntMapComparePc(const void *a, const void *b) {
+    int NuQFntMapComparePc(const void *a, const void *b) {
         u16 left = ((const VUCHARIDX *)a)->unicode;
         u16 right = ((const VUCHARIDX *)b)->unicode;
 
@@ -2479,8 +2475,8 @@ extern "C" {
     }
 
     /* Builds a font from a BMP glyph strip, one cell per character of text in strip order. */
-    VUFNT *__cdecl NuQFntCreateFromBmpPc(const char *path, i32 cell_height, i32 baseline, i32 key_colour, u16 *text,
-                                         i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
+    VUFNT *NuQFntCreateFromBmpPc(const char *path, i32 cell_height, i32 baseline, i32 key_colour, u16 *text, i32 flags,
+                                 i32 plane, VARIPTR *buffer, VARIPTR end) {
         f32 width;
         f32 y;
         f32 x;
@@ -2691,7 +2687,7 @@ extern "C" {
         return font;
     }
 
-    void __cdecl PCGraphicsDestroyPostEffectTexturesPc(void) {
+    void PCGraphicsDestroyPostEffectTexturesPc(void) {
         NuPostEffectReleasePortsPc();
         PCGraphicsDestroyRenderTexture(PCGraphicsPostEffectBackBufferTexturePc);
     }
@@ -2828,7 +2824,7 @@ extern "C" {
     void NuSpeedBlurFilter::ResizeTexturesPc(i32, i32) {
     }
 
-    i32 __cdecl PcInitializeDynamicGeometryBuffersPc(PC_DYNAMIC_GEOMETRY_PC *geometry, i32 count) {
+    i32 PcInitializeDynamicGeometryBuffersPc(PC_DYNAMIC_GEOMETRY_PC *geometry, i32 count) {
         geometry->vertex_buffer = NULL;
         PCDeviceCreateVertexBuffer((u32)count * 0x50, 0x208, 0, 0, &geometry->vertex_buffer);
         i32 segments =
@@ -2882,7 +2878,7 @@ extern "C" {
         return 1;
     }
 
-    u8 __cdecl PcTransformDynamicGeometryPc(PC_GEOMETRY_SKIN_PC *skin, PC_GEOMETRY_MESH_PC *mesh, u32 *output_index) {
+    u8 PcTransformDynamicGeometryPc(PC_GEOMETRY_SKIN_PC *skin, PC_GEOMETRY_MESH_PC *mesh, u32 *output_index) {
         for (u32 group_index = 0; group_index < mesh->group_count; ++group_index) {
             PC_GEOMETRY_GROUP_PC *group = &mesh->groups[group_index];
             PC_GEOMETRY_BASIS_PC *basis = &PcGeometryTransformsPc[group->transform_index];
@@ -2977,7 +2973,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl PcUpdateGeometryDistancesPc(PC_GEOMETRY_OUTPUT_PC *output, PC_GEOMETRY_SORT_ITEM_PC *items, i32 count) {
+    i32 PcUpdateGeometryDistancesPc(PC_GEOMETRY_OUTPUT_PC *output, PC_GEOMETRY_SORT_ITEM_PC *items, i32 count) {
         PC_GEOMETRY_BASIS_VECTOR_PC origin;
         origin.x = PcGeometryDistanceOriginPc.x;
         origin.y = PcGeometryDistanceOriginPc.y;
@@ -3016,7 +3012,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl NuRndrSetAmbientLightPS(const NUVEC *colour) {
+    i32 NuRndrSetAmbientLightPS(const NUVEC *colour) {
         render_state.ambient_intensity.x = colour->x;
         render_state.ambient_intensity.y = colour->y;
         render_state.ambient_intensity.z = colour->z;
@@ -3026,8 +3022,8 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl NuRndrSetDirectionalLightsPS(const NUVEC *d0, const NUVEC *c0, const NUVEC *d1, const NUVEC *c1,
-                                             const NUVEC *d2, const NUVEC *c2) {
+    i32 NuRndrSetDirectionalLightsPS(const NUVEC *d0, const NUVEC *c0, const NUVEC *d1, const NUVEC *c1,
+                                     const NUVEC *d2, const NUVEC *c2) {
         NUMTX *view = NuCameraGetViewMtx();
         render_state.light_intensity[0] = *c0;
         render_state.light_intensity[1] = *c1;
@@ -3053,7 +3049,7 @@ extern "C" {
         return 1;
     }
 
-    void __cdecl NuRndrStateSetSpecularLightEx(const NUVEC *direction, const NUMTX *matrix, const NUVEC *colour) {
+    void NuRndrStateSetSpecularLightEx(const NUVEC *direction, const NUMTX *matrix, const NUVEC *colour) {
         CAMERA_RENDER_SPECULAR_READER_PC *state = (CAMERA_RENDER_SPECULAR_READER_PC *)&render_state;
         render_state.specular_mtx = *matrix;
         render_state.specular_colour = *colour;
@@ -3063,7 +3059,7 @@ extern "C" {
         render_state.light_packet_cache = NULL;
     }
 
-    i32 __cdecl NuRndrStateUpdateCameraState(void) {
+    i32 NuRndrStateUpdateCameraState(void) {
         NUMTX *projection = NuCameraGetProjectionMtx();
         NUMTX *view = NuCameraGetViewMtx();
         f64 horizontal;
@@ -3099,7 +3095,7 @@ extern "C" {
         return render_state.fog_state_word;
     }
 
-    void *__cdecl DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state) {
+    void *DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state) {
         VARIPTR *cursor;
         NUPRIM_LIGHT_PACKET_PC *packet;
         i32 i;
@@ -3126,7 +3122,7 @@ extern "C" {
         return packet;
     }
 
-    void *__cdecl DisplayListBuildKonstPacket(NUGLOBALRNDRSTATE_PC *state) {
+    void *DisplayListBuildKonstPacket(NUGLOBALRNDRSTATE_PC *state) {
         VARIPTR *cursor;
         f32 *packet;
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
@@ -3141,7 +3137,7 @@ extern "C" {
         return packet;
     }
 
-    void *__cdecl DisplayListBuildReflectionPacket(NUGLOBALRNDRSTATE_PC *state) {
+    void *DisplayListBuildReflectionPacket(NUGLOBALRNDRSTATE_PC *state) {
         VARIPTR *cursor;
         u32 *packet;
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
@@ -3152,7 +3148,7 @@ extern "C" {
         return packet;
     }
 
-    void *__cdecl DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state) {
+    void *DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state) {
         VARIPTR *cursor;
         void *packet;
         f32 *field;
@@ -3177,7 +3173,7 @@ extern "C" {
         return packet;
     }
 
-    void *__cdecl DisplayListBuildVertexGroupPacket(NUGLOBALRNDRSTATE_PC *unused) {
+    void *DisplayListBuildVertexGroupPacket(NUGLOBALRNDRSTATE_PC *unused) {
         VARIPTR *cursor;
         u32 *packet;
         f32 *output;
@@ -3219,7 +3215,7 @@ extern "C" {
         return NULL;
     }
 
-    void __cdecl RndrStateCopyGlobalState(NUGLOBALRNDRSTATE_PC *state) {
+    void RndrStateCopyGlobalState(NUGLOBALRNDRSTATE_PC *state) {
         memcpy(state, &render_state, sizeof(*state));
         state->fog_packet_cache = NULL;
         state->camera_packet_cache = NULL;
@@ -3227,7 +3223,7 @@ extern "C" {
         state->konst_packet_cache = NULL;
     }
 
-    void __cdecl RndrStateResetGlobalState(NUGLOBALRNDRSTATE_PC *state) {
+    void RndrStateResetGlobalState(NUGLOBALRNDRSTATE_PC *state) {
         state->state_00f4 = 0;
         state->state_0100 = 0;
         state->fog_packet_cache = NULL;
@@ -3245,7 +3241,7 @@ extern "C" {
         memset(&render_state.counter_001e, 0xff, sizeof(render_state.counter_001e));
     }
 
-    void __cdecl RndrStateResetSharedGlobalState(void) {
+    void RndrStateResetSharedGlobalState(void) {
         render_state.state_00f4 = 0;
         render_state.state_0100 = 0;
         render_state.fog_packet_cache = NULL;
@@ -3266,7 +3262,7 @@ extern "C" {
         return &render_state;
     }
 
-    void __cdecl NuRndrStateInit(void) {
+    void NuRndrStateInit(void) {
         memset(&render_state, 0, sizeof(render_state));
         NuMtxSetIdentity(&RndrStateTransformPc);
         NuMtxSetIdentity(&RndrStateScaledTransformPc);
@@ -3278,8 +3274,8 @@ extern "C" {
         NuRndrStateUpdateCameraState();
     }
 
-    void __cdecl RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint,
-                                            NUMTL *material) {
+    void RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint,
+                                    NUMTL *material) {
         (void)tint_enabled;
         (void)tint;
         render_state.state_00f8 = alpha;
@@ -3290,7 +3286,7 @@ extern "C" {
         render_state.konst_packet_cache = NULL;
     }
 
-    void __cdecl NuRndrStateGetTransformPc(NUMTX *output, const NUMTL *material) {
+    void NuRndrStateGetTransformPc(NUMTX *output, const NUMTL *material) {
         const PC_TRANSFORM_MATERIAL_VIEW *selected = (const PC_TRANSFORM_MATERIAL_VIEW *)material;
         f32 scale;
         NUVEC scaling;
@@ -3315,7 +3311,7 @@ extern "C" {
         *output = RndrStateScaledTransformPc;
     }
 
-    void __cdecl NuRndrStateSetTransformPc(const NUMTX *matrix) {
+    void NuRndrStateSetTransformPc(const NUMTX *matrix) {
         f32 temporary;
         RndrStateTransformScalePc = 1.0f;
         RndrStateTransformPc = *matrix;
@@ -3331,14 +3327,14 @@ extern "C" {
         RndrStateScaledTransformPc = RndrStateTransformPc;
     }
 
-    void __cdecl RndrStateSetReflection(i32 reflection) {
+    void RndrStateSetReflection(i32 reflection) {
         render_state.reflection_state = (u32)reflection;
         ++render_state.counter_0020;
         ++render_state.reflection_id;
         render_state.reflection_packet_cache = NULL;
     }
 
-    static void __cdecl NuRndrResetStreamBufferPc(void) {
+    static void NuRndrResetStreamBufferPc(void) {
         switch (rndrstream_buffid) {
             case 0:
                 nudlist_stream_cursor = rndrstream_b;
@@ -3356,7 +3352,7 @@ extern "C" {
                        nuprim_field_ba8 - nudlist_stream_cursor.addr);
     }
 
-    void __cdecl NuRndrSwapStreamBuffers(void) {
+    void NuRndrSwapStreamBuffers(void) {
         switch (rndrstream_buffid) {
             case 0:
                 rndrstream_used = nudlist_stream_cursor.addr - rndrstream_b.addr;
@@ -3376,7 +3372,7 @@ extern "C" {
         NuRndrResetStreamBufferPc();
     }
 
-    void __cdecl NuRndrStreamInit(i32 size, VARIPTR *buffer) {
+    void NuRndrStreamInit(i32 size, VARIPTR *buffer) {
         if (buffer == NULL) {
             rndrstream_b.void_ptr = NuAlloc(size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nustream.c", 126);
             rndrstream_a.void_ptr = NuAlloc(size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nustream.c", 127);
@@ -3392,7 +3388,7 @@ extern "C" {
         NuRndrResetStreamBufferPc();
     }
 
-    void __cdecl NuDisplayListDrawPrimitive2DPc(void *data) {
+    void NuDisplayListDrawPrimitive2DPc(void *data) {
         DISPLAY_PRIMITIVE_PACKET_PC *packet = (DISPLAY_PRIMITIVE_PACKET_PC *)data;
         u32 count;
         const void *vertices;
@@ -3445,7 +3441,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuDisplayListSkinPalettePc(void *arg) {
+    void NuDisplayListSkinPalettePc(void *arg) {
         PC_DL_SKIN_PALETTE_READER *packet = (PC_DL_SKIN_PALETTE_READER *)arg;
         i32 count = packet->count;
         void *elements = packet->elements;
@@ -3459,7 +3455,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuDisplayListDrawFaceOnPc(void *arg) {
+    void NuDisplayListDrawFaceOnPc(void *arg) {
         PC_DL_FACEON_DRAW_READER *packet = (PC_DL_FACEON_DRAW_READER *)arg;
         if (packet == NULL) {
             return;
@@ -3468,7 +3464,7 @@ extern "C" {
         PCDeviceDrawPrimitivePc(4, packet->first_vertex, packet->primitive_count * 2u);
     }
 
-    void __cdecl NuDisplayListLightsPc(void *arg) {
+    void NuDisplayListLightsPc(void *arg) {
         PC_DL_LIGHTS_READER *packet = (PC_DL_LIGHTS_READER *)arg;
         if (PCDeviceHardwareVertexProcessingPC != 4) {
             NuShaderManagerSetfv(1, &packet->ambient.x);
@@ -3512,13 +3508,13 @@ extern "C" {
         }
     }
 
-    void __cdecl NuDisplayListTintPc(void *arg) {
+    void NuDisplayListTintPc(void *arg) {
         NUVEC4 tint = {1.0f, 1.0f, 1.0f, *(f32 *)arg};
         NuDisplayHandlerTintPc = tint;
         NuShaderManagerSetfv(0x38, &tint.x);
     }
 
-    void __cdecl NuDisplayListFogPc(void *arg) {
+    void NuDisplayListFogPc(void *arg) {
         PC_DL_FOG_READER *packet = (PC_DL_FOG_READER *)arg;
         if (packet->enabled != 0) {
             i32 packed = (i32)packet->colour;
@@ -3540,11 +3536,11 @@ extern "C" {
         }
     }
 
-    void __cdecl NuDisplayListLightmapPacketPc(void *arg) {
+    void NuDisplayListLightmapPacketPc(void *arg) {
         PCGraphicsFrameScratchCount.lightmap_packet = arg;
     }
 
-    void __cdecl NuDisplayListUpdateLightmapPc(void) {
+    void NuDisplayListUpdateLightmapPc(void) {
         PC_DL_LIGHTMAP_UPDATE_READER *packet;
         i32 stage;
         f32 offset[3];
@@ -3600,7 +3596,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuDisplayListLegacyLightmapPc(void *arg) {
+    void NuDisplayListLegacyLightmapPc(void *arg) {
         i32 *texture_ids = (i32 *)arg;
         f32 offset[3] = {0.0f, 0.0f, 0.0f};
         i32 i;
@@ -3618,7 +3614,7 @@ extern "C" {
         NuShaderManagerSetfv(0x60, offset);
     }
 
-    void __cdecl NuDisplayListLegacyLightmapOffsetPc(void *arg) {
+    void NuDisplayListLegacyLightmapOffsetPc(void *arg) {
         PC_DL_LEGACY_LIGHTMAP_READER *packet = (PC_DL_LEGACY_LIGHTMAP_READER *)arg;
         f32 offset[3];
         i32 i;
@@ -3639,7 +3635,7 @@ extern "C" {
         NuShaderManagerSetfv(0x60, offset);
     }
 
-    void __cdecl NuDisplayListPacketAdPc(void *arg) {
+    void NuDisplayListPacketAdPc(void *arg) {
         PC_DL_AD_PACKET *packet = (PC_DL_AD_PACKET *)arg;
         PC_DL_AD_RECORD *record;
         NUVEC4 values;
@@ -3705,7 +3701,7 @@ extern "C" {
         PCDeviceSetStreamSourceFreqPc(1, 1);
     }
 
-    void __cdecl NuRndrScreenGrabTileInit(SCREENGRAB_TILE_PARAMS_PC *params, i32 tiles, f32 b, f32 a, f32 c) {
+    void NuRndrScreenGrabTileInit(SCREENGRAB_TILE_PARAMS_PC *params, i32 tiles, f32 b, f32 a, f32 c) {
         (void)params;
         (void)tiles;
         (void)b;
@@ -3713,15 +3709,15 @@ extern "C" {
         (void)c;
     }
 
-    void __cdecl NuRndrScreenGrabTileDeInit(SCREENGRAB_TILE_PARAMS_PC *params) {
+    void NuRndrScreenGrabTileDeInit(SCREENGRAB_TILE_PARAMS_PC *params) {
         (void)params;
     }
 
-    void __cdecl NuRndrScreenGrabTileBegin(void **tile) {
+    void NuRndrScreenGrabTileBegin(void **tile) {
         *tile = NULL;
     }
 
-    void __cdecl NuRndrScreenGrabTileEnd(void **tile) {
+    void NuRndrScreenGrabTileEnd(void **tile) {
         (void)tile;
     }
 
@@ -3739,7 +3735,7 @@ extern "C" {
         NuMtxSetIdentity(&NuVpIdentityMatrixPc);
     }
 
-    void __cdecl NuVpBuildScalingTemplatePc(void) {
+    void NuVpBuildScalingTemplatePc(void) {
         f32 width = (f32)PS2_REZ_W;
         f32 height = (f32)PS2_REZ_H;
         f32 min_z = vpCurrent.min_z;
@@ -3761,7 +3757,7 @@ extern "C" {
         NuCameraScalingTemplate.m33 = 1.0f;
     }
 
-    void __cdecl NuVpUpdate(void) {
+    void NuVpUpdate(void) {
         PC_VIEWPORT_PC viewport;
         i32 x;
         i32 y;
@@ -3873,8 +3869,8 @@ extern "C" {
         return 1.0f;
     }
 
-    void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
-                                         f32 dest_y, f32 dest_right, f32 dest_bottom) {
+    void RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
+                                 f32 dest_y, f32 dest_right, f32 dest_bottom) {
         RenderPostViewportPrefixPc.source_x = source_x;
         RenderPostViewportPrefixPc.source_y = source_y;
         RenderPostViewportPrefixPc.source_right = source_right;
@@ -3895,7 +3891,7 @@ extern "C" {
         PCSpecialProjectionAdjust.y_offset = ((height - source_bottom) - source_y) * -2.0f / height;
     }
 
-    i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *handle, NUMTX *matrix, f32 alpha) {
+    i32 NuSpecialDrawAtAlpha(NUSPECIALHANDLE *handle, NUMTX *matrix, f32 alpha) {
         i32 result;
         if (handle->scene == NULL) {
             return 0;
@@ -3916,7 +3912,7 @@ extern "C" {
     static u32 NuDebrisCurrentBufferIndex;
 
     /* PC implementation of the NuInitDebrisRenderer family. */
-    void __cdecl debris_InitializeD3D(void) {
+    void debris_InitializeD3D(void) {
         i32 index;
         NuDebrisCurrentBufferIndex = 0;
         NuDebrisUseSystemMemory = 0;
@@ -3929,7 +3925,7 @@ extern "C" {
                                  NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
     }
 
-    void __cdecl NuDebrisReleaseVertexBuffersPc(void) {
+    void NuDebrisReleaseVertexBuffersPc(void) {
         PC_BUFFER_RESOURCE_PC **buffer = NuDebrisVertexBuffers;
         do {
             PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)buffer);
@@ -3937,7 +3933,7 @@ extern "C" {
         } while (buffer != NuDebrisVertexBuffers + 4);
     }
 
-    void __cdecl NuDebrisRendererFlushBuffers(void) {
+    void NuDebrisRendererFlushBuffers(void) {
         if (NuDebrisUseSystemMemory == 0 && NuDebrisVertexData != NULL) {
             PCDeviceUnlockVertexBuffer(NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
         }
@@ -3949,7 +3945,7 @@ extern "C" {
         NuDebrisFrameVertexCount = 0;
     }
 
-    i32 __cdecl NuDebrisRendererNextBuffer(void) {
+    i32 NuDebrisRendererNextBuffer(void) {
         if (NuDebrisUseSystemMemory == 0 && NuDebrisVertexData != NULL) {
             PCDeviceUnlockVertexBuffer(NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
         }
@@ -3975,7 +3971,7 @@ extern "C" {
         return 1;
     }
 
-    void __cdecl NuDisplayListDrawDebrisPc(void *arg) {
+    void NuDisplayListDrawDebrisPc(void *arg) {
         PC_DL_DEBRIS_DRAW_READER *packet = (PC_DL_DEBRIS_DRAW_READER *)arg;
         if (packet->vertex_count == 0) {
             return;
@@ -3989,7 +3985,7 @@ extern "C" {
         }
     }
 
-    DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSet(void *memory, i32 *size) {
+    DEBRIS_PARTICLE_CHUNK_PC *CreateDmaParticleSet(void *memory, i32 *size) {
         u8 *cursor = (u8 *)memory;
         u8 *start = cursor;
         DEBRIS_PARTICLE_CHUNK_PC *chunk = (DEBRIS_PARTICLE_CHUNK_PC *)cursor;
@@ -4021,11 +4017,11 @@ extern "C" {
         return (DEBRIS_PARTICLE_CHUNK_PC *)start;
     }
 
-    DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSetGlass(void *memory, i32 *size) {
+    DEBRIS_PARTICLE_CHUNK_PC *CreateDmaParticleSetGlass(void *memory, i32 *size) {
         return CreateDmaParticleSet(memory, size);
     }
 
-    DEBRIS_PART_HEADER_PC *__cdecl CreateDmaPartEffectList(void *memory, i32 *size) {
+    DEBRIS_PART_HEADER_PC *CreateDmaPartEffectList(void *memory, i32 *size) {
         u8 *cursor = (u8 *)(((u32)memory + 0xf) & ~0xf);
         u8 *start = cursor;
         DEBRIS_PART_HEADER_PC *header = (DEBRIS_PART_HEADER_PC *)cursor;
@@ -4034,7 +4030,7 @@ extern "C" {
         return (DEBRIS_PART_HEADER_PC *)start;
     }
 
-    void __cdecl LinkDmaParticalSets(DEBRIS_PARTICLE_CHUNK_PC **chunks, i32 count) {
+    void LinkDmaParticalSets(DEBRIS_PARTICLE_CHUNK_PC **chunks, i32 count) {
         DEBRIS_PARTICLE_CHUNK_PC *chunk = chunks[count - 1];
         i32 i;
         chunk->command = 0x52;
@@ -4046,7 +4042,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuRndrParticleSetRepeat(NUVEC *position) {
+    void NuRndrParticleSetRepeat(NUVEC *position) {
         NUVEC repeat;
         repeat.x = (position->x - NuRndrDebBase.x) / NuRndrDebRange.x;
         repeat.y = (position->y - NuRndrDebBase.y) / NuRndrDebRange.y;
@@ -4059,7 +4055,7 @@ extern "C" {
         position->z = NuRndrDebBase.z + repeat.z * NuRndrDebRange.z;
     }
 
-    void __cdecl GenericDebinfoDmaTypeUpdate(DEBRIS_INFO_PC *effect) {
+    void GenericDebinfoDmaTypeUpdate(DEBRIS_INFO_PC *effect) {
         if (effect->native_data == NULL) {
             if (freeDmaDebType >= EDPP_MAX_DMADEBTYPES) {
                 NuPtlDmaSlotsExhaustedPc();
@@ -4197,17 +4193,17 @@ extern "C" {
         }
     }
 
-    void __cdecl NuPrim2DEnd(void) {
+    void NuPrim2DEnd(void) {
         *NuPrimVertexCountPointer = NuPrimVertexCount;
         NuPrimVertexCount = 0;
     }
 
-    void __cdecl NuPrim3DEnd(void) {
+    void NuPrim3DEnd(void) {
         *NuPrimVertexCountPointer = NuPrimVertexCount;
         NuPrimVertexCount = 0;
     }
 
-    void __cdecl NuPrim2DAddXYZ(f32 x, f32 y, f32 z) {
+    void NuPrim2DAddXYZ(f32 x, f32 y, f32 z) {
         ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = NuPrimXScale * x + NuPrimXBias;
         ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = NuPrimYScale * y + NuPrimYBias;
         ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z;
@@ -4237,12 +4233,12 @@ extern "C" {
         }
     }
 
-    void __cdecl NuPrimInit(VARIPTR *buffer, VARIPTR end) {
+    void NuPrimInit(VARIPTR *buffer, VARIPTR end) {
         (void)buffer;
         (void)end;
     }
 
-    void __cdecl NuPrimSetCoordinateSystem(i32 scale_mode) {
+    void NuPrimSetCoordinateSystem(i32 scale_mode) {
         NuPrimCoordSystemStack[NuPrimCSPos] = scale_mode;
 
         switch (scale_mode) {
@@ -4269,17 +4265,17 @@ extern "C" {
 
     /* Native PC entry 0x00600bb0 is RET-only; the D3D release path calls it before
      * releasing the geometry buffers (0x00600bc0 is its restore counterpart). */
-    void __cdecl NuPrimReleaseResourcesPc(void) {
+    void NuPrimReleaseResourcesPc(void) {
     }
 
-    void __cdecl NuKeyboardWindowStateLeafPc(void) {
+    void NuKeyboardWindowStateLeafPc(void) {
     }
 
-    void __cdecl Initialise_PS(NUGSCN *scene) {
+    void Initialise_PS(NUGSCN *scene) {
         scene->instance_visibility_flags = NuPortalVisibilityBitsPc;
     }
 
-    void __cdecl PortalFlagRoomVisiblePc(NUGSCNROOM *room, NUGSCN *scene) {
+    void PortalFlagRoomVisiblePc(NUGSCNROOM *room, NUGSCN *scene) {
         i32 i;
         if (scene->display_list != NULL) {
             for (i = 0; i < room->instance_count; ++i) {
@@ -4293,7 +4289,7 @@ extern "C" {
         }
     }
 
-    void __cdecl SetAllInstancesVisible(NUGSCN *scene) {
+    void SetAllInstancesVisible(NUGSCN *scene) {
         i32 i;
         if (scene->display_list != NULL) {
             memset(NuPortalVisibilityBitsPc, 255, 625);
@@ -4304,7 +4300,7 @@ extern "C" {
         }
     }
 
-    void __cdecl SetAllInstancesHidden(NUGSCN *scene) {
+    void SetAllInstancesHidden(NUGSCN *scene) {
         i32 i;
         if (scene->display_list != NULL) {
             memset(NuPortalVisibilityBitsPc, 0, 625);
@@ -4315,7 +4311,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PortalClipRoomPc(NUGSCN *scene, NUGSCNROOM *room, NUPORTAL_FRUSTUM_PC *frustum) {
+    void PortalClipRoomPc(NUGSCN *scene, NUGSCNROOM *room, NUPORTAL_FRUSTUM_PC *frustum) {
         NUDISPLAY_LIST_PC *display = scene->display_list;
         u32 i;
         if (display != NULL && (display->render_flags & 0x4000) != 0) {
@@ -4377,7 +4373,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuMtlCreatePS(NUMTL *material, i32 is_3d) {
+    void NuMtlCreatePS(NUMTL *material, i32 is_3d) {
         PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
         NuShaderMtlDescInit(reinterpret_cast<PC_MATERIAL_CREATE_SHADER *>(&mtl->shader));
         if (mtl->texture_id > 0) {
@@ -4399,7 +4395,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuMtlUpdatePS(NUMTL *material) {
+    void NuMtlUpdatePS(NUMTL *material) {
         PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
         PC_MATERIAL_DEVICE_CAPS_VIEW *device = reinterpret_cast<PC_MATERIAL_DEVICE_CAPS_VIEW *>(&PCDeviceBackend);
         PC_SHADER_HANDLE_VIEW *shader;
@@ -4456,7 +4452,7 @@ extern "C" {
         view->texture_animation_offsets[layer][1] = v;
     }
 
-    void __cdecl NuMtlSetShaderDescPS(NUMTL *material, const PC_MATERIAL_SHADER_DESC_VIEW *description) {
+    void NuMtlSetShaderDescPS(NUMTL *material, const PC_MATERIAL_SHADER_DESC_VIEW *description) {
         PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
         i32 colour;
         mtl->shader = *description;
@@ -4466,7 +4462,7 @@ extern "C" {
         mtl->diffuse.z = ((colour >> 16) & 0xff) / 255.0;
     }
 
-    void __cdecl NuDisplayListReflectionPc(void *arg) {
+    void NuDisplayListReflectionPc(void *arg) {
         i32 reflection = *(i32 *)arg;
         PC_DL_MATERIAL_READER *material;
         NuDisplayHandlerReflectionPc = reflection;
@@ -4506,7 +4502,7 @@ extern "C" {
     void fun_006017b0(void) {
     }
 
-    void __cdecl NuMtlSetRenderPlane(NUMTL *material, i32 plane) {
+    void NuMtlSetRenderPlane(NUMTL *material, i32 plane) {
     }
 
     void fun_006017d0(void) {
@@ -4537,8 +4533,8 @@ extern "C" {
         NuLgtStateEnabledPc = 0;
     }
 
-    void __cdecl NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta,
-                            u32 colour, f32 end_width, f32 length) {
+    void NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta, u32 colour,
+                    f32 end_width, f32 length) {
         i32 i;
         if (NuLgtLaserCnt >= 64) {
             return;
@@ -4566,7 +4562,7 @@ extern "C" {
         ++NuLgtLaserCnt;
     }
 
-    void __cdecl NuLgtSetArcMatEx(i32 type, NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1) {
+    void NuLgtSetArcMatEx(i32 type, NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1) {
         if (type >= 4) {
             return;
         }
@@ -4581,8 +4577,8 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl NuLgtArcLaserEx(i32 type, NUVEC *start, NUVEC *end, NUVEC *bend, f32 width, f32 segment_length,
-                                 f32 wobble, f32 bend_amount, i32 colour, i32 flags) {
+    void NuLgtArcLaserEx(i32 type, NUVEC *start, NUVEC *end, NUVEC *bend, f32 width, f32 segment_length, f32 wobble,
+                         f32 bend_amount, i32 colour, i32 flags) {
         i32 i;
         i32 index;
         u32 red;
@@ -4632,14 +4628,14 @@ extern "C" {
         ++NuLgtArcLaserCnt;
     }
 
-    void __cdecl NuGScnRndr3(NUGSCN *scene) {
+    void NuGScnRndr3(NUGSCN *scene) {
         NuDisplaySceneRndr(scene->display_list);
     }
 
     void fun_00601e10(void) {
     }
 
-    i32 __cdecl NuGScnUploadGfxDataFromFilePS(VARIPTR *cursor, VARIPTR end, NUFILE file) {
+    i32 NuGScnUploadGfxDataFromFilePS(VARIPTR *cursor, VARIPTR end, NUFILE file) {
         i32 section_size;
         i32 bytes_read;
         i32 i;
@@ -4767,7 +4763,7 @@ extern "C" {
         return section_size;
     }
 
-    void __cdecl NuGScnCreatePS(NUGSCN *scene, VARIPTR *cursor, VARIPTR *end) {
+    void NuGScnCreatePS(NUGSCN *scene, VARIPTR *cursor, VARIPTR *end) {
         i32 i;
         (void)cursor;
         (void)end;
@@ -4778,7 +4774,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuGScnFixupTIDsPS(NUGSCN *scene) {
+    void NuGScnFixupTIDsPS(NUGSCN *scene) {
         i32 i;
         i32 j;
         if (scene->display_list == NULL) {
@@ -4805,7 +4801,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuGScnRestoreTIDsPS(NUGSCN *scene) {
+    void NuGScnRestoreTIDsPS(NUGSCN *scene) {
         i32 i;
         i32 j;
         if (scene->display_list == NULL) {
@@ -4832,7 +4828,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuGScnFixupPS(NUGSCN *scene) {
+    void NuGScnFixupPS(NUGSCN *scene) {
         SCENE_FIXUP_NATIVE_PC *native = (SCENE_FIXUP_NATIVE_PC *)scene->native_scene;
         SCENE_FIXUP_GEOMETRY_PC *geometry;
         SCENE_FIXUP_VERTEX_STREAM_PC *stream;
@@ -4876,7 +4872,7 @@ extern "C" {
         NuPortalMaxDepth(scene, scene->max_portals);
     }
 
-    void __cdecl NuGScnDestroyPS(NUGSCN *scene) {
+    void NuGScnDestroyPS(NUGSCN *scene) {
         PC_GSCN_NATIVE_VIEW *native = (PC_GSCN_NATIVE_VIEW *)scene->native_scene;
         PC_SCENE_MTL_VIEW *material;
         i32 i;
@@ -4945,7 +4941,7 @@ extern "C" {
     }
 
     /* Releases the dynamic vertex buffers of every registered scene before a D3D reset. */
-    void __cdecl NuGScnReleaseDynamicBuffersPc(void) {
+    void NuGScnReleaseDynamicBuffersPc(void) {
         i32 i;
         u32 j;
         for (i = 0; i != 100; ++i) {
@@ -4965,7 +4961,7 @@ extern "C" {
     }
 
     /* Recreates the dynamic vertex buffers released by NuGScnReleaseDynamicBuffersPc. */
-    void __cdecl NuGScnRestoreDynamicBuffersPc(void) {
+    void NuGScnRestoreDynamicBuffersPc(void) {
         i32 i;
         u32 j;
         for (i = 0; i != 100; ++i) {
@@ -4985,57 +4981,57 @@ extern "C" {
         }
     }
 
-    void __cdecl NuDisplayListDrawItems(NUDISPLAYLISTITEM *items) {
+    void NuDisplayListDrawItems(NUDISPLAYLISTITEM *items) {
         NuDisplayListExecute(items, CurrentItemTable);
     }
 
-    i32 __cdecl DisplayListDebugPS(NUDISPLAYLISTITEM *item, char *text) {
+    i32 DisplayListDebugPS(NUDISPLAYLISTITEM *item, char *text) {
         (void)item;
         (void)text;
         return 0;
     }
 
-    void __cdecl NuDisplayListAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
+    void NuDisplayListAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
         (void)texture_id;
         item->type = 0x87;
         item->next = NULL;
         item->id = 0;
     }
 
-    void __cdecl NuDisplayListAddTexture(NUDISPLAYLISTITEM *item, i32 texture_id) {
+    void NuDisplayListAddTexture(NUDISPLAYLISTITEM *item, i32 texture_id) {
         (void)texture_id;
         item->type = 0x87;
         item->next = NULL;
         item->id = 0;
     }
 
-    void __cdecl NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *item, NUMTL *material) {
+    void NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *item, NUMTL *material) {
         item->type = 0x80;
         item->next = material;
         item->id = 3;
     }
 
-    void __cdecl NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *item, NUMTL *material) {
+    void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *item, NUMTL *material) {
         (void)material;
         item->type = 0x87;
         item->next = NULL;
         item->id = 0;
     }
 
-    void __cdecl NuDisplayListAddLightState(NUDISPLAYLISTITEM *item, NUMTL *material) {
+    void NuDisplayListAddLightState(NUDISPLAYLISTITEM *item, NUMTL *material) {
         (void)material;
         item->type = 0x87;
         item->next = NULL;
         item->id = 0;
     }
 
-    void __cdecl DisplayListCreatePS(NUDISPLAY_LIST_PC *scene, VARIPTR *buffer, VARIPTR end) {
+    void DisplayListCreatePS(NUDISPLAY_LIST_PC *scene, VARIPTR *buffer, VARIPTR end) {
         (void)scene;
         (void)buffer;
         (void)end;
     }
 
-    VARIPTR *__cdecl NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target) {
+    VARIPTR *NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target) {
         VARIPTR *cursor;
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
         cursor = NuDisplayListStreamCursor;
@@ -5055,7 +5051,7 @@ extern "C" {
         return target != NULL ? NULL : cursor;
     }
 
-    VARIPTR *__cdecl NuDisplayListLinkItems(NUDISPLAYLIST_PC *list, i32 count) {
+    VARIPTR *NuDisplayListLinkItems(NUDISPLAYLIST_PC *list, i32 count) {
         VARIPTR *cursor;
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         cursor = NuDisplayListStreamCursor;
@@ -5070,8 +5066,8 @@ extern "C" {
         return cursor;
     }
 
-    void *__cdecl DisplayListCreateGeomTransformPS(VARIPTR *buffer, NUMTX *matrix, NUMTL *material, void *geometry,
-                                                   void *existing) {
+    void *DisplayListCreateGeomTransformPS(VARIPTR *buffer, NUMTX *matrix, NUMTL *material, void *geometry,
+                                           void *existing) {
         NUVEC translation;
         NUVEC scale;
         NUMTX *result;
@@ -5095,7 +5091,7 @@ extern "C" {
         return result;
     }
 
-    void *__cdecl DisplayListCreateFaceonTransformPS(VARIPTR *buffer, NUMTX *matrix, NUMTL *material, void *faceon) {
+    void *DisplayListCreateFaceonTransformPS(VARIPTR *buffer, NUMTX *matrix, NUMTL *material, void *faceon) {
         NUMTX *result;
         NUMTX *orientation;
         NUVEC direction;
@@ -5138,8 +5134,8 @@ extern "C" {
         return 0;
     }
 
-    void *__cdecl DisplayListCreateSkinTransformPS(VARIPTR *buffer, NUMTX *skin, void *weights, void *geometry_ptr,
-                                                   void **render_geometry, void *unused) {
+    void *DisplayListCreateSkinTransformPS(VARIPTR *buffer, NUMTX *skin, void *weights, void *geometry_ptr,
+                                           void **render_geometry, void *unused) {
         PC_SPECIAL_GEOMETRY *geometry = (PC_SPECIAL_GEOMETRY *)geometry_ptr;
         i32 *matrix_count;
         u32 vertex;
@@ -5191,12 +5187,12 @@ extern "C" {
         return matrix_count;
     }
 
-    void __cdecl DisplayListPrintItemPS(NUDISPLAYLISTITEM *item, i32 file_handle) {
+    void DisplayListPrintItemPS(NUDISPLAYLISTITEM *item, i32 file_handle) {
         (void)item;
         (void)file_handle;
     }
 
-    void __cdecl DisplayListSwapBuffersPS(void) {
+    void DisplayListSwapBuffersPS(void) {
     }
 
     void fun_00603930(void) {
@@ -5209,17 +5205,17 @@ extern "C" {
     }
 
     /* Native603960 is an actual empty cross-TU operation, also empty in source. */
-    void __cdecl DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *scene) {
+    void DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *scene) {
         (void)scene;
     }
 
-    void *__cdecl NuDisplayListPrepareFaceonPS(VARIPTR *buffer, void *faceon, NUMTX *matrix) {
+    void *NuDisplayListPrepareFaceonPS(VARIPTR *buffer, void *faceon, NUMTX *matrix) {
         (void)buffer;
         (void)matrix;
         return faceon;
     }
 
-    void __cdecl NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *scene) {
+    void NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *scene) {
         i32 i;
         for (i = 0; i < scene->item_count; ++i) {
             NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->items)[i];
@@ -5229,7 +5225,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuDisplaySceneDestroyPS(NUDISPLAY_LIST_PC *scene) {
+    void NuDisplaySceneDestroyPS(NUDISPLAY_LIST_PC *scene) {
         (void)scene;
     }
 
@@ -5237,8 +5233,7 @@ extern "C" {
         return 1;
     }
 
-    void __cdecl NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *source_scene, NUDISPLAY_LIST_PC *clone_scene,
-                                       VARIPTR *buffer) {
+    void NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *source_scene, NUDISPLAY_LIST_PC *clone_scene, VARIPTR *buffer) {
         u32 *word;
         clone_scene->native_word = NULL;
         if (source_scene->native_word != NULL) {
@@ -5249,7 +5244,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuDisplayListVertexGroupsPc(void *arg) {
+    void NuDisplayListVertexGroupsPc(void *arg) {
         PC_DL_VERTEX_GROUPS_READER *packet = (PC_DL_VERTEX_GROUPS_READER *)arg;
         NUVEC4 *values = packet->values;
         i32 groups = (i32)((u32)packet->count + 3u) / 4;
@@ -5259,7 +5254,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuDisplayListVertexOffsetsPc(void *arg) {
+    void NuDisplayListVertexOffsetsPc(void *arg) {
         PC_DL_VERTEX_OFFSETS_READER *packet = (PC_DL_VERTEX_OFFSETS_READER *)arg;
         i32 count = packet->count;
         i32 i;
@@ -5269,7 +5264,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PostShadowSelectHandlersPc(i32 mode) {
+    void PostShadowSelectHandlersPc(i32 mode) {
         switch (mode) {
             case 0:
                 CurrentItemTable = PCDisplayItemHandlerPrefixPc;
@@ -5283,19 +5278,19 @@ extern "C" {
         }
     }
 
-    void __cdecl DisplayListSetAlphaPS(NUDISPLAYLISTITEM *item, NUDISPLAYLISTITEM *geometry, f32 alpha) {
+    void DisplayListSetAlphaPS(NUDISPLAYLISTITEM *item, NUDISPLAYLISTITEM *geometry, f32 alpha) {
         NUMTX *matrix = (NUMTX *)item->next;
         (void)geometry;
         matrix->m33 = alpha < 0.0f ? 0.0f : (alpha > 1.0f ? 1.0f : alpha);
     }
 
-    void __cdecl DisplayListSetShadowCasterFlagPS(NUDISPLAYLISTITEM *first, NUDISPLAYLISTITEM *last, i32 shadow) {
+    void DisplayListSetShadowCasterFlagPS(NUDISPLAYLISTITEM *first, NUDISPLAYLISTITEM *last, i32 shadow) {
         PC_SPECIAL_TRANSFORM_PACKET *packet = (PC_SPECIAL_TRANSFORM_PACKET *)first->next;
         (void)last;
         packet->matrix.m32 = (f32)shadow;
     }
 
-    void __cdecl NuDisplayListCameraPc(void *arg) {
+    void NuDisplayListCameraPc(void *arg) {
         PC_DL_CAMERA_READER *packet = (PC_DL_CAMERA_READER *)arg;
         if (packet->id != NuDisplayHandlerCameraIdPc) {
             PC_VIEWPORT_PC viewport;
@@ -5317,7 +5312,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PCGraphicsInitRenderTexturePool(VARIPTR *buffer, VARIPTR end) {
+    void PCGraphicsInitRenderTexturePool(VARIPTR *buffer, VARIPTR end) {
         i32 index;
         (void)buffer;
         (void)end;
@@ -5348,8 +5343,8 @@ extern "C" {
         return NULL;
     }
 
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateEffectTexture(i32 width, i32 height, i32 levels, i32 usage,
-                                                                      i32 format) {
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsCreateEffectTexture(i32 width, i32 height, i32 levels, i32 usage,
+                                                              i32 format) {
         GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsAllocRenderTexturePc();
         usage &= ~0x10;
         switch (usage) {
@@ -5372,7 +5367,7 @@ extern "C" {
     }
 
     /* Returns the render texture behind a frame-copy texture id, or NULL for other textures. */
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsFrameRenderTexturePc(i32 texture_id) {
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsFrameRenderTexturePc(i32 texture_id) {
         FRAME_NATIVE_TEXTURE_PC *texture = (FRAME_NATIVE_TEXTURE_PC *)NuTextureGetDimensions(texture_id);
         u32 index = (u32)(texture - FrameNativeTexturePoolPc.records);
         if (index > 15) {
@@ -5381,7 +5376,7 @@ extern "C" {
         return texture->render_texture;
     }
 
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTarget(i32 divider, i32 levels) {
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsCreateColourTarget(i32 divider, i32 levels) {
         i32 format = PCGraphicsFormatFromD3d(PCDeviceBackend.parameters.format);
         u32 height = PCDeviceBackend.parameters.height / (u32)divider;
         u32 width = PCDeviceBackend.parameters.width / (u32)divider;
@@ -5391,7 +5386,7 @@ extern "C" {
         return texture;
     }
 
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTargetFormat(i32 divider, i32 levels, i32 format) {
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsCreateColourTargetFormat(i32 divider, i32 levels, i32 format) {
         u32 height = PCDeviceBackend.parameters.height / (u32)divider;
         u32 width = PCDeviceBackend.parameters.width / (u32)divider;
         GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsAllocRenderTexturePc();
@@ -5409,7 +5404,7 @@ extern "C" {
         PCGraphicsResizeEffectTexture(texture, width, height, format);
     }
 
-    PC_FRAMEBUFFER_PC *__cdecl PCGraphicsCreateFramebuffer(void) {
+    PC_FRAMEBUFFER_PC *PCGraphicsCreateFramebuffer(void) {
         i32 index;
         for (index = 0; index != 32; ++index) {
             if (PcFramebufferActive[index] == 0) {
@@ -5431,7 +5426,7 @@ extern "C" {
         return NULL;
     }
 
-    void __cdecl PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *frame) {
+    void PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *frame) {
         for (i32 index = 0; index != 5; ++index) {
             frame->targets[index].Reset();
         }
@@ -5442,25 +5437,25 @@ extern "C" {
         }
     }
 
-    void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *frame, i32 index, GRAPHICS_RENDER_TEXTURE_PC *texture,
-                                             i32 level) {
+    void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *frame, i32 index, GRAPHICS_RENDER_TEXTURE_PC *texture,
+                                     i32 level) {
         frame->targets[index].Attach(texture, level, false);
         frame->changed = 1;
     }
 
-    void __cdecl PCGraphicsAttachOwnedFramebuffer(PC_FRAMEBUFFER_PC *frame, i32 index,
-                                                  GRAPHICS_RENDER_TEXTURE_PC *texture, i32 level) {
+    void PCGraphicsAttachOwnedFramebuffer(PC_FRAMEBUFFER_PC *frame, i32 index, GRAPHICS_RENDER_TEXTURE_PC *texture,
+                                          i32 level) {
         frame->targets[index].Attach(texture, level, true);
     }
 
-    void __cdecl PCGraphicsReleaseFramebuffers(void) {
+    void PCGraphicsReleaseFramebuffers(void) {
         PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 0, NULL, 0);
         PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 1, NULL, 0);
         PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 2, NULL, 0);
         PCGraphicsAttachFramebuffer(PcSecondaryFramebuffer, 0, NULL, 0);
     }
 
-    void __cdecl PCGraphicsRestoreFramebuffers(void) {
+    void PCGraphicsRestoreFramebuffers(void) {
         PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 0, PCDeviceBackend.textures[0], 0);
         PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 1, PCDeviceBackend.textures[1], 0);
         PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 2, PCDeviceBackend.textures[2], 0);
@@ -5494,8 +5489,8 @@ extern "C" {
         PcSurfaceRegistry[registry_index] = NULL;
     }
 
-    u8 __cdecl PcInitializeGeometryBasisPc(PC_GEOMETRY_BASIS_SOURCE_PC *source, NUMTX *palette,
-                                           PC_GEOMETRY_MORPH_WEIGHTS_PC *morph) {
+    u8 PcInitializeGeometryBasisPc(PC_GEOMETRY_BASIS_SOURCE_PC *source, NUMTX *palette,
+                                   PC_GEOMETRY_MORPH_WEIGHTS_PC *morph) {
         NUMTX identity;
         i32 morph_count;
         if (source->record_count > PcGeometryMatrixCapacityPc || PcGeometryTransformsPc == NULL) {
@@ -5578,7 +5573,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl NuRndrSetAmbientLightSpecular(const NUVEC4 *colour) {
+    i32 NuRndrSetAmbientLightSpecular(const NUVEC4 *colour) {
         AMBIENT_SPECULAR_RENDER_VIEW_PC *state = (AMBIENT_SPECULAR_RENDER_VIEW_PC *)&render_state;
         state->global_specular = colour->w;
         PCGlobalLightingState.ambient = *(const NUVEC *)colour;
@@ -5586,7 +5581,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *global) {
+    void DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *global) {
         void *packet;
 
         if (global == NULL) {
@@ -5674,7 +5669,7 @@ extern "C" {
         ((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->global_id = global->counter_0020;
     }
 
-    void __cdecl DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *state) {
+    void DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *state) {
         NUGLOBALRNDRSTATE_PC *previous;
         if (state == NULL) {
             return;
@@ -5695,7 +5690,7 @@ extern "C" {
         previous->counter_0020 = state->counter_0020;
     }
 
-    void __cdecl NuDisplayListDrawGeometryPc(void *arg) {
+    void NuDisplayListDrawGeometryPc(void *arg) {
         PC_DL_GEOMETRY_READER *packet = (PC_DL_GEOMETRY_READER *)arg;
         PC_DL_GEOMETRY_MATERIAL_READER *material = (PC_DL_GEOMETRY_MATERIAL_READER *)NuDisplayHandlerMaterialPc;
         u32 primitive_count;
@@ -5765,7 +5760,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuVpInit(void) {
+    void NuVpInit(void) {
         NuPs2GetViewport(&vpDevice);
         vpDevice.center_x = 0.5f;
         vpDevice.center_y = 0.5f;
@@ -5782,7 +5777,7 @@ extern "C" {
         NuVpUpdate();
     }
 
-    void __cdecl NuInitDebrisRenderer(VARIPTR *buffer, VARIPTR buffer_end) {
+    void NuInitDebrisRenderer(VARIPTR *buffer, VARIPTR buffer_end) {
         i32 index;
         (void)buffer_end;
         NuDebrisMaxVertexCount = NuDebrisIdealDynamicVBSizePc / 24u;
@@ -5794,7 +5789,7 @@ extern "C" {
         debris_InitializeD3D();
     }
 
-    void __cdecl AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET_PC *group) {
+    void AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET_PC *group) {
         NUDISPLAYLIST_PC *list = group->material->display_list;
         VARIPTR *buffer;
         list->scene->render_flags |= 2;
@@ -5817,7 +5812,7 @@ extern "C" {
         list->items = (NUDISPLAYLISTITEM *)list->items + 1;
     }
 
-    void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material) {
+    void NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material) {
         NUDISPLAYLIST_PC *list;
         VARIPTR *primitive_buffer;
         VARIPTR *cursor;
@@ -5874,7 +5869,7 @@ extern "C" {
         list->items = (NUPRIM_COMMAND_PC *)list->items + 1;
     }
 
-    void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material, NUMTX *world_matrix) {
+    void NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material, NUMTX *world_matrix) {
         NUDISPLAYLIST_PC *list;
         VARIPTR *cursor;
         VARIPTR *primitive_buffer;
@@ -5926,7 +5921,7 @@ extern "C" {
         list->items = (NUPRIM_COMMAND_PC *)list->items + 1;
     }
 
-    void __cdecl NuLgtLaserDraw(i32 paused) {
+    void NuLgtLaserDraw(i32 paused) {
         i32 i;
         i32 k;
         f32 tex_v[4];
@@ -6212,7 +6207,7 @@ extern "C" {
         NuScratchRelease();
     }
 
-    void __cdecl NuLgtInitializeStatePc(void) {
+    void NuLgtInitializeStatePc(void) {
         i32 i;
         NuLgtStateUnknownPc = 0;
         NuLgtStateCapacityPc = 8;
@@ -6229,7 +6224,7 @@ extern "C" {
         NuLgtStateEnabledPc = 1;
     }
 
-    void __cdecl NuLgtSetArcMat(NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1) {
+    void NuLgtSetArcMat(NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1) {
         NuLgtArcMtl[0].material = material;
         NuLgtArcMtl[0].u0 = u0;
         NuLgtArcMtl[0].v0 = v0;
@@ -6242,7 +6237,7 @@ extern "C" {
         NuLgtArcLaserEx(type, start, end, bend, width, segment_length, wobble, bend_amount, colour, 0);
     }
 
-    void __cdecl NuLgtArcLaserDraw(i32 paused) {
+    void NuLgtArcLaserDraw(i32 paused) {
         i32 i;
         f32 tex_v[4];
         NULGTVERTEX_PC *vertex;
@@ -6461,7 +6456,7 @@ extern "C" {
         NuScratchRelease();
     }
 
-    void __cdecl NuGobjReleaseChildPc(PC_GOBJ_REGISTRY_CHILD_PC *child) {
+    void NuGobjReleaseChildPc(PC_GOBJ_REGISTRY_CHILD_PC *child) {
         PC_GOBJ_REGISTRY_AUX_PC *aux = child->auxiliary;
         if (child->owned_buffer != NULL) {
             NuFree(child->owned_buffer, NuGobjSourcePathPc, 605);
@@ -6498,7 +6493,7 @@ extern "C" {
         return NULL;
     }
 
-    void __cdecl PCGraphicsClearFrameTexturesPc(void) {
+    void PCGraphicsClearFrameTexturesPc(void) {
         PC_EFFECT_SURFACE_PC surface;
         for (i32 i = 0; i < 16; ++i) {
             FRAME_NATIVE_TEXTURE_PC *record = &FrameNativeTexturePoolPc.records[i];
@@ -6529,7 +6524,7 @@ extern "C" {
     PC_FRAMEBUFFER_PC::~PC_FRAMEBUFFER_PC() {
     }
 
-    void __cdecl PCGraphicsInitializeFramebuffers(u32 flags, i32 unused, VARIPTR *buffer, VARIPTR end) {
+    void PCGraphicsInitializeFramebuffers(u32 flags, i32 unused, VARIPTR *buffer, VARIPTR end) {
         (void)unused;
         (void)buffer;
         (void)end;
@@ -6563,9 +6558,8 @@ extern "C" {
         PCGraphicsBindFramebuffer(PcDefaultFramebuffer);
     }
 
-    void __cdecl BuildDebrisVerts(DEBRIS_PART_HEADER_PC *header, DEBRIS_PARTICLE_CHUNK_PC *chunk, NUMTL *material,
-                                  f32 time, NUMTX *matrix, i32 particle_type, f32 unused_a, f32 unused_b, f32 unused_c,
-                                  f32 near_clip) {
+    void BuildDebrisVerts(DEBRIS_PART_HEADER_PC *header, DEBRIS_PARTICLE_CHUNK_PC *chunk, NUMTL *material, f32 time,
+                          NUMTX *matrix, i32 particle_type, f32 unused_a, f32 unused_b, f32 unused_c, f32 near_clip) {
         u32 emitted = 0;
         f32 u0;
         f32 v0;
@@ -6713,7 +6707,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *target) {
+    i32 NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *target) {
         FRAME_NATIVE_TEXTURE_PC *texture = FrameNativeTexturePoolPc.Allocate();
         texture->render_texture = target;
         texture->texture_id = NuTexRegisterDimensionsPc(&texture->dimensions);
@@ -6739,8 +6733,8 @@ extern "C" {
         }
     }
 
-    void __cdecl NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *chunks, DEBRIS_PART_HEADER_PC *header, NUMTL *material,
-                                     f32 time, NUMTX *matrix, i32 particle_type, f32 a, f32 b, f32 c, f32 near_clip) {
+    void NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *chunks, DEBRIS_PART_HEADER_PC *header, NUMTL *material, f32 time,
+                             NUMTX *matrix, i32 particle_type, f32 a, f32 b, f32 c, f32 near_clip) {
         DEBRIS_PARTICLE_CHUNK_PC *chunk;
         DEBRIS_PARTICLE_CHUNK_PC *data;
         i32 count;
@@ -6819,7 +6813,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuGobjRegistryCleanupPc(void) {
+    void NuGobjRegistryCleanupPc(void) {
         if (NuGobjRegistryInitializedPc != 0) {
             PC_GOBJ_REGISTRY_ENTRY_PC *entry = NuGobjRegistryFirstPc;
             while (entry != NULL) {
@@ -6847,7 +6841,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuGobjRegistryInitPc(void) {
+    void NuGobjRegistryInitPc(void) {
         if (NuGobjRegistryInitializedPc != 0) {
             NuGobjRegistryCleanupPc();
         }
@@ -6902,7 +6896,7 @@ extern "C" {
         programs[0] = program;
     }
 
-    void __cdecl NuMtlInitExPS(VARIPTR *) {
+    void NuMtlInitExPS(VARIPTR *) {
         Nu360MtlInit();
     }
 
@@ -6946,7 +6940,7 @@ struct PC_HG_SHADOW_GROUP {
 }; // size 0x10
 
 extern "C" {
-    NUHGOBJ_POI_PC *__cdecl NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index) {
+    NUHGOBJ_POI_PC *NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index) {
         if (index < object->point_index_count) {
             index = object->point_index_map[index];
             if (index != 0xff) {
@@ -7010,10 +7004,10 @@ extern "C" {
 } // extern "C"
 
 /* nupostdeferred's platform members: the empty framebuffer resolve and the shadow display-list handlers. */
-extern "C" void __cdecl PCGraphicsResolveFramebufferPc(i32) {
+extern "C" void PCGraphicsResolveFramebufferPc(i32) {
 }
 
-extern "C" void __cdecl NuDisplayListShadowTransformPc(void *data) {
+extern "C" void NuDisplayListShadowTransformPc(void *data) {
     NUMTX *matrix = (NUMTX *)data;
     f32 saved33 = matrix->m33;
     f32 saved23 = matrix->m23;
@@ -7024,7 +7018,7 @@ extern "C" void __cdecl NuDisplayListShadowTransformPc(void *data) {
     matrix->m23 = saved23;
 }
 
-extern "C" void __cdecl NuDisplayListShadowTransformTransposePc(void *data) {
+extern "C" void NuDisplayListShadowTransformTransposePc(void *data) {
     NUMTX *matrix = (NUMTX *)data;
     f32 saved33 = matrix->m33;
     f32 saved32 = matrix->m32;
@@ -7053,7 +7047,7 @@ typedef struct PC_SHADOW_MATERIAL_READER_PC {
     PC_TEXTURE_RESOURCE_PC *vertex_declaration; // 0x2bc
 } PC_SHADOW_MATERIAL_READER_PC;                 // size 0x2c0
 
-extern "C" void __cdecl NuDisplayListShadowMaterialPc(void *data) {
+extern "C" void NuDisplayListShadowMaterialPc(void *data) {
     PC_SHADOW_MATERIAL_READER_PC *material = (PC_SHADOW_MATERIAL_READER_PC *)data;
     PC_SHADER_OBJECT_FULL_VIEW *shader =
         (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderRecordFromHandle((u32)(i32)material->shadow_shader_id);
@@ -7084,7 +7078,7 @@ extern "C" {
     extern i32 DwaBlockCountPc;
     extern u8 DwaBlockTablePc[0x400];
 
-    void __cdecl NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha) {
+    void NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha) {
         NuRndrClear(clear_flags, bottom_colour, alpha);
     }
 
@@ -7100,7 +7094,7 @@ extern "C" {
         PCGraphicsRenderTextureAllocationError();
     }
 
-    void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state) {
+    void NuDisplayListResetStateCache(NURNDRLIBSTATE *state) {
         state->mtl = NULL;
         state->tex_id = -1;
         state->global_id = -1;
@@ -7110,18 +7104,18 @@ extern "C" {
         state->konst_id = -1;
     }
 
-    void __cdecl RndrStateUpdate(NURNDRLIBSTATE *state, NUMTL *material, NUDISPLAYLISTITEM *item) {
+    void RndrStateUpdate(NURNDRLIBSTATE *state, NUMTL *material, NUDISPLAYLISTITEM *item) {
         (void)state;
         (void)material;
         (void)item;
     }
 
-    void __cdecl RndrStateUpdateFx(NURNDRLIBSTATE *state, NUDISPLAYLISTITEM *item) {
+    void RndrStateUpdateFx(NURNDRLIBSTATE *state, NUDISPLAYLISTITEM *item) {
         (void)state;
         (void)item;
     }
 
-    void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2) {
+    void NuDisplayListInit(VARIPTR *cursor, i32 arg2) {
         NuRndrStateInit();
         nudlist_field_9d8 = 0;
         nudlist_field_e80 = 0;
@@ -7143,7 +7137,7 @@ extern "C" {
         NuDisplayListBeginFrame();
     }
 
-    void __cdecl NuRndrDwaInitPc(void) {
+    void NuRndrDwaInitPc(void) {
         DwaWeightCapacityPc = 0x4000;
         DwaPointerCapacityPc = 0x4000;
         DwaBlockCapacityPc = 0x2000;
@@ -7157,7 +7151,7 @@ extern "C" {
 
     /* Native PC entry 0x005fe450 is RET-only; PcRendererCleanup calls it while the D3D
      * device is torn down. Its historical name is unknown. */
-    void __cdecl NuRndrDwaReleasePc(void) {
+    void NuRndrDwaReleasePc(void) {
     }
 
     void fun_005fe4a0(u32 density) {
@@ -7187,7 +7181,7 @@ extern "C" {
     void fun_005fe590(void) {
     }
 
-    void __cdecl NuRndrConfigureLeafPc(f32 a, f32 b, i32 c) {
+    void NuRndrConfigureLeafPc(f32 a, f32 b, i32 c) {
         (void)a;
         (void)b;
         (void)c;
@@ -7296,7 +7290,7 @@ extern "C" {
         colour[2] = b;
     }
 
-    void __cdecl PermanentGraphicsResourceSetup(void) {
+    void PermanentGraphicsResourceSetup(void) {
         NuPtlDmaSlotsExhaustedPc();
     }
 
@@ -7304,7 +7298,7 @@ extern "C" {
         NuPtlDmaSlotsExhaustedPc();
     }
 
-    void __cdecl NuRndrShadowInit(u8 *random) {
+    void NuRndrShadowInit(u8 *random) {
         (void)random;
         NuPtlDmaSlotsExhaustedPc();
     }
@@ -7328,7 +7322,7 @@ extern "C" {
     void fun_005fef50(void) {
     }
 
-    void __cdecl NuLightSpotFadeSet(u32 fade) {
+    void NuLightSpotFadeSet(u32 fade) {
         (void)fade;
     }
 
@@ -7355,7 +7349,7 @@ extern "C" {
         return 1;
     }
 
-    DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32 count) {
+    DWA_WEIGHT_BLOCK_PC *NuRndrCreateBlendShapeDeformerWeightsArray(i32 count) {
         i32 clear_bytes = count * 4 + 0x204;
         DWA_WEIGHT_BLOCK_PC *result;
         rndr_blend_shape_deformer_wt_cnt -= clear_bytes;
@@ -7368,7 +7362,7 @@ extern "C" {
         return result;
     }
 
-    DWA_WEIGHT_BLOCK_PC **__cdecl NuRndrCreateBlendShapeDWAPointers(i32 count) {
+    DWA_WEIGHT_BLOCK_PC **NuRndrCreateBlendShapeDWAPointers(i32 count) {
         rndr_blend_shape_deformer_wt_ptrs_cnt -= count;
         if (rndr_blend_shape_deformer_wt_cnt < 0) {
             PCClipScreenUnsupported();
@@ -7377,14 +7371,14 @@ extern "C" {
         return &DwaPointerPoolPc[rndr_blend_shape_deformer_wt_ptrs_cnt];
     }
 
-    void __cdecl NuRndrShadowDirCol(const NUVEC *direction, u32 colour, f32 near_distance, f32 far_distance) {
+    void NuRndrShadowDirCol(const NUVEC *direction, u32 colour, f32 near_distance, f32 far_distance) {
         PCShadowState.direction = *direction;
         PCShadowNearValue = near_distance;
         PCShadowFarValue = far_distance;
         PCShadowState.packed_colour = ((colour >> 1) & 0x007f7f7fu) + (colour & 0xff000000u) * 2u;
     }
 
-    void __cdecl NuRndrAddShadow(NUVEC *position, f32 radius, i32 opacity, i32 unused_x, i32 unused_y, i32 unused_z) {
+    void NuRndrAddShadow(NUVEC *position, f32 radius, i32 opacity, i32 unused_x, i32 unused_y, i32 unused_z) {
         if (NuCameraClipTestPoints(position, 1, NULL) == 0 && NuRndrShadowCnt < 128) {
             NuRndrShadPolDat[NuRndrShadowCnt].position = *position;
             NuRndrShadPolDat[NuRndrShadowCnt].radius = radius;
@@ -7394,7 +7388,7 @@ extern "C" {
     }
 
     /* The debug 3D line batch is not drawn on PC. */
-    void __cdecl NuRndrLine3dDbgFlush(void) {
+    void NuRndrLine3dDbgFlush(void) {
     }
 
     void fun_005fecc0(void) {
@@ -7409,7 +7403,7 @@ extern "C" {
         return NuHGobjRndrMtxDwa(eval, world, count, indices, matrices, NULL, 0);
     }
 
-    void __cdecl NuRndrShadPolys(NUMTL *material) {
+    void NuRndrShadPolys(NUMTL *material) {
         i32 index;
         PC_SHADOW_QUEUE_RECORD *record;
         NUVEC position;
@@ -7460,7 +7454,7 @@ extern "C" {
         NuRndrShadowCnt = 0;
     }
 
-    void __cdecl NuRndrInitWorld(void) {
+    void NuRndrInitWorld(void) {
     }
 
     void fun_005fe620(void) {
@@ -7488,7 +7482,7 @@ extern "C" {
     }
 
     /* Direct object rendering is not supported on PC: retail reports it and draws nothing. */
-    i32 __cdecl NuRndrGobj(void *object, NUMTX *matrix) {
+    i32 NuRndrGobj(void *object, NUMTX *matrix) {
         PCClipScreenUnsupported();
         return 0;
     }
@@ -7511,14 +7505,14 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip) {
+    i32 NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip) {
         return 0;
     }
 
-    void __cdecl FaceYDirStream(i32 angle) {
+    void FaceYDirStream(i32 angle) {
     }
 
-    i32 __cdecl NuRndrSetSpecularLightPS(const NUVEC *direction, const NUVEC4 *intensity) {
+    i32 NuRndrSetSpecularLightPS(const NUVEC *direction, const NUVEC4 *intensity) {
         static NUVEC rndrstream_specular_dir = {0.0f, 0.0f, 1.0f};
         static NUVEC4 rndrstream_specular_intensity = {1.0f, 1.0f, 1.0f, 1.0f};
         static NUVEC camvec = {0.0f, 0.0f, -1.0f};
@@ -7629,7 +7623,7 @@ extern "C" {
         NuMtlAnimateShaderMtlTextures(frame_time);
     }
 
-    void __cdecl NuRndrInitEx(i32 size, VARIPTR *buffer, VARIPTR end) {
+    void NuRndrInitEx(i32 size, VARIPTR *buffer, VARIPTR end) {
         NuRndrStreamInit(size, buffer);
         NuRndrInit(buffer, end);
     }
@@ -7640,11 +7634,11 @@ extern "C" {
     static PC_BUFFER_RESOURCE_PC *RendererGeometryVertexBufferPc = 0;
     static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc = 0;
 
-    void __cdecl NuRndrGeometryBufferReleasePc(void) {
+    void NuRndrGeometryBufferReleasePc(void) {
         PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
     }
 
-    void __cdecl NuRndrGeometryBufferRestorePc(void) {
+    void NuRndrGeometryBufferRestorePc(void) {
         PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
         PCDeviceCreateVertexBuffer(0x40000, 0x208, 0, 0, &RendererGeometryVertexBufferPc);
         NuRndrQuadBufferInitPc();
@@ -7676,7 +7670,7 @@ extern "C" {
 
 #define QUAD_VERTEX ((RENDERER_SCREEN_VERTEX_PC *)data)
 
-    void __cdecl NuRndrQuadBufferInitPc(void) {
+    void NuRndrQuadBufferInitPc(void) {
         void *data;
         if (RendererQuadVertexBufferPc != NULL) {
             RendererQuadVertexBufferPc->methods->release(RendererQuadVertexBufferPc);
@@ -7711,7 +7705,7 @@ extern "C" {
 
 #undef QUAD_VERTEX
 
-    void __cdecl NuRndrGeometryBuffersInitPc(void) {
+    void NuRndrGeometryBuffersInitPc(void) {
         u16 *indices;
         i32 i;
         u32 base;
@@ -7744,7 +7738,7 @@ extern "C" {
         RendererGeometryIndexBufferPc->methods->unlock(RendererGeometryIndexBufferPc);
     }
 
-    void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *buffer, VARIPTR end) {
+    void NuRndrBufferDescriptorsInitPc(VARIPTR *buffer, VARIPTR end) {
         PC_VERTEX_ELEMENT_PC elements[3];
         elements[0].stream = 0;
         elements[0].offset = 0;
@@ -7770,10 +7764,10 @@ extern "C" {
         NuRndrGeometryBuffersInitPc();
     }
 
-    void __cdecl PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height);
+    void PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height);
 
     /* Sizes the post-effect targets (power-of-two when the device needs it) and claims the back-buffer copy. */
-    void __cdecl PCGraphicsCreatePostEffectTextures(u32 width, u32 height) {
+    void PCGraphicsCreatePostEffectTextures(u32 width, u32 height) {
         GRAPHICS_RENDER_TEXTURE_PC *texture;
         PCGraphicsPostEffectWidthPc = width;
         if (width >= 512) {
@@ -7805,7 +7799,7 @@ extern "C" {
 
     /* Re-sizes the post-effect targets after a mode change, with the same clamps as PCGraphicsCreatePostEffectTextures.
      */
-    void __cdecl PCGraphicsResizePostEffectTexturesPc(u32 width, u32 height) {
+    void PCGraphicsResizePostEffectTexturesPc(u32 width, u32 height) {
         u32 target_width = width < 512 ? width : 512;
         u32 target_height;
         PCGraphicsPostEffectWidthPc = target_width;
@@ -7833,7 +7827,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuRndrInit(VARIPTR *buffer, VARIPTR end) {
+    void NuRndrInit(VARIPTR *buffer, VARIPTR end) {
         RENDERER_SHADOW_DEFAULTS_PC *shadow = (RENDERER_SHADOW_DEFAULTS_PC *)&PCShadowState;
         NUVEC defaults;
         i32 i;
@@ -7869,7 +7863,7 @@ extern "C" {
 
 #define STARTUP_MATERIAL(material) ((PC_STARTUP_MATERIAL_READER_PC *)(material))
 
-    void __cdecl NuRndrInitStartupMaterialsPc(void) {
+    void NuRndrInitStartupMaterialsPc(void) {
         PCStartupMaterial1Pc = NuMtlCreate(1);
         STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.z = STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.y =
             STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.x = 1.0f;
@@ -7917,7 +7911,7 @@ extern "C" {
 
 #undef STARTUP_MATERIAL
 
-    void __cdecl NuRndrFx(i32 paused, void *context) {
+    void NuRndrFx(i32 paused, void *context) {
         (void)context;
         NuLgtLaserDraw(paused);
         NuLgtArcLaserDraw(paused);
@@ -7933,7 +7927,7 @@ extern "C" {
         currentScene.clear_flags = 1;
     }
 
-    i32 __cdecl NuRndrSetFxMtx(NUMTX *matrix) {
+    i32 NuRndrSetFxMtx(NUMTX *matrix) {
         return 1;
     }
 
@@ -7943,7 +7937,7 @@ extern "C" {
 
 /* nucamera's platform members: NuCameraSet, the extents clip test and the projection matrix. */
 extern "C" {
-    void __cdecl NuCameraSet(NUCAMERA *camera) {
+    void NuCameraSet(NUCAMERA *camera) {
         NuCameraSetEx(camera, 0);
 
         NuVpSetIdentityPc(&cmtx);
@@ -8007,7 +8001,7 @@ extern "C" {
 
 #define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)
 
-    i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 far_clip, i32 clip_screen) {
+    i32 NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 far_clip, i32 clip_screen) {
         NUVEC corners[8];
         NUVEC transformed[8];
         u8 codes[8];
@@ -8124,7 +8118,7 @@ extern "C" {
 #undef NUCAMERA_CLIP_CODE
 #undef NUCAMERA_CLIP_CODE_EX
 
-    void __cdecl NuCameraSetProjectionMtx(NUMTX *out, f32 fov, f32 aspect, f32 near_clip, f32 far_clip) {
+    void NuCameraSetProjectionMtx(NUMTX *out, f32 fov, f32 aspect, f32 near_clip, f32 far_clip) {
         f32 half_fov = (f32)((f64)fov * 0.5);
         i32 angle = (i32)((f64)half_fov * AIPathAngularScale);
         f32 cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
@@ -8147,7 +8141,7 @@ extern "C" {
 
 /* nuvec's platform members: the block transforms. */
 extern "C" {
-    void __cdecl NuVecMtxTransformBlock(NUVEC *out, NUVEC *vectors, NUMTX *matrix, i32 count) {
+    void NuVecMtxTransformBlock(NUVEC *out, NUVEC *vectors, NUMTX *matrix, i32 count) {
         i32 index;
 
         for (index = 0; index < count; ++index) {
@@ -8159,8 +8153,8 @@ extern "C" {
         }
     }
 
-    void __cdecl PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *destination, NUVEC4BLOCK_PC *source, NUMTX *matrix,
-                                             i32 count, u32 *outcodes) {
+    void PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *destination, NUVEC4BLOCK_PC *source, NUMTX *matrix, i32 count,
+                                     u32 *outcodes) {
         count = (count + 3) >> 2;
         if (count <= 0) {
             return;

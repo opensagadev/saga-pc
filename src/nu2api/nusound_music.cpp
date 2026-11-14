@@ -1455,7 +1455,7 @@ extern "C" f32 fun_00696a70(f32 value) {
     return (f32)log10((f64)value);
 }
 
-extern "C" i32 __cdecl NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_parameter, i32 token, ...) {
+extern "C" i32 NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_parameter, i32 token, ...) {
     PC_SOUND_INIT_CONFIG config;
     va_list args;
     i32 i;
@@ -1511,13 +1511,13 @@ extern "C" i32 __cdecl NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_pa
 }
 
 /* Original names unknown; retail keeps both uncalled wrappers after NuSound3InitV (0x695360, 0x695390). */
-extern "C" i32 __cdecl NuSound3InitTablePc(SFX_FILE_INFO_PC *samples, i32 sample_count, i32 device_parameter) {
+extern "C" i32 NuSound3InitTablePc(SFX_FILE_INFO_PC *samples, i32 sample_count, i32 device_parameter) {
     VARIPTR end;
     end.void_ptr = NULL;
     return NuSound3InitV(NULL, end, device_parameter, 1, samples, 2, sample_count, 0);
 }
 
-extern "C" i32 __cdecl NuSound3InitDefaultPc(SFX_FILE_INFO_PC *samples) {
+extern "C" i32 NuSound3InitDefaultPc(SFX_FILE_INFO_PC *samples) {
     VARIPTR end;
     end.void_ptr = NULL;
     return NuSound3InitV(NULL, end, 3, 1, samples, 2, 400, 0);

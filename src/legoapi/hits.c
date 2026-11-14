@@ -4,7 +4,7 @@
 
 /* Retail unit 0x58b720-0x58b8aa (legoapi/hits.c): definitions in retail address order. */
 
-u16 __cdecl ObjHitObj_Flags(GAMEOBJECT *object) {
+u16 ObjHitObj_Flags(GAMEOBJECT *object) {
     u16 flags = 0;
     if (object != NULL) {
         if (((object->flags_1fc_word >> 7) & 1) == 0) {
@@ -24,7 +24,7 @@ u16 __cdecl ObjHitObj_Flags(GAMEOBJECT *object) {
     return flags;
 }
 
-void __cdecl RegenerateHearts(GAMEOBJECT *object) {
+void RegenerateHearts(GAMEOBJECT *object) {
     if (object->current_hp > 0 && object->current_hp < object->field_107e && object->vehicle_hit_timer <= 0.0f &&
         object->spawn_protection_timer <= 0.0f && ParticlesPerSecond(1.0f, FRAMETIME) > 0) {
         ++object->current_hp;
@@ -32,18 +32,18 @@ void __cdecl RegenerateHearts(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl CannotKill(GAMEOBJECT *object) {
+i32 CannotKill(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x02000000) != 0) {
         return 1;
     }
     return (object->character_data->game_character->flags_094 & 0x800) != 0 && object->field_280 == 0xff;
 }
 
-i32 __cdecl NoLayerKill(GAMEOBJECT *object) {
+i32 NoLayerKill(GAMEOBJECT *object) {
     return (object->character_data->game_character->flags_094 & 0x800000) != 0 && object->field_283 == 6;
 }
 
-GAMEOBJECT *__cdecl BossKilled(i32 character_id) {
+GAMEOBJECT *BossKilled(i32 character_id) {
     GAMEOBJECT *object = FindGameObject(character_id, 1, 1, 1, 0);
     if (object != NULL && (object->portal_flags & 0x08000000) != 0) {
         if (object->dead != 0 || object->current_hp == 0) {

@@ -50,7 +50,7 @@ struct HATMACHINE_WORLD_PC {
     HATMACHINE_SYS_PC *hat_machine_sys; // 0x5074
 }; // size 0x5078
 
-extern "C" void __cdecl Hat_GetAbsTargetPos(HATMACHINE_PC *machine, NUVEC *position) {
+extern "C" void Hat_GetAbsTargetPos(HATMACHINE_PC *machine, NUVEC *position) {
     if (machine != NULL && position != NULL) {
         NUVEC offset = machine->target_offset;
         NuVecRotateY(&offset, &offset, machine->yaw);
@@ -60,7 +60,7 @@ extern "C" void __cdecl Hat_GetAbsTargetPos(HATMACHINE_PC *machine, NUVEC *posit
     }
 }
 
-extern "C" void __cdecl HatMachines_InitTerrain(WORLDINFO *world) {
+extern "C" void HatMachines_InitTerrain(WORLDINFO *world) {
     if (((HATMACHINE_WORLD_PC *)world)->hat_machine_sys != NULL) {
         for (i32 index = 0; index < ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->count; ++index) {
             HATMACHINE_PC *machine = &((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index];
@@ -71,8 +71,7 @@ extern "C" void __cdecl HatMachines_InitTerrain(WORLDINFO *world) {
     }
 }
 
-extern "C" HATMACHINE_PC *__cdecl HatMachine_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object,
-                                                         f32 *distance) {
+extern "C" HATMACHINE_PC *HatMachine_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     f32 nearest_distance = 1.0e9f;
     HATMACHINE_PC *nearest = NULL;
     if (world == NULL || ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys == NULL) {
@@ -103,7 +102,7 @@ extern "C" HATMACHINE_PC *__cdecl HatMachine_FindNearest(WORLDINFO *world, NUVEC
     return nearest;
 }
 
-extern "C" i32 __cdecl HatMachine_BeingUsed(HATMACHINE_PC *machine) {
+extern "C" i32 HatMachine_BeingUsed(HATMACHINE_PC *machine) {
     return machine->flags & 1;
 }
 
@@ -115,7 +114,7 @@ struct HAT_USE_REQUEST_PC {
 
 extern "C" i16 id_PRINCESSLEIABOUSHH;
 
-extern "C" void __cdecl HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 special_pressed) {
+extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 special_pressed) {
     HATMACHINE_PC *machine = (HATMACHINE_PC *)object->grapple;
     if (object->field_db0 > 0.0f) {
         object->field_db0 -= FRAMETIME;
@@ -292,7 +291,7 @@ extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 extern "C" i32 hatmachine_gizmotype_id;
 // Genuine Draw callback is retained as an unresolved source dependency until its full body is transferred.
 extern "C" {
-    static void __cdecl HatMachine_Draw(void *, void *, f32);
+    static void HatMachine_Draw(void *, void *, f32);
 }
 extern "C" {
     static i32 HatMachine_GetMaxGizmos(void *world_ptr) {
@@ -559,13 +558,13 @@ extern "C" ADDGIZMOTYPE_PC *HatMachine_RegisterGizmo(i32 type_id) {
     HatMachineAddTypePc.fns.late_update_fn = HatMachine_Update;
     HatMachineAddTypePc.fns.draw_fn = HatMachine_Draw;
     HatMachineAddTypePc.fns.panel_draw_fn = NULL;
-    HatMachineAddTypePc.fns.get_gizmo_name_fn = (char *(__cdecl *)(struct gizmo_pc_s *))HatMachine_GetGizmoName;
-    HatMachineAddTypePc.fns.get_output_fn = (i32(__cdecl *)(struct gizmo_pc_s *, i32, i32))HatMachine_GetOutput;
-    HatMachineAddTypePc.fns.get_output_name_fn = (char *(__cdecl *)(struct gizmo_pc_s *, i32))HatMachine_GetOutputName;
+    HatMachineAddTypePc.fns.get_gizmo_name_fn = (char *(*)(struct gizmo_pc_s *))HatMachine_GetGizmoName;
+    HatMachineAddTypePc.fns.get_output_fn = (i32(*)(struct gizmo_pc_s *, i32, i32))HatMachine_GetOutput;
+    HatMachineAddTypePc.fns.get_output_name_fn = (char *(*)(struct gizmo_pc_s *, i32))HatMachine_GetOutputName;
     HatMachineAddTypePc.fns.get_num_outputs_fn = (void *)HatMachine_GetNumOutputs;
-    HatMachineAddTypePc.fns.activate_fn = (void(__cdecl *)(struct gizmo_pc_s *, i32))HatMachine_Activate;
+    HatMachineAddTypePc.fns.activate_fn = (void (*)(struct gizmo_pc_s *, i32))HatMachine_Activate;
     HatMachineAddTypePc.fns.activate_rev_fn = NULL;
-    HatMachineAddTypePc.fns.set_visibility_fn = (void(__cdecl *)(struct gizmo_pc_s *, i32))HatMachine_SetVisibility;
+    HatMachineAddTypePc.fns.set_visibility_fn = (void (*)(struct gizmo_pc_s *, i32))HatMachine_SetVisibility;
     HatMachineAddTypePc.fns.get_visibility_fn = NULL;
     HatMachineAddTypePc.fns.get_pos_fn = NULL;
     HatMachineAddTypePc.fns.using_special_fn = NULL;
@@ -596,7 +595,7 @@ static inline f32 NuFdiv(f32 a, f32 b) {
 
 STATIC_ASSERT(sizeof(((HATMACHINE_PC *)0)->model_special_index) == 1);
 
-extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {
+extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     HATMACHINE_SYS_PC *system;
     if (world == NULL || (system = ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys) == NULL || system->count == 0) {

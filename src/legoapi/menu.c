@@ -84,7 +84,7 @@ typedef struct PC_MENU_SERVICE_VIEW {
 
 STATIC_ASSERT(sizeof(PC_MENU_SERVICE_VIEW) == sizeof(MENU));
 
-MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
+MENU *NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
 #define NEWMENU_VIEW ((PC_MENU_SERVICE_VIEW *)GameMenu)
     PC_MENU_SERVICE_VIEW *menu = NULL;
     i32 index;
@@ -181,8 +181,7 @@ MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
 #undef NEWMENU_VIEW
 }
 
-void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u32 red, u32 green, u32 blue,
-                                     u32 alpha) {
+void DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u32 red, u32 green, u32 blue, u32 alpha) {
     char accept_text[128];
     char cancel_text[128];
     char axes_text[128];
@@ -251,7 +250,7 @@ void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 ena
     }
 }
 
-void __cdecl DrawMenuButtonPrompts(i32 confirm, i32 cancel, i32 enabled, u32 red, u32 green, u32 blue, u32 alpha) {
+void DrawMenuButtonPrompts(i32 confirm, i32 cancel, i32 enabled, u32 red, u32 green, u32 blue, u32 alpha) {
     DrawMenuButtonPromptsEx(confirm, cancel, 0, enabled, red, green, blue, alpha);
 }
 
@@ -276,11 +275,11 @@ typedef struct menu_draw_state_pc_s {
 STATIC_ASSERT(offsetof(MENUFNINFO, draw_fn) == 8);
 STATIC_ASSERT(offsetof(MENUFNINFO, confirm_prompt) == 0x19);
 STATIC_ASSERT(offsetof(MENUFNINFO, cancel_prompt) == 0x1a);
-extern void(__cdecl *memcard_drawasiconfn)(void);
-extern void(__cdecl *predrawfn)(MENU *);
-extern void(__cdecl *headerdrawfn)(void);
+extern void (*memcard_drawasiconfn)(void);
+extern void (*predrawfn)(MENU *);
+extern void (*headerdrawfn)(void);
 
-void __cdecl DrawMenu(i32 paused) {
+void DrawMenu(i32 paused) {
     MENU *menu;
     MENU_DRAW_STATE_PC *view;
     f32 saved_baseline = 0.0f;
@@ -338,14 +337,14 @@ void __cdecl DrawMenu(i32 paused) {
     }
 }
 
-void __cdecl DrawMenuHeader(void) {
+void DrawMenuHeader(void) {
     if (MenuDisableHeaders == 0) {
         MenuSmartTextEx(MenuHeader, 0, MenuTopYPc, 1, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
                         (u8)header_r, (u8)header_g, (u8)header_b, 1.2f, 1, NULL, 0, MenuA);
     }
 }
 
-void __cdecl MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *buffer, VARIPTR buffer_end) {
+void MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *buffer, VARIPTR buffer_end) {
     NuStringTableSetBank(2);
     NuStringTableSetFormat(0);
     NuStringTableLoadCSV(filepath, buffer, buffer_end, "LABEL", language);
@@ -743,7 +742,7 @@ void fun_0050a430(void) {
     memcard_savefailed = 0;
 }
 
-void __cdecl MenuRememberCursor(MENU *menu) {
+void MenuRememberCursor(MENU *menu) {
     if (menu->menu == -1) {
         return;
     }
@@ -755,7 +754,7 @@ void __cdecl MenuRememberCursor(MENU *menu) {
     }
 }
 
-void __cdecl BackupMenu(void) {
+void BackupMenu(void) {
     i32 level = GameMenuLevel;
     if (level != 0) {
         MENU *menu = &GameMenu[level];
@@ -794,7 +793,7 @@ void __cdecl BackupMenu(void) {
     }
 }
 
-void __cdecl BackupMenuNoFn(void) {
+void BackupMenuNoFn(void) {
     i32 level = GameMenuLevel;
     if (level != 0) {
         MENU *menu = &GameMenu[level];
@@ -851,7 +850,7 @@ typedef struct MENU_DRAW_VIEW_PC {
 
 STATIC_ASSERT(sizeof(MENU_DRAW_VIEW_PC) == sizeof(MENU));
 
-void __cdecl DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
+void DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     MENU_DRAW_VIEW_PC *view = (MENU_DRAW_VIEW_PC *)menu;
     f32 scale;
     f32 spacing;
@@ -912,9 +911,9 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     dme_sy = 1.0f;
 }
 
-void __cdecl MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r,
-                            u8 header_g, u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g,
-                            u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b) {
+void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r, u8 header_g,
+                    u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g, u8 flash0_b, u8 flash1_r,
+                    u8 flash1_g, u8 flash1_b) {
     MENUNORMALR = normal_r;
     MENUNORMALG = normal_g;
     MENUNORMALB = normal_b;
@@ -944,11 +943,11 @@ void fun_00509720(f32 top, f32 bottom) {
     MENUBOTY = bottom;
 }
 
-void fun_00509740(void(__cdecl *function)(MENU *)) {
+void fun_00509740(void (*function)(MENU *)) {
     predrawfn = function;
 }
 
-void fun_00509750(void(__cdecl *function)(void)) {
+void fun_00509750(void (*function)(void)) {
     headerdrawfn = function;
 }
 

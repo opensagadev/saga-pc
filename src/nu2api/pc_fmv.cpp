@@ -2,10 +2,10 @@
 #include "pc_fmv_native.h"
 #include <stdarg.h>
 #include <string.h>
-typedef i32(__cdecl *FMV_INPUT_CALLBACK_PC)(void);
-typedef void(__cdecl *FMV_DRAW_CALLBACK_PC)(void);
+typedef i32 (*FMV_INPUT_CALLBACK_PC)(void);
+typedef void (*FMV_DRAW_CALLBACK_PC)(void);
 
-extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
+extern "C" i32 NuFmvPlayV(i32 option, ...) {
     va_list args;
     i32 count = 0;
     i32 stop_sound = 1;
@@ -13,7 +13,7 @@ extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
     i32 mode = 0;
     f32 volume = 1.0f;
     char *name = NULL;
-    i32(__cdecl * callback)(void) = NULL;
+    i32 (*callback)(void) = NULL;
     char path[256];
     va_start(args, option);
     while (option != 1) {

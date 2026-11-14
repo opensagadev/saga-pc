@@ -17,7 +17,7 @@ typedef struct CLOUDCITY_LEVEL_FLAG_VIEW_PC {
     u8 started;                 // 0x0
 } CLOUDCITY_LEVEL_FLAG_VIEW_PC; // size 0x1
 
-i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *object) {
+i32 MosEisleyC_PastBarrier(GAMEOBJECT *object) {
     if (WORLD->current_level == MOSEISLEYC_LDATA) {
         return object->position.z > 5.85f;
     }
@@ -51,7 +51,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
 STATIC_ASSERT(offsetof(WORLDINFO, sock_sys) == 0x2988);
 STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
 
-i32 __cdecl DeathStarShieldDown(void) {
+i32 DeathStarShieldDown(void) {
     GIZMOBLOWUP_PC *blowup;
     GAMEOBJECT *player;
     TORPEDO_MUSIC_FLAGS_VIEW_PC *packet;
@@ -90,7 +90,7 @@ i32 __cdecl DeathStarShieldDown(void) {
 }
 
 /* Native 0x004e5170, 204 bytes. */
-void __cdecl DeathStarEscapeB_Init(WORLDINFO *world) {
+void DeathStarEscapeB_Init(WORLDINFO *world) {
     NUINSTANIM *animation[2];
     void *data[2];
     i32 index;
@@ -113,7 +113,7 @@ void __cdecl DeathStarEscapeB_Init(WORLDINFO *world) {
 }
 
 /* Native 0x004e5240, 307 bytes. */
-void __cdecl DeathStarEscapeB_Update(WORLDINFO *world) {
+void DeathStarEscapeB_Update(WORLDINFO *world) {
     NUINSTANIM *animation[2] = {NULL, NULL};
     void *data[2] = {NULL, NULL};
     i32 index;
@@ -152,30 +152,30 @@ extern i16 CharacterFixupIdPc007f1a3c;
 extern i16 CharacterFixupIdPc007f1a40;
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.animation_override_from) == 0x3ee);
 
-void __cdecl MosEisleyB_Init(WORLDINFO *world) {
+void MosEisleyB_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "land_speeder_terrain1", 1);
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "Wash");
 }
 
-void __cdecl MosEisleyE_Init(WORLDINFO *world) {
+void MosEisleyE_Init(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force1");
 }
 
-void __cdecl MosEisleyE_Reset(WORLDINFO *world) {
+void MosEisleyE_Reset(WORLDINFO *world) {
     texanimbits &= ~2;
 }
 
-void __cdecl BlockadeRunnerB_Init(WORLDINFO *world) {
+void BlockadeRunnerB_Init(WORLDINFO *world) {
     LevBlowUp[0] = GizmoBlowUp_FindByName(world, "thermo_041");
 }
 
-void __cdecl BlockadeRunnerB_Update(WORLDINFO *world) {
+void BlockadeRunnerB_Update(WORLDINFO *world) {
     if (LevBlowUp[0] != NULL && InStory() != 0) {
         LevBlowUp[0]->status_flags &= ~0x800000;
     }
 }
 
-void __cdecl BlockadeRunnerC_Init(WORLDINFO *world) {
+void BlockadeRunnerC_Init(WORLDINFO *world) {
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "obstacle8");
 }
 
@@ -249,14 +249,14 @@ static void BlockadeRunnerDEjectCreaturePc(i32 eject_index) {
     }
 }
 
-void __cdecl BlockadeRunnerD_Reset(WORLDINFO *world) {
+void BlockadeRunnerD_Reset(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle15");
     LevGizmo[1] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle14");
     ((u8 *)LevFlag)[0] = 0;
     ((u8 *)LevFlag)[1] = 0;
 }
 
-void __cdecl BlockadeRunnerD_Update(WORLDINFO *world) {
+void BlockadeRunnerD_Update(WORLDINFO *world) {
     i32 i;
     if (netclient != 0) {
         return;
@@ -288,7 +288,7 @@ void __cdecl BlockadeRunnerD_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl DeathStarRescueB_Init(WORLDINFO *world) {
+void DeathStarRescueB_Init(WORLDINFO *world) {
     u8 *flags = (u8 *)LevFlag;
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "reactor_1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], "reactor_2", 1);
@@ -306,7 +306,7 @@ void __cdecl DeathStarRescueB_Init(WORLDINFO *world) {
     LevSfxId[1] = GetSfxId("env_tractorbeam_off");
 }
 
-void __cdecl DeathStarRescueB_Update(WORLDINFO *world) {
+void DeathStarRescueB_Update(WORLDINFO *world) {
     u8 *flags = (u8 *)LevFlag;
     i32 i;
     for (i = 0; i < 6; i++) {
@@ -327,7 +327,7 @@ void __cdecl DeathStarRescueB_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl DeathStarEscapeB_Draw(WORLDINFO *world) {
+void DeathStarEscapeB_Draw(WORLDINFO *world) {
     NUMTX matrix;
     if (LevGameObject[0] != NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
         matrix = LevGameObject[0]->locator_matrices[1];
@@ -339,7 +339,7 @@ void __cdecl DeathStarEscapeB_Draw(WORLDINFO *world) {
     }
 }
 
-void __cdecl DeathStarEscapeA_Update(WORLDINFO *world) {
+void DeathStarEscapeA_Update(WORLDINFO *world) {
     if (GameCam->sock == 2) {
         NUVEC position;
         position.x = (f32)((f64)qrand() * PlayerRandomScalePc * 2.0 + 36.5);
@@ -349,13 +349,13 @@ void __cdecl DeathStarEscapeA_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl DeathStarEscapeC_Init(WORLDINFO *world) {
+void DeathStarEscapeC_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], "door_push", 1);
     LevPathCnx[0] = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "droid_rescue_a",
                                       "droid_rescue_b", &LevPathCnxDir);
 }
 
-void __cdecl DeathStarEscapeC_Update(WORLDINFO *world) {
+void DeathStarEscapeC_Update(WORLDINFO *world) {
     NUVEC *position;
     if (LevPathCnx[0] == NULL) {
         return;
@@ -373,7 +373,7 @@ void __cdecl DeathStarEscapeC_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl DeathStarEscapeD_Update(WORLDINFO *world) {
+void DeathStarEscapeD_Update(WORLDINFO *world) {
     NUVEC position;
     position.x = (f32)((f64)qrand() * PlayerRandomScalePc * 4.0 + 32.5);
     position.y = -5.5f;
@@ -381,21 +381,21 @@ void __cdecl DeathStarEscapeD_Update(WORLDINFO *world) {
     LevChatterSfx("Dianoga_Groan", &position);
 }
 
-void __cdecl LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
+void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
 
-void __cdecl MosEisleyD_AlwaysUpdate(WORLDINFO *world) {
+void MosEisleyD_AlwaysUpdate(WORLDINFO *world) {
     LevelStreaming_DoorOverride(world, LevelFixupSlotPc0087b1c0, 7.5f, NULL);
 }
 
-void __cdecl DeathStarRescueB_AlwaysUpdate(WORLDINFO *world) {
+void DeathStarRescueB_AlwaysUpdate(WORLDINFO *world) {
     LevelStreaming_DoorOverride(world, LevelFixupSlotPc0087b1d0, 8.5f, NULL);
 }
 
-void __cdecl DeathStarRescueC_AlwaysUpdate(WORLDINFO *world) {
+void DeathStarRescueC_AlwaysUpdate(WORLDINFO *world) {
     LevelStreaming_DoorOverride(world, DEATHSTARRESCUEE_LDATA, 8.5f, NULL);
 }
 
-void __cdecl DeathStarEscapeB_AlwaysUpdate(WORLDINFO *world) {
+void DeathStarEscapeB_AlwaysUpdate(WORLDINFO *world) {
     NUVEC position;
     SOCKPOSITION_PC socket_position;
     if (Players_AveragePos(&position, &socket_position) && socket_position.sock_index != -1) {
@@ -410,7 +410,7 @@ void __cdecl DeathStarEscapeB_AlwaysUpdate(WORLDINFO *world) {
 /* PC 0x0087b1f8: Death Star battle midtro level slot (never assigned by FixUpLevels). */
 LEVELDATA_PC *DEATHSTARBATTLEMIDTRO_LDATA = NULL;
 
-void __cdecl DeathStarBattleC_AlwaysUpdate(WORLDINFO *world) {
+void DeathStarBattleC_AlwaysUpdate(WORLDINFO *world) {
     if (FreePlay == 0) {
         if (DEATHSTARBATTLEMIDTRO_LDATA != NULL) {
             other_level_override = DEATHSTARBATTLEMIDTRO_LDATA->index;
@@ -432,14 +432,14 @@ typedef struct trenchrun_pc_s {
 /* PC 0x00889638: Death Star trench run state. */
 static TRENCHRUN_PC trenchrun;
 
-void __cdecl DeathStarBattleDInit(WORLDINFO *world) {
+void DeathStarBattleDInit(WORLDINFO *world) {
 }
 
-void __cdecl DeathStarBattleDReset(WORLDINFO *world) {
+void DeathStarBattleDReset(WORLDINFO *world) {
     memset(&trenchrun, 0, sizeof(trenchrun));
 }
 
-void __cdecl DeathStarBattleDDraw(WORLDINFO *world) {
+void DeathStarBattleDDraw(WORLDINFO *world) {
 }
 
 void fun_004e5eb0(void) {
@@ -493,7 +493,7 @@ f32 TrenchRollScalePc = 5000.0f;
 f32 TrenchMaxHeightMovePc = 5.0f;
 #pragma data_seg()
 
-void __cdecl TrenchMove(GAMEOBJECT *object) {
+void TrenchMove(GAMEOBJECT *object) {
     NUVEC target;
     f32 phase;
     f32 height_difference;
@@ -606,7 +606,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, move_override) == 0x10b0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_offset) == 0xe84);
 
 /* Native 0x004e5b70..0x004e5b94, complete 36-byte cdecl callback. */
-static void __cdecl TrenchKilledCallback(GAMEOBJECT *object) {
+static void TrenchKilledCallback(GAMEOBJECT *object) {
     i32 index;
     for (index = 0; index < 3; ++index) {
         if (trenchrun.objects[index] == object) {
@@ -616,7 +616,7 @@ static void __cdecl TrenchKilledCallback(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl DeathStarBattleDUpdate(WORLDINFO *world) {
+void DeathStarBattleDUpdate(WORLDINFO *world) {
     GAMEOBJECT *trench_player;
     GAMEOBJECT *ship;
     NUVEC spawn;

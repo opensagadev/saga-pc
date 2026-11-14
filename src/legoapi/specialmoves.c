@@ -10,7 +10,7 @@ STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_id) == 6);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_animation) == 8);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, flags) == 0xa);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, distance_apart) == 0xc);
-void __cdecl SpecialMovesConfigMissingPc(char *filename);
+void SpecialMovesConfigMissingPc(char *filename);
 
 static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 *variant, i16 *animation) {
     while (NuFParGetWord(parser)) {
@@ -93,28 +93,28 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
     }
 }
 
-i32 __cdecl SpecialMove_GetAttackerAction(i32 index) {
+i32 SpecialMove_GetAttackerAction(i32 index) {
     if (index != -1) {
         return SpecialMove[index].attacker_animation;
     }
     return -1;
 }
 
-i32 __cdecl SpecialMove_GetVictimAction(i32 index) {
+i32 SpecialMove_GetVictimAction(i32 index) {
     if (index != -1) {
         return SpecialMove[index].victim_animation;
     }
     return -1;
 }
 
-f32 __cdecl SpecialMove_GetDistanceApart(i32 index) {
+f32 SpecialMove_GetDistanceApart(i32 index) {
     if (index != -1) {
         return SpecialMove[index].distance_apart;
     }
     return 0.0f;
 }
 
-u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask) {
+u32 SpecialMove_GetFlags(i32 index, u32 mask) {
     if (index != -1) {
         if (mask != 0) {
             return SpecialMove[index].flags & mask;
@@ -124,7 +124,7 @@ u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask) {
     return 0;
 }
 
-i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
+i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     SPECIALMOVE_PC *moves = SpecialMove;
     i32 i;
     if (moves == NULL) {
@@ -163,7 +163,7 @@ static void SpecialMove_KillVictim(GAMEOBJECT *victim) {
               0x1000, 0, 1);
 }
 
-i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
+i32 SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
     GAMEOBJECT *victim;
     if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || object->character_context != LEGOCONTEXT_SPECIALMOVE_ATTACKER ||
         object->special_move_pc == -1 || object->force_target == NULL) {
@@ -183,7 +183,7 @@ i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
     return 1;
 }
 
-void __cdecl SpecialMove_Cancel(GAMEOBJECT *object) {
+void SpecialMove_Cancel(GAMEOBJECT *object) {
     GAMEOBJECT *other;
     if ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
          object->special_move_pc != -1) ||
@@ -199,7 +199,7 @@ void __cdecl SpecialMove_Cancel(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl SpecialMove_VictimCode(GAMEOBJECT *object) {
+void SpecialMove_VictimCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM) {
         if (object->force_target == NULL) {
             object->character_context = -1;
@@ -215,7 +215,7 @@ void __cdecl SpecialMove_VictimCode(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
+void SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
     i32 move = object->special_move_pc;
     f32 distance = move != -1 ? SpecialMove[move].distance_apart : 0.0f;
     NUVEC target;

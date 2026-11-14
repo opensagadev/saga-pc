@@ -1,9 +1,9 @@
 #include "saga.h"
 
-void __cdecl SetDepthOfField(void) {
+void SetDepthOfField(void) {
 }
 
-f32 __cdecl NewShadow(NUVEC *position, f32 unused, f32 height, i32 mask) {
+f32 NewShadow(NUVEC *position, f32 unused, f32 height, i32 mask) {
     return NewShadowEx(position, unused, height, height, mask);
 }
 

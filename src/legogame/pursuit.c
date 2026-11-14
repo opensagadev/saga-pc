@@ -70,22 +70,22 @@ static void UpdateZamArrow(WORLDINFO *world) {
     }
 }
 
-void __cdecl BountyHunterPursuitA_Init(WORLDINFO *world) {
+void BountyHunterPursuitA_Init(WORLDINFO *world) {
 }
 
-void __cdecl BountyHunterPursuitA_Reset(WORLDINFO *world) {
+void BountyHunterPursuitA_Reset(WORLDINFO *world) {
     memset(&zamarrow, 0, sizeof(zamarrow));
     zamarrow.object = GetNamedGameObject(world->ai_sys, "ai_zam");
 }
 
-void __cdecl BountyHunterPursuitA_Update(WORLDINFO *world) {
+void BountyHunterPursuitA_Update(WORLDINFO *world) {
     UpdateZamArrow(world);
 }
 
-void __cdecl BountyHunterPursuitB_Init(WORLDINFO *world) {
+void BountyHunterPursuitB_Init(WORLDINFO *world) {
 }
 
-void __cdecl BountyHunterPursuitB_Reset(WORLDINFO *world) {
+void BountyHunterPursuitB_Reset(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator1");
     LevGizmo[1] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator2");
     LevGizmo[2] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator3");
@@ -98,16 +98,16 @@ void __cdecl BountyHunterPursuitB_Reset(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "CompletedB", NULL);
 }
 
-void __cdecl BountyHunterPursuitB_Update(WORLDINFO *world) {
+void BountyHunterPursuitB_Update(WORLDINFO *world) {
     if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f) {
         UpdateZamArrow(world);
     }
 }
 
-void __cdecl BountyHunterPursuitC_Init(WORLDINFO *world) {
+void BountyHunterPursuitC_Init(WORLDINFO *world) {
 }
 
-void __cdecl BountyHunterPursuitC_Reset(WORLDINFO *world) {
+void BountyHunterPursuitC_Reset(WORLDINFO *world) {
     PURSUIT_TRAFFIC_PC *traffic;
     PURSUIT_TRAFFIC_ENTRY_PC *entry;
     NUMTX first;
@@ -139,7 +139,7 @@ void __cdecl BountyHunterPursuitC_Reset(WORLDINFO *world) {
     }
 }
 
-void __cdecl BountyHunterPursuitC_Update(WORLDINFO *world) {
+void BountyHunterPursuitC_Update(WORLDINFO *world) {
     PURSUIT_TRAFFIC_PC *traffic;
     PURSUIT_TRAFFIC_ENTRY_PC *entry;
     i32 i;
@@ -169,10 +169,10 @@ void __cdecl BountyHunterPursuitC_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl BountyHunterPursuitD_Init(WORLDINFO *world) {
+void BountyHunterPursuitD_Init(WORLDINFO *world) {
 }
 
-void __cdecl BountyHunterPursuitD_Reset(WORLDINFO *world) {
+void BountyHunterPursuitD_Reset(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator1");
     LevGizmo[1] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator2");
     LevGizmo[2] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator3");
@@ -188,7 +188,7 @@ void __cdecl BountyHunterPursuitD_Reset(WORLDINFO *world) {
     LevGameObject[0] = GetNamedGameObject(world->ai_sys, "ai_zam");
 }
 
-void __cdecl BountyHunterPursuitD_Update(WORLDINFO *world) {
+void BountyHunterPursuitD_Update(WORLDINFO *world) {
     f32 nearest_distance_sq;
     f32 distance_sq;
     f32 distance;

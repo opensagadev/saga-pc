@@ -44,7 +44,7 @@ typedef struct PULSE_WORLD_VIEW_PC {
     LEVEL_SFX_PULSE_PC *pulses_sys; // 0x5050
 } PULSE_WORLD_VIEW_PC;              // size 0x5054
 
-void __cdecl Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32 capacity) {
+void Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32 capacity) {
     if (system == NULL) {
         return;
     }
@@ -65,7 +65,7 @@ void __cdecl Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32
     }
 }
 
-void __cdecl Pulses_Configure(WORLDINFO *world, char *config) {
+void Pulses_Configure(WORLDINFO *world, char *config) {
     NUFPAR_PC *parser;
     LEVEL_SFX_PULSE_PC pulse_sys;
     PULSE_PC *pulse;
@@ -197,7 +197,7 @@ outer_lines:
     world->giz_buffer.addr = ((world->giz_buffer.addr + sizeof(LEVEL_SFX_PULSE_PC) + 3U) & ~3U);
 }
 
-void __cdecl Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
+void Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
     i32 i;
     if (system == NULL) {
         return;
@@ -214,7 +214,7 @@ void __cdecl Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
     }
 }
 
-void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
+void Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
     WORLDINFO *world;
     NUVEC hit_direction;
     i32 i;

@@ -8,9 +8,9 @@ template <>
 void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *,
                                              const PC_SHADER_FILTER_MATERIAL_VIEW *);
 
-void __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW *desc,
-                                                           const PC_SHADER_FILTER_MATERIAL_VIEW *mtl, i32 input_flags,
-                                                           i32 input_parameter) {
+void PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW *desc,
+                                                const PC_SHADER_FILTER_MATERIAL_VIEW *mtl, i32 input_flags,
+                                                i32 input_parameter) {
     descriptor = desc;
     material = mtl;
     flags = input_flags;
@@ -39,7 +39,7 @@ void __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTE
     }
 }
 
-bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::UnfilteredHasLayer(i32 which) const {
+bool PC_SHADER_MATERIAL_FILTER_VIEW::UnfilteredHasLayer(i32 which) const {
     switch (which) {
         case 0:
             return true;
@@ -54,7 +54,7 @@ bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::UnfilteredHasLayer(i32 which) co
     }
 }
 
-bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32 which) const {
+bool PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32 which) const {
     if (variant != 0 && descriptor->override_mode == 0) {
         return false;
     }
@@ -72,7 +72,7 @@ bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32 which) const {
     }
 }
 
-bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32 which) const {
+bool PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32 which) const {
     if (variant != 0) {
         return UnfilteredHasLayer(which) && which == 0 && (descriptor->override_mode & 1) != 0;
     }
@@ -81,7 +81,7 @@ bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32 which) const {
 
 #define SHADER_VERTEX_FORMAT_HAS_UV_SETS(format, count) ((i8)(((format) >> 9) & 3) >= (count))
 
-u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
+u32 PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
     u32 v = descriptor->vertex_format;
     u32 result = 0;
     u32 colour0;
@@ -624,7 +624,7 @@ bool ShaderManagerHLSL::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *filte
     return true;
 }
 
-extern "C" void __cdecl NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end) {
+extern "C" void NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end) {
     VirtualStackAllocator allocator;
     allocator.setExternalMemoryPool(arena->void_ptr, arena_end.addr - arena->addr);
     void *memory = allocator.cursor;

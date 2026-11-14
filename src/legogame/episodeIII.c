@@ -185,9 +185,9 @@ typedef struct terrain_set_reader_pc_s {
 } TERRAIN_SET_READER_PC;
 
 extern i16 CharacterFixupIdPc007f1a0c;
-GIZFORCE_PC *__cdecl GizForces_FindForce(WORLDINFO *world, char *name);
+GIZFORCE_PC *GizForces_FindForce(WORLDINFO *world, char *name);
 
-void __cdecl CruiserAInit(WORLDINFO *world) {
+void CruiserAInit(WORLDINFO *world) {
     ((CRUISERA_LEVFLAG_PC *)LevFlag)->starfighter_state = 0;
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "starfighter1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], "starfighter2", 1);
@@ -196,7 +196,7 @@ void __cdecl CruiserAInit(WORLDINFO *world) {
     }
 }
 
-void __cdecl CruiserAUpdate(WORLDINFO *world) {
+void CruiserAUpdate(WORLDINFO *world) {
     if (((CRUISERA_LEVFLAG_PC *)LevFlag)->starfighter_state == 1) {
         ((CRUISERA_LEVFLAG_PC *)LevFlag)->starfighter_state = 2;
         if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
@@ -211,12 +211,12 @@ void __cdecl CruiserAUpdate(WORLDINFO *world) {
 CRUISERC_PC cruiser_c = {0};
 CRUISERC_NETPACKET_PC *crusiserc_netpacket = NULL;
 
-void __cdecl CruiserCReset(WORLDINFO *world) {
+void CruiserCReset(WORLDINFO *world) {
     crusiserc_netpacket = SetLevelHack(4);
     memset(&cruiser_c, 0, sizeof(cruiser_c));
 }
 
-void __cdecl CruiserCUpdate(WORLDINFO *world) {
+void CruiserCUpdate(WORLDINFO *world) {
     if (cruiser_c.free_palpatine == NULL) {
         cruiser_c.free_palpatine = CheckGizAIMessage(gizaimessagesys, "FreePalpatine", NULL);
     }
@@ -243,7 +243,7 @@ void __cdecl CruiserCUpdate(WORLDINFO *world) {
     }
 }
 
-void __cdecl CruiserCPanel(WORLDINFO *world) {
+void CruiserCPanel(WORLDINFO *world) {
     if (netclient != 0) {
         return;
     }
@@ -260,7 +260,7 @@ static NUSPECIALHANDLE CruiserD_Lift = {NULL, NULL, NULL};
 static CRUISERD_LIFT_ANIM_PC *CruiserD_LiftAnim = NULL;
 static i32 CruiserD_Lift_plat_id = 0;
 
-void __cdecl CruiserDInit(WORLDINFO *world) {
+void CruiserDInit(WORLDINFO *world) {
     i32 i;
     for (i = 0; i < world->area->level_count; i++) {
         if (world->area->levels[i] == LevelFixupSlotPc0087b170->index) {
@@ -280,7 +280,7 @@ static f32 CruiserD_frame = 1.0f;
 static i32 CruiserD_direction = 1;
 static GIZAIMESSAGE *CruiserD_LiftChase_msg = NULL;
 
-void __cdecl CruiserDReset(WORLDINFO *world) {
+void CruiserDReset(WORLDINFO *world) {
     CruiserD_LiftChase_msg = CheckGizAIMessage(gizaimessagesys, "LiftChase", NULL);
     MiscTime = 0.0f;
     if (NuSpecialExistsFn(&CruiserD_Lift) != 0 && CruiserD_LiftAnim != NULL) {
@@ -307,7 +307,7 @@ void __cdecl CruiserDReset(WORLDINFO *world) {
 
 static f32 CruiserD_ResetTimePc = 1.0f;
 
-void __cdecl CruiserDUpdate(WORLDINFO *world) {
+void CruiserDUpdate(WORLDINFO *world) {
     CruiserD_LiftChase = 0;
     if (NuSpecialExistsFn(&CruiserD_Lift) == 0 || CruiserD_LiftAnim == NULL || CruiserD_LiftChase_msg == NULL) {
         return;
@@ -362,7 +362,7 @@ void __cdecl CruiserDUpdate(WORLDINFO *world) {
     }
 }
 
-void __cdecl GrievousA_Reset(WORLDINFO *world) {
+void GrievousA_Reset(WORLDINFO *world) {
     if (netclient != 0) {
         return;
     }
@@ -397,7 +397,7 @@ void KashyyykA_Reset(WORLDINFO *unused0) {
     KashyyykA_msg_WookiesToRescue = CheckGizAIMessage(gizaimessagesys, "WookiesToRescue", NULL);
 }
 
-void __cdecl KashyyykA_Panel(WORLDINFO *world) {
+void KashyyykA_Panel(WORLDINFO *world) {
     if (Mission_Active(MissionSys) == NULL) {
         i16 characters[3] = {id_WOOKIEE, id_WOOKIEE, id_WOOKIEE};
         u8 rescued[3] = {1, 1, 1};
@@ -423,13 +423,13 @@ void __cdecl KashyyykA_Panel(WORLDINFO *world) {
     }
 }
 
-void __cdecl KashyyykD_Init(WORLDINFO *world) {
+void KashyyykD_Init(WORLDINFO *world) {
     boulder_wait = 0.0f;
     i_boulder = 0;
     boulder_blowup_type = GizmoBlowupGetTypeFromNameTableId(WORLD, GizmoBlowupGetNameTableId("ball_blowup_null"));
 }
 
-void __cdecl KashyyykD_Reset(WORLDINFO *world) {
+void KashyyykD_Reset(WORLDINFO *world) {
     char name[256];
     i32 i;
     for (i = 0; i < 2; ++i) {
@@ -448,7 +448,7 @@ void __cdecl KashyyykD_Reset(WORLDINFO *world) {
     }
 }
 
-void __cdecl Boulder_Move(PART_PC *part, f32 unused) {
+void Boulder_Move(PART_PC *part, f32 unused) {
     i32 index;
     f32 reciprocal;
     if (netclient != 0) {
@@ -478,7 +478,7 @@ void __cdecl Boulder_Move(PART_PC *part, f32 unused) {
     }
 }
 
-void __cdecl Boulder_Kill(PART_PC *part, i32 unused) {
+void Boulder_Kill(PART_PC *part, i32 unused) {
     i32 index;
     if (part == boulder_part[0]) {
         index = 0;
@@ -499,7 +499,7 @@ void __cdecl Boulder_Kill(PART_PC *part, i32 unused) {
     boulder_part[index] = NULL;
 }
 
-static void __cdecl BoulderSpawnPc(i32 index) {
+static void BoulderSpawnPc(i32 index) {
     ADDPART_PC params;
     PART_PC *part;
     NUINSTANIM **animation = &LevInstAnimResetPc.animations[index];
@@ -528,7 +528,7 @@ static void __cdecl BoulderSpawnPc(i32 index) {
     }
 }
 
-void __cdecl KashyyykD_Update(WORLDINFO *world) {
+void KashyyykD_Update(WORLDINFO *world) {
     if (netclient != 0) {
         return;
     }
@@ -647,7 +647,7 @@ static void VaderA_StartCollapseStage(WORLDINFO *world) {
 
 VADERA_NETPACKET_PC *vadera_netpacket = NULL;
 
-void __cdecl VaderA_Init(WORLDINFO *world) {
+void VaderA_Init(WORLDINFO *world) {
     memset(&vader_a, 0, sizeof(vader_a));
     vadera_netpacket = SetLevelHack(8);
     vader_a.big_jump_locator = AIPathFindLocator(world->ai_sys, "Bigjump_0");
@@ -656,7 +656,7 @@ void __cdecl VaderA_Init(WORLDINFO *world) {
     vader_a.timer_message = SetGizAIMessage(gizaimessagesys, "timer", 0.0f, NULL);
 }
 
-void __cdecl VaderA_Reset(WORLDINFO *world) {
+void VaderA_Reset(WORLDINFO *world) {
     DrawTimer(0, 0, 1);
     if (netclient == 0 && vader_a.count != 0) {
         VaderA_StartCollapseStage(world);
@@ -672,7 +672,7 @@ static f32 VaderA_TimeBonusPc = 20.0f;
 static NUVEC vadar_cam_pos = {0.0f, 0.88f, -12.4f};
 static NUVEC vadar_cam_tgt = {0.0f, 2.0f, -17.4f};
 
-void __cdecl VaderA_Update(WORLDINFO *world) {
+void VaderA_Update(WORLDINFO *world) {
     i32 i;
     if (vader_a.timer_message != NULL) {
         vader_a.timer_message->value += FRAMETIME;
@@ -751,14 +751,14 @@ void __cdecl VaderA_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl VaderA_DrawPanel(WORLDINFO *world) {
+void VaderA_DrawPanel(WORLDINFO *world) {
     if (vader_a.count != 0 && vader_a.count < 3) {
         DrawTimer((i32)vader_a.timer + 1, vader_a.subtitle, 0);
         vader_a.subtitle = 0;
     }
 }
 
-void __cdecl VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door) {
+void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door) {
     if (netclient == 0 && vader_a.count == 0) {
         VaderA_StartCollapseStage(world);
     }
@@ -772,7 +772,7 @@ void VaderB_Reset(WORLDINFO *unused0) {
     vader_b_playersDead = 0;
 }
 
-void __cdecl VaderB_Update(WORLDINFO *world) {
+void VaderB_Update(WORLDINFO *world) {
     if (netclient == 0 && vader_b_complete_msg != NULL && vader_b_complete_msg->value == 1.0f &&
         LevelFixupSlotPc0087b17c != NULL) {
         GoToNewLevel(VADERC_LDATA->index);
@@ -790,7 +790,7 @@ VADERC_PC vader_c = {0};
 void *vaderc_netpacket = NULL;
 i32 Vader_ObiWanKilledAnakin = 0;
 
-void __cdecl VaderC_Init(WORLDINFO *world) {
+void VaderC_Init(WORLDINFO *world) {
     char *names[10] = {"rock1", "rock2", "rock3", "rock4", "rock5", "rock6", "rock7", "rock8", "rock10", "rock11"};
     i32 i;
     memset(&vader_c, 0, sizeof(vader_c));
@@ -807,14 +807,14 @@ void __cdecl VaderC_Init(WORLDINFO *world) {
     vaderc_netpacket = SetLevelHack(1);
 }
 
-void __cdecl VaderC_Reset(WORLDINFO *world) {
+void VaderC_Reset(WORLDINFO *world) {
     vader_c.progress_mask = 0;
     vader_c.players_dead = 0;
 }
 
 void *CurTerr = NULL;
 
-void __cdecl VaderC_Update(WORLDINFO *world) {
+void VaderC_Update(WORLDINFO *world) {
     GAMEOBJECT *first;
     GAMEOBJECT *second;
     i32 i;
@@ -885,7 +885,7 @@ void __cdecl VaderC_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl VaderC_DrawPanel(WORLDINFO *world) {
+void VaderC_DrawPanel(WORLDINFO *world) {
     if (netclient != 0) {
         return;
     }

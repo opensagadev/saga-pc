@@ -20,7 +20,7 @@ STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 /* Retail is a hand-written SSE block: four points per iteration, three outputs (x, y, z blocks) and one outcode
  * vector. Outcodes: 32 near, 16 far, 1/2 left/right (|x| against z*zx), 8/4 bottom/top (|y| against z*zy). */
 
-void __cdecl NuVec4MtxTransformVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *m) {
+void NuVec4MtxTransformVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *m) {
     f32 y = v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + v->w * m->m31;
     f32 z = v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + v->w * m->m32;
     f32 w = v->x * m->m03 + v->y * m->m13 + v->z * m->m23 + v->w * m->m33;
@@ -30,7 +30,7 @@ void __cdecl NuVec4MtxTransformVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *m) {
     out->w = w;
 }
 
-void __cdecl NuVec4MtxTransformVU0x2(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
+void NuVec4MtxTransformVU0x2(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
     i32 i;
     for (i = 0; i < 2; ++i) {
         f32 y = ((in->y * m->m11 + in->x * m->m01) + (in->z * m->m21)) + in->w * m->m31;
@@ -46,7 +46,7 @@ void __cdecl NuVec4MtxTransformVU0x2(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
     }
 }
 
-void __cdecl NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
+void NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
     i32 i;
     for (i = 0; i < 3; ++i) {
         f32 y = ((in->y * m->m11 + in->x * m->m01) + (in->z * m->m21)) + in->w * m->m31;
@@ -62,7 +62,7 @@ void __cdecl NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
     }
 }
 
-void __cdecl NuVec4MtxTransformVU0x4(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
+void NuVec4MtxTransformVU0x4(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
     i32 i;
     for (i = 0; i < 4; ++i) {
         f32 y = ((in->y * m->m11 + in->x * m->m01) + (in->z * m->m21)) + in->w * m->m31;
@@ -78,7 +78,7 @@ void __cdecl NuVec4MtxTransformVU0x4(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
     }
 }
 
-void __cdecl NuVec4MtxRotateVU0(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
+void NuVec4MtxRotateVU0(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
     f32 y = matrix->m01 * input->x + matrix->m11 * input->y + matrix->m21 * input->z;
     f32 z = matrix->m02 * input->x + matrix->m12 * input->y + matrix->m22 * input->z;
     out->x = matrix->m10 * input->y + input->x * matrix->m00 + matrix->m20 * input->z;
@@ -87,7 +87,7 @@ void __cdecl NuVec4MtxRotateVU0(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
     out->w = input->w;
 }
 
-void __cdecl NuVec4MtxTransformHVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *matrix) {
+void NuVec4MtxTransformHVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *matrix) {
     NuVec4MtxTransformVU0(out, v, matrix);
 }
 
@@ -99,7 +99,7 @@ f32 fun_005c1290(f32 value) {
     return expf(value);
 }
 
-void __cdecl AnimationDiagnosticNoOpPc(void) {
+void AnimationDiagnosticNoOpPc(void) {
 }
 
 /* Retail 0x5c1880 takes parent in ECX, rotation in EDX and the output on the

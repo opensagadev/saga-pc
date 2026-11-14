@@ -6,17 +6,17 @@ extern "C" {
     extern i32 movie_skipped;
     extern f32 MoviePlayTime;
     extern f32 MovieFrameTime;
-    extern i32(__cdecl *MovieInputFn)(void);
+    extern i32 (*MovieInputFn)(void);
 }
 
 STATIC_ASSERT(offsetof(NUFPAR_PC, file_name) == 8);
 STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
 extern "C" {
-    void __cdecl MoviesListNoOpPc(char *path);
+    void MoviesListNoOpPc(char *path);
 }
 extern "C" {
-    i32 __cdecl GamePads_SkipMovie(void);
-    i32 __cdecl NuFmvPlayV(i32 tag, ...);
+    i32 GamePads_SkipMovie(void);
+    i32 NuFmvPlayV(i32 tag, ...);
 }
 
 extern "C" {
@@ -31,7 +31,7 @@ extern "C" {
     const char MoviesListKeywordPc[6] = "movie";
 #pragma const_seg()
 
-    void __cdecl Movies_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {
+    void Movies_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {
         NUFPAR_PC *parser;
         char *destination;
         (void)buffer_end;
@@ -69,7 +69,7 @@ extern "C" {
     }
 }
 
-extern "C" i32 __cdecl Movie_CallBack(void) {
+extern "C" i32 Movie_CallBack(void) {
     NUPAD_INIT_STATE *pads[2];
     i32 skipped = 0;
     ThingProcessData frame;
@@ -92,8 +92,8 @@ extern "C" i32 __cdecl Movie_CallBack(void) {
 
 extern "C" {
 
-    i32 __cdecl Movie_Play(char *name, VARIPTR *buffer, VARIPTR *buffer_end, f32 frame_time,
-                           i32(__cdecl *input_fn)(void), f32 volume) {
+    i32 Movie_Play(char *name, VARIPTR *buffer, VARIPTR *buffer_end, f32 frame_time, i32 (*input_fn)(void),
+                   f32 volume) {
         char path[256];
         char subtitles[256];
         f32 movie_volume;

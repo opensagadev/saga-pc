@@ -273,23 +273,23 @@ typedef struct SoundVoiceManagerPC {
     IDirectSoundBuffer *primary_buffer;
     PC_DS_BUFFER_DESC_VIEW primary_desc;
 #ifdef __cplusplus
-    void __thiscall Init(i32, u8, u8);
-    i32 __thiscall LoadWavSamplePc(const char *, i32);
-    SoundVoiceManagerPC *__thiscall ResetStoragePc(void);
-    void __thiscall UnloadSample(i32);
-    void __thiscall ClearSamplesPc(void);
-    void __thiscall SetOptionD14Pc(u8);
-    IDirectSound8 *__thiscall GetFactory(void);
-    void __thiscall SetSampleName(const char *name, i32 sample_index);
-    i32 __thiscall AllocateVoice(i32, i32);
-    bool __thiscall FindLoopVoicePc(NUVEC *, i32, i32 *);
-    void __thiscall SetVoice(i32, i32, f32, i32);
-    void __thiscall SetVolumeTableIndex(i32, i32);
-    void __thiscall SetFrequencyParameter(i32, i32);
-    void __thiscall StopVoice(i32);
-    void __thiscall StopAllVoices(void);
-    void __thiscall UpdateVoices(void);
-    void __thiscall Setup3DVoice(i32, const NUVEC *, i32);
+    void Init(i32, u8, u8);
+    i32 LoadWavSamplePc(const char *, i32);
+    SoundVoiceManagerPC *ResetStoragePc(void);
+    void UnloadSample(i32);
+    void ClearSamplesPc(void);
+    void SetOptionD14Pc(u8);
+    IDirectSound8 *GetFactory(void);
+    void SetSampleName(const char *name, i32 sample_index);
+    i32 AllocateVoice(i32, i32);
+    bool FindLoopVoicePc(NUVEC *, i32, i32 *);
+    void SetVoice(i32, i32, f32, i32);
+    void SetVolumeTableIndex(i32, i32);
+    void SetFrequencyParameter(i32, i32);
+    void StopVoice(i32);
+    void StopAllVoices(void);
+    void UpdateVoices(void);
+    void Setup3DVoice(i32, const NUVEC *, i32);
 #endif
 } SoundVoiceManagerPC;
 
@@ -396,33 +396,33 @@ union variptr_u;
 typedef struct gizmofns_pc_s {
     i16 options;
     u16 padding;
-    i32(__cdecl *get_max_gizmos_fn)(void *world);
+    i32 (*get_max_gizmos_fn)(void *world);
     void *add_gizmos_fn;
-    void(__cdecl *early_update_fn)(void *world, void *data, f32 delta_time);
-    void(__cdecl *late_update_fn)(void *world, void *data, f32 delta_time);
-    void(__cdecl *draw_fn)(void *world, void *data, f32 delta_time);
-    void(__cdecl *panel_draw_fn)(void *world, void *data, f32 delta_time);
-    char *(__cdecl *get_gizmo_name_fn)(struct gizmo_pc_s *gizmo);
-    i32(__cdecl *get_output_fn)(struct gizmo_pc_s *gizmo, i32 output, i32 mode);
-    char *(__cdecl *get_output_name_fn)(struct gizmo_pc_s *gizmo, i32 output);
+    void (*early_update_fn)(void *world, void *data, f32 delta_time);
+    void (*late_update_fn)(void *world, void *data, f32 delta_time);
+    void (*draw_fn)(void *world, void *data, f32 delta_time);
+    void (*panel_draw_fn)(void *world, void *data, f32 delta_time);
+    char *(*get_gizmo_name_fn)(struct gizmo_pc_s *gizmo);
+    i32 (*get_output_fn)(struct gizmo_pc_s *gizmo, i32 output, i32 mode);
+    char *(*get_output_name_fn)(struct gizmo_pc_s *gizmo, i32 output);
     void *get_num_outputs_fn;
-    void(__cdecl *activate_fn)(struct gizmo_pc_s *gizmo, i32 active);
-    i32(__cdecl *activate_rev_fn)(struct gizmo_pc_s *gizmo, i32 reverse, i32 visibility);
-    void(__cdecl *set_visibility_fn)(struct gizmo_pc_s *gizmo, i32 visible);
-    i32(__cdecl *get_visibility_fn)(struct gizmo_pc_s *gizmo);
+    void (*activate_fn)(struct gizmo_pc_s *gizmo, i32 active);
+    i32 (*activate_rev_fn)(struct gizmo_pc_s *gizmo, i32 reverse, i32 visibility);
+    void (*set_visibility_fn)(struct gizmo_pc_s *gizmo, i32 visible);
+    i32 (*get_visibility_fn)(struct gizmo_pc_s *gizmo);
     void *get_pos_fn;
     void *using_special_fn;
     void *bolt_hit_plat_fn;
-    struct gizmo_pc_s *(__cdecl *get_best_bolt_target_fn)(struct gizmoset_pc_s *, f32 *, NUVEC *, NUVEC *, void *,
-                                                          NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
+    struct gizmo_pc_s *(*get_best_bolt_target_fn)(struct gizmoset_pc_s *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *,
+                                                  NUVEC *, f32, f32, i32, i32, i32);
     void *bolt_hit_fn;
-    void *(__cdecl *allocate_progress_data_fn)(union variptr_u *buffer, union variptr_u *end);
-    void(__cdecl *clear_progress_fn)(void *world, void *progress);
-    void(__cdecl *store_progress_fn)(void *world, void *data, void *progress);
-    void(__cdecl *reset_fn)(void *world, void *data, void *progress);
-    void *(__cdecl *reserve_buffer_space_fn)(void *world);
-    i32(__cdecl *load_fn)(void *world, void *data);
-    void(__cdecl *post_load_fn)(void *world, void *data);
+    void *(*allocate_progress_data_fn)(union variptr_u *buffer, union variptr_u *end);
+    void (*clear_progress_fn)(void *world, void *progress);
+    void (*store_progress_fn)(void *world, void *data, void *progress);
+    void (*reset_fn)(void *world, void *data, void *progress);
+    void *(*reserve_buffer_space_fn)(void *world);
+    i32 (*load_fn)(void *world, void *data);
+    void (*post_load_fn)(void *world, void *data);
     void *add_level_sfx_fn;
 } GIZMOFNS_PC;
 
@@ -467,7 +467,7 @@ typedef struct addgizmotype_pc_s {
 } ADDGIZMOTYPE_PC;
 
 STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
-typedef ADDGIZMOTYPE_PC *(__cdecl *REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
+typedef ADDGIZMOTYPE_PC *(*REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
 #ifdef __cplusplus
 extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 #else
@@ -602,7 +602,7 @@ STATIC_ASSERT(offsetof(GIZFLOW_PC, flowboxes) == 0x8);
 STATIC_ASSERT(offsetof(GIZFLOW_PC, frame) == 0xc);
 STATIC_ASSERT(offsetof(GIZFLOW_PC, pointers_need_reset) == 0xd);
 
-typedef void(__cdecl *GIZACTIONFN_PC)(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+typedef void (*GIZACTIONFN_PC)(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
 
 typedef struct GIZACTIONDEF_PC {
     const char *name;
@@ -617,9 +617,9 @@ typedef struct FLOWBOXACTION_PC {
 } FLOWBOXACTION_PC;
 
 typedef struct FLOWBOX_CALLBACKS_PC {
-    void(__cdecl *reset)(GIZFLOW_PC *, FLOWBOX_PC *);
-    i32(__cdecl *process)(GIZFLOW_PC *, FLOWBOX_PC *, u8);
-    i32(__cdecl *check_output)(GIZFLOW_PC *, FLOWBOX_PC *, u8);
+    void (*reset)(GIZFLOW_PC *, FLOWBOX_PC *);
+    i32 (*process)(GIZFLOW_PC *, FLOWBOX_PC *, u8);
+    i32 (*check_output)(GIZFLOW_PC *, FLOWBOX_PC *, u8);
 } FLOWBOX_CALLBACKS_PC;
 
 STATIC_ASSERT(sizeof(GIZACTIONDEF_PC) == 8);
@@ -1301,8 +1301,8 @@ struct AISCRIPTPROCESS_PC {
     void *local_messages;        // 0xc4
 }; // size 0xc8
 
-typedef f32(__cdecl *AICONDITION_EVAL_PC)(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-typedef void *(__cdecl *AICONDITION_INIT_PC)(AISYS_PC *, char *, AISCRIPT_PC *);
+typedef f32 (*AICONDITION_EVAL_PC)(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+typedef void *(*AICONDITION_INIT_PC)(AISYS_PC *, char *, AISCRIPT_PC *);
 
 typedef struct AICONDITIONDEF_PC {
     const char *name;            // 0x0
@@ -1310,7 +1310,7 @@ typedef struct AICONDITIONDEF_PC {
     AICONDITION_INIT_PC init_fn; // 0x8
 } AICONDITIONDEF_PC;             // size 0xc
 
-typedef i32(__cdecl *AIACTION_EVAL_PC)(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+typedef i32 (*AIACTION_EVAL_PC)(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 
 typedef struct AIACTIONDEF_PC {
     const char *name;             // 0x0
@@ -1557,7 +1557,7 @@ typedef struct APIOBJECT_PC {
     struct APIOBJECT_PC *collision_link;                             // 0x298
 } APIOBJECT_PC;                                                      // size 0x29c
 
-typedef APIOBJECT_PC *(__cdecl *APIOBJECT_FROM_ID_PC)(u8);
+typedef APIOBJECT_PC *(*APIOBJECT_FROM_ID_PC)(u8);
 
 typedef struct AIACTIONMACRO_PC AIACTIONMACRO_PC;
 typedef struct AICONDITIONMACRO_PC AICONDITIONMACRO_PC;
@@ -1667,7 +1667,7 @@ typedef struct AIPATHSYS_PC {
     AIPATHSPECIALROUTE_PC *special_routes; // 0xc
 } AIPATHSYS_PC;                            // size 0x10
 
-typedef i32(__cdecl *AI_PREPARING_SPECIAL_MOVE_PC)(AIPACKET_PC *, APIOBJECT_PC *, i32);
+typedef i32 (*AI_PREPARING_SPECIAL_MOVE_PC)(AIPACKET_PC *, APIOBJECT_PC *, i32);
 
 typedef struct AIANTINODE_PC {
     NUVEC position;                 // 0x00
@@ -2615,7 +2615,7 @@ typedef struct NuKeyboardOwner_PC {
 #ifdef __cplusplus
     NuKeyboardOwner_PC();
     ~NuKeyboardOwner_PC();
-    void __thiscall SetMouseEnabledPc(u8 enabled);
+    void SetMouseEnabledPc(u8 enabled);
     const struct PC_DI_MOUSE_STATE_PC *PollMousePc();
     i32 SetMouseCooperativePc(i32 value);
     void RescanDevicesPc();
@@ -2749,7 +2749,7 @@ STATIC_ASSERT(sizeof(NUFPAR_PC) == 0x584);
 
 typedef struct nufpcomjmp_s {
     char *keyword;
-    void(__cdecl *callback)(NUFPAR_PC *parser);
+    void (*callback)(NUFPAR_PC *parser);
 } NUFPCOMJMP;
 
 STATIC_ASSERT(sizeof(NUFPCOMJMP) == 8);
@@ -2757,13 +2757,13 @@ STATIC_ASSERT(offsetof(NUFPCOMJMP, callback) == 4);
 
 typedef struct nufpcomjmpctx_s {
     char *keyword;
-    void(__cdecl *callback)(NUFPAR_PC *parser, void *context);
+    void (*callback)(NUFPAR_PC *parser, void *context);
 } NUFPCOMJMPCTX;
 
 STATIC_ASSERT(sizeof(NUFPCOMJMPCTX) == 8);
 STATIC_ASSERT(offsetof(NUFPCOMJMPCTX, callback) == 4);
-typedef void(__cdecl *NUFPCOMFN)(NUFPAR_PC *parser);
-typedef i32(__cdecl *NURDPGETVARFN)(char *name, f32 *value, i32 *found);
+typedef void (*NUFPCOMFN)(NUFPAR_PC *parser);
+typedef i32 (*NURDPGETVARFN)(char *name, f32 *value, i32 *found);
 
 typedef struct nufparpos_pc_s {
     i32 line_number;
@@ -3579,11 +3579,11 @@ typedef struct BOLTTYPE_PC_s {
     i8 field_3d;
     u16 field_3e;
     u32 field_40;
-    void(__cdecl *init_callback)(struct bolt_s *bolt);
-    void(__cdecl *update_callback)(struct bolt_s *bolt);
-    void(__cdecl *end_callback)(struct bolt_s *bolt);
-    void(__cdecl *ricochet_callback)(struct bolt_s *bolt, NUVEC *normal);
-    f32(__cdecl *scale_callback)(struct bolt_s *bolt);
+    void (*init_callback)(struct bolt_s *bolt);
+    void (*update_callback)(struct bolt_s *bolt);
+    void (*end_callback)(struct bolt_s *bolt);
+    void (*ricochet_callback)(struct bolt_s *bolt, NUVEC *normal);
+    f32 (*scale_callback)(struct bolt_s *bolt);
 
     union {
         const char *shoot_sound;
@@ -3653,12 +3653,12 @@ struct PART_PC;
 typedef struct BOLTSYS_PC_s {
     BOLTTYPE_PC *types;
     i32 count;
-    void(__cdecl *stop_targeting)(struct gameobject_s *, NUVEC *);
-    void(__cdecl *debris)(struct bolt_s *, NUVEC *, i32, NUVEC *, i32);
-    void(__cdecl *shoot_origin)(struct gameobject_s *, NUVEC *);
-    u16(__cdecl *shoot_direction)(struct gameobject_s *, NUVEC *);
-    i32(__cdecl *hit_part)(struct bolt_s *, struct PART_PC *);
-    i32(__cdecl *alternate_fire)(struct gameobject_s *, i32);
+    void (*stop_targeting)(struct gameobject_s *, NUVEC *);
+    void (*debris)(struct bolt_s *, NUVEC *, i32, NUVEC *, i32);
+    void (*shoot_origin)(struct gameobject_s *, NUVEC *);
+    u16 (*shoot_direction)(struct gameobject_s *, NUVEC *);
+    i32 (*hit_part)(struct bolt_s *, struct PART_PC *);
+    i32 (*alternate_fire)(struct gameobject_s *, i32);
 } BOLTSYS_PC;
 
 STATIC_ASSERT(offsetof(BOLTSYS_PC, stop_targeting) == 8);
@@ -5137,7 +5137,7 @@ STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, kind) == 0);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, name) == 4);
 
 typedef struct PLAYERCHARACTERCONFIG_PC {
-    i32(__cdecl *make_layer_list)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    i32 (*make_layer_list)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
     GAMECHARACTERLAYER_PC *layers;
     i8 *layer_lookup;
     f32 stop_speed;
@@ -5435,8 +5435,8 @@ typedef struct characterdata_pc_s {
     u16 animation_count;
     u8 field6_0x16;
     u8 field7_0x17;
-    void(__cdecl *move_fn)(struct gameobject_s *);
-    void(__cdecl *animate_fn)(struct gameobject_s *);
+    void (*move_fn)(struct gameobject_s *);
+    void (*animate_fn)(struct gameobject_s *);
     void *draw_fn;
     PLAYERCHARACTERCONFIG_PC *game_character;
     struct CHARACTER_EFFECT_CONFIG_PC *effects;
@@ -5680,8 +5680,8 @@ typedef struct SoundTable {
 STATIC_ASSERT(sizeof(SoundTable) == 0xc8);
 
 typedef struct GAMEAUDIO_PC {
-    i32(__cdecl *override_footstep_fn)(struct gameobject_s *, i32);
-    i32(__cdecl *check_reverb_fn)(void);
+    i32 (*override_footstep_fn)(struct gameobject_s *, i32);
+    i32 (*check_reverb_fn)(void);
     char *sfx_names[84];
     i16 sfx_ids[84];
 } GAMEAUDIO_PC;
@@ -6033,7 +6033,7 @@ typedef struct apicharsys_s {
     i32 area_animation_count;
     i32 loaded_animation_count;
     i32 animation_load_attempts;
-    void(__cdecl *set_creature_lights)(APIOBJECT_PC *);
+    void (*set_creature_lights)(APIOBJECT_PC *);
 } APICHARSYS;
 
 STATIC_ASSERT(sizeof(APICHARSYS) == 0x38);
@@ -6748,7 +6748,7 @@ typedef struct gameobject_s {
                 struct gameobject_s *takeover_target;
             };
 
-            void(__cdecl *tag_object_callback)(struct gameobject_s *);
+            void (*tag_object_callback)(struct gameobject_s *);
         };
     };
 
@@ -7001,7 +7001,7 @@ typedef struct gameobject_s {
     struct gameobject_s *opponent;
     struct gameobject_s *last_attacker;
     void *snake_body;
-    void(__cdecl *move_override)(struct gameobject_s *);
+    void (*move_override)(struct gameobject_s *);
 
     union {
         u8 unknown_10b4[4];
@@ -7234,10 +7234,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, flags_107a) == 0x107a);
 
 typedef struct PART_PC PART_PC;
 typedef struct PART_LIGHTING_DATA_PC PART_LIGHTING_DATA_PC;
-typedef void(__cdecl *PART_ACTION_PC)(PART_PC *);
-typedef void(__cdecl *PART_MOVE_PC)(PART_PC *, f32);
-typedef void(__cdecl *PART_KILL_PC)(PART_PC *, i32);
-typedef i32(__cdecl *PART_DRAW_PC)(PART_PC *);
+typedef void (*PART_ACTION_PC)(PART_PC *);
+typedef void (*PART_MOVE_PC)(PART_PC *, f32);
+typedef void (*PART_KILL_PC)(PART_PC *, i32);
+typedef i32 (*PART_DRAW_PC)(PART_PC *);
 
 struct PART_LIGHTING_DATA_PC {
     u8 unknown_0[0x78];
@@ -7499,9 +7499,9 @@ STATIC_ASSERT(offsetof(PODSPRINT_PC, ai) == 8);
 STATIC_ASSERT(offsetof(PODSPRINT_PC, ai_index) == 0x8f);
 STATIC_ASSERT(sizeof(PODSPRINT_PC) == 0x94);
 STATIC_ASSERT(offsetof(PODSPRINT_PC, speed) == 0x84);
-typedef void(__cdecl *AI_SCRIPT_FIRST_ACTION_PC)(AISYS_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *);
+typedef void (*AI_SCRIPT_FIRST_ACTION_PC)(AISYS_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *);
 
-typedef i32(__cdecl *AI_GAME_PARAM_TO_FLOAT_PC)(AIPACKET_PC *, AISCRIPTPROCESS_PC *, char *, f32 *);
+typedef i32 (*AI_GAME_PARAM_TO_FLOAT_PC)(AIPACKET_PC *, AISCRIPTPROCESS_PC *, char *, f32 *);
 
 typedef struct kaminoeplate_s {
     u8 opaque_00_13a[0x13a];
@@ -7908,8 +7908,8 @@ STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, joints) == 8);
 STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, joint_flags) == 0xc);
 STATIC_ASSERT(sizeof(ANI3_GLOBALBUFFER_PC) == 0x10);
 
-typedef void(__cdecl *ANI3_ROOT_CALLBACK_PC)(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
-typedef void(__cdecl *ANI3_EVAL_CALLBACK_PC)(NUMTX *, void *, NUQUAT *);
+typedef void (*ANI3_ROOT_CALLBACK_PC)(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
+typedef void (*ANI3_EVAL_CALLBACK_PC)(NUMTX *, void *, NUQUAT *);
 
 typedef struct NUHGOBJ_EVAL_JOINT_PC {
     NUMTX bind_matrix;
@@ -7997,7 +7997,7 @@ STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, bounds_max) == 0x1b8);
 STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART_PC, rigid) == 4);
 STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART_PC, alternate_smooth) == 16);
 
-typedef void(__cdecl *NUJOINTPROCANIMFN_PC)(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *);
+typedef void (*NUJOINTPROCANIMFN_PC)(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *);
 
 typedef struct nuglobalrndrstate_pc_s {
     u8 unknown_0000[8];
@@ -8672,7 +8672,7 @@ STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_188) == 0x188);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_214) == 0x214);
 
 struct bgprocinfo_s;
-typedef void(__cdecl bgprocdofn)(struct bgprocinfo_s *);
+typedef void(bgprocdofn)(struct bgprocinfo_s *);
 
 typedef struct bgvar_s {
     i32 type;
@@ -9624,8 +9624,8 @@ typedef struct MENU_VIDEO_OPTIONS_PC {
     i32 speed_blur_enabled;
     i32 hires_enabled;
 #ifdef __cplusplus
-    u8 __thiscall ChangedPc();
-    void __thiscall ApplyPc();
+    u8 ChangedPc();
+    void ApplyPc();
 #endif
 } MENU_VIDEO_OPTIONS_PC;
 
@@ -9672,40 +9672,40 @@ typedef struct PC_WINDOW_OPTIONS_PC {
     u8 unknown_45a[2];
     i32 forceshadermodel;
 #ifdef __cplusplus
-    void __thiscall SetWidth(i32 value);
-    void __thiscall SetHeight(i32 value);
-    void __thiscall SetDeviceWidth(i32 value);
-    void __thiscall SetDeviceHeight(i32 value);
-    void __thiscall SetRefresh(i32 value);
-    void __thiscall SetMultisample(i32 value);
-    void __thiscall SetSfxVolume(i32 value);
-    void __thiscall SetMusicVolume(i32 value);
-    void __thiscall SetMasterVolume(i32 value);
-    void __thiscall SetMusicEnabled(u8 value);
-    void __thiscall SetBloomMethod(i32 value);
-    void __thiscall SetShadowMethod(i32 value);
-    void __thiscall SetSpeedBlurSupported(u8 value);
-    void __thiscall Save();
-    void __thiscall Defaults();
-    void __thiscall Validate();
-    void __thiscall InitializePath();
-    void __thiscall Load();
-    void __thiscall SetDesiredBloomMethod(i32 value);
-    void __thiscall SetDesiredShadowMethod(i32 value);
-    void __thiscall SetSpeedBlurEnabled(u8 value);
-    void __thiscall SetUseHires(u8 value);
-    void __thiscall SetOption459(u8 value);
-    void __thiscall SetWindowX(i32 value);
-    void __thiscall SetWindowY(i32 value);
-    void __thiscall SetMouseSensitivity(i32 value);
-    void __thiscall SetInvertY(u8 value);
-    void __thiscall SetVibration(u8 value);
-    void __thiscall SetForceShaderModel(i32 value);
+    void SetWidth(i32 value);
+    void SetHeight(i32 value);
+    void SetDeviceWidth(i32 value);
+    void SetDeviceHeight(i32 value);
+    void SetRefresh(i32 value);
+    void SetMultisample(i32 value);
+    void SetSfxVolume(i32 value);
+    void SetMusicVolume(i32 value);
+    void SetMasterVolume(i32 value);
+    void SetMusicEnabled(u8 value);
+    void SetBloomMethod(i32 value);
+    void SetShadowMethod(i32 value);
+    void SetSpeedBlurSupported(u8 value);
+    void Save();
+    void Defaults();
+    void Validate();
+    void InitializePath();
+    void Load();
+    void SetDesiredBloomMethod(i32 value);
+    void SetDesiredShadowMethod(i32 value);
+    void SetSpeedBlurEnabled(u8 value);
+    void SetUseHires(u8 value);
+    void SetOption459(u8 value);
+    void SetWindowX(i32 value);
+    void SetWindowY(i32 value);
+    void SetMouseSensitivity(i32 value);
+    void SetInvertY(u8 value);
+    void SetVibration(u8 value);
+    void SetForceShaderModel(i32 value);
 
-    void __thiscall SetAspectModePc(i32);
-    void __thiscall SetShadowsEnabledPc(u8);
-    void __thiscall SetBloomEnabledPc(u8);
-    void __thiscall SetUseHiresPendingPc(u8);
+    void SetAspectModePc(i32);
+    void SetShadowsEnabledPc(u8);
+    void SetBloomEnabledPc(u8);
+    void SetUseHiresPendingPc(u8);
 #endif
 } PC_WINDOW_OPTIONS_PC;
 
@@ -9799,7 +9799,7 @@ typedef struct PC_DEVICE_STATE_CACHE_PC {
     i32 state_key;
     PC_DEVICE_RENDER_CACHE_PC render_states;
 #ifdef __cplusplus
-    void __thiscall Invalidate();
+    void Invalidate();
 #endif
 } PC_DEVICE_STATE_CACHE_PC;
 
@@ -9894,39 +9894,39 @@ typedef struct PC_DEVICE_BACKEND_PC {
 #ifdef __cplusplus
     PC_DEVICE_BACKEND_PC();
     ~PC_DEVICE_BACKEND_PC();
-    void __thiscall Shutdown();
-    void __thiscall DrawPostEffectQuadPc();
-    void __thiscall DrawPostEffectIndexedPc();
-    void __thiscall PostEffectBarrierPc();
-    HRESULT __thiscall EndScene();
-    HRESULT __thiscall CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC *target, i32 filter, i32 unused);
-    void __thiscall SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabled, i32 target);
-    void __thiscall ReleaseDefaultPoolResources();
-    void __thiscall ApplyViewport(const PC_VIEWPORT_PC *viewport);
-    void __thiscall InitializeFactory();
-    i32 __thiscall FindAspect(u32 width, u32 height);
-    u32 __thiscall FindMode(u32 width, u32 height, u32 refresh);
-    u32 __thiscall GetMultisampleType();
+    void Shutdown();
+    void DrawPostEffectQuadPc();
+    void DrawPostEffectIndexedPc();
+    void PostEffectBarrierPc();
+    HRESULT EndScene();
+    HRESULT CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC *target, i32 filter, i32 unused);
+    void SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabled, i32 target);
+    void ReleaseDefaultPoolResources();
+    void ApplyViewport(const PC_VIEWPORT_PC *viewport);
+    void InitializeFactory();
+    i32 FindAspect(u32 width, u32 height);
+    u32 FindMode(u32 width, u32 height, u32 refresh);
+    u32 GetMultisampleType();
 
-    void __thiscall CreateOrResetDevice(i32 reposition_window);
-    void __thiscall InitializeAdapter();
-    void __thiscall Present(const RECT *, const RECT *, HWND, const RGNDATA *);
-    void __thiscall BeginScene();
-    void __thiscall BuildDefaultPoolResources();
-    void __thiscall ConfigureTargetKinds();
-    void __thiscall ResetTargets();
-    void __thiscall SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE_PC *surface);
-    u32 __thiscall CaptureScreenshotPc(u32 width, u32 height, void **data);
-    void __thiscall ResetViewport();
-    void __thiscall ConfigureCurrentTargets();
-    void __thiscall BeginDefaultTargets();
-    void __thiscall RequestMode(u32 mode);
-    void __thiscall NextResolution();
-    void __thiscall PreviousResolution();
-    void __thiscall NextRefresh();
-    void __thiscall PreviousRefresh();
-    void __thiscall ResetRequestedMode();
-    PC_VIEWPORT_PC *__thiscall GetRequestedViewportPc();
+    void CreateOrResetDevice(i32 reposition_window);
+    void InitializeAdapter();
+    void Present(const RECT *, const RECT *, HWND, const RGNDATA *);
+    void BeginScene();
+    void BuildDefaultPoolResources();
+    void ConfigureTargetKinds();
+    void ResetTargets();
+    void SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE_PC *surface);
+    u32 CaptureScreenshotPc(u32 width, u32 height, void **data);
+    void ResetViewport();
+    void ConfigureCurrentTargets();
+    void BeginDefaultTargets();
+    void RequestMode(u32 mode);
+    void NextResolution();
+    void PreviousResolution();
+    void NextRefresh();
+    void PreviousRefresh();
+    void ResetRequestedMode();
+    PC_VIEWPORT_PC *GetRequestedViewportPc();
     void SetSurfaceRenderTarget(PC_EFFECT_SURFACE_PC *, u32);
     void SetDepthStencilSurface(PC_EFFECT_SURFACE_PC *);
     void ClearDepthStencilSurface();
@@ -9934,9 +9934,9 @@ typedef struct PC_DEVICE_BACKEND_PC {
     void CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *);
     void CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *);
 
-    u8 __thiscall SupportsMultisamplePc(i32);
-    u8 __thiscall HasRequestedModeChangedPc();
-    void __thiscall RestoreSavedModePc();
+    u8 SupportsMultisamplePc(i32);
+    u8 HasRequestedModeChangedPc();
+    void RestoreSavedModePc();
 #endif
 } PC_DEVICE_BACKEND_PC;
 
@@ -10158,10 +10158,10 @@ typedef struct PC_NATIVE_DEBUG_STATE_PC {
     u8 write_log;
     u8 unknown_505[3];
 #ifdef __cplusplus
-    void __thiscall InitializeHeader();
-    void __thiscall UpdateGeometry();
-    void __thiscall Initialize();
-    void __thiscall Shutdown();
+    void InitializeHeader();
+    void UpdateGeometry();
+    void Initialize();
+    void Shutdown();
 #endif
 } PC_NATIVE_DEBUG_STATE_PC;
 
@@ -10211,8 +10211,8 @@ class PCFrustumClipSet {
     PC_FRUSTUM_GROUP_PC first_group;
     u8 unknown_0380[0x390];
     i32 active_render_set_count;
-    i32 __thiscall TestBoxes(const NUVEC *, const NUVEC *);
-    bool __thiscall TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 group_index);
+    i32 TestBoxes(const NUVEC *, const NUVEC *);
+    bool TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 group_index);
 };
 
 STATIC_ASSERT(offsetof(PCFrustumClipSet, first_group) == 0);
@@ -10254,7 +10254,7 @@ STATIC_ASSERT(offsetof(LEVELFIXUP_PC, draw_status) == 0x20);
 #define PCWarningNativeFormat GizAIMessage_NameFormat // NOLINT(readability-identifier-naming)
 
 typedef struct game_message_pc_s GAME_MESSAGE_PC;
-typedef void(__cdecl *GAME_MESSAGE_CALLBACK_PC)(GAME_MESSAGE_PC *);
+typedef void (*GAME_MESSAGE_CALLBACK_PC)(GAME_MESSAGE_PC *);
 
 typedef struct add_game_message_pc_s {
     const char *text;
@@ -10329,7 +10329,7 @@ struct game_message_pc_s {
 
     union {
         void *parameter_10c;
-        void(__cdecl *draw_fn)(struct game_message_pc_s *, NUVEC *, f32);
+        void (*draw_fn)(struct game_message_pc_s *, NUVEC *, f32);
     };
 
     GAME_MESSAGE_CALLBACK_PC end_fn;
@@ -10474,7 +10474,7 @@ struct OccluderSet {
     void OnCameraSet();
     bool IsOccludedSphere(const NUVEC *, f32);
     void PrepareForQueries(const NUMTX *, const NUMTX *);
-    static i32 __cdecl SortByDepth(const void *, const void *);
+    static i32 SortByDepth(const void *, const void *);
 };
 
 STATIC_ASSERT(sizeof(OccluderSet) == 0xa0);
@@ -10581,8 +10581,8 @@ STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, room) == 0x24);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, type_index) == 0x25);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, rotation) == 0x26);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, timer) == 0x28);
-typedef void(__cdecl *PICKUP_UPDATE_FN_PC)(WORLDINFO *, GIZMOPICKUP_PC *);
-typedef void(__cdecl *PICKUP_COLLECT_FN_PC)(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
+typedef void (*PICKUP_UPDATE_FN_PC)(WORLDINFO *, GIZMOPICKUP_PC *);
+typedef void (*PICKUP_COLLECT_FN_PC)(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
 
 typedef struct GIZMO_PICKUP_TYPE_PC {
     char *name;
@@ -10671,7 +10671,7 @@ typedef struct HINT_PC {
     f32 repeat_delay;
 
     union {
-        i32(__cdecl *update_fn)(struct HINT_PC *);
+        i32 (*update_fn)(struct HINT_PC *);
         u8 unknown10[4];
     };
 
@@ -10695,7 +10695,7 @@ STATIC_ASSERT(offsetof(HINT_PC, cooldown) == 0x18);
 typedef struct HINTSYS_PC {
     union {
         u8 unknown0[4];
-        void(__cdecl *draw_fn)(HINT_PC *, i32);
+        void (*draw_fn)(HINT_PC *, i32);
     };
 
     HINT_PC *hints;
@@ -11029,16 +11029,16 @@ typedef struct CUT_LOAD_LIST_ENTRY_PC CUT_LOAD_LIST_ENTRY_PC;
 extern "C" {
 #endif
 
-    i32 __cdecl NuDisplayListRndrSpecial(NUSPECIALHANDLE *, NUMTX *, i32, NUMTX *, void *);
-    void __cdecl WindShear(NUMTX *, NUMTX *, i32, i32);
-    void __cdecl NuMtxCalcCheapFaceY_v2(NUMTX *, NUVEC *);
-    VARIPTR *__cdecl NuDisplayListLinkItems(NUDISPLAYLIST_PC *, i32);
-    void *__cdecl DisplayListCreateGeomTransformPS(VARIPTR *, NUMTX *, NUMTL *, void *, void *);
-    void *__cdecl DisplayListCreateFaceonTransformPS(VARIPTR *, NUMTX *, NUMTL *, void *);
-    void *__cdecl DisplayListCreateSkinTransformPS(VARIPTR *, NUMTX *, void *, void *, void **, void *);
-    void *__cdecl NuDisplayListPrepareFaceonPS(VARIPTR *, void *, NUMTX *);
-    void __cdecl DisplayListSetShadowCasterFlagPS(NUDISPLAYLISTITEM *, NUDISPLAYLISTITEM *, i32);
-    void __cdecl DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *);
+    i32 NuDisplayListRndrSpecial(NUSPECIALHANDLE *, NUMTX *, i32, NUMTX *, void *);
+    void WindShear(NUMTX *, NUMTX *, i32, i32);
+    void NuMtxCalcCheapFaceY_v2(NUMTX *, NUVEC *);
+    VARIPTR *NuDisplayListLinkItems(NUDISPLAYLIST_PC *, i32);
+    void *DisplayListCreateGeomTransformPS(VARIPTR *, NUMTX *, NUMTL *, void *, void *);
+    void *DisplayListCreateFaceonTransformPS(VARIPTR *, NUMTX *, NUMTL *, void *);
+    void *DisplayListCreateSkinTransformPS(VARIPTR *, NUMTX *, void *, void *, void **, void *);
+    void *NuDisplayListPrepareFaceonPS(VARIPTR *, void *, NUMTX *);
+    void DisplayListSetShadowCasterFlagPS(NUDISPLAYLISTITEM *, NUDISPLAYLISTITEM *, i32);
+    void DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *);
     extern PC_SPECIAL_PROJECTION_ADJUST PCSpecialProjectionAdjust;
     extern NUMTX PCSpecialProjectionTranslate;
     extern NUMTX PCSpecialProjectionScale;
@@ -11055,44 +11055,44 @@ extern "C" {
     extern f32 global_windspeed;
     extern u32 PCWindFrameCount;
 
-    void __cdecl GizBuildIt_SetToStart(void *, i32, i32);
-    void __cdecl KillRumble(GAMEOBJECT *);
-    void __cdecl HitRumble(GAMEOBJECT *);
-    void __cdecl TakeHitRumble(GAMEOBJECT *, f32);
+    void GizBuildIt_SetToStart(void *, i32, i32);
+    void KillRumble(GAMEOBJECT *);
+    void HitRumble(GAMEOBJECT *);
+    void TakeHitRumble(GAMEOBJECT *, f32);
 
-    i32 __cdecl NuSpecialClipTestShadowLights(NUVEC *, NUVEC *, i32);
+    i32 NuSpecialClipTestShadowLights(NUVEC *, NUVEC *, i32);
     /* Forward view remains local to the original material group. */
     typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
     /* Add inside existing C declarations. Native register helpers stay local. */
-    void __cdecl NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *);
-    void __cdecl NuMtlCreatePS(NUMTL *, i32);
-    NUMTL *__cdecl NuMtlCreate(i32);
-    NUMTL *__cdecl NuMtlCreate3D(i32);
-    NUMTL *__cdecl NuMtlCreateEx(i32, u32);
-    NUMTL *__cdecl NuMtlCreateEx3D(i32, u32);
-    void __cdecl NuMtlRegisterForOverride(NUMTL *, u32 *, i32);
-    NUMTL *__cdecl NuMtlFindVariantMtl(NUMTL *, NUMTL *);
-    NULNKHDR *__cdecl NuLstAllocHead(NULSTHDR *);
-    NULNKHDR *__cdecl NuLstAlloc(NULSTHDR *);
+    void NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *);
+    void NuMtlCreatePS(NUMTL *, i32);
+    NUMTL *NuMtlCreate(i32);
+    NUMTL *NuMtlCreate3D(i32);
+    NUMTL *NuMtlCreateEx(i32, u32);
+    NUMTL *NuMtlCreateEx3D(i32, u32);
+    void NuMtlRegisterForOverride(NUMTL *, u32 *, i32);
+    NUMTL *NuMtlFindVariantMtl(NUMTL *, NUMTL *);
+    NULNKHDR *NuLstAllocHead(NULSTHDR *);
+    NULNKHDR *NuLstAlloc(NULSTHDR *);
     extern NUMTL *PCMaterialPoolPc;
     extern i32 PCMaterialPoolCountPc;
-    void __cdecl SnakeBeenHit(GAMEOBJECT *);
-    void __cdecl NuMtxSetRotationXYVU0(NUMTX *, NUANGVEC *);
+    void SnakeBeenHit(GAMEOBJECT *);
+    void NuMtxSetRotationXYVU0(NUMTX *, NUANGVEC *);
     extern f32 SnakeSegmentHeightPc;
     extern f32 SnakeDebrisUpwardSpeedPc;
 
-    void __cdecl Arcade_Kill(i32, i32);
-    void __cdecl Arcade_AIKilled(i32);
+    void Arcade_Kill(i32, i32);
+    void Arcade_AIKilled(i32);
     extern const char ArcadeAiKilledSoundNamePc[16];
 
-    void __cdecl InstantKillParts(GAMEOBJECT *, i32, f32);
-    i32 __cdecl ObjHitObj(GAMEOBJECT *, GAMEOBJECT *, i32, u16, i32, i32);
-    void __cdecl ObjHitShield(GAMEOBJECT *, GAMEOBJECT *, i32, void *);
-    void __cdecl PlayerTakeHit(GAMEOBJECT *, GAMEOBJECT *);
-    i32 __cdecl DeactivatePlayer(GAMEOBJECT *, f32, GAMEOBJECT *);
-    i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *, GAMEOBJECT *, f32, u32);
-    void __cdecl Player_ClearContext(GAMEOBJECT *, i32);
-    i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *);
+    void InstantKillParts(GAMEOBJECT *, i32, f32);
+    i32 ObjHitObj(GAMEOBJECT *, GAMEOBJECT *, i32, u16, i32, i32);
+    void ObjHitShield(GAMEOBJECT *, GAMEOBJECT *, i32, void *);
+    void PlayerTakeHit(GAMEOBJECT *, GAMEOBJECT *);
+    i32 DeactivatePlayer(GAMEOBJECT *, f32, GAMEOBJECT *);
+    i32 PlayerTakeHitReactionPc(GAMEOBJECT *, GAMEOBJECT *, f32, u32);
+    void Player_ClearContext(GAMEOBJECT *, i32);
+    i32 SpecialMove_ReleaseVictim(GAMEOBJECT *);
     /* SpecialMove_KillVictim stays static with private ESI ABI in original caller TU; no public declaration. */
     extern BOLT *objhitobj_bolt;
     extern i32 objhitobj_nohurtsfx;
@@ -11124,75 +11124,75 @@ extern "C" {
     extern const char ShieldHitSfxPc[9];
     extern const char ShieldFlickerSfxPc[13];
 
-    void __cdecl LoseHelmet(GAMEOBJECT *, i32, i32);
-    void __cdecl DropTorpedoPickups(TORPEDOPACKET_PC *, i32);
-    void __cdecl Torpedo_Shoot(GAMEOBJECT *);
-    void __cdecl HomeNearestTorpTarget(BOLT_PC *, TORPEDOPACKET_PC *);
-    void __cdecl Torpedo_Ricochet(BOLT_PC *, TORPEDOPACKET_PC *);
-    void __cdecl Torpedo_InitBolt(BOLT_PC *);
-    void __cdecl Torpedo_UpdateBolt(BOLT_PC *);
-    void __cdecl LetGoOfBalloon(GAMEOBJECT *);
-    void __cdecl PopBalloon(GAMEOBJECT *);
+    void LoseHelmet(GAMEOBJECT *, i32, i32);
+    void DropTorpedoPickups(TORPEDOPACKET_PC *, i32);
+    void Torpedo_Shoot(GAMEOBJECT *);
+    void HomeNearestTorpTarget(BOLT_PC *, TORPEDOPACKET_PC *);
+    void Torpedo_Ricochet(BOLT_PC *, TORPEDOPACKET_PC *);
+    void Torpedo_InitBolt(BOLT_PC *);
+    void Torpedo_UpdateBolt(BOLT_PC *);
+    void LetGoOfBalloon(GAMEOBJECT *);
+    void PopBalloon(GAMEOBJECT *);
 
-    void __cdecl SuperCarry_Throw(GAMEOBJECT *, i32);
-    void __cdecl SuperCarry_Release(GAMEOBJECT *);
-    void __cdecl Whip_Release(GAMEOBJECT *);
+    void SuperCarry_Throw(GAMEOBJECT *, i32);
+    void SuperCarry_Release(GAMEOBJECT *);
+    void Whip_Release(GAMEOBJECT *);
     /* SuperCarry_PartKill is static original carrying TU callback; no public declaration. */
 
     extern AREA_DATA_PC *HOTHBATTLE_ADATA;
     /* New public declarations only; private PartCollidePC stays original parts.c-local. */
-    void __cdecl PartCollide_2D(PART_PC *);
-    void __cdecl DeflectPart(PART_PC *, GAMEOBJECT *, f32, f32, i32, i32);
-    i32 __cdecl getMaxTorpedos(GAMEOBJECT *);
-    void __cdecl ReleaseBuildIt(GAMEOBJECT *, i32);
-    void __cdecl ReleasePush(GAMEOBJECT *);
-    void __cdecl LightSabreDebris(GAMEOBJECT *);
+    void PartCollide_2D(PART_PC *);
+    void DeflectPart(PART_PC *, GAMEOBJECT *, f32, f32, i32, i32);
+    i32 getMaxTorpedos(GAMEOBJECT *);
+    void ReleaseBuildIt(GAMEOBJECT *, i32);
+    void ReleasePush(GAMEOBJECT *);
+    void LightSabreDebris(GAMEOBJECT *);
     /* ObjHitObj/Shield prototypes belong to the independently reviewed combat SCC packet. */
 
-    void __cdecl EngineNoiseCode(GAMEOBJECT *, i32);
-    void __cdecl KeepWeaponOut(GAMEOBJECT *);
-    void __cdecl PlaySfxByIdAndSetVolumeAndPitch(i32, NUVEC *, f32, f32);
+    void EngineNoiseCode(GAMEOBJECT *, i32);
+    void KeepWeaponOut(GAMEOBJECT *);
+    void PlaySfxByIdAndSetVolumeAndPitch(i32, NUVEC *, f32, f32);
     /* Shared declarations must have existing extern C linkage; no newsharedfield needed. */
 
-    void __cdecl StartFlatten(GAMEOBJECT *, GAMEOBJECT *);
-    void __cdecl ActivatePlayer(GAMEOBJECT *);
-    void __cdecl GameCam_HitJudder(void);
+    void StartFlatten(GAMEOBJECT *, GAMEOBJECT *);
+    void ActivatePlayer(GAMEOBJECT *);
+    void GameCam_HitJudder(void);
 
-    void __cdecl DropInOutCode(GAMEOBJECT *);
-    f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *);
-    void __cdecl CatchUpCode(GAMEOBJECT *, f32, f32, i32);
+    void DropInOutCode(GAMEOBJECT *);
+    f32 FindGunshipHoverHeight(GAMEOBJECT *);
+    void CatchUpCode(GAMEOBJECT *, f32, f32, i32);
     extern f32 VehicleGunshipHoverBasePc;
     extern f32 VehicleGunshipHoverOtherPc;
     extern f32 VehicleGunshipHoverSeparationPc;
     /* Existing extern C shared block; no new shared layout fields. */
 
-    GRAPPLE_DYNAMIC_PC *__cdecl Grapple_AddDynamic(void *, i32);
-    GRAPPLE_DYNAMIC_PC *__cdecl Grapple_RemoveDynamic(void *);
+    GRAPPLE_DYNAMIC_PC *Grapple_AddDynamic(void *, i32);
+    GRAPPLE_DYNAMIC_PC *Grapple_RemoveDynamic(void *);
     extern GRAPPLE_DYNAMIC_PC DynamicGrapplePc[4];
 
-    void __cdecl SetWeaponIn(GAMEOBJECT *);
+    void SetWeaponIn(GAMEOBJECT *);
     extern i32 LEGOCONTEXT_WEAPONIN;
     extern i32 LEGOCONTEXT_WEAPONOUT;
     /* Existing shared extern C scope. No new fields/providers. */
 
-    void __cdecl FloatRumble(GAMEOBJECT *);
-    void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *, NUVEC *, NUVEC *);
-    void __cdecl FastWeaponIn(GAMEOBJECT *, i32);
-    void __cdecl FloatCode(GAMEOBJECT *);
-    void __cdecl GetRotationAngles(NUVEC *, u16 *, u16 *);
-    void __cdecl Disorientate(GAMEOBJECT *, NUVEC *);
-    void __cdecl DisorientateCode(GAMEOBJECT *, NUVEC *, f32);
-    void __cdecl TractorBeamCode(GAMEOBJECT *);
+    void FloatRumble(GAMEOBJECT *);
+    void SuperCarry_GetObjectPos(GAMEOBJECT *, NUVEC *, NUVEC *);
+    void FastWeaponIn(GAMEOBJECT *, i32);
+    void FloatCode(GAMEOBJECT *);
+    void GetRotationAngles(NUVEC *, u16 *, u16 *);
+    void Disorientate(GAMEOBJECT *, NUVEC *);
+    void DisorientateCode(GAMEOBJECT *, NUVEC *, f32);
+    void TractorBeamCode(GAMEOBJECT *);
     extern i32 WeaponInOut_NoAIJediSfx;
     extern u8 disorientAxis;
     extern u8 TractorBeamEnabledPc;
     /* FloatAdvancePc static same originalTU; no public prototype. */
 
-    i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *, i32);
-    i32 __cdecl ShootCode(GAMEOBJECT *, i32, i32, i32, i32, i32);
-    void __cdecl StartQuickShoot(GAMEOBJECT *, i32);
-    void __cdecl Move_CANNON(GAMEOBJECT *);
-    i32 __cdecl ZapTarget(GAMEOBJECT *);
+    i32 BoltType_FindIDByCreature(GAMEOBJECT *, i32);
+    i32 ShootCode(GAMEOBJECT *, i32, i32, i32, i32, i32);
+    void StartQuickShoot(GAMEOBJECT *, i32);
+    void Move_CANNON(GAMEOBJECT *);
+    i32 ZapTarget(GAMEOBJECT *);
     extern i16 VehicleBoltId7f17d0Pc;
     extern i16 VehicleBoltId7f17d4Pc;
     extern i16 VehicleBoltId7f18b4Pc;
@@ -11249,9 +11249,9 @@ extern "C" {
     extern i32 PCShadowPacketCount;
     extern struct PC_HG_SHADOW_STATE_VIEW PCShadowState;
     extern f32 ComplexShadowBasePc;
-    void __cdecl ConfigureComplexShadow(GAMEOBJECT *object);
-    void __cdecl NuRndrShadowDirCol(const NUVEC *direction, u32 colour, f32 near_distance, f32 far_distance);
-    void __cdecl InitGameMode(void);
+    void ConfigureComplexShadow(GAMEOBJECT *object);
+    void NuRndrShadowDirCol(const NUVEC *direction, u32 colour, f32 near_distance, f32 far_distance);
+    void InitGameMode(void);
     extern i32 drawcharactermodel_nobsa;
     extern i32 drawcharactermodel_noani;
     extern i32 drawcharactermodel_restpose;
@@ -11259,56 +11259,55 @@ extern "C" {
     extern i32 drawcharactermodel_locatorsupdated;
     extern u8 TempNumJoints;
     extern i32 notransparentchardraw;
-    extern void(__cdecl *APIObjResetShadowMapRenderingFn)(void);
-    extern void(__cdecl *APIObjEnableShadowMapRenderingFn)(void);
+    extern void (*APIObjResetShadowMapRenderingFn)(void);
+    extern void (*APIObjEnableShadowMapRenderingFn)(void);
     extern NUHGOBJ_EVAL_PC *Temphgobj;
     extern NUMTL *APITrans_Mtl[2];
 
-    void __cdecl NuMtxMulArrayVU0(NUMTX *, NUMTX *, NUMTX *, i32);
-    void __cdecl NuSpecialForceMaterials(i32, NUMTL **);
-    void __cdecl NuRndrStartReflectionRender(i32);
-    void __cdecl NuRndrEndReflectionRender(void);
-    void __cdecl NuRndrCalcRandEllipsePos(NUVEC4 *, NUMTX *, NUVEC *);
-    void __cdecl NuRndrCalcRandCylinderPos(NUVEC4 *, NUMTX *, NUVEC *);
-    i32 __cdecl NuHGobjRndrRandShadowSurfacePoints(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *, i32, NUVEC *, i32);
-    i32 __cdecl NuCameraClipHGobj(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *);
-    i32 __cdecl NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *, NUMTX *, DWA_WEIGHT_BLOCK_PC **, i32);
-    void __cdecl PCEnqueueHierarchyShadowGroup(NUMTX *, void *, i32, void *, i32, void *, i32);
-    void __cdecl NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *);
-    void __cdecl RootFnEx(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
-    void __cdecl RootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
-    void __cdecl RootFnY(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
-    void __cdecl BlendRootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
-    void __cdecl NuHGobjRestrictEvaluation(NUHGOBJ_EVAL_PC *);
-    void __cdecl NuHGobjRestoreEvaluation(void);
-    void __cdecl APITransparentCharDraw(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *, NUMTX *, DWA_WEIGHT_BLOCK_PC **, i32);
-    i32 __cdecl APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, ANIMPACKET_PC *, NUMTX *,
-                                      NUMTX *, NUMTX *, NUVEC *, NUMTX *, GAMEOBJECT *, u32,
-                                      NUHGOBJ_JOINT_OVERRIDE_PC *, i32, i32, f32, NUMTX *,
-                                      void(__cdecl *)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS_PC *);
-    void __cdecl AddLevelSfxFromName(char *, i32 *, i32 *, i32);
-    void __cdecl AddLevelSfxFromId(i32, i32 *, i32 *, i32);
-    void __cdecl GameAudio_AddSfx(i32, i32 *, i32 *, i32);
-    void __cdecl Pulses_AddSfx(LEVEL_SFX_PULSE_PC *, i32 *, i32 *, i32);
-    void __cdecl Pulses_Configure(WORLDINFO *, char *);
-    void __cdecl Pulses_Reset(LEVEL_SFX_PULSE_PC *);
-    void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *);
-    i32 __cdecl GizmoGetVisibility(void *, void *);
-    void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *, f32, f32);
-    void __cdecl DestroyAIGroup(AIGROUP_PC *);
-    void __cdecl FreeTorpedoPacket(TORPEDOPACKET_PC **);
-    void __cdecl EquivalentObjects_Configure(WORLDINFO *, char *);
-    void __cdecl CharPlatforms_Configure(WORLDINFO *, char *);
-    void __cdecl AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *, WORLDINFO *, i32 *, i32 *, i32);
-    void __cdecl SetSpecialSfxBits(i32 *, i32 *, WORLDINFO *);
-    void __cdecl SetSoundBitsById(const i32 *, void(__cdecl *)(i32));
-    i32 __cdecl CanObjSlide(GAMEOBJECT *, i32);
-    i32 __cdecl StartSlide(GAMEOBJECT *, i32);
-    void __cdecl SlideCode(GAMEOBJECT *);
-    void __cdecl FlattenCode(GAMEOBJECT *);
-    BOLT_PC *__cdecl Bolt_Find(i32, NUVEC *, GAMEOBJECT *);
-    void *__cdecl GizTorpMachine_FindNearest(WORLDINFO *, NUVEC *, f32 *);
-    void *__cdecl FindNearestTorpTarget(WORLDINFO *, NUVEC *, f32, u8 *);
+    void NuMtxMulArrayVU0(NUMTX *, NUMTX *, NUMTX *, i32);
+    void NuSpecialForceMaterials(i32, NUMTL **);
+    void NuRndrStartReflectionRender(i32);
+    void NuRndrEndReflectionRender(void);
+    void NuRndrCalcRandEllipsePos(NUVEC4 *, NUMTX *, NUVEC *);
+    void NuRndrCalcRandCylinderPos(NUVEC4 *, NUMTX *, NUVEC *);
+    i32 NuHGobjRndrRandShadowSurfacePoints(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *, i32, NUVEC *, i32);
+    i32 NuCameraClipHGobj(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *);
+    i32 NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *, NUMTX *, DWA_WEIGHT_BLOCK_PC **, i32);
+    void PCEnqueueHierarchyShadowGroup(NUMTX *, void *, i32, void *, i32, void *, i32);
+    void NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *);
+    void RootFnEx(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
+    void RootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
+    void RootFnY(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
+    void BlendRootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
+    void NuHGobjRestrictEvaluation(NUHGOBJ_EVAL_PC *);
+    void NuHGobjRestoreEvaluation(void);
+    void APITransparentCharDraw(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *, NUMTX *, DWA_WEIGHT_BLOCK_PC **, i32);
+    i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, ANIMPACKET_PC *, NUMTX *, NUMTX *,
+                              NUMTX *, NUVEC *, NUMTX *, GAMEOBJECT *, u32, NUHGOBJ_JOINT_OVERRIDE_PC *, i32, i32, f32,
+                              NUMTX *, void (*)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS_PC *);
+    void AddLevelSfxFromName(char *, i32 *, i32 *, i32);
+    void AddLevelSfxFromId(i32, i32 *, i32 *, i32);
+    void GameAudio_AddSfx(i32, i32 *, i32 *, i32);
+    void Pulses_AddSfx(LEVEL_SFX_PULSE_PC *, i32 *, i32 *, i32);
+    void Pulses_Configure(WORLDINFO *, char *);
+    void Pulses_Reset(LEVEL_SFX_PULSE_PC *);
+    void Pulses_Update(LEVEL_SFX_PULSE_PC *);
+    i32 GizmoGetVisibility(void *, void *);
+    void SpawnCreatureFromCrate(GAMEOBJECT *, f32, f32);
+    void DestroyAIGroup(AIGROUP_PC *);
+    void FreeTorpedoPacket(TORPEDOPACKET_PC **);
+    void EquivalentObjects_Configure(WORLDINFO *, char *);
+    void CharPlatforms_Configure(WORLDINFO *, char *);
+    void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *, WORLDINFO *, i32 *, i32 *, i32);
+    void SetSpecialSfxBits(i32 *, i32 *, WORLDINFO *);
+    void SetSoundBitsById(const i32 *, void (*)(i32));
+    i32 CanObjSlide(GAMEOBJECT *, i32);
+    i32 StartSlide(GAMEOBJECT *, i32);
+    void SlideCode(GAMEOBJECT *);
+    void FlattenCode(GAMEOBJECT *);
+    BOLT_PC *Bolt_Find(i32, NUVEC *, GAMEOBJECT *);
+    void *GizTorpMachine_FindNearest(WORLDINFO *, NUVEC *, f32 *);
+    void *FindNearestTorpTarget(WORLDINFO *, NUVEC *, f32, u8 *);
     extern AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA;
 
     extern u8 CUTSUBTITLEDEFAULT_R;
@@ -11322,11 +11321,11 @@ extern "C" {
     extern u8 CUTSUBTITLEDEFAULT_ALIGN;
     extern f32 CUTSUBTITLEDEFAULT_X;
 
-    void __cdecl ResetMiniAnimPacket(MINIANIMPACKET_PC *, i32);
-    void __cdecl Move_BEAST(GAMEOBJECT *);
-    void __cdecl SetLevelSfxBits(WORLDINFO *);
-    void __cdecl TorpedoCode(GAMEOBJECT *, i32, f32);
-    void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *);
+    void ResetMiniAnimPacket(MINIANIMPACKET_PC *, i32);
+    void Move_BEAST(GAMEOBJECT *);
+    void SetLevelSfxBits(WORLDINFO *);
+    void TorpedoCode(GAMEOBJECT *, i32, f32);
+    void Torpedo_UpdateJobbies(GAMEOBJECT *);
     extern u8 TorpedoFillEnabledPc;
     extern f32 TorpedoGrabRangeSquaredPc;
     extern f32 TorpedoStealTimerPc;
@@ -11334,45 +11333,44 @@ extern "C" {
     extern const char TorpedoFireSfxPc[14];
     extern char TextInputKeyNameTextPc759770[2];
     extern AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
-    void __cdecl SfxBitsStore(SoundTable *);
-    void __cdecl ForcedBackCode(GAMEOBJECT *);
-    void __cdecl PooCode(GAMEOBJECT *);
-    i32 __cdecl StartFallLand(GAMEOBJECT *, i32);
-    i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *);
-    i32 __cdecl SpecialMove_GetAttackerAction(i32);
-    i32 __cdecl SpecialMove_GetVictimAction(i32);
-    u32 __cdecl SpecialMove_GetFlags(i32, u32);
-    i32 __cdecl SpecialMove_Check(GAMEOBJECT *, GAMEOBJECT *);
-    i32 __cdecl objInNetWaitContext(GAMEOBJECT *, i32);
-    i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *, GAMEOBJECT *, f32);
-    void __cdecl PlaySabreSfx(char *, GAMEOBJECT *, NUVEC *, i32);
-    void __cdecl StartHold(GAMEOBJECT *);
-    void __cdecl Punch_Hit(GAMEOBJECT *, GAMEOBJECT *, f32, f32);
-    GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *, f32, f32, f32, i32, u32, u32, u32);
-    GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *, f32, f32, i32, i32, i32);
-    PART_PC *__cdecl FindPart(NUVEC *, i32, GAMEOBJECT *);
+    void SfxBitsStore(SoundTable *);
+    void ForcedBackCode(GAMEOBJECT *);
+    void PooCode(GAMEOBJECT *);
+    i32 StartFallLand(GAMEOBJECT *, i32);
+    i32 MosEisleyC_PastBarrier(GAMEOBJECT *);
+    i32 SpecialMove_GetAttackerAction(i32);
+    i32 SpecialMove_GetVictimAction(i32);
+    u32 SpecialMove_GetFlags(i32, u32);
+    i32 SpecialMove_Check(GAMEOBJECT *, GAMEOBJECT *);
+    i32 objInNetWaitContext(GAMEOBJECT *, i32);
+    i32 ObjOpponentStillThere(GAMEOBJECT *, GAMEOBJECT *, f32);
+    void PlaySabreSfx(char *, GAMEOBJECT *, NUVEC *, i32);
+    void StartHold(GAMEOBJECT *);
+    void Punch_Hit(GAMEOBJECT *, GAMEOBJECT *, f32, f32);
+    GIZMOBLOWUP_PC *GizmoBlowUpOpponent(GAMEOBJECT *, f32, f32, f32, i32, u32, u32, u32);
+    GAMEOBJECT *ObjOpponent(GAMEOBJECT *, f32, f32, i32, i32, i32);
+    PART_PC *FindPart(NUVEC *, i32, GAMEOBJECT *);
 
-    void __cdecl Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font);
-    void __cdecl Text3DStringEncode(char *source, u16 *destination);
-    void __cdecl TextDecodeCodeword(char *source, char *destination);
-    void __cdecl TextDecode(char *source, u8 *destination);
-    f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, i32 colour,
-                                   i32 button_font);
-    void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
-                          u8 green, u8 blue, u8 alpha);
+    void Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font);
+    void Text3DStringEncode(char *source, u16 *destination);
+    void TextDecodeCodeword(char *source, char *destination);
+    void TextDecode(char *source, u8 *destination);
+    f32 TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, i32 colour, i32 button_font);
+    void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
+                  u8 green, u8 blue, u8 alpha);
     void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
                 u8 blue);
     void FadeLoop_DrawObj(f32 alpha);
     void EdFileWriteFloat(f32 value);
     void AddGameMsgCount(NUVEC *position, i32 count, i32 total, u8 red, u8 green, u8 blue, f32 field_0xd4);
     void AddFancyMessage(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 message_id, i32 colour_type);
-    void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z);
-    void __cdecl NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z);
-    void __cdecl NuQFntPrintW(VUFNT *font, u16 *text);
-    void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale);
-    i32 __cdecl PcInput_GetCtrlStringPlayer(void);
-    i32 __cdecl NuPadGetPort(i32 player);
-    i32 __cdecl PcInput_GetCtrlInputString(i32 device, i32 button, char *destination);
+    void DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z);
+    void NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z);
+    void NuQFntPrintW(VUFNT *font, u16 *text);
+    void DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale);
+    i32 PcInput_GetCtrlStringPlayer(void);
+    i32 NuPadGetPort(i32 player);
+    i32 PcInput_GetCtrlInputString(i32 device, i32 button, char *destination);
     extern f32 QFONTSCALEY;
     extern u8 text_preset_r[10];
     extern u8 text_preset_g[10];
@@ -11390,29 +11388,28 @@ extern "C" {
     extern i32 TextPrintModePc;
     extern TEXT_INPUT_LABELS_PC *TextInputAlternateLabelsPc;
     extern TEXT_INPUT_LABELS_PC *TextInputDefaultLabelsPc;
-    extern void(__cdecl *TextInputNameCallbackPc)(i32, char *);
+    extern void (*TextInputNameCallbackPc)(i32, char *);
     extern i8 TextInputLastDeviceIndexPc;
     extern NUPADMAPPING g_nupadMapping[3];
 
-    i32 __cdecl InStory(void);
+    i32 InStory(void);
 
-    void __cdecl Move_VEHICLE(GAMEOBJECT *);
-    void __cdecl Move_POD(GAMEOBJECT *);
-    void __cdecl PodCollisionCode(GAMEOBJECT *);
-    f32 __cdecl FindPodHoverHeight(GAMEOBJECT *);
-    void __cdecl PlaySfxByIdAndSetPitch(i32, NUVEC *, f32);
-    void __cdecl CableCode(GAMEOBJECT *, i32, f32);
-    void __cdecl TerrainPlayer(GAMEOBJECT *);
-    void __cdecl PostResetCode(GAMEOBJECT *);
-    GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *, NUVEC *, f32);
-    CABLE_RECORD_PC *__cdecl CreateCable(GAMEOBJECT *, GAMEOBJECT *, i32);
+    void Move_VEHICLE(GAMEOBJECT *);
+    void Move_POD(GAMEOBJECT *);
+    void PodCollisionCode(GAMEOBJECT *);
+    f32 FindPodHoverHeight(GAMEOBJECT *);
+    void PlaySfxByIdAndSetPitch(i32, NUVEC *, f32);
+    void CableCode(GAMEOBJECT *, i32, f32);
+    void TerrainPlayer(GAMEOBJECT *);
+    void PostResetCode(GAMEOBJECT *);
+    GAMEOBJECT *CableTargetGameObject(GAMEOBJECT *, NUVEC *, f32);
+    CABLE_RECORD_PC *CreateCable(GAMEOBJECT *, GAMEOBJECT *, i32);
 
     extern CUT_LOAD_LIST_ENTRY_PC *CutList;
     extern i32 CUTCOUNT;
-    extern void(__cdecl *CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
-    CUT_LOAD_SYS_PC *__cdecl CutScenes_Load(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32,
-                                            WORLDINFO *);
-    void __cdecl CutSceneConfigMissingPc(char *);
+    extern void (*CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
+    CUT_LOAD_SYS_PC *CutScenes_Load(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32, WORLDINFO *);
+    void CutSceneConfigMissingPc(char *);
 
     extern const char ForcePushSoundNamePc[11];
     extern const char VehicleSmartBombChargeNamePc[10];
@@ -11443,7 +11440,7 @@ extern "C" {
     extern LEVELDATA_PC *DAGOBAHC_LDATA;
     extern LEVELDATA_PC *ENDORBATTLEC_LDATA;
     extern i32 NOTERRAINSTOP;
-    extern void(__cdecl *VehicleSlowdownCallbackPc)(GAMEOBJECT *);
+    extern void (*VehicleSlowdownCallbackPc)(GAMEOBJECT *);
     extern f32 VehicleLaunchHoverOffsetPc;
     extern f32 PodCollisionMagnitudePc;
     extern i32 LEGO_AIPATHCNX_BLOCKAGE;
@@ -11467,28 +11464,28 @@ extern "C" {
     STATIC_ASSERT(offsetof(FLIGHT_SPLINE_RESOURCE_PC, cumulative_distances) == 0x414);
     STATIC_ASSERT(offsetof(FLIGHT_SPLINE_RESOURCE_PC, id) == 0x524);
 
-    void __cdecl LevelSplines_InitForLevel(WORLDINFO *);
-    void __cdecl Surfaces_Reset(void);
-    void __cdecl Particles_Stop(WORLDINFO *);
-    void __cdecl DebFreeAllCreatedEffects(void);
-    i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);
+    void LevelSplines_InitForLevel(WORLDINFO *);
+    void Surfaces_Reset(void);
+    void Particles_Stop(WORLDINFO *);
+    void DebFreeAllCreatedEffects(void);
+    i32 NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);
 /* Windows SDK commctrl.h aliases DrawStatusText to DrawStatusTextA. */
 #ifdef DrawStatusText
 #undef DrawStatusText
 #endif
-    void __cdecl DrawStatusText(char *, u16, f32, f32, f32, u32, i32);
-    void __cdecl WidescreenCode(i32);
-    void __cdecl NuQFntSetMtx(VUFNT *, NUMTX *);
-    f32 __cdecl NuCameraFocalLenToFOV(f32);
-    i32 __cdecl DrawPanel3DObject(f32, f32, f32, f32, f32, f32, u16, u16, u16, NUSPECIALHANDLE *, i32, f32);
-    void __cdecl DrawCharIcon(i32, f32, f32, f32, f32, i32, f32, f32, i32, NUSPECIALHANDLE *);
-    void __cdecl BackDrop_Draw(f32, i32);
-    void __cdecl DrawParallax(NUSPECIALHANDLE *);
-    void __cdecl NoRender(void);
-    void __cdecl CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along);
-    void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance);
+    void DrawStatusText(char *, u16, f32, f32, f32, u32, i32);
+    void WidescreenCode(i32);
+    void NuQFntSetMtx(VUFNT *, NUMTX *);
+    f32 NuCameraFocalLenToFOV(f32);
+    i32 DrawPanel3DObject(f32, f32, f32, f32, f32, f32, u16, u16, u16, NUSPECIALHANDLE *, i32, f32);
+    void DrawCharIcon(i32, f32, f32, f32, f32, i32, f32, f32, i32, NUSPECIALHANDLE *);
+    void BackDrop_Draw(f32, i32);
+    void DrawParallax(NUSPECIALHANDLE *);
+    void NoRender(void);
+    void CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along);
+    void CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance);
 
-    void __cdecl Shadow_SetMode(void);
+    void Shadow_SetMode(void);
 
     typedef struct BATARANG_TARGET_s {
         void *object;
@@ -11649,27 +11646,27 @@ extern "C" {
     STATIC_ASSERT(offsetof(LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC, value) == 0);
     STATIC_ASSERT(offsetof(LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC, low_word) == 0);
     extern LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC LEGOOBJ_DEFAULTLASTCOIN;
-    void __cdecl RememberPlayerIDs(i32, i32, i32);
-    TORPEDOPACKET_PC *__cdecl GetTorpedoPacket(void);
-    i32 __cdecl Collection_Got(i32);
+    void RememberPlayerIDs(i32, i32, i32);
+    TORPEDOPACKET_PC *GetTorpedoPacket(void);
+    i32 Collection_Got(i32);
     extern COLLECTION_AREA_SAVE_PC *Game_AreaSave;
     extern u8 *Game_CharacterSave;
-    i32 __cdecl AreaFromMiniKitID(i32);
-    void __cdecl Players_Init(void);
+    i32 AreaFromMiniKitID(i32);
+    void Players_Init(void);
 
-    void __cdecl Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS_PC *, i32);
-    void __cdecl Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *);
-    void __cdecl NuWin32SetDFS(i32);
+    void Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS_PC *, i32);
+    void Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *);
+    void NuWin32SetDFS(i32);
 
-    void __cdecl noterraininit(void);
-    void __cdecl TerrSetPlatScanDist(f32 distance);
-    void __cdecl TerrainSetWallDeflectYScale(f32 scale);
-    void __cdecl TerrainPlatformOldUpdate(void);
-    void __cdecl TerrainPlatformNewUpdate(void);
-    void __cdecl NuGScnUpdate(NUGSCN *scene, f32 delta);
+    void noterraininit(void);
+    void TerrSetPlatScanDist(f32 distance);
+    void TerrainSetWallDeflectYScale(f32 scale);
+    void TerrainPlatformOldUpdate(void);
+    void TerrainPlatformNewUpdate(void);
+    void NuGScnUpdate(NUGSCN *scene, f32 delta);
 
     typedef struct TERRAIN_CALLBACK_LIFECYCLE_PC {
-        void(__cdecl *function)(void *argument);
+        void (*function)(void *argument);
         void *argument;
     } TERRAIN_CALLBACK_LIFECYCLE_PC;
 
@@ -11684,10 +11681,10 @@ extern "C" {
     extern i32 cntrots;
     extern TERRAIN_CALLBACK_LIFECYCLE_PC PlatCallback[8];
 
-    void __cdecl Customiser_InitNames(CUSTOMISER_LAYERS_PC *);
-    NUGSCN *__cdecl IconScene_FindById(i32);
-    void __cdecl IntroText_Draw(f32);
-    void __cdecl SetQFont2D(void);
+    void Customiser_InitNames(CUSTOMISER_LAYERS_PC *);
+    NUGSCN *IconScene_FindById(i32);
+    void IntroText_Draw(f32);
+    void SetQFont2D(void);
 
     typedef struct FONT_LEGACY_GLYPH_PC {
         f32 u0;
@@ -11719,30 +11716,30 @@ extern "C" {
     STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, character_map) == 0x20);
     STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, glyphs) == 0x120);
 
-    void __cdecl NuMtlSetRenderPlane(NUMTL *, i32);
+    void NuMtlSetRenderPlane(NUMTL *, i32);
     extern i32 create_qfont2dlower;
     extern i32 create_qfont2dz;
     extern i32 create_qfont3d;
     extern i32 create_qfont3dz;
     extern VUFNT *QFont2DZ;
     extern VUFNT *QFont3D;
-    void __cdecl NuQFntDestroy(VUFNT *);
-    i32 __cdecl NuQFntReadPS(VUFNT *, i32, i32, i32, VARIPTR *, VARIPTR);
-    VUFNT *__cdecl NuQFntReadBuffer(VARIPTR *, VARIPTR *, VARIPTR);
-    VUFNT *__cdecl NuQFntRead(char *, VARIPTR *, VARIPTR);
-    VUFNT *__cdecl NuQFntDuplicate(VUFNT *, i32, i32, VARIPTR *, VARIPTR *);
-    VUFNT *__cdecl NuQFntLoadPtr(char *, char *, i32, i32, VARIPTR *, VARIPTR *);
-    VUFNT *__cdecl NuQFntCreate(FONT_LEGACY_READER_PC *, i32, i32, VARIPTR *, VARIPTR *);
-    void __cdecl NuQFntWrite(char *, VUFNT *);
-    void __cdecl NuQFntWriteUniversalFont(char *, VUFNT *, char *);
-    VUFNT *__cdecl LoadGameFont(char *, char *, VARIPTR *, VARIPTR *, i32);
-    VUFNT *__cdecl LoadButtonFont(char *, char *, VARIPTR *, VARIPTR *, i32);
-    void __cdecl UnloadGameFont(i32 unused);
-    void __cdecl Text_LoadFont(char *, VARIPTR *, VARIPTR *);
+    void NuQFntDestroy(VUFNT *);
+    i32 NuQFntReadPS(VUFNT *, i32, i32, i32, VARIPTR *, VARIPTR);
+    VUFNT *NuQFntReadBuffer(VARIPTR *, VARIPTR *, VARIPTR);
+    VUFNT *NuQFntRead(char *, VARIPTR *, VARIPTR);
+    VUFNT *NuQFntDuplicate(VUFNT *, i32, i32, VARIPTR *, VARIPTR *);
+    VUFNT *NuQFntLoadPtr(char *, char *, i32, i32, VARIPTR *, VARIPTR *);
+    VUFNT *NuQFntCreate(FONT_LEGACY_READER_PC *, i32, i32, VARIPTR *, VARIPTR *);
+    void NuQFntWrite(char *, VUFNT *);
+    void NuQFntWriteUniversalFont(char *, VUFNT *, char *);
+    VUFNT *LoadGameFont(char *, char *, VARIPTR *, VARIPTR *, i32);
+    VUFNT *LoadButtonFont(char *, char *, VARIPTR *, VARIPTR *, i32);
+    void UnloadGameFont(i32 unused);
+    void Text_LoadFont(char *, VARIPTR *, VARIPTR *);
 
-    void __cdecl NuQFntSetSpaceWidth(VUFNT *, f32);
-    f32 __cdecl NuQFntPrintJustifiedW(VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *);
-    f32 __cdecl NuQFntPrintJustifiedRSW(void *, VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *);
+    void NuQFntSetSpaceWidth(VUFNT *, f32);
+    f32 NuQFntPrintJustifiedW(VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *);
+    f32 NuQFntPrintJustifiedRSW(void *, VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *);
 
     extern const char RenderSplineShopStartPc[11];
     extern const char RenderSplineBountyStartPc[13];
@@ -11758,18 +11755,18 @@ extern "C" {
     extern i32 drawcharicon_find;
     extern NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
     extern NUGSCN *backdrop_scene;
-    extern void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
+    extern void (*RenderBackdropAlphaFnPc)(f32 *);
     extern u16 SURFACEBITS_NODUST;
     extern i32 RenderHubFromCutscenePlayerPc;
 
-    void __cdecl TextInputSetKeyboardOverridePc(i32);
-    void __cdecl PcInput_SetCtrlStringPlayer(i32);
-    i32 __cdecl PcInput_PortIsKeyboard(i32);
-    extern i32(__cdecl *PcInputCommandFilterPc)(i32, i32);
-    void __cdecl PcInput_SetIsUsedCallBack(i32(__cdecl *filter)(i32, i32));
-    i32 __cdecl PcInput_ScanForAnyInput(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active);
-    i32 __cdecl PcInput_RemapVirtualKeyboard(i32 port, i32 player);
-    u8 __cdecl PcInput_SafeGetMapping(i32 port, i32 key, i32 auxiliary_index);
+    void TextInputSetKeyboardOverridePc(i32);
+    void PcInput_SetCtrlStringPlayer(i32);
+    i32 PcInput_PortIsKeyboard(i32);
+    extern i32 (*PcInputCommandFilterPc)(i32, i32);
+    void PcInput_SetIsUsedCallBack(i32 (*filter)(i32, i32));
+    i32 PcInput_ScanForAnyInput(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active);
+    i32 PcInput_RemapVirtualKeyboard(i32 port, i32 player);
+    u8 PcInput_SafeGetMapping(i32 port, i32 key, i32 auxiliary_index);
 
     typedef struct PC_SHADOW_QUEUE_RECORD {
         NUVEC position;
@@ -11808,20 +11805,20 @@ extern "C" {
     extern NURND_VERTEX3D_PC NuRndrShadowVerticesPc[4];
     STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC[4]) == 0x90);
     STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, normal) == 0xc);
-    void __cdecl NuRndrShadPolys(NUMTL *);
-    i32 __cdecl NuCameraClipTestPoints(NUVEC *, i32, NUMTX *);
-    i32 __cdecl NuRndrSetDirectionalLightsPS(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *,
-                                             const NUVEC *);
-    void __cdecl ShadowMapEnablePc(struct PC_SPECIAL_SHADOW_LIGHT *);
-    void __cdecl NuSpecialClearShadowLights(void);
+    void NuRndrShadPolys(NUMTL *);
+    i32 NuCameraClipTestPoints(NUVEC *, i32, NUMTX *);
+    i32 NuRndrSetDirectionalLightsPS(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *,
+                                     const NUVEC *);
+    void ShadowMapEnablePc(struct PC_SPECIAL_SHADOW_LIGHT *);
+    void NuSpecialClearShadowLights(void);
 
-    f32 __cdecl AnimEndFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
-    void __cdecl CharScene_Draw(WORLDINFO *, i32, NUMTX *, NUMTX *);
-    f32 __cdecl BlobShadowFade(NUVEC *, f32, f32, f32);
-    void __cdecl EnableShadowMapRendering(i32);
-    void __cdecl ResetShadowMapRendering(void);
-    void __cdecl SetZeroLights(void);
-    void __cdecl NuRndrAddShadow(NUVEC *, f32, i32, i32, i32, i32);
+    f32 AnimEndFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
+    void CharScene_Draw(WORLDINFO *, i32, NUMTX *, NUMTX *);
+    f32 BlobShadowFade(NUVEC *, f32, f32, f32);
+    void EnableShadowMapRendering(i32);
+    void ResetShadowMapRendering(void);
+    void SetZeroLights(void);
+    void NuRndrAddShadow(NUVEC *, f32, i32, i32, i32, i32);
 
     /* Private-register helpers remain local; no public stack prototypes. */
     typedef struct RTL_LIGHT_PC {
@@ -11964,7 +11961,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(RTL_SET_PC, header) == 0);
     STATIC_ASSERT(offsetof(RTL_SET_PC, lights) == 4);
     STATIC_ASSERT(offsetof(RTL_SET_PC, fog) == 0x4604);
-    RTL_FOG_MIGRATION_PC *__cdecl rtlGetFogSet(RTL_SET_PC *set, NUVEC *position);
+    RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET_PC *set, NUVEC *position);
 
     typedef struct RTL_INDEX_PC {
         i32 enabled;
@@ -11996,12 +11993,12 @@ extern "C" {
 
     struct RTL_DATA_PC;
     struct RTL_INDEX_PC;
-    void __cdecl ResetLights(NUVEC *, struct RTL_DATA_PC *, void *);
-    void __cdecl FindAndSetLights(NUVEC *, f32, void *);
-    void __cdecl rtlResetEx(struct RTL_DATA_PC *, i32);
-    i32 __cdecl rtlDynamicMasterEnable(i32);
-    void __cdecl rtlSetLights(struct RTL_DATA_PC *);
-    void __cdecl rtlApplySetScale(void *, struct RTL_DATA_PC *, NUVEC *, NUMTX *, i32, f32);
+    void ResetLights(NUVEC *, struct RTL_DATA_PC *, void *);
+    void FindAndSetLights(NUVEC *, f32, void *);
+    void rtlResetEx(struct RTL_DATA_PC *, i32);
+    i32 rtlDynamicMasterEnable(i32);
+    void rtlSetLights(struct RTL_DATA_PC *);
+    void rtlApplySetScale(void *, struct RTL_DATA_PC *, NUVEC *, NUMTX *, i32, f32);
     extern i32 rtl_dynamic_lights_enabled;
     extern i32 rtl_error;
     extern f32 rtl_frametime;
@@ -12013,17 +12010,17 @@ extern "C" {
     extern f32 *modifiers;
     extern i32 rtltimer1;
     extern f32 rtltimer1adv;
-    void __cdecl rtlFrameUpdate(f32 frame_time);
-    void __cdecl Cheats_FrameUpdate(void);
-    void __cdecl UpdateCutBorders(void);
+    void rtlFrameUpdate(f32 frame_time);
+    void Cheats_FrameUpdate(void);
+    void UpdateCutBorders(void);
     extern struct RTL_INDEX_PC *dbg_rtlindex;
     extern const char RtlSearchTimebarNamePc[];
 
-    void __cdecl Text3DEx2(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, u8);
-    void __cdecl MenuText3DEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, i32);
-    void __cdecl DrawMenuButtonPromptsEx(i32, i32, i32, i32, u32, u32, u32, u32);
-    char **__cdecl PcInput_GetKeyNameTable(void);
-    i32 __cdecl PcInput_PortIsUC(i32);
+    void Text3DEx2(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, u8);
+    void MenuText3DEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, i32);
+    void DrawMenuButtonPromptsEx(i32, i32, i32, i32, u32, u32, u32, u32);
+    char **PcInput_GetKeyNameTable(void);
+    i32 PcInput_PortIsUC(i32);
     extern VUFNT *QFont2DLower;
     extern char *apitxt_SELECT;
     extern char *apitxt_BACK;
@@ -12033,15 +12030,15 @@ extern "C" {
     extern f32 MenuPromptPositionScalePc;
     extern f32 MENUDY;
 
-    void __cdecl DrawMenuButtonPrompts(i32, i32, i32, u32, u32, u32, u32);
+    void DrawMenuButtonPrompts(i32, i32, i32, u32, u32, u32, u32);
 
-    void __cdecl NuBackbufferCopy(i32);
-    void __cdecl GrabStillScreen(void);
-    void __cdecl DebrisSetFacing(i32, u8, i16, i16);
-    void __cdecl DebrisSetRoomID(i32, NUGSCN *);
-    void __cdecl edppStartSingleEffect(i32);
-    void __cdecl edppStartPage(i32);
-    void __cdecl Particles_Start(WORLDINFO *);
+    void NuBackbufferCopy(i32);
+    void GrabStillScreen(void);
+    void DebrisSetFacing(i32, u8, i16, i16);
+    void DebrisSetRoomID(i32, NUGSCN *);
+    void edppStartSingleEffect(i32);
+    void edppStartPage(i32);
+    void Particles_Start(WORLDINFO *);
     extern u8 ScreenGrabNeeded;
     extern f32 pause_fade;
     extern NUGSCN *EdppPageScenesPc[8];
@@ -12050,30 +12047,30 @@ extern "C" {
     extern i32 EdppUnresolvedInstancesPc;
     extern char **PDebNameList;
 
-    void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
-    i32 __cdecl FindNextBreak(u8 *, i32);
-    i32 __cdecl FindNearestBreak(u8 *, i32);
-    i32 __cdecl NuStrFindPosU(u8 *, i32);
-    void __cdecl SmartTextEx2(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, u32);
-    void __cdecl MenuSmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
-    void __cdecl DrawMenuHeader(void);
-    void __cdecl DrawMenu(i32);
-    void __cdecl DrawPanel(void);
-    void __cdecl GameTiming(WORLDINFO *world, f32 *game_time);
+    void SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
+    i32 FindNextBreak(u8 *, i32);
+    i32 FindNearestBreak(u8 *, i32);
+    i32 NuStrFindPosU(u8 *, i32);
+    void SmartTextEx2(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, u32);
+    void MenuSmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
+    void DrawMenuHeader(void);
+    void DrawMenu(i32);
+    void DrawPanel(void);
+    void GameTiming(WORLDINFO *world, f32 *game_time);
     extern i32 g_enableButtonPrompts;
-    extern void(__cdecl *headerdrawfn)(void);
+    extern void (*headerdrawfn)(void);
     extern f32 MenuTopYPc;
     extern u8 MENUNORMALR;
     extern u8 MENUNORMALG;
     extern f32 SmartTextDefaultWidthPc;
     extern f32 SmartTextLongestWidthPc;
     extern i32 MenuDisableHeaders;
-    extern void(__cdecl *predrawfn)(MENU *);
+    extern void (*predrawfn)(MENU *);
     extern u8 MENUNORMALB;
     extern i32 memcard_autosavestarted;
     extern f32 memcard_autosavepredelay;
     extern f32 memcard_autosavepostdelay;
-    extern void(__cdecl *memcard_drawasiconfn)(void);
+    extern void (*memcard_drawasiconfn)(void);
 
     typedef struct cut_load_locator_s CUT_LOAD_LOCATOR;
     typedef struct cut_load_locator_type_s CUT_LOAD_LOCATOR_TYPE;
@@ -12098,66 +12095,65 @@ extern "C" {
     extern i32 dco_id;
     extern f32 dco_reflectcoord;
     extern CUT_DRAW_SETTINGS_PC *CutSceneSys;
-    extern void(__cdecl *UpdateLocatorVfxFn)(i32, NUMTX *);
-    extern i32(__cdecl *TriggerLocatorVfxFn)(i32, NUMTX *);
-    extern NUHGOBJ_EVAL_PC *(__cdecl *NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
-    extern void(__cdecl *NuCutSceneCharacterRender)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
-    extern void(__cdecl *NuCutSceneResetCharacters)(INSTNUGCUTSCENE *);
-    extern void(__cdecl *NuCutSceneRigidPostRender)(void *, NUSPECIALHANDLE *, NUMTX *);
-    extern void(__cdecl *NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
-                                              CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
+    extern void (*UpdateLocatorVfxFn)(i32, NUMTX *);
+    extern i32 (*TriggerLocatorVfxFn)(i32, NUMTX *);
+    extern NUHGOBJ_EVAL_PC *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
+    extern void (*NuCutSceneCharacterRender)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
+    extern void (*NuCutSceneResetCharacters)(INSTNUGCUTSCENE *);
+    extern void (*NuCutSceneRigidPostRender)(void *, NUSPECIALHANDLE *, NUMTX *);
+    extern void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32,
+                                       NUMTX *, i32);
     extern f32 CutSceneDebrisAxisSizePc;
     extern i32 CutSceneDebrisProcessModePc;
-    extern i32(__cdecl *MatrixReflection_CanOverrideFn)(void);
+    extern i32 (*MatrixReflection_CanOverrideFn)(void);
     extern PLAYERCHARACTERCONFIG_PC *dco_gcdata;
     extern CHARACTER_MODEL_LAYERS_PC *dco_cmodel;
     extern i32 dco_wearinghat;
     extern i32 dco_reflectaxis;
     extern u16 dco_prerotatez;
     extern i32 dco_locatorposonly;
-    extern void(__cdecl *DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
+    extern void (*DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
     extern i32 CutSceneWaiting;
     /* Minimal public contracts; complete field views stay in their source owners.
      * Registration callbacks currently use concrete local views in scratch. On shared
      * promotion cast the installed callback addresses to these canonical ABI typedefs
      * and recompile full contexts. Do not publish private helper prototypes. */
     typedef struct CUT_LOOKAT_STATE_PC CUT_LOOKAT_STATE_PC;
-    typedef void(__cdecl *CUT_DRAW_RENDER_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
-    typedef void(__cdecl *CUT_DRAW_EVAL_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
-    typedef void(__cdecl *CUT_DRAW_RIGID_CALLBACK_PC)(void *, NUSPECIALHANDLE *, NUMTX *);
-    void __cdecl CutScenes_InitSystem(CUT_DRAW_SETTINGS_PC *);
-    void __cdecl NuGCutSceneSysInit(CUT_LOCATOR_FUNCTION_ENTRY_PC *);
-    void __cdecl NuSetCutSceneCharacterRenderFn(CUT_DRAW_RENDER_CALLBACK_PC);
-    void __cdecl NuSetCutSceneCharacterEvalFn(CUT_DRAW_EVAL_CALLBACK_PC);
-    void __cdecl NuSetCutSceneFindCharactersFn(void(__cdecl *)(CUT_SCENE_LOAD_PC *));
-    void __cdecl NuSetCutSceneResetCharactersFn(void(__cdecl *)(INSTNUGCUTSCENE *));
-    void __cdecl NuSetCutSceneCharacterCreateDataFn(void(__cdecl *)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *,
-                                                                    VARIPTR *));
-    void __cdecl NuSetCutSceneRigidPostRenderFn(CUT_DRAW_RIGID_CALLBACK_PC);
-    i32 __cdecl MatrixReflection(NUMTX *, i32, f32, f32, NUMTX *);
-    void __cdecl DrawObjectOnCharacter(WORLDINFO *, GAMEOBJECT *, i32, NUSPECIALHANDLE *, i32, i32, NUMTX *, i32, u32,
-                                       NUMTX *, NUVEC *, f32, f32);
-    i32 __cdecl Draw3DObjectMtx(WORLDINFO *, i32, NUMTX *);
-    i32 __cdecl LevelObject_FindIndexFromName_RefOnly(char *);
-    i32 __cdecl LevelObject_GetReflection(i32);
-    i32 __cdecl NuGCutLocatorIsVisble_3(CUT_LOCATOR_GENERIC_PC *, f32, f32 *, f32 *);
-    i32 __cdecl NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC_PC *, f32, NUANIM_TIME2_PC *, f32 *, f32 *);
-    i32 __cdecl FindMtlInHGObj(NUHGOBJ_EVAL_PC *, i32);
-    i32 __cdecl FindTexAnimFromMtl(NUHGOBJ_EVAL_PC *, NUMTL *);
-    void __cdecl instGetLookAtLocatorInfo(INSTNUGCUTSCENE *, CUT_LOOKAT_STATE_PC *);
-    void __cdecl CutGetJointOverrideMatrixPc(NUHGOBJ_EVAL_PC *, i32, NUMTX *);
-    void __cdecl instNuGCutLocatorUpdate(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
-                                         CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
-    void __cdecl NuVec4MtxRotateVU0(NUVEC4 *, NUVEC4 *, NUMTX *);
+    typedef void (*CUT_DRAW_RENDER_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
+    typedef void (*CUT_DRAW_EVAL_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
+    typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, NUSPECIALHANDLE *, NUMTX *);
+    void CutScenes_InitSystem(CUT_DRAW_SETTINGS_PC *);
+    void NuGCutSceneSysInit(CUT_LOCATOR_FUNCTION_ENTRY_PC *);
+    void NuSetCutSceneCharacterRenderFn(CUT_DRAW_RENDER_CALLBACK_PC);
+    void NuSetCutSceneCharacterEvalFn(CUT_DRAW_EVAL_CALLBACK_PC);
+    void NuSetCutSceneFindCharactersFn(void (*)(CUT_SCENE_LOAD_PC *));
+    void NuSetCutSceneResetCharactersFn(void (*)(INSTNUGCUTSCENE *));
+    void NuSetCutSceneCharacterCreateDataFn(void (*)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *));
+    void NuSetCutSceneRigidPostRenderFn(CUT_DRAW_RIGID_CALLBACK_PC);
+    i32 MatrixReflection(NUMTX *, i32, f32, f32, NUMTX *);
+    void DrawObjectOnCharacter(WORLDINFO *, GAMEOBJECT *, i32, NUSPECIALHANDLE *, i32, i32, NUMTX *, i32, u32, NUMTX *,
+                               NUVEC *, f32, f32);
+    i32 Draw3DObjectMtx(WORLDINFO *, i32, NUMTX *);
+    i32 LevelObject_FindIndexFromName_RefOnly(char *);
+    i32 LevelObject_GetReflection(i32);
+    i32 NuGCutLocatorIsVisble_3(CUT_LOCATOR_GENERIC_PC *, f32, f32 *, f32 *);
+    i32 NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC_PC *, f32, NUANIM_TIME2_PC *, f32 *, f32 *);
+    i32 FindMtlInHGObj(NUHGOBJ_EVAL_PC *, i32);
+    i32 FindTexAnimFromMtl(NUHGOBJ_EVAL_PC *, NUMTL *);
+    void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *, CUT_LOOKAT_STATE_PC *);
+    void CutGetJointOverrideMatrixPc(NUHGOBJ_EVAL_PC *, i32, NUMTX *);
+    void instNuGCutLocatorUpdate(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
+                                 CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
+    void NuVec4MtxRotateVU0(NUVEC4 *, NUVEC4 *, NUMTX *);
 
-    void __cdecl DebrisOrientationMtx(i32, NUMTX *);
-    void __cdecl DebrisPosOrientationMtx(i32, NUMTX *);
-    void __cdecl DebrisPopulateInstance(i32, f32);
-    i32 __cdecl CreateScaledEffect(i32, f32);
-    void __cdecl DebrisReScale(i32, f32);
-    void __cdecl AddScaledFiniteShotDebrisEffect(i32 *, i32, NUVEC *, NUVEC *, NUVEC *, i32, f32);
-    i32 __cdecl AddScaledVariableShotDebrisEffect2(i32, NUVEC *, i32, f32, NUMTX *, NUMTX *, f32);
-    void __cdecl NuRndrAxisArrowsMtx(NUMTX *, f32, NUMTL *);
+    void DebrisOrientationMtx(i32, NUMTX *);
+    void DebrisPosOrientationMtx(i32, NUMTX *);
+    void DebrisPopulateInstance(i32, f32);
+    i32 CreateScaledEffect(i32, f32);
+    void DebrisReScale(i32, f32);
+    void AddScaledFiniteShotDebrisEffect(i32 *, i32, NUVEC *, NUVEC *, NUVEC *, i32, f32);
+    i32 AddScaledVariableShotDebrisEffect2(i32, NUVEC *, i32, f32, NUMTX *, NUMTX *, f32);
+    void NuRndrAxisArrowsMtx(NUMTX *, f32, NUMTL *);
 
     typedef struct debris_scale_cache_pc_s {
         i32 base_effect_index;
@@ -12175,11 +12171,11 @@ extern "C" {
 
     extern HINTSYS_PC hintsys;
     extern i32 CutSceneSingleStreamBufferPc;
-    extern i32(__cdecl *LookupLocatorVfxFn)(char *);
+    extern i32 (*LookupLocatorVfxFn)(char *);
     extern i32 CutSceneLookupAllDebrisPagesPc;
-    extern void(__cdecl *NuCutSceneFindCharacters)(CUT_SCENE_LOAD_PC *);
-    extern void(__cdecl *NuCutSceneCharacterCreateData)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *);
-    extern i32(__cdecl *NuCutSceneRequestSFX)(char *);
+    extern void (*NuCutSceneFindCharacters)(CUT_SCENE_LOAD_PC *);
+    extern void (*NuCutSceneCharacterCreateData)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *);
+    extern i32 (*NuCutSceneRequestSFX)(char *);
     extern CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctionsPc;
     extern LEVELDATA_PC *NEGOTIATIONSA_LDATA;
     extern LEVELDATA_PC *NEGOTIATIONSB_LDATA;
@@ -12254,78 +12250,77 @@ extern "C" {
     extern f32 ComboOpponent_Range2;
     extern NUVEC PooPositionPc[2];
     extern i32 objopponent_ignoreaiopponent;
-    extern i32(__cdecl *IsWearingBackPackFn)(GAMEOBJECT *);
+    extern i32 (*IsWearingBackPackFn)(GAMEOBJECT *);
     extern i32 GizmoBlowUpOpponent_Behind;
     extern f32 GizmoBlowUpOpponent_Range2;
     extern i32 SpecialMoveCount;
-    extern i32(__cdecl *UsingExtraActionsFn)(GAMEOBJECT *);
-    extern i32(__cdecl *CanStartHoldFn)(GAMEOBJECT *);
-    extern i32(__cdecl *Punch_GetDamageFn)(GAMEOBJECT *, GAMEOBJECT *);
-    extern void(__cdecl *Punch_HitExtraCodeFn)(GAMEOBJECT *, NUVEC *);
-    extern void(__cdecl *Punch_HitHoldFn)(GAMEOBJECT *, GAMEOBJECT *);
+    extern i32 (*UsingExtraActionsFn)(GAMEOBJECT *);
+    extern i32 (*CanStartHoldFn)(GAMEOBJECT *);
+    extern i32 (*Punch_GetDamageFn)(GAMEOBJECT *, GAMEOBJECT *);
+    extern void (*Punch_HitExtraCodeFn)(GAMEOBJECT *, NUVEC *);
+    extern void (*Punch_HitHoldFn)(GAMEOBJECT *, GAMEOBJECT *);
     extern GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[];
-    i32 __cdecl GizForce_FindBestForceTarget(void *, GAMEOBJECT *);
+    i32 GizForce_FindBestForceTarget(void *, GAMEOBJECT *);
 
     extern TIMER LevelTimer;
 
     struct PC_STEREO_PLAY_PACKET;
     struct PC_STEREO_SAMPLE_METADATA;
 #ifdef __cplusplus
-    void __cdecl PCStereoUnknownToken(...);
+    void PCStereoUnknownToken(...);
 #else
-void __cdecl PCStereoUnknownToken(void);
+void PCStereoUnknownToken(void);
 #endif
-    i32 __cdecl NuSound3PlayStereoV(i32 token, ...);
-    void __cdecl PCStereoStartPacket(struct PC_STEREO_PLAY_PACKET *packet);
+    i32 NuSound3PlayStereoV(i32 token, ...);
+    void PCStereoStartPacket(struct PC_STEREO_PLAY_PACKET *packet);
     extern i32 PCStereoChannel0A;
     extern i32 PCStereoChannel0B;
     extern i32 PCStereoChannel1A;
     extern i32 PCStereoChannel1B;
     extern f32 PCMusicDuckOverride;
 
-    void __cdecl TrafficAnimSys_Configure(WORLDINFO *world, char *config);
-    void __cdecl Faders_Configure(WORLDINFO *world, char *config);
-    void __cdecl AddVariableShotPARTEffect(i32, NUVEC *, f32, f32, NUMTX *);
+    void TrafficAnimSys_Configure(WORLDINFO *world, char *config);
+    void Faders_Configure(WORLDINFO *world, char *config);
+    void AddVariableShotPARTEffect(i32, NUVEC *, f32, f32, NUMTX *);
 
     extern AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSpherePc[14];
     extern i16 id_CATAPULT;
     extern i16 id_FIRETRUCK;
-    void __cdecl AwkwardShapeCode(GAMEOBJECT *, i32);
-    i32 __cdecl NewRayCastScaleYMask(NUVEC *, NUVEC *, f32, f32, i32, u32);
-    void __cdecl RayImpact(NUVEC *);
-    void __cdecl PlayGruntSfx(GAMEOBJECT *);
-    i32 __cdecl TerrainPlatId(void);
-    f32 __cdecl NewRayCastGetTOFI(void);
-    i32 __cdecl NewRayCastGetImpactTerrainType(void);
+    void AwkwardShapeCode(GAMEOBJECT *, i32);
+    i32 NewRayCastScaleYMask(NUVEC *, NUVEC *, f32, f32, i32, u32);
+    void RayImpact(NUVEC *);
+    void PlayGruntSfx(GAMEOBJECT *);
+    i32 TerrainPlatId(void);
+    f32 NewRayCastGetTOFI(void);
+    i32 NewRayCastGetImpactTerrainType(void);
 
-    i32 __cdecl SuperWeirdo(GAMEOBJECT *);
-    void __cdecl SetHeadTarget(GAMEOBJECT *, NUVEC *, i8, f32, f32, f32);
+    i32 SuperWeirdo(GAMEOBJECT *);
+    void SetHeadTarget(GAMEOBJECT *, NUVEC *, i8, f32, f32, f32);
 
-    void __cdecl SetWeaponOut(GAMEOBJECT *);
-    void __cdecl FastWeaponOut(GAMEOBJECT *, i32);
-    void __cdecl SlowWeaponOut(GAMEOBJECT *);
-    void __cdecl SlowWeaponIn(GAMEOBJECT *);
-    i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *);
-    extern i32(__cdecl *Fighting_WeaponInActionFn)(GAMEOBJECT *);
-    extern i32(__cdecl *Fighting_WeaponOutActionFn)(GAMEOBJECT *);
+    void SetWeaponOut(GAMEOBJECT *);
+    void FastWeaponOut(GAMEOBJECT *, i32);
+    void SlowWeaponOut(GAMEOBJECT *);
+    void SlowWeaponIn(GAMEOBJECT *);
+    i32 PlayerItem_GotAmmo(WEAPON_AMMO_PC *);
+    extern i32 (*Fighting_WeaponInActionFn)(GAMEOBJECT *);
+    extern i32 (*Fighting_WeaponOutActionFn)(GAMEOBJECT *);
 
-    i32 __cdecl GizmoSys_SetBestBoltTarget(void *, WORLDINFO *, GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32,
-                                           i32);
-    i32 __cdecl SetObjTarget(GAMEOBJECT *, GAMEOBJECT *);
-    i32 __cdecl SetGizmoBlowUpTarget(GAMEOBJECT *, GIZMOBLOWUP_PC *);
-    i32 __cdecl SetPartTarget(GAMEOBJECT *, PART_PC *);
-    GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
-    PART_PC *__cdecl TargetPart(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32);
-    extern i32(__cdecl *GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *);
+    i32 GizmoSys_SetBestBoltTarget(void *, WORLDINFO *, GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
+    i32 SetObjTarget(GAMEOBJECT *, GAMEOBJECT *);
+    i32 SetGizmoBlowUpTarget(GAMEOBJECT *, GIZMOBLOWUP_PC *);
+    i32 SetPartTarget(GAMEOBJECT *, PART_PC *);
+    GIZMOBLOWUP_PC *GizmoBlowUp_Target(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
+    PART_PC *TargetPart(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32);
+    extern i32 (*GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *);
 
-    i32 __cdecl GizForce_StoodOnForce(GIZFORCE_PC *, GAMEOBJECT *);
-    u16 __cdecl GizForces_AngleToForce(NUVEC *, GIZFORCE_PC *);
-    i32 __cdecl GizForce_Complete(GIZFORCE_PC *);
-    void __cdecl TakeHitCode(GAMEOBJECT *object);
-    void __cdecl ResetForceGlow(void *packet);
-    i32 __cdecl TwistLevel(LEVELDATA_PC *);
-    void __cdecl LoopCode(GAMEOBJECT *, i32, i32, GAMEPAD_PC *, i32);
-    void __cdecl Hint_SetComplete(i32);
+    i32 GizForce_StoodOnForce(GIZFORCE_PC *, GAMEOBJECT *);
+    u16 GizForces_AngleToForce(NUVEC *, GIZFORCE_PC *);
+    i32 GizForce_Complete(GIZFORCE_PC *);
+    void TakeHitCode(GAMEOBJECT *object);
+    void ResetForceGlow(void *packet);
+    i32 TwistLevel(LEVELDATA_PC *);
+    void LoopCode(GAMEOBJECT *, i32, i32, GAMEPAD_PC *, i32);
+    void Hint_SetComplete(i32);
     extern f32 VehicleLoopTimePc;
 
     extern NEW_MINI_PIECE_PC NewMiniPiece[10];
@@ -12351,81 +12346,80 @@ void __cdecl PCStereoUnknownToken(void);
     extern f32 CHEAT_POWERUPTIME;
     extern u16 PowerUp_PanelYRot[2];
     extern i32 POWERUP_TEXTID;
-    void __cdecl Pup_CollectCoin(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
-    void __cdecl Pup_UpdateBlueCoin(WORLDINFO *, GIZMOPICKUP_PC *);
-    void __cdecl Pup_UpdatePurpleCoin(WORLDINFO *, GIZMOPICKUP_PC *);
-    void __cdecl Pup_CollectMinikit(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
-    void __cdecl Pup_CollectHeart(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
-    void __cdecl Pup_CollectRedBrick(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
-    void __cdecl Pup_CollectCharKit(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
-    void __cdecl Pup_UpdatePowerUp(WORLDINFO *, GIZMOPICKUP_PC *);
-    void __cdecl Pup_CollectPowerUp(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
-    void __cdecl CollectRedBrick(NUVEC *);
-    void __cdecl CollectMinikit(NUVEC *, char *, i32);
-    void __cdecl CollectHitPoint(GAMEOBJECT *, NUVEC *, i32);
-    void __cdecl CollectPowerUp(GAMEOBJECT *, NUVEC *, u16, i32);
-    void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *);
-    void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *);
+    void Pup_CollectCoin(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
+    void Pup_UpdateBlueCoin(WORLDINFO *, GIZMOPICKUP_PC *);
+    void Pup_UpdatePurpleCoin(WORLDINFO *, GIZMOPICKUP_PC *);
+    void Pup_CollectMinikit(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
+    void Pup_CollectHeart(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
+    void Pup_CollectRedBrick(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
+    void Pup_CollectCharKit(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
+    void Pup_UpdatePowerUp(WORLDINFO *, GIZMOPICKUP_PC *);
+    void Pup_CollectPowerUp(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
+    void CollectRedBrick(NUVEC *);
+    void CollectMinikit(NUVEC *, char *, i32);
+    void CollectHitPoint(GAMEOBJECT *, NUVEC *, i32);
+    void CollectPowerUp(GAMEOBJECT *, NUVEC *, u16, i32);
+    void MiniKit_GameMsg_Update(GAME_MESSAGE_PC *);
+    void MiniKit_GameMsg_End(GAME_MESSAGE_PC *);
     extern HINT_PC Hints_LSW[65];
-    void __cdecl DrawHint_LSW(HINT_PC *, i32);
-    i32 __cdecl Tag_UpdateHint(HINT_PC *);
-    i32 __cdecl GizForce_UpdateHint(HINT_PC *);
-    i32 __cdecl GizBuildIts_UpdateHint(HINT_PC *);
-    i32 __cdecl GizPanel_UpdateHint(HINT_PC *);
-    i32 __cdecl ZipUps_UpdateHint(HINT_PC *);
-    i32 __cdecl Dodge_UpdateHint(HINT_PC *);
-    i32 __cdecl GizTurrets_UpdateHint(HINT_PC *);
-    i32 __cdecl Push_UpdateHints(HINT_PC *);
-    i32 __cdecl Teleport_UpdateHints(HINT_PC *);
-    i32 __cdecl ShinyMetal_UpdateHint(HINT_PC *);
-    i32 __cdecl Shop_UpdateHint(HINT_PC *);
-    i32 __cdecl Percent_UpdateHint(HINT_PC *);
-    i32 __cdecl IndyUnlocked_UpdateHint(HINT_PC *);
-    i32 __cdecl Hint_isComplete(HINT_PC *);
-    void __cdecl Hint_SetCompletePc(HINT_PC *);
-    void __cdecl RegisterWithHintSys(void(__cdecl *draw_fn)(HINT_PC *, i32), HINT_PC *hints, u32 *save_bits,
-                                     i32 save_word_count);
-    void __cdecl initGameHintSys_LSW(void);
-    i32 __cdecl Hint_CurrentId(void);
-    void __cdecl Hint_SetHintFromId(i32, i32, i32);
-    u16 __cdecl GameCam_GetAdjustedYRot(GAMECAMERA *);
-    f32 __cdecl PowerUp_GetPanelY(i32);
-    void __cdecl Cheat_StartPowerUp(NUVEC *, GAMEOBJECT *);
-    void __cdecl EndChallenge(i32, i32);
-    i32 __cdecl FindGameMsgsWithID(i32, i32, i32, GAME_MESSAGE_PC *);
-    HINT_PC *__cdecl Hint_FindHint(i32);
-    void __cdecl Hint_ResetHint(i32 hint_id, i32 reset_completed);
-    void __cdecl Hint_SetHint(HINT_PC *, i32, i32);
-    void __cdecl Hint_SaveGameState(HINT_PC *);
-    void __cdecl Hint_LoadAllGameState(void);
-    GAME_MESSAGE_PC *__cdecl AddGameMessage(char *, NUVEC *, f32, NUVEC *, f32, u8, u8, u8, u32, f32);
-    void __cdecl GameCam_HitRoll(void);
-    void __cdecl GizmoPickup_CollectCoin(WORLDINFO *, NUVEC *, i32, i32, GAMEOBJECT *, i32);
-    void __cdecl PowerUp_Particles(WORLDINFO *, NUVEC *);
-    void __cdecl SetCoinType(i32, GIZMOPICKUP_PC *);
-    GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *, GAMEOBJECT *, u32, f32, f32, i32, i32, i32, f32 *, i32,
-                                              i32(__cdecl *)(GAMEOBJECT *));
-    void __cdecl KillParts(GAMEOBJECT *, i32, i32, i32, f32, i32, u16 *);
-    void __cdecl SetKillPartMom(NUVEC *);
-    void __cdecl PartImpact_Brick(PART_PC *);
-    NUSPECIALHANDLE *__cdecl CharScene_FindHSpecial(WORLDINFO *, i32);
-    void __cdecl Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *, GAMEOBJECT *, i32, i32, f32);
-    void __cdecl KillParts_TIEFIGHTER(ADDPART_PC *, i32, i32, GAMEOBJECT *, i32, u16, u16, NUVEC *);
-    void __cdecl KillParts_ATAT(ADDPART_PC *, i32, i32, GAMEOBJECT *);
-    void __cdecl KillParts_SpeederBike(ADDPART_PC *, i32, i32, GAMEOBJECT *);
-    void __cdecl TiePart_Kill(PART_PC *, i32);
-    void __cdecl TiePart_KillExplode(PART_PC *, i32);
-    void __cdecl TiePart_Impact(PART_PC *);
-    void __cdecl TiePart_Move(PART_PC *, f32);
-    void __cdecl TieSpinZPart_Move(PART_PC *, f32);
-    void __cdecl AtatPart_Stop(PART_PC *);
-    void __cdecl AtatPart_Update(PART_PC *);
-    void __cdecl SpeederPart_Kill(PART_PC *, i32);
-    void __cdecl SpeederPart_Update(PART_PC *);
-    i32 __cdecl SpeederPart_Draw(PART_PC *);
-    void __cdecl AddVariableShotDebrisEffectTimed3(i32, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *);
-    void __cdecl AddVariableShotDebrisEffectTimed1(i32, NUVEC *, i32, f32, i16, i16, NUMTX *);
-    i32 __cdecl KillGameObject(GAMEOBJECT *, i32, i32);
+    void DrawHint_LSW(HINT_PC *, i32);
+    i32 Tag_UpdateHint(HINT_PC *);
+    i32 GizForce_UpdateHint(HINT_PC *);
+    i32 GizBuildIts_UpdateHint(HINT_PC *);
+    i32 GizPanel_UpdateHint(HINT_PC *);
+    i32 ZipUps_UpdateHint(HINT_PC *);
+    i32 Dodge_UpdateHint(HINT_PC *);
+    i32 GizTurrets_UpdateHint(HINT_PC *);
+    i32 Push_UpdateHints(HINT_PC *);
+    i32 Teleport_UpdateHints(HINT_PC *);
+    i32 ShinyMetal_UpdateHint(HINT_PC *);
+    i32 Shop_UpdateHint(HINT_PC *);
+    i32 Percent_UpdateHint(HINT_PC *);
+    i32 IndyUnlocked_UpdateHint(HINT_PC *);
+    i32 Hint_isComplete(HINT_PC *);
+    void Hint_SetCompletePc(HINT_PC *);
+    void RegisterWithHintSys(void (*draw_fn)(HINT_PC *, i32), HINT_PC *hints, u32 *save_bits, i32 save_word_count);
+    void initGameHintSys_LSW(void);
+    i32 Hint_CurrentId(void);
+    void Hint_SetHintFromId(i32, i32, i32);
+    u16 GameCam_GetAdjustedYRot(GAMECAMERA *);
+    f32 PowerUp_GetPanelY(i32);
+    void Cheat_StartPowerUp(NUVEC *, GAMEOBJECT *);
+    void EndChallenge(i32, i32);
+    i32 FindGameMsgsWithID(i32, i32, i32, GAME_MESSAGE_PC *);
+    HINT_PC *Hint_FindHint(i32);
+    void Hint_ResetHint(i32 hint_id, i32 reset_completed);
+    void Hint_SetHint(HINT_PC *, i32, i32);
+    void Hint_SaveGameState(HINT_PC *);
+    void Hint_LoadAllGameState(void);
+    GAME_MESSAGE_PC *AddGameMessage(char *, NUVEC *, f32, NUVEC *, f32, u8, u8, u8, u32, f32);
+    void GameCam_HitRoll(void);
+    void GizmoPickup_CollectCoin(WORLDINFO *, NUVEC *, i32, i32, GAMEOBJECT *, i32);
+    void PowerUp_Particles(WORLDINFO *, NUVEC *);
+    void SetCoinType(i32, GIZMOPICKUP_PC *);
+    GAMEOBJECT *FindNearestGameObject(NUVEC *, GAMEOBJECT *, u32, f32, f32, i32, i32, i32, f32 *, i32,
+                                      i32 (*)(GAMEOBJECT *));
+    void KillParts(GAMEOBJECT *, i32, i32, i32, f32, i32, u16 *);
+    void SetKillPartMom(NUVEC *);
+    void PartImpact_Brick(PART_PC *);
+    NUSPECIALHANDLE *CharScene_FindHSpecial(WORLDINFO *, i32);
+    void Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *, GAMEOBJECT *, i32, i32, f32);
+    void KillParts_TIEFIGHTER(ADDPART_PC *, i32, i32, GAMEOBJECT *, i32, u16, u16, NUVEC *);
+    void KillParts_ATAT(ADDPART_PC *, i32, i32, GAMEOBJECT *);
+    void KillParts_SpeederBike(ADDPART_PC *, i32, i32, GAMEOBJECT *);
+    void TiePart_Kill(PART_PC *, i32);
+    void TiePart_KillExplode(PART_PC *, i32);
+    void TiePart_Impact(PART_PC *);
+    void TiePart_Move(PART_PC *, f32);
+    void TieSpinZPart_Move(PART_PC *, f32);
+    void AtatPart_Stop(PART_PC *);
+    void AtatPart_Update(PART_PC *);
+    void SpeederPart_Kill(PART_PC *, i32);
+    void SpeederPart_Update(PART_PC *);
+    i32 SpeederPart_Draw(PART_PC *);
+    void AddVariableShotDebrisEffectTimed3(i32, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *);
+    void AddVariableShotDebrisEffectTimed1(i32, NUVEC *, i32, f32, i16, i16, NUMTX *);
+    i32 KillGameObject(GAMEOBJECT *, i32, i32);
     extern i16 id_BOBAFETT;
     extern i16 id_MINIDROIDEKA;
     extern LEVELDATA_PC *SARLACCPITA_LDATA;
@@ -12458,28 +12452,26 @@ void __cdecl PCStereoUnknownToken(void);
     extern f32 POWERUPYPOS2;
     extern f32 CHEAT_POWERUPTIME;
     extern f32 PowerUp_PanelPosMul[2];
-    i32 __cdecl ObjIsTargetSpeeder(GAMEOBJECT *object);
-    void __cdecl PlayHurtSfx(GAMEOBJECT *object);
-    void __cdecl EndForce(GAMEOBJECT *object, i32 mode);
-    void __cdecl ReleaseForce(GAMEOBJECT *object, i32 mode);
-    extern void(__cdecl *ExtraHurtSfxFn)(GAMEOBJECT *object);
+    i32 ObjIsTargetSpeeder(GAMEOBJECT *object);
+    void PlayHurtSfx(GAMEOBJECT *object);
+    void EndForce(GAMEOBJECT *object, i32 mode);
+    void ReleaseForce(GAMEOBJECT *object, i32 mode);
+    extern void (*ExtraHurtSfxFn)(GAMEOBJECT *object);
 
-    void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *position, NUVEC *direction,
-                            f32 unused, i32 player_index, f32 speed, f32 lifetime, GAMEOBJECT *owner, i32 random_types,
-                            i32 panel);
-    void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 add_offset, i32 flags,
-                                        GAMEOBJECT *object);
-    void __cdecl AddCoinsAsParts(i32 coins, NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
-    void __cdecl AddHeartAsPart(GAMEOBJECT *owner, NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
-    void __cdecl AddTorpedoAsPart(NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
-    void __cdecl PowerUp_AddPart(NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
+    void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *position, NUVEC *direction, f32 unused,
+                    i32 player_index, f32 speed, f32 lifetime, GAMEOBJECT *owner, i32 random_types, i32 panel);
+    void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 add_offset, i32 flags, GAMEOBJECT *object);
+    void AddCoinsAsParts(i32 coins, NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
+    void AddHeartAsPart(GAMEOBJECT *owner, NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
+    void AddTorpedoAsPart(NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
+    void PowerUp_AddPart(NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
 
     extern f32 DrawCoinTotalTime;
     extern f32 PANEL_COINSCALE_START;
     extern i16 GizBuilditGDeb[6];
-    void __cdecl EndScoreMessage(GAME_MESSAGE_PC *);
-    void __cdecl GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *);
-    void __cdecl NewBuzzFrames(void *, i32, i32);
+    void EndScoreMessage(GAME_MESSAGE_PC *);
+    void GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *);
+    void NewBuzzFrames(void *, i32, i32);
     extern f32 AreaPickupGravity;
     extern f32 AreaPickupScale;
     extern f32 PartExtraCoinRate_PC;
@@ -12494,46 +12486,46 @@ void __cdecl PCStereoUnknownToken(void);
     extern const char PickupCoinSfx_PC[11];
     extern const char CoinDropSilverSfx_PC[10];
     extern const char CoinDropGoldSfx_PC[10];
-    void __cdecl AddTorpedoAsPart(NUVEC *, NUVEC *, f32, f32);
-    void __cdecl AddHeartAsPart(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32);
-    void __cdecl PowerUp_AddPart(NUVEC *, NUVEC *, f32, f32);
-    void __cdecl AddCoinsAsParts(i32, NUVEC *, NUVEC *, f32, f32);
-    i32 __cdecl PartDraw_Torp(PART_PC *);
-    void __cdecl AddVariableShotDebrisEffectTimed3(i32, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *);
-    void __cdecl AddVariableShotDebrisEffectTimed1(i32, NUVEC *, i32, f32, i16, i16, NUMTX *);
-    i32 __cdecl KillPlayer(GAMEOBJECT *, i32, i32, NUVEC *);
-    void __cdecl Arcade_PlayerKilled(i32, i32);
-    void __cdecl ChatterSfx(GAMEOBJECT *, i32, f32);
+    void AddTorpedoAsPart(NUVEC *, NUVEC *, f32, f32);
+    void AddHeartAsPart(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32);
+    void PowerUp_AddPart(NUVEC *, NUVEC *, f32, f32);
+    void AddCoinsAsParts(i32, NUVEC *, NUVEC *, f32, f32);
+    i32 PartDraw_Torp(PART_PC *);
+    void AddVariableShotDebrisEffectTimed3(i32, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *);
+    void AddVariableShotDebrisEffectTimed1(i32, NUVEC *, i32, f32, i16, i16, NUMTX *);
+    i32 KillPlayer(GAMEOBJECT *, i32, i32, NUVEC *);
+    void Arcade_PlayerKilled(i32, i32);
+    void ChatterSfx(GAMEOBJECT *, i32, f32);
     extern const char PickupMultiplierFormat[4];
     extern const char PowerUpLoopSfx_PC[18];
 #define PickupCoinName PickupCoinSfx_PC         // NOLINT(readability-identifier-naming)
 #define PickupCoinBName PickupTypeLiteral758c5c // NOLINT(readability-identifier-naming)
 
-    void __cdecl IncreaseScore(u32 *score, u64 amount, i32 apply_multiplier);
-    void __cdecl SetBonusWinner(i32 player_index);
-    MENU *__cdecl NewMenu(i32 menu_id, i32 remember, i32 argument);
-    void __cdecl Arcade_CoinCollected(i32 player_index, u32 *coins, u32 amount);
-    void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_scores, i32 argument);
-    i32 __cdecl NuSPrintf(char *buffer, const char *format, ...);
-    void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player_index, f32 scale, GAMEOBJECT *object, i32 mode);
-    void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message);
-    i32 __cdecl CoinsGoToMainTotal(void);
-    void __cdecl GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *message);
-    i32 __cdecl LoseCoins(GAMEOBJECT *object, i32 cause);
-    void __cdecl PreResetCode(GAMEOBJECT *object);
-    f32 __cdecl GetHoverPosY(GAMEOBJECT *object);
-    void __cdecl AddWaterSplash(GAMEOBJECT *object, NUVEC *position);
-    void __cdecl BigJumpCode(GAMEOBJECT *object);
-    void __cdecl StartEndOfJump(GAMEOBJECT *object);
-    void __cdecl NewBuzzFrames(void *pad, i32 frames, i32 ignored);
-    void __cdecl FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end);
-    void __cdecl PlayLandSfx(GAMEOBJECT *object, i32 variant, i32 ignored);
-    i32 __cdecl rtlDynamicEnable(i32 id, i32 enabled);
-    NULNKHDR *__cdecl NuLstGetByIdx(NULSTHDR *list, i32 index);
-    i32 __cdecl Arcade_BothPlayersActive(void);
-    i32 __cdecl Player_HasInvincibility(GAMEOBJECT *);
-    i32 __cdecl Player_HasFastBuild(GAMEOBJECT *);
-    void __cdecl AlertSurroundingCreatures(GAMEOBJECT *, NUVEC *);
+    void IncreaseScore(u32 *score, u64 amount, i32 apply_multiplier);
+    void SetBonusWinner(i32 player_index);
+    MENU *NewMenu(i32 menu_id, i32 remember, i32 argument);
+    void Arcade_CoinCollected(i32 player_index, u32 *coins, u32 amount);
+    void Arcade_AwardPoint(i32 player_index, i32 reset_scores, i32 argument);
+    i32 NuSPrintf(char *buffer, const char *format, ...);
+    void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player_index, f32 scale, GAMEOBJECT *object, i32 mode);
+    void EndScoreMessage(GAME_MESSAGE_PC *message);
+    i32 CoinsGoToMainTotal(void);
+    void GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *message);
+    i32 LoseCoins(GAMEOBJECT *object, i32 cause);
+    void PreResetCode(GAMEOBJECT *object);
+    f32 GetHoverPosY(GAMEOBJECT *object);
+    void AddWaterSplash(GAMEOBJECT *object, NUVEC *position);
+    void BigJumpCode(GAMEOBJECT *object);
+    void StartEndOfJump(GAMEOBJECT *object);
+    void NewBuzzFrames(void *pad, i32 frames, i32 ignored);
+    void FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end);
+    void PlayLandSfx(GAMEOBJECT *object, i32 variant, i32 ignored);
+    i32 rtlDynamicEnable(i32 id, i32 enabled);
+    NULNKHDR *NuLstGetByIdx(NULSTHDR *list, i32 index);
+    i32 Arcade_BothPlayersActive(void);
+    i32 Player_HasInvincibility(GAMEOBJECT *);
+    i32 Player_HasFastBuild(GAMEOBJECT *);
+    void AlertSurroundingCreatures(GAMEOBJECT *, NUVEC *);
     extern f32 alert_time;
     extern NUVEC alert_pos;
     extern char ScorePanelName[9];
@@ -12553,7 +12545,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern i32 cointotal_i_obj[2];
     extern i32 TerrainLastChatterSfxPc;
     extern ADD_GAME_MESSAGE_PC AddGameMsg_Default;
-    extern i32(__cdecl *BigJump_LandActionFn)(GAMEOBJECT *);
+    extern i32 (*BigJump_LandActionFn)(GAMEOBJECT *);
     extern f32 COINMSGTIME;
     extern i32 PCArcadeUnpairedIconModel;
     extern i16 BigJumpLandFallbackPc;
@@ -12580,8 +12572,8 @@ void __cdecl PCStereoUnknownToken(void);
     extern f32 DoubleScoreTime;
     extern i32 LookAtBoth;
     extern u32 SuperStoryScore;
-    extern void(__cdecl *BigJump_EndOfLandFn)(GAMEOBJECT *);
-    extern i32(__cdecl *FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
+    extern void (*BigJump_EndOfLandFn)(GAMEOBJECT *);
+    extern i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
     extern i32 LEGO_AIPATHCNX_BLOCKAGE;
     extern i32 LEGO_AIPATHCNX_WALLSHUFFLE;
     extern i32 LEGO_AIPATHCNX_FULLTERRAIN;
@@ -12592,41 +12584,41 @@ void __cdecl PCStereoUnknownToken(void);
 
     extern GAME_MESSAGE_PC GameMessage[128];
     extern i32 GameMessageIndex;
-    GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message);
-    void __cdecl ResetGameMessages(void);
+    GAME_MESSAGE_PC *AddGameMsg(ADD_GAME_MESSAGE_PC *message);
+    void ResetGameMessages(void);
 
-    void __cdecl NewScan(NUVEC *position, i32 terrain_mask, i32 scan_platforms);
-    void __cdecl ScanTerrainHandel(i32 terrain_mask, i16 *handle);
-    void __cdecl ScanTerrainPlatform(i32 group_index, i32 terrain_mask);
-    i32 __cdecl HitTerrPoly(TERRAIN_POLYGON_INFO_PC *surface, i32 group_index);
-    i32 __cdecl NuOcclusionManagerIsEnabled(void);
-    i32 __cdecl ReleaseHearts(void);
-    void __cdecl MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale);
-    i32 __cdecl UnderWater(GAMEOBJECT *object);
-    i32 __cdecl IntersectWater(GAMEOBJECT *object);
-    void __cdecl Surface_Deflect(NUVEC *normal, NUVEC *movement, NUVEC *result, i32 mode);
-    GAMEOBJECT *__cdecl CharPlatform_FindObjFromPlatID(void *system, i32 platform_id);
-    void __cdecl TerrainSetImpactData(void *records, i32 *count, i32 max_records);
-    void __cdecl TerrainSetPlatConnectTol(f32 tolerance);
+    void NewScan(NUVEC *position, i32 terrain_mask, i32 scan_platforms);
+    void ScanTerrainHandel(i32 terrain_mask, i16 *handle);
+    void ScanTerrainPlatform(i32 group_index, i32 terrain_mask);
+    i32 HitTerrPoly(TERRAIN_POLYGON_INFO_PC *surface, i32 group_index);
+    i32 NuOcclusionManagerIsEnabled(void);
+    i32 ReleaseHearts(void);
+    void MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale);
+    i32 UnderWater(GAMEOBJECT *object);
+    i32 IntersectWater(GAMEOBJECT *object);
+    void Surface_Deflect(NUVEC *normal, NUVEC *movement, NUVEC *result, i32 mode);
+    GAMEOBJECT *CharPlatform_FindObjFromPlatID(void *system, i32 platform_id);
+    void TerrainSetImpactData(void *records, i32 *count, i32 max_records);
+    void TerrainSetPlatConnectTol(f32 tolerance);
     extern f32 TerrainPlayerOtherMovementScalePc;
     extern f32 TerrainPlayerBikeMovementScalePc;
     extern f32 TerrainPlayerPlatConnectTolerancePc;
     extern i32 TerrainPlayerShadowFixPc;
     extern i32 MAXBLOWUPRANDSPANG;
-    extern void(__cdecl *GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
+    extern void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
     extern i32 TerrPlatDis;
     extern i32 PCPortalsEnabled;
     extern f32 AreaPickupGravity;
     extern f32 AreaPickupScale;
 
-    int __cdecl NuMain(int argc, char **argv);
-    void __cdecl NuCommandLine(i32 *__restrict argc, char ***__restrict argv);
-    NUDATHDR *__cdecl NuDatSet(NUDATHDR *header);
-    NUDATHDR *__cdecl NuDatGet(void);
-    i32 __cdecl NuDatFileFindHash(NUDATHDR *header, char *name);
-    i32 __cdecl NuDatFileFindTree(NUDATHDR *header, char *name);
-    i32 __cdecl NuFileExistQuiet(char *filepath);
-    i32 __cdecl NuFileExists(char *filepath);
+    int NuMain(int argc, char **argv);
+    void NuCommandLine(i32 *__restrict argc, char ***__restrict argv);
+    NUDATHDR *NuDatSet(NUDATHDR *header);
+    NUDATHDR *NuDatGet(void);
+    i32 NuDatFileFindHash(NUDATHDR *header, char *name);
+    i32 NuDatFileFindTree(NUDATHDR *header, char *name);
+    i32 NuFileExistQuiet(char *filepath);
+    i32 NuFileExists(char *filepath);
 
     /* NuFileGetInfo result; the AI editor's file browser reads it. */
     typedef struct AI_EDITOR_FILE_INFO_PC {
@@ -12653,12 +12645,12 @@ void __cdecl PCStereoUnknownToken(void);
     STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
     STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
     STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, name) == 0x18);
-    i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info);
-    f32 __cdecl NuFileReadFloat(NUFILE file);
-    i32 __cdecl NuFileReadInt(NUFILE file);
-    i8 __cdecl NuFileReadChar(NUFILE file);
-    u16 __cdecl NuFileReadWChar(NUFILE file);
-    void __cdecl PCByteCopy(void *destination, const void *source, u32 count);
+    i32 NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info);
+    f32 NuFileReadFloat(NUFILE file);
+    i32 NuFileReadInt(NUFILE file);
+    i8 NuFileReadChar(NUFILE file);
+    u16 NuFileReadWChar(NUFILE file);
+    void PCByteCopy(void *destination, const void *source, u32 count);
 
     extern DAT_HANDLES_PC NuDatHandles;
     extern const char EpisodeIDat[14];
@@ -12676,9 +12668,9 @@ void __cdecl PCStereoUnknownToken(void);
 #else
 extern OCCLUSIONMANAGER g_OcclusionManager;
 #endif
-    void __cdecl NuOcclusionManagerInit(u32, VARIPTR *, VARIPTR);
-    void __cdecl NuOcclusionManagerBeginFrame(void);
-    void __cdecl NuFrameBegin(void);
+    void NuOcclusionManagerInit(u32, VARIPTR *, VARIPTR);
+    void NuOcclusionManagerBeginFrame(void);
+    void NuFrameBegin(void);
     extern void *Game_NuPad_Store[2];
     extern void **Game_NuPad;
     extern void *NuTimeBar_SetList[16];
@@ -12713,61 +12705,61 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern i32 PS2_VCNTR_Y;
     extern i32 PS2_VREZ_H;
     extern i64 NuTime_TickBase;
-    void __cdecl NuTimeGetTicksPS(u32 *low, i32 *high);
-    void __cdecl NuTimeGet(NuTime *time);
-    void __cdecl NuTimeSub(NuTime *time, NuTime *a, NuTime *b);
-    void __cdecl NuTimeGetTicksPerSecondPS(u32 *low, u32 *high);
-    f32 __cdecl NuTimeSeconds(NuTime *time);
-    f32 __cdecl NuTimeMilliSeconds(NuTime *time);
-    f32 __cdecl NuTimeMicroSeconds(NuTime *time);
-    f32 __cdecl NuTimeScanlines(NuTime *time);
+    void NuTimeGetTicksPS(u32 *low, i32 *high);
+    void NuTimeGet(NuTime *time);
+    void NuTimeSub(NuTime *time, NuTime *a, NuTime *b);
+    void NuTimeGetTicksPerSecondPS(u32 *low, u32 *high);
+    f32 NuTimeSeconds(NuTime *time);
+    f32 NuTimeMilliSeconds(NuTime *time);
+    f32 NuTimeMicroSeconds(NuTime *time);
+    f32 NuTimeScanlines(NuTime *time);
     extern i64 NuTime_PerformanceFrequency;
     extern const f64 NuTime_LowScale;
     extern const f64 NuScale1000;
     extern const f64 NuTime_MicroScale;
     extern const f64 NuTime_ScanlineScale;
     extern const f64 NuTime_RefreshRate;
-    void __cdecl NuTimeBarSlotReset(i32 set, i32 slot);
-    void __cdecl _NuTimeBarSlotBegin(i32 set, i32 slot, const char *name);
-    i32 __cdecl NuTimeBarCreateSetEx(VARIPTR *buffer, VARIPTR end, i32 *colours);
-    i32 __cdecl NuTimeBarCreateSetEx2(VARIPTR *buffer, VARIPTR end, i32 colour);
-    i32 __cdecl NuTimeBarCreateSet(i32 *colours);
-    void __cdecl NuTimeBarDestroySet(i32 set);
-    u32 __cdecl _NuTimeBarSlotEnd(i32 set, i32 slot);
-    void __cdecl NuTimeBarSlotSet(i32 set, i32 slot, i32 value);
-    void __cdecl NuTimeBarSlotSetName(i32 set, i32 slot, const char *name);
-    void __cdecl NuTimeBarSlotSetEx(i32 set, i32 slot, i32 value, const char *name);
-    i32 __cdecl NuTimeBarSlotLastValueMicroseconds(i32 set, i32 slot);
-    i32 __cdecl NuTimeBarSlotLastValue(i32 set, i32 slot);
-    void __cdecl NuTimeBarResetPeaks(void);
-    void __cdecl NuTimeBarEnable(i32 enabled);
-    void __cdecl NuTimeBarIndicateGpuFrameOut(i32 enabled);
-    void __cdecl NuTimeBarInitEx(VARIPTR *buffer, VARIPTR end);
-    void __cdecl NuTimeBarInit(void);
-    i32 __cdecl NuVideoGetMode(void);
-    void __cdecl NuVideoSetMode(i32 mode);
-    void __cdecl NuVideoSetResolution(i32 width, i32 height);
-    i32 __cdecl NuVideoGetAspect(void);
-    i32 __cdecl NuVideoGetSwapMode(void);
-    i32 __cdecl NuVideoSetSwapMode(i32 mode);
-    void __cdecl NuVideoSetSwapModePS(i32 mode);
+    void NuTimeBarSlotReset(i32 set, i32 slot);
+    void _NuTimeBarSlotBegin(i32 set, i32 slot, const char *name);
+    i32 NuTimeBarCreateSetEx(VARIPTR *buffer, VARIPTR end, i32 *colours);
+    i32 NuTimeBarCreateSetEx2(VARIPTR *buffer, VARIPTR end, i32 colour);
+    i32 NuTimeBarCreateSet(i32 *colours);
+    void NuTimeBarDestroySet(i32 set);
+    u32 _NuTimeBarSlotEnd(i32 set, i32 slot);
+    void NuTimeBarSlotSet(i32 set, i32 slot, i32 value);
+    void NuTimeBarSlotSetName(i32 set, i32 slot, const char *name);
+    void NuTimeBarSlotSetEx(i32 set, i32 slot, i32 value, const char *name);
+    i32 NuTimeBarSlotLastValueMicroseconds(i32 set, i32 slot);
+    i32 NuTimeBarSlotLastValue(i32 set, i32 slot);
+    void NuTimeBarResetPeaks(void);
+    void NuTimeBarEnable(i32 enabled);
+    void NuTimeBarIndicateGpuFrameOut(i32 enabled);
+    void NuTimeBarInitEx(VARIPTR *buffer, VARIPTR end);
+    void NuTimeBarInit(void);
+    i32 NuVideoGetMode(void);
+    void NuVideoSetMode(i32 mode);
+    void NuVideoSetResolution(i32 width, i32 height);
+    i32 NuVideoGetAspect(void);
+    i32 NuVideoGetSwapMode(void);
+    i32 NuVideoSetSwapMode(i32 mode);
+    void NuVideoSetSwapModePS(i32 mode);
     extern f32 NuVideoFrameRate;
-    void __cdecl NuVideoRollingFrameRateReset(void);
-    void __cdecl NuVideoSetBrightnessPS(void);
-    void __cdecl NuVideoSetBrightness(f32 brightness);
-    i32 __cdecl NuLanguageGet(void);
-    void __cdecl NuLanguageSet(i32 language);
-    i32 __cdecl NuRegionGet(void);
-    void __cdecl NuRegionSet(i32 region);
-    void __cdecl NuMtxMulVU0(NUMTX *result, NUMTX *left, NUMTX *right);
-    void __cdecl NuMtxSetIdentity(NUMTX *matrix);
+    void NuVideoRollingFrameRateReset(void);
+    void NuVideoSetBrightnessPS(void);
+    void NuVideoSetBrightness(f32 brightness);
+    i32 NuLanguageGet(void);
+    void NuLanguageSet(i32 language);
+    i32 NuRegionGet(void);
+    void NuRegionSet(i32 region);
+    void NuMtxMulVU0(NUMTX *result, NUMTX *left, NUMTX *right);
+    void NuMtxSetIdentity(NUMTX *matrix);
     extern NUMTX NuMtxSetIdentityTemplate;
-    void __cdecl NuUnicodeToUTF8(u8 *output, u16 *input);
-    void __cdecl NuUTF8ToUnicode(u16 *output, u8 *input);
-    void __cdecl NuAsciiToUnicode(u16 *output, char *input);
-    i32 __cdecl NuIsAlNum(char character);
-    i32 __cdecl NuSpecialCompare(NUSPECIALHANDLE *left, NUSPECIALHANDLE *right);
-    void __cdecl NuSpecialClear(NUSPECIALHANDLE *special);
+    void NuUnicodeToUTF8(u8 *output, u16 *input);
+    void NuUTF8ToUnicode(u16 *output, u8 *input);
+    void NuAsciiToUnicode(u16 *output, char *input);
+    i32 NuIsAlNum(char character);
+    i32 NuSpecialCompare(NUSPECIALHANDLE *left, NUSPECIALHANDLE *right);
+    void NuSpecialClear(NUSPECIALHANDLE *special);
     extern VUFNT *QFont2DButtons;
     extern VUFNT *system_qfont;
     extern f32 nuqfnt_space_width;
@@ -12785,18 +12777,18 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern f32 qfnt_offscale_y;
     extern f32 qfnt_rezscale_w;
     extern f32 qfnt_rezscale_h;
-    void __cdecl NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z);
-    void __cdecl NuQFntPrintU(VUFNT *font, char *text);
-    void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags);
-    void __cdecl NuQFntPrintEx(VUFNT *font, i32 x, i32 y, i32 alignment, const char *format, ...);
-    i32 __cdecl NuQFntSetCoordinateSystem(i32 mode);
-    void __cdecl NuQFntPushCoordinateSystem(i32 mode);
-    void __cdecl NuQFntPopCoordinateSystem(void);
-    i32 __cdecl NuQFntGetCoordinateSystem(void);
-    void __cdecl NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix);
-    void __cdecl NuQFntSetRS(void *stream, VUFNT *font);
-    void __cdecl NuQFntSetScaleRS(void *stream, VUFNT *font, f32 x_scale, f32 y_scale);
-    void __cdecl NuQFntSetColourRS(void *stream, VUFNT *font, u32 colour);
+    void NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z);
+    void NuQFntPrintU(VUFNT *font, char *text);
+    void NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags);
+    void NuQFntPrintEx(VUFNT *font, i32 x, i32 y, i32 alignment, const char *format, ...);
+    i32 NuQFntSetCoordinateSystem(i32 mode);
+    void NuQFntPushCoordinateSystem(i32 mode);
+    void NuQFntPopCoordinateSystem(void);
+    i32 NuQFntGetCoordinateSystem(void);
+    void NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix);
+    void NuQFntSetRS(void *stream, VUFNT *font);
+    void NuQFntSetScaleRS(void *stream, VUFNT *font, f32 x_scale, f32 y_scale);
+    void NuQFntSetColourRS(void *stream, VUFNT *font, u32 colour);
     extern const f64 NuQFntHalfScale;
     extern NUTEXDIM_PC **NuTextureDimensions;
     extern i32 NuPrimVertexCount;
@@ -12813,160 +12805,159 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern const f32 NuPrimPS2YScale;
     extern const f32 NuPrimTwo;
     extern const f32 NuPrimMinusTwo;
-    void __cdecl NuPrimSetCoordinateSystem(i32 scale_mode);
-    void __cdecl NuPrim2DEnd(void);
-    void __cdecl NuPrim3DEnd(void);
-    void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material);
-    void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material, NUMTX *matrix);
-    VARIPTR *__cdecl NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target);
-    void __cdecl NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material);
-    void *__cdecl DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state);
-    void *__cdecl DisplayListBuildKonstPacket(NUGLOBALRNDRSTATE_PC *state);
-    void *__cdecl DisplayListBuildReflectionPacket(NUGLOBALRNDRSTATE_PC *state);
-    void *__cdecl DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state);
-    void *__cdecl DisplayListBuildVertexGroupPacket(NUGLOBALRNDRSTATE_PC *);
-    void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *state);
-    void __cdecl RndrStateCopyGlobalState(NUGLOBALRNDRSTATE_PC *state);
-    void __cdecl RndrStateResetGlobalState(NUGLOBALRNDRSTATE_PC *state);
-    void __cdecl RndrStateResetSharedGlobalState(void);
-    void __cdecl RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint,
-                                            NUMTL *material);
-    void __cdecl RndrStateSetReflection(i32 reflection);
-    i32 __cdecl NuRndrSetAmbientLightPS(const NUVEC *colour);
-    void __cdecl NuPrim2DAddXYZ(f32 x, f32 y, f32 z);
+    void NuPrimSetCoordinateSystem(i32 scale_mode);
+    void NuPrim2DEnd(void);
+    void NuPrim3DEnd(void);
+    void NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material);
+    void NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material, NUMTX *matrix);
+    VARIPTR *NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target);
+    void NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material);
+    void *DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state);
+    void *DisplayListBuildKonstPacket(NUGLOBALRNDRSTATE_PC *state);
+    void *DisplayListBuildReflectionPacket(NUGLOBALRNDRSTATE_PC *state);
+    void *DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state);
+    void *DisplayListBuildVertexGroupPacket(NUGLOBALRNDRSTATE_PC *);
+    void DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *state);
+    void RndrStateCopyGlobalState(NUGLOBALRNDRSTATE_PC *state);
+    void RndrStateResetGlobalState(NUGLOBALRNDRSTATE_PC *state);
+    void RndrStateResetSharedGlobalState(void);
+    void RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint, NUMTL *material);
+    void RndrStateSetReflection(i32 reflection);
+    i32 NuRndrSetAmbientLightPS(const NUVEC *colour);
+    void NuPrim2DAddXYZ(f32 x, f32 y, f32 z);
     extern NUFPAR_PC NuFParRecords[4];
     extern char NuFParBuffers[4][0x1000];
-    void __cdecl NuFParInit(i32 max_count, i32 buffer_size);
-    NUFPAR_PC *__cdecl NuFParOpen(NUFILE file_handle);
-    NUFPAR_PC *__cdecl NuFParCreate(char *file_name);
-    NUFPAR_PC *__cdecl NuFParCreateMem(char *file_name, char *buffer, i32 size);
-    NUFPAR_PC *__cdecl NuFParCreateGivenFH(char *file_name, NUFILE file_handle);
-    void __cdecl NuFParDestroy(NUFPAR_PC *parser);
-    i32 __cdecl NuFParGetLine(NUFPAR_PC *parser);
-    i32 __cdecl NuFParGetWord(NUFPAR_PC *parser);
-    void __cdecl NuFParUnGetWord(NUFPAR_PC *parser);
-    i32 __cdecl NuFParGetInt(NUFPAR_PC *parser);
-    f32 __cdecl NuFParGetFloat(NUFPAR_PC *parser);
-    f32 __cdecl NuFParGetFloatRDP(NUFPAR_PC *parser);
-    f32 __cdecl NuRDPFVar(char *input, NURDPGETVARFN get_variable);
-    f32 __cdecl NuRDPF(char *input);
-    i32 __cdecl GetLineW(u16 *buffer, NUFILE file);
-    i32 __cdecl NuRDPIVar(char *input, NURDPGETVARFN get_variable);
-    i32 __cdecl NuRDPI(char *input);
-    i32 __cdecl NuFParGetIntRDP(NUFPAR_PC *parser);
-    void __cdecl NuFParGetOptionalFloat(NUFPAR_PC *parser, f32 *value);
-    void __cdecl NuFParGetOptionalInt(NUFPAR_PC *parser, i32 *value);
-    f32 __cdecl NuAToF(char *text);
-    i32 __cdecl NuAToI(char *text);
-    void __cdecl NuUnicodeToAscii(char *out, u16 *text);
-    i32 __cdecl NuFParPushCom2(NUFPAR_PC *parser, NUFPCOMJMP *primary, NUFPCOMJMP *secondary);
-    i32 __cdecl NuFParPushCom(NUFPAR_PC *parser, NUFPCOMJMP *commands);
-    i32 __cdecl NuFParPushComCTX(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands);
-    i32 __cdecl NuFParPushComCTX2(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands, NUFPCOMJMPCTX *commands2);
-    void __cdecl NuFParPopCom(NUFPAR_PC *parser);
-    NUFPCOMFN __cdecl NuFParSetInterpreterErrorHandler(NUFPCOMFN handler);
-    i32 __cdecl NuFParInterpretWord(NUFPAR_PC *parser);
-    i32 __cdecl NuFParInterpretWordCTX(NUFPAR_PC *parser, void *context);
+    void NuFParInit(i32 max_count, i32 buffer_size);
+    NUFPAR_PC *NuFParOpen(NUFILE file_handle);
+    NUFPAR_PC *NuFParCreate(char *file_name);
+    NUFPAR_PC *NuFParCreateMem(char *file_name, char *buffer, i32 size);
+    NUFPAR_PC *NuFParCreateGivenFH(char *file_name, NUFILE file_handle);
+    void NuFParDestroy(NUFPAR_PC *parser);
+    i32 NuFParGetLine(NUFPAR_PC *parser);
+    i32 NuFParGetWord(NUFPAR_PC *parser);
+    void NuFParUnGetWord(NUFPAR_PC *parser);
+    i32 NuFParGetInt(NUFPAR_PC *parser);
+    f32 NuFParGetFloat(NUFPAR_PC *parser);
+    f32 NuFParGetFloatRDP(NUFPAR_PC *parser);
+    f32 NuRDPFVar(char *input, NURDPGETVARFN get_variable);
+    f32 NuRDPF(char *input);
+    i32 GetLineW(u16 *buffer, NUFILE file);
+    i32 NuRDPIVar(char *input, NURDPGETVARFN get_variable);
+    i32 NuRDPI(char *input);
+    i32 NuFParGetIntRDP(NUFPAR_PC *parser);
+    void NuFParGetOptionalFloat(NUFPAR_PC *parser, f32 *value);
+    void NuFParGetOptionalInt(NUFPAR_PC *parser, i32 *value);
+    f32 NuAToF(char *text);
+    i32 NuAToI(char *text);
+    void NuUnicodeToAscii(char *out, u16 *text);
+    i32 NuFParPushCom2(NUFPAR_PC *parser, NUFPCOMJMP *primary, NUFPCOMJMP *secondary);
+    i32 NuFParPushCom(NUFPAR_PC *parser, NUFPCOMJMP *commands);
+    i32 NuFParPushComCTX(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands);
+    i32 NuFParPushComCTX2(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands, NUFPCOMJMPCTX *commands2);
+    void NuFParPopCom(NUFPAR_PC *parser);
+    NUFPCOMFN NuFParSetInterpreterErrorHandler(NUFPCOMFN handler);
+    i32 NuFParInterpretWord(NUFPAR_PC *parser);
+    i32 NuFParInterpretWordCTX(NUFPAR_PC *parser, void *context);
     extern const char LevelBeforeLoadName[16];
     extern const char LevelAfterLoadName[15];
-    void __cdecl LC_BL_mipmapmode(NUFPAR_PC *parser);
-    void __cdecl LC_BL_fix_strobing_anims(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_ter_groups(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_ter_platforms(NUFPAR_PC *parser);
-    void __cdecl LC_AL_backr(NUFPAR_PC *parser);
-    void __cdecl LC_AL_backg(NUFPAR_PC *parser);
-    void __cdecl LC_AL_backb(NUFPAR_PC *parser);
-    void __cdecl LC_AL_backr_top(NUFPAR_PC *parser);
-    void __cdecl LC_AL_backg_top(NUFPAR_PC *parser);
-    void __cdecl LC_AL_backb_top(NUFPAR_PC *parser);
-    void __cdecl LC_AL_backr_bottom(NUFPAR_PC *parser);
-    void __cdecl LC_AL_backg_bottom(NUFPAR_PC *parser);
-    void __cdecl LC_AL_backb_bottom(NUFPAR_PC *parser);
-    void __cdecl LC_AL_farclip_hack(NUFPAR_PC *parser);
-    void __cdecl LC_AL_farclip(NUFPAR_PC *parser);
-    void __cdecl LC_AL_nearclip(NUFPAR_PC *parser);
-    void __cdecl LC_AL_hover_height(NUFPAR_PC *parser);
-    void __cdecl LC_AL_blobshadow_alpha(NUFPAR_PC *parser);
-    void __cdecl LC_AL_blobshadow_fadenear(NUFPAR_PC *parser);
-    void __cdecl LC_AL_blobshadow_fadefar(NUFPAR_PC *parser);
-    void __cdecl LC_AL_reflect_range(NUFPAR_PC *parser);
-    void __cdecl LC_AL_reflect_y(NUFPAR_PC *parser);
-    void __cdecl LC_AL_metal(NUFPAR_PC *parser);
-    void __cdecl LC_AL_in_space(NUFPAR_PC *parser);
-    void __cdecl LC_AL_override_nopickupgravity(NUFPAR_PC *parser);
-    void __cdecl LC_AL_hidden_icons(NUFPAR_PC *parser);
-    void __cdecl LC_AL_pickups_to_panel(NUFPAR_PC *parser);
-    void __cdecl LC_AL_forget_takeovers(NUFPAR_PC *parser);
-    void __cdecl LC_AL_narrow_socks(NUFPAR_PC *parser);
-    void __cdecl LC_AL_camera_rain(NUFPAR_PC *parser);
-    void __cdecl LC_AL_terrain_rain(NUFPAR_PC *parser);
-    void __cdecl LC_AL_double_score(NUFPAR_PC *parser);
-    void __cdecl LC_AL_flat_terrain(NUFPAR_PC *parser);
-    void __cdecl LC_AL_cam_tilt(NUFPAR_PC *parser);
-    void __cdecl LC_AL_raycaststep(NUFPAR_PC *parser);
-    void __cdecl LC_AL_plat_scan_dist(NUFPAR_PC *parser);
-    void __cdecl LC_AL_waterripple_startcol_r(NUFPAR_PC *parser);
-    void __cdecl LC_AL_waterripple_startcol_g(NUFPAR_PC *parser);
-    void __cdecl LC_AL_waterripple_startcol_b(NUFPAR_PC *parser);
-    void __cdecl LC_AL_waterripple_startcol_a(NUFPAR_PC *parser);
-    void __cdecl LC_AL_waterripple_endcol_r(NUFPAR_PC *parser);
-    void __cdecl LC_AL_waterripple_endcol_g(NUFPAR_PC *parser);
-    void __cdecl LC_AL_waterripple_endcol_b(NUFPAR_PC *parser);
-    void __cdecl LC_AL_waterripple_endcol_a(NUFPAR_PC *parser);
-    void __cdecl LC_AL_waterripple_life(NUFPAR_PC *parser);
-    void __cdecl LC_AL_cam_pullback_dist(NUFPAR_PC *parser);
-    void __cdecl LC_AL_cam_lateral_dist(NUFPAR_PC *parser);
-    void __cdecl LC_AL_campos_seek(NUFPAR_PC *parser);
-    void __cdecl LC_AL_camang_seek(NUFPAR_PC *parser);
-    void __cdecl LC_AL_shadowtype(NUFPAR_PC *parser);
-    void __cdecl LC_AL_music(NUFPAR_PC *parser);
-    void __cdecl LC_AL_music_other(NUFPAR_PC *parser);
-    void __cdecl LC_AL_sfx_ambient(NUFPAR_PC *parser);
-    void __cdecl LC_AL_conveyor(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_tightropes(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_signals(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_levers(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_technos(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_zipups(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_grapples(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_obstacles(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_obstacle_objects(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_turrets(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_buildits(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_buildit_objects(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_spinneranim_objs(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_climb_objects(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_shards(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_spinners(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_minicuts(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_minicutParts(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_gizmoblowuptypes(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_gizmoblowups(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_pushblocks(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_pushblock_endpos(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_attractos(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_timers(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_guidelines(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_ledges(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_securitydoors(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_tubes(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_pickups(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_gameantinodes(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_gizpanels(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_hatmachines(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_force(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_force_objects(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_bombgen_objects(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_bombgens(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_gizspecials(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_doors(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_teleports(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_gizrandoms(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_torpmachines(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_bridges(NUFPAR_PC *parser);
-    void __cdecl LC_BL_max_plugs(NUFPAR_PC *parser);
-    void __cdecl LC_BL_wind_speed(NUFPAR_PC *parser);
-    void __cdecl LC_BL_wind_size(NUFPAR_PC *parser);
+    void LC_BL_mipmapmode(NUFPAR_PC *parser);
+    void LC_BL_fix_strobing_anims(NUFPAR_PC *parser);
+    void LC_BL_max_ter_groups(NUFPAR_PC *parser);
+    void LC_BL_max_ter_platforms(NUFPAR_PC *parser);
+    void LC_AL_backr(NUFPAR_PC *parser);
+    void LC_AL_backg(NUFPAR_PC *parser);
+    void LC_AL_backb(NUFPAR_PC *parser);
+    void LC_AL_backr_top(NUFPAR_PC *parser);
+    void LC_AL_backg_top(NUFPAR_PC *parser);
+    void LC_AL_backb_top(NUFPAR_PC *parser);
+    void LC_AL_backr_bottom(NUFPAR_PC *parser);
+    void LC_AL_backg_bottom(NUFPAR_PC *parser);
+    void LC_AL_backb_bottom(NUFPAR_PC *parser);
+    void LC_AL_farclip_hack(NUFPAR_PC *parser);
+    void LC_AL_farclip(NUFPAR_PC *parser);
+    void LC_AL_nearclip(NUFPAR_PC *parser);
+    void LC_AL_hover_height(NUFPAR_PC *parser);
+    void LC_AL_blobshadow_alpha(NUFPAR_PC *parser);
+    void LC_AL_blobshadow_fadenear(NUFPAR_PC *parser);
+    void LC_AL_blobshadow_fadefar(NUFPAR_PC *parser);
+    void LC_AL_reflect_range(NUFPAR_PC *parser);
+    void LC_AL_reflect_y(NUFPAR_PC *parser);
+    void LC_AL_metal(NUFPAR_PC *parser);
+    void LC_AL_in_space(NUFPAR_PC *parser);
+    void LC_AL_override_nopickupgravity(NUFPAR_PC *parser);
+    void LC_AL_hidden_icons(NUFPAR_PC *parser);
+    void LC_AL_pickups_to_panel(NUFPAR_PC *parser);
+    void LC_AL_forget_takeovers(NUFPAR_PC *parser);
+    void LC_AL_narrow_socks(NUFPAR_PC *parser);
+    void LC_AL_camera_rain(NUFPAR_PC *parser);
+    void LC_AL_terrain_rain(NUFPAR_PC *parser);
+    void LC_AL_double_score(NUFPAR_PC *parser);
+    void LC_AL_flat_terrain(NUFPAR_PC *parser);
+    void LC_AL_cam_tilt(NUFPAR_PC *parser);
+    void LC_AL_raycaststep(NUFPAR_PC *parser);
+    void LC_AL_plat_scan_dist(NUFPAR_PC *parser);
+    void LC_AL_waterripple_startcol_r(NUFPAR_PC *parser);
+    void LC_AL_waterripple_startcol_g(NUFPAR_PC *parser);
+    void LC_AL_waterripple_startcol_b(NUFPAR_PC *parser);
+    void LC_AL_waterripple_startcol_a(NUFPAR_PC *parser);
+    void LC_AL_waterripple_endcol_r(NUFPAR_PC *parser);
+    void LC_AL_waterripple_endcol_g(NUFPAR_PC *parser);
+    void LC_AL_waterripple_endcol_b(NUFPAR_PC *parser);
+    void LC_AL_waterripple_endcol_a(NUFPAR_PC *parser);
+    void LC_AL_waterripple_life(NUFPAR_PC *parser);
+    void LC_AL_cam_pullback_dist(NUFPAR_PC *parser);
+    void LC_AL_cam_lateral_dist(NUFPAR_PC *parser);
+    void LC_AL_campos_seek(NUFPAR_PC *parser);
+    void LC_AL_camang_seek(NUFPAR_PC *parser);
+    void LC_AL_shadowtype(NUFPAR_PC *parser);
+    void LC_AL_music(NUFPAR_PC *parser);
+    void LC_AL_music_other(NUFPAR_PC *parser);
+    void LC_AL_sfx_ambient(NUFPAR_PC *parser);
+    void LC_AL_conveyor(NUFPAR_PC *parser);
+    void LC_BL_max_tightropes(NUFPAR_PC *parser);
+    void LC_BL_max_signals(NUFPAR_PC *parser);
+    void LC_BL_max_levers(NUFPAR_PC *parser);
+    void LC_BL_max_technos(NUFPAR_PC *parser);
+    void LC_BL_max_zipups(NUFPAR_PC *parser);
+    void LC_BL_max_grapples(NUFPAR_PC *parser);
+    void LC_BL_max_obstacles(NUFPAR_PC *parser);
+    void LC_BL_max_obstacle_objects(NUFPAR_PC *parser);
+    void LC_BL_max_turrets(NUFPAR_PC *parser);
+    void LC_BL_max_buildits(NUFPAR_PC *parser);
+    void LC_BL_max_buildit_objects(NUFPAR_PC *parser);
+    void LC_BL_max_spinneranim_objs(NUFPAR_PC *parser);
+    void LC_BL_max_climb_objects(NUFPAR_PC *parser);
+    void LC_BL_max_shards(NUFPAR_PC *parser);
+    void LC_BL_max_spinners(NUFPAR_PC *parser);
+    void LC_BL_max_minicuts(NUFPAR_PC *parser);
+    void LC_BL_max_minicutParts(NUFPAR_PC *parser);
+    void LC_BL_max_gizmoblowuptypes(NUFPAR_PC *parser);
+    void LC_BL_max_gizmoblowups(NUFPAR_PC *parser);
+    void LC_BL_max_pushblocks(NUFPAR_PC *parser);
+    void LC_BL_max_pushblock_endpos(NUFPAR_PC *parser);
+    void LC_BL_max_attractos(NUFPAR_PC *parser);
+    void LC_BL_max_timers(NUFPAR_PC *parser);
+    void LC_BL_max_guidelines(NUFPAR_PC *parser);
+    void LC_BL_max_ledges(NUFPAR_PC *parser);
+    void LC_BL_max_securitydoors(NUFPAR_PC *parser);
+    void LC_BL_max_tubes(NUFPAR_PC *parser);
+    void LC_BL_max_pickups(NUFPAR_PC *parser);
+    void LC_BL_max_gameantinodes(NUFPAR_PC *parser);
+    void LC_BL_max_gizpanels(NUFPAR_PC *parser);
+    void LC_BL_max_hatmachines(NUFPAR_PC *parser);
+    void LC_BL_max_force(NUFPAR_PC *parser);
+    void LC_BL_max_force_objects(NUFPAR_PC *parser);
+    void LC_BL_max_bombgen_objects(NUFPAR_PC *parser);
+    void LC_BL_max_bombgens(NUFPAR_PC *parser);
+    void LC_BL_max_gizspecials(NUFPAR_PC *parser);
+    void LC_BL_max_doors(NUFPAR_PC *parser);
+    void LC_BL_max_teleports(NUFPAR_PC *parser);
+    void LC_BL_max_gizrandoms(NUFPAR_PC *parser);
+    void LC_BL_max_torpmachines(NUFPAR_PC *parser);
+    void LC_BL_max_bridges(NUFPAR_PC *parser);
+    void LC_BL_max_plugs(NUFPAR_PC *parser);
+    void LC_BL_wind_speed(NUFPAR_PC *parser);
+    void LC_BL_wind_size(NUFPAR_PC *parser);
     extern const char LevelConfigGameKeyword_windsize[9];
     extern const char LevelConfigGameKeyword_windspeed[10];
     extern const char LevelConfigGameKeyword_max_bombgens[13];
@@ -13016,27 +13007,27 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern NUFPCOMJMP LevelConfig_AfterLoad_GenericKeywords[53];
     extern NUFPCOMJMP *Level_ConfigBeforeLoad_GameKeywords;
     extern NUFPCOMJMP *Level_ConfigAfterLoad_GameKeywords;
-    extern void(__cdecl *fnInterpreterError)(NUFPAR_PC *parser);
-    void __cdecl NuFParGetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position);
-    void __cdecl NuFParSetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position);
-    void __cdecl NuFParSuspend(NUFPAR_PC *parser);
-    void __cdecl NuFParResume(NUFPAR_PC *parser);
-    void __cdecl NuFreeFPar(NUFPAR_PC *parser);
-    u16 __cdecl UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode);
-    u16 __cdecl NuQFntEncodeUnicodeChar(VUFNT *font, u16 character);
-    void __cdecl NuQFntEncodeUnicodeString(VUFNT *font, u16 *text);
-    void __cdecl NuQFntUTF8toQCode(VUFNT *font, char *text, u16 *encoded);
-    f32 __cdecl NuQFntPrintLenW(VUFNT *font, u16 *text);
-    f32 __cdecl NuQFntPrintLenU(VUFNT *font, char *text);
-    f32 __cdecl NuQFntHeight(VUFNT *font);
-    f32 __cdecl NuQFntBaseline(VUFNT *font);
-    void __cdecl NuQFntSetJustifiedTolerances(f32 squash, f32 stretch);
-    f32 __cdecl NuFloor(f32 value);
-    f32 __cdecl NuFsign(f32 value);
+    extern void (*fnInterpreterError)(NUFPAR_PC *parser);
+    void NuFParGetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position);
+    void NuFParSetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position);
+    void NuFParSuspend(NUFPAR_PC *parser);
+    void NuFParResume(NUFPAR_PC *parser);
+    void NuFreeFPar(NUFPAR_PC *parser);
+    u16 UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode);
+    u16 NuQFntEncodeUnicodeChar(VUFNT *font, u16 character);
+    void NuQFntEncodeUnicodeString(VUFNT *font, u16 *text);
+    void NuQFntUTF8toQCode(VUFNT *font, char *text, u16 *encoded);
+    f32 NuQFntPrintLenW(VUFNT *font, u16 *text);
+    f32 NuQFntPrintLenU(VUFNT *font, char *text);
+    f32 NuQFntHeight(VUFNT *font);
+    f32 NuQFntBaseline(VUFNT *font);
+    void NuQFntSetJustifiedTolerances(f32 squash, f32 stretch);
+    f32 NuFloor(f32 value);
+    f32 NuFsign(f32 value);
     extern const f32 nu_fsign_minus_one;
-    void __cdecl InitOnce(i32 argc, char **argv);
-    i32 __cdecl StartupParseArgument(i32 count, char **arguments);
-    void __cdecl StartupOpenDats(const char **names, i32 count, VARIPTR *arena);
+    void InitOnce(i32 argc, char **argv);
+    i32 StartupParseArgument(i32 count, char **arguments);
+    void StartupOpenDats(const char **names, i32 count, VARIPTR *arena);
     extern NUDATHDR *StartupDatList[7];
     extern i32 StartupDatCount;
     extern const char *StartupDatNames[7];
@@ -13083,16 +13074,16 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern f32 opts_sfx_wait;
     extern i32 opts_sfx_i;
     extern LEVELDATA_PC *TITLES_LDATA;
-    void __cdecl MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
-                                  void (*draw_save_slots_info_fn)(f32, f32, i32, i32), i32 is_fade_enabled,
-                                  i32 is_shadow_enabled);
-    void __cdecl MenuInitialise(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
-                                void (*draw_save_slots_fn)(MENU *, f32), i32 is_fade_enabled, i32 is_shadow_enabled);
-    void __cdecl MenuReset(void);
-    void __cdecl MenuEnterNewGame(MENU *menu);
-    void __cdecl MenuDrawNewGame(MENU *menu);
-    void __cdecl MenuUpdateNewGame(MENU *menu);
-    void __cdecl MenuPcStringsInit(void);
+    void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
+                          void (*draw_save_slots_info_fn)(f32, f32, i32, i32), i32 is_fade_enabled,
+                          i32 is_shadow_enabled);
+    void MenuInitialise(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
+                        void (*draw_save_slots_fn)(MENU *, f32), i32 is_fade_enabled, i32 is_shadow_enabled);
+    void MenuReset(void);
+    void MenuEnterNewGame(MENU *menu);
+    void MenuDrawNewGame(MENU *menu);
+    void MenuUpdateNewGame(MENU *menu);
+    void MenuPcStringsInit(void);
     extern MENU_PC_STRING_ENTRY MenuPcStringTable827800[40];
     extern MENU_PC_STRING_ENTRY MenuPcStringTable827940[40];
     extern MENU_PC_STRING_ENTRY MenuPcStringTable827a80[40];
@@ -13106,34 +13097,34 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern i16 TextIdPc8808fc;
     extern i16 TextIdPc880850;
     extern i16 TextIdPc880bc4;
-    void __cdecl MenuEnterOptions(MENU *menu);
-    void __cdecl MenuUpdateOptions(MENU *menu);
-    void __cdecl MenuDrawOptions(MENU *menu);
-    void __cdecl MenuExitOptions(MENU *menu);
-    void __cdecl RestoreOptions(void);
-    f32 __cdecl GameGetMusicVolume(OPTIONSSAVE *options);
-    f32 __cdecl GameSetMusicVolume(OPTIONSSAVE *options);
-    f32 __cdecl GameSetSoundVolume(OPTIONSSAVE *options);
-    void __cdecl SfxCheckMusicOnOff(OPTIONSSAVE *options);
+    void MenuEnterOptions(MENU *menu);
+    void MenuUpdateOptions(MENU *menu);
+    void MenuDrawOptions(MENU *menu);
+    void MenuExitOptions(MENU *menu);
+    void RestoreOptions(void);
+    f32 GameGetMusicVolume(OPTIONSSAVE *options);
+    f32 GameSetMusicVolume(OPTIONSSAVE *options);
+    f32 GameSetSoundVolume(OPTIONSSAVE *options);
+    void SfxCheckMusicOnOff(OPTIONSSAVE *options);
     extern f32 MASTERVOLUME;
     extern f32 AUDIOFADELEVEL;
-    void __cdecl SetSoundVolume(f32 volume);
-    f32 __cdecl GetSoundVolume(void);
-    void __cdecl MenuEnterTitles(MENU *menu);
-    void __cdecl MenuDrawTitles(MENU *menu);
-    void __cdecl MenuUpdateTitles(MENU *menu);
-    i32 __cdecl GetParentMenuID(void);
+    void SetSoundVolume(f32 volume);
+    f32 GetSoundVolume(void);
+    void MenuEnterTitles(MENU *menu);
+    void MenuDrawTitles(MENU *menu);
+    void MenuUpdateTitles(MENU *menu);
+    i32 GetParentMenuID(void);
     extern i32 MenuLoadOccurred;
     extern i32 startnewgame_initiated;
     extern i32 startnewgame;
     extern i32 saveload_autosave;
-    void __cdecl PcRegisterSaveFolderPc(const char *company, const char *product, const char *parameter, i32 personal);
-    void __cdecl saveloadInit(VARIPTR *buffer, VARIPTR end, i32 size, const char *product, const char *icon,
-                              const char *title, i32 flags);
+    void PcRegisterSaveFolderPc(const char *company, const char *product, const char *parameter, i32 personal);
+    void saveloadInit(VARIPTR *buffer, VARIPTR end, i32 size, const char *product, const char *icon, const char *title,
+                      i32 flags);
     extern char SaveProductCodePc[12];
     extern const char *SaveIconNamePc;
     extern char SaveUnicodeNamePc[20];
-    void __cdecl MenuSetPlatformState(i32 state);
+    void MenuSetPlatformState(i32 state);
     extern i32 BGLOAD;
     extern i32 PermDataLoaded;
     extern i32 LOADEROFF;
@@ -13146,30 +13137,30 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern TIMER GlobalTimer;
     extern i32 saveload_status;
     extern NUGSCN *save_icon_scene;
-    i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut);
-    CUTINFO *__cdecl CutScene_Find(CUTSYS_PC *system, char *name);
-    CUTINFO *__cdecl NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i32 unused_4);
+    i32 CutScene_StartFn_LSW(CUTINFO *cut);
+    CUTINFO *CutScene_Find(CUTSYS_PC *system, char *name);
+    CUTINFO *NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i32 unused_4);
     extern CUTINFO *NewCutInfo[8];
     extern i32 NewCutInfoCount;
-    void __cdecl CutScene_PreUpdateFn_LSW(CUTINFO *cut);
-    void __cdecl CutScene_PostUpdateFn_LSW(void);
-    void __cdecl CutScene_StoppedFn_LSW(CUTINFO *cut);
-    i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character);
-    i32 __cdecl InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
-    i32 __cdecl Bolt_HitPlatFn_LSW(BOLT *bolt);
-    i32 __cdecl Bolt_HitCustomFn_LSW(void *bolt, void *points);
-    void __cdecl GameBlowUpBlownUpFn_LSW(void *blowup);
-    void __cdecl GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle);
-    extern i32(__cdecl *CutScene_StartFn)(CUTINFO *cut);
-    extern void(__cdecl *CutScene_PreUpdateFn)(CUTINFO *cut);
-    extern void(__cdecl *CutScene_PostUpdateFn)(void);
-    extern void(__cdecl *CutScene_StoppedFn)(CUTINFO *cut);
-    extern i32(__cdecl *CutScene_ReplaceCharacterModelFn)(CUTINFO *cut, CUTSCENECHARACTER *character);
-    extern i32(__cdecl *InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
-    extern i32(__cdecl *Bolt_HitPlatFn)(BOLT *bolt);
-    extern i32(__cdecl *Bolt_HitCustomFn)(void *bolt, void *points);
-    extern void(__cdecl *GameBlowUpBlownUpFn)(void *blowup);
-    extern void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
+    void CutScene_PreUpdateFn_LSW(CUTINFO *cut);
+    void CutScene_PostUpdateFn_LSW(void);
+    void CutScene_StoppedFn_LSW(CUTINFO *cut);
+    i32 CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character);
+    i32 InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
+    i32 Bolt_HitPlatFn_LSW(BOLT *bolt);
+    i32 Bolt_HitCustomFn_LSW(void *bolt, void *points);
+    void GameBlowUpBlownUpFn_LSW(void *blowup);
+    void GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle);
+    extern i32 (*CutScene_StartFn)(CUTINFO *cut);
+    extern void (*CutScene_PreUpdateFn)(CUTINFO *cut);
+    extern void (*CutScene_PostUpdateFn)(void);
+    extern void (*CutScene_StoppedFn)(CUTINFO *cut);
+    extern i32 (*CutScene_ReplaceCharacterModelFn)(CUTINFO *cut, CUTSCENECHARACTER *character);
+    extern i32 (*InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
+    extern i32 (*Bolt_HitPlatFn)(BOLT *bolt);
+    extern i32 (*Bolt_HitCustomFn)(void *bolt, void *points);
+    extern void (*GameBlowUpBlownUpFn)(void *blowup);
+    extern void (*GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
     extern AREA_DATA_PC *PODRACE_ADATA;
     extern AREA_DATA_PC *GUNSHIP_ADATA;
     extern AREA_DATA_PC *DOGFIGHT_ADATA;
@@ -13181,11 +13172,11 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern const char LevelSplinesStartName[6];
     extern const char LevelSplinesStartCamName[10];
     extern LEVEL_PROGRESS *LevelProgressData;
-    i32 __cdecl EffectOffProgress_Update(LEVEL_PROGRESS *progress, char *name, i32 enabled);
-    void __cdecl EffectOffProgress_Reset(LEVEL_PROGRESS *progress);
+    i32 EffectOffProgress_Update(LEVEL_PROGRESS *progress, char *name, i32 enabled);
+    void EffectOffProgress_Reset(LEVEL_PROGRESS *progress);
     extern LEVELSPLINE_PC LevelSplinesTable[26];
-    void __cdecl LevelProgress_ReserveBufferSpace(VARIPTR *buffer, VARIPTR buffer_end);
-    void __cdecl LevelSplines_InitForGame(LEVELSPLINE_PC *table);
+    void LevelProgress_ReserveBufferSpace(VARIPTR *buffer, VARIPTR buffer_end);
+    void LevelSplines_InitForGame(LEVELSPLINE_PC *table);
     extern LEVELDATA_PC *KAMINOE_LDATA;
     extern void *game_cutscenes_cutscene;
     extern void *game_cutscenes_podrace_pod_explode;
@@ -13202,7 +13193,7 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern LEVELDATA_PC *SPEEDERCHASEA_LDATA;
     extern LEVELDATA_PC *DEATHSTARBATTLED_LDATA;
     extern i16 id_SPEEDERBIKE;
-    i32 __cdecl KaminoE_CheckPlatHit(BOLT *bolt);
+    i32 KaminoE_CheckPlatHit(BOLT *bolt);
     extern i16 id_ANAKINSPOD;
     extern i16 id_ANAKINSPODGREEN;
     extern i16 id_ANAKINSNEWPOD;
@@ -13219,33 +13210,31 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern void *game_cutscenes_podsprint_sebulba;
     extern void *game_cutscenes_dogfight_die;
     extern LEVELDATA_PC *PODSPRINTA_LDATA;
-    i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character);
+    i32 CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character);
     extern LEVELDATA_PC *PODRACEB_LDATA;
     extern LEVELDATA_PC *BONUS_GUNSHIPA_LDATA;
     extern u16 podrace_die_angle_a;
     extern u16 podrace_die_angle_b;
     extern u16 podrace_die_angle_c;
-    void __cdecl instNuGCutSceneSetMtx(INSTNUGCUTSCENE *inst, NUMTX *mtx);
-    f32 *__cdecl PCCutLocatorAni3(CUT_LOCATOR_ANIMATION_PC *, NUMTX *, f32);
-    void __cdecl PCCutRigidAni3(CUT_RIGID_ANIMATION_PC *, f32, NUMTX *);
-    void __cdecl PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *,
-                                    i32 *);
-    i32 __cdecl PCCutAni3CurveInteger(ANI3_HEADER_PC *, f32 *, i32);
-    f32 *__cdecl NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *, f32, NUMTX *, NUANIM_TIME2_PC *);
-    void __cdecl NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *, f32, NUMTX *);
-    void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *,
-                                       i32 *);
+    void instNuGCutSceneSetMtx(INSTNUGCUTSCENE *inst, NUMTX *mtx);
+    f32 *PCCutLocatorAni3(CUT_LOCATOR_ANIMATION_PC *, NUMTX *, f32);
+    void PCCutRigidAni3(CUT_RIGID_ANIMATION_PC *, f32, NUMTX *);
+    void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *);
+    i32 PCCutAni3CurveInteger(ANI3_HEADER_PC *, f32 *, i32);
+    f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *, f32, NUMTX *, NUANIM_TIME2_PC *);
+    void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *, f32, NUMTX *);
+    void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *);
     extern NULSTHDR *bgproc_procinfo_pool;
     extern volatile u32 nu_current_thread_id;
-    extern void(__cdecl *NuThreadDisableThreadSwap)(void);
-    extern void(__cdecl *NuThreadEnableThreadSwap)(void);
-    NULNKHDR *__cdecl NuLstAllocTail(NULSTHDR *list);
-    void __cdecl NuLstFree(NULNKHDR *node);
-    NULNKHDR *__cdecl NuLstGetNext(NULSTHDR *list, NULNKHDR *node);
-    void __cdecl bgProcDataOversize(i32 size);
-    NULSTHDR *__cdecl NuLstCreate(i32 element_count, i32 element_size);
+    extern void (*NuThreadDisableThreadSwap)(void);
+    extern void (*NuThreadEnableThreadSwap)(void);
+    NULNKHDR *NuLstAllocTail(NULSTHDR *list);
+    void NuLstFree(NULNKHDR *node);
+    NULNKHDR *NuLstGetNext(NULSTHDR *list, NULNKHDR *node);
+    void bgProcDataOversize(i32 size);
+    NULSTHDR *NuLstCreate(i32 element_count, i32 element_size);
     extern const char NuLstCreateTag[52];
-    BGPROCINFO *__cdecl bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32 data_size);
+    BGPROCINFO *bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32 data_size);
     extern const char GetSfxSwPPadName[7];
     extern LEVELDATA_PC *DOGFIGHTA_LDATA;
     extern void *OldLevelHackData;
@@ -13264,10 +13253,10 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern i32 nused_sort_pris;
     extern NUSORTPRI *sort_list;
     extern i32 render_scene_index;
-    void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state);
-    void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 end_unused, i32 count);
-    void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2);
-    void __cdecl NuDisplayListBeginFrame(void);
+    void NuDisplayListResetStateCache(NURNDRLIBSTATE *state);
+    void NuDisplayListStreamAlloc(VARIPTR *cursor, i32 end_unused, i32 count);
+    void NuDisplayListInit(VARIPTR *cursor, i32 arg2);
+    void NuDisplayListBeginFrame(void);
     extern u32 nuprim_field_ba8;
     extern i32 nudlist_alloc_count;
     extern u32 nudlist_alloc_base;
@@ -13283,30 +13272,30 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern u32 nudlist_field_1598;
     extern NUDISPLAYLISTITEM nudlist_2d_static;
     extern VARIPTR nudlist_stream_cursor;
-    void __cdecl NuRndrEndScene(void);
-    i32 __cdecl NuDisplayListAddRenderScene(void);
-    void __cdecl NuVpGetPosition2(f32 *x, f32 *y);
+    void NuRndrEndScene(void);
+    i32 NuDisplayListAddRenderScene(void);
+    void NuVpGetPosition2(f32 *x, f32 *y);
     extern i32 sceneParametersCount;
-    i32 __cdecl NuRndrBeginScene(i32 begin_flags);
-    void __cdecl NuRndrFx(i32 paused, void *context);
-    void __cdecl NuLgtLaserDraw(i32 paused);
-    void __cdecl NuLgtArcLaserDraw(i32 paused);
+    i32 NuRndrBeginScene(i32 begin_flags);
+    void NuRndrFx(i32 paused, void *context);
+    void NuLgtLaserDraw(i32 paused);
+    void NuLgtArcLaserDraw(i32 paused);
     extern f32 NuRndrFxHeightOverridePc;
     extern f32 NuRndrFxHeightPc;
     extern f32 NuRndrFxPreviousHeightPc;
     extern u32 NuRndrFxColourPc;
-    void __cdecl NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha);
-    void __cdecl NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha);
+    void NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha);
+    void NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha);
     extern f32 DEFAULTFRAMETIME;
     extern i32 PAL;
-    void __cdecl SetBackgroundMusic(i32 track);
-    void __cdecl LoadPerm(void);
-    void __cdecl GameAISysSetGame(void);
-    void __cdecl GameAISysInit(void);
+    void SetBackgroundMusic(i32 track);
+    void LoadPerm(void);
+    void GameAISysSetGame(void);
+    void GameAISysInit(void);
     extern PART_EMIT_PC part_emits[40];
     extern i32 part_page_on[8];
     extern GAMEPAD_INIT_RECORD GamePadStorage[64];
-    void __cdecl GamePads_Init(void);
+    void GamePads_Init(void);
     extern i32 bgproc_initialized;
     extern CRITICAL_SECTION bgproc_critical_section;
     extern HANDLE bgproc_work_event;
@@ -13318,22 +13307,22 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern i32 bgproc_freeze;
     extern const char bgproc_resume_event_name[9];
     extern const char bgproc_work_event_name[11];
-    void __cdecl bgProcInit(void);
-    void __cdecl bgprocFreeze(void);
-    void __cdecl bgprocUnFreeze(void);
-    i32 __cdecl bgprocIsFrozen(void);
-    i32 __cdecl bgprocIsFreezing(void);
-    i32 __cdecl bgProcIsBgThread(void);
-    void __cdecl APITransparentInit(void);
-    void __cdecl InitShadowLights(void);
-    void __cdecl NuKeyboardRead(void);
-    f32 __cdecl NuFrameEnd(void);
-    i32 __cdecl NuHasError(void);
-    void __cdecl NuClearError(void);
+    void bgProcInit(void);
+    void bgprocFreeze(void);
+    void bgprocUnFreeze(void);
+    i32 bgprocIsFrozen(void);
+    i32 bgprocIsFreezing(void);
+    i32 bgProcIsBgThread(void);
+    void APITransparentInit(void);
+    void InitShadowLights(void);
+    void NuKeyboardRead(void);
+    f32 NuFrameEnd(void);
+    i32 NuHasError(void);
+    void NuClearError(void);
     extern i32 ShowingError;
     extern i32 bHaveErr;
-    void __cdecl NuSevereWarning(const char *format, ...);
-    void __cdecl PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...);
+    void NuSevereWarning(const char *format, ...);
+    void PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...);
     extern PC_NATIVE_DEBUG_STATE_PC PCNativeWarningDebugState;
     extern char PCNativeDebugFormatBuffer[];
     extern char PCNativeDebugOutputBuffer[];
@@ -13341,10 +13330,10 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern char PCWarningFormatBuffer[];
     extern char PCWarningOutputBuffer[];
     extern char PCWarningMessages[];
-    extern void(__cdecl *PCWarningHandler)(char *);
+    extern void (*PCWarningHandler)(char *);
     extern const char PCWarningSuffix[];
-    void __cdecl Levels_FixUp(struct level_fixup_pc_s *levels);
-    void __cdecl EmperorFightA_Init(WORLDINFO *world);
+    void Levels_FixUp(struct level_fixup_pc_s *levels);
+    void EmperorFightA_Init(WORLDINFO *world);
     extern i16 LEGOACT_SUPERCARRY_WALK;
     extern const f64 PlayerSlideSpeedPc;
     extern const f64 PlayerTightRopePhasePc;
@@ -13361,7 +13350,7 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern const f32 PlayerBuildItNegativeLimitPc;
     extern i32 LEGOCONTEXT_PUSHSPINNER;
     extern i32 PlayerPushSpinnerDegreesPc;
-    extern i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *);
+    extern i32 (*CanMagnetClimbFn)(GAMEOBJECT *);
     extern struct specialmove_pc_s *SpecialMove;
     extern const char EpisodeVI_ShowHearts[11];
     extern const char EpisodeVI_ElectricFloor[14];
@@ -13417,8 +13406,8 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[256];
     extern u32 CRC16TablePC[256];
     extern u32 ShaderProgramHashPC[2];
-    PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32);
-    void __cdecl PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT_PC *, PC_TEXTURE_RESOURCE_PC **);
+    PC_TEXTURE_RESOURCE_PC *NuGetVertexDeclaration(u32);
+    void PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT_PC *, PC_TEXTURE_RESOURCE_PC **);
     typedef struct PC_SHADER_FILTER_DESC_VIEW PC_SHADER_FILTER_DESC_VIEW;
     typedef struct PC_SHADER_FILTER_MATERIAL_VIEW PC_SHADER_FILTER_MATERIAL_VIEW;
     typedef struct PC_SHADER_MATERIAL_FILTER_VIEW PC_SHADER_MATERIAL_FILTER_VIEW;
@@ -13428,17 +13417,16 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
 #else
 typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
 #endif
-    void __cdecl NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end);
-    PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *,
-                                                                      const PC_SHADER_FILTER_MATERIAL_VIEW *);
-    PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *,
-                                                                             const PC_SHADER_FILTER_MATERIAL_VIEW *,
-                                                                             i32);
-    void __cdecl NuShaderObjectKeyGenerate3(u32 *, const PC_SHADER_MATERIAL_FILTER_VIEW *, i32);
-    void __cdecl PCShaderNativeUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
-    void __cdecl NuShaderObjectBaseUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
-    void __cdecl NuShaderObjectUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
-    NUTEXDIM_PC *__cdecl NuTextureGetDimensions(i32);
+    void NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end);
+    PC_SHADER_OBJECT_FULL_VIEW *NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *,
+                                                              const PC_SHADER_FILTER_MATERIAL_VIEW *);
+    PC_SHADER_OBJECT_FULL_VIEW *NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *,
+                                                                     const PC_SHADER_FILTER_MATERIAL_VIEW *, i32);
+    void NuShaderObjectKeyGenerate3(u32 *, const PC_SHADER_MATERIAL_FILTER_VIEW *, i32);
+    void PCShaderNativeUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
+    void NuShaderObjectBaseUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
+    void NuShaderObjectUnInit(PC_SHADER_OBJECT_FULL_VIEW *);
+    NUTEXDIM_PC *NuTextureGetDimensions(i32);
 
     typedef struct PC_SHADER_PARAMETER_LOCAL_PC PC_SHADER_PARAMETER_LOCAL_PC;
 
@@ -13564,25 +13552,24 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(offsetof(D3DX_BUFFER_METHODS_PC, get_buffer_pointer) == 12);
     STATIC_ASSERT(offsetof(D3DX_CONSTANT_TABLE_METHODS_PC, get_constant_description) == 24);
     STATIC_ASSERT(offsetof(D3DX_CONSTANT_TABLE_METHODS_PC, get_constant_by_name) == 36);
-    void __cdecl NuShaderObjectBaseInit(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32);
-    void __cdecl NuShaderObjectInit(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32, const char *, i32, const char *,
-                                    i32, i32);
-    PC_SHADER_PARAMETER_LOCAL_PC *__cdecl PCShaderAllocateParameter(PC_SHADER_OBJECT_FULL_VIEW *, i32);
-    void __cdecl PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *, ID3DXConstantTable *, ID3DXConstantTable *);
-    void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32, const char *, i32,
-                                          const char *, i32, i32);
-    HRESULT __cdecl PCDeviceCreateVertexShader(const DWORD *, PC_TEXTURE_RESOURCE_PC **);
-    HRESULT __cdecl PCDeviceCreatePixelShader(const DWORD *, PC_TEXTURE_RESOURCE_PC **);
+    void NuShaderObjectBaseInit(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32);
+    void NuShaderObjectInit(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32, const char *, i32, const char *, i32, i32);
+    PC_SHADER_PARAMETER_LOCAL_PC *PCShaderAllocateParameter(PC_SHADER_OBJECT_FULL_VIEW *, i32);
+    void PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *, ID3DXConstantTable *, ID3DXConstantTable *);
+    void PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32, const char *, i32, const char *, i32,
+                                  i32);
+    HRESULT PCDeviceCreateVertexShader(const DWORD *, PC_TEXTURE_RESOURCE_PC **);
+    HRESULT PCDeviceCreatePixelShader(const DWORD *, PC_TEXTURE_RESOURCE_PC **);
 
-    void __cdecl NewRumble(void *, f32, i32);
-    void __cdecl NewBuzz(void *, f32, i32);
-    void __cdecl NuSound3AddRumble(void *, f32, i32, f32, f32);
-    i32 __cdecl Glide_SetTargetMom(GAMEOBJECT *);
-    i32 __cdecl Hang_SetTargetMom(GAMEOBJECT *);
-    i32 __cdecl LedgeTerrain_SetTargetMom(GAMEOBJECT *);
-    void __cdecl Grapple_SetRotOrder(GAMEOBJECT *);
-    void __cdecl SeekVec(NUVEC *, NUVEC *, NUVEC *, f32);
-    void __cdecl NuMtlUpdatePS(NUMTL *);
+    void NewRumble(void *, f32, i32);
+    void NewBuzz(void *, f32, i32);
+    void NuSound3AddRumble(void *, f32, i32, f32, f32);
+    i32 Glide_SetTargetMom(GAMEOBJECT *);
+    i32 Hang_SetTargetMom(GAMEOBJECT *);
+    i32 LedgeTerrain_SetTargetMom(GAMEOBJECT *);
+    void Grapple_SetRotOrder(GAMEOBJECT *);
+    void SeekVec(NUVEC *, NUVEC *, NUVEC *, f32);
+    void NuMtlUpdatePS(NUMTL *);
 
     typedef struct NATIVE_PARTICLE_PACKET_PC {
         u8 vertex_buffer_index;
@@ -13628,41 +13615,41 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(sizeof(API_EXTRA_ACTION_PC) == 8);
     STATIC_ASSERT(offsetof(API_EXTRA_ACTION_PC, action) == 4);
     extern API_EXTRA_ACTION_PC PlayerExtraActionInfoPc[33];
-    void __cdecl SetActionInfo(API_ACTION_INFO_PC *, API_EXTRA_ACTION_PC *);
+    void SetActionInfo(API_ACTION_INFO_PC *, API_EXTRA_ACTION_PC *);
     extern API_ACTION_INFO_PC PlayerActionInfoListPc[234];
     extern void *PlayerBlockActionInfoPc;
 
     extern i32 PlayerGrappleSwingModePc;
     extern const char PlayerGrappleWindSoundPc[11];
 
-    void __cdecl NuMtlUpdate(NUMTL *);
-    NUDISPLAY_LIST_PC *__cdecl NuDisplaySceneClone(NUDISPLAY_LIST_PC *, VARIPTR *);
-    void __cdecl NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *, NUDISPLAY_LIST_PC *, VARIPTR *);
+    void NuMtlUpdate(NUMTL *);
+    NUDISPLAY_LIST_PC *NuDisplaySceneClone(NUDISPLAY_LIST_PC *, VARIPTR *);
+    void NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *, NUDISPLAY_LIST_PC *, VARIPTR *);
 
-    void __cdecl PCDeviceLockVertexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE_PC *);
-    HRESULT __cdecl PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *);
-    void __cdecl PCCharacterModelDiagnosticNoOp();
-    void __cdecl Player_ResetContexts(void *);
-    void __cdecl SetFlicker(GAMEOBJECT *, f32);
-    i32 __cdecl NewBlockAction(GAMEOBJECT *);
-    i32 __cdecl GameAudio_GetPlrSfxBits(void *);
-    i32 __cdecl Hub_InMenu(void);
-    void __cdecl SetProtocolDroidDeactivatedAction(GAMEOBJECT *);
+    void PCDeviceLockVertexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE_PC *);
+    HRESULT PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *);
+    void PCCharacterModelDiagnosticNoOp();
+    void Player_ResetContexts(void *);
+    void SetFlicker(GAMEOBJECT *, f32);
+    i32 NewBlockAction(GAMEOBJECT *);
+    i32 GameAudio_GetPlrSfxBits(void *);
+    i32 Hub_InMenu(void);
+    void SetProtocolDroidDeactivatedAction(GAMEOBJECT *);
     struct carry_plug_pc_s;
     struct carry_plug_sys_pc_s;
-    void __cdecl QuatInterpolateRotationMatrix(NUMTX *, NUMTX *, NUMTX *, f32);
-    struct carry_plug_pc_s *__cdecl Plug_FindNearest(struct carry_plug_sys_pc_s *, NUVEC *, f32 *, i32);
-    void __cdecl Plug_MakeDrawMtx(struct carry_plug_pc_s *, NUMTX *);
-    void __cdecl SuperCarry_PartImpact(PART_PC *);
-    void __cdecl GizBlowup_Respawn(GIZMOBLOWUP_PC *);
-    i32 __cdecl SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *, NUVEC *, u16, i32);
+    void QuatInterpolateRotationMatrix(NUMTX *, NUMTX *, NUMTX *, f32);
+    struct carry_plug_pc_s *Plug_FindNearest(struct carry_plug_sys_pc_s *, NUVEC *, f32 *, i32);
+    void Plug_MakeDrawMtx(struct carry_plug_pc_s *, NUMTX *);
+    void SuperCarry_PartImpact(PART_PC *);
+    void GizBlowup_Respawn(GIZMOBLOWUP_PC *);
+    i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *, NUVEC *, u16, i32);
     extern f32 SuperCarryImpactSpeedPc;
-    void __cdecl GameCam_Blend(GAMECAMERA *, f32, f32, i32);
-    void __cdecl PlayDieSfx(GAMEOBJECT *);
-    extern void(__cdecl *ExtraDieSfxFn)(GAMEOBJECT *);
-    void __cdecl DebrisDraw(i32, i32);
-    i32 __cdecl NuPortalClipTest(NUGSCN *, NUVEC *, f32, i16);
-    i32 __cdecl clipTestSphere(NUPORTALSPHERE_PC *, NUPORTAL_FRUSTUM_PC *);
+    void GameCam_Blend(GAMECAMERA *, f32, f32, i32);
+    void PlayDieSfx(GAMEOBJECT *);
+    extern void (*ExtraDieSfxFn)(GAMEOBJECT *);
+    void DebrisDraw(i32, i32);
+    i32 NuPortalClipTest(NUGSCN *, NUVEC *, f32, i16);
+    i32 clipTestSphere(NUPORTALSPHERE_PC *, NUPORTAL_FRUSTUM_PC *);
     extern NUPLANE NuPortalCameraPlane;
     extern NUMTL *DebMat[9];
     extern NUMTX xzfacingmtx;
@@ -13674,50 +13661,50 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i32 edbits_editor_state;
     extern const char DebrisTimeBarName[4];
     extern u8 TerrWallTab[4];
-    void __cdecl DerotateMovementVector(void);
-    void __cdecl RotateVec(NUVEC *, NUVEC *);
-    void __cdecl DeRotateTerrain(TERRAIN_POLYGON_INFO_PC *);
+    void DerotateMovementVector(void);
+    void RotateVec(NUVEC *, NUVEC *);
+    void DeRotateTerrain(TERRAIN_POLYGON_INFO_PC *);
     struct TERRAIN_SPATIAL_NODE;
     struct TERRAIN_SET_PC;
-    void __cdecl RotateTerrain(TERRAIN_POLYGON_INFO_PC *);
-    void __cdecl TerrainScanWallSpline(struct TERRAIN_SPATIAL_NODE *);
-    void __cdecl TerrainAddWallSpline(struct TERRAIN_SPATIAL_NODE *, struct TERRAIN_SET_PC *);
-    void __cdecl TerrainRemoveWallSpline(struct TERRAIN_SPATIAL_NODE *, struct TERRAIN_SET_PC *);
-    void __cdecl FullDeflectSize(NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl FullReflectTest(NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl CubeImpact(NUMTX *, NUMTX *, NUVEC *, f32, NUVEC *);
-    void __cdecl TerrainWallSideSlide(NUVEC *, void *, f32, f32, NUANG);
-    void __cdecl TerrainPolyEdge(NUVEC *, NUVEC *);
-    void __cdecl NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE_PC *, NUVEC *);
-    void __cdecl DeRotatePoint(NUVEC *);
-    i16 __cdecl InsideLineF(f32, f32, f32, f32, f32, f32);
-    i16 __cdecl InsidePolLines(f32, f32, f32, f32, f32, f32, f32, f32, f32, NUVEC *);
-    i32 __cdecl CheckCylinder(i32, i32, i32 *, i32);
-    i32 __cdecl CheckSphere(i32);
-    i32 __cdecl CheckSphereTer(NUVEC *, f32);
-    i32 __cdecl HitPoly(f32, f32, f32, f32, TERRAIN_POLYGON_INFO_PC *);
-    void __cdecl NewTerrainScaleYMask(NUVEC *, NUVEC *, u8 *, i32, f32, f32, f32, i32, i32, i32);
-    i32 __cdecl HitWallSpline(void);
+    void RotateTerrain(TERRAIN_POLYGON_INFO_PC *);
+    void TerrainScanWallSpline(struct TERRAIN_SPATIAL_NODE *);
+    void TerrainAddWallSpline(struct TERRAIN_SPATIAL_NODE *, struct TERRAIN_SET_PC *);
+    void TerrainRemoveWallSpline(struct TERRAIN_SPATIAL_NODE *, struct TERRAIN_SET_PC *);
+    void FullDeflectSize(NUVEC *, NUVEC *, NUVEC *);
+    void FullReflectTest(NUVEC *, NUVEC *, NUVEC *);
+    void CubeImpact(NUMTX *, NUMTX *, NUVEC *, f32, NUVEC *);
+    void TerrainWallSideSlide(NUVEC *, void *, f32, f32, NUANG);
+    void TerrainPolyEdge(NUVEC *, NUVEC *);
+    void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE_PC *, NUVEC *);
+    void DeRotatePoint(NUVEC *);
+    i16 InsideLineF(f32, f32, f32, f32, f32, f32);
+    i16 InsidePolLines(f32, f32, f32, f32, f32, f32, f32, f32, f32, NUVEC *);
+    i32 CheckCylinder(i32, i32, i32 *, i32);
+    i32 CheckSphere(i32);
+    i32 CheckSphereTer(NUVEC *, f32);
+    i32 HitPoly(f32, f32, f32, f32, TERRAIN_POLYGON_INFO_PC *);
+    void NewTerrainScaleYMask(NUVEC *, NUVEC *, u8 *, i32, f32, f32, f32, i32, i32, i32);
+    i32 HitWallSpline(void);
     extern i32 TerrPolyObj;
-    i32 __cdecl TerrainPlatformEmbedded(NUVEC *);
-    void __cdecl TerrainImpact(NUVEC *, NUVEC *, u8 *);
-    i32 __cdecl PlatformChecks(i32, NUVEC *);
-    i32 __cdecl HitTerrain(void);
-    TERRAIN_TRACK_SLOT_PC *__cdecl AllocTerrId(void);
-    void __cdecl FullDeflect(NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl FullDeflectSmallY(NUVEC *, NUVEC *, NUVEC *);
-    i32 __cdecl FullDeflectTest(NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl PlatformConnect(char *, NUVEC *, NUVEC *, i32);
-    void __cdecl TerrainSideClamp(NUVEC *, NUVEC *);
-    void __cdecl TerrainImpactNorm(void);
-    void __cdecl StorePlatImpact(void);
-    void __cdecl NewTerrStoreAnyInfo(void);
-    i32 __cdecl TerrShapeSideStep(NUVEC *, NUVEC *, u8 *);
-    void __cdecl TerrainMoveImpactData(void);
-    i32 __cdecl TerrainImpactPlatform(u8 *);
-    i32 __cdecl TerrainPlatformMoveCheck(NUVEC *, NUVEC *, i32, i32, i32);
-    void __cdecl TerrainPlatGetMtx(i32, NUMTX **, NUMTX **);
-    void __cdecl AddCollisionSphere(NUVEC *, f32);
+    i32 TerrainPlatformEmbedded(NUVEC *);
+    void TerrainImpact(NUVEC *, NUVEC *, u8 *);
+    i32 PlatformChecks(i32, NUVEC *);
+    i32 HitTerrain(void);
+    TERRAIN_TRACK_SLOT_PC *AllocTerrId(void);
+    void FullDeflect(NUVEC *, NUVEC *, NUVEC *);
+    void FullDeflectSmallY(NUVEC *, NUVEC *, NUVEC *);
+    i32 FullDeflectTest(NUVEC *, NUVEC *, NUVEC *);
+    void PlatformConnect(char *, NUVEC *, NUVEC *, i32);
+    void TerrainSideClamp(NUVEC *, NUVEC *);
+    void TerrainImpactNorm(void);
+    void StorePlatImpact(void);
+    void NewTerrStoreAnyInfo(void);
+    i32 TerrShapeSideStep(NUVEC *, NUVEC *, u8 *);
+    void TerrainMoveImpactData(void);
+    i32 TerrainImpactPlatform(u8 *);
+    i32 TerrainPlatformMoveCheck(NUVEC *, NUVEC *, i32, i32, i32);
+    void TerrainPlatGetMtx(i32, NUMTX **, NUMTX **);
+    void AddCollisionSphere(NUVEC *, f32);
     extern const f64 TerrainOpposingContactThresholdPc;
     extern f32 TerConTol;
     extern f32 TerrWallDeflectYScale;
@@ -13780,39 +13767,39 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void NuRndrSetDebBox(NUVEC *);
 
     extern NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24];
-    void __cdecl DisplayListLinkDynamicMtls(void);
-    void __cdecl NuDisplayListRecalculateMaterialStartsPC(NUDISPLAY_LIST_PC *);
-    NUDISPLAYLISTITEM *__cdecl NuDisplayListCreateMtlDlist(NUDISPLAYLISTITEM *, NUMTL *, VARIPTR *, VARIPTR);
-    void __cdecl DisplayListSetAlphaPS(NUDISPLAYLISTITEM *, NUDISPLAYLISTITEM *, f32);
-    void __cdecl DisplayListSwapBuffersPS(void);
-    void __cdecl NuDisplayListAddClut(NUDISPLAYLISTITEM *, i32);
-    void __cdecl NuDisplayListAddTexture(NUDISPLAYLISTITEM *, i32);
-    void __cdecl NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *, NUMTL *);
-    void __cdecl NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *, NUMTL *);
-    void __cdecl NuDisplayListAddLightState(NUDISPLAYLISTITEM *, NUMTL *);
-    void __cdecl RndrStateUpdate(NURNDRLIBSTATE *, NUMTL *, NUDISPLAYLISTITEM *);
-    void __cdecl RndrStateUpdateFx(NURNDRLIBSTATE *, NUDISPLAYLISTITEM *);
-    void __cdecl NuDisplayListSwapBuffersEndFrame(void);
-    void __cdecl PushAway(NUVEC *, float, NUVEC *, NUVEC *, GAMEOBJECT *, GAMEOBJECT *, float, u32);
-    i32 __cdecl Pushing(GAMEOBJECT *, u16 *, i32 *, i32 *);
-    i32 __cdecl CanClimbSurface(GAMEOBJECT *, i32);
-    void __cdecl NuSpecialGetBounds(NUSPECIALHANDLE *, NUVEC *, NUVEC *);
-    void __cdecl ForceLightning_Origin(GAMEOBJECT *, NUVEC *, NUVEC *);
-    void __cdecl KillBossCompleteLevel(i32, i32, f32);
-    i32 __cdecl KillBossPlayCutScene(i32, i32, f32, char *);
-    i32 __cdecl KillBoss(i32, i32, f32);
-    GAMEOBJECT *__cdecl BossKilled(i32);
-    void __cdecl UpdateMidPos(GIZMOBLOWUP_PC *);
-    void *__cdecl GameAntinode_RegisterAntiNodeUsingData(void *, NUVEC *, u16, void *, f32, i32);
-    void *__cdecl GameAntinode_RegisterAntiNode(void *, NUVEC *, f32, f32, f32, u16, i32, f32);
-    void __cdecl GameAntinode_FindGridPosition(WORLDINFO *, NUVEC *, f32, f32, u8 *, u8 *, u8 *, u8 *);
-    void __cdecl DebrisTimeSlip(i32);
-    void __cdecl DebrisProcessTimeSlip(void);
-    void __cdecl DebrisFreeOldestDmaDebTypeTable(void);
-    void __cdecl EmperorFightA_Reset(WORLDINFO *);
-    void __cdecl EmperorFightA_Update(WORLDINFO *);
-    void __cdecl SarlaccPitC_Reset(WORLDINFO *);
-    void __cdecl SarlaccPitC_Update(WORLDINFO *);
+    void DisplayListLinkDynamicMtls(void);
+    void NuDisplayListRecalculateMaterialStartsPC(NUDISPLAY_LIST_PC *);
+    NUDISPLAYLISTITEM *NuDisplayListCreateMtlDlist(NUDISPLAYLISTITEM *, NUMTL *, VARIPTR *, VARIPTR);
+    void DisplayListSetAlphaPS(NUDISPLAYLISTITEM *, NUDISPLAYLISTITEM *, f32);
+    void DisplayListSwapBuffersPS(void);
+    void NuDisplayListAddClut(NUDISPLAYLISTITEM *, i32);
+    void NuDisplayListAddTexture(NUDISPLAYLISTITEM *, i32);
+    void NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *, NUMTL *);
+    void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *, NUMTL *);
+    void NuDisplayListAddLightState(NUDISPLAYLISTITEM *, NUMTL *);
+    void RndrStateUpdate(NURNDRLIBSTATE *, NUMTL *, NUDISPLAYLISTITEM *);
+    void RndrStateUpdateFx(NURNDRLIBSTATE *, NUDISPLAYLISTITEM *);
+    void NuDisplayListSwapBuffersEndFrame(void);
+    void PushAway(NUVEC *, float, NUVEC *, NUVEC *, GAMEOBJECT *, GAMEOBJECT *, float, u32);
+    i32 Pushing(GAMEOBJECT *, u16 *, i32 *, i32 *);
+    i32 CanClimbSurface(GAMEOBJECT *, i32);
+    void NuSpecialGetBounds(NUSPECIALHANDLE *, NUVEC *, NUVEC *);
+    void ForceLightning_Origin(GAMEOBJECT *, NUVEC *, NUVEC *);
+    void KillBossCompleteLevel(i32, i32, f32);
+    i32 KillBossPlayCutScene(i32, i32, f32, char *);
+    i32 KillBoss(i32, i32, f32);
+    GAMEOBJECT *BossKilled(i32);
+    void UpdateMidPos(GIZMOBLOWUP_PC *);
+    void *GameAntinode_RegisterAntiNodeUsingData(void *, NUVEC *, u16, void *, f32, i32);
+    void *GameAntinode_RegisterAntiNode(void *, NUVEC *, f32, f32, f32, u16, i32, f32);
+    void GameAntinode_FindGridPosition(WORLDINFO *, NUVEC *, f32, f32, u8 *, u8 *, u8 *, u8 *);
+    void DebrisTimeSlip(i32);
+    void DebrisProcessTimeSlip(void);
+    void DebrisFreeOldestDmaDebTypeTable(void);
+    void EmperorFightA_Reset(WORLDINFO *);
+    void EmperorFightA_Update(WORLDINFO *);
+    void SarlaccPitC_Reset(WORLDINFO *);
+    void SarlaccPitC_Update(WORLDINFO *);
     extern const char EpisodeVI_liftrlightbon1[17];
     extern const char EpisodeVI_liftrlightbon2[17];
     extern const char EpisodeVI_liftrlightbon3[17];
@@ -13835,9 +13822,9 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern const char EpisodeVI_doton12[10];
     extern void *emperorfighta_netpacket;
     extern i32 LevSfxFlag[4];
-    void *__cdecl TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn,
-                                i32 scene_id, u32 max_group_indices, u32 max_groups, u32 max_platforms);
-    void __cdecl TerrainDiagnosticNoOpPC(const void *context, ...);
+    void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn, i32 scene_id,
+                        u32 max_group_indices, u32 max_groups, u32 max_platforms);
+    void TerrainDiagnosticNoOpPC(const void *context, ...);
     extern const char TerrainSourcePathPc[53];
     extern const f32 TerrainUnusedSpatialBlockPc;
     extern const f32 TerrainBoundsMinimumPc;
@@ -13854,55 +13841,55 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i32 TerrShapeAdjCnt;
     extern TERRAIN_POLYGON_INFO_PC *TerrPoly;
     extern u8 TerrWallInfo;
-    void *__cdecl SetLevelHack(i32 size);
+    void *SetLevelHack(i32 size);
     extern f32 LevelHackSendTimer;
-    f32 __cdecl PushingTowardsAngle(u16 push_heading, u16 target_heading);
-    void __cdecl GizPanel_GetAbsTargetPos(void *, NUVEC *, i32);
-    NUVEC *__cdecl Grabber_GetGrabPos(void *, NUMTX *);
-    i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *, u16, float);
-    i32 __cdecl TightRope_SetTargetMom(GAMEOBJECT *);
-    i32 __cdecl Conveyor_AdjustSpeed(NUVEC *);
-    void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *);
-    i32 __cdecl CanStepBack(GAMEOBJECT *);
-    i32 __cdecl StepBackFromTarget(GAMEOBJECT *);
-    void __cdecl GizGetBuildItPlayerPos(GAMEOBJECT *, NUVEC *, NUVEC *);
-    void __cdecl GizBuildItPushAwayFromStart(GAMEOBJECT *, void *);
-    i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *, float);
-    i32 __cdecl SuperCarry_YRotation(GAMEOBJECT *, u16);
-    i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *);
-    void __cdecl SetPushAngle(GAMEOBJECT *);
-    void __cdecl Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target);
-    i32 __cdecl Grapple_SetTargetMom(GAMEOBJECT *object);
-    void __cdecl NuTexAnimAddList(void *list);
+    f32 PushingTowardsAngle(u16 push_heading, u16 target_heading);
+    void GizPanel_GetAbsTargetPos(void *, NUVEC *, i32);
+    NUVEC *Grabber_GetGrabPos(void *, NUMTX *);
+    i32 Slide_SetTargetMom(GAMEOBJECT *, u16, float);
+    i32 TightRope_SetTargetMom(GAMEOBJECT *);
+    i32 Conveyor_AdjustSpeed(NUVEC *);
+    void SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *);
+    i32 CanStepBack(GAMEOBJECT *);
+    i32 StepBackFromTarget(GAMEOBJECT *);
+    void GizGetBuildItPlayerPos(GAMEOBJECT *, NUVEC *, NUVEC *);
+    void GizBuildItPushAwayFromStart(GAMEOBJECT *, void *);
+    i32 SuperCarry_SetTargetMom(GAMEOBJECT *, float);
+    i32 SuperCarry_YRotation(GAMEOBJECT *, u16);
+    i32 SuperCarry_Carrying(GAMEOBJECT *);
+    void SetPushAngle(GAMEOBJECT *);
+    void Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target);
+    i32 Grapple_SetTargetMom(GAMEOBJECT *object);
+    void NuTexAnimAddList(void *list);
     extern const char NuTextureAnimationSlotsWarning[31];
-    i32 __cdecl WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 heading);
-    i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 heading);
-    void __cdecl FinishLoop(i32 frames);
+    i32 WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 heading);
+    i32 Climb_SetTargetMom(GAMEOBJECT *object, u16 heading);
+    void FinishLoop(i32 frames);
     extern i32 finishloop_backdroponly;
-    NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *buf, i32 *size_out, i16 mode);
-    NUDATHDR *__cdecl NuDatOpen(const char *filepath, VARIPTR *buf, i32 *size_out);
-    i64 __cdecl NuDatCalcPos(NUDATHDR *header, i32 offset);
-    i32 __cdecl NuDatFileGetFreeInfo(void);
-    i32 __cdecl NuDatFileGetFreeHandleIX(NUDATHDR *header, i32 info_index);
-    NUFILE __cdecl NuDatFileOpen(NUDATHDR *header, char *filepath, i32 mode);
-    i32 __cdecl NuDatFileRead(NUFILE file, void *buffer, i32 size);
-    i32 __cdecl NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *buffer, i32 capacity);
-    NUFILE __cdecl NuMemFileOpen(void *buffer, i32 buffer_size, i32 mode);
-    void *__cdecl NuMemFileAddr(NUFILE file);
-    i32 __cdecl NuMemFileWrite(NUFILE file, const void *data, i32 size);
-    i32 __cdecl NuMemFileRead(NUFILE file, void *buffer, i32 size);
-    i64 __cdecl NuMemFileSeek(NUFILE file, i64 offset, i32 origin);
-    void __cdecl NuMemFileClose(NUFILE file);
+    NUDATHDR *NuDatOpenEx(const char *filepath, VARIPTR *buf, i32 *size_out, i16 mode);
+    NUDATHDR *NuDatOpen(const char *filepath, VARIPTR *buf, i32 *size_out);
+    i64 NuDatCalcPos(NUDATHDR *header, i32 offset);
+    i32 NuDatFileGetFreeInfo(void);
+    i32 NuDatFileGetFreeHandleIX(NUDATHDR *header, i32 info_index);
+    NUFILE NuDatFileOpen(NUDATHDR *header, char *filepath, i32 mode);
+    i32 NuDatFileRead(NUFILE file, void *buffer, i32 size);
+    i32 NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *buffer, i32 capacity);
+    NUFILE NuMemFileOpen(void *buffer, i32 buffer_size, i32 mode);
+    void *NuMemFileAddr(NUFILE file);
+    i32 NuMemFileWrite(NUFILE file, const void *data, i32 size);
+    i32 NuMemFileRead(NUFILE file, void *buffer, i32 size);
+    i64 NuMemFileSeek(NUFILE file, i64 offset, i32 origin);
+    void NuMemFileClose(NUFILE file);
     extern i32 file_criticalsection;
     extern PC_NUDATFILEINFO *unpack_file_info;
     extern NUDATOPENFILEINFO *unpack_file_odi;
     extern i64 unpack_file_pos;
     extern HANDLE pc_file_handles[32];
-    i32 __cdecl NuPSFileOpen(const char *filepath, i32 mode);
-    i32 __cdecl NuPSFileClose(i32 handle);
-    i32 __cdecl NuPSFileRead(i32 handle, void *buffer, i32 size);
-    i32 __cdecl NuPSFileWrite(i32 handle, const void *buffer, i32 size);
-    i64 __cdecl NuPSFileLSeek(i32 handle, i64 position, i32 origin);
+    i32 NuPSFileOpen(const char *filepath, i32 mode);
+    i32 NuPSFileClose(i32 handle);
+    i32 NuPSFileRead(i32 handle, void *buffer, i32 size);
+    i32 NuPSFileWrite(i32 handle, const void *buffer, i32 size);
+    i64 NuPSFileLSeek(i32 handle, i64 position, i32 origin);
     extern FILEINFO file_info[33];
     extern FILEBUFF file_buff[4];
     extern PC_NUDATFILEINFO pc_dat_file_infos[20];
@@ -13917,50 +13904,50 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern NUFILE_DEVICE host_device;
     extern NUFILE_DEVICE *default_device;
     extern i32 DontDoFileUpperCaseHack;
-    NUFILE_DEVICE *__cdecl NuFileGetDeviceFromPath(const char *path);
-    NUFILE_DEVICE *__cdecl NuFileAddDevice(NUFILE_DEVICE *device);
-    void __cdecl NuFileGetCurrentDirectory(char *destination);
-    void __cdecl NuFileSetCurrentDirectory(const char *path);
-    void __cdecl NuFileSetCurrentSysDirectory(char *path);
-    void __cdecl NuFileGetCurrentDllPath(char *destination);
-    void __cdecl NuFileSetCurrentDllDirectory(const char *path);
-    i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *destination, char *source, i32 capacity);
-    i32 __cdecl DEVHOST_Interrogate(NUFILE_DEVICE *device);
-    NUFILE __cdecl NuFileOpen(const char *, i32);
-    NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 flags);
-    void __cdecl NuFileClose(NUFILE file);
-    i64 __cdecl NuFileSeek(NUFILE file, i64 offset, i32 origin);
-    i64 __cdecl NuMemFilePos(NUFILE file);
-    i64 __cdecl NuFilePos(NUFILE file);
-    i64 __cdecl NuFileSize(char *filepath);
-    i64 __cdecl NuFileOpenSize(NUFILE file);
+    NUFILE_DEVICE *NuFileGetDeviceFromPath(const char *path);
+    NUFILE_DEVICE *NuFileAddDevice(NUFILE_DEVICE *device);
+    void NuFileGetCurrentDirectory(char *destination);
+    void NuFileSetCurrentDirectory(const char *path);
+    void NuFileSetCurrentSysDirectory(char *path);
+    void NuFileGetCurrentDllPath(char *destination);
+    void NuFileSetCurrentDllDirectory(const char *path);
+    i32 DEV_FormatName(NUFILE_DEVICE *device, char *destination, char *source, i32 capacity);
+    i32 DEVHOST_Interrogate(NUFILE_DEVICE *device);
+    NUFILE NuFileOpen(const char *, i32);
+    NUFILE NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 flags);
+    void NuFileClose(NUFILE file);
+    i64 NuFileSeek(NUFILE file, i64 offset, i32 origin);
+    i64 NuMemFilePos(NUFILE file);
+    i64 NuFilePos(NUFILE file);
+    i64 NuFileSize(char *filepath);
+    i64 NuFileOpenSize(NUFILE file);
     extern i32 nufile_blkcnt;
     extern PC_NUFILE_READBLOCK nufile_blkinfo[1024];
-    i32 __cdecl NuFileBeginBlkRead(NUFILE file, i32 expected_tag);
-    i32 __cdecl NuFileAlignRead(NUFILE file, i32 mask);
-    void __cdecl NuFileEndBlkRead(NUFILE file);
-    i32 __cdecl NuFileGetBlkSize(void);
-    i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 origin);
-    void __cdecl NuDatFileClose(NUFILE file);
-    i32 __cdecl NuDatFileOpenSize(NUFILE file);
-    i32 __cdecl NuMcFileOpenSize(NUFILE file);
-    i32 __cdecl NuMcOpen(i32 port, i32 slot, char *filepath, i32 mode, i32 async);
-    i32 __cdecl NuMcRead(i32 file, void *destination, i32 size, i32 async);
-    i32 __cdecl NuMcClose(i32 file, i32 async);
-    i32 __cdecl NuMcSeek(i32 file, i32 offset, i32 origin, i32 async);
-    i32 __cdecl NuFileRead(NUFILE file, void *buffer, i32 size);
-    i32 __cdecl NuFileLoadBuffer(char *filepath, void *buffer, i32 capacity);
-    i32 __cdecl NuFileLoadBufferVP(char *filepath, VARIPTR *current, VARIPTR *end);
-    i32 __cdecl NuFilePakGetLastError(void);
-    u32 __cdecl NuFilePakGetSize(void *pak);
-    i32 __cdecl NuFilePakGetItem(void *pak, char *name);
-    i32 __cdecl NuFilePakGetItemInfo(void *pak, i32 index, void **data, i32 *size);
-    i32 __cdecl NuFilePakSetItemRequired(void *pak, i32 index, i32 required);
-    void __cdecl NuFilePakRelocate(void *pak, void *destination);
-    i32 __cdecl NuFilePakCondense(void *pak);
-    i32 __cdecl NuFileStatus(NUFILE file);
-    void __cdecl NuFileError(void);
-    void __cdecl NuFileRetry(void);
+    i32 NuFileBeginBlkRead(NUFILE file, i32 expected_tag);
+    i32 NuFileAlignRead(NUFILE file, i32 mask);
+    void NuFileEndBlkRead(NUFILE file);
+    i32 NuFileGetBlkSize(void);
+    i64 NuDatFileSeek(NUFILE file, i64 offset, i32 origin);
+    void NuDatFileClose(NUFILE file);
+    i32 NuDatFileOpenSize(NUFILE file);
+    i32 NuMcFileOpenSize(NUFILE file);
+    i32 NuMcOpen(i32 port, i32 slot, char *filepath, i32 mode, i32 async);
+    i32 NuMcRead(i32 file, void *destination, i32 size, i32 async);
+    i32 NuMcClose(i32 file, i32 async);
+    i32 NuMcSeek(i32 file, i32 offset, i32 origin, i32 async);
+    i32 NuFileRead(NUFILE file, void *buffer, i32 size);
+    i32 NuFileLoadBuffer(char *filepath, void *buffer, i32 capacity);
+    i32 NuFileLoadBufferVP(char *filepath, VARIPTR *current, VARIPTR *end);
+    i32 NuFilePakGetLastError(void);
+    u32 NuFilePakGetSize(void *pak);
+    i32 NuFilePakGetItem(void *pak, char *name);
+    i32 NuFilePakGetItemInfo(void *pak, i32 index, void **data, i32 *size);
+    i32 NuFilePakSetItemRequired(void *pak, i32 index, i32 required);
+    void NuFilePakRelocate(void *pak, void *destination);
+    i32 NuFilePakCondense(void *pak);
+    i32 NuFileStatus(NUFILE file);
+    void NuFileError(void);
+    void NuFileRetry(void);
     extern NuKeyboardState_PC *nu_input_state;
     extern NuKeyboardOwner_PC nu_keyboard_owner;
     extern u8 nu_keyboard_pages[0x200];
@@ -13972,14 +13959,14 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i32 nu_keyboard_no_key_state;
     extern HINSTANCE PCInputWindow;
     extern HWND PCInputInstance;
-    i32 __cdecl NuKeyboardPlatformStartup(void);
-    void __cdecl NuKeyboardCreateWindowState(HWND window, HINSTANCE instance);
+    i32 NuKeyboardPlatformStartup(void);
+    void NuKeyboardCreateWindowState(HWND window, HINSTANCE instance);
     u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner);
     extern const f32 PCKeyboardDefaultValue;
     void __fastcall NuKeyboardResetInputRecords(NuKeyboardState_PC *state);
     void __fastcall NuKeyboardInsertInputRecord(NuKeyboardState_PC *state, i32 unused_edx, i32 index, i32 field_00,
                                                 i32 field_01, i32 field_02, u16 field_04);
-    void __cdecl PcInput_EnableKeyboards(const i16 *keys, i32 count);
+    void PcInput_EnableKeyboards(const i16 *keys, i32 count);
     extern i32 PCThreadCriticalSectionCount;
     extern CRITICAL_SECTION PCThreadCriticalSections[13];
     extern i32 PCFrameCriticalSectionIndex;
@@ -13990,12 +13977,12 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern void *NuAllocPeakEnd0;
     extern u32 NuAllocHeaderMetadata[3];
     extern u32 NuAllocTailMetadata[3];
-    void *__cdecl NuAlloc(i32 size, const char *file, i32 line);
-    void __cdecl NuFree(void *user_data, const char *file, i32 line);
-    void __cdecl edpartStartPage(u8 page);
-    void __cdecl edpartStopPage(u8 page);
-    void __cdecl Parts_Start(WORLDINFO *world);
-    void __cdecl Parts_Stop(WORLDINFO *world);
+    void *NuAlloc(i32 size, const char *file, i32 line);
+    void NuFree(void *user_data, const char *file, i32 line);
+    void edpartStartPage(u8 page);
+    void edpartStopPage(u8 page);
+    void Parts_Start(WORLDINFO *world);
+    void Parts_Stop(WORLDINFO *world);
     extern f32 INTROTEXT_Y;
     extern f32 INTROTEXT_SCALE;
     extern void (*Text_GameSetLanguageFn)(i32);
@@ -14005,73 +13992,72 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern const char Text_TimeMS[8];
     extern const char Text_TimeSC[8];
     extern const char Text_TimeS[3];
-    void __cdecl Text_SetLanguage(i32 language);
-    void __cdecl Text_SetLanguage_Game(i32 language);
-    void __cdecl Text_MakeTime(f32 time, i32 show_hours, i32 show_minutes, i32 show_centiseconds, char *text);
-    i32 __cdecl SplitTextFindNextWS(u8 *text, i32 position);
-    void __cdecl FixUpButtonsInFont(VUFNT *game_font, VUFNT *button_font);
-    i32 __cdecl NuHGobjReversibleCharacters(i32 enabled);
-    i32 __cdecl NuHGobjForceShadowsOnCharacters(i32 enabled);
+    void Text_SetLanguage(i32 language);
+    void Text_SetLanguage_Game(i32 language);
+    void Text_MakeTime(f32 time, i32 show_hours, i32 show_minutes, i32 show_centiseconds, char *text);
+    i32 SplitTextFindNextWS(u8 *text, i32 position);
+    void FixUpButtonsInFont(VUFNT *game_font, VUFNT *button_font);
+    i32 NuHGobjReversibleCharacters(i32 enabled);
+    i32 NuHGobjForceShadowsOnCharacters(i32 enabled);
     extern i32 NuSound3LoopHoldTime;
     extern NUDATHDR *NuSoundDat;
-    void __cdecl NuSound3SetDat(NUDATHDR *header);
-    i32 __cdecl NuSound3SetReverb(i32 enable);
-    void __cdecl NuSound3SetLoopHoldTime(f32 time);
-    void __cdecl NuSound3ClearLoopHold(NUVEC *, i32);
-    void __cdecl NuSound3FlushLoops(void);
-    void __cdecl NuSound3StopRumble(void);
-    void __cdecl NuSound3SetRumblePads(void *pad0, void *pad1);
-    void __cdecl NuSound3StopStereoStream(i32 index);
-    void __cdecl NuSound3PauseStereoStream(i32 index);
-    void __cdecl NuSound3ResumeStereoStream(i32 index);
-    i32 __cdecl NuSound3SetStreamVolume(i32 index, i32 volume);
-    i32 __cdecl NuSound3GetStereoStreamStatus(i32 index);
-    f32 __cdecl numusicGetDuckVolume(void);
+    void NuSound3SetDat(NUDATHDR *header);
+    i32 NuSound3SetReverb(i32 enable);
+    void NuSound3SetLoopHoldTime(f32 time);
+    void NuSound3ClearLoopHold(NUVEC *, i32);
+    void NuSound3FlushLoops(void);
+    void NuSound3StopRumble(void);
+    void NuSound3SetRumblePads(void *pad0, void *pad1);
+    void NuSound3StopStereoStream(i32 index);
+    void NuSound3PauseStereoStream(i32 index);
+    void NuSound3ResumeStereoStream(i32 index);
+    i32 NuSound3SetStreamVolume(i32 index, i32 volume);
+    i32 NuSound3GetStereoStreamStatus(i32 index);
+    f32 numusicGetDuckVolume(void);
     extern f32 NuSound3VolumeTable[0x4000];
     extern i32 NuSound3VolumeOffset;
     extern GAMEANIMPROGRESS gameanimsysprogress;
-    void *__cdecl GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size);
-    GAMEANIMOBJ *__cdecl GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame,
-                                               f32 end_frame, i32 append);
-    i32 __cdecl GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated,
-                                          i32 include_static);
-    i32 __cdecl GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection,
-                                               i32 include_animated, i32 include_static);
-    i32 __cdecl GameAnimSet_GetVisibility(GAMEANIMSET *set);
-    void __cdecl GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility);
-    void __cdecl GameAnimSet_EvalAnim(GAMEANIMSET *set);
-    void __cdecl GameAnimSys_Update(GAMEANIMSYS *system);
+    void *GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size);
+    GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame,
+                                       i32 append);
+    i32 GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated,
+                                  i32 include_static);
+    i32 GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection,
+                                       i32 include_animated, i32 include_static);
+    i32 GameAnimSet_GetVisibility(GAMEANIMSET *set);
+    void GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility);
+    void GameAnimSet_EvalAnim(GAMEANIMSET *set);
+    void GameAnimSys_Update(GAMEANIMSYS *system);
 
-    void __cdecl GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i32 capacity, i32 level_count);
-    void __cdecl GameAnimSys_StoreProgress(GAMEANIMSYS *system, i32 index);
-    u8 *__cdecl GameAnimSys_GetProgressData(i32 index);
-    void __cdecl GameAnimSys_ClearProgress(i32 index);
-    GAMEANIMSYS *__cdecl GameAnimSys_Create(VARIPTR *buf, VARIPTR *end);
-    GAMEANIMSET *__cdecl GameAnimSet_Create(VARIPTR *buf, VARIPTR *end, GAMEANIMOBJPOOL *pool, GAMEANIMSYS *system);
-    void __cdecl GameAnimSet_AddToSystemList(GAMEANIMSET *set);
-    void __cdecl GameAnimSet_EvaluateState(GAMEANIMSET *set);
-    void __cdecl GameAnimSet_RemoveFromSystemList(GAMEANIMSET *set);
-    void __cdecl GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index);
-    GAMEANIMOBJPOOL *__cdecl GameAnimSet_CreateObjectPool(VARIPTR *buf, VARIPTR *end, i32 object_data_size,
-                                                          i32 capacity);
-    void __cdecl GameAnimSet_RemoveObject(GAMEANIMSET *set, GAMEANIMOBJ *object);
-    void __cdecl GameAnimSet_RemoveAllObjects(GAMEANIMSET *set);
-    void __cdecl GameAnimSet_SetTFactor(GAMEANIMSET *set, f32 factor);
-    void __cdecl GameAnimSet_ScaleFParam1(GAMEANIMSET *set, f32 scale);
-    i32 __cdecl GameAnimSet_IsAnimationReset(GAMEANIMSET *set);
-    i32 __cdecl GameAnimSet_Reset(GAMEANIMSET *set);
-    i32 __cdecl GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state);
-    i32 __cdecl GameAnimSet_Stop(GAMEANIMSET *set);
-    i32 __cdecl GameAnimSet_SetRepeating(GAMEANIMSET *set, i32 repeating);
-    i32 __cdecl GameAnimSet_JumpToEnd(GAMEANIMSET *set);
-    i32 __cdecl GameAnimSet_JumpToStart(GAMEANIMSET *set);
-    void __cdecl GameAnimSet_JumpToAnimPos(GAMEANIMSET *set, f32 position);
-    i32 __cdecl GameAnimSet_Playing(GAMEANIMSET *set);
-    f32 __cdecl GameAnimSet_GetCurrentFrame(GAMEANIMSET *set);
-    f32 __cdecl GameAnimSet_GetAnimPos(GAMEANIMOBJ *object);
-    void __cdecl GameAnimSet_SetAnimPos(GAMEANIMOBJ *object, f32 position);
-    f32 __cdecl GameAnimSet_GetCompletionRatio(GAMEANIMSET *set);
-    void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name);
+    void GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i32 capacity, i32 level_count);
+    void GameAnimSys_StoreProgress(GAMEANIMSYS *system, i32 index);
+    u8 *GameAnimSys_GetProgressData(i32 index);
+    void GameAnimSys_ClearProgress(i32 index);
+    GAMEANIMSYS *GameAnimSys_Create(VARIPTR *buf, VARIPTR *end);
+    GAMEANIMSET *GameAnimSet_Create(VARIPTR *buf, VARIPTR *end, GAMEANIMOBJPOOL *pool, GAMEANIMSYS *system);
+    void GameAnimSet_AddToSystemList(GAMEANIMSET *set);
+    void GameAnimSet_EvaluateState(GAMEANIMSET *set);
+    void GameAnimSet_RemoveFromSystemList(GAMEANIMSET *set);
+    void GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index);
+    GAMEANIMOBJPOOL *GameAnimSet_CreateObjectPool(VARIPTR *buf, VARIPTR *end, i32 object_data_size, i32 capacity);
+    void GameAnimSet_RemoveObject(GAMEANIMSET *set, GAMEANIMOBJ *object);
+    void GameAnimSet_RemoveAllObjects(GAMEANIMSET *set);
+    void GameAnimSet_SetTFactor(GAMEANIMSET *set, f32 factor);
+    void GameAnimSet_ScaleFParam1(GAMEANIMSET *set, f32 scale);
+    i32 GameAnimSet_IsAnimationReset(GAMEANIMSET *set);
+    i32 GameAnimSet_Reset(GAMEANIMSET *set);
+    i32 GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state);
+    i32 GameAnimSet_Stop(GAMEANIMSET *set);
+    i32 GameAnimSet_SetRepeating(GAMEANIMSET *set, i32 repeating);
+    i32 GameAnimSet_JumpToEnd(GAMEANIMSET *set);
+    i32 GameAnimSet_JumpToStart(GAMEANIMSET *set);
+    void GameAnimSet_JumpToAnimPos(GAMEANIMSET *set, f32 position);
+    i32 GameAnimSet_Playing(GAMEANIMSET *set);
+    f32 GameAnimSet_GetCurrentFrame(GAMEANIMSET *set);
+    f32 GameAnimSet_GetAnimPos(GAMEANIMOBJ *object);
+    void GameAnimSet_SetAnimPos(GAMEANIMOBJ *object, f32 position);
+    f32 GameAnimSet_GetCompletionRatio(GAMEANIMSET *set);
+    void *GizmoFindByName(void *gizmo_sys, i32 type_id, char *name);
     extern void *gizmotypes;
     extern AREA_DATA_PC *ADataList;
     extern i32 AREACOUNT;
@@ -14082,53 +14068,53 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i32 CHARCOUNT;
     extern CHEATSYSTEM_PC *CheatSystemPtr;
     extern CHEATSYSTEM_PC CheatSystem;
-    void __cdecl Cheats_Init(CHEAT_PC *cheats);
-    AREA_DATA_PC *__cdecl Area_FindByName(char *name, i32 *index_out);
-    LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out);
-    LEVELDATA_PC *__cdecl Area_FindNextPlayLevel(i32 level_index);
-    void __cdecl Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end);
-    void __cdecl Areas_FixUp(AREAFIXUP_PC *fixup);
-    void __cdecl FixUpAreas(void);
-    f32 __cdecl LoadPermFadeAlpha(f32 t, f32 duration);
+    void Cheats_Init(CHEAT_PC *cheats);
+    AREA_DATA_PC *Area_FindByName(char *name, i32 *index_out);
+    LEVELDATA_PC *Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out);
+    LEVELDATA_PC *Area_FindNextPlayLevel(i32 level_index);
+    void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end);
+    void Areas_FixUp(AREAFIXUP_PC *fixup);
+    void FixUpAreas(void);
+    f32 LoadPermFadeAlpha(f32 t, f32 duration);
     extern AREAFIXUP_PC AreaFixUpLSW[65];
     extern AREAFIXUP_PC AreaFixUpLostTemple[2];
     extern AREAFIXUP_PC AreaFixUpGotham[5];
     extern AREA_DATA_PC *LOSTTEMPLE_ADATA;
-    void __cdecl SuperCounters_Reset(i32 area_index);
-    void __cdecl SuperCounters_FixUpGizmos(WORLDINFO *world);
-    AREA_SUPERCOUNTER_PC *__cdecl SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world,
-                                                                    AREA_SUPERCOUNTER_PICKUP_PC **pickup_out);
-    void __cdecl SuperCounters_ResetProcessed(WORLDINFO *world);
+    void SuperCounters_Reset(i32 area_index);
+    void SuperCounters_FixUpGizmos(WORLDINFO *world);
+    AREA_SUPERCOUNTER_PC *SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world,
+                                                            AREA_SUPERCOUNTER_PICKUP_PC **pickup_out);
+    void SuperCounters_ResetProcessed(WORLDINFO *world);
     extern u16 AREA_DEFAULTBONUSTIMETRIALTIME;
     extern u16 AREA_DEFAULTCHALLENGETIME;
-    LEVELDATA_PC *__cdecl Level_FindByName(char *name, i32 *index);
-    void __cdecl GoToNewLevel(i32 level_index);
-    void __cdecl CompleteLevel(WORLDINFO *world);
+    LEVELDATA_PC *Level_FindByName(char *name, i32 *index);
+    void GoToNewLevel(i32 level_index);
+    void CompleteLevel(WORLDINFO *world);
     extern u32 LevelCompletionFallbackFlagPC;
-    i32 __cdecl Action_CompleteLevel(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                     char **params, i32 count, i32 first_time, f32 elapsed);
-    i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                    i32 count, i32 first_time, f32 elapsed);
-    i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                       char **params, i32 num_params, i32 first_time, f32 elapsed);
-    i32 __cdecl Action_SnapToPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                      char **params, i32 count, i32 first_time, f32 elapsed);
-    i32 __cdecl Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                          char **params, i32 count, i32 first_time, f32 elapsed);
-    void __cdecl InitSurfaceInfo(GAMEOBJECT *object);
-    f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask);
-    f32 __cdecl FindReflectionNoPlatforms(NUVEC *position);
-    f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_range, i32 mask);
-    void __cdecl PlatOnOff(i32 platform_index, i32 enabled);
-    void __cdecl NewTerrPlatformsOff(void);
+    i32 Action_CompleteLevel(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                             i32 count, i32 first_time, f32 elapsed);
+    i32 Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                            i32 count, i32 first_time, f32 elapsed);
+    i32 Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                               i32 num_params, i32 first_time, f32 elapsed);
+    i32 Action_SnapToPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 count, i32 first_time, f32 elapsed);
+    i32 Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 count, i32 first_time, f32 elapsed);
+    void InitSurfaceInfo(GAMEOBJECT *object);
+    f32 GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask);
+    f32 FindReflectionNoPlatforms(NUVEC *position);
+    f32 NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_range, i32 mask);
+    void PlatOnOff(i32 platform_index, i32 enabled);
+    void NewTerrPlatformsOff(void);
     extern u32 LAYER_HOVERIGNORE;
-    i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode);
-    void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height);
-    i32 __cdecl ShadowInfo(void);
-    i32 __cdecl EShadowInfo(void);
-    i32 __cdecl ShadowRoofInfo(void);
-    i32 __cdecl NewShadowOnPlatform(void);
-    void __cdecl NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, NUMTX *matrix);
+    i32 SetObjOnSurface(GAMEOBJECT *object, i32 mode);
+    void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height);
+    i32 ShadowInfo(void);
+    i32 EShadowInfo(void);
+    i32 ShadowRoofInfo(void);
+    i32 NewShadowOnPlatform(void);
+    void NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, NUMTX *matrix);
     extern TERRAIN_POLYGON_INFO_PC *ShadPoly;
     extern TERRAIN_POLYGON_INFO_PC *EShadPoly;
     extern TERRAIN_POLYGON_INFO_PC *ShadRoofPoly;
@@ -14139,21 +14125,21 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern NUVEC GetSurfaceInfoWaterNormalPc;
     extern PC_SURFACE_MASK_PC GetSurfaceInfoDefaultMaskPc;
     extern PC_SURFACE_MASK_PC GetSurfaceInfoRuntimeMaskPc;
-    void __cdecl SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction);
-    extern void(__cdecl *SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object);
-    void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation);
-    i32 __cdecl Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                       char **params, i32 num_params, i32 first_time, f32 elapsed);
-    i32 __cdecl Action_SetScaleOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                        char **params, i32 num_params, i32 first_time, f32 elapsed);
+    void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction);
+    extern void (*SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object);
+    void CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation);
+    i32 Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                               i32 num_params, i32 first_time, f32 elapsed);
+    i32 Action_SetScaleOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 num_params, i32 first_time, f32 elapsed);
     extern const char AIScaleOverrideResetName[6];
     extern const char AIUseCurrentSpeedMultiplierName[11];
     extern const char AIUseCurrentSpeedSnapName[12];
     extern const char AIAnimSpeedValueName[7];
     extern const char AIAnimSpeedMultiplyByName[13];
-    i32 __cdecl CharIDFromName(const char *name);
-    i32 __cdecl Cheat_FindByName(char *name);
-    void __cdecl Cheat_SetArea(i32 cheat, i32 area_index);
+    i32 CharIDFromName(const char *name);
+    i32 Cheat_FindByName(char *name);
+    void Cheat_SetArea(i32 cheat, i32 area_index);
     extern AREA_DATA_PC *LastAData;
     extern AREA_DATA_PC *HUB_ADATA;
     extern LEVELDATA_PC *LDataList;
@@ -14185,71 +14171,71 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern const char PermLegalUS[4];
     extern const char PermLegalDirectoryPc[];
     extern const char PermLegalPcPrefixPc[];
-    void __cdecl LoadPermLoadLegalTexture(void);
+    void LoadPermLoadLegalTexture(void);
     extern i32 debinf_count;
     extern DEBRIS_INFO_PC **debtab;
     extern i32 edpp_page_used[8];
-    i32 __cdecl LookupDebrisEffectPageOnly(char *name, i8 page);
-    void __cdecl DebrisTypeStatusAlwaysOff(i32 type);
-    void __cdecl DebrisTypeStatusAlwaysOn(i32 type);
-    void __cdecl SetEffectVisibility(char *name, i32 visible);
-    void __cdecl StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 reset_factor);
-    void __cdecl ClearLevelProgress(i32 index, WORLDINFO *world);
-    void __cdecl GizmoSysClearLevelProgress(void *owner, i32 index);
-    void __cdecl edanimParamReset(void);
-    void __cdecl edanimUpdateObjects(f32 elapsed);
-    NUVEC *__cdecl edmainQueryLocVec(void);
-    void __cdecl edanimStartPage(i32 page);
-    void __cdecl edanimStopPage(i32 page);
-    void __cdecl edanimClearPage(i32 page);
-    void __cdecl edanimStartAllPages(void);
-    void __cdecl SoundStopMusic(void);
-    void __cdecl UpdateBackgroundMusic(void);
-    void __cdecl ClearLinkedCutSceneMusic(void *context);
-    void __cdecl ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options);
-    void __cdecl PauseGameAudio(i32 ignored);
-    void __cdecl SetLinkedCutSceneMusic(void *context, i32 state);
-    void __cdecl NuSound3StopSFX(void);
-    void __cdecl NuSound3SetSFXPitch(i32 pitch);
-    void __cdecl ResetLevSfx(WORLDINFO *world);
-    i32 __cdecl NuMcWrite(i32 file, const void *buffer, i32 size, i32 async);
+    i32 LookupDebrisEffectPageOnly(char *name, i8 page);
+    void DebrisTypeStatusAlwaysOff(i32 type);
+    void DebrisTypeStatusAlwaysOn(i32 type);
+    void SetEffectVisibility(char *name, i32 visible);
+    void StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 reset_factor);
+    void ClearLevelProgress(i32 index, WORLDINFO *world);
+    void GizmoSysClearLevelProgress(void *owner, i32 index);
+    void edanimParamReset(void);
+    void edanimUpdateObjects(f32 elapsed);
+    NUVEC *edmainQueryLocVec(void);
+    void edanimStartPage(i32 page);
+    void edanimStopPage(i32 page);
+    void edanimClearPage(i32 page);
+    void edanimStartAllPages(void);
+    void SoundStopMusic(void);
+    void UpdateBackgroundMusic(void);
+    void ClearLinkedCutSceneMusic(void *context);
+    void ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options);
+    void PauseGameAudio(i32 ignored);
+    void SetLinkedCutSceneMusic(void *context, i32 state);
+    void NuSound3StopSFX(void);
+    void NuSound3SetSFXPitch(i32 pitch);
+    void ResetLevSfx(WORLDINFO *world);
+    i32 NuMcWrite(i32 file, const void *buffer, i32 size, i32 async);
     extern volatile i32 nuvideo_global_vbcnt;
     extern i32 nurndr_tritot_this_frame;
     extern i32 openlevels;
     extern i32 PlayerID[2];
     extern i16 PlayerList[8];
     extern APICHARACTERMODELLIST Hub_ModelList[6];
-    void __cdecl Hub_MakeModelList(void);
+    void Hub_MakeModelList(void);
     extern MAINFRAMECOUNTERS MainFrameCounters;
     extern i32 do_multiframe_update;
     extern char *NuBlankString;
-    i32 __cdecl NuStringTableLoadCSV(char *, VARIPTR *, VARIPTR, char *, char *);
-    i32 __cdecl NuStringTableLoadTXT(char *, VARIPTR *, VARIPTR);
-    u16 *__cdecl NuStringTableGetByName(char *);
+    i32 NuStringTableLoadCSV(char *, VARIPTR *, VARIPTR, char *, char *);
+    i32 NuStringTableLoadTXT(char *, VARIPTR *, VARIPTR);
+    u16 *NuStringTableGetByName(char *);
     extern BOLTTYPE_PC GlobalBoltType_Default;
     extern BOLTSYS_PC GlobalBoltSystem_Default;
-    void __cdecl Bolt_GetShootOrigin_Default(GAMEOBJECT *, NUVEC *);
-    i32 __cdecl Bolt_HitPart_LSW(BOLT_PC *, PART_PC *);
-    void __cdecl GetShootOrigin_LSW(GAMEOBJECT *, NUVEC *);
-    u16 __cdecl GetShootDirection_LSW(GAMEOBJECT *, NUVEC *);
-    u16 __cdecl GetShootDirection_Batman(GAMEOBJECT *, NUVEC *);
-    void __cdecl Bolt_Debris_LSW(BOLT_PC *, NUVEC *, i32, NUVEC *, i32);
-    void __cdecl UpdateBolt_Geonosian(BOLT_PC *);
-    void __cdecl Torpedo_InitRicochet(BOLT_PC *, NUVEC *);
-    void __cdecl Torpedo_EndBolt(BOLT_PC *);
-    i32 __cdecl Bolt_AlternateFire_LSW(GAMEOBJECT *, i32);
-    f32 __cdecl Torpedo_Scale(BOLT_PC *);
-    u16 __cdecl Bolt_GetShootDirection_Default(GAMEOBJECT *, NUVEC *);
-    void __cdecl Bolt_Debris_Default(BOLT *, NUVEC *, i32, NUVEC *, i32);
-    void __cdecl FindAnglesZX(NUVEC *, u16 *, u16 *);
+    void Bolt_GetShootOrigin_Default(GAMEOBJECT *, NUVEC *);
+    i32 Bolt_HitPart_LSW(BOLT_PC *, PART_PC *);
+    void GetShootOrigin_LSW(GAMEOBJECT *, NUVEC *);
+    u16 GetShootDirection_LSW(GAMEOBJECT *, NUVEC *);
+    u16 GetShootDirection_Batman(GAMEOBJECT *, NUVEC *);
+    void Bolt_Debris_LSW(BOLT_PC *, NUVEC *, i32, NUVEC *, i32);
+    void UpdateBolt_Geonosian(BOLT_PC *);
+    void Torpedo_InitRicochet(BOLT_PC *, NUVEC *);
+    void Torpedo_EndBolt(BOLT_PC *);
+    i32 Bolt_AlternateFire_LSW(GAMEOBJECT *, i32);
+    f32 Torpedo_Scale(BOLT_PC *);
+    u16 Bolt_GetShootDirection_Default(GAMEOBJECT *, NUVEC *);
+    void Bolt_Debris_Default(BOLT *, NUVEC *, i32, NUVEC *, i32);
+    void FindAnglesZX(NUVEC *, u16 *, u16 *);
     extern BOLTSYS_PC *BoltSys;
-    void __cdecl BoltSys_Init(BOLTSYS_PC *);
+    void BoltSys_Init(BOLTSYS_PC *);
     extern BOLT Bolt[32];
     extern i32 i_bolt;
-    i16 __cdecl NuPortalWhichRoom(NUGSCN *, NUVEC *);
-    void __cdecl NuStringTableSetBank(i32);
-    void __cdecl NuStringTableSetFormat(i32);
-    i32 __cdecl NuStringTableGetFormat(void);
+    i16 NuPortalWhichRoom(NUGSCN *, NUVEC *);
+    void NuStringTableSetBank(i32);
+    void NuStringTableSetFormat(i32);
+    i32 NuStringTableGetFormat(void);
     extern f32 spline_seek_pos;
     extern f32 spline_seek_ang;
     extern f32 spline_xoffset_speed_seek;
@@ -14263,17 +14249,17 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern const NUVEC GAMEOBJECT_ROTATION_POLICECAR_OFFSETS[4];
     extern const NUVEC GAMEOBJECT_ROTATION_MOWER_OFFSETS[4];
     extern const NUVEC GAMEOBJECT_ROTATION_DEFAULT_OFFSETS[4];
-    AISCRIPT_PC *__cdecl AIScriptFind(AISYS_PC *, const char *, i32, i32, i32);
-    AISTATE_PC *__cdecl AIStateFind(const char *, AISCRIPT_PC *);
-    void __cdecl AIScriptCopyConditions(NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *);
-    void __cdecl AIScriptCopyActions(NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *);
-    i32 __cdecl AIScriptBuildDerivedScript(AISCRIPT_PC *, VARIPTR *, VARIPTR *, AISYS_PC *);
-    void __cdecl AIScriptLoadAllPakFile(void *, char *, VARIPTR *, VARIPTR *, AISYS_PC *);
-    i32 __cdecl GameObjectNearFloor(GAMEOBJECT *, f32, f32 *);
-    void __cdecl PortalGameObject(GAMEOBJECT *, i32, i32, i16, NUGSCN *);
-    void __cdecl APIObjectVelocities(GAMEOBJECT *);
-    f32 __cdecl VehicleTurnOrLoopOffset(GAMEOBJECT *);
-    void __cdecl NuStrLwrW(u16 *, const u16 *);
+    AISCRIPT_PC *AIScriptFind(AISYS_PC *, const char *, i32, i32, i32);
+    AISTATE_PC *AIStateFind(const char *, AISCRIPT_PC *);
+    void AIScriptCopyConditions(NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *);
+    void AIScriptCopyActions(NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *);
+    i32 AIScriptBuildDerivedScript(AISCRIPT_PC *, VARIPTR *, VARIPTR *, AISYS_PC *);
+    void AIScriptLoadAllPakFile(void *, char *, VARIPTR *, VARIPTR *, AISYS_PC *);
+    i32 GameObjectNearFloor(GAMEOBJECT *, f32, f32 *);
+    void PortalGameObject(GAMEOBJECT *, i32, i32, i16, NUGSCN *);
+    void APIObjectVelocities(GAMEOBJECT *);
+    f32 VehicleTurnOrLoopOffset(GAMEOBJECT *);
+    void NuStrLwrW(u16 *, const u16 *);
     extern const f64 VehicleTurnPhaseScale;
     extern const f64 VehicleTurnPhaseOffset;
     extern const f64 MoveSplineRunSpeedSentinel;
@@ -14316,9 +14302,9 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
     STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowup_count) == 0x50c0);
     STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowups) == 0x50c8);
-    typedef i32(__cdecl *AI_PARSE_SPEED_PC)(char *, u8 *);
-    typedef f32(__cdecl *AI_CHARACTER_DISTANCE_PC)(i32);
-    typedef NUVEC *(__cdecl *AI_ORIGIN_POSITION_PC)(AISYS_PC *, AIPACKET_PC *);
+    typedef i32 (*AI_PARSE_SPEED_PC)(char *, u8 *);
+    typedef f32 (*AI_CHARACTER_DISTANCE_PC)(i32);
+    typedef NUVEC *(*AI_ORIGIN_POSITION_PC)(AISYS_PC *, AIPACKET_PC *);
     extern AI_PARSE_SPEED_PC AIActionParseSpeedFn;
     extern AI_CHARACTER_DISTANCE_PC GetViewRangeFn;
     extern AI_CHARACTER_DISTANCE_PC GetHearDistanceFn;
@@ -14330,28 +14316,28 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i16 id_XWING;
     extern i16 id_STAP;
     extern i16 id_STAP2;
-    void __cdecl AIScriptSetState(AISCRIPTPROCESS_PC *, AISTATE_PC *);
-    void __cdecl AIScriptProcessorInit(AISYS_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *, AICREATURE_PC *, char *, char *,
-                                       i32, AISCRIPT_PC *, AISTATE_PC *);
-    f32 __cdecl AIParamToFloatEx(AIPACKET_PC *, AISCRIPTPROCESS_PC *, char *);
-    void __cdecl AIScriptProcess(AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *, f32);
-    void __cdecl AISysProcessCharacter(AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, f32, i32, i32);
+    void AIScriptSetState(AISCRIPTPROCESS_PC *, AISTATE_PC *);
+    void AIScriptProcessorInit(AISYS_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *, AICREATURE_PC *, char *, char *, i32,
+                               AISCRIPT_PC *, AISTATE_PC *);
+    f32 AIParamToFloatEx(AIPACKET_PC *, AISCRIPTPROCESS_PC *, char *);
+    void AIScriptProcess(AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *, f32);
+    void AISysProcessCharacter(AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, f32, i32, i32);
     extern AREA_DATA_PC *SPEEDERCHASE_ADATA;
-    i32 __cdecl GizmoBlowupCheckProximity(WORLDINFO *, GAMEOBJECT *);
-    u16 __cdecl SeekRot(u16, u16, f32);
-    f32 __cdecl SeekValF(f32, f32, f32);
-    void __cdecl BobaRocket_Move(PART_PC *, f32);
-    void *__cdecl NuFilePakLoad(char *, VARIPTR *, VARIPTR, i32);
-    void *__cdecl NuFilePakLoadKey(char *, VARIPTR *, VARIPTR, i32, const u8 *, u32);
-    void __cdecl CharConfig_CalculateJumpStats(f32, f32, f32 *, f32 *);
-    void __cdecl CharConfig_ConfigureAll(i32, NUFPCOMJMP *);
-    void __cdecl LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *, VARIPTR *, VARIPTR *, i32, i32);
-    void __cdecl PartStop_Flickerer(PART_PC *);
-    i32 __cdecl PartDraw_Flickerer(PART_PC *);
-    void __cdecl PartImpact_Basketball(PART_PC *);
-    void __cdecl BobaRocket_Deflect(PART_PC *);
-    i32 __cdecl ParticlesPerFrame(f32, f32);
-    i32 __cdecl CurrentAnim(ANIMPACKET_PC *);
+    i32 GizmoBlowupCheckProximity(WORLDINFO *, GAMEOBJECT *);
+    u16 SeekRot(u16, u16, f32);
+    f32 SeekValF(f32, f32, f32);
+    void BobaRocket_Move(PART_PC *, f32);
+    void *NuFilePakLoad(char *, VARIPTR *, VARIPTR, i32);
+    void *NuFilePakLoadKey(char *, VARIPTR *, VARIPTR, i32, const u8 *, u32);
+    void CharConfig_CalculateJumpStats(f32, f32, f32 *, f32 *);
+    void CharConfig_ConfigureAll(i32, NUFPCOMJMP *);
+    void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *, VARIPTR *, VARIPTR *, i32, i32);
+    void PartStop_Flickerer(PART_PC *);
+    i32 PartDraw_Flickerer(PART_PC *);
+    void PartImpact_Basketball(PART_PC *);
+    void BobaRocket_Deflect(PART_PC *);
+    i32 ParticlesPerFrame(f32, f32);
+    i32 CurrentAnim(ANIMPACKET_PC *);
 
     /* The u16 after the buffer at 0x93b0e8 is the separate global temp_yrot. */
     typedef struct CONFIG_BUFFER_PC {
@@ -14396,7 +14382,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(offsetof(EXPLOSION_PC, field_30) == 0x30);
     STATIC_ASSERT(offsetof(EXPLOSION_PC, field_32) == 0x32);
     STATIC_ASSERT(offsetof(EXPLOSION_PC, field_33) == 0x33);
-    typedef void(__cdecl *CHECK_LOST_DATA_PC)(void *);
+    typedef void (*CHECK_LOST_DATA_PC)(void *);
     extern GIZMO_PC *LevGizmo[12];
     extern EXPLOSION_PC Explosions[8];
     extern i32 i_explosion;
@@ -14429,8 +14415,8 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
 
     STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
     STATIC_ASSERT(offsetof(COLLECTID_PC, id) == 0);
-    typedef void(__cdecl *TAG_DRAW_ICON_PC)(GAMEOBJECT *);
-    typedef i32(__cdecl *LAST_SAFE_POS_EXTRA_PC)(GAMEOBJECT *);
+    typedef void (*TAG_DRAW_ICON_PC)(GAMEOBJECT *);
+    typedef i32 (*LAST_SAFE_POS_EXTRA_PC)(GAMEOBJECT *);
     extern i32 Tag_Mode;
     extern GAMEOBJECT *player_tag_to;
     extern f32 player_tag_timer;
@@ -14482,15 +14468,15 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern const char AIActionFalseName[6];
     extern i32 AIActionDiagnosticMode;
 
-    f32 __cdecl NuAnimEndFrame(void *);
-    f32 __cdecl AnimDuration(i32, i32, f32, f32, i32);
-    i32 __cdecl InCollectList_Index(i32, COLLECTID_PC *, i32);
-    i32 __cdecl NoLayerKill(GAMEOBJECT *);
-    f32 __cdecl SpeederChaseATATInOutMul(NUVEC *, NUVEC *);
-    void __cdecl UpdateLastSafePosition(GAMEOBJECT *);
-    void __cdecl ClearLastSafeTakeOver(GAMEOBJECT *);
-    void __cdecl SetToLastSafePos(GAMEOBJECT *);
-    i32 __cdecl AIScriptSetBaseScriptStateByName(AISCRIPTPROCESS_PC *, char *);
+    f32 NuAnimEndFrame(void *);
+    f32 AnimDuration(i32, i32, f32, f32, i32);
+    i32 InCollectList_Index(i32, COLLECTID_PC *, i32);
+    i32 NoLayerKill(GAMEOBJECT *);
+    f32 SpeederChaseATATInOutMul(NUVEC *, NUVEC *);
+    void UpdateLastSafePosition(GAMEOBJECT *);
+    void ClearLastSafeTakeOver(GAMEOBJECT *);
+    void SetToLastSafePos(GAMEOBJECT *);
+    i32 AIScriptSetBaseScriptStateByName(AISCRIPTPROCESS_PC *, char *);
     extern i32 LevSafePlatID[2];
     STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, blend_out_time) == 0x14);
     STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, playback_rate) == 0x18);
@@ -14542,12 +14528,12 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern const char TakeOverState_MapRunAway[11];
     extern const char TakeOverState_ReleasedTakeOver[17];
 
-    EXPLOSION_PC *__cdecl AddExplosion(NUVEC *, f32, f32, GAMEOBJECT *, i32, u32);
-    void __cdecl AddSlamDebris(GAMEOBJECT *);
-    void __cdecl ResetExplosions(void);
-    void __cdecl DrawExplosions(void);
-    void __cdecl UpdateExplosions(void);
-    void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *);
+    EXPLOSION_PC *AddExplosion(NUVEC *, f32, f32, GAMEOBJECT *, i32, u32);
+    void AddSlamDebris(GAMEOBJECT *);
+    void ResetExplosions(void);
+    void DrawExplosions(void);
+    void UpdateExplosions(void);
+    void UpdateExplosion_Generic(EXPLOSION_PC *);
     extern f32 ExplosionKnockbackScalePc;
     STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
     STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
@@ -14560,20 +14546,20 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_half_height) == 0x1e0);
 
 #ifdef __cplusplus
-    void __cdecl AIScriptMissingStateDiagnostic(...);
-    void __cdecl AIScriptMissingStateDiagnosticAlternate(...);
-    void __cdecl AIScriptMissingConditionDiagnostic(...);
+    void AIScriptMissingStateDiagnostic(...);
+    void AIScriptMissingStateDiagnosticAlternate(...);
+    void AIScriptMissingConditionDiagnostic(...);
 #elif !defined(AISYSALL_SCRIPT_DIAGNOSTIC_PROTOTYPES)
 /* aisysall.c defines these variadic and declares their prototypes itself; other C units keep this form, since
  * VC8's code generation for unrelated units shifts with the declarations it sees here. */
-void __cdecl AIScriptMissingStateDiagnostic();
-void __cdecl AIScriptMissingStateDiagnosticAlternate();
-void __cdecl AIScriptMissingConditionDiagnostic();
+void AIScriptMissingStateDiagnostic();
+void AIScriptMissingStateDiagnosticAlternate();
+void AIScriptMissingConditionDiagnostic();
 #endif
-    void __cdecl InitFn_GameParamToFloat(AI_GAME_PARAM_TO_FLOAT_PC);
-    i32 __cdecl NuSpecialFindDisplay(NUGSCN *, NUSPECIALHANDLE *, char *, i32);
-    NUGSPLINE *__cdecl NuSplineFind(NUGSCN *, char *);
-    typedef i32(__cdecl *AI_BIG_JUMP_TO_DESTINATION_PC)(APIOBJECT_PC *, NUVEC *);
+    void InitFn_GameParamToFloat(AI_GAME_PARAM_TO_FLOAT_PC);
+    i32 NuSpecialFindDisplay(NUGSCN *, NUSPECIALHANDLE *, char *, i32);
+    NUGSPLINE *NuSplineFind(NUGSCN *, char *);
+    typedef i32 (*AI_BIG_JUMP_TO_DESTINATION_PC)(APIOBJECT_PC *, NUVEC *);
     extern const char AILocatorPersonalFormat[6];
     extern const char AILocatorIndexedFormat[6];
     extern const char AIActionIndexedName[8];
@@ -14597,14 +14583,14 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i16 LEGOACT_COMBOJUMP;
     extern i16 LEGOACT_JUMP2;
 
-    void __cdecl StartJump(GAMEOBJECT *, i32);
-    i32 __cdecl StartBigJump(GAMEOBJECT *, NUVEC *, i32, f32, f32, i32);
-    void __cdecl ResetAnimPacket(ANIMPACKET_PC *, i32);
-    void __cdecl PlayJumpSfx(GAMEOBJECT *, i32);
-    EXPLOSION_PC *__cdecl Detonate(NUVEC *, u16);
-    void __cdecl BobaRocket_Kill(PART_PC *, i32);
-    void __cdecl PartUpdate_Basketball(PART_PC *);
-    void __cdecl PartCollide_3D(PART_PC *);
+    void StartJump(GAMEOBJECT *, i32);
+    i32 StartBigJump(GAMEOBJECT *, NUVEC *, i32, f32, f32, i32);
+    void ResetAnimPacket(ANIMPACKET_PC *, i32);
+    void PlayJumpSfx(GAMEOBJECT *, i32);
+    EXPLOSION_PC *Detonate(NUVEC *, u16);
+    void BobaRocket_Kill(PART_PC *, i32);
+    void PartUpdate_Basketball(PART_PC *);
+    void PartCollide_3D(PART_PC *);
     STATIC_ASSERT(offsetof(NUMTX, translation) == 0x30);
     STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
     STATIC_ASSERT(offsetof(ANIMPACKET_PC, previous_time) == 0x4);
@@ -14632,11 +14618,11 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 LEGOCONTEXT_TUBE;
     extern i32 LEGOCONTEXT_GLIDE;
 
-    void __cdecl SockSysFindInScene(SOCKSYS_PC *, NUGSCN *);
-    SOCKSYS_PC *__cdecl SockSysInit(VARIPTR *, VARIPTR, NUGSCN *);
-    void __cdecl SockSys_Configure(SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *);
-    void __cdecl SockSys_GenerateData(SOCKSYS_PC *, VARIPTR *, VARIPTR);
-    i32 __cdecl ObjInTube(GAMEOBJECT *);
+    void SockSysFindInScene(SOCKSYS_PC *, NUGSCN *);
+    SOCKSYS_PC *SockSysInit(VARIPTR *, VARIPTR, NUGSCN *);
+    void SockSys_Configure(SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *);
+    void SockSys_GenerateData(SOCKSYS_PC *, VARIPTR *, VARIPTR);
+    i32 ObjInTube(GAMEOBJECT *);
     STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
     STATIC_ASSERT(offsetof(GAMEOBJECT, collision_contact_mask) == 0x1f0);
     STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
@@ -14660,11 +14646,11 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(offsetof(GAMEOBJECT, field_106e) == 0x106e);
     STATIC_ASSERT(offsetof(GAMEOBJECT, lift_clear_state) == 0x1050);
     STATIC_ASSERT(offsetof(SOCK_PC, vertical_scale) == 0x7c);
-    i32 __cdecl AIScriptSetInterrupt(AISCRIPTPROCESS_PC *, u8, u8, char *, f32);
-    void __cdecl Buck_Start(GAMEOBJECT *, GAMEOBJECT *);
-    void __cdecl Buck_StartRiderJump(GAMEOBJECT *, GAMEOBJECT *);
-    void __cdecl NuMtxVecToEulerXYZ(NUVEC *, NUVEC *, NUANG *, NUANG *, NUANG *);
-    void __cdecl NuMtxGetEulerXYZ(NUMTX *, NUANG *, NUANG *, NUANG *);
+    i32 AIScriptSetInterrupt(AISCRIPTPROCESS_PC *, u8, u8, char *, f32);
+    void Buck_Start(GAMEOBJECT *, GAMEOBJECT *);
+    void Buck_StartRiderJump(GAMEOBJECT *, GAMEOBJECT *);
+    void NuMtxVecToEulerXYZ(NUVEC *, NUVEC *, NUANG *, NUANG *, NUANG *);
+    void NuMtxGetEulerXYZ(NUMTX *, NUANG *, NUANG *, NUANG *);
     STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, decal_special) == 0x3c);
     STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, burst_special) == 0x54);
     STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_flags) == 0x7c);
@@ -14686,36 +14672,36 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern GAMEOBJECT *player2;
     STATIC_ASSERT(offsetof(GAMEOBJECT, one_at_once_player) == 0x1084);
     STATIC_ASSERT(offsetof(GAMEOBJECT, attack_override) == 0x1085);
-    i32 __cdecl GetMenuID(void);
-    f32 __cdecl GamePad_Rotate(GAMEOBJECT *);
-    i32 __cdecl GamePad_Waggle(GAMEPAD_PC *);
-    i16 __cdecl NuASin(f32);
-    void __cdecl NuQuatSlerp(NUQUAT *, NUQUAT *, NUQUAT *, f32);
-    void __cdecl SockRotationMatrix(SOCKSYS_PC *, SOCKPOSITION_PC *, NUMTX *, i32, i32);
-    i32 __cdecl oneAtOnce_CanAttack(GAMEOBJECT *, GAMEOBJECT *);
-    f32 __cdecl oneAtOnce_GetHoldRange(GAMEOBJECT *);
-    i32 __cdecl Action_SetScriptState(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_AttackOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_FollowDirection(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_FollowCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_GameFollowPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_MoveForward(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    void __cdecl SockSysPointAlongSpline(NUVEC *, NUGSPLINE *, i32, i32, f32);
-    void __cdecl ComplexSockPosition(SOCKSYS_PC *, NUVEC *, i32, i32, SOCKPOSITION_PC *);
-    void __cdecl ComplexSockAngles(SOCKROT_PC *);
-    f32 __cdecl MidDistanceFromSockStart(SOCKSYS_PC *, SOCKPOSITION_PC *);
-    void __cdecl MoveSockPosition(SOCKSYS_PC *, SOCKPOSITION_PC *, f32, SOCKPOSITION_PC *);
-    i32 __cdecl SockSysTrackInSplineInfo(SOCKSYS_PC *, SOCKPOSITION_PC *, NUVEC *, f32 *);
-    f32 __cdecl RatioBetweenPlanes(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *);
-    f32 __cdecl ForceTowardsMid(GAMEOBJECT *);
-    i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32);
+    i32 GetMenuID(void);
+    f32 GamePad_Rotate(GAMEOBJECT *);
+    i32 GamePad_Waggle(GAMEPAD_PC *);
+    i16 NuASin(f32);
+    void NuQuatSlerp(NUQUAT *, NUQUAT *, NUQUAT *, f32);
+    void SockRotationMatrix(SOCKSYS_PC *, SOCKPOSITION_PC *, NUMTX *, i32, i32);
+    i32 oneAtOnce_CanAttack(GAMEOBJECT *, GAMEOBJECT *);
+    f32 oneAtOnce_GetHoldRange(GAMEOBJECT *);
+    i32 Action_SetScriptState(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_AttackOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_FollowDirection(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_FollowCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_GameFollowPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_MoveForward(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    void SockSysPointAlongSpline(NUVEC *, NUGSPLINE *, i32, i32, f32);
+    void ComplexSockPosition(SOCKSYS_PC *, NUVEC *, i32, i32, SOCKPOSITION_PC *);
+    void ComplexSockAngles(SOCKROT_PC *);
+    f32 MidDistanceFromSockStart(SOCKSYS_PC *, SOCKPOSITION_PC *);
+    void MoveSockPosition(SOCKSYS_PC *, SOCKPOSITION_PC *, f32, SOCKPOSITION_PC *);
+    i32 SockSysTrackInSplineInfo(SOCKSYS_PC *, SOCKPOSITION_PC *, NUVEC *, f32 *);
+    f32 RatioBetweenPlanes(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *);
+    f32 ForceTowardsMid(GAMEOBJECT *);
+    i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32);
     extern i32 nethost;
     extern i16 id_PKDROID;
     extern LEVELDATA_PC *NEGOTIATIONSC_LDATA;
     extern const char GameObjectState_InActive[9];
-    void __cdecl ManageGameObjects(void);
-    void __cdecl RemoveGameObject(GAMEOBJECT *, i32);
-    void __cdecl DeactivateGameObject(GAMEOBJECT *);
+    void ManageGameObjects(void);
+    void RemoveGameObject(GAMEOBJECT *, i32);
+    void DeactivateGameObject(GAMEOBJECT *);
     extern f32 CurrentSpeed;
     extern f32 avg_currentspeed_mul;
     extern i32 TwistSockRotationModeA;
@@ -14751,13 +14737,13 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(offsetof(VIEWCAM_PC, gamepad) == 0x24);
     STATIC_ASSERT(sizeof(VIEWCAM_PC) == 0x28);
     extern VIEWCAM_PC ViewCam;
-    GAMEPAD_PC *__cdecl ViewCamGetGamePad(void);
+    GAMEPAD_PC *ViewCamGetGamePad(void);
     STATIC_ASSERT(offsetof(GAMEOBJECT, last_attacker) == 0x10a8);
-    i32 __cdecl LineIntersectSphere(NUVEC *, NUVEC *, NUVEC *, f32, f32 *);
-    BOLT_PC *__cdecl FindIncomingBolt(GAMEOBJECT *, i32, i32);
-    i32 __cdecl LineIntersectCircle(NUVEC *, NUVEC *, NUVEC *, f32);
-    i32 __cdecl InDoubleScoreZone(GAMEOBJECT *);
-    i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *, GAMEOBJECT *, NUVEC *);
+    i32 LineIntersectSphere(NUVEC *, NUVEC *, NUVEC *, f32, f32 *);
+    BOLT_PC *FindIncomingBolt(GAMEOBJECT *, i32, i32);
+    i32 LineIntersectCircle(NUVEC *, NUVEC *, NUVEC *, f32);
+    i32 InDoubleScoreZone(GAMEOBJECT *);
+    i32 TakeOverYodaSeekDistanceHack(GAMEOBJECT *, GAMEOBJECT *, NUVEC *);
     extern const char AIGamePunch2Name[8];
     extern const char AIGamePunch1Name[8];
     extern const char AIGameSetName[5];
@@ -14796,7 +14782,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(offsetof(GAMEOBJECT, ai_elapsed_time) == 0x10b8);
     STATIC_ASSERT(offsetof(GAMEOBJECT, ai_vertical_velocity) == 0x10c8);
     STATIC_ASSERT(offsetof(GAMEOBJECT, active_trigger_set) == 0x10d4);
-    TECHNO_PC *__cdecl Technos_FindControllingTechno(GAMEOBJECT *);
+    TECHNO_PC *Technos_FindControllingTechno(GAMEOBJECT *);
     extern i32 CircleLeanDegrees;
     extern i32 GUNSHIPAHACK;
     extern i32 podrace_section;
@@ -14855,11 +14841,11 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
     STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
     extern MISSIONSYS_PC *MissionSys;
-    extern void(__cdecl *GameObjectDimensionsExtraFn)(GAMEOBJECT *);
-    MISSIONDATA_PC *__cdecl Mission_Active(MISSIONSYS_PC *);
-    void __cdecl GameObjectDimensions(GAMEOBJECT *);
-    typedef u8(__cdecl *AI_LEVEL_CHARACTER_TYPE_ID_PC)(char *);
-    typedef i32(__cdecl *AI_LEVEL_CHARACTER_GLOBAL_ID_PC)(u8);
+    extern void (*GameObjectDimensionsExtraFn)(GAMEOBJECT *);
+    MISSIONDATA_PC *Mission_Active(MISSIONSYS_PC *);
+    void GameObjectDimensions(GAMEOBJECT *);
+    typedef u8 (*AI_LEVEL_CHARACTER_TYPE_ID_PC)(char *);
+    typedef i32 (*AI_LEVEL_CHARACTER_GLOBAL_ID_PC)(u8);
     extern f32 idealgoalrange;
     extern f32 engagefiretime;
     extern f32 DEFAULT_MOVE_RANGE;
@@ -14892,9 +14878,9 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern f32 DookuC_ForceThrowSpeed;
     extern NUVEC ForceThrowMaulPositionPc;
     extern LEVELDATA_PC *MAULF_LDATA;
-    PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *, GIZFORCE_PC *, f32, f32, i32);
-    PART_PC *__cdecl Part_FindFromHSpecial(NUSPECIALHANDLE *);
-    void __cdecl PartKill_ForceThrow(PART_PC *, i32);
+    PART_PC *GizForce_Throw(GAMEOBJECT *, GIZFORCE_PC *, f32, f32, i32);
+    PART_PC *Part_FindFromHSpecial(NUSPECIALHANDLE *);
+    void PartKill_ForceThrow(PART_PC *, i32);
     extern f32 PARTSCALEUPTIME;
 
     extern NARROWSOCKEXCEPTION_PC *NarrowSockException;
@@ -14902,15 +14888,15 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern LEVEL_OBJECT_CONFIG_PC *ObjTabList;
     extern i32 LEVELOBJECTCOUNT;
     extern i32 EXTRALEVELOBJECTCOUNT;
-    i32 __cdecl LevelObject_FindIndexFromName(char *);
-    i32 __cdecl LevelObject_AddExtra(char *, i32);
+    i32 LevelObject_FindIndexFromName(char *);
+    i32 LevelObject_AddExtra(char *, i32);
     extern PODSPRINT_PC podsprint;
     extern i16 id_BASKETCANNON;
     extern AI_SCRIPT_FIRST_ACTION_PC ScriptProcessFirstTimeActionFn;
     extern AIPACKET_PC *current_packet;
     extern AISCRIPTPROCESS_PC *current_processor;
 
-    f32 __cdecl PodSprint_InStartCountdown(WORLDINFO *);
+    f32 PodSprint_InStartCountdown(WORLDINFO *);
     extern f32 SaberSparksTimer;
     extern const char SaberSparksName[12];
     extern u16 SURFACEBITS_DUST;
@@ -14918,11 +14904,11 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 LEVOBJREF_LASTOBJ;
     extern i32 LEVOBJREF_FIRSTREFOBJ;
     extern i32 LEVOBJREF_LASTREFOBJ;
-    void __cdecl KillPart(PART_PC *, i32);
-    PART_PC *__cdecl AddPart(ADDPART_PC *);
-    PART_PC *__cdecl FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range);
-    void __cdecl NewPartRotation(PART_PC *);
-    void __cdecl NewPartOrderedRotation(PART_PC *);
+    void KillPart(PART_PC *, i32);
+    PART_PC *AddPart(ADDPART_PC *);
+    PART_PC *FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range);
+    void NewPartRotation(PART_PC *);
+    void NewPartOrderedRotation(PART_PC *);
     extern AI_GAME_PARAM_TO_FLOAT_PC GameParamToFloatFn;
     extern const char AIExpressionRandName[5];
     extern const char AIExpressionTrueName[5];
@@ -14934,39 +14920,39 @@ void __cdecl AIScriptMissingConditionDiagnostic();
 
     extern const char AICharacterInitialiseName[11];
     struct CHARPIVOT_PC;
-    void __cdecl CharPivot_Init(struct CHARPIVOT_PC *);
-    void __cdecl CharPivot_Check(GAMEOBJECT *, NUVEC *);
+    void CharPivot_Init(struct CHARPIVOT_PC *);
+    void CharPivot_Check(GAMEOBJECT *, NUVEC *);
     extern ADDPART_PC Default_ADDPART;
     extern PART_PC *Part;
     extern i32 part_scene_pageid[32];
     extern i32 part_page_used[8];
     extern i32 MAXPARTS;
     extern i32 part_slot_cursor;
-    i32 __cdecl NuLineLineIntersect(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32 *, f32 *);
-    f32 __cdecl SeekLinearF(f32, f32, f32);
-    u16 __cdecl TurnRot(u16, u16, i32, i32 *);
-    i32 __cdecl Cheat_PowerUpActive(i32);
-    i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *);
-    i32 __cdecl Player_HasDoubleWeaponDamage(GAMEOBJECT *);
-    i32 __cdecl AnakinGreenSabre(GAMEOBJECT *);
-    u16 __cdecl ObjHitObj_Flags(GAMEOBJECT *);
-    i32 __cdecl SphereSphereOverlapScaleY(NUVEC *, f32, f32, NUVEC *, f32, f32);
-    void __cdecl FindAnglesXY(NUVEC *, u16 *, u16 *);
-    i32 __cdecl SphereSphereOverlap(NUVEC *, f32, NUVEC *, f32);
-    i32 __cdecl ParticlesPerSecond(f32, f32);
-    i32 __cdecl UnderPlayerControl(GAMEOBJECT *);
-    i32 __cdecl ObjInNarrowSock(GAMEOBJECT *, SOCKSYS_PC *, i32);
-    f32 __cdecl GetVehicleSpeedMul(GAMEOBJECT *, f32);
-    i32 __cdecl GoingForwardsAlongNarrowSock(GAMEOBJECT *);
-    f32 __cdecl DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *);
-    void __cdecl StartTurn(GAMEOBJECT *);
-    void __cdecl TurnCode(GAMEOBJECT *, i32, GAMEPAD_PC *);
-    i32 __cdecl ActionFromName(const char *);
-    i32 __cdecl FindGameDebris(APIDEBRISSYS_PC *, char *);
+    i32 NuLineLineIntersect(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32 *, f32 *);
+    f32 SeekLinearF(f32, f32, f32);
+    u16 TurnRot(u16, u16, i32, i32 *);
+    i32 Cheat_PowerUpActive(i32);
+    i32 Player_HasPurpleForce(GAMEOBJECT *);
+    i32 Player_HasDoubleWeaponDamage(GAMEOBJECT *);
+    i32 AnakinGreenSabre(GAMEOBJECT *);
+    u16 ObjHitObj_Flags(GAMEOBJECT *);
+    i32 SphereSphereOverlapScaleY(NUVEC *, f32, f32, NUVEC *, f32, f32);
+    void FindAnglesXY(NUVEC *, u16 *, u16 *);
+    i32 SphereSphereOverlap(NUVEC *, f32, NUVEC *, f32);
+    i32 ParticlesPerSecond(f32, f32);
+    i32 UnderPlayerControl(GAMEOBJECT *);
+    i32 ObjInNarrowSock(GAMEOBJECT *, SOCKSYS_PC *, i32);
+    f32 GetVehicleSpeedMul(GAMEOBJECT *, f32);
+    i32 GoingForwardsAlongNarrowSock(GAMEOBJECT *);
+    f32 DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *);
+    void StartTurn(GAMEOBJECT *);
+    void TurnCode(GAMEOBJECT *, i32, GAMEPAD_PC *);
+    i32 ActionFromName(const char *);
+    i32 FindGameDebris(APIDEBRISSYS_PC *, char *);
     extern APIDEBRISSYS_PC *perm_debrissys;
-    f32 *__cdecl AnimPlaying(ANIMPACKET_PC *, i32, i32, i32);
-    u16 __cdecl GamePad_InputAngle(GAMEOBJECT *, GAMEPAD_PC *);
-    PART_PC *__cdecl HitParts(GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32);
+    f32 *AnimPlaying(ANIMPACKET_PC *, i32, i32, i32);
+    u16 GamePad_InputAngle(GAMEOBJECT *, GAMEPAD_PC *);
+    PART_PC *HitParts(GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32);
 
     extern i32 HIGHGAMEOBJECT;
     extern GAMEOBJECT *Obj;
@@ -14981,9 +14967,9 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern f32 CloakMovementRecoverRatePc;
     extern f32 CloakMovementFallRatePc;
     extern f32 HairMovementRestAnglePc;
-    void __cdecl HeadMovement(GAMEOBJECT *);
-    void __cdecl CloakMovement(GAMEOBJECT *);
-    void __cdecl HairMovement(GAMEOBJECT *);
+    void HeadMovement(GAMEOBJECT *);
+    void CloakMovement(GAMEOBJECT *);
+    void HairMovement(GAMEOBJECT *);
     extern f32 ForcePushDurationPc;
     extern f32 ForcePushStrongDurationPc;
     extern f32 ForcePushMindTrickDurationPc;
@@ -15002,19 +14988,19 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern u16 id_GONKDROID;
     extern i32 ONEPLAYERPOWERUPS;
     extern APIOBJECT_FROM_ID_PC APIOBJECTFromObjIDFn;
-    void __cdecl AISysProcess(AISYS_PC *, APIOBJECT_PC *, APIOBJECT_PC *);
-    i32 __cdecl Arcade_GetMode(u32 *);
+    void AISysProcess(AISYS_PC *, APIOBJECT_PC *, APIOBJECT_PC *);
+    i32 Arcade_GetMode(u32 *);
     extern NUVEC v001;
     extern AREA_DATA_PC *VADER_ADATA;
-    void __cdecl EndBolt_EwokTorpedo(BOLT_PC *bolt);
-    BOLTTYPE_PC *__cdecl BoltType_FindByID(i32, WORLDINFO *);
-    GAMEOBJECT *__cdecl FindGameObject(i32, u32, i32, i32, i32);
-    void __cdecl MakeBaddiesForgetAboutParty(i32);
-    void __cdecl ScaleGameObject(GAMEOBJECT *);
-    void __cdecl GetTopBot(GAMEOBJECT *);
-    void __cdecl SnapCreaturePos(GAMEOBJECT *, NUVEC *, i32, AIPATHINFO_PC *, i32);
-    APIOBJECT_PC *__cdecl GameAPIOBJECTFromObjID(u8);
-    GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, u32, i32, i32, i32);
+    void EndBolt_EwokTorpedo(BOLT_PC *bolt);
+    BOLTTYPE_PC *BoltType_FindByID(i32, WORLDINFO *);
+    GAMEOBJECT *FindGameObject(i32, u32, i32, i32, i32);
+    void MakeBaddiesForgetAboutParty(i32);
+    void ScaleGameObject(GAMEOBJECT *);
+    void GetTopBot(GAMEOBJECT *);
+    void SnapCreaturePos(GAMEOBJECT *, NUVEC *, i32, AIPATHINFO_PC *, i32);
+    APIOBJECT_PC *GameAPIOBJECTFromObjID(u8);
+    GAMEOBJECT *TargetGameObject(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, u32, i32, i32, i32);
 
     typedef struct PC_EDBRIDGE {
         i32 instance_id;
@@ -15158,12 +15144,12 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern f32 edgra_global_fadeout;
     extern i32 edgra_clumpthin;
     extern i32 edgra_elementthin;
-    void __cdecl edbriDetermineNearest(f32 distance);
-    void __cdecl edgraDetermineNearestClump(f32 distance);
-    void __cdecl edgraSortVectorBuffer(i32 index);
-    void __cdecl edgraInitAllClumps(void);
-    i32 __cdecl edbriLoadPage(char *path, void *scene);
-    i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer, VARIPTR *end);
+    void edbriDetermineNearest(f32 distance);
+    void edgraDetermineNearestClump(f32 distance);
+    void edgraSortVectorBuffer(i32 index);
+    void edgraInitAllClumps(void);
+    i32 edbriLoadPage(char *path, void *scene);
+    i32 edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer, VARIPTR *end);
 
     typedef struct debris_key_pc_s DEBRISKEY_PC;
     extern DEBRISKEY_PC *debkeydata;
@@ -15181,16 +15167,16 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(offsetof(DEBRISPARTICLE_PC, start_time) == 0xc);
     STATIC_ASSERT(offsetof(DEBRISPARTICLE_PC, momentum) == 0x10);
     STATIC_ASSERT(offsetof(DEBRISPARTICLE_PC, inverse_lifetime) == 0x1c);
-    void __cdecl GenDebMomAdjFromPos(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void __cdecl GenDebMomAdjFromPosAll(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void __cdecl GenDebMomAdjFromPosRev(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void __cdecl GenDebMomAdjFromSplash(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void __cdecl GenDebMomAdjFromAshRock(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void __cdecl GenDebMomAdjFromPosRevTree(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromPos(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromPosAll(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromPosRev(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromSplash(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromAshRock(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromPosRevTree(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
 
     typedef struct debris_particle_chunk_pc_s DEBRIS_PARTICLE_CHUNK_PC;
-    typedef DEBRISPARTICLE_PC *(__cdecl *DEBRISGENERATOR_PC)(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    typedef void(__cdecl *DEBRISMOMENTUMADJUSTER_PC)(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
+    typedef DEBRISPARTICLE_PC *(*DEBRISGENERATOR_PC)(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    typedef void (*DEBRISMOMENTUMADJUSTER_PC)(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
 
     typedef struct debris_process_sphere_pc_s {
         NUVEC position;
@@ -15344,26 +15330,26 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern DEBRISKEY_PC *debris_keystack;
     extern DEBRISGENERATOR_PC gensorttab[13];
     extern DEBRISMOMENTUMADJUSTER_PC gencodetab[7];
-    i32 __cdecl DebAlloc(void);
-    void __cdecl DebrisStartOffsetEx(DEBRISKEY_PC *, f32);
-    void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *, DEBRISKEY_PC *);
-    void __cdecl NuDebrisRendererFlushBuffers(void);
-    i32 __cdecl NuDebrisRendererNextBuffer(void);
-    void __cdecl NuRndrParticleSetRepeat(NUVEC *);
-    void __cdecl BuildDebrisVerts(DEBRIS_PART_HEADER_PC *, DEBRIS_PARTICLE_CHUNK_PC *, NUMTL *, f32, NUMTX *, i32, f32,
-                                  f32, f32, f32);
-    void __cdecl NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *, DEBRIS_PART_HEADER_PC *, NUMTL *, f32, NUMTX *, i32,
-                                     f32, f32, f32, f32);
-    void __cdecl AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET_PC *);
+    i32 DebAlloc(void);
+    void DebrisStartOffsetEx(DEBRISKEY_PC *, f32);
+    void DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *, DEBRISKEY_PC *);
+    void NuDebrisRendererFlushBuffers(void);
+    i32 NuDebrisRendererNextBuffer(void);
+    void NuRndrParticleSetRepeat(NUVEC *);
+    void BuildDebrisVerts(DEBRIS_PART_HEADER_PC *, DEBRIS_PARTICLE_CHUNK_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32,
+                          f32, f32);
+    void NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *, DEBRIS_PART_HEADER_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32,
+                             f32, f32);
+    void AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET_PC *);
 
-    void __cdecl DebrisStartOffset(i32, f32);
-    void __cdecl DebrisOrientation(i32, i16, i16);
-    void __cdecl DebrisEmitterOrientation(i32, i16, i16, i16);
-    void __cdecl DebrisReflectionOrientation(i32, i16, i16, f32, f32);
-    void __cdecl DebrisSetTrigger(i32, i32, i32, f32);
-    void __cdecl AddDebrisEffect(i32 *, i32, f32, f32, f32);
-    void __cdecl AddFiniteShotDebrisEffect2(i32 *, i32, NUVEC *, NUVEC *, NUVEC *, i32);
-    void __cdecl AddFiniteShotDebrisEffect(i32 *, i32, NUVEC *, i32);
+    void DebrisStartOffset(i32, f32);
+    void DebrisOrientation(i32, i16, i16);
+    void DebrisEmitterOrientation(i32, i16, i16, i16);
+    void DebrisReflectionOrientation(i32, i16, i16, f32, f32);
+    void DebrisSetTrigger(i32, i32, i32, f32);
+    void AddDebrisEffect(i32 *, i32, f32, f32, f32);
+    void AddFiniteShotDebrisEffect2(i32 *, i32, NUVEC *, NUVEC *, NUVEC *, i32);
+    void AddFiniteShotDebrisEffect(i32 *, i32, NUVEC *, i32);
 
     extern f32 partglobaltime;
     extern f32 debris_thinning_level;
@@ -15386,7 +15372,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, abs_frustum) == 0xd0);
     STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, abs_scissor) == 0x110);
     extern CAMERA_CLIP_PLANES_PC CameraClipPlanesPc;
-    void __cdecl VisibilityZeroMatrixPc(NUMTX *);
+    void VisibilityZeroMatrixPc(NUMTX *);
 // Native SaveState copies this complete 0x150-byte working view.
 // The original allocation extent remains unknown.
 // NOLINTNEXTLINE(readability-identifier-naming)
@@ -15401,20 +15387,20 @@ void __cdecl AIScriptMissingConditionDiagnostic();
 #define AxisClipAbsFrustumPlanesPc CameraClipPlanesPc.abs_frustum
 // NOLINTNEXTLINE(readability-identifier-naming)
 #define AxisClipAbsScissorPlanesPc CameraClipPlanesPc.abs_scissor
-    i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *, NUVEC *, f32);
-    i32 __cdecl AddPARTEffect(i32, NUVEC *);
-    void __cdecl PARTStartOffset(i32, f32);
-    void __cdecl DebrisEmitterOrientationMtx(i32, NUMTX *);
-    void __cdecl AddVariableShotDebrisEffectTimed5(i32, NUVEC *, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *, u16, i8);
-    void __cdecl AddVariableShotDebrisEffectMtx3(i32, NUVEC *, NUVEC *, i32, NUMTX *, NUMTX *);
-    void __cdecl AddVariableShotDebrisEffect(i32, NUVEC *, i32, i16, i16);
+    i32 NuCameraClipTestExtentsAxisAligned(NUVEC *, NUVEC *, f32);
+    i32 AddPARTEffect(i32, NUVEC *);
+    void PARTStartOffset(i32, f32);
+    void DebrisEmitterOrientationMtx(i32, NUMTX *);
+    void AddVariableShotDebrisEffectTimed5(i32, NUVEC *, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *, u16, i8);
+    void AddVariableShotDebrisEffectMtx3(i32, NUVEC *, NUVEC *, i32, NUMTX *, NUMTX *);
+    void AddVariableShotDebrisEffect(i32, NUVEC *, i32, i16, i16);
 
-    i32 __cdecl edbitsLookupInstance(char *, NUGSCN *);
-    void __cdecl edgraCalculatePage(i8, i32);
-    NUVEC __cdecl NuFadeObjGetAngleTerrainValues(NUVEC *);
-    f32 __cdecl NewShadow(NUVEC *, f32, f32, i32);
-    i32 __cdecl NuGScnNumSpecials(NUGSCN *);
-    void __cdecl NuGScnGetSpecial(NUSPECIALHANDLE *, NUGSCN *, i32);
+    i32 edbitsLookupInstance(char *, NUGSCN *);
+    void edgraCalculatePage(i8, i32);
+    NUVEC NuFadeObjGetAngleTerrainValues(NUVEC *);
+    f32 NewShadow(NUVEC *, f32, f32, i32);
+    i32 NuGScnNumSpecials(NUGSCN *);
+    void NuGScnGetSpecial(NUSPECIALHANDLE *, NUGSCN *, i32);
     extern i32 edgra_page_on[8];
 #define PCGrassTerrainScene CurrentTerrain // NOLINT(readability-identifier-naming)
 
@@ -15547,24 +15533,24 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 NuWindWave;
     extern i32 NuWindDir;
     extern i32 NuWindDir2;
-    void __cdecl NuFadeObjInit(void);
-    PC_NUFADEGROUP *__cdecl NuFadeObjAllocateGrp(void);
-    PC_NUFADEGROUP *__cdecl NuFadeObjCreateMtx(NUSPECIALHANDLE *, NUMTX *, i16, f32, f32, i32);
-    void __cdecl NuFadeObjUpdateArray(NUVEC **positions);
-    void __cdecl NuFadeObjUpdate(NUVEC *position);
-    void __cdecl NuFadeObjDraw(void);
-    void __cdecl NuWindInit(void);
-    PC_NUWINDGROUP *__cdecl NuWindAllocateGrp(void);
-    PC_NUWINDGROUP *__cdecl NuWindCreateMtx(NUSPECIALHANDLE *, NUMTX *, i16, f32, f32, i32, f32, f32);
-    void __cdecl NuWindUpdateArray(NUVEC **positions);
-    void __cdecl NuWindUpdate(NUVEC *wind);
-    void __cdecl NuWindDraw(void);
+    void NuFadeObjInit(void);
+    PC_NUFADEGROUP *NuFadeObjAllocateGrp(void);
+    PC_NUFADEGROUP *NuFadeObjCreateMtx(NUSPECIALHANDLE *, NUMTX *, i16, f32, f32, i32);
+    void NuFadeObjUpdateArray(NUVEC **positions);
+    void NuFadeObjUpdate(NUVEC *position);
+    void NuFadeObjDraw(void);
+    void NuWindInit(void);
+    PC_NUWINDGROUP *NuWindAllocateGrp(void);
+    PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *, NUMTX *, i16, f32, f32, i32, f32, f32);
+    void NuWindUpdateArray(NUVEC **positions);
+    void NuWindUpdate(NUVEC *wind);
+    void NuWindDraw(void);
     extern i32 edgra_units_used;
     extern i32 edgra_page_on[8];
     extern i32 edgra_page_calculate_done[8];
-    void __cdecl edgraStartPage(i8 page);
-    void __cdecl NuWindInit(void);
-    void __cdecl NuFadeObjInit(void);
+    void edgraStartPage(i8 page);
+    void NuWindInit(void);
+    void NuFadeObjInit(void);
 
     struct debris_particle_chunk_pc_s {
         u8 command;
@@ -15615,27 +15601,27 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 freechunkcontrolsptr;
     extern DEBRIS_CHUNK_CONTROL_PC **freechunkcontrols;
     extern DEBRIS_CHUNK_CONTROL_PC *debris_chunk_control_stack[2];
-    i32 __cdecl SolveQuadratic(f32, f32, f32, f32 *, f32 *);
-    void __cdecl DebrisGetControlStackLock(void);
-    void __cdecl DebrisReleaseControlStackLock(void);
-    void __cdecl AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *, DEBRIS_CHUNK_CONTROL_PC **);
+    i32 SolveQuadratic(f32, f32, f32, f32 *, f32 *);
+    void DebrisGetControlStackLock(void);
+    void DebrisReleaseControlStackLock(void);
+    void AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *, DEBRIS_CHUNK_CONTROL_PC **);
 
-    void __cdecl GenericDebinfoDmaTypeUpdate(DEBRIS_INFO_PC *effect);
-    void __cdecl NuPtlDmaSlotsExhaustedPc(void);
+    void GenericDebinfoDmaTypeUpdate(DEBRIS_INFO_PC *effect);
+    void NuPtlDmaSlotsExhaustedPc(void);
     extern i32 freeDmaDebType;
     extern i32 EDPP_MAX_DMADEBTYPES;
     extern DEBRIS_PART_HEADER_PC **DmaDebTypes;
-    void __cdecl NuVecMtxTransformVU0(NUVEC *, NUVEC *, NUMTX *);
-    i32 __cdecl DebrisNuASin(f32);
+    void NuVecMtxTransformVU0(NUVEC *, NUVEC *, NUMTX *);
+    i32 DebrisNuASin(f32);
 
-    i32 __cdecl NuTexCreateNative(NUTEXDIM_PC *);
-    void __cdecl NuTexCreatePS(NUTEXDIM_PC *);
-    void __cdecl PCDeviceCreateTextureFromMemory(const void *, u32, PC_TEXTURE_RESOURCE_PC **);
+    i32 NuTexCreateNative(NUTEXDIM_PC *);
+    void NuTexCreatePS(NUTEXDIM_PC *);
+    void PCDeviceCreateTextureFromMemory(const void *, u32, PC_TEXTURE_RESOURCE_PC **);
     extern i32 NuTextureCapacityPC;
     extern i32 NuTextureLoadCountPC;
     extern i32 *NuTextureLoadOrderPC;
     extern const f32 AIPositionUnsetPc;
-    i32 __cdecl AddGameDebris(APIDEBRISSYS_PC *, i32, NUVEC *);
+    i32 AddGameDebris(APIDEBRISSYS_PC *, i32, NUVEC *);
 
     typedef struct debris_render_chunk_pc_s {
         DEBRIS_PARTICLE_CHUNK_PC *particle_chunk;
@@ -15667,61 +15653,61 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass;
     extern DEBRIS_RENDER_CHUNK_PC *ParticleChunkToRender;
     extern DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5];
-    DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSet(void *, i32 *);
-    DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSetGlass(void *, i32 *);
-    DEBRIS_PART_HEADER_PC *__cdecl CreateDmaPartEffectList(void *, i32 *);
-    void __cdecl LinkDmaParticalSets(DEBRIS_PARTICLE_CHUNK_PC **, i32);
-    void __cdecl DebrisReserveTrashableSpace(VARIPTR *, VARIPTR, i32, i32);
-    void __cdecl DebrisTrashableSetup(VARIPTR *, VARIPTR *);
-    void __cdecl AddChunkToRenderStack(DEBRIS_RENDER_CHUNK_PC *, DEBRIS_RENDER_CHUNK_PC **);
-    void __cdecl RemoveChunkFromRenderStack(DEBRIS_RENDER_CHUNK_PC *, DEBRIS_RENDER_CHUNK_PC **);
-    void __cdecl RemoveChunkControlFromStack(DEBRIS_CHUNK_CONTROL_PC *, DEBRIS_CHUNK_CONTROL_PC **);
-    void __cdecl RemoveAnyChunkControls(DEBRIS_PARTICLE_CHUNK_PC *);
-    void __cdecl DebrisProcessSpheres(DEBRISPARTICLE_PC *, f32, DEBRIS_INFO_PC *, DEBRISKEY_PC *, i32);
+    DEBRIS_PARTICLE_CHUNK_PC *CreateDmaParticleSet(void *, i32 *);
+    DEBRIS_PARTICLE_CHUNK_PC *CreateDmaParticleSetGlass(void *, i32 *);
+    DEBRIS_PART_HEADER_PC *CreateDmaPartEffectList(void *, i32 *);
+    void LinkDmaParticalSets(DEBRIS_PARTICLE_CHUNK_PC **, i32);
+    void DebrisReserveTrashableSpace(VARIPTR *, VARIPTR, i32, i32);
+    void DebrisTrashableSetup(VARIPTR *, VARIPTR *);
+    void AddChunkToRenderStack(DEBRIS_RENDER_CHUNK_PC *, DEBRIS_RENDER_CHUNK_PC **);
+    void RemoveChunkFromRenderStack(DEBRIS_RENDER_CHUNK_PC *, DEBRIS_RENDER_CHUNK_PC **);
+    void RemoveChunkControlFromStack(DEBRIS_CHUNK_CONTROL_PC *, DEBRIS_CHUNK_CONTROL_PC **);
+    void RemoveAnyChunkControls(DEBRIS_PARTICLE_CHUNK_PC *);
+    void DebrisProcessSpheres(DEBRISPARTICLE_PC *, f32, DEBRIS_INFO_PC *, DEBRISKEY_PC *, i32);
 
-    void __cdecl edbriStopPage(i8 page);
-    void __cdecl edbriClearPage(i8 page);
-    void __cdecl edgraStopPage(i8 page);
-    void __cdecl edgraClearPage(i8 page);
+    void edbriStopPage(i8 page);
+    void edbriClearPage(i8 page);
+    void edgraStopPage(i8 page);
+    void edgraClearPage(i8 page);
 
-    void __cdecl NuGScnCreatePS(NUGSCN *, VARIPTR *, VARIPTR *);
-    void __cdecl PCDeviceCreateVertexBuffer(u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **);
-    void __cdecl PCDeviceCreateIndexBuffer(u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
-    void __cdecl PCDeviceCreateTextureFromMemoryEx(const void *, u32, u32, u32, u32, u32, i32, i32, u32, u32, u32,
-                                                   D3DXIMAGE_INFO *, PALETTEENTRY *, PC_TEXTURE_RESOURCE_PC **);
-    void __cdecl PCDeviceCreateCubeTextureFromMemory(const void *, u32, PC_TEXTURE_RESOURCE_PC **);
-    i32 __cdecl PCFrameLoadingYieldEnabled(void);
+    void NuGScnCreatePS(NUGSCN *, VARIPTR *, VARIPTR *);
+    void PCDeviceCreateVertexBuffer(u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **);
+    void PCDeviceCreateIndexBuffer(u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
+    void PCDeviceCreateTextureFromMemoryEx(const void *, u32, u32, u32, u32, u32, i32, i32, u32, u32, u32,
+                                           D3DXIMAGE_INFO *, PALETTEENTRY *, PC_TEXTURE_RESOURCE_PC **);
+    void PCDeviceCreateCubeTextureFromMemory(const void *, u32, PC_TEXTURE_RESOURCE_PC **);
+    i32 PCFrameLoadingYieldEnabled(void);
     extern SCENE_VIDEO_RESOURCE_HEADER_PC SceneVideoResourcesPC;
     extern i32 PCDeviceHardwareVertexProcessingPC;
     extern u8 PCFrameLoadingYieldEnabledPC;
-    void __cdecl NuMtlDestroy(NUMTL *);
-    void __cdecl NuDisplayListDestroyMtl(NUMTL *);
-    void __cdecl DestroyRippleMtls(WORLDINFO *);
-    void __cdecl CharScenes_LevelDump(WORLDINFO *);
-    void __cdecl CharacterMiniKits_Dump(WORLDINFO *);
+    void NuMtlDestroy(NUMTL *);
+    void NuDisplayListDestroyMtl(NUMTL *);
+    void DestroyRippleMtls(WORLDINFO *);
+    void CharScenes_LevelDump(WORLDINFO *);
+    void CharacterMiniKits_Dump(WORLDINFO *);
     extern NULSTHDR *g_overrideList;
     extern i32 *Char_MiniKit;
     extern VARIPTR minikits_savecharacterbufferptr;
     extern const char GizmoConfigPathFormat[7];
-    void __cdecl LoadGizmoSys(void *system, void *world, char *config_file);
-    void __cdecl EdFileSetMedia(i32 media);
-    void __cdecl EdFileSetPakFile(void *pak);
-    void __cdecl EdFileSetReadWrongEndianess(i32 value);
-    i32 __cdecl EdFileOpen(char *filepath, i32 mode);
-    i32 __cdecl EdFileClose(void);
-    void __cdecl EdFileRead(void *buffer, i32 length);
-    i32 __cdecl EdFileReadInt(void);
-    f32 __cdecl EdFileReadFloat(void);
-    i16 __cdecl EdFileReadShort(void);
-    void __cdecl EdFileReadNuVec(NUVEC *out);
-    char __cdecl EdFileReadChar(void);
-    i32 __cdecl NuFileWrite(NUFILE file, const void *data, i32 size);
-    void *__cdecl LoadAnimFromPAK(char *path, i32 clip, void *pak, i32 flags);
-    void *__cdecl LoadAnim(char *path, i32 clip, VARIPTR *buffer, VARIPTR end);
-    NUHGOBJ_POI_PC *__cdecl NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index);
-    void __cdecl APIObjectDestroyAll(APIOBJECTSYS_PC *system);
-    void __cdecl ClearGameObjects(APIOBJECTSYS_PC *system);
-    i32 __cdecl rtlResetDynamic(void);
+    void LoadGizmoSys(void *system, void *world, char *config_file);
+    void EdFileSetMedia(i32 media);
+    void EdFileSetPakFile(void *pak);
+    void EdFileSetReadWrongEndianess(i32 value);
+    i32 EdFileOpen(char *filepath, i32 mode);
+    i32 EdFileClose(void);
+    void EdFileRead(void *buffer, i32 length);
+    i32 EdFileReadInt(void);
+    f32 EdFileReadFloat(void);
+    i16 EdFileReadShort(void);
+    void EdFileReadNuVec(NUVEC *out);
+    char EdFileReadChar(void);
+    i32 NuFileWrite(NUFILE file, const void *data, i32 size);
+    void *LoadAnimFromPAK(char *path, i32 clip, void *pak, i32 flags);
+    void *LoadAnim(char *path, i32 clip, VARIPTR *buffer, VARIPTR end);
+    NUHGOBJ_POI_PC *NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index);
+    void APIObjectDestroyAll(APIOBJECTSYS_PC *system);
+    void ClearGameObjects(APIOBJECTSYS_PC *system);
+    i32 rtlResetDynamic(void);
     extern NULSTHDR *rtl_dynamic_pool;
     extern i32 rtl_dynamic_max;
 
@@ -15736,9 +15722,9 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern const f64 ApplyGravityFrameScale;
     extern const f32 ApplyGravityMinimumFrameTime;
 
-    i32 __cdecl Techno_FindOperator(void *, GAMEPAD_PC **, GAMEOBJECT **);
-    f32 __cdecl NuInfiniteLineToPointDistSqrEx(NUVEC *, NUVEC *, NUVEC *, NUVEC *);
-    f32 __cdecl NuInfiniteLineToPointDistSqr(NUVEC *, NUVEC *, NUVEC *);
+    i32 Techno_FindOperator(void *, GAMEPAD_PC **, GAMEOBJECT **);
+    f32 NuInfiniteLineToPointDistSqrEx(NUVEC *, NUVEC *, NUVEC *, NUVEC *);
+    f32 NuInfiniteLineToPointDistSqr(NUVEC *, NUVEC *, NUVEC *);
     STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, render_count) == 0x190);
     STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, render_parts) == 0x194);
     STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_lookup) == 0x8);
@@ -15753,92 +15739,91 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i16 id_BODYGUARD;
     extern i16 id_GEONOSIAN;
     extern i16 id_CHEWBACCA;
-    u32 __cdecl AdjustLayerBits(u32, GAMEOBJECT *);
-    void __cdecl FixUpLayers(void);
-    void __cdecl GameObjectToCameraCode(GAMEOBJECT *);
-    i32 __cdecl LayerFromName(PLAYERCHARACTERCONFIG_PC *, const char *);
-    i32 __cdecl NuHGobjGetLayerIndex(const char *, NUHGOBJ_EVAL_PC *);
-    i32 __cdecl MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    u32 AdjustLayerBits(u32, GAMEOBJECT *);
+    void FixUpLayers(void);
+    void GameObjectToCameraCode(GAMEOBJECT *);
+    i32 LayerFromName(PLAYERCHARACTERCONFIG_PC *, const char *);
+    i32 NuHGobjGetLayerIndex(const char *, NUHGOBJ_EVAL_PC *);
+    i32 MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
 
     STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, tiptoe_speed) == 0x14);
     STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, walk_speed) == 0x18);
-    f32 __cdecl GetCharacterGoalSpeed(APIOBJECT_PC *);
-    typedef i32(__cdecl *AI_RESPAWN_ON_PATH_PC)(APIOBJECT_PC *);
-    typedef f32(__cdecl *AI_CHARACTER_GOAL_SPEED_PC)(APIOBJECT_PC *);
-    typedef i32(__cdecl *AI_MID_SPECIAL_MOVE_PC)(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
+    f32 GetCharacterGoalSpeed(APIOBJECT_PC *);
+    typedef i32 (*AI_RESPAWN_ON_PATH_PC)(APIOBJECT_PC *);
+    typedef f32 (*AI_CHARACTER_GOAL_SPEED_PC)(APIOBJECT_PC *);
+    typedef i32 (*AI_MID_SPECIAL_MOVE_PC)(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
 
     extern AI_RESPAWN_ON_PATH_PC AIRespawnOnPathFn;
     extern AI_CHARACTER_GOAL_SPEED_PC GetCharacterGoalSpeedFn;
     extern AI_MID_SPECIAL_MOVE_PC MidSpecialMoveFn;
-    GAMEOBJECT *__cdecl GetOtherActivePlayer(GAMEOBJECT *);
-    i32 __cdecl AvailableToPlayer(u32, i32, i32, i32);
-    i32 __cdecl Cheats_CheckFlags(u32);
-    i32 __cdecl OutSideSplineArea(NUVEC *, NUGSPLINE *, NUVEC *, NUVEC *, i32);
-    i32 __cdecl LineIntersectXY(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *);
+    GAMEOBJECT *GetOtherActivePlayer(GAMEOBJECT *);
+    i32 AvailableToPlayer(u32, i32, i32, i32);
+    i32 Cheats_CheckFlags(u32);
+    i32 OutSideSplineArea(NUVEC *, NUGSPLINE *, NUVEC *, NUVEC *, i32);
+    i32 LineIntersectXY(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *);
 
     STATIC_ASSERT(offsetof(APICHARSYS, character_count) == 0);
     STATIC_ASSERT(offsetof(APICHARSYS, playermodelids) == 0x1c);
     STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
-    void __cdecl AddToAIGroup(AIGROUP_PC *, APIOBJECT_PC *);
-    void __cdecl AISysGetCharacterPathPos(AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, i32);
-    void __cdecl AIMoveInstruction(AIPACKET_PC *, NUVEC *, f32, AIPATHINFO_PC *, i32, f32);
-    void __cdecl AIFormationFollow(AIPACKET_PC *);
-    void __cdecl AISysUpdateCharacterPathPos(AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, f32);
+    void AddToAIGroup(AIGROUP_PC *, APIOBJECT_PC *);
+    void AISysGetCharacterPathPos(AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, i32);
+    void AIMoveInstruction(AIPACKET_PC *, NUVEC *, f32, AIPATHINFO_PC *, i32, f32);
+    void AIFormationFollow(AIPACKET_PC *);
+    void AISysUpdateCharacterPathPos(AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, f32);
 
     extern i32 GAMERAND;
-    void __cdecl ResetSeeds(void);
+    void ResetSeeds(void);
     STATIC_ASSERT(offsetof(GAMEOBJECT, context_position_offset) == 0x760);
     STATIC_ASSERT(offsetof(GAMEOBJECT, render_offset) == 0xe94);
     STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant) == 0x7b6);
     extern f32 MAGNETOFFSET;
-    void __cdecl DrawOffsetCode(GAMEOBJECT *, i32);
-    void __cdecl InitFn_GetCharacterGoalSpeedFn(AI_CHARACTER_GOAL_SPEED_PC);
+    void DrawOffsetCode(GAMEOBJECT *, i32);
+    void InitFn_GetCharacterGoalSpeedFn(AI_CHARACTER_GOAL_SPEED_PC);
     extern ARCADE_MODE_PC Arcade_Mode[7];
     extern ARCADE_ITEM_PC ArcadeItem;
     extern i32 party_cant_be_under_cover;
     extern i32 gizmoerrorlogsize;
-    i32 __cdecl CannotKill(GAMEOBJECT *);
-    i32 __cdecl Cheat_IsOn(i32);
-    i32 __cdecl FaceOpponent(GAMEOBJECT *, NUVEC *);
-    i32 __cdecl ForcePushed_SetTargetMom(GAMEOBJECT *, f32 *);
-    i32 __cdecl ForcePushed_YRotation(GAMEOBJECT *);
-    void __cdecl InitFn_APIOBJECTFromObjIDFn(APIOBJECT_FROM_ID_PC);
-    void __cdecl AILocatorSet_CheckLocatorsStillAssigned(AISYS_PC *, AILOCATORSET_PC *);
-    void __cdecl AILocatorSet_AssignNearestLocator(AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, NUVEC *,
-                                                   f32, i32);
-    void __cdecl AILocatorSet_AssignFurthestLocator(AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *,
-                                                    NUVEC *, f32, i32);
-    void __cdecl AILocatorSet_AssignRandomLocator(AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, f32,
-                                                  i32);
-    void __cdecl NuVec4MtxTransform(NUVEC4 *, NUVEC *, NUMTX *);
-    i32 __cdecl NuCameraClipTestSphere(NUVEC *, f32, NUMTX *);
-    i32 __cdecl AIPathCheckExtents(AIPATH_PC *, NUVEC *);
-    void __cdecl AISysGetPathPosEx(AISYS_PC *, NUVEC *, AIPATHINFO_PC *, AIPATH_PC *, i32, i32, f32 *);
-    void __cdecl AISysGetPathPos(AISYS_PC *, NUVEC *, AIPATHINFO_PC *, AIPATH_PC *, i32);
-    f32 __cdecl NuLineToPointDistSqrEx(NUVEC *, NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl AICircle(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
-    void __cdecl AIMoveDirectlyToDestination(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 CannotKill(GAMEOBJECT *);
+    i32 Cheat_IsOn(i32);
+    i32 FaceOpponent(GAMEOBJECT *, NUVEC *);
+    i32 ForcePushed_SetTargetMom(GAMEOBJECT *, f32 *);
+    i32 ForcePushed_YRotation(GAMEOBJECT *);
+    void InitFn_APIOBJECTFromObjIDFn(APIOBJECT_FROM_ID_PC);
+    void AILocatorSet_CheckLocatorsStillAssigned(AISYS_PC *, AILOCATORSET_PC *);
+    void AILocatorSet_AssignNearestLocator(AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, NUVEC *, f32,
+                                           i32);
+    void AILocatorSet_AssignFurthestLocator(AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, NUVEC *, f32,
+                                            i32);
+    void AILocatorSet_AssignRandomLocator(AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, f32, i32);
+    void NuVec4MtxTransform(NUVEC4 *, NUVEC *, NUMTX *);
+    i32 NuCameraClipTestSphere(NUVEC *, f32, NUMTX *);
+    i32 AIPathCheckExtents(AIPATH_PC *, NUVEC *);
+    void AISysGetPathPosEx(AISYS_PC *, NUVEC *, AIPATHINFO_PC *, AIPATH_PC *, i32, i32, f32 *);
+    void AISysGetPathPos(AISYS_PC *, NUVEC *, AIPATHINFO_PC *, AIPATH_PC *, i32);
+    f32 NuLineToPointDistSqrEx(NUVEC *, NUVEC *, NUVEC *, NUVEC *);
+    void AICircle(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
+    void AIMoveDirectlyToDestination(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
 
     extern CHARACTER_CONTEXT_INFO_PC PCContextInfoTable[101];
     extern CHARACTER_CONTEXT_INFO_PC *CInfo;
     extern AIANTINODE_PC dynamic_antinodes[64];
     extern f32 default_path_heighttol;
-    i32 __cdecl AISysSetLevelPath(AISYS_PC *, char *);
-    AILOCATOR_PC *__cdecl AIPathFindLocator(AISYS_PC *, char *);
-    AILOCATOR_PC *__cdecl LocalGetRandomLocator(AILOCATOR_PC **locators, i32 count, f32 clip_radius, NUVEC *position,
-                                                f32 max_distance, i32 outside_camera, f32 max_delta_y, f32 min_delta_y);
-    AILOCATORSET_PC *__cdecl AIPathFindLocatorSet(AISYS_PC *, char *);
-    AIAREA_PC *__cdecl AISysFindArea(AISYS_PC *, char *);
-    AIPATH_PC *__cdecl AISysFindPath(AISYS_PC *, char *);
-    AIPATHNODE_PC *__cdecl AIPathFindNode(AISYS_PC *, AIPATH_PC *, char *);
-    void *__cdecl AIPAthFindPathCnx(AISYS_PC *, AIPATH_PC *, char *, char *, i32 *);
-    AIANTINODE_PC *__cdecl AIAntinodeCreate(NUVEC *, f32);
-    AIANTINODE_PC *__cdecl AIAntinodeCreateSingleFrame(NUVEC *, f32);
-    void __cdecl AIAntinodeDestroy(AIANTINODE_PC *);
-    void __cdecl AIAntinodeCullSingleFrame(void);
-    void __cdecl AIAntinodeMove(AIANTINODE_PC *, NUVEC *, f32, f32, f32);
-    f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *, i32, i32, i32, u32);
-    void __cdecl MoveInactiveVehicle(GAMEOBJECT *, i32, GAMEOBJECT **);
+    i32 AISysSetLevelPath(AISYS_PC *, char *);
+    AILOCATOR_PC *AIPathFindLocator(AISYS_PC *, char *);
+    AILOCATOR_PC *LocalGetRandomLocator(AILOCATOR_PC **locators, i32 count, f32 clip_radius, NUVEC *position,
+                                        f32 max_distance, i32 outside_camera, f32 max_delta_y, f32 min_delta_y);
+    AILOCATORSET_PC *AIPathFindLocatorSet(AISYS_PC *, char *);
+    AIAREA_PC *AISysFindArea(AISYS_PC *, char *);
+    AIPATH_PC *AISysFindPath(AISYS_PC *, char *);
+    AIPATHNODE_PC *AIPathFindNode(AISYS_PC *, AIPATH_PC *, char *);
+    void *AIPAthFindPathCnx(AISYS_PC *, AIPATH_PC *, char *, char *, i32 *);
+    AIANTINODE_PC *AIAntinodeCreate(NUVEC *, f32);
+    AIANTINODE_PC *AIAntinodeCreateSingleFrame(NUVEC *, f32);
+    void AIAntinodeDestroy(AIANTINODE_PC *);
+    void AIAntinodeCullSingleFrame(void);
+    void AIAntinodeMove(AIANTINODE_PC *, NUVEC *, f32, f32, f32);
+    f32 AIPathNodeDistanceToPathNode(AIPATH_PC *, i32, i32, i32, u32);
+    void MoveInactiveVehicle(GAMEOBJECT *, i32, GAMEOBJECT **);
 
     extern u16 GameObjectRotationBuggyId;
     extern u16 GameObjectRotationRadioCarId;
@@ -15849,15 +15834,15 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern u16 temp_zrot;
     extern i32 VehicleArea;
     extern const char NuAnimSourceFileName[48];
-    void __cdecl NuStringTableUnload(void);
-    u16 *__cdecl NuStringTableGetById(i32);
-    i32 __cdecl NuStringTableGetIdByName(char *);
-    u16 *__cdecl NuStringBadSubString(const u16 *, const u16 *, i32 *, i32);
-    i32 __cdecl NuStringFilterBadWordsW(u16 *, u16 *, u16 *);
-    i32 __cdecl NuStringFilterBadWords(u8 *, u8 *, u8 *);
-    void __cdecl buildBitCountTable(void);
-    void *__cdecl NuAnimCurveSetCreate(i32);
-    void *__cdecl NuAnimDataRead(NUFILE);
+    void NuStringTableUnload(void);
+    u16 *NuStringTableGetById(i32);
+    i32 NuStringTableGetIdByName(char *);
+    u16 *NuStringBadSubString(const u16 *, const u16 *, i32 *, i32);
+    i32 NuStringFilterBadWordsW(u16 *, u16 *, u16 *);
+    i32 NuStringFilterBadWords(u8 *, u8 *, u8 *);
+    void buildBitCountTable(void);
+    void *NuAnimCurveSetCreate(i32);
+    void *NuAnimDataRead(NUFILE);
     extern const char AIScriptKeywordInclude[8];
     extern const char AIScriptKeywordDeriveFromScript[17];
     extern const char AIScriptKeywordActionMacro[12];
@@ -15881,7 +15866,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern void **AnimBuffEvalData;
     extern i32 *AnimBuffEvalJoint;
     extern const NUMTX ANI3_EVAL_IDENTITY_MATRIX;
-    f32 __cdecl GetVehicleHoverHeight(GAMEOBJECT *, f32 *);
+    f32 GetVehicleHoverHeight(GAMEOBJECT *, f32 *);
     extern NULISTHDR global_aiscripts;
     extern NUSTRINGBANK StringBank[3];
     extern i16 CurrentStringBank;
@@ -15890,23 +15875,23 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i16 NuSound3GroupSampleIds[512];
     extern i32 NuSound3GroupSampleCount;
     extern i32 NuSound3GroupCount;
-    void __cdecl VuQuatSlerpFast(NUQUAT *, NUQUAT *, NUQUAT *, f32);
-    void __cdecl GameObjectOrigin(GAMEOBJECT *);
+    void VuQuatSlerpFast(NUQUAT *, NUQUAT *, NUQUAT *, f32);
+    void GameObjectOrigin(GAMEOBJECT *);
     extern f32 FRAMETIME;
     extern void *debris_cutoff_camera_vec;
     extern i32 debris_render_group;
-    f32 __cdecl CameraEmitterDistance(NUVEC *position);
-    void __cdecl DebrisProcessAllocation(void);
-    void __cdecl DebrisProcessTriggers(void);
-    void __cdecl DebrisProcessGeneration(void);
+    f32 CameraEmitterDistance(NUVEC *position);
+    void DebrisProcessAllocation(void);
+    void DebrisProcessTriggers(void);
+    void DebrisProcessGeneration(void);
     extern i32 debris_detail_level;
     extern u8 debris_object_switches[];
-    void __cdecl DebrisRegisterCutoffCameraVec(void *position);
-    void __cdecl DebrisSetRenderGroup(i32 group);
-    void __cdecl ResetFrameCounters(void);
-    void __cdecl InitCables(WORLDINFO *world);
-    void __cdecl InitSnakes(WORLDINFO *world);
-    i32 __cdecl NuSpecialFind(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags);
+    void DebrisRegisterCutoffCameraVec(void *position);
+    void DebrisSetRenderGroup(i32 group);
+    void ResetFrameCounters(void);
+    void InitCables(WORLDINFO *world);
+    void InitSnakes(WORLDINFO *world);
+    i32 NuSpecialFind(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags);
     extern u8 cables[0xf60];
     extern f32 default_targetmomf;
     extern f32 targetmomf;
@@ -15917,18 +15902,18 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern f32 default_tow_length;
     extern f32 tow_length;
     extern AREA_DATA_PC *GUNSHIP_ADATA;
-    void __cdecl UpdateFrameCounters(void);
-    void __cdecl ResetTimer(TIMER *timer, f32 reset_time);
-    void __cdecl UpdateTimer(TIMER *timer);
-    void __cdecl WorldInfo_ReArrangeBuffers(i32 area1, i32 area2);
+    void UpdateFrameCounters(void);
+    void ResetTimer(TIMER *timer, f32 reset_time);
+    void UpdateTimer(TIMER *timer);
+    void WorldInfo_ReArrangeBuffers(i32 area1, i32 area2);
     extern f32 PanelProjectionX;
     extern f32 PanelProjectionY;
     extern f32 PanelWideWidth;
     extern f32 PanelWideHeight;
     extern f32 PANEL3DMULX;
     extern f32 PANEL3DMULY;
-    void __cdecl InitPanel(i32 mode);
-    void __cdecl RotateGameMatrix(NUMTX *matrix, i32 order, u16 x, u16 y, u16 z);
+    void InitPanel(i32 mode);
+    void RotateGameMatrix(NUMTX *matrix, i32 order, u16 x, u16 y, u16 z);
     extern LANGUAGEDATA Game_LanguageList[7];
     extern LANGUAGEDATA Text_LanguageList_Default[7];
     extern LANGUAGEDATA *Text_LanguageList;
@@ -15960,19 +15945,19 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i16 tITALIAN;
     extern i16 tSPANISH;
     extern i16 tDANISH;
-    void __cdecl Text_InitLanguageList(LANGUAGEDATA *language_list);
-    char *__cdecl Text_GetLanguagePath(i32 language);
-    void *__cdecl Text_IsFontLoaded(void);
-    void __cdecl Text_InitStringTable(i32 count, VARIPTR *buf, VARIPTR *buf_end);
-    i32 __cdecl Text_GetMaxOverallStrings(void);
-    void __cdecl Text_InitTable(TEXTENTRY *entry, i32 first, i32 last);
-    void __cdecl Text_InsertCommasIntoNumber(char *number, char *text, i32 length);
-    void __cdecl Text_MakeScore(u32 score, char *text);
-    i32 __cdecl Text_StripComments(char *text, char *dest, i32 separators);
-    void __cdecl IntroText_SetTextID(i32 id);
-    void __cdecl Text_InitDefaultStrings(void);
-    void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count);
-    void __cdecl Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end);
+    void Text_InitLanguageList(LANGUAGEDATA *language_list);
+    char *Text_GetLanguagePath(i32 language);
+    void *Text_IsFontLoaded(void);
+    void Text_InitStringTable(i32 count, VARIPTR *buf, VARIPTR *buf_end);
+    i32 Text_GetMaxOverallStrings(void);
+    void Text_InitTable(TEXTENTRY *entry, i32 first, i32 last);
+    void Text_InsertCommasIntoNumber(char *number, char *text, i32 length);
+    void Text_MakeScore(u32 score, char *text);
+    i32 Text_StripComments(char *text, char *dest, i32 separators);
+    void IntroText_SetTextID(i32 id);
+    void Text_InitDefaultStrings(void);
+    void Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count);
+    void Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end);
     extern const char TextLoadPermTextDirectory[12];
     extern const char TextLoadPermAPIExtension[9];
     extern const char TextLoadPermTRCPath[19];
@@ -15994,184 +15979,182 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern f32 STCOORDSCALE;
     extern const char Text_WibbleCodeword[7];
     extern const char Text_CrossCodeword[6];
-    void __cdecl Text_DecodeButtons(char *source, char *destination);
-    void __cdecl TextRegisterButtonMapFn(void (*fn)(char *, char *));
-    void __cdecl SmartTextSetFWNMode(i32 mode);
-    void __cdecl SmartTextSetFont(VUFNT *font);
-    void __cdecl SetGameFont(VUFNT *font);
-    void __cdecl Set3DGameFont(VUFNT *font);
-    void __cdecl SmartTextSetWidescreen(f32 font_scale_x, f32 coordinate_scale);
-    void __cdecl SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale);
-    i32 __cdecl NuStrLen(const char *text);
-    i32 __cdecl NuStrICmp(const char *a, const char *b);
-    i32 __cdecl NuStrICmpW(NUWCHAR *a, NUWCHAR *b);
-    char *__cdecl NuStrIStr(char *text, char *substring);
-    void __cdecl NuLinkedListAppend(NULISTHDR *list, NULISTLNK *node);
-    void __cdecl NuLinkedListRemove(NULISTHDR *list, NULISTLNK *node);
-    NULISTLNK *__cdecl NuLinkedListGetHead(NULISTHDR *list);
-    NULISTLNK *__cdecl NuLinkedListGetTail(NULISTHDR *list);
-    NULISTLNK *__cdecl NuLinkedListGetNext(NULISTHDR *list, NULISTLNK *node);
-    void __cdecl ResetGizAIMessageSys(GIZAIMESSAGESYS *sys);
-    void __cdecl ClearGizAIMessageSys(GIZAIMESSAGESYS *sys);
-    GIZAIMESSAGE *__cdecl CheckGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message);
-    GIZAIMESSAGE *__cdecl SetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, f32 value, GIZAIMESSAGE *message);
-    f32 __cdecl GetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message);
-    GIZAIMESSAGE *__cdecl QueryGizAIMessage(GIZAIMESSAGESYS *sys, GIZAIMESSAGE *message);
-    char *__cdecl GizAIMessage_GetName(GIZAIMESSAGE *message);
+    void Text_DecodeButtons(char *source, char *destination);
+    void TextRegisterButtonMapFn(void (*fn)(char *, char *));
+    void SmartTextSetFWNMode(i32 mode);
+    void SmartTextSetFont(VUFNT *font);
+    void SetGameFont(VUFNT *font);
+    void Set3DGameFont(VUFNT *font);
+    void SmartTextSetWidescreen(f32 font_scale_x, f32 coordinate_scale);
+    void SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale);
+    i32 NuStrLen(const char *text);
+    i32 NuStrICmp(const char *a, const char *b);
+    i32 NuStrICmpW(NUWCHAR *a, NUWCHAR *b);
+    char *NuStrIStr(char *text, char *substring);
+    void NuLinkedListAppend(NULISTHDR *list, NULISTLNK *node);
+    void NuLinkedListRemove(NULISTHDR *list, NULISTLNK *node);
+    NULISTLNK *NuLinkedListGetHead(NULISTHDR *list);
+    NULISTLNK *NuLinkedListGetTail(NULISTHDR *list);
+    NULISTLNK *NuLinkedListGetNext(NULISTHDR *list, NULISTLNK *node);
+    void ResetGizAIMessageSys(GIZAIMESSAGESYS *sys);
+    void ClearGizAIMessageSys(GIZAIMESSAGESYS *sys);
+    GIZAIMESSAGE *CheckGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message);
+    GIZAIMESSAGE *SetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, f32 value, GIZAIMESSAGE *message);
+    f32 GetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message);
+    GIZAIMESSAGE *QueryGizAIMessage(GIZAIMESSAGESYS *sys, GIZAIMESSAGE *message);
+    char *GizAIMessage_GetName(GIZAIMESSAGE *message);
     extern char gizaimessage_prefix[5];
     extern const char GizAIMessage_NameFormat[3];
     extern const char GizAIMessage_PrefixedNameFormat[5];
     extern GIZAIMESSAGESYS *gizaimessagesys;
-    void *__cdecl AISysBufferAlloc(VARIPTR *cursor, VARIPTR *end, u32 size);
-    GIZAIMESSAGESYS *__cdecl CreateGizAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count);
-    i32 __cdecl NuStrNICmp(const char *a, const char *b, i32 n);
-    void __cdecl NuStrUpr(char *dst, const char *src);
-    void __cdecl NuStrLwr(char *dst, const char *src);
-    i32 __cdecl NuHexStringToI(char *string);
-    u8 *__cdecl NuUnicodeCharFromUTF8(u16 *out, u8 *text);
-    u8 *__cdecl NuUTF8CharFromUnicode(u8 *out, u16 codepoint);
-    void __cdecl NuStrCat(char *str, const char *ext);
-    i32 __cdecl NuStrNCat(char *str, const char *ext, i32 n);
-    i32 __cdecl NuStrCpy(char *dst, const char *src);
-    i32 __cdecl NuStrNCpy(char *dst, const char *src, i32 n);
-    char *__cdecl NuStrChr(char *src, char c);
-    char *__cdecl NuStrRChr(char *src, char c);
-    i32 __cdecl NuStrLenU(u8 *str);
-    i32 __cdecl NuStrCmp(const char *a, const char *b);
-    i32 __cdecl NuStrNCmp(const char *a, const char *b, i32 n);
-    f32 __cdecl NuFmod(f32 a, f32 b);
-    f32 __cdecl NuFsqrt(f32 f);
-    void __cdecl NuMtxSetTranslation(NUMTX *matrix, NUVEC *translation);
-    void __cdecl NuMtxSetTranslationNeg(NUMTX *matrix, NUVEC *translation);
-    void __cdecl NuMtxSetScale(NUMTX *matrix, NUVEC *scale);
-    void __cdecl NuMtxMul(NUMTX *matrix, NUMTX *left, NUMTX *right);
-    void __cdecl NuMtxMulR(NUMTX *matrix, NUMTX *left, NUMTX *right);
-    void __cdecl NuMtxSetRotateXYZ(NUMTX *matrix, NUANGVEC *angles);
-    void __cdecl NuMtxSetRotateXYZVU0(NUMTX *matrix, NUANGVEC *angles);
-    void __cdecl NuMtxPreScaleVU0(NUMTX *matrix, NUVEC *scale);
-    void __cdecl EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update);
-    void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame);
-    void __cdecl NuSpecialUpdate(NUSPECIALHANDLE *special);
-    void __cdecl NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special);
-    void __cdecl DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix);
-    void __cdecl DisplayListSpecialTransformNoOpPc(NUSPECIALHANDLE *special, NUMTX *matrix);
-    void __cdecl NuMtxSetRotationX(NUMTX *matrix, NUANG angle);
-    void __cdecl NuMtxSetRotationY(NUMTX *matrix, NUANG angle);
-    void __cdecl NuMtxSetRotationZ(NUMTX *matrix, NUANG angle);
-    void __cdecl NuMtxSetRotationAxis(NUMTX *matrix, NUANG angle, NUVEC *axis);
-    void __cdecl NuMtxInv(NUMTX *output, NUMTX *input);
-    void __cdecl NuMtxInvVU0(NUMTX *output, NUMTX *input);
-    void __cdecl NuMtxInvR(NUMTX *output, NUMTX *input);
-    void __cdecl NuMtxRotateAng(NUANG angle, f32 x, f32 z, f32 *rx, f32 *rz);
-    void __cdecl NuMtxTranslate(NUMTX *matrix, NUVEC *translation);
-    void __cdecl NuMtxTranslateNeg(NUMTX *matrix, NUVEC *translation);
-    void __cdecl NuMtxPreTranslate(NUMTX *matrix, NUVEC *translation);
-    void __cdecl NuMtxScale(NUMTX *matrix, NUVEC *scale);
-    void __cdecl NuMtxScaleU(NUMTX *matrix, f32 scale);
-    void __cdecl NuMtxPreScaleU(NUMTX *matrix, f32 scale);
-    void __cdecl NuMtxPreScale(NUMTX *matrix, NUVEC *scale);
-    void __cdecl NuMtxPreScaleX(NUMTX *matrix, f32 scale_x);
-    void __cdecl NuMtxGetXAxis(NUMTX *matrix, NUVEC *axis);
-    void __cdecl NuMtxGetYAxis(NUMTX *matrix, NUVEC *axis);
-    void __cdecl NuMtxGetZAxis(NUMTX *matrix, NUVEC *axis);
-    void __cdecl NuMtxGetTranslation(NUMTX *matrix, NUVEC *translation);
-    void __cdecl NuQuatFromEulerXYZ(NUQUAT *out, NUANG psi, NUANG theta, NUANG phi);
-    void __cdecl NuMtxToQuat(NUMTX *matrix, NUQUAT *out);
-    void __cdecl NuQuatToMtx(NUQUAT *quat, NUMTX *out);
-    void __cdecl NuQuatMul(NUQUAT *out, NUQUAT *q0, NUQUAT *q1);
-    void __cdecl NuQuatNormalise(NUQUAT *out, NUQUAT *q);
-    void __cdecl NuQuatHarmonize(NUQUAT *a, NUQUAT *b);
-    void __cdecl NuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t);
-    void __cdecl NuQuatLerp(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t);
-    f32 __cdecl NuCubicInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t);
-    void __cdecl NuQuatCubicInt(NUQUAT *out, NUQUAT *m, NUQUAT *a, NUQUAT *b, NUQUAT *c, f32 t);
-    f32 __cdecl NuHermiteInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t);
-    void __cdecl NuQuatHermiteInt(NUQUAT *out, NUQUAT *m, NUQUAT *q0, NUQUAT *q1, NUQUAT *q2, f32 t);
-    void __cdecl NuPlnEqn(NUPLANE *out, NUVEC *pnt0, NUVEC *pnt1, NUVEC *pnt2);
-    i32 __cdecl NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction);
-    i32 __cdecl NuPlnLine(NUPLANE *plane, NUVEC *s, NUVEC *e, NUVEC *out);
-    f32 __cdecl NuPlnLine3(NUPLANE *plane, NUVEC *pnt, NUVEC *v, NUVEC *out);
-    i32 __cdecl NuPtInPolyXY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
-    i32 __cdecl NuPtInPolyYX(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
-    i32 __cdecl NuPtInPolyXZ(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
-    i32 __cdecl NuPtInPolyZX(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
-    i32 __cdecl NuPtInPolyYZ(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
-    i32 __cdecl NuPtInPolyZY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
-    f32 __cdecl NuPlnDist2(NUPLANE *plane, NUVEC *a, NUVEC *b);
-    f32 __cdecl NuVecNorm(NUVEC *out, NUVEC *input);
-    void __cdecl NuVecSurfaceNormal(NUVEC *out, NUVEC *p0, NUVEC *p1, NUVEC *p2);
-    f32 __cdecl NuVecDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *delta);
-    f32 __cdecl NuVecXZDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *delta);
-    void __cdecl PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *result, u16 *yaw, u16 *pitch, i32 looping);
-    void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance);
-    void __cdecl GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i32 looping, i16 first_point,
-                                     i16 last_point);
-    void __cdecl InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping);
-    void __cdecl NuVecScaleAccum(NUVEC *out, NUVEC *input, f32 scale);
-    void __cdecl NuVecInvScale(NUVEC *out, NUVEC *input, f32 scale);
-    void __cdecl NuVecCrossRel(NUVEC *out, NUVEC *base, NUVEC *p0, NUVEC *p1);
-    f32 __cdecl NuVecMagXZ(NUVEC *input);
-    void __cdecl NuVecRotateX(NUVEC *out, NUVEC *input, NUANG angle);
-    void __cdecl NuVecRotateY(NUVEC *out, NUVEC *input, NUANG angle);
-    void __cdecl NuVecRotateZ(NUVEC *out, NUVEC *input, NUANG angle);
-    void __cdecl NuVecRotateYValZ(NUVEC *out, f32 magnitude, NUANG angle);
-    void __cdecl NuMtxLookAtD3D(NUMTX *matrix, NUVEC *eye, NUVEC *target, NUVEC *up);
-    void __cdecl NuMtxSetPerspectiveD3D(NUMTX *matrix, f32 fov, f32 aspect, f32 near_plane, f32 far_plane);
-    void __cdecl NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane,
-                                    f32 far_plane);
-    void __cdecl NuMtxSetFrustumBlend(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane,
-                                      f32 far_plane);
-    void __cdecl NuMtxGetFrustumD3D(NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *near_plane,
-                                    f32 *far_plane);
-    f32 __cdecl NuAnimEndFrameOld(void *animation_data);
-    f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special);
-    void __cdecl NuSpecialGetRadius(NUSPECIALHANDLE *special, NUVEC *centre, f32 *radius);
-    void __cdecl GizFlowStoreProgress(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
+    void *AISysBufferAlloc(VARIPTR *cursor, VARIPTR *end, u32 size);
+    GIZAIMESSAGESYS *CreateGizAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count);
+    i32 NuStrNICmp(const char *a, const char *b, i32 n);
+    void NuStrUpr(char *dst, const char *src);
+    void NuStrLwr(char *dst, const char *src);
+    i32 NuHexStringToI(char *string);
+    u8 *NuUnicodeCharFromUTF8(u16 *out, u8 *text);
+    u8 *NuUTF8CharFromUnicode(u8 *out, u16 codepoint);
+    void NuStrCat(char *str, const char *ext);
+    i32 NuStrNCat(char *str, const char *ext, i32 n);
+    i32 NuStrCpy(char *dst, const char *src);
+    i32 NuStrNCpy(char *dst, const char *src, i32 n);
+    char *NuStrChr(char *src, char c);
+    char *NuStrRChr(char *src, char c);
+    i32 NuStrLenU(u8 *str);
+    i32 NuStrCmp(const char *a, const char *b);
+    i32 NuStrNCmp(const char *a, const char *b, i32 n);
+    f32 NuFmod(f32 a, f32 b);
+    f32 NuFsqrt(f32 f);
+    void NuMtxSetTranslation(NUMTX *matrix, NUVEC *translation);
+    void NuMtxSetTranslationNeg(NUMTX *matrix, NUVEC *translation);
+    void NuMtxSetScale(NUMTX *matrix, NUVEC *scale);
+    void NuMtxMul(NUMTX *matrix, NUMTX *left, NUMTX *right);
+    void NuMtxMulR(NUMTX *matrix, NUMTX *left, NUMTX *right);
+    void NuMtxSetRotateXYZ(NUMTX *matrix, NUANGVEC *angles);
+    void NuMtxSetRotateXYZVU0(NUMTX *matrix, NUANGVEC *angles);
+    void NuMtxPreScaleVU0(NUMTX *matrix, NUVEC *scale);
+    void EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update);
+    void EvalAnim2(NUSPECIALHANDLE *special, f32 frame);
+    void NuSpecialUpdate(NUSPECIALHANDLE *special);
+    void NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special);
+    void DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix);
+    void DisplayListSpecialTransformNoOpPc(NUSPECIALHANDLE *special, NUMTX *matrix);
+    void NuMtxSetRotationX(NUMTX *matrix, NUANG angle);
+    void NuMtxSetRotationY(NUMTX *matrix, NUANG angle);
+    void NuMtxSetRotationZ(NUMTX *matrix, NUANG angle);
+    void NuMtxSetRotationAxis(NUMTX *matrix, NUANG angle, NUVEC *axis);
+    void NuMtxInv(NUMTX *output, NUMTX *input);
+    void NuMtxInvVU0(NUMTX *output, NUMTX *input);
+    void NuMtxInvR(NUMTX *output, NUMTX *input);
+    void NuMtxRotateAng(NUANG angle, f32 x, f32 z, f32 *rx, f32 *rz);
+    void NuMtxTranslate(NUMTX *matrix, NUVEC *translation);
+    void NuMtxTranslateNeg(NUMTX *matrix, NUVEC *translation);
+    void NuMtxPreTranslate(NUMTX *matrix, NUVEC *translation);
+    void NuMtxScale(NUMTX *matrix, NUVEC *scale);
+    void NuMtxScaleU(NUMTX *matrix, f32 scale);
+    void NuMtxPreScaleU(NUMTX *matrix, f32 scale);
+    void NuMtxPreScale(NUMTX *matrix, NUVEC *scale);
+    void NuMtxPreScaleX(NUMTX *matrix, f32 scale_x);
+    void NuMtxGetXAxis(NUMTX *matrix, NUVEC *axis);
+    void NuMtxGetYAxis(NUMTX *matrix, NUVEC *axis);
+    void NuMtxGetZAxis(NUMTX *matrix, NUVEC *axis);
+    void NuMtxGetTranslation(NUMTX *matrix, NUVEC *translation);
+    void NuQuatFromEulerXYZ(NUQUAT *out, NUANG psi, NUANG theta, NUANG phi);
+    void NuMtxToQuat(NUMTX *matrix, NUQUAT *out);
+    void NuQuatToMtx(NUQUAT *quat, NUMTX *out);
+    void NuQuatMul(NUQUAT *out, NUQUAT *q0, NUQUAT *q1);
+    void NuQuatNormalise(NUQUAT *out, NUQUAT *q);
+    void NuQuatHarmonize(NUQUAT *a, NUQUAT *b);
+    void NuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t);
+    void NuQuatLerp(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t);
+    f32 NuCubicInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t);
+    void NuQuatCubicInt(NUQUAT *out, NUQUAT *m, NUQUAT *a, NUQUAT *b, NUQUAT *c, f32 t);
+    f32 NuHermiteInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t);
+    void NuQuatHermiteInt(NUQUAT *out, NUQUAT *m, NUQUAT *q0, NUQUAT *q1, NUQUAT *q2, f32 t);
+    void NuPlnEqn(NUPLANE *out, NUVEC *pnt0, NUVEC *pnt1, NUVEC *pnt2);
+    i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction);
+    i32 NuPlnLine(NUPLANE *plane, NUVEC *s, NUVEC *e, NUVEC *out);
+    f32 NuPlnLine3(NUPLANE *plane, NUVEC *pnt, NUVEC *v, NUVEC *out);
+    i32 NuPtInPolyXY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    i32 NuPtInPolyYX(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    i32 NuPtInPolyXZ(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    i32 NuPtInPolyZX(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    i32 NuPtInPolyYZ(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    i32 NuPtInPolyZY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2);
+    f32 NuPlnDist2(NUPLANE *plane, NUVEC *a, NUVEC *b);
+    f32 NuVecNorm(NUVEC *out, NUVEC *input);
+    void NuVecSurfaceNormal(NUVEC *out, NUVEC *p0, NUVEC *p1, NUVEC *p2);
+    f32 NuVecDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *delta);
+    f32 NuVecXZDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *delta);
+    void PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *result, u16 *yaw, u16 *pitch, i32 looping);
+    void MoveSplinePosition(SPLINEPOS *position, f32 distance);
+    void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i32 looping, i16 first_point,
+                             i16 last_point);
+    void InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping);
+    void NuVecScaleAccum(NUVEC *out, NUVEC *input, f32 scale);
+    void NuVecInvScale(NUVEC *out, NUVEC *input, f32 scale);
+    void NuVecCrossRel(NUVEC *out, NUVEC *base, NUVEC *p0, NUVEC *p1);
+    f32 NuVecMagXZ(NUVEC *input);
+    void NuVecRotateX(NUVEC *out, NUVEC *input, NUANG angle);
+    void NuVecRotateY(NUVEC *out, NUVEC *input, NUANG angle);
+    void NuVecRotateZ(NUVEC *out, NUVEC *input, NUANG angle);
+    void NuVecRotateYValZ(NUVEC *out, f32 magnitude, NUANG angle);
+    void NuMtxLookAtD3D(NUMTX *matrix, NUVEC *eye, NUVEC *target, NUVEC *up);
+    void NuMtxSetPerspectiveD3D(NUMTX *matrix, f32 fov, f32 aspect, f32 near_plane, f32 far_plane);
+    void NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane);
+    void NuMtxSetFrustumBlend(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane);
+    void NuMtxGetFrustumD3D(NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *near_plane,
+                            f32 *far_plane);
+    f32 NuAnimEndFrameOld(void *animation_data);
+    f32 NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special);
+    void NuSpecialGetRadius(NUSPECIALHANDLE *special, NUVEC *centre, f32 *radius);
+    void GizFlowStoreProgress(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
     extern const FLOWBOX_CALLBACKS_PC flowbox_callbacks[3];
     extern u8 gizflow_loop_checksum;
     extern const char GizmoDefaultOutputName[8];
-    i32 __cdecl GizmoGetOutput(void *system, void *gizmo, i32 output, i32 mode);
-    char *__cdecl GizmoGetOutputName(void *system, void *gizmo, i32 output);
-    void __cdecl GizmoActivateReverse(void *system, void *gizmo, i32 reverse, i32 visibility, i32 mode);
-    i32 __cdecl CheckOutputGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    i32 __cdecl ProcessConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    i32 __cdecl CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    i32 __cdecl ProcessActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    void __cdecl PerformActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box);
-    void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
-    FLOWBOX_PC *__cdecl FlowBoxFindByName(GIZFLOW_PC *system, char *name);
+    i32 GizmoGetOutput(void *system, void *gizmo, i32 output, i32 mode);
+    char *GizmoGetOutputName(void *system, void *gizmo, i32 output);
+    void GizmoActivateReverse(void *system, void *gizmo, i32 reverse, i32 visibility, i32 mode);
+    i32 CheckOutputGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    i32 ProcessConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    i32 CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    i32 ProcessActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void PerformActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box);
+    void ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
+    FLOWBOX_PC *FlowBoxFindByName(GIZFLOW_PC *system, char *name);
     extern u8 ForcePlayEndFrame;
     extern u8 ForceEulerToQuat;
     extern ANI3_GLOBALBUFFER_PC *globalbuffer;
-    f32 __cdecl CalcValue1648(char *, i32, i32, f32, ANI3_SCALEMIN_PC *);
-    void __cdecl CalcValue1648Get2Values(char *, i32, i32, ANI3_SCALEMIN_PC *, f32 *, f32 *);
-    void __cdecl ANI_Ani3ExtractAllNodeCurves(ANI3_HEADER_PC *, f32, f32 *, i32, char *);
-    f32 *__cdecl NuAnimCurveExtractAllNodeCurves_3(ANI3_HEADER_PC *, i32, f32, char *);
-    void __cdecl NuAnimCurve2SetApplyToMatrix_3(ANI3_HEADER_PC *, i32, f32, NUMTX *);
-    void __cdecl NuAnimData2CalcMatrix(ANI3_HEADER_PC *, i32, f32, NUMTX *);
-    i32 __cdecl ANI_SimpleAni3PlayerV4Joint(ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, i32, i32);
-    i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *);
-    void __cdecl ResetGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box);
-    i32 __cdecl CheckOutputActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    void __cdecl ResetGizFlowPointers(GIZFLOW_PC *system);
-    void __cdecl ProcessGizFlow(GIZFLOW_PC *system, f32 delta_time);
-    i32 __cdecl ProcessGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    void __cdecl GizmoSetVisibility(void *system, void *gizmo, i32 visible, i32 mode);
-    void __cdecl GizmoActivate(void *system, void *gizmo, i32 active, i32 mode);
-    void __cdecl NuMtxInvRSS(NUMTX *inverse, NUMTX *matrix);
-    f32 __cdecl NuMtxSSE(NUMTX *a, NUMTX *b);
-    void __cdecl NuMtxOrth(NUMTX *matrix);
-    i32 __cdecl RotDiff(u16 current, u16 target);
-    NUANG __cdecl NuAtan2D(f32 dx, f32 dy);
-    NUANG __cdecl NuAtan2DA(f32 dx, f32 dy);
-    f32 __cdecl NuAtan2DAF(f32 dx, f32 dy);
-    void __cdecl AIScriptInitConditions(AISYS_PC *sys);
-    void __cdecl xConditions(NUFPAR_PC *parser);
-    void __cdecl xActions(NUFPAR_PC *parser);
-    void __cdecl xConditionMacro(NUFPAR_PC *parser);
-    void __cdecl xActionMacro(NUFPAR_PC *parser);
-    void __cdecl xRefScript(NUFPAR_PC *parser);
+    f32 CalcValue1648(char *, i32, i32, f32, ANI3_SCALEMIN_PC *);
+    void CalcValue1648Get2Values(char *, i32, i32, ANI3_SCALEMIN_PC *, f32 *, f32 *);
+    void ANI_Ani3ExtractAllNodeCurves(ANI3_HEADER_PC *, f32, f32 *, i32, char *);
+    f32 *NuAnimCurveExtractAllNodeCurves_3(ANI3_HEADER_PC *, i32, f32, char *);
+    void NuAnimCurve2SetApplyToMatrix_3(ANI3_HEADER_PC *, i32, f32, NUMTX *);
+    void NuAnimData2CalcMatrix(ANI3_HEADER_PC *, i32, f32, NUMTX *);
+    i32 ANI_SimpleAni3PlayerV4Joint(ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, i32, i32);
+    i32 ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *);
+    void ResetGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box);
+    i32 CheckOutputActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void ResetGizFlowPointers(GIZFLOW_PC *system);
+    void ProcessGizFlow(GIZFLOW_PC *system, f32 delta_time);
+    i32 ProcessGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void GizmoSetVisibility(void *system, void *gizmo, i32 visible, i32 mode);
+    void GizmoActivate(void *system, void *gizmo, i32 active, i32 mode);
+    void NuMtxInvRSS(NUMTX *inverse, NUMTX *matrix);
+    f32 NuMtxSSE(NUMTX *a, NUMTX *b);
+    void NuMtxOrth(NUMTX *matrix);
+    i32 RotDiff(u16 current, u16 target);
+    NUANG NuAtan2D(f32 dx, f32 dy);
+    NUANG NuAtan2DA(f32 dx, f32 dy);
+    f32 NuAtan2DAF(f32 dx, f32 dy);
+    void AIScriptInitConditions(AISYS_PC *sys);
+    void xConditions(NUFPAR_PC *parser);
+    void xActions(NUFPAR_PC *parser);
+    void xConditionMacro(NUFPAR_PC *parser);
+    void xActionMacro(NUFPAR_PC *parser);
+    void xRefScript(NUFPAR_PC *parser);
     extern VARIPTR *aiscript_load_buffer;
     extern AISCRIPT_PC *aiscript_load_script;
     extern AISTATE_PC *aiscript_load_state;
@@ -16179,66 +16162,66 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern NULISTHDR *aiscript_load_conditions;
     extern NULISTHDR *aiscript_load_actions;
     extern i32 condition_has_no_goto;
-    void __cdecl NuVecAdd(NUVEC *dst, NUVEC *a, NUVEC *b);
-    void __cdecl NuVecSub(NUVEC *dst, NUVEC *a, NUVEC *b);
-    void __cdecl NuVecScale(NUVEC *dst, NUVEC *src, f32 scale);
-    void __cdecl NuVecAddScale(NUVEC *dst, NUVEC *a, NUVEC *b, f32 scale);
-    f32 __cdecl NuVecDot(NUVEC *a, NUVEC *b);
-    void __cdecl NuVecNeg(NUVEC *dst, NUVEC *src);
-    void __cdecl NuVecCross(NUVEC *dst, NUVEC *a, NUVEC *b);
-    void __cdecl NuVecMax(NUVEC *dst, NUVEC *a, NUVEC *b);
-    void __cdecl NuVecMin(NUVEC *dst, NUVEC *a, NUVEC *b);
-    f32 __cdecl NuVecMagSqr(NUVEC *vec);
-    f32 __cdecl NuVecMag(NUVEC *vec);
-    f32 __cdecl NuVecDist(NUVEC *v0, NUVEC *v1, NUVEC *dist);
-    void __cdecl NuVecLerp(NUVEC *dst, NUVEC *a, NUVEC *b, f32 t);
-    void __cdecl NuVecMtxRotate(NUVEC *dst, NUVEC *src, NUMTX *matrix);
-    void __cdecl NuVecMtxTransform(NUVEC *dst, NUVEC *src, NUMTX *matrix);
-    void __cdecl NuVecInvMtxRotate(NUVEC *dst, NUVEC *src, NUMTX *matrix);
-    void __cdecl NuVecInvMtxTransform(NUVEC *dst, NUVEC *src, NUMTX *matrix);
-    NUMTX *__cdecl NuSpecialGetMtx(NUSPECIALHANDLE *special);
-    void __cdecl NuSpecialSetMtx(NUSPECIALHANDLE *special, const NUMTX *matrix);
-    i32 __cdecl NuSpecialExistsFn(NUSPECIALHANDLE *special);
-    i32 __cdecl NuSpecialTestAnim(NUSPECIALHANDLE *special);
-    NUVEC *__cdecl NuSpecialGetPos(NUSPECIALHANDLE *special);
-    NUVEC *__cdecl NuSpecialGetDrawPos(NUSPECIALHANDLE *special);
-    char *__cdecl NuSpecialGetName(NUSPECIALHANDLE *special);
-    NUMTX *__cdecl NuSpecialGetDrawMtx(NUSPECIALHANDLE *special);
-    NUMTX *__cdecl NuSpecialGetInstanceMtx(NUSPECIALHANDLE *special);
-    void *__cdecl NuSpecialGetInstAnim(NUSPECIALHANDLE *special);
-    void __cdecl NuSpecialSetCollision(NUSPECIALHANDLE *special, i32 enabled);
-    i32 __cdecl NuSpecialGetCollision(NUSPECIALHANDLE *special);
-    void __cdecl NuSpecialSetNoVisiTest(NUSPECIALHANDLE *special, i32 enabled);
-    i32 __cdecl NuSpecialGetNoVisiTestFn(NUSPECIALHANDLE *special);
+    void NuVecAdd(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void NuVecSub(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void NuVecScale(NUVEC *dst, NUVEC *src, f32 scale);
+    void NuVecAddScale(NUVEC *dst, NUVEC *a, NUVEC *b, f32 scale);
+    f32 NuVecDot(NUVEC *a, NUVEC *b);
+    void NuVecNeg(NUVEC *dst, NUVEC *src);
+    void NuVecCross(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void NuVecMax(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void NuVecMin(NUVEC *dst, NUVEC *a, NUVEC *b);
+    f32 NuVecMagSqr(NUVEC *vec);
+    f32 NuVecMag(NUVEC *vec);
+    f32 NuVecDist(NUVEC *v0, NUVEC *v1, NUVEC *dist);
+    void NuVecLerp(NUVEC *dst, NUVEC *a, NUVEC *b, f32 t);
+    void NuVecMtxRotate(NUVEC *dst, NUVEC *src, NUMTX *matrix);
+    void NuVecMtxTransform(NUVEC *dst, NUVEC *src, NUMTX *matrix);
+    void NuVecInvMtxRotate(NUVEC *dst, NUVEC *src, NUMTX *matrix);
+    void NuVecInvMtxTransform(NUVEC *dst, NUVEC *src, NUMTX *matrix);
+    NUMTX *NuSpecialGetMtx(NUSPECIALHANDLE *special);
+    void NuSpecialSetMtx(NUSPECIALHANDLE *special, const NUMTX *matrix);
+    i32 NuSpecialExistsFn(NUSPECIALHANDLE *special);
+    i32 NuSpecialTestAnim(NUSPECIALHANDLE *special);
+    NUVEC *NuSpecialGetPos(NUSPECIALHANDLE *special);
+    NUVEC *NuSpecialGetDrawPos(NUSPECIALHANDLE *special);
+    char *NuSpecialGetName(NUSPECIALHANDLE *special);
+    NUMTX *NuSpecialGetDrawMtx(NUSPECIALHANDLE *special);
+    NUMTX *NuSpecialGetInstanceMtx(NUSPECIALHANDLE *special);
+    void *NuSpecialGetInstAnim(NUSPECIALHANDLE *special);
+    void NuSpecialSetCollision(NUSPECIALHANDLE *special, i32 enabled);
+    i32 NuSpecialGetCollision(NUSPECIALHANDLE *special);
+    void NuSpecialSetNoVisiTest(NUSPECIALHANDLE *special, i32 enabled);
+    i32 NuSpecialGetNoVisiTestFn(NUSPECIALHANDLE *special);
     extern f32 nuspecial_const_alpha;
     extern NUVEC nuspecial_const_tint;
     extern i32 nuspecial_const_alpha_enabled;
     extern i32 nuspecial_const_tint_enabled;
     extern i32 nuspecial_draw_state;
-    void __cdecl NuSpecialConstAlpha(i32 enabled, f32 alpha);
-    void __cdecl NuSpecialConstTint(i32 enabled, const NUVEC *tint);
-    void __cdecl NuSpecialGetNext(NUSPECIALHANDLE *special);
-    i32 __cdecl NuSpecialGetFirst(NUGSCN *scene, NUSPECIALHANDLE *special, i32 flags);
-    i32 __cdecl NuSpecialGetNumSpecials(NUGSCN *scene);
-    i32 __cdecl NuSpecialGetOnScreenFn(NUSPECIALHANDLE *special);
-    i32 __cdecl NuSpecialGetVisibilityFn(NUSPECIALHANDLE *special);
+    void NuSpecialConstAlpha(i32 enabled, f32 alpha);
+    void NuSpecialConstTint(i32 enabled, const NUVEC *tint);
+    void NuSpecialGetNext(NUSPECIALHANDLE *special);
+    i32 NuSpecialGetFirst(NUGSCN *scene, NUSPECIALHANDLE *special, i32 flags);
+    i32 NuSpecialGetNumSpecials(NUGSCN *scene);
+    i32 NuSpecialGetOnScreenFn(NUSPECIALHANDLE *special);
+    i32 NuSpecialGetVisibilityFn(NUSPECIALHANDLE *special);
     extern i32 nu_water_reset_state;
     extern i32 nu_water_reset_status;
-    void __cdecl NuWaterSpeed(f32);
-    void __cdecl NuShaderObjectBaseSetWaterSpeed(f32);
+    void NuWaterSpeed(f32);
+    void NuShaderObjectBaseSetWaterSpeed(f32);
     extern i32 nu_water_flow_state;
-    void __cdecl NuWaterClearPc(void);
-    void __cdecl NuWaterReset(void);
+    void NuWaterClearPc(void);
+    void NuWaterReset(void);
     extern u8 fstackmem[NU_PORTAL_STACK_SIZE];
     extern VARIPTR fstack;
     extern VARIPTR fstack_top;
     extern VARIPTR fstack_limit;
-    void __cdecl NuPortalInit(void);
-    void __cdecl Initialise_PS(NUGSCN *);
-    void __cdecl SetAllInstancesVisible(NUGSCN *);
-    void __cdecl SetAllInstancesHidden(NUGSCN *);
-    void __cdecl PortalFlagRoomVisiblePc(NUGSCNROOM *, NUGSCN *);
-    void __cdecl PortalClipRoomPc(NUGSCN *, NUGSCNROOM *, NUPORTAL_FRUSTUM_PC *);
+    void NuPortalInit(void);
+    void Initialise_PS(NUGSCN *);
+    void SetAllInstancesVisible(NUGSCN *);
+    void SetAllInstancesHidden(NUGSCN *);
+    void PortalFlagRoomVisiblePc(NUGSCNROOM *, NUGSCN *);
+    void PortalClipRoomPc(NUGSCN *, NUGSCNROOM *, NUPORTAL_FRUSTUM_PC *);
     extern NUCAMERA *NuPortalCameraPc;
     extern NUMTX NuPortalLocalViewPc;
     extern NUMTX NuPortalProjectionScratchPc;
@@ -16258,7 +16241,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 NuPortalCameraSelectPc;
     extern NUCAMERA NuPortalDebugCameraPc;
     extern NUCAMERA NuPortalRestoreCameraPc;
-    i32 __cdecl NuPortalVisibility(NUGSCN *);
+    i32 NuPortalVisibility(NUGSCN *);
 
     typedef struct MINICAM_COMMAND_PC {
         i32 type;
@@ -16384,51 +16367,51 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern const char AICameraLiteral7580b0[13];
     extern const char AICameraLiteral7580a4[9];
 
-    i32 __cdecl Action_CameraCut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_DynamicCameraCut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_EndCameraCut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    void __cdecl GameCameraMakeMiniCut(NUGSPLINE *, f32, f32, f32, f32, i32, i32);
-    void __cdecl GameCameraMakeMiniCut2(NUVEC *, NUVEC *, i32, f32, f32, f32, f32, i32, i32, i32);
-    void __cdecl GameCameraMakeMiniCut3(u32, f32, i32, i32, i32, void *, i32, NUVEC *, f32, f32, f32, f32, f32, f32,
-                                        f32, i32, NUGSPLINE *, i8, i8);
-    void __cdecl Minicam_AddCommand(i32, f32, i32, void *, NUVEC);
-    void __cdecl MiniCam_ChangeMode(i32 mode);
-    void __cdecl Minicam_AddDeltas(f32 duration);
-    void __cdecl Minicam_ClearDeltas(void);
-    void __cdecl Minicam_ResetForNextCommand(void);
-    void __cdecl Minicam_CalcCamPos(void);
-    void __cdecl Minicam_Update(void);
-    void __cdecl Bolts_Update(WORLDINFO *);
-    void __cdecl Bolts_Draw(WORLDINFO *);
-    void __cdecl Bolt_Reflect(NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl NewTerrHitInfo(u8 *);
-    void __cdecl NewRayCastGetImpactNormal(NUVEC *);
-    void __cdecl Hint_CancelCurrent(void);
+    i32 Action_CameraCut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_DynamicCameraCut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_EndCameraCut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    void GameCameraMakeMiniCut(NUGSPLINE *, f32, f32, f32, f32, i32, i32);
+    void GameCameraMakeMiniCut2(NUVEC *, NUVEC *, i32, f32, f32, f32, f32, i32, i32, i32);
+    void GameCameraMakeMiniCut3(u32, f32, i32, i32, i32, void *, i32, NUVEC *, f32, f32, f32, f32, f32, f32, f32, i32,
+                                NUGSPLINE *, i8, i8);
+    void Minicam_AddCommand(i32, f32, i32, void *, NUVEC);
+    void MiniCam_ChangeMode(i32 mode);
+    void Minicam_AddDeltas(f32 duration);
+    void Minicam_ClearDeltas(void);
+    void Minicam_ResetForNextCommand(void);
+    void Minicam_CalcCamPos(void);
+    void Minicam_Update(void);
+    void Bolts_Update(WORLDINFO *);
+    void Bolts_Draw(WORLDINFO *);
+    void Bolt_Reflect(NUVEC *, NUVEC *, NUVEC *);
+    void NewTerrHitInfo(u8 *);
+    void NewRayCastGetImpactNormal(NUVEC *);
+    void Hint_CancelCurrent(void);
     extern NUJOINTPROCANIMFN_PC JointProcAnimFn;
-    void __cdecl SetProceduralAnimationFn(NUJOINTPROCANIMFN_PC callback);
-    void __cdecl NuAnimBuffProceduralAnimation(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *);
-    void __cdecl NuMouseRead(void);
-    void __cdecl NuPause(i32 paused);
-    char __cdecl NuKeyToAscii(u32 key, i32 shifted);
+    void SetProceduralAnimationFn(NUJOINTPROCANIMFN_PC callback);
+    void NuAnimBuffProceduralAnimation(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *);
+    void NuMouseRead(void);
+    void NuPause(i32 paused);
+    char NuKeyToAscii(u32 key, i32 shifted);
     extern WORLDINFO WorldInfo[2];
     extern WORLDINFO *WORLD;
     extern GAMECAMERA *GameCam;
     extern void *Player[8];
     extern f32 DEFAULTFPS;
-    extern void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index);
+    extern void NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index);
     extern i32 part_debris_count;
     extern WORLDINFO *LWORLD;
     extern u16 ang[513];
     extern f32 NuTrigTable[32768];
-    f32 __cdecl NuExp10(f32);
-    void __cdecl NuTrigInit(void);
-    void __cdecl NuMtxRotateX(NUMTX *matrix, NUANG angle);
-    void __cdecl NuMtxRotateY(NUMTX *matrix, NUANG angle);
-    void __cdecl NuMtxRotateZ(NUMTX *matrix, NUANG angle);
-    void __cdecl NuMtxTransposeR(NUMTX *out, NUMTX *source);
-    void __cdecl NuMtxTranspose(NUMTX *out, NUMTX *source);
-    void __cdecl NuHGobjPOIMtx(NUHGOBJ_EVAL_PC *, u8, NUMTX *, NUMTX *, NUMTX *);
-    void __cdecl NuHGobjEval(NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *);
+    f32 NuExp10(f32);
+    void NuTrigInit(void);
+    void NuMtxRotateX(NUMTX *matrix, NUANG angle);
+    void NuMtxRotateY(NUMTX *matrix, NUANG angle);
+    void NuMtxRotateZ(NUMTX *matrix, NUANG angle);
+    void NuMtxTransposeR(NUMTX *out, NUMTX *source);
+    void NuMtxTranspose(NUMTX *out, NUMTX *source);
+    void NuHGobjPOIMtx(NUHGOBJ_EVAL_PC *, u8, NUMTX *, NUMTX *, NUMTX *);
+    void NuHGobjEval(NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *);
     extern NUCAMERA global_camera;
     extern i32 NuCameraMode;
 
@@ -16451,21 +16434,21 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern NUMTX NuVpIdentityMatrixPc;
     extern const f64 NuVpFixed16ScalePc;
     extern const f64 NuVpDepthRangePc;
-    void __cdecl NuVpSubmitPc(const PC_VIEWPORT_PC *viewport);
-    HRESULT __cdecl PCDeviceSetTransform(i32 state, const NUMTX *matrix);
-    void __cdecl NuVpBuildScalingTemplatePc(void);
-    void __cdecl NuVpSetIdentityPc(NUMTX *matrix);
-    void __cdecl NuVpUpdate(void);
+    void NuVpSubmitPc(const PC_VIEWPORT_PC *viewport);
+    HRESULT PCDeviceSetTransform(i32 state, const NUMTX *matrix);
+    void NuVpBuildScalingTemplatePc(void);
+    void NuVpSetIdentityPc(NUMTX *matrix);
+    void NuVpUpdate(void);
     extern NUMTX psmtx;
     extern f32 NuCameraProjectionGlobalScaleX;
     extern f32 NuCameraProjectionGlobalScaleY;
     extern f32 NuCameraProjectionGlobalOffsetX;
     extern f32 NuCameraProjectionGlobalOffsetY;
-    void __cdecl NuCameraSet(NUCAMERA *camera);
-    void __cdecl NuCameraSetEx(NUCAMERA *, i32);
-    void __cdecl NuCameraSetProjectionMtx(NUMTX *, f32, f32, f32, f32);
-    void __cdecl NuMtxMulH(NUMTX *, NUMTX *, NUMTX *);
-    void __cdecl NuMtxMulRVU0(NUMTX *, NUMTX *, NUMTX *);
+    void NuCameraSet(NUCAMERA *camera);
+    void NuCameraSetEx(NUCAMERA *, i32);
+    void NuCameraSetProjectionMtx(NUMTX *, f32, f32, f32, f32);
+    void NuMtxMulH(NUMTX *, NUMTX *, NUMTX *);
+    void NuMtxMulRVU0(NUMTX *, NUMTX *, NUMTX *);
     extern NUMTX clip_test_mtx;
     extern f32 zx;
     extern f32 zy;
@@ -16482,36 +16465,36 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern u32 clip_outcode_workspace_prefix[8];
     extern NUVEC4BLOCK_PC ClipCornerBlocks[2];
     extern NUVEC4BLOCK_PC ClipTransformedBlocks[2];
-    void __cdecl NuVecMtxTransformBlock(NUVEC *, NUVEC *, NUMTX *, i32);
-    void __cdecl PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *, NUVEC4BLOCK_PC *, NUMTX *, i32, u32 *);
-    i32 __cdecl NuCameraClipTestExtents(NUVEC *, NUVEC *, NUMTX *, f32, i32);
-    void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
-    void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
+    void NuVecMtxTransformBlock(NUVEC *, NUVEC *, NUMTX *, i32);
+    void PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *, NUVEC4BLOCK_PC *, NUMTX *, i32, u32 *);
+    i32 NuCameraClipTestExtents(NUVEC *, NUVEC *, NUMTX *, f32, i32);
+    void NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
+    void NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
     extern f32 NuCameraProjectionFarClipBias;
     extern NUMTX NuCameraScissorProjectionScratch;
-    void __cdecl PCClipScreenUnsupported(void);
+    void PCClipScreenUnsupported(void);
     extern NUVEC cam_axes;
-    void __cdecl NuCameraGet(NUCAMERA *camera);
-    NUCAMERA *__cdecl NuCameraCreate(void);
-    void __cdecl NuCameraDestroy(NUCAMERA *camera);
+    void NuCameraGet(NUCAMERA *camera);
+    NUCAMERA *NuCameraCreate(void);
+    void NuCameraDestroy(NUCAMERA *camera);
     extern NUCAMERA *pNuCam;
     extern const char NuCameraAllocSource[54];
-    NUMTX *__cdecl NuCameraGetMtx(void);
-    void __cdecl NuCameraSetAxes(NUVEC *axes);
-    void __cdecl NuCameraGetAxes(NUVEC *axes);
-    NUCAMERA *__cdecl NuCameraGetCam(void);
-    NUMTX *__cdecl NuCameraGetViewMtx(void);
-    NUMTX *__cdecl NuCameraGetProjectionMtx(void);
-    NUMTX *__cdecl NuCameraGetClippingMtx(void);
-    NUMTX *__cdecl NuCameraGetScalingMtx(void);
-    NUMTX *__cdecl NuCameraGetVPCSMtx(void);
-    NUMTX *__cdecl NuCameraGetVPCMtx(void);
-    NUMTX *__cdecl NuCameraGetVPMtx(void);
-    NUMTX *__cdecl NuCameraGetPCMtx(void);
-    void __cdecl NuCameraGetClipMtx(NUMTX *viewport, NUMTX *scissor);
-    NUMTX *__cdecl NuCameraGetClipPlanes(void);
-    void __cdecl NuMtxCalcCheapFaceOn(NUMTX *matrix, NUVEC *position);
-    void __cdecl NuMtxCalcDebrisFaceOn(NUMTX *matrix);
+    NUMTX *NuCameraGetMtx(void);
+    void NuCameraSetAxes(NUVEC *axes);
+    void NuCameraGetAxes(NUVEC *axes);
+    NUCAMERA *NuCameraGetCam(void);
+    NUMTX *NuCameraGetViewMtx(void);
+    NUMTX *NuCameraGetProjectionMtx(void);
+    NUMTX *NuCameraGetClippingMtx(void);
+    NUMTX *NuCameraGetScalingMtx(void);
+    NUMTX *NuCameraGetVPCSMtx(void);
+    NUMTX *NuCameraGetVPCMtx(void);
+    NUMTX *NuCameraGetVPMtx(void);
+    NUMTX *NuCameraGetPCMtx(void);
+    void NuCameraGetClipMtx(NUMTX *viewport, NUMTX *scissor);
+    NUMTX *NuCameraGetClipPlanes(void);
+    void NuMtxCalcCheapFaceOn(NUMTX *matrix, NUVEC *position);
+    void NuMtxCalcDebrisFaceOn(NUMTX *matrix);
     extern NUMTX vmtx;
     extern NUMTX pmtx;
     extern NUMTX cmtx;
@@ -16553,9 +16536,9 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 new_level_from_menu;
     extern i32 reset_restart;
     extern i32 reset_reimport;
-    void __cdecl NewGameMode(void);
-    void __cdecl ResetLevel(WORLDINFO *world, char *cutscene, i32 unused);
-    void __cdecl GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name);
+    void NewGameMode(void);
+    void ResetLevel(WORLDINFO *world, char *cutscene, i32 unused);
+    void GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name);
     extern i32 no_more_loads;
     extern i32 BonusWinner;
     extern i32 BonusCoinTotal;
@@ -16588,7 +16571,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 cubeEdgeIndices[12][2];
     extern i32 cubeEdgeTopologies[12][2];
     extern MSG win_message;
-    i32 __cdecl NuWindowsProcessMessages(void);
+    i32 NuWindowsProcessMessages(void);
     extern i32 permbuffer_size;
     extern i32 CHARACTERBUFFERSIZE;
     extern i32 EDITBUFFERENDSIZE;
@@ -16602,54 +16585,54 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern VARIPTR superbuffer_ptr;
     extern VARIPTR superbuffer_end;
     extern VARIPTR editbuffer_end;
-    void __cdecl StartPerm(void);
-    void __cdecl EndPerm(void);
-    void __cdecl LoadPermData(void *process);
-    void __cdecl Level_SetDefaults(LEVELDATA_PC *level);
-    void __cdecl CutScenes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR end);
-    EPISODEDATA_PC *__cdecl Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                                   i32 *count_out);
+    void StartPerm(void);
+    void EndPerm(void);
+    void LoadPermData(void *process);
+    void Level_SetDefaults(LEVELDATA_PC *level);
+    void CutScenes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR end);
+    EPISODEDATA_PC *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
+                                           i32 *count_out);
     extern const char LoadPermLevelsPath[18];
     extern const char LoadPermAreasPath[17];
     extern const char LoadPermEpisodesPath[20];
     extern const char EpisodeConfigKeyword_area[5];
     extern const char EpisodeConfigKeyword_episode_start[14];
     extern const char EpisodeConfigKeyword_episode_end[12];
-    void __cdecl WorldInfo_InitOnce(void);
-    WORLDINFO *__cdecl WorldInfo_CurrentlyActive(void);
-    WORLDINFO *__cdecl WorldInfo_CurrentlyLoading(void);
-    i32 __cdecl WorldInfo_OtherLevel(WORLDINFO *world);
-    void __cdecl WorldInfo_UpdateRoomVisibility(WORLDINFO *world, i32 param);
-    void __cdecl edGraEnableTerrainSwap(void);
-    void __cdecl edGraDisableTerrainSwap(void);
-    void __cdecl edGraInitTerrainSwapProtection(void);
+    void WorldInfo_InitOnce(void);
+    WORLDINFO *WorldInfo_CurrentlyActive(void);
+    WORLDINFO *WorldInfo_CurrentlyLoading(void);
+    i32 WorldInfo_OtherLevel(WORLDINFO *world);
+    void WorldInfo_UpdateRoomVisibility(WORLDINFO *world, i32 param);
+    void edGraEnableTerrainSwap(void);
+    void edGraDisableTerrainSwap(void);
+    void edGraInitTerrainSwapProtection(void);
     int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, int show);
 
     extern u32 fseed;
 
-    i32 __cdecl NuRand(NURAND *rand);
-    f32 __cdecl NuRandFloat(void);
-    f32 __cdecl NuRandFloatSeeded(u32 *seed);
-    u32 __cdecl NuRandInt(void);
-    u32 __cdecl NuRandIntSeeded(u32 *seed);
-    void __cdecl NuRandSeed(u32 seed);
-    void __cdecl NuRandSetSeed(NURAND *rand, i32 seed);
-    u32 __cdecl NuRandGetSeed(void);
-    f32 __cdecl NuFloatRand(NURAND *rand);
+    i32 NuRand(NURAND *rand);
+    f32 NuRandFloat(void);
+    f32 NuRandFloatSeeded(u32 *seed);
+    u32 NuRandInt(void);
+    u32 NuRandIntSeeded(u32 *seed);
+    void NuRandSeed(u32 seed);
+    void NuRandSetSeed(NURAND *rand, i32 seed);
+    u32 NuRandGetSeed(void);
+    f32 NuFloatRand(NURAND *rand);
 
     extern u32 NuWindQS;
     extern const f64 nu_wind_phase_scale;
     extern const f64 nu_wind_scaled_time_multiplier;
-    void __cdecl NuWindAnimate(NUWIND *wind, f32 frame_time);
+    void NuWindAnimate(NUWIND *wind, f32 frame_time);
     extern u32 partseed;
     extern RTLSET_PC *PartRTL;
-    void __cdecl SetPartRTLSet(RTLSET_PC *rtl_set);
+    void SetPartRTLSet(RTLSET_PC *rtl_set);
     extern NUGSCN *edbits_base_scene;
     extern void *edbits_base_terrain;
     extern i32 NuSound3Initialized;
     extern TERRAIN_SURFACE_PC TerSurface[32];
     extern EDANIM_PARAM_PC AnimParams[64];
-    void __cdecl SfxBitsRestore(SoundTable *table);
+    void SfxBitsRestore(SoundTable *table);
     extern SoundTable CurrentSFXTAB;
     extern u16 SfxBits[100];
     extern u16 GlobalSfxBits[100];
@@ -16762,25 +16745,25 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern const char LevelConfigKeyword_xspeed[7];
     extern LEVELDATA_PC *levelconfig_ldata;
     extern struct nusound_filename_info_s *MusicInfo;
-    i32 __cdecl GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback);
-    i32 __cdecl GetSfxId(char *name);
-    u32 __cdecl SfxNameHash(const char *name);
+    i32 GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback);
+    i32 GetSfxId(char *name);
+    u32 SfxNameHash(const char *name);
     extern i16 *SfxHashHeads;
-    void __cdecl GameAudio_PlaySfxById(i32, NUVEC *, i32, i32);
-    void __cdecl GameAudio_PlaySfx(i32, NUVEC *, i32, i32);
-    void __cdecl AddLevSfx(WORLDINFO *, NUVEC *, char *, i32);
-    void __cdecl UpdateLevelSfx(WORLDINFO *, i32);
-    void __cdecl PlaySfxByIdEx(i32, NUVEC *, f32, f32);
-    void __cdecl PlaySfxAndSetVolume(char *, NUVEC *, f32);
-    void __cdecl PlaySfxAndSetPitch(char *, NUVEC *, f32);
-    void __cdecl PlaySfxById(i32, NUVEC *);
-    void __cdecl PlaySfxByIdAndSetVolume(i32, NUVEC *, f32);
-    void __cdecl PlaySfx(char *, NUVEC *);
+    void GameAudio_PlaySfxById(i32, NUVEC *, i32, i32);
+    void GameAudio_PlaySfx(i32, NUVEC *, i32, i32);
+    void AddLevSfx(WORLDINFO *, NUVEC *, char *, i32);
+    void UpdateLevelSfx(WORLDINFO *, i32);
+    void PlaySfxByIdEx(i32, NUVEC *, f32, f32);
+    void PlaySfxAndSetVolume(char *, NUVEC *, f32);
+    void PlaySfxAndSetPitch(char *, NUVEC *, f32);
+    void PlaySfxById(i32, NUVEC *);
+    void PlaySfxByIdAndSetVolume(i32, NUVEC *, f32);
+    void PlaySfx(char *, NUVEC *);
     extern u32 PCImplodeWordMask;
-    i32 __cdecl ExplodeBufferSize(char *);
-    i32 __cdecl ExplodeCompressedSize(char *);
-    void __cdecl NuDatFileDecodeNext(void);
-    typedef i32(__cdecl *AISYS_SPECIAL_NODE_CALLBACK_PC)(void *, NUSPECIALHANDLE *);
+    i32 ExplodeBufferSize(char *);
+    i32 ExplodeCompressedSize(char *);
+    void NuDatFileDecodeNext(void);
+    typedef i32 (*AISYS_SPECIAL_NODE_CALLBACK_PC)(void *, NUSPECIALHANDLE *);
     extern AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback;
     extern const f64 AIPathAngularScale;
     extern f32 AIPathConnectionMargin;
@@ -16788,23 +16771,23 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern const f64 PCPathArcSineCoefficient5;
     extern const f64 PCPathArcSineCoefficient7;
     extern const f64 PCPathArcSineCoefficient9;
-    i16 __cdecl PCPathArcSine(f32);
-    f32 __cdecl NuVecXZDist(NUVEC *, NUVEC *, NUVEC *);
+    i16 PCPathArcSine(f32);
+    f32 NuVecXZDist(NUVEC *, NUVEC *, NUVEC *);
     extern const f64 PCAtan2RadianScale;
-    f32 __cdecl NuAtan2(f32, f32);
-    i32 __cdecl WithinConnection(void *, NUVEC *, AIPATH_PC *, AIPATHCNX_PC *, i32, AIPATHCNX_PC *, i32, i32,
-                                 AIPATHINFO_PC *, f32, i32);
-    void __cdecl AIPathNodeUpdatePos(void *, AIPATH_PC *, AIPATHNODE_PC *);
+    f32 NuAtan2(f32, f32);
+    i32 WithinConnection(void *, NUVEC *, AIPATH_PC *, AIPATHCNX_PC *, i32, AIPATHCNX_PC *, i32, i32, AIPATHINFO_PC *,
+                         f32, i32);
+    void AIPathNodeUpdatePos(void *, AIPATH_PC *, AIPATHNODE_PC *);
     extern f32 BoltShootParameter;
     extern u16 BoltShootClassId0;
     extern u16 BoltShootClassId1;
     extern u16 BoltShootClassId2;
     extern i32 BoltShootIdScratch;
     extern NUVEC BoltShootPositionScratch;
-    BOLT_PC *__cdecl Bolt_Alloc(void);
+    BOLT_PC *Bolt_Alloc(void);
     extern const f64 BoltTargetRandomDenominator;
-    f32 __cdecl Bolt_ObjTargetPosYAdjust(GAMEOBJECT *);
-    void __cdecl Bolt_Shoot(GAMEOBJECT *, i32, i32);
+    f32 Bolt_ObjTargetPosYAdjust(GAMEOBJECT *);
+    void Bolt_Shoot(GAMEOBJECT *, i32, i32);
     extern void *CurrentTerrain;
 
     typedef struct ai_special_terrain_platform_pc_s {
@@ -16821,18 +16804,18 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(sizeof(AI_SPECIAL_TERRAIN_PLATFORM_PC) == 0x6c);
     STATIC_ASSERT(offsetof(AI_SPECIAL_TERRAIN_PLATFORM_PC, scene_object_index) == 0x4a);
     STATIC_ASSERT(offsetof(AI_SPECIAL_TERRAIN_VIEW_PC, platforms) == 0x68);
-    void *__cdecl TerrainGetCur(void);
-    void __cdecl TerrainSetCur(void *);
-    i32 __cdecl PlatInstGetHit(i32);
-    i32 __cdecl NewPlatInst(void *, i32);
-    i32 __cdecl DeletePlatinst(i32);
-    void __cdecl ScanTerrIDRemovePlat(i32);
-    i32 __cdecl NuSpecialGetInstanceix(NUSPECIALHANDLE *);
-    void __cdecl NuVec4MtxTransformVU0(NUVEC4 *, NUVEC4 *, NUMTX *);
-    i32 __cdecl NuSpecialDrawAt(NUSPECIALHANDLE *, NUMTX *);
-    f32 __cdecl PCSoundVolumeLookup(i32);
-    HRESULT __cdecl PCSoundSetRawVolume(IDirectSoundBuffer *, i32);
-    HRESULT __cdecl PCSoundSetLinearVolume(IDirectSoundBuffer *, f32);
+    void *TerrainGetCur(void);
+    void TerrainSetCur(void *);
+    i32 PlatInstGetHit(i32);
+    i32 NewPlatInst(void *, i32);
+    i32 DeletePlatinst(i32);
+    void ScanTerrIDRemovePlat(i32);
+    i32 NuSpecialGetInstanceix(NUSPECIALHANDLE *);
+    void NuVec4MtxTransformVU0(NUVEC4 *, NUVEC4 *, NUMTX *);
+    i32 NuSpecialDrawAt(NUSPECIALHANDLE *, NUMTX *);
+    f32 PCSoundVolumeLookup(i32);
+    HRESULT PCSoundSetRawVolume(IDirectSoundBuffer *, i32);
+    HRESULT PCSoundSetLinearVolume(IDirectSoundBuffer *, f32);
     extern SoundVoiceManagerPC SoundVoiceManager;
     extern CRITICAL_SECTION SoundVoiceCriticalSection;
     extern i32 SoundVoiceEnabledGate;
@@ -16841,57 +16824,57 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern const char *PCSoundOggExtension;
     extern i32 PCSoundVolumeMultiplier;
     /* Current shared TYPE100/INSTANCE114/TERRAIN_SET views suffice; no new layout slots. */
-    i32 __cdecl NuRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
-    i32 __cdecl NuRndrStrip3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *, i32);
-    i32 __cdecl NuRndrTriStrip3dClip(NURND_VERTEX3D_PC *, i32, NUMTX *, NUMTL *);
-    i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 count);
-    void __cdecl NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour);
-    void __cdecl NuRndrSphere(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale);
-    void __cdecl NuRndrSphereEx(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale, i32 angle_step);
-    void __cdecl EdFileSwapEndianess16(void *);
-    void __cdecl EdFileSwapEndianess32(void *);
-    void __cdecl GameAntinode_Update(void *);
-    i32 __cdecl ViewCamGetMode(void);
-    NUVEC *__cdecl ViewCamGetTgt(void);
-    void *__cdecl GameAntnode_CreateSys(WORLDINFO *, VARIPTR *, VARIPTR *, i32);
-    void __cdecl GameAntinode_UnregisterAntiNode(void *, void *);
-    void *__cdecl GameAntinode_UpdateAntiNodeUsingData(void *, void *, NUVEC *, u16, void *, f32, i32);
-    GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowupTypeAdd(WORLDINFO *, NUSPECIALHANDLE *, i32, i32 *);
-    void __cdecl GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *, WORLDINFO *);
-    void *__cdecl gizmoblowup_reservebuffers(WORLDINFO *);
+    i32 NuRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
+    i32 NuRndrStrip3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *, i32);
+    i32 NuRndrTriStrip3dClip(NURND_VERTEX3D_PC *, i32, NUMTX *, NUMTL *);
+    i32 NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 count);
+    void NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour);
+    void NuRndrSphere(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale);
+    void NuRndrSphereEx(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale, i32 angle_step);
+    void EdFileSwapEndianess16(void *);
+    void EdFileSwapEndianess32(void *);
+    void GameAntinode_Update(void *);
+    i32 ViewCamGetMode(void);
+    NUVEC *ViewCamGetTgt(void);
+    void *GameAntnode_CreateSys(WORLDINFO *, VARIPTR *, VARIPTR *, i32);
+    void GameAntinode_UnregisterAntiNode(void *, void *);
+    void *GameAntinode_UpdateAntiNodeUsingData(void *, void *, NUVEC *, u16, void *, f32, i32);
+    GIZMOBLOWUPTYPE_PC *GizmoBlowupTypeAdd(WORLDINFO *, NUSPECIALHANDLE *, i32, i32 *);
+    void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *, WORLDINFO *);
+    void *gizmoblowup_reservebuffers(WORLDINFO *);
     /* All aggregate views stay named/local and already asserted; no new shared field/data required. */
-    i32 __cdecl clipTestBox(NUVEC *, NUVEC *, NUPLANE *, i32);
-    i32 __cdecl NuPortalClipTestBox(NUVEC *, NUVEC *, NUPORTAL_FRUSTUM_PC *);
-    void __cdecl NuMtxInvH(NUMTX *, NUMTX *);
-    f32 __cdecl NuVecMtxTransformH(NUVEC *, NUVEC *, NUMTX *);
-    void __cdecl NuVec4MtxTransformH(NUVEC4 *, NUVEC4 *, NUMTX *);
+    i32 clipTestBox(NUVEC *, NUVEC *, NUPLANE *, i32);
+    i32 NuPortalClipTestBox(NUVEC *, NUVEC *, NUPORTAL_FRUSTUM_PC *);
+    void NuMtxInvH(NUMTX *, NUMTX *);
+    f32 NuVecMtxTransformH(NUVEC *, NUVEC *, NUMTX *);
+    void NuVec4MtxTransformH(NUVEC4 *, NUVEC4 *, NUMTX *);
     struct addgizmotype_pc_s;
     struct zipup_progress_pc_s;
-    i32 __cdecl ZipUps_Load(WORLDINFO *world);
-    void *__cdecl ZipUps_ReserveBufferSpace(WORLDINFO *world);
-    void __cdecl ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed);
-    void __cdecl ZipUps_Reset(WORLDINFO *world, void *unused, struct zipup_progress_pc_s *progress);
-    void __cdecl ZipUps_Update(WORLDINFO *world, void *unused, f32 delta_time);
-    struct addgizmotype_pc_s *__cdecl ZipUps_RegisterGizmo(i32 type_id);
-    void __cdecl InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end);
-    void __cdecl DrawRopeSingle(NUVEC *start, NUVEC *end, f32 amount, NUMTL *material, f32 time, f32 grow_time,
-                                f32 spacing, f32 scale);
-    void __cdecl ZipUps_DrawLines(void);
-    i32 __cdecl ObjLandReady(GAMEOBJECT *object);
-    GIZMO_PC *__cdecl AddGizmo(void *system, i32 type_id, char *name, void *object);
+    i32 ZipUps_Load(WORLDINFO *world);
+    void *ZipUps_ReserveBufferSpace(WORLDINFO *world);
+    void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed);
+    void ZipUps_Reset(WORLDINFO *world, void *unused, struct zipup_progress_pc_s *progress);
+    void ZipUps_Update(WORLDINFO *world, void *unused, f32 delta_time);
+    struct addgizmotype_pc_s *ZipUps_RegisterGizmo(i32 type_id);
+    void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end);
+    void DrawRopeSingle(NUVEC *start, NUVEC *end, f32 amount, NUMTL *material, f32 time, f32 grow_time, f32 spacing,
+                        f32 scale);
+    void ZipUps_DrawLines(void);
+    i32 ObjLandReady(GAMEOBJECT *object);
+    GIZMO_PC *AddGizmo(void *system, i32 type_id, char *name, void *object);
 
-    i32 __cdecl GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *);
-    void __cdecl GizBlowup_InitTerrain(void);
-    void __cdecl GizBlowup_DeleteSingleTerrain(GIZMOBLOWUP_PC *);
-    void __cdecl GizBlowup_DeleteTerrain(void);
-    void __cdecl GizmoBlowupsFinalSetup(WORLDINFO *);
-    void __cdecl GizmoBlowupVisibilityOverrides(WORLDINFO *);
-    GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindFromPlatID(WORLDINFO *, i32);
-    GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindByName(WORLDINFO *, char *);
-    GIZMOBLOWUP_PC *__cdecl FindNearestGizmoBlowUp(WORLDINFO *, NUVEC *, f32);
-    void __cdecl GizmoSwapBlowups(GIZMOBLOWUP_PC *, GIZMOBLOWUP_PC *);
-    void __cdecl GizmoSortBlowups(WORLDINFO *);
-    void __cdecl PlatInstRotate(i32, i32);
+    i32 GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *);
+    void GizBlowup_InitTerrain(void);
+    void GizBlowup_DeleteSingleTerrain(GIZMOBLOWUP_PC *);
+    void GizBlowup_DeleteTerrain(void);
+    void GizmoBlowupsFinalSetup(WORLDINFO *);
+    void GizmoBlowupVisibilityOverrides(WORLDINFO *);
+    GIZMOBLOWUP_PC *GizmoBlowUp_FindFromPlatID(WORLDINFO *, i32);
+    GIZMOBLOWUP_PC *GizmoBlowUp_FindByName(WORLDINFO *, char *);
+    GIZMOBLOWUP_PC *FindNearestGizmoBlowUp(WORLDINFO *, NUVEC *, f32);
+    void GizmoSwapBlowups(GIZMOBLOWUP_PC *, GIZMOBLOWUP_PC *);
+    void GizmoSortBlowups(WORLDINFO *);
+    void PlatInstRotate(i32, i32);
     extern GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC GizmoBlowupHitMultiplierPc;
     STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
     STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, burst_platform_id) == 0x104);
@@ -16925,11 +16908,11 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern char GrapDetach_text[11];
     extern struct PC_OGG_CACHE_RECORD_PC *PCOggCachePoolPc;
     extern i32 PCOggCriticalSectionPc;
-    i32 __cdecl PCThreadCriticalSectionCreate_candidate(void);
-    void __cdecl NuThreadCriticalSectionBegin(i32);
-    void __cdecl NuThreadCriticalSectionEnd(i32);
-    i64 __cdecl PCThreadMillisecondsPc(void);
-    void __cdecl PCThreadCriticalSectionDeleteNoOpPc(i32);
+    i32 PCThreadCriticalSectionCreate_candidate(void);
+    void NuThreadCriticalSectionBegin(i32);
+    void NuThreadCriticalSectionEnd(i32);
+    i64 PCThreadMillisecondsPc(void);
+    void PCThreadCriticalSectionDeleteNoOpPc(i32);
     STATIC_ASSERT(sizeof(PC_DS_CAPS_VIEW) == 0x60);
     STATIC_ASSERT(offsetof(SoundVoiceManagerPC, option5) == 5);
     STATIC_ASSERT(offsetof(SoundVoiceManagerPC, option6) == 6);
@@ -16943,40 +16926,40 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, set_orientation) == 0x34);
     STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, set_position) == 0x38);
     STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, set_rolloff_factor) == 0x3c);
-    void __cdecl PCSoundPlayUnpositioned(i32, i32, i32, i32, f32, i32, f32, f32, i32);
-    void __cdecl PCSoundPlayUnpositionedWrapper(i32, i32, i32, i32, f32, i32, f32, f32);
+    void PCSoundPlayUnpositioned(i32, i32, i32, i32, f32, i32, f32, f32, i32);
+    void PCSoundPlayUnpositionedWrapper(i32, i32, i32, i32, f32, i32, f32, f32);
     extern i32 PCSoundStartedOneShotCountPc;
     extern i32 PCSoundStartedLoopCountPc;
     extern i32 PCSoundUpdatedLoopCountPc;
     extern NUVEC PCSoundListenerLoopPositionPc;
-    void __cdecl PCSoundPlayPositionedLoop(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32);
-    void __cdecl PCSoundPlayPositioned(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32, i32);
-    void __cdecl PCSoundPlayPositionedWrapper(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32);
+    void PCSoundPlayPositionedLoop(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32);
+    void PCSoundPlayPositioned(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32, i32);
+    void PCSoundPlayPositionedWrapper(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32);
     extern const GUID SoundVoice3DBufferIID;
 #ifdef __cplusplus
-    void __cdecl PCSoundAlreadyPlayingHook(...);
-    void __cdecl PCSoundFailure(...);
+    void PCSoundAlreadyPlayingHook(...);
+    void PCSoundFailure(...);
 #else
-void __cdecl PCSoundAlreadyPlayingHook(void);
+void PCSoundAlreadyPlayingHook(void);
 #endif
-    void __cdecl NuAnimRelocatePtrsANI3(ANI3_HEADER_PC *, i32);
-    void __cdecl NuTexAnimProgSysInit(void);
-    void __cdecl ANI_FixUpAddrs(ANI3_HEADER_PC *, i32, i32);
-    void *__cdecl NuAnimData2FixPtrs(void *, i32, i32, i32);
-    void *__cdecl NuAnimData2Fixup(i32, void **);
-    void *__cdecl NuPtrBlockFix(void *);
+    void NuAnimRelocatePtrsANI3(ANI3_HEADER_PC *, i32);
+    void NuTexAnimProgSysInit(void);
+    void ANI_FixUpAddrs(ANI3_HEADER_PC *, i32, i32);
+    void *NuAnimData2FixPtrs(void *, i32, i32, i32);
+    void *NuAnimData2Fixup(i32, void **);
+    void *NuPtrBlockFix(void *);
     extern NUBRIDGE_PC Bridges[8];
     extern i32 NuBridgeProc;
-    void __cdecl NuMtxPreRotateX(NUMTX *, NUANG);
-    void __cdecl NuMtxPreRotateY(NUMTX *, NUANG);
-    void __cdecl NuMtxPreRotateZ(NUMTX *, NUANG);
-    i32 __cdecl NuBridgeCreate(NUGSCN *, NUSPECIALHANDLE *, NUSPECIALHANDLE *, NUVEC *, NUVEC *, f32, i16, f32, f32,
-                               f32, f32, i32, f32, f32, i32, u32);
-    void __cdecl NuBridgeInit(void);
-    void __cdecl NuBridgeRemove(i32);
-    void __cdecl NuBridgeUpdate(NUVEC *);
-    void __cdecl NuBridgeDraw(NUMTL *);
-    void __cdecl NuBrdigeDrawRope(NUMTL *, NUVEC *, NUVEC *, i32, i32 *, i32);
+    void NuMtxPreRotateX(NUMTX *, NUANG);
+    void NuMtxPreRotateY(NUMTX *, NUANG);
+    void NuMtxPreRotateZ(NUMTX *, NUANG);
+    i32 NuBridgeCreate(NUGSCN *, NUSPECIALHANDLE *, NUSPECIALHANDLE *, NUVEC *, NUVEC *, f32, i16, f32, f32, f32, f32,
+                       i32, f32, f32, i32, u32);
+    void NuBridgeInit(void);
+    void NuBridgeRemove(i32);
+    void NuBridgeUpdate(NUVEC *);
+    void NuBridgeDraw(NUMTL *);
+    void NuBrdigeDrawRope(NUMTL *, NUVEC *, NUVEC *, i32, i32 *, i32);
     extern f32 AIFireIntervalMul;
     extern f32 GhostLightMul;
     extern f32 GhostLightTargetMul;
@@ -17001,8 +16984,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, time_elapsed) == 8);
     extern ADAPTIVEDIFFICULTY_PC adaptivedifficulty;
     extern f32 AdaptiveDifficultyRecoveryTimePc;
-    f32 __cdecl AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY_PC *);
-    f32 __cdecl AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount);
+    f32 AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY_PC *);
+    f32 AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount);
     extern i8 adtabentries[9][4];
     extern i8 (*adtab)[4];
 
@@ -17017,7 +17000,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char AIControlAllNonPartyName[14];
     extern const char AIControlDefaultTitleName[8];
 
-    typedef void(__cdecl *PLAYER_CLEAR_CONTEXT_CALLBACK_PC)(GAMEOBJECT *, i32);
+    typedef void (*PLAYER_CLEAR_CONTEXT_CALLBACK_PC)(GAMEOBJECT *, i32);
     extern i32 LEGOCONTEXT_WHIP;
     extern i32 LEGOCONTEXT_SUPERCARRY;
     extern i32 LEGOCONTEXT_SPECIALMOVE_ATTACKER;
@@ -17050,14 +17033,14 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char GameAIPlayerFormat[9];
 
     extern AREA_DATA_PC *PODSPRINT_ADATA;
-    void __cdecl MakeThrowVector(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32);
-    APIOBJECT_PC *__cdecl GetNamedAPIObject(void *, char *);
-    NUVEC *__cdecl GetAICreatureOrigin(AISYS_PC *, AIPACKET_PC *);
-    typedef APIOBJECT_PC *(__cdecl *GAMEOBJECT_LOOKUP_CALLBACK_PC)(void *, char *);
+    void MakeThrowVector(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32);
+    APIOBJECT_PC *GetNamedAPIObject(void *, char *);
+    NUVEC *GetAICreatureOrigin(AISYS_PC *, AIPACKET_PC *);
+    typedef APIOBJECT_PC *(*GAMEOBJECT_LOOKUP_CALLBACK_PC)(void *, char *);
     extern GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback;
-    GAMEOBJECT *__cdecl GetNamedGameObject(void *, char *);
+    GAMEOBJECT *GetNamedGameObject(void *, char *);
     extern const char AIScriptParamPrefix[6];
-    f32 __cdecl AIParamToFloat(AISCRIPTPROCESS_PC *, char *);
+    f32 AIParamToFloat(AISCRIPTPROCESS_PC *, char *);
     extern const char AIScriptActionNameArgPrefix[6];
     extern const char AITransferLiteral757834[13];
     extern const char AITransferLiteral757874[15];
@@ -17080,24 +17063,23 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char AITransferLiteral757e70[15];
     extern const char AITransferLiteral75772c[5];
     extern const char AITransferLiteral757a44[23];
-    i32 __cdecl LookupDebrisEffectPageIgnore(char *, i8, i32);
-    i32 __cdecl LookupDebrisEffectPage(char *, i8);
+    i32 LookupDebrisEffectPageIgnore(char *, i8, i32);
+    i32 LookupDebrisEffectPage(char *, i8);
     extern i32 nufile_lsn_allowed;
-    i32 __cdecl NuDatGetFileInfo(NUDATHDR *, char *, i64 *, i32 *);
-    i32 __cdecl Action_BigJump(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetCurrentSpeed(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetGravityHeight(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SnapWeaponOut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_DontAvoidCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_MoveAwayFromLastAttacker(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32,
-                                                f32);
-    i32 __cdecl Action_CannotDropIn(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetSpline(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_CameraShake(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetZeroAcceleration(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_FaceCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetPath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetInvulnerable(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 NuDatGetFileInfo(NUDATHDR *, char *, i64 *, i32 *);
+    i32 Action_BigJump(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetCurrentSpeed(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetGravityHeight(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SnapWeaponOut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_DontAvoidCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_MoveAwayFromLastAttacker(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_CannotDropIn(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetSpline(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_CameraShake(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetZeroAcceleration(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_FaceCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetPath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetInvulnerable(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
     extern const char AITransferLiteral7576b8[7];
     extern const char AITransferLiteral7576a8[7];
     extern const char AITransferLiteral7576b0[6];
@@ -17118,7 +17100,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char AITransferLiteral757a20[8];
     extern const char AITransferLiteral757f7c[7];
     extern i32 gizspecial_gizmotype_id;
-    extern void(__cdecl *APIObjPlaySfxByIdFn)(i32, NUVEC *);
+    extern void (*APIObjPlaySfxByIdFn)(i32, NUVEC *);
     extern const char WorldGrassFormat[7];
     extern const char WorldBridgeFormat[7];
     extern i32 Grass_Available;
@@ -17174,47 +17156,47 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char APIObjectPakExtension[5];
     extern i32 append;
     extern i32 nopakfile;
-    extern i32(__cdecl *RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *);
+    extern i32 (*RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *);
     extern void *RedirectAnimList;
     extern char RedirectAnimDir[64];
     extern PC_FILEEXTINFO extensions[64];
     extern i32 num_extensions;
-    void __cdecl NuFileExtInit(i32);
-    i32 __cdecl NuFileInitEx(i32 device_id, i32 reboot_iop, i32 eject);
-    void __cdecl NuFileInit(i32 device_id);
-    void __cdecl NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject);
-    i32 __cdecl NuFileUseHiresPC(void);
-    i32 __cdecl NuFileExtGetType(char *path, i32 path_len);
-    i32 __cdecl NuFileExtRemove(char *destination, char *path);
-    i32 __cdecl NuFileExtGetExt(char *destination, i32 capacity, i32 type);
-    i32 __cdecl NuFileExtConvert(char *destination, char *path);
-    void __cdecl PCDeviceResetState(void);
-    void __cdecl PCDeviceSetRenderState(i32, u32);
-    void __cdecl PCDeviceSetSamplerState(u32, i32, u32);
-    void __cdecl PCDeviceSetTexture(u32, void *);
-    void __cdecl PCDeviceSetTextureStageState(u32, i32, u32);
+    void NuFileExtInit(i32);
+    i32 NuFileInitEx(i32 device_id, i32 reboot_iop, i32 eject);
+    void NuFileInit(i32 device_id);
+    void NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject);
+    i32 NuFileUseHiresPC(void);
+    i32 NuFileExtGetType(char *path, i32 path_len);
+    i32 NuFileExtRemove(char *destination, char *path);
+    i32 NuFileExtGetExt(char *destination, i32 capacity, i32 type);
+    i32 NuFileExtConvert(char *destination, char *path);
+    void PCDeviceResetState(void);
+    void PCDeviceSetRenderState(i32, u32);
+    void PCDeviceSetSamplerState(u32, i32, u32);
+    void PCDeviceSetTexture(u32, void *);
+    void PCDeviceSetTextureStageState(u32, i32, u32);
     extern u8 PCDeviceStateCacheEnabled;
     extern PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc;
     extern i32 PCDeviceSamplerInvalidation[16][2];
-    void __cdecl Customiser_DumpAll(void *, WORLDINFO *);
-    void __cdecl ClearAreaProgress(i32, i32);
-    i32 __cdecl MovingBackwards(GAMEOBJECT *);
-    void __cdecl Climb_UpdateMagnetRotation(GAMEOBJECT *);
-    void *__cdecl NuAnimData2LoadBuffFromPAK(void *, i32);
-    void *__cdecl NuAnimData2LoadBuffEx(char *, VARIPTR *, VARIPTR *, void **);
-    void *__cdecl NuAnimData2LoadBuff(char *, VARIPTR *, VARIPTR *);
-    void __cdecl PCAnimationLoadFailureNoOp(char *);
+    void Customiser_DumpAll(void *, WORLDINFO *);
+    void ClearAreaProgress(i32, i32);
+    i32 MovingBackwards(GAMEOBJECT *);
+    void Climb_UpdateMagnetRotation(GAMEOBJECT *);
+    void *NuAnimData2LoadBuffFromPAK(void *, i32);
+    void *NuAnimData2LoadBuffEx(char *, VARIPTR *, VARIPTR *, void **);
+    void *NuAnimData2LoadBuff(char *, VARIPTR *, VARIPTR *);
+    void PCAnimationLoadFailureNoOp(char *);
     STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef8_word) == 0xef8);
     STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1044) == 0x1044);
-    i32 __cdecl Action_SetSide(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetTakeOverTarget(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetStateArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SnapToOrigin(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_GameDontPush(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetAIOverrideControl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_PlayGizSpecial(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetLastAttacker(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetUseOneAtOnce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetSide(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetTakeOverTarget(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetStateArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SnapToOrigin(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_GameDontPush(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetAIOverrideControl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_PlayGizSpecial(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetLastAttacker(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetUseOneAtOnce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
     extern i32 NuLgtLaserCnt;
     extern i32 NuLgtLaserOldCnt;
     extern i32 NuLgtSeed;
@@ -17259,11 +17241,11 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, hitpoints) == 0x29);
     STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, contact_index) == 0x2a);
     extern TAKEOVEROBJECT_PC takeoverobjects[8];
-    i32 __cdecl TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
-    void __cdecl RegisterTakeOverObject(GAMEOBJECT *);
-    i32 __cdecl Action_SetTaggable(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_TagCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_RegisterTakeOverObject(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
+    void RegisterTakeOverObject(GAMEOBJECT *);
+    i32 Action_SetTaggable(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_TagCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_RegisterTakeOverObject(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 
     extern i32 num_takeoverobjects;
     extern char DoorExitNamePc[64];
@@ -17282,13 +17264,13 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 Lap;
     extern i32 BuildUpTotal;
     extern i32 BuildUpDone;
-    void __cdecl NewArea_ResetGlobalsPC(void);
-    void __cdecl NewArea(void);
-    void __cdecl ResetMinikitCounter(void);
+    void NewArea_ResetGlobalsPC(void);
+    void NewArea(void);
+    void ResetMinikitCounter(void);
     STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, flags_word) == 0x210);
     STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
-    void __cdecl NuPPUnpack(void *, void *);
-    i32 __cdecl NuPPLoadBuffer(NUFILE file, void *buffer, i32 capacity);
+    void NuPPUnpack(void *, void *);
+    i32 NuPPLoadBuffer(NUFILE file, void *buffer, i32 capacity);
     extern const char AITransferLiteral757a94[9];
     extern const char AITransferLiteral757a8c[7];
     extern const char AITransferLiteral757c64[4];
@@ -17301,8 +17283,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     extern PARTTYPE_LOOKUP_PC part_types[128];
     extern NUGSPLINE *script_spline_selected;
-    i32 __cdecl PARTLookupType(char *name);
-    i32 __cdecl NuSplineFindAllBeg(NUGSCN *scene, char *name, NUGSPLINE **results, i32 capacity);
+    i32 PARTLookupType(char *name);
+    i32 NuSplineFindAllBeg(NUGSCN *scene, char *name, NUGSPLINE **results, i32 capacity);
     extern const char AITransferLiteral7577dc[8];
     extern const char AITransferLiteral757824[7];
     extern const char AITransferLiteral75781c[8];
@@ -17352,21 +17334,21 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern f32 LEDGETERRAINLOOKAHEAD;
     extern i16 LEGOACT_HANG_MOVE;
 
-    void __cdecl StoreProgressAICharacter(LEVEL_PROGRESS *progress);
-    void __cdecl Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress);
-    void __cdecl StoreLevelProgressFn(WORLDINFO *world, LEVEL_PROGRESS *progress, i32 area_progress);
-    void __cdecl StoreLevelProgress(WORLDINFO *world);
+    void StoreProgressAICharacter(LEVEL_PROGRESS *progress);
+    void Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress);
+    void StoreLevelProgressFn(WORLDINFO *world, LEVEL_PROGRESS *progress, i32 area_progress);
+    void StoreLevelProgress(WORLDINFO *world);
     extern i32 bonus_gunship_store_progress_flag;
 
-    void __cdecl NuSound3GetStreamInfo(i32 stream_index, void *info);
-    void __cdecl NuQFntPushPrintMode(u32 mode);
-    void __cdecl NuQFntPopPrintMode(void);
-    void __cdecl NuQFntSet(VUFNT *font);
-    void __cdecl NuQFntSetICGap(VUFNT *font, f32 ic_gap);
-    void __cdecl NuQFntSetScale(VUFNT *font, f32 x_scale, f32 y_scale);
-    void __cdecl NuQFntSetColour(VUFNT *font, u32 colour);
-    void __cdecl NuQFntSetPointSize(VUFNT *font, f32 width, f32 height);
-    void __cdecl NuQFntSetScale2d(VUFNT *font, f32 x_scale, f32 y_scale);
+    void NuSound3GetStreamInfo(i32 stream_index, void *info);
+    void NuQFntPushPrintMode(u32 mode);
+    void NuQFntPopPrintMode(void);
+    void NuQFntSet(VUFNT *font);
+    void NuQFntSetICGap(VUFNT *font, f32 ic_gap);
+    void NuQFntSetScale(VUFNT *font, f32 x_scale, f32 y_scale);
+    void NuQFntSetColour(VUFNT *font, u32 colour);
+    void NuQFntSetPointSize(VUFNT *font, f32 width, f32 height);
+    void NuQFntSetScale2d(VUFNT *font, f32 x_scale, f32 y_scale);
     extern u32 NuQFntModeStack[16];
     extern i32 NuQFntModeStackIndex;
     extern const char NuMusicDebugClassInvalid[8];
@@ -17395,60 +17377,60 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char NuMusicDebugStatus7[8];
     extern const char *NuMusicVoiceStatusText[8];
     extern u32 NuMusicDebugColour;
-    void __cdecl PCCharacterSystemExistingNoOp();
-    void __cdecl APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 model_capacity,
-                                     i32 model_id_capacity, i32 animation_capacity, APICHARACTERDATA *characters,
-                                     void(__cdecl *set_lights)(APIOBJECT_PC *));
-    void __cdecl GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *position);
+    void PCCharacterSystemExistingNoOp();
+    void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 model_capacity,
+                             i32 model_id_capacity, i32 animation_capacity, APICHARACTERDATA *characters,
+                             void (*set_lights)(APIOBJECT_PC *));
+    void GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *position);
     extern const char GizmoSnapOptionNamePc[];
     extern const char ActionSnapPlayer1Name[8];
     extern const char ActionSnapPlayer2Name[8];
     extern const char ActionSnapDontCheckTerrainName[19];
-    void __cdecl NuTexDestroy(i32 texture_id);
-    void __cdecl NuTexDestroyPS(NUTEXDIM_PC *texture);
-    void __cdecl PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture);
-    void __cdecl PCDisplayListCriticalSectionEnterPc(void);
-    void __cdecl PCDisplayListCriticalSectionLeavePc(void);
-    void __cdecl NudxFw_D3DBeginCriticalSection(void);
-    void __cdecl NudxFw_D3DEndCriticalSection(void);
-    CHARACTER_MODEL_LAYERS_PC *__cdecl APICharacterLoaded(i32);
-    f32 __cdecl AnimListFrame(CHARACTER_MODEL_LAYERS_PC *, i32, i32);
-    f32 __cdecl AnimStopFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
-    f32 *__cdecl AnimListFrameArray(CHARACTER_MODEL_LAYERS_PC *, i32);
+    void NuTexDestroy(i32 texture_id);
+    void NuTexDestroyPS(NUTEXDIM_PC *texture);
+    void PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture);
+    void PCDisplayListCriticalSectionEnterPc(void);
+    void PCDisplayListCriticalSectionLeavePc(void);
+    void NudxFw_D3DBeginCriticalSection(void);
+    void NudxFw_D3DEndCriticalSection(void);
+    CHARACTER_MODEL_LAYERS_PC *APICharacterLoaded(i32);
+    f32 AnimListFrame(CHARACTER_MODEL_LAYERS_PC *, i32, i32);
+    f32 AnimStopFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
+    f32 *AnimListFrameArray(CHARACTER_MODEL_LAYERS_PC *, i32);
     extern const char AIActionCircleTeleportName[9];
     extern const char AIActionCircleReverseName[8];
     extern const char AIActionCircleAnticlockwiseName[14];
     extern const char AIActionCircleClockwiseName[10];
-    i32 __cdecl Action_CircleLocator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_GoToOriginalPath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    void __cdecl ResetForceBack(void);
-    void __cdecl SetForceBack(GAMEOBJECT *, NUVEC *, f32, i32);
+    i32 Action_CircleLocator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_GoToOriginalPath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    void ResetForceBack(void);
+    void SetForceBack(GAMEOBJECT *, NUVEC *, f32, i32);
     extern f32 ForceBackRadius2;
-    i32 __cdecl AnimMiscFlags(CHARACTER_MODEL_LAYERS_PC *, i32);
-    f32 __cdecl AnimSpeed(CHARACTER_MODEL_LAYERS_PC *, i32);
-    void __cdecl APIResetCharacterRemap(void);
-    void __cdecl NuSound3KillAllAudio(void);
-    void __cdecl NuSound3Update(void);
+    i32 AnimMiscFlags(CHARACTER_MODEL_LAYERS_PC *, i32);
+    f32 AnimSpeed(CHARACTER_MODEL_LAYERS_PC *, i32);
+    void APIResetCharacterRemap(void);
+    void NuSound3KillAllAudio(void);
+    void NuSound3Update(void);
     extern void *PCSoundMixSource;
     extern i32 PCSoundMixSampleCount;
     extern void *PCSoundMixDestination;
     extern HANDLE PCSoundMixEvent;
     extern PC_SOUND_COMMIT_PC *PCSoundCommitTarget;
     extern const char NuFileSourcePathPC[50];
-    void *__cdecl NuFileLoad(char *);
-    i32 __cdecl NuFileGetLastError(void);
-    NUFILE_DEVICE *__cdecl NuFileFindDevice(i32, i32);
-    void __cdecl WorldInfo_Dump(WORLDINFO *);
-    i32 __cdecl WorldInfo_Reset(WORLDINFO *, i32);
-    void __cdecl WorldInfo_Load(WORLDINFO *);
-    void __cdecl WorldInfo_Init(WORLDINFO *);
-    void __cdecl WorldInfo_LoadObjectAnimFile(WORLDINFO *);
-    i32 __cdecl edanimLoadPage(char *, NUGSCN *);
-    void __cdecl SetLevelExBlowupFlags(u32);
+    void *NuFileLoad(char *);
+    i32 NuFileGetLastError(void);
+    NUFILE_DEVICE *NuFileFindDevice(i32, i32);
+    void WorldInfo_Dump(WORLDINFO *);
+    i32 WorldInfo_Reset(WORLDINFO *, i32);
+    void WorldInfo_Load(WORLDINFO *);
+    void WorldInfo_Init(WORLDINFO *);
+    void WorldInfo_LoadObjectAnimFile(WORLDINFO *);
+    i32 edanimLoadPage(char *, NUGSCN *);
+    void SetLevelExBlowupFlags(u32);
     extern const char WorldPathSeparator[2];
     extern const char WorldObjectAnimFormat[7];
     extern const char WorldLevelConfigFormat[7];
-    void __cdecl GameCam_NewShake(GAMECAMERA *, f32, f32, f32);
+    void GameCam_NewShake(GAMECAMERA *, f32, f32, f32);
     STATIC_ASSERT(offsetof(GAMEOBJECT, is_underwater) == 0x286);
     STATIC_ASSERT(offsetof(GAMEOBJECT, effect_flags) == 0x289);
     STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_pc) == 0x7b7);
@@ -17475,73 +17457,73 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char YArgPrefix[3];
     extern const char ZArgPrefix[3];
     extern const char CharacterPosArgPrefix[15];
-    i32 __cdecl Action_PlaySfx(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    void __cdecl GameAIScriptAddLevelSfx(WORLDINFO *, NULISTHDR *);
-    void __cdecl AISysCharacterSetPath(AIPACKET_PC *, AIPATH_PC *);
-    void __cdecl AISysFindRoute(AIPACKET_PC *);
-    void __cdecl AISysCharacterSetPathCnx(AIPACKET_PC *, NUVEC *, AIPATHCNX_PC *, i32);
+    i32 Action_PlaySfx(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    void GameAIScriptAddLevelSfx(WORLDINFO *, NULISTHDR *);
+    void AISysCharacterSetPath(AIPACKET_PC *, AIPATH_PC *);
+    void AISysFindRoute(AIPACKET_PC *);
+    void AISysCharacterSetPathCnx(AIPACKET_PC *, NUVEC *, AIPATHCNX_PC *, i32);
     extern REPEAT_SFX_ENTRY_PC RepeatSfxQueue[32];
     extern i32 RepeatSfxQueueHead;
-    void __cdecl PlayRepeatSfx(char *, i32, f32, char, f32, NUVEC *);
-    void __cdecl UpdateRepeatSfx(void);
+    void PlayRepeatSfx(char *, i32, f32, char, f32, NUVEC *);
+    void UpdateRepeatSfx(void);
     extern TERRAIN_LAYER_PC TerLayer[17];
     extern NUVEC ANI3_EVAL_SCALE_ARRAY[256];
-    void *__cdecl NuScratchAlloc32(i32);
-    void __cdecl NuScratchRelease(void);
-    NUVEC *__cdecl NuMtxGetScale(NUVEC *, NUMTX *);
-    void __cdecl NuMtxScaleVU0(NUMTX *, NUVEC *);
-    void __cdecl NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK_PC callback, void **data, i32 *joints);
-    void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *, ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *,
-                                            ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
-    void __cdecl NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *,
-                                      ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
-    void __cdecl NuHGobjEvalAnimBlend2Root(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32,
-                                           void *, NUMTX *, ANI3_ROOT_CALLBACK_PC, void *);
-    void __cdecl NuAnimData2CalcTime(NUANIMDATA2_PC *, f32, NUANIM_TIME2_PC *);
-    i32 __cdecl NuAnimNumNodes(NUANIMDATA2_PC *);
-    f32 __cdecl NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *, NUANIM_TIME2_PC *, u32);
+    void *NuScratchAlloc32(i32);
+    void NuScratchRelease(void);
+    NUVEC *NuMtxGetScale(NUVEC *, NUMTX *);
+    void NuMtxScaleVU0(NUMTX *, NUVEC *);
+    void NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK_PC callback, void **data, i32 *joints);
+    void NuAnimBuffEvaluate_3_QuatB(NUMTX *, ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *,
+                                    ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
+    void NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *, ANI3_ROOT_CALLBACK_PC,
+                              NUVEC *, void *);
+    void NuHGobjEvalAnimBlend2Root(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32, void *,
+                                   NUMTX *, ANI3_ROOT_CALLBACK_PC, void *);
+    void NuAnimData2CalcTime(NUANIMDATA2_PC *, f32, NUANIM_TIME2_PC *);
+    i32 NuAnimNumNodes(NUANIMDATA2_PC *);
+    f32 NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *, NUANIM_TIME2_PC *, u32);
     extern i32 ddmaxjoints;
     extern i32 rndr_blend_shape_deformer_wt_cnt;
     extern i32 rndr_blend_shape_deformer_wt_ptrs_cnt;
     extern DWA_WEIGHT_BLOCK_PC DwaWeightPoolPc[60669];
     extern DWA_WEIGHT_BLOCK_PC *DwaPointerPoolPc[2048];
-    DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32);
-    DWA_WEIGHT_BLOCK_PC **__cdecl NuRndrCreateBlendShapeDWAPointers(i32);
-    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa2(i32, i16 *, NUANIMDATA2_PC *, f32);
-    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend2(i32, i16 *, NUANIMDATA2_PC *, f32, NUANIMDATA2_PC *, f32, f32);
+    DWA_WEIGHT_BLOCK_PC *NuRndrCreateBlendShapeDeformerWeightsArray(i32);
+    DWA_WEIGHT_BLOCK_PC **NuRndrCreateBlendShapeDWAPointers(i32);
+    DWA_WEIGHT_BLOCK_PC **NuHGobjEvalDwa2(i32, i16 *, NUANIMDATA2_PC *, f32);
+    DWA_WEIGHT_BLOCK_PC **NuHGobjEvalDwaBlend2(i32, i16 *, NUANIMDATA2_PC *, f32, NUANIMDATA2_PC *, f32, f32);
     extern i32 NumQuatPushes;
     extern u8 AnimQuatSavedPc[4];
-    void __cdecl AnimationDiagnosticNoOpPc(void);
+    void AnimationDiagnosticNoOpPc(void);
     void __fastcall NuQuatMulAlignedPc(const NUQUAT *parent, const NUQUAT *rotation, NUQUAT *out);
-    void __cdecl NuHGobjEvalAnim2Root_3(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, void *, NUMTX *,
-                                        ANI3_ROOT_CALLBACK_PC, void *);
-    void __cdecl NuHGobjEvalAnimBlend2Root_3(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32,
-                                             void *, NUMTX *, ANI3_ROOT_CALLBACK_PC, void *);
-    void __cdecl NuHGobjEvalAnimBlend2(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32,
-                                       void *, NUMTX *);
-    void __cdecl PCBuildLegacySkeletalJoint(DWA_CURVE_CELL_PC *, i8 *, u8, NUANIM_TIME2_PC *, NUHGOBJ_EVAL_JOINT_PC *,
-                                            NUVEC *, NUVEC *, NUMTX *, NUHGOBJ_JOINT_OVERRIDE_PC *, NUVEC *, NUVEC *);
-    void __cdecl NuHGobjEvalAnim2Root(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, NUHGOBJ_JOINT_OVERRIDE_PC *,
-                                      NUMTX *, ANI3_ROOT_CALLBACK_PC, void *);
-    void __cdecl NuHGobjEvalAnim2(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *);
-    extern i32(__cdecl *MakeLayerList)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
-    void __cdecl EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, DWA_WEIGHT_BLOCK_PC ***,
-                               NUVEC *, NUMTX *, u32);
-    i32 __cdecl PCBuildModelLayerList(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
-    void __cdecl PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS_PC *, NUMTX *, NUMTX *, NUVEC *, NUMTX *);
-    i32 __cdecl Action_NoTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_NoLosCheck(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_FlatTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_DontUseShadowTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_DontPush(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_CanSeeBehind(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_RequiresLOS(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetFullPathSearch(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_NoShadows(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    f32 __cdecl Condition_Timer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-    f32 __cdecl Condition_Random(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-    f32 __cdecl Condition_AlwaysTrue(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-    NUMTX *__cdecl NuSound3GetListener(void);
+    void NuHGobjEvalAnim2Root_3(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, void *, NUMTX *, ANI3_ROOT_CALLBACK_PC,
+                                void *);
+    void NuHGobjEvalAnimBlend2Root_3(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32, void *,
+                                     NUMTX *, ANI3_ROOT_CALLBACK_PC, void *);
+    void NuHGobjEvalAnimBlend2(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32, void *,
+                               NUMTX *);
+    void PCBuildLegacySkeletalJoint(DWA_CURVE_CELL_PC *, i8 *, u8, NUANIM_TIME2_PC *, NUHGOBJ_EVAL_JOINT_PC *, NUVEC *,
+                                    NUVEC *, NUMTX *, NUHGOBJ_JOINT_OVERRIDE_PC *, NUVEC *, NUVEC *);
+    void NuHGobjEvalAnim2Root(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *,
+                              ANI3_ROOT_CALLBACK_PC, void *);
+    void NuHGobjEvalAnim2(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *);
+    extern i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    void EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, DWA_WEIGHT_BLOCK_PC ***, NUVEC *,
+                       NUMTX *, u32);
+    i32 PCBuildModelLayerList(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    void PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS_PC *, NUMTX *, NUMTX *, NUVEC *, NUMTX *);
+    i32 Action_NoTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_NoLosCheck(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_FlatTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_DontUseShadowTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_DontPush(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_CanSeeBehind(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_RequiresLOS(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_SetFullPathSearch(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_NoShadows(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    f32 Condition_Timer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    f32 Condition_Random(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    f32 Condition_AlwaysTrue(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    NUMTX *NuSound3GetListener(void);
     extern NUMTX *NuSound3Listener;
     extern f32 nusound_fade_start;
     extern f32 nusound_fade_end;
@@ -17553,15 +17535,15 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern SFX_RECORD_PC *SfxInfo;
     extern u32 *SfxCRCTable;
     extern i32 SfxCRCTableInitialized;
-    void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end);
-    u32 __cdecl SfxNameHashN(const char *name, u32 limit);
+    void SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end);
+    u32 SfxNameHashN(const char *name, u32 limit);
     extern SFX_FILE_INFO_PC *SfxFileTable;
     extern i32 SfxFileCount;
-    void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records);
-    void __cdecl SetSfxBit_OnEx(i32 id);
-    void __cdecl SetSfxBit_On(i32 id);
-    void __cdecl SetSfxBit_OffEx(i32 id);
-    i32 __cdecl SfxBitEx(i32 id);
+    void SfxSetFileTable(SFX_FILE_INFO_PC *records);
+    void SetSfxBit_OnEx(i32 id);
+    void SetSfxBit_On(i32 id);
+    void SetSfxBit_OffEx(i32 id);
+    i32 SfxBitEx(i32 id);
     extern NUPRIM_VERTEX_GROUP_SOURCE_PC *NuPrimVertexGroupSource;
     extern i16 *AmbientPairTab;
     extern NUMTL *numtl_defaultmtl2d;
@@ -17570,28 +17552,28 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern NUGLOBALRNDRSTATE_PC render_state;
     extern u8 NuPrimNeedsOverbrightening;
     extern NUMTX numtx_identity;
-    void __cdecl edbitsRegisterBaseScene(NUGSCN *scene);
-    void __cdecl edanimRegisterBaseScene(NUGSCN *scene);
-    void __cdecl edbitsRegisterBaseTerrain(void *terrain);
-    void __cdecl WorldInfo_Register(WORLDINFO *world);
+    void edbitsRegisterBaseScene(NUGSCN *scene);
+    void edanimRegisterBaseScene(NUGSCN *scene);
+    void edbitsRegisterBaseTerrain(void *terrain);
+    void WorldInfo_Register(WORLDINFO *world);
     extern u32 debrisseed;
     extern f32 debris_time_increment;
     extern i32 DebrisCutSceneMode;
-    void __cdecl DebrisSetCutSceneMode(i32 enabled);
-    u32 __cdecl NuWindRand(void);
-    void __cdecl NuPartSetSeed(i32 seed);
-    u32 __cdecl NuPartGetSeed(void);
-    void __cdecl DebrisSetSeed(i32 seed);
-    u32 __cdecl DebrisGetSeed(void);
-    void __cdecl DebrisSetTimeIncrement(f32 increment);
+    void DebrisSetCutSceneMode(i32 enabled);
+    u32 NuWindRand(void);
+    void NuPartSetSeed(i32 seed);
+    u32 NuPartGetSeed(void);
+    void DebrisSetSeed(i32 seed);
+    u32 DebrisGetSeed(void);
+    void DebrisSetTimeIncrement(f32 increment);
 
-    NUANG __cdecl NuAngAdd(NUANG a, NUANG b);
-    NUANG __cdecl NuAngSub(NUANG a, NUANG b);
-    void __cdecl NuAng2AltSol(NUANG *out_x, NUANG *out_y, NUANG *out_z, NUANG x, NUANG y, NUANG z);
+    NUANG NuAngAdd(NUANG a, NUANG b);
+    NUANG NuAngSub(NUANG a, NUANG b);
+    void NuAng2AltSol(NUANG *out_x, NUANG *out_y, NUANG *out_z, NUANG x, NUANG y, NUANG z);
 
     extern i32 qseed;
-    i32 __cdecl qrand(void);
-    i32 __cdecl getqseed(void);
+    i32 qrand(void);
+    i32 getqseed(void);
 
     typedef struct PC_SCENE_MTL_VIEW {
         u8 unknown_0[0xc];
@@ -17748,32 +17730,32 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 NuUnresolvedTextureIDPC;
     extern u8 NuUnresolvedTextureDdsPc[0x2080];
     extern const u8 NuUnresolvedTextureDDS[8320];
-    void __cdecl NuGScnRemove(NUGSCN *);
-    void __cdecl NuGScnFixupTIDs(NUGSCN *);
-    void __cdecl NuGScnFixupTIDsPS(NUGSCN *);
-    i32 __cdecl NuGScnRestoreTID(NUGSCN *, i32);
-    void __cdecl NuGScnRestoreTIDs(NUGSCN *);
-    void __cdecl NuGScnRestoreTIDsPS(NUGSCN *);
-    void __cdecl NuGScnDestroyPS(NUGSCN *);
-    void __cdecl NuDisplaySceneDestroy(NUDISPLAY_LIST_PC *);
-    void __cdecl NuDisplaySceneDestroyPS(NUDISPLAY_LIST_PC *);
-    void __cdecl NuDisplayListDestroyMtl(NUMTL *);
-    void __cdecl NuTexAnimRemoveList(void *);
-    PC_TEXTURE_ANIM_ENV *__cdecl NuTexAnimEnvCreate(VARIPTR *, NUMTL *, u16 *, void *);
-    i32 __cdecl NuTexGetUnresolvedTextureTIDPS(void);
-    i32 __cdecl NuTexPixelBitsPc(i32 type);
-    i32 __cdecl NuTexImageSizePc(i32 type, i32 width, i32 height);
-    i32 __cdecl NuTexImageSizeMipsPc(i32 type, i32 width, i32 height, i32 mips);
-    i32 __cdecl NuTexLoadBmpPc(const char *path, i32 mips, NUTEXBMP_PC *bitmap);
-    NUTEXBMP_PC *__cdecl NuTexCreateBmpPc(const char *path);
-    void __cdecl NuTexBmpUnsupportedDepthPc(i32 bit_count, const char *path);
+    void NuGScnRemove(NUGSCN *);
+    void NuGScnFixupTIDs(NUGSCN *);
+    void NuGScnFixupTIDsPS(NUGSCN *);
+    i32 NuGScnRestoreTID(NUGSCN *, i32);
+    void NuGScnRestoreTIDs(NUGSCN *);
+    void NuGScnRestoreTIDsPS(NUGSCN *);
+    void NuGScnDestroyPS(NUGSCN *);
+    void NuDisplaySceneDestroy(NUDISPLAY_LIST_PC *);
+    void NuDisplaySceneDestroyPS(NUDISPLAY_LIST_PC *);
+    void NuDisplayListDestroyMtl(NUMTL *);
+    void NuTexAnimRemoveList(void *);
+    PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *, NUMTL *, u16 *, void *);
+    i32 NuTexGetUnresolvedTextureTIDPS(void);
+    i32 NuTexPixelBitsPc(i32 type);
+    i32 NuTexImageSizePc(i32 type, i32 width, i32 height);
+    i32 NuTexImageSizeMipsPc(i32 type, i32 width, i32 height, i32 mips);
+    i32 NuTexLoadBmpPc(const char *path, i32 mips, NUTEXBMP_PC *bitmap);
+    NUTEXBMP_PC *NuTexCreateBmpPc(const char *path);
+    void NuTexBmpUnsupportedDepthPc(i32 bit_count, const char *path);
     extern char NuTexBmpErrorTextPc[0x80];
     extern NUTEXBMP_COLOUR_PC NuTexBmpPalettePc[0x100];
     extern i32 NuQFntScanXPc;
     extern i32 NuQFntScanYPc;
-    void __cdecl NuQFntAtlasErrorPc(void);
-    PC_SHADER_RECORD_VIEW *__cdecl PCShaderRecordFromHandle(u32);
-    void __cdecl NuShaderManagerReleaseShader(PC_SHADER_RECORD_VIEW *);
+    void NuQFntAtlasErrorPc(void);
+    PC_SHADER_RECORD_VIEW *PCShaderRecordFromHandle(u32);
+    void NuShaderManagerReleaseShader(PC_SHADER_RECORD_VIEW *);
     extern const char NuTextureSourcePathPC[55];
     extern const char NuQFntSourcePathPC[56];
     extern const char NuTextureAnimationSourcePathPC[50];
@@ -17784,60 +17766,60 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     extern i32 NuWindMaxMatsPC;
     extern i32 edbri_page_on[8];
-    void __cdecl edbriBridgesReset(void);
-    void __cdecl edgraSetup(VARIPTR *, VARIPTR, i32, i32, i32);
-    void __cdecl NuWindSetup(VARIPTR *, VARIPTR, i32, i32);
-    void __cdecl NuFadeObjSetup(VARIPTR *, VARIPTR, i32, i32);
+    void edbriBridgesReset(void);
+    void edgraSetup(VARIPTR *, VARIPTR, i32, i32, i32);
+    void NuWindSetup(VARIPTR *, VARIPTR, i32, i32);
+    void NuFadeObjSetup(VARIPTR *, VARIPTR, i32, i32);
 
-    void __cdecl edgraClumpsReset(void);
+    void edgraClumpsReset(void);
 
-    i32 __cdecl AddGameDebrisMomentum(APIDEBRISSYS_PC *, i32, NUVEC *, NUVEC *, NUVEC *);
-    i32 __cdecl AddGameDebrisXYZ(APIDEBRISSYS_PC *, i32, f32, f32, f32);
-    i32 __cdecl AddGameDebrisRot(APIDEBRISSYS_PC *, i32, NUVEC *, i32, u16, u16);
-    i32 __cdecl AddGameDebrisMtx(APIDEBRISSYS_PC *, i32, NUVEC *, i32, NUMTX *);
-    i32 __cdecl AddGameDebrisMom(APIDEBRISSYS_PC *, i32, NUVEC *, i32, NUVEC *);
-    void __cdecl SetAPIObjPlaySfxByIdFn(void(__cdecl *)(i32, NUVEC *));
-    void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, ANIMPACKET_PC *, NUMTX *, GAMEOBJECT *,
-                                CHARACTER_EFFECT_CONFIG_PC *, i32, f32, void(__cdecl *)(void *, GAMEOBJECT *, i32, i32),
-                                APIDEBRISSYS_PC *);
-    void __cdecl PCAnimationEffectCheckpoint(void);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndex(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebDummy(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexRadialRotor(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexSpheroid(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexBounceY(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexBounceXZ(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexImprovedRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *__cdecl GenDebIndexRadialStar(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    i32 __cdecl AddFiniteShotPART(i32, NUVEC *, i32);
+    i32 AddGameDebrisMomentum(APIDEBRISSYS_PC *, i32, NUVEC *, NUVEC *, NUVEC *);
+    i32 AddGameDebrisXYZ(APIDEBRISSYS_PC *, i32, f32, f32, f32);
+    i32 AddGameDebrisRot(APIDEBRISSYS_PC *, i32, NUVEC *, i32, u16, u16);
+    i32 AddGameDebrisMtx(APIDEBRISSYS_PC *, i32, NUVEC *, i32, NUMTX *);
+    i32 AddGameDebrisMom(APIDEBRISSYS_PC *, i32, NUVEC *, i32, NUVEC *);
+    void SetAPIObjPlaySfxByIdFn(void (*)(i32, NUVEC *));
+    void AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, ANIMPACKET_PC *, NUMTX *, GAMEOBJECT *,
+                        CHARACTER_EFFECT_CONFIG_PC *, i32, f32, void (*)(void *, GAMEOBJECT *, i32, i32),
+                        APIDEBRISSYS_PC *);
+    void PCAnimationEffectCheckpoint(void);
+    DEBRISPARTICLE_PC *GenDebIndex(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *GenDebDummy(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexRadialRotor(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexBounceY(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexBounceXZ(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexImprovedRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexRadialStar(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
+    i32 AddFiniteShotPART(i32, NUVEC *, i32);
     extern i32 SceneUploadBufferSizePC;
     extern VARIPTR SceneUploadBufferStartPC;
     extern VARIPTR SceneUploadBufferCursorPC;
     extern VARIPTR SceneUploadBufferEndPC;
     extern const char SceneUploadSourcePathPC[57];
-    i32 __cdecl NuGScnUploadGfxDataFromFilePS(VARIPTR *, VARIPTR, NUFILE);
-    void __cdecl DebReAlloc2(DEBRISKEY_PC *);
-    void __cdecl DebReAlloc(DEBRISKEY_PC *, i32);
+    i32 NuGScnUploadGfxDataFromFilePS(VARIPTR *, VARIPTR, NUFILE);
+    void DebReAlloc2(DEBRISKEY_PC *);
+    void DebReAlloc(DEBRISKEY_PC *, i32);
     extern NUDISPLAY_LIST_PC PCDynamicDisplayScene;
 #define nudlist_flags (PCDynamicDisplayScene.render_flags)                  // NOLINT(readability-identifier-naming)
 #define nudlist_field_e58 (PCDynamicDisplayScene.native_word)               // NOLINT(readability-identifier-naming)
 #define PCDisplayMaterialRegistry (PCDynamicDisplayScene.display_materials) // NOLINT(readability-identifier-naming)
 #define PCDisplayMaterialCount (PCDynamicDisplayScene.material_count)       // NOLINT(readability-identifier-naming)
     extern u32 numtl_renderplane;
-    void __cdecl NuMemSet128(void *, u32, i32);
-    void __cdecl NuPortalMaxDepth(NUGSCN *, i32);
-    void __cdecl NuDisplaySceneAdd(NUDISPLAY_LIST_PC *);
-    void __cdecl NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *);
+    void NuMemSet128(void *, u32, i32);
+    void NuPortalMaxDepth(NUGSCN *, i32);
+    void NuDisplaySceneAdd(NUDISPLAY_LIST_PC *);
+    void NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *);
     extern NUGSPLINE *splineStore;
     extern i32 numSplinesLoaded;
     extern const char *EDSPLINE_FILECHECK;
     extern const char EditorSplineFileCheckTextPc[13];
-    i32 __cdecl LoadEditorSplines(char *, VARIPTR *, VARIPTR *);
-    void __cdecl DebFreeChunksInstantly(i32 *);
-    void __cdecl DebFreeOrphansInstantly(DEBRIS_INFO_PC *);
-    void __cdecl RemoveDebrisEffectFromStack(DEBRISKEY_PC *);
-    void __cdecl DebFreeInstantly(i32 *);
+    i32 LoadEditorSplines(char *, VARIPTR *, VARIPTR *);
+    void DebFreeChunksInstantly(i32 *);
+    void DebFreeOrphansInstantly(DEBRIS_INFO_PC *);
+    void RemoveDebrisEffectFromStack(DEBRISKEY_PC *);
+    void DebFreeInstantly(i32 *);
 
     typedef struct state_anim_pc_s {
         u16 count;
@@ -17851,17 +17833,17 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(STATE_ANIM_PC, times) == 4);
     STATIC_ASSERT(offsetof(STATE_ANIM_PC, values) == 8);
     /* C extern declarations: */
-    i32 __cdecl StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
-    i32 __cdecl StateAnimEvaluate(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
-    void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_stream_buffers);
-    void __cdecl NuGCutSceneFixUp(void *scene, NUGSCN *gscene, void *extra_scene, i32 page);
-    void __cdecl NuGCutSceneFixUpExtra(void *scene, NUGSCN *gscene);
-    INSTNUGCUTSCENE *__cdecl instNuGCutSceneCreate(void *scene, NUGSCN *gscene, void *extra_scene, char *name,
-                                                   VARIPTR *buffer, i32 background);
-    STATE_ANIM_PC *__cdecl StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta);
-    void __cdecl CutSceneLoadDiagnosticPc(void *unused, ...);
-    void __cdecl CutSceneMissingObjectDiagnosticPc(char *format, ...);
-    void __cdecl NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix);
+    i32 StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
+    i32 StateAnimEvaluate(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
+    void *NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_stream_buffers);
+    void NuGCutSceneFixUp(void *scene, NUGSCN *gscene, void *extra_scene, i32 page);
+    void NuGCutSceneFixUpExtra(void *scene, NUGSCN *gscene);
+    INSTNUGCUTSCENE *instNuGCutSceneCreate(void *scene, NUGSCN *gscene, void *extra_scene, char *name, VARIPTR *buffer,
+                                           i32 background);
+    STATE_ANIM_PC *StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta);
+    void CutSceneLoadDiagnosticPc(void *unused, ...);
+    void CutSceneMissingObjectDiagnosticPc(char *format, ...);
+    void NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix);
 
     typedef struct edpp_particle_pc_s {
         NUVEC position;
@@ -17924,19 +17906,19 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 edpp_instances_used;
     extern i32 edpp_types_used;
     extern EDPP_PARTICLE_PC edpp_ptls[512];
-    void __cdecl InitParts(i32, VARIPTR *, VARIPTR);
-    void __cdecl KillPartsByScene(NUGSCN *);
-    void __cdecl edpartClearPage(i8);
-    void __cdecl edppPtlDestroy(i32);
-    void __cdecl edppPtlShelve(i32);
-    void __cdecl edppStopPage(i8);
-    void __cdecl edppClearPage(i8);
+    void InitParts(i32, VARIPTR *, VARIPTR);
+    void KillPartsByScene(NUGSCN *);
+    void edpartClearPage(i8);
+    void edppPtlDestroy(i32);
+    void edppPtlShelve(i32);
+    void edppStopPage(i8);
+    void edppClearPage(i8);
 
-    extern void(__cdecl *NuCutSceneDestroyCharacters)(void *);
-    extern void(__cdecl *NuCutSceneCharacterDestroyData)(void *, void *);
-    extern void(__cdecl *NuCutSceneCharacterEval)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
-    extern void(__cdecl *NuCutSceneCharacterRelease)(void *, void *);
-    extern void(__cdecl *ReleaseLocatorVfxFn)(i32);
+    extern void (*NuCutSceneDestroyCharacters)(void *);
+    extern void (*NuCutSceneCharacterDestroyData)(void *, void *);
+    extern void (*NuCutSceneCharacterEval)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
+    extern void (*NuCutSceneCharacterRelease)(void *, void *);
+    extern void (*ReleaseLocatorVfxFn)(i32);
     extern u8 CutSceneCameraCTRL;
     extern NUGSCN *edbits_base_scene;
     extern i32 edbits_anim_page;
@@ -17944,53 +17926,53 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 edanim_nearest;
     extern i32 edanim_nearest_param_id;
     extern NUVEC edanim_cam_pos;
-    i32 __cdecl edanimLookupSpecial(char *, NUGSCN *);
-    void __cdecl edanimDetermineNearestAnim(f32);
+    i32 edanimLookupSpecial(char *, NUGSCN *);
+    void edanimDetermineNearestAnim(f32);
 
-    i32 __cdecl edanimLoadPage(char *, NUGSCN *);
-    PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *, VARIPTR *, i32, i32, char **, i32);
-    i32 __cdecl PARTLookupTypePageOnly(char *, i32);
-    void __cdecl DebFree(i32 *);
-    void __cdecl NuGCutSceneDestroy(void *);
-    void __cdecl instNuGCutSceneDestroy(INSTNUGCUTSCENE *);
-    void __cdecl instNuGCutSceneEnd(INSTNUGCUTSCENE *);
-    void __cdecl instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *);
-    void __cdecl CutScenes_Destroy(CUTSYS_PC *);
+    i32 edanimLoadPage(char *, NUGSCN *);
+    PARTDEBRISSYS *InitPartDebris(VARIPTR *, VARIPTR *, i32, i32, char **, i32);
+    i32 PARTLookupTypePageOnly(char *, i32);
+    void DebFree(i32 *);
+    void NuGCutSceneDestroy(void *);
+    void instNuGCutSceneDestroy(INSTNUGCUTSCENE *);
+    void instNuGCutSceneEnd(INSTNUGCUTSCENE *);
+    void instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *);
+    void CutScenes_Destroy(CUTSYS_PC *);
 
-    void __cdecl DebrisProcessControlChunks(i32);
-    i32 __cdecl NewPlayerCharacter(GAMEOBJECT *, i32, i32, i32);
-    void __cdecl Shards_HandleLostObj(WORLDINFO *, GAMEOBJECT *);
-    void __cdecl DestroySnakeBody(GAMEOBJECT *);
-    void __cdecl BlowUpSnakeBody(GAMEOBJECT *);
-    void __cdecl GizForce_ResetLOS(GAMEOBJECT *);
-    void __cdecl AICreatureResumeScript(GAMEOBJECT *);
+    void DebrisProcessControlChunks(i32);
+    i32 NewPlayerCharacter(GAMEOBJECT *, i32, i32, i32);
+    void Shards_HandleLostObj(WORLDINFO *, GAMEOBJECT *);
+    void DestroySnakeBody(GAMEOBJECT *);
+    void BlowUpSnakeBody(GAMEOBJECT *);
+    void GizForce_ResetLOS(GAMEOBJECT *);
+    void AICreatureResumeScript(GAMEOBJECT *);
 
     /* Proposed finite public interfaces; UpdateAnimTimer remains original-TU private. */
-    void __cdecl AnimatePlayer(GAMEOBJECT *);
-    void __cdecl UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, f32, f32, f32, f32);
-    void __cdecl AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *, ANIMPACKET_PC *);
-    void __cdecl AnimPacketFullToMiniPc(ANIMPACKET_PC *, DRAW_ATTACHMENTS_MINI_PC *);
-    void __cdecl UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS_PC *, DRAW_ATTACHMENTS_MINI_PC *, f32, f32, f32);
-    GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *);
-    void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *);
-    void __cdecl PlayerInitCapabilitiesDefaultPc(GAMEOBJECT *);
-    void __cdecl PlayerInitCapabilitiesVariant0Pc(GAMEOBJECT *);
-    void __cdecl PlayerInitCapabilitiesVariant1Pc(GAMEOBJECT *);
-    i32 __cdecl CanPullLevers(i32);
-    void __cdecl ResetPlayerPacket(void *, CHARACTERDATA_PC *);
-    void __cdecl ResetCoinPacket(void *);
-    GAMEOBJECT *__cdecl AddGameObject(void);
-    void __cdecl SetGameObjectCharacterData(GAMEOBJECT *);
-    i32 __cdecl GetDefaultIdle(GAMEOBJECT *);
-    void __cdecl ResetCharacterIdle(GAMEOBJECT *, i32, i32);
-    void __cdecl ResetPlayerMoves(GAMEOBJECT *);
-    void __cdecl ResetPlayerAI(GAMEOBJECT *);
-    void __cdecl InitPlayerAI(GAMEOBJECT *);
-    GAMEOBJECT *__cdecl AddCreature(i32, i32);
-    void __cdecl AutoWeaponOnOff(GAMEOBJECT *);
-    f32 __cdecl GizBuildItMul(GAMEOBJECT *);
-    void __cdecl AddFootSteps(GAMEOBJECT *);
-    void __cdecl PlayFootStepSfx(GAMEOBJECT *);
+    void AnimatePlayer(GAMEOBJECT *);
+    void UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, f32, f32, f32, f32);
+    void AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *, ANIMPACKET_PC *);
+    void AnimPacketFullToMiniPc(ANIMPACKET_PC *, DRAW_ATTACHMENTS_MINI_PC *);
+    void UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS_PC *, DRAW_ATTACHMENTS_MINI_PC *, f32, f32, f32);
+    GAMEOBJECT *APIObjectCreate(APIOBJECTSYS_PC *);
+    void SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *);
+    void PlayerInitCapabilitiesDefaultPc(GAMEOBJECT *);
+    void PlayerInitCapabilitiesVariant0Pc(GAMEOBJECT *);
+    void PlayerInitCapabilitiesVariant1Pc(GAMEOBJECT *);
+    i32 CanPullLevers(i32);
+    void ResetPlayerPacket(void *, CHARACTERDATA_PC *);
+    void ResetCoinPacket(void *);
+    GAMEOBJECT *AddGameObject(void);
+    void SetGameObjectCharacterData(GAMEOBJECT *);
+    i32 GetDefaultIdle(GAMEOBJECT *);
+    void ResetCharacterIdle(GAMEOBJECT *, i32, i32);
+    void ResetPlayerMoves(GAMEOBJECT *);
+    void ResetPlayerAI(GAMEOBJECT *);
+    void InitPlayerAI(GAMEOBJECT *);
+    GAMEOBJECT *AddCreature(i32, i32);
+    void AutoWeaponOnOff(GAMEOBJECT *);
+    f32 GizBuildItMul(GAMEOBJECT *);
+    void AddFootSteps(GAMEOBJECT *);
+    void PlayFootStepSfx(GAMEOBJECT *);
 
     /* Additive shared contracts only; existing RTL/flight/game/player types reused. */
     STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, amount) == 4);
@@ -18032,14 +18014,14 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(sizeof(PLAYER_START_INITIALIZER_RECORD_PC) == 0x10);
     STATIC_ASSERT(offsetof(PLAYER_START_INITIALIZER_RECORD_PC, position) == 0);
 
-    GAMEOBJECT *__cdecl AddDynamicCreature(i32, NUVEC *, i32, char *, AIPATHINFO_PC *, AIGROUP_PC *, i32, NUGSPLINE *,
-                                           NUVEC *, i32, i32);
-    i32 __cdecl InitCreature(GAMEOBJECT *, i32, i32);
-    void __cdecl ResetRumble(RUMBLE_PACKET_RESOURCE_PC *);
-    GAMEPAD_PC *__cdecl GamePad_Allocate(void);
-    SUIT_LAYERS_PC *__cdecl Suit_GetDefault(i32);
-    NUVEC *__cdecl Player_StartPos(GAMEOBJECT *);
-    i32 __cdecl Action_CreatePod(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    GAMEOBJECT *AddDynamicCreature(i32, NUVEC *, i32, char *, AIPATHINFO_PC *, AIGROUP_PC *, i32, NUGSPLINE *, NUVEC *,
+                                   i32, i32);
+    i32 InitCreature(GAMEOBJECT *, i32, i32);
+    void ResetRumble(RUMBLE_PACKET_RESOURCE_PC *);
+    GAMEPAD_PC *GamePad_Allocate(void);
+    SUIT_LAYERS_PC *Suit_GetDefault(i32);
+    NUVEC *Player_StartPos(GAMEOBJECT *);
+    i32 Action_CreatePod(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
     extern i32 NOAICREATURES;
     extern i32 addcreature_override_id_check;
     extern f32 default_mover_extra;
@@ -18088,9 +18070,9 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
                       offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
                   0x54);
 
-    void __cdecl CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *);
-    void __cdecl CharShadows_Update(void);
-    void __cdecl CharShadows_Draw(void);
+    void CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *);
+    void CharShadows_Update(void);
+    void CharShadows_Draw(void);
 
     extern char SuitMetadataName0075314cPc[7];
     extern i16 tBATMANSUIT;
@@ -18112,46 +18094,45 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i16 tMAGNETSUIT;
     extern char SuitMetadataName0075d20cPc[14];
     extern i16 tATTRACTSUIT;
-    void __cdecl NuDisplayListDrawPrimitive2DPc(void *);
-    void *__cdecl PCShaderCurrentObjectPc(void);
-    void __cdecl PCDeviceDrawPrimitiveUPPc(i32, u32, const void *, u32);
+    void NuDisplayListDrawPrimitive2DPc(void *);
+    void *PCShaderCurrentObjectPc(void);
+    void PCDeviceDrawPrimitiveUPPc(i32, u32, const void *, u32);
     extern u32 PCDevicePrimitiveUPCallCountPc;
-    void __cdecl PCDeviceDrawIndexedPrimitiveUPPc(i32, u32, u32, u32, const void *, i32, const void *, u32);
-    void __cdecl PCDeviceSetFVFPc(u32);
+    void PCDeviceDrawIndexedPrimitiveUPPc(i32, u32, u32, u32, const void *, i32, const void *, u32);
+    void PCDeviceSetFVFPc(u32);
     extern u32 PCDeviceIndexedPrimitiveUPCallCountPc;
 
     extern GAMEOBJECT *PodPacemakerPc;
     /* PodRacePc: see episodeI.c. */
 
-    i32 __cdecl DebrisSingleCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
-    i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
-    i32 __cdecl DebrisCollisionCheckScaleYFlag(NUVEC *, f32, f32, u8);
-    i32 __cdecl DebrisTorusCollisionCheckScaleYFlag(NUVEC *, f32, f32, u8);
-    i32 __cdecl DebrisPreCheckCollisions(NUVEC *, f32);
-    i32 __cdecl DebrisTorusCollisionCheckScaleY(NUVEC *, f32, f32);
-    i32 __cdecl DebrisCollisionCheckScaleY(NUVEC *, f32, f32);
-    i32 __cdecl DebrisCollisionCheckFlag(NUVEC *, f32, u8);
-    i32 __cdecl DebrisCollisionCheck(NUVEC *, f32);
-    i32 __cdecl DebrisAllCollisionCheckScaleYFlag(NUVEC *, f32, f32, u8);
-    void __cdecl SortDebrisRenderStack(void);
-    void __cdecl UpdateDebrisRenderStackPriority(void);
-    void __cdecl DebrisCleanUpDmaDebTypeTables(void);
-    void __cdecl Debris(i32);
-    void __cdecl DebrisShift(NUMTX *);
-    i32 __cdecl DebrisFindAllOfType(i32, NUVEC *, i32 *, i32, i32, i32);
-    i32 __cdecl DebrisGetRingProperties(i32, NUVEC *, NUVEC *, f32 *);
-    i32 __cdecl DebrisGetConeProperties(i32, NUVEC *, NUVEC *, f32 *, f32 *, NUVEC *, f32 *, f32 *);
-    void __cdecl edppDetermineNearest(f32);
-    void __cdecl edppDeleteEffect(i32);
-    NUMTL *__cdecl CreateCopyMat(NUMTL *, i32, i32, i32, i32);
-    NUMTL *__cdecl CreateAlphaBlendTexture(VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
+    i32 DebrisSingleCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
+    i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
+    i32 DebrisCollisionCheckScaleYFlag(NUVEC *, f32, f32, u8);
+    i32 DebrisTorusCollisionCheckScaleYFlag(NUVEC *, f32, f32, u8);
+    i32 DebrisPreCheckCollisions(NUVEC *, f32);
+    i32 DebrisTorusCollisionCheckScaleY(NUVEC *, f32, f32);
+    i32 DebrisCollisionCheckScaleY(NUVEC *, f32, f32);
+    i32 DebrisCollisionCheckFlag(NUVEC *, f32, u8);
+    i32 DebrisCollisionCheck(NUVEC *, f32);
+    i32 DebrisAllCollisionCheckScaleYFlag(NUVEC *, f32, f32, u8);
+    void SortDebrisRenderStack(void);
+    void UpdateDebrisRenderStackPriority(void);
+    void DebrisCleanUpDmaDebTypeTables(void);
+    void Debris(i32);
+    void DebrisShift(NUMTX *);
+    i32 DebrisFindAllOfType(i32, NUVEC *, i32 *, i32, i32, i32);
+    i32 DebrisGetRingProperties(i32, NUVEC *, NUVEC *, f32 *);
+    i32 DebrisGetConeProperties(i32, NUVEC *, NUVEC *, f32 *, f32 *, NUVEC *, f32 *, f32 *);
+    void edppDetermineNearest(f32);
+    void edppDeleteEffect(i32);
+    NUMTL *CreateCopyMat(NUMTL *, i32, i32, i32, i32);
+    NUMTL *CreateAlphaBlendTexture(VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
     /* Original gizmo.c private error caller group; existing local CONFIG_SYSTEM view retained. */
     extern const char GizmoSpecialErrorTabPc[3];
-    i32 __cdecl Gizmo_FindNuSpecial(NUGSCN *, NUSPECIALHANDLE *, char *, i32, void *, char *, char *);
-    i32 __cdecl GizmoFileReadName(char *);
-    GAMEANIMOBJ *__cdecl GameAnimSet_AddObjectByName(GAMEANIMSET *, NUGSCN *, char *, f32, f32, i32, void *, char *,
-                                                     char *);
-    i32 __cdecl GizmoFileReadGameAnimSet(GAMEANIMSET *, void *, void(__cdecl *)(GAMEANIMOBJ *, u8), u8, char *, char *);
+    i32 Gizmo_FindNuSpecial(NUGSCN *, NUSPECIALHANDLE *, char *, i32, void *, char *, char *);
+    i32 GizmoFileReadName(char *);
+    GAMEANIMOBJ *GameAnimSet_AddObjectByName(GAMEANIMSET *, NUGSCN *, char *, f32, f32, i32, void *, char *, char *);
+    i32 GizmoFileReadGameAnimSet(GAMEANIMSET *, void *, void (*)(GAMEANIMOBJ *, u8), u8, char *, char *);
 
     /* WORLDINFO existing unknown_2960 first DWORD -> GAMEANIMSYS *game_anim_sys @2960; retain next9 unknown DWORDs.
      * Existing unknown_4698 split at46a4 -> void *giz_obstacle_sys; retain preceding0xc/following0x68 opaque.
@@ -18174,48 +18155,48 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char GizObstacleTypeNamePc[12];
     extern i32 GizmoBlowupNameCountPc;
     extern char GizmoBlowupNameTablePc[32][32];
-    void *__cdecl GizObstacles_ReserveBufferSpace(void *);
-    i32 __cdecl GizObstacles_Load(void *, void *);
-    void __cdecl GizObstacles_PostLoad(void *, void *);
-    void __cdecl GizObstacles_Reset(void *, void *, void *);
-    i32 __cdecl IsSfxLooping(i32);
+    void *GizObstacles_ReserveBufferSpace(void *);
+    i32 GizObstacles_Load(void *, void *);
+    void GizObstacles_PostLoad(void *, void *);
+    void GizObstacles_Reset(void *, void *, void *);
+    i32 IsSfxLooping(i32);
     extern i32 ngizobstacletriggers;
     typedef struct PC_MUSIC_ACTION_PAIR_PC PC_MUSIC_ACTION_PAIR_PC;
     extern PC_MUSIC_ACTION_PAIR_PC *ActionPairTab;
-    i32 __cdecl ActionFromQuiet(i32);
-    void __cdecl GizmoBlowupResetNameTable(void);
-    i32 __cdecl GizmoBlowupGetNameTableId(char *);
-    i32 __cdecl GizmoBlowupGetTypeFromNameTableId(WORLDINFO *, i32);
+    i32 ActionFromQuiet(i32);
+    void GizmoBlowupResetNameTable(void);
+    i32 GizmoBlowupGetNameTableId(char *);
+    i32 GizmoBlowupGetTypeFromNameTableId(WORLDINFO *, i32);
 
-    void __cdecl edbriBridgeUpdate(i32 index, NUGSCN *scene);
-    void __cdecl edbriStartPage(i32 page);
-    void __cdecl Doors_Init(WORLDINFO *);
-    void __cdecl LevObj_FixUpPlatIDs(WORLDINFO *);
-    void __cdecl InitGameObjectLights(void);
-    i32 __cdecl rtlDynamicAlloc(void);
-    i32 __cdecl rtlFindByUserId(RTL_SET_PC *, i32);
-    void __cdecl rtlDynamicFree(i32);
-    i32 __cdecl rtlDynamicAllocTemplate(RTL_SET_PC *, i32);
-    i32 __cdecl rtlDynamicSetType(i32, i32);
-    i32 __cdecl FindPlatInst(i32);
+    void edbriBridgeUpdate(i32 index, NUGSCN *scene);
+    void edbriStartPage(i32 page);
+    void Doors_Init(WORLDINFO *);
+    void LevObj_FixUpPlatIDs(WORLDINFO *);
+    void InitGameObjectLights(void);
+    i32 rtlDynamicAlloc(void);
+    i32 rtlFindByUserId(RTL_SET_PC *, i32);
+    void rtlDynamicFree(i32);
+    i32 rtlDynamicAllocTemplate(RTL_SET_PC *, i32);
+    i32 rtlDynamicSetType(i32, i32);
+    i32 FindPlatInst(i32);
     extern void *LastDoorPointerPc;
 
-    void __cdecl GizObstacles_AddLevelSfx(void *, void *, i32 *, i32 *, i32);
-    void __cdecl GizmoObstacle_Activate(GIZMO_PC *, i32);
-    void __cdecl GizmoObstacle_SetVisibility(GIZMO_PC *, i32);
-    NUVEC *__cdecl GizmoObstacle_GetPos(GIZMO_PC *);
-    char *__cdecl GizmoObstacle_GetGizmoName(GIZMO_PC *);
-    i32 __cdecl GizmoObstacle_GetOutput(GIZMO_PC *, i32, i32);
-    i32 __cdecl GizmoObstacle_GetNumOutputs(GIZMO_PC *);
-    void *__cdecl GizObstacles_AllocateProgressData(VARIPTR *, VARIPTR *);
-    void __cdecl GizObstacles_ClearProgress(void *, void *);
-    void __cdecl GizObstacles_StoreProgress(void *, void *, void *);
-    i32 __cdecl GizmoObstacle_ActivateRev(GIZMO_PC *, i32, i32);
-    i32 __cdecl NuTexResolveReference(NUGSCN *, i32);
-    i32 __cdecl NuGScnFixupTID(NUGSCN *, i32);
-    i32 __cdecl NuTexRead(char *, VARIPTR *, VARIPTR);
-    void __cdecl NuRegisterEndFrameCallBackFn(void(__cdecl *)(void));
-    void __cdecl DebrisSetup2(VARIPTR *, VARIPTR, VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
+    void GizObstacles_AddLevelSfx(void *, void *, i32 *, i32 *, i32);
+    void GizmoObstacle_Activate(GIZMO_PC *, i32);
+    void GizmoObstacle_SetVisibility(GIZMO_PC *, i32);
+    NUVEC *GizmoObstacle_GetPos(GIZMO_PC *);
+    char *GizmoObstacle_GetGizmoName(GIZMO_PC *);
+    i32 GizmoObstacle_GetOutput(GIZMO_PC *, i32, i32);
+    i32 GizmoObstacle_GetNumOutputs(GIZMO_PC *);
+    void *GizObstacles_AllocateProgressData(VARIPTR *, VARIPTR *);
+    void GizObstacles_ClearProgress(void *, void *);
+    void GizObstacles_StoreProgress(void *, void *, void *);
+    i32 GizmoObstacle_ActivateRev(GIZMO_PC *, i32, i32);
+    i32 NuTexResolveReference(NUGSCN *, i32);
+    i32 NuGScnFixupTID(NUGSCN *, i32);
+    i32 NuTexRead(char *, VARIPTR *, VARIPTR);
+    void NuRegisterEndFrameCallBackFn(void (*)(void));
+    void DebrisSetup2(VARIPTR *, VARIPTR, VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
 
     extern DEBRIS_COLLISION_ENTRY_PC *spherecolldata;
     extern DEBRIS_COLLISION_ENTRY_PC *toruscolldata;
@@ -18234,60 +18215,60 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 DebrisDmaCleanupIndexPc;
     extern i32 edpp_nearest;
     extern NUVEC edpp_cam_pos;
-    extern void(__cdecl *NuApiEndFrameCallbackPc)(void);
+    extern void (*NuApiEndFrameCallbackPc)(void);
     extern const char NuTextureDdsExtensionPc[4];
     /* New public original-source routines; original private colour helper remains local. */
-    void __cdecl NuDisplayListCreate(NUDISPLAY_LIST_PC *, VARIPTR *, VARIPTR, i32, i32, i32, i32, i32, i32, i32);
-    void __cdecl NuDisplayListCreateDynMtlList_candidate(VARIPTR *, VARIPTR);
-    void __cdecl NuDisplayListExecute(NUDISPLAYLISTITEM *, void(__cdecl **)(void *));
-    void __cdecl DisplayListCreatePS(NUDISPLAY_LIST_PC *, VARIPTR *, VARIPTR);
+    void NuDisplayListCreate(NUDISPLAY_LIST_PC *, VARIPTR *, VARIPTR, i32, i32, i32, i32, i32, i32, i32);
+    void NuDisplayListCreateDynMtlList_candidate(VARIPTR *, VARIPTR);
+    void NuDisplayListExecute(NUDISPLAYLISTITEM *, void (**)(void *));
+    void DisplayListCreatePS(NUDISPLAY_LIST_PC *, VARIPTR *, VARIPTR);
     extern const char PCDynamicDisplaySceneNameText[31];
     extern const char *PCDynamicDisplaySceneNamePointer;
 
-    void __cdecl GizObstacle_Stop(GIZOBSTACLE *);
-    void __cdecl GizObstacles_Update(void *, void *, f32);
-    GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowup_FindType(char *, WORLDINFO *);
-    void __cdecl GizmoBlowUpTypeBlowUp(WORLDINFO *, i32, NUVEC *);
-    void __cdecl AddShoveObject(NUSPECIALHANDLE *, i16);
+    void GizObstacle_Stop(GIZOBSTACLE *);
+    void GizObstacles_Update(void *, void *, f32);
+    GIZMOBLOWUPTYPE_PC *GizmoBlowup_FindType(char *, WORLDINFO *);
+    void GizmoBlowUpTypeBlowUp(WORLDINFO *, i32, NUVEC *);
+    void AddShoveObject(NUSPECIALHANDLE *, i16);
     extern NUVEC *GizObstacleTriggersPc[16];
-    extern i32(__cdecl *GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
+    extern i32 (*GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
     extern LEVELDATA_PC *ObstacleReturnLevelPc;
     extern const char GizObstacleTriggerLimitMessagePc[59];
-    void __cdecl GizObstacles_AddTrigger(NUVEC *);
-    void __cdecl GizObstacle_SetTechnoControlled(GIZOBSTACLE *, f32);
-    void __cdecl GizObstacle_SetPushControlled(GIZOBSTACLE *, GAMEOBJECT *, f32);
-    GIZOBSTACLE *__cdecl GizObstacle_FindNearest(void *, NUVEC *, GAMEOBJECT *, f32 *, i32);
-    i32 __cdecl GizObstacles_Hit(void *, GIZOBSTACLE *, NUVEC *, i32, i32);
+    void GizObstacles_AddTrigger(NUVEC *);
+    void GizObstacle_SetTechnoControlled(GIZOBSTACLE *, f32);
+    void GizObstacle_SetPushControlled(GIZOBSTACLE *, GAMEOBJECT *, f32);
+    GIZOBSTACLE *GizObstacle_FindNearest(void *, NUVEC *, GAMEOBJECT *, f32 *, i32);
+    i32 GizObstacles_Hit(void *, GIZOBSTACLE *, NUVEC *, i32, i32);
     struct GIZTURRET_s;
-    i32 __cdecl GizTurrets_Hit(WORLDINFO *, struct GIZTURRET_s *, NUVEC *, i32, i32);
-    void __cdecl TorpedoHitTarget(BOLT_PC *);
-    void __cdecl Torpedo_EndBolt(BOLT_PC *);
-    GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *,
-                                                     f32, f32, i32, i32, i32);
-    void __cdecl ShoveObjectSysReset(void);
-    void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *, i32, f32, NUMTX *);
-    void __cdecl GizObstacles_Draw(void *, void *, f32);
-    i32 __cdecl NuPointRelToBoundingBox(NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl NuClipXPlane(NUVEC *, NUVEC *, NUVEC *, f32 *);
-    void __cdecl NuClipYPlane(NUVEC *, NUVEC *, NUVEC *, f32 *);
-    void __cdecl NuClipZPlane(NUVEC *, NUVEC *, NUVEC *, f32 *);
-    i32 __cdecl BoundingBoxToLine(NUVEC *, NUVEC *, NUMTX *, NUVEC *, NUVEC *, f32, NUVEC *);
-    void __cdecl ShoveSystemCheckGameObject(GAMEOBJECT *);
+    i32 GizTurrets_Hit(WORLDINFO *, struct GIZTURRET_s *, NUVEC *, i32, i32);
+    void TorpedoHitTarget(BOLT_PC *);
+    void Torpedo_EndBolt(BOLT_PC *);
+    GIZMO_PC *GizObstacles_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32,
+                                             i32, i32, i32);
+    void ShoveObjectSysReset(void);
+    void GameAnimSet_DrawReflection(GAMEANIMSET *, i32, f32, NUMTX *);
+    void GizObstacles_Draw(void *, void *, f32);
+    i32 NuPointRelToBoundingBox(NUVEC *, NUVEC *, NUVEC *);
+    void NuClipXPlane(NUVEC *, NUVEC *, NUVEC *, f32 *);
+    void NuClipYPlane(NUVEC *, NUVEC *, NUVEC *, f32 *);
+    void NuClipZPlane(NUVEC *, NUVEC *, NUVEC *, f32 *);
+    i32 BoundingBoxToLine(NUVEC *, NUVEC *, NUMTX *, NUVEC *, NUVEC *, f32, NUVEC *);
+    void ShoveSystemCheckGameObject(GAMEOBJECT *);
     extern f32 ShoveMaximumSpeedPc;
     extern f32 ShoveMaximumPenetrationPc;
 
-    void __cdecl ResetAICreature(GAMEOBJECT *, AISYS_PC *);
-    void __cdecl ResetAICreatures(AISYS_PC *);
-    void __cdecl Move_DEFAULT(GAMEOBJECT *);
-    void __cdecl Player_ToggleCharacter(GAMEOBJECT *, i32 direction, i32 sound);
+    void ResetAICreature(GAMEOBJECT *, AISYS_PC *);
+    void ResetAICreatures(AISYS_PC *);
+    void Move_DEFAULT(GAMEOBJECT *);
+    void Player_ToggleCharacter(GAMEOBJECT *, i32 direction, i32 sound);
     extern i32 gExplodeInitialised;
     extern u32 GAMEPAD_TOGGLELEFT;
     extern u32 GAMEPAD_TOGGLERIGHT;
     extern f32 TOGGLEREPEATTIME;
     extern i32 LEGOHINT_FREEPLAYTOGGLE;
     extern i32 FULLDEBUGTOGGLE;
-    extern i32(__cdecl *Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
-    extern void(__cdecl *Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
+    extern i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
+    extern void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
     extern char *implode_inbuffer;
     extern char *implode_outbuffer;
     extern u32 implode_bitbuf;
@@ -18514,7 +18495,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     // NOLINTEND(google-runtime-int)
 
-    i32 __cdecl ExplodeBufferNoHeader(char *, char *, i32, i32);
+    i32 ExplodeBufferNoHeader(char *, char *, i32, i32);
 
     typedef struct {
         int n;
@@ -18557,29 +18538,29 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, instance_count) == 0xb2);
     STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_runtime_flags) == 0xfc);
     extern NUVEC GizmoBlowupUnitScalePc;
-    void __cdecl GizmoBlowupUpdateMatrix(GIZMOBLOWUP_PC *);
-    void __cdecl GizmoBlowupGenDecalMatrix(GIZMOBLOWUP_PC *, NUMTX *, i32);
-    void __cdecl GizmoBlowupGenShadowMatrix(GIZMOBLOWUP_PC *, NUMTX *);
-    void __cdecl GizmoBlowupLateUpdate(void *, void *, f32);
-    void __cdecl GizmoBlowupEarlyUpdate(void *, void *, f32);
-    void __cdecl GameAntiNodeData_Init(void *, NUSPECIALHANDLE *);
-    void __cdecl GameAntiNodeData_Read(void *);
-    i32 __cdecl LookupDebrisEffect(char *);
+    void GizmoBlowupUpdateMatrix(GIZMOBLOWUP_PC *);
+    void GizmoBlowupGenDecalMatrix(GIZMOBLOWUP_PC *, NUMTX *, i32);
+    void GizmoBlowupGenShadowMatrix(GIZMOBLOWUP_PC *, NUMTX *);
+    void GizmoBlowupLateUpdate(void *, void *, f32);
+    void GizmoBlowupEarlyUpdate(void *, void *, f32);
+    void GameAntiNodeData_Init(void *, NUSPECIALHANDLE *);
+    void GameAntiNodeData_Read(void *);
+    i32 LookupDebrisEffect(char *);
 
     STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowup_mtx_buffer) == 0x50e8);
-    i32 __cdecl InitGizmoBlowupTypes(WORLDINFO *);
-    i32 __cdecl InitGizmoBlowups(WORLDINFO *);
-    i32 __cdecl InitGizmoBlowupsMtxBuffer(WORLDINFO *);
+    i32 InitGizmoBlowupTypes(WORLDINFO *);
+    i32 InitGizmoBlowups(WORLDINFO *);
+    i32 InitGizmoBlowupsMtxBuffer(WORLDINFO *);
 
     STATIC_ASSERT(offsetof(WORLDINFO, zipups) == 0x4688);
     STATIC_ASSERT(offsetof(WORLDINFO, zipup_count) == 0x468c);
-    ZIPUP_PC *__cdecl ZipUp_FindNearest(WORLDINFO *, NUVEC *, f32, f32 *, i32 *, GAMEOBJECT *);
+    ZIPUP_PC *ZipUp_FindNearest(WORLDINFO *, NUVEC *, f32, f32 *, i32 *, GAMEOBJECT *);
 
-    u16 __cdecl EdFileReadUnsignedShort(void);
-    u8 __cdecl EdFileReadUnsignedChar(void);
+    u16 EdFileReadUnsignedShort(void);
+    u8 EdFileReadUnsignedChar(void);
 
     STATIC_ASSERT(sizeof(GAMEANTINODEDATA_PC) == 0x24);
-    i32 __cdecl gizmoblowup_Load(void *, void *);
+    i32 gizmoblowup_Load(void *, void *);
     STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, alternate_specials) == 0);
     STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, shadow_special) == 0x48);
     STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_time_scale) == 0x78);
@@ -18682,54 +18663,54 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 LevMusicAmbient;
     extern i32 LevMusicOtherAction;
     extern i32 LevMusicOtherAmbient;
-    extern void(__cdecl *WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *);
-    extern void(__cdecl *WorldInfo_InitLastFn)(WORLDINFO *);
+    extern void (*WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *);
+    extern void (*WorldInfo_InitLastFn)(WORLDINFO *);
     /* Replace canonical DoorExitNamePc declaration with char[64]; selected copied exit-name length<=63. Remove
      * standalone MiscTime/TargetDeg_Mid/TargetDeg_Far externs before introducing the reviewed member macros. */
 
-    void __cdecl Players_InitPositions(WORLDINFO *);
-    void *__cdecl Door_FindByName(WORLDINFO *, char *);
-    void *__cdecl Door_FindByIndex(WORLDINFO *, i32, i32, NUVEC *);
-    i32 __cdecl StartDoorPositions(void);
-    u32 __cdecl Episode_FindAreaFromFlags(EPISODEDATA_PC *, u32, u32);
+    void Players_InitPositions(WORLDINFO *);
+    void *Door_FindByName(WORLDINFO *, char *);
+    void *Door_FindByIndex(WORLDINFO *, i32, i32, NUVEC *);
+    i32 StartDoorPositions(void);
+    u32 Episode_FindAreaFromFlags(EPISODEDATA_PC *, u32, u32);
     /* C++ only, complete neutral class in original shadow owner; method in shared
        declaration needed for natural WorldInfo_Init member caller later. No adapter. */
 
     typedef struct player_item_type_reset_pc_s PLAYER_ITEM_TYPE_RESET_PC;
-    i32 __cdecl BoltType_FindIDByName(const char *, WORLDINFO *);
-    void __cdecl Bolt_PlayHitSfx(BOLT_PC *);
-    i32 __cdecl Bolt_HitPartMode(BOLT_PC *);
-    PART_PC *__cdecl Bolt_HitParts(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
-    u32 __cdecl GetLevelExBlowupFlags(void);
-    GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, u32, u8 *);
-    i32 __cdecl GizmoSys_BoltHit(void *, WORLDINFO *, BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
-    i32 __cdecl GizmoSys_BoltHitPlat(void *, WORLDINFO *, BOLT_PC *, u8 *);
-    void __cdecl Bolt_End(BOLT_PC *, i32);
-    void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *, NUVEC *, NUVEC *, u8 *);
-    BOLT_PC *__cdecl Bolt_Add(GAMEOBJECT *, NUVEC *, NUMTX *, i32, i32);
-    i32 __cdecl Bolt_HitGameObject(BOLT_PC *, GAMEOBJECT *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
-    i32 __cdecl Bolt_HitGameObjects(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
-    void __cdecl CalculateInterceptVector(NUVEC *, NUVEC *, NUVEC *, f32, NUVEC *, NUVEC *);
-    i32 __cdecl Player_HasDeflectBolts(GAMEOBJECT *);
-    i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *);
+    i32 BoltType_FindIDByName(const char *, WORLDINFO *);
+    void Bolt_PlayHitSfx(BOLT_PC *);
+    i32 Bolt_HitPartMode(BOLT_PC *);
+    PART_PC *Bolt_HitParts(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
+    u32 GetLevelExBlowupFlags(void);
+    GIZMOBLOWUP_PC *GizmoBlowUp_Hit(GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, u32, u8 *);
+    i32 GizmoSys_BoltHit(void *, WORLDINFO *, BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
+    i32 GizmoSys_BoltHitPlat(void *, WORLDINFO *, BOLT_PC *, u8 *);
+    void Bolt_End(BOLT_PC *, i32);
+    void Bolt_AddDeflectedBolt(BOLT_PC *, NUVEC *, NUVEC *, u8 *);
+    BOLT_PC *Bolt_Add(GAMEOBJECT *, NUVEC *, NUMTX *, i32, i32);
+    i32 Bolt_HitGameObject(BOLT_PC *, GAMEOBJECT *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
+    i32 Bolt_HitGameObjects(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
+    void CalculateInterceptVector(NUVEC *, NUVEC *, NUVEC *, f32, NUVEC *, NUVEC *);
+    i32 Player_HasDeflectBolts(GAMEOBJECT *);
+    i32 Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *);
     extern i32 BoltNoSfxPc;
     extern i32 BoltNoObjectMomentumPc;
     extern i32 BoltBlockContextPc;
     extern i16 BoltDeactivatedActionPc;
     extern u32 ExBlowupFlagsPc;
-    extern i32(__cdecl *BoltInitSfxFn)(GAMEOBJECT *);
-    extern i32(__cdecl *BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
-    void __cdecl PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *);
-    void __cdecl PlayerItemTypes_Reset(WORLDINFO *);
-    PLAYER_ITEM_TYPE_RESET_PC *__cdecl PlayerItemType_Find(i32);
+    extern i32 (*BoltInitSfxFn)(GAMEOBJECT *);
+    extern i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
+    void PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *);
+    void PlayerItemTypes_Reset(WORLDINFO *);
+    PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType_Find(i32);
 
-    void __cdecl ClearLevData(void);
-    void __cdecl NewLevelFromMenu(LEVELDATA_PC *, i32, i32, i32);
-    i32 __cdecl Action_SetLapTime(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    void ClearLevData(void);
+    void NewLevelFromMenu(LEVELDATA_PC *, i32, i32, i32);
+    i32 Action_SetLapTime(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 
-    void __cdecl WorldInfo_Init(WORLDINFO *);
-    void __cdecl NuRndrInitWorld(void);
-    i32 __cdecl NuRndrGobj(void *object, NUMTX *matrix);
+    void WorldInfo_Init(WORLDINFO *);
+    void NuRndrInitWorld(void);
+    i32 NuRndrGobj(void *object, NUMTX *matrix);
 
     /* Qualified CPU visibility/tree views; original owning extents remain unknown. */
     typedef struct visibility_result_reader_pc_s {
@@ -18778,15 +18759,15 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 #define VISIBILITY_ALTERNATE_WIDTH_PC zxs
     extern f32 zys;
 #define VISIBILITY_OCCLUSION_OUTPUT_PC OcclusionBitArray
-    void __cdecl NuCameraLock(i32);
-    void __cdecl NuVisiOcclusion(VISIBILITY_RESULT_READER_PC *);
-    VISIBILITY_RESULT_READER_PC *__cdecl NuVisiEvaluate(NUGSCN *, void *);
-    void __cdecl NuVisiInstTree(VISIBILITY_RESULT_READER_PC *, NUGSCN *);
+    void NuCameraLock(i32);
+    void NuVisiOcclusion(VISIBILITY_RESULT_READER_PC *);
+    VISIBILITY_RESULT_READER_PC *NuVisiEvaluate(NUGSCN *, void *);
+    void NuVisiInstTree(VISIBILITY_RESULT_READER_PC *, NUGSCN *);
 
-    void __cdecl PortalDoors_Configure(WORLDINFO *, char *);
-    void __cdecl SpecialMiniKits_Configure(WORLDINFO *, char *);
-    void __cdecl SpecialMiniKits_Reset(WORLDINFO *);
-    void __cdecl SpecialMiniKits_Draw(WORLDINFO *);
+    void PortalDoors_Configure(WORLDINFO *, char *);
+    void SpecialMiniKits_Configure(WORLDINFO *, char *);
+    void SpecialMiniKits_Reset(WORLDINFO *);
+    void SpecialMiniKits_Draw(WORLDINFO *);
 
     typedef struct char_category_record_pc_s {
         char *name;
@@ -18802,22 +18783,22 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 CHARCATEGORYCOUNT;
     extern CHAR_CATEGORY_RECORD_PC *CharCategory;
 
-    void __cdecl SetBallooningHeight(GAMEOBJECT *, f32);
-    void __cdecl GameObjectSetCanUse(GAMEOBJECT *, void *, u8, u8, f32);
-    i32 __cdecl Suit_GetIndex(SUIT_LAYERS_PC *);
-    void __cdecl SetObjAsHeadTarget(GAMEOBJECT *, GAMEOBJECT *, i8, f32, f32, f32);
-    i32 __cdecl CharCategory_IsCategory(GAMEOBJECT *, i32);
+    void SetBallooningHeight(GAMEOBJECT *, f32);
+    void GameObjectSetCanUse(GAMEOBJECT *, void *, u8, u8, f32);
+    i32 Suit_GetIndex(SUIT_LAYERS_PC *);
+    void SetObjAsHeadTarget(GAMEOBJECT *, GAMEOBJECT *, i8, f32, f32, f32);
+    i32 CharCategory_IsCategory(GAMEOBJECT *, i32);
 
     extern i16 GrabMachineIdPc;
     extern i16 GrabMagnetIdPc;
     extern i16 RobotBaseIdPc;
-    void __cdecl Grabber_Configure(WORLDINFO *, char *);
-    void __cdecl GizForceSFX_Configure(WORLDINFO *, char *);
-    void __cdecl Doors_Configure(WORLDINFO *, char *);
+    void Grabber_Configure(WORLDINFO *, char *);
+    void GizForceSFX_Configure(WORLDINFO *, char *);
+    void Doors_Configure(WORLDINFO *, char *);
 
-    void __cdecl NuDisplaySceneRndr(NUDISPLAY_LIST_PC *);
+    void NuDisplaySceneRndr(NUDISPLAY_LIST_PC *);
     /* Actual empty separate original source operation; no invented provider. */
-    void __cdecl DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *);
+    void DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *);
     extern i32 DisplaySceneRenderDisabledPc;
     extern i32 noscenespecials;
     extern i32 VisibilityPortalFilterEnabledPc;
@@ -18825,17 +18806,17 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
      * native/private incoming ESI scene and one caller-clean stack visibility word.
      * Blank CSV ctype prevents an external plain two-stack-argument call. */
 
-    u32 __cdecl EdFileReadUnsignedInt(void);
-    void __cdecl edpartScaleType(i32, f32);
-    void __cdecl PartTimeSlip(void);
-    i32 __cdecl CreateScaledPARTEffect(i32, f32);
-    void __cdecl PartCleanupTypes(void);
-    i32 __cdecl GetSfxIdN(char *, i32);
+    u32 EdFileReadUnsignedInt(void);
+    void edpartScaleType(i32, f32);
+    void PartTimeSlip(void);
+    i32 CreateScaledPARTEffect(i32, f32);
+    void PartCleanupTypes(void);
+    i32 GetSfxIdN(char *, i32);
 
-    u8 __cdecl NuToUpper(u8);
-    i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *, char *, char *, char *, i32);
-    NUGSPLINE *__cdecl edSpline_SplineFind(NUGSCN *, char *);
-    void __cdecl Teleports_Configure(WORLDINFO *, char *);
+    u8 NuToUpper(u8);
+    i32 GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *, char *, char *, char *, i32);
+    NUGSPLINE *edSpline_SplineFind(NUGSCN *, char *);
+    void Teleports_Configure(WORLDINFO *, char *);
 
     extern i32 edpart_load_particle_page;
     extern char PartNullInstanceNamePc[14];
@@ -18846,9 +18827,9 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern f32 antinode_time;
     extern f32 antinode_reverse_time;
 
-    void __cdecl GameCreatureInteraction2D(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32);
-    void __cdecl LEGO_AISysCreatureInteraction2D(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32);
-    void __cdecl AISysCreatureAntinodeInteraction(AISYS_PC *, i32, APIOBJECT_PC **, i32 *);
+    void GameCreatureInteraction2D(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32);
+    void LEGO_AISysCreatureInteraction2D(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32);
+    void AISysCreatureAntinodeInteraction(AISYS_PC *, i32, APIOBJECT_PC **, i32 *);
 
     typedef struct render_post_bloom_reader_pc_s {
         u8 unknown_00[4];
@@ -18885,71 +18866,71 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, direction_near_scale) == 0x44);
     STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, direction_bias) == 0x48);
 
-    f32 __cdecl RenderPostLogPc(f32);
-    f32 __cdecl NuPowFast(f32, f32);
-    i16 __cdecl RenderPostASinPc(f32);
-    void __cdecl DrawAlphaGrid(i32, i32, RENDER_POST_BLOOM_READER_PC *);
+    f32 RenderPostLogPc(f32);
+    f32 NuPowFast(f32, f32);
+    i16 RenderPostASinPc(f32);
+    void DrawAlphaGrid(i32, i32, RENDER_POST_BLOOM_READER_PC *);
 
-    i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene);
-    void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page);
-    void __cdecl edpartDetermineNearest(f32 distance);
-    i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count);
-    void __cdecl Particles_Load(WORLDINFO *, char **, i32, i32);
-    void __cdecl LoadPartFile(WORLDINFO *);
-    void __cdecl edpartSetParticlePage(i32);
-    i32 __cdecl edpartLoadPage(char *, i8, NUGSCN *);
-    void __cdecl FileLoadSingleEffectType(DEBRIS_INFO_PC *, i32, i8);
-    i32 __cdecl edppLoadPage(char *, i8, NUGSCN *);
-    void __cdecl UpdatePartEmits(f32 time);
-    void __cdecl NuMtxAlignY(NUMTX *m, NUVEC *v);
-    void __cdecl NuMtxInvRSSH(NUMTX *inverse, NUMTX *matrix);
-    void __cdecl NuMtxAlignX(NUMTX *m, NUVEC *v);
-    void __cdecl NuMtxLookAtX(NUMTX *m, NUVEC *point);
-    void __cdecl NuMtxInvLookAtX(NUMTX *m, NUVEC *point);
-    void __cdecl NuMtxInvLookAtY(NUMTX *m, NUVEC *point);
-    void __cdecl NuMtxInvLookAtZ(NUMTX *m, NUVEC *point);
-    void __cdecl NuMtxAddR(NUMTX *output, NUMTX *a, NUMTX *b);
-    void __cdecl NuMtxSubR(NUMTX *output, NUMTX *a, NUMTX *b);
-    void __cdecl NuMtxSkewSymmetric(NUMTX *m, NUVEC *v);
-    f32 __cdecl NuMtxDet3(NUMTX *m);
-    i32 __cdecl NuMtxCompare(NUMTX *a, NUMTX *b);
-    void __cdecl NuMtxAlignZ(NUMTX *m, NUVEC *v);
-    void __cdecl NuMtxLookAtY(NUMTX *m, NUVEC *point);
-    void __cdecl NuMtxLookAtZ(NUMTX *m, NUVEC *point);
-    void __cdecl FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result);
-    i32 __cdecl rtlDynamicSetPos(i32 id, NUVEC *position);
+    i32 edpartLookupObjectInScene(char *name, NUGSCN *scene);
+    void edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page);
+    void edpartDetermineNearest(f32 distance);
+    i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count);
+    void Particles_Load(WORLDINFO *, char **, i32, i32);
+    void LoadPartFile(WORLDINFO *);
+    void edpartSetParticlePage(i32);
+    i32 edpartLoadPage(char *, i8, NUGSCN *);
+    void FileLoadSingleEffectType(DEBRIS_INFO_PC *, i32, i8);
+    i32 edppLoadPage(char *, i8, NUGSCN *);
+    void UpdatePartEmits(f32 time);
+    void NuMtxAlignY(NUMTX *m, NUVEC *v);
+    void NuMtxInvRSSH(NUMTX *inverse, NUMTX *matrix);
+    void NuMtxAlignX(NUMTX *m, NUVEC *v);
+    void NuMtxLookAtX(NUMTX *m, NUVEC *point);
+    void NuMtxInvLookAtX(NUMTX *m, NUVEC *point);
+    void NuMtxInvLookAtY(NUMTX *m, NUVEC *point);
+    void NuMtxInvLookAtZ(NUMTX *m, NUVEC *point);
+    void NuMtxAddR(NUMTX *output, NUMTX *a, NUMTX *b);
+    void NuMtxSubR(NUMTX *output, NUMTX *a, NUMTX *b);
+    void NuMtxSkewSymmetric(NUMTX *m, NUVEC *v);
+    f32 NuMtxDet3(NUMTX *m);
+    i32 NuMtxCompare(NUMTX *a, NUMTX *b);
+    void NuMtxAlignZ(NUMTX *m, NUVEC *v);
+    void NuMtxLookAtY(NUMTX *m, NUVEC *point);
+    void NuMtxLookAtZ(NUMTX *m, NUVEC *point);
+    void FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result);
+    i32 rtlDynamicSetPos(i32 id, NUVEC *position);
 
     typedef struct TEXTURE_ANIM_PROGRAM_PC TEXTURE_ANIM_PROGRAM_PC;
     typedef struct TEXTURE_ANIMATION_PC TEXTURE_ANIMATION_PC;
     struct PC_MATERIAL_SHADER_DESC_VIEW;
 
-    void __cdecl NuTexAnimSetSignals(u32 signals);
-    void __cdecl NuTexAnimSetMask(i32 mask);
-    void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment);
-    void __cdecl NuTexAnimEnvReset(PC_TEXTURE_ANIM_ENV *environment);
-    void __cdecl NuTexAnimProcessList(TEXTURE_ANIMATION_PC *animation);
-    void __cdecl NuTexAnimResetList(TEXTURE_ANIMATION_PC *animation);
-    void __cdecl NuTexAnimInitMutex(void);
-    void __cdecl NuTexAnimProcess(f32 frame_time);
-    void __cdecl NuTexAnimRestart(void);
-    TEXTURE_ANIMATION_PC *__cdecl NuTexAnimFind(TEXTURE_ANIMATION_PC *animation, const char *name);
-    void __cdecl NuTexAnimDestroy(TEXTURE_ANIMATION_PC *animation);
-    TEXTURE_ANIMATION_PC *__cdecl NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *program, NUMTL *material,
-                                                  u16 *texture_ids, i32 texture_count);
-    TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgFind(const char *name);
-    void __cdecl NuTexAnimProgDestroy(TEXTURE_ANIM_PROGRAM_PC *program);
-    void __cdecl NuTexAnimProgRelease(void);
-    void __cdecl NuTexAnimProgInit(TEXTURE_ANIM_PROGRAM_PC *program);
-    TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgCreate(VARIPTR *buffer, i32 extra_bytes, const char *name);
-    void __cdecl NuTexAnimProgWrite(char *path, TEXTURE_ANIM_PROGRAM_PC *program);
-    TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgRead(VARIPTR *buffer, char *path);
-    void __cdecl NuTexAnimProgAssembleEnd(TEXTURE_ANIM_PROGRAM_PC *program);
-    TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgParseFile(NUFILE file, VARIPTR *buffer, VARIPTR end, i32 fps_unused);
-    TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIPTR end, i32 fps_unused);
-    void __cdecl NuMtlSetShaderDescPS(NUMTL *material, const struct PC_MATERIAL_SHADER_DESC_VIEW *description);
-    void __cdecl NuTexInitEx(VARIPTR *buffer, i32 count);
-    void __cdecl NuTexInitExPS(VARIPTR *buffer_unused);
-    void __cdecl PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE_PC **resource);
+    void NuTexAnimSetSignals(u32 signals);
+    void NuTexAnimSetMask(i32 mask);
+    void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment);
+    void NuTexAnimEnvReset(PC_TEXTURE_ANIM_ENV *environment);
+    void NuTexAnimProcessList(TEXTURE_ANIMATION_PC *animation);
+    void NuTexAnimResetList(TEXTURE_ANIMATION_PC *animation);
+    void NuTexAnimInitMutex(void);
+    void NuTexAnimProcess(f32 frame_time);
+    void NuTexAnimRestart(void);
+    TEXTURE_ANIMATION_PC *NuTexAnimFind(TEXTURE_ANIMATION_PC *animation, const char *name);
+    void NuTexAnimDestroy(TEXTURE_ANIMATION_PC *animation);
+    TEXTURE_ANIMATION_PC *NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *program, NUMTL *material,
+                                          u16 *texture_ids, i32 texture_count);
+    TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgFind(const char *name);
+    void NuTexAnimProgDestroy(TEXTURE_ANIM_PROGRAM_PC *program);
+    void NuTexAnimProgRelease(void);
+    void NuTexAnimProgInit(TEXTURE_ANIM_PROGRAM_PC *program);
+    TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgCreate(VARIPTR *buffer, i32 extra_bytes, const char *name);
+    void NuTexAnimProgWrite(char *path, TEXTURE_ANIM_PROGRAM_PC *program);
+    TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgRead(VARIPTR *buffer, char *path);
+    void NuTexAnimProgAssembleEnd(TEXTURE_ANIM_PROGRAM_PC *program);
+    TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgParseFile(NUFILE file, VARIPTR *buffer, VARIPTR end, i32 fps_unused);
+    TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIPTR end, i32 fps_unused);
+    void NuMtlSetShaderDescPS(NUMTL *material, const struct PC_MATERIAL_SHADER_DESC_VIEW *description);
+    void NuTexInitEx(VARIPTR *buffer, i32 count);
+    void NuTexInitExPS(VARIPTR *buffer_unused);
+    void PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE_PC **resource);
 
     extern NURAND texanim_rand;
     extern u16 script_mask;
@@ -18961,21 +18942,21 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     struct GIZTURRETSYS_s;
     typedef struct trigger_system_pc_s TRIGGER_SYSTEM_PC;
-    i32 __cdecl GameObjectUsingLever(GAMEOBJECT *, void *);
-    i32 __cdecl Lever_BeingPulled(void *);
-    i32 __cdecl GizForce_GameObjUsingForce(GAMEOBJECT *, GIZFORCE_PC *);
-    GAMEOBJECT *__cdecl Grapple_Occupied(void *, GAMEOBJECT *, AIPATHCNX_PC *);
-    void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *);
-    void __cdecl oneAtOnce_MaintainArray(void);
-    void __cdecl oneAtOnce_SetNumAttackers(i32);
-    void __cdecl oneAtOnce_SetAttackersPerRow(i32);
-    void __cdecl oneAtOnce_SetDistPerRow(f32);
-    void __cdecl oneAtOnce_SetInitDistPerRow(f32);
+    i32 GameObjectUsingLever(GAMEOBJECT *, void *);
+    i32 Lever_BeingPulled(void *);
+    i32 GizForce_GameObjUsingForce(GAMEOBJECT *, GIZFORCE_PC *);
+    GAMEOBJECT *Grapple_Occupied(void *, GAMEOBJECT *, AIPATHCNX_PC *);
+    void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *);
+    void oneAtOnce_MaintainArray(void);
+    void oneAtOnce_SetNumAttackers(i32);
+    void oneAtOnce_SetAttackersPerRow(i32);
+    void oneAtOnce_SetDistPerRow(f32);
+    void oneAtOnce_SetInitDistPerRow(f32);
     extern i32 spinner_gizmotype_id;
     extern i32 LEGOCONTEXT_GRAPPLE;
     extern i32 lever_gizmotype_id;
     extern i32 grapple_gizmotype_id;
-    void __cdecl GameAIProcess(void);
+    void GameAIProcess(void);
     extern f32 draw_attention_distance;
     extern u32 GAMEPAD_START;
     extern i32 active_neutral_count;
@@ -18996,13 +18977,13 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 GameAiLosDivisorPc;
     extern f32 timetogetlos;
     extern i32 test_new_interaction;
-    void __cdecl GizTurrets_OpponentSelection(struct GIZTURRETSYS_s *, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **);
+    void GizTurrets_OpponentSelection(struct GIZTURRETSYS_s *, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **);
 
-    f32 __cdecl NewRayCastGetEmbedDist(void);
-    i32 __cdecl NewRayCastHitWallSpline(void);
-    i32 __cdecl NewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags);
+    f32 NewRayCastGetEmbedDist(void);
+    i32 NewRayCastHitWallSpline(void);
+    i32 NewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags);
 
-    void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *, i32, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **, f32);
+    void APIObjectLOSChecks(APIOBJECTSYS_PC *, i32, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **, f32);
 
     typedef struct render_post_viewport_prefix_pc_s {
         f32 source_x;
@@ -19033,21 +19014,21 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, x_offset) == 0x28);
     STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, y_offset) == 0x2c);
     extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc;
-    void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
-                                         f32 dest_y, f32 dest_right, f32 dest_bottom);
-    void __cdecl RenderPostViewportResetPc(void);
+    void RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
+                                 f32 dest_y, f32 dest_right, f32 dest_bottom);
+    void RenderPostViewportResetPc(void);
 
-    void __cdecl DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
-                                RENDER_POST_BLOOM_READER_PC *parameters);
-    void __cdecl RenderPostClearScreenPc(void);
-    u8 __cdecl NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value);
+    void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
+                        RENDER_POST_BLOOM_READER_PC *parameters);
+    void RenderPostClearScreenPc(void);
+    u8 NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value);
 
 #define RENDER_POST_ALPHA_CACHE_PC cacheValues
-    i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags);
-    void __cdecl CastPart(PART_PC *part, f32 time);
+    i32 PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags);
+    void CastPart(PART_PC *part, f32 time);
 
-    void __cdecl GameCreatureOpponentSelection(AISYS_PC *, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **, i32,
-                                               APIOBJECT_PC **, u64, f32);
+    void GameCreatureOpponentSelection(AISYS_PC *, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **,
+                                       u64, f32);
 
     extern i16 PartPlatformImpactListPc[4];
     extern f32 PartCollisionIntervalPc;
@@ -19056,18 +19037,18 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern f32 OpponentSelectionHysteresisPc;
     extern i32 nbaddies_can_see_players;
 
-    void __cdecl UpdateParts(f32 time);
-    void __cdecl DrawParts(i32 keep_offscreen);
-    void __cdecl NuPartEnableRayCasts(i32 enabled);
-    i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y,
-                                                   NUMTX *orientation, f32 scale);
-    void __cdecl DebrisStatusAlwaysOff(i32 *handle);
+    void UpdateParts(f32 time);
+    void DrawParts(i32 keep_offscreen);
+    void NuPartEnableRayCasts(i32 enabled);
+    i32 AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y,
+                                           NUMTX *orientation, f32 scale);
+    void DebrisStatusAlwaysOff(i32 *handle);
     extern i32 NetPaused;
 #ifdef __cplusplus
 }
 
 // These retain C++ linkage and are not exposed as C declarations.
-void __cdecl ClearPause(void);
+void ClearPause(void);
 extern i32 app_tbgameset;
 extern i32 app_tbplayerset;
 extern i32 app_tbaiset;
@@ -19633,8 +19614,8 @@ STATIC_ASSERT(sizeof(NETMESSAGE_PC::MessageData) == 0x4b4);
 STATIC_ASSERT(offsetof(NETMESSAGE_PC::MessageData, bytes) == 0);
 STATIC_ASSERT(offsetof(NETMESSAGE_PC::MessageData, references) == 0x4b0);
 extern "C" {
-    void __cdecl Bolt_Init(void *, NETMESSAGE_PC &);
-    void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &);
+    void Bolt_Init(void *, NETMESSAGE_PC &);
+    void Bolt_HitGameObjectRC(NETMESSAGE_PC &);
 }
 
 struct PC_WAVE_CHUNK_PC {
@@ -19901,33 +19882,33 @@ STATIC_ASSERT(sizeof(struct PC_SPECIAL_SHADOW_LIGHT) == 0x828);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct PC_SPECIAL_SHADOW_LIGHT *__cdecl NuDynamicLightCreate(void);
-    void __cdecl NuDynamicLightSetParameterf(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, f32 value);
-    void __cdecl NuDynamicLightSetParameteri(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, i32 value);
-    i32 __cdecl rtlDynamicSetRadii(i32, f32, f32);
-    i32 __cdecl rtlDynamicSetColours(i32, NUVEC *, NUVEC *);
-    i32 __cdecl rtlDynamicSetDirection(i32, NUVEC *);
-    void __cdecl IndexLights(RTL_SET_PC *, VARIPTR *, i32);
-    void __cdecl rtlProcessLights(void *, f32);
-    void __cdecl rtlSwapSetEndianess(void *);
-    RTL_SET_PC *__cdecl rtlLoadSet(char *, VARIPTR *, i32);
-    NULSTHDR *__cdecl NuLstCreateBuff(i32, i32, VARIPTR *, VARIPTR, i32);
-    void __cdecl NuMtlInitOverride(i32, VARIPTR *, VARIPTR *);
+    struct PC_SPECIAL_SHADOW_LIGHT *NuDynamicLightCreate(void);
+    void NuDynamicLightSetParameterf(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, f32 value);
+    void NuDynamicLightSetParameteri(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, i32 value);
+    i32 rtlDynamicSetRadii(i32, f32, f32);
+    i32 rtlDynamicSetColours(i32, NUVEC *, NUVEC *);
+    i32 rtlDynamicSetDirection(i32, NUVEC *);
+    void IndexLights(RTL_SET_PC *, VARIPTR *, i32);
+    void rtlProcessLights(void *, f32);
+    void rtlSwapSetEndianess(void *);
+    RTL_SET_PC *rtlLoadSet(char *, VARIPTR *, i32);
+    NULSTHDR *NuLstCreateBuff(i32, i32, VARIPTR *, VARIPTR, i32);
+    void NuMtlInitOverride(i32, VARIPTR *, VARIPTR *);
     extern u32 NuDebrisIdealDynamicVBSizePc;
     extern i32 MaxAnimJoints;
-    void __cdecl NuInitDebrisRenderer(VARIPTR *, VARIPTR);
-    void __cdecl NuAPIInit(void);
-    void __cdecl NuWindInitialise(NUWIND *);
-    void __cdecl NuAnimInit(i32, VARIPTR *, VARIPTR);
-    void __cdecl NuAnimBuffCreateScratch(ANI3_BUFFER_PC *buffer);
-    i32 __cdecl rtlInitDynamic(VARIPTR *, VARIPTR, i32);
-    void *__cdecl LoadGizFlow(void *, void *, char *, VARIPTR *, VARIPTR *);
-    void __cdecl GizmoSysAddGizmos(void *, GIZFLOW_PC *, void *);
-    GIZMO_PC *__cdecl createGizTimer(void *, f32, i32, char *);
-    GIZMO_PC *__cdecl createGizRandom(void *, i32, i32 *, char *);
-    GIZMO_PC *__cdecl createGizSpecial(void *, char *);
-    void __cdecl GizFlowLoadDiagnosticPc(char *);
-    void __cdecl GizFlowMissingNamePc(char *, i32);
+    void NuInitDebrisRenderer(VARIPTR *, VARIPTR);
+    void NuAPIInit(void);
+    void NuWindInitialise(NUWIND *);
+    void NuAnimInit(i32, VARIPTR *, VARIPTR);
+    void NuAnimBuffCreateScratch(ANI3_BUFFER_PC *buffer);
+    i32 rtlInitDynamic(VARIPTR *, VARIPTR, i32);
+    void *LoadGizFlow(void *, void *, char *, VARIPTR *, VARIPTR *);
+    void GizmoSysAddGizmos(void *, GIZFLOW_PC *, void *);
+    GIZMO_PC *createGizTimer(void *, f32, i32, char *);
+    GIZMO_PC *createGizRandom(void *, i32, i32 *, char *);
+    GIZMO_PC *createGizSpecial(void *, char *);
+    void GizFlowLoadDiagnosticPc(char *);
+    void GizFlowMissingNamePc(char *, i32);
     extern i32 giztimer_gizmotype_id;
     extern i32 gizrandom_gizmotype_id;
 #ifdef __cplusplus
@@ -19937,9 +19918,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl LightGameObject(GAMEOBJECT *, void *);
-    void __cdecl ConstantRumble(GAMEOBJECT *, f32, f32);
-    void __cdecl PowerUp_Update(GAMEOBJECT *);
+    void LightGameObject(GAMEOBJECT *, void *);
+    void ConstantRumble(GAMEOBJECT *, f32, f32);
+    void PowerUp_Update(GAMEOBJECT *);
 /* Verified game-local light views may remain source-local: light_data4d8/current61c. No new shared fields or storage.
  */
 #ifdef __cplusplus
@@ -20009,34 +19990,33 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUANIM_LEGACY_CHUNK_PC, curve_sets) == 8);
 
     STATIC_ASSERT(sizeof(NUANIM_LEGACY_CHUNK_PC) == 0xc);
-    f32 __cdecl NuAnimCurveCalcVal2(NUANIM_LEGACY_CURVE_PC *, NUANIM_TIME2_PC *);
-    void __cdecl NuAnimCurveSetApplyToMatrix(NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUMTX *);
-    void __cdecl NuAnimDataCalcTime(NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *);
-    void __cdecl NuAnimCurveSetApplyBlendToJoint2(NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUANIM_LEGACY_SET_PC *,
-                                                  NUANIM_TIME2_PC *, f32, NUHGOBJ_EVAL_JOINT_PC *, NUVEC *, NUVEC *,
-                                                  NUMTX *, NUHGOBJ_JOINT_OVERRIDE_PC *);
-    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa(i32, i16 *, NUANIM_LEGACY_HEADER_PC *, f32);
-    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend(i32, i16 *, NUANIM_LEGACY_HEADER_PC *, f32,
-                                                      NUANIM_LEGACY_HEADER_PC *, f32, f32);
-    void __cdecl NuHGobjEvalAnimBlend(NUHGOBJ_EVAL_PC *, NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_LEGACY_HEADER_PC *, f32,
-                                      f32, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *);
+    f32 NuAnimCurveCalcVal2(NUANIM_LEGACY_CURVE_PC *, NUANIM_TIME2_PC *);
+    void NuAnimCurveSetApplyToMatrix(NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUMTX *);
+    void NuAnimDataCalcTime(NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *);
+    void NuAnimCurveSetApplyBlendToJoint2(NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUANIM_LEGACY_SET_PC *,
+                                          NUANIM_TIME2_PC *, f32, NUHGOBJ_EVAL_JOINT_PC *, NUVEC *, NUVEC *, NUMTX *,
+                                          NUHGOBJ_JOINT_OVERRIDE_PC *);
+    DWA_WEIGHT_BLOCK_PC **NuHGobjEvalDwa(i32, i16 *, NUANIM_LEGACY_HEADER_PC *, f32);
+    DWA_WEIGHT_BLOCK_PC **NuHGobjEvalDwaBlend(i32, i16 *, NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_LEGACY_HEADER_PC *,
+                                              f32, f32);
+    void NuHGobjEvalAnimBlend(NUHGOBJ_EVAL_PC *, NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_LEGACY_HEADER_PC *, f32, f32,
+                              i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *);
 
-    i32 __cdecl APIObjectCollision(APIOBJECT_PC *, APIOBJECT_PC *);
-    i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *, APIOBJECT_PC *);
-    void __cdecl APIObjectCollisions(i32, APIOBJECT_PC **, NUVEC *, NUVEC *,
-                                     i32(__cdecl *)(APIOBJECT_PC *, APIOBJECT_PC *));
-    i32 __cdecl ForcePushed_SuperPush_Occurring(GAMEOBJECT *, GAMEOBJECT *);
-    void __cdecl CollideGameObjects(WORLDINFO *);
+    i32 APIObjectCollision(APIOBJECT_PC *, APIOBJECT_PC *);
+    i32 APIObjectCollision2D(APIOBJECT_PC *, APIOBJECT_PC *);
+    void APIObjectCollisions(i32, APIOBJECT_PC **, NUVEC *, NUVEC *, i32 (*)(APIOBJECT_PC *, APIOBJECT_PC *));
+    i32 ForcePushed_SuperPush_Occurring(GAMEOBJECT *, GAMEOBJECT *);
+    void CollideGameObjects(WORLDINFO *);
     extern LEVELDATA_PC *CollisionVehicleExcludedLevelPc;
 
-    void __cdecl NuCameraBuildClipPlanes(void);
-    void __cdecl NuMtxCalcFaceY(NUMTX *, NUVEC *);
-    void __cdecl NuMtxCalcFaceOn(NUMTX *, NUVEC *);
-    i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *, NUVEC *, NUMTX *, f32, i32, f32 *);
-    i32 __cdecl NuRndrSetSpecularLightPS(const NUVEC *, const NUVEC4 *);
-    i32 __cdecl NuRndrSetFxMtx(NUMTX *);
-    void __cdecl SetCameraMatrices(void);
-    void __cdecl NuRndrStateSetSpecularLightEx(const NUVEC *, const NUMTX *, const NUVEC *);
+    void NuCameraBuildClipPlanes(void);
+    void NuMtxCalcFaceY(NUMTX *, NUVEC *);
+    void NuMtxCalcFaceOn(NUMTX *, NUVEC *);
+    i32 NuCameraClipTestExtentsGeneric(NUVEC *, NUVEC *, NUMTX *, f32, i32, f32 *);
+    i32 NuRndrSetSpecularLightPS(const NUVEC *, const NUVEC4 *);
+    i32 NuRndrSetFxMtx(NUMTX *);
+    void SetCameraMatrices(void);
+    void NuRndrStateSetSpecularLightEx(const NUVEC *, const NUMTX *, const NUVEC *);
 
 #ifdef __cplusplus
 }
@@ -20046,12 +20026,12 @@ extern "C" {
 extern "C" {
 #endif
     typedef struct ripple_set_pc_s RIPPLE_SET_PC;
-    void __cdecl AddRipple(RIPPLE_SET_PC *, NUMTX *, f32, f32, f32, f32, u32, u32, i32, NUMTL *, NUVEC *);
-    void __cdecl BuildRippleMtx(NUMTX *, NUVEC *, NUVEC *, u16, u16);
-    void __cdecl VecRotateAxis(NUVEC *, u16, NUVEC *);
-    void __cdecl AddSurfaceRipples(GAMEOBJECT *);
-    void __cdecl PodDust(WORLDINFO *, GAMEOBJECT *);
-    void __cdecl AddSurfaceDebris(GAMEOBJECT *);
+    void AddRipple(RIPPLE_SET_PC *, NUMTX *, f32, f32, f32, f32, u32, u32, i32, NUMTL *, NUVEC *);
+    void BuildRippleMtx(NUMTX *, NUVEC *, NUVEC *, u16, u16);
+    void VecRotateAxis(NUVEC *, u16, NUVEC *);
+    void AddSurfaceRipples(GAMEOBJECT *);
+    void PodDust(WORLDINFO *, GAMEOBJECT *);
+    void AddSurfaceDebris(GAMEOBJECT *);
 
     extern RIPPLE_SET_PC *RippleSetPc;
     extern f32 RipplePerturbationPc;
@@ -20065,21 +20045,21 @@ extern "C" {
 
     typedef struct BURN_SET_PC BURN_SET_PC;
 
-    void __cdecl edrtlInitBurnset(BURN_SET_PC *);
-    void __cdecl edrtlDetermineNearestBurn(f32, BURN_SET_PC *);
-    i32 __cdecl edrtlBurnoutLoadSet(char *, BURN_SET_PC *);
-    BURN_SET_PC *__cdecl edrtlBurnoutLoad(char *, VARIPTR *, i32);
-    void __cdecl edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32);
-    void __cdecl edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32);
-    void __cdecl edrtlDrawLightEx(i32 index, i32 style);
-    RTL_SET_PC *__cdecl rtlGetEnvSet(void);
-    void __cdecl RndrOSphere(NUVEC *centre, f32 radius, i32 colour, i32 segments, NUMTL *mtl);
-    void __cdecl RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *mtl);
-    void __cdecl EdDrawBegin(i32 index);
-    void __cdecl EdDrawEnd(void);
-    void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments,
-                                    i32 colour, i32 cap_bottom, i32 cap_top);
-    void __cdecl LoadLights(void *, char *);
+    void edrtlInitBurnset(BURN_SET_PC *);
+    void edrtlDetermineNearestBurn(f32, BURN_SET_PC *);
+    i32 edrtlBurnoutLoadSet(char *, BURN_SET_PC *);
+    BURN_SET_PC *edrtlBurnoutLoad(char *, VARIPTR *, i32);
+    void edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32);
+    void edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32);
+    void edrtlDrawLightEx(i32 index, i32 style);
+    RTL_SET_PC *rtlGetEnvSet(void);
+    void RndrOSphere(NUVEC *centre, f32 radius, i32 colour, i32 segments, NUMTL *mtl);
+    void RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *mtl);
+    void EdDrawBegin(i32 index);
+    void EdDrawEnd(void);
+    void EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments, i32 colour,
+                            i32 cap_bottom, i32 cap_top);
+    void LoadLights(void *, char *);
 
     typedef struct CAMERA_CLIP_PACKET_PC {
         NUMTX clip;
@@ -20138,15 +20118,15 @@ extern "C" {
     extern i32 cam_state_count;
     extern CAMERA_SAVED_STATE_PC CameraSavedStatesPc[16];
 
-    void __cdecl NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *, NUCAMERA *, i32);
-    void __cdecl NuCameraTransformView(NUVEC *, NUVEC *, i32, NUMTX *);
-    void __cdecl NuCameraTransformScreenClip(NUVEC *, NUVEC *, i32, NUMTX *);
-    void __cdecl NuCameraTransformScissorClip(NUVEC *, NUVEC *, i32, NUMTX *);
-    void __cdecl NuCameraTransformScreen(NUVEC *, NUVEC *, i32, NUMTX *);
-    i32 __cdecl NuCameraSaveState(void);
-    void __cdecl NuCameraClearStateBuffer(void);
-    i32 __cdecl NuRndrStateUpdateCameraState(void);
-    void __cdecl NuVpGetSize2(f32 *, f32 *);
+    void NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *, NUCAMERA *, i32);
+    void NuCameraTransformView(NUVEC *, NUVEC *, i32, NUMTX *);
+    void NuCameraTransformScreenClip(NUVEC *, NUVEC *, i32, NUMTX *);
+    void NuCameraTransformScissorClip(NUVEC *, NUVEC *, i32, NUMTX *);
+    void NuCameraTransformScreen(NUVEC *, NUVEC *, i32, NUMTX *);
+    i32 NuCameraSaveState(void);
+    void NuCameraClearStateBuffer(void);
+    i32 NuRndrStateUpdateCameraState(void);
+    void NuVpGetSize2(f32 *, f32 *);
 
 #ifdef __cplusplus
 }
@@ -20280,26 +20260,26 @@ extern "C" {
     extern NUMTL *streakmtl;
     extern NUMTL *streakmtl_ref;
     extern const char StreakTextureNamePc[17];
-    void __cdecl InitStreaks(VARIPTR *, VARIPTR, char *);
-    void __cdecl AddStreakPoints(NUVEC *, f32, u32, void **, i32, GAMEOBJECT *);
-    void __cdecl UpdateStreaks(f32);
-    void __cdecl DrawStreaks(void);
-    void __cdecl ResetStreaks(void);
+    void InitStreaks(VARIPTR *, VARIPTR, char *);
+    void AddStreakPoints(NUVEC *, f32, u32, void **, i32, GAMEOBJECT *);
+    void UpdateStreaks(f32);
+    void DrawStreaks(void);
+    void ResetStreaks(void);
 
-    i32 __cdecl InitSpecialSfx(void *);
-    void __cdecl LoadSpecialSfxFile(void *);
-    i32 __cdecl SpecialSfxLoad(char *, void *);
-    void __cdecl UpdateSpecialSfx(WORLDINFO *);
-    i32 __cdecl GetAnimDirection(NUINSTANIM *);
+    i32 InitSpecialSfx(void *);
+    void LoadSpecialSfxFile(void *);
+    i32 SpecialSfxLoad(char *, void *);
+    void UpdateSpecialSfx(WORLDINFO *);
+    i32 GetAnimDirection(NUINSTANIM *);
 
-    void __cdecl AveragePlayerCurrentSpeedMul(void);
-    void __cdecl SetPlayer(void);
-    void __cdecl RegenerateHearts(GAMEOBJECT *);
-    void __cdecl UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *);
-    void __cdecl SpecialMove_Cancel(GAMEOBJECT *);
+    void AveragePlayerCurrentSpeedMul(void);
+    void SetPlayer(void);
+    void RegenerateHearts(GAMEOBJECT *);
+    void UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *);
+    void SpecialMove_Cancel(GAMEOBJECT *);
 
-    i32 __cdecl OnOrInsidePlane(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32 *);
-    void __cdecl KeepOnScreen(GAMEOBJECT *);
+    i32 OnOrInsidePlane(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32 *);
+    void KeepOnScreen(GAMEOBJECT *);
 
     STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 
@@ -20320,34 +20300,34 @@ extern "C" {
     extern i32 FramePadProfilePortPc;
     extern i32 MaxGamePads;
     extern f32 FrameMaterialAnimationSpeedPc;
-    FRAME_PAD_PC *__cdecl NuPadOpen(i32 port, i32 slot);
-    i32 __cdecl NuPadRead(FRAME_PAD_PC *pad);
-    void __cdecl NuPadSetStatus(i32 pad, i32 status);
-    void __cdecl NuPadSetValid(i32 port, i32 valid);
-    void __cdecl NuPadMapPlayerToPort(i32 player, i32 port);
-    void __cdecl NuPadAutoConfigurePc(i32 count);
-    void __cdecl PcInput_DisableAllKeyboards(void);
-    void __cdecl NuRndrInitStartupMaterialsPc(void);
+    FRAME_PAD_PC *NuPadOpen(i32 port, i32 slot);
+    i32 NuPadRead(FRAME_PAD_PC *pad);
+    void NuPadSetStatus(i32 pad, i32 status);
+    void NuPadSetValid(i32 port, i32 valid);
+    void NuPadMapPlayerToPort(i32 player, i32 port);
+    void NuPadAutoConfigurePc(i32 count);
+    void PcInput_DisableAllKeyboards(void);
+    void NuRndrInitStartupMaterialsPc(void);
     extern NUMTL *PCStartupMaterial1Pc;
     extern NUMTL *PCStartupMaterial2Pc;
     extern i16 PlayerLastPort[8];
-    void __cdecl NuPadProcessReadData(FRAME_SCANNED_PAD_PC *pad);
-    void __cdecl NuPadSetMaxGamePads(i32 count);
-    void __cdecl NuPadInit(void);
-    void __cdecl NuPadResetState(i32 preserve_scanned_state);
-    void __cdecl NuPadRecordEndFrame(void);
-    void __cdecl NuPadRecordPlay(FRAME_SCANNED_PAD_PC *pad);
-    i32 __cdecl NuPad_Interface_GetMaxDevices(void);
-    void __cdecl NuPadOpenPS(FRAME_PAD_PC *pad);
-    void __cdecl NuPadInitPS(FRAME_SCANNED_PAD_PC *pad);
-    char *__cdecl NuGetErrN(i32 entry);
-    void __cdecl NuQFntPrintV(VUFNT *font, const char *format, char *arguments);
-    f32 __cdecl NuQFntPrintLenV(VUFNT *font, const char *format, char *arguments);
-    f32 __cdecl NuTimeGetFrameTime(void);
-    void __cdecl NuDisplayListAnimateMtls(f32 frame_time);
-    void __cdecl NuMtlSetUVOffsetPS(NUMTL *material, u32 layer, f32 u, f32 v);
-    void __cdecl NuMtlAnimateShaderMtlTextures(f32 frame_time);
-    void __cdecl NuMtlAnimate(f32 frame_time);
+    void NuPadProcessReadData(FRAME_SCANNED_PAD_PC *pad);
+    void NuPadSetMaxGamePads(i32 count);
+    void NuPadInit(void);
+    void NuPadResetState(i32 preserve_scanned_state);
+    void NuPadRecordEndFrame(void);
+    void NuPadRecordPlay(FRAME_SCANNED_PAD_PC *pad);
+    i32 NuPad_Interface_GetMaxDevices(void);
+    void NuPadOpenPS(FRAME_PAD_PC *pad);
+    void NuPadInitPS(FRAME_SCANNED_PAD_PC *pad);
+    char *NuGetErrN(i32 entry);
+    void NuQFntPrintV(VUFNT *font, const char *format, char *arguments);
+    f32 NuQFntPrintLenV(VUFNT *font, const char *format, char *arguments);
+    f32 NuTimeGetFrameTime(void);
+    void NuDisplayListAnimateMtls(f32 frame_time);
+    void NuMtlSetUVOffsetPS(NUMTL *material, u32 layer, f32 u, f32 v);
+    void NuMtlAnimateShaderMtlTextures(f32 frame_time);
+    void NuMtlAnimate(f32 frame_time);
 
 #ifdef __cplusplus
 }
@@ -20380,34 +20360,34 @@ extern "C" {
     extern i32 PCGraphicsRenderTextureBytes;
     extern PICKUP_TYPE_SYSTEM_PC GizmoPickupSys_Game;
     extern f32 COINMAGNETSCALE;
-    extern f32(__cdecl *GizmoPickups_Collide2DFn)(GAMEOBJECT *);
-    void __cdecl UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 player_index);
-    void __cdecl CheckMissionEnd(MISSIONSYS_PC *system);
-    void __cdecl GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system);
-    GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unused);
-    void __cdecl PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture);
-    void __cdecl PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...);
+    extern f32 (*GizmoPickups_Collide2DFn)(GAMEOBJECT *);
+    void UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 player_index);
+    void CheckMissionEnd(MISSIONSYS_PC *system);
+    void GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system);
+    GIZMOPICKUP_PC *GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unused);
+    void PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture);
+    void PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...);
 #ifdef __cplusplus
 }
 #endif
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl BoltTypes_Configure(WORLDINFO *, char *);
-    void __cdecl BoltTypes_Init(WORLDINFO *);
-    void __cdecl LevelObjects_InitForLevel(WORLDINFO *);
-    i32 __cdecl FindPartDebris(PARTDEBRISSYS *, char *);
+    void BoltTypes_Configure(WORLDINFO *, char *);
+    void BoltTypes_Init(WORLDINFO *);
+    void LevelObjects_InitForLevel(WORLDINFO *);
+    i32 FindPartDebris(PARTDEBRISSYS *, char *);
     extern NUGSCN *area_scene;
     extern NUGSCN *vehicle_scene;
     extern NUGSCN *big_icon_scene;
     extern i32 KNOBS;
 
-    void __cdecl PCGraphicsRenderTextureAllocationError(void);
-    void __cdecl PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32, i32);
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTarget(i32, i32);
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTargetFormat(i32, i32, i32);
-    void __cdecl PCDeviceCreateDepthSurface(u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
-    void __cdecl PCDeviceCreateTexture(u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **);
+    void PCGraphicsRenderTextureAllocationError(void);
+    void PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32, i32);
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsCreateColourTarget(i32, i32);
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsCreateColourTargetFormat(i32, i32, i32);
+    void PCDeviceCreateDepthSurface(u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+    void PCDeviceCreateTexture(u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **);
 #ifdef __cplusplus
 }
 #endif
@@ -20648,9 +20628,9 @@ struct PC_CONTROL_TEXT_PC {
 
 struct PC_CONTROL_CONFIG_PC {
     VUFNT *font;
-    void(__cdecl *draw_background)(f32, f32, f32);
+    void (*draw_background)(f32, f32, f32);
     PC_CONTROL_ITEM_PC **rows;
-    void(__cdecl *play_sound)(i32);
+    void (*play_sound)(i32);
     const char *blocked_keys;
 };
 
@@ -20679,7 +20659,7 @@ struct PC_CONTROL_SCREEN_PC {
     u32 config_hash;
     u8 missing_binding;
     u8 unknown71[3];
-    void(__cdecl *draw_background)(f32, f32, f32);
+    void (*draw_background)(f32, f32, f32);
     f32 deadzone[4];
     f32 saved_deadzone[4];
     f32 keyboard_deadzone;
@@ -20690,7 +20670,7 @@ struct PC_CONTROL_SCREEN_PC {
     PC_CONTROL_TEXT_PC text[12];
     f32 elapsed;
     NUMTL *material;
-    void(__cdecl *play_sound)(i32);
+    void (*play_sound)(i32);
     i32 ItemAllowsBinding(PC_CONTROL_ROW_PC *, i32, i32);
     void AdvanceSelection(PC_CONTROL_ROW_PC *);
     i32 CountPlayerRows(PC_CONTROL_ROW_PC *);
@@ -20744,21 +20724,21 @@ extern "C" {
     extern i16 *PcControlTextIdsPc[45];
     extern char *PcControlTextPc[45];
     extern f32 PcControlBaselineAdjustPc;
-    void __cdecl PcControlRegisterPc(PC_CONTROL_CONFIG_PC *, VARIPTR *, VARIPTR *);
-    void __cdecl PcControlPlaySoundPc(i32);
-    void __cdecl LoadPermProgressDraw(f32, f32, f32);
-    void __cdecl MenuEnterControlSetupPc(MENU *);
-    void __cdecl MenuDrawSelectLanguage(MENU *);
-    void __cdecl MenuUpdateSelectLanguage(MENU *);
-    void __cdecl MenuDrawExtras(MENU *);
-    void __cdecl MenuUpdateExtras(MENU *);
-    u32 __cdecl Cheat_CheckFlags(i32, u32);
+    void PcControlRegisterPc(PC_CONTROL_CONFIG_PC *, VARIPTR *, VARIPTR *);
+    void PcControlPlaySoundPc(i32);
+    void LoadPermProgressDraw(f32, f32, f32);
+    void MenuEnterControlSetupPc(MENU *);
+    void MenuDrawSelectLanguage(MENU *);
+    void MenuUpdateSelectLanguage(MENU *);
+    void MenuDrawExtras(MENU *);
+    void MenuUpdateExtras(MENU *);
+    u32 Cheat_CheckFlags(i32, u32);
     extern CHEAT_PC ExtrasCheatsPc[46];
-    void __cdecl MenuDrawControlSetupPc(MENU *);
-    void __cdecl MenuUpdateControlSetupPc(MENU *);
-    void __cdecl MenuEnterSelectControlsPc(MENU *);
-    void __cdecl MenuUpdateSelectControlsPc(MENU *);
-    void __cdecl MenuExitSelectControlsPc(MENU *);
+    void MenuDrawControlSetupPc(MENU *);
+    void MenuUpdateControlSetupPc(MENU *);
+    void MenuEnterSelectControlsPc(MENU *);
+    void MenuUpdateSelectControlsPc(MENU *);
+    void MenuExitSelectControlsPc(MENU *);
 }
 
 #pragma pack(push, 2)
@@ -21017,37 +20997,37 @@ struct PC_INPUT_RUNTIME_PC {
 };
 
 // Add public declarations in C++ context (PC_INPUT_CONFIG_PC type is C++ only).
-typedef i32(__cdecl *PC_INPUT_COMMAND_FILTER_PC)(i32, i32);
+typedef i32 (*PC_INPUT_COMMAND_FILTER_PC)(i32, i32);
 extern u8 PcInputAxisRemap[16];
 extern u32 PcInputAxisRemapInitialized;
-extern "C" void __cdecl PcInputCopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank);
-extern "C" void __cdecl PcInputResetMouseMotionPc();
-extern "C" char *__cdecl PcInputDeviceNamePc(i32 port);
-extern "C" void __cdecl PcInputSuppressKeyOnePc(i32 value);
-extern "C" void __cdecl PcInputSetMouseFieldPc(i32 value);
-extern "C" void __cdecl PcInputSetCapturedPortPc(i32 port);
-extern "C" i32 __cdecl PcInputCapturedPortPc();
-extern "C" void __cdecl PcInputSetBlockedKeysPc(const char *keys);
-extern "C" i32 __cdecl PcInputIsMouseDevicePc(i32 port);
-extern "C" i32 __cdecl PcInputIsJoystickDevicePc(i32 port);
-extern "C" i32 __cdecl PcInputMixConfigurationHashPc(i32 previous, i32 value);
-extern "C" i32 __cdecl PcInputHashAuxiliaryBindingsPc();
-extern "C" void __cdecl PcInputInstallConfigPc(PC_INPUT_CONFIG_PC *config, i32 port, i32 key, i32 auxiliary, i32 bank);
-extern "C" i32 __cdecl PcInputBindingPresentPc(i32 port, i32 action, i32 auxiliary, i32 bank);
-extern "C" PC_INPUT_CONFIG_PC *__cdecl PcInputFindConfigPc(u8 mask, i32 port, i32 key);
-extern "C" i32 __cdecl PcInputBindingAvailablePc(i32 bank, i32 bank_count, i32 kind, i32 value);
-extern "C" void __cdecl PcInputClearOtherBankConflictsPc(i32 bank, i32 bank_count);
-extern "C" i32 __cdecl PcInputResolveAuxiliaryConflictsPc(i32 bank, i32 bank_count);
-extern "C" i32 __cdecl PcInputAlternateDeadzonePc(i32 port);
-extern "C" void __cdecl PcInputSetDeadzonePc(i32 port, i32 value);
-extern "C" void __cdecl PcInputSetAlternateDeadzonePc(i32 port, i32 value);
-extern "C" PC_INPUT_COMMAND_FILTER_PC __cdecl PcInputGetCommandFilterPc();
-extern "C" void __cdecl PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary,
-                                               i32 bank, u32 excluded);
-extern "C" i32 __cdecl PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank,
-                                                  i32 a, i32 b, char *c);
-extern "C" void __cdecl PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key);
-extern "C" void __cdecl PcInputSaveConfigurationPc();
+extern "C" void PcInputCopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank);
+extern "C" void PcInputResetMouseMotionPc();
+extern "C" char *PcInputDeviceNamePc(i32 port);
+extern "C" void PcInputSuppressKeyOnePc(i32 value);
+extern "C" void PcInputSetMouseFieldPc(i32 value);
+extern "C" void PcInputSetCapturedPortPc(i32 port);
+extern "C" i32 PcInputCapturedPortPc();
+extern "C" void PcInputSetBlockedKeysPc(const char *keys);
+extern "C" i32 PcInputIsMouseDevicePc(i32 port);
+extern "C" i32 PcInputIsJoystickDevicePc(i32 port);
+extern "C" i32 PcInputMixConfigurationHashPc(i32 previous, i32 value);
+extern "C" i32 PcInputHashAuxiliaryBindingsPc();
+extern "C" void PcInputInstallConfigPc(PC_INPUT_CONFIG_PC *config, i32 port, i32 key, i32 auxiliary, i32 bank);
+extern "C" i32 PcInputBindingPresentPc(i32 port, i32 action, i32 auxiliary, i32 bank);
+extern "C" PC_INPUT_CONFIG_PC *PcInputFindConfigPc(u8 mask, i32 port, i32 key);
+extern "C" i32 PcInputBindingAvailablePc(i32 bank, i32 bank_count, i32 kind, i32 value);
+extern "C" void PcInputClearOtherBankConflictsPc(i32 bank, i32 bank_count);
+extern "C" i32 PcInputResolveAuxiliaryConflictsPc(i32 bank, i32 bank_count);
+extern "C" i32 PcInputAlternateDeadzonePc(i32 port);
+extern "C" void PcInputSetDeadzonePc(i32 port, i32 value);
+extern "C" void PcInputSetAlternateDeadzonePc(i32 port, i32 value);
+extern "C" PC_INPUT_COMMAND_FILTER_PC PcInputGetCommandFilterPc();
+extern "C" void PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank,
+                                       u32 excluded);
+extern "C" i32 PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a,
+                                          i32 b, char *c);
+extern "C" void PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key);
+extern "C" void PcInputSaveConfigurationPc();
 
 extern PC_INPUT_CONFIG_PC PcStaticInputConfigs[24];
 extern PC_DI_CAPS_PC PcKeyboardCapabilities;
@@ -21140,15 +21120,15 @@ STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, unknown_04) == 4);
 
 extern const GUID PcWbemClassId;
 extern const GUID PcWbemInterfaceId;
-extern "C" char *__cdecl PcGetUserFolder(const char *, const char *);
+extern "C" char *PcGetUserFolder(const char *, const char *);
 struct _iobuf;
-extern "C" _iobuf *__cdecl PcOpenPlatformFile(const char *, const char *, i32, const char *);
+extern "C" _iobuf *PcOpenPlatformFile(const char *, const char *, i32, const char *);
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl PCOptionsBuildFolder(char *);
+    void PCOptionsBuildFolder(char *);
 #ifdef __cplusplus
 }
 #endif
@@ -21158,7 +21138,7 @@ struct PC_INPUT_RUNTIME_PC;
 extern const char *PcCompanyName;
 extern const char *PcProductName;
 extern i32 PcUsePersonalFolder;
-extern void(__cdecl *PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *);
+extern void (*PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *);
 extern char PcUserFolder[260];
 extern char PcFileDirectory[128];
 extern char PcFilePath[128];
@@ -21195,13 +21175,13 @@ extern char *PcInputKeyNames824be0[238];
 extern char *PcInputKeyNames821558[238];
 #endif
 
-typedef LRESULT(__cdecl *PC_WINDOW_CALLBACK_PC)(HWND, UINT, WPARAM, LPARAM, i32 *);
+typedef LRESULT (*PC_WINDOW_CALLBACK_PC)(HWND, UINT, WPARAM, LPARAM, i32 *);
 #ifdef __cplusplus
 
-extern "C" void __cdecl PcShutdown(void);
-extern "C" void __cdecl PcKeyDown(i32 scan_code);
-extern "C" void __cdecl PcKeyUp(i32 scan_code);
-extern "C" void __cdecl PcPrepareTiming(void);
+extern "C" void PcShutdown(void);
+extern "C" void PcKeyDown(i32 scan_code);
+extern "C" void PcKeyUp(i32 scan_code);
+extern "C" void PcPrepareTiming(void);
 extern "C" LRESULT __stdcall WindowProcPc(HWND, UINT, WPARAM, LPARAM);
 
 STATIC_ASSERT(sizeof(WNDCLASSEXA) == 48);
@@ -21224,26 +21204,26 @@ STATIC_ASSERT(sizeof(FILTERKEYS) == 24);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl SetPadDescriptorPc(i32, const u16 *);
-    void __cdecl InitPadDescriptorsPc(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
-    i32 __cdecl QueueKeyPressPc(i32, i32);
-    i32 __cdecl CreateWindowPc(HINSTANCE, i32, u16);
-    i32 __cdecl PublishWindowPc(HWND, i32);
-    void __cdecl RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC);
-    void __cdecl SetAccessibilityPc(u8);
-    void __cdecl ParsePlatformArgumentsPc(char *);
+    void SetPadDescriptorPc(i32, const u16 *);
+    void InitPadDescriptorsPc(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
+    i32 QueueKeyPressPc(i32, i32);
+    i32 CreateWindowPc(HINSTANCE, i32, u16);
+    i32 PublishWindowPc(HWND, i32);
+    void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC);
+    void SetAccessibilityPc(u8);
+    void ParsePlatformArgumentsPc(char *);
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-    void __cdecl PcFreeApiCallBuffer(void);
-    void __cdecl PcRendererCleanup(void);
-    void __cdecl PcRendererShutdown(i32);
-    void __cdecl PcDestroyPlatform(void);
-    void __cdecl PcRelaunchMediaCenter(void);
-    i32 __cdecl PCDeviceIsAbsent(void);
+    void PcFreeApiCallBuffer(void);
+    void PcRendererCleanup(void);
+    void PcRendererShutdown(i32);
+    void PcDestroyPlatform(void);
+    void PcRelaunchMediaCenter(void);
+    i32 PCDeviceIsAbsent(void);
 }
 STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, release) == 8);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
@@ -21319,8 +21299,8 @@ extern "C" {
     extern char PcModuleFilename[260];
     extern void *PcApiCallBuffer;
     extern i32 PcApiCallBufferCount;
-    i32 __cdecl PcApiGetCallBufferCount(void);
-    void *__cdecl PcApiGetCallBuffer(void);
+    i32 PcApiGetCallBufferCount(void);
+    void *PcApiGetCallBuffer(void);
     extern u32 CpuVendorPc;
     extern u32 CpuHas3dnowPc;
     extern u32 CpuHasSse2Pc;
@@ -21369,11 +21349,11 @@ STATIC_ASSERT(offsetof(NUAPI, video_aspect) == 0x10);
 extern "C" {
 #endif
 
-    void __cdecl InitPadDescriptorsPc(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
-    i32 __cdecl CreateWindowPc(HINSTANCE, i32, u16);
-    i32 __cdecl PublishWindowPc(HWND, i32);
-    i32 __cdecl PCDeviceIsAbsent(void);
-    i32 __cdecl NuInitHardwarePc(VARIPTR *, VARIPTR *, i32, ...);
+    void InitPadDescriptorsPc(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
+    i32 CreateWindowPc(HINSTANCE, i32, u16);
+    i32 PublishWindowPc(HWND, i32);
+    i32 PCDeviceIsAbsent(void);
+    i32 NuInitHardwarePc(VARIPTR *, VARIPTR *, i32, ...);
 
 #ifdef __cplusplus
 }
@@ -21382,9 +21362,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuPrimInit(VARIPTR *buffer, VARIPTR end);
-    void __cdecl PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture);
-    void __cdecl PCGraphicsInitRenderTexturePool(VARIPTR *buffer, VARIPTR end);
+    void NuPrimInit(VARIPTR *buffer, VARIPTR end);
+    void PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture);
+    void PCGraphicsInitRenderTexturePool(VARIPTR *buffer, VARIPTR end);
 #ifdef __cplusplus
 }
 #endif
@@ -21397,9 +21377,9 @@ extern "C" {
     extern i8 PcInputActionOrder[20];
     extern char *PcArgv[];
     extern PC_WINDOW_CALLBACK_PC PcWindowCallbacks[];
-    void __cdecl CpuDetectFeaturesPc(void);
-    void __cdecl WorldInfo_StreamLevel(BGPROCINFO *);
-    i32 __cdecl PcConfigureInputGraphicsCaps(void);
+    void CpuDetectFeaturesPc(void);
+    void WorldInfo_StreamLevel(BGPROCINFO *);
+    i32 PcConfigureInputGraphicsCaps(void);
 #ifdef __cplusplus
 }
 #endif
@@ -21408,18 +21388,17 @@ STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, pixel_shader_version) == 0xcc);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *, VARIPTR *, VARIPTR *, i32, i32,
-                                                       i32(__cdecl *)(CUSTOMPIECE_LAYERS_PC *),
-                                                       void(__cdecl *)(CUSTOMPIECE_LAYERS_PC *, NUFPAR_PC *),
-                                                       i32(__cdecl *)(char *), void *, i16 *);
-    void __cdecl Customiser_Dump(void);
-    void __cdecl Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS_PC *, void *);
-    i32 __cdecl CharVariant_Find(char *);
-    void __cdecl CharVariants_Init(char **, i32);
-    i32 __cdecl Game_100PercentComplete(void);
-    void __cdecl PermanentCustomPieceConfigPc(CUSTOMPIECE_LAYERS_PC *, NUFPAR_PC *);
-    i32 __cdecl PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *);
-    i32 __cdecl Collection_GotAnyOfType(i32, u32);
+    CUSTOMISER_LAYERS_PC *Customiser_Configure(char *, VARIPTR *, VARIPTR *, i32, i32, i32 (*)(CUSTOMPIECE_LAYERS_PC *),
+                                               void (*)(CUSTOMPIECE_LAYERS_PC *, NUFPAR_PC *), i32 (*)(char *), void *,
+                                               i16 *);
+    void Customiser_Dump(void);
+    void Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS_PC *, void *);
+    i32 CharVariant_Find(char *);
+    void CharVariants_Init(char **, i32);
+    i32 Game_100PercentComplete(void);
+    void PermanentCustomPieceConfigPc(CUSTOMPIECE_LAYERS_PC *, NUFPAR_PC *);
+    i32 PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *);
+    i32 Collection_GotAnyOfType(i32, u32);
 
 #ifdef __cplusplus
 }
@@ -21446,9 +21425,9 @@ STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, scale) == 0x10);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl Collection_CreateMaster(char *, i16 *, COLLECTION_BUILD_PC *, i32, f32);
-    void __cdecl Collection_CreateCustom(char *, i16 *, COLLECTION_BUILD_PC *, u32, u32, u32, i32, i32, VARIPTR *,
-                                         VARIPTR *, i32, f32);
+    void Collection_CreateMaster(char *, i16 *, COLLECTION_BUILD_PC *, i32, f32);
+    void Collection_CreateCustom(char *, i16 *, COLLECTION_BUILD_PC *, u32, u32, u32, i32, i32, VARIPTR *, VARIPTR *,
+                                 i32, f32);
 #ifdef __cplusplus
 }
 #endif
@@ -21456,11 +21435,11 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuRndrStateInit(void);
-    void __cdecl NuRndrStateGetTransformPc(NUMTX *, const NUMTL *);
-    void __cdecl NuRndrStateSetTransformPc(const NUMTX *);
-    void __cdecl NuRndrStreamInit(i32 size, VARIPTR *buffer);
-    void __cdecl NuRndrSwapStreamBuffers(void);
+    void NuRndrStateInit(void);
+    void NuRndrStateGetTransformPc(NUMTX *, const NUMTL *);
+    void NuRndrStateSetTransformPc(const NUMTX *);
+    void NuRndrStreamInit(i32 size, VARIPTR *buffer);
+    void NuRndrSwapStreamBuffers(void);
 #ifdef __cplusplus
 }
 #endif
@@ -21468,8 +21447,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    NUGSCN *__cdecl NuGScnRead(VARIPTR *, VARIPTR, char *);
-    NUGSCN *__cdecl PCGraphicsSceneReadClones(VARIPTR *, VARIPTR, char *, i32);
+    NUGSCN *NuGScnRead(VARIPTR *, VARIPTR, char *);
+    NUGSCN *PCGraphicsSceneReadClones(VARIPTR *, VARIPTR, char *, i32);
 /* Private helper remains in its genuine caller TU, with local scene ingestion views. */
 #ifdef __cplusplus
 }
@@ -21478,7 +21457,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuRndrInitEx(i32 stream_size, VARIPTR *buffer, VARIPTR end);
+    void NuRndrInitEx(i32 stream_size, VARIPTR *buffer, VARIPTR end);
 #ifdef __cplusplus
 }
 #endif
@@ -21491,10 +21470,10 @@ extern "C" {
     extern NUMTL *PermanentShadowMaterialPc;
     extern void *things_scene_terrain;
     extern i32 PARTPAGE_GENERAL;
-    void __cdecl CreateFadeMaterials(void);
-    void __cdecl Level_Update(WORLDINFO *world);
-    void __cdecl Level_Draw(WORLDINFO *world);
-    void __cdecl LoadPerm1(void);
+    void CreateFadeMaterials(void);
+    void Level_Update(WORLDINFO *world);
+    void Level_Draw(WORLDINFO *world);
+    void LoadPerm1(void);
 #ifdef __cplusplus
 }
 #endif
@@ -21502,9 +21481,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl AIPathCalcExtents(AIPATH_PC *path);
-    AISYS_PC *__cdecl AISysLoadEx(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *, char *);
-    AISYS_PC *__cdecl AISysLoad(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *);
+    void AIPathCalcExtents(AIPATH_PC *path);
+    AISYS_PC *AISysLoadEx(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *, char *);
+    AISYS_PC *AISysLoad(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *);
 
     extern char *AiLevelPathName;
     extern i32 ai_usepackfile;
@@ -21513,8 +21492,8 @@ extern "C" {
     extern i8 AiLoadMaximumRespawnCountPc;
     extern f32 AiLoadMinimumRespawnTimePc;
     extern f32 AiLoadMaximumRespawnTimePc;
-    extern i32(__cdecl *GlobalCharacterTypeIDFn)(char *);
-    extern void(__cdecl *GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
+    extern i32 (*GlobalCharacterTypeIDFn)(char *);
+    extern void (*GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 
 #ifdef __cplusplus
 }
@@ -21525,16 +21504,16 @@ typedef struct trigger_system_pc_s TRIGGER_SYSTEM_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void *__cdecl AIPathCnxControlSysCreate(VARIPTR *, VARIPTR *, i32);
-    void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *, VARIPTR *, i32);
-    void *__cdecl AITriggerSetSysCreate(VARIPTR *, VARIPTR *);
-    void *__cdecl CreateClimbObjectSys(VARIPTR *, VARIPTR *, i32);
-    APIOBJECTSYS_PC *__cdecl APIObjectSysInit(i32, VARIPTR *, VARIPTR *);
-    i32 __cdecl rtlGetDirection(RTL_SET_PC *, i32, NUVEC **);
-    void __cdecl AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *);
-    void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *);
-    void __cdecl DeathStarEscapeB_Init(WORLDINFO *);
-    void __cdecl DeathStarEscapeB_Update(WORLDINFO *);
+    void *AIPathCnxControlSysCreate(VARIPTR *, VARIPTR *, i32);
+    void *AIPathCnxHelperSysCreate(VARIPTR *, VARIPTR *, i32);
+    void *AITriggerSetSysCreate(VARIPTR *, VARIPTR *);
+    void *CreateClimbObjectSys(VARIPTR *, VARIPTR *, i32);
+    APIOBJECTSYS_PC *APIObjectSysInit(i32, VARIPTR *, VARIPTR *);
+    i32 rtlGetDirection(RTL_SET_PC *, i32, NUVEC **);
+    void AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *);
+    void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *);
+    void DeathStarEscapeB_Init(WORLDINFO *);
+    void DeathStarEscapeB_Update(WORLDINFO *);
     extern f32 fakeanimendframe[1];
     extern f32 fakeanimframe[1];
     extern i8 *DeathStarEscapeBNetPacketPc;
@@ -21544,7 +21523,7 @@ extern "C" {
     extern const char DeathStarEscapeBWindowCleanPc[12];
     extern const char DeathStarEscapeBWasher2Pc[9];
     extern const char DeathStarEscapeBWasher1Pc[9];
-    void __cdecl AITriggerSetSysReset(TRIGGER_SYSTEM_PC *);
+    void AITriggerSetSysReset(TRIGGER_SYSTEM_PC *);
 #ifdef __cplusplus
 }
 #endif
@@ -21552,12 +21531,12 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuRndrArenaInitPc(VARIPTR *, VARIPTR);
-    void __cdecl NuRndrQuadBufferInitPc(void);
-    void __cdecl NuRndrGeometryBuffersInitPc(void);
-    void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *, VARIPTR);
-    void __cdecl NuRndrInit(VARIPTR *, VARIPTR);
-    void __cdecl NuRndrInitGeneric(void);
+    void NuRndrArenaInitPc(VARIPTR *, VARIPTR);
+    void NuRndrQuadBufferInitPc(void);
+    void NuRndrGeometryBuffersInitPc(void);
+    void NuRndrBufferDescriptorsInitPc(VARIPTR *, VARIPTR);
+    void NuRndrInit(VARIPTR *, VARIPTR);
+    void NuRndrInitGeneric(void);
 #ifdef __cplusplus
 }
 #endif
@@ -21565,7 +21544,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count);
+    void NuMtlInitEx(VARIPTR *buffer, i32 material_count);
 #ifdef __cplusplus
 }
 #endif
@@ -21573,8 +21552,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR, i32);
-    NUHGOBJ_EVAL_PC *__cdecl NuGHGRead(char *, VARIPTR *, VARIPTR);
+    void APILoadCharacterModels(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR, i32);
+    NUHGOBJ_EVAL_PC *NuGHGRead(char *, VARIPTR *, VARIPTR);
 #ifdef __cplusplus
 }
 #endif
@@ -21791,7 +21770,7 @@ STATIC_ASSERT(offsetof(ShaderRegisterBlockPc, name) == 0);
 STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, programs) == 0);
 STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, unknown_965) == 0x965);
 STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, unknown_966) == 0x966);
-extern "C" void __cdecl ShaderLexicalClassesInitPc(void);
+extern "C" void ShaderLexicalClassesInitPc(void);
 
 STATIC_ASSERT(offsetof(ShaderCompilerDictionaryPc, active_output) == 0x99c);
 
@@ -22058,11 +22037,11 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     i32 second_path;
     i32 layer_count;
     i32 parameter;
-    void __thiscall Initialize(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32);
-    bool __thiscall UnfilteredHasLayer(i32) const;
-    bool __thiscall HasDiffuse(i32) const;
-    bool __thiscall HasLayer(i32) const;
-    u32 __thiscall GetVertexFlags() const;
+    void Initialize(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32);
+    bool UnfilteredHasLayer(i32) const;
+    bool HasDiffuse(i32) const;
+    bool HasLayer(i32) const;
+    u32 GetVertexFlags() const;
     i32 HasTexCoordSets(i32 count) const;
     bool HasLayerVertexFlag8(i32 layer) const;
     bool HasVertexSkin() const;
@@ -22164,8 +22143,8 @@ STATIC_ASSERT(offsetof(ShaderCompilerBasePc, dictionary) == 0x20c);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, source_buffer) == 0xbb0);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, parser_memory) == 0xbc0);
 
-extern "C" void __cdecl PCShaderObjectCreateHLSLPc(NuShaderObject *);
-extern "C" void __cdecl PCShaderObjectDestroyHLSLPc(NuShaderObject *);
+extern "C" void PCShaderObjectCreateHLSLPc(NuShaderObject *);
+extern "C" void PCShaderObjectDestroyHLSLPc(NuShaderObject *);
 
 class NuShaderObject {
   public:
@@ -22203,9 +22182,9 @@ template <class T> class ShaderManagerTemplate {
     T slots[400];
     i32 last_allocated;
     PC_SHADER_OBJECT_FULL_VIEW *bound_slot;
-    PC_SHADER_OBJECT_FULL_VIEW *__thiscall AllocateSlot(i32 *index);
-    PC_SHADER_OBJECT_FULL_VIEW *__thiscall Retrieve(const PC_SHADER_FILTER_DESC_VIEW *,
-                                                    const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32, bool);
+    PC_SHADER_OBJECT_FULL_VIEW *AllocateSlot(i32 *index);
+    PC_SHADER_OBJECT_FULL_VIEW *Retrieve(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *,
+                                         i32, i32, bool);
     void ReleaseShader(T *slot);
     void DestroyShaders();
     void SetCurrentShader(T *slot);
@@ -22258,29 +22237,29 @@ STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, vertex_source) == 0x79190);
 STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, pixel_source) == 0x791a0);
 STATIC_ASSERT(sizeof(ShaderManagerHLSLPc) == 0x791b0);
 
-extern "C" u32 __cdecl ShaderDeclarationFlagsPc(u8, u8, u8);
-extern "C" i32 __cdecl ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *);
+extern "C" u32 ShaderDeclarationFlagsPc(u8, u8, u8);
+extern "C" i32 ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *);
 
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *);
-    void __cdecl instNuGCutSceneStart(INSTNUGCUTSCENE *);
-    void __cdecl instNuGCutSceneReset(INSTNUGCUTSCENE *);
-    INSTNUGCUTSCENE *__cdecl instNuGCutSceneFindActivePc(char *name);
-    void __cdecl instNuGCutScenePlay(INSTNUGCUTSCENE *owner, i32 forward);
-    void __cdecl NuGCutSceneSysRender(i32);
+    void instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *);
+    void instNuGCutSceneStart(INSTNUGCUTSCENE *);
+    void instNuGCutSceneReset(INSTNUGCUTSCENE *);
+    INSTNUGCUTSCENE *instNuGCutSceneFindActivePc(char *name);
+    void instNuGCutScenePlay(INSTNUGCUTSCENE *owner, i32 forward);
+    void NuGCutSceneSysRender(i32);
     struct cut_load_rigid_s;
-    extern void(__cdecl *NuCutSceneRigidCollisionCheck)(struct cut_load_rigid_s *, NUMTX *);
+    extern void (*NuCutSceneRigidCollisionCheck)(struct cut_load_rigid_s *, NUMTX *);
     extern i32 CutSceneRenderRigidsPc;
     extern i32 CutSceneRenderCharactersPc;
     extern i32 CutSceneRenderLocatorsPc;
-    f32 __cdecl NuCameraDistSqr(NUVEC *);
-    void __cdecl CutSceneStreamDiagnosticPc(char *);
+    f32 NuCameraDistSqr(NUVEC *);
+    void CutSceneStreamDiagnosticPc(char *);
 
-    void __cdecl NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed);
+    void NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed);
     extern NUMTX CutSceneCameraMatrixPc;
     extern NUVEC CutSceneFocusLocationPc;
     extern u8 CutSceneCameraMatrixSetPc;
@@ -22290,50 +22269,49 @@ extern "C" {
     extern i32 CutSceneCameraChangedPc;
     extern i32 CutSceneCameraDofModePc;
     extern INSTNUGCUTSCENE *CutSceneLoadingInstancePc;
-    extern void(__cdecl *NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
+    extern void (*NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
     extern i32 CutSceneUpdateCamerasPc;
-    extern void(__cdecl *NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *);
+    extern void (*NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *);
 
-    void __cdecl NewScanInit(void);
-    i16 *__cdecl NewScanHandel(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_type, i16 *subset);
+    void NewScanInit(void);
+    i16 *NewScanHandel(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_type, i16 *subset);
 
-    i32 __cdecl NewRayCastMask(NUVEC *, NUVEC *, f32, i32, i32);
-    i32 __cdecl NewRayCastSet(NUVEC *, NUVEC *, f32, f32, f32, i32, i32);
-    i32 __cdecl NewRayCastSetMask(NUVEC *, NUVEC *, f32, f32, f32, i32, i32, i32);
+    i32 NewRayCastMask(NUVEC *, NUVEC *, f32, i32, i32);
+    i32 NewRayCastSet(NUVEC *, NUVEC *, f32, f32, f32, i32, i32);
+    i32 NewRayCastSetMask(NUVEC *, NUVEC *, f32, f32, f32, i32, i32, i32);
 
-    i32 __cdecl NewRayCastSetHandel(NUVEC *, NUVEC *, f32, f32, f32, i16 *, i32);
-    f32 __cdecl NewShadowHandelEx(NUVEC *, f32, f32, f32, i32, i16 *);
-    i32 __cdecl TerrainTrackBack(NUVEC *, NUVEC *, f32, f32, NUVEC *);
-    i32 __cdecl NewRayCastPlatForm(NUVEC *, NUVEC *, f32, f32, i32, i32);
-    void __cdecl TerrDraw(TERRAIN_POLYGON_INFO_PC *, i16);
-    void __cdecl TerrDrawSitu(TERRAIN_POLYGON_INFO_PC *, NUVEC *);
-    void __cdecl TerrDrawPlat(TERRAIN_POLYGON_INFO_PC *, i16);
-    void __cdecl TerrDrawPlatCol(TERRAIN_POLYGON_INFO_PC *, i16, i32);
-    void __cdecl TerrDrawImpactPol(void);
-    void __cdecl DrawMPlatPc(i32);
-    void __cdecl DrawMSitu(i32);
-    void __cdecl SphereDrawEx(NUVEC *, f32, f32, i32);
-    void __cdecl SphereDraw(NUVEC *, f32, f32);
-    void __cdecl DrawWallSpline(f32);
+    i32 NewRayCastSetHandel(NUVEC *, NUVEC *, f32, f32, f32, i16 *, i32);
+    f32 NewShadowHandelEx(NUVEC *, f32, f32, f32, i32, i16 *);
+    i32 TerrainTrackBack(NUVEC *, NUVEC *, f32, f32, NUVEC *);
+    i32 NewRayCastPlatForm(NUVEC *, NUVEC *, f32, f32, i32, i32);
+    void TerrDraw(TERRAIN_POLYGON_INFO_PC *, i16);
+    void TerrDrawSitu(TERRAIN_POLYGON_INFO_PC *, NUVEC *);
+    void TerrDrawPlat(TERRAIN_POLYGON_INFO_PC *, i16);
+    void TerrDrawPlatCol(TERRAIN_POLYGON_INFO_PC *, i16, i32);
+    void TerrDrawImpactPol(void);
+    void DrawMPlatPc(i32);
+    void DrawMSitu(i32);
+    void SphereDrawEx(NUVEC *, f32, f32, i32);
+    void SphereDraw(NUVEC *, f32, f32);
+    void DrawWallSpline(f32);
 
     struct TERRAIN_SKIN_STREAM_PC;
     struct TERRAIN_SKIN_INFO_PC;
     struct TERRAIN_SKIN_BLEND_PC;
     struct TERRAIN_SET_PC;
-    void __cdecl TerrainSkinPrepareGroupPc(i32 group_index, struct TERRAIN_SKIN_STREAM_PC *output,
-                                           const struct TERRAIN_SKIN_INFO_PC *info);
-    i32 __cdecl TerrainSkinCreateInfoPc(NUMTX *matrix, const struct TERRAIN_SKIN_BLEND_PC *blend,
-                                        const NUVEC4 *sample_rows, f32 scale, i32 source_scene_index, i16 mode,
-                                        struct TERRAIN_SET_PC *source_terrain);
-    void __cdecl TerrainSkinInitArenaPc(struct TERRAIN_SKIN_INFO_PC *base, u8 *end, i32 capacity);
-    void __cdecl TerrainSkinResetArenaPc(void);
-    u8 *__cdecl TerrainSkinRebuildIndexPc(i32 pool_slots);
+    void TerrainSkinPrepareGroupPc(i32 group_index, struct TERRAIN_SKIN_STREAM_PC *output,
+                                   const struct TERRAIN_SKIN_INFO_PC *info);
+    i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const struct TERRAIN_SKIN_BLEND_PC *blend, const NUVEC4 *sample_rows,
+                                f32 scale, i32 source_scene_index, i16 mode, struct TERRAIN_SET_PC *source_terrain);
+    void TerrainSkinInitArenaPc(struct TERRAIN_SKIN_INFO_PC *base, u8 *end, i32 capacity);
+    void TerrainSkinResetArenaPc(void);
+    u8 *TerrainSkinRebuildIndexPc(i32 pool_slots);
 
-    void __cdecl terrainpickupinit(char *, void **);
-    void __cdecl AddPickupTerr(i32, NUVEC *);
-    i32 __cdecl AddPickupTerrRot(i32, NUMTX *, NUMTX *, i32);
-    i32 __cdecl NewPlatPickupInst(void *, i32);
-    void __cdecl ReassignPickupInst(i32, i32);
+    void terrainpickupinit(char *, void **);
+    void AddPickupTerr(i32, NUVEC *);
+    i32 AddPickupTerrRot(i32, NUMTX *, NUMTX *, i32);
+    i32 NewPlatPickupInst(void *, i32);
+    void ReassignPickupInst(i32, i32);
 
 #ifdef __cplusplus
 }
@@ -22385,10 +22363,10 @@ STATIC_ASSERT(offsetof(STATUS_MINIKIT_DRAW_CACHE_PC, active) == 0x44);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
-    void __cdecl MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
-    void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);
-    void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *);
+    void MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
+    void MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
+    void Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);
+    void CharacterMiniKits_Load(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *);
 #ifdef __cplusplus
 }
 #endif
@@ -22396,15 +22374,15 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl SetAreaPickupGravity(i32 area, i32 level);
-    void __cdecl InitRippleMtl(char *, NUMTL **, VARIPTR *, VARIPTR *);
-    i32 __cdecl LookupRippleEffectIndex(char *);
-    void __cdecl RippleEffects_Configure(WORLDINFO *, char *);
-    void __cdecl InitRipples(RIPPLE_SET_PC **, VARIPTR *, VARIPTR *, i32);
-    void __cdecl ResetRippleSet(RIPPLE_SET_PC *);
-    void __cdecl UpdateRippleSet(RIPPLE_SET_PC *);
-    void __cdecl DrawRippleSet(RIPPLE_SET_PC *);
-    void __cdecl CharMiniKit_Draw(i32, NUMTX *, i32, f32, f32);
+    void SetAreaPickupGravity(i32 area, i32 level);
+    void InitRippleMtl(char *, NUMTL **, VARIPTR *, VARIPTR *);
+    i32 LookupRippleEffectIndex(char *);
+    void RippleEffects_Configure(WORLDINFO *, char *);
+    void InitRipples(RIPPLE_SET_PC **, VARIPTR *, VARIPTR *, i32);
+    void ResetRippleSet(RIPPLE_SET_PC *);
+    void UpdateRippleSet(RIPPLE_SET_PC *);
+    void DrawRippleSet(RIPPLE_SET_PC *);
+    void CharMiniKit_Draw(i32, NUMTX *, i32, f32, f32);
 #ifdef __cplusplus
 }
 #endif
@@ -22440,13 +22418,13 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl MenuRepeat(i32 *, i32 *, f32 *, u8 *, f32, f32);
-    i32 __cdecl UpdateMenu(u32, u32, u32, u32, f32, u32, u32, u32, u32);
-    void __cdecl UpdateGameMenu(GAMEPAD_PC *, i32);
-    i32 __cdecl AreaGetKeyboardOverridePc(void);
-    i32 __cdecl NuKeyboard(i32);
-    i32 __cdecl NuKeyboard_db(i32);
-    i32 __cdecl NuSound3LoadingSfx(void);
+    void MenuRepeat(i32 *, i32 *, f32 *, u8 *, f32, f32);
+    i32 UpdateMenu(u32, u32, u32, u32, f32, u32, u32, u32, u32);
+    void UpdateGameMenu(GAMEPAD_PC *, i32);
+    i32 AreaGetKeyboardOverridePc(void);
+    i32 NuKeyboard(i32);
+    i32 NuKeyboard_db(i32);
+    i32 NuSound3LoadingSfx(void);
 #ifdef __cplusplus
 }
 #endif
@@ -22490,19 +22468,19 @@ STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, ending_text) == 0x1c);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl InModelList(APICHARACTERMODELLIST *, i32, i32 *);
-    void __cdecl GameLoadCharacterModels(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR *, i32, i32);
-    void *__cdecl CutScenePlayer_Active(void);
+    i32 InModelList(APICHARACTERMODELLIST *, i32, i32 *);
+    void GameLoadCharacterModels(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR *, i32, i32);
+    void *CutScenePlayer_Active(void);
     extern struct CUT_PLAYER_ACTIVE_PC *CutScenePlayer;
-    struct CUT_PLAYER_ACTIVE_PC *__cdecl CutScenePlayer_Available(void);
-    void __cdecl CutScenePlayer_Reset(void);
-    i32 __cdecl CutScenePlayer_CanStart(i32 clip_id);
-    void __cdecl CutScenePlayer_Start(i32 clip_id);
-    void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode);
-    void __cdecl CutScenePlayer_Configure(char *, VARIPTR *, VARIPTR *, i16 *, i16 *, i16 *, i16 *, i16 *);
-    i32 __cdecl Batarang_StartTargetting(GAMEOBJECT *);
-    i32 __cdecl BatarangGetObjectFromCharIdPc(i32 character);
-    void __cdecl KeepPointOnScreen(NUVEC *, NUVEC *);
+    struct CUT_PLAYER_ACTIVE_PC *CutScenePlayer_Available(void);
+    void CutScenePlayer_Reset(void);
+    i32 CutScenePlayer_CanStart(i32 clip_id);
+    void CutScenePlayer_Start(i32 clip_id);
+    void CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode);
+    void CutScenePlayer_Configure(char *, VARIPTR *, VARIPTR *, i16 *, i16 *, i16 *, i16 *, i16 *);
+    i32 Batarang_StartTargetting(GAMEOBJECT *);
+    i32 BatarangGetObjectFromCharIdPc(i32 character);
+    void KeepPointOnScreen(NUVEC *, NUVEC *);
 
 #ifdef __cplusplus
 }
@@ -22532,7 +22510,7 @@ STATIC_ASSERT(offsetof(ShaderUniformRecordPc, values) == 28);
 extern "C" {
 #endif
     extern ShaderUniformRecordPc ShaderUniformRecordsPc[100];
-    ShaderUniformRecordPc *__cdecl NuShaderUniformGetByString(const char *name);
+    ShaderUniformRecordPc *NuShaderUniformGetByString(const char *name);
 #ifdef __cplusplus
 }
 #endif
@@ -22562,10 +22540,10 @@ extern "C" {
     extern i32 HubLastAreaPc;
     extern i32 HubEpisodePc;
     extern i32 HubMiniKitAreaPc;
-    extern void(__cdecl *HubInitAIFnPc)(WORLDINFO *);
+    extern void (*HubInitAIFnPc)(WORLDINFO *);
     extern f32 HubHologramTargetAlphaPc;
     extern void *HubBuildItPc;
-    extern void(__cdecl *HubResetAIFnPc)(WORLDINFO *);
+    extern void (*HubResetAIFnPc)(WORLDINFO *);
     extern u64 LevHSpecialExists;
     extern f32 HubJabbaAwakePc;
     extern i32 HubBuildItsResetPc;
@@ -22610,18 +22588,18 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl SpecialMoves_Configure(char *, VARIPTR *, VARIPTR *);
-    void __cdecl BackDrop_ClearColourTargets(void);
-    void __cdecl BackDrop_ResetColours(void);
-    void __cdecl BackDrop_UpdateColours(i32);
-    void __cdecl BackDrop_Init(char *, VARIPTR *, VARIPTR *);
-    void __cdecl BackDrop_Update(f32);
-    void __cdecl IconScenes_Init(char *, VARIPTR *, VARIPTR *);
-    void __cdecl IconScenes_Load(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR *);
-    char *__cdecl LevelObject_FindNameFromIndex(i32);
+    void SpecialMoves_Configure(char *, VARIPTR *, VARIPTR *);
+    void BackDrop_ClearColourTargets(void);
+    void BackDrop_ResetColours(void);
+    void BackDrop_UpdateColours(i32);
+    void BackDrop_Init(char *, VARIPTR *, VARIPTR *);
+    void BackDrop_Update(f32);
+    void IconScenes_Init(char *, VARIPTR *, VARIPTR *);
+    void IconScenes_Load(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR *);
+    char *LevelObject_FindNameFromIndex(i32);
     struct text_crawl_view_pc_s;
-    void __cdecl TextCrawl_Init(struct text_crawl_view_pc_s *, i32, i32);
-    void __cdecl TextCrawl_Draw(f32, i32, f32, char *);
+    void TextCrawl_Init(struct text_crawl_view_pc_s *, i32, i32);
+    void TextCrawl_Draw(f32, i32, f32, char *);
 #ifdef __cplusplus
 }
 #endif
@@ -22631,15 +22609,15 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl Hub_Init(WORLDINFO *);
-    void __cdecl Hub_Reset(WORLDINFO *);
-    void __cdecl Hub_InitMiniKits(WORLDINFO *);
-    void __cdecl Hub_DrawMiniKits(WORLDINFO *);
-    void __cdecl Hub_Draw3D(WORLDINFO *);
-    void *__cdecl GizBuildIt_Find(WORLDINFO *, char *);
+    void Hub_Init(WORLDINFO *);
+    void Hub_Reset(WORLDINFO *);
+    void Hub_InitMiniKits(WORLDINFO *);
+    void Hub_DrawMiniKits(WORLDINFO *);
+    void Hub_Draw3D(WORLDINFO *);
+    void *GizBuildIt_Find(WORLDINFO *, char *);
 #ifdef __cplusplus
 }
-i32 __cdecl Episode_CountOpenAreas(i32, i32, COLLECTION_AREA_SAVE_PC *);
+i32 Episode_CountOpenAreas(i32, i32, COLLECTION_AREA_SAVE_PC *);
 #endif
 
 typedef struct AREA_EXTRA_MODEL_PC {
@@ -22667,8 +22645,8 @@ STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, flags) == 6);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl Area_Configure(i32, i32, AREA_EXTRA_MODEL_PC *, i16 *);
-    void __cdecl LoadAreaCharacters(void);
+    void Area_Configure(i32, i32, AREA_EXTRA_MODEL_PC *, i16 *);
+    void LoadAreaCharacters(void);
 
     extern AREA_EXTRA_MODEL_PC ExtraModelList[6];
     extern i32 AreaDataLoaded;
@@ -22706,11 +22684,11 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl MakeFreePlayModelList(i32, i32, i32, i32, i32);
-    i32 __cdecl InModelListDataFlags(APICHARACTERMODELLIST *, u32, u32, i32, i32);
-    i32 __cdecl RandomIDFromFlags(u32, u32, i32, APICHARACTERMODELLIST *, i32);
-    i32 __cdecl CanWearHatsInFreePlay(i32);
-    i32 __cdecl Collection_GetIDList(COLLECTION_BUILD_PC *, u32, u32, i16 *, i32 *, i32 *, i32);
+    void MakeFreePlayModelList(i32, i32, i32, i32, i32);
+    i32 InModelListDataFlags(APICHARACTERMODELLIST *, u32, u32, i32, i32);
+    i32 RandomIDFromFlags(u32, u32, i32, APICHARACTERMODELLIST *, i32);
+    i32 CanWearHatsInFreePlay(i32);
+    i32 Collection_GetIDList(COLLECTION_BUILD_PC *, u32, u32, i16 *, i32 *, i32 *, i32);
     extern i16 FreePlayId007f199cPc;
     extern i16 FreePlayId007f1a4cPc;
     extern i16 FreePlayId007f1a48Pc;
@@ -22737,7 +22715,7 @@ extern "C" {
     extern i16 TextCrawlChapterIdPc;
     extern i16 TextCrawlVehicleBonusIdPc;
     extern i16 TextCrawlCharacterBonusIdPc;
-    void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *, APICHARACTERMODELLIST *);
+    void Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *, APICHARACTERMODELLIST *);
     extern i32 Customiser_AccessoriesLoaded;
 #ifdef __cplusplus
 }
@@ -22746,8 +22724,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl NuAtani(i32, i32);
-    f32 __cdecl NuAtanf(i32, i32);
+    i32 NuAtani(i32, i32);
+    f32 NuAtanf(i32, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -22755,10 +22733,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl SetMoveAndAnimateFunctions(u32, u32, u32, u32, i32, void(__cdecl *)(GAMEOBJECT *),
-                                            void(__cdecl *)(GAMEOBJECT *), void(__cdecl *)(GAMEOBJECT *));
+    void SetMoveAndAnimateFunctions(u32, u32, u32, u32, i32, void (*)(GAMEOBJECT *), void (*)(GAMEOBJECT *),
+                                    void (*)(GAMEOBJECT *));
     /* Existing provider declaration absent from the current header. */
-    void __cdecl Buck_MoveCode(GAMEOBJECT *, i32);
+    void Buck_MoveCode(GAMEOBJECT *, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -22766,7 +22744,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl LoadPerm2(void);
+    void LoadPerm2(void);
     extern APICHARACTERMODELLIST PermModelListPc[1];
     extern COLLECTION_BUILD_PC MasterCollectionPc;
     extern COLLECTION_BUILD_PC CharacterCollectionPc;
@@ -22799,7 +22777,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl Move_CHARACTER(GAMEOBJECT *);
+    void Move_CHARACTER(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif
@@ -22859,54 +22837,54 @@ extern "C" {
     extern i32 LEGOCONTEXT_WEAPONIN;
     extern i32 LEGOCONTEXT_WEAPONOUT;
     extern i32 ZipUpLandCombatRollContextPc;
-    extern i32(__cdecl *CanGlideFn)(GAMEOBJECT *);
-    extern i32(__cdecl *Jump_PreventJumpFn)(GAMEOBJECT *);
-    extern i32(__cdecl *Slam_GetDebrisFn)(GAMEOBJECT *, i32);
-    extern void(__cdecl *Jump_EndOfLandContextFn)(GAMEOBJECT *);
-    i32 __cdecl Glide_Start(GAMEOBJECT *);
-    i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *);
-    i32 __cdecl Slam_Start(GAMEOBJECT *, f32);
-    i32 __cdecl StartBackFlip(GAMEOBJECT *);
-    i32 __cdecl UseFallAnim(GAMEOBJECT *);
-    void __cdecl Animate_ASTROMECH(GAMEOBJECT *);
-    void __cdecl Animate_ATAT(GAMEOBJECT *);
-    void __cdecl Animate_BARMAN(GAMEOBJECT *);
-    void __cdecl Animate_BATTLEDROID(GAMEOBJECT *);
-    void __cdecl Animate_BEAST(GAMEOBJECT *);
-    void __cdecl Animate_CANNON(GAMEOBJECT *);
-    void __cdecl Animate_CHARACTER(GAMEOBJECT *);
-    void __cdecl Animate_CRITTER(GAMEOBJECT *);
-    void __cdecl Animate_DEFAULT(GAMEOBJECT *);
-    void __cdecl Animate_DROIDEKA(GAMEOBJECT *);
-    void __cdecl Animate_GEONOSIAN(GAMEOBJECT *);
-    void __cdecl Animate_HOVERDROID(GAMEOBJECT *);
-    void __cdecl Animate_JEDI(GAMEOBJECT *);
-    void __cdecl Animate_PROTOCOL(GAMEOBJECT *);
-    void __cdecl Animate_REPUBLICGUNSHIP(GAMEOBJECT *);
-    void __cdecl Animate_SPEEDERBIKE(GAMEOBJECT *);
-    void __cdecl Animate_SUPERBATTLEDROID(GAMEOBJECT *);
-    void __cdecl Animate_VEHICLE(GAMEOBJECT *);
-    void __cdecl Animate_WALKER(GAMEOBJECT *);
-    void __cdecl Animate_WEIRDO(GAMEOBJECT *);
-    void __cdecl BlockSfx(GAMEOBJECT *);
-    void __cdecl ComboHitFrame(GAMEOBJECT *, i32);
-    void __cdecl JumpCode(GAMEOBJECT *, i32, i32, u32, i32, i32, i32);
-    void __cdecl MakeJumpReachHeight(GAMEOBJECT *, f32, i32);
-    void __cdecl Move_ATAT(GAMEOBJECT *);
-    void __cdecl Move_BARMAN(GAMEOBJECT *);
-    void __cdecl Move_DRAGBOMB(GAMEOBJECT *);
-    void __cdecl Move_DROIDEKA(GAMEOBJECT *);
-    void __cdecl Move_HOVERDROID(GAMEOBJECT *);
-    void __cdecl Move_REPUBLICGUNSHIP(GAMEOBJECT *);
-    void __cdecl Move_SPEEDERBIKE(GAMEOBJECT *);
-    void __cdecl Move_SUPERBATTLEDROID(GAMEOBJECT *);
-    void __cdecl Move_WALKER(GAMEOBJECT *);
-    void __cdecl PostAnimate_ASTROMECH(GAMEOBJECT *);
-    void __cdecl PostAnimate_FETT(GAMEOBJECT *);
-    void __cdecl StartLunge(GAMEOBJECT *, f32, f32);
-    void __cdecl UpdateCharacterIdle(GAMEOBJECT *);
-    typedef i32(__cdecl *SAVE_HASH_FN_PC)(void);
-    typedef void(__cdecl *SAVE_VOID_FN_PC)(void);
+    extern i32 (*CanGlideFn)(GAMEOBJECT *);
+    extern i32 (*Jump_PreventJumpFn)(GAMEOBJECT *);
+    extern i32 (*Slam_GetDebrisFn)(GAMEOBJECT *, i32);
+    extern void (*Jump_EndOfLandContextFn)(GAMEOBJECT *);
+    i32 Glide_Start(GAMEOBJECT *);
+    i32 SetProtocolDroidFallAnim(GAMEOBJECT *);
+    i32 Slam_Start(GAMEOBJECT *, f32);
+    i32 StartBackFlip(GAMEOBJECT *);
+    i32 UseFallAnim(GAMEOBJECT *);
+    void Animate_ASTROMECH(GAMEOBJECT *);
+    void Animate_ATAT(GAMEOBJECT *);
+    void Animate_BARMAN(GAMEOBJECT *);
+    void Animate_BATTLEDROID(GAMEOBJECT *);
+    void Animate_BEAST(GAMEOBJECT *);
+    void Animate_CANNON(GAMEOBJECT *);
+    void Animate_CHARACTER(GAMEOBJECT *);
+    void Animate_CRITTER(GAMEOBJECT *);
+    void Animate_DEFAULT(GAMEOBJECT *);
+    void Animate_DROIDEKA(GAMEOBJECT *);
+    void Animate_GEONOSIAN(GAMEOBJECT *);
+    void Animate_HOVERDROID(GAMEOBJECT *);
+    void Animate_JEDI(GAMEOBJECT *);
+    void Animate_PROTOCOL(GAMEOBJECT *);
+    void Animate_REPUBLICGUNSHIP(GAMEOBJECT *);
+    void Animate_SPEEDERBIKE(GAMEOBJECT *);
+    void Animate_SUPERBATTLEDROID(GAMEOBJECT *);
+    void Animate_VEHICLE(GAMEOBJECT *);
+    void Animate_WALKER(GAMEOBJECT *);
+    void Animate_WEIRDO(GAMEOBJECT *);
+    void BlockSfx(GAMEOBJECT *);
+    void ComboHitFrame(GAMEOBJECT *, i32);
+    void JumpCode(GAMEOBJECT *, i32, i32, u32, i32, i32, i32);
+    void MakeJumpReachHeight(GAMEOBJECT *, f32, i32);
+    void Move_ATAT(GAMEOBJECT *);
+    void Move_BARMAN(GAMEOBJECT *);
+    void Move_DRAGBOMB(GAMEOBJECT *);
+    void Move_DROIDEKA(GAMEOBJECT *);
+    void Move_HOVERDROID(GAMEOBJECT *);
+    void Move_REPUBLICGUNSHIP(GAMEOBJECT *);
+    void Move_SPEEDERBIKE(GAMEOBJECT *);
+    void Move_SUPERBATTLEDROID(GAMEOBJECT *);
+    void Move_WALKER(GAMEOBJECT *);
+    void PostAnimate_ASTROMECH(GAMEOBJECT *);
+    void PostAnimate_FETT(GAMEOBJECT *);
+    void StartLunge(GAMEOBJECT *, f32, f32);
+    void UpdateCharacterIdle(GAMEOBJECT *);
+    typedef i32 (*SAVE_HASH_FN_PC)(void);
+    typedef void (*SAVE_VOID_FN_PC)(void);
     extern i32 SAVESLOTS;
     extern f32 memcard_autosavecanceldelay;
     extern i32 saveload_cardtype;
@@ -22958,12 +22936,12 @@ extern "C" {
     extern i32 saveload_savepresent;
     extern i32 saveload_autosavedisabled;
     extern i32 saveload_slotused[];
-    void __cdecl SaveSystemInitialise(i32, SAVE_HASH_FN_PC, void *, i32, i32, SAVE_VOID_FN_PC);
-    void __cdecl SaveSystemInitialiseEx(i32, SAVE_HASH_FN_PC, void *, i32, void *, i32, i32, SAVE_VOID_FN_PC);
-    void __cdecl SetSaveSuccessFn(SAVE_VOID_FN_PC);
-    i32 __cdecl ChecksumSaveData(void *, i32);
-    void __cdecl UpdateSaveSlots(void);
-    void __cdecl loadsaveCallEachFrame(void);
+    void SaveSystemInitialise(i32, SAVE_HASH_FN_PC, void *, i32, i32, SAVE_VOID_FN_PC);
+    void SaveSystemInitialiseEx(i32, SAVE_HASH_FN_PC, void *, i32, void *, i32, i32, SAVE_VOID_FN_PC);
+    void SetSaveSuccessFn(SAVE_VOID_FN_PC);
+    i32 ChecksumSaveData(void *, i32);
+    void UpdateSaveSlots(void);
+    void loadsaveCallEachFrame(void);
     extern i32 Menu_DisableCancel;
     extern i32 Menu_InHeaderSave;
     extern i32 Menu_InWarningFlow;
@@ -22976,33 +22954,33 @@ extern "C" {
     extern i32 MENUSFX_MENUSELECT;
     extern i32 MENUSFX_MENUNOENTRY;
     extern i32 memcard_autosaveenabled;
-    void __cdecl MenuEnterSaveConfirm(MENU *);
-    void __cdecl MenuEnterAutoSaveWarning(MENU *);
-    void __cdecl MenuEnterAutoSaveCancel(MENU *);
-    void __cdecl MenuEnterCardWarning(MENU *);
-    void __cdecl MenuEnterHeaderSave(MENU *);
-    void __cdecl MenuEnterStartNewGame(MENU *);
-    void __cdecl MenuExitSave(MENU *);
-    void __cdecl MenuExitLoad(MENU *);
-    void __cdecl MenuExitCardWarning(MENU *);
-    void __cdecl MenuUpdateSave(MENU *);
-    void __cdecl MenuUpdateInsertCard(MENU *);
-    void __cdecl MenuUpdateNoMemoryCard(MENU *);
-    void __cdecl MenuUpdateNotEnoughSpace(MENU *);
-    void __cdecl MenuUpdateNoData(MENU *);
-    void __cdecl MenuUpdateFormatConfirm(MENU *);
-    void __cdecl MenuUpdateFormatting(MENU *);
-    void __cdecl MenuUpdateDeleteConfirm(MENU *);
-    void __cdecl MenuUpdateDeleting(MENU *);
-    void __cdecl MenuUpdateSaveConfirm(MENU *);
-    void __cdecl MenuUpdateSaving(MENU *);
-    void __cdecl MenuUpdateAutoSaveWarning(MENU *);
-    void __cdecl MenuUpdateLoad(MENU *);
-    void __cdecl MenuUpdateLoadConfirm(MENU *);
-    void __cdecl MenuUpdateLoading(MENU *);
-    void __cdecl MenuUpdateSaveCancel(MENU *);
-    void __cdecl MenuUpdateLoadCancel(MENU *);
-    void __cdecl MenuUpdateFormatCancel(MENU *);
+    void MenuEnterSaveConfirm(MENU *);
+    void MenuEnterAutoSaveWarning(MENU *);
+    void MenuEnterAutoSaveCancel(MENU *);
+    void MenuEnterCardWarning(MENU *);
+    void MenuEnterHeaderSave(MENU *);
+    void MenuEnterStartNewGame(MENU *);
+    void MenuExitSave(MENU *);
+    void MenuExitLoad(MENU *);
+    void MenuExitCardWarning(MENU *);
+    void MenuUpdateSave(MENU *);
+    void MenuUpdateInsertCard(MENU *);
+    void MenuUpdateNoMemoryCard(MENU *);
+    void MenuUpdateNotEnoughSpace(MENU *);
+    void MenuUpdateNoData(MENU *);
+    void MenuUpdateFormatConfirm(MENU *);
+    void MenuUpdateFormatting(MENU *);
+    void MenuUpdateDeleteConfirm(MENU *);
+    void MenuUpdateDeleting(MENU *);
+    void MenuUpdateSaveConfirm(MENU *);
+    void MenuUpdateSaving(MENU *);
+    void MenuUpdateAutoSaveWarning(MENU *);
+    void MenuUpdateLoad(MENU *);
+    void MenuUpdateLoadConfirm(MENU *);
+    void MenuUpdateLoading(MENU *);
+    void MenuUpdateSaveCancel(MENU *);
+    void MenuUpdateLoadCancel(MENU *);
+    void MenuUpdateFormatCancel(MENU *);
     extern i32 Menu_LastFlow;
     extern i32 saveload_filecorrupt;
     extern i32 SAVESIZE;
@@ -23015,14 +22993,14 @@ extern "C" {
     extern u8 MENUFLASH1R;
     extern u8 MENUFLASH1G;
     extern u8 MENUFLASH1B;
-    void __cdecl MenuEnterSave(MENU *);
-    void __cdecl MenuEnterLoad(MENU *);
-    void __cdecl APIMenuDrawMemCardSlots(MENU *, f32);
+    void MenuEnterSave(MENU *);
+    void MenuEnterLoad(MENU *);
+    void APIMenuDrawMemCardSlots(MENU *, f32);
     extern i32 MENUSFX_MENUBACK;
-    void __cdecl MenuRememberCursor(MENU *);
-    void __cdecl BackupMenu(void);
-    void __cdecl BackupMenuNoFn(void);
-    void __cdecl DrawMenuEntryEx(MENU *, char *, u8);
+    void MenuRememberCursor(MENU *);
+    void BackupMenu(void);
+    void BackupMenuNoFn(void);
+    void DrawMenuEntryEx(MENU *, char *, u8);
     extern f32 dme_sx;
     extern i32 dme_rgb;
     extern i32 dme_align;
@@ -23030,24 +23008,24 @@ extern "C" {
     extern u8 dme_g;
     extern u8 dme_b;
     extern f32 MENUENTRYEXWIDTH;
-    void __cdecl MenuEnterInsertCard(MENU *);
-    void __cdecl MenuDrawInsertCard(MENU *);
-    void __cdecl MenuDrawFormatConfirm(MENU *);
-    void __cdecl MenuDrawNotEnoughSpace(MENU *);
-    void __cdecl MenuDrawSaving(MENU *);
-    void __cdecl MenuDrawDeleting(MENU *);
-    void __cdecl MenuDrawAutoSaveWarning(MENU *);
-    void __cdecl MenuDrawSave(MENU *);
-    void __cdecl MenuDrawLoad(MENU *);
-    void __cdecl MenuDrawNoMemoryCard(MENU *);
-    void __cdecl MenuDrawDeleteConfirm(MENU *);
-    void __cdecl MenuDrawSaveConfirm(MENU *);
-    void __cdecl MenuDrawLoadConfirm(MENU *);
-    void __cdecl MenuDrawSaveCancel(MENU *);
-    void __cdecl MenuDrawLoadCancel(MENU *);
-    void __cdecl MenuDrawFormatCancel(MENU *);
-    void __cdecl MenuDrawFileCorrupt(MENU *);
-    void __cdecl APIMenuDrawGameState(f32, f32, i32, i32);
+    void MenuEnterInsertCard(MENU *);
+    void MenuDrawInsertCard(MENU *);
+    void MenuDrawFormatConfirm(MENU *);
+    void MenuDrawNotEnoughSpace(MENU *);
+    void MenuDrawSaving(MENU *);
+    void MenuDrawDeleting(MENU *);
+    void MenuDrawAutoSaveWarning(MENU *);
+    void MenuDrawSave(MENU *);
+    void MenuDrawLoad(MENU *);
+    void MenuDrawNoMemoryCard(MENU *);
+    void MenuDrawDeleteConfirm(MENU *);
+    void MenuDrawSaveConfirm(MENU *);
+    void MenuDrawLoadConfirm(MENU *);
+    void MenuDrawSaveCancel(MENU *);
+    void MenuDrawLoadCancel(MENU *);
+    void MenuDrawFormatCancel(MENU *);
+    void MenuDrawFileCorrupt(MENU *);
+    void APIMenuDrawGameState(f32, f32, i32, i32);
     extern f32 MENUBOTY;
     extern u8 MENUWARNR;
     extern u8 MENUWARNG;
@@ -23068,16 +23046,16 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl BackFlipCode(GAMEOBJECT *);
-    void __cdecl Glide_MoveCode(GAMEOBJECT *);
-    void __cdecl StartJetPackFall(GAMEOBJECT *, i32);
-    void __cdecl JetPackCode(GAMEOBJECT *, i32, i32, i32);
-    void __cdecl Hang_MoveCode(GAMEOBJECT *);
-    void __cdecl Climb_MoveCode(GAMEOBJECT *);
-    void __cdecl WeaponOutCode(GAMEOBJECT *);
-    void __cdecl WeaponInCode(GAMEOBJECT *);
-    void __cdecl WeaponScalingCode(GAMEOBJECT *);
-    void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *);
+    void BackFlipCode(GAMEOBJECT *);
+    void Glide_MoveCode(GAMEOBJECT *);
+    void StartJetPackFall(GAMEOBJECT *, i32);
+    void JetPackCode(GAMEOBJECT *, i32, i32, i32);
+    void Hang_MoveCode(GAMEOBJECT *);
+    void Climb_MoveCode(GAMEOBJECT *);
+    void WeaponOutCode(GAMEOBJECT *);
+    void WeaponInCode(GAMEOBJECT *);
+    void WeaponScalingCode(GAMEOBJECT *);
+    void LedgeTerrain_MoveCode(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif
@@ -23156,9 +23134,9 @@ STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, has_terrain_platform) == 0x1c);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    GRAPPLE_MOTION_PC *__cdecl Grapple_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
-    void __cdecl Grapple_MoveCode(GAMEOBJECT *);
-    i32 __cdecl AnimBlendingFromTo(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, i32, i32);
+    GRAPPLE_MOTION_PC *Grapple_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    void Grapple_MoveCode(GAMEOBJECT *);
+    i32 AnimBlendingFromTo(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, i32, i32);
 /* Nine held scalar declarations are in the separately pinned state proposal. */
 #ifdef __cplusplus
 }
@@ -23169,8 +23147,8 @@ extern "C" {
 #endif
     /* Inside the existing C public declaration section; definition remains owner-local. */
     typedef struct TIGHTROPE_MOTION_PC TIGHTROPE_MOTION_PC;
-    TIGHTROPE_MOTION_PC *__cdecl TightRope_InRange(GAMEOBJECT *, WORLDINFO *, NUVEC *);
-    void __cdecl TightRope_MoveCode(GAMEOBJECT *, i32);
+    TIGHTROPE_MOTION_PC *TightRope_InRange(GAMEOBJECT *, WORLDINFO *, NUVEC *);
+    void TightRope_MoveCode(GAMEOBJECT *, i32);
 
 #ifdef __cplusplus
 }
@@ -23178,18 +23156,18 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl Credits_Load(WORLDINFO *, VARIPTR *, VARIPTR *);
-    void __cdecl Credits_Init(WORLDINFO *);
-    void __cdecl Credits_GetInfo(f32 *, i32 *, f32 *);
-    void __cdecl Credits_DrawPanel(WORLDINFO *);
+    void Credits_Load(WORLDINFO *, VARIPTR *, VARIPTR *);
+    void Credits_Init(WORLDINFO *);
+    void Credits_GetInfo(f32 *, i32 *, f32 *);
+    void Credits_DrawPanel(WORLDINFO *);
 #ifdef __cplusplus
 }
 #endif
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl AIScriptOpenPakFileParse(AISCRIPT_PC **, void *, char *, char *, VARIPTR *, VARIPTR *);
-    void __cdecl AIScriptLoadAll(char *, VARIPTR *, VARIPTR *, AISYS_PC *);
+    void AIScriptOpenPakFileParse(AISCRIPT_PC **, void *, char *, char *, VARIPTR *, VARIPTR *);
+    void AIScriptLoadAll(char *, VARIPTR *, VARIPTR *, AISYS_PC *);
 #ifdef __cplusplus
 }
 #endif
@@ -23220,9 +23198,9 @@ STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, get_surface_level) == 0x4
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *);
-    i32 __cdecl PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *);
-    void __cdecl PCDeviceClear(u32, const RECT *, u32, u32, f32, u32);
+    i32 PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *);
+    i32 PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *);
+    void PCDeviceClear(u32, const RECT *, u32, u32, f32, u32);
 #ifdef __cplusplus
 }
 #endif
@@ -23232,14 +23210,14 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateEffectTexture(i32, i32, i32, i32, i32);
-    void __cdecl PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
-    void __cdecl PCGraphicsReleaseEffectTextures(void);
-    void __cdecl PCGraphicsRestoreEffectTextures(i32);
-    void __cdecl PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *, u32);
-    i32 __cdecl PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *);
-    i32 __cdecl PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *);
-    void __cdecl PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTURE_PC *, u16, i32 *, i32 *);
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsCreateEffectTexture(i32, i32, i32, i32, i32);
+    void PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
+    void PCGraphicsReleaseEffectTextures(void);
+    void PCGraphicsRestoreEffectTextures(i32);
+    void PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *, u32);
+    i32 PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *);
+    i32 PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *);
+    void PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTURE_PC *, u16, i32 *, i32 *);
 #ifdef __cplusplus
 }
 #endif
@@ -23253,10 +23231,10 @@ STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, field_18) == 0x18);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) == 0x1c);
 extern "C" {
 #endif
-    void __cdecl PCDeviceSetVertexShaderConstantsF(UINT start, const f32 *values, UINT count);
-    void __cdecl PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, UINT count);
-    void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *, i32, i32, i32, const f32 *);
-    void __cdecl NuShaderManagerSetfv(i32 semantic, const f32 *values);
+    void PCDeviceSetVertexShaderConstantsF(UINT start, const f32 *values, UINT count);
+    void PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, UINT count);
+    void NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *, i32, i32, i32, const f32 *);
+    void NuShaderManagerSetfv(i32 semantic, const f32 *values);
 #ifdef __cplusplus
 }
 #endif
@@ -23264,7 +23242,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl MenuLoadTechnicalStrings(char *, char *, VARIPTR *, VARIPTR);
+    void MenuLoadTechnicalStrings(char *, char *, VARIPTR *, VARIPTR);
     extern char *apiGameName;
     extern char *apiGameTitle;
     extern char *apiGameSubTitle;
@@ -23325,10 +23303,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
-    void __cdecl CharScenes_Init(VARIPTR *, VARIPTR *);
-    void __cdecl CharScenes_LevelLoad(WORLDINFO *);
-    void __cdecl CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);
+    APIDEBRISSYS_PC *InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
+    void CharScenes_Init(VARIPTR *, VARIPTR *);
+    void CharScenes_LevelLoad(WORLDINFO *);
+    void CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);
 #ifdef __cplusplus
 }
 #endif
@@ -23336,12 +23314,12 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuShaderObjectBaseCreate(PC_SHADER_OBJECT_FULL_VIEW *);
-    void __cdecl NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *);
-    void __cdecl NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *);
-    void __cdecl NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *);
-    void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *);
-    void __cdecl PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *);
+    void NuShaderObjectBaseCreate(PC_SHADER_OBJECT_FULL_VIEW *);
+    void NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *);
+    void NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *);
+    void NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *);
+    void PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *);
+    void PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *);
 #ifdef __cplusplus
 }
 #endif
@@ -23393,7 +23371,7 @@ extern "C" {
 extern "C" {
 #endif
     extern LEVELFIXUP_PC LevelFixupStartupPc[2];
-    void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup);
+    void FixUpLevels(struct level_fixup_pc_s *fixup);
 
 #ifdef __cplusplus
 }
@@ -23415,17 +23393,17 @@ extern "C" {
     extern f32 Lighting_RedFlashGreenPc;
     extern f32 Lighting_RedFlashBluePc;
     extern f32 Lighting_BlueFlickerRedPc;
-    extern i32(__cdecl *Lighting_BlueFlickerFn)(GAMEOBJECT *);
-    void __cdecl SetLights(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl SetLights_RTLDATA(RTL_DATA_PC *, f32);
-    void __cdecl SetLevelLights(void *, f32);
-    void __cdecl SetPanelLights(f32);
-    void __cdecl FreeGameObjectLights(void);
-    f32 __cdecl rtlSpecularValue(RTL_DATA_PC *);
-    void __cdecl rtlSetSpecularValue(RTL_DATA_PC *, f32);
-    void __cdecl rtlSetSpecularLight(RTL_DATA_PC *);
-    i32 __cdecl NuRndrSetAmbientLightSpecular(const NUVEC4 *);
-    void __cdecl SetCreatureLights(APIOBJECT_PC *);
+    extern i32 (*Lighting_BlueFlickerFn)(GAMEOBJECT *);
+    void SetLights(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *);
+    void SetLights_RTLDATA(RTL_DATA_PC *, f32);
+    void SetLevelLights(void *, f32);
+    void SetPanelLights(f32);
+    void FreeGameObjectLights(void);
+    f32 rtlSpecularValue(RTL_DATA_PC *);
+    void rtlSetSpecularValue(RTL_DATA_PC *, f32);
+    void rtlSetSpecularLight(RTL_DATA_PC *);
+    i32 NuRndrSetAmbientLightSpecular(const NUVEC4 *);
+    void SetCreatureLights(APIOBJECT_PC *);
 #ifdef __cplusplus
 }
 #endif
@@ -23433,41 +23411,40 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl Action_Kill(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_ResetContext(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_TakeDamage(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_CanBeCarried(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_Activate(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_RemoveThrownForceObjects(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32,
-                                                f32);
-    i32 __cdecl Action_AnimTimeRandom(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_PlayGizObstacle(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_UseForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_ProbeDroid(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_AlertCreatures(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    void __cdecl GizObstacle_JumpToStart(GIZOBSTACLE *);
-    void __cdecl GizObstacle_JumpToEnd(GIZOBSTACLE *);
-    void __cdecl GizObstacle_PlayForwards(GIZOBSTACLE *);
-    void __cdecl GizObstacle_PlayBackwards(GIZOBSTACLE *);
-    i32 __cdecl Action_EngageOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_Kill(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_ResetContext(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_TakeDamage(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_CanBeCarried(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_Activate(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_RemoveThrownForceObjects(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_AnimTimeRandom(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_PlayGizObstacle(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_UseForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_ProbeDroid(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_AlertCreatures(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    void GizObstacle_JumpToStart(GIZOBSTACLE *);
+    void GizObstacle_JumpToEnd(GIZOBSTACLE *);
+    void GizObstacle_PlayForwards(GIZOBSTACLE *);
+    void GizObstacle_PlayBackwards(GIZOBSTACLE *);
+    i32 Action_EngageOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 
-    char *__cdecl NuStrStr(char *text, const char *needle);
-    i32 __cdecl instNuGCutSceneIsFinished(INSTNUGCUTSCENE *);
-    void __cdecl instNuGCutScenePause(INSTNUGCUTSCENE *, i32 paused);
-    void __cdecl instNuGCutSceneStop(INSTNUGCUTSCENE *);
-    void __cdecl NuGCutSceneSysPostBackgroundLoad(void);
-    i32 __cdecl instNuGCutSceneSwapBuffers(INSTNUGCUTSCENE *, i32 force);
-    void __cdecl instNuGCutSceneServiceLoad(void);
+    char *NuStrStr(char *text, const char *needle);
+    i32 instNuGCutSceneIsFinished(INSTNUGCUTSCENE *);
+    void instNuGCutScenePause(INSTNUGCUTSCENE *, i32 paused);
+    void instNuGCutSceneStop(INSTNUGCUTSCENE *);
+    void NuGCutSceneSysPostBackgroundLoad(void);
+    i32 instNuGCutSceneSwapBuffers(INSTNUGCUTSCENE *, i32 force);
+    void instNuGCutSceneServiceLoad(void);
     extern i32 CutSceneStreamLoadGuardPc;
 
-    void __cdecl CutScenes_Start(WORLDINFO *world);
-    void __cdecl CutScenes_Reset(WORLDINFO *world);
-    void __cdecl CutScenes_Stop(CUTSYS_PC *system);
-    void __cdecl CutScenes_End(void);
-    void __cdecl CutScenes_Update(WORLDINFO *world, i32 paused);
-    void __cdecl CutScenes_Draw(WORLDINFO *world);
-    void __cdecl CutScenePlayer_SetObjects(CUTINFO *cut);
-    void __cdecl PCFrameSetLoadingYieldEnabled(i32 enabled);
+    void CutScenes_Start(WORLDINFO *world);
+    void CutScenes_Reset(WORLDINFO *world);
+    void CutScenes_Stop(CUTSYS_PC *system);
+    void CutScenes_End(void);
+    void CutScenes_Update(WORLDINFO *world, i32 paused);
+    void CutScenes_Draw(WORLDINFO *world);
+    void CutScenePlayer_SetObjects(CUTINFO *cut);
+    void PCFrameSetLoadingYieldEnabled(i32 enabled);
     extern i32 CutSceneMusicStartFramePc;
     extern f32 LevelNameMul;
     extern f32 LevelNameTime;
@@ -23485,7 +23462,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl PcNativeSelectLanguage(const char *);
+    i32 PcNativeSelectLanguage(const char *);
     extern u32 PcUseUserGeoRegionPc;
 #ifdef __cplusplus
 }
@@ -23502,7 +23479,7 @@ extern "C" {
     extern i16 LEGOACT_SUPERPUSH_PULL;
     extern i16 LEGOACT_WALLJUMP_WAIT;
     extern i16 GizSpinnerGDeb_Fail[3];
-    extern u32(__cdecl *CanPushObstaclesFn)(GAMEOBJECT *);
+    extern u32 (*CanPushObstaclesFn)(GAMEOBJECT *);
     extern u16 PushBlockFacingTolerancePc;
     extern NUMTX LevMtx;
     extern f32 LevAlpha;
@@ -23543,26 +23520,26 @@ extern "C" {
 #endif
     typedef struct pushblock_s PUSH_BLOCK_PC;
     typedef struct TELEPORT_MOTION_PC TELEPORT_MOTION_PC;
-    void __cdecl PushCode(GAMEOBJECT *, i32);
-    struct GIZSPINNER_s *__cdecl GizSpinner_Find(WORLDINFO *, NUVEC *, i32);
-    i32 __cdecl GizSpinner_Push(struct GIZSPINNER_s *, i32);
-    void __cdecl GizSpinner_PushFail(GAMEOBJECT *, struct GIZSPINNER_s *);
-    PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *, GAMEOBJECT *, f32);
-    i32 __cdecl PushBlock(GAMEOBJECT *);
-    void __cdecl Ledge_MoveCode(WORLDINFO *, GAMEOBJECT *);
-    TELEPORT_MOTION_PC *__cdecl Teleport_Find(GAMEOBJECT *, f32);
-    void __cdecl Teleport_MoveCode(GAMEOBJECT *, i32);
-    void __cdecl Door_Reset(void);
-    void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
-    void __cdecl Titles_Init(WORLDINFO *);
-    void __cdecl Titles_Update(WORLDINFO *);
-    void __cdecl Titles_Draw(WORLDINFO *);
-    void __cdecl Credits_Init_Game(WORLDINFO *);
-    void __cdecl Credits_Update_Game(WORLDINFO *);
-    void __cdecl Credits_Draw_Game(WORLDINFO *);
-    i32 __cdecl PcInitializeDynamicGeometryBuffersPc(struct PC_DYNAMIC_GEOMETRY_PC *, i32);
-    i32 __cdecl PcUpdateGeometryDistancesPc(struct PC_GEOMETRY_OUTPUT_PC *, struct PC_GEOMETRY_SORT_ITEM_PC *, i32);
-    u8 __cdecl PcTransformDynamicGeometryPc(struct PC_GEOMETRY_SKIN_PC *, struct PC_GEOMETRY_MESH_PC *, u32 *);
+    void PushCode(GAMEOBJECT *, i32);
+    struct GIZSPINNER_s *GizSpinner_Find(WORLDINFO *, NUVEC *, i32);
+    i32 GizSpinner_Push(struct GIZSPINNER_s *, i32);
+    void GizSpinner_PushFail(GAMEOBJECT *, struct GIZSPINNER_s *);
+    PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *, GAMEOBJECT *, f32);
+    i32 PushBlock(GAMEOBJECT *);
+    void Ledge_MoveCode(WORLDINFO *, GAMEOBJECT *);
+    TELEPORT_MOTION_PC *Teleport_Find(GAMEOBJECT *, f32);
+    void Teleport_MoveCode(GAMEOBJECT *, i32);
+    void Door_Reset(void);
+    void NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
+    void Titles_Init(WORLDINFO *);
+    void Titles_Update(WORLDINFO *);
+    void Titles_Draw(WORLDINFO *);
+    void Credits_Init_Game(WORLDINFO *);
+    void Credits_Update_Game(WORLDINFO *);
+    void Credits_Draw_Game(WORLDINFO *);
+    i32 PcInitializeDynamicGeometryBuffersPc(struct PC_DYNAMIC_GEOMETRY_PC *, i32);
+    i32 PcUpdateGeometryDistancesPc(struct PC_GEOMETRY_OUTPUT_PC *, struct PC_GEOMETRY_SORT_ITEM_PC *, i32);
+    u8 PcTransformDynamicGeometryPc(struct PC_GEOMETRY_SKIN_PC *, struct PC_GEOMETRY_MESH_PC *, u32 *);
 #ifdef __cplusplus
 }
 #endif
@@ -23574,13 +23551,13 @@ typedef struct PC_GEOMETRY_MORPH_WEIGHTS_PC PC_GEOMETRY_MORPH_WEIGHTS_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl PcGeometryBackendAvailablePc(void);
-    i32 __cdecl PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *);
-    u8 __cdecl PcInitializeGeometryBasisPc(PC_GEOMETRY_BASIS_SOURCE_PC *, NUMTX *, PC_GEOMETRY_MORPH_WEIGHTS_PC *);
-    void __cdecl PcResetGeometryOriginStatePc(void);
-    void __cdecl PCGraphicsInitializeFramebuffers(u32, i32, VARIPTR *, VARIPTR);
-    void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *, NUMTX *);
-    void __cdecl NuMtxGetPerspectiveD3D(NUMTX *, f32 *, f32 *, f32 *, f32 *);
+    i32 PcGeometryBackendAvailablePc(void);
+    i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *);
+    u8 PcInitializeGeometryBasisPc(PC_GEOMETRY_BASIS_SOURCE_PC *, NUMTX *, PC_GEOMETRY_MORPH_WEIGHTS_PC *);
+    void PcResetGeometryOriginStatePc(void);
+    void PCGraphicsInitializeFramebuffers(u32, i32, VARIPTR *, VARIPTR);
+    void PcUpdateGeometryCameraOriginPc(NUMTX *, NUMTX *);
+    void NuMtxGetPerspectiveD3D(NUMTX *, f32 *, f32 *, f32 *, f32 *);
     extern i32 PcGeometryRegistryCountPc;
     extern PC_GEOMETRY_PUBLISH_RECORD_PC *PcGeometryRegistryPc;
     extern i32 PcGeometryMatrixCapacityPc;
@@ -23601,9 +23578,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl Tube_MoveCode(GAMEOBJECT *, WORLDINFO *);
-    void __cdecl HoldCode(GAMEOBJECT *);
-    void __cdecl SpecialMove_VictimCode(GAMEOBJECT *);
+    void Tube_MoveCode(GAMEOBJECT *, WORLDINFO *);
+    void HoldCode(GAMEOBJECT *);
+    void SpecialMove_VictimCode(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif
@@ -23660,20 +23637,20 @@ STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, position) == 0x68);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl Hat_GetAbsTargetPos(HATMACHINE_PC *, NUVEC *);
-    void __cdecl HatMachines_InitTerrain(WORLDINFO *);
-    HATMACHINE_PC *__cdecl HatMachine_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
-    i32 __cdecl HatMachine_BeingUsed(HATMACHINE_PC *);
-    void __cdecl Levers_InitTerrain(WORLDINFO *);
-    void __cdecl ReleaseLever(GAMEOBJECT *);
-    void __cdecl Lever_GetAbsTargetPos(GIZMO_LEVER_PC *, NUVEC *);
-    GIZMO_LEVER_PC *__cdecl Lever_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
-    i32 __cdecl Lever_FullyPulledDown(GIZMO_LEVER_PC *);
-    void __cdecl Lever_MoveCode(WORLDINFO *, GAMEOBJECT *);
-    void __cdecl Teleports_Reset(WORLDINFO *);
-    void __cdecl Teleports_UpdateBeforeGameObjects(WORLDINFO *);
-    void __cdecl Teleports_UpdateAfterGameObjects(WORLDINFO *);
-    void __cdecl Teleport_NetMoveCode(GAMEOBJECT *);
+    void Hat_GetAbsTargetPos(HATMACHINE_PC *, NUVEC *);
+    void HatMachines_InitTerrain(WORLDINFO *);
+    HATMACHINE_PC *HatMachine_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    i32 HatMachine_BeingUsed(HATMACHINE_PC *);
+    void Levers_InitTerrain(WORLDINFO *);
+    void ReleaseLever(GAMEOBJECT *);
+    void Lever_GetAbsTargetPos(GIZMO_LEVER_PC *, NUVEC *);
+    GIZMO_LEVER_PC *Lever_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    i32 Lever_FullyPulledDown(GIZMO_LEVER_PC *);
+    void Lever_MoveCode(WORLDINFO *, GAMEOBJECT *);
+    void Teleports_Reset(WORLDINFO *);
+    void Teleports_UpdateBeforeGameObjects(WORLDINFO *);
+    void Teleports_UpdateAfterGameObjects(WORLDINFO *);
+    void Teleport_NetMoveCode(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif
@@ -23682,13 +23659,13 @@ struct MISSION_SAVE_READER_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    MISSIONSYS_PC *__cdecl Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER_PC *);
-    void __cdecl EndMission(MISSIONSYS_PC *, i32, i32);
-    i32 __cdecl Mission_CurrentState(MISSIONSYS_PC *);
-    i32 __cdecl Missions_PartyAvailable(MISSIONSYS_PC *);
-    i32 __cdecl Missions_NumCompleted(MISSIONSYS_PC *, struct MISSION_SAVE_READER_PC *, i32);
-    GAMEOBJECT *__cdecl Mission_FindTarget(MISSIONSYS_PC *, u64 *);
-    i32 __cdecl Missions_PickupsOff(MISSIONSYS_PC *);
+    MISSIONSYS_PC *Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER_PC *);
+    void EndMission(MISSIONSYS_PC *, i32, i32);
+    i32 Mission_CurrentState(MISSIONSYS_PC *);
+    i32 Missions_PartyAvailable(MISSIONSYS_PC *);
+    i32 Missions_NumCompleted(MISSIONSYS_PC *, struct MISSION_SAVE_READER_PC *, i32);
+    GAMEOBJECT *Mission_FindTarget(MISSIONSYS_PC *, u64 *);
+    i32 Missions_PickupsOff(MISSIONSYS_PC *);
 #ifdef __cplusplus
 }
 #endif
@@ -23696,10 +23673,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl PushSeekComplete(PUSH_BLOCK_PC *, i32);
-    i32 __cdecl OtherBlockInRange(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, i32);
-    i32 __cdecl SnapPosTaken(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, i32);
-    i32 __cdecl TerrainBlockOnBlock(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, f32 *);
+    void PushSeekComplete(PUSH_BLOCK_PC *, i32);
+    i32 OtherBlockInRange(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, i32);
+    i32 SnapPosTaken(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, i32);
+    i32 TerrainBlockOnBlock(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, f32 *);
 #ifdef __cplusplus
 }
 #endif
@@ -23708,7 +23685,7 @@ extern "C" {
 extern "C" {
 #endif
     struct addgizmotype_pc_s;
-    struct addgizmotype_pc_s *__cdecl Levers_RegisterGizmo(i32 type_id);
+    struct addgizmotype_pc_s *Levers_RegisterGizmo(i32 type_id);
     extern char *LeverTypeNamePtrPc;
     extern char *LeverOutputDownNamePtrPc;
 #ifdef __cplusplus
@@ -23718,8 +23695,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    u8 __cdecl FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared,
-                                      u8 require_character_flags, u32 character_flags);
+    u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared,
+                              u8 require_character_flags, u32 character_flags);
 #ifdef __cplusplus
 }
 #endif
@@ -23727,10 +23704,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl Players_AveragePos(NUVEC *, SOCKPOSITION_PC *);
-    i32 __cdecl StreamingInsideLineXZPc(f32, f32, f32, f32, f32, f32);
-    BGPROCINFO *__cdecl bgGetProcActive(void);
-    void __cdecl LevelStreaming_Update(WORLDINFO *);
+    i32 Players_AveragePos(NUVEC *, SOCKPOSITION_PC *);
+    i32 StreamingInsideLineXZPc(f32, f32, f32, f32, f32, f32);
+    BGPROCINFO *bgGetProcActive(void);
+    void LevelStreaming_Update(WORLDINFO *);
     extern i32 LEGOSPL_SPLIT;
     extern i32 other_level_override;
 #ifdef __cplusplus
@@ -23740,10 +23717,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl EndMissionsMenu(void);
-    void __cdecl MenuInitMissions(MENU *);
-    void __cdecl MenuUpdateMissions(MENU *);
-    void __cdecl MenuDrawMissions(MENU *);
+    void EndMissionsMenu(void);
+    void MenuInitMissions(MENU *);
+    void MenuUpdateMissions(MENU *);
+    void MenuDrawMissions(MENU *);
 #ifdef __cplusplus
 }
 #endif
@@ -23751,10 +23728,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
-    void __cdecl MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
-    void __cdecl MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
-    void __cdecl UpdatePushBlocks(void *, void *, f32);
+    PUSH_BLOCK_PC *BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
+    void MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+    void MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+    void UpdatePushBlocks(void *, void *, f32);
     extern f32 PushVelocitySeekRatePc;
     extern f32 PushFallingSpeedPc;
     extern f32 PushCornerInsetPc;
@@ -23763,12 +23740,12 @@ extern "C" {
     extern f32 PushRumbleWindowPc;
     extern f32 PushBlockOverlapShrinkPc;
     extern i32 PushBlockHintIdPc;
-    void __cdecl KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
-    PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
-    char *__cdecl NuIToA(i32, char *, i32);
+    void KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
+    PUSH_BLOCK_PC *NearestPushBlock(WORLDINFO *, NUVEC *, f32);
+    char *NuIToA(i32, char *, i32);
     extern char *PushBlocksNamePc;
 
-    void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
+    void *GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -23814,8 +23791,8 @@ extern "C" {
 extern "C" {
 #endif
     /* Within the existing extern C declaration block; current HATMACHINE_PC is already forward-declared. */
-    void __cdecl HatMachine_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
-    struct addgizmotype_pc_s *__cdecl HatMachine_RegisterGizmo(i32);
+    void HatMachine_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
+    struct addgizmotype_pc_s *HatMachine_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif
@@ -23838,18 +23815,18 @@ extern "C" {
 extern "C" {
 #endif
     struct addgizmotype_pc_s;
-    struct addgizmotype_pc_s *__cdecl GizObstacles_RegisterGizmo(i32 type_id);
-    struct addgizmotype_pc_s *__cdecl Tubes_RegisterGizmo(i32);
-    struct addgizmotype_pc_s *__cdecl Plugs_RegisterGizmo(i32);
+    struct addgizmotype_pc_s *GizObstacles_RegisterGizmo(i32 type_id);
+    struct addgizmotype_pc_s *Tubes_RegisterGizmo(i32);
+    struct addgizmotype_pc_s *Plugs_RegisterGizmo(i32);
 
     struct addgizmotype_pc_s;
-    struct addgizmotype_pc_s *__cdecl MiniCut_RegisterGizmo(i32);
+    struct addgizmotype_pc_s *MiniCut_RegisterGizmo(i32);
 
 #ifdef __cplusplus
     extern "C" {
 #endif
-        void __cdecl Move_GEONOSIAN(GAMEOBJECT *);
-        void __cdecl Move_JAWA(GAMEOBJECT *);
+        void Move_GEONOSIAN(GAMEOBJECT *);
+        void Move_JAWA(GAMEOBJECT *);
 #ifdef __cplusplus
     }
 #endif
@@ -23857,8 +23834,8 @@ extern "C" {
 #ifdef __cplusplus
     extern "C" {
 #endif
-        CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *, VARIPTR *, VARIPTR *, i32, i32 *, i32,
-                                                         PLAYERCHARACTERCONFIG_PC **);
+        CHARACTERDATA_PC *ConfigureCharacterList(char *, VARIPTR *, VARIPTR *, i32, i32 *, i32,
+                                                 PLAYERCHARACTERCONFIG_PC **);
 #ifdef __cplusplus
     }
 #endif
@@ -23870,14 +23847,14 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl Move_CRITTER(GAMEOBJECT *);
-    void __cdecl Move_DROIDGENERIC(GAMEOBJECT *);
-    void __cdecl Move_JEDI(GAMEOBJECT *);
-    void __cdecl Move_WEIRDO(GAMEOBJECT *);
-    void __cdecl Animate_POD(GAMEOBJECT *);
-    i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
-    i32 __cdecl PodRace_InStartCountdown(WORLDINFO *);
-    void __cdecl SetPodMergeAnims(ANIMPACKET_PC *, i32);
+    void Move_CRITTER(GAMEOBJECT *);
+    void Move_DROIDGENERIC(GAMEOBJECT *);
+    void Move_JEDI(GAMEOBJECT *);
+    void Move_WEIRDO(GAMEOBJECT *);
+    void Animate_POD(GAMEOBJECT *);
+    i32 ThermalDetonator_MoveCode(GAMEOBJECT *);
+    i32 PodRace_InStartCountdown(WORLDINFO *);
+    void SetPodMergeAnims(ANIMPACKET_PC *, i32);
     extern i16 id_BAT;
     extern i16 id_NAFFDROID1;
     extern i16 id_NAFFDROID2;
@@ -23922,7 +23899,7 @@ extern "C" {
 extern "C" {
 #endif
     struct addgizmotype_pc_s;
-    struct addgizmotype_pc_s *__cdecl GizSpecial_RegisterGizmo(i32 type_id);
+    struct addgizmotype_pc_s *GizSpecial_RegisterGizmo(i32 type_id);
 #ifdef __cplusplus
 }
 #endif
@@ -23963,11 +23940,11 @@ extern "C" {
     typedef struct addgizmotype_pc_s TECHNO_REGISTRATION_PC;
     typedef struct addgizmotype_pc_s PORTAL_REGISTRATION_PC;
     typedef struct addgizmotype_pc_s SHADOW_REGISTRATION_PC;
-    TECHNO_REGISTRATION_PC *__cdecl Technos_RegisterGizmo(i32 type_id);
-    PORTAL_REGISTRATION_PC *__cdecl Portal_RegisterGizmo(i32 type_id);
-    SHADOW_REGISTRATION_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32 type_id);
-    void __cdecl PortalDoors_Reset(WORLDINFO *world);
-    void __cdecl NuPortalSetActiveDirect(NUPORTAL *portal, i32 active);
+    TECHNO_REGISTRATION_PC *Technos_RegisterGizmo(i32 type_id);
+    PORTAL_REGISTRATION_PC *Portal_RegisterGizmo(i32 type_id);
+    SHADOW_REGISTRATION_PC *EdGizShadowMachine_RegisterGizmo(i32 type_id);
+    void PortalDoors_Reset(WORLDINFO *world);
+    void NuPortalSetActiveDirect(NUPORTAL *portal, i32 active);
     extern TECHNO_CONFIG_PC TechnoSysPc;
     extern const char *TechnoRegistrationNamePc;
     extern i32 techno_gizmotype_id;
@@ -23991,8 +23968,8 @@ STATIC_ASSERT(offsetof(CHARFIXUP_PC, id) == 4);
 extern "C" {
 #endif
     extern CHARFIXUP_PC CharacterFixupTablePc[219];
-    void __cdecl FixUpCharacters(CHARFIXUP_PC *);
-    void __cdecl ExtraCharacterFixUpAfterConfig(void);
+    void FixUpCharacters(CHARFIXUP_PC *);
+    void ExtraCharacterFixUpAfterConfig(void);
 #ifdef __cplusplus
 }
 #endif
@@ -24028,19 +24005,19 @@ extern "C" {
     extern AREA_DATA_PC *BONUSKASHYYYK_ADATA;
     extern i32 Tag_DoneFirst;
     extern i32 Tag_DoneAny;
-    void __cdecl NewGame(void);
-    i32 __cdecl Episode_ContainsArea(i32, i32 *);
-    void __cdecl Suits_Init(void);
+    void NewGame(void);
+    i32 Episode_ContainsArea(i32, i32 *);
+    void Suits_Init(void);
 
     /* Add within the existing public C linkage cohort. Retain the game-save
      * refinement from game-init-after-MM; it supplies the two existing name fields. */
     extern u32 GAMEPAD_SKIP;
-    void __cdecl GamePad_InitButtons(void);
-    void __cdecl Hint_ClearHintsAndDoneFlags(void);
-    void __cdecl Cheats_SetFlags(void);
-    void __cdecl Cheat_SetOn(i32 cheat, i32 on, i32 update_save);
-    void __cdecl Cheats_TurnOff(i32 only_powerups);
-    void __cdecl FinishWeirdoNames(i32 which);
+    void GamePad_InitButtons(void);
+    void Hint_ClearHintsAndDoneFlags(void);
+    void Cheats_SetFlags(void);
+    void Cheat_SetOn(i32 cheat, i32 on, i32 update_save);
+    void Cheats_TurnOff(i32 only_powerups);
+    void FinishWeirdoNames(i32 which);
 
 #ifdef __cplusplus
 }
@@ -24067,9 +24044,9 @@ struct cut_player_clip_config_pc_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern u32(__cdecl *CanSuperCarryFn)(GAMEOBJECT *);
-    extern u32(__cdecl *CanPushBlocksFn)(GAMEOBJECT *);
-    extern i32(__cdecl *CutScenePlayer_AcceptFn)(struct cut_player_clip_config_pc_s *);
+    extern u32 (*CanSuperCarryFn)(GAMEOBJECT *);
+    extern u32 (*CanPushBlocksFn)(GAMEOBJECT *);
+    extern i32 (*CutScenePlayer_AcceptFn)(struct cut_player_clip_config_pc_s *);
     extern i16 id_SNOWTROOPER;
     extern i16 id_DEATHSTARTROOPER;
     extern i16 id_MOONCAR;
@@ -24149,20 +24126,20 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl Collection_Configure(char *, VARIPTR *, VARIPTR *);
-    f32 __cdecl GetVehicleAreaRememberSpeed(void);
-    SUIT_LAYERS_PC *__cdecl Suit_GetLast(i32, i32);
-    void __cdecl ReleaseEat(GAMEOBJECT *);
-    GAMEOBJECT *__cdecl Transform_TargettedByObj(void *);
-    ATTRACTO_PC *__cdecl Attracto_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
-    void __cdecl Attracto_GetPos_Top(ATTRACTO_PC *, NUVEC *);
-    void __cdecl Customiser_Set100PercentPieces(CUSTOMISER_LAYERS_PC *);
-    CUSTOMPIECE_LAYERS_PC *__cdecl Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *, char *, i32 *, i32 *);
-    i32 __cdecl Hub_Outside(void);
-    i32 __cdecl KaminoInside(void);
-    i32 __cdecl KaminoDiscoOn(void);
-    i32 __cdecl DeathStarShieldDown(void);
-    i32 __cdecl SarlaccPitDiscoActive(WORLDINFO *);
+    void Collection_Configure(char *, VARIPTR *, VARIPTR *);
+    f32 GetVehicleAreaRememberSpeed(void);
+    SUIT_LAYERS_PC *Suit_GetLast(i32, i32);
+    void ReleaseEat(GAMEOBJECT *);
+    GAMEOBJECT *Transform_TargettedByObj(void *);
+    ATTRACTO_PC *Attracto_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    void Attracto_GetPos_Top(ATTRACTO_PC *, NUVEC *);
+    void Customiser_Set100PercentPieces(CUSTOMISER_LAYERS_PC *);
+    CUSTOMPIECE_LAYERS_PC *Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *, char *, i32 *, i32 *);
+    i32 Hub_Outside(void);
+    i32 KaminoInside(void);
+    i32 KaminoDiscoOn(void);
+    i32 DeathStarShieldDown(void);
+    i32 SarlaccPitDiscoActive(WORLDINFO *);
 #ifdef __cplusplus
 }
 #endif
@@ -24227,22 +24204,22 @@ extern "C" {
     extern i32 selectmodemode;
     extern f32 selectmodetime;
     extern i32 CruiserD_LiftChase;
-    extern i32(__cdecl *CheckMusicOtherFn)(void);
-    extern i32(__cdecl *GameAudio_ActionMusicFn)(void);
-    extern i32(__cdecl *PauseRenderOffFn)(void);
+    extern i32 (*CheckMusicOtherFn)(void);
+    extern i32 (*GameAudio_ActionMusicFn)(void);
+    extern i32 (*PauseRenderOffFn)(void);
     extern f32 minikittime;
     extern i32 freeplaymode;
     extern i32 freeplay_selected[2];
-    extern i32(__cdecl *Tag_NoHiddenIconFn)(GAMEOBJECT *);
+    extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
     extern f32 game_pulse;
     extern const char *TagAsciiDownPc;
-    i32 __cdecl RedirectAnim(char *, void *, CHARACTERANIM_CONFIG_PC *, char *);
-    i32 __cdecl Hub_BonusBuildIt(struct GIZBUILDIT_PC *);
-    void __cdecl Batarangs_CheckLostData(void *);
+    i32 RedirectAnim(char *, void *, CHARACTERANIM_CONFIG_PC *, char *);
+    i32 Hub_BonusBuildIt(struct GIZBUILDIT_PC *);
+    void Batarangs_CheckLostData(void *);
     extern f32 HubMiniKitPanelTimePc;
-    void __cdecl Hub_ResetPanel(void);
-    void __cdecl GameAudio_PlaySfxAndSetVolume(i32 sfx, NUVEC *position, f32 volume);
-    i32 __cdecl GameAudio_GetSfxId(i32);
+    void Hub_ResetPanel(void);
+    void GameAudio_PlaySfxAndSetVolume(i32 sfx, NUVEC *position, f32 volume);
+    i32 GameAudio_GetSfxId(i32);
     extern AREA_DATA_PC *KAMINO_ADATA;
 #ifdef __cplusplus
 }
@@ -24330,32 +24307,32 @@ struct game_door_callback_pc_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32(__cdecl *SetSoundFadeDistCallBackFn)(WORLDINFO *);
-    extern i32(__cdecl *AlternateGameCallbackPc)(GAMEOBJECT *object);
-    extern i32(__cdecl *GamePads_IgnoreInputFn)(void);
-    extern void(__cdecl *Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_pc_s *door);
-    extern void(__cdecl *GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target);
-    extern i32(__cdecl *GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle);
-    extern void(__cdecl *PauseGame_ExtraCodeFn)(void);
-    extern i32(__cdecl *Hub_PanelBusyFn)(void);
-    extern i32(__cdecl *GizBuildIt_CanStartBuildingFn)(struct GIZBUILDIT_PC *input, GAMEOBJECT *object);
-    extern void(__cdecl *GizBuildIt_FinishFn)(struct GIZBUILDIT_PC *input);
-    extern void(__cdecl *Game_100PercentFn)(void);
-    extern void(__cdecl *Game_AllGoldBricksFn)(void);
-    extern f32(__cdecl *Hint_AlphaTargetFn)(void);
-    extern void(__cdecl *Collection_GetSelectingPlayerIDsFn)(i16 *ids);
-    extern NUSPECIALHANDLE *(__cdecl *GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message);
+    extern i32 (*SetSoundFadeDistCallBackFn)(WORLDINFO *);
+    extern i32 (*AlternateGameCallbackPc)(GAMEOBJECT *object);
+    extern i32 (*GamePads_IgnoreInputFn)(void);
+    extern void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_pc_s *door);
+    extern void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target);
+    extern i32 (*GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle);
+    extern void (*PauseGame_ExtraCodeFn)(void);
+    extern i32 (*Hub_PanelBusyFn)(void);
+    extern i32 (*GizBuildIt_CanStartBuildingFn)(struct GIZBUILDIT_PC *input, GAMEOBJECT *object);
+    extern void (*GizBuildIt_FinishFn)(struct GIZBUILDIT_PC *input);
+    extern void (*Game_100PercentFn)(void);
+    extern void (*Game_AllGoldBricksFn)(void);
+    extern f32 (*Hint_AlphaTargetFn)(void);
+    extern void (*Collection_GetSelectingPlayerIDsFn)(i16 *ids);
+    extern NUSPECIALHANDLE *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message);
     extern BOLTTYPE_PC GlobalBoltType[44];
     extern BOLTSYS_PC BoltSys_LSW;
     extern BOLTSYS_PC BoltSys_Batman;
     extern struct CHARPIVOT_PC CharPivot_LSW[32];
     extern struct CHARPIVOT_PC CharPivot_Batman;
     extern i32 CompletionPointInfoPc[7];
-    i32 __cdecl Hub_PanelBusy(void);
-    i32 __cdecl ObjZappedBlue(GAMEOBJECT *);
-    void __cdecl ResetShadowMapRenderingFn(void);
-    void __cdecl EnableShadowMapRenderingFn(void);
-    void __cdecl InitGameAfterConfig(void);
+    i32 Hub_PanelBusy(void);
+    i32 ObjZappedBlue(GAMEOBJECT *);
+    void ResetShadowMapRenderingFn(void);
+    void EnableShadowMapRenderingFn(void);
+    void InitGameAfterConfig(void);
 #ifdef __cplusplus
 }
 #endif
@@ -24465,11 +24442,10 @@ extern "C" {
     extern i16 tOUTRO;
     extern i16 tENDING;
     extern i16 tPOWERUP;
-    void __cdecl ReleaseTakeOver(GAMEOBJECT *, i32);
-    void __cdecl AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);
-    void __cdecl Level_RegisterGameConfigKeywords(NUFPCOMJMP *, NUFPCOMJMP *);
-    void __cdecl APIObjectRegisterAnimRedirect(i32(__cdecl *)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *),
-                                               void *, char *);
+    void ReleaseTakeOver(GAMEOBJECT *, i32);
+    void AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);
+    void Level_RegisterGameConfigKeywords(NUFPCOMJMP *, NUFPCOMJMP *);
+    void APIObjectRegisterAnimRedirect(i32 (*)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *), void *, char *);
 
 #ifdef __cplusplus
 }
@@ -24510,7 +24486,7 @@ extern "C" {
     extern f32 (*nuspecial_vertex_offsets)[4];
     extern u32 RenderFrameSceneFlagsPc;
     extern i32 global_frame_count_paused;
-    extern void(__cdecl *RenderFrameCallbackPc)(void);
+    extern void (*RenderFrameCallbackPc)(void);
     extern u32 NuPostEffectInitialisedFlagsPc;
     extern FRAME_NATIVE_TEXTURE_POOL_PC FrameNativeTexturePoolPc;
     extern NUFILE nudlist_field_958;
@@ -24539,30 +24515,30 @@ STATIC_ASSERT(offsetof(PC_BOOT_FRAMEBUFFER_VIEW_PC, slots) == 0);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl NuRndrSwapScreen(i32 mode);
-    i32 __cdecl NuRndrSwapScreenEx(i32 mode, void(__cdecl *callback)(void));
-    void __cdecl NuPostEffectInit(u32, VARIPTR *, VARIPTR);
-    i32 __cdecl NuPostEffectIsInitialised(u32 mask);
-    i32 __cdecl NuDynamicLightIsEnabled(NURNDRLIGHTRECORD *records);
-    void __cdecl NuDynamicLightAddRenderScene(NURNDRLIGHTRECORD *records, i32 index, i32 scene_id);
-    i32 __cdecl NuTexGetWidth(i32 id);
-    i32 __cdecl NuTexGetHeight(i32 id);
-    HRESULT __cdecl PCDeviceEndScenePc(void);
-    i32 __cdecl NuTexRegisterDimensionsPc(NUTEXDIM_PC *texture);
-    i32 __cdecl NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *target);
-    void __cdecl NuDisplayListCaptureBegin(void);
-    void __cdecl NuRndrEndSceneEx(i32 flags);
-    void __cdecl NuTimeBarSetRender(i32 set);
-    void __cdecl PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *framebuffer);
+    i32 NuRndrSwapScreen(i32 mode);
+    i32 NuRndrSwapScreenEx(i32 mode, void (*callback)(void));
+    void NuPostEffectInit(u32, VARIPTR *, VARIPTR);
+    i32 NuPostEffectIsInitialised(u32 mask);
+    i32 NuDynamicLightIsEnabled(NURNDRLIGHTRECORD *records);
+    void NuDynamicLightAddRenderScene(NURNDRLIGHTRECORD *records, i32 index, i32 scene_id);
+    i32 NuTexGetWidth(i32 id);
+    i32 NuTexGetHeight(i32 id);
+    HRESULT PCDeviceEndScenePc(void);
+    i32 NuTexRegisterDimensionsPc(NUTEXDIM_PC *texture);
+    i32 NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *target);
+    void NuDisplayListCaptureBegin(void);
+    void NuRndrEndSceneEx(i32 flags);
+    void NuTimeBarSetRender(i32 set);
+    void PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *framebuffer);
     extern PC_FRAMEBUFFER_PC *PcDefaultFramebuffer;
     extern PC_BOOT_FRAMEBUFFER_VIEW_PC PcBootFramebuffersPc;
-    PC_FRAMEBUFFER_PC *__cdecl NuFramebufferGetObject(i32 index);
-    i32 __cdecl NuFramebufferGetWidth(PC_FRAMEBUFFER_PC *framebuffer);
-    i32 __cdecl NuFramebufferGetHeight(PC_FRAMEBUFFER_PC *framebuffer);
-    void __cdecl NuEffectTexLockVP(VARIPTR *buffer, VARIPTR end);
-    i32 __cdecl NuEffectTexUnlockVP(void);
-    i32 __cdecl NuTexCreateFramebufferCopy(VARIPTR *buffer, VARIPTR end);
-    void __cdecl InitStillRender(VARIPTR *buffer, VARIPTR end);
+    PC_FRAMEBUFFER_PC *NuFramebufferGetObject(i32 index);
+    i32 NuFramebufferGetWidth(PC_FRAMEBUFFER_PC *framebuffer);
+    i32 NuFramebufferGetHeight(PC_FRAMEBUFFER_PC *framebuffer);
+    void NuEffectTexLockVP(VARIPTR *buffer, VARIPTR end);
+    i32 NuEffectTexUnlockVP(void);
+    i32 NuTexCreateFramebufferCopy(VARIPTR *buffer, VARIPTR end);
+    void InitStillRender(VARIPTR *buffer, VARIPTR end);
 #ifdef __cplusplus
 }
 #endif
@@ -24589,16 +24565,16 @@ extern "C" {
     extern void *NuDisplayHandlerMaterialPc;
     extern i32 NuDisplayHandlerReflectionPc;
     extern i32 NuDisplayHandlerCameraIdPc;
-    void __cdecl NuVec4Add(NUVEC4 *, NUVEC4 *, NUVEC4 *);
-    void __cdecl NuDisplayListSkinPalettePc(void *);
-    void __cdecl NuDisplayListLightsPc(void *);
-    void __cdecl NuDisplayListTintPc(void *);
-    void __cdecl NuDisplayListFogPc(void *);
-    void __cdecl NuDisplayListLightmapPacketPc(void *);
-    void __cdecl NuDisplayListLegacyLightmapPc(void *);
-    void __cdecl NuDisplayListLegacyLightmapOffsetPc(void *);
-    void __cdecl NuDisplayListReflectionPc(void *);
-    void __cdecl NuDisplayListCameraPc(void *);
+    void NuVec4Add(NUVEC4 *, NUVEC4 *, NUVEC4 *);
+    void NuDisplayListSkinPalettePc(void *);
+    void NuDisplayListLightsPc(void *);
+    void NuDisplayListTintPc(void *);
+    void NuDisplayListFogPc(void *);
+    void NuDisplayListLightmapPacketPc(void *);
+    void NuDisplayListLegacyLightmapPc(void *);
+    void NuDisplayListLegacyLightmapOffsetPc(void *);
+    void NuDisplayListReflectionPc(void *);
+    void NuDisplayListCameraPc(void *);
 #ifdef __cplusplus
 }
 #endif
@@ -24606,12 +24582,12 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuShaderManagerSetElementfv(i32 semantic, i32 element, const f32 *values);
+    void NuShaderManagerSetElementfv(i32 semantic, i32 element, const f32 *values);
     extern char g_shaderSaveFolder[256];
-    void __cdecl NuShaderManagerSetShaderSaveFolder(const char *folder);
-    void __cdecl NuShaderManagerSetElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values);
-    void __cdecl NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic,
-                                                       i32 first_element, i32 count, const f32 *values);
+    void NuShaderManagerSetShaderSaveFolder(const char *folder);
+    void NuShaderManagerSetElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values);
+    void NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element,
+                                               i32 count, const f32 *values);
 #ifdef __cplusplus
 }
 #endif
@@ -24642,25 +24618,25 @@ extern "C" {
 #endif
     extern i32 PCGraphicsFrameState;
     extern i32 PCGraphicsBoundShader;
-    void __cdecl NuDisplayListVertexGroupsPc(void *);
-    void __cdecl NuDisplayListVertexOffsetsPc(void *);
-    void __cdecl NuDisplayListTransformPc(void *);
-    void __cdecl NuDisplayListTransformTransposePc(void *);
-    void __cdecl NuDisplayListFaceOnTransformPc(void *);
-    void __cdecl NuDisplayListPacketAdPc(void *);
-    void __cdecl NuDisplayListUpdateLightmapPc(void);
-    void __cdecl NuDisplayListDrawGeometryPc(void *);
-    void __cdecl NuDisplayListDrawFaceOnPc(void *);
-    void __cdecl NuDisplayListDrawDebrisPc(void *);
-    void __cdecl PCDeviceSetStreamSourcePc(u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
-    void __cdecl PCDeviceDrawPrimitivePc(i32, u32, u32);
-    void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *);
-    void __cdecl PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
-    void __cdecl PCDeviceSetStreamSourceFreqPc(u32, u32);
-    void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *);
-    void __cdecl PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *);
-    void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *);
-    void __cdecl NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *);
+    void NuDisplayListVertexGroupsPc(void *);
+    void NuDisplayListVertexOffsetsPc(void *);
+    void NuDisplayListTransformPc(void *);
+    void NuDisplayListTransformTransposePc(void *);
+    void NuDisplayListFaceOnTransformPc(void *);
+    void NuDisplayListPacketAdPc(void *);
+    void NuDisplayListUpdateLightmapPc(void);
+    void NuDisplayListDrawGeometryPc(void *);
+    void NuDisplayListDrawFaceOnPc(void *);
+    void NuDisplayListDrawDebrisPc(void *);
+    void PCDeviceSetStreamSourcePc(u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
+    void PCDeviceDrawPrimitivePc(i32, u32, u32);
+    void PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *);
+    void PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
+    void PCDeviceSetStreamSourceFreqPc(u32, u32);
+    void PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *);
+    void PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *);
+    void PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *);
+    void NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *);
 #ifdef __cplusplus
 }
 #endif
@@ -24708,11 +24684,11 @@ STATIC_ASSERT(offsetof(NUWIND, parameter_24) == 0x24);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *, NUMTL *);
-    i32 __cdecl NuWindCurrent(NUWIND *);
-    void __cdecl PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *, u32);
-    f32 __cdecl NuShaderManagerGetShininessFactor(void);
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuPostEffectGetBackBuffer(i32);
+    void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *, NUMTL *);
+    i32 NuWindCurrent(NUWIND *);
+    void PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *, u32);
+    f32 NuShaderManagerGetShininessFactor(void);
+    GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectGetBackBuffer(i32);
 #ifdef __cplusplus
 }
 #endif
@@ -24720,12 +24696,12 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuMtlSetRenderStatesPS(NUMTL *);
-    PC_FRAMEBUFFER_PC *__cdecl PCGraphicsGetBoundFramebufferPc(void);
-    void __cdecl PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *, i32);
-    void __cdecl PCGraphicsCopyFramebufferTex2DPc(i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32);
-    void __cdecl NuDisplayListDrawRenderScene(i32);
-    void __cdecl NuDisplayListDrawItems(NUDISPLAYLISTITEM *);
+    void NuMtlSetRenderStatesPS(NUMTL *);
+    PC_FRAMEBUFFER_PC *PCGraphicsGetBoundFramebufferPc(void);
+    void PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *, i32);
+    void PCGraphicsCopyFramebufferTex2DPc(i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32);
+    void NuDisplayListDrawRenderScene(i32);
+    void NuDisplayListDrawItems(NUDISPLAYLISTITEM *);
 #ifdef __cplusplus
 }
 #endif
@@ -24734,18 +24710,18 @@ extern "C" {
 extern "C" {
 #endif
     extern i32 PCFramePresentationStatePc;
-    i32 __cdecl PCFramePresentNativePc(i32, i32);
-    void __cdecl PCPresentationPlatformLeafPc(void);
+    i32 PCFramePresentNativePc(i32, i32);
+    void PCPresentationPlatformLeafPc(void);
 #ifdef __cplusplus
 }
 #endif
 
-typedef void(__cdecl *PC_DISPLAY_ITEM_HANDLER_PC)(void *);
+typedef void (*PC_DISPLAY_ITEM_HANDLER_PC)(void *);
 STATIC_ASSERT(sizeof(PC_DISPLAY_ITEM_HANDLER_PC) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuDisplayListMaterialPc(void *);
+    void NuDisplayListMaterialPc(void *);
     extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefixPc[49];
     extern PC_DISPLAY_ITEM_HANDLER_PC *CurrentItemTable;
 #ifdef __cplusplus
@@ -24801,7 +24777,7 @@ STATIC_ASSERT(offsetof(NU_POST_BLOOM_PARAMETERS_PC, direction_bias) == 0x48);
 extern "C" {
 #endif
     extern PC_POST_BUFFER_PROXY_PC PostProxyBuffersPc[5];
-    void __cdecl NuPostEffectRender(PC_FRAMEBUFFER_PC *);
+    void NuPostEffectRender(PC_FRAMEBUFFER_PC *);
 #ifdef __cplusplus
 }
 #endif
@@ -24815,8 +24791,8 @@ struct PC_POST_DATA_PORT_ENTRY {
 
 struct PC_POST_DATA_PORT_MANAGER {
     PC_POST_DATA_PORT_ENTRY entries[256];
-    i32 __thiscall Register(const char *name, void *data);
-    void __thiscall ResetReferences();
+    i32 Register(const char *name, void *data);
+    void ResetReferences();
 };
 
 struct PC_POST_DATA_PORT {
@@ -24966,18 +24942,18 @@ extern "C" {
     extern NU_POST_SPEED_VIEW_PC *speedBlurFilter;
     extern i32 NuPostEffectsRanPc;
     extern u8 NuPostLastFrameEffectPc;
-    void __cdecl PCDeviceResetSamplerDefaultsPc(void);
-    void __cdecl NuPostEffectReset(void);
-    void __cdecl NuPostEffectEnable(i32);
-    void __cdecl NuPostEffectDisable(u32);
-    void __cdecl NuPostEffectAddDynamicLight(NuDynamicLight *);
-    i32 __cdecl NuPostEffectGetActiveDynamicLightCount(void);
-    void __cdecl NuPostEffectDepthOfField(const NU_POST_DOF_PARAMETERS_PC *);
-    void __cdecl NuPostEffectDeferredShading(const f32 *);
-    void __cdecl NuPostEffectBloom(const NU_POST_BLOOM_PARAMETERS_PC *);
-    void __cdecl NuPostEffectMotionBlur(const NUMTX *, const NUMTX *, f32, f32, f32);
-    void __cdecl NuPostEffectAccumulationMotionBlur(i32, f32, f32);
-    void __cdecl NuPostEffectSpeedBlur(const NU_POST_SPEED_PARAMETERS_PC *);
+    void PCDeviceResetSamplerDefaultsPc(void);
+    void NuPostEffectReset(void);
+    void NuPostEffectEnable(i32);
+    void NuPostEffectDisable(u32);
+    void NuPostEffectAddDynamicLight(NuDynamicLight *);
+    i32 NuPostEffectGetActiveDynamicLightCount(void);
+    void NuPostEffectDepthOfField(const NU_POST_DOF_PARAMETERS_PC *);
+    void NuPostEffectDeferredShading(const f32 *);
+    void NuPostEffectBloom(const NU_POST_BLOOM_PARAMETERS_PC *);
+    void NuPostEffectMotionBlur(const NUMTX *, const NUMTX *, f32, f32, f32);
+    void NuPostEffectAccumulationMotionBlur(i32, f32, f32);
+    void NuPostEffectSpeedBlur(const NU_POST_SPEED_PARAMETERS_PC *);
 #ifdef __cplusplus
 }
 #endif
@@ -25231,7 +25207,7 @@ extern "C" {
     extern i32 NuLgtStateFreeHeadPc;
     extern i32 NuLgtStateEnabledPc;
     extern i32 NuLgtStateUnknownPc;
-    void __cdecl NuLgtInitializeStatePc(void);
+    void NuLgtInitializeStatePc(void);
 #ifdef __cplusplus
 }
 #endif
@@ -25282,12 +25258,12 @@ extern "C" {
     extern i32 NuGobjRegistryCountPc;
     extern PC_GOBJ_REGISTRY_ENTRY_PC *NuGobjRegistryFirstPc;
     extern const char NuGobjSourcePathPc[51];
-    void __cdecl NuGobjReleaseChildPc(PC_GOBJ_REGISTRY_CHILD_PC *);
-    void __cdecl NuGobjRegistryCleanupPc(void);
-    void __cdecl NuGobjRegistryInitPc(void);
+    void NuGobjReleaseChildPc(PC_GOBJ_REGISTRY_CHILD_PC *);
+    void NuGobjRegistryCleanupPc(void);
+    void NuGobjRegistryInitPc(void);
 
-    void __cdecl NuPs2GetViewport(NUVPCURRENT *viewport);
-    void __cdecl NuVpInit(void);
+    void NuPs2GetViewport(NUVPCURRENT *viewport);
+    void NuVpInit(void);
 #ifdef __cplusplus
 }
 #endif
@@ -25297,13 +25273,13 @@ extern "C" {
 #endif
     extern AREA_DATA_PC *JIMTEST_ADATA;
     extern f32 ActionMusicStickyTimeoutPc[2];
-    void __cdecl LSW_SetIndy(i32 area_index);
-    void __cdecl GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time);
-    void __cdecl Cheats_Reset(void);
-    void __cdecl Batarangs_Reset(void);
-    void __cdecl GameCam_Reset(GAMECAMERA *camera);
-    void __cdecl Minicam_InitSystem(void);
-    void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress);
+    void LSW_SetIndy(i32 area_index);
+    void GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time);
+    void Cheats_Reset(void);
+    void Batarangs_Reset(void);
+    void GameCam_Reset(GAMECAMERA *camera);
+    void Minicam_InitSystem(void);
+    void ResetScene(NUGSCN *scene, SCENEPROGRESS *progress);
 #ifdef __cplusplus
 }
 #endif
@@ -25311,8 +25287,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl PcInitializeStartupCriticalSection(void);
-    void __cdecl PcInitializePerformanceTiming(void);
+    void PcInitializeStartupCriticalSection(void);
+    void PcInitializePerformanceTiming(void);
     extern i32 PcStartupCriticalSectionInitialized;
     extern CRITICAL_SECTION PcStartupCriticalSection;
 #ifdef __cplusplus
@@ -25325,9 +25301,9 @@ STATIC_ASSERT(sizeof(LARGE_INTEGER) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl ReadPad(i32 port);
-    void __cdecl ReadPads(void);
-    i32 __cdecl GamePadReadBackendPc(FRAME_PAD_PC *pad, i32 ignored);
+    i32 ReadPad(i32 port);
+    void ReadPads(void);
+    i32 GamePadReadBackendPc(FRAME_PAD_PC *pad, i32 ignored);
     extern FRAME_PAD_PC *pActivePad;
 #ifdef __cplusplus
 }
@@ -25375,13 +25351,13 @@ extern "C" {
     extern HANDLE PCSoundSampleWorkerHandlePc;
     extern volatile u8 PCSoundSampleWorkerStopPc;
     extern char *PCSampleFilenameExtensionPc;
-    void __cdecl AudioGroup_Parse(NUFPAR_PC *);
-    void __cdecl InitSfx(VARIPTR *cursor, VARIPTR end, const char *file);
-    void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *, VARIPTR *, VARIPTR);
-    void __cdecl NuSound3SetRequestTable(u16 *, i32);
-    i32 __cdecl NuSound3InitV(VARIPTR *, VARIPTR, i32, i32, ...);
-    i32 __cdecl PCSoundInitializePc(PC_SOUND_INIT_CONFIG *);
-    struct nusound_filename_info_s *__cdecl ConfigureMusic(char *, VARIPTR *, VARIPTR *);
+    void AudioGroup_Parse(NUFPAR_PC *);
+    void InitSfx(VARIPTR *cursor, VARIPTR end, const char *file);
+    void NuSound3SetSampleTable(SFX_FILE_INFO_PC *, VARIPTR *, VARIPTR);
+    void NuSound3SetRequestTable(u16 *, i32);
+    i32 NuSound3InitV(VARIPTR *, VARIPTR, i32, i32, ...);
+    i32 PCSoundInitializePc(PC_SOUND_INIT_CONFIG *);
+    struct nusound_filename_info_s *ConfigureMusic(char *, VARIPTR *, VARIPTR *);
 #ifdef __cplusplus
 }
 #endif
@@ -25389,11 +25365,11 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl NuPadGetDeadzoneByPortPS(i32 port);
-    i32 __cdecl NuPadReadOutputsPc(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
-    f32 __cdecl PcInputAspectRatioPc(void);
-    void __cdecl NuPadUpdatePads(void);
-    void __cdecl PcInputEndFramePc(void);
+    i32 NuPadGetDeadzoneByPortPS(i32 port);
+    i32 NuPadReadOutputsPc(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
+    f32 PcInputAspectRatioPc(void);
+    void NuPadUpdatePads(void);
+    void PcInputEndFramePc(void);
     extern const u8 PcInputPovBitsPc[8];
     extern u8 PcMouseAxisModesPc[3];
     extern u32 mbuttons;
@@ -25411,70 +25387,70 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    f32 __cdecl NuPow(f32 base, f32 exponent);
-    void __cdecl NuPadRecordSave(char *filepath);
-    i32 __cdecl NuFileWriteInt(NUFILE file, i32 value);
-    u32 __cdecl NuFileWriteUnsignedInt(NUFILE file, u32 value);
+    f32 NuPow(f32 base, f32 exponent);
+    void NuPadRecordSave(char *filepath);
+    i32 NuFileWriteInt(NUFILE file, i32 value);
+    u32 NuFileWriteUnsignedInt(NUFILE file, u32 value);
     extern i32 NuPowFirstTimePc;
     extern i32 NuPowCacheIndexPc;
     extern i32 NuFile_SwapEndianOnWrite;
     extern f32 NuPowBasesPc[32];
     extern f32 NuPowExponentsPc[32];
     extern f32 NuPowResultsPc[32];
-    void __cdecl NuMtxPreTranslateX(NUMTX *m, f32 tx);
-    void __cdecl NuMtxPreTranslateNeg(NUMTX *m, NUVEC *t);
-    void __cdecl NuMtxPreSkewYX(NUMTX *Mtx, f32 SkewVal);
-    void __cdecl NuMtxPreRotateY180X(NUMTX *m, NUANG a);
-    void __cdecl NuMtxPreRotateY180(NUMTX *m);
-    void __cdecl NuMtxTruncate24Bit(NUMTX *, NUMTX *);
-    void __cdecl NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix);
-    void __cdecl NuMtxLookAtInverseD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up);
-    void __cdecl NuMtxSetPerspectiveBlend(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar);
-    void __cdecl NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f);
-    void __cdecl NuVecMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *m);
-    void __cdecl NuVecMtxRotateValX(NUVEC *out, f32 value, NUMTX *matrix);
-    void __cdecl NuVecMtxRotateValY(NUVEC *out, f32 value, NUMTX *matrix);
-    void __cdecl NuVecMtxRotateValZ(NUVEC *out, f32 value, NUMTX *matrix);
-    void __cdecl NuVecMtxRotateH(NUVEC *out, NUVEC *v, NUMTX *m);
-    void __cdecl NuVecMtxScale(NUVEC *out, NUVEC *v, NUMTX *m);
-    void __cdecl NuVecInvMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *matrix);
-    void __cdecl NuVecInvMtxRotateValX(NUVEC *out, f32 unused, NUMTX *matrix);
-    void __cdecl NuVecInvMtxRotateValY(NUVEC *out, f32 unused, NUMTX *matrix);
-    void __cdecl NuVecInvMtxRotateValZ(NUVEC *out, f32 unused, NUMTX *matrix);
-    void __cdecl NuVecInvMtxScale(NUVEC *out, NUVEC *v, NUMTX *matrix);
-    void __cdecl NuVecRotateYValX(NUVEC *out, f32 value, NUANG angle);
-    f32 __cdecl NuVec4Dot(NUVEC4 *v0, NUVEC4 *v1);
-    void __cdecl NuVec4ScaleAccum(NUVEC4 *out, NUVEC4 *v, f32 scale);
-    void __cdecl NuVec4Sub(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b);
-    void __cdecl NuVec4Max(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b);
-    void __cdecl NuVec4Min(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b);
-    f32 __cdecl NuVec4Mag(NUVEC4 *v);
-    f32 __cdecl NuVec4MagSqr(NUVEC4 *v);
-    void __cdecl NuVec4Lerp(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b, f32 t);
-    i16 __cdecl NuFloatToHalf(f32 value);
-    f32 __cdecl NuHalfToFloat(i16 value);
-    void __cdecl NuVec4ToNuHalfVec4(NUVEC4 *v, NUHALFVEC4 *out);
-    void __cdecl NuHalfVec4ToNuVec4(NUHALFVEC4 *v, NUVEC4 *out);
+    void NuMtxPreTranslateX(NUMTX *m, f32 tx);
+    void NuMtxPreTranslateNeg(NUMTX *m, NUVEC *t);
+    void NuMtxPreSkewYX(NUMTX *Mtx, f32 SkewVal);
+    void NuMtxPreRotateY180X(NUMTX *m, NUANG a);
+    void NuMtxPreRotateY180(NUMTX *m);
+    void NuMtxTruncate24Bit(NUMTX *, NUMTX *);
+    void NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix);
+    void NuMtxLookAtInverseD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up);
+    void NuMtxSetPerspectiveBlend(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar);
+    void NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f);
+    void NuVecMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *m);
+    void NuVecMtxRotateValX(NUVEC *out, f32 value, NUMTX *matrix);
+    void NuVecMtxRotateValY(NUVEC *out, f32 value, NUMTX *matrix);
+    void NuVecMtxRotateValZ(NUVEC *out, f32 value, NUMTX *matrix);
+    void NuVecMtxRotateH(NUVEC *out, NUVEC *v, NUMTX *m);
+    void NuVecMtxScale(NUVEC *out, NUVEC *v, NUMTX *m);
+    void NuVecInvMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *matrix);
+    void NuVecInvMtxRotateValX(NUVEC *out, f32 unused, NUMTX *matrix);
+    void NuVecInvMtxRotateValY(NUVEC *out, f32 unused, NUMTX *matrix);
+    void NuVecInvMtxRotateValZ(NUVEC *out, f32 unused, NUMTX *matrix);
+    void NuVecInvMtxScale(NUVEC *out, NUVEC *v, NUMTX *matrix);
+    void NuVecRotateYValX(NUVEC *out, f32 value, NUANG angle);
+    f32 NuVec4Dot(NUVEC4 *v0, NUVEC4 *v1);
+    void NuVec4ScaleAccum(NUVEC4 *out, NUVEC4 *v, f32 scale);
+    void NuVec4Sub(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b);
+    void NuVec4Max(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b);
+    void NuVec4Min(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b);
+    f32 NuVec4Mag(NUVEC4 *v);
+    f32 NuVec4MagSqr(NUVEC4 *v);
+    void NuVec4Lerp(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b, f32 t);
+    i16 NuFloatToHalf(f32 value);
+    f32 NuHalfToFloat(i16 value);
+    void NuVec4ToNuHalfVec4(NUVEC4 *v, NUHALFVEC4 *out);
+    void NuHalfVec4ToNuVec4(NUHALFVEC4 *v, NUVEC4 *out);
 
     /* Pause callbacks and immediate rectangle rendering. */
-    extern void(__cdecl *ResumeGame_ExtraCodeFn)(void);
-    void __cdecl ResumeGame(i32 play_sound);
-    void __cdecl NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
-    void __cdecl NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
-                                 NUMTL *material);
+    extern void (*ResumeGame_ExtraCodeFn)(void);
+    void ResumeGame(i32 play_sound);
+    void NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
+    void NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
+                         NUMTL *material);
 
     /* Source stack interfaces. */
-    GAMEOBJECT *__cdecl PlayerOpponent(GAMEOBJECT *, f32, i32);
-    NUVEC *__cdecl GetZapOrigin(GAMEOBJECT *);
-    void __cdecl ZapCode(GAMEOBJECT *, i32, i32);
+    GAMEOBJECT *PlayerOpponent(GAMEOBJECT *, f32, i32);
+    NUVEC *GetZapOrigin(GAMEOBJECT *);
+    void ZapCode(GAMEOBJECT *, i32, i32);
     extern f32 PlayerOpponent_Range2;
 
     extern TEXTENTRY Text_TableMenu[167];
     extern TEXTENTRY Text_TableGame[347];
     extern TEXTENTRY Text_TableMain[706];
     STATIC_ASSERT(offsetof(GAMEOBJECT, dynamic_light_id) == 0xe04);
-    void __cdecl NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta,
-                            u32 colour, f32 end_width, f32 length);
+    void NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta, u32 colour,
+                    f32 end_width, f32 length);
     extern f32 testlaser_sizew;
     extern f32 testlaser_sizel;
     extern f32 testlaser_sizewab;
@@ -25499,8 +25475,8 @@ struct eduimenu_s;
 struct eduiitem_s;
 struct nuhspecial_s;
 f32 NuSpecialGetAnimPos(struct nuhspecial_s *special);
-typedef void(__cdecl *EdUiMenuCallback)(struct eduimenu_s *menu, struct eduimenu_s *parent);
-typedef void(__cdecl *EdUiItemCallback)(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+typedef void (*EdUiMenuCallback)(struct eduimenu_s *menu, struct eduimenu_s *parent);
+typedef void (*EdUiItemCallback)(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
 typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, NUSPECIALHANDLE *special);
 
 /* Types imported from the Android sources (tools/typeimport.py). */
@@ -26338,7 +26314,7 @@ struct storepack_s {
 
     u8 field7_0xa;
     u8 field8_0xb;
-    void(__cdecl *unlock_fn)(void);
+    void (*unlock_fn)(void);
     char *floor_target_door_name;
     char *custodian_locator_set;
     f32 offset_floor_target;
@@ -26734,11 +26710,11 @@ struct HINT_s {
     f32 repeat_delay;
 
     union {
-        i32(__cdecl *availability_fn)(struct HINT_s *arg0);
+        i32 (*availability_fn)(struct HINT_s *arg0);
         u8 pad_0x14[4];
     };
 
-    void(__cdecl *on_display)(struct HINT_s *arg0);
+    void (*on_display)(struct HINT_s *arg0);
     u8 completion_flags[4];
     f32 field_0x20;
 };
@@ -26943,10 +26919,10 @@ STATIC_ASSERT(sizeof(struct STATUSPACKET_LSW_s) == 4);
 
 struct STATUSPACKET_s {
     struct STATUSPACKET_LSW_s *lsw_packet;
-    i32(__cdecl *init_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1);
-    i32(__cdecl *finish_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
-    void(__cdecl *reset_callback)(struct STATUSPACKET_s *arg0);
-    void(__cdecl *draw_background_callback)(struct STATUSPACKET_s *arg0);
+    i32 (*init_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1);
+    i32 (*finish_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
+    void (*reset_callback)(struct STATUSPACKET_s *arg0);
+    void (*draw_background_callback)(struct STATUSPACKET_s *arg0);
     struct area_data_pc_s *area;
     struct episode_data_pc_s *episode;
     u32 *score;
@@ -27118,9 +27094,9 @@ STATIC_ASSERT(offsetof(struct STATUSPACKET_s, previous_gold_bricks) == 0xbd);
 STATIC_ASSERT(sizeof(((struct STATUSPACKET_s *)0)->field_0x12c) == 32);
 
 struct STATUS_STAGE_s {
-    void(__cdecl *draw_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
-    void(__cdecl *update_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, f32 arg2);
-    void(__cdecl *skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);
+    void (*draw_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
+    void (*update_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, f32 arg2);
+    void (*skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);
     i32 type;
     u16 field_0x10;
     u8 field_0x12;
@@ -27139,10 +27115,10 @@ STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, field_0x1c) == 0x1c);
 
 typedef struct REGISTER_STATUS_PACKET_PC {
     struct STATUSPACKET_LSW_s *lsw_packet;
-    i32(__cdecl *init_callback)(WORLDINFO *, STATUSPACKET_s *);
-    i32(__cdecl *finish_callback)(WORLDINFO *, STATUSPACKET_s *, i32);
-    void(__cdecl *reset_callback)(STATUSPACKET_s *);
-    void(__cdecl *draw_background_callback)(STATUSPACKET_s *);
+    i32 (*init_callback)(WORLDINFO *, STATUSPACKET_s *);
+    i32 (*finish_callback)(WORLDINFO *, STATUSPACKET_s *, i32);
+    void (*reset_callback)(STATUSPACKET_s *);
+    void (*draw_background_callback)(STATUSPACKET_s *);
     f32 stage_delay;
 } REGISTER_STATUS_PACKET_PC;
 
@@ -28374,10 +28350,10 @@ struct eduiitem_s {
     i32 y;
     char *text;
     i32 colours[4];
-    i32(__cdecl *input)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2, u32 arg3);
-    i32(__cdecl *process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
-    i32(__cdecl *render)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
-    void(__cdecl *destroy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i32 (*input)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2, u32 arg3);
+    i32 (*process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32 (*render)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
+    void (*destroy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
 };
 
 STATIC_ASSERT(sizeof(struct eduiitem_s) == 72);
@@ -28395,7 +28371,7 @@ struct eduimenu_s {
     i32 field_24;
     i32 field_28;
     void *font;
-    void(__cdecl *callback)(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void (*callback)(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     char *title;
 
     union {
@@ -28419,14 +28395,14 @@ STATIC_ASSERT(sizeof(struct eduimenu_s) == 68);
 
 struct edui_textpicker_s {
     struct eduiitem_s base;
-    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    i32 (*interact)(struct edui_interact_s *arg0);
     char value[256];
     i32 keyboard_column;
     i32 keyboard_row;
     i32 cursor;
     i16 editing;
     i16 max_length;
-    void(__cdecl *callback)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*callback)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     char *format;
 
     union {
@@ -28872,15 +28848,15 @@ STATIC_ASSERT(sizeof(struct edui_gradient_node_s) == 32);
 
 struct edui_gradient_pick_s {
     struct eduiitem_s base;
-    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    i32 (*interact)(struct edui_interact_s *arg0);
     struct edui_gradient_node_s *first_stage;
     struct edui_gradient_node_s *selected_stage;
-    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void(__cdecl *press)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void(__cdecl *add)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void(__cdecl *remove)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void(__cdecl *copy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void(__cdecl *paste)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*press)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*add)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*remove)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*copy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*paste)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     i32 change_timer;
 };
 
@@ -28888,10 +28864,10 @@ STATIC_ASSERT(sizeof(struct edui_gradient_pick_s) == 112);
 
 struct edui_texture_pick_s {
     struct eduiitem_s base;
-    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    i32 (*interact)(struct edui_interact_s *arg0);
     f32 uv_x[2];
     f32 uv_y[2];
-    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     NUMTL *material;
     i32 selected_corner;
     f32 zoom;
@@ -28901,10 +28877,10 @@ STATIC_ASSERT(sizeof(struct edui_texture_pick_s) == 108);
 
 struct edui_graph_s {
     struct eduiitem_s base;
-    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    i32 (*interact)(struct edui_interact_s *arg0);
     struct nugraph_s *graph;
     struct nugraph_s *onion_skins[8];
-    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     f32 cursor_x;
     f32 cursor_y;
     i32 width;
@@ -28921,8 +28897,8 @@ STATIC_ASSERT(sizeof(struct edui_graph_s) == 192);
 
 struct edui_slider_s {
     struct eduiitem_s base;
-    i32(__cdecl *interact)(struct edui_interact_s *arg0);
-    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    i32 (*interact)(struct edui_interact_s *arg0);
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     f32 normalized_value;
     f32 value;
     f32 minimum;
@@ -28980,7 +28956,7 @@ STATIC_ASSERT(sizeof(struct edcam_s) == 148);
 
 struct edui_prop_s {
     struct eduiitem_s base;
-    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    i32 (*interact)(struct edui_interact_s *arg0);
     u32 editing : 1;
     u32 dragging_label : 1;
     u32 divider_active : 1;
@@ -28997,9 +28973,9 @@ struct edui_prop_s {
     char *property_text;
     u8 unknown_68[4];
     i32 depth;
-    void(__cdecl *selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void(__cdecl *button)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*button)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     i32 extra_data;
 };
 
@@ -29012,7 +28988,7 @@ struct edui_interact_s {
     f32 height;
     struct eduimenu_s *menu;
     struct eduiitem_s *item;
-    i32(__cdecl *callback)(struct edui_interact_s *arg0);
+    i32 (*callback)(struct edui_interact_s *arg0);
     u32 buttons;
     i32 field_20;
 };
@@ -29021,9 +28997,9 @@ STATIC_ASSERT(sizeof(struct edui_interact_s) == 36);
 
 struct edui_sel_s {
     struct eduiitem_s base;
-    i32(__cdecl *interact)(struct edui_interact_s *arg0);
-    void(__cdecl *selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void(__cdecl *held)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    i32 (*interact)(struct edui_interact_s *arg0);
+    void (*selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*held)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
 };
 
 STATIC_ASSERT(sizeof(struct edui_sel_s) == 84);
@@ -29040,8 +29016,8 @@ STATIC_ASSERT(sizeof(struct edui_colour_slider_s) == 112);
 
 struct edui_file_pick_s {
     struct eduiitem_s base;
-    i32(__cdecl *interact)(struct edui_interact_s *arg0);
-    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    i32 (*interact)(struct edui_interact_s *arg0);
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     char *format;
     u16 reserved_54;
     u16 reopen_directory;
@@ -29049,14 +29025,14 @@ struct edui_file_pick_s {
     char directory[256];
     char filename[256];
     char filter[8];
-    i32(__cdecl *compare_entries)(void *arg0, void *arg1);
+    i32 (*compare_entries)(void *arg0, void *arg1);
 };
 
 STATIC_ASSERT(sizeof(struct edui_file_pick_s) == 676);
 
 struct edui_colour_pick_s {
     struct eduiitem_s base;
-    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    i32 (*interact)(struct edui_interact_s *arg0);
     f32 cursor_x;
     f32 cursor_y;
     f32 hue;
@@ -29078,7 +29054,7 @@ struct edui_colour_pick_s {
     };
 
     u8 unknown_6d[3];
-    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
 };
 
 STATIC_ASSERT(sizeof(struct edui_colour_pick_s) == 116);
@@ -29087,16 +29063,16 @@ struct ed_module_s {
     struct ed_module_s *next;
     struct ed_module_s *previous;
     char *name;
-    void(__cdecl *init)(void);
-    void(__cdecl *close)(void);
-    void(__cdecl *activate)(void);
-    void(__cdecl *deactivate)(void);
-    void(__cdecl *apply)(void);
-    void(__cdecl *write)(i32 arg0);
-    void(__cdecl *read)(i32 arg0);
+    void (*init)(void);
+    void (*close)(void);
+    void (*activate)(void);
+    void (*deactivate)(void);
+    void (*apply)(void);
+    void (*write)(i32 arg0);
+    void (*read)(i32 arg0);
     u32 block_id;
-    i32(__cdecl *process)(f32 arg0, struct FRAME_PAD_PC *arg1);
-    void(__cdecl *render)(void);
+    i32 (*process)(f32 arg0, struct FRAME_PAD_PC *arg1);
+    void (*render)(void);
     void *reserved;
 };
 
@@ -29187,7 +29163,7 @@ STATIC_ASSERT(sizeof(struct eduiiattr_s) == 16);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuGScnRndr3(NUGSCN *);
+    void NuGScnRndr3(NUGSCN *);
     extern void *cutscene_load_instance;
     extern i32 stream_cut_issued;
     extern u32 EXBLOWUPFLAGS;
@@ -29212,7 +29188,7 @@ extern "C" {
     STATIC_ASSERT(sizeof(GAMEFOG_STATE_PC) == 0x38);
     extern GAMEFOG_STATE_PC GameFog;
     extern GAMEFOG_STATE_PC GameFogOld;
-    void __cdecl GameFog_Update(WORLDINFO *world);
+    void GameFog_Update(WORLDINFO *world);
     extern i32 back_rgba[2];
     extern i32 old_pause_state;
     extern struct NUGSCN_s *edbits_things_scene;
@@ -29236,7 +29212,7 @@ extern "C" {
     extern i16 id_RIDDLER_GOON;
     extern i16 id_RIDDLER_GOON_GUN;
     extern u8 FS_Active;
-    extern void(__cdecl *FS_Callback)(char *arg0, char *arg1);
+    extern void (*FS_Callback)(char *arg0, char *arg1);
     extern char *FS_CurrentCursorPos;
     extern char *FS_CurrentPos;
     extern i32 FS_CurrentPosFileNum;
@@ -29263,12 +29239,12 @@ extern "C" {
     extern i32 edpp_roty;
     extern i32 edpp_rotz;
     extern i32 gizturret_test_ang;
-    void __cdecl APIDumpCharacterModels(i32 mode);
-    void __cdecl CharScenes_AreaDump(void);
-    void __cdecl Customiser_DumpAccessories(void *customiser);
-    void __cdecl Customiser_RestoreModelTextureIDs(void *customiser);
-    void __cdecl IconScenes_Dump(void);
-    void __cdecl Particles_DumpAreaPage(void);
+    void APIDumpCharacterModels(i32 mode);
+    void CharScenes_AreaDump(void);
+    void Customiser_DumpAccessories(void *customiser);
+    void Customiser_RestoreModelTextureIDs(void *customiser);
+    void IconScenes_Dump(void);
+    void Particles_DumpAreaPage(void);
     extern i32 LEGOMENU_PAUSECUT;
     extern i32 LEGOMENU_PAUSESYNC;
     extern TIMER PauseTimer;
@@ -29281,15 +29257,15 @@ extern "C" {
     extern void *gunship_weapons[4];
     extern struct level_data_pc_s *CLOUDCITYTRAPOUTRO_LDATA;
     extern i16 id_DARTHVADER;
-    void __cdecl DeathStar2BattleFire_SetSlowDownMul(struct gameobject_s *object);
-    extern void(__cdecl *LEGO_SET_SLOWDOWNFN)(struct gameobject_s *arg0);
+    void DeathStar2BattleFire_SetSlowDownMul(struct gameobject_s *object);
+    extern void (*LEGO_SET_SLOWDOWNFN)(struct gameobject_s *arg0);
     extern SPLINEPOS fireBackPos;
     extern f32 fireSpeedScale;
     extern SPLINEPOS fireSplinePos;
     extern f32 runningTotalPos;
     extern struct NUGSCN_s *FadeLoop_ObjScene;
-    extern i32(__cdecl *GizObstacle_CheckExcludeFlagsFn)(struct gizobstacle_s *arg0, struct gameobject_s *arg1);
-    i32 __cdecl GizObstacle_CheckExcludeFlagsFn_LSW(struct gizobstacle_s *obstacle, struct gameobject_s *object);
+    extern i32 (*GizObstacle_CheckExcludeFlagsFn)(struct gizobstacle_s *arg0, struct gameobject_s *arg1);
+    i32 GizObstacle_CheckExcludeFlagsFn_LSW(struct gizobstacle_s *obstacle, struct gameobject_s *object);
     extern void *IconScene;
     extern i32 gizmopickup_typeid;
     extern void *hothtroopers;
@@ -29297,52 +29273,50 @@ extern "C" {
     extern i8 trooper_side[10];
     extern char CustomiseLetter[39];
     extern i32 grab_screen_image;
-    extern void(__cdecl *drawptr)(void);
+    extern void (*drawptr)(void);
     extern i32 picked;
     extern u8 Reflections_On;
-    i32 __cdecl DisplayListDebugPS(struct nudisplaylistitem_s *item, char *text);
-    void __cdecl DisplayListPrintItemPS(struct nudisplaylistitem_s *item, i32 file_handle);
-    void __cdecl NuHtmlWrite(char *text, ...);
+    i32 DisplayListDebugPS(struct nudisplaylistitem_s *item, char *text);
+    void DisplayListPrintItemPS(struct nudisplaylistitem_s *item, i32 file_handle);
+    void NuHtmlWrite(char *text, ...);
     extern i32 nudlist_debug_level;
     extern i32 NUSOUND_STREAM_3;
     extern char *txt;
     extern i16 id_MINISLAVE1;
     extern i32 PadFlyMode;
-    GIZOBSTACLE *__cdecl GizObstacle_FindByName(GIZOBSTACLESYS_s *system, char *name);
-    void __cdecl TakeOverGameObject(struct gameobject_s *rider, struct gameobject_s *vehicle, i32 blend_camera,
-                                    i32 immediate);
-    void __cdecl DrawBossHitPoints(struct gameobject_s *object);
-    void __cdecl MovePlayer(struct gameobject_s *object);
-    void __cdecl MovePlayerSpline(struct gameobject_s *object);
-    i16 __cdecl GetGenericGoon(i32 arg0);
-    extern void(__cdecl *AIPathNodeDeletedFn)(struct EDAIPATHNODE_s *arg0);
-    void __cdecl DrawLocator(struct nuvec_s *arg0, f32 arg1, i32 arg2, i32 arg3);
-    extern char *(__cdecl *SpecialRouteCharacterNameFn)(u8 arg0);
+    GIZOBSTACLE *GizObstacle_FindByName(GIZOBSTACLESYS_s *system, char *name);
+    void TakeOverGameObject(struct gameobject_s *rider, struct gameobject_s *vehicle, i32 blend_camera, i32 immediate);
+    void DrawBossHitPoints(struct gameobject_s *object);
+    void MovePlayer(struct gameobject_s *object);
+    void MovePlayerSpline(struct gameobject_s *object);
+    i16 GetGenericGoon(i32 arg0);
+    extern void (*AIPathNodeDeletedFn)(struct EDAIPATHNODE_s *arg0);
+    void DrawLocator(struct nuvec_s *arg0, f32 arg1, i32 arg2, i32 arg3);
+    extern char *(*SpecialRouteCharacterNameFn)(u8 arg0);
     extern f32 aiEditor_LocatorWidth;
     extern i32 aidata_version;
     extern struct AIEDITOR_RENDER_STATE *aieditor;
-    void __cdecl aieditor_ClearMainMenu(void);
-    void __cdecl aieditor_cbCancelMainMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl aieditor_cbCancelSaveMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl creatureEditor_PathNodeMoved(struct EDAIPATHNODE_s *node);
+    void aieditor_ClearMainMenu(void);
+    void aieditor_cbCancelMainMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void aieditor_cbCancelSaveMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void creatureEditor_PathNodeMoved(struct EDAIPATHNODE_s *node);
     extern void *ed_fnt;
-    struct eduiitem_s *__cdecl eduiMenuAddItem(struct eduimenu_s *menu, struct eduiitem_s *item);
-    struct eduimenu_s *__cdecl eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void *callback,
-                                              char *title);
+    struct eduiitem_s *eduiMenuAddItem(struct eduimenu_s *menu, struct eduiitem_s *item);
+    struct eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void *callback, char *title);
     extern struct eduiitem_s *edui_last_item;
-    void __cdecl locatorEditor_PathNodeMoved(struct EDAIPATHNODE_s *node);
-    void __cdecl locatorEditor_cbCancelRenameMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl locatorEditor_cbCancelSelectLocatorSet(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl locatorEditor_cbRenameLocator(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl locatorEditor_cbSetLocatorSet(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl pathEditor_cbCancelSelectMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl pathEditor_cbSetCurrentPath(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl routeEditor_cbCancelRouteUsers(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl routeEditor_cbSetRouteUsers(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void locatorEditor_PathNodeMoved(struct EDAIPATHNODE_s *node);
+    void locatorEditor_cbCancelRenameMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void locatorEditor_cbCancelSelectLocatorSet(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void locatorEditor_cbRenameLocator(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void locatorEditor_cbSetLocatorSet(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void pathEditor_cbCancelSelectMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void pathEditor_cbSetCurrentPath(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void routeEditor_cbCancelRouteUsers(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void routeEditor_cbSetRouteUsers(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern i32 edSfxAllCount;
-    void __cdecl edanimDrawCursor(void);
-    void __cdecl edanimRenderParticleEmitters(i32 parameter_index);
-    void __cdecl edanimRenderSoundEmitters(i32 parameter_index);
+    void edanimDrawCursor(void);
+    void edanimRenderParticleEmitters(i32 parameter_index);
+    void edanimRenderSoundEmitters(i32 parameter_index);
     extern struct eduimenu_s *edanim_active_menu;
     extern struct eduimenu_s *edanim_bouncy_menu;
     extern struct eduimenu_s *edanim_localsoundtype_menu;
@@ -29352,17 +29326,17 @@ extern "C" {
     extern i32 edanim_sound_mode;
     extern i32 edanim_sound_type;
     extern struct eduimenu_s *edanim_soundtype_menu;
-    void __cdecl edanimcbCancelBouncyMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edanimcbCancelLocalSoundTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edanimcbCancelSoundMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edanimcbCancelSoundTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edanimcbLocalSoundMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edanimcbSetBouncyDamping(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edanimcbSetBouncyPlayerGrav(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edanimcbSetBouncyTension(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edanimcbSetLocalSoundType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edanimcbSetSoundType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
-    char *__cdecl edbitsGetSoundName(i32 sound_type);
+    void edanimcbCancelBouncyMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edanimcbCancelLocalSoundTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edanimcbCancelSoundMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edanimcbCancelSoundTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edanimcbLocalSoundMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edanimcbSetBouncyDamping(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edanimcbSetBouncyPlayerGrav(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edanimcbSetBouncyTension(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edanimcbSetLocalSoundType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    void edanimcbSetSoundType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    char *edbitsGetSoundName(i32 sound_type);
     extern char edbits_level_save_directory[256];
     extern char edbits_level_save_extension[256];
     extern char edbits_level_save_name[256];
@@ -29373,70 +29347,70 @@ extern "C" {
     extern char edgra_filter_string[16];
     extern struct eduimenu_s *edgra_instance_menu;
     extern i32 edgra_instance_type;
-    void __cdecl edgracbCancelDpadModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbCancelInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbSetDpadMode(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetInstanceType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbCancelDpadModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbCancelInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbSetDpadMode(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetInstanceType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern u32 edgrey[4];
-    void __cdecl eduiMenuAddItemFirst(struct eduimenu_s *menu, struct eduiitem_s *item);
+    void eduiMenuAddItemFirst(struct eduimenu_s *menu, struct eduiitem_s *item);
     extern struct eduimenu_s *edbri_bridgeproperties_menu;
     extern struct eduimenu_s *edbri_dpadmode_menu;
     extern i32 edbri_mode;
     extern struct eduimenu_s *edbri_plankcount_menu;
     extern i32 edbri_planks;
     extern i32 edbri_post_interval;
-    void __cdecl edbricbCancelBridgePropertiesMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edbricbCancelDpadModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edbricbCancelPlankCountMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edbricbRopeColourMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbSetBridgeDamp(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbSetBridgeGravity(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbSetBridgePlrweight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbSetBridgeRopeheight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbSetBridgeStability(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbSetBridgeTension(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbSetDpadMode(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbSetPlankCount(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbSetPostInterval(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    u32 __cdecl FS_EncodedDateKey(char *name);
-    void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out);
-    f32 __cdecl FS_GetDirTextWidth(void);
-    i32 __cdecl FS_PrevNameLen(char *name);
-    struct eduimenu_s *__cdecl eduiGetActiveMenu(void);
-    struct eduiitem_s *__cdecl eduiItemGreyPickCreate(u32 data, void *colours, void *callback, char *text);
+    void edbricbCancelBridgePropertiesMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edbricbCancelDpadModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edbricbCancelPlankCountMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edbricbRopeColourMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbSetBridgeDamp(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbSetBridgeGravity(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbSetBridgePlrweight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbSetBridgeRopeheight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbSetBridgeStability(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbSetBridgeTension(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbSetDpadMode(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbSetPlankCount(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbSetPostInterval(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    u32 FS_EncodedDateKey(char *name);
+    void FS_GetDirList(char *path, char *filter, char *filter_out);
+    f32 FS_GetDirTextWidth(void);
+    i32 FS_PrevNameLen(char *name);
+    struct eduimenu_s *eduiGetActiveMenu(void);
+    struct eduiitem_s *eduiItemGreyPickCreate(u32 data, void *colours, void *callback, char *text);
     extern i32 edui_donotdraw;
     extern void *edui_font;
-    void __cdecl eduicbPickCFGCancel(struct eduimenu_s *menu, struct eduimenu_s *arg1);
+    void eduicbPickCFGCancel(struct eduimenu_s *menu, struct eduimenu_s *arg1);
     extern u32 eduimenu_outline_colour;
     extern u32 eduimenu_selected_outline_colour;
-    void __cdecl cbgpcfgAdd(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
-    void __cdecl cbgpcfgCPPress(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
-    void __cdecl cbgpcfgCopy(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
-    void __cdecl cbgpcfgDel(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
-    void __cdecl cbgpcfgPaste(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
-    struct eduiitem_s *__cdecl eduiItemColourPickCreate(u32 arg0, void *arg1, void *arg2, char *arg3);
-    void __cdecl eduiItemColourPickSetHSV(struct edui_colour_pick_s *item, f32 hue, f32 saturation, f32 value);
-    struct eduiitem_s *__cdecl eduiItemSelWithClipColourCreate(u32 data, void *colours, i32 selected, i32 group,
-                                                               void *callback, char *text);
+    void cbgpcfgAdd(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void cbgpcfgCPPress(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void cbgpcfgCopy(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void cbgpcfgDel(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void cbgpcfgPaste(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    struct eduiitem_s *eduiItemColourPickCreate(u32 arg0, void *arg1, void *arg2, char *arg3);
+    void eduiItemColourPickSetHSV(struct edui_colour_pick_s *item, f32 hue, f32 saturation, f32 value);
+    struct eduiitem_s *eduiItemSelWithClipColourCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
+                                                       char *text);
     extern struct eduimenu_s *edui_messagemenu;
-    void __cdecl eduicbCancelMessageMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbChangeETimeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbChangeGenRateMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbFileLoadEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbFileSaveEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlCancelDataMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlCancelEmitMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlCopyEffect(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlDeleteEffect(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlEmitTimeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlEmitVelMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlGravMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlShowAll(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlStartVelMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlVarEmitMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlVarStartMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgraDetermineNearestInstance(f32 distance);
-    void __cdecl edgraDoInput(struct FRAME_PAD_PC *pad);
+    void eduicbCancelMessageMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbChangeETimeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbChangeGenRateMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbFileLoadEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbFileSaveEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlCancelDataMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlCancelEmitMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlCopyEffect(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlDeleteEffect(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlEmitTimeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlEmitVelMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlGravMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlShowAll(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlStartVelMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlVarEmitMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlVarStartMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgraDetermineNearestInstance(f32 distance);
+    void edgraDoInput(struct FRAME_PAD_PC *pad);
     extern struct eduimenu_s *edgra_active_menu;
     extern struct eduimenu_s *edgra_clumparea_menu;
     extern struct eduimenu_s *edgra_clumpfade_menu;
@@ -29446,62 +29420,62 @@ extern "C" {
     extern struct eduimenu_s *edgra_globals_menu;
     extern i32 edgra_mode;
     extern i32 edgra_superscale;
-    void __cdecl edgracbApplyGlobalFade(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbCancelClumpAreaMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbCancelClumpFadeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbCancelClumpModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbCancelClumpPropertiesMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbCancelGlobalsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbClumpDistMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbClumpSizesMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbClumpTerrainMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetClumpArea(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetClumpFadeIn(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetClumpFadeOut(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetClumpMode(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetClumpWind(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetGlobalFadeIn(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetGlobalFadeOut(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbToggleClumpReactive(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbApplyGlobalFade(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbCancelClumpAreaMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbCancelClumpFadeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbCancelClumpModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbCancelClumpPropertiesMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbCancelGlobalsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbClumpDistMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbClumpSizesMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbClumpTerrainMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetClumpArea(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetClumpFadeIn(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetClumpFadeOut(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetClumpMode(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetClumpWind(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetGlobalFadeIn(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetGlobalFadeOut(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbToggleClumpReactive(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern i32 edpp_create_type;
     extern u8 edpp_effect_list;
     extern i32 edpp_num_orphans;
     extern i32 edpp_showAllPlaced;
     extern struct eduimenu_s *edptl_drawflag_menu;
     extern struct eduimenu_s *edptl_group_menu;
-    void __cdecl edptlcbCancelDrawflagMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edptlcbCancelGroupMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edptlcbChangeCSDisable(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edptlcbClipboardMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edptlcbDeleteOrphans(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edptlcbGhostMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edptlcbSetDrawflag(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edptlcbSetGroup(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edptlcbSetMasterGroup(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl eduiItemSliderSetFmt(struct edui_slider_s *item, char *format);
-    void __cdecl eduiItemSliderSetGranularity(struct edui_slider_s *item, f32 granularity);
+    void edptlcbCancelDrawflagMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edptlcbCancelGroupMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edptlcbChangeCSDisable(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edptlcbClipboardMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edptlcbDeleteOrphans(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edptlcbGhostMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edptlcbSetDrawflag(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edptlcbSetGroup(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edptlcbSetMasterGroup(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void eduiItemSliderSetFmt(struct edui_slider_s *item, char *format);
+    void eduiItemSliderSetGranularity(struct edui_slider_s *item, f32 granularity);
     extern struct edui_slider_s *fadeinitem;
     extern struct edui_slider_s *fadeoutitem;
     extern struct edui_slider_s *globalfadeinitem;
     extern struct edui_slider_s *globalfadeoutitem;
     extern struct eduimenu_s *ptldatamenu;
     extern struct eduimenu_s *ptlemitmenu;
-    void __cdecl edpartApplyScaleType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartCancelCutOffMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelGravMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelInstanceOrientMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelScaleTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelThingsInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartChangeBounce(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeGrav(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeInstanceRot(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeInstanceVarRot(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartGeneralTypeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartLevelTypeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartSetInstanceType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartSetScaleFactor(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartApplyScaleType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartCancelCutOffMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelGravMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelInstanceOrientMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelScaleTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelThingsInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartChangeBounce(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeGrav(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeInstanceRot(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeInstanceVarRot(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartGeneralTypeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartLevelTypeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartSetInstanceType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartSetScaleFactor(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern struct eduimenu_s *edpart_cutoff_menu;
     extern i32 edpart_filter;
     extern char edpart_filter_string[16];
@@ -29515,36 +29489,36 @@ extern "C" {
     extern struct eduimenu_s *edpart_thingsinstance_menu;
     extern struct eduimenu_s *edpart_type_menu;
     extern i32 edpart_which_scene;
-    void __cdecl DebrisSetDetailLevels(i32 arg0, i32 arg1);
-    void __cdecl DebrisSetGroupID(i32 handle, i16 group);
-    void __cdecl DebrisStatusNormal(i32 *handle);
-    void __cdecl cbCancelChangeNameMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbCancelEffectListMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbChangeName(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl cbPtlApplyJib(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlCancelCutOffMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlCancelDamageFlagMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlCancelDamageMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlCancelJibMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlChangeCameraCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlChangeCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlChangeCutOn(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlChangeDamageFlags(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlChangeDrawCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlChangeRepeatFlag(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlChangeSoundCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlCollMenu(struct eduimenu_s *parent, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlRepeatBoxMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlTorusMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbSelEffectList(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    void DebrisSetDetailLevels(i32 arg0, i32 arg1);
+    void DebrisSetGroupID(i32 handle, i16 group);
+    void DebrisStatusNormal(i32 *handle);
+    void cbCancelChangeNameMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbCancelEffectListMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbChangeName(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void cbPtlApplyJib(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlCancelCutOffMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlCancelDamageFlagMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlCancelDamageMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlCancelJibMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlChangeCameraCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlChangeCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlChangeCutOn(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlChangeDamageFlags(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlChangeDrawCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlChangeRepeatFlag(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlChangeSoundCutOff(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlCollMenu(struct eduimenu_s *parent, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlRepeatBoxMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlTorusMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbSelEffectList(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
     extern struct eduimenu_s *dpadmodemenu;
-    void __cdecl edcamSetPos(struct nuvec_s *position);
-    void __cdecl edppDrawCursor(void);
-    void __cdecl edppHighlightNearest(void);
-    void __cdecl edppMultipleCopyClear(void);
-    void __cdecl edppMultipleCopyCopy(void);
-    void __cdecl edppMultipleCopyPaste(void);
-    i32 __cdecl edppPtlCreate(struct nuvec_s *arg0, i32 arg1);
+    void edcamSetPos(struct nuvec_s *position);
+    void edppDrawCursor(void);
+    void edppHighlightNearest(void);
+    void edppMultipleCopyClear(void);
+    void edppMultipleCopyCopy(void);
+    void edppMultipleCopyPaste(void);
+    i32 edppPtlCreate(struct nuvec_s *arg0, i32 arg1);
     extern struct eduimenu_s *edpp_active_menu;
     extern f32 edpp_copy_size;
     extern i32 edpp_dpad_mode;
@@ -29556,57 +29530,57 @@ extern "C" {
     extern struct eduimenu_s *edptl_star_menu;
     extern i32 edptl_superscale;
     extern struct eduimenu_s *edptl_testdetail_menu;
-    void __cdecl edptlcbApplyBounceFactor(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edptlcbApplyBounceOffset(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edptlcbApplyStarPoints(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edptlcbApplyStarRatio(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edptlcbCancelBounceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edptlcbCancelDetailMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edptlcbCancelDpadModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edptlcbCancelOrphanListMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edptlcbCancelStarMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edptlcbCancelTestDetailMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edptlcbSetDebrisDetail(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edptlcbSetDebrisThinning(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edptlcbSetDetail(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edptlcbSetDpadMode(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edptlcbSetMaxThin(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edptlcbApplyBounceFactor(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edptlcbApplyBounceOffset(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edptlcbApplyStarPoints(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edptlcbApplyStarRatio(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edptlcbCancelBounceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edptlcbCancelDetailMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edptlcbCancelDpadModeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edptlcbCancelOrphanListMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edptlcbCancelStarMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edptlcbCancelTestDetailMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edptlcbSetDebrisDetail(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edptlcbSetDebrisThinning(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edptlcbSetDetail(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edptlcbSetDpadMode(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edptlcbSetMaxThin(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern struct eduimenu_s *effectlistmenu;
     extern struct eduimenu_s *namemenu;
     extern struct eduimenu_s *ptlcutoffmenu;
-    void __cdecl cbPtlCancelQuickDeleteMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlCancelTextureMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlQuickDeleteType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlSelTextureType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlSetXZFacing(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl cbPtlTextureSelectMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlCancelQuickDeleteMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlCancelTextureMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlQuickDeleteType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlSelTextureType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlSetXZFacing(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void cbPtlTextureSelectMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern u32 eddarkred[4];
     extern struct eduimenu_s *edptl_quickdel_menu;
     extern struct eduimenu_s *texturemenu;
     extern struct eduimenu_s *textureselectmenu;
-    void __cdecl Door_GoThrough(struct WORLDINFO_s *world, struct DOOR_s *door, i32 player_triggered);
+    void Door_GoThrough(struct WORLDINFO_s *world, struct DOOR_s *door, i32 player_triggered);
     extern f32 iconalphaoverride;
     extern i16 tCHALLENGECOMPLETE;
     extern i16 tWINNER;
-    void __cdecl AI_Activate(void *gizmo, i32 active);
-    void __cdecl AI_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused);
-    char *__cdecl AI_GetGizmoName(void *gizmo);
-    i32 __cdecl AI_GetMaxGizmos(void *arg0);
-    i32 __cdecl AI_GetNumOutputs(void *arg0);
-    i32 __cdecl AI_GetOutput(void *gizmo, i32 arg1, i32 arg2);
-    char *__cdecl AI_GetOutputName(void *arg0, i32 arg1);
+    void AI_Activate(void *gizmo, i32 active);
+    void AI_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused);
+    char *AI_GetGizmoName(void *gizmo);
+    i32 AI_GetMaxGizmos(void *arg0);
+    i32 AI_GetNumOutputs(void *arg0);
+    i32 AI_GetOutput(void *gizmo, i32 arg1, i32 arg2);
+    char *AI_GetOutputName(void *arg0, i32 arg1);
     extern f32 GIZPANEL_PLAYERPOSLIFT;
-    void __cdecl GizTurret_ReadAnimSetData(struct gameanimobj_s *object, u8 version);
-    struct nuvec_s *__cdecl GizmoGetPos(struct gizmosys_pc_s *gizmo_sys, void *gizmo);
-    struct area_supercounter_pc_s *__cdecl SuperCounters_FindPickup(struct WORLDINFO_s *arg0, void *arg1,
-                                                                    struct nuvec_s *arg2, void *arg3);
+    void GizTurret_ReadAnimSetData(struct gameanimobj_s *object, u8 version);
+    struct nuvec_s *GizmoGetPos(struct gizmosys_pc_s *gizmo_sys, void *gizmo);
+    struct area_supercounter_pc_s *SuperCounters_FindPickup(struct WORLDINFO_s *arg0, void *arg1, struct nuvec_s *arg2,
+                                                            void *arg3);
     extern u16 *Game_CompletionSave;
-    u8 __cdecl Store_IsPackUnlocked(i32 pack);
-    void __cdecl NuLightSpeedBlur(i32 reuse_camera, f32 scale);
-    void __cdecl NuSpeedBlurSetMotionFactors(f32 pan, f32 pull, f32 clamp);
+    u8 Store_IsPackUnlocked(i32 pack);
+    void NuLightSpeedBlur(i32 reuse_camera, f32 scale);
+    void NuSpeedBlurSetMotionFactors(f32 pan, f32 pull, f32 clamp);
     extern struct level_data_pc_s *PODRACEC_LDATA;
-    void __cdecl edbriMakePath(char *path);
-    void __cdecl edbriStartAllPages(void);
+    void edbriMakePath(char *path);
+    void edbriStartAllPages(void);
     extern f32 Door_CutCamBlendTime;
     extern NUVEC Door_CutCamPos0;
     extern NUVEC Door_CutCamPos1;
@@ -29616,15 +29590,15 @@ extern "C" {
     extern char Door_ExitCameraSplineName[32];
     extern char Door_ExitName[64];
     extern struct DOOR_s *setlastdoor_last;
-    i32 __cdecl ShipDropCoins(struct starfighter_s *fighter);
-    void __cdecl CutScene_SnapToEnd(void *cut);
+    i32 ShipDropCoins(struct starfighter_s *fighter);
+    void CutScene_SnapToEnd(void *cut);
     extern i32 LevForce;
     extern struct gameobject_s *Maul_obj;
-    void __cdecl PodRaceReset(void);
+    void PodRaceReset(void);
     extern i32 PodRace_nsnipers;
     extern f32 PodRace_sniper_fire_time;
     extern SNIPER_s PodRace_snipers[10];
-    void __cdecl PodSprint_InitAISpline(struct WORLDINFO_s *world, void *ai, char *name);
+    void PodSprint_InitAISpline(struct WORLDINFO_s *world, void *ai, char *name);
     extern i32 g_lowEndLevelBehaviour;
     extern void *kaminoe_netpacket;
     extern i32 max_nsnipers;
@@ -29637,12 +29611,12 @@ extern "C" {
     extern f32 mushroom_time_increment;
     extern struct PODSPRINTNETPACKET_s *podsprint_netpacket;
     extern struct gameobject_s *Grievous_obj;
-    void __cdecl InitMiniSnowTroopers(struct WORLDINFO_s *arg0, i32 arg1, i32 arg2, i32 arg3);
+    void InitMiniSnowTroopers(struct WORLDINFO_s *arg0, i32 arg1, i32 arg2, i32 arg3);
     extern struct gizaimessage_s *KashyyykA_msg_TotalWookies;
     extern struct gizaimessage_s *KashyyykA_msg_WookiesToRescue;
     extern struct gizaimessage_s *vader_b_complete_msg;
     extern u8 vader_b_playersDead;
-    void __cdecl InitTrooperCannons(struct WORLDINFO_s *arg0);
+    void InitTrooperCannons(struct WORLDINFO_s *arg0);
     extern struct gameobject_s *gameobj;
     extern i16 id_MILLENNIUMFALCON;
     extern f32 spotLightA_yrot[2];
@@ -29650,7 +29624,7 @@ extern "C" {
     extern f32 spotLightB_yrot[2];
     extern f32 spotLightB_zrot[2];
     extern u8 troopercannons_beenReset;
-    void __cdecl FadeLoop_SetObj(struct NUGSCN_s *scene, char *name);
+    void FadeLoop_SetObj(struct NUGSCN_s *scene, char *name);
     extern u8 code_test[16];
     extern struct eduimenu_s *edanim_localparticle_menu;
     extern struct eduimenu_s *edanim_localparticletype_menu;
@@ -29659,58 +29633,56 @@ extern "C" {
     extern struct eduimenu_s *edanim_particle_menu;
     extern i32 edanim_particle_type;
     extern struct eduimenu_s *edanim_particletype_menu;
-    void __cdecl edanimcbCancelLocalParticleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edanimcbCancelLocalParticleTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edanimcbCancelMCTBMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edanimcbCancelParticleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edanimcbCancelParticleTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edanimcbSetLocalParticleType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edanimcbSetParticleRate(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edanimcbSetParticleType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edanimcbToggleParticleSwitch(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edanimcbCancelLocalParticleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edanimcbCancelLocalParticleTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edanimcbCancelMCTBMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edanimcbCancelParticleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edanimcbCancelParticleTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edanimcbSetLocalParticleType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    void edanimcbSetParticleRate(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edanimcbSetParticleType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    void edanimcbToggleParticleSwitch(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
     extern char id_test[17];
-    i32 __cdecl saveloadCheckCardFreeSpace(i32 slot);
-    i32 __cdecl saveloadCheckCardType(void);
-    i32 __cdecl saveloadCheckSlotsUsed(void);
-    i32 __cdecl saveloadDeleteSlot(i32 slot);
-    i32 __cdecl saveloadSaveSlot(i32 slot, void *buffer, i32 size);
-    void __cdecl AddFancyMessageRGB(char *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, i32 arg5, u8 arg6, u8 arg7,
-                                    u8 arg8);
-    void __cdecl PadOutPause(i32 port, struct WORLDINFO_s *world);
-    i32 __cdecl PlayersDropInOut(void);
-    void __cdecl DoInput(WORLDINFO *world);
-    i32 __cdecl CutScene_IsSkippable(CUTINFO *cut);
+    i32 saveloadCheckCardFreeSpace(i32 slot);
+    i32 saveloadCheckCardType(void);
+    i32 saveloadCheckSlotsUsed(void);
+    i32 saveloadDeleteSlot(i32 slot);
+    i32 saveloadSaveSlot(i32 slot, void *buffer, i32 size);
+    void AddFancyMessageRGB(char *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, i32 arg5, u8 arg6, u8 arg7, u8 arg8);
+    void PadOutPause(i32 port, struct WORLDINFO_s *world);
+    i32 PlayersDropInOut(void);
+    void DoInput(WORLDINFO *world);
+    i32 CutScene_IsSkippable(CUTINFO *cut);
     extern i32 COMPLETIONPOINTS;
-    f32 __cdecl NuFmin(f32 a, f32 b);
-    void __cdecl GizBuildIt_TurnOff(struct GIZBUILDIT_s *buildit);
-    void __cdecl GizAIMessage_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 arg1, void *arg2, void *arg3);
-    char *__cdecl GizAIMessage_GetGizmoName(GIZMO_PC *gizmo);
-    i32 __cdecl GizAIMessage_GetMaxGizmos(void *arg0);
-    i32 __cdecl GizAIMessage_GetNumOutputs(GIZMO_PC *gizmo);
-    i32 __cdecl GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 arg2);
-    char *__cdecl GizAIMessage_GetOutputName(GIZMO_PC *gizmo, i32 output_index);
+    f32 NuFmin(f32 a, f32 b);
+    void GizBuildIt_TurnOff(struct GIZBUILDIT_s *buildit);
+    void GizAIMessage_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 arg1, void *arg2, void *arg3);
+    char *GizAIMessage_GetGizmoName(GIZMO_PC *gizmo);
+    i32 GizAIMessage_GetMaxGizmos(void *arg0);
+    i32 GizAIMessage_GetNumOutputs(GIZMO_PC *gizmo);
+    i32 GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 arg2);
+    char *GizAIMessage_GetOutputName(GIZMO_PC *gizmo, i32 output_index);
     extern i32 gizaimessage_gizmotype_id;
     extern f32 ICONSIZE;
-    void __cdecl PlayRadio(char *arg0, char *arg1, i32 arg2);
-    void __cdecl RegisterGizActions(GIZACTIONDEF_PC *definitions);
-    void __cdecl GizRandom_Activate(GIZMO_PC *gizmo, i32 active);
-    void __cdecl GizRandom_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
-    char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo);
-    i32 __cdecl GizRandom_GetMaxGizmos(void *world_ptr);
-    i32 __cdecl GizRandom_GetNumOutputs(void *gizmo);
-    i32 __cdecl GizRandom_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 arg2);
-    char *__cdecl GizRandom_GetOutputName(GIZMO_PC *arg0, i32 arg1);
-    void *__cdecl GizRandom_ReserveBufferSpace(void *world_ptr);
-    i32 __cdecl GizSpinner_GetTargetPoints(struct GIZSPINNER_s *spinner, struct nuvec_s *positions,
-                                           struct nuvec_s *directions);
-    f32 __cdecl NuSpecialGetOriginRadius(NUSPECIALHANDLE *special);
-    i32 __cdecl DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x,
-                                         u16 rotate_y, u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order);
+    void PlayRadio(char *arg0, char *arg1, i32 arg2);
+    void RegisterGizActions(GIZACTIONDEF_PC *definitions);
+    void GizRandom_Activate(GIZMO_PC *gizmo, i32 active);
+    void GizRandom_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    char *GizRandom_GetGizmoName(GIZMO_PC *gizmo);
+    i32 GizRandom_GetMaxGizmos(void *world_ptr);
+    i32 GizRandom_GetNumOutputs(void *gizmo);
+    i32 GizRandom_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 arg2);
+    char *GizRandom_GetOutputName(GIZMO_PC *arg0, i32 arg1);
+    void *GizRandom_ReserveBufferSpace(void *world_ptr);
+    i32 GizSpinner_GetTargetPoints(struct GIZSPINNER_s *spinner, struct nuvec_s *positions, struct nuvec_s *directions);
+    f32 NuSpecialGetOriginRadius(NUSPECIALHANDLE *special);
+    i32 DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y,
+                                 u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order);
     extern f32 PANEL_MINIKITCOUNTSCALE;
     extern f32 PANEL_MINIKITCOUNTY;
     extern f32 stats_xscale;
     extern NUSPECIALHANDLE FadeLoop_ObjHSpecial;
-    struct level_data_pc_s *__cdecl CanSaveAndExit(struct WORLDINFO_s *world);
+    struct level_data_pc_s *CanSaveAndExit(struct WORLDINFO_s *world);
     extern u8 MENUEXITB;
     extern u8 MENUEXITG;
     extern u8 MENUEXITR;
@@ -29740,43 +29712,43 @@ extern "C" {
     extern i16 tRESTARTLEVEL;
     extern i16 tSAVEANDEXIT;
     extern i16 tYES;
-    i32 __cdecl SpawnMeleeCreatureType(i32 type);
+    i32 SpawnMeleeCreatureType(i32 type);
     extern i16 id_PROBEDROID;
     extern HOTHBATTLE_MELEE_s melee;
     extern struct gameobject_s *ForceBackObj;
     extern f32 ForceBackRadius;
     extern i32 ForceBackType;
-    void __cdecl edpartCancelChangeGenRateMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelChangeMaxLifeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelChangeNameMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelDebrisScaleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelDebrisSettingsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelEmitMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelInstanceFlagsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelInstanceScaleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelInstanceSettingsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartChangeDebrisScale(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeGenRate(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edpartChangeInstanceFlag(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeInstanceScale(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeMaxLife(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeName(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edpartChangeRanMaxLife(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartDestroy(i32 index);
-    void __cdecl edpartDieDebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartDrawCursor(void);
-    void __cdecl edpartEmitTimeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartEmitVelMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartEmitterDebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartFinishMenu(struct eduimenu_s *menu);
-    void __cdecl edpartHighlightNearest(void);
-    void __cdecl edpartImpactDebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartImpactPartMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartTintMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartTrail1DebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartTrail2DebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartVarEmitMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartVarStartMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartCancelChangeGenRateMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelChangeMaxLifeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelChangeNameMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelDebrisScaleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelDebrisSettingsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelEmitMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelInstanceFlagsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelInstanceScaleMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelInstanceSettingsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartChangeDebrisScale(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeGenRate(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edpartChangeInstanceFlag(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeInstanceScale(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeMaxLife(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeName(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edpartChangeRanMaxLife(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartDestroy(i32 index);
+    void edpartDieDebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartDrawCursor(void);
+    void edpartEmitTimeMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartEmitVelMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartEmitterDebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartFinishMenu(struct eduimenu_s *menu);
+    void edpartHighlightNearest(void);
+    void edpartImpactDebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartImpactPartMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartTintMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartTrail1DebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartTrail2DebrisMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartVarEmitMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartVarStartMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern struct eduimenu_s *edpart_active_menu;
     extern struct eduimenu_s *edpart_changegenrate_menu;
     extern i32 edpart_create_type;
@@ -29789,21 +29761,21 @@ extern "C" {
     extern struct eduimenu_s *edpart_maxlife_menu;
     extern struct eduimenu_s *edpart_name_menu;
     extern struct part_emit_pc_s *edpart_nearest_emit;
-    void __cdecl DrawGameObjectsDraw(i32 pass);
-    void __cdecl ResetPlayer(struct gameobject_s *arg0, i32 arg1, struct nuvec_s *arg2, i32 arg3);
+    void DrawGameObjectsDraw(i32 pass);
+    void ResetPlayer(struct gameobject_s *arg0, i32 arg1, struct nuvec_s *arg2, i32 arg3);
     extern i32 droid_hack;
-    void __cdecl SetAnimFrame(struct nuhspecial_s *special, f32 frame);
+    void SetAnimFrame(struct nuhspecial_s *special, f32 frame);
     extern i32 runoutofpostabspace;
     extern f32 CameraZoom;
-    void __cdecl ReCalculateCompletionPoints(void);
+    void ReCalculateCompletionPoints(void);
     extern STATUSPACKET_s StatusPacket;
-    void __cdecl StatusStage_Reset(struct STATUS_STAGE_s *stage);
-    void __cdecl NextStatusStage(STATUSPACKET_s *);
-    void __cdecl RegisterStatusScreen(STATUS_STAGE_s *, i32 *, const REGISTER_STATUS_PACKET_PC *);
-    void __cdecl ResetStatusPacket_LSW(STATUSPACKET_s *);
-    i32 __cdecl InitStatusScreen_LSW(WORLDINFO *, STATUSPACKET_s *);
-    i32 __cdecl FinishStatusPacket_LSW(WORLDINFO *, STATUSPACKET_s *, i32);
-    void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *);
+    void StatusStage_Reset(struct STATUS_STAGE_s *stage);
+    void NextStatusStage(STATUSPACKET_s *);
+    void RegisterStatusScreen(STATUS_STAGE_s *, i32 *, const REGISTER_STATUS_PACKET_PC *);
+    void ResetStatusPacket_LSW(STATUSPACKET_s *);
+    i32 InitStatusScreen_LSW(WORLDINFO *, STATUSPACKET_s *);
+    i32 FinishStatusPacket_LSW(WORLDINFO *, STATUSPACKET_s *, i32);
+    void DrawStatusBG_LSW(STATUSPACKET_s *);
     extern i32 StatusNewMinikitCountPc;
     extern i32 currentminikit;
     extern i16 StatusNewCharacterIdsPc[8];
@@ -29811,35 +29783,35 @@ extern "C" {
     extern f32 StatusMiniKitDirectionOffsetPc;
     extern f32 slideseek;
     extern STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10];
-    void __cdecl DrawStatusMiniKit(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32);
-    void __cdecl CollectCharcters_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl CollectCharcters_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl ChallangeCash_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl ChallangeCash_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl ChallangeCash_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    i32 __cdecl AddToCollection(i32);
-    void __cdecl Collection_GetPos(COLLECTION_s *, i32, f32 *, f32 *);
+    void DrawStatusMiniKit(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32);
+    void CollectCharcters_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void CollectCharcters_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void CollectCharcters_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void CollectCharactersOff_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void ChallangeCash_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void ChallangeCash_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void ChallangeCash_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    i32 AddToCollection(i32);
+    void Collection_GetPos(COLLECTION_s *, i32, f32 *, f32 *);
     extern f32 StatusCollectionIconYPc;
     extern f32 StatusCollectionTextYPc;
     extern f32 StatusCollectionYPc;
     extern i32 StatusCollectionAppearSoundPlayedPc;
     extern i32 StatusCollectionMoveSoundPlayedPc;
-    void __cdecl MiniKit_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void MiniKit_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void MiniKit_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void MiniKit_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
     extern f32 StatusMiniKitEntranceHeightPc;
     extern f32 StatusMiniKitScalePc;
     extern f32 StatusMiniKitXPc;
     extern f32 StatusMiniKitYPc;
-    i32 __cdecl UpdateNewMiniKits(STATUSPACKET_s *, STATUS_STAGE_s *);
-    void __cdecl AddStatusMiniKitParts(void);
+    i32 UpdateNewMiniKits(STATUSPACKET_s *, STATUS_STAGE_s *);
+    void AddStatusMiniKitParts(void);
     extern f32 jibberlen;
     extern f32 slidetime;
     extern f32 pop_timer;
     extern PART_LIGHTING_DATA_PC StatusMiniKitPartLightingPc;
-    i32 __cdecl DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *, NUMTX *);
+    i32 DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *, NUMTX *);
     extern i32 PauseSaveAndExitPc;
     extern TIMER BonusTimer;
     extern TIMER ChallengeTimer;
@@ -29849,60 +29821,60 @@ extern "C" {
     extern i16 TextIdPc880728;
     extern i16 TextIdPc8806e4;
     extern i16 TextIdPc8808d0;
-    void __cdecl StatusPacketReset(STATUSPACKET_s *);
-    f32 __cdecl StatusScoreRatioPc(f32, f32);
-    i32 __cdecl newCharactersCollected(STATUSPACKET_s *);
-    void __cdecl InitStatusScreen(WORLDINFO *);
+    void StatusPacketReset(STATUSPACKET_s *);
+    f32 StatusScoreRatioPc(f32, f32);
+    i32 newCharactersCollected(STATUSPACKET_s *);
+    void InitStatusScreen(WORLDINFO *);
     extern i32 StatusDemoOptionPc;
     extern AREA_DATA_PC *NEGOTIATIONS_ADATA;
-    void __cdecl StatusRumbleUpdatePc(void);
-    void __cdecl UpdateStatusScreen(WORLDINFO *);
-    void __cdecl FinishStatusPacket(i32);
-    void __cdecl InitMission(MISSIONSYS_PC *, i32);
-    void __cdecl NuPadSetMotorsPc(NUPAD_INIT_STATE *, i32, i32);
-    void __cdecl NeedScreenGrab(i32);
+    void StatusRumbleUpdatePc(void);
+    void UpdateStatusScreen(WORLDINFO *);
+    void FinishStatusPacket(i32);
+    void InitMission(MISSIONSYS_PC *, i32);
+    void NuPadSetMotorsPc(NUPAD_INIT_STATE *, i32, i32);
+    void NeedScreenGrab(i32);
     extern i32 DrawGoldBrick_Stage;
     extern i32 DrawGoldBrick_Phase;
     extern i16 TextIdPc880f9c;
     extern const char CutPlayerTextSeparatorPc[4];
-    void __cdecl SetDrawGoldBrick(STATUSPACKET_s *, i32);
-    void __cdecl GoldBrick_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl GoldBrick_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl BonusComplete_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl BonusComplete_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl BonusTime_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl BonusTime_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl BonusComplete_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl BonusTime_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl SuperStoryTime_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl SuperStoryTime_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl SuperStoryScore_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl BonusWin_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl BonusWin_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl BonusWin_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl DrawBonusScore(f32, i32, i32, f32, i32 *);
+    void SetDrawGoldBrick(STATUSPACKET_s *, i32);
+    void GoldBrick_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void GoldBrick_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void GoldBrick_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void BonusComplete_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void BonusComplete_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void BonusTime_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void BonusTime_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void BonusComplete_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void BonusTime_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void SuperStoryTime_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void SuperStoryTime_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void SuperStoryTime_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void SuperStoryScore_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void SuperStoryScore_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void SuperStoryScore_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void BonusWin_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void BonusWin_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void BonusWin_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void DrawBonusScore(f32, i32, i32, f32, i32 *);
     extern i16 TextIdPc88075c;
     extern i16 TextIdPc880720;
     extern i16 TextIdPc880738;
-    void __cdecl CoinTotal_Draw(i32, f32, f32, i32, f32, i32, i32, i32);
-    f32 __cdecl getFinishedStatusAlpha(STATUSPACKET_s *);
-    void __cdecl DrawBonusTime(STATUSPACKET_s *, f32, i32);
+    void CoinTotal_Draw(i32, f32, f32, i32, f32, i32, i32, i32);
+    f32 getFinishedStatusAlpha(STATUSPACKET_s *);
+    void DrawBonusTime(STATUSPACKET_s *, f32, i32);
     extern i16 TextIdPc880734;
     extern f32 StatusIconYPc;
     extern f32 STATSPOS2YPc;
     extern i32 StatusDrawPlayerIconsPc;
-    f32 __cdecl StatusIconsOnOff(f32);
-    void __cdecl Coins_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl Coins_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl Coins_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl TrueHero_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl TrueHero_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    void __cdecl DrawBuildUpBar(f32, f32, i32, i32, f32, f32, f32, i32);
+    f32 StatusIconsOnOff(f32);
+    void Coins_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void Coins_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void Coins_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void TrueHero_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void TrueHero_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void TrueHero_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void DrawBuildUpBar(f32, f32, i32, i32, f32, f32, f32, i32);
     extern i32 HubBothTrueJediGoldBricksPc;
     extern f32 StatusTrueHeroBarScalePc;
     extern f32 StatusTrueHeroBarYPc;
@@ -29912,10 +29884,10 @@ extern "C" {
     extern f32 StatusTrueHeroSpDelayPc;
     extern const char StatusTrueHeroPercentFormatPc[5];
     extern const char StatusTrueHeroFullPercentTextPc[5];
-    void __cdecl LevelComplete_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl LevelComplete_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl NewStatusRumbleBuzz(i32, f32, f32, i32);
-    void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void LevelComplete_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void LevelComplete_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void NewStatusRumbleBuzz(i32, f32, f32, i32);
+    void LevelComplete_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
     extern f32 StatusTitleYPc;
     extern f32 StatusSecondaryTitleYPc;
     extern i16 TextIdPc8806e8;
@@ -29939,18 +29911,18 @@ extern "C" {
     extern f32 StatusCoinsScalePc;
     extern f32 StatusCoinsTitleScalePc;
     extern f32 StatusCoinsTitleYPc;
-    void __cdecl RedBrick_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl RedBrick_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl RedBrick_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void RedBrick_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void RedBrick_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void RedBrick_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
     extern i16 TextIdPc880748;
     extern CHEAT_PC ExtrasCheatsPc[46];
     extern f32 StatusTextScalePc;
     extern i32 StatusRedPc;
     extern i32 StatusGreenPc;
     extern i32 StatusBluePc;
-    void __cdecl AllMiniKits_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl AllMiniKits_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void AllMiniKits_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void AllMiniKits_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void AllMiniKits_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
     extern i16 TextIdPc880740;
     extern f32 StatusAllMiniKitsTitleScalePc;
     extern f32 StatusAllMiniKitsCharacterTextScalePc;
@@ -29964,9 +29936,9 @@ extern "C" {
     extern f32 StatusAllMiniKitsQuestionYOffsetPc;
     extern f32 StatusAllMiniKitsCompleteScalePc;
     extern f32 StatusAllMiniKitsCompleteYOffsetPc;
-    void __cdecl CollectCharactersOff_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
-    void __cdecl CollectCharactersOff_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
-    void __cdecl Save_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void CollectCharactersOff_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void CollectCharactersOff_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void Save_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     extern struct STATUS_STAGE_s *StatusStages;
     extern f32 menu_pulse;
     extern i32 smarttextex_drawmessagebox;
@@ -29983,19 +29955,19 @@ extern "C" {
     extern i32 CharShelfIds[7];
     extern shopitem_s CutItems[128];
     extern i32 CutShelfIds[7];
-    void __cdecl DrawTopShelf(i32 picked_item);
-    void __cdecl DrawShopPrompts(void);
-    void __cdecl DrawItemMenu2D(void);
-    void __cdecl DrawCodeMenu3D(void);
-    void __cdecl DrawSubItems(void);
+    void DrawTopShelf(i32 picked_item);
+    void DrawShopPrompts(void);
+    void DrawItemMenu2D(void);
+    void DrawCodeMenu3D(void);
+    void DrawSubItems(void);
     extern i32 ShopBrickRotationDegreesPc;
     extern f32 ShopCharacterPeriodPc;
     extern const f64 ShopCharacterAmplitudePc;
     extern f32 ShopCodePulseScalePc;
     extern f32 ShopCodeArrowBingPc;
     extern f32 ShopCodeArrowAmplitudePc;
-    void __cdecl MenuDrawShop(MENU *menu);
-    void __cdecl MenuUpdateShop(MENU *menu);
+    void MenuDrawShop(MENU *menu);
+    void MenuUpdateShop(MENU *menu);
     extern i16 TextIdPc88070c;
     extern i16 TextIdPc88077c;
     extern i16 TextIdPc880800;
@@ -30007,165 +29979,155 @@ extern "C" {
     extern i32 ExtraShelfIds[7];
     extern struct shopitem_s *HintItems;
     extern i32 HintShelfIds[7];
-    void __cdecl InitBikeParts(void);
+    void InitBikeParts(void);
     extern i32 SHOPCHARCOUNT;
-    i32 __cdecl SelectShopItem(struct shopitem_s *items, i32 index);
-    i32 __cdecl BuyShopItem(struct shopitem_s *items, i32 index, i32 charge);
-    i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count);
-    i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count);
+    i32 SelectShopItem(struct shopitem_s *items, i32 index);
+    i32 BuyShopItem(struct shopitem_s *items, i32 index, i32 charge);
+    i32 MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count);
+    i32 MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count);
     extern f32 ShopNameAlpha;
     extern NUVEC SubShelfPos[7];
     extern shopitem_s TopShelf[6];
     extern nuhspecial_s iconback;
     extern i32 players_going_forward;
-    void __cdecl cbPtlCancelGSortMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlCancelReadoutMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlSelGSort(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
-    void __cdecl cbPtlSelReadout(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlCancelGSortMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlCancelReadoutMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlSelGSort(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    void cbPtlSelReadout(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern i32 edpp_readout;
     extern struct eduimenu_s *ptlgsortmenu;
     extern struct eduimenu_s *ptlreadoutmenu;
-    struct SIGNAL_s *__cdecl Signal_FindNearest(struct WORLDINFO_s *world, struct nuvec_s *position,
-                                                struct gameobject_s *object, f32 *distance);
+    struct SIGNAL_s *Signal_FindNearest(struct WORLDINFO_s *world, struct nuvec_s *position,
+                                        struct gameobject_s *object, f32 *distance);
     extern i32 traffic_portalling;
     extern struct eduimenu_s *edanim_switchtype_menu;
-    void __cdecl edanimcbCancelSwitchTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edanimcbSetSwitchType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
+    void edanimcbCancelSwitchTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edanimcbSetSwitchType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 arg2);
     extern struct level_data_pc_s *DAGOBAHA_LDATA;
     extern struct level_data_pc_s *DAGOBAHD_LDATA;
     extern struct level_data_pc_s *DAGOBAHE_LDATA;
-    void __cdecl ResetRadios(void);
+    void ResetRadios(void);
     extern u8 RadioEntriesPc[0xa0];
     extern i32 radios_playing;
-    u32 __cdecl NuMouseReadButtons(void);
-    f32 __cdecl NuMouseReadXVel(void);
-    f32 __cdecl NuMouseReadYVel(void);
-    f32 __cdecl NuMouseReadZVel(void);
-    void __cdecl do_Pad_Standard_camera(struct edcam_s *camera, f32 delta_time, struct FRAME_PAD_PC *pad);
-    void __cdecl do_Pad_flymode_camera(struct edcam_s *camera, f32 delta_time, struct FRAME_PAD_PC *pad);
-    void __cdecl do_mouse_flymode_camera(struct edcam_s *camera, f32 delta_time);
+    u32 NuMouseReadButtons(void);
+    f32 NuMouseReadXVel(void);
+    f32 NuMouseReadYVel(void);
+    f32 NuMouseReadZVel(void);
+    void do_Pad_Standard_camera(struct edcam_s *camera, f32 delta_time, struct FRAME_PAD_PC *pad);
+    void do_Pad_flymode_camera(struct edcam_s *camera, f32 delta_time, struct FRAME_PAD_PC *pad);
+    void do_mouse_flymode_camera(struct edcam_s *camera, f32 delta_time);
     extern struct numtx_s *ed_remap_mtx;
-    void __cdecl edmainSetCamera(struct numtx_s *matrix);
+    void edmainSetCamera(struct numtx_s *matrix);
     extern edcam_s *gp_cam;
-    void __cdecl NuDisplayListBurstRndrSpecial(struct nuhspecial_s *handle, u32 count, struct numtx_s *matrices,
-                                               i32 clip);
-    i32 __cdecl findrange(struct NUGSCN_s *arg0, i32 arg1);
-    void __cdecl NuTexAddReference(i32 tex_id, struct NUGSCN_s *scene);
+    void NuDisplayListBurstRndrSpecial(struct nuhspecial_s *handle, u32 count, struct numtx_s *matrices, i32 clip);
+    i32 findrange(struct NUGSCN_s *arg0, i32 arg1);
+    void NuTexAddReference(i32 tex_id, struct NUGSCN_s *scene);
     extern f32 AiRndrCullDistance;
     extern i32 DisableDebugMsg;
-    void __cdecl NuDebugMsgPrint(char *message);
+    void NuDebugMsgPrint(char *message);
     extern char err_msg_filter[32];
-    extern void(__cdecl *nudebug_handler)(char *arg0);
+    extern void (*nudebug_handler)(char *arg0);
     extern char *nufile;
     extern i32 nuline;
-    void __cdecl NuHtmlFlush(i32 force);
-    void __cdecl NuRndrPrimSetColour(i32 colour);
-    void __cdecl NuRndrPrimUV(f32 u, f32 v);
-    void __cdecl cbCancelSubMenu(struct eduimenu_s *menu, struct eduimenu_s *arg1);
-    void __cdecl cbColourPickSel(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    i32 __cdecl cbProcessColourPick(struct eduimenu_s *menu, struct eduiitem_s *item, f32 delta_time,
-                                    struct FRAME_PAD_PC *pad);
-    void __cdecl cbToggleIndicatorMode(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl cbCopy(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPaste(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void NuHtmlFlush(i32 force);
+    void NuRndrPrimSetColour(i32 colour);
+    void NuRndrPrimUV(f32 u, f32 v);
+    void cbCancelSubMenu(struct eduimenu_s *menu, struct eduimenu_s *arg1);
+    void cbColourPickSel(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    i32 cbProcessColourPick(struct eduimenu_s *menu, struct eduiitem_s *item, f32 delta_time, struct FRAME_PAD_PC *pad);
+    void cbToggleIndicatorMode(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void cbCopy(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPaste(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern i32 ed_init;
-    void __cdecl edmainClose(void);
+    void edmainClose(void);
     extern struct nucamera_s *edinternalcam;
-    void __cdecl edmainExtCamera(struct nucamera_s *camera);
-    void __cdecl eduiInit(void);
-    void __cdecl cbmcfgCameraSpeed(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbmcfgCancel(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbSetAutoSpeed(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl eduiMenuFitWidth(struct eduimenu_s *menu, i32 padding);
-    void __cdecl cbMMCancel(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbMMEditorConfig(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbMMRegSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl eduiMenuHighlight(struct eduimenu_s *menu, struct eduiitem_s *item);
-    void __cdecl cbMMReturnToApp(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edmainExtCamera(struct nucamera_s *camera);
+    void eduiInit(void);
+    void cbmcfgCameraSpeed(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbmcfgCancel(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbSetAutoSpeed(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void eduiMenuFitWidth(struct eduimenu_s *menu, i32 padding);
+    void cbMMCancel(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbMMEditorConfig(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbMMRegSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void eduiMenuHighlight(struct eduimenu_s *menu, struct eduiitem_s *item);
+    void cbMMReturnToApp(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern char ed_levelfile[256];
-    void __cdecl eduiInitMaterials(void);
-    void __cdecl cbSel(struct eduimenu_s *arg0, struct eduiitem_s *item);
-    void __cdecl Game_KillPart(struct PART_PC *part, i32 reason);
-    void __cdecl eduiMenuRender(struct eduimenu_s *menu);
+    void eduiInitMaterials(void);
+    void cbSel(struct eduimenu_s *arg0, struct eduiitem_s *item);
+    void Game_KillPart(struct PART_PC *part, i32 reason);
+    void eduiMenuRender(struct eduimenu_s *menu);
     extern struct eduimenu_s *active_menu;
-    void __cdecl cbGradChange(void);
-    void __cdecl cbSubMenu(struct eduimenu_s *menu, struct eduiitem_s *item);
+    void cbGradChange(void);
+    void cbSubMenu(struct eduimenu_s *menu, struct eduiitem_s *item);
     extern struct eduimenu_s *default_active_menu;
-    struct edui_gradient_node_s *__cdecl eduiGradStageAdd(struct edui_gradient_pick_s *item, f32 time, f32 hue,
-                                                          f32 saturation, f32 value);
-    struct eduiitem_s *__cdecl eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text);
-    struct eduiitem_s *__cdecl eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiItemCallback callback,
-                                                          char *text);
-    struct eduiitem_s *__cdecl eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum,
-                                                    f32 maximum, f32 value, char *text);
-    i32 __cdecl eduiMenuProcessAux(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
-    i32 __cdecl eduiProcessInteracts(struct eduimenu_s *menu, struct FRAME_PAD_PC *pad);
+    struct edui_gradient_node_s *eduiGradStageAdd(struct edui_gradient_pick_s *item, f32 time, f32 hue, f32 saturation,
+                                                  f32 value);
+    struct eduiitem_s *eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text);
+    struct eduiitem_s *eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiItemCallback callback,
+                                                  char *text);
+    struct eduiitem_s *eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum,
+                                            f32 maximum, f32 value, char *text);
+    i32 eduiMenuProcessAux(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
+    i32 eduiProcessInteracts(struct eduimenu_s *menu, struct FRAME_PAD_PC *pad);
     extern struct eduimenu_s *submenu0;
-    void __cdecl cbPtlDamageFlagMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlDamageFlagMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern struct anakin_door_s *AnakinC;
     extern anakin_door_setup_s DoorSetupList[15];
-    void __cdecl PodRaceSnipersReset(void);
-    void __cdecl edanimcbLocalParticleMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours,
-                                     void *material);
-    void __cdecl NuSound3CancelCheckStereo(void);
-    struct eduiitem_s *__cdecl eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
-                                                 char *text);
-    struct eduiitem_s *__cdecl eduiItemTextPickCreate(u32 data, void *colours, void *callback, char *text);
-    struct eduiitem_s *__cdecl eduiItemToggleCreate(size_t data, const void *colours, i32 selected, i32 group,
-                                                    EdUiItemCallback callback, char *text);
-    void __cdecl eduiCreateMessageMenu(struct eduimenu_s *parent, char *message, i32 highlighted);
-    struct eduiitem_s *__cdecl eduiItemCheckCreate(size_t data, const void *colours, i32 selected, i32 group,
-                                                   EdUiItemCallback callback, char *text);
-    i32 __cdecl eduiMenuAttach(struct eduimenu_s *menu, struct eduimenu_s *child);
-    struct eduiitem_s *__cdecl eduiItemSliderCreateInt(u32 data, void *colours, i32 group, void *callback, i32 minimum,
-                                                       i32 maximum, i32 value, char *text);
-    i32 __cdecl eduiMenuProcess(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
-    struct COLLECTID *__cdecl CollectIDUnlocked(i32 id);
-    void __cdecl edcamSet(void);
-    void __cdecl edppDoInput(struct FRAME_PAD_PC *pad);
-    void __cdecl edcamMoveEx(struct FRAME_PAD_PC *pad, f32 delta_time);
-    extern i32(__cdecl *FindAlternativeSpecialObjectFn)(struct AISYS_PC *arg0, NUSPECIALHANDLE *arg1);
-    i16 __cdecl FindAnimIX(struct characterdata_pc_s *character, char *name);
+    void PodRaceSnipersReset(void);
+    void edanimcbLocalParticleMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours,
+                             void *material);
+    void NuSound3CancelCheckStereo(void);
+    struct eduiitem_s *eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, void *callback, char *text);
+    struct eduiitem_s *eduiItemTextPickCreate(u32 data, void *colours, void *callback, char *text);
+    struct eduiitem_s *eduiItemToggleCreate(size_t data, const void *colours, i32 selected, i32 group,
+                                            EdUiItemCallback callback, char *text);
+    void eduiCreateMessageMenu(struct eduimenu_s *parent, char *message, i32 highlighted);
+    struct eduiitem_s *eduiItemCheckCreate(size_t data, const void *colours, i32 selected, i32 group,
+                                           EdUiItemCallback callback, char *text);
+    i32 eduiMenuAttach(struct eduimenu_s *menu, struct eduimenu_s *child);
+    struct eduiitem_s *eduiItemSliderCreateInt(u32 data, void *colours, i32 group, void *callback, i32 minimum,
+                                               i32 maximum, i32 value, char *text);
+    i32 eduiMenuProcess(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
+    struct COLLECTID *CollectIDUnlocked(i32 id);
+    void edcamSet(void);
+    void edppDoInput(struct FRAME_PAD_PC *pad);
+    void edcamMoveEx(struct FRAME_PAD_PC *pad, f32 delta_time);
+    extern i32 (*FindAlternativeSpecialObjectFn)(struct AISYS_PC *arg0, NUSPECIALHANDLE *arg1);
+    i16 FindAnimIX(struct characterdata_pc_s *character, char *name);
     extern u32 lightning_col[2];
     extern f32 lightning_endw[2];
     extern f32 lightning_sizel[2];
     extern f32 lightning_sizew[2];
     extern f32 lightning_sizewab[2];
     extern i32 lightning_type;
-    i32 __cdecl eduiItemSetText(struct eduiitem_s *item, char *text);
-    void __cdecl eduiItemSliderSetVal(struct edui_slider_s *item, f32 value);
-    i32 __cdecl eduicbInteractSel(struct edui_interact_s *arg0);
-    i32 __cdecl eduicbInteractSlider(struct edui_interact_s *arg0);
-    void __cdecl eduicbItemDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
-    void __cdecl eduicbItemSliderDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
-    i32 __cdecl eduicbProcessColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
-                                          struct FRAME_PAD_PC *arg3);
-    i32 __cdecl eduicbProcessSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
-    i32 __cdecl eduicbProcessSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
-                                    struct FRAME_PAD_PC *arg3);
-    i32 __cdecl eduicbRenderCheck(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
-                                  i32 arg5);
-    i32 __cdecl eduicbRenderColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
-                                         i32 arg5);
-    i32 __cdecl eduicbRenderSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
-                                i32 arg5);
-    i32 __cdecl eduicbRenderSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
-                                   i32 arg5);
-    i32 __cdecl eduicbRenderSliderInt(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
-                                      i32 arg5);
-    void __cdecl eduicbItemTextPickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
-    i32 __cdecl eduicbProcessTextPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
-                                      struct FRAME_PAD_PC *arg3);
-    i32 __cdecl eduicbRenderTextPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
-                                     i32 arg5);
-    void __cdecl eduiItemTextPickSetFmt(struct edui_textpicker_s *item, char *format);
+    i32 eduiItemSetText(struct eduiitem_s *item, char *text);
+    void eduiItemSliderSetVal(struct edui_slider_s *item, f32 value);
+    i32 eduicbInteractSel(struct edui_interact_s *arg0);
+    i32 eduicbInteractSlider(struct edui_interact_s *arg0);
+    void eduicbItemDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    void eduicbItemSliderDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i32 eduicbProcessColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
+                                  struct FRAME_PAD_PC *arg3);
+    i32 eduicbProcessSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32 eduicbProcessSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32 eduicbRenderCheck(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
+    i32 eduicbRenderColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
+                                 i32 arg5);
+    i32 eduicbRenderSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
+    i32 eduicbRenderSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
+    i32 eduicbRenderSliderInt(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
+    void eduicbItemTextPickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i32 eduicbProcessTextPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32 eduicbRenderTextPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
+    void eduiItemTextPickSetFmt(struct edui_textpicker_s *item, char *format);
     extern char *textrow[4];
-    void __cdecl DebrisSetPriority(i32 arg0, i16 arg1, u8 arg2);
+    void DebrisSetPriority(i32 arg0, i16 arg1, u8 arg2);
     extern i32 edbits_particle_level_page;
-    void __cdecl EatVictim(struct gameobject_s *object);
-    struct gameobject_s *__cdecl GizTurret_GetTgt(struct GIZTURRET_s *turret, struct numtx_s *matrix);
-    void __cdecl GrabVictim(struct gameobject_s *object, struct gameobject_s *victim);
+    void EatVictim(struct gameobject_s *object);
+    struct gameobject_s *GizTurret_GetTgt(struct GIZTURRET_s *turret, struct numtx_s *matrix);
+    void GrabVictim(struct gameobject_s *object, struct gameobject_s *victim);
     extern i32 addbolt_nosfx;
     extern f32 gizturret_rapid_fire_rate;
     extern u16 temp_yrot;
@@ -30177,7 +30139,7 @@ extern "C" {
     extern f32 PodRace_sniper_fire_radius;
     extern f32 PodRace_sniper_fire_range_time;
     extern f32 PodRace_sniper_start_fire_radius;
-    void __cdecl Hub_MarkCharacterUnavailable(i16 *characters, i16 character);
+    void Hub_MarkCharacterUnavailable(i16 *characters, i16 character);
     extern storepack_s StorePack[11];
     extern i16 id_JABBA;
     extern i16 id_TRAININGREMOTE;
@@ -30185,35 +30147,33 @@ extern "C" {
     extern i16 id_WEIRDO2;
     extern i16 id_WHIP;
     extern i16 id_WOMPRAT;
-    void __cdecl StartLaunch(struct gameobject_s *object);
-    void __cdecl eduiItemFilePickSetFmt(struct edui_file_pick_s *item, char *format);
-    void __cdecl eduicbItemFilePickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
-    i32 __cdecl eduicbProcessFilePick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
-                                      struct FRAME_PAD_PC *arg3);
-    i32 __cdecl eduicbRenderFilePick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
-                                     i32 arg5);
-    void __cdecl NuPs2VideoScreenDump(char *filename, i32 format, f32 scale_x, f32 scale_y, i32 face, i32 x, i32 y);
+    void StartLaunch(struct gameobject_s *object);
+    void eduiItemFilePickSetFmt(struct edui_file_pick_s *item, char *format);
+    void eduicbItemFilePickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i32 eduicbProcessFilePick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32 eduicbRenderFilePick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
+    void NuPs2VideoScreenDump(char *filename, i32 format, f32 scale_x, f32 scale_y, i32 face, i32 x, i32 y);
     extern struct edui_interact_s *eduiInteractLocked;
-    void __cdecl eduiMenuDestroyItems(struct eduimenu_s *menu);
+    void eduiMenuDestroyItems(struct eduimenu_s *menu);
     extern i32 edptl_clipboard_entry;
     extern struct eduimenu_s *ptltypemenu;
-    void __cdecl GizPanel_Activate(void *gizmo, i32 active);
-    void __cdecl GizPanel_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
-    void __cdecl GizPanel_Draw(void *world_ptr, void *arg1, f32 arg2);
-    char *__cdecl GizPanel_GetGizmoName(void *gizmo);
-    i32 __cdecl GizPanel_GetMaxGizmos(void *world_ptr);
-    i32 __cdecl GizPanel_GetNumOutputs(void *arg0);
-    i32 __cdecl GizPanel_GetOutput(void *gizmo, i32 arg1, i32 arg2);
-    char *__cdecl GizPanel_GetOutputName(void *arg0, i32 output_index);
-    i32 __cdecl GizPanel_Load(void *world_ptr, void *arg1);
-    void __cdecl GizPanel_InitTerrain(WORLDINFO *world);
-    void __cdecl GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible);
-    void __cdecl GizPanel_Update(void *world_ptr, void *arg1, f32 delta_time);
-    void *__cdecl GizPanels_AllocateProgressData(void *buffer, void *buffer_end);
-    void __cdecl GizPanels_ClearProgress(void *arg0, void *progress_data);
-    void *__cdecl GizPanels_ReserveBufferSpace(void *world_ptr);
-    void __cdecl GizPanels_Reset(void *world_ptr, void *arg1, void *progress_ptr);
-    void __cdecl GizPanels_StoreProgress(void *world_ptr, void *arg1, void *progress_ptr);
+    void GizPanel_Activate(void *gizmo, i32 active);
+    void GizPanel_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void GizPanel_Draw(void *world_ptr, void *arg1, f32 arg2);
+    char *GizPanel_GetGizmoName(void *gizmo);
+    i32 GizPanel_GetMaxGizmos(void *world_ptr);
+    i32 GizPanel_GetNumOutputs(void *arg0);
+    i32 GizPanel_GetOutput(void *gizmo, i32 arg1, i32 arg2);
+    char *GizPanel_GetOutputName(void *arg0, i32 output_index);
+    i32 GizPanel_Load(void *world_ptr, void *arg1);
+    void GizPanel_InitTerrain(WORLDINFO *world);
+    void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible);
+    void GizPanel_Update(void *world_ptr, void *arg1, f32 delta_time);
+    void *GizPanels_AllocateProgressData(void *buffer, void *buffer_end);
+    void GizPanels_ClearProgress(void *arg0, void *progress_data);
+    void *GizPanels_ReserveBufferSpace(void *world_ptr);
+    void GizPanels_Reset(void *world_ptr, void *arg1, void *progress_ptr);
+    void GizPanels_StoreProgress(void *world_ptr, void *arg1, void *progress_ptr);
     extern i16 id_ATST;
     extern i16 id_JEDISTARFIGHTERREDEP3;
     extern i16 id_MINIIMPERIALSHUTTLE;
@@ -30221,18 +30181,18 @@ extern "C" {
     extern i16 id_MINIROYALSTARSHIP;
     extern i16 id_MINITIEINTERCEPTOR;
     extern i16 id_MINIXWING;
-    void __cdecl edbriDoInput(struct FRAME_PAD_PC *pad);
+    void edbriDoInput(struct FRAME_PAD_PC *pad);
     extern struct eduimenu_s *edbri_active_menu;
-    void __cdecl Door_Activate(GIZMO_PC *gizmo, i32 value);
-    void __cdecl Door_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
-    char *__cdecl Door_GetGizmoName(GIZMO_PC *gizmo);
-    i32 __cdecl Door_GetMaxGizmos(void *door);
-    i32 __cdecl Door_GetNumOutputs(GIZMO_PC *arg0);
-    i32 __cdecl Door_GetOutput(GIZMO_PC *gizmo, i32 arg1, i32 arg2);
-    char *__cdecl Door_GetOutputName(GIZMO_PC *arg0, i32 arg1);
+    void Door_Activate(GIZMO_PC *gizmo, i32 value);
+    void Door_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    char *Door_GetGizmoName(GIZMO_PC *gizmo);
+    i32 Door_GetMaxGizmos(void *door);
+    i32 Door_GetNumOutputs(GIZMO_PC *arg0);
+    i32 Door_GetOutput(GIZMO_PC *gizmo, i32 arg1, i32 arg2);
+    char *Door_GetOutputName(GIZMO_PC *arg0, i32 arg1);
     extern char door_gizmotype_id;
-    f32 __cdecl XZLinesClosest(struct nuvec_s *first_start, struct nuvec_s *first_end, struct nuvec_s *second_start,
-                               struct nuvec_s *second_end, f32 *first_fraction, f32 *second_fraction);
+    f32 XZLinesClosest(struct nuvec_s *first_start, struct nuvec_s *first_end, struct nuvec_s *second_start,
+                       struct nuvec_s *second_end, f32 *first_fraction, f32 *second_fraction);
     extern i16 id_CLONEARC;
     extern i16 id_IMPERIALSHUTTLE;
     extern i16 id_NABOOSTARFIGHTER;
@@ -30240,126 +30200,124 @@ extern "C" {
     extern struct level_data_pc_s *TEMPLESTATUS_LDATA;
     extern NUVEC TempleC_StreamStatusPos;
     extern u8 drawLights;
-    void __cdecl GizSpinner_Activate(void *gizmo, i32 active);
-    void __cdecl GizSpinner_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
-    void *__cdecl GizSpinner_AllocateProgressData(void *buffer, void *buffer_end);
-    void __cdecl GizSpinner_ClearProgress(void *arg0, void *progress_ptr);
-    void __cdecl GizSpinner_Draw(void *world_ptr, void *arg1, f32 arg2);
-    i32 *__cdecl GizSpinner_GetBestBoltTarget(struct gizmoset_pc_s *arg0, f32 *arg1, struct nuvec_s *result_position,
-                                              struct nuvec_s *result_velocity, void *arg4, struct nuvec_s *position,
-                                              struct nuvec_s *direction, f32 radius, f32 range_squared, i32 directional,
-                                              i32 arg10, i32 arg11);
-    char *__cdecl GizSpinner_GetGizmoName(void *gizmo);
-    i32 __cdecl GizSpinner_GetMaxGizmos(void *world_ptr);
-    i32 __cdecl GizSpinner_GetNumOutputs(void *gizmo);
-    i32 __cdecl GizSpinner_GetOutput(void *gizmo, i32 output_index, i32 arg2);
-    char *__cdecl GizSpinner_GetOutputName(void *gizmo, i32 output_index);
-    struct nuvec_s *__cdecl GizSpinner_GetPos(void *gizmo);
-    i32 __cdecl GizSpinner_HasBoltHit(void *arg0, void *arg1, void *arg2, struct nuvec_s *arg3, i32 arg4, f32 arg5,
-                                      struct nuvec_s *arg6, struct nuvec_s *arg7, struct bolt_s *arg8, u32 arg9,
-                                      u8 *arg10);
-    i32 __cdecl GizSpinner_Load(void *world_ptr, void *arg1);
-    void __cdecl GizSpinner_PanelDraw(void *arg0, void *arg1, f32 arg2);
-    void *__cdecl GizSpinner_ReserveBufferSpace(void *world_ptr);
-    void __cdecl GizSpinner_SetVisibility(void *gizmo, i32 visible);
-    void __cdecl GizSpinner_StoreProgressData(void *world_ptr, void *arg1, void *progress_ptr);
-    i32 __cdecl GizSpinner_UsingSpecial(void *results, void *world_ptr, i32 capacity, char *name);
-    void __cdecl GizSpinners_Update(void *world_ptr, void *arg1, f32 arg2);
-    void __cdecl GizTimer_Activate(GIZMO_PC *gizmo, i32 unknown);
-    void __cdecl GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 unknown1, void *world_info, void *unknown2);
-    char *__cdecl GizTimer_GetGizmoName(GIZMO_PC *gizmo);
-    i32 __cdecl GizTimer_GetMaxGizmos(void *world_info);
-    i32 __cdecl GizTimer_GetNumOutputs(GIZMO_PC *gizmo);
-    i32 __cdecl GizTimer_GetOutput(GIZMO_PC *gizmo, i32 arg1, i32 arg2);
-    char *__cdecl GizTimer_GetOutputName(GIZMO_PC *gizmo, i32 output_index);
-    i32 __cdecl GizTimer_Load(void *world_info, void *arg1);
-    void *__cdecl GizTimer_ReserveBufferSpace(void *world_info);
-    void __cdecl GizTimer_Update(void *world_info, void *arg1, f32 delta_time);
-    void __cdecl GizTorp_Activate(void *gizmo, i32 active);
-    void __cdecl GizTorp_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
-    void __cdecl GizTorp_Draw(void *world_ptr, void *arg1, f32 arg2);
-    char *__cdecl GizTorp_GetGizmoName(void *gizmo);
-    i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr);
-    i32 __cdecl GizTorp_GetNumOutputs(void *arg0);
-    i32 __cdecl GizTorp_GetOutput(void *arg0, i32 arg1, i32 arg2);
-    char *__cdecl GizTorp_GetOutputName(GIZMO_PC *arg0, i32 output_index);
-    void __cdecl GizTorp_SetVisibility(void *gizmo, i32 visible);
-    void __cdecl GizTorp_Update(void *world_ptr, void *arg1, f32 arg2);
-    void *__cdecl GizTorps_ReserveBufferSpace(void *world_ptr);
-    void __cdecl GizTorps_Reset(void *world_ptr, void *arg1, void *arg2);
+    void GizSpinner_Activate(void *gizmo, i32 active);
+    void GizSpinner_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void *GizSpinner_AllocateProgressData(void *buffer, void *buffer_end);
+    void GizSpinner_ClearProgress(void *arg0, void *progress_ptr);
+    void GizSpinner_Draw(void *world_ptr, void *arg1, f32 arg2);
+    i32 *GizSpinner_GetBestBoltTarget(struct gizmoset_pc_s *arg0, f32 *arg1, struct nuvec_s *result_position,
+                                      struct nuvec_s *result_velocity, void *arg4, struct nuvec_s *position,
+                                      struct nuvec_s *direction, f32 radius, f32 range_squared, i32 directional,
+                                      i32 arg10, i32 arg11);
+    char *GizSpinner_GetGizmoName(void *gizmo);
+    i32 GizSpinner_GetMaxGizmos(void *world_ptr);
+    i32 GizSpinner_GetNumOutputs(void *gizmo);
+    i32 GizSpinner_GetOutput(void *gizmo, i32 output_index, i32 arg2);
+    char *GizSpinner_GetOutputName(void *gizmo, i32 output_index);
+    struct nuvec_s *GizSpinner_GetPos(void *gizmo);
+    i32 GizSpinner_HasBoltHit(void *arg0, void *arg1, void *arg2, struct nuvec_s *arg3, i32 arg4, f32 arg5,
+                              struct nuvec_s *arg6, struct nuvec_s *arg7, struct bolt_s *arg8, u32 arg9, u8 *arg10);
+    i32 GizSpinner_Load(void *world_ptr, void *arg1);
+    void GizSpinner_PanelDraw(void *arg0, void *arg1, f32 arg2);
+    void *GizSpinner_ReserveBufferSpace(void *world_ptr);
+    void GizSpinner_SetVisibility(void *gizmo, i32 visible);
+    void GizSpinner_StoreProgressData(void *world_ptr, void *arg1, void *progress_ptr);
+    i32 GizSpinner_UsingSpecial(void *results, void *world_ptr, i32 capacity, char *name);
+    void GizSpinners_Update(void *world_ptr, void *arg1, f32 arg2);
+    void GizTimer_Activate(GIZMO_PC *gizmo, i32 unknown);
+    void GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 unknown1, void *world_info, void *unknown2);
+    char *GizTimer_GetGizmoName(GIZMO_PC *gizmo);
+    i32 GizTimer_GetMaxGizmos(void *world_info);
+    i32 GizTimer_GetNumOutputs(GIZMO_PC *gizmo);
+    i32 GizTimer_GetOutput(GIZMO_PC *gizmo, i32 arg1, i32 arg2);
+    char *GizTimer_GetOutputName(GIZMO_PC *gizmo, i32 output_index);
+    i32 GizTimer_Load(void *world_info, void *arg1);
+    void *GizTimer_ReserveBufferSpace(void *world_info);
+    void GizTimer_Update(void *world_info, void *arg1, f32 delta_time);
+    void GizTorp_Activate(void *gizmo, i32 active);
+    void GizTorp_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void GizTorp_Draw(void *world_ptr, void *arg1, f32 arg2);
+    char *GizTorp_GetGizmoName(void *gizmo);
+    i32 GizTorp_GetMaxGizmos(void *world_ptr);
+    i32 GizTorp_GetNumOutputs(void *arg0);
+    i32 GizTorp_GetOutput(void *arg0, i32 arg1, i32 arg2);
+    char *GizTorp_GetOutputName(GIZMO_PC *arg0, i32 output_index);
+    void GizTorp_SetVisibility(void *gizmo, i32 visible);
+    void GizTorp_Update(void *world_ptr, void *arg1, f32 arg2);
+    void *GizTorps_ReserveBufferSpace(void *world_ptr);
+    void GizTorps_Reset(void *world_ptr, void *arg1, void *arg2);
     extern i32 giztorpmachine_gizmotype_id;
     extern struct GIZBOMBGEN_s *HothBattleC_BombGenerator;
-    void __cdecl HothBattleE_UpdateWave(void);
-    i32 __cdecl NuIOS_IsLowEndDevice(void);
-    void __cdecl UpdateMiniSnowTroopers(struct WORLDINFO_s *arg0);
-    void __cdecl DrawMiniSnowTroopers(struct WORLDINFO_s *world);
+    void HothBattleE_UpdateWave(void);
+    i32 NuIOS_IsLowEndDevice(void);
+    void UpdateMiniSnowTroopers(struct WORLDINFO_s *arg0);
+    void DrawMiniSnowTroopers(struct WORLDINFO_s *world);
     extern struct EPISODESAVE_s *Game_EpisodeSave;
-    void __cdecl edpartDoInput(struct FRAME_PAD_PC *pad);
+    void edpartDoInput(struct FRAME_PAD_PC *pad);
     extern i32 edpart_count;
     extern i32 edpart_emitrotx;
     extern i32 edpart_emitroty;
     extern i32 edpart_emitrotz;
     extern struct eduimenu_s *ptlgcodemenu;
-    void __cdecl NuVec4MtxTransformHVU0(struct NUVEC4 *out, struct NUVEC4 *v, struct numtx_s *matrix);
-    i32 __cdecl ImplodeGetI(void *buf, i32 size);
-    void __cdecl NuSpecialList(struct NUGSCN_s *scene);
-    void __cdecl GizBuildIt_Finish(struct GIZBUILDIT_s *buildit);
-    void __cdecl eduiMenuDestroy(struct eduimenu_s *menu);
-    i32 __cdecl eduiMenuDetach(struct eduimenu_s *menu);
-    void __cdecl ChrisAnakinCReset(void);
-    void *__cdecl NuFramebufferGetFrontBuffer(void);
-    void __cdecl GizTurret_CalculateInterceptVector(struct nuvec_s *origin, struct numtx_s *matrix,
-                                                    struct nuvec_s *target, struct nuvec_s *velocity, f32 speed,
-                                                    struct nuvec_s *intercept, struct nuvec_s *intercept_velocity,
-                                                    u32 fallback);
+    void NuVec4MtxTransformHVU0(struct NUVEC4 *out, struct NUVEC4 *v, struct numtx_s *matrix);
+    i32 ImplodeGetI(void *buf, i32 size);
+    void NuSpecialList(struct NUGSCN_s *scene);
+    void GizBuildIt_Finish(struct GIZBUILDIT_s *buildit);
+    void eduiMenuDestroy(struct eduimenu_s *menu);
+    i32 eduiMenuDetach(struct eduimenu_s *menu);
+    void ChrisAnakinCReset(void);
+    void *NuFramebufferGetFrontBuffer(void);
+    void GizTurret_CalculateInterceptVector(struct nuvec_s *origin, struct numtx_s *matrix, struct nuvec_s *target,
+                                            struct nuvec_s *velocity, f32 speed, struct nuvec_s *intercept,
+                                            struct nuvec_s *intercept_velocity, u32 fallback);
     extern i32 edpart_copy_mode;
     extern i32 edpart_copyroty;
     extern i32 edpart_copyrotz;
     extern i32 edpart_roty;
     extern i32 edpart_rotz;
-    void __cdecl NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material);
-    void __cdecl DestroyCable(struct CABLE_s *cable);
+    void NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material);
+    void DestroyCable(struct CABLE_s *cable);
     extern struct level_data_pc_s *HOTHBATTLED_LDATA;
-    void __cdecl IncrementMinikitCounter(struct gameobject_s *object);
+    void IncrementMinikitCounter(struct gameobject_s *object);
     extern i32 TERRAINMASK_NONDROID;
     extern i32 atat_locators[4];
     extern f32 cable_damping;
     extern f32 cable_gravity;
     extern f32 cable_ground_damping;
     extern f32 cable_speed;
-    struct AIGROUP_PC *__cdecl CreateAIGroup(struct AISYS_PC *arg0, i32 arg1, f32 arg2, f32 arg3, f32 arg4);
-    i32 __cdecl Hub_GetRandomCharType(void);
-    struct AILOCATOR_PC *__cdecl LocalGetNearestLocator(void *arg0, i32 arg1, f32 arg2, struct nuvec_s *arg3, f32 arg4,
-                                                        i32 arg5, f32 arg6, f32 arg7);
-    u32 __cdecl ParseAIPathCnxFlag(char *name);
-    void __cdecl PodSprint_GetIAlongVals(struct nugspline_s *spline, i16 *first_point, i16 *last_point);
-    void __cdecl AiRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, u32 colour);
-    void __cdecl DrawWeapon_SetSabreObjects(struct gameobject_s *object, i32 red, i32 green, i32 blue, i32 purple,
-                                            i32 *models, i32 *hilt);
+    struct AIGROUP_PC *CreateAIGroup(struct AISYS_PC *arg0, i32 arg1, f32 arg2, f32 arg3, f32 arg4);
+    i32 Hub_GetRandomCharType(void);
+    struct AILOCATOR_PC *LocalGetNearestLocator(void *arg0, i32 arg1, f32 arg2, struct nuvec_s *arg3, f32 arg4,
+                                                i32 arg5, f32 arg6, f32 arg7);
+    u32 ParseAIPathCnxFlag(char *name);
+    void PodSprint_GetIAlongVals(struct nugspline_s *spline, i16 *first_point, i16 *last_point);
+    void AiRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, u32 colour);
+    void DrawWeapon_SetSabreObjects(struct gameobject_s *object, i32 red, i32 green, i32 blue, i32 purple, i32 *models,
+                                    i32 *hilt);
     extern i32 edanim_emitroty;
     extern i32 edanim_emitrotz;
     extern struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff;
-    void __cdecl AsteroidChaseD_SetTurretTarget(i32 index, struct nuvec_s *position);
+    void AsteroidChaseD_SetTurretTarget(i32 index, struct nuvec_s *position);
     extern struct GIZTURRET_s *StarDestroyerTurrets[16];
     extern nuhspecial_s escape[8];
     extern f32 melee_waveDelay;
     extern i8 melee_wavePhase;
     extern u8 turretAliveCount;
-    void __cdecl GuidedMissile_Deflect(struct PART_PC *part);
-    void __cdecl GuidedMissile_Kill(struct PART_PC *part, i32 reason);
-    void __cdecl GuidedMissile_Move(struct PART_PC *part, f32 time);
+    void GuidedMissile_Deflect(struct PART_PC *part);
+    void GuidedMissile_Kill(struct PART_PC *part, i32 reason);
+    void GuidedMissile_Move(struct PART_PC *part, f32 time);
     extern f32 test_missile_scale;
     extern edui_interact_s eduiInteracts[64];
     extern i32 numInteracts;
-    struct PC_EDGRAINDIVIDUAL *__cdecl GetIndGrassClump(i32 clump, i32 element);
-    void __cdecl edgraChangeFilterName(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    i32 __cdecl edgraClumpCreate(struct nuvec_s *position);
-    void __cdecl edgraClumpDestroy(i32 index);
-    void __cdecl edgraClumpPlace(i32 index, struct nuvec_s *position);
-    void __cdecl edgraInstanceCreate(struct nuvec_s *position);
-    void __cdecl edgraInstanceDestroy(i32 index);
-    void __cdecl edgraInstancePlace(i32 index, struct nuvec_s *position);
-    void __cdecl edgraToggleFilter(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    struct PC_EDGRAINDIVIDUAL *GetIndGrassClump(i32 clump, i32 element);
+    void edgraChangeFilterName(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    i32 edgraClumpCreate(struct nuvec_s *position);
+    void edgraClumpDestroy(i32 index);
+    void edgraClumpPlace(i32 index, struct nuvec_s *position);
+    void edgraInstanceCreate(struct nuvec_s *position);
+    void edgraInstanceDestroy(i32 index);
+    void edgraInstancePlace(i32 index, struct nuvec_s *position);
+    void edgraToggleFilter(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern i32 edgra_cam_ax;
     extern i32 edgra_cam_ay;
     extern i32 edgra_clump_size;
@@ -30371,20 +30329,20 @@ extern "C" {
     extern i32 edgra_roty;
     extern i32 edgra_rotz;
     extern f32 edgra_size;
-    void __cdecl edgracbCancelClumpDistMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbCancelClumpTerrainMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbCancelOptMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbChangeInstanceMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbCopyClump(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbDiscardCopy(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbFileSave(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSScaleMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetClumpDist(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetClumpTerrainOffset(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbToggleClumpTerrain(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbToggleClumpTilt(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbCancelClumpDistMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbCancelClumpTerrainMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbCancelOptMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbChangeInstanceMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbCopyClump(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbDiscardCopy(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbFileSave(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSScaleMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetClumpDist(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetClumpTerrainOffset(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbToggleClumpTerrain(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbToggleClumpTilt(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern struct KILLPARTS_CHARSCENE_PC *CharScene_Area;
-    void *__cdecl CreatePodRaceMine(struct nuvec_s *pos);
+    void *CreatePodRaceMine(struct nuvec_s *pos);
     extern i32 do_mine;
     extern f32 max_speed_mul;
     extern f32 min_speed_mul;
@@ -30393,41 +30351,40 @@ extern "C" {
     extern f32 test_factor;
     extern f32 test_seek_rate;
     extern struct PART_PC *boulder_part[2];
-    void __cdecl Boulder_Move(PART_PC *, f32);
-    void __cdecl Boulder_Kill(PART_PC *, i32);
-    void __cdecl HothBattle_AssignSpawnLocator(struct gameobject_s *object, struct AILOCATOR_PC *locator,
-                                               struct AILOCATORSET_PC *set);
-    struct AILOCATOR_PC *__cdecl getSpawnLocator(f32 clip_radius, char *name);
+    void Boulder_Move(PART_PC *, f32);
+    void Boulder_Kill(PART_PC *, i32);
+    void HothBattle_AssignSpawnLocator(struct gameobject_s *object, struct AILOCATOR_PC *locator,
+                                       struct AILOCATORSET_PC *set);
+    struct AILOCATOR_PC *getSpawnLocator(f32 clip_radius, char *name);
     extern i16 id_SPEEDERBIKESNOW;
     extern u32 edui_cursor_buttons;
     extern i32 kPRIM_COORD_LOOKUP[3];
     extern struct PC_SCENE_MTL_VIEW *pAlphaMask;
     extern struct PC_SCENE_MTL_VIEW *pZClearMaterial;
-    void __cdecl eduiMenuEnsureSelection(struct eduimenu_s *menu);
-    i32 __cdecl eduiMenuProcessInput(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad,
-                                     i32 item_result);
-    i32 __cdecl eduiMenuProcessSelectedItem(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
-    void __cdecl AddToGoldBricks(void);
+    void eduiMenuEnsureSelection(struct eduimenu_s *menu);
+    i32 eduiMenuProcessInput(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad, i32 item_result);
+    i32 eduiMenuProcessSelectedItem(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
+    void AddToGoldBricks(void);
     extern struct eduimenu_s *edgra_clumpsizes_menu;
-    void __cdecl edgracbCancelClumpSizesMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbSetClumpHeight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetClumpMaxHeight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edgracbSetClumpMinHeight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    char *__cdecl GizmoGetName(struct gizmo_pc_s *gizmo);
+    void edgracbCancelClumpSizesMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbSetClumpHeight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetClumpMaxHeight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edgracbSetClumpMinHeight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    char *GizmoGetName(struct gizmo_pc_s *gizmo);
     extern i32 fpcount;
     extern APICHARACTERMODELLIST fplist[341];
     extern u8 hub_makefreeplaylist_addotherid;
     extern i32 hub_new_level;
     extern struct GIZFORCE_s *force_array[4];
-    void __cdecl ResetTrooperCannons(struct WORLDINFO_s *arg0, i32 arg1);
-    void __cdecl UpdateTrooperCannons(struct WORLDINFO_s *arg0);
-    void __cdecl NuSpecialSetDrawPos(struct nuhspecial_s *special, struct nuvec_s *pos);
+    void ResetTrooperCannons(struct WORLDINFO_s *arg0, i32 arg1);
+    void UpdateTrooperCannons(struct WORLDINFO_s *arg0);
+    void NuSpecialSetDrawPos(struct nuhspecial_s *special, struct nuvec_s *pos);
     extern GIZACTIONDEF_PC game_gizactiondefs[24];
     extern nuhspecial_s thingsSceneBase;
-    struct GIZMOBLOWUP_PC *__cdecl DeathStar2BattleD_InZapRange(struct gameobject_s *object);
+    struct GIZMOBLOWUP_PC *DeathStar2BattleD_InZapRange(struct gameobject_s *object);
     extern i32 bombgen_gizmotype_id;
     extern i32 fire_clip_dist;
-    void __cdecl Signal_SetVisibility(struct SIGNAL_s *signal, i32 visible);
+    void Signal_SetVisibility(struct SIGNAL_s *signal, i32 visible);
     extern i32 set_speedermode;
     extern f32 speeder_ahead_time;
     extern i32 speeder_hitpoints_lost;
@@ -30441,7 +30398,7 @@ extern "C" {
     extern SPEEDERCHASEVALUES speedervals[4];
     extern f32 zoom_ahead_extra;
     extern f32 zoom_ahead_extra_time;
-    u16 __cdecl NuToUpperW(u16 c);
+    u16 NuToUpperW(u16 c);
     extern char edbits_general_save_directory[256];
     extern char edbits_general_save_extension[256];
     extern char edbits_general_save_name[256];
@@ -30453,86 +30410,86 @@ extern "C" {
     extern i32 edbri_rotz;
     extern f32 edbri_width;
     extern struct eduimenu_s *edgra_changeinstance_menu;
-    void __cdecl edgracbCancelChangeInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edgracbChangeInstanceType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartCancelWorldInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartRemoveInstance(struct parttype_lookup_pc_s *type, i32 index);
+    void edgracbCancelChangeInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edgracbChangeInstanceType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartCancelWorldInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartRemoveInstance(struct parttype_lookup_pc_s *type, i32 index);
     extern struct eduimenu_s *edpart_worldinstance_menu;
     extern struct gameobject_s *Vader_obj;
     extern i32 edbri_pageid;
-    void __cdecl NuFileUpCase(struct nufile_device_s *device, char *filepath);
+    void NuFileUpCase(struct nufile_device_s *device, char *filepath);
     extern char *iop_image_name;
     extern const char NuFileIopImageNamePc[13];
-    void __cdecl MakePlayCorner(struct gamecamera_s *camera, f32 screen_x, f32 screen_y, struct nuvec_s *near_corner,
-                                struct nuvec_s *far_corner);
-    void __cdecl SetPlayPlane(struct KEEP_SCREEN_PLANE_PC *plane, struct nuvec_s *a, struct nuvec_s *b,
-                              struct nuvec_s *c, struct nuvec_s *d, struct nuvec_s *edge_a0, struct nuvec_s *edge_a1,
-                              struct nuvec_s *edge_b0, struct nuvec_s *edge_b1);
-    void __cdecl NuErrorPrint(char *arg0);
-    void __cdecl NuWarningPrint(char *message);
-    extern void(__cdecl *nuerror_handler)(char *arg0);
-    extern void(__cdecl *nuwarning_handler)(char *arg0);
-    void __cdecl GameMsg_Draw_MiniKitDetector(struct game_message_pc_s *arg0, struct nuvec_s *arg1, f32 arg2);
-    void __cdecl edcamSetSpeed(f32 position_x, f32 position_y, f32 position_z, f32 distance);
+    void MakePlayCorner(struct gamecamera_s *camera, f32 screen_x, f32 screen_y, struct nuvec_s *near_corner,
+                        struct nuvec_s *far_corner);
+    void SetPlayPlane(struct KEEP_SCREEN_PLANE_PC *plane, struct nuvec_s *a, struct nuvec_s *b, struct nuvec_s *c,
+                      struct nuvec_s *d, struct nuvec_s *edge_a0, struct nuvec_s *edge_a1, struct nuvec_s *edge_b0,
+                      struct nuvec_s *edge_b1);
+    void NuErrorPrint(char *arg0);
+    void NuWarningPrint(char *message);
+    extern void (*nuerror_handler)(char *arg0);
+    extern void (*nuwarning_handler)(char *arg0);
+    void GameMsg_Draw_MiniKitDetector(struct game_message_pc_s *arg0, struct nuvec_s *arg1, f32 arg2);
+    void edcamSetSpeed(f32 position_x, f32 position_y, f32 position_z, f32 distance);
     extern u32 edui_cursor_buttons_db;
     extern f32 edui_cursor_x;
     extern f32 edui_cursor_y;
-    void __cdecl eduicbMenuCloseAllexpanders(struct eduimenu_s *menu);
-    void __cdecl edpartAddGeneralType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartAddLevelType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartCancelGeneralTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelLevelTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartInstanceOrphansMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartSetDistribution(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void eduicbMenuCloseAllexpanders(struct eduimenu_s *menu);
+    void edpartAddGeneralType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartAddLevelType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartCancelGeneralTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelLevelTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartInstanceOrphansMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartSetDistribution(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern struct eduimenu_s *edpart_generaltype_menu;
     extern struct eduimenu_s *edpart_leveltype_menu;
     extern char nullobjectname[16];
-    void __cdecl Hub_ActivateDoorMenu(void *arg0);
+    void Hub_ActivateDoorMenu(void *arg0);
     extern i32 door_cutscenesnap;
     extern i32 gone_through_door_to_new_mode;
     extern void *newmode_cutinfo;
     extern nuhspecial_s thingsSceneArm;
-    f32 __cdecl NuFmax(f32 a, f32 b);
-    void __cdecl ResetSinglePushBlock(struct WORLDINFO_s *world, struct pushblock_s *block, i32 index);
-    void __cdecl ResetPushProgress(struct WORLDINFO_s *world, void *progress);
-    void __cdecl GizmoPushBlockInitAndReset(struct WORLDINFO_s *world, void *progress);
-    void __cdecl ResetSinglePushBlockHeight(struct WORLDINFO_s *arg0, struct pushblock_s *arg1, i32 arg2);
+    f32 NuFmax(f32 a, f32 b);
+    void ResetSinglePushBlock(struct WORLDINFO_s *world, struct pushblock_s *block, i32 index);
+    void ResetPushProgress(struct WORLDINFO_s *world, void *progress);
+    void GizmoPushBlockInitAndReset(struct WORLDINFO_s *world, void *progress);
+    void ResetSinglePushBlockHeight(struct WORLDINFO_s *arg0, struct pushblock_s *arg1, i32 arg2);
     extern i32 pushposincrease;
-    void __cdecl GizSpinner_Update(struct GIZSPINNER_s *spinner);
+    void GizSpinner_Update(struct GIZSPINNER_s *spinner);
     extern GRAPPLE_DYNAMIC_PC DynamicGrapple[4];
-    void __cdecl Grapples_DrawList(struct WORLDINFO_s *world, struct GRAPPLE_DYNAMIC_PC *grapples, i32 grapple_count,
-                                   u16 target_rotation, f32 target_alpha);
-    void __cdecl edpartCancelDataMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelDieDebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelEmitterDebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelImpactDebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelImpactPartMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelOptMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelTintMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelTrail1DebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartCancelTrail2DebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edpartChangeDebrisPerSec(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeFilterName(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
-    void __cdecl edpartChangeTintB(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeTintG(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartChangeTintR(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartCreate(struct nuvec_s *position, i32 type);
-    void __cdecl edpartFileLoadEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartFileSaveEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartFileSaveEffectsGeneral(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartFileSaveEffectsLevel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartGeneralDebrisIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartGeneralPartIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartLevelDebrisIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartLevelPartIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartMoveList(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartMultipleCopyClear(void);
-    void __cdecl edpartMultipleCopyCopy(void);
-    void __cdecl edpartSScaleMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartSoundsMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartSwitchMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartToggleFilter(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void Grapples_DrawList(struct WORLDINFO_s *world, struct GRAPPLE_DYNAMIC_PC *grapples, i32 grapple_count,
+                           u16 target_rotation, f32 target_alpha);
+    void edpartCancelDataMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelDieDebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelEmitterDebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelImpactDebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelImpactPartMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelOptMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelTintMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelTrail1DebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartCancelTrail2DebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edpartChangeDebrisPerSec(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeFilterName(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void edpartChangeTintB(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeTintG(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartChangeTintR(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartCreate(struct nuvec_s *position, i32 type);
+    void edpartFileLoadEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartFileSaveEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartFileSaveEffectsGeneral(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartFileSaveEffectsLevel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartGeneralDebrisIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartGeneralPartIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartLevelDebrisIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartLevelPartIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartMoveList(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edpartMultipleCopyClear(void);
+    void edpartMultipleCopyCopy(void);
+    void edpartSScaleMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartSoundsMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartSwitchMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartToggleFilter(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
     extern i32 edpart_cam_ax;
     extern i32 edpart_cam_ay;
     extern NUVEC edpart_cam_pos;
@@ -30549,85 +30506,83 @@ extern "C" {
     extern struct eduimenu_s *edpart_tint_menu;
     extern struct eduimenu_s *edpart_trail1debris_menu;
     extern struct eduimenu_s *edpart_trail2debris_menu;
-    struct SUIT_INITIALIZER_RECORD_PC *__cdecl Suit_FindFromLetter(char letter);
+    struct SUIT_INITIALIZER_RECORD_PC *Suit_FindFromLetter(char letter);
     extern struct PC_SCENE_MTL_VIEW *SolidMtl3D;
     extern i32 selection_value;
-    void __cdecl cbInteractMenuKeySelect(struct eduimenu_s *menu);
-    i32 __cdecl eduiCheckForPadMenuCancel(struct eduimenu_s *menu, struct FRAME_PAD_PC *pad);
-    void __cdecl eduicbItemGradPickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
-    i32 __cdecl eduicbRenderGradPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
-                                     i32 arg5);
-    void __cdecl edpartDataMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartEmitMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartInstanceMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edpartInstanceSettingsMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl do_maya_mouse_camera(struct edcam_s *camera);
-    i32 __cdecl NuKeyGet(u32 *modifiers);
-    void __cdecl cbInteractMenuScrollTo(struct eduimenu_s *menu, char *text);
+    void cbInteractMenuKeySelect(struct eduimenu_s *menu);
+    i32 eduiCheckForPadMenuCancel(struct eduimenu_s *menu, struct FRAME_PAD_PC *pad);
+    void eduicbItemGradPickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i32 eduicbRenderGradPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
+    void edpartDataMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartEmitMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartInstanceMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void edpartInstanceSettingsMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void do_maya_mouse_camera(struct edcam_s *camera);
+    i32 NuKeyGet(u32 *modifiers);
+    void cbInteractMenuScrollTo(struct eduimenu_s *menu, char *text);
     extern NUVEC AttractoBackPackCountPos;
     extern i16 tCHEAT_SELFDESTRUCT;
     extern DETONATOR_s Detonator[10];
-    void __cdecl Detonator_Detonate(struct DETONATOR_s *arg0);
+    void Detonator_Detonate(struct DETONATOR_s *arg0);
     extern f32 aiEditor_DrawYOffset;
-    void __cdecl PlatInstBounce(i32 index, f32 impulse, f32 spring, f32 damping);
-    void __cdecl edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour,
-                                         struct PC_SCENE_MTL_VIEW *material);
-    void __cdecl edbriDrawCursor(void);
+    void PlatInstBounce(i32 index, f32 impulse, f32 spring, f32 damping);
+    void edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material);
+    void edbriDrawCursor(void);
     extern struct PC_SCENE_MTL_VIEW *edbri_mtl_zoff;
     extern struct eduimenu_s *edbri_ropecolour_menu;
-    void __cdecl edbricbCancelRopeColourMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edbricbSetRopeColour(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl eduiItemColourPickSetRGB(struct edui_colour_pick_s *arg0, f32 arg1, f32 arg2, f32 arg3);
-    void __cdecl FS_BuildFilterBlocks(char *arg0);
-    void __cdecl FS_BuildFilterOutBlocks(char *arg0);
+    void edbricbCancelRopeColourMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edbricbSetRopeColour(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void eduiItemColourPickSetRGB(struct edui_colour_pick_s *arg0, f32 arg1, f32 arg2, f32 arg3);
+    void FS_BuildFilterBlocks(char *arg0);
+    void FS_BuildFilterOutBlocks(char *arg0);
     extern char FS_ParentEntry[8];
-    void __cdecl NuFileCloseDir(i32 file);
-    i32 __cdecl NuFileOpenDir(char *path);
-    void __cdecl eduiFntPrintEx(void *font, i32 x, i32 y, i32 alignment, char *format, ...);
-    void __cdecl eduicbMenuOpenAllexpanders(struct eduimenu_s *menu);
+    void NuFileCloseDir(i32 file);
+    i32 NuFileOpenDir(char *path);
+    void eduiFntPrintEx(void *font, i32 x, i32 y, i32 alignment, char *format, ...);
+    void eduicbMenuOpenAllexpanders(struct eduimenu_s *menu);
     extern i32 ui_bgmtl;
-    void __cdecl edbitsDrawCircleTilted(struct nuvec_s *arg0, f32 arg1, i32 arg2, struct PC_SCENE_MTL_VIEW *arg3,
-                                        i32 arg4, i32 arg5);
-    void __cdecl edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material);
-    void __cdecl edgraDrawCursor(void);
+    void edbitsDrawCircleTilted(struct nuvec_s *arg0, f32 arg1, i32 arg2, struct PC_SCENE_MTL_VIEW *arg3, i32 arg4,
+                                i32 arg5);
+    void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material);
+    void edgraDrawCursor(void);
     extern struct PC_SCENE_MTL_VIEW *edgra_mtl;
-    void __cdecl cbCancelMessageMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbCancelMessageMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     extern char edbits_datapath[256];
     extern i32 edbits_override_backups;
-    i32 __cdecl edppSaveEffects(char *filename, u8 page);
+    i32 edppSaveEffects(char *filename, u8 page);
     extern char *edpp_save_names[6];
     extern i32 edpp_usememcard;
-    void __cdecl edptlcbCancelClipboardMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl edptlcbCutClipboard(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edptlcbPasteClipboard(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edptlcbCancelClipboardMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void edptlcbCutClipboard(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edptlcbPasteClipboard(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern struct eduimenu_s *messagemenu;
     extern struct eduimenu_s *ptlclipmenu;
-    void __cdecl cbPtlCancelInstanceSettingsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void __cdecl cbPtlChangePriority(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl cbPtlToggleDynamicPriority(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlCancelInstanceSettingsMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbPtlChangePriority(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbPtlToggleDynamicPriority(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern struct eduimenu_s *edptl_instancesettings_menu;
-    void __cdecl edptlcbScaleEffectMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edptlcbScaleEffectMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern f32 cable_slack;
     extern i32 nsegments_drawn;
     extern f32 nsegments_per_unit;
     extern f32 slack_factor;
     extern i32 solid_cable;
-    void __cdecl edanimParamDestroy(i32 parameter_index);
-    void __cdecl edanimParticleCreate(struct nuvec_s *position);
-    void __cdecl edanimParticlePlace(i32 particle_index, struct nuvec_s *position);
-    void __cdecl edanimSoundCreate(struct nuvec_s *position);
-    void __cdecl edanimSoundDestroy(i32 parameter_index, i32 sound_index);
-    void __cdecl edanimSoundPlace(i32 sound_index, struct nuvec_s *position);
+    void edanimParamDestroy(i32 parameter_index);
+    void edanimParticleCreate(struct nuvec_s *position);
+    void edanimParticlePlace(i32 particle_index, struct nuvec_s *position);
+    void edanimSoundCreate(struct nuvec_s *position);
+    void edanimSoundDestroy(i32 parameter_index, i32 sound_index);
+    void edanimSoundPlace(i32 sound_index, struct nuvec_s *position);
     extern i32 edanim_cam_ax;
     extern i32 edanim_cam_ay;
     extern struct eduimenu_s *edanim_options_menu;
-    void __cdecl edbriBridgeDestroy(i32 arg0);
+    void edbriBridgeDestroy(i32 arg0);
     extern i32 edbri_cam_ax;
     extern i32 edbri_cam_ay;
-    void __cdecl edbricbFileSave(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbPlankInstanceMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl edbricbPostInstanceMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void __cdecl ResetPaintPuzzle(struct WORLDINFO_s *world);
+    void edbricbFileSave(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbPlankInstanceMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void edbricbPostInstanceMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void ResetPaintPuzzle(struct WORLDINFO_s *world);
     extern void *factoryb_netpacket;
     extern struct gizmo_pc_s *forcetube;
     extern nuhspecial_s green_light;
@@ -30639,31 +30594,31 @@ extern "C" {
     extern struct gizmo_pc_s *paintobst[6];
     extern struct gizmo_pc_s *paintpanel[3];
     extern nuhspecial_s painttargetcolour[3];
-    void __cdecl Customiser_SaveModelTextureIDs(void *customiser, struct CHARACTER_MODEL_LAYERS_PC *model);
+    void Customiser_SaveModelTextureIDs(void *customiser, struct CHARACTER_MODEL_LAYERS_PC *model);
     extern LEVEL_OBJECT_CONFIG_PC ObjTab[750];
     extern i32 CharacterLoadAreaModelsPc;
-    void __cdecl LoadSingleCharacter(BGPROCINFO *);
-    void __cdecl UpdateCharacterLoad(void);
+    void LoadSingleCharacter(BGPROCINFO *);
+    void UpdateCharacterLoad(void);
     extern i32 g_loadingCharacterInHub;
     extern i32 hub_character_ready;
     extern f32 KITPOS2Y;
     extern i32 LEGOOBJ_CHARKIT;
     extern i32 LEGOOBJ_MINIKIT;
     extern f32 teamswitchtimer;
-    f32 __cdecl GetAspectRatio(void);
+    f32 GetAspectRatio(void);
     extern f32 LastTouchTime;
     extern f32 TopShelfScale[6];
     extern i32 subitemselected;
     extern f32 toppush[6];
     extern f32 topscale[6];
-    u8 __cdecl Text_MenuColourLerp(u8 first, u8 second, f32 amount);
+    u8 Text_MenuColourLerp(u8 first, u8 second, f32 amount);
     extern i32 PickUpFlickerFrames;
     extern i32 PickUpFlickerTest;
     extern i32 PickupFlickerFrame;
-    f32 __cdecl NuMouseReadXRel(void);
-    f32 __cdecl NuMouseReadYRel(void);
-    f32 __cdecl NuMouseReadZRel(void);
-    i32 __cdecl NuPs2ApplyDeadZone(i32 raw_value, i32 dead_zone);
+    f32 NuMouseReadXRel(void);
+    f32 NuMouseReadYRel(void);
+    f32 NuMouseReadZRel(void);
+    i32 NuPs2ApplyDeadZone(i32 raw_value, i32 dead_zone);
 #ifdef __cplusplus
 }
 #endif
@@ -30887,10 +30842,10 @@ enum { AREAFLAG_SINGLE_BUFFER = 8 };
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl GameAudio_Init(GAMEAUDIO_PC *audio);
-    void __cdecl MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry);
-    i32 __cdecl GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform);
-    i32 __cdecl GameAudio_CheckReverb_LSW(void);
+    void GameAudio_Init(GAMEAUDIO_PC *audio);
+    void MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry);
+    i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform);
+    i32 GameAudio_CheckReverb_LSW(void);
     extern GAMEAUDIO_PC GameAudioLswPc;
     extern GAMEAUDIO_PC GameAudioAlternatePc;
     extern const char GameAudioName00753354Pc[11];
@@ -30962,8 +30917,8 @@ extern "C" {
     extern const char GameAudioName0075c510Pc[12];
     extern const char GameAudioName0075c51cPc[11];
     extern const char GameAudioName0075c528Pc[12];
-    void __cdecl Hub_UpdateMiniKits(WORLDINFO *world);
-    void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
+    void Hub_UpdateMiniKits(WORLDINFO *world);
+    void Customiser_Update(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
     extern i32 customiser_quit;
     extern const char ExtrasNameFormatPc[7];
     extern MENU_VIDEO_OPTIONS_PC MenuVideoOptionsPc;
@@ -30979,59 +30934,59 @@ extern "C" {
     extern const char MenuEffects4xFormatPc[7];
     extern const char MenuEffects2xFormatPc[7];
 #ifdef __cplusplus
-    bool __cdecl MenuCanChangeMultisamplePc(void);
-    bool __cdecl MenuCanChangeShadowsPc(void);
+    bool MenuCanChangeMultisamplePc(void);
+    bool MenuCanChangeShadowsPc(void);
 #endif
-    void __cdecl MenuEnterVideoPc(MENU *);
-    void __cdecl MenuDrawVideoPc(MENU *);
-    void __cdecl MenuUpdateVideoPc(MENU *);
-    void __cdecl MenuExitVideoPc(MENU *);
-    void __cdecl MenuEnterEffectsPc(MENU *);
-    void __cdecl MenuDrawEffectsPc(MENU *);
-    void __cdecl MenuUpdateEffectsPc(MENU *);
-    void __cdecl MenuExitEffectsPc(MENU *);
-    void __cdecl MenuApplyVideoPc(void);
-    void __cdecl MenuCancelVideoPc(void);
+    void MenuEnterVideoPc(MENU *);
+    void MenuDrawVideoPc(MENU *);
+    void MenuUpdateVideoPc(MENU *);
+    void MenuExitVideoPc(MENU *);
+    void MenuEnterEffectsPc(MENU *);
+    void MenuDrawEffectsPc(MENU *);
+    void MenuUpdateEffectsPc(MENU *);
+    void MenuExitEffectsPc(MENU *);
+    void MenuApplyVideoPc(void);
+    void MenuCancelVideoPc(void);
     extern f32 MenuVideoConfirmDurationPc;
     extern i32 MenuVideoConfirmWaitPc;
     extern const char MenuVideoCountdownFormatPc[9];
-    void __cdecl MenuEnterVideoConfirmPc(MENU *);
-    void __cdecl MenuDrawVideoConfirmPc(MENU *);
-    void __cdecl MenuUpdateVideoConfirmPc(MENU *);
-    void __cdecl MenuExitVideoConfirmPc(MENU *);
-    void __cdecl MenuDrawNoticePc(char *, u32, u32, u32);
-    void __cdecl MenuEnterHiresNoticePc(MENU *);
-    void __cdecl MenuDrawHiresNoticePc(MENU *);
-    void __cdecl MenuUpdateHiresNoticePc(MENU *);
-    void __cdecl MenuExitHiresNoticePc(MENU *);
-    void __cdecl MenuEnterQuitPc(MENU *);
-    void __cdecl MenuDrawQuitPc(MENU *);
-    void __cdecl MenuUpdateQuitPc(MENU *);
-    void __cdecl MenuExitQuitPc(MENU *);
-    __declspec(noreturn) void __cdecl PcQuitToWindows(void);
-    void __cdecl PauseGame(i32);
-    void __cdecl PadOutPause(i32, WORLDINFO *);
-    void __cdecl DropOut(i32, i32, i32, i32);
-    void __cdecl MenuDrawPauseMain(MENU *);
-    void __cdecl MenuUpdatePauseMain(MENU *);
-    void __cdecl MenuDrawPauseRestart(MENU *);
-    void __cdecl MenuDrawPauseExit(MENU *);
-    void __cdecl MenuUpdatePauseExit(MENU *);
-    void __cdecl MenuDrawAutoSaveCancel(MENU *);
-    void __cdecl MenuUpdateAutoSaveCancel(MENU *);
-    i32 __cdecl saveloadLoadSlot(i32 slot, void *buffer, i32 size);
-    void __cdecl saveloadASLoad(i32 slot, void *buffer, i32 size);
-    void __cdecl saveloadASCallEachFrame(void);
+    void MenuEnterVideoConfirmPc(MENU *);
+    void MenuDrawVideoConfirmPc(MENU *);
+    void MenuUpdateVideoConfirmPc(MENU *);
+    void MenuExitVideoConfirmPc(MENU *);
+    void MenuDrawNoticePc(char *, u32, u32, u32);
+    void MenuEnterHiresNoticePc(MENU *);
+    void MenuDrawHiresNoticePc(MENU *);
+    void MenuUpdateHiresNoticePc(MENU *);
+    void MenuExitHiresNoticePc(MENU *);
+    void MenuEnterQuitPc(MENU *);
+    void MenuDrawQuitPc(MENU *);
+    void MenuUpdateQuitPc(MENU *);
+    void MenuExitQuitPc(MENU *);
+    __declspec(noreturn) void PcQuitToWindows(void);
+    void PauseGame(i32);
+    void PadOutPause(i32, WORLDINFO *);
+    void DropOut(i32, i32, i32, i32);
+    void MenuDrawPauseMain(MENU *);
+    void MenuUpdatePauseMain(MENU *);
+    void MenuDrawPauseRestart(MENU *);
+    void MenuDrawPauseExit(MENU *);
+    void MenuUpdatePauseExit(MENU *);
+    void MenuDrawAutoSaveCancel(MENU *);
+    void MenuUpdateAutoSaveCancel(MENU *);
+    i32 saveloadLoadSlot(i32 slot, void *buffer, i32 size);
+    void saveloadASLoad(i32 slot, void *buffer, i32 size);
+    void saveloadASCallEachFrame(void);
 
-    i32 __cdecl MenuInMemoryCard(void);
-    i32 __cdecl Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *);
-    void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
-    void __cdecl UpdateCharacterLoad(void);
-    void __cdecl MakeMenuPacket(void);
-    void __cdecl Hub_UpdateMiniKits(WORLDINFO *);
-    i32 __cdecl Episode_IsComplete(EPISODEDATA_PC *, i32 *);
-    void __cdecl GizBuildIt_SetToEnd(GIZBUILDIT_PC *);
-    GIZBUILDIT_PC *__cdecl GizBuildIt_FindNearest(WORLDINFO *, GAMEOBJECT *, i32, i32);
+    i32 MenuInMemoryCard(void);
+    i32 Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *);
+    void Customiser_Update(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
+    void UpdateCharacterLoad(void);
+    void MakeMenuPacket(void);
+    void Hub_UpdateMiniKits(WORLDINFO *);
+    i32 Episode_IsComplete(EPISODEDATA_PC *, i32 *);
+    void GizBuildIt_SetToEnd(GIZBUILDIT_PC *);
+    GIZBUILDIT_PC *GizBuildIt_FindNearest(WORLDINFO *, GAMEOBJECT *, i32, i32);
     extern i32 HubTrueJediTypeAlphaPc;
     extern f32 HubMiniKitOpenThresholdPc;
     extern i32 HubCompletedAreasPc;
@@ -31039,7 +30994,7 @@ extern "C" {
     extern NUVEC HubForceBackPositionPc;
     extern f32 HubForceBackRadiusPc;
     extern f32 HubMiniKitOpenTimePc;
-    extern void(__cdecl *HubUpdateAIFnPc)(WORLDINFO *);
+    extern void (*HubUpdateAIFnPc)(WORLDINFO *);
     extern i32 shop_quit;
     extern i32 shop_save_done;
     extern i32 SHOPACTIVE;
@@ -31049,18 +31004,18 @@ extern "C" {
     extern i32 customiser_changed;
     extern GAMESAVE TempGame;         /* 856c38, native0x7e4c owner. */
     extern GAMESAVE OldCustomiseGame; /* 85ea98, native0x7e4c owner. */
-    void __cdecl Hub_Update(WORLDINFO *);
+    void Hub_Update(WORLDINFO *);
     extern i32 HubDoorAreaPc;
-    void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
-    void __cdecl Customiser_Init(CUSTOMISER_LAYERS_PC *);
-    void __cdecl Customiser_Reset(CUSTOMISER_LAYERS_PC *);
-    void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *);
-    void __cdecl Customiser_TransformToPanel(CUSTOMISER_LAYERS_PC *);
-    void __cdecl MenuDrawCustomiserPc(MENU *);
-    void __cdecl MenuUpdateCustomiserPc(MENU *);
-    i32 __cdecl CustomiserMenu_Update(void);
-    i32 __cdecl Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *, i32, i32, i32, i32);
-    void __cdecl Hub_Load(WORLDINFO *, VARIPTR *, VARIPTR *);
+    void Customiser_LoadAll(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
+    void Customiser_Init(CUSTOMISER_LAYERS_PC *);
+    void Customiser_Reset(CUSTOMISER_LAYERS_PC *);
+    void Customiser_Draw3D(CUSTOMISER_LAYERS_PC *);
+    void Customiser_TransformToPanel(CUSTOMISER_LAYERS_PC *);
+    void MenuDrawCustomiserPc(MENU *);
+    void MenuUpdateCustomiserPc(MENU *);
+    i32 CustomiserMenu_Update(void);
+    i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *, i32, i32, i32, i32);
+    void Hub_Load(WORLDINFO *, VARIPTR *, VARIPTR *);
 
     /* Append declarations inside saga.h extern "C" block. */
     extern f32 PANEL_MINIKITCOUNTSCALE;
@@ -31130,14 +31085,14 @@ extern "C" {
     extern i16 TextIdPc8810c0;
 
     /* Append inside saga.h extern "C" block; native C ABI. Existing identical prototypes may be retained once. */
-    void __cdecl SmartText(char *, f32, f32, f32, f32, f32, f32, i32, i32, i32, i32, f32, i32);
-    char *__cdecl TextButtonStringPc(i32, const char *, const char *);
-    char *__cdecl TextInputActionLabelPc(i32, i32, i32, i32);
-    i32 __cdecl Text_ExpandButtonString(char *, char *);
-    void __cdecl DrawPlayerIconPrompts(i32, i32, f32, i32, i32, i32, i32, i32, i32, f32, i32, i32, i32, i32);
-    void __cdecl Hub_DrawImportantBrick(i32, f32, f32, f32, i32, i32);
-    char *__cdecl GameObj_GetNamePc(i32, GAMEOBJECT *, char *);
-    void __cdecl Collection_Draw(COLLECTION_BUILD_PC *, f32, f32, f32, APICHARACTERMODELLIST *, f32, i32);
+    void SmartText(char *, f32, f32, f32, f32, f32, f32, i32, i32, i32, i32, f32, i32);
+    char *TextButtonStringPc(i32, const char *, const char *);
+    char *TextInputActionLabelPc(i32, i32, i32, i32);
+    i32 Text_ExpandButtonString(char *, char *);
+    void DrawPlayerIconPrompts(i32, i32, f32, i32, i32, i32, i32, i32, i32, f32, i32, i32, i32, i32);
+    void Hub_DrawImportantBrick(i32, f32, f32, f32, i32, i32);
+    char *GameObj_GetNamePc(i32, GAMEOBJECT *, char *);
+    void Collection_Draw(COLLECTION_BUILD_PC *, f32, f32, f32, APICHARACTERMODELLIST *, f32, i32);
 
 #ifdef __cplusplus
     extern "C" {
@@ -31196,28 +31151,28 @@ extern "C" {
 #ifdef __cplusplus
     extern "C" {
 #endif
-        void __cdecl WipeBackToHub(void);
-        void __cdecl Hub_UpdateFreePlaySelect(void);
-        void __cdecl InitChallenge(i32);
-        void __cdecl MenuInitSelectMode(MENU *);
-        void __cdecl MenuInitBonusMode(MENU *);
-        void __cdecl MenuDrawSelectMode(MENU *);
-        void __cdecl MenuDrawBonusMode(MENU *);
-        void __cdecl MenuUpdateSelectMode(MENU *);
-        void __cdecl MenuUpdateBonusMode(MENU *);
-        void __cdecl MenuInitFreePlay(MENU *);
-        void __cdecl MenuUpdateFreePlay(MENU *);
-        void __cdecl MenuDrawFreePlay(MENU *);
+        void WipeBackToHub(void);
+        void Hub_UpdateFreePlaySelect(void);
+        void InitChallenge(i32);
+        void MenuInitSelectMode(MENU *);
+        void MenuInitBonusMode(MENU *);
+        void MenuDrawSelectMode(MENU *);
+        void MenuDrawBonusMode(MENU *);
+        void MenuUpdateSelectMode(MENU *);
+        void MenuUpdateBonusMode(MENU *);
+        void MenuInitFreePlay(MENU *);
+        void MenuUpdateFreePlay(MENU *);
+        void MenuDrawFreePlay(MENU *);
 #ifdef __cplusplus
     }
 #endif
 
-    void __cdecl Hub_DrawPanel(WORLDINFO *);
-    void __cdecl DrawShopPanel(void);
-    void __cdecl UpdateGameMessages(void);
-    void __cdecl DrawGameMessages(void);
-    void __cdecl Hint_Draw(i32);
-    extern void(__cdecl *ShopDrawPanelFnPc)(void);
+    void Hub_DrawPanel(WORLDINFO *);
+    void DrawShopPanel(void);
+    void UpdateGameMessages(void);
+    void DrawGameMessages(void);
+    void Hint_Draw(i32);
+    extern void (*ShopDrawPanelFnPc)(void);
 
 #ifdef __cplusplus
 }
@@ -31226,12 +31181,12 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl NuSpecialFindMulti(NUGSCN *, NUSPECIALHANDLE *, char *, i32, i32);
-    void __cdecl InitShop(WORLDINFO *);
-    void __cdecl DrawShop3D(WORLDINFO *);
-    void __cdecl Doors_Check(WORLDINFO *, GAMEOBJECT *);
-    void __cdecl TransformGameMessages(NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl GizmoSysPanelDraw(void *, void *, f32);
+    i32 NuSpecialFindMulti(NUGSCN *, NUSPECIALHANDLE *, char *, i32, i32);
+    void InitShop(WORLDINFO *);
+    void DrawShop3D(WORLDINFO *);
+    void Doors_Check(WORLDINFO *, GAMEOBJECT *);
+    void TransformGameMessages(NUVEC *, NUVEC *, NUVEC *);
+    void GizmoSysPanelDraw(void *, void *, f32);
     extern i32 ShowPlayerCoordinatePc;
 #ifdef __cplusplus
 }
@@ -31244,9 +31199,9 @@ STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) == 0x10);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl InitAICreatures(AISYS_PC *);
-    void __cdecl AIPathCnxHelperSysReset(WORLDINFO *, struct ai_helper_system_pc_s *);
-    void __cdecl GameAISysReset(AISYS_PC *);
+    void InitAICreatures(AISYS_PC *);
+    void AIPathCnxHelperSysReset(WORLDINFO *, struct ai_helper_system_pc_s *);
+    void GameAISysReset(AISYS_PC *);
 #ifdef __cplusplus
 }
 #endif
@@ -31267,13 +31222,13 @@ STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, serve_player) == 0x14c);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl GameAISysStartFrame(AISYS_PC *);
-    i32 __cdecl CheckPosAIArea(AIAREA_PC *, NUVEC *, f32);
-    void __cdecl LSW_Hub_InitAI(WORLDINFO *);
-    void __cdecl LSW_Hub_ResetAI(WORLDINFO *);
-    void __cdecl LSW_Hub_UpdateAI(WORLDINFO *);
-    void *__cdecl Condition_InHubAreaInit(AISYS_PC *, char *, AISCRIPT_PC *);
-    f32 __cdecl Condition_InHubArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    void GameAISysStartFrame(AISYS_PC *);
+    i32 CheckPosAIArea(AIAREA_PC *, NUVEC *, f32);
+    void LSW_Hub_InitAI(WORLDINFO *);
+    void LSW_Hub_ResetAI(WORLDINFO *);
+    void LSW_Hub_UpdateAI(WORLDINFO *);
+    void *Condition_InHubAreaInit(AISYS_PC *, char *, AISCRIPT_PC *);
+    f32 Condition_InHubArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 #ifdef __cplusplus
 }
 #endif
@@ -31281,9 +31236,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl ReStoreStatusTakeOverObjectSys(i32 restore_progress);
-    AITRIGGERSET_s *__cdecl AITriggerSetCreate(AITRIGGERSETSYS_s *, FLOWBOX_PC *);
-    void __cdecl AITriggerSysAutoSetUp(WORLDINFO *, AITRIGGERSETSYS_s *);
+    void ReStoreStatusTakeOverObjectSys(i32 restore_progress);
+    AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *, FLOWBOX_PC *);
+    void AITriggerSysAutoSetUp(WORLDINFO *, AITRIGGERSETSYS_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -31291,15 +31246,15 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl SetSpecialMove(GAMEOBJECT *, AIPATHNODE_PC *, AIPATHNODE_PC *, i8);
-    i32 __cdecl TryToTeleportToNextNode(GAMEOBJECT *, AIPATHNODE_PC *, i32);
-    i32 __cdecl StarWars_PrepareR2D2Glide(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 __cdecl StarWars_PrepareHatch(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 __cdecl StarWars_PrepareHoverTube(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 __cdecl StarWars_PrepareBigJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 __cdecl StarWars_PrepareTakeOverJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *, APIOBJECT_PC *, i32);
-    i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    void SetSpecialMove(GAMEOBJECT *, AIPATHNODE_PC *, AIPATHNODE_PC *, i8);
+    i32 TryToTeleportToNextNode(GAMEOBJECT *, AIPATHNODE_PC *, i32);
+    i32 StarWars_PrepareR2D2Glide(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 StarWars_PrepareHatch(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 StarWars_PrepareHoverTube(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 StarWars_PrepareBigJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 StarWars_PrepareTakeOverJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 StarWars_PrepareObstacle(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 StarWars_PrepareJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -31312,12 +31267,12 @@ STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl UpdateStats(void);
-    void __cdecl GizmoPickups_SetOnOff(void);
-    f32 __cdecl CurrentHintAlpha(void);
-    void __cdecl DrawMiniKitCount(f32, f32, i32, i32);
-    u32 __cdecl Cheat_MultiplyScore(u32);
-    i32 __cdecl GizmoPickup_NumberOfType(WORLDINFO *, i32, u8);
+    void UpdateStats(void);
+    void GizmoPickups_SetOnOff(void);
+    f32 CurrentHintAlpha(void);
+    void DrawMiniKitCount(f32, f32, i32, i32);
+    u32 Cheat_MultiplyScore(u32);
+    i32 GizmoPickup_NumberOfType(WORLDINFO *, i32, u8);
 #ifdef __cplusplus
 }
 #endif
@@ -31327,7 +31282,7 @@ extern "C" {
 #endif
     extern i16 TextIdPc880818;
     extern i16 TextIdPc880834;
-    void __cdecl Arcade_UpdatePanel(i32 paused);
+    void Arcade_UpdatePanel(i32 paused);
 #ifdef __cplusplus
 }
 #endif
@@ -31335,7 +31290,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 alpha);
+    i32 DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 alpha);
 #ifdef __cplusplus
 }
 #endif
@@ -31362,7 +31317,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl GizPanel_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
+    void GizPanel_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -31370,10 +31325,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl BuildIt_MoveCode(GAMEOBJECT *);
-    void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *);
-    void __cdecl GizBuildIt_SetHeadTarget(GIZBUILDIT_s *, GAMEOBJECT *);
-    void __cdecl GizBuildIt_SetStepTime(GIZBUILDIT_s *, GAMEOBJECT *);
+    void BuildIt_MoveCode(GAMEOBJECT *);
+    void GizBuildItPushAwayFromEnd(GAMEOBJECT *);
+    void GizBuildIt_SetHeadTarget(GIZBUILDIT_s *, GAMEOBJECT *);
+    void GizBuildIt_SetStepTime(GIZBUILDIT_s *, GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif
@@ -31388,23 +31343,22 @@ struct POST_SHADER_PROGRAM_PC {
 
 STATIC_ASSERT(sizeof(POST_SHADER_PROGRAM_PC) == 0x10);
 extern "C" {
-    u32 *__cdecl PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *);
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuFramebufferGetAttachedTex(PC_FRAMEBUFFER_PC *, i32, i32 *, i32 *);
-    void __cdecl PCGraphicsFramebufferBarrierPc(i32, i32);
-    void __cdecl PCGraphicsFramebufferActionPc(i32);
-    void __cdecl PCGraphicsSubmitViewportPc(i32, i32, i32, i32);
-    void __cdecl PCGraphicsSetSamplerTuplePc(u32, const u32 *);
-    void __cdecl PCGraphicsDrawPostEffectQuadPc(void);
-    void __cdecl PCGraphicsDrawPostEffectIndexedPc(void);
-    void __cdecl PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *,
-                                       i32);
-    void __cdecl PostFilterBlitTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32,
-                                         POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *);
-    void __cdecl PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32,
-                                         POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *);
-    void __cdecl PCDevicePostEffectBarrierPc(void);
-    void __cdecl NuRndrEndFrameActionPc(void);
-    void __cdecl NuPostEffectEnd(void);
+    u32 *PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *);
+    GRAPHICS_RENDER_TEXTURE_PC *NuFramebufferGetAttachedTex(PC_FRAMEBUFFER_PC *, i32, i32 *, i32 *);
+    void PCGraphicsFramebufferBarrierPc(i32, i32);
+    void PCGraphicsFramebufferActionPc(i32);
+    void PCGraphicsSubmitViewportPc(i32, i32, i32, i32);
+    void PCGraphicsSetSamplerTuplePc(u32, const u32 *);
+    void PCGraphicsDrawPostEffectQuadPc(void);
+    void PCGraphicsDrawPostEffectIndexedPc(void);
+    void PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *, i32);
+    void PostFilterBlitTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32,
+                                 POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *);
+    void PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32,
+                                 POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *);
+    void PCDevicePostEffectBarrierPc(void);
+    void NuRndrEndFrameActionPc(void);
+    void NuPostEffectEnd(void);
 }
 
 #endif
@@ -31415,10 +31369,10 @@ STATIC_ASSERT(offsetof(NURNDRLIBSCENE, burnout_parameters_pc) == 0x58);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl BurnoutApply(i32);
-    void __cdecl NuRndrSetBurnoutParametersPc(i32, const BURN_PARAMETERS_PC *);
-    void __cdecl NuRndrSetShadowCoefficientPc(i32, f32);
-    void __cdecl NuDeferredShadingRender(void);
+    void BurnoutApply(i32);
+    void NuRndrSetBurnoutParametersPc(i32, const BURN_PARAMETERS_PC *);
+    void NuRndrSetShadowCoefficientPc(i32, f32);
+    void NuDeferredShadingRender(void);
 #ifdef __cplusplus
 }
 #endif
@@ -31426,10 +31380,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl RenderShadowLights(i32);
-    i32 __cdecl NuSpecialSetClipping(i32, i32);
-    void __cdecl NuSpecialClearShadowClipTestResults(void);
-    void __cdecl DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *, i32, i32);
+    void RenderShadowLights(i32);
+    i32 NuSpecialSetClipping(i32, i32);
+    void NuSpecialClearShadowClipTestResults(void);
+    void DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *, i32, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -31450,14 +31404,14 @@ STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, light_direction4_pc) == 0
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl SetShadowLight(void);
+    void SetShadowLight(void);
     extern i32 PostShadowCubeFaceIndicesPc[6][4];
     extern f32 PostShadowPlaneExtrusionPc;
     extern f32 PostBlurHighInputBiasPc;
     extern f32 PostBlurHighOutputBiasPc;
-    void __cdecl PostShadowComputeFrustumCubePc(const NUCAMERA *, NUVEC4 *, NUVEC4 *);
-    i32 __cdecl PostShadowComputePlanesPc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *);
-    void __cdecl PostShadowComputeCapsulePc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *, NUVEC4 *, f32 *);
+    void PostShadowComputeFrustumCubePc(const NUCAMERA *, NUVEC4 *, NUVEC4 *);
+    i32 PostShadowComputePlanesPc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *);
+    void PostShadowComputeCapsulePc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *, NUVEC4 *, f32 *);
 #ifdef __cplusplus
 }
 #endif
@@ -31465,8 +31419,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl NuSound3SuspendForFocusPc(void);
-    void __cdecl NuSound3ResumeAfterFocusPc(void);
+    void NuSound3SuspendForFocusPc(void);
+    void NuSound3ResumeAfterFocusPc(void);
 #ifdef __cplusplus
 }
 #endif
@@ -31496,7 +31450,7 @@ extern "C" {
 #endif
 
 /* Native Indy path-connection movement and lookup ABI. */
-typedef i32(__cdecl *AI_HELPER_FILTER_PC)(AI_HELPER_SLOT_PC *, GAMEOBJECT *, AIPATHCNX_PC *, u8, u8);
+typedef i32 (*AI_HELPER_FILTER_PC)(AI_HELPER_SLOT_PC *, GAMEOBJECT *, AIPATHCNX_PC *, u8, u8);
 
 typedef struct INDY_PREPARE_SPECIAL_MOVE_PC {
     u32 capabilities;
@@ -31531,42 +31485,42 @@ extern "C" {
     extern f32 IndyJumpDistancePc[2];
     extern INDY_PREPARE_SPECIAL_MOVE_PC IndyPrepareSpecialMovePc[7];
     extern AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFnsPc[10];
-    AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *, AIPATHCNX_PC *, u8, void *, u8);
-    i32 __cdecl Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_StartJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_BigJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
-    i32 __cdecl Indy_PrepareWhipSwingPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
-    i32 __cdecl Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused);
-    i32 __cdecl Indy_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks);
-    i32 __cdecl Indy_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *apiobject);
-    void __cdecl Indy_AIPathCnxHelperSysInit(WORLDINFO *world);
-    i32 __cdecl Indy_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
-    i32 __cdecl Indy_MidSpecialMove_ClimbUpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_ClimbDownPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_GrappleStartPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_GrappleClimbPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
-    i32 __cdecl IndyGrappleHelperOccupiedPc(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX_PC *connection,
-                                            u8 direction, u8 type);
-    i32 __cdecl Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
-    void __cdecl InitClimbObjectSys(WORLDINFO *world);
-    void __cdecl ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object);
-    CLIMB_SLOT_PC *__cdecl FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection);
-    INDY_GUIDELINE_PC *__cdecl GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance);
-    AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object,
-                                                       AIPATHCNX_PC *connection, u8 direction, u8 type,
-                                                       AI_HELPER_FILTER_PC filter);
-    GRAPPLE_DYNAMIC_PC *__cdecl Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position);
-    i32 __cdecl IndyGrappleCanJumpPc(GAMEOBJECT *object);
-    void __cdecl PartImpact_ThermalDetonator(PART_PC *part);
-    void __cdecl PartUpdate_ThermalDetonator(PART_PC *part);
-    i32 __cdecl PartDraw_ThermalDetonator(PART_PC *part);
-    void __cdecl PartKill_ThermalDetonator(PART_PC *part, i32 unused);
-    void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object);
+    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *, AIPATHCNX_PC *, u8, void *, u8);
+    i32 Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_StartJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_BigJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 Indy_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
+    i32 Indy_PrepareWhipSwingPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
+    i32 Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 Indy_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused);
+    i32 Indy_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks);
+    i32 Indy_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *apiobject);
+    void Indy_AIPathCnxHelperSysInit(WORLDINFO *world);
+    i32 Indy_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    i32 Indy_MidSpecialMove_ClimbUpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_ClimbDownPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_GrappleStartPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_GrappleClimbPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 Indy_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    i32 IndyGrappleHelperOccupiedPc(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX_PC *connection,
+                                    u8 direction, u8 type);
+    i32 Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    void InitClimbObjectSys(WORLDINFO *world);
+    void ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object);
+    CLIMB_SLOT_PC *FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection);
+    INDY_GUIDELINE_PC *GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance);
+    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object,
+                                               AIPATHCNX_PC *connection, u8 direction, u8 type,
+                                               AI_HELPER_FILTER_PC filter);
+    GRAPPLE_DYNAMIC_PC *Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position);
+    i32 IndyGrappleCanJumpPc(GAMEOBJECT *object);
+    void PartImpact_ThermalDetonator(PART_PC *part);
+    void PartUpdate_ThermalDetonator(PART_PC *part);
+    i32 PartDraw_ThermalDetonator(PART_PC *part);
+    void PartKill_ThermalDetonator(PART_PC *part, i32 unused);
+    void ThermalDetonator_Throw(GAMEOBJECT *object);
 #ifdef __cplusplus
 }
 #endif
@@ -31574,18 +31528,18 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl Batarang_FindTarget(WORLDINFO *, GAMEOBJECT *, i32);
-    void __cdecl Batarang_Release(GAMEOBJECT *, i32);
-    i32 __cdecl Batarang_InitRicochet(PLAYER_BATARANG_SLOT_PC *, NUVEC *);
-    i32 __cdecl Batarang_SeekToTarget(PLAYER_BATARANG_SLOT_PC *);
-    void __cdecl Batarang_MoveCode(GAMEOBJECT *);
-    void __cdecl Batarang_StartThrowQuick(GAMEOBJECT *);
-    void __cdecl Batarangs_Update(void);
-    void __cdecl Batarangs_Draw(void);
+    i32 Batarang_FindTarget(WORLDINFO *, GAMEOBJECT *, i32);
+    void Batarang_Release(GAMEOBJECT *, i32);
+    i32 Batarang_InitRicochet(PLAYER_BATARANG_SLOT_PC *, NUVEC *);
+    i32 Batarang_SeekToTarget(PLAYER_BATARANG_SLOT_PC *);
+    void Batarang_MoveCode(GAMEOBJECT *);
+    void Batarang_StartThrowQuick(GAMEOBJECT *);
+    void Batarangs_Update(void);
+    void Batarangs_Draw(void);
     extern f32 BatarangCatwomanStunTimePc;
     extern f32 BatarangDetonatorHitDelayPc;
-    void __cdecl APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target);
-    void __cdecl APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object);
+    void APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target);
+    void APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object);
 #ifdef __cplusplus
 }
 #endif
@@ -31642,15 +31596,15 @@ extern "C" {
     extern f32 TimerScalePc;
     extern f32 TimerAlphaPc;
     extern i32 ticktock;
-    void __cdecl DrawTimer(i32 time, i32 expanded, i32 reset);
-    void __cdecl TickTockSfx(void);
-    void __cdecl Doors_SetLastDoor(DOOR_s *door);
-    void __cdecl BonusGunshipA_ResetPc(WORLDINFO *);
-    void __cdecl BonusGunshipA_UpdatePc(WORLDINFO *);
-    void __cdecl BonusGunshipB_InitPc(WORLDINFO *);
-    void __cdecl BonusGunshipB_ResetPc(WORLDINFO *);
-    void __cdecl BonusGunshipB_UpdatePc(WORLDINFO *);
-    void __cdecl BonusGunshipB_PanelPc(WORLDINFO *);
+    void DrawTimer(i32 time, i32 expanded, i32 reset);
+    void TickTockSfx(void);
+    void Doors_SetLastDoor(DOOR_s *door);
+    void BonusGunshipA_ResetPc(WORLDINFO *);
+    void BonusGunshipA_UpdatePc(WORLDINFO *);
+    void BonusGunshipB_InitPc(WORLDINFO *);
+    void BonusGunshipB_ResetPc(WORLDINFO *);
+    void BonusGunshipB_UpdatePc(WORLDINFO *);
+    void BonusGunshipB_PanelPc(WORLDINFO *);
 #ifdef __cplusplus
 }
 #endif
@@ -31668,7 +31622,7 @@ STATIC_ASSERT(sizeof(SPEEDERCHASE_NETPACKET_PC) == 7);
 STATIC_ASSERT(offsetof(SPEEDERCHASE_NETPACKET_PC, target_count) == 1);
 STATIC_ASSERT(offsetof(SPEEDERCHASE_NETPACKET_PC, killed_count) == 2);
 STATIC_ASSERT(offsetof(SPEEDERCHASE_NETPACKET_PC, phase) == 4);
-typedef i32(__cdecl *LEVEL_BLOWUP_CALLBACK_PC)(GIZMOBLOWUP_PC *, i32);
+typedef i32 (*LEVEL_BLOWUP_CALLBACK_PC)(GIZMOBLOWUP_PC *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -31677,13 +31631,13 @@ extern "C" {
     extern i32 SpeederChaseState1Pc;
     extern f32 SpeederChaseTime0Pc;
     extern f32 SpeederChaseTime1Pc;
-    void __cdecl SpeederChaseA_Init(WORLDINFO *);
-    void __cdecl SpeederChaseA_Reset(WORLDINFO *);
-    void __cdecl SpeederChaseA_Update(WORLDINFO *);
-    void __cdecl SpeederChaseA_Panel(WORLDINFO *);
-    void __cdecl DrawMeleeTargetsPc(i16 *, u8 *, i32);
-    void __cdecl SetLevelBlowupCallbackPc(LEVEL_BLOWUP_CALLBACK_PC callback);
-    i32 __cdecl SpeederBlowupHack(GIZMOBLOWUP_PC *, i32);
+    void SpeederChaseA_Init(WORLDINFO *);
+    void SpeederChaseA_Reset(WORLDINFO *);
+    void SpeederChaseA_Update(WORLDINFO *);
+    void SpeederChaseA_Panel(WORLDINFO *);
+    void DrawMeleeTargetsPc(i16 *, u8 *, i32);
+    void SetLevelBlowupCallbackPc(LEVEL_BLOWUP_CALLBACK_PC callback);
+    i32 SpeederBlowupHack(GIZMOBLOWUP_PC *, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -31794,11 +31748,11 @@ extern "C" {
     extern NUVEC jedib_offsets[3];
     extern i32 jedib_yrot[3];
     extern i16 *JediB_playerids[3];
-    void __cdecl JediB_Init(WORLDINFO *);
-    void __cdecl JediB_Reset(WORLDINFO *);
-    void __cdecl JediB_Update(WORLDINFO *);
-    void __cdecl JediB_DrawPanelPc(WORLDINFO *);
-    void __cdecl DrawMeleeTargetsAlphaPc(i16 *, u8 *, f32 *, i32);
+    void JediB_Init(WORLDINFO *);
+    void JediB_Reset(WORLDINFO *);
+    void JediB_Update(WORLDINFO *);
+    void JediB_DrawPanelPc(WORLDINFO *);
+    void DrawMeleeTargetsAlphaPc(i16 *, u8 *, f32 *, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -31819,9 +31773,9 @@ STATIC_ASSERT(offsetof(TAG_TRANSFER_PC, elapsed) == 52);
 extern "C" {
 #endif
     extern TAG_TRANSFER_PC TagTransfersPc[2];
-    void __cdecl Tag_ResetTransfers(void);
-    void __cdecl Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target);
-    void __cdecl Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count);
+    void Tag_ResetTransfers(void);
+    void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target);
+    void Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count);
 #ifdef __cplusplus
 }
 #endif
@@ -32853,7 +32807,7 @@ class NetStats : public NetSmallStats {
 u32 UtilGetTime(void);
 u32 UtilGetFrameStartTime(void);
 void UtilFrameStart(void);
-extern "C" void __cdecl refpack_init(void);
+extern "C" void refpack_init(void);
 
 class V2Peer {
   public:

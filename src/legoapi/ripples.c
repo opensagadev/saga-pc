@@ -12,7 +12,7 @@ typedef struct world_ripple_cleanup_pc_s {
     i32 count;                         // 0x46f8
 } WORLD_RIPPLE_CLEANUP_PC;             // size 0x46fc
 
-void __cdecl DestroyRippleMtls(WORLDINFO *world) {
+void DestroyRippleMtls(WORLDINFO *world) {
     // MATCH-EXCEPTION: the cast is repeated at each use; a cast local gives the other SIB order (U1)
     i32 i;
     for (i = 0; i < ((WORLD_RIPPLE_CLEANUP_PC *)world)->count; ++i) {
@@ -85,8 +85,8 @@ static RIPPLE_NODE_PC *RippleAllocPc(RIPPLE_SET_PC *set) {
     return NULL;
 }
 
-void __cdecl AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 lifetime, f32 delay,
-                       u32 start_color, u32 end_color, i32 flags, NUMTL *material, NUVEC *velocity) {
+void AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 lifetime, f32 delay, u32 start_color,
+               u32 end_color, i32 flags, NUMTL *material, NUVEC *velocity) {
     RIPPLE_NODE_PC *node;
     if (material == NULL || set == NULL) {
         return;
@@ -170,7 +170,7 @@ static WORLDINFO *RippleEffectsWorldInfoPc = 0;
 static RIPPLE_EFFECT_PC *RippleEffectsCurrentPc = 0;
 static const char *RippleEffectNamesPc[2] = {"water", "forcefield"};
 
-i32 __cdecl LookupRippleEffectIndex(char *name) {
+i32 LookupRippleEffectIndex(char *name) {
     i32 i;
     for (i = 0; i < 2; ++i) {
         if (NuStrICmp(RippleEffectNamesPc[i], name) == 0) {
@@ -231,7 +231,7 @@ static NUFPCOMJMP RippleEffectConfigKeywordsPc[8] = {{"texture_name", RippleText
                                                      {"end_radius", RippleEndRadiusPc},
                                                      {NULL, NULL}};
 
-void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
+void RippleEffects_Configure(WORLDINFO *world, char *config) {
     WORLD_RIPPLE_VIEW_PC *view = (WORLD_RIPPLE_VIEW_PC *)world;
     NUFPAR_PC *parser;
     RIPPLE_EFFECT_PC *effect;
@@ -312,7 +312,7 @@ static void SetupMainPoolPtrs(RIPPLE_NODE_PC *nodes, i32 count) {
     }
 }
 
-void __cdecl InitRipples(RIPPLE_SET_PC **result, VARIPTR *buffer, VARIPTR *unused_end, i32 count) {
+void InitRipples(RIPPLE_SET_PC **result, VARIPTR *buffer, VARIPTR *unused_end, i32 count) {
     RIPPLE_SET_PC *set;
     RIPPLE_NODE_PC *nodes;
     RIPPLE_NODE_PC **erase_list;
@@ -340,7 +340,7 @@ void __cdecl InitRipples(RIPPLE_SET_PC **result, VARIPTR *buffer, VARIPTR *unuse
     (*result)->oldest = NULL;
 }
 
-void __cdecl ResetRippleSet(RIPPLE_SET_PC *set) {
+void ResetRippleSet(RIPPLE_SET_PC *set) {
     RIPPLE_NODE_PC *nodes = set->nodes;
     i32 count = set->capacity;
     memset(nodes, 0, count * sizeof(*nodes));
@@ -382,7 +382,7 @@ static void RippleFreeNodePc(RIPPLE_SET_PC *set, RIPPLE_NODE_PC *node) {
     }
 }
 
-void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
+void UpdateRippleSet(RIPPLE_SET_PC *set) {
     RIPPLE_NODE_PC *node;
     RIPPLE_NODE_PC *next;
     i32 i;
@@ -448,7 +448,7 @@ void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
     RippleEraseCountPc = 0;
 }
 
-void __cdecl DrawRipple(RIPPLE_NODE_PC *node) {
+void DrawRipple(RIPPLE_NODE_PC *node) {
     NURND_VERTEX3D_PC vertices[4];
     NUMTX matrix;
     f32 size = node->initial_size;
@@ -481,7 +481,7 @@ void __cdecl DrawRipple(RIPPLE_NODE_PC *node) {
     NuRndrTriStrip3dClip(vertices, 4, &matrix, node->material);
 }
 
-void __cdecl DrawRippleSet(RIPPLE_SET_PC *set) {
+void DrawRippleSet(RIPPLE_SET_PC *set) {
     RIPPLE_NODE_PC *node;
     i32 i;
     if (set == NULL) {

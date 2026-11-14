@@ -7,7 +7,7 @@ static f32 Cheat_PowerUpTime = 0;
 STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, cheats) == 0);
 STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, count) == 4);
 
-void __cdecl Cheats_Init(CHEAT_PC *cheats) {
+void Cheats_Init(CHEAT_PC *cheats) {
     CHEATSYSTEM_PC *system;
 
     system = CheatSystemPtr;
@@ -22,7 +22,7 @@ void __cdecl Cheats_Init(CHEAT_PC *cheats) {
     } while ((++cheats)->name != NULL);
 }
 
-i32 __cdecl Cheat_FindByName(char *name) {
+i32 Cheat_FindByName(char *name) {
     i32 index;
 
     for (index = 0; index < CheatSystemPtr->count; ++index) {
@@ -33,7 +33,7 @@ i32 __cdecl Cheat_FindByName(char *name) {
     return -1;
 }
 
-void __cdecl Cheats_SetFlags(void) {
+void Cheats_SetFlags(void) {
     CHEATSYSTEM_PC *system = CheatSystemPtr;
     i32 index;
     system->flags = 0;
@@ -55,18 +55,18 @@ void __cdecl Cheats_SetFlags(void) {
     }
 }
 
-i32 __cdecl Cheats_CheckFlags(u32 flags) {
+i32 Cheats_CheckFlags(u32 flags) {
     return (i32)(CheatSystemPtr->flags & flags);
 }
 
-u32 __cdecl Cheat_CheckFlags(i32 index, u32 flags) {
+u32 Cheat_CheckFlags(i32 index, u32 flags) {
     if (index < 0 || index >= CheatSystemPtr->count) {
         return 0;
     }
     return CheatSystemPtr->cheats[index].flags & flags;
 }
 
-void __cdecl Cheat_SetOn(i32 cheat, i32 on, i32 update_save) {
+void Cheat_SetOn(i32 cheat, i32 on, i32 update_save) {
     (void)update_save;
     if (cheat < 0 || cheat >= CheatSystemPtr->count) {
         return;
@@ -75,7 +75,7 @@ void __cdecl Cheat_SetOn(i32 cheat, i32 on, i32 update_save) {
     Cheats_SetFlags();
 }
 
-i32 __cdecl Cheat_IsOn(i32 cheat) {
+i32 Cheat_IsOn(i32 cheat) {
     CHEAT_PC *cheats;
     if (cheat < 0 || cheat >= CheatSystemPtr->count) {
         return 0;
@@ -107,7 +107,7 @@ void Cheat_GetOnOffBitfield(u32 *onoffs, i32 count) {
 }
 
 /* Complete native0056e2a0..0056e2dc. */
-u32 __cdecl Cheat_MultiplyScore(u32 score) {
+u32 Cheat_MultiplyScore(u32 score) {
     u32 flags = CheatSystemPtr->flags;
     if ((flags & 4) != 0) {
         score *= 2;
@@ -127,7 +127,7 @@ u32 __cdecl Cheat_MultiplyScore(u32 score) {
     return score;
 }
 
-void __cdecl Cheats_TurnOff(i32 only_powerups) {
+void Cheats_TurnOff(i32 only_powerups) {
     CHEATSYSTEM_PC *system = CheatSystemPtr;
     i32 index;
     for (index = 0; index < system->count; ++index) {
@@ -138,7 +138,7 @@ void __cdecl Cheats_TurnOff(i32 only_powerups) {
     Cheats_SetFlags();
 }
 
-void __cdecl Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
+void Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
     GAME_MESSAGE_PC *display;
     if (ONEPLAYERPOWERUPS != 0) {
         if (object == NULL) {
@@ -162,7 +162,7 @@ void __cdecl Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
     GameAudio_PlaySfx(0x50, NULL, 0, 0);
 }
 
-i32 __cdecl Cheat_PowerUpActive(i32 index) {
+i32 Cheat_PowerUpActive(i32 index) {
     i32 player;
     if (ONEPLAYERPOWERUPS != 0) {
         if (index != 0 && index != 1) {
@@ -180,7 +180,7 @@ i32 __cdecl Cheat_PowerUpActive(i32 index) {
     return 0;
 }
 
-void __cdecl Cheats_Update(void) {
+void Cheats_Update(void) {
     if (ONEPLAYERPOWERUPS == 0 && Cheat_PowerUpTime > 0.0f) {
         Cheat_PowerUpTime -= FRAMETIME;
         if (Cheat_PowerUpTime <= 0.0f) {
@@ -192,17 +192,17 @@ void __cdecl Cheats_Update(void) {
     }
 }
 
-void __cdecl Cheats_Reset(void) {
+void Cheats_Reset(void) {
     Cheat_PowerUpTime = 0.0f;
     Cheats_SetFlags();
 }
 
-void __cdecl Cheats_FrameUpdate(void) {
+void Cheats_FrameUpdate(void) {
     Cheats_Update();
     Cheats_SetFlags();
 }
 
-void __cdecl Cheat_SetArea(i32 cheat, i32 area_index) {
+void Cheat_SetArea(i32 cheat, i32 area_index) {
     CHEAT_PC *cheats;
 
     if (cheat < 0 || cheat >= CheatSystemPtr->count || area_index < 0 || area_index >= AREACOUNT) {

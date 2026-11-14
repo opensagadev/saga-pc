@@ -39,8 +39,8 @@ typedef struct debris_material_pc_s {
     u32 vertex_flags;                       // 0x1f0
 } DEBRIS_MATERIAL_PC;                       // size 0x1f4
 
-NUMTL *__cdecl CreateAlphaBlendTexture(VARIPTR *buffer, VARIPTR buffer_end, char *name, i32 disable_depth_write,
-                                       i32 alpha_mode, i32 sort_priority, i32 depth_mode) {
+NUMTL *CreateAlphaBlendTexture(VARIPTR *buffer, VARIPTR buffer_end, char *name, i32 disable_depth_write, i32 alpha_mode,
+                               i32 sort_priority, i32 depth_mode) {
     i32 texture_id = NuTexRead(name, buffer, buffer_end);
     DEBRIS_MATERIAL_PC *material;
     buffer->addr = (buffer->addr + 15) & ~15u;

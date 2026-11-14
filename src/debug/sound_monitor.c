@@ -40,7 +40,7 @@ static void SoundSkip(int reason, const char *stage, DWORD thread) {
     }
 }
 
-void __cdecl SagaDebugSoundSetterBeginPc(void) {
+void SagaDebugSoundSetterBeginPc(void) {
     int saved_errno = errno;
     DWORD saved_error = GetLastError();
     LONG active = InterlockedIncrement(&sound_active_setters);
@@ -53,7 +53,7 @@ void __cdecl SagaDebugSoundSetterBeginPc(void) {
     SetLastError(saved_error);
 }
 
-void __cdecl SagaDebugSoundSetterEndPc(const void *source, int count, const void *destination, const void *caller) {
+void SagaDebugSoundSetterEndPc(const void *source, int count, const void *destination, const void *caller) {
     int saved_errno = errno;
     DWORD saved_error = GetLastError();
     DWORD thread = GetCurrentThreadId();
@@ -81,8 +81,8 @@ void __cdecl SagaDebugSoundSetterEndPc(const void *source, int count, const void
     SetLastError(saved_error);
 }
 
-void __cdecl SagaDebugSoundCheckpointPc(const char *stage, void *volatile const *source, volatile const int *count,
-                                        void *volatile const *destination) {
+void SagaDebugSoundCheckpointPc(const char *stage, void *volatile const *source, volatile const int *count,
+                                void *volatile const *destination) {
     int saved_errno = errno;
     DWORD saved_error = GetLastError();
     DWORD thread = GetCurrentThreadId();

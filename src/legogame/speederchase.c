@@ -12,7 +12,7 @@ STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
 STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
 STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
 
-i32 __cdecl SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
+i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
     (void)hit_type;
     if (blowup != NULL) {
         if (NuStrCmp(blowup->name, "thermocrate_011") == 0) {
@@ -37,7 +37,7 @@ i32 SpeederChaseState1Pc = 0;
 f32 SpeederChaseTime0Pc = 0.0f;
 f32 SpeederChaseTime1Pc = 0.0f;
 
-void __cdecl SpeederChaseA_Init(WORLDINFO *world) {
+void SpeederChaseA_Init(WORLDINFO *world) {
     SpeederChaseNetPacketPc = SetLevelHack(7);
     SetLevelExBlowupFlags(3);
     SetLevelBlowupCallbackPc(SpeederBlowupHack);
@@ -71,7 +71,7 @@ void SpeederChaseA_Reset(WORLDINFO *unused0) {
     players_going_forward = 1;
 }
 
-void __cdecl SpeederChaseA_Update(WORLDINFO *world) {
+void SpeederChaseA_Update(WORLDINFO *world) {
     GAMEOBJECT *object;
     NUINSTANIM *animation;
     NUVEC *position;
@@ -140,7 +140,7 @@ void __cdecl SpeederChaseA_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl SpeederChaseA_Panel(WORLDINFO *world) {
+void SpeederChaseA_Panel(WORLDINFO *world) {
     i16 targets[10];
     u8 defeated[10] = {0};
     i32 count;
@@ -179,7 +179,7 @@ void __cdecl SpeederChaseA_Panel(WORLDINFO *world) {
     }
 }
 
-i32 __cdecl ObjIsTargetSpeeder(GAMEOBJECT *object) {
+i32 ObjIsTargetSpeeder(GAMEOBJECT *object) {
     if (object->id != (u16)id_SPEEDERBIKE) {
         return 0;
     }
@@ -232,8 +232,8 @@ f32 speeder_level_height_lerpf = 5.0f;
 f32 zoom_ahead_extra_time = 5.0f;
 f32 zoom_ahead_extra = 3.0f;
 
-i32 __cdecl Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                      char **params, i32 param_count, i32 first_time, f32 elapsed) {
+i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 param_count, i32 first_time, f32 elapsed) {
     SOCK_PC *sock = &WORLD->sock_sys->socks[1];
     GAMEOBJECT *object;
     GAMEOBJECT *reference;
@@ -421,7 +421,7 @@ i32 __cdecl Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     return 0;
 }
 
-f32 __cdecl SpeederChaseATATInOutMul(NUVEC *start, NUVEC *end) {
+f32 SpeederChaseATATInOutMul(NUVEC *start, NUVEC *end) {
     f32 multiplier = (f32)((f64)NuVecXZDist(start, end, NULL) * 0.125);
     if (multiplier > 1.0f) {
         multiplier = 1.0f;

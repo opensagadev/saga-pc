@@ -1,6 +1,6 @@
 #include "saga.h"
 
-i32 __cdecl LookupDebrisEffectPageIgnore(char *name, i8 page, i32 ignore) {
+i32 LookupDebrisEffectPageIgnore(char *name, i8 page, i32 ignore) {
     i32 i;
 
     if (name == NULL) {
@@ -32,11 +32,11 @@ i32 __cdecl LookupDebrisEffectPageIgnore(char *name, i8 page, i32 ignore) {
     return -1;
 }
 
-i32 __cdecl LookupDebrisEffectPage(char *name, i8 page) {
+i32 LookupDebrisEffectPage(char *name, i8 page) {
     return LookupDebrisEffectPageIgnore(name, page, 0);
 }
 
-i32 __cdecl LookupDebrisEffectPageOnly(char *name, i8 page) {
+i32 LookupDebrisEffectPageOnly(char *name, i8 page) {
     i32 i;
 
     if (name == NULL) {
@@ -61,13 +61,13 @@ i32 __cdecl LookupDebrisEffectPageOnly(char *name, i8 page) {
     return -1;
 }
 
-void __cdecl DebrisTypeStatusAlwaysOff(i32 type) {
+void DebrisTypeStatusAlwaysOff(i32 type) {
     if (type != -1) {
         debtab[type]->status = 0;
     }
 }
 
-void __cdecl DebrisTypeStatusAlwaysOn(i32 type) {
+void DebrisTypeStatusAlwaysOn(i32 type) {
     if (type != -1) {
         debtab[type]->status = 2;
     }
@@ -141,7 +141,7 @@ void DebrisSetRenderGroup(i32 group) {
     debris_render_group = group;
 }
 
-void __cdecl PARTStartOffset(i32 index, f32 offset) {
+void PARTStartOffset(i32 index, f32 offset) {
     PART_EMIT_PC *emitter;
     PARTTYPE_LOOKUP_PC *type;
     f32 period;
@@ -182,7 +182,7 @@ void __cdecl PARTStartOffset(i32 index, f32 offset) {
     emitter->time_38 = partglobaltime;
 }
 
-i32 __cdecl AddPARTEffect(i32 effect, NUVEC *position) {
+i32 AddPARTEffect(i32 effect, NUVEC *position) {
     i32 i;
     if (part_emits_used == 40) {
         return -1;
@@ -213,7 +213,7 @@ i32 __cdecl AddPARTEffect(i32 effect, NUVEC *position) {
     return -1;
 }
 
-i32 __cdecl AddFiniteShotPART(i32 effect, NUVEC *position, i32 count) {
+i32 AddFiniteShotPART(i32 effect, NUVEC *position, i32 count) {
     i32 index;
     if (effect == -1) {
         return effect;
@@ -260,7 +260,7 @@ i32 DebAlloc(void) {
     return slot;
 }
 
-void __cdecl DebrisStartOffsetEx(DEBRISKEY_PC *key, f32 offset) {
+void DebrisStartOffsetEx(DEBRISKEY_PC *key, f32 offset) {
     i32 frame_count = (i32)(60.0 * offset);
     DEBRIS_INFO_PC *effect;
     f32 now;
@@ -293,6 +293,6 @@ void __cdecl DebrisStartOffsetEx(DEBRISKEY_PC *key, f32 offset) {
     key->previous_emission_time = -10.0f;
 }
 
-i32 __cdecl LookupDebrisEffect(char *name) {
+i32 LookupDebrisEffect(char *name) {
     return LookupDebrisEffectPage(name, 0);
 }

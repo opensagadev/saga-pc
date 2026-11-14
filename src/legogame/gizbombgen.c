@@ -102,7 +102,7 @@ i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
     return 1;
 }
 
-void *__cdecl GizBombGens_ReserveBufferSpace(void *pointer) {
+void *GizBombGens_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = pointer;
     GIZBOMBGENSYS_s *system;
     i32 i;
@@ -120,7 +120,7 @@ void *__cdecl GizBombGens_ReserveBufferSpace(void *pointer) {
     return system;
 }
 
-void __cdecl GizmoBombGen_Activate(GIZMO_PC *gizmo, i32 active) {
+void GizmoBombGen_Activate(GIZMO_PC *gizmo, i32 active) {
     BOMBGEN_ACTIVATION_READER_PC *generator;
     if (gizmo != NULL) {
         generator = gizmo->object;
@@ -128,7 +128,7 @@ void __cdecl GizmoBombGen_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
-void __cdecl GizmoBombGen_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void GizmoBombGen_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     BOMBGEN_ACTIVATION_READER_PC *generator;
     if (gizmo != NULL && gizmo->object != NULL) {
         generator = gizmo->object;
@@ -137,14 +137,14 @@ void __cdecl GizmoBombGen_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 
-NUVEC *__cdecl GizmoBombGen_GetPos(GIZMO_PC *gizmo) {
+NUVEC *GizmoBombGen_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
     return &((GIZBOMBGEN_s *)gizmo->object)->position;
 }
 
-void __cdecl GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
+void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     WORLDINFO *w = world_ptr;
     ADD_BOMB_RESET_SYS_PC *s = data;
     s->reset = 1;
@@ -156,8 +156,7 @@ void __cdecl GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progres
     s->progress = progress;
 }
 
-static void __cdecl BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system,
-                                               BOMB_GENERATOR_PROGRESS_PC *progress) {
+static void BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system, BOMB_GENERATOR_PROGRESS_PC *progress) {
     BOMB_GENERATOR_RUNTIME_PC *generator = system->items;
     i32 index;
     i32 shared_bomb;
@@ -223,7 +222,7 @@ static void __cdecl BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC 
     }
 }
 
-void __cdecl GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_time) {
+void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_time) {
     WORLDINFO *world = world_pointer;
     BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system = system_pointer;
     u16 model;
@@ -290,7 +289,7 @@ void __cdecl GizBombGens_Update(void *world_pointer, void *system_pointer, f32 d
     }
 }
 
-i32 __cdecl GizBombGens_GetMaxGizmos(void *world_ptr) {
+i32 GizBombGens_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     if (world != NULL) {
         return world->current_level->max_bombgens;
@@ -298,7 +297,7 @@ i32 __cdecl GizBombGens_GetMaxGizmos(void *world_ptr) {
     return 0;
 }
 
-void __cdecl GizBombGens_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
+void GizBombGens_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
     GIZBOMBGENSYS_s *s = data;
     i32 i;
     (void)world;
@@ -312,32 +311,32 @@ void __cdecl GizBombGens_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void
     }
 }
 
-char *__cdecl GizmoBombGen_GetGizmoName(GIZMO_PC *gizmo) {
+char *GizmoBombGen_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo != NULL) {
         return ((GIZBOMBGEN_s *)gizmo->object)->name;
     }
     return NULL;
 }
 
-i32 __cdecl GizmoBombGen_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+i32 GizmoBombGen_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     (void)output;
     (void)mode;
     return ((GIZBOMBGEN_s *)gizmo->object)->flags & 1;
 }
 
-char *__cdecl GizmoBombGen_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+char *GizmoBombGen_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return AIRegistryTextPc007575bc;
 }
 
-i32 __cdecl GizmoBombGen_GetNumOutputs(GIZMO_PC *gizmo) {
+i32 GizmoBombGen_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
 
-void *__cdecl GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+void *GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 0x18);
 }
 
-void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
+void GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
     BOMB_PROGRESS_PC *progress = progress_ptr;
     if (progress == NULL) {
         return;
@@ -361,7 +360,7 @@ GIZBOMBGEN_s *GizBombGen_FindByName(GIZBOMBGENSYS_s *system, char *name) {
     return generator;
 }
 
-void __cdecl GizBombGens_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+void GizBombGens_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     BOMB_PROGRESS_PC *progress = progress_ptr;
     BOMB_PROGRESS_SYSTEM_PC *system = data;
     BOMB_PROGRESS_RECORD_PC *record;
@@ -393,7 +392,7 @@ void __cdecl GizBombGens_StoreProgress(void *world_ptr, void *data, void *progre
 char *GizmoRegistryGizBombGenNamePtrPc = "BombGenerator";
 static ADDGIZMOTYPE_PC GizmoRegistryGizBombGenAddTypePc = {0};
 
-ADDGIZMOTYPE_PC *__cdecl GizBombGen_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *GizBombGen_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizBombGenAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->name = GizmoRegistryGizBombGenNamePtrPc;
@@ -410,22 +409,22 @@ ADDGIZMOTYPE_PC *__cdecl GizBombGen_RegisterGizmo(i32 type_id) {
     addtype->fns.add_level_sfx_fn = NULL;
     addtype->prefix = "";
     addtype->fns.options = 0x18;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizBombGens_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizBombGens_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizBombGens_AddGizmos;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizBombGens_Update;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizmoBombGen_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizmoBombGen_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizmoBombGen_GetOutputName;
+    addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizBombGens_Update;
+    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizmoBombGen_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoBombGen_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizmoBombGen_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizmoBombGen_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoBombGen_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoBombGen_SetVisibility;
+    addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizmoBombGen_Activate;
+    addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizmoBombGen_SetVisibility;
     addtype->fns.get_pos_fn = (void *)GizmoBombGen_GetPos;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizBombGens_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizBombGens_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizBombGens_StoreProgress;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizBombGens_SetResetFlag;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizBombGens_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizBombGens_Load;
+    addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizBombGens_AllocateProgressData;
+    addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizBombGens_ClearProgress;
+    addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizBombGens_StoreProgress;
+    addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizBombGens_SetResetFlag;
+    addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizBombGens_ReserveBufferSpace;
+    addtype->fns.load_fn = (i32(*)(void *, void *))GizBombGens_Load;
     bombgen_gizmotype_id = type_id;
     return addtype;
 }

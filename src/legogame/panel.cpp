@@ -45,14 +45,14 @@ extern "C" {
     extern f32 HudBossHeartScalePc;
     extern f32 HudBossIconYPc;
     extern f32 HudBossIconScalePc;
-    i32 __cdecl PcInput_GetFirstKeyboardPort(void);
+    i32 PcInput_GetFirstKeyboardPort(void);
     extern i32 NuMainSkipCutBordersPc;
     extern i32 drawautosaveicon;
     extern f32 HudLevelTitleYPc;
     extern f32 HudLevelTitleScalePc;
     extern f32 HudLevelTitleScaleXPc;
     extern f32 HudLevelTitleWidthPc;
-    void __cdecl CutScene_DrawSubtitles(void);
+    void CutScene_DrawSubtitles(void);
     extern i32 DRAWBGLOAD;
     extern i32 FPSDISPLAY;
     extern f32 HudNameScalePc;
@@ -74,10 +74,10 @@ extern "C" {
     extern i32 HudPausePromptGreenPc;
     extern u8 HudPausePromptBluePc;
     void Arcade_ResetPanel(void);
-    void __cdecl Arcade_DrawPanel(i32 paused);
+    void Arcade_DrawPanel(i32 paused);
 }
 extern "C" NUMTL *FadeMtl2;
-extern "C" void __cdecl DrawPauseFade(void);
+extern "C" void DrawPauseFade(void);
 
 typedef struct PANEL_PRIM_VERTEX_PC {
     f32 x;
@@ -93,7 +93,7 @@ typedef struct TAG_CHARACTER_DATA_READER_PC {
     u8 opaque_44[8];
 } TAG_CHARACTER_DATA_READER_PC;
 
-extern i32(__cdecl *Tag_NoHiddenIconFn)(GAMEOBJECT *);
+extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
 
 static void NuRndrPrimSetColour(i32 colour) {
     i32 converted;
@@ -108,7 +108,7 @@ static void NuRndrPrimSetColour(i32 colour) {
 
 extern "C" {
 
-    f32 __cdecl PowerUp_GetPanelY(i32 player_index) {
+    f32 PowerUp_GetPanelY(i32 player_index) {
         if (player_index == -1) {
             return POWERUPYPOS1;
         }
@@ -122,12 +122,12 @@ extern "C" {
 
     i32 drawautosaveicon = 0;
 
-    void __cdecl DrawAutoSaveIcon(void) {
+    void DrawAutoSaveIcon(void) {
         drawautosaveicon = 1;
     }
 
     /* Append to src/legoapi/panel.c. Complete native 004b71a0..004b7943. */
-    void __cdecl UpdateStats(void) {
+    void UpdateStats(void) {
         f32 target;
         i32 freeplay;
         u32 maximum;
@@ -394,8 +394,8 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
 
 extern "C" {
 
-    void __cdecl CoinTotal_Draw(i32 total, f32 y, f32 scale, i32 remember_positions, f32 icon_phase, i32 red, i32 green,
-                                i32 blue) {
+    void CoinTotal_Draw(i32 total, f32 y, f32 scale, i32 remember_positions, f32 icon_phase, i32 red, i32 green,
+                        i32 blue) {
         char text[32];
         f32 score_scale;
         f32 icon_scale;
@@ -492,7 +492,7 @@ extern "C" {
     }
 }
 
-void __cdecl DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32 scale_y, f32 alpha, i32 angle) {
+void DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32 scale_y, f32 alpha, i32 angle) {
     const f32 progress = (f32)(HubBuildBarSegmentsPc * count) / (f32)total;
     const i32 filled = (i32)progress;
     const f32 fraction = NuFmod(progress, 1.0f);
@@ -634,7 +634,7 @@ extern "C" {
 }
 
 /* PC4b8cf0,718bytes. Fiveargs y,active0,active1,alpha,scores. */
-void __cdecl DrawBonusScore(f32 y, i32 active0, i32 active1, f32 alpha, i32 *scores) {
+void DrawBonusScore(f32 y, i32 active0, i32 active1, f32 alpha, i32 *scores) {
     i32 in_arcade;
     i32 goal;
     if (Arcade != 0 && (WORLD->area == NULL || WORLD->area != HUB_ADATA)) {
@@ -662,7 +662,7 @@ void __cdecl DrawBonusScore(f32 y, i32 active0, i32 active1, f32 alpha, i32 *sco
 
 extern "C" {
 
-    i32 __cdecl InDoubleScoreZone(GAMEOBJECT *object) {
+    i32 InDoubleScoreZone(GAMEOBJECT *object) {
         i32 i;
         if ((WORLD->current_level->flags & 0x800) != 0) {
             return 1;
@@ -676,12 +676,12 @@ extern "C" {
         return 0;
     }
 
-    f32 __cdecl DoubleScoreAlpha(void) {
+    f32 DoubleScoreAlpha(void) {
         i32 angle = (i32)((f64)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0);
         return (f32)((f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)0.2f + 0.5);
     }
 
-    void __cdecl DrawInDoubleScoreZone(f32 time) {
+    void DrawInDoubleScoreZone(f32 time) {
         i32 alpha = (i32)((f64)DoubleScoreAlpha() * 128.0 * (f64)time);
         SmartTextEx(TTab[TextIdPc88098c], 0.0f, DoubleScoreTextYPc, 1.0f, DoubleScoreTextScalePc,
                     DoubleScoreTextScalePc, DoubleScoreTextScalePc, 0, 255, 255, 255, 1.5f, 1, NULL, 0, alpha);
@@ -689,7 +689,7 @@ extern "C" {
 
     /* Append in src/legoapi/panel.c after the static DrawHitPointsPc definition.
        Native bounded routine004b9110..004ba185 (4213 bytes), cdecl(i32 paused). */
-    void __cdecl DrawPlayerHudPc(i32 paused) {
+    void DrawPlayerHudPc(i32 paused) {
         u32 arcade_flags;
         i32 arcade_mode;
         f32 status_y;
@@ -955,7 +955,7 @@ extern "C" {
 
     f32 MeleeRowsSpacingPc = 0.15f;
 
-    void __cdecl DrawMeleeTargetsPc(i16 *targets, u8 *status, i32 count) {
+    void DrawMeleeTargetsPc(i16 *targets, u8 *status, i32 count) {
         f32 alpha;
         f32 scale;
         f32 spacing;
@@ -1002,7 +1002,7 @@ extern "C" {
     f32 MeleeRowsYPc = 0.475f;
     f32 MeleeRowsYOffsetPc = -0.175f;
 
-    void __cdecl DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count) {
+    void DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count) {
         i32 row_counts[3];
         i32 row;
         i32 i;
@@ -1052,7 +1052,7 @@ extern "C" {
     f32 meleeTarg_scaleSize[4] = {0};
 
     /* PC 0x004ba680. */
-    void __cdecl DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special) {
+    void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special) {
         char text[4];
         f32 icon_scale;
         f32 step;
@@ -1141,7 +1141,7 @@ extern "C" {
         }
     }
 
-    void __cdecl DrawMeleeTargetsAlphaPc(i16 *targets, u8 *dimmed, f32 *values, i32 count) {
+    void DrawMeleeTargetsAlphaPc(i16 *targets, u8 *dimmed, f32 *values, i32 count) {
         f32 size;
         f32 spacing;
         f32 offset;
@@ -1171,7 +1171,7 @@ extern "C" {
     f32 TimerAlphaPc = 1.0f;
     static const char DrawTimerFormatPc[3] = "%d";
 
-    void __cdecl DrawTimer(i32 time, i32 expanded, i32 reset) {
+    void DrawTimer(i32 time, i32 expanded, i32 reset) {
         char text[16];
         f32 scale;
         if (reset != 0) {
@@ -1198,7 +1198,7 @@ extern "C" {
                  (u8)((f64)TimerAlphaPc * 128.0));
     }
 
-    void __cdecl InitPanel(i32 mode) {
+    void InitPanel(i32 mode) {
         f32 width;
         f32 height;
 
@@ -1217,7 +1217,7 @@ extern "C" {
     f32 HudAutoSaveScalePc = 0.07500000298023224f;
 #pragma data_seg()
 
-    void __cdecl DrawPanel(void) {
+    void DrawPanel(void) {
         i32 menu = GetMenuID();
         i32 paused;
         i32 player_index;
@@ -1277,7 +1277,7 @@ extern "C" {
         }
         if (WORLD->current_level == STATUS_LDATA || (WORLD->current_level->flags & 0x400) != 0) {
             if (WORLD->current_level->callbacks[6] != NULL) {
-                ((void(__cdecl *)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
+                ((void (*)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
             }
             DrawGameMessages();
             goto draw_menu;
@@ -1404,7 +1404,7 @@ extern "C" {
         }
         DebrisDraw(paused, 4);
         if (WORLD->current_level->callbacks[6] != NULL) {
-            ((void(__cdecl *)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
+            ((void (*)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
         }
         GizmoSysPanelDraw(WORLD->gizmo_sys, WORLD, FRAMETIME);
         if (paused == 0) {
@@ -1437,7 +1437,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl PanelRender(WORLDINFO *world) {
+extern "C" void PanelRender(WORLDINFO *world) {
     i32 colour;
     NuRndrBeginScene(1);
     SetQFont2D();
@@ -1467,7 +1467,7 @@ extern "C" void __cdecl PanelRender(WORLDINFO *world) {
     }
 }
 
-void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
+void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     ADD_GAME_MESSAGE_PC message;
     NUVEC position;
     i32 first_red;
@@ -1543,7 +1543,7 @@ void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     AddGameMsg(&message);
 }
 
-void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object) {
+void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     ADD_GAME_MESSAGE_PC message;
     NUVEC position;
     i32 id;

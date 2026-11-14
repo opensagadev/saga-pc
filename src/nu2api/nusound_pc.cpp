@@ -18,13 +18,13 @@ static SFX_FILE_INFO_PC *PCStereoSampleMetadata = 0;
 #pragma bss_seg()
 static i32 SoundSampleCountPc = 0;
 
-extern "C" void __cdecl PCSoundAlreadyPlayingHook(...) {
+extern "C" void PCSoundAlreadyPlayingHook(...) {
 }
 
 extern "C" void fun_00696aa0(void) {
 }
 
-extern "C" void __cdecl NuSound3FlushLoops(void) {
+extern "C" void NuSound3FlushLoops(void) {
 }
 
 extern "C" void fun_006987d0(void) {
@@ -39,7 +39,7 @@ extern "C" void fun_00698800(void) {
 extern "C" void fun_00698810(void) {
 }
 
-extern "C" void __cdecl NuSound3SetDPL(i32 mode, i32 unused) {
+extern "C" void NuSound3SetDPL(i32 mode, i32 unused) {
     (void)mode;
     (void)unused;
 }
@@ -68,8 +68,8 @@ extern "C" void fun_006988b0(void) {
 extern "C" void fun_006988f0(void) {
 }
 
-extern "C" void __cdecl PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg3, i32 arg4, f32 arg5, i32 arg6,
-                                                f32 arg7, f32 arg8, i32 arg9) {
+extern "C" void PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg3, i32 arg4, f32 arg5, i32 arg6,
+                                        f32 arg7, f32 arg8, i32 arg9) {
     SoundSamplePC *sample;
     i32 scaled_volume;
     i32 voice_id;
@@ -111,13 +111,13 @@ extern "C" void __cdecl PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index,
     (void)arg9;
 }
 
-extern "C" void __cdecl PCSoundPlayUnpositionedWrapper(i32 arg1, i32 arg2, i32 arg3, i32 arg4, f32 arg5, i32 arg6,
-                                                       f32 arg7, f32 arg8) {
+extern "C" void PCSoundPlayUnpositionedWrapper(i32 arg1, i32 arg2, i32 arg3, i32 arg4, f32 arg5, i32 arg6, f32 arg7,
+                                               f32 arg8) {
     PCSoundPlayUnpositioned(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, 0);
 }
 
 extern "C" {
-    static i32 __cdecl PCSoundPositionVolumePc(NUVEC *relative, NUVEC *position, i32 volume) {
+    static i32 PCSoundPositionVolumePc(NUVEC *relative, NUVEC *position, i32 volume) {
         f32 distance_squared;
         f32 distance;
         f32 scale;
@@ -143,9 +143,9 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right,
-                                              i32 pitch, f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain,
-                                              f32 rumble_release, i32 priority) {
+extern "C" void PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right, i32 pitch,
+                                      f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain, f32 rumble_release,
+                                      i32 priority) {
     NUVEC relative;
     i32 scaled_volume;
     i32 attenuated_volume;
@@ -191,14 +191,14 @@ extern "C" void __cdecl PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i3
     (void)priority;
 }
 
-extern "C" void __cdecl PCSoundPlayPositionedWrapper(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right,
-                                                     i32 pitch, f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain,
-                                                     f32 rumble_release) {
+extern "C" void PCSoundPlayPositionedWrapper(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right,
+                                             i32 pitch, f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain,
+                                             f32 rumble_release) {
     PCSoundPlayPositioned(position, sample_id, volume_left, volume_right, pitch, buzz_timer, rumble_strength,
                           rumble_sustain, rumble_release, 0);
 }
 
-bool __thiscall SoundVoiceManagerPC::FindLoopVoicePc(NUVEC *position, i32 sample_id, i32 *voice_id) {
+bool SoundVoiceManagerPC::FindLoopVoicePc(NUVEC *position, i32 sample_id, i32 *voice_id) {
     i32 index;
 
     if (SoundVoiceEnabledGate == 0) {
@@ -216,9 +216,8 @@ bool __thiscall SoundVoiceManagerPC::FindLoopVoicePc(NUVEC *position, i32 sample
     return false;
 }
 
-extern "C" void __cdecl PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right,
-                                                  i32 pitch, f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain,
-                                                  f32 rumble_release) {
+extern "C" void PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right, i32 pitch,
+                                          f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain, f32 rumble_release) {
     NUVEC relative;
     i32 scaled_volume;
     i32 attenuated_volume;
@@ -280,7 +279,7 @@ extern "C" void __cdecl PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id
     (void)rumble_release;
 }
 
-i32 __thiscall SoundVoiceManagerPC::AllocateVoice(i32 sample_id, i32 bank) {
+i32 SoundVoiceManagerPC::AllocateVoice(i32 sample_id, i32 bank) {
     i32 first_voice;
     i32 last_voice;
     i32 voice_id;
@@ -329,7 +328,7 @@ i32 __thiscall SoundVoiceManagerPC::AllocateVoice(i32 sample_id, i32 bank) {
     return -1;
 }
 
-void __thiscall SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 volume, i32 parameter) {
+void SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 volume, i32 parameter) {
     IDirectSoundBuffer *voice = voices[voice_id].voice;
     i32 volume_level;
     i32 status;
@@ -369,7 +368,7 @@ void __thiscall SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 vol
     }
 }
 
-void __thiscall SoundVoiceManagerPC::SetVolumeTableIndex(i32 voice_id, i32 volume_index) {
+void SoundVoiceManagerPC::SetVolumeTableIndex(i32 voice_id, i32 volume_index) {
     IDirectSoundBuffer *voice = voices[voice_id].voice;
     i32 table_index;
     i32 volume_level;
@@ -395,7 +394,7 @@ void __thiscall SoundVoiceManagerPC::SetVolumeTableIndex(i32 voice_id, i32 volum
     }
 }
 
-void __thiscall SoundVoiceManagerPC::SetFrequencyParameter(i32 voice_id, i32 parameter) {
+void SoundVoiceManagerPC::SetFrequencyParameter(i32 voice_id, i32 parameter) {
     i32 sample_frequency;
     i32 frequency;
 
@@ -415,7 +414,7 @@ void __thiscall SoundVoiceManagerPC::SetFrequencyParameter(i32 voice_id, i32 par
     voices[voice_id].voice->vtable->set_frequency(voices[voice_id].voice, (DWORD)frequency);
 }
 
-void __thiscall SoundVoiceManagerPC::StopVoice(i32 voice_id) {
+void SoundVoiceManagerPC::StopVoice(i32 voice_id) {
     if (voices[voice_id].voice != NULL) {
         if (voices[voice_id].aux != NULL) {
             voices[voice_id].aux->vtable->release(voices[voice_id].aux);
@@ -429,7 +428,7 @@ void __thiscall SoundVoiceManagerPC::StopVoice(i32 voice_id) {
     memset(&voices[voice_id], 0, sizeof(voices[voice_id]));
 }
 
-void __thiscall SoundVoiceManagerPC::StopAllVoices(void) {
+void SoundVoiceManagerPC::StopAllVoices(void) {
     SoundVoiceSlotPC *slot = voices;
     i32 count = 64;
 
@@ -450,7 +449,7 @@ void __thiscall SoundVoiceManagerPC::StopAllVoices(void) {
     } while (count != 0);
 }
 
-void __thiscall SoundVoiceManagerPC::UpdateVoices(void) {
+void SoundVoiceManagerPC::UpdateVoices(void) {
     i32 voice_id;
     DWORD status;
 
@@ -494,7 +493,7 @@ void __thiscall SoundVoiceManagerPC::UpdateVoices(void) {
     }
 }
 
-extern "C" void __cdecl NuSound3Update(void) {
+extern "C" void NuSound3Update(void) {
     SAGA_SOUND_CHECK("NuSound3Update before request copy");
     if (PCSoundMixDestination != NULL) {
         if (PCSoundMixSource != NULL && PCSoundMixSampleCount != 0) {
@@ -510,7 +509,7 @@ extern "C" void __cdecl NuSound3Update(void) {
     }
 }
 
-void __thiscall SoundVoiceManagerPC::Setup3DVoice(i32 voice_id, const NUVEC *position, i32 update_mode) {
+void SoundVoiceManagerPC::Setup3DVoice(i32 voice_id, const NUVEC *position, i32 update_mode) {
     SoundVoiceSlotPC *slot = &voices[voice_id];
     DWORD update_flag = update_mode == 0;
     HRESULT result;
@@ -528,7 +527,7 @@ void __thiscall SoundVoiceManagerPC::Setup3DVoice(i32 voice_id, const NUVEC *pos
     slot->aux->vtable->set_position(slot->aux, position->x, position->y, position->z, update_flag);
 }
 
-void __thiscall SoundVoiceManagerPC::SetSampleName(const char *name, i32 sample_index) {
+void SoundVoiceManagerPC::SetSampleName(const char *name, i32 sample_index) {
     i32 name_length;
 
     this->samples[sample_index].valid_byte = 1;
@@ -780,7 +779,7 @@ i32 SoundVoiceManagerPC::LoadWavSamplePc(const char *name, i32 index) {
     return 0;
 }
 
-void __thiscall SoundVoiceManagerPC::ClearSamplesPc(void) {
+void SoundVoiceManagerPC::ClearSamplesPc(void) {
     i32 i;
     EnterCriticalSection(&SoundSampleCriticalSectionPc);
     for (i = 0; i < 64; ++i) {
@@ -802,7 +801,7 @@ void __thiscall SoundVoiceManagerPC::ClearSamplesPc(void) {
     LeaveCriticalSection(&SoundSampleCriticalSectionPc);
 }
 
-void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VARIPTR end) {
+void NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VARIPTR end) {
     char directory[0x800];
     char filename[0x800];
     i32 i;
@@ -838,7 +837,7 @@ void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VAR
     }
 }
 
-void __cdecl NuSound3SetRequestTable(u16 *request_bits, i32 short_count) {
+void NuSound3SetRequestTable(u16 *request_bits, i32 short_count) {
     SAGA_SOUND_SETTER_BEGIN();
     if (PCSoundMixSampleCount != short_count) {
         if (PCSoundMixDestination != NULL) {
@@ -908,7 +907,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl PCSoundInitializePc(PC_SOUND_INIT_CONFIG *config) {
+    i32 PCSoundInitializePc(PC_SOUND_INIT_CONFIG *config) {
         VARIPTR zero;
         SoundVoiceManager.samples = (SoundSamplePC *)((config->cursor->addr + 3) & ~3u);
         config->cursor->addr = (config->cursor->addr + 3) & ~3u;
@@ -942,18 +941,18 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl NuSound3StopSFX(void) {
+extern "C" void NuSound3StopSFX(void) {
     SoundVoiceManager.StopAllVoices();
 }
 
-extern "C" void __cdecl NuSound3SetSFXPitch(i32 pitch) {
+extern "C" void NuSound3SetSFXPitch(i32 pitch) {
     (void)pitch;
 }
 
-extern "C" void __cdecl NuSound3CancelCheckStereo(void) {
+extern "C" void NuSound3CancelCheckStereo(void) {
 }
 
-extern "C" NUMTX *__cdecl NuSound3GetListener(void) {
+extern "C" NUMTX *NuSound3GetListener(void) {
     extern NUMTX *NuSound3Listener;
 
     return NuSound3Listener != NULL ? NuSound3Listener : &global_camera.mtx;

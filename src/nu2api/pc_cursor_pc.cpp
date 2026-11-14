@@ -3,7 +3,7 @@
 extern "C" {
     extern i32 PcCursorTextureIdPc;
     extern NUMTL *PcCursorMaterialPc;
-    void __cdecl PcCreateCursorMaterialPc(void);
+    void PcCreateCursorMaterialPc(void);
 }
 
 /* Embedded mouse cursor DDS image (retail .data 0x826590, 0x1080 bytes). */
@@ -234,7 +234,7 @@ extern "C" u8 PcCursorImagePc[0x1080] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 #pragma data_seg()
 
-extern "C" void __cdecl PcCreateCursorMaterialPc(void) {
+extern "C" void PcCreateCursorMaterialPc(void) {
     if (PcCursorTextureIdPc == -1) {
         NUTEXDIM_PC *texture = static_cast<NUTEXDIM_PC *>(NuAlloc(sizeof(NUTEXDIM_PC), ".\\windows.cpp", 0x642));
         memset(texture, 0, sizeof(*texture));

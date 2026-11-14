@@ -10,7 +10,7 @@ typedef struct LEVEL_JUDDER_FIELDS_PC {
     u8 maximum_distance;  // 0xcd
 } LEVEL_JUDDER_FIELDS_PC; // size 0xce
 
-void __cdecl GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *source) {
+void GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *source) {
     union {
         f32 value;
         u32 bits;
@@ -52,7 +52,7 @@ void __cdecl GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *sou
     }
 }
 
-void __cdecl GameCam_Blend(GAMECAMERA *camera, f32 duration, f32 curve, i32 mode) {
+void GameCam_Blend(GAMECAMERA *camera, f32 duration, f32 curve, i32 mode) {
     if (camera == NULL) {
         camera = GameCam;
     }
@@ -74,14 +74,14 @@ void __cdecl GameCam_Blend(GAMECAMERA *camera, f32 duration, f32 curve, i32 mode
     camera->blend_end_target = camera->target;
 }
 
-u16 __cdecl GameCam_GetAdjustedYRot(GAMECAMERA *camera) {
+u16 GameCam_GetAdjustedYRot(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;
     }
     return (u16)(camera->input_yaw + (u16)camera->adjusted_yaw_offset);
 }
 
-void __cdecl GameCam_HitRoll(void) {
+void GameCam_HitRoll(void) {
     f32 amount = qrand() < 0x8000 ? -0.25f : 0.25f;
     GameCam_Judder(GameCam, amount, 2, NULL);
 }
@@ -98,7 +98,7 @@ void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *exceptions) {
     }
 }
 
-void __cdecl GameCam_HitJudder(void) {
+void GameCam_HitJudder(void) {
     f32 amount = VehicleArea != 0 ? -0.3f : -0.2f;
     if (qrand() < 0x8000) {
         amount = -amount;
@@ -116,7 +116,7 @@ extern f32 GameCamShakeDirSeekPc;
 extern f32 GameCamShakeOffsetSeekPc;
 extern i32 PlayPlanesUseRenderMtxPc;
 
-void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera) {
+void GameCam_ResetLookRot(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;
     }
@@ -128,7 +128,7 @@ void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera) {
     camera->field_208 = 0.0f;
 }
 
-void __cdecl GameCam_UpdateLookRot(GAMECAMERA *camera) {
+void GameCam_UpdateLookRot(GAMECAMERA *camera) {
     i32 i;
     f32 players;
     if (camera == NULL) {
@@ -220,7 +220,7 @@ static void MakePlayPlane(KEEP_SCREEN_PLANE_PC *plane, NUVEC *a, NUVEC *b, NUVEC
     NuVecNorm(&plane->normal, &plane->normal);
 }
 
-void __cdecl MakePlayPlanes(GAMECAMERA *camera) {
+void MakePlayPlanes(GAMECAMERA *camera) {
     NUVEC ray;
     PLAY_CORNER_PC corners[4];
     i32 i;
@@ -250,7 +250,7 @@ void __cdecl MakePlayPlanes(GAMECAMERA *camera) {
                   &corners[2].far_point);
 }
 
-void __cdecl GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount) {
+void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount) {
     NUVEC offset;
     f32 amount;
     f32 rate;
@@ -289,7 +289,7 @@ void __cdecl GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount) {
     NuMtxPreRotateY(&camera->render_mtx, (i32)(offset.x / GameCamShakeRadiusPc * (camera->shake_amplitude * 910.0f)));
 }
 
-void __cdecl CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVEC *reference) {
+void CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVEC *reference) {
     f32 distances[2];
     f32 blend;
     distances[0] = NuVecDist(reference, player_a, NULL);
@@ -300,7 +300,7 @@ void __cdecl CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player
     center->z = (player_b->z - player_a->z) * blend + player_a->z;
 }
 
-void __cdecl ViewCamDraw(void) {
+void ViewCamDraw(void) {
 }
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
@@ -312,7 +312,7 @@ typedef struct KEEP_SCREEN_CAMERA_FIELDS_PC {
     u16 pitch;                  // 0x1f8
 } KEEP_SCREEN_CAMERA_FIELDS_PC; // size 0x1fc
 
-void __cdecl GameCam_Reset(GAMECAMERA *camera) {
+void GameCam_Reset(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;
     }
@@ -395,7 +395,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, grabber) == 0x46ec);
         (destination) = storage.value;                                                                                 \
     } while (0)
 
-static void __cdecl SetCameraEffectMatrixPc(void) {
+static void SetCameraEffectMatrixPc(void) {
     NUMTX effect_matrix;
     NUVEC scale;
     scale.x = 0.5f;
@@ -413,7 +413,7 @@ static void __cdecl SetCameraEffectMatrixPc(void) {
     NuRndrSetFxMtx(&effect_matrix);
 }
 
-void __cdecl SetCameraMatrices(void) {
+void SetCameraMatrices(void) {
     PCGlobalLightingState.specular_direction_missing = 1;
     PCGlobalLightingState.specular_intensity_present = 0;
     NuRndrSetSpecularLightPS(NULL, NULL);

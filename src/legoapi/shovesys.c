@@ -18,7 +18,7 @@ typedef struct shove_system_pc_s {
 
 static SHOVE_SYSTEM_PC ShoveSystemPc = {0};
 
-void __cdecl AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {
+void AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {
     NUMTX *matrix;
     if (NuSpecialExistsFn(special) && ShoveSystemPc.count < 16) {
         ShoveSystemPc.objects[ShoveSystemPc.count].special = special;
@@ -32,11 +32,11 @@ void __cdecl AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {
     }
 }
 
-void __cdecl ShoveObjectSysReset(void) {
+void ShoveObjectSysReset(void) {
     ShoveSystemPc.count = 0;
 }
 
-void __cdecl ShoveSystemCheckGameObject(GAMEOBJECT *object) {
+void ShoveSystemCheckGameObject(GAMEOBJECT *object) {
     f32 best_penetration = 0.0f;
     SHOVE_OBJECT_PC *shove;
     i32 i;

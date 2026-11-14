@@ -4,7 +4,7 @@
 
 extern char NuHtmlUnknownTextPc[8];
 
-void __cdecl NuHtmlWrite(char *text, ...) {
+void NuHtmlWrite(char *text, ...) {
     va_list args;
     i32 length;
     if (text == NULL || *text == '\0') {
@@ -21,7 +21,7 @@ void __cdecl NuHtmlWrite(char *text, ...) {
     }
 }
 
-void __cdecl NuHtmlFlushPc(void) {
+void NuHtmlFlushPc(void) {
     if (nudlist_field_18b0 != PCDisplayCaptureCursorPc) {
         NuFileWriteString(nudlist_field_988, PCDisplayCaptureBufferPc);
         PCDisplayCaptureCursorPc = PCDisplayCaptureBufferPc;
@@ -31,7 +31,7 @@ void __cdecl NuHtmlFlushPc(void) {
 }
 
 /* Writes a banner row whose caption is formatted like printf. */
-void __cdecl NuHtmlHeading(char *text, ...) {
+void NuHtmlHeading(char *text, ...) {
     va_list args;
     if (text == NULL || *text == '\0') {
         text = NuHtmlUnknownTextPc;

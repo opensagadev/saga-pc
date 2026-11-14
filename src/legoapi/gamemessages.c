@@ -36,14 +36,14 @@ static f32 GameMessagesFdivPc(f32 a, f32 b) {
     return a / b;
 }
 
-void __cdecl ResetGameMessages(void) {
+void ResetGameMessages(void) {
     i32 i;
     for (i = 0; i < 128; ++i) {
         GameMessage[i].active = 0;
     }
 }
 
-GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
+GAME_MESSAGE_PC *AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
     GAME_MESSAGE_PC *slot;
     GAME_MESSAGE_PC fallback;
     i32 temporary = 0;
@@ -180,8 +180,8 @@ found:
     return slot;
 }
 
-GAME_MESSAGE_PC *__cdecl AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position,
-                                        f32 target_scale, u8 red, u8 green, u8 blue, u32 flags, f32 duration) {
+GAME_MESSAGE_PC *AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position, f32 target_scale,
+                                u8 red, u8 green, u8 blue, u32 flags, f32 duration) {
     ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
     message.text = text;
     message.position = position;
@@ -196,7 +196,7 @@ GAME_MESSAGE_PC *__cdecl AddGameMessage(char *text, NUVEC *position, f32 scale, 
     return AddGameMsg(&message);
 }
 
-void __cdecl UpdateGameMessages(void) {
+void UpdateGameMessages(void) {
     GAME_MESSAGE_PC *message = GameMessage;
     GAME_MESSAGE_CALLBACK_PC callback;
     f32 rounded_time;
@@ -295,7 +295,7 @@ void __cdecl UpdateGameMessages(void) {
 }
 
 /* PC5612f0/267; append to gamemessages.c. Native cdecl3 pointers, all stack. */
-void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *camera_direction) {
+void TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *camera_direction) {
     GAME_MESSAGE_PC *message = GameMessage;
     GAME_MESSAGE_PC *end = message + 128;
     for (; message != end; ++message) {
@@ -330,7 +330,7 @@ void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, 
 }
 
 /* PC561400/1235. Append to render.c (body valid C99), existing native globals. */
-void __cdecl DrawGameMessages(void) {
+void DrawGameMessages(void) {
     GAME_MESSAGE_PC *message;
     i32 index;
     for (index = 0; index < 128; ++index) {
@@ -434,7 +434,7 @@ void __cdecl DrawGameMessages(void) {
     }
 }
 
-i32 __cdecl FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *exclude) {
+i32 FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *exclude) {
     GAME_MESSAGE_PC *message = GameMessage;
     i32 count = 0;
     i32 index;
@@ -463,8 +463,7 @@ void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, u
     }
 }
 
-void __cdecl AddFancyMessageRGB(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 message_id, u8 red, u8 green,
-                                u8 blue) {
+void AddFancyMessageRGB(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 message_id, u8 red, u8 green, u8 blue) {
     NUVEC position;
     f32 doubled_scale;
     f64 half_scale;

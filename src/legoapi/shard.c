@@ -104,8 +104,8 @@ static void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
 
 /* Native PC shop state machine. Child callbacks remain real unresolved native
  * references until their complete functions are ported; menu ID 13 stays unwired. */
-typedef i32(__cdecl *SHOP_MENU_CALLBACK_PC)(void *);
-typedef void(__cdecl *SHOP_DRAW_CALLBACK_PC)(void);
+typedef i32 (*SHOP_MENU_CALLBACK_PC)(void *);
+typedef void (*SHOP_DRAW_CALLBACK_PC)(void);
 
 /* The retail move code is written out per shelf slot: any compiler-unrolled
  * loop in the function makes VC8 schedule the x87 operands differently. */

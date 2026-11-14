@@ -5,7 +5,7 @@
 #define ALIGN(value, alignment) (((value) + (alignment) - 1) & ~((alignment) - 1))
 
 extern "C" {
-    void __cdecl NuSpecialBurstDrawAt(struct nuhspecial_s *, u32, NUMTX *, i32);
+    void NuSpecialBurstDrawAt(struct nuhspecial_s *, u32, NUMTX *, i32);
     i32 droid_hack = 0;
     static i32 trooperteamcount = 0;
     i8 trooper_side[10] = {0};

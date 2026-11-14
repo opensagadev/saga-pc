@@ -11,7 +11,7 @@ typedef struct FADERS_WORLD_VIEW_PC {
     i32 fader_count;        // 0x5038
 } FADERS_WORLD_VIEW_PC;     // size 0x503c
 
-void __cdecl Faders_Configure(WORLDINFO *world, char *config) {
+void Faders_Configure(WORLDINFO *world, char *config) {
     FADERS_WORLD_VIEW_PC *view = (FADERS_WORLD_VIEW_PC *)world;
     NUFPAR_PC *parser;
     FADER_PC *fader;

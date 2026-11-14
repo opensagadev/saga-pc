@@ -1,6 +1,6 @@
 #include "saga.h"
 
-void __cdecl Door_Reset(void) {
+void Door_Reset(void) {
     DoorExitNamePc[0] = '\0';
     Door_Start = 0;
     Door_NextSock = -1;
@@ -39,7 +39,7 @@ typedef struct startup_world_doors_pc_s {
     STARTUP_DOOR_PC *start_door; // 0x46a0
 } STARTUP_WORLD_DOORS_PC;        // size 0x46a4
 
-void __cdecl Doors_Init(WORLDINFO *world) {
+void Doors_Init(WORLDINFO *world) {
     STARTUP_WORLD_DOORS_PC *view = (STARTUP_WORLD_DOORS_PC *)world;
     STARTUP_DOOR_PC *door;
     i32 index;
@@ -128,7 +128,7 @@ typedef union player_position_sock_pc_u {
 
 STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
 
-void *__cdecl Door_FindByName(WORLDINFO *world, char *name) {
+void *Door_FindByName(WORLDINFO *world, char *name) {
     PLAYER_WORLD_DOORS_PC *view = (PLAYER_WORLD_DOORS_PC *)world;
     PLAYER_DOOR_PC *door = view->doors;
     i32 index;
@@ -142,7 +142,7 @@ void *__cdecl Door_FindByName(WORLDINFO *world, char *name) {
     return NULL;
 }
 
-i32 __cdecl StartDoorPositions(void) {
+i32 StartDoorPositions(void) {
     PLAYER_DOOR_PC *door;
     PLAYER_POSITION_RECORD_PC *start;
     i32 index;
@@ -182,7 +182,7 @@ i32 __cdecl StartDoorPositions(void) {
     return 0;
 }
 
-void *__cdecl Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *position) {
+void *Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *position) {
     PLAYER_DOOR_PC *door = ((PLAYER_WORLD_DOORS_PC *)world)->doors;
     PLAYER_DOOR_PC *nearest;
     f32 nearest_distance;
@@ -341,7 +341,7 @@ typedef struct world_door_config_pc_s {
 static WORLD_DOOR_CONFIG_PC *D_worldinfo = 0;
 static DOOR_CONFIG_PC *D_door = 0;
 
-static void __cdecl D_spline(NUFPAR_PC *parser) {
+static void D_spline(NUFPAR_PC *parser) {
     i32 i;
     if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 64) {
         return;
@@ -365,7 +365,7 @@ static void __cdecl D_spline(NUFPAR_PC *parser) {
     }
 }
 
-static void __cdecl D_level(NUFPAR_PC *parser) {
+static void D_level(NUFPAR_PC *parser) {
     i32 index;
     if (NuFParGetWord(parser) != 0) {
         Level_FindByName(parser->word_buffer_ptr, &index);
@@ -375,7 +375,7 @@ static void __cdecl D_level(NUFPAR_PC *parser) {
     }
 }
 
-static void __cdecl D_level_freeplay(NUFPAR_PC *parser) {
+static void D_level_freeplay(NUFPAR_PC *parser) {
     i32 index;
     if (NuFParGetWord(parser) != 0) {
         Level_FindByName(parser->word_buffer_ptr, &index);
@@ -385,7 +385,7 @@ static void __cdecl D_level_freeplay(NUFPAR_PC *parser) {
     }
 }
 
-static void __cdecl D_cam_spline(NUFPAR_PC *parser) {
+static void D_cam_spline(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 32) {
         return;
     }
@@ -397,38 +397,38 @@ static void __cdecl D_cam_spline(NUFPAR_PC *parser) {
     }
 }
 
-static void __cdecl D_cam_wait(NUFPAR_PC *parser) {
+static void D_cam_wait(NUFPAR_PC *parser) {
     D_door->camera_wait = NuFParGetFloat(parser);
 }
 
-static void __cdecl D_cam_blend_time(NUFPAR_PC *parser) {
+static void D_cam_blend_time(NUFPAR_PC *parser) {
     D_door->camera_blend = NuFParGetFloat(parser);
 }
 
-static void __cdecl D_cam_lookatplayers(NUFPAR_PC *parser) {
+static void D_cam_lookatplayers(NUFPAR_PC *parser) {
     D_door->flags |= 2;
 }
 
-static void __cdecl D_one_way(NUFPAR_PC *parser) {
+static void D_one_way(NUFPAR_PC *parser) {
     D_door->flags |= 1;
 }
 
-static void __cdecl D_two_player_only(NUFPAR_PC *parser) {
+static void D_two_player_only(NUFPAR_PC *parser) {
     D_door->flags |= 0x10;
 }
 
-static void __cdecl D_do_not_use(NUFPAR_PC *parser) {
+static void D_do_not_use(NUFPAR_PC *parser) {
     D_door->flags |= 4;
 }
 
-static void __cdecl D_next_sock(NUFPAR_PC *parser) {
+static void D_next_sock(NUFPAR_PC *parser) {
     i32 index = NuFParGetInt(parser);
     if ((u32)index <= 63) {
         D_door->next_sock = (u8)index;
     }
 }
 
-static void __cdecl D_vehicle(NUFPAR_PC *parser) {
+static void D_vehicle(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) != 0) {
         if (NuStrICmp(parser->word_buffer_ptr, "all") == 0) {
             D_door->vehicle_mask_low = 0xffff;
@@ -442,11 +442,11 @@ static void __cdecl D_vehicle(NUFPAR_PC *parser) {
     }
 }
 
-static void __cdecl D_use_as_start(NUFPAR_PC *parser) {
+static void D_use_as_start(NUFPAR_PC *parser) {
     D_door->flags |= 8;
 }
 
-static void __cdecl D_cut_scene(NUFPAR_PC *parser) {
+static void D_cut_scene(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) != 0) {
         D_door->cutscene = CutScene_Find(WorldInfo_CurrentlyLoading()->cutscene_sys, parser->word_buffer_ptr);
     }
@@ -473,7 +473,7 @@ static NUFPCOMJMP Door_ConfigKeywords[] = {{"spline", D_spline},
                                            {"cutscene", D_cut_scene},
                                            {NULL, NULL}};
 
-void __cdecl Doors_Configure(WORLDINFO *world_ptr, char *config) {
+void Doors_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_DOOR_CONFIG_PC *world = (WORLD_DOOR_CONFIG_PC *)world_ptr;
     NUFPAR_PC *parser;
     DOOR_CONFIG_PC *door;
@@ -561,10 +561,10 @@ STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_9) == 9);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_b) == 11);
 extern void *Door_Last;
-i32 __cdecl CutScene_HasPlayed(CUTINFO *cutscene);
-i32 __cdecl NuPtInPoly(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUPLANE *);
+i32 CutScene_HasPlayed(CUTINFO *cutscene);
+i32 NuPtInPoly(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUPLANE *);
 
-void __cdecl Door_SetCutCam(DOOR_s *door) {
+void Door_SetCutCam(DOOR_s *door) {
     Door_UseCutCam = 0;
     if (door->camera_spline != NULL) {
         Door_UseCutCam = 1;
@@ -583,7 +583,7 @@ void __cdecl Door_SetCutCam(DOOR_s *door) {
     Door_CutLookAtPlayers = door->flags & 2;
 }
 
-void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
+void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     void *cutscene;
     i32 destination;
     i32 index;
@@ -658,7 +658,7 @@ static __inline f32 DoorsFabsPc(f32 value) {
     return *(f32 *)&bits;
 }
 
-void __cdecl Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
+void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
     DOOR_s *door;
     NUVEC previous;
     NUVEC current;
@@ -759,7 +759,7 @@ STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
 
 STATIC_ASSERT(offsetof(DOOR_s, name) == 0);
 
-void __cdecl Doors_SetLastDoor(DOOR_s *door) {
+void Doors_SetLastDoor(DOOR_s *door) {
     if (door != NULL && door != LastDoorPointerPc) {
         NuStrCpy(DoorExitNamePc, door->name);
         StartDoorPositions();

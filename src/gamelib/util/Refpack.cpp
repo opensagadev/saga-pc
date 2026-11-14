@@ -29,13 +29,13 @@ extern "C" {
     static i32 *RefpackHashTablePc = NULL;
     static i32 *RefpackLinkArrayPc = NULL;
 
-    void __cdecl refpack_init(void) {
+    void refpack_init(void) {
         RefpackHashTablePc = (i32 *)theMemoryManager.AllocLinear(0x40000, 16, 1);
         RefpackLinkArrayPc = (i32 *)theMemoryManager.AllocLinear(0x10000, 16, 1);
     }
 }
 
-extern "C" u32 __cdecl RefpackGetMatchLengthPc(u8 *first, u8 *second, u32 maximum) {
+extern "C" u32 RefpackGetMatchLengthPc(u8 *first, u8 *second, u32 maximum) {
     u32 length;
     for (length = 0; length < maximum; ++length) {
         if (*first++ != *second++) {
@@ -45,13 +45,13 @@ extern "C" u32 __cdecl RefpackGetMatchLengthPc(u8 *first, u8 *second, u32 maximu
     return length;
 }
 
-extern "C" u32 __cdecl RefpackHashStringPc(u8 *string) {
+extern "C" u32 RefpackHashStringPc(u8 *string) {
     u32 hash = crctab[string[0]];
     hash = (hash >> 8) ^ crctab[(u8)(hash ^ string[1])];
     return (hash >> 8) ^ crctab[(u8)(hash ^ string[2])];
 }
 
-extern "C" i32 __cdecl refpack(u8 *source, i32 source_size, u8 *destination) {
+extern "C" i32 refpack(u8 *source, i32 source_size, u8 *destination) {
     i32 *clear_table = RefpackHashTablePc;
     u32 index;
     u8 *output = destination;

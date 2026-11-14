@@ -1,10 +1,10 @@
 #include "saga.h"
 
-void __cdecl NuRndrSetParticleRotation(NUMTX *rotation) {
+void NuRndrSetParticleRotation(NUMTX *rotation) {
     NuRndr_DebrisRotMtxPtr = rotation;
 }
 
-void __cdecl NuRndrSetDebBox(NUVEC *range) {
+void NuRndrSetDebBox(NUVEC *range) {
     NUVEC size;
     NUVEC corners[8];
     NUVEC minimum;

@@ -3,7 +3,7 @@
 
 /* Retail detects the CPU with a hand-written inline assembly block, ported as is;
    the shifts by zero come from its uniform field-extraction pattern. */
-extern "C" void __cdecl CpuDetectFeaturesPc(void) {
+extern "C" void CpuDetectFeaturesPc(void) {
     __asm {
         pushfd
         pop eax
@@ -208,7 +208,7 @@ extern "C" void __cdecl CpuDetectFeaturesPc(void) {
 }
 
 /* Native 0x6e62d0-0x6e668d: lazy accessors for the detected CPU fields. None has a caller in retail. */
-extern "C" u32 __cdecl CpuGetHasCpuidPc(void) {
+extern "C" u32 CpuGetHasCpuidPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -216,7 +216,7 @@ extern "C" u32 __cdecl CpuGetHasCpuidPc(void) {
     return CpuHasCpuidPc;
 }
 
-extern "C" u32 __cdecl CpuGetFamilyPc(void) {
+extern "C" u32 CpuGetFamilyPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -224,7 +224,7 @@ extern "C" u32 __cdecl CpuGetFamilyPc(void) {
     return CpuFamilyPc;
 }
 
-extern "C" u32 __cdecl CpuGetProcessorTypePc(void) {
+extern "C" u32 CpuGetProcessorTypePc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -232,7 +232,7 @@ extern "C" u32 __cdecl CpuGetProcessorTypePc(void) {
     return CpuProcessorTypePc;
 }
 
-extern "C" u32 __cdecl CpuGetModelPc(void) {
+extern "C" u32 CpuGetModelPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -240,7 +240,7 @@ extern "C" u32 __cdecl CpuGetModelPc(void) {
     return CpuModelPc;
 }
 
-extern "C" u32 __cdecl CpuGetSteppingPc(void) {
+extern "C" u32 CpuGetSteppingPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -248,7 +248,7 @@ extern "C" u32 __cdecl CpuGetSteppingPc(void) {
     return CpuSteppingPc;
 }
 
-extern "C" u32 __cdecl CpuGetUnsetValue0Pc(void) {
+extern "C" u32 CpuGetUnsetValue0Pc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -256,7 +256,7 @@ extern "C" u32 __cdecl CpuGetUnsetValue0Pc(void) {
     return CpuUnsetValue0Pc;
 }
 
-extern "C" u32 __cdecl CpuGetBasicLeafMaxPc(void) {
+extern "C" u32 CpuGetBasicLeafMaxPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -264,7 +264,7 @@ extern "C" u32 __cdecl CpuGetBasicLeafMaxPc(void) {
     return CpuBasicLeafMaxPc;
 }
 
-extern "C" u32 __cdecl CpuGetUnsetValue1Pc(void) {
+extern "C" u32 CpuGetUnsetValue1Pc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -272,7 +272,7 @@ extern "C" u32 __cdecl CpuGetUnsetValue1Pc(void) {
     return CpuUnsetValue1Pc;
 }
 
-extern "C" u32 __cdecl CpuGetHasFpuPc(void) {
+extern "C" u32 CpuGetHasFpuPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -280,7 +280,7 @@ extern "C" u32 __cdecl CpuGetHasFpuPc(void) {
     return CpuHasFpuPc;
 }
 
-extern "C" u32 __cdecl CpuGetHasMmxPc(void) {
+extern "C" u32 CpuGetHasMmxPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -288,7 +288,7 @@ extern "C" u32 __cdecl CpuGetHasMmxPc(void) {
     return CpuHasMmxPc;
 }
 
-extern "C" u32 __cdecl CpuGetHasTscPc(void) {
+extern "C" u32 CpuGetHasTscPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -296,7 +296,7 @@ extern "C" u32 __cdecl CpuGetHasTscPc(void) {
     return CpuHasTscPc;
 }
 
-extern "C" u32 __cdecl CpuGetHasDePc(void) {
+extern "C" u32 CpuGetHasDePc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -304,7 +304,7 @@ extern "C" u32 __cdecl CpuGetHasDePc(void) {
     return CpuHasDePc;
 }
 
-extern "C" u32 __cdecl CpuGetHasApicPc(void) {
+extern "C" u32 CpuGetHasApicPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -312,7 +312,7 @@ extern "C" u32 __cdecl CpuGetHasApicPc(void) {
     return CpuHasApicPc;
 }
 
-extern "C" u32 __cdecl CpuGetHasPatPc(void) {
+extern "C" u32 CpuGetHasPatPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -320,7 +320,7 @@ extern "C" u32 __cdecl CpuGetHasPatPc(void) {
     return CpuHasPatPc;
 }
 
-extern "C" u32 __cdecl CpuGetHasVmePc(void) {
+extern "C" u32 CpuGetHasVmePc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -328,7 +328,7 @@ extern "C" u32 __cdecl CpuGetHasVmePc(void) {
     return CpuHasVmePc;
 }
 
-extern "C" u32 __cdecl CpuGetHasPsePc(void) {
+extern "C" u32 CpuGetHasPsePc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -336,7 +336,7 @@ extern "C" u32 __cdecl CpuGetHasPsePc(void) {
     return CpuHasPsePc;
 }
 
-extern "C" u32 __cdecl CpuGetHasMsrPc(void) {
+extern "C" u32 CpuGetHasMsrPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -344,7 +344,7 @@ extern "C" u32 __cdecl CpuGetHasMsrPc(void) {
     return CpuHasMsrPc;
 }
 
-extern "C" u32 __cdecl CpuGetHasPaePc(void) {
+extern "C" u32 CpuGetHasPaePc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -352,7 +352,7 @@ extern "C" u32 __cdecl CpuGetHasPaePc(void) {
     return CpuHasPaePc;
 }
 
-extern "C" u32 __cdecl CpuGetHasMcePc(void) {
+extern "C" u32 CpuGetHasMcePc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -360,7 +360,7 @@ extern "C" u32 __cdecl CpuGetHasMcePc(void) {
     return CpuHasMcePc;
 }
 
-extern "C" u32 __cdecl CpuGetHasCmpxchg8bPc(void) {
+extern "C" u32 CpuGetHasCmpxchg8bPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -368,7 +368,7 @@ extern "C" u32 __cdecl CpuGetHasCmpxchg8bPc(void) {
     return CpuHasCmpxchg8bPc;
 }
 
-extern "C" u32 __cdecl CpuGetHasPgePc(void) {
+extern "C" u32 CpuGetHasPgePc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -376,7 +376,7 @@ extern "C" u32 __cdecl CpuGetHasPgePc(void) {
     return CpuHasPgePc;
 }
 
-extern "C" u32 __cdecl CpuGetHasMcaPc(void) {
+extern "C" u32 CpuGetHasMcaPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -384,7 +384,7 @@ extern "C" u32 __cdecl CpuGetHasMcaPc(void) {
     return CpuHasMcaPc;
 }
 
-extern "C" u32 __cdecl CpuGetHasCmovPc(void) {
+extern "C" u32 CpuGetHasCmovPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -392,7 +392,7 @@ extern "C" u32 __cdecl CpuGetHasCmovPc(void) {
     return CpuHasCmovPc;
 }
 
-extern "C" u32 __cdecl CpuGetUnsetFeature0Pc(void) {
+extern "C" u32 CpuGetUnsetFeature0Pc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -400,7 +400,7 @@ extern "C" u32 __cdecl CpuGetUnsetFeature0Pc(void) {
     return CpuUnsetFeature0Pc;
 }
 
-extern "C" u32 __cdecl CpuGetUnsetFeature1Pc(void) {
+extern "C" u32 CpuGetUnsetFeature1Pc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -408,7 +408,7 @@ extern "C" u32 __cdecl CpuGetUnsetFeature1Pc(void) {
     return CpuUnsetFeature1Pc;
 }
 
-extern "C" u32 __cdecl CpuGetUnsetFeature2Pc(void) {
+extern "C" u32 CpuGetUnsetFeature2Pc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -416,7 +416,7 @@ extern "C" u32 __cdecl CpuGetUnsetFeature2Pc(void) {
     return CpuUnsetFeature2Pc;
 }
 
-extern "C" u32 __cdecl CpuGetUnsetFeature3Pc(void) {
+extern "C" u32 CpuGetUnsetFeature3Pc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -424,7 +424,7 @@ extern "C" u32 __cdecl CpuGetUnsetFeature3Pc(void) {
     return CpuUnsetFeature3Pc;
 }
 
-extern "C" u32 __cdecl CpuGetHas3dnowPc(void) {
+extern "C" u32 CpuGetHas3dnowPc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -432,7 +432,7 @@ extern "C" u32 __cdecl CpuGetHas3dnowPc(void) {
     return CpuHas3dnowPc;
 }
 
-extern "C" i32 __cdecl CpuGetHasSsePc(void) {
+extern "C" i32 CpuGetHasSsePc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;
@@ -440,7 +440,7 @@ extern "C" i32 __cdecl CpuGetHasSsePc(void) {
     return PCClipUseSSE;
 }
 
-extern "C" u32 __cdecl CpuGetHasSse2Pc(void) {
+extern "C" u32 CpuGetHasSse2Pc(void) {
     if (CpuInitializedPc == 0) {
         CpuDetectFeaturesPc();
         CpuInitializedPc = 1;

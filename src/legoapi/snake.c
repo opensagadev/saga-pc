@@ -5,7 +5,7 @@
 extern u8 snakebodies[0x440];
 static NUSPECIALHANDLE snake_hspecials[3] = {0};
 
-void __cdecl InitSnakes(WORLDINFO *world) {
+void InitSnakes(WORLDINFO *world) {
     memset(snakebodies, 0, sizeof(snakebodies));
     NuSpecialFind(world->current_gscn, &snake_hspecials[0], "Snake_bit_1", 1);
     NuSpecialFind(world->current_gscn, &snake_hspecials[1], "Snake_bit_2", 1);
@@ -51,7 +51,7 @@ extern f32 SnakeYawSeekRatePc;
 #define POW5(x) (POW2(x) * POW3(x))
 
 /* Unit-local copy of the NuASin polynomial (the snake unit carries its own instance). */
-i32 __cdecl SnakeASinPc(f32 sin) {
+i32 SnakeASinPc(f32 sin) {
     f32 abs;
     f32 sqrt;
     f32 unknown_a;
@@ -101,7 +101,7 @@ i32 __cdecl SnakeASinPc(f32 sin) {
 
 static f32 SnakeBodyDefaultScalePc = 1.0f;
 
-SNAKE_BODY_PC *__cdecl CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
+SNAKE_BODY_PC *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
     SNAKE_BODY_PC *body;
     i32 slot;
     i32 index;
@@ -124,7 +124,7 @@ SNAKE_BODY_PC *__cdecl CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
     return NULL;
 }
 
-void __cdecl UpdateSnakeBody(GAMEOBJECT *object) {
+void UpdateSnakeBody(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
     NUVEC position;
     NUVEC offset;
@@ -169,7 +169,7 @@ void __cdecl UpdateSnakeBody(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl SnakeBeenHit(GAMEOBJECT *object) {
+void SnakeBeenHit(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
     i32 i;
     i32 index;
@@ -219,7 +219,7 @@ void __cdecl SnakeBeenHit(GAMEOBJECT *object) {
     reader->snake_body->segment_count -= 2;
 }
 
-void __cdecl DestroySnakeBody(GAMEOBJECT *object) {
+void DestroySnakeBody(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
     if (object != NULL && reader->snake_body != NULL) {
         memset(reader->snake_body, 0, sizeof(*reader->snake_body));
@@ -227,7 +227,7 @@ void __cdecl DestroySnakeBody(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl BlowUpSnakeBody(GAMEOBJECT *object) {
+void BlowUpSnakeBody(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
     i32 index;
     i32 special_index;
@@ -279,7 +279,7 @@ void __cdecl BlowUpSnakeBody(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl DrawSnakeBody(GAMEOBJECT *object) {
+void DrawSnakeBody(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
     i32 segment_index;
     i32 special_index;

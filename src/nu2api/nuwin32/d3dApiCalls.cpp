@@ -3,37 +3,37 @@
 /* Retail unit 0x6df010-0x6dfea0: definitions in retail address order. */
 
 extern "C" {
-    void __cdecl PCDeviceBeginScenePc(void);
-    void __cdecl PCGraphicsReleaseFramebuffers(void);
-    void __cdecl PCGraphicsRestoreFramebuffers(void);
-    void __cdecl NuRndrGeometryBufferReleasePc(void);
-    void __cdecl NuRndrGeometryBufferRestorePc(void);
-    void __cdecl NuDebrisReleaseVertexBuffersPc(void);
-    void __cdecl debris_InitializeD3D(void);
-    void __cdecl NuRndrDwaReleasePc(void);
-    void __cdecl PcGeometryOriginReleasePc(void);
-    void __cdecl NuPrimReleaseResourcesPc(void);
-    void __cdecl NuKeyboardWindowStateLeafPc(void);
-    i32 __cdecl GameReleaseResourcesPc(void);
-    i32 __cdecl GameRestoreResourcesPc(void);
-    void __cdecl DebrisReleaseResourcesPc(void);
-    void __cdecl DebrisRestoreResourcesPc(void);
-    void __cdecl NuWaterReleaseVertexBufferPc(void);
-    void __cdecl NuGScnReleaseDynamicBuffersPc(void);
-    void __cdecl NuGScnRestoreDynamicBuffersPc(void);
-    void __cdecl NuTexReleaseResourcesPc(void);
-    void __cdecl NuTexRestoreResourcesPc(void);
-    void __cdecl FmvReleasePc(void);
-    void __cdecl FmvRestorePc(void);
-    void __cdecl NuFmvTextureReleasePc(void);
-    void __cdecl NuFmvTextureRestorePc(void);
-    void __cdecl ResizeStillRenderPc(i32, i32);
-    void __cdecl PCGraphicsClearFrameTexturesPc(void);
+    void PCDeviceBeginScenePc(void);
+    void PCGraphicsReleaseFramebuffers(void);
+    void PCGraphicsRestoreFramebuffers(void);
+    void NuRndrGeometryBufferReleasePc(void);
+    void NuRndrGeometryBufferRestorePc(void);
+    void NuDebrisReleaseVertexBuffersPc(void);
+    void debris_InitializeD3D(void);
+    void NuRndrDwaReleasePc(void);
+    void PcGeometryOriginReleasePc(void);
+    void NuPrimReleaseResourcesPc(void);
+    void NuKeyboardWindowStateLeafPc(void);
+    i32 GameReleaseResourcesPc(void);
+    i32 GameRestoreResourcesPc(void);
+    void DebrisReleaseResourcesPc(void);
+    void DebrisRestoreResourcesPc(void);
+    void NuWaterReleaseVertexBufferPc(void);
+    void NuGScnReleaseDynamicBuffersPc(void);
+    void NuGScnRestoreDynamicBuffersPc(void);
+    void NuTexReleaseResourcesPc(void);
+    void NuTexRestoreResourcesPc(void);
+    void FmvReleasePc(void);
+    void FmvRestorePc(void);
+    void NuFmvTextureReleasePc(void);
+    void NuFmvTextureRestorePc(void);
+    void ResizeStillRenderPc(i32, i32);
+    void PCGraphicsClearFrameTexturesPc(void);
     f32 fun_005d0920(void);
     f32 fun_005d0930(void);
     void PCDeviceSetGammaRampPc(const void *ramp);
 }
-extern "C" void __cdecl NuPostEffectResizePc(void);
+extern "C" void NuPostEffectResizePc(void);
 
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */
 struct D3DXMATRIX {
@@ -80,7 +80,7 @@ STATIC_ASSERT(sizeof(D3DXMATRIX) == sizeof(NUMTX));
 extern "C" void fun_006df010(void) {
 }
 
-extern "C" void __cdecl NuKeyboardCreateWindowState(HWND window, HINSTANCE instance) {
+extern "C" void NuKeyboardCreateWindowState(HWND window, HINSTANCE instance) {
     PCFrameCriticalSectionIndex = PCThreadCriticalSectionCreate_candidate();
     PCDeviceBackend.InitializeAdapter();
     nu_keyboard_owner.Setup(window, instance);
@@ -88,14 +88,14 @@ extern "C" void __cdecl NuKeyboardCreateWindowState(HWND window, HINSTANCE insta
     PCNativeWarningDebugState.Initialize();
 }
 
-extern "C" void __cdecl PcRendererCleanup(void) {
+extern "C" void PcRendererCleanup(void) {
     NuRndrDwaReleasePc();
     PcGeometryOriginReleasePc();
     NuPrimReleaseResourcesPc();
     NuDebrisReleaseVertexBuffersPc();
 }
 
-extern "C" void __cdecl PcRendererShutdown(i32 unused) {
+extern "C" void PcRendererShutdown(i32 unused) {
     if (PCDeviceIsAbsent() == 0) {
         PCDeviceSetTexture(0, NULL);
         PCDeviceSetTexture(1, NULL);
@@ -151,7 +151,7 @@ extern "C" u32 fun_006df260(void) {
     return PCDeviceBackend.parameters.width;
 }
 
-extern "C" u32 __cdecl PcGetRefreshRatePc(void) {
+extern "C" u32 PcGetRefreshRatePc(void) {
     return PCDeviceBackend.parameters.refresh_rate;
 }
 
@@ -163,7 +163,7 @@ extern "C" u32 fun_006df280(void) {
     return mode;
 }
 
-extern "C" f32 __cdecl PcInputAspectRatioPc(void) {
+extern "C" f32 PcInputAspectRatioPc(void) {
     f32 value;
     switch (PcWindowOptions.aspect_mode) {
         case 0:
@@ -191,19 +191,19 @@ extern "C" u32 fun_006df2f0(void) {
 
 extern "C" {
 
-    void __cdecl NudxFw_D3DBeginCriticalSection(void) {
+    void NudxFw_D3DBeginCriticalSection(void) {
         NuThreadCriticalSectionBegin(PCFrameCriticalSectionIndex);
     }
 
-    void __cdecl NudxFw_D3DEndCriticalSection(void) {
+    void NudxFw_D3DEndCriticalSection(void) {
         NuThreadCriticalSectionEnd(PCFrameCriticalSectionIndex);
     }
 
-    void __cdecl PCFrameSetLoadingYieldEnabled(i32 enabled) {
+    void PCFrameSetLoadingYieldEnabled(i32 enabled) {
         PCFrameLoadingYieldEnabledPC = enabled != 0;
     }
 
-    i32 __cdecl PCFrameLoadingYieldEnabled(void) {
+    i32 PCFrameLoadingYieldEnabled(void) {
         return PCFrameLoadingYieldEnabledPC;
     }
 
@@ -267,7 +267,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl PCDeviceSetWorldIdentityPc(void) {
+extern "C" void PCDeviceSetWorldIdentityPc(void) {
     static D3DXMATRIX identity(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
                                1.0f);
     PCDeviceSetTransform(0x100, (const NUMTX *)&identity);
@@ -275,7 +275,7 @@ extern "C" void __cdecl PCDeviceSetWorldIdentityPc(void) {
 
 extern "C" {
 
-    void __cdecl PCDeviceResetState(void) {
+    void PCDeviceResetState(void) {
         i32 stage;
 
         NuThreadCriticalSectionBegin(PCFrameCriticalSectionIndex);
@@ -303,7 +303,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl PCDeviceResetSamplerDefaultsPc(void) {
+extern "C" void PCDeviceResetSamplerDefaultsPc(void) {
     u32 stage = 0;
     if (PCDeviceBackend.caps.sampler_count_pc == 0) {
         return;
@@ -375,40 +375,40 @@ extern "C" u32 fun_006dfd00(void) {
 extern "C" void fun_006dfd20(void) {
 }
 
-extern "C" i32 __cdecl PCFrameBeginScenePc(i32 begin) {
+extern "C" i32 PCFrameBeginScenePc(i32 begin) {
     (void)begin;
     PCDeviceBeginScenePc();
     return 0;
 }
 
-extern "C" i32 __cdecl PCFramePresentNativePc(i32 mode_unused, i32 flag_unused) {
+extern "C" i32 PCFramePresentNativePc(i32 mode_unused, i32 flag_unused) {
     PCFramePresentationStatePc = 0;
     PCDeviceBackend.Present(NULL, NULL, NULL, NULL);
     PCPresentationPlatformLeafPc();
     return 0;
 }
 
-extern "C" void __cdecl PCFrameResetTargetsPc(void) {
+extern "C" void PCFrameResetTargetsPc(void) {
     PCDeviceBackend.ResetTargets();
 }
 
-extern "C" void __cdecl PCFrameConfigureTargetsPc(void) {
+extern "C" void PCFrameConfigureTargetsPc(void) {
     PCDeviceBackend.ConfigureCurrentTargets();
 }
 
-extern "C" void __cdecl PCDevicePostEffectBarrierPc(void) {
+extern "C" void PCDevicePostEffectBarrierPc(void) {
     PCDeviceBackend.PostEffectBarrierPc();
 }
 
-extern "C" i32 __cdecl PcApiGetCallBufferCount(void) {
+extern "C" i32 PcApiGetCallBufferCount(void) {
     return PcApiCallBufferCount;
 }
 
-extern "C" void *__cdecl PcApiGetCallBuffer(void) {
+extern "C" void *PcApiGetCallBuffer(void) {
     return PcApiCallBuffer;
 }
 
-extern "C" void __cdecl PcFreeApiCallBuffer(void) {
+extern "C" void PcFreeApiCallBuffer(void) {
     if (PcApiCallBuffer != NULL) {
         NuFree(PcApiCallBuffer, ".\\d3dApiCalls.cpp", 0x451);
     }
@@ -416,14 +416,14 @@ extern "C" void __cdecl PcFreeApiCallBuffer(void) {
     PcApiCallBufferCount = 0;
 }
 
-extern "C" void __cdecl PcDestroyPlatform(void) {
+extern "C" void PcDestroyPlatform(void) {
     PCNativeWarningDebugState.Shutdown();
     nu_keyboard_owner.Shutdown();
     PcRendererShutdown(0);
     PCDeviceBackend.Shutdown();
 }
 
-extern "C" void __cdecl PCGraphicsRecreateResources(i32 reset_available) {
+extern "C" void PCGraphicsRecreateResources(i32 reset_available) {
     PCDeviceBackend.RestoreDefaultPoolResources();
     if (reset_available != 0) {
         NuPostEffectResizePc();

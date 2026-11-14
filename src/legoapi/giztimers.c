@@ -69,7 +69,7 @@ i32 GizTimer_GetMaxGizmos(void *world_info) {
     return world->current_level->max_timers;
 }
 
-void __cdecl GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_info, void *unused) {
+void GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_info, void *unused) {
     GIZFLOW_LOAD_WORLD_PC *world = world_info;
     i32 i;
     for (i = 0; i < world->timer_count; ++i) {
@@ -79,7 +79,7 @@ void __cdecl GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, vo
     }
 }
 
-void __cdecl GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
+void GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
     GIZFLOW_LOAD_WORLD_PC *world = world_info;
     i32 i;
     for (i = 0; i < world->timer_count; ++i) {
@@ -90,11 +90,11 @@ void __cdecl GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
     }
 }
 
-char *__cdecl GizTimer_GetGizmoName(GIZMO_PC *gizmo) {
+char *GizTimer_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((GIZFLOW_TIMER_PC *)gizmo->object)->name : NULL;
 }
 
-i32 __cdecl GizTimer_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
+i32 GizTimer_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
     GIZFLOW_TIMER_PC *timer = gizmo->object;
     if (timer->flags & 1) {
         return timer->time_remaining <= 0.0f;
@@ -110,7 +110,7 @@ i32 GizTimer_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
 
-void __cdecl GizTimer_Activate(GIZMO_PC *gizmo, i32 active) {
+void GizTimer_Activate(GIZMO_PC *gizmo, i32 active) {
     GIZFLOW_TIMER_PC *timer = gizmo->object;
     if (timer->flags & 2) {
         timer->time_remaining = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)timer->start_time);
@@ -124,7 +124,7 @@ void __cdecl GizTimer_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
-void *__cdecl GizTimer_ReserveBufferSpace(void *world_info) {
+void *GizTimer_ReserveBufferSpace(void *world_info) {
     GIZFLOW_LOAD_WORLD_PC *world = world_info;
     world->timers = NULL;
     world->timer_count = 0;
@@ -137,7 +137,7 @@ void *__cdecl GizTimer_ReserveBufferSpace(void *world_info) {
 }
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
-GIZMO_PC *__cdecl createGizTimer(void *unused, f32 time, i32 random_time, char *name) {
+GIZMO_PC *createGizTimer(void *unused, f32 time, i32 random_time, char *name) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();
     GIZFLOW_TIMER_PC *timer;
     if (world == NULL || world->timers == NULL || world->timer_count == world->level->max_timers) {

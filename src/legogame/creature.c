@@ -120,14 +120,14 @@ typedef struct TERRAIN_PLAYER_SET_PC {
 } TERRAIN_PLAYER_SET_PC;  // size 0x1bb0
 
 typedef struct TERRAIN_PLAYER_CHARACTER_PC {
-    u8 unknown_0[0x18];                         // 0x00
-    void(__cdecl *move_callback)(GAMEOBJECT *); // 0x18
-} TERRAIN_PLAYER_CHARACTER_PC;                  // size 0x1c
+    u8 unknown_0[0x18];                  // 0x00
+    void (*move_callback)(GAMEOBJECT *); // 0x18
+} TERRAIN_PLAYER_CHARACTER_PC;           // size 0x1c
 
-void __cdecl TakeOverCode(GAMEOBJECT *, i32);
-void __cdecl ApplyGravity(GAMEOBJECT *, f32 *, f32, f32, f32 *);
-void __cdecl Tag_Check(GAMEOBJECT *);
-void __cdecl GameObjectRotation(GAMEOBJECT *, i32);
+void TakeOverCode(GAMEOBJECT *, i32);
+void ApplyGravity(GAMEOBJECT *, f32 *, f32, f32, f32 *);
+void Tag_Check(GAMEOBJECT *);
+void GameObjectRotation(GAMEOBJECT *, i32);
 #define AIPATHCNX_FLAG_SET(connection, field, flag)                                                                    \
     ((connection) != NULL && ((connection)->field[0] & (u32)(flag)) != 0)
 
@@ -169,13 +169,13 @@ typedef struct KEEP_SCREEN_CAMERA_FIELDS_PC {
     u16 pitch;
 } KEEP_SCREEN_CAMERA_FIELDS_PC;
 
-void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object);
-void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object);
-i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object);
-i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object);
-i32 __cdecl MovePlayer_GUNSHIPIN(GAMEOBJECT *object);
-i32 __cdecl MovePlayer_POD(GAMEOBJECT *object);
-void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object);
+void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object);
+void MovePlayer_ROLLING(GAMEOBJECT *object);
+i32 MovePlayer_TWIST(GAMEOBJECT *object);
+i32 MovePlayer_CIRCLE(GAMEOBJECT *object);
+i32 MovePlayer_GUNSHIPIN(GAMEOBJECT *object);
+i32 MovePlayer_POD(GAMEOBJECT *object);
+void MovePlayer_DIRECTIONAL(GAMEOBJECT *object);
 
 typedef struct moveplayer_pad_bits_pc_s {
     u16 low : 3;
@@ -206,7 +206,7 @@ f32 animduration_blendouttime;
 // Append to src/legoapi/characters.cpp. Retail 00419e90/284 and 00419fb0/808.
 i32 CharacterLoadAreaModelsPc;
 i16 CharacterFixupIdPc007f18c4;
-i32 __cdecl AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id);
+i32 AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id);
 
 typedef struct SPECIAL_LAYER_PC_s {
     i16 *character_id;
@@ -288,8 +288,8 @@ typedef struct PARAPHERNALIA_EXTRA_PC {
     u8 draw_reflection;
 } PARAPHERNALIA_EXTRA_PC;
 
-void __cdecl DrawForceGlowSprite(NUVEC *, f32, i32, f32, GAMEOBJECT *);
-void __cdecl DrawSnakeBody(GAMEOBJECT *);
+void DrawForceGlowSprite(NUVEC *, f32, i32, f32, GAMEOBJECT *);
+void DrawSnakeBody(GAMEOBJECT *);
 
 typedef struct draw_objects_flags_pc_s {
     u8 unknown_000[0xe24];
@@ -347,7 +347,7 @@ typedef union DRAW_ATTACHMENTS_PACKET_PC {
  * The two calculated return paths require a final f32 store/reload.
  */
 extern const f32 CharacterWeaponScaleUpperBoundPc;
-f32 __cdecl DropInOutScale(GAMEOBJECT *object);
+f32 DropInOutScale(GAMEOBJECT *object);
 
 /* Private native PC 41cb50/2038 draft; integrate only after source review. */
 typedef struct CHARACTER_DRAW_HIERARCHY_PC {
@@ -370,8 +370,8 @@ typedef struct DRAW_PREPASS_TELEPORT_OBJECT_PC {
     DRAW_PREPASS_TELEPORT_PC *teleport;
 } DRAW_PREPASS_TELEPORT_OBJECT_PC;
 
-f32 __cdecl PodSprint_RollMul(GAMEOBJECT *);
-void __cdecl ApplyExtraRotation(GAMEOBJECT *, NUMTX *);
+f32 PodSprint_RollMul(GAMEOBJECT *);
+void ApplyExtraRotation(GAMEOBJECT *, NUMTX *);
 
 typedef struct draw_process_flags_pc_s {
     u8 unknown_000[0xe20];
@@ -385,12 +385,12 @@ typedef struct draw_process_flags_pc_s {
 
 extern i32 DrawParaphernaliaEnabledPc;
 extern i16 CharacterFixupIdPc007f1820;
-void __cdecl CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *, GAMEOBJECT *, NUMTX *);
-void __cdecl Grapple_DrawLine(GAMEOBJECT *);
-void __cdecl SuperCarry_DrawObject(GAMEOBJECT *);
-void __cdecl DrawTorpedos(GAMEOBJECT *);
-void __cdecl GizDrawBuildItPiece(GAMEOBJECT *, i32);
-void __cdecl TransformDrawTargetPc(NUVEC *, f32, f32);
+void CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *, GAMEOBJECT *, NUMTX *);
+void Grapple_DrawLine(GAMEOBJECT *);
+void SuperCarry_DrawObject(GAMEOBJECT *);
+void DrawTorpedos(GAMEOBJECT *);
+void GizDrawBuildItPiece(GAMEOBJECT *, i32);
+void TransformDrawTargetPc(NUVEC *, f32, f32);
 
 /* Native 0x0041fe90, 526 bytes. */
 typedef struct ai_creature_init_packet_pc_s {
@@ -624,7 +624,7 @@ static void GameDrawMtxRotateZPc(NUMTX *matrix, NUANG angle) {
     matrix->m31 = (m30 * sine) + (matrix->m31 * cosine);
 }
 
-void __cdecl FixUpCharacters(CHARFIXUP_PC *fixup) {
+void FixUpCharacters(CHARFIXUP_PC *fixup) {
     i32 i;
     for (i = 0; i < CHARCOUNT; ++i) {
         GCDataList[i] = GCDATA_DEFAULT;
@@ -648,7 +648,7 @@ void __cdecl FixUpCharacters(CHARFIXUP_PC *fixup) {
     }
 }
 
-void __cdecl ExtraCharacterFixUpAfterConfig(void) {
+void ExtraCharacterFixUpAfterConfig(void) {
     i32 i;
     SetMoveAndAnimateFunctions(8, 8, 0, 0, -1, Move_JEDI, Animate_JEDI, NULL);
     SetMoveAndAnimateFunctions(0x1000010, 0x10, 0, 0, -1, Move_DROIDGENERIC, NULL, NULL);
@@ -722,7 +722,7 @@ void __cdecl ExtraCharacterFixUpAfterConfig(void) {
     }
 }
 
-void __cdecl ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character) {
+void ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character) {
     PLAYER_PACKET_RESET_PC *packet = opaque_packet;
     i32 i;
     (void)character;
@@ -781,12 +781,12 @@ void __cdecl ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character)
     packet->field_784 = 0.0f;
 }
 
-void __cdecl SetFlicker(GAMEOBJECT *object, f32 duration) {
+void SetFlicker(GAMEOBJECT *object, f32 duration) {
     object->flags_e24 &= ~0x70000;
     object->vehicle_hit_timer = duration;
 }
 
-void __cdecl ResetPlayerAI(GAMEOBJECT *object) {
+void ResetPlayerAI(GAMEOBJECT *object) {
     object->special_move_timer_pc = 0.0f;
     object->ai_packet.animation_override_from = -1;
     object->ai_packet.animation_override_to = -1;
@@ -811,7 +811,7 @@ void __cdecl ResetPlayerAI(GAMEOBJECT *object) {
     AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
 }
 
-void __cdecl DeactivateGameObject(GAMEOBJECT *object) {
+void DeactivateGameObject(GAMEOBJECT *object) {
     if (object == NULL) {
         return;
     }
@@ -843,7 +843,7 @@ void DeactivateCharacter(char *name) {
     }
 }
 
-void __cdecl SetGameObjectCharacterData(GAMEOBJECT *object) {
+void SetGameObjectCharacterData(GAMEOBJECT *object) {
     CHARACTERDATA_PC *data = object->character_data;
     object->origin_scale = data->model_scale;
     object->collision_radius_unscaled = data->collision_radius;
@@ -864,14 +864,14 @@ static __declspec(noinline) void InitCreatureModelFlagsPc(GAMEOBJECT *object) {
 /* Original source name unknown. Retail places this with the game object code
    at 0x414d10, and PlayersDropInOut calls it rather than inlining it, so the
    definition lives in its own unit. */
-void __cdecl PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints) {
+void PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints) {
     object->current_hp = hitpoints;
     if (hitpoints > object->field_107e) {
         object->current_hp = object->field_107e;
     }
 }
 
-i32 __cdecl MakePlayerList(i32 count) {
+i32 MakePlayerList(i32 count) {
     i32 player_count = 0;
     i32 i;
     GAMEOBJECT *player;
@@ -948,7 +948,7 @@ void ClearAICreatures() {
     }
 }
 
-void __cdecl StoreProgressAICharacter(LEVEL_PROGRESS *progress) {
+void StoreProgressAICharacter(LEVEL_PROGRESS *progress) {
     LEVEL_AI_PROGRESS_PC *saved = (LEVEL_AI_PROGRESS_PC *)progress;
     GAMEOBJECT *object;
     i32 index;
@@ -977,7 +977,7 @@ void AICreatureResumeScript(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl GetDefaultIdle(GAMEOBJECT *object) {
+i32 GetDefaultIdle(GAMEOBJECT *object) {
     i32 animation;
     PLAYER_BATARANG_IDLE_PC *batarang;
     void **actions;
@@ -1008,7 +1008,7 @@ i32 __cdecl GetDefaultIdle(GAMEOBJECT *object) {
     return 1;
 }
 
-void __cdecl ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
+void ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
     CHARACTERANIM_CONFIG_PC *info;
     i32 minimum;
     i32 maximum;
@@ -1099,7 +1099,7 @@ static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
     }
 }
 
-void __cdecl UpdateCharacterIdle(GAMEOBJECT *object) {
+void UpdateCharacterIdle(GAMEOBJECT *object) {
     CHARACTER_IDLE_STATE_PC *state = (CHARACTER_IDLE_STATE_PC *)object;
     CHARACTERDATA_PC *character;
     i32 alternate;
@@ -1196,7 +1196,7 @@ static void GunshipKeepOnScreenPc(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl KeepOnScreen(GAMEOBJECT *object) {
+void KeepOnScreen(GAMEOBJECT *object) {
     f32 previous_keep_time = object->field_da8;
     i32 controlled = 0;
     i32 index;
@@ -1299,7 +1299,7 @@ void __cdecl KeepOnScreen(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
+void MovePlayerSpline(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     f32 speed;
     f32 distance;
@@ -1417,7 +1417,7 @@ void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
     GameObjectOrigin(object);
 }
 
-void __cdecl MovePlayer(GAMEOBJECT *object) {
+void MovePlayer(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     i32 analog_x;
     i32 analog_y;
@@ -1700,7 +1700,7 @@ static i32 TerrainKillPlayer(GAMEOBJECT *object, i32 surface, NUVEC *normal) {
     return 1;
 }
 
-void __cdecl TerrainPlayer(GAMEOBJECT *object) {
+void TerrainPlayer(GAMEOBJECT *object) {
     NUVEC forward;
     GAMEPAD_PC *entry_pad;
     i32 entry_underwater;
@@ -2526,7 +2526,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
     NuVecRotateYValZ(&object->facing_direction, 1.0f, object->field_0x276);
 }
 
-void __cdecl AnimatePlayer(GAMEOBJECT *object) {
+void AnimatePlayer(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
     i16 override_from;
@@ -2664,7 +2664,7 @@ static void DrawWeapon_SetSabreObjects(GAMEOBJECT *object, i32 red, i32 green, i
     }
 }
 
-i32 __cdecl AnakinGreenSabre(GAMEOBJECT *object) {
+i32 AnakinGreenSabre(GAMEOBJECT *object) {
     if (FreePlay == 0 && object->id == (u16)id_ANAKINPADAWAN && WORLD->area != NULL &&
         (WORLD->area == JEDI_ADATA || WORLD->area == DOOKU_ADATA)) {
         return 1;
@@ -2769,7 +2769,7 @@ static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
     }
 }
 
-void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
+void ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
     PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
     i32 locator = config->thingy_locator;
     i32 model;
@@ -2980,7 +2980,7 @@ static void ParaphernaliaHandPc(GAMEOBJECT *object, i32 reflection) {
     }
 }
 
-void __cdecl ConfigureComplexShadow(GAMEOBJECT *object) {
+void ConfigureComplexShadow(GAMEOBJECT *object) {
     NUVEC direction;
     f32 distance;
     if (object != NULL) {
@@ -2996,7 +2996,7 @@ void __cdecl ConfigureComplexShadow(GAMEOBJECT *object) {
     NuRndrShadowDirCol(&direction, 0x17000000u, distance, distance);
 }
 
-void __cdecl LoadSingleCharacter(BGPROCINFO *info) {
+void LoadSingleCharacter(BGPROCINFO *info) {
     APICHARACTERMODELLIST list[2] = {{(i16)waiting_for_character, 1}, {-1, 0}};
     NUGSCN *scene;
     i32 i;
@@ -3020,7 +3020,7 @@ void __cdecl LoadSingleCharacter(BGPROCINFO *info) {
     waiting_for_character = -1;
 }
 
-void __cdecl UpdateCharacterLoad(void) {
+void UpdateCharacterLoad(void) {
     i32 candidates[340];
     i32 candidate;
     i32 menu = GetMenuID();
@@ -3085,7 +3085,7 @@ void __cdecl UpdateCharacterLoad(void) {
     bgPostRequest(LoadSingleCharacter, NULL, NULL, 0);
 }
 
-i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared) {
+i32 ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared) {
     i32 index;
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *object = Player[index];
@@ -3102,7 +3102,7 @@ i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distanc
     return 0;
 }
 
-i32 __cdecl AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet, i32 require_all) {
+i32 AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet, i32 require_all) {
     i32 index;
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *object = Player[index];
@@ -3166,7 +3166,7 @@ i32 __cdecl AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet
     return 0;
 }
 
-GAMEOBJECT *__cdecl GetOtherActivePlayer(GAMEOBJECT *object) {
+GAMEOBJECT *GetOtherActivePlayer(GAMEOBJECT *object) {
     GAMEOBJECT *other;
     if (object == Player[0]) {
         other = Player[1];
@@ -3228,7 +3228,7 @@ static SPECIAL_LAYER_PC SpecialLayer[42] = {
 };
 #pragma data_seg()
 
-u32 __cdecl AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
+u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *data = object->character_data->game_character;
     i32 cape_layer = data->cape_layer;
     u32 cape = cape_layer != -1 ? 1u << cape_layer : 0;
@@ -3401,7 +3401,7 @@ static void SetLayersBobPc(GAMEOBJECT *object) {
     object->layer_mask |= 1u << hands[qrand() / 0x8000];
 }
 
-void __cdecl FixUpLayers(void) {
+void FixUpLayers(void) {
     i32 model_index;
     i32 id;
     for (model_index = 0; model_index < apicharsys->loaded_model_count; ++model_index) {
@@ -3425,7 +3425,7 @@ void __cdecl FixUpLayers(void) {
     }
 }
 
-i32 __cdecl fun_0041aec0(GAMEOBJECT *object) {
+i32 fun_0041aec0(GAMEOBJECT *object) {
     u8 context = (u8)object->character_context;
     if (context == 0x4d && object->field_7b3 == 0) {
         return 2;
@@ -3433,7 +3433,7 @@ i32 __cdecl fun_0041aec0(GAMEOBJECT *object) {
     return (context == 0x52) + 1;
 }
 
-i32 __cdecl SuperWeirdo(GAMEOBJECT *object) {
+i32 SuperWeirdo(GAMEOBJECT *object) {
     if ((object->flags_1fc & 0x80) != 0 && (Game.customizer_weirdo_flags & 1) != 0 && CharacterCustomiser != NULL &&
         (object->id == (u16)CharacterCustomiser->character_ids[0] ||
          object->id == (u16)CharacterCustomiser->character_ids[1])) {
@@ -3442,14 +3442,14 @@ i32 __cdecl SuperWeirdo(GAMEOBJECT *object) {
     return 0;
 }
 
-i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *object) {
+i32 Player_HasPurpleForce(GAMEOBJECT *object) {
     if (Cheat_IsOn(28) != 0) {
         return 1;
     }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
-void __cdecl ResetPlayerMoves(GAMEOBJECT *object) {
+void ResetPlayerMoves(GAMEOBJECT *object) {
     ResetPlayerPacket(((PLAYER_PACKET_STORAGE_PC *)object)->player_packet_storage, object->character_data);
     object->fall_acceleration_timer = 0.0f;
     object->movement_direction = v000;
@@ -3474,7 +3474,7 @@ void __cdecl ResetPlayerMoves(GAMEOBJECT *object) {
     DrawOffsetCode(object, 1);
 }
 
-void __cdecl InitPlayerAI(GAMEOBJECT *object) {
+void InitPlayerAI(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character;
     i32 can_pull_levers;
     u8 type;
@@ -3619,7 +3619,7 @@ void SetPlayerGroupPosition(f32 x, f32 y, f32 z) {
     }
 }
 
-i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
+i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     PLAYERCHARACTERCONFIG_PC *config;
     NUVEC velocity;
     AIPATHINFO_PC path;
@@ -3734,7 +3734,7 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
     return 1;
 }
 
-void __cdecl ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
+void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     AICREATURE_PC *creature;
     AIPATHINFO_PC *path_info;
     AIROW_PC *row;
@@ -3844,7 +3844,7 @@ void __cdecl ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     }
 }
 
-void __cdecl ResetAICreatures(AISYS_PC *system) {
+void ResetAICreatures(AISYS_PC *system) {
     GAMEOBJECT *object;
     AICREATURE_PC *creature;
     i32 index;
@@ -3891,7 +3891,7 @@ void __cdecl ResetAICreatures(AISYS_PC *system) {
     }
 }
 
-i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
+i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     NUVEC start;
     void **animations;
     i32 animation;
@@ -3976,9 +3976,9 @@ i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     return 1;
 }
 
-i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *animation, NUMTX *matrix,
-                                   NUMTX *secondary_matrix, NUMTX *reflection_matrix, NUMTX *auxiliary_matrix,
-                                   GAMEOBJECT *object, u32 flags) {
+i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *animation, NUMTX *matrix,
+                           NUMTX *secondary_matrix, NUMTX *reflection_matrix, NUMTX *auxiliary_matrix,
+                           GAMEOBJECT *object, u32 flags) {
     NUMTX special_matrix;
     NUMTX scaled_matrix;
     NUMTX scaled_reflection;
@@ -4079,7 +4079,7 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_
     return result;
 }
 
-i32 __cdecl DrawGameObjectsProcess(void) {
+i32 DrawGameObjectsProcess(void) {
     GAMEOBJECT *object = Obj;
     i32 index;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
@@ -4451,8 +4451,8 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
     }
 }
 
-static void __cdecl DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 character_id, NUMTX *joint_matrices,
-                                                ANIMPACKET_PC *animation, i32 locator, NUMTX *override_matrix) {
+static void DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 character_id, NUMTX *joint_matrices,
+                                        ANIMPACKET_PC *animation, i32 locator, NUMTX *override_matrix) {
     i16 model_index;
     CHARACTER_MODEL_LAYERS_PC *model;
     NUMTX matrix;
@@ -4481,7 +4481,7 @@ static void __cdecl DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 characte
     GameDrawCharacterModel(model, animation, &matrix, NULL, reflection, NULL, NULL, 0xffffffffu);
 }
 
-void __cdecl DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
+void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
     i32 character_id;
     i32 current_animation;
     DRAW_ATTACHMENTS_PACKET_PC animation;
@@ -4528,7 +4528,7 @@ void __cdecl DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices)
                                 object->character_data->game_character->extra_character_locator, override_matrix);
 }
 
-void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
+void DrawParaphernaliaPc(GAMEOBJECT *object) {
     i32 i;
     NUMTX matrix;
     NUMTX reflected;
@@ -4864,7 +4864,7 @@ void DrawGameObjectsDraw(i32 pass) {
             object->flags_ef0 |= 0x40000;
         }
         if (Paused == 0 && object->character_data->draw_fn != NULL) {
-            ((void(__cdecl *)(GAMEOBJECT *))object->character_data->draw_fn)(object);
+            ((void (*)(GAMEOBJECT *))object->character_data->draw_fn)(object);
         }
     }
     ResetShadowMapRendering();
@@ -4882,7 +4882,7 @@ void DrawGameObjects() {
     NuCameraSet(&global_camera);
 }
 
-GAMEOBJECT *__cdecl ActivateCharacter(char *name, NUVEC *position, i32 angle) {
+GAMEOBJECT *ActivateCharacter(char *name, NUVEC *position, i32 angle) {
     GAMEOBJECT *object;
     if (Mission_Active(NULL) != NULL) {
         return NULL;
@@ -4917,7 +4917,7 @@ GAMEOBJECT *__cdecl ActivateCharacter(char *name, NUVEC *position, i32 angle) {
     return NULL;
 }
 
-GAMEOBJECT *__cdecl AddCreature(i32 id, i32 parameter) {
+GAMEOBJECT *AddCreature(i32 id, i32 parameter) {
     GAMEOBJECT *object;
     if ((u32)id > 0x153 || apicharsys->playermodelids[id] == -1) {
         return NULL;
@@ -4930,7 +4930,7 @@ GAMEOBJECT *__cdecl AddCreature(i32 id, i32 parameter) {
     return object;
 }
 
-void __cdecl Players_Init(void) {
+void Players_Init(void) {
     GAMEOBJECT **players = (GAMEOBJECT **)Player;
     PLAYER_INIT_PROGRESS_PC *progress = (PLAYER_INIT_PROGRESS_PC *)PlayerProgress;
     i16 *list;
@@ -5058,7 +5058,7 @@ void __cdecl Players_Init(void) {
     RememberPlayerIDs(0, players[0] != NULL ? (i16)players[0]->id : -1, players[1] != NULL ? (i16)players[1]->id : -1);
 }
 
-void __cdecl InitAICreatures(AISYS_PC *system) {
+void InitAICreatures(AISYS_PC *system) {
     i32 creature_index;
     i32 member;
     i32 type;

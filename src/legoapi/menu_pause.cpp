@@ -11,16 +11,16 @@ extern "C" {
     extern u8 MenuAutoSaveCancelFirstPc;
     extern i32 SaveloadPendingPc;
     extern u32 savetimer;
-    i32 __cdecl saveload_getinfo(void);
+    i32 saveload_getinfo(void);
 
-    void __cdecl MenuDrawAutoSaveCancel(MENU *menu) {
+    void MenuDrawAutoSaveCancel(MENU *menu) {
         if (!MenuASCancelFinished && !memcard_savefailed) {
             menu->draw_y = MENUBOTY;
             DrawMenuEntryEx(menu, apitxt_OK, (u8)MenuA);
         }
     }
 
-    void __cdecl MenuUpdateAutoSaveCancel(MENU *menu) {
+    void MenuUpdateAutoSaveCancel(MENU *menu) {
         if (MenuASCancelFinished) {
             MenuASCancelFinished = 0;
             BackupMenu();
@@ -48,7 +48,7 @@ extern "C" {
         }
     }
 
-    void __cdecl saveloadASCallEachFrame(void) {
+    void saveloadASCallEachFrame(void) {
         if (SaveloadPendingPc && (i32)(GetTickCount() - savetimer) > 1000) {
             SaveloadPendingPc = 0;
             saveload_getinfo();

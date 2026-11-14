@@ -14,7 +14,7 @@ typedef struct portal_callback_pc_s {
 static char portal_output_name_pc[64] = "Active";
 static char portal_gizmo_name_pc[16] = {0};
 
-static i32 __cdecl Portal_GetMaxGizmos(void *world_ptr) {
+static i32 Portal_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     if (world == NULL || world->current_gscn == NULL) {
         return 0;
@@ -22,7 +22,7 @@ static i32 __cdecl Portal_GetMaxGizmos(void *world_ptr) {
     return world->current_gscn->max_portals;
 }
 
-static void __cdecl Portal_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
+static void Portal_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     i32 index;
     if (world == NULL || world->current_gscn == NULL) {
@@ -35,7 +35,7 @@ static void __cdecl Portal_AddGizmos(void *system, i32 type_id, void *world_ptr,
     }
 }
 
-static char *__cdecl Portal_GetGizmoName(GIZMO_PC *gizmo) {
+static char *Portal_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
@@ -43,28 +43,28 @@ static char *__cdecl Portal_GetGizmoName(GIZMO_PC *gizmo) {
     return portal_gizmo_name_pc;
 }
 
-static i32 __cdecl Portal_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
+static i32 Portal_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
     if (gizmo != NULL && gizmo->object != NULL && (((PORTAL_CALLBACK_PC *)gizmo->object)->flags & 1) != 0) {
         return 1;
     }
     return 0;
 }
 
-static char *__cdecl Portal_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *Portal_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return portal_output_name_pc;
 }
 
-static i32 __cdecl Portal_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 Portal_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
 
-static void __cdecl Portal_Activate(GIZMO_PC *gizmo, i32 active) {
+static void Portal_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL && gizmo->object != NULL) {
         NuPortalSetActiveDirect(gizmo->object, active);
     }
 }
 
-static i32 __cdecl Portal_ActivateRev(GIZMO_PC *gizmo, i32 inactive, i32 check) {
+static i32 Portal_ActivateRev(GIZMO_PC *gizmo, i32 inactive, i32 check) {
     PORTAL_CALLBACK_PC *portal;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
@@ -80,17 +80,17 @@ static i32 __cdecl Portal_ActivateRev(GIZMO_PC *gizmo, i32 inactive, i32 check) 
     return 1;
 }
 
-static void *__cdecl Portals_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+static void *Portals_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 4);
 }
 
-static void __cdecl Portals_ClearProgress(void *world, void *progress_ptr) {
+static void Portals_ClearProgress(void *world, void *progress_ptr) {
     if (progress_ptr != NULL) {
         *(u32 *)progress_ptr = 0xffffffff;
     }
 }
 
-static void __cdecl Portals_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+static void Portals_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     u32 *progress = progress_ptr;
     i32 index;
@@ -113,7 +113,7 @@ static void __cdecl Portals_StoreProgress(void *world_ptr, void *data, void *pro
     }
 }
 
-static void __cdecl Portals_Reset(void *world_ptr, void *data, void *progress_ptr) {
+static void Portals_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     u32 *progress = progress_ptr;
     i32 index;
@@ -138,7 +138,7 @@ static void __cdecl Portals_Reset(void *world_ptr, void *data, void *progress_pt
     }
 }
 
-ADDGIZMOTYPE_PC *__cdecl Portal_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *Portal_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "Portal";

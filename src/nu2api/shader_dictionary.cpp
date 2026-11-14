@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <new>
 // Repeats saga.h, but deleting it changes ShaderCompilerDictionaryPc::EmitAttribute (declaration noise).
-extern "C" void __cdecl ShaderLexicalClassesInitPc(void);
+extern "C" void ShaderLexicalClassesInitPc(void);
 
 ShaderCompilerDictionaryPc::ShaderCompilerDictionaryPc(VirtualStackAllocator &parent, i32 input_mode)
     : scratch(parent, 0x3000), output_memory(parent, 0x4000), register_buffer(parent, 0x100) {

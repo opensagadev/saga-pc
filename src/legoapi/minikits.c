@@ -21,14 +21,14 @@ STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 #ifdef __cplusplus
 #endif
 
-void __cdecl MiniKits_Init(VARIPTR *buffer, VARIPTR *end) {
+void MiniKits_Init(VARIPTR *buffer, VARIPTR *end) {
     (void)end;
     buffer->addr = (buffer->addr + 3) & ~3u;
     Char_MiniKit = buffer->void_ptr;
     buffer->addr += (u32)CHARCOUNT * 4u;
 }
 
-void __cdecl MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR *end, void *unused) {
+void MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR *end, void *unused) {
     char path[256];
     (void)unused;
     minikit->scene = NULL;
@@ -50,7 +50,7 @@ void __cdecl MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR 
 
 static const char *MiniKitDirectionNamesPc[6] = {"NegX", "PosX", "NegY", "PosY", "NegZ", "PosZ"};
 
-void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
+void MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
     i32 direction_counts[6];
     i32 index;
     i32 direction;
@@ -87,7 +87,7 @@ void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer,
     }
 }
 
-void __cdecl CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 reflection_plane, f32 reflection_height) {
+void CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 reflection_plane, f32 reflection_height) {
     MINIKIT_PC *kit;
     i32 i;
     if (Char_MiniKit == NULL) {
@@ -115,7 +115,7 @@ void __cdecl CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 re
     }
 }
 
-void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
+void CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
     i32 i;
     i32 character_id;
@@ -162,7 +162,7 @@ void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *
     }
 }
 
-void __cdecl CharacterMiniKits_Dump(WORLDINFO *world) {
+void CharacterMiniKits_Dump(WORLDINFO *world) {
     WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
     i32 i;
     if (view->minikit.scene != NULL) {
@@ -222,7 +222,7 @@ i32 AllMiniKitsDone(AREASAVE_s *save) {
 }
 
 /* Complete native0059a1e0..0059a414. */
-void __cdecl DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
+void DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
     i32 model = ChallengeMode != 0 ? CharKitModelId_PC : MiniKitModelId_PC;
     f32 factor;
     f32 x;
@@ -248,12 +248,12 @@ void __cdecl DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
     Text3D(text, x, y + PANEL_MINIKITCOUNTY, 1.0f, scale, scale, scale, 0, 255, 0, 127);
 }
 
-void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {
+void MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {
     message->parameter_e2 = (u16)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     message->parameter_e0 = (u16)(NU_SIN_LUT(message->parameter_e2 * 2) * 1820.0);
 }
 
-void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
+void MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
     MiniKitScale = 2.0f;
     if (WorldInfo_CurrentlyActive()->area != NULL && (i16)message->icon != -1) {
         if ((i16)message->icon == MiniKitModelId_PC) {

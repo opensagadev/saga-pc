@@ -23,7 +23,7 @@ typedef struct cut_instance_pre_end_pc_s {
     CUT_CAMERA_PRE_END_PC *camera_instance; // 0x9c
 } CUT_INSTANCE_PRE_END_PC;                  // size 0xa0
 
-void __cdecl instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
+void instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
     CUT_INSTANCE_PRE_END_PC *instance = (CUT_INSTANCE_PRE_END_PC *)owner;
     instance->current_frame = instance->scene->duration;
     instance->render_frame = instance->scene->duration;
@@ -124,7 +124,7 @@ typedef struct cut_average_instance_pc_s {
     CUT_AVERAGE_RIGID_INSTANCE_PC *rigid_instance; // 0xa0
 } CUT_AVERAGE_INSTANCE_PC;                         // size 0xa4
 
-void __cdecl instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *owner, NUMTX *matrix, NUVEC *out) {
+void instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *owner, NUMTX *matrix, NUVEC *out) {
     CUT_AVERAGE_INSTANCE_PC *instance = (CUT_AVERAGE_INSTANCE_PC *)owner;
     f32 count = 0.0f;
     i32 i;
@@ -199,20 +199,19 @@ __declspec(allocate(".bss$DefragInstEndMem")) void *DefragInstEndMem = NULL;
 #pragma section(".bss$DefragCutSceneListBase", read, write)
 __declspec(allocate(".bss$DefragCutSceneListBase")) CUT_MEMORY_ENTRY_PC *DefragCutSceneListBase = NULL;
 #pragma section(".bss$DefragGetInstFn", read, write)
-__declspec(allocate(".bss$DefragGetInstFn")) CUT_MEMORY_INSTANCE_PC *(__cdecl *DefragGetInstFn)(void *) = NULL;
+__declspec(allocate(".bss$DefragGetInstFn")) CUT_MEMORY_INSTANCE_PC *(*DefragGetInstFn)(void *) = NULL;
 #pragma section(".bss$DefragCutSceneList", read, write)
 __declspec(allocate(".bss$DefragCutSceneList")) CUT_MEMORY_ENTRY_PC *DefragCutSceneList = NULL;
 #pragma section(".bss$DefragCreateInstFn", read, write)
 __declspec(allocate(".bss$DefragCreateInstFn"))
-CUT_MEMORY_INSTANCE_PC *(__cdecl *DefragCreateInstFn)(void *, CUT_MEMORY_SCENE_PC *, VARIPTR *) = NULL;
+CUT_MEMORY_INSTANCE_PC *(*DefragCreateInstFn)(void *, CUT_MEMORY_SCENE_PC *, VARIPTR *) = NULL;
 #pragma section(".bss$DefragInstDestroyedFn", read, write)
-__declspec(allocate(".bss$DefragInstDestroyedFn")) void(__cdecl *DefragInstDestroyedFn)(void *) = NULL;
+__declspec(allocate(".bss$DefragInstDestroyedFn")) void (*DefragInstDestroyedFn)(void *) = NULL;
 
-void __cdecl instNuGCutSceneResetCleanUp(void *list_storage, void *cut_base, void *cut_end, void *inst_base,
-                                         void *inst_end, CUT_MEMORY_INSTANCE_PC *(__cdecl *get_inst)(void *),
-                                         CUT_MEMORY_INSTANCE_PC *(__cdecl *create_inst)(void *, CUT_MEMORY_SCENE_PC *,
-                                                                                        VARIPTR *),
-                                         void(__cdecl *inst_destroyed)(void *)) {
+void instNuGCutSceneResetCleanUp(void *list_storage, void *cut_base, void *cut_end, void *inst_base, void *inst_end,
+                                 CUT_MEMORY_INSTANCE_PC *(*get_inst)(void *),
+                                 CUT_MEMORY_INSTANCE_PC *(*create_inst)(void *, CUT_MEMORY_SCENE_PC *, VARIPTR *),
+                                 void (*inst_destroyed)(void *)) {
     DefragCutSceneList = (CUT_MEMORY_ENTRY_PC *)(((u32)list_storage + 3) & ~3);
     DefragCutSceneListBase = DefragCutSceneList;
     DefragCutSceneBaseMem = cut_base;
@@ -224,18 +223,18 @@ void __cdecl instNuGCutSceneResetCleanUp(void *list_storage, void *cut_base, voi
     DefragInstDestroyedFn = inst_destroyed;
     DefragCutSceneListSize = 0;
     if (list_storage == NULL || cut_base == NULL) {
-        ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
+        ((void (*)(void))CutSceneLoadDiagnosticPc)();
     }
     if (get_inst == NULL || create_inst == NULL || inst_destroyed == NULL) {
-        ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
+        ((void (*)(void))CutSceneLoadDiagnosticPc)();
     }
 }
 
-void __cdecl instNuGCutSceneAddCleanUpItem(void *handle, i32 enabled) {
+void instNuGCutSceneAddCleanUpItem(void *handle, i32 enabled) {
     CUT_MEMORY_INSTANCE_PC *instance = DefragGetInstFn(handle);
     CUT_MEMORY_ENTRY_PC *entry;
     if ((instance->flags_88 & 2) != 0) {
-        ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
+        ((void (*)(void))CutSceneLoadDiagnosticPc)();
     }
     entry = DefragCutSceneList++;
     entry->handle = handle;
@@ -256,7 +255,7 @@ static void CutSceneSetPrimitiveColourPc(i32 colour) {
     ((CUT_MEMORY_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
 
-void __cdecl DisplayCutSceneMemory(void) {
+void DisplayCutSceneMemory(void) {
     CUT_MEMORY_ENTRY_PC *entry;
     CUT_MEMORY_ENTRY_PC *end;
     CUT_MEMORY_INSTANCE_PC *instance;
@@ -458,7 +457,7 @@ static CUT_SCRIPT_NODE_PC *CutScriptNodeAllocPc(i32 type, VARIPTR *buffer, CUT_S
     (buffer)->addr += strlen((fp)->word_buffer_ptr) + 1;                                                               \
     sprintf((field), (fp)->word_buffer_ptr)
 
-CUT_SCRIPT_NODE_PC *__cdecl CutScriptParseBlockPc(NUFPAR_PC *fp, VARIPTR *buffer, i32 unused) {
+CUT_SCRIPT_NODE_PC *CutScriptParseBlockPc(NUFPAR_PC *fp, VARIPTR *buffer, i32 unused) {
     CUT_SCRIPT_NODE_PC *head = NULL;
     CUT_SCRIPT_NODE_PC *prev = NULL;
     CUT_SCRIPT_NODE_PC *node;
@@ -481,7 +480,7 @@ CUT_SCRIPT_NODE_PC *__cdecl CutScriptParseBlockPc(NUFPAR_PC *fp, VARIPTR *buffer
             } else if (NuStrICmp(fp->word_buffer_ptr, "backward") == 0) {
                 node->b.value = 0;
             } else {
-                ((void(__cdecl *)(void))CutSceneMissingObjectDiagnosticPc)();
+                ((void (*)(void))CutSceneMissingObjectDiagnosticPc)();
             }
         } else if (NuStrICmp(fp->word_buffer_ptr, "CHAINCUTSCENEINST") == 0) {
             node = CutScriptNodeAllocPc(2, buffer, prev, &head);
@@ -581,7 +580,7 @@ static CUT_SCRIPT_PC *CutScriptReadPc(NUFPAR_PC *fp, VARIPTR *buffer, i32 unused
     return script;
 }
 
-CUT_SCRIPT_PC *__cdecl CutScriptLoadPc(char *file, VARIPTR *buffer, i32 unused) {
+CUT_SCRIPT_PC *CutScriptLoadPc(char *file, VARIPTR *buffer, i32 unused) {
     CUT_SCRIPT_PC *head = NULL;
     CUT_SCRIPT_PC *prev = NULL;
     CUT_SCRIPT_PC *script;
@@ -688,27 +687,27 @@ __declspec(allocate(".bss$CutTriggerSetListPc")) CUT_TRIGGER_SET_PC *CutTriggerS
 __declspec(allocate(".bss$CutTriggerPendingSetListPc")) CUT_TRIGGER_SET_PC *CutTriggerPendingSetListPc = NULL;
 
 typedef struct cut_app_command_pc_s {
-    char *name;                // 0x0
-    void(__cdecl *fn)(char *); // 0x4
-} CUT_APP_COMMAND_PC;          // size 0x8
+    char *name;         // 0x0
+    void (*fn)(char *); // 0x4
+} CUT_APP_COMMAND_PC;   // size 0x8
 
 #pragma section(".bss$CutScriptAppCommandsPc", read, write)
 __declspec(allocate(".bss$CutScriptAppCommandsPc")) CUT_APP_COMMAND_PC *CutScriptAppCommandsPc = NULL;
 
-void __cdecl CutScriptSetAppCommandsPc(CUT_APP_COMMAND_PC *commands) {
+void CutScriptSetAppCommandsPc(CUT_APP_COMMAND_PC *commands) {
     CutScriptAppCommandsPc = commands;
 }
 
-void __cdecl CutTriggerClearPendingPc(void) {
+void CutTriggerClearPendingPc(void) {
     CutTriggerPendingSetListPc = NULL;
 }
 
-void __cdecl CutTriggerClearListsPc(void) {
+void CutTriggerClearListsPc(void) {
     CutTriggerPendingSetListPc = NULL;
     CutTriggerSetListPc = NULL;
 }
 
-void __cdecl CutTriggerActivatePendingPc(void) {
+void CutTriggerActivatePendingPc(void) {
     CUT_TRIGGER_SET_PC *set = CutTriggerPendingSetListPc;
     CUT_TRIGGER_SET_PC *list;
     CUT_TRIGGER_SET_PC *current;
@@ -729,8 +728,8 @@ void __cdecl CutTriggerActivatePendingPc(void) {
     }
 }
 
-CUT_TRIGGER_SET_PC *__cdecl CutTriggerSetCreatePc(CUT_TRIGGER_FILE_PC *file, NUGSCN *scene, CUT_SCRIPT_PC *scripts,
-                                                  VARIPTR *buffer, VARIPTR *end, i32 pending) {
+CUT_TRIGGER_SET_PC *CutTriggerSetCreatePc(CUT_TRIGGER_FILE_PC *file, NUGSCN *scene, CUT_SCRIPT_PC *scripts,
+                                          VARIPTR *buffer, VARIPTR *end, i32 pending) {
     CUT_TRIGGER_SET_PC *set = NULL;
     CUT_TRIGGER_SET_PC *list;
     i32 i;
@@ -769,7 +768,7 @@ CUT_TRIGGER_SET_PC *__cdecl CutTriggerSetCreatePc(CUT_TRIGGER_FILE_PC *file, NUG
     return set;
 }
 
-void __cdecl CutTriggerSetUnlinkPc(CUT_TRIGGER_SET_PC *set) {
+void CutTriggerSetUnlinkPc(CUT_TRIGGER_SET_PC *set) {
     if (set->next != NULL) {
         set->next->prev = set->prev;
     }
@@ -780,15 +779,15 @@ void __cdecl CutTriggerSetUnlinkPc(CUT_TRIGGER_SET_PC *set) {
     }
 }
 
-void __cdecl CutTriggerSetEnablePc(CUT_TRIGGER_SET_PC *set) {
+void CutTriggerSetEnablePc(CUT_TRIGGER_SET_PC *set) {
     set->flags &= ~1U;
 }
 
-void __cdecl CutTriggerSetDisablePc(CUT_TRIGGER_SET_PC *set) {
+void CutTriggerSetDisablePc(CUT_TRIGGER_SET_PC *set) {
     set->flags |= 1;
 }
 
-CUT_TRIGGER_FILE_PC *__cdecl CutTriggerFileLoadPc(char *path, VARIPTR *buffer, VARIPTR *end) {
+CUT_TRIGGER_FILE_PC *CutTriggerFileLoadPc(char *path, VARIPTR *buffer, VARIPTR *end) {
     CUT_TRIGGER_FILE_PC *file;
     CUT_TRIGGER_ENTRY_PC *entry;
     CUT_TRIGGER_SHAPE_PC *shape;
@@ -823,10 +822,10 @@ CUT_TRIGGER_FILE_PC *__cdecl CutTriggerFileLoadPc(char *path, VARIPTR *buffer, V
     return file;
 }
 
-void __cdecl CutTriggerSysNullPc(void) {
+void CutTriggerSysNullPc(void) {
 }
 
-void __cdecl CutTriggerSetFlagPc(CUT_TRIGGER_SET_PC *set, char *name, i32 flag, i32 on) {
+void CutTriggerSetFlagPc(CUT_TRIGGER_SET_PC *set, char *name, i32 flag, i32 on) {
     CUT_TRIGGER_FILE_PC *file = set->file;
     i32 i;
     u8 mask;
@@ -843,7 +842,7 @@ void __cdecl CutTriggerSetFlagPc(CUT_TRIGGER_SET_PC *set, char *name, i32 flag, 
     }
 }
 
-void __cdecl CutTriggerEnablePc(CUT_TRIGGER_SET_PC *set, char *name) {
+void CutTriggerEnablePc(CUT_TRIGGER_SET_PC *set, char *name) {
     CUT_TRIGGER_FILE_PC *file = set->file;
     i32 i;
     for (i = 0; i < file->count; ++i) {
@@ -854,7 +853,7 @@ void __cdecl CutTriggerEnablePc(CUT_TRIGGER_SET_PC *set, char *name) {
     }
 }
 
-i32 __cdecl CutTriggerIsPulledPc(CUT_TRIGGER_SET_PC *set, char *name) {
+i32 CutTriggerIsPulledPc(CUT_TRIGGER_SET_PC *set, char *name) {
     CUT_TRIGGER_FILE_PC *file = set->file;
     i32 i;
     for (i = 0; i < file->count; ++i) {
@@ -865,7 +864,7 @@ i32 __cdecl CutTriggerIsPulledPc(CUT_TRIGGER_SET_PC *set, char *name) {
     return 0;
 }
 
-void __cdecl CutTriggerPullPc(CUT_TRIGGER_SET_PC *set, char *name) {
+void CutTriggerPullPc(CUT_TRIGGER_SET_PC *set, char *name) {
     CUT_TRIGGER_FILE_PC *file = set->file;
     i32 i;
     for (i = 0; i < file->count; ++i) {
@@ -876,7 +875,7 @@ void __cdecl CutTriggerPullPc(CUT_TRIGGER_SET_PC *set, char *name) {
     }
 }
 
-void __cdecl CutTriggerResetPc(CUT_TRIGGER_SET_PC *set, char *name) {
+void CutTriggerResetPc(CUT_TRIGGER_SET_PC *set, char *name) {
     CUT_TRIGGER_FILE_PC *file;
     i32 i;
     if (set == NULL) {
@@ -898,7 +897,7 @@ static f32 CutTriggerFabsPc(f32 value) {
     return *(f32 *)&bits;
 }
 
-i32 __cdecl CutTriggerEntryTestPc(CUT_TRIGGER_ENTRY_PC *entry, NUVEC *pos, f32 radius) {
+i32 CutTriggerEntryTestPc(CUT_TRIGGER_ENTRY_PC *entry, NUVEC *pos, f32 radius) {
     NUVEC extent;
     NUVEC local_pos;
     NUVEC box_extent;
@@ -968,7 +967,7 @@ i32 __cdecl CutTriggerEntryTestPc(CUT_TRIGGER_ENTRY_PC *entry, NUVEC *pos, f32 r
     return 0;
 }
 
-i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NUVEC *pos, f32 radius) {
+i32 CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NUVEC *pos, f32 radius) {
     NUMTX inverse;
     NUVEC delta;
     NUVEC local_pos;
@@ -1040,7 +1039,7 @@ i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NU
     return 0;
 }
 
-i32 __cdecl CutTriggerSetTestPc(CUT_TRIGGER_SET_PC *set, char *name, NUVEC *pos, f32 radius, i32 include_hidden) {
+i32 CutTriggerSetTestPc(CUT_TRIGGER_SET_PC *set, char *name, NUVEC *pos, f32 radius, i32 include_hidden) {
     CUT_TRIGGER_FILE_PC *file = set->file;
     NUGSCN *gscene;
     CUT_TRIGGER_ENTRY_PC *entry;
@@ -1085,13 +1084,13 @@ i32 __cdecl CutTriggerSetTestPc(CUT_TRIGGER_SET_PC *set, char *name, NUVEC *pos,
    preserves eax/ecx/edx, which CutTriggerFirePc and CutTriggerUpdatePc rely on.
    Calls compiled before the definition stay ordinary external calls
    (CutScriptParseBlockPc), so it is defined here rather than at the top. */
-void __cdecl CutSceneMissingObjectDiagnosticPc(char *format, ...) {
+void CutSceneMissingObjectDiagnosticPc(char *format, ...) {
 }
 
-#define CUT_SCRIPT_DIAG0() ((void(__cdecl *)(void))CutSceneMissingObjectDiagnosticPc)()
+#define CUT_SCRIPT_DIAG0() ((void (*)(void))CutSceneMissingObjectDiagnosticPc)()
 #define CUT_SCRIPT_DIAG2(a, b) CutSceneMissingObjectDiagnosticPc((char *)(a), (b))
 
-void __cdecl CutScriptExecutePc(CUT_SCRIPT_NODE_PC *node, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
+void CutScriptExecutePc(CUT_SCRIPT_NODE_PC *node, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
     INSTNUGCUTSCENE *instance;
     INSTNUGCUTSCENE *chain;
     NUSPECIALHANDLE special;
@@ -1126,7 +1125,7 @@ void __cdecl CutScriptExecutePc(CUT_SCRIPT_NODE_PC *node, NUGSCN *scene, CUT_TRI
                 chain = instNuGCutSceneFindActivePc(node->b.name);
                 if (instance != NULL && chain != NULL) {
                     if (instance->scene == NULL) {
-                        ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
+                        ((void (*)(void))CutSceneLoadDiagnosticPc)();
                     }
                     instance->chained_instance = chain;
                     done = 1;
@@ -1138,7 +1137,7 @@ void __cdecl CutScriptExecutePc(CUT_SCRIPT_NODE_PC *node, NUGSCN *scene, CUT_TRI
                 if (instance != NULL) {
                     count = node->b.value;
                     if (count > 31) {
-                        ((void(__cdecl *)(i32))CutSceneMissingObjectDiagnosticPc)(count);
+                        ((void (*)(i32))CutSceneMissingObjectDiagnosticPc)(count);
                         count = 31;
                     }
                     instance->flags_88 ^= ((u32)(count << 13) ^ instance->flags_88) & 0x3e000;
@@ -1253,7 +1252,7 @@ void __cdecl CutScriptExecutePc(CUT_SCRIPT_NODE_PC *node, NUGSCN *scene, CUT_TRI
     }
 }
 
-i32 __cdecl CutScriptRunPc(CUT_SCRIPT_PC *scripts, char *name, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
+i32 CutScriptRunPc(CUT_SCRIPT_PC *scripts, char *name, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
     CUT_APP_COMMAND_PC *command = CutScriptAppCommandsPc;
     if (NuStrNICmp(name, "Fn", 2) == 0) {
         for (; command != NULL && command->name != NULL; ++command) {
@@ -1278,8 +1277,7 @@ i32 __cdecl CutScriptRunPc(CUT_SCRIPT_PC *scripts, char *name, NUGSCN *scene, CU
     return 0;
 }
 
-void __cdecl CutTriggerFirePc(CUT_TRIGGER_SET_PC *set, CUT_TRIGGER_ENTRY_PC *entry, CUT_TRIGGER_STATE_PC *state,
-                              i32 on) {
+void CutTriggerFirePc(CUT_TRIGGER_SET_PC *set, CUT_TRIGGER_ENTRY_PC *entry, CUT_TRIGGER_STATE_PC *state, i32 on) {
     char name[32];
     if (on != 0) {
         CUT_SCRIPT_DIAG2(entry->name, entry->name);
@@ -1293,7 +1291,7 @@ void __cdecl CutTriggerFirePc(CUT_TRIGGER_SET_PC *set, CUT_TRIGGER_ENTRY_PC *ent
     }
 }
 
-void __cdecl CutTriggerUpdatePc(NUVEC *pos, f32 radius, i32 include_hidden) {
+void CutTriggerUpdatePc(NUVEC *pos, f32 radius, i32 include_hidden) {
     CUT_TRIGGER_SET_PC *set;
     CUT_TRIGGER_FILE_PC *file;
     NUGSCN *gscene;
@@ -1356,7 +1354,7 @@ void __cdecl CutTriggerUpdatePc(NUVEC *pos, f32 radius, i32 include_hidden) {
         return 1;                                                                                                      \
     }
 
-i32 __cdecl CutTriggerHitPc(NUVEC *pos, f32 radius, i16 amount) {
+i32 CutTriggerHitPc(NUVEC *pos, f32 radius, i16 amount) {
     CUT_TRIGGER_SET_PC *set;
     CUT_TRIGGER_FILE_PC *file;
     NUGSCN *gscene;

@@ -37,12 +37,12 @@ extern "C" {
 }
 
 extern "C" {
-    void __cdecl AddToCompletionPoints(u32 points);
+    void AddToCompletionPoints(u32 points);
     i32 AllMiniKitsDone(AREASAVE_s *save);
 }
 extern "C" {
 
-    f32 __cdecl StatusScoreRatioPc(f32 numerator, f32 denominator) {
+    f32 StatusScoreRatioPc(f32 numerator, f32 denominator) {
         if (numerator != 0.0f && denominator != 0.0f) {
             f32 result = (f64)numerator / (f64)denominator;
             return result;
@@ -109,7 +109,7 @@ extern "C" {
     i32 DrawGoldBrick_Stage = 0;
     i32 DrawGoldBrick_Phase = 0;
 
-    void __cdecl SetDrawGoldBrick(STATUSPACKET_s *packet, i32 unused) {
+    void SetDrawGoldBrick(STATUSPACKET_s *packet, i32 unused) {
         i32 index = packet->current_gold_brick;
         (void)unused;
         if (packet->gold_brick_enabled[index] != 0) {
@@ -121,7 +121,7 @@ extern "C" {
 
     static NUMTX RenderStatusMatrixPrivate = {0};
 
-    void __cdecl DrawStatusText(char *text, u16 angle, f32 x, f32 y, f32 scale, u32 colour, i32 alignment) {
+    void DrawStatusText(char *text, u16 angle, f32 x, f32 y, f32 scale, u32 colour, i32 alignment) {
         NUVEC origin = {0.0f, 0.0f, 800.0f};
         NUVEC position = {x * DrawStatusScaleXPc, y * DrawStatusScaleYPc, 0.0f};
         u16 encoded[512];
@@ -157,8 +157,8 @@ extern "C" {
         NuQFntSetCoordinateSystem(3);
     }
 
-    void __cdecl DrawStatusTextFraction(i32 current, i32 total, f32 x, f32 y, u16 angle, f32 scale, u32 colour,
-                                        f32 animation, f32 animation_duration) {
+    void DrawStatusTextFraction(i32 current, i32 total, f32 x, f32 y, u16 angle, f32 scale, u32 colour, f32 animation,
+                                f32 animation_duration) {
         char text[16];
         u16 encoded[64];
         NUMTX matrix;
@@ -239,7 +239,7 @@ extern "C" {
     }
 
     /* Complete native status-control foundation. No registration/table activation. */
-    void __cdecl StatusStage_Reset(STATUS_STAGE_s *stage) {
+    void StatusStage_Reset(STATUS_STAGE_s *stage) {
         if (stage != NULL) {
             stage->field_0x14 = -1;
             stage->field_0x18 = 0.0f;
@@ -270,7 +270,7 @@ extern "C" {
         }
     }
 
-    void __cdecl StatusRumbleUpdatePc(void) {
+    void StatusRumbleUpdatePc(void) {
         RUMBLE_PACKET_RESOURCE_PC *packet = ((STATUS_RUMBLE_PAIR_PC *)&StatusPacket.player0_rumble_amount)->players;
         i32 player;
         for (player = 0; player < 2; ++player, ++packet) {
@@ -290,7 +290,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NextStatusStage(STATUSPACKET_s *packet) {
+    void NextStatusStage(STATUSPACKET_s *packet) {
         if (packet->stage != NULL && packet->stage->field_0x14 == -1 &&
             packet->stage->field_0x18 < packet->field_0x68) {
             packet->flags_word |= 2;
@@ -346,7 +346,7 @@ extern "C" {
 
     i16 StatusNewCharacterIdsPc[8] = {0};
 
-    i32 __cdecl newCharactersCollected(STATUSPACKET_s *packet) {
+    i32 newCharactersCollected(STATUSPACKET_s *packet) {
         i32 count = 0;
         if (StartupGameFlag1 == 0) {
             if ((((u8 *)&packet->lsw_packet->field_0x00)[3] & 1) != 0 &&
@@ -384,12 +384,12 @@ extern "C" {
         return count;
     }
 
-    void __cdecl StatusPacketReset(STATUSPACKET_s *packet) {
+    void StatusPacketReset(STATUSPACKET_s *packet) {
         struct STATUSPACKET_LSW_s *lsw = packet->lsw_packet;
-        void(__cdecl * reset)(STATUSPACKET_s *) = packet->reset_callback;
-        i32(__cdecl * init)(WORLDINFO *, STATUSPACKET_s *) = packet->init_callback;
-        i32(__cdecl * finish)(WORLDINFO *, STATUSPACKET_s *, i32) = packet->finish_callback;
-        void(__cdecl * draw)(STATUSPACKET_s *) = packet->draw_background_callback;
+        void (*reset)(STATUSPACKET_s *) = packet->reset_callback;
+        i32 (*init)(WORLDINFO *, STATUSPACKET_s *) = packet->init_callback;
+        i32 (*finish)(WORLDINFO *, STATUSPACKET_s *, i32) = packet->finish_callback;
+        void (*draw)(STATUSPACKET_s *) = packet->draw_background_callback;
         f32 delay = packet->field_0x68;
         reset(packet);
         memset(packet, 0, sizeof(*packet));
@@ -405,7 +405,7 @@ extern "C" {
     i32 currentminikit = 0;
     u32 StatusCollectedSuitBitsPc = 0;
 
-    void __cdecl InitStatusScreen(WORLDINFO *world) {
+    void InitStatusScreen(WORLDINFO *world) {
         STATUSPACKET_s *p = &StatusPacket;
         i32 i;
         i32 area;
@@ -883,7 +883,7 @@ extern "C" {
         SendMessageA(PCInputInstance, WM_CLOSE, 0, 0);
     }
 
-    void __cdecl Status_DrawPlayerIconsPc(STATUSPACKET_s *packet, f32 y, f32 alpha) {
+    void Status_DrawPlayerIconsPc(STATUSPACKET_s *packet, f32 y, f32 alpha) {
         i32 player;
         for (player = 0; player < 2; ++player) {
             f32 x;
@@ -907,7 +907,7 @@ extern "C" {
     /* Retail places StatusIconsOnOff (0x4850e0) with the shared status-screen code next to
        Status_DrawPlayerIconsPc, not with the LSW stage callbacks, so the stage callbacks call
        it instead of inlining it. */
-    f32 __cdecl StatusIconsOnOff(f32 blend) {
+    f32 StatusIconsOnOff(f32 blend) {
         i32 angle = (i32)((f64)blend * 16384.0);
         f32 position = (STATSPOSY - STATSPOS2YPc) * NuTrigTable[(angle >> 1) & 0x7fff] + STATSPOS2YPc;
         return position;
@@ -917,7 +917,7 @@ extern "C" {
     f32 pop_timer = 0.0f;
 }
 
-i32 __cdecl UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
+i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
     (void)packet;
     if (stage->field_0x18 > stage->field_0x1c) {
         stage->field_0x18 = 0.0f;
@@ -938,8 +938,8 @@ extern "C" {
     STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10] = {0};
 }
 
-void __cdecl DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 max_pieces,
-                               STATUSPACKET_s *packet, f32 phase) {
+void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 max_pieces, STATUSPACKET_s *packet,
+                       f32 phase) {
     STATUS_WORLD_MINIKIT_READER_PC *view = (STATUS_WORLD_MINIKIT_READER_PC *)WORLD;
     if (view->minikit.scene == NULL || view->minikit.pieces == NULL) {
         return;
@@ -1034,7 +1034,7 @@ extern "C" {
     PART_LIGHTING_DATA_PC StatusMiniKitPartLightingPc = {0};
 }
 
-void __cdecl AddStatusMiniKitParts(void) {
+void AddStatusMiniKitParts(void) {
     f32 delay = 0.0f;
     NUVEC target_position = {0.0f, STATSPOSY, 1.0f};
     StatusMiniKitPartLightingPc.values[0] = PanelLightingColoursPc[0];
@@ -1096,7 +1096,7 @@ extern "C" {
     f32 StatusPromptHintYPc = 0.39f;
     f32 StatusPromptStepYPc = -0.2f;
 
-    void __cdecl Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha) {
+    void Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha) {
         AREA_DATA_PC *areas = ADataList;
         i32 labels[2];
         i32 locked = 0;
@@ -1200,7 +1200,7 @@ extern "C" {
 
     f32 StatusBonusTimeYPc = -0.5f;
 
-    void __cdecl DrawBonusTime(STATUSPACKET_s *packet, f32 position, i32 alpha) {
+    void DrawBonusTime(STATUSPACKET_s *packet, f32 position, i32 alpha) {
         f32 y = StatusBonusTimeYPc * position;
         char time[256];
         char previous[256];
@@ -1261,7 +1261,7 @@ extern "C" {
 #pragma data_seg()
 }
 
-extern "C" void __cdecl DrawStatusScreen(WORLDINFO *) {
+extern "C" void DrawStatusScreen(WORLDINFO *) {
     iconalphaoverride = -1.0f;
     memset(StatusMiniKitDrawCachePc, 0, sizeof(StatusMiniKitDrawCachePc));
     if (GAMEDEMO != 0) {
@@ -1396,7 +1396,7 @@ extern "C" void __cdecl DrawStatusScreen(WORLDINFO *) {
     }
 }
 
-extern "C" void __cdecl FinishStatusPacket(i32 choice) {
+extern "C" void FinishStatusPacket(i32 choice) {
     if (LOSTTEMPLE_ADATA != NULL && StatusPacket.area_id == (i16)LOSTTEMPLE_ADATA->index) {
         if (StatusPacket.player0_model == (u16)VehicleBoltId7f17d0Pc) {
             StatusPacket.player0_model = (u16)VehicleBoltId7f17d4Pc;
@@ -1458,13 +1458,12 @@ extern "C" void __cdecl FinishStatusPacket(i32 choice) {
 }
 
 /* Retail 486c00 consists solely of RET. */
-extern "C" void __cdecl NuMainStatusHelperPc(STATUSPACKET_s *) {
+extern "C" void NuMainStatusHelperPc(STATUSPACKET_s *) {
 }
 
 extern "C" {
 
-    void __cdecl RegisterStatusScreen(STATUS_STAGE_s *stages, i32 *unused,
-                                      const REGISTER_STATUS_PACKET_PC *registration) {
+    void RegisterStatusScreen(STATUS_STAGE_s *stages, i32 *unused, const REGISTER_STATUS_PACKET_PC *registration) {
         (void)unused;
         StatusStages = stages;
         StatusPacket.lsw_packet = registration->lsw_packet;
@@ -1475,7 +1474,7 @@ extern "C" {
         StatusPacket.field_0x68 = registration->stage_delay;
     }
 
-    void __cdecl UpdateStatusScreen(WORLDINFO *world) {
+    void UpdateStatusScreen(WORLDINFO *world) {
         const f32 elapsed = FRAMETIME;
         f32 seek_step = (f64)elapsed * 3.0;
         i32 player;

@@ -2,11 +2,11 @@
 #include <windows.h>
 #include <string.h>
 
-i32 __cdecl NuFileUseHiresPC(void) {
+i32 NuFileUseHiresPC(void) {
     return PcWindowOptions.usehires;
 }
 
-void __cdecl NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject) {
+void NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject) {
     (void)device_id;
     (void)reboot_iop;
     (void)eject;
@@ -55,7 +55,7 @@ typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
     char name[MAX_PATH];                 // 0x040
 } FILE_DIRECTORY_HOST_ENTRY_PC;          // size 0x144
 
-extern i32 __cdecl FileDirectoryHostOpenPc(char *path);
+extern i32 FileDirectoryHostOpenPc(char *path);
 extern const char FileDirectorySourceNamePc[56];
 char *FileDirectoryPathSlotsPc[16] = {0};
 HANDLE FileDirectoryHostHandlesPc[16] = {0};
@@ -63,15 +63,15 @@ WIN32_FIND_DATAA FileDirectoryFindDataPc[16] = {0};
 i32 FileDirectoryOpenCountPc = 0;
 NUFILE_DEVICE *FileDirectoryDefaultDevicePc = &host_device;
 const char FileDirectorySourceNamePc[56] = "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c";
-void __cdecl FileDirectoryErrorPc(i32 error);
+void FileDirectoryErrorPc(i32 error);
 
-i32 __cdecl NuFileExists(char *filepath) {
+i32 NuFileExists(char *filepath) {
     return NuFileExistQuiet(filepath);
 }
 
-extern void __cdecl NuFileReldirFix(NUFILE_DEVICE *device, char *path);
+extern void NuFileReldirFix(NUFILE_DEVICE *device, char *path);
 
-i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *path, i32 buf_size) {
+i32 DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *path, i32 buf_size) {
     char buffer[512];
     i32 device_name_len;
     char *subpath;
@@ -112,7 +112,7 @@ i32 fun_004ff280(NUFILE_DEVICE *device) {
     return 1;
 }
 
-i32 __cdecl DEVHOST_Interrogate(NUFILE_DEVICE *device) {
+i32 DEVHOST_Interrogate(NUFILE_DEVICE *device) {
     device->status = 1;
     return 1;
 }
@@ -129,11 +129,11 @@ i32 fun_004ff2c0(void) {
     return 0;
 }
 
-extern i32 __cdecl FileDirectoryMcOpenPc(i32 port, i32 slot, char *path);
-extern void __cdecl FileDirectoryMcClosePc(i32 file);
-extern i32 __cdecl FileDirectoryMcReadPc(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
+extern i32 FileDirectoryMcOpenPc(i32 port, i32 slot, char *path);
+extern void FileDirectoryMcClosePc(i32 file);
+extern i32 FileDirectoryMcReadPc(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
 
-NUFILE __cdecl NuFileOpenDir(char *path) {
+NUFILE NuFileOpenDir(char *path) {
     char formatted[256];
     NUFILE_DEVICE *device = NuFileGetDeviceFromPath(path);
     i32 result;
@@ -160,7 +160,7 @@ NUFILE __cdecl NuFileOpenDir(char *path) {
     return result + 1;
 }
 
-void __cdecl NuFileCloseDir(NUFILE file) {
+void NuFileCloseDir(NUFILE file) {
     if (file >= 0x1000) {
         FileDirectoryMcClosePc(file - 0x1000);
         return;
@@ -168,7 +168,7 @@ void __cdecl NuFileCloseDir(NUFILE file) {
     FileDirectoryHostClosePc(file - 1);
 }
 
-i32 __cdecl NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
+i32 NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
     FILE_DIRECTORY_HOST_ENTRY_PC host;
     i32 result;
     u32 flags;
@@ -202,7 +202,7 @@ i32 __cdecl NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
     return length;
 }
 
-i32 __cdecl FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entry) {
+i32 FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entry) {
     SYSTEMTIME time;
     u32 flags = 0x100;
     if ((FileDirectoryFindDataPc[file].dwFileAttributes & 1) != 0) {
@@ -251,7 +251,7 @@ i32 __cdecl FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entr
 extern i32 FileDirectoryOpenCountPc;       /* 921268 */
 extern char *FileDirectoryPathSlotsPc[16]; /* 921270 */
 
-i32 __cdecl FileDirectoryHostOpenPc(char *path) {
+i32 FileDirectoryHostOpenPc(char *path) {
     char search[200];
     i32 slot;
     if (FileDirectoryOpenCountPc == 16) {
@@ -284,7 +284,7 @@ i32 __cdecl FileDirectoryHostOpenPc(char *path) {
     return slot;
 }
 
-i32 __cdecl FileDirectoryHostClosePc(i32 slot) {
+i32 FileDirectoryHostClosePc(i32 slot) {
     HANDLE handle;
     NuFree(FileDirectoryPathSlotsPc[slot], FileDirectorySourceNamePc, 0x22e);
     handle = FileDirectoryHostHandlesPc[slot];
@@ -295,13 +295,13 @@ i32 __cdecl FileDirectoryHostClosePc(i32 slot) {
     return 0;
 }
 
-i32 __cdecl FileHostDeletePathPc(const char *path) {
+i32 FileHostDeletePathPc(const char *path) {
     return DeleteFileA(path);
 }
 
-extern i32 __cdecl FileDeviceFormatDefaultNamePc(char *destination, char *path, i32 maximum_size);
+extern i32 FileDeviceFormatDefaultNamePc(char *destination, char *path, i32 maximum_size);
 
-i32 __cdecl FileHostMovePathPc(char *destination, char *source) {
+i32 FileHostMovePathPc(char *destination, char *source) {
     char formatted_destination[256];
     char formatted_source[256];
     FileDeviceFormatDefaultNamePc(formatted_source, source, 256);
@@ -310,7 +310,7 @@ i32 __cdecl FileHostMovePathPc(char *destination, char *source) {
     return MoveFileA(formatted_source, formatted_destination);
 }
 
-i32 __cdecl SaveCreateDirectoryPc(char *path) {
+i32 SaveCreateDirectoryPc(char *path) {
     SECURITY_ATTRIBUTES security;
     security.bInheritHandle = 1;
     security.nLength = sizeof(security);
@@ -322,7 +322,7 @@ i32 fun_004ff960(void) {
     return 0;
 }
 
-i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {
+i32 NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {
     WIN32_FILE_ATTRIBUTE_DATA attributes;
     SYSTEMTIME time;
     u32 flags;

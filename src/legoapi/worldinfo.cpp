@@ -63,8 +63,8 @@ extern "C" {
         u32 reset_flags;        // 0x118
     } WORLD_INITIAL_RESET_PC;   // size 0x11c
 
-    void __cdecl ResetSounds(void);
-    i32 __cdecl AmbientFromQuiet(i32);
+    void ResetSounds(void);
+    i32 AmbientFromQuiet(i32);
 
     typedef struct world_resource_icons_reader_pc_s {
         u8 unknown_0000[0x2964];      // 0x0000
@@ -94,7 +94,7 @@ extern "C" {
         return LWORLD;
     }
 
-    void __cdecl WorldInfo_ReArrangeBuffers(i32 area1, i32 area2) {
+    void WorldInfo_ReArrangeBuffers(i32 area1, i32 area2) {
         VARIPTR *buffer_end = &WorldInfo[1].buffer_end;
         AREA_DATA_PC *areas;
         u8 single_buffer = 8;
@@ -125,7 +125,7 @@ extern "C" {
         buffer_end->addr = end;
     }
 
-    i32 __cdecl WorldInfo_OtherLevel(WORLDINFO *world) {
+    i32 WorldInfo_OtherLevel(WORLDINFO *world) {
         WORLDINFO *other = &WorldInfo[0];
         if (world == &WorldInfo[0]) {
             other = &WorldInfo[1];
@@ -136,13 +136,13 @@ extern "C" {
         return -1;
     }
 
-    void __cdecl WorldInfo_Register(WORLDINFO *world) {
+    void WorldInfo_Register(WORLDINFO *world) {
         edbitsRegisterBaseScene(world->current_gscn);
         edanimRegisterBaseScene(world->current_gscn);
         edbitsRegisterBaseTerrain(world->terrain);
     }
 
-    void __cdecl WorldInfo_UpdateRoomVisibility(WORLDINFO *world, i32 param) {
+    void WorldInfo_UpdateRoomVisibility(WORLDINFO *world, i32 param) {
         world->room_visibility_flag = 1;
         world->rooms_visible_ptr = world->rooms_visible;
         memset(world->rooms_visible, 0, 0x100);
@@ -167,7 +167,7 @@ extern "C" {
         }
     }
 
-    void __cdecl WorldInfo_LoadObjectAnimFile(WORLDINFO *world) {
+    void WorldInfo_LoadObjectAnimFile(WORLDINFO *world) {
         if (world->page_anim == -1) {
             char path[256];
             sprintf(path, WorldObjectAnimFormat, world->config_file);
@@ -192,7 +192,7 @@ extern "C" {
         }
     }
 
-    void __cdecl WorldInfo_Dump(WORLDINFO *world) {
+    void WorldInfo_Dump(WORLDINFO *world) {
         i32 index;
         WORLD_RESOURCE_ICONS_READER_PC *resource = (WORLD_RESOURCE_ICONS_READER_PC *)world;
         Customiser_DumpAll(Game_Customiser, world); /* Native 55f6cd. */
@@ -317,7 +317,7 @@ extern "C" {
         i32 portal_door_count;        // 0x504c
     } PORTAL_DOOR_WORLD_PC;           // size 0x5050
 
-    void __cdecl PortalDoors_Configure(WORLDINFO *world, char *config) {
+    void PortalDoors_Configure(WORLDINFO *world, char *config) {
         PORTAL_DOOR_WORLD_PC *view = (PORTAL_DOOR_WORLD_PC *)world;
         PORTAL_DOOR_PC *cursor;
         NUFPAR_PC *parser;
@@ -393,7 +393,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PortalDoors_Reset(WORLDINFO *world) {
+    void PortalDoors_Reset(WORLDINFO *world) {
         PORTAL_DOOR_WORLD_PC *view = (PORTAL_DOOR_WORLD_PC *)world;
         i32 index;
         PORTAL_DOOR_PC *door = view->portal_doors;
@@ -404,7 +404,7 @@ extern "C" {
         }
     }
 
-    void __cdecl EquivalentObjects_Configure(WORLDINFO *world, char *config) {
+    void EquivalentObjects_Configure(WORLDINFO *world, char *config) {
         NUFPAR_PC *parser;
         EQUIVALENT_GROUP_PC *cursor;
         world->equivalent_groups = NULL;
@@ -446,7 +446,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl EquivalentObject_Find(WORLDINFO *world, NUSPECIALHANDLE *special) {
+    i32 EquivalentObject_Find(WORLDINFO *world, NUSPECIALHANDLE *special) {
         EQUIVALENTOBJECTGROUP_PC *group;
         i32 group_index;
         i32 index;
@@ -473,7 +473,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl LoadTerrainFile(WORLDINFO *world) {
+    void LoadTerrainFile(WORLDINFO *world) {
         LEVELDATA_PC *level = world->current_level;
 
         world->terrain = NULL;
@@ -485,7 +485,7 @@ extern "C" {
         }
     }
 
-    void __cdecl LoadGrassFile(WORLDINFO *world) {
+    void LoadGrassFile(WORLDINFO *world) {
         char path[256];
 
         world->page_grass = -1;
@@ -498,7 +498,7 @@ extern "C" {
         }
     }
 
-    void __cdecl LoadBridgeFile(WORLDINFO *world) {
+    void LoadBridgeFile(WORLDINFO *world) {
         char path[256];
 
         world->page_bridge = -1;
@@ -508,7 +508,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl WorldInfo_Reset(WORLDINFO *world, i32 level_index) {
+    i32 WorldInfo_Reset(WORLDINFO *world, i32 level_index) {
         void *start;
         VARIPTR end;
         i32 buffer_size;
@@ -569,8 +569,8 @@ extern "C" {
         return 1;
     }
 
-    void __cdecl WorldInfo_Init(WORLDINFO *world) {
-        void(__cdecl * init_fn)(WORLDINFO *);
+    void WorldInfo_Init(WORLDINFO *world) {
+        void (*init_fn)(WORLDINFO *);
         i32 menu_id = -1;
         i32 menu_y = -1;
         ((WORLD_INITIAL_RESET_PC *)world)->reset_flags = 0;
@@ -655,7 +655,7 @@ extern "C" {
         world->room_visibility_flag = 1;
         world->rooms_visible_ptr = world->rooms_visible;
         memset(world->rooms_visible, 0, sizeof(world->rooms_visible));
-        init_fn = (void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[1];
+        init_fn = (void (*)(WORLDINFO *))world->current_level->callbacks[1];
         if (init_fn != NULL) {
             init_fn(world);
         }
@@ -721,7 +721,7 @@ extern "C" {
         }
     }
 
-    void __cdecl WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
+    void WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
         (void)bg_info;
         LOG_INFO("Stream level begin: next_level=%d", next_level);
         PCDeviceResetState();
@@ -739,7 +739,7 @@ extern "C" {
         LOG_INFO("Stream level complete: next_level=%d world=%p loaded=%d", next_level, (void *)LWORLD, LWORLD->loaded);
     }
 
-    void __cdecl LevelStreaming_Update(WORLDINFO *world) {
+    void LevelStreaming_Update(WORLDINFO *world) {
         CUTINFO *cut;
         NUVEC position;
         i32 i;
@@ -821,7 +821,7 @@ extern "C" {
         }
     }
 
-    void __cdecl WorldInfo_Activate(void) {
+    void WorldInfo_Activate(void) {
         LOG_INFO("World activate begin: previous=%p next=%p", (void *)WORLD, (void *)LWORLD);
         WORLD = LWORLD;
         WorldInfo_Init(LWORLD);

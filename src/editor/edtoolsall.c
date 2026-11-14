@@ -17,7 +17,7 @@ extern "C" {
 
 eduimenu_s *submenu0 = NULL;
 
-void __cdecl cbTriggerSubMenu(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbTriggerSubMenu(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     eduimenu_s *submenu = item->data_ptr;
     if (submenu != NULL) {
         eduiMenuAttach(menu, submenu);
@@ -28,6 +28,6 @@ void __cdecl cbTriggerSubMenu(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     item->highlighted = 0;
 }
 
-void __cdecl cbCancelSubMenuFromItem(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+void cbCancelSubMenuFromItem(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     eduiMenuDetach(menu);
 }

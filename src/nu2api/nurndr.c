@@ -13,7 +13,7 @@ i32 render_scene_index = 0;
 NURNDRLIBSCENE sceneParameters[16] = {0};
 NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24] = {0};
 
-i32 __cdecl NuRndrBeginScene(i32 begin_flags) {
+i32 NuRndrBeginScene(i32 begin_flags) {
     currentScene.clear_alpha_4c = 0.0f;
     currentScene.clear_flags_08 = 0;
     currentScene.clear_flags = 0;
@@ -36,7 +36,7 @@ i32 __cdecl NuRndrBeginScene(i32 begin_flags) {
     return 1;
 }
 
-void __cdecl NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha) {
+void NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha) {
     currentScene.clear_alpha = alpha;
     currentScene.clear_flags_08 |= clear_flags;
     currentScene.bg_colour = bg_colour;
@@ -77,14 +77,14 @@ static f32 NuFdiv(f32 a, f32 b) {
     return a / b;
 }
 
-void __cdecl NuVpGetPosition2(f32 *x, f32 *y) {
+void NuVpGetPosition2(f32 *x, f32 *y) {
     *x = NuFdiv((f32)vpCurrent.x * 0.0625f - ((f32)PS2_VCNTR_X - (f32)(PS2_REZ_W >> 1)),
                 NuFdiv((f32)PS2_REZ_W, (f32)PS2_VREZ_W));
     *y = NuFdiv((f32)vpCurrent.y * 0.0625f - ((f32)PS2_VCNTR_Y - (f32)(PS2_REZ_H >> 1)),
                 NuFdiv((f32)PS2_REZ_H, (f32)PS2_VREZ_H));
 }
 
-i32 __cdecl NuDisplayListAddRenderScene(void) {
+i32 NuDisplayListAddRenderScene(void) {
     VARIPTR *cursor;
     NUSORTPRI **pris;
     NUSORTPRI *node;
@@ -180,7 +180,7 @@ i32 __cdecl NuDisplayListAddRenderScene(void) {
     return render_scene_index - 1;
 }
 
-void __cdecl NuRndrEndScene(void) {
+void NuRndrEndScene(void) {
     i32 scene_id = NuDisplayListAddRenderScene();
 
     currentScene.scene_id = scene_id;
@@ -201,7 +201,7 @@ void __cdecl NuRndrEndScene(void) {
     sceneParametersCount += 1;
 }
 
-void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count) {
+void NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count) {
     i32 index;
 
     nudlist_alloc_count = count;
@@ -294,15 +294,15 @@ void NuRndrGlobalFrameCountPause(i32 paused) {
     global_frame_count_paused = paused;
 }
 
-void __cdecl NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *parameters) {
+void NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *parameters) {
     currentScene.burnout_parameters_pc = *parameters;
 }
 
-void __cdecl NuDeferredShadingRender(void) {
+void NuDeferredShadingRender(void) {
     currentScene.unknown_48 = 1;
 }
 
-void __cdecl NuRndrSetShadowCoefficientPc(i32 index, f32 value) {
+void NuRndrSetShadowCoefficientPc(i32 index, f32 value) {
     switch (index) {
         case 0:
             currentScene.shadow_coefficients_pc[0] = value;
@@ -319,7 +319,7 @@ void __cdecl NuRndrSetShadowCoefficientPc(i32 index, f32 value) {
     }
 }
 
-void __cdecl NuLightSpeedBlurOldCameraPos(NUMTX *camera) {
+void NuLightSpeedBlurOldCameraPos(NUMTX *camera) {
     NU_POST_SPEED_PARAMETERS_PC *parameters = (NU_POST_SPEED_PARAMETERS_PC *)&currentScene.unknown_188;
     parameters->current = *camera;
     NuMtxInv(&parameters->current, &parameters->current);
@@ -327,7 +327,7 @@ void __cdecl NuLightSpeedBlurOldCameraPos(NUMTX *camera) {
 
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_214) == 0x214);
 
-void __cdecl NuBackbufferCopy(i32 texture_id) {
+void NuBackbufferCopy(i32 texture_id) {
     currentScene.unknown_214 = (u32)texture_id;
 }
 
@@ -380,7 +380,7 @@ static void NuRndrPrimSetColourPrivate(i32 colour) {
         ++NuPrimVertexCount;                                                                                           \
     } while (0)
 
-void __cdecl NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
+void NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
     f32 base = length * 0.8f;
     f32 width = length * 0.1f;
     NuPrim3DBegin(14, 5, material, matrix);
@@ -438,7 +438,7 @@ void fun_005c2050(void) {
 void fun_005c2080(void) {
 }
 
-void __cdecl NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *material) {
+void NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *material) {
     f32 step = (f32)(65536.0 / segments);
     f32 theta = 0.0f;
     i32 ring;
@@ -475,7 +475,7 @@ void __cdecl NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *mat
     }
 }
 
-void __cdecl NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour) {
+void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour) {
     NuPrim3DBegin(15, 5, NULL, matrix);
     NuRndrPrimSetColourPrivate(colour);
     NuRndrPrimPosition(minimum->x, minimum->y, minimum->z);
@@ -514,7 +514,7 @@ void __cdecl NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i3
     NuPrim3DEnd();
 }
 
-void __cdecl NuRndrAxisBright(NUMTX *matrix, f32 length, i32 brightness) {
+void NuRndrAxisBright(NUMTX *matrix, f32 length, i32 brightness) {
     f32 base = length * 0.8f;
     f32 width = length * 0.1f;
     i32 red = (i32)(0xff000000u | (brightness & 0xff));
@@ -560,11 +560,11 @@ void __cdecl NuRndrAxisBright(NUMTX *matrix, f32 length, i32 brightness) {
     NuPrim3DEnd();
 }
 
-void __cdecl NuRndrAxes(NUMTX *matrix, f32 length) {
+void NuRndrAxes(NUMTX *matrix, f32 length) {
     NuRndrAxisBright(matrix, length, 0xff);
 }
 
-void __cdecl NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
+void NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
     NUMTX matrix = NuMtxSetIdentityTemplate;
     f32 dx;
     f32 dz;
@@ -608,7 +608,7 @@ void __cdecl NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
 
 #undef LOCATOR_PRIM_POSITION
 
-i32 __cdecl NuRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix) {
+i32 NuRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix) {
     NuPrim3DBegin(14, 7, material, matrix);
     {
         LOCATOR_PRIM_VERTEX_PC *output;
@@ -658,7 +658,7 @@ i32 __cdecl NuRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *ma
     return 1;
 }
 
-i32 __cdecl NuRndrStrip3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix, i32 count) {
+i32 NuRndrStrip3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix, i32 count) {
     i32 i;
     if (count == 0) {
         return 1;
@@ -690,11 +690,11 @@ i32 __cdecl NuRndrStrip3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *m
     return 1;
 }
 
-i32 __cdecl NuRndrTriStrip3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
+i32 NuRndrTriStrip3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
     return NuRndrStrip3d(vertices, material, matrix, count);
 }
 
-i32 __cdecl NuRndrTri3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
+i32 NuRndrTri3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
     i32 i;
     if (count == 0) {
         return 1;
@@ -735,7 +735,7 @@ extern i32 NuPrimCoordSystemStack[2];
         uv_vertex->v = (V);                                                                                            \
     } while (0)
 
-void __cdecl NuRndr3dLine(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
+void NuRndr3dLine(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
     NuPrim3DBegin(14, 5, NULL, &NuMtxSetIdentityTemplate);
     NuRndrPrimSetColourPrivate(colour);
     NURNDR_PRIM_UV(0.0f, 0.0f);
@@ -754,7 +754,7 @@ void __cdecl NuRndr3dLine(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 co
     NuPrim3DEnd();
 }
 
-void __cdecl NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
+void NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
     NuPrim3DBegin(14, 5, NULL, &NuMtxSetIdentityTemplate);
     NuRndrPrimSetColourPrivate(colour);
     ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = x0;
@@ -771,8 +771,8 @@ void __cdecl NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32
     NuPrim3DEnd();
 }
 
-void __cdecl NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
-                              NUMTL *material, i32 z) {
+void NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material,
+                      i32 z) {
     f32 sx = (f32)((f64)x * 0.0625);
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sz = (f32)((f64)z * (1.0f / 16777215.0f));
@@ -799,7 +799,7 @@ void __cdecl NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-void __cdecl NuRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material) {
+void NuRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material) {
     f32 sx = (f32)((f64)x * 0.0625);
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sw = (f32)((f64)width * 0.0625);
@@ -833,8 +833,8 @@ void __cdecl NuRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-void __cdecl NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours,
-                                 void *material) {
+void NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours,
+                         void *material) {
     f32 sx = (f32)((f64)x * 0.0625);
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sw = (f32)((f64)width * 0.0625);
@@ -868,7 +868,7 @@ void __cdecl NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f3
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-void __cdecl NuRndrGradRect2diZ(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material, i32 z) {
+void NuRndrGradRect2diZ(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material, i32 z) {
     f32 sx = (f32)((f64)x * 0.0625);
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sw = (f32)((f64)width * 0.0625);
@@ -889,7 +889,7 @@ void __cdecl NuRndrGradRect2diZ(i32 x, i32 y, i32 width, i32 height, u32 *colour
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
-i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 count) {
+i32 NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 count) {
     i32 i;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
@@ -915,7 +915,7 @@ i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 
 #define PORTAL_DEBUG_SIN(ANGLE) NuTrigTable[((i32)(ANGLE) >> 1) & 0x7fff]
 #define PORTAL_DEBUG_COS(ANGLE) NuTrigTable[(((i32)(ANGLE) + 16384) >> 1) & 0x7fff]
 
-void __cdecl NuRndrSphere(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale) {
+void NuRndrSphere(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale) {
     f64 radius_squared = (f64)radius * radius;
     i32 band;
     i32 angle;
@@ -945,7 +945,7 @@ void __cdecl NuRndrSphere(NUVEC *centre, f32 radius, i32 colour, f32 vertical_sc
     }
 }
 
-void __cdecl NuRndrSphereEx(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale, i32 angle_step) {
+void NuRndrSphereEx(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale, i32 angle_step) {
     f64 radius_squared = (f64)radius * radius;
     i32 band;
     i32 angle;
@@ -993,7 +993,7 @@ void __cdecl NuRndrSphereEx(NUVEC *centre, f32 radius, i32 colour, f32 vertical_
 extern i32 NuPrimCoordSystemStack[];
 
 /* Native EAX-colour calls require the existing genuine private colour/caller owner. */
-void __cdecl RenderPostClearScreenPc(void) {
+void RenderPostClearScreenPc(void) {
     i32 restore_mode;
     LOCATOR_PRIM_VERTEX_PC *vertex;
     ++NuPrimCSPos;
@@ -1199,7 +1199,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
     PCSpecialProjectionAdjust = saved_adjust;
 }
 
-u8 __cdecl NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value) {
+u8 NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value) {
     (void)minimum_unused;
     (void)maximum_unused;
     return (u8)MIN(255.0f, MAX(0.0f, value));
@@ -1227,7 +1227,7 @@ typedef struct pc_shadow_edge_s {
     i32 count;       // 0xc
 } PC_SHADOW_EDGE_PC; // size 0x10
 
-void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
+void NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
     RendererArenaDataPc = (RENDERER_ARENA_VERTEX_PC *)((buffer->addr + 3) & ~3u);
     buffer->addr = ((buffer->addr + 3) & ~3u) + 0x36b00;
     RendererArenaOffsetsPc = (u32 *)((buffer->addr + 3) & ~3u);
@@ -1243,7 +1243,7 @@ void NuRndrAnglesBetweenPointsPc(NUVEC *direction, f32 *pitch, f32 *yaw) {
 
 NUVEC NuRndrShadowDirectionsPc[8] = {0};
 
-void __cdecl NuRndrRotateVecPc(NUVEC *vector, f32 pitch, f32 yaw) {
+void NuRndrRotateVecPc(NUVEC *vector, f32 pitch, f32 yaw) {
     f32 sin_pitch = NuTrigTable[((i32)pitch >> 1) & 0x7fff];
     f32 cos_pitch = NuTrigTable[((i32)(pitch + 16384.0) >> 1) & 0x7fff];
     f32 sin_yaw = NuTrigTable[((i32)yaw >> 1) & 0x7fff];
@@ -1254,7 +1254,7 @@ void __cdecl NuRndrRotateVecPc(NUVEC *vector, f32 pitch, f32 yaw) {
     vector->x = cos_yaw * vector->x + z * sin_yaw;
 }
 
-void __cdecl NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
+void NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
     NUVEC angles; /* x: pitch, y: yaw */
     f32 length;
     i32 i;
@@ -1293,8 +1293,7 @@ typedef struct PC_SHADOW_CYLINDER_PC {
 
 /* Extrudes the silhouette of a queued cylinder along the light offset into arena quads: ten edges of a capsule outline
  * when bit 0 of the record is set, otherwise the four edges of a box. */
-void __cdecl NuRndrArenaAddCylinderVolumePc(PC_SHADOW_CYLINDER_PC *cylinder, PC_HG_SHADOW_PACKET *packet,
-                                            NUVEC *offset) {
+void NuRndrArenaAddCylinderVolumePc(PC_SHADOW_CYLINDER_PC *cylinder, PC_HG_SHADOW_PACKET *packet, NUVEC *offset) {
     NUVEC axis[3];
     VuVec v[32];
     NUVEC4 centre;
@@ -1604,8 +1603,8 @@ void __cdecl NuRndrArenaAddCylinderVolumePc(PC_SHADOW_CYLINDER_PC *cylinder, PC_
 
 /* Extrudes the eight-direction silhouette of a queued ellipsoid (centre and three axes) along the light offset into
  * arena quads. */
-void __cdecl NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUVEC *offset, f32 near_value,
-                                             f32 far_value) {
+void NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUVEC *offset, f32 near_value,
+                                     f32 far_value) {
     VuVec v[32];
     NUVEC4 centre;
     NUVEC axis[3];
@@ -1711,8 +1710,8 @@ void __cdecl NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *p
     }
 }
 
-void __cdecl NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *groups,
-                                         PC_SHADOW_EDGE_PC *points, NUVEC *offset) {
+void NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *groups, PC_SHADOW_EDGE_PC *points,
+                                 NUVEC *offset) {
     f32 buffer[256];
     NUMTX *matrix = (NUMTX *)(((u32)buffer + 15) & ~15u);
     VuVec *v;
@@ -1784,7 +1783,7 @@ typedef struct PC_SHADOW_EDGE_SET_PC {
 } PC_SHADOW_EDGE_SET_PC;
 
 /* Builds the shadow-volume arena from the queued hierarchy shadow packets, one light setup per packet sequence. */
-void __cdecl NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1) {
+void NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1) {
     PC_HG_SHADOW_PACKET *packet;
     NUVEC *direction;
     NUVEC offset;
@@ -1867,7 +1866,7 @@ void __cdecl NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1) {
 
 /* PC 601a30. Minimum reader for this initialization cohort, not a NUMTL extent. */
 
-void __cdecl NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material) {
+void NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material) {
     i32 colour_local = colour; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice (U20)
     LOCATOR_PRIM_VERTEX_PC *vertex;
     ++NuPrimCSPos;
@@ -1897,7 +1896,7 @@ typedef struct NULINEVERTEX2D_PC {
     f32 v;           // 0x18
 } NULINEVERTEX2D_PC; // size 0x1c
 
-i32 __cdecl NuRndrLine2d(NULINEVERTEX2D_PC *vertices, NUMTL *material) {
+i32 NuRndrLine2d(NULINEVERTEX2D_PC *vertices, NUMTL *material) {
     f32 u;
     f32 v;
     NuPrim2DBegin(14, 7, material);
@@ -1915,8 +1914,8 @@ i32 __cdecl NuRndrLine2d(NULINEVERTEX2D_PC *vertices, NUMTL *material) {
     return 1;
 }
 
-void __cdecl NuRndrRect(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
-                        NUMTL *material) {
+void NuRndrRect(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
+                NUMTL *material) {
     NuPrim2DBegin(16, 7, material);
     NURNDR_PRIM_UV(u0, v0);
     NuRndrPrimSetColourPrivate(colour);
@@ -1927,8 +1926,8 @@ void __cdecl NuRndrRect(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 
     NuPrim2DEnd();
 }
 
-void __cdecl NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1,
-                                   i32 colour, NUMTL *material) {
+void NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
+                           NUMTL *material) {
     NuPrim2DBegin(16, 7, material);
     NURNDR_PRIM_UV(u0, v0);
     NuRndrPrimSetColourPrivate(colour);
@@ -1939,7 +1938,7 @@ void __cdecl NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f
     NuPrim2DEnd();
 }
 
-void __cdecl NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material) {
+void NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material) {
     f32 sx = (f32)((f64)x * 0.0625);
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sw;
@@ -1965,8 +1964,7 @@ void __cdecl NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMT
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-void __cdecl NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
-                             NUMTL *material) {
+void NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material) {
     f32 sx = (f32)((f64)x * 0.0625);
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sw;
@@ -1992,7 +1990,7 @@ void __cdecl NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-void __cdecl NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material) {
+void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material) {
     struct {
         f32 x;
         f32 y;
@@ -2045,7 +2043,7 @@ static NUMTX NuLightSpeedBlurViewProjectionPc = {0};
 static NUMTX NuLightSpeedBlurPreviousViewProjectionPc = {0};
 STATIC_ASSERT(offsetof(NUAPI, frame_time) == 0x3c);
 
-void __cdecl NuLightSpeedBlur(i32 reuse_camera, f32 scale) {
+void NuLightSpeedBlur(i32 reuse_camera, f32 scale) {
     NU_POST_SPEED_PARAMETERS_PC *parameters = (NU_POST_SPEED_PARAMETERS_PC *)&currentScene.unknown_188;
     f32 frame_time;
     if (NuLightSpeedBlurEnabledPc == 0) {
@@ -2063,7 +2061,7 @@ void __cdecl NuLightSpeedBlur(i32 reuse_camera, f32 scale) {
     parameters->scale = scale;
 }
 
-void __cdecl NuRndrLineStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material) {
+void NuRndrLineStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material) {
     i32 i;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
@@ -2087,7 +2085,7 @@ void __cdecl NuRndrLineStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour,
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-void __cdecl NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material) {
+void NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material) {
     i32 i;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
@@ -2115,7 +2113,7 @@ void fun_005dc3e0(void) {
     AnimationDiagnosticNoOpPc();
 }
 
-void __cdecl NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, NUMTL *material) {
+void NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, NUMTL *material) {
     LOCATOR_PRIM_VERTEX_PC *vertex;
     NuPrim2DBegin(16, 7, material);
     NuRndrPrimSetColourPrivate(colour);

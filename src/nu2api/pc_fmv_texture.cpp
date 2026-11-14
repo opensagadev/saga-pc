@@ -17,13 +17,13 @@ extern "C" {
     NU_FMV_TEXTURE_PC NuFmvTexturePc = {0}; // 0x029a99e0
 }
 
-extern "C" void __cdecl NuFmvTextureReleasePc(void) {
+extern "C" void NuFmvTextureReleasePc(void) {
     if (NuFmvTextureActivePc != 0) {
         FmvReleaseImagePc(&NuFmvTexturePc.movie);
     }
 }
 
-extern "C" void __cdecl NuFmvTextureRestorePc(void) {
+extern "C" void NuFmvTextureRestorePc(void) {
     if (NuFmvTextureActivePc != 0) {
         FmvRestoreImagePc(&NuFmvTexturePc.movie);
     }

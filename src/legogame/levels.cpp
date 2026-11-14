@@ -4,11 +4,11 @@
 
 /* Retail unit 0x488e90-0x48fc30 (legoapi/levels.cpp): definitions in retail address order. */
 
-extern "C" void __cdecl FmvPlatformUpdatePc(void);
-extern "C" void __cdecl Particles_LoadAreaPage(char *);
+extern "C" void FmvPlatformUpdatePc(void);
+extern "C" void Particles_LoadAreaPage(char *);
 extern "C" {
-    void __cdecl NewAreaMusicChanges(void);
-    void __cdecl ClearTakeOverObjectSys(void);
+    void NewAreaMusicChanges(void);
+    void ClearTakeOverObjectSys(void);
     extern void *Door_Last;
 }
 
@@ -34,23 +34,23 @@ typedef struct area_loading_pad_reader_pc_s {
 } AREA_LOADING_PAD_READER_PC;
 
 extern "C" {
-    void __cdecl MusicClearAll(void);
-    void __cdecl SoundKillAll(void);
-    void __cdecl GamePlayMusic(LEVELDATA_PC *, i32, OPTIONSSAVE *);
+    void MusicClearAll(void);
+    void SoundKillAll(void);
+    void GamePlayMusic(LEVELDATA_PC *, i32, OPTIONSSAVE *);
 }
-void __cdecl legoSetMusicVolume(f32);
+void legoSetMusicVolume(f32);
 extern "C" {
-    void __cdecl NuLgtSetArcMat(NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1);
-    void __cdecl PermanentGraphicsResourceSetup(void);
-    void __cdecl NuRndrShadowInit(u8 *random);
-    void __cdecl InitTexAnimScripts(char **table);
+    void NuLgtSetArcMat(NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1);
+    void PermanentGraphicsResourceSetup(void);
+    void NuRndrShadowInit(u8 *random);
+    void InitTexAnimScripts(char **table);
     extern char *TexAnimScriptNamesTitlePc[3];
     extern char *TexAnimScriptNamesGamePc[32];
 }
-extern "C" void __cdecl CreateUsefulMaterials(void);
-extern "C" void __cdecl edbitsRegisterThingsScene(NUGSCN *scene);
-extern "C" i32 __cdecl NuMtlSetCurrentRenderPlane(i32 render_plane);
-extern "C" void __cdecl ParticleReset(void);
+extern "C" void CreateUsefulMaterials(void);
+extern "C" void edbitsRegisterThingsScene(NUGSCN *scene);
+extern "C" i32 NuMtlSetCurrentRenderPlane(i32 render_plane);
+extern "C" void ParticleReset(void);
 
 typedef struct permanent_material_reader_pc_s {
     u8 unknown_0000[0x40];
@@ -64,7 +64,7 @@ typedef struct permanent_material_reader_pc_s {
     u16 sort_priority;
 } PERMANENT_MATERIAL_READER_PC;
 
-extern "C" void __cdecl DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
+extern "C" void DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
 
 typedef struct permanent_customiser_save_pc_s {
     u16 pieces[9];
@@ -83,244 +83,244 @@ extern "C" {
     extern f32 PermCollectionScalePc;
 }
 #define LEVEL_BYTE_CALLBACK(name, field)                                                                               \
-    void __cdecl name(NUFPAR_PC *parser) {                                                                             \
+    void name(NUFPAR_PC *parser) {                                                                                     \
         levelconfig_ldata->field = (u8)NuFParGetInt(parser);                                                           \
     }
 #define LEVEL_WORD_CALLBACK(name, field)                                                                               \
-    void __cdecl name(NUFPAR_PC *parser) {                                                                             \
+    void name(NUFPAR_PC *parser) {                                                                                     \
         levelconfig_ldata->field = (i16)NuFParGetInt(parser);                                                          \
     }
-extern "C" void __cdecl KashyyykD_Init(WORLDINFO *);
-extern "C" void __cdecl KashyyykD_Reset(WORLDINFO *);
-extern "C" void __cdecl KashyyykD_Update(WORLDINFO *);
-extern "C" void __cdecl GunshipA_Init(WORLDINFO *);
-extern "C" void __cdecl GunshipA_Update(WORLDINFO *);
-extern "C" void __cdecl GunshipA_DrawPc(WORLDINFO *);
-extern "C" void __cdecl GunshipB_Reset(WORLDINFO *);
-extern "C" void __cdecl HothBattleE_Init(WORLDINFO *);
-extern "C" void __cdecl HothBattleE_Update(WORLDINFO *);
-extern "C" void __cdecl HothBattleE_DrawPc(WORLDINFO *);
-extern "C" void __cdecl HothBattleE_PanelPc(WORLDINFO *);
-extern "C" void __cdecl HothBattleA_Init(WORLDINFO *);
-extern "C" void __cdecl HothBattleA_Reset(WORLDINFO *);
-extern "C" void __cdecl HothBattleA_Update(WORLDINFO *);
-extern "C" void __cdecl HothBattleA_DrawPc(WORLDINFO *);
-extern "C" void __cdecl HothBattleC_Init(WORLDINFO *);
-extern "C" void __cdecl HothBattleC_Reset(WORLDINFO *);
-extern "C" void __cdecl HothBattleC_Update(WORLDINFO *);
-extern "C" void __cdecl HothBattleC_DrawPc(WORLDINFO *);
-extern "C" void __cdecl CloudCityEscapeA_Init(WORLDINFO *);
-extern "C" void __cdecl CloudCityEscapeA_Reset(WORLDINFO *);
-extern "C" void __cdecl CloudCityEscapeA_Update(WORLDINFO *);
-extern "C" void __cdecl CloudCityEscapeA_Panel(WORLDINFO *);
-extern "C" void __cdecl CloudCityTrapA_Init(WORLDINFO *);
-extern "C" void __cdecl CloudCityTrapA_Reset(WORLDINFO *);
-extern "C" void __cdecl CloudCityTrapA_Update(WORLDINFO *);
+extern "C" void KashyyykD_Init(WORLDINFO *);
+extern "C" void KashyyykD_Reset(WORLDINFO *);
+extern "C" void KashyyykD_Update(WORLDINFO *);
+extern "C" void GunshipA_Init(WORLDINFO *);
+extern "C" void GunshipA_Update(WORLDINFO *);
+extern "C" void GunshipA_DrawPc(WORLDINFO *);
+extern "C" void GunshipB_Reset(WORLDINFO *);
+extern "C" void HothBattleE_Init(WORLDINFO *);
+extern "C" void HothBattleE_Update(WORLDINFO *);
+extern "C" void HothBattleE_DrawPc(WORLDINFO *);
+extern "C" void HothBattleE_PanelPc(WORLDINFO *);
+extern "C" void HothBattleA_Init(WORLDINFO *);
+extern "C" void HothBattleA_Reset(WORLDINFO *);
+extern "C" void HothBattleA_Update(WORLDINFO *);
+extern "C" void HothBattleA_DrawPc(WORLDINFO *);
+extern "C" void HothBattleC_Init(WORLDINFO *);
+extern "C" void HothBattleC_Reset(WORLDINFO *);
+extern "C" void HothBattleC_Update(WORLDINFO *);
+extern "C" void HothBattleC_DrawPc(WORLDINFO *);
+extern "C" void CloudCityEscapeA_Init(WORLDINFO *);
+extern "C" void CloudCityEscapeA_Reset(WORLDINFO *);
+extern "C" void CloudCityEscapeA_Update(WORLDINFO *);
+extern "C" void CloudCityEscapeA_Panel(WORLDINFO *);
+extern "C" void CloudCityTrapA_Init(WORLDINFO *);
+extern "C" void CloudCityTrapA_Reset(WORLDINFO *);
+extern "C" void CloudCityTrapA_Update(WORLDINFO *);
 /* Per-level callbacks installed by FixUpLevels (retail entry addresses in config/symbols.csv). */
-extern "C" void __cdecl DrawStatusScreen(WORLDINFO *);
-extern "C" void __cdecl LostTempleC_ResetPc(WORLDINFO *);
-extern "C" void __cdecl LostTempleC_UpdatePc(WORLDINFO *);
-extern "C" void __cdecl GunganA_Init(WORLDINFO *);
-extern "C" void __cdecl GunganA_Update(WORLDINFO *);
-extern "C" void __cdecl PodRaceBInit(WORLDINFO *);
-extern "C" void __cdecl PodRaceBReset(WORLDINFO *);
-extern "C" void __cdecl PodRaceBUpdate(WORLDINFO *);
-extern "C" void __cdecl PodRaceAInit(WORLDINFO *);
-extern "C" void __cdecl PodRaceAReset(WORLDINFO *);
-extern "C" void __cdecl PodRaceAUpdatePc(WORLDINFO *);
-extern "C" void __cdecl PodRaceA_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl PodRaceADrawPc(WORLDINFO *);
-extern "C" void __cdecl PodRaceCInit(WORLDINFO *);
-extern "C" void __cdecl PodRaceCReset(WORLDINFO *);
-extern "C" void __cdecl PodRaceCUpdate(WORLDINFO *);
-extern "C" void __cdecl PodSprintA_Init(WORLDINFO *);
-extern "C" void __cdecl PodSprintA_Reset(WORLDINFO *);
-extern "C" void __cdecl PodSprintA_Update(WORLDINFO *);
-extern "C" void __cdecl PodSprintA_Panel(WORLDINFO *);
-extern "C" void __cdecl AnakinsFlightB_Init(WORLDINFO *);
-extern "C" void __cdecl AnakinsFlightB_Update(WORLDINFO *);
-extern "C" void __cdecl AnakinsFlightB_Draw(WORLDINFO *);
-extern "C" void __cdecl RetakeG_Init(WORLDINFO *);
-extern "C" void __cdecl RetakeG_Reset(WORLDINFO *);
-extern "C" void __cdecl RetakeG_Update(WORLDINFO *);
-extern "C" void __cdecl RetakeG_Panel(WORLDINFO *);
-extern "C" void __cdecl MaulA_Init(WORLDINFO *);
-extern "C" void __cdecl MaulA_Reset(WORLDINFO *);
-extern "C" void __cdecl MaulA_Update(WORLDINFO *);
-extern "C" void __cdecl MaulA_Panel(WORLDINFO *);
-extern "C" void __cdecl MaulD_Init(WORLDINFO *);
-extern "C" void __cdecl MaulD_Update(WORLDINFO *);
-extern "C" void __cdecl MaulE_Init(WORLDINFO *);
-extern "C" void __cdecl MaulE_Update(WORLDINFO *);
-extern "C" void __cdecl MaulF_Init(WORLDINFO *);
-extern "C" void __cdecl MaulF_Reset(WORLDINFO *);
-extern "C" void __cdecl MaulF_Update(WORLDINFO *);
-extern "C" void __cdecl MaulF_Panel(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitA_Init(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitA_Reset(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitA_Update(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitB_Init(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitB_Reset(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitB_Update(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitC_Init(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitC_Reset(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitC_Update(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitD_Init(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitD_Reset(WORLDINFO *);
-extern "C" void __cdecl BountyHunterPursuitD_Update(WORLDINFO *);
-extern "C" void __cdecl FactoryB_Init(WORLDINFO *);
-extern "C" void __cdecl FactoryB_Reset(WORLDINFO *);
-extern "C" void __cdecl FactoryB_Update(WORLDINFO *);
-extern "C" void __cdecl FactoryB_Draw(WORLDINFO *);
-extern "C" void __cdecl FactoryG_Init(WORLDINFO *);
-extern "C" void __cdecl FactoryG_Update(WORLDINFO *);
-extern "C" void __cdecl DookuC_Reset(WORLDINFO *);
-extern "C" void __cdecl DookuC_Update(WORLDINFO *);
-extern "C" void __cdecl DookuC_DrawPanel(WORLDINFO *);
-extern "C" void __cdecl KaminoA_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl KaminoC_Reset(WORLDINFO *);
-extern "C" void __cdecl KaminoC_Init(WORLDINFO *);
-extern "C" void __cdecl KaminoC_Update(WORLDINFO *);
-extern "C" void __cdecl KaminoOutro_Init(WORLDINFO *);
-extern "C" void __cdecl KaminoE_Reset(WORLDINFO *);
-extern "C" void __cdecl KaminoE_Init(WORLDINFO *);
-extern "C" void __cdecl KaminoE_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl KaminoE_UpdatePc(WORLDINFO *);
-extern "C" void __cdecl KaminoE_Draw(WORLDINFO *);
-extern "C" void __cdecl CruiserAInit(WORLDINFO *);
-extern "C" void __cdecl CruiserAUpdate(WORLDINFO *);
-extern "C" void __cdecl CruiserCReset(WORLDINFO *);
-extern "C" void __cdecl CruiserCUpdate(WORLDINFO *);
-extern "C" void __cdecl CruiserCPanel(WORLDINFO *);
-extern "C" void __cdecl CruiserDInit(WORLDINFO *);
-extern "C" void __cdecl CruiserDReset(WORLDINFO *);
-extern "C" void __cdecl CruiserDUpdate(WORLDINFO *);
-extern "C" void __cdecl GrievousA_Init(WORLDINFO *);
-extern "C" void __cdecl GrievousA_Reset(WORLDINFO *);
-extern "C" void __cdecl GrievousA_Update(WORLDINFO *);
-extern "C" void __cdecl TempleC_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl KashyyykA_Init(WORLDINFO *);
-extern "C" void __cdecl KashyyykA_Reset(WORLDINFO *);
-extern "C" void __cdecl KashyyykA_Update(WORLDINFO *);
-extern "C" void __cdecl KashyyykA_Panel(WORLDINFO *);
-extern "C" void __cdecl KashyyykB_Init(WORLDINFO *);
-extern "C" void __cdecl KashyyykB_Reset(WORLDINFO *);
-extern "C" void __cdecl KashyyykB_Update(WORLDINFO *);
-extern "C" void __cdecl KashyyykC_Init(WORLDINFO *);
-extern "C" void __cdecl KashyyykC_Update(WORLDINFO *);
-extern "C" void __cdecl VaderA_Init(WORLDINFO *);
-extern "C" void __cdecl VaderA_Reset(WORLDINFO *);
-extern "C" void __cdecl VaderA_Update(WORLDINFO *);
-extern "C" void __cdecl VaderA_DrawPanel(WORLDINFO *);
-extern "C" void __cdecl VaderB_Init(WORLDINFO *);
-extern "C" void __cdecl VaderB_Reset(WORLDINFO *);
-extern "C" void __cdecl VaderB_Update(WORLDINFO *);
-extern "C" void __cdecl VaderB_DrawPanel(WORLDINFO *);
-extern "C" void __cdecl VaderC_Init(WORLDINFO *);
-extern "C" void __cdecl VaderC_Reset(WORLDINFO *);
-extern "C" void __cdecl VaderC_Update(WORLDINFO *);
-extern "C" void __cdecl VaderC_DrawPanel(WORLDINFO *);
-extern "C" void __cdecl BlockadeRunnerB_Init(WORLDINFO *);
-extern "C" void __cdecl BlockadeRunnerB_Update(WORLDINFO *);
-extern "C" void __cdecl BlockadeRunnerC_Init(WORLDINFO *);
-extern "C" void __cdecl BlockadeRunnerD_Reset(WORLDINFO *);
-extern "C" void __cdecl BlockadeRunnerD_Update(WORLDINFO *);
-extern "C" void __cdecl MosEisleyB_Init(WORLDINFO *);
-extern "C" void __cdecl MosEisleyD_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl MosEisleyE_Init(WORLDINFO *);
-extern "C" void __cdecl MosEisleyE_Reset(WORLDINFO *);
-extern "C" void __cdecl MosEisleyE_Update(WORLDINFO *);
-extern "C" void __cdecl DeathStarRescueB_Init(WORLDINFO *);
-extern "C" void __cdecl DeathStarRescueB_Update(WORLDINFO *);
-extern "C" void __cdecl DeathStarRescueB_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl DeathStarRescueC_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl DeathStarEscapeA_Update(WORLDINFO *);
-extern "C" void __cdecl DeathStarEscapeB_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl DeathStarEscapeB_Draw(WORLDINFO *);
-extern "C" void __cdecl DeathStarEscapeC_Init(WORLDINFO *);
-extern "C" void __cdecl DeathStarEscapeC_Update(WORLDINFO *);
-extern "C" void __cdecl DeathStarEscapeC_Reset(WORLDINFO *);
-extern "C" void __cdecl DeathStarEscapeD_Update(WORLDINFO *);
-extern "C" void __cdecl DeathStarBattleC_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl DeathStarBattleDInit(WORLDINFO *);
-extern "C" void __cdecl DeathStarBattleDUpdate(WORLDINFO *);
-extern "C" void __cdecl DeathStarBattleDDraw(WORLDINFO *);
-extern "C" void __cdecl DeathStarBattleDReset(WORLDINFO *);
-extern "C" void __cdecl HothEscapeA_Init(WORLDINFO *);
-extern "C" void __cdecl HothEscapeA_Update(WORLDINFO *);
-extern "C" void __cdecl HothEscapeA_Reset(WORLDINFO *);
-extern "C" void __cdecl HothEscapeB_Init(WORLDINFO *);
-extern "C" void __cdecl HothEscapeB_Update(WORLDINFO *);
-extern "C" void __cdecl HothEscapeB_Reset(WORLDINFO *);
-extern "C" void __cdecl HothEscapeC_Init(WORLDINFO *);
-extern "C" void __cdecl HothEscapeC_Update(WORLDINFO *);
-extern "C" void __cdecl HothEscapeC_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl HothEscapeC_Reset(WORLDINFO *);
-extern "C" void __cdecl HothEscapeD_Init(WORLDINFO *);
-extern "C" void __cdecl HothEscapeD_Update(WORLDINFO *);
-extern "C" void __cdecl HothEscapeD_Reset(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseA_Init(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseA_Reset(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseA_Update(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseB_Init(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseB_Reset(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseB_Update(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseC_Init(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseC_Reset(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseC_Update(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseD_Init(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseD_Update(WORLDINFO *);
-extern "C" void __cdecl AsteroidChaseD_Panel(WORLDINFO *);
-extern "C" void __cdecl DagobahE_Init(WORLDINFO *);
-extern "C" void __cdecl DagobahB_Init(WORLDINFO *);
-extern "C" void __cdecl DagobahB_Reset(WORLDINFO *);
-extern "C" void __cdecl DagobahC_Init(WORLDINFO *);
-extern "C" void __cdecl DagobahC_Panel(WORLDINFO *);
-extern "C" void __cdecl CloudCityTrapB_Init(WORLDINFO *);
-extern "C" void __cdecl CloudCityTrapB_Update(WORLDINFO *);
-extern "C" void __cdecl CloudCityTrapC_Reset(WORLDINFO *);
-extern "C" void __cdecl CloudCityTrapC_Update(WORLDINFO *);
-extern "C" void __cdecl CloudCityTrapC_Panel(WORLDINFO *);
-extern "C" void __cdecl CloudCityEscapeC_Init(WORLDINFO *);
-extern "C" void __cdecl CloudCityEscapeC_Update(WORLDINFO *);
-extern "C" void __cdecl JabbasPalaceA_Init(WORLDINFO *);
-extern "C" void __cdecl JabbasPalaceA_Reset(WORLDINFO *);
-extern "C" void __cdecl JabbasPalaceA_Update(WORLDINFO *);
-extern "C" void __cdecl JabbasPalaceB_Init(WORLDINFO *);
-extern "C" void __cdecl JabbasPalaceB_Reset(WORLDINFO *);
-extern "C" void __cdecl JabbasPalaceD_Reset(WORLDINFO *);
-extern "C" void __cdecl JabbasPalaceE_Init(WORLDINFO *);
-extern "C" void __cdecl JabbasPalaceE_Reset(WORLDINFO *);
-extern "C" void __cdecl JabbasPalaceE_Update(WORLDINFO *);
-extern "C" void __cdecl JabbasPalaceE_Panel(WORLDINFO *);
-extern "C" void __cdecl EndorBattleA_Init(WORLDINFO *);
-extern "C" void __cdecl EndorBattleA_Update(WORLDINFO *);
-extern "C" void __cdecl DeathStar2BattleA_AlwaysUpdate(WORLDINFO *);
-extern "C" void __cdecl DeathStar2BattleD_Init(WORLDINFO *);
-extern "C" void __cdecl DeathStar2BattleD_Update(WORLDINFO *);
-extern "C" void __cdecl DeathStar2BattleFire_Init(WORLDINFO *);
-extern "C" void __cdecl EmperorFightA_Panel(WORLDINFO *);
-extern "C" void __cdecl SarlaccPitA_Reset(WORLDINFO *);
-extern "C" void __cdecl SarlaccPitA_Draw(WORLDINFO *);
-extern "C" void __cdecl SarlaccPitB_Init(WORLDINFO *);
-extern "C" void __cdecl SarlaccPitB_Reset(WORLDINFO *);
-extern "C" void __cdecl SarlaccPitB_Update(WORLDINFO *);
-extern "C" void __cdecl SarlaccPitC_Init(WORLDINFO *);
-extern "C" void __cdecl LegoCity_Reset(WORLDINFO *);
-extern "C" void __cdecl LegoCity_Update(WORLDINFO *);
-extern "C" void __cdecl NewTown_Init(WORLDINFO *);
-extern "C" void __cdecl NewTown_Reset(WORLDINFO *);
-extern "C" void __cdecl NewTown_Update(WORLDINFO *);
-extern "C" void __cdecl FairgroundbadA_Init(WORLDINFO *);
-extern "C" void __cdecl FairgroundbadA_Update(WORLDINFO *);
-extern "C" void __cdecl FairgroundbadA_Draw(WORLDINFO *);
+extern "C" void DrawStatusScreen(WORLDINFO *);
+extern "C" void LostTempleC_ResetPc(WORLDINFO *);
+extern "C" void LostTempleC_UpdatePc(WORLDINFO *);
+extern "C" void GunganA_Init(WORLDINFO *);
+extern "C" void GunganA_Update(WORLDINFO *);
+extern "C" void PodRaceBInit(WORLDINFO *);
+extern "C" void PodRaceBReset(WORLDINFO *);
+extern "C" void PodRaceBUpdate(WORLDINFO *);
+extern "C" void PodRaceAInit(WORLDINFO *);
+extern "C" void PodRaceAReset(WORLDINFO *);
+extern "C" void PodRaceAUpdatePc(WORLDINFO *);
+extern "C" void PodRaceA_AlwaysUpdate(WORLDINFO *);
+extern "C" void PodRaceADrawPc(WORLDINFO *);
+extern "C" void PodRaceCInit(WORLDINFO *);
+extern "C" void PodRaceCReset(WORLDINFO *);
+extern "C" void PodRaceCUpdate(WORLDINFO *);
+extern "C" void PodSprintA_Init(WORLDINFO *);
+extern "C" void PodSprintA_Reset(WORLDINFO *);
+extern "C" void PodSprintA_Update(WORLDINFO *);
+extern "C" void PodSprintA_Panel(WORLDINFO *);
+extern "C" void AnakinsFlightB_Init(WORLDINFO *);
+extern "C" void AnakinsFlightB_Update(WORLDINFO *);
+extern "C" void AnakinsFlightB_Draw(WORLDINFO *);
+extern "C" void RetakeG_Init(WORLDINFO *);
+extern "C" void RetakeG_Reset(WORLDINFO *);
+extern "C" void RetakeG_Update(WORLDINFO *);
+extern "C" void RetakeG_Panel(WORLDINFO *);
+extern "C" void MaulA_Init(WORLDINFO *);
+extern "C" void MaulA_Reset(WORLDINFO *);
+extern "C" void MaulA_Update(WORLDINFO *);
+extern "C" void MaulA_Panel(WORLDINFO *);
+extern "C" void MaulD_Init(WORLDINFO *);
+extern "C" void MaulD_Update(WORLDINFO *);
+extern "C" void MaulE_Init(WORLDINFO *);
+extern "C" void MaulE_Update(WORLDINFO *);
+extern "C" void MaulF_Init(WORLDINFO *);
+extern "C" void MaulF_Reset(WORLDINFO *);
+extern "C" void MaulF_Update(WORLDINFO *);
+extern "C" void MaulF_Panel(WORLDINFO *);
+extern "C" void BountyHunterPursuitA_Init(WORLDINFO *);
+extern "C" void BountyHunterPursuitA_Reset(WORLDINFO *);
+extern "C" void BountyHunterPursuitA_Update(WORLDINFO *);
+extern "C" void BountyHunterPursuitB_Init(WORLDINFO *);
+extern "C" void BountyHunterPursuitB_Reset(WORLDINFO *);
+extern "C" void BountyHunterPursuitB_Update(WORLDINFO *);
+extern "C" void BountyHunterPursuitC_Init(WORLDINFO *);
+extern "C" void BountyHunterPursuitC_Reset(WORLDINFO *);
+extern "C" void BountyHunterPursuitC_Update(WORLDINFO *);
+extern "C" void BountyHunterPursuitD_Init(WORLDINFO *);
+extern "C" void BountyHunterPursuitD_Reset(WORLDINFO *);
+extern "C" void BountyHunterPursuitD_Update(WORLDINFO *);
+extern "C" void FactoryB_Init(WORLDINFO *);
+extern "C" void FactoryB_Reset(WORLDINFO *);
+extern "C" void FactoryB_Update(WORLDINFO *);
+extern "C" void FactoryB_Draw(WORLDINFO *);
+extern "C" void FactoryG_Init(WORLDINFO *);
+extern "C" void FactoryG_Update(WORLDINFO *);
+extern "C" void DookuC_Reset(WORLDINFO *);
+extern "C" void DookuC_Update(WORLDINFO *);
+extern "C" void DookuC_DrawPanel(WORLDINFO *);
+extern "C" void KaminoA_AlwaysUpdate(WORLDINFO *);
+extern "C" void KaminoC_Reset(WORLDINFO *);
+extern "C" void KaminoC_Init(WORLDINFO *);
+extern "C" void KaminoC_Update(WORLDINFO *);
+extern "C" void KaminoOutro_Init(WORLDINFO *);
+extern "C" void KaminoE_Reset(WORLDINFO *);
+extern "C" void KaminoE_Init(WORLDINFO *);
+extern "C" void KaminoE_AlwaysUpdate(WORLDINFO *);
+extern "C" void KaminoE_UpdatePc(WORLDINFO *);
+extern "C" void KaminoE_Draw(WORLDINFO *);
+extern "C" void CruiserAInit(WORLDINFO *);
+extern "C" void CruiserAUpdate(WORLDINFO *);
+extern "C" void CruiserCReset(WORLDINFO *);
+extern "C" void CruiserCUpdate(WORLDINFO *);
+extern "C" void CruiserCPanel(WORLDINFO *);
+extern "C" void CruiserDInit(WORLDINFO *);
+extern "C" void CruiserDReset(WORLDINFO *);
+extern "C" void CruiserDUpdate(WORLDINFO *);
+extern "C" void GrievousA_Init(WORLDINFO *);
+extern "C" void GrievousA_Reset(WORLDINFO *);
+extern "C" void GrievousA_Update(WORLDINFO *);
+extern "C" void TempleC_AlwaysUpdate(WORLDINFO *);
+extern "C" void KashyyykA_Init(WORLDINFO *);
+extern "C" void KashyyykA_Reset(WORLDINFO *);
+extern "C" void KashyyykA_Update(WORLDINFO *);
+extern "C" void KashyyykA_Panel(WORLDINFO *);
+extern "C" void KashyyykB_Init(WORLDINFO *);
+extern "C" void KashyyykB_Reset(WORLDINFO *);
+extern "C" void KashyyykB_Update(WORLDINFO *);
+extern "C" void KashyyykC_Init(WORLDINFO *);
+extern "C" void KashyyykC_Update(WORLDINFO *);
+extern "C" void VaderA_Init(WORLDINFO *);
+extern "C" void VaderA_Reset(WORLDINFO *);
+extern "C" void VaderA_Update(WORLDINFO *);
+extern "C" void VaderA_DrawPanel(WORLDINFO *);
+extern "C" void VaderB_Init(WORLDINFO *);
+extern "C" void VaderB_Reset(WORLDINFO *);
+extern "C" void VaderB_Update(WORLDINFO *);
+extern "C" void VaderB_DrawPanel(WORLDINFO *);
+extern "C" void VaderC_Init(WORLDINFO *);
+extern "C" void VaderC_Reset(WORLDINFO *);
+extern "C" void VaderC_Update(WORLDINFO *);
+extern "C" void VaderC_DrawPanel(WORLDINFO *);
+extern "C" void BlockadeRunnerB_Init(WORLDINFO *);
+extern "C" void BlockadeRunnerB_Update(WORLDINFO *);
+extern "C" void BlockadeRunnerC_Init(WORLDINFO *);
+extern "C" void BlockadeRunnerD_Reset(WORLDINFO *);
+extern "C" void BlockadeRunnerD_Update(WORLDINFO *);
+extern "C" void MosEisleyB_Init(WORLDINFO *);
+extern "C" void MosEisleyD_AlwaysUpdate(WORLDINFO *);
+extern "C" void MosEisleyE_Init(WORLDINFO *);
+extern "C" void MosEisleyE_Reset(WORLDINFO *);
+extern "C" void MosEisleyE_Update(WORLDINFO *);
+extern "C" void DeathStarRescueB_Init(WORLDINFO *);
+extern "C" void DeathStarRescueB_Update(WORLDINFO *);
+extern "C" void DeathStarRescueB_AlwaysUpdate(WORLDINFO *);
+extern "C" void DeathStarRescueC_AlwaysUpdate(WORLDINFO *);
+extern "C" void DeathStarEscapeA_Update(WORLDINFO *);
+extern "C" void DeathStarEscapeB_AlwaysUpdate(WORLDINFO *);
+extern "C" void DeathStarEscapeB_Draw(WORLDINFO *);
+extern "C" void DeathStarEscapeC_Init(WORLDINFO *);
+extern "C" void DeathStarEscapeC_Update(WORLDINFO *);
+extern "C" void DeathStarEscapeC_Reset(WORLDINFO *);
+extern "C" void DeathStarEscapeD_Update(WORLDINFO *);
+extern "C" void DeathStarBattleC_AlwaysUpdate(WORLDINFO *);
+extern "C" void DeathStarBattleDInit(WORLDINFO *);
+extern "C" void DeathStarBattleDUpdate(WORLDINFO *);
+extern "C" void DeathStarBattleDDraw(WORLDINFO *);
+extern "C" void DeathStarBattleDReset(WORLDINFO *);
+extern "C" void HothEscapeA_Init(WORLDINFO *);
+extern "C" void HothEscapeA_Update(WORLDINFO *);
+extern "C" void HothEscapeA_Reset(WORLDINFO *);
+extern "C" void HothEscapeB_Init(WORLDINFO *);
+extern "C" void HothEscapeB_Update(WORLDINFO *);
+extern "C" void HothEscapeB_Reset(WORLDINFO *);
+extern "C" void HothEscapeC_Init(WORLDINFO *);
+extern "C" void HothEscapeC_Update(WORLDINFO *);
+extern "C" void HothEscapeC_AlwaysUpdate(WORLDINFO *);
+extern "C" void HothEscapeC_Reset(WORLDINFO *);
+extern "C" void HothEscapeD_Init(WORLDINFO *);
+extern "C" void HothEscapeD_Update(WORLDINFO *);
+extern "C" void HothEscapeD_Reset(WORLDINFO *);
+extern "C" void AsteroidChaseA_Init(WORLDINFO *);
+extern "C" void AsteroidChaseA_Reset(WORLDINFO *);
+extern "C" void AsteroidChaseA_Update(WORLDINFO *);
+extern "C" void AsteroidChaseB_Init(WORLDINFO *);
+extern "C" void AsteroidChaseB_Reset(WORLDINFO *);
+extern "C" void AsteroidChaseB_Update(WORLDINFO *);
+extern "C" void AsteroidChaseC_Init(WORLDINFO *);
+extern "C" void AsteroidChaseC_Reset(WORLDINFO *);
+extern "C" void AsteroidChaseC_Update(WORLDINFO *);
+extern "C" void AsteroidChaseD_Init(WORLDINFO *);
+extern "C" void AsteroidChaseD_Update(WORLDINFO *);
+extern "C" void AsteroidChaseD_Panel(WORLDINFO *);
+extern "C" void DagobahE_Init(WORLDINFO *);
+extern "C" void DagobahB_Init(WORLDINFO *);
+extern "C" void DagobahB_Reset(WORLDINFO *);
+extern "C" void DagobahC_Init(WORLDINFO *);
+extern "C" void DagobahC_Panel(WORLDINFO *);
+extern "C" void CloudCityTrapB_Init(WORLDINFO *);
+extern "C" void CloudCityTrapB_Update(WORLDINFO *);
+extern "C" void CloudCityTrapC_Reset(WORLDINFO *);
+extern "C" void CloudCityTrapC_Update(WORLDINFO *);
+extern "C" void CloudCityTrapC_Panel(WORLDINFO *);
+extern "C" void CloudCityEscapeC_Init(WORLDINFO *);
+extern "C" void CloudCityEscapeC_Update(WORLDINFO *);
+extern "C" void JabbasPalaceA_Init(WORLDINFO *);
+extern "C" void JabbasPalaceA_Reset(WORLDINFO *);
+extern "C" void JabbasPalaceA_Update(WORLDINFO *);
+extern "C" void JabbasPalaceB_Init(WORLDINFO *);
+extern "C" void JabbasPalaceB_Reset(WORLDINFO *);
+extern "C" void JabbasPalaceD_Reset(WORLDINFO *);
+extern "C" void JabbasPalaceE_Init(WORLDINFO *);
+extern "C" void JabbasPalaceE_Reset(WORLDINFO *);
+extern "C" void JabbasPalaceE_Update(WORLDINFO *);
+extern "C" void JabbasPalaceE_Panel(WORLDINFO *);
+extern "C" void EndorBattleA_Init(WORLDINFO *);
+extern "C" void EndorBattleA_Update(WORLDINFO *);
+extern "C" void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *);
+extern "C" void DeathStar2BattleD_Init(WORLDINFO *);
+extern "C" void DeathStar2BattleD_Update(WORLDINFO *);
+extern "C" void DeathStar2BattleFire_Init(WORLDINFO *);
+extern "C" void EmperorFightA_Panel(WORLDINFO *);
+extern "C" void SarlaccPitA_Reset(WORLDINFO *);
+extern "C" void SarlaccPitA_Draw(WORLDINFO *);
+extern "C" void SarlaccPitB_Init(WORLDINFO *);
+extern "C" void SarlaccPitB_Reset(WORLDINFO *);
+extern "C" void SarlaccPitB_Update(WORLDINFO *);
+extern "C" void SarlaccPitC_Init(WORLDINFO *);
+extern "C" void LegoCity_Reset(WORLDINFO *);
+extern "C" void LegoCity_Update(WORLDINFO *);
+extern "C" void NewTown_Init(WORLDINFO *);
+extern "C" void NewTown_Reset(WORLDINFO *);
+extern "C" void NewTown_Update(WORLDINFO *);
+extern "C" void FairgroundbadA_Init(WORLDINFO *);
+extern "C" void FairgroundbadA_Update(WORLDINFO *);
+extern "C" void FairgroundbadA_Draw(WORLDINFO *);
 extern "C" {
     extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
 }
-extern "C" void __cdecl ChrisDogFightAInit(WORLDINFO *);
-extern "C" void __cdecl ChrisDogFightAReset(WORLDINFO *);
-extern "C" void __cdecl ChrisDogFightAUpdate(WORLDINFO *);
-extern "C" void __cdecl ChrisDogFightADraw(WORLDINFO *);
+extern "C" void ChrisDogFightAInit(WORLDINFO *);
+extern "C" void ChrisDogFightAReset(WORLDINFO *);
+extern "C" void ChrisDogFightAUpdate(WORLDINFO *);
+extern "C" void ChrisDogFightADraw(WORLDINFO *);
 
 /* Native 0x0048a310, 217 bytes. */
 typedef struct level_script_progress_pc_s {
@@ -335,7 +335,7 @@ typedef struct ai_script_progress_view_pc_s {
 
 #define WORLD_PORTAL_BOUNDS_PC(scene) ((NUVEC4 *)(scene)->portal_boxes)
 extern "C" {
-    void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene);
+    void SaveSceneObjectAnimTFactors(NUGSCN *scene);
 
     typedef struct world_script_progress_pc_s {
         char name[16];
@@ -356,10 +356,10 @@ extern "C" {
         u32 progress_flags;
     } WORLD_PERSISTENCE_FLAGS_PC;
 
-    void __cdecl GizmoSysStoreProgress(void *system, void *world, i32 index);
-    void __cdecl LoadGrassFile(WORLDINFO *world);
-    void __cdecl LoadBridgeFile(WORLDINFO *world);
-    void __cdecl LoadTerrainFile(WORLDINFO *world);
+    void GizmoSysStoreProgress(void *system, void *world, i32 index);
+    void LoadGrassFile(WORLDINFO *world);
+    void LoadBridgeFile(WORLDINFO *world);
+    void LoadTerrainFile(WORLDINFO *world);
 }
 
 typedef struct world_minikit_load_pc_s {
@@ -387,15 +387,15 @@ typedef struct world_load_reader_pc_s {
 } WORLD_LOAD_READER_PC;
 
 extern "C" {
-    void __cdecl Level_LoadConfigFile(WORLDINFO *);
-    void __cdecl LevelConfig_BeforeLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
-    void __cdecl LevelConfig_AfterLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
-    void *__cdecl CreateGizmoSys(WORLDINFO *, VARIPTR *, VARIPTR *);
+    void Level_LoadConfigFile(WORLDINFO *);
+    void LevelConfig_BeforeLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
+    void LevelConfig_AfterLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
+    void *CreateGizmoSys(WORLDINFO *, VARIPTR *, VARIPTR *);
 }
-extern "C" void __cdecl Attractos_InitTerrain(WORLDINFO *);
-extern "C" void __cdecl SecurityDoors_InitTerrain(WORLDINFO *);
-extern "C" void __cdecl GizSpinners_InitTerrain(WORLDINFO *world);
-extern "C" void __cdecl Signals_InitTerrain(WORLDINFO *);
+extern "C" void Attractos_InitTerrain(WORLDINFO *);
+extern "C" void SecurityDoors_InitTerrain(WORLDINFO *);
+extern "C" void GizSpinners_InitTerrain(WORLDINFO *world);
+extern "C" void Signals_InitTerrain(WORLDINFO *);
 
 static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {
     if (list == NULL) {
@@ -466,7 +466,7 @@ static i32 World_AppendFreePlayPrivate(i32 model) {
     return 1;
 }
 
-void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 param5) {
+void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 param5) {
     i16 ids[340];
     i32 models[2];
     i32 index;
@@ -640,7 +640,7 @@ extras:
 
 extern "C" {
 
-    i32 __cdecl KillBoss(i32 character_id, i32 flag_index, f32 delay) {
+    i32 KillBoss(i32 character_id, i32 flag_index, f32 delay) {
         u8 *flags = (u8 *)LevFlag;
         switch (flags[flag_index]) {
             case 0:
@@ -665,7 +665,7 @@ extern "C" {
         return 1;
     }
 
-    void __cdecl KillBossCompleteLevel(i32 character_id, i32 flag_index, f32 delay) {
+    void KillBossCompleteLevel(i32 character_id, i32 flag_index, f32 delay) {
         if (KillBoss(character_id, flag_index, delay) != 0) {
             CompleteLevel(WORLD);
         }
@@ -677,7 +677,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl KillBossPlayCutScene(i32 character_id, i32 flag_index, f32 delay, char *name) {
+    i32 KillBossPlayCutScene(i32 character_id, i32 flag_index, f32 delay, char *name) {
         if (KillBoss(character_id, flag_index, delay) != 0) {
             NewCutScene(NULL, WORLD->cutscene_sys, name, 1);
             return 1;
@@ -751,7 +751,7 @@ static void WorldGetTitlesNamePrivatePc(char *titles) {
 
 static NUVEC TitlesStartPositionPc = {0};
 
-extern "C" void __cdecl Titles_Init(WORLDINFO *world) {
+extern "C" void Titles_Init(WORLDINFO *world) {
     char title_name[64];
     NewGame();
     WorldGetTitlesNamePrivatePc(title_name);
@@ -785,7 +785,7 @@ extern "C" void __cdecl Titles_Init(WORLDINFO *world) {
     PicturesFixUpPc(world);
 }
 
-extern "C" void __cdecl Titles_Update(WORLDINFO *world) {
+extern "C" void Titles_Update(WORLDINFO *world) {
     if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
         i32 menu = GetMenuID();
         f32 target = (menu == -1 || menu == 0 || menu == 1) ? 1.0f : 0.0f;
@@ -801,7 +801,7 @@ extern "C" {
     f32 TitlePictureYPc = -0.15f;
 }
 
-extern "C" void __cdecl Titles_Draw(WORLDINFO *world) {
+extern "C" void Titles_Draw(WORLDINFO *world) {
     NUMTX matrix;
     if (NuSpecialExistsFn(&LevHSpecial[0]) != 0 && LevAlpha > 0.0f) {
         matrix = LevMtx;
@@ -854,7 +854,7 @@ extern "C" void __cdecl Titles_Draw(WORLDINFO *world) {
 
 extern "C" {
 
-    i32 __cdecl EffectOffProgress_Update(LEVEL_PROGRESS *progress, char *name, i32 visible) {
+    i32 EffectOffProgress_Update(LEVEL_PROGRESS *progress, char *name, i32 visible) {
         i32 i;
 
         if (progress != NULL && name != NULL && NuStrLen(name) < 16) {
@@ -885,7 +885,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl EffectOffProgress_Reset(LEVEL_PROGRESS *progress) {
+    void EffectOffProgress_Reset(LEVEL_PROGRESS *progress) {
         i32 i;
 
         if (progress == NULL) {
@@ -898,13 +898,13 @@ extern "C" {
         }
     }
 
-    void __cdecl LevelProgress_ReserveBufferSpace(VARIPTR *buffer, VARIPTR buffer_end) {
+    void LevelProgress_ReserveBufferSpace(VARIPTR *buffer, VARIPTR buffer_end) {
         buffer->addr = (buffer->addr + 0xfU) & ~0xfU;
         LevelProgressData = (LEVEL_PROGRESS *)buffer->void_ptr;
         buffer->addr += 0x229e0;
     }
 
-    void __cdecl ClearLevelProgress(i32 index, WORLDINFO *world) {
+    void ClearLevelProgress(i32 index, WORLDINFO *world) {
         if (index >= 0) {
             memset(&LevelProgressData[index], 0, sizeof(LEVEL_PROGRESS));
             LevelProgressData[index].progress_state = 0;
@@ -944,7 +944,7 @@ extern "C" {
     }
 
     /* Shared LEVEL_SCRIPT_PROCESS_PC is defined in saga.h in the final patch. */
-    void __cdecl LevelScriptReStoreProgress(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *process) {
+    void LevelScriptReStoreProgress(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *process) {
         i32 index;
         i32 parameter;
         if (world->level_progress == NULL || process == NULL || NuStrLen(process->name) == 0) {
@@ -973,7 +973,7 @@ extern "C" {
     }
 }
 
-void __cdecl NewArea_ResetGlobalsPC(void) {
+void NewArea_ResetGlobalsPC(void) {
     i32 phase;
 
     AreaGlobals_PC.new_minikit_count = 0;
@@ -998,7 +998,7 @@ void __cdecl NewArea_ResetGlobalsPC(void) {
 
 extern "C" {
 
-    void __cdecl ClearLevData(void) {
+    void ClearLevData(void) {
         memset(LevFlag, 0, sizeof(LevFlag));
         memset(LevSfxFlag, 0, sizeof(LevSfxFlag));
         memset(LevHSpecial, 0, sizeof(LevHSpecial));
@@ -1029,7 +1029,7 @@ extern "C" {
     }
 }
 
-void __cdecl LoadPerm1(void) {
+void LoadPerm1(void) {
     char path[256];
     u8 shadow_random[0x800];
     i32 index;
@@ -1136,7 +1136,7 @@ void __cdecl LoadPerm1(void) {
 
 extern "C" {
 
-    void __cdecl LoadPerm2(void) {
+    void LoadPerm2(void) {
         CharConfig_ConfigureAll(1, ConfigChar_GameKeywords);
         ExtraCharacterFixUpAfterConfig();
         nopakfile = CHARPAK == 0;
@@ -1199,7 +1199,7 @@ extern "C" {
         }
     }
 
-    static void __cdecl LoadAreaData(BGPROCINFO *bg_info) {
+    static void LoadAreaData(BGPROCINFO *bg_info) {
         char path[256];
         i32 area = Area;
         i32 level = Level;
@@ -1340,7 +1340,7 @@ extern "C" {
     static f32 LoadWait = 0;
 }
 
-void __cdecl LoadAreaCharacters(void) {
+void LoadAreaCharacters(void) {
     static const char *crawl_music[] = {"Ep1_TextCrawl", "Ep2_TextCrawl", "Ep3_TextCrawl",
                                         "Ep4_TextCrawl", "Ep5_TextCrawl", "Ep6_TextCrawl"};
     i32 load_type = 2;
@@ -1624,7 +1624,7 @@ extern "C" {
     /* progress->specials[i] read through the bitfield view (stands in for the header field). */
 #define SCENE_STATE(progress, i) (((SCENE_SPECIAL_STATE_PC *)(progress)->specials)[i])
 
-    void __cdecl StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 copy_tfactor) {
+    void StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 copy_tfactor) {
         NUSPECIALHANDLE special;
         NUINSTANIM *animation;
         i32 count;
@@ -1666,7 +1666,7 @@ extern "C" {
 }
 
 /* Append in existing world.cpp beside StoreSceneProgress. PC48c3f0..48c590 inclusive417. */
-void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
+void ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
     i32 count;
     i32 i;
     NUSPECIALHANDLE special;
@@ -1720,8 +1720,7 @@ void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
     }
 }
 
-extern "C" SCENESPECIALPROGRESS_PC *__cdecl FindSceneStateObj(NUGSCN *scene, SCENEPROGRESS *progress,
-                                                              NUSPECIALHANDLE *target) {
+extern "C" SCENESPECIALPROGRESS_PC *FindSceneStateObj(NUGSCN *scene, SCENEPROGRESS *progress, NUSPECIALHANDLE *target) {
     i32 count;
     i32 i;
     NUSPECIALHANDLE special;
@@ -1746,7 +1745,7 @@ extern "C" SCENESPECIALPROGRESS_PC *__cdecl FindSceneStateObj(NUGSCN *scene, SCE
 
 extern "C" {
 
-    void __cdecl CalculateWorldSize(WORLDINFO *world) {
+    void CalculateWorldSize(WORLDINFO *world) {
         NUVEC minimum = v000;
         NUVEC maximum = v000;
         i32 index;
@@ -1831,7 +1830,7 @@ extern "C" {
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_shards, max_shards)
 
-    void __cdecl LC_BL_max_spinners(NUFPAR_PC *parser) {
+    void LC_BL_max_spinners(NUFPAR_PC *parser) {
         levelconfig_ldata->max_spinners = (u8)NuFParGetInt(parser);
         if (levelconfig_ldata->max_spinners > 8) {
             levelconfig_ldata->max_spinners = 8;
@@ -1842,28 +1841,28 @@ extern "C" {
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_minicutParts, max_minicut_stages)
 
-    void __cdecl LC_BL_max_gizmoblowuptypes(NUFPAR_PC *parser) {
+    void LC_BL_max_gizmoblowuptypes(NUFPAR_PC *parser) {
         levelconfig_ldata->max_gizmoblowuptypes = (i16)NuFParGetInt(parser);
         if ((u16)levelconfig_ldata->max_gizmoblowuptypes > 0xff) {
             levelconfig_ldata->max_gizmoblowuptypes = 0xff;
         }
     }
 
-    void __cdecl LC_BL_max_gizmoblowups(NUFPAR_PC *parser) {
+    void LC_BL_max_gizmoblowups(NUFPAR_PC *parser) {
         levelconfig_ldata->max_gizmoblowups = (i16)NuFParGetInt(parser);
         if ((u16)levelconfig_ldata->max_gizmoblowups > 0x200) {
             levelconfig_ldata->max_gizmoblowups = 0x200;
         }
     }
 
-    void __cdecl LC_BL_max_pushblocks(NUFPAR_PC *parser) {
+    void LC_BL_max_pushblocks(NUFPAR_PC *parser) {
         levelconfig_ldata->max_pushblocks = (u8)NuFParGetInt(parser);
         if (levelconfig_ldata->max_pushblocks > 0x10) {
             levelconfig_ldata->max_pushblocks = 0x10;
         }
     }
 
-    void __cdecl LC_BL_max_pushblock_endpos(NUFPAR_PC *parser) {
+    void LC_BL_max_pushblock_endpos(NUFPAR_PC *parser) {
         levelconfig_ldata->max_pushblock_endpos = (u8)NuFParGetInt(parser);
         if (levelconfig_ldata->max_pushblock_endpos > 0x40) {
             levelconfig_ldata->max_pushblock_endpos = 0x40;
@@ -1912,16 +1911,16 @@ extern "C" {
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_plugs, max_plugs)
 
-    void __cdecl LC_BL_wind_speed(NUFPAR_PC *parser) {
+    void LC_BL_wind_speed(NUFPAR_PC *parser) {
         levelconfig_ldata->wind_speed = NuFParGetFloat(parser);
     }
 
-    void __cdecl LC_BL_wind_size(NUFPAR_PC *parser) {
+    void LC_BL_wind_size(NUFPAR_PC *parser) {
         levelconfig_ldata->wind_size = NuFParGetFloat(parser);
     }
 }
 
-void __cdecl WorldInfo_Load(WORLDINFO *world) {
+void WorldInfo_Load(WORLDINFO *world) {
     char path[256];
     char titles[64];
     char ai_name[32];
@@ -2157,8 +2156,8 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         goto abort;
     }
     if (world->current_level->callbacks[0] != NULL) {
-        ((void(__cdecl *)(WORLDINFO *, VARIPTR *, VARIPTR *))world->current_level->callbacks[0])(
-            world, &world->giz_buffer, &world->buffer_end);
+        ((void (*)(WORLDINFO *, VARIPTR *, VARIPTR *))world->current_level->callbacks[0])(world, &world->giz_buffer,
+                                                                                          &world->buffer_end);
     }
     SetAreaPickupGravity(world->area_index, world->level_idx); /* Native 48d683: cdecl(area,level). */
     world->loaded = 1;
@@ -2180,7 +2179,7 @@ extern "C" {
 static const char *const CreditsEpisodeMusicPc[6] = {"Ep1_EndCredits", "Ep2_EndCredits", "Ep3_EndCredits",
                                                      "Ep4_EndCredits", "Ep5_EndCredits", "Ep6_EndCredits"};
 
-extern "C" void __cdecl Credits_Init_Game(WORLDINFO *world) {
+extern "C" void Credits_Init_Game(WORLDINFO *world) {
     i32 episode = LastAData != NULL ? LastAData->episode_index : 0;
     if (episode < 0 || episode > 5) {
         episode = 0;
@@ -2204,7 +2203,7 @@ extern "C" void __cdecl Credits_Init_Game(WORLDINFO *world) {
     LevMtx.m32 = CreditsPictureBaseZPc;
 }
 
-extern "C" void __cdecl Credits_Update_Game(WORLDINFO *world) {
+extern "C" void Credits_Update_Game(WORLDINFO *world) {
     i32 finished;
     Credits_GetInfo(NULL, &finished, NULL);
     LevTime[1] = finished == 0 ? 1.0f : 0.0f;
@@ -2216,7 +2215,7 @@ extern "C" {
     f32 CreditsPictureAlphaPc = 0.5f;
 }
 
-extern "C" void __cdecl Credits_Draw_Game(WORLDINFO *world) {
+extern "C" void Credits_Draw_Game(WORLDINFO *world) {
     if (LevTime[0] > 0.0f) {
         f32 time = CreditsTime;
         f32 duration;
@@ -2286,7 +2285,7 @@ extern "C" {
     static LEVELDATA_PC *LevelFixupSlotPc0087af60 = NULL;
 }
 
-extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
+extern "C" void FixUpLevels(struct level_fixup_pc_s *fixup) {
     LEVELDATA_PC *level;
     i32 index;
     Levels_FixUp(fixup);
@@ -3311,7 +3310,7 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
 
 extern "C" {
 
-    void __cdecl Level_SetDefaults(LEVELDATA_PC *level) {
+    void Level_SetDefaults(LEVELDATA_PC *level) {
         level->max_gameantinodes = 0x100;
         level->max_gizmoblowups = 0x40;
         level->max_pickups = 0x100;
@@ -3360,7 +3359,7 @@ extern "C" {
         level->wind_speed = 3.0f;
     }
 
-    void __cdecl FixUpAreas(void) {
+    void FixUpAreas(void) {
         if (StartupGameFlag1 != 0) {
             Areas_FixUp(AreaFixUpLSW);
             if (LOSTTEMPLE_ADATA != NULL) {
@@ -3374,7 +3373,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y) {
+extern "C" void Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y) {
     if (world->current_level == TITLES_LDATA) {
         *menu_id = 0;
     } else if (world->current_level == CREDITS_LDATA) {
@@ -3382,7 +3381,7 @@ extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, 
     }
 }
 
-extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
+extern "C" void Game_WorldInfo_InitLast(WORLDINFO *world) {
     GizSpinners_InitTerrain(world);
     Signals_InitTerrain(world);
     Attractos_InitTerrain(world);
@@ -3397,7 +3396,7 @@ extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
 
 extern "C" {
 
-    void __cdecl ClearAreaProgress(i32 area_index, i32 restore) {
+    void ClearAreaProgress(i32 area_index, i32 restore) {
         i32 index;
 
         for (index = 0; index < 12; ++index) {
@@ -3415,7 +3414,7 @@ extern "C" {
         }
     }
 
-    void __cdecl StoreLevelProgressFn(WORLDINFO *world, LEVEL_PROGRESS *progress, i32 area_progress) {
+    void StoreLevelProgressFn(WORLDINFO *world, LEVEL_PROGRESS *progress, i32 area_progress) {
         i32 index;
 
         if (area_progress == 0) {
@@ -3467,14 +3466,14 @@ extern "C" {
         }
     }
 
-    void __cdecl StoreLevelProgress(WORLDINFO *world) {
+    void StoreLevelProgress(WORLDINFO *world) {
         if (world != NULL) {
             StoreLevelProgressFn(world, world->level_progress, 0);
         }
     }
 }
 
-void __cdecl NewArea(void) {
+void NewArea(void) {
     i32 i;
 
     LSW1 = 0;

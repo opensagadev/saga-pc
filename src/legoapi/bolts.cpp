@@ -5,7 +5,7 @@
    follow retail address order; C entry points keep C linkage via extern "C". */
 
 extern "C" {
-    extern i32(__cdecl *BoltInitSfxFn)(GAMEOBJECT *);
+    extern i32 (*BoltInitSfxFn)(GAMEOBJECT *);
 }
 STATIC_ASSERT(offsetof(BOLTTYPE_PC, init_callback) == 0x44);
 STATIC_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
@@ -27,7 +27,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(BOLT_PC, active) == 0x100);
     STATIC_ASSERT(offsetof(BOLT_PC, type_id) == 0x101);
 
-    typedef i32(__cdecl *BOLT_HIT_PART_FN_PC)(BOLT_PC *, PART_PC *);
+    typedef i32 (*BOLT_HIT_PART_FN_PC)(BOLT_PC *, PART_PC *);
     STATIC_ASSERT(offsetof(BOLTSYS_PC, hit_part) == 0x18);
     STATIC_ASSERT(offsetof(PART_PC, position) == 0x30);
     STATIC_ASSERT(offsetof(PART_PC, velocity) == 0x80);
@@ -1232,7 +1232,7 @@ STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
 STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
 
-extern "C" i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
+extern "C" i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
 
 extern "C" {
     static void NuMtxSetRotationYInline(NUMTX *matrix, NUANG angle) {
@@ -1259,7 +1259,7 @@ extern "C" {
 
 // Retail private rotation leaves take the matrix in EAX and angle in ECX (VC8 internal ABI).
 extern "C" {
-    static NUMTX *__cdecl BoltDrawRotateXPrivate(NUMTX *m, i32 angle) {
+    static NUMTX *BoltDrawRotateXPrivate(NUMTX *m, i32 angle) {
         f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         f32 sin_x = NuTrigTable[(angle >> 1) & 0x7fff];
         f32 m01 = m->m01;
@@ -1278,7 +1278,7 @@ extern "C" {
         return m;
     }
 
-    static NUMTX *__cdecl BoltDrawRotateZPrivate(NUMTX *m, i32 angle) {
+    static NUMTX *BoltDrawRotateZPrivate(NUMTX *m, i32 angle) {
         f32 cos_z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         f32 sin_z = NuTrigTable[(angle >> 1) & 0x7fff];
         f32 m00 = m->m00;
@@ -1355,7 +1355,7 @@ static void Bolt_OrientationPrivate(BOLT_PC *bolt) {
 }
 
 extern "C" {
-    BOLT_PC *__cdecl Bolt_Alloc(void) {
+    BOLT_PC *Bolt_Alloc(void) {
         BOLT_PC *bolt = NULL;
         i32 attempts = 0;
         while (Bolt[i_bolt].active != 0 && (Bolt[i_bolt].flags & 8) != 0 && attempts < 32) {
@@ -1376,14 +1376,14 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl Bolt_Reflect(NUVEC *normal, NUVEC *incoming, NUVEC *out) {
+extern "C" void Bolt_Reflect(NUVEC *normal, NUVEC *incoming, NUVEC *out) {
     f32 twice_dot = (normal->x * incoming->x + normal->y * incoming->y + normal->z * incoming->z) * 2.0f;
     out->x = incoming->x - normal->x * twice_dot;
     out->y = incoming->y - normal->y * twice_dot;
     out->z = incoming->z - normal->z * twice_dot;
 }
 
-extern "C" void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *bolt, NUVEC *incoming, NUVEC *normal, u8 *processed) {
+extern "C" void Bolt_AddDeflectedBolt(BOLT_PC *bolt, NUVEC *incoming, NUVEC *normal, u8 *processed) {
     BOLTTYPE_PC *type = bolt->type;
     NUVEC reflected;
     NUVEC position;
@@ -1428,7 +1428,7 @@ extern "C" void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *bolt, NUVEC *incoming, NU
 }
 
 extern "C" {
-    void __cdecl Bolt_PlayHitSfx(BOLT_PC *bolt) {
+    void Bolt_PlayHitSfx(BOLT_PC *bolt) {
         if (bolt->type->field_66 != -1) {
             GameAudio_PlaySfxById(bolt->type->field_66, &bolt->position, 0, 0);
         } else {
@@ -1436,7 +1436,7 @@ extern "C" {
         }
     }
 
-    BOLT_PC *__cdecl FindIncomingBolt(GAMEOBJECT *object, i32 check_owner, i32 mark_hit) {
+    BOLT_PC *FindIncomingBolt(GAMEOBJECT *object, i32 check_owner, i32 mark_hit) {
         f32 radius;
         f32 nearest;
         BOLT_PC *result;
@@ -1480,7 +1480,7 @@ extern "C" {
         return result;
     }
 
-    BOLT_PC *__cdecl Bolt_Find(i32 type_id, NUVEC *position, GAMEOBJECT *owner) {
+    BOLT_PC *Bolt_Find(i32 type_id, NUVEC *position, GAMEOBJECT *owner) {
         f32 nearest_distance = 1000000.0f;
         BOLT_PC *bolt = Bolt;
         BOLT_PC *nearest = NULL;
@@ -1504,7 +1504,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl Bolt_End(BOLT_PC *bolt, i32 run_callback) {
+extern "C" void Bolt_End(BOLT_PC *bolt, i32 run_callback) {
     bolt->active = 0;
     if (run_callback != 0 && bolt->type != NULL && bolt->type->end_callback != NULL) {
         bolt->type->end_callback(bolt);
@@ -1695,7 +1695,7 @@ extern "C" {
         {NULL, NULL},
     };
 
-    BOLTTYPE_PC *__cdecl BoltType_FindByID(i32 id, WORLDINFO *world) {
+    BOLTTYPE_PC *BoltType_FindByID(i32 id, WORLDINFO *world) {
         BOLTSYS_PC *system = BoltSys;
         if (id >= 0 && id < system->count) {
             return &system->types[id];
@@ -1708,7 +1708,7 @@ extern "C" {
         return NULL;
     }
 
-    i32 __cdecl BoltType_FindIDByName(const char *name, WORLDINFO *world) {
+    i32 BoltType_FindIDByName(const char *name, WORLDINFO *world) {
         i32 index;
         if (NuStrLen(name) != 0) {
             for (index = 7; index >= 0; --index) {
@@ -1725,7 +1725,7 @@ extern "C" {
         return -1;
     }
 
-    void __cdecl BoltTypes_Init(WORLDINFO *world) {
+    void BoltTypes_Init(WORLDINFO *world) {
         BOLT_CONFIG_PC *type = (BOLT_CONFIG_PC *)BoltSys->types;
         i32 index;
         for (index = 0; index < BoltSys->count; ++index, ++type) {
@@ -1765,11 +1765,11 @@ extern "C" {
         memset(world->bolt_types, 0, sizeof(world->bolt_types));
     }
 
-    void __cdecl Bolt_GetShootOrigin_Default(GAMEOBJECT *object, NUVEC *position) {
+    void Bolt_GetShootOrigin_Default(GAMEOBJECT *object, NUVEC *position) {
         *position = object->collision_position;
     }
 
-    u16 __cdecl Bolt_GetShootDirection_Default(GAMEOBJECT *object, NUVEC *direction) {
+    u16 Bolt_GetShootDirection_Default(GAMEOBJECT *object, NUVEC *direction) {
         if (direction != NULL) {
             direction->x = NuTrigTable[object->movement_facing_angle >> 1];
             direction->y = 0.0f;
@@ -1778,13 +1778,13 @@ extern "C" {
         return object->movement_facing_angle;
     }
 
-    f32 __cdecl Bolt_ObjTargetPosYAdjust(GAMEOBJECT *object) {
+    f32 Bolt_ObjTargetPosYAdjust(GAMEOBJECT *object) {
         f32 height = object->field_b0;
         f64 random = qrand();
         return (f32)(random * ((height * 2.0f) / BoltTargetRandomDenominator) - height);
     }
 
-    i32 __cdecl Bolt_HitPartMode(BOLT_PC *bolt) {
+    i32 Bolt_HitPartMode(BOLT_PC *bolt) {
         GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
         if (owner != NULL) {
             if (owner->field_280 == 0) {
@@ -1797,8 +1797,7 @@ extern "C" {
         return 3;
     }
 
-    PART_PC *__cdecl Bolt_HitParts(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
-                                   i32 reason) {
+    PART_PC *Bolt_HitParts(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius, i32 reason) {
         PART_PC *part = Part;
         i32 i;
         i32 point;
@@ -1840,7 +1839,7 @@ extern "C" {
         return NULL;
     }
 
-    void __cdecl Bolt_Debris_Default(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *velocity, i32 flags) {
+    void Bolt_Debris_Default(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *velocity, i32 flags) {
         WORLDINFO *world = WorldInfo_CurrentlyActive();
         i32 index;
 
@@ -1864,7 +1863,7 @@ extern "C" {
         }
     }
 
-    void __cdecl BoltSys_Init(BOLTSYS_PC *system) {
+    void BoltSys_Init(BOLTSYS_PC *system) {
         i32 i;
         for (i = 0; i < system->count; ++i) {
             system->types[i].shoot_sound_id = -1;
@@ -1952,7 +1951,7 @@ static i32 Bolt_HitBlowupPrivate(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, N
     return 0;
 }
 
-extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
+extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
     u16 bolt_index;
     u16 object_index;
     NUVEC points[3];
@@ -2123,7 +2122,7 @@ finish:
     }
 }
 
-extern "C" void __cdecl Bolts_Draw(WORLDINFO *world) {
+extern "C" void Bolts_Draw(WORLDINFO *world) {
     NUVEC scale = {0.0f, 0.0f, 0.0f};
     for (BOLT_PC *bolt = Bolt; bolt != Bolt + 32; ++bolt) {
         if (bolt->active == 0) {
@@ -2187,7 +2186,7 @@ extern "C" void __cdecl Bolts_Draw(WORLDINFO *world) {
 }
 
 extern "C" {
-    void __cdecl BoltTypes_Configure(WORLDINFO *world, char *config) {
+    void BoltTypes_Configure(WORLDINFO *world, char *config) {
         memset(world->bolt_types, 0, sizeof(world->bolt_types));
         NUFPAR_PC *parser = NuFParCreateMem("bolttypes", config, 0xffff);
         if (parser == NULL) {
@@ -2230,8 +2229,8 @@ extern "C" {
     }
 }
 
-extern "C" i32 __cdecl Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUVEC *points, NUVEC *minimum,
-                                          NUVEC *maximum, f32 radius, u8 *hit_flags) {
+extern "C" i32 Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUVEC *points, NUVEC *minimum, NUVEC *maximum,
+                                  f32 radius, u8 *hit_flags) {
     NUVEC center = object->collision_position;
     i32 hit;
     for (hit = 2; hit >= 0; --hit) {
@@ -2264,8 +2263,8 @@ extern "C" i32 __cdecl Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUV
     return 0;
 }
 
-extern "C" i32 __cdecl Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
-                                           u8 *hit_flags) {
+extern "C" i32 Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
+                                   u8 *hit_flags) {
     GAMEOBJECT *object = Obj;
     i32 index;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
@@ -2312,7 +2311,7 @@ extern "C" i32 __cdecl Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *
     return 0;
 }
 
-extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
+extern "C" void Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     BOLT_PC *bolt = static_cast<BOLT_PC *>(storage);
     i16 owner_index;
     NUVEC position;
@@ -2542,7 +2541,7 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     }
 }
 
-extern "C" BOLT_PC *__cdecl Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, i32 type_id, i32 flags) {
+extern "C" BOLT_PC *Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, i32 type_id, i32 flags) {
     BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
     BOLT_PC *bolt = NULL;
     if (type != NULL && NuSpecialExistsFn(reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68))) {
@@ -2562,7 +2561,7 @@ extern "C" BOLT_PC *__cdecl Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *
     return bolt;
 }
 
-extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
+extern "C" void Bolts_Update(WORLDINFO *world) {
     NUVEC offset;
     NUVEC points[3];
     NUVEC normal = v010;
@@ -2782,7 +2781,7 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
 }
 
 extern "C" {
-    void __cdecl Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
+    void Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
         i32 bolts[5];
         i32 bolt_count = 0;
         i32 used_locator = 0;

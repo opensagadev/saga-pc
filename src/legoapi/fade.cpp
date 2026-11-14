@@ -43,9 +43,9 @@ class FadeStill : public FadeBase {
 };
 
 extern "C" {
-    void __cdecl DrawStillScreen(i32 clear);
-    void __cdecl DrawPauseScreenWipe(void);
-    void __cdecl DrawFadeScreenWipe(void);
+    void DrawStillScreen(i32 clear);
+    void DrawPauseScreenWipe(void);
+    void DrawFadeScreenWipe(void);
 
     Fade fade;
     FadeWipe fadeWipe;

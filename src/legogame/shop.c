@@ -77,10 +77,10 @@ extern f32 ShopCodeExitPushPc;
 extern f32 ShopTopCodeOffsetPc;
 extern f32 ShopTopExtraOffsetPc;
 extern f32 ShopTopHintOffsetPc;
-extern i32(__cdecl *menuptr)(void *menu);
+extern i32 (*menuptr)(void *menu);
 /* PC4c6c50/21, append to shard.c (or retain C linkage in C++).
  * 880100 native callback BSS0, single owner; SHOPACTIVE existing880494. */
-extern void(__cdecl *ShopDrawPanelFnPc)(void);
+extern void (*ShopDrawPanelFnPc)(void);
 
 /* Native PC shop state machine. Child callbacks remain real unresolved native
  * references until their complete functions are ported; menu ID 13 stays unwired. */
@@ -97,8 +97,8 @@ typedef struct SHOP_INPUT_PC {
     i32 cancel;
 } SHOP_INPUT_PC;
 
-typedef i32(__cdecl *SHOP_MENU_CALLBACK_PC)(void *);
-typedef void(__cdecl *SHOP_DRAW_CALLBACK_PC)(void);
+typedef i32 (*SHOP_MENU_CALLBACK_PC)(void *);
+typedef void (*SHOP_DRAW_CALLBACK_PC)(void);
 extern SHOP_MENU_CALLBACK_PC ShopMenuParentPc[3];
 extern SHOP_MENU_CALLBACK_PC ShopOldMenuParentPc[3];
 extern SHOP_MENU_CALLBACK_PC ShopOldMenuFnPc;
@@ -132,7 +132,7 @@ extern char ShopUserCodePc[6];
 extern i32 ShopMoveItemsPc;
 extern i32 ShopSubMoveSfxLockPc;
 extern i32 ShopScrollKeyHitPc;
-void __cdecl AddToCompletionPoints(u32 points);
+void AddToCompletionPoints(u32 points);
 extern f32 ShopPurchasePulsePc;
 extern i32 HubForceShopSavePc;
 extern f32 ShopPurchasePulseDurationPc;
@@ -641,7 +641,7 @@ i32 CheckCash(shopitem_s *items, i32 item) {
     return Game.coins >= (u32)items[item].price;
 }
 
-i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
+i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     u32 *bits = NULL;
     if (items[index].type == 0) {
@@ -671,7 +671,7 @@ i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
 }
 
 /* 004c2730..004c2ae8 instructions; 004c2ae8..004c2b00 six-entry switch table. */
-i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
+i32 SelectShopItem(shopitem_s *items, i32 index) {
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     HINT_PC *hint;
     i32 id;
@@ -790,7 +790,7 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
 
 /* 004c2b00..004c31fd. Right moves IDs toward index zero, interpolates slots
  * 1..6 toward their previous shelf slot, and uses the PC scale2 owner. */
-i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
+i32 MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
     i32 angle;
     i32 i;
     f32 phase;
@@ -847,7 +847,7 @@ i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
 
 /* 004c3200..004c38fc. Preserve the descending PC interpolation order and
  * the distinct scale4 owner, including when positions aliases SubShelfPos. */
-i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
+i32 MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
     i32 angle;
     i32 i;
     f32 phase;
@@ -903,7 +903,7 @@ i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
 }
 
 /* 004c3900..004c3988 instructions; 004c3988..004c39a0 six-entry switch table. */
-void __cdecl SelectSubItem(void) {
+void SelectSubItem(void) {
     shopitem_s *items;
     i32 index;
     i32 result;
@@ -944,7 +944,7 @@ void __cdecl SelectSubItem(void) {
 
 /* 004c39a0..004c410a. The PC callback uses direct shop-pad input, buys on one
  * confirm, and has no Android touch rows, item-selection mode, or cursor input. */
-i32 __cdecl SubItemMenu(void *menu) {
+i32 SubItemMenu(void *menu) {
     SHOP_INPUT_PC input;
     shopitem_s *items = NULL;
     i32 *ids;
@@ -1119,7 +1119,7 @@ finish:
 }
 
 /* 004c4110..004c4193. PC cancellation belongs to the active child callback. */
-i32 __cdecl DoShopMenu(void *menu) {
+i32 DoShopMenu(void *menu) {
     i32 result;
     if (menuptr != NULL) {
         result = menuptr(menu);
@@ -1147,7 +1147,7 @@ i32 __cdecl DoShopMenu(void *menu) {
 }
 
 /* 004c41a0..004c4f38. Same TU as the native EAX-argument input helper. */
-i32 __cdecl CodeMenu(void *menu) {
+i32 CodeMenu(void *menu) {
     i32 down = 0;
     i32 up = 0;
     i32 left = 0;
@@ -1402,7 +1402,7 @@ i32 __cdecl CodeMenu(void *menu) {
 
 /* 004c4f40..004c501f. ShopCheatNamePc is a text pointer at00880008; the
  * separate integer code column is at0087c564. */
-void __cdecl DrawCodeMenu(void) {
+void DrawCodeMenu(void) {
     if (ShopCheatTimerPc > 0.0f) {
         if (ShopCheatNamePc != NULL && (f64)ShopCheatTimerPc < ShopCheatBlinkCutoffPc &&
             NuFmod(ShopCheatTimerPc, 0.35f) < 0.175f) {
@@ -1553,7 +1553,7 @@ void DrawTopShelf(i32 unused) {
 
 /* 004c5650..004c58dd. PC renders exactly six code slots, uses codeshelfscale,
  * and updates the original arrow phase owner without Android's extra slot. */
-void __cdecl DrawCodeMenu3D(void) {
+void DrawCodeMenu3D(void) {
     i32 letters[6];
     i32 i;
     i32 angle;
@@ -1596,7 +1596,7 @@ void __cdecl DrawCodeMenu3D(void) {
 }
 
 /* 004c58e0..004c63fc, including two six-entry native switch tables. */
-void __cdecl DrawSubItems(void) {
+void DrawSubItems(void) {
     f32 bing = 0.0f;
     f32 bing_scale;
     f32 item_scale;
@@ -1809,7 +1809,7 @@ void __cdecl DrawSubItems(void) {
 }
 
 /* 004c6400..004c64e9. The PC top-level label follows all six native shelves. */
-void __cdecl DrawItemMenu2D(void) {
+void DrawItemMenu2D(void) {
     i32 text_id;
     if (ShopNameAlpha > 0.0f) {
         if (picked == 0) {
@@ -1831,7 +1831,7 @@ void __cdecl DrawItemMenu2D(void) {
 }
 
 /* 004c64f0..004c6bec instructions;004c6bec..004c6c04 six-entry table. */
-void __cdecl DrawSubItemMenu2D(void) {
+void DrawSubItemMenu2D(void) {
     shopitem_s *items;
     i32 *ids;
     char title[128];
@@ -1972,7 +1972,7 @@ void __cdecl DrawSubItemMenu2D(void) {
 }
 
 /* 004c6c10..004c6c15: retain the real native target, currently unresolved. */
-void __cdecl DrawSubItemMenu3D(void) {
+void DrawSubItemMenu3D(void) {
     DrawSubItems();
 }
 
@@ -1984,7 +1984,7 @@ void DrawShop3D(WORLDINFO *world) {
     SetLevelLights(world->rtl_set, 1.0f);
 }
 
-void __cdecl DrawShopPanel(void) {
+void DrawShopPanel(void) {
     if (SHOPACTIVE != 0 && ShopDrawPanelFnPc != NULL) {
         ShopDrawPanelFnPc();
     }
@@ -2047,7 +2047,7 @@ static void ShopMtxSetIdentityPc(NUMTX *matrix) {
 
 /* 004c6e90..004c74dd. The PC version deliberately ignores the generic MENU
  * confirm/cursor fields and permits selection of all six original shelves. */
-i32 __cdecl ItemMenu(void *menu) {
+i32 ItemMenu(void *menu) {
     SHOP_INPUT_PC input;
     i32 entry_picked = picked;
     i32 candidate = picked;
@@ -2186,7 +2186,7 @@ i32 __cdecl ItemMenu(void *menu) {
 
 /* 004c74e0..004c76c4. Preserve PC initialization to shelf zero, and the
  * complete cutscene-player return state rather than Android's defaults. */
-i32 __cdecl UpdateShop(void *menu) {
+i32 UpdateShop(void *menu) {
     i32 i;
     UpdateCharacterIDs();
     ShopScaleOverridePc[0] = 0.0f;
@@ -2251,7 +2251,7 @@ void DrawQuestion(NUVEC *position, f32 scale_value, f32 y_push) {
 
 /* 004c7750..004c7819. Keep the affordability predicate separate from actual
  * prompt drawing and preserve both players' native prompt arguments. */
-void __cdecl DrawShopPrompts(void) {
+void DrawShopPrompts(void) {
     i32 select = -1;
     i32 back = -1;
     f32 alpha = 1.0f;
@@ -2277,7 +2277,7 @@ void __cdecl DrawShopPrompts(void) {
     }
 }
 
-void __cdecl GetShopCamLookPos(NUVEC *position) {
+void GetShopCamLookPos(NUVEC *position) {
     if (menuptr == ItemMenu && splshelf != NULL && picked != -1) {
         *position = splshelf->pts[picked];
     } else {

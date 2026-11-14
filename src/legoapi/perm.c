@@ -1,5 +1,5 @@
 #include "saga.h"
 
-void __cdecl SetBackgroundMusic(i32 track) {
+void SetBackgroundMusic(i32 track) {
     (void)track;
 }

@@ -25,7 +25,7 @@ typedef struct ai_controller_scene_view_pc_s {
     NUGSCN *scene;
 } AI_CONTROLLER_SCENE_VIEW_PC;
 
-void *__cdecl CutScene_FindInst(void *, char *);
+void *CutScene_FindInst(void *, char *);
 
 typedef struct controller_animation_view_pc_s {
     u8 unknown_00[0x5c];
@@ -45,51 +45,51 @@ typedef struct controller_cut_view_pc_s {
 } CONTROLLER_CUT_VIEW_PC;
 
 /* Native PC startup and callback providers; insert in gameai.c before GameAISysSetGame. */
-typedef char *(__cdecl *AI_CHARACTER_NAME_PC)(u8);
-typedef char *(__cdecl *AI_GLOBAL_CHARACTER_NAME_PC)(i32);
-typedef void *(__cdecl *AI_GLOBAL_CHARACTER_HGOBJ_PC)(i32);
-typedef void(__cdecl *AI_GLOBAL_CHARACTER_RENDER_PC)(NUVEC *, i16, i32, i32, void *);
-typedef void(__cdecl *AI_CLEAR_CREATURES_PC)(void);
-typedef APIOBJECT_PC *(__cdecl *AI_GET_NAMED_OBJECT_PC)(void *, char *);
-typedef NUVEC *(__cdecl *AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
-extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
+typedef char *(*AI_CHARACTER_NAME_PC)(u8);
+typedef char *(*AI_GLOBAL_CHARACTER_NAME_PC)(i32);
+typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ_PC)(i32);
+typedef void (*AI_GLOBAL_CHARACTER_RENDER_PC)(NUVEC *, i16, i32, i32, void *);
+typedef void (*AI_CLEAR_CREATURES_PC)(void);
+typedef APIOBJECT_PC *(*AI_GET_NAMED_OBJECT_PC)(void *, char *);
+typedef NUVEC *(*AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
+extern void (*AIPathCnxHelperSysInitFn)(WORLDINFO *);
 extern AIACTIONDEF_PC lego_aiactiondefs[];
 extern AIACTIONDEF_PC api_aiactiondefs[];
 extern AIACTIONDEF_PC *game_aiactiondefs;
 extern AICONDITIONDEF_PC lego_aiconditiondefs[];
 extern AICONDITIONDEF_PC *game_aiconditiondefs;
-i32 __cdecl NuHGobjRndr(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *);
-void __cdecl RegisterAIScriptActions(AIACTIONDEF_PC *);
-void __cdecl RegisterAIScriptConditions(AICONDITIONDEF_PC *);
-void __cdecl SetScriptErrorLevel(i32);
-void __cdecl InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC);
-void __cdecl InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC);
-void __cdecl InitFn_LevelCharacterName(AI_CHARACTER_NAME_PC);
-void __cdecl InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME_PC);
-void __cdecl InitFn_LevelCharacterGlobalID(AI_LEVEL_CHARACTER_GLOBAL_ID_PC);
-void __cdecl InitFn_GlobalCharacterTypeID(i32(__cdecl *)(char *));
-void __cdecl InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME_PC);
-void __cdecl InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER_PC);
-void __cdecl InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ_PC);
-void __cdecl InitFn_ClearAICreatures(AI_CLEAR_CREATURES_PC);
-void __cdecl InitFn_GameAILoad(void(__cdecl *)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *));
-void __cdecl InitFn_AIActionParseSpeed(AI_PARSE_SPEED_PC);
-void __cdecl InitFn_AIRespawnOnPath(AI_RESPAWN_ON_PATH_PC);
-void __cdecl InitFn_GetViewRange(AI_CHARACTER_DISTANCE_PC);
-void __cdecl InitFn_GetHearDistance(AI_CHARACTER_DISTANCE_PC);
-void __cdecl InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE_PC);
-void __cdecl InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE_PC);
-void __cdecl InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT_PC);
-void __cdecl InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN_PC);
-void __cdecl InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION_PC);
-void __cdecl InitFn_FindAlternativeSpecialObjectFn(AIFINDALTERNATIVESPECIALOBJECT *);
-i32 __cdecl EquivalentObject_Find(WORLDINFO *, NUSPECIALHANDLE *);
-void __cdecl ClearAICreatures(void);
-void __cdecl StarWars_GameAISysInit(void);
-void __cdecl Indy_GameAISysInit(void);
-i32 __cdecl TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
+i32 NuHGobjRndr(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *);
+void RegisterAIScriptActions(AIACTIONDEF_PC *);
+void RegisterAIScriptConditions(AICONDITIONDEF_PC *);
+void SetScriptErrorLevel(i32);
+void InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC);
+void InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC);
+void InitFn_LevelCharacterName(AI_CHARACTER_NAME_PC);
+void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME_PC);
+void InitFn_LevelCharacterGlobalID(AI_LEVEL_CHARACTER_GLOBAL_ID_PC);
+void InitFn_GlobalCharacterTypeID(i32 (*)(char *));
+void InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME_PC);
+void InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER_PC);
+void InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ_PC);
+void InitFn_ClearAICreatures(AI_CLEAR_CREATURES_PC);
+void InitFn_GameAILoad(void (*)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *));
+void InitFn_AIActionParseSpeed(AI_PARSE_SPEED_PC);
+void InitFn_AIRespawnOnPath(AI_RESPAWN_ON_PATH_PC);
+void InitFn_GetViewRange(AI_CHARACTER_DISTANCE_PC);
+void InitFn_GetHearDistance(AI_CHARACTER_DISTANCE_PC);
+void InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE_PC);
+void InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE_PC);
+void InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT_PC);
+void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN_PC);
+void InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION_PC);
+void InitFn_FindAlternativeSpecialObjectFn(AIFINDALTERNATIVESPECIALOBJECT *);
+i32 EquivalentObject_Find(WORLDINFO *, NUSPECIALHANDLE *);
+void ClearAICreatures(void);
+void StarWars_GameAISysInit(void);
+void Indy_GameAISysInit(void);
+i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
 /* Genuine original call declarations: no placeholder implementations. */
-GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
+GAMEOBJECT *AddCreature(i32 model, i32 mode);
 extern i32 complexsockposition_forcesock;
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 #define INTERACTION_COPY_ANTINODE(source, target)                                                                      \
@@ -145,7 +145,7 @@ typedef struct OPPONENT_LOS_PC {
 #define OPPONENT_SYS(p) ((OPPONENT_SYS_PC *)(p))
 #define OPPONENT_LOS(p) ((OPPONENT_LOS_PC *)(p))
 void __movsd(unsigned long *, unsigned long const *, unsigned int);
-void __cdecl LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
+void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
 extern const char GameAILevelScriptFormatPc[8];
 
 typedef struct ai_frame_world_pc_s {
@@ -216,7 +216,7 @@ i32 OpponentCanAcquirePc(APIOBJECT_PC *observer, APIOBJECT_PC *target, f32 dista
     return 0;
 }
 
-void __cdecl AlertSurroundingCreatures(GAMEOBJECT *object, NUVEC *position) {
+void AlertSurroundingCreatures(GAMEOBJECT *object, NUVEC *position) {
     if (object != NULL &&
         ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || (object->flags_1f8 & 5) != 0 ||
          (object->character_data->game_character->flags_090 & 0x8000) != 0)) {
@@ -544,7 +544,7 @@ void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT_PC **o
     }
 }
 
-void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
+void MakeBaddiesForgetAboutParty(i32 check_hostility) {
     GAMEOBJECT *baddies[64];
     GAMEOBJECT *party[64];
     i32 baddie_count = 0;
@@ -682,8 +682,8 @@ static void CreatureInteractionOrbitPc(APIOBJECT_PC *object, NUVEC *difference, 
     }
 }
 
-void __cdecl GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable,
-                                       f32 delta_time) {
+void GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable,
+                               f32 delta_time) {
     i32 index;
     i32 first_index;
     i32 second_index;
@@ -867,7 +867,7 @@ static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
 }
 
 /* Native 0x0043b730, 137 bytes. */
-void __cdecl GameAIResetPathConnectionsPc(AISYS_PC *system) {
+void GameAIResetPathConnectionsPc(AISYS_PC *system) {
     AIPATH_PC *path;
     AIPATHCNX_PC *connection;
     i32 path_index;
@@ -930,7 +930,7 @@ static void GameAIUpdateAreaPc(AIAREA_PC *area) {
 }
 
 /* Native 0x0043b940, 467 bytes. */
-void __cdecl GameAISysStartFrame(AISYS_PC *system) {
+void GameAISysStartFrame(AISYS_PC *system) {
     i32 path_index;
     i32 connection_index;
     i32 script_index;
@@ -996,7 +996,7 @@ i32 CheckPosAIArea(AIAREA_PC *area, NUVEC *position, float tolerance) {
 
 const char GameAIEveryonePc[9] = "Everyone";
 
-u8 __cdecl LevelCharacterTypeID(char *name) {
+u8 LevelCharacterTypeID(char *name) {
     i32 index;
     if (NuStrICmp(name, (char *)GameAIEveryonePc) == 0) {
         return 0x40;
@@ -1013,7 +1013,7 @@ u8 __cdecl LevelCharacterTypeID(char *name) {
 
 const char *GameAISkipCharactersPc[4] = {GameAIBatmanPc, GameAIRobinPc, GameAIGlidePackPc, NULL};
 
-static i32 __cdecl IsSpecialRouteCharacterSkippedPc(char *name) {
+static i32 IsSpecialRouteCharacterSkippedPc(char *name) {
     i32 index;
     for (index = 0; GameAISkipCharactersPc[index] != NULL; ++index) {
         if (NuStrICmp(name, (char *)GameAISkipCharactersPc[index]) == 0) {
@@ -1023,7 +1023,7 @@ static i32 __cdecl IsSpecialRouteCharacterSkippedPc(char *name) {
     return 0;
 }
 
-u8 __cdecl SpecialRouteCharacterTypeID(char *name) {
+u8 SpecialRouteCharacterTypeID(char *name) {
     i32 route;
     i32 skipped = 0;
     i32 suit;
@@ -1059,14 +1059,14 @@ u8 __cdecl SpecialRouteCharacterTypeID(char *name) {
     return -1;
 }
 
-char *__cdecl LevelCharacterName(u8 index) {
+char *LevelCharacterName(u8 index) {
     if (index != 0xff && CurrentStoryCList != NULL && CurrentStoryCList[index].model_id != -1) {
         return apicharsys->char_data[CurrentStoryCList[index].model_id].name;
     }
     return NULL;
 }
 
-char *__cdecl SpecialRouteCharacterName(u8 id) {
+char *SpecialRouteCharacterName(u8 id) {
     i32 route;
     i32 skipped = 0;
     if (id != 0xff) {
@@ -1089,14 +1089,14 @@ char *__cdecl SpecialRouteCharacterName(u8 id) {
     return NULL;
 }
 
-i32 __cdecl LevelCharacterGlobalID(u8 index) {
+i32 LevelCharacterGlobalID(u8 index) {
     if (index != 0xff && CurrentStoryCList != NULL) {
         return CurrentStoryCList[index].model_id;
     }
     return -1;
 }
 
-i32 __cdecl GlobalCharacterTypeID(char *name) {
+i32 GlobalCharacterTypeID(char *name) {
     i32 index;
     for (index = 0; index < apicharsys->character_count; ++index) {
         if (NuStrICmp(name, apicharsys->char_data[index].name) == 0) {
@@ -1106,14 +1106,14 @@ i32 __cdecl GlobalCharacterTypeID(char *name) {
     return -1;
 }
 
-char *__cdecl GlobalCharacterName(i32 id) {
+char *GlobalCharacterName(i32 id) {
     if (id != -1 && id < apicharsys->character_count) {
         return apicharsys->char_data[id].name;
     }
     return NULL;
 }
 
-void __cdecl GlobalCharacterRender(NUVEC *position, i16 angle, i32 character, i32 unused, void *creature) {
+void GlobalCharacterRender(NUVEC *position, i16 angle, i32 character, i32 unused, void *creature) {
     i16 layers[32];
     i32 model_id;
     i32 count;
@@ -1141,7 +1141,7 @@ void __cdecl GlobalCharacterRender(NUVEC *position, i16 angle, i32 character, i3
     }
 }
 
-void *__cdecl GlobalCharacterHGobj(i32 id) {
+void *GlobalCharacterHGobj(i32 id) {
     i16 model;
     if (id == -1) {
         return NULL;
@@ -1169,7 +1169,7 @@ i32 GameAIActionParseSpeed(char *name, u8 *speed) {
     return 0;
 }
 
-f32 __cdecl GetCharacterGoalSpeed(APIOBJECT_PC *object) {
+f32 GetCharacterGoalSpeed(APIOBJECT_PC *object) {
     if (object == NULL || object->ai == NULL) {
         return 0.0f;
     }
@@ -1185,35 +1185,35 @@ f32 __cdecl GetCharacterGoalSpeed(APIOBJECT_PC *object) {
     }
 }
 
-f32 __cdecl GetViewRange(i32 id) {
+f32 GetViewRange(i32 id) {
     if (id == -1) {
         return 0.0f;
     }
     return apicharsys->char_data[id].game_character->viewdistance;
 }
 
-f32 __cdecl GetHearDistance(i32 id) {
+f32 GetHearDistance(i32 id) {
     if (id == -1) {
         return 0.0f;
     }
     return apicharsys->char_data[id].game_character->heardistance;
 }
 
-f32 __cdecl GetMaxViewHeight(i32 id) {
+f32 GetMaxViewHeight(i32 id) {
     if (id == -1) {
         return 0.0f;
     }
     return apicharsys->char_data[id].game_character->maxviewheight;
 }
 
-f32 __cdecl GetMinViewHeight(i32 id) {
+f32 GetMinViewHeight(i32 id) {
     if (id == -1) {
         return 0.0f;
     }
     return apicharsys->char_data[id].game_character->minviewheight;
 }
 
-APIOBJECT_PC *__cdecl GetNamedAPIObject(void *system_pointer, char *name) {
+APIOBJECT_PC *GetNamedAPIObject(void *system_pointer, char *name) {
     AISYS_PC *system;
     GAMEOBJECT *object;
     AICREATURE_PC *creature;
@@ -1264,7 +1264,7 @@ APIOBJECT_PC *__cdecl GetNamedAPIObject(void *system_pointer, char *name) {
     return NULL;
 }
 
-NUVEC *__cdecl GetAICreatureOrigin(AISYS_PC *system, AIPACKET_PC *packet) {
+NUVEC *GetAICreatureOrigin(AISYS_PC *system, AIPACKET_PC *packet) {
     AICREATURE_PC *creature;
     NUVEC offset;
     i32 across;
@@ -1319,7 +1319,7 @@ void GameAILoad(AISYS_PC *system, i32 version, NUGSCN *unused2, VARIPTR *buffer,
     }
 }
 
-i32 __cdecl AIRespawnOnPath(APIOBJECT_PC *apiobject) {
+i32 AIRespawnOnPath(APIOBJECT_PC *apiobject) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     if (object->dead == 0 && (apiobject->ai->path_info.flags & 1) == 0 && (object->flags_1fc_word & 0x2000) != 0 &&
         (object->character_data->model_flags & 0x400000) == 0 && object->objptr->character_context != 0x2b &&
@@ -1337,7 +1337,7 @@ i32 __cdecl AIRespawnOnPath(APIOBJECT_PC *apiobject) {
     return 0;
 }
 
-i32 __cdecl AIBigJumpToDestination(APIOBJECT_PC *apiobject, NUVEC *destination) {
+i32 AIBigJumpToDestination(APIOBJECT_PC *apiobject, NUVEC *destination) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     GAMEOBJECT *owner;
     if (destination != NULL && object != NULL && object->objptr != NULL && object->dead == 0 &&
@@ -1358,12 +1358,12 @@ i32 __cdecl AIBigJumpToDestination(APIOBJECT_PC *apiobject, NUVEC *destination) 
     return 1;
 }
 
-i32 __cdecl GameFindAlternativeSpecialObject(AISYS_PC *system, NUSPECIALHANDLE *special) {
+i32 GameFindAlternativeSpecialObject(AISYS_PC *system, NUSPECIALHANDLE *special) {
     (void)system;
     return EquivalentObject_Find(WorldInfo_CurrentlyActive(), special);
 }
 
-APIOBJECT_PC *__cdecl GameAPIOBJECTFromObjID(u8 object_id) {
+APIOBJECT_PC *GameAPIOBJECTFromObjID(u8 object_id) {
     GAMEOBJECT *object;
     u32 flags;
     if (object_id < HIGHGAMEOBJECT) {
@@ -1430,7 +1430,7 @@ void GameAISysInit(void) {
     GameAISysSetGame();
 }
 
-i32 __cdecl TryToTeleportToNextNode(GAMEOBJECT *object, AIPATHNODE_PC *node, i32 tightrope) {
+i32 TryToTeleportToNextNode(GAMEOBJECT *object, AIPATHNODE_PC *node, i32 tightrope) {
     NUVEC position;
     if ((object->flags_1f8 & 0x400) == 0 && (object->ai_packet.path_info.flags & 1) != 0 &&
         (object->field_f10 >= OFFSCREEN_CATCHUP_TIME ||
@@ -1470,7 +1470,7 @@ i32 __cdecl TryToTeleportToNextNode(GAMEOBJECT *object, AIPATHNODE_PC *node, i32
     return 0;
 }
 
-void __cdecl SetSpecialMove(GAMEOBJECT *object, AIPATHNODE_PC *node, AIPATHNODE_PC *source, i8 type) {
+void SetSpecialMove(GAMEOBJECT *object, AIPATHNODE_PC *node, AIPATHNODE_PC *source, i8 type) {
     object->special_move_timer_pc = 0.0f;
     object->ai_packet.special_move_node = node;
     object->field_1086 = (u8)type;
@@ -1478,7 +1478,7 @@ void __cdecl SetSpecialMove(GAMEOBJECT *object, AIPATHNODE_PC *node, AIPATHNODE_
     object->special_move_source_pc = source;
 }
 
-void __cdecl ClearSpecialMove(GAMEOBJECT *object) {
+void ClearSpecialMove(GAMEOBJECT *object) {
     object->special_move_timer_pc = 1.0f;
     object->ai_packet.special_move_node = NULL;
     object->field_1086 = 0;
@@ -1488,7 +1488,7 @@ void __cdecl ClearSpecialMove(GAMEOBJECT *object) {
     object->indy_guideline_state.endpoint = 0;
 }
 
-void __cdecl AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system) {
+void AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system) {
     i32 index;
     if (system == NULL) {
         return;
@@ -1501,10 +1501,9 @@ void __cdecl AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system) {
     }
 }
 
-struct AIPATHCNXCONTROLLER_s *__cdecl AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *system, AISYS_PC *ai,
-                                                                AIPATH_PC *path, char *from, char *to, i32 target_type,
-                                                                char *target_name, i32 fake_animation_id,
-                                                                i32 gizmo_output) {
+struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *system, AISYS_PC *ai, AIPATH_PC *path,
+                                                        char *from, char *to, i32 target_type, char *target_name,
+                                                        i32 fake_animation_id, i32 gizmo_output) {
     NUSPECIALHANDLE special;
     struct AIPATHCNXCONTROLLER_s *controller = NULL;
     void *target = NULL;
@@ -1601,7 +1600,7 @@ void fun_0043cf70(AI_CONTROL_SYSTEM_PC *system, AI_CONTROL_SLOT_PC *controller) 
     }
 }
 
-void __cdecl AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32 first, i32 last) {
+void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32 first, i32 last) {
     i32 end;
     i32 frame;
     CONTROLLER_ANIMATION_VIEW_PC *animation;
@@ -1659,7 +1658,7 @@ void __cdecl AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *control
     }
 }
 
-void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
+void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
     struct AIPATHCNXCONTROLLER_s *controller;
     NUINSTANIM *animation;
     CONTROLLER_CUT_VIEW_PC *cut;
@@ -1798,7 +1797,7 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
     }
 }
 
-i32 __cdecl oneAtOnce_CanAttack(GAMEOBJECT *object, GAMEOBJECT *opponent) {
+i32 oneAtOnce_CanAttack(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     if (object == NULL) {
         return 0;
     }
@@ -1824,7 +1823,7 @@ static f32 AtOnce_RowDist = 0.75f;
 static f32 AtOnce_InitialRowDist = 0.75f;
 #pragma data_seg()
 
-f32 __cdecl oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
+f32 oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
     i32 unassigned = 0;
     i32 row = 0;
     i32 player_index = ((APIOBJECT_PC *)object->ai_packet.opponent)->locator_name_index;
@@ -1852,7 +1851,7 @@ f32 __cdecl oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
 
 static i32 AtOnce_maxAttackers = 1;
 
-void __cdecl oneAtOnce_SetNumAttackers(i32 attackers) {
+void oneAtOnce_SetNumAttackers(i32 attackers) {
     if (attackers < 0) {
         attackers = 0;
     }
@@ -1883,7 +1882,7 @@ void oneAtOnce_SetInitDistPerRow(float distance) {
     AtOnce_InitialRowDist = distance;
 }
 
-void __cdecl oneAtOnce_MaintainArray(void) {
+void oneAtOnce_MaintainArray(void) {
     GAMEOBJECT *previous_attackers[8][4];
     /* Four explicit zeros: retail stores the first four counts from one register and zero-fills the rest. */
     i32 attacker_count[8] = {0, 0, 0, 0};
@@ -1959,9 +1958,9 @@ void __cdecl oneAtOnce_MaintainArray(void) {
     }
 }
 
-GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, char *script_name,
-                                       AIPATHINFO_PC *path_info, AIGROUP_PC *group, i32 set_on_surface,
-                                       NUGSPLINE *spline, NUVEC *spline_offset, i32 spline_mode, i32 creature_set) {
+GAMEOBJECT *AddDynamicCreature(i32 model, NUVEC *position, i32 angle, char *script_name, AIPATHINFO_PC *path_info,
+                               AIGROUP_PC *group, i32 set_on_surface, NUGSPLINE *spline, NUVEC *spline_offset,
+                               i32 spline_mode, i32 creature_set) {
     GAMEOBJECT *object;
     APIOBJECT_PC *api;
     u32 flags;
@@ -2133,8 +2132,8 @@ GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, ch
     return object;
 }
 
-void __cdecl AISysGetPathPos2(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *path_info, NUVEC *path_position,
-                              AIPATH_PC *path, i32 flags) {
+void AISysGetPathPos2(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *path_info, NUVEC *path_position,
+                      AIPATH_PC *path, i32 flags) {
     if (system != NULL && position != NULL && path_info != NULL) {
         /* The packet is a raw byte buffer (retail places it above the object as a /GS buffer). */
         u8 packet_data[0x210];
@@ -2153,12 +2152,12 @@ void __cdecl AISysGetPathPos2(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *
     }
 }
 
-i32 __cdecl AI_GetMaxGizmos(void *world_ptr) {
+i32 AI_GetMaxGizmos(void *world_ptr) {
     (void)world_ptr;
     return 32;
 }
 
-void __cdecl AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+void AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
     struct LEVELSCRIPTPROCESS_s *item = ((ADD_AI_WORLD_PC *)world_ptr)->items;
     i32 i;
     (void)data;
@@ -2170,7 +2169,7 @@ void __cdecl AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *dat
     }
 }
 
-char *__cdecl AI_GetGizmoName(void *gizmo_pointer) {
+char *AI_GetGizmoName(void *gizmo_pointer) {
     GIZMO_PC *gizmo = gizmo_pointer;
     AI_GIZMO_NAME_PROCESS_PC *process;
     i8 length;
@@ -2215,7 +2214,7 @@ char *__cdecl AI_GetGizmoName(void *gizmo_pointer) {
     return AIGizmoNameBufferPc;
 }
 
-i32 __cdecl AI_GetOutput(void *input, i32 output, i32 mode) {
+i32 AI_GetOutput(void *input, i32 output, i32 mode) {
     GIZMO_PC *gizmo = input;
     (void)output;
     (void)mode;
@@ -2225,7 +2224,7 @@ i32 __cdecl AI_GetOutput(void *input, i32 output, i32 mode) {
     return 0;
 }
 
-i32 __cdecl AI_GetNumOutputs(void *gizmo) {
+i32 AI_GetNumOutputs(void *gizmo) {
     return 1;
 }
 
@@ -2233,11 +2232,11 @@ i32 __cdecl AI_GetNumOutputs(void *gizmo) {
 char AIProcessingOutputTextPc[11] = "Processing";
 #pragma data_seg()
 
-char *__cdecl AI_GetOutputName(void *gizmo, i32 output) {
+char *AI_GetOutputName(void *gizmo, i32 output) {
     return AIProcessingOutputTextPc;
 }
 
-void __cdecl AI_Activate(void *input, i32 active) {
+void AI_Activate(void *input, i32 active) {
     GIZMO_PC *gizmo = input;
     LEVEL_SCRIPT_PROCESS_PC *process;
     if (gizmo != NULL && gizmo->object != NULL) {
@@ -2254,7 +2253,7 @@ const char GizmoRegistryAINamePc[] = "AIProcessor";
 const char GizmoRegistryAIPrefixPc[] = "ai_";
 #pragma const_seg()
 
-ADDGIZMOTYPE_PC *__cdecl AI_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *AI_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryAIAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->fns.options = 0x0;
@@ -2280,19 +2279,19 @@ ADDGIZMOTYPE_PC *__cdecl AI_RegisterGizmo(i32 type_id) {
     addtype->fns.add_level_sfx_fn = NULL;
     addtype->name = (char *)GizmoRegistryAINamePc;
     addtype->prefix = (char *)GizmoRegistryAIPrefixPc;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))AI_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))AI_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)AI_AddGizmos;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))AI_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))AI_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))AI_GetOutputName;
+    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))AI_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))AI_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))AI_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)AI_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))AI_Activate;
+    addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))AI_Activate;
     return addtype;
 }
 
 /* Studs the level's active AI characters drop (TotalLevelCoinTally); Gonk
  * droids and characters flagged 0x40 count for nothing. */
-u32 __cdecl GameAI_TotalScore(void) {
+u32 GameAI_TotalScore(void) {
     GAMEOBJECT *object = Obj;
     PLAYERCHARACTERCONFIG_PC *config;
     u32 total = 0;
@@ -2309,7 +2308,7 @@ u32 __cdecl GameAI_TotalScore(void) {
     return total;
 }
 
-void __cdecl GameAIProcess(void) {
+void GameAIProcess(void) {
     i32 index;
     u16 angle;
     GAMEOBJECT *object;
@@ -2906,7 +2905,7 @@ void __cdecl GameAIProcess(void) {
     oneAtOnce_MaintainArray();
 }
 
-void __cdecl GameAISysReset(AISYS_PC *system) {
+void GameAISysReset(AISYS_PC *system) {
     i32 script_index;
     char script_name[32];
     if (system == NULL) {
@@ -2939,7 +2938,7 @@ void __cdecl GameAISysReset(AISYS_PC *system) {
     }
 }
 
-void *__cdecl AIPathCnxControlSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
+void *AIPathCnxControlSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
     AI_CONTROL_SYSTEM_PC *system = AISysBufferAlloc(buffer, end, sizeof(*system));
     if (system != NULL) {
         memset(system, 0, sizeof(*system));

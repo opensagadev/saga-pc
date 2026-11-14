@@ -7,7 +7,7 @@ STATIC_ASSERT(offsetof(GAMESAVE, options_save) + offsetof(OPTIONSSAVE, widescree
 #pragma section(".bss$MenuButtonHistoryPc", read, write)
 extern "C" {
 
-    void __cdecl MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry) {
+    void MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry) {
         MENUSFX_MENUMOVE = move;
         MENUSFX_MENUSELECT = select;
         MENUSFX_MENUBACK = back;
@@ -34,7 +34,7 @@ STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
 
 /* 50b310/71. Existing menu globals and types, no new owner data. */
-extern "C" i32 __cdecl MenuInMemoryCard(void) {
+extern "C" i32 MenuInMemoryCard(void) {
     if (GameMenuLevel != -1 && MenuValidated != 0 && MenuInfo[GameMenu[GameMenuLevel].menu].id >= 1000 &&
         MenuInfo[GameMenu[GameMenuLevel].menu].id < 1031) {
         return 1;

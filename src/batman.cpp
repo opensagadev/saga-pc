@@ -1,32 +1,32 @@
 #include "saga.h"
 #include <string.h>
 
-extern "C" void __cdecl NuMainTrailerLeafPc(void);
-extern "C" void __cdecl NuRndrLine3dDbgFlush(void);
+extern "C" void NuMainTrailerLeafPc(void);
+extern "C" void NuRndrLine3dDbgFlush(void);
 
 extern "C" {
     extern i32 NuMainRendererControlPc;
-    void __cdecl NuRndrShadowOnOff(i32);
-    void __cdecl Grabber_Update(WORLDINFO *world);
-    void __cdecl Detonators_Update(void);
-    void __cdecl UpdateCables(void);
-    void __cdecl UpdateRadios(void);
-    void __cdecl Hint_Process(f32 elapsed);
-    void __cdecl NuSound3SetDPL(i32 mode, i32 unused);
-    void __cdecl NuSound3UpdateRumble(f32 frame_time);
-    void __cdecl GameFog_Set(void);
-    void __cdecl SetSpotLightMode(void);
-    void __cdecl Grabber_Draw(WORLDINFO *world);
-    void __cdecl DrawCables(void);
-    void __cdecl Detonators_Draw(void);
-    void __cdecl SetDepthOfField(void);
-    void __cdecl NuMainRenderLeafPc(void);
-    void __cdecl ViewCamDraw(void);
-    void __cdecl SpeedBlur_Update(void);
-    void __cdecl DebrisKillPlayers(void);
-    void __cdecl AddCameraRain(WORLDINFO *world, i32 mode);
-    void __cdecl DebrisDrawGlass(void);
-    void __cdecl SoundUpdate(f32 frame_time);
+    void NuRndrShadowOnOff(i32);
+    void Grabber_Update(WORLDINFO *world);
+    void Detonators_Update(void);
+    void UpdateCables(void);
+    void UpdateRadios(void);
+    void Hint_Process(f32 elapsed);
+    void NuSound3SetDPL(i32 mode, i32 unused);
+    void NuSound3UpdateRumble(f32 frame_time);
+    void GameFog_Set(void);
+    void SetSpotLightMode(void);
+    void Grabber_Draw(WORLDINFO *world);
+    void DrawCables(void);
+    void Detonators_Draw(void);
+    void SetDepthOfField(void);
+    void NuMainRenderLeafPc(void);
+    void ViewCamDraw(void);
+    void SpeedBlur_Update(void);
+    void DebrisKillPlayers(void);
+    void AddCameraRain(WORLDINFO *world, i32 mode);
+    void DebrisDrawGlass(void);
+    void SoundUpdate(f32 frame_time);
 #pragma data_seg(".data$BURNOUTON")
     i32 BURNOUTON = 1;
 #pragma data_seg()
@@ -38,7 +38,7 @@ typedef struct main_controller_world_view_pc_s {
     AI_CONTROL_SYSTEM_PC *control_system; // 0x4670
 } MAIN_CONTROLLER_WORLD_VIEW_PC;          // size 0x4674
 
-extern "C" void __cdecl DrawSaveSlots(MENU *, f32);
+extern "C" void DrawSaveSlots(MENU *, f32);
 
 struct FADEINFO_s;
 
@@ -58,50 +58,50 @@ void legoSetMusicVolume(f32 volume);
 
 extern "C" {
     extern FADEINFO_PC *pFadeInfo;
-    void __cdecl GizmoSysSetGame(void);
-    void __cdecl ResetCharacterBuffer(i32 keep);
-    void __cdecl WorldInfo_Activate(void);
-    void __cdecl FindGameCutScenes(void);
-    void __cdecl DebrisGlassInit(void);
-    void __cdecl GamePlayMusic(LEVELDATA_PC *level, i32 start, OPTIONSSAVE *options);
-    void __cdecl CheckResetBits(void);
-    void __cdecl Movie_Play(char *name, VARIPTR *buffer, VARIPTR *end, f32 frame_time, void *callback, f32 volume);
-    void __cdecl Areas_OpenAll(i32 mode);
-    void __cdecl CutScenes_BGLoadManager(void);
-    i32 __cdecl CutScene_PlayingOrRequested(void *cutscene);
-    void __cdecl DrawCutBorders(i32 widescreen);
-    void __cdecl HandleStillRender(void);
-    void __cdecl PanelRender(WORLDINFO *world);
-    void __cdecl ViewCamSetActive(i32 camera, i32 mode);
-    void __cdecl StoreStatusTakeOverObjectSys(void);
-    void __cdecl ReleaseAllTakeOvers(void);
-    void __cdecl Mission_Clear(MISSIONSYS_s *mission_sys);
-    void __cdecl RestoreGameCut(void);
+    void GizmoSysSetGame(void);
+    void ResetCharacterBuffer(i32 keep);
+    void WorldInfo_Activate(void);
+    void FindGameCutScenes(void);
+    void DebrisGlassInit(void);
+    void GamePlayMusic(LEVELDATA_PC *level, i32 start, OPTIONSSAVE *options);
+    void CheckResetBits(void);
+    void Movie_Play(char *name, VARIPTR *buffer, VARIPTR *end, f32 frame_time, void *callback, f32 volume);
+    void Areas_OpenAll(i32 mode);
+    void CutScenes_BGLoadManager(void);
+    i32 CutScene_PlayingOrRequested(void *cutscene);
+    void DrawCutBorders(i32 widescreen);
+    void HandleStillRender(void);
+    void PanelRender(WORLDINFO *world);
+    void ViewCamSetActive(i32 camera, i32 mode);
+    void StoreStatusTakeOverObjectSys(void);
+    void ReleaseAllTakeOvers(void);
+    void Mission_Clear(MISSIONSYS_s *mission_sys);
+    void RestoreGameCut(void);
     TIMER BonusTimer = {0};
 
-    void __cdecl NuAllocDumpRecords(i32 min_size);
-    void __cdecl WorldInfo_DrawScene(WORLDINFO *world);
-    void __cdecl PortalDoors_Update(WORLDINFO *world);
-    u8 __cdecl IsGrabbingScreen(void);
-    void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours);
-    void __cdecl NuMtlAnimateSetSpeedScale(f32 scale);
-    void __cdecl NuMtlAnimateSetMask(i32 mask);
-    void __cdecl NuRndrGlobalFrameCountPause(i32 paused);
-    void __cdecl SetTexAnimSignals(void);
-    void __cdecl CharPlatforms_Update(CHARPLATFORMSYS_s *system);
-    void __cdecl TrafficAnimSys_Update(struct TRAFFICANIMSYS_s *system);
-    void __cdecl GizmoSysEarlyUpdate(void *system, void *world, f32 delta_time);
-    void __cdecl GizmoSysLateUpdate(void *system, void *world, f32 delta_time);
-    void __cdecl UpdateGameObjects(WORLDINFO *world);
-    void __cdecl MoveGameCamera(GAMECAMERA *camera);
-    void __cdecl GameObjectToCameraDistances(void);
-    void __cdecl DrawGameObjects(void);
-    i32 __cdecl DrawGameObjectsProcess(void);
-    void __cdecl GameObjectStuffAfterAnimation(void);
-    void __cdecl Faders_Draw(WORLDINFO *world);
-    void __cdecl TrafficAnimSys_Draw(struct TRAFFICANIMSYS_s *system);
-    void __cdecl GizmoSysDraw(void *system, void *world, f32 delta_time);
-    void __cdecl SpeedBlur_Apply(WORLDINFO *world);
+    void NuAllocDumpRecords(i32 min_size);
+    void WorldInfo_DrawScene(WORLDINFO *world);
+    void PortalDoors_Update(WORLDINFO *world);
+    u8 IsGrabbingScreen(void);
+    void GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours);
+    void NuMtlAnimateSetSpeedScale(f32 scale);
+    void NuMtlAnimateSetMask(i32 mask);
+    void NuRndrGlobalFrameCountPause(i32 paused);
+    void SetTexAnimSignals(void);
+    void CharPlatforms_Update(CHARPLATFORMSYS_s *system);
+    void TrafficAnimSys_Update(struct TRAFFICANIMSYS_s *system);
+    void GizmoSysEarlyUpdate(void *system, void *world, f32 delta_time);
+    void GizmoSysLateUpdate(void *system, void *world, f32 delta_time);
+    void UpdateGameObjects(WORLDINFO *world);
+    void MoveGameCamera(GAMECAMERA *camera);
+    void GameObjectToCameraDistances(void);
+    void DrawGameObjects(void);
+    i32 DrawGameObjectsProcess(void);
+    void GameObjectStuffAfterAnimation(void);
+    void Faders_Draw(WORLDINFO *world);
+    void TrafficAnimSys_Draw(struct TRAFFICANIMSYS_s *system);
+    void GizmoSysDraw(void *system, void *world, f32 delta_time);
+    void SpeedBlur_Apply(WORLDINFO *world);
 
     u8 NuAllocDumpOnLevelPc = 0;
     i32 NuMainSkipCutBordersPc = 0;
@@ -156,7 +156,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     LEVELDATA_PC *level;
     FADETYPE fade_type;
     i32 i;
-    void(__cdecl * callback)(WORLDINFO *);
+    void (*callback)(WORLDINFO *);
     NUVEC *wind_objects[8];
     NUPAD_INIT_STATE *pads[2];
     ThingProcessData packet;
@@ -390,7 +390,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             BackDrop_Update(FRAMETIME);
         }
     }
-    callback = (void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[4];
+    callback = (void (*)(WORLDINFO *))world->current_level->callbacks[4];
     if (callback != NULL) {
         callback(world);
     }
@@ -570,17 +570,17 @@ STATIC_ASSERT(offsetof(PLAYERPROGRESS, coins) == 0);
 
 extern "C" {
     u8 StatusPlayerActivePc[8] = {0};
-    void __cdecl NuMainStatusHelperPc(STATUSPACKET_s *);
-    void __cdecl MusicClearAll(void);
-    void __cdecl SoundKillAll(void);
-    void __cdecl ClearUpAreaData(void);
-    void __cdecl WorldInfo_ClearAllIfScreenFaded(void);
-    i32 __cdecl MakePlayerList(i32);
+    void NuMainStatusHelperPc(STATUSPACKET_s *);
+    void MusicClearAll(void);
+    void SoundKillAll(void);
+    void ClearUpAreaData(void);
+    void WorldInfo_ClearAllIfScreenFaded(void);
+    i32 MakePlayerList(i32);
 }
 
-i32 __cdecl Game_Exit(i32);
+i32 Game_Exit(i32);
 
-extern "C" int __cdecl NuMain(int argc, char **argv) {
+extern "C" int NuMain(int argc, char **argv) {
     WORLDINFO *saved_world;
     GIZAIMESSAGE *message;
     FADETYPE fade_type;

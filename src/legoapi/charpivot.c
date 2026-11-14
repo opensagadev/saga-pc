@@ -9,7 +9,7 @@ STATIC_ASSERT(offsetof(CHARPIVOT_PC, character_id) == 0x10);
 
 static CHARPIVOT_PC *CharPivot = 0;
 
-void __cdecl CharPivot_Init(CHARPIVOT_PC *table) {
+void CharPivot_Init(CHARPIVOT_PC *table) {
     CharPivot = table;
     if (table != NULL) {
         for (; table->name != NULL; ++table) {
@@ -18,7 +18,7 @@ void __cdecl CharPivot_Init(CHARPIVOT_PC *table) {
     }
 }
 
-void __cdecl CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
+void CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
     CHARPIVOT_PC *pivot;
     CHARACTER_MODEL_LAYERS_PC *model;
     f32 *frame;

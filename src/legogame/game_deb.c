@@ -187,7 +187,7 @@ typedef struct ripple_material_reader_pc_s {
     f32 opacity;
 } RIPPLE_MATERIAL_READER_PC;
 
-void __cdecl DebrisKillPlayers(void) {
+void DebrisKillPlayers(void) {
     i32 i;
     GAMEOBJECT *player;
     DebrisPreCheckCollisions(&GameCam->position, 50.0f);
@@ -209,7 +209,7 @@ void __cdecl DebrisKillPlayers(void) {
     }
 }
 
-void __cdecl AddSurfaceDebris(GAMEOBJECT *object) {
+void AddSurfaceDebris(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i8 layer;
     i32 effect;
@@ -310,7 +310,7 @@ void __cdecl AddSurfaceDebris(GAMEOBJECT *object) {
     } while (--count > 0);
 }
 
-void __cdecl AddWaterSplash(GAMEOBJECT *object, NUVEC *position) {
+void AddWaterSplash(GAMEOBJECT *object, NUVEC *position) {
     AddGameDebrisXYZ(WORLD->game_debris_sys, 13, position->x, object->water_height, position->z);
     PlaySfx((char *)TerrainWaterJumpSoundNamePc, &object->collision_position);
     NewRumble(object->pad->bound_pad, 0.5f, 0);
@@ -342,7 +342,7 @@ void AddSlamDebris(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
+void InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
     char filename[64] = "stuff\\";
     i32 texture;
     if (name != NULL) {
@@ -367,7 +367,7 @@ void __cdecl InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR 
     *result = NULL;
 }
 
-void __cdecl BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 unused_x, u16 unused_y) {
+void BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 unused_x, u16 unused_y) {
     (void)unused_x;
     (void)unused_y;
     FindAnglesXY(normal, NULL, NULL);
@@ -376,7 +376,7 @@ void __cdecl BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 u
     NuMtxTranslate(matrix, position);
 }
 
-void __cdecl BurnoutApply(i32 view) {
+void BurnoutApply(i32 view) {
     BURN_PARAMETERS_PC parameters;
     NUVEC average;
     parameters.field_00 = 0;
@@ -399,7 +399,7 @@ void __cdecl BurnoutApply(i32 view) {
 
 static f32 RippleRandomRadiusPc = 0.15f;
 
-void __cdecl AddSurfaceRipples(GAMEOBJECT *object) {
+void AddSurfaceRipples(GAMEOBJECT *object) {
     RIPPLE_CONTACT_TIMER_VIEW_PC *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW_PC *)object;
     NUVEC position;
     NUVEC normal;

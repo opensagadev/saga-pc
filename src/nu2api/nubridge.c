@@ -9,7 +9,7 @@ static __inline f32 NuBridgeFabsPc(f32 value) {
 }
 
 /* Builds a scaled frame for each rope segment; the PC build has the draw calls compiled out. */
-void __cdecl NuBridgeDrawRopeSegmentPc(NUMTL *material, NUVEC *points, i32 count, i32 colour) {
+void NuBridgeDrawRopeSegmentPc(NUMTL *material, NUVEC *points, i32 count, i32 colour) {
     i32 i;
     NUVEC *next;
     NUVEC side;
@@ -63,7 +63,7 @@ void __cdecl NuBridgeDrawRopeSegmentPc(NUMTL *material, NUVEC *points, i32 count
     }
 }
 
-void __cdecl NuBrdigeDrawRope(NUMTL *material, NUVEC *first, NUVEC *second, i32 count, i32 *boundaries, i32 colour) {
+void NuBrdigeDrawRope(NUMTL *material, NUVEC *first, NUVEC *second, i32 count, i32 *boundaries, i32 colour) {
     i32 i;
     (void)count;
     for (i = 0; boundaries[i] < boundaries[i + 1]; ++i) {
@@ -72,7 +72,7 @@ void __cdecl NuBrdigeDrawRope(NUMTL *material, NUVEC *first, NUVEC *second, i32 
     }
 }
 
-void __cdecl NuBridgeDraw(NUMTL *material) {
+void NuBridgeDraw(NUMTL *material) {
     i32 b;
     i32 i;
     NUBRIDGE_PC *bridge;
@@ -492,7 +492,7 @@ void NuBridgeUpdate(NUVEC *position) {
     }
 }
 
-i32 __cdecl NuBridgeAlloc(void) {
+i32 NuBridgeAlloc(void) {
     i32 index;
     NUBRIDGE_PC *bridge = Bridges;
     for (index = 0; index < 8; ++index, ++bridge) {
@@ -503,7 +503,7 @@ i32 __cdecl NuBridgeAlloc(void) {
     return -1;
 }
 
-void __cdecl NuBridgeInit(void) {
+void NuBridgeInit(void) {
     void *saved_terrain = TerrainGetCur();
     NUBRIDGE_PC *bridge = Bridges;
     i32 i;
@@ -522,7 +522,7 @@ void __cdecl NuBridgeInit(void) {
     TerrainSetCur(saved_terrain);
 }
 
-void __cdecl NuBridgeRemove(i32 index) {
+void NuBridgeRemove(i32 index) {
     void *saved_terrain;
     NUBRIDGE_PC *bridge;
     i32 j;
@@ -543,13 +543,13 @@ void __cdecl NuBridgeRemove(i32 index) {
     TerrainSetCur(saved_terrain);
 }
 
-void __cdecl NuBridgeOn(i32 enabled) {
+void NuBridgeOn(i32 enabled) {
     NuBridgeProc = enabled;
 }
 
-i32 __cdecl NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDLE *second, NUVEC *start, NUVEC *end,
-                           f32 width, i16 rotation, f32 spring_strength, f32 damping, f32 gravity, f32 load_multiplier,
-                           i32 count, f32 field_b04, f32 field_b08, i32 field_ae7, u32 colour) {
+i32 NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDLE *second, NUVEC *start, NUVEC *end, f32 width,
+                   i16 rotation, f32 spring_strength, f32 damping, f32 gravity, f32 load_multiplier, i32 count,
+                   f32 field_b04, f32 field_b08, i32 field_ae7, u32 colour) {
     i32 index;
     i32 i;
     NUBRIDGE_PC *bridge;

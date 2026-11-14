@@ -111,35 +111,35 @@ typedef struct cut_instance_reader_pc_s {
     f32 current_frame;     // 0x90
 } CUT_INSTANCE_READER_PC;  // size 0x94
 
-void __cdecl RetakeG_Reset(WORLDINFO *world) {
+void RetakeG_Reset(WORLDINFO *world) {
 }
 
-void __cdecl MaulA_Update(WORLDINFO *world) {
+void MaulA_Update(WORLDINFO *world) {
 }
 
-void __cdecl MaulD_Init(WORLDINFO *world) {
+void MaulD_Init(WORLDINFO *world) {
 }
 
-void __cdecl MaulD_Update(WORLDINFO *world) {
+void MaulD_Update(WORLDINFO *world) {
 }
 
-void __cdecl MaulE_Init(WORLDINFO *world) {
+void MaulE_Init(WORLDINFO *world) {
 }
 
-void __cdecl MaulE_Update(WORLDINFO *world) {
+void MaulE_Update(WORLDINFO *world) {
 }
 
-void __cdecl MaulF_Update(WORLDINFO *world) {
+void MaulF_Update(WORLDINFO *world) {
 }
 
-void __cdecl AnakinsFlightB_Update(WORLDINFO *world) {
+void AnakinsFlightB_Update(WORLDINFO *world) {
 }
 
-void __cdecl AnakinsFlightB_Draw(WORLDINFO *world) {
+void AnakinsFlightB_Draw(WORLDINFO *world) {
 }
 
 /* Empty level debug hook shared with the Episode II callbacks. */
-void __cdecl KaminoEGizmoMissingPc(char *name) {
+void KaminoEGizmoMissingPc(char *name) {
 }
 
 typedef struct podrace_netpacket_reader_pc_s {

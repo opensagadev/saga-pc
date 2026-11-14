@@ -7,7 +7,7 @@
 #pragma section(".bss$MenuButtonHistoryPc", read, write)
 
 extern "C" {
-    void __cdecl GameDrawMenuEntry(MENU *, char *);
+    void GameDrawMenuEntry(MENU *, char *);
     extern f32 ExtrasFadeStartPc;
     extern f32 ExtrasFadeEndPc;
     extern i16 TextIdPc88074c;
@@ -32,16 +32,16 @@ struct EXTRAS_SAVE_READER_PC {
 
 extern "C" {
     extern i32 HubForceShopSavePc;
-    i32 __cdecl UpdateShop(void *);
-    void __cdecl NuMainStatusHelperPc(STATUSPACKET_s *);
-    void __cdecl Text_FillInExtendedSaveInfo(void);
-    void __cdecl Hub_ClearStats(void);
-    i32 __cdecl TriggerAutoSave(void);
+    i32 UpdateShop(void *);
+    void NuMainStatusHelperPc(STATUSPACKET_s *);
+    void Text_FillInExtendedSaveInfo(void);
+    void Hub_ClearStats(void);
+    i32 TriggerAutoSave(void);
 }
 extern "C" {
     extern f32 MenuTitlesPromptYPc;
     extern f32 MenuTitlesWidePromptYPc;
-    void __cdecl Hub_UpdateKit(void);
+    void Hub_UpdateKit(void);
     extern i16 TextIdPc880fc4;
     extern i16 TextIdPc880838;
     extern i16 TextIdPc880850;
@@ -68,12 +68,12 @@ extern "C" {
     extern i16 TextIdPc880754;
     extern i16 TextIdPc880890;
 }
-void __cdecl legoSetMusicVolume(f32);
+void legoSetMusicVolume(f32);
 extern "C" {
-    void __cdecl MusicClearAll(void);
-    void __cdecl SoundKillAll(void);
-    void __cdecl GamePlayMusic(LEVELDATA_PC *, i32, OPTIONSSAVE *);
-    i32 __cdecl Movie_Play(char *, VARIPTR *, VARIPTR *, f32, i32(__cdecl *)(void), f32);
+    void MusicClearAll(void);
+    void SoundKillAll(void);
+    void GamePlayMusic(LEVELDATA_PC *, i32, OPTIONSSAVE *);
+    i32 Movie_Play(char *, VARIPTR *, VARIPTR *, f32, i32 (*)(void), f32);
     extern char *Trailer[6];
 }
 extern "C" f32 MenuNewGameYPc;
@@ -113,22 +113,22 @@ typedef struct MENU_INPUT_PAD_PC {
 extern "C" {
     extern i8 DropInPendingPlayerPc;
     extern i8 DropInConfigurationPlayerPc;
-    void __cdecl PcControlInitializePc(i32, i32, i32, u8);
-    i32 __cdecl PcControlUpdatePc(FRAME_PAD_PC *, FRAME_PAD_PC *, f32);
-    void __cdecl PcControlDrawPc(void);
+    void PcControlInitializePc(i32, i32, i32, u8);
+    i32 PcControlUpdatePc(FRAME_PAD_PC *, FRAME_PAD_PC *, f32);
+    void PcControlDrawPc(void);
 }
 
 extern "C" {
 
-    void __cdecl MenuEnterControlSetupPc(MENU *) {
+    void MenuEnterControlSetupPc(MENU *) {
         PcControlInitializePc(2, -1, -1, 0);
     }
 
-    void __cdecl MenuDrawControlSetupPc(MENU *) {
+    void MenuDrawControlSetupPc(MENU *) {
         PcControlDrawPc();
     }
 
-    void __cdecl MenuUpdateControlSetupPc(MENU *) {
+    void MenuUpdateControlSetupPc(MENU *) {
         i32 result = PcControlUpdatePc((FRAME_PAD_PC *)Game_NuPad[0], (FRAME_PAD_PC *)Game_NuPad[1], FRAMETIME);
         if (DropInConfigurationPlayerPc >= 0) {
             if (result == 3) {
@@ -145,15 +145,15 @@ extern "C" {
         }
     }
 
-    void __cdecl MenuExitSelectControlsPc(MENU *) {
+    void MenuExitSelectControlsPc(MENU *) {
     }
 
-    void __cdecl MenuEnterSelectControlsPc(MENU *) {
+    void MenuEnterSelectControlsPc(MENU *) {
         GameAudio_PlaySfx(0x30, NULL, 0, 0);
         PcControlInitializePc(1, -1, -1, 0);
     }
 
-    void __cdecl MenuUpdateSelectControlsPc(MENU *) {
+    void MenuUpdateSelectControlsPc(MENU *) {
         i32 result = PcControlUpdatePc((FRAME_PAD_PC *)Game_NuPad[0], (FRAME_PAD_PC *)Game_NuPad[1], FRAMETIME);
         if (result == 2) {
             BackupMenu();
@@ -165,7 +165,7 @@ extern "C" {
 
     __declspec(allocate(".bss$MenuButtonHistoryPc")) u32 MenuButtonHistoryPc[15] = {0};
 
-    void __cdecl MenuUpdateButtonHistoryPc(void) {
+    void MenuUpdateButtonHistoryPc(void) {
         const i32 menu_id = GetMenuID();
         if (Paused != 0 || menu_id != -1) {
             memset(MenuButtonHistoryPc, 0, sizeof(MenuButtonHistoryPc));
@@ -185,7 +185,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl DrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
+extern "C" void DrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     f32 spacing = (f32)(MENUDY * 0.75);
     f32 scale = (f32)(MenuTextScalePc * 0.75);
     char progress[32];
@@ -235,7 +235,7 @@ static void DrawSaveSlotsImplPc(MENU *menu, f32 y) {
     }
 }
 
-extern "C" void __cdecl DrawSaveSlots(MENU *menu, f32 y) {
+extern "C" void DrawSaveSlots(MENU *menu, f32 y) {
     DrawSaveSlotsImplPc(menu, y);
 }
 
@@ -251,7 +251,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl MenuUpdateOptions(MENU *menu) {
+extern "C" void MenuUpdateOptions(MENU *menu) {
     i32 accept_row;
     i32 requested_sound;
     i32 sound;
@@ -347,7 +347,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl MenuUpdateExtras(MENU *menu) {
+extern "C" void MenuUpdateExtras(MENU *menu) {
     EXTRAS_SAVE_READER_PC *save = (EXTRAS_SAVE_READER_PC *)&Game;
     if (menu->confirm_pressed) {
         i32 index = (menu->selected_item + 44) % 45;
@@ -367,7 +367,7 @@ extern "C" void __cdecl MenuUpdateExtras(MENU *menu) {
     }
 }
 
-extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
+extern "C" void MenuDrawExtras(MENU *menu) {
     char text[256];
     char number[64];
     EXTRAS_SAVE_READER_PC *save = (EXTRAS_SAVE_READER_PC *)&Game;
@@ -493,7 +493,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
+extern "C" void MenuUpdateNewGame(MENU *menu) {
     i32 aspect_mode = PcWindowOptions.aspect_mode;
     if (aspect_mode == 3) {
         aspect_mode = PCDeviceBackend.active_aspect_mode;
@@ -586,7 +586,7 @@ extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
     }
 }
 
-extern "C" void __cdecl MenuDrawNewGame(MENU *menu) {
+extern "C" void MenuDrawNewGame(MENU *menu) {
     i32 menu_alpha = (i32)((f32)MenuA * newgamealpha);
     if (MenuLoadOccurred != 0 || newgame_menudrawoff != 0) {
         return;
@@ -622,20 +622,20 @@ extern "C" void __cdecl MenuDrawNewGame(MENU *menu) {
 
 extern "C" {
 
-    void __cdecl MenuUpdateSelectLanguage(MENU *menu) {
+    void MenuUpdateSelectLanguage(MENU *menu) {
         if (menu->confirm_pressed || menu->time_04 >= 10.0f) {
             Text_SetLanguage(Text_LanguageList[menu->selected_item].language);
             BackupMenu();
         }
     }
 
-    void __cdecl MenuDrawSelectLanguage(MENU *menu) {
+    void MenuDrawSelectLanguage(MENU *menu) {
         for (i32 i = 0; i < LANGUAGECOUNT; ++i) {
             GameDrawMenuEntry(menu, Text_LanguageList[i].localized_name);
         }
     }
 
-    void __cdecl UpdateGameMenu(GAMEPAD_PC *pad, i32 check_buttons) {
+    void UpdateGameMenu(GAMEPAD_PC *pad, i32 check_buttons) {
         MENU *menu;
         i32 menu_id = GetMenuID();
         i32 menu_active;
@@ -799,7 +799,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl MenuUpdateTitles(MENU *menu) {
+extern "C" void MenuUpdateTitles(MENU *menu) {
     i32 kind;
     i32 value;
     if (UpdateTitleSequence(menu)) {
@@ -830,7 +830,7 @@ extern "C" void __cdecl MenuUpdateTitles(MENU *menu) {
 
 extern "C" {
 
-    void __cdecl MenuDrawTitles(MENU *menu) {
+    void MenuDrawTitles(MENU *menu) {
         f32 y;
         (void)menu;
         if (GameTimer.time_elapsed >= 3.0f && GameTimer.time_elapsed_mod_seconds < 0.666f) {
@@ -845,7 +845,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl MenuUpdatePauseMain(MENU *menu) {
+extern "C" void MenuUpdatePauseMain(MENU *menu) {
     i32 aspect = PcWindowOptions.aspect_mode;
     if (aspect == 3) {
         aspect = PCDeviceBackend.active_aspect_mode;
@@ -915,7 +915,7 @@ extern "C" void __cdecl MenuUpdatePauseMain(MENU *menu) {
     }
 }
 
-extern "C" void __cdecl MenuDrawPauseMain(MENU *menu) {
+extern "C" void MenuDrawPauseMain(MENU *menu) {
     i32 both = Arcade_BothPlayersActive();
     if (MenuKeyboardPendingPc) {
         both = 0;
@@ -974,7 +974,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl MenuDrawPauseRestart(MENU *menu) {
+extern "C" void MenuDrawPauseRestart(MENU *menu) {
     if (!MenuStopDraw) {
         SmartTextEx(TTab[TextIdPc880840], PauseMenus_X, (f32)(menu->draw_y - MENUDY * 1.5), 1.0f, MenuTextScalePc,
                     MenuTextScalePc, MenuTextScalePc, PauseMenus_Align, AlternateHudColourBytesPc[0],
@@ -984,7 +984,7 @@ extern "C" void __cdecl MenuDrawPauseRestart(MENU *menu) {
     GameDrawMenuEntry(menu, TTab[TextIdPc880874]);
 }
 
-extern "C" void __cdecl MenuUpdatePauseExit(MENU *menu) {
+extern "C" void MenuUpdatePauseExit(MENU *menu) {
     if (menu->confirm_pressed) {
         LEVELDATA_PC *save_level = CanSaveAndExit(WORLD);
         if (save_level) {
@@ -1033,7 +1033,7 @@ extern "C" void __cdecl MenuUpdatePauseExit(MENU *menu) {
     MenuSFX = GameAudio_GetSfxId(0x31);
 }
 
-extern "C" void __cdecl MenuDrawPauseExit(MENU *menu) {
+extern "C" void MenuDrawPauseExit(MENU *menu) {
     LEVELDATA_PC *save_level = CanSaveAndExit(WORLD);
     f32 spacing = 1.5f;
     char *warning;
@@ -1095,7 +1095,7 @@ extern "C" void __cdecl MenuDrawPauseExit(MENU *menu) {
 
 extern "C" {
 
-    void __cdecl EndShopMenu(i32) {
+    void EndShopMenu(i32) {
         LevLock[0] = 1;
         LevTime[0] = 0.6f;
         DrawCoinTotalTime = 2.0f;
@@ -1104,7 +1104,7 @@ extern "C" {
         ReCalculateCompletionPoints();
     }
 
-    void __cdecl MenuUpdateShop(MENU *menu) {
+    void MenuUpdateShop(MENU *menu) {
         if (shop_save_done != 0) {
             EndShopMenu(0);
             shop_save_done = 0;
@@ -1140,7 +1140,7 @@ extern "C" {
 
     /* 00496650..00496738. Callback remains unwired until the full native shop
      * interaction/drawing/exit dependency chain is available. */
-    void __cdecl MenuDrawShop(MENU *menu) {
+    void MenuDrawShop(MENU *menu) {
         f32 alpha;
         (void)menu;
         if (MenuStopDraw == 0 && shop_quit == 0) {
@@ -1154,7 +1154,7 @@ extern "C" {
         }
     }
 
-    void __cdecl MakeMenuPacket(void) {
+    void MakeMenuPacket(void) {
         i32 player;
         for (player = 0; player < 2; ++player) {
             GAMEOBJECT *object = (GAMEOBJECT *)Player[player];
@@ -1170,7 +1170,7 @@ extern "C" {
         }
     }
 
-    void __cdecl MenuUpdateMiniKit(MENU *menu) {
+    void MenuUpdateMiniKit(MENU *menu) {
         (void)menu;
         Hub_UpdateKit();
     }
@@ -1183,7 +1183,7 @@ extern "C" {
     f32 MenuMiniKitInstructionYPc = -0.375f;
 #pragma data_seg()
 
-    void __cdecl MenuDrawMiniKit(MENU *menu) {
+    void MenuDrawMiniKit(MENU *menu) {
         f32 alpha;
         f32 pulse;
         f32 scale;
@@ -1233,7 +1233,7 @@ extern "C" {
         }
     }
 
-    void __cdecl MenuUpdateBonusWin(MENU *menu) {
+    void MenuUpdateBonusWin(MENU *menu) {
         if (menu->menu_time >= 5.0f) {
             CompleteLevel(WORLD);
         } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
@@ -1258,7 +1258,7 @@ extern "C" {
         }
     }
 
-    void __cdecl MenuUpdateBonusComplete(MENU *menu) {
+    void MenuUpdateBonusComplete(MENU *menu) {
         if (menu->menu_time >= 5.0f) {
             CompleteLevel(WORLD);
         } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
@@ -1267,7 +1267,7 @@ extern "C" {
         }
     }
 
-    void __cdecl MenuDrawBonusComplete(MENU *menu) {
+    void MenuDrawBonusComplete(MENU *menu) {
         i32 red;
         i32 green;
         (void)menu;

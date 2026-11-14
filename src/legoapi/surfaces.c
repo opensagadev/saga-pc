@@ -12,15 +12,15 @@ typedef struct world_conveyor_pc_s {
     void *conveyor;
 } WORLD_CONVEYOR_PC;
 
-void __cdecl SurfaceMaskOn(u32 *surface_mask) {
+void SurfaceMaskOn(u32 *surface_mask) {
     *surface_mask = 0x20;
 }
 
-void __cdecl SurfaceMaskOff(u32 *surface_mask) {
+void SurfaceMaskOff(u32 *surface_mask) {
     *surface_mask = 0;
 }
 
-void __cdecl Surfaces_Reset(void) {
+void Surfaces_Reset(void) {
     i32 i;
     LAYER_HOVERIGNORE = 0x10;
     SURFACEBITS_DUST = 0;
@@ -35,13 +35,13 @@ void __cdecl Surfaces_Reset(void) {
     }
 }
 
-void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
+void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
     i32 raw_surface;
     i32 surface_index;
     i8 material;
     i8 roof_surface;
     u8 material_mask;
-    void(__cdecl * extra_reflect)(GAMEOBJECT *);
+    void (*extra_reflect)(GAMEOBJECT *);
 
     if (floor_height != GameObjectNearFloorNoFloorHeight) {
         raw_surface = ShadowInfo();
@@ -117,7 +117,7 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
     }
 }
 
-i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
+i32 SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
     f32 y;
     i32 placed;
 
@@ -144,7 +144,7 @@ i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
     return placed;
 }
 
-i32 __cdecl Conveyor_AdjustSpeed(NUVEC *velocity) {
+i32 Conveyor_AdjustSpeed(NUVEC *velocity) {
     WORLD_CONVEYOR_PC *world = (WORLD_CONVEYOR_PC *)WorldInfo_CurrentlyActive();
     if (world != NULL && world->conveyor != NULL) {
         velocity->x += world->current_level->conveyor_x_speed;
@@ -153,11 +153,11 @@ i32 __cdecl Conveyor_AdjustSpeed(NUVEC *velocity) {
     return 0;
 }
 
-i32 __cdecl UnderWater(GAMEOBJECT *object) {
+i32 UnderWater(GAMEOBJECT *object) {
     return (object->field_283 == 1 || object->field_283 == 9) && object->collision_position.y <= object->water_height;
 }
 
-i32 __cdecl IntersectWater(GAMEOBJECT *object) {
+i32 IntersectWater(GAMEOBJECT *object) {
     if (object->field_283 != 1 && object->field_283 != 9) {
         return 0;
     }
@@ -170,7 +170,7 @@ i32 __cdecl IntersectWater(GAMEOBJECT *object) {
     return 1;
 }
 
-void __cdecl Surface_Deflect(NUVEC *normal, NUVEC *movement, NUVEC *result, i32 mode) {
+void Surface_Deflect(NUVEC *normal, NUVEC *movement, NUVEC *result, i32 mode) {
     f32 correction;
     correction = (-movement->x) * normal->x + (-movement->y) * normal->y + (-movement->z) * normal->z;
     if (mode == 2) {
@@ -183,8 +183,8 @@ void __cdecl Surface_Deflect(NUVEC *normal, NUVEC *movement, NUVEC *result, i32 
     result->z = movement->z + normal->z * correction;
 }
 
-void __cdecl InitSurfaceInfo(GAMEOBJECT *object) {
-    void(__cdecl * extra_reflect)(GAMEOBJECT *);
+void InitSurfaceInfo(GAMEOBJECT *object) {
+    void (*extra_reflect)(GAMEOBJECT *);
 
     object->floor_height = GameShadow(object, &object->position, 5.0f, -1);
     if (object->floor_height != GameObjectNearFloorNoFloorHeight) {

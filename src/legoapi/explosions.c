@@ -1,8 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-EXPLOSION_PC *__cdecl AddExplosion(NUVEC *position, f32 radius, f32 duration, GAMEOBJECT *owner, i32 effect,
-                                   u32 flags) {
+EXPLOSION_PC *AddExplosion(NUVEC *position, f32 radius, f32 duration, GAMEOBJECT *owner, i32 effect, u32 flags) {
     EXPLOSION_PC *explosion = &Explosions[i_explosion];
     explosion->position = *position;
     explosion->radius = radius;
@@ -24,13 +23,13 @@ EXPLOSION_PC *__cdecl AddExplosion(NUVEC *position, f32 radius, f32 duration, GA
     return explosion;
 }
 
-void __cdecl ResetExplosions(void) {
+void ResetExplosions(void) {
     memset(Explosions, 0, sizeof(Explosions));
     i_explosion = 0;
 }
 
 /* Native draw entry is a genuine one-byte RET. */
-void __cdecl DrawExplosions(void) {
+void DrawExplosions(void) {
 }
 
 static void Explosion_Feedback(EXPLOSION_PC *explosion) {
@@ -42,7 +41,7 @@ static void Explosion_Feedback(EXPLOSION_PC *explosion) {
     }
 }
 
-void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
+void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
     f32 progress;
     f32 radius;
     f32 inverse;
@@ -237,7 +236,7 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
     }
 }
 
-void __cdecl UpdateExplosions(void) {
+void UpdateExplosions(void) {
     i32 i;
     EXPLOSION_PC *explosion = Explosions;
     f32 time;

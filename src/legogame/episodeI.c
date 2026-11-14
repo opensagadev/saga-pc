@@ -126,11 +126,11 @@ typedef struct cut_instance_reader_pc_s {
 extern i16 CharacterFixupIdPc007f19ac;
 extern i16 CharacterFixupIdPc007f19b0;
 extern i16 CharacterFixupIdPc007f19b4;
-void __cdecl ChrisAllocLevelStuff(WORLDINFO *world);
-void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
+void ChrisAllocLevelStuff(WORLDINFO *world);
+void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
 /* PodRace_A mine spawner and renderer. */
-i32 __cdecl QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step);
-void __cdecl PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble);
+i32 QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step);
+void PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble);
 
 typedef struct podrace_netpacket_pc_s {
     f32 start_countdown;
@@ -140,7 +140,7 @@ typedef struct podrace_netpacket_pc_s {
     i32 lap;
 } PODRACE_NETPACKET_PC;
 
-i32 __cdecl NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix);
+i32 NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix);
 
 /* Pod sprint (Episode I bonus) level callbacks. */
 typedef struct PODSPRINT_VIEW_PC {
@@ -186,7 +186,7 @@ typedef struct PODSPRINT_NETPACKET_PC {
 /* PC 0x008824cc: last player positions used for the finish line tests. */
 static NUVEC pod_old_pos[2];
 extern f32 HudBossIconYPc;
-i32 __cdecl XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second);
+i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second);
 
 static void PodMatrixCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
@@ -209,7 +209,7 @@ static void PodMatrixCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
 
 GUNGAN_A_PC gungan_a = {0};
 
-void __cdecl GunganA_Init(WORLDINFO *world) {
+void GunganA_Init(WORLDINFO *world) {
     char name[32];
     i32 i;
     if (netclient == 0) {
@@ -233,7 +233,7 @@ void __cdecl GunganA_Init(WORLDINFO *world) {
 
 f32 gungan_a_time = 0.5f;
 
-void __cdecl GunganA_Update(WORLDINFO *world) {
+void GunganA_Update(WORLDINFO *world) {
     GAMEOBJECT *object;
     i32 r;
     if (netclient != 0) {
@@ -269,7 +269,7 @@ void __cdecl GunganA_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl PodRaceSnipersReset(void) {
+void PodRaceSnipersReset(void) {
     PodRace_nsnipers = 0;
     if (Lap != 0) {
         char name[16];
@@ -490,7 +490,7 @@ static void PodRaceExplodeClientMinePc(NUVEC *position, GAMEOBJECT *object) {
 
 static f32 PodMineGrowTimePc = 1.0f;
 
-void __cdecl UpdatePodRaceMines(void) {
+void UpdatePodRaceMines(void) {
     GAMEOBJECT *objects[64];
     NUVEC delta;
     MINE_ENTRY_PC *entry;
@@ -574,7 +574,7 @@ void __cdecl UpdatePodRaceMines(void) {
     }
 }
 
-void __cdecl PodRaceADraw(WORLDINFO *world) {
+void PodRaceADraw(WORLDINFO *world) {
     NUMTX mtx;
     NUVEC scale;
     i32 i;
@@ -608,7 +608,7 @@ static f32 PodMineSpreadPc = 30.0f;
 static f32 PodMineAheadPc = 100.0f;
 static f32 PodMineMaxSockPc = 100.0f;
 
-void __cdecl PodRaceAUpdate(void) {
+void PodRaceAUpdate(void) {
     NUVEC vec;
     if (Lap < 4 && MiniCutCam == 0) {
         minesys.update_timer += FRAMETIME;
@@ -865,7 +865,7 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
     return 1;
 }
 
-void __cdecl ResetPodStuff(void) {
+void ResetPodStuff(void) {
     f32 duration;
     i32 i;
     i32 id = apicharsys->playermodelids[id_ANAKINSPOD];
@@ -884,13 +884,13 @@ void __cdecl ResetPodStuff(void) {
     }
 }
 
-void __cdecl PodRace_IncreaseLap(void) {
+void PodRace_IncreaseLap(void) {
     Lap = (i32)((u32)Lap + 1u);
 }
 
 PODRACE_NETPACKET_PC *podrace_netpacket = NULL;
 
-void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
+void PodRaceUpdate(WORLDINFO *world, f32 dt) {
     char reason[128];
     f32 old;
     i32 i;
@@ -984,7 +984,7 @@ static f32 PodSprintLapIconScalePc = 0.16f;
 static f32 PodSprintCountdownYPc = 0.425f;
 static f32 PodSprintCountdownScalePc = 0.75f;
 
-void __cdecl PodRacePanel(WORLDINFO *world) {
+void PodRacePanel(WORLDINFO *world) {
     char text[256];
     f32 scale;
     i32 count;
@@ -1031,7 +1031,7 @@ void __cdecl PodRacePanel(WORLDINFO *world) {
 
 static i32 podhurry_i = 0;
 
-void __cdecl UpdatePodRaceLapDisplay(f32 dt) {
+void UpdatePodRaceLapDisplay(f32 dt) {
     f32 target;
     i32 oldhurry;
     if (FadeSys.fade == 0.0f && MiniCutCam == 0 && CUTSTOPGAME == 0) {
@@ -1074,7 +1074,7 @@ void __cdecl UpdatePodRaceLapDisplay(f32 dt) {
 static f32 pod_pacemaker_alpha = 0.0f;
 static f32 PodPacemakerTextScalePc = 0.08f;
 
-void __cdecl UpdatePacemakerDisplay(WORLDINFO *world) {
+void UpdatePacemakerDisplay(WORLDINFO *world) {
     NUVEC position;
     GAME_MESSAGE_PC *message;
     if (PodPacemakerPc == NULL) {
@@ -1108,12 +1108,12 @@ void fun_004daa50(void) {
     UpdatePodRaceLapDisplay(FRAMETIME);
 }
 
-i32 __cdecl PodRace_InStartCountdown(WORLDINFO *world) {
+i32 PodRace_InStartCountdown(WORLDINFO *world) {
     POD_RACE_COUNTDOWN_READER_PC *race = (POD_RACE_COUNTDOWN_READER_PC *)PodRacePc;
     return world->area != NULL && world->area == PODRACE_ADATA && race != NULL && race->lap_countdown > 0.0f;
 }
 
-void __cdecl PodRaceAUpdatePc(WORLDINFO *world) {
+void PodRaceAUpdatePc(WORLDINFO *world) {
     UpdatePacemakerDisplay(world);
     PodRaceUpdate(world, FRAMETIME);
     if (netclient == 0) {
@@ -1122,7 +1122,7 @@ void __cdecl PodRaceAUpdatePc(WORLDINFO *world) {
     UpdatePodRaceMines();
 }
 
-void __cdecl PodRaceA_AlwaysUpdate(WORLDINFO *world) {
+void PodRaceA_AlwaysUpdate(WORLDINFO *world) {
     UpdatePodRaceLapDisplay(FRAMETIME);
     if (Lap == 3) {
         if (InStory() != 0) {
@@ -1137,7 +1137,7 @@ void __cdecl PodRaceA_AlwaysUpdate(WORLDINFO *world) {
     }
 }
 
-void __cdecl PodRaceADrawPc(WORLDINFO *world) {
+void PodRaceADrawPc(WORLDINFO *world) {
     PodRaceADraw(world);
 }
 
@@ -1145,8 +1145,8 @@ void __cdecl PodRaceADrawPc(WORLDINFO *world) {
 f32 mushroom_time_available = 15.0f;
 f32 mushroom_max_time_available = 15.0f;
 
-i32 __cdecl Action_MushroomCollapse(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                    i32 count, i32 first_time, f32 elapsed) {
+i32 Action_MushroomCollapse(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                            i32 count, i32 first_time, f32 elapsed) {
     if (first_time != 0 && mushroom_collapse == 0) {
         i32 index;
         char *value;
@@ -1189,7 +1189,7 @@ static i32 mushroom_n_attempts = 0;
 static CUTINFO *mushroom0_cut = NULL;
 static f32 mushroom_countdown = 15.0f;
 
-void __cdecl PodRaceBUpdate(WORLDINFO *world) {
+void PodRaceBUpdate(WORLDINFO *world) {
     if (Lap == 2 && PodRacePc->mushroom_timer > 1.0f && mushroom_collapse != 0) {
         switch (((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state) {
             case 0:
@@ -1241,7 +1241,7 @@ void __cdecl PodRaceBUpdate(WORLDINFO *world) {
     }
 }
 
-void __cdecl PodRaceCUpdate(WORLDINFO *world) {
+void PodRaceCUpdate(WORLDINFO *world) {
     i32 i;
     UpdatePacemakerDisplay(world);
     UpdatePodRaceLapDisplay(FRAMETIME);
@@ -1263,8 +1263,8 @@ void __cdecl PodRaceCUpdate(WORLDINFO *world) {
     }
 }
 
-i32 __cdecl Action_SetLapTime(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params,
-                              i32 param_count, i32 first_time, f32 ignored) {
+i32 Action_SetLapTime(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params,
+                      i32 param_count, i32 first_time, f32 ignored) {
     i32 i;
     (void)system;
     (void)process;
@@ -1419,7 +1419,7 @@ void fun_004db710(void) {
     PodRaceKeyPc[7] = -1;
 }
 
-void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
+void PodDust(WORLDINFO *world, GAMEOBJECT *object) {
     NUVEC positions[2];
     NUVEC previous[2];
     NUVEC delta;
@@ -1514,7 +1514,7 @@ void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
     }
 }
 
-f32 __cdecl PodSprint_InStartCountdown(WORLDINFO *world) {
+f32 PodSprint_InStartCountdown(WORLDINFO *world) {
     if (world->current_level == PODSPRINTA_LDATA) {
         return podsprint.speed;
     }
@@ -1567,7 +1567,7 @@ static void PodSprint_InitAISplinePc(WORLDINFO *world, PODSPRINT_AI_PC *ai, char
     }
 }
 
-void __cdecl PodSprintA_Init(WORLDINFO *world) {
+void PodSprintA_Init(WORLDINFO *world) {
     memset(&podsprint, 0, sizeof(podsprint));
     podsprint_netpacket = SetLevelHack(10);
     PODSPRINT->finish_line = NuSplineFind(world->current_gscn, "finish_line");
@@ -1589,7 +1589,7 @@ void __cdecl PodSprintA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[51], "bigrock_eight", 1);
 }
 
-void __cdecl PodSprintA_Reset(WORLDINFO *world) {
+void PodSprintA_Reset(WORLDINFO *world) {
     i32 i;
     GAMEOBJECT *object;
     PODSPRINT->bits.reset_requested = 0;
@@ -1789,7 +1789,7 @@ static void PodSprint_UpdateAlphaPc(void) {
 static f32 boulder_offset_y = 1.0f;
 static f32 boulder_offset_y_seek = 1.0f;
 
-void __cdecl PodSprintA_Update(WORLDINFO *world) {
+void PodSprintA_Update(WORLDINFO *world) {
     i32 i;
     GAMEOBJECT *object;
     f32 seek;
@@ -1835,7 +1835,7 @@ void __cdecl PodSprintA_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl PodSprintA_Panel(WORLDINFO *world) {
+void PodSprintA_Panel(WORLDINFO *world) {
     char text[256];
     i32 count;
     f32 scale;
@@ -1886,8 +1886,8 @@ void PodSprint_GetIAlongVals(NUGSPLINE *spline, i16 *out1, i16 *out2) {
     }
 }
 
-i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params,
-                              i32 param_count, i32 first_time, f32 delta_time) {
+i32 Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params, i32 param_count,
+                      i32 first_time, f32 delta_time) {
     GAMEOBJECT *object;
     f32 goal;
     f32 base_speed;
@@ -1986,13 +1986,13 @@ RETAKEG_NETPACKET_PC *retakeg_netpacket = NULL;
 static GIZAIMESSAGE *RetakeG_TotalGuards_msg = NULL;
 static GIZAIMESSAGE *RetakeG_GuardsToRescue_msg = NULL;
 
-void __cdecl RetakeG_Init(WORLDINFO *world) {
+void RetakeG_Init(WORLDINFO *world) {
     retakeg_netpacket = SetLevelHack(4);
     RetakeG_TotalGuards_msg = CheckGizAIMessage(gizaimessagesys, "TotalGuards", NULL);
     RetakeG_GuardsToRescue_msg = CheckGizAIMessage(gizaimessagesys, "GuardsToRescue", NULL);
 }
 
-void __cdecl RetakeG_Update(WORLDINFO *world) {
+void RetakeG_Update(WORLDINFO *world) {
     if (netclient == 0) {
         retakeg_netpacket->guard_b = (i16)RetakeG_GuardsToRescue_msg->value;
         retakeg_netpacket->guard_a = (i16)RetakeG_TotalGuards_msg->value;
@@ -2002,7 +2002,7 @@ void __cdecl RetakeG_Update(WORLDINFO *world) {
     }
 }
 
-void __cdecl RetakeG_Panel(WORLDINFO *world) {
+void RetakeG_Panel(WORLDINFO *world) {
     i16 ids[6] = {id_ROYALGUARD, id_ROYALGUARD, id_ROYALGUARD, id_ROYALGUARD, id_ROYALGUARD, id_ROYALGUARD};
     u8 alive[6] = {1, 1, 1, 1, 1, 1};
     i32 i;
@@ -2026,7 +2026,7 @@ void __cdecl RetakeG_Panel(WORLDINFO *world) {
 static struct gizaimessage_s *MaulA_ai_message = 0;
 static GIZAIMESSAGE *MaulA_hits_message = NULL;
 
-void __cdecl MaulA_Init(WORLDINFO *world) {
+void MaulA_Init(WORLDINFO *world) {
     MaulA_ai_message = CheckGizAIMessage(gizaimessagesys, "MaulOnTheRun", NULL);
     MaulA_hits_message = CheckGizAIMessage(gizaimessagesys, "Hits", NULL);
     NuSpecialFind(world->current_gscn, &LevHSpecial[4], "engine_1c", 1);
@@ -2044,7 +2044,7 @@ void MaulA_Reset(WORLDINFO *world) {
     Maul_obj = FindGameObject(id_DARTHMAUL, 1, 1, 0, 0);
 }
 
-void __cdecl MaulA_Panel(WORLDINFO *world) {
+void MaulA_Panel(WORLDINFO *world) {
     if (netclient == 0) {
         if (Maul_obj != NULL && MaulA_ai_message != NULL && MaulA_ai_message->value == 0.0f &&
             MaulA_hits_message != NULL) {
@@ -2071,11 +2071,11 @@ void MaulF_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &slots[2], "throw_object3", 1);
 }
 
-void __cdecl MaulF_Reset(WORLDINFO *world) {
+void MaulF_Reset(WORLDINFO *world) {
     Maul_obj = FindGameObject(id_DARTHMAUL, 1, 1, 0, 0);
 }
 
-void __cdecl MaulF_Panel(WORLDINFO *world) {
+void MaulF_Panel(WORLDINFO *world) {
     if (netclient == 0) {
         if (Maul_obj != NULL && MaulA_ai_message != NULL && MaulA_ai_message->value == 1.0f) {
             DrawBossHitPoints(Maul_obj);
@@ -2085,7 +2085,7 @@ void __cdecl MaulF_Panel(WORLDINFO *world) {
     }
 }
 
-void __cdecl AnakinsFlightB_Init(WORLDINFO *world) {
+void AnakinsFlightB_Init(WORLDINFO *world) {
     i32 count;
     gunship_bolts[0] = (i16)BoltType_FindIDByName("trooper_red", world);
     gunship_flags[0] = 0;
@@ -2099,7 +2099,7 @@ void __cdecl AnakinsFlightB_Init(WORLDINFO *world) {
     }
 }
 
-void __cdecl PodRaceInit(WORLDINFO *world) {
+void PodRaceInit(WORLDINFO *world) {
     PODRACE_RESOURCE_PC *podrace;
     i32 id;
     i32 i;
@@ -2127,7 +2127,7 @@ void __cdecl PodRaceInit(WORLDINFO *world) {
     }
 }
 
-void __cdecl PodRaceReset(void) {
+void PodRaceReset(void) {
     PODRACE_RESOURCE_PC *podrace = PodRacePc;
     i32 i;
     podrace->mushroom_timer = 0.0f;
@@ -2139,11 +2139,11 @@ void __cdecl PodRaceReset(void) {
     }
 }
 
-void __cdecl PodRaceAInit(WORLDINFO *world) {
+void PodRaceAInit(WORLDINFO *world) {
     PodRaceInit(world);
 }
 
-void __cdecl PodRaceAReset(WORLDINFO *world) {
+void PodRaceAReset(WORLDINFO *world) {
     PodRaceReset();
     switch (Lap) {
         case 1:
@@ -2165,7 +2165,7 @@ void __cdecl PodRaceAReset(WORLDINFO *world) {
     }
 }
 
-void __cdecl PodRaceBInit(WORLDINFO *world) {
+void PodRaceBInit(WORLDINFO *world) {
     PodRaceInit(world);
     mushroom_collapse = 0;
     mushroom_nattempts_per_increment = 1;
@@ -2175,7 +2175,7 @@ void __cdecl PodRaceBInit(WORLDINFO *world) {
     }
 }
 
-void __cdecl PodRaceBReset(WORLDINFO *world) {
+void PodRaceBReset(WORLDINFO *world) {
     PodRaceReset();
     switch (Lap) {
         case 1:
@@ -2197,7 +2197,7 @@ void __cdecl PodRaceBReset(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "collapsing_mush", 1);
 }
 
-void __cdecl PodRaceCInit(WORLDINFO *world) {
+void PodRaceCInit(WORLDINFO *world) {
     char name[256];
     i32 i;
     PodRaceInit(world);
@@ -2253,8 +2253,8 @@ void PodRaceCReset(WORLDINFO *world) {
     }
 }
 
-i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params,
-                             i32 param_count, i32 first_time, f32 ignored) {
+i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params, i32 param_count,
+                     i32 first_time, f32 ignored) {
     i32 spline_id = -1;
     i32 pacemaker = 0;
     i32 damaged = 0;

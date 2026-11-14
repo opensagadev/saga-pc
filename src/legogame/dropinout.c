@@ -1,15 +1,15 @@
 #include "saga.h"
 
-void __cdecl PcControlInitializePc(i32, i32, i32, u8);
-u8 __cdecl PcInput_MappingIsGood(i32 port, i32 player_index);
+void PcControlInitializePc(i32, i32, i32, u8);
+u8 PcInput_MappingIsGood(i32 port, i32 player_index);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, hitpoints) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
 STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) == 0xc5c);
 STATIC_ASSERT(offsetof(NUVEC, y) == 4);
 STATIC_ASSERT(offsetof(NUVEC, z) == 8);
-i32 __cdecl PcInput_GetFirstKeyboardPort(void);
-i32 __cdecl PC_CtrlConfigGetPlayerPort(i32 player_index);
-void __cdecl PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints);
+i32 PcInput_GetFirstKeyboardPort(void);
+i32 PC_CtrlConfigGetPlayerPort(i32 player_index);
+void PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints);
 #define DROPIN_SCREEN_INSIDE(object)                                                                                   \
     ((object)->camera_screen_position.x > -0.85000002384185791 &&                                                      \
      (object)->camera_screen_position.x < 0.85000002384185791 &&                                                       \
@@ -28,7 +28,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_player_packet_pc) == 0x6c4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, respawn_timer) == 0x1d8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 
-void __cdecl CheckForPlayersTurnedOff(void) {
+void CheckForPlayersTurnedOff(void) {
     i32 source_index;
     for (source_index = 0; source_index < 2; ++source_index) {
         GAMEOBJECT *source = Player[source_index];
@@ -50,7 +50,7 @@ void __cdecl CheckForPlayersTurnedOff(void) {
 }
 
 /* Players whose drop-in flag (0x80) is set. */
-i32 __cdecl GetNumLocalPlayers(void) {
+i32 GetNumLocalPlayers(void) {
     i32 count = 0;
     if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80)) {
         count = 1;
@@ -61,7 +61,7 @@ i32 __cdecl GetNumLocalPlayers(void) {
     return count < 0 ? 0 : count;
 }
 
-i32 __cdecl FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
+i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
     if (WORLD != NULL && WORLD->current_level == FACTORYF_LDATA) {
         return 0;
     }
@@ -105,7 +105,7 @@ f32 DropInOutScale(GAMEOBJECT *object) {
     return 1.0f;
 }
 
-void __cdecl DropInOutCode(GAMEOBJECT *object) {
+void DropInOutCode(GAMEOBJECT *object) {
     u8 context = (u8)object->character_context;
     GAMEOBJECT *other;
     if (context != 0x23 && context != 0x24) {
@@ -154,7 +154,7 @@ void StartDropOut(GAMEOBJECT *object) {
     object->field_7aa = animation;
 }
 
-void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
+void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
     GAMEOBJECT *object = Player[player];
     i32 secondary;
     i32 movement;
@@ -230,7 +230,7 @@ STATIC_ASSERT(sizeof(DropInCaptureDelayPc) == 2);
 STATIC_ASSERT(sizeof(DropInCapturePortPc) == 4);
 STATIC_ASSERT(sizeof(PlayerDevicePortsPc) == 8);
 
-i32 __cdecl PlayersDropInOut(void) {
+i32 PlayersDropInOut(void) {
     i32 force_join = 0;
     i32 changed = 0;
     i32 menu;

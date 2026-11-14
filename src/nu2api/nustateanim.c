@@ -1,6 +1,6 @@
 #include "saga.h"
 
-STATE_ANIM_PC *__cdecl StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta) {
+STATE_ANIM_PC *StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta) {
     state = state ? (STATE_ANIM_PC *)((u32)state + delta) : NULL;
     if (state != NULL) {
         state->times = state->times ? (f32 *)((u32)state->times + delta) : NULL;
@@ -9,7 +9,7 @@ STATE_ANIM_PC *__cdecl StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta) {
     return state;
 }
 
-i32 __cdecl StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame) {
+i32 StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame) {
     i32 cursor = *index;
     i32 old_value;
     i32 new_value;

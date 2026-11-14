@@ -1,9 +1,9 @@
 #include "saga.h"
 
-extern "C" void __cdecl NuRndrConfigureLeafPc(f32, f32, i32);
+extern "C" void NuRndrConfigureLeafPc(f32, f32, i32);
 extern "C" const f32 InitOnceHalf;
 
-extern "C" void __cdecl InitGameBeforeConfig(void);
+extern "C" void InitGameBeforeConfig(void);
 
 extern "C" {
     static void StartupParseArguments(i32 count, char **arguments) {
@@ -17,7 +17,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl InitOnce(i32 argc, char **argv) {
+extern "C" void InitOnce(i32 argc, char **argv) {
     PcNativeSelectLanguage(InitOnceEmptyConfigPc);
     permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, InitOnceAllocSource, 0x112);
     superbuffer_end.addr = permbuffer_base.addr + (u32)SUPERBUFFERSIZE;

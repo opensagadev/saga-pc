@@ -8,9 +8,9 @@ static char *Text_ErrorString = (char *)Text_ErrorText;
 static i32 Text_MaxStrings_Overall = 0;
 static u32 *Text_StringBits = 0;
 
-extern i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser);
-extern i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser);
-extern i32 __cdecl NuStrLenW(const NUWCHAR *str);
+extern i32 NuFParGetLineW(NUFPAR_PC *parser);
+extern i32 NuFParGetWordW(NUFPAR_PC *parser);
+extern i32 NuStrLenW(const NUWCHAR *str);
 
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
     if (language_list != NULL) {
@@ -196,7 +196,7 @@ static i32 Text_IsOtherPlatformWord(NUFPAR_PC *parser) {
     return 0;
 }
 
-void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count) {
+void Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count) {
     u8 *out = *buffer;
     NUFPAR_PC *parser = NuFParCreate(path);
     i32 index;
@@ -266,7 +266,7 @@ void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32
 }
 
 /* Retail 4cf4b0 consists solely of RET. */
-void __cdecl Text_FillInExtendedSaveInfo(void) {
+void Text_FillInExtendedSaveInfo(void) {
 }
 
 void TextRegisterButtonMapFn(void (*fn)(char *, char *)) {
@@ -495,7 +495,7 @@ void Text_SetLanguage(i32 language) {
     }
 }
 
-i32 __cdecl GetMenuID(void) {
+i32 GetMenuID(void) {
     i16 menu = GameMenu[GameMenuLevel].menu;
     return menu == -1 ? -1 : MenuInfo[menu].id;
 }
@@ -512,7 +512,7 @@ i32 GetParentMenuID(void) {
     return MenuInfo[menu].id;
 }
 
-i32 __cdecl TriggerAutoSave(void) {
+i32 TriggerAutoSave(void) {
     if (memcard_autosave != 0 && memcard_autosaveenabled != 0 && saveload_autosave != -1) {
         memcard_autosaveneeded = 1;
         MenuSaveOccurred = 0;
@@ -525,7 +525,7 @@ i32 fun_0050c040(void) {
     return saveload_status;
 }
 
-void __cdecl Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font) {
+void Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font) {
     u16 character;
     while (*source != 0) {
         source = NuUnicodeCharFromUTF8(&character, source);
@@ -550,11 +550,11 @@ void __cdecl Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font) {
 }
 
 // noinline: the original calls Text3DStringEncode out of line from IntroText_Draw; VC8 would inline it there.
-__declspec(noinline) void __cdecl Text3DStringEncode(char *source, u16 *destination) {
+__declspec(noinline) void Text3DStringEncode(char *source, u16 *destination) {
     Text3DStringEncodeFont((u8 *)source, destination, SmartTextFont != NULL ? SmartTextFont : QFont2D);
 }
 
-void __cdecl TextDecodeCodeword(char *source, char *destination) {
+void TextDecodeCodeword(char *source, char *destination) {
     i32 button;
     i32 device;
     if (buttonmapfn != NULL) {
@@ -614,7 +614,7 @@ void __cdecl TextDecodeCodeword(char *source, char *destination) {
     PcInput_GetCtrlInputString(device, button, destination);
 }
 
-void __cdecl TextDecode(char *text, u8 *destination) {
+void TextDecode(char *text, u8 *destination) {
     u8 *source = (u8 *)text;
     i32 input = 0;
     i32 output = 0;
@@ -676,7 +676,7 @@ void __cdecl TextDecode(char *text, u8 *destination) {
     destination[output] = 0;
 }
 
-f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, i32 colour, i32 button_font) {
+f32 TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, i32 colour, i32 button_font) {
     VUFNT *base_font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
     VUFNT *font;
     f32 relative_scale;
@@ -701,8 +701,8 @@ f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y
 
 #define TEXT3D_FONT() (SmartTextFont != NULL ? SmartTextFont : QFont2D)
 
-void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
-                      u8 green, u8 blue, u8 alpha) {
+void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
+              u8 blue, u8 alpha) {
     u8 alpha_byte = alpha;
     f32 width;
     f32 height;
@@ -910,13 +910,13 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
 }
 
 // noinline: the original calls SetQFont2D out of line from IntroText_Draw; VC8 would inline it there.
-__declspec(noinline) void __cdecl SetQFont2D(void) {
+__declspec(noinline) void SetQFont2D(void) {
     NuQFntSetCoordinateSystem(3);
     NuQFntSet(QFont2D);
     NuQFntSetSpaceWidth(QFont2D, 12.0f);
 }
 
-void __cdecl IntroText_Draw(f32 alpha) {
+void IntroText_Draw(f32 alpha) {
     u16 encoded[128];
     u32 colour;
     if (INTROTEXT_ID == -1) {
@@ -931,8 +931,8 @@ void __cdecl IntroText_Draw(f32 alpha) {
                           colour, NULL);
 }
 
-void __cdecl Text3DEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green,
-                       u32 blue, u8 alpha) {
+void Text3DEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green, u32 blue,
+               u8 alpha) {
     if (QFont2DLower != NULL) {
         VUFNT *saved_font = SmartTextFont;
         SmartTextFont = QFont2DLower;
@@ -941,8 +941,8 @@ void __cdecl Text3DEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, 
     }
 }
 
-void __cdecl MenuText3DEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green,
-                          u32 blue, i32 alpha) {
+void MenuText3DEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green, u32 blue,
+                  i32 alpha) {
     if (MenuDrawDropShadows != 0) {
         f32 shadow_x = (f32)((f64)x + (f64)sx * (f64)0.015f);
         f32 shadow_y = (f32)((f64)y - (f64)sy * (f64)0.015f);
@@ -1208,8 +1208,8 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     TextScaleY = saved_y_scale;
 }
 
-void __cdecl SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green,
-                          u8 blue, f32 max_width, i32 max_lines, void *box, i32 suppress, u32 alpha) {
+void SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green, u8 blue,
+                  f32 max_width, i32 max_lines, void *box, i32 suppress, u32 alpha) {
     VUFNT *saved_font = SmartTextFont;
     if (QFont2DLower != NULL) {
         SmartTextFont = QFont2DLower;
@@ -1230,8 +1230,8 @@ void fun_0050e510(i32 mode) {
     TextPrintModePc = mode;
 }
 
-void __cdecl MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green,
-                             u8 blue, f32 max_width, i32 max_lines, void *box, i32 suppress, i32 alpha) {
+void MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green, u8 blue,
+                     f32 max_width, i32 max_lines, void *box, i32 suppress, i32 alpha) {
     if (MenuDrawDropShadows != 0) {
         f32 shadow_x = (f32)((f64)x + (f64)sx * (f64)0.015f);
         f32 shadow_y = (f32)((f64)y - (f64)sy * (f64)0.015f);
@@ -1266,7 +1266,7 @@ static TEXT_CRAWL_VIEW_PC *TextCrawlCurrentPc = 0;
 static NUMTX TextCrawlMatrixPc = {0};
 static NUVEC TextCrawlOffsetPc = {0.0f, -1.0f, 10.0f};
 
-void __cdecl TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
+void TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
     if (crawl == NULL || QFont3DZ == NULL) {
         return;
     }
@@ -1281,7 +1281,7 @@ void __cdecl TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
     }
 }
 
-void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
+void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     AREA_DATA_PC *area;
     TEXT_CRAWL_MISSION_VIEW_PC *mission;
     i32 body_text_id;
@@ -1458,7 +1458,7 @@ void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     NuQFntPopPrintMode();
 }
 
-VUFNT *__cdecl LoadGameFont(char *path, char *texture_path, VARIPTR *buffer, VARIPTR *end, i32 plane) {
+VUFNT *LoadGameFont(char *path, char *texture_path, VARIPTR *buffer, VARIPTR *end, i32 plane) {
     QFont2D = NuQFntLoadPtr(path, texture_path, 4, plane, buffer, end);
     if (QFont2D != NULL) {
         if (create_qfont2dlower != 0) {
@@ -1477,7 +1477,7 @@ VUFNT *__cdecl LoadGameFont(char *path, char *texture_path, VARIPTR *buffer, VAR
     return QFont2D;
 }
 
-void __cdecl UnloadGameFont(i32 unused) {
+void UnloadGameFont(i32 unused) {
     if (QFont2DLower != NULL) {
         NuQFntDestroy(QFont2DLower);
         QFont2DLower = NULL;
@@ -1497,7 +1497,7 @@ void __cdecl UnloadGameFont(i32 unused) {
     NuQFntDestroy(QFont2D);
 }
 
-VUFNT *__cdecl LoadButtonFont(char *path, char *texture_path, VARIPTR *buffer, VARIPTR *end, i32 plane) {
+VUFNT *LoadButtonFont(char *path, char *texture_path, VARIPTR *buffer, VARIPTR *end, i32 plane) {
     if (QFont2DButtons == NULL) {
         QFont2DButtons = NuQFntLoadPtr(path, texture_path, 4, plane, buffer, end);
         if (QFont2DButtons != NULL) {
@@ -1524,7 +1524,7 @@ void fun_00511690(MENU *menu) {
     DrawMenuEntryEx(menu, apitxt_CANCEL, MenuA);
 }
 
-void __cdecl Text_LoadFont(char *path, VARIPTR *buffer, VARIPTR *end) {
+void Text_LoadFont(char *path, VARIPTR *buffer, VARIPTR *end) {
     create_qfont3dz = 1;
     Text_AppFont = LoadGameFont(path, path, buffer, end, 1);
     LoadButtonFont("stuff\\text\\Buttons", NULL, buffer, end, 0);
@@ -1532,8 +1532,8 @@ void __cdecl Text_LoadFont(char *path, VARIPTR *buffer, VARIPTR *end) {
 
 f32 MatrixTextScalePc = 0.004f;
 
-void __cdecl MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, u32 alignment,
-                        u32 colour, NUMTX *matrix, i32 camera_relative) {
+void MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, u32 alignment,
+                u32 colour, NUMTX *matrix, i32 camera_relative) {
     u16 encoded[512];
     f32 width;
     f32 height;
@@ -1581,9 +1581,9 @@ void __cdecl MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f
     NuQFntPopPrintMode();
 }
 
-extern void __cdecl GameDrawMenuEntry(MENU *menu, char *text);
+extern void GameDrawMenuEntry(MENU *menu, char *text);
 
-void __cdecl MenuDrawViewTextStrings(MENU *menu) {
+void MenuDrawViewTextStrings(MENU *menu) {
     char text[2048];
     i32 i;
     menu->item_scale = 2.0f;
@@ -1661,7 +1661,7 @@ void __cdecl MenuDrawViewTextStrings(MENU *menu) {
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, buttons_held) == 4);
 
-void __cdecl MenuUpdateViewTextStrings(MENU *menu) {
+void MenuUpdateViewTextStrings(MENU *menu) {
     if (menu->cancel_pressed != 0) {
         BackupMenu();
         return;

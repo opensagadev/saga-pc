@@ -1,10 +1,10 @@
 #include "saga.h"
 
 extern "C" {
-    i32 __cdecl PCFrameBeginScenePc(i32 begin);
-    void __cdecl PCFrameResetTargetsPc(void);
-    void __cdecl PCFrameConfigureTargetsPc(void);
-    void __cdecl NuDisplayListHtmlEndPc(void);
+    i32 PCFrameBeginScenePc(i32 begin);
+    void PCFrameResetTargetsPc(void);
+    void PCFrameConfigureTargetsPc(void);
+    void NuDisplayListHtmlEndPc(void);
 }
 
 extern "C" PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256];
@@ -17,7 +17,7 @@ inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
 
 /* Full native 60aff0 control reconstruction, with genuinely missing VOID
  * actions retained at their actual call sites. No consumed value is stubbed. */
-extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
+extern "C" i32 NuRndrSwapScreen(i32 mode) {
     i32 last_effect_scene = -1;
     RenderFrameShaderTimePc += nuapi.frame_time;
     rndr_blend_shape_deformer_wt_cnt = 0xef00;
@@ -190,7 +190,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     return 1;
 }
 
-extern "C" i32 __cdecl NuRndrSwapScreenEx(i32 mode, void(__cdecl *callback)(void)) {
+extern "C" i32 NuRndrSwapScreenEx(i32 mode, void (*callback)(void)) {
     if (callback != NULL) {
         callback();
     }

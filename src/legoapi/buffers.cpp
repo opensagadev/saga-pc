@@ -4,12 +4,12 @@
 
 extern "C" {
 
-    void __cdecl StartPerm(void) {
+    void StartPerm(void) {
         permbuffer_ptr.addr = permbuffer_base.addr;
         permbuffer_end.addr = superbuffer_end.addr;
     }
 
-    void __cdecl EndPerm(void) {
+    void EndPerm(void) {
         u32 aligned = (permbuffer_ptr.addr + 3U) & ~3U;
         u32 world_start;
         u32 world_mid;
@@ -34,7 +34,7 @@ extern "C" {
         editbuffer_end.addr = superbuffer_end.addr - (u32)EDITBUFFERENDSIZE;
     }
 
-    void __cdecl ResetCharacterBuffer(i32 force_reset) {
+    void ResetCharacterBuffer(i32 force_reset) {
         if (force_reset != 0 || Area == -1 || Area != last_area) {
             characterbuffer_ptr = characterbuffer_base;
             memset(characterbuffer_base.void_ptr, 0, CHARACTERBUFFERSIZE);

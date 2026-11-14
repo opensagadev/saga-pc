@@ -15,13 +15,13 @@ extern "C" {
     extern eduimenu_s *edLevelDestroyThisMenu;
     extern eduimenu_s *edLevelDestroyThisMenu2;
     extern i32 edlevel_mouseandkeyboard;
-    void __cdecl eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding);
-    void __cdecl eduiSetDefaultActiveMenu(eduimenu_s *menu);
-    void __cdecl eduiProcessCursor(f32 delta_time, FRAME_PAD_PC *pad);
-    i32 __cdecl eduiGetCameraEnabled(void);
-    void __cdecl eduiSetFontScale(f32 x, f32 y);
-    void __cdecl edcamMove(FRAME_PAD_PC *pad);
-    void __cdecl edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
+    void eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding);
+    void eduiSetDefaultActiveMenu(eduimenu_s *menu);
+    void eduiProcessCursor(f32 delta_time, FRAME_PAD_PC *pad);
+    i32 eduiGetCameraEnabled(void);
+    void eduiSetFontScale(f32 x, f32 y);
+    void edcamMove(FRAME_PAD_PC *pad);
+    void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
     extern struct eduiiattr_s EdLevelAttr;
     extern i32 pad_disabled;
     extern i32 EdLevelFnt;
@@ -29,55 +29,55 @@ extern "C" {
     extern NUMTL *edLevel2dMtl;
     extern NUMTL *edLevel3dMtl;
     extern NUMTL *edLevelTexMtl;
-    char *__cdecl GetSfxName(i32 sound_id);
-    i32 __cdecl NuFileAlign(NUFILE file, i32 mask);
-    eduiitem_s *__cdecl eduiItemSeparatorCreate(u32 data, const void *colours);
-    i32 __cdecl edmainGetCursorEnabled(void);
-    NUCAMERA *__cdecl edmainGetCameraPc(void);
-    f32 __cdecl edcamGetDist(void);
-    void __cdecl EdDrawLineCross(NUVEC *position, f32 size, i32 colour);
-    void __cdecl eduiFlushInteracts(void);
-    void __cdecl NuRndrLine3dDbgFlush(void);
-    void __cdecl eduiGetCursorCoords(f32 *x, f32 *y);
-    void __cdecl NuFntSet(i32 font);
-    void __cdecl NuFntScale(i32 x, i32 y);
-    void __cdecl eduiSetCursorColour(u32 colour);
-    void __cdecl eduiRenderCursor(void);
+    char *GetSfxName(i32 sound_id);
+    i32 NuFileAlign(NUFILE file, i32 mask);
+    eduiitem_s *eduiItemSeparatorCreate(u32 data, const void *colours);
+    i32 edmainGetCursorEnabled(void);
+    NUCAMERA *edmainGetCameraPc(void);
+    f32 edcamGetDist(void);
+    void EdDrawLineCross(NUVEC *position, f32 size, i32 colour);
+    void eduiFlushInteracts(void);
+    void NuRndrLine3dDbgFlush(void);
+    void eduiGetCursorCoords(f32 *x, f32 *y);
+    void NuFntSet(i32 font);
+    void NuFntScale(i32 x, i32 y);
+    void eduiSetCursorColour(u32 colour);
+    void eduiRenderCursor(void);
     extern i32 eduiPropTextPos;
-    i32 __cdecl eduiUsedAlgPad(FRAME_PAD_PC *pad);
-    void __cdecl eduiSetCursorCoords(f32 x, f32 y);
-    void __cdecl PcGetMousePositionPc(f32 *x, f32 *y);
-    void __cdecl NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_end, NUCAMERA *camera);
-    void __cdecl eduiSetCameraEnabled(i32 enabled);
+    i32 eduiUsedAlgPad(FRAME_PAD_PC *pad);
+    void eduiSetCursorCoords(f32 x, f32 y);
+    void PcGetMousePositionPc(f32 *x, f32 *y);
+    void NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_end, NUCAMERA *camera);
+    void eduiSetCameraEnabled(i32 enabled);
     extern i32 NewPrim;
-    void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
-    eduiitem_s *__cdecl eduiItemExpanderCreate(u32 data, const void *colours, void *callback, char *text);
-    eduiitem_s *__cdecl eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button,
-                                           i32 button_type, char *text, char *value);
-    eduiitem_s *__cdecl eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *changed, void *button,
-                                             i32 button_type, char *text, char *value, i32 extra_data);
-    i32 __cdecl eduiItemPropSetText(edui_prop_s *item, char *text);
-    void __cdecl eduiItemExpanderAddChild(eduiitem_s *item, eduiitem_s *child);
-    void __cdecl eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item);
-    void __cdecl eduiMenuSetAttr(eduimenu_s *menu, const u32 *colours);
-    eduimenu_s *__cdecl eduiGetActiveMenuParent(void);
-    void __cdecl eduiSetActiveMenu(eduimenu_s *menu);
-    void __cdecl EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour);
-    void __cdecl EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments);
-    void __cdecl EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments);
-    void __cdecl EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments);
-    void __cdecl EdDrawLineCube(NUMTX *transform, f32 size, i32 colour);
-    void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour,
-                                  i32 segments);
-    f32 __cdecl eduiGetAnalougePadValue(FRAME_PAD_PC *pad);
-    void __cdecl eduiGetCursorDelta(f32 *x, f32 *y);
-    i32 __cdecl NuSpecialNumMtls(NUSPECIALHANDLE *special);
-    NUMTL *__cdecl NuSpecialGetMtl(NUSPECIALHANDLE *special, i32 index);
-    eduiitem_s *__cdecl eduiItemFilterCreate(u32 data, void *colours, char *text, char *value);
-    void __cdecl eduiMenuSortItemsByTxt(eduimenu_s *menu);
-    void __cdecl edcamSetDist(f32 distance);
-    void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
-                                 f32 radius_scale, f32 radius_bias);
+    void EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
+    eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback, char *text);
+    eduiitem_s *eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button,
+                                   i32 button_type, char *text, char *value);
+    eduiitem_s *eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *changed, void *button,
+                                     i32 button_type, char *text, char *value, i32 extra_data);
+    i32 eduiItemPropSetText(edui_prop_s *item, char *text);
+    void eduiItemExpanderAddChild(eduiitem_s *item, eduiitem_s *child);
+    void eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item);
+    void eduiMenuSetAttr(eduimenu_s *menu, const u32 *colours);
+    eduimenu_s *eduiGetActiveMenuParent(void);
+    void eduiSetActiveMenu(eduimenu_s *menu);
+    void EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour);
+    void EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+    void EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+    void EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+    void EdDrawLineCube(NUMTX *transform, f32 size, i32 colour);
+    void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour,
+                          i32 segments);
+    f32 eduiGetAnalougePadValue(FRAME_PAD_PC *pad);
+    void eduiGetCursorDelta(f32 *x, f32 *y);
+    i32 NuSpecialNumMtls(NUSPECIALHANDLE *special);
+    NUMTL *NuSpecialGetMtl(NUSPECIALHANDLE *special, i32 index);
+    eduiitem_s *eduiItemFilterCreate(u32 data, void *colours, char *text, char *value);
+    void eduiMenuSortItemsByTxt(eduimenu_s *menu);
+    void edcamSetDist(f32 distance);
+    void EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
+                         f32 radius_scale, f32 radius_bias);
 }
 
 STATIC_ASSERT(sizeof(EdStream) == 0x20);
@@ -520,7 +520,7 @@ extern "C" {
         ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
     }
 
-    void __cdecl EdDrawMtx(NUMTX *matrix);
+    void EdDrawMtx(NUMTX *matrix);
 
     /* Appends a vertex position and moves the stream to the next vertex. */
     static inline void EdDrawAddXYZ(f32 x, f32 y, f32 z) {
@@ -556,10 +556,10 @@ extern "C" {
         (v).z = (pz);                                                                                                  \
         (v).w = 0.0f;                                                                                                  \
     } while (0)
-    void __cdecl EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour);
-    void __cdecl EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour);
-    void __cdecl EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 cap_colour, f32 radius,
-                                      f32 limit, f32 offset);
+    void EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour);
+    void EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour);
+    void EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 cap_colour, f32 radius, f32 limit,
+                              f32 offset);
 #define EDDRAW_AXIS_ARROW(row_x, row_y, row_z, colour)                                                                 \
     do {                                                                                                               \
         tip.x = (row_x) * size;                                                                                        \
@@ -575,7 +575,7 @@ extern "C" {
         width = size * (f64)0.02f;                                                                                     \
         EdDrawPolyArrow(origin, (NUVEC *)&tip, 8, (colour), width, width, 0.02f, 0.0f);                                \
     } while (0)
-    void __cdecl EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity);
+    void EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity);
 } /* extern "C" */
 
 STATIC_ASSERT(sizeof(EdTool) == 0xc);
@@ -2355,7 +2355,7 @@ void EdSfxNameControl::cbSelectSfx(eduimenu_s *menu, eduiitem_s *item, u32) {
     }
 }
 
-void __cdecl EdDrawBegin(i32 index) {
+void EdDrawBegin(i32 index) {
     if (EdDrawMtl[0] == NULL) {
         EdDrawMtl[0] = NuMtlCreate3D(1);
         EdDrawMtl[0]->attribs.cull_mode = 2;
@@ -2371,7 +2371,7 @@ void __cdecl EdDrawBegin(i32 index) {
     NewPrim = 1;
 }
 
-void __cdecl EdDrawEnd(void) {
+void EdDrawEnd(void) {
     if (NewPrim != 0) {
         if (NewPrim == 2 || NewPrim == 3) {
             NuPrim3DEnd();
@@ -2380,13 +2380,13 @@ void __cdecl EdDrawEnd(void) {
     }
 }
 
-void __cdecl EdDrawMtx(NUMTX *matrix) {
+void EdDrawMtx(NUMTX *matrix) {
     EdDrawEnd();
     EdDrawBegin(0);
     NewMtx = matrix;
 }
 
-void __cdecl EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour) {
+void EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour) {
     // MATCH-EXCEPTION: as in EdDrawPolyTri, a copy of colour frees its
     // parameter slot for the vertex temporaries.
     i32 vertex_colour = colour;
@@ -2400,7 +2400,7 @@ void __cdecl EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour) {
     EdDrawAddXYZ(b->x, b->y, b->z);
 }
 
-void __cdecl EdDrawLineCross(NUVEC *position, f32 size, i32 colour) {
+void EdDrawLineCross(NUVEC *position, f32 size, i32 colour) {
     __declspec(align(16)) NUVEC4 start;
     __declspec(align(16)) NUVEC4 end;
     start.y = end.y = position->y;
@@ -2418,19 +2418,19 @@ void __cdecl EdDrawLineCross(NUVEC *position, f32 size, i32 colour) {
     EdDrawLineSegment((NUVEC *)&start, (NUVEC *)&end, colour);
 }
 
-void __cdecl EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
+void EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
     EDDRAW_LINE_CIRCLE(NuVecRotateX, 0.0f, radius);
 }
 
-void __cdecl EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
+void EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
     EDDRAW_LINE_CIRCLE(NuVecRotateY, 0.0f, radius);
 }
 
-void __cdecl EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
+void EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
     EDDRAW_LINE_CIRCLE(NuVecRotateZ, radius, 0.0f);
 }
 
-void __cdecl EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour) {
+void EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour) {
     __declspec(align(16)) VuVec points[4];
     __declspec(align(16)) VuVec point;
     i32 i;
@@ -2451,7 +2451,7 @@ void __cdecl EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour) {
     EdDrawLineSegment(&points[2].xyz, &points[3].xyz, colour);
 }
 
-void __cdecl EdDrawLineCube(NUMTX *transform, f32 size, i32 colour) {
+void EdDrawLineCube(NUMTX *transform, f32 size, i32 colour) {
     __declspec(align(16)) VuVec points[9];
     __declspec(align(16)) VuVec point;
     i32 i;
@@ -2494,7 +2494,7 @@ void __cdecl EdDrawLineCube(NUMTX *transform, f32 size, i32 colour) {
     EdDrawLineSegment(&points[6].xyz, &points[8].xyz, colour);
 }
 
-void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour) {
+void EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour) {
     __declspec(align(16)) VuVec first;
     __declspec(align(16)) VuVec second;
     f64 radius_squared = radius * radius;
@@ -2544,7 +2544,7 @@ void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour) 
     }
 }
 
-void __cdecl EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
+void EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
     // MATCH-EXCEPTION: a copy of colour frees its parameter slot, which retail
     // reuses for the vertex temporaries; no other source form found.
     i32 vertex_colour = colour;
@@ -2560,8 +2560,7 @@ void __cdecl EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
     EdDrawAddXYZ(c->x, c->y, c->z);
 }
 
-void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour,
-                              i32 segments) {
+void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour, i32 segments) {
     __declspec(align(16)) NUVEC4 first;
     __declspec(align(16)) NUVEC4 second;
     i32 step;
@@ -2641,8 +2640,8 @@ void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_ang
     } while (remaining > 0);
 }
 
-void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments, i32 colour,
-                                i32 cap_bottom, i32 cap_top) {
+void EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments, i32 colour,
+                        i32 cap_bottom, i32 cap_top) {
     __declspec(align(16)) VuVec a;
     __declspec(align(16)) VuVec b;
     __declspec(align(16)) VuVec c;
@@ -2711,8 +2710,8 @@ void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 
     EdDrawMtx(NULL);
 }
 
-void __cdecl EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 cap_colour, f32 radius,
-                                  f32 limit, f32 offset) {
+void EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 cap_colour, f32 radius, f32 limit,
+                          f32 offset) {
     __declspec(align(16)) NUMTX transform;
     VuVec direction;
     VuVec center;
@@ -2760,8 +2759,8 @@ void __cdecl EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colou
     }
 }
 
-void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
-                             f32 radius_scale, f32 radius_bias) {
+void EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius, f32 radius_scale,
+                     f32 radius_bias) {
     __declspec(align(16)) NUMTX matrix;
     NUVEC4 delta;
     NUVEC4 dir;
@@ -2835,7 +2834,7 @@ void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f
     }
 }
 
-void __cdecl EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity) {
+void EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity) {
     __declspec(align(16)) NUVEC4 tip;
     __declspec(align(16)) NUVEC4 sum;
     NUVEC *origin = &transform->translation;
@@ -5592,7 +5591,7 @@ void LevelEditor::CreateEditorList(eduimenu_s *parent, eduiitem_s *item) {
     eduiMenuAttach(parent, menu);
 }
 
-extern "C" void __cdecl eduiSetUsingMenuFocusPc(i32 enabled);
+extern "C" void eduiSetUsingMenuFocusPc(i32 enabled);
 
 /* Gives the editor menus the focus and enters every registered editor. */
 void LevelEditor::Enter() {

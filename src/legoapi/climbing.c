@@ -11,7 +11,7 @@ typedef struct movement_model_pc_s {
     void **model_data_b;
 } MOVEMENT_MODEL_PC;
 
-extern i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *);
+extern i32 (*CanMagnetClimbFn)(GAMEOBJECT *);
 
 static __inline f32 MovePlayerFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
@@ -62,7 +62,7 @@ static i32 LedgeTerrain_Attach(GAMEOBJECT *object, u16 facing, NUVEC *position, 
     return 1;
 }
 
-void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
+void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     NUVEC position;
     u16 wall_angle;
     i16 animation;
@@ -216,7 +216,7 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     object->context_duration = 0.25f;
 }
 
-i32 __cdecl LedgeTerrain_SetTargetMom(GAMEOBJECT *object) {
+i32 LedgeTerrain_SetTargetMom(GAMEOBJECT *object) {
     i32 angle = object->movement_facing_angle;
     object->target_velocity.x =
         (NuTrigTable[(u32)angle >> 1] * LEDGETERRAINLOOKAHEAD + object->external_force.x - object->upper_position.x) *
@@ -228,7 +228,7 @@ i32 __cdecl LedgeTerrain_SetTargetMom(GAMEOBJECT *object) {
     return 1;
 }
 
-i32 __cdecl CanClimbSurface(GAMEOBJECT *object, i32 surface) {
+i32 CanClimbSurface(GAMEOBJECT *object, i32 surface) {
     if ((u32)surface > 31 || (TerSurface[surface].flags & 0x10000) == 0) {
         return 0;
     }
@@ -238,7 +238,7 @@ i32 __cdecl CanClimbSurface(GAMEOBJECT *object, i32 surface) {
     return 1;
 }
 
-void __cdecl Climb_SetMagnetAction(GAMEOBJECT *object) {
+void Climb_SetMagnetAction(GAMEOBJECT *object) {
     object->field_7aa = LEGOACT_IDLE;
     if (object->pad->input_magnitude > 0.0f) {
         if (LEGOACT_MAGNET_WALK_METAL != -1) {
@@ -249,19 +249,19 @@ void __cdecl Climb_SetMagnetAction(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl Climb_UpdateMagnetRotation(GAMEOBJECT *object) {
+void Climb_UpdateMagnetRotation(GAMEOBJECT *object) {
     object->movement_mode = 0;
     object->pitch_angle = SeekRot(object->pitch_angle, (u16)(-0x4000 - object->field_7a4), 6.0f);
     object->roll_angle = SeekRot(object->roll_angle, 0, 10.0f);
 }
 
-void __cdecl Climb_SetMagnetDrawOffsetTarget(GAMEOBJECT *object, NUVEC *offset) {
+void Climb_SetMagnetDrawOffsetTarget(GAMEOBJECT *object, NUVEC *offset) {
     NuVecScale(offset, &object->external_force, MAGNETOFFSET);
     NuVecAdd(offset, offset, &object->launch_origin);
     NuVecSub(offset, offset, &object->position);
 }
 
-void __cdecl Climb_MoveCode(GAMEOBJECT *object) {
+void Climb_MoveCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_CLIMB == -1) {
         return;
     }
@@ -384,7 +384,7 @@ void __cdecl Climb_MoveCode(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
+i32 Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     union {
         f32 value;
         u32 bits;
@@ -420,7 +420,7 @@ i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     return 1;
 }
 
-void __cdecl Hang_MoveCode(GAMEOBJECT *object) {
+void Hang_MoveCode(GAMEOBJECT *object) {
     i16 animation;
     u8 variant;
     if (LEGOCONTEXT_HANG == -1) {
@@ -475,7 +475,7 @@ void __cdecl Hang_MoveCode(GAMEOBJECT *object) {
     object->external_force = object->contact_normal;
 }
 
-i32 __cdecl Hang_SetTargetMom(GAMEOBJECT *object) {
+i32 Hang_SetTargetMom(GAMEOBJECT *object) {
     if (object->pad->input_magnitude > 0.0f) {
         f32 speed;
         if (LEGOACT_HANG_MOVE != -1 &&
@@ -496,7 +496,7 @@ i32 __cdecl Hang_SetTargetMom(GAMEOBJECT *object) {
     return 1;
 }
 
-void *__cdecl CreateClimbObjectSys(VARIPTR *buffer, VARIPTR *end, i32 count) {
+void *CreateClimbObjectSys(VARIPTR *buffer, VARIPTR *end, i32 count) {
     CLIMB_SYSTEM_PC *system = NULL;
     if (count != 0) {
         system = GameBufferAlloc(buffer, end, sizeof(*system));
@@ -510,7 +510,7 @@ void *__cdecl CreateClimbObjectSys(VARIPTR *buffer, VARIPTR *end, i32 count) {
 
 i32 ClimbNormalProbeCountPc = 8;
 
-void __cdecl ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
+void ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
     AIPATHNODE_PC *first = &object->path->nodes[object->connection->node_indices[0]];
     AIPATHNODE_PC *second = &object->path->nodes[object->connection->node_indices[1]];
     AIPATHNODE_PC *node = first->position.y < second->position.y ? first : second;
@@ -537,7 +537,7 @@ void __cdecl ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
     }
 }
 
-void __cdecl InitClimbObjectSys(WORLDINFO *world) {
+void InitClimbObjectSys(WORLDINFO *world) {
     i32 index;
     i32 connection_index;
     AIPATH_PC *path;
@@ -567,7 +567,7 @@ void __cdecl InitClimbObjectSys(WORLDINFO *world) {
     }
 }
 
-CLIMB_SLOT_PC *__cdecl FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection) {
+CLIMB_SLOT_PC *FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection) {
     i32 index;
     CLIMB_SLOT_PC *object;
     if (system != NULL) {

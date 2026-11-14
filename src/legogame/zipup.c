@@ -89,7 +89,7 @@ struct zipup_pc_s {
     };
 }; // size 0x7c
 
-i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
+i32 ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
 
 typedef struct HINT_ZIPUP_PC {
     u8 name[16];
@@ -149,7 +149,7 @@ typedef struct zipup_rope_material_pc_s {
 
 static __inline f32 ZipUpFabsPc(f32 value);
 
-static i32 __cdecl ZipUpArcSinePc(f32 sin) {
+static i32 ZipUpArcSinePc(f32 sin) {
     f32 abs;
     f32 sqrt;
     f32 unknown_a;
@@ -302,7 +302,7 @@ static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
     return 1;
 }
 
-extern i32 __cdecl ZipUps_Load(WORLDINFO *world) {
+extern i32 ZipUps_Load(WORLDINFO *world) {
     i32 version;
     i32 index;
 
@@ -340,7 +340,7 @@ extern i32 __cdecl ZipUps_Load(WORLDINFO *world) {
     return 0;
 }
 
-extern void *__cdecl ZipUps_ReserveBufferSpace(WORLDINFO *world) {
+extern void *ZipUps_ReserveBufferSpace(WORLDINFO *world) {
     world->zipups = NULL;
     world->zipup_count = 0;
     if (world->current_level->max_zipups > 0) {
@@ -397,8 +397,8 @@ extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *prog
     }
 }
 
-ZIPUP_PC *__cdecl ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *distance, i32 *endpoint,
-                                    GAMEOBJECT *object) {
+ZIPUP_PC *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *distance, i32 *endpoint,
+                            GAMEOBJECT *object) {
     ZIPUP_PC *nearest;
     i32 index;
     i32 end;
@@ -836,7 +836,7 @@ extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
     }
 }
 
-i32 __cdecl ZipUps_UpdateHint(HINT_PC *hint) {
+i32 ZipUps_UpdateHint(HINT_PC *hint) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     HINT_ZIPUP_PC *zipups;
     i32 index;
@@ -1075,8 +1075,8 @@ extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddTypePc.fns.get_max_gizmos_fn = ZipUps_GetMaxGizmos;
     ZipUpAddTypePc.fns.add_gizmos_fn = (void *)ZipUps_AddGizmos;
     ZipUpAddTypePc.fns.early_update_fn = NULL;
-    ZipUpAddTypePc.fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))ZipUps_Update;
-    ZipUpAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))ZipUps_Draw;
+    ZipUpAddTypePc.fns.late_update_fn = (void (*)(void *, void *, f32))ZipUps_Update;
+    ZipUpAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))ZipUps_Draw;
     ZipUpAddTypePc.fns.panel_draw_fn = NULL;
     ZipUpAddTypePc.fns.get_gizmo_name_fn = (void *)ZipUp_GetGizmoName;
     ZipUpAddTypePc.fns.get_output_fn = (void *)ZipUp_GetOutput;
@@ -1092,11 +1092,11 @@ extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddTypePc.fns.get_best_bolt_target_fn = NULL;
     ZipUpAddTypePc.fns.bolt_hit_fn = NULL;
     ZipUpAddTypePc.fns.allocate_progress_data_fn = ZipUps_AllocateProgressData;
-    ZipUpAddTypePc.fns.clear_progress_fn = (void(__cdecl *)(void *, void *))ZipUps_ClearProgress;
-    ZipUpAddTypePc.fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))ZipUps_StoreProgress;
-    ZipUpAddTypePc.fns.reset_fn = (void(__cdecl *)(void *, void *, void *))ZipUps_Reset;
-    ZipUpAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))ZipUps_ReserveBufferSpace;
-    ZipUpAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))ZipUps_Load;
+    ZipUpAddTypePc.fns.clear_progress_fn = (void (*)(void *, void *))ZipUps_ClearProgress;
+    ZipUpAddTypePc.fns.store_progress_fn = (void (*)(void *, void *, void *))ZipUps_StoreProgress;
+    ZipUpAddTypePc.fns.reset_fn = (void (*)(void *, void *, void *))ZipUps_Reset;
+    ZipUpAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))ZipUps_ReserveBufferSpace;
+    ZipUpAddTypePc.fns.load_fn = (i32(*)(void *, void *))ZipUps_Load;
     ZipUpAddTypePc.fns.post_load_fn = NULL;
     ZipUpAddTypePc.fns.add_level_sfx_fn = NULL;
     zipup_gizmotype_id = type_id;

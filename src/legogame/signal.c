@@ -67,7 +67,7 @@ STATIC_ASSERT(sizeof(CHARACTER_CONTEXT_INFO_PC) == 0x10);
 STATIC_ASSERT(offsetof(CHARACTER_CONTEXT_INFO_PC, flags) == 8);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, action_animations) == 0xc);
 
-i32 __cdecl Signals_Load(WORLDINFO *world, void *unused) {
+i32 Signals_Load(WORLDINFO *world, void *unused) {
     i32 version;
     i32 index;
     if (world->signal_count == 0) {
@@ -90,14 +90,14 @@ i32 __cdecl Signals_Load(WORLDINFO *world, void *unused) {
     return 0;
 }
 
-void __cdecl Signals_InitTerrain(WORLDINFO *world) {
+void Signals_InitTerrain(WORLDINFO *world) {
     i32 index;
     for (index = 0; index < world->signal_count; ++index) {
         world->signals[index].platform_id = NewPlatPickupInst(&world->signals[index].matrix, 2);
     }
 }
 
-void *__cdecl Signals_ReserveBufferSpace(WORLDINFO *world) {
+void *Signals_ReserveBufferSpace(WORLDINFO *world) {
     LEVELDATA_PC *level = world->current_level;
     world->signals = NULL;
     world->signal_count = 0;
@@ -109,14 +109,14 @@ void *__cdecl Signals_ReserveBufferSpace(WORLDINFO *world) {
     return world->signals;
 }
 
-void __cdecl Signal_Activate(GIZMO_PC *gizmo, i32 active) {
+void Signal_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         SIGNAL_s *signal = gizmo->object;
         signal->active = active != 0;
     }
 }
 
-i32 __cdecl Signal_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 reverse) {
+i32 Signal_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 reverse) {
     if (gizmo != NULL) {
         SIGNAL_s *signal = gizmo->object;
         if (signal != NULL) {
@@ -140,13 +140,13 @@ static void SignalSetVisiblePc(SIGNAL_s *signal, i32 visible) {
     }
 }
 
-void __cdecl Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
+void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
         SignalSetVisiblePc(gizmo->object, visible);
     }
 }
 
-NUVEC *__cdecl Signal_GetPos(GIZMO_PC *gizmo) {
+NUVEC *Signal_GetPos(GIZMO_PC *gizmo) {
     SIGNAL_s *signal = gizmo != NULL ? (SIGNAL_s *)gizmo->object : NULL;
     return signal != NULL ? &signal->position : NULL;
 }
@@ -187,7 +187,7 @@ static void SignalResetRecordPc(SIGNAL_s *signal) {
     NuMtxTranslate(&signal->matrix, &signal->position);
 }
 
-void __cdecl Signals_Reset(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *progress) {
+void Signals_Reset(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *progress) {
     SIGNAL_s *signal;
     i32 index;
     if (world == NULL || world->signals == NULL) {
@@ -211,7 +211,7 @@ void __cdecl Signals_Reset(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *pro
     }
 }
 
-void __cdecl Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
+void Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
     SIGNAL_s *signal = world->signals;
     i32 index;
     for (index = 0; index < world->signal_count; ++index, ++signal) {
@@ -266,7 +266,7 @@ void __cdecl Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
     }
 }
 
-SIGNAL_s *__cdecl Signal_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+SIGNAL_s *Signal_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     SIGNAL_s *nearest = NULL;
     f32 nearest_distance;
     SIGNAL_s *signal;
@@ -295,7 +295,7 @@ SIGNAL_s *__cdecl Signal_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJE
     return nearest;
 }
 
-void __cdecl Signals_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
+void Signals_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
     SIGNAL_s *signal = world->signals;
     i32 index;
     for (index = 0; index < world->signal_count; ++index, ++signal) {
@@ -354,11 +354,11 @@ void __cdecl Signals_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
     }
 }
 
-i32 __cdecl Signals_GetMaxGizmos(WORLDINFO *world) {
+i32 Signals_GetMaxGizmos(WORLDINFO *world) {
     return world != NULL ? world->current_level->max_signals : 0;
 }
 
-void __cdecl Signals_AddGizmos(void *system, i32 type_id, WORLDINFO *world, void *unused) {
+void Signals_AddGizmos(void *system, i32 type_id, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->signal_count; ++index) {
         if (NuStrLen(world->signals[index].name) != 0) {
@@ -367,12 +367,12 @@ void __cdecl Signals_AddGizmos(void *system, i32 type_id, WORLDINFO *world, void
     }
 }
 
-char *__cdecl Signal_GetGizmoName(GIZMO_PC *gizmo) {
+char *Signal_GetGizmoName(GIZMO_PC *gizmo) {
     SIGNAL_s *signal = gizmo != NULL ? (SIGNAL_s *)gizmo->object : NULL;
     return signal != NULL ? signal->name : NULL;
 }
 
-i32 __cdecl Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode) {
+i32 Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode) {
     SIGNAL_s *signal = gizmo->object;
     if ((signal->flags & 1) != 0 && (signal->flags & 2) != 0) {
         return 1;
@@ -380,19 +380,19 @@ i32 __cdecl Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode)
     return 0;
 }
 
-char *__cdecl Signal_GetOutputName(GIZMO_PC *unused, i32 unused_index) {
+char *Signal_GetOutputName(GIZMO_PC *unused, i32 unused_index) {
     return (char *)AIRegistryTextPc007575bc;
 }
 
-i32 __cdecl Signal_GetNumOutputs(GIZMO_PC *unused) {
+i32 Signal_GetNumOutputs(GIZMO_PC *unused) {
     return 1;
 }
 
-void *__cdecl Signals_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+void *Signals_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, sizeof(SIGNALPROGRESS_s));
 }
 
-void __cdecl Signals_ClearProgress(void *unused, SIGNALPROGRESS_s *progress) {
+void Signals_ClearProgress(void *unused, SIGNALPROGRESS_s *progress) {
     if (progress != NULL) {
         memset(progress->suit_letters, 0, sizeof(progress->suit_letters));
         progress->active_mask[0] = 0xffffffffu;
@@ -400,7 +400,7 @@ void __cdecl Signals_ClearProgress(void *unused, SIGNALPROGRESS_s *progress) {
     }
 }
 
-void __cdecl Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *progress) {
+void Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *progress) {
     SIGNAL_s *signal;
     i32 index;
     Signals_ClearProgress(world, progress);
@@ -428,17 +428,17 @@ char *SignalRegistryNamePc = (char *)PCContextName_Signal;
 ADDGIZMOTYPE_PC SignalAddTypePc = {0};
 #pragma data_seg()
 
-ADDGIZMOTYPE_PC *__cdecl Signals_RegisterGizmo(i32 unused_type_id) {
+ADDGIZMOTYPE_PC *Signals_RegisterGizmo(i32 unused_type_id) {
     char *name = SignalRegistryNamePc;
     SignalAddTypePc = Default_ADDGIZMOTYPE;
     SignalAddTypePc.name = name;
     SignalAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
     SignalAddTypePc.fns.options = 0x28;
-    SignalAddTypePc.fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Signals_GetMaxGizmos;
+    SignalAddTypePc.fns.get_max_gizmos_fn = (i32(*)(void *))Signals_GetMaxGizmos;
     SignalAddTypePc.fns.add_gizmos_fn = (void *)Signals_AddGizmos;
     SignalAddTypePc.fns.early_update_fn = NULL;
-    SignalAddTypePc.fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))Signals_Update;
-    SignalAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))Signals_Draw;
+    SignalAddTypePc.fns.late_update_fn = (void (*)(void *, void *, f32))Signals_Update;
+    SignalAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))Signals_Draw;
     SignalAddTypePc.fns.panel_draw_fn = NULL;
     SignalAddTypePc.fns.get_gizmo_name_fn = Signal_GetGizmoName;
     SignalAddTypePc.fns.get_output_fn = Signal_GetOutput;
@@ -454,17 +454,17 @@ ADDGIZMOTYPE_PC *__cdecl Signals_RegisterGizmo(i32 unused_type_id) {
     SignalAddTypePc.fns.get_best_bolt_target_fn = NULL;
     SignalAddTypePc.fns.bolt_hit_fn = NULL;
     SignalAddTypePc.fns.allocate_progress_data_fn = Signals_AllocateProgressData;
-    SignalAddTypePc.fns.clear_progress_fn = (void(__cdecl *)(void *, void *))Signals_ClearProgress;
-    SignalAddTypePc.fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))Signals_StoreProgress;
-    SignalAddTypePc.fns.reset_fn = (void(__cdecl *)(void *, void *, void *))Signals_Reset;
-    SignalAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))Signals_ReserveBufferSpace;
-    SignalAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))Signals_Load;
+    SignalAddTypePc.fns.clear_progress_fn = (void (*)(void *, void *))Signals_ClearProgress;
+    SignalAddTypePc.fns.store_progress_fn = (void (*)(void *, void *, void *))Signals_StoreProgress;
+    SignalAddTypePc.fns.reset_fn = (void (*)(void *, void *, void *))Signals_Reset;
+    SignalAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))Signals_ReserveBufferSpace;
+    SignalAddTypePc.fns.load_fn = (i32(*)(void *, void *))Signals_Load;
     SignalAddTypePc.fns.post_load_fn = NULL;
     SignalAddTypePc.fns.add_level_sfx_fn = NULL;
     return &SignalAddTypePc;
 }
 
-void __cdecl Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
+void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     if (object->character_context == 0x4c) {
         f32 *animation_time = NULL;
         i32 exchange;
@@ -547,7 +547,7 @@ void __cdecl Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
 }
 
-void __cdecl SuitBlowupCodePc(WORLDINFO *world, GAMEOBJECT *object) {
+void SuitBlowupCodePc(WORLDINFO *world, GAMEOBJECT *object) {
     GIZMOBLOWUP_PC *candidates[256];
     GIZMOBLOWUP_PC *blowup;
     NUVEC minimum;

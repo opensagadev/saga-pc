@@ -35,7 +35,7 @@ typedef struct VEHICLE_FIRE_STATE_PC {
 
 STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, weapon_ammo) + offsetof(WEAPON_AMMO_PC, ammo) == 0x7f8);
 
-i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
+i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     VEHICLE_FIRE_STATE_PC *state = (VEHICLE_FIRE_STATE_PC *)object;
     i32 id;
@@ -178,7 +178,7 @@ i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     return fallback;
 }
 
-void __cdecl Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32 no_explosion) {
+void Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32 no_explosion) {
     i32 i;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 effect;
@@ -231,7 +231,7 @@ void __cdecl Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unu
     }
 }
 
-i32 __cdecl Bolt_HitPart_LSW(BOLT_PC *bolt, PART_PC *part) {
+i32 Bolt_HitPart_LSW(BOLT_PC *bolt, PART_PC *part) {
     if (part->field_206 == 1 && part->scale_time < 2.0f) {
         return 1;
     }
@@ -264,11 +264,11 @@ i32 Bolt_AlternateFire_LSW(GAMEOBJECT *object, i32 index) {
     return 1;
 }
 
-void __cdecl EndBolt_EwokTorpedo(BOLT_PC *bolt) {
+void EndBolt_EwokTorpedo(BOLT_PC *bolt) {
     Detonate(&bolt->position, 0);
 }
 
-void __cdecl UpdateBolt_Geonosian(BOLT_PC *bolt) {
+void UpdateBolt_Geonosian(BOLT_PC *bolt) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 effect = world->game_debris_sys->entries[85].effect;
     if (effect != -1) {

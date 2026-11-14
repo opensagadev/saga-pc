@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "saga.h"
 
-void __cdecl Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
-void __cdecl Text_FillInExtendedSaveInfo(void);
-i32 __cdecl TriggerAutoSave(void);
+void Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
+void Text_FillInExtendedSaveInfo(void);
+i32 TriggerAutoSave(void);
 
 static f32 StatusLerpPc(f32 to, f32 from, f32 blend) {
     f32 result = (to - from) * blend + from;
@@ -18,7 +18,7 @@ static __inline f32 StatusFabsPc(f32 value) {
     return result;
 }
 
-static f32 __cdecl StatusCoinsRatioPc(f32 numerator, f32 denominator) {
+static f32 StatusCoinsRatioPc(f32 numerator, f32 denominator) {
     f32 result;
     if (numerator == 0.0f || denominator == 0.0f) {
         return 0.0f;
@@ -27,31 +27,31 @@ static f32 __cdecl StatusCoinsRatioPc(f32 numerator, f32 denominator) {
     return result;
 }
 
-void __cdecl ResetStatusPacket_LSW(STATUSPACKET_s *packet) {
+void ResetStatusPacket_LSW(STATUSPACKET_s *packet) {
     packet->lsw_packet->field_0x00 = 0;
 }
 
-i32 __cdecl InitStatusScreen_LSW(WORLDINFO *world, STATUSPACKET_s *packet) {
+i32 InitStatusScreen_LSW(WORLDINFO *world, STATUSPACKET_s *packet) {
     (void)world;
     (void)packet;
     return 0;
 }
 
-i32 __cdecl FinishStatusPacket_LSW(WORLDINFO *world, STATUSPACKET_s *packet, i32 result) {
+i32 FinishStatusPacket_LSW(WORLDINFO *world, STATUSPACKET_s *packet, i32 result) {
     (void)world;
     (void)packet;
     (void)result;
     return 0;
 }
 
-void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *packet) {
+void DrawStatusBG_LSW(STATUSPACKET_s *packet) {
     if (packet->stage->field_0x14 == -1) {
         packet->stage->field_0x18 = 0.0f;
         packet->stage->field_0x14 = 0;
     }
 }
 
-f32 __cdecl getFinishedStatusAlpha(STATUSPACKET_s *packet) {
+f32 getFinishedStatusAlpha(STATUSPACKET_s *packet) {
     STATUS_STAGE_s *stage = packet->stage;
     if (stage->type == 12 || stage->type == 11) {
         return 0.0f;
@@ -85,7 +85,7 @@ f32 __cdecl getFinishedStatusAlpha(STATUSPACKET_s *packet) {
     return 1.0f;
 }
 
-void __cdecl TrueHero_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void TrueHero_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     NextStatusStage(packet);
 }
@@ -93,7 +93,7 @@ void __cdecl TrueHero_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 f32 StatusTrueHeroNextSoundPercentPc = 5.0f;
 f32 StatusTrueHeroSpDelayPc = 0.0f;
 
-void __cdecl TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0:
             stage->field_0x14 = 1;
@@ -172,7 +172,7 @@ f32 StatusTrueHeroTextYPc = 0.3f;
 const char StatusTrueHeroPercentFormatPc[5] = "%i%%";
 const char StatusTrueHeroFullPercentTextPc[5] = "100%";
 
-void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
     f32 alpha = 1.0f;
     if (current == 0) {
@@ -270,7 +270,7 @@ void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
              StatusCoinsTitleScalePc, 0, 255, 255, 255, (u8)(alpha * 128.0f));
 }
 
-void __cdecl MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     if ((packet->field_0xb0 & 2) == 0) {
         currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCountPc);
         if ((packet->field_0xb0 & 0x10) != 0 && (stage->field_0x14 != 6 || !(stage->field_0x18 >= stage->field_0x1c))) {
@@ -284,7 +284,7 @@ f32 slideseek = 0.0f;
 f32 jibberlen = 0.1f;
 static f32 StatusMiniKitPieceDurationPc = 0.4f;
 
-void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0:
             StatusNewMinikitCountPc = packet->new_minikits;
@@ -406,7 +406,7 @@ f32 StatusMiniKitScalePc = 0.333f;
 f32 StatusMiniKitXPc = 0.0f;
 f32 StatusMiniKitYPc = 0.0f;
 
-void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 alpha;
     f32 reveal;
     i32 opacity;
@@ -581,13 +581,13 @@ void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
     }
 }
 
-void __cdecl AllMiniKits_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void AllMiniKits_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     AddToCollection(VehicleBoltId7f195cPc);
     NextStatusStage(packet);
 }
 
-void __cdecl AllMiniKits_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void AllMiniKits_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0:
             stage->field_0x14 = 1;
@@ -616,7 +616,7 @@ i32 StatusBluePc = 0;
 f32 StatusAllMiniKitsTitleScalePc = 0.7f;
 f32 StatusAllMiniKitsCharacterTextScalePc = 0.6f;
 
-void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 alpha;
     f32 reveal;
     i32 opacity;
@@ -708,12 +708,12 @@ void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
     }
 }
 
-void __cdecl RedBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void RedBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     NextStatusStage(packet);
 }
 
-void __cdecl RedBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void RedBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0:
             stage->field_0x14 = 1;
@@ -736,7 +736,7 @@ void __cdecl RedBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
 
 f32 StatusTextScalePc = 0.7f;
 
-void __cdecl RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 text_y;
     u16 rotation;
     f32 panel_y;
@@ -768,7 +768,7 @@ void __cdecl RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
 
 f32 StatusIconYPc = 0;
 
-void __cdecl Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     u32 remaining;
     (void)stage;
     StatusIconYPc = StatusIconsOnOff(1.0f);
@@ -781,7 +781,7 @@ void __cdecl Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 
 i32 StatusDrawPlayerIconsPc = 0;
 
-void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     i32 finished = 0;
     switch (stage->field_0x14) {
         case 0:
@@ -850,7 +850,7 @@ void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
 f32 StatusCoinsTotalYPc = 0.3f;
 f32 StatusCoinsScalePc = 2.0f;
 
-void __cdecl Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     if (current != 0) {
         f32 alpha = 1.0f;
         f32 coin_y = STATSPOS2YPc;
@@ -936,14 +936,14 @@ void __cdecl Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
     }
 }
 
-void __cdecl GoldBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void GoldBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     if (Game.gold_bricks <= 60) {
         NextStatusStage(packet);
     }
 }
 
-void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     i32 last = Game.gold_bricks - packet->previous_gold_bricks - 1;
     char text[256];
     NUVEC position;
@@ -1004,7 +1004,7 @@ void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
     }
 }
 
-void __cdecl GoldBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void GoldBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
     if (current == 0) {
         return;
@@ -1055,7 +1055,7 @@ void __cdecl GoldBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i
     }
 }
 
-void __cdecl Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     i32 selected = 0;
     i32 moved_up = 0;
     i32 moved_down = 0;
@@ -1110,7 +1110,7 @@ void __cdecl Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f3
     }
 }
 
-void __cdecl Prompt_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 active) {
+void Prompt_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 active) {
     if (active != 0) {
         if (stage->field_0x18 < 0.5f) {
             i32 angle = (i32)(((f64)stage->field_0x18 + (f64)stage->field_0x18) * 16384.0);
@@ -1128,7 +1128,7 @@ void __cdecl Prompt_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 
     }
 }
 
-void __cdecl CollectCharcters_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void CollectCharcters_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     if (stage->field_0x14 == 0) {
         stage->field_0x14 = 1;
     }
@@ -1140,7 +1140,7 @@ void __cdecl CollectCharcters_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet
     NextStatusStage(packet);
 }
 
-void __cdecl CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     if (stage->field_0x14 != 0) {
         i32 index = stage->field_0x14;
         stage->field_0x18 = elapsed + stage->field_0x18;
@@ -1177,7 +1177,7 @@ f32 StatusCollectionYPc = -0.5f;
 i32 StatusCollectionAppearSoundPlayedPc = 0;
 i32 StatusCollectionMoveSoundPlayedPc = 0;
 
-void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     COLLECTION_BUILD_PC *collection = (packet->field_0xb0 & 0x80) != 0 ? &VehicleCollectionPc : &CharacterCollectionPc;
     if (current == 0) {
         return;
@@ -1256,7 +1256,7 @@ void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet
     }
 }
 
-void __cdecl CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0:
             stage->field_0x14 = 1;
@@ -1275,7 +1275,7 @@ void __cdecl CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *
     }
 }
 
-void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 alpha;
     COLLECTION_BUILD_PC *collection = (packet->field_0xb0 & 0x80) != 0 ? &VehicleCollectionPc : &CharacterCollectionPc;
     if (current == 0) {
@@ -1297,7 +1297,7 @@ void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
     Collection_Draw(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, alpha, 0);
 }
 
-void __cdecl LevelComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void LevelComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     if (stage->type == 26 && packet->mission_state == 2) {
         *packet->score = packet->reward_score;
     }
@@ -1307,7 +1307,7 @@ void __cdecl LevelComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
     NextStatusStage(packet);
 }
 
-void __cdecl LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0:
             stage->field_0x14 = 1;
@@ -1358,7 +1358,7 @@ void __cdecl LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
 f32 StatusTitleYPc = 0.1f;
 f32 StatusSecondaryTitleYPc = -0.1f;
 
-void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
     if (current != 0) {
         f32 progress;
@@ -1537,12 +1537,12 @@ void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
     }
 }
 
-void __cdecl BonusComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void BonusComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     NextStatusStage(packet);
 }
 
-void __cdecl BonusComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void BonusComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0: {
             stage->field_0x18 = 0.0f;
@@ -1568,7 +1568,7 @@ void __cdecl BonusComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
     }
 }
 
-void __cdecl BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     if (current == 0) {
         return;
     }
@@ -1602,7 +1602,7 @@ void __cdecl BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
     }
 }
 
-void __cdecl BonusTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void BonusTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0: {
             stage->field_0x14 = 1;
@@ -1631,7 +1631,7 @@ void __cdecl BonusTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
     }
 }
 
-void __cdecl BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     if (current != 0) {
         if (stage->field_0x14 > 0) {
             f32 alpha;
@@ -1660,13 +1660,13 @@ void __cdecl BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i
     }
 }
 
-void __cdecl SuperStoryTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void SuperStoryTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     *packet->score = packet->time_reward_score;
     NextStatusStage(packet);
 }
 
-void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0: {
             stage->field_0x18 = 0.0f;
@@ -1719,7 +1719,7 @@ void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
     }
 }
 
-void __cdecl SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
     char previous[256];
     f32 alpha;
@@ -1785,13 +1785,13 @@ void __cdecl SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pack
     Text3DEx(previous, 0.0f, -0.2f, 1.0f, 0.7f, 0.7f, 0.7f, 0, 255, 255, 255, opacity / 2);
 }
 
-void __cdecl SuperStoryScore_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+void SuperStoryScore_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     *packet->score = packet->final_reward_score;
     NextStatusStage(packet);
 }
 
-void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void SuperStoryScore_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0: {
             stage->field_0x18 = 0.0f;
@@ -1845,7 +1845,7 @@ void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *p
     }
 }
 
-void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
     char previous[256];
     f32 coin_progress;
@@ -1904,7 +1904,7 @@ void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
     }
 }
 
-void __cdecl BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0: {
             stage->field_0x14 = 1;
@@ -1952,7 +1952,7 @@ void __cdecl BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
     }
 }
 
-void __cdecl BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     if (current != 0) {
         if (stage->field_0x14 == 0) {
             iconalphaoverride = 0.0f;
@@ -1978,7 +1978,7 @@ void __cdecl BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
     }
 }
 
-void __cdecl ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     NUVEC target = {0.0f, STATSPOSY, 1.0f};
     switch (stage->field_0x14) {
         case 0:
@@ -2039,7 +2039,7 @@ void __cdecl ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
     }
 }
 
-void __cdecl ChallangeCash_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+void ChallangeCash_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     NUVEC position = {0.0f, StatusAllMiniKitsYPc, 1.0f};
     if (current == 0) {
         return;
@@ -2064,7 +2064,7 @@ void __cdecl ChallangeCash_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i
     }
 }
 
-void __cdecl Exit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void Exit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     if (stage->field_0x14 >= 0) {
         stage->field_0x18 = (f64)elapsed + (f64)stage->field_0x18;
     }
@@ -2078,7 +2078,7 @@ void __cdecl Exit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
     }
 }
 
-void __cdecl Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     if (packet->save_state == 3) {
         f32 accumulated = elapsed + stage->field_0x18;
         stage->field_0x18 = accumulated;
@@ -2106,7 +2106,7 @@ void __cdecl Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
     }
 }
 
-void __cdecl Fade_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+void Fade_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     switch (stage->field_0x14) {
         case 0:
             stage->field_0x14 = 1;
@@ -2175,7 +2175,7 @@ static STATUS_STAGE_s StatusStagesLswPc[34] = {
 };
 static struct STATUSPACKET_LSW_s StatusPacketLswPc = {0};
 
-void __cdecl LSW_registerStatusScreen(void) {
+void LSW_registerStatusScreen(void) {
     REGISTER_STATUS_PACKET_PC registration;
     memset(&registration, 0, sizeof(registration));
     registration.lsw_packet = &StatusPacketLswPc;

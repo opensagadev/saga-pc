@@ -231,7 +231,7 @@ extern "C" BOOL fun_006dd0e0(void) {
 
 // MATCH-EXCEPTION: platform_policy.cpp defines PcPlatformPolicy returning a full int (it loads the
 // BOOL result into eax), but retail WinMain tests only al, so this unit saw a byte-returning prototype.
-extern "C" u8 __cdecl PcPlatformPolicy(u8 enabled);
+extern "C" u8 PcPlatformPolicy(u8 enabled);
 
 extern "C" i32 __stdcall WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line, i32 show) {
     PCInputWindow = instance;
@@ -255,7 +255,7 @@ extern "C" i32 __stdcall WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR c
     return 0;
 }
 
-extern "C" void __cdecl PcRelaunchMediaCenter(void) {
+extern "C" void PcRelaunchMediaCenter(void) {
     char filename[MAX_PATH];
     if (GetSystemMetrics(0x57) != 0 && PcRelaunchMce != 0) {
         if (ExpandEnvironmentStringsA("%SystemRoot%\\ehome\\ehshell.exe", filename, MAX_PATH) != 0) {
@@ -266,11 +266,11 @@ extern "C" void __cdecl PcRelaunchMediaCenter(void) {
     }
 }
 
-extern "C" const char *__cdecl GetPCStartupMessage(void) {
+extern "C" const char *GetPCStartupMessage(void) {
     return NULL;
 }
 
-extern "C" void __cdecl PcShutdown(void) {
+extern "C" void PcShutdown(void) {
     PcWindowOptions.Save();
     DestroyWindow(PCInputInstance);
     PcFreeApiCallBuffer();
@@ -285,7 +285,7 @@ extern "C" void __cdecl PcShutdown(void) {
     SetThreadExecutionState(0x80000000);
 }
 
-extern "C" __declspec(noreturn) void __cdecl PcQuitToWindows(void) {
+extern "C" __declspec(noreturn) void PcQuitToWindows(void) {
     PcShutdown();
     exit(0);
 }

@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-extern "C" void __cdecl PCDecoderDiagnosticNoOpPc(...) {
+extern "C" void PCDecoderDiagnosticNoOpPc(...) {
 }
 
 WavReader::WavReader(void) {

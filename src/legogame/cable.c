@@ -53,7 +53,7 @@ void InitCables(WORLDINFO *world) {
     }
 }
 
-CABLE_RECORD_PC *__cdecl CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32 sound) {
+CABLE_RECORD_PC *CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32 sound) {
     i32 i;
     CABLE_RECORD_PC *cable;
     if (source != NULL && target != NULL) {
@@ -131,7 +131,7 @@ static void CableAtstToppled(GAMEOBJECT *target) {
     }
 }
 
-void __cdecl UpdateCables(void) {
+void UpdateCables(void) {
     CABLE_RECORD_PC *cable = (CABLE_RECORD_PC *)cables;
     NUVEC closest;
     NUVEC delta;
@@ -472,7 +472,7 @@ void __cdecl UpdateCables(void) {
     }
 }
 
-void __cdecl DrawCables(void) {
+void DrawCables(void) {
     CABLE_RECORD_PC *cable = (CABLE_RECORD_PC *)cables;
     NURND_VERTEX3D_PC vertices[2];
     NUVEC step;
@@ -600,7 +600,7 @@ void __cdecl DrawCables(void) {
     }
 }
 
-GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f32 radius) {
+GAMEOBJECT *CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f32 radius) {
     f32 radius_squared = radius * radius;
     GAMEOBJECT *nearest = NULL;
     GAMEOBJECT *candidate = Obj;

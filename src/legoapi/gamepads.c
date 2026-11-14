@@ -7,10 +7,10 @@
 
 /* Genuine native PC entry 0x004017b0 is RET-only; NuMainRenderWorld calls it after
  * SetDepthOfField. Its historical name is unknown. */
-void __cdecl NuMainRenderLeafPc(void) {
+void NuMainRenderLeafPc(void) {
 }
 
-void __cdecl GamePad_InitButtons(void) {
+void GamePad_InitButtons(void) {
     GAMEPAD_JUMP = 0x40;
     GAMEPAD_ACTION = 0x80;
     GAMEPAD_SPECIAL = 0x20;
@@ -24,16 +24,16 @@ void fun_00401810(void) {
 }
 
 /* PC sets no fog here; GameFog_Update programs it directly. */
-void __cdecl GameFog_Set(void) {
+void GameFog_Set(void) {
 }
 
 /* Native PC entries 0x00401850 and 0x00401860 only return 0; the D3D restore and
  * release paths call them for the game layer. Their historical names are unknown. */
-i32 __cdecl GameRestoreResourcesPc(void) {
+i32 GameRestoreResourcesPc(void) {
     return 0;
 }
 
-i32 __cdecl GameReleaseResourcesPc(void) {
+i32 GameReleaseResourcesPc(void) {
     return 0;
 }
 
@@ -55,7 +55,7 @@ static f32 HitsFabsPc(f32 f) {
     return rv;
 }
 
-GAMEPAD_PC *__cdecl GamePad_Allocate(void) {
+GAMEPAD_PC *GamePad_Allocate(void) {
     i32 index;
     for (index = 0; index < 64; ++index) {
         if ((GamePadStorage[index].allocated & 1) == 0) {
@@ -66,7 +66,7 @@ GAMEPAD_PC *__cdecl GamePad_Allocate(void) {
     return NULL;
 }
 
-void __cdecl GamePads_Init(void) {
+void GamePads_Init(void) {
     i32 i;
 
     memset(GamePadStorage, 0, sizeof(GamePadStorage));
@@ -94,7 +94,7 @@ void fun_0054a670(void) {
 void fun_0054a680(void) {
 }
 
-f32 __cdecl GamePad_Rotate(GAMEOBJECT *object) {
+f32 GamePad_Rotate(GAMEOBJECT *object) {
     GAMEPAD_PC *pad;
     i32 index;
     i32 current_delta;
@@ -118,7 +118,7 @@ f32 __cdecl GamePad_Rotate(GAMEOBJECT *object) {
     return 0.0f;
 }
 
-i32 __cdecl GamePad_Waggle(GAMEPAD_PC *pad) {
+i32 GamePad_Waggle(GAMEPAD_PC *pad) {
     if (pad->input_magnitude != 0.0f && abs(RotDiff(pad->previous_input_angle, pad->input_angle)) > 0x2000) {
         return 1;
     }
@@ -131,13 +131,13 @@ i32 __cdecl GamePad_Waggle(GAMEPAD_PC *pad) {
     return 0;
 }
 
-void __cdecl ResetRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
+void ResetRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
     packet->duration = 0.0f;
     packet->amount = 0.0f;
     packet->active = 0;
 }
 
-void __cdecl UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
+void UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
     if (packet->duration > 0.0f) {
         packet->duration -= FRAMETIME;
     }
@@ -149,7 +149,7 @@ void __cdecl UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
     }
 }
 
-void __cdecl NewRumble(void *pad, f32 strength, i32 ignored) {
+void NewRumble(void *pad, f32 strength, i32 ignored) {
     i32 amount;
     (void)ignored;
     if (pad != NULL) {
@@ -161,21 +161,21 @@ void __cdecl NewRumble(void *pad, f32 strength, i32 ignored) {
     }
 }
 
-void __cdecl NewBuzz(void *pad, f32 duration, i32 ignored) {
+void NewBuzz(void *pad, f32 duration, i32 ignored) {
     (void)ignored;
     if (pad != NULL) {
         NuSound3AddRumble(pad, duration, 0, 0.0f, 0.0f);
     }
 }
 
-void __cdecl NewBuzzFrames(void *pad, i32 frames, i32 ignored) {
+void NewBuzzFrames(void *pad, i32 frames, i32 ignored) {
     (void)ignored;
     if (pad != NULL) {
         NuSound3AddRumble(pad, (f32)frames / DEFAULTFPS, 0, 0.0f, 0.0f);
     }
 }
 
-void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index) {
+void NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index) {
     i32 index;
     GAMEOBJECT *object;
     (void)player_index;
@@ -201,7 +201,7 @@ void DieRumble(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl KillRumble(GAMEOBJECT *object) {
+void KillRumble(GAMEOBJECT *object) {
     FRAME_PAD_PC *pad;
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         NewRumble(object->pad->bound_pad, 0.7f, 0);
@@ -212,7 +212,7 @@ void __cdecl KillRumble(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl HitRumble(GAMEOBJECT *object) {
+void HitRumble(GAMEOBJECT *object) {
     FRAME_PAD_PC *pad;
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         NewRumble(object->pad->bound_pad, 0.5f, 0);
@@ -223,14 +223,14 @@ void __cdecl HitRumble(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl TakeHitRumble(GAMEOBJECT *object, f32 strength) {
+void TakeHitRumble(GAMEOBJECT *object, f32 strength) {
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         NewRumble(object->pad->bound_pad, strength, 0);
         NewBuzz(object->pad->bound_pad, 0.1f, 0);
     }
 }
 
-void __cdecl FloatRumble(GAMEOBJECT *object) {
+void FloatRumble(GAMEOBJECT *object) {
     f32 strength;
     FRAME_PAD_PC *pad;
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
@@ -247,7 +247,7 @@ void __cdecl FloatRumble(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
+void ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
     i32 angle;
     f32 sine;
     f32 scale;
@@ -270,7 +270,7 @@ void __cdecl ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
     }
 }
 
-void __cdecl PadOutPause(i32 index, WORLDINFO *world) {
+void PadOutPause(i32 index, WORLDINFO *world) {
     i32 menu;
     if (Paused) {
         return;
@@ -309,7 +309,7 @@ void __cdecl PadOutPause(i32 index, WORLDINFO *world) {
     }
 }
 
-i32 __cdecl ReadPad(i32 port) {
+i32 ReadPad(i32 port) {
     GAMEPAD_RUNTIME_INPUT_PC *gamepad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[port];
     FRAME_PAD_PC *pad = gamepad->bound_pad;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
@@ -388,7 +388,7 @@ i32 __cdecl ReadPad(i32 port) {
     return mode;
 }
 
-void __cdecl ReadPads(void) {
+void ReadPads(void) {
     i32 port;
     for (port = 0; port < 2; ++port) {
         ReadPad(port);
@@ -396,7 +396,7 @@ void __cdecl ReadPads(void) {
     readpads_always = 0;
 }
 
-void __cdecl DoInput(WORLDINFO *world) {
+void DoInput(WORLDINFO *world) {
     i32 input[2];
     i32 keyboard_mask;
     i32 changed;
@@ -493,7 +493,7 @@ void __cdecl DoInput(WORLDINFO *world) {
     }
 }
 
-u16 __cdecl GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {
+u16 GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {
     if ((object->flags_1fc_word & 0x80) != 0 && object->sock_position.sock_index != -1) {
         if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 0x40) != 0) {
             return (u16)(pad->input_angle + object->sock_heading +
@@ -503,7 +503,7 @@ u16 __cdecl GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {
     return (u16)(pad->input_angle + GameCam->input_yaw);
 }
 
-i32 __cdecl GamePads_SkipMovie(void) {
+i32 GamePads_SkipMovie(void) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 skipped = 0;
     i32 pressed_device = 0;

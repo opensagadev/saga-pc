@@ -24,11 +24,11 @@ class OggReader : public WavReader {
     virtual HRESULT Reset(void);
     virtual HRESULT Read(void *, u32, u32 *);
     virtual i32 SeekTime(f32);
-    static u32 __cdecl ReadCallbackPc(void *, u32, u32, void *);
-    static i32 __cdecl SeekCallbackPc(void *, i64, i32);
-    static i32 __cdecl CloseCallbackPc(void *);
+    static u32 ReadCallbackPc(void *, u32, u32, void *);
+    static i32 SeekCallbackPc(void *, i64, i32);
+    static i32 CloseCallbackPc(void *);
     // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
-    static long __cdecl TellCallbackPc(void *);
+    static long TellCallbackPc(void *);
     u8 compressed;                  // 0x040
     u8 unknown_041[7];              // 0x041
     OggVorbis_File vorbis_state;    // 0x048
@@ -176,7 +176,7 @@ i32 OggReader::SeekTime(f32 seconds) {
     return result;
 }
 
-u32 __cdecl OggReader::ReadCallbackPc(void *output, u32 element_size, u32 element_count, void *source) {
+u32 OggReader::ReadCallbackPc(void *output, u32 element_size, u32 element_count, void *source) {
     NuThreadCriticalSectionBegin(PCOggCriticalSectionPc);
     OggReader *reader = (OggReader *)source;
     if (reader->cache == NULL || reader->cache->data == NULL) {
@@ -198,7 +198,7 @@ u32 __cdecl OggReader::ReadCallbackPc(void *output, u32 element_size, u32 elemen
     return (u32)bytes / element_size;
 }
 
-i32 __cdecl OggReader::SeekCallbackPc(void *source, i64 offset, i32 origin) {
+i32 OggReader::SeekCallbackPc(void *source, i64 offset, i32 origin) {
     NuThreadCriticalSectionBegin(PCOggCriticalSectionPc);
     OggReader *reader = (OggReader *)source;
     if (reader->cache == NULL) {
@@ -221,7 +221,7 @@ i32 __cdecl OggReader::SeekCallbackPc(void *source, i64 offset, i32 origin) {
     return result;
 }
 
-i32 __cdecl OggReader::CloseCallbackPc(void *source) {
+i32 OggReader::CloseCallbackPc(void *source) {
     NuThreadCriticalSectionBegin(PCOggCriticalSectionPc);
     OggReader *reader = (OggReader *)source;
     if (reader->cache != NULL) {
@@ -233,7 +233,7 @@ i32 __cdecl OggReader::CloseCallbackPc(void *source) {
 }
 
 // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
-long __cdecl OggReader::TellCallbackPc(void *source) {
+long OggReader::TellCallbackPc(void *source) {
     OggReader *reader = (OggReader *)source;
     if (reader->cache == NULL) {
         return 0;

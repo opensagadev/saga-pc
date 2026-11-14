@@ -1,9 +1,9 @@
 #include "saga.h"
 
 extern "C" i32 special_debug;
-extern "C" void __cdecl PCSpecialEmptyHandler(...);
+extern "C" void PCSpecialEmptyHandler(...);
 extern "C" {
-    SOCK_PC *__cdecl FindSock(SOCKSYS_PC *sys, char *name) {
+    SOCK_PC *FindSock(SOCKSYS_PC *sys, char *name) {
         if (sys != NULL) {
             SOCK_PC *sock = sys->socks;
             for (i32 index = 0; index < 64; ++index, ++sock) {
@@ -15,8 +15,8 @@ extern "C" {
         return NULL;
     }
 
-    void __cdecl SockOn(SOCKSYS_PC *sys, i32 index);
-    void __cdecl SockOff(SOCKSYS_PC *sys, i32 index);
+    void SockOn(SOCKSYS_PC *sys, i32 index);
+    void SockOff(SOCKSYS_PC *sys, i32 index);
 }
 
 static i32 NuSpecialFindMultiDisplayPc(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
@@ -39,7 +39,7 @@ static i32 NuSpecialFindMultiDisplayPc(NUGSCN *scene, NUSPECIALHANDLE *dest, cha
     return count;
 }
 
-extern "C" i32 __cdecl NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
+extern "C" i32 NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
     NUDISPLAY_SPECIAL_PC *display_special = NULL;
     i32 count = 0;
     if (scene != NULL) {
@@ -104,8 +104,7 @@ STATIC_ASSERT(offsetof(ZIPUP_s, lower_position) == 0x10);
 STATIC_ASSERT(offsetof(ZIPUP_s, hook_origin) == 0x1c);
 STATIC_ASSERT(offsetof(ZIPUP_s, upper_position) == 0x28);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, run_speed) == 0x1c);
-extern "C" void __cdecl StartBallooning(GAMEOBJECT *, i32);
+extern "C" void StartBallooning(GAMEOBJECT *, i32);
 
-extern "C" struct AIPATHCNXCONTROLLER_s *__cdecl AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *,
-                                                                           AIPATH_PC *, char *, char *, i32, char *,
-                                                                           i32, i32);
+extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH_PC *,
+                                                                   char *, char *, i32, char *, i32, i32);

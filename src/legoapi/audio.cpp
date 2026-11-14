@@ -11,17 +11,17 @@ struct PC_MUSIC_ACTION_PAIR_PC {
 }; // size 0x1c
 
 extern "C" {
-    extern void(__cdecl *ExtraHurtSfxFn)(GAMEOBJECT *);
+    extern void (*ExtraHurtSfxFn)(GAMEOBJECT *);
 }
-extern "C" void(__cdecl *ExtraDieSfxFn)(GAMEOBJECT *);
+extern "C" void (*ExtraDieSfxFn)(GAMEOBJECT *);
 extern "C" {
     typedef struct footstep_audio_callbacks_pc_s {
-        i32(__cdecl *override_footstep)(GAMEOBJECT *, i32);
+        i32 (*override_footstep)(GAMEOBJECT *, i32);
     } FOOTSTEP_AUDIO_CALLBACKS_PC;
 }
 // External declarations only; final shared integration must use canonical C linkage.
-extern i32(__cdecl *CheckMusicOtherFn)(void);
-extern i32(__cdecl *GameAudio_ActionMusicFn)(void);
+extern i32 (*CheckMusicOtherFn)(void);
+extern i32 (*GameAudio_ActionMusicFn)(void);
 
 struct MUSIC_PAIR_ARENA_PC {
     i32 prefix_word;
@@ -40,7 +40,7 @@ extern "C" {
 
 extern "C" {
 
-    i32 __cdecl GameAudio_GetPlrSfxBits(void *object_ptr) {
+    i32 GameAudio_GetPlrSfxBits(void *object_ptr) {
         GAMEOBJECT *object = (GAMEOBJECT *)object_ptr;
         if (object != NULL && object->player_controlled) {
             return 1 << object->field_280;
@@ -48,7 +48,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl GameAudio_Reset(void) {
+    void GameAudio_Reset(void) {
         i32 i;
 
         GameAudio = &GameAudioStorage;
@@ -59,7 +59,7 @@ extern "C" {
         }
     }
 
-    void __cdecl GameAudio_PlaySfxById(i32 sfx_id, NUVEC *position, i32 flags, i32 volume) {
+    void GameAudio_PlaySfxById(i32 sfx_id, NUVEC *position, i32 flags, i32 volume) {
         (void)volume;
         if (flags != 0) {
             if (flags == 1 || flags == 3) {
@@ -75,26 +75,26 @@ extern "C" {
         }
     }
 
-    void __cdecl GameAudio_PlaySfx(i32 sfx, NUVEC *position, i32 flags, i32 volume) {
+    void GameAudio_PlaySfx(i32 sfx, NUVEC *position, i32 flags, i32 volume) {
         if ((u32)sfx <= 83) {
             GameAudio_PlaySfxById(GameAudio->sfx_ids[sfx], position, flags, volume);
         }
     }
 
-    void __cdecl GameAudio_PlaySfxAndSetVolume(i32 sfx, NUVEC *position, f32 volume) {
+    void GameAudio_PlaySfxAndSetVolume(i32 sfx, NUVEC *position, f32 volume) {
         if ((u32)sfx <= 0x53) {
             PlaySfxByIdAndSetVolume(GameAudio->sfx_ids[sfx], position, volume);
         }
     }
 
-    i32 __cdecl GameAudio_GetSfxId(i32 sfx) {
+    i32 GameAudio_GetSfxId(i32 sfx) {
         if ((u32)sfx <= 0x53) {
             return GameAudio->sfx_ids[sfx];
         }
         return -1;
     }
 
-    void __cdecl GameAudio_AddSfx(i32 code, i32 *ids, i32 *count, i32 capacity) {
+    void GameAudio_AddSfx(i32 code, i32 *ids, i32 *count, i32 capacity) {
         i32 id;
         i32 i;
         if (ids == NULL || count == NULL || *count >= capacity) {
@@ -116,7 +116,7 @@ extern "C" {
         ++*count;
     }
 
-    void __cdecl GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time) {
+    void GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time) {
         ActionMusicStickyTimeoutPc[0] = initial_delay;
         ActionMusicStickyTimeoutPc[1] = hold_time;
     }
@@ -156,7 +156,7 @@ f32 GameSetSoundVolume(OPTIONSSAVE *options) {
 
 extern "C" {
 
-    void __cdecl ResetLevSfx(WORLDINFO *world) {
+    void ResetLevSfx(WORLDINFO *world) {
         i32 index;
         for (index = 0; index < 64; ++index) {
             world->level_sfx[index].id = -1;
@@ -164,7 +164,7 @@ extern "C" {
         world->level_sfx_count = 0;
     }
 
-    void __cdecl AddLevSfx(WORLDINFO *world, NUVEC *position, char *name, i32 sfx_id) {
+    void AddLevSfx(WORLDINFO *world, NUVEC *position, char *name, i32 sfx_id) {
         i32 index;
 
         if (sfx_id == -1 && name != NULL) {
@@ -198,7 +198,7 @@ extern "C" {
         world->level_sfx_count++;
     }
 
-    void __cdecl ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
+    void ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
         if (TerrainChatterWaitPc <= 0.0f && ParticlesPerSecond(2.0f, FRAMETIME) > 0 && object->dead == 0 &&
             object->character_context == -1) {
             if (sound != TerrainLastChatterSfxPc || !(interval > 0.0f)) {
@@ -213,14 +213,14 @@ extern "C" {
     }
 
     /* PC 0x00547d70. */
-    void __cdecl LevChatterSfx(char *name, NUVEC *position) {
+    void LevChatterSfx(char *name, NUVEC *position) {
         if (TerrainChatterWaitPc <= 0.0f && qrand() < 0x400) {
             PlaySfx(name, position);
             TerrainChatterWaitPc = (f32)((f64)qrand() * PlayerRandomScalePc * 2.0 + NuTimeBarColumnStep);
         }
     }
 
-    void __cdecl EngineNoiseCode(GAMEOBJECT *object, i32 silent) {
+    void EngineNoiseCode(GAMEOBJECT *object, i32 silent) {
         PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
         i32 sfx_id = character->sfx_engine;
         f32 target;
@@ -259,7 +259,7 @@ extern "C" {
     }
 }
 
-void __cdecl PlayJumpSfx(GAMEOBJECT *object, i32 type) {
+void PlayJumpSfx(GAMEOBJECT *object, i32 type) {
     i32 sfx;
     u32 flags = object->character_data->model_flags;
     if ((flags & 0x40) != 0) {
@@ -298,7 +298,7 @@ void __cdecl PlayJumpSfx(GAMEOBJECT *object, i32 type) {
 
 extern "C" {
 
-    void __cdecl PlayLandSfx(GAMEOBJECT *object, i32 type, i32 ignored) {
+    void PlayLandSfx(GAMEOBJECT *object, i32 type, i32 ignored) {
         i32 sfx;
         i32 alternate;
         (void)ignored;
@@ -344,7 +344,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PlayFootStepSfx(GAMEOBJECT *object) {
+    void PlayFootStepSfx(GAMEOBJECT *object) {
         i32 on_platform;
         i8 surface;
         i32 sound;
@@ -360,8 +360,7 @@ extern "C" {
         if (object->character_data->game_character->sfx_footstep != -1) {
             sound = object->character_data->game_character->sfx_footstep;
         } else {
-            i32(__cdecl * override_footstep)(GAMEOBJECT *, i32) =
-                ((FOOTSTEP_AUDIO_CALLBACKS_PC *)GameAudio)->override_footstep;
+            i32 (*override_footstep)(GAMEOBJECT *, i32) = ((FOOTSTEP_AUDIO_CALLBACKS_PC *)GameAudio)->override_footstep;
             if (override_footstep == NULL || (sound = override_footstep(object, on_platform)) == -1) {
                 if (object->is_underwater == 0 && object->water_intersects == 0) {
                     alternate = WorldInfo_CurrentlyActive()->current_level->flags & 0x1000;
@@ -404,7 +403,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PlayGruntSfx(GAMEOBJECT *object) {
+    void PlayGruntSfx(GAMEOBJECT *object) {
         CHARACTERDATA_PC *character = object->character_data;
         i32 sfx;
         if (character->game_character->sfx_grunt != -1) {
@@ -424,7 +423,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PlayHurtSfx(GAMEOBJECT *object) {
+    void PlayHurtSfx(GAMEOBJECT *object) {
         CHARACTERDATA_PC *character = object->character_data;
         i32 sfx;
         if (character->game_character->sfx_hurt != -1) {
@@ -449,7 +448,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl PlayDieSfx(GAMEOBJECT *object) {
+extern "C" void PlayDieSfx(GAMEOBJECT *object) {
     i32 sfx;
     if (object->character_data->game_character->sfx_die != -1) {
         sfx = object->character_data->game_character->sfx_die;
@@ -476,7 +475,7 @@ extern "C" void __cdecl PlayDieSfx(GAMEOBJECT *object) {
     }
 }
 
-extern "C" void __cdecl PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *position, i32 unused) {
+extern "C" void PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *position, i32 unused) {
     u8 player = object->field_280;
     i32 bits = 0;
     (void)unused;
@@ -504,7 +503,7 @@ extern "C" void __cdecl PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *posi
 
 extern "C" {
 
-    void __cdecl AddLevelSfxFromName(char *name, i32 *ids, i32 *count, i32 capacity) {
+    void AddLevelSfxFromName(char *name, i32 *ids, i32 *count, i32 capacity) {
         i32 id;
         i32 i;
         if (ids == NULL || count == NULL || *count >= capacity) {
@@ -523,7 +522,7 @@ extern "C" {
         ++*count;
     }
 
-    void __cdecl AddLevelSfxFromId(i32 id, i32 *ids, i32 *count, i32 capacity) {
+    void AddLevelSfxFromId(i32 id, i32 *ids, i32 *count, i32 capacity) {
         i32 i;
         if (ids == NULL || count == NULL || *count >= capacity || id == -1) {
             return;
@@ -537,8 +536,8 @@ extern "C" {
         ++*count;
     }
 
-    void __cdecl UpdateLevelSfx(WORLDINFO *world, i32 paused) {
-        i32(__cdecl * check_reverb)(void);
+    void UpdateLevelSfx(WORLDINFO *world, i32 paused) {
+        i32 (*check_reverb)(void);
         SfxBitsRestore(&CurrentSFXTAB);
         if (paused == 0 && (check_reverb = GameAudio->check_reverb_fn) != NULL && check_reverb() != 0) {
             NuSound3SetReverb(1);
@@ -552,7 +551,7 @@ extern "C" {
 }
 i32 ticktock = 0;
 
-void __cdecl TickTockSfx(void) {
+void TickTockSfx(void) {
     if (ticktock != 0) {
         PlaySfxById(GameAudio->sfx_ids[0x1d], NULL);
         ticktock = 0;
@@ -562,7 +561,7 @@ void __cdecl TickTockSfx(void) {
     }
 }
 
-extern "C" void __cdecl ResetRepeatSfx(void) {
+extern "C" void ResetRepeatSfx(void) {
     i32 i;
     memset(RepeatSfxQueue, 0, sizeof(RepeatSfxQueue));
     RepeatSfxQueueHead = 0;
@@ -571,8 +570,7 @@ extern "C" void __cdecl ResetRepeatSfx(void) {
     }
 }
 
-void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, char play_count, f32 repeat_delay,
-                           NUVEC *position) {
+void PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, char play_count, f32 repeat_delay, NUVEC *position) {
     if (play_count == 1 && start_delay == 0.0f) {
         if (sfx_id != -1) {
             PlaySfxById(sfx_id, position);
@@ -599,7 +597,7 @@ void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, char play_co
     RepeatSfxQueueHead = (RepeatSfxQueueHead + 1) & 0x1f;
 }
 
-void __cdecl UpdateRepeatSfx(void) {
+void UpdateRepeatSfx(void) {
     REPEAT_SFX_ENTRY_PC *entry = RepeatSfxQueue;
     i32 index;
     for (index = 0; index < 32; ++index, ++entry) {
@@ -633,7 +631,7 @@ void __cdecl UpdateRepeatSfx(void) {
     }
 }
 
-extern "C" void __cdecl SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options) {
+extern "C" void SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options) {
     options->sound_volume = 8;
     options->music_volume = 6;
     if (SetSoundFadeDistCallBackFn == NULL || SetSoundFadeDistCallBackFn(world) == 0) {
@@ -651,11 +649,11 @@ extern "C" void __cdecl SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options)
 
 extern "C" {
 
-    void __cdecl NewAreaMusicChanges(void) {
+    void NewAreaMusicChanges(void) {
         BeenAttacked = 0;
     }
 
-    i32 __cdecl ActionFromQuiet(i32 quiet_index) {
+    i32 ActionFromQuiet(i32 quiet_index) {
         i32 index;
         if (quiet_index == -1) {
             return -1;
@@ -668,7 +666,7 @@ extern "C" {
         return -1;
     }
 
-    i32 __cdecl AmbientFromQuiet(i32 quiet_index) {
+    i32 AmbientFromQuiet(i32 quiet_index) {
         i32 pair_index;
         i16 id;
 
@@ -684,7 +682,7 @@ extern "C" {
         return -1;
     }
 
-    i32 __cdecl GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback) {
+    i32 GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback) {
         (void)name;
         (void)table;
         (void)fallback;
@@ -692,7 +690,7 @@ extern "C" {
     }
 }
 
-extern "C" nusound_filename_info_s *__cdecl ConfigureMusic(char *ignored_file, VARIPTR *cursor, VARIPTR *end) {
+extern "C" nusound_filename_info_s *ConfigureMusic(char *ignored_file, VARIPTR *cursor, VARIPTR *end) {
     nusound_filename_info_s *files;
     VARIPTR buffer;
     music_man.Initialise("audio\\music.cfg", NULL, cursor, *end);
@@ -711,7 +709,7 @@ extern "C" nusound_filename_info_s *__cdecl ConfigureMusic(char *ignored_file, V
     return files;
 }
 
-extern "C" void __cdecl GamePlayMusic(LEVELDATA_PC *level, i32 check, OPTIONSSAVE *options) {
+extern "C" void GamePlayMusic(LEVELDATA_PC *level, i32 check, OPTIONSSAVE *options) {
     i32 other = MusicOther;
     i32 music_other;
 
@@ -766,7 +764,7 @@ extern "C" i32 fun_00548c30() {
     return 0;
 }
 
-extern "C" void __cdecl ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options) {
+extern "C" void ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options) {
     if (GameAudio_ActionMusicFn != NULL) {
         MusicActiveReset = GameAudio_ActionMusicFn();
     } else {
@@ -849,7 +847,7 @@ extern "C" void MusicClearAll() {
 
 extern "C" {
 
-    void __cdecl GameAudio_Init(GAMEAUDIO_PC *audio) {
+    void GameAudio_Init(GAMEAUDIO_PC *audio) {
         i32 i;
         GameAudio = audio;
         for (i = 0; i < 84; ++i) {

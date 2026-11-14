@@ -1,6 +1,6 @@
 #include "saga.h"
 
-NULNKHDR *__cdecl NuLstAllocTail(NULSTHDR *list) {
+NULNKHDR *NuLstAllocTail(NULSTHDR *list) {
     u32 current_thread;
     NULNKHDR *node;
 
@@ -45,7 +45,7 @@ NULNKHDR *__cdecl NuLstAllocTail(NULSTHDR *list) {
     return NULL;
 }
 
-NULNKHDR *__cdecl NuLstAllocFree(NULSTHDR *list) {
+NULNKHDR *NuLstAllocFree(NULSTHDR *list) {
     u32 current_thread;
     NULNKHDR *node;
     if (list->free != NULL) {
@@ -71,7 +71,7 @@ NULNKHDR *__cdecl NuLstAllocFree(NULSTHDR *list) {
     return NULL;
 }
 
-void __cdecl NuLstAtachHead(NULSTHDR *list, NULNKHDR *node) {
+void NuLstAtachHead(NULSTHDR *list, NULNKHDR *node) {
     u32 current_thread = nu_current_thread_id;
     if (list->safe_thread != current_thread) {
         NuThreadDisableThreadSwap();
@@ -89,7 +89,7 @@ void __cdecl NuLstAtachHead(NULSTHDR *list, NULNKHDR *node) {
     }
 }
 
-void __cdecl NuLstAttachTail(NULSTHDR *list, NULNKHDR *node) {
+void NuLstAttachTail(NULSTHDR *list, NULNKHDR *node) {
     u32 current_thread = nu_current_thread_id;
     if (list->safe_thread != current_thread) {
         NuThreadDisableThreadSwap();
@@ -107,7 +107,7 @@ void __cdecl NuLstAttachTail(NULSTHDR *list, NULNKHDR *node) {
     }
 }
 
-NULNKHDR *__cdecl NuLstAllocBefore(NULNKHDR *anchor) {
+NULNKHDR *NuLstAllocBefore(NULNKHDR *anchor) {
     NULSTHDR *list;
     u32 current_thread;
     NULNKHDR *node;
@@ -147,7 +147,7 @@ NULNKHDR *__cdecl NuLstAllocBefore(NULNKHDR *anchor) {
 }
 
 /* The anchor's own next link is never updated, as in the original. */
-NULNKHDR *__cdecl NuLstAllocAfter(NULNKHDR *anchor) {
+NULNKHDR *NuLstAllocAfter(NULNKHDR *anchor) {
     NULSTHDR *list;
     u32 current_thread;
     NULNKHDR *node;
@@ -185,12 +185,12 @@ NULNKHDR *__cdecl NuLstAllocAfter(NULNKHDR *anchor) {
     return NULL;
 }
 
-NULNKHDR *__cdecl NuLstGetByIdx(NULSTHDR *list, i32 index) {
+NULNKHDR *NuLstGetByIdx(NULSTHDR *list, i32 index) {
     NULNKHDR *node = (NULNKHDR *)((u8 *)(list + 1) + (i16)list->element_size_total * index);
     return (node->is_used & 1) != 0 ? node + 1 : NULL;
 }
 
-NULSTHDR *__cdecl NuLstCreate(i32 element_count, i32 element_size) {
+NULSTHDR *NuLstCreate(i32 element_count, i32 element_size) {
     NULSTHDR *list;
     i32 element_size_total;
     i32 index;
@@ -284,7 +284,7 @@ NULNKHDR *NuLstGetNext(NULSTHDR *list, NULNKHDR *node) {
     return NULL;
 }
 
-NULNKHDR *__cdecl NuLstGetPrev(NULSTHDR *list, NULNKHDR *node) {
+NULNKHDR *NuLstGetPrev(NULSTHDR *list, NULNKHDR *node) {
     if (node != NULL) {
         --node;
         if (node->prev != NULL) {
@@ -296,7 +296,7 @@ NULNKHDR *__cdecl NuLstGetPrev(NULSTHDR *list, NULNKHDR *node) {
     return NULL;
 }
 
-i32 __cdecl NuLstMoveNext(NULSTHDR *list, NULNKHDR *node) {
+i32 NuLstMoveNext(NULSTHDR *list, NULNKHDR *node) {
     NULNKHDR *next;
     --node;
     if (node->next != NULL) {
@@ -320,7 +320,7 @@ i32 __cdecl NuLstMoveNext(NULSTHDR *list, NULNKHDR *node) {
     return 0;
 }
 
-i32 __cdecl NuLstMovePrev(NULSTHDR *list, NULNKHDR *node) {
+i32 NuLstMovePrev(NULSTHDR *list, NULNKHDR *node) {
     NULNKHDR *prev;
     --node;
     if (node->prev != NULL) {
@@ -344,11 +344,11 @@ i32 __cdecl NuLstMovePrev(NULSTHDR *list, NULNKHDR *node) {
     return 0;
 }
 
-NULNKHDR *__cdecl NuLstGetFree(NULSTHDR *list) {
+NULNKHDR *NuLstGetFree(NULSTHDR *list) {
     return list->free + 1;
 }
 
-NULNKHDR *__cdecl NuLstAllocHead(NULSTHDR *list) {
+NULNKHDR *NuLstAllocHead(NULSTHDR *list) {
     u32 current_thread;
     NULNKHDR *node;
     if (list->free != NULL) {
@@ -381,7 +381,7 @@ NULNKHDR *__cdecl NuLstAllocHead(NULSTHDR *list) {
     return NULL;
 }
 
-NULNKHDR *__cdecl NuLstAlloc(NULSTHDR *list) {
+NULNKHDR *NuLstAlloc(NULSTHDR *list) {
     return NuLstAllocHead(list);
 }
 
@@ -399,7 +399,7 @@ STATIC_ASSERT(offsetof(NULNKHDR, next) == 0x4);
 STATIC_ASSERT(offsetof(NULNKHDR, prev) == 0x8);
 STATIC_ASSERT(offsetof(NULNKHDR, id) == 0xc);
 
-NULSTHDR *__cdecl NuLstCreateBuff(i32 count, i32 size, VARIPTR *buffer, VARIPTR end, i32 alignment) {
+NULSTHDR *NuLstCreateBuff(i32 count, i32 size, VARIPTR *buffer, VARIPTR end, i32 alignment) {
     NULSTHDR *list = NULL;
     u32 stride;
     u32 bytes;

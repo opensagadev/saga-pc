@@ -136,7 +136,7 @@ typedef struct NuKeyboardActionState_PC {
     i32 fallback_action;                      // 0x6608
 } NuKeyboardActionState_PC;                   // size 0x660c
 
-void __cdecl PcInput_EnableKeyboards(const i16 *keys, i32 count) {
+void PcInput_EnableKeyboards(const i16 *keys, i32 count) {
     NuKeyboardActionState_PC *state;
     i32 i;
     i32 recognized;

@@ -9,9 +9,9 @@ STATIC_ASSERT(offsetof(WORLDINFO, camera_splines) == 0x2ac4);
 STATIC_ASSERT(offsetof(LEVELSPLINE_PC, scene) == 0);
 STATIC_ASSERT(offsetof(LEVELSPLINE_PC, max_points) == 0xa);
 STATIC_ASSERT(offsetof(LEVELSPLINE_PC, level) == 0xc);
-typedef void(__cdecl *LEVELSETDEFAULTS_PC)(LEVELDATA_PC *level);
+typedef void (*LEVELSETDEFAULTS_PC)(LEVELDATA_PC *level);
 extern "C" {
-    void __cdecl LevelsConfigDiagnosticPc(char *message);
+    void LevelsConfigDiagnosticPc(char *message);
 }
 
 /* Native 0x0048a310, 217 bytes. */
@@ -26,7 +26,7 @@ typedef struct ai_script_progress_view_pc_s {
 } AI_SCRIPT_PROGRESS_VIEW_PC;             // size 0x2c24
 
 extern "C" {
-    void __cdecl LevelObjectsArenaDiagnosticPc(i32 size);
+    void LevelObjectsArenaDiagnosticPc(i32 size);
 }
 
 typedef struct startup_level_object_pc_s {
@@ -56,13 +56,13 @@ typedef struct menu_mission_reader_pc_s {
 
 extern "C" {
 
-    void __cdecl Level_RegisterGameConfigKeywords(NUFPCOMJMP *before_load, NUFPCOMJMP *after_load) {
+    void Level_RegisterGameConfigKeywords(NUFPCOMJMP *before_load, NUFPCOMJMP *after_load) {
         Level_ConfigBeforeLoad_GameKeywords = before_load;
         Level_ConfigAfterLoad_GameKeywords = after_load;
     }
 
-    LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                               i32 *count_out, void *set_defaults_fn) {
+    LEVELDATA_PC *Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out,
+                                       void *set_defaults_fn) {
         NUFPAR_PC *parser;
         LEVELDATA_PC *level_data;
         LEVELDATA_PC *current_level;
@@ -227,7 +227,7 @@ extern "C" {
         return NULL;
     }
 
-    LEVELDATA_PC *__cdecl Level_FindByName(char *name, i32 *index_out) {
+    LEVELDATA_PC *Level_FindByName(char *name, i32 *index_out) {
         i32 index;
 
         for (index = 0; index < LEVELCOUNT; ++index) {
@@ -245,7 +245,7 @@ extern "C" {
         return NULL;
     }
 
-    void __cdecl Levels_FixUp(LEVELFIXUP_PC *fixup) {
+    void Levels_FixUp(LEVELFIXUP_PC *fixup) {
         LEVELDATA_PC *level;
         if (fixup != NULL) {
             for (; fixup->name != NULL; ++fixup) {
@@ -280,24 +280,24 @@ extern "C" {
         }
     }
 
-    void __cdecl LC_BL_mipmapmode(NUFPAR_PC *parser) {
+    void LC_BL_mipmapmode(NUFPAR_PC *parser) {
         levelconfig_ldata->mipmap_mode = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_BL_fix_strobing_anims(NUFPAR_PC *parser) {
+    void LC_BL_fix_strobing_anims(NUFPAR_PC *parser) {
         (void)parser;
         levelconfig_ldata->flags |= 0x100;
     }
 
-    void __cdecl LC_BL_max_ter_groups(NUFPAR_PC *parser) {
+    void LC_BL_max_ter_groups(NUFPAR_PC *parser) {
         levelconfig_ldata->max_ter_groups = (i16)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_BL_max_ter_platforms(NUFPAR_PC *parser) {
+    void LC_BL_max_ter_platforms(NUFPAR_PC *parser) {
         levelconfig_ldata->max_ter_platforms = (i16)NuFParGetInt(parser);
     }
 
-    void __cdecl LevelConfig_BeforeLoad(LEVELDATA_PC *level, char *buffer, NUFPCOMJMP *keywords) {
+    void LevelConfig_BeforeLoad(LEVELDATA_PC *level, char *buffer, NUFPCOMJMP *keywords) {
         NUFPAR_PC *parser = NuFParCreateMem((char *)LevelBeforeLoadName, buffer, 0xffff);
 
         if (parser == NULL) {
@@ -314,46 +314,46 @@ extern "C" {
         NuFParDestroy(parser);
     }
 
-    void __cdecl LC_AL_backr(NUFPAR_PC *parser) {
+    void LC_AL_backr(NUFPAR_PC *parser) {
         levelconfig_ldata->display.bg_red_bottom = (u8)NuFParGetInt(parser);
         levelconfig_ldata->display.bg_red_top = levelconfig_ldata->display.bg_red_bottom;
     }
 
-    void __cdecl LC_AL_backg(NUFPAR_PC *parser) {
+    void LC_AL_backg(NUFPAR_PC *parser) {
         levelconfig_ldata->display.bg_green_bottom = (u8)NuFParGetInt(parser);
         levelconfig_ldata->display.bg_green_top = levelconfig_ldata->display.bg_green_bottom;
     }
 
-    void __cdecl LC_AL_backb(NUFPAR_PC *parser) {
+    void LC_AL_backb(NUFPAR_PC *parser) {
         levelconfig_ldata->display.bg_blue_bottom = (u8)NuFParGetInt(parser);
         levelconfig_ldata->display.bg_blue_top = levelconfig_ldata->display.bg_blue_bottom;
     }
 
-    void __cdecl LC_AL_backr_top(NUFPAR_PC *parser) {
+    void LC_AL_backr_top(NUFPAR_PC *parser) {
         levelconfig_ldata->display.bg_red_top = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_backg_top(NUFPAR_PC *parser) {
+    void LC_AL_backg_top(NUFPAR_PC *parser) {
         levelconfig_ldata->display.bg_green_top = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_backb_top(NUFPAR_PC *parser) {
+    void LC_AL_backb_top(NUFPAR_PC *parser) {
         levelconfig_ldata->display.bg_blue_top = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_backr_bottom(NUFPAR_PC *parser) {
+    void LC_AL_backr_bottom(NUFPAR_PC *parser) {
         levelconfig_ldata->display.bg_red_bottom = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_backg_bottom(NUFPAR_PC *parser) {
+    void LC_AL_backg_bottom(NUFPAR_PC *parser) {
         levelconfig_ldata->display.bg_green_bottom = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_backb_bottom(NUFPAR_PC *parser) {
+    void LC_AL_backb_bottom(NUFPAR_PC *parser) {
         levelconfig_ldata->display.bg_blue_bottom = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_farclip_hack(NUFPAR_PC *parser) {
+    void LC_AL_farclip_hack(NUFPAR_PC *parser) {
         f32 value = NuFParGetFloat(parser);
 
         if (value < 0.1f) {
@@ -364,7 +364,7 @@ extern "C" {
         levelconfig_ldata->display.farclip_hack = value;
     }
 
-    void __cdecl LC_AL_farclip(NUFPAR_PC *parser) {
+    void LC_AL_farclip(NUFPAR_PC *parser) {
         i32 value = NuFParGetInt(parser);
 
         if (value < 10) {
@@ -375,7 +375,7 @@ extern "C" {
         levelconfig_ldata->display.far_clip = (i16)value;
     }
 
-    void __cdecl LC_AL_nearclip(NUFPAR_PC *parser) {
+    void LC_AL_nearclip(NUFPAR_PC *parser) {
         f32 value = NuFParGetFloat(parser);
 
         if (value < 0.001f) {
@@ -386,27 +386,27 @@ extern "C" {
         levelconfig_ldata->display.near_clip = value;
     }
 
-    void __cdecl LC_AL_hover_height(NUFPAR_PC *parser) {
+    void LC_AL_hover_height(NUFPAR_PC *parser) {
         levelconfig_ldata->hover_height = NuFParGetFloat(parser);
     }
 
-    void __cdecl LC_AL_blobshadow_alpha(NUFPAR_PC *parser) {
+    void LC_AL_blobshadow_alpha(NUFPAR_PC *parser) {
         levelconfig_ldata->blob_shadow_alpha = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_blobshadow_fadenear(NUFPAR_PC *parser) {
+    void LC_AL_blobshadow_fadenear(NUFPAR_PC *parser) {
         levelconfig_ldata->blob_shadow_fade_near = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_blobshadow_fadefar(NUFPAR_PC *parser) {
+    void LC_AL_blobshadow_fadefar(NUFPAR_PC *parser) {
         levelconfig_ldata->blob_shadow_fade_far = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_reflect_range(NUFPAR_PC *parser) {
+    void LC_AL_reflect_range(NUFPAR_PC *parser) {
         levelconfig_ldata->reflection_range = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_reflect_y(NUFPAR_PC *parser) {
+    void LC_AL_reflect_y(NUFPAR_PC *parser) {
         levelconfig_ldata->reflection_y = NuFParGetFloat(parser);
     }
 
@@ -418,19 +418,19 @@ extern "C" {
         }
     }
 
-    void __cdecl LC_AL_metal(NUFPAR_PC *parser) {
+    void LC_AL_metal(NUFPAR_PC *parser) {
         LevelConfigSetFlag(parser, 0x1000);
     }
 
-    void __cdecl LC_AL_in_space(NUFPAR_PC *parser) {
+    void LC_AL_in_space(NUFPAR_PC *parser) {
         LevelConfigSetFlag(parser, 0x40000);
     }
 
-    void __cdecl LC_AL_override_nopickupgravity(NUFPAR_PC *parser) {
+    void LC_AL_override_nopickupgravity(NUFPAR_PC *parser) {
         LevelConfigSetFlag(parser, 0x400000);
     }
 
-    void __cdecl LC_AL_hidden_icons(NUFPAR_PC *parser) {
+    void LC_AL_hidden_icons(NUFPAR_PC *parser) {
         if (NuFParGetWord(parser) != 0) {
             if (NuStrICmp(parser->word_buffer_ptr, LevelConfigOn) == 0) {
                 levelconfig_ldata->flags &= ~0x800000u;
@@ -442,83 +442,83 @@ extern "C" {
         }
     }
 
-    void __cdecl LC_AL_pickups_to_panel(NUFPAR_PC *parser) {
+    void LC_AL_pickups_to_panel(NUFPAR_PC *parser) {
         LevelConfigSetFlag(parser, 0x80000);
     }
 
-    void __cdecl LC_AL_forget_takeovers(NUFPAR_PC *parser) {
+    void LC_AL_forget_takeovers(NUFPAR_PC *parser) {
         LevelConfigSetFlag(parser, 0x100000);
     }
 
-    void __cdecl LC_AL_narrow_socks(NUFPAR_PC *parser) {
+    void LC_AL_narrow_socks(NUFPAR_PC *parser) {
         LevelConfigSetFlag(parser, 0x200000);
     }
 
-    void __cdecl LC_AL_camera_rain(NUFPAR_PC *parser) {
+    void LC_AL_camera_rain(NUFPAR_PC *parser) {
         LevelConfigSetFlag(parser, 0x4000);
     }
 
-    void __cdecl LC_AL_terrain_rain(NUFPAR_PC *parser) {
+    void LC_AL_terrain_rain(NUFPAR_PC *parser) {
         LevelConfigSetFlag(parser, 0x8000);
     }
 
-    void __cdecl LC_AL_double_score(NUFPAR_PC *parser) {
+    void LC_AL_double_score(NUFPAR_PC *parser) {
         LevelConfigSetFlag(parser, 0x800);
     }
 
-    void __cdecl LC_AL_flat_terrain(NUFPAR_PC *parser) {
+    void LC_AL_flat_terrain(NUFPAR_PC *parser) {
         LevelConfigSetFlag(parser, 0x10);
     }
 
-    void __cdecl LC_AL_cam_tilt(NUFPAR_PC *parser) {
+    void LC_AL_cam_tilt(NUFPAR_PC *parser) {
         levelconfig_ldata->cam_tilt = NuFParGetFloat(parser);
     }
 
-    void __cdecl LC_AL_raycaststep(NUFPAR_PC *parser) {
+    void LC_AL_raycaststep(NUFPAR_PC *parser) {
         levelconfig_ldata->raycast_step = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_plat_scan_dist(NUFPAR_PC *parser) {
+    void LC_AL_plat_scan_dist(NUFPAR_PC *parser) {
         levelconfig_ldata->platform_scan_distance = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_waterripple_startcol_r(NUFPAR_PC *parser) {
+    void LC_AL_waterripple_startcol_r(NUFPAR_PC *parser) {
         levelconfig_ldata->water_ripple_start_rgba[0] = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_waterripple_startcol_g(NUFPAR_PC *parser) {
+    void LC_AL_waterripple_startcol_g(NUFPAR_PC *parser) {
         levelconfig_ldata->water_ripple_start_rgba[1] = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_waterripple_startcol_b(NUFPAR_PC *parser) {
+    void LC_AL_waterripple_startcol_b(NUFPAR_PC *parser) {
         levelconfig_ldata->water_ripple_start_rgba[2] = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_waterripple_startcol_a(NUFPAR_PC *parser) {
+    void LC_AL_waterripple_startcol_a(NUFPAR_PC *parser) {
         levelconfig_ldata->water_ripple_start_rgba[3] = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_waterripple_endcol_r(NUFPAR_PC *parser) {
+    void LC_AL_waterripple_endcol_r(NUFPAR_PC *parser) {
         levelconfig_ldata->water_ripple_end_rgba[0] = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_waterripple_endcol_g(NUFPAR_PC *parser) {
+    void LC_AL_waterripple_endcol_g(NUFPAR_PC *parser) {
         levelconfig_ldata->water_ripple_end_rgba[1] = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_waterripple_endcol_b(NUFPAR_PC *parser) {
+    void LC_AL_waterripple_endcol_b(NUFPAR_PC *parser) {
         levelconfig_ldata->water_ripple_end_rgba[2] = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_waterripple_endcol_a(NUFPAR_PC *parser) {
+    void LC_AL_waterripple_endcol_a(NUFPAR_PC *parser) {
         levelconfig_ldata->water_ripple_end_rgba[3] = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_waterripple_life(NUFPAR_PC *parser) {
+    void LC_AL_waterripple_life(NUFPAR_PC *parser) {
         levelconfig_ldata->water_ripple_life = NuFParGetFloat(parser);
     }
 
-    void __cdecl LC_AL_cam_pullback_dist(NUFPAR_PC *parser) {
+    void LC_AL_cam_pullback_dist(NUFPAR_PC *parser) {
         f32 value = NuFParGetFloat(parser);
 
         if (value < 0.0f) {
@@ -527,7 +527,7 @@ extern "C" {
         levelconfig_ldata->cam_pullback_dist = value;
     }
 
-    void __cdecl LC_AL_cam_lateral_dist(NUFPAR_PC *parser) {
+    void LC_AL_cam_lateral_dist(NUFPAR_PC *parser) {
         f32 value = NuFParGetFloat(parser);
 
         if (value < 0.0f) {
@@ -536,20 +536,20 @@ extern "C" {
         levelconfig_ldata->cam_lateral_dist = value;
     }
 
-    void __cdecl LC_AL_campos_seek(NUFPAR_PC *parser) {
+    void LC_AL_campos_seek(NUFPAR_PC *parser) {
         levelconfig_ldata->cam_pos_seek = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_camang_seek(NUFPAR_PC *parser) {
+    void LC_AL_camang_seek(NUFPAR_PC *parser) {
         levelconfig_ldata->cam_angle_seek = (u8)NuFParGetInt(parser);
     }
 
-    void __cdecl LC_AL_shadowtype(NUFPAR_PC *parser) {
+    void LC_AL_shadowtype(NUFPAR_PC *parser) {
         levelconfig_ldata->shadow_type = NuFParGetInt(parser);
     }
 }
 
-extern "C" void __cdecl LC_AL_music(NUFPAR_PC *parser) {
+extern "C" void LC_AL_music(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) == 0) {
         return;
     }
@@ -560,7 +560,7 @@ extern "C" void __cdecl LC_AL_music(NUFPAR_PC *parser) {
     levelconfig_ldata->music_tracks[4] = music_man.GetTrackHandle(0x20, parser->word_buffer_ptr);
 }
 
-extern "C" void __cdecl LC_AL_music_other(NUFPAR_PC *parser) {
+extern "C" void LC_AL_music_other(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) == 0) {
         return;
     }
@@ -573,13 +573,13 @@ extern "C" void __cdecl LC_AL_music_other(NUFPAR_PC *parser) {
 
 extern "C" {
 
-    void __cdecl LC_AL_sfx_ambient(NUFPAR_PC *parser) {
+    void LC_AL_sfx_ambient(NUFPAR_PC *parser) {
         if (NuFParGetWord(parser) != 0) {
             levelconfig_ldata->sfx_ambient = (i16)GetSfxId(parser->word_buffer_ptr);
         }
     }
 
-    void __cdecl LC_AL_conveyor(NUFPAR_PC *parser) {
+    void LC_AL_conveyor(NUFPAR_PC *parser) {
         while (NuFParGetWord(parser) != 0) {
             if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeyword_xspeed) == 0) {
                 levelconfig_ldata->conveyor_x_speed = NuFParGetFloat(parser);
@@ -589,7 +589,7 @@ extern "C" {
         }
     }
 
-    void __cdecl LevelConfig_AfterLoad(LEVELDATA_PC *level, char *buffer, NUFPCOMJMP *keywords) {
+    void LevelConfig_AfterLoad(LEVELDATA_PC *level, char *buffer, NUFPCOMJMP *keywords) {
         NUFPAR_PC *parser = NuFParCreateMem((char *)LevelAfterLoadName, buffer, 0xffff);
 
         if (parser == NULL) {
@@ -611,7 +611,7 @@ extern "C" {
         level->flags |= 1;
     }
 
-    void __cdecl LevelSplines_InitForGame(LEVELSPLINE_PC *table) {
+    void LevelSplines_InitForGame(LEVELSPLINE_PC *table) {
         LEVELSPLINE_PC *record;
 
         LevSplList = table;
@@ -629,7 +629,7 @@ extern "C" {
         }
     }
 
-    void __cdecl LevelSplines_InitForLevel(WORLDINFO *world) {
+    void LevelSplines_InitForLevel(WORLDINFO *world) {
         char name[64];
         i32 i;
         u32 size;
@@ -691,8 +691,8 @@ extern "C" {
     i32 LEVOBJREF_FIRSTREFOBJ = -1;
     i32 LEVOBJREF_LASTREFOBJ = -1;
 
-    void __cdecl LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *table, VARIPTR *buffer, VARIPTR *buffer_end,
-                                          i32 maximum, i32 name_table_size) {
+    void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *table, VARIPTR *buffer, VARIPTR *buffer_end, i32 maximum,
+                                  i32 name_table_size) {
         i32 reflection_range;
         i32 object_range;
         LEVOBJREF_FIRSTOBJ = -1;
@@ -737,7 +737,7 @@ extern "C" {
     i32 EXTRALEVELOBJECTCOUNT = 0;
     static i32 ExtraLevelObject_NameTableIndex = 0;
 
-    i32 __cdecl LevelObject_AddExtra(char *name, i32 kind) {
+    i32 LevelObject_AddExtra(char *name, i32 kind) {
         i32 length;
         char *destination;
         if (LEVELOBJECTCOUNT >= LEVELOBJECTMAX) {
@@ -760,7 +760,7 @@ extern "C" {
         return 1;
     }
 
-    void __cdecl LevelObjects_InitForLevel(WORLDINFO *world) {
+    void LevelObjects_InitForLevel(WORLDINFO *world) {
         i32 index;
         u32 size;
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
@@ -833,7 +833,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl LevelObject_FindIndexFromName(char *name) {
+    i32 LevelObject_FindIndexFromName(char *name) {
         i32 i;
         if (ObjTabList == NULL) {
             return -1;
@@ -846,7 +846,7 @@ extern "C" {
         return -1;
     }
 
-    void __cdecl LevObj_FixUpPlatIDs(WORLDINFO *world) {
+    void LevObj_FixUpPlatIDs(WORLDINFO *world) {
         i32 index;
         if (ObjTabList == NULL) {
             return;
@@ -862,7 +862,7 @@ extern "C" {
         }
     }
 
-    void *__cdecl LevObj_FindByPlatID(WORLDINFO *world, i32 platform_id) {
+    void *LevObj_FindByPlatID(WORLDINFO *world, i32 platform_id) {
         STARTUP_LEVEL_OBJECT_PC *object = (STARTUP_LEVEL_OBJECT_PC *)world->level_objects;
         i32 i;
         for (i = 0; i < LEVELOBJECTCOUNT; ++i, ++object) {
@@ -873,7 +873,7 @@ extern "C" {
         return NULL;
     }
 
-    char *__cdecl LevelObject_FindNameFromIndex(i32 index) {
+    char *LevelObject_FindNameFromIndex(i32 index) {
         char *name = "";
         if (ObjTabList == NULL || index < 0 || index >= LEVELOBJECTCOUNT) {
             return name;
@@ -882,14 +882,14 @@ extern "C" {
         return name;
     }
 
-    i32 __cdecl LevelObject_GetReflection(i32 index) {
+    i32 LevelObject_GetReflection(i32 index) {
         if (index != -1 && index >= LEVOBJREF_FIRSTOBJ && index <= LEVOBJREF_LASTOBJ) {
             return LEVOBJREF_FIRSTREFOBJ - LEVOBJREF_FIRSTOBJ + index;
         }
         return index;
     }
 
-    i32 __cdecl LevelObject_FindIndexFromName_RefOnly(char *name) {
+    i32 LevelObject_FindIndexFromName_RefOnly(char *name) {
         i32 end;
         i32 i;
         if (ObjTabList == NULL) {
@@ -907,7 +907,7 @@ extern "C" {
         return -1;
     }
 
-    void __cdecl Level_LoadConfigFile(WORLDINFO *world) {
+    void Level_LoadConfigFile(WORLDINFO *world) {
         char name[128];
         i32 bytes_read;
 
@@ -923,8 +923,8 @@ extern "C" {
         }
     }
 
-    void __cdecl Level_Update(WORLDINFO *world) {
-        void(__cdecl * update)(WORLDINFO *) = (void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[3];
+    void Level_Update(WORLDINFO *world) {
+        void (*update)(WORLDINFO *) = (void (*)(WORLDINFO *))world->current_level->callbacks[3];
         if (update != NULL) {
             update(world);
         }
@@ -937,22 +937,22 @@ extern "C" {
         }
     }
 
-    void __cdecl Level_Draw(WORLDINFO *world) {
-        void(__cdecl * draw)(WORLDINFO *) = (void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[5];
+    void Level_Draw(WORLDINFO *world) {
+        void (*draw)(WORLDINFO *) = (void (*)(WORLDINFO *))world->current_level->callbacks[5];
         if (draw != NULL) {
             draw(world);
         }
     }
 }
 
-void __cdecl GoToNewLevel(i32 level_index) {
+void GoToNewLevel(i32 level_index) {
     NewLData = &LDataList[level_index];
     if (waiting_for_level != -1) {
         waiting_for_new_level = 1;
     }
 }
 
-void __cdecl CompleteLevel(WORLDINFO *world) {
+void CompleteLevel(WORLDINFO *world) {
     LEVELDATA_PC *level;
 
     level = NewLData;
@@ -971,7 +971,7 @@ void __cdecl CompleteLevel(WORLDINFO *world) {
 
 extern "C" {
 
-    void __cdecl ResetLevel(WORLDINFO *world, char *cutscene, i32 unused) {
+    void ResetLevel(WORLDINFO *world, char *cutscene, i32 unused) {
         CutDeadVehiclePlayer = NULL;
         if (world != NULL && NewCutScene(NULL, world->cutscene_sys, cutscene, 0) != NULL) {
             ResetBits |= 7;
@@ -991,7 +991,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NewLevelFromMenu(LEVELDATA_PC *level, i32 menu_id, i32 menu_y, i32 ignored) {
+    void NewLevelFromMenu(LEVELDATA_PC *level, i32 menu_id, i32 menu_y, i32 ignored) {
         MISSIONDATA_PC *mission;
         (void)ignored;
         LOG_INFO("Menu level request: level=%p menu=%d row=%d", (void *)level, menu_id, menu_y);

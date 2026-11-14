@@ -119,10 +119,9 @@ typedef struct grapple_movement_pc_s {
 } GRAPPLE_MOVEMENT_PC;
 
 static inline f32 GrappleFabsPc(f32 value);
-extern "C" void __cdecl DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags,
-                                       NUMTL *unused_material);
+extern "C" void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags, NUMTL *unused_material);
 
-extern "C" i32 __cdecl Grapples_Load(void *world_pointer, void *unused) {
+extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     i32 version;
     i32 index;
@@ -181,7 +180,7 @@ extern "C" i32 __cdecl Grapples_Load(void *world_pointer, void *unused) {
 
 extern "C" {
 
-    void *__cdecl Grapples_ReserveBufferSpace(void *pointer) {
+    void *Grapples_ReserveBufferSpace(void *pointer) {
         WORLDINFO *world = (WORLDINFO *)pointer;
         world->grapples = NULL;
         world->grapple_count = 0;
@@ -258,7 +257,7 @@ static void Grapple_Reset(GRAPPLE_MOTION_PC *grapple) {
     grapple->has_terrain_platform = 0;
 }
 
-extern "C" void __cdecl Grapples_Reset(void *world_pointer, void *unused, void *progress_pointer) {
+extern "C" void Grapples_Reset(void *world_pointer, void *unused, void *progress_pointer) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_pointer;
     GRAPPLE_MOTION_PC *grapple;
@@ -292,7 +291,7 @@ extern "C" void __cdecl Grapples_Reset(void *world_pointer, void *unused, void *
     }
 }
 
-GAMEOBJECT *__cdecl Grapple_Occupied(void *grapple, GAMEOBJECT *excluded, AIPATHCNX_PC *connection) {
+GAMEOBJECT *Grapple_Occupied(void *grapple, GAMEOBJECT *excluded, AIPATHCNX_PC *connection) {
     GAMEOBJECT *object;
     i32 index;
     if (LEGOCONTEXT_GRAPPLE == -1) {
@@ -369,8 +368,8 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
     }
 }
 
-extern "C" GRAPPLE_MOTION_PC *__cdecl Grapple_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object,
-                                                          f32 *distance_squared) {
+extern "C" GRAPPLE_MOTION_PC *Grapple_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object,
+                                                  f32 *distance_squared) {
     if (((WORLD_GRAPPLE_MOTION_VIEW_PC *)world)->grapples == NULL) {
         return NULL;
     }
@@ -401,7 +400,7 @@ extern "C" GRAPPLE_MOTION_PC *__cdecl Grapple_FindNearest(WORLDINFO *world, NUVE
 
 extern "C" {
 
-    GRAPPLE_DYNAMIC_PC *__cdecl Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position) {
+    GRAPPLE_DYNAMIC_PC *Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position) {
         GRAPPLE_DYNAMIC_PC *nearest = NULL;
         GRAPPLE_DYNAMIC_PC *grapple;
         f32 nearest_distance = 1000000000.0f;
@@ -495,7 +494,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl Grapples_Draw(void *world_pointer, void *unused, f32 unused_delta) {
+extern "C" void Grapples_Draw(void *world_pointer, void *unused, f32 unused_delta) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     u16 rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     f64 pulse = (f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0;
@@ -526,7 +525,7 @@ static i32 GrappleAttachmentPositionsPc(GAMEOBJECT *object, NUVEC **positions) {
     return count;
 }
 
-extern "C" void __cdecl Grapple_DrawLine(GAMEOBJECT *object) {
+extern "C" void Grapple_DrawLine(GAMEOBJECT *object) {
     GRAPPLE_MOTION_PC *grapple = (GRAPPLE_MOTION_PC *)object->grapple;
     if (!grapple->disabled && object->character_model->model_data_b[object->field_7aa] != NULL &&
         AnimPlaying(&object->anim_packet, object->field_7aa, 0, 0) == NULL) {
@@ -565,7 +564,7 @@ extern "C" void __cdecl Grapple_DrawLine(GAMEOBJECT *object) {
     }
 }
 
-extern "C" void __cdecl Grapple_Activate(GIZMO_PC *gizmo, i32 active) {
+extern "C" void Grapple_Activate(GIZMO_PC *gizmo, i32 active) {
     GRAPPLE_MOTION_PC *grapple;
     if (gizmo != NULL) {
         grapple = (GRAPPLE_MOTION_PC *)gizmo->object;
@@ -576,7 +575,7 @@ extern "C" void __cdecl Grapple_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
-extern "C" void __cdecl Grapple_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+extern "C" void Grapple_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     GRAPPLE_MOTION_PC *grapple;
     if (gizmo != NULL) {
         grapple = (GRAPPLE_MOTION_PC *)gizmo->object;
@@ -586,7 +585,7 @@ extern "C" void __cdecl Grapple_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 
 extern "C" {
 
-    i32 __cdecl Grapples_GetMaxGizmos(void *world_ptr) {
+    i32 Grapples_GetMaxGizmos(void *world_ptr) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
         if (world != NULL) {
             return world->current_level->max_grapples;
@@ -594,7 +593,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl Grapples_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+    void Grapples_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
         WORLDINFO *w = (WORLDINFO *)world_ptr;
         i32 i;
         (void)data;
@@ -606,14 +605,14 @@ extern "C" {
     }
 }
 
-extern "C" char *__cdecl Grapple_GetGizmoName(GIZMO_PC *gizmo) {
+extern "C" char *Grapple_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo != NULL) {
         return ((GRAPPLE_MOTION_PC *)gizmo->object)->name;
     }
     return NULL;
 }
 
-extern "C" i32 __cdecl Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+extern "C" i32 Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     GRAPPLE_MOTION_PC *grapple = (GRAPPLE_MOTION_PC *)gizmo->object;
     (void)mode;
     if (!grapple->visible || !grapple->active) {
@@ -644,7 +643,7 @@ extern "C" {
     const char GrappleOccupiedByTwoOutputTextPc[14] = "Occupied By 2";
 #pragma const_seg()
 
-    char *__cdecl Grapple_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    char *Grapple_GetOutputName(GIZMO_PC *gizmo, i32 output) {
         switch (output) {
             case 1:
                 return (char *)GrappleOccupiedOutputTextPc;
@@ -655,18 +654,18 @@ extern "C" {
     }
 }
 
-extern "C" i32 __cdecl Grapple_GetNumOutputs(GIZMO_PC *unused) {
+extern "C" i32 Grapple_GetNumOutputs(GIZMO_PC *unused) {
     (void)unused;
     return 3;
 }
 
 extern "C" {
 
-    void *__cdecl Grapples_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    void *Grapples_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
         return GizmoBufferAlloc(buffer, end, 0x8);
     }
 
-    void __cdecl Grapples_ClearProgress(void *owner, void *progress_ptr) {
+    void Grapples_ClearProgress(void *owner, void *progress_ptr) {
         GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_ptr;
         if (progress == NULL) {
             return;
@@ -675,7 +674,7 @@ extern "C" {
         progress->visible[0] = 0xffffffffu;
     }
 
-    void __cdecl Grapples_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+    void Grapples_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
         GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_ptr;
         WORLDINFO *world = (WORLDINFO *)world_ptr;
         GRAPPLE_DYNAMIC_PC *record;
@@ -710,7 +709,7 @@ extern "C" {
     f32 GrappleRopeSeekRatesPc[6] = {24.0f, 12.0f, 8.0f, 6.0f, 4.5f, 3.0f};
 }
 
-extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system, f32 unused_time) {
+extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 unused_time) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     WORLD_GRAPPLE_MOTION_VIEW_PC *view = (WORLD_GRAPPLE_MOTION_VIEW_PC *)world;
     GRAPPLE_MOTION_PC *grapple = view->grapples;
@@ -844,7 +843,7 @@ extern "C" {
     char *GizmoRegistryGrapplesNamePtrPc = (char *)PCContextName_Grapple;
     static ADDGIZMOTYPE_PC GizmoRegistryGrapplesAddTypePc = {0};
 
-    ADDGIZMOTYPE_PC *__cdecl Grapples_RegisterGizmo(i32 type_id) {
+    ADDGIZMOTYPE_PC *Grapples_RegisterGizmo(i32 type_id) {
         ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGrapplesAddTypePc;
         *addtype = Default_ADDGIZMOTYPE;
         addtype->name = GizmoRegistryGrapplesNamePtrPc;
@@ -861,28 +860,28 @@ extern "C" {
         addtype->fns.add_level_sfx_fn = NULL;
         addtype->prefix = "";
         addtype->fns.options = 0x8;
-        addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Grapples_GetMaxGizmos;
+        addtype->fns.get_max_gizmos_fn = (i32(*)(void *))Grapples_GetMaxGizmos;
         addtype->fns.add_gizmos_fn = (void *)Grapples_AddGizmos;
-        addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))Grapples_Update;
-        addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))Grapples_Draw;
-        addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))Grapple_GetGizmoName;
-        addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))Grapple_GetOutput;
-        addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))Grapple_GetOutputName;
+        addtype->fns.late_update_fn = (void (*)(void *, void *, f32))Grapples_Update;
+        addtype->fns.draw_fn = (void (*)(void *, void *, f32))Grapples_Draw;
+        addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))Grapple_GetGizmoName;
+        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))Grapple_GetOutput;
+        addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))Grapple_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)Grapple_GetNumOutputs;
-        addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))Grapple_Activate;
-        addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))Grapple_SetVisibility;
-        addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))Grapples_AllocateProgressData;
-        addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))Grapples_ClearProgress;
-        addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))Grapples_StoreProgress;
-        addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))Grapples_Reset;
-        addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))Grapples_ReserveBufferSpace;
-        addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))Grapples_Load;
+        addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))Grapple_Activate;
+        addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))Grapple_SetVisibility;
+        addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))Grapples_AllocateProgressData;
+        addtype->fns.clear_progress_fn = (void (*)(void *, void *))Grapples_ClearProgress;
+        addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))Grapples_StoreProgress;
+        addtype->fns.reset_fn = (void (*)(void *, void *, void *))Grapples_Reset;
+        addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))Grapples_ReserveBufferSpace;
+        addtype->fns.load_fn = (i32(*)(void *, void *))Grapples_Load;
         grapple_gizmotype_id = type_id;
         return addtype;
     }
 }
 
-GRAPPLE_DYNAMIC_PC *__cdecl Grapple_AddDynamic(void *attached_object, i32 retain_attachment) {
+GRAPPLE_DYNAMIC_PC *Grapple_AddDynamic(void *attached_object, i32 retain_attachment) {
     i32 index;
     for (index = 0; index < 4; ++index) {
         if (DynamicGrapplePc[index].attached_object == attached_object) {
@@ -900,7 +899,7 @@ GRAPPLE_DYNAMIC_PC *__cdecl Grapple_AddDynamic(void *attached_object, i32 retain
     return NULL;
 }
 
-GRAPPLE_DYNAMIC_PC *__cdecl Grapple_RemoveDynamic(void *attached_object) {
+GRAPPLE_DYNAMIC_PC *Grapple_RemoveDynamic(void *attached_object) {
     i32 index;
     for (index = 0; index < 4; ++index) {
         if (DynamicGrapplePc[index].attached_object == attached_object) {
@@ -965,7 +964,7 @@ static void Grapple_JumpPc(GAMEOBJECT *object) {
     }
 }
 
-extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
+extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
     object->flags_e24 &= ~0x80;
     if (LEGOCONTEXT_GRAPPLE == -1) {
         return;
@@ -1279,7 +1278,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
 
 extern "C" {
 
-    i32 __cdecl IndyGrappleCanJumpPc(GAMEOBJECT *object) {
+    i32 IndyGrappleCanJumpPc(GAMEOBJECT *object) {
         if (LEGOCONTEXT_GRAPPLE != -1 && object->character_context == LEGOCONTEXT_GRAPPLE &&
             (object->field_7b3 == 1 || (object->field_7b3 == 0 && object->context_duration >= 0.5f))) {
             return 1;
@@ -1287,7 +1286,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target) {
+    void Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target) {
         i32 amplitude;
         i32 angle;
         target->x = 0.0f;
@@ -1300,7 +1299,7 @@ extern "C" {
         NuVecAdd(target, target, &GRAPPLE_CURRENT->shadow_probe_position);
     }
 
-    i32 __cdecl Grapple_SetTargetMom(GAMEOBJECT *object) {
+    i32 Grapple_SetTargetMom(GAMEOBJECT *object) {
         NUVEC point;
         if (object->field_7b3 == 1) {
             object->target_velocity.x = (object->external_force.x - object->upper_position.x) * 20.0;
@@ -1315,14 +1314,14 @@ extern "C" {
         return 1;
     }
 
-    void __cdecl Grapple_SetRotOrder(GAMEOBJECT *object) {
+    void Grapple_SetRotOrder(GAMEOBJECT *object) {
         if (object->field_7b3 != 1) {
             object->movement_mode = 2;
         }
     }
 }
 
-extern "C" i32 __cdecl Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position) {
+extern "C" i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position) {
     position->x = ((GRAPPLE_MOTION_PC *)object->grapple)->hook_position.x;
     position->y = ((GRAPPLE_MOTION_PC *)object->grapple)->hook_position.y - object->context_hover_target_y;
     position->z = ((GRAPPLE_MOTION_PC *)object->grapple)->hook_position.z;
@@ -1337,8 +1336,7 @@ static inline f32 GrappleFabsPc(f32 value) {
     return *(f32 *)&bits;
 }
 
-extern "C" void __cdecl DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags,
-                                       NUMTL *unused_material) {
+extern "C" void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags, NUMTL *unused_material) {
     NURND_VERTEX3D_PC vertices[2];
     NUVEC previous;
     NUVEC middle;

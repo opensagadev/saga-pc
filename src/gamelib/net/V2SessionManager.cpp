@@ -30,8 +30,8 @@ STATIC_ASSERT(offsetof(V2SessionManager, peer_list) == 0x94);
 STATIC_ASSERT(offsetof(V2SessionManager, stats) == 0xa0);
 
 extern "C" {
-    void __cdecl PcDebugPrintLock(void);
-    void __cdecl PcDebugPrintUnlock(void);
+    void PcDebugPrintLock(void);
+    void PcDebugPrintUnlock(void);
 }
 
 V2SessionManager *V2SessionManager::mpSessionManager = 0;

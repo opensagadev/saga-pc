@@ -5,16 +5,16 @@
 #include <process.h>
 #include <string.h>
 
-extern "C" void __cdecl NuFileWriteString(NUFILE file, const char *text);
+extern "C" void NuFileWriteString(NUFILE file, const char *text);
 
 /* Native 0x6dff40: empty hook that receives each runtime error report. Retail
  * still calls it from PCNativeErrorPrint, which suggests it was compiled in
  * another unit; here the compiler drops the call to the empty body. */
-extern "C" void __cdecl PCNativeErrorHookPc(char *text) {
+extern "C" void PCNativeErrorHookPc(char *text) {
     (void)text;
 }
 
-void __cdecl PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+void PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
     va_list args;
     if (format != NULL) {
         va_start(args, format);
@@ -27,7 +27,7 @@ void __cdecl PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *for
     }
 }
 
-void __cdecl PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+void PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
     va_list arguments;
     if (format != NULL) {
         va_start(arguments, format);
@@ -40,7 +40,7 @@ void __cdecl PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const ch
     _exit(3);
 }
 
-extern "C" void __cdecl PCNativeMessagePrintPc(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+extern "C" void PCNativeMessagePrintPc(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
     va_list arguments;
     (void)state;
     if (format != NULL) {
@@ -52,7 +52,7 @@ extern "C" void __cdecl PCNativeMessagePrintPc(PC_NATIVE_DEBUG_STATE_PC *state, 
     MessageBoxA(PCInputInstance, PCNativeDebugOutputBuffer, "", 0x30);
 }
 
-extern "C" void __cdecl PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+extern "C" void PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
     va_list arguments;
     if (format != NULL) {
         va_start(arguments, format);
@@ -78,7 +78,7 @@ extern "C" void __cdecl PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, cons
     }
 }
 
-extern "C" void __cdecl PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+extern "C" void PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
     va_list arguments;
     if (format != NULL) {
         va_start(arguments, format);
@@ -93,8 +93,8 @@ extern "C" void __cdecl PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, co
 }
 
 /* Native 0x6e0260 and 0x6e0280: only format the text; the PC build draws nothing. */
-extern "C" void __cdecl PCNativeDebugPrintAtPc(PC_NATIVE_DEBUG_STATE_PC *state, i32 x, i32 y, u32 colour,
-                                               const char *format, ...) {
+extern "C" void PCNativeDebugPrintAtPc(PC_NATIVE_DEBUG_STATE_PC *state, i32 x, i32 y, u32 colour, const char *format,
+                                       ...) {
     va_list arguments;
     (void)state;
     (void)x;
@@ -107,7 +107,7 @@ extern "C" void __cdecl PCNativeDebugPrintAtPc(PC_NATIVE_DEBUG_STATE_PC *state, 
     }
 }
 
-extern "C" void __cdecl PCNativeDebugFormatPc(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+extern "C" void PCNativeDebugFormatPc(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
     va_list arguments;
     (void)state;
     if (format != NULL) {
@@ -121,8 +121,7 @@ extern "C" void __cdecl PCNativeDebugFormatPc(PC_NATIVE_DEBUG_STATE_PC *state, c
 extern "C" const char *WINAPI DXGetErrorString9A(HRESULT result);
 extern "C" const char *WINAPI DXGetErrorDescription9A(HRESULT result);
 
-extern "C" void __cdecl PCNativeD3DWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, HRESULT result, const char *format,
-                                                ...) {
+extern "C" void PCNativeD3DWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, HRESULT result, const char *format, ...) {
     va_list arguments;
     if (format != NULL) {
         va_start(arguments, format);

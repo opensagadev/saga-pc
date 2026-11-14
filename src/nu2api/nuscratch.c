@@ -5,11 +5,11 @@ extern u8 NuScratchBackingAccessPc[0x4000];
 STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(sizeof(u32) == 4);
 
-void __cdecl NuScratchReset(void) {
+void NuScratchReset(void) {
     ps2_scratch_free = NuScratchBackingAccessPc;
 }
 
-void *__cdecl NuScratchAlloc32(i32 request_bytes) {
+void *NuScratchAlloc32(i32 request_bytes) {
     u8 *current = ps2_scratch_free;
     u8 *previous = current;
     void **trailer;
@@ -20,7 +20,7 @@ void *__cdecl NuScratchAlloc32(i32 request_bytes) {
     return current;
 }
 
-void *__cdecl NuScratchAlloc64(i32 request_bytes) {
+void *NuScratchAlloc64(i32 request_bytes) {
     u8 *current = ps2_scratch_free;
     u8 *previous = current;
     void **trailer;
@@ -31,7 +31,7 @@ void *__cdecl NuScratchAlloc64(i32 request_bytes) {
     return current;
 }
 
-void *__cdecl NuScratchAlloc128(i32 request_bytes) {
+void *NuScratchAlloc128(i32 request_bytes) {
     u8 *current = ps2_scratch_free;
     u8 *previous = current;
     void **trailer;
@@ -42,7 +42,7 @@ void *__cdecl NuScratchAlloc128(i32 request_bytes) {
     return current;
 }
 
-void __cdecl NuScratchRelease(void) {
+void NuScratchRelease(void) {
     ps2_scratch_free = ((void **)ps2_scratch_free)[-1];
 }
 

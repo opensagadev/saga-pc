@@ -82,10 +82,10 @@ typedef struct CHARCONFIG_FLAGS098_PC {
 #define CC_FLAGS098 (*(CHARCONFIG_FLAGS098_PC *)charconfig.runtime->flags_098)
 
 /* Defined at the end of this file; retail calls it with and without a path. */
-void __cdecl CharConfigPakDiagnosticPc(const char *format, ...);
+void CharConfigPakDiagnosticPc(const char *format, ...);
 /* MATCH-EXCEPTION: retail also calls it with no arguments or with a number first; those calls go through a type
  * without a prototype, as C allows no other way. */
-#define CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED ((void(__cdecl *)())CharConfigPakDiagnosticPc)
+#define CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED ((void (*)())CharConfigPakDiagnosticPc)
 
 f32 CharConfigAbsFloat(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffffu;
@@ -2064,5 +2064,5 @@ STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
 
 /* Original source name unknown. Empty on PC (a bare RET at 0x5845b0). Defined
    after its callers and variadic, so CharConfig_ConfigureAll keeps the calls. */
-void __cdecl CharConfigPakDiagnosticPc(const char *format, ...) {
+void CharConfigPakDiagnosticPc(const char *format, ...) {
 }

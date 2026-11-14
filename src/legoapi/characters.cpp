@@ -54,7 +54,7 @@ STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + sizeof(GAME_CUSTOMISER_STAR
 STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, name) == 0);
 STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, flags) == 4);
 STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, action_id) == 8);
-typedef void(__cdecl *CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
+typedef void (*CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
 
 typedef struct character_callback_writer_pc_s {
     i32 name_id;
@@ -160,7 +160,7 @@ extern "C" {
 #pragma data_seg()
 }
 
-i32 __cdecl CharIDFromName(const char *name) {
+i32 CharIDFromName(const char *name) {
     i32 index;
 
     for (index = 0; index < CHARCOUNT; ++index) {
@@ -183,7 +183,7 @@ extern "C" CHARACTERDATA_PC *CDataFromName(const char *name) {
 }
 
 // Genuine character subsystem callback; arg1 prefix, arg4 output are PC order.
-i32 __cdecl RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *animation, char *output_path) {
+i32 RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *animation, char *output_path) {
     const ANIM_REDIRECT_VIEW_PC *redirect;
     const char *name;
     if (list == NULL) {
@@ -200,7 +200,7 @@ i32 __cdecl RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *a
     return 0;
 }
 
-extern "C" void __cdecl CharScenes_Init(VARIPTR *buffer, VARIPTR *end) {
+extern "C" void CharScenes_Init(VARIPTR *buffer, VARIPTR *end) {
     u32 size = CHARCOUNT * sizeof(*KillPartsCharSceneAreaPc);
     KILLPARTS_CHARSCENE_PC *scenes = (KILLPARTS_CHARSCENE_PC *)((buffer->addr + 3) & ~3u);
     KillPartsCharSceneAreaPc = scenes;
@@ -219,7 +219,7 @@ static void CharScene_Load(KILLPARTS_CHARSCENE_PC *entry, i32 model_id, VARIPTR 
 
 extern "C" {
 
-    void __cdecl CharScenes_LevelLoad(WORLDINFO *world) {
+    void CharScenes_LevelLoad(WORLDINFO *world) {
         for (i32 i = 0; i < CHARCOUNT; ++i) {
             ((CHARACTER_SCENE_WORLD_PC *)world)->character_scenes[i].scene = NULL;
             if ((KillPartsCharSceneAreaPc == NULL || KillPartsCharSceneAreaPc[i].scene == NULL) &&
@@ -232,7 +232,7 @@ extern "C" {
         }
     }
 
-    void __cdecl CharScenes_AreaLoad(APICHARACTERMODELLIST *list, VARIPTR *buffer, VARIPTR end) {
+    void CharScenes_AreaLoad(APICHARACTERMODELLIST *list, VARIPTR *buffer, VARIPTR end) {
         if (KillPartsCharSceneAreaPc == NULL) {
             return;
         }
@@ -247,7 +247,7 @@ extern "C" {
         }
     }
 
-    NUSPECIALHANDLE *__cdecl CharScene_FindHSpecial(WORLDINFO *world, i32 character_id) {
+    NUSPECIALHANDLE *CharScene_FindHSpecial(WORLDINFO *world, i32 character_id) {
         KILLPARTS_WORLD_SCENES_PC *scenes = reinterpret_cast<KILLPARTS_WORLD_SCENES_PC *>(world);
         NUSPECIALHANDLE *special;
         if (KillPartsCharSceneAreaPc != NULL && KillPartsCharSceneAreaPc[character_id].scene != NULL) {
@@ -264,7 +264,7 @@ extern "C" {
     }
 }
 
-void __cdecl CharScene_Draw(WORLDINFO *world, i32 character_id, NUMTX *matrix, NUMTX *reflection_matrix) {
+void CharScene_Draw(WORLDINFO *world, i32 character_id, NUMTX *matrix, NUMTX *reflection_matrix) {
     NUSPECIALHANDLE *special = CharScene_FindHSpecial(world, character_id);
     if (special != NULL) {
         if (matrix != NULL) {
@@ -278,7 +278,7 @@ void __cdecl CharScene_Draw(WORLDINFO *world, i32 character_id, NUMTX *matrix, N
 
 extern "C" {
 
-    void __cdecl CharScenes_LevelDump(WORLDINFO *world) {
+    void CharScenes_LevelDump(WORLDINFO *world) {
         CHARACTER_SCENE_WORLD_PC *resource = (CHARACTER_SCENE_WORLD_PC *)world;
         if (resource->character_scenes == NULL) {
             return;
@@ -317,7 +317,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, count) == 2);
     STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
 
-    void __cdecl IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
+    void IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
         u32 table_size = (u32)CHARCOUNT * sizeof(*IconScenePc);
         u32 addr = (buffer->addr + 3) & ~3u;
         IconScenePc = (NUGSCN **)addr;
@@ -328,14 +328,14 @@ extern "C" {
         }
     }
 
-    NUGSCN *__cdecl IconScene_FindById(i32 id) {
+    NUGSCN *IconScene_FindById(i32 id) {
         if (id < 0 || id >= CHARCOUNT) {
             return NULL;
         }
         return IconScenePc[id];
     }
 
-    void __cdecl IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buffer, VARIPTR *end) {
+    void IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buffer, VARIPTR *end) {
         i32 id;
         NUGSCN *scene;
         NUGSCN **scenes;
@@ -368,7 +368,7 @@ extern "C" {
         }
     }
 
-    void __cdecl IconScenes_Dump(void) {
+    void IconScenes_Dump(void) {
         i32 i;
         NUGSCN **scenes = IconScenePc;
         if (scenes == NULL) {
@@ -384,9 +384,8 @@ extern "C" {
         }
     }
 
-    void __cdecl DrawCharIcon(i32 character_id, f32 x, f32 y, f32 z, f32 scale, i32 frame_object_id,
-                              f32 character_alpha, f32 frame_alpha, i32 draw_character,
-                              NUSPECIALHANDLE *override_special) {
+    void DrawCharIcon(i32 character_id, f32 x, f32 y, f32 z, f32 scale, i32 frame_object_id, f32 character_alpha,
+                      f32 frame_alpha, i32 draw_character, NUSPECIALHANDLE *override_special) {
         WORLDINFO *world = WorldInfo_CurrentlyActive();
         NUSPECIALHANDLE special;
         if (ObjTabList == NULL || world == NULL) {
@@ -437,7 +436,7 @@ extern "C" {
         drawcharicon_i_panel = -1;
     }
 
-    i32 __cdecl LayerFromName(PLAYERCHARACTERCONFIG_PC *character, const char *name) {
+    i32 LayerFromName(PLAYERCHARACTERCONFIG_PC *character, const char *name) {
         i32 i;
         for (i = 0; i < character->layer_count; ++i) {
             if (NuStrICmp(name, character->layers[i].name) == 0) {
@@ -447,7 +446,7 @@ extern "C" {
         return -1;
     }
 
-    i32 __cdecl MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *model, i16 *output, u32 mask) {
+    i32 MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *model, i16 *output, u32 mask) {
         PLAYERCHARACTERCONFIG_PC *character;
         i32 count;
         i32 bit;
@@ -488,7 +487,7 @@ extern "C" {
         return count;
     }
 
-    void __cdecl CharCategories_Init(CHAR_CATEGORY_RECORD_PC *categories) {
+    void CharCategories_Init(CHAR_CATEGORY_RECORD_PC *categories) {
         CharCategory = categories;
         CHARCATEGORYCOUNT = 0;
         if (categories != NULL) {
@@ -499,7 +498,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl CharCategory_FindByName(char *name) {
+    i32 CharCategory_FindByName(char *name) {
         if (CharCategory == NULL) {
             return -1;
         }
@@ -511,7 +510,7 @@ extern "C" {
         return -1;
     }
 
-    i32 __cdecl CharCategory_IsCategory(GAMEOBJECT *object, i32 index) {
+    i32 CharCategory_IsCategory(GAMEOBJECT *object, i32 index) {
         CHAR_CATEGORY_RECORD_PC *category;
         if (index < 0 || index >= CHARCATEGORYCOUNT) {
             return 0;
@@ -532,10 +531,9 @@ extern "C" {
         return 1;
     }
 
-    void __cdecl SetMoveAndAnimateFunctions(u32 model_mask, u32 model_value, u32 game_mask, u32 game_value,
-                                            i32 movement_type, CHARACTER_UPDATE_CALLBACK_PC move,
-                                            CHARACTER_UPDATE_CALLBACK_PC animate,
-                                            CHARACTER_UPDATE_CALLBACK_PC post_animate) {
+    void SetMoveAndAnimateFunctions(u32 model_mask, u32 model_value, u32 game_mask, u32 game_value, i32 movement_type,
+                                    CHARACTER_UPDATE_CALLBACK_PC move, CHARACTER_UPDATE_CALLBACK_PC animate,
+                                    CHARACTER_UPDATE_CALLBACK_PC post_animate) {
         i32 index;
         for (index = 0; index < CHARCOUNT; ++index) {
             if (model_mask != 0 && (CDataList[index].model_flags & model_mask) != model_value) {
@@ -559,16 +557,16 @@ extern "C" {
         }
     }
 
-    void __cdecl GameLoadCharacterModels(APICHARACTERMODELLIST *list, i32 append_models, VARIPTR *buffer, VARIPTR *end,
-                                         i32 area_models, i32 area) {
+    void GameLoadCharacterModels(APICHARACTERMODELLIST *list, i32 append_models, VARIPTR *buffer, VARIPTR *end,
+                                 i32 area_models, i32 area) {
         if (area_models != 0 && CutScenePlayer_Active() != NULL && area != -1 && &ADataList[area] != HUB_ADATA) {
             area_models = 0;
         }
         APILoadCharacterModels(list, append_models, buffer, *end, area_models);
     }
 
-    i32 __cdecl InModelListDataFlags(APICHARACTERMODELLIST *list, u32 model_flags, u32 game_flags, i32 require_hats,
-                                     i32 reject_hidden) {
+    i32 InModelListDataFlags(APICHARACTERMODELLIST *list, u32 model_flags, u32 game_flags, i32 require_hats,
+                             i32 reject_hidden) {
         if (list != NULL) {
             for (; list->model_id != -1; ++list) {
                 i32 id;
@@ -590,8 +588,8 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl RandomIDFromFlags(u32 model_flags, u32 game_flags, i32 require_hat, APICHARACTERMODELLIST *excluded,
-                                  i32 exclude_hidden) {
+    i32 RandomIDFromFlags(u32 model_flags, u32 game_flags, i32 require_hat, APICHARACTERMODELLIST *excluded,
+                          i32 exclude_hidden) {
         i16 candidates[500];
         i32 count = 0;
         i32 id;
@@ -629,14 +627,14 @@ extern "C" {
     static char **CharVariant = 0;
     static i32 CHARVARIANTCOUNT = 0;
 
-    void __cdecl CharVariants_Init(char **variants, i32 count) {
+    void CharVariants_Init(char **variants, i32 count) {
         if (variants != NULL && count > 0) {
             CharVariant = variants;
             CHARVARIANTCOUNT = count;
         }
     }
 
-    i32 __cdecl CharVariant_Find(char *name) {
+    i32 CharVariant_Find(char *name) {
         i32 index;
         if (CharVariant != NULL) {
             for (index = 0; index < CHARVARIANTCOUNT; ++index) {

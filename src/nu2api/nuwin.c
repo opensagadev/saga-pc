@@ -21,6 +21,6 @@ void fun_006dd370(i32 index, i32 value) {
     NuWindowsConfigValuesPc[index] = value;
 }
 
-i32 __cdecl NuWindowsGetConfigValuePc(i32 index) {
+i32 NuWindowsGetConfigValuePc(i32 index) {
     return NuWindowsConfigValuesPc[index];
 }

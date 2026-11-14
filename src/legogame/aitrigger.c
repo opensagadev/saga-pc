@@ -77,7 +77,7 @@ STATIC_ASSERT(sizeof(AITRIGGERSET_s) == 0x214);
         (set)->trigger_indices[index] = -1;                                                                            \
     }
 
-void __cdecl AITriggerSetSysReset(TRIGGER_SYSTEM_PC *system) {
+void AITriggerSetSysReset(TRIGGER_SYSTEM_PC *system) {
     i32 index;
     if (system == NULL) {
         return;
@@ -92,7 +92,7 @@ void __cdecl AITriggerSetSysReset(TRIGGER_SYSTEM_PC *system) {
     }
 }
 
-AITRIGGERSET_s *__cdecl AITriggerSetCreate(AITRIGGERSETSYS_s *system, FLOWBOX_PC *box) {
+AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *system, FLOWBOX_PC *box) {
     i32 index;
     if (system != NULL) {
         for (index = 0; index < 32; ++index) {
@@ -247,11 +247,11 @@ static i32 TriggerGizmoAvailablePc(GIZMO_PC *gizmo) {
     return 0;
 }
 
-i32 __cdecl GameObjectUsingLever(GAMEOBJECT *object, void *lever) {
+i32 GameObjectUsingLever(GAMEOBJECT *object, void *lever) {
     return object->character_context == 0x4a && object->grapple == lever;
 }
 
-void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
+void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
     u64 character_mask = 0;
     TRIGGER_SET_PC *set;
     i32 set_index;
@@ -461,7 +461,7 @@ void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
     }
 }
 
-void __cdecl AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) {
+void AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) {
     AITRIGGERSET_s *groups[32] = {0};
     GIZFLOW_PC *flow;
     FLOWBOX_PC *box;
@@ -491,7 +491,7 @@ void __cdecl AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) 
     }
 }
 
-void *__cdecl AITriggerSetSysCreate(VARIPTR *buffer, VARIPTR *end) {
+void *AITriggerSetSysCreate(VARIPTR *buffer, VARIPTR *end) {
     TRIGGER_SYSTEM_PC *system = AISysBufferAlloc(buffer, end, sizeof(*system));
     AITriggerSetSysReset(system);
     return system;

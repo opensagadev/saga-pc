@@ -6,11 +6,11 @@ static u8 *TerrainCrashDataPc = 0;
 static i16 debug_index = 0;
 #pragma bss_seg()
 
-void __cdecl TerrainSetCur(void *terrain) {
+void TerrainSetCur(void *terrain) {
     CurrentTerrain = terrain;
 }
 
-void *__cdecl TerrainGetCur(void) {
+void *TerrainGetCur(void) {
     return CurrentTerrain;
 }
 
@@ -34,7 +34,7 @@ void fun_0066cc00(void (*function)(void *argument)) {
     }
 }
 
-i32 __cdecl PlatInstGetHit(i32 index) {
+i32 PlatInstGetHit(i32 index) {
     TERRAIN_SET_PC *terrain = CurrentTerrain;
     if (terrain == NULL || index < 0 || index >= terrain->max_platforms) {
         return 0;
@@ -49,7 +49,7 @@ void PlatInstCenter(i32 index, NUVEC *position) {
     }
 }
 
-void __cdecl ScanTerrIDRemovePlat(i32 platform_index) {
+void ScanTerrIDRemovePlat(i32 platform_index) {
     i32 i;
 
     for (i = 0; i < 64; i++) {
@@ -61,7 +61,7 @@ void __cdecl ScanTerrIDRemovePlat(i32 platform_index) {
 
 #define TERRAIN_NPI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 
-i32 __cdecl NewPlatInst(void *object, i32 instance) {
+i32 NewPlatInst(void *object, i32 instance) {
     TERRAIN_SET_PC *terrain = CurrentTerrain;
     i32 new_index;
     i32 source_index;
@@ -128,7 +128,7 @@ i32 __cdecl NewPlatInst(void *object, i32 instance) {
 
 #define TERRAIN_DP_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 
-i32 __cdecl DeletePlatinst(i32 platform_index) {
+i32 DeletePlatinst(i32 platform_index) {
     i32 i;
     i32 cell_group_index;
 
@@ -176,7 +176,7 @@ i32 PlatformCrush(void) {
 
 #undef TERRAIN_DP_SET
 
-i32 __cdecl ShadowInfo(void) {
+i32 ShadowInfo(void) {
     return ShadPoly != NULL ? ShadPoly->material[0] : -1;
 }
 
@@ -193,15 +193,15 @@ void ShadowDir(NUVEC *direction) {
     }
 }
 
-i32 __cdecl EShadowInfo(void) {
+i32 EShadowInfo(void) {
     return EShadPoly != NULL ? EShadPoly->material[1] : -1;
 }
 
-i32 __cdecl ShadowRoofInfo(void) {
+i32 ShadowRoofInfo(void) {
     return ShadRoofPoly != NULL ? ShadRoofPoly->material[0] : -1;
 }
 
-i32 __cdecl NewShadowOnPlatform(void) {
+i32 NewShadowOnPlatform(void) {
     TERRAIN_SET_PC *terrain = CurrentTerrain;
     TERRAIN_GROUP_PC *group;
     if (terrain == NULL || castnum == -1) {
@@ -1315,7 +1315,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
 #undef TERRAIN_CROSS
 #undef SHADOW_BOUNDS_OVERLAP
 
-f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_range, i32 mask) {
+f32 NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_range, i32 mask) {
     NUVEC local_position;
     (void)unused;
     TerrainShadowHeightPc = LevelConfigFarDistance;
@@ -1962,21 +1962,21 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     return saved_cursor.void_ptr;
 }
 
-void __cdecl TerrainPlatGetMtx(i32 index, NUMTX **previous, NUMTX **current) {
+void TerrainPlatGetMtx(i32 index, NUMTX **previous, NUMTX **current) {
     if (index > -1) {
         *previous = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix;
         *current = ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object;
     }
 }
 
-void __cdecl TerrainSetImpactData(void *records, i32 *count, i32 max_records) {
+void TerrainSetImpactData(void *records, i32 *count, i32 max_records) {
     TerImpactData = records;
     TerImpactDataCount = count;
     *count = 0;
     TerImpactDataMax = max_records;
 }
 
-void __cdecl TerrainSetPlatConnectTol(f32 tolerance) {
+void TerrainSetPlatConnectTol(f32 tolerance) {
     TerConTol = tolerance;
 }
 
@@ -2000,7 +2000,7 @@ typedef struct TERRAIN_PLATFORM_LIFECYCLE_PC {
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platform_count) == 0x154);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platforms) == 0x158);
 
-void __cdecl noterraininit(void) {
+void noterraininit(void) {
     terraincnt = 0;
     curSphereter = 0;
     platinrange = 0;
@@ -2011,15 +2011,15 @@ void __cdecl noterraininit(void) {
     TerrShapeAdjCnt = 0;
 }
 
-void __cdecl TerrSetPlatScanDist(f32 distance) {
+void TerrSetPlatScanDist(f32 distance) {
     TerrPlatScanDist = distance;
 }
 
-void __cdecl TerrainSetWallDeflectYScale(f32 scale) {
+void TerrainSetWallDeflectYScale(f32 scale) {
     TerrWallDeflectYScale = scale;
 }
 
-void __cdecl TerrainPlatformOldUpdate(void) {
+void TerrainPlatformOldUpdate(void) {
     i32 i;
     if (CurrentTerrain == NULL) {
         return;
@@ -2041,7 +2041,7 @@ void __cdecl TerrainPlatformOldUpdate(void) {
 #define TERRAIN_TPNU_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 #define TERRAIN_TPNU_PLATFORM(index) (((TERRAIN_PLATFORM_LIFECYCLE_PC *)TERRAIN_TPNU_SET->platforms)[index])
 
-void __cdecl TerrainPlatformNewUpdate(void) {
+void TerrainPlatformNewUpdate(void) {
     i32 i;
     f32 negative_distance;
     f32 x;
@@ -2225,7 +2225,7 @@ NUVEC TerCrossProduct(NUVEC *a, NUVEC *b) {
 #undef TERRAIN_TPNU_PLATFORM
 #undef TERRAIN_TPNU_SET
 
-i32 __cdecl FindPlatInst(i32 instance) {
+i32 FindPlatInst(i32 instance) {
     TERRAIN_SET_PC *terrain;
     i32 index;
     i32 result = -1;
@@ -2242,7 +2242,7 @@ i32 __cdecl FindPlatInst(i32 instance) {
     return result;
 }
 
-void __cdecl PlatInstRotate(i32 platform_index, i32 enabled) {
+void PlatInstRotate(i32 platform_index, i32 enabled) {
     TERRAIN_SET_PC *terrain;
     if (platform_index >= 0) {
         terrain = CurrentTerrain;
@@ -3518,7 +3518,7 @@ void TerrainRemoveWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain
 
 #define TERRAIN_BOUNCE_PLATFORM_PC ((TERRAIN_PLATFORM_LIFECYCLE_PC *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms)
 
-void __cdecl PlatInstBounce(i32 index, f32 impulse, f32 spring, f32 damping) {
+void PlatInstBounce(i32 index, f32 impulse, f32 spring, f32 damping) {
     if (index >= 0) {
         if (index < ((TERRAIN_SET_PC *)CurrentTerrain)->max_platforms) {
             if (TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_impulse == 0.0f) {

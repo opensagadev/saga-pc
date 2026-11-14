@@ -3,9 +3,9 @@
 
 /* Retail unit 0x457ec0-0x458461: definitions in retail address order. */
 
-void __cdecl Text_ExpandAllButtonStrings(char *, char *);
+void Text_ExpandAllButtonStrings(char *, char *);
 
-f32 __cdecl CurrentHintAlpha(void) {
+f32 CurrentHintAlpha(void) {
     f32 alpha;
     f32 fade_start;
     if (hintsys.active_hint == NULL) {
@@ -27,7 +27,7 @@ f32 __cdecl CurrentHintAlpha(void) {
 
 const u8 HintRGB[5][3] = {{255, 0, 0}, {0, 255, 0}, {0, 127, 255}, {127, 0, 255}, {255, 255, 0}};
 
-void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
+void DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
     f32 alpha;
     f32 text_x;
     f32 text_y;
@@ -98,7 +98,7 @@ void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
     }
 }
 
-void __cdecl initGameHintSys_LSW(void) {
+void initGameHintSys_LSW(void) {
     RegisterWithHintSys(DrawHint_LSW, Hints_LSW, Game.hint_completion_bits, 3);
     LswForceUsedHintFlagsPc &= ~7u;
 }

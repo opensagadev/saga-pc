@@ -12,7 +12,7 @@ static i32 NuPSFileFindFreeHandle(void) {
     return -1;
 }
 
-i32 __cdecl NuPSFileOpen(const char *path, i32 mode) {
+i32 NuPSFileOpen(const char *path, i32 mode) {
     DWORD access = 0;
     DWORD creation = 0;
     i32 index;
@@ -40,19 +40,19 @@ i32 __cdecl NuPSFileOpen(const char *path, i32 mode) {
     return index;
 }
 
-i32 __cdecl NuPSFileClose(i32 index) {
+i32 NuPSFileClose(i32 index) {
     BOOL closed = CloseHandle(pc_file_handles[index]);
     pc_file_handles[index] = INVALID_HANDLE_VALUE;
     return closed == FALSE;
 }
 
-i32 __cdecl NuPSFileRead(i32 index, void *destination, i32 size) {
+i32 NuPSFileRead(i32 index, void *destination, i32 size) {
     DWORD count = 0;
     ReadFile(pc_file_handles[index], destination, size, &count, NULL);
     return count;
 }
 
-i32 __cdecl NuPSFileWrite(i32 index, const void *source, i32 size) {
+i32 NuPSFileWrite(i32 index, const void *source, i32 size) {
     DWORD count = 0;
     if (WriteFile(pc_file_handles[index], source, size, &count, NULL)) {
         return count;
@@ -60,7 +60,7 @@ i32 __cdecl NuPSFileWrite(i32 index, const void *source, i32 size) {
     return 0;
 }
 
-i64 __cdecl NuPSFileLSeek(i32 index, i64 offset, i32 origin) {
+i64 NuPSFileLSeek(i32 index, i64 offset, i32 origin) {
     DWORD method;
     LARGE_INTEGER distance;
     LARGE_INTEGER position;

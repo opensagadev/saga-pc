@@ -1,8 +1,8 @@
 #include "saga.h"
 
-i32 __cdecl PCDeviceSetCursorPositionPc(i32 x, i32 y);
+i32 PCDeviceSetCursorPositionPc(i32 x, i32 y);
 
-void __cdecl NuMouseRead(void) {
+void NuMouseRead(void) {
 }
 
 u32 NuMouseReadButtons(void) {
@@ -19,18 +19,18 @@ u32 fun_006d58d0(i32 button) {
 void fun_006d5940(void) {
 }
 
-f32 __cdecl NuMouseReadX(void) {
+f32 NuMouseReadX(void) {
     return PcMouseX;
 }
 
-f32 __cdecl NuMouseReadY(void) {
+f32 NuMouseReadY(void) {
     return PcMouseY;
 }
 
-void __cdecl PcEditorCursorEnablePc(i32 enabled) {
+void PcEditorCursorEnablePc(i32 enabled) {
 }
 
-void __cdecl PcGetMousePositionPc(f32 *x, f32 *y) {
+void PcGetMousePositionPc(f32 *x, f32 *y) {
     if (x != NULL) {
         *x = PcMouseX;
     }
@@ -40,7 +40,7 @@ void __cdecl PcGetMousePositionPc(f32 *x, f32 *y) {
 }
 
 /* Moves the OS cursor to a normalised client position. */
-void __cdecl PcSetMousePositionPc(f32 x, f32 y) {
+void PcSetMousePositionPc(f32 x, f32 y) {
     i32 client_x;
     i32 client_y;
     PcMouseX = x;

@@ -1,6 +1,6 @@
 #include "saga.h"
 
-void __cdecl NuWindAnimate(NUWIND *wind, f32 frame_time) {
+void NuWindAnimate(NUWIND *wind, f32 frame_time) {
     if (wind != NULL) {
         wind->phase += nu_wind_phase_scale * wind->phase_speed_scale * frame_time;
         if (wind->phase >= 1.0f) {
@@ -15,7 +15,7 @@ VARIPTR *fun_005ddd00(void) {
     return &nudlist_stream_cursor;
 }
 
-i32 __cdecl NuWindCurrent(NUWIND *wind) {
+i32 NuWindCurrent(NUWIND *wind) {
     if (wind == NULL || wind->current < 0) {
         return -1;
     }
@@ -23,7 +23,7 @@ i32 __cdecl NuWindCurrent(NUWIND *wind) {
 }
 
 /* Original source: gamelib/nuwind/nuwind.cpp. */
-void __cdecl NuWindInitialise(NUWIND *wind) {
+void NuWindInitialise(NUWIND *wind) {
     if (wind != NULL) {
         i32 index;
         for (index = 0; index < 8; ++index) {

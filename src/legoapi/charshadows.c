@@ -3,9 +3,9 @@
 /* Retail unit 0x589f60-0x58a504: definitions in retail address order. */
 
 extern i32 CharacterBlobShadowsOnPc;
-f32 __cdecl DropInOutScale(GAMEOBJECT *object);
+f32 DropInOutScale(GAMEOBJECT *object);
 
-void __cdecl CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {
+void CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {
     packet->shadows[0].position.y = 2000000.0f;
     packet->shadows[1].position.y = 2000000.0f;
     packet->shadows[2].position.y = 2000000.0f;
@@ -13,7 +13,7 @@ void __cdecl CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {
     packet->shadows[4].position.y = 2000000.0f;
 }
 
-void __cdecl CharShadows_Update(void) {
+void CharShadows_Update(void) {
     GAMEOBJECT *object = Obj;
     CHARACTER_SHADOW_PACKET_PC *packet;
     CHARACTER_SHADOW_RESET_SLOT_PC *slot;
@@ -86,7 +86,7 @@ void __cdecl CharShadows_Update(void) {
     }
 }
 
-void __cdecl CharShadows_Draw(void) {
+void CharShadows_Draw(void) {
     GAMEOBJECT *object;
     CHARACTER_SHADOW_PACKET_PC *packet;
     CHARACTER_SHADOW_RESET_SLOT_PC *slot;

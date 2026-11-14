@@ -3,7 +3,7 @@
 static i32 NuFadeMaxDataPC;
 static i32 NuFadeMaxGroupsPC;
 
-void __cdecl NuFadeObjSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count) {
+void NuFadeObjSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count) {
     NuFadeMaxDataPC = matrix_count;
     NuFadeMaxGroupsPC = group_count;
     buffer->addr = (buffer->addr + 15) & ~15u;
@@ -18,7 +18,7 @@ void __cdecl NuFadeObjSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 
 void fun_00545e00(void) {
 }
 
-NUVEC __cdecl NuFadeObjGetAngleTerrainValues(NUVEC *position) {
+NUVEC NuFadeObjGetAngleTerrainValues(NUVEC *position) {
     NUVEC values;
     values.y = NewShadow(position, 0.0f, 5.0f, 0);
     values.x = (f32)NuAtan2D(ShadNorm.z, ShadNorm.y);
@@ -26,7 +26,7 @@ NUVEC __cdecl NuFadeObjGetAngleTerrainValues(NUVEC *position) {
     return values;
 }
 
-void __cdecl NuFadeObjInit(void) {
+void NuFadeObjInit(void) {
     i32 group;
     i32 i;
     i16 *platform;
@@ -51,7 +51,7 @@ void __cdecl NuFadeObjInit(void) {
     TerrainSetCur(terrain);
 }
 
-PC_NUFADEGROUP *__cdecl NuFadeObjAllocateGrp(void) {
+PC_NUFADEGROUP *NuFadeObjAllocateGrp(void) {
     i32 index;
     for (index = 0; index < NuFadeMaxGroupsPC; ++index) {
         if (!NuFadeObjGroup[index].active) {
@@ -83,8 +83,8 @@ i32 NuFadeSetFxCodeMtls(NUGEOM *geometry, u8 *codes) {
     return count;
 }
 
-PC_NUFADEGROUP *__cdecl NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 near_distance,
-                                           f32 far_distance, i32 flags) {
+PC_NUFADEGROUP *NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 near_distance,
+                                   f32 far_distance, i32 flags) {
     PC_NUFADEGROUP *group;
     NUMTX *matrix = matrices;
     i16 *platform;
@@ -151,7 +151,7 @@ PC_NUFADEGROUP *__cdecl NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matri
     return NULL;
 }
 
-void __cdecl NuFadeObjAngleTerrain(NUMTX *matrix) {
+void NuFadeObjAngleTerrain(NUMTX *matrix) {
     NUVEC4 position;
     NUVEC4 angles;
     matrix->m31 = NewShadow(&matrix->translation, 0.0f, 5.0f, 0);
@@ -168,7 +168,7 @@ void __cdecl NuFadeObjAngleTerrain(NUMTX *matrix) {
     matrix->m32 = position.z;
 }
 
-void __cdecl NuFadeObjUpdateArray(NUVEC **positions) {
+void NuFadeObjUpdateArray(NUVEC **positions) {
     i32 i;
     i32 g;
     i32 p;
@@ -227,7 +227,7 @@ void __cdecl NuFadeObjUpdateArray(NUVEC **positions) {
     TerrainSetCur(terrain);
 }
 
-void __cdecl NuFadeObjUpdate(NUVEC *position) {
+void NuFadeObjUpdate(NUVEC *position) {
     i32 i;
     NUVEC *positions[8];
     for (i = 1; i < 8; ++i) {
@@ -240,7 +240,7 @@ void __cdecl NuFadeObjUpdate(NUVEC *position) {
 void fun_00545c70(void) {
 }
 
-void __cdecl NuFadeObjDraw(void) {
+void NuFadeObjDraw(void) {
     i32 i;
     i32 g;
     NUMTX *matrix;

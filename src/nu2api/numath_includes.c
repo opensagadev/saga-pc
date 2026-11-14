@@ -119,7 +119,7 @@ u16 ang[513] = {
 #define POW4(x) (POW2(x) * POW2(x))
 #define POW5(x) (POW2(x) * POW3(x))
 
-i16 __cdecl NuASin(f32 sin) {
+i16 NuASin(f32 sin) {
     f32 abs;
     f32 sqrt;
     f32 unknown_a;
@@ -154,11 +154,11 @@ i16 __cdecl NuASin(f32 sin) {
            MAX_SHORT_OVER_PI;
 }
 
-i16 __cdecl NuACos(f32 cos) {
+i16 NuACos(f32 cos) {
     return 0x4000 - NuASin(cos);
 }
 
-void __cdecl NuVecMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
+void NuVecMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
     f32 y = v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31;
     f32 z = v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + m->m32;
 
@@ -167,7 +167,7 @@ void __cdecl NuVecMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->z = z;
 }
 
-f32 __cdecl NuVecMtxTransformH(NUVEC *out, NUVEC *v, NUMTX *m) {
+f32 NuVecMtxTransformH(NUVEC *out, NUVEC *v, NUMTX *m) {
     f32 reciprocal_w = NuFdiv(1.0f, v->x * m->m03 + v->y * m->m13 + v->z * m->m23 + m->m33);
     f32 y = (v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31) * reciprocal_w;
     f32 z = (v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + m->m32) * reciprocal_w;
@@ -177,13 +177,13 @@ f32 __cdecl NuVecMtxTransformH(NUVEC *out, NUVEC *v, NUMTX *m) {
     return reciprocal_w;
 }
 
-void __cdecl NuVecMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *m) {
+void NuVecMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->x = v->x + m->m30;
     out->y = v->y + m->m31;
     out->z = v->z + m->m32;
 }
 
-void __cdecl NuVecMtxRotate(NUVEC *out, NUVEC *v, NUMTX *m) {
+void NuVecMtxRotate(NUVEC *out, NUVEC *v, NUMTX *m) {
     f32 y = v->x * m->m01 + v->y * m->m11 + v->z * m->m21;
     f32 z = v->x * m->m02 + v->y * m->m12 + v->z * m->m22;
 
@@ -192,25 +192,25 @@ void __cdecl NuVecMtxRotate(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->z = z;
 }
 
-void __cdecl NuVecMtxRotateValX(NUVEC *out, f32 value, NUMTX *matrix) {
+void NuVecMtxRotateValX(NUVEC *out, f32 value, NUMTX *matrix) {
     out->x = matrix->m00 * value;
     out->y = matrix->m01 * value;
     out->z = matrix->m02 * value;
 }
 
-void __cdecl NuVecMtxRotateValY(NUVEC *out, f32 value, NUMTX *matrix) {
+void NuVecMtxRotateValY(NUVEC *out, f32 value, NUMTX *matrix) {
     out->x = matrix->m10 * value;
     out->y = matrix->m11 * value;
     out->z = matrix->m12 * value;
 }
 
-void __cdecl NuVecMtxRotateValZ(NUVEC *out, f32 value, NUMTX *matrix) {
+void NuVecMtxRotateValZ(NUVEC *out, f32 value, NUMTX *matrix) {
     out->x = matrix->m20 * value;
     out->y = matrix->m21 * value;
     out->z = matrix->m22 * value;
 }
 
-void __cdecl NuVecMtxRotateH(NUVEC *out, NUVEC *v, NUMTX *m) {
+void NuVecMtxRotateH(NUVEC *out, NUVEC *v, NUMTX *m) {
     f32 reciprocal_w = 1.0f / (v->x * m->m03 + v->y * m->m13 + v->z * m->m23);
     f32 y = (v->x * m->m01 + v->y * m->m11 + v->z * m->m21) * reciprocal_w;
     f32 z = (v->x * m->m02 + v->y * m->m12 + v->z * m->m22) * reciprocal_w;
@@ -219,13 +219,13 @@ void __cdecl NuVecMtxRotateH(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->z = z;
 }
 
-void __cdecl NuVecMtxScale(NUVEC *out, NUVEC *v, NUMTX *m) {
+void NuVecMtxScale(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->x = v->x * m->m00;
     out->y = v->y * m->m11;
     out->z = v->z * m->m22;
 }
 
-void __cdecl NuVecInvMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
+void NuVecInvMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
     f32 x = v->x - m->m30;
     f32 y = v->y - m->m31;
     f32 z = v->z - m->m32;
@@ -235,13 +235,13 @@ void __cdecl NuVecInvMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->z = x * m->m20 + y * m->m21 + z * m->m22;
 }
 
-void __cdecl NuVecInvMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *matrix) {
+void NuVecInvMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *matrix) {
     out->x = v->x - matrix->m30;
     out->y = v->y - matrix->m31;
     out->z = v->z - matrix->m32;
 }
 
-void __cdecl NuVecInvMtxRotate(NUVEC *out, NUVEC *v, NUMTX *m) {
+void NuVecInvMtxRotate(NUVEC *out, NUVEC *v, NUMTX *m) {
     f32 y = v->x * m->m10 + v->y * m->m11 + v->z * m->m12;
     f32 z = v->x * m->m20 + v->y * m->m21 + v->z * m->m22;
 
@@ -250,34 +250,34 @@ void __cdecl NuVecInvMtxRotate(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->z = z;
 }
 
-void __cdecl NuVecInvMtxRotateValX(NUVEC *out, f32 unused, NUMTX *matrix) {
+void NuVecInvMtxRotateValX(NUVEC *out, f32 unused, NUMTX *matrix) {
     (void)unused;
     out->x = out->x * matrix->m00;
     out->y = out->x * matrix->m10;
     out->z = out->x * matrix->m20;
 }
 
-void __cdecl NuVecInvMtxRotateValY(NUVEC *out, f32 unused, NUMTX *matrix) {
+void NuVecInvMtxRotateValY(NUVEC *out, f32 unused, NUMTX *matrix) {
     (void)unused;
     out->x = out->y * matrix->m01;
     out->y = out->y * matrix->m11;
     out->z = out->y * matrix->m21;
 }
 
-void __cdecl NuVecInvMtxRotateValZ(NUVEC *out, f32 unused, NUMTX *matrix) {
+void NuVecInvMtxRotateValZ(NUVEC *out, f32 unused, NUMTX *matrix) {
     (void)unused;
     out->x = out->z * matrix->m02;
     out->y = out->z * matrix->m12;
     out->z = out->z * matrix->m22;
 }
 
-void __cdecl NuVecInvMtxScale(NUVEC *out, NUVEC *v, NUMTX *matrix) {
+void NuVecInvMtxScale(NUVEC *out, NUVEC *v, NUMTX *matrix) {
     out->x = v->x / matrix->m00;
     out->y = v->y / matrix->m11;
     out->z = v->z / matrix->m22;
 }
 
-void __cdecl NuVecRotateX(NUVEC *out, NUVEC *vector, NUANG angle) {
+void NuVecRotateX(NUVEC *out, NUVEC *vector, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 y = vector->y;
@@ -287,7 +287,7 @@ void __cdecl NuVecRotateX(NUVEC *out, NUVEC *vector, NUANG angle) {
     out->z = y * sine + vector->z * cosine;
 }
 
-void __cdecl NuVecRotateY(NUVEC *out, NUVEC *vector, NUANG angle) {
+void NuVecRotateY(NUVEC *out, NUVEC *vector, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 x = vector->x;
@@ -297,7 +297,7 @@ void __cdecl NuVecRotateY(NUVEC *out, NUVEC *vector, NUANG angle) {
     out->z = vector->z * cosine - x * sine;
 }
 
-void __cdecl NuVecRotateZ(NUVEC *out, NUVEC *vector, NUANG angle) {
+void NuVecRotateZ(NUVEC *out, NUVEC *vector, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 x = vector->x;
@@ -307,7 +307,7 @@ void __cdecl NuVecRotateZ(NUVEC *out, NUVEC *vector, NUANG angle) {
     out->z = vector->z;
 }
 
-void __cdecl NuVecRotateYValZ(NUVEC *out, f32 magnitude, NUANG angle) {
+void NuVecRotateYValZ(NUVEC *out, f32 magnitude, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
 
@@ -316,7 +316,7 @@ void __cdecl NuVecRotateYValZ(NUVEC *out, f32 magnitude, NUANG angle) {
     out->z = magnitude * cosine;
 }
 
-void __cdecl NuVecRotateYValX(NUVEC *out, f32 value, NUANG angle) {
+void NuVecRotateYValX(NUVEC *out, f32 value, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     out->x = value * cosine;
@@ -324,43 +324,43 @@ void __cdecl NuVecRotateYValX(NUVEC *out, f32 value, NUANG angle) {
     out->z = -value * sine;
 }
 
-void __cdecl NuVecNeg(NUVEC *out, NUVEC *vector) {
+void NuVecNeg(NUVEC *out, NUVEC *vector) {
     out->x = -vector->x;
     out->y = -vector->y;
     out->z = -vector->z;
 }
 
-void __cdecl NuVecAdd(NUVEC *out, NUVEC *left, NUVEC *right) {
+void NuVecAdd(NUVEC *out, NUVEC *left, NUVEC *right) {
     out->x = left->x + right->x;
     out->y = left->y + right->y;
     out->z = left->z + right->z;
 }
 
-void __cdecl NuVecSub(NUVEC *out, NUVEC *left, NUVEC *right) {
+void NuVecSub(NUVEC *out, NUVEC *left, NUVEC *right) {
     out->x = left->x - right->x;
     out->y = left->y - right->y;
     out->z = left->z - right->z;
 }
 
-void __cdecl NuVecScale(NUVEC *out, NUVEC *vector, f32 scale) {
+void NuVecScale(NUVEC *out, NUVEC *vector, f32 scale) {
     out->x = vector->x * scale;
     out->y = vector->y * scale;
     out->z = vector->z * scale;
 }
 
-void __cdecl NuVecAddScale(NUVEC *out, NUVEC *left, NUVEC *right, f32 scale) {
+void NuVecAddScale(NUVEC *out, NUVEC *left, NUVEC *right, f32 scale) {
     out->x = left->x + right->x * scale;
     out->y = left->y + right->y * scale;
     out->z = left->z + right->z * scale;
 }
 
-void __cdecl NuVecScaleAccum(NUVEC *out, NUVEC *vector, f32 scale) {
+void NuVecScaleAccum(NUVEC *out, NUVEC *vector, f32 scale) {
     out->x += vector->x * scale;
     out->y += vector->y * scale;
     out->z += vector->z * scale;
 }
 
-void __cdecl NuVecInvScale(NUVEC *out, NUVEC *vector, f32 scale) {
+void NuVecInvScale(NUVEC *out, NUVEC *vector, f32 scale) {
     f32 inverse_scale;
 
     if (scale == 0.0f) {
@@ -374,7 +374,7 @@ void __cdecl NuVecInvScale(NUVEC *out, NUVEC *vector, f32 scale) {
     out->z = vector->z * inverse_scale;
 }
 
-void __cdecl NuVecCross(NUVEC *out, NUVEC *left, NUVEC *right) {
+void NuVecCross(NUVEC *out, NUVEC *left, NUVEC *right) {
     f32 y;
     f32 z;
 
@@ -385,7 +385,7 @@ void __cdecl NuVecCross(NUVEC *out, NUVEC *left, NUVEC *right) {
     out->z = z;
 }
 
-void __cdecl NuVecCrossRel(NUVEC *out, NUVEC *base, NUVEC *p0, NUVEC *p1) {
+void NuVecCrossRel(NUVEC *out, NUVEC *base, NUVEC *p0, NUVEC *p1) {
     f32 x;
     f32 y;
     f32 z;
@@ -397,12 +397,12 @@ void __cdecl NuVecCrossRel(NUVEC *out, NUVEC *base, NUVEC *p0, NUVEC *p1) {
     out->z = z;
 }
 
-f32 __cdecl NuVecDot(NUVEC *left, NUVEC *right) {
+f32 NuVecDot(NUVEC *left, NUVEC *right) {
     return left->x * right->x + left->y * right->y + left->z * right->z;
 }
 
 /* Smallest power of two that is at least value (1 for value <= 1). */
-i32 __cdecl NuMiscNextPow2(i32 value) {
+i32 NuMiscNextPow2(i32 value) {
     i32 shift;
     for (shift = 0; (1 << shift) < value; shift++) {
     }
@@ -426,15 +426,15 @@ i32 NuMiscNextPow2Exp(i32 value) {
     return shift;
 }
 
-f32 __cdecl NuVecMag(NUVEC *v0) {
+f32 NuVecMag(NUVEC *v0) {
     return NuFsqrt(NuVecMagSqr(v0));
 }
 
-f32 __cdecl NuVecMagXZ(NUVEC *vector) {
+f32 NuVecMagXZ(NUVEC *vector) {
     return NuFsqrt(vector->x * vector->x + vector->z * vector->z);
 }
 
-void __cdecl NuVecMax(NUVEC *out, NUVEC *left, NUVEC *right) {
+void NuVecMax(NUVEC *out, NUVEC *left, NUVEC *right) {
     if (left->x > right->x) {
         out->x = left->x;
     } else {
@@ -454,7 +454,7 @@ void __cdecl NuVecMax(NUVEC *out, NUVEC *left, NUVEC *right) {
     }
 }
 
-void __cdecl NuVecMin(NUVEC *out, NUVEC *left, NUVEC *right) {
+void NuVecMin(NUVEC *out, NUVEC *left, NUVEC *right) {
     if (left->x < right->x) {
         out->x = left->x;
     } else {
@@ -474,11 +474,11 @@ void __cdecl NuVecMin(NUVEC *out, NUVEC *left, NUVEC *right) {
     }
 }
 
-f32 __cdecl NuVecMagSqr(NUVEC *vector) {
+f32 NuVecMagSqr(NUVEC *vector) {
     return vector->x * vector->x + vector->y * vector->y + vector->z * vector->z;
 }
 
-f32 __cdecl NuVecNorm(NUVEC *out, NUVEC *vector) {
+f32 NuVecNorm(NUVEC *out, NUVEC *vector) {
     f32 length = NuFsqrt(vector->x * vector->x + vector->y * vector->y + vector->z * vector->z);
     f32 inverse_length;
 
@@ -494,7 +494,7 @@ f32 __cdecl NuVecNorm(NUVEC *out, NUVEC *vector) {
     return length;
 }
 
-void __cdecl NuVecSurfaceNormal(NUVEC *out, NUVEC *p0, NUVEC *p1, NUVEC *p2) {
+void NuVecSurfaceNormal(NUVEC *out, NUVEC *p0, NUVEC *p1, NUVEC *p2) {
     NUVEC edge0;
     NUVEC edge1;
 
@@ -509,7 +509,7 @@ void __cdecl NuVecSurfaceNormal(NUVEC *out, NUVEC *p0, NUVEC *p1, NUVEC *p2) {
     NuVecNorm(out, out);
 }
 
-f32 __cdecl NuVecDist(NUVEC *v0, NUVEC *v1, NUVEC *d) {
+f32 NuVecDist(NUVEC *v0, NUVEC *v1, NUVEC *d) {
     NUVEC dist;
 
     if (d != NULL) {
@@ -521,7 +521,7 @@ f32 __cdecl NuVecDist(NUVEC *v0, NUVEC *v1, NUVEC *d) {
     }
 }
 
-f32 __cdecl NuVecDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *d) {
+f32 NuVecDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *d) {
     NUVEC dist;
 
     if (d != NULL) {
@@ -533,7 +533,7 @@ f32 __cdecl NuVecDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *d) {
     }
 }
 
-f32 __cdecl NuVecXZDist(NUVEC *v0, NUVEC *v1, NUVEC *d) {
+f32 NuVecXZDist(NUVEC *v0, NUVEC *v1, NUVEC *d) {
     NUVEC dist;
 
     if (d != NULL) {
@@ -549,7 +549,7 @@ f32 __cdecl NuVecXZDist(NUVEC *v0, NUVEC *v1, NUVEC *d) {
     }
 }
 
-f32 __cdecl NuVecXZDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *d) {
+f32 NuVecXZDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *d) {
     NUVEC dist;
 
     if (d != NULL) {
@@ -565,13 +565,13 @@ f32 __cdecl NuVecXZDistSqr(NUVEC *v0, NUVEC *v1, NUVEC *d) {
     }
 }
 
-void __cdecl NuVecLerp(NUVEC *out, NUVEC *left, NUVEC *right, f32 t) {
+void NuVecLerp(NUVEC *out, NUVEC *left, NUVEC *right, f32 t) {
     out->x = ((left->x - right->x) * t) + right->x;
     out->y = ((left->y - right->y) * t) + right->y;
     out->z = ((left->z - right->z) * t) + right->z;
 }
 
-i32 __cdecl NuLineLineIntersect(NUVEC *pnt0, NUVEC *v0, NUVEC *pnt1, NUVEC *v1, f32 *s, f32 *t) {
+i32 NuLineLineIntersect(NUVEC *pnt0, NUVEC *v0, NUVEC *pnt1, NUVEC *v1, f32 *s, f32 *t) {
     NUVEC cross;
     f32 len;
     f32 inv_len;
@@ -615,8 +615,8 @@ i32 __cdecl NuLineLineIntersect(NUVEC *pnt0, NUVEC *v0, NUVEC *pnt1, NUVEC *v1, 
     return 0;
 }
 
-i32 __cdecl BoundingBoxToLine(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, NUVEC *start, NUVEC *end, f32 expansion,
-                              NUVEC *intersection) {
+i32 BoundingBoxToLine(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, NUVEC *start, NUVEC *end, f32 expansion,
+                      NUVEC *intersection) {
     NUVEC a;
     NUVEC b;
     NUVEC direction;
@@ -715,39 +715,39 @@ i32 NuVecCompareTolerance(NUVEC *a, NUVEC *b, f32 tolerance) {
     return 1;
 }
 
-void __cdecl NuVec4Add(NUVEC4 *out, NUVEC4 *left, NUVEC4 *right) {
+void NuVec4Add(NUVEC4 *out, NUVEC4 *left, NUVEC4 *right) {
     out->w = left->w + right->w;
     out->x = left->x + right->x;
     out->y = left->y + right->y;
     out->z = left->z + right->z;
 }
 
-f32 __cdecl NuVec4Dot(NUVEC4 *v0, NUVEC4 *v1) {
+f32 NuVec4Dot(NUVEC4 *v0, NUVEC4 *v1) {
     return v0->w * v1->w + v0->x * v1->x + v0->y * v1->y + v0->z * v1->z;
 }
 
-void __cdecl NuVec4Scale(NUVEC4 *out, NUVEC4 *input, f32 scale) {
+void NuVec4Scale(NUVEC4 *out, NUVEC4 *input, f32 scale) {
     out->x = input->x * scale;
     out->y = input->y * scale;
     out->z = input->z * scale;
     out->w = input->w * scale;
 }
 
-void __cdecl NuVec4ScaleAccum(NUVEC4 *out, NUVEC4 *v, f32 scale) {
+void NuVec4ScaleAccum(NUVEC4 *out, NUVEC4 *v, f32 scale) {
     out->x += v->x * scale;
     out->y += v->y * scale;
     out->z += v->z * scale;
     out->w += v->w * scale;
 }
 
-void __cdecl NuVec4Sub(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
+void NuVec4Sub(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
     out->x = a->x - b->x;
     out->y = a->y - b->y;
     out->z = a->z - b->z;
     out->w = a->w - b->w;
 }
 
-void __cdecl NuVec4MtxTransform(NUVEC4 *out, NUVEC *v, NUMTX *m) {
+void NuVec4MtxTransform(NUVEC4 *out, NUVEC *v, NUMTX *m) {
     f32 y = v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31;
     f32 z = v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + m->m32;
     f32 w = v->x * m->m03 + v->y * m->m13 + v->z * m->m23 + m->m33;
@@ -757,7 +757,7 @@ void __cdecl NuVec4MtxTransform(NUVEC4 *out, NUVEC *v, NUMTX *m) {
     out->w = w;
 }
 
-void __cdecl NuVec4MtxTransformH(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
+void NuVec4MtxTransformH(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
     f32 y = input->x * matrix->m01 + input->y * matrix->m11 + input->z * matrix->m21 + input->w * matrix->m31;
     f32 z = input->x * matrix->m02 + input->y * matrix->m12 + input->z * matrix->m22 + input->w * matrix->m32;
     f32 w = input->x * matrix->m03 + input->y * matrix->m13 + input->z * matrix->m23 + input->w * matrix->m33;
@@ -767,7 +767,7 @@ void __cdecl NuVec4MtxTransformH(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
     out->w = w;
 }
 
-void __cdecl NuVec4Max(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
+void NuVec4Max(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
     if (a->x > b->x) {
         out->x = a->x;
     } else {
@@ -790,7 +790,7 @@ void __cdecl NuVec4Max(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
     }
 }
 
-void __cdecl NuVec4Min(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
+void NuVec4Min(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
     if (a->x < b->x) {
         out->x = a->x;
     } else {
@@ -813,22 +813,22 @@ void __cdecl NuVec4Min(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
     }
 }
 
-f32 __cdecl NuVec4Mag(NUVEC4 *v) {
+f32 NuVec4Mag(NUVEC4 *v) {
     return NuFsqrt(v->w * v->w + v->x * v->x + v->y * v->y + v->z * v->z);
 }
 
-f32 __cdecl NuVec4MagSqr(NUVEC4 *v) {
+f32 NuVec4MagSqr(NUVEC4 *v) {
     return v->w * v->w + v->x * v->x + v->y * v->y + v->z * v->z;
 }
 
-void __cdecl NuVec4Lerp(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b, f32 t) {
+void NuVec4Lerp(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b, f32 t) {
     out->x = b->x + (a->x - b->x) * t;
     out->y = b->y + (a->y - b->y) * t;
     out->z = b->z + (a->z - b->z) * t;
     out->w = b->w + (a->w - b->w) * t;
 }
 
-i16 __cdecl NuFloatToHalf(f32 value) {
+i16 NuFloatToHalf(f32 value) {
     union {
         f32 value;
         u32 bits;
@@ -851,7 +851,7 @@ i16 __cdecl NuFloatToHalf(f32 value) {
     return (i16)((sign << 15) | ((exponent & 31) << 10) | (mantissa >> 13));
 }
 
-f32 __cdecl NuHalfToFloat(i16 value) {
+f32 NuHalfToFloat(i16 value) {
     u16 bits = (u16)value;
 
     union {
@@ -866,29 +866,29 @@ f32 __cdecl NuHalfToFloat(i16 value) {
     return packed.value;
 }
 
-void __cdecl NuVec4ToNuHalfVec4(NUVEC4 *v, NUHALFVEC4 *out) {
+void NuVec4ToNuHalfVec4(NUVEC4 *v, NUHALFVEC4 *out) {
     out->x = NuFloatToHalf(v->x);
     out->y = NuFloatToHalf(v->y);
     out->z = NuFloatToHalf(v->z);
     out->w = NuFloatToHalf(v->w);
 }
 
-void __cdecl NuHalfVec4ToNuVec4(NUHALFVEC4 *v, NUVEC4 *out) {
+void NuHalfVec4ToNuVec4(NUHALFVEC4 *v, NUVEC4 *out) {
     out->x = NuHalfToFloat(v->x);
     out->y = NuHalfToFloat(v->y);
     out->z = NuHalfToFloat(v->z);
     out->w = NuHalfToFloat(v->w);
 }
 
-void __cdecl VisibilityZeroMatrixPc(NUMTX *matrix) {
+void VisibilityZeroMatrixPc(NUMTX *matrix) {
     *matrix = VisibilityZeroMatrixTemplatePc;
 }
 
-void __cdecl NuMtxSetIdentity(NUMTX *matrix) {
+void NuMtxSetIdentity(NUMTX *matrix) {
     *matrix = NuMtxSetIdentityTemplate;
 }
 
-void __cdecl NuMtxSetTranslation(NUMTX *m, NUVEC *t) {
+void NuMtxSetTranslation(NUMTX *m, NUVEC *t) {
     m->m30 = t->x;
     m->m31 = t->y;
     m->m32 = t->z;
@@ -896,7 +896,7 @@ void __cdecl NuMtxSetTranslation(NUMTX *m, NUVEC *t) {
     m->m00 = m->m11 = m->m22 = m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxSetTranslationNeg(NUMTX *m, NUVEC *t) {
+void NuMtxSetTranslationNeg(NUMTX *m, NUVEC *t) {
     m->m30 = -t->x;
     m->m31 = -t->y;
     m->m32 = -t->z;
@@ -904,7 +904,7 @@ void __cdecl NuMtxSetTranslationNeg(NUMTX *m, NUVEC *t) {
     m->m00 = m->m11 = m->m22 = m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxSetScale(NUMTX *m, NUVEC *s) {
+void NuMtxSetScale(NUMTX *m, NUVEC *s) {
     m->m00 = s->x;
     m->m11 = s->y;
     m->m22 = s->z;
@@ -912,7 +912,7 @@ void __cdecl NuMtxSetScale(NUMTX *m, NUVEC *s) {
     m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxSetRotationX(NUMTX *m, NUANG angle) {
+void NuMtxSetRotationX(NUMTX *m, NUANG angle) {
     m->m11 = m->m22 = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     m->m12 = NuTrigTable[(angle >> 1) & 0x7fff];
     m->m21 = -m->m12;
@@ -921,7 +921,7 @@ void __cdecl NuMtxSetRotationX(NUMTX *m, NUANG angle) {
     m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxSetRotationY(NUMTX *m, NUANG angle) {
+void NuMtxSetRotationY(NUMTX *m, NUANG angle) {
     m->m00 = m->m22 = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     m->m20 = NuTrigTable[(angle >> 1) & 0x7fff];
     m->m02 = -m->m20;
@@ -930,7 +930,7 @@ void __cdecl NuMtxSetRotationY(NUMTX *m, NUANG angle) {
     m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxSetRotationZ(NUMTX *m, NUANG angle) {
+void NuMtxSetRotationZ(NUMTX *m, NUANG angle) {
     m->m00 = m->m11 = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     m->m01 = NuTrigTable[(angle >> 1) & 0x7fff];
     m->m10 = -m->m01;
@@ -939,7 +939,7 @@ void __cdecl NuMtxSetRotationZ(NUMTX *m, NUANG angle) {
     m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxSetRotationAxis(NUMTX *m, NUANG angle, NUVEC *axis) {
+void NuMtxSetRotationAxis(NUMTX *m, NUANG angle, NUVEC *axis) {
     NUANG half_angle = angle >> 1;
     f32 sine = NuTrigTable[(half_angle >> 1) & 0x7fff];
     f32 cosine = NuTrigTable[((half_angle + 0x4000) >> 1) & 0x7fff];
@@ -975,37 +975,37 @@ void __cdecl NuMtxSetRotationAxis(NUMTX *m, NUANG angle, NUVEC *axis) {
     m->m30 = m->m31 = m->m32 = 0.0f;
 }
 
-void __cdecl NuMtxTranslate(NUMTX *m, NUVEC *t) {
+void NuMtxTranslate(NUMTX *m, NUVEC *t) {
     m->m30 += t->x;
     m->m31 += t->y;
     m->m32 += t->z;
 }
 
-void __cdecl NuMtxTranslateNeg(NUMTX *m, NUVEC *t) {
+void NuMtxTranslateNeg(NUMTX *m, NUVEC *t) {
     m->m30 -= t->x;
     m->m31 -= t->y;
     m->m32 -= t->z;
 }
 
-void __cdecl NuMtxPreTranslate(NUMTX *m, NUVEC *t) {
+void NuMtxPreTranslate(NUMTX *m, NUVEC *t) {
     m->m30 += t->x * m->m00 + t->y * m->m10 + t->z * m->m20;
     m->m31 += t->x * m->m01 + t->y * m->m11 + t->z * m->m21;
     m->m32 += t->x * m->m02 + t->y * m->m12 + t->z * m->m22;
 }
 
-void __cdecl NuMtxPreTranslateX(NUMTX *m, f32 tx) {
+void NuMtxPreTranslateX(NUMTX *m, f32 tx) {
     m->m30 = m->m30 + m->m00 * tx;
     m->m31 = m->m31 + m->m01 * tx;
     m->m32 = m->m32 + m->m02 * tx;
 }
 
-void __cdecl NuMtxPreTranslateNeg(NUMTX *m, NUVEC *t) {
+void NuMtxPreTranslateNeg(NUMTX *m, NUVEC *t) {
     m->m30 -= t->x * m->m00 + t->y * m->m10 + t->z * m->m20;
     m->m31 -= t->x * m->m01 + t->y * m->m11 + t->z * m->m21;
     m->m32 -= t->x * m->m02 + t->y * m->m12 + t->z * m->m22;
 }
 
-void __cdecl NuMtxScale(NUMTX *m, NUVEC *s) {
+void NuMtxScale(NUMTX *m, NUVEC *s) {
     m->m00 *= s->x;
     m->m01 *= s->y;
     m->m02 *= s->z;
@@ -1020,7 +1020,7 @@ void __cdecl NuMtxScale(NUMTX *m, NUVEC *s) {
     m->m32 *= s->z;
 }
 
-void __cdecl NuMtxScaleU(NUMTX *m, f32 s) {
+void NuMtxScaleU(NUMTX *m, f32 s) {
     m->m00 *= s;
     m->m01 *= s;
     m->m02 *= s;
@@ -1035,7 +1035,7 @@ void __cdecl NuMtxScaleU(NUMTX *m, f32 s) {
     m->m32 *= s;
 }
 
-void __cdecl NuMtxPreScaleU(NUMTX *m, f32 s) {
+void NuMtxPreScaleU(NUMTX *m, f32 s) {
     m->m00 *= s;
     m->m01 *= s;
     m->m02 *= s;
@@ -1047,14 +1047,14 @@ void __cdecl NuMtxPreScaleU(NUMTX *m, f32 s) {
     m->m22 *= s;
 }
 
-NUVEC *__cdecl NuMtxGetScale(NUVEC *out, NUMTX *matrix) {
+NUVEC *NuMtxGetScale(NUVEC *out, NUMTX *matrix) {
     out->x = NuFsqrt(matrix->m00 * matrix->m00 + matrix->m01 * matrix->m01 + matrix->m02 * matrix->m02);
     out->y = NuFsqrt(matrix->m10 * matrix->m10 + matrix->m11 * matrix->m11 + matrix->m12 * matrix->m12);
     out->z = NuFsqrt(matrix->m20 * matrix->m20 + matrix->m21 * matrix->m21 + matrix->m22 * matrix->m22);
     return out;
 }
 
-void __cdecl NuMtxPreScale(NUMTX *m, NUVEC *s) {
+void NuMtxPreScale(NUMTX *m, NUVEC *s) {
     m->m00 *= s->x;
     m->m01 *= s->x;
     m->m02 *= s->x;
@@ -1066,19 +1066,19 @@ void __cdecl NuMtxPreScale(NUMTX *m, NUVEC *s) {
     m->m22 *= s->z;
 }
 
-void __cdecl NuMtxPreScaleX(NUMTX *m, f32 scale_x) {
+void NuMtxPreScaleX(NUMTX *m, f32 scale_x) {
     m->m00 *= scale_x;
     m->m01 *= scale_x;
     m->m02 *= scale_x;
 }
 
-void __cdecl NuMtxPreSkewYX(NUMTX *Mtx, f32 SkewVal) {
+void NuMtxPreSkewYX(NUMTX *Mtx, f32 SkewVal) {
     Mtx->m00 = Mtx->m00 + Mtx->m10 * SkewVal;
     Mtx->m01 = Mtx->m01 + Mtx->m11 * SkewVal;
     Mtx->m02 = Mtx->m02 + Mtx->m12 * SkewVal;
 }
 
-void __cdecl NuMtxRotateX(NUMTX *m, NUANG angle) {
+void NuMtxRotateX(NUMTX *m, NUANG angle) {
     f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sin_x = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m01 = m->m01;
@@ -1096,7 +1096,7 @@ void __cdecl NuMtxRotateX(NUMTX *m, NUANG angle) {
     m->m32 = (m31 * sin_x) + (m->m32 * cos_x);
 }
 
-void __cdecl NuMtxPreRotateX(NUMTX *m, NUANG angle) {
+void NuMtxPreRotateX(NUMTX *m, NUANG angle) {
     f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sin_x = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m10 = m->m10;
@@ -1111,7 +1111,7 @@ void __cdecl NuMtxPreRotateX(NUMTX *m, NUANG angle) {
     m->m22 = m->m22 * cos_x - sin_x * m12;
 }
 
-void __cdecl NuMtxPreRotateY180X(NUMTX *m, NUANG a) {
+void NuMtxPreRotateY180X(NUMTX *m, NUANG a) {
     f32 cosx = NuTrigTable[((a + 0x4000) >> 1) & 0x7fff];
     f32 sinx = NuTrigTable[(a >> 1) & 0x7fff];
     f32 m10 = m->m10;
@@ -1129,7 +1129,7 @@ void __cdecl NuMtxPreRotateY180X(NUMTX *m, NUANG a) {
     m->m22 = -(m->m22 * cosx) - sinx * m12;
 }
 
-void __cdecl NuMtxRotateY(NUMTX *m, NUANG angle) {
+void NuMtxRotateY(NUMTX *m, NUANG angle) {
     f32 cos_y = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sin_y = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m00 = m->m00;
@@ -1147,7 +1147,7 @@ void __cdecl NuMtxRotateY(NUMTX *m, NUANG angle) {
     m->m32 = m->m32 * cos_y - m30 * sin_y;
 }
 
-void __cdecl NuMtxPreRotateY(NUMTX *m, NUANG angle) {
+void NuMtxPreRotateY(NUMTX *m, NUANG angle) {
     f32 cos_y = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sin_y = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m00 = m->m00;
@@ -1162,7 +1162,7 @@ void __cdecl NuMtxPreRotateY(NUMTX *m, NUANG angle) {
     m->m22 = sin_y * m02 + m->m22 * cos_y;
 }
 
-void __cdecl NuMtxPreRotateY180(NUMTX *m) {
+void NuMtxPreRotateY180(NUMTX *m) {
     m->m00 = -m->m00;
     m->m01 = -m->m01;
     m->m02 = -m->m02;
@@ -1171,7 +1171,7 @@ void __cdecl NuMtxPreRotateY180(NUMTX *m) {
     m->m22 = -m->m22;
 }
 
-void __cdecl NuMtxRotateZ(NUMTX *m, NUANG angle) {
+void NuMtxRotateZ(NUMTX *m, NUANG angle) {
     f32 cos_z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sin_z = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m00 = m->m00;
@@ -1189,7 +1189,7 @@ void __cdecl NuMtxRotateZ(NUMTX *m, NUANG angle) {
     m->m31 = (m30 * sin_z) + (m->m31 * cos_z);
 }
 
-void __cdecl NuMtxPreRotateZ(NUMTX *m, NUANG angle) {
+void NuMtxPreRotateZ(NUMTX *m, NUANG angle) {
     f32 cos_z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sin_z = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m00 = m->m00;
@@ -1204,7 +1204,7 @@ void __cdecl NuMtxPreRotateZ(NUMTX *m, NUANG angle) {
     m->m12 = m->m12 * cos_z - sin_z * m02;
 }
 
-void __cdecl NuMtxSetRotateXYZ(NUMTX *m, NUANGVEC *a) {
+void NuMtxSetRotateXYZ(NUMTX *m, NUANGVEC *a) {
     f32 cosx = NU_COS_PC(a->x);
     f32 sinx = NU_SIN_PC(a->x);
     f32 cosy = NU_COS_PC(a->y);
@@ -1230,7 +1230,7 @@ void __cdecl NuMtxSetRotateXYZ(NUMTX *m, NUANGVEC *a) {
     m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxMul(NUMTX *m, NUMTX *m0, NUMTX *m1) {
+void NuMtxMul(NUMTX *m, NUMTX *m0, NUMTX *m1) {
     NUMTX gm;
 
     if ((m == m0) || (m == m1)) {
@@ -1271,7 +1271,7 @@ void __cdecl NuMtxMul(NUMTX *m, NUMTX *m0, NUMTX *m1) {
     }
 }
 
-void __cdecl NuMtxMulR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
+void NuMtxMulR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
     NUMTX gm;
 
     if ((m == m0) || (m == m1)) {
@@ -1308,7 +1308,7 @@ void __cdecl NuMtxMulR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
     }
 }
 
-void __cdecl NuMtxTransposeR(NUMTX *m, NUMTX *source) {
+void NuMtxTransposeR(NUMTX *m, NUMTX *source) {
     f32 t;
 
     t = source->m01;
@@ -1329,7 +1329,7 @@ void __cdecl NuMtxTransposeR(NUMTX *m, NUMTX *source) {
     m->m33 = source->m33;
 }
 
-void __cdecl NuMtxTranspose(NUMTX *m, NUMTX *source) {
+void NuMtxTranspose(NUMTX *m, NUMTX *source) {
     f32 t;
 
     t = source->m01;
@@ -1356,7 +1356,7 @@ void __cdecl NuMtxTranspose(NUMTX *m, NUMTX *source) {
     m->m33 = source->m33;
 }
 
-void __cdecl NuMtxInv(NUMTX *m, NUMTX *source) {
+void NuMtxInv(NUMTX *m, NUMTX *source) {
     f32 tx = -source->m30;
     f32 ty = -source->m31;
     f32 tz = -source->m32;
@@ -1383,7 +1383,7 @@ void __cdecl NuMtxInv(NUMTX *m, NUMTX *source) {
     m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxInvR(NUMTX *m, NUMTX *source) {
+void NuMtxInvR(NUMTX *m, NUMTX *source) {
     f32 t;
 
     t = source->m01;
@@ -1407,7 +1407,7 @@ void __cdecl NuMtxInvR(NUMTX *m, NUMTX *source) {
     m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxInvRSS(NUMTX *inverse, NUMTX *matrix) {
+void NuMtxInvRSS(NUMTX *inverse, NUMTX *matrix) {
     NUMTX result;
     f32 determinant;
     f32 inverse_determinant;
@@ -1436,7 +1436,7 @@ void __cdecl NuMtxInvRSS(NUMTX *inverse, NUMTX *matrix) {
     *inverse = result;
 }
 
-void __cdecl NuMtxInvRSSH(NUMTX *inv, NUMTX *T) {
+void NuMtxInvRSSH(NUMTX *inv, NUMTX *T) {
     NUMTX gm;
 
     f32 tx = -T->m30;
@@ -1465,7 +1465,7 @@ void __cdecl NuMtxInvRSSH(NUMTX *inv, NUMTX *T) {
     *inv = gm;
 }
 
-void __cdecl NuMtxInvH(NUMTX *mi, NUMTX *m0) {
+void NuMtxInvH(NUMTX *mi, NUMTX *m0) {
     // there's some weird stack alignment stuff going on here...
     // also not sure if this semantically matches the original implementation
     i32 p[4];
@@ -1581,7 +1581,7 @@ void __cdecl NuMtxInvH(NUMTX *mi, NUMTX *m0) {
     mi->m33 = a[3][3];
 }
 
-void __cdecl NuMtxAlignX(NUMTX *m, NUVEC *v) {
+void NuMtxAlignX(NUMTX *m, NUVEC *v) {
     f32 s;
     m->m00 = v->x;
     m->m01 = v->y;
@@ -1601,7 +1601,7 @@ void __cdecl NuMtxAlignX(NUMTX *m, NUVEC *v) {
     m->m12 = m->m20 * m->m01 - m->m21 * m->m00;
 }
 
-void __cdecl NuMtxAlignY(NUMTX *m, NUVEC *v) {
+void NuMtxAlignY(NUMTX *m, NUVEC *v) {
     f32 s;
     m->m10 = v->x;
     m->m11 = v->y;
@@ -1621,7 +1621,7 @@ void __cdecl NuMtxAlignY(NUMTX *m, NUVEC *v) {
     m->m22 = (m->m00 * m->m11) - (m->m01 * m->m10);
 }
 
-void __cdecl NuMtxAlignZ(NUMTX *m, NUVEC *v) {
+void NuMtxAlignZ(NUMTX *m, NUVEC *v) {
     f32 xLenSq = (m->m00 * m->m00) + (m->m01 * m->m01) + (m->m02 * m->m02);
     f32 yLenSq = (m->m10 * m->m10) + (m->m11 * m->m11) + (m->m12 * m->m12);
     f32 zLenSq = (m->m20 * m->m20) + (m->m21 * m->m21) + (m->m22 * m->m22);
@@ -1656,7 +1656,7 @@ void __cdecl NuMtxAlignZ(NUMTX *m, NUVEC *v) {
     }
 }
 
-void __cdecl NuMtxLookAtX(NUMTX *m, NUVEC *pnt) {
+void NuMtxLookAtX(NUMTX *m, NUVEC *pnt) {
     NUVEC v;
 
     v.x = pnt->x - m->m30;
@@ -1667,7 +1667,7 @@ void __cdecl NuMtxLookAtX(NUMTX *m, NUVEC *pnt) {
     NuMtxAlignX(m, &v);
 }
 
-void __cdecl NuMtxLookAtY(NUMTX *m, NUVEC *point) {
+void NuMtxLookAtY(NUMTX *m, NUVEC *point) {
     NUVEC v;
     v.x = point->x - m->m30;
     v.y = point->y - m->m31;
@@ -1676,7 +1676,7 @@ void __cdecl NuMtxLookAtY(NUMTX *m, NUVEC *point) {
     NuMtxAlignY(m, &v);
 }
 
-void __cdecl NuMtxLookAtZ(NUMTX *m, NUVEC *point) {
+void NuMtxLookAtZ(NUMTX *m, NUVEC *point) {
     NUVEC v;
     v.x = point->x - m->m30;
     v.y = point->y - m->m31;
@@ -1685,7 +1685,7 @@ void __cdecl NuMtxLookAtZ(NUMTX *m, NUVEC *point) {
     NuMtxAlignZ(m, &v);
 }
 
-void __cdecl NuMtxInvLookAtX(NUMTX *m, NUVEC *pnt) {
+void NuMtxInvLookAtX(NUMTX *m, NUVEC *pnt) {
     NUVEC v;
 
     v.x = m->m30 - pnt->x;
@@ -1696,7 +1696,7 @@ void __cdecl NuMtxInvLookAtX(NUMTX *m, NUVEC *pnt) {
     NuMtxAlignX(m, &v);
 }
 
-void __cdecl NuMtxInvLookAtY(NUMTX *m, NUVEC *pnt) {
+void NuMtxInvLookAtY(NUMTX *m, NUVEC *pnt) {
     NUVEC v;
 
     v.x = m->m30 - pnt->x;
@@ -1707,7 +1707,7 @@ void __cdecl NuMtxInvLookAtY(NUMTX *m, NUVEC *pnt) {
     NuMtxAlignY(m, &v);
 }
 
-void __cdecl NuMtxInvLookAtZ(NUMTX *m, NUVEC *pnt) {
+void NuMtxInvLookAtZ(NUMTX *m, NUVEC *pnt) {
     NUVEC v;
 
     v.x = m->m30 - pnt->x;
@@ -1718,7 +1718,7 @@ void __cdecl NuMtxInvLookAtZ(NUMTX *m, NUVEC *pnt) {
     NuMtxAlignZ(m, &v);
 }
 
-void __cdecl NuMtxAddR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
+void NuMtxAddR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
     m->m00 = m0->m00 + m1->m00;
     m->m01 = m0->m01 + m1->m01;
     m->m02 = m0->m02 + m1->m02;
@@ -1737,7 +1737,7 @@ void __cdecl NuMtxAddR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
     m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxSubR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
+void NuMtxSubR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
     m->m00 = m0->m00 - m1->m00;
     m->m01 = m0->m01 - m1->m01;
     m->m02 = m0->m02 - m1->m02;
@@ -1756,7 +1756,7 @@ void __cdecl NuMtxSubR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
     m->m33 = 1.0f;
 }
 
-void __cdecl NuMtxSkewSymmetric(NUMTX *m, NUVEC *v) {
+void NuMtxSkewSymmetric(NUMTX *m, NUVEC *v) {
     m->m00 = 0.0;
     m->m01 = -v->z;
     m->m02 = v->y;
@@ -1775,7 +1775,7 @@ void __cdecl NuMtxSkewSymmetric(NUMTX *m, NUVEC *v) {
     m->m33 = 1.0;
 }
 
-void __cdecl NuMtxOrth(NUMTX *m) {
+void NuMtxOrth(NUMTX *m) {
     f32 magnitude;
 
     magnitude = 1.0f / NuFsqrt(m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02);
@@ -1796,31 +1796,31 @@ void __cdecl NuMtxOrth(NUMTX *m) {
     m->m12 = m->m20 * m->m01 - m->m21 * m->m00;
 }
 
-void __cdecl NuMtxGetXAxis(NUMTX *m, NUVEC *x) {
+void NuMtxGetXAxis(NUMTX *m, NUVEC *x) {
     x->x = m->m00;
     x->y = m->m01;
     x->z = m->m02;
 }
 
-void __cdecl NuMtxGetYAxis(NUMTX *m, NUVEC *y) {
+void NuMtxGetYAxis(NUMTX *m, NUVEC *y) {
     y->x = m->m10;
     y->y = m->m11;
     y->z = m->m12;
 }
 
-void __cdecl NuMtxGetZAxis(NUMTX *m, NUVEC *z) {
+void NuMtxGetZAxis(NUMTX *m, NUVEC *z) {
     z->x = m->m20;
     z->y = m->m21;
     z->z = m->m22;
 }
 
-void __cdecl NuMtxGetTranslation(NUMTX *m, NUVEC *translation) {
+void NuMtxGetTranslation(NUMTX *m, NUVEC *translation) {
     translation->x = m->m30;
     translation->y = m->m31;
     translation->z = m->m32;
 }
 
-void __cdecl NuMtxRotateAng(NUANG angle, f32 x, f32 z, f32 *rx, f32 *rz) {
+void NuMtxRotateAng(NUANG angle, f32 x, f32 z, f32 *rx, f32 *rz) {
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
 
@@ -1828,7 +1828,7 @@ void __cdecl NuMtxRotateAng(NUANG angle, f32 x, f32 z, f32 *rx, f32 *rz) {
     *rz = x * sine + z * cosine;
 }
 
-void __cdecl NuMtxVecToEulerXYZ(NUVEC *XVec, NUVEC *ZVec, NUANG *x, NUANG *y, NUANG *z) {
+void NuMtxVecToEulerXYZ(NUVEC *XVec, NUVEC *ZVec, NUANG *x, NUANG *y, NUANG *z) {
     NUVEC XVec2;
     NUVEC ZVec2;
 
@@ -1842,7 +1842,7 @@ void __cdecl NuMtxVecToEulerXYZ(NUVEC *XVec, NUVEC *ZVec, NUANG *x, NUANG *y, NU
     *x = -NuAtan2D(ZVec2.y, ZVec2.z);
 }
 
-void __cdecl NuMtxGetEulerXYZ(NUMTX *matrix, NUANG *x, NUANG *y, NUANG *z) {
+void NuMtxGetEulerXYZ(NUMTX *matrix, NUANG *x, NUANG *y, NUANG *z) {
     NUVEC x_vector;
     NUVEC z_vector;
     x_vector.x = matrix->m00;
@@ -1854,12 +1854,12 @@ void __cdecl NuMtxGetEulerXYZ(NUMTX *matrix, NUANG *x, NUANG *y, NUANG *z) {
     NuMtxVecToEulerXYZ(&x_vector, &z_vector, x, y, z);
 }
 
-f32 __cdecl NuMtxDet3(NUMTX *m) {
+f32 NuMtxDet3(NUMTX *m) {
     return m->m00 * (m->m11 * m->m22 - m->m12 * m->m21) - m->m01 * (m->m10 * m->m22 - m->m12 * m->m20) +
            m->m02 * (m->m10 * m->m21 - m->m11 * m->m20);
 }
 
-i32 __cdecl NuMtxCompare(NUMTX *a, NUMTX *b) {
+i32 NuMtxCompare(NUMTX *a, NUMTX *b) {
     i32 i;
     f32 *aa = &a->m00;
     f32 *bb = &b->m00;
@@ -1878,7 +1878,7 @@ i32 __cdecl NuMtxCompare(NUMTX *a, NUMTX *b) {
     return 0;
 }
 
-f32 __cdecl NuMtxSSE(NUMTX *a, NUMTX *b) {
+f32 NuMtxSSE(NUMTX *a, NUMTX *b) {
     f32 sse;
 
     sse = (a->m00 - b->m00) * (a->m00 - b->m00);
@@ -1901,7 +1901,7 @@ f32 __cdecl NuMtxSSE(NUMTX *a, NUMTX *b) {
     return sse;
 }
 
-void __cdecl NuMtxTruncate24Bit(NUMTX *out, NUMTX *input) {
+void NuMtxTruncate24Bit(NUMTX *out, NUMTX *input) {
     union {
         f32 value;
         u32 bits;
@@ -1957,7 +1957,7 @@ void __cdecl NuMtxTruncate24Bit(NUMTX *out, NUMTX *input) {
     memcpy(&out->m33, &packed.bits, 4);
 }
 
-void __cdecl NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix) {
+void NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix) {
     f32 best_error = 3.4028234663852886e+38f;
     i32 element;
     i32 pass;
@@ -2000,7 +2000,7 @@ void __cdecl NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix) {
     }
 }
 
-void __cdecl NuMtxLookAtD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up) {
+void NuMtxLookAtD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up) {
     NUVEC ax;
     NUVEC ay;
     NUVEC az;
@@ -2030,7 +2030,7 @@ void __cdecl NuMtxLookAtD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up) {
     mtx->m33 = 1.0f;
 }
 
-void __cdecl NuMtxLookAtInverseD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up) {
+void NuMtxLookAtInverseD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up) {
     NUVEC ax;
     NUVEC ay;
     NUVEC az;
@@ -2060,7 +2060,7 @@ void __cdecl NuMtxLookAtInverseD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC 
     mtx->m33 = 1.0f;
 }
 
-void __cdecl NuMtxSetPerspectiveD3D(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar) {
+void NuMtxSetPerspectiveD3D(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar) {
     f32 tanFovy2 = NU_SIN_LUT((i32)((fovy / 2.0f) * (65536.0f / 360.0f))) /
                    NU_COS_LUT((i32)((fovy / 2.0f) * (65536.0f / 360.0f))); // 65536 / 360 angle units per degree
     mtx->m00 = 1.0 / (aspect * tanFovy2);
@@ -2081,7 +2081,7 @@ void __cdecl NuMtxSetPerspectiveD3D(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear,
     mtx->m33 = 0.0;
 }
 
-void __cdecl NuMtxSetPerspectiveBlend(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar) {
+void NuMtxSetPerspectiveBlend(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar) {
     f32 tanFovy2 = NU_SIN_LUT((i32)((fovy / 2.0f) * (65536.0f / 360.0f))) /
                    NU_COS_LUT((i32)((fovy / 2.0f) * (65536.0f / 360.0f))); // 65536 / 360 angle units per degree
     mtx->m00 = 1.0f / (aspect * tanFovy2);
@@ -2102,7 +2102,7 @@ void __cdecl NuMtxSetPerspectiveBlend(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNea
     mtx->m33 = 0.0f;
 }
 
-void __cdecl NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 z_near, f32 z_far) {
+void NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 z_near, f32 z_far) {
     matrix->m00 = 2.0f * z_near / (right - left);
     matrix->m01 = 0.0f;
     matrix->m02 = 0.0f;
@@ -2121,7 +2121,7 @@ void __cdecl NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, 
     matrix->m33 = 0.0f;
 }
 
-void __cdecl NuMtxSetFrustumBlend(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 z_near, f32 z_far) {
+void NuMtxSetFrustumBlend(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 z_near, f32 z_far) {
     matrix->m00 = 2.0f * z_near / (right - left);
     matrix->m01 = 0.0f;
     matrix->m02 = 0.0f;
@@ -2140,7 +2140,7 @@ void __cdecl NuMtxSetFrustumBlend(NUMTX *matrix, f32 left, f32 right, f32 bottom
     matrix->m33 = 0.0f;
 }
 
-void __cdecl NuMtxSetOrthoD3D(NUMTX *mtx, f32 l, f32 r, f32 b, f32 t, f32 n, f32 f) {
+void NuMtxSetOrthoD3D(NUMTX *mtx, f32 l, f32 r, f32 b, f32 t, f32 n, f32 f) {
     mtx->m00 = 2.0f / (r - l);
     mtx->m01 = 0.0f;
     mtx->m02 = 0.0f;
@@ -2159,7 +2159,7 @@ void __cdecl NuMtxSetOrthoD3D(NUMTX *mtx, f32 l, f32 r, f32 b, f32 t, f32 n, f32
     mtx->m33 = 1.0f;
 }
 
-void __cdecl NuMtxSetOrthoBlend(NUMTX *mtx, f32 l, f32 r, f32 b, f32 t, f32 n, f32 f) {
+void NuMtxSetOrthoBlend(NUMTX *mtx, f32 l, f32 r, f32 b, f32 t, f32 n, f32 f) {
     mtx->m00 = 2.0f / (r - l);
     mtx->m01 = 0.0f;
     mtx->m02 = 0.0f;
@@ -2178,8 +2178,7 @@ void __cdecl NuMtxSetOrthoBlend(NUMTX *mtx, f32 l, f32 r, f32 b, f32 t, f32 n, f
     mtx->m33 = 1.0f;
 }
 
-void __cdecl NuMtxGetFrustumD3D(NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *z_near_out,
-                                f32 *z_far_out) {
+void NuMtxGetFrustumD3D(NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *z_near_out, f32 *z_far_out) {
     f32 q = matrix->m22;
     f32 z_near = -matrix->m32 / q;
 
@@ -2203,7 +2202,7 @@ void __cdecl NuMtxGetFrustumD3D(NUMTX *matrix, f32 *left, f32 *right, f32 *botto
     }
 }
 
-void __cdecl NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f) {
+void NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f) {
     f32 Q = (mtx->m22 + 1.0f) * 0.5f;
     f32 zNear = -(mtx->m32 * 0.5f) / Q;
 
@@ -2227,14 +2226,14 @@ void __cdecl NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f3
     }
 }
 
-f32 __cdecl NuFnabs(f32 f) {
+f32 NuFnabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f | 0x80000000;
     return rv;
 }
 
-f32 __cdecl NuFneg(f32 v) {
+f32 NuFneg(f32 v) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&v ^ 0x80000000;
@@ -2250,11 +2249,11 @@ f32 NuFsign(f32 value) {
     return value;
 }
 
-i32 __cdecl NuEquiv(f32 a, f32 b) {
+i32 NuEquiv(f32 a, f32 b) {
     return NuFabs(a - b) < fetol;
 }
 
-void __cdecl NuEquivTollerance(f32 tolerance) {
+void NuEquivTollerance(f32 tolerance) {
     fetol = tolerance;
 }
 
@@ -2330,7 +2329,7 @@ void NuEulerXYZFromQuat(NUANG *x, NUANG *y, NUANG *z, NUQUAT *input) {
     *z = NuAtan2D(2.0f * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z);
 }
 
-void __cdecl NuMtxToQuat(NUMTX *m, NUQUAT *out) {
+void NuMtxToQuat(NUMTX *m, NUQUAT *out) {
     NuMtxIndexedViewPc *indexed = (NuMtxIndexedViewPc *)m;
     i32 next[3];
     f32 q[4];
@@ -2554,7 +2553,7 @@ void NuQuatHermiteInt(NUQUAT *out, NUQUAT *m, NUQUAT *q0, NUQUAT *q1, NUQUAT *q2
     out->w = NuHermiteInterpolation(m->w, q0->w, q1->w, q2->w, t);
 }
 
-void __cdecl NuQuatSlerp(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
+void NuQuatSlerp(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
     f32 _unused;
     NUQUAT to_prime;
     f32 scale;
@@ -2676,7 +2675,7 @@ void NuQuatNeg2(NUQUAT *out, NUQUAT *in) {
     out->w = -in->w;
 }
 
-void __cdecl VuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
+void VuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
     __m128 source = _mm_load_ps(&from->x);
     __m128 target = _mm_load_ps(&to->x);
     __m128 products = _mm_mul_ps(target, source);
@@ -2785,7 +2784,7 @@ f32 NuPlnDist2(NUPLANE *plane, NUVEC *a, NUVEC *b) {
     return 0.0f;
 }
 
-i32 __cdecl NuPlnLine(NUPLANE *plane, NUVEC *s, NUVEC *e, NUVEC *out) {
+i32 NuPlnLine(NUPLANE *plane, NUVEC *s, NUVEC *e, NUVEC *out) {
     f32 dot_sp;
     f32 dot_ep;
     NUVEC dir;
@@ -2830,7 +2829,7 @@ f32 NuPlnLine3(NUPLANE *plane, NUVEC *pnt, NUVEC *v, NUVEC *out) {
     return dist;
 }
 
-i32 __cdecl NuPtInPoly(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2, NUPLANE *plane) {
+i32 NuPtInPoly(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2, NUPLANE *plane) {
     union {
         f32 value;
         u32 bits;
@@ -2950,7 +2949,7 @@ i32 NuPtInPolyZY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
     return 0;
 }
 
-i32 __cdecl NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction) {
+i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction) {
     f32 cross_y = (first->c * second->a) - (first->a * second->c);
     f32 cross_z = first->a * second->b - first->b * second->a;
     NUVEC normal;
@@ -3000,7 +2999,7 @@ i32 __cdecl NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUV
     return 0;
 }
 
-f32 __cdecl NuLineToPointDistSqrEx(NUVEC *s, NUVEC *e, NUVEC *pnt, NUVEC *out) {
+f32 NuLineToPointDistSqrEx(NUVEC *s, NUVEC *e, NUVEC *pnt, NUVEC *out) {
     NUVEC s_to_e;
     f32 len;
     NUVEC pnt_to_s;
@@ -3039,7 +3038,7 @@ f32 NuLineToPointDistSqr(NUVEC *start, NUVEC *end, NUVEC *point) {
     return NuLineToPointDistSqrEx(start, end, point, NULL);
 }
 
-f32 __cdecl NuInfiniteLineToPointDistSqrEx(NUVEC *start, NUVEC *end, NUVEC *point, NUVEC *closest) {
+f32 NuInfiniteLineToPointDistSqrEx(NUVEC *start, NUVEC *end, NUVEC *point, NUVEC *closest) {
     f32 length;
     f32 projection;
     f32 distance;
@@ -3061,7 +3060,7 @@ f32 __cdecl NuInfiniteLineToPointDistSqrEx(NUVEC *start, NUVEC *end, NUVEC *poin
     return distance;
 }
 
-f32 __cdecl NuInfiniteLineToPointDistSqr(NUVEC *start, NUVEC *end, NUVEC *point) {
+f32 NuInfiniteLineToPointDistSqr(NUVEC *start, NUVEC *end, NUVEC *point) {
     return NuInfiniteLineToPointDistSqrEx(start, end, point, NULL);
 }
 
@@ -3082,7 +3081,7 @@ f32 NuLineToLineDist(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d) {
     return distance;
 }
 
-i32 __cdecl NuPointRelToBoundingBox(NUVEC *point, NUVEC *maximum, NUVEC *minimum) {
+i32 NuPointRelToBoundingBox(NUVEC *point, NUVEC *maximum, NUVEC *minimum) {
     i32 result = 0;
     if (point->x >= maximum->x) {
         result |= 1;
@@ -3102,7 +3101,7 @@ i32 __cdecl NuPointRelToBoundingBox(NUVEC *point, NUVEC *maximum, NUVEC *minimum
     return result;
 }
 
-void __cdecl NuClipXPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane) {
+void NuClipXPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane) {
     f32 delta;
     if (plane != NULL) {
         out->x = *plane;
@@ -3114,7 +3113,7 @@ void __cdecl NuClipXPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane
     out->z = point->z + (direction->z * delta) / direction->x;
 }
 
-void __cdecl NuClipYPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane) {
+void NuClipYPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane) {
     f32 delta;
     if (plane != NULL) {
         out->y = *plane;
@@ -3126,7 +3125,7 @@ void __cdecl NuClipYPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane
     out->z = point->z + (direction->z * delta) / direction->y;
 }
 
-void __cdecl NuClipZPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane) {
+void NuClipZPlane(NUVEC *out, NUVEC *point, NUVEC *direction, f32 *plane) {
     f32 delta;
     if (plane != NULL) {
         out->z = *plane;
@@ -4213,7 +4212,7 @@ i32 nugraphFileLoadGraphOnly(nugraph_s *graph, char *filename) {
     return result;
 }
 
-void __cdecl NuTrigInit(void) {
+void NuTrigInit(void) {
     const f32 interval = (f32)(2.0 * 3.14159265358979323846 / 32768);
     i32 i;
 
@@ -4268,7 +4267,7 @@ static u16 NuAngAtanQuadrantI(u32 dx, u32 dy) {
     return ang[(dx << 9) / dy];
 }
 
-i32 __cdecl NuAtani(i32 dx, i32 dy) {
+i32 NuAtani(i32 dx, i32 dy) {
     if (dx == 0) {
         return dy < 0 ? 0x8000 : 0;
     }
@@ -4294,7 +4293,7 @@ static f32 NuAngAtanQuadrantRadI(u32 dx, u32 dy) {
     return (f32)((u32)ang[(dx << 9) / dy] * PCAtan2RadianScale);
 }
 
-f32 __cdecl NuAtanf(i32 dx, i32 dy) {
+f32 NuAtanf(i32 dx, i32 dy) {
     if (dx == 0) {
         return dy < 0 ? 3.1415927410125732f : 0.0f;
     }
@@ -4313,7 +4312,7 @@ f32 __cdecl NuAtanf(i32 dx, i32 dy) {
     return NuAngAtanQuadrantRadI((u32)dx, (u32)dy);
 }
 
-f32 __cdecl NuAtan2(f32 x, f32 y) {
+f32 NuAtan2(f32 x, f32 y) {
     return (f32)(NuAtan2D(x, y) * PCAtan2RadianScale);
 }
 
@@ -4375,7 +4374,7 @@ static f32 NuAngAtanQuadrantInterpF(f32 dx, f32 dy) {
     return result;
 }
 
-NUANG __cdecl NuAtan2D(f32 dx, f32 dy) {
+NUANG NuAtan2D(f32 dx, f32 dy) {
     if (dx == 0.0f) {
         return dy < 0.0f ? 0x8000 : 0;
     }
@@ -4394,7 +4393,7 @@ NUANG __cdecl NuAtan2D(f32 dx, f32 dy) {
     return NuAngAtanQuadrant(dx, dy);
 }
 
-NUANG __cdecl NuAtan2DA(f32 dx, f32 dy) {
+NUANG NuAtan2DA(f32 dx, f32 dy) {
     if (dx == 0.0f) {
         return dy < 0.0f ? 0x8000 : 0;
     }
@@ -4413,7 +4412,7 @@ NUANG __cdecl NuAtan2DA(f32 dx, f32 dy) {
     return NuAngAtanQuadrantInterp(dx, dy);
 }
 
-f32 __cdecl NuAtan2DAF(f32 dx, f32 dy) {
+f32 NuAtan2DAF(f32 dx, f32 dy) {
     if (dx == 0.0f) {
         return dy < 0.0f ? 32768.0f : 0.0f;
     }
@@ -4469,7 +4468,7 @@ void NuAng2AltSol(NUANG *out_x, NUANG *out_y, NUANG *out_z, NUANG x, NUANG y, NU
     *out_z = z + 0x8000;
 }
 
-f32 __cdecl NuPow(f32 base, f32 exponent) {
+f32 NuPow(f32 base, f32 exponent) {
     i32 i;
     f32 result;
     if (base == 0.0f) {
@@ -4494,7 +4493,7 @@ f32 __cdecl NuPow(f32 base, f32 exponent) {
     return result;
 }
 
-f32 __cdecl NuPowFast(f32 base, f32 exponent) {
+f32 NuPowFast(f32 base, f32 exponent) {
     f32 result;
     if (base == 0.0) {
         return 0.0;
@@ -4503,7 +4502,7 @@ f32 __cdecl NuPowFast(f32 base, f32 exponent) {
     return result;
 }
 
-void __cdecl NuMtxGetPerspectiveD3D(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
+void NuMtxGetPerspectiveD3D(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
     f32 Q = mtx->m22;
     *zNear = -mtx->m32 / Q;
     *zFar = (*zNear * Q) / (Q - 1.0f);
@@ -4511,7 +4510,7 @@ void __cdecl NuMtxGetPerspectiveD3D(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNe
     *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
 }
 
-void __cdecl NuMtxGetPerspectivePS3(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
+void NuMtxGetPerspectivePS3(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
     f32 Q = mtx->m22;
     f32 B = mtx->m32;
 
@@ -4521,7 +4520,7 @@ void __cdecl NuMtxGetPerspectivePS3(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNe
     *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
 }
 
-void __cdecl NuMtxGetPerspectiveOGL(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
+void NuMtxGetPerspectiveOGL(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
     f32 depth = mtx->m22;
     *zNear = 2.0f * depth / mtx->m32 - 1.0f;
     *zFar = (*zNear * depth) / (depth - 1.0f);
@@ -4529,7 +4528,7 @@ void __cdecl NuMtxGetPerspectiveOGL(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNe
     *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
 }
 
-void __cdecl NuMtxGetPerspectiveBlend(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
+void NuMtxGetPerspectiveBlend(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
     f32 Q = (mtx->m22 + 1.0f) * 0.5f;
     *zNear = -(mtx->m32 * 0.5f) / Q;
     *zFar = (*zNear * Q) / (Q - 1.0f);
@@ -4567,7 +4566,7 @@ f32 fun_005c0200(f32 value) {
     return sqrtf(value);
 }
 
-f32 __cdecl RenderPostLogPc(f32 value) {
+f32 RenderPostLogPc(f32 value) {
     f32 exponent;
     f32 counter;
     f32 position;
@@ -4607,7 +4606,7 @@ f32 __cdecl RenderPostLogPc(f32 value) {
     return RenderPostLogTablePc[index] + exponent;
 }
 
-f32 __cdecl NuExp10(f32 value) {
+f32 NuExp10(f32 value) {
     f32 result;
     f32 counter;
     f32 position;

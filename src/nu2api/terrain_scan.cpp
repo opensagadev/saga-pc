@@ -7,7 +7,7 @@ extern "C" {
     extern void *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
 
-    void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);
+    void TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }

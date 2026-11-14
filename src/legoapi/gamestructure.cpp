@@ -2,18 +2,18 @@
 
 /* Retail unit 0x55c0f0-0x55c8e6: definitions in retail address order. */
 
-extern "C" void __cdecl DumpAreaData(i32 mode, i32 last_area);
-extern "C" void __cdecl BackDrop_Dump(void);
+extern "C" void DumpAreaData(i32 mode, i32 last_area);
+extern "C" void BackDrop_Dump(void);
 
 STATIC_ASSERT(offsetof(AREASAVE_s, area_complete) == 1);
 STATIC_ASSERT(offsetof(STATUSCOLLECT_s, completion_points) == 0);
 STATIC_ASSERT(offsetof(STATUSCOLLECT_s, flags) == 3);
 extern "C" {
-    extern void(__cdecl *PauseGame_ExtraCodeFn)(void);
-    extern void(__cdecl *ResumeGame_ExtraCodeFn)(void);
+    extern void (*PauseGame_ExtraCodeFn)(void);
+    extern void (*ResumeGame_ExtraCodeFn)(void);
 }
 
-extern "C" void __cdecl PauseGame(i32 pad) {
+extern "C" void PauseGame(i32 pad) {
     Paused = 1;
     NuPause(1);
     music_man.SetFader(0.0f, 0.5f);
@@ -70,7 +70,7 @@ extern "C" void NetworkSyncPause(void) {
 
 extern "C" {
 
-    void __cdecl ResumeGame(i32 play_sound) {
+    void ResumeGame(i32 play_sound) {
         Paused = 0;
         NetPaused = 0;
         NuPause(0);
@@ -118,14 +118,14 @@ extern "C" {
     }
 }
 
-extern "C" i32 __cdecl InStory(void) {
+extern "C" i32 InStory(void) {
     if (FreePlay != 0 || ChallengeMode != 0 || Mission_Active(NULL) != NULL || Arcade != 0) {
         return 0;
     }
     return 1;
 }
 
-i32 __cdecl Game_Exit(i32 last_area) {
+i32 Game_Exit(i32 last_area) {
     if (PcWindowQuit != 0) {
         if (WorldInfo[0].loaded != 0) {
             WorldInfo_Dump(&WorldInfo[0]);
@@ -155,7 +155,7 @@ i32 __cdecl Game_Exit(i32 last_area) {
     return 0;
 }
 
-extern "C" LEVELDATA_PC *__cdecl CanSaveAndExit(WORLDINFO *world) {
+extern "C" LEVELDATA_PC *CanSaveAndExit(WORLDINFO *world) {
     if (GAMEDEMO == 0 && SuperStory == 0 && world->area != NULL && world->area != HUB_ADATA &&
         (world->area->flags & 0x146) == 0 && Mission_Active(NULL) == NULL && ChallengeMode == 0 && Arcade == 0 &&
         CutScenePlayer_Active() == NULL && Game_AreaSave != NULL &&
@@ -166,7 +166,7 @@ extern "C" LEVELDATA_PC *__cdecl CanSaveAndExit(WORLDINFO *world) {
     return NULL;
 }
 
-extern "C" void __cdecl AddToCompletionPoints(u32 points) {
+extern "C" void AddToCompletionPoints(u32 points) {
     if (CustomiserCompletionSavePc != NULL &&
         ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points < HubCompletionPointsPc) {
         ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points += points;
@@ -184,7 +184,7 @@ extern "C" void __cdecl AddToCompletionPoints(u32 points) {
 
 extern "C" {
 
-    i32 __cdecl Game_100PercentComplete(void) {
+    i32 Game_100PercentComplete(void) {
         if (CustomiserCompletionSavePc != NULL && (CustomiserCompletionSavePc->flags & 1) != 0) {
             return 1;
         }

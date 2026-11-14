@@ -30,19 +30,19 @@ extern "C" {
     extern i32 SaveloadPendingPc;
     extern u32 savetimer;
     extern i32 saveload_slotused[6];
-    extern char *__cdecl fullslotname(i32);
+    extern char *fullslotname(i32);
     extern char SaveSlotNamePc[256];
     extern const char SaveSlotCaptionFormatPc[13] = "Save Slot %d";
 
-    void __cdecl PcRegisterSaveMetadataPc(const void *metadata) {
+    void PcRegisterSaveMetadataPc(const void *metadata) {
         if (metadata != NULL) {
             PCByteCopy(PcSaveHeaderMetadataPc, metadata, 16);
         }
     }
 
-    i32 __cdecl SaveCreateDirectoryPc(char *path);
+    i32 SaveCreateDirectoryPc(char *path);
 
-    void __cdecl createslotfolder(i32) {
+    void createslotfolder(i32) {
 #ifndef SAGA_DEBUG
         PCOptionsBuildFolder(SaveFolderPathPc);
         strcat(SaveFolderPathPc, "SavedGames");
@@ -54,7 +54,7 @@ extern "C" {
         SaveCreateDirectoryPc(SaveCreateFolderPathPc);
     }
 
-    i32 __cdecl PCSaveSlot(i32 slot, void *buffer, i32 size, u32 hash) {
+    i32 PCSaveSlot(i32 slot, void *buffer, i32 size, u32 hash) {
         PC_SAVE_HEADER_PC header;
         char date_time[1024];
         char time[64];
@@ -90,11 +90,11 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl saveloadSaveSlot(i32 slot, void *buffer, i32 size) {
+    i32 saveloadSaveSlot(i32 slot, void *buffer, i32 size) {
         return PCSaveSlot(slot, buffer, size, (u32)-1);
     }
 
-    i32 __cdecl saveloadLoadSlot(i32 slot, void *buffer, i32 size) {
+    i32 saveloadLoadSlot(i32 slot, void *buffer, i32 size) {
         PC_SAVE_HEADER_PC header;
         char *name = fullslotname(slot);
         FILE *file = fopen(name, "rb");
@@ -110,13 +110,13 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl saveloadDeleteSlot(i32 slot) {
+    i32 saveloadDeleteSlot(i32 slot) {
         sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
         remove(SaveSlotNamePc);
         return 1;
     }
 
-    void __cdecl saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash) {
+    void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash) {
         SaveloadPendingPc = 1;
         savetimer = GetTickCount();
         saveload_status = 11;
@@ -125,7 +125,7 @@ extern "C" {
         saveload_slotid = slot;
     }
 
-    void __cdecl saveloadASLoad(i32 slot, void *buffer, i32 size) {
+    void saveloadASLoad(i32 slot, void *buffer, i32 size) {
         saveload_status = 7;
         saveloadLoadSlot(slot, buffer, size);
         SaveloadPendingPc = 1;
@@ -136,10 +136,10 @@ extern "C" {
     }
 
     /* PC has no memory card to format. */
-    void __cdecl saveloadASFormat(void) {
+    void saveloadASFormat(void) {
     }
 
-    void __cdecl saveloadASDelete(i32 slot) {
+    void saveloadASDelete(i32 slot) {
         sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
         remove(SaveSlotNamePc);
         saveload_slotid = slot;

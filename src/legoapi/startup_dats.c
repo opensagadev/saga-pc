@@ -1,6 +1,6 @@
 #include "saga.h"
 
-void __cdecl StartupOpenDats(const char **names, i32 count, VARIPTR *arena) {
+void StartupOpenDats(const char **names, i32 count, VARIPTR *arena) {
     i32 index;
 
     StartupDatCount = count;
@@ -13,7 +13,7 @@ void __cdecl StartupOpenDats(const char **names, i32 count, VARIPTR *arena) {
     }
 }
 
-void __cdecl NuWin32SetDFS(i32 index) {
+void NuWin32SetDFS(i32 index) {
     if (StartupDatCount > 0 && StartupDatList[0] != NULL) {
         NuDatSet(StartupDatList[index]);
     }

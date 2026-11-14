@@ -1,6 +1,6 @@
 #include "saga.h"
 
-void __cdecl NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count) {
+void NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count) {
     NuWindMaxMatsPC = matrix_count;
     NuWindMaxGroupsPC = group_count;
     buffer->addr = (buffer->addr + 15) & ~15u;
@@ -13,7 +13,7 @@ i32 fun_00546fc0(void) {
     return 0;
 }
 
-void __cdecl NuWindInit(void) {
+void NuWindInit(void) {
     i32 index;
     i32 count;
     NuWindDir2 = 0;
@@ -25,7 +25,7 @@ void __cdecl NuWindInit(void) {
     }
 }
 
-PC_NUWINDGROUP *__cdecl NuWindAllocateGrp(void) {
+PC_NUWINDGROUP *NuWindAllocateGrp(void) {
     i32 index;
     for (index = 0; index < NuWindMaxGroupsPC; ++index) {
         if (NuWindGroup[index].in_use == 0) {
@@ -36,7 +36,7 @@ PC_NUWINDGROUP *__cdecl NuWindAllocateGrp(void) {
     return NULL;
 }
 
-void __cdecl NuWindFreeGrp(PC_NUWINDGROUP *group) {
+void NuWindFreeGrp(PC_NUWINDGROUP *group) {
     if (group != NULL) {
         group->in_use = 0;
     }
@@ -105,7 +105,7 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
     return group;
 }
 
-void __cdecl NuWindUpdateArray(NUVEC **positions) {
+void NuWindUpdateArray(NUVEC **positions) {
     i32 instance;
     i32 index;
     i32 object;
@@ -303,7 +303,7 @@ void __cdecl NuWindUpdateArray(NUVEC **positions) {
     }
 }
 
-void __cdecl NuWindUpdate(NUVEC *wind) {
+void NuWindUpdate(NUVEC *wind) {
     NUVEC *winds[8];
     i32 index;
     for (index = 1; index <= 7; ++index) {
@@ -313,7 +313,7 @@ void __cdecl NuWindUpdate(NUVEC *wind) {
     NuWindUpdateArray(winds);
 }
 
-void __cdecl NuWindDraw(void) {
+void NuWindDraw(void) {
     i32 instance;
     i32 index;
     NUMTX *matrix;

@@ -20,32 +20,32 @@ STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_2c) == 0x2c);
 STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_30) == 0x30);
 STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, preset) == 0x34);
 
-static i32 __cdecl Shadow_GetMaxGizmos(void *world) {
+static i32 Shadow_GetMaxGizmos(void *world) {
     return 1;
 }
 
-static void __cdecl Shadow_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
+static void Shadow_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     SHADOW_WORLD_VIEW_PC *world = world_ptr;
     AddGizmo(system, type_id, NULL, &world->shadow_editor);
 }
 
-static char *__cdecl Shadow_GetGizmoName(GIZMO_PC *gizmo) {
+static char *Shadow_GetGizmoName(GIZMO_PC *gizmo) {
     return ShadowGizmoNamePc;
 }
 
-static i32 __cdecl Shadow_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
+static i32 Shadow_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
     return 0;
 }
 
-static char *__cdecl Shadow_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *Shadow_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return ShadowOutputNamePc;
 }
 
-static i32 __cdecl Shadow_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 Shadow_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
 
-static void *__cdecl Shadow_ReserveBufferSpace(void *world_ptr) {
+static void *Shadow_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     SHADOW_WORLD_VIEW_PC *view = world_ptr;
     world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
@@ -101,7 +101,7 @@ static void Shadow_ApplyPreset(EDGIZSHADOW_PC *shadow, i32 preset) {
     }
 }
 
-static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
+static i32 Shadow_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     SHADOW_WORLD_VIEW_PC *view = world_ptr;
     EDGIZSHADOW_PC *shadow;
@@ -160,7 +160,7 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
 
 i32 edGizShadow_gizmotype_id = 0;
 
-ADDGIZMOTYPE_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *EdGizShadowMachine_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "ShadowEditor";

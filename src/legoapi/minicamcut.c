@@ -18,7 +18,7 @@ typedef struct MINICAM_CAMERA_PC {
 
 #define MINI_CAM_CAMERA (*(MINICAM_CAMERA_PC *)GameCam)
 
-void __cdecl Minicam_InitSystem(void) {
+void Minicam_InitSystem(void) {
     memset(&MiniCam, 0, sizeof(MiniCam));
 }
 

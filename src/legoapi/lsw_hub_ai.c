@@ -4,14 +4,14 @@
 
 extern i16 CharacterFixupIdPc007f18c4;
 
-i32 __cdecl Hub_CurrentArea(void) {
+i32 Hub_CurrentArea(void) {
     if (WORLD->current_level == HUB_LDATA) {
         return HubAiMusicStatePc.area;
     }
     return -1;
 }
 
-i32 __cdecl Hub_Outside(void) {
+i32 Hub_Outside(void) {
     if (Hub_CurrentArea() == 7) {
         return 1;
     }
@@ -88,7 +88,7 @@ extern const char HubAITableFormatPc[9];
 extern const char HubAITableAreaFormatPc[11];
 
 /* 0x491380/481 */
-void __cdecl LSW_Hub_InitAI(WORLDINFO *world) {
+void LSW_Hub_InitAI(WORLDINFO *world) {
     i32 area;
     i32 locator;
     i32 counter;
@@ -125,7 +125,7 @@ void __cdecl LSW_Hub_InitAI(WORLDINFO *world) {
 }
 
 /* 0x491570/39 */
-void __cdecl LSW_Hub_ResetAI(WORLDINFO *world) {
+void LSW_Hub_ResetAI(WORLDINFO *world) {
     HubAiMusicStatePc.area = -1;
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, (char *)HubAIBandDoorPc);
 }
@@ -157,7 +157,7 @@ static i32 HubChooseRandomCharacterPc(i16 *characters) {
 }
 
 /* 0x491800/56 */
-i32 __cdecl Hub_GetRandomCharType(void) {
+i32 Hub_GetRandomCharType(void) {
     i16 characters[340];
     Hub_MakeListCharactersAvailable(characters);
     return HubChooseRandomCharacterPc(characters);
@@ -230,7 +230,7 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
 }
 
 /* 0x491aa0/130 */
-void __cdecl LSW_Hub_UpdateAI(WORLDINFO *world) {
+void LSW_Hub_UpdateAI(WORLDINFO *world) {
     if (hub_character_ready != -1) {
         SetLevelSfxBits(world);
         hub_character_ready = -1;
@@ -256,7 +256,7 @@ void __cdecl LSW_Hub_UpdateAI(WORLDINFO *world) {
 }
 
 /* 0x491b30/56 */
-void *__cdecl Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     i32 index;
     if (name != NULL) {
         for (index = 0; index < 10; ++index) {
@@ -269,8 +269,7 @@ void *__cdecl Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC 
 }
 
 /* 0x491b70/19 */
-f32 __cdecl Condition_InHubArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                void *area) {
+f32 Condition_InHubArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name, void *area) {
     if (HubAiMusicStatePc.area == (i32)area) {
         return 1.0f;
     }

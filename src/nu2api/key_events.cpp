@@ -1,6 +1,6 @@
 #include "saga.h"
 
-extern "C" i32 __cdecl NuKeyGet(u32 *modifiers) {
+extern "C" i32 NuKeyGet(u32 *modifiers) {
     i32 scan_code;
     if (PcKeyQueueTail != PcKeyQueueHead) {
         scan_code = PcKeyQueueScanCodes[PcKeyQueueHead];
@@ -13,7 +13,7 @@ extern "C" i32 __cdecl NuKeyGet(u32 *modifiers) {
     return -1;
 }
 
-extern "C" void __cdecl NuKeyFlush(void) {
+extern "C" void NuKeyFlush(void) {
     PcKeyQueueHead = PcKeyQueueTail;
 }
 

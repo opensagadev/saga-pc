@@ -9,12 +9,12 @@ void EdFileWriteInt(i32 value);
 void EdFileWriteShort(i16 value);
 void EdFileWriteChar(char value);
 void EdFileWriteNuVec(NUVEC *value);
-void __cdecl edcamMove(FRAME_PAD_PC *pad);
-void __cdecl edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
+void edcamMove(FRAME_PAD_PC *pad);
+void edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
 void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 extern NUMTL *edbri_mtl;
 
-void __cdecl edbriBridgesReset(void) {
+void edbriBridgesReset(void) {
     i32 i;
     NuBridgeInit();
     for (i = 0; i < 64; ++i) {
@@ -38,7 +38,7 @@ void edbriEnter(void) {
     edbri_nearest = -1;
 }
 
-void __cdecl edbriStopPage(i8 page) {
+void edbriStopPage(i8 page) {
     i32 index;
     if (edbri_page_used[page]) {
         for (index = 0; index < 64; ++index) {
@@ -51,7 +51,7 @@ void __cdecl edbriStopPage(i8 page) {
     }
 }
 
-void __cdecl edbriClearPage(i8 page) {
+void edbriClearPage(i8 page) {
     i32 index;
     edbriStopPage(page);
     for (index = 0; index < 64; ++index) {
@@ -127,7 +127,7 @@ static void edbricbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unu
     edbri_dpadmode_menu->y = parent->y + 40;
 }
 
-void __cdecl edbriDetermineNearest(f32 distance) {
+void edbriDetermineNearest(f32 distance) {
     NUVEC delta;
     i32 index;
     if (edbri_nearest != -1) {
@@ -153,7 +153,7 @@ void __cdecl edbriDetermineNearest(f32 distance) {
     }
 }
 
-i32 __cdecl edbriLoadPage(char *path, void *scene) {
+i32 edbriLoadPage(char *path, void *scene) {
     i32 page = -1;
     i32 count;
     i32 index;
@@ -237,7 +237,7 @@ STATIC_ASSERT(offsetof(PC_EDBRIDGE, red) == 0x40);
 STATIC_ASSERT(offsetof(PC_EDBRIDGE, green) == 0x41);
 STATIC_ASSERT(offsetof(PC_EDBRIDGE, blue) == 0x42);
 
-void __cdecl edbriBridgeUpdate(i32 index, NUGSCN *scene) {
+void edbriBridgeUpdate(i32 index, NUGSCN *scene) {
     NUVEC end;
     NUVEC delta;
     NUSPECIALHANDLE first;
@@ -319,7 +319,7 @@ void edbriInit(void) {
     edbri_post_instance_type = -1;
 }
 
-void __cdecl edbriStartPage(i32 page_number) {
+void edbriStartPage(i32 page_number) {
     i8 page = (i8)page_number;
     i32 index;
     if (edbri_page_used[page] && edbri_page_scene[page]) {
@@ -416,7 +416,7 @@ static void edbricbBridgePropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1,
     edbri_bridgeproperties_menu->y = parent->y + 40;
 }
 
-i32 __cdecl edbriFileSave(char *path) {
+i32 edbriFileSave(char *path) {
     NUSPECIALHANDLE special;
     char name[20];
     i32 count = 0;
@@ -474,7 +474,7 @@ i32 __cdecl edbriFileSave(char *path) {
     return 0;
 }
 
-void __cdecl edbricbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edbricbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char name[256];
     char directory[256];
     char extension[256];
@@ -511,7 +511,7 @@ static void edbricbCancelPostInstanceMenu(eduimenu_s *unused0, eduimenu_s *unuse
     edbri_postinstance_menu = NULL;
 }
 
-void __cdecl edbricbPostInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edbricbPostInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 count;
     i32 i;
     i32 selected;
@@ -547,7 +547,7 @@ static void edbricbCancelPlankInstanceMenu(eduimenu_s *unused0, eduimenu_s *unus
     edbri_plankinstance_menu = NULL;
 }
 
-void __cdecl edbricbPlankInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edbricbPlankInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 count;
     i32 i;
     i32 selected;
@@ -575,7 +575,7 @@ void __cdecl edbricbPlankInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u
     edbri_plankinstance_menu->y = parent->y + 40;
 }
 
-i32 __cdecl edbriBridgeCreate(NUVEC *position) {
+i32 edbriBridgeCreate(NUVEC *position) {
     i32 index = 0;
     if (edbri_bridges_used == 64) {
         return -1;
@@ -601,14 +601,14 @@ i32 __cdecl edbriBridgeCreate(NUVEC *position) {
     return index;
 }
 
-void __cdecl edbriBridgeDestroy(i32 index) {
+void edbriBridgeDestroy(i32 index) {
     NuBridgeRemove(edBridges[index].instance_id);
     --edbri_bridges_used;
     edBridges[index].instance_id = -1;
     edBridges[index].connection_index = -1;
 }
 
-void __cdecl edbriCreateOptionsMenu(void) {
+void edbriCreateOptionsMenu(void) {
     edbri_options_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edbricbCancelOptMenu, "Options");
     if (!edbri_options_menu) {
         return;
@@ -629,7 +629,7 @@ void __cdecl edbriCreateOptionsMenu(void) {
     eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbFileLoad, "Load Bridges"));
 }
 
-void __cdecl edbriDoInput(FRAME_PAD_PC *pad) {
+void edbriDoInput(FRAME_PAD_PC *pad) {
     i32 index;
     if ((pad->digital_buttons & 0x100) == 0) {
         edcamMove(pad);
@@ -720,12 +720,12 @@ void __cdecl edbriDoInput(FRAME_PAD_PC *pad) {
     }
 }
 
-void __cdecl edbricbCancelRopeColourMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edbricbCancelRopeColourMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edbri_ropecolour_menu);
     edbri_ropecolour_menu = NULL;
 }
 
-void __cdecl edbricbSetRopeColour(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+void edbricbSetRopeColour(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edui_colour_pick_s *colour = (edui_colour_pick_s *)item;
     eduimenu_s *parent = NULL;
     edBridges[edbri_nearest].red = (u8)(colour->red * 255.0);
@@ -785,7 +785,7 @@ STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
 NUMTL *edbri_mtl = NULL;
 #pragma bss_seg()
 
-void __cdecl edbriDrawCursor(void) {
+void edbriDrawCursor(void) {
     NURND_VERTEX3D_PC line[2];
     NUVEC extent;
     line[0].colour = 0xffffffff;

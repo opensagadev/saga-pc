@@ -127,8 +127,7 @@ static void write_record(enum log_level level, const char *record) {
     }
 }
 
-void __cdecl _saga_log(enum log_level level, const char *file, int line, const char *function, const char *format,
-                       ...) {
+void _saga_log(enum log_level level, const char *file, int line, const char *function, const char *format, ...) {
     static const char *const names[] = {"ERROR", "WARN", "INFO", "DEBUG"};
     SYSTEMTIME time;
     DWORD saved_error;

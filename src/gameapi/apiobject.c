@@ -112,32 +112,32 @@ typedef struct CHARACTER_PACK_ANIMATION_PC {
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, field_12_low) == 0x12);
 
 typedef struct CHARACTER_LIST_ENTRY_PC {
-    i32 name_id;                                  // 0x00
-    u32 model_flags;                              // 0x04
-    char *dir;                                    // 0x08
-    char *name;                                   // 0x0c
-    CHARACTERANIM_CONFIG_PC *animations;          // 0x10
-    u16 animation_count;                          // 0x14
-    u8 unknown_16[2];                             // 0x16
-    void(__cdecl *move_fn)(GAMEOBJECT *);         // 0x18
-    void(__cdecl *animate_fn)(GAMEOBJECT *);      // 0x1c
-    void(__cdecl *post_animate_fn)(GAMEOBJECT *); // 0x20
-    PLAYERCHARACTERCONFIG_PC *game_character;     // 0x24
-    CHARACTER_EFFECT_CONFIG_PC *effects;          // 0x28
-    f32 scaled_radius;                            // 0x2c
-    f32 collision_radius;                         // 0x30
-    f32 bottom;                                   // 0x34
-    f32 top;                                      // 0x38
-    f32 model_scale;                              // 0x3c
-    u8 flags;                                     // 0x40
-    u8 unknown_41;                                // 0x41
-    i16 icon_model;                               // 0x42
-    u32 unknown_44;                               // 0x44
-    u32 unknown_48;                               // 0x48
-} CHARACTER_LIST_ENTRY_PC;                        // size 0x4c
+    i32 name_id;                              // 0x00
+    u32 model_flags;                          // 0x04
+    char *dir;                                // 0x08
+    char *name;                               // 0x0c
+    CHARACTERANIM_CONFIG_PC *animations;      // 0x10
+    u16 animation_count;                      // 0x14
+    u8 unknown_16[2];                         // 0x16
+    void (*move_fn)(GAMEOBJECT *);            // 0x18
+    void (*animate_fn)(GAMEOBJECT *);         // 0x1c
+    void (*post_animate_fn)(GAMEOBJECT *);    // 0x20
+    PLAYERCHARACTERCONFIG_PC *game_character; // 0x24
+    CHARACTER_EFFECT_CONFIG_PC *effects;      // 0x28
+    f32 scaled_radius;                        // 0x2c
+    f32 collision_radius;                     // 0x30
+    f32 bottom;                               // 0x34
+    f32 top;                                  // 0x38
+    f32 model_scale;                          // 0x3c
+    u8 flags;                                 // 0x40
+    u8 unknown_41;                            // 0x41
+    i16 icon_model;                           // 0x42
+    u32 unknown_44;                           // 0x44
+    u32 unknown_48;                           // 0x48
+} CHARACTER_LIST_ENTRY_PC;                    // size 0x4c
 
 STATIC_ASSERT(sizeof(CHARACTER_LIST_ENTRY_PC) == sizeof(CHARACTERDATA_PC));
-extern void __cdecl NuHGobjDestroy(NUHGOBJ_EVAL_PC *object);
+extern void NuHGobjDestroy(NUHGOBJ_EVAL_PC *object);
 STATIC_ASSERT(offsetof(APICHARSYS, permanent_model_count) == 0xc);
 STATIC_ASSERT(offsetof(APICHARSYS, loaded_model_count) == 0x10);
 STATIC_ASSERT(offsetof(APICHARSYS, models) == 0x18);
@@ -158,14 +158,14 @@ static f32 APIObjectSafeDividePc(f32 a, f32 b) {
     return a / b;
 }
 
-f32 __cdecl AnimEndFrame(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
+f32 AnimEndFrame(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
     if (animation != -1 && model->model_data_b[animation] != NULL) {
         return NuAnimEndFrame(model->model_data_b[animation]);
     }
     return 0.0f;
 }
 
-i32 __cdecl AnimMiscFlags(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
+i32 AnimMiscFlags(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
     if (animation != -1 && model->model_data_b[animation] != NULL) {
         return model->animations[animation]->misc_flags;
     }
@@ -190,7 +190,7 @@ void AnimList_RequestAnimGroupForCreatures(i32 group_id, ...) {
 
 static i32 AnimBlendMode = 1;
 
-void __cdecl SetAnimBlendMode(i32 mode) {
+void SetAnimBlendMode(i32 mode) {
     AnimBlendMode = mode;
 }
 
@@ -198,7 +198,7 @@ i32 GetAnimBlendMode(void) {
     return AnimBlendMode;
 }
 
-APIOBJECTSYS_PC *__cdecl APIObjectSysInit(i32 object_size, VARIPTR *buffer, VARIPTR *end) {
+APIOBJECTSYS_PC *APIObjectSysInit(i32 object_size, VARIPTR *buffer, VARIPTR *end) {
     APIOBJECTSYS_PC *system = AISysBufferAlloc(buffer, end, sizeof(*system));
     if (system != NULL) {
         memset(system, 0, sizeof(*system));
@@ -223,7 +223,7 @@ void fun_0062a840(APIOBJECT_PC *object, u8 object_id, i32 enable) {
     }
 }
 
-GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *system) {
+GAMEOBJECT *APIObjectCreate(APIOBJECTSYS_PC *system) {
     GAMEOBJECT *object;
     i32 index;
     if (system != NULL && system->object_size != 0) {
@@ -240,7 +240,7 @@ GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *system) {
     return NULL;
 }
 
-void __cdecl APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target) {
+void APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target) {
     if (source != NULL) {
         system->hostility_masks[source->hostility_group] &= ~((u64)1 << target->hostility_group);
     } else {
@@ -248,7 +248,7 @@ void __cdecl APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *so
     }
 }
 
-void __cdecl APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object) {
+void APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object) {
     i32 index;
     GAMEOBJECT *other;
     if (system != NULL && object != NULL && system->object_size != 0) {
@@ -265,13 +265,13 @@ void __cdecl APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object) {
     }
 }
 
-void __cdecl APIObjectDestroyAll(APIOBJECTSYS_PC *system) {
+void APIObjectDestroyAll(APIOBJECTSYS_PC *system) {
     if (system != NULL) {
         memset(system->objects, 0, system->object_size * 64);
     }
 }
 
-i32 __cdecl QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step) {
+i32 QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step) {
     f32 distance;
     i32 hit;
     NUVEC direction;
@@ -312,8 +312,8 @@ i32 __cdecl QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 sc
     }
 }
 
-void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_count, APIOBJECT_PC **sources,
-                                i32 target_count, APIOBJECT_PC **targets, f32 ray_step) {
+void APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_count, APIOBJECT_PC **sources, i32 target_count,
+                        APIOBJECT_PC **targets, f32 ray_step) {
     i32 source_visible;
     i32 target_visible;
     i32 initial_target;
@@ -435,7 +435,7 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
 done:;
 }
 
-void __cdecl APIObjectVelocities(GAMEOBJECT *object) {
+void APIObjectVelocities(GAMEOBJECT *object) {
     f32 horizontal_squared;
     f32 absolute_velocity;
     u32 bits;
@@ -460,7 +460,7 @@ void __cdecl APIObjectVelocities(GAMEOBJECT *object) {
 static f32 MINFORCEAPART = 0.333f;
 static f32 MAXFORCEAPART = 0.666f;
 
-i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
+i32 APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
     GAMEOBJECT *first = (GAMEOBJECT *)first_input;
     GAMEOBJECT *second = (GAMEOBJECT *)second_input;
     f32 value;
@@ -615,7 +615,7 @@ static void GameObjectForceApart2D(GAMEOBJECT *first, GAMEOBJECT *second) {
     }
 }
 
-i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
+i32 APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
     GAMEOBJECT *first = (GAMEOBJECT *)first_input;
     GAMEOBJECT *second = (GAMEOBJECT *)second_input;
     f32 value;
@@ -774,8 +774,8 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
     return 1;
 }
 
-void __cdecl APIObjectCollisions(i32 count, APIOBJECT_PC **objects, NUVEC *minimums, NUVEC *maximums,
-                                 i32(__cdecl *collide)(APIOBJECT_PC *, APIOBJECT_PC *)) {
+void APIObjectCollisions(i32 count, APIOBJECT_PC **objects, NUVEC *minimums, NUVEC *maximums,
+                         i32 (*collide)(APIOBJECT_PC *, APIOBJECT_PC *)) {
     i32 outer;
     i32 inner;
     GAMEOBJECT **first;
@@ -837,7 +837,7 @@ void __cdecl APIObjectCollisions(i32 count, APIOBJECT_PC **objects, NUVEC *minim
     }
 }
 
-i32 __cdecl ParticlesPerFrame(f32 rate, f32 frame_time) {
+i32 ParticlesPerFrame(f32 rate, f32 frame_time) {
     f64 rate_scaled = (f64)rate * 65536.0;
     i32 scaled = (i32)(rate_scaled * ((f64)frame_time * 60.0));
     i32 count = 0;
@@ -852,7 +852,7 @@ i32 __cdecl ParticlesPerFrame(f32 rate, f32 frame_time) {
     return count;
 }
 
-i32 __cdecl ParticlesPerSecond(f32 rate, f32 frame_time) {
+i32 ParticlesPerSecond(f32 rate, f32 frame_time) {
     f32 particles_per_frame = (f32)((f64)rate / 60.0);
     i32 scaled_count = (i32)((f64)particles_per_frame * 65536.0 * ((f64)frame_time * 60.0));
     i32 count = 0;
@@ -867,7 +867,7 @@ i32 __cdecl ParticlesPerSecond(f32 rate, f32 frame_time) {
     return count;
 }
 
-i32 __cdecl FindGameDebris(APIDEBRISSYS_PC *system, char *name) {
+i32 FindGameDebris(APIDEBRISSYS_PC *system, char *name) {
     i32 index;
     for (index = system->named_count; index < system->capacity; ++index) {
         if (NuStrICmp(name, system->entries[index].name) == 0) {
@@ -877,8 +877,7 @@ i32 __cdecl FindGameDebris(APIDEBRISSYS_PC *system, char *name) {
     return -1;
 }
 
-APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *cursor, VARIPTR end, i32 count, i32 named_count, char **names,
-                                        i32 page) {
+APIDEBRISSYS_PC *InitGameDebris(VARIPTR *cursor, VARIPTR end, i32 count, i32 named_count, char **names, i32 page) {
     APIDEBRISSYS_PC *system;
     i32 i;
     i32 j;
@@ -915,7 +914,7 @@ APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *cursor, VARIPTR end, i32 count,
     return NULL;
 }
 
-i32 __cdecl AddGameDebris(APIDEBRISSYS_PC *system, i32 type, NUVEC *position) {
+i32 AddGameDebris(APIDEBRISSYS_PC *system, i32 type, NUVEC *position) {
     if (type >= 0 && type < system->capacity && system->entries[type].effect != -1) {
         i32 handle = -1;
         AddFiniteShotDebrisEffect(&handle, system->entries[type].effect, position, 1);
@@ -924,8 +923,8 @@ i32 __cdecl AddGameDebris(APIDEBRISSYS_PC *system, i32 type, NUVEC *position) {
     return 0;
 }
 
-i32 __cdecl AddGameDebrisMomentum(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, NUVEC *emitter_momentum,
-                                  NUVEC *particle_momentum) {
+i32 AddGameDebrisMomentum(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, NUVEC *emitter_momentum,
+                          NUVEC *particle_momentum) {
     if (type >= 0 && type < system->capacity && system->entries[type].effect != -1) {
         i32 handle = -1;
         AddFiniteShotDebrisEffect2(&handle, system->entries[type].effect, position, emitter_momentum, particle_momentum,
@@ -935,7 +934,7 @@ i32 __cdecl AddGameDebrisMomentum(APIDEBRISSYS_PC *system, i32 type, NUVEC *posi
     return 0;
 }
 
-i32 __cdecl AddGameDebrisXYZ(APIDEBRISSYS_PC *system, i32 type, f32 x, f32 y, f32 z) {
+i32 AddGameDebrisXYZ(APIDEBRISSYS_PC *system, i32 type, f32 x, f32 y, f32 z) {
     if (type >= 0 && type < system->capacity && system->entries[type].effect != -1) {
         i32 handle = -1;
         NUVEC position = {x, y, z};
@@ -945,8 +944,7 @@ i32 __cdecl AddGameDebrisXYZ(APIDEBRISSYS_PC *system, i32 type, f32 x, f32 y, f3
     return 0;
 }
 
-i32 __cdecl AddGameDebrisRot(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, i32 count, u16 z_rotation,
-                             u16 y_rotation) {
+i32 AddGameDebrisRot(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, i32 count, u16 z_rotation, u16 y_rotation) {
     if (type >= 0 && type < system->capacity && system->entries[type].effect != -1 && count > 0) {
         AddVariableShotDebrisEffect(system->entries[type].effect, position, count, z_rotation, y_rotation);
         return 1;
@@ -954,7 +952,7 @@ i32 __cdecl AddGameDebrisRot(APIDEBRISSYS_PC *system, i32 type, NUVEC *position,
     return 0;
 }
 
-i32 __cdecl AddGameDebrisMtx(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, i32 count, NUMTX *matrix) {
+i32 AddGameDebrisMtx(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, i32 count, NUMTX *matrix) {
     if (type >= 0 && type < system->capacity && system->entries[type].effect != -1 && count > 0) {
         NUMTX orientation;
         NuMtxSetRotationX(&orientation, 0x4000);
@@ -966,7 +964,7 @@ i32 __cdecl AddGameDebrisMtx(APIDEBRISSYS_PC *system, i32 type, NUVEC *position,
     return 0;
 }
 
-i32 __cdecl AddGameDebrisMom(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, i32 count, NUVEC *momentum) {
+i32 AddGameDebrisMom(APIDEBRISSYS_PC *system, i32 type, NUVEC *position, i32 count, NUVEC *momentum) {
     if (type >= 0 && type < system->capacity && system->entries[type].effect != -1 && count > 0) {
         NUVEC zero = {0.0f, 0.0f, 0.0f};
         if (momentum == NULL) {
@@ -978,15 +976,14 @@ i32 __cdecl AddGameDebrisMom(APIDEBRISSYS_PC *system, i32 type, NUVEC *position,
     return 0;
 }
 
-void __cdecl SetAPIObjPlaySfxByIdFn(void(__cdecl *play_sfx)(i32, NUVEC *)) {
+void SetAPIObjPlaySfxByIdFn(void (*play_sfx)(i32, NUVEC *)) {
     APIObjPlaySfxByIdFn = play_sfx;
 }
 
-void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *character_data, ANIMPACKET_PC *packet,
-                            NUMTX *locator_matrices, GAMEOBJECT *object, CHARACTER_EFFECT_CONFIG_PC *effects,
-                            i32 paused, f32 frame_time,
-                            void(__cdecl *footprint_callback)(void *, GAMEOBJECT *, i32, i32),
-                            APIDEBRISSYS_PC *debris_sys) {
+void AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *character_data, ANIMPACKET_PC *packet,
+                    NUMTX *locator_matrices, GAMEOBJECT *object, CHARACTER_EFFECT_CONFIG_PC *effects, i32 paused,
+                    f32 frame_time, void (*footprint_callback)(void *, GAMEOBJECT *, i32, i32),
+                    APIDEBRISSYS_PC *debris_sys) {
     i32 animation_id;
     f32 animation_time;
     GAMEOBJECT *api;
@@ -1251,7 +1248,7 @@ void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *
     }
 }
 
-void __cdecl APICharacterModelReset(CHARACTER_MODEL_LAYERS_PC *model) {
+void APICharacterModelReset(CHARACTER_MODEL_LAYERS_PC *model) {
     model->flags &= 0xfe;
     model->model_id = 0;
     model->state = 0;
@@ -1264,7 +1261,7 @@ void __cdecl APICharacterModelReset(CHARACTER_MODEL_LAYERS_PC *model) {
     memset(model->points_of_interest, 0, sizeof(model->points_of_interest));
 }
 
-void *__cdecl LoadAnimFromPAK(char *path, i32 area_animation, void *data, i32 size) {
+void *LoadAnimFromPAK(char *path, i32 area_animation, void *data, i32 size) {
     API_ANIMATION_CACHE_PC *entry = apicharsys->animations;
     i32 i;
     for (i = 0; i < apicharsys->loaded_animation_count; ++entry, ++i) {
@@ -1288,7 +1285,7 @@ void *__cdecl LoadAnimFromPAK(char *path, i32 area_animation, void *data, i32 si
     return NULL;
 }
 
-void *__cdecl LoadAnim(char *path, i32 area_animation, VARIPTR *cursor, VARIPTR end) {
+void *LoadAnim(char *path, i32 area_animation, VARIPTR *cursor, VARIPTR end) {
     API_ANIMATION_CACHE_PC *entry = apicharsys->animations;
     i32 i;
     for (i = 0; i < apicharsys->loaded_animation_count; ++i, ++entry) {
@@ -1312,8 +1309,8 @@ void *__cdecl LoadAnim(char *path, i32 area_animation, VARIPTR *cursor, VARIPTR 
     return NULL;
 }
 
-void __cdecl APIObjectRegisterAnimRedirect(i32(__cdecl *callback)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *),
-                                           void *list, char *directory) {
+void APIObjectRegisterAnimRedirect(i32 (*callback)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *), void *list,
+                                   char *directory) {
     i32 length = NuStrLen(directory);
     RedirectAnimFn = callback;
     RedirectAnimList = list;
@@ -1325,7 +1322,7 @@ void __cdecl APIObjectRegisterAnimRedirect(i32(__cdecl *callback)(char *, void *
     }
 }
 
-void __cdecl APIResetCharacterRemap(void) {
+void APIResetCharacterRemap(void) {
     i32 i;
     for (i = 0; i < apicharsys->character_count; ++i) {
         if ((apicharsys->char_data[i].model_flags & 2) == 0) {
@@ -1334,8 +1331,8 @@ void __cdecl APIResetCharacterRemap(void) {
     }
 }
 
-void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VARIPTR *buffer,
-                                    VARIPTR buffer_end, i32 area_models) {
+void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VARIPTR *buffer, VARIPTR buffer_end,
+                            i32 area_models) {
     char animation_extension[5] = ".an3";
     char deformation_extension[5] = ".bsa";
     char path[0x100];
@@ -1566,7 +1563,7 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
     }
 }
 
-CHARACTER_MODEL_LAYERS_PC *__cdecl APICharacterLoaded(i32 character_id) {
+CHARACTER_MODEL_LAYERS_PC *APICharacterLoaded(i32 character_id) {
     i16 model_id;
     if (character_id != -1) {
         model_id = apicharsys->playermodelids[character_id];
@@ -1577,7 +1574,7 @@ CHARACTER_MODEL_LAYERS_PC *__cdecl APICharacterLoaded(i32 character_id) {
     return NULL;
 }
 
-void __cdecl APIDumpCharacterModels(i32 mode) {
+void APIDumpCharacterModels(i32 mode) {
     i32 model_index;
     if (mode != 0) {
         model_index = 0;
@@ -1592,7 +1589,7 @@ void __cdecl APIDumpCharacterModels(i32 mode) {
     }
 }
 
-i16 __cdecl FindAnimIX(CHARACTERDATA_PC *character, char *name) {
+i16 FindAnimIX(CHARACTERDATA_PC *character, char *name) {
     CHARACTERANIM_CONFIG_PC *animation;
     if (character != NULL) {
         animation = character->animations;
@@ -1613,7 +1610,7 @@ i16 __cdecl FindAnimIX(CHARACTERDATA_PC *character, char *name) {
 
 f32 animduration_blendouttime = 0;
 
-f32 __cdecl AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 end_frame, i32 subtract_blend_out) {
+f32 AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 end_frame, i32 subtract_blend_out) {
     i16 model_id;
     CHARACTER_MODEL_LAYERS_PC *model;
     CHARACTER_ANIMATION_LOCATOR_PC *animation_info;
@@ -1653,7 +1650,7 @@ f32 __cdecl AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 e
     return duration;
 }
 
-i32 __cdecl PCBuildModelLayerList(CHARACTER_MODEL_LAYERS_PC *model, i16 *indices, u32 mask) {
+i32 PCBuildModelLayerList(CHARACTER_MODEL_LAYERS_PC *model, i16 *indices, u32 mask) {
     i32 count = 0;
     if (model != NULL) {
         u32 bit = 1;
@@ -1670,8 +1667,8 @@ i32 __cdecl PCBuildModelLayerList(CHARACTER_MODEL_LAYERS_PC *model, i16 *indices
     return count;
 }
 
-void __cdecl PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS_PC *model, NUMTX *world_matrix,
-                                            NUMTX *joint_matrices, NUVEC *positions, NUMTX *matrices) {
+void PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS_PC *model, NUMTX *world_matrix, NUMTX *joint_matrices,
+                                    NUVEC *positions, NUMTX *matrices) {
     i32 index;
     NUMTX result;
     if (positions == NULL && matrices == NULL) {
@@ -1690,9 +1687,9 @@ void __cdecl PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS_PC *model, NU
     }
 }
 
-void __cdecl EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, NUMTX *world_matrix,
-                           NUMTX *joint_matrices, DWA_WEIGHT_BLOCK_PC ***dwa_output, NUVEC *locator_positions,
-                           NUMTX *locator_matrices, u32 layer_mask) {
+void EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, NUMTX *world_matrix, NUMTX *joint_matrices,
+                   DWA_WEIGHT_BLOCK_PC ***dwa_output, NUVEC *locator_positions, NUMTX *locator_matrices,
+                   u32 layer_mask) {
     i16 render_indices[32];
     i32 render_count = MakeLayerList(model, render_indices, layer_mask);
     if (render_count < 1) {
@@ -1775,7 +1772,7 @@ f32 BlendTimeBetweenAnims(CHARACTER_MODEL_LAYERS_PC *model, i32 source_animation
     return time;
 }
 
-void __cdecl ResetAnimPacket(ANIMPACKET_PC *packet, i32 animation) {
+void ResetAnimPacket(ANIMPACKET_PC *packet, i32 animation) {
     if (packet == NULL) {
         return;
     }
@@ -1793,7 +1790,7 @@ void __cdecl ResetAnimPacket(ANIMPACKET_PC *packet, i32 animation) {
     packet->reversed_3d = 0;
 }
 
-void __cdecl ResetMiniAnimPacket(MINIANIMPACKET_PC *packet, i32 animation) {
+void ResetMiniAnimPacket(MINIANIMPACKET_PC *packet, i32 animation) {
     if (packet == NULL) {
         return;
     }
@@ -1807,7 +1804,7 @@ void __cdecl ResetMiniAnimPacket(MINIANIMPACKET_PC *packet, i32 animation) {
     packet->flags = 4;
 }
 
-void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet) {
+void SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet) {
     f64 duration;
     if (model == NULL || packet == NULL) {
         return;
@@ -2101,7 +2098,7 @@ update_timers:
     }
 }
 
-void __cdecl AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *source, ANIMPACKET_PC *destination) {
+void AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *source, ANIMPACKET_PC *destination) {
     destination->current_time = source->current_time;
     destination->previous_time = source->previous_time;
     destination->blend_elapsed_pc = source->blend_elapsed;
@@ -2121,7 +2118,7 @@ void __cdecl AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *source, ANIMPACKET
     destination->overlay_animation = -1;
 }
 
-void __cdecl AnimPacketFullToMiniPc(ANIMPACKET_PC *source, DRAW_ATTACHMENTS_MINI_PC *destination) {
+void AnimPacketFullToMiniPc(ANIMPACKET_PC *source, DRAW_ATTACHMENTS_MINI_PC *destination) {
     destination->current_time = source->current_time;
     destination->previous_time = source->previous_time;
     destination->blend_elapsed = source->blend_elapsed_pc;
@@ -2137,8 +2134,8 @@ void __cdecl AnimPacketFullToMiniPc(ANIMPACKET_PC *source, DRAW_ATTACHMENTS_MINI
     destination->requested_animation = source->requested_animation;
 }
 
-void __cdecl UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS_PC *model, DRAW_ATTACHMENTS_MINI_PC *mini, f32 frame_step,
-                                  f32 movement_speed, f32 blend_step) {
+void UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS_PC *model, DRAW_ATTACHMENTS_MINI_PC *mini, f32 frame_step,
+                          f32 movement_speed, f32 blend_step) {
     union {
         ANIMPACKET_PC packet;
         u32 words[18];
@@ -2149,8 +2146,8 @@ void __cdecl UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS_PC *model, DRAW_ATTACHM
     AnimPacketFullToMiniPc(&full.packet, mini);
 }
 
-i32 __cdecl AnimBlendingFromTo(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, i32 source_animation,
-                               i32 target_animation) {
+i32 AnimBlendingFromTo(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, i32 source_animation,
+                       i32 target_animation) {
     if (packet->blending != 0 && source_animation != -1 && packet->blend_source_animation == source_animation &&
         target_animation != -1 && packet->blend_target_animation == target_animation) {
         if (model != NULL &&
@@ -2162,7 +2159,7 @@ i32 __cdecl AnimBlendingFromTo(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *
     return 0;
 }
 
-f32 *__cdecl AnimPlaying(ANIMPACKET_PC *packet, i32 animation, i32 target, i32 source) {
+f32 *AnimPlaying(ANIMPACKET_PC *packet, i32 animation, i32 target, i32 source) {
     if (animation == -1) {
         return NULL;
     }
@@ -2179,42 +2176,42 @@ f32 *__cdecl AnimPlaying(ANIMPACKET_PC *packet, i32 animation, i32 target, i32 s
     return NULL;
 }
 
-i32 __cdecl CurrentAnim(ANIMPACKET_PC *packet) {
+i32 CurrentAnim(ANIMPACKET_PC *packet) {
     if (packet->blending != 0) {
         return packet->blend_target_animation;
     }
     return packet->animation_index;
 }
 
-f32 __cdecl AnimSpeed(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
+f32 AnimSpeed(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
     if (animation != -1 && model->model_data_b[animation] != NULL) {
         return model->animations[animation]->action_speed;
     }
     return 0.0f;
 }
 
-f32 __cdecl AnimListFrame(CHARACTER_MODEL_LAYERS_PC *model, i32 animation, i32 frame) {
+f32 AnimListFrame(CHARACTER_MODEL_LAYERS_PC *model, i32 animation, i32 frame) {
     if (animation == -1 || model->model_data_b[animation] == NULL || (u32)frame > 3) {
         return 0.0f;
     }
     return model->animation_configs[animation]->event_frames[frame];
 }
 
-f32 __cdecl AnimStopFrame(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
+f32 AnimStopFrame(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
     if (animation != -1 && model->model_data_b[animation] != NULL) {
         return model->animation_configs[animation]->stop_frame;
     }
     return 0.0f;
 }
 
-f32 *__cdecl AnimListFrameArray(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
+f32 *AnimListFrameArray(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
     if (animation == -1 || model->model_data_b[animation] == NULL) {
         return NULL;
     }
     return model->animation_configs[animation]->event_frames;
 }
 
-i32 __cdecl AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id) {
+i32 AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id) {
     CHARACTER_MODEL_LAYERS_PC *source;
     CHARACTER_MODEL_LAYERS_PC *target;
     i32 source_model;
@@ -2420,7 +2417,7 @@ void NuHGobjRestoreEvaluation(void) {
     }
 }
 
-void __cdecl APITransparentInit(void) {
+void APITransparentInit(void) {
     APITrans_Mtl[0] = NuMtlCreate3D(1);
     APITrans_Mtl[0]->attribs.unknown_1_1_2 = 1;
     APITrans_Mtl[0]->attribs.unknown_1_4_8 = 1;
@@ -2779,7 +2776,7 @@ cleanup:
     return result;
 }
 
-i32 __cdecl InModelList(APICHARACTERMODELLIST *list, i32 id, i32 *out_index) {
+i32 InModelList(APICHARACTERMODELLIST *list, i32 id, i32 *out_index) {
     if (list != NULL) {
         i32 i = 0;
         for (; list->model_id != -1; ++list, ++i) {
@@ -2797,7 +2794,7 @@ i32 __cdecl InModelList(APICHARACTERMODELLIST *list, i32 id, i32 *out_index) {
     return 0;
 }
 
-void __cdecl SetActionInfo(API_ACTION_INFO_PC *info, API_EXTRA_ACTION_PC *extra) {
+void SetActionInfo(API_ACTION_INFO_PC *info, API_EXTRA_ACTION_PC *extra) {
     APIActionInfo = info;
     APIExtraActionData = extra;
 }
@@ -2810,7 +2807,7 @@ const char *ActionInfoName(i32 action) {
     return APIActionInfo != NULL ? APIActionInfo[action].name : "?";
 }
 
-i32 __cdecl ActionFromName(const char *name) {
+i32 ActionFromName(const char *name) {
     i32 action;
     API_EXTRA_ACTION_PC *extra;
 
@@ -2834,9 +2831,8 @@ i32 __cdecl ActionFromName(const char *name) {
     return -1;
 }
 
-CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, i32 maximum,
-                                                 i32 *count_out, i32 game_stride,
-                                                 PLAYERCHARACTERCONFIG_PC **game_data_out) {
+CHARACTERDATA_PC *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, i32 maximum,
+                                         i32 *count_out, i32 game_stride, PLAYERCHARACTERCONFIG_PC **game_data_out) {
     NUFPAR_PC *parser;
     CHARACTER_LIST_ENTRY_PC *first;
     CHARACTER_LIST_ENTRY_PC *current;
@@ -2948,9 +2944,8 @@ CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_sta
     return NULL;
 }
 
-void __cdecl APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 model_capacity,
-                                 i32 model_id_capacity, i32 animation_capacity, APICHARACTERDATA *characters,
-                                 void(__cdecl *lights)(APIOBJECT_PC *)) {
+void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 model_capacity, i32 model_id_capacity,
+                         i32 animation_capacity, APICHARACTERDATA *characters, void (*lights)(APIOBJECT_PC *)) {
     i32 i;
     CHARACTER_MODEL_LAYERS_PC *model;
     (void)end;
@@ -3003,7 +2998,7 @@ void __cdecl APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_cou
 
 /* Table sine and cosine of an angle in radians; the cosine negates the angle as retail does. */
 
-static void __cdecl WindShearComponentsPC(f32 *shear_x, f32 *shear_z, i32 wind_scale, i32 wind_speed) {
+static void WindShearComponentsPC(f32 *shear_x, f32 *shear_z, i32 wind_scale, i32 wind_speed) {
     f32 amplitude = (f32)(((f64)wind_scale / 65535.0) * global_windscale);
     f32 speed = (f32)(((f64)wind_speed / 65535.0) * global_windspeed);
     u32 seed = (u32)wind_speed;
@@ -3016,7 +3011,7 @@ static void __cdecl WindShearComponentsPC(f32 *shear_x, f32 *shear_z, i32 wind_s
     *shear_z = (f32)(((f64)PC_WIND_COS((f32)(phase * (f64)1.1f)) + cos_half + cos_quarter) * amplitude);
 }
 
-void __cdecl WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_speed) {
+void WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_speed) {
     f32 shear_x;
     f32 shear_z;
     WindShearComponentsPC(&shear_x, &shear_z, wind_scale, wind_speed);

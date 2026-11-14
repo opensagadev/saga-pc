@@ -8,7 +8,7 @@ extern "C" {
     extern TerrainQuery_s *TerI;
     extern void *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
-    void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);
+    void TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
@@ -2394,7 +2394,7 @@ extern "C" i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f3
     return NewRayCastScaleYMask(position, movement, radius, scale_y, scan_flags, 0);
 }
 
-extern "C" void __cdecl FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result) {
+extern "C" void FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result) {
     const f32 reverse_x = -movement->x;
     const f32 reverse_y = -movement->y;
     const f32 reverse_z = -movement->z;

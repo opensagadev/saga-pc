@@ -6,7 +6,7 @@
 static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemTypePc = 0;
 static i32 PlayerItemTypeCountPc = 0;
 
-void __cdecl PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *types) {
+void PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *types) {
     PlayerItemTypePc = NULL;
     PlayerItemTypeCountPc = 0;
     if (types == NULL) {
@@ -22,7 +22,7 @@ void __cdecl PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *types) {
     }
 }
 
-void __cdecl PlayerItemTypes_Reset(WORLDINFO *world) {
+void PlayerItemTypes_Reset(WORLDINFO *world) {
     i32 index;
     if (PlayerItemTypePc != NULL) {
         for (index = 0; index < PlayerItemTypeCountPc; ++index) {
@@ -31,7 +31,7 @@ void __cdecl PlayerItemTypes_Reset(WORLDINFO *world) {
     }
 }
 
-PLAYER_ITEM_TYPE_RESET_PC *__cdecl PlayerItemType_Find(i32 id) {
+PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType_Find(i32 id) {
     i32 index;
     if (PlayerItemTypePc == NULL) {
         return NULL;
@@ -44,7 +44,7 @@ PLAYER_ITEM_TYPE_RESET_PC *__cdecl PlayerItemType_Find(i32 id) {
     return NULL;
 }
 
-i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
+i32 PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
     if (item == NULL) {
         return 1;
     }

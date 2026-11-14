@@ -234,7 +234,7 @@ extern "C" {
     }
 }
 
-extern "C" void *__cdecl GizBuildIt_Find(WORLDINFO *world, char *name) {
+extern "C" void *GizBuildIt_Find(WORLDINFO *world, char *name) {
     GIZBUILDIT_WORLD_READER_PC *w = (GIZBUILDIT_WORLD_READER_PC *)world;
     GIZBUILDIT_SYSTEM_READER_PC *system = w->system;
     if (system != NULL) {
@@ -282,7 +282,7 @@ extern "C" {
     }
 }
 
-extern "C" GIZBUILDIT_PC *__cdecl GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *player, i32 mode, i32 shadow) {
+extern "C" GIZBUILDIT_PC *GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *player, i32 mode, i32 shadow) {
     if (world->giz_buildit_sys == NULL || player == NULL) {
         return NULL;
     }
@@ -334,7 +334,7 @@ extern "C" GIZBUILDIT_PC *__cdecl GizBuildIt_FindNearest(WORLDINFO *world, GAMEO
 
 extern "C" {
 
-    GIZBUILDIT_PC *__cdecl GizBuildIt_AnyReacting(WORLDINFO *world) {
+    GIZBUILDIT_PC *GizBuildIt_AnyReacting(WORLDINFO *world) {
         struct GIZBUILDITSYS_s *system = world->giz_buildit_sys;
         if (system != NULL) {
             GIZBUILDIT_PC *buildit = (GIZBUILDIT_PC *)system->buildits;
@@ -357,7 +357,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl GizBuildIt_AtEnd(void *buildit_pointer) {
+    i32 GizBuildIt_AtEnd(void *buildit_pointer) {
         BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)buildit_pointer;
         if (buildit != NULL && buildit->build_state == 2) {
             return 1;
@@ -424,7 +424,7 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEA
     }
 }
 
-extern "C" void __cdecl GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
+extern "C" void GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
     GIZBUILDIT_PC *buildit = static_cast<GIZBUILDIT_PC *>(object->grapple);
     GAMEANIMOBJ *piece;
     GIZBUILDITANIMDATA_s *data;
@@ -480,7 +480,7 @@ extern "C" {
 
 #define PLAYER_BUILDIT(player) ((BUILDIT_MOVEMENT_PC *)(player)->grapple)
 
-    void __cdecl GizGetBuildItPlayerPos(GAMEOBJECT *player, NUVEC *position, NUVEC *target) {
+    void GizGetBuildItPlayerPos(GAMEOBJECT *player, NUVEC *position, NUVEC *target) {
         BUILDIT_MATRICES_PC *data;
         i32 count;
         i32 index;
@@ -534,7 +534,7 @@ extern "C" {
         }
     }
 
-    void __cdecl GizBuildItPushAwayFromStart(GAMEOBJECT *player, void *context) {
+    void GizBuildItPushAwayFromStart(GAMEOBJECT *player, void *context) {
         BUILDIT_MOVEMENT_PC *buildit = (BUILDIT_MOVEMENT_PC *)context;
         BUILDIT_MATRICES_PC *data;
         BUILDIT_ANIMATION_PC *object;
@@ -607,7 +607,7 @@ extern "C" {
         PushAway(&centre, radius, &minimum, &maximum, player, NULL, 1.0f, 0);
     }
 
-    void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
+    void GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
         GIZBUILDIT_PC *buildit;
         GIZBUILDITANIMDATA_s *data;
         NUVEC centre;
@@ -700,7 +700,7 @@ extern "C" {
         }
     }
 
-    f32 __cdecl GizBuildItMul(GAMEOBJECT *player) {
+    f32 GizBuildItMul(GAMEOBJECT *player) {
         BUILDIT_MOVEMENT_PC *buildit;
         i32 amount;
         i32 completed;
@@ -723,7 +723,7 @@ extern "C" {
         return (f32)((f64)amount / 10.0 + 1.0);
     }
 
-    void __cdecl ReleaseBuildIt(GAMEOBJECT *player, i32 completed) {
+    void ReleaseBuildIt(GAMEOBJECT *player, i32 completed) {
         f32 completion_blend;
         if (LEGOCONTEXT_BUILDIT == -1 || player->character_context != LEGOCONTEXT_BUILDIT) {
             return;
@@ -733,7 +733,7 @@ extern "C" {
         GameCam_Blend(GameCam, 0.5f, completion_blend, 1);
     }
 
-    void __cdecl GizBuildIts_PostLoad(void *world, void *pointer) {
+    void GizBuildIts_PostLoad(void *world, void *pointer) {
         REGISTRY_BUILDIT_SYSTEM_PC *system = (REGISTRY_BUILDIT_SYSTEM_PC *)pointer;
         REGISTRY_BUILDIT_RECORD_PC *buildit;
         i32 i;
@@ -750,7 +750,7 @@ extern "C" {
         }
     }
 
-    void *__cdecl GizBuildIts_ReserveBufferSpace(void *pointer) {
+    void *GizBuildIts_ReserveBufferSpace(void *pointer) {
         WORLDINFO *world = (WORLDINFO *)pointer;
         REGISTRY_BUILDIT_SYSTEM_PC *system;
         i32 i;
@@ -771,14 +771,14 @@ extern "C" {
         return system;
     }
 
-    void __cdecl GizBuildit_SetVisibility(GIZBUILDIT_s *buildit, i32 visible) {
+    void GizBuildit_SetVisibility(GIZBUILDIT_s *buildit, i32 visible) {
         if (buildit != NULL) {
             GameAnimSet_SetVisibility(buildit->anim_set, visible);
             ((BUILDIT_RESET_PC *)buildit)->availability.visible = visible != 0;
         }
     }
 
-    void __cdecl GizmoBuildit_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    void GizmoBuildit_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         BUILDIT_RESET_PC *buildit;
         if (gizmo == NULL) {
             return;
@@ -791,7 +791,7 @@ extern "C" {
         buildit->availability.visible = visible != 0;
     }
 
-    NUVEC *__cdecl GizmoBuildit_GetPos(GIZMO_PC *gizmo) {
+    NUVEC *GizmoBuildit_GetPos(GIZMO_PC *gizmo) {
         if (gizmo == NULL || gizmo->object == NULL) {
             return NULL;
         }
@@ -922,7 +922,7 @@ extern "C" {
         }
     }
 
-    void __cdecl GizBuildIts_Reset(void *world, void *system_pointer, void *progress_pointer) {
+    void GizBuildIts_Reset(void *world, void *system_pointer, void *progress_pointer) {
         BUILDIT_RESET_SYSTEM_PC *system = (BUILDIT_RESET_SYSTEM_PC *)system_pointer;
         BUILDIT_RESET_PROGRESS_PC *progress = (BUILDIT_RESET_PROGRESS_PC *)progress_pointer;
         BUILDIT_RESET_PC *buildit = system->buildits;
@@ -941,7 +941,7 @@ extern "C" {
         }
     }
 
-    void __cdecl GizBuildIts_EarlyUpdate(void *world, void *pointer, f32 delta_time) {
+    void GizBuildIts_EarlyUpdate(void *world, void *pointer, f32 delta_time) {
         GIZBUILDITSYS_s *system = (GIZBUILDITSYS_s *)pointer;
         BUILDIT_RESET_PC *buildit;
         i32 i;
@@ -957,7 +957,7 @@ extern "C" {
         (void)delta_time;
     }
 
-    i32 __cdecl GizBuildIts_UpdateHint(HINT_PC *hint) {
+    i32 GizBuildIts_UpdateHint(HINT_PC *hint) {
         if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
             return 0;
         }
@@ -1004,7 +1004,7 @@ extern "C" {
         }
     }
 
-    void __cdecl GizBuildIts_Draw(void *world_pointer, void *system_pointer, f32 unused) {
+    void GizBuildIts_Draw(void *world_pointer, void *system_pointer, f32 unused) {
         WORLDINFO *world = (WORLDINFO *)world_pointer;
         BUILDIT_RESET_SYSTEM_PC *system = (BUILDIT_RESET_SYSTEM_PC *)system_pointer;
         BUILDIT_RESET_PC *buildit;
@@ -1058,7 +1058,7 @@ extern "C" {
         ResetShadowMapRendering();
     }
 
-    i32 __cdecl GizBuildIts_GetMaxGizmos(void *world_ptr) {
+    i32 GizBuildIts_GetMaxGizmos(void *world_ptr) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
         if (world != NULL) {
             return world->current_level->max_buildits;
@@ -1066,7 +1066,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl GizBuildIts_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
+    void GizBuildIts_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
         GIZBUILDITSYS_s *s = (GIZBUILDITSYS_s *)data;
         i32 i;
         (void)world;
@@ -1080,11 +1080,11 @@ extern "C" {
         }
     }
 
-    char *__cdecl GizmoBuildit_GetGizmoName(GIZMO_PC *gizmo) {
+    char *GizmoBuildit_GetGizmoName(GIZMO_PC *gizmo) {
         return gizmo != NULL ? (char *)gizmo->object : NULL;
     }
 
-    i32 __cdecl GizmoBuildit_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_read) {
+    i32 GizmoBuildit_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_read) {
         BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)gizmo->object;
         if (((buildit->availability.visible && buildit->availability.active) || force_read != 0) &&
             buildit->build_state == 2) {
@@ -1093,19 +1093,19 @@ extern "C" {
         return 0;
     }
 
-    char *__cdecl GizmoBuildit_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    char *GizmoBuildit_GetOutputName(GIZMO_PC *gizmo, i32 output) {
         return "Finished";
     }
 
-    i32 __cdecl GizmoBuildit_GetNumOutputs(GIZMO_PC *gizmo) {
+    i32 GizmoBuildit_GetNumOutputs(GIZMO_PC *gizmo) {
         return 1;
     }
 
-    void *__cdecl GizBuildIts_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    void *GizBuildIts_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
         return GizmoBufferAlloc(buffer, end, 0x60);
     }
 
-    void __cdecl GizBuildIts_ClearProgress(void *owner, void *progress_ptr) {
+    void GizBuildIts_ClearProgress(void *owner, void *progress_ptr) {
         BUILD_PROGRESS_PC *progress = (BUILD_PROGRESS_PC *)progress_ptr;
         if (progress == NULL) {
             return;
@@ -1117,7 +1117,7 @@ extern "C" {
         memset(progress->object_count, 0, 64);
     }
 
-    void __cdecl GizBuildIts_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+    void GizBuildIts_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
         BUILD_PROGRESS_PC *progress = (BUILD_PROGRESS_PC *)progress_ptr;
         BUILD_PROGRESS_SYSTEM_PC *system = (BUILD_PROGRESS_SYSTEM_PC *)data;
         BUILD_PROGRESS_RECORD_PC *record;
@@ -1157,7 +1157,7 @@ extern "C" {
     }
 
     /* Studs the level's build-its release (TotalLevelCoinTally). */
-    u32 __cdecl GizBuildIts_TotalScore(WORLDINFO *world) {
+    u32 GizBuildIts_TotalScore(WORLDINFO *world) {
         BUILDIT_RESET_SYSTEM_PC *system;
         BUILDIT_RESET_PC *buildit;
         u32 total = 0;
@@ -1174,7 +1174,7 @@ extern "C" {
         return total;
     }
 
-    void __cdecl GizBuildIt_Finish(GIZBUILDIT_s *buildit_pointer) {
+    void GizBuildIt_Finish(GIZBUILDIT_s *buildit_pointer) {
         BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)buildit_pointer;
         buildit->build_state = 2;
         if ((buildit->state_flags & 2) != 0) {
@@ -1197,7 +1197,7 @@ extern "C" {
         buildit->reset_step_timer = buildit->reset_step_duration;
     }
 
-    void __cdecl GizBuildIt_SetToStart(void *buildit_pointer, i32 emit_debris, i32 keep_built_pieces) {
+    void GizBuildIt_SetToStart(void *buildit_pointer, i32 emit_debris, i32 keep_built_pieces) {
         BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)buildit_pointer;
         i32 restored_count;
         i32 i;
@@ -1245,7 +1245,7 @@ extern "C" {
 }
 
 /* 590da0/182. Add to the native buildit owner with the shared PC type. */
-extern "C" void __cdecl GizBuildIt_SetToEnd(GIZBUILDIT_PC *buildit) {
+extern "C" void GizBuildIt_SetToEnd(GIZBUILDIT_PC *buildit) {
     if (buildit == NULL) {
         return;
     }
@@ -1284,7 +1284,7 @@ extern "C" {
     const char GizmoRegistryGizBuildItsNamePc[] = "GizBuildit";
 #pragma const_seg()
 
-    i32 __cdecl GizBuildIts_Load(void *world_pointer, void *system_pointer) {
+    i32 GizBuildIts_Load(void *world_pointer, void *system_pointer) {
         WORLDINFO *world = (WORLDINFO *)world_pointer;
         GIZBUILDITSYS_s *system = (GIZBUILDITSYS_s *)system_pointer;
         BUILDIT_RESET_PC *buildit;
@@ -1384,7 +1384,7 @@ extern "C" {
         return 1;
     }
 
-    void __cdecl GizmoBuildit_Activate(GIZMO_PC *gizmo, i32 active) {
+    void GizmoBuildit_Activate(GIZMO_PC *gizmo, i32 active) {
         BUILDIT_RESET_PC *buildit;
         NUVEC scatter_position;
         i32 reward_released;
@@ -1431,7 +1431,7 @@ extern "C" {
         }
     }
 
-    void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f32 unused) {
+    void GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f32 unused) {
         WORLDINFO *world = (WORLDINFO *)world_pointer;
         BUILDIT_RESET_SYSTEM_PC *system = (BUILDIT_RESET_SYSTEM_PC *)system_pointer;
         BUILDIT_RESET_PC *buildit;
@@ -1749,7 +1749,7 @@ extern "C" {
     char *GizmoRegistryGizBuildItsNamePtrPc = (char *)GizmoRegistryGizBuildItsNamePc;
     static ADDGIZMOTYPE_PC GizmoRegistryGizBuildItsAddTypePc = {0};
 
-    ADDGIZMOTYPE_PC *__cdecl GizBuildIts_RegisterGizmo(i32 type_id) {
+    ADDGIZMOTYPE_PC *GizBuildIts_RegisterGizmo(i32 type_id) {
         ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizBuildItsAddTypePc;
         *addtype = Default_ADDGIZMOTYPE;
         addtype->name = GizmoRegistryGizBuildItsNamePtrPc;
@@ -1763,31 +1763,30 @@ extern "C" {
         addtype->fns.add_level_sfx_fn = NULL;
         addtype->prefix = "";
         addtype->fns.options = 0x60;
-        addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizBuildIts_GetMaxGizmos;
+        addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizBuildIts_GetMaxGizmos;
         addtype->fns.add_gizmos_fn = (void *)GizBuildIts_AddGizmos;
-        addtype->fns.early_update_fn = (void(__cdecl *)(void *, void *, f32))GizBuildIts_EarlyUpdate;
-        addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizBuildIts_LateUpdate;
-        addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizBuildIts_Draw;
-        addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizmoBuildit_GetGizmoName;
-        addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizmoBuildit_GetOutput;
-        addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizmoBuildit_GetOutputName;
+        addtype->fns.early_update_fn = (void (*)(void *, void *, f32))GizBuildIts_EarlyUpdate;
+        addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizBuildIts_LateUpdate;
+        addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizBuildIts_Draw;
+        addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizmoBuildit_GetGizmoName;
+        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoBuildit_GetOutput;
+        addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizmoBuildit_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)GizmoBuildit_GetNumOutputs;
-        addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoBuildit_Activate;
-        addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoBuildit_SetVisibility;
+        addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizmoBuildit_Activate;
+        addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizmoBuildit_SetVisibility;
         addtype->fns.get_pos_fn = (void *)GizmoBuildit_GetPos;
-        addtype->fns.allocate_progress_data_fn =
-            (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizBuildIts_AllocateProgressData;
-        addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizBuildIts_ClearProgress;
-        addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizBuildIts_StoreProgress;
-        addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizBuildIts_Reset;
-        addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizBuildIts_ReserveBufferSpace;
-        addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizBuildIts_Load;
-        addtype->fns.post_load_fn = (void(__cdecl *)(void *, void *))GizBuildIts_PostLoad;
+        addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizBuildIts_AllocateProgressData;
+        addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizBuildIts_ClearProgress;
+        addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizBuildIts_StoreProgress;
+        addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizBuildIts_Reset;
+        addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizBuildIts_ReserveBufferSpace;
+        addtype->fns.load_fn = (i32(*)(void *, void *))GizBuildIts_Load;
+        addtype->fns.post_load_fn = (void (*)(void *, void *))GizBuildIts_PostLoad;
         gizbuildit_gizmotype_id = type_id;
         return addtype;
     }
 
-    void __cdecl BuildIt_MoveCode(GAMEOBJECT *player) {
+    void BuildIt_MoveCode(GAMEOBJECT *player) {
         GIZBUILDIT_PC *buildit;
         i32 animation;
         f32 timer;

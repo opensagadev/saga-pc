@@ -1,29 +1,29 @@
 #include "saga.h"
 
 extern "C" char *lsw_memcard_objname;
-extern "C" void __cdecl TextInputGlyphNamePc(i32, char *);
-extern "C" void __cdecl RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);
-extern "C" void __cdecl RegisterAlternateGizmoTypesPc(VARIPTR *, VARIPTR *);
-extern "C" void __cdecl RegisterDefaultGizmoTypesPc(VARIPTR *, VARIPTR *);
-extern "C" void __cdecl Alt_registerStatusScreen(void);
-extern "C" void __cdecl Alt_registerStatusScreenExtraPc(void);
+extern "C" void TextInputGlyphNamePc(i32, char *);
+extern "C" void RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);
+extern "C" void RegisterAlternateGizmoTypesPc(VARIPTR *, VARIPTR *);
+extern "C" void RegisterDefaultGizmoTypesPc(VARIPTR *, VARIPTR *);
+extern "C" void Alt_registerStatusScreen(void);
+extern "C" void Alt_registerStatusScreenExtraPc(void);
 extern "C" {
-    void __cdecl MiniKits_Init(VARIPTR *, VARIPTR *);
-    void __cdecl CharCategories_Init(CHAR_CATEGORY_RECORD_PC *);
+    void MiniKits_Init(VARIPTR *, VARIPTR *);
+    void CharCategories_Init(CHAR_CATEGORY_RECORD_PC *);
     extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefaultPc[6];
     extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLswPc[10];
     extern char *StartupCharVariantNamesPc[23];
 }
-extern "C" void __cdecl PcInput_SetStringUCGfxRemapFn(void(__cdecl *)(i32, char *));
+extern "C" void PcInput_SetStringUCGfxRemapFn(void (*)(i32, char *));
 
-static i32 __cdecl PcInputCommandAllowedPc(i32 port, i32 command) {
+static i32 PcInputCommandAllowedPc(i32 port, i32 command) {
     if (PcInput_PortIsKeyboard(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3)) {
         return 0;
     }
     return 1;
 }
 
-extern "C" void __cdecl Movies_ConfigureList(char *, VARIPTR *, VARIPTR *);
+extern "C" void Movies_ConfigureList(char *, VARIPTR *, VARIPTR *);
 class Fade;
 class FadeWipe;
 class FadeStillWipe;
@@ -35,20 +35,20 @@ extern "C" {
     extern FadeWipe fadeWipe;
     extern FadeStillWipe fadeStillWipe;
     extern FadeStill fadeStill;
-    void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end);
+    void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end);
 }
 
 extern "C" {
 
-    void __cdecl LoadPermLoadFonts(void);
-    void __cdecl LoadPermLoadSaveIconScene(void);
-    void __cdecl RegisterHelpers(void);
-    void __cdecl LSW_registerStatusScreen(void);
+    void LoadPermLoadFonts(void);
+    void LoadPermLoadSaveIconScene(void);
+    void RegisterHelpers(void);
+    void LSW_registerStatusScreen(void);
 
-    extern LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                                      i32 *count_out, void *set_defaults_fn);
-    extern AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                                     i32 *count_out);
+    extern LEVELDATA_PC *Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
+                                              i32 *count_out, void *set_defaults_fn);
+    extern AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
+                                             i32 *count_out);
 
     extern "C" {
         extern NUMTL *FadeMtl;
@@ -77,7 +77,7 @@ extern "C" {
 
     extern "C" {
 
-        static void __cdecl NuPrim2DSetColor(i32 colour) {
+        static void NuPrim2DSetColor(i32 colour) {
             u32 converted;
             if (NuPrimNeedsOverbrightening != 0) {
                 converted =
@@ -89,7 +89,7 @@ extern "C" {
             ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
         }
 
-        static void __cdecl NuPrim2DSetUV(f32 u, f32 v) {
+        static void NuPrim2DSetUV(f32 u, f32 v) {
             NUPRIMVERTEX_PC *vertex = (NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
             vertex->u = u;
             vertex->v = v;
@@ -114,7 +114,7 @@ extern "C" {
             }
         }
 
-        void __cdecl LoadPermLoadLegalTexture(void) {
+        void LoadPermLoadLegalTexture(void) {
             VARIPTR texture_base;
             VARIPTR texture_end;
             char path[128];
@@ -143,7 +143,7 @@ extern "C" {
             loadlegal_done = 1;
         }
 
-        static i32 __cdecl LoadPermCreateLegalMtl(NUMTL **output, i32 texture_id) {
+        static i32 LoadPermCreateLegalMtl(NUMTL **output, i32 texture_id) {
             NUMTL *material;
             LEGAL_MATERIAL_PC *view;
             if (*output != NULL) {
@@ -166,7 +166,7 @@ extern "C" {
             return 1;
         }
 
-        void __cdecl LoadPermDestroyLegalMtl(void) {
+        void LoadPermDestroyLegalMtl(void) {
             if (legal_mtl != NULL) {
                 NuMtlDestroy(legal_mtl);
                 legal_mtl = NULL;
@@ -176,7 +176,7 @@ extern "C" {
         void fun_004c9da0() {
         }
 
-        void __cdecl LoadPermLoadFonts(void) {
+        void LoadPermLoadFonts(void) {
             if (StartupGameFlag0 != 0) {
                 Text_LoadFont("stuff\\text\\pc_font", &permbuffer_ptr, &permbuffer_end);
             } else if (StartupGameFlag1 != 0) {
@@ -191,7 +191,7 @@ extern "C" {
         }
 
         /* LSW draws the save icon from pc_bits' "mem_card" special. */
-        void __cdecl LoadPermLoadSaveIconScene(void) {
+        void LoadPermLoadSaveIconScene(void) {
             if (StartupGameFlag1 != 0) {
                 ObjTab[0].name = lsw_memcard_objname;
                 save_icon_scene = NuGScnRead(&permbuffer_ptr, permbuffer_end, "stuff\\pc_bits.gsc");
@@ -200,11 +200,11 @@ extern "C" {
             }
         }
 
-        void __cdecl LoadPermProgressDraw(f32, f32, f32 fade) {
+        void LoadPermProgressDraw(f32, f32, f32 fade) {
             NuRndrRect2di(0, 0, 0x2800, 0xe20, ((i32)(fade * 100.0) << 24) | 0xffffff, FadeMtl);
         }
 
-        f32 __cdecl LoadPermFadeAlpha(f32 t, f32 duration) {
+        f32 LoadPermFadeAlpha(f32 t, f32 duration) {
             f32 end;
             f32 total;
 
@@ -237,7 +237,7 @@ extern "C" {
             memset(free_lists, 0, sizeof(free_lists));
         }
 
-        void __cdecl LoadPermData(void *process) {
+        void LoadPermData(void *process) {
             PC_CONTROL_CONFIG_PC control_config;
             char blocked_keys[4];
 
@@ -390,7 +390,7 @@ extern "C" {
             PermDataLoaded = 1;
         }
 
-        void __cdecl LoadPerm(void) {
+        void LoadPerm(void) {
             WORLDINFO *saved_world;
             f32 language_timer;
             f32 legal_timer;

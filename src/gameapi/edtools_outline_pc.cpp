@@ -22,7 +22,7 @@ static void RndrVtxLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vertices) {
 }
 
 /* Camera-facing circle outline around centre. */
-void __cdecl RndrOSphere(NUVEC *centre, f32 radius, i32 colour, i32 segments, NUMTL *) {
+void RndrOSphere(NUVEC *centre, f32 radius, i32 colour, i32 segments, NUMTL *) {
     NUMTX matrix = global_camera.mtx;
     NURND_VERTEX3D_PC vertices[2];
     i32 step;
@@ -68,7 +68,7 @@ extern "C" void RndrCircleXZ(NUVEC *centre, f32 radius, i32 colour, i32 segments
 }
 
 /* Camera-facing square outline of half-size radius around centre. */
-void __cdecl RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *) {
+void RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *) {
     f32 corners[8] = {-1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f};
     NUMTX matrix = global_camera.mtx;
     NURND_VERTEX3D_PC vertices[2];

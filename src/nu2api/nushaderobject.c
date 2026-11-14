@@ -1,23 +1,22 @@
 #include "saga.h"
 
-void __cdecl NuShaderObjectUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+void NuShaderObjectUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     NuShaderObjectBaseUnInit(shader);
 }
 
-void __cdecl NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+void NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     NuShaderObjectBaseCreate(shader);
     shader->active_parameters = 0;
     shader->field_18 = 0;
 }
 
-void __cdecl NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+void NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     NuShaderObjectBaseUnInit(shader);
     NuShaderObjectBaseDestroy(shader);
 }
 
-void __cdecl NuShaderObjectInit(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index,
-                                const char *vertex_source, i32 vertex_length, const char *pixel_source,
-                                i32 pixel_length, i32 version) {
+void NuShaderObjectInit(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index, const char *vertex_source,
+                        i32 vertex_length, const char *pixel_source, i32 pixel_length, i32 version) {
     NuShaderObjectBaseInit(shader, key, index);
     shader->version = version;
 }
@@ -37,8 +36,8 @@ static const char *PCShaderFindConstantPc(ShaderUniformRecordPc *uniform, ID3DXC
     return handle;
 }
 
-void __cdecl PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *shader, ID3DXConstantTable *vertex_constants,
-                                        ID3DXConstantTable *pixel_constants) {
+void PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *shader, ID3DXConstantTable *vertex_constants,
+                                ID3DXConstantTable *pixel_constants) {
     i32 i;
     shader->active_parameters = NULL;
     for (i = 0; i < 100; ++i) {

@@ -1,14 +1,14 @@
 #include "saga.h"
 static i32 NumSfxInst = 0;
 
-void __cdecl PlaySfx(char *name, NUVEC *position) {
+void PlaySfx(char *name, NUVEC *position) {
     i32 sfx_id = GetSfxId(name);
     if (sfx_id != -1) {
         PlaySfxByIdEx(sfx_id, position, 1.0f, 1.0f);
     }
 }
 
-void __cdecl PlaySfxAndSetPitch(char *name, NUVEC *position, f32 pitch) {
+void PlaySfxAndSetPitch(char *name, NUVEC *position, f32 pitch) {
     i32 sfx_id = GetSfxId(name);
     if (sfx_id != -1) {
         PlaySfxByIdEx(sfx_id, position, 1.0f, pitch);
@@ -22,22 +22,22 @@ void PlaySfxAndSetVolumeAndPitch(char *name, NUVEC *position, f32 volume, f32 pi
     }
 }
 
-void __cdecl PlaySfxAndSetVolume(char *name, NUVEC *position, f32 volume) {
+void PlaySfxAndSetVolume(char *name, NUVEC *position, f32 volume) {
     i32 sfx_id = GetSfxId(name);
     if (sfx_id != -1) {
         PlaySfxByIdEx(sfx_id, position, volume, 1.0f);
     }
 }
 
-void __cdecl PlaySfxById(i32 sfx_id, NUVEC *position) {
+void PlaySfxById(i32 sfx_id, NUVEC *position) {
     PlaySfxByIdEx(sfx_id, position, 1.0f, 1.0f);
 }
 
-void __cdecl PlaySfxByIdAndSetVolume(i32 sfx_id, NUVEC *position, f32 volume) {
+void PlaySfxByIdAndSetVolume(i32 sfx_id, NUVEC *position, f32 volume) {
     PlaySfxByIdEx(sfx_id, position, volume, 1.0f);
 }
 
-void __cdecl GroupBuffer_MoveToEnd(i32 group_id) {
+void GroupBuffer_MoveToEnd(i32 group_id) {
     i32 buffer_length = NuSound3GroupSampleCount;
     i32 first_sample = NuSound3Groups[group_id].first_sample;
     i32 sample_count = NuSound3Groups[group_id].sample_count;
@@ -58,7 +58,7 @@ void __cdecl GroupBuffer_MoveToEnd(i32 group_id) {
     }
 }
 
-void __cdecl GroupBuffer_AddToGroup(i32 group_id, i32 sample_id) {
+void GroupBuffer_AddToGroup(i32 group_id, i32 sample_id) {
     if (NuSound3GroupSampleCount == 0x200) {
         return;
     }
@@ -67,7 +67,7 @@ void __cdecl GroupBuffer_AddToGroup(i32 group_id, i32 sample_id) {
     NuSound3Groups[group_id].cursor = 0;
 }
 
-void __cdecl GroupBuffer_RemoveFromGroup(i32 group_id, i32 sample_id) {
+void GroupBuffer_RemoveFromGroup(i32 group_id, i32 sample_id) {
     i32 first_sample = NuSound3Groups[group_id].first_sample;
     i32 group_end = first_sample + NuSound3Groups[group_id].sample_count;
     i32 found = -1;
@@ -89,7 +89,7 @@ void __cdecl GroupBuffer_RemoveFromGroup(i32 group_id, i32 sample_id) {
     NuSound3Groups[group_id].cursor = 0;
 }
 
-void __cdecl GroupBuffer_RemoveGroup(i32 group_id) {
+void GroupBuffer_RemoveGroup(i32 group_id) {
     i32 first_sample;
     i32 sample_count;
     i32 index;
@@ -119,7 +119,7 @@ void __cdecl GroupBuffer_RemoveGroup(i32 group_id) {
     }
 }
 
-i32 __cdecl GroupBuffer_MakeGroup(i32 sample_id) {
+i32 GroupBuffer_MakeGroup(i32 sample_id) {
     if (NuSound3GroupCount == 0x80) {
         return -1;
     }
@@ -136,7 +136,7 @@ i32 __cdecl GroupBuffer_MakeGroup(i32 sample_id) {
     return NuSound3GroupCount++;
 }
 
-i32 __cdecl GroupBuffer_InGroup(i32 group_id, i32 sample_id) {
+i32 GroupBuffer_InGroup(i32 group_id, i32 sample_id) {
     i32 index = NuSound3Groups[group_id].first_sample;
     i32 group_end = index + NuSound3Groups[group_id].sample_count;
 
@@ -148,7 +148,7 @@ i32 __cdecl GroupBuffer_InGroup(i32 group_id, i32 sample_id) {
     return 0;
 }
 
-i32 __cdecl GroupBuffer_GetSample(i32 group_id, i32 sequential) {
+i32 GroupBuffer_GetSample(i32 group_id, i32 sequential) {
     SFX_GROUP_PC *group = &NuSound3Groups[group_id];
     i32 first_sample = group->first_sample;
     i32 sample_count = group->sample_count;
@@ -170,15 +170,15 @@ i32 __cdecl GroupBuffer_GetSample(i32 group_id, i32 sequential) {
     return NuSound3GroupSampleIds[first_sample + ((nusound_seed >> 16) % sample_count)];
 }
 
-i32 __cdecl GroupBuffer_GetNumInGroup(i32 group_id) {
+i32 GroupBuffer_GetNumInGroup(i32 group_id) {
     return NuSound3Groups[group_id].sample_count;
 }
 
-i32 __cdecl GroupBuffer_GetSampleByIndex(i32 group_id, i32 sample_index) {
+i32 GroupBuffer_GetSampleByIndex(i32 group_id, i32 sample_index) {
     return NuSound3GroupSampleIds[NuSound3Groups[group_id].first_sample + sample_index];
 }
 
-void __cdecl AudioGroup_Parse(NUFPAR_PC *parser) {
+void AudioGroup_Parse(NUFPAR_PC *parser) {
     i32 first = 1;
     i32 group_id = -1;
 
@@ -203,7 +203,7 @@ void __cdecl AudioGroup_Parse(NUFPAR_PC *parser) {
     }
 }
 
-void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
+void PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     const NUMTX *listener;
     i32 priority;
     i32 sample_id;
@@ -338,7 +338,7 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     }
 }
 
-void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records) {
+void SfxSetFileTable(SFX_FILE_INFO_PC *records) {
     i32 index;
 
     SfxFileTable = records;
@@ -355,7 +355,7 @@ void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records) {
     }
 }
 
-void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end) {
+void SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end) {
     u32 index;
     u32 value;
     u32 top_bit;
@@ -382,7 +382,7 @@ void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end) {
     SfxCRCTableInitialized = 1;
 }
 
-u32 __cdecl CRC_Process(const void *data, u32 size) {
+u32 CRC_Process(const void *data, u32 size) {
     const u8 *bytes = data;
     u32 hash = 0;
     u32 index;
@@ -393,7 +393,7 @@ u32 __cdecl CRC_Process(const void *data, u32 size) {
     return hash;
 }
 
-u32 __cdecl CRC_ProcessString(const char *str) {
+u32 CRC_ProcessString(const char *str) {
     u32 reg = 0;
     u32 top;
 
@@ -404,7 +404,7 @@ u32 __cdecl CRC_ProcessString(const char *str) {
     return reg;
 }
 
-u32 __cdecl CRC_ProcessStringN(const char *str, u32 size) {
+u32 CRC_ProcessStringN(const char *str, u32 size) {
     u32 reg = 0;
     u32 i;
     u32 top;
@@ -417,7 +417,7 @@ u32 __cdecl CRC_ProcessStringN(const char *str, u32 size) {
     return reg;
 }
 
-u32 __cdecl SfxNameHash(const char *name) {
+u32 SfxNameHash(const char *name) {
     u32 reg = 0;
     u32 i = 0;
     u32 top;
@@ -435,7 +435,7 @@ u32 __cdecl SfxNameHash(const char *name) {
     return reg;
 }
 
-u32 __cdecl SfxNameHashN(const char *name, u32 max_length) {
+u32 SfxNameHashN(const char *name, u32 max_length) {
     u32 reg = 0;
     u32 i = 0;
     u32 top;
@@ -453,7 +453,7 @@ u32 __cdecl SfxNameHashN(const char *name, u32 max_length) {
     return reg;
 }
 
-i32 __cdecl GetSfxId(char *name) {
+i32 GetSfxId(char *name) {
     i32 index;
 
     if (name == NULL) {
@@ -473,7 +473,7 @@ i32 __cdecl GetSfxId(char *name) {
     return -1;
 }
 
-void __cdecl SetSfxBit_OnEx(i32 sfx_id) {
+void SetSfxBit_OnEx(i32 sfx_id) {
     i32 word;
     if ((u32)sfx_id <= 0x63f) {
         word = sfx_id / 16;
@@ -483,7 +483,7 @@ void __cdecl SetSfxBit_OnEx(i32 sfx_id) {
     }
 }
 
-void __cdecl SetSfxBit_OffEx(i32 sfx_id) {
+void SetSfxBit_OffEx(i32 sfx_id) {
     i32 word;
     if ((u32)sfx_id <= 0x63f) {
         word = sfx_id / 16;
@@ -493,7 +493,7 @@ void __cdecl SetSfxBit_OffEx(i32 sfx_id) {
     }
 }
 
-i32 __cdecl SfxBitEx(i32 sfx_id) {
+i32 SfxBitEx(i32 sfx_id) {
     i32 word;
     if ((u32)sfx_id <= 0x63f) {
         word = sfx_id / 16;
@@ -507,7 +507,7 @@ i32 __cdecl SfxBitEx(i32 sfx_id) {
     return -1;
 }
 
-void __cdecl SetSfxBit_On(i32 sound_id) {
+void SetSfxBit_On(i32 sound_id) {
     i32 sample_id;
 
     if (sound_id < 0) {
@@ -519,20 +519,20 @@ void __cdecl SetSfxBit_On(i32 sound_id) {
     }
 }
 
-void __cdecl SetSfxBit_Off(i32 sound_id) {
+void SetSfxBit_Off(i32 sound_id) {
     if (sound_id >= 0) {
         SetSfxBit_OffEx((i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17);
     }
 }
 
-i32 __cdecl SfxBit(i32 sound_id) {
+i32 SfxBit(i32 sound_id) {
     if (sound_id >= 0) {
         return SfxBitEx((i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17);
     }
     return 0;
 }
 
-void __cdecl SetSfxBitTab_OnEx(SoundTable *table, i32 sfx_id) {
+void SetSfxBitTab_OnEx(SoundTable *table, i32 sfx_id) {
     i32 word;
     if ((u32)sfx_id <= 0x63f) {
         word = sfx_id / 16;
@@ -542,7 +542,7 @@ void __cdecl SetSfxBitTab_OnEx(SoundTable *table, i32 sfx_id) {
     }
 }
 
-void __cdecl SetSfxBitTab_OffEx(SoundTable *table, i32 sfx_id) {
+void SetSfxBitTab_OffEx(SoundTable *table, i32 sfx_id) {
     i32 word;
     if ((u32)sfx_id <= 0x63f) {
         word = sfx_id / 16;
@@ -552,7 +552,7 @@ void __cdecl SetSfxBitTab_OffEx(SoundTable *table, i32 sfx_id) {
     }
 }
 
-i32 __cdecl SfxBitTabEx(const SoundTable *table, i32 sfx_id) {
+i32 SfxBitTabEx(const SoundTable *table, i32 sfx_id) {
     i32 word;
     if ((u32)sfx_id <= 0x63f) {
         word = sfx_id / 16;
@@ -566,59 +566,59 @@ i32 __cdecl SfxBitTabEx(const SoundTable *table, i32 sfx_id) {
     return -1;
 }
 
-void __cdecl SetSfxBitTab_On(SoundTable *table, i32 sound_id) {
+void SetSfxBitTab_On(SoundTable *table, i32 sound_id) {
     if (sound_id >= 0) {
         SetSfxBitTab_OnEx(table, (i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17);
     }
 }
 
-void __cdecl SetSfxBitTab_Off(SoundTable *table, i32 sound_id) {
+void SetSfxBitTab_Off(SoundTable *table, i32 sound_id) {
     if (sound_id >= 0) {
         SetSfxBitTab_OffEx(table, (i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17);
     }
 }
 
-i32 __cdecl SfxBitTab(const SoundTable *table, i32 sound_id) {
+i32 SfxBitTab(const SoundTable *table, i32 sound_id) {
     if (sound_id >= 0) {
         return SfxBitTabEx(table, (i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17);
     }
     return 0;
 }
 
-void __cdecl SfxBitsSetAll(u16 *bits) {
+void SfxBitsSetAll(u16 *bits) {
     memset(bits, -1, 200);
 }
 
-void __cdecl SfxBitsStore(SoundTable *sound_table) {
+void SfxBitsStore(SoundTable *sound_table) {
     PCByteCopy(sound_table, SfxBits, 0xc8);
 }
 
-void __cdecl SfxBitsRestore(SoundTable *sound_table) {
+void SfxBitsRestore(SoundTable *sound_table) {
     PCByteCopy(SfxBits, sound_table, 0xc8);
 }
 
-void __cdecl SfxBitMaskTable(u16 *bits, const u16 *mask) {
+void SfxBitMaskTable(u16 *bits, const u16 *mask) {
     i32 index;
     for (index = 0; index < 100; index++) {
         bits[index] &= mask[index];
     }
 }
 
-void __cdecl PrepareSounds(const u16 *sounds) {
+void PrepareSounds(const u16 *sounds) {
     i32 index;
     for (index = 0; index < 100; index++) {
         SfxBits[index] |= sounds[index];
     }
 }
 
-void __cdecl PrepareAllSounds(void) {
+void PrepareAllSounds(void) {
     i32 index;
     for (index = 0; index < 100; index++) {
         SfxBits[index] = 0xffff;
     }
 }
 
-void __cdecl MaskSounds(const u16 *mask) {
+void MaskSounds(const u16 *mask) {
     i32 index;
     for (index = 0; index < 100; index++) {
         SfxBits[index] &= mask[index];
@@ -627,7 +627,7 @@ void __cdecl MaskSounds(const u16 *mask) {
 
 f32 MusicVolume = 1.0f;
 f32 CutVolume = 0.8f;
-i32 __cdecl NuSoundGetStereoStreamStatus(i32 stream);
+i32 NuSoundGetStereoStreamStatus(i32 stream);
 
 static void MusicPlayStream(i32 stream, i32 track, i32 volume, f32 seek_offset, i32 one_shot) {
     if (NOSOUND == 0 && NOMUSIC == 0) {
@@ -644,7 +644,7 @@ void SetPreSeekStartPoint(f32 offset) {
     Music.seek_offset = offset;
 }
 
-void __cdecl MusicPreSeek(i32 track) {
+void MusicPreSeek(i32 track) {
     if (NOSOUND != 0 || NOMUSIC != 0 || track < 0) {
         return;
     }
@@ -680,7 +680,7 @@ void __cdecl MusicPreSeek(i32 track) {
     }
 }
 
-void __cdecl RestoreGameMusic(void) {
+void RestoreGameMusic(void) {
     if ((NOMUSIC == 0 || NOSOUND == 0) && PCStereoChannel1B != -1) {
         if (Music.transition_frames <= 0x18) {
             Music.restore_requested = 1;
@@ -702,7 +702,7 @@ void __cdecl RestoreGameMusic(void) {
     }
 }
 
-void __cdecl SoundUpdate(f32 frame_time) {
+void SoundUpdate(f32 frame_time) {
     if (Music.update_delay != 0 || frame_time == 0.0f) {
         return;
     }
@@ -807,7 +807,7 @@ i32 MusicSeeking(void) {
 void fun_00653830(void) {
 }
 
-void __cdecl SoundStopMusic(void) {
+void SoundStopMusic(void) {
     if (NOSOUND == 0 && NOMUSIC == 0) {
         NuSound3StopStereoStream(0);
         NuSound3StopStereoStream(1);
@@ -829,14 +829,14 @@ void __cdecl SoundStopMusic(void) {
     }
 }
 
-void __cdecl SoundKillAll(void) {
+void SoundKillAll(void) {
     SoundStopMusic();
     NuSound3FlushLoops();
     NuSound3KillAllAudio();
     NuSound3Update();
 }
 
-void __cdecl ClearLinkedCutSceneMusic(void *context) {
+void ClearLinkedCutSceneMusic(void *context) {
     if (context == NULL || context == Music.track_data) {
         Music.track_data = NULL;
     }
@@ -871,11 +871,11 @@ void RestoreGameCut(void) {
     NuSound3ResumeStereoStream(1 - music->primary_stream);
 }
 
-void __cdecl ResetSounds(void) {
+void ResetSounds(void) {
     PCByteCopy(SfxBits, GlobalSfxBits, 0xc8);
 }
 
-void __cdecl UpdateBackgroundMusic(void) {
+void UpdateBackgroundMusic(void) {
 }
 
 void SetSoundVolume(f32 volume) {
@@ -886,7 +886,7 @@ f32 GetSoundVolume(void) {
     return MASTERVOLUME;
 }
 
-void __cdecl NuSound3AddRumble(void *pad, f32 strength, i32 duration, f32 priority, f32 buzz) {
+void NuSound3AddRumble(void *pad, f32 strength, i32 duration, f32 priority, f32 buzz) {
     (void)pad;
     (void)strength;
     (void)duration;
@@ -894,7 +894,7 @@ void __cdecl NuSound3AddRumble(void *pad, f32 strength, i32 duration, f32 priori
     (void)buzz;
 }
 
-void __cdecl NuSound3SetRumblePads(void *pad0, void *pad1) {
+void NuSound3SetRumblePads(void *pad0, void *pad1) {
     (void)pad0;
     (void)pad1;
 }
@@ -919,7 +919,7 @@ i32 fun_00698980(void) {
     return 0;
 }
 
-void __cdecl NuSound3SetDat(NUDATHDR *header) {
+void NuSound3SetDat(NUDATHDR *header) {
     NuSoundDat = header;
 }
 
@@ -932,7 +932,7 @@ void fun_006986f0(void) {
 void fun_00698700(void) {
 }
 
-i32 __cdecl NuSound3SetReverb(i32 enable) {
+i32 NuSound3SetReverb(i32 enable) {
     i32 previous = SoundVoiceManager.option_d14;
     SoundVoiceManager.option_d14 = enable != 0;
     return previous;
@@ -942,14 +942,14 @@ void NuSound3SetLoopHoldTime(f32 time) {
     NuSound3LoopHoldTime = (i32)(time * NuScale1000);
 }
 
-void __cdecl NuSound3StopRumble(void) {
+void NuSound3StopRumble(void) {
 }
 
-void __cdecl NuSound3UpdateRumble(f32 frame_time) {
+void NuSound3UpdateRumble(f32 frame_time) {
     (void)frame_time;
 }
 
-f32 __cdecl PCSoundVolumeLookup(i32 index) {
+f32 PCSoundVolumeLookup(i32 index) {
     /* Retail checks only the upper bound; preserve its negative-index behavior. */
     if (index > 0x3fff) {
         index = 0;
@@ -958,7 +958,7 @@ f32 __cdecl PCSoundVolumeLookup(i32 index) {
     return NuSound3VolumeTable[index];
 }
 
-HRESULT __cdecl PCSoundSetRawVolume(IDirectSoundBuffer *buffer, i32 volume) {
+HRESULT PCSoundSetRawVolume(IDirectSoundBuffer *buffer, i32 volume) {
     volume += SoundVoiceVolumeOffset;
     volume = volume > 0 ? 0 : volume;
     if (volume < -10000) {
@@ -968,7 +968,7 @@ HRESULT __cdecl PCSoundSetRawVolume(IDirectSoundBuffer *buffer, i32 volume) {
     return buffer->vtable->set_volume(buffer, volume);
 }
 
-HRESULT __cdecl PCSoundSetLinearVolume(IDirectSoundBuffer *buffer, f32 volume) {
+HRESULT PCSoundSetLinearVolume(IDirectSoundBuffer *buffer, f32 volume) {
     i32 raw_volume = (i32)volume + SoundVoiceVolumeOffset;
 
     raw_volume = raw_volume > 0 ? 0 : raw_volume;
@@ -979,7 +979,7 @@ HRESULT __cdecl PCSoundSetLinearVolume(IDirectSoundBuffer *buffer, f32 volume) {
     return buffer->vtable->set_volume(buffer, raw_volume);
 }
 
-void __cdecl SetSoundBitsById(const i32 *ids, void(__cdecl *set_bit)(i32)) {
+void SetSoundBitsById(const i32 *ids, void (*set_bit)(i32)) {
     i32 id;
     while ((id = *ids++) != -1) {
         i32 group;
@@ -1018,7 +1018,7 @@ void SetSoundBitsBySingleId(i32 id, void (*set_bit)(i32)) {
     }
 }
 
-i32 __cdecl GetSfxIdN(char *name, i32 length) {
+i32 GetSfxIdN(char *name, i32 length) {
     i32 index;
     for (index = 0; index < 1600; ++index) {
         if (NuStrNICmp(name, SfxInfo[index].name, length) == 0) {
@@ -1029,14 +1029,14 @@ i32 __cdecl GetSfxIdN(char *name, i32 length) {
     return -1;
 }
 
-char *__cdecl GetSfxName(i32 sound_id) {
+char *GetSfxName(i32 sound_id) {
     if (sound_id >= 0) {
         return SfxInfo[sound_id].name;
     }
     return NULL;
 }
 
-i32 __cdecl NuSound3LoadingSfx(void) {
+i32 NuSound3LoadingSfx(void) {
     return NuSound3LoadingSfxPc != 0;
 }
 
@@ -1044,8 +1044,8 @@ STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_ids) == 0x158);
 STATIC_ASSERT(sizeof(((GAMEAUDIO_PC *)0)->sfx_ids[0]) == 2);
 
 /* Integration fragment: declarations below must precede callback definitions. */
-void __cdecl InitSoundInfo(i32);
-void __cdecl LoadSfx(const char *, VARIPTR *, VARIPTR);
+void InitSoundInfo(i32);
+void LoadSfx(const char *, VARIPTR *, VARIPTR);
 
 static void fnAudioSample(NUFPAR_PC *fpar) {
     char *str;
@@ -1223,14 +1223,14 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
     NumSfxInst++;
 }
 
-static void __cdecl fnAudioAudio(NUFPAR_PC *parser) {
+static void fnAudioAudio(NUFPAR_PC *parser) {
     SfxAudioVersionPc = NuFParGetFloat(parser);
 }
 
 static NUFPCOMJMP audioComPc[] = {
     {"Audio", fnAudioAudio}, {"Sample", fnAudioSample}, {"Group", AudioGroup_Parse}, {NULL, NULL}};
 
-void __cdecl InitSoundInfo(i32 index) {
+void InitSoundInfo(i32 index) {
     SfxInfo[index].sample_id_flags |= 0x7fff;
     SfxInfo[index].name = SfxNameSlotsPc[NumSfxInst];
     SfxInfo[index].pitch = 0x5622;
@@ -1257,7 +1257,7 @@ void __cdecl InitSoundInfo(i32 index) {
     SfxRevertInfoPc[index] = SfxInfo[index];
 }
 
-void __cdecl LoadSfx(const char *file, VARIPTR *cursor, VARIPTR end) {
+void LoadSfx(const char *file, VARIPTR *cursor, VARIPTR end) {
     NUFPAR_PC *parser = NuFParCreate((char *)file);
     i32 count;
     if (parser != NULL) {
@@ -1283,7 +1283,7 @@ void __cdecl LoadSfx(const char *file, VARIPTR *cursor, VARIPTR end) {
     NuSound3Update();
 }
 
-void __cdecl InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
+void InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
     i32 i;
     i32 sample;
     cursor->addr = (cursor->addr + 3) & ~3u;
@@ -1328,7 +1328,7 @@ void __cdecl InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
     PCByteCopy(SfxBits, GlobalSfxBits, 200);
 }
 
-void __cdecl PauseGameAudio(i32 ignored) {
+void PauseGameAudio(i32 ignored) {
     (void)ignored;
     if (NOSOUND == 0) {
         NuSound3StopSFX();
@@ -1625,7 +1625,7 @@ void SwapMusic(i32 mode) {
     NuSound3Update();
 }
 
-void __cdecl SetLinkedCutSceneMusic(void *context, i32 state) {
+void SetLinkedCutSceneMusic(void *context, i32 state) {
     Music.track_data = context;
     if (Music.state == 11 || Music.state == 12 || Music.state == 13) {
         Music.state = state == 13 ? 13 : 11;
@@ -1633,7 +1633,7 @@ void __cdecl SetLinkedCutSceneMusic(void *context, i32 state) {
 }
 
 /* Retail 0x00698a20 is a one-byte RET and reads neither argument. */
-void __cdecl NuSound3ClearLoopHold(NUVEC *position, i32 mode) {
+void NuSound3ClearLoopHold(NUVEC *position, i32 mode) {
 }
 
 void fun_00698a30(void) {
@@ -1641,6 +1641,6 @@ void fun_00698a30(void) {
 
 /* Retail's sound error report, compiled empty. It lives outside the sound voice code so its callers keep their
  * failure tests and calls; they pass a path, an index, an HRESULT or nothing. */
-void __cdecl PCSoundFailure(const char *format, ...) {
+void PCSoundFailure(const char *format, ...) {
     (void)format;
 }

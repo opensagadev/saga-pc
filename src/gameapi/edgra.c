@@ -9,14 +9,14 @@ void EdFileWriteShort(i16 value);
 void EdFileWriteChar(char value);
 void EdFileWriteNuVec(NUVEC *value);
 extern struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff;
-void __cdecl edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
-                            i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
-void __cdecl edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
-                                  struct PC_SCENE_MTL_VIEW *material, i32 rotation_z, i32 rotation_y);
+void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
+                    i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
+void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct PC_SCENE_MTL_VIEW *material,
+                          i32 rotation_z, i32 rotation_y);
 
 #define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
 
-i32 __cdecl edgraFileSave(char *path) {
+i32 edgraFileSave(char *path) {
     NUSPECIALHANDLE special;
     char name[20];
     i32 clump_count = 0;
@@ -131,7 +131,7 @@ void edgracbCancelGlobalsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edgra_globals_menu = NULL;
 }
 
-void __cdecl edgraDrawCursor(void) {
+void edgraDrawCursor(void) {
     NURND_VERTEX3D_PC line[2];
     NUVEC arrow;
     NUSPECIALHANDLE special;
@@ -230,7 +230,7 @@ void __cdecl edgraDrawCursor(void) {
     NuQFntPopCoordinateSystem();
 }
 
-void __cdecl edgracbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edgracbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char name[256];
     char directory[256];
     char extension[256];
@@ -258,7 +258,7 @@ void __cdecl edgracbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     }
 }
 
-void __cdecl edgracbCopyClump(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edgracbCopyClump(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent = NULL;
     edgra_copy_source = edgra_nearest;
     if (menu->parent != NULL) {
@@ -270,7 +270,7 @@ void __cdecl edgracbCopyClump(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
     }
 }
 
-void __cdecl edgracbDiscardCopy(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edgracbDiscardCopy(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent = NULL;
     edgra_copy_source = -1;
     if (menu->parent != NULL) {
@@ -291,7 +291,7 @@ static void edgracbCancelSScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edgra_sscale_menu = NULL;
 }
 
-void __cdecl edgracbSScaleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edgracbSScaleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edgra_sscale_menu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, edgracbCancelSScaleMenu, "Super Scale");
     if (edgra_sscale_menu == NULL) {
         return;
@@ -303,15 +303,15 @@ void __cdecl edgracbSScaleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     edgra_sscale_menu->y = parent->y + 40;
 }
 
-void __cdecl edgraToggleFilter(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edgraToggleFilter(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     edgra_filter = item->highlighted;
 }
 
-void __cdecl edgraChangeFilterName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edgraChangeFilterName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     NuStrNCpy(edgra_filter_string, ((edui_textpicker_s *)item)->value, 16);
 }
 
-void __cdecl edgracbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edgracbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edgra_active_menu = NULL;
     if (edgra_options_menu != NULL) {
         eduiMenuDestroy(edgra_options_menu);
@@ -319,7 +319,7 @@ void __cdecl edgracbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     }
 }
 
-void __cdecl edgraRender(void) {
+void edgraRender(void) {
     edcamSet();
     edgraDrawCursor();
     if (edgra_nearest != -1) {

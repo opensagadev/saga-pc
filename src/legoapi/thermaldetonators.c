@@ -20,7 +20,7 @@ STATIC_ASSERT(offsetof(PART_PC, update_fn) == 0x1c4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, throw_locator) == 0x112);
 
-void __cdecl PartImpact_ThermalDetonator(PART_PC *part) {
+void PartImpact_ThermalDetonator(PART_PC *part) {
     i32 stuck = 0;
     i8 surface;
     u32 shadow;
@@ -78,7 +78,7 @@ void __cdecl PartImpact_ThermalDetonator(PART_PC *part) {
     }
 }
 
-void __cdecl PartUpdate_ThermalDetonator(PART_PC *part) {
+void PartUpdate_ThermalDetonator(PART_PC *part) {
     f32 height;
     f32 water;
     i32 surface;
@@ -123,7 +123,7 @@ void __cdecl PartUpdate_ThermalDetonator(PART_PC *part) {
     }
 }
 
-i32 __cdecl PartDraw_ThermalDetonator(PART_PC *part) {
+i32 PartDraw_ThermalDetonator(PART_PC *part) {
     NUMTX matrix;
     i32 draw = PartDraw_Flickerer(part);
     NUMTX reflection;
@@ -175,7 +175,7 @@ void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
     }
 }
 
-void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
+void ThermalDetonator_Throw(GAMEOBJECT *object) {
     NUVEC movement;
     NUVEC velocity;
     NUVEC origin;
@@ -255,7 +255,7 @@ void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
     NewBuzzFrames(object->pad->bound_pad, 2, 0);
 }
 
-void __cdecl ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
+void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     NUVEC movement;
     NUVEC origin;
     NUVEC centre;
@@ -316,7 +316,7 @@ void __cdecl ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     NewBuzzFrames(object->pad->bound_pad, 2, 0);
 }
 
-i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *object) {
+i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     f32 *frame = NULL;
     PART_PC *part;
     f32 release_frame;
@@ -389,7 +389,7 @@ i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     return 0;
 }
 
-i32 __cdecl ShinyMetal_UpdateHint(HINT_PC *hint) {
+i32 ShinyMetal_UpdateHint(HINT_PC *hint) {
     (void)hint;
     if (JABBASPALACE_ADATA == NULL || WORLD->current_level != JABBASPALACEB_LDATA ||
         Game.area_save[JABBASPALACE_ADATA->index].area_complete != 0 || Mission_Active(NULL) != NULL) {

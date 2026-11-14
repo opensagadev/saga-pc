@@ -4,13 +4,13 @@
 /* edbitsGetSoundName is an inline stub returning NULL in the PC build. */
 #define EDANIM_SOUND_NAME_PC(type) ((char *)0)
 
-void __cdecl edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
-                            i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
+void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
+                    i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
 
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_58) == 0x58);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_64) == 0x64);
 
-i32 __cdecl edanimLookupSpecial(char *name, NUGSCN *scene) {
+i32 edanimLookupSpecial(char *name, NUGSCN *scene) {
     NUSPECIALHANDLE special;
     i32 index;
     if (scene != NULL) {
@@ -24,7 +24,7 @@ i32 __cdecl edanimLookupSpecial(char *name, NUGSCN *scene) {
     return -1;
 }
 
-void __cdecl edanimDetermineNearestAnim(f32 distance) {
+void edanimDetermineNearestAnim(f32 distance) {
     NUSPECIALHANDLE special;
     NUVEC delta;
     f32 candidate;
@@ -157,7 +157,7 @@ void edanimParticleDestroy(i32 parameter_index, i32 particle_index) {
     --AnimParams[parameter_index].effect_count;
 }
 
-i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
+i32 edanimLoadPage(char *path, NUGSCN *scene) {
     i32 page;
     i32 version;
     i32 count;
@@ -559,11 +559,11 @@ void edanimRender() {
     }
 }
 
-void __cdecl edcamMove(FRAME_PAD_PC *pad);
-void __cdecl edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
-i32 __cdecl edanimParamCreate(i32 instance);
+void edcamMove(FRAME_PAD_PC *pad);
+void edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
+i32 edanimParamCreate(i32 instance);
 
-void __cdecl edanimRenderParticleEmitters(i32 parameter_index) {
+void edanimRenderParticleEmitters(i32 parameter_index) {
     NUSPECIALHANDLE special;
     NUVEC *base_position;
     i32 particle;
@@ -595,7 +595,7 @@ void __cdecl edanimRenderParticleEmitters(i32 parameter_index) {
     }
 }
 
-void __cdecl edanimRenderSoundEmitters(i32 parameter_index) {
+void edanimRenderSoundEmitters(i32 parameter_index) {
     NUSPECIALHANDLE special;
     NUVEC *base_position;
     i32 sound;
@@ -614,14 +614,14 @@ void __cdecl edanimRenderSoundEmitters(i32 parameter_index) {
     }
 }
 
-void __cdecl edanimSoundPlace(i32 sound_index, NUVEC *position) {
+void edanimSoundPlace(i32 sound_index, NUVEC *position) {
     NUSPECIALHANDLE special;
     NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
     NuVecSub((NUVEC *)AnimParams[edanim_nearest_param_id].sound_positions[sound_index], position,
              NuSpecialGetPos(&special));
 }
 
-void __cdecl edanimParticlePlace(i32 particle_index, NUVEC *position) {
+void edanimParticlePlace(i32 particle_index, NUVEC *position) {
     NUSPECIALHANDLE special;
     NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
     NuVecSub((NUVEC *)AnimParams[edanim_nearest_param_id].effect_positions[particle_index], position,
@@ -630,7 +630,7 @@ void __cdecl edanimParticlePlace(i32 particle_index, NUVEC *position) {
     AnimParams[edanim_nearest_param_id].effect_angle_ranges[particle_index] = edanim_emitroty;
 }
 
-void __cdecl edanimParticleCreate(NUVEC *position) {
+void edanimParticleCreate(NUVEC *position) {
     i32 index = AnimParams[edanim_nearest_param_id].effect_count;
     if (index != 8 && edanim_particle_type != -1) {
         edanimParticlePlace(index, position);
@@ -642,7 +642,7 @@ void __cdecl edanimParticleCreate(NUVEC *position) {
     }
 }
 
-void __cdecl edanimSoundCreate(NUVEC *position) {
+void edanimSoundCreate(NUVEC *position) {
     i32 index = AnimParams[edanim_nearest_param_id].sound_count;
     if (index != 8 && edanim_sound_type != -1) {
         edanimSoundPlace(index, position);
@@ -654,7 +654,7 @@ void __cdecl edanimSoundCreate(NUVEC *position) {
     }
 }
 
-void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
+void edanimDoInput(FRAME_PAD_PC *pad) {
     NUSPECIALHANDLE special;
     NUVEC position;
     NUVEC *origin;
@@ -833,7 +833,7 @@ void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
     }
 }
 
-void __cdecl edanimDrawCursor(void) {
+void edanimDrawCursor(void) {
     NURND_VERTEX3D_PC line[2];
     NUVEC direction;
     NUSPECIALHANDLE special;

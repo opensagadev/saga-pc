@@ -7,7 +7,7 @@
 static i32 force_camera_farclip = 0;
 static f32 NuCameraOrthoScale = 0.1f;
 
-NUCAMERA *__cdecl NuCameraCreate(void) {
+NUCAMERA *NuCameraCreate(void) {
     NUCAMERA *camera = NuAlloc(sizeof(NUCAMERA), NuCameraAllocSource, 0x11e);
 
     NuMtxSetIdentity(&camera->mtx);
@@ -28,7 +28,7 @@ NUCAMERA *__cdecl NuCameraCreate(void) {
     return camera;
 }
 
-void __cdecl NuCameraDestroy(NUCAMERA *camera) {
+void NuCameraDestroy(NUCAMERA *camera) {
     if (camera != NULL) {
         NuFree(camera, NuCameraAllocSource, 0x13e);
     }
@@ -43,70 +43,70 @@ static void NuCameraSetOrthoMtx(NUMTX *mtx, f32 aspect) {
     mtx->m33 = 1.0f;
 }
 
-void __cdecl NuCameraForceFarclip(i32 enabled) {
+void NuCameraForceFarclip(i32 enabled) {
     force_camera_farclip = enabled;
 }
 
-void __cdecl NuCameraGet(NUCAMERA *camera) {
+void NuCameraGet(NUCAMERA *camera) {
     *camera = global_camera;
 }
 
 /* Applies the camera with a temporary reflection state, handing back the state NuCameraSet leaves. */
-void __cdecl NuCameraSetReflect(NUCAMERA *camera, NUCAMERAREFLECT *reflect) {
+void NuCameraSetReflect(NUCAMERA *camera, NUCAMERAREFLECT *reflect) {
     global_reflect = *reflect;
     NuCameraSet(camera);
     *reflect = global_reflect;
 }
 
-NUMTX *__cdecl NuCameraGetMtx(void) {
+NUMTX *NuCameraGetMtx(void) {
     return &global_camera.mtx;
 }
 
-void __cdecl NuCameraSetAxes(NUVEC *axes) {
+void NuCameraSetAxes(NUVEC *axes) {
     cam_axes = *axes;
 }
 
-void __cdecl NuCameraGetAxes(NUVEC *axes) {
+void NuCameraGetAxes(NUVEC *axes) {
     *axes = cam_axes;
 }
 
-NUCAMERA *__cdecl NuCameraGetCam(void) {
+NUCAMERA *NuCameraGetCam(void) {
     return &global_camera;
 }
 
-NUMTX *__cdecl NuCameraGetViewMtx(void) {
+NUMTX *NuCameraGetViewMtx(void) {
     return &vmtx;
 }
 
-NUMTX *__cdecl NuCameraGetProjectionMtx(void) {
+NUMTX *NuCameraGetProjectionMtx(void) {
     return &pmtx;
 }
 
-NUMTX *__cdecl NuCameraGetClippingMtx(void) {
+NUMTX *NuCameraGetClippingMtx(void) {
     return &cmtx;
 }
 
-NUMTX *__cdecl NuCameraGetScalingMtx(void) {
+NUMTX *NuCameraGetScalingMtx(void) {
     return &smtx;
 }
 
-NUMTX *__cdecl NuCameraGetVPCSMtx(void) {
+NUMTX *NuCameraGetVPCSMtx(void) {
     return &vpsmtx;
 }
 
-NUMTX *__cdecl NuCameraGetVPCMtx(void) {
+NUMTX *NuCameraGetVPCMtx(void) {
     return &vpc_vport_mtx;
 }
 
-NUMTX *__cdecl NuCameraGetVPMtx(void) {
+NUMTX *NuCameraGetVPMtx(void) {
     return &vpmtx;
 }
 
-NUMTX *__cdecl NuCameraGetPCMtx(void) {
+NUMTX *NuCameraGetPCMtx(void) {
     return &pc_vport_mtx;
 }
 
-void __cdecl NuCameraGetClipMtx(NUMTX *viewport, NUMTX *scissor) {
+void NuCameraGetClipMtx(NUMTX *viewport, NUMTX *scissor) {
     if (viewport != NULL) {
         *viewport = vpc_vport_mtx;
     }
@@ -115,18 +115,18 @@ void __cdecl NuCameraGetClipMtx(NUMTX *viewport, NUMTX *scissor) {
     }
 }
 
-NUMTX *__cdecl NuCameraGetClipPlanes(void) {
+NUMTX *NuCameraGetClipPlanes(void) {
     return &clip_planes;
 }
 
-void __cdecl NuCameraRayCast(NUVEC *point, f32 x, f32 y) {
+void NuCameraRayCast(NUVEC *point, f32 x, f32 y) {
     point->x = x * zx;
     point->y = y * zy;
     point->z = 1.0f;
     NuVecMtxRotate(point, point, &global_camera.mtx);
 }
 
-void __cdecl NuMtxCalcCheapFaceOn(NUMTX *m, NUVEC *position) {
+void NuMtxCalcCheapFaceOn(NUMTX *m, NUVEC *position) {
     NUMTX *view = NuCameraGetViewMtx();
 
     m->m00 = -view->m00;
@@ -145,7 +145,7 @@ void __cdecl NuMtxCalcCheapFaceOn(NUMTX *m, NUVEC *position) {
     m->m32 = position->z;
 }
 
-void __cdecl NuMtxCalcCheapFaceY(NUMTX *m, NUVEC *position) {
+void NuMtxCalcCheapFaceY(NUMTX *m, NUVEC *position) {
     NUMTX *view = NuCameraGetViewMtx();
     NUVEC right;
     NUVEC forward;
@@ -176,7 +176,7 @@ void __cdecl NuMtxCalcCheapFaceY(NUMTX *m, NUVEC *position) {
     m->m32 = position->z;
 }
 
-void __cdecl NuMtxCalcDebrisFaceOn(NUMTX *m) {
+void NuMtxCalcDebrisFaceOn(NUMTX *m) {
     NUMTX *view = NuCameraGetViewMtx();
 
     m->m00 = -view->m00;
@@ -212,7 +212,7 @@ void __cdecl NuMtxCalcDebrisFaceOn(NUMTX *m) {
 
 /* Reconstructed storage qualifiers express the original F32 checkpoints;
    they do not assert historical declarations. */
-void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
+void NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
         f32 far_clip;
         f32 near_clip;
@@ -245,7 +245,7 @@ void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, 
     NuMtxMulVU0(out, view, &pc_vport_mtx);
 }
 
-void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
+void NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
         f32 far_clip;
         f32 near_clip;
@@ -277,7 +277,7 @@ void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera
     NuMtxMulVU0(out, view, &NuCameraScissorProjectionScratch);
 }
 
-i32 __cdecl NuCameraClipTestSphere(NUVEC *point, f32 radius, NUMTX *world) {
+i32 NuCameraClipTestSphere(NUVEC *point, f32 radius, NUMTX *world) {
     NUVEC transformed;
     NUVEC4 plane_distances;
     if (world != NULL) {
@@ -312,10 +312,10 @@ rejected:
 
 extern i32 NuCameraScissorWidthPc;
 extern i32 NuCameraScissorHeightPc;
-i32 __cdecl NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip);
-void __cdecl FaceYDirStream(i32 angle);
+i32 NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip);
+void FaceYDirStream(i32 angle);
 
-void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
+void NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     global_camera = *camera;
     FaceYDirStream(NuAtan2D(-global_camera.mtx.m20, -global_camera.mtx.m22));
     if (fast == 0) {
@@ -406,7 +406,7 @@ void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     }
 }
 
-i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32 far_clip) {
+i32 NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32 far_clip) {
     struct __declspec(align(16)) BoundProjection {
         NUVEC sides;
         f32 fourth;
@@ -462,7 +462,7 @@ i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32
     return 1;
 }
 
-void __cdecl NuMtxCalcCheapFaceY_v2(NUMTX *matrix, NUVEC *direction) {
+void NuMtxCalcCheapFaceY_v2(NUMTX *matrix, NUVEC *direction) {
     NUVEC *first = (NUVEC *)&matrix->m00;
     NUVEC *second = (NUVEC *)&matrix->m10;
     NUVEC *third = (NUVEC *)&matrix->m20;
@@ -475,20 +475,20 @@ void __cdecl NuMtxCalcCheapFaceY_v2(NUMTX *matrix, NUVEC *direction) {
     matrix->m33 = 1.0f;
 }
 
-f32 __cdecl NuCameraFocalLenToFOV(f32 focal_length) {
+f32 NuCameraFocalLenToFOV(f32 focal_length) {
     f32 ratio = (f32)(18.0 / focal_length);
     f32 result = (f32)(NuAtan2DAF(ratio, 1.0f) * PCAtan2RadianScale * 2.0);
     return result;
 }
 
-f32 __cdecl NuCameraFOVToFocalLen(f32 fov) {
+f32 NuCameraFOVToFocalLen(f32 fov) {
     f32 half_fov = (f32)(fov * 0.5);
 
     return (f32)(18.0 / (NU_SIN_LUT(half_fov * 10430.3779296875) /
                          NuTrigTable[(0x4000 - (i32)(half_fov * -10430.3779296875)) >> 1 & 0x7fff]));
 }
 
-f32 __cdecl NuCameraCalcAperture(f32 focal_length, f32 root_fstop) {
+f32 NuCameraCalcAperture(f32 focal_length, f32 root_fstop) {
     f32 aperture;
 
     root_fstop = root_fstop * root_fstop;
@@ -500,7 +500,7 @@ f32 __cdecl NuCameraCalcAperture(f32 focal_length, f32 root_fstop) {
     return aperture;
 }
 
-f32 __cdecl NuCameraCalcRootFStop(f32 focal_length, f32 aperture) {
+f32 NuCameraCalcRootFStop(f32 focal_length, f32 aperture) {
     f32 ratio;
 
     if (focal_length == 0.0f || aperture == 0.0f) {
@@ -511,7 +511,7 @@ f32 __cdecl NuCameraCalcRootFStop(f32 focal_length, f32 aperture) {
     return NuFsqrt(ratio);
 }
 
-i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix) {
+i32 NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix) {
     NUMTX matrix;
     i32 common;
     i32 i;
@@ -551,7 +551,7 @@ i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix
     return common;
 }
 
-void __cdecl NuMtxCalcFaceOn(NUMTX *m, NUVEC *v) {
+void NuMtxCalcFaceOn(NUMTX *m, NUVEC *v) {
     NUVEC world_up = {0.0f, 1.0f, 0.0f};
     NUVEC right;
     NUVEC up;
@@ -588,7 +588,7 @@ void __cdecl NuMtxCalcFaceOn(NUMTX *m, NUVEC *v) {
     m->m32 = v->z;
 }
 
-void __cdecl NuMtxCalcFaceY(NUMTX *m, NUVEC *v) {
+void NuMtxCalcFaceY(NUMTX *m, NUVEC *v) {
     NUVEC world_up = {0.0f, 1.0f, 0.0f};
     NUVEC right;
     NUVEC up;
@@ -620,8 +620,7 @@ void __cdecl NuMtxCalcFaceY(NUMTX *m, NUVEC *v) {
     m->m32 = v->z;
 }
 
-i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_mtx, f32 far_clip, i32 flags,
-                                           f32 *min_depth) {
+i32 NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_mtx, f32 far_clip, i32 flags, f32 *min_depth) {
     NUMTX transform;
     NUVEC corners[8];
     NUVEC view[8];
@@ -698,7 +697,7 @@ i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_
     return 2;
 }
 
-void __cdecl NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *clip, NUCAMERA *camera, i32 use_cached_projection) {
+void NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *clip, NUCAMERA *camera, i32 use_cached_projection) {
     static NUMTX clip_inverse = {0};
     if (use_cached_projection == 0 || (clip->flags & 1) == 0) {
         i32 angle;
@@ -725,7 +724,7 @@ void __cdecl NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *clip, NUCAMERA *camera, 
     NuMtxMulVU0(&clip->clip, &clip_inverse, &clip->projection);
 }
 
-void __cdecl NuCameraTransformView(NUVEC *view, NUVEC *world, i32 count, NUMTX *matrix) {
+void NuCameraTransformView(NUVEC *view, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
     if (matrix != NULL) {
@@ -738,7 +737,7 @@ void __cdecl NuCameraTransformView(NUVEC *view, NUVEC *world, i32 count, NUMTX *
     }
 }
 
-void __cdecl NuCameraTransformScreenClip(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
+void NuCameraTransformScreenClip(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
     if (matrix != NULL) {
@@ -751,7 +750,7 @@ void __cdecl NuCameraTransformScreenClip(NUVEC *screen, NUVEC *world, i32 count,
     }
 }
 
-void __cdecl NuCameraTransformScissorClip(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
+void NuCameraTransformScissorClip(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
     if (matrix != NULL) {
@@ -764,7 +763,7 @@ void __cdecl NuCameraTransformScissorClip(NUVEC *screen, NUVEC *world, i32 count
     }
 }
 
-void __cdecl NuCameraTransformScreen(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
+void NuCameraTransformScreen(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
     if (matrix != NULL) {
@@ -790,7 +789,7 @@ void NuCameraTransformScreenVU0(NUVEC4 *screen, NUVEC4 *world, i32 count, NUMTX 
     }
 }
 
-i32 __cdecl NuCameraSaveState(void) {
+i32 NuCameraSaveState(void) {
     i32 index = -1;
     if (cam_state_count < 16) {
         CAMERA_SAVED_STATE_PC *state;
@@ -816,42 +815,42 @@ i32 __cdecl NuCameraSaveState(void) {
     return index + 1;
 }
 
-void __cdecl NuCameraClearStateBuffer(void) {
+void NuCameraClearStateBuffer(void) {
     cam_state_count = 0;
 }
 
-i32 __cdecl NuVecClipTestPointVU0(NUVEC *point, NUMTX *matrix);
+i32 NuVecClipTestPointVU0(NUVEC *point, NUMTX *matrix);
 
-i32 __cdecl NuCameraClipTestPointVport(NUVEC *point) {
+i32 NuCameraClipTestPointVport(NUVEC *point) {
     return NuVecClipTestPointVU0(point, &vpc_vport_mtx) == 0;
 }
 
-i32 __cdecl NuCameraClipTestPointScissor(NUVEC *point) {
+i32 NuCameraClipTestPointScissor(NUVEC *point) {
     return NuVecClipTestPointVU0(point, &vpc_sci_mtx) == 0;
 }
 
-f32 __cdecl NuCameraDistSqr(NUVEC *point) {
+f32 NuCameraDistSqr(NUVEC *point) {
     return NuVecDistSqr(point, (NUVEC *)&global_camera.mtx.m30, NULL);
 }
 
-f32 __cdecl NuCameraDist(NUVEC *point) {
+f32 NuCameraDist(NUVEC *point) {
     return NuVecDist(point, (NUVEC *)&global_camera.mtx.m30, NULL);
 }
 
-void __cdecl NuCameraGetTrans(NUVEC *trans) {
+void NuCameraGetTrans(NUVEC *trans) {
     *trans = *(NUVEC *)&global_camera.mtx.m30;
 }
 
-void __cdecl NuCameraGetPosition(NUVEC *position) {
+void NuCameraGetPosition(NUVEC *position) {
     *position = *(NUVEC *)&global_camera.mtx.m30;
 }
 
-void __cdecl NuCameraGetClippingRatios(f32 *horizontal, f32 *vertical) {
+void NuCameraGetClippingRatios(f32 *horizontal, f32 *vertical) {
     *horizontal = zx;
     *vertical = zy;
 }
 
-void __cdecl NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_end, NUCAMERA *camera) {
+void NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_end, NUCAMERA *camera) {
     NUVEC near_point;
     NUVEC far_point;
     f32 half_fov;

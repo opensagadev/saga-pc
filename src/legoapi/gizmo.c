@@ -6,7 +6,7 @@ STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_num_output
 
 typedef struct area_gizmotype_pc_s {
     u8 unknown_0000[0x44];
-    char *(__cdecl *get_gizmo_name)(void *gizmo);
+    char *(*get_gizmo_name)(void *gizmo);
     u8 unknown_0048[0x54];
 } AREA_GIZMOTYPE_PC;
 
@@ -37,9 +37,9 @@ typedef struct area_gizmosys_prefix_pc_s {
 
 /* Retail calls one empty diagnostic entry with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
-void __cdecl GizmoDiagnosticPc(char *format, ...);
-#define GIZMO_DIAGNOSTIC_BARE() ((void(__cdecl *)())GizmoDiagnosticPc)()
-void __cdecl GizmoNameDiagnosticPc(char *name);
+void GizmoDiagnosticPc(char *format, ...);
+#define GIZMO_DIAGNOSTIC_BARE() ((void (*)())GizmoDiagnosticPc)()
+void GizmoNameDiagnosticPc(char *name);
 #define GIZMO_BUFFER_ALLOC_CHECKED(result, type, buffer, end, size)                                                    \
     do {                                                                                                               \
         void *allocation_ = NULL;                                                                                      \
@@ -64,44 +64,44 @@ STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
 STATIC_ASSERT(offsetof(GIZMOSET_PC, data) == 0x10);
 
 typedef struct bolt_gizmo_type_pc_s {
-    u8 unknown_00[0x6c];                                              // 0x00
-    i32(__cdecl *hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *); // 0x6c
-    u8 unknown_70[4];                                                 // 0x70
-    i32(__cdecl *hit_bolt)(WORLDINFO *,                               // 0x74
-                           void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *);
+    u8 unknown_00[0x6c];                                       // 0x00
+    i32 (*hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *); // 0x6c
+    u8 unknown_70[4];                                          // 0x70
+    i32 (*hit_bolt)(WORLDINFO *,                               // 0x74
+                    void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *);
     u8 unknown_78[0x24]; // 0x78
 } BOLT_GIZMO_TYPE_PC;    // size 0x9c
 
-typedef NUVEC *(__cdecl *GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
+typedef NUVEC *(*GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
 void EdFileWrite(void *data, i32 len);
 void EdFileWriteInt(i32 value);
 void EdFileWriteChar(char value);
 extern GIZACTIONDEF_PC *gizactiondefs;
 
 typedef struct GIZMO_NAME_TYPE_PC {
-    u8 unknown_00[0x20];                     // 0x00
-    char prefix[0x20];                       // 0x20
-    u8 unknown_40[4];                        // 0x40
-    char *(__cdecl *get_gizmo_name)(void *); // 0x44
-    u8 unknown_48[0x54];                     // 0x48
-} GIZMO_NAME_TYPE_PC;                        // size 0x9c
+    u8 unknown_00[0x20];             // 0x00
+    char prefix[0x20];               // 0x20
+    u8 unknown_40[4];                // 0x40
+    char *(*get_gizmo_name)(void *); // 0x44
+    u8 unknown_48[0x54];             // 0x48
+} GIZMO_NAME_TYPE_PC;                // size 0x9c
 
 typedef struct level_sfx_gizmotype_s {
     u8 unknown_00[0x94];
-    void(__cdecl *add_level_sfx)(WORLDINFO *, void *, i32 *, i32 *, i32);
+    void (*add_level_sfx)(WORLDINFO *, void *, i32 *, i32 *, i32);
     u8 unknown_98[4];
 } LEVEL_SFX_GIZMOTYPE_PC;
 
-static i32 __cdecl DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo);
-static i32 __cdecl DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode);
-static char *__cdecl DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output);
+static i32 DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo);
+static i32 DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode);
+static char *DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output);
 ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE = {NULL,
                                         NULL,
                                         {-1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
                                          (void *)DefaultGizmo_GetOutput, (void *)DefaultGizmo_GetOutputName,
                                          (void *)DefaultGizmo_GetNumOutputs}};
 
-i32 __cdecl GizmoFileReadName(char *name) {
+i32 GizmoFileReadName(char *name) {
     i32 length = EdFileReadChar();
     if (length) {
         EdFileRead(name, length);
@@ -110,25 +110,25 @@ i32 __cdecl GizmoFileReadName(char *name) {
     return 0;
 }
 
-static i32 __cdecl DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+static i32 DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     (void)gizmo;
     (void)output;
     (void)mode;
     return 0;
 }
 
-static char *__cdecl DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
     (void)output;
     return (char *)GizmoDefaultOutputName;
 }
 
-static i32 __cdecl DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo) {
     (void)gizmo;
     return 1;
 }
 
-void *__cdecl GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
+void *GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
     void *allocation = NULL;
     if (buffer != NULL && end != NULL && buffer->addr + (u32)size < end->addr) {
         allocation = (void *)((buffer->addr + 15) & ~15u);
@@ -138,8 +138,8 @@ void *__cdecl GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
     return allocation;
 }
 
-void __cdecl RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYPE_FN *register_functions,
-                                i32 max_levels) {
+void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYPE_FN *register_functions,
+                        i32 max_levels) {
     GIZMOTYPE_PC *type;
     ADDGIZMOTYPE_PC *definition;
     i32 count = 0;
@@ -222,7 +222,7 @@ void __cdecl RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CO
     }
 }
 
-void *__cdecl CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
+void *CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
     GIZMOSYS_PC *system = NULL;
     GIZMOSET_PC *set;
     GIZMOTYPE_PC *type;
@@ -276,7 +276,7 @@ static void GizmoSysPostLoad(GIZMOSYS_PC *system, void *world) {
     }
 }
 
-void __cdecl AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *system, WORLDINFO *world, i32 *ids, i32 *count, i32 capacity) {
+void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *system, WORLDINFO *world, i32 *ids, i32 *count, i32 capacity) {
     LEVEL_SFX_GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
     i32 i;
@@ -293,7 +293,7 @@ void __cdecl AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *system, WORLDINFO *world, i
 }
 
 /* MATCH-EXCEPTION: retail reads the typed gizmotypes global at each use (saga.h declares it void *). */
-void __cdecl GizmoSysClearLevelProgress(void *owner, i32 index) {
+void GizmoSysClearLevelProgress(void *owner, i32 index) {
     GIZMOTYPE_PC *type;
     i32 i;
 
@@ -313,7 +313,7 @@ void __cdecl GizmoSysClearLevelProgress(void *owner, i32 index) {
     }
 }
 
-void __cdecl GizmoSysStoreProgress(void *system_ptr, void *world, i32 progress_index) {
+void GizmoSysStoreProgress(void *system_ptr, void *world, i32 progress_index) {
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -335,7 +335,7 @@ void __cdecl GizmoSysStoreProgress(void *system_ptr, void *world, i32 progress_i
     }
 }
 
-void __cdecl GizmoSysReset(void *system_ptr, void *world, i32 progress_index) {
+void GizmoSysReset(void *system_ptr, void *world, i32 progress_index) {
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -357,7 +357,7 @@ void __cdecl GizmoSysReset(void *system_ptr, void *world, i32 progress_index) {
     }
 }
 
-void __cdecl GizmoSysEarlyUpdate(void *system_ptr, void *world, f32 delta_time) {
+void GizmoSysEarlyUpdate(void *system_ptr, void *world, f32 delta_time) {
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -374,7 +374,7 @@ void __cdecl GizmoSysEarlyUpdate(void *system_ptr, void *world, f32 delta_time) 
     }
 }
 
-void __cdecl GizmoSysLateUpdate(void *system_ptr, void *world, f32 delta_time) {
+void GizmoSysLateUpdate(void *system_ptr, void *world, f32 delta_time) {
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -391,7 +391,7 @@ void __cdecl GizmoSysLateUpdate(void *system_ptr, void *world, f32 delta_time) {
     }
 }
 
-void __cdecl GizmoSysDraw(void *system_ptr, void *world, f32 delta_time) {
+void GizmoSysDraw(void *system_ptr, void *world, f32 delta_time) {
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -408,7 +408,7 @@ void __cdecl GizmoSysDraw(void *system_ptr, void *world, f32 delta_time) {
     }
 }
 
-void __cdecl GizmoSysPanelDraw(void *system_ptr, void *world, f32 delta_time) {
+void GizmoSysPanelDraw(void *system_ptr, void *world, f32 delta_time) {
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -425,7 +425,7 @@ void __cdecl GizmoSysPanelDraw(void *system_ptr, void *world, f32 delta_time) {
     }
 }
 
-i32 __cdecl GizmoGetTypeIDByName(void *system, char *name) {
+i32 GizmoGetTypeIDByName(void *system, char *name) {
     i32 index;
     if (gizmotypes != NULL && system != NULL && name != NULL) {
         for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index) {
@@ -451,7 +451,7 @@ i32 ResetGizmoType(GIZMOSYS_PC *system, i32 type_id, char *name) {
     return 0;
 }
 
-GIZMO_PC *__cdecl AddGizmo(void *system_ptr, i32 type_id, char *name, void *object) {
+GIZMO_PC *AddGizmo(void *system_ptr, i32 type_id, char *name, void *object) {
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPES_PC *registry;
     GIZMOSET_PC *set;
@@ -483,7 +483,7 @@ GIZMO_PC *__cdecl AddGizmo(void *system_ptr, i32 type_id, char *name, void *obje
     return gizmo;
 }
 
-GIZMO_PC *__cdecl GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
+GIZMO_PC *GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
     GIZMOTYPES_PC *types = gizmotypes;
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPE_PC *type;
@@ -521,7 +521,7 @@ GIZMO_PC *__cdecl GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
     return NULL;
 }
 
-void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
+void *GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
     AREA_GIZMOTYPES_PC *types = gizmotypes;
 
     if (types != NULL && gizmo_sys != NULL && name != NULL) {
@@ -573,10 +573,10 @@ void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
     return NULL;
 }
 
-char *__cdecl GizmoGetName(GIZMO_PC *gizmo) {
+char *GizmoGetName(GIZMO_PC *gizmo) {
     GIZMOTYPES_PC *types = gizmotypes;
     if (types != NULL && gizmo != NULL && gizmo->type_id < types->count) {
-        char *(__cdecl * get_name)(GIZMO_PC *) = types->types[gizmo->type_id].fns.get_gizmo_name_fn;
+        char *(*get_name)(GIZMO_PC *) = types->types[gizmo->type_id].fns.get_gizmo_name_fn;
         if (get_name != NULL) {
             return get_name(gizmo);
         }
@@ -584,14 +584,14 @@ char *__cdecl GizmoGetName(GIZMO_PC *gizmo) {
     return NULL;
 }
 
-i32 __cdecl GizmoGetNumOutputs(void *system, GIZMO_PC *gizmo) {
+i32 GizmoGetNumOutputs(void *system, GIZMO_PC *gizmo) {
     GIZMOTYPES_PC *types = gizmotypes;
-    i32(__cdecl * get_count)(GIZMO_PC *);
+    i32 (*get_count)(GIZMO_PC *);
     if (types == NULL || system == NULL || gizmo == NULL) {
         return 0;
     }
     if (gizmo->type_id < types->count) {
-        get_count = (i32(__cdecl *)(GIZMO_PC *))types->types[gizmo->type_id].fns.get_num_outputs_fn;
+        get_count = (i32(*)(GIZMO_PC *))types->types[gizmo->type_id].fns.get_num_outputs_fn;
         if (get_count != NULL) {
             return get_count(gizmo);
         }
@@ -599,9 +599,9 @@ i32 __cdecl GizmoGetNumOutputs(void *system, GIZMO_PC *gizmo) {
     return 1;
 }
 
-i32 __cdecl GizmoGetOutput(void *system, void *gizmo_ptr, i32 output, i32 mode) {
+i32 GizmoGetOutput(void *system, void *gizmo_ptr, i32 output, i32 mode) {
     GIZMOTYPES_PC *registry;
-    i32(__cdecl * get_output)(GIZMO_PC *, i32, i32);
+    i32 (*get_output)(GIZMO_PC *, i32, i32);
     GIZMO_PC *gizmo = gizmo_ptr;
     if (gizmotypes == NULL || system == NULL || gizmo == NULL) {
         return 0;
@@ -617,10 +617,10 @@ i32 __cdecl GizmoGetOutput(void *system, void *gizmo_ptr, i32 output, i32 mode) 
     return get_output(gizmo, output, mode);
 }
 
-char *__cdecl GizmoGetOutputName(void *system, void *gizmo_ptr, i32 output) {
+char *GizmoGetOutputName(void *system, void *gizmo_ptr, i32 output) {
     GIZMOTYPES_PC *registry = gizmotypes;
     GIZMO_PC *gizmo = gizmo_ptr;
-    char *(__cdecl * get_name)(GIZMO_PC *, i32);
+    char *(*get_name)(GIZMO_PC *, i32);
     if (registry == NULL || system == NULL || gizmo == NULL) {
         return NULL;
     }
@@ -633,7 +633,7 @@ char *__cdecl GizmoGetOutputName(void *system, void *gizmo_ptr, i32 output) {
     return (char *)GizmoDefaultOutputName;
 }
 
-void __cdecl GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) {
+void GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) {
     GIZMOTYPES_PC *registry;
     GIZMOTYPE_PC *type;
     GIZMO_PC *gizmo = gizmo_ptr;
@@ -660,7 +660,7 @@ void __cdecl GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) 
     (void)mode;
 }
 
-void __cdecl GizmoSetVisibility(void *system, void *gizmo_ptr, i32 visible, i32 mode) {
+void GizmoSetVisibility(void *system, void *gizmo_ptr, i32 visible, i32 mode) {
     GIZMOTYPES_PC *registry;
     GIZMOTYPE_PC *type;
     GIZMO_PC *gizmo = gizmo_ptr;
@@ -687,10 +687,10 @@ void __cdecl GizmoSetVisibility(void *system, void *gizmo_ptr, i32 visible, i32 
     (void)mode;
 }
 
-i32 __cdecl GizmoGetVisibility(void *system, void *pointer) {
+i32 GizmoGetVisibility(void *system, void *pointer) {
     GIZMO_PC *gizmo = pointer;
     GIZMOTYPES_PC *registry;
-    i32(__cdecl * get_visibility)(GIZMO_PC *);
+    i32 (*get_visibility)(GIZMO_PC *);
     if (gizmotypes == NULL || system == NULL || gizmo == NULL) {
         return 0;
     }
@@ -705,7 +705,7 @@ i32 __cdecl GizmoGetVisibility(void *system, void *pointer) {
     return get_visibility(gizmo);
 }
 
-NUVEC *__cdecl GizmoGetPos(GIZMOSYS_PC *system, void *pointer) {
+NUVEC *GizmoGetPos(GIZMOSYS_PC *system, void *pointer) {
     GIZMO_PC *gizmo = pointer;
     GIZMO_GET_POS_FN_PC get_pos_fn;
     if (gizmotypes == NULL || gizmo == NULL) {
@@ -719,7 +719,7 @@ NUVEC *__cdecl GizmoGetPos(GIZMOSYS_PC *system, void *pointer) {
 }
 
 i32 GizmoGetGizmosUsingSpecial(GIZMOSYS_PC *system, void *world, GIZMO_PC **results, i32 capacity, char *name) {
-    i32(__cdecl * using_special)(GIZMO_PC **, void *, i32, char *);
+    i32 (*using_special)(GIZMO_PC **, void *, i32, char *);
     i32 count = 0;
     i32 added;
     i32 i;
@@ -749,7 +749,7 @@ i32 GizmoGetGuid(GIZMOSYS_PC *system, GIZMO_PC *gizmo) {
 
 i32 GizmoInfoVersionPc = 4;
 
-i32 __cdecl GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
+i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
     NUSPECIALHANDLE special;
     GIZMO_PC gizmo;
     char backup[256];
@@ -871,7 +871,7 @@ i32 __cdecl GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene)
     return 0;
 }
 
-i32 __cdecl GizmoIsNameUnique(GIZMOSYS_PREFIX_PC *system, char *name) {
+i32 GizmoIsNameUnique(GIZMOSYS_PREFIX_PC *system, char *name) {
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
     i32 type_index;
@@ -895,7 +895,7 @@ i32 __cdecl GizmoIsNameUnique(GIZMOSYS_PREFIX_PC *system, char *name) {
     return 1;
 }
 
-i32 __cdecl GizmoNameUsesPrefix(char *name, char *prefix) {
+i32 GizmoNameUsesPrefix(char *name, char *prefix) {
     if (name == NULL || prefix == NULL) {
         return 0;
     }
@@ -909,7 +909,7 @@ i32 __cdecl GizmoNameUsesPrefix(char *name, char *prefix) {
     return 1;
 }
 
-i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *system, char *prefix, char *name, char *result, i32 result_size) {
+i32 GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *system, char *prefix, char *name, char *result, i32 result_size) {
     char suffix[16];
     char shortened_name[64];
     i32 type_index;
@@ -944,7 +944,7 @@ i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *system, char *prefix, char *n
     return 0;
 }
 
-i32 __cdecl GizmoSys_BoltHitPlat(void *system, WORLDINFO *world, BOLT_PC *bolt, u8 *hit_flags) {
+i32 GizmoSys_BoltHitPlat(void *system, WORLDINFO *world, BOLT_PC *bolt, u8 *hit_flags) {
     BOLT_GIZMO_TYPE_PC *type;
     GIZMOSET_PC *set;
     i32 i;
@@ -972,8 +972,8 @@ static void GizmoAppendSpecialErrorPrivate(void *ptr, const char *text) {
     }
 }
 
-i32 __cdecl Gizmo_FindNuSpecial(NUGSCN *scene, NUSPECIALHANDLE *special, char *name, i32 flags, void *ptr, char *prefix,
-                                char *suffix) {
+i32 Gizmo_FindNuSpecial(NUGSCN *scene, NUSPECIALHANDLE *special, char *name, i32 flags, void *ptr, char *prefix,
+                        char *suffix) {
     GIZMOSYS_PC *system = ptr;
     if (NuSpecialFind(scene, special, name, flags)) {
         return 1;
@@ -994,7 +994,7 @@ i32 __cdecl Gizmo_FindNuSpecial(NUGSCN *scene, NUSPECIALHANDLE *special, char *n
     return 0;
 }
 
-void __cdecl LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
+void LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
     GIZMOSYS_PC *system = system_ptr;
     char gizmo_name[32];
     char path[256];
@@ -1045,7 +1045,7 @@ void __cdecl LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
     system->flags &= ~4;
 }
 
-void __cdecl GizmoSysAddGizmos(void *system_ptr, GIZFLOW_PC *flow, void *world) {
+void GizmoSysAddGizmos(void *system_ptr, GIZFLOW_PC *flow, void *world) {
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -1056,8 +1056,7 @@ void __cdecl GizmoSysAddGizmos(void *system_ptr, GIZFLOW_PC *flow, void *world) 
         for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
             ResetGizmoType(system, index, NULL);
             if (type->fns.add_gizmos_fn != NULL) {
-                ((void(__cdecl *)(void *, i32, void *, void *))type->fns.add_gizmos_fn)(system, index, world,
-                                                                                        set->data);
+                ((void (*)(void *, i32, void *, void *))type->fns.add_gizmos_fn)(system, index, world, set->data);
             }
         }
     }
@@ -1090,7 +1089,7 @@ i32 GizmoTypeGetProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i
     return type->fns.options;
 }
 
-void __cdecl GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name) {
+void GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name) {
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
     void *progress;
@@ -1118,9 +1117,9 @@ void __cdecl GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progre
     }
 }
 
-void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i32 visibility, i32 mode) {
+void GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i32 visibility, i32 mode) {
     GIZMO_PC *gizmo = gizmo_ptr;
-    i32(__cdecl * activate_rev)(GIZMO_PC *, i32, i32);
+    i32 (*activate_rev)(GIZMO_PC *, i32, i32);
     i32 command = 2;
     if (visibility != 0) {
         command = 6;
@@ -1155,6 +1154,6 @@ extern "C" {
 #endif
 
 /* Original source name unknown. The native entry is exactly RET (0x559570, in this unit). */
-void __cdecl GizmoDiagnosticPc(char *format, ...) {
+void GizmoDiagnosticPc(char *format, ...) {
     (void)format;
 }

@@ -1,39 +1,39 @@
 #include "saga.h"
 
-void __cdecl PCAnimationLoadFailureNoOp(char *path) {
+void PCAnimationLoadFailureNoOp(char *path) {
     (void)path;
 }
 
-void __cdecl PCCharacterSystemExistingNoOp() {
+void PCCharacterSystemExistingNoOp() {
 }
 
-void __cdecl NuPtlDmaSlotsExhaustedPc(void) {
+void NuPtlDmaSlotsExhaustedPc(void) {
 }
 
-void __cdecl PCClipScreenUnsupported(void) {
+void PCClipScreenUnsupported(void) {
 }
 
-void __cdecl NuQFntAtlasErrorPc(void) {
+void NuQFntAtlasErrorPc(void) {
 }
 
-void __cdecl PCGraphicsRenderTextureAllocationError(void) {
+void PCGraphicsRenderTextureAllocationError(void) {
 }
 
-void __cdecl NuTexBmpUnsupportedDepthPc(i32 bit_count, const char *path) {
+void NuTexBmpUnsupportedDepthPc(i32 bit_count, const char *path) {
     (void)bit_count;
     (void)path;
 }
 
-void __cdecl NuFrameEndLeafPc(void) {
+void NuFrameEndLeafPc(void) {
 }
 
-void __cdecl DisplayListSpecialTransformNoOpPc(NUSPECIALHANDLE *special, NUMTX *matrix) {
+void DisplayListSpecialTransformNoOpPc(NUSPECIALHANDLE *special, NUMTX *matrix) {
     (void)special;
     (void)matrix;
 }
 
 /* PC has no PS2 screen grab; the dump is empty. */
-void __cdecl NuPs2VideoScreenDump(char *filename, i32 format, f32 scale_x, f32 scale_y, i32 face, i32 x, i32 y) {
+void NuPs2VideoScreenDump(char *filename, i32 format, f32 scale_x, f32 scale_y, i32 face, i32 x, i32 y) {
 }
 
 i32 fun_006de9b0(void) {
@@ -74,7 +74,7 @@ i32 fun_006dea50(void) {
     return 0;
 }
 
-void __cdecl PCAnimationEffectCheckpoint(void) {
+void PCAnimationEffectCheckpoint(void) {
 }
 
 void fun_006dea70(void) {
@@ -107,25 +107,25 @@ void fun_006debf0(void) {
 void fun_006dec00(void) {
 }
 
-void __cdecl PCCharacterModelDiagnosticNoOp() {
+void PCCharacterModelDiagnosticNoOp() {
 }
 
-void __cdecl CutSceneLoadDiagnosticPc(void *unused, ...) {
+void CutSceneLoadDiagnosticPc(void *unused, ...) {
     (void)unused;
 }
 
-void __cdecl CutSceneConfigMissingPc(char *unused) {
+void CutSceneConfigMissingPc(char *unused) {
     (void)unused;
 }
 
-void __cdecl CutSceneStreamDiagnosticPc(char *unused) {
+void CutSceneStreamDiagnosticPc(char *unused) {
     (void)unused;
 }
 
-void __cdecl NuFileError(void) {
+void NuFileError(void) {
 }
 
-void __cdecl NuFileRetry(void) {
+void NuFileRetry(void) {
 }
 
 void fun_004ef7c0(void) {
@@ -133,23 +133,23 @@ void fun_004ef7c0(void) {
 
 /* Empty release diagnostics with an argument; the linker folds them into
    NuFileError and NuFileRetry. */
-void __cdecl NuRDPIVariableErrorPc(char *name) {
+void NuRDPIVariableErrorPc(char *name) {
     (void)name;
 }
 
 void fun_004ef7a0(void) {
 }
 
-void __cdecl NuDatFileMissingPc(char *filepath) {
+void NuDatFileMissingPc(char *filepath) {
     (void)filepath;
 }
 
-void __cdecl NuAllocBadPointer(void) {
+void NuAllocBadPointer(void) {
 }
 
 void fun_004eedb0(void) {
 }
 
-void __cdecl NuAllocReport(const void *message, ...) {
+void NuAllocReport(const void *message, ...) {
     (void)message;
 }

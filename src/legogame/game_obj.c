@@ -18,8 +18,8 @@ typedef struct creature_crate_part_view_pc_s {
     f32 spawn_delay;
 } CREATURE_CRATE_PART_VIEW_PC;
 
-i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused);
-void __cdecl MovePlayer_NETWORK(GAMEOBJECT *);
+i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused);
+void MovePlayer_NETWORK(GAMEOBJECT *);
 
 typedef struct grapple_rotation_pc_s {
     u8 unknown_00[0x30];
@@ -29,8 +29,8 @@ typedef struct grapple_rotation_pc_s {
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern u8 SuperCarryPlayerRgbPc[2][3];
 extern i32 FalconDebKey[2];
-void __cdecl DieRumble(GAMEOBJECT *);
-void __cdecl GetTakeOverPos(GAMEOBJECT *, NUVEC *);
+void DieRumble(GAMEOBJECT *);
+void GetTakeOverPos(GAMEOBJECT *, NUVEC *);
 extern i16 CharacterFixupIdPc007f18c4;
 extern const char BeenKilledPc[11];
 extern const char EP3DogfightDiePc[17];
@@ -131,7 +131,7 @@ typedef struct KILLPARTS_RIDER_LIGHT_PC {
     NUVEC intensity[2];
 } KILLPARTS_RIDER_LIGHT_PC;
 
-static void __cdecl CreatureCrate_Stop(PART_PC *part) {
+static void CreatureCrate_Stop(PART_PC *part) {
     GAMEOBJECT *object = part->owner;
     u16 debris;
     i32 type;
@@ -153,7 +153,7 @@ static void __cdecl CreatureCrate_Stop(PART_PC *part) {
     NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
 }
 
-static void __cdecl CreatureCrate_MoveFn(PART_PC *part, f32 elapsed) {
+static void CreatureCrate_MoveFn(PART_PC *part, f32 elapsed) {
     CREATURE_CRATE_PART_VIEW_PC *crate = (CREATURE_CRATE_PART_VIEW_PC *)part;
     crate->spawn_delay -= elapsed;
     if (crate->spawn_delay <= 0.0f) {
@@ -162,14 +162,14 @@ static void __cdecl CreatureCrate_MoveFn(PART_PC *part, f32 elapsed) {
     }
 }
 
-static i32 __cdecl CreatureCrate_DrawFn(PART_PC *part) {
+static i32 CreatureCrate_DrawFn(PART_PC *part) {
     if (((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay > 0.0f) {
         return 0;
     }
     return 1;
 }
 
-void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
+void SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     NUVEC velocity = {0.0f, 0.0f, 0.0f};
     NUMTX matrix;
     ADDPART_PC parameters;
@@ -208,7 +208,7 @@ void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     object->ai_packet.reset_mode = 3;
 }
 
-void __cdecl ManageGameObjects(void) {
+void ManageGameObjects(void) {
     i32 i;
     i32 j;
     i32 area;
@@ -584,7 +584,7 @@ static i32 Collide2Objects(APIOBJECT_PC *first, APIOBJECT_PC *second) {
     return collision_result;
 }
 
-void __cdecl CollideGameObjects(WORLDINFO *world) {
+void CollideGameObjects(WORLDINFO *world) {
     i32 object_count = HIGHGAMEOBJECT;
     i32 index;
     i32 player_index;
@@ -722,7 +722,7 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
     APIObjectCollisions(collision_count, collision_objects, collision_minimums, collision_maximums, Collide2Objects);
 }
 
-void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
+void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     PLAYERCHARACTERCONFIG_PC *game;
     u16 x;
     u16 z;
@@ -957,7 +957,7 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     }
 }
 
-void __cdecl PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
+void PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
     i32 state;
     i32 animation;
     f32 duration;
@@ -1000,7 +1000,7 @@ void __cdecl PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
     }
 }
 
-i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration, u32 flags) {
+i32 PlayerTakeHitReactionPc(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration, u32 flags) {
     REACTION_FIELDS_PC *view = (REACTION_FIELDS_PC *)target;
     void **animations;
     i32 choices[16];
@@ -1082,7 +1082,7 @@ i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *target, GAMEOBJECT *attacker, f3
     return 0;
 }
 
-i32 __cdecl DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
+i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
     f32 model_state;
     if (object->character_context != 0x17 || object->context_timer < duration) {
         model_state = object->origin_scale_override;
@@ -1121,7 +1121,7 @@ i32 __cdecl DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *sourc
     return 0;
 }
 
-void __cdecl ActivatePlayer(GAMEOBJECT *object) {
+void ActivatePlayer(GAMEOBJECT *object) {
     object->character_context = -1;
     if (object->character_model->model_data_b[0x80] != NULL) {
         object->character_context = 0x41;
@@ -1131,7 +1131,7 @@ void __cdecl ActivatePlayer(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl GameObjectToCameraCode(GAMEOBJECT *object) {
+void GameObjectToCameraCode(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *data;
     u32 mask;
 
@@ -1166,7 +1166,7 @@ void __cdecl GameObjectToCameraCode(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl SetKillPartMom(NUVEC *momentum) {
+void SetKillPartMom(NUVEC *momentum) {
     momentum->x = 0.0f;
     momentum->y = 1.0f;
     momentum->z = 0.0f;
@@ -1174,22 +1174,22 @@ void __cdecl SetKillPartMom(NUVEC *momentum) {
     NuVecRotateX(momentum, momentum, qrand());
 }
 
-void __cdecl TiePart_Kill(PART_PC *part, i32 unused) {
+void TiePart_Kill(PART_PC *part, i32 unused) {
     AddGameDebris(WORLD->game_debris_sys, 0x6a, &part->position);
 }
 
-void __cdecl TiePart_KillExplode(PART_PC *part, i32 unused) {
+void TiePart_KillExplode(PART_PC *part, i32 unused) {
     AddGameDebris(WORLD->game_debris_sys, 0x6b, &part->position);
     AddPartDebris(WORLD->part_debris_sys, 3, &part->position);
 }
 
-void __cdecl TiePart_Impact(PART_PC *part) {
+void TiePart_Impact(PART_PC *part) {
     AddGameDebris(WORLD->game_debris_sys, 0x6a, &part->position);
 }
 
 /* Native local helper takes the particle in ESI and time on the stack. This
  * logical signature is private to the coherent compiler-generated caller group. */
-static void __cdecl TiePart_MoveCorePC(PART_PC *part, f32 time) {
+static void TiePart_MoveCorePC(PART_PC *part, f32 time) {
     NUVEC position;
     position.x = part->position.x + part->velocity.x * time;
     position.y = part->position.y + part->velocity.y * time;
@@ -1202,7 +1202,7 @@ static void __cdecl TiePart_MoveCorePC(PART_PC *part, f32 time) {
                                       NULL);
 }
 
-void __cdecl AtatPart_Stop(PART_PC *part) {
+void AtatPart_Stop(PART_PC *part) {
     PlaySfx(KillPartsAtatExplodeTextPc, &part->position);
     PartStop_Flickerer(part);
 }
@@ -1254,7 +1254,7 @@ void AtatPart_Update(PART_PC *part) {
 
 static i32 KillPartsTieSpinRatePc = 200000;
 
-void __cdecl TieSpinZPart_Move(PART_PC *part, f32 time) {
+void TieSpinZPart_Move(PART_PC *part, f32 time) {
     NUVEC trail;
     part->field_124[3] = KillPartsTieSpinRatePc;
     part->rotation_z = ((u16)(((i32)(((f64)KillPartsTieSpinRatePc) * FRAMETIME))));
@@ -1267,14 +1267,14 @@ void __cdecl TieSpinZPart_Move(PART_PC *part, f32 time) {
                                       FRAMETIME, NULL, NULL);
 }
 
-void __cdecl TiePart_Move(PART_PC *part, f32 time) {
+void TiePart_Move(PART_PC *part, f32 time) {
     part->field_124[3] = -32768;
     part->rotation_z = ((u16)(((i32)(-32768.0 * FRAMETIME))));
     TiePart_MoveCorePC(part, time);
 }
 
-void __cdecl KillParts_TIEFIGHTER(ADDPART_PC *params, i32 part_index, i32 variant, GAMEOBJECT *object, i32 mode,
-                                  u16 xrot, u16 yrot, NUVEC *velocity) {
+void KillParts_TIEFIGHTER(ADDPART_PC *params, i32 part_index, i32 variant, GAMEOBJECT *object, i32 mode, u16 xrot,
+                          u16 yrot, NUVEC *velocity) {
     if (variant != 0) {
         params->flags = 0x10;
     } else {
@@ -1333,7 +1333,7 @@ void __cdecl KillParts_TIEFIGHTER(ADDPART_PC *params, i32 part_index, i32 varian
     AddPart(params);
 }
 
-void __cdecl InitBikeParts(void) {
+void InitBikeParts(void) {
     memset(KillPartsBikesPc, 0, sizeof(KillPartsBikesPc));
 }
 
@@ -1460,7 +1460,7 @@ i32 SpeederPart_Draw(PART_PC *part) {
     return 1;
 }
 
-void __cdecl KillParts_ATAT(ADDPART_PC *params, i32 unused, i32 variant, GAMEOBJECT *object) {
+void KillParts_ATAT(ADDPART_PC *params, i32 unused, i32 variant, GAMEOBJECT *object) {
     PART_PC *part;
     params->flags = variant == 0 ? 0x500 : 0x110;
     params->velocity->z = 0.0f;
@@ -1475,7 +1475,7 @@ void __cdecl KillParts_ATAT(ADDPART_PC *params, i32 unused, i32 variant, GAMEOBJ
     }
 }
 
-void __cdecl LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
+void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
     i32 locator;
     NUVEC velocity;
     ADDPART_PC params;
@@ -1512,7 +1512,7 @@ void __cdecl LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
 static f32 SHIELDFLICKERTIME = 0.10000000149011612f;
 #pragma data_seg()
 
-void __cdecl ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *unused_bolt) {
+void ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *unused_bolt) {
     SHIELD_STATE_PC *shield = (SHIELD_STATE_PC *)target;
     i32 health;
     f32 first_rumble;
@@ -1573,9 +1573,8 @@ void __cdecl ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, 
     }
 }
 
-GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius,
-                                     f32 range_squared, u32 model_mask, i32 directional, i32 require_drawn,
-                                     i32 bolt_id) {
+GAMEOBJECT *TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared,
+                             u32 model_mask, i32 directional, i32 require_drawn, i32 bolt_id) {
     NUVEC aim = *direction;
     BOLTTYPE_PC *bolt = BoltType_FindByID(bolt_id, WORLD);
     u16 near_angle = TargetDeg_Near;
@@ -1678,7 +1677,7 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
     return best != NULL ? best : previous;
 }
 
-void __cdecl ClearLastSafeTakeOver(GAMEOBJECT *object) {
+void ClearLastSafeTakeOver(GAMEOBJECT *object) {
     i32 index;
     GAMEOBJECT *candidate;
     if (object == NULL || (object->portal_flags & 0x100000) != 0) {
@@ -1693,7 +1692,7 @@ void __cdecl ClearLastSafeTakeOver(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl Tag_UpdateHint(HINT_PC *hint) {
+i32 Tag_UpdateHint(HINT_PC *hint) {
     WORLDINFO *world = WORLD;
     u32 hint_flags;
     i16 tc14_id;
@@ -1969,7 +1968,7 @@ char *GameObj_GetNamePc(i32 model, GAMEOBJECT *object, char *buffer) {
 GAMEOBJECT *player_tag_from = 0;
 #pragma bss_seg()
 
-void __cdecl UpdateGameObjects(WORLDINFO *world) {
+void UpdateGameObjects(WORLDINFO *world) {
     i32 i;
     i32 setting;
     GAMEOBJECT *object;
@@ -2557,7 +2556,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     }
 }
 
-i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
+i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     NUVEC momentum;
     NUVEC position;
     i32 debris[4];
@@ -2954,7 +2953,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     return 1;
 }
 
-i32 __cdecl KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protection, NUVEC *unused) {
+i32 KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protection, NUVEC *unused) {
     i32 other;
     i32 active;
     (void)unused;
@@ -2998,7 +2997,7 @@ void SpeederPart_Kill(PART_PC *part, i32 unused) {
     }
 }
 
-void __cdecl KillParts_SpeederBike(ADDPART_PC *params, i32 unused1, i32 unused2, GAMEOBJECT *object) {
+void KillParts_SpeederBike(ADDPART_PC *params, i32 unused1, i32 unused2, GAMEOBJECT *object) {
     PART_PC *part;
     KILLPARTS_PART_PC *bike_part;
     f32 distance;
@@ -3266,13 +3265,13 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
     }
 }
 
-void __cdecl InstantKillParts(GAMEOBJECT *object, i32 mode, f32 vertical_scale) {
+void InstantKillParts(GAMEOBJECT *object, i32 mode, f32 vertical_scale) {
     i32 excluded_layer;
     excluded_layer = object->id == (u16)id_BODYGUARD && object->current_hp <= 1 ? 4 : -1;
     KillParts(object, -1, excluded_layer, mode, vertical_scale, 0, NULL);
 }
 
-i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i32 probe, i32 ignored) {
+i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i32 probe, i32 ignored) {
     i32 reaction_trigger;
 
     i32 no_hurt;

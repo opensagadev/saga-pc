@@ -33,21 +33,20 @@ class TEXT_INPUT_MANAGER_PC {
     u8 use_keyboard_override;                     // 0x67e0
     u8 unknown_67e1[0x0f];                        // 0x67e1
     TEXT_INPUT_DEVICE_KIND_PC device_kind[32];    // 0x67f0
-    i32 __thiscall ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
-                              i32 alternate_labels, char *delimiters);
+    i32 ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
+                   i32 alternate_labels, char *delimiters);
 }; // size 0x68b0
 
 extern "C" {
-    extern void(__cdecl *TextInputNameCallbackPc)(i32, char *);
+    extern void (*TextInputNameCallbackPc)(i32, char *);
 
-    i32 __cdecl PcInput_GetCtrlStringPlayer(void) {
+    i32 PcInput_GetCtrlStringPlayer(void) {
         return TextInputLastDeviceIndexPc;
     }
 }
 
-i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *destination, i32 custom,
-                                                 i32 custom_index, i32 use_callback, i32 alternate_labels,
-                                                 char *delimiters) {
+i32 TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index,
+                                      i32 use_callback, i32 alternate_labels, char *delimiters) {
     i32 result = 0;
     i32 open = 0;
     i32 close = 0;
@@ -226,7 +225,7 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
     return result;
 }
 
-extern "C" i32 __cdecl PcInput_GetCtrlInputString(i32 device, i32 button, char *destination) {
+extern "C" i32 PcInput_GetCtrlInputString(i32 device, i32 button, char *destination) {
     TEXT_INPUT_MANAGER_PC *manager = (TEXT_INPUT_MANAGER_PC *)nu_input_state;
     if (device < 0) {
         device = 0;
@@ -240,7 +239,7 @@ extern "C" i32 __cdecl PcInput_GetCtrlInputString(i32 device, i32 button, char *
 }
 
 extern "C" {
-    void __cdecl TextInputSetKeyboardOverridePc(i32 mode) {
+    void TextInputSetKeyboardOverridePc(i32 mode) {
         TEXT_INPUT_MANAGER_PC *manager = reinterpret_cast<TEXT_INPUT_MANAGER_PC *>(nu_input_state);
         i32 previous = (i8)manager->use_keyboard_override;
         manager->use_keyboard_override = (u8)mode;
@@ -249,26 +248,26 @@ extern "C" {
         }
     }
 
-    void __cdecl PcInput_SetCtrlStringPlayer(i32 device) {
+    void PcInput_SetCtrlStringPlayer(i32 device) {
         TextInputLastDeviceIndexPc = (i8)device;
     }
 
-    i32 __cdecl PcInput_PortIsKeyboard(i32 device) {
+    i32 PcInput_PortIsKeyboard(i32 device) {
         return (u32)device - 10u <= 3u;
     }
 }
 
 extern "C" {
-    char **__cdecl PcInput_GetKeyNameTable(void) {
+    char **PcInput_GetKeyNameTable(void) {
         return TextInputKeyNamesPc;
     }
 
-    i32 __cdecl PcInput_PortIsUC(i32 device) {
+    i32 PcInput_PortIsUC(i32 device) {
         return (u32)device <= 3u;
     }
 }
 
-extern "C" i32 __cdecl AreaGetKeyboardOverridePc(void) {
+extern "C" i32 AreaGetKeyboardOverridePc(void) {
     return (i8)((TEXT_INPUT_MANAGER_PC *)nu_input_state)->use_keyboard_override;
 }
 
@@ -283,8 +282,8 @@ extern "C" void fun_006d63e0(f32 *value, f32 target, f32 rate) {
     *value += target;
 }
 
-extern "C" i32 __cdecl PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank,
-                                                  i32 a, i32 b, char *c) {
+extern "C" i32 PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a,
+                                          i32 b, char *c) {
     return ((TEXT_INPUT_MANAGER_PC *)nu_input_state)->ButtonName(action, port, destination, auxiliary, bank, a, b, c);
 }
 

@@ -7,24 +7,24 @@ static f32 BuckSnowmobMaxYPc = 0.1f;
 static f32 BuckSnowmobMinYPc = -0.01f;
 static f32 BuckSnowmobRadiusPc = 0.2f;
 
-extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world);
-extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y);
+extern "C" void Game_WorldInfo_InitLast(WORLDINFO *world);
+extern "C" void Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y);
 
-extern "C" void __cdecl MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b,
-                                       u8 header_r, u8 header_g, u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b,
-                                       u8 flash0_r, u8 flash0_g, u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b);
+extern "C" void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r,
+                               u8 header_g, u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g,
+                               u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b);
 #include <string.h>
 #include <stdio.h>
-extern "C" void __cdecl NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
+extern "C" void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
-extern "C" void __cdecl SurfaceMaskOn(u32 *surface_mask);
-extern "C" void __cdecl Grabber_Reset(WORLDINFO *world);
-extern "C" void __cdecl Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *customiser);
-extern "C" u32 __cdecl TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces,
-                                           u32 *obstacles, u32 *turrets, u32 *characters);
-extern "C" void __cdecl SurfaceMaskOff(u32 *surface_mask);
-extern "C" void __cdecl VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
-extern "C" void __cdecl PodRace_IncreaseLap(void);
+extern "C" void SurfaceMaskOn(u32 *surface_mask);
+extern "C" void Grabber_Reset(WORLDINFO *world);
+extern "C" void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *customiser);
+extern "C" u32 TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces,
+                                   u32 *obstacles, u32 *turrets, u32 *characters);
+extern "C" void SurfaceMaskOff(u32 *surface_mask);
+extern "C" void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
+extern "C" void PodRace_IncreaseLap(void);
 
 /* Native Game fields consumed by 42b080. */
 typedef struct SHOP_COMPLETION_GAME_PC {
@@ -47,8 +47,8 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, challenge_trial_time) == 0x84);
 STATIC_ASSERT(offsetof(HINT_PC, price) == 4);
 extern "C" {
-    i32 __cdecl AllMiniKitsDone(AREASAVE_s *);
-    void __cdecl AddToCompletionPoints(u32);
+    i32 AllMiniKitsDone(AREASAVE_s *);
+    void AddToCompletionPoints(u32);
 }
 extern "C" {
     extern u16 PodRaceBDieAngle;
@@ -57,7 +57,7 @@ extern "C" {
     extern NUVEC PodAvalanchePeakPos;
     extern f32 PodAvalancheShakeFrames;
     extern f32 PodAvalancheShakeRange;
-    extern i32 __cdecl ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
+    extern i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
     extern i16 CharacterFixupIdPc007f18c4;
     extern AREA_DATA_PC *MOSEISLEY_ADATA;
     extern AREA_DATA_PC *TATOOINE_ADATA;
@@ -65,7 +65,7 @@ extern "C" {
 extern "C" TIMER ChallengeTimer;
 extern "C" {
     extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
-    void __cdecl Hub_LockUnlockDoors(WORLDINFO *world);
+    void Hub_LockUnlockDoors(WORLDINFO *world);
     extern void *game_cutscenes_droid_factory_conveyor;
     extern AREA_DATA_PC *ROOFTOPS_ADATA;
     extern i16 CharacterFixupIdPc007f1828; /* character id fixed up from "PenguinBomb" */
@@ -87,7 +87,7 @@ typedef struct SHOP_SAVE_VIEW_PC {
  * Source composition, not a compiled/ABI/emitted-output acceptance.
  * Genuine subsystem suppliers are kept in their original owners.
  * All local callbacks are retained solely by the true publisher below. */
-extern "C" i32 __cdecl Hub_PanelBusy(void);
+extern "C" i32 Hub_PanelBusy(void);
 #define GAME_PUBLISHER_ASSERT(expression)                                                                              \
     typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
 // Source lease:
@@ -168,40 +168,40 @@ GAME_PUBLISHER_ASSERT(offsetof(AREA_GLOBALS_PC, area_phase) == 0xc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, spawn_protection_timer) == 0x1000);
 extern "C" {
-    void __cdecl SetTexAnimSignals(void);
-    void __cdecl Bolts_Reset(void);
-    void __cdecl Detonators_Reset(void);
-    void __cdecl ResetParts(void);
-    void __cdecl Panel_Clear(void);
-    void __cdecl Hint_Reset(void);
-    void __cdecl TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system);
-    void __cdecl Faders_Reset(WORLDINFO *world);
-    void __cdecl GizmoSysReset(void *system, void *world, i32 progress_index);
-    void __cdecl ClearAICreatures(void);
-    void __cdecl CharPlatforms_Reset(CHARPLATFORMSYS_s *system);
-    void __cdecl ResetRepeatSfx(void);
-    void __cdecl SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options);
-    void __cdecl CutScene_StartAudio(void);
-    void __cdecl Tag_SetMode(i32 mode);
+    void SetTexAnimSignals(void);
+    void Bolts_Reset(void);
+    void Detonators_Reset(void);
+    void ResetParts(void);
+    void Panel_Clear(void);
+    void Hint_Reset(void);
+    void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system);
+    void Faders_Reset(WORLDINFO *world);
+    void GizmoSysReset(void *system, void *world, i32 progress_index);
+    void ClearAICreatures(void);
+    void CharPlatforms_Reset(CHARPLATFORMSYS_s *system);
+    void ResetRepeatSfx(void);
+    void SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options);
+    void CutScene_StartAudio(void);
+    void Tag_SetMode(i32 mode);
     extern const char ActionSnapPartyName[6];
     extern char AreaFixUpName_Jedi[8];
     extern i32 makebaddiesforgetinresetbits;
     extern i32 FalconDebKey[2];
     extern i32 come_from_an_editor;
 }
-extern "C" i32 __cdecl GetRandomCoinType(void);
-extern "C" void __cdecl GameFog_Reset(void);
+extern "C" i32 GetRandomCoinType(void);
+extern "C" void GameFog_Reset(void);
 // Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/player-movement-callbacks-v1/held2.cppfrag
 /* Genuine proposed supplier definitions remain in their original speederchase/suit owners. */
-extern "C" f32 __cdecl GetVehicleAreaRememberSpeed(void);
+extern "C" f32 GetVehicleAreaRememberSpeed(void);
 extern "C" {
-    void __cdecl SetAnimBlendMode(i32 mode);
-    void __cdecl GameRegisterGizActions(void);
-    void __cdecl DrawAutoSaveIcon(void);
-    void __cdecl InitPartTable(char **names);
-    void __cdecl GameAudio_Reset(void);
-    u8 __cdecl NuAnimSetForceEulerToQuat(u8 force);
-    i32 __cdecl NuWindowsGetConfigValuePc(i32 index);
+    void SetAnimBlendMode(i32 mode);
+    void GameRegisterGizActions(void);
+    void DrawAutoSaveIcon(void);
+    void InitPartTable(char **names);
+    void GameAudio_Reset(void);
+    u8 NuAnimSetForceEulerToQuat(u8 force);
+    i32 NuWindowsGetConfigValuePc(i32 index);
 }
 
 typedef struct game_door_callback_pc_s {
@@ -239,11 +239,11 @@ extern i32 selectmodemode;
 // Original Android static game.cpp state; PC private visibility/TU unproved.
 extern i32 deathstar_hold_count;
 // External declarations only; final shared integration must use canonical C linkage.
-extern i32(__cdecl *CheckMusicOtherFn)(void);
-extern i32(__cdecl *GameAudio_ActionMusicFn)(void);
-extern i32(__cdecl *PauseRenderOffFn)(void);
+extern i32 (*CheckMusicOtherFn)(void);
+extern i32 (*GameAudio_ActionMusicFn)(void);
+extern i32 (*PauseRenderOffFn)(void);
 // Genuine unresolved value suppliers: cannot activate music family with substitutes.
-i32 __cdecl Hub_Outside(void);
+i32 Hub_Outside(void);
 #define ACTION_MUSIC_PLAYER_FIGHTING(player)                                                                           \
     ((player) != NULL &&                                                                                               \
      ((player)->ai_packet.opponent != NULL ||                                                                          \
@@ -297,7 +297,7 @@ GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
 // build/analysis/next-world-loading-wave/game-init-after-MM/publisher-source-v1/world-and-hub-corrected.cppfrag
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 // Keep this private callback with the real publisher; native is a tail call.
-extern "C" void __cdecl Hub_ResetPanel(void);
+extern "C" void Hub_ResetPanel(void);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
 
 // Source lease:
@@ -327,7 +327,7 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, hud_icon_timer) == 0xd60);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
-extern i32(__cdecl *Tag_NoHiddenIconFn)(GAMEOBJECT *);
+extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
 // Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v9/tag-alternate.cppfrag
 /* Reuse TAG_CHARACTER_DATA_READER_PC from the LSW callback contract. */
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pause_context_state) == 0xee8);
@@ -373,11 +373,11 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
 STATIC_ASSERT(offsetof(OPTIONSSAVE, music_enabled) == 6);
 
-extern "C" i32 __cdecl fun_0041aec0(GAMEOBJECT *object);
-void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object);
-void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object);
-extern "C" void __cdecl GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target);
-static void __cdecl LEGO_AllGoldBricksFn(void);
+extern "C" i32 fun_0041aec0(GAMEOBJECT *object);
+void Tag_DrawIcon_LSW(GAMEOBJECT *object);
+void Tag_DrawIcon_Batman(GAMEOBJECT *object);
+extern "C" void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target);
+static void LEGO_AllGoldBricksFn(void);
 extern "C" {
 
     /* Retail keeps this TU's out-of-line NuFabs copy at 0x428930. */
@@ -387,7 +387,7 @@ extern "C" {
         return *(f32 *)&bits;
     }
 
-    f32 __cdecl AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount) {
+    f32 AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount) {
         if (difficulty != NULL && Cheat_IsOn(44) && !BonusArea && !GAMEDEMO) {
             f32 sum = amount + difficulty->accumulator;
             difficulty->accumulator = sum;
@@ -410,7 +410,7 @@ extern "C" {
     static f32 AdaptiveDifficultyRecoveryThresholdPc = 0.1f;
 #pragma data_seg()
 
-    f32 __cdecl AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY_PC *difficulty) {
+    f32 AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY_PC *difficulty) {
         f32 threshold;
         f32 elapsed;
         i32 increase;
@@ -462,7 +462,7 @@ static void InitOptionsSaveDefaults(OPTIONSSAVE *options) {
     options->music_volume = (u8)NuWindowsGetConfigValuePc(5);
 }
 
-static i32 __cdecl MakeSaveHash(void) {
+static i32 MakeSaveHash(void) {
     return Game.save_hash;
 }
 
@@ -476,7 +476,7 @@ extern "C" {
                                "MAUL_P_2",     "MAUL_P_3",   "SPEAR_HIT",    "RED_BRICK",   "POD_ROCK",     NULL};
 }
 
-extern "C" void __cdecl InitGameBeforeConfig(void) {
+extern "C" void InitGameBeforeConfig(void) {
     if (PAL != 0) {
         NuStrCpy(SaveProductCodePc, "BESLES-54221");
         DEFAULTFRAMETIME = 0.02f;
@@ -523,7 +523,7 @@ extern "C" void __cdecl InitGameBeforeConfig(void) {
     }
 }
 
-static void __cdecl GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK_PC *door) {
+static void GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK_PC *door) {
     VehicleAreaRememberSpeed = GetVehicleAreaRememberSpeed();
     if (world->current_level == VADERA_LDATA) {
         VaderA_GoneThroughDoor(world, reinterpret_cast<DOOR_s *>(door));
@@ -625,7 +625,7 @@ static void Player_ClearContext_Game(GAMEOBJECT *object, i32 release_takeover) {
     }
 }
 
-static i32 __cdecl GizBuildit_AutoBuildPos_Game(void *context, NUVEC *position, NUVEC *result, u16 *angle) {
+static i32 GizBuildit_AutoBuildPos_Game(void *context, NUVEC *position, NUVEC *result, u16 *angle) {
     WORLDINFO *world = (WORLDINFO *)context;
     ATTRACTO_PC *attracto;
     if (world == NULL) {
@@ -652,7 +652,7 @@ static i32 Fighting_WeaponOutAction_Game(GAMEOBJECT *object) {
     return data->game_character->weapon_action == 0 && (data->model_flags & 0x80) != 0 ? 127 : 17;
 }
 
-static void __cdecl GameMsg_EndDelay_Game(GAME_MESSAGE_PC *message) {
+static void GameMsg_EndDelay_Game(GAME_MESSAGE_PC *message) {
     i32 random;
     if (message->score <= 0) {
         return;
@@ -679,7 +679,7 @@ static void __cdecl GameMsg_EndDelay_Game(GAME_MESSAGE_PC *message) {
     }
 }
 
-static i32 __cdecl Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 sound) {
+static i32 Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 sound) {
     i32 previous;
     i32 selected;
     if (object->suit != NULL) {
@@ -716,7 +716,7 @@ static i32 __cdecl Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, 
     return 0;
 }
 
-static void __cdecl Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) {
+static void Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) {
     SUIT_LAYERS_PC *previous = object->suit;
     if ((i16)object->id != ID_DEFAULTCHARACTER_A && (i16)object->id != ID_DEFAULTCHARACTER_B) {
         object->suit = NULL;
@@ -747,7 +747,7 @@ static void __cdecl Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) 
     }
 }
 
-static void __cdecl Punch_HitExtraCode_alternate_PC(GAMEOBJECT *object, NUVEC *position) {
+static void Punch_HitExtraCode_alternate_PC(GAMEOBJECT *object, NUVEC *position) {
     if ((AnimMiscFlags(object->character_model, object->field_7aa) & 4) != 0) {
         if (position != NULL) {
             PlaySfx("WhipHit", position);
@@ -811,7 +811,7 @@ static void ExtraDieSfx_LSW(GAMEOBJECT *object) {
  * PC87afa4 is canonical BATTLEOVERCORUSCANT_ADATA, not an AA name guess.
  * Native never reads its passed WORLDINFO argument; it reads canonical WORLD.
  * No default state is written on the miss path. */
-static i32 __cdecl SetSoundFadeDistCallBackFn_LSW(WORLDINFO_s *) {
+static i32 SetSoundFadeDistCallBackFn_LSW(WORLDINFO_s *) {
     if (WORLD->current_level == KAMINOE_LDATA) {
         nusound_fade_start = 3.0f;
         nusound_fade_end = 22.5f;
@@ -1018,13 +1018,13 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
     }
 }
 
-static void __cdecl PauseGame_ExtraCode(void) {
+static void PauseGame_ExtraCode(void) {
     Hub_ResetPanel();
 }
 
 // Source lease: build/analysis/publication-render-audio-next/source-contract-v2/render-bodies.cppfrag
 // Append inside the real publisher/private cohort only after owner review.
-static void __cdecl CutScene_OverrideConfigFileName_LSW(char *filename, i32 unused0, i32 unused1) {
+static void CutScene_OverrideConfigFileName_LSW(char *filename, i32 unused0, i32 unused1) {
     char *prefix = "episodei\\ep1_podrace_";
     i32 length;
     if (PODSPRINT_ADATA == NULL || WorldInfo_CurrentlyActive()->area != PODSPRINT_ADATA) {
@@ -1042,7 +1042,7 @@ static void __cdecl CutScene_OverrideConfigFileName_LSW(char *filename, i32 unus
     }
 }
 
-static i32 __cdecl CheckMusicOther(void) {
+static i32 CheckMusicOther(void) {
     NUVEC position;
     SOCKPOSITION_PC socket_position;
     LEVELDATA_PC *level;
@@ -1090,7 +1090,7 @@ static i32 __cdecl CheckMusicOther(void) {
     return 0;
 }
 
-static i32 __cdecl GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT_PC *input, GAMEOBJECT *object) {
+static i32 GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT_PC *input, GAMEOBJECT *object) {
     GAME_BUILDIT_READER_PC *buildit = (GAME_BUILDIT_READER_PC *)input;
     if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0) {
         if (input == HubBuildItPc) {
@@ -1104,7 +1104,7 @@ static i32 __cdecl GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT_PC *input, GAME
     return 1;
 }
 
-static void __cdecl BackDrop_Alpha(f32 *alpha) {
+static void BackDrop_Alpha(f32 *alpha) {
     if (WORLD != NULL) {
         if (WORLD->current_level == TITLES_LDATA) {
             *alpha *= newgamealpha;
@@ -1133,7 +1133,7 @@ static void __cdecl BackDrop_Alpha(f32 *alpha) {
     }
 }
 
-static void __cdecl LEGO_100PercentFn(void) {
+static void LEGO_100PercentFn(void) {
     if (CharacterCustomiser != NULL) {
         i32 category;
         i32 piece;
@@ -1146,7 +1146,7 @@ static void __cdecl LEGO_100PercentFn(void) {
     }
 }
 
-static i32 __cdecl LastSafePosExtra(GAMEOBJECT *object) {
+static i32 LastSafePosExtra(GAMEOBJECT *object) {
     LEVELDATA_PC *level = WORLD->current_level;
     if (level == LevelFixupSlotPc0087b1a8 && object->jump_animation_state == 0x0e) {
         return 1;
@@ -1164,7 +1164,7 @@ static i32 __cdecl LastSafePosExtra(GAMEOBJECT *object) {
 // Source lease: build/analysis/publication-render-audio-next/source-contract-v2/music-bodies.cppfrag
 // Genuine private callback/helper group: retain within real game publisher TU.
 // The five named value suppliers below are genuine unresolved providers, not stubs.
-static i32 __cdecl ActionMusicSockChoicePc(void) {
+static i32 ActionMusicSockChoicePc(void) {
     NUVEC position;
     SOCKPOSITION_PC socket_position;
     if (Players_AveragePos(&position, &socket_position) != 0) {
@@ -1182,7 +1182,7 @@ static i32 __cdecl ActionMusicSockChoicePc(void) {
     return -1;
 }
 
-static i32 __cdecl ActionMusicFn(void) {
+static i32 ActionMusicFn(void) {
     if (StartupGameFlag0 != 0) {
         if (WORLD->area != NULL && WORLD->area == LOSTTEMPLE_ADATA &&
             WORLD->current_level != LevelFixupSlotPc0087b2c4) {
@@ -1220,7 +1220,7 @@ static i32 __cdecl ActionMusicFn(void) {
     return 0;
 }
 
-static i32 __cdecl PauseRenderOff(void) {
+static i32 PauseRenderOff(void) {
     GetMenuID();
     return 0;
 }
@@ -1229,7 +1229,7 @@ static i32 FindSlamOrigin_UseCPos(GAMEOBJECT *object) {
     return object->id == (u16)id_GRIEVOUS;
 }
 
-static i32 __cdecl MatrixReflection_CanOverride(void) {
+static i32 MatrixReflection_CanOverride(void) {
     if (WORLD->current_level == DEATHSTARESCAPEA_LDATA && GameCam->sock_position.sock_index != 0 &&
         GameCam->sock_position.sock_index != 3) {
         return 0;
@@ -1244,12 +1244,12 @@ static i32 CutScenePlayer_Accept(CUT_PLAYER_CLIP_CONFIG_PC *clip) {
     return 1;
 }
 
-static i32 __cdecl Jump_PreventJump(GAMEOBJECT *object) {
+static i32 Jump_PreventJump(GAMEOBJECT *object) {
     return WORLD->current_level == LevelFixupSlotPc0087b154 && object->floor_height != 2000000.0 &&
            object->surface_normal.y < NuTrigTable[0x371c];
 }
 
-static void __cdecl SurfaceInfo_ExtraReflect(GAMEOBJECT *object) {
+static void SurfaceInfo_ExtraReflect(GAMEOBJECT *object) {
     if (WORLD->current_level == LevelFixupSlotPc0087b170 && object->reflection_height == 2000000.0 &&
         object->position.x < 11.0f) {
         object->reflection_enabled = 3;
@@ -1267,21 +1267,21 @@ static void __cdecl SurfaceInfo_ExtraReflect(GAMEOBJECT *object) {
     }
 }
 
-static f32 __cdecl Hint_AlphaTarget(void) {
+static f32 Hint_AlphaTarget(void) {
     if (minikittime > 0.0f && ChallengeMode == 0) {
         return 0.0f;
     }
     return 1.0f;
 }
 
-static f32 __cdecl GizmoPickups_Collide2D(GAMEOBJECT *object) {
+static f32 GizmoPickups_Collide2D(GAMEOBJECT *object) {
     if (WORLD->current_level == SPEEDERCHASEA_LDATA && object->id == (u16)id_SPEEDERBIKE) {
         return 2.0f;
     }
     return 0.0f;
 }
 
-static i32 __cdecl Tag_NoHiddenIcon(GAMEOBJECT *object) {
+static i32 Tag_NoHiddenIcon(GAMEOBJECT *object) {
     if (WorldInfo_CurrentlyActive()->current_level == DEATHSTARESCAPEB_LDATA &&
         GameCam->sock_position.sock_index == 5) {
         return 1;
@@ -1289,7 +1289,7 @@ static i32 __cdecl Tag_NoHiddenIcon(GAMEOBJECT *object) {
     return 0;
 }
 
-static void __cdecl Collection_GetSelectingPlayerIDs(i16 *ids) {
+static void Collection_GetSelectingPlayerIDs(i16 *ids) {
     i32 count;
     if (WORLD->area == NULL || WORLD->area != HUB_ADATA || GetMenuID() != 17 ||
         !(freeplaymode == 0 || freeplaymode == 1 || freeplaymode == 2 || freeplaymode == 3)) {
@@ -1305,14 +1305,14 @@ static void __cdecl Collection_GetSelectingPlayerIDs(i16 *ids) {
     }
 }
 
-static i32 __cdecl GizmoBlowUp_NoTarget(WORLDINFO *world, GAMEOBJECT *object) {
+static i32 GizmoBlowUp_NoTarget(WORLDINFO *world, GAMEOBJECT *object) {
     if (world->current_level == DEATHSTARRESCUEA_LDATA && GameCam->sock_position.sock_index == 2) {
         return 1;
     }
     return 0;
 }
 
-void __cdecl GizmoBlowUp_Sfx(GIZMOBLOWUP_PC *unused, NUVEC *position) {
+void GizmoBlowUp_Sfx(GIZMOBLOWUP_PC *unused, NUVEC *position) {
     LEVELDATA_PC *level = WORLD->current_level;
     GAME_GIZMO_SFX_CAMERA_READER_PC *camera = (GAME_GIZMO_SFX_CAMERA_READER_PC *)GameCam;
     (void)unused;
@@ -1326,14 +1326,14 @@ void __cdecl GizmoBlowUp_Sfx(GIZMOBLOWUP_PC *unused, NUVEC *position) {
     }
 }
 
-static NUSPECIALHANDLE *__cdecl GameMsg_GetExtraObj(GAME_MESSAGE_PC *message) {
+static NUSPECIALHANDLE *GameMsg_GetExtraObj(GAME_MESSAGE_PC *message) {
     if (message->icon == 0xd0) {
         return &WORLD->level_objects[0xd1].special;
     }
     return NULL;
 }
 
-static void __cdecl Jump_EndOfLandContext(GAMEOBJECT *object) {
+static void Jump_EndOfLandContext(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS_PC *weapon = (GAME_CALLBACK_WEAPON_FLAGS_PC *)object;
     if ((i16)object->id == id_THEEMPEROR && object->character_context == LEGOCONTEXT_LAND_COMBOJUMP &&
         BigJumpLandPreferredPc != -1 && object->field_7aa == BigJumpLandPreferredPc &&
@@ -1342,7 +1342,7 @@ static void __cdecl Jump_EndOfLandContext(GAMEOBJECT *object) {
     }
 }
 
-static void __cdecl BigJump_EndOfLand(GAMEOBJECT *object) {
+static void BigJump_EndOfLand(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS_PC *weapon = (GAME_CALLBACK_WEAPON_FLAGS_PC *)object;
     if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferredPc != -1 &&
         object->field_7aa == BigJumpLandPreferredPc && ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
@@ -1350,7 +1350,7 @@ static void __cdecl BigJump_EndOfLand(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl LSW_SetIndy(i32 area_index) {
+void LSW_SetIndy(i32 area_index) {
     if (area_index != -1 && (&ADataList[area_index] == LOSTTEMPLE_ADATA || &ADataList[area_index] == JIMTEST_ADATA)) {
         LEDGETERRAINLOOKAHEAD = 0.075f;
         PUNCHGAP = 0.3f;
@@ -1401,7 +1401,7 @@ void __cdecl LSW_SetIndy(i32 area_index) {
     }
 }
 
-void __cdecl NewGame(void) {
+void NewGame(void) {
     OPTIONSSAVE saved_options = Game.options_save;
     i32 i;
     u8 previous_group = 0;
@@ -1492,7 +1492,7 @@ void __cdecl NewGame(void) {
 extern "C" {
     i32 CompletionPointInfoRecalculatePc[7] = {0};
 
-    void __cdecl ReCalculateCompletionPoints(void) {
+    void ReCalculateCompletionPoints(void) {
         SHOP_COMPLETION_GAME_PC *save = reinterpret_cast<SHOP_COMPLETION_GAME_PC *>(&Game);
         i32 i;
         AREA_DATA_PC *area;
@@ -1623,7 +1623,7 @@ extern "C" {
 }
 
 /* 42b4c0/47. Originalargument unused, retainABI/call. */
-extern "C" void __cdecl InitChallenge(i32 area) {
+extern "C" void InitChallenge(i32 area) {
     (void)area;
     ChallengeMode = 1;
     ResetTimer(&ChallengeTimer, 0);
@@ -1631,7 +1631,7 @@ extern "C" void __cdecl InitChallenge(i32 area) {
     AreaGlobals_PC.field_1c = 0;
 }
 
-extern "C" void __cdecl MenuUpdateEndChallenge(MENU *menu) {
+extern "C" void MenuUpdateEndChallenge(MENU *menu) {
     if (menu->menu_time >= 5.0f) {
         CompleteLevel(WORLD);
     } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
@@ -1642,7 +1642,7 @@ extern "C" void __cdecl MenuUpdateEndChallenge(MENU *menu) {
 
 extern "C" {
 
-    void __cdecl MenuDrawEndChallenge(MENU *menu) {
+    void MenuDrawEndChallenge(MENU *menu) {
         (void)menu;
         if (MenuStopDraw == 0) {
             if (ChallengeMode == 2) {
@@ -1669,13 +1669,13 @@ extern "C" {
         }
     }
 
-    void __cdecl SetBonusWinner(i32 player_index) {
+    void SetBonusWinner(i32 player_index) {
         BonusWinner = player_index;
         GameCam_Blend(GameCam, 1.5f, 0.0f, 1);
         LookAtBoth = 1;
     }
 
-    void __cdecl BuyAllShopExtras(void) {
+    void BuyAllShopExtras(void) {
         SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
         i32 index;
         i8 area;
@@ -1694,7 +1694,7 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl InitGameMode(void) {
+extern "C" void InitGameMode(void) {
     i32 i;
     GIZMO_PICKUP_TYPE_PC *type;
     f32 speed;
@@ -1738,15 +1738,15 @@ extern "C" void __cdecl InitGameMode(void) {
     ConfigureComplexShadow(NULL);
 }
 
-static i32 __cdecl Game_IgnoreInput(void) {
+static i32 Game_IgnoreInput(void) {
     return newgamecam != 0;
 }
 
-extern "C" void __cdecl CheckResetBits(void) {
+extern "C" void CheckResetBits(void) {
     i32 i;
     GAMEOBJECT **player_slot;
     char script_name[32];
-    void(__cdecl * callback)(WORLDINFO *);
+    void (*callback)(WORLDINFO *);
     if ((ResetBits & 0x20) != 0 && WORLD->current_level->area_level_index != -1) {
         ClearLevelProgress(WORLD->current_level->area_level_index, WORLD);
     }
@@ -1948,7 +1948,7 @@ extern "C" void __cdecl CheckResetBits(void) {
         }
     }
     WORLD->blowup_target_candidate_count = 0;
-    callback = (void(__cdecl *)(WORLDINFO *))WORLD->current_level->callbacks[2];
+    callback = (void (*)(WORLDINFO *))WORLD->current_level->callbacks[2];
     if (callback != NULL) {
         callback(WORLD);
     }
@@ -2022,7 +2022,7 @@ extern "C" void __cdecl CheckResetBits(void) {
 
 extern "C" {
 
-    void __cdecl DeflectPart(PART_PC *part, GAMEOBJECT *object, f32 speed, f32 gravity, i32 deflect, i32 debris) {
+    void DeflectPart(PART_PC *part, GAMEOBJECT *object, f32 speed, f32 gravity, i32 deflect, i32 debris) {
         NUMTX matrix = part->transform;
         u32 flags = part->flags;
         i32 type = part->part_id;
@@ -2252,15 +2252,15 @@ extern "C" {
         }
     }
 
-    void __cdecl PartCollide_2D(PART_PC *part) {
+    void PartCollide_2D(PART_PC *part) {
         PartCollidePC(part, 0);
     }
 
-    void __cdecl PartCollide_3D(PART_PC *part) {
+    void PartCollide_3D(PART_PC *part) {
         PartCollidePC(part, 1);
     }
 
-    void __cdecl Game_KillPart(PART_PC *part, i32 reason) {
+    void Game_KillPart(PART_PC *part, i32 reason) {
         if (reason == 1 && part->field_206 != -1) {
             if ((part->field_206 & 1) != 0 && Player[0] != NULL) {
                 NewBuzz(((GAMEOBJECT *)Player[0])->pad->bound_pad, 0.2f, 0);
@@ -2310,7 +2310,7 @@ extern "C" {
         PlaySfx((char *)ForceThrowExplodeNamePc, &part->position);
     }
 
-    void __cdecl Areas_OpenAll(i32 mode) {
+    void Areas_OpenAll(i32 mode) {
         i32 i;
 
         for (i = 0; i < AREACOUNT; i++) {
@@ -2412,7 +2412,7 @@ extern "C" {
                    1);
     }
 
-    void __cdecl FindGameCutScenes(void) {
+    void FindGameCutScenes(void) {
         game_cutscenes_podrace_pod_explode = NULL;
         game_cutscenes_podrace_out_of_time = NULL;
         game_cutscenes_bonus_gunship_cavalry_explode = NULL;
@@ -2437,7 +2437,7 @@ extern "C" {
         game_cutscenes_podsprint_sebulba = CutScene_Find(WORLD->cutscene_sys, "ep1_podsprint_sebulba");
     }
 
-    i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut) {
+    i32 CutScene_StartFn_LSW(CUTINFO *cut) {
         NUMTX matrix;
         NUVEC *position;
         u16 rotation;
@@ -2480,7 +2480,7 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl CutScene_PreUpdateFn_LSW(CUTINFO *cut) {
+    void CutScene_PreUpdateFn_LSW(CUTINFO *cut) {
         f32 intensity;
         f32 distance;
 
@@ -2504,7 +2504,7 @@ extern "C" {
         GameCam_NewShake(GameCam, intensity, 0.1f, 1.25f);
     }
 
-    void __cdecl CutScene_StoppedFn_LSW(CUTINFO *cut) {
+    void CutScene_StoppedFn_LSW(CUTINFO *cut) {
         if (cut == game_cutscenes_cutscene) {
             if (NuSpecialExistsFn(&LevHSpecial[50])) {
                 AddPartDebris(WORLD->part_debris_sys, 0x10, NuSpecialGetDrawPos(&LevHSpecial[50]));
@@ -2517,7 +2517,7 @@ extern "C" {
         }
     }
 
-    i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character) {
+    i32 CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character) {
         i16 id;
         GAMEOBJECT *vehicle;
 
@@ -2611,7 +2611,7 @@ extern "C" {
         return -1;
     }
 
-    i32 __cdecl InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) {
+    i32 InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) {
         f32 scale;
 
         if (object != NULL) {
@@ -2635,14 +2635,14 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Bolt_HitPlatFn_LSW(BOLT *bolt) {
+    i32 Bolt_HitPlatFn_LSW(BOLT *bolt) {
         if (KAMINOE_LDATA == WORLD->current_level) {
             KaminoE_CheckPlatHit(bolt);
         }
         return 0;
     }
 
-    i32 __cdecl Bolt_HitCustomFn_LSW(void *bolt, void *points) {
+    i32 Bolt_HitCustomFn_LSW(void *bolt, void *points) {
         if (DOGFIGHTA_LDATA == WORLD->current_level) {
             return ChrisExtraBoltCollision((BOLT *)bolt, (NUVEC *)points);
         }
@@ -2657,7 +2657,7 @@ extern "C" {
     const char BlowupBushNamePc[5] = "bush";
     const char BlowupWompratGeneratorNamePc[9] = "womp_gen";
 
-    void __cdecl GameBlowUpBlownUpFn_LSW(void *blowup_pointer) {
+    void GameBlowUpBlownUpFn_LSW(void *blowup_pointer) {
         GIZMOBLOWUP_PC *blowup = (GIZMOBLOWUP_PC *)blowup_pointer;
         char *name;
         if (blowup == NULL || blowup->type == NULL || WORLD->area == NULL || netclient != 0) {
@@ -2693,15 +2693,15 @@ extern "C" {
                            NULL, 1, NULL, NULL, 0, 16);
     }
 
-    void __cdecl GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle) {
+    void GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle) {
         if (obstacle->mode == 2 && obstacle->trigger_radius < 0.25f) {
             obstacle->start_sfx_id = (i16)GetSfxId((char *)GetSfxSwPPadName);
         }
     }
 
-    void __cdecl NuLightSpeedBlurOldCameraPos(NUMTX *camera);
+    void NuLightSpeedBlurOldCameraPos(NUMTX *camera);
 
-    void __cdecl SpeedBlur_Update(void) {
+    void SpeedBlur_Update(void) {
         static NUMTX cameraMtxs[2];
         static i32 lastCameraMtx = -1;
         if (lastCameraMtx < 0) {
@@ -2740,7 +2740,7 @@ extern "C" {
     }
 }
 
-static void __cdecl GizBuildIt_FinishFn_Game(GIZBUILDIT_PC *input) {
+static void GizBuildIt_FinishFn_Game(GIZBUILDIT_PC *input) {
     if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0 && input == HubBuildItPc &&
         (Game.hub_buildit_completed & 0x80) == 0) {
         AddFancyMessageRGB(TTab[TextIdPc880ff0], 0.0f, 0.0f, 0.6f, 1.25f, 1, 255, 0, 0);
@@ -2759,7 +2759,7 @@ static PLAYER_ITEM_TYPE_RESET_PC InitPlayerItemTypesPc[2] = {{15, {6, 0}, "blue"
 /* Source-only candidate. Native complete parent 42e160..42f393/4659.
  * Shared member refinements and real config storage in the adjacent recipe
  * must close before compilation. No substitute backing is supplied here. */
-void __cdecl InitGameAfterConfig(void) {
+void InitGameAfterConfig(void) {
     POINTS_PER_STORY = 6;
     POINTS_PER_CHARACTER = 1;
     POINTS_PER_SUPERSTORY = 3;
@@ -3268,7 +3268,7 @@ void __cdecl InitGameAfterConfig(void) {
 
 extern "C" {
 
-    void __cdecl EndChallenge(i32 state, i32 show_message) {
+    void EndChallenge(i32 state, i32 show_message) {
         if (netclient == 0 || show_message == 0) {
             ChallengeMode = state;
             SetBonusWinner(qrand() / 0x8000);
@@ -3290,5 +3290,5 @@ extern "C" {
 // Source lease:
 // build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v10/transform-and-allgold.cppfrag
 
-static void __cdecl LEGO_AllGoldBricksFn(void) {
+static void LEGO_AllGoldBricksFn(void) {
 }

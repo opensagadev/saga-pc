@@ -87,7 +87,7 @@ extern f32 GizPanelFloorLiftPc;
 extern u8 PanelStormActivePc;
 extern u8 PanelDroidActivePc;
 extern u8 PanelBountyHunterActivePc;
-void __cdecl SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
+void SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
 
 /* Native PC hint updater records retain their original packed field offsets. */
 typedef struct HINT_PANEL_PC {
@@ -153,7 +153,7 @@ static NUVEC *PanelGetTrackingPositionPc(PANEL_MOVEMENT_PC *panel, NUVEC *positi
     return position;
 }
 
-i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
+i32 GizPanel_Load(void *world_pointer, void *unused) {
     typedef union PanelLoadFlagsPc {
         u8 value;
 
@@ -247,7 +247,7 @@ i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
     return 1;
 }
 
-void *__cdecl GizPanels_ReserveBufferSpace(void *pointer) {
+void *GizPanels_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = pointer;
     REGISTRY_PANEL_SYSTEM_PC *system;
     world->giz_panel_sys = NULL;
@@ -266,7 +266,7 @@ void *__cdecl GizPanels_ReserveBufferSpace(void *pointer) {
     return world->giz_panel_sys;
 }
 
-void __cdecl GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     typedef union PanelVisibleFlagsPc {
         u8 value;
 
@@ -301,7 +301,7 @@ void __cdecl GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 
-void __cdecl GizPanel_GetAbsTargetPos(void *context, NUVEC *target, i32 player_position) {
+void GizPanel_GetAbsTargetPos(void *context, NUVEC *target, i32 player_position) {
     PANEL_MOVEMENT_PC *panel = context;
     NUVEC offset;
     if (panel == NULL || target == NULL) {
@@ -324,7 +324,7 @@ void __cdecl GizPanel_GetAbsTargetPos(void *context, NUVEC *target, i32 player_p
     *target = offset;
 }
 
-i32 __cdecl GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL_PC *panel) {
+i32 GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL_PC *panel) {
     if (panel == NULL || object == NULL) {
         return 0;
     }
@@ -366,7 +366,7 @@ i32 __cdecl GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL_PC *panel) {
     return 0;
 }
 
-PANEL_MOVEMENT_PC *__cdecl GizPanel_FindByName(WORLDINFO *world, char *name) {
+PANEL_MOVEMENT_PC *GizPanel_FindByName(WORLDINFO *world, char *name) {
     PANEL_MOVEMENT_PC *panel;
     i32 index;
     if (world == NULL || world->giz_panel_sys == NULL) {
@@ -381,8 +381,8 @@ PANEL_MOVEMENT_PC *__cdecl GizPanel_FindByName(WORLDINFO *world, char *name) {
     return NULL;
 }
 
-PANEL_MOVEMENT_PC *__cdecl GizPanel_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object,
-                                                f32 *distance_squared, i32 check_eligibility) {
+PANEL_MOVEMENT_PC *GizPanel_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared,
+                                        i32 check_eligibility) {
     PANEL_SYSTEM_PC *system;
     PANEL_MOVEMENT_PC *nearest = NULL;
     f32 nearest_distance = 1.0e9f;
@@ -419,7 +419,7 @@ PANEL_MOVEMENT_PC *__cdecl GizPanel_FindNearest(WORLDINFO *world, NUVEC *positio
     return nearest;
 }
 
-void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
+void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
     WORLDINFO *world = world_pointer;
     PANEL_SYSTEM_PC *system = (PANEL_SYSTEM_PC *)world->giz_panel_sys;
     GAMEOBJECT *nearest_player = NULL;
@@ -508,7 +508,7 @@ f32 GizPanelPictureYPc = 0.0775f;
 /* Lift of the panel target above the floor it was dropped onto (007f90cc). */
 f32 GizPanelFloorLiftPc = 0.001f;
 
-void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
+void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
     WORLDINFO *world = world_pointer;
     PANEL_SYSTEM_PC *system;
     u16 target_spin;
@@ -700,7 +700,7 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
     ResetShadowMapRendering();
 }
 
-i32 __cdecl GizPanel_GetMaxGizmos(void *world_ptr) {
+i32 GizPanel_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     if (world != NULL) {
         return world->current_level->max_gizpanels;
@@ -708,7 +708,7 @@ i32 __cdecl GizPanel_GetMaxGizmos(void *world_ptr) {
     return 0;
 }
 
-void __cdecl GizPanel_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+void GizPanel_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     i32 i;
     (void)data;
@@ -722,7 +722,7 @@ void __cdecl GizPanel_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, voi
     }
 }
 
-char *__cdecl GizPanel_GetGizmoName(void *input) {
+char *GizPanel_GetGizmoName(void *input) {
     GIZMO_PC *gizmo = input;
     if (gizmo != NULL && gizmo->object != NULL) {
         return ((PANEL_MOVEMENT_PC *)gizmo->object)->name;
@@ -734,7 +734,7 @@ i32 fun_0046eb50(PANEL_MOVEMENT_PC *panel) {
     return panel->flags & 1;
 }
 
-i32 __cdecl GizPanel_GetOutput(void *input, i32 output, i32 mode) {
+i32 GizPanel_GetOutput(void *input, i32 output, i32 mode) {
     GIZMO_PC *gizmo = input;
     PANEL_MOVEMENT_PC *panel = gizmo->object;
     (void)output;
@@ -745,20 +745,20 @@ i32 __cdecl GizPanel_GetOutput(void *input, i32 output, i32 mode) {
     return 0;
 }
 
-char *__cdecl GizPanel_GetOutputName(void *unused, i32 output_index) {
+char *GizPanel_GetOutputName(void *unused, i32 output_index) {
     return output_index == 0 ? (char *)"Finished" : NULL;
 }
 
-i32 __cdecl GizPanel_GetNumOutputs(void *unused) {
+i32 GizPanel_GetNumOutputs(void *unused) {
     (void)unused;
     return 1;
 }
 
-void *__cdecl GizPanels_AllocateProgressData(void *buffer, void *end) {
+void *GizPanels_AllocateProgressData(void *buffer, void *end) {
     return GizmoBufferAlloc(buffer, end, 0xc);
 }
 
-void __cdecl GizPanels_ClearProgress(void *owner, void *progress_ptr) {
+void GizPanels_ClearProgress(void *owner, void *progress_ptr) {
     PANEL_PROGRESS_PC *progress = progress_ptr;
     if (progress == NULL) {
         return;
@@ -768,7 +768,7 @@ void __cdecl GizPanels_ClearProgress(void *owner, void *progress_ptr) {
     progress->visible[0] = 0xffffffffu;
 }
 
-void __cdecl GizPanels_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+void GizPanels_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     PANEL_PROGRESS_PC *progress = progress_ptr;
     WORLDINFO *world = world_ptr;
     PANEL_PROGRESS_SYSTEM_PC *system;
@@ -804,7 +804,7 @@ void __cdecl GizPanels_StoreProgress(void *world_ptr, void *data, void *progress
     }
 }
 
-void __cdecl GizPanel_PlaySfx(char *name, NUVEC *position, i32 player_bits) {
+void GizPanel_PlaySfx(char *name, NUVEC *position, i32 player_bits) {
     i16 sfx_id;
     if (name == NULL || position == NULL) {
         return;
@@ -829,7 +829,7 @@ void __cdecl GizPanel_PlaySfx(char *name, NUVEC *position, i32 player_bits) {
     }
 }
 
-void __cdecl GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
+void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     PANEL_MOVEMENT_PC *panel;
     f32 distance;
     f32 radius;
@@ -969,7 +969,7 @@ void __cdecl GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     }
 }
 
-i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
+i32 GizPanel_UpdateHint(HINT_PC *hint) {
     u8 storm = 0;
     u8 droid = 0;
     u8 bountyhunter = 0;
@@ -1032,7 +1032,7 @@ i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
     return 0;
 }
 
-void __cdecl GizPanel_Reset(void *context) {
+void GizPanel_Reset(void *context) {
     PANEL_MOVEMENT_PC *panel = context;
     NUVEC offset;
     NUVEC probe_position;
@@ -1061,7 +1061,7 @@ void __cdecl GizPanel_Reset(void *context) {
     NuMtxTranslate(&panel->matrix, &panel->position);
 }
 
-void __cdecl GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) {
+void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) {
     typedef union PanelProgressFlagsPc {
         u8 value;
 
@@ -1120,7 +1120,7 @@ void fun_0046f6f0(PANEL_MOVEMENT_PC *panel, NUVEC *position) {
     }
 }
 
-void __cdecl GizPanel_Activate(void *input, i32 active) {
+void GizPanel_Activate(void *input, i32 active) {
     typedef union PanelActiveFlagsPc {
         u8 value;
 
@@ -1153,7 +1153,7 @@ void __cdecl GizPanel_Activate(void *input, i32 active) {
 static ADDGIZMOTYPE_PC GizmoRegistryGizPanelAddTypePc = {0};
 const char GizmoRegistryGizPanelNamePc[] = "Panel";
 
-ADDGIZMOTYPE_PC *__cdecl GizPanel_RegisterGizmo(i32 type_id) {
+ADDGIZMOTYPE_PC *GizPanel_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizPanelAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->fns.early_update_fn = NULL;
@@ -1171,21 +1171,21 @@ ADDGIZMOTYPE_PC *__cdecl GizPanel_RegisterGizmo(i32 type_id) {
     addtype->name = (char *)GizmoRegistryGizPanelNamePc;
     addtype->prefix = "";
     addtype->fns.options = 0xc;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizPanel_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizPanel_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizPanel_AddGizmos;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizPanel_Update;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizPanel_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizPanel_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizPanel_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizPanel_GetOutputName;
+    addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizPanel_Update;
+    addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizPanel_Draw;
+    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizPanel_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizPanel_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizPanel_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizPanel_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizPanel_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizPanel_SetVisibility;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizPanels_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizPanels_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizPanels_StoreProgress;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizPanels_Reset;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizPanels_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizPanel_Load;
+    addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizPanel_Activate;
+    addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizPanel_SetVisibility;
+    addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizPanels_AllocateProgressData;
+    addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizPanels_ClearProgress;
+    addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizPanels_StoreProgress;
+    addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizPanels_Reset;
+    addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizPanels_ReserveBufferSpace;
+    addtype->fns.load_fn = (i32(*)(void *, void *))GizPanel_Load;
     return addtype;
 }

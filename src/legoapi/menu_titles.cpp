@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "saga.h"
 
-extern "C" void __cdecl MenuPcStringsInit(void) {
+extern "C" void MenuPcStringsInit(void) {
     MENU_PC_STRING_ENTRY *entry = MenuPcStringTable827940;
     switch (NuLanguageGet()) {
         case 18:
@@ -36,7 +36,7 @@ typedef struct OPTIONS_MENU_READER_PC {
     u8 player_control[2]; // 0x0
 } OPTIONS_MENU_READER_PC; // size 0x2
 
-extern "C" void __cdecl GameDrawMenuEntry(MENU *menu, char *text) {
+extern "C" void GameDrawMenuEntry(MENU *menu, char *text) {
     if (Paused != 0) {
         dme_align = PauseMenus_Align;
         menu->draw_x = PauseMenus_X;

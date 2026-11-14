@@ -2,9 +2,9 @@
 #include <string.h>
 #include "saga.h"
 
-void __cdecl GameAnimMissingAnimDiagnosticPc(char *name);
+void GameAnimMissingAnimDiagnosticPc(char *name);
 
-void __cdecl GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i32 capacity, i32 level_count) {
+void GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i32 capacity, i32 level_count) {
     i32 i;
 
     if (buf == NULL || end == NULL) {
@@ -20,7 +20,7 @@ void __cdecl GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i
     }
 }
 
-void __cdecl GameAnimSys_StoreProgress(GAMEANIMSYS *system, i32 index) {
+void GameAnimSys_StoreProgress(GAMEANIMSYS *system, i32 index) {
     u8 *progress;
     i32 i;
 
@@ -33,14 +33,14 @@ void __cdecl GameAnimSys_StoreProgress(GAMEANIMSYS *system, i32 index) {
     }
 }
 
-u8 *__cdecl GameAnimSys_GetProgressData(i32 index) {
+u8 *GameAnimSys_GetProgressData(i32 index) {
     if (index < 0 || index >= gameanimsysprogress.count) {
         return NULL;
     }
     return gameanimsysprogress.entries[index];
 }
 
-void __cdecl GameAnimSys_ClearProgress(i32 index) {
+void GameAnimSys_ClearProgress(i32 index) {
     u8 *progress;
     i32 i;
 
@@ -53,7 +53,7 @@ void __cdecl GameAnimSys_ClearProgress(i32 index) {
     }
 }
 
-GAMEANIMSYS *__cdecl GameAnimSys_Create(VARIPTR *buf, VARIPTR *end) {
+GAMEANIMSYS *GameAnimSys_Create(VARIPTR *buf, VARIPTR *end) {
     GAMEANIMSYS *system = GameBufferAlloc(buf, end, sizeof(GAMEANIMSYS));
 
     if (system != NULL && gameanimsysprogress.entry_size != 0) {
@@ -62,7 +62,7 @@ GAMEANIMSYS *__cdecl GameAnimSys_Create(VARIPTR *buf, VARIPTR *end) {
     return system;
 }
 
-GAMEANIMSET *__cdecl GameAnimSet_Create(VARIPTR *buf, VARIPTR *end, GAMEANIMOBJPOOL *pool, GAMEANIMSYS *system) {
+GAMEANIMSET *GameAnimSet_Create(VARIPTR *buf, VARIPTR *end, GAMEANIMOBJPOOL *pool, GAMEANIMSYS *system) {
     GAMEANIMSET *set = NULL;
     i32 index;
 
@@ -81,14 +81,14 @@ GAMEANIMSET *__cdecl GameAnimSet_Create(VARIPTR *buf, VARIPTR *end, GAMEANIMOBJP
     return set;
 }
 
-void __cdecl GameAnimSet_AddToSystemList(GAMEANIMSET *set) {
+void GameAnimSet_AddToSystemList(GAMEANIMSET *set) {
     if (set != NULL && set->system != NULL && (set->flags & 4) == 0) {
         NuLinkedListAppend(&set->system->active_sets, &set->links);
         set->flags = (u16)(set->flags | 4);
     }
 }
 
-void __cdecl GameAnimSet_EvaluateState(GAMEANIMSET *set) {
+void GameAnimSet_EvaluateState(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
     NUINSTANIM *animation;
     i32 all_at_end = 1;
@@ -120,7 +120,7 @@ void __cdecl GameAnimSet_EvaluateState(GAMEANIMSET *set) {
     }
 }
 
-void __cdecl GameAnimSet_RemoveFromSystemList(GAMEANIMSET *set) {
+void GameAnimSet_RemoveFromSystemList(GAMEANIMSET *set) {
     if (set != NULL && set->system != NULL) {
         if ((set->flags & 4) != 0) {
             NuLinkedListRemove(&set->system->active_sets, &set->links);
@@ -130,7 +130,7 @@ void __cdecl GameAnimSet_RemoveFromSystemList(GAMEANIMSET *set) {
     }
 }
 
-void __cdecl GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index) {
+void GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index) {
     u8 *progress;
     i32 i;
 
@@ -153,7 +153,7 @@ void __cdecl GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index) {
     }
 }
 
-GAMEANIMOBJPOOL *__cdecl GameAnimSet_CreateObjectPool(VARIPTR *buf, VARIPTR *end, i32 object_data_size, i32 capacity) {
+GAMEANIMOBJPOOL *GameAnimSet_CreateObjectPool(VARIPTR *buf, VARIPTR *end, i32 object_data_size, i32 capacity) {
     GAMEANIMOBJPOOL *pool = NULL;
     i32 i;
 
@@ -175,7 +175,7 @@ GAMEANIMOBJPOOL *__cdecl GameAnimSet_CreateObjectPool(VARIPTR *buf, VARIPTR *end
     return pool;
 }
 
-void __cdecl GameAnimSet_RemoveObject(GAMEANIMSET *set, GAMEANIMOBJ *object) {
+void GameAnimSet_RemoveObject(GAMEANIMSET *set, GAMEANIMOBJ *object) {
     GAMEANIMOBJ *previous;
 
     if (set == NULL || object == NULL) {
@@ -199,7 +199,7 @@ void __cdecl GameAnimSet_RemoveObject(GAMEANIMSET *set, GAMEANIMOBJ *object) {
     set->object_pool->free_objects = object;
 }
 
-void __cdecl GameAnimSet_RemoveAllObjects(GAMEANIMSET *set) {
+void GameAnimSet_RemoveAllObjects(GAMEANIMSET *set) {
     if (set != NULL) {
         while (set->objects != NULL) {
             GameAnimSet_RemoveObject(set, set->objects);
@@ -207,7 +207,7 @@ void __cdecl GameAnimSet_RemoveAllObjects(GAMEANIMSET *set) {
     }
 }
 
-void __cdecl GameAnimSet_SetTFactor(GAMEANIMSET *set, f32 factor) {
+void GameAnimSet_SetTFactor(GAMEANIMSET *set, f32 factor) {
     GAMEANIMOBJ *object;
     f32 direction;
 
@@ -226,7 +226,7 @@ void __cdecl GameAnimSet_SetTFactor(GAMEANIMSET *set, f32 factor) {
     }
 }
 
-void __cdecl GameAnimSet_ScaleFParam1(GAMEANIMSET *set, f32 scale) {
+void GameAnimSet_ScaleFParam1(GAMEANIMSET *set, f32 scale) {
     GAMEANIMOBJ *object;
 
     if (set != NULL) {
@@ -238,7 +238,7 @@ void __cdecl GameAnimSet_ScaleFParam1(GAMEANIMSET *set, f32 scale) {
     }
 }
 
-i32 __cdecl GameAnimSet_IsAnimationReset(GAMEANIMSET *set) {
+i32 GameAnimSet_IsAnimationReset(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
     NUINSTANIM *animation;
     i32 animated_count;
@@ -273,7 +273,7 @@ i32 __cdecl GameAnimSet_IsAnimationReset(GAMEANIMSET *set) {
     return 1;
 }
 
-i32 __cdecl GameAnimSet_Reset(GAMEANIMSET *set) {
+i32 GameAnimSet_Reset(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
     if (set != NULL) {
@@ -290,7 +290,7 @@ i32 __cdecl GameAnimSet_Reset(GAMEANIMSET *set) {
     return 1;
 }
 
-i32 __cdecl GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
+i32 GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
     GAMEANIMOBJ *object;
     f32 direction;
 
@@ -333,7 +333,7 @@ i32 __cdecl GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
     return 1;
 }
 
-i32 __cdecl GameAnimSet_Stop(GAMEANIMSET *set) {
+i32 GameAnimSet_Stop(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
     if (set != NULL && (set->state == 1 || set->state == 3)) {
@@ -347,7 +347,7 @@ i32 __cdecl GameAnimSet_Stop(GAMEANIMSET *set) {
     return 1;
 }
 
-i32 __cdecl GameAnimSet_SetRepeating(GAMEANIMSET *set, i32 repeating) {
+i32 GameAnimSet_SetRepeating(GAMEANIMSET *set, i32 repeating) {
     GAMEANIMOBJ *object;
 
     if (set != NULL) {
@@ -361,7 +361,7 @@ i32 __cdecl GameAnimSet_SetRepeating(GAMEANIMSET *set, i32 repeating) {
     return 1;
 }
 
-i32 __cdecl GameAnimSet_JumpToEnd(GAMEANIMSET *set) {
+i32 GameAnimSet_JumpToEnd(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
     if (set != NULL) {
@@ -375,7 +375,7 @@ i32 __cdecl GameAnimSet_JumpToEnd(GAMEANIMSET *set) {
     return 1;
 }
 
-i32 __cdecl GameAnimSet_JumpToStart(GAMEANIMSET *set) {
+i32 GameAnimSet_JumpToStart(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
     if (set != NULL) {
@@ -389,7 +389,7 @@ i32 __cdecl GameAnimSet_JumpToStart(GAMEANIMSET *set) {
     return 1;
 }
 
-void __cdecl GameAnimSet_JumpToAnimPos(GAMEANIMSET *set, f32 position) {
+void GameAnimSet_JumpToAnimPos(GAMEANIMSET *set, f32 position) {
     GAMEANIMOBJ *object;
     f32 direction;
 
@@ -412,7 +412,7 @@ void __cdecl GameAnimSet_JumpToAnimPos(GAMEANIMSET *set, f32 position) {
     }
 }
 
-i32 __cdecl GameAnimSet_Playing(GAMEANIMSET *set) {
+i32 GameAnimSet_Playing(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
     if (set != NULL) {
@@ -425,7 +425,7 @@ i32 __cdecl GameAnimSet_Playing(GAMEANIMSET *set) {
     return 1;
 }
 
-f32 __cdecl GameAnimSet_GetCurrentFrame(GAMEANIMSET *set) {
+f32 GameAnimSet_GetCurrentFrame(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
     if (set != NULL) {
@@ -438,7 +438,7 @@ f32 __cdecl GameAnimSet_GetCurrentFrame(GAMEANIMSET *set) {
     return 0.0f;
 }
 
-f32 __cdecl GameAnimSet_GetAnimPos(GAMEANIMOBJ *object) {
+f32 GameAnimSet_GetAnimPos(GAMEANIMOBJ *object) {
     f32 position = 0.0f;
 
     if (object != NULL && object->instance_animation != NULL && object->animation != NULL) {
@@ -457,7 +457,7 @@ f32 __cdecl GameAnimSet_GetAnimPos(GAMEANIMOBJ *object) {
     return position;
 }
 
-void __cdecl GameAnimSet_SetAnimPos(GAMEANIMOBJ *object, f32 position) {
+void GameAnimSet_SetAnimPos(GAMEANIMOBJ *object, f32 position) {
     if (object == NULL || object->instance_animation == NULL || object->animation == NULL) {
         return;
     }
@@ -495,7 +495,7 @@ void GameAnimSet_SetOffset(GAMEANIMSET *set, NUVEC *offset) {
     }
 }
 
-f32 __cdecl GameAnimSet_GetCompletionRatio(GAMEANIMSET *set) {
+f32 GameAnimSet_GetCompletionRatio(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
     f32 ratio = 0.0f;
 
@@ -520,8 +520,8 @@ f32 __cdecl GameAnimSet_GetCompletionRatio(GAMEANIMSET *set) {
     return ratio;
 }
 
-GAMEANIMOBJ *__cdecl GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame,
-                                           i32 append) {
+GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame,
+                                   i32 append) {
     GAMEANIMOBJPOOL *pool;
     GAMEANIMOBJ *object = NULL;
     GAMEANIMOBJ *tail;
@@ -587,8 +587,8 @@ GAMEANIMOBJ *__cdecl GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *sp
     return object;
 }
 
-i32 __cdecl GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated,
-                                      i32 include_static) {
+i32 GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated,
+                              i32 include_static) {
     GAMEANIMOBJ *object;
     NUVEC sum = {0.0f, 0.0f, 0.0f};
     i32 count = 0;
@@ -633,7 +633,7 @@ i32 __cdecl GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 fra
     return 1;
 }
 
-i32 __cdecl GameAnimSet_GetVisibility(GAMEANIMSET *set) {
+i32 GameAnimSet_GetVisibility(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
     i32 visible_count;
 
@@ -654,7 +654,7 @@ i32 __cdecl GameAnimSet_GetVisibility(GAMEANIMSET *set) {
     return 0;
 }
 
-void __cdecl GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility) {
+void GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility) {
     GAMEANIMOBJ *object;
 
     if (set == NULL) {
@@ -665,7 +665,7 @@ void __cdecl GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility) {
     }
 }
 
-void __cdecl GameAnimSet_EvalAnim(GAMEANIMSET *set) {
+void GameAnimSet_EvalAnim(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
     if (set == NULL) {
@@ -692,8 +692,8 @@ f32 GameAnimSet_AutoSetReflectY(GAMEANIMSET *set, NUVEC *position, NUMTX *matrix
     return 0.0f;
 }
 
-i32 __cdecl GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection,
-                                           i32 include_animated, i32 include_static) {
+i32 GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection,
+                                   i32 include_animated, i32 include_static) {
     GAMEANIMOBJ *object;
     NUVEC minimum;
     NUVEC maximum;
@@ -786,7 +786,7 @@ i32 __cdecl GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 
     return 0;
 }
 
-void __cdecl GameAnimSys_Update(GAMEANIMSYS *system) {
+void GameAnimSys_Update(GAMEANIMSYS *system) {
     GAMEANIMSET *set;
     GAMEANIMSET *next_set;
     GAMEANIMOBJ *object;
@@ -887,7 +887,7 @@ void __cdecl GameAnimSys_Update(GAMEANIMSYS *system) {
     }
 }
 
-void __cdecl edanimParamReset(void) {
+void edanimParamReset(void) {
     i32 i;
 
     for (i = 0; i < 64; ++i) {
@@ -901,17 +901,17 @@ void __cdecl edanimParamReset(void) {
     }
 }
 
-void __cdecl edanimStartPage(i32 page) {
+void edanimStartPage(i32 page) {
     if (edanim_page_used[page] != 0 && edanim_page_scene[page] != NULL && edanim_page_on[page] == 0) {
         edanim_page_on[page] = 1;
     }
 }
 
-void __cdecl edanimStopPage(i32 page) {
+void edanimStopPage(i32 page) {
     edanim_page_on[page] = 0;
 }
 
-void __cdecl edanimClearPage(i32 page) {
+void edanimClearPage(i32 page) {
     i32 index;
 
     if (edanim_page_on[page] != 0) {
@@ -927,7 +927,7 @@ void __cdecl edanimClearPage(i32 page) {
     edanim_page_scene[page] = NULL;
 }
 
-void __cdecl edanimStartAllPages(void) {
+void edanimStartAllPages(void) {
     i32 page;
 
     for (page = 0; page < 8; ++page) {
@@ -997,7 +997,7 @@ i32 edanimFileSave(char *path) {
     return 0;
 }
 
-void __cdecl edanimRegisterBaseScene(NUGSCN *scene) {
+void edanimRegisterBaseScene(NUGSCN *scene) {
     (void)scene;
 }
 
@@ -1496,7 +1496,7 @@ static void edanimcbMCTBCardWriteKeyCard(eduimenu_s *menu, eduiitem_s *unused1, 
     }
 }
 
-i32 __cdecl saveloadCheckKeyCode(char *id, u8 *code);
+i32 saveloadCheckKeyCode(char *id, u8 *code);
 
 static void edanimcbMCTBCardCheckKeyCard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadCheckKeyCode(id_test, code_test)) {
@@ -1559,9 +1559,8 @@ void fun_0065b5e0(void) {
 STATIC_ASSERT(offsetof(GAMEOBJECT, mini_current_animation) == 0x7ee);
 STATIC_ASSERT(offsetof(GAMEOBJECT, mini_previous_animation) == 0x7f0);
 
-GAMEANIMOBJ *__cdecl GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene, char *name, f32 start_frame,
-                                                 f32 end_frame, i32 append, void *gizmo_sys, char *prefix,
-                                                 char *suffix) {
+GAMEANIMOBJ *GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene, char *name, f32 start_frame, f32 end_frame,
+                                         i32 append, void *gizmo_sys, char *prefix, char *suffix) {
     NUSPECIALHANDLE special;
     if (set && Gizmo_FindNuSpecial(scene, &special, name, 1, gizmo_sys, prefix, suffix)) {
         return GameAnimSet_AddObject(set, &special, start_frame, end_frame, append);
@@ -1605,7 +1604,7 @@ STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
 STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
-void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, NUMTX *matrix) {
+void GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, NUMTX *matrix) {
     f32 plane;
     GAMEANIMOBJ *object;
     NUMTX reflection;

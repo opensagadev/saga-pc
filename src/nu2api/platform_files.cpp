@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-extern "C" char *__cdecl PcGetUserFolder(const char *unused_company, const char *unused_product) {
+extern "C" char *PcGetUserFolder(const char *unused_company, const char *unused_product) {
     i32 folder = CSIDL_LOCAL_APPDATA;
     if (PcUsePersonalFolder) {
         folder = CSIDL_PERSONAL;
@@ -15,8 +15,7 @@ extern "C" char *__cdecl PcGetUserFolder(const char *unused_company, const char 
     return PcUserFolder;
 }
 
-extern "C" FILE *__cdecl PcOpenPlatformFile(const char *name, const char *prefix, i32 use_user_folder,
-                                            const char *mode) {
+extern "C" FILE *PcOpenPlatformFile(const char *name, const char *prefix, i32 use_user_folder, const char *mode) {
     if (use_user_folder == 1) {
         strcpy(PcFileDirectory, PcGetUserFolder(PcCompanyName, PcProductName));
         strcat(PcFileDirectory, "\\");

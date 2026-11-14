@@ -13,23 +13,23 @@ extern "C" {
     extern f32 min_r;
     extern f32 def_fr;
     extern struct eduiiattr_s EdLevelAttr;
-    eduiitem_s *__cdecl eduiItemSeparatorCreate(u32 data, const void *colours);
-    void __cdecl cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32 data);
-    void __cdecl cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    eduiitem_s *eduiItemSeparatorCreate(u32 data, const void *colours);
+    void cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32 data);
+    void cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
     extern i32 EdLevelFnt;
     extern i32 modifier_cnt;
     extern char **modifier_names;
-    void __cdecl eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding);
+    void eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding);
     extern RTL_LIGHT_PC *rtl_locked;
-    void __cdecl rtlFree(RTL_LIGHT_PC *light);
-    void __cdecl fogFree(RTL_FOG_MIGRATION_PC *fog);
+    void rtlFree(RTL_LIGHT_PC *light);
+    void fogFree(RTL_FOG_MIGRATION_PC *fog);
 }
 
 extern "C" {
-    eduiitem_s *__cdecl eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button,
-                                           i32 button_type, char *text, char *value);
-    i32 __cdecl eduiItemPropSetText(edui_prop_s *item, char *text);
-    void __cdecl eduiGetCursorDelta(f32 *x, f32 *y);
+    eduiitem_s *eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button,
+                                   i32 button_type, char *text, char *value);
+    i32 eduiItemPropSetText(edui_prop_s *item, char *text);
+    void eduiGetCursorDelta(f32 *x, f32 *y);
 }
 
 /* The engine's VuVec helpers (the same header edlevelall.cpp uses). VC8 inlines them here and keeps

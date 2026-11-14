@@ -80,7 +80,7 @@ static void CreditsInitCreditPc(CREDIT_RECORD_PC *credit, char *text, f32 x, f32
     credit->alignment = alignment;
 }
 
-void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
+void Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     char filename[256];
     CREDIT_RECORD_PC *credit;
     CREDIT_RECORD_PC *previous;
@@ -181,7 +181,7 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     NuFParDestroy(parser);
 }
 
-void __cdecl Credits_Init(WORLDINFO *world) {
+void Credits_Init(WORLDINFO *world) {
     CreditsAlpha = 1.0f;
     CreditsTime = 0.0f;
     CreditsFinishedTime = 0.0f;
@@ -191,7 +191,7 @@ void __cdecl Credits_Init(WORLDINFO *world) {
     }
 }
 
-void __cdecl Credits_GetInfo(f32 *duration, i32 *flag, f32 *alpha) {
+void Credits_GetInfo(f32 *duration, i32 *flag, f32 *alpha) {
     if (duration != NULL) {
         *duration = Credits_Duration;
     }
@@ -243,15 +243,15 @@ static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
     }
 }
 
-void __cdecl Credits_DrawPanel(WORLDINFO *world) {
+void Credits_DrawPanel(WORLDINFO *world) {
     CreditsDrawListPc(CreditList, CreditsTime);
 }
 
-void __cdecl legoSetMusicVolume(f32);
-extern "C" void __cdecl MusicClearAll(void);
-extern "C" void __cdecl SoundKillAll(void);
+void legoSetMusicVolume(f32);
+extern "C" void MusicClearAll(void);
+extern "C" void SoundKillAll(void);
 
-extern "C" void __cdecl Credits_UpdateMenu(MENU *menu) {
+extern "C" void Credits_UpdateMenu(MENU *menu) {
     f32 volume = Game_OptionsSave != NULL ? GameSetMusicVolume(Game_OptionsSave) : 1.0f;
     f32 previous_time = CreditsTime;
     if (CreditsFlag != 0) {

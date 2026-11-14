@@ -12,7 +12,7 @@ typedef struct terrain_player_platform_sys_pc_s {
     TERRAIN_PLAYER_PLATFORM_RECORD_PC entries[1]; // 0x08
 } TERRAIN_PLAYER_PLATFORM_SYS_PC;                 // size 0x1c
 
-GAMEOBJECT *__cdecl CharPlatform_FindObjFromPlatID(void *system, i32 id) {
+GAMEOBJECT *CharPlatform_FindObjFromPlatID(void *system, i32 id) {
     TERRAIN_PLAYER_PLATFORM_SYS_PC *platforms = system;
     i32 i;
     if (platforms == NULL) {
@@ -56,7 +56,7 @@ typedef struct CHAR_PLATFORM_WORLD_PC {
     CHAR_PLATFORM_SYSTEM_PC *char_platform_sys; // 0x2adc
 } CHAR_PLATFORM_WORLD_PC;                       // size 0x2ae0
 
-void __cdecl CharPlatforms_Configure(WORLDINFO *world, char *config) {
+void CharPlatforms_Configure(WORLDINFO *world, char *config) {
     CHAR_PLATFORM_WORLD_PC *view = (CHAR_PLATFORM_WORLD_PC *)world;
     CHAR_PLATFORM_SYSTEM_PC *system;
     NUFPAR_PC *parser;

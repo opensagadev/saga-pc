@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <stdio.h>
 
-void __cdecl LoadPartFile(WORLDINFO *world) {
+void LoadPartFile(WORLDINFO *world) {
     char path[256];
     world->page_part = -1;
     edpartSetParticlePage(world->page_pp);

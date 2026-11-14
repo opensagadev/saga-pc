@@ -2,7 +2,7 @@
 #include "saga.h"
 static u8 ShaderLexicalClassesPc[256] = {0};
 
-extern "C" void __cdecl ShaderLexicalClassesInitPc(void) {
+extern "C" void ShaderLexicalClassesInitPc(void) {
     if (ShaderLexicalClassesPc['A'] != 0) {
         return;
     }
@@ -404,11 +404,11 @@ ShaderConditionNodePc *ShaderCompilerParserPc::ParseExpression(ShaderCompilerBuf
     return stack[0];
 }
 
-extern "C" u32 __cdecl ShaderDeclarationFlagsPc(u8 shared, u8 vertex, u8 pixel) {
+extern "C" u32 ShaderDeclarationFlagsPc(u8 shared, u8 vertex, u8 pixel) {
     return (shared ? 0x4000u : 0u) | (vertex ? 0x2000u : 0u) | (pixel ? 0x1000u : 0u) | 0x20u;
 }
 
-extern "C" i32 __cdecl ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *slice) {
+extern "C" i32 ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *slice) {
     if (slice->Equals("default")) {
         return 1;
     }

@@ -24,11 +24,11 @@ class OggReader : public WavReader {
     virtual HRESULT Reset(void);
     virtual HRESULT Read(void *, u32, u32 *);
     virtual i32 SeekTime(f32);
-    static u32 __cdecl ReadCallbackPc(void *, u32, u32, void *);
-    static i32 __cdecl SeekCallbackPc(void *, i64, i32);
-    static i32 __cdecl CloseCallbackPc(void *);
+    static u32 ReadCallbackPc(void *, u32, u32, void *);
+    static i32 SeekCallbackPc(void *, i64, i32);
+    static i32 CloseCallbackPc(void *);
     // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
-    static long __cdecl TellCallbackPc(void *);
+    static long TellCallbackPc(void *);
     u8 compressed;                  // 0x040
     u8 unknown_041[7];              // 0x041
     OggVorbis_File vorbis_state;    // 0x048
@@ -42,7 +42,7 @@ class OggReader : public WavReader {
 STATIC_ASSERT(sizeof(OggVorbis_File) == 0x2d0);
 STATIC_ASSERT(offsetof(OggVorbis_File, callbacks) == 0x2c0);
 
-extern "C" void __cdecl NuSound3GetStreamInfo(i32 stream_index, void *info) {
+extern "C" void NuSound3GetStreamInfo(i32 stream_index, void *info) {
     (void)stream_index;
     (void)info;
 }
@@ -75,7 +75,7 @@ extern SoundQueue *NuSound3StereoStreams[2];
 extern "C" f32 NuSound3VolumeTable[0x4000];
 extern "C" i32 NuSound3VolumeOffset;
 
-extern "C" void __cdecl NuSound3KillAllAudio(void) {
+extern "C" void NuSound3KillAllAudio(void) {
     NuSound3StereoStreams[0]->Stop();
     NuSound3StereoStreams[1]->Stop();
     SoundVoiceManager.StopAllVoices();
@@ -225,28 +225,28 @@ i32 SoundQueue::SetStreamFlags(i32 flags) {
     return SendCommand(2, flags);
 }
 
-extern "C" void __cdecl NuSound3StopStereoStream(i32 index) {
+extern "C" void NuSound3StopStereoStream(i32 index) {
     if (index != 0) {
         index = 1;
     }
     NuSound3StereoStreams[index]->Stop();
 }
 
-extern "C" void __cdecl NuSound3ResumeStereoStream(i32 index) {
+extern "C" void NuSound3ResumeStereoStream(i32 index) {
     if (index != 0) {
         index = 1;
     }
     NuSound3StereoStreams[index]->Resume();
 }
 
-extern "C" void __cdecl NuSound3PauseStereoStream(i32 index) {
+extern "C" void NuSound3PauseStereoStream(i32 index) {
     if (index != 0) {
         index = 1;
     }
     NuSound3StereoStreams[index]->Pause();
 }
 
-extern "C" i32 __cdecl NuSound3SetStreamVolume(i32 index, i32 volume) {
+extern "C" i32 NuSound3SetStreamVolume(i32 index, i32 volume) {
     if (index != 0) {
         index = 1;
     }
@@ -263,14 +263,14 @@ extern "C" i32 __cdecl NuSound3SetStreamVolume(i32 index, i32 volume) {
 extern "C" void fun_006984b0(void) {
 }
 
-extern "C" i32 __cdecl NuSound3GetStereoStreamStatus(i32 index) {
+extern "C" i32 NuSound3GetStereoStreamStatus(i32 index) {
     if (index != 0) {
         index = 1;
     }
     return NuSound3StereoStreams[index]->GetStatus();
 }
 
-extern "C" i32 __cdecl NuSoundGetStereoStreamStatus(i32 stream) {
+extern "C" i32 NuSoundGetStereoStreamStatus(i32 stream) {
     if (stream == 0) {
         return NuSound3GetStereoStreamStatus(PCStereoChannel0A);
     }
@@ -809,7 +809,7 @@ void SoundQueue::SuspendForFocusPc(void) {
     unknown_03f4 = 1;
 }
 
-extern "C" void __cdecl NuSound3SuspendForFocusPc(void) {
+extern "C" void NuSound3SuspendForFocusPc(void) {
     if (NuSound3Initialized != 0) {
         SoundVoiceManager.StopAllVoices();
         NuSound3StereoStreams[0]->SuspendForFocusPc();
@@ -823,14 +823,14 @@ extern "C" void fun_00698fe0(void) {
 extern "C" void fun_00698ff0(void) {
 }
 
-extern "C" void __cdecl NuSound3ResumeAfterFocusPc(void) {
+extern "C" void NuSound3ResumeAfterFocusPc(void) {
     if (NuSound3Initialized != 0) {
         NuSound3StereoStreams[0]->CancelPausePc();
         NuSound3StereoStreams[1]->CancelPausePc();
     }
 }
 
-extern "C" void __cdecl PCSoundStopStereoChannelPc(i32 channel) {
+extern "C" void PCSoundStopStereoChannelPc(i32 channel) {
     char message[64];
     sprintf(message, ">>> NuSoundStopStereo %d", channel);
     SoundQueue *stream = NuSound3StereoStreams[0];
@@ -840,7 +840,7 @@ extern "C" void __cdecl PCSoundStopStereoChannelPc(i32 channel) {
     stream->Stop();
 }
 
-extern "C" void __cdecl NuFmvStopSoundPc(i32 wait) {
+extern "C" void NuFmvStopSoundPc(i32 wait) {
     SoundVoiceManager.StopAllVoices();
     if (wait != 0) {
         PCSoundStopStereoChannelPc(PCStereoChannel0A);
@@ -852,6 +852,6 @@ extern "C" void __cdecl NuFmvStopSoundPc(i32 wait) {
     }
 }
 
-extern "C" IDirectSound8 *__cdecl NuFmvGetSoundFactoryPc(void) {
+extern "C" IDirectSound8 *NuFmvGetSoundFactoryPc(void) {
     return SoundVoiceManager.factory;
 }

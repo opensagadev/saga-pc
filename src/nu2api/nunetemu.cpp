@@ -18,7 +18,7 @@ STATIC_ASSERT(offsetof(NuNetEmu, raw_stats) == 0x17cc);
 STATIC_ASSERT(offsetof(NuNetEmu, packet_stats) == 0x19ec);
 STATIC_ASSERT(sizeof(NuNetEmu) == 0x1c24);
 
-extern "C" i32 __cdecl refpack(u8 *source, i32 source_size, u8 *destination);
+extern "C" i32 refpack(u8 *source, i32 source_size, u8 *destination);
 i32 unref(u8 *source, u8 *destination);
 
 NuNetEmu theNuNetEmu;

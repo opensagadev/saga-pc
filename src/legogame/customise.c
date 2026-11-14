@@ -43,7 +43,7 @@ typedef struct customiser_config_pc_s {
     i32 piece_counts[9];
     i16 character_ids[2];
     u8 unknown_70[0x100];
-    i32(__cdecl *piece_available)(CUSTOMPIECE_LAYERS_PC *);
+    i32 (*piece_available)(CUSTOMPIECE_LAYERS_PC *);
     CUSTOM_SAVE_CONFIG_PC *save;
     u8 unknown_178[0xd8];
     i8 locator_indices[9];
@@ -119,10 +119,10 @@ typedef struct custom_material_update_pc_s {
 } CUSTOM_MATERIAL_UPDATE_PC;
 
 extern NUVEC CustomisePos[2];
-i32 __cdecl Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category);
-i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
-                                   GAMEOBJECT *, u32);
-i32 __cdecl Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_input, i32 unused);
+i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category);
+i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
+                           GAMEOBJECT *, u32);
+i32 Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_input, i32 unused);
 extern i16 TextIdPc880fa0;
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
 extern i16 TextIdPc880750;
@@ -132,9 +132,9 @@ extern i16 TextIdPc880760;
 extern i16 TextIdPc880858;
 extern i16 TextIdPc880894;
 extern i16 TextIdPc880898;
-void __cdecl Hub_ClearStats(void);
-void __cdecl Text_FillInExtendedSaveInfo(void);
-i32 __cdecl TriggerAutoSave(void);
+void Hub_ClearStats(void);
+void Text_FillInExtendedSaveInfo(void);
+i32 TriggerAutoSave(void);
 
 /* 424750/92. Can share the fuller Customiser canonical type once integrated. */
 typedef struct hub_customiser_menu_reader_pc_s {
@@ -201,7 +201,7 @@ static void CustomiserMtxRotateYPc(NUMTX *matrix, i32 angle) {
     matrix->m32 = matrix->m32 * cosine - d * sine;
 }
 
-static i32 __cdecl Customise_FindLetter(char character) {
+static i32 Customise_FindLetter(char character) {
     i32 letter;
     for (letter = 0; letter < 38; ++letter) {
         if (CustomiseLetter[letter] == character) {
@@ -214,7 +214,7 @@ static i32 __cdecl Customise_FindLetter(char character) {
     return letter;
 }
 
-void __cdecl FinishWeirdoNames(i32 which) {
+void FinishWeirdoNames(i32 which) {
     char *name;
     i32 length;
     if (which != 1) {
@@ -270,7 +270,7 @@ static CUSTOMISER_GAME_SETTING_PC CustomiserGameSettingsPrivatePc[] = {{"bountyh
                                                                        {"stormtrooperhelmet", 0, 0x40000},
                                                                        {NULL, 0, 0}};
 
-void __cdecl PermanentCustomPieceConfigPc(CUSTOMPIECE_LAYERS_PC *input, NUFPAR_PC *parser) {
+void PermanentCustomPieceConfigPc(CUSTOMPIECE_LAYERS_PC *input, NUFPAR_PC *parser) {
     CUSTOM_PIECE_CONFIG_PC *piece = (CUSTOM_PIECE_CONFIG_PC *)input;
     CUSTOMISER_GAME_SETTING_PC *setting;
     for (setting = CustomiserGameSettingsPrivatePc; setting->name != NULL; ++setting) {
@@ -282,7 +282,7 @@ void __cdecl PermanentCustomPieceConfigPc(CUSTOMPIECE_LAYERS_PC *input, NUFPAR_P
     }
 }
 
-void __cdecl Customiser_InitNames(CUSTOMISER_LAYERS_PC *customiser) {
+void Customiser_InitNames(CUSTOMISER_LAYERS_PC *customiser) {
     CUSTOMISER_NAMES_PC *view = (CUSTOMISER_NAMES_PC *)customiser;
     i32 index;
     if (customiser == NULL) {
@@ -301,7 +301,7 @@ void __cdecl Customiser_InitNames(CUSTOMISER_LAYERS_PC *customiser) {
 
 /* 00423c30 / 874. Native contains class/name-part accumulation even though
  * the final displayed name is the generic stranger label. */
-void __cdecl Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *input, i32 index) {
+void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *input, i32 index) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOMISER_NAMES_PC *names = (CUSTOMISER_NAMES_PC *)input;
     i32 best = -1;
@@ -367,7 +367,7 @@ void __cdecl Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *input, i32 index) {
     }
 }
 
-i32 __cdecl PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *input) {
+i32 PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *input) {
     CUSTOM_PIECE_CONFIG_PC *piece = (CUSTOM_PIECE_CONFIG_PC *)input;
     if (GAMEDEMO != 0) {
         if ((piece->availability_flags & 0x10) != 0) {
@@ -411,7 +411,7 @@ static f32 CustomiseNameBoardMulPc[2] = {0};
 static f32 CustomiseNameLetterBlipScalePc[2] = {0};
 
 /* 00424040 / 775 */
-void __cdecl Customiser_Init(CUSTOMISER_LAYERS_PC *input) {
+void Customiser_Init(CUSTOMISER_LAYERS_PC *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
     i32 side;
@@ -479,7 +479,7 @@ void __cdecl Customiser_Init(CUSTOMISER_LAYERS_PC *input) {
 
 static f32 CustomiseMenuTimePc[2] = {0};
 
-void __cdecl Customiser_Reset(CUSTOMISER_LAYERS_PC *customiser) {
+void Customiser_Reset(CUSTOMISER_LAYERS_PC *customiser) {
     CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)customiser;
     i32 side;
     if (customiser == NULL) {
@@ -497,7 +497,7 @@ void __cdecl Customiser_Reset(CUSTOMISER_LAYERS_PC *customiser) {
 static NUVEC CustomiseScreenPosPc[2] = {0};
 
 /* 004243b0 / 42 */
-void __cdecl Customiser_TransformToPanel(CUSTOMISER_LAYERS_PC *unused) {
+void Customiser_TransformToPanel(CUSTOMISER_LAYERS_PC *unused) {
     (void)unused;
     NuCameraTransformScreenClip(&CustomiseScreenPosPc[0], &CustomisePos[0], 1, NULL);
     NuCameraTransformScreenClip(&CustomiseScreenPosPc[1], &CustomisePos[1], 1, NULL);
@@ -530,7 +530,7 @@ static u32 CustomiserPreviewLayerMaskPc(CUSTOMISER_CONFIG_PC *customiser, const 
 
 /* 00424500 / 491: applies both saved customisations to their characters'
  * layer masks, model and gameplay flags, weapon and blade colour. */
-void __cdecl Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *input) {
+void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     u32 side;
     i32 category;
@@ -570,7 +570,7 @@ void __cdecl Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *input) {
     Customiser_SetNameAndIcon(input, -1);
 }
 
-void __cdecl Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count) {
+void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count) {
     if (MissionMenuPacketPc.active_player[0] != 0) {
         if (MissionMenuPacketPc.active_player[1] == 0) {
             *index = 0;
@@ -586,7 +586,7 @@ void __cdecl Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count) {
     *count = 2;
 }
 
-i32 __cdecl Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *customiser) {
+i32 Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *customiser) {
     HUB_CUSTOMISER_MENU_READER_PC *c = (HUB_CUSTOMISER_MENU_READER_PC *)customiser;
     if (c == NULL || APICharacterLoaded(c->character_ids[0]) == NULL) {
         return 0;
@@ -600,7 +600,7 @@ i32 __cdecl Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *customiser) {
     return c->second_animation == 190 || c->second_animation == 99;
 }
 
-i32 __cdecl Customise_GetToggleString(i32 index) {
+i32 Customise_GetToggleString(i32 index) {
     i32 mode = CustomiseMode[index];
     if (mode == 1) {
         return TextIdPc880890;
@@ -619,7 +619,7 @@ static i32 CustomiseNameYPc[2] = {0};
 static const char CustomiserBadWordReplacementPc[9] = "Stranger";
 
 /* 00424810..004252bc: PC control returns its quit decision to the wrapper. */
-i32 __cdecl CustomiserMenu_Update(void) {
+i32 CustomiserMenu_Update(void) {
     i32 quit = 0;
     i32 cancel_name = 0;
     i32 toggle = 0;
@@ -1038,7 +1038,7 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
 static NUVEC CustomiseNoHatPosPc[2] = {0};
 static f32 CustomiseHeadOffsetPc = 0.21f;
 
-void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
+void Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
     /* Native conversions must all happen before the NULL test. */
@@ -1191,7 +1191,7 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
 }
 
 /* 00425fa0 / 1087 */
-void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
+void Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
@@ -1301,7 +1301,7 @@ void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
 
 static const char CustomiserMenuBackSfxPc[9] = "menuBack";
 
-void __cdecl MenuUpdateCustomiserPc(MENU *menu) {
+void MenuUpdateCustomiserPc(MENU *menu) {
     i32 quit;
     (void)menu;
     if (customiser_save_done != 0) {
@@ -1334,7 +1334,7 @@ void __cdecl MenuUpdateCustomiserPc(MENU *menu) {
     CustomiserMenu_End();
 }
 
-void __cdecl MenuDrawCustomiserPc(MENU *menu) {
+void MenuDrawCustomiserPc(MENU *menu) {
     i32 active_index;
     i32 active_count;
     i32 player;

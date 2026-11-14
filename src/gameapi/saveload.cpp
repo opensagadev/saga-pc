@@ -9,7 +9,7 @@ extern "C" {
     extern i32 saveload_slotcode[6];
     void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
-    char *__cdecl fullslotname(i32 slot) {
+    char *fullslotname(i32 slot) {
 #ifndef SAGA_DEBUG
         PCOptionsBuildFolder(SaveFolderPathPc);
         strcat(SaveFolderPathPc, "SavedGames");
@@ -24,7 +24,7 @@ extern "C" {
         return SaveFullSlotPathPc;
     }
 
-    i32 __cdecl saveload_getinfo(void) {
+    i32 saveload_getinfo(void) {
         saveload_savepresent = 0;
         i32 count = 0;
         for (i32 slot = 0; slot < 6; ++slot) {
@@ -48,8 +48,8 @@ extern "C" {
         return 0;
     }
 
-    void __cdecl saveloadInit(VARIPTR *buffer, VARIPTR end, i32 size, const char *product, const char *icon,
-                              const char *title, i32 flags) {
+    void saveloadInit(VARIPTR *buffer, VARIPTR end, i32 size, const char *product, const char *icon, const char *title,
+                      i32 flags) {
         saveload_getinfo();
         saveload_status = 1;
         saveload_autosave = -1;
@@ -66,7 +66,7 @@ extern "C" {
     void fun_00543ed0(void) {
     }
 
-    i32 __cdecl saveloadCheckSlotsUsed(void) {
+    i32 saveloadCheckSlotsUsed(void) {
         i32 used = 0;
         for (i32 slot = 0; slot < 6; ++slot) {
             char *name = fullslotname(slot);
@@ -79,27 +79,27 @@ extern "C" {
         return used;
     }
 
-    i32 __cdecl saveloadCheckCardPresent(void) {
+    i32 saveloadCheckCardPresent(void) {
         return 1;
     }
 
-    i32 __cdecl saveloadCheckCardType(void) {
+    i32 saveloadCheckCardType(void) {
         return 1;
     }
 
-    i32 __cdecl saveloadCheckCardFormatted(void) {
+    i32 saveloadCheckCardFormatted(void) {
         return 1;
     }
 
-    i32 __cdecl saveloadCheckCardFreeSpace(i32 slot) {
+    i32 saveloadCheckCardFreeSpace(i32 slot) {
         return 1;
     }
 
-    i32 __cdecl saveloadFormatCard(void) {
+    i32 saveloadFormatCard(void) {
         return 1;
     }
 
-    i32 __cdecl saveloadUnFormatCard(void) {
+    i32 saveloadUnFormatCard(void) {
         return 1;
     }
 
@@ -107,11 +107,11 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl saveloadCheckKeyCode(char *id, u8 *code) {
+    i32 saveloadCheckKeyCode(char *id, u8 *code) {
         return 0;
     }
 
-    i32 __cdecl saveloadWriteKeyCode(char *id, u8 *code) {
+    i32 saveloadWriteKeyCode(char *id, u8 *code) {
         return 0;
     }
 }
