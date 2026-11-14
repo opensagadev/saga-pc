@@ -307,6 +307,7 @@ class SymbolMap:
         self.lines = self.path.read_text().splitlines(keepends=True)
         self.symbols = collections.defaultdict(list)
         self.names = collections.defaultdict(list)
+        self.renamed = {}  # name: addresses whose rows this run already gave the literal (same-named statics)
         for index, line in enumerate(self.lines[1:], 1):
             row = next(csv.reader(io.StringIO(line)))
             symbol = row[1].strip()
@@ -325,6 +326,9 @@ class SymbolMap:
         """Replace (None: delete) one row and keep the indexes current."""
         old = next(csv.reader(io.StringIO(self.lines[index])))[1].strip()
         self.symbols[old] = [(i, r) for i, r in self.symbols[old] if i != index]
+        for name, rows in self.names.items():
+            if any(i == index for i, _ in rows):
+                self.names[name] = [(i, r) for i, r in rows if i != index]
         self.lines[index] = line
         if line is not None:
             row = next(csv.reader(io.StringIO(line)))
@@ -343,7 +347,7 @@ def plan_symbols(symbols, decl, in_segment=False):
     literal = decl["symbol"] or literal_name(decl["data"], False) + (SEGMENT_SUFFIX if in_segment else "")
     named = symbols.named(decl["name"])
     existing = {int(r[0], 16) for _, r in symbols.by_symbol(literal)}
-    addresses = {int(r[0], 16) for _, r in named}
+    addresses = {int(r[0], 16) for _, r in named} or symbols.renamed.get(decl["name"], set())
     if len(addresses) > 1:
         return None, f"{decl['name']} is mapped at {len(addresses)} addresses"
     if existing - addresses:
@@ -474,6 +478,8 @@ def fix(sources, found, only=None):
             if problem or rows is None:
                 problems.append((decl, problem))
                 continue
+            symbols.renamed[decl["name"]] = {int(r[0], 16) for _, r in symbols.named(decl["name"])} or \
+                symbols.renamed.get(decl["name"], set())
             for index, line in rows.items():
                 symbols.replace(index, line)
         if not problems:

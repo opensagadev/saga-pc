@@ -124,6 +124,16 @@ class LiteralScanTests(unittest.TestCase):
         self.assertNotIn("TwicePc", unit)
         self.assertIn("0x751030,??_C@_05", path.read_text())
 
+    def test_same_named_statics_share_their_row(self):
+        (self.root / "src/second.c").write_text('static const char TwicePc[] = "twice";\n'
+                                                'void G(void) { Print(TwicePc); Print(TwicePc); }\n')
+        path = self.root / "config/symbols.csv"
+        path.write_text(SYMBOLS + "0x751030,_TwicePc,6,const char[6]\n")
+        sources, found, _ = self.scan()
+        fixed, skipped = literalscan.fix(sources, [d for d in found if d["name"] == "TwicePc"])
+        self.assertEqual((len(fixed), skipped), (2, []))
+        self.assertEqual(path.read_text().count("0x751030,??_C@_05"), 1)
+
     def test_uses_under_different_segments_are_not_fixed(self):
         unit = (self.root / "src/unit.c").read_text().replace(
             '    Print(TwicePc);\n    Print(TwicePc);',
