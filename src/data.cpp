@@ -194,13 +194,6 @@ extern "C" {
 }
 
 extern "C" {
-    f32 RenderBackdropTopRPc = 0.0f;
-    f32 RenderBackdropTopGPc = 0.0f;
-    f32 RenderBackdropTopBPc = 0.0f;
-    f32 RenderBackdropBottomRPc = 0.0f;
-    f32 RenderBackdropBottomGPc = 0.0f;
-    f32 RenderBackdropBottomBPc = 24.0f;
-    i32 RenderBackdropBlackPc = 0;
     f32 hub_minikitviewer_movewait = 0.0f;
     f32 hub_minikitviewer_move = 0.0f;
     f32 HubMiniKitViewerReflectYPc = 0.09000000357627869f;
@@ -7719,9 +7712,7 @@ i32 frameout = 0;
 i32 other_level = -1;
 volatile i32 waiting_for_level = 0;
 i32 waiting_for_new_level = 0;
-i32 screendump = 0;
 i32 MiniCutCam = 0;
-i32 pause_rndr_on = 0;
 i32 clear_screen_onstill = 1;
 i32 HubMainRenderTimeHack = 0;
 i32 peak_poly_count = 0;
@@ -8260,7 +8251,6 @@ extern "C" {
     extern const char nufile_disc_suffix[3] = ";1";
 #pragma const_seg()
     DAT_HANDLES_PC NuDatHandles = {0};
-    i32 finishloop_backdroponly = 0;
 #pragma data_seg(".data$StartupDatNames")
     const char *StartupDatNames[7] = {
         "GAME.DAT",       "Episode_I.DAT", "Episode_II.DAT", "Episode_III.DAT",
@@ -8707,8 +8697,6 @@ extern "C" {
 #pragma data_seg(".data$ScreenStillHeightPc")
     i32 ScreenStillHeightPc = 3592;
 #pragma data_seg()
-    f32 MainRenderTime = 0;
-    f32 MainRenderTargetTime = 0;
     f32 WaitingForLevelTime = 0;
     f32 WaitingForCharacterTime = 0;
     f32 MAXFRAMETIME = 0;
@@ -10175,7 +10163,6 @@ extern "C" {
     // Eight queue slots are a source access view; the complete original extent is unknown.
     CUTINFO *NewCutInfo[8] = {0};
     i32 NewCutInfoCount = 0;
-    u32 LevelCompletionFallbackFlagPC = 0;
 #pragma const_seg(".rdata$AIAnimSpeedValueName")
     const char AIAnimSpeedValueName[7] = "value=";
 #pragma const_seg()
@@ -13328,12 +13315,6 @@ extern "C" {
 
     NUGSCN *things_scene = 0;
 
-    NUSPECIALHANDLE RenderBackdropSpecialsPc[4] = {0};
-
-    NUGSCN *backdrop_scene = 0;
-
-    void (*RenderBackdropAlphaFnPc)(f32 *) = 0;
-
     u16 SURFACEBITS_NODUST = 0;
 
     i32 RenderHubFromCutscenePlayerPc = 0;
@@ -13405,8 +13386,6 @@ extern "C" {
 }
 
 extern "C" {
-    u8 ScreenGrabNeeded = 0;
-    f32 pause_fade = 0;
     NUGSCN *EdppPageScenesPc[8] = {0};
 }
 
@@ -13799,7 +13778,6 @@ extern "C" {
     NUVEC *ObstacleCamCutCamPtr = 0;
     i32 ObstacleCamBorders = 0;
     u8 ObstacleCamAlwaysSnapAnglesPc = 0;
-    f32 CutBorderScale = 0;
 #pragma const_seg(".rdata$AICameraLiteral758090")
     const char AICameraLiteral758090[19] = "use_current_campos";
 #pragma const_seg()
@@ -14822,7 +14800,6 @@ extern "C" {
     i16 ShopHintTextIdsPc[15] = {630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 641, 642, 643, -1};
     i32 PlayerHitPointsTwoHeartsPc = 1;
     i32 ConvertOldPickupsPc = 0;
-    i32 GrabScreenWhenFadingPc = 0;
     i32 TrooperGameDebrisPc[4] = {-1, -1, -1, -1};
     i32 LEGOHINT_SHOOTCAMERAS = -1;
     i32 LEGOHINT_BUILD = -1;
@@ -23519,20 +23496,10 @@ extern "C" {
 
 extern "C" {
 
-    GAMEFOG_STATE_PC GameFogOld = {{0}};
-
-    GAMEFOG_STATE_PC GameFog = {{0}};
-}
-
-extern "C" {
-
     i32 back_rgba[2] = {0};
-
-    i32 old_pause_state = 0;
 
     NUMTL *FadeMtl2 = 0;
 
-    f32 ScreenPauseFadeSpeedPc = 2.0f;
     u64 CharacterMaskAllPc = ~(u64)0;
     i32 FalconDebKey[2] = {-1, -1};
 
@@ -23660,10 +23627,6 @@ extern "C" {
 }
 
 extern "C" {
-    struct NUGSCN_s *FadeLoop_ObjScene = 0;
-}
-
-extern "C" {
 #pragma data_seg(".data$gizmopickup_typeid")
     i32 gizmopickup_typeid = -1;
 }
@@ -23699,10 +23662,6 @@ extern "C" {
 extern "C" {
 
     i32 makeplayerlist_freeplay = 0;
-}
-
-extern "C" {
-    NUSPECIALHANDLE FadeLoop_ObjHSpecial = {0};
 }
 
 extern "C" {

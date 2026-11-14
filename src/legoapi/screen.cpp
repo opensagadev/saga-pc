@@ -137,12 +137,47 @@ extern "C" void CreateFadeMaterials(void) {
 }
 
 extern "C" {
+    NUMTL *SolidMtl = 0;
+    NUSPECIALHANDLE RenderBackdropSpecialsPc[4] = {0};
+    static f32 GameFogTime = 0;
+    static void *GameFogSet = 0;
+    static f32 GameFogDuration = 0;
+    GAMEFOG_STATE_PC GameFogOld = {{0}};
+    static f32 dof_fstop = 0;
+    static i32 GameFogSnap = 0;
+    NUSPECIALHANDLE FadeLoop_ObjHSpecial = {0};
+    f32 MainRenderTime = 0;
+    f32 MainRenderTargetTime = 0;
+    static GAMEFOG_STATE_PC GameFogNew = {{0}};
+    GAMEFOG_STATE_PC GameFog = {{0}};
+    struct NUGSCN_s *FadeLoop_ObjScene = 0;
+    NUGSCN *backdrop_scene = 0;
     static f32 RenderBackdropTargetTopRPc = 0.0f;
     static f32 RenderBackdropTargetTopGPc = 0.0f;
     static f32 RenderBackdropTargetTopBPc = 0.0f;
     static f32 RenderBackdropTargetBottomRPc = 0.0f;
     static f32 RenderBackdropTargetBottomGPc = 0.0f;
+    f32 RenderBackdropTopRPc = 0.0f;
+    f32 RenderBackdropTopGPc = 0.0f;
+    f32 RenderBackdropTopBPc = 0.0f;
+    f32 RenderBackdropBottomRPc = 0.0f;
+    f32 RenderBackdropBottomGPc = 0.0f;
+    static f32 RenderBackdropWaitPc = 0.0f;
+    i32 RenderBackdropBlackPc = 0;
+    u8 ScreenGrabNeeded = 0;
+    i32 screendump = 0;
+    i32 pause_rndr_on = 0;
+    i32 GrabScreenWhenFadingPc = 0;
+    i32 finishloop_backdroponly = 0;
+    void (*RenderBackdropAlphaFnPc)(f32 *) = 0;
+    f32 CutBorderScale = 0;
+    i32 old_pause_state = 0;
+    u32 LevelCompletionFallbackFlagPC = 0;
+    f32 pause_fade = 0;
     static f32 RenderBackdropTargetBottomBPc = 24.0f;
+    f32 RenderBackdropBottomBPc = 24.0f;
+    static f32 GameFogDefaultFStopPc = 22.0f;
+    f32 ScreenPauseFadeSpeedPc = 2.0f;
 
     void BackDrop_ClearColourTargets(void) {
         RenderBackdropTargetTopRPc = 0.0f;
@@ -152,8 +187,6 @@ extern "C" {
         RenderBackdropTargetBottomGPc = 0.0f;
         RenderBackdropTargetBottomBPc = 0.0f;
     }
-
-    static f32 RenderBackdropWaitPc = 0.0f;
 
     void BackDrop_ResetColours(void) {
         RenderBackdropTopRPc = 0.0f;
@@ -283,21 +316,12 @@ extern "C" {
         NuSpecialDrawAt(special, &matrix);
     }
 
-    static f32 GameFogDuration = 0;
-    static void *GameFogSet = 0;
-    static i32 GameFogSnap = 0;
-    static f32 GameFogTime = 0;
-
     void GameFog_Reset() {
         GameFogSnap = 1;
         GameFogDuration = 0.0f;
         GameFogSet = 0;
         GameFogTime = 0.0f;
     }
-
-    static f32 GameFogDefaultFStopPc = 22.0f;
-    static GAMEFOG_STATE_PC GameFogNew = {{0}};
-    static f32 dof_fstop = 0;
 
     void GameFog_Update(WORLDINFO *world) {
         RTL_FOG_MIGRATION_PC *previous = (RTL_FOG_MIGRATION_PC *)GameFogSet;
@@ -757,9 +781,7 @@ extern "C" void HandleStillRender(void) {
     clear_screen_onstill = 1;
 }
 
-extern "C" {
-    NUMTL *SolidMtl = 0;
-}
+extern "C" {}
 
 extern "C" void DrawFadeScreenWipe(void) {
     i32 x = 0;
