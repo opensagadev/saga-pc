@@ -95,11 +95,13 @@ typedef struct level_sfx_gizmotype_s {
 static i32 DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo);
 static i32 DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode);
 static char *DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output);
+i32 gizmoerrorlogsize = 2048;
 ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE = {NULL,
                                         NULL,
                                         {-1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
                                          (void *)DefaultGizmo_GetOutput, (void *)DefaultGizmo_GetOutputName,
                                          (void *)DefaultGizmo_GetNumOutputs}};
+i32 GizmoInfoVersionPc = 4;
 
 i32 GizmoFileReadName(char *name) {
     i32 length = EdFileReadChar();
@@ -746,8 +748,6 @@ i32 GizmoGetGizmosUsingSpecial(GIZMOSYS_PC *system, void *world, GIZMO_PC **resu
 i32 GizmoGetGuid(GIZMOSYS_PC *system, GIZMO_PC *gizmo) {
     return -1;
 }
-
-i32 GizmoInfoVersionPc = 4;
 
 i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
     NUSPECIALHANDLE special;

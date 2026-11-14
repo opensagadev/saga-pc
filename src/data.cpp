@@ -9534,9 +9534,6 @@ extern "C" {
                                   {&TextIdPc8808c0, 0, 1, 0}}};
 
 #pragma data_seg()
-#pragma data_seg(".data$gizmoerrorlogsize")
-    i32 gizmoerrorlogsize = 2048;
-#pragma data_seg()
 }
 
 extern "C" {
