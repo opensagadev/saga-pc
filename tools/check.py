@@ -2,6 +2,7 @@
 """Check project inputs and compiled symbol coverage without the retail EXE."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+import csv
 import json
 import os
 from pathlib import Path
@@ -204,11 +205,25 @@ def check_headers():
     allowed = {"src/saga.h", "src/externals.h", "src/debug/diagnostics.h", "src/debug/skin_trace.h",
                "src/debug/support.h",
                "src/nu2api/pc_fmv_native.h"} | {
-        "lib/ogg-vorbis/vorbis/" + name for name in vorbis_headers}
+        "lib/ogg-vorbis/vorbis/" + name for name in vorbis_headers} | split_headers()
     if "src/saga.h" not in headers or headers - allowed:
         raise ValueError("Project headers must be src/saga.h, src/debug/diagnostics.h and optional src/externals.h "
                          "or the reviewed original Vorbis header catalog, native PC FMV ABI header "
-                         "or the exact Debug skin-trace header, diagnostics header or support header")
+                         "or the exact Debug skin-trace header, diagnostics header or support header, "
+                         f"or a target header of {HEADER_MAP}; unexpected: "
+                         + ", ".join(sorted(headers - allowed)[:10]))
+
+
+HEADER_MAP = "config/header-map.csv"
+
+
+def split_headers():
+    """The module headers saga.h is split into (docs/header-plan.md): the targets of config/header-map.csv."""
+    path = ROOT / HEADER_MAP
+    if not path.is_file():
+        return set()
+    with path.open(newline="", encoding="utf-8") as stream:
+        return {"src/" + row["target"].strip() for row in csv.DictReader(stream) if row["target"].strip()}
 
 
 def check_diagnostic_boundaries():
