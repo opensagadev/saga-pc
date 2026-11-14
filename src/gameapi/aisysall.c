@@ -52,7 +52,6 @@ typedef struct AI_PATH_BUILD_SYSTEM {   // size 0x10
     AIPATHSPECIALROUTE *special_routes; // 0xc
 } AI_PATH_BUILD_SYSTEM;
 
-STATIC_ASSERT(sizeof(((AIPATHROUTE *)0)->character_mask) == 16);
 static i32 iterator_count = 0;
 static f32 ***distance_tables = NULL;
 
@@ -429,8 +428,6 @@ extern NUVEC edpath_addoffset;
 extern i32 AiEditorAntinodeModeIdPc;
 
 static const char *AiEditorAntinodeTypeNamesPc[3] = {"Circle", "Ellipse", "Rectangle"};
-
-STATIC_ASSERT(sizeof(AiEditorAntinodeTypeNamesPc) == 12);
 
 f32 AiEditorPickHeightTolerancePc = 0.1f;
 

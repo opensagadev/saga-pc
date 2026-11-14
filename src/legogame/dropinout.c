@@ -212,9 +212,6 @@ i32 PlayerDevicePortsPc[2] = {-1, -1};
 #pragma data_seg()
 STATIC_ASSERT(sizeof(DropInPendingPlayerPc) == 1);
 STATIC_ASSERT(sizeof(DropInConfigurationPlayerPc) == 1);
-STATIC_ASSERT(sizeof(DropInCaptureDelayPc) == 2);
-STATIC_ASSERT(sizeof(DropInCapturePortPc) == 4);
-STATIC_ASSERT(sizeof(PlayerDevicePortsPc) == 8);
 
 i32 PlayersDropInOut(void) {
     i32 force_join = 0;

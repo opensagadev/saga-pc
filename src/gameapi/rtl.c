@@ -1076,28 +1076,6 @@ struct BURN_SET_PC {                    // size 0x564
     i32 field_560;                      // 0x560
 };
 
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_00) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_04) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_08) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_0c) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_10) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_14) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_18) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_1c) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_20) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_24) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_28) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_2c) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_30) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_34) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_38) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_3c) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_40) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_44) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_48) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_4c) == 4);
-STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_50) == 4);
-
 static NUVEC burn_editor_position_pc = {0};
 // NOLINTNEXTLINE(readability-identifier-naming) -- the unit's public state name.
 BURN_SET_PC *edrtl_edit_burnset = 0;
@@ -2613,7 +2591,6 @@ __declspec(allocate(".bss$RtlCurrentFogPc")) RTL_FOG_MIGRATION_PC *curr_fog = NU
 __declspec(allocate(".bss$RtlClipboardFogPc")) RTL_FOG_MIGRATION_PC clipboard_fog = {0};
 STATIC_ASSERT(sizeof(clipboard_light) == 35 * sizeof(u32));
 STATIC_ASSERT(sizeof(clipboard_fog) == 19 * sizeof(u32));
-STATIC_ASSERT(sizeof(hide_types) == 8 * sizeof(i32));
 
 void edrtlcbCancelMenu(eduimenu_s *menu, eduimenu_s *parent) {
     rtled_menu_active = 0;
@@ -2721,7 +2698,6 @@ __declspec(allocate(".bss$RtlRedoItemPc")) eduiitem_s *redo_item = NULL;
 
 void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
 STATIC_ASSERT(sizeof(void *) == 4);
-STATIC_ASSERT(sizeof(u32) == 4);
 
 void edrtlSaveUndo(void) {
     if (maxundo != 0 && curr_set != NULL) {

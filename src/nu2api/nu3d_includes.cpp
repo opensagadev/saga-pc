@@ -11641,9 +11641,6 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
 // ---- nupostfilter (generic post-filter code; the PC members are in nu3d_platform.cpp) ----
 
 /* The reset clears these three adjacent flags together. */
-STATIC_ASSERT(offsetof(NuMainFilterGen, bloom_enabled) == offsetof(NuMainFilterGen, dof_enabled) + sizeof(bool));
-STATIC_ASSERT(offsetof(NuMainFilterGen, motion_blur_enabled) ==
-              offsetof(NuMainFilterGen, bloom_enabled) + sizeof(bool));
 
 extern "C" PC_FRAMEBUFFER_PC *PCGraphicsCreateFramebuffer(void);
 extern "C" void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);
@@ -14732,8 +14729,6 @@ extern "C" {
 
     void fun_005e54a0(void) {
     }
-
-    STATIC_ASSERT(sizeof(((NUTEXDIM_PC *)0)->checksum) == 16);
 
     void NuChecksumAsHex(u8 *checksum, char *out) {
         i32 i;

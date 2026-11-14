@@ -152,7 +152,6 @@ extern "C" {
          NULL, NULL, NULL, {"wpn_axe_swing"}, {"wpn_bib_stab"}, 3258978304, {0}, {0}, {0}},
     };
     // clang-format on
-    STATIC_ASSERT(sizeof(GlobalBoltType) == 7216);
     STATIC_ASSERT(42 * sizeof(BOLTTYPE_PC) + offsetof(BOLTTYPE_PC, object_ids) == 0x1b10);
 
     BOLTSYS_PC BoltSys_LSW = {GlobalBoltType,

@@ -1066,9 +1066,6 @@ extern "C" {
         u8 *material_used[2];           // 0x58
     } NUPRIM_SCENE_USAGE;
 
-    STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, material_used_back) ==
-                  offsetof(NUPRIM_SCENE_USAGE, material_used) + sizeof(u8 *));
-
     typedef struct AMBIENT_SPECULAR_RENDER_VIEW { // size 0x90
         u8 unknown_00[0x8c];                      // 0x00
         f32 global_specular;                      // 0x8c

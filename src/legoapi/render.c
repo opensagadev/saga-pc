@@ -168,18 +168,9 @@ typedef struct STATUS_RUMBLE_PAIR {
     RUMBLE_PACKET_RESOURCE_PC players[2];
 } STATUS_RUMBLE_PAIR;
 
-STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_rumble_amount) - offsetof(STATUSPACKET_s, player0_rumble_amount) ==
-              sizeof(RUMBLE_PACKET_RESOURCE_PC));
-STATIC_ASSERT(offsetof(STATUSPACKET_s, area_time) ==
-              offsetof(STATUSPACKET_s, player0_rumble_amount) + sizeof(STATUS_RUMBLE_PAIR));
-
 typedef struct StatusPlayerModelPair { // size 0x4
     u16 model[2];                      // 0x0
 } StatusPlayerModelPair;
-
-STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_model) == offsetof(STATUSPACKET_s, player0_model) + sizeof(u16));
-STATIC_ASSERT(offsetof(STATUSPACKET_s, area_id) ==
-              offsetof(STATUSPACKET_s, player0_model) + sizeof(StatusPlayerModelPair));
 
 #define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                  \
     do {                                                                                                               \

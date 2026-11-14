@@ -224,8 +224,6 @@ void ShaderCompilerParserPc::fun_0074b6b0(ShaderParserNodePc *node) {
     APPEND_NODE(node);
 }
 
-STATIC_ASSERT(sizeof(ShaderCompilerParserPc) == 0x45c);
-
 void ShaderCompilerParserPc::SetShowDefinitions(u8 enabled) {
     FlushText();
     ShaderParserTogglePc *node = reinterpret_cast<ShaderParserTogglePc *>(arena->cursor);

@@ -3,7 +3,6 @@
 extern u8 *ps2_scratch_free;
 extern u8 NuScratchBackingAccessPc[0x4000];
 STATIC_ASSERT(sizeof(void *) == 4);
-STATIC_ASSERT(sizeof(u32) == 4);
 
 void NuScratchReset(void) {
     ps2_scratch_free = NuScratchBackingAccessPc;

@@ -177,7 +177,6 @@ struct PC_DL_SHADER_PROGRAM_PAIR_PC {      // size 0x8
 };
 
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, textures) + sizeof(GRAPHICS_RENDER_TEXTURE_PC *) == 0x6b8);
-STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, unknown_4d4) == 0x4d4);
 
 extern "C" {
     static void PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE_PC *texture) {

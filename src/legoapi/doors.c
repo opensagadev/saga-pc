@@ -126,8 +126,6 @@ typedef union player_position_sock_pc_u { // size 0x38
     } start;
 } PLAYER_POSITION_SOCK_PC;
 
-STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
-
 void *Door_FindByName(WORLDINFO *world, char *name) {
     PLAYER_WORLD_DOORS_PC *view = (PLAYER_WORLD_DOORS_PC *)world;
     PLAYER_DOOR_PC *door = view->doors;

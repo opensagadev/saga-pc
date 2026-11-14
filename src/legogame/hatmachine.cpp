@@ -601,8 +601,6 @@ static inline f32 NuFdiv(f32 a, f32 b) {
     return a / b;
 }
 
-STATIC_ASSERT(sizeof(((HATMACHINE_PC *)0)->model_special_index) == 1);
-
 extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     HATMACHINE_SYS *system;

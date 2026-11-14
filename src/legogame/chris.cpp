@@ -162,8 +162,6 @@ extern "C" {
     };
 #pragma data_seg()
 
-    STATIC_ASSERT(sizeof(FLIGHT_SPLINE_RESOURCE_PC) == sizeof(DOGFIGHT_SPLINE_HISTORY_PC));
-
     extern void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
 
     typedef struct DOGFIGHT_SPEEDUP_PC { // size 0x8

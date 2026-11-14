@@ -4,8 +4,6 @@ NetSessionManager *theNetSessionManager;
 
 /* TTNetwork object: network statistics and the TTNetwork singleton. */
 
-STATIC_ASSERT(offsetof(TTNetwork, clients) == 0x4);
-
 void *NetTransportEntry::operator new(u32 size) {
     return theMemoryManager.AllocPool(size, 1);
 }

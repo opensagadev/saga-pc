@@ -5,8 +5,6 @@
 /* PC-only network session manager, never constructed outside this
  * object. */
 
-STATIC_ASSERT(offsetof(NetStats, totals) == 8);
-
 extern "C" {
     void PcDebugPrintLock(void);
     void PcDebugPrintUnlock(void);

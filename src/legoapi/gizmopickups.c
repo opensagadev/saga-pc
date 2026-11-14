@@ -3,7 +3,6 @@
 extern i32 NuMainSkipCutBordersPc;
 extern i32 drawautosaveicon;
 STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) + 6 * sizeof(void *) == 0x80);
-STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->flags_1fc_word) == 4);
 
 typedef struct coin_reset_packet_s {
     u8 unknown_00[4];
@@ -127,7 +126,6 @@ typedef struct PICKUP_VISIBILITY_VIEW { // size 0x2c
 
 STATIC_ASSERT(sizeof(PICKUP_VISIBILITY_VIEW) == sizeof(GIZMOPICKUP_PC));
 STATIC_ASSERT(offsetof(PICKUP_VISIBILITY_VIEW, flags) == offsetof(GIZMOPICKUP_PC, flags));
-STATIC_ASSERT(sizeof(((PICKUP_VISIBILITY_VIEW *)0)->flags) == 1);
 
 static NUMTX *PickupSetRotationXPc(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];

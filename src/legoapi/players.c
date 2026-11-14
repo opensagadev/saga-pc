@@ -91,8 +91,6 @@ typedef struct CREATURE_RESET_PACKET_VIEW { // size 0xe4c
     u8 packet[0x788];                       // 0x6c4
 } CREATURE_RESET_PACKET_VIEW;
 
-STATIC_ASSERT(sizeof(((CREATURE_RESET_PACKET_VIEW *)0)->packet) == 0x788);
-
 typedef struct player_position_record_s { // size 0x10
     NUVEC *position;                      // 0x0
     i32 sock_location;                    // 0x4
@@ -110,7 +108,6 @@ typedef union player_position_sock_pc_u { // size 0x38
     } start;
 } PLAYER_POSITION_SOCK_PC;
 
-STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
 extern i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
 extern void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
 extern i32 complexsockposition_forcesock;

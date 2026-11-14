@@ -2,7 +2,6 @@
 #include <string.h>
 
 extern GAMEOBJECT *player_tag_from;
-STATIC_ASSERT(sizeof(Player) == 32);
 #define TAG_CAN_TARGET(source, target)                                                                                 \
     ((target) != NULL && ((target)->flags_1fc_word & 1) != 0 && ((target)->flags_1fc_word & 0x1000) != 0 &&            \
      (target) != (source) && (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 &&                          \

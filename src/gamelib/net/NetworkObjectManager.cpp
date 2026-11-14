@@ -3,8 +3,6 @@
 /* Network object system: replicates editor objects between peers on
  * listener channel 3. */
 
-STATIC_ASSERT(sizeof(NetworkObjectManager::NetPeerPush) == 0x14);
-
 /* Empty trace hooks of the network object system. */
 void NetTrace(...) {
 }

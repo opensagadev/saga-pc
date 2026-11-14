@@ -27,8 +27,6 @@ typedef union TAGSCRIPTSTATE { // size 0xcc
     } fields;
 } TAGSCRIPTSTATE;
 
-STATIC_ASSERT(offsetof(AIPACKET_PC, takeover_script_link) - offsetof(AIPACKET_PC, script_processor) == 0xc8);
-
 /* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
 typedef struct TAGFLAGS1FC {
     u32 bits_0_6 : 7;

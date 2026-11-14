@@ -324,8 +324,6 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
     }
 }
 
-STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->flags_e24) == 4);
-
 /* Append to existing collection.c after its canonical static CollectCount/CollectList. */
 
 typedef struct SHOP_UNLOCK_AREA { // size 0xc

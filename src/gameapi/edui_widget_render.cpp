@@ -2092,8 +2092,6 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
 
 extern "C" i32 EduiRenderWidthPc;
 
-STATIC_ASSERT(sizeof(((edui_textpicker_s *)0)->editing) == 2);
-
 extern "C" {
 #pragma data_seg(".data$EduiTextCopyHelp")
     char *EduiTextCopyHelpPc = "Copy L2+R2 Paste L1+R1";

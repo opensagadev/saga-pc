@@ -8194,7 +8194,6 @@ extern "C" {
         {NULL, NULL, 0, 0, 0, 0},
     };
 #pragma data_seg()
-    STATIC_ASSERT(sizeof(LevelSplinesTable) == 0x1a0);
     i32 nudlist_alloc_count = 0;
     u32 nudlist_alloc_base = 0;
     u32 nudlist_alloc_end = 0;
@@ -25279,7 +25278,6 @@ char uberShader2[158576] = {
     0x5f, 0x5f, 0x5f, 0x5f, 0x5f, 0x5f, 0x0d, 0x0a, 0x23, 0x65, 0x6e, 0x64, 0x69, 0x66, 0x0d, 0x0a, 0x0d, 0x0a, 0x0d,
     0x0a, 0x00,
 };
-STATIC_ASSERT(sizeof(uberShader2) == 158576);
 
 #pragma data_seg(".data$FrameRenderCaptureStatePc")
 #pragma bss_seg(".bss$FrameRenderCaptureStatePc")

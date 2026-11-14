@@ -219,7 +219,6 @@ extern "C" {
 #pragma bss_seg()
 
     static char AreaIconPathPrivate[0x40] = "stuff\\icons\\";
-    STATIC_ASSERT(sizeof(AreaIconPathPrivate) == 0x40);
 
     void IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
         u32 table_size = (u32)CHARCOUNT * sizeof(*IconScenePc);

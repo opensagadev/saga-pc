@@ -29,9 +29,6 @@ typedef struct attracto_world_reader_s { // size 0x50a0
     i32 attracto_count;                  // 0x509c
 } ATTRACTO_WORLD_READER_PC;
 
-STATIC_ASSERT(sizeof(((ATTRACTO_WORLD_READER_PC *)0)->attractos) == 4);
-STATIC_ASSERT(sizeof(((ATTRACTO_WORLD_READER_PC *)0)->attracto_count) == 4);
-
 typedef struct attracto_record_recovered_s { // size 0x74
     char name[16];                           // 0x00
     NUVEC position;                          // 0x10

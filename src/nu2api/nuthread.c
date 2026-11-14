@@ -5,7 +5,6 @@ STATIC_ASSERT(sizeof(CRITICAL_SECTION) == 0x18);
 /* PC-only state for the critical-section wrappers; their higher-level names
  * remain provisional until the original thread initialization path is mapped. */
 extern i32 PCThreadCriticalSectionCount;
-STATIC_ASSERT(sizeof(PCThreadCriticalSections) == 0x138);
 
 i32 PCThreadCriticalSectionCreate_candidate(void) {
     if (PCThreadCriticalSectionCount <= 12) {

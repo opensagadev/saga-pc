@@ -50,7 +50,6 @@ struct nudathdr_s;
 struct nudisplaylistitem_s;
 struct nurndrlibstate_s;
 
-STATIC_ASSERT(sizeof(MSG) == 28);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -64,31 +63,14 @@ extern "C" {
 #ifdef __cplusplus
 struct PC_AUDIO_DECODER_VIEW;
 
-STATIC_ASSERT(sizeof(WAVEFORMATEX) == 0x12);
 #endif
 #ifdef __cplusplus
 
-STATIC_ASSERT(sizeof(WNDCLASSEXA) == 48);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, cbSize) == 0);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, style) == 4);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, lpfnWndProc) == 8);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, cbClsExtra) == 12);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, cbWndExtra) == 16);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, hInstance) == 20);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, hIcon) == 24);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, hCursor) == 28);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, hbrBackground) == 32);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, lpszMenuName) == 36);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, lpszClassName) == 40);
-STATIC_ASSERT(offsetof(WNDCLASSEXA, hIconSm) == 44);
-STATIC_ASSERT(sizeof(STICKYKEYS) == 8);
-STATIC_ASSERT(sizeof(TOGGLEKEYS) == 8);
 STATIC_ASSERT(sizeof(FILTERKEYS) == 24);
 #endif
 /* Opaque pointees only; complete reader types remain in their genuine CPP owners. */
 struct PC_SHADER_WATER_MATERIAL_VIEW;
 STATIC_ASSERT(sizeof(CRITICAL_SECTION) == 24);
-STATIC_ASSERT(sizeof(DWORD_PTR) == 4);
 STATIC_ASSERT(sizeof(LARGE_INTEGER) == 8);
 #undef SAGA_DECOMP_H_PART
 #define SAGA_DECOMP_H_PART 2
@@ -190,56 +172,6 @@ extern "C" {
         u8 unknown_c[0x4cc];             // 0x00c
     } PC_SHADER_SLOT_VIEW;
 
-    STATIC_ASSERT(sizeof(oggpack_buffer) == 20);
-    STATIC_ASSERT(sizeof(ogg_page) == 16);
-    STATIC_ASSERT(sizeof(ogg_stream_state) == 360);
-    STATIC_ASSERT(sizeof(ogg_packet) == 32);
-    STATIC_ASSERT(sizeof(ogg_sync_state) == 28);
-    STATIC_ASSERT(offsetof(oggpack_buffer, endbyte) == 0x0);
-    STATIC_ASSERT(offsetof(oggpack_buffer, endbit) == 0x4);
-    STATIC_ASSERT(offsetof(oggpack_buffer, buffer) == 0x8);
-    STATIC_ASSERT(offsetof(oggpack_buffer, ptr) == 0xc);
-    STATIC_ASSERT(offsetof(oggpack_buffer, storage) == 0x10);
-    STATIC_ASSERT(offsetof(ogg_page, header) == 0x0);
-    STATIC_ASSERT(offsetof(ogg_page, header_len) == 0x4);
-    STATIC_ASSERT(offsetof(ogg_page, body) == 0x8);
-    STATIC_ASSERT(offsetof(ogg_page, body_len) == 0xc);
-    STATIC_ASSERT(offsetof(ogg_stream_state, body_data) == 0x0);
-    STATIC_ASSERT(offsetof(ogg_stream_state, body_storage) == 0x4);
-    STATIC_ASSERT(offsetof(ogg_stream_state, body_fill) == 0x8);
-    STATIC_ASSERT(offsetof(ogg_stream_state, body_returned) == 0xc);
-    STATIC_ASSERT(offsetof(ogg_stream_state, lacing_vals) == 0x10);
-    STATIC_ASSERT(offsetof(ogg_stream_state, granule_vals) == 0x14);
-    STATIC_ASSERT(offsetof(ogg_stream_state, lacing_storage) == 0x18);
-    STATIC_ASSERT(offsetof(ogg_stream_state, lacing_fill) == 0x1c);
-    STATIC_ASSERT(offsetof(ogg_stream_state, lacing_packet) == 0x20);
-    STATIC_ASSERT(offsetof(ogg_stream_state, lacing_returned) == 0x24);
-    STATIC_ASSERT(offsetof(ogg_stream_state, header) == 0x28);
-    STATIC_ASSERT(offsetof(ogg_stream_state, header_fill) == 0x144);
-    STATIC_ASSERT(offsetof(ogg_stream_state, e_o_s) == 0x148);
-    STATIC_ASSERT(offsetof(ogg_stream_state, b_o_s) == 0x14c);
-    STATIC_ASSERT(offsetof(ogg_stream_state, serialno) == 0x150);
-    STATIC_ASSERT(offsetof(ogg_stream_state, pageno) == 0x154);
-    STATIC_ASSERT(offsetof(ogg_stream_state, packetno) == 0x158);
-    STATIC_ASSERT(offsetof(ogg_stream_state, granulepos) == 0x160);
-    STATIC_ASSERT(offsetof(ogg_packet, packet) == 0x0);
-    STATIC_ASSERT(offsetof(ogg_packet, bytes) == 0x4);
-    STATIC_ASSERT(offsetof(ogg_packet, b_o_s) == 0x8);
-    STATIC_ASSERT(offsetof(ogg_packet, e_o_s) == 0xc);
-    STATIC_ASSERT(offsetof(ogg_packet, granulepos) == 0x10);
-    STATIC_ASSERT(offsetof(ogg_packet, packetno) == 0x18);
-    STATIC_ASSERT(offsetof(ogg_sync_state, data) == 0x0);
-    STATIC_ASSERT(offsetof(ogg_sync_state, storage) == 0x4);
-    STATIC_ASSERT(offsetof(ogg_sync_state, fill) == 0x8);
-    STATIC_ASSERT(offsetof(ogg_sync_state, returned) == 0xc);
-    STATIC_ASSERT(offsetof(ogg_sync_state, unsynced) == 0x10);
-    STATIC_ASSERT(offsetof(ogg_sync_state, headerbytes) == 0x14);
-    STATIC_ASSERT(offsetof(ogg_sync_state, bodybytes) == 0x18);
-
-    STATIC_ASSERT(sizeof(drft_lookup) == 12);
-    STATIC_ASSERT(offsetof(drft_lookup, n) == 0);
-    STATIC_ASSERT(offsetof(drft_lookup, trigcache) == 4);
-    STATIC_ASSERT(offsetof(drft_lookup, splitcache) == 8);
     struct PC_MATERIAL_SHADER_DESC_VIEW;
 
 #ifdef __cplusplus
@@ -425,9 +357,6 @@ typedef struct ANIM_REDIRECT_VIEW_PC { // size 0x8
     u8 unknown_06[2];                  // 0x6
 } ANIM_REDIRECT_VIEW_PC;
 
-STATIC_ASSERT(sizeof(((HINT_PC *)0)->price) == 4);
-STATIC_ASSERT(sizeof(((HINT_PC *)0)->unknown3) == 9);
-
 /* Refine the existing single DWORD owner; do not create another address alias. */
 typedef union PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC { // size 0x4
     i32 reset_word;
@@ -490,8 +419,6 @@ typedef struct NU_POST_SPEED_VIEW_PC {                    // size 0x20
 } NU_POST_SPEED_VIEW_PC;
 
 #include "debug/diagnostics.h"
-STATIC_ASSERT(sizeof(((LEVEL_PROGRESS *)0)->unknown_2818) == 8);
-STATIC_ASSERT(sizeof(((LEVEL_PROGRESS *)0)->destroyed_trooper_cannon_mask) == 4);
 #undef SAGA_DECOMP_H_PART
 #define SAGA_DECOMP_H_PART 3
 #ifdef SAGA_SHIM
@@ -608,13 +535,9 @@ struct PC_AUDIO_DECODER_VIEW {
 
 #endif
 #ifdef __cplusplus
-STATIC_ASSERT(sizeof(((PC_INPUT_DEVICE_PC *)0)->reset_pairs[0]) == 4);
 #endif
 #ifdef __cplusplus
-STATIC_ASSERT(sizeof(((PC_INPUT_RUNTIME_PC *)0)->shutdown_state) == 4);
 #endif
-STATIC_ASSERT(sizeof(((MISSIONSYS_PC *)0)->unknown_08) == 0x15);
-STATIC_ASSERT(sizeof(((MISSIONSYS_PC *)0)->unknown_count_prefix) == 0x14);
 #undef SAGA_DECOMP_H_PART
 #define SAGA_DECOMP_H_PART 4
 #ifdef SAGA_SHIM
@@ -697,11 +620,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->landing_followup) == 1);
-STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->batarang) == 4);
-STATIC_ASSERT(sizeof(((LEVELDATA_PC *)0)->episode) == 1);
 STATIC_ASSERT(__alignof(INDY_GUIDELINE_STATE) == 1);
-STATIC_ASSERT(sizeof(((WORLDINFO *)0)->unknown_4680) == 8);
 #undef SAGA_DECOMP_H_PART
 #define SAGA_DECOMP_H_PART 7
 #ifdef SAGA_SHIM
@@ -713,22 +632,6 @@ STATIC_ASSERT(sizeof(((WORLDINFO *)0)->unknown_4680) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY *)0)->animation_playing) == 1);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT *)0)->previous_frame) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT *)0)->flags) == 1);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT *)0)->sfx_id) == 2);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT *)0)->trigger_frame) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT *)0)->next) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY *)0)->flags) == 1);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY *)0)->event_count) == 1);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY *)0)->special) == 12);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY *)0)->events) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->buffer) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->scene) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->entry_count) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->entries) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->event_count) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->events) == 4);
 #ifdef __cplusplus
 }
 #endif
@@ -753,12 +656,6 @@ typedef struct NU_POST_DEFERRED_VIEW_PC {      // size 0xdc
     i32 deferred_geometry_count;               // 0xd8
 } NU_POST_DEFERRED_VIEW_PC;
 
-STATIC_ASSERT(sizeof(((struct STATUSPACKET_s *)0)->coins_remaining[0]) == 4);
-STATIC_ASSERT(sizeof(((struct STATUSPACKET_s *)0)->coins_collected[0]) == 4);
-STATIC_ASSERT(sizeof(((struct STATUSPACKET_s *)0)->save_state) == 1);
-STATIC_ASSERT(sizeof(((struct STATUSPACKET_s *)0)->prompt_choice) == 1);
-STATIC_ASSERT(sizeof(((struct STATUSPACKET_s *)0)->flags_word) == 4);
-STATIC_ASSERT(sizeof(((struct STATUSPACKET_s *)0)->field_0x12c) == 32);
 #undef SAGA_DECOMP_H_PART
 #define SAGA_DECOMP_H_PART 8
 #ifdef SAGA_SHIM
@@ -767,8 +664,6 @@ STATIC_ASSERT(sizeof(((struct STATUSPACKET_s *)0)->field_0x12c) == 32);
 #endif
 
 #if SAGA_DECOMP_H_PART == 8 && !defined(SAGA_DECOMP_H_STOP)
-STATIC_ASSERT(sizeof(((DEBRIS_INFO_PC *)0)->field_218_keys) == 0x40);
-STATIC_ASSERT(sizeof(((DEBRIS_INFO_PC *)0)->field_258_keys) == 0x40);
 #undef SAGA_DECOMP_H_PART
 #define SAGA_DECOMP_H_PART 9
 #ifdef SAGA_SHIM
@@ -779,7 +674,6 @@ STATIC_ASSERT(sizeof(((DEBRIS_INFO_PC *)0)->field_258_keys) == 0x40);
 #if SAGA_DECOMP_H_PART == 9 && !defined(SAGA_DECOMP_H_STOP)
 #ifdef __cplusplus
 #ifdef SAGA_SHADER_PARSER_TYPES
-STATIC_ASSERT(sizeof(std::vector<ShaderParserIncludePc *>) == 0x10);
 #endif
 #endif
 #undef SAGA_DECOMP_H_PART

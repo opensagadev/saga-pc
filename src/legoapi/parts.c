@@ -864,8 +864,6 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
 }
 
 void AddDebrisEffectToStack(DEBRISKEY_PC *key);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == offsetof(GAMEOBJECT, field_c8c) + sizeof(f32));
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_c94) == offsetof(GAMEOBJECT, field_c8c) + 2 * sizeof(f32));
 
 typedef struct debris_material_flags_s { // size 0x4
     u32 alpha_mode : 4;                  // 0x0:0

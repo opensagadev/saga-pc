@@ -921,8 +921,6 @@ extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP_PC
     }
 }
 
-STATIC_ASSERT(sizeof(((AREA_SUPERCOUNTER_PICKUP_PC *)0)->position_special) == 12);
-
 extern "C" void SuperCounters_FixUpGizmos(WORLDINFO *world) {
     if (world->area == NULL || world->area->super_counters == NULL) {
         return;

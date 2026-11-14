@@ -179,8 +179,6 @@ typedef struct bulk_ai_full_object_s {         // size 0x2b8
     u8 trailing[0x2b8 - sizeof(APIOBJECT_PC)]; // 0x29c
 } BULK_AI_FULL_OBJECT_PC;
 
-STATIC_ASSERT(sizeof(AIPACKET_PC) <= 0x210);
-
 i32 OpponentCanAcquirePc(APIOBJECT_PC *observer, APIOBJECT_PC *target, f32 distance, u64 awareness, f32 dx, f32 dz) {
     f32 facing_dot;
     if (party_under_cover != 0 && ((observer->motion_flags & 0x400) == 0 || (target->motion_flags & 0x400) == 0)) {

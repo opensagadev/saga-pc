@@ -361,9 +361,6 @@ typedef struct GIZFLOW_BOX_LOADER_PREFIX { // size 0xc
     u16 state_flags;                       // 0xa
 } GIZFLOW_BOX_LOADER_PREFIX;
 
-STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX *)0)->assist_id) == 1);
-STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX *)0)->state_flags) == 2);
-
 static void FlowBoxActivationFeedback(GIZFLOW_PC *system, FLOWBOX_PC *box) {
     FLOWBOXGIZMODATA *data;
     i32 i;

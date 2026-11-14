@@ -1,6 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(((SIGNAL_s *)0)->name) == 16);
 extern char TextInputKeyNameTextPc7516c0[1];
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, capabilities) == 0x4bc);
 

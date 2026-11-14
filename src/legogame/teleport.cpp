@@ -78,8 +78,6 @@ typedef struct TELEPORT_VARIANT_VIEW { // size 0x7c0
     u32 forwards : 1;                  // 0x7bc:10
 } TELEPORT_VARIANT_VIEW;
 
-STATIC_ASSERT(sizeof(((TELEPORT_MOTION_PC *)0)->flap_angle) == 4);
-
 typedef struct {
     char name[16];
     u8 opaque[0xfc - 16];

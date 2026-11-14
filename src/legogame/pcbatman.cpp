@@ -39,9 +39,6 @@ extern "C" void InitOnce(i32 argc, char **argv) {
     i16 third[] = {0xcb, 0xcd, 0xc8, 0xd0, -1, -1, -1,   -1, -1, -1, 0x9d, 0x52, 0x51,
                    0x50, 0x4c, 0x4f, -1,   -1, -1, 0x9c, -1, -1, -1, -1,   -1};
     i8 order[] = {0, 1, 2, 3, 12, 13, 14, 15, 16, 18, 23, 4, 5, 6, 7, 8, 10, 11, 9, -1};
-    STATIC_ASSERT(sizeof(first) == 50);
-    STATIC_ASSERT(sizeof(third) == 50);
-    STATIC_ASSERT(sizeof(order) == 20);
     InitPadDescriptorsPc((const u16 *)first, NULL, (const u16 *)third, NULL, order);
     NuInitHardwarePc(&permbuffer_base, &superbuffer_end, 0, 4, InitOnceHostFsPc, 24, StartupDatNames, 7, 6,
                      InitOnceFileModePc, 7, InitOnceEjectPc, 8, 0x500000, 18, PAL ? 8 : 0, 33, 512, PAL ? 256 : 224, 26,

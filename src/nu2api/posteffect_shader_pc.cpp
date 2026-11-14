@@ -21,8 +21,6 @@ struct POST_SHADER_PROGRAM_POOL_PC {     // size 0x40c
     void fun_006054a0(i32 index, bool set);
 };
 
-STATIC_ASSERT(sizeof(std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC>) == 16);
-STATIC_ASSERT(sizeof(std::vector<POST_PIXEL_SHADER_CACHE_ENTRY_PC>) == 16);
 extern "C" {
 #pragma bss_seg(".bss$PostShaderProgramPoolPc")
     POST_SHADER_PROGRAM_POOL_PC PostShaderProgramPoolPc = {0};

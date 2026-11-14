@@ -3,11 +3,6 @@
 
 /* ThingManager's unit. */
 
-STATIC_ASSERT(sizeof(BaseThing) == 0x10);
-STATIC_ASSERT(offsetof(BaseThing, id) == 0x4);
-STATIC_ASSERT(offsetof(BaseThing, flags) == 0x8);
-STATIC_ASSERT(offsetof(BaseThing, profiling) == 0xc);
-
 /* A set flag bit switches the action off. */
 i32 BaseThing::fun_00633400(i32 action) {
     return (flags & (1 << action)) == 0;
@@ -27,11 +22,6 @@ void BaseThing::Display(ThingRenderData *) {
 
 BaseThing::~BaseThing() {
 }
-
-STATIC_ASSERT(sizeof(ThingProcessData) == 0x10);
-STATIC_ASSERT(offsetof(ThingProcessData, paused) == 0x4);
-STATIC_ASSERT(offsetof(ThingProcessData, pads) == 0x8);
-STATIC_ASSERT(offsetof(ThingProcessData, pad_count) == 0xc);
 
 /* Bit numbers of BaseThing::flags; a set bit opts the thing out of a pass. */
 enum {

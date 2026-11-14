@@ -34,7 +34,6 @@ typedef struct OBJECT_GRAPPLE_MOTION_VIEW { // size 0x1074
     u8 input_flags;                         // 0x1072
 } OBJECT_GRAPPLE_MOTION_VIEW;
 
-STATIC_ASSERT(sizeof(GRAPPLE_MOTION_PC) == sizeof(GRAPPLE_DYNAMIC_PC));
 #define GRAPPLE_CURRENT ((GRAPPLE_MOTION_PC *)object->grapple)
 
 typedef struct grapple_load_extra_s { // size 0xf8

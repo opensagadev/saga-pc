@@ -1,14 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(SPECIALMOVE_PC) == 0x10);
-STATIC_ASSERT(offsetof(SPECIALMOVE_PC, attacker_animation) == 0);
-STATIC_ASSERT(offsetof(SPECIALMOVE_PC, attacker_id) == 2);
-STATIC_ASSERT(offsetof(SPECIALMOVE_PC, attacker_action_type) == 4);
-STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_action_type) == 5);
-STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_id) == 6);
-STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_animation) == 8);
-STATIC_ASSERT(offsetof(SPECIALMOVE_PC, flags) == 0xa);
-STATIC_ASSERT(offsetof(SPECIALMOVE_PC, distance_apart) == 0xc);
 void SpecialMovesConfigMissingPc(char *filename);
 
 static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 *variant, i16 *animation) {

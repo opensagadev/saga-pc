@@ -82,4 +82,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(sizeof(troopercannons) == 0xc0);

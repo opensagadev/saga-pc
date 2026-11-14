@@ -731,9 +731,6 @@ void SoundVoiceManagerPC::Init(i32 unused, u8 option5_value, u8 option6_value) {
     NuSound3StereoStreams[1] = new SoundQueue(SoundVoiceManager.factory, 6);
 }
 
-STATIC_ASSERT(offsetof(IDirectSound8Vtbl, create_sound_buffer) == 0xc);
-STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, lock) == 0x2c);
-STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, unlock) == 0x4c);
 extern "C" i32 PCSampleLoadEnabledPc;
 extern "C" i32 PCSoundSampleLimitPc;
 extern "C" const GUID PCSampleBufferAlgorithmPc;

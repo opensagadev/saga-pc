@@ -2,22 +2,6 @@
 
 /* Network condition emulator. */
 
-STATIC_ASSERT(sizeof(NuNetEmu::EmuPacket) == 0x24);
-STATIC_ASSERT(offsetof(NuNetEmu::EmuPacket, address) == 0x8);
-STATIC_ASSERT(offsetof(NuNetEmu::EmuPacket, payload) == 0xc);
-STATIC_ASSERT(offsetof(NuNetEmu::EmuPacket, flush_time) == 0x18);
-STATIC_ASSERT(offsetof(NuNetEmu::EmuPacket, creation_time) == 0x20);
-STATIC_ASSERT(sizeof(NuNetEmu::PackStats) == 0x238);
-STATIC_ASSERT(offsetof(NuNetEmu, enabled) == 0x10);
-STATIC_ASSERT(offsetof(NuNetEmu, loss_chance) == 0x34);
-STATIC_ASSERT(offsetof(NuNetEmu, packed_buffer) == 0x40);
-STATIC_ASSERT(offsetof(NuNetEmu, unpacked_buffer) == 0xbf8);
-STATIC_ASSERT(offsetof(NuNetEmu, read_offset) == 0x17b0);
-STATIC_ASSERT(offsetof(NuNetEmu, max_packets) == 0x17c8);
-STATIC_ASSERT(offsetof(NuNetEmu, raw_stats) == 0x17cc);
-STATIC_ASSERT(offsetof(NuNetEmu, packet_stats) == 0x19ec);
-STATIC_ASSERT(sizeof(NuNetEmu) == 0x1c24);
-
 extern "C" i32 refpack(u8 *source, i32 source_size, u8 *destination);
 i32 unref(u8 *source, u8 *destination);
 

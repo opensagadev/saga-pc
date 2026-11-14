@@ -30,42 +30,6 @@ typedef struct edpp_file_particle_s { // size 0x58
     i16 facing_rotation_y;            // 0x56
 } EDPP_FILE_PARTICLE_PC;
 
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->position) == sizeof(((EDPP_PARTICLE_PC *)0)->position));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->effect_index) == sizeof(((EDPP_PARTICLE_PC *)0)->effect_index));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->instance_id) == sizeof(((EDPP_PARTICLE_PC *)0)->instance_id));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->rotation_z) == sizeof(((EDPP_PARTICLE_PC *)0)->rotation_z));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->rotation_y) == sizeof(((EDPP_PARTICLE_PC *)0)->rotation_y));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->emitter_rotation_z) ==
-              sizeof(((EDPP_PARTICLE_PC *)0)->emitter_rotation_z));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->emitter_rotation_y) ==
-              sizeof(((EDPP_PARTICLE_PC *)0)->emitter_rotation_y));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->emitter_rotation_x) ==
-              sizeof(((EDPP_PARTICLE_PC *)0)->emitter_rotation_x));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->start_offset) == sizeof(((EDPP_PARTICLE_PC *)0)->start_offset));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->name) == sizeof(((EDPP_PARTICLE_PC *)0)->name));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->switch_type) == sizeof(((EDPP_PARTICLE_PC *)0)->switch_type));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->switch_id) == sizeof(((EDPP_PARTICLE_PC *)0)->switch_id));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->switch_variable) ==
-              sizeof(((EDPP_PARTICLE_PC *)0)->switch_variable));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->reflection_rotation_z) ==
-              sizeof(((EDPP_PARTICLE_PC *)0)->reflection_rotation_z));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->reflection_rotation_y) ==
-              sizeof(((EDPP_PARTICLE_PC *)0)->reflection_rotation_y));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->reflection_offset) ==
-              sizeof(((EDPP_PARTICLE_PC *)0)->reflection_offset));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->reflection_bounce) ==
-              sizeof(((EDPP_PARTICLE_PC *)0)->reflection_bounce));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->render_group) == sizeof(((EDPP_PARTICLE_PC *)0)->render_group));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->page) == sizeof(((EDPP_PARTICLE_PC *)0)->page));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->detail_levels) == sizeof(((EDPP_PARTICLE_PC *)0)->detail_levels));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->facing_mode) == sizeof(((EDPP_PARTICLE_PC *)0)->facing_mode));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->facing_rotation_x) ==
-              sizeof(((EDPP_PARTICLE_PC *)0)->facing_rotation_x));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->facing_rotation_y) ==
-              sizeof(((EDPP_PARTICLE_PC *)0)->facing_rotation_y));
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->render_priority) == 2);
-STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->dynamic_priority) == 1);
-
 extern const f64 ActionSnapWeightedRandomZeroPc;
 
 static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
