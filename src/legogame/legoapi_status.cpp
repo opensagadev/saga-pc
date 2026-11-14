@@ -1,6 +1,17 @@
 #include <stdio.h>
 #include "saga.h"
+i32 StatusNewMinikitCountPc = 0;
+i16 StatusNewCharacterIdsPc[8] = {0};
+i32 currentminikit = 0;
+u32 StatusCollectedSuitBitsPc = 0;
+f32 pop_timer = 0.0f;
 static i32 goldbrickmsgcount = 0;
+i32 DrawGoldBrick_Stage = 0;
+PART_LIGHTING_DATA_PC StatusMiniKitPartLightingPc = {0};
+i32 DrawGoldBrick_Phase = 0;
+struct STATUS_STAGE_s *StatusStages = 0;
+i32 StatusDemoOptionPc = 0;
+static NUMTX RenderStatusMatrixPrivate = {0};
 
 /* Walks the two adjacent 0x14-byte rumble records. */
 typedef struct STATUS_RUMBLE_PAIR_PC {
@@ -103,8 +114,6 @@ static void StatusMiniKitRotateZPc(NUMTX *m, i32 a) {
 }
 
 extern "C" {
-    i32 DrawGoldBrick_Stage = 0;
-    i32 DrawGoldBrick_Phase = 0;
 
     void SetDrawGoldBrick(STATUSPACKET_s *packet, i32 unused) {
         i32 index = packet->current_gold_brick;
@@ -115,8 +124,6 @@ extern "C" {
             DrawGoldBrick_Phase = stage->field_0x14;
         }
     }
-
-    static NUMTX RenderStatusMatrixPrivate = {0};
 
     void DrawStatusText(char *text, u16 angle, f32 x, f32 y, f32 scale, u32 colour, i32 alignment) {
         NUVEC origin = {0.0f, 0.0f, 800.0f};
@@ -340,8 +347,6 @@ extern "C" {
         ++packet->stage_count;
     }
 
-    i16 StatusNewCharacterIdsPc[8] = {0};
-
     i32 newCharactersCollected(STATUSPACKET_s *packet) {
         i32 count = 0;
         if (StartupGameFlag1 == 0) {
@@ -396,10 +401,6 @@ extern "C" {
         packet->field_0x68 = delay;
         packet->init_callback = init;
     }
-
-    i32 StatusNewMinikitCountPc = 0;
-    i32 currentminikit = 0;
-    u32 StatusCollectedSuitBitsPc = 0;
 
     void InitStatusScreen(WORLDINFO *world) {
         STATUSPACKET_s *p = &StatusPacket;
@@ -909,8 +910,18 @@ extern "C" {
         return position;
     }
 
+    f32 StatusCountdownLimitPc = 6.0f;
     f32 slidetime = 0.25f;
-    f32 pop_timer = 0.0f;
+    f32 StatusGoldBrickXPc = 0.715f;
+    f32 StatusGoldBrickYPc = -0.666f;
+    f32 StatusGoldBrickScalePc = 0.6f;
+    f32 DrawStatusScaleXPc = 350.0f;
+    f32 DrawStatusScaleYPc = 300.0f;
+    f32 StatusMiniKitDirectionOffsetPc = 0.035f;
+    f32 StatusPromptSingleYPc = 0.125f;
+    f32 StatusPromptHintYPc = 0.39f;
+    f32 StatusPromptStepYPc = -0.2f;
+    f32 StatusBonusTimeYPc = -0.5f;
 }
 
 i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
@@ -930,7 +941,6 @@ i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
 }
 
 extern "C" {
-    f32 StatusMiniKitDirectionOffsetPc = 0.035f;
     STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10] = {0};
 }
 
@@ -1026,9 +1036,7 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
     }
 }
 
-extern "C" {
-    PART_LIGHTING_DATA_PC StatusMiniKitPartLightingPc = {0};
-}
+extern "C" {}
 
 void AddStatusMiniKitParts(void) {
     f32 delay = 0.0f;
@@ -1088,9 +1096,6 @@ void AddStatusMiniKitParts(void) {
 }
 
 extern "C" {
-    f32 StatusPromptSingleYPc = 0.125f;
-    f32 StatusPromptHintYPc = 0.39f;
-    f32 StatusPromptStepYPc = -0.2f;
 
     void Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha) {
         AREA_DATA_PC *areas = ADataList;
@@ -1194,8 +1199,6 @@ extern "C" {
         }
     }
 
-    f32 StatusBonusTimeYPc = -0.5f;
-
     void DrawBonusTime(STATUSPACKET_s *packet, f32 position, i32 alpha) {
         f32 y = StatusBonusTimeYPc * position;
         char time[256];
@@ -1234,26 +1237,17 @@ extern "C" {
         }
     }
 
-    i32 StatusDemoOptionPc = 0;
 #pragma data_seg(".data$StatusCountdownLimitPc")
-    extern "C" {
-        f32 StatusCountdownLimitPc = 6.0f;
-    }
+    extern "C" {}
 #pragma data_seg()
 #pragma data_seg(".data$StatusGoldBrickXPc")
-    extern "C" {
-        f32 StatusGoldBrickXPc = 0.715f;
-    }
+    extern "C" {}
 #pragma data_seg()
 #pragma data_seg(".data$StatusGoldBrickYPc")
-    extern "C" {
-        f32 StatusGoldBrickYPc = -0.666f;
-    }
+    extern "C" {}
 #pragma data_seg()
 #pragma data_seg(".data$StatusGoldBrickScalePc")
-    extern "C" {
-        f32 StatusGoldBrickScalePc = 0.6f;
-    }
+    extern "C" {}
 #pragma data_seg()
 }
 

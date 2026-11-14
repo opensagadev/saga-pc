@@ -13600,14 +13600,6 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$DrawStatusScaleXPc")
-    f32 DrawStatusScaleXPc = 350.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$DrawStatusScaleYPc")
-    f32 DrawStatusScaleYPc = 300.0f;
-#pragma data_seg()
-
 #pragma data_seg(".data$DrawCharIconPanelPc")
     i32 drawcharicon_i_panel = -1;
 #pragma data_seg()
@@ -24355,7 +24347,6 @@ extern "C" {
 }
 
 extern "C" {
-    struct STATUS_STAGE_s *StatusStages = 0;
 
     STATUSPACKET_s StatusPacket = {0};
 
