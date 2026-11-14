@@ -114,9 +114,9 @@ typedef struct cut_instance_reader_s {
     f32 current_frame;
 } CUT_INSTANCE_READER_PC;
 
-extern i16 CharacterFixupIdPc007f19ac;
-extern i16 CharacterFixupIdPc007f19b0;
-extern i16 CharacterFixupIdPc007f19b4;
+extern i16 dat_007f19ac;
+extern i16 dat_007f19b0;
+extern i16 dat_007f19b4;
 void ChrisAllocLevelStuff(WORLDINFO *world);
 void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
 /* PodRace_A mine spawner and renderer. */
@@ -221,10 +221,10 @@ void GunganA_Init(WORLDINFO *world) {
     i32 i;
     if (netclient == 0) {
         memset(&gungan_a, 0, sizeof(gungan_a));
-        gungan_a.models[0] = CharacterFixupIdPc007f19ac;
-        gungan_a.models[1] = CharacterFixupIdPc007f19b0;
-        gungan_a.models[2] = CharacterFixupIdPc007f19b4;
-        gungan_a.models[3] = CharacterFixupIdPc007f19b0;
+        gungan_a.models[0] = dat_007f19ac;
+        gungan_a.models[1] = dat_007f19b0;
+        gungan_a.models[2] = dat_007f19b4;
+        gungan_a.models[3] = dat_007f19b0;
         for (i = 0; i < 32; i++) {
             sprintf(name, "origin_%d", i);
             gungan_a.origins[i] = AIPathFindLocator(world->ai_sys, name);
@@ -1121,13 +1121,13 @@ void PodRaceA_AlwaysUpdate(WORLDINFO *world) {
     UpdatePodRaceLapDisplay(FRAMETIME);
     if (Lap == 3) {
         if (InStory() != 0) {
-            if (LevelFixupSlotPc0087b0b8 != NULL) {
-                other_level_override = LevelFixupSlotPc0087b0b8->index;
+            if (dat_0087b0b8 != NULL) {
+                other_level_override = dat_0087b0b8->index;
                 return;
             }
         }
-        if (LevelFixupSlotPc0087b0bc != NULL) {
-            other_level_override = LevelFixupSlotPc0087b0bc->index;
+        if (dat_0087b0bc != NULL) {
+            other_level_override = dat_0087b0bc->index;
         }
     }
 }
@@ -1179,7 +1179,7 @@ i32 PodSeekMushCutSound(void) {
 }
 
 i32 PodSeekSubCutSound(void) {
-    if (WORLD->current_level == LevelFixupSlotPc0087b0b4 && Lap == 3 && GameCam->sock_position.distance > 195.0f) {
+    if (WORLD->current_level == dat_0087b0b4 && Lap == 3 && GameCam->sock_position.distance > 195.0f) {
         if (PodRacePc->mushroom_timer < PodRacePc->previous_lap_display - 2.8f + GameCam->sock_position.distance - 195.0) {
             return 1;
         }
@@ -1531,10 +1531,10 @@ f32 PodSprint_InStartCountdown(WORLDINFO *world) {
 
 float PodSprint_RollMul(GAMEOBJECT *object) {
     i16 id = ((i16)(object->id));
-    if (id == FreePlayId007f1a98 || id == VehicleBoltId7f1a2c || id == VehicleBoltId7f1a9c) {
+    if (id == dat_007f1a98 || id == dat_007f1a2c || id == dat_007f1a9c) {
         return 0.6f;
     }
-    if (id == id_XWING || id == VehicleBoltId7f1a24 || id == VehicleBoltId7f19a4 || id == id_NEW_REPUBLIC_GUNSHIP) {
+    if (id == id_XWING || id == dat_007f1a24 || id == dat_007f19a4 || id == id_NEW_REPUBLIC_GUNSHIP) {
         return 0.8f;
     }
     return 1.0f;

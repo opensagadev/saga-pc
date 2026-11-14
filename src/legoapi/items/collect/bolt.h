@@ -50,18 +50,18 @@ typedef struct weapon_ammo_s {    // size 0x8
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 VehicleBoltId7f190c;
-    extern i16 VehicleBoltId7f1a38;
-    extern i16 VehicleBoltId7f1a9c;
-    extern i16 VehicleBoltId7f1aa0;
-    extern i16 VehicleBoltId7f1aac;
-    extern i16 VehicleBoltId7f1ad8;
-    extern i16 VehicleBoltId7f1aec;
-    extern i16 VehicleBoltId7f1af0;
-    extern i16 VehicleBoltId7f1b00;
-    extern i16 VehicleBoltId7f1b04;
-    extern i16 VehicleBoltId7f1b08;
-    extern i16 VehicleBoltId7f1b0c;
+    extern i16 dat_007f190c;
+    extern i16 dat_007f1a38;
+    extern i16 dat_007f1a9c;
+    extern i16 dat_007f1aa0;
+    extern i16 dat_007f1aac;
+    extern i16 dat_007f1ad8;
+    extern i16 dat_007f1aec;
+    extern i16 dat_007f1af0;
+    extern i16 dat_007f1b00;
+    extern i16 dat_007f1b04;
+    extern i16 dat_007f1b08;
+    extern i16 dat_007f1b0c;
 #ifdef __cplusplus
 }
 #endif

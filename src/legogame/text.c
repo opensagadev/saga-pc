@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-extern i16 TextIdPc880894;
-extern i16 TextIdPc880898;
+extern i16 dat_00880894;
+extern i16 dat_00880898;
 
 void Text_SetLanguage_Game(i32 language) {
     switch (language) {
@@ -81,11 +81,11 @@ void Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
 
     buffer->addr = ((u32)string_buffer + 3U) & ~3U;
 
-    if (TTab[TextIdPc880894] != NULL) {
-        NuStrCpy(Game.customiser_start[0].name, TTab[TextIdPc880894]);
+    if (TTab[dat_00880894] != NULL) {
+        NuStrCpy(Game.customiser_start[0].name, TTab[dat_00880894]);
     }
-    if (TTab[TextIdPc880898] != NULL) {
-        NuStrCpy(Game.customiser_start[1].name, TTab[TextIdPc880898]);
+    if (TTab[dat_00880898] != NULL) {
+        NuStrCpy(Game.customiser_start[1].name, TTab[dat_00880898]);
     }
     FinishWeirdoNames(-1);
     Customiser_InitNames(CharacterCustomiser);

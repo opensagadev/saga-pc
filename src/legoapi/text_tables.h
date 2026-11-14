@@ -9,22 +9,22 @@
 extern "C" {
 #endif
     extern i16 tACCEPT;
-    extern i16 TextIdPc88073c;
-    extern i16 TextIdPc88071c;
-    extern i16 TextIdPc8806e4;
-    extern i16 TextIdPc8808d0;
-    extern i16 TextIdPc88075c;
-    extern i16 TextIdPc8806f4;
-    extern i16 TextIdPc88072c;
-    extern i16 TextIdPc8808d4;
-    extern i16 TextIdPc880748;
-    extern i16 TextIdPc880740;
-    extern i16 TextIdPc880844;
-    extern i16 TextIdPc880eb0;
-    extern i16 TextIdPc8810c0;
+    extern i16 dat_0088073c;
+    extern i16 dat_0088071c;
+    extern i16 dat_008806e4;
+    extern i16 dat_008808d0;
+    extern i16 dat_0088075c;
+    extern i16 dat_008806f4;
+    extern i16 dat_0088072c;
+    extern i16 dat_008808d4;
+    extern i16 dat_00880748;
+    extern i16 dat_00880740;
+    extern i16 dat_00880844;
+    extern i16 dat_00880eb0;
+    extern i16 dat_008810c0;
     extern i16 PCArcadeLevelText;
 
-    extern i16 TextIdPc880818;
+    extern i16 dat_00880818;
 #ifdef __cplusplus
 }
 #endif

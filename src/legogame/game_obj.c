@@ -24,7 +24,7 @@ extern u8 SuperCarryPlayerRgb[2][3];
 extern i32 FalconDebKey[2];
 void DieRumble(GAMEOBJECT *);
 void GetTakeOverPos(GAMEOBJECT *, NUVEC *);
-extern i16 CharacterFixupIdPc007f18c4;
+extern i16 dat_007f18c4;
 
 typedef struct kill_zipup_s {
     u8 unknown_00[0x68];
@@ -2543,7 +2543,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         } else if (object->character_data->move_fn == Move_CANNON) {
             debris[0] = 75;
             debris[1] = 117;
-        } else if (object->id == (u16)VehicleBoltId7f1910) {
+        } else if (object->id == (u16)dat_007f1910) {
             debris[0] = 38;
             part_debris = 0;
         } else if (object->id == (u16)id_CLONEWALKER || object->id == (u16)id_ATST_LOWRES) {
@@ -2555,15 +2555,15 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         } else if (object->id == (u16)id_ATAT) {
             GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
             NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
-        } else if (object->id == (u16)id_XWING || object->id == (u16)VehicleBoltId7f1a24 || object->id == (u16)VehicleBoltId7f19a4 ||
-                   object->id == (u16)id_TIEFIGHTER || object->id == (u16)VehicleBoltId7f1a28 || object->id == (u16)VehicleBoltId7f196c ||
-                   object->id == (u16)id_TIEBOMBER || object->id == (u16)VehicleBoltId7f1a2c || object->id == (u16)VehicleBoltId7f195c) {
+        } else if (object->id == (u16)id_XWING || object->id == (u16)dat_007f1a24 || object->id == (u16)dat_007f19a4 ||
+                   object->id == (u16)id_TIEFIGHTER || object->id == (u16)dat_007f1a28 || object->id == (u16)dat_007f196c ||
+                   object->id == (u16)id_TIEBOMBER || object->id == (u16)dat_007f1a2c || object->id == (u16)dat_007f195c) {
             debris[0] = 34;
             if (WORLD->current_level == DEATHSTARRESCUEE_LDATA && object->field_280 == 0xff) {
                 GameCam_Judder(GameCam, qrand() < 32768 ? -0.75f : 0.75f, 2, NULL);
                 NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
             }
-        } else if (object->id == (u16)VehicleBoltId7f19a8) {
+        } else if (object->id == (u16)dat_007f19a8) {
             debris[0] = 34;
         } else if (object->id == (u16)id_MOUSEDROID) {
             debris[0] = 69;
@@ -2582,9 +2582,9 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
                 part_debris = 3;
             }
             PlaySfx("exp_thermalDet", &object->collision_position);
-        } else if (object->id == (u16)CharacterFixupIdPc007f18c4) {
+        } else if (object->id == (u16)dat_007f18c4) {
             part_debris = 5;
-        } else if (object->id == (u16)VehicleBoltId7f18b4) {
+        } else if (object->id == (u16)dat_007f18b4) {
             debris[0] = 130;
             debris[1] = 133;
         }

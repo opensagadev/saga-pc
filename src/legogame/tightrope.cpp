@@ -36,7 +36,7 @@ typedef struct tightrope_progress_recovered_s {
 } TIGHTROPE_PROGRESS_PC;
 
 extern "C" {
-    extern char TextInputKeyNameTextPc7516c0[1];
+    extern char dat_007516c0[1];
 }
 
 typedef struct tightrope_movement_s {
@@ -368,7 +368,7 @@ extern "C" {
         char *name = TightRopeRegistryNamePc;
         TightRopeAddType = Default_ADDGIZMOTYPE;
         TightRopeAddType.name = name;
-        TightRopeAddType.prefix = TextInputKeyNameTextPc7516c0;
+        TightRopeAddType.prefix = dat_007516c0;
         TightRopeAddType.fns.options = 8;
         TightRopeAddType.fns.get_max_gizmos_fn = (i32(*)(void *))TightRopes_GetMaxGizmos;
         TightRopeAddType.fns.add_gizmos_fn = (void *)TightRopes_AddGizmos;

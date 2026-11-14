@@ -249,10 +249,10 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
     } else if (alpha > 1.0f) {
         alpha = 1.0f;
     }
-    NuStrCpy(text, TTab[TextIdPc880f9c]);
+    NuStrCpy(text, TTab[dat_00880f9c]);
     if (HubBothTrueJediGoldBricks != 0) {
         NuStrCat(text, " ");
-        NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4]);
+        NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? dat_008808a8 : dat_008808a4]);
     }
     Text3DEx(text, 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale, 0, 255, 255, 255,
              (u8)(alpha * 128.0f));
@@ -517,8 +517,8 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
         } else if (title_alpha > 1.0f) {
             title_alpha = 1.0f;
         }
-        Text3DEx(TTab[TextIdPc8808d0], 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale,
-                 0, 255, 255, 255, (u8)(title_alpha * 128.0));
+        Text3DEx(TTab[dat_008808d0], 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale, 0,
+                 255, 255, 255, (u8)(title_alpha * 128.0));
         return;
     }
     if (stage->field_0x12 == 0) {
@@ -559,7 +559,7 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
 
 void AllMiniKits_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
-    AddToCollection(VehicleBoltId7f195c);
+    AddToCollection(dat_007f195c);
     NextStatusStage(packet);
 }
 
@@ -630,15 +630,15 @@ void AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 cur
             }
         }
         if (icon_alpha > 0.0f) {
-            DrawCharIcon(VehicleBoltId7f195c, 0.0f,
+            DrawCharIcon(dat_007f195c, 0.0f,
                          (sliding ? (1.0f - NuTrigTable[((i32)(icon_alpha * 16384.0f) >> 1) & 0x7fff]) * -0.5f : 0.0f) + 0.225f, 0.0f, 0.4f,
                          0xa7, icon_alpha, icon_alpha, 1, NULL);
-            SmartTextEx(TTab[CDataList[VehicleBoltId7f195c].name_id], 0.0f, -0.1f, 1.0f, StatusAllMiniKitsCharacterTextScale,
+            SmartTextEx(TTab[CDataList[dat_007f195c].name_id], 0.0f, -0.1f, 1.0f, StatusAllMiniKitsCharacterTextScale,
                         StatusAllMiniKitsCharacterTextScale, StatusAllMiniKitsCharacterTextScale, 0, (u8)StatusRed, (u8)StatusGreen,
                         (u8)StatusBlue, 1.7f, 1, NULL, 0, (i32)(icon_alpha * 128.0f));
         }
         if (title_alpha > 0.0f) {
-            Text3DEx(TTab[TextIdPc880740], 0.0f, 0.225f, 1.0f, StatusAllMiniKitsTitleScale, StatusAllMiniKitsTitleScale,
+            Text3DEx(TTab[dat_00880740], 0.0f, 0.225f, 1.0f, StatusAllMiniKitsTitleScale, StatusAllMiniKitsTitleScale,
                      StatusAllMiniKitsTitleScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, (u8)(title_alpha * 128.0f));
         }
         return;
@@ -724,8 +724,8 @@ void RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
             blend = NuTrigTable[((i32)((1.0f - (stage->field_0x18 - fade_start)) * 16384.0f) >> 1) & 0x7fff];
         }
     }
-    SmartTextEx(TTab[TextIdPc880748], 0.0f, 0.05f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
-                (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, (i32)(blend * 128.0f));
+    SmartTextEx(TTab[dat_00880748], 0.0f, 0.05f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed, (u8)StatusGreen,
+                (u8)StatusBlue, 1.7f, 1, NULL, 0, (i32)(blend * 128.0f));
     rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25f * 65536.0f);
     panel_y = blend - 1.5f;
     DrawPanel3DObjectNoAlpha(0.0f, panel_y, 1.0f, 1.0f, 1.0f, 1.0f, (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f), rotation,
@@ -893,8 +893,8 @@ void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) 
         } else if (alpha > 1.0f) {
             alpha = 1.0f;
         }
-        Text3DEx(TTab[TextIdPc8808d4], 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale,
-                 0, 255, 255, 255, (u8)(alpha * 128.0f));
+        Text3DEx(TTab[dat_008808d4], 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale, 0,
+                 255, 255, 255, (u8)(alpha * 128.0f));
     } else if (stage->field_0x12 != 0) {
         CoinTotal_Draw((i32)*packet->score,
                        (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(getFinishedStatusAlpha(packet) * 16384.0f) >> 1) & 0x7fff] +
@@ -945,12 +945,12 @@ void GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
                     position.x = 0.0f;
                     position.y = 0.0375f;
                     position.z = 1.0f;
-                    if (message_id == TextIdPc880f9c) {
+                    if (message_id == dat_00880f9c) {
                         NuStrCpy(text, TTab[message_id]);
                         if (HubBothTrueJediGoldBricks != 0) {
                             i16 name_id;
                             NuStrCat(text, " - ");
-                            name_id = (packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4;
+                            name_id = (packet->field_0xb0 & 0x40) != 0 ? dat_008808a8 : dat_008808a4;
                             NuStrCat(text, TTab[name_id]);
                         }
                         message = text;
@@ -1086,8 +1086,8 @@ void Prompt_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 active) 
             StatusDrawPlayerIcons = 1;
         } else {
             Status_DrawPromptMenu(packet, 1, 1.0f);
-            DrawPlayerIconPrompts(packet->player_active[0], TextIdPc880888, 1.0f, -1, -1, -1, TextIdPc880eac, packet->player_active[1],
-                                  TextIdPc880888, 1.0f, -1, -1, -1, TextIdPc880eac);
+            DrawPlayerIconPrompts(packet->player_active[0], dat_00880888, 1.0f, -1, -1, -1, dat_00880eac, packet->player_active[1],
+                                  dat_00880888, 1.0f, -1, -1, -1, dat_00880eac);
         }
     }
 }
@@ -1341,27 +1341,27 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                     scale = StatusTextScale * 0.75f;
                     SmartTextEx(text, 0.0f, StatusTitleY, 1.0f, scale, scale, scale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue,
                                 1.7f, 1, NULL, 0, opacity);
-                    SmartTextEx(TTab[TextIdPc88073c], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale,
-                                0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[dat_0088073c], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
+                                (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                 } else if (stage->type == 13) {
                     if ((PODRACE_ADATA != NULL && packet->area == PODRACE_ADATA) ||
                         (BONUS_GUNSHIP_ADATA != NULL && packet->area == BONUS_GUNSHIP_ADATA)) {
-                        SmartTextEx(TTab[TextIdPc880728], 0.0f, (StatusSecondaryTitleY + StatusTitleY) * 0.5f, 1.0f, StatusTextScale,
+                        SmartTextEx(TTab[dat_00880728], 0.0f, (StatusSecondaryTitleY + StatusTitleY) * 0.5f, 1.0f, StatusTextScale,
                                     StatusTextScale, StatusTextScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0,
                                     opacity);
                     } else {
-                        SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
+                        SmartTextEx(TTab[dat_00880728], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
                                     (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
-                        SmartTextEx(TTab[TextIdPc88072c], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale,
+                        SmartTextEx(TTab[dat_0088072c], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale,
                                     StatusTextScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                     }
                 } else if (stage->type == 8) {
-                    SmartTextEx(TTab[TextIdPc8810cc], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
+                    SmartTextEx(TTab[dat_008810cc], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
                                 (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
-                    SmartTextEx(TTab[TextIdPc8810d0], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale,
-                                0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[dat_008810d0], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
+                                (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                 } else if (stage->type == 28) {
-                    SmartTextEx(TTab[TextIdPc880710], 0.0f, 0.0f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
+                    SmartTextEx(TTab[dat_00880710], 0.0f, 0.0f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
                                 (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                 } else if (stage->type == 23) {
                     i16 label;
@@ -1369,13 +1369,13 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                     u32 green;
                     u32 blue;
                     if (packet->challenge_state == 2) {
-                        label = TextIdPc8806e8;
+                        label = dat_008806e8;
                         red = green = blue = 255;
                     } else {
                         red = StatusRed;
                         green = StatusGreen;
                         blue = StatusBlue;
-                        label = packet->challenge_state == 3 ? TextIdPc8806f4 : TextIdPc88100c;
+                        label = packet->challenge_state == 3 ? dat_008806f4 : dat_0088100c;
                     }
                     SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, red, green, blue, 1.7f,
                                 1, NULL, 0, opacity);
@@ -1385,35 +1385,35 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                     u32 green;
                     u32 blue;
                     if (packet->mission_state == 2) {
-                        label = TextIdPc8806e4;
+                        label = dat_008806e4;
                         red = green = blue = 255;
                     } else {
                         red = StatusRed;
                         green = StatusGreen;
                         blue = StatusBlue;
-                        label = TextIdPc8806f4;
+                        label = dat_008806f4;
                     }
                     SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, red, green, blue, 1.7f,
                                 1, NULL, 0, opacity);
                 } else {
                     i16 label;
                     if (stage->type == 29) {
-                        label = TextIdPc881014;
+                        label = dat_00881014;
                     } else if (stage->type == 30) {
-                        label = TextIdPc88101c;
+                        label = dat_0088101c;
                     } else if (stage->type == 31) {
-                        label = TextIdPc881024;
+                        label = dat_00881024;
                     } else if (stage->type == 32) {
-                        label = TextIdPc88102c;
+                        label = dat_0088102c;
                     } else if (stage->type == 33) {
-                        label = TextIdPc881034;
+                        label = dat_00881034;
                     } else {
-                        label = TextIdPc88103c;
+                        label = dat_0088103c;
                     }
                     SmartTextEx(TTab[label], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
                                 (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
-                    SmartTextEx(TTab[TextIdPc880730], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale,
-                                0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[dat_00880730], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
+                                (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                 }
             }
         }
@@ -1530,7 +1530,7 @@ void BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
         }
         if (alpha > 0.0f) {
             i32 opacity = (i32)((f64)alpha * 128.0);
-            SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
+            SmartTextEx(TTab[dat_00880728], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
                         (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, (u32)opacity);
         }
     }
@@ -1696,11 +1696,11 @@ void SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 
         CoinTotal_Draw((i32)*packet->score, coin_y, coin_scale, 1, 1.0f, 255, 191, 0);
     }
     if (packet->new_best_time != 0.0f) {
-        title = TTab[TextIdPc88071c];
+        title = TTab[dat_0088071c];
         red = 0;
         green = 255;
     } else {
-        title = TTab[TextIdPc880734];
+        title = TTab[dat_00880734];
         red = 255;
         green = 0;
     }
@@ -1815,11 +1815,11 @@ void SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
         }
         opacity = (i32)((f64)alpha * 128.0);
         if (packet->new_best_score != 0) {
-            title = TTab[TextIdPc880720];
+            title = TTab[dat_00880720];
             red = 0;
             green = 255;
         } else {
-            title = TTab[TextIdPc880738];
+            title = TTab[dat_00880738];
             red = 255;
             green = 0;
         }
@@ -1911,8 +1911,8 @@ void BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
             i32 second = (packet->flags_word >> 5) & 1;
             f32 winner_x = second == 0 ? -0.675f : 0.675f;
             i32 opacity = (i32)((f64)iconalphaoverride * 128.0);
-            SmartTextEx(TTab[TextIdPc88075c], winner_x, STATSPOSY, 1.0f, 0.7f, 0.7f, 0.7f, second != 0 ? 8 : 2, 0, 255, 0, 0.35f, 1, NULL,
-                        0, (u32)opacity);
+            SmartTextEx(TTab[dat_0088075c], winner_x, STATSPOSY, 1.0f, 0.7f, 0.7f, 0.7f, second != 0 ? 8 : 2, 0, 255, 0, 0.35f, 1, NULL, 0,
+                        (u32)opacity);
         }
         DrawBonusScore(STATSPOSY, StatusPacket.player0_active, StatusPacket.player1_active, iconalphaoverride, BonusScore);
     } else if (stage->field_0x12 != 0 && packet->stage->type != 25) {
@@ -1999,11 +1999,11 @@ void ChallangeCash_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curre
     if (stage->field_0x18 < 2.0f && NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
         i32 second_player = (packet->flags_word >> 5) & 1;
         f32 winner_x = second_player == 0 ? -0.675f : 0.675f;
-        SmartTextEx(TTab[TextIdPc88075c], winner_x, STATSPOSY, 1.0f, 0.7f, 0.7f, 0.7f, second_player != 0 ? 8 : 2, 0, 255, 0, 0.35f, 1,
-                    NULL, 0, (i32)(iconalphaoverride * 128.0));
+        SmartTextEx(TTab[dat_0088075c], winner_x, STATSPOSY, 1.0f, 0.7f, 0.7f, 0.7f, second_player != 0 ? 8 : 2, 0, 255, 0, 0.35f, 1, NULL,
+                    0, (i32)(iconalphaoverride * 128.0));
     }
     if (stage->field_0x14 == 1) {
-        AddGameMessage(TTab[TextIdPc8806e8], &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
+        AddGameMessage(TTab[dat_008806e8], &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
     }
 }
 

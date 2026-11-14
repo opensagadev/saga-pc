@@ -133,11 +133,11 @@ extern "C" {
 #endif
     extern JEDIB_STATE jedi_b;
     extern i32 JediBActiveCount;
-    extern i16 CharacterFixupIdPc007f19c8;
-    extern i16 CharacterFixupIdPc007f19c4;
-    extern i16 CharacterFixupIdPc007f19d0;
-    extern i16 CharacterFixupIdPc007f19d4;
-    extern i16 CharacterFixupIdPc007f19d8;
+    extern i16 dat_007f19c8;
+    extern i16 dat_007f19c4;
+    extern i16 dat_007f19d0;
+    extern i16 dat_007f19d4;
+    extern i16 dat_007f19d8;
     extern JEDIB_NETPACKET *jedib_netpacket;
     extern JEDIB_PHASE jedi_b_phase1[8];
     extern JEDIB_PHASE jedi_b_phase2[8];

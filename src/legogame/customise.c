@@ -122,15 +122,15 @@ extern NUVEC CustomisePos[2];
 i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS *input, i32 index, i32 count, i32 unused, i32 category);
 i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 i32 Customiser_GetIcon(CUSTOMISER_LAYERS *input, const void *save_input, i32 unused);
-extern i16 TextIdPc880fa0;
+extern i16 dat_00880fa0;
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
-extern i16 TextIdPc880750;
-extern i16 TextIdPc880754;
-extern i16 TextIdPc880758;
-extern i16 TextIdPc880760;
-extern i16 TextIdPc880858;
-extern i16 TextIdPc880894;
-extern i16 TextIdPc880898;
+extern i16 dat_00880750;
+extern i16 dat_00880754;
+extern i16 dat_00880758;
+extern i16 dat_00880760;
+extern i16 dat_00880858;
+extern i16 dat_00880894;
+extern i16 dat_00880898;
 void Hub_ClearStats(void);
 void Text_FillInExtendedSaveInfo(void);
 i32 TriggerAutoSave(void);
@@ -362,7 +362,7 @@ void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS *input, i32 index) {
                 best = group;
             }
         }
-        sprintf(names->display_names[side], "%s %i", TTab[TextIdPc880fa0], side + 1);
+        sprintf(names->display_names[side], "%s %i", TTab[dat_00880fa0], side + 1);
         CDataList[customiser->character_ids[side]].icon_model = (i16)Customiser_GetIcon(input, &Game.customiser_start[side], side);
     }
 }
@@ -602,14 +602,14 @@ i32 Customiser_MenuAvailable(CUSTOMISER_LAYERS *customiser) {
 i32 Customise_GetToggleString(i32 index) {
     i32 mode = CustomiseMode[index];
     if (mode == 1) {
-        return TextIdPc880890;
+        return dat_00880890;
     }
     if (mode != 0) {
         do {
             mode = (mode + 1) % 3;
         } while (mode == 0);
     }
-    return TextIdPc880780;
+    return dat_00880780;
 }
 
 static i32 CustomiseMenuY[2] = {0};
@@ -834,7 +834,7 @@ i32 CustomiserMenu_Update(void) {
                             } while (Game.customiser_start[side].name[last] == ' ');
                         }
                         if (last < 0) {
-                            i16 text_id = side == 0 ? TextIdPc880894 : TextIdPc880898;
+                            i16 text_id = side == 0 ? dat_00880894 : dat_00880898;
                             NuStrCpy(Game.customiser_start[side].name, TTab[text_id]);
                             FinishWeirdoNames(side);
                         } else {
@@ -1327,25 +1327,25 @@ void MenuDrawCustomiser(MENU *menu) {
     DrawCharIcon(MissionMenuPacket.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSize, 0xa6, alpha, alpha, 1, NULL);
     alpha = MissionMenuPacket.active_player[1] != 0 ? 1.0f : MissionDropInAlpha;
     DrawCharIcon(MissionMenuPacket.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSize, 0xa5, alpha, alpha, 1, NULL);
-    select[0] = select[1] = active_count == 1 ? TextIdPc880750 : -1;
-    action[0] = action[1] = TextIdPc880758;
+    select[0] = select[1] = active_count == 1 ? dat_00880750 : -1;
+    action[0] = action[1] = dat_00880758;
     toggle[0] = toggle[1] = -1;
     if (GAMEDEMO != 0) {
         if (MissionMenuPacket.active_player[0] != 0 && MissionMenuPacket.active_player[1] != 0) {
             if (MissionMenuPacket.selected[0] != 0) {
                 select[0] = action[0] = -1;
-                cancel[0] = TextIdPc880890;
+                cancel[0] = dat_00880890;
             } else {
-                cancel[0] = TextIdPc880760;
+                cancel[0] = dat_00880760;
             }
             if (MissionMenuPacket.selected[1] != 0) {
                 select[1] = action[1] = -1;
-                cancel[1] = TextIdPc880890;
+                cancel[1] = dat_00880890;
             } else {
-                cancel[1] = TextIdPc880760;
+                cancel[1] = dat_00880760;
             }
         } else {
-            cancel[0] = cancel[1] = TextIdPc880858;
+            cancel[0] = cancel[1] = dat_00880858;
         }
     } else {
         for (player = 0; player < 2; ++player) {
@@ -1362,15 +1362,15 @@ void MenuDrawCustomiser(MENU *menu) {
             cancel[player] = -1;
             if (CustomiseMode[0] != 1 && CustomiseMode[1] != 1) {
                 if (customiser_changed != 0) {
-                    cancel[player] = TextIdPc880754;
+                    cancel[player] = dat_00880754;
                 } else {
-                    cancel[player] = TextIdPc880844;
+                    cancel[player] = dat_00880844;
                 }
             }
         }
     }
-    DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], select[0], 1.0f, action[0], cancel[0], toggle[0], TextIdPc880eac,
-                          MissionMenuPacket.active_player[1], select[1], 1.0f, action[1], cancel[1], toggle[1], TextIdPc880eac);
+    DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], select[0], 1.0f, action[0], cancel[0], toggle[0], dat_00880eac,
+                          MissionMenuPacket.active_player[1], select[1], 1.0f, action[1], cancel[1], toggle[1], dat_00880eac);
     x = -ICONX;
     colour = menu_flash == 0 ? 255 : 191;
     for (player = 0; player < 2; ++player) {
@@ -1389,8 +1389,8 @@ void MenuDrawCustomiser(MENU *menu) {
                      0.5f, 0.5f, 0, colour, colour, colour, CustomiseMenuY[side] > 0 ? 128 : 32);
             Text3DEx((char *)TagAsciiDown, x, (f32)(y - 0.07000000029802322 + (BlipD[player] > 0.0f ? -0.021000002f : 0.0f)), 1.0f, 0.5f,
                      0.5f, 0.5f, 0, colour, colour, colour, CustomiseMenuY[side] < 8 ? 128 : 32);
-            SmartTextEx(TTab[TextIdPc880888], x, (f32)(STATSPOSY - 0.375), 1.0f, 0.3f, 0.3f, 0.3f, 0, colour, colour, colour, 0.15f, 1,
-                        NULL, 0, 128);
+            SmartTextEx(TTab[dat_00880888], x, (f32)(STATSPOSY - 0.375), 1.0f, 0.3f, 0.3f, 0.3f, 0, colour, colour, colour, 0.15f, 1, NULL,
+                        0, 128);
         }
         x += ICONX + ICONX;
     }

@@ -1,6 +1,6 @@
 #include "saga.h"
 
-extern i16 CharacterFixupIdPc007f1a3c;
+extern i16 dat_007f1a3c;
 
 i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
     (void)hit_type;
@@ -68,7 +68,7 @@ void SpeederChaseA_Update(WORLDINFO *world) {
     void *animation_data;
     f64 animation_time;
     i32 i;
-    ResetTrooperCannons(world, CharacterFixupIdPc007f1a3c);
+    ResetTrooperCannons(world, dat_007f1a3c);
     UpdateTrooperCannons(world);
     if (netclient == 0) {
         if (LevAIMessage[4] != NULL) {

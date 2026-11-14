@@ -87,7 +87,7 @@ typedef struct attracto_shard_reader_s { // size 0x54
 } ATTRACTO_SHARD_READER_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, upper_position) + 4 == 0x194);
-extern char TextInputKeyNameTextPc7516c0[1];
+extern char dat_007516c0[1];
 extern void Shard_Collect(SHARD_s *, GAMEOBJECT *);
 extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
 
@@ -417,7 +417,7 @@ ADDGIZMOTYPE_PC *Attractos_RegisterGizmo(i32 unused_type_id) {
     char *name = AttractoRegistryNamePc;
     AttractoAddType = Default_ADDGIZMOTYPE;
     AttractoAddType.name = name;
-    AttractoAddType.prefix = TextInputKeyNameTextPc7516c0;
+    AttractoAddType.prefix = dat_007516c0;
     AttractoAddType.fns.options = 0x2c;
     AttractoAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Attractos_GetMaxGizmos;
     AttractoAddType.fns.add_gizmos_fn = (void *)Attractos_AddGizmos;

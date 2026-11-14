@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-extern i16 CharacterFixupIdPc007f18c4;
+extern i16 dat_007f18c4;
 
 i32 Hub_CurrentArea(void) {
     if (WORLD->current_level == HUB_LDATA) {
@@ -45,14 +45,14 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
     if (id_BARMAN != -1) {
         characters[id_BARMAN] = -1;
     }
-    if (VehicleBoltId7f1910 != -1) {
-        characters[VehicleBoltId7f1910] = -1;
+    if (dat_007f1910 != -1) {
+        characters[dat_007f1910] = -1;
     }
     if (DefaultAnimationJabbaId != -1) {
         characters[DefaultAnimationJabbaId] = -1;
     }
-    if (CharacterFixupIdPc007f18c4 != -1) {
-        characters[CharacterFixupIdPc007f18c4] = -1;
+    if (dat_007f18c4 != -1) {
+        characters[dat_007f18c4] = -1;
     }
     if (PermanentWeirdo1Id != -1) {
         characters[PermanentWeirdo1Id] = -1;

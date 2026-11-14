@@ -41,7 +41,7 @@ enum {
 
 extern "C" {
     ThingManager *theThingManager = NULL;
-    extern const char MenuPcString76b274[4];
+    extern const char dat_0076b274[4];
     void NuFntSet(i32 font);
     void NuFntScale(i32 x, i32 y);
 }
@@ -280,7 +280,7 @@ void ThingManager::edTimingInit() {
 void ThingManager::edTimingEnter() {
     edTimingMenu = eduiMenuCreate(30, 30, 250, 320, NULL, (void *)cbEdTrackCancel, "Timings");
     if (edTimingMenu != NULL) {
-        eduiMenuAddItem(edTimingMenu, eduiItemSelCreate(0, EdAttr, 0, 1, (void *)cbEdTimingSelect, (char *)MenuPcString76b274));
+        eduiMenuAddItem(edTimingMenu, eduiItemSelCreate(0, EdAttr, 0, 1, (void *)cbEdTimingSelect, (char *)dat_0076b274));
         eduiMenuAddItem(edTimingMenu, eduiItemSelCreate(1, EdAttr, 0, 2, (void *)cbEdTimingSelect, "System"));
         eduiMenuAddItem(edTimingMenu, eduiItemSelCreate(2, EdAttr, 0, 3, (void *)cbEdTimingSelect, "No Things"));
         eduiMenuAddItem(edTimingMenu, eduiItemSelCreate(3, EdAttr, 0, 4, (void *)cbEdTimingSelect, "All Things"));

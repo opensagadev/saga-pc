@@ -31,7 +31,7 @@ extern "C" {
     extern f32 TorpedoGrabRangeSquared;
     extern f32 TorpedoStealTimer;
     extern f32 TorpedoStealRange;
-    extern char TextInputKeyNameTextPc759770[2];
+    extern char dat_00759770[2];
     TORPEDOPACKET *GetTorpedoPacket(void);
     void Torpedo_InitRicochet(BOLT_PC *, NUVEC *);
     void Torpedo_EndBolt(BOLT_PC *);

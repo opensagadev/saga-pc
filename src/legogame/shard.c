@@ -6,7 +6,7 @@ typedef struct shard_progress_recovered_s { // size 0x30
     u32 visible[4];                         // 0x20
 } SHARD_PROGRESS_PC;
 
-extern char TextInputKeyNameTextPc7516c0[1];
+extern char dat_007516c0[1];
 extern char *Shard_OutputName;
 void Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
 
@@ -328,7 +328,7 @@ ADDGIZMOTYPE_PC *Shards_RegisterGizmo(i32 unused_type_id) {
     char *name = ShardRegistryNamePc;
     ShardAddType = Default_ADDGIZMOTYPE;
     ShardAddType.name = name;
-    ShardAddType.prefix = TextInputKeyNameTextPc7516c0;
+    ShardAddType.prefix = dat_007516c0;
     ShardAddType.fns.options = 0x30;
     ShardAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Shards_GetMaxGizmos;
     ShardAddType.fns.add_gizmos_fn = (void *)Shards_AddGizmos;

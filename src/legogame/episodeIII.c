@@ -174,7 +174,7 @@ typedef struct terrain_set_reader_s {
     TERRAIN_PLATFORM_READER_PC *platforms;
 } TERRAIN_SET_READER_PC;
 
-extern i16 CharacterFixupIdPc007f1a0c;
+extern i16 dat_007f1a0c;
 GIZFORCE_PC *GizForces_FindForce(WORLDINFO *world, char *name);
 
 void CruiserAInit(WORLDINFO *world) {
@@ -218,7 +218,7 @@ void CruiserCUpdate(WORLDINFO *world) {
         cruiser_c.dooku_fight->value = (f32)crusiserc_netpacket->dooku_fight;
     }
     if (cruiser_c.palpatine == NULL) {
-        cruiser_c.palpatine = FindGameObject(CharacterFixupIdPc007f1a0c, 0x400, 1, 1, 0);
+        cruiser_c.palpatine = FindGameObject(dat_007f1a0c, 0x400, 1, 1, 0);
     }
     if (cruiser_c.palpatine_locator == NULL) {
         cruiser_c.palpatine_locator = AIPathFindLocator(WORLD->ai_sys, "Palpatine");
@@ -253,7 +253,7 @@ static i32 CruiserD_Lift_plat_id = 0;
 void CruiserDInit(WORLDINFO *world) {
     i32 i;
     for (i = 0; i < world->area->level_count; i++) {
-        if (world->area->levels[i] == LevelFixupSlotPc0087b170->index) {
+        if (world->area->levels[i] == dat_0087b170->index) {
             CruiserE_ix = i;
         }
     }
@@ -600,9 +600,8 @@ NUVEC TempleC_StreamStatusPos = {52.57f, 0.76f, -16.54f};
 
 void TempleC_AlwaysUpdate(WORLDINFO *unused0) {
     NUVEC position;
-    if (LevelFixupSlotPc0087b150 != NULL && Players_AveragePos(&position, NULL) &&
-        NuVecXZDistSqr(&position, &TempleC_StreamStatusPos, NULL) < 100.0f) {
-        other_level_override = LevelFixupSlotPc0087b150->index;
+    if (dat_0087b150 != NULL && Players_AveragePos(&position, NULL) && NuVecXZDistSqr(&position, &TempleC_StreamStatusPos, NULL) < 100.0f) {
+        other_level_override = dat_0087b150->index;
     }
 }
 
@@ -759,7 +758,7 @@ void VaderB_Reset(WORLDINFO *unused0) {
 }
 
 void VaderB_Update(WORLDINFO *world) {
-    if (netclient == 0 && vader_b_complete_msg != NULL && vader_b_complete_msg->value == 1.0f && LevelFixupSlotPc0087b17c != NULL) {
+    if (netclient == 0 && vader_b_complete_msg != NULL && vader_b_complete_msg->value == 1.0f && dat_0087b17c != NULL) {
         GoToNewLevel(VADERC_LDATA->index);
     }
     if (vader_b_playersDead == 0 &&

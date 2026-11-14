@@ -147,7 +147,7 @@ extern "C" {
     extern f32 PANEL_MINIKITCOUNTY;
     extern f32 stats_xscale;
     extern i32 HubBothTrueJediGoldBricks;
-    extern i16 TextIdPc88077c;
+    extern i16 dat_0088077c;
     extern i32 fpcount;
     extern i32 HubTrueJediTypeAlpha;
     extern f32 HubMiniKitOpenThreshold;
@@ -181,28 +181,28 @@ extern "C" {
     extern f32 HubArcadeMenuY;
 
     /* Existing mapped text IDs; definitions remain in their canonical owner. */
-    extern i16 TextIdPc880714;
-    extern i16 TextIdPc880718;
-    extern i16 TextIdPc880724;
-    extern i16 TextIdPc88076c;
-    extern i16 TextIdPc880780;
-    extern i16 TextIdPc8807b8;
-    extern i16 TextIdPc8807c0;
-    extern i16 TextIdPc8807c4;
-    extern i16 TextIdPc8807e8;
-    extern i16 TextIdPc8807fc;
-    extern i16 TextIdPc880888;
-    extern i16 TextIdPc8808a4;
-    extern i16 TextIdPc8808a8;
-    extern i16 TextIdPc8808b8;
-    extern i16 TextIdPc880eac;
-    extern i16 TextIdPc880eb4;
-    extern i16 TextIdPc881018;
-    extern i16 TextIdPc881020;
-    extern i16 TextIdPc881028;
-    extern i16 TextIdPc881030;
-    extern i16 TextIdPc881038;
-    extern i16 TextIdPc881040;
+    extern i16 dat_00880714;
+    extern i16 dat_00880718;
+    extern i16 dat_00880724;
+    extern i16 dat_0088076c;
+    extern i16 dat_00880780;
+    extern i16 dat_008807b8;
+    extern i16 dat_008807c0;
+    extern i16 dat_008807c4;
+    extern i16 dat_008807e8;
+    extern i16 dat_008807fc;
+    extern i16 dat_00880888;
+    extern i16 dat_008808a4;
+    extern i16 dat_008808a8;
+    extern i16 dat_008808b8;
+    extern i16 dat_00880eac;
+    extern i16 dat_00880eb4;
+    extern i16 dat_00881018;
+    extern i16 dat_00881020;
+    extern i16 dat_00881028;
+    extern i16 dat_00881030;
+    extern i16 dat_00881038;
+    extern i16 dat_00881040;
 
     extern i32 hub_bonusepisode;
     extern f32 selectmodeduration;
@@ -224,7 +224,7 @@ extern "C" {
     extern i32 freeplay_i[2];
     extern i16 PCArcadeModeText;
     extern i16 PCArcadePlayText;
-    extern i16 TextIdPc8807cc;
+    extern i16 dat_008807cc;
     extern f32 IndyGrappleHeightTolerance;
     extern f32 IndyGrappleReleaseRadius;
     extern f32 IndyGrappleTimeout;
@@ -328,7 +328,7 @@ extern "C" {
 extern "C" {
 #endif
     extern GAMEPAD_INIT_RECORD GamePadStorage[64];
-    extern struct level_data_s *LevelFixupSlotPc0087b2dc;
+    extern struct level_data_s *dat_0087b2dc;
     i32 Hub_BonusBuildIt(struct GIZBUILDIT *);
     extern APICHARACTERMODELLIST fplist[341];
     extern APICHARACTERMODELLIST fplist[341];

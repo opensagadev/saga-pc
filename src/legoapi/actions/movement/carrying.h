@@ -35,8 +35,8 @@ extern "C" {
     extern i32 SuperCarry_KeepObjectLevel;
     extern i32 SuperCarry_AlignObject;
 
-    extern char SuitMetadataName0075314c[7];
-    extern char SuitMetadataName00753144[6];
+    extern char dat_0075314c[7];
+    extern char dat_00753144[6];
     extern u32 (*CanSuperCarryFn)(GAMEOBJECT *);
 #ifdef __cplusplus
 }

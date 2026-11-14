@@ -17,7 +17,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 VehicleBoltId7f1910;
+    extern i16 dat_007f1910;
     extern HUB_AI_MUSIC_VIEW HubAiMusicState;
     i32 Hub_Outside(void);
     i32 Hub_GetRandomCharType(void);

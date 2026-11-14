@@ -1961,7 +1961,7 @@ extern "C" {
             if (player == NULL) {
                 continue;
             }
-            if (player->id != (u16)id_JEDISTARFIGHTERYELLOWEP3 && player->id != (u16)VehicleBoltId7f19e8) {
+            if (player->id != (u16)id_JEDISTARFIGHTERYELLOWEP3 && player->id != (u16)dat_007f19e8) {
                 if (DogfightDebrisKeysPc[i] != -1) {
                     DebFreeInstantly(&DogfightDebrisKeysPc[i]);
                 }
@@ -2118,7 +2118,7 @@ extern "C" {
             }
             ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->coin_history_count = 0;
         } else if (world->current_level == PODRACEA_LDATA || world->current_level == PODRACEB_LDATA ||
-                   world->current_level == LevelFixupSlotPc0087b0b4) {
+                   world->current_level == dat_0087b0b4) {
             world->level_specific_data = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 0xb030);
         } else {
             world->has_level_specific_data = 0;

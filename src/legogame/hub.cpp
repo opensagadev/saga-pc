@@ -170,8 +170,8 @@ struct GIZBUILDIT;
      (p)->jump_animation_state == (mode))
 extern "C" i32 HubDrawMiniKitCharacter;
 extern "C" i32 HubDoorNewLevel;
-extern "C" i16 TextIdPc8806f8;
-extern "C" i16 TextIdPc8807e4;
+extern "C" i16 dat_008806f8;
+extern "C" i16 dat_008807e4;
 extern "C" f32 HubEpisodeTitleY;
 extern "C" f32 HubEpisodeTitleSize;
 extern "C" f32 HubEpisodeSubtitleY;
@@ -530,15 +530,15 @@ static void HubDrawSelectModeMenu(i32 selected, f32 alpha) {
         opacity[1] = 128;
         count = 2;
     } else {
-        ids[0] = complete != 0 ? TextIdPc8808b8 : TextIdPc8808a4;
+        ids[0] = complete != 0 ? dat_008808b8 : dat_008808a4;
         opacity[0] = 128;
         count = 1;
         if ((ADataList[area].flags & 0x1000) == 0) {
-            ids[1] = TextIdPc8808a8;
+            ids[1] = dat_008808a8;
             opacity[1] = complete != 0 ? 128 : 32;
             count = 2;
             if ((ADataList[area].flags & 0x10) != 0) {
-                ids[2] = TextIdPc88076c;
+                ids[2] = dat_0088076c;
                 opacity[2] = opacity[1];
                 count = 3;
             }
@@ -642,16 +642,16 @@ static void HubDrawArcadeMenu(i32 selected, f32 alpha) {
                 } else {
                     sprintf(number, "%i", target);
                     NuStrCat(text, number);
-                    if (TTab[TextIdPc8807fc] != NULL) {
+                    if (TTab[dat_008807fc] != NULL) {
                         NuStrCat(text, " ");
-                        NuStrCat(text, TTab[TextIdPc8807fc]);
+                        NuStrCat(text, TTab[dat_008807fc]);
                     }
                 }
                 break;
             }
             case 3:
                 NuStrCat(text, ": ");
-                NuStrCat(text, TTab[ArcadeItem.entries[i].index != 0 ? TextIdPc880864 : TextIdPc880874]);
+                NuStrCat(text, TTab[ArcadeItem.entries[i].index != 0 ? dat_00880864 : dat_00880874]);
                 if (Arcade_Score[0] == 0 && Arcade_Score[1] == 0) {
                     opacity /= 3;
                 }
@@ -712,8 +712,8 @@ extern "C" {
 static void HubDrawArcadeStats(f32 alpha) {
     const i32 menu = GetMenuID();
     const f64 alpha_scaled = alpha * 128.0;
-    SmartTextEx(TTab[TextIdPc8807b8], 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize,
-                HubEpisodeSubtitleSize, 0, HubEpisodeRed, HubEpisodeGreen, HubEpisodeBlue, 1.7f, 1, NULL, 0, (i32)alpha_scaled);
+    SmartTextEx(TTab[dat_008807b8], 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize,
+                0, HubEpisodeRed, HubEpisodeGreen, HubEpisodeBlue, 1.7f, 1, NULL, 0, (i32)alpha_scaled);
     i32 first;
     i32 second;
     if (menu == -1) {
@@ -733,12 +733,12 @@ static void HubDrawArcadeStats(f32 alpha) {
         if (HubArcadePlayableArea(&unavailable) != NULL || unavailable != 1) {
             return;
         }
-        text = TextIdPc8807c4;
+        text = dat_008807c4;
     } else {
         if (menu != -1 || Arcade_BothPlayersActive() != 0) {
             return;
         }
-        text = TextIdPc8807c0;
+        text = dat_008807c0;
     }
     if (text == -1) {
         return;
@@ -781,7 +781,7 @@ extern "C" {
                       (f64)0.8f);
         scale = Arcade_NeedTwoPlayers_Scale;
         size = (f32)((f64)scale * (f64)0.6f);
-        SmartTextEx(TTab[TextIdPc8807c0], 0.0f, -0.55f, 1.0f, size, size, size, 0, 255, 0, 0, (f32)((f64)scale * (f64)1.7f), 1, NULL, 0,
+        SmartTextEx(TTab[dat_008807c0], 0.0f, -0.55f, 1.0f, size, size, size, 0, 255, 0, 0, (f32)((f64)scale * (f64)1.7f), 1, NULL, 0,
                     (i32)((f64)alpha * 128.0));
     }
 
@@ -988,7 +988,7 @@ extern "C" void Arcade_DrawEndMenu(MENU *menu) {
     if (MenuStopDraw != 0) {
         return;
     }
-    SmartTextEx(TTab[TextIdPc88075c], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, 0, menu_flash ? 191 : 255, 0, 1.7f, 1, NULL, 0, 128);
+    SmartTextEx(TTab[dat_0088075c], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, 0, menu_flash ? 191 : 255, 0, 1.7f, 1, NULL, 0, 128);
 }
 
 static void HubInitBonusMode(void) {
@@ -1007,7 +1007,7 @@ static void HubDrawBonusModeMenu(i32 selected, f32 alpha) {
     char text[3][128];
     i32 count;
     if (hub_bonusepisode != -1) {
-        NuStrCpy(text[0], TTab[TextIdPc880724]);
+        NuStrCpy(text[0], TTab[dat_00880724]);
         NuStrCpy(text[1], TTab[TextCrawlCharacterBonusId]);
         NuStrCpy(text[2], TTab[TextCrawlVehicleBonusId]);
         const i32 character_area = Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], 5, 4);
@@ -1922,7 +1922,7 @@ void HubDrawAreaStats(f32 phase, i32 area_index, i32 mode) {
     AREA_DATA_PC *area = &ADataList[area_index];
     const i32 alpha = (i32)(phase * 128.0);
     if (LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area_index) {
-        SmartTextEx(TTab[TextIdPc8807e8], 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize,
+        SmartTextEx(TTab[dat_008807e8], 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize,
                     HubEpisodeSubtitleSize, 0, HubEpisodeRed, HubEpisodeGreen, HubEpisodeBlue, 1.7f, 1, NULL, 0, alpha);
         if (Game.lost_temple_area_complete != 0) {
             Hub_DrawImportantBrick(251, 0.0f, (f32)(HubEpisodeSubtitleY - .05000000074505806), phase, -1, -1);
@@ -1950,7 +1950,7 @@ void HubDrawAreaStats(f32 phase, i32 area_index, i32 mode) {
             NuStrCpy(text, Game.area_save[area_index].true_hero_complete[0] != 0 ? "$" : "X");
             Text3DEx(text, HubAreaPanelX[1], HubEpisodeTitleY, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
-            SmartTextEx(TTab[TextIdPc8808a4], HubAreaPanelX[1], HubTrueJediLabelOffset + HubEpisodeTitleY, 1.0f, HubTrueJediLabelScale,
+            SmartTextEx(TTab[dat_008808a4], HubAreaPanelX[1], HubTrueJediLabelOffset + HubEpisodeTitleY, 1.0f, HubTrueJediLabelScale,
                         HubTrueJediLabelScale, HubTrueJediLabelScale, 0, HubTrueJediLabelRed, HubTrueJediLabelGreen, HubTrueJediLabelBlue,
                         HubTrueJediLabelWidth, 1, NULL, 0, (i32)(HubTrueJediTypeAlpha * phase));
             DrawBuildUpBar(HubAreaPanelX[4], HubEpisodeTitleY + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
@@ -1958,7 +1958,7 @@ void HubDrawAreaStats(f32 phase, i32 area_index, i32 mode) {
             NuStrCpy(text, Game.area_save[area_index].true_hero_complete[1] != 0 ? "$" : "X");
             Text3DEx(text, HubAreaPanelX[4], HubEpisodeTitleY, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
-            SmartTextEx(TTab[TextIdPc8808a8], HubAreaPanelX[4], HubTrueJediLabelOffset + HubEpisodeTitleY, 1.0f, HubTrueJediLabelScale,
+            SmartTextEx(TTab[dat_008808a8], HubAreaPanelX[4], HubTrueJediLabelOffset + HubEpisodeTitleY, 1.0f, HubTrueJediLabelScale,
                         HubTrueJediLabelScale, HubTrueJediLabelScale, 0, HubTrueJediLabelRed, HubTrueJediLabelGreen, HubTrueJediLabelBlue,
                         HubTrueJediLabelWidth, 1, NULL, 0, (i32)(HubTrueJediTypeAlpha * phase));
         } else {
@@ -2260,7 +2260,7 @@ static void HubDrawEpisodeStats(i32 episode_index, f32 phase) {
             sprintf(text, "%i/%i", EpStoryBuildUpCount, EpStoryBuildUpTotal);
             Text3DEx(text, HubAreaPanelX[1], HubEpisodeTitleY, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
-            SmartTextEx(TTab[TextIdPc8808a4], HubAreaPanelX[1], HubTrueJediLabelOffset + HubEpisodeTitleY, 1.0f, HubTrueJediLabelScale,
+            SmartTextEx(TTab[dat_008808a4], HubAreaPanelX[1], HubTrueJediLabelOffset + HubEpisodeTitleY, 1.0f, HubTrueJediLabelScale,
                         HubTrueJediLabelScale, HubTrueJediLabelScale, 0, HubTrueJediLabelRed, HubTrueJediLabelGreen, HubTrueJediLabelBlue,
                         HubTrueJediLabelWidth, 1, NULL, 0, static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlpha) * phase));
             DrawBuildUpBar(HubAreaPanelX[4], HubEpisodeTitleY + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
@@ -2268,7 +2268,7 @@ static void HubDrawEpisodeStats(i32 episode_index, f32 phase) {
             sprintf(text, "%i/%i", EpFreePlayBuildUpCount, EpFreePlayBuildUpTotal);
             Text3DEx(text, HubAreaPanelX[4], HubEpisodeTitleY, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
-            SmartTextEx(TTab[TextIdPc8808a8], HubAreaPanelX[4], HubTrueJediLabelOffset + HubEpisodeTitleY, 1.0f, HubTrueJediLabelScale,
+            SmartTextEx(TTab[dat_008808a8], HubAreaPanelX[4], HubTrueJediLabelOffset + HubEpisodeTitleY, 1.0f, HubTrueJediLabelScale,
                         HubTrueJediLabelScale, HubTrueJediLabelScale, 0, HubTrueJediLabelRed, HubTrueJediLabelGreen, HubTrueJediLabelBlue,
                         HubTrueJediLabelWidth, 1, NULL, 0, static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlpha) * phase));
         } else {
@@ -2399,17 +2399,17 @@ static void HubDrawBonusStats(f32 alpha, i32 area, i32 episode, i32 mode) {
     const i32 vehicle_area = Episode_FindAreaFromFlags(&EDataList[episode], 5, 5);
     i32 title;
     if (episode == 0) {
-        title = TextIdPc881018;
+        title = dat_00881018;
     } else if (episode == 1) {
-        title = TextIdPc881020;
+        title = dat_00881020;
     } else if (episode == 2) {
-        title = TextIdPc881028;
+        title = dat_00881028;
     } else if (episode == 3) {
-        title = TextIdPc881030;
+        title = dat_00881030;
     } else if (episode == 4) {
-        title = TextIdPc881038;
+        title = dat_00881038;
     } else {
-        title = TextIdPc881040;
+        title = dat_00881040;
     }
     SmartTextEx(TTab[title], 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, 0,
                 HubEpisodeRed, HubEpisodeGreen, HubEpisodeBlue, 1.7f, 1, NULL, 0, opacity);
@@ -2419,7 +2419,7 @@ static void HubDrawBonusStats(f32 alpha, i32 area, i32 episode, i32 mode) {
         case 0:
             x = -0.4f;
             time = Game.episode_save[episode].superstory_time_limit;
-            SmartTextEx(TTab[TextIdPc880718], 0.4f, (f32)(HubEpisodeTitleY + 0.125), 1.0f, HubEpisodeTitleSize, HubEpisodeTitleSize,
+            SmartTextEx(TTab[dat_00880718], 0.4f, (f32)(HubEpisodeTitleY + 0.125), 1.0f, HubEpisodeTitleSize, HubEpisodeTitleSize,
                         HubEpisodeTitleSize, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
             Text_MakeScore(Game.episode_save[episode].superstory_score_target, score);
             Text3DEx(score, 0.4f, HubEpisodeTitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, 0, 255,
@@ -2445,7 +2445,7 @@ static void HubDrawBonusStats(f32 alpha, i32 area, i32 episode, i32 mode) {
             break;
     }
     if (mode != -1) {
-        SmartTextEx(TTab[TextIdPc880714], x, (f32)(HubEpisodeTitleY + 0.125), 1.0f, HubEpisodeTitleSize, HubEpisodeTitleSize,
+        SmartTextEx(TTab[dat_00880714], x, (f32)(HubEpisodeTitleY + 0.125), 1.0f, HubEpisodeTitleSize, HubEpisodeTitleSize,
                     HubEpisodeTitleSize, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
         Text_MakeTime(time, 1, 1, 1, text);
         Text3DEx(text, x, HubEpisodeTitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, 0, 255, 255, 255,
@@ -2486,7 +2486,7 @@ static void HubDrawSuperBonusStats(AREA_DATA_PC *area, f32 alpha) {
                 HubEpisodeSubtitleSize, 0, HubEpisodeRed, HubEpisodeGreen, HubEpisodeBlue, 1.7f, 1, NULL, 0, opacity);
     if (Game.area_save[area->index].area_complete != 0) {
         char text[64];
-        SmartTextEx(TTab[TextIdPc880714], 0.0f, (f32)(HubEpisodeTitleY + 0.125), 1.0f, HubEpisodeTitleSize, HubEpisodeTitleSize,
+        SmartTextEx(TTab[dat_00880714], 0.0f, (f32)(HubEpisodeTitleY + 0.125), 1.0f, HubEpisodeTitleSize, HubEpisodeTitleSize,
                     HubEpisodeTitleSize, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
         Text_MakeTime(Game.area_save[area->index].challenge_trial_time, 1, 1, 1, text);
         Text3DEx(text, 0.0f, HubEpisodeTitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, 0, 255, 255,
@@ -2533,8 +2533,8 @@ static void HubDrawSelectMode(void) {
         HubDrawSelectModeMenu(0, (1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff]) * alpha);
     }
     if (!(MainRenderTime > 0.0f) && selectmodemode == 0 && alpha == 1.0f) {
-        DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], TextIdPc880888, 1.0f, -1, tBACK, -1, TextIdPc880eac,
-                              MissionMenuPacket.active_player[1], TextIdPc880888, 1.0f, -1, tBACK, -1, TextIdPc880eac);
+        DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], dat_00880888, 1.0f, -1, tBACK, -1, dat_00880eac,
+                              MissionMenuPacket.active_player[1], dat_00880888, 1.0f, -1, tBACK, -1, dat_00880eac);
     }
 }
 
@@ -2606,8 +2606,8 @@ static void HubDrawBonusMode(void) {
                      hub_bonusmode >= 4 ? 32 : 128);
         }
     }
-    DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], TextIdPc880888, prompt_alpha, -1, tBACK, -1, -1,
-                          MissionMenuPacket.active_player[1], TextIdPc880888, prompt_alpha, -1, tBACK, -1, -1);
+    DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], dat_00880888, prompt_alpha, -1, tBACK, -1, -1,
+                          MissionMenuPacket.active_player[1], dat_00880888, prompt_alpha, -1, tBACK, -1, -1);
 }
 
 /* Copied collection data chooses the default model pair. */
@@ -2848,23 +2848,23 @@ static void Hub_DrawFreePlaySelect(void) {
             switch (freeplay_selected[player]) {
                 case 0:
                     if (freeplay_time[player] <= 0.0f) {
-                        select[player] = TextIdPc880888;
-                        back[player] = TextIdPc880844;
-                        status[player] = TextIdPc880eac;
+                        select[player] = dat_00880888;
+                        back[player] = dat_00880844;
+                        status[player] = dat_00880eac;
                     }
                     break;
                 case 1:
                     if (freeplay_time[player] <= 0.0f) {
-                        select[player] = TextIdPc880864;
-                        back[player] = TextIdPc880874;
-                        status[player] = TextIdPc880eb0;
+                        select[player] = dat_00880864;
+                        back[player] = dat_00880874;
+                        status[player] = dat_00880eb0;
                     }
                     break;
                 case 2:
                 case 3:
                     if (MissionMenuPacket.active_player[other] != 0 && freeplay_selected[other] < freeplay_selected[player]) {
-                        back[player] = TextIdPc880890;
-                        status[player] = TextIdPc880eb4;
+                        back[player] = dat_00880890;
+                        status[player] = dat_00880eb4;
                     }
                     break;
             }
@@ -3375,8 +3375,8 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             alpha = 1.0f - (newgamecamtime - 7.5f) * 2.0f;
         }
         if (alpha > 0.0f) {
-            SmartTextEx(TTab[TextIdPc8806f8], 0.0f, (HubEpisodeTitleY + HubEpisodeSubtitleY) * 0.5f, 1.0f, 0.8f, 0.8f, 0.8f, 0,
-                        HubEpisodeRed, HubEpisodeGreen, HubEpisodeBlue, 1.7f, 1, NULL, 0, static_cast<i32>(alpha * 128.0));
+            SmartTextEx(TTab[dat_008806f8], 0.0f, (HubEpisodeTitleY + HubEpisodeSubtitleY) * 0.5f, 1.0f, 0.8f, 0.8f, 0.8f, 0, HubEpisodeRed,
+                        HubEpisodeGreen, HubEpisodeBlue, 1.7f, 1, NULL, 0, static_cast<i32>(alpha * 128.0));
         }
     }
     DrawShopPanel();
@@ -3421,18 +3421,18 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 sprintf(text, "%i/%i", story_count, story_total);
                 Text3DEx(text, HubAreaPanelX[1], HubEpisodeSubtitleY, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale, PANEL_MINIKITCOUNTSCALE,
                          PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
-                SmartTextEx(TTab[TextIdPc8808a4], HubAreaPanelX[1], HubTrueJediLabelOffset + HubEpisodeSubtitleY, 1.0f,
-                            HubTrueJediLabelScale, HubTrueJediLabelScale, HubTrueJediLabelScale, 0, HubTrueJediLabelRed,
-                            HubTrueJediLabelGreen, HubTrueJediLabelBlue, HubTrueJediLabelWidth, 1, NULL, 0,
+                SmartTextEx(TTab[dat_008808a4], HubAreaPanelX[1], HubTrueJediLabelOffset + HubEpisodeSubtitleY, 1.0f, HubTrueJediLabelScale,
+                            HubTrueJediLabelScale, HubTrueJediLabelScale, 0, HubTrueJediLabelRed, HubTrueJediLabelGreen,
+                            HubTrueJediLabelBlue, HubTrueJediLabelWidth, 1, NULL, 0,
                             static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlpha) * HubAreaTime));
                 DrawBuildUpBar(HubAreaPanelX[4], HubEpisodeSubtitleY + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
                                NuTrigTable[((i32)(16384.0 * HubAreaTime) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
                 sprintf(text, "%i/%i", free_count, free_total);
                 Text3DEx(text, HubAreaPanelX[4], HubEpisodeSubtitleY, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale, PANEL_MINIKITCOUNTSCALE,
                          PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
-                SmartTextEx(TTab[TextIdPc8808a8], HubAreaPanelX[4], HubTrueJediLabelOffset + HubEpisodeSubtitleY, 1.0f,
-                            HubTrueJediLabelScale, HubTrueJediLabelScale, HubTrueJediLabelScale, 0, HubTrueJediLabelRed,
-                            HubTrueJediLabelGreen, HubTrueJediLabelBlue, HubTrueJediLabelWidth, 1, NULL, 0,
+                SmartTextEx(TTab[dat_008808a8], HubAreaPanelX[4], HubTrueJediLabelOffset + HubEpisodeSubtitleY, 1.0f, HubTrueJediLabelScale,
+                            HubTrueJediLabelScale, HubTrueJediLabelScale, 0, HubTrueJediLabelRed, HubTrueJediLabelGreen,
+                            HubTrueJediLabelBlue, HubTrueJediLabelWidth, 1, NULL, 0,
                             static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlpha) * HubAreaTime));
             } else {
                 DrawBuildUpBar(HubAreaPanelX[1], HubEpisodeSubtitleY + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
@@ -3491,7 +3491,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 x = -.1f;
             }
             Hub_DrawImportantBrick(211, x, HubEpisodeTitleY, HubAreaTime, gold_count, gold_total);
-            SmartTextEx(TTab[TextIdPc8807e4], 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize,
+            SmartTextEx(TTab[dat_008807e4], 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize,
                         HubEpisodeSubtitleSize, 0, HubEpisodeRed, HubEpisodeGreen, HubEpisodeBlue, 1.7f, 1, NULL, 0, alpha);
         } else if (HubArea >= 0 && HubArea < EPISODECOUNT) {
             HubDrawEpisodeStats(HubArea, HubAreaTime);
@@ -4956,7 +4956,7 @@ extern "C" {
         if ((object->character_data->model_flags & 0x100000) != 0) {
             object->ai_packet.capabilities |= 8;
         }
-        if (object->id == (u16)VehicleBoltId7f17d0) {
+        if (object->id == (u16)dat_007f17d0) {
             object->ai_packet.capabilities |= 0x400;
         }
         if (object->character_model->action_animations[0xcd] != NULL) {
@@ -5036,8 +5036,8 @@ extern "C" void LostTempleC_Update(WORLDINFO *world) {
         return;
     }
 complete:
-    if (FreePlay == 0 && LevelFixupSlotPc0087b2dc != NULL) {
-        GoToNewLevel(LevelFixupSlotPc0087b2dc->index);
+    if (FreePlay == 0 && dat_0087b2dc != NULL) {
+        GoToNewLevel(dat_0087b2dc->index);
     } else {
         CompleteLevel(world);
     }

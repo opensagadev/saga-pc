@@ -94,8 +94,8 @@ typedef struct JABBA_ANTINODE_VIEW {
 } JABBA_ANTINODE_VIEW;
 
 STATIC_ASSERT(offsetof(JABBA_ANTINODE_VIEW, type) == offsetof(AIANTINODE, type));
-extern i16 CharacterFixupIdPc007f1a7c;
-extern i16 CharacterFixupIdPc007f1a88;
+extern i16 dat_007f1a7c;
+extern i16 dat_007f1a88;
 #pragma section(".sarlrw", read, write)
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, movement_look_target) == 0x4ac);
 extern i32 EmperorFloorRouteOn;
@@ -107,8 +107,8 @@ extern f32 EmperorFloorSafeXMinimum;
 #define EMPEROR_FLOOR_AREA_MASK(world, area) (1 << ((area) - (world)->ai_sys->areas))
 
 void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *world) {
-    if (FreePlay == 0 && LevelFixupSlotPc0087b284 != NULL) {
-        other_level_override = LevelFixupSlotPc0087b284->index;
+    if (FreePlay == 0 && dat_0087b284 != NULL) {
+        other_level_override = dat_0087b284->index;
     }
 }
 
@@ -811,7 +811,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
         if (FreePlay) {
             KillBossCompleteLevel(id_RANCOR, 0, 0.3f);
         } else {
-            KillBossNewLevel(id_RANCOR, 0, 0.3f, LevelFixupSlotPc0087b2b0->index);
+            KillBossNewLevel(id_RANCOR, 0, 0.3f, dat_0087b2b0->index);
         }
     }
     if (LevGameObject[0] != NULL) {
@@ -1497,7 +1497,7 @@ void LegoCity_Update(WORLDINFO *world) {
         } else if (object->id == (u16)id_MOONCAR) {
             changedMoonCar = ~prevOnMoonCar;
             onMoonCar = 0xff;
-        } else if (object->id == (u16)CharacterFixupIdPc007f1a7c) {
+        } else if (object->id == (u16)dat_007f1a7c) {
             changedTownCar = ~prevOnTownCar;
             onTownCar = 0xff;
         }
@@ -1615,7 +1615,7 @@ void NewTown_Update(WORLDINFO *world) {
         } else if (object->id == (u16)id_FIRETRUCK) {
             changedFireTruck = ~prevOnFireTruck;
             onFireTruck = 0xff;
-        } else if (object->id == (u16)CharacterFixupIdPc007f1a88) {
+        } else if (object->id == (u16)dat_007f1a88) {
             changedLifeBoat = ~prevOnLifeBoat;
             onLifeBoat = 0xff;
         }

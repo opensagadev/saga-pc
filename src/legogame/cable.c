@@ -255,7 +255,7 @@ void UpdateCables(void) {
                         if (cable->wrap_count < 15 && turn > 0) {
                             cable->wrap_indices[cable->wrap_count++] = (u8)next;
                             if (cable->wrap_count == 15) {
-                                if (WORLD->current_level == LevelFixupSlotPc0087b208) {
+                                if (WORLD->current_level == dat_0087b208) {
                                     DeactivatePlayer(cable->target, 60.0f, NULL);
                                 } else {
                                     DeactivatePlayer(cable->target, 30.0f, NULL);

@@ -1075,7 +1075,7 @@ extern struct eduimenu_s *edpart_sounds_menu;
 extern struct eduimenu_s *edpart_soundx_menu;
 extern struct eduimenu_s *edpart_soundid_menu;
 extern struct eduimenu_s *edpart_soundcontrol_menu;
-extern const char MenuPcString76b274[4];
+extern const char dat_0076b274[4];
 void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *item, u32 value);
 
 #define EDPART_REFRESH_EMITTER_SOUNDS()                                                                                                    \
@@ -1177,7 +1177,7 @@ void edpartSoundControlMenu(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_soundcontrol_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelSoundControlMenu, "Sound Control");
         if (edpart_soundcontrol_menu != NULL) {
-            EDPART_SOUND_CONTROL_ITEM(0, (char *)MenuPcString76b274);
+            EDPART_SOUND_CONTROL_ITEM(0, (char *)dat_0076b274);
             EDPART_SOUND_CONTROL_ITEM(1, "On Edge");
             EDPART_SOUND_CONTROL_ITEM(2, "Off Edge");
             EDPART_SOUND_CONTROL_ITEM(3, "Per PART");

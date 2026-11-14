@@ -60,7 +60,7 @@ extern "C" {
     extern f32 PodAvalancheShakeFrames;
     extern f32 PodAvalancheShakeRange;
     extern i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
-    extern i16 CharacterFixupIdPc007f18c4;
+    extern i16 dat_007f18c4;
     extern AREA_DATA_PC *MOSEISLEY_ADATA;
     extern AREA_DATA_PC *TATOOINE_ADATA;
 }
@@ -70,7 +70,7 @@ extern "C" {
     void Hub_LockUnlockDoors(WORLDINFO *world);
     extern void *game_cutscenes_droid_factory_conveyor;
     extern AREA_DATA_PC *ROOFTOPS_ADATA;
-    extern i16 CharacterFixupIdPc007f1828; /* character id fixed up from "PenguinBomb" */
+    extern i16 dat_007f1828; /* character id fixed up from "PenguinBomb" */
 }
 
 typedef struct SHOP_SAVE_VIEW {
@@ -255,7 +255,7 @@ GAME_PUBLISHER_ASSERT(offsetof(GAME_BUILDIT_READER, anim_object_count) == 0x6c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, gold_bricks) == 0x7c1a);
 GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, part_debris_sys) == 0x138);
-extern "C" i16 TextIdPc880ff0;
+extern "C" i16 dat_00880ff0;
 extern i32 freeplaymode;
 GAME_PUBLISHER_ASSERT(sizeof(MISSION_MENU_PACKET) == 0xa);
 GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, player_model) == 0);
@@ -491,7 +491,7 @@ static void GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK_PC *doo
             if (FreePlay != 0) {
                 CompleteLevel(world);
             } else {
-                NewLData = LevelFixupSlotPc0087b0b8;
+                NewLData = dat_0087b0b8;
                 LevelCompletionFallbackFlagPC = 1;
                 if (waiting_for_level != -1) {
                     waiting_for_new_level = 1;
@@ -842,7 +842,7 @@ static i32 SetSoundFadeDistCallBackFn_LSW(WORLDINFO_s *) {
 }
 
 static void BuckStartExtra_LSW(GAMEOBJECT *object) {
-    if (WorldInfo_CurrentlyActive()->current_level != LevelFixupSlotPc0087b218 || object->id != (u16)id_SNOWMOB) {
+    if (WorldInfo_CurrentlyActive()->current_level != dat_0087b218 || object->id != (u16)id_SNOWMOB) {
         return;
     }
     for (i32 i = 0; i < 8; ++i) {
@@ -904,34 +904,34 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         scale->x = 2.3f;
     } else if (character_id == id_ATAT) {
         scale->x = 7.0f;
-    } else if (character_id == VehicleBoltId7f18b4) {
+    } else if (character_id == dat_007f18b4) {
         scale->x = 3.0f;
     } else if (character_id == id_XWING) {
         scale->x = 10.0f;
     } else if (character_id == id_YWING) {
         scale->x = 6.5f;
-    } else if (character_id == VehicleBoltId7f1a24) {
+    } else if (character_id == dat_007f1a24) {
         scale->x = 4.0f;
-    } else if (character_id == VehicleBoltId7f19a4) {
+    } else if (character_id == dat_007f19a4) {
         scale->x = 10.0f;
-    } else if (character_id == id_TIEFIGHTER || character_id == VehicleBoltId7f1a28 || character_id == VehicleBoltId7f196c ||
+    } else if (character_id == id_TIEFIGHTER || character_id == dat_007f1a28 || character_id == dat_007f196c ||
                character_id == id_TIEBOMBER) {
         scale->x = 6.0f;
-    } else if (character_id == VehicleBoltId7f1a2c) {
+    } else if (character_id == dat_007f1a2c) {
         scale->x = 8.0f;
-    } else if (character_id == VehicleBoltId7f195c) {
+    } else if (character_id == dat_007f195c) {
         scale->x = 8.0f;
     } else if (character_id == id_WOOKIEFLYER) {
         scale->x = 6.0f;
-    } else if (character_id == FreePlayId007f1a98) {
+    } else if (character_id == dat_007f1a98) {
         scale->x = 5.0f;
-    } else if (character_id == FreePlayId007f1b40 || character_id == FreePlayId007f1b44 || character_id == id_ANAKINSNEWPOD ||
+    } else if (character_id == dat_007f1b40 || character_id == dat_007f1b44 || character_id == id_ANAKINSNEWPOD ||
                character_id == id_ANAKINSNEWPODGREEN || character_id == id_NEW_REPUBLIC_GUNSHIP ||
                character_id == id_NEW_REPUBLIC_GUNSHIP_GREEN) {
         scale->x = 6.0f;
-    } else if (character_id == VehicleBoltId7f1a9c || character_id == VehicleBoltId7f1aa0) {
+    } else if (character_id == dat_007f1a9c || character_id == dat_007f1aa0) {
         scale->x = 7.0f;
-    } else if (character_id == VehicleBoltId7f1b34 || character_id == VehicleBoltId7f1b38) {
+    } else if (character_id == dat_007f1b34 || character_id == dat_007f1b38) {
         scale->x = 5.0f;
     } else if (character_id == id_SEBULBASPOD) {
         scale->x = 8.0f;
@@ -945,8 +945,8 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         offset->z = -0.03f;
     } else if (character_id == (i16)id_GONKDROID) {
         offset->z = -0.0075f;
-    } else if (character_id == id_IMPERIALSPY || character_id == FreePlayId007f199c || character_id == id_GREEDO ||
-               character_id == id_BOSSK || character_id == id_CANTINABAND) {
+    } else if (character_id == id_IMPERIALSPY || character_id == dat_007f199c || character_id == id_GREEDO || character_id == id_BOSSK ||
+               character_id == id_CANTINABAND) {
         offset->z = -0.03f;
     } else if (character_id == id_IMPERIALGUARD) {
         offset->z = 0.015f;
@@ -991,7 +991,7 @@ static i32 CheckMusicOther(void) {
             if (Hub_Outside() != 0) {
                 return 1;
             }
-        } else if (level == LevelFixupSlotPc0087b12c) {
+        } else if (level == dat_0087b12c) {
             if (KaminoInside() != 0) {
                 return 1;
             }
@@ -1003,7 +1003,7 @@ static i32 CheckMusicOther(void) {
             if (KaminoInside() == 0) {
                 return 1;
             }
-        } else if (level == LevelFixupSlotPc0087b1bc) {
+        } else if (level == dat_0087b1bc) {
             if (socket_position.sock_index == 3) {
                 return 1;
             }
@@ -1016,7 +1016,7 @@ static i32 CheckMusicOther(void) {
                 --deathstar_hold_count;
                 return 1;
             }
-        } else if (level == LevelFixupSlotPc0087b228) {
+        } else if (level == dat_0087b228) {
             if (GameCam->sock_position.sock_index == 4) {
                 return 1;
             }
@@ -1086,11 +1086,10 @@ static void LEGO_100PercentFn(void) {
 
 static i32 LastSafePosExtra(GAMEOBJECT *object) {
     LEVELDATA_PC *level = WORLD->current_level;
-    if (level == LevelFixupSlotPc0087b1a8 && object->jump_animation_state == 0x0e) {
+    if (level == dat_0087b1a8 && object->jump_animation_state == 0x0e) {
         return 1;
     }
-    if (level == LevelFixupSlotPc0087b264 && object->jump_animation_state == 0x18 && (object->flags_1fc & 0x80) != 0 &&
-        object->field_283 == -1) {
+    if (level == dat_0087b264 && object->jump_animation_state == 0x18 && (object->flags_1fc & 0x80) != 0 && object->field_283 == -1) {
         return 1;
     }
     if (level == DEATHSTARESCAPEC_LDATA && (i16)object->id == id_SERVICECAR) {
@@ -1119,16 +1118,15 @@ static i32 ActionMusicSockChoice(void) {
 
 static i32 ActionMusicFn(void) {
     if (StartupGameFlag0 != 0) {
-        if (WORLD->area != NULL && WORLD->area == LOSTTEMPLE_ADATA && WORLD->current_level != LevelFixupSlotPc0087b2c4) {
+        if (WORLD->area != NULL && WORLD->area == LOSTTEMPLE_ADATA && WORLD->current_level != dat_0087b2c4) {
             return 1;
         }
     } else {
-        if (Arcade != 0 || DoubleScore != 0 || Cheat_PowerUpActive(-1) != 0 ||
-            (WORLD->current_level == LevelFixupSlotPc0087b164 && MiniCutCam != 0) ||
+        if (Arcade != 0 || DoubleScore != 0 || Cheat_PowerUpActive(-1) != 0 || (WORLD->current_level == dat_0087b164 && MiniCutCam != 0) ||
             (WORLD->current_level == CRUISERD_LDATA && CruiserD_LiftChase != 0) || WORLD->current_level == DEATHSTARRESCUEE_LDATA) {
             return 1;
         }
-        if (WORLD->current_level == LevelFixupSlotPc0087b1bc && CheckMusicOther() != 0) {
+        if (WORLD->current_level == dat_0087b1bc && CheckMusicOther() != 0) {
             return 1;
         }
         if (WORLD->current_level == CLOUDCITYESCAPEA_LDATA) {
@@ -1178,16 +1176,15 @@ static i32 CutScenePlayer_Accept(CUT_PLAYER_CLIP_CONFIG_PC *clip) {
 }
 
 static i32 Jump_PreventJump(GAMEOBJECT *object) {
-    return WORLD->current_level == LevelFixupSlotPc0087b154 && object->floor_height != 2000000.0 &&
-           object->surface_normal.y < NuTrigTable[0x371c];
+    return WORLD->current_level == dat_0087b154 && object->floor_height != 2000000.0 && object->surface_normal.y < NuTrigTable[0x371c];
 }
 
 static void SurfaceInfo_ExtraReflect(GAMEOBJECT *object) {
-    if (WORLD->current_level == LevelFixupSlotPc0087b170 && object->reflection_height == 2000000.0 && object->position.x < 11.0f) {
+    if (WORLD->current_level == dat_0087b170 && object->reflection_height == 2000000.0 && object->position.x < 11.0f) {
         object->reflection_enabled = 3;
         object->reflection_height = -39.2f;
     }
-    if (WORLD->current_level == LevelFixupSlotPc0087b1d0) {
+    if (WORLD->current_level == dat_0087b1d0) {
         if (object->position.z > 20.75f) {
             object->reflection_enabled = 3;
             object->reflection_height = 22.4f;
@@ -1431,7 +1428,7 @@ extern "C" {
         save->gold_bricks = 0;
         memset(CompletionPointInfoRecalculate, 0, sizeof(CompletionPointInfoRecalculate));
         if (AllMiniKitsDone(save->area_save) != 0) {
-            AddToCollection(VehicleBoltId7f195c);
+            AddToCollection(dat_007f195c);
         }
         for (i = 0; i < MasterCollection.count; ++i) {
             COLLECTID *entry = reinterpret_cast<COLLECTID *>(&MasterCollection.list[i]);
@@ -1591,7 +1588,7 @@ extern "C" {
                     red = 191;
                     green = 31;
                 }
-                SmartText(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
+                SmartText(TTab[dat_008806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
             }
             DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobals.field_20, 10);
         }
@@ -2277,7 +2274,7 @@ extern "C" {
         i32 count;
         if (WORLD->area == ROOFTOPS_ADATA) {
             NuStrCpy(script, "PenguinBox");
-            model = CharacterFixupIdPc007f1828;
+            model = dat_007f1828;
         }
         choice = qrand() * (1.0f / 65535.0f) * 100.0f;
         if (choice < 50.0f) {
@@ -2593,7 +2590,7 @@ extern "C" {
         } else {
             return;
         }
-        AddDynamicCreature(CharacterFixupIdPc007f18c4, &blowup->position, 0, "spawned_womprat", NULL, NULL, 1, NULL, NULL, 0, 16);
+        AddDynamicCreature(dat_007f18c4, &blowup->position, 0, "spawned_womprat", NULL, NULL, 1, NULL, NULL, 0, 16);
     }
 
     void GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle) {
@@ -2624,7 +2621,7 @@ extern "C" {
             return;
         }
         level = world->current_level;
-        if (level == PODRACEA_LDATA || level == PODRACEB_LDATA || level == LevelFixupSlotPc0087b0b4) {
+        if (level == PODRACEA_LDATA || level == PODRACEB_LDATA || level == dat_0087b0b4) {
             if (PodRace_InStartCountdown(WORLD) != 0) {
                 return;
             }
@@ -2645,7 +2642,7 @@ extern "C" {
 
 static void GizBuildIt_FinishFn_Game(GIZBUILDIT *input) {
     if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0 && input == HubBuildIt && (Game.hub_buildit_completed & 0x80) == 0) {
-        AddFancyMessageRGB(TTab[TextIdPc880ff0], 0.0f, 0.0f, 0.6f, 1.25f, 1, 255, 0, 0);
+        AddFancyMessageRGB(TTab[dat_00880ff0], 0.0f, 0.0f, 0.6f, 1.25f, 1, 255, 0, 0);
         BuyAllShopExtras();
         ReCalculateCompletionPoints();
         AddPartDebris(WORLD->part_debris_sys, 15, &((GAME_BUILDIT_READER *)HubBuildIt)->position);
@@ -2778,7 +2775,7 @@ void InitGameAfterConfig(void) {
     Level_RegisterGameConfigKeywords(LevelConfigKeywords_BeforeLoad, WorldLoadAfterKeywordsPc);
     Suits_Init();
     Collection_Configure("chars\\collection.txt", &permbuffer_ptr, &permbuffer_end);
-    if ((u16)VehicleBoltId7f17d4 != 0xffff && InCollectList_Index(VehicleBoltId7f17d4, NULL, 0) != -1 && TempCollectID != NULL) {
+    if ((u16)dat_007f17d4 != 0xffff && InCollectList_Index(dat_007f17d4, NULL, 0) != -1 && TempCollectID != NULL) {
         TempCollectID->selection_type = 0;
         TempCollectID->shop_enabled = 1;
         TempCollectID->price = 50000;

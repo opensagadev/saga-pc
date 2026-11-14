@@ -1,6 +1,6 @@
 #include "saga.h"
 
-extern char TextInputKeyNameTextPc7516c0[1];
+extern char dat_007516c0[1];
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, capabilities) == 0x4bc);
 
 i32 Signals_Load(WORLDINFO *world, void *unused) {
@@ -366,7 +366,7 @@ ADDGIZMOTYPE_PC *Signals_RegisterGizmo(i32 unused_type_id) {
     char *name = SignalRegistryNamePc;
     SignalAddType = Default_ADDGIZMOTYPE;
     SignalAddType.name = name;
-    SignalAddType.prefix = TextInputKeyNameTextPc7516c0;
+    SignalAddType.prefix = dat_007516c0;
     SignalAddType.fns.options = 0x28;
     SignalAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Signals_GetMaxGizmos;
     SignalAddType.fns.add_gizmos_fn = (void *)Signals_AddGizmos;

@@ -22,7 +22,7 @@ typedef struct guideline_progress_s { // size 0x8
     u32 visible_mask[1];              // 0x4
 } GUIDELINE_PROGRESS_PC;
 
-extern char TextInputKeyNameTextPc7516c0[1];
+extern char dat_007516c0[1];
 
 void GuideLines_Draw(void *world, void *unused, f32 delta_time);
 
@@ -189,7 +189,7 @@ ADDGIZMOTYPE_PC *GuideLines_RegisterGizmo(i32 unused_type_id) {
     char *name = GuideLineRegistryNamePc;
     GuideLineAddType = Default_ADDGIZMOTYPE;
     GuideLineAddType.name = name;
-    GuideLineAddType.prefix = TextInputKeyNameTextPc7516c0;
+    GuideLineAddType.prefix = dat_007516c0;
     GuideLineAddType.fns.options = 8;
     GuideLineAddType.fns.get_max_gizmos_fn = (i32(*)(void *))GuideLines_GetMaxGizmos;
     GuideLineAddType.fns.add_gizmos_fn = (void *)GuideLines_AddGizmos;

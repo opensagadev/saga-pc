@@ -19,7 +19,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 VehicleBoltId7f17d4;
+    extern i16 dat_007f17d4;
     i32 Shop_UpdateHint(HINT *);
     extern i32 shop_from_cutsceneplayer;
 #ifdef __cplusplus
@@ -54,11 +54,11 @@ extern "C" {
     extern f32 ShopCodePulseScale;
     extern f32 ShopCodeArrowBing;
     extern f32 ShopCodeArrowAmplitude;
-    extern i16 TextIdPc88070c;
-    extern i16 TextIdPc880800;
-    extern i16 TextIdPc8808c4;
-    extern i16 TextIdPc880904;
-    extern i16 TextIdPc880908;
+    extern i16 dat_0088070c;
+    extern i16 dat_00880800;
+    extern i16 dat_008808c4;
+    extern i16 dat_00880904;
+    extern i16 dat_00880908;
     extern struct shopitem_s *ExtraItems;
     extern i32 ExtraShelfIds[7];
     extern struct shopitem_s *HintItems;
@@ -77,7 +77,7 @@ extern "C" {
     extern f32 topscale[6];
     extern i32 SHOPACTIVE;
     extern f32 ShopLockedScale;
-    extern i16 TextIdPc8808c0;
+    extern i16 dat_008808c0;
     void DrawShopPanel(void);
     extern void (*ShopDrawPanelFn)(void);
     void InitShop(WORLDINFO *);

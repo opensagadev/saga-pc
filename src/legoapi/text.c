@@ -274,21 +274,11 @@ void TextRegisterButtonMapFn(void (*fn)(char *, char *)) {
     }
 }
 
-extern char TextInputKeyNameTextPc7516c0[1];
+extern char dat_007516c0[1];
 
 const char *TextInputButtonGlyphsPc[12] = {
-    "\xd4\xb1",
-    "\xd4\xb2",
-    "\xd4\xb3",
-    "\xd4\xb4",
-    "\xd4\xb5",
-    "\xd4\xb6",
-    "\xd4\xbd",
-    "\xd4\xbe",
-    TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0,
-    "\xd4\xb8",
-    "\xd4\xb7",
+    "\xd4\xb1", "\xd4\xb2", "\xd4\xb3",   "\xd4\xb4",   "\xd4\xb5", "\xd4\xb6",
+    "\xd4\xbd", "\xd4\xbe", dat_007516c0, dat_007516c0, "\xd4\xb8", "\xd4\xb7",
 };
 
 const char *TextInputAxisGlyphsPc[4] = {

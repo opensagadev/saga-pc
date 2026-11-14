@@ -152,14 +152,14 @@ void MenuDrawMissions(MENU *menu) {
     size = MissionMenuPacket.active_player[1] ? 1.0f : MissionDropInAlpha;
     DrawCharIcon(MissionMenuPacket.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSize, 165, size, size, 1, NULL);
     if (MissionMenuPacket.active_player[0] != 0 && MissionMenuPacket.active_player[1] != 0) {
-        const i16 select = TextIdPc880888;
-        const i16 back = TextIdPc880844;
-        const i16 status = TextIdPc880eac;
-        const i16 unselect = TextIdPc880890;
+        const i16 select = dat_00880888;
+        const i16 back = dat_00880844;
+        const i16 status = dat_00880eac;
+        const i16 unselect = dat_00880890;
         if (MissionMenuPacket.selected[0] != 0) {
             select0 = -1;
             back0 = unselect;
-            status0 = TextIdPc880eb0;
+            status0 = dat_00880eb0;
         } else {
             select0 = select;
             back0 = back;
@@ -168,16 +168,16 @@ void MenuDrawMissions(MENU *menu) {
         if (MissionMenuPacket.selected[1] != 0) {
             select1 = -1;
             back1 = unselect;
-            status1 = TextIdPc880eb0;
+            status1 = dat_00880eb0;
         } else {
             select1 = select;
             back1 = back;
             status1 = status;
         }
     } else {
-        select0 = select1 = TextIdPc880888;
-        back0 = back1 = TextIdPc880844;
-        status0 = status1 = TextIdPc880eac;
+        select0 = select1 = dat_00880888;
+        back0 = back1 = dat_00880844;
+        status0 = status1 = dat_00880eac;
     }
     DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], select0, 1.0f, -1, back0, -1, status0, MissionMenuPacket.active_player[1],
                           select1, 1.0f, -1, back1, -1, status1);
@@ -217,7 +217,7 @@ void MenuDrawEndMission(MENU *menu) {
             colour_a = 191;
             colour_b = 31;
         }
-        SmartText(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, colour_a, colour_b, 0, 1.7f, 1);
+        SmartText(TTab[dat_008806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, colour_a, colour_b, 0, 1.7f, 1);
     }
 }
 

@@ -94,7 +94,7 @@ extern "C" {
     u8 NuAllocDumpOnLevel = 0;
     i32 NuMainSkipCutBorders = 0;
     i64 frameout_count = 0;
-    char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&TextIdPc8810c0, NULL};
+    char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&dat_008810c0, NULL};
 }
 
 extern "C" {

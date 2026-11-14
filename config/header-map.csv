@@ -3612,38 +3612,38 @@ function:ShootCode,function,ShootCode,11277,11277,1,legoapi/characters/motion/mo
 function:StartQuickShoot,function,StartQuickShoot,11278,11278,1,legoapi/characters/motion/move.h,android,StartQuickShoot
 function:Move_CANNON,function,Move_CANNON,11279,11279,1,legoapi/characters/motion.h,android,Move_CANNON
 function:ZapTarget,function,ZapTarget,11280,11280,1,legoapi/characters/motion/move.h,android,ZapTarget
-variable:VehicleBoltId7f17d0,variable,VehicleBoltId7f17d0,11281,11281,1,legoapi/misc/legoapi_status.h,rule,used most in legogame/legoapi_status.cpp (2) android-path
-variable:VehicleBoltId7f17d4,variable,VehicleBoltId7f17d4,11282,11282,1,legoapi/menus/screens/shop.h,rule,used most in legogame/shop.c (4) android-path
-variable:VehicleBoltId7f18b4,variable,VehicleBoltId7f18b4,11283,11283,1,legoapi/world/levels/episodeV.h,rule,used most in legogame/episodeV.c (5) android-path
-variable:VehicleBoltId7f190c,variable,VehicleBoltId7f190c,11284,11284,1,legoapi/items/collect/bolt.h,users,VehicleBoltId7f190c: only legogame/bolt.c android-path
-variable:VehicleBoltId7f1910,variable,VehicleBoltId7f1910,11285,11285,1,legoapi/ai/game/lsw_hub_ai.h,rule,used most in legogame/lsw_hub_ai.c (2) android-path
-variable:VehicleBoltId7f1924,variable,VehicleBoltId7f1924,11286,11286,1,legoapi/characters/core/character.h,data-order,retail 0x7f1924 between 0x7f1920 and 0x7f192c
-variable:VehicleBoltId7f1928,variable,VehicleBoltId7f1928,11287,11287,1,legoapi/characters/core/character.h,data-order,retail 0x7f1928 between 0x7f1920 and 0x7f192c
-variable:VehicleBoltId7f195c,variable,VehicleBoltId7f195c,11288,11288,1,legoapi/menus/core/gamehint.h,rule,used most in legogame/gamehint.c (3) android-path
-variable:VehicleBoltId7f196c,variable,VehicleBoltId7f196c,11289,11289,1,legoapi/characters/core/character.h,data-order,retail 0x7f196c between 0x7f1968 and 0x7f1970
+variable:dat_007f17d0,variable,dat_007f17d0,11281,11281,1,legoapi/misc/legoapi_status.h,rule,used most in legogame/legoapi_status.cpp (2) android-path
+variable:dat_007f17d4,variable,dat_007f17d4,11282,11282,1,legoapi/menus/screens/shop.h,rule,used most in legogame/shop.c (4) android-path
+variable:dat_007f18b4,variable,dat_007f18b4,11283,11283,1,legoapi/world/levels/episodeV.h,rule,used most in legogame/episodeV.c (5) android-path
+variable:dat_007f190c,variable,dat_007f190c,11284,11284,1,legoapi/items/collect/bolt.h,users,dat_007f190c: only legogame/bolt.c android-path
+variable:dat_007f1910,variable,dat_007f1910,11285,11285,1,legoapi/ai/game/lsw_hub_ai.h,rule,used most in legogame/lsw_hub_ai.c (2) android-path
+variable:dat_007f1924,variable,dat_007f1924,11286,11286,1,legoapi/characters/core/character.h,data-order,retail 0x7f1924 between 0x7f1920 and 0x7f192c
+variable:dat_007f1928,variable,dat_007f1928,11287,11287,1,legoapi/characters/core/character.h,data-order,retail 0x7f1928 between 0x7f1920 and 0x7f192c
+variable:dat_007f195c,variable,dat_007f195c,11288,11288,1,legoapi/menus/core/gamehint.h,rule,used most in legogame/gamehint.c (3) android-path
+variable:dat_007f196c,variable,dat_007f196c,11289,11289,1,legoapi/characters/core/character.h,data-order,retail 0x7f196c between 0x7f1968 and 0x7f1970
 variable:id_JAWA,variable,id_JAWA,11290,11290,1,legoapi/characters/core/character.h,android,id_JAWA
-variable:VehicleBoltId7f19a4,variable,VehicleBoltId7f19a4,11291,11291,1,legoapi/characters/core/character.h,data-order,retail 0x7f19a4 between 0x7f19a0 and 0x7f19b8
-variable:VehicleBoltId7f19a8,variable,VehicleBoltId7f19a8,11292,11292,1,legoapi/characters/core/character.h,data-order,retail 0x7f19a8 between 0x7f19a0 and 0x7f19b8
-variable:VehicleBoltId7f19e8,variable,VehicleBoltId7f19e8,11293,11293,1,legoapi/characters/core/character.h,data-order,retail 0x7f19e8 between 0x7f19e4 and 0x7f19ec
+variable:dat_007f19a4,variable,dat_007f19a4,11291,11291,1,legoapi/characters/core/character.h,data-order,retail 0x7f19a4 between 0x7f19a0 and 0x7f19b8
+variable:dat_007f19a8,variable,dat_007f19a8,11292,11292,1,legoapi/characters/core/character.h,data-order,retail 0x7f19a8 between 0x7f19a0 and 0x7f19b8
+variable:dat_007f19e8,variable,dat_007f19e8,11293,11293,1,legoapi/characters/core/character.h,data-order,retail 0x7f19e8 between 0x7f19e4 and 0x7f19ec
 variable:id_REPUBLICGUNSHIP,variable,id_REPUBLICGUNSHIP,11294,11294,1,legoapi/characters/core/character.h,android,id_REPUBLICGUNSHIP
-variable:VehicleBoltId7f1a24,variable,VehicleBoltId7f1a24,11295,11295,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a24 between 0x7f1a20 and 0x7f1a30
-variable:VehicleBoltId7f1a28,variable,VehicleBoltId7f1a28,11296,11296,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a28 between 0x7f1a20 and 0x7f1a30
-variable:VehicleBoltId7f1a2c,variable,VehicleBoltId7f1a2c,11297,11297,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a2c between 0x7f1a20 and 0x7f1a30
+variable:dat_007f1a24,variable,dat_007f1a24,11295,11295,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a24 between 0x7f1a20 and 0x7f1a30
+variable:dat_007f1a28,variable,dat_007f1a28,11296,11296,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a28 between 0x7f1a20 and 0x7f1a30
+variable:dat_007f1a2c,variable,dat_007f1a2c,11297,11297,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a2c between 0x7f1a20 and 0x7f1a30
 variable:id_SENTRYDROID,variable,id_SENTRYDROID,11298,11298,1,legoapi/characters/core/character.h,android,id_SENTRYDROID
-variable:VehicleBoltId7f1a38,variable,VehicleBoltId7f1a38,11299,11299,1,legoapi/items/collect/bolt.h,users,VehicleBoltId7f1a38: only legogame/bolt.c android-path
-variable:VehicleBoltId7f1a9c,variable,VehicleBoltId7f1a9c,11300,11300,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
-variable:VehicleBoltId7f1aa0,variable,VehicleBoltId7f1aa0,11301,11301,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
-variable:VehicleBoltId7f1aac,variable,VehicleBoltId7f1aac,11302,11302,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
+variable:dat_007f1a38,variable,dat_007f1a38,11299,11299,1,legoapi/items/collect/bolt.h,users,dat_007f1a38: only legogame/bolt.c android-path
+variable:dat_007f1a9c,variable,dat_007f1a9c,11300,11300,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
+variable:dat_007f1aa0,variable,dat_007f1aa0,11301,11301,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
+variable:dat_007f1aac,variable,dat_007f1aac,11302,11302,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
 variable:VehicleSpecialShooterId,variable,VehicleSpecialShooterId,11303,11303,1,legoapi/world/levels.h,data-order,retail 0x7f1ab8 between 0x7f1ab4 and 0x7f1abc
-variable:VehicleBoltId7f1ad8,variable,VehicleBoltId7f1ad8,11304,11304,1,legoapi/items/collect/bolt.h,users,VehicleBoltId7f1ad8: only legogame/bolt.c android-path
-variable:VehicleBoltId7f1aec,variable,VehicleBoltId7f1aec,11305,11305,1,legoapi/items/collect/bolt.h,users,VehicleBoltId7f1aec: only legogame/bolt.c android-path
-variable:VehicleBoltId7f1af0,variable,VehicleBoltId7f1af0,11306,11306,1,legoapi/items/collect/bolt.h,users,VehicleBoltId7f1af0: only legogame/bolt.c android-path
-variable:VehicleBoltId7f1b00,variable,VehicleBoltId7f1b00,11307,11307,1,legoapi/items/collect/bolt.h,users,VehicleBoltId7f1b00: only legogame/bolt.c android-path
-variable:VehicleBoltId7f1b04,variable,VehicleBoltId7f1b04,11308,11308,1,legoapi/items/collect/bolt.h,users,VehicleBoltId7f1b04: only legogame/bolt.c android-path
-variable:VehicleBoltId7f1b08,variable,VehicleBoltId7f1b08,11309,11309,1,legoapi/items/collect/bolt.h,users,VehicleBoltId7f1b08: only legogame/bolt.c android-path
-variable:VehicleBoltId7f1b0c,variable,VehicleBoltId7f1b0c,11310,11310,1,legoapi/items/collect/bolt.h,users,VehicleBoltId7f1b0c: only legogame/bolt.c android-path
-variable:VehicleBoltId7f1b34,variable,VehicleBoltId7f1b34,11311,11311,1,legoapi/characters/core/character.h,data-order,retail 0x7f1b34 between 0x7f1b30 and 0x7f1b3c
-variable:VehicleBoltId7f1b38,variable,VehicleBoltId7f1b38,11312,11312,1,legoapi/characters/core/character.h,data-order,retail 0x7f1b38 between 0x7f1b30 and 0x7f1b3c
+variable:dat_007f1ad8,variable,dat_007f1ad8,11304,11304,1,legoapi/items/collect/bolt.h,users,dat_007f1ad8: only legogame/bolt.c android-path
+variable:dat_007f1aec,variable,dat_007f1aec,11305,11305,1,legoapi/items/collect/bolt.h,users,dat_007f1aec: only legogame/bolt.c android-path
+variable:dat_007f1af0,variable,dat_007f1af0,11306,11306,1,legoapi/items/collect/bolt.h,users,dat_007f1af0: only legogame/bolt.c android-path
+variable:dat_007f1b00,variable,dat_007f1b00,11307,11307,1,legoapi/items/collect/bolt.h,users,dat_007f1b00: only legogame/bolt.c android-path
+variable:dat_007f1b04,variable,dat_007f1b04,11308,11308,1,legoapi/items/collect/bolt.h,users,dat_007f1b04: only legogame/bolt.c android-path
+variable:dat_007f1b08,variable,dat_007f1b08,11309,11309,1,legoapi/items/collect/bolt.h,users,dat_007f1b08: only legogame/bolt.c android-path
+variable:dat_007f1b0c,variable,dat_007f1b0c,11310,11310,1,legoapi/items/collect/bolt.h,users,dat_007f1b0c: only legogame/bolt.c android-path
+variable:dat_007f1b34,variable,dat_007f1b34,11311,11311,1,legoapi/characters/core/character.h,data-order,retail 0x7f1b34 between 0x7f1b30 and 0x7f1b3c
+variable:dat_007f1b38,variable,dat_007f1b38,11312,11312,1,legoapi/characters/core/character.h,data-order,retail 0x7f1b38 between 0x7f1b30 and 0x7f1b3c
 variable:id_ZAMSSPEEDER,variable,id_ZAMSSPEEDER,11313,11313,1,legoapi/characters/core/character.h,android,id_ZAMSSPEEDER
 variable:VehicleGunshipAngleADefault,variable,VehicleGunshipAngleADefault,11314,11314,1,legoapi/characters/motion/move.h,users,VehicleGunshipAngleADefault: only legogame/move.c android-path
 variable:VehicleGunshipAngleAPlayer1,variable,VehicleGunshipAngleAPlayer1,11315,11315,1,legoapi/characters/motion/move.h,users,VehicleGunshipAngleAPlayer1: only legogame/move.c android-path
@@ -3761,7 +3761,7 @@ variable:TorpedoGrabRangeSquared,variable,TorpedoGrabRangeSquared,11433,11433,1,
 variable:TorpedoStealTimer,variable,TorpedoStealTimer,11434,11434,1,legoapi/items/collect/torpedo.h,users,TorpedoStealTimer: only legogame/torpedo.c android-path
 variable:TorpedoStealRange,variable,TorpedoStealRange,11435,11435,1,legoapi/items/collect/torpedo.h,users,TorpedoStealRange: only legogame/torpedo.c android-path
 variable:TorpedoFireSfxPc,variable,TorpedoFireSfxPc,11436,11436,1,legoapi/items/collect/bolts.h,rule,used most in legoapi/bolts.cpp (4) android-path
-variable:TextInputKeyNameTextPc759770,variable,TextInputKeyNameTextPc759770,11437,11437,1,legoapi/items/collect/torpedo.h,users,TextInputKeyNameTextPc759770: only legogame/torpedo.c android-path
+variable:dat_00759770,variable,dat_00759770,11437,11437,1,legoapi/items/collect/torpedo.h,users,dat_00759770: only legogame/torpedo.c android-path
 variable:BATTLEOVERCORUSCANT_ADATA,variable,BATTLEOVERCORUSCANT_ADATA,11438,11438,1,globals.h,android-weak,catch-all (needs a module owner); BATTLEOVERCORUSCANT_ADATA
 function:SfxBitsStore,function,SfxBitsStore,11439,11439,1,legoapi/render/core/gameliball.h,android,SfxBitsStore
 function:ForcedBackCode,function,ForcedBackCode,11440,11440,1,legoapi/characters/motion/move.h,android,ForcedBackCode
@@ -4557,19 +4557,19 @@ variable:KillPartsTieSpinsText,variable,KillPartsTieSpinsText,12538,12538,1,lego
 variable:KillPartsTieTrailScale,variable,KillPartsTieTrailScale,12539,12539,1,legoapi/items/objects/game_obj.h,users,KillPartsTieTrailScale: only legogame/game_obj.c android-path
 variable:KillPartsTieSpinTranslation,variable,KillPartsTieSpinTranslation,12540,12540,1,legoapi/items/objects/game_obj.h,users,KillPartsTieSpinTranslation: only legogame/game_obj.c android-path
 variable:KillPartsAtatExplodeText,variable,KillPartsAtatExplodeText,12541,12541,1,legoapi/items/objects/game_obj.h,users,KillPartsAtatExplodeText: only legogame/game_obj.c android-path
-variable:PickupTypeLiteral758c00,variable,PickupTypeLiteral758c00,12542,12542,1,legoapi/gizmo/object/gizmopickup.h,data-nearest,"only data.cpp mentions it; retail 0x758c00, nearest 0x758c14"
-variable:PickupTypeLiteral758c0c,variable,PickupTypeLiteral758c0c,12543,12543,1,legoapi/gizmo/object/gizmopickup.h,data-nearest,"only data.cpp mentions it; retail 0x758c0c, nearest 0x758c14"
-variable:PickupTypeLiteral758c14,variable,PickupTypeLiteral758c14,12544,12544,1,legoapi/gizmo/object/gizmopickup.h,users,PickupTypeLiteral758c14: only legogame/gizmopickup.c android-path
-variable:PickupTypeLiteral758c20,variable,PickupTypeLiteral758c20,12545,12545,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c20 between 0x758c14 and 0x758c5c
-variable:PickupTypeLiteral758c28,variable,PickupTypeLiteral758c28,12546,12546,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c28 between 0x758c14 and 0x758c5c
-variable:PickupTypeLiteral758c34,variable,PickupTypeLiteral758c34,12547,12547,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c34 between 0x758c14 and 0x758c5c
-variable:PickupTypeLiteral758c3c,variable,PickupTypeLiteral758c3c,12548,12548,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c3c between 0x758c14 and 0x758c5c
-variable:PickupTypeLiteral758c48,variable,PickupTypeLiteral758c48,12549,12549,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c48 between 0x758c14 and 0x758c5c
-variable:PickupTypeLiteral758c50,variable,PickupTypeLiteral758c50,12550,12550,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c50 between 0x758c14 and 0x758c5c
-variable:PickupTypeLiteral758c5c,variable,PickupTypeLiteral758c5c,12551,12551,1,legoapi/gizmo/object/gizmopickup.h,users,PickupTypeLiteral758c5c: only legogame/gizmopickup.c android-path
-variable:PickupTypeLiteral758c68,variable,PickupTypeLiteral758c68,12552,12552,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c68 between 0x758c5c and 0x758c8c
-variable:PickupTypeLiteral758c74,variable,PickupTypeLiteral758c74,12553,12553,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c74 between 0x758c5c and 0x758c8c
-variable:PickupTypeLiteral758c80,variable,PickupTypeLiteral758c80,12554,12554,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c80 between 0x758c5c and 0x758c8c
+variable:dat_00758c00,variable,dat_00758c00,12542,12542,1,legoapi/gizmo/object/gizmopickup.h,data-nearest,"only data.cpp mentions it; retail 0x758c00, nearest 0x758c14"
+variable:dat_00758c0c,variable,dat_00758c0c,12543,12543,1,legoapi/gizmo/object/gizmopickup.h,data-nearest,"only data.cpp mentions it; retail 0x758c0c, nearest 0x758c14"
+variable:dat_00758c14,variable,dat_00758c14,12544,12544,1,legoapi/gizmo/object/gizmopickup.h,users,dat_00758c14: only legogame/gizmopickup.c android-path
+variable:dat_00758c20,variable,dat_00758c20,12545,12545,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c20 between 0x758c14 and 0x758c5c
+variable:dat_00758c28,variable,dat_00758c28,12546,12546,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c28 between 0x758c14 and 0x758c5c
+variable:dat_00758c34,variable,dat_00758c34,12547,12547,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c34 between 0x758c14 and 0x758c5c
+variable:dat_00758c3c,variable,dat_00758c3c,12548,12548,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c3c between 0x758c14 and 0x758c5c
+variable:dat_00758c48,variable,dat_00758c48,12549,12549,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c48 between 0x758c14 and 0x758c5c
+variable:dat_00758c50,variable,dat_00758c50,12550,12550,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c50 between 0x758c14 and 0x758c5c
+variable:dat_00758c5c,variable,dat_00758c5c,12551,12551,1,legoapi/gizmo/object/gizmopickup.h,users,dat_00758c5c: only legogame/gizmopickup.c android-path
+variable:dat_00758c68,variable,dat_00758c68,12552,12552,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c68 between 0x758c5c and 0x758c8c
+variable:dat_00758c74,variable,dat_00758c74,12553,12553,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c74 between 0x758c5c and 0x758c8c
+variable:dat_00758c80,variable,dat_00758c80,12554,12554,1,legoapi/gizmo/object/gizmopickup.h,data-order,retail 0x758c80 between 0x758c5c and 0x758c8c
 variable:GizmoPickupType,variable,GizmoPickupType,12555,12555,1,legoapi/gizmo/object/gizmopickup.h,android,GizmoPickupType
 variable:POWERUPYPOS1#2,variable,POWERUPYPOS1,12556,12556,1,legoapi/menus/core/panel.h,users,POWERUPYPOS1: only legogame/panel.cpp android-path
 variable:POWERUPYPOS2#2,variable,POWERUPYPOS2,12557,12557,1,legoapi/menus/core/panel.h,users,POWERUPYPOS2: only legogame/panel.cpp android-path
@@ -5171,19 +5171,19 @@ function:MenuEnterNewGame,function,MenuEnterNewGame,13188,13188,1,legoapi/menus/
 function:MenuDrawNewGame,function,MenuDrawNewGame,13189,13189,1,legoapi/menus/screens/menu.h,android,MenuDrawNewGame
 function:MenuUpdateNewGame,function,MenuUpdateNewGame,13190,13190,1,legoapi/menus/screens/menu.h,android,MenuUpdateNewGame
 function:MenuPcStringsInit,function,MenuPcStringsInit,13191,13191,1,nu2api/nuwin32/Stubs.h,symbol,nu2api/nuwin32/Stubs.cpp pc-path
-variable:MenuPcStringTable827800,variable,MenuPcStringTable827800,13192,13192,1,nu2api/nuwin32/Stubs.h,users,MenuPcStringTable827800: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:MenuPcStringTable827940,variable,MenuPcStringTable827940,13193,13193,1,nu2api/nuwin32/Stubs.h,users,MenuPcStringTable827940: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:MenuPcStringTable827a80,variable,MenuPcStringTable827a80,13194,13194,1,nu2api/nuwin32/Stubs.h,users,MenuPcStringTable827a80: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:MenuPcStringTable827bc0,variable,MenuPcStringTable827bc0,13195,13195,1,nu2api/nuwin32/Stubs.h,users,MenuPcStringTable827bc0: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:MenuPcStringTable827d00,variable,MenuPcStringTable827d00,13196,13196,1,nu2api/nuwin32/Stubs.h,users,MenuPcStringTable827d00: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:MenuPcStringTable827e40,variable,MenuPcStringTable827e40,13197,13197,1,nu2api/nuwin32/Stubs.h,users,MenuPcStringTable827e40: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:MenuPcStringTable827f80,variable,MenuPcStringTable827f80,13198,13198,1,nu2api/nuwin32/Stubs.h,users,MenuPcStringTable827f80: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:dat_00827800,variable,dat_00827800,13192,13192,1,nu2api/nuwin32/Stubs.h,users,dat_00827800: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:dat_00827940,variable,dat_00827940,13193,13193,1,nu2api/nuwin32/Stubs.h,users,dat_00827940: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:dat_00827a80,variable,dat_00827a80,13194,13194,1,nu2api/nuwin32/Stubs.h,users,dat_00827a80: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:dat_00827bc0,variable,dat_00827bc0,13195,13195,1,nu2api/nuwin32/Stubs.h,users,dat_00827bc0: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:dat_00827d00,variable,dat_00827d00,13196,13196,1,nu2api/nuwin32/Stubs.h,users,dat_00827d00: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:dat_00827e40,variable,dat_00827e40,13197,13197,1,nu2api/nuwin32/Stubs.h,users,dat_00827e40: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:dat_00827f80,variable,dat_00827f80,13198,13198,1,nu2api/nuwin32/Stubs.h,users,dat_00827f80: only nu2api/nuwin32/Stubs.cpp pc-path
 variable:MenuPcStrings,variable,MenuPcStrings,13199,13199,1,legoapi/menus/screens/gamemenuall.h,rule,used most in gameapi/gamemenuall.cpp (42) android-path
 variable:MenuPcStringsInitialized,variable,MenuPcStringsInitialized,13200,13200,1,legoapi/menus/screens/gamemenuall.h,rule,used most in gameapi/gamemenuall.cpp (42) android-path
-variable:TextIdPc880824,variable,TextIdPc880824,13201,13201,1,legoapi/menus/screens/menu.h,users,TextIdPc880824: only legogame/menu.cpp android-path
-variable:TextIdPc8808fc,variable,TextIdPc8808fc,13202,13202,1,legoapi/menus/screens/menu.h,users,TextIdPc8808fc: only legogame/menu.cpp android-path
-variable:TextIdPc880850,variable,TextIdPc880850,13203,13203,1,legoapi/menus/screens/menu.h,users,TextIdPc880850: only legogame/menu.cpp android-path
-variable:TextIdPc880bc4,variable,TextIdPc880bc4,13204,13204,1,legoapi/menus/screens/menu.h,users,TextIdPc880bc4: only legogame/menu.cpp android-path
+variable:dat_00880824,variable,dat_00880824,13201,13201,1,legoapi/menus/screens/menu.h,users,dat_00880824: only legogame/menu.cpp android-path
+variable:dat_008808fc,variable,dat_008808fc,13202,13202,1,legoapi/menus/screens/menu.h,users,dat_008808fc: only legogame/menu.cpp android-path
+variable:dat_00880850,variable,dat_00880850,13203,13203,1,legoapi/menus/screens/menu.h,users,dat_00880850: only legogame/menu.cpp android-path
+variable:dat_00880bc4,variable,dat_00880bc4,13204,13204,1,legoapi/menus/screens/menu.h,users,dat_00880bc4: only legogame/menu.cpp android-path
 function:MenuEnterOptions,function,MenuEnterOptions,13205,13205,1,legoapi/menus/screens/menu.h,android,MenuEnterOptions
 function:MenuUpdateOptions,function,MenuUpdateOptions,13206,13206,1,legoapi/menus/screens/menu.h,android,MenuUpdateOptions
 function:MenuDrawOptions,function,MenuDrawOptions,13207,13207,1,legoapi/menus/screens/menu.h,android,MenuDrawOptions
@@ -8508,7 +8508,7 @@ variable:AITransferLiteral757ec4,variable,AITransferLiteral757ec4,17171,17171,1,
 variable:AITransferLiteral757ebc,variable,AITransferLiteral757ebc,17172,17172,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral757ebc: only legogame/gameaiscript.c android-path
 variable:AITransferLiteral757a5c,variable,AITransferLiteral757a5c,17173,17173,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:AITransferLiteral757ee0,variable,AITransferLiteral757ee0,17174,17174,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral757ee0: only legogame/gameaiscript.c android-path
-variable:AITransferLiteral757a7c,variable,AITransferLiteral757a7c,17175,17175,1,gameapi/ai/aisys/gameaiscript.h,definition,legogame/gameaiscript.c android-path
+variable:dat_00757a7c,variable,dat_00757a7c,17175,17175,1,gameapi/ai/aisys/gameaiscript.h,definition,legogame/gameaiscript.c android-path
 variable:AITransferLiteral757a84,variable,AITransferLiteral757a84,17176,17176,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral757a84: only legogame/gameaiscript.c android-path
 variable:AITransferLiteral757cd8,variable,AITransferLiteral757cd8,17177,17177,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:AITransferLiteral757cd0,variable,AITransferLiteral757cd0,17178,17178,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral757cd0: only legogame/gameaiscript.c android-path
@@ -8724,7 +8724,7 @@ variable:script_spline_selected#2,variable,script_spline_selected,17403,17403,1,
 function:PARTLookupType,function,PARTLookupType,17404,17404,1,legoapi/render/fx.h,android,PARTLookupType
 function:NuSplineFindAllBeg,function,NuSplineFindAllBeg,17405,17405,1,nu2api/nu3d/nuspline.h,android,NuSplineFindAllBeg
 variable:AITransferLiteral7577dc,variable,AITransferLiteral7577dc,17406,17406,1,nu2api/nu3d/nuspline.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AITransferLiteral757824,variable,AITransferLiteral757824,17407,17407,1,gameapi/ai/aisys/gameaiscript.h,definition,legogame/gameaiscript.c android-path
+variable:dat_00757824,variable,dat_00757824,17407,17407,1,gameapi/ai/aisys/gameaiscript.h,definition,legogame/gameaiscript.c android-path
 variable:AITransferLiteral75781c,variable,AITransferLiteral75781c,17408,17408,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral75781c: only legogame/gameaiscript.c android-path
 variable:AITransferLiteral757884,variable,AITransferLiteral757884,17409,17409,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:AITransferLiteral757a68,variable,AITransferLiteral757a68,17410,17410,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral757a68: only legogame/gameaiscript.c android-path
@@ -9292,25 +9292,25 @@ assert:-#3623,assert,,18187,18189,3,legoapi/characters/motion/charshadows.h,foll
 function:CharShadows_Reset,function,CharShadows_Reset,18191,18191,2,legoapi/characters/motion/charshadows.h,android,CharShadows_Reset
 function:CharShadows_Update,function,CharShadows_Update,18192,18192,1,legoapi/characters/motion/charshadows.h,symbol,legoapi/charshadows.c android-path
 function:CharShadows_Draw,function,CharShadows_Draw,18193,18193,1,legoapi/characters/motion/charshadows.h,symbol,legoapi/charshadows.c android-path
-variable:SuitMetadataName0075314c,variable,SuitMetadataName0075314c,18195,18195,2,legoapi/actions/movement/carrying.h,data-nearest,"only data.cpp mentions it; retail 0x75314c, nearest 0x753170"
+variable:dat_0075314c,variable,dat_0075314c,18195,18195,2,legoapi/actions/movement/carrying.h,data-nearest,"only data.cpp mentions it; retail 0x75314c, nearest 0x753170"
 variable:tBATMANSUIT,variable,tBATMANSUIT,18196,18196,1,legoapi/menus/screens/menu.h,data-order,retail 0x880964 between 0x88093c and 0x880bc4
-variable:SuitMetadataName0075d280,variable,SuitMetadataName0075d280,18197,18197,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d280, nearest 0x75d3a4"
+variable:dat_0075d280,variable,dat_0075d280,18197,18197,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d280, nearest 0x75d3a4"
 variable:tSHADOWSUIT,variable,tSHADOWSUIT,18198,18198,1,legoapi/menus/screens/menu.h,data-order,retail 0x880968 between 0x88093c and 0x880bc4
-variable:SuitMetadataName0075d270,variable,SuitMetadataName0075d270,18199,18199,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d270, nearest 0x75d3a4"
+variable:dat_0075d270,variable,dat_0075d270,18199,18199,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d270, nearest 0x75d3a4"
 variable:tGLIDESUIT,variable,tGLIDESUIT,18200,18200,1,legoapi/menus/screens/menu.h,data-order,retail 0x88096c between 0x88093c and 0x880bc4
-variable:SuitMetadataName0075d25c,variable,SuitMetadataName0075d25c,18201,18201,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d25c, nearest 0x75d3a4"
+variable:dat_0075d25c,variable,dat_0075d25c,18201,18201,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d25c, nearest 0x75d3a4"
 variable:tDEMOLITIONSUIT,variable,tDEMOLITIONSUIT,18202,18202,1,legoapi/menus/screens/menu.h,data-order,retail 0x880970 between 0x88093c and 0x880bc4
-variable:SuitMetadataName0075d24c,variable,SuitMetadataName0075d24c,18203,18203,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d24c, nearest 0x75d3a4"
+variable:dat_0075d24c,variable,dat_0075d24c,18203,18203,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d24c, nearest 0x75d3a4"
 variable:tSONARSUIT,variable,tSONARSUIT,18204,18204,1,legoapi/menus/screens/menu.h,data-order,retail 0x880974 between 0x88093c and 0x880bc4
-variable:SuitMetadataName00753144,variable,SuitMetadataName00753144,18205,18205,1,legoapi/actions/movement/carrying.h,data-nearest,"only data.cpp mentions it; retail 0x753144, nearest 0x753170"
+variable:dat_00753144,variable,dat_00753144,18205,18205,1,legoapi/actions/movement/carrying.h,data-nearest,"only data.cpp mentions it; retail 0x753144, nearest 0x753170"
 variable:tROBINSUIT,variable,tROBINSUIT,18206,18206,1,legoapi/menus/screens/menu.h,data-order,retail 0x880978 between 0x88093c and 0x880bc4
-variable:SuitMetadataName0075d240,variable,SuitMetadataName0075d240,18207,18207,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d240, nearest 0x75d3a4"
+variable:dat_0075d240,variable,dat_0075d240,18207,18207,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d240, nearest 0x75d3a4"
 variable:tWATERSUIT,variable,tWATERSUIT,18208,18208,1,legoapi/menus/screens/menu.h,data-order,retail 0x88097c between 0x88093c and 0x880bc4
-variable:SuitMetadataName0075d22c,variable,SuitMetadataName0075d22c,18209,18209,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d22c, nearest 0x75d3a4"
+variable:dat_0075d22c,variable,dat_0075d22c,18209,18209,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d22c, nearest 0x75d3a4"
 variable:tTECHNOLOGYSUIT,variable,tTECHNOLOGYSUIT,18210,18210,1,legoapi/menus/screens/menu.h,data-order,retail 0x880980 between 0x88093c and 0x880bc4
-variable:SuitMetadataName0075d21c,variable,SuitMetadataName0075d21c,18211,18211,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d21c, nearest 0x75d3a4"
+variable:dat_0075d21c,variable,dat_0075d21c,18211,18211,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d21c, nearest 0x75d3a4"
 variable:tMAGNETSUIT,variable,tMAGNETSUIT,18212,18212,1,legoapi/menus/screens/menu.h,data-order,retail 0x880984 between 0x88093c and 0x880bc4
-variable:SuitMetadataName0075d20c,variable,SuitMetadataName0075d20c,18213,18213,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d20c, nearest 0x75d3a4"
+variable:dat_0075d20c,variable,dat_0075d20c,18213,18213,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d20c, nearest 0x75d3a4"
 variable:tATTRACTSUIT,variable,tATTRACTSUIT,18214,18214,1,legoapi/menus/screens/menu.h,data-order,retail 0x880988 between 0x88093c and 0x880bc4
 function:NuDisplayListDrawPrimitive2D,function,NuDisplayListDrawPrimitive2D,18215,18215,1,nu2api/nustream.h,symbol,nu2api/nu3d_pc_includes.cpp[nustream.c] pc-path
 function:PCShaderCurrentObjectPc,function,PCShaderCurrentObjectPc,18216,18216,1,nu2api/nu3d/nushadermanager_gen.h,symbol,nu2api/nushadermanager_gen.cpp android-dir
@@ -10773,37 +10773,37 @@ variable:PcInputStateInitializedCallback,variable,PcInputStateInitializedCallbac
 variable:PcUserFolder,variable,PcUserFolder,21341,21341,1,nu2api/pc_options.h,rule,used most in nu2api/pc_options.cpp (2) pc-path
 variable:PcFileDirectory,variable,PcFileDirectory,21342,21342,1,nu2api/platform_files.h,rule,used most in nu2api/platform_files.cpp (19) pc-path
 variable:PcFilePath,variable,PcFilePath,21343,21343,1,nu2api/platform_files.h,rule,used most in nu2api/platform_files.cpp (4) pc-path
-variable:PcInputLabels820560,variable,PcInputLabels820560,21344,21344,1,nu2api/PCInput.h,users,PcInputLabels820560: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820480,variable,PcInputLabels820480,21345,21345,1,nu2api/PCInput.h,users,PcInputLabels820480: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820aa0,variable,PcInputLabels820aa0,21346,21346,1,nu2api/PCInput.h,users,PcInputLabels820aa0: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820d40,variable,PcInputLabels820d40,21347,21347,1,nu2api/PCInput.h,users,PcInputLabels820d40: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820c60,variable,PcInputLabels820c60,21348,21348,1,nu2api/PCInput.h,users,PcInputLabels820c60: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820b80,variable,PcInputLabels820b80,21349,21349,1,nu2api/PCInput.h,users,PcInputLabels820b80: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820640,variable,PcInputLabels820640,21350,21350,1,nu2api/PCInput.h,users,PcInputLabels820640: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels8209c0,variable,PcInputLabels8209c0,21351,21351,1,nu2api/PCInput.h,users,PcInputLabels8209c0: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820e20,variable,PcInputLabels820e20,21352,21352,1,nu2api/PCInput.h,users,PcInputLabels820e20: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels8210c0,variable,PcInputLabels8210c0,21353,21353,1,nu2api/PCInput.h,users,PcInputLabels8210c0: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820f00,variable,PcInputLabels820f00,21354,21354,1,nu2api/PCInput.h,users,PcInputLabels820f00: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820fe0,variable,PcInputLabels820fe0,21355,21355,1,nu2api/PCInput.h,users,PcInputLabels820fe0: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820800,variable,PcInputLabels820800,21356,21356,1,nu2api/PCInput.h,users,PcInputLabels820800: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels820720,variable,PcInputLabels820720,21357,21357,1,nu2api/PCInput.h,users,PcInputLabels820720: only nu2api/PCInput.cpp pc-path
-variable:PcInputLabels8208e0,variable,PcInputLabels8208e0,21358,21358,1,nu2api/PCInput.h,users,PcInputLabels8208e0: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames821910,variable,PcInputKeyNames821910,21359,21359,1,nu2api/PCInput.h,users,PcInputKeyNames821910: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames822080,variable,PcInputKeyNames822080,21360,21360,1,nu2api/PCInput.h,users,PcInputKeyNames822080: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames822ae8,variable,PcInputKeyNames822ae8,21361,21361,1,nu2api/PCInput.h,users,PcInputKeyNames822ae8: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames822770,variable,PcInputKeyNames822770,21362,21362,1,nu2api/PCInput.h,users,PcInputKeyNames822770: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames8223f8,variable,PcInputKeyNames8223f8,21363,21363,1,nu2api/PCInput.h,users,PcInputKeyNames8223f8: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames8231d8,variable,PcInputKeyNames8231d8,21364,21364,1,nu2api/PCInput.h,users,PcInputKeyNames8231d8: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames8240b8,variable,PcInputKeyNames8240b8,21365,21365,1,nu2api/PCInput.h,users,PcInputKeyNames8240b8: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames822e60,variable,PcInputKeyNames822e60,21366,21366,1,nu2api/PCInput.h,users,PcInputKeyNames822e60: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames821cc8,variable,PcInputKeyNames821cc8,21367,21367,1,nu2api/PCInput.h,users,PcInputKeyNames821cc8: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames823590,variable,PcInputKeyNames823590,21368,21368,1,nu2api/PCInput.h,users,PcInputKeyNames823590: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames823948,variable,PcInputKeyNames823948,21369,21369,1,nu2api/PCInput.h,users,PcInputKeyNames823948: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames824828,variable,PcInputKeyNames824828,21370,21370,1,nu2api/PCInput.h,users,PcInputKeyNames824828: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames824470,variable,PcInputKeyNames824470,21371,21371,1,nu2api/PCInput.h,users,PcInputKeyNames824470: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames823d00,variable,PcInputKeyNames823d00,21372,21372,1,nu2api/PCInput.h,users,PcInputKeyNames823d00: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames824be0,variable,PcInputKeyNames824be0,21373,21373,1,nu2api/PCInput.h,users,PcInputKeyNames824be0: only nu2api/PCInput.cpp pc-path
-variable:PcInputKeyNames821558,variable,PcInputKeyNames821558,21374,21374,1,nu2api/PCInput.h,users,PcInputKeyNames821558: only nu2api/PCInput.cpp pc-path
+variable:dat_00820560,variable,dat_00820560,21344,21344,1,nu2api/PCInput.h,users,dat_00820560: only nu2api/PCInput.cpp pc-path
+variable:dat_00820480,variable,dat_00820480,21345,21345,1,nu2api/PCInput.h,users,dat_00820480: only nu2api/PCInput.cpp pc-path
+variable:dat_00820aa0,variable,dat_00820aa0,21346,21346,1,nu2api/PCInput.h,users,dat_00820aa0: only nu2api/PCInput.cpp pc-path
+variable:dat_00820d40,variable,dat_00820d40,21347,21347,1,nu2api/PCInput.h,users,dat_00820d40: only nu2api/PCInput.cpp pc-path
+variable:dat_00820c60,variable,dat_00820c60,21348,21348,1,nu2api/PCInput.h,users,dat_00820c60: only nu2api/PCInput.cpp pc-path
+variable:dat_00820b80,variable,dat_00820b80,21349,21349,1,nu2api/PCInput.h,users,dat_00820b80: only nu2api/PCInput.cpp pc-path
+variable:dat_00820640,variable,dat_00820640,21350,21350,1,nu2api/PCInput.h,users,dat_00820640: only nu2api/PCInput.cpp pc-path
+variable:dat_008209c0,variable,dat_008209c0,21351,21351,1,nu2api/PCInput.h,users,dat_008209c0: only nu2api/PCInput.cpp pc-path
+variable:dat_00820e20,variable,dat_00820e20,21352,21352,1,nu2api/PCInput.h,users,dat_00820e20: only nu2api/PCInput.cpp pc-path
+variable:dat_008210c0,variable,dat_008210c0,21353,21353,1,nu2api/PCInput.h,users,dat_008210c0: only nu2api/PCInput.cpp pc-path
+variable:dat_00820f00,variable,dat_00820f00,21354,21354,1,nu2api/PCInput.h,users,dat_00820f00: only nu2api/PCInput.cpp pc-path
+variable:dat_00820fe0,variable,dat_00820fe0,21355,21355,1,nu2api/PCInput.h,users,dat_00820fe0: only nu2api/PCInput.cpp pc-path
+variable:dat_00820800,variable,dat_00820800,21356,21356,1,nu2api/PCInput.h,users,dat_00820800: only nu2api/PCInput.cpp pc-path
+variable:dat_00820720,variable,dat_00820720,21357,21357,1,nu2api/PCInput.h,users,dat_00820720: only nu2api/PCInput.cpp pc-path
+variable:dat_008208e0,variable,dat_008208e0,21358,21358,1,nu2api/PCInput.h,users,dat_008208e0: only nu2api/PCInput.cpp pc-path
+variable:dat_00821910,variable,dat_00821910,21359,21359,1,nu2api/PCInput.h,users,dat_00821910: only nu2api/PCInput.cpp pc-path
+variable:dat_00822080,variable,dat_00822080,21360,21360,1,nu2api/PCInput.h,users,dat_00822080: only nu2api/PCInput.cpp pc-path
+variable:dat_00822ae8,variable,dat_00822ae8,21361,21361,1,nu2api/PCInput.h,users,dat_00822ae8: only nu2api/PCInput.cpp pc-path
+variable:dat_00822770,variable,dat_00822770,21362,21362,1,nu2api/PCInput.h,users,dat_00822770: only nu2api/PCInput.cpp pc-path
+variable:dat_008223f8,variable,dat_008223f8,21363,21363,1,nu2api/PCInput.h,users,dat_008223f8: only nu2api/PCInput.cpp pc-path
+variable:dat_008231d8,variable,dat_008231d8,21364,21364,1,nu2api/PCInput.h,users,dat_008231d8: only nu2api/PCInput.cpp pc-path
+variable:dat_008240b8,variable,dat_008240b8,21365,21365,1,nu2api/PCInput.h,users,dat_008240b8: only nu2api/PCInput.cpp pc-path
+variable:dat_00822e60,variable,dat_00822e60,21366,21366,1,nu2api/PCInput.h,users,dat_00822e60: only nu2api/PCInput.cpp pc-path
+variable:dat_00821cc8,variable,dat_00821cc8,21367,21367,1,nu2api/PCInput.h,users,dat_00821cc8: only nu2api/PCInput.cpp pc-path
+variable:dat_00823590,variable,dat_00823590,21368,21368,1,nu2api/PCInput.h,users,dat_00823590: only nu2api/PCInput.cpp pc-path
+variable:dat_00823948,variable,dat_00823948,21369,21369,1,nu2api/PCInput.h,users,dat_00823948: only nu2api/PCInput.cpp pc-path
+variable:dat_00824828,variable,dat_00824828,21370,21370,1,nu2api/PCInput.h,users,dat_00824828: only nu2api/PCInput.cpp pc-path
+variable:dat_00824470,variable,dat_00824470,21371,21371,1,nu2api/PCInput.h,users,dat_00824470: only nu2api/PCInput.cpp pc-path
+variable:dat_00823d00,variable,dat_00823d00,21372,21372,1,nu2api/PCInput.h,users,dat_00823d00: only nu2api/PCInput.cpp pc-path
+variable:dat_00824be0,variable,dat_00824be0,21373,21373,1,nu2api/PCInput.h,users,dat_00824be0: only nu2api/PCInput.cpp pc-path
+variable:dat_00821558,variable,dat_00821558,21374,21374,1,nu2api/PCInput.h,users,dat_00821558: only nu2api/PCInput.cpp pc-path
 typedef:PC_WINDOW_CALLBACK_PC,typedef,PC_WINDOW_CALLBACK_PC,21377,21377,2,nu2api/nuwin32/nu2api_windows.h,users,PC_WINDOW_CALLBACK_PC: only nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 function:PcShutdown,function,PcShutdown,21380,21380,2,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 function:PcKeyDown,function,PcKeyDown,21381,21381,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
@@ -11519,24 +11519,24 @@ variable:Area_MissionModelList,variable,Area_MissionModelList,22925,22925,1,glob
 variable:CurrentCList,variable,CurrentCList,22926,22926,1,globals.h,android-weak,catch-all (needs a module owner); CurrentCList
 variable:CurrentStoryCList,variable,CurrentStoryCList,22927,22927,1,globals.h,android-weak,catch-all (needs a module owner); CurrentStoryCList
 variable:netnewgame,variable,netnewgame,22928,22928,1,legoapi/world/levels.h,users,netnewgame: only legogame/levels.cpp android-path
-variable:AreaExtraTargetId7f17bc,variable,AreaExtraTargetId7f17bc,22929,22929,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
-variable:AreaExtraSourceId7f17c8,variable,AreaExtraSourceId7f17c8,22930,22930,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
-variable:AreaExtraTargetId7f17cc,variable,AreaExtraTargetId7f17cc,22931,22931,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
+variable:dat_007f17bc,variable,dat_007f17bc,22929,22929,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
+variable:dat_007f17c8,variable,dat_007f17c8,22930,22930,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
+variable:dat_007f17cc,variable,dat_007f17cc,22931,22931,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
 function:MakeFreePlayModelList,function,MakeFreePlayModelList,22939,22939,1,legoapi/world/levels/levels.h,android,MakeFreePlayModelList
 function:InModelListDataFlags,function,InModelListDataFlags,22940,22940,1,legoapi/characters/core/charconfig.h,android,InModelListDataFlags
 function:RandomIDFromFlags,function,RandomIDFromFlags,22941,22941,1,legoapi/characters/core/charconfig.h,android,RandomIDFromFlags
 function:CanWearHatsInFreePlay,function,CanWearHatsInFreePlay,22942,22942,1,legoapi/characters/core/players.h,android,CanWearHatsInFreePlay
 function:Collection_GetIDList,function,Collection_GetIDList,22943,22943,1,legoapi/items/base/collection.h,android,Collection_GetIDList
-variable:FreePlayId007f199c,variable,FreePlayId007f199c,22944,22944,1,legoapi/characters/core/character.h,data-order,retail 0x7f199c between 0x7f1998 and 0x7f19a0
-variable:FreePlayId007f1a4c,variable,FreePlayId007f1a4c,22945,22945,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
-variable:FreePlayId007f1a48,variable,FreePlayId007f1a48,22946,22946,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
-variable:FreePlayId007f1a44,variable,FreePlayId007f1a44,22947,22947,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
-variable:FreePlayId007f1ab0,variable,FreePlayId007f1ab0,22948,22948,1,legoapi/world/levels.h,users,FreePlayId007f1ab0: only legogame/levels.cpp android-path
-variable:FreePlayId007f1ab4,variable,FreePlayId007f1ab4,22949,22949,1,legoapi/world/levels.h,users,FreePlayId007f1ab4: only legogame/levels.cpp android-path
-variable:FreePlayId007f1abc,variable,FreePlayId007f1abc,22950,22950,1,legoapi/world/levels.h,users,FreePlayId007f1abc: only legogame/levels.cpp android-path
-variable:FreePlayId007f1b44,variable,FreePlayId007f1b44,22951,22951,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
-variable:FreePlayId007f1b40,variable,FreePlayId007f1b40,22952,22952,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
-variable:FreePlayId007f1a98,variable,FreePlayId007f1a98,22953,22953,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:dat_007f199c,variable,dat_007f199c,22944,22944,1,legoapi/characters/core/character.h,data-order,retail 0x7f199c between 0x7f1998 and 0x7f19a0
+variable:dat_007f1a4c,variable,dat_007f1a4c,22945,22945,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
+variable:dat_007f1a48,variable,dat_007f1a48,22946,22946,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
+variable:dat_007f1a44,variable,dat_007f1a44,22947,22947,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
+variable:dat_007f1ab0,variable,dat_007f1ab0,22948,22948,1,legoapi/world/levels.h,users,dat_007f1ab0: only legogame/levels.cpp android-path
+variable:dat_007f1ab4,variable,dat_007f1ab4,22949,22949,1,legoapi/world/levels.h,users,dat_007f1ab4: only legogame/levels.cpp android-path
+variable:dat_007f1abc,variable,dat_007f1abc,22950,22950,1,legoapi/world/levels.h,users,dat_007f1abc: only legogame/levels.cpp android-path
+variable:dat_007f1b44,variable,dat_007f1b44,22951,22951,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:dat_007f1b40,variable,dat_007f1b40,22952,22952,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:dat_007f1a98,variable,dat_007f1a98,22953,22953,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
 variable:FreePlayModelCount,variable,FreePlayModelCount,22954,22954,1,globals.h,android-weak,catch-all (needs a module owner); FreePlayModelCount
 variable:FreePlayResidentCount,variable,FreePlayResidentCount,22955,22955,1,globals.h,android-weak,catch-all (needs a module owner); FreePlayResidentCount
 variable:FreePlayBonusCount,variable,FreePlayBonusCount,22956,22956,1,legoapi/world/levels.h,data-order,retail 0x87a974 between 0x87a958 and 0x87aa50
@@ -11960,42 +11960,42 @@ function:NuShaderObjectCreate,function,NuShaderObjectCreate,23571,23571,1,nu2api
 function:NuShaderObjectDestroy,function,NuShaderObjectDestroy,23572,23572,1,nu2api/nu3d/nushader.h,android,NuShaderObjectDestroy
 function:PCShaderObjectCreateHLSLPc#2,function,PCShaderObjectCreateHLSLPc,23573,23573,1,nu2api/nu3d/nushaderobjectbase.h,symbol,nu2api/nushaderobjectbase.cpp android-dir
 function:PCShaderObjectDestroyHLSLPc#2,function,PCShaderObjectDestroyHLSLPc,23574,23574,1,nu2api/nu3d/nushaderobjectbase.h,symbol,nu2api/nushaderobjectbase.cpp android-dir
-variable:LevelFixupSlotPc0087b0b4,variable,LevelFixupSlotPc0087b0b4,23582,23582,1,legoapi/world/levels.h,data-order,retail 0x87b0b4 between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b0b8,variable,LevelFixupSlotPc0087b0b8,23583,23583,1,legoapi/world/levels.h,data-order,retail 0x87b0b8 between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b0bc,variable,LevelFixupSlotPc0087b0bc,23584,23584,1,legoapi/world/levels.h,data-order,retail 0x87b0bc between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b0f0,variable,LevelFixupSlotPc0087b0f0,23585,23585,1,legoapi/world/levels.h,data-order,retail 0x87b0f0 between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b12c,variable,LevelFixupSlotPc0087b12c,23586,23586,1,legoapi/world/levels.h,data-order,retail 0x87b12c between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b138,variable,LevelFixupSlotPc0087b138,23587,23587,1,legoapi/world/levels.h,data-order,retail 0x87b138 between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b140,variable,LevelFixupSlotPc0087b140,23588,23588,1,legoapi/world/levels.h,data-order,retail 0x87b140 between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b148,variable,LevelFixupSlotPc0087b148,23589,23589,1,legoapi/world/levels.h,data-order,retail 0x87b148 between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b150,variable,LevelFixupSlotPc0087b150,23590,23590,1,legoapi/world/levels.h,data-order,retail 0x87b150 between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b154,variable,LevelFixupSlotPc0087b154,23591,23591,1,legoapi/world/levels.h,data-order,retail 0x87b154 between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b164,variable,LevelFixupSlotPc0087b164,23592,23592,1,legoapi/world/levels.h,data-order,retail 0x87b164 between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b170,variable,LevelFixupSlotPc0087b170,23593,23593,1,legoapi/world/levels.h,data-order,retail 0x87b170 between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b17c,variable,LevelFixupSlotPc0087b17c,23594,23594,1,legoapi/world/levels.h,data-order,retail 0x87b17c between 0x87b080 and 0x87b184
-variable:LevelFixupSlotPc0087b194,variable,LevelFixupSlotPc0087b194,23595,23595,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (3) android-path
-variable:LevelFixupSlotPc0087b1a8,variable,LevelFixupSlotPc0087b1a8,23596,23596,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:dat_0087b0b4,variable,dat_0087b0b4,23582,23582,1,legoapi/world/levels.h,data-order,retail 0x87b0b4 between 0x87b080 and 0x87b184
+variable:dat_0087b0b8,variable,dat_0087b0b8,23583,23583,1,legoapi/world/levels.h,data-order,retail 0x87b0b8 between 0x87b080 and 0x87b184
+variable:dat_0087b0bc,variable,dat_0087b0bc,23584,23584,1,legoapi/world/levels.h,data-order,retail 0x87b0bc between 0x87b080 and 0x87b184
+variable:dat_0087b0f0,variable,dat_0087b0f0,23585,23585,1,legoapi/world/levels.h,data-order,retail 0x87b0f0 between 0x87b080 and 0x87b184
+variable:dat_0087b12c,variable,dat_0087b12c,23586,23586,1,legoapi/world/levels.h,data-order,retail 0x87b12c between 0x87b080 and 0x87b184
+variable:dat_0087b138,variable,dat_0087b138,23587,23587,1,legoapi/world/levels.h,data-order,retail 0x87b138 between 0x87b080 and 0x87b184
+variable:dat_0087b140,variable,dat_0087b140,23588,23588,1,legoapi/world/levels.h,data-order,retail 0x87b140 between 0x87b080 and 0x87b184
+variable:dat_0087b148,variable,dat_0087b148,23589,23589,1,legoapi/world/levels.h,data-order,retail 0x87b148 between 0x87b080 and 0x87b184
+variable:dat_0087b150,variable,dat_0087b150,23590,23590,1,legoapi/world/levels.h,data-order,retail 0x87b150 between 0x87b080 and 0x87b184
+variable:dat_0087b154,variable,dat_0087b154,23591,23591,1,legoapi/world/levels.h,data-order,retail 0x87b154 between 0x87b080 and 0x87b184
+variable:dat_0087b164,variable,dat_0087b164,23592,23592,1,legoapi/world/levels.h,data-order,retail 0x87b164 between 0x87b080 and 0x87b184
+variable:dat_0087b170,variable,dat_0087b170,23593,23593,1,legoapi/world/levels.h,data-order,retail 0x87b170 between 0x87b080 and 0x87b184
+variable:dat_0087b17c,variable,dat_0087b17c,23594,23594,1,legoapi/world/levels.h,data-order,retail 0x87b17c between 0x87b080 and 0x87b184
+variable:dat_0087b194,variable,dat_0087b194,23595,23595,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (3) android-path
+variable:dat_0087b1a8,variable,dat_0087b1a8,23596,23596,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
 variable:TATOOINEE_LDATA,variable,TATOOINEE_LDATA,23597,23597,1,globals.h,android-weak,catch-all (needs a module owner); TATOOINEE_LDATA
-variable:LevelFixupSlotPc0087b1bc,variable,LevelFixupSlotPc0087b1bc,23598,23598,1,legogame/game.h,rule,used most in legogame/game.c (2) android-path
-variable:LevelFixupSlotPc0087b1c0,variable,LevelFixupSlotPc0087b1c0,23599,23599,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (4) android-path
-variable:LevelFixupSlotPc0087b1d0,variable,LevelFixupSlotPc0087b1d0,23600,23600,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
-variable:LevelFixupSlotPc0087b200,variable,LevelFixupSlotPc0087b200,23601,23601,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (1) android-path
-variable:LevelFixupSlotPc0087b204,variable,LevelFixupSlotPc0087b204,23602,23602,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (5) android-path
-variable:LevelFixupSlotPc0087b208,variable,LevelFixupSlotPc0087b208,23603,23603,1,legoapi/items/objects/cable.h,rule,used most in legogame/cable.c (1) android-path
-variable:LevelFixupSlotPc0087b210,variable,LevelFixupSlotPc0087b210,23604,23604,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (1) android-path
-variable:LevelFixupSlotPc0087b218,variable,LevelFixupSlotPc0087b218,23605,23605,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (4) android-path
-variable:LevelFixupSlotPc0087b220,variable,LevelFixupSlotPc0087b220,23606,23606,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (4) android-path
+variable:dat_0087b1bc,variable,dat_0087b1bc,23598,23598,1,legogame/game.h,rule,used most in legogame/game.c (2) android-path
+variable:dat_0087b1c0,variable,dat_0087b1c0,23599,23599,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (4) android-path
+variable:dat_0087b1d0,variable,dat_0087b1d0,23600,23600,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:dat_0087b200,variable,dat_0087b200,23601,23601,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (1) android-path
+variable:dat_0087b204,variable,dat_0087b204,23602,23602,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (5) android-path
+variable:dat_0087b208,variable,dat_0087b208,23603,23603,1,legoapi/items/objects/cable.h,rule,used most in legogame/cable.c (1) android-path
+variable:dat_0087b210,variable,dat_0087b210,23604,23604,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (1) android-path
+variable:dat_0087b218,variable,dat_0087b218,23605,23605,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (4) android-path
+variable:dat_0087b220,variable,dat_0087b220,23606,23606,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (4) android-path
 variable:ASTEROIDCHASEA_LDATA,variable,ASTEROIDCHASEA_LDATA,23607,23607,1,globals.h,android-weak,catch-all (needs a module owner); ASTEROIDCHASEA_LDATA
-variable:LevelFixupSlotPc0087b228,variable,LevelFixupSlotPc0087b228,23608,23608,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (4) android-path
+variable:dat_0087b228,variable,dat_0087b228,23608,23608,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (4) android-path
 variable:ASTEROIDCHASEMITRO_LDATA,variable,ASTEROIDCHASEMITRO_LDATA,23609,23609,1,globals.h,android-weak,catch-all (needs a module owner); ASTEROIDCHASEMITRO_LDATA
-variable:LevelFixupSlotPc0087b250,variable,LevelFixupSlotPc0087b250,23610,23610,1,legoapi/world/levels/episodeV.h,rule,used most in legogame/episodeV.c (2) android-path
-variable:LevelFixupSlotPc0087b258,variable,LevelFixupSlotPc0087b258,23611,23611,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (1) android-path
-variable:LevelFixupSlotPc0087b264,variable,LevelFixupSlotPc0087b264,23612,23612,1,legoapi/audio/sfx.h,rule,used most in legogame/sfx.c (2) android-path
-variable:LevelFixupSlotPc0087b268,variable,LevelFixupSlotPc0087b268,23613,23613,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (3) android-path
-variable:LevelFixupSlotPc0087b284,variable,LevelFixupSlotPc0087b284,23614,23614,1,legoapi/world/levels/episodeVI.h,rule,used most in legogame/episodeVI.c (2) android-path
-variable:LevelFixupSlotPc0087b2b0,variable,LevelFixupSlotPc0087b2b0,23615,23615,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (1) android-path
-variable:LevelFixupSlotPc0087b2c4,variable,LevelFixupSlotPc0087b2c4,23616,23616,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
-variable:LevelFixupSlotPc0087b2dc,variable,LevelFixupSlotPc0087b2dc,23617,23617,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (2) android-path
+variable:dat_0087b250,variable,dat_0087b250,23610,23610,1,legoapi/world/levels/episodeV.h,rule,used most in legogame/episodeV.c (2) android-path
+variable:dat_0087b258,variable,dat_0087b258,23611,23611,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (1) android-path
+variable:dat_0087b264,variable,dat_0087b264,23612,23612,1,legoapi/audio/sfx.h,rule,used most in legogame/sfx.c (2) android-path
+variable:dat_0087b268,variable,dat_0087b268,23613,23613,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (3) android-path
+variable:dat_0087b284,variable,dat_0087b284,23614,23614,1,legoapi/world/levels/episodeVI.h,rule,used most in legogame/episodeVI.c (2) android-path
+variable:dat_0087b2b0,variable,dat_0087b2b0,23615,23615,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (1) android-path
+variable:dat_0087b2c4,variable,dat_0087b2c4,23616,23616,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:dat_0087b2dc,variable,dat_0087b2dc,23617,23617,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (2) android-path
 variable:LevelFixupStartup,variable,LevelFixupStartup,23625,23625,1,legogame/pcbatman.h,definition,legogame/pcbatman.cpp pc-path
 function:FixUpLevels,function,FixUpLevels,23626,23626,1,legoapi/world/level.h,android,FixUpLevels
 variable:LevelLightingData,variable,LevelLightingData,23635,23635,1,legoapi/render/light/lighting.h,rule,used most in legoapi/lighting.cpp (10) android-path
@@ -14376,11 +14376,11 @@ variable:PauseSaveAndExit,variable,PauseSaveAndExit,30107,30107,1,legoapi/misc/l
 variable:BonusTimer,variable,BonusTimer,30108,30108,1,legoapi/misc/gamemain.h,data-order,retail 0x925028 between 0x925014 and 0x925040
 variable:ChallengeTimer,variable,ChallengeTimer,30109,30109,1,globals.h,android-weak,catch-all (needs a module owner); ChallengeTimer
 variable:Game_MissionSave,variable,Game_MissionSave,30110,30110,1,legogame/game.h,definition,legogame/game.c android-path
-variable:TextIdPc88073c,variable,TextIdPc88073c,30111,30111,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
-variable:TextIdPc88071c,variable,TextIdPc88071c,30112,30112,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
-variable:TextIdPc880728,variable,TextIdPc880728,30113,30113,1,legogame/gamestatus.h,rule,used most in legogame/gamestatus.c (3) pc-path
-variable:TextIdPc8806e4,variable,TextIdPc8806e4,30114,30114,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
-variable:TextIdPc8808d0,variable,TextIdPc8808d0,30115,30115,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_0088073c,variable,dat_0088073c,30111,30111,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_0088071c,variable,dat_0088071c,30112,30112,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_00880728,variable,dat_00880728,30113,30113,1,legogame/gamestatus.h,rule,used most in legogame/gamestatus.c (3) pc-path
+variable:dat_008806e4,variable,dat_008806e4,30114,30114,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_008808d0,variable,dat_008808d0,30115,30115,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
 function:StatusPacketReset,function,StatusPacketReset,30116,30116,1,legoapi/misc/legoapi_status.h,android,StatusPacketReset
 function:StatusScoreRatio,function,StatusScoreRatio,30117,30117,1,legoapi/misc/legoapi_status.h,symbol,legogame/legoapi_status.cpp android-path
 function:newCharactersCollected,function,newCharactersCollected,30118,30118,1,legoapi/misc/legoapi_status.h,android,newCharactersCollected
@@ -14395,7 +14395,7 @@ function:NuPadSetMotorsPc,function,NuPadSetMotorsPc,30126,30126,1,nu2api/nuwin32
 function:NeedScreenGrab,function,NeedScreenGrab,30127,30127,1,legoapi/render/core/screen.h,android,NeedScreenGrab
 variable:DrawGoldBrick_Stage,variable,DrawGoldBrick_Stage,30128,30128,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path
 variable:DrawGoldBrick_Phase,variable,DrawGoldBrick_Phase,30129,30129,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path
-variable:TextIdPc880f9c,variable,TextIdPc880f9c,30130,30130,1,legogame/gamestatus.h,users,TextIdPc880f9c: only legogame/gamestatus.c pc-path
+variable:dat_00880f9c,variable,dat_00880f9c,30130,30130,1,legogame/gamestatus.h,users,dat_00880f9c: only legogame/gamestatus.c pc-path
 variable:CutPlayerTextSeparatorPc,variable,CutPlayerTextSeparatorPc,30131,30131,1,legoapi/cutscenes/cutscenes.h,rule,used most in legoapi/cutscenes.cpp (5) android-path
 function:SetDrawGoldBrick,function,SetDrawGoldBrick,30132,30132,1,legoapi/misc/legoapi_status.h,android,SetDrawGoldBrick
 function:GoldBrick_LSW_Skip,function,GoldBrick_LSW_Skip,30133,30133,1,legoapi/menus/screens/gamestatus_lsw.h,android,GoldBrick_LSW_Skip
@@ -14417,13 +14417,13 @@ function:BonusWin_LSW_Skip,function,BonusWin_LSW_Skip,30148,30148,1,legoapi/menu
 function:BonusWin_LSW_Update,function,BonusWin_LSW_Update,30149,30149,1,legoapi/menus/screens/gamestatus_lsw.h,android,BonusWin_LSW_Update
 function:BonusWin_LSW_Draw,function,BonusWin_LSW_Draw,30150,30150,1,legoapi/menus/screens/gamestatus_lsw.h,android,BonusWin_LSW_Draw
 function:DrawBonusScore,function,DrawBonusScore,30151,30151,1,legoapi/menus/core/panel.h,android,DrawBonusScore
-variable:TextIdPc88075c,variable,TextIdPc88075c,30152,30152,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
-variable:TextIdPc880720,variable,TextIdPc880720,30153,30153,1,legogame/gamestatus.h,users,TextIdPc880720: only legogame/gamestatus.c pc-path
-variable:TextIdPc880738,variable,TextIdPc880738,30154,30154,1,legogame/gamestatus.h,users,TextIdPc880738: only legogame/gamestatus.c pc-path
+variable:dat_0088075c,variable,dat_0088075c,30152,30152,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_00880720,variable,dat_00880720,30153,30153,1,legogame/gamestatus.h,users,dat_00880720: only legogame/gamestatus.c pc-path
+variable:dat_00880738,variable,dat_00880738,30154,30154,1,legogame/gamestatus.h,users,dat_00880738: only legogame/gamestatus.c pc-path
 function:CoinTotal_Draw,function,CoinTotal_Draw,30155,30155,1,legoapi/menus/core/panel.h,android,CoinTotal_Draw
 function:getFinishedStatusAlpha,function,getFinishedStatusAlpha,30156,30156,1,legoapi/menus/screens/gamestatus_lsw.h,android,getFinishedStatusAlpha
 function:DrawBonusTime,function,DrawBonusTime,30157,30157,1,legoapi/misc/legoapi_status.h,android,DrawBonusTime
-variable:TextIdPc880734,variable,TextIdPc880734,30158,30158,1,legogame/gamestatus.h,data-order,retail 0x880734 between 0x880730 and 0x880738
+variable:dat_00880734,variable,dat_00880734,30158,30158,1,legogame/gamestatus.h,data-order,retail 0x880734 between 0x880730 and 0x880738
 variable:StatusIconY,variable,StatusIconY,30159,30159,1,legogame/gamestatus.h,definition,legogame/gamestatus.c pc-path
 variable:STATSPOS2Y,variable,STATSPOS2Y,30160,30160,1,legogame/gamestatus.h,rule,used most in legogame/gamestatus.c (25) pc-path
 variable:StatusDrawPlayerIcons,variable,StatusDrawPlayerIcons,30161,30161,1,legogame/gamestatus.h,definition,legogame/gamestatus.c pc-path
@@ -14450,21 +14450,21 @@ function:NewStatusRumbleBuzz,function,NewStatusRumbleBuzz,30181,30181,1,legoapi/
 function:LevelComplete_LSW_Draw,function,LevelComplete_LSW_Draw,30182,30182,1,legoapi/menus/screens/gamestatus_lsw.h,android,LevelComplete_LSW_Draw
 variable:StatusTitleY,variable,StatusTitleY,30183,30183,1,legogame/gamestatus.h,definition,legogame/gamestatus.c pc-path
 variable:StatusSecondaryTitleY,variable,StatusSecondaryTitleY,30184,30184,1,legogame/gamestatus.h,definition,legogame/gamestatus.c pc-path
-variable:TextIdPc8806e8,variable,TextIdPc8806e8,30185,30185,1,legogame/gamestatus.h,users,TextIdPc8806e8: only legogame/gamestatus.c pc-path
-variable:TextIdPc8806f4,variable,TextIdPc8806f4,30186,30186,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
-variable:TextIdPc880710,variable,TextIdPc880710,30187,30187,1,legogame/gamestatus.h,users,TextIdPc880710: only legogame/gamestatus.c pc-path
-variable:TextIdPc88072c,variable,TextIdPc88072c,30188,30188,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
-variable:TextIdPc880730,variable,TextIdPc880730,30189,30189,1,legogame/gamestatus.h,users,TextIdPc880730: only legogame/gamestatus.c pc-path
-variable:TextIdPc88100c,variable,TextIdPc88100c,30190,30190,1,legogame/gamestatus.h,users,TextIdPc88100c: only legogame/gamestatus.c pc-path
-variable:TextIdPc881014,variable,TextIdPc881014,30191,30191,1,legogame/gamestatus.h,users,TextIdPc881014: only legogame/gamestatus.c pc-path
-variable:TextIdPc88101c,variable,TextIdPc88101c,30192,30192,1,legogame/gamestatus.h,users,TextIdPc88101c: only legogame/gamestatus.c pc-path
-variable:TextIdPc881024,variable,TextIdPc881024,30193,30193,1,legogame/gamestatus.h,users,TextIdPc881024: only legogame/gamestatus.c pc-path
-variable:TextIdPc88102c,variable,TextIdPc88102c,30194,30194,1,legogame/gamestatus.h,users,TextIdPc88102c: only legogame/gamestatus.c pc-path
-variable:TextIdPc881034,variable,TextIdPc881034,30195,30195,1,legogame/gamestatus.h,users,TextIdPc881034: only legogame/gamestatus.c pc-path
-variable:TextIdPc88103c,variable,TextIdPc88103c,30196,30196,1,legogame/gamestatus.h,users,TextIdPc88103c: only legogame/gamestatus.c pc-path
-variable:TextIdPc8810cc,variable,TextIdPc8810cc,30197,30197,1,legogame/gamestatus.h,users,TextIdPc8810cc: only legogame/gamestatus.c pc-path
-variable:TextIdPc8810d0,variable,TextIdPc8810d0,30198,30198,1,legogame/gamestatus.h,users,TextIdPc8810d0: only legogame/gamestatus.c pc-path
-variable:TextIdPc8808d4,variable,TextIdPc8808d4,30199,30199,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_008806e8,variable,dat_008806e8,30185,30185,1,legogame/gamestatus.h,users,dat_008806e8: only legogame/gamestatus.c pc-path
+variable:dat_008806f4,variable,dat_008806f4,30186,30186,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_00880710,variable,dat_00880710,30187,30187,1,legogame/gamestatus.h,users,dat_00880710: only legogame/gamestatus.c pc-path
+variable:dat_0088072c,variable,dat_0088072c,30188,30188,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_00880730,variable,dat_00880730,30189,30189,1,legogame/gamestatus.h,users,dat_00880730: only legogame/gamestatus.c pc-path
+variable:dat_0088100c,variable,dat_0088100c,30190,30190,1,legogame/gamestatus.h,users,dat_0088100c: only legogame/gamestatus.c pc-path
+variable:dat_00881014,variable,dat_00881014,30191,30191,1,legogame/gamestatus.h,users,dat_00881014: only legogame/gamestatus.c pc-path
+variable:dat_0088101c,variable,dat_0088101c,30192,30192,1,legogame/gamestatus.h,users,dat_0088101c: only legogame/gamestatus.c pc-path
+variable:dat_00881024,variable,dat_00881024,30193,30193,1,legogame/gamestatus.h,users,dat_00881024: only legogame/gamestatus.c pc-path
+variable:dat_0088102c,variable,dat_0088102c,30194,30194,1,legogame/gamestatus.h,users,dat_0088102c: only legogame/gamestatus.c pc-path
+variable:dat_00881034,variable,dat_00881034,30195,30195,1,legogame/gamestatus.h,users,dat_00881034: only legogame/gamestatus.c pc-path
+variable:dat_0088103c,variable,dat_0088103c,30196,30196,1,legogame/gamestatus.h,users,dat_0088103c: only legogame/gamestatus.c pc-path
+variable:dat_008810cc,variable,dat_008810cc,30197,30197,1,legogame/gamestatus.h,users,dat_008810cc: only legogame/gamestatus.c pc-path
+variable:dat_008810d0,variable,dat_008810d0,30198,30198,1,legogame/gamestatus.h,users,dat_008810d0: only legogame/gamestatus.c pc-path
+variable:dat_008808d4,variable,dat_008808d4,30199,30199,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
 variable:HudScoreX,variable,HudScoreX,30200,30200,1,legoapi/menus/core/panel.h,rule,used most in legogame/panel.cpp (4) android-path
 variable:HudScoreScale,variable,HudScoreScale,30201,30201,1,legogame/gamestatus.h,rule,used most in legogame/gamestatus.c (3) pc-path
 variable:StatusCoinsTotalY,variable,StatusCoinsTotalY,30202,30202,1,legogame/gamestatus.h,definition,legogame/gamestatus.c pc-path
@@ -14474,7 +14474,7 @@ variable:StatusCoinsTitleY,variable,StatusCoinsTitleY,30205,30205,1,legogame/gam
 function:RedBrick_LSW_Skip,function,RedBrick_LSW_Skip,30206,30206,1,legoapi/menus/screens/gamestatus_lsw.h,android,RedBrick_LSW_Skip
 function:RedBrick_LSW_Update,function,RedBrick_LSW_Update,30207,30207,1,legoapi/menus/screens/gamestatus_lsw.h,android,RedBrick_LSW_Update
 function:RedBrick_LSW_Draw,function,RedBrick_LSW_Draw,30208,30208,1,legoapi/menus/screens/gamestatus_lsw.h,android,RedBrick_LSW_Draw
-variable:TextIdPc880748,variable,TextIdPc880748,30209,30209,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_00880748,variable,dat_00880748,30209,30209,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
 variable:ExtrasCheats#2,variable,ExtrasCheats,30210,30210,1,legoapi/menus/screens/shop.h,rule,used most in legogame/shop.c (16) android-path
 variable:StatusTextScale,variable,StatusTextScale,30211,30211,1,legogame/gamestatus.h,definition,legogame/gamestatus.c pc-path
 variable:StatusRed,variable,StatusRed,30212,30212,1,legogame/gamestatus.h,definition,legogame/gamestatus.c pc-path
@@ -14483,7 +14483,7 @@ variable:StatusBlue,variable,StatusBlue,30214,30214,1,legogame/gamestatus.h,defi
 function:AllMiniKits_LSW_Skip,function,AllMiniKits_LSW_Skip,30215,30215,1,legoapi/menus/screens/gamestatus_lsw.h,android,AllMiniKits_LSW_Skip
 function:AllMiniKits_LSW_Update,function,AllMiniKits_LSW_Update,30216,30216,1,legoapi/menus/screens/gamestatus_lsw.h,android,AllMiniKits_LSW_Update
 function:AllMiniKits_LSW_Draw,function,AllMiniKits_LSW_Draw,30217,30217,1,legoapi/menus/screens/gamestatus_lsw.h,android,AllMiniKits_LSW_Draw
-variable:TextIdPc880740,variable,TextIdPc880740,30218,30218,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_00880740,variable,dat_00880740,30218,30218,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
 variable:StatusAllMiniKitsTitleScale,variable,StatusAllMiniKitsTitleScale,30219,30219,1,legogame/gamestatus.h,definition,legogame/gamestatus.c pc-path
 variable:StatusAllMiniKitsCharacterTextScale,variable,StatusAllMiniKitsCharacterTextScale,30220,30220,1,legogame/gamestatus.h,definition,legogame/gamestatus.c pc-path
 variable:StatusAllMiniKitsX,variable,StatusAllMiniKitsX,30221,30221,1,legogame/gamestatus.h,definition,legogame/gamestatus.c pc-path
@@ -14528,13 +14528,13 @@ variable:ShopCodeArrowBing,variable,ShopCodeArrowBing,30259,30259,1,legoapi/menu
 variable:ShopCodeArrowAmplitude,variable,ShopCodeArrowAmplitude,30260,30260,1,legoapi/menus/screens/shop.h,users,ShopCodeArrowAmplitude: only legogame/shop.c android-path
 function:MenuDrawShop,function,MenuDrawShop,30261,30261,1,legoapi/menus/screens/menu.h,symbol,legogame/menu.cpp android-path
 function:MenuUpdateShop,function,MenuUpdateShop,30262,30262,1,legoapi/menus/screens/menu.h,symbol,legogame/menu.cpp android-path
-variable:TextIdPc88070c,variable,TextIdPc88070c,30263,30263,1,legoapi/menus/screens/shop.h,users,TextIdPc88070c: only legogame/shop.c android-path
-variable:TextIdPc88077c,variable,TextIdPc88077c,30264,30264,1,legoapi/lib/hub.h,data-order,retail 0x88077c between 0x88076c and 0x8807b8
-variable:TextIdPc880800,variable,TextIdPc880800,30265,30265,1,legoapi/menus/screens/shop.h,users,TextIdPc880800: only legogame/shop.c android-path
-variable:TextIdPc8808c4,variable,TextIdPc8808c4,30266,30266,1,legoapi/menus/screens/shop.h,users,TextIdPc8808c4: only legogame/shop.c android-path
-variable:TextIdPc880904,variable,TextIdPc880904,30267,30267,1,legoapi/menus/screens/shop.h,users,TextIdPc880904: only legogame/shop.c android-path
-variable:TextIdPc880908,variable,TextIdPc880908,30268,30268,1,legoapi/menus/screens/shop.h,users,TextIdPc880908: only legogame/shop.c android-path
-variable:TextIdPc88090c,variable,TextIdPc88090c,30269,30269,1,legoapi/menus/screens/menu.h,rule,used most in legogame/menu.cpp (3) android-path
+variable:dat_0088070c,variable,dat_0088070c,30263,30263,1,legoapi/menus/screens/shop.h,users,dat_0088070c: only legogame/shop.c android-path
+variable:dat_0088077c,variable,dat_0088077c,30264,30264,1,legoapi/lib/hub.h,data-order,retail 0x88077c between 0x88076c and 0x8807b8
+variable:dat_00880800,variable,dat_00880800,30265,30265,1,legoapi/menus/screens/shop.h,users,dat_00880800: only legogame/shop.c android-path
+variable:dat_008808c4,variable,dat_008808c4,30266,30266,1,legoapi/menus/screens/shop.h,users,dat_008808c4: only legogame/shop.c android-path
+variable:dat_00880904,variable,dat_00880904,30267,30267,1,legoapi/menus/screens/shop.h,users,dat_00880904: only legogame/shop.c android-path
+variable:dat_00880908,variable,dat_00880908,30268,30268,1,legoapi/menus/screens/shop.h,users,dat_00880908: only legogame/shop.c android-path
+variable:dat_0088090c,variable,dat_0088090c,30269,30269,1,legoapi/menus/screens/menu.h,rule,used most in legogame/menu.cpp (3) android-path
 variable:ExtraItems,variable,ExtraItems,30270,30270,1,legoapi/menus/screens/shop.h,android,ExtraItems
 variable:ExtraShelfIds,variable,ExtraShelfIds,30271,30271,1,legoapi/menus/screens/shop.h,android,ExtraShelfIds
 variable:HintItems,variable,HintItems,30272,30272,1,legoapi/menus/screens/shop.h,android,HintItems
@@ -15273,7 +15273,7 @@ variable:ScorePanelName#2,variable,ScorePanelName,31145,31145,1,legoapi/gizmo/ob
 variable:PCContextName_Jump,variable,PCContextName_Jump,31146,31146,1,legoapi/menus/core/gamehint.h,users,PCContextName_Jump: only legogame/gamehint.c android-path
 variable:GameAudioName00758838Pc,variable,GameAudioName00758838Pc,31147,31147,1,legogame/gamestatus.h,users,GameAudioName00758838Pc: only legogame/gamestatus.c pc-path
 variable:GameAudioName00758be8Pc,variable,GameAudioName00758be8Pc,31148,31148,1,legoapi/gizmos/traps/gizforce.h,rule,used most in legogame/gizforce.c (1) android-path
-variable:PickupTypeLiteral758c14#2,variable,PickupTypeLiteral758c14,31149,31149,1,legoapi/gizmo/object/gizmopickup.h,users,PickupTypeLiteral758c14: only legogame/gizmopickup.c android-path
+variable:dat_00758c14#2,variable,dat_00758c14,31149,31149,1,legoapi/gizmo/object/gizmopickup.h,users,dat_00758c14: only legogame/gizmopickup.c android-path
 variable:ArcadeAiKilledSoundNamePc#2,variable,ArcadeAiKilledSoundNamePc,31150,31150,1,legoapi/lib/hub.h,users,ArcadeAiKilledSoundNamePc: only legogame/hub.cpp android-path
 variable:PCContextName_Punch,variable,PCContextName_Punch,31151,31151,1,legoapi/characters/motion/move.h,data-nearest,"only data.cpp mentions it; retail 0x75bbdc, nearest 0x75bd7c"
 variable:GrapDetach_text#2,variable,GrapDetach_text,31152,31152,1,legoapi/props/objects/zipup.h,users,GrapDetach_text: only legogame/zipup.c android-path
@@ -15467,34 +15467,34 @@ variable:HubEpisodeBlue,variable,HubEpisodeBlue,31344,31344,1,legoapi/lib/hub.h,
 variable:HubArcadeMenuY,variable,HubArcadeMenuY,31345,31345,1,legoapi/lib/hub.h,users,HubArcadeMenuY: only legogame/hub.cpp android-path
 variable:TextInputActionLabelBufferPc,variable,TextInputActionLabelBufferPc,31346,31346,1,nu2api/PCInput.h,users,TextInputActionLabelBufferPc: only nu2api/PCInput.cpp pc-path
 variable:HubButtonStringBuffer,variable,HubButtonStringBuffer,31347,31347,1,legogame/pcbatman.h,users,HubButtonStringBuffer: only legogame/pcbatman.cpp pc-path
-variable:TextIdPc880714,variable,TextIdPc880714,31350,31350,3,legoapi/lib/hub.h,users,TextIdPc880714: only legogame/hub.cpp android-path
-variable:TextIdPc880718,variable,TextIdPc880718,31351,31351,1,legoapi/lib/hub.h,users,TextIdPc880718: only legogame/hub.cpp android-path
-variable:TextIdPc880724,variable,TextIdPc880724,31352,31352,1,legoapi/lib/hub.h,users,TextIdPc880724: only legogame/hub.cpp android-path
-variable:TextIdPc88076c,variable,TextIdPc88076c,31353,31353,1,legoapi/lib/hub.h,users,TextIdPc88076c: only legogame/hub.cpp android-path
-variable:TextIdPc880780,variable,TextIdPc880780,31354,31354,1,legoapi/lib/hub.h,data-order,retail 0x880780 between 0x88076c and 0x8807b8
-variable:TextIdPc8807b8,variable,TextIdPc8807b8,31355,31355,1,legoapi/lib/hub.h,users,TextIdPc8807b8: only legogame/hub.cpp android-path
-variable:TextIdPc8807c0,variable,TextIdPc8807c0,31356,31356,1,legoapi/lib/hub.h,users,TextIdPc8807c0: only legogame/hub.cpp android-path
-variable:TextIdPc8807c4,variable,TextIdPc8807c4,31357,31357,1,legoapi/lib/hub.h,users,TextIdPc8807c4: only legogame/hub.cpp android-path
-variable:TextIdPc8807e8,variable,TextIdPc8807e8,31358,31358,1,legoapi/lib/hub.h,users,TextIdPc8807e8: only legogame/hub.cpp android-path
-variable:TextIdPc8807fc,variable,TextIdPc8807fc,31359,31359,1,legoapi/lib/hub.h,users,TextIdPc8807fc: only legogame/hub.cpp android-path
-variable:TextIdPc880844,variable,TextIdPc880844,31360,31360,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
-variable:TextIdPc880864,variable,TextIdPc880864,31361,31361,1,legoapi/menus/screens/menu.h,data-order,retail 0x880864 between 0x880850 and 0x880878
-variable:TextIdPc880874,variable,TextIdPc880874,31362,31362,1,legoapi/menus/screens/menu.h,data-order,retail 0x880874 between 0x880850 and 0x880878
-variable:TextIdPc880888,variable,TextIdPc880888,31363,31363,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (5) android-path
-variable:TextIdPc880890,variable,TextIdPc880890,31364,31364,1,legoapi/menus/screens/customise.h,rule,used most in legogame/customise.c (3) android-path
-variable:TextIdPc8808a4,variable,TextIdPc8808a4,31365,31365,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (4) android-path
-variable:TextIdPc8808a8,variable,TextIdPc8808a8,31366,31366,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (4) android-path
-variable:TextIdPc8808b8,variable,TextIdPc8808b8,31367,31367,1,legoapi/lib/hub.h,users,TextIdPc8808b8: only legogame/hub.cpp android-path
-variable:TextIdPc880eac,variable,TextIdPc880eac,31368,31368,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (3) android-path
-variable:TextIdPc880eb0,variable,TextIdPc880eb0,31369,31369,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
-variable:TextIdPc880eb4,variable,TextIdPc880eb4,31370,31370,1,legoapi/lib/hub.h,users,TextIdPc880eb4: only legogame/hub.cpp android-path
-variable:TextIdPc881018,variable,TextIdPc881018,31371,31371,1,legoapi/lib/hub.h,users,TextIdPc881018: only legogame/hub.cpp android-path
-variable:TextIdPc881020,variable,TextIdPc881020,31372,31372,1,legoapi/lib/hub.h,users,TextIdPc881020: only legogame/hub.cpp android-path
-variable:TextIdPc881028,variable,TextIdPc881028,31373,31373,1,legoapi/lib/hub.h,users,TextIdPc881028: only legogame/hub.cpp android-path
-variable:TextIdPc881030,variable,TextIdPc881030,31374,31374,1,legoapi/lib/hub.h,users,TextIdPc881030: only legogame/hub.cpp android-path
-variable:TextIdPc881038,variable,TextIdPc881038,31375,31375,1,legoapi/lib/hub.h,users,TextIdPc881038: only legogame/hub.cpp android-path
-variable:TextIdPc881040,variable,TextIdPc881040,31376,31376,1,legoapi/lib/hub.h,users,TextIdPc881040: only legogame/hub.cpp android-path
-variable:TextIdPc8810c0,variable,TextIdPc8810c0,31377,31377,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (2) pc-path
+variable:dat_00880714,variable,dat_00880714,31350,31350,3,legoapi/lib/hub.h,users,dat_00880714: only legogame/hub.cpp android-path
+variable:dat_00880718,variable,dat_00880718,31351,31351,1,legoapi/lib/hub.h,users,dat_00880718: only legogame/hub.cpp android-path
+variable:dat_00880724,variable,dat_00880724,31352,31352,1,legoapi/lib/hub.h,users,dat_00880724: only legogame/hub.cpp android-path
+variable:dat_0088076c,variable,dat_0088076c,31353,31353,1,legoapi/lib/hub.h,users,dat_0088076c: only legogame/hub.cpp android-path
+variable:dat_00880780,variable,dat_00880780,31354,31354,1,legoapi/lib/hub.h,data-order,retail 0x880780 between 0x88076c and 0x8807b8
+variable:dat_008807b8,variable,dat_008807b8,31355,31355,1,legoapi/lib/hub.h,users,dat_008807b8: only legogame/hub.cpp android-path
+variable:dat_008807c0,variable,dat_008807c0,31356,31356,1,legoapi/lib/hub.h,users,dat_008807c0: only legogame/hub.cpp android-path
+variable:dat_008807c4,variable,dat_008807c4,31357,31357,1,legoapi/lib/hub.h,users,dat_008807c4: only legogame/hub.cpp android-path
+variable:dat_008807e8,variable,dat_008807e8,31358,31358,1,legoapi/lib/hub.h,users,dat_008807e8: only legogame/hub.cpp android-path
+variable:dat_008807fc,variable,dat_008807fc,31359,31359,1,legoapi/lib/hub.h,users,dat_008807fc: only legogame/hub.cpp android-path
+variable:dat_00880844,variable,dat_00880844,31360,31360,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_00880864,variable,dat_00880864,31361,31361,1,legoapi/menus/screens/menu.h,data-order,retail 0x880864 between 0x880850 and 0x880878
+variable:dat_00880874,variable,dat_00880874,31362,31362,1,legoapi/menus/screens/menu.h,data-order,retail 0x880874 between 0x880850 and 0x880878
+variable:dat_00880888,variable,dat_00880888,31363,31363,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (5) android-path
+variable:dat_00880890,variable,dat_00880890,31364,31364,1,legoapi/menus/screens/customise.h,rule,used most in legogame/customise.c (3) android-path
+variable:dat_008808a4,variable,dat_008808a4,31365,31365,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (4) android-path
+variable:dat_008808a8,variable,dat_008808a8,31366,31366,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (4) android-path
+variable:dat_008808b8,variable,dat_008808b8,31367,31367,1,legoapi/lib/hub.h,users,dat_008808b8: only legogame/hub.cpp android-path
+variable:dat_00880eac,variable,dat_00880eac,31368,31368,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (3) android-path
+variable:dat_00880eb0,variable,dat_00880eb0,31369,31369,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_00880eb4,variable,dat_00880eb4,31370,31370,1,legoapi/lib/hub.h,users,dat_00880eb4: only legogame/hub.cpp android-path
+variable:dat_00881018,variable,dat_00881018,31371,31371,1,legoapi/lib/hub.h,users,dat_00881018: only legogame/hub.cpp android-path
+variable:dat_00881020,variable,dat_00881020,31372,31372,1,legoapi/lib/hub.h,users,dat_00881020: only legogame/hub.cpp android-path
+variable:dat_00881028,variable,dat_00881028,31373,31373,1,legoapi/lib/hub.h,users,dat_00881028: only legogame/hub.cpp android-path
+variable:dat_00881030,variable,dat_00881030,31374,31374,1,legoapi/lib/hub.h,users,dat_00881030: only legogame/hub.cpp android-path
+variable:dat_00881038,variable,dat_00881038,31375,31375,1,legoapi/lib/hub.h,users,dat_00881038: only legogame/hub.cpp android-path
+variable:dat_00881040,variable,dat_00881040,31376,31376,1,legoapi/lib/hub.h,users,dat_00881040: only legogame/hub.cpp android-path
+variable:dat_008810c0,variable,dat_008810c0,31377,31377,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (2) pc-path
 function:SmartText,function,SmartText,31380,31380,3,legoapi/menus/core/text.h,android,SmartText
 function:TextButtonString,function,TextButtonString,31381,31381,1,gameapi/apitext.h,symbol,gameapi/gamemenuall.cpp[apitext.c] pc-path
 function:TextInputActionLabelPc,function,TextInputActionLabelPc,31382,31382,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
@@ -15548,8 +15548,8 @@ variable:E4CHARACTER_ADATA,variable,E4CHARACTER_ADATA,31433,31433,1,legogame/gam
 variable:E5CHARACTER_ADATA,variable,E5CHARACTER_ADATA,31434,31434,1,legogame/game.h,data-nearest,"only data.cpp mentions it; retail 0x87b014, nearest 0x87b00c"
 variable:E6CHARACTER_ADATA,variable,E6CHARACTER_ADATA,31435,31435,1,legogame/game.h,data-nearest,"only data.cpp mentions it; retail 0x87b018, nearest 0x87b00c"
 variable:PCArcadePlayText,variable,PCArcadePlayText,31436,31436,1,legoapi/lib/hub.h,data-order,retail 0x8807f8 between 0x8807e8 and 0x8807fc
-variable:TextIdPc8807cc,variable,TextIdPc8807cc,31437,31437,1,legoapi/lib/hub.h,data-order,retail 0x8807cc between 0x8807c4 and 0x8807e8
-variable:TextIdPc8808c0,variable,TextIdPc8808c0,31438,31438,1,legoapi/menus/screens/shop.h,users,TextIdPc8808c0: only legogame/shop.c android-path
+variable:dat_008807cc,variable,dat_008807cc,31437,31437,1,legoapi/lib/hub.h,data-order,retail 0x8807cc between 0x8807c4 and 0x8807e8
+variable:dat_008808c0,variable,dat_008808c0,31438,31438,1,legoapi/menus/screens/shop.h,users,dat_008808c0: only legogame/shop.c android-path
 function:WipeBackToHub,function,WipeBackToHub,31446,31446,1,legoapi/world/levels/hub.h,android,WipeBackToHub
 function:Hub_UpdateFreePlaySelect,function,Hub_UpdateFreePlaySelect,31447,31447,1,legoapi/world/levels/hub.h,android,Hub_UpdateFreePlaySelect
 function:InitChallenge,function,InitChallenge,31448,31448,1,legoapi/world/mission.h,android,InitChallenge
@@ -15624,8 +15624,8 @@ function:CurrentHintAlpha,function,CurrentHintAlpha,31564,31564,1,legoapi/menus/
 function:DrawMiniKitCount,function,DrawMiniKitCount,31565,31565,1,legoapi/render/core/render.h,android,DrawMiniKitCount
 function:Cheat_MultiplyScore,function,Cheat_MultiplyScore,31566,31566,1,legoapi/core/config/cheat.h,android,Cheat_MultiplyScore
 function:GizmoPickup_NumberOfType,function,GizmoPickup_NumberOfType,31567,31567,1,legoapi/gizmos/fx/gizmopickups.h,android,GizmoPickup_NumberOfType
-variable:TextIdPc880818,variable,TextIdPc880818,31575,31575,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
-variable:TextIdPc880834,variable,TextIdPc880834,31576,31576,1,legoapi/menus/core/panel.h,users,TextIdPc880834: only legogame/panel.cpp android-path
+variable:dat_00880818,variable,dat_00880818,31575,31575,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (3) pc-path
+variable:dat_00880834,variable,dat_00880834,31576,31576,1,legoapi/menus/core/panel.h,users,dat_00880834: only legogame/panel.cpp android-path
 function:Arcade_UpdatePanel,function,Arcade_UpdatePanel,31577,31577,1,legoapi/menus/screens/arcade.h,android,Arcade_UpdatePanel
 function:DrawPanel3DObjectMtx,function,DrawPanel3DObjectMtx,31585,31585,1,legoapi/render/core/render.h,android,DrawPanel3DObjectMtx
 assert:-#5059,assert,,31590,31590,2,legoapi/items/base/apiobject.h,follow-type,GAMEOBJECT
@@ -15864,11 +15864,11 @@ assert:-#5146,assert,,32023,32023,1,legoapi/world/levels/episodeII.h,follow-type
 assert:-#5147,assert,,32024,32024,1,legoapi/world/levels/episodeII.h,follow-type,JEDIB_NETPACKET
 variable:jedi_b,variable,jedi_b,32028,32028,1,legoapi/world/levels/episodeII.h,users,jedi_b: only legogame/episodeII.c android-path
 variable:JediBActiveCount,variable,JediBActiveCount,32029,32029,1,legoapi/world/levels/episodeII.h,users,JediBActiveCount: only legogame/episodeII.c android-path
-variable:CharacterFixupIdPc007f19c8,variable,CharacterFixupIdPc007f19c8,32030,32030,1,legoapi/world/levels/episodeII.h,users,CharacterFixupIdPc007f19c8: only legogame/episodeII.c android-path
-variable:CharacterFixupIdPc007f19c4,variable,CharacterFixupIdPc007f19c4,32031,32031,1,legoapi/world/levels/episodeII.h,users,CharacterFixupIdPc007f19c4: only legogame/episodeII.c android-path
-variable:CharacterFixupIdPc007f19d0,variable,CharacterFixupIdPc007f19d0,32032,32032,1,legoapi/world/levels/episodeII.h,users,CharacterFixupIdPc007f19d0: only legogame/episodeII.c android-path
-variable:CharacterFixupIdPc007f19d4,variable,CharacterFixupIdPc007f19d4,32033,32033,1,legoapi/world/levels/episodeII.h,users,CharacterFixupIdPc007f19d4: only legogame/episodeII.c android-path
-variable:CharacterFixupIdPc007f19d8,variable,CharacterFixupIdPc007f19d8,32034,32034,1,legoapi/world/levels/episodeII.h,users,CharacterFixupIdPc007f19d8: only legogame/episodeII.c android-path
+variable:dat_007f19c8,variable,dat_007f19c8,32030,32030,1,legoapi/world/levels/episodeII.h,users,dat_007f19c8: only legogame/episodeII.c android-path
+variable:dat_007f19c4,variable,dat_007f19c4,32031,32031,1,legoapi/world/levels/episodeII.h,users,dat_007f19c4: only legogame/episodeII.c android-path
+variable:dat_007f19d0,variable,dat_007f19d0,32032,32032,1,legoapi/world/levels/episodeII.h,users,dat_007f19d0: only legogame/episodeII.c android-path
+variable:dat_007f19d4,variable,dat_007f19d4,32033,32033,1,legoapi/world/levels/episodeII.h,users,dat_007f19d4: only legogame/episodeII.c android-path
+variable:dat_007f19d8,variable,dat_007f19d8,32034,32034,1,legoapi/world/levels/episodeII.h,users,dat_007f19d8: only legogame/episodeII.c android-path
 variable:jedib_netpacket,variable,jedib_netpacket,32035,32035,1,legoapi/world/levels/episodeII.h,android,jedib_netpacket
 variable:jedi_b_phase1,variable,jedi_b_phase1,32036,32036,1,legoapi/world/levels/episodeII.h,users,jedi_b_phase1: only legogame/episodeII.c android-path
 variable:jedi_b_phase2,variable,jedi_b_phase2,32037,32037,1,legoapi/world/levels/episodeII.h,users,jedi_b_phase2: only legogame/episodeII.c android-path

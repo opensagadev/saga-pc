@@ -97,7 +97,7 @@ the count, and a new address name (in the map or ported under that name) raises
 it above the budget on purpose.
 
 Older address-style names remain: about 1,900 data rows whose name ends in
-their address (`_PcInputText77066c`, `_TextIdPc880e54`,
+their address (`_dat_0077066c`, `_dat_00880e54`,
 `_AITransferLiteral757ebc`) and the address-suffixed data names in sources
 (oddscan `hex-name`); no code row and no function name in `src/` uses an
 older address form any more. They are not renamed here. A later rename batch:

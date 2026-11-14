@@ -50,7 +50,7 @@ extern "C" {
     extern const char EpisodeVI_doton12[10];
     extern void *emperorfighta_netpacket;
     f32 DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *);
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b284;
+    extern LEVELDATA_PC *dat_0087b284;
 #ifdef __cplusplus
 }
 #endif

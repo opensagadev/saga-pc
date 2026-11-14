@@ -59,9 +59,9 @@ extern "C" {
     void KeepOnScreen(GAMEOBJECT *);
 
     extern KEEP_SCREEN_PLANE PlayPlane[6];
-    extern i16 AreaExtraTargetId7f17bc;
-    extern i16 AreaExtraSourceId7f17c8;
-    extern i16 AreaExtraTargetId7f17cc;
+    extern i16 dat_007f17bc;
+    extern i16 dat_007f17c8;
+    extern i16 dat_007f17cc;
     extern i16 PermanentWeirdo1Id;
     extern i16 PermanentWeirdo2Id;
     extern i16 DefaultAnimationJabbaId;

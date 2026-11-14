@@ -852,8 +852,8 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
                 break;
         }
         if (target_position != NULL) {
-            message = AddGameMessage(TextInputKeyNameTextPc759770, target_position, (f32)((f64)AreaPickupScale * 5.0), NULL, 0.0f, 255, 0,
-                                     255, 0x10c7, 0.0f);
+            message =
+                AddGameMessage(dat_00759770, target_position, (f32)((f64)AreaPickupScale * 5.0), NULL, 0.0f, 255, 0, 255, 0x10c7, 0.0f);
             if (message != NULL) {
                 message->target_is_coin_total = 4;
                 message->parameter_10c = (void *)DrawGameMessage_Targets;

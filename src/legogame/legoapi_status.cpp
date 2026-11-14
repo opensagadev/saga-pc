@@ -24,14 +24,14 @@ typedef struct status_world_minikit_reader_s {
     MINIKIT_PC minikit;
 } STATUS_WORLD_MINIKIT_READER_PC;
 
-extern "C" i16 TextIdPc880bc0;
+extern "C" i16 dat_00880bc0;
 extern "C" {
-    extern i16 TextIdPc8806f8;
-    extern i16 TextIdPc880704;
-    extern i16 TextIdPc880744;
-    extern i16 TextIdPc88078c;
-    extern i16 TextIdPc880790;
-    extern i16 TextIdPc88083c;
+    extern i16 dat_008806f8;
+    extern i16 dat_00880704;
+    extern i16 dat_00880744;
+    extern i16 dat_0088078c;
+    extern i16 dat_00880790;
+    extern i16 dat_0088083c;
 }
 
 extern "C" {
@@ -348,7 +348,7 @@ extern "C" {
         } else {
             i16 temple_ids[2];
             i16 *ids;
-            temple_ids[0] = VehicleBoltId7f17d4;
+            temple_ids[0] = dat_007f17d4;
             temple_ids[1] = -1;
             ids = packet->area != NULL && packet->area == LOSTTEMPLE_ADATA ? temple_ids : Area_PlayerIDList;
             while (*ids != -1 && count < 7) {
@@ -518,7 +518,7 @@ extern "C" {
                         save->superstory_complete = 1;
                         AddToCompletionPoints(POINTS_PER_SUPERSTORY);
                         if (EpisodeGoldBrickForSuperStory != 0) {
-                            gold = AddGoldBrickMessage(p, TextIdPc88073c);
+                            gold = AddGoldBrickMessage(p, dat_0088073c);
                         }
                     }
                 } else {
@@ -569,7 +569,7 @@ extern "C" {
             if (p->previous_best_time <= 0.0f || p->previous_best_time > p->elapsed_time) {
                 if (WORLD->area->challenge_trial_time != 0 && p->previous_best_time >= WORLD->area->challenge_trial_time) {
                     AddToCompletionPoints(POINTS_PER_TIMETRIAL);
-                    gold = AddGoldBrickMessage(p, TextIdPc88071c);
+                    gold = AddGoldBrickMessage(p, dat_0088071c);
                 }
                 p->new_best_time = p->elapsed_time;
                 Game.area_save[area].challenge_trial_time = p->elapsed_time;
@@ -580,7 +580,7 @@ extern "C" {
                     AddToCompletionPoints(POINTS_PER_SUPERBONUSCOMPLETE);
                     p->newly_completed = 1;
                     if (EpisodeGoldBrickForSuperBonus != 0) {
-                        gold = AddGoldBrickMessage(p, TextIdPc880728);
+                        gold = AddGoldBrickMessage(p, dat_00880728);
                     }
                 }
                 AddStatusStage(p, 22, gold);
@@ -617,7 +617,7 @@ extern "C" {
                         Game_MissionSave->completed[(i8)MissionSys->active_mission->index] = 1;
                     }
                     AddToCompletionPoints(POINTS_PER_MISSION);
-                    gold = AddGoldBrickMessage(p, TextIdPc8806e4);
+                    gold = AddGoldBrickMessage(p, dat_008806e4);
                 }
                 {
                     i32 whole = (i32)((f64)p->mission->time - (f64)p->elapsed_time);
@@ -749,7 +749,7 @@ extern "C" {
                 Game.area_save[area].area_complete = 1;
                 AddToCompletionPoints(POINTS_PER_STORY);
                 if ((p->flags_word & 0x100) == 0 && (p->area->flags & 0x800) == 0) {
-                    gold = AddGoldBrickMessage(p, TextIdPc880728);
+                    gold = AddGoldBrickMessage(p, dat_00880728);
                 }
                 if (p->episode != NULL && Episode_IsComplete(p->episode, NULL) != 0) {
                     completed_episode = p->area->episode_index;
@@ -809,7 +809,7 @@ extern "C" {
                     if ((p->field_0xb0 & 4) != 0) {
                         *complete = 1;
                         AddToCompletionPoints(POINTS_PER_TRUEJEDI);
-                        AddStatusStage(p, 1, AddGoldBrickMessage(p, TextIdPc880818));
+                        AddStatusStage(p, 1, AddGoldBrickMessage(p, dat_00880818));
                     } else if (p->collected_score > 0.0f) {
                         AddStatusStage(p, 2, 0);
                     }
@@ -819,7 +819,7 @@ extern "C" {
                     Game.area_save[area].true_hero_complete[1] = 1;
                     Game.area_save[area].true_hero_complete[0] = 1;
                     AddToCompletionPoints(POINTS_PER_TRUEJEDI);
-                    AddStatusStage(p, 1, AddGoldBrickMessage(p, TextIdPc880818));
+                    AddStatusStage(p, 1, AddGoldBrickMessage(p, dat_00880818));
                 } else if (p->collected_score > 0.0f && (p->flags_word & 0x800) == 0) {
                     AddStatusStage(p, 2, 0);
                 }
@@ -836,13 +836,13 @@ extern "C" {
                 Game.area_save[area].minikit_complete = 1;
                 p->flags_word |= 0x10;
                 AddToCompletionPoints(POINTS_PER_MINIKIT);
-                gold = AddGoldBrickMessage(p, TextIdPc8808d0);
+                gold = AddGoldBrickMessage(p, dat_008808d0);
             }
             if (PauseSaveAndExit == 0 || p->new_minikits != 0) {
                 AddStatusStage(p, 4, gold);
             }
             if ((p->field_0xb0 & 0x10) != 0 && AllMiniKitsDone((AREASAVE_s *)Game.area_save) != 0) {
-                AddToCollection(VehicleBoltId7f195c);
+                AddToCollection(dat_007f195c);
                 AddStatusStage(p, 17, 0);
             }
         }
@@ -1088,32 +1088,32 @@ extern "C" {
         f32 y;
         labels[1] = -1;
         if ((packet->flags_word & 0x100u) != 0) {
-            labels[0] = TextIdPc88083c;
-            labels[1] = TextIdPc8806f8;
+            labels[0] = dat_0088083c;
+            labels[1] = dat_008806f8;
         } else if (packet->challenge_state != 0) {
-            labels[0] = TextIdPc88083c;
-            labels[1] = TextIdPc8806f8;
+            labels[0] = dat_0088083c;
+            labels[1] = dat_008806f8;
         } else if (packet->mission_state != 0) {
-            labels[0] = TextIdPc88083c;
-            labels[1] = TextIdPc8806f8;
+            labels[0] = dat_0088083c;
+            labels[1] = dat_008806f8;
         } else if ((packet->flags_word & 0x40u) != 0) {
-            labels[0] = TextIdPc8806f8;
+            labels[0] = dat_008806f8;
         } else if (packet->area_id != -1 && (u8)areas[packet->area_id].episode_index == 0xff) {
-            labels[0] = TextIdPc8806f8;
+            labels[0] = dat_008806f8;
         } else {
             u32 chapter = (packet->flags_word >> 3) & 1;
             if (chapter != 0 && packet->next_area != -1 && (areas[packet->next_area].flags & 2u) == 0 &&
                 Game.area_save[packet->next_area].complete == 0) {
-                labels[0] = TextIdPc8806f8;
+                labels[0] = dat_008806f8;
                 locked = 1;
             } else {
                 if (packet->next_area != -1 && (areas[packet->next_area].flags & 2u) != 0) {
-                    labels[0] = TextIdPc880744;
+                    labels[0] = dat_00880744;
                 } else {
-                    labels[0] = TextIdPc880704;
+                    labels[0] = dat_00880704;
                 }
                 if (chapter != 0) {
-                    labels[1] = TextIdPc8806f8;
+                    labels[1] = dat_008806f8;
                 }
             }
         }
@@ -1128,7 +1128,7 @@ extern "C" {
             count = 1;
             y = StartupGameFlag1 != 0 ? StatusPromptSingleY : title;
             if (locked != 0) {
-                label = areas[packet->next_area].area_index == 5 ? TextIdPc88078c : TextIdPc880790;
+                label = areas[packet->next_area].area_index == 5 ? dat_0088078c : dat_00880790;
                 SmartTextEx(TTab[label], 0.0f, 0.325f, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255, 63, 0, 1.7f, 1, NULL, 0, (i32)((f64)alpha * 128.0));
             }
         } else {
@@ -1187,11 +1187,11 @@ extern "C" {
         i32 red;
         i32 green;
         if (packet->new_best_time != 0.0f) {
-            title = TTab[TextIdPc88071c];
+            title = TTab[dat_0088071c];
             red = 0;
             green = 255;
         } else {
-            title = TTab[TextIdPc880734];
+            title = TTab[dat_00880734];
             red = 255;
             green = 0;
         }
@@ -1248,8 +1248,8 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
             return;
         }
         char *labels[2];
-        labels[0] = TTab[TextIdPc8808a8];
-        labels[1] = TTab[TextIdPc880bc0];
+        labels[0] = TTab[dat_008808a8];
+        labels[1] = TTab[dat_00880bc0];
         f32 y = -0.75 - MENUDY * 0.5;
         for (i32 option = 0; option < 2; ++option) {
             i32 red;
@@ -1371,10 +1371,10 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
 
 extern "C" void FinishStatusPacket(i32 choice) {
     if (LOSTTEMPLE_ADATA != NULL && StatusPacket.area_id == (i16)LOSTTEMPLE_ADATA->index) {
-        if (StatusPacket.player0_model == (u16)VehicleBoltId7f17d0) {
-            StatusPacket.player0_model = (u16)VehicleBoltId7f17d4;
-        } else if (StatusPacket.player1_model == (u16)VehicleBoltId7f17d0) {
-            StatusPacket.player1_model = (u16)VehicleBoltId7f17d4;
+        if (StatusPacket.player0_model == (u16)dat_007f17d0) {
+            StatusPacket.player0_model = (u16)dat_007f17d4;
+        } else if (StatusPacket.player1_model == (u16)dat_007f17d0) {
+            StatusPacket.player1_model = (u16)dat_007f17d4;
         }
     }
     RememberPlayerIDs(1, (i16)StatusPacket.player0_model, (i16)StatusPacket.player1_model);

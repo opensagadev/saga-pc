@@ -85,7 +85,7 @@ dropping it is codegen-neutral cosmetics and low priority.
 | `assert-offsetof-unit` | 6,609 | 203 | nu3d_includes.cpp 384, players.c 368, aisysall.c 328, nu3d_platform.cpp 286 | block (overlay scaffolding) |
 | `assert-sizeof` | 1,804 | 180 | saga.h 751, nu3d_includes.cpp 74, edlevelall.cpp 55 | see section 6 |
 | `placeholder-field` (`field_0x14`, `unknown_102`, `pad_`) | 9,785 | 232 | saga.h 1,689, move.c 737, rtl.c 531 | block (naming; neutral) |
-| `hex-name` (`TextIdPc8808e4`, `FUN_`, `data_0x`) | 12,063 | 110 | data.cpp 8,105, text_tables.cpp 1,482, ai_registry_pc.c 717, saga.h 335 | block (naming; neutral) |
+| `hex-name` (`dat_008808e4`, `FUN_`, `data_0x`) | 12,063 | 110 | data.cpp 8,105, text_tables.cpp 1,482, ai_registry_pc.c 717, saga.h 335 | block (naming; neutral) |
 | `candidate-name` (`_candidate`) | 439 | 63 | nu3d_includes.cpp 45, saga.h 41, nu3d_platform.cpp 31 | block (naming; neutral) |
 | `pc-suffix` (accepted, count only) | 52,581 | 323 | saga.h 8,981 | ok |
 | `comment-draft` (`SOURCE DRAFT ONLY`) | 2 | 2 | aisysall.c, rtl.c | block |

@@ -319,10 +319,10 @@ static void JediBResetRecord(JEDIB_CREATURE *record) {
     }
     if (record->flags & 2) {
         if (FreePlay == 0 && (jedi_b.unique_spawned & 1) == 0) {
-            record->id = CharacterFixupIdPc007f19d8;
+            record->id = dat_007f19d8;
             jedi_b.unique_spawned |= 1;
         } else if (FreePlay == 0 && (jedi_b.unique_spawned & 2) == 0) {
-            record->id = CharacterFixupIdPc007f19d4;
+            record->id = dat_007f19d4;
             jedi_b.unique_spawned |= 2;
         } else if (NuRandFloat() < 0.5f) {
             record->id = id_BATTLEDROIDGEONOSIAN;
@@ -685,7 +685,7 @@ static void JediBEndPhase(WORLDINFO *world) {
     }
     if (jedi_b.phase >= 7) {
         if (FreePlay == 0) {
-            NewLData = LevelFixupSlotPc0087b0f0;
+            NewLData = dat_0087b0f0;
         }
         CompleteLevel(world);
     }
@@ -796,7 +796,7 @@ void JediB_Update(WORLDINFO *world) {
                 baddie->object->ai_packet.locator = NULL;
                 target = NULL;
                 if ((player->character_data->model_flags & 0x80000) == 0 &&
-                    ((i16)player->objptr->id != CharacterFixupIdPc007f19c4 || (player->flags_1fc & 0x80) != 0) &&
+                    ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & 0x80) != 0) &&
                     (player->character_data->game_character->weapon_action != 4 ||
                      baddie->object->character_data->game_character->weapon_action != 4)) {
                     target = player;
@@ -806,7 +806,7 @@ void JediB_Update(WORLDINFO *world) {
                     }
                     if (player2 != NULL) {
                         if ((player2->character_data->model_flags & 0x80000) == 0 &&
-                            ((i16)player->objptr->id != CharacterFixupIdPc007f19c4 || (player->flags_1fc & 0x80) != 0) &&
+                            ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & 0x80) != 0) &&
                             (player->character_data->game_character->weapon_action != 4 ||
                              baddie->object->character_data->game_character->weapon_action != 4)) {
                             target = player2;
@@ -924,11 +924,11 @@ void JediB_DrawPanel(WORLDINFO *world) {
                     } else {
                         count = 1;
                         if (jedi_b.phase == 1) {
-                            ids[0] = CharacterFixupIdPc007f19c8;
+                            ids[0] = dat_007f19c8;
                         } else if (jedi_b.phase == 2) {
                             ids[0] = id_ANAKINPADAWAN;
                         } else if (jedi_b.phase == 3) {
-                            ids[0] = CharacterFixupIdPc007f19d0;
+                            ids[0] = dat_007f19d0;
                         }
                     }
                     DrawMeleeTargetsAlpha(ids, spawned, NULL, count);
@@ -1037,8 +1037,8 @@ void DookuC_Update(WORLDINFO *world) {
     if (netclient == 0) {
         if (FreePlay != 0) {
             KillBossCompleteLevel(id_DOOKU, 0, 0.0f);
-        } else if (LevelFixupSlotPc0087b140 != NULL) {
-            KillBossNewLevel(id_DOOKU, 0, 0.0f, LevelFixupSlotPc0087b140->index);
+        } else if (dat_0087b140 != NULL) {
+            KillBossNewLevel(id_DOOKU, 0, 0.0f, dat_0087b140->index);
         }
     }
     DrawForceBackEffect(&dooku_c.node);
@@ -1102,7 +1102,7 @@ void FactoryG_Update(WORLDINFO *world) {
         return;
     }
     if (ObiWan == NULL) {
-        ObiWan = FindGameObject(CharacterFixupIdPc007f19d0, 0x400, 0, 1, 0);
+        ObiWan = FindGameObject(dat_007f19d0, 0x400, 0, 1, 0);
         return;
     }
     if (FreePlay != 0) {
@@ -1820,7 +1820,7 @@ void KaminoE_UpdatePc(WORLDINFO *world) {
         if (FreePlay != 0) {
             KillBossCompleteLevel(id_JANGOFETT, 0, 0.0f);
         } else {
-            KillBossNewLevel(id_JANGOFETT, 0, 0.0f, LevelFixupSlotPc0087b138->index);
+            KillBossNewLevel(id_JANGOFETT, 0, 0.0f, dat_0087b138->index);
         }
     }
     if (kamino_e.jango_fight->value == 0.0f && FreePlay == 0 && kamino_e.intro_cutscene != NULL &&
@@ -1874,7 +1874,7 @@ void KaminoE_Draw(WORLDINFO *world) {
 
 i32 KaminoInside(void) {
     if (WORLD->area != NULL && WORLD->area == KAMINO_ADATA) {
-        if (WORLD->current_level == LevelFixupSlotPc0087b12c) {
+        if (WORLD->current_level == dat_0087b12c) {
             if (CUTSTOPGAME != 0 || GameCam->sock_position.sock_index == 5 || GameCam->sock_position.sock_index == 6) {
                 return 1;
             }

@@ -372,7 +372,7 @@ typedef struct MOTION_SHOOT_PHASE_READER {
     u8 bolt_fire_phase;
 } MOTION_SHOOT_PHASE_READER;
 
-extern i16 TextIdPc881060;
+extern i16 dat_00881060;
 
 typedef struct lunge_target_slots_s {
     u8 unknown_000[0x790];
@@ -438,7 +438,7 @@ typedef struct COMBO_CONTEXT_INFO {
 
 extern f32 ForceDeflectSpeed;
 extern f32 ForceDeflectSeekRate;
-extern i16 CharacterFixupIdPc007f1a78;
+extern i16 dat_007f1a78;
 
 typedef struct weirdo_batarang_reader_s {
     u8 unknown_000[0xcc0];
@@ -3373,7 +3373,7 @@ i32 Dodge_UpdateHint(HINT *hint) {
 
 static void PunchRanges(GAMEOBJECT *object, f32 *gap, f32 *charge_gap) {
     CHARACTER_MODEL_LAYERS *model;
-    if (object->id == (u16)VehicleBoltId7f17d4) {
+    if (object->id == (u16)dat_007f17d4) {
         model = APICharacterLoaded(PunchRangeCompanionId);
         if (model != NULL && model->model_data_b[0x2e] != NULL) {
             *charge_gap = *gap = 0.6f;
@@ -3651,7 +3651,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
 start_attack:
     object->context_variant_flags &= ~1;
     if (StartupGameFlag1 == 0 || StartupGameFlag0 != 0 ||
-        (object->id == (u16)VehicleBoltId7f17d4 && APICharacterLoaded(PunchRangeCompanionId) != NULL)) {
+        (object->id == (u16)dat_007f17d4 && APICharacterLoaded(PunchRangeCompanionId) != NULL)) {
         if (object->field_7aa == 0x51 && object->combo_stage == 0) {
             PUNCH_STYLE_VIEW_PC *style = (PUNCH_STYLE_VIEW_PC *)object;
             CHARACTER_MODEL_LAYERS *model = object->character_model;
@@ -4994,7 +4994,7 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
                         i32 immune = FreePlay != 0 && (object->flags_e20 & 0x100) != 0 &&
                                      (target->character_data->game_character->flags_090 & 0x4000) != 0;
                         i32 damage = immune != 0 ? 0 : target->player_index == -1 ? target->current_hp : 1;
-                        i32 flags = WORLD->current_level == LevelFixupSlotPc0087b194 && (object->flags_1f8 & 0x400) != 0;
+                        i32 flags = WORLD->current_level == dat_0087b194 && (object->flags_1f8 & 0x400) != 0;
                         if (ObjHitObj(object, target, damage, flags, 0, 1) != 2 && (object->flags_e20 & 0x80) != 0 && immune == 0) {
                             target->fall_animation_timer = 0.2f;
                         }
@@ -5044,7 +5044,7 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
             target = object->force_target;
             if ((f64)object->context_timer >= (f64)0.4f && target != NULL && (target->flags_1fc_word & 1) != 0 && target->dead == 0 &&
                 (target->character_data->game_character->weapon_action == 4 || target->id == (u16)id_BATTLEDROIDSECURITY ||
-                 target->id == id_GONKDROID || target->id == (u16)id_PKDROID || target->id == (u16)CharacterFixupIdPc007f1a78)) {
+                 target->id == id_GONKDROID || target->id == (u16)id_PKDROID || target->id == (u16)dat_007f1a78)) {
                 DeactivatePlayer(target, (f32)((f64)DEACTIVATEDTIME * 0.5), NULL);
                 NewRumble(object->pad->bound_pad, 0.5f, 0);
             }
@@ -7038,7 +7038,7 @@ static void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
     }
     KillPlayer(object, 2, 1, NULL);
     if (object->camera_screen_position.z > 0.0f) {
-        AddFancyMessage(TTab[TextIdPc881060], object->camera_screen_position.x, object->camera_screen_position.y, 0.25f, 1.0f, 1, 0);
+        AddFancyMessage(TTab[dat_00881060], object->camera_screen_position.x, object->camera_screen_position.y, 0.25f, 1.0f, 1, 0);
     }
 }
 
@@ -7271,8 +7271,8 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
     } else {
         timers->fall_animation_timer = 0.0f;
     }
-    if (object->id == (u16)AreaExtraSourceId7f17c8) {
-        model_id = apicharsys->playermodelids[AreaExtraTargetId7f17cc];
+    if (object->id == (u16)dat_007f17c8) {
+        model_id = apicharsys->playermodelids[dat_007f17cc];
         if (model_id == -1) {
             return;
         }
@@ -7283,7 +7283,7 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
         }
         UpdateMiniAnimPacket(&apicharsys->models[model_id], &mini->packet, (f32)((f64)FRAMETIME * 30.0), 0.0f, FRAMETIME);
     } else if (object->suit != NULL && (object->suit->flags & 2) != 0) {
-        model_id = apicharsys->playermodelids[AreaExtraTargetId7f17bc];
+        model_id = apicharsys->playermodelids[dat_007f17bc];
         if (model_id == -1) {
             return;
         }
@@ -10814,7 +10814,7 @@ void GameObjectStuffAfterAnimation(void) {
         }
         if (VehicleArea != 0 && object->field_280 <= 1) {
             i32 *handle = &FalconDebKey[object->field_280];
-            if (object->id == (u16)VehicleBoltId7f19a4 && (object->flags_1fc_word & 0x80) != 0 && (object->flags_e24 & 8) != 0 &&
+            if (object->id == (u16)dat_007f19a4 && (object->flags_1fc_word & 0x80) != 0 && (object->flags_e24 & 8) != 0 &&
                 object->character_model->points_of_interest[2] != NULL && object->origin_scale == 1.0f) {
                 if (*handle == -1) {
                     AddDebrisEffect(handle, WORLD->game_debris_sys->entries[136].effect, 0.0f, 0.0f, 0.0f);
@@ -11619,7 +11619,7 @@ void Move_CHARACTER(GAMEOBJECT *object) {
     u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
     u32 tag_pressed = object->pad->buttons_pressed & GAMEPAD_TAG;
     PLAYERCHARACTERCONFIG *runtime;
-    if (object->id == (u16)id_GAMORREANGUARD || object->id == (u16)VehicleBoltId7f1924 || object->id == (u16)VehicleBoltId7f1928 ||
+    if (object->id == (u16)id_GAMORREANGUARD || object->id == (u16)dat_007f1924 || object->id == (u16)dat_007f1928 ||
         object->id == (u16)id_CAPTAINTARPALS) {
         KeepWeaponOut(object);
     }
@@ -11743,8 +11743,7 @@ after_gravity:
     HoldCode(object);
     BlockCode(object, action_pressed, action_held, 0, (object->character_data->model_flags & 0x80) == 0);
     PunchCode(object, action_pressed, action_held, object->character_data->model_flags & 0x80, 0, 0.0f);
-    if ((object->character_data->game_character->flags_094 & 0x20000000) != 0 && object->id == (u16)VehicleBoltId7f17d0 &&
-        StartupGameFlag0 != 0) {
+    if ((object->character_data->game_character->flags_094 & 0x20000000) != 0 && object->id == (u16)dat_007f17d0 && StartupGameFlag0 != 0) {
         Whip_MoveCode(object);
     }
     DodgeCode(object, action_pressed, jump_pressed);
@@ -12077,7 +12076,7 @@ void Move_DROIDGENERIC(GAMEOBJECT *object) {
             zap_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
         }
         KeepWeaponIn(object);
-    } else if (object->character_data->game_character->weapon_action == 4 || object->id == (u16)VehicleBoltId7f18b4) {
+    } else if (object->character_data->game_character->weapon_action == 4 || object->id == (u16)dat_007f18b4) {
         KeepWeaponOut(object);
     }
     DropInOutCode(object);
@@ -12134,7 +12133,7 @@ zap:
                 if (object->field_281 != 0 && object->character_context == -1 && object->pad->input_magnitude > 0.0f) {
                     PlaySfx(object->id == (u16)id_MOUSEDROID ? "drd_mousebot_lp" : "R2Move", &object->collision_position);
                 }
-            } else if (object->id == (u16)VehicleBoltId7f18b4) {
+            } else if (object->id == (u16)dat_007f18b4) {
                 PlaySfx("Probot_EngLp", &object->collision_position);
                 FireCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, object->pad->buttons_pressed & GAMEPAD_ACTION, 0.5f, 1);
             }
@@ -12145,7 +12144,7 @@ zap:
     }
     if ((object->character_data->model_flags & 0x20) != 0) {
         GizPanel_MoveCode(WORLD, object, (GAMEPAD_SPECIAL | GAMEPAD_ACTION) & object->pad->buttons_pressed);
-        if (WORLD->current_level == LevelFixupSlotPc0087b218) {
+        if (WORLD->current_level == dat_0087b218) {
             BigJumpCode(object);
         }
     }

@@ -133,15 +133,15 @@ extern "C" POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32 mode, const DWO
 
 extern "C" void PostFilterInitSharedResources(void);
 extern "C" {
-    extern const DWORD PostShaderTokens7656f0[];
-    extern const DWORD PostShaderTokens765798[];
-    extern const DWORD PostShaderTokens765848[];
-    extern const DWORD PostShaderTokens765aa8[];
-    extern const DWORD PostShaderTokens765ca0[];
-    extern const DWORD PostShaderTokens765d90[];
-    extern const DWORD PostShaderTokens765e40[];
-    extern const DWORD PostShaderTokens765f30[];
-    extern const DWORD PostShaderTokens7660d0[];
+    extern const DWORD dat_007656f0[];
+    extern const DWORD dat_00765798[];
+    extern const DWORD dat_00765848[];
+    extern const DWORD dat_00765aa8[];
+    extern const DWORD dat_00765ca0[];
+    extern const DWORD dat_00765d90[];
+    extern const DWORD dat_00765e40[];
+    extern const DWORD dat_00765f30[];
+    extern const DWORD dat_007660d0[];
 #pragma bss_seg(".bss$PostCopyTexProgramPc")
     POST_SHADER_PROGRAM_PC *PostCopyTexProgram = 0;
 #pragma bss_seg(".bss$PostCopyTexLodProgramPc")
@@ -163,15 +163,15 @@ extern "C" void PostFilterInitPrograms(i32 width, i32 height) {
     (void)width;
     (void)height;
     PostFilterInitSharedResources();
-    PostCopyTexProgram = PostShaderProgramCreatePc(2, PostShaderTokens7656f0, PostShaderTokens765798);
+    PostCopyTexProgram = PostShaderProgramCreatePc(2, dat_007656f0, dat_00765798);
     PostCopyTexLodProgram = NULL;
     PostBlendTexProgram = NULL;
     if (PCDeviceHardwareVertexProcessingPC > 1) {
-        PostBlur5x5Program = PostShaderProgramCreatePc(2, PostShaderTokens765848, PostShaderTokens765aa8);
-        PostBlur7x7Program = PostShaderProgramCreatePc(2, PostShaderTokens765ca0, PostShaderTokens765d90);
+        PostBlur5x5Program = PostShaderProgramCreatePc(2, dat_00765848, dat_00765aa8);
+        PostBlur7x7Program = PostShaderProgramCreatePc(2, dat_00765ca0, dat_00765d90);
     }
-    PostCopyAuxProgram = PostShaderProgramCreatePc(2, PostShaderTokens765f30, PostShaderTokens7660d0);
-    PostBlurAuxProgram = PostShaderProgramCreatePc(2, PostShaderTokens765e40, PostShaderTokens765d90);
+    PostCopyAuxProgram = PostShaderProgramCreatePc(2, dat_00765f30, dat_007660d0);
+    PostBlurAuxProgram = PostShaderProgramCreatePc(2, dat_00765e40, dat_00765d90);
 }
 
 extern "C" void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *program) {

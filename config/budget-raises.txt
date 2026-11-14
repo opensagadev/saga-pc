@@ -145,4 +145,5 @@ config/oddscan-budget.json format-off 4 four initializer tables are still wider 
 config/oddscan-budget.json magic-flag 7567 the 140-column reformat joins lines; oddscan counts per line (no new literal)
 config/oddscan-budget.json magic-state 8727 the 140-column reformat joins lines; oddscan counts per line (no new literal)
 config/oddscan-budget.json stdcall-definition 6 the 140-column reformat joins a wrapped declaration; oddscan counts per line (no new attribute)
-config/oddscan-budget.json hex-name 9428 address-named globals (TextIdPc8810c0 style) were hidden from the hex-name pattern by a trailing Pc; dropping the pc marker shows 447 of them (no new address name)
+config/oddscan-budget.json hex-name 9428 address-named globals (dat_008810c0 style) were hidden from the hex-name pattern by a trailing Pc; dropping the pc marker shows 447 of them (no new address name)
+config/oddscan-budget.json address-name 16324 2,419 names that restated their address in free forms (TextIdPc8810c0) take the standard fun_/dat_<VA> form this class counts; hex-name falls from 9428 to 562

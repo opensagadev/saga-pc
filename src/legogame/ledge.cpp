@@ -292,7 +292,7 @@ typedef struct LEDGE_PROGRESS { // size 0x20
 } LEDGE_PROGRESS;
 
 extern "C" {
-    extern char TextInputKeyNameTextPc7516c0[1];
+    extern char dat_007516c0[1];
     extern char *LedgeOutputName;
 
     static void Ledge_Reset(LEDGE_MOTION *ledge) {
@@ -536,7 +536,7 @@ extern "C" {
         char *name = LedgeRegistryNamePc;
         LedgeAddType = Default_ADDGIZMOTYPE;
         LedgeAddType.name = name;
-        LedgeAddType.prefix = TextInputKeyNameTextPc7516c0;
+        LedgeAddType.prefix = dat_007516c0;
         LedgeAddType.fns.options = 0x20;
         LedgeAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Ledges_GetMaxGizmos;
         LedgeAddType.fns.add_gizmos_fn = (void *)Ledges_AddGizmos;

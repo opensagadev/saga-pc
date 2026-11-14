@@ -335,7 +335,7 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
             break;
     }
     if (DoubleScoreTime > 0.0f || type_index == 2 || type_index == 3) {
-        PlaySfx((char *)PickupTypeLiteral758c5c, position);
+        PlaySfx((char *)dat_00758c5c, position);
     } else {
         PlaySfx((char *)PickupCoinSfx, position);
     }
@@ -424,7 +424,7 @@ void CollectRedBrick(NUVEC *position) {
     ADD_GAME_MESSAGE_PC message;
     NUVEC target;
     AddGameDebris(WORLD->game_debris_sys, 0x62, position);
-    GameAudio_PlaySfxById(GetSfxId(PickupTypeLiteral758c14), position, 3, 0);
+    GameAudio_PlaySfxById(GetSfxId(dat_00758c14), position, 3, 0);
     if (WORLD->area_index == -1 || Game.area_save[WORLD->area_index].red_brick_collected == 0) {
         target.x = REDBRICKPOSX;
         target.y = REDBRICKPOSY;
@@ -493,7 +493,7 @@ void CollectMinikit(NUVEC *position, char *name, i32 flags) {
         }
     }
     AddGameDebris(WORLD->game_debris_sys, 0x13, position);
-    GameAudio_PlaySfxById(GetSfxId(PickupTypeLiteral758c14), position, 3, 0);
+    GameAudio_PlaySfxById(GetSfxId(dat_00758c14), position, 3, 0);
 }
 
 static void PartImpact_Coin(PART_PC *part) {

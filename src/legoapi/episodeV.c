@@ -276,7 +276,7 @@ void HothEscapeC_Update(WORLDINFO *world) {
 }
 
 void HothEscapeC_AlwaysUpdate(WORLDINFO *world) {
-    LevelStreaming_DoorOverride(world, LevelFixupSlotPc0087b220, 7.5f, NULL);
+    LevelStreaming_DoorOverride(world, dat_0087b220, 7.5f, NULL);
 }
 
 void HothEscapeD_Init(WORLDINFO *world) {
@@ -483,8 +483,7 @@ f32 spotLightB_zrot[2] = {0.5f, 0.5f};
 
 void DrawFalconSpotLights(GAMEOBJECT *object) {
     NUMTX matrix;
-    if ((object->field_280 != 0 && object->field_280 != 1) || (i16)object->id != VehicleBoltId7f19a4 ||
-        WORLD->level_objects[0x127].active == 0) {
+    if ((object->field_280 != 0 && object->field_280 != 1) || (i16)object->id != dat_007f19a4 || WORLD->level_objects[0x127].active == 0) {
         return;
     }
     if (object->character_model->points_of_interest[4] != NULL) {
@@ -572,7 +571,7 @@ void AsteroidChaseB_Update(WORLDINFO *world) {
         }
     }
     for (i = 0; i < 2; i++) {
-        if (PLAYER_OBJ(i) != NULL && (i16)PLAYER_OBJ(i)->id == VehicleBoltId7f19a4 && LevArea[0] != NULL &&
+        if (PLAYER_OBJ(i) != NULL && (i16)PLAYER_OBJ(i)->id == dat_007f19a4 && LevArea[0] != NULL &&
             (*(u64 *)PLAYER_OBJ(i)->ai_area_mask & (u64)(i64)(1 << (LevArea[0] - world->ai_sys->areas))) != 0) {
             if (LevTime[i] >= 2.0f) {
                 LevTime[i] = 2.0f;
@@ -582,7 +581,7 @@ void AsteroidChaseB_Update(WORLDINFO *world) {
             } else {
                 LevTime[i] = FRAMETIME + LevTime[i];
             }
-        } else if (PLAYER_OBJ(i) != NULL && (i16)PLAYER_OBJ(i)->id == VehicleBoltId7f19a4) {
+        } else if (PLAYER_OBJ(i) != NULL && (i16)PLAYER_OBJ(i)->id == dat_007f19a4) {
             if (LevTime[i] > 0.0f) {
                 LevTime[i] -= FRAMETIME;
             } else {
@@ -812,7 +811,7 @@ void CloudCityTrapA_Update(WORLDINFO *world) {
         UpdateTrooperCannons(world);
     }
     if (LevGameObject[0] == NULL) {
-        LevGameObject[0] = FindGameObject(FreePlayId007f199c, 1, 1, 1, 0);
+        LevGameObject[0] = FindGameObject(dat_007f199c, 1, 1, 1, 0);
     }
     if (netclient == 0) {
         if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f) {
@@ -830,13 +829,13 @@ void CloudCityTrapA_Update(WORLDINFO *world) {
 void CloudCityTrapB_Init(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
     LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, "TrapBEndFight", NULL);
-    LevGameObject[0] = FindGameObject(FreePlayId007f199c, 1, 1, 1, 0);
+    LevGameObject[0] = FindGameObject(dat_007f199c, 1, 1, 1, 0);
 }
 
 void CloudCityTrapB_Update(WORLDINFO *unused0) {
     struct gameobject_s *vader;
     if (LevGameObject[0] == NULL) {
-        LevGameObject[0] = FindGameObject(FreePlayId007f199c, 1, 1, 1, 0);
+        LevGameObject[0] = FindGameObject(dat_007f199c, 1, 1, 1, 0);
     }
     if (netclient != 0) {
         return;
@@ -853,15 +852,15 @@ void CloudCityTrapB_Update(WORLDINFO *unused0) {
     if (vader->dead != 0 || vader->current_hp == 0) {
         if (FreePlay != 0) {
             CompleteLevel(WORLD);
-        } else if (LevelFixupSlotPc0087b250 != NULL) {
-            GoToNewLevel(LevelFixupSlotPc0087b250->index);
+        } else if (dat_0087b250 != NULL) {
+            GoToNewLevel(dat_0087b250->index);
         }
     }
 }
 
 void CloudCityTrapC_Reset(WORLDINFO *world) {
     struct gizmo_s *gizmo;
-    LevGameObject[0] = FindGameObject(FreePlayId007f199c, 1, 1, 0, 0);
+    LevGameObject[0] = FindGameObject(dat_007f199c, 1, 1, 0, 0);
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
     LevPathCnx[0] = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "gap1_a", "gap1_b", &LevPathCnxDir);
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle3");
@@ -1048,7 +1047,7 @@ void DagobahE_Init(WORLDINFO *world) {
 }
 
 void DagobahC_Init(WORLDINFO *world) {
-    Vader_obj = FindGameObject(FreePlayId007f199c, 1, 1, 0, 0);
+    Vader_obj = FindGameObject(dat_007f199c, 1, 1, 0, 0);
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force20");
 }
 
@@ -1072,7 +1071,7 @@ void IncrementMinikitCounter(GAMEOBJECT *unused) {
     Players_AveragePos(&average, NULL);
     if (world->current_level == HOTHBATTLEA_LDATA) {
         INCREMENT_MINIKIT_COUNTER_FOR(world, &average, 0, &minikitCounter_A, 10.0f, -0xe38, -0x2000);
-    } else if (world->current_level == LevelFixupSlotPc0087b204) {
+    } else if (world->current_level == dat_0087b204) {
         INCREMENT_MINIKIT_COUNTER_FOR(world, &average, 1, &minikitCounter_C, 25.0f, -0x1555, -0x871c);
     }
 }
@@ -1311,9 +1310,9 @@ void HothBattle_ManageBackgroundCreatures(void) {
     }
     for (type = 0; type < melee.creature_count; ++type) {
         i16 id = melee.waves[type].character_id;
-        if (id == VehicleBoltId7f18b4) {
+        if (id == dat_007f18b4) {
             wave_types |= 1;
-        } else if (id == VehicleBoltId7f19a8) {
+        } else if (id == dat_007f19a8) {
             wave_types |= 2;
         } else if (id == id_ATST_LOWRES) {
             wave_types |= 4;
@@ -1321,14 +1320,13 @@ void HothBattle_ManageBackgroundCreatures(void) {
             wave_types |= 8;
         }
     }
-    radius = apicharsys->char_data[VehicleBoltId7f18b4].collision_radius;
+    radius = apicharsys->char_data[dat_007f18b4].collision_radius;
     while (aicreature_sets_alive[0] < 5 && (wave_types & 1) == 0) {
         spawn = getSpawnLocator(radius, "spawn");
         if (spawn == NULL) {
             return;
         }
-        object = AddDynamicCreature(VehicleBoltId7f18b4, &spawn->position, spawn->rotation, "Probe", &spawn->path_info, NULL, 1, NULL, NULL,
-                                    0, 1);
+        object = AddDynamicCreature(dat_007f18b4, &spawn->position, spawn->rotation, "Probe", &spawn->path_info, NULL, 1, NULL, NULL, 0, 1);
         if (object == NULL) {
             break;
         }
@@ -1500,7 +1498,7 @@ i32 HothBattle_StartNewWave() {
     if (melee.field_0x2 != 0) {
         switch (melee.field_0x1) {
             case 1:
-                melee.waves[0].character_id = VehicleBoltId7f18b4;
+                melee.waves[0].character_id = dat_007f18b4;
                 melee.waves[0].field_0x18 = 11;
                 melee.waves[0].field_0x19 = 11;
                 NuStrCpy(melee.waves[0].name, "Probe");
@@ -1521,7 +1519,7 @@ i32 HothBattle_StartNewWave() {
                 melee.creature_count = 1;
                 break;
             case 4:
-                melee.waves[0].character_id = VehicleBoltId7f18b4;
+                melee.waves[0].character_id = dat_007f18b4;
                 melee.waves[0].field_0x18 = 4;
                 melee.waves[0].field_0x19 = 4;
                 NuStrCpy(melee.waves[0].name, "Probe");
@@ -1568,7 +1566,7 @@ void HothBattleE_UpdateWave(void) {
                 if (FreePlay != 0) {
                     CompleteLevel(WORLD);
                 } else {
-                    GoToNewLevel(LevelFixupSlotPc0087b210->index);
+                    GoToNewLevel(dat_0087b210->index);
                 }
             }
             melee.wave_delay = 0.0f;

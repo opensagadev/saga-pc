@@ -133,8 +133,8 @@ void DeathStarEscapeB_Update(WORLDINFO *world) {
 
 /* Episode IV FixUpLevels callbacks (Mos Eisley, Blockade Runner, Death Star rescue and escape). */
 i32 test_tb = 1;
-extern i16 CharacterFixupIdPc007f1a3c;
-extern i16 CharacterFixupIdPc007f1a40;
+extern i16 dat_007f1a3c;
+extern i16 dat_007f1a40;
 
 void MosEisleyB_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "land_speeder_terrain1", 1);
@@ -192,10 +192,10 @@ static void BlockadeRunnerDEjectCreature(i32 eject_index) {
     ADDPART params;
     i32 i;
     i32 model;
-    models[0] = CharacterFixupIdPc007f1a3c;
-    models[1] = CharacterFixupIdPc007f1a40;
-    models[2] = CharacterFixupIdPc007f1a3c;
-    models[3] = FreePlayId007f1a44;
+    models[0] = dat_007f1a3c;
+    models[1] = dat_007f1a40;
+    models[2] = dat_007f1a3c;
+    models[3] = dat_007f1a44;
     if ((u32)eject_index > 1) {
         return;
     }
@@ -370,11 +370,11 @@ void DeathStarEscapeD_Update(WORLDINFO *world) {
 void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
 
 void MosEisleyD_AlwaysUpdate(WORLDINFO *world) {
-    LevelStreaming_DoorOverride(world, LevelFixupSlotPc0087b1c0, 7.5f, NULL);
+    LevelStreaming_DoorOverride(world, dat_0087b1c0, 7.5f, NULL);
 }
 
 void DeathStarRescueB_AlwaysUpdate(WORLDINFO *world) {
-    LevelStreaming_DoorOverride(world, LevelFixupSlotPc0087b1d0, 8.5f, NULL);
+    LevelStreaming_DoorOverride(world, dat_0087b1d0, 8.5f, NULL);
 }
 
 void DeathStarRescueC_AlwaysUpdate(WORLDINFO *world) {
@@ -654,7 +654,7 @@ void DeathStarBattleDUpdate(WORLDINFO *world) {
                     }
                     NuVecAdd(&spawn, &spawn, &offset);
                     if (trenchrun.midtro_played == 0 && index == 1) {
-                        model = VehicleBoltId7f196c;
+                        model = dat_007f196c;
                     } else {
                         model = id_TIEFIGHTER;
                     }

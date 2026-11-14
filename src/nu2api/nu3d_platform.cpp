@@ -29,24 +29,24 @@ extern "C" {
     // @@PREAMBLE
     struct POST_SHADER_PROGRAM_PC;
     POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32, const DWORD *, const DWORD *);
-    extern const DWORD PostShaderTokens7662d8[168];
-    extern const DWORD PostShaderTokens766578[94];
-    extern const DWORD PostShaderTokens7666f0[75];
-    extern const DWORD PostShaderTokens766820[261];
-    extern const DWORD PostShaderTokens766c38[168];
-    extern const DWORD PostShaderTokens766ed8[94];
-    extern const DWORD PostShaderTokens767050[75];
-    extern const DWORD PostShaderTokens767180[261];
-    extern const DWORD PostShaderTokens767598[85];
-    extern const DWORD PostShaderTokens7676f0[566];
-    extern const DWORD PostShaderTokens767fc8[554];
-    extern const DWORD PostShaderTokens768870[155];
-    extern const DWORD PostShaderTokens768ae0[143];
-    extern const DWORD PostShaderTokens768d20[48];
-    extern const DWORD PostShaderTokens768de0[180];
-    extern const DWORD PostShaderTokens7690b0[131];
-    extern const DWORD PostShaderTokens7692c0[175];
-    extern const DWORD PostShaderTokens769580[100];
+    extern const DWORD dat_007662d8[168];
+    extern const DWORD dat_00766578[94];
+    extern const DWORD dat_007666f0[75];
+    extern const DWORD dat_00766820[261];
+    extern const DWORD dat_00766c38[168];
+    extern const DWORD dat_00766ed8[94];
+    extern const DWORD dat_00767050[75];
+    extern const DWORD dat_00767180[261];
+    extern const DWORD dat_00767598[85];
+    extern const DWORD dat_007676f0[566];
+    extern const DWORD dat_00767fc8[554];
+    extern const DWORD dat_00768870[155];
+    extern const DWORD dat_00768ae0[143];
+    extern const DWORD dat_00768d20[48];
+    extern const DWORD dat_00768de0[180];
+    extern const DWORD dat_007690b0[131];
+    extern const DWORD dat_007692c0[175];
+    extern const DWORD dat_00769580[100];
     PC_FRAMEBUFFER *PCGraphicsCreateFramebuffer(void);
     void NuPostEffectReleasePorts(void);
     void fun_005f83a0(GRAPHICS_RENDER_TEXTURE *texture, i32 texture_id);
@@ -408,7 +408,7 @@ extern "C" {
     typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
 
     extern "C" {
-        extern const DWORD NuMaterialShaderTokens769710Pc[76] = {
+        extern const DWORD dat_00769710[76] = {
             0xfffe0101u, 0x0022fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xfffe0101u, 0x00000001u, 0x0000001cu, 0x20000120u,
             0x0000004cu, 0x00000030u, 0x00000002u, 0x00020004u, 0x0000003cu, 0x00000000u, 0x77656976u, 0x6a6f7250u, 0xababab00u,
             0x00030003u, 0x00040004u, 0x00000001u, 0x00000000u, 0x315f7376u, 0x4d00315fu, 0x6f726369u, 0x74666f73u, 0x29522820u,
@@ -420,7 +420,7 @@ extern "C" {
             0x90040002u, 0xa0500004u, 0xa0050004u, 0x0000ffffu,
         };
 
-        extern const DWORD NuMaterialShaderTokens769840Pc[44] = {
+        extern const DWORD dat_00769840[44] = {
             0xffff0101u, 0x0023fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xffff0101u, 0x00000001u, 0x0000001cu, 0x00000120u,
             0x0000004cu, 0x00000030u, 0x00000003u, 0x00000001u, 0x0000003cu, 0x00000000u, 0x66666964u, 0x5f657375u, 0x00786574u,
             0x000c0004u, 0x00010001u, 0x00000001u, 0x00000000u, 0x315f7370u, 0x4d00315fu, 0x6f726369u, 0x74666f73u, 0x29522820u,
@@ -428,7 +428,7 @@ extern "C" {
             0xababab00u, 0x00000042u, 0xb00f0000u, 0x00000005u, 0x810f0000u, 0xb0e40000u, 0x90e40000u, 0x0000ffffu,
         };
 
-        extern const DWORD NuMaterialShaderTokens7698f0Pc[89] = {
+        extern const DWORD dat_007698f0[89] = {
             0xfffe0200u, 0x0022fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xfffe0200u, 0x00000001u, 0x0000001cu, 0x20000120u,
             0x0000004cu, 0x00000030u, 0x00000002u, 0x00020004u, 0x0000003cu, 0x00000000u, 0x77656976u, 0x6a6f7250u, 0xababab00u,
             0x00030003u, 0x00040004u, 0x00000001u, 0x00000000u, 0x325f7376u, 0x4d00305fu, 0x6f726369u, 0x74666f73u, 0x29522820u,
@@ -441,7 +441,7 @@ extern "C" {
             0xa0000004u, 0x02000001u, 0xd00f0000u, 0x90e40001u, 0x02000001u, 0xe00c0000u, 0x90440002u, 0x0000ffffu,
         };
 
-        extern const DWORD NuMaterialShaderTokens769a58Pc[124] = {
+        extern const DWORD dat_00769a58[124] = {
             0xffff0200u, 0x002bfffeu, 0x42415443u, 0x0000001cu, 0x00000077u, 0xffff0200u, 0x00000002u, 0x0000001cu, 0x20000120u,
             0x00000070u, 0x00000044u, 0x00000003u, 0x00020001u, 0x00000054u, 0x00000000u, 0x00000064u, 0x00010003u, 0x00060001u,
             0x00000054u, 0x00000000u, 0x6b636162u, 0x66667542u, 0x745f7265u, 0xab007865u, 0x000c0004u, 0x00010001u, 0x00000001u,
@@ -458,7 +458,7 @@ extern "C" {
             0x802f0000u, 0x80e40000u, 0xa0e40002u, 0x02000001u, 0x802f0800u, 0x80e40000u, 0x0000ffffu,
         };
 
-        extern const DWORD NuMaterialShaderTokens769c48Pc[87] = {
+        extern const DWORD dat_00769c48[87] = {
             0xfffe0101u, 0x0022fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xfffe0101u, 0x00000001u, 0x0000001cu, 0x20000120u,
             0x0000004cu, 0x00000030u, 0x00000002u, 0x00020004u, 0x0000003cu, 0x00000000u, 0x77656976u, 0x6a6f7250u, 0xababab00u,
             0x00030003u, 0x00040004u, 0x00000001u, 0x00000000u, 0x315f7376u, 0x4d00315fu, 0x6f726369u, 0x74666f73u, 0x29522820u,
@@ -471,7 +471,7 @@ extern "C" {
             0xd00f0000u, 0x90e40001u, 0x00000001u, 0xe00c0000u, 0xa0ff0004u, 0x0000ffffu,
         };
 
-        extern const DWORD NuMaterialShaderTokens769da8Pc[54] = {
+        extern const DWORD dat_00769da8[54] = {
             0xffff0101u, 0x0024fffeu, 0x42415443u, 0x0000001cu, 0x00000057u, 0xffff0101u, 0x00000001u, 0x0000001cu, 0x00000120u,
             0x00000050u, 0x00000030u, 0x00000003u, 0x00000001u, 0x00000040u, 0x00000000u, 0x6b636162u, 0x66667542u, 0x745f7265u,
             0xab007865u, 0x000c0004u, 0x00010001u, 0x00000001u, 0x00000000u, 0x315f7370u, 0x4d00315fu, 0x6f726369u, 0x74666f73u,
@@ -480,7 +480,7 @@ extern "C" {
             0xb00f0000u, 0x00000005u, 0x81070000u, 0xb0e40000u, 0x90e40000u, 0x40000001u, 0x80080000u, 0xa0ff0000u, 0x0000ffffu,
         };
 
-        extern const DWORD NuMaterialShaderTokens769e80Pc[262] = {
+        extern const DWORD dat_00769e80[262] = {
             0xfffe0101u, 0x005bfffeu, 0x42415443u, 0x0000001cu, 0x00000134u, 0xfffe0101u, 0x00000008u, 0x0000001cu, 0x20000120u,
             0x0000012du, 0x000000bcu, 0x00540002u, 0x01520001u, 0x000000c8u, 0x00000000u, 0x000000d8u, 0x00500002u, 0x01420003u,
             0x000000e4u, 0x00000000u, 0x000000f4u, 0x00590002u, 0x01660001u, 0x000000c8u, 0x00000000u, 0x00000106u, 0x00300002u,
@@ -513,7 +513,7 @@ extern "C" {
             0x0000ffffu,
         };
 
-        extern const DWORD NuMaterialShaderTokens76a3c8Pc[91] = {
+        extern const DWORD dat_0076a3c8[91] = {
             0xffff0200u, 0x002efffeu, 0x42415443u, 0x0000001cu, 0x00000083u, 0xffff0200u, 0x00000002u, 0x0000001cu, 0x20000120u,
             0x0000007cu, 0x00000044u, 0x00000003u, 0x00020001u, 0x00000050u, 0x00000000u, 0x00000060u, 0x00000002u, 0x00020001u,
             0x0000006cu, 0x00000000u, 0x66666964u, 0x5f657375u, 0x00786574u, 0x000c0004u, 0x00010001u, 0x00000001u, 0x00000000u,
@@ -527,7 +527,7 @@ extern "C" {
             0x0000ffffu,
         };
 
-        extern const DWORD NuMaterialShaderTokens76a298Pc[76] = {
+        extern const DWORD dat_0076a298[76] = {
             0xffff0101u, 0x002ffffeu, 0x42415443u, 0x0000001cu, 0x00000083u, 0xffff0101u, 0x00000002u, 0x0000001cu, 0x00000120u,
             0x0000007cu, 0x00000044u, 0x00000003u, 0x00000001u, 0x00000050u, 0x00000000u, 0x00000060u, 0x00000002u, 0x00020001u,
             0x0000006cu, 0x00000000u, 0x66666964u, 0x5f657375u, 0x00786574u, 0x000c0004u, 0x00010001u, 0x00000001u, 0x00000000u,
@@ -539,7 +539,7 @@ extern "C" {
             0xb0e40000u, 0x80e40000u, 0xa0e40000u, 0x0000ffffu,
         };
 
-        extern const DWORD NuMaterialShaderTokens76a538Pc[43] = {
+        extern const DWORD dat_0076a538[43] = {
             0xfffe0101u, 0x0016fffeu, 0x42415443u, 0x0000001cu, 0x00000023u, 0xfffe0101u, 0x00000000u, 0x00000000u, 0x20000120u,
             0x0000001cu, 0x315f7376u, 0x4d00315fu, 0x6f726369u, 0x74666f73u, 0x29522820u, 0x534c4820u, 0x6853204cu, 0x72656461u,
             0x6d6f4320u, 0x656c6970u, 0x2e392072u, 0x392e3931u, 0x312e3934u, 0x00343031u, 0x0000001fu, 0x80000000u, 0x900f0000u,
@@ -547,7 +547,7 @@ extern "C" {
             0x00000001u, 0xd00f0000u, 0x90e40001u, 0x00000001u, 0xe0030000u, 0x90e40002u, 0x0000ffffu,
         };
 
-        extern const DWORD NuMaterialShaderTokens76a5e8Pc[44] = {
+        extern const DWORD dat_0076a5e8[44] = {
             0xffff0101u, 0x0023fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xffff0101u, 0x00000001u, 0x0000001cu, 0x00000120u,
             0x0000004cu, 0x00000030u, 0x00000003u, 0x00000001u, 0x0000003cu, 0x00000000u, 0x66666964u, 0x5f657375u, 0x00786574u,
             0x000c0004u, 0x00010001u, 0x00000001u, 0x00000000u, 0x315f7370u, 0x4d00315fu, 0x6f726369u, 0x74666f73u, 0x29522820u,
@@ -622,23 +622,23 @@ extern "C" {
     }
 
     extern "C" void Nu360MtlInit(void) {
-        NuDisplayMaterialDebrisPrograms = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
-            PostShaderProgramCreatePc(2, NuMaterialShaderTokens769710Pc, NuMaterialShaderTokens769840Pc));
+        NuDisplayMaterialDebrisPrograms =
+            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(PostShaderProgramCreatePc(2, dat_00769710, dat_00769840));
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            NuDisplayMaterialGlassPrograms = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
-                PostShaderProgramCreatePc(2, NuMaterialShaderTokens7698f0Pc, NuMaterialShaderTokens769a58Pc));
+            NuDisplayMaterialGlassPrograms =
+                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(PostShaderProgramCreatePc(2, dat_007698f0, dat_00769a58));
         } else {
-            NuDisplayMaterialGlassPrograms = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
-                PostShaderProgramCreatePc(2, NuMaterialShaderTokens769c48Pc, NuMaterialShaderTokens769da8Pc));
+            NuDisplayMaterialGlassPrograms =
+                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(PostShaderProgramCreatePc(2, dat_00769c48, dat_00769da8));
         }
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            NuDisplayMaterialFaceOnDecalPrograms = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
-                PostShaderProgramCreatePc(2, NuMaterialShaderTokens769e80Pc, NuMaterialShaderTokens76a3c8Pc));
+            NuDisplayMaterialFaceOnDecalPrograms =
+                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(PostShaderProgramCreatePc(2, dat_00769e80, dat_0076a3c8));
         }
-        NuDisplayMaterialFaceOnPrograms = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
-            PostShaderProgramCreatePc(2, NuMaterialShaderTokens769e80Pc, NuMaterialShaderTokens76a298Pc));
-        NuDisplayMaterialDefaultPrograms = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
-            PostShaderProgramCreatePc(2, NuMaterialShaderTokens76a538Pc, NuMaterialShaderTokens76a5e8Pc));
+        NuDisplayMaterialFaceOnPrograms =
+            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(PostShaderProgramCreatePc(2, dat_00769e80, dat_0076a298));
+        NuDisplayMaterialDefaultPrograms =
+            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(PostShaderProgramCreatePc(2, dat_0076a538, dat_0076a5e8));
         PCDeviceCreateVertexDeclaration(NuMaterialFaceOnElements, &NuDisplayMaterialFaceOnDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDebrisElements, &NuDisplayMaterialDebrisDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDefaultElements, &NuDisplayMaterialDefaultDeclaration);
@@ -6792,19 +6792,19 @@ extern "C" {
         NuMainFilterGen::initResources();
         void *last_program;
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            programs[6] = PostShaderProgramCreatePc(2, PostShaderTokens7662d8, PostShaderTokens766578);
-            programs[8] = PostShaderProgramCreatePc(2, PostShaderTokens766820, PostShaderTokens766578);
-            platform_programs[0] = PostShaderProgramCreatePc(2, PostShaderTokens7662d8, PostShaderTokens7666f0);
-            last_program = PostShaderProgramCreatePc(2, PostShaderTokens766820, PostShaderTokens7666f0);
+            programs[6] = PostShaderProgramCreatePc(2, dat_007662d8, dat_00766578);
+            programs[8] = PostShaderProgramCreatePc(2, dat_00766820, dat_00766578);
+            platform_programs[0] = PostShaderProgramCreatePc(2, dat_007662d8, dat_007666f0);
+            last_program = PostShaderProgramCreatePc(2, dat_00766820, dat_007666f0);
             platform_uniforms[0] = 0x82;
             platform_uniforms[1] = 0x88;
             platform_uniforms[2] = 0x89;
             platform_uniforms[3] = 0x8a;
         } else {
-            programs[6] = PostShaderProgramCreatePc(2, PostShaderTokens766c38, PostShaderTokens766ed8);
-            programs[8] = PostShaderProgramCreatePc(2, PostShaderTokens767180, PostShaderTokens766ed8);
-            platform_programs[0] = PostShaderProgramCreatePc(2, PostShaderTokens766c38, PostShaderTokens767050);
-            last_program = PostShaderProgramCreatePc(2, PostShaderTokens767180, PostShaderTokens767050);
+            programs[6] = PostShaderProgramCreatePc(2, dat_00766c38, dat_00766ed8);
+            programs[8] = PostShaderProgramCreatePc(2, dat_00767180, dat_00766ed8);
+            platform_programs[0] = PostShaderProgramCreatePc(2, dat_00766c38, dat_00767050);
+            last_program = PostShaderProgramCreatePc(2, dat_00767180, dat_00767050);
             platform_uniforms[0] = 0;
             platform_uniforms[1] = 1;
             platform_uniforms[2] = 2;
@@ -6816,20 +6816,20 @@ extern "C" {
 
     void NuDeferredFilter::initResources() {
         NuDeferredFilterGen::initResources();
-        programs[0] = PostShaderProgramCreatePc(2, PostShaderTokens767598, PostShaderTokens7676f0);
-        programs[1] = PostShaderProgramCreatePc(2, PostShaderTokens767598, PostShaderTokens767fc8);
-        programs[2] = PostShaderProgramCreatePc(2, PostShaderTokens768d20, PostShaderTokens768870);
-        programs[3] = PostShaderProgramCreatePc(2, PostShaderTokens768d20, PostShaderTokens768ae0);
+        programs[0] = PostShaderProgramCreatePc(2, dat_00767598, dat_007676f0);
+        programs[1] = PostShaderProgramCreatePc(2, dat_00767598, dat_00767fc8);
+        programs[2] = PostShaderProgramCreatePc(2, dat_00768d20, dat_00768870);
+        programs[3] = PostShaderProgramCreatePc(2, dat_00768d20, dat_00768ae0);
     }
 
     void NuSpeedBlurFilter::initResources() {
         NuPostFilterGen::initResources();
         void *program;
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            program = PostShaderProgramCreatePc(2, PostShaderTokens768de0, PostShaderTokens7690b0);
+            program = PostShaderProgramCreatePc(2, dat_00768de0, dat_007690b0);
             platform_uniform = 0x80;
         } else {
-            program = PostShaderProgramCreatePc(2, PostShaderTokens7692c0, PostShaderTokens769580);
+            program = PostShaderProgramCreatePc(2, dat_007692c0, dat_00769580);
             platform_uniform = 0;
         }
         programs[0] = program;

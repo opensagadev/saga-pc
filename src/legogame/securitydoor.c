@@ -33,7 +33,7 @@ typedef struct security_door_progress_s { // size 0xc
     u32 opened_mask[1];                   // 0x8
 } SECURITY_DOOR_PROGRESS_PC;
 
-extern char TextInputKeyNameTextPc7516c0[1];
+extern char dat_007516c0[1];
 extern char *SecurityDoor_OutputName;
 
 static void SecurityDoorUpdateMatrices(SECURITY_DOOR_RECORD_PC *door, u16 angle) {
@@ -354,7 +354,7 @@ ADDGIZMOTYPE_PC *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
     char *name = SecurityDoorRegistryNamePc;
     SecurityDoorAddType = Default_ADDGIZMOTYPE;
     SecurityDoorAddType.name = name;
-    SecurityDoorAddType.prefix = TextInputKeyNameTextPc7516c0;
+    SecurityDoorAddType.prefix = dat_007516c0;
     SecurityDoorAddType.fns.options = 12;
     SecurityDoorAddType.fns.get_max_gizmos_fn = (i32(*)(void *))SecurityDoors_GetMaxGizmos;
     SecurityDoorAddType.fns.add_gizmos_fn = (void *)SecurityDoors_AddGizmos;

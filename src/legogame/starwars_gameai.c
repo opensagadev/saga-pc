@@ -295,7 +295,7 @@ i32 StarWars_PrepareBigJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unus
     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
         return 1;
     }
-    if (WORLD->current_level == LevelFixupSlotPc0087b148 && destination->name != NULL && NuStrICmp(destination->name, "stairs_top") == 0) {
+    if (WORLD->current_level == dat_0087b148 && destination->name != NULL && NuStrICmp(destination->name, "stairs_top") == 0) {
         alternate = AIPathFindNode(WORLD->ai_sys, NULL, "stairs_top2");
         if (alternate != NULL) {
             destination = alternate;

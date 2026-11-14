@@ -32,7 +32,7 @@ struct SPINNER_HIT_FLAGS_STACK { // size 0x4
 };
 
 extern "C" {
-    extern char TextInputKeyNameTextPc7516c0[1];
+    extern char dat_007516c0[1];
     extern char SpinnerOutputBuffer[14];
     extern const f64 GameObjectNearFloorNoFloorHeight;
     i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
@@ -471,7 +471,7 @@ extern "C" char *GizSpinner_GetOutputName(void *gizmo, i32 output) {
         NuStrCpy(SpinnerOutputBuffer, "100%% Complete");
         return SpinnerOutputBuffer;
     }
-    NuStrCpy(SpinnerOutputBuffer, TextInputKeyNameTextPc7516c0);
+    NuStrCpy(SpinnerOutputBuffer, dat_007516c0);
     return SpinnerOutputBuffer;
 }
 

@@ -22,10 +22,10 @@ extern "C" {
     extern i32 opts_sfx_i;
     void MenuDrawNewGame(MENU *menu);
     void MenuUpdateNewGame(MENU *menu);
-    extern i16 TextIdPc880824;
-    extern i16 TextIdPc8808fc;
-    extern i16 TextIdPc880850;
-    extern i16 TextIdPc880bc4;
+    extern i16 dat_00880824;
+    extern i16 dat_008808fc;
+    extern i16 dat_00880850;
+    extern i16 dat_00880bc4;
     void MenuEnterOptions(MENU *menu);
     void MenuUpdateOptions(MENU *menu);
     void MenuDrawOptions(MENU *menu);
@@ -70,14 +70,14 @@ extern "C" {
     extern u8 AlternateHudRgb[3];
     void MenuDrawShop(MENU *menu);
     void MenuUpdateShop(MENU *menu);
-    extern i16 TextIdPc88090c;
+    extern i16 dat_0088090c;
     void MenuDrawPauseMain(MENU *);
     void MenuUpdatePauseMain(MENU *);
     void MenuDrawPauseRestart(MENU *);
     void MenuDrawPauseExit(MENU *);
     void MenuUpdatePauseExit(MENU *);
-    extern i16 TextIdPc880864;
-    extern i16 TextIdPc880874;
+    extern i16 dat_00880864;
+    extern i16 dat_00880874;
 #ifdef __cplusplus
 }
 #endif

@@ -8,9 +8,9 @@ extern "C" {
     void GameDrawMenuEntry(MENU *, char *);
     extern f32 ExtrasFadeStart;
     extern f32 ExtrasFadeEnd;
-    extern i16 TextIdPc88074c;
-    extern i16 TextIdPc880708;
-    extern i16 TextIdPc880764;
+    extern i16 dat_0088074c;
+    extern i16 dat_00880708;
+    extern i16 dat_00880764;
 }
 
 struct EXTRAS_AREA_SAVE_READER { // size 0xc
@@ -38,31 +38,31 @@ extern "C" {
     extern f32 MenuTitlesPromptY;
     extern f32 MenuTitlesWidePromptY;
     void Hub_UpdateKit(void);
-    extern i16 TextIdPc880fc4;
-    extern i16 TextIdPc880838;
-    extern i16 TextIdPc880850;
-    extern i16 TextIdPc880bc4;
-    extern i16 TextIdPc88090c;
-    extern i16 TextIdPc88089c;
-    extern i16 TextIdPc8808ec;
-    extern i16 TextIdPc8806f8;
-    extern i16 TextIdPc880860;
+    extern i16 dat_00880fc4;
+    extern i16 dat_00880838;
+    extern i16 dat_00880850;
+    extern i16 dat_00880bc4;
+    extern i16 dat_0088090c;
+    extern i16 dat_0088089c;
+    extern i16 dat_008808ec;
+    extern i16 dat_008806f8;
+    extern i16 dat_00880860;
 }
 extern "C" {
-    extern i16 TextIdPc880840;
-    extern i16 TextIdPc880864;
-    extern i16 TextIdPc880874;
-    extern i16 TextIdPc8806fc;
-    extern i16 TextIdPc880910;
-    extern i16 TextIdPc8808f0;
-    extern i16 TextIdPc8807d0;
-    extern i16 TextIdPc8807d4;
-    extern i16 TextIdPc880914;
-    extern i16 TextIdPc88084c;
-    extern i16 TextIdPc880794;
-    extern i16 TextIdPc880700;
-    extern i16 TextIdPc880754;
-    extern i16 TextIdPc880890;
+    extern i16 dat_00880840;
+    extern i16 dat_00880864;
+    extern i16 dat_00880874;
+    extern i16 dat_008806fc;
+    extern i16 dat_00880910;
+    extern i16 dat_008808f0;
+    extern i16 dat_008807d0;
+    extern i16 dat_008807d4;
+    extern i16 dat_00880914;
+    extern i16 dat_0088084c;
+    extern i16 dat_00880794;
+    extern i16 dat_00880700;
+    extern i16 dat_00880754;
+    extern i16 dat_00880890;
 }
 void legoSetMusicVolume(f32);
 extern "C" {
@@ -83,10 +83,10 @@ typedef struct OPTIONS_MENU_READER {
 } OPTIONS_MENU_READER;
 
 extern "C" {
-    extern i16 TextIdPc88081c;
-    extern i16 TextIdPc880820;
-    extern i16 TextIdPc8809ec;
-    extern i16 TextIdPc880b0c;
+    extern i16 dat_0088081c;
+    extern i16 dat_00880820;
+    extern i16 dat_008809ec;
+    extern i16 dat_00880b0c;
     extern i32 saveload_slotcode[6];
     extern f32 MenuSaveSlotsWidth;
     extern f32 MenuSaveSlotsStepY;
@@ -197,9 +197,9 @@ extern "C" void DrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     u8 red;
     u8 green;
     if (slot == -1) {
-        NuStrCpy(game_name, TTab[TextIdPc88081c]);
+        NuStrCpy(game_name, TTab[dat_0088081c]);
     } else {
-        sprintf(game_name, "%s %i", TTab[TextIdPc880820], slot + 1);
+        sprintf(game_name, "%s %i", TTab[dat_00880820], slot + 1);
     }
     if (highlight != 0 && menu_flash != 0) {
         red = 0;
@@ -215,9 +215,9 @@ extern "C" void DrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
         spacing = (f32)(spacing * 1.5);
         Text3DEx(progress, x, (f32)(y + spacing * 0.5), 1.0f, scale, scale, scale, 0, 255, 191, 0, (u8)MenuA);
     } else if (saveload_freespace >= SAVESIZE_ADDITIONAL) {
-        SmartTextEx(TTab[TextIdPc8809ec], x, (f32)(y + spacing * 0.5), 1.0f, scale, scale, scale, 0, 0, 255, 0, 0.45f, 2, NULL, 0, MenuA);
+        SmartTextEx(TTab[dat_008809ec], x, (f32)(y + spacing * 0.5), 1.0f, scale, scale, scale, 0, 0, 255, 0, 0.45f, 2, NULL, 0, MenuA);
     } else {
-        SmartTextEx(TTab[TextIdPc880b0c], x, (f32)(y + spacing * 0.5), 1.0f, scale, scale, scale, 0, 255, 0, 0, 0.45f, 2, NULL, 0, MenuA);
+        SmartTextEx(TTab[dat_00880b0c], x, (f32)(y + spacing * 0.5), 1.0f, scale, scale, scale, 0, 255, 0, 0, 0.45f, 2, NULL, 0, MenuA);
     }
 }
 
@@ -380,10 +380,10 @@ extern "C" void MenuDrawExtras(MENU *menu) {
         if (index >= 8 && !(save->unlocked[index / 32] & (1u << (index & 31))) && ExtrasCheats[index].area_index != -1 &&
             !save->areas[ExtrasCheats[index].area_index].red_brick_unlocked) {
             alpha = 0.5f;
-            NuStrCpy(text, TTab[TextIdPc88074c]);
+            NuStrCpy(text, TTab[dat_0088074c]);
             sprintf(number, " %i: ", index - 7);
             NuStrCat(text, number);
-            NuStrCat(text, TTab[TextIdPc880708]);
+            NuStrCat(text, TTab[dat_00880708]);
         } else {
             if (save->unlocked[index / 32] & (1u << (index & 31))) {
                 alpha = 1.0f;
@@ -393,7 +393,7 @@ extern "C" void MenuDrawExtras(MENU *menu) {
                 }
             } else {
                 alpha = 0.5f;
-                NuStrCpy(number, TTab[TextIdPc880764]);
+                NuStrCpy(number, TTab[dat_00880764]);
             }
             sprintf(text, "%s: %s", TTab[*ExtrasCheats[index].text_id], number);
         }
@@ -597,10 +597,10 @@ extern "C" void MenuDrawNewGame(MENU *menu) {
     }
     menu->draw_y = MenuNewGameY - menu->centre_offset;
     i32 alpha = (i32)((f32)menu_alpha * title_alpha);
-    DrawMenuEntryEx(menu, TTab[TextIdPc880824], alpha);
-    DrawMenuEntryEx(menu, TTab[TextIdPc8808fc], alpha);
-    DrawMenuEntryEx(menu, TTab[TextIdPc880850], alpha);
-    DrawMenuEntryEx(menu, TTab[TextIdPc880bc4], alpha);
+    DrawMenuEntryEx(menu, TTab[dat_00880824], alpha);
+    DrawMenuEntryEx(menu, TTab[dat_008808fc], alpha);
+    DrawMenuEntryEx(menu, TTab[dat_00880850], alpha);
+    DrawMenuEntryEx(menu, TTab[dat_00880bc4], alpha);
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
@@ -917,9 +917,9 @@ extern "C" void MenuDrawPauseMain(MENU *menu) {
     dme_r = 0;
     dme_g = 255;
     dme_b = 0x3f;
-    GameDrawMenuEntry(menu, TTab[TextIdPc880838]);
-    GameDrawMenuEntry(menu, TTab[TextIdPc880850]);
-    GameDrawMenuEntry(menu, TTab[TextIdPc880bc4]);
+    GameDrawMenuEntry(menu, TTab[dat_00880838]);
+    GameDrawMenuEntry(menu, TTab[dat_00880850]);
+    GameDrawMenuEntry(menu, TTab[dat_00880bc4]);
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
@@ -929,21 +929,21 @@ extern "C" void MenuDrawPauseMain(MENU *menu) {
     }
     GameDrawMenuEntry(menu, (char *)MenuPcStrings[29]);
     if (!SuperStory && !ChallengeMode && !Mission_Active(NULL)) {
-        GameDrawMenuEntry(menu, TTab[TextIdPc88090c]);
+        GameDrawMenuEntry(menu, TTab[dat_0088090c]);
     } else {
-        DrawMenuEntryEx(menu, TTab[TextIdPc88090c], (u8)(i32)(MenuA * 0.5));
+        DrawMenuEntryEx(menu, TTab[dat_0088090c], (u8)(i32)(MenuA * 0.5));
     }
     if (both) {
-        GameDrawMenuEntry(menu, TTab[TextIdPc88089c]);
+        GameDrawMenuEntry(menu, TTab[dat_0088089c]);
     }
     if (WORLD->current_level != HUB_LDATA) {
         if (GAMEDEMO) {
-            GameDrawMenuEntry(menu, TTab[TextIdPc8808ec]);
+            GameDrawMenuEntry(menu, TTab[dat_008808ec]);
         } else {
-            GameDrawMenuEntry(menu, TTab[TextIdPc8806f8]);
+            GameDrawMenuEntry(menu, TTab[dat_008806f8]);
         }
     } else {
-        GameDrawMenuEntry(menu, TTab[TextIdPc880860]);
+        GameDrawMenuEntry(menu, TTab[dat_00880860]);
     }
 }
 
@@ -970,12 +970,11 @@ extern "C" {
 
 extern "C" void MenuDrawPauseRestart(MENU *menu) {
     if (!MenuStopDraw) {
-        SmartTextEx(TTab[TextIdPc880840], PauseMenus_X, (f32)(menu->draw_y - MENUDY * 1.5), 1.0f, MenuTextScale, MenuTextScale,
-                    MenuTextScale, PauseMenus_Align, AlternateHudColourBytes[0], AlternateHudColourBytes[1], AlternateHudRgb[0], 1.7f, 1,
-                    NULL, 0, MenuA);
+        SmartTextEx(TTab[dat_00880840], PauseMenus_X, (f32)(menu->draw_y - MENUDY * 1.5), 1.0f, MenuTextScale, MenuTextScale, MenuTextScale,
+                    PauseMenus_Align, AlternateHudColourBytes[0], AlternateHudColourBytes[1], AlternateHudRgb[0], 1.7f, 1, NULL, 0, MenuA);
     }
-    GameDrawMenuEntry(menu, TTab[TextIdPc880864]);
-    GameDrawMenuEntry(menu, TTab[TextIdPc880874]);
+    GameDrawMenuEntry(menu, TTab[dat_00880864]);
+    GameDrawMenuEntry(menu, TTab[dat_00880874]);
 }
 
 extern "C" void MenuUpdatePauseExit(MENU *menu) {
@@ -1033,27 +1032,26 @@ extern "C" void MenuDrawPauseExit(MENU *menu) {
     char *title;
     if (save_level) {
         spacing = 2.0f;
-        title = TTab[TextIdPc8806fc];
-        warning = TTab[TextIdPc880910];
+        title = TTab[dat_008806fc];
+        warning = TTab[dat_00880910];
     } else if (GAMEDEMO) {
-        title = TTab[TextIdPc8808f0];
-        warning = TTab[TextIdPc880910];
+        title = TTab[dat_008808f0];
+        warning = TTab[dat_00880910];
     } else if (WORLD->current_level != HUB_LDATA) {
-        title = TTab[TextIdPc8806fc];
+        title = TTab[dat_008806fc];
         if (Arcade) {
             warning = NULL;
             if (pause_i_pad != -1) {
                 i32 other = pause_i_pad == 0;
-                warning = PCArcadePointGoals[ArcadeItem.play] > 0 && Arcade_Points[pause_i_pad] < Arcade_Points[other]
-                              ? TTab[TextIdPc8807d0]
-                              : TTab[TextIdPc8807d4];
+                warning = PCArcadePointGoals[ArcadeItem.play] > 0 && Arcade_Points[pause_i_pad] < Arcade_Points[other] ? TTab[dat_008807d0]
+                                                                                                                       : TTab[dat_008807d4];
             }
         } else {
-            warning = SuperStory ? TTab[TextIdPc880914] : TTab[TextIdPc880910];
+            warning = SuperStory ? TTab[dat_00880914] : TTab[dat_00880910];
         }
     } else {
-        title = TTab[TextIdPc88084c];
-        warning = TTab[TextIdPc880794];
+        title = TTab[dat_0088084c];
+        warning = TTab[dat_00880794];
     }
     if (!MenuStopDraw) {
         SmartTextEx(title, PauseMenus_X, menu->draw_y - spacing * MENUDY, 1.0f, MenuTextScale, MenuTextScale, MenuTextScale,
@@ -1072,12 +1070,12 @@ extern "C" void MenuDrawPauseExit(MENU *menu) {
         }
     }
     if (save_level) {
-        GameDrawMenuEntry(menu, TTab[TextIdPc880700]);
-        GameDrawMenuEntry(menu, TTab[TextIdPc880754]);
-        GameDrawMenuEntry(menu, TTab[TextIdPc880890]);
+        GameDrawMenuEntry(menu, TTab[dat_00880700]);
+        GameDrawMenuEntry(menu, TTab[dat_00880754]);
+        GameDrawMenuEntry(menu, TTab[dat_00880890]);
     } else {
-        GameDrawMenuEntry(menu, TTab[TextIdPc880864]);
-        GameDrawMenuEntry(menu, TTab[TextIdPc880874]);
+        GameDrawMenuEntry(menu, TTab[dat_00880864]);
+        GameDrawMenuEntry(menu, TTab[dat_00880874]);
     }
 }
 
@@ -1181,8 +1179,8 @@ extern "C" {
         DrawCharIcon(MissionMenuPacket.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSize, 166, alpha, alpha, 1, NULL);
         alpha = MissionMenuPacket.active_player[1] != 0 ? 1.0f : MissionDropInAlpha;
         DrawCharIcon(MissionMenuPacket.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSize, 165, alpha, alpha, 1, NULL);
-        DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], -1, 1.0f, -1, TextIdPc880844, -1, TextIdPc880eac,
-                              MissionMenuPacket.active_player[1], -1, 1.0f, -1, TextIdPc880844, -1, TextIdPc880eac);
+        DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], -1, 1.0f, -1, dat_00880844, -1, dat_00880eac,
+                              MissionMenuPacket.active_player[1], -1, 1.0f, -1, dat_00880844, -1, dat_00880eac);
         NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f);
         pulse = (f32)((f64)NuTrigTable[(u16)((f64)NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1] * (f64)0.05f);
         colour = menu_flash == 0 ? 255 : 191;
@@ -1195,15 +1193,15 @@ extern "C" {
             Text3DEx("[[lb]]", -ICONX, MenuMiniKitUpperArrowY + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255, (u8)opacity);
             scale = (f32)(pulse + 0.5);
             Text3DEx("[[rb]]", -ICONX, MenuMiniKitLowerArrowY + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255, (u8)opacity);
-            SmartTextEx(TTab[TextIdPc880888], -ICONX, MenuMiniKitInstructionY + STATSPOSY, 1.0f, 0.3f, 0.3f, 0.3f, 0, colour, colour,
-                        colour, 0.15f, 1, NULL, 0, opacity);
+            SmartTextEx(TTab[dat_00880888], -ICONX, MenuMiniKitInstructionY + STATSPOSY, 1.0f, 0.3f, 0.3f, 0.3f, 0, colour, colour, colour,
+                        0.15f, 1, NULL, 0, opacity);
         }
         if (MissionMenuPacket.active_player[1] != 0) {
             scale = (f32)(0.5 - pulse);
             Text3DEx("[[lb]]", ICONX, MenuMiniKitUpperArrowY + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255, (u8)opacity);
             scale = (f32)(pulse + 0.5);
             Text3DEx("[[rb]]", ICONX, MenuMiniKitLowerArrowY + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255, (u8)opacity);
-            SmartTextEx(TTab[TextIdPc880888], ICONX, MenuMiniKitInstructionY + STATSPOSY, 1.0f, 0.3f, 0.3f, 0.3f, 0, colour, colour, colour,
+            SmartTextEx(TTab[dat_00880888], ICONX, MenuMiniKitInstructionY + STATSPOSY, 1.0f, 0.3f, 0.3f, 0.3f, 0, colour, colour, colour,
                         0.15f, 1, NULL, 0, opacity);
         }
     }
@@ -1255,6 +1253,6 @@ extern "C" {
             red = 191;
             green = 143;
         }
-        SmartText(TTab[TextIdPc880fc4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
+        SmartText(TTab[dat_00880fc4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
     }
 }

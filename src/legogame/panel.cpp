@@ -31,7 +31,7 @@ extern "C" {
     extern f32 PanelHeartWidescreen;
     extern f32 DoubleScoreTextY;
     extern f32 DoubleScoreTextScale;
-    extern i16 TextIdPc88098c;
+    extern i16 dat_0088098c;
     extern f32 CoinTotalScoreSize;
     extern f32 CoinTotalCoinOffset;
     extern f32 CoinTotalScoreOffsetY;
@@ -221,7 +221,7 @@ extern "C" {
                             if ((u32)BuildUpDone >= maximum) {
                                 BuildUpScale = 2.5f;
                                 BuildUpTotal = 1;
-                                AddFancyMessage(TTab[TextIdPc880818], 0.0f, 0.0f, 1.0f, 1.0f, 1, 0);
+                                AddFancyMessage(TTab[dat_00880818], 0.0f, 0.0f, 1.0f, 1.0f, 1, 0);
                             }
                         }
                         BuildUpScale = SeekLinearF(BuildUpScale, 1.0f, (f32)(3.0 * (f64)FRAMETIME));
@@ -346,7 +346,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
                 green = HubPromptOffColour[1];
                 blue = HubPromptOffColour[2];
             }
-            Text_ExpandButtonString((char *)(alternate[player] == TextIdPc880780 ? "[T]" : "[O]"), text);
+            Text_ExpandButtonString((char *)(alternate[player] == dat_00880780 ? "[T]" : "[O]"), text);
             SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffset - .01));
             SmartTextEx(TTab[alternate[player]], x, y, 1.0f, .4f, .25f, .4f, align, red, green, blue, max_width, 1, NULL, 0, 128);
@@ -663,7 +663,7 @@ extern "C" {
 
     void DrawInDoubleScoreZone(f32 time) {
         i32 alpha = (i32)((f64)DoubleScoreAlpha() * 128.0 * (f64)time);
-        SmartTextEx(TTab[TextIdPc88098c], 0.0f, DoubleScoreTextY, 1.0f, DoubleScoreTextScale, DoubleScoreTextScale, DoubleScoreTextScale, 0,
+        SmartTextEx(TTab[dat_0088098c], 0.0f, DoubleScoreTextY, 1.0f, DoubleScoreTextScale, DoubleScoreTextScale, DoubleScoreTextScale, 0,
                     255, 255, 255, 1.5f, 1, NULL, 0, alpha);
     }
 
@@ -717,7 +717,7 @@ extern "C" {
             alpha = ((object->flags_1fc & 0x80) != 0 ? 1.0f : MissionDropInAlpha) * base_alpha;
             icon_alpha = (i32)((f64)alpha * 128.0);
             drawcharicon_i_panel = player;
-            if (WORLD->current_level == LevelFixupSlotPc0087b268 && object->takeover_source != NULL &&
+            if (WORLD->current_level == dat_0087b268 && object->takeover_source != NULL &&
                 object->takeover_source->id == static_cast<u16>(id_YODA)) {
                 visible = object->hud_icon_timer <= 0.0f ||
                           (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
@@ -741,7 +741,7 @@ extern "C" {
             }
             if (HudPausePromptEnabled != 0 && paused != 0 && player == pause_i_pad) {
                 f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidth : HudNameWidth;
-                SmartTextEx(TTab[TextIdPc880834], name_x, status_y + HudPausePromptOffsetY, 1.0f, HudNameScale, HudNameScale, HudNameScale,
+                SmartTextEx(TTab[dat_00880834], name_x, status_y + HudPausePromptOffsetY, 1.0f, HudNameScale, HudNameScale, HudNameScale,
                             alignment | 1, (u8)HudPausePromptRed, (u8)HudPausePromptGreen, HudPausePromptBlue, width, 1, NULL, 0,
                             flash_alpha);
             }

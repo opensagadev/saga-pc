@@ -156,9 +156,9 @@ extern f32 ShopCodeRepeatTimer;
 extern f32 ShopCodeRepeatInterval;
 extern f32 ShopCodeExitPush;
 extern char ShopCodeCharacters[37];
-extern i16 TextIdPc880708;
-extern i16 TextIdPc88074c;
-extern i16 TextIdPc880778;
+extern i16 dat_00880708;
+extern i16 dat_0088074c;
+extern i16 dat_00880778;
 
 /* Same-unit matrix helpers, also kept as standalone copies (source in EAX, destination in ECX). */
 static void ShopMtxCopy(NUMTX *destination, const NUMTX *source) {
@@ -236,7 +236,7 @@ static void NuMtxRotateZInline(NUMTX *m, i32 a) {
 
 /* Same-unit helper taking EAX; includes the vehicle exception. */
 static i32 Shop_CharacterUnlocked(i32 character_id) {
-    if (character_id == VehicleBoltId7f17d4) {
+    if (character_id == dat_007f17d4) {
         return ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0;
     }
     return CollectIDUnlocked(character_id) != 0;
@@ -1410,15 +1410,13 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
 
         character_id = (u16)(item->item_id);
         unavailable = 1;
-        if ((character_id == VehicleBoltId7f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
-                                                 : CollectIDUnlocked(character_id) != NULL) &&
+        if ((character_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) &&
             item->unlocked == 1) {
             unavailable = 0;
         }
-        alpha =
-            (character_id == VehicleBoltId7f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL)
-                ? 1.0f
-                : 0.5f;
+        alpha = (character_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL)
+                    ? 1.0f
+                    : 0.5f;
 
         scale.x = scale.y = scale.z = scale_value;
         NuMtxSetScale(&matrix, &scale);
@@ -1779,17 +1777,17 @@ void DrawItemMenu2D(void) {
     i32 text_id;
     if (ShopNameAlpha > 0.0f) {
         if (picked == 0) {
-            text_id = TextIdPc880904;
+            text_id = dat_00880904;
         } else if (picked == 1) {
-            text_id = TextIdPc88070c;
+            text_id = dat_0088070c;
         } else if (picked == 2) {
-            text_id = TextIdPc88090c;
+            text_id = dat_0088090c;
         } else if (picked == 4) {
-            text_id = TextIdPc88077c;
+            text_id = dat_0088077c;
         } else if (picked == 5) {
-            text_id = TextIdPc880800;
+            text_id = dat_00880800;
         } else {
-            text_id = TextIdPc880908;
+            text_id = dat_00880908;
         }
         SmartTextEx(TTab[text_id], 0.0f, (f32)(((f64)HubEpisodeTitleY + HubEpisodeSubtitleY) * 0.5), 1.0f, 0.8f, 0.8f, 0.8f, 0, 255, 255,
                     255, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
@@ -1835,13 +1833,13 @@ void DrawSubItemMenu2D(void) {
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
             buyable = 0;
-        } else if ((u16)items[ids[3]].item_id == VehicleBoltId7f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
-                                                                     : CollectIDUnlocked((u16)items[ids[3]].item_id) != 0) {
+        } else if ((u16)items[ids[3]].item_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
+                                                              : CollectIDUnlocked((u16)items[ids[3]].item_id) != 0) {
             buyable = show_name = 1;
         } else {
             scale = (f32)((f64)ShopLockedScale * (f64)0.7f);
-            SmartTextEx(TTab[TextIdPc880708], 0.0f, (f32)((HubEpisodeTitleY + (f64)HubEpisodeSubtitleY) * 0.5), 1.0f, scale, scale, scale,
-                        0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
+            SmartTextEx(TTab[dat_00880708], 0.0f, (f32)((HubEpisodeTitleY + (f64)HubEpisodeSubtitleY) * 0.5), 1.0f, scale, scale, scale, 0,
+                        255, 0, 0, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
         }
     } else if (items[ids[3]].type == 0) {
         show_name = 0;
@@ -1859,18 +1857,18 @@ void DrawSubItemMenu2D(void) {
             if (id < 8 || ExtrasCheats[id].area_index == -1 || Game.area_save[ExtrasCheats[id].area_index].red_brick_collected != 0) {
                 buyable = show_name = 1;
             } else {
-                sprintf(title, "%s %i", TTab[TextIdPc88074c], id - 7);
+                sprintf(title, "%s %i", TTab[dat_0088074c], id - 7);
                 scale = (f32)((f64)ShopLockedScale * (f64)0.6f);
                 SmartTextEx(title, 0.0f, HubEpisodeTitleY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
                             (i32)((f64)ShopNameAlpha * 128.0));
-                SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleY, 1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0,
+                SmartTextEx(TTab[dat_00880708], 0.0f, HubEpisodeSubtitleY, 1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0,
                             (i32)((f64)ShopNameAlpha * 128.0));
                 buyable = show_name = 0;
             }
         }
     } else if (items[ids[3]].type == 4) {
         id = (u16)items[ids[3]].item_id;
-        sprintf(title, "%s %i", TTab[TextIdPc880778], id + 1);
+        sprintf(title, "%s %i", TTab[dat_00880778], id + 1);
         name = title;
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
@@ -1879,7 +1877,7 @@ void DrawSubItemMenu2D(void) {
             SmartTextEx(title, 0.0f, HubEpisodeTitleY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
                         (i32)((f64)ShopNameAlpha * 128.0));
             scale = (f32)((f64)ShopLockedScale * (f64)0.6f);
-            SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleY, 1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0,
+            SmartTextEx(TTab[dat_00880708], 0.0f, HubEpisodeSubtitleY, 1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0,
                         (i32)((f64)ShopNameAlpha * 128.0));
             buyable = show_name = 0;
         } else {
@@ -1896,7 +1894,7 @@ void DrawSubItemMenu2D(void) {
                         (i32)((f64)ShopNameAlpha * 128.0));
         } else {
             scale = (f32)((f64)ShopLockedScale * (f64)0.6f);
-            SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleY, 1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0,
+            SmartTextEx(TTab[dat_00880708], 0.0f, HubEpisodeSubtitleY, 1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0,
                         (i32)((f64)ShopNameAlpha * 128.0));
         }
         buyable = show_name = 0;
@@ -2211,24 +2209,24 @@ void DrawShopPrompts(void) {
     i32 back = -1;
     f32 alpha = 1.0f;
     if (menuptr == ItemMenu) {
-        back = TextIdPc880844;
-        select = TextIdPc880888;
+        back = dat_00880844;
+        select = dat_00880888;
     } else if (menuptr == SubItemMenu) {
-        select = picked == 5 ? TextIdPc8808c0 : TextIdPc8808c4;
+        select = picked == 5 ? dat_008808c0 : dat_008808c4;
         if (Shop_CanSelect() == 0) {
             alpha = 0.25f;
         }
         back = tBACK;
     } else if (menuptr == CodeMenu) {
         back = tBACK;
-        select = TextIdPc880888;
+        select = dat_00880888;
     }
     if (netclient != 0) {
         select = -1;
     }
     if (select != -1 || back != -1) {
-        DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], select, alpha, -1, back, -1, TextIdPc880eac,
-                              MissionMenuPacket.active_player[1], select, alpha, -1, back, -1, TextIdPc880eac);
+        DrawPlayerIconPrompts(MissionMenuPacket.active_player[0], select, alpha, -1, back, -1, dat_00880eac,
+                              MissionMenuPacket.active_player[1], select, alpha, -1, back, -1, dat_00880eac);
     }
 }
 

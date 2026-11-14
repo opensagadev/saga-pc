@@ -29,15 +29,15 @@ const char GizObstacleActionStayOpenPC[9];
 const char GizObstacleActionStayShutPC[9];
 const char GizmoSnapOptionName[5];
 GIZMOPICKUP *GizmoPickup_FindByName(WORLDINFO *, char *);
-const char GizActionLiteral7589f0[];
-const char GizActionLiteral7589fc[];
-const char GizActionLiteral758a08[];
-const char GizActionLiteral758a14[];
-const char GizActionLiteral758a1c[];
-const char GizActionLiteral758a2c[];
-const char GizActionLiteral758a3c[];
-const char GizActionLiteral758a48[];
-const char GizActionLiteral758a54[];
+const char dat_007589f0[];
+const char dat_007589fc[];
+const char dat_00758a08[];
+const char dat_00758a14[];
+const char dat_00758a1c[];
+const char dat_00758a2c[];
+const char dat_00758a3c[];
+const char dat_00758a48[];
+const char dat_00758a54[];
 void *Technos_FindTgt(TECHNO_s *techno);
 
 typedef struct ACTIVATE_CHAR_BUILDIT_VIEW {
@@ -318,26 +318,26 @@ void GizAction_ChangeTechnoTgt(GIZFLOW *unused0, FLOWBOX *unused1, char **params
     i32 target_kind = 0;
     u8 movement = 0xff;
     for (index = 0; index < count; ++index) {
-        char *value = NuStrIStr(params[index], (char *)GizActionLiteral758a54);
+        char *value = NuStrIStr(params[index], (char *)dat_00758a54);
         if (value != NULL) {
-            techno_name = value + NuStrLen(GizActionLiteral758a54);
+            techno_name = value + NuStrLen(dat_00758a54);
         } else if ((value = NuStrIStr(params[index], "target=")) != NULL) {
             target_name = value + NuStrLen("target=");
-        } else if (NuStrICmp(value, GizActionLiteral758a48) == 0) {
+        } else if (NuStrICmp(value, dat_00758a48) == 0) {
             movement = 1;
-        } else if (NuStrICmp(value, GizActionLiteral758a3c) == 0) {
+        } else if (NuStrICmp(value, dat_00758a3c) == 0) {
             movement = 2;
-        } else if (NuStrICmp(value, GizActionLiteral758a2c) == 0) {
+        } else if (NuStrICmp(value, dat_00758a2c) == 0) {
             movement = 8;
-        } else if (NuStrICmp(value, GizActionLiteral758a1c) == 0) {
+        } else if (NuStrICmp(value, dat_00758a1c) == 0) {
             movement = 4;
-        } else if (NuStrICmp(params[index], GizActionLiteral758a14) == 0) {
+        } else if (NuStrICmp(params[index], dat_00758a14) == 0) {
             target_kind = 3;
-        } else if (NuStrICmp(params[index], GizActionLiteral758a08) == 0) {
+        } else if (NuStrICmp(params[index], dat_00758a08) == 0) {
             target_kind = 2;
-        } else if (NuStrICmp(params[index], GizActionLiteral7589fc) == 0) {
+        } else if (NuStrICmp(params[index], dat_007589fc) == 0) {
             target_kind = 1;
-        } else if (NuStrICmp(params[index], GizActionLiteral7589f0) == 0) {
+        } else if (NuStrICmp(params[index], dat_007589f0) == 0) {
             target_kind = -1;
         }
     }

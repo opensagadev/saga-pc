@@ -88,7 +88,7 @@ typedef struct ai_gizmo_name_process_s { // size 0xdc
     u8 unknown_bc[0x20];                 // 0xbc
 } AI_GIZMO_NAME_PROCESS_PC;
 
-extern char TextInputKeyNameTextPc7516c0[1];
+extern char dat_007516c0[1];
 extern char *BlowupOutputNames[3];
 extern char SpinnerOutputBuffer[14];
 

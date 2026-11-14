@@ -75,7 +75,7 @@ extern "C" {
     void DrawPlayerIconPrompts(i32, i32, f32, i32, i32, i32, i32, i32, i32, f32, i32, i32, i32, i32);
     extern i32 ShowPlayerCoordinate;
     void UpdateStats(void);
-    extern i16 TextIdPc880834;
+    extern i16 dat_00880834;
     extern f32 TimerBaseScale;
     extern f32 TimerScale;
     extern f32 TimerAlpha;

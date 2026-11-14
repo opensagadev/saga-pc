@@ -61,7 +61,7 @@ extern "C" {
     void MenuDrawCustomiser(MENU *);
     void MenuUpdateCustomiser(MENU *);
     i32 CustomiserMenu_Update(void);
-    extern i16 TextIdPc880890;
+    extern i16 dat_00880890;
     extern u8 downrepeatcount[2];
     extern u8 rightrepeatcount[2];
 #ifdef __cplusplus

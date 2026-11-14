@@ -57,7 +57,7 @@ typedef struct RUMBLE_PACKET_RESOURCE { // size 0x14
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 VehicleBoltId7f17d0;
+    extern i16 dat_007f17d0;
 /* Windows SDK commctrl.h aliases DrawStatusText to DrawStatusTextA. */
 #ifdef DrawStatusText
 #undef DrawStatusText

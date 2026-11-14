@@ -22,13 +22,13 @@ typedef void (*PART_KILL_PC)(struct PART_PC *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 VehicleBoltId7f18b4;
+    extern i16 dat_007f18b4;
     i32 TakeOverYodaSeekDistanceHack(struct gameobject_s *, struct gameobject_s *, NUVEC *);
     extern i32 dagobah_training;
     extern u8 minikitCounter_C;
     extern u8 minikitCounter_A;
     extern const char AITransferLiteral758430[5];
-    extern struct level_data_s *LevelFixupSlotPc0087b250;
+    extern struct level_data_s *dat_0087b250;
 #ifdef __cplusplus
 }
 #endif

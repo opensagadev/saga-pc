@@ -203,7 +203,7 @@ typedef struct CHARACTER_IDLE_POLICY {
 
 f32 animduration_blendouttime;
 i32 CharacterLoadAreaModels;
-i16 CharacterFixupIdPc007f18c4;
+i16 dat_007f18c4;
 i32 AnimPacketModelsCompatible(ANIMPACKET_PC *packet, i32 source_id, i32 target_id);
 
 typedef struct SPECIAL_LAYER_PC_s {
@@ -273,7 +273,7 @@ typedef struct PLAYER_LAYER_FLAGS {
     u32 unknown_10 : 22;
 } PLAYER_LAYER_FLAGS;
 
-extern i16 CharacterFixupIdPc007f1810;
+extern i16 dat_007f1810;
 
 typedef struct PARAPHERNALIA_EXTRA {
     u8 prefix[0xc68];
@@ -376,7 +376,7 @@ typedef struct draw_process_flags_s {
 } DRAW_PROCESS_FLAGS_PC;
 
 extern i32 DrawParaphernaliaEnabled;
-extern i16 CharacterFixupIdPc007f1820;
+extern i16 dat_007f1820;
 void CustomiserDrawAccessories(CUSTOMISER_LAYERS *, GAMEOBJECT *, NUMTX *);
 void Grapple_DrawLine(GAMEOBJECT *);
 void SuperCarry_DrawObject(GAMEOBJECT *);
@@ -569,8 +569,8 @@ void ExtraCharacterFixUpAfterConfig(void) {
         CDataList[id_SPEEDERBIKE].move_fn = Move_SPEEDERBIKE;
         CDataList[id_SPEEDERBIKE].animate_fn = Animate_SPEEDERBIKE;
     }
-    if (VehicleBoltId7f18b4 != -1) {
-        CDataList[VehicleBoltId7f18b4].animate_fn = Animate_DEFAULT;
+    if (dat_007f18b4 != -1) {
+        CDataList[dat_007f18b4].animate_fn = Animate_DEFAULT;
     }
     if (id_BODYGUARD != -1) {
         CDataList[id_BODYGUARD].move_fn = Move_JEDI;
@@ -2847,7 +2847,7 @@ void UpdateCharacterLoad(void) {
         return;
     }
     count = 0;
-    if (VehicleBoltId7f17d4 != -1 && APICharacterLoaded(VehicleBoltId7f17d4) != NULL && PunchRangeCompanionId != -1 &&
+    if (dat_007f17d4 != -1 && APICharacterLoaded(dat_007f17d4) != NULL && PunchRangeCompanionId != -1 &&
         APICharacterLoaded(PunchRangeCompanionId) == NULL) {
         candidates[count++] = PunchRangeCompanionId;
     } else if (id_BARMAN != -1 && APICharacterLoaded(id_BARMAN) == NULL) {
@@ -2864,8 +2864,8 @@ void UpdateCharacterLoad(void) {
         candidates[count++] = id_MOSEISLEYCITIZEN;
     } else if (id_CANTINAALIEN != -1 && APICharacterLoaded(id_CANTINAALIEN) == NULL) {
         candidates[count++] = id_CANTINAALIEN;
-    } else if (CharacterFixupIdPc007f18c4 != -1 && APICharacterLoaded(CharacterFixupIdPc007f18c4) == NULL) {
-        candidates[count++] = CharacterFixupIdPc007f18c4;
+    } else if (dat_007f18c4 != -1 && APICharacterLoaded(dat_007f18c4) == NULL) {
+        candidates[count++] = dat_007f18c4;
     } else {
         for (id = 0; id < CHARCOUNT; ++id) {
             if (id == id_DROIDEKA || (CDataList[id].model_flags & 0x04002000) != 0 || APICharacterLoaded(id) != NULL) {
@@ -4162,7 +4162,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                         sabre = 1;
                     }
                 }
-            } else if (object->id == (u16)CharacterFixupIdPc007f1810 || (object->character_data->model_flags & 0x80) != 0) {
+            } else if (object->id == (u16)dat_007f1810 || (object->character_data->model_flags & 0x80) != 0) {
                 models[0] = 0xc;
             }
             count = 0;
@@ -4280,7 +4280,7 @@ void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
         if (object->id != (u16)ID_DEFAULTCHARACTER_A) {
             return;
         }
-        character_id = AreaExtraTargetId7f17bc;
+        character_id = dat_007f17bc;
         AnimPacketMiniToFull((DRAW_ATTACHMENTS_MINI *)object->mini_anim_packet, &animation.packet);
     } else if (object->id == (u16)PunchRangeUnitId &&
                (AnimPlaying(&object->anim_packet, 0x51, 1, 1) != NULL || AnimPlaying(&object->anim_packet, 0x55, 1, 1) != NULL ||
@@ -4292,10 +4292,10 @@ void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
             animation.packet.blend_target_animation != 0x94) {
             return;
         }
-    } else if (object->id == (u16)AreaExtraSourceId7f17c8) {
-        character_id = AreaExtraTargetId7f17cc;
+    } else if (object->id == (u16)dat_007f17c8) {
+        character_id = dat_007f17cc;
         AnimPacketMiniToFull((DRAW_ATTACHMENTS_MINI *)object->mini_anim_packet, &animation.packet);
-    } else if (object->id == (u16)VehicleBoltId7f17d0 || object->id == (u16)VehicleBoltId7f17d4) {
+    } else if (object->id == (u16)dat_007f17d0 || object->id == (u16)dat_007f17d4) {
         if (AnimPacketModelsCompatible(&object->anim_packet, (i16)object->id, PunchRangeCompanionId) == 0) {
             return;
         }
@@ -4458,7 +4458,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
         ParaphernaliaCommunicate(object, extra->draw_reflection);
     }
     if (object->character_context == 0x22) {
-        if ((WORLD->area != NULL && WORLD->area == HUB_ADATA) || WORLD->current_level == LevelFixupSlotPc0087b194 ||
+        if ((WORLD->area != NULL && WORLD->area == HUB_ADATA) || WORLD->current_level == dat_0087b194 ||
             WORLD->current_level == DOOKUC_LDATA) {
             glow_position.x = object->collision_position.x;
             glow_position.y = object->character_bottom * object->origin_scale + object->position.y +
@@ -4567,7 +4567,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
                 NuSpecialDrawAt(&WORLD->level_objects[10].special, special_matrix);
             }
         }
-    } else if (((i16)(object->id)) == CharacterFixupIdPc007f1820 && (time = AnimPlaying(&object->anim_packet, 1, 0, 0)) != NULL) {
+    } else if (((i16)(object->id)) == dat_007f1820 && (time = AnimPlaying(&object->anim_packet, 1, 0, 0)) != NULL) {
         start = AnimListFrame(object->character_model, 1, 0);
         if (start >= 1.0f) {
             finish = AnimListFrame(object->character_model, 1, 1);

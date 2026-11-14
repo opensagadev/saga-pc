@@ -3,25 +3,25 @@
 #include "saga.h"
 
 extern "C" void MenuPcStringsInit(void) {
-    MENU_PC_STRING_ENTRY *entry = MenuPcStringTable827940;
+    MENU_PC_STRING_ENTRY *entry = dat_00827940;
     switch (NuLanguageGet()) {
         case 18:
-            entry = MenuPcStringTable827800;
+            entry = dat_00827800;
             break;
         case 2:
-            entry = MenuPcStringTable827a80;
+            entry = dat_00827a80;
             break;
         case 4:
-            entry = MenuPcStringTable827bc0;
+            entry = dat_00827bc0;
             break;
         case 5:
-            entry = MenuPcStringTable827d00;
+            entry = dat_00827d00;
             break;
         case 3:
-            entry = MenuPcStringTable827e40;
+            entry = dat_00827e40;
             break;
         case 8:
-            entry = MenuPcStringTable827f80;
+            entry = dat_00827f80;
             break;
     }
     memset(MenuPcStrings, 0, sizeof(MenuPcStrings));

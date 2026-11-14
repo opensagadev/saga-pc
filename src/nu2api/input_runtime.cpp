@@ -358,89 +358,89 @@ PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC() {
     InitKeyboardProfiles();
     switch (NuLanguageGet()) {
         case 0:
-            TextInputKeyNamesPc = PcInputKeyNames821910;
-            TextInputDefaultLabelsPc = &PcInputLabels820560;
-            TextInputAlternateLabelsPc = &PcInputLabels820560;
+            TextInputKeyNamesPc = dat_00821910;
+            TextInputDefaultLabelsPc = &dat_00820560;
+            TextInputAlternateLabelsPc = &dat_00820560;
             break;
         case 1:
             TextInputKeyNamesPc = TextInputKeyNameTablePc;
-            TextInputDefaultLabelsPc = &PcInputLabels820480;
-            TextInputAlternateLabelsPc = &PcInputLabels820480;
+            TextInputDefaultLabelsPc = &dat_00820480;
+            TextInputAlternateLabelsPc = &dat_00820480;
             break;
         case 2:
-            TextInputKeyNamesPc = PcInputKeyNames822080;
-            TextInputDefaultLabelsPc = &PcInputLabels820aa0;
-            TextInputAlternateLabelsPc = &PcInputLabels820aa0;
+            TextInputKeyNamesPc = dat_00822080;
+            TextInputDefaultLabelsPc = &dat_00820aa0;
+            TextInputAlternateLabelsPc = &dat_00820aa0;
             break;
         case 3:
-            TextInputKeyNamesPc = PcInputKeyNames822ae8;
-            TextInputDefaultLabelsPc = &PcInputLabels820d40;
-            TextInputAlternateLabelsPc = &PcInputLabels820d40;
+            TextInputKeyNamesPc = dat_00822ae8;
+            TextInputDefaultLabelsPc = &dat_00820d40;
+            TextInputAlternateLabelsPc = &dat_00820d40;
             break;
         case 4:
-            TextInputKeyNamesPc = PcInputKeyNames822770;
-            TextInputDefaultLabelsPc = &PcInputLabels820c60;
-            TextInputAlternateLabelsPc = &PcInputLabels820c60;
+            TextInputKeyNamesPc = dat_00822770;
+            TextInputDefaultLabelsPc = &dat_00820c60;
+            TextInputAlternateLabelsPc = &dat_00820c60;
             break;
         case 5:
-            TextInputKeyNamesPc = PcInputKeyNames8223f8;
-            TextInputDefaultLabelsPc = &PcInputLabels820b80;
-            TextInputAlternateLabelsPc = &PcInputLabels820b80;
+            TextInputKeyNamesPc = dat_008223f8;
+            TextInputDefaultLabelsPc = &dat_00820b80;
+            TextInputAlternateLabelsPc = &dat_00820b80;
             break;
         case 6:
-            TextInputKeyNamesPc = PcInputKeyNames8231d8;
-            TextInputDefaultLabelsPc = &PcInputLabels820640;
-            TextInputAlternateLabelsPc = &PcInputLabels820640;
+            TextInputKeyNamesPc = dat_008231d8;
+            TextInputDefaultLabelsPc = &dat_00820640;
+            TextInputAlternateLabelsPc = &dat_00820640;
             break;
         case 7:
-            TextInputKeyNamesPc = PcInputKeyNames8240b8;
-            TextInputDefaultLabelsPc = &PcInputLabels8209c0;
-            TextInputAlternateLabelsPc = &PcInputLabels8209c0;
+            TextInputKeyNamesPc = dat_008240b8;
+            TextInputDefaultLabelsPc = &dat_008209c0;
+            TextInputAlternateLabelsPc = &dat_008209c0;
             break;
         case 8:
-            TextInputKeyNamesPc = PcInputKeyNames822e60;
-            TextInputDefaultLabelsPc = &PcInputLabels820e20;
-            TextInputAlternateLabelsPc = &PcInputLabels820e20;
+            TextInputKeyNamesPc = dat_00822e60;
+            TextInputDefaultLabelsPc = &dat_00820e20;
+            TextInputAlternateLabelsPc = &dat_00820e20;
             break;
         case 10:
-            TextInputKeyNamesPc = PcInputKeyNames821cc8;
-            TextInputDefaultLabelsPc = &PcInputLabels8210c0;
-            TextInputAlternateLabelsPc = &PcInputLabels8210c0;
+            TextInputKeyNamesPc = dat_00821cc8;
+            TextInputDefaultLabelsPc = &dat_008210c0;
+            TextInputAlternateLabelsPc = &dat_008210c0;
             break;
         case 11:
-            TextInputKeyNamesPc = PcInputKeyNames823590;
-            TextInputDefaultLabelsPc = &PcInputLabels820f00;
-            TextInputAlternateLabelsPc = &PcInputLabels820f00;
+            TextInputKeyNamesPc = dat_00823590;
+            TextInputDefaultLabelsPc = &dat_00820f00;
+            TextInputAlternateLabelsPc = &dat_00820f00;
             break;
         case 12:
-            TextInputKeyNamesPc = PcInputKeyNames823948;
-            TextInputDefaultLabelsPc = &PcInputLabels820fe0;
-            TextInputAlternateLabelsPc = &PcInputLabels820fe0;
+            TextInputKeyNamesPc = dat_00823948;
+            TextInputDefaultLabelsPc = &dat_00820fe0;
+            TextInputAlternateLabelsPc = &dat_00820fe0;
             break;
         case 14:
-            TextInputKeyNamesPc = PcInputKeyNames824828;
-            TextInputDefaultLabelsPc = &PcInputLabels820800;
-            TextInputAlternateLabelsPc = &PcInputLabels820800;
+            TextInputKeyNamesPc = dat_00824828;
+            TextInputDefaultLabelsPc = &dat_00820800;
+            TextInputAlternateLabelsPc = &dat_00820800;
             break;
         case 15:
-            TextInputKeyNamesPc = PcInputKeyNames824470;
-            TextInputDefaultLabelsPc = &PcInputLabels820720;
-            TextInputAlternateLabelsPc = &PcInputLabels820720;
+            TextInputKeyNamesPc = dat_00824470;
+            TextInputDefaultLabelsPc = &dat_00820720;
+            TextInputAlternateLabelsPc = &dat_00820720;
             break;
         case 16:
-            TextInputKeyNamesPc = PcInputKeyNames823d00;
-            TextInputDefaultLabelsPc = &PcInputLabels8209c0;
-            TextInputAlternateLabelsPc = &PcInputLabels8209c0;
+            TextInputKeyNamesPc = dat_00823d00;
+            TextInputDefaultLabelsPc = &dat_008209c0;
+            TextInputAlternateLabelsPc = &dat_008209c0;
             break;
         case 17:
-            TextInputKeyNamesPc = PcInputKeyNames824be0;
-            TextInputDefaultLabelsPc = &PcInputLabels8208e0;
-            TextInputAlternateLabelsPc = &PcInputLabels8208e0;
+            TextInputKeyNamesPc = dat_00824be0;
+            TextInputDefaultLabelsPc = &dat_008208e0;
+            TextInputAlternateLabelsPc = &dat_008208e0;
             break;
         default:
-            TextInputKeyNamesPc = PcInputKeyNames821558;
-            TextInputDefaultLabelsPc = &PcInputLabels820480;
-            TextInputAlternateLabelsPc = &PcInputLabels820480;
+            TextInputKeyNamesPc = dat_00821558;
+            TextInputDefaultLabelsPc = &dat_00820480;
+            TextInputAlternateLabelsPc = &dat_00820480;
             break;
     }
 }

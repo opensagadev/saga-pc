@@ -341,8 +341,8 @@ i32 GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL_PC *panel) {
             if (GCDataList[(i16)object->id].weapon_action == 1 || GCDataList[(i16)object->id].weapon_action == 8) {
                 return 1;
             }
-            if ((i16)object->id == FreePlayId007f199c || (i16)object->id == id_THEEMPEROR || (i16)object->id == FreePlayId007f1a4c ||
-                (i16)object->id == FreePlayId007f1a48 || (i16)object->id == FreePlayId007f1a44) {
+            if ((i16)object->id == dat_007f199c || (i16)object->id == id_THEEMPEROR || (i16)object->id == dat_007f1a4c ||
+                (i16)object->id == dat_007f1a48 || (i16)object->id == dat_007f1a44) {
                 return 1;
             }
             break;

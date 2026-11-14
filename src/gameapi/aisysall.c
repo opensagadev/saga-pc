@@ -396,9 +396,9 @@ extern i32 near_clip_at_cursor;
 
 f32 AiEditorNearClipOffset = 5.0f;
 
-extern const char MenuPcString75f2c0[3];
+extern const char dat_0075f2c0[3];
 
-extern const char MenuPcString75f2c4[4];
+extern const char dat_0075f2c4[4];
 
 extern i32 AiEditorRouteModeId;
 
@@ -10034,10 +10034,10 @@ eduimenu_s *antinodeEditor_DeleteAntinodeMenu(void) {
     if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteAntinodeCancel, "Delete Antinode??");
         if (menu != NULL) {
-            eduiMenuAddItem(
-                menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)MenuPcString75f2c0));
-            eduiMenuAddItem(
-                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)MenuPcString75f2c4));
+            eduiMenuAddItem(menu,
+                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)dat_0075f2c0));
+            eduiMenuAddItem(menu,
+                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)dat_0075f2c4));
             return menu;
         }
     }
@@ -14031,10 +14031,10 @@ void locatorEditor_cbDeleteLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 
         case 0:
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Delete current locator set?");
             if (menu != NULL) {
-                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet,
-                                                        (char *)MenuPcString75f2c0));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet,
-                                                        (char *)MenuPcString75f2c4));
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)dat_0075f2c0));
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)dat_0075f2c4));
                 eduiMenuAttach(parent, menu);
             }
             break;
@@ -14062,10 +14062,10 @@ void locatorEditor_cbEmptyLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 e
         case 0:
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Empty current locator set?");
             if (menu != NULL) {
-                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet,
-                                                        (char *)MenuPcString75f2c0));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet,
-                                                        (char *)MenuPcString75f2c4));
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)dat_0075f2c0));
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)dat_0075f2c4));
                 eduiMenuAttach(parent, menu);
             }
             break;
@@ -16804,10 +16804,10 @@ eduimenu_s *locatorEditor_DeleteLocatorMenu(void) {
     if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteLocatorCancel, "Delete locator??");
         if (menu != NULL) {
-            eduiMenuAddItem(
-                menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)MenuPcString75f2c0));
-            eduiMenuAddItem(
-                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)MenuPcString75f2c4));
+            eduiMenuAddItem(menu,
+                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)dat_0075f2c0));
+            eduiMenuAddItem(menu,
+                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)dat_0075f2c4));
             return menu;
         }
     }
@@ -17601,9 +17601,9 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
             menu = eduiMenuCreate(100, 70, 440, 270, ed_fnt, AiEditorMessageCloseMenu, title);
             if (menu != NULL) {
                 eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
-                                                        (char *)MenuPcString75f2c0));
+                                                        (char *)dat_0075f2c0));
                 eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
-                                                        (char *)MenuPcString75f2c4));
+                                                        (char *)dat_0075f2c4));
                 return menu;
             }
         }

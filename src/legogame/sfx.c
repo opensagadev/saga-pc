@@ -38,9 +38,9 @@ i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
         return GetSfxId("fs_ice");
     }
     if (area == DAGOBAH_ADATA && on_platform == 0) {
-        if (world->current_level != LevelFixupSlotPc0087b258 || object->jump_animation_state != 0x14) {
-            if (world->current_level != LevelFixupSlotPc0087b264) {
-                if (world->current_level != LevelFixupSlotPc0087b268 ||
+        if (world->current_level != dat_0087b258 || object->jump_animation_state != 0x14) {
+            if (world->current_level != dat_0087b264) {
+                if (world->current_level != dat_0087b268 ||
                     (GameCam->sock_position.sock_index != 1 && GameCam->sock_position.sock_index != 4)) {
                     return GetSfxId("fs_swamp");
                 }
@@ -59,13 +59,13 @@ i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
 
 i32 GameAudio_CheckReverb_LSW(void) {
     LEVELDATA_PC *level = WorldInfo_CurrentlyActive()->current_level;
-    if (level == LevelFixupSlotPc0087b200) {
+    if (level == dat_0087b200) {
         return 1;
     }
-    if (level == LevelFixupSlotPc0087b264) {
+    if (level == dat_0087b264) {
         return 1;
     }
-    if (level == LevelFixupSlotPc0087b228 && GameCam->sock_position.sock_index == 4) {
+    if (level == dat_0087b228 && GameCam->sock_position.sock_index == 4) {
         return 1;
     }
     return 0;
@@ -522,7 +522,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("veh_tie_by");
             ADD_SFX("Tie_Spins");
         }
-        if (character_id == VehicleBoltId7f1924 || character_id == VehicleBoltId7f1928) {
+        if (character_id == dat_007f1924 || character_id == dat_007f1928) {
             ADD_SFX("wpn_bomb_drop");
             ADD_SFX("exp_bomb");
         }
