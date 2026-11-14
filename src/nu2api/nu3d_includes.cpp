@@ -219,7 +219,6 @@ extern "C" {
     (((((value0) - (value1)) * 2.0 + (tangent0) + (tangent1)) * (t) - ((value0) - (value1)) * 3.0) -                   \
      (tangent0) * 2.0 - (tangent1))
 
-/* Genuine in-place operations; no reconstruction-only helper symbols. */
 #define PC_LEGACY_CURVE_STORE(destination, channel)                                                                    \
     (destination) = formats[(channel)] == 0 ? curves[(channel)].constant                                               \
                                             : NuAnimCurve2CalcValEx(&curves[(channel)], time, (u32)formats[(channel)])
@@ -827,9 +826,6 @@ extern "C" {
             anim = (ANI3_HEADER_PC *)((char *)anim + anim->next_block);
         }
     }
-
-    /* Access conventions and valid-engine backing requirements are specified in the
-     * handoff; these are not historical full aggregate types. */
 
     void NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK_PC callback, void **data, i32 *joints) {
         AnimBuffEvalCB = callback;
@@ -5757,7 +5753,7 @@ extern "C" {
     }
 }
 
-/* Genuine original occlusion.cpp static members; outside extern C. */
+/* occlusion.cpp static members; outside extern C. */
 NUMTL *OccluderSet::ms_pZOnlyMtl3D = 0;
 NUMTL *OccluderSet::ms_pZOnlyMtl2D = 0;
 NUMTL *OccluderSet::ms_pAlphaMtl2D = 0;
@@ -10652,8 +10648,6 @@ extern "C" void NuPostEffectResizePc(void) {
     PCGraphicsResizePostEffectTexturesPc(width, height);
 }
 
-/* Original nupostfilter source family. This is an append proposal to existing
- * nupostfilter.c; includes/layout declarations supplied separately. */
 void NuPostEffectReset(void) {
     NuPostEffectsRanPc = 0;
     NuPostLastFrameEffectPc = 0;
@@ -16707,12 +16701,6 @@ extern "C" {
                                     matrices, root_fn, root_data);
     }
 
-    /* Proposal only. Normal finite skeleton/override counts 0..255, readable
-     * indexed payloads and hierarchy, writable outputs; optional installed root
-     * callback obeys the existing six-word normal engine contract. Legacy duration1
-     * leaves time_offset undefined: format4 requires a separately valid offset.
-     * Missing-node scales remain undefined; later scale-dependent children require
-     * a valid prior parent node or the initialized parent255 sentinel. */
     void NuHGobjEvalAnim2Root(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation, f32 time, i32 override_count,
                               NUHGOBJ_JOINT_OVERRIDE_PC *overrides, NUMTX *matrices, ANI3_ROOT_CALLBACK_PC root_fn,
                               void *root_data) {
