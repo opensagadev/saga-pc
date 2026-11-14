@@ -546,6 +546,7 @@ i32 Blowup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignored) {
 }
 
 #pragma data_seg(".data$BlowupOutputNamesPc")
+i32 MAXBLOWUPRANDSPANG = 60;
 char *BlowupOutputNamesPc[3] = {"Blownup", "Punched", "Plugging"};
 #pragma data_seg()
 
@@ -2632,7 +2633,18 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
     ResetShadowMapRendering();
 }
 
+GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC GizmoBlowupHitMultiplierPc = {1};
 char *GizmoRegistryNewBlowupNamePtrPc = "blowup";
+i32 GizmoBlowupNameCountPc = 0;
+u32 EXBLOWUPFLAGS = 0;
+char GizmoBlowupNameTablePc[32][32] = {0};
+i32 GizmoBlowUpOpponent_Behind = 0;
+f32 GizmoBlowUpOpponent_Range2 = 0;
+void (*GameBlowUpBlownUpFn)(void *blowup) = 0;
+i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32) = 0;
+void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target) = NULL;
+void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *) = 0;
+i32 (*GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *) = 0;
 static ADDGIZMOTYPE_PC GizmoRegistryNewBlowupAddTypePc = {0};
 
 ADDGIZMOTYPE_PC *NewBlowup_RegisterGizmo(i32 type_id) {

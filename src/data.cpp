@@ -7413,10 +7413,6 @@ extern "C" {
 #pragma const_seg(".rdata$GizObstacleTypeNamePc")
     extern const char GizObstacleTypeNamePc[12] = "GizObstacle";
 #pragma const_seg()
-
-    i32 GizmoBlowupNameCountPc = 0;
-
-    char GizmoBlowupNameTablePc[32][32] = {0};
 }
 extern "C" {
 #pragma const_seg(".rdata$PCSoundBuffer8IIDPc")
@@ -8112,7 +8108,6 @@ extern "C" {
     i32 (*InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) = 0;
     i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
     i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
-    void (*GameBlowUpBlownUpFn)(void *blowup) = 0;
     void (*GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle) = 0;
     f32 PodAvalancheShakeFrames = 111.0f;
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
@@ -11583,10 +11578,6 @@ extern "C" {
 #pragma data_seg(".data$TerrainPlayerShadowFixPc")
     i32 TerrainPlayerShadowFixPc = 1;
 #pragma data_seg()
-#pragma data_seg(".data$MAXBLOWUPRANDSPANG")
-    i32 MAXBLOWUPRANDSPANG = 60;
-#pragma data_seg()
-    void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *) = 0;
 }
 
 extern "C" {
@@ -12126,10 +12117,6 @@ extern "C" {
 #pragma data_seg(".data$VehicleLoopTimePc")
     f32 VehicleLoopTimePc = 1.5f;
 #pragma data_seg()
-}
-
-extern "C" {
-    i32 (*GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *) = 0;
 }
 
 extern "C" {
@@ -13252,10 +13239,6 @@ extern "C" {
 
     i32 (*IsWearingBackPackFn)(GAMEOBJECT *) = 0;
 
-    i32 GizmoBlowUpOpponent_Behind = 0;
-
-    f32 GizmoBlowUpOpponent_Range2 = 0;
-
     i32 SpecialMoveCount = 0;
 
     i32 (*UsingExtraActionsFn)(GAMEOBJECT *) = 0;
@@ -13966,9 +13949,6 @@ extern "C" {
     extern const GUID PCSampleBufferAlgorithmPc = {
         0x00000000, 0x0000, 0x0000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
 #pragma const_seg()
-#pragma data_seg(".data$GizmoBlowupHitMultiplierPc")
-    GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC GizmoBlowupHitMultiplierPc = {1};
-#pragma data_seg()
 #pragma data_seg(".data$PCSampleLoadEnabledPc")
     i32 PCSampleLoadEnabledPc = 1;
 #pragma data_seg()
@@ -14154,7 +14134,6 @@ extern "C" {
     i32 BoltNoSfxPc = 0;
     i32 BoltNoObjectMomentumPc = 0;
     i32 (*BoltInitSfxFn)(GAMEOBJECT *) = 0;
-    i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32) = 0;
 #pragma data_seg(".data$BoltBlockContextPc")
     i32 BoltBlockContextPc = -1;
 #pragma data_seg()
@@ -15027,7 +15006,6 @@ extern "C" {
     i32 (*SetSoundFadeDistCallBackFn)(WORLDINFO *) = NULL;
     i32 (*AlternateGameCallbackPc)(GAMEOBJECT *object) = NULL;
     i32 (*GamePads_IgnoreInputFn)(void) = NULL;
-    void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target) = NULL;
     i32 (*GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle) = NULL;
     void (*PauseGame_ExtraCodeFn)(void) = NULL;
     i32 (*Hub_PanelBusyFn)(void) = NULL;
@@ -23797,10 +23775,6 @@ extern "C" {
 
 extern "C" {
     i32 stream_cut_issued = 0;
-}
-
-extern "C" {
-    u32 EXBLOWUPFLAGS = 0;
 }
 
 extern "C" {
