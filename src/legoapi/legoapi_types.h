@@ -247,22 +247,22 @@ enum {
     TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP = 2
 };
 
-typedef struct gizaimessage_s {
-    NULISTLNK links;     // 0x00
-    char name[32];       // 0x08
-    f32 value;           // 0x28
-    i8 output_values[8]; // 0x2c
-    i8 output_count;     // 0x34
-    u8 unknown_35;       // 0x35
-    u16 flags;           // 0x36
-} GIZAIMESSAGE;          // size 0x38
+typedef struct gizaimessage_s { // size 0x38
+    NULISTLNK links;            // 0x00
+    char name[32];              // 0x08
+    f32 value;                  // 0x28
+    i8 output_values[8];        // 0x2c
+    i8 output_count;            // 0x34
+    u8 unknown_35;              // 0x35
+    u16 flags;                  // 0x36
+} GIZAIMESSAGE;
 
-typedef struct gizaimessagesys_s {
-    i32 count;              // 0x00
-    GIZAIMESSAGE *messages; // 0x04
-    NULISTHDR free_list;    // 0x08
-    NULISTHDR active_list;  // 0x10
-} GIZAIMESSAGESYS;          // size 0x18
+typedef struct gizaimessagesys_s { // size 0x18
+    i32 count;                     // 0x00
+    GIZAIMESSAGE *messages;        // 0x04
+    NULISTHDR free_list;           // 0x08
+    NULISTHDR active_list;         // 0x10
+} GIZAIMESSAGESYS;
 
 typedef struct part_emit_pc_s {
     NUVEC position;

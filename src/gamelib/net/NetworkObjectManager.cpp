@@ -69,7 +69,7 @@ i32 V2Peer::fun_00611a60(i32 time) const {
 }
 
 /* Serialises replicated members into a NETMESSAGE_PC. */
-class NetOutputStream : public EdOutputStream {
+class NetOutputStream : public EdOutputStream { // size 0x24
   public:
     NetOutputStream() {
     }
@@ -98,10 +98,10 @@ class NetOutputStream : public EdOutputStream {
     }
 
     NETMESSAGE_PC *message; // 0x20
-}; // size 0x24
+};
 
 /* Reads replicated members back out of a NETMESSAGE_PC. */
-class NetInputStream : public EdInputStream {
+class NetInputStream : public EdInputStream { // size 0x24
   public:
     NetInputStream() : message(NULL) {
     }
@@ -135,7 +135,7 @@ class NetInputStream : public EdInputStream {
     }
 
     NETMESSAGE_PC *message; // 0x20
-}; // size 0x24
+};
 
 /* Replicator data is a packed run of word-aligned per-object records. */
 #define REPLICATOR_ALIGN(cursor) (((u32)(cursor) + 3) & ~3)
@@ -167,7 +167,7 @@ class NetChangedReplicator : public NetReplicator {
     static i16 mCrc32Table[256];
 };
 
-class NetPredictor : public NetReplicator {
+class NetPredictor : public NetReplicator { // size 0x28
   public:
     struct PredictorData {
         f32 values[3];
@@ -198,7 +198,7 @@ class NetPredictor : public NetReplicator {
     f32 maximum_sample_delta;     // 0x1c
     f32 minimum_value;            // 0x20
     f32 maximum_value;            // 0x24
-}; // size 0x28
+};
 
 STATIC_ASSERT(sizeof(NetPredictor::PredictorTime) == 0x1c);
 STATIC_ASSERT(offsetof(V2Peer, time_offset) == 0x29c);

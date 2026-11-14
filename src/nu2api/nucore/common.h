@@ -39,11 +39,11 @@ typedef u32 usize;
 
 #if SAGA_NU2API_NUCORE_COMMON_H_PART == 2 && !defined(SAGA_NU2API_NUCORE_COMMON_H_STOP)
 
-typedef union variptr_u {
-    void *void_ptr; // 0x0
-    char *char_ptr; // 0x0
-    u32 addr;       // 0x0
-} VARIPTR;          // size 0x4
+typedef union variptr_u { // size 0x4
+    void *void_ptr;
+    char *char_ptr;
+    u32 addr;
+} VARIPTR;
 
 #undef SAGA_NU2API_NUCORE_COMMON_H_PART
 #define SAGA_NU2API_NUCORE_COMMON_H_PART 3

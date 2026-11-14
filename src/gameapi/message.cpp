@@ -13,7 +13,7 @@ typedef i32 (*AINETFILTERFN)(void);
 AINETFILTERFN AINetSendFilter = 0;
 AINETFILTERFN AINetReceiveFilter = 0;
 
-class AINet : NetListenerInterface {
+class AINet : NetListenerInterface { // size 0x4
   public:
     AINet();
     virtual ~AINet();
@@ -26,7 +26,7 @@ class AINet : NetListenerInterface {
     void ReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
 
     static AINet *sm_instance;
-}; // size 0x4
+};
 
 AINet *AINet::sm_instance = NULL;
 

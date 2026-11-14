@@ -63,14 +63,14 @@ STATIC_ASSERT(offsetof(GIZMOTYPES_PC, max_levels) == 4);
 STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
 STATIC_ASSERT(offsetof(GIZMOSET_PC, data) == 0x10);
 
-typedef struct bolt_gizmo_type_pc_s {
+typedef struct bolt_gizmo_type_pc_s {                          // size 0x9c
     u8 unknown_00[0x6c];                                       // 0x00
     i32 (*hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *); // 0x6c
     u8 unknown_70[4];                                          // 0x70
     i32 (*hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32,
                     u8 *); // 0x74
     u8 unknown_78[0x24];   // 0x78
-} BOLT_GIZMO_TYPE_PC;      // size 0x9c
+} BOLT_GIZMO_TYPE_PC;
 
 typedef NUVEC *(*GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
 void EdFileWrite(void *data, i32 len);
@@ -78,13 +78,13 @@ void EdFileWriteInt(i32 value);
 void EdFileWriteChar(char value);
 extern GIZACTIONDEF_PC *gizactiondefs;
 
-typedef struct GIZMO_NAME_TYPE_PC {
+typedef struct GIZMO_NAME_TYPE_PC {  // size 0x9c
     u8 unknown_00[0x20];             // 0x00
     char prefix[0x20];               // 0x20
     u8 unknown_40[4];                // 0x40
     char *(*get_gizmo_name)(void *); // 0x44
     u8 unknown_48[0x54];             // 0x48
-} GIZMO_NAME_TYPE_PC;                // size 0x9c
+} GIZMO_NAME_TYPE_PC;
 
 typedef struct level_sfx_gizmotype_s {
     u8 unknown_00[0x94];

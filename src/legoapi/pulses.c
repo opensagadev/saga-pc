@@ -11,7 +11,7 @@ static f32 PulsesFabsPc(f32 f) {
     return rv;
 }
 
-typedef struct PULSE_PC {
+typedef struct PULSE_PC {    // size 0x34
     NUSPECIALHANDLE special; // 0x00
     f32 on_time;             // 0x0c
     f32 off_time;            // 0x10
@@ -21,9 +21,9 @@ typedef struct PULSE_PC {
     u16 disabled;            // 0x1e
     char gizmo_name[16];     // 0x20
     void *gizmo;             // 0x30
-} PULSE_PC;                  // size 0x34
+} PULSE_PC;
 
-struct level_sfx_pulse_prefix_s {
+struct level_sfx_pulse_prefix_s {    // size 0x20
     PULSE_PC *pulses;                // 0x00
     u16 pulse_count;                 // 0x04
     i16 sfx_turn_on;                 // 0x06
@@ -37,12 +37,12 @@ struct level_sfx_pulse_prefix_s {
     i16 debris_hit_player;           // 0x1c
     u8 radial_hit_direction;         // 0x1e
     u8 unknown_1f;                   // 0x1f
-}; // size 0x20
+};
 
-typedef struct PULSE_WORLD_VIEW_PC {
-    u8 unknown_0[0x5050];           // 0x0000
-    LEVEL_SFX_PULSE_PC *pulses_sys; // 0x5050
-} PULSE_WORLD_VIEW_PC;              // size 0x5054
+typedef struct PULSE_WORLD_VIEW_PC { // size 0x5054
+    u8 unknown_0[0x5050];            // 0x0000
+    LEVEL_SFX_PULSE_PC *pulses_sys;  // 0x5050
+} PULSE_WORLD_VIEW_PC;
 
 void Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32 capacity) {
     if (system == NULL) {

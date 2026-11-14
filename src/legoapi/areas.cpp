@@ -6,36 +6,36 @@ extern "C" {
     void AreasConfigDiagnosticPc(char *message);
 }
 
-typedef struct area_gizmotype_pc_s {
+typedef struct area_gizmotype_pc_s {      // size 0x9c
     u8 unknown_0000[0x44];                // 0x00
     char *(*get_gizmo_name)(void *gizmo); // 0x44
     u8 unknown_0048[0x54];                // 0x48
-} AREA_GIZMOTYPE_PC;                      // size 0x9c
+} AREA_GIZMOTYPE_PC;
 
-typedef struct area_gizmotypes_pc_s {
-    i32 count;                // 0x0
-    i32 unknown_0004;         // 0x4
-    AREA_GIZMOTYPE_PC *types; // 0x8
-} AREA_GIZMOTYPES_PC;         // size 0xc
+typedef struct area_gizmotypes_pc_s { // size 0xc
+    i32 count;                        // 0x0
+    i32 unknown_0004;                 // 0x4
+    AREA_GIZMOTYPE_PC *types;         // 0x8
+} AREA_GIZMOTYPES_PC;
 
-typedef struct area_gizmoset_pc_s {
-    void *type;         // 0x00
-    i32 count;          // 0x04
-    i32 max_count;      // 0x08
-    void *gizmos;       // 0x0c
-    void *unknown_0010; // 0x10
-} AREA_GIZMOSET_PC;     // size 0x14
+typedef struct area_gizmoset_pc_s { // size 0x14
+    void *type;                     // 0x00
+    i32 count;                      // 0x04
+    i32 max_count;                  // 0x08
+    void *gizmos;                   // 0x0c
+    void *unknown_0010;             // 0x10
+} AREA_GIZMOSET_PC;
 
-typedef struct area_gizmo_pc_s {
-    void *object;     // 0x0
-    i16 unknown_0004; // 0x4
-    u8 type_id;       // 0x6
-    u8 unknown_0007;  // 0x7
-} AREA_GIZMO_PC;      // size 0x8
+typedef struct area_gizmo_pc_s { // size 0x8
+    void *object;                // 0x0
+    i16 unknown_0004;            // 0x4
+    u8 type_id;                  // 0x6
+    u8 unknown_0007;             // 0x7
+} AREA_GIZMO_PC;
 
-typedef struct area_gizmosys_prefix_pc_s {
-    AREA_GIZMOSET_PC *sets; // 0x0
-} AREA_GIZMOSYS_PREFIX_PC;  // size 0x4
+typedef struct area_gizmosys_prefix_pc_s { // size 0x4
+    AREA_GIZMOSET_PC *sets;                // 0x0
+} AREA_GIZMOSYS_PREFIX_PC;
 
 AREA_DATA_PC *Area_FindByName(char *name, i32 *index_out) {
     i32 index;
@@ -381,11 +381,11 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
     return NULL;
 }
 
-typedef struct player_progress_hp_pc_s {
-    u8 unknown_0000[8];  // 0x0
-    u8 hitpoints;        // 0x8
-    u8 unknown_0009[7];  // 0x9
-} PLAYER_PROGRESS_HP_PC; // size 0x10
+typedef struct player_progress_hp_pc_s { // size 0x10
+    u8 unknown_0000[8];                  // 0x0
+    u8 hitpoints;                        // 0x8
+    u8 unknown_0009[7];                  // 0x9
+} PLAYER_PROGRESS_HP_PC;
 
 i32 AreaFromMiniKitID(i32 id) {
     i32 index;
@@ -422,15 +422,15 @@ extern "C" i8 Area_CharIDInCurrentList(i32 character_id) {
     return -1;
 }
 
-typedef struct AREA_MISSION_READER_PC {
-    u8 unknown_00[0x1f];  // 0x00
-    u8 character_count;   // 0x1f
-    i16 character_ids[8]; // 0x20
-} AREA_MISSION_READER_PC; // size 0x30
+typedef struct AREA_MISSION_READER_PC { // size 0x30
+    u8 unknown_00[0x1f];                // 0x00
+    u8 character_count;                 // 0x1f
+    i16 character_ids[8];               // 0x20
+} AREA_MISSION_READER_PC;
 
-typedef struct AREA_MISSION_DATA_READER_PC {
-    i16 find_char;             // 0x0
-} AREA_MISSION_DATA_READER_PC; // size 0x2
+typedef struct AREA_MISSION_DATA_READER_PC { // size 0x2
+    i16 find_char;                           // 0x0
+} AREA_MISSION_DATA_READER_PC;
 
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_other_index) == 0x9c);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, red) == 0x1e4);
@@ -814,16 +814,16 @@ extern "C" void DumpAreaData(i32 mode, i32) {
     Particles_DumpAreaPage();
 }
 
-typedef struct area_loading_clock_reader_pc_s {
-    u8 unknown_0000[0x7c20];    // 0x0000
-    f32 elapsed_time;           // 0x7c20
-} AREA_LOADING_CLOCK_READER_PC; // size 0x7c24
+typedef struct area_loading_clock_reader_pc_s { // size 0x7c24
+    u8 unknown_0000[0x7c20];                    // 0x0000
+    f32 elapsed_time;                           // 0x7c20
+} AREA_LOADING_CLOCK_READER_PC;
 
-typedef struct area_loading_pad_reader_pc_s {
-    u8 unknown_0000[8];       // 0x00
-    u32 buttons_pressed;      // 0x08
-    u8 unknown_000c[0x54];    // 0x0c
-} AREA_LOADING_PAD_READER_PC; // size 0x60
+typedef struct area_loading_pad_reader_pc_s { // size 0x60
+    u8 unknown_0000[8];                       // 0x00
+    u32 buttons_pressed;                      // 0x08
+    u8 unknown_000c[0x54];                    // 0x0c
+} AREA_LOADING_PAD_READER_PC;
 
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_04) == 4);
 extern "C" u8 *Game_LevelSave;

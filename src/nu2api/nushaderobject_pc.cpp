@@ -217,84 +217,84 @@ extern "C" void NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW
 }
 
 /* Verified accessed material cohort; no original allocation extent claim. */
-typedef struct PC_SHADER_MATERIAL_DISPATCH_VIEW {
-    u8 unknown_0000[0x40];          // 0x000
-    u32 sampler_address_modes;      // 0x040
-    u8 unknown_0044[0x1c];          // 0x044
-    f32 phase_speed;                // 0x060
-    f32 phase_scale;                // 0x064
-    f32 phase_factor;               // 0x068
-    f32 amplitude;                  // 0x06c
-    u8 unknown_0070[0x44];          // 0x070
-    u32 texture_flags;              // 0x0b4
-    i32 diffuse_texture_ids[4];     // 0x0b8
-    u32 channel_colours[4];         // 0x0c8
-    f32 parameter_d8;               // 0x0d8
-    f32 parameter_dc;               // 0x0dc
-    f32 parameter_e0;               // 0x0e0
-    f32 parameter_e4;               // 0x0e4
-    i32 height_texture_id;          // 0x0e8
-    i32 normal_texture_id;          // 0x0ec
-    f32 texture_lerp;               // 0x0f0
-    u32 reflection_colour;          // 0x0f4
-    u8 unknown_00f8[0x3];           // 0x0f8
-    u8 flip_sign;                   // 0x0fb
-    i32 specular_texture_id;        // 0x0fc
-    i32 bump_texture_id;            // 0x100
-    i32 cube_texture_id;            // 0x104
-    i32 reflection_texture_id;      // 0x108
-    i32 depth_texture_id;           // 0x10c
-    i32 lighting_texture_id;        // 0x110
-    f32 parameter_114;              // 0x114
-    f32 parameter_118;              // 0x118
-    u32 diffuse_colour;             // 0x11c
-    u32 specular_colour;            // 0x120
-    u32 tint_colour;                // 0x124
-    u32 shadow_colour;              // 0x128
-    f32 parameter_12c;              // 0x12c
-    f32 parameter_130;              // 0x130
-    f32 parameter_134;              // 0x134
-    f32 parameter_138;              // 0x138
-    f32 parameter_13c;              // 0x13c
-    f32 parameter_140;              // 0x140
-    f32 parameter_144;              // 0x144
-    f32 parameter_148;              // 0x148
-    f32 parameter_14c;              // 0x14c
-    f32 parameter_150;              // 0x150
-    f32 parameter_154;              // 0x154
-    f32 parameter_158;              // 0x158
-    u8 unknown_015c[0x30];          // 0x15c
-    f32 texture_bias[6];            // 0x18c
-    u8 unknown_01a4[0x4];           // 0x1a4
-    f32 parameter_1a8;              // 0x1a8
-    f32 parameter_1ac;              // 0x1ac
-    f32 parameter_1b0;              // 0x1b0
-    f32 parameter_1b4;              // 0x1b4
-    f32 parameter_1b8;              // 0x1b8
-    f32 parameter_1bc;              // 0x1bc
-    u8 unknown_01c0[0x10];          // 0x1c0
-    f32 uv_upload_lanes[10];        // 0x1d0
-    u8 unknown_01f8[0x50];          // 0x1f8
-    f32 parameter_248;              // 0x248
-    i32 clamp_texture_id;           // 0x24c
-    u32 palette_colours[4];         // 0x250
-    f32 parameter_260;              // 0x260
-    f32 parameter_264;              // 0x264
-    u8 unknown_0268[0x4];           // 0x268
-    u32 phase_flags;                // 0x26c
-    u8 unknown_0270[0x4];           // 0x270
-    f32 parameter_274;              // 0x274
-    f32 parameter_278;              // 0x278
-    f32 parameter_27c;              // 0x27c
-    f32 parameter_280;              // 0x280
-    f32 parameter_284;              // 0x284
-    f32 parameter_288;              // 0x288
-    f32 parameter_28c;              // 0x28c
-    f32 parameter_290;              // 0x290
-    f32 parameter_294;              // 0x294
-    i32 point_texture_id;           // 0x298
-    i32 unfiltered_texture_id;      // 0x29c
-} PC_SHADER_MATERIAL_DISPATCH_VIEW; // size 0x2a0
+typedef struct PC_SHADER_MATERIAL_DISPATCH_VIEW { // size 0x2a0
+    u8 unknown_0000[0x40];                        // 0x000
+    u32 sampler_address_modes;                    // 0x040
+    u8 unknown_0044[0x1c];                        // 0x044
+    f32 phase_speed;                              // 0x060
+    f32 phase_scale;                              // 0x064
+    f32 phase_factor;                             // 0x068
+    f32 amplitude;                                // 0x06c
+    u8 unknown_0070[0x44];                        // 0x070
+    u32 texture_flags;                            // 0x0b4
+    i32 diffuse_texture_ids[4];                   // 0x0b8
+    u32 channel_colours[4];                       // 0x0c8
+    f32 parameter_d8;                             // 0x0d8
+    f32 parameter_dc;                             // 0x0dc
+    f32 parameter_e0;                             // 0x0e0
+    f32 parameter_e4;                             // 0x0e4
+    i32 height_texture_id;                        // 0x0e8
+    i32 normal_texture_id;                        // 0x0ec
+    f32 texture_lerp;                             // 0x0f0
+    u32 reflection_colour;                        // 0x0f4
+    u8 unknown_00f8[0x3];                         // 0x0f8
+    u8 flip_sign;                                 // 0x0fb
+    i32 specular_texture_id;                      // 0x0fc
+    i32 bump_texture_id;                          // 0x100
+    i32 cube_texture_id;                          // 0x104
+    i32 reflection_texture_id;                    // 0x108
+    i32 depth_texture_id;                         // 0x10c
+    i32 lighting_texture_id;                      // 0x110
+    f32 parameter_114;                            // 0x114
+    f32 parameter_118;                            // 0x118
+    u32 diffuse_colour;                           // 0x11c
+    u32 specular_colour;                          // 0x120
+    u32 tint_colour;                              // 0x124
+    u32 shadow_colour;                            // 0x128
+    f32 parameter_12c;                            // 0x12c
+    f32 parameter_130;                            // 0x130
+    f32 parameter_134;                            // 0x134
+    f32 parameter_138;                            // 0x138
+    f32 parameter_13c;                            // 0x13c
+    f32 parameter_140;                            // 0x140
+    f32 parameter_144;                            // 0x144
+    f32 parameter_148;                            // 0x148
+    f32 parameter_14c;                            // 0x14c
+    f32 parameter_150;                            // 0x150
+    f32 parameter_154;                            // 0x154
+    f32 parameter_158;                            // 0x158
+    u8 unknown_015c[0x30];                        // 0x15c
+    f32 texture_bias[6];                          // 0x18c
+    u8 unknown_01a4[0x4];                         // 0x1a4
+    f32 parameter_1a8;                            // 0x1a8
+    f32 parameter_1ac;                            // 0x1ac
+    f32 parameter_1b0;                            // 0x1b0
+    f32 parameter_1b4;                            // 0x1b4
+    f32 parameter_1b8;                            // 0x1b8
+    f32 parameter_1bc;                            // 0x1bc
+    u8 unknown_01c0[0x10];                        // 0x1c0
+    f32 uv_upload_lanes[10];                      // 0x1d0
+    u8 unknown_01f8[0x50];                        // 0x1f8
+    f32 parameter_248;                            // 0x248
+    i32 clamp_texture_id;                         // 0x24c
+    u32 palette_colours[4];                       // 0x250
+    f32 parameter_260;                            // 0x260
+    f32 parameter_264;                            // 0x264
+    u8 unknown_0268[0x4];                         // 0x268
+    u32 phase_flags;                              // 0x26c
+    u8 unknown_0270[0x4];                         // 0x270
+    f32 parameter_274;                            // 0x274
+    f32 parameter_278;                            // 0x278
+    f32 parameter_27c;                            // 0x27c
+    f32 parameter_280;                            // 0x280
+    f32 parameter_284;                            // 0x284
+    f32 parameter_288;                            // 0x288
+    f32 parameter_28c;                            // 0x28c
+    f32 parameter_290;                            // 0x290
+    f32 parameter_294;                            // 0x294
+    i32 point_texture_id;                         // 0x298
+    i32 unfiltered_texture_id;                    // 0x29c
+} PC_SHADER_MATERIAL_DISPATCH_VIEW;
 
 void PC_SHADER_PARAMETER_LOCAL_PC::SetScalar(f32 value) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
@@ -380,12 +380,12 @@ extern "C" u32 PCShaderSamplerBiasBitsPc(f32 bias) {
 }
 
 /* Minimum accessed cohort, not a whole NUMTL allocation/size claim. */
-typedef struct PC_SHADER_WATER_MATERIAL_VIEW {
-    u8 unknown_0000[0x60];       // 0x00
-    f32 phase_speed;             // 0x60
-    u8 unknown_0064[8];          // 0x64
-    f32 amplitude;               // 0x6c
-} PC_SHADER_WATER_MATERIAL_VIEW; // size 0x70
+typedef struct PC_SHADER_WATER_MATERIAL_VIEW { // size 0x70
+    u8 unknown_0000[0x60];                     // 0x00
+    f32 phase_speed;                           // 0x60
+    u8 unknown_0064[8];                        // 0x64
+    f32 amplitude;                             // 0x6c
+} PC_SHADER_WATER_MATERIAL_VIEW;
 
 /* Original caller/helper cohort required; these are logical signatures only.
  * Physical register ABI remains a compiler proof hold until the real dispatcher

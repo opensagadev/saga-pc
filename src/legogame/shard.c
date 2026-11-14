@@ -1,10 +1,10 @@
 #include "saga.h"
 
-typedef struct shard_progress_recovered_pc_s {
-    u32 collected[4]; // 0x00
-    u32 active[4];    // 0x10
-    u32 visible[4];   // 0x20
-} SHARD_PROGRESS_PC;  // size 0x30
+typedef struct shard_progress_recovered_pc_s { // size 0x30
+    u32 collected[4];                          // 0x00
+    u32 active[4];                             // 0x10
+    u32 visible[4];                            // 0x20
+} SHARD_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(SHARD_s) == 0x54);
 STATIC_ASSERT(offsetof(SHARD_s, position) == 0x10);

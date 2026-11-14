@@ -2375,16 +2375,16 @@ void RestoreLastSocksTurnoff(SOCKSYS_PC *system) {
     }
 }
 
-typedef struct SOCK_CAMERA_RESULT_PC {
-    SOCKPOSITION_PC socket; // 0x00
-    NUVEC position;         // 0x38
-    NUVEC target;           // 0x44
-    f32 blend;              // 0x50
-    f32 position_seek;      // 0x54
-    f32 angle_seek;         // 0x58
-    f32 shake;              // 0x5c
-    f32 separation;         // 0x60
-} SOCK_CAMERA_RESULT_PC;    // size 0x64
+typedef struct SOCK_CAMERA_RESULT_PC { // size 0x64
+    SOCKPOSITION_PC socket;            // 0x00
+    NUVEC position;                    // 0x38
+    NUVEC target;                      // 0x44
+    f32 blend;                         // 0x50
+    f32 position_seek;                 // 0x54
+    f32 angle_seek;                    // 0x58
+    f32 shake;                         // 0x5c
+    f32 separation;                    // 0x60
+} SOCK_CAMERA_RESULT_PC;
 
 i32 LastSingleSockWeWereInPc = -1;
 

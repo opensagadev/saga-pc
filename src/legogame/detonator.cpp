@@ -1,12 +1,12 @@
 #include "saga.h"
 #include <string.h>
 
-struct BATARANG_DETONATOR_HIT_VIEW_PC {
-    u8 unknown00[0xc];  // 0x00
-    f32 scale;          // 0x0c
-    u8 unknown10[0x10]; // 0x10
-    f32 delay;          // 0x20
-}; // size 0x24
+struct BATARANG_DETONATOR_HIT_VIEW_PC { // size 0x24
+    u8 unknown00[0xc];                  // 0x00
+    f32 scale;                          // 0x0c
+    u8 unknown10[0x10];                 // 0x10
+    f32 delay;                          // 0x20
+};
 
 extern "C" const f64 GameObjectNearFloorNoFloorHeight;
 

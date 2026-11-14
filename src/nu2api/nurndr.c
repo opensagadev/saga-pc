@@ -324,25 +324,25 @@ void NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *parameters
 
 /* View of the scene's post-effect block at 0xac..0x187 (Android nurenderscene_s: depth of field,
  * texture blend, camera and accumulation motion blur). */
-typedef struct NURNDR_EFFECTS_VIEW_PC {
-    NU_POST_DOF_PARAMETERS_PC dof;   // 0x00
-    u32 texture_blend_enabled;       // 0x18
-    i32 texture_blend_arg0;          // 0x1c
-    i32 texture_blend_arg1;          // 0x20
-    NUVEC4 texture_blend_parameters; // 0x24
-    u32 motion_params_set;           // 0x34
-    u32 motion_effect_set;           // 0x38
-    NUMTX motion_previous;           // 0x3c
-    NUMTX motion_current;            // 0x7c
-    f32 motion_scale;                // 0xbc
-    f32 motion_maximum;              // 0xc0
-    f32 motion_falloff;              // 0xc4
-    u32 accumulation_params_set;     // 0xc8
-    u32 accumulation_effect_set;     // 0xcc
-    i32 accumulation_frames;         // 0xd0
-    f32 accumulation_mode;           // 0xd4
-    f32 accumulation_blend;          // 0xd8
-} NURNDR_EFFECTS_VIEW_PC;            // size 0xdc
+typedef struct NURNDR_EFFECTS_VIEW_PC { // size 0xdc
+    NU_POST_DOF_PARAMETERS_PC dof;      // 0x00
+    u32 texture_blend_enabled;          // 0x18
+    i32 texture_blend_arg0;             // 0x1c
+    i32 texture_blend_arg1;             // 0x20
+    NUVEC4 texture_blend_parameters;    // 0x24
+    u32 motion_params_set;              // 0x34
+    u32 motion_effect_set;              // 0x38
+    NUMTX motion_previous;              // 0x3c
+    NUMTX motion_current;               // 0x7c
+    f32 motion_scale;                   // 0xbc
+    f32 motion_maximum;                 // 0xc0
+    f32 motion_falloff;                 // 0xc4
+    u32 accumulation_params_set;        // 0xc8
+    u32 accumulation_effect_set;        // 0xcc
+    i32 accumulation_frames;            // 0xd0
+    f32 accumulation_mode;              // 0xd4
+    f32 accumulation_blend;             // 0xd8
+} NURNDR_EFFECTS_VIEW_PC;
 
 #define NURNDR_EFFECTS ((NURNDR_EFFECTS_VIEW_PC *)&currentScene.unknown_ac)
 
@@ -496,14 +496,14 @@ void fun_005d5260(f32 offset) {
     PCShaderMaterialSamplerBiasOffsetPc = offset;
 }
 
-typedef struct locator_prim_vertex_pc_s {
-    f32 x;                // 0x00
-    f32 y;                // 0x04
-    f32 z;                // 0x08
-    u32 colour;           // 0x0c
-    f32 u;                // 0x10
-    f32 v;                // 0x14
-} LOCATOR_PRIM_VERTEX_PC; // size 0x18
+typedef struct locator_prim_vertex_pc_s { // size 0x18
+    f32 x;                                // 0x00
+    f32 y;                                // 0x04
+    f32 z;                                // 0x08
+    u32 colour;                           // 0x0c
+    f32 u;                                // 0x10
+    f32 v;                                // 0x14
+} LOCATOR_PRIM_VERTEX_PC;
 
 static void NuRndrPrimSetColourPrivate(i32 colour) {
     i32 converted;
@@ -1354,10 +1354,10 @@ PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc = 0;
 PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc = 0;
 
 /* Stencil shadow-volume arena vertex: D3DDECLTYPE_FLOAT3 position and D3DCOLOR. */
-typedef struct RENDERER_ARENA_VERTEX_PC {
-    NUVEC position;         // 0x0
-    u32 colour;             // 0xc
-} RENDERER_ARENA_VERTEX_PC; // size 0x10
+typedef struct RENDERER_ARENA_VERTEX_PC { // size 0x10
+    NUVEC position;                       // 0x0
+    u32 colour;                           // 0xc
+} RENDERER_ARENA_VERTEX_PC;
 
 RENDERER_ARENA_VERTEX_PC *RendererArenaDataPc = 0;
 u32 *RendererArenaOffsetsPc = 0;
@@ -1367,10 +1367,10 @@ i32 RendererArenaVertexCountPc = 0;
 i32 RendererArenaIndexCountPc = 0;
 
 /* Shadow outline records: a direction or point with a count (or a -1 marker in the arena) in the fourth word. */
-typedef struct pc_shadow_edge_s {
-    NUVEC v;         // 0x0
-    i32 count;       // 0xc
-} PC_SHADOW_EDGE_PC; // size 0x10
+typedef struct pc_shadow_edge_s { // size 0x10
+    NUVEC v;                      // 0x0
+    i32 count;                    // 0xc
+} PC_SHADOW_EDGE_PC;
 
 void NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
     RendererArenaDataPc = (RENDERER_ARENA_VERTEX_PC *)((buffer->addr + 3) & ~3u);
@@ -1423,18 +1423,19 @@ void NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
 
 /* Shadow cylinder records: a centre, the axis and two side vectors in object space. Bit 0 of the first word selects a
  * rounded (capsule) outline instead of a box. */
-typedef struct PC_SHADOW_CYLINDER_PC {
-    union {           // 0x00
-        NUVEC centre; // 0x00
-        u32 flags;    // 0x00
-    };
+typedef struct PC_SHADOW_CYLINDER_PC { // size 0x40
 
-    NUVEC axis;          // 0x0c
-    NUVEC side;          // 0x18
-    f32 unknown_24;      // 0x24
-    NUVEC up;            // 0x28
-    f32 unknown_34[3];   // 0x34
-} PC_SHADOW_CYLINDER_PC; // size 0x40
+    union { // size 0xc
+        NUVEC centre;
+        u32 flags;
+    }; // 0x00
+
+    NUVEC axis;        // 0x0c
+    NUVEC side;        // 0x18
+    f32 unknown_24;    // 0x24
+    NUVEC up;          // 0x28
+    f32 unknown_34[3]; // 0x34
+} PC_SHADOW_CYLINDER_PC;
 
 /* Extrudes the silhouette of a queued cylinder along the light offset into arena quads: ten edges of a capsule outline
  * when bit 0 of the record is set, otherwise the four edges of a box. */
@@ -2032,14 +2033,14 @@ void NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material) 
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-typedef struct NULINEVERTEX2D_PC {
-    f32 x;           // 0x00
-    f32 y;           // 0x04
-    f32 unused[2];   // 0x08
-    i32 colour;      // 0x10
-    f32 u;           // 0x14
-    f32 v;           // 0x18
-} NULINEVERTEX2D_PC; // size 0x1c
+typedef struct NULINEVERTEX2D_PC { // size 0x1c
+    f32 x;                         // 0x00
+    f32 y;                         // 0x04
+    f32 unused[2];                 // 0x08
+    i32 colour;                    // 0x10
+    f32 u;                         // 0x14
+    f32 v;                         // 0x18
+} NULINEVERTEX2D_PC;
 
 i32 NuRndrLine2d(NULINEVERTEX2D_PC *vertices, NUMTL *material) {
     f32 u;

@@ -3,7 +3,7 @@
 
 struct PC_PLATFORM_POLICY_PC;
 
-struct PC_PLATFORM_POLICY_METHODS_PC {
+struct PC_PLATFORM_POLICY_METHODS_PC {                                // size 0x1c
     void *unknown_00;                                                 // 0x00
     void *unknown_04;                                                 // 0x04
     ULONG(__stdcall *release)(PC_PLATFORM_POLICY_PC *);               // 0x08
@@ -11,7 +11,7 @@ struct PC_PLATFORM_POLICY_METHODS_PC {
     void *unknown_10;                                                 // 0x10
     void *unknown_14;                                                 // 0x14
     HRESULT(__stdcall *check)(PC_PLATFORM_POLICY_PC *, BSTR, BOOL *); // 0x18
-}; // size 0x1c
+};
 
 struct PC_PLATFORM_POLICY_PC {
     PC_PLATFORM_POLICY_METHODS_PC *methods;

@@ -46,12 +46,12 @@ extern "C" {
     extern const f32 DogfightOriginStartXPc;
 
     /* The PC keeps eight additional bytes at the end of each fighter record. */
-    typedef struct DOGFIGHT_FIGHTER_PC {
-        starfighter_s fields; // 0x000
-        u8 unknown_128[8];    // 0x128
-    } DOGFIGHT_FIGHTER_PC;    // size 0x130
+    typedef struct DOGFIGHT_FIGHTER_PC { // size 0x130
+        starfighter_s fields;            // 0x000
+        u8 unknown_128[8];               // 0x128
+    } DOGFIGHT_FIGHTER_PC;
 
-    typedef struct DOGFIGHT_GROUP_PC {
+    typedef struct DOGFIGHT_GROUP_PC {   // size 0x680
         NUMTX matrix;                    // 0x000
         DOGFIGHT_FIGHTER_PC fighters[5]; // 0x040
         NUVEC4 velocity;                 // 0x630
@@ -64,55 +64,55 @@ extern "C" {
         i32 draw_target;                 // 0x674
         f32 duration;                    // 0x678
         f32 speed;                       // 0x67c
-    } DOGFIGHT_GROUP_PC;                 // size 0x680
+    } DOGFIGHT_GROUP_PC;
 
-    typedef struct DOGFIGHT_CROSS_PC {
-        NUMTX matrix;     // 0x00
-        u16 flags;        // 0x40
-        u16 enabled;      // 0x42
-        u8 unknown_44[4]; // 0x44
-        u32 colour;       // 0x48
-        f32 scale;        // 0x4c
-    } DOGFIGHT_CROSS_PC;  // size 0x50
+    typedef struct DOGFIGHT_CROSS_PC { // size 0x50
+        NUMTX matrix;                  // 0x00
+        u16 flags;                     // 0x40
+        u16 enabled;                   // 0x42
+        u8 unknown_44[4];              // 0x44
+        u32 colour;                    // 0x48
+        f32 scale;                     // 0x4c
+    } DOGFIGHT_CROSS_PC;
 
-    typedef struct DOGFIGHT_SPLINE_HISTORY_PC {
-        u8 unknown_000[0x404];         // 0x000
-        f32 current_value;             // 0x404
-        f32 reset_value;               // 0x408
-        u8 unknown_40c[0x514 - 0x40c]; // 0x40c
-        u32 reset_state;               // 0x514
-        u32 current_state;             // 0x518
-        u8 unknown_51c[0x530 - 0x51c]; // 0x51c
-    } DOGFIGHT_SPLINE_HISTORY_PC;      // size 0x530
+    typedef struct DOGFIGHT_SPLINE_HISTORY_PC { // size 0x530
+        u8 unknown_000[0x404];                  // 0x000
+        f32 current_value;                      // 0x404
+        f32 reset_value;                        // 0x408
+        u8 unknown_40c[0x514 - 0x40c];          // 0x40c
+        u32 reset_state;                        // 0x514
+        u32 current_state;                      // 0x518
+        u8 unknown_51c[0x530 - 0x51c];          // 0x51c
+    } DOGFIGHT_SPLINE_HISTORY_PC;
 
-    typedef struct DOGFIGHT_ACTION_PC {
-        i32 command;      // 0x0
-        f32 value;        // 0x4
-    } DOGFIGHT_ACTION_PC; // size 0x8
+    typedef struct DOGFIGHT_ACTION_PC { // size 0x8
+        i32 command;                    // 0x0
+        f32 value;                      // 0x4
+    } DOGFIGHT_ACTION_PC;
 
-    typedef struct DOGFIGHT_DOOR_PC {
-        char name[12];  // 0x00
-        f32 distance;   // 0x0c
-        f32 timer;      // 0x10
-    } DOGFIGHT_DOOR_PC; // size 0x14
+    typedef struct DOGFIGHT_DOOR_PC { // size 0x14
+        char name[12];                // 0x00
+        f32 distance;                 // 0x0c
+        f32 timer;                    // 0x10
+    } DOGFIGHT_DOOR_PC;
 
-    typedef struct DOGFIGHT_RESET_RECORD_PC {
-        u8 unknown[0x60];       // 0x00
-    } DOGFIGHT_RESET_RECORD_PC; // size 0x60
+    typedef struct DOGFIGHT_RESET_RECORD_PC { // size 0x60
+        u8 unknown[0x60];                     // 0x00
+    } DOGFIGHT_RESET_RECORD_PC;
 
-    typedef struct DOGFIGHT_RESET_BUFFER_PC {
-        DOGFIGHT_RESET_RECORD_PC *records; // 0x0
-        u32 capacity;                      // 0x4
-        u32 used;                          // 0x8
-    } DOGFIGHT_RESET_BUFFER_PC;            // size 0xc
+    typedef struct DOGFIGHT_RESET_BUFFER_PC { // size 0xc
+        DOGFIGHT_RESET_RECORD_PC *records;    // 0x0
+        u32 capacity;                         // 0x4
+        u32 used;                             // 0x8
+    } DOGFIGHT_RESET_BUFFER_PC;
 
-    typedef struct DOGFIGHT_COIN_RECORD_PC {
-        i32 spline_id;         // 0x0
-        f32 spawn_time;        // 0x4
-        u8 unknown_08[8];      // 0x8
-    } DOGFIGHT_COIN_RECORD_PC; // size 0x10
+    typedef struct DOGFIGHT_COIN_RECORD_PC { // size 0x10
+        i32 spline_id;                       // 0x0
+        f32 spawn_time;                      // 0x4
+        u8 unknown_08[8];                    // 0x8
+    } DOGFIGHT_COIN_RECORD_PC;
 
-    typedef struct DOGFIGHT_SPACE_PC {
+    typedef struct DOGFIGHT_SPACE_PC {               // size 0x64740
         DOGFIGHT_CROSS_PC crosses[2];                // 0x00000
         DOGFIGHT_GROUP_PC groups[8];                 // 0x000a0
         NUVEC4 draw_scale;                           // 0x034a0
@@ -142,7 +142,7 @@ extern "C" {
         i32 coin_history_count;                      // 0x63734
         DOGFIGHT_COIN_RECORD_PC coin_history[256];   // 0x63738
         u8 unknown_64738[8];                         // 0x64738
-    } DOGFIGHT_SPACE_PC;                             // size 0x64740
+    } DOGFIGHT_SPACE_PC;
 
     STATIC_ASSERT(offsetof(WORLDINFO, has_level_specific_data) == 0x5118);
     STATIC_ASSERT(offsetof(WORLDINFO, level_specific_data) == 0x511c);
@@ -180,10 +180,10 @@ extern "C" {
 
     extern void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
 
-    typedef struct DOGFIGHT_SPEEDUP_PC {
-        f32 distance;      // 0x0
-        f32 speed;         // 0x4
-    } DOGFIGHT_SPEEDUP_PC; // size 0x8
+    typedef struct DOGFIGHT_SPEEDUP_PC { // size 0x8
+        f32 distance;                    // 0x0
+        f32 speed;                       // 0x4
+    } DOGFIGHT_SPEEDUP_PC;
 
 #pragma data_seg(".data$DogfightSpeedRatePc")
     f32 DogfightSpeedRatePc = 0.25f;
@@ -223,26 +223,26 @@ extern "C" {
     extern f32 FlightSplineDefaultIncrementPc;
 
     /* These records retain the PC-only 0x130 fighter and 0x60 quick-bolt strides. */
-    typedef struct DOGFIGHT_QUICK_BOLT_PC {
-        NUMTX matrix;         // 0x00
-        NUVEC4 velocity;      // 0x40
-        f32 duration;         // 0x50
-        u32 unknown_54;       // 0x54
-        i32 type;             // 0x58
-        u32 unknown_5c;       // 0x5c
-    } DOGFIGHT_QUICK_BOLT_PC; // size 0x60
+    typedef struct DOGFIGHT_QUICK_BOLT_PC { // size 0x60
+        NUMTX matrix;                       // 0x00
+        NUVEC4 velocity;                    // 0x40
+        f32 duration;                       // 0x50
+        u32 unknown_54;                     // 0x54
+        i32 type;                           // 0x58
+        u32 unknown_5c;                     // 0x5c
+    } DOGFIGHT_QUICK_BOLT_PC;
 
-    typedef struct DOGFIGHT_QUICK_BUFFER_PC {
-        DOGFIGHT_QUICK_BOLT_PC *records; // 0x0
-        u32 capacity;                    // 0x4
-        u32 used;                        // 0x8
-    } DOGFIGHT_QUICK_BUFFER_PC;          // size 0xc
+    typedef struct DOGFIGHT_QUICK_BUFFER_PC { // size 0xc
+        DOGFIGHT_QUICK_BOLT_PC *records;      // 0x0
+        u32 capacity;                         // 0x4
+        u32 used;                             // 0x8
+    } DOGFIGHT_QUICK_BUFFER_PC;
 
-    typedef struct DOGFIGHT_TARGET_SPLINE_PC {
-        u8 unknown_000[0x51c];   // 0x000
-        i32 target_id;           // 0x51c
-        u8 unknown_520[16];      // 0x520
-    } DOGFIGHT_TARGET_SPLINE_PC; // size 0x530
+    typedef struct DOGFIGHT_TARGET_SPLINE_PC { // size 0x530
+        u8 unknown_000[0x51c];                 // 0x000
+        i32 target_id;                         // 0x51c
+        u8 unknown_520[16];                    // 0x520
+    } DOGFIGHT_TARGET_SPLINE_PC;
 
 #pragma data_seg(push, ".data$DogfightDeathImpulseScalePc")
     f32 DogfightDeathImpulseScalePc = 10.0f;
@@ -270,33 +270,33 @@ extern "C" {
 #pragma data_seg(pop)
 
     /* Recovered PC playback views; original private source names are unknown. */
-    typedef struct DOGFIGHT_PLAYBACK_SPLINE_PC {
-        NUVEC4 points[64];         // 0x000
-        i32 point_count;           // 0x400
-        f32 next_spawn;            // 0x404
-        f32 reset_spawn;           // 0x408
-        f32 interval;              // 0x40c
-        f32 length;                // 0x410
-        f32 cumulative[64];        // 0x414
-        i32 repeat_limit;          // 0x514
-        i32 remaining;             // 0x518
-        i32 target_id;             // 0x51c
-        i32 object_id;             // 0x520
-        i32 model_id;              // 0x524
-        u8 unknown_528[8];         // 0x528
-    } DOGFIGHT_PLAYBACK_SPLINE_PC; // size 0x530
+    typedef struct DOGFIGHT_PLAYBACK_SPLINE_PC { // size 0x530
+        NUVEC4 points[64];                       // 0x000
+        i32 point_count;                         // 0x400
+        f32 next_spawn;                          // 0x404
+        f32 reset_spawn;                         // 0x408
+        f32 interval;                            // 0x40c
+        f32 length;                              // 0x410
+        f32 cumulative[64];                      // 0x414
+        i32 repeat_limit;                        // 0x514
+        i32 remaining;                           // 0x518
+        i32 target_id;                           // 0x51c
+        i32 object_id;                           // 0x520
+        i32 model_id;                            // 0x524
+        u8 unknown_528[8];                       // 0x528
+    } DOGFIGHT_PLAYBACK_SPLINE_PC;
 
-    typedef struct DOGFIGHT_ACTION_STATE_PC {
-        NUVEC4 draw_scale;           // 0x00
-        DOGFIGHT_ACTION_PC *actions; // 0x10
-        DOGFIGHT_ACTION_PC *current; // 0x14
-        i32 next_index;              // 0x18
-        i32 command;                 // 0x1c
-        u32 unknown_20;              // 0x20
-        f32 timer;                   // 0x24
-        u32 unknown_28;              // 0x28
-        DOGFIGHT_SPACE_PC *owner;    // 0x2c
-    } DOGFIGHT_ACTION_STATE_PC;      // size 0x30
+    typedef struct DOGFIGHT_ACTION_STATE_PC { // size 0x30
+        NUVEC4 draw_scale;                    // 0x00
+        DOGFIGHT_ACTION_PC *actions;          // 0x10
+        DOGFIGHT_ACTION_PC *current;          // 0x14
+        i32 next_index;                       // 0x18
+        i32 command;                          // 0x1c
+        u32 unknown_20;                       // 0x20
+        f32 timer;                            // 0x24
+        u32 unknown_28;                       // 0x28
+        DOGFIGHT_SPACE_PC *owner;             // 0x2c
+    } DOGFIGHT_ACTION_STATE_PC;
 
     typedef struct DOGFIGHT_LEVEL_FLAGS_PC {
         u8 first;
@@ -357,9 +357,9 @@ extern "C" {
     STATIC_ASSERT(offsetof(starfighter_s, spawn_time) == 0xf8);
     STATIC_ASSERT(offsetof(starfighter_s, hit_count) == 0x118);
 
-    typedef __declspec(align(16)) struct DOGFIGHT_COLLISION_VECTOR_PC {
-        NUVEC xyz;                  // 0x0
-    } DOGFIGHT_COLLISION_VECTOR_PC; // size 0x10
+    typedef __declspec(align(16)) struct DOGFIGHT_COLLISION_VECTOR_PC { // size 0x10
+        NUVEC xyz;                                                      // 0x0
+    } DOGFIGHT_COLLISION_VECTOR_PC;
 
     STATIC_ASSERT(__alignof(DOGFIGHT_COLLISION_VECTOR_PC) == 16);
     STATIC_ASSERT(__alignof(NUVEC) == 4);
@@ -386,22 +386,22 @@ extern "C" {
     };
 
     /* PC file records share the established 0x530-byte evaluator layout. */
-    typedef struct FLIGHT_SPLINE_FILE_PC {
-        NUVEC4 points[64];            // 0x000
-        i32 point_count;              // 0x400
-        f32 current_value;            // 0x404
-        f32 reset_value;              // 0x408
-        f32 rate;                     // 0x40c
-        f32 length;                   // 0x410
-        f32 cumulative_distances[64]; // 0x414
-        i32 reset_state;              // 0x514
-        i32 current_state;            // 0x518
-        i32 previous_id;              // 0x51c
-        i32 order;                    // 0x520
-        i32 id;                       // 0x524
-        i32 enabled;                  // 0x528
-        u32 unknown_52c;              // 0x52c
-    } FLIGHT_SPLINE_FILE_PC;          // size 0x530
+    typedef struct FLIGHT_SPLINE_FILE_PC { // size 0x530
+        NUVEC4 points[64];                 // 0x000
+        i32 point_count;                   // 0x400
+        f32 current_value;                 // 0x404
+        f32 reset_value;                   // 0x408
+        f32 rate;                          // 0x40c
+        f32 length;                        // 0x410
+        f32 cumulative_distances[64];      // 0x414
+        i32 reset_state;                   // 0x514
+        i32 current_state;                 // 0x518
+        i32 previous_id;                   // 0x51c
+        i32 order;                         // 0x520
+        i32 id;                            // 0x524
+        i32 enabled;                       // 0x528
+        u32 unknown_52c;                   // 0x52c
+    } FLIGHT_SPLINE_FILE_PC;
 
     STATIC_ASSERT(sizeof(FLIGHT_SPLINE_FILE_PC) == sizeof(FLIGHT_SPLINE_RESOURCE_PC));
     STATIC_ASSERT(offsetof(WORLDINFO, config_file) == 0x80);

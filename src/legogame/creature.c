@@ -1,57 +1,57 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct PLAYER_PACKET_RESET_PC {
-    u8 unknown_000[0x101];    // 0x000
-    u8 context_state_flags;   // 0x101
-    u8 unknown_102[0x4d2];    // 0x102
-    NUVEC reset_up_direction; // 0x5d4
-    GAMEPAD_PC *gamepad;      // 0x5e0
-    u8 unknown_5e4[0x20];     // 0x5e4
-    void *field_604;          // 0x604
-    u8 unknown_608[0xc];      // 0x608
-    u32 field_614[8];         // 0x614
-    u8 unknown_634[0x28];     // 0x634
-    i32 input_state;          // 0x65c
-    f32 field_660;            // 0x660
-    u8 unknown_664[0x20];     // 0x664
-    f32 delayed_turn_timer;   // 0x684
-    f32 field_688;            // 0x688
-    u8 unknown_68c[0x4];      // 0x68c
-    f32 field_690;            // 0x690
-    u8 unknown_694[0x24];     // 0x694
-    f32 field_6b8;            // 0x6b8
-    u8 unknown_6bc[0x1c];     // 0x6bc
-    f32 field_6d8;            // 0x6d8
-    f32 ground_height;        // 0x6dc
-    u8 unknown_6e0[0xc];      // 0x6e0
-    f32 field_6ec;            // 0x6ec
-    u8 unknown_6f0[0x18];     // 0x6f0
-    f32 field_708;            // 0x708
-    f32 field_70c;            // 0x70c
-    f32 field_710;            // 0x710
-    u8 unknown_714[0x4];      // 0x714
-    f32 field_718;            // 0x718
-    u8 unknown_71c[0x10];     // 0x71c
-    f32 field_72c;            // 0x72c
-    u8 unknown_730[0x1c];     // 0x730
-    i16 movement_angle_0;     // 0x74c
-    i16 movement_angle_1;     // 0x74e
-    u8 unknown_750[0x4];      // 0x750
-    u16 movement_lean_angle;  // 0x754
-    u16 secondary_lean_angle; // 0x756
-    u16 tertiary_lean_angle;  // 0x758
-    i16 force_glow_index;     // 0x75a
-    u32 secondary_flags;      // 0x75c
-    u32 render_flags;         // 0x760
-    u8 random_state[4];       // 0x764
-    u8 unknown_768[0x17];     // 0x768
-    i8 surface_type;          // 0x77f
-    u8 unknown_780[0x4];      // 0x780
-    f32 field_784;            // 0x784
-} PLAYER_PACKET_RESET_PC;     // size 0x788
+typedef struct PLAYER_PACKET_RESET_PC { // size 0x788
+    u8 unknown_000[0x101];              // 0x000
+    u8 context_state_flags;             // 0x101
+    u8 unknown_102[0x4d2];              // 0x102
+    NUVEC reset_up_direction;           // 0x5d4
+    GAMEPAD_PC *gamepad;                // 0x5e0
+    u8 unknown_5e4[0x20];               // 0x5e4
+    void *field_604;                    // 0x604
+    u8 unknown_608[0xc];                // 0x608
+    u32 field_614[8];                   // 0x614
+    u8 unknown_634[0x28];               // 0x634
+    i32 input_state;                    // 0x65c
+    f32 field_660;                      // 0x660
+    u8 unknown_664[0x20];               // 0x664
+    f32 delayed_turn_timer;             // 0x684
+    f32 field_688;                      // 0x688
+    u8 unknown_68c[0x4];                // 0x68c
+    f32 field_690;                      // 0x690
+    u8 unknown_694[0x24];               // 0x694
+    f32 field_6b8;                      // 0x6b8
+    u8 unknown_6bc[0x1c];               // 0x6bc
+    f32 field_6d8;                      // 0x6d8
+    f32 ground_height;                  // 0x6dc
+    u8 unknown_6e0[0xc];                // 0x6e0
+    f32 field_6ec;                      // 0x6ec
+    u8 unknown_6f0[0x18];               // 0x6f0
+    f32 field_708;                      // 0x708
+    f32 field_70c;                      // 0x70c
+    f32 field_710;                      // 0x710
+    u8 unknown_714[0x4];                // 0x714
+    f32 field_718;                      // 0x718
+    u8 unknown_71c[0x10];               // 0x71c
+    f32 field_72c;                      // 0x72c
+    u8 unknown_730[0x1c];               // 0x730
+    i16 movement_angle_0;               // 0x74c
+    i16 movement_angle_1;               // 0x74e
+    u8 unknown_750[0x4];                // 0x750
+    u16 movement_lean_angle;            // 0x754
+    u16 secondary_lean_angle;           // 0x756
+    u16 tertiary_lean_angle;            // 0x758
+    i16 force_glow_index;               // 0x75a
+    u32 secondary_flags;                // 0x75c
+    u32 render_flags;                   // 0x760
+    u8 random_state[4];                 // 0x764
+    u8 unknown_768[0x17];               // 0x768
+    i8 surface_type;                    // 0x77f
+    u8 unknown_780[0x4];                // 0x780
+    f32 field_784;                      // 0x784
+} PLAYER_PACKET_RESET_PC;
 
-typedef struct GAMEPAD_RESET_PC {
+typedef struct GAMEPAD_RESET_PC {  // size 0x5c
     void *bound_pad;               // 0x00
     u32 buttons_held;              // 0x04
     u32 buttons_pressed;           // 0x08
@@ -70,59 +70,59 @@ typedef struct GAMEPAD_RESET_PC {
     void *operator_data;           // 0x54
     u8 unknown_058[0x2];           // 0x58
     u16 runtime_flags;             // 0x5a
-} GAMEPAD_RESET_PC;                // size 0x5c
+} GAMEPAD_RESET_PC;
 
-typedef struct TERRAIN_PLAYER_IMPACT_PC {
-    NUVEC position;         // 0x00
-    NUVEC normal;           // 0x0c
-    u8 material[2];         // 0x18
-    u8 flags;               // 0x1a
-    u8 normal_flags;        // 0x1b
-} TERRAIN_PLAYER_IMPACT_PC; // size 0x1c
+typedef struct TERRAIN_PLAYER_IMPACT_PC { // size 0x1c
+    NUVEC position;                       // 0x00
+    NUVEC normal;                         // 0x0c
+    u8 material[2];                       // 0x18
+    u8 flags;                             // 0x1a
+    u8 normal_flags;                      // 0x1b
+} TERRAIN_PLAYER_IMPACT_PC;
 
-typedef struct TERRAIN_PLAYER_PLATFORM_RECORD_PC {
-    u8 unknown_0[0xe];               // 0x00
-    i16 platform_id;                 // 0x0e
-    GAMEOBJECT *object;              // 0x10
-} TERRAIN_PLAYER_PLATFORM_RECORD_PC; // size 0x14
+typedef struct TERRAIN_PLAYER_PLATFORM_RECORD_PC { // size 0x14
+    u8 unknown_0[0xe];                             // 0x00
+    i16 platform_id;                               // 0x0e
+    GAMEOBJECT *object;                            // 0x10
+} TERRAIN_PLAYER_PLATFORM_RECORD_PC;
 
-typedef struct TERRAIN_PLAYER_PLATFORM_SYS_PC {
+typedef struct TERRAIN_PLAYER_PLATFORM_SYS_PC {   // size 0x1c
     u8 unknown_0[4];                              // 0x00
     i32 count;                                    // 0x04
     TERRAIN_PLAYER_PLATFORM_RECORD_PC entries[1]; // 0x08
-} TERRAIN_PLAYER_PLATFORM_SYS_PC;                 // size 0x1c
+} TERRAIN_PLAYER_PLATFORM_SYS_PC;
 
-typedef struct TERRAIN_PLAYER_GRABBER_PC {
-    u8 unknown_0[0x554];        // 0x000
-    f32 platform_contact_timer; // 0x554
-    u8 unknown_558[8];          // 0x558
-    i16 platform_id;            // 0x560
-} TERRAIN_PLAYER_GRABBER_PC;    // size 0x564
+typedef struct TERRAIN_PLAYER_GRABBER_PC { // size 0x564
+    u8 unknown_0[0x554];                   // 0x000
+    f32 platform_contact_timer;            // 0x554
+    u8 unknown_558[8];                     // 0x558
+    i16 platform_id;                       // 0x560
+} TERRAIN_PLAYER_GRABBER_PC;
 
-typedef struct TERRAIN_PLAYER_WORLD_PC {
-    u8 unknown_0[0x46ec];               // 0x0000
-    TERRAIN_PLAYER_GRABBER_PC *grabber; // 0x46ec
-} TERRAIN_PLAYER_WORLD_PC;              // size 0x46f0
+typedef struct TERRAIN_PLAYER_WORLD_PC { // size 0x46f0
+    u8 unknown_0[0x46ec];                // 0x0000
+    TERRAIN_PLAYER_GRABBER_PC *grabber;  // 0x46ec
+} TERRAIN_PLAYER_WORLD_PC;
 
-typedef struct TERRAIN_PLAYER_BLOWUP_PC {
-    u8 unknown_0[0x102];    // 0x000
-    i16 platform_id;        // 0x102
-} TERRAIN_PLAYER_BLOWUP_PC; // size 0x104
+typedef struct TERRAIN_PLAYER_BLOWUP_PC { // size 0x104
+    u8 unknown_0[0x102];                  // 0x000
+    i16 platform_id;                      // 0x102
+} TERRAIN_PLAYER_BLOWUP_PC;
 
-typedef struct TERRAIN_PLAYER_COINS_PC {
-    u32 coins;             // 0x0
-    f32 scale;             // 0x4
-} TERRAIN_PLAYER_COINS_PC; // size 0x8
+typedef struct TERRAIN_PLAYER_COINS_PC { // size 0x8
+    u32 coins;                           // 0x0
+    f32 scale;                           // 0x4
+} TERRAIN_PLAYER_COINS_PC;
 
-typedef struct TERRAIN_PLAYER_SET_PC {
-    u8 unknown_0[0x1bac]; // 0x0000
-    i32 minimum_height;   // 0x1bac
-} TERRAIN_PLAYER_SET_PC;  // size 0x1bb0
+typedef struct TERRAIN_PLAYER_SET_PC { // size 0x1bb0
+    u8 unknown_0[0x1bac];              // 0x0000
+    i32 minimum_height;                // 0x1bac
+} TERRAIN_PLAYER_SET_PC;
 
-typedef struct TERRAIN_PLAYER_CHARACTER_PC {
-    u8 unknown_0[0x18];                  // 0x00
-    void (*move_callback)(GAMEOBJECT *); // 0x18
-} TERRAIN_PLAYER_CHARACTER_PC;           // size 0x1c
+typedef struct TERRAIN_PLAYER_CHARACTER_PC { // size 0x1c
+    u8 unknown_0[0x18];                      // 0x00
+    void (*move_callback)(GAMEOBJECT *);     // 0x18
+} TERRAIN_PLAYER_CHARACTER_PC;
 
 void TakeOverCode(GAMEOBJECT *, i32);
 void ApplyGravity(GAMEOBJECT *, f32 *, f32, f32, f32 *);

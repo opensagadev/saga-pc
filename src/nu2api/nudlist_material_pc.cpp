@@ -3,10 +3,10 @@
 #include "saga.h"
 #include <math.h>
 
-typedef struct PC_DL_MATERIAL_READER {
-    u8 unknown_0000[0x40]; // 0x00
-    u32 reflection_flags;  // 0x40
-} PC_DL_MATERIAL_READER;   // size 0x44
+typedef struct PC_DL_MATERIAL_READER { // size 0x44
+    u8 unknown_0000[0x40];             // 0x00
+    u32 reflection_flags;              // 0x40
+} PC_DL_MATERIAL_READER;
 
 STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
 STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
@@ -162,7 +162,7 @@ extern "C" void NuDisplayListFaceOnTransformPc(void *arg) {
 }
 
 /* Minimum reader only; no material allocation, pointee or full extent claim. */
-typedef struct PC_DL_E_MATERIAL_READER {
+typedef struct PC_DL_E_MATERIAL_READER {        // size 0x2c0
     NUMTL common;                               // 0x000
     u8 unknown_009c[0x1c];                      // 0x09c
     i32 texture_id;                             // 0x0b8
@@ -173,15 +173,15 @@ typedef struct PC_DL_E_MATERIAL_READER {
     u8 face_on_variant;                         // 0x268
     u8 unknown_0269[0x53];                      // 0x269
     PC_TEXTURE_RESOURCE_PC *vertex_declaration; // 0x2bc
-} PC_DL_E_MATERIAL_READER;                      // size 0x2c0
+} PC_DL_E_MATERIAL_READER;
 
 STATIC_ASSERT(sizeof(NUMTL) == 0x9c);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) + 0x4f * sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 0x3d0);
 
-struct PC_DL_SHADER_PROGRAM_PAIR_PC {
+struct PC_DL_SHADER_PROGRAM_PAIR_PC {      // size 0x8
     PC_TEXTURE_RESOURCE_PC *vertex_shader; // 0x0
     PC_TEXTURE_RESOURCE_PC *pixel_shader;  // 0x4
-}; // size 0x8
+};
 
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, textures) + sizeof(GRAPHICS_RENDER_TEXTURE_PC *) == 0x6b8);
 STATIC_ASSERT(offsetof(ShaderUniformRecordPc, values) == 0x1c);
@@ -362,12 +362,12 @@ extern "C" void NuDisplayListMaterialPc(void *arg) {
     }
 }
 
-typedef struct PC_DL_MATERIAL_STATES_READER {
-    u8 unknown_0000[0x40];      // 0x000
-    u32 attributes;             // 0x040
-    u8 unknown_0044[0x1ac];     // 0x044
-    u32 variant_flags;          // 0x1f0
-} PC_DL_MATERIAL_STATES_READER; // size 0x1f4
+typedef struct PC_DL_MATERIAL_STATES_READER { // size 0x1f4
+    u8 unknown_0000[0x40];                    // 0x000
+    u32 attributes;                           // 0x040
+    u8 unknown_0044[0x1ac];                   // 0x044
+    u32 variant_flags;                        // 0x1f0
+} PC_DL_MATERIAL_STATES_READER;
 
 /* PCDisplayHandlerSetZMode is the real private helper already in the BC cohort. */
 extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {

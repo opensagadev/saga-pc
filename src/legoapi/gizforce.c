@@ -1,10 +1,10 @@
 #include "saga.h"
 
-typedef struct force_glow_reader_pc_s {
-    u8 unknown_0000[0xd14];           // 0x000
-    GAMEOBJECT *force_glow_object;    // 0xd14
-    GAMEOBJECT *force_glow_candidate; // 0xd18
-} FORCE_GLOW_READER_PC;               // size 0xd1c
+typedef struct force_glow_reader_pc_s { // size 0xd1c
+    u8 unknown_0000[0xd14];             // 0x000
+    GAMEOBJECT *force_glow_object;      // 0xd14
+    GAMEOBJECT *force_glow_candidate;   // 0xd18
+} FORCE_GLOW_READER_PC;
 
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 STATIC_ASSERT(offsetof(PART_PC, gravity) == 0xe8);
@@ -80,17 +80,17 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
     }
 }
 
-typedef struct force_glow_packet_pc_s {
-    u8 unknown000[0x650];         // 0x000
-    void *object;                 // 0x650
-    void *candidate;              // 0x654
-    u8 unknown658[0x6bc - 0x658]; // 0x658
-    f32 alpha;                    // 0x6bc
-    f32 target;                   // 0x6c0
-    f32 recovery;                 // 0x6c4
-    f32 unknown6c8;               // 0x6c8
-    f32 hold;                     // 0x6cc
-} FORCE_GLOW_PACKET_PC;           // size 0x6d0
+typedef struct force_glow_packet_pc_s { // size 0x6d0
+    u8 unknown000[0x650];               // 0x000
+    void *object;                       // 0x650
+    void *candidate;                    // 0x654
+    u8 unknown658[0x6bc - 0x658];       // 0x658
+    f32 alpha;                          // 0x6bc
+    f32 target;                         // 0x6c0
+    f32 recovery;                       // 0x6c4
+    f32 unknown6c8;                     // 0x6c8
+    f32 hold;                           // 0x6cc
+} FORCE_GLOW_PACKET_PC;
 
 STATIC_ASSERT(sizeof(FORCE_RESET_GROUP_PC) == 0x28);
 STATIC_ASSERT(offsetof(FORCE_RESET_GROUP_PC, slot_words) == 0);
@@ -142,19 +142,19 @@ STATIC_ASSERT(offsetof(GIZFORCE_PC, animation_speed) == 0x58);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, start_frame) == 0x5c);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, end_frame) == 0x60);
 
-typedef struct GIZFORCE_ANIMATION_DATA_PC {
-    u8 unknown_00[2];         // 0x0
-    i16 platform_id;          // 0x2
-} GIZFORCE_ANIMATION_DATA_PC; // size 0x4
+typedef struct GIZFORCE_ANIMATION_DATA_PC { // size 0x4
+    u8 unknown_00[2];                       // 0x0
+    i16 platform_id;                        // 0x2
+} GIZFORCE_ANIMATION_DATA_PC;
 
-typedef struct GIZFORCE_GROUP_BEST_PC {
-    GIZFORCE_PC *forces[9]; // 0x00
-    u8 flags;               // 0x24
-    u8 unknown_25;          // 0x25
-    u8 count;               // 0x26
-} GIZFORCE_GROUP_BEST_PC;   // size 0x28
+typedef struct GIZFORCE_GROUP_BEST_PC { // size 0x28
+    GIZFORCE_PC *forces[9];             // 0x00
+    u8 flags;                           // 0x24
+    u8 unknown_25;                      // 0x25
+    u8 count;                           // 0x26
+} GIZFORCE_GROUP_BEST_PC;
 
-typedef struct GIZFORCE_BEST_PC {
+typedef struct GIZFORCE_BEST_PC {  // size 0xa4
     u8 unknown_000[0x1c];          // 0x00
     NUVEC position;                // 0x1c
     GAMEANIMSET *anim_set;         // 0x28
@@ -168,53 +168,53 @@ typedef struct GIZFORCE_BEST_PC {
     u32 config_flags;              // 0x74
     u8 unknown_078[0x28];          // 0x78
     u32 runtime_flags;             // 0xa0
-} GIZFORCE_BEST_PC;                // size 0xa4
+} GIZFORCE_BEST_PC;
 
-typedef struct GIZFORCE_SYS_BEST_PC {
-    u8 unknown_000[4];            // 0x00
-    GIZFORCE_PC **visible_forces; // 0x04
-    u8 unknown_008[8];            // 0x08
-    u16 visible_count;            // 0x10
-    u8 unknown_012[2];            // 0x12
-    GAMEANIMOBJPOOL *anim_pool;   // 0x14
-} GIZFORCE_SYS_BEST_PC;           // size 0x18
+typedef struct GIZFORCE_SYS_BEST_PC { // size 0x18
+    u8 unknown_000[4];                // 0x00
+    GIZFORCE_PC **visible_forces;     // 0x04
+    u8 unknown_008[8];                // 0x08
+    u16 visible_count;                // 0x10
+    u8 unknown_012[2];                // 0x12
+    GAMEANIMOBJPOOL *anim_pool;       // 0x14
+} GIZFORCE_SYS_BEST_PC;
 
-typedef struct GIZFORCE_LOS_BEST_PC {
-    u32 clear_bits[12]; // 0x00
-    u32 queried_at[1];  // 0x30
-} GIZFORCE_LOS_BEST_PC; // size 0x34
+typedef struct GIZFORCE_LOS_BEST_PC { // size 0x34
+    u32 clear_bits[12];               // 0x00
+    u32 queried_at[1];                // 0x30
+} GIZFORCE_LOS_BEST_PC;
 
-typedef struct GIZFORCE_OBJECT_BEST_PC {
-    u8 unknown_000[0x10cc]; // 0x0000
-    GIZFORCE_PC *target;    // 0x10cc
-    GAMEANIMOBJ *animation; // 0x10d0
-} GIZFORCE_OBJECT_BEST_PC;  // size 0x10d4
+typedef struct GIZFORCE_OBJECT_BEST_PC { // size 0x10d4
+    u8 unknown_000[0x10cc];              // 0x0000
+    GIZFORCE_PC *target;                 // 0x10cc
+    GAMEANIMOBJ *animation;              // 0x10d0
+} GIZFORCE_OBJECT_BEST_PC;
 
-typedef struct GIZFORCE_PLATFORM_BEST_PC {
-    u8 unknown_000[2];       // 0x0
-    i16 platform_id;         // 0x2
-} GIZFORCE_PLATFORM_BEST_PC; // size 0x4
+typedef struct GIZFORCE_PLATFORM_BEST_PC { // size 0x4
+    u8 unknown_000[2];                     // 0x0
+    i16 platform_id;                       // 0x2
+} GIZFORCE_PLATFORM_BEST_PC;
 
-typedef struct force_sfx_config_pc_s {
-    u8 unknown_00[0x28];        // 0x00
-    GAMEANIMSET *anim_set;      // 0x28
-    u8 unknown_2c[0x82 - 0x2c]; // 0x2c
-    i16 process_sfx;            // 0x82
-    i16 complete_sfx;           // 0x84
-    i16 return_sfx;             // 0x86
-    u8 unknown_88[0xa4 - 0x88]; // 0x88
-} FORCE_SFX_CONFIG_PC;          // size 0xa4
+typedef struct force_sfx_config_pc_s { // size 0xa4
+    u8 unknown_00[0x28];               // 0x00
+    GAMEANIMSET *anim_set;             // 0x28
+    u8 unknown_2c[0x82 - 0x2c];        // 0x2c
+    i16 process_sfx;                   // 0x82
+    i16 complete_sfx;                  // 0x84
+    i16 return_sfx;                    // 0x86
+    u8 unknown_88[0xa4 - 0x88];        // 0x88
+} FORCE_SFX_CONFIG_PC;
 
-typedef struct force_sfx_system_pc_s {
-    FORCE_SFX_CONFIG_PC *forces; // 0x0
-    u8 unknown_04[0xe - 4];      // 0x4
-    u16 count;                   // 0xe
-} FORCE_SFX_SYSTEM_PC;           // size 0x10
+typedef struct force_sfx_system_pc_s { // size 0x10
+    FORCE_SFX_CONFIG_PC *forces;       // 0x0
+    u8 unknown_04[0xe - 4];            // 0x4
+    u16 count;                         // 0xe
+} FORCE_SFX_SYSTEM_PC;
 
-typedef struct world_force_sfx_pc_s {
+typedef struct world_force_sfx_pc_s {  // size 0x46b0
     u8 unknown_0000[0x46ac];           // 0x0000
     FORCE_SFX_SYSTEM_PC *force_system; // 0x46ac
-} WORLD_FORCE_SFX_PC;                  // size 0x46b0
+} WORLD_FORCE_SFX_PC;
 
 static void *GizForces_ReserveBufferSpace(void *world_ptr) {
     i32 i;
@@ -239,21 +239,21 @@ static void *GizForces_ReserveBufferSpace(void *world_ptr) {
     return force_sys;
 }
 
-typedef struct trigger_force_object_pc_s {
-    u8 unknown000[0x10cc]; // 0x0000
-    GIZFORCE_PC *force;    // 0x10cc
-} TRIGGER_FORCE_OBJECT_PC; // size 0x10d0
+typedef struct trigger_force_object_pc_s { // size 0x10d0
+    u8 unknown000[0x10cc];                 // 0x0000
+    GIZFORCE_PC *force;                    // 0x10cc
+} TRIGGER_FORCE_OBJECT_PC;
 
-typedef struct FORCE_RESET_PROGRESS_PC {
-    u32 enabled[4];             // 0x00
-    u32 visible[4];             // 0x10
-    u32 reward_released[4];     // 0x20
-    u32 socket_hidden[4];       // 0x30
-    u32 completion_released[4]; // 0x40
-    u32 completion_pending[4];  // 0x50
-    u32 destroyed[4];           // 0x60
-    u8 group_members[8][8];     // 0x70
-} FORCE_RESET_PROGRESS_PC;      // size 0xb0
+typedef struct FORCE_RESET_PROGRESS_PC { // size 0xb0
+    u32 enabled[4];                      // 0x00
+    u32 visible[4];                      // 0x10
+    u32 reward_released[4];              // 0x20
+    u32 socket_hidden[4];                // 0x30
+    u32 completion_released[4];          // 0x40
+    u32 completion_pending[4];           // 0x50
+    u32 destroyed[4];                    // 0x60
+    u8 group_members[8][8];              // 0x70
+} FORCE_RESET_PROGRESS_PC;
 
 STATIC_ASSERT(offsetof(GIZFORCESYS_s, forces) == 0);
 STATIC_ASSERT(offsetof(GIZFORCESYS_s, count) == 0xe);

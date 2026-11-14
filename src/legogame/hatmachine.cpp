@@ -1,6 +1,6 @@
 #include "saga.h"
 
-struct HATMACHINE_PC {
+struct HATMACHINE_PC {      // size 0xa0
     NUMTX matrix;           // 0x00
     char name[16];          // 0x40
     NUVEC position;         // 0x50
@@ -11,17 +11,17 @@ struct HATMACHINE_PC {
     u8 model_letter;        // 0x61
     u8 model_special_index; // 0x62
 
-    union {       // 0x63
-        u8 flags; // 0x63
+    union { // size 0x1
+        u8 flags;
 
-        struct {                        // 0x63
+        struct {                        // size 0x1
             u8 state_bit0 : 1;          // 0x63:0
             u8 state_bit1 : 1;          // 0x63:1
             u8 visible : 1;             // 0x63:2
             u8 enabled : 1;             // 0x63:3
             u8 reserved_state_bits : 4; // 0x63:4
         };
-    };
+    }; // 0x63
 
     NUVEC player_position; // 0x64
     NUVEC target_offset;   // 0x70
@@ -36,19 +36,19 @@ struct HATMACHINE_PC {
     f32 animation_time;    // 0x94
     f32 idle_bounce_timer; // 0x98
     u8 reserved_9c[4];     // 0x9c
-}; // size 0xa0
+};
 
-struct HATMACHINE_SYS_PC {
+struct HATMACHINE_SYS_PC {   // size 0x10
     i32 count;               // 0x0
     i32 reserved_04;         // 0x4
     i32 reserved_08;         // 0x8
     HATMACHINE_PC *machines; // 0xc
-}; // size 0x10
+};
 
-struct HATMACHINE_WORLD_PC {
+struct HATMACHINE_WORLD_PC {            // size 0x5078
     u8 unknown_000[0x5074];             // 0x0000
     HATMACHINE_SYS_PC *hat_machine_sys; // 0x5074
-}; // size 0x5078
+};
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 extern "C" {
@@ -116,11 +116,11 @@ extern "C" i32 HatMachine_BeingUsed(HATMACHINE_PC *machine) {
     return machine->flags & 1;
 }
 
-struct HAT_USE_REQUEST_PC {
-    u8 unknown_000[0x79c]; // 0x000
-    i32 request;           // 0x79c
-    void *net_wait_info;   // 0x7a0
-}; // size 0x7a4
+struct HAT_USE_REQUEST_PC { // size 0x7a4
+    u8 unknown_000[0x79c];  // 0x000
+    i32 request;            // 0x79c
+    void *net_wait_info;    // 0x7a0
+};
 
 extern "C" i16 id_PRINCESSLEIABOUSHH;
 
@@ -291,11 +291,11 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
     }
 }
 
-struct HATMACHINE_PROGRESS_PC {
-    i32 preserved_state; // 0x0
-    u32 enabled_mask[1]; // 0x4
-    u32 visible_mask[1]; // 0x8
-}; // size 0xc
+struct HATMACHINE_PROGRESS_PC { // size 0xc
+    i32 preserved_state;        // 0x0
+    u32 enabled_mask[1];        // 0x4
+    u32 visible_mask[1];        // 0x8
+};
 
 extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 extern "C" i32 hatmachine_gizmotype_id;

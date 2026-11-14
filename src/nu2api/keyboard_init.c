@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct NuKeyboardProfile_PC {
+typedef struct NuKeyboardProfile_PC {   // size 0x17c
     u8 unknown_00_to_0b[0x0c];          // 0x000
     i32 device_mode_a;                  // 0x00c
     NuKeyboardDevice_PC *device;        // 0x010
@@ -14,25 +14,25 @@ typedef struct NuKeyboardProfile_PC {
     u8 active_39;                       // 0x039
     char name[0x40];                    // 0x03a
     u8 unknown_7a_to_17b[0x17c - 0x7a]; // 0x07a
-} NuKeyboardProfile_PC;                 // size 0x17c
+} NuKeyboardProfile_PC;
 
-typedef struct NuKeyboardProfileLayout_PC {
-    u8 unknown_0000_to_5cff[0x5d00];  // 0x0000
-    NuKeyboardProfile_PC profiles[4]; // 0x5d00
-} NuKeyboardProfileLayout_PC;         // size 0x62f0
+typedef struct NuKeyboardProfileLayout_PC { // size 0x62f0
+    u8 unknown_0000_to_5cff[0x5d00];        // 0x0000
+    NuKeyboardProfile_PC profiles[4];       // 0x5d00
+} NuKeyboardProfileLayout_PC;
 
-typedef struct NuKeyboardActionRecord_PC {
-    u8 unknown_00_to_27[0x28];          // 0x000
-    u8 active;                          // 0x028
-    u8 unknown_29_to_17b[0x17c - 0x29]; // 0x029
-} NuKeyboardActionRecord_PC;            // size 0x17c
+typedef struct NuKeyboardActionRecord_PC { // size 0x17c
+    u8 unknown_00_to_27[0x28];             // 0x000
+    u8 active;                             // 0x028
+    u8 unknown_29_to_17b[0x17c - 0x29];    // 0x029
+} NuKeyboardActionRecord_PC;
 
-typedef struct NuKeyboardActionState_PC {
+typedef struct NuKeyboardActionState_PC {     // size 0x660c
     u8 unknown_0000_to_4e33[0x4e34];          // 0x0000
     NuKeyboardActionRecord_PC records[14];    // 0x4e34
     u8 unknown_62fc_to_6607[0x6608 - 0x62fc]; // 0x62fc
     i32 fallback_action;                      // 0x6608
-} NuKeyboardActionState_PC;                   // size 0x660c
+} NuKeyboardActionState_PC;
 
 void PcInput_EnableKeyboards(const i16 *keys, i32 count) {
     NuKeyboardActionState_PC *state;

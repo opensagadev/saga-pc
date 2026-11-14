@@ -354,12 +354,12 @@ i32 ProcessActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
     return 1;
 }
 
-typedef struct GIZFLOW_BOX_LOADER_PREFIX_PC {
-    u8 unknown_000[4];          // 0x0
-    u8 assist_id;               // 0x4
-    u8 unknown_005[5];          // 0x5
-    u16 state_flags;            // 0xa
-} GIZFLOW_BOX_LOADER_PREFIX_PC; // size 0xc
+typedef struct GIZFLOW_BOX_LOADER_PREFIX_PC { // size 0xc
+    u8 unknown_000[4];                        // 0x0
+    u8 assist_id;                             // 0x4
+    u8 unknown_005[5];                        // 0x5
+    u16 state_flags;                          // 0xa
+} GIZFLOW_BOX_LOADER_PREFIX_PC;
 
 STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->assist_id) == 1);
 STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->state_flags) == 2);
@@ -821,11 +821,11 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
 
 typedef struct GIZFLOW_REMAP_PC GIZFLOW_REMAP_PC;
 
-struct GIZFLOW_REMAP_PC {
+struct GIZFLOW_REMAP_PC {  // size 0x70
     i16 parents[16];       // 0x00
     i16 children[32];      // 0x20
     u8 parent_outputs[16]; // 0x60
-}; // size 0x70
+};
 
 static GIZFLOW_REMAP_PC *remap = 0;
 static i32 numRemaps = 0;
@@ -975,11 +975,11 @@ void fun_0059ecb0(void) {
 
 typedef struct GIZFLOW_CONDITION_TYPE_PC GIZFLOW_CONDITION_TYPE_PC;
 
-struct GIZFLOW_CONDITION_TYPE_PC {
-    i32 type;                  // 0x0
-    char *name;                // 0x4
-    void (*load)(NUFPAR_PC *); // 0x8
-}; // size 0xc
+struct GIZFLOW_CONDITION_TYPE_PC { // size 0xc
+    i32 type;                      // 0x0
+    char *name;                    // 0x4
+    void (*load)(NUFPAR_PC *);     // 0x8
+};
 
 static GIZFLOW_CONDITION_TYPE_PC gizflow_condition_types_pc[] = {
     {0, "All", NULL},  {1, "Any", NULL},

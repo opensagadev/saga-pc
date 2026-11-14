@@ -1,23 +1,23 @@
 #include "saga.h"
 
-typedef struct carry_plug_pc_s {
-    char name[16];       // 0x00
-    NUVEC position;      // 0x10
-    u16 rotation_x;      // 0x1c
-    u16 rotation_y;      // 0x1e
-    u16 rotation_z;      // 0x20
-    u8 enabled;          // 0x22
-    u8 active : 1;       // 0x23:0
-    u8 visible : 1;      // 0x23:1
-    u8 plugged : 1;      // 0x23:2
-    u8 unknown_23 : 5;   // 0x23:3
-    u8 unknown_24[0x10]; // 0x24
-} CARRY_PLUG_PC;         // size 0x34
+typedef struct carry_plug_pc_s { // size 0x34
+    char name[16];               // 0x00
+    NUVEC position;              // 0x10
+    u16 rotation_x;              // 0x1c
+    u16 rotation_y;              // 0x1e
+    u16 rotation_z;              // 0x20
+    u8 enabled;                  // 0x22
+    u8 active : 1;               // 0x23:0
+    u8 visible : 1;              // 0x23:1
+    u8 plugged : 1;              // 0x23:2
+    u8 unknown_23 : 5;           // 0x23:3
+    u8 unknown_24[0x10];         // 0x24
+} CARRY_PLUG_PC;
 
-typedef struct carry_plug_sys_pc_s {
-    CARRY_PLUG_PC *plugs; // 0x0
-    i32 count;            // 0x4
-} CARRY_PLUG_SYS_PC;      // size 0x8
+typedef struct carry_plug_sys_pc_s { // size 0x8
+    CARRY_PLUG_PC *plugs;            // 0x0
+    i32 count;                       // 0x4
+} CARRY_PLUG_SYS_PC;
 
 CARRY_PLUG_PC *Plug_FindNearest(CARRY_PLUG_SYS_PC *system, NUVEC *position, f32 *distance_squared, i32 only_unplugged) {
     CARRY_PLUG_PC *nearest = NULL;
@@ -51,16 +51,16 @@ void Plug_MakeDrawMtx(CARRY_PLUG_PC *plug, NUMTX *matrix) {
     NuMtxTranslate(matrix, &plug->position);
 }
 
-typedef struct plug_world_callbacks_pc_s {
-    u8 unknown[0x516c];             // 0x0000
-    CARRY_PLUG_SYS_PC *plug_system; // 0x516c
-} PLUG_WORLD_CALLBACKS_PC;          // size 0x5170
+typedef struct plug_world_callbacks_pc_s { // size 0x5170
+    u8 unknown[0x516c];                    // 0x0000
+    CARRY_PLUG_SYS_PC *plug_system;        // 0x516c
+} PLUG_WORLD_CALLBACKS_PC;
 
-typedef struct plug_progress_pc_s {
-    u32 visible_mask[1]; // 0x0
-    u32 active_mask[1];  // 0x4
-    u32 plugged_mask[1]; // 0x8
-} PLUG_PROGRESS_PC;      // size 0xc
+typedef struct plug_progress_pc_s { // size 0xc
+    u32 visible_mask[1];            // 0x0
+    u32 active_mask[1];             // 0x4
+    u32 plugged_mask[1];            // 0x8
+} PLUG_PROGRESS_PC;
 
 static void *Plugs_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;

@@ -3,19 +3,19 @@
 #include <string.h>
 
 /* Complete 0x2028-byte native header written before optional API data and Game. */
-typedef struct PC_SAVE_HEADER_PC {
-    u32 magic;                    // 0x0000
-    u32 version;                  // 0x0004
-    u32 size;                     // 0x0008
-    u32 reserved_0c;              // 0x000c
-    u32 reserved_10;              // 0x0010
-    u32 api_data_size;            // 0x0014
-    u8 metadata[16];              // 0x0018
-    WCHAR title[1024];            // 0x0028
-    WCHAR slot_caption[1024];     // 0x0828
-    WCHAR reserved_caption[1024]; // 0x1028
-    WCHAR date_time[1024];        // 0x1828
-} PC_SAVE_HEADER_PC;              // size 0x2028
+typedef struct PC_SAVE_HEADER_PC { // size 0x2028
+    u32 magic;                     // 0x0000
+    u32 version;                   // 0x0004
+    u32 size;                      // 0x0008
+    u32 reserved_0c;               // 0x000c
+    u32 reserved_10;               // 0x0010
+    u32 api_data_size;             // 0x0014
+    u8 metadata[16];               // 0x0018
+    WCHAR title[1024];             // 0x0028
+    WCHAR slot_caption[1024];      // 0x0828
+    WCHAR reserved_caption[1024];  // 0x1028
+    WCHAR date_time[1024];         // 0x1828
+} PC_SAVE_HEADER_PC;
 
 extern "C" {
     extern char SaveFolderPathPc[256];

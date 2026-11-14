@@ -2,11 +2,11 @@
 #include <string.h>
 #include <stdio.h>
 
-struct PC_MUSIC_ACTION_PAIR_PC {
-    i16 quiet_id;         // 0x00
-    i16 action_id;        // 0x02
-    u8 unknown_004[0x18]; // 0x04
-}; // size 0x1c
+struct PC_MUSIC_ACTION_PAIR_PC { // size 0x1c
+    i16 quiet_id;                // 0x00
+    i16 action_id;               // 0x02
+    u8 unknown_004[0x18];        // 0x04
+};
 
 extern "C" {
     extern void (*ExtraHurtSfxFn)(GAMEOBJECT *);

@@ -1,13 +1,13 @@
 #include "saga.h"
 
-struct text_crawl_view_pc_s {
+struct text_crawl_view_pc_s {  // size 0x10
     i16 *heading_text;         // 0x0
     i16 *vehicle_bonus_text;   // 0x4
     i16 *character_bonus_text; // 0x8
     u8 paragraph_count;        // 0xc
     i8 area;                   // 0xd
     u8 unknown_0e[2];          // 0xe
-}; // size 0x10
+};
 
 extern "C" {
     AREA_EXTRA_MODEL_PC ExtraModelList[6] = {
@@ -31311,12 +31311,12 @@ extern "C" {
         AISYS_PC *, VARIPTR *, VARIPTR *) = NULL;
 }
 
-typedef struct AI_PATH_CONNECTION_TYPE_PC {
+typedef struct AI_PATH_CONNECTION_TYPE_PC {        // size 0x4c
     u32 connection_flag;                           // 0x00
     void (*draw)(NUVEC *, f32, NUVEC *, u32, i32); // 0x04
     char name[64];                                 // 0x08
     u32 flags;                                     // 0x48
-} AI_PATH_CONNECTION_TYPE_PC;                      // size 0x4c
+} AI_PATH_CONNECTION_TYPE_PC;
 
 #pragma section(".data$AIPathConnectionViewsPc", read, write)
 extern "C" {

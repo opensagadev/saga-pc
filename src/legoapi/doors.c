@@ -6,13 +6,13 @@ void Door_Reset(void) {
     Door_NextSock = -1;
 }
 
-typedef struct startup_door_spline_pc_s {
-    i16 point_count;      // 0x0
-    u8 unknown_02[6];     // 0x2
-    NUVEC *points;        // 0x8
-} STARTUP_DOOR_SPLINE_PC; // size 0xc
+typedef struct startup_door_spline_pc_s { // size 0xc
+    i16 point_count;                      // 0x0
+    u8 unknown_02[6];                     // 0x2
+    NUVEC *points;                        // 0x8
+} STARTUP_DOOR_SPLINE_PC;
 
-typedef struct startup_door_pc_s {
+typedef struct startup_door_pc_s {  // size 0x128
     u8 unknown_00[0xa0];            // 0x000
     STARTUP_DOOR_SPLINE_PC *spline; // 0x0a0
     NUVEC point0;                   // 0x0a4
@@ -30,14 +30,14 @@ typedef struct startup_door_pc_s {
     u8 unknown_f8[0x18];            // 0x0f8
     NUPLANE plane;                  // 0x110
     u8 unknown_120[8];              // 0x120
-} STARTUP_DOOR_PC;                  // size 0x128
+} STARTUP_DOOR_PC;
 
-typedef struct startup_world_doors_pc_s {
-    u8 unknown_00[0x4698];       // 0x0000
-    STARTUP_DOOR_PC *doors;      // 0x4698
-    i32 door_count;              // 0x469c
-    STARTUP_DOOR_PC *start_door; // 0x46a0
-} STARTUP_WORLD_DOORS_PC;        // size 0x46a4
+typedef struct startup_world_doors_pc_s { // size 0x46a4
+    u8 unknown_00[0x4698];                // 0x0000
+    STARTUP_DOOR_PC *doors;               // 0x4698
+    i32 door_count;                       // 0x469c
+    STARTUP_DOOR_PC *start_door;          // 0x46a0
+} STARTUP_WORLD_DOORS_PC;
 
 void Doors_Init(WORLDINFO *world) {
     STARTUP_WORLD_DOORS_PC *view = (STARTUP_WORLD_DOORS_PC *)world;
@@ -86,45 +86,45 @@ void Doors_Init(WORLDINFO *world) {
     }
 }
 
-typedef struct player_position_record_pc_s {
-    NUVEC *position;         // 0x0
-    i32 sock_location;       // 0x4
-    f32 sock_ratio;          // 0x8
-    i16 angle;               // 0xc
-    u8 unknown_0e[2];        // 0xe
-} PLAYER_POSITION_RECORD_PC; // size 0x10
+typedef struct player_position_record_pc_s { // size 0x10
+    NUVEC *position;                         // 0x0
+    i32 sock_location;                       // 0x4
+    f32 sock_ratio;                          // 0x8
+    i16 angle;                               // 0xc
+    u8 unknown_0e[2];                        // 0xe
+} PLAYER_POSITION_RECORD_PC;
 
-typedef struct player_door_pc_s {
-    char name[128];       // 0x000
-    char camera_name[32]; // 0x080
-    NUGSPLINE *spline;    // 0x0a0
-    u8 unknown_a4[0x30];  // 0x0a4
-    NUVEC position;       // 0x0d4
-    u8 unknown_e0[0x10];  // 0x0e0
-    i16 level;            // 0x0f0
-    i16 freeplay_area;    // 0x0f2
-    u8 next_sock;         // 0x0f4
-    u8 flags;             // 0x0f5
-    u8 vehicle;           // 0x0f6
-    u8 active;            // 0x0f7
-    u8 unknown_f8[0x30];  // 0x0f8
-} PLAYER_DOOR_PC;         // size 0x128
+typedef struct player_door_pc_s { // size 0x128
+    char name[128];               // 0x000
+    char camera_name[32];         // 0x080
+    NUGSPLINE *spline;            // 0x0a0
+    u8 unknown_a4[0x30];          // 0x0a4
+    NUVEC position;               // 0x0d4
+    u8 unknown_e0[0x10];          // 0x0e0
+    i16 level;                    // 0x0f0
+    i16 freeplay_area;            // 0x0f2
+    u8 next_sock;                 // 0x0f4
+    u8 flags;                     // 0x0f5
+    u8 vehicle;                   // 0x0f6
+    u8 active;                    // 0x0f7
+    u8 unknown_f8[0x30];          // 0x0f8
+} PLAYER_DOOR_PC;
 
-typedef struct player_world_doors_pc_s {
-    u8 unknown_00[0x4698];      // 0x0000
-    PLAYER_DOOR_PC *doors;      // 0x4698
-    i32 door_count;             // 0x469c
-    PLAYER_DOOR_PC *start_door; // 0x46a0
-} PLAYER_WORLD_DOORS_PC;        // size 0x46a4
+typedef struct player_world_doors_pc_s { // size 0x46a4
+    u8 unknown_00[0x4698];               // 0x0000
+    PLAYER_DOOR_PC *doors;               // 0x4698
+    i32 door_count;                      // 0x469c
+    PLAYER_DOOR_PC *start_door;          // 0x46a0
+} PLAYER_WORLD_DOORS_PC;
 
-typedef union player_position_sock_pc_u {
-    SOCKPOSITION_PC sock; // 0x00
+typedef union player_position_sock_pc_u { // size 0x38
+    SOCKPOSITION_PC sock;
 
-    struct {          // 0x00
+    struct {          // size 0x8
         i32 location; // 0x00
         f32 ratio;    // 0x04
     } start;
-} PLAYER_POSITION_SOCK_PC; // size 0x38
+} PLAYER_POSITION_SOCK_PC;
 
 STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
 
@@ -303,40 +303,40 @@ ADDGIZMOTYPE_PC *Door_RegisterGizmo(i32 type_id) {
     return &addtype;
 }
 
-typedef struct door_config_pc_s {
-    char name[128];             // 0x000
-    char camera_name[32];       // 0x080
-    NUGSPLINE *spline;          // 0x0a0
-    u8 unknown_a4[0xd4 - 0xa4]; // 0x0a4
-    NUVEC position;             // 0x0d4
-    f32 radius;                 // 0x0e0
-    NUVEC normal;               // 0x0e4
-    i16 level;                  // 0x0f0
-    i16 freeplay_level;         // 0x0f2
-    i8 next_sock;               // 0x0f4
-    u8 flags;                   // 0x0f5
-    i8 vehicle;                 // 0x0f6
-    u8 active;                  // 0x0f7
-    NUGSPLINE *camera_spline;   // 0x0f8
-    f32 camera_wait;            // 0x0fc
-    f32 camera_blend;           // 0x100
-    u8 unknown_104[4];          // 0x104
-    u32 vehicle_mask_low;       // 0x108
-    u32 vehicle_mask_high;      // 0x10c
-    u8 unknown_110[0x10];       // 0x110
-    CUTINFO *cutscene;          // 0x120
-    u8 unknown_124[4];          // 0x124
-} DOOR_CONFIG_PC;               // size 0x128
+typedef struct door_config_pc_s { // size 0x128
+    char name[128];               // 0x000
+    char camera_name[32];         // 0x080
+    NUGSPLINE *spline;            // 0x0a0
+    u8 unknown_a4[0xd4 - 0xa4];   // 0x0a4
+    NUVEC position;               // 0x0d4
+    f32 radius;                   // 0x0e0
+    NUVEC normal;                 // 0x0e4
+    i16 level;                    // 0x0f0
+    i16 freeplay_level;           // 0x0f2
+    i8 next_sock;                 // 0x0f4
+    u8 flags;                     // 0x0f5
+    i8 vehicle;                   // 0x0f6
+    u8 active;                    // 0x0f7
+    NUGSPLINE *camera_spline;     // 0x0f8
+    f32 camera_wait;              // 0x0fc
+    f32 camera_blend;             // 0x100
+    u8 unknown_104[4];            // 0x104
+    u32 vehicle_mask_low;         // 0x108
+    u32 vehicle_mask_high;        // 0x10c
+    u8 unknown_110[0x10];         // 0x110
+    CUTINFO *cutscene;            // 0x120
+    u8 unknown_124[4];            // 0x124
+} DOOR_CONFIG_PC;
 
-typedef struct world_door_config_pc_s {
-    u8 unknown_000[0x104];          // 0x0000
-    void *giz_buffer;               // 0x0104
-    u8 unknown_108[0x13c - 0x108];  // 0x0108
-    NUGSCN *scene;                  // 0x013c
-    u8 unknown_140[0x4698 - 0x140]; // 0x0140
-    DOOR_CONFIG_PC *doors;          // 0x4698
-    i32 door_count;                 // 0x469c
-} WORLD_DOOR_CONFIG_PC;             // size 0x46a0
+typedef struct world_door_config_pc_s { // size 0x46a0
+    u8 unknown_000[0x104];              // 0x0000
+    void *giz_buffer;                   // 0x0104
+    u8 unknown_108[0x13c - 0x108];      // 0x0108
+    NUGSCN *scene;                      // 0x013c
+    u8 unknown_140[0x4698 - 0x140];     // 0x0140
+    DOOR_CONFIG_PC *doors;              // 0x4698
+    i32 door_count;                     // 0x469c
+} WORLD_DOOR_CONFIG_PC;
 
 static WORLD_DOOR_CONFIG_PC *D_worldinfo = 0;
 static DOOR_CONFIG_PC *D_door = 0;

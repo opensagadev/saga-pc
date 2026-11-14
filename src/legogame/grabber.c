@@ -1,27 +1,27 @@
 #include "saga.h"
 
-typedef struct grabber_progress_source_pc_s {
-    u8 unknown_0000[0x484];   // 0x000
-    f32 stored_tfactor;       // 0x484
-    u8 unknown_0488[4];       // 0x488
-    f32 stored_frame;         // 0x48c
-    u8 unknown_0490[4];       // 0x490
-    f32 stored_parameter;     // 0x494
-} GRABBER_PROGRESS_SOURCE_PC; // size 0x498
+typedef struct grabber_progress_source_pc_s { // size 0x498
+    u8 unknown_0000[0x484];                   // 0x000
+    f32 stored_tfactor;                       // 0x484
+    u8 unknown_0488[4];                       // 0x488
+    f32 stored_frame;                         // 0x48c
+    u8 unknown_0490[4];                       // 0x490
+    f32 stored_parameter;                     // 0x494
+} GRABBER_PROGRESS_SOURCE_PC;
 
-typedef struct world_grabber_progress_pc_s {
-    u8 unknown_0000[0x46ec];             // 0x0000
-    GRABBER_PROGRESS_SOURCE_PC *grabber; // 0x46ec
-} WORLD_GRABBER_PROGRESS_PC;             // size 0x46f0
+typedef struct world_grabber_progress_pc_s { // size 0x46f0
+    u8 unknown_0000[0x46ec];                 // 0x0000
+    GRABBER_PROGRESS_SOURCE_PC *grabber;     // 0x46ec
+} WORLD_GRABBER_PROGRESS_PC;
 
-typedef struct level_grabber_progress_pc_s {
-    u8 unknown_0000[0x2810]; // 0x0000
-    f32 stored_frame;        // 0x2810
-    f32 stored_tfactor;      // 0x2814
-    f32 stored_parameter;    // 0x2818
-} LEVEL_GRABBER_PROGRESS_PC; // size 0x281c
+typedef struct level_grabber_progress_pc_s { // size 0x281c
+    u8 unknown_0000[0x2810];                 // 0x0000
+    f32 stored_frame;                        // 0x2810
+    f32 stored_tfactor;                      // 0x2814
+    f32 stored_parameter;                    // 0x2818
+} LEVEL_GRABBER_PROGRESS_PC;
 
-typedef struct grabber_pc_s {
+typedef struct grabber_pc_s {                   // size 0x568
     NUMTX matrix;                               // 0x000
     NUMTX grab_matrix;                          // 0x040
     u8 unknown_080[0x440 - 0x80];               // 0x080
@@ -52,16 +52,16 @@ typedef struct grabber_pc_s {
     f32 platform_contact_timer;                 // 0x554
     u8 state;                                   // 0x558
 
-    union {       // 0x559
-        u8 flags; // 0x559
+    union { // size 0x1
+        u8 flags;
 
-        struct {                   // 0x559
+        struct {                   // size 0x1
             u8 flag_0 : 1;         // 0x559:0
             u8 lifted : 1;         // 0x559:1
             u8 switch_latched : 1; // 0x559:2
             u8 rotate : 1;         // 0x559:3
         } bits;
-    };
+    }; // 0x559
 
     u16 yaw;           // 0x55a
     u16 target_yaw;    // 0x55c
@@ -70,34 +70,34 @@ typedef struct grabber_pc_s {
     u8 move_xy;        // 0x562
     u8 invert_x;       // 0x563
     u8 unknown_564[4]; // 0x564
-} GRABBER_PC;          // size 0x568
+} GRABBER_PC;
 
-typedef struct world_grabber_config_pc_s {
-    u8 unknown_000[0x104];          // 0x0000
-    void *giz_buffer;               // 0x0104
-    u8 unknown_108[0x128 - 0x108];  // 0x0108
-    LEVELDATA_PC *current_level;    // 0x0128
-    u8 unknown_12c[0x13c - 0x12c];  // 0x012c
-    NUGSCN *scene;                  // 0x013c
-    u8 unknown_140[0x46ec - 0x140]; // 0x0140
-    GRABBER_PC *grabber;            // 0x46ec
-} WORLD_GRABBER_PC;                 // size 0x46f0
+typedef struct world_grabber_config_pc_s { // size 0x46f0
+    u8 unknown_000[0x104];                 // 0x0000
+    void *giz_buffer;                      // 0x0104
+    u8 unknown_108[0x128 - 0x108];         // 0x0108
+    LEVELDATA_PC *current_level;           // 0x0128
+    u8 unknown_12c[0x13c - 0x12c];         // 0x012c
+    NUGSCN *scene;                         // 0x013c
+    u8 unknown_140[0x46ec - 0x140];        // 0x0140
+    GRABBER_PC *grabber;                   // 0x46ec
+} WORLD_GRABBER_PC;
 
-typedef struct grab_config_data_pc_s {
-    f32 level_y_offset;     // 0x00
-    NUFPCOMJMP keywords[9]; // 0x04
-} GRAB_CONFIG_DATA_PC;      // size 0x4c
+typedef struct grab_config_data_pc_s { // size 0x4c
+    f32 level_y_offset;                // 0x00
+    NUFPCOMJMP keywords[9];            // 0x04
+} GRAB_CONFIG_DATA_PC;
 
-typedef struct grabber_hg_view_pc_s {
-    u8 unknown_000[0x19c];     // 0x000
-    i32 shadow_surface_points; // 0x19c
-    u8 suppress_shadow_points; // 0x1a0
-} GRABBER_HG_VIEW_PC;          // size 0x1a4
+typedef struct grabber_hg_view_pc_s { // size 0x1a4
+    u8 unknown_000[0x19c];            // 0x000
+    i32 shadow_surface_points;        // 0x19c
+    u8 suppress_shadow_points;        // 0x1a0
+} GRABBER_HG_VIEW_PC;
 
-typedef struct grabber_antinode_view_pc_s {
-    u8 unknown_00[0x50];    // 0x00
-    i64 object_mask;        // 0x50
-} GRABBER_ANTINODE_VIEW_PC; // size 0x58
+typedef struct grabber_antinode_view_pc_s { // size 0x58
+    u8 unknown_00[0x50];                    // 0x00
+    i64 object_mask;                        // 0x50
+} GRABBER_ANTINODE_VIEW_PC;
 
 GIZMOPICKUP_PC *GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
 extern i32 CharacterBlobShadowsOnPc;

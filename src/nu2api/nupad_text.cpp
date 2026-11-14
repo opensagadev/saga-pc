@@ -3,26 +3,26 @@
 
 #pragma pack(push, 1)
 
-struct TEXT_INPUT_BINDING_PC {
-    u8 type;         // 0x0
-    u8 unknown_0001; // 0x1
-    i16 value;       // 0x2
-}; // size 0x4
+struct TEXT_INPUT_BINDING_PC { // size 0x4
+    u8 type;                   // 0x0
+    u8 unknown_0001;           // 0x1
+    i16 value;                 // 0x2
+};
 
-struct TEXT_INPUT_DEVICE_PC {
+struct TEXT_INPUT_DEVICE_PC {           // size 0x17c
     u8 unknown_0000[0x6e];              // 0x000
     TEXT_INPUT_BINDING_PC bindings[32]; // 0x06e
     u8 unknown_00ee[0x8e];              // 0x0ee
-}; // size 0x17c
+};
 
-struct TEXT_INPUT_DEVICE_KIND_PC {
-    i8 kind;            // 0x0
-    u8 unknown_0001[5]; // 0x1
-}; // size 0x6
+struct TEXT_INPUT_DEVICE_KIND_PC { // size 0x6
+    i8 kind;                       // 0x0
+    u8 unknown_0001[5];            // 0x1
+};
 
 #pragma pack(pop)
 
-class TEXT_INPUT_MANAGER_PC {
+class TEXT_INPUT_MANAGER_PC { // size 0x68b0
   public:
     u8 unknown_0000[0x4e34];                      // 0x0000
     TEXT_INPUT_DEVICE_PC devices[14];             // 0x4e34
@@ -36,7 +36,7 @@ class TEXT_INPUT_MANAGER_PC {
     i32 ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
                    i32 alternate_labels, char *delimiters);
     i32 fun_006d9dc0(i32 device, i32 button, char *destination, i32 custom, i32 custom_index);
-}; // size 0x68b0
+};
 
 extern "C" {
     extern void (*TextInputNameCallbackPc)(i32, char *);

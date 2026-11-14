@@ -51,7 +51,7 @@ i32 ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
     return 0;
 }
 
-typedef struct AIONCEATTACKER_PC {
-    GAMEOBJECT *object; // 0x0
-    f32 distance;       // 0x4
-} AIONCEATTACKER_PC;    // size 0x8
+typedef struct AIONCEATTACKER_PC { // size 0x8
+    GAMEOBJECT *object;            // 0x0
+    f32 distance;                  // 0x4
+} AIONCEATTACKER_PC;

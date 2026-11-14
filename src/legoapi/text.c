@@ -1240,20 +1240,20 @@ void MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u3
     SmartTextEx(text, x, y, z, sx, sy, sz, alignment, red, green, blue, max_width, max_lines, box, suppress, alpha);
 }
 
-typedef struct text_crawl_view_pc_s {
-    i16 *heading_text;         // 0x0
-    i16 *vehicle_bonus_text;   // 0x4
-    i16 *character_bonus_text; // 0x8
-    u8 paragraph_count;        // 0xc
-    i8 area;                   // 0xd
-    u8 unknown_0e[2];          // 0xe
-} TEXT_CRAWL_VIEW_PC;          // size 0x10
+typedef struct text_crawl_view_pc_s { // size 0x10
+    i16 *heading_text;                // 0x0
+    i16 *vehicle_bonus_text;          // 0x4
+    i16 *character_bonus_text;        // 0x8
+    u8 paragraph_count;               // 0xc
+    i8 area;                          // 0xd
+    u8 unknown_0e[2];                 // 0xe
+} TEXT_CRAWL_VIEW_PC;
 
-typedef struct text_crawl_mission_view_pc_s {
-    u8 unknown_00[4];         // 0x0
-    i16 name_id;              // 0x4
-    i16 text_id;              // 0x6
-} TEXT_CRAWL_MISSION_VIEW_PC; // size 0x8
+typedef struct text_crawl_mission_view_pc_s { // size 0x8
+    u8 unknown_00[4];                         // 0x0
+    i16 name_id;                              // 0x4
+    i16 text_id;                              // 0x6
+} TEXT_CRAWL_MISSION_VIEW_PC;
 
 STATIC_ASSERT(offsetof(AREA_DATA_PC, name_id) == 0x78);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);

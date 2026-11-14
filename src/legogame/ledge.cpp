@@ -1,20 +1,20 @@
 #include "saga.h"
 
-typedef struct LEDGE_MOTION_PC {
-    char name[8];   // 0x00
-    NUVEC position; // 0x08
-    u16 y_rotation; // 0x14
-    i8 type_code;   // 0x16
+typedef struct LEDGE_MOTION_PC { // size 0x38
+    char name[8];                // 0x00
+    NUVEC position;              // 0x08
+    u16 y_rotation;              // 0x14
+    i8 type_code;                // 0x16
 
-    union {             // 0x17
-        u8 state_flags; // 0x17
+    union { // size 0x1
+        u8 state_flags;
 
-        struct {            // 0x17
+        struct {            // size 0x1
             u8 active : 1;  // 0x17:0
             u8 visible : 1; // 0x17:1
             u8 unused : 6;  // 0x17:2
         } state_bits;
-    };
+    }; // 0x17
 
     u8 type_index;     // 0x18
     u8 flags;          // 0x19
@@ -23,23 +23,23 @@ typedef struct LEDGE_MOTION_PC {
     i16 field_1e;      // 0x1e
     NUVEC bounds_min;  // 0x20
     NUVEC bounds_max;  // 0x2c
-} LEDGE_MOTION_PC;     // size 0x38
+} LEDGE_MOTION_PC;
 
-typedef struct LEDGE_WORLD_PC {
-    u8 unknown_000[0x50a8];  // 0x0000
-    LEDGE_MOTION_PC *ledges; // 0x50a8
-    i32 count;               // 0x50ac
-} LEDGE_WORLD_PC;            // size 0x50b0
+typedef struct LEDGE_WORLD_PC { // size 0x50b0
+    u8 unknown_000[0x50a8];     // 0x0000
+    LEDGE_MOTION_PC *ledges;    // 0x50a8
+    i32 count;                  // 0x50ac
+} LEDGE_WORLD_PC;
 
-typedef struct LEDGEPIECE {
-    i16 object_id;     // 0x00
-    i8 type_code;      // 0x02
-    u8 straight;       // 0x03
-    NUVEC start;       // 0x04
-    NUVEC end;         // 0x10
-    u16 exit_angle;    // 0x1c
-    u16 arc_mid_angle; // 0x1e
-} LEDGEPIECE;          // size 0x20
+typedef struct LEDGEPIECE { // size 0x20
+    i16 object_id;          // 0x00
+    i8 type_code;           // 0x02
+    u8 straight;            // 0x03
+    NUVEC start;            // 0x04
+    NUVEC end;              // 0x10
+    u16 exit_angle;         // 0x1c
+    u16 arc_mid_angle;      // 0x1e
+} LEDGEPIECE;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, external_force) == 0x748);
 STATIC_ASSERT(offsetof(GAMEOBJECT, launch_origin) == 0x754);
@@ -292,10 +292,10 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     LedgeSetAttachPositionPc(object, &position, angle + 0x8000);
 }
 
-typedef struct LEDGE_PROGRESS_PC {
-    u32 active[4];   // 0x00
-    u32 visible[4];  // 0x10
-} LEDGE_PROGRESS_PC; // size 0x20
+typedef struct LEDGE_PROGRESS_PC { // size 0x20
+    u32 active[4];                 // 0x00
+    u32 visible[4];                // 0x10
+} LEDGE_PROGRESS_PC;
 
 STATIC_ASSERT(offsetof(WORLDINFO, ledges) == 0x50a8);
 STATIC_ASSERT(offsetof(WORLDINFO, ledge_count) == 0x50ac);

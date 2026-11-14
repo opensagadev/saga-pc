@@ -2,32 +2,32 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct level_sfx_world_view_s {
-    u8 unknown_00[0x4684];          // 0x0000
-    i32 teleport_count;             // 0x4684
-    u8 unknown_4688[0x38];          // 0x4688
-    i32 push_block_count;           // 0x46c0
-    u8 unknown_46c4[0x20];          // 0x46c4
-    i32 spinner_count;              // 0x46e4
-    u8 unknown_46e8[4];             // 0x46e8
-    void *grabber;                  // 0x46ec
-    u8 unknown_46f0[0x960];         // 0x46f0
-    LEVEL_SFX_PULSE_PC *pulses_sys; // 0x5050
-    u8 unknown_5054[0x18];          // 0x5054
-    i32 nlevers;                    // 0x506c
-    u8 unknown_5070[4];             // 0x5070
-    i32 *hat_machine_sys;           // 0x5074
-} LEVEL_SFX_WORLD_VIEW_PC;          // size 0x5078
+typedef struct level_sfx_world_view_s { // size 0x5078
+    u8 unknown_00[0x4684];              // 0x0000
+    i32 teleport_count;                 // 0x4684
+    u8 unknown_4688[0x38];              // 0x4688
+    i32 push_block_count;               // 0x46c0
+    u8 unknown_46c4[0x20];              // 0x46c4
+    i32 spinner_count;                  // 0x46e4
+    u8 unknown_46e8[4];                 // 0x46e8
+    void *grabber;                      // 0x46ec
+    u8 unknown_46f0[0x960];             // 0x46f0
+    LEVEL_SFX_PULSE_PC *pulses_sys;     // 0x5050
+    u8 unknown_5054[0x18];              // 0x5054
+    i32 nlevers;                        // 0x506c
+    u8 unknown_5070[4];                 // 0x5070
+    i32 *hat_machine_sys;               // 0x5074
+} LEVEL_SFX_WORLD_VIEW_PC;
 
-typedef struct level_sfx_cut_slot_s {
-    i16 id;              // 0x00
-    u8 unknown_02[0x12]; // 0x02
-} LEVEL_SFX_CUT_SLOT_PC; // size 0x14
+typedef struct level_sfx_cut_slot_s { // size 0x14
+    i16 id;                           // 0x00
+    u8 unknown_02[0x12];              // 0x02
+} LEVEL_SFX_CUT_SLOT_PC;
 
-typedef struct level_sfx_cut_s {
+typedef struct level_sfx_cut_s {  // size 0xe8
     u8 unknown_00[0x70];          // 0x00
     LEVEL_SFX_CUT_SLOT_PC sfx[6]; // 0x70
-} LEVEL_SFX_CUT_PC;               // size 0xe8
+} LEVEL_SFX_CUT_PC;
 
 AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
 

@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <stdio.h>
 
-typedef struct SARLACC_DISCO_PC {
+typedef struct SARLACC_DISCO_PC {   // size 0x400
     AIAREA_PC *area;                // 0x000
     NUSPECIALHANDLE off[16];        // 0x004
     NUSPECIALHANDLE flash[16];      // 0x0c4
@@ -23,7 +23,7 @@ typedef struct SARLACC_DISCO_PC {
     GIZAIMESSAGE *complete_message; // 0x3f4
     GIZAIMESSAGE *state_message;    // 0x3f8
     NUVEC *last_selected_position;  // 0x3fc
-} SARLACC_DISCO_PC;                 // size 0x400
+} SARLACC_DISCO_PC;
 
 STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, off_mask) == 4);
 STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, flash_mask) == 6);
@@ -49,42 +49,42 @@ i32 DeathStarZapLaserTypePc = 0;
 static f32 slowDownTimer[2] = {0};
 f32 FireDeltaPositionPc = 0.0f;
 
-typedef struct emperor_fight_packet_pc_s {
-    i32 state;             // 0x0
-    u8 enabled;            // 0x4
-    u8 zap;                // 0x5
-    u8 player_floor_mask;  // 0x6
-    u8 reserved;           // 0x7
-} EMPEROR_FIGHT_PACKET_PC; // size 0x8
+typedef struct emperor_fight_packet_pc_s { // size 0x8
+    i32 state;                             // 0x0
+    u8 enabled;                            // 0x4
+    u8 zap;                                // 0x5
+    u8 player_floor_mask;                  // 0x6
+    u8 reserved;                           // 0x7
+} EMPEROR_FIGHT_PACKET_PC;
 
-typedef struct level_script_flags_pc_s {
-    u8 first;            // 0x0
-    u8 light_flags[4];   // 0x1
-    u8 arrow_flags[4];   // 0x5
-    u8 remaining[7];     // 0x9
-} LEVEL_SCRIPT_FLAGS_PC; // size 0x10
+typedef struct level_script_flags_pc_s { // size 0x10
+    u8 first;                            // 0x0
+    u8 light_flags[4];                   // 0x1
+    u8 arrow_flags[4];                   // 0x5
+    u8 remaining[7];                     // 0x9
+} LEVEL_SCRIPT_FLAGS_PC;
 
-typedef struct sarlacc_world_pc_s {
+typedef struct sarlacc_world_pc_s {  // size 0x50d4
     u8 unknown_0000[0x50cc];         // 0x0000
     i32 blowup_target_count;         // 0x50cc
     GIZMOBLOWUP_PC **blowup_targets; // 0x50d0
-} SARLACC_WORLD_PC;                  // size 0x50d4
+} SARLACC_WORLD_PC;
 
-typedef struct sarlacc_panel_pc_s {
-    u8 unknown_00[0x62]; // 0x00
-    u8 state_flags;      // 0x62
-} SARLACC_PANEL_PC;      // size 0x63
+typedef struct sarlacc_panel_pc_s { // size 0x63
+    u8 unknown_00[0x62];            // 0x00
+    u8 state_flags;                 // 0x62
+} SARLACC_PANEL_PC;
 
 extern i32 DrawBossHitPointsTwoRowsPc;
 
 /* Emperor floor packet and private controls. */
-typedef struct emperor_update_packet_pc_s {
-    i32 state;              // 0x0
-    u8 enabled;             // 0x4
-    u8 zap;                 // 0x5
-    i8 player_floor_mask;   // 0x6
-    u8 reserved;            // 0x7
-} EMPEROR_UPDATE_PACKET_PC; // size 0x8
+typedef struct emperor_update_packet_pc_s { // size 0x8
+    i32 state;                              // 0x0
+    u8 enabled;                             // 0x4
+    u8 zap;                                 // 0x5
+    i8 player_floor_mask;                   // 0x6
+    u8 reserved;                            // 0x7
+} EMPEROR_UPDATE_PACKET_PC;
 
 void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);

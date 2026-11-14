@@ -41,34 +41,34 @@ extern "C" void GameFog_Reset(void);
 extern "C" void Panel_Clear(void);
 extern "C" void PauseGameCut(void);
 
-typedef struct cut_record_cleanup_pc_s {
-    void *scene;               // 0x0
-    INSTNUGCUTSCENE *instance; // 0x4
-} CUT_RECORD_CLEANUP_PC;       // size 0x8
+typedef struct cut_record_cleanup_pc_s { // size 0x8
+    void *scene;                         // 0x0
+    INSTNUGCUTSCENE *instance;           // 0x4
+} CUT_RECORD_CLEANUP_PC;
 
-typedef struct CUT_LOAD_STATE_PC {
-    NUSPECIALHANDLE special; // 0x0
-    u8 on : 1;               // 0xc:0
-    u8 off : 1;              // 0xc:1
-    u8 end_anim : 1;         // 0xc:2
-    u8 unknown_0c_bits : 5;  // 0xc:3
-    u8 unknown_0d;           // 0xd
-    u8 unknown_0e;           // 0xe
-    u8 unknown_0f;           // 0xf
-} CUT_LOAD_STATE_PC;         // size 0x10
+typedef struct CUT_LOAD_STATE_PC { // size 0x10
+    NUSPECIALHANDLE special;       // 0x0
+    u8 on : 1;                     // 0xc:0
+    u8 off : 1;                    // 0xc:1
+    u8 end_anim : 1;               // 0xc:2
+    u8 unknown_0c_bits : 5;        // 0xc:3
+    u8 unknown_0d;                 // 0xd
+    u8 unknown_0e;                 // 0xe
+    u8 unknown_0f;                 // 0xf
+} CUT_LOAD_STATE_PC;
 
-typedef struct CUT_LOAD_SFX_PC {
-    i16 id;         // 0x00
-    u8 flags;       // 0x02
-    u8 unknown_03;  // 0x03
-    f32 frame;      // 0x04
-    NUVEC position; // 0x08
-} CUT_LOAD_SFX_PC;  // size 0x14
+typedef struct CUT_LOAD_SFX_PC { // size 0x14
+    i16 id;                      // 0x00
+    u8 flags;                    // 0x02
+    u8 unknown_03;               // 0x03
+    f32 frame;                   // 0x04
+    NUVEC position;              // 0x08
+} CUT_LOAD_SFX_PC;
 
-typedef struct CUT_LOAD_TEXANIM_PC {
-    f32 frame;         // 0x0
-    i32 index;         // 0x4
-} CUT_LOAD_TEXANIM_PC; // size 0x8
+typedef struct CUT_LOAD_TEXANIM_PC { // size 0x8
+    f32 frame;                       // 0x0
+    i32 index;                       // 0x4
+} CUT_LOAD_TEXANIM_PC;
 
 typedef struct CUT_LOAD_FADE_FOG_PC {
     f32 frame;
@@ -77,25 +77,25 @@ typedef struct CUT_LOAD_FADE_FOG_PC {
     f32 value;
 } CUT_LOAD_FADE_FOG_PC;
 
-typedef struct CUT_LOAD_SUBTITLE_PC {
-    i16 text_id;        // 0x00
-    u8 red;             // 0x02
-    u8 green;           // 0x03
-    u8 blue;            // 0x04
-    u8 alpha;           // 0x05
-    u8 alignment;       // 0x06
-    u8 unknown_07;      // 0x07
-    f32 start_frame;    // 0x08
-    f32 end_frame;      // 0x0c
-    f32 x;              // 0x10
-    f32 y;              // 0x14
-    f32 x_scale;        // 0x18
-    f32 y_scale;        // 0x1c
-    f32 max_width;      // 0x20
-    f32 fade_time;      // 0x24
-} CUT_LOAD_SUBTITLE_PC; // size 0x28
+typedef struct CUT_LOAD_SUBTITLE_PC { // size 0x28
+    i16 text_id;                      // 0x00
+    u8 red;                           // 0x02
+    u8 green;                         // 0x03
+    u8 blue;                          // 0x04
+    u8 alpha;                         // 0x05
+    u8 alignment;                     // 0x06
+    u8 unknown_07;                    // 0x07
+    f32 start_frame;                  // 0x08
+    f32 end_frame;                    // 0x0c
+    f32 x;                            // 0x10
+    f32 y;                            // 0x14
+    f32 x_scale;                      // 0x18
+    f32 y_scale;                      // 0x1c
+    f32 max_width;                    // 0x20
+    f32 fade_time;                    // 0x24
+} CUT_LOAD_SUBTITLE_PC;
 
-typedef struct CUT_LOAD_RECORD_PC {
+typedef struct CUT_LOAD_RECORD_PC {            // size 0x190
     void *scene;                               // 0x000
     INSTNUGCUTSCENE *instance;                 // 0x004
     char name[64];                             // 0x008
@@ -129,7 +129,7 @@ typedef struct CUT_LOAD_RECORD_PC {
     u8 end_flags;                              // 0x18a
     u8 unknown_18b;                            // 0x18b
     i32 music_handle;                          // 0x18c
-} CUT_LOAD_RECORD_PC;                          // size 0x190
+} CUT_LOAD_RECORD_PC;
 
 #define CS_NUFABS(destination, source)                                                                                 \
     do {                                                                                                               \
@@ -145,84 +145,85 @@ static f32 CutscenesFabs(f32 f) {
     return rv;
 }
 
-typedef struct CUT_LOAD_SYS_PC {
+typedef struct CUT_LOAD_SYS_PC {  // size 0xc
     CUT_LOAD_RECORD_PC **records; // 0x0
     i32 count;                    // 0x4
     u32 *character_bits;          // 0x8
-} CUT_LOAD_SYS_PC;                // size 0xc
+} CUT_LOAD_SYS_PC;
 
-typedef struct CUT_LOAD_LIST_ENTRY_PC {
-    char *directory;      // 0x0
-    char *name;           // 0x4
-    i16 level;            // 0x8
-    u8 unknown_0a[2];     // 0xa
-} CUT_LOAD_LIST_ENTRY_PC; // size 0xc
+typedef struct CUT_LOAD_LIST_ENTRY_PC { // size 0xc
+    char *directory;                    // 0x0
+    char *name;                         // 0x4
+    i16 level;                          // 0x8
+    u8 unknown_0a[2];                   // 0xa
+} CUT_LOAD_LIST_ENTRY_PC;
 
-typedef struct CUT_LOAD_INSTANCE_RATE_PC {
-    u8 unknown_00[0x98];     // 0x00
-    f32 rate;                // 0x98
-} CUT_LOAD_INSTANCE_RATE_PC; // size 0x9c
+typedef struct CUT_LOAD_INSTANCE_RATE_PC { // size 0x9c
+    u8 unknown_00[0x98];                   // 0x00
+    f32 rate;                              // 0x98
+} CUT_LOAD_INSTANCE_RATE_PC;
 
 extern "C" {
     extern void (*CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
 }
 typedef struct CUT_DRAW_LOCATOR_PC CUT_DRAW_LOCATOR_PC;
 
-typedef struct CUT_DRAW_CHARACTER_PC {
-    NUMTX base_matrix;               // 0x00
-    char *name;                      // 0x40
-    CUT_ANIMATION_PC *animation;     // 0x44
-    ANI3_HEADER_PC *face_animation;  // 0x48
-    NUANIMDATA2_PC *extra_animation; // 0x4c
-    void *character_model;           // 0x50
+typedef struct CUT_DRAW_CHARACTER_PC { // size 0x64
+    NUMTX base_matrix;                 // 0x00
+    char *name;                        // 0x40
+    CUT_ANIMATION_PC *animation;       // 0x44
+    ANI3_HEADER_PC *face_animation;    // 0x48
+    NUANIMDATA2_PC *extra_animation;   // 0x4c
+    void *character_model;             // 0x50
 
-    union {                           // 0x54
-        i32 index;                    // 0x54
-        CUT_DRAW_LOCATOR_PC *pointer; // 0x54
-    } locator;
+    union { // size 0x4
+        i32 index;
+        CUT_DRAW_LOCATOR_PC *pointer;
+    } locator; // 0x54
 
-    f32 animation_rate;  // 0x58
-    u8 flags;            // 0x5c
-    u8 animation_index;  // 0x5d
-    u8 locator_count;    // 0x5e
-    u8 unknown_5f;       // 0x5f
-    u8 locator_index;    // 0x60
-    u8 blend_time;       // 0x61
-    u8 unknown_62;       // 0x62
-    i8 start_frame;      // 0x63
-} CUT_DRAW_CHARACTER_PC; // size 0x64
+    f32 animation_rate; // 0x58
+    u8 flags;           // 0x5c
+    u8 animation_index; // 0x5d
+    u8 locator_count;   // 0x5e
+    u8 unknown_5f;      // 0x5f
+    u8 locator_index;   // 0x60
+    u8 blend_time;      // 0x61
+    u8 unknown_62;      // 0x62
+    i8 start_frame;     // 0x63
+} CUT_DRAW_CHARACTER_PC;
 
-typedef struct CUT_DRAW_CHAR_INSTANCE_PC {
-    void *character_model;   // 0x00
-    f32 blend_progress;      // 0x04
-    u8 unknown_08[4];        // 0x08
-    f32 animation_frame_a;   // 0x0c
-    f32 animation_frame_b;   // 0x10
-    u8 flags;                // 0x14
-    u8 current_animation;    // 0x15
-    u8 animation_a;          // 0x16
-    u8 animation_b;          // 0x17
-} CUT_DRAW_CHAR_INSTANCE_PC; // size 0x18
+typedef struct CUT_DRAW_CHAR_INSTANCE_PC { // size 0x18
+    void *character_model;                 // 0x00
+    f32 blend_progress;                    // 0x04
+    u8 unknown_08[4];                      // 0x08
+    f32 animation_frame_a;                 // 0x0c
+    f32 animation_frame_b;                 // 0x10
+    u8 flags;                              // 0x14
+    u8 current_animation;                  // 0x15
+    u8 animation_a;                        // 0x16
+    u8 animation_b;                        // 0x17
+} CUT_DRAW_CHAR_INSTANCE_PC;
 
-typedef struct CUT_DRAW_LOCATOR_ANIMATION_PC {
-    NUMTX matrix;                // 0x00
-    NUVEC pivot;                 // 0x40
-    f32 scale;                   // 0x4c
-    NUANIMDATA2_PC *animation;   // 0x50
-} CUT_DRAW_LOCATOR_ANIMATION_PC; // size 0x54
+typedef struct CUT_DRAW_LOCATOR_ANIMATION_PC { // size 0x54
+    NUMTX matrix;                              // 0x00
+    NUVEC pivot;                               // 0x40
+    f32 scale;                                 // 0x4c
+    NUANIMDATA2_PC *animation;                 // 0x50
+} CUT_DRAW_LOCATOR_ANIMATION_PC;
 
-struct CUT_DRAW_LOCATOR_PC {
-    union {                                     // 0x00
-        CUT_LOCATOR_GENERIC_PC prefix;          // 0x00
-        CUT_DRAW_LOCATOR_ANIMATION_PC animated; // 0x00
-    };
+struct CUT_DRAW_LOCATOR_PC { // size 0x64
+
+    union { // size 0x54
+        CUT_LOCATOR_GENERIC_PC prefix;
+        CUT_DRAW_LOCATOR_ANIMATION_PC animated;
+    }; // 0x00
 
     u8 unknown_54[4]; // 0x54
     u8 flags;         // 0x58
     u8 type_index;    // 0x59
     u8 joint_index;   // 0x5a
     u8 unknown_5b[9]; // 0x5b
-}; // size 0x64
+};
 
 typedef struct CUT_DRAW_LOCATOR_SYS_PC {
     CUT_DRAW_LOCATOR_PC *locators;
@@ -230,113 +231,113 @@ typedef struct CUT_DRAW_LOCATOR_SYS_PC {
     i32 count;
 } CUT_DRAW_LOCATOR_SYS_PC;
 
-typedef struct CUT_DRAW_LOCATOR_INSTANCE_PC {
-    f32 frame;                  // 0x0
-    i32 effect_handle;          // 0x4
-} CUT_DRAW_LOCATOR_INSTANCE_PC; // size 0x8
+typedef struct CUT_DRAW_LOCATOR_INSTANCE_PC { // size 0x8
+    f32 frame;                                // 0x0
+    i32 effect_handle;                        // 0x4
+} CUT_DRAW_LOCATOR_INSTANCE_PC;
 
 typedef struct CUT_DRAW_LOCATOR_INSTANCE_SYS_PC {
     CUT_DRAW_LOCATOR_INSTANCE_PC *locators;
 } CUT_DRAW_LOCATOR_INSTANCE_SYS_PC;
 
-typedef struct CUT_DRAW_SCENE_PC {
+typedef struct CUT_DRAW_SCENE_PC {           // size 0x20
     u8 unknown_00[8];                        // 0x00
     f32 duration;                            // 0x08
     u8 unknown_0c[0x10];                     // 0x0c
     CUT_DRAW_LOCATOR_SYS_PC *locator_system; // 0x1c
-} CUT_DRAW_SCENE_PC;                         // size 0x20
+} CUT_DRAW_SCENE_PC;
 
-typedef struct CUT_DRAW_INSTANCE_PC {
+typedef struct CUT_DRAW_INSTANCE_PC {                   // size 0xac
     u8 unknown_00[0x18];                                // 0x00
     NUMTX matrix;                                       // 0x18
     u8 unknown_58[0x30];                                // 0x58
     u32 flags;                                          // 0x88
     u8 unknown_8c[0x1c];                                // 0x8c
     CUT_DRAW_LOCATOR_INSTANCE_SYS_PC *locator_instance; // 0xa8
-} CUT_DRAW_INSTANCE_PC;                                 // size 0xac
+} CUT_DRAW_INSTANCE_PC;
 
 STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
 
-typedef struct CUT_DRAW_OBJECT_PC {
-    u8 unknown_00[0xb8]; // 0x00
-    NUMTX matrix;        // 0xb8
-} CUT_DRAW_OBJECT_PC;    // size 0xf8
+typedef struct CUT_DRAW_OBJECT_PC { // size 0xf8
+    u8 unknown_00[0xb8];            // 0x00
+    NUMTX matrix;                   // 0xb8
+} CUT_DRAW_OBJECT_PC;
 
-typedef struct CUT_DRAW_HIERARCHY_PC {
+typedef struct CUT_DRAW_HIERARCHY_PC { // size 0x1a1
     u8 unknown_00[0x1a0];              // 0x000
     u8 suppress_shadow_surface_points; // 0x1a0
-} CUT_DRAW_HIERARCHY_PC;               // size 0x1a1
+} CUT_DRAW_HIERARCHY_PC;
 
-typedef struct CUT_DRAW_CAMERA_PC {
-    u8 unknown_00[0xb8]; // 0x00
-    NUMTX render_matrix; // 0xb8
-} CUT_DRAW_CAMERA_PC;    // size 0xf8
+typedef struct CUT_DRAW_CAMERA_PC { // size 0xf8
+    u8 unknown_00[0xb8];            // 0x00
+    NUMTX render_matrix;            // 0xb8
+} CUT_DRAW_CAMERA_PC;
 
-typedef struct CUT_DRAW_CHARACTER_SYSTEM_PC {
-    CUT_DRAW_CHARACTER_PC *characters; // 0x0
-    u16 count;                         // 0x4
-} CUT_DRAW_CHARACTER_SYSTEM_PC;        // size 0x8
+typedef struct CUT_DRAW_CHARACTER_SYSTEM_PC { // size 0x8
+    CUT_DRAW_CHARACTER_PC *characters;        // 0x0
+    u16 count;                                // 0x4
+} CUT_DRAW_CHARACTER_SYSTEM_PC;
 
 typedef struct CUT_DRAW_CHAR_INSTANCE_SYSTEM_PC {
     CUT_DRAW_CHAR_INSTANCE_PC *characters;
 } CUT_DRAW_CHAR_INSTANCE_SYSTEM_PC;
 
-typedef struct CUT_DRAW_REGISTRATION_SCENE_PC {
-    u8 unknown_00[0x18];                      // 0x00
-    CUT_DRAW_CHARACTER_SYSTEM_PC *characters; // 0x18
-    CUT_DRAW_LOCATOR_SYS_PC *locators;        // 0x1c
-} CUT_DRAW_REGISTRATION_SCENE_PC;             // size 0x20
+typedef struct CUT_DRAW_REGISTRATION_SCENE_PC { // size 0x20
+    u8 unknown_00[0x18];                        // 0x00
+    CUT_DRAW_CHARACTER_SYSTEM_PC *characters;   // 0x18
+    CUT_DRAW_LOCATOR_SYS_PC *locators;          // 0x1c
+} CUT_DRAW_REGISTRATION_SCENE_PC;
 
-typedef struct CUT_DRAW_REGISTRATION_INSTANCE_PC {
-    u8 unknown_00[0x18];                          // 0x00
-    NUMTX matrix;                                 // 0x18
-    CUT_DRAW_REGISTRATION_SCENE_PC *scene;        // 0x58
-    u8 unknown_5c[0x2c];                          // 0x5c
-    u32 flags;                                    // 0x88
-    u8 unknown_8c[0x18];                          // 0x8c
-    CUT_DRAW_CHAR_INSTANCE_SYSTEM_PC *characters; // 0xa4
-} CUT_DRAW_REGISTRATION_INSTANCE_PC;              // size 0xa8
+typedef struct CUT_DRAW_REGISTRATION_INSTANCE_PC { // size 0xa8
+    u8 unknown_00[0x18];                           // 0x00
+    NUMTX matrix;                                  // 0x18
+    CUT_DRAW_REGISTRATION_SCENE_PC *scene;         // 0x58
+    u8 unknown_5c[0x2c];                           // 0x5c
+    u32 flags;                                     // 0x88
+    u8 unknown_8c[0x18];                           // 0x8c
+    CUT_DRAW_CHAR_INSTANCE_SYSTEM_PC *characters;  // 0xa4
+} CUT_DRAW_REGISTRATION_INSTANCE_PC;
 
 typedef struct CUT_DRAW_RIGID_PC {
     u8 unknown_00[0x58];
     u8 flags;
 } CUT_DRAW_RIGID_PC;
 
-typedef struct CUT_DRAW_LOCATOR_ENTRY_PC {
-    char *name;     // 0x00
-    u32 unknown_04; // 0x04
-    u32 unknown_08; // 0x08
-    u32 unknown_0c; // 0x0c
+typedef struct CUT_DRAW_LOCATOR_ENTRY_PC { // size 0x14
+    char *name;                            // 0x00
+    u32 unknown_04;                        // 0x04
+    u32 unknown_08;                        // 0x08
+    u32 unknown_0c;                        // 0x0c
     void (*update)(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS_PC *, CUT_DRAW_LOCATOR_INSTANCE_PC *, CUT_DRAW_LOCATOR_PC *,
                    f32, NUMTX *, i32); // 0x10
-} CUT_DRAW_LOCATOR_ENTRY_PC;           // size 0x14
+} CUT_DRAW_LOCATOR_ENTRY_PC;
 
-typedef struct CUT_CONTROLLER_INSTANCE_PC {
-    u8 unknown_00[0x88];      // 0x00
-    u32 flags_88;             // 0x88
-    u32 flags_8c;             // 0x8c
-    f32 current_frame;        // 0x90
-    f32 render_frame;         // 0x94
-    f32 rate;                 // 0x98
-} CUT_CONTROLLER_INSTANCE_PC; // size 0x9c
+typedef struct CUT_CONTROLLER_INSTANCE_PC { // size 0x9c
+    u8 unknown_00[0x88];                    // 0x00
+    u32 flags_88;                           // 0x88
+    u32 flags_8c;                           // 0x8c
+    f32 current_frame;                      // 0x90
+    f32 render_frame;                       // 0x94
+    f32 rate;                               // 0x98
+} CUT_CONTROLLER_INSTANCE_PC;
 
 STATIC_ASSERT(offsetof(WORLDINFO, cutscene_sys) == 0x2ab0);
 STATIC_ASSERT(offsetof(WORLDINFO, level_progress) == 0x130);
 
-typedef struct CUT_CONTROLLER_PLAYER_PC {
-    void *clips;            // 0x0
-    void *active;           // 0x4
-} CUT_CONTROLLER_PLAYER_PC; // size 0x8
+typedef struct CUT_CONTROLLER_PLAYER_PC { // size 0x8
+    void *clips;                          // 0x0
+    void *active;                         // 0x4
+} CUT_CONTROLLER_PLAYER_PC;
 
-typedef struct CUT_CONTROLLER_CLIP_PC {
-    u32 unknown_00;       // 0x0
-    char name[1];         // 0x4
-} CUT_CONTROLLER_CLIP_PC; // size 0x8
+typedef struct CUT_CONTROLLER_CLIP_PC { // size 0x8
+    u32 unknown_00;                     // 0x0
+    char name[1];                       // 0x4
+} CUT_CONTROLLER_CLIP_PC;
 
-typedef struct CUT_CONTROLLER_PROGRESS_PC {
-    u8 unknown_00[0x2800];    // 0x0000
-    u8 scene_flags;           // 0x2800
-} CUT_CONTROLLER_PROGRESS_PC; // size 0x2801
+typedef struct CUT_CONTROLLER_PROGRESS_PC { // size 0x2801
+    u8 unknown_00[0x2800];                  // 0x0000
+    u8 scene_flags;                         // 0x2800
+} CUT_CONTROLLER_PROGRESS_PC;
 
 STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);

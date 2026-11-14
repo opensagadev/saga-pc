@@ -1,10 +1,10 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct shadow_world_view_pc_s {
-    u8 reserved_0000[0x5110];      // 0x0000
-    EDGIZSHADOW_PC *shadow_editor; // 0x5110
-} SHADOW_WORLD_VIEW_PC;            // size 0x5114
+typedef struct shadow_world_view_pc_s { // size 0x5114
+    u8 reserved_0000[0x5110];           // 0x0000
+    EDGIZSHADOW_PC *shadow_editor;      // 0x5110
+} SHADOW_WORLD_VIEW_PC;
 
 STATIC_ASSERT(sizeof(EDGIZSHADOW_PC) == 0x38);
 STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, direction) == 0);

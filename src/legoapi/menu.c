@@ -54,33 +54,33 @@ void MenuReset(void) {
     MenuSetPlatformState(-1);
 }
 
-typedef struct PC_MENU_SERVICE_VIEW {
-    f32 menu_time;       // 0x00
-    f32 time_04;         // 0x04
-    i16 selected_column; // 0x08
-    i16 selected_row;    // 0x0a
-    i16 first_column;    // 0x0c
-    i16 first_row;       // 0x0e
-    i16 last_column;     // 0x10
-    i16 last_row;        // 0x12
-    i16 menu;            // 0x14
-    i8 previous_menu;    // 0x16
-    i8 flags;            // 0x17
-    f32 transition_18;   // 0x18
-    f32 transition_1c;   // 0x1c
-    u8 unknown_20[0x30]; // 0x20
-    i32 state_50;        // 0x50
-    u8 unknown_54[0x38]; // 0x54
-    i32 draw_item;       // 0x8c
-    u8 unknown_90[0x20]; // 0x90
-    i32 state_b0;        // 0xb0
-    i32 state_b4;        // 0xb4
-    i32 state_b8;        // 0xb8
-    i32 state_bc;        // 0xbc
-    i32 state_c0;        // 0xc0
-    u8 unknown_c4[0x18]; // 0xc4
-    i32 state_dc;        // 0xdc
-} PC_MENU_SERVICE_VIEW;  // size 0xe0
+typedef struct PC_MENU_SERVICE_VIEW { // size 0xe0
+    f32 menu_time;                    // 0x00
+    f32 time_04;                      // 0x04
+    i16 selected_column;              // 0x08
+    i16 selected_row;                 // 0x0a
+    i16 first_column;                 // 0x0c
+    i16 first_row;                    // 0x0e
+    i16 last_column;                  // 0x10
+    i16 last_row;                     // 0x12
+    i16 menu;                         // 0x14
+    i8 previous_menu;                 // 0x16
+    i8 flags;                         // 0x17
+    f32 transition_18;                // 0x18
+    f32 transition_1c;                // 0x1c
+    u8 unknown_20[0x30];              // 0x20
+    i32 state_50;                     // 0x50
+    u8 unknown_54[0x38];              // 0x54
+    i32 draw_item;                    // 0x8c
+    u8 unknown_90[0x20];              // 0x90
+    i32 state_b0;                     // 0xb0
+    i32 state_b4;                     // 0xb4
+    i32 state_b8;                     // 0xb8
+    i32 state_bc;                     // 0xbc
+    i32 state_c0;                     // 0xc0
+    u8 unknown_c4[0x18];              // 0xc4
+    i32 state_dc;                     // 0xdc
+} PC_MENU_SERVICE_VIEW;
 
 STATIC_ASSERT(sizeof(PC_MENU_SERVICE_VIEW) == sizeof(MENU));
 
@@ -254,23 +254,23 @@ void DrawMenuButtonPrompts(i32 confirm, i32 cancel, i32 enabled, u32 red, u32 gr
     DrawMenuButtonPromptsEx(confirm, cancel, 0, enabled, red, green, blue, alpha);
 }
 
-typedef struct menu_draw_state_pc_s {
-    u8 unknown_00[0x0e]; // 0x00
-    i16 first_row;       // 0x0e
-    u8 unknown_10[2];    // 0x10
-    i16 last_row;        // 0x12
-    i16 menu;            // 0x14
-    u8 unknown_16[0x76]; // 0x16
-    i32 draw_item;       // 0x8c
-    f32 item_scale;      // 0x90
-    f32 draw_x;          // 0x94
-    f32 draw_y;          // 0x98
-    f32 draw_z;          // 0x9c
-    f32 draw_offset;     // 0xa0
-    f32 centre_offset;   // 0xa4
-    u8 unknown_a8[4];    // 0xa8
-    i32 paused;          // 0xac
-} MENU_DRAW_STATE_PC;    // size 0xb0
+typedef struct menu_draw_state_pc_s { // size 0xb0
+    u8 unknown_00[0x0e];              // 0x00
+    i16 first_row;                    // 0x0e
+    u8 unknown_10[2];                 // 0x10
+    i16 last_row;                     // 0x12
+    i16 menu;                         // 0x14
+    u8 unknown_16[0x76];              // 0x16
+    i32 draw_item;                    // 0x8c
+    f32 item_scale;                   // 0x90
+    f32 draw_x;                       // 0x94
+    f32 draw_y;                       // 0x98
+    f32 draw_z;                       // 0x9c
+    f32 draw_offset;                  // 0xa0
+    f32 centre_offset;                // 0xa4
+    u8 unknown_a8[4];                 // 0xa8
+    i32 paused;                       // 0xac
+} MENU_DRAW_STATE_PC;
 
 STATIC_ASSERT(offsetof(MENUFNINFO, draw_fn) == 8);
 STATIC_ASSERT(offsetof(MENUFNINFO, confirm_prompt) == 0x19);
@@ -409,54 +409,54 @@ void MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *buffer, V
     apitxt_CONTROLLERREMOVED = (char *)NuStringTableGetByName("PC_CONTROLLERREMOVED");
 }
 
-typedef struct PC_MENU_UPDATE_VIEW {
-    f32 menu_time;            // 0x00
-    f32 unk;                  // 0x04
-    i16 selected_column;      // 0x08
-    i16 selected_row;         // 0x0a
-    i16 first_column;         // 0x0c
-    i16 first_row;            // 0x0e
-    i16 last_column;          // 0x10
-    i16 last_row;             // 0x12
-    i16 menu;                 // 0x14
-    i8 previous_menu;         // 0x16
-    i8 flags_17;              // 0x17
-    f32 transition_time;      // 0x18
-    f32 transition_duration;  // 0x1c
-    f32 repeat_up_time;       // 0x20
-    f32 repeat_down_time;     // 0x24
-    f32 repeat_left_time;     // 0x28
-    f32 repeat_right_time;    // 0x2c
-    u8 repeat_up_count;       // 0x30
-    u8 repeat_down_count;     // 0x31
-    u8 repeat_left_count;     // 0x32
-    u8 repeat_right_count;    // 0x33
-    i32 selected_item;        // 0x34
-    i32 selected_item_column; // 0x38
-    i32 previous_item;        // 0x3c
-    u32 buttons_held;         // 0x40
-    u32 buttons_pressed;      // 0x44
-    i32 column_count;         // 0x48
-    i32 row_count;            // 0x4c
-    i32 unknown50;            // 0x50
-    i32 up_pressed;           // 0x54
-    i32 down_pressed;         // 0x58
-    i32 left_pressed;         // 0x5c
-    i32 right_pressed;        // 0x60
-    i32 confirm_pressed;      // 0x64
-    i32 cancel_pressed;       // 0x68
-    i32 up_held;              // 0x6c
-    i32 down_held;            // 0x70
-    i32 left_held;            // 0x74
-    i32 right_held;           // 0x78
-    u32 start_pressed;        // 0x7c
-    u32 select_pressed;       // 0x80
-    u32 action_04_pressed;    // 0x84
-    u32 action_08_pressed;    // 0x88
-    u8 unknown8c[0x4c];       // 0x8c
-    i32 input_disabled;       // 0xd8
-    i32 state;                // 0xdc
-} PC_MENU_UPDATE_VIEW;        // size 0xe0
+typedef struct PC_MENU_UPDATE_VIEW { // size 0xe0
+    f32 menu_time;                   // 0x00
+    f32 unk;                         // 0x04
+    i16 selected_column;             // 0x08
+    i16 selected_row;                // 0x0a
+    i16 first_column;                // 0x0c
+    i16 first_row;                   // 0x0e
+    i16 last_column;                 // 0x10
+    i16 last_row;                    // 0x12
+    i16 menu;                        // 0x14
+    i8 previous_menu;                // 0x16
+    i8 flags_17;                     // 0x17
+    f32 transition_time;             // 0x18
+    f32 transition_duration;         // 0x1c
+    f32 repeat_up_time;              // 0x20
+    f32 repeat_down_time;            // 0x24
+    f32 repeat_left_time;            // 0x28
+    f32 repeat_right_time;           // 0x2c
+    u8 repeat_up_count;              // 0x30
+    u8 repeat_down_count;            // 0x31
+    u8 repeat_left_count;            // 0x32
+    u8 repeat_right_count;           // 0x33
+    i32 selected_item;               // 0x34
+    i32 selected_item_column;        // 0x38
+    i32 previous_item;               // 0x3c
+    u32 buttons_held;                // 0x40
+    u32 buttons_pressed;             // 0x44
+    i32 column_count;                // 0x48
+    i32 row_count;                   // 0x4c
+    i32 unknown50;                   // 0x50
+    i32 up_pressed;                  // 0x54
+    i32 down_pressed;                // 0x58
+    i32 left_pressed;                // 0x5c
+    i32 right_pressed;               // 0x60
+    i32 confirm_pressed;             // 0x64
+    i32 cancel_pressed;              // 0x68
+    i32 up_held;                     // 0x6c
+    i32 down_held;                   // 0x70
+    i32 left_held;                   // 0x74
+    i32 right_held;                  // 0x78
+    u32 start_pressed;               // 0x7c
+    u32 select_pressed;              // 0x80
+    u32 action_04_pressed;           // 0x84
+    u32 action_08_pressed;           // 0x88
+    u8 unknown8c[0x4c];              // 0x8c
+    i32 input_disabled;              // 0xd8
+    i32 state;                       // 0xdc
+} PC_MENU_UPDATE_VIEW;
 
 STATIC_ASSERT(sizeof(PC_MENU_UPDATE_VIEW) == sizeof(MENU));
 
@@ -833,25 +833,25 @@ void BackupMenuNoFn(void) {
     }
 }
 
-typedef struct MENU_DRAW_VIEW_PC {
-    u8 unknown_00[0xe];    // 0x00
-    i16 first_row;         // 0x0e
-    u8 unknown_10[2];      // 0x10
-    i16 last_row;          // 0x12
-    u8 unknown_14[0x78];   // 0x14
-    i32 draw_item;         // 0x8c
-    f32 item_scale;        // 0x90
-    f32 draw_x;            // 0x94
-    f32 draw_y;            // 0x98
-    f32 draw_z;            // 0x9c
-    u8 unknown_a0[0x24];   // 0xa0
-    f32 *item_offsets;     // 0xc4
-    f32 item_offset_scale; // 0xc8
-    u8 unknown_cc[4];      // 0xcc
-    f32 item_scale_x;      // 0xd0
-    f32 item_spacing;      // 0xd4
-    u8 unknown_d8[8];      // 0xd8
-} MENU_DRAW_VIEW_PC;       // size 0xe0
+typedef struct MENU_DRAW_VIEW_PC { // size 0xe0
+    u8 unknown_00[0xe];            // 0x00
+    i16 first_row;                 // 0x0e
+    u8 unknown_10[2];              // 0x10
+    i16 last_row;                  // 0x12
+    u8 unknown_14[0x78];           // 0x14
+    i32 draw_item;                 // 0x8c
+    f32 item_scale;                // 0x90
+    f32 draw_x;                    // 0x94
+    f32 draw_y;                    // 0x98
+    f32 draw_z;                    // 0x9c
+    u8 unknown_a0[0x24];           // 0xa0
+    f32 *item_offsets;             // 0xc4
+    f32 item_offset_scale;         // 0xc8
+    u8 unknown_cc[4];              // 0xcc
+    f32 item_scale_x;              // 0xd0
+    f32 item_spacing;              // 0xd4
+    u8 unknown_d8[8];              // 0xd8
+} MENU_DRAW_VIEW_PC;
 
 STATIC_ASSERT(sizeof(MENU_DRAW_VIEW_PC) == sizeof(MENU));
 

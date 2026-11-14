@@ -66,12 +66,12 @@ STATIC_ASSERT(offsetof(GIZMOSET_PC, count) == 4);
 STATIC_ASSERT(offsetof(GIZMOSET_PC, gizmos) == 0xc);
 
 /* One saved entry per spinner; the gizmo progress block holds eight of them. */
-typedef struct SpinnerProgressEntryPc {
-    f32 position;         // 0x0
-    u16 rotation;         // 0x4
-    u8 flags;             // 0x6
-    u8 unused;            // 0x7
-} SpinnerProgressEntryPc; // size 0x8
+typedef struct SpinnerProgressEntryPc { // size 0x8
+    f32 position;                       // 0x0
+    u16 rotation;                       // 0x4
+    u8 flags;                           // 0x6
+    u8 unused;                          // 0x7
+} SpinnerProgressEntryPc;
 
 /* Takes these absolute values through the float's bit pattern. */
 static f32 SpinnerFabsPc(f32 value) {
@@ -92,9 +92,9 @@ static i32 SpinnerFindSpecialPc(WORLDINFO *world, NUSPECIALHANDLE *special, char
 
 // Private helper; receives spinner in EAX, bolt in ESI, and flags on the stack.
 // A four-byte aggregate preserves that stack slot under VC8's private argument optimization.
-struct SPINNER_HIT_FLAGS_STACK_PC {
-    u8 *value; // 0x0
-}; // size 0x4
+struct SPINNER_HIT_FLAGS_STACK_PC { // size 0x4
+    u8 *value;                      // 0x0
+};
 
 extern "C" {
     extern const char LevelObjectNamePc00754364[20];

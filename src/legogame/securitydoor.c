@@ -1,23 +1,23 @@
 #include "saga.h"
 
-typedef struct security_door_record_pc_s {
-    NUMTX leaf_matrix[2]; // 0x00
-    char name[16];        // 0x80
-    NUVEC position;       // 0x90
-    i16 platform_id[2];   // 0x9c
-    u16 yaw;              // 0xa0
+typedef struct security_door_record_pc_s { // size 0xc0
+    NUMTX leaf_matrix[2];                  // 0x00
+    char name[16];                         // 0x80
+    NUVEC position;                        // 0x90
+    i16 platform_id[2];                    // 0x9c
+    u16 yaw;                               // 0xa0
 
-    union {       // 0xa2
-        u8 flags; // 0xa2
+    union { // size 0x1
+        u8 flags;
 
-        struct {            // 0xa2
+        struct {            // size 0x1
             u8 active : 1;  // 0xa2:0
             u8 visible : 1; // 0xa2:1
             u8 opened : 1;  // 0xa2:2
             u8 drawn : 1;   // 0xa2:3
             u8 unused : 4;  // 0xa2:4
         } bits;
-    };
+    }; // 0xa2
 
     u8 state;              // 0xa3
     NUVEC player_position; // 0xa4
@@ -25,13 +25,13 @@ typedef struct security_door_record_pc_s {
     u16 terrain_angle_x;   // 0xb2
     f32 opening;           // 0xb4
     u8 unknown_b8[8];      // 0xb8
-} SECURITY_DOOR_RECORD_PC; // size 0xc0
+} SECURITY_DOOR_RECORD_PC;
 
-typedef struct security_door_progress_pc_s {
-    u32 visible_mask[1];     // 0x0
-    u32 active_mask[1];      // 0x4
-    u32 opened_mask[1];      // 0x8
-} SECURITY_DOOR_PROGRESS_PC; // size 0xc
+typedef struct security_door_progress_pc_s { // size 0xc
+    u32 visible_mask[1];                     // 0x0
+    u32 active_mask[1];                      // 0x4
+    u32 opened_mask[1];                      // 0x8
+} SECURITY_DOOR_PROGRESS_PC;
 
 STATIC_ASSERT(offsetof(WORLDINFO, security_doors) == 0x50b0);
 STATIC_ASSERT(offsetof(WORLDINFO, security_door_count) == 0x50b4);

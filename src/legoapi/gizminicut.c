@@ -3,38 +3,38 @@
 
 extern i32 FRAMES_TO_WAIT;
 
-typedef struct minicut_part_pc_s {
-    char name[32];            // 0x00
-    NUVEC *resolved_position; // 0x20
-    NUVEC position;           // 0x24
-    f32 distance;             // 0x30
-    u16 pitch;                // 0x34
-    u16 yaw;                  // 0x36
-    u16 roll;                 // 0x38
-    u16 padding;              // 0x3a
-    f32 duration;             // 0x3c
-    f32 field_of_view;        // 0x40
-} MINICUT_PART_PC;            // size 0x44
+typedef struct minicut_part_pc_s { // size 0x44
+    char name[32];                 // 0x00
+    NUVEC *resolved_position;      // 0x20
+    NUVEC position;                // 0x24
+    f32 distance;                  // 0x30
+    u16 pitch;                     // 0x34
+    u16 yaw;                       // 0x36
+    u16 roll;                      // 0x38
+    u16 padding;                   // 0x3a
+    f32 duration;                  // 0x3c
+    f32 field_of_view;             // 0x40
+} MINICUT_PART_PC;
 
-typedef struct minicut_pc_s {
-    char name[16];          // 0x00
-    MINICUT_PART_PC *parts; // 0x10
-    i32 part_count;         // 0x14
-    u8 played;              // 0x18
-    u8 padding[3];          // 0x19
-    f32 blend_in;           // 0x1c
-    f32 tracking_speed;     // 0x20
-    f32 blend_out;          // 0x24
-    f32 hold_time;          // 0x28
-    f32 end_time;           // 0x2c
-} MINICUT_PC;               // size 0x30
+typedef struct minicut_pc_s { // size 0x30
+    char name[16];            // 0x00
+    MINICUT_PART_PC *parts;   // 0x10
+    i32 part_count;           // 0x14
+    u8 played;                // 0x18
+    u8 padding[3];            // 0x19
+    f32 blend_in;             // 0x1c
+    f32 tracking_speed;       // 0x20
+    f32 blend_out;            // 0x24
+    f32 hold_time;            // 0x28
+    f32 end_time;             // 0x2c
+} MINICUT_PC;
 
-typedef struct minicut_world_pc_s {
-    u8 unknown[0x50ec];     // 0x0000
-    MINICUT_PC *minicuts;   // 0x50ec
-    MINICUT_PART_PC *parts; // 0x50f0
-    i32 count;              // 0x50f4
-} MINICUT_WORLD_PC;         // size 0x50f8
+typedef struct minicut_world_pc_s { // size 0x50f8
+    u8 unknown[0x50ec];             // 0x0000
+    MINICUT_PC *minicuts;           // 0x50ec
+    MINICUT_PART_PC *parts;         // 0x50f0
+    i32 count;                      // 0x50f4
+} MINICUT_WORLD_PC;
 
 static i32 GizMiniCut_GetMaxGizmos(void *world) {
     return ((WORLDINFO *)world)->current_level->max_minicuts;

@@ -1,6 +1,6 @@
 #include "saga.h"
 
-typedef struct TELEPORT_CONFIG_PC {
+typedef struct TELEPORT_CONFIG_PC {   // size 0xfc
     char name[0x40];                  // 0x00
     NUGSPLINE *path;                  // 0x40
     f32 duration;                     // 0x44
@@ -14,26 +14,26 @@ typedef struct TELEPORT_CONFIG_PC {
     u8 unknown_74[8];                 // 0x74
     NUMTX flap1_matrix;               // 0x7c
     NUMTX flap2_matrix;               // 0xbc
-} TELEPORT_CONFIG_PC;                 // size 0xfc
+} TELEPORT_CONFIG_PC;
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 
-typedef struct WORLD_TELEPORT_CONFIG_PC {
-    u8 unknown_00[0x104];             // 0x0000
-    VARIPTR giz_buffer;               // 0x0104
-    u8 unknown_108[0x34];             // 0x0108
-    NUGSCN *scene;                    // 0x013c
-    u8 unknown_140[0x2988];           // 0x0140
-    GIZMOSYS_PREFIX_PC *gizmo_system; // 0x2ac8
-    u8 unknown_2acc[0x1bb4];          // 0x2acc
-    TELEPORT_CONFIG_PC *teleports;    // 0x4680
-    i32 teleport_count;               // 0x4684
-} WORLD_TELEPORT_CONFIG_PC;           // size 0x4688
+typedef struct WORLD_TELEPORT_CONFIG_PC { // size 0x4688
+    u8 unknown_00[0x104];                 // 0x0000
+    VARIPTR giz_buffer;                   // 0x0104
+    u8 unknown_108[0x34];                 // 0x0108
+    NUGSCN *scene;                        // 0x013c
+    u8 unknown_140[0x2988];               // 0x0140
+    GIZMOSYS_PREFIX_PC *gizmo_system;     // 0x2ac8
+    u8 unknown_2acc[0x1bb4];              // 0x2acc
+    TELEPORT_CONFIG_PC *teleports;        // 0x4680
+    i32 teleport_count;                   // 0x4684
+} WORLD_TELEPORT_CONFIG_PC;
 
-typedef struct TELEPORT_KEYWORDS_PC {
-    char *name_prefix;       // 0x00
-    NUFPCOMJMP keywords[12]; // 0x04
-} TELEPORT_KEYWORDS_PC;      // size 0x64
+typedef struct TELEPORT_KEYWORDS_PC { // size 0x64
+    char *name_prefix;                // 0x00
+    NUFPCOMJMP keywords[12];          // 0x04
+} TELEPORT_KEYWORDS_PC;
 
 extern "C" {
     i32 Teleport_GetMaxGizmos(void *);
@@ -48,7 +48,7 @@ extern "C" {
     extern const char GrappleOccupiedOutputTextPc[9];
 }
 
-typedef struct TELEPORT_MOTION_PC {
+typedef struct TELEPORT_MOTION_PC {   // size 0xfc
     char name[0x40];                  // 0x00
     NUGSPLINE *path;                  // 0x40
     f32 duration;                     // 0x44
@@ -63,24 +63,24 @@ typedef struct TELEPORT_MOTION_PC {
     u16 flap_target[2];               // 0x78
     NUMTX flap1_matrix;               // 0x7c
     NUMTX flap2_matrix;               // 0xbc
-} TELEPORT_MOTION_PC;                 // size 0xfc
+} TELEPORT_MOTION_PC;
 
-typedef struct TELEPORT_WORLD_PC {
+typedef struct TELEPORT_WORLD_PC { // size 0x4688
     u8 unknown_000[0x4680];        // 0x0000
     TELEPORT_MOTION_PC *teleports; // 0x4680
     i32 teleport_count;            // 0x4684
-} TELEPORT_WORLD_PC;               // size 0x4688
+} TELEPORT_WORLD_PC;
 
-typedef struct TELEPORT_NET_WAIT_VIEW_PC {
-    u8 unknown_000[0x7a0];   // 0x000
-    void *net_wait_info;     // 0x7a0
-} TELEPORT_NET_WAIT_VIEW_PC; // size 0x7a4
+typedef struct TELEPORT_NET_WAIT_VIEW_PC { // size 0x7a4
+    u8 unknown_000[0x7a0];                 // 0x000
+    void *net_wait_info;                   // 0x7a0
+} TELEPORT_NET_WAIT_VIEW_PC;
 
-typedef struct TELEPORT_VARIANT_VIEW_PC {
-    u8 unknown_000[0x7bc];     // 0x000
-    u32 variant_low_bits : 10; // 0x7bc:0
-    u32 forwards : 1;          // 0x7bc:10
-} TELEPORT_VARIANT_VIEW_PC;    // size 0x7c0
+typedef struct TELEPORT_VARIANT_VIEW_PC { // size 0x7c0
+    u8 unknown_000[0x7bc];                // 0x000
+    u32 variant_low_bits : 10;            // 0x7bc:0
+    u32 forwards : 1;                     // 0x7bc:10
+} TELEPORT_VARIANT_VIEW_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);

@@ -1,26 +1,26 @@
 #include "saga.h"
 
-struct PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC {
-    u32 unknown_00;      // 0x00
-    i32 element_count;   // 0x04
-    u8 unknown_08[0x70]; // 0x08
-}; // size 0x78
+struct PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC { // size 0x78
+    u32 unknown_00;                           // 0x00
+    i32 element_count;                        // 0x04
+    u8 unknown_08[0x70];                      // 0x08
+};
 
-struct PC_GEOMETRY_PUBLISH_SKIN_REF_PC {
-    u32 unknown_00;      // 0x00
-    i32 matrix_count;    // 0x04
-    u8 unknown_08[0x14]; // 0x08
-}; // size 0x1c
+struct PC_GEOMETRY_PUBLISH_SKIN_REF_PC { // size 0x1c
+    u32 unknown_00;                      // 0x00
+    i32 matrix_count;                    // 0x04
+    u8 unknown_08[0x14];                 // 0x08
+};
 
-struct PC_GEOMETRY_PUBLISH_FORMAT_PC {
+struct PC_GEOMETRY_PUBLISH_FORMAT_PC {             // size 0x14
     u32 kind;                                      // 0x00
     u32 record_count;                              // 0x04
     u32 skin_ref_count;                            // 0x08
     PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC *records; // 0x0c
     PC_GEOMETRY_PUBLISH_SKIN_REF_PC *skin_refs;    // 0x10
-}; // size 0x14
+};
 
-struct PC_GEOMETRY_PUBLISH_RECORD_PC {
+struct PC_GEOMETRY_PUBLISH_RECORD_PC {          // size 0x28
     PC_GEOMETRY_PUBLISH_FORMAT_PC *format;      // 0x00
     i32 element_count;                          // 0x04
     u32 unknown_08;                             // 0x08
@@ -31,13 +31,13 @@ struct PC_GEOMETRY_PUBLISH_RECORD_PC {
     PC_BUFFER_RESOURCE_PC *strip_index_buffer;  // 0x1c
     u32 frame_stamp;                            // 0x20
     u32 unknown_24;                             // 0x24
-}; // size 0x28
+};
 
-struct PC_GEOMETRY_PUBLISH_SORT_ITEM_PC {
-    u32 output_index;     // 0x0
-    f32 distance_squared; // 0x4
-    u32 unknown_08;       // 0x8
-}; // size 0xc
+struct PC_GEOMETRY_PUBLISH_SORT_ITEM_PC { // size 0xc
+    u32 output_index;                     // 0x0
+    f32 distance_squared;                 // 0x4
+    u32 unknown_08;                       // 0x8
+};
 
 extern "C" i32 PcGeometryBackendAvailablePc(void) {
     return PCDeviceHardwareVertexProcessingPC >= 4;

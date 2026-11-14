@@ -22,53 +22,53 @@ extern "C" {
     STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns.clear_progress_fn) == 0x7c);
     STATIC_ASSERT(offsetof(GIZMOTYPE_PC, progress) == 0x98);
 
-    typedef struct world_script_progress_pc_s {
-        char name[16];          // 0x00
-        f32 params[4];          // 0x10
-    } WORLD_SCRIPT_PROGRESS_PC; // size 0x20
+    typedef struct world_script_progress_pc_s { // size 0x20
+        char name[16];                          // 0x00
+        f32 params[4];                          // 0x10
+    } WORLD_SCRIPT_PROGRESS_PC;
 
     STATIC_ASSERT(offsetof(WORLDINFO, game_anim_sys) == 0x2960);
     STATIC_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
     STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
     STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);
 
-    typedef struct level_progress_transfer_pc_s {
-        SCENEPROGRESS scene_progress;         // 0x0000
-        u32 flags;                            // 0x2800
-        u8 unknown_2804[0x20];                // 0x2804
-        WORLD_SCRIPT_PROGRESS_PC scripts[32]; // 0x2824
-        GIZFLOWPROGRESS_PC giz_flow_progress; // 0x2c24
-        char disabled_effect_names[12][16];   // 0x2d68
-    } LEVEL_PROGRESS_TRANSFER_PC;             // size 0x2e28
+    typedef struct level_progress_transfer_pc_s { // size 0x2e28
+        SCENEPROGRESS scene_progress;             // 0x0000
+        u32 flags;                                // 0x2800
+        u8 unknown_2804[0x20];                    // 0x2804
+        WORLD_SCRIPT_PROGRESS_PC scripts[32];     // 0x2824
+        GIZFLOWPROGRESS_PC giz_flow_progress;     // 0x2c24
+        char disabled_effect_names[12][16];       // 0x2d68
+    } LEVEL_PROGRESS_TRANSFER_PC;
 
-    typedef struct world_persistence_flags_pc_s {
-        u8 unknown_0000[0x5170];  // 0x0000
-        u32 progress_flags;       // 0x5170
-    } WORLD_PERSISTENCE_FLAGS_PC; // size 0x5174
+    typedef struct world_persistence_flags_pc_s { // size 0x5174
+        u8 unknown_0000[0x5170];                  // 0x0000
+        u32 progress_flags;                       // 0x5170
+    } WORLD_PERSISTENCE_FLAGS_PC;
 
-    typedef struct world_initial_progress_pc_s {
-        SCENEPROGRESS scene;     // 0x0000
-        u32 initialized_flags;   // 0x2800
-    } WORLD_INITIAL_PROGRESS_PC; // size 0x2804
+    typedef struct world_initial_progress_pc_s { // size 0x2804
+        SCENEPROGRESS scene;                     // 0x0000
+        u32 initialized_flags;                   // 0x2800
+    } WORLD_INITIAL_PROGRESS_PC;
 
-    typedef struct world_initial_final_pc_s {
-        u8 unknown_0000[0x5170]; // 0x0000
-        i32 initialized;         // 0x5170
-    } WORLD_INITIAL_FINAL_PC;    // size 0x5174
+    typedef struct world_initial_final_pc_s { // size 0x5174
+        u8 unknown_0000[0x5170];              // 0x0000
+        i32 initialized;                      // 0x5170
+    } WORLD_INITIAL_FINAL_PC;
 
-    typedef struct world_initial_reset_pc_s {
-        u8 unknown_0000[0x114]; // 0x000
-        u32 initialized;        // 0x114
-        u32 reset_flags;        // 0x118
-    } WORLD_INITIAL_RESET_PC;   // size 0x11c
+    typedef struct world_initial_reset_pc_s { // size 0x11c
+        u8 unknown_0000[0x114];               // 0x000
+        u32 initialized;                      // 0x114
+        u32 reset_flags;                      // 0x118
+    } WORLD_INITIAL_RESET_PC;
 
     void ResetSounds(void);
     i32 AmbientFromQuiet(i32);
 
-    typedef struct world_resource_icons_reader_pc_s {
-        u8 unknown_0000[0x2964];      // 0x0000
-        NUGSCN *icons_scene;          // 0x2964
-    } WORLD_RESOURCE_ICONS_READER_PC; // size 0x2968
+    typedef struct world_resource_icons_reader_pc_s { // size 0x2968
+        u8 unknown_0000[0x2964];                      // 0x0000
+        NUGSCN *icons_scene;                          // 0x2964
+    } WORLD_RESOURCE_ICONS_READER_PC;
 
     void PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc(i32 enabled) {
         if (enabled != 0 && this->enabled == 0) {
@@ -303,18 +303,18 @@ extern "C" {
         NUSPECIALHANDLE objects[1];
     } EQUIVALENT_GROUP_PC;
 
-    typedef struct PORTAL_DOOR_PC {
-        NUSPECIALHANDLE special; // 0x0
-        u16 flags;               // 0xc
-        u8 portal_id;            // 0xe
-        u8 unknown_0f;           // 0xf
-    } PORTAL_DOOR_PC;            // size 0x10
+    typedef struct PORTAL_DOOR_PC { // size 0x10
+        NUSPECIALHANDLE special;    // 0x0
+        u16 flags;                  // 0xc
+        u8 portal_id;               // 0xe
+        u8 unknown_0f;              // 0xf
+    } PORTAL_DOOR_PC;
 
-    typedef struct PORTAL_DOOR_WORLD_PC {
-        u8 unknown_0000[0x5048];      // 0x0000
-        PORTAL_DOOR_PC *portal_doors; // 0x5048
-        i32 portal_door_count;        // 0x504c
-    } PORTAL_DOOR_WORLD_PC;           // size 0x5050
+    typedef struct PORTAL_DOOR_WORLD_PC { // size 0x5050
+        u8 unknown_0000[0x5048];          // 0x0000
+        PORTAL_DOOR_PC *portal_doors;     // 0x5048
+        i32 portal_door_count;            // 0x504c
+    } PORTAL_DOOR_WORLD_PC;
 
     void PortalDoors_Configure(WORLDINFO *world, char *config) {
         PORTAL_DOOR_WORLD_PC *view = (PORTAL_DOOR_WORLD_PC *)world;
