@@ -5,6 +5,13 @@
 #include <string.h>
 
 static char *NuFParBufferBase = 0;
+i32 DontDoFileUpperCaseHack = 0;
+NUDATHDR *curr_dat = 0;
+i32 nufile_buffering_enabled = 0;
+i32 nufile_try_packed = 0;
+i32 datsys_offset = 0;
+i32 NuFile_SwapEndianOnWrite = 0;
+i32 nufile_lasterror = 0;
 static NUFPAR_PC *NuFParRecordBase = 0;
 
 typedef struct numemblklink_s {
@@ -20,10 +27,17 @@ typedef struct numemblk_s {
 } NUMEMBLK;                  // size 0x10
 
 i32 decode_buffer_left = 0;
+char NuFParBuffers[4][0x1000] = {0};
+FILEINFO file_info[33] = {0};
 static i32 decode_buffer_pos = 0;
 static u8 decode_buffer[262144] = {0};
+/* Preserve the existing canonical working view; this is not a PC capacity claim. */
+i64 unpack_file_pos = 0;
+i32 file_criticalsection = 0;
 static u8 read_buffer[0x40000] = {0};
 i32 read_buffer_size = 0;
+NUDATOPENFILEINFO *unpack_file_odi = 0;
+i32 NuApiTextLinePc = 0;
 static i32 read_buffer_decoded_size = 0;
 
 extern NUFILE_DEVICE enum_devices[16];
@@ -170,9 +184,20 @@ typedef struct FRAME_PAD_RAMP_PC {
 } FRAME_PAD_RAMP_PC;
 
 static FRAME_SCANNED_PAD_PC g_nupadScannedPads[16] = {0};
+i32 min_delay = 20;
+f32 FrameStartupDelayPc = 6.0f;
 static f32 FramePadRampRatePc = 0.1f;
 static FRAME_PAD_RAMP_PC FramePadRampValuesPc[5] = {
     {0.0f, 0.0f}, {0.5f, 0.1f}, {0.75f, 0.25f}, {0.85f, 0.5f}, {1.0f, 1.0f}};
+i32 dat_0091eeec = 0;
+NUSTRINGBANK StringBank[3] = {0};
+i16 CurrentStringBank = 0;
+u8 UseCorrectDeadZoning = 0;
+u32 dat_0091ef20 = 0;
+void (*NuApiEndFrameCallbackPc)(void) = 0;
+i32 argc = 0;
+char **argv = 0;
+i32 ShowingError = 0;
 static i32 FramePadDirectMappingPc = 0;
 static i32 FramePadActivatedPc = 0;
 
@@ -196,6 +221,7 @@ u8 ImplodeGetByteFromMem(void);
 void ImplodeError(char *msg, ...);
 
 static i32 ImplodePendingCopyPc = 0;
+FILEBUFF file_buff[4] = {0};
 static i32 inlen = 0;
 
 static unsigned char ImplodeRingBufferPc[0x2000] = {0};
@@ -224,8 +250,12 @@ static unsigned char ImplodeRingBufferPc[0x2000] = {0};
 static u32 blocksize = 0;
 
 static u16 ImplodeOffsetTablePc[0x100] = {0};
+NUFPAR_PC NuFParRecords[4] = {0};
+PC_NUDATFILEINFO *unpack_file_info = 0;
 static u8 ImplodeOffsetLengthsPc[0x13] = {0};
 
+PC_FILEEXTINFO extensions[64] = {0};
+PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
 static u16 ImplodeLiteralTablePc[0x1000] = {0};
 static u8 ImplodeLiteralLengthsPc[0x1fe] = {0};
 static u32 subbitbuf = 0;
@@ -248,6 +278,13 @@ typedef struct TimeBarSet {
 
 /* Original source: nu2api/nucore/nuapi.cpp; PC initializes only the fields
  * below after clearing the real 0x90-byte API record. */
+char *iop_image_name = "ioprp300.img";
+i32 nufile_lsn_allowed = 1;
+NUFILE_DEVICE *default_device = &host_device;
+u32 nustring_format = 1;
+char *NuBlankString = (char *)NuBlankStringValue;
+// PC reads pairs of 16-bit code points, ending with a zero pair.
+u16 bad_equiv[8][2] = {{'a', '@'}, {'a', '4'}, {'e', '3'}, {'i', '1'}, {'l', '1'}, {'o', '0'}, {'t', '7'}, {0, 0}};
 static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;
 
 extern i32 min_delay;
@@ -4406,6 +4443,7 @@ typedef struct NUMEMHIGHBLOCK_PC {
     u32 reserved[2];                // 0x8
 } NUMEMHIGHBLOCK_PC;                // size 0x10
 
+void (*fnInterpreterError)(NUFPAR_PC *parser) = 0;
 static NUMEMHIGHBLOCK_PC *freep = 0;
 
 void NuAllocHighInit(u32 buffer, u32 size) {

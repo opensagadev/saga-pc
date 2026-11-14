@@ -7278,12 +7278,6 @@ extern "C" {
 #pragma data_seg(".data$DwaStreamCapacityPc")
     i32 DwaStreamCapacityPc = 0x2000;
 #pragma data_seg()
-#pragma data_seg(".data$FrameSleepMillisecondsPc")
-    i32 min_delay = 20;
-#pragma data_seg()
-#pragma data_seg(".data$FrameStartupDelayPc")
-    f32 FrameStartupDelayPc = 6.0f;
-#pragma data_seg()
 #pragma data_seg(".data$NuHtmlUnknownTextPc")
     char NuHtmlUnknownTextPc[8] = "unknown";
 #pragma data_seg()
@@ -7619,12 +7613,6 @@ extern "C" {
     i32 DebrisDmaCleanupIndexPc = 1;
 #pragma data_seg()
 
-    i32 dat_0091eeec = 0;
-
-    u32 dat_0091ef20 = 0;
-
-    void (*NuApiEndFrameCallbackPc)(void) = 0;
-
     i32 numtoruscolldata = 0;
 
     NUVEC edpp_cam_pos = {0};
@@ -7729,7 +7717,6 @@ extern "C" {
         Bolt_GetShootDirection_Default, NULL, NULL,
     };
     BOLTSYS_PC *BoltSys = &GlobalBoltSystem_Default;
-    NUSTRINGBANK StringBank[3] = {0};
 #pragma data_seg(".data$BoltShootClassId0")
     u16 BoltShootClassId0 = 0xffff;
 #pragma data_seg()
@@ -7742,8 +7729,6 @@ extern "C" {
 #pragma data_seg(".data$BoltShootParameter")
     f32 BoltShootParameter = 0.1f;
 #pragma data_seg()
-    i16 CurrentStringBank = 0;
-    u32 nustring_format = 1;
     SFX_GROUP_PC NuSound3Groups[128] = {0};
     i16 NuSound3GroupSampleIds[512] = {0};
     i32 NuSound3GroupSampleCount = 0;
@@ -7796,7 +7781,6 @@ extern "C" {
 #pragma const_seg(".rdata$AIScriptKeywordLevel")
     extern const char AIScriptKeywordLevel[6] = "Level";
 #pragma const_seg()
-    char *NuBlankString = (char *)NuBlankStringValue;
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
 #pragma const_seg(".rdata$AIPathAngularScale")
     extern const f64 AIPathAngularScale = 10430.3779296875;
@@ -7942,7 +7926,6 @@ extern "C" {
     extern const char AIScriptFalse[6] = "false";
 #pragma const_seg()
     i32 nufile_blkcnt = 1;
-    PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
     NUDATHDR *StartupDatList[7] = {0};
     i32 StartupDatCount = 0;
     GAMEANIMPROGRESS gameanimsysprogress = {0};
@@ -7965,7 +7948,6 @@ extern "C" {
     void *NuHwParameter33Pc = 0;
     NUMTL *PcCursorMaterialPc = 0;
     i32 nuqfnt_initialised = 0;
-    i32 NuApiTextLinePc = 0;
     f32 NuFrameAccumulatedTimePc = 0;
 
     // PC debris timing uses a single-precision 1/60-second step.
@@ -7995,12 +7977,6 @@ extern "C" {
 #pragma const_seg(".rdata$NuPrimTwo")
     extern const f32 NuPrimTwo = 2.0f;
 #pragma const_seg()
-    NUFPAR_PC NuFParRecords[4] = {0};
-    char NuFParBuffers[4][0x1000] = {0};
-    i32 file_criticalsection = 0;
-    PC_NUDATFILEINFO *unpack_file_info = 0;
-    NUDATOPENFILEINFO *unpack_file_odi = 0;
-    i64 unpack_file_pos = 0;
     f32 nuqfnt_space_width = 0;
     f32 qfnt_len_scale = 1.0f;
     f32 qfnt_height_scale = 1.0f;
@@ -8165,7 +8141,6 @@ extern "C" {
     i32 bgproc_initialized = 0;
     HANDLE bgproc_work_event = 0;
     HANDLE bgproc_resume_event = 0;
-    i32 ShowingError = 0;
     HANDLE pc_file_handles[32] = {
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
@@ -8175,12 +8150,6 @@ extern "C" {
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
     };
-    FILEINFO file_info[33] = {0};
-    FILEBUFF file_buff[4] = {0};
-    i32 nufile_buffering_enabled = 0;
-    i32 datsys_offset = 0;
-    i32 nufile_lasterror = 0;
-    i32 nufile_try_packed = 0;
     NUFILE_DEVICE devices[16] = {0};
     i32 numdevices = 0;
     NUFILE_DEVICE enum_devices[16] = {0};
@@ -8207,9 +8176,6 @@ extern "C" {
         DEV_FormatName,
         DEVHOST_Interrogate,
     };
-    char *iop_image_name = "ioprp300.img";
-    NUFILE_DEVICE *default_device = &host_device;
-    i32 DontDoFileUpperCaseHack = 0;
     NuKeyboardState_PC *nu_input_state = 0;
     HINSTANCE PCInputWindow = 0;
     HWND PCInputInstance = 0;
@@ -8774,7 +8740,6 @@ extern "C" {
     u8 NuPrimNeedsOverbrightening = 0;
     LEVELDATA_PC *levelconfig_ldata = 0;
     NUFPCOMJMP *Level_ConfigBeforeLoad_GameKeywords = 0;
-    void (*fnInterpreterError)(NUFPAR_PC *parser) = 0;
     TERRAIN_SURFACE_PC TerSurface[32] = {
         {1.0f, 0, 0xffff},     {1.0f, 65, 0xffff},   {1.0f, 2, 0xffff},      {1.0f, 8, 0xffff},   {1.0f, 65536, 0xffff},
         {1.0f, 66560, 0xffff}, {1.0f, 0, 0xffff},    {1.0f, 2048, 0xffff},   {1.0f, 0, 0xffff},   {1.0f, 8192, 0xffff},
@@ -9037,9 +9002,6 @@ u32 NuWindQS = 0x1365;
 u32 partseed = 0x5c0999;
 u32 debrisseed = 0x5c0999;
 
-i32 argc = 0;
-char **argv = 0;
-NUDATHDR *curr_dat = 0;
 MSG win_message = {0};
 
 i32 permbuffer_size = 0;
@@ -9113,9 +9075,6 @@ NUKEYCHAR NuKeyChar[65] = {
     {0x52, 0x30, 0x30, {0, 0}}, {0x53, 0x2e, 0x2e, {0, 0}}, {0x8d, 0x3d, 0x3d, {0, 0}}, {0xb5, 0x2f, 0x2f, {0, 0}},
     {0x0, 0x00, 0x00, {0, 0}},
 };
-
-// PC reads pairs of 16-bit code points, ending with a zero pair.
-u16 bad_equiv[8][2] = {{'a', '@'}, {'a', '4'}, {'e', '3'}, {'i', '1'}, {'l', '1'}, {'o', '0'}, {'t', '7'}, {0, 0}};
 
 i32 SkinFlipTab[8] = {0, 1, 2, 3, 0, 2, 1, 3};
 
@@ -10366,9 +10325,6 @@ extern "C" {
     PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc;
 #pragma bss_seg()
     i32 PCDeviceSamplerInvalidation[16][2] = {0};
-#pragma data_seg(".data$nufile_lsn_allowed")
-    i32 nufile_lsn_allowed = 1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -10425,7 +10381,6 @@ extern "C" {
 #pragma const_seg(".rdata$NuFileExt_ca3_PC")
     extern const char NuFileExt_ca3_PC[5] = ".ca3";
 #pragma const_seg()
-    PC_FILEEXTINFO extensions[64] = {0};
     i32 num_extensions = 0;
     void *Game_Customiser = 0;
 }
@@ -14069,9 +14024,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$FramePadCorrectDeadZoningPc")
-    u8 UseCorrectDeadZoning = 0;
-#pragma data_seg()
 #pragma data_seg(".data$FramePadProfilePortPc")
     i32 FramePadProfilePortPc = -1;
 #pragma data_seg()
@@ -23278,7 +23230,6 @@ extern "C" {
     f32 NuPowExponentsPc[32] = {0};
     f32 NuPowResultsPc[32] = {0};
     i32 NuPowCacheIndexPc = 0;
-    i32 NuFile_SwapEndianOnWrite = 0;
 }
 
 extern "C" {
