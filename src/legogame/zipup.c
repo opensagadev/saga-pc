@@ -4,19 +4,26 @@
 static char GrapSwing_text[10] = "GrapSwing";
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpRiderHeightPc")
+i32 zipup_gizmotype_id = -1;
+f32 ZipUpRopeHalfWidthPc = 0.009999999776482582f;
+static f32 ZipUpSwingOffsetLengthPc = 1.9236159324645996f;
+static f32 ZipUpSwingOffsetHeightPc = 0.25150299072265625f;
+f32 ZipUpMarkerOffsetZPc = 0.9229000210762024f;
+f32 ZipUpMarkerOffsetYPc = 0.8399999737739563f;
+static char ZipUpOutputNamePc[] = "Active";
+static f32 ZipUpRiderOffsetScalePc = 0.8999999761581421f;
 static f32 ZipUpRiderHeightPc = 0.5f;
+static f32 ZipUpSwingDurationPc = 1.5f;
+char *ZipUpTypeNamePtrPc = (char *)PCContextName_ZipUp;
+u32 ZipUpRopeCheatColourPc = 0xff103f10;
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpRiderOffsetScalePc")
-static f32 ZipUpRiderOffsetScalePc = 0.8999999761581421f;
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpSwingDurationPc")
-static f32 ZipUpSwingDurationPc = 1.5f;
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpSwingOffsetHeightPc")
-static f32 ZipUpSwingOffsetHeightPc = 0.25150299072265625f;
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpSwingOffsetLengthPc")
-static f32 ZipUpSwingOffsetLengthPc = 1.9236159324645996f;
 #pragma data_seg()
 
 struct zipup_pc_s {
@@ -147,6 +154,9 @@ typedef struct zipup_rope_material_pc_s {
 } ZIPUP_ROPE_MATERIAL_PC; // size 0x74
 
 static f32 ZipUpFabsPc(f32 value);
+
+i32 CanDrawZipUpSwirls = 0;
+i32 ZipUpRopeModulationPc = 0;
 
 static i32 ZipUpArcSinePc(f32 sin) {
     f32 abs;
@@ -1053,8 +1063,6 @@ static i32 ZipUp_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     }
     return 0;
 }
-
-static char ZipUpOutputNamePc[] = "Active";
 
 static char *ZipUp_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return ZipUpOutputNamePc;

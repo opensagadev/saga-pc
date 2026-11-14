@@ -14022,37 +14022,17 @@ extern "C" {
 #pragma data_seg(".data$ZipUpSwingJumpAnimationPc")
     u16 ZipUpSwingJumpAnimationPc = 0xffff;
 #pragma data_seg()
-    i32 CanDrawZipUpSwirls = 0;
     NUMTL *ropemtl = 0;
-#pragma data_seg(".data$ZipUpMarkerOffsetYPc")
-    f32 ZipUpMarkerOffsetYPc = 0.8399999737739563f;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpMarkerOffsetZPc")
-    f32 ZipUpMarkerOffsetZPc = 0.9229000210762024f;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpRopeHalfWidthPc")
-    f32 ZipUpRopeHalfWidthPc = 0.009999999776482582f;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpRopeCheatColourPc")
-    u32 ZipUpRopeCheatColourPc = 0xff103f10;
-#pragma data_seg()
 #pragma data_seg(".data$ZipUpLineCharacterIdPc")
     i16 ZipUpLineCharacterIdPc = -1;
 #pragma data_seg()
     NUMTL *ZipUpLineMaterialPc = 0;
-#pragma data_seg(".data$ZipUpTypeNamePtrPc")
-    char *ZipUpTypeNamePtrPc = (char *)PCContextName_ZipUp;
-#pragma data_seg()
-#pragma data_seg(".data$zipup_gizmotype_id")
-    i32 zipup_gizmotype_id = -1;
-#pragma data_seg()
 #pragma data_seg(".data$ZipUpLandCombatRollContextPc")
     i32 ZipUpLandCombatRollContextPc = -1;
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpWallShuffleContextPc")
     i32 ZipUpWallShuffleContextPc = -1;
 #pragma data_seg()
-    i32 ZipUpRopeModulationPc = 0;
 #pragma data_seg(".data$GrapAttach_text")
     char GrapAttach_text[11] = "GrapAttach";
 #pragma data_seg()
