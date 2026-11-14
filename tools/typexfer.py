@@ -32,6 +32,15 @@ else:
 K = ci.CursorKind
 T = ci.TypeKind
 HEADER = ROOT / "src/saga.h"
+# saga.h includes the module headers it was split into (docs/header-plan.md): their declarations are PC types too.
+PROJECT_HEADERS = str(ROOT / "src") + "/"
+
+
+def require_unsplit(tool):
+    """Stop a tool that edits declarations in place in saga.h once saga.h is the include-all shim."""
+    if "#define SAGA_SHIM" in HEADER.read_text(encoding="latin-1"):
+        raise SystemExit(f"{tool}: src/saga.h is the include-all shim of the module headers; this tool still edits "
+                         "saga.h in place (docs/header-plan.md, step 3)")
 PADDING = re.compile(r"^(unknown|opaque|reserved|padding|pad)(_[0-9a-fA-Fx]+)?$|^unknown_")
 ANDROID_PLACEHOLDER = re.compile(r"^(pad|padding|unknown|unk|field|reserved|dummy|spare)(_?(0x)?[0-9a-fA-F]+)?$|^(field|unk|unknown|pad)_")
 PRIMITIVE_NAMES = {"i8", "u8", "i16", "u16", "i32", "u32", "i64", "u64", "f32", "f64", "char"}
@@ -486,6 +495,7 @@ def main():
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--only", nargs="+", help="Limit the transfer to these PC structs (tag or typedef)")
     args = parser.parse_args()
+    require_unsplit("typexfer.py")
     (ROOT / "build/typexfer").mkdir(parents=True, exist_ok=True)
     edits, report, (pc, pc_typedefs) = plan(args.android.resolve(), args.only)
     print(f"{len(report)} padding ranges gain {sum(r[1] for r in report)} fields "

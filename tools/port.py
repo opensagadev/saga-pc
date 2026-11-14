@@ -41,7 +41,7 @@ class Context:
         self.aunit = typexfer.android_unit(android_root)
         self.android, _ = typexfer.parse_structs(self.aunit, str(self.android_root / "src"))
         punit = typexfer.pc_unit()
-        self.pc, self.pc_typedefs = typexfer.parse_structs(punit, str(typexfer.HEADER))
+        self.pc, self.pc_typedefs = typexfer.parse_structs(punit, typexfer.PROJECT_HEADERS)
         pairs = typexfer.pair(self.android, self.pc)
         # Android struct (by spelling) -> (pc struct, anchors)
         self.by_android = {}

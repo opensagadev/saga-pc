@@ -106,6 +106,11 @@ class Android:
                 return
 
 
+def project_header_text():
+    """saga.h and the module headers it includes (docs/header-plan.md)."""
+    return "\n".join(path.read_text(encoding="latin-1") for path in sorted((ROOT / "src").rglob("*.h")))
+
+
 def defined_elsewhere(name):
     pattern = re.compile(r"\b" + re.escape(name) + r"\s*(=|,|\})")
     return any(pattern.search(path.read_text(encoding="latin-1"))
@@ -178,11 +183,12 @@ def function_defined(name):
 def declare(names, android, translator):
     """Add externs and enum constants to the transferred section of saga.h."""
     text = HEADER.read_text(encoding="latin-1")
+    declared = project_header_text()
     externs, constants, missing = [], [], []
     skip = ROOT / "build/globals/skip.txt"  # declarations that did not compile in every unit
     skipped = set(skip.read_text().split()) if skip.is_file() else set()
     for name in names:
-        if re.search(r"\b" + re.escape(name) + r"\b", text) or name in skipped:
+        if re.search(r"\b" + re.escape(name) + r"\b", declared) or name in skipped:
             continue
         android.find(name)
         if name in android.constants:
@@ -321,9 +327,9 @@ def define(symbol, address, cursor, translator, pe, sections):
     """data.cpp definition text and CSV type for one global, with the retail initial value."""
     name = symbol.lstrip("_")
     spelled = spell_variable(cursor.type, name, translator)
-    # Define it exactly as saga.h declares it, when it does.
-    declared = re.search(r"^\s*extern\s+([^;\n]*?\b" + re.escape(name) + r"\b[^;\n]*);", HEADER.read_text(
-        encoding="latin-1"), re.M)
+    # Define it exactly as saga.h (or a module header) declares it, when it does.
+    declared = re.search(r"^\s*extern\s+([^;\n]*?\b" + re.escape(name) + r"\b[^;\n]*);", project_header_text(),
+                         re.M)
     if declared and "," not in declared.group(1):
         spelled = declared.group(1).strip()
     size = cursor.type.get_size()

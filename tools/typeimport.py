@@ -270,6 +270,7 @@ def main():
     parser.add_argument("--android", type=Path, default=ROOT.parent / "saga")
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
+    typexfer.require_unsplit("typeimport.py")
     importer = Importer(args.android)
     for name in args.types:
         struct = importer.resolve(name)
