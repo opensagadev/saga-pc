@@ -1395,7 +1395,7 @@ extern "C" {
                     buildit->activation_radius = 1.75f;
                 }
                 if (version < 4) {
-                    buildit->state_flags = (i8)EdFileReadChar();
+                    buildit->state_flags = EdFileReadChar();
                     if (version >= 2) {
                         if (EdFileReadChar() != 0) {
                             buildit->state_flags |= 0x40;
