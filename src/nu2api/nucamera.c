@@ -413,7 +413,7 @@ i32 NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32 far_cli
         f32 far_plane;
         f32 near_plane;
     } distance;
-    struct __declspec(align(16)) BoundProjection radius;
+    struct BoundProjection radius;
 
     f32 saved_far = AxisClipNearFarPlanesPc.m30;
     if (far_clip != 0.0f) {

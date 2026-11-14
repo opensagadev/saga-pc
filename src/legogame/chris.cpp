@@ -696,13 +696,13 @@ extern "C" {
         f32 scaled = (spline->point_count - 1) * along;
         i32 index = (i32)scaled;
         f32 fraction = scaled - index;
-        __declspec(align(16)) NUVEC4 direction;
-        __declspec(align(16)) NUVEC4 first;
-        __declspec(align(16)) NUVEC4 last;
-        __declspec(align(16)) NUVEC4 constant;
-        __declspec(align(16)) NUVEC4 linear;
-        __declspec(align(16)) NUVEC4 quadratic;
-        __declspec(align(16)) NUVEC4 coefficient;
+        NUVEC4 direction;
+        NUVEC4 first;
+        NUVEC4 last;
+        NUVEC4 constant;
+        NUVEC4 linear;
+        NUVEC4 quadratic;
+        NUVEC4 coefficient;
         __declspec(align(16)) NUVEC4 cubic;
         NUVEC4 *previous;
         NUVEC4 *current;
@@ -849,8 +849,8 @@ extern "C" {
     static f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
         f32 distance = 0.0f;
         f32 along = 1.0f;
-        __declspec(align(16)) NUVEC4 current;
-        __declspec(align(16)) NUVEC4 previous;
+        NUVEC4 current;
+        NUVEC4 previous;
         __declspec(align(16)) NUVEC4 difference;
         f32 squared;
         if (spline->point_count != 0) {
@@ -884,8 +884,8 @@ extern "C" {
         f32 point_value;
         f32 along;
         f32 squared;
-        __declspec(align(16)) NUVEC4 previous;
-        __declspec(align(16)) NUVEC4 current;
+        NUVEC4 previous;
+        NUVEC4 current;
         __declspec(align(16)) NUVEC4 difference;
         for (point = 0; point < spline->point_count; ++point) {
             point_value = (f32)point;
@@ -980,7 +980,7 @@ extern "C" {
 
     /* Native debug paths retain these vector evaluations without line submission calls. */
     static void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode) {
-        __declspec(align(16)) NUVEC4 points[512];
+        NUVEC4 points[512];
         __declspec(align(16)) NUVEC4 direction;
         __declspec(align(16)) NUVEC4 axis;
         i32 count;
@@ -1141,7 +1141,7 @@ extern "C" {
     }
 
     static void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode) {
-        __declspec(align(16)) NUVEC4 local;
+        NUVEC4 local;
         __declspec(align(16)) NUVEC4 up;
         i16 yaw;
         i16 pitch;
@@ -2101,7 +2101,7 @@ extern "C" {
     }
 
     static i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position, NUVEC *velocity) {
-        __declspec(align(16)) NUVEC relative_position;
+        NUVEC relative_position;
         __declspec(align(16)) NUVEC relative_velocity;
         __declspec(align(16)) NUVEC step;
         NUVEC *ship_position = (NUVEC *)&fighter->matrix.m30;
@@ -2501,7 +2501,7 @@ extern "C" {
     }
 
     static void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state) {
-        __declspec(align(16)) NUVEC4 start;
+        NUVEC4 start;
         __declspec(align(16)) NUVEC4 target;
         if (state->actions == NULL) {
             return;

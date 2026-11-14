@@ -33,7 +33,7 @@ typedef struct USEFUL_MATERIAL_PC {
 extern NUMTL *SolidMtl;
 extern i32 (*MatrixReflection_CanOverrideFn)(void);
 
-static __inline f32 UtilitiesFabsPc(f32 value);
+static f32 UtilitiesFabsPc(f32 value);
 
 static void ReflectionCopyMatrixPc(NUMTX *result, NUMTX *source) {
     result->m00 = source->m00;

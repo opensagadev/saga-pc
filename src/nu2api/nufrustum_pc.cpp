@@ -2,7 +2,7 @@
 
 bool PCFrustumClipSet::TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 group_index) {
     PC_FRUSTUM_GROUP_PC *group = &first_group + group_index;
-    __declspec(align(16)) NUVEC4 corners[8];
+    NUVEC4 corners[8];
     corners[0].x = minimum->x;
     corners[0].y = minimum->y;
     corners[0].z = minimum->z;

@@ -147,7 +147,7 @@ typedef struct zipup_rope_material_pc_s {
     f32 opacity;          // 0x70
 } ZIPUP_ROPE_MATERIAL_PC; // size 0x74
 
-static __inline f32 ZipUpFabsPc(f32 value);
+static f32 ZipUpFabsPc(f32 value);
 
 static i32 ZipUpArcSinePc(f32 sin) {
     f32 abs;

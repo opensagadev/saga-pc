@@ -285,7 +285,7 @@ extern "C" void PcShutdown(void) {
     SetThreadExecutionState(0x80000000);
 }
 
-extern "C" __declspec(noreturn) void PcQuitToWindows(void) {
+extern "C" void PcQuitToWindows(void) {
     PcShutdown();
     exit(0);
 }

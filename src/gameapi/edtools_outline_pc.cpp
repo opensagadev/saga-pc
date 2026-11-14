@@ -9,7 +9,7 @@ static void RndrVtxLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vertices) {
     __declspec(align(16)) NUVEC first = vertices[0].position;
     __declspec(align(16)) NUVEC second = vertices[1].position;
     if (matrix != NULL) {
-        __declspec(align(16)) NUMTX matrix_copy;
+        NUMTX matrix_copy;
         NUMTX *transform = matrix;
         if (((size_t)(transform) & 15) != 0) {
             matrix_copy = *transform;

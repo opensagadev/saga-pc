@@ -646,7 +646,7 @@ static RACEPOD_RESOURCE_PC *RacePodAllocatePrivatePc(void) {
 }
 
 static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f32 blend, i32 alternate) {
-    __declspec(align(16)) NUVEC4 axis;
+    NUVEC4 axis;
     __declspec(align(16)) NUVEC4 local;
     i16 yaw;
     i16 pitch;
@@ -2269,8 +2269,8 @@ i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC 
     RACEPOD_RESOURCE_PC *pod;
     f64 duration;
     f32 difference;
-    __declspec(align(16)) NUVEC4 position;
-    __declspec(align(16)) NUVEC4 next_position;
+    NUVEC4 position;
+    NUVEC4 next_position;
     __declspec(align(16)) NUVEC4 direction;
     (void)system;
     (void)process;

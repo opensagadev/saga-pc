@@ -30963,7 +30963,7 @@ extern "C" {
     void MenuDrawQuitPc(MENU *);
     void MenuUpdateQuitPc(MENU *);
     void MenuExitQuitPc(MENU *);
-    __declspec(noreturn) void PcQuitToWindows(void);
+    void PcQuitToWindows(void);
     void PauseGame(i32);
     void PadOutPause(i32, WORLDINFO *);
     void DropOut(i32, i32, i32, i32);

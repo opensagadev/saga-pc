@@ -1102,8 +1102,8 @@ extern "C" {
                     out += 4;
                     curve_types += 3;
                 } else if (group == 1) {
-                    __declspec(align(16)) f32 first[4];
-                    __declspec(align(16)) f32 second[4];
+                    f32 first[4];
+                    f32 second[4];
                     __m128 products;
                     __m128 result;
                     f32 dot;
@@ -1301,8 +1301,8 @@ extern "C" {
                     out += 4;
                     curve_types += 3;
                 } else if (group == 1) {
-                    __declspec(align(16)) f32 first[4];
-                    __declspec(align(16)) f32 second[4];
+                    f32 first[4];
+                    f32 second[4];
                     __m128 products;
                     __m128 result;
                     for (i = 0; i < 4; ++i) {
@@ -1489,8 +1489,8 @@ extern "C" {
                 } else if (group == 1) {
                     f32 first[3];
                     f32 second[3];
-                    __declspec(align(16)) NUQUAT first_quat;
-                    __declspec(align(16)) NUQUAT second_quat;
+                    NUQUAT first_quat;
+                    NUQUAT second_quat;
                     __m128 products;
                     __m128 result;
                     f32 dot;
@@ -1827,9 +1827,9 @@ extern "C" {
                     }
                     out += 4;
                 } else if (group == 1) {
-                    __declspec(align(16)) f32 second[4];
-                    __declspec(align(16)) f32 first[4];
-                    __declspec(align(16)) NUQUAT sampled;
+                    f32 second[4];
+                    f32 first[4];
+                    NUQUAT sampled;
                     __m128 result;
                     __m128 squared;
                     for (i = 0; i < 3; ++i) {
@@ -2046,9 +2046,9 @@ extern "C" {
                     }
                     out += 4;
                 } else if (group == 1) {
-                    __declspec(align(16)) f32 second[4];
-                    __declspec(align(16)) f32 first[4];
-                    __declspec(align(16)) NUQUAT sampled;
+                    f32 second[4];
+                    f32 first[4];
+                    NUQUAT sampled;
                     __m128 result;
                     __m128 squared;
                     for (i = 0; i < 4; ++i) {
@@ -2260,9 +2260,9 @@ extern "C" {
                 } else if (group == 1) {
                     f32 first[3];
                     f32 second[3];
-                    __declspec(align(16)) NUQUAT first_quat;
-                    __declspec(align(16)) NUQUAT second_quat;
-                    __declspec(align(16)) NUQUAT sampled;
+                    NUQUAT first_quat;
+                    NUQUAT second_quat;
+                    NUQUAT sampled;
                     __m128 products;
                     __m128 result;
                     f32 dot;
@@ -5044,7 +5044,7 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
     if (!queries_prepared) {
         return false;
     }
-    __declspec(align(16)) NUVEC4 projected;
+    NUVEC4 projected;
     NuVec4MtxTransform(&projected, const_cast<NUVEC *>(center), &projection_matrix);
     if (projected.w < radius) {
         return false;
@@ -5115,7 +5115,7 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
                          {maximum->x, maximum->y, maximum->z, 1.0f}, {maximum->x, maximum->y, minimum->z, 1.0f},
                          {minimum->x, minimum->y, minimum->z, 1.0f}, {minimum->x, minimum->y, maximum->z, 1.0f},
                          {maximum->x, minimum->y, maximum->z, 1.0f}, {maximum->x, minimum->y, minimum->z, 1.0f}};
-    __declspec(align(16)) NUMTX transform;
+    NUMTX transform;
     if (matrix) {
         NuMtxMulH(&transform, const_cast<NUMTX *>(matrix), &projection_matrix);
     } else {
@@ -5722,15 +5722,15 @@ extern "C" i32 rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const NUVEC4 *p
                 ++count;
                 dst = out++;
                 f32 t = da / (da - db);
-                __declspec(align(16)) NUVEC4 delta;
+                NUVEC4 delta;
                 delta.x = b->x - a->x;
                 delta.y = b->y - a->y;
                 delta.z = b->z - a->z;
-                __declspec(align(16)) NUVEC4 scaled;
+                NUVEC4 scaled;
                 scaled.x = delta.x * t;
                 scaled.y = delta.y * t;
                 scaled.z = delta.z * t;
-                __declspec(align(16)) NUVEC4 point;
+                NUVEC4 point;
                 point.x = a->x + scaled.x;
                 point.y = a->y + scaled.y;
                 point.z = a->z + scaled.z;
@@ -5749,11 +5749,11 @@ extern "C" i32 rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const NUVEC4 *p
             ++count;
             dst = out++;
             f32 t = -da / (db - da);
-            __declspec(align(16)) NUVEC4 delta;
+            NUVEC4 delta;
             delta.x = b->x - a->x;
             delta.y = b->y - a->y;
             delta.z = b->z - a->z;
-            __declspec(align(16)) NUVEC4 scaled;
+            NUVEC4 scaled;
             scaled.x = delta.x * t;
             scaled.y = delta.y * t;
             scaled.z = delta.z * t;
@@ -5799,15 +5799,15 @@ extern "C" void PostShadowComputeBoundingSpacePc(const NUVEC4 *points, NUMTX *ma
 
 extern "C" void PostShadowComputeClippingPlanesPc(const NUMTX *matrix, bool zero_near, NUVEC4 *left, NUVEC4 *right,
                                                   NUVEC4 *bottom, NUVEC4 *top, NUVEC4 *near_plane, NUVEC4 *far_plane) {
-    __declspec(align(16)) const NUVEC4 symmetric[8] = {{-1, -1, -1, 1}, {-1, 1, -1, 1}, {1, 1, -1, 1}, {1, -1, -1, 1},
+    const NUVEC4 symmetric[8] = {{-1, -1, -1, 1}, {-1, 1, -1, 1}, {1, 1, -1, 1}, {1, -1, -1, 1},
                                                        {-1, -1, 1, 1},  {-1, 1, 1, 1},  {1, 1, 1, 1},  {1, -1, 1, 1}};
-    __declspec(align(16)) const NUVEC4 positive[8] = {{-1, -1, 0, 1}, {-1, 1, 0, 1}, {1, 1, 0, 1}, {1, -1, 0, 1},
+    const NUVEC4 positive[8] = {{-1, -1, 0, 1}, {-1, 1, 0, 1}, {1, 1, 0, 1}, {1, -1, 0, 1},
                                                       {-1, -1, 1, 1}, {-1, 1, 1, 1}, {1, 1, 1, 1}, {1, -1, 1, 1}};
     const NUVEC4 *source = zero_near ? positive : symmetric;
-    __declspec(align(16)) NUVEC4 corners[8];
+    NUVEC4 corners[8];
     for (i32 i = 0; i < 8; ++i) {
         const NUVEC4 *in = &source[i];
-        __declspec(align(16)) NUVEC4 result;
+        NUVEC4 result;
         f32 inverse;
         result.x = in->y * matrix->m10 + in->x * matrix->m00 + matrix->m20 * in->z + matrix->m30;
         result.y = in->y * matrix->m11 + matrix->m01 * in->x + in->z * matrix->m21 + matrix->m31;
@@ -5819,23 +5819,23 @@ extern "C" void PostShadowComputeClippingPlanesPc(const NUMTX *matrix, bool zero
         result.z *= inverse;
         corners[i] = result;
     }
-    __declspec(align(16)) NUVEC4 near_up;
+    NUVEC4 near_up;
     near_up.x = corners[1].x - corners[0].x;
     near_up.y = corners[1].y - corners[0].y;
     near_up.z = corners[1].z - corners[0].z;
-    __declspec(align(16)) NUVEC4 depth_left;
+    NUVEC4 depth_left;
     depth_left.x = corners[4].x - corners[0].x;
     depth_left.y = corners[4].y - corners[0].y;
     depth_left.z = corners[4].z - corners[0].z;
-    __declspec(align(16)) NUVEC4 far_left;
+    NUVEC4 far_left;
     far_left.x = corners[5].x - corners[6].x;
     far_left.y = corners[5].y - corners[6].y;
     far_left.z = corners[5].z - corners[6].z;
-    __declspec(align(16)) NUVEC4 near_right;
+    NUVEC4 near_right;
     near_right.x = corners[3].x - corners[0].x;
     near_right.y = corners[3].y - corners[0].y;
     near_right.z = corners[3].z - corners[0].z;
-    __declspec(align(16)) NUVEC4 far_down;
+    NUVEC4 far_down;
     far_down.x = corners[7].x - corners[6].x;
     far_down.y = corners[7].y - corners[6].y;
     far_down.z = corners[7].z - corners[6].z;
@@ -11120,7 +11120,7 @@ void NuMotionFilterGen::render() {
     GRAPHICS_RENDER_TEXTURE_PC *destination = NuFramebufferGetAttachedTex(output, 0, NULL, NULL);
     NuShaderProgramMakeCurrent((POST_SHADER_PROGRAM_PC *)programs[0]);
     f32 ratio = maximum / scale;
-    __declspec(align(16)) f32 params[4];
+    f32 params[4];
     __declspec(align(16)) f32 weights[7][4];
     for (i32 i = 0; i < 7; ++i) {
         f32 *weight = weights[i];
@@ -11522,8 +11522,8 @@ void NuMainFilterGen::render() {
     if (dof_enabled) {
         PCGraphicsEffectTextureWidth(color_texture);
         PCGraphicsEffectTextureHeight(color_texture);
-        __declspec(align(16)) f32 params[4] = {dof_blur, NuMainFilterDofWeightPc, 0.0f, 0.0f};
-        __declspec(align(16)) f32 jitter[4] = {(f32)(rand() / 32767.0), (f32)(rand() / 32767.0), 0.0f, 0.0f};
+        f32 params[4] = {dof_blur, NuMainFilterDofWeightPc, 0.0f, 0.0f};
+        f32 jitter[4] = {(f32)(rand() / 32767.0), (f32)(rand() / 32767.0), 0.0f, 0.0f};
         PCDeviceSetVertexShaderConstantsF(0x80, params, 1);
         PCDeviceSetVertexShaderConstantsF(0x81, jitter, 1);
         PCGraphicsEffectTextureSetFilterFields(blur_texture, 2, 2, 2);
@@ -11533,12 +11533,12 @@ void NuMainFilterGen::render() {
     }
     if (bloom_enabled) {
         f32 blend = bloom->blend;
-        __declspec(align(16)) f32 params[4] = {bloom->intensity * blur_gain, blend, 0.0f, 0.0f};
+        f32 params[4] = {bloom->intensity * blur_gain, blend, 0.0f, 0.0f};
         PCDeviceSetVertexShaderConstantsF(0x82, params, 1);
         f32 scale_range = (bloom->far_scale - bloom->near_scale) * bloom->intensity;
         f32 angle_start = bloom->near_angle / 180.0;
         f32 angle_range = 180.0 / (bloom->far_angle - bloom->near_angle);
-        __declspec(align(16)) f32 angle[4] = {bloom->near_scale * bloom->intensity, scale_range, angle_start,
+        f32 angle[4] = {bloom->near_scale * bloom->intensity, scale_range, angle_start,
                                               angle_range};
         PCDeviceSetVertexShaderConstantsF(0x88, angle, 1);
         if (bloom->directional) {
@@ -11546,7 +11546,7 @@ void NuMainFilterGen::render() {
             f32 direction_angle_start = bloom->direction_near_angle * 3.1415927410125732 / 180.0;
             f32 direction_angle_range =
                 180.0 / ((bloom->direction_far_angle - bloom->direction_near_angle) * 3.1415927410125732);
-            __declspec(align(16)) f32 directional[4] = {bloom->direction_near_scale * bloom->intensity,
+            f32 directional[4] = {bloom->direction_near_scale * bloom->intensity,
                                                         direction_scale_range, direction_angle_start,
                                                         direction_angle_range};
             PCDeviceSetVertexShaderConstantsF(0x89, directional, 1);
@@ -13117,7 +13117,7 @@ extern "C" i32 NuSpecialClipTestShadowLights(NUVEC *minimum, NUVEC *maximum, i32
         VuVec max_copy;
         min_copy.xyz = *minimum;
         max_copy.xyz = *maximum;
-        __declspec(align(16)) NUVEC4 min_box;
+        NUVEC4 min_box;
         __declspec(align(16)) NUVEC4 max_box;
         max_box.x = max_copy.x;
         max_box.y = max_copy.y;
@@ -14124,7 +14124,7 @@ extern "C" {
         f32 left_right_inv;
         f32 top_bottom_inv;
 
-        __declspec(align(16)) NUMTX frustum_planes;
+        NUMTX frustum_planes;
         __declspec(align(16)) NUMTX scissor_planes;
 
         f32 dot;
@@ -14960,8 +14960,8 @@ extern "C" {
     void NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
         NUDISPLAY_SPECIAL_PC *display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
         NUDISPLAY_LIST_PC *display_scene = ((NUGSCN *)special->scene)->display_list;
-        __declspec(align(16)) NUMTX draw_matrix = *NuSpecialGetDrawMtx(special);
-        __declspec(align(16)) NUVEC4 extent;
+        NUMTX draw_matrix = *NuSpecialGetDrawMtx(special);
+        NUVEC4 extent;
         __declspec(align(16)) NUVEC4 center;
         NUVEC4 abs_row[3];
 
@@ -15020,10 +15020,10 @@ extern "C" {
     void xxxNuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
         NUDISPLAY_LIST_PC *scene = ((NUGSCN *)special->scene)->display_list;
         NUDISPLAY_SPECIAL_PC *display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
-        __declspec(align(16)) NUMTX matrix = *NuSpecialGetDrawMtx(special);
-        __declspec(align(16)) NUVEC4 corners[8];
-        __declspec(align(16)) NUVEC4 maximum;
-        __declspec(align(16)) NUVEC4 minimum;
+        NUMTX matrix = *NuSpecialGetDrawMtx(special);
+        NUVEC4 corners[8];
+        NUVEC4 maximum;
+        NUVEC4 minimum;
 
         corners[0].x = display->bounds_min.x;
         corners[0].y = display->bounds_min.y;
@@ -15072,7 +15072,7 @@ extern "C" {
         NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[6]);
         NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[7]);
         if ((scene->render_flags & 0x4000) != 0) {
-            __declspec(align(16)) NUVEC4 center;
+            NUVEC4 center;
             __declspec(align(16)) NUVEC4 extent;
             center.x = minimum.x + maximum.x;
             center.y = minimum.y + maximum.y;

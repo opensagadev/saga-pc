@@ -9011,7 +9011,7 @@ extern "C" {
     NUMTX NuCameraScissorProjectionScratch = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$clip_test_mtx")
-    __declspec(align(16)) NUMTX clip_test_mtx = {0};
+    NUMTX clip_test_mtx = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$zx")
     f32 zx = 0;
@@ -9049,13 +9049,13 @@ extern "C" {
     i32 PCClipUseSSE = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ClipCornerBlocks")
-    __declspec(align(16)) NUVEC4BLOCK_PC ClipCornerBlocks[2] = {0};
+    NUVEC4BLOCK_PC ClipCornerBlocks[2] = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$ClipTransformedBlocks")
-    __declspec(align(16)) NUVEC4BLOCK_PC ClipTransformedBlocks[2] = {0};
+    NUVEC4BLOCK_PC ClipTransformedBlocks[2] = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$clip_outcode_workspace_prefix")
-    __declspec(align(16)) u32 clip_outcode_workspace_prefix[8] = {0};
+    u32 clip_outcode_workspace_prefix[8] = {0};
 #pragma bss_seg()
 #pragma data_seg(".data$AIPathConnectionMargin")
     f32 AIPathConnectionMargin = 0.05f;

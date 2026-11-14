@@ -1230,7 +1230,7 @@ void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
 
 void AiRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, u32 colour) {
     if (AiRndrCullDistance > 0.0f) {
-        __declspec(align(16)) NUVEC position;
+        NUVEC position;
         __declspec(align(16)) NUVEC delta;
         f32 start_distance;
         f32 end_distance;

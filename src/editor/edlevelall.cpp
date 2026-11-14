@@ -534,8 +534,8 @@ extern "C" {
 #define EDDRAW_LINE_CIRCLE(rotate, base_y, base_z)                                                                     \
     do {                                                                                                               \
         VuVec &origin = *(VuVec *)centre;                                                                              \
-        __declspec(align(16)) VuVec base;                                                                              \
-        __declspec(align(16)) VuVec point;                                                                             \
+        VuVec base;                                                                              \
+        VuVec point;                                                                             \
         __declspec(align(16)) VuVec previous;                                                                          \
         i32 i;                                                                                                         \
         base.x = 0.0f;                                                                                                 \
@@ -2401,7 +2401,7 @@ void EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour) {
 }
 
 void EdDrawLineCross(NUVEC *position, f32 size, i32 colour) {
-    __declspec(align(16)) NUVEC4 start;
+    NUVEC4 start;
     __declspec(align(16)) NUVEC4 end;
     start.y = end.y = position->y;
     start.z = end.z = position->z;
@@ -2431,7 +2431,7 @@ void EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
 }
 
 void EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour) {
-    __declspec(align(16)) VuVec points[4];
+    VuVec points[4];
     __declspec(align(16)) VuVec point;
     i32 i;
     EDDRAW_SET_POINT(point, 0.0f, 0.0f, -size);
@@ -2452,7 +2452,7 @@ void EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour) {
 }
 
 void EdDrawLineCube(NUMTX *transform, f32 size, i32 colour) {
-    __declspec(align(16)) VuVec points[9];
+    VuVec points[9];
     __declspec(align(16)) VuVec point;
     i32 i;
     EDDRAW_SET_POINT(point, size, size, -size);
@@ -2495,7 +2495,7 @@ void EdDrawLineCube(NUMTX *transform, f32 size, i32 colour) {
 }
 
 void EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour) {
-    __declspec(align(16)) VuVec first;
+    VuVec first;
     __declspec(align(16)) VuVec second;
     f64 radius_squared = radius * radius;
     f32 first_radius;
@@ -2561,7 +2561,7 @@ void EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
 }
 
 void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour, i32 segments) {
-    __declspec(align(16)) NUVEC4 first;
+    NUVEC4 first;
     __declspec(align(16)) NUVEC4 second;
     i32 step;
     i32 angle;
@@ -2642,9 +2642,9 @@ void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 
 
 void EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments, i32 colour,
                         i32 cap_bottom, i32 cap_top) {
-    __declspec(align(16)) VuVec a;
+    VuVec a;
     __declspec(align(16)) VuVec b;
-    __declspec(align(16)) VuVec c;
+    VuVec c;
     f32 scale = top_radius / radius;
     i32 dark = EDDRAW_DARKEN(colour);
     i32 tri_colour = 0;
@@ -2835,7 +2835,7 @@ void EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_r
 }
 
 void EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity) {
-    __declspec(align(16)) NUVEC4 tip;
+    NUVEC4 tip;
     __declspec(align(16)) NUVEC4 sum;
     NUVEC *origin = &transform->translation;
     f32 width;
@@ -4640,7 +4640,7 @@ i32 EdFileOutputStream::SerialiseBuffer(void *data, i32 size, i32 count) {
 f32 LineToPointDistance(VuVec &origin, VuVec &direction, VuVec &point, VuVec *closest) {
     f32 length = NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
     f32 inverse_length = 1.0f / length;
-    __declspec(align(16)) VuVec normal;
+    VuVec normal;
     __declspec(align(16)) VuVec offset;
     f32 projection;
     f32 distance;
@@ -4746,8 +4746,8 @@ i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec 
 /* Intersects the line through origin along direction with a sphere. */
 i32 LineToSphereIntersection(VuVec &origin, VuVec &direction, VuVec &center, f32 radius, VuVec *far_intersection,
                              VuVec *near_intersection) {
-    __declspec(align(16)) VuVec end = origin + direction;
-    __declspec(align(16)) VuVec delta = end - origin;
+    VuVec end = origin + direction;
+    VuVec delta = end - origin;
     f32 c = VuVecLengthSq(center);
     f32 a = (delta.z * delta.z) + (delta.x * delta.x + delta.y * delta.y);
     __declspec(align(16)) VuVec offset = origin - center;
@@ -5067,7 +5067,7 @@ void ClassEditor::cbEdClassRemoveDuplicates(eduimenu_s *, eduiitem_s *, u32) {
                 continue;
             }
             const char *other_name = other->GetName();
-            __declspec(align(16)) VuVec second_position;
+            VuVec second_position;
             second_position.xyz = other->GetInitialPosition()->xyz;
             i32 other_type;
             for (other_type = 0; other_type < thePlaceableHelper.object_type_count; other_type++) {
@@ -5372,7 +5372,7 @@ void EdVectorControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32 value) {
  * rows. */
 void EdMatrixControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
     EdMatrixControl *control = static_cast<EdMatrixControl *>(item->data_ptr);
-    __declspec(align(16)) VuMtx matrix;
+    VuMtx matrix;
     control->GetVal(matrix);
     f32 value = NuAToF(reinterpret_cast<edui_prop_s *>(item)->property_text);
     if (item == control->components[0]) {
@@ -5389,7 +5389,7 @@ void EdMatrixControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
         __declspec(align(16)) VuMtx rebuilt;
         VuMtxCopy(rebuilt, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
         if (control->components[6] != NULL && control->components[7] != NULL && control->components[8] != NULL) {
-            __declspec(align(16)) VuVec scale;
+            VuVec scale;
             scale.x = NuAToF(reinterpret_cast<edui_prop_s *>(control->components[6])->property_text);
             scale.y = NuAToF(reinterpret_cast<edui_prop_s *>(control->components[7])->property_text);
             scale.z = NuAToF(reinterpret_cast<edui_prop_s *>(control->components[8])->property_text);
@@ -5683,8 +5683,8 @@ i32 EdManipulator::SelectAxis(EdInputContext &input, VuVec &origin, VuVec &first
  * the centre, and arrows along the axes; grey when nothing editable is
  * selected. */
 void EdManipulator::DrawAxis(VuVec &origin, VuMtx *matrix) {
-    __declspec(align(16)) VuVec points[8];
-    __declspec(align(16)) VuMtx box;
+    VuVec points[8];
+    VuMtx box;
     GetAxisLocators(origin, points, matrix);
     EdDrawBegin(1);
     EdDrawLineSphere(&points[1].xyz, ManipulatorHandleRadius * Scale, 1.0f,
@@ -5722,9 +5722,9 @@ void EdManipulator::DrawAxis(VuVec &origin, VuMtx *matrix) {
     }
     EdDrawBegin(0);
     f32 size = ManipulatorHandleRadius * Scale;
-    __declspec(align(16)) VuVec offset;
+    VuVec offset;
     __declspec(align(16)) VuVec start;
-    __declspec(align(16)) VuVec end;
+    VuVec end;
     VuVecCopy(offset, (points[1] - points[7]) * size);
     VuVecCopy(start, points[1] - offset * 0.5f);
     VuVecCopy(end, points[1] + offset * 0.5f);
@@ -5752,9 +5752,9 @@ void EdManipulator::DrawAxis(VuVec &origin, VuMtx *matrix) {
 /* Picks the rotation circle under the cursor; while dragging, tracks the
  * angle swept around the picked axis in angle_delta. */
 i32 EdManipulator::SelectRotator(EdInputContext &input, VuVec &center, VuVec &plane) {
-    __declspec(align(16)) VuVec hits[2];
-    __declspec(align(16)) VuVec normals[3];
-    __declspec(align(16)) VuVec chosen;
+    VuVec hits[2];
+    VuVec normals[3];
+    VuVec chosen;
     f32 radius = ManipulatorAxisLength * Scale;
     f32 nearest_distance = 3.402823466e38f;
     i32 axis = 0;
@@ -5794,7 +5794,7 @@ i32 EdManipulator::SelectRotator(EdInputContext &input, VuVec &center, VuVec &pl
             for (i32 hit = 0; hit < 2; hit++) {
                 VuVec &point = hits[hit];
                 VuVec &normal = normals[candidate];
-                __declspec(align(16)) VuVec projection;
+                VuVec projection;
                 __declspec(align(16)) VuVec screen_point;
                 f32 distance_to_plane = VuVecDot(normal, point) + normal.w;
                 VuVecCopy(projection, point - normal * distance_to_plane);
@@ -6618,7 +6618,7 @@ void SplineObject::ReverseKnots() {
 /* One point per knot (and the first again for a closed spline). */
 void SplineObject::GenLinearPoints() {
     points.Clear();
-    __declspec(align(16)) VuVec point;
+    VuVec point;
     SplineKnot *knot;
     for (knot = knots.first; knot != NULL; knot = knot->next) {
         point.x = knot->position.x;
@@ -6654,7 +6654,7 @@ void SplineObject::GenBezierPoints() {
     while (start != NULL && end != NULL) {
         f32 length = BezierLineLength(start->position, start->out_tangent, end->position, end->in_tangent);
         for (; distance < length; distance += step) {
-            __declspec(align(16)) VuVec point;
+            VuVec point;
             BezierLinePos(point, start->position, start->out_tangent, end->position, end->in_tangent, distance);
             DropPoint(point);
             point.y += height;
@@ -7262,9 +7262,9 @@ i32 ClassEditor::FindNearestObject(VuVec &point, ClassObject &nearest, i32 filte
             if (!object_class->FindMember(&member, object, 8, 1)) {
                 continue;
             }
-            __declspec(align(16)) VuVec position;
+            VuVec position;
             member.reference->GetAttributeData(member.object, 8, EdType_VuVec, &position, 0);
-            __declspec(align(16)) VuVec delta;
+            VuVec delta;
             delta.x = position.x - point.x;
             delta.y = position.y - point.y;
             delta.z = position.z - point.z;
@@ -7315,7 +7315,7 @@ i32 ClassEditor::FindNearestObject(VuVec &point, ClassObject &nearest, ClassObje
             if (!Editable(object, object_class, -1) || !object_class->FindMember(&member, object, 8, 1)) {
                 continue;
             }
-            __declspec(align(16)) VuVec position;
+            VuVec position;
             member.reference->GetAttributeData(member.object, 8, EdType_VuVec, &position, 0);
             VuVec delta;
             delta.x = position.x - point.x;
@@ -7843,7 +7843,7 @@ i32 ClassObjectList::GetAveragePosition(VuVec &average) {
 /* The average position of up to 64 objects and the radius of the sphere
  * around it that holds every object's own sphere. */
 i32 ClassObjectList::GetAveragePosition(VuVec &average, f32 &radius) {
-    __declspec(align(16)) VuVec positions[64];
+    VuVec positions[64];
     __declspec(align(16)) f32 radii[64];
     i32 count = 0;
     average.x = 0.0f;
@@ -8390,10 +8390,10 @@ void EdManipulator::Render(ClassObjectList &objects) {
  * input held, the centre handle drops them at the cursor position. */
 i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
     EdManipulator::Process(input, objects);
-    __declspec(align(16)) VuVec position;
+    VuVec position;
     if (objects.GetAveragePosition(position)) {
-        __declspec(align(16)) VuVec first;
-        __declspec(align(16)) VuVec second;
+        VuVec first;
+        VuVec second;
         i32 axis = SelectAxis(input, position, first, second, NULL);
         theLevelEditor.field_0x2c = AxisColour[axis];
         if (input.GetHold(3) == 0.0f && input.GetHold(38) == 0.0f) {
@@ -8411,7 +8411,7 @@ i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
                 case 3: {
                     f32 amount = VuVecDot(first, delta);
                     if (amount != 0.0f) {
-                        __declspec(align(16)) VuVec offset = first * amount;
+                        VuVec offset = first * amount;
                         position.x += offset.x;
                         position.y += offset.y;
                         position.z += offset.z;
@@ -8424,7 +8424,7 @@ i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
                 case 6: {
                     f32 amount = VuVecDot(delta, first);
                     if (amount != 0.0f) {
-                        __declspec(align(16)) VuVec offset = first * amount;
+                        VuVec offset = first * amount;
                         position.x += offset.x;
                         position.y += offset.y;
                         position.z += offset.z;
@@ -8479,7 +8479,7 @@ void EdManMove::Render(ClassObjectList &objects) {
  * position. */
 i32 EdManRotate::RotateItem(EdInputContext &, ClassObjectList &objects, i32 angle, i32 axis) {
     ClassObjectListEntry *entry = objects.first;
-    __declspec(align(16)) VuVec position;
+    VuVec position;
     objects.GetAveragePosition(position);
     if (angle == 0 || entry == NULL) {
         return axis;
@@ -8529,7 +8529,7 @@ i32 EdManRotate::RotateItem(EdInputContext &, ClassObjectList &objects, i32 angl
  * cycling the axis) rotates about rotation_axis. */
 i32 EdManRotate::Process(EdInputContext &input, ClassObjectList &objects) {
     EdManipulator::Process(input, objects);
-    __declspec(align(16)) VuVec position;
+    VuVec position;
     if (!objects.GetAveragePosition(position)) {
         return 0;
     }
@@ -8566,14 +8566,14 @@ void EdManRotate::Render(ClassObjectList &objects) {
  * plane, or uniformly with the analog inputs on the centre handle. */
 i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
     EdManipulator::Process(input, objects);
-    __declspec(align(16)) VuVec position;
+    VuVec position;
     if (!objects.GetAveragePosition(position)) {
         return 0;
     }
-    __declspec(align(16)) VuMtx transform;
+    VuMtx transform;
     reinterpret_cast<ClassObject *>(&objects.first->ed_class)->GetAttributeData(0x10, EdType_VuMtx, &transform, 0);
     __declspec(align(16)) VuVec first;
-    __declspec(align(16)) VuVec second;
+    VuVec second;
     i32 axis = SelectAxis(input, position, first, second, &transform);
     theLevelEditor.field_0x2c = AxisColour[axis];
     if (input.GetHold(3) == 0.0f) {
@@ -8581,11 +8581,11 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
     }
     for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
         ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
-        __declspec(align(16)) VuMtx scaling;
-        __declspec(align(16)) VuMtx result;
+        VuMtx scaling;
+        VuMtx result;
         __declspec(align(16)) VuVec scale;
-        __declspec(align(16)) VuVec projected;
-        __declspec(align(16)) VuVec unit;
+        VuVec projected;
+        VuVec unit;
         VuVecCopy(unit, VuVecMake(1.0f, 1.0f, 1.0f, 1.0f));
         object->GetAttributeData(0x20, EdType_VuMtx, &transform, 0);
         switch (axis) {
@@ -8667,7 +8667,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
 }
 
 void EdManScale::Render(ClassObjectList &objects) {
-    __declspec(align(16)) VuVec position;
+    VuVec position;
     __declspec(align(16)) VuMtx transform;
     if (objects.count > 2) {
         EdManipulator::Render(objects);
@@ -8821,7 +8821,7 @@ void PropertyTool::ToggleActiveMenu() {
 
 void PropertyTool::RenderMenu(PropertyMenu *property_menu) {
     eduimenu_s *menu = property_menu->menu;
-    __declspec(align(16)) VuVec start;
+    VuVec start;
     __declspec(align(16)) VuVec end;
     if (property_menu->order == -1) {
         AutoLocateMenu(property_menu);
@@ -8852,7 +8852,7 @@ void PropertyTool::RenderMenu(PropertyMenu *property_menu) {
 /* Distance from the cursor ray to the object's position sphere (attribute 8
  * position, attribute 0x40 radius, default radius 1). */
 f32 EdClassInterface::DistanceToObject(VuVec &origin, VuVec &direction, void *object, EdRef **reference) {
-    __declspec(align(16)) VuVec position;
+    VuVec position;
     f32 radius = 1.0f;
     EdMember member;
     f32 distance = 3.402823466e38f;
@@ -8875,7 +8875,7 @@ f32 EdClassInterface::DistanceToObject(VuVec &origin, VuVec &direction, void *ob
 
 /* Distance from a point to the object's position sphere (default radius 0). */
 f32 EdClassInterface::DistanceToObject(VuVec &point, void *object, EdRef **reference) {
-    __declspec(align(16)) VuVec position;
+    VuVec position;
     f32 radius = 0.0f;
     EdMember member;
     f32 distance = 3.402823466e38f;
@@ -9203,9 +9203,9 @@ void SceneObjectHelper::SubRender() {
 /* Sets both tangents to a tenth of the neighbour-to-neighbour vector; a
  * spline that drops onto the terrain lowers them by 10. */
 void SplineKnot::Smooth() {
-    __declspec(align(16)) VuVec before;
-    __declspec(align(16)) VuVec after;
-    __declspec(align(16)) VuVec centre;
+    VuVec before;
+    VuVec after;
+    VuVec centre;
     __declspec(align(16)) VuVec delta;
     before.x = 0.0f;
     before.y = 0.0f;

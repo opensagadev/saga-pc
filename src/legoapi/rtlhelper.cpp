@@ -435,15 +435,15 @@ static f32 rtl_helper_grab_distance = 0.5f;
 void RTLHelper::Process(void *object, EdInputContext &input) {
     RTL_LIGHT_PC *light = static_cast<RTL_LIGHT_PC *>(object);
     if (input.GetHold(22) != 0.0f) {
-        __declspec(align(16)) VuVec position;
-        __declspec(align(16)) VuVec direction;
-        __declspec(align(16)) VuVec plane;
-        __declspec(align(16)) VuVec delta;
-        __declspec(align(16)) VuVec outer_point;
-        __declspec(align(16)) VuVec inner_point;
-        __declspec(align(16)) VuVec intersection;
-        __declspec(align(16)) VuVec screen_cursor;
-        __declspec(align(16)) VuVec screen_inner;
+        VuVec position;
+        VuVec direction;
+        VuVec plane;
+        VuVec delta;
+        VuVec outer_point;
+        VuVec inner_point;
+        VuVec intersection;
+        VuVec screen_cursor;
+        VuVec screen_inner;
         __declspec(align(16)) VuVec screen_outer;
         position.xyz = light->position;
         plane.xyz = *reinterpret_cast<NUVEC *>(&global_camera.mtx.m20);
@@ -574,10 +574,10 @@ void RTLHelper::Render(void *object, i32) {
     RTL_LIGHT_PC *light = static_cast<RTL_LIGHT_PC *>(object);
     i32 colour = RTLHELPER_COLOUR(light->colour, 255.0);
     i32 dark_colour = RTLHELPER_COLOUR(light->colour, 128.0);
-    __declspec(align(16)) VuVec position;
-    __declspec(align(16)) VuVec direction;
-    __declspec(align(16)) VuVec centre;
-    __declspec(align(16)) VuVec half;
+    VuVec position;
+    VuVec direction;
+    VuVec centre;
+    VuVec half;
     f32 scale;
     __declspec(align(16)) NUMTX matrix;
 
