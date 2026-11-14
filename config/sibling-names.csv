@@ -1,6 +1,3 @@
 our_name,original_name,kind,evidence
-ForceBackObjPc,ForceBackObj,global,high: accessed at the same position in DrawForceBackEffect ResetForceBack SetForceBack
-ForceBackTypePc,ForceBackType,global,high: accessed at the same position in DrawForceBackEffect SetForceBack
 GamePadReadBackendPc,NuPCReadPad,function,low: called at the same position in ReadPad
-IconScenePc,IconScene,global,high: accessed at the same position in IconScene_FindById
 PCPresentationPlatformLeafPc,NudxInput_Clearflags,function,low: called at the same position in GamePads_SkipMovie

@@ -5632,47 +5632,47 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     }
 }
 
-#pragma bss_seg(".bss$ForceBackObjPc")
-static GAMEOBJECT *ForceBackObjPc = 0;
+#pragma bss_seg(".bss$ForceBackObj")
+static GAMEOBJECT *ForceBackObj = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ForceBackPosPc")
 static NUVEC *ForceBackPos = 0;
 #pragma bss_seg()
 
 void ResetForceBack(void) {
-    ForceBackObjPc = NULL;
+    ForceBackObj = NULL;
     ForceBackPos = NULL;
 }
 
 #pragma bss_seg(".bss$ForceBackRadiusPc")
 static f32 ForceBackRadiusPc = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$ForceBackTypePc")
-static i32 ForceBackTypePc = 0;
+#pragma bss_seg(".bss$ForceBackType")
+static i32 ForceBackType = 0;
 #pragma bss_seg()
 
 void SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 type) {
-    ForceBackObjPc = object;
+    ForceBackObj = object;
     ForceBackPos = object != NULL ? &object->collision_position : position;
     ForceBackRadiusPc = radius;
     ForceBackRadius2 = radius * radius;
-    ForceBackTypePc = type;
+    ForceBackType = type;
 }
 
 void DrawForceBackEffect(nuhspecial_s *special) {
     if (special == NULL || !NuSpecialExistsFn(special)) {
         return;
     }
-    if (ForceBackObjPc != NULL && ForceBackTypePc != 3) {
+    if (ForceBackObj != NULL && ForceBackType != 3) {
         NUMTX matrix;
         NUVEC position;
         NUVEC scale;
         NuSpecialSetVisibility(special, 1);
         matrix = *NuSpecialGetDrawMtx(special);
         position = position;
-        position.x = ForceBackObjPc->lower_position.x;
-        position.y = 0.005f + ForceBackObjPc->floor_height;
-        position.z = ForceBackObjPc->lower_position.z;
+        position.x = ForceBackObj->lower_position.x;
+        position.y = 0.005f + ForceBackObj->floor_height;
+        position.z = ForceBackObj->lower_position.z;
         scale = scale;
         scale.x = scale.y = scale.z = ForceBackRadiusPc;
         NuMtxSetTranslation(&matrix, &position);
@@ -5710,17 +5710,17 @@ void ForcedBackCode(GAMEOBJECT *object) {
                 ((BEAST_GROUND_CONTACT_VIEW *)object)->ground_contact_grace_timer = 0.0f;
                 object->flags_e24 |= 0x400;
             }
-        } else if (ForceBackTypePc == 4 && (f64)object->context_timer < (f64)0.2f) {
+        } else if (ForceBackType == 4 && (f64)object->context_timer < (f64)0.2f) {
             object->context_timer = 0.2f;
         }
-        if (ForceBackTypePc == 2) {
+        if (ForceBackType == 2) {
             AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[111].effect, &object->collision_position, 50, FRAMETIME, 0, 0,
                                               NULL);
         }
         NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.6f), 0);
-    } else if (ForceBackPos != NULL && object != ForceBackObjPc &&
-               (ForceBackTypePc != 2 || (object->character_data->model_flags & 0x10) != 0) && !MosEisleyC_PastBarrier(object) &&
-               (ForceBackTypePc != 3 || ForceBackObjPc == NULL || ForceBackObjPc->force_target == object)) {
+    } else if (ForceBackPos != NULL && object != ForceBackObj &&
+               (ForceBackType != 2 || (object->character_data->model_flags & 0x10) != 0) && !MosEisleyC_PastBarrier(object) &&
+               (ForceBackType != 3 || ForceBackObj == NULL || ForceBackObj->force_target == object)) {
         radius = (f32)((f64)ForceBackRadiusPc - (f64)0.2f);
         if (distance < radius * radius) {
             Player_ClearContext(object, 1);

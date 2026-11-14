@@ -1,0 +1,4 @@
+old,new,evidence
+ForceBackObjPc,ForceBackObj,sibling build: same accesses in DrawForceBackEffect ResetForceBack SetForceBack (the unused header extern goes)
+ForceBackTypePc,ForceBackType,sibling build: same accesses in DrawForceBackEffect SetForceBack (the unused header extern goes)
+IconScenePc,IconScene,sibling build: same access in IconScene_FindById (the unused header extern goes)

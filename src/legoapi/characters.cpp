@@ -214,16 +214,16 @@ extern "C" void CharScenes_AreaDump() {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$IconScenePc")
-    static NUGSCN **IconScenePc = 0;
+#pragma bss_seg(".bss$IconScene")
+    static NUGSCN **IconScene = 0;
 #pragma bss_seg()
 
     static char AreaIconPathPrivate[0x40] = "stuff\\icons\\";
 
     void IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
-        u32 table_size = (u32)CHARCOUNT * sizeof(*IconScenePc);
+        u32 table_size = (u32)CHARCOUNT * sizeof(*IconScene);
         u32 addr = (buffer->addr + 3) & ~3u;
-        IconScenePc = (NUGSCN **)addr;
+        IconScene = (NUGSCN **)addr;
         buffer->addr = addr + table_size;
         memset((void *)addr, 0, table_size);
         if (path != NULL && NuStrLen(path) < 0x40) {
@@ -235,7 +235,7 @@ extern "C" {
         if (id < 0 || id >= CHARCOUNT) {
             return NULL;
         }
-        return IconScenePc[id];
+        return IconScene[id];
     }
 
     void IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buffer, VARIPTR *end) {
@@ -245,7 +245,7 @@ extern "C" {
         if (list == NULL) {
             return;
         }
-        scenes = IconScenePc;
+        scenes = IconScene;
         if (scenes == NULL) {
             return;
         }
@@ -263,7 +263,7 @@ extern "C" {
             NuStrCat(path, LevelObject_FindNameFromIndex(object_index));
             NuStrCat(path, ".gsc");
             scene = NuGScnRead(buffer, *end, path);
-            scenes = IconScenePc;
+            scenes = IconScene;
             scenes[id] = scene;
             if (scene != NULL && scene->display_list != NULL) {
                 scene->display_list->render_flags |= 0x10;
@@ -273,7 +273,7 @@ extern "C" {
 
     void IconScenes_Dump(void) {
         i32 i;
-        NUGSCN **scenes = IconScenePc;
+        NUGSCN **scenes = IconScene;
         if (scenes == NULL) {
             return;
         }
@@ -281,7 +281,7 @@ extern "C" {
             NUGSCN *scene = scenes[i];
             if (scene != NULL) {
                 NuGScnRemove(scene);
-                scenes = IconScenePc;
+                scenes = IconScene;
                 scenes[i] = NULL;
             }
         }

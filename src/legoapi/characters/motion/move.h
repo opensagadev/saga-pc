@@ -202,7 +202,6 @@ extern "C" {
     extern f32 testlaser_sizewab;
     extern f32 testlaser_endw;
     extern i32 testlaser_type;
-    extern i32 ForceBackType;
     extern i32 lightning_type;
 #ifdef __cplusplus
 }
@@ -457,7 +456,6 @@ extern "C" {
     struct gameobject_s *PlayerOpponent(struct gameobject_s *, f32, i32);
     NUVEC *GetZapOrigin(struct gameobject_s *);
     void ZapCode(struct gameobject_s *, i32, i32);
-    extern struct gameobject_s *ForceBackObj;
     void EatVictim(struct gameobject_s *object);
     void GrabVictim(struct gameobject_s *object, struct gameobject_s *victim);
 #ifdef __cplusplus

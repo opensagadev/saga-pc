@@ -51,7 +51,6 @@ extern "C" {
 
     void CharScenes_Init(VARIPTR *, VARIPTR *);
     void CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);
-    extern void *IconScene;
     extern struct KILLPARTS_CHARSCENE *CharScene_Area;
 #ifdef __cplusplus
 }

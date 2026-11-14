@@ -39961,9 +39961,9 @@ address,symbol,size,ctype
 0x0087b8dc,_IDLESPEEDINNARROWSOCKSONLY,4,i32
 0x0087b8e0,_SaberSparksTimer,4,f32
 0x87b8e4,_testlaser_type,4,i32
-0x0087b8e8,_ForceBackObjPc,4,GAMEOBJECT *
+0x0087b8e8,_ForceBackObj,4,GAMEOBJECT *
 0x0087b8ec,_ForceBackPos,4,NUVEC *
-0x0087b8f0,_ForceBackTypePc,4,i32
+0x0087b8f0,_ForceBackType,4,i32
 0x87b8f4,_VehicleSlowdownCallback,4,void (__cdecl *)(GAMEOBJECT *)
 0x87b8f8,_lightning_type,4,i32
 0x87b8fc,_applygravity_extrahoveroffset,4,f32
@@ -41618,7 +41618,7 @@ address,symbol,size,ctype
 0x93b210,?GizObstaclesAddType@?1??GizObstacles_RegisterGizmo@@9@9,120,ADD_GIZMO_CONFIG_TYPE_PC
 0x0093b288,_gizmotypes,4,void *
 0x93b28c,_CHARCATEGORYCOUNT,4,i32
-0x93b290,_IconScenePc,4,NUGSCN **
+0x93b290,_IconScene,4,NUGSCN **
 0x0093b294,_CDataList,4,CHARACTERDATA_PC *
 0x0093b298,_CHARCOUNT,4,i32
 0x93b29c,_KillPartsCharSceneArea,4,KILLPARTS_CHARSCENE *
