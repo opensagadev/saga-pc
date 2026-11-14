@@ -1,21 +1,11 @@
-#ifndef SAGA_NU2API_NUFILE_PC_H_PART
-#define SAGA_NU2API_NUFILE_PC_H_PART 1
-#endif
+#ifndef SAGA_NU2API_NUFILE_PC_H
+#define SAGA_NU2API_NUFILE_PC_H
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nufile/nufile.h (not all of it earlier in the shim). */
-
-#ifndef SAGA_SHIM
-#include "nu2api/nufile/nufile.h"
-#endif
-/* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_NU2API_NUFILE_PC_H_PART == 1 && !defined(SAGA_NU2API_NUFILE_PC_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -48,26 +38,13 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUFILE_PC_H_PART
-#define SAGA_NU2API_NUFILE_PC_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUFILE_PC_H_STOP
-#endif
-#endif
 
-#if SAGA_NU2API_NUFILE_PC_H_PART == 2 && !defined(SAGA_NU2API_NUFILE_PC_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUFILE_DEVICE host_device;
+    extern struct nufile_device_s host_device;
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUFILE_PC_H_PART
-#define SAGA_NU2API_NUFILE_PC_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUFILE_PC_H_STOP
-#endif
-#endif
 
-#undef SAGA_NU2API_NUFILE_PC_H_STOP
+#endif

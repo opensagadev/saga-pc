@@ -1,23 +1,18 @@
-#ifndef SAGA_NU2API_NUMATH_NUVEC_H_PART
-#define SAGA_NU2API_NUMATH_NUVEC_H_PART 1
-#endif
+#ifndef SAGA_NU2API_NUMATH_NUVEC_H
+#define SAGA_NU2API_NUMATH_NUVEC_H
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/numath/nuang.h, nu2api/numath/numtx.h (not all of it earlier in the shim).
- */
+/* Included via saga.h only for now: nu2api/numath/nuang.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "nu2api/numath/nuang.h"
-#include "nu2api/numath/numtx.h"
 #endif
-/* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
 
-#if SAGA_NU2API_NUMATH_NUVEC_H_PART == 1 && !defined(SAGA_NU2API_NUMATH_NUVEC_H_STOP)
+struct numtx_s;
 
 typedef struct nuvec_s {
     f32 x;
@@ -69,44 +64,31 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUMATH_NUVEC_H_PART
-#define SAGA_NU2API_NUMATH_NUVEC_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUMATH_NUVEC_H_STOP
-#endif
-#endif
 
-#if SAGA_NU2API_NUMATH_NUVEC_H_PART == 2 && !defined(SAGA_NU2API_NUMATH_NUVEC_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuVecMtxTransformVU0(NUVEC *, NUVEC *, NUMTX *);
-    void NuVecMtxRotate(NUVEC *dst, NUVEC *src, NUMTX *matrix);
-    void NuVecMtxTransform(NUVEC *dst, NUVEC *src, NUMTX *matrix);
-    void NuVecInvMtxRotate(NUVEC *dst, NUVEC *src, NUMTX *matrix);
-    void NuVecInvMtxTransform(NUVEC *dst, NUVEC *src, NUMTX *matrix);
-    void NuVecMtxTransformBlock(NUVEC *, NUVEC *, NUMTX *, i32);
-    f32 NuVecMtxTransformH(NUVEC *, NUVEC *, NUMTX *);
-    i32 BoundingBoxToLine(NUVEC *, NUVEC *, NUMTX *, NUVEC *, NUVEC *, f32, NUVEC *);
-    void NuVecMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *m);
-    void NuVecMtxRotateValX(NUVEC *out, f32 value, NUMTX *matrix);
-    void NuVecMtxRotateValY(NUVEC *out, f32 value, NUMTX *matrix);
-    void NuVecMtxRotateValZ(NUVEC *out, f32 value, NUMTX *matrix);
-    void NuVecMtxRotateH(NUVEC *out, NUVEC *v, NUMTX *m);
-    void NuVecMtxScale(NUVEC *out, NUVEC *v, NUMTX *m);
-    void NuVecInvMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *matrix);
-    void NuVecInvMtxRotateValX(NUVEC *out, f32 unused, NUMTX *matrix);
-    void NuVecInvMtxRotateValY(NUVEC *out, f32 unused, NUMTX *matrix);
-    void NuVecInvMtxRotateValZ(NUVEC *out, f32 unused, NUMTX *matrix);
-    void NuVecInvMtxScale(NUVEC *out, NUVEC *v, NUMTX *matrix);
+    void NuVecMtxTransformVU0(NUVEC *, NUVEC *, struct numtx_s *);
+    void NuVecMtxRotate(NUVEC *dst, NUVEC *src, struct numtx_s *matrix);
+    void NuVecMtxTransform(NUVEC *dst, NUVEC *src, struct numtx_s *matrix);
+    void NuVecInvMtxRotate(NUVEC *dst, NUVEC *src, struct numtx_s *matrix);
+    void NuVecInvMtxTransform(NUVEC *dst, NUVEC *src, struct numtx_s *matrix);
+    void NuVecMtxTransformBlock(NUVEC *, NUVEC *, struct numtx_s *, i32);
+    f32 NuVecMtxTransformH(NUVEC *, NUVEC *, struct numtx_s *);
+    i32 BoundingBoxToLine(NUVEC *, NUVEC *, struct numtx_s *, NUVEC *, NUVEC *, f32, NUVEC *);
+    void NuVecMtxTranslate(NUVEC *out, NUVEC *v, struct numtx_s *m);
+    void NuVecMtxRotateValX(NUVEC *out, f32 value, struct numtx_s *matrix);
+    void NuVecMtxRotateValY(NUVEC *out, f32 value, struct numtx_s *matrix);
+    void NuVecMtxRotateValZ(NUVEC *out, f32 value, struct numtx_s *matrix);
+    void NuVecMtxRotateH(NUVEC *out, NUVEC *v, struct numtx_s *m);
+    void NuVecMtxScale(NUVEC *out, NUVEC *v, struct numtx_s *m);
+    void NuVecInvMtxTranslate(NUVEC *out, NUVEC *v, struct numtx_s *matrix);
+    void NuVecInvMtxRotateValX(NUVEC *out, f32 unused, struct numtx_s *matrix);
+    void NuVecInvMtxRotateValY(NUVEC *out, f32 unused, struct numtx_s *matrix);
+    void NuVecInvMtxRotateValZ(NUVEC *out, f32 unused, struct numtx_s *matrix);
+    void NuVecInvMtxScale(NUVEC *out, NUVEC *v, struct numtx_s *matrix);
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUMATH_NUVEC_H_PART
-#define SAGA_NU2API_NUMATH_NUVEC_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUMATH_NUVEC_H_STOP
-#endif
-#endif
 
-#undef SAGA_NU2API_NUMATH_NUVEC_H_STOP
+#endif
