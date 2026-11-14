@@ -28061,11 +28061,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$HeadCloakHairTuningPc")
-    f32 HeadMovementThresholdPc = 0.0017453293548896909f;
-    f32 CloakMovementRecoverRatePc = 2.0f;
-    f32 CloakMovementFallRatePc = 2.0f;
-#pragma data_seg()
 #pragma section(".bss$HeadCloakHairTuningPc", read, write)
     __declspec(allocate(".bss$HeadCloakHairTuningPc")) f32 HairMovementRestAnglePc = 0.0f;
 }

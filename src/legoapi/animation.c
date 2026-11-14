@@ -1,8 +1,13 @@
 #include "saga.h"
 
-static f32 HairMovementFallAnglePc = -1.8325958251953125f;
-static f32 HairMovementFallRatePc = 2.0f;
+/* Retail unit 0x58bc60-0x58d311 (legoapi/animation.c): definitions in retail address order. */
+
+f32 HeadMovementThresholdPc = 0.0017453293548896909f;
+f32 CloakMovementRecoverRatePc = 2.0f;
+f32 CloakMovementFallRatePc = 2.0f;
 static f32 HairMovementRecoverRatePc = 2.0f;
+static f32 HairMovementFallRatePc = 2.0f;
+static f32 HairMovementFallAnglePc = -1.8325958251953125f;
 
 typedef struct character_joint_movement_pc_s {
     u8 unknown_000[0xf3c];                  // 0x0000
