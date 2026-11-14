@@ -7983,7 +7983,6 @@ extern "C" {
     NUMTX *NuSound3Listener = 0;
     f32 nusound_fade_start = 2.0f;
     f32 nusound_fade_end = 15.0f;
-    u32 nusound_seed = 0x20558057;
 #pragma const_seg(".rdata$GizmoDefaultOutputName")
     extern const char GizmoDefaultOutputName[8] = "default";
 #pragma const_seg()
@@ -9117,10 +9116,6 @@ extern "C" {
     extern const f32 PCKeyboardDefaultValue = 0.1f;
 #pragma const_seg()
     f32 dme_sy = 1.0f;
-    f32 MASTERVOLUME = 1.0f;
-#pragma data_seg(".data$AUDIOFADELEVEL")
-    f32 AUDIOFADELEVEL = 1.0f;
-#pragma data_seg()
     NUMTX numtx_identity = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
                             0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     NUMTL *numtl_defaultmtl2d = 0;
@@ -23803,8 +23798,6 @@ extern "C" {
     char SfxNameSlotsPc[1601][32] = {0};
     char SfxFilenameSlotsPc[1601][64] = {0};
     i32 SfxRefCountsPc[1601] = {0};
-    char SfxConfigFilenamePc[256] = "Audio/audio.cfg";
-    const char *SfxMusicExtensionPc = NuFileExt_vag_PC;
     f32 SfxAudioVersionPc = 0;
     CRITICAL_SECTION SoundSampleCriticalSectionPc = {0};
     HANDLE PCSoundSampleWorkerHandlePc = 0;

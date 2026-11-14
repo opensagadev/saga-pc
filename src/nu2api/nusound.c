@@ -1226,6 +1226,11 @@ static void fnAudioAudio(NUFPAR_PC *parser) {
     SfxAudioVersionPc = NuFParGetFloat(parser);
 }
 
+const char *SfxMusicExtensionPc = NuFileExt_vag_PC;
+u32 nusound_seed = 0x20558057;
+char SfxConfigFilenamePc[256] = "Audio/audio.cfg";
+f32 MASTERVOLUME = 1.0f;
+f32 AUDIOFADELEVEL = 1.0f;
 static NUFPCOMJMP audioComPc[] = {
     {"Audio", fnAudioAudio}, {"Sample", fnAudioSample}, {"Group", AudioGroup_Parse}, {NULL, NULL}};
 
