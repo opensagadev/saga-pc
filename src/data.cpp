@@ -7390,10 +7390,6 @@ extern "C" {
         0x6825a449, 0x7524, 0x4d82, {0x92, 0xf, 0x50, 0xe3, 0x6a, 0xb3, 0xab, 0x1e}};
 #pragma const_seg()
 
-#pragma data_seg(".data$TerrPlatScanDist")
-    f32 TerrPlatScanDist = 10.0f;
-#pragma data_seg()
-
     PLAYER_BATARANG_SLOT_PC BatarangPacketsPc[8] = {0};
 
     SUIT_LAYERS_PC *PlayerSuit[8] = {0};
@@ -7417,8 +7413,6 @@ extern "C" {
     COLLECTION_AREA_SAVE_PC *Game_AreaSave = 0;
 
     i32 cntrots = 0;
-
-    TERRAIN_CALLBACK_LIFECYCLE_PC PlatCallback[8] = {0};
 
     i32 PlatCodeCallback = 0;
 
@@ -7617,8 +7611,6 @@ extern "C" {
 
     NUVEC edpp_cam_pos = {0};
 
-    i32 edpp_nearest = 0;
-
     i32 numspherecolldata = 0;
 
     DEBRIS_COLLISION_ENTRY_PC *spherecolldata = 0;
@@ -7730,7 +7722,6 @@ extern "C" {
     f32 BoltShootParameter = 0.1f;
 #pragma data_seg()
     SFX_GROUP_PC NuSound3Groups[128] = {0};
-    i16 NuSound3GroupSampleIds[512] = {0};
     i32 NuSound3GroupSampleCount = 0;
     i32 NuSound3GroupCount = 0;
     BOLT Bolt[32] = {0};
@@ -8027,7 +8018,6 @@ extern "C" {
     i32 saveload_status = 0;
     i32 NOMUSIC = 0;
     MUSICPLAYBACK_PC Music = {0, -1, 0, -1, 0, -1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0, -1, NULL};
-    i32 edpp_page_used[8] = {0};
     i32 debinf_count = 0;
     DEBRIS_INFO_PC **debtab = 0;
     NUGSCN *save_icon_scene = 0;
@@ -8828,7 +8818,6 @@ extern "C" {
 #pragma const_seg(".rdata$AreaConfigKeyword_name_id")
     extern const char AreaConfigKeyword_name_id[8] = "name_id";
 #pragma const_seg()
-    u16 SfxBits[100] = {0};
     u16 GlobalSfxBits[100] = {0};
     i32 EdAnimLocalFrameCountPc = 0;
     NUVEC *ed_loc = 0;
@@ -9074,8 +9063,6 @@ NUKEYCHAR NuKeyChar[65] = {
     {0x52, 0x30, 0x30, {0, 0}}, {0x53, 0x2e, 0x2e, {0, 0}}, {0x8d, 0x3d, 0x3d, {0, 0}}, {0xb5, 0x2f, 0x2f, {0, 0}},
     {0x0, 0x00, 0x00, {0, 0}},
 };
-
-i32 SkinFlipTab[8] = {0, 1, 2, 3, 0, 2, 1, 3};
 
 // Both PC indices are masked to two bits.
 i32 TrooperStepFrames[4] = {1, 2, 1, 0};
@@ -10100,12 +10087,9 @@ extern "C" {
     const char AIScaleOverrideResetName[6] = "reset";
 #pragma const_seg()
     void (*SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object) = 0;
-    TERRAIN_POLYGON_INFO_PC *ShadPoly = 0;
     TERRAIN_POLYGON_INFO_PC *EShadPoly = 0;
-    TERRAIN_POLYGON_INFO_PC *ShadRoofPoly = 0;
     i16 castnum = 0;
     f32 EShadY = 0;
-    f32 GetSurfaceInfoRoofHeightPc = 0;
     NUVEC ShadNorm = {0};
     NUVEC GetSurfaceInfoWaterNormalPc = {0};
     PC_SURFACE_MASK_PC GetSurfaceInfoRuntimeMaskPc = {0};
@@ -10139,28 +10123,14 @@ struct TERRAIN_SKIN_INFO_PC;
 struct TERRAIN_SKIN_USE_RECORD_PC;
 
 extern "C" {
-    // Accessed terrain state and literals; full original allocation extents remain unknown.
-    TerrainQuery_s *TerI = 0;
-    u16 NuTerrPlatsOff = 0;
-    TERRAIN_POLYGON_INFO_PC *ScaleTerrain = 0;
-    i16 TerrainShadowFloorIndexPc = 0;
     TERRAIN_POLYGON_INFO_PC *TerrainCastAuxPolygonPc = 0;
-    f32 TerrainShadowHeightPc = 0;
     u16 TerrainCastAuxValidPc = 0;
     i16 TerrainCastAuxIndexPc = 0;
-    NUVEC TerrainCastAuxNormalPc = {0};
     u16 TerrainWaterCastIndexPc = 0;
-    u16 TerrainRoofValidPc = 0;
-    i16 TerrainRoofIndexPc = 0;
-    NUVEC TerrainRoofNormalPc = {0};
     u16 TerrainSurfaceClassPc = 0;
     i32 PlatSkinCnt = 0;
     struct TERRAIN_SKIN_INFO_PC *PlatSkinInfo = 0;
-    u32 TerrainUpadteCnt = 0;
     struct TERRAIN_SKIN_USE_RECORD_PC *SkinMemInfo = 0;
-    i32 PlatSkinMaxStore = 0;
-    i32 PlatSkinMaxSize = 0;
-    u8 *PlatSkinMem = 0;
 #pragma const_seg(".rdata$TerrainCastLowerSentinel")
     extern const f32 TerrainCastLowerSentinel = -2000000.0f;
 #pragma const_seg()
@@ -10524,17 +10494,12 @@ extern "C" {
 extern "C" {
     struct PC_SCENE_MTL_VIEW *edbri_mtl_zoff = 0;
     PC_EDBRIDGE edBridges[64] = {0};
-    i32 edbri_page_used[8] = {0};
-    NUGSCN *edbri_page_scene[8] = {0};
     i32 edbri_bridges_used = 0;
     i32 edbri_nearest = 0;
-    NUVEC edbri_cam_pos = {0};
     i32 edgra_page_used[8] = {0};
     NUGSCN *edgra_page_scene[8] = {0};
-    void *edgra_page_terrain[8] = {0};
     NUMTX *edgra_page_matrix_stack[8] = {0};
     i32 edgra_page_vectors_valid[8] = {0};
-    i32 edgra_nearest = 0;
     NUVEC edgra_cam_pos = {0};
     i32 edbits_editmode = 0;
     NUMTX *edgra_mtxbuffer = 0;
@@ -10572,7 +10537,6 @@ extern "C" {
 #pragma data_seg(".data$edgra_elementthin")
     i32 edgra_elementthin = 1;
 #pragma data_seg()
-    i32 edgra_page_on[8] = {0};
     i32 debris_suspended = 0;
     f32 globaltime = 0;
     f32 panelglobaltime = 0;
@@ -10580,7 +10544,6 @@ extern "C" {
     i32 update_debris_enabled = 1;
 #pragma data_seg()
     DEBRISKEY_PC *debris_keystack = 0;
-    i32 freedebkeyptr = 0;
     i32 maxdebkeys = 0;
     i16 *freedebkeys = 0;
 }
@@ -10597,22 +10560,18 @@ extern "C" {
     i32 NuWindDir = 0;
     i32 NuWindDir2 = 0;
     i32 edgra_units_used = 0;
-    i32 edgra_page_calculate_done[8] = {0};
 #pragma data_seg(".data$debrischunks")
     i32 debrischunks = 256;
 #pragma data_seg()
 #pragma data_seg(".data$debrischunksglass")
     i32 debrischunksglass = 32;
 #pragma data_seg()
-    DEBRIS_CHUNK_CONTROL_PC **freechunkcontrols = 0;
     i32 freechunkcontrolsptr = 0;
     volatile i32 debris_control_stack_lock = 0;
-    DEBRIS_CHUNK_CONTROL_PC *debris_chunk_control_stack[2] = {0};
     LEVELDATA_PC *CLOUDCITYTRAPB_LDATA = 0;
     LEVELDATA_PC *MAULA_LDATA = 0;
     LEVELDATA_PC *MAULF_LDATA = 0;
     LEVELDATA_PC *DOOKUC_LDATA = 0;
-    i32 freeDmaDebType = 0;
 #pragma data_seg(".data$EDPP_MAX_DMADEBTYPES")
     i32 EDPP_MAX_DMADEBTYPES = 64;
 #pragma data_seg()
@@ -10674,8 +10633,6 @@ extern "C" {
 
 extern "C" {
 
-    DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass = 0;
-    DEBRIS_PARTICLE_CHUNK_PC **freedebchunks = 0;
     i32 freedebchkptrg = 0;
     DEBRIS_CHUNK_CONTROL_PC *debris_chunk_controls = 0;
     i32 freedebchkptr = 0;
@@ -10728,13 +10685,11 @@ extern "C" {
     i32 edpp_page_on[8] = {0};
     i32 edpp_instances_used = 0;
     i32 edpp_types_used = 0;
-    EDPP_PARTICLE_PC edpp_ptls[512] = {0};
 }
 
 extern "C" {
     i32 edbits_anim_page = 0;
     i32 edanim_particle_mode = 0;
-    i32 edanim_nearest = 0;
     i32 edanim_nearest_param_id = 0;
     NUVEC edanim_cam_pos = {0};
 }
@@ -10758,12 +10713,9 @@ extern "C" {
 extern "C" {
     void *ScaleTerrainT2 = 0;
     void *TempScanStack = 0;
-    void *WallSplList = 0;
     i32 terraincnt = 0;
     i32 curSphereter = 0;
-    i32 platinrange = 0;
     TERRAIN_POLYGON_INFO_PC *TerrPoly = 0;
-    u8 TerrWallInfo = 0;
     i32 PlatImpactId = 0;
     i32 TerrShapeAdjCnt = 0;
 #pragma const_seg(".rdata$TerrainUnusedSpatialBlockPc")
@@ -10811,7 +10763,6 @@ extern "C" {
 extern "C" {
     void *emperorfighta_netpacket = 0;
     i32 LevSfxFlag[4] = {0};
-    u8 debris_object_switches[128] = {0};
 }
 
 extern "C" {
@@ -10894,7 +10845,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 WallSplCount = 0;
     i32 curPickInst = 0;
     i32 IgnoreWallSplines = 0;
     i32 WallSplinesOnly = 0;
@@ -11249,10 +11199,6 @@ extern "C" {
 }
 
 extern "C" {
-    u8 TerrWallTab[4] = {0};
-}
-
-extern "C" {
     LEVELDATA_PC *CRUISERD_LDATA = 0;
 }
 
@@ -11260,20 +11206,8 @@ extern "C" {
 #pragma const_seg(".rdata$TerrainOpposingContactThresholdPc")
     extern const f64 TerrainOpposingContactThresholdPc = -0.7f;
 #pragma const_seg()
-#pragma data_seg(".data$TerConTol")
-    f32 TerConTol = 0.1f;
-#pragma data_seg()
     NUVEC TerrImpactPos = {0};
-    i32 terrhitflags = 0;
-    i16 TerrImpact = 0;
-    TERRAIN_SPHERE_PC SphereData[16] = {0};
-    i32 PlatCrush = 0;
-    TERRAIN_AXIS_FREEDOM_SHAPE_PC *TerrShape = 0;
-    NUVEC4 tertempvec4 = {0};
-    NUVEC TerrWallNorm = {0};
 
-    EDBITS_GAME_SOUND edbitsGameSound[320] = {0};
-    i32 plathitid = 0;
     TERRAIN_POLYGON_INFO_PC PlatImpactTer = {0};
     NUMTX tertempmat = {0};
     TERRAIN_LAST_IMPACT_PC TerrLastImpact = {0};
@@ -11340,9 +11274,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$TerrPlatDis")
-    i32 TerrPlatDis = -1;
-#pragma data_seg()
 #pragma data_seg(".data$PCPortalsEnabled")
     i32 PCPortalsEnabled = 1;
 #pragma data_seg()
@@ -23209,7 +23140,6 @@ extern "C" {
     i32 NumSfxNames = 0;
     char SfxNameSlotsPc[1601][32] = {0};
     char SfxFilenameSlotsPc[1601][64] = {0};
-    i32 SfxRefCountsPc[1601] = {0};
     f32 SfxAudioVersionPc = 0;
     CRITICAL_SECTION SoundSampleCriticalSectionPc = {0};
     char *PCSampleFilenameExtensionPc = (char *)NuFileExt_wav_PC;
@@ -23517,11 +23447,6 @@ extern "C" {
 
     u8 edpp_effect_list = 0;
 
-    i32 edpp_snap_enabled = 0;
-
-    i32 edpp_copy_source[8] = {0};
-
-    struct eduimenu_s *ptlcutoffmenu = 0;
     struct eduimenu_s *edptl_bounce_menu = 0;
     struct eduimenu_s *edptl_damageflag_menu = 0;
     struct eduimenu_s *edptl_instancesettings_menu = 0;
@@ -23543,16 +23468,11 @@ extern "C" {
 #pragma data_seg(".data$edptl_superscale")
     i32 edptl_superscale = 1;
 #pragma data_seg()
-    struct eduimenu_s *ptlemitvelmenu = 0;
-    struct eduimenu_s *ptlgravmenu = 0;
     struct eduimenu_s *changegenratemenu = 0;
     struct eduimenu_s *etimemenu = 0;
-    struct eduimenu_s *emittimemenu = 0;
     struct eduimenu_s *edptl_ghost_menu = 0;
-    struct eduimenu_s *ptlvaremitmenu = 0;
     struct eduimenu_s *ptlvarstartmenu = 0;
     struct eduimenu_s *sscalemenu = 0;
-    struct eduimenu_s *ptlstartvelmenu = 0;
     struct eduimenu_s *ptlemitmenu = 0;
     i32 edbits_particle_general_page = 0;
 #pragma data_seg(".data$edbits_particle_char_page")
@@ -23568,10 +23488,6 @@ extern "C" {
 #pragma data_seg(".data$eddarkred")
     u32 eddarkred[4] = {0x80000050, 0x80ff0000, 0x80808080, 0x80404040};
 #pragma data_seg()
-
-    i32 edpp_cam_ay = 0;
-
-    i32 edpp_cam_ax = 0;
 
     struct eduimenu_s *ptloptmenu = 0;
 
@@ -23712,16 +23628,12 @@ extern "C" {
 
 extern "C" {
     struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff = 0;
-
-    i32 edanim_sound_mode = 0;
 }
 
 extern "C" {
     void *ed_fnt = 0;
 
     struct eduimenu_s *edanim_soundtype_menu = 0;
-
-    i32 edanim_sound_type = 0;
 
     i32 edSfxAllCount = 0;
 
@@ -23730,8 +23642,6 @@ extern "C" {
     char edbits_level_save_name[256] = {0};
 
     char edbits_level_save_extension[256] = {0};
-
-    void *edanim_mtl = 0;
 
     struct eduimenu_s *edanim_active_menu = 0;
 }
@@ -23753,10 +23663,6 @@ extern "C" {
 
 #pragma data_seg(".data$edgra_copy_source")
     i32 edgra_copy_source = -1;
-
-    i32 edgra_clump_size = 0;
-
-    i32 edgra_cam_ax = 0;
 
     i32 edgra_cam_ay = 0;
 
@@ -23826,24 +23732,17 @@ extern "C" {
 extern "C" {
     struct eduimenu_s *ptltypemenu = 0;
 
-    struct eduimenu_s *effectlistmenu = 0;
-
     struct eduimenu_s *edptl_torus_menu = 0;
-    struct eduimenu_s *ptlrotmenu = 0;
     struct eduimenu_s *collmenu = 0;
     struct eduimenu_s *ptlgsortmenu = 0;
     struct eduimenu_s *ptlclipmenu = 0;
     struct eduimenu_s *ptlgcodemenu = 0;
     struct eduimenu_s *edptl_group_menu = 0;
     struct eduimenu_s *edptl_drawflag_menu = 0;
-    struct eduimenu_s *ptlcolmenu = 0;
-    struct eduimenu_s *ptlsizemenu = 0;
 
     struct eduimenu_s *dpadmodemenu = 0;
 
     struct eduimenu_s *edptl_orphanlist_menu = 0;
-
-    struct eduimenu_s *edptl_damage_menu = 0;
 
 #pragma data_seg(".data$edptl_clipboard_entry")
     i32 edptl_clipboard_entry = -1;
@@ -23879,8 +23778,6 @@ extern "C" {
 
     i32 edgra_filter = 0;
 
-    i32 edgra_instance_type = 0;
-
     struct eduimenu_s *edgra_dpadmode_menu = 0;
 
     i32 edgra_dpadmode = 0;
@@ -23901,15 +23798,12 @@ extern "C" {
 }
 
 extern "C" {
-    struct eduimenu_s *ptlreadoutmenu = 0;
 
     i32 edpp_readout = 0;
 }
 
 extern "C" {
     struct eduimenu_s *edanim_particletype_menu = 0;
-
-    i32 edanim_particle_type = 0;
 }
 
 extern "C" {
@@ -23956,7 +23850,6 @@ extern "C" {
     struct PC_SCENE_MTL_VIEW *uimtls[5] = {0};
 
     struct eduimenu_s *messagemenu = 0;
-    struct eduimenu_s *ptldatamenu = 0;
     char edbits_datapath[256] = {0};
     i32 edbits_override_backups = 0;
 }
@@ -24000,14 +23893,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 edanim_cam_ax = 0;
-}
-
-extern "C" {
-    i32 edanim_cam_ay = 0;
-}
-
-extern "C" {
     struct eduimenu_s *edanim_options_menu = 0;
 }
 
@@ -24023,10 +23908,6 @@ extern "C" {
     struct eduimenu_s *edgra_clumpdist_menu = 0;
 
     struct eduimenu_s *edgra_clumpterrain_menu = 0;
-}
-
-extern "C" {
-    struct eduimenu_s *namemenu = 0;
 }
 
 extern "C" {
@@ -24194,14 +24075,6 @@ extern "C" {
 
 extern "C" {
     struct eduimenu_s *edbri_postinstance_menu = 0;
-}
-
-extern "C" {
-    i32 edbri_cam_ax = 0;
-}
-
-extern "C" {
-    i32 edbri_cam_ay = 0;
 }
 
 extern "C" {

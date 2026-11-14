@@ -1,5 +1,36 @@
 #include "saga.h"
 static u8 *TerrainCrashDataPc = 0;
+i32 edanim_sound_mode = 0;
+i32 edanim_sound_type = 0;
+f32 TerrainShadowHeightPc = 0;
+u16 TerrainRoofValidPc = 0;
+i32 edpp_page_used[8] = {0};
+struct eduimenu_s *namemenu = 0;
+TERRAIN_POLYGON_INFO_PC *ScaleTerrain = 0;
+struct eduimenu_s *ptlcutoffmenu = 0;
+struct eduimenu_s *ptlvaremitmenu = 0;
+u8 TerrWallTab[4] = {0};
+i32 freeDmaDebType = 0;
+i32 PlatSkinMaxStore = 0;
+u8 *PlatSkinMem = 0;
+EDPP_PARTICLE_PC edpp_ptls[512] = {0};
+void *WallSplList = 0;
+u16 NuTerrPlatsOff = 0;
+struct eduimenu_s *edptl_damage_menu = 0;
+i32 edbri_cam_ay = 0;
+i32 plathitid = 0;
+i32 edanim_cam_ay = 0;
+u8 debris_object_switches[128] = {0};
+TERRAIN_POLYGON_INFO_PC *ShadPoly = 0;
+i16 TerrainShadowFloorIndexPc = 0;
+i32 edgra_cam_ax = 0;
+DEBRIS_CHUNK_CONTROL_PC *debris_chunk_control_stack[2] = {0};
+u32 TerrainUpadteCnt = 0;
+i32 PlatSkinMaxSize = 0;
+i32 edgra_page_calculate_done[8] = {0};
+i32 edpp_cam_ay = 0;
+NUVEC TerrainRoofNormalPc = {0};
+NUGSCN *edbri_page_scene[8] = {0};
 static i16 debug_index = 0;
 
 void TerrainSetCur(void *terrain) {
@@ -2343,6 +2374,24 @@ STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_5c) == 0x5c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_60) == 0x60);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_64) == 0x64);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platforms) == 0x158);
+NUVEC4 tertempvec4 = {0};
+i32 edgra_nearest = 0;
+i32 SfxRefCountsPc[1601] = {0};
+i32 edgra_clump_size = 0;
+i32 edpp_snap_enabled = 0;
+i32 edanim_nearest = 0;
+DEBRIS_CHUNK_CONTROL_PC **freechunkcontrols = 0;
+struct eduimenu_s *ptlgravmenu = 0;
+i16 TerrainRoofIndexPc = 0;
+i32 edpp_cam_ax = 0;
+i32 edpp_nearest = 0;
+NUVEC TerrWallNorm = {0};
+EDBITS_GAME_SOUND edbitsGameSound[320] = {0};
+i32 WallSplCount = 0;
+NUVEC edbri_cam_pos = {0};
+i32 edanim_particle_type = 0;
+i32 edpp_copy_source[8] = {0};
+struct eduimenu_s *effectlistmenu = 0;
 static TERRAIN_PICKUP_SET_PC *PickupTerr = 0;
 
 i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET_PC *terrain) {
@@ -3105,6 +3154,39 @@ void DrawWallSpline(f32 height) {
     }
 }
 
+i32 edanim_cam_ax = 0;
+i32 platinrange = 0;
+struct eduimenu_s *ptlrotmenu = 0;
+struct eduimenu_s *ptlstartvelmenu = 0;
+i32 edgra_page_on[8] = {0};
+i32 edbri_page_used[8] = {0};
+i32 freedebkeyptr = 0;
+i32 edgra_instance_type = 0;
+struct eduimenu_s *ptlemitvelmenu = 0;
+void *edanim_mtl = 0;
+struct eduimenu_s *ptlreadoutmenu = 0;
+DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass = 0;
+DEBRIS_PARTICLE_CHUNK_PC **freedebchunks = 0;
+NUVEC TerrainCastAuxNormalPc = {0};
+struct eduimenu_s *emittimemenu = 0;
+TERRAIN_CALLBACK_LIFECYCLE_PC PlatCallback[8] = {0};
+i32 terrhitflags = 0;
+i16 TerrImpact = 0;
+u8 TerrWallInfo = 0;
+i16 NuSound3GroupSampleIds[512] = {0};
+TERRAIN_SPHERE_PC SphereData[16] = {0};
+u16 SfxBits[100] = {0};
+TERRAIN_POLYGON_INFO_PC *ShadRoofPoly = 0;
+struct eduimenu_s *ptldatamenu = 0;
+i32 PlatCrush = 0;
+TERRAIN_AXIS_FREEDOM_SHAPE_PC *TerrShape = 0;
+struct eduimenu_s *ptlsizemenu = 0;
+struct eduimenu_s *ptlcolmenu = 0;
+void *edgra_page_terrain[8] = {0};
+f32 GetSurfaceInfoRoofHeightPc = 0;
+i32 edbri_cam_ax = 0;
+// Accessed terrain state and literals; full original allocation extents remain unknown.
+TerrainQuery_s *TerI = 0;
 static i32 TerrainSkinInfoCapacityPc = 0;
 static u8 *TerrainSkinArenaEndPc = 0;
 static i32 TerrainSkinOriginalGroupCountPc = -1;
@@ -3516,6 +3598,10 @@ TERRAIN_GROUP_PC *fun_00681cc0(i32 instance) {
     return &terrain->groups[terrain->platforms[index].terrain_group_index];
 }
 
+i32 TerrPlatDis = -1;
+f32 TerConTol = 0.1f;
+f32 TerrPlatScanDist = 10.0f;
+i32 SkinFlipTab[8] = {0, 1, 2, 3, 0, 2, 1, 3};
 static const char *errstr[] = {"ERR_UNKNOWN", "ERR_NOTERR",      "ERR_MAXTERLIST", "ERR_MAXTERR",
                                "ERR_INOUT",   "ERR_PLATSKINMAX", "ERR_NOINSTANCE"};
 
