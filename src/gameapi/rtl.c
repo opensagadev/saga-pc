@@ -3944,8 +3944,6 @@ static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second) {
     return different;
 }
 
-#pragma section(".rdata$RtlExtensionText", read)
-__declspec(allocate(".rdata$RtlExtensionText"))
 #pragma section(".rdata$RtlFilePathFormat", read)
 __declspec(allocate(".rdata$RtlFilePathFormat")) const char RtlFilePathFormatPc[7] = "%s%s%s";
 #pragma section(".data$RtlExtensionPointer", read, write)
