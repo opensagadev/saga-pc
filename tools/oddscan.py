@@ -93,6 +93,8 @@ CLASSES = [
     ("assert-offsetof-header", "c", "STATIC_ASSERT(offsetof ...) in a header"),
     ("assert-offsetof-unit", "c", "STATIC_ASSERT(offsetof ...) in a .c/.cpp (overlay scaffolding)"),
     ("assert-sizeof", "c", "STATIC_ASSERT(sizeof ...)"),
+    ("assert-layout-unlisted", "c", "STATIC_ASSERT(sizeof/offsetof ...) of a type that config/assert-keep.csv does "
+                                    "not list for its file (a layout comment states it: tools/layoutcheck.py)"),
     ("placeholder-field", "c", "unk_/pad_/field_0xNN/padNN identifiers"),
     ("hex-name", "c", "address-named symbols (FUN_/DAT_/sub_/data_0x.., Foo67e8), older forms"),
     ("address-name", "c", "standard address names fun_XXXXXXXX/dat_XXXXXXXX in src/ and config/symbols.csv "
@@ -204,6 +206,22 @@ VIEW_DEF = re.compile(r'\b(?:struct|union|typedef\s+(?:struct|union))\s+(' + VIE
 VIEW_USE = re.compile(VIEW_NAME)
 PC_SUFFIX = re.compile(r'\b[A-Za-z_]\w*(?:Pc|_PC|_pc)\b')
 ASSERT = re.compile(r'\bSTATIC_ASSERT\s*\(\s*(offsetof|sizeof)?')
+ASSERT_TYPE = re.compile(r'\bSTATIC_ASSERT\s*\(\s*(?:offsetof|sizeof)\s*\(\s*(?:(?:struct|union|class)\s+)?(\w+)')
+ASSERT_KEEP = ROOT / "config/assert-keep.csv"
+_assert_keep = None
+
+
+def assert_keep():
+    """{(file, type)} of layout asserts kept on purpose (config/assert-keep.csv)."""
+    global _assert_keep
+    if _assert_keep is None:
+        import csv  # noqa: PLC0415
+        _assert_keep = set()
+        if ASSERT_KEEP.is_file():
+            with ASSERT_KEEP.open(newline="", encoding="utf-8") as handle:
+                for row in csv.DictReader(handle):
+                    _assert_keep.add((row["file"], row["type"]))
+    return _assert_keep
 DUMMY = re.compile(r'\b(?:dummy\w*|\w+_dummy|sink\w*|discard\w*)\b|(?<![\w.>])(\w+)\s*=\s*\1\s*;')
 VOID_CAST = re.compile(r'^\s*\(\s*void\s*\)\s*[A-Za-z_]\w*\s*;')
 EXTERN_LOCAL = re.compile(r'^\s*extern\b')
@@ -701,6 +719,9 @@ class FileScan:
                 self.add("assert-offsetof-header" if self.header else "assert-offsetof-unit", number, raw)
             elif match.group(1) == "sizeof":
                 self.add("assert-sizeof", number, raw)
+        for match in ASSERT_TYPE.finditer(line):
+            if (self.path, match.group(1)) not in assert_keep():
+                self.add("assert-layout-unlisted", number, raw)
 
     def literal_uses(self, number, line, switch_stack):
         if re.match(r'\s*(?:for|while)\b', line) is None and "for (" not in line:

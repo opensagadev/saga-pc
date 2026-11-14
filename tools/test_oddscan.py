@@ -117,6 +117,15 @@ void Bar(void) {
     def test_layout_scaffolding(self):
         self.assertEqual(self.scan.counts["view-type"], 1)
         self.assertEqual(self.scan.counts["assert-offsetof-unit"], 1)
+        self.assertEqual(self.scan.counts["assert-layout-unlisted"], 1)
+        kept = oddscan._assert_keep
+        try:
+            oddscan._assert_keep = {("src/legoapi/thing.c", "THING_VIEW_PC")}
+            scan = oddscan.FileScan("src/legoapi/thing.c", UNIT)
+            self.assertEqual(scan.counts["assert-layout-unlisted"], 0)
+            self.assertEqual(scan.counts["assert-offsetof-unit"], 1)
+        finally:
+            oddscan._assert_keep = kept
         self.assertGreaterEqual(self.scan.counts["placeholder-field"], 2)
 
     def test_enums(self):

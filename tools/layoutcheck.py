@@ -774,10 +774,26 @@ def clang_format(path, ranges):
     subprocess.run([*args, str(path)], cwd=ROOT, check=True, timeout=120)
 
 
-def convert(target, jobs, dry_run=False, all_records=False, scope=None, skip=()):
+def cached_analysis(files, jobs, cache):
+    """analyze_files() through a cache of {file: facts} (texts must not change between uses)."""
+    missing = [rel for rel in files if rel not in cache]
+    if missing:
+        cache.update(analyze_files(missing, jobs))
+    return {rel: cache[rel] for rel in files}
+
+
+def convert(target, jobs, dry_run=False, all_records=False, scope=None, skip=(), cache=None, texts=None,
+            units_only=False):
+    """Plan the conversion of one target; with `cache`/`texts` given, return the plan instead of writing.
+
+    `units_only` keeps the asserts in headers (only those in .c/.cpp units go).
+    """
+    plan_only = cache is not None
+    cache = {} if cache is None else cache
     file, first, last, struct = parse_target(target)
     sources = all_sources()
-    texts = {rel: (ROOT / rel).read_text(encoding="utf-8") for rel in sources}
+    if texts is None:
+        texts = {rel: (ROOT / rel).read_text(encoding="utf-8") for rel in sources}
     if file is None:
         holders = [rel for rel in sources if re.search(rf"\b(?:struct|union|class)\s+{re.escape(struct)}\b|"
                                                        rf"\}}\s*{re.escape(struct)}\s*;", texts[rel])]
@@ -785,7 +801,7 @@ def convert(target, jobs, dry_run=False, all_records=False, scope=None, skip=())
             raise SystemExit(f"layoutcheck: no definition of {struct} found")
         file = holders[0] if "src/saga.h" not in holders else "src/saga.h"
     print(f"layoutcheck: analyzing {file}")
-    own = analyze_files([file], jobs)[file]
+    own = cached_analysis([file], jobs, cache)[file]
     merged, conflicts = merge_records(own)
     conflict_lines = {line for line, _ in conflicts}
     selected = {}
@@ -805,12 +821,12 @@ def convert(target, jobs, dry_run=False, all_records=False, scope=None, skip=())
     print(f"layoutcheck: {len(selected)} records, asserts in {len(assert_files)} files")
     analyzed = {file: own}
     if others:
-        analyzed.update(analyze_files(others, jobs))
+        analyzed.update(cached_analysis(others, jobs, cache))
     verdicts = assert_verdicts({rel: analyzed[rel] for rel in assert_files})
     keys = {(file, close) for close in selected}
     asserted = defaultdict(int)
     for (rel, line), (entry, key, reason) in verdicts.items():
-        if key is not None and tuple(key) in keys:
+        if key is not None and tuple(key) in keys and not (units_only and rel.endswith(".h")):
             asserted[tuple(key)] += 1
     report = {"records": 0, "members": 0, "removed": 0, "kept": [], "skipped": [], "orphans": []}
     lines = texts[file].splitlines()
@@ -841,6 +857,8 @@ def convert(target, jobs, dry_run=False, all_records=False, scope=None, skip=())
         if reason:
             report["kept"].append(f"{rel}:{line}: {entry['text']}  ({reason})")
             continue
+        if units_only and rel.endswith(".h"):
+            continue
         doomed[rel].add(line)
     for rel, numbers in doomed.items():
         text_lines = texts[rel].splitlines()
@@ -854,26 +872,37 @@ def convert(target, jobs, dry_run=False, all_records=False, scope=None, skip=())
     for title, key in (("kept", "kept"), ("skipped", "skipped"), ("comment above a removed assert", "orphans")):
         for item in report[key]:
             print(f"  {title}: {item}")
-    if dry_run:
-        return report
-    touched = set(doomed) | ({file} if edits else set())
-    for rel in sorted(touched):
+    ranges = [(record["first"], close) for close, record in selected.items() if (file, close) in converted_keys]
+    plan = {"report": report, "edits": {file: edits} if edits else {}, "doomed": dict(doomed),
+            "ranges": {file: ranges} if ranges else {}}
+    if dry_run or plan_only:
+        return plan
+    apply_plans([plan], texts)
+    return plan
+
+
+def apply_plans(plans, texts):
+    """Write the comment edits and assert deletions of several plans made on the same texts."""
+    edits, doomed, ranges = defaultdict(dict), defaultdict(set), defaultdict(list)
+    for plan in plans:
+        for rel, changes in plan["edits"].items():
+            for number, new in changes.items():
+                if number in edits[rel] and edits[rel][number] != new:
+                    raise SystemExit(f"layoutcheck: {rel}:{number}: two conversions edit this line differently")
+                edits[rel][number] = new
+        for rel, numbers in plan["doomed"].items():
+            doomed[rel] |= numbers
+        for rel, spans in plan["ranges"].items():
+            ranges[rel] += spans
+    for rel in sorted(set(edits) | set(doomed)):
         text_lines = texts[rel].splitlines()
-        if rel == file:
-            for number, new in edits.items():
-                text_lines[number - 1] = new
+        for number, new in edits.get(rel, {}).items():
+            text_lines[number - 1] = new
         out, mapping = delete_lines(text_lines, doomed.get(rel, set()))
         path = ROOT / rel
         path.write_text("\n".join(out) + ("\n" if texts[rel].endswith("\n") else ""), encoding="utf-8")
-        if rel == file:
-            ranges = []
-            for close, record in selected.items():
-                if (file, close) in converted_keys:
-                    a, b = mapping.get(record["first"]), mapping.get(close)
-                    if a and b:
-                        ranges.append((a, b))
-            clang_format(path, merge_ranges(ranges))
-    return report
+        spans = [(mapping.get(a), mapping.get(b)) for a, b in ranges.get(rel, [])]
+        clang_format(path, merge_ranges([(a, b) for a, b in spans if a and b]))
 
 
 def merge_ranges(ranges):
@@ -1014,7 +1043,10 @@ def stats(jobs):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("files", nargs="*", help="files to check (default: every file with layout comments)")
-    parser.add_argument("--convert", metavar="TARGET", help="file, file:first-last or struct name to convert")
+    parser.add_argument("--convert", metavar="TARGET", action="append",
+                        help="file, file:first-last or struct name to convert (repeatable: one analysis, one write)")
+    parser.add_argument("--units-only", action="store_true",
+                        help="with --convert: write the comments but delete only the asserts in .c/.cpp units")
     parser.add_argument("--dry-run", action="store_true", help="with --convert or --fix: report only")
     parser.add_argument("--all-records", action="store_true", help="with --convert: also records without asserts")
     parser.add_argument("--only-here", action="store_true",
@@ -1028,9 +1060,16 @@ def main(argv=None):
     parser.add_argument("--jobs", type=int, default=min(2, multiprocessing.cpu_count()))
     args = parser.parse_args(argv)
     if args.convert:
-        file, *_ = parse_target(args.convert)
-        convert(args.convert, args.jobs, args.dry_run, args.all_records,
-                scope={file} if args.only_here and file else None, skip=args.skip)
+        sources = all_sources()
+        texts = {rel: (ROOT / rel).read_text(encoding="utf-8") for rel in sources}
+        cache, plans = {}, []
+        for target in args.convert:
+            file, *_ = parse_target(target)
+            plans.append(convert(target, args.jobs, args.dry_run, args.all_records,
+                                 scope={file} if args.only_here and file else None, skip=args.skip,
+                                 cache=cache, texts=texts, units_only=args.units_only))
+        if not args.dry_run:
+            apply_plans(plans, texts)
         return 0
     if args.stats:
         return stats(args.jobs)
