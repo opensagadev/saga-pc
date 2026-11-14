@@ -7641,7 +7641,6 @@ i32 loadareacharacters_loadedlevel = 0;
 i32 level_already_loaded = -1;
 i32 next_level = 0;
 volatile i32 abort_load = 0;
-i32 party_cant_be_under_cover = 0;
 i32 ResetOldFStop = 0;
 i32 new_level_from_menu = 0;
 i32 reset_restart = 0;
@@ -9018,9 +9017,6 @@ extern "C" {
     NUVEC plr_lastpos = {0};
     NUVEC v000 = {0};
     TIMER GameTimer = {0};
-    i32 party_under_cover = 0;
-    GAMEOBJECT *alert_obj = 0;
-    f32 alert_timer = 0;
 #pragma data_seg(".data$ForcePush_Speed")
     f32 ForcePush_Speed = 2.5f;
 #pragma data_seg()
@@ -9738,9 +9734,6 @@ extern "C" {
 }
 
 extern "C" {
-    f32 party_follow_offsets[8] = {0};
-    i32 ai_fighting = 0;
-    f32 drop_back_in_timer = 0;
 #pragma data_seg(".data$aitol")
     f32 aitol = 0.5f;
 #pragma data_seg()
@@ -11233,13 +11226,6 @@ extern "C" {
     void (*BigJump_EndOfLandFn)(GAMEOBJECT *) = 0;
     i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *) = 0;
     f32 AddCoinDelay[2] = {0};
-}
-
-extern "C" {
-#pragma data_seg(".data$alert_time")
-    f32 alert_time = 10.0f;
-#pragma data_seg()
-    NUVEC alert_pos = {0};
 }
 
 extern "C" {
@@ -13553,9 +13539,6 @@ extern "C" {
 #pragma data_seg(".data$id_UGNAUGHT")
     i16 id_UGNAUGHT = -1;
 #pragma data_seg()
-#pragma data_seg(".data$OpponentSelectionHysteresisPc")
-    f32 OpponentSelectionHysteresisPc = 0.5f;
-#pragma data_seg()
 #pragma data_seg(".data$nbaddies_can_see_players")
     i32 nbaddies_can_see_players = 0;
 #pragma data_seg()
@@ -13590,17 +13573,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$draw_attention_distance")
-    f32 draw_attention_distance = 2.0f;
-#pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_START")
     u32 GAMEPAD_START = 2048;
-#pragma data_seg()
-#pragma data_seg(".data$active_neutral_count")
-    i32 active_neutral_count = 0;
-#pragma data_seg()
-#pragma data_seg(".data$GameAiPartyFollowSpacingPc")
-    f32 GameAiPartyFollowSpacingPc = 0.20000000298023224f;
 #pragma data_seg()
 #pragma data_seg(".data$JEDI_B_LDATA")
     LEVELDATA_PC *JEDI_B_LDATA = NULL;
@@ -13629,26 +13603,11 @@ extern "C" {
 #pragma data_seg(".data$DEFENDTIME")
     f32 DEFENDTIME = 4.0f;
 #pragma data_seg()
-#pragma data_seg(".data$debug_ignore_players")
-    i32 debug_ignore_players = 0;
-#pragma data_seg()
-#pragma data_seg(".data$WALKSTEALTH")
-    i32 WALKSTEALTH = 0;
-#pragma data_seg()
 #pragma data_seg(".data$active_goody_count")
     i32 active_goody_count = 0;
 #pragma data_seg()
 #pragma data_seg(".data$active_baddy_count")
     i32 active_baddy_count = 0;
-#pragma data_seg()
-#pragma data_seg(".data$GameAiLosDivisorPc")
-    i32 GameAiLosDivisorPc = 2;
-#pragma data_seg()
-#pragma data_seg(".data$timetogetlos")
-    f32 timetogetlos = 0.0f;
-#pragma data_seg()
-#pragma data_seg(".data$test_new_interaction")
-    i32 test_new_interaction = 0;
 #pragma data_seg()
 }
 
@@ -25069,10 +25028,6 @@ extern "C" {
 }
 
 extern "C" {
-    char AIGizmoNameBufferPc[16] = {0};
-}
-
-extern "C" {
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc = 0;
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc = 0;
     f32 PostGaussianTexelBiasPc = 0.0f;
@@ -26363,7 +26318,6 @@ extern "C" {
 }
 
 extern "C" {
-    f32 fakeanimframe[1] = {0};
     i32 JediBActiveCountPc = 0;
     JEDIB_NETPACKET_PC *jedib_netpacket = NULL;
     JEDIB_STATE_PC jedi_b = {0};

@@ -1001,7 +1001,17 @@ u8 LevelCharacterTypeID(char *name) {
     return -1;
 }
 
+static i32 AtOnce_maxAttackers = 1;
+static i32 AtOnce_attackersPerRow = 32;
+static f32 AtOnce_RowDist = 0.75f;
+static f32 AtOnce_InitialRowDist = 0.75f;
+f32 alert_time = 10.0f;
+i32 GameAiLosDivisorPc = 2;
+f32 draw_attention_distance = 2.0f;
+f32 GameAiPartyFollowSpacingPc = 0.20000000298023224f;
 const char *GameAISkipCharactersPc[4] = {"Batman", "Robin", "Glide_Pack", NULL};
+f32 OpponentSelectionHysteresisPc = 0.5f;
+char AIProcessingOutputTextPc[11] = "Processing";
 
 static i32 IsSpecialRouteCharacterSkippedPc(char *name) {
     i32 index;
@@ -1801,14 +1811,27 @@ i32 oneAtOnce_CanAttack(GAMEOBJECT *object, GAMEOBJECT *opponent) {
 }
 
 static AIONCEATTACKER_PC AtOnce_attackingPlayer[8][17] = {0};
+f32 party_follow_offsets[8] = {0};
+NUVEC alert_pos = {0};
+f32 fakeanimframe[1] = {0};
+i32 party_under_cover = 0;
+i32 party_cant_be_under_cover = 0;
+i32 ai_fighting = 0;
+i32 WALKSTEALTH = 0;
+GAMEOBJECT *alert_obj = 0;
+f32 alert_timer = 0;
+f32 timetogetlos = 0.0f;
+f32 drop_back_in_timer = 0;
+i32 active_neutral_count = 0;
+i32 test_new_interaction = 0;
+i32 debug_ignore_players = 0;
+char AIGizmoNameBufferPc[16] = {0};
+static ADDGIZMOTYPE_PC GizmoRegistryAIAddTypePc = {0};
 #pragma data_seg(".data$AtOnce_attackersPerRow")
-static i32 AtOnce_attackersPerRow = 32;
 #pragma data_seg()
 #pragma data_seg(".data$AtOnce_RowDist")
-static f32 AtOnce_RowDist = 0.75f;
 #pragma data_seg()
 #pragma data_seg(".data$AtOnce_InitialRowDist")
-static f32 AtOnce_InitialRowDist = 0.75f;
 #pragma data_seg()
 
 f32 oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
@@ -1836,8 +1859,6 @@ f32 oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
     }
     return 0.75f;
 }
-
-static i32 AtOnce_maxAttackers = 1;
 
 void oneAtOnce_SetNumAttackers(i32 attackers) {
     if (attackers < 0) {
@@ -2217,7 +2238,6 @@ i32 AI_GetNumOutputs(void *gizmo) {
 }
 
 #pragma data_seg(".data$AIProcessingOutputTextPc")
-char AIProcessingOutputTextPc[11] = "Processing";
 #pragma data_seg()
 
 char *AI_GetOutputName(void *gizmo, i32 output) {
@@ -2232,8 +2252,6 @@ void AI_Activate(void *input, i32 active) {
         process->processor.flags ^= (((active == 0) << 1) ^ process->processor.flags) & 2;
     }
 }
-
-static ADDGIZMOTYPE_PC GizmoRegistryAIAddTypePc = {0};
 
 ADDGIZMOTYPE_PC *AI_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryAIAddTypePc;
