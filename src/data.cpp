@@ -10982,7 +10982,6 @@ extern "C" {
     void (*NuCutSceneCharacterDestroyData)(void *, void *) = 0;
     void (*NuCutSceneCharacterEval)(INSTNUGCUTSCENE *, void *, void *, void *, f32) = 0;
     void (*NuCutSceneCharacterRelease)(void *, void *) = 0;
-    void (*ReleaseLocatorVfxFn)(i32) = 0;
     u8 CutSceneCameraCTRL = 0;
     i32 part_types_used = 0;
     i32 part_platimpactcnt = 0;
@@ -13435,8 +13434,6 @@ extern "C" {
     i32 CutSceneSingleStreamBufferPc = 2;
 #pragma data_seg()
 
-    i32 (*LookupLocatorVfxFn)(char *) = 0;
-
     i32 CutSceneLookupAllDebrisPagesPc = 0;
 
     void (*NuCutSceneFindCharacters)(CUT_SCENE_LOAD_PC *) = 0;
@@ -13776,10 +13773,6 @@ extern "C" {
 #pragma data_seg(".data$CutSceneSys")
     CUT_DRAW_SETTINGS_PC *CutSceneSys = &CutSceneDrawSettingsPc;
 #pragma data_seg()
-
-    void (*UpdateLocatorVfxFn)(i32, NUMTX *) = 0;
-
-    i32 (*TriggerLocatorVfxFn)(i32, NUMTX *) = 0;
 
     NUHGOBJ_EVAL_PC *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32) = 0;
 
@@ -14592,7 +14585,6 @@ extern "C" {
 
 extern "C" {
     NUMTX CutSceneCameraMatrixPc = {0};
-    NUVEC CutSceneFocusLocationPc = {0};
     u8 CutSceneCameraMatrixSetPc = 0;
     u8 CutSceneUseFocusLocationPc = 0;
     f32 CutSceneFocusDistancePc = 0.0f;
