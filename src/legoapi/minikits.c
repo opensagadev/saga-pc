@@ -47,6 +47,10 @@ void MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR *end, vo
 }
 
 static const char *MiniKitDirectionNamesPc[6] = {"NegX", "PosX", "NegY", "PosY", "NegZ", "PosZ"};
+f32 KITPOSX = -0.7250000238418579f;
+f32 KITPOSY = -0.699999988079071f;
+f32 KITPOS2X = -1.27499998f;
+f32 KITPOS2YPc = -1.2999999523162842f;
 
 void MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
     i32 direction_counts[6];

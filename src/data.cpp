@@ -11820,16 +11820,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$KITPOSX")
-    f32 KITPOSX = -0.7250000238418579f;
-#pragma data_seg()
-}
-extern "C" {
-#pragma data_seg(".data$KITPOSY")
-    f32 KITPOSY = -0.699999988079071f;
-#pragma data_seg()
-}
-extern "C" {
 #pragma data_seg(".data$PANEL_MINIKITSCALE")
     f32 PANEL_MINIKITSCALE = 0.25f;
 #pragma data_seg()
@@ -15229,7 +15219,6 @@ extern "C" {
     i32 SHOPHINTCOUNT = 0;
     i16 ShopHintIdsPc[24] = {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     i16 ShopHintTextIdsPc[15] = {630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 641, 642, 643, -1};
-    f32 KITPOS2X = -1.27499998f;
     i32 PlayerHitPointsTwoHeartsPc = 1;
     i32 ConvertOldPickupsPc = 0;
     i32 GrabScreenWhenFadingPc = 0;
@@ -27550,12 +27539,6 @@ extern "C" {
 #pragma const_seg()
     const char *HubAreaNamesPc[10] = {"MAINROOM", "EPISODE1", "EPISODE2", "EPISODE3", "EPISODE4",
                                       "EPISODE5", "EPISODE6", "JUNKYARD", "BONUS",    "BOUNTY"};
-}
-
-extern "C" {
-#pragma data_seg(".data$KITPOS2YPc")
-    f32 KITPOS2YPc = -1.2999999523162842f;
-#pragma data_seg()
 }
 
 extern "C" {
