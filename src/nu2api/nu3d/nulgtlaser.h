@@ -63,8 +63,8 @@ extern "C" {
     extern i32 NuLgtArcLaserOldCnt;
     extern i32 NuLgtArcLaserFrame;
     extern NULGTARCLASER_PC NuLgtArcLaserData[16];
-    void NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta, u32 colour,
-                    f32 end_width, f32 length);
+    void NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta, u32 colour, f32 end_width,
+                    f32 length);
 #ifdef __cplusplus
 }
 #endif

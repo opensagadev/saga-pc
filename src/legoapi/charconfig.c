@@ -325,8 +325,8 @@ static void CC_SetAnimMiscFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *anim
     }
 }
 
-static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, i32 character_id,
-                              CHARACTER_EFFECT_CONFIG_PC *effects, i32 *effect_count) {
+static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, i32 character_id, CHARACTER_EFFECT_CONFIG_PC *effects,
+                              i32 *effect_count) {
     CHARACTER_EFFECT_CONFIG_PC *effect;
     if (animation->action_id == -1) {
         return;
@@ -386,8 +386,7 @@ static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animat
                 effect->particle_count = (u8)(count);
                 effect->flags |= 1;
             }
-        } else if (NuStrICmp(parser->word_buffer_ptr, "frame") == 0 ||
-                   NuStrICmp(parser->word_buffer_ptr, "frame1") == 0) {
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame") == 0 || NuStrICmp(parser->word_buffer_ptr, "frame1") == 0) {
             effect->frame[0] = NuFParGetFloat(parser);
         } else if (NuStrICmp(parser->word_buffer_ptr, "frame2") == 0) {
             effect->frame[1] = NuFParGetFloat(parser);
@@ -583,8 +582,7 @@ static void CC_anim_start(NUFPAR_PC *parser) {
                     animation.flags |= 0x40000;
                 }
             }
-        } else if (NuStrICmp(parser->word_buffer_ptr, "no_headturn") == 0 ||
-                   NuStrICmp(parser->word_buffer_ptr, "headturn_off") == 0) {
+        } else if (NuStrICmp(parser->word_buffer_ptr, "no_headturn") == 0 || NuStrICmp(parser->word_buffer_ptr, "headturn_off") == 0) {
             animation.flags |= 0x40;
         } else if (NuStrICmp(parser->word_buffer_ptr, "headturn") == 0) {
             if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
@@ -598,12 +596,10 @@ static void CC_anim_start(NUFPAR_PC *parser) {
             animation.maximum_repetitions = (u8)(abs(NuFParGetInt(parser)));
         } else if (NuStrICmp(parser->word_buffer_ptr, "speed") == 0) {
             animation.action_speed = NuFParGetFloat(parser);
-        } else if (NuStrICmp(parser->word_buffer_ptr, "frame") == 0 ||
-                   NuStrICmp(parser->word_buffer_ptr, "frame1") == 0 ||
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame") == 0 || NuStrICmp(parser->word_buffer_ptr, "frame1") == 0 ||
                    NuStrICmp(parser->word_buffer_ptr, "frame_hit") == 0) {
             animation.event_frame_1 = NuFParGetFloat(parser);
-        } else if (NuStrICmp(parser->word_buffer_ptr, "frame2") == 0 ||
-                   NuStrICmp(parser->word_buffer_ptr, "frame_end") == 0) {
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame2") == 0 || NuStrICmp(parser->word_buffer_ptr, "frame_end") == 0) {
             animation.event_frame_2 = NuFParGetFloat(parser);
         } else if (NuStrICmp(parser->word_buffer_ptr, "frame3") == 0) {
             animation.event_frame_3 = NuFParGetFloat(parser);
@@ -643,8 +639,7 @@ static void CC_anim_start(NUFPAR_PC *parser) {
         } else if (NuStrICmp(parser->word_buffer_ptr, "effect_start") == 0) {
             if ((charconfig.flags & 0x40) != 0 && (charconfig.flags & 0x20) != 0) {
                 if (charconfig.effect_count < 32) {
-                    CC_ReadAnimEffect(parser, &animation, charconfig.character_id, charconfig.effect_scratch,
-                                      &charconfig.effect_count);
+                    CC_ReadAnimEffect(parser, &animation, charconfig.character_id, charconfig.effect_scratch, &charconfig.effect_count);
                 }
             } else {
                 while (NuFParGetLine(parser) != 0) {
@@ -672,8 +667,7 @@ static void CC_anim_start(NUFPAR_PC *parser) {
                        NuStrICmp(charconfig.character->animations[index].name, name) != 0) {
                     ++index;
                 }
-                if (index < charconfig.character->animation_count &&
-                    charconfig.character->animations[index].name != NULL) {
+                if (index < charconfig.character->animation_count && charconfig.character->animations[index].name != NULL) {
                     CHARACTERANIM_CONFIG_PC *existing = &charconfig.character->animations[index];
                     existing->blend_in_time = animation.blend_in_time;
                     existing->blend_out_time = animation.blend_out_time;
@@ -780,8 +774,7 @@ static void CC_helmet_locator(NUFPAR_PC *parser) {
 /* Reads the next word as a locator index; zero when the line has no more words. */
 // MATCH-EXCEPTION: the original inlines this reader into both callers with no out-of-line copy and without
 // rotating the loop; a static inline function leaves a COMDAT in the object, so it is written as a macro.
-#define CC_READ_LOCATOR_INDEX(parser, locator)                                                                         \
-    (NuFParGetWord(parser) == 0 ? 0 : (*(locator) = NuAToI((parser)->word_buffer_ptr), 1))
+#define CC_READ_LOCATOR_INDEX(parser, locator) (NuFParGetWord(parser) == 0 ? 0 : (*(locator) = NuAToI((parser)->word_buffer_ptr), 1))
 
 static void CC_shadow_locators(NUFPAR_PC *parser) {
     u32 locator;
@@ -1522,214 +1515,216 @@ static void CC_set_timebaseupdate4(NUFPAR_PC *parser) {
     CC_SetTimebase(parser, 0);
 }
 
-static NUFPCOMJMP ConfigChar_Keywords[] = {{"name_id", CC_name_id},
-                                           {"name", CC_name_id},
-                                           {"mass", CC_mass},
-                                           {"radius", CC_radius},
-                                           {"miny", CC_miny},
-                                           {"maxy", CC_maxy},
-                                           {"scale", CC_scale},
-                                           {"layer", CC_layer},
-                                           {"fixed_layers", CC_fixed_layers},
-                                           {"hair_layer_index", CC_hair_layer_index},
-                                           {"cape_layer_index", CC_cape_layer_index},
-                                           {"hair_layer", CC_hair_layer},
-                                           {"cape_layer", CC_cape_layer},
-                                           {"layers_special", CC_layers_special},
-                                           {"layers_high", CC_layers_high},
-                                           {"layers_medium", CC_layers_medium},
-                                           {"layers_low", CC_layers_low},
-                                           {"layers_dead", CC_layers_dead},
-                                           {"ride_layersoff", CC_ride_layersoff},
-                                           {"bsa_default", CC_bsa_default},
-                                           {"anim_start", CC_anim_start},
-                                           {"collision_locator", CC_collision_locator},
-                                           {"weapon_locator", CC_weapon_locator_1},
-                                           {"weapon_locator_1", CC_weapon_locator_1},
-                                           {"weapon_locator_2", CC_weapon_locator_2},
-                                           {"weapon_locator_3", CC_weapon_locator_3},
-                                           {"weapon_locator_4", CC_weapon_locator_4},
-                                           {"weapon_shoot_locator", CC_weapon_shoot_locator_1},
-                                           {"weapon_shoot_locator_1", CC_weapon_shoot_locator_1},
-                                           {"weapon_shoot_locator_2", CC_weapon_shoot_locator_2},
-                                           {"weapon_shoot_locator_3", CC_weapon_shoot_locator_3},
-                                           {"weapon_shoot_locator_4", CC_weapon_shoot_locator_4},
-                                           {"shield_locator", CC_shield_locator},
-                                           {"throw_locator", CC_throw_locator},
-                                           {"place_locator", CC_place_locator},
-                                           {"grapple_locator", CC_grapple_locator},
-                                           {"grapple_locators", CC_grapple_locator},
-                                           {"extra_character_locator", CC_extra_character_locator},
-                                           {"ride_locator", CC_ride_locator},
-                                           {"poo_locator", CC_poo_locator},
-                                           {"head_locator", CC_head_locator},
-                                           {"rocket_locator", CC_rocket_locator},
-                                           {"thingy_locator", CC_thingy_locator},
-                                           {"helmet_locator", CC_helmet_locator},
-                                           {"shadow_locators", CC_shadow_locators},
-                                           {"thrust_locators", CC_thrust_locators},
-                                           {"hand_locators", CC_hand_locators},
-                                           {"streak_locators", CC_streak_1_locators},
-                                           {"streak_1_locators", CC_streak_1_locators},
-                                           {"streak_2_locators", CC_streak_2_locators},
-                                           {"streak_3_locators", CC_streak_3_locators},
-                                           {"streak_4_locators", CC_streak_4_locators},
-                                           {"head_joint", CC_head_joint},
-                                           {"cloak_joint", CC_cloak_joint},
-                                           {"cloak_joint2", CC_cloak_joint2},
-                                           {"sfx_die", CC_sfx_die},
-                                           {"sfx_hurt", CC_sfx_hurt},
-                                           {"sfx_grunt", CC_sfx_grunt},
-                                           {"sfx_engine", CC_sfx_engine},
-                                           {"sfx_shoot", CC_sfx_shoot},
-                                           {"sfx_footstep", CC_sfx_footstep},
-                                           {"sfx_chatter", CC_sfx_chatter},
-                                           {"chatter_delay", CC_chatter_delay},
-                                           {"sfx_sabre", CC_sfx_sabre},
-                                           {"sfx_misc", CC_sfx_misc},
-                                           {"clear_sfx_misc", CC_clear_sfx_misc},
-                                           {"cloak_up_angle", CC_cloak_up_angle},
-                                           {"cloak_down_angle", CC_cloak_down_angle},
-                                           {"viewrange", CC_viewrange},
-                                           {"heardistance", CC_heardistance},
-                                           {"max_viewheight", CC_max_viewheight},
-                                           {"min_viewheight", CC_min_viewheight},
-                                           {"mediumres_swapdist", CC_mediumres_swapdist},
-                                           {"lowres_swapdist", CC_lowres_swapdist},
-                                           {"turn_rate", CC_turn_rate},
-                                           {"turn_rate_2", CC_turn_rate_2},
-                                           {"banking", CC_banking},
-                                           {"choke", CC_choke},
-                                           {"lightning", CC_lightning},
-                                           {"resist_zap", CC_resist_zap},
-                                           {"ghost", CC_ghost},
-                                           {"has_no_turn", CC_has_no_turn},
-                                           {"speed_up_time", CC_speed_up_time},
-                                           {"slow_down_time", CC_slow_down_time},
-                                           {"jump_move_speed_scale", CC_jump_move_speed_scale},
-                                           {"loop_height", CC_loop_height},
-                                           {"no_tiptoe", CC_no_tiptoe},
-                                           {"already_got_hat", CC_already_got_hat},
-                                           {"not_got_hat", CC_not_got_hat},
-                                           {"punch_weapon_out", CC_punch_weapon_out},
-                                           {"can_take_over", CC_can_take_over},
-                                           {"turning_circle", CC_turning_circle},
-                                           {"slide_orientation", CC_slide_orientation},
-                                           {"can_drag_bombs", CC_can_drag_bombs},
-                                           {"extra_toggle", CC_extra_toggle},
-                                           {"can_flatten", CC_can_flatten},
-                                           {"tightrope_walk", CC_tightrope_walk},
-                                           {"car_wheels", CC_car_wheels},
-                                           {"is_a_girl", CC_is_a_girl},
-                                           {"is_a_boy", CC_is_a_boy},
-                                           {"icon", CC_icon},
-                                           {"weapon", CC_weapon},
-                                           {"shield_hit_points", CC_shield_hit_points},
-                                           {"stop_speed", CC_stop_speed},
-                                           {"idle_speed", CC_idle_speed},
-                                           {"tiptoe_speed", CC_tiptoe_speed},
-                                           {"walk_speed", CC_walk_speed},
-                                           {"run_speed", CC_run_speed},
-                                           {"backwards_factor", CC_backwards_factor},
-                                           {"air_gravity", CC_air_gravity},
-                                           {"jump_speed", CC_jump_speed},
-                                           {"jump_2_speed", CC_jump_2_speed},
-                                           {"acceleration", CC_acceleration},
-                                           {"streak", CC_streak},
-                                           {"hit_points", CC_hit_points},
-                                           {"baddie", CC_baddie},
-                                           {"jedi", CC_jedi},
-                                           {"droid", CC_droid},
-                                           {"protocol", CC_protocol},
-                                           {"astromech", CC_astromech},
-                                           {"cannon", CC_cannon},
-                                           {"bounty_hunter", CC_bounty_hunter},
-                                           {"blaster", CC_blaster},
-                                           {"teleport", CC_teleport},
-                                           {"zipup", CC_zipup},
-                                           {"untargetable", CC_untargetable},
-                                           {"orientate", CC_orientate},
-                                           {"neutral", CC_neutral},
-                                           {"complex_shadow", CC_complex_shadow},
-                                           {"shadow_orientation", CC_shadow_orientation},
-                                           {"can_open_doors", CC_can_open_doors},
-                                           {"non_stick", CC_non_stick},
-                                           {"can_shoot_offscreen", CC_can_shoot_offscreen},
-                                           {"can_fire", CC_can_fire},
-                                           {"can_poo", CC_can_poo},
-                                           {"can_zap", CC_can_zap},
-                                           {"put_weapon_away_on_shoot", CC_put_weapon_away_on_shoot},
-                                           {"always_stop_to_shoot", CC_always_stop_to_shoot},
-                                           {"second_shot_only", CC_second_shot_only},
-                                           {"no_start_punch_sfx", CC_no_start_punch_sfx},
-                                           {"single_jump_slam", CC_single_jump_slam},
-                                           {"dont_draw_rider", CC_dont_draw_rider},
-                                           {"minikit", CC_minikit},
-                                           {"minikit_with_scene", CC_minikit_with_scene},
-                                           {"minikit_noscenewhenplayable", CC_minikit_noscenewhenplayable},
-                                           {"lift_hover", CC_lift_hover},
-                                           {"glide_anytime", CC_glide_anytime},
-                                           {"can_communicate", CC_can_communicate},
-                                           {"immune_to_magnets", CC_immune_to_magnets},
-                                           {"immune_to_forcepush", CC_immune_to_forcepush},
-                                           {"cannot_kill", CC_cannot_kill},
-                                           {"wait_for_weapon_in_out", CC_wait_for_weapon_in_out},
-                                           {"double_jump_hover", CC_double_jump_hover},
-                                           {"no_category", CC_no_category},
-                                           {"no_force", CC_no_force},
-                                           {"white_lightning", CC_white_lightning},
-                                           {"buck_rider", CC_buck_rider},
-                                           {"die_usecurrentlayers", CC_die_usecurrentlayers},
-                                           {"no_weapon_draw", CC_no_weapon_draw},
-                                           {"no_jump_fire", CC_no_jump_fire},
-                                           {"hover_over_mud", CC_hover_over_mud},
-                                           {"toggle_if_not_in_collection", CC_toggle_if_not_in_collection},
-                                           {"toggle_if_in_minikit_bonus", CC_toggle_if_in_minikit_bonus},
-                                           {"deflect_bolts_in_minikit_bonus", CC_deflect_bolts_in_minikit_bonus},
-                                           {"has_grapple", CC_has_grapple},
-                                           {"hover_wings", CC_hover_wings},
-                                           {"has_whip", CC_has_whip},
-                                           {"respawn", CC_respawn},
-                                           {"vehicle", CC_vehicle},
-                                           {"only_active_when_taken_over", CC_only_active_when_taken_over},
-                                           {"beast", CC_beast},
-                                           {"prefers_brawling", CC_prefers_brawling},
-                                           {"dontpush", CC_dontpush},
-                                           {"dont_move_out_of_way", CC_dont_move_out_of_way},
-                                           {"dontmove", CC_dontmove},
-                                           {"jetpack", CC_jetpack},
-                                           {"oldheadmovement", CC_oldheadmovement},
-                                           {"atatheadmovement", CC_atatheadmovement},
-                                           {"cannotbigjump", CC_cannotbigjump},
-                                           {"no_offpath_teleport", CC_no_offpath_teleport},
-                                           {"no_kill_parts", CC_no_kill_parts},
-                                           {"high_jump", CC_high_jump},
-                                           {"super_strength", CC_super_strength},
-                                           {"transformatron", CC_transformatron},
-                                           {"bypass_security", CC_bypass_security},
-                                           {"hazard_protection", CC_hazard_protection},
-                                           {"wall_jump", CC_wall_jump},
-                                           {"got_batarang", CC_got_batarang},
-                                           {"tightrope_tilt", CC_tightrope_tilt},
-                                           {"combat_roll", CC_combat_roll},
-                                           {"has_scene_element", CC_has_scene_element},
-                                           {"dont_turn", CC_dont_turn},
-                                           {"no_jump", CC_no_jump},
-                                           {"no_shoot", CC_no_shoot},
-                                           {"blobshadow_size", CC_blobshadow_size},
-                                           {"blobshadow_alpha", CC_blobshadow_alpha},
-                                           {"hover_height", CC_hover_height},
-                                           {"hover_time", CC_hover_time},
-                                           {"maxheadturn", CC_maxheadturn},
-                                           {"maxheadtilt", CC_maxheadtilt},
-                                           {"headrotrate", CC_headrotrate},
-                                           {"coinvalue", CC_coin_value},
-                                           {"coin_value", CC_coin_value},
-                                           {"timebaseupdate1", CC_set_timebaseupdate1},
-                                           {"timebaseupdate2", CC_set_timebaseupdate2},
-                                           {"timebaseupdate3", CC_set_timebaseupdate3},
-                                           {"timebaseupdate4", CC_set_timebaseupdate4},
-                                           {NULL, NULL}};
+static NUFPCOMJMP ConfigChar_Keywords[] = {
+    {"name_id",                        CC_name_id                       },
+    {"name",                           CC_name_id                       },
+    {"mass",                           CC_mass                          },
+    {"radius",                         CC_radius                        },
+    {"miny",                           CC_miny                          },
+    {"maxy",                           CC_maxy                          },
+    {"scale",                          CC_scale                         },
+    {"layer",                          CC_layer                         },
+    {"fixed_layers",                   CC_fixed_layers                  },
+    {"hair_layer_index",               CC_hair_layer_index              },
+    {"cape_layer_index",               CC_cape_layer_index              },
+    {"hair_layer",                     CC_hair_layer                    },
+    {"cape_layer",                     CC_cape_layer                    },
+    {"layers_special",                 CC_layers_special                },
+    {"layers_high",                    CC_layers_high                   },
+    {"layers_medium",                  CC_layers_medium                 },
+    {"layers_low",                     CC_layers_low                    },
+    {"layers_dead",                    CC_layers_dead                   },
+    {"ride_layersoff",                 CC_ride_layersoff                },
+    {"bsa_default",                    CC_bsa_default                   },
+    {"anim_start",                     CC_anim_start                    },
+    {"collision_locator",              CC_collision_locator             },
+    {"weapon_locator",                 CC_weapon_locator_1              },
+    {"weapon_locator_1",               CC_weapon_locator_1              },
+    {"weapon_locator_2",               CC_weapon_locator_2              },
+    {"weapon_locator_3",               CC_weapon_locator_3              },
+    {"weapon_locator_4",               CC_weapon_locator_4              },
+    {"weapon_shoot_locator",           CC_weapon_shoot_locator_1        },
+    {"weapon_shoot_locator_1",         CC_weapon_shoot_locator_1        },
+    {"weapon_shoot_locator_2",         CC_weapon_shoot_locator_2        },
+    {"weapon_shoot_locator_3",         CC_weapon_shoot_locator_3        },
+    {"weapon_shoot_locator_4",         CC_weapon_shoot_locator_4        },
+    {"shield_locator",                 CC_shield_locator                },
+    {"throw_locator",                  CC_throw_locator                 },
+    {"place_locator",                  CC_place_locator                 },
+    {"grapple_locator",                CC_grapple_locator               },
+    {"grapple_locators",               CC_grapple_locator               },
+    {"extra_character_locator",        CC_extra_character_locator       },
+    {"ride_locator",                   CC_ride_locator                  },
+    {"poo_locator",                    CC_poo_locator                   },
+    {"head_locator",                   CC_head_locator                  },
+    {"rocket_locator",                 CC_rocket_locator                },
+    {"thingy_locator",                 CC_thingy_locator                },
+    {"helmet_locator",                 CC_helmet_locator                },
+    {"shadow_locators",                CC_shadow_locators               },
+    {"thrust_locators",                CC_thrust_locators               },
+    {"hand_locators",                  CC_hand_locators                 },
+    {"streak_locators",                CC_streak_1_locators             },
+    {"streak_1_locators",              CC_streak_1_locators             },
+    {"streak_2_locators",              CC_streak_2_locators             },
+    {"streak_3_locators",              CC_streak_3_locators             },
+    {"streak_4_locators",              CC_streak_4_locators             },
+    {"head_joint",                     CC_head_joint                    },
+    {"cloak_joint",                    CC_cloak_joint                   },
+    {"cloak_joint2",                   CC_cloak_joint2                  },
+    {"sfx_die",                        CC_sfx_die                       },
+    {"sfx_hurt",                       CC_sfx_hurt                      },
+    {"sfx_grunt",                      CC_sfx_grunt                     },
+    {"sfx_engine",                     CC_sfx_engine                    },
+    {"sfx_shoot",                      CC_sfx_shoot                     },
+    {"sfx_footstep",                   CC_sfx_footstep                  },
+    {"sfx_chatter",                    CC_sfx_chatter                   },
+    {"chatter_delay",                  CC_chatter_delay                 },
+    {"sfx_sabre",                      CC_sfx_sabre                     },
+    {"sfx_misc",                       CC_sfx_misc                      },
+    {"clear_sfx_misc",                 CC_clear_sfx_misc                },
+    {"cloak_up_angle",                 CC_cloak_up_angle                },
+    {"cloak_down_angle",               CC_cloak_down_angle              },
+    {"viewrange",                      CC_viewrange                     },
+    {"heardistance",                   CC_heardistance                  },
+    {"max_viewheight",                 CC_max_viewheight                },
+    {"min_viewheight",                 CC_min_viewheight                },
+    {"mediumres_swapdist",             CC_mediumres_swapdist            },
+    {"lowres_swapdist",                CC_lowres_swapdist               },
+    {"turn_rate",                      CC_turn_rate                     },
+    {"turn_rate_2",                    CC_turn_rate_2                   },
+    {"banking",                        CC_banking                       },
+    {"choke",                          CC_choke                         },
+    {"lightning",                      CC_lightning                     },
+    {"resist_zap",                     CC_resist_zap                    },
+    {"ghost",                          CC_ghost                         },
+    {"has_no_turn",                    CC_has_no_turn                   },
+    {"speed_up_time",                  CC_speed_up_time                 },
+    {"slow_down_time",                 CC_slow_down_time                },
+    {"jump_move_speed_scale",          CC_jump_move_speed_scale         },
+    {"loop_height",                    CC_loop_height                   },
+    {"no_tiptoe",                      CC_no_tiptoe                     },
+    {"already_got_hat",                CC_already_got_hat               },
+    {"not_got_hat",                    CC_not_got_hat                   },
+    {"punch_weapon_out",               CC_punch_weapon_out              },
+    {"can_take_over",                  CC_can_take_over                 },
+    {"turning_circle",                 CC_turning_circle                },
+    {"slide_orientation",              CC_slide_orientation             },
+    {"can_drag_bombs",                 CC_can_drag_bombs                },
+    {"extra_toggle",                   CC_extra_toggle                  },
+    {"can_flatten",                    CC_can_flatten                   },
+    {"tightrope_walk",                 CC_tightrope_walk                },
+    {"car_wheels",                     CC_car_wheels                    },
+    {"is_a_girl",                      CC_is_a_girl                     },
+    {"is_a_boy",                       CC_is_a_boy                      },
+    {"icon",                           CC_icon                          },
+    {"weapon",                         CC_weapon                        },
+    {"shield_hit_points",              CC_shield_hit_points             },
+    {"stop_speed",                     CC_stop_speed                    },
+    {"idle_speed",                     CC_idle_speed                    },
+    {"tiptoe_speed",                   CC_tiptoe_speed                  },
+    {"walk_speed",                     CC_walk_speed                    },
+    {"run_speed",                      CC_run_speed                     },
+    {"backwards_factor",               CC_backwards_factor              },
+    {"air_gravity",                    CC_air_gravity                   },
+    {"jump_speed",                     CC_jump_speed                    },
+    {"jump_2_speed",                   CC_jump_2_speed                  },
+    {"acceleration",                   CC_acceleration                  },
+    {"streak",                         CC_streak                        },
+    {"hit_points",                     CC_hit_points                    },
+    {"baddie",                         CC_baddie                        },
+    {"jedi",                           CC_jedi                          },
+    {"droid",                          CC_droid                         },
+    {"protocol",                       CC_protocol                      },
+    {"astromech",                      CC_astromech                     },
+    {"cannon",                         CC_cannon                        },
+    {"bounty_hunter",                  CC_bounty_hunter                 },
+    {"blaster",                        CC_blaster                       },
+    {"teleport",                       CC_teleport                      },
+    {"zipup",                          CC_zipup                         },
+    {"untargetable",                   CC_untargetable                  },
+    {"orientate",                      CC_orientate                     },
+    {"neutral",                        CC_neutral                       },
+    {"complex_shadow",                 CC_complex_shadow                },
+    {"shadow_orientation",             CC_shadow_orientation            },
+    {"can_open_doors",                 CC_can_open_doors                },
+    {"non_stick",                      CC_non_stick                     },
+    {"can_shoot_offscreen",            CC_can_shoot_offscreen           },
+    {"can_fire",                       CC_can_fire                      },
+    {"can_poo",                        CC_can_poo                       },
+    {"can_zap",                        CC_can_zap                       },
+    {"put_weapon_away_on_shoot",       CC_put_weapon_away_on_shoot      },
+    {"always_stop_to_shoot",           CC_always_stop_to_shoot          },
+    {"second_shot_only",               CC_second_shot_only              },
+    {"no_start_punch_sfx",             CC_no_start_punch_sfx            },
+    {"single_jump_slam",               CC_single_jump_slam              },
+    {"dont_draw_rider",                CC_dont_draw_rider               },
+    {"minikit",                        CC_minikit                       },
+    {"minikit_with_scene",             CC_minikit_with_scene            },
+    {"minikit_noscenewhenplayable",    CC_minikit_noscenewhenplayable   },
+    {"lift_hover",                     CC_lift_hover                    },
+    {"glide_anytime",                  CC_glide_anytime                 },
+    {"can_communicate",                CC_can_communicate               },
+    {"immune_to_magnets",              CC_immune_to_magnets             },
+    {"immune_to_forcepush",            CC_immune_to_forcepush           },
+    {"cannot_kill",                    CC_cannot_kill                   },
+    {"wait_for_weapon_in_out",         CC_wait_for_weapon_in_out        },
+    {"double_jump_hover",              CC_double_jump_hover             },
+    {"no_category",                    CC_no_category                   },
+    {"no_force",                       CC_no_force                      },
+    {"white_lightning",                CC_white_lightning               },
+    {"buck_rider",                     CC_buck_rider                    },
+    {"die_usecurrentlayers",           CC_die_usecurrentlayers          },
+    {"no_weapon_draw",                 CC_no_weapon_draw                },
+    {"no_jump_fire",                   CC_no_jump_fire                  },
+    {"hover_over_mud",                 CC_hover_over_mud                },
+    {"toggle_if_not_in_collection",    CC_toggle_if_not_in_collection   },
+    {"toggle_if_in_minikit_bonus",     CC_toggle_if_in_minikit_bonus    },
+    {"deflect_bolts_in_minikit_bonus", CC_deflect_bolts_in_minikit_bonus},
+    {"has_grapple",                    CC_has_grapple                   },
+    {"hover_wings",                    CC_hover_wings                   },
+    {"has_whip",                       CC_has_whip                      },
+    {"respawn",                        CC_respawn                       },
+    {"vehicle",                        CC_vehicle                       },
+    {"only_active_when_taken_over",    CC_only_active_when_taken_over   },
+    {"beast",                          CC_beast                         },
+    {"prefers_brawling",               CC_prefers_brawling              },
+    {"dontpush",                       CC_dontpush                      },
+    {"dont_move_out_of_way",           CC_dont_move_out_of_way          },
+    {"dontmove",                       CC_dontmove                      },
+    {"jetpack",                        CC_jetpack                       },
+    {"oldheadmovement",                CC_oldheadmovement               },
+    {"atatheadmovement",               CC_atatheadmovement              },
+    {"cannotbigjump",                  CC_cannotbigjump                 },
+    {"no_offpath_teleport",            CC_no_offpath_teleport           },
+    {"no_kill_parts",                  CC_no_kill_parts                 },
+    {"high_jump",                      CC_high_jump                     },
+    {"super_strength",                 CC_super_strength                },
+    {"transformatron",                 CC_transformatron                },
+    {"bypass_security",                CC_bypass_security               },
+    {"hazard_protection",              CC_hazard_protection             },
+    {"wall_jump",                      CC_wall_jump                     },
+    {"got_batarang",                   CC_got_batarang                  },
+    {"tightrope_tilt",                 CC_tightrope_tilt                },
+    {"combat_roll",                    CC_combat_roll                   },
+    {"has_scene_element",              CC_has_scene_element             },
+    {"dont_turn",                      CC_dont_turn                     },
+    {"no_jump",                        CC_no_jump                       },
+    {"no_shoot",                       CC_no_shoot                      },
+    {"blobshadow_size",                CC_blobshadow_size               },
+    {"blobshadow_alpha",               CC_blobshadow_alpha              },
+    {"hover_height",                   CC_hover_height                  },
+    {"hover_time",                     CC_hover_time                    },
+    {"maxheadturn",                    CC_maxheadturn                   },
+    {"maxheadtilt",                    CC_maxheadtilt                   },
+    {"headrotrate",                    CC_headrotrate                   },
+    {"coinvalue",                      CC_coin_value                    },
+    {"coin_value",                     CC_coin_value                    },
+    {"timebaseupdate1",                CC_set_timebaseupdate1           },
+    {"timebaseupdate2",                CC_set_timebaseupdate2           },
+    {"timebaseupdate3",                CC_set_timebaseupdate3           },
+    {"timebaseupdate4",                CC_set_timebaseupdate4           },
+    {NULL,                             NULL                             }
+};
 
 i32 SecondCharConfigure = 0;
 i32 configureallcharacters_perm = 0;
@@ -1754,8 +1749,7 @@ static i32 RedirectTextFile(char *text, char *filename, i32 filename_capacity) {
                 continue;
             }
             if (NuStrICmp(parser->word_buffer_ptr, "txt_file") == 0) {
-                if (result == 0 && NuFParGetWord(parser) != 0 &&
-                    NuStrLen(parser->word_buffer_ptr) < filename_capacity) {
+                if (result == 0 && NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < filename_capacity) {
                     NuStrCpy(filename, parser->word_buffer_ptr);
                     result = 1;
                 }
@@ -1783,8 +1777,8 @@ void CharConfig_CalculateJumpStats(float jump_speed, float gravity, float *durat
     }
 }
 
-static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR *arena, VARIPTR *arena_end,
-                      i32 permanent, char *text, i32 text_length, i32 redirect, NUFPCOMJMP *game_keywords) {
+static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR *arena, VARIPTR *arena_end, i32 permanent, char *text,
+                      i32 text_length, i32 redirect, NUFPCOMJMP *game_keywords) {
     CHARACTERDATA_PC *character = (CHARACTERDATA_PC *)&apicharsys->char_data[character_id];
     char redirected_name[64];
     char path[128];
@@ -1882,8 +1876,8 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
             charconfig.runtime->ai_update_intervals[i] = (u8)vehicle_timebase_nframes[i];
         }
     }
-    CharConfig_CalculateJumpStats(charconfig.runtime->jump_speed, charconfig.runtime->gravity,
-                                  &charconfig.runtime->jump_duration, &charconfig.runtime->jump_height);
+    CharConfig_CalculateJumpStats(charconfig.runtime->jump_speed, charconfig.runtime->gravity, &charconfig.runtime->jump_duration,
+                                  &charconfig.runtime->jump_height);
     CharConfig_CalculateJumpStats(charconfig.runtime->second_jump_speed, charconfig.runtime->gravity,
                                   &charconfig.runtime->second_jump_duration, &charconfig.runtime->second_jump_height);
     if ((charconfig.flags & 0x20) != 0) {
@@ -1913,8 +1907,7 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
             charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
             charconfig.runtime->layers = charconfig.arena->void_ptr;
             charconfig.arena->addr += charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER);
-            PCByteCopy(charconfig.runtime->layers, charconfig.layer_scratch,
-                       charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER));
+            PCByteCopy(charconfig.runtime->layers, charconfig.layer_scratch, charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER));
             charconfig.runtime->layer_lookup = charconfig.arena->void_ptr;
             charconfig.arena->addr += 32;
             for (bit = 0; bit < 32; ++bit) {
@@ -2000,8 +1993,7 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
                         }
                     }
                     if (size > 0) {
-                        CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 1, ConfigBuffer.bytes, size, 0,
-                                   game_keywords);
+                        CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 1, ConfigBuffer.bytes, size, 0, game_keywords);
                     }
                 } else {
                     CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED();
@@ -2012,8 +2004,8 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
                 continue;
             }
         } else {
-            result = CharConfig(id, directory, filename, permanent != 0 ? &permbuffer_ptr : NULL,
-                                permanent != 0 ? &permbuffer_end : NULL, permanent != 0, NULL, 0, 1, game_keywords);
+            result = CharConfig(id, directory, filename, permanent != 0 ? &permbuffer_ptr : NULL, permanent != 0 ? &permbuffer_end : NULL,
+                                permanent != 0, NULL, 0, 1, game_keywords);
         }
         if (result != 2) {
             continue;
@@ -2035,8 +2027,8 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
             CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 0, ConfigBuffer.bytes, size, 0, game_keywords);
         } else {
             SecondCharConfigure = 1;
-            CharConfig(id, directory, filename, permanent != 0 ? &permbuffer_ptr : NULL,
-                       permanent != 0 ? &permbuffer_end : NULL, permanent != 0, NULL, 0, 0, game_keywords);
+            CharConfig(id, directory, filename, permanent != 0 ? &permbuffer_ptr : NULL, permanent != 0 ? &permbuffer_end : NULL,
+                       permanent != 0, NULL, 0, 0, game_keywords);
         }
     }
 }

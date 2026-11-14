@@ -81,8 +81,7 @@ typedef struct emperor_update_packet_s { // size 0x8
 } EMPEROR_UPDATE_PACKET_PC;
 
 void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
-#define RANCOR_PLAYER_IN_AREA_PC(player, world, n)                                                                     \
-    (U64_PAIR((player)->ai_area_mask) & (1 << (LevArea[n] - (world)->ai_sys->areas)))
+#define RANCOR_PLAYER_IN_AREA_PC(player, world, n) (U64_PAIR((player)->ai_area_mask) & (1 << (LevArea[n] - (world)->ai_sys->areas)))
 /* Fairground party split locator. */
 static AILOCATOR_PC *FairgroundSplitPartyLocatorPc;
 
@@ -190,8 +189,8 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
                 direction.x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
                 direction.y = 0.0f;
                 direction.z = NuTrigTable[(angle >> 1) & 0x7fff];
-                AddPickups(0, 0, 1, 0, &shield_position, &direction, 3.0f, -1,
-                           (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 15.0 + 10.0), 2000000.0f, NULL, 1, 0);
+                AddPickups(0, 0, 1, 0, &shield_position, &direction, 3.0f, -1, (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 15.0 + 10.0),
+                           2000000.0f, NULL, 1, 0);
             }
             return;
         }
@@ -224,8 +223,8 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
         position.z = player->collision_position.z + (f64)delta.z * 0.5;
         rtlDynamicSetPos(player->dynamic_light_id, &position);
         length = NuVecDist(&((GAMEOBJECT *)Player[i])->collision_position, mid, &delta);
-        NuLgtLaser(DeathStarZapLaserTypePc, DeathStarZapSizeWidthPc, DeathStarZapSizeLengthPc, DeathStarZapWidthBiasPc,
-                   mid, &delta, 0xff808040, DeathStarZapEndWidthPc, length);
+        NuLgtLaser(DeathStarZapLaserTypePc, DeathStarZapSizeWidthPc, DeathStarZapSizeLengthPc, DeathStarZapWidthBiasPc, mid, &delta,
+                   0xff808040, DeathStarZapEndWidthPc, length);
         NewRumble(((GAMEOBJECT *)Player[i])->pad->bound_pad, (f32)((f64)qrand() * (f64)0.000015259022f * (f64)0.3f), 0);
         if (qrand() < 0x1000) {
             NewBuzzFrames(((GAMEOBJECT *)Player[i])->pad->bound_pad, 1, 0);
@@ -258,8 +257,8 @@ void DeathStar2BattleFire_Draw(WORLDINFO *world) {
         difference.z = average.z - position.position.z;
         distance = NuVecMagSqr(&difference);
         if (distance < fire_clip_dist) {
-            AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 33,
-                                              FRAMETIME, pitch, yaw, NULL);
+            AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 33, FRAMETIME, pitch, yaw,
+                                              NULL);
         }
         MoveSplinePosition(&position, -40.0f);
     }
@@ -274,8 +273,8 @@ void DeathStar2BattleFire_Draw(WORLDINFO *world) {
         difference.z = average.z - position.position.z;
         distance = NuVecMagSqr(&difference);
         if (distance < fire_clip_dist) {
-            AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 67,
-                                              FRAMETIME, pitch, yaw, NULL);
+            AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 67, FRAMETIME, pitch, yaw,
+                                              NULL);
         }
         MoveSplinePosition(&position, 40.0f);
     }
@@ -290,8 +289,8 @@ void DeathStar2BattleFire_Draw(WORLDINFO *world) {
         difference.z = average.z - position.position.z;
         distance = NuVecMagSqr(&difference);
         if (distance < fire_clip_dist) {
-            AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 33,
-                                              FRAMETIME, pitch, yaw, NULL);
+            AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 33, FRAMETIME, pitch, yaw,
+                                              NULL);
         }
         MoveSplinePosition(&position, -40.0f);
     }
@@ -529,8 +528,8 @@ void EmperorFightA_Update(WORLDINFO *world) {
                 continue;
             }
             distance = NuVecDist(&end, &hands[i], &delta);
-            NuLgtLaser(lightning_type, lightning_sizew[0], lightning_sizel[0], lightning_sizewab[0], &hands[i], &delta,
-                       lightning_col[0], lightning_endw[0], distance);
+            NuLgtLaser(lightning_type, lightning_sizew[0], lightning_sizel[0], lightning_sizewab[0], &hands[i], &delta, lightning_col[0],
+                       lightning_endw[0], distance);
             PlaySfx("ForceLightningLp", &locator->position);
         }
         LevGameObject[0]->ai_packet.movement_look_target = &locator->position;
@@ -650,8 +649,8 @@ void EmperorFightA_Update(WORLDINFO *world) {
                                      ((f64)height * 0.25 + player->lower_position.y));
                 player_end.z = player->collision_position.z;
                 distance = NuVecDist(&player_end, &floor_end, &floor_delta);
-                NuLgtLaser(testlaser_type, testlaser_sizew, testlaser_sizel, testlaser_sizewab, &floor_end,
-                           &floor_delta, 0xff808040, testlaser_endw, distance);
+                NuLgtLaser(testlaser_type, testlaser_sizew, testlaser_sizel, testlaser_sizewab, &floor_end, &floor_delta, 0xff808040,
+                           testlaser_endw, distance);
                 sound_position = &((GAMEOBJECT *)Player[i])->collision_position;
                 sound = GetSfxId("ForceLightningLp");
                 GameAudio_PlaySfxById(sound, sound_position, 0, 1);
@@ -664,16 +663,14 @@ void EmperorFightA_Update(WORLDINFO *world) {
             player = Player[0];
             minimum = EmperorFloorSafeXMinimumPc;
             if (!player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
-                (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) &&
-                player->collision_position.x < minimum) {
+                (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
                 ((GAMEOBJECT *)Player[0])->last_safe_position.x = (f32)minimum;
                 ((GAMEOBJECT *)Player[0])->respawn_position.x = (f32)minimum;
             }
             player = Player[1];
             if (!player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
-                (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) &&
-                player->collision_position.x < minimum) {
+                (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
                 ((GAMEOBJECT *)Player[1])->last_safe_position.x = (f32)minimum;
                 ((GAMEOBJECT *)Player[1])->respawn_position.x = (f32)minimum;
@@ -912,14 +909,14 @@ void SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
         }
         bit = 1u << index;
         /* Expands the show-and-raise code separately in each branch. */
-#define SARLACC_SHOW_PANEL_PC(handle)                                                                                  \
-    do {                                                                                                               \
-        NuSpecialSetVisibility(handle, 1);                                                                             \
-        position = NuSpecialGetDrawPos(handle);                                                                        \
-        if (position != NULL) {                                                                                        \
-            position->y = sarlaccdisco.height;                                                                         \
-            NuSpecialSetDrawPos(handle, position);                                                                     \
-        }                                                                                                              \
+#define SARLACC_SHOW_PANEL_PC(handle)                                                                                                      \
+    do {                                                                                                                                   \
+        NuSpecialSetVisibility(handle, 1);                                                                                                 \
+        position = NuSpecialGetDrawPos(handle);                                                                                            \
+        if (position != NULL) {                                                                                                            \
+            position->y = sarlaccdisco.height;                                                                                             \
+            NuSpecialSetDrawPos(handle, position);                                                                                         \
+        }                                                                                                                                  \
     } while (0)
         if (sarlaccb_netpacket->off_mask & bit) {
             SARLACC_SHOW_PANEL_PC(&sarlaccdisco.off[index]);
@@ -1135,10 +1132,8 @@ void SarlaccPitB_Update(WORLDINFO *world) {
             case 0:
                 sarlaccb_netpacket->disco_active = 0;
                 if (NuSpecialExistsFn(&SarlaccLevSpecialPc[0]) && ready &&
-                    ((player != NULL &&
-                      (U64_PAIR((player)->ai_area_mask) & (i32)(1u << (sarlaccdisco.area - world->ai_sys->areas)))) ||
-                     (player2 != NULL &&
-                      (U64_PAIR((player2)->ai_area_mask) & (i32)(1u << (sarlaccdisco.area - world->ai_sys->areas)))))) {
+                    ((player != NULL && (U64_PAIR((player)->ai_area_mask) & (i32)(1u << (sarlaccdisco.area - world->ai_sys->areas)))) ||
+                     (player2 != NULL && (U64_PAIR((player2)->ai_area_mask) & (i32)(1u << (sarlaccdisco.area - world->ai_sys->areas)))))) {
                     sarlaccdisco.timer = 0.0f;
                     sarlaccdisco.phase = 1;
                     sarlaccdisco.first_panel = (i8)SarlaccDiscoPickPanel(0, -1);
@@ -1168,8 +1163,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
                     position = NuSpecialGetPos(&sarlaccdisco.flash[*selected]);
                     for (index = 0; index < 8; ++index) {
                         GAMEOBJECT *object = Player[index];
-                        if (object != NULL && (object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) &&
-                            object->field_281 != 0) {
+                        if (object != NULL && (object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->field_281 != 0) {
                             f32 dx = position->x - object->position.x;
                             f32 dz = position->z - object->position.z;
                             f32 distance = dx * dx + dz * dz;
@@ -1183,10 +1177,8 @@ void SarlaccPitB_Update(WORLDINFO *world) {
                             }
                         }
                     }
-                    if (previous != (i8)sarlaccdisco.panel_state[*selected] &&
-                        sarlaccdisco.panel_state[*selected] == 2) {
-                        sarlaccdisco.last_selected_position =
-                            &NuSpecialGetDrawMtx(&sarlaccdisco.on[*selected])->translation;
+                    if (previous != (i8)sarlaccdisco.panel_state[*selected] && sarlaccdisco.panel_state[*selected] == 2) {
+                        sarlaccdisco.last_selected_position = &NuSpecialGetDrawMtx(&sarlaccdisco.on[*selected])->translation;
                         sarlaccb_netpacket->sound_mask |= 1 << *selected;
                     }
                 }
@@ -1249,8 +1241,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
                 break;
         }
         if (sarlaccdisco.phase != 0) {
-            f32 amount =
-                (SarlaccDiscoHeightPc - sarlaccdisco.height) / (SarlaccDiscoHeightPc - sarlaccdisco.initial_height);
+            f32 amount = (SarlaccDiscoHeightPc - sarlaccdisco.height) / (SarlaccDiscoHeightPc - sarlaccdisco.initial_height);
             f32 rate;
             amount = amount < 0.0f ? 0.0f : amount > 1.0f ? 1.0f : amount;
             rate = (f32)(1.0 - ((f64)NuTrigTable[((i32)((f64)amount * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5);
@@ -1294,10 +1285,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
             sarlacc_engine_timer = 0.1f;
         }
         NuSpecialGetDrawPos(&LevHSpecial[0])->z =
-            (f32)((1.0 -
-                   ((f64)NuTrigTable[((i32)((f64)sarlacc_engine_timer * 10.0 * 32768.0 + 16384.0) >> 1) & 0x7fff] +
-                    1.0) *
-                       0.5) *
+            (f32)((1.0 - ((f64)NuTrigTable[((i32)((f64)sarlacc_engine_timer * 10.0 * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5) *
                       (f64)0.01f -
                   (f64)0.005f + (f64)sarlacc_lump_position.z);
         PlaySfx("env_curtain_lp", NuSpecialGetDrawPos(&LevHSpecial[0]));
@@ -1398,8 +1386,7 @@ void SarlaccPitC_Update(WORLDINFO *world) {
             script_world->blowup_targets = NULL;
         }
         if (!SarlaccRechargingPc) {
-            if ((u32)SarlaccPowerPc < 8 && LevGizmo[0] != NULL &&
-                GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) != 0) {
+            if ((u32)SarlaccPowerPc < 8 && LevGizmo[0] != NULL && GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) != 0) {
                 SarlaccRechargingPc = 1;
                 SarlaccRechargeTimerPc = 0.0f;
             }
@@ -1727,11 +1714,10 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
     } else {
         effect = 36;
     }
-    PointAlongSpline(LevelCodeSpline[0],
-                     (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 0.1f + (f64)fireSplinePos.normalized_position),
+    PointAlongSpline(LevelCodeSpline[0], (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 0.1f + (f64)fireSplinePos.normalized_position),
                      &point, &yaw, &pitch, 0);
-    AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[effect].effect, &point, 90, FRAMETIME,
-                                      (i16)qrand(), (i16)qrand(), NULL);
+    AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[effect].effect, &point, 90, FRAMETIME, (i16)qrand(), (i16)qrand(),
+                                      NULL);
     NuMtxSetIdentity(&matrix);
     PointAlongSpline(LevelCodeSpline[0], fireSplinePos.normalized_position, &point, &yaw, &pitch, 0);
     NuMtxPreRotateY(&matrix, yaw);
@@ -1760,8 +1746,8 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
                 if (((GAMEOBJECT *)Player[index])->dead != 0) {
                     fireSpeedScale = 0.2f;
                 }
-                AddVariableShotDebrisEffectTimed3(world->game_debris_sys->entries[115].effect, &nearest->position,
-                                                  &nearest->velocity, 40, FRAMETIME, NULL, NULL);
+                AddVariableShotDebrisEffectTimed3(world->game_debris_sys->entries[115].effect, &nearest->position, &nearest->velocity, 40,
+                                                  FRAMETIME, NULL, NULL);
                 if ((((GAMEOBJECT *)Player[index])->flags_1f8 & 0x40000) == 0) {
                     objhitobj_nohurtsfx = 1;
                     objhitobj_noimpactsfx = 1;
@@ -1823,8 +1809,7 @@ void FairgroundbadA_Update(WORLDINFO *world) {
     }
     for (index = 0; index < 8; ++index) {
         object = Player[index];
-        if (object != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 &&
-            (object->flags_1fc_word & 0x80) != 0) {
+        if (object != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && (object->flags_1fc_word & 0x80) != 0) {
             position = &object->collision_position;
             if (!(position->x < -57.0 || position->x > -47.0f || position->z < -5.2f || position->z > -4.22f)) {
                 if (++count >= 2) {

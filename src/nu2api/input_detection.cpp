@@ -114,8 +114,8 @@ extern "C" BOOL IsXInputProductPc(const GUID *product) {
         goto cleanup;
     }
 
-    CoSetProxyBlanket(services, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, RPC_C_AUTHN_LEVEL_CALL,
-                      RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE);
+    CoSetProxyBlanket(services, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL,
+                      EOAC_NONE);
 
     hr = services->CreateInstanceEnum(class_name, 0, NULL, &enumerator);
     if (FAILED(hr) || enumerator == NULL) {

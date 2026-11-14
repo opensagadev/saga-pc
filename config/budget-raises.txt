@@ -141,3 +141,7 @@ config/castscan-budget.json duplicate-type 1647 a type renamed from ...ViewPc to
 config/castscan-budget.json declaration-type 1759 17 existing casts move here from byte-pointer, record-pun and signedness once the layout asserts that castscan read their types from are comments (same casts, total unchanged)
 config/oddscan-budget.json format-off 3 GlobalBoltType (bolts.cpp), ExtrasCheatsPc (data.cpp) and the rtl.c table: clang-format writes a row that holds a nested {...} one value per line once it is wider than 120 columns (no option changes it); the rows are packed by hand between off/on markers
 config/castscan-budget.json declaration-type 1769 10 existing casts change class once the remaining layout asserts go (null-pointer drops by 108 with the removed ((T *)0)->member asserts)
+config/oddscan-budget.json format-off 4 four initializer tables are still wider than 140 columns once aligned (GlobalBoltType, GizmoPickupType, PcStaticInputConfigs, the rtl.c table): aligned by script between off/on markers
+config/oddscan-budget.json magic-flag 7567 the 140-column reformat joins lines; oddscan counts per line (no new literal)
+config/oddscan-budget.json magic-state 8727 the 140-column reformat joins lines; oddscan counts per line (no new literal)
+config/oddscan-budget.json stdcall-definition 6 the 140-column reformat joins a wrapped declaration; oddscan counts per line (no new attribute)

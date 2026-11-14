@@ -11,18 +11,18 @@ typedef struct character_joint_movement_s { // size 0x1080
     u8 count;                               // 0x107d
 } CHARACTER_JOINT_MOVEMENT_PC;
 
-#define FOOTSTEP_CHECK(index)                                                                                          \
-    frame = config->event_frames[index];                                                                               \
-    if (frame >= 1.0f && valid_interval) {                                                                             \
-        if (frame <= current) {                                                                                        \
-            if (previous > current)                                                                                    \
-                crossed = 1;                                                                                           \
-            else if (frame > previous)                                                                                 \
-                crossed = 1;                                                                                           \
-        } else if (previous > current) {                                                                               \
-            if (frame > previous)                                                                                      \
-                crossed = 1;                                                                                           \
-        }                                                                                                              \
+#define FOOTSTEP_CHECK(index)                                                                                                              \
+    frame = config->event_frames[index];                                                                                                   \
+    if (frame >= 1.0f && valid_interval) {                                                                                                 \
+        if (frame <= current) {                                                                                                            \
+            if (previous > current)                                                                                                        \
+                crossed = 1;                                                                                                               \
+            else if (frame > previous)                                                                                                     \
+                crossed = 1;                                                                                                               \
+        } else if (previous > current) {                                                                                                   \
+            if (frame > previous)                                                                                                          \
+                crossed = 1;                                                                                                               \
+        }                                                                                                                                  \
     }
 
 void AddFootSteps(GAMEOBJECT *object) {
@@ -80,8 +80,7 @@ void SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32 time, f
     f32 fraction;
     f32 delay;
     if (position != NULL) {
-        if (object->head_target == NULL ||
-            (position != object->head_target && priority >= object->head_target_priority)) {
+        if (object->head_target == NULL || (position != object->head_target && priority >= object->head_target_priority)) {
             random = qrand();
             object->head_target = position;
             object->head_target_priority = priority;
@@ -99,8 +98,8 @@ void SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32 time, f
     }
 }
 
-void SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priority, f32 unused_time,
-                        f32 unused_minimum_delay, f32 unused_maximum_delay) {
+void SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priority, f32 unused_time, f32 unused_minimum_delay,
+                        f32 unused_maximum_delay) {
     i32 joint;
     if (object != NULL && target != NULL && target->character_data != NULL) {
         joint = target->character_data->game_character->head_locator;
@@ -133,22 +132,19 @@ static void HeadMovementLegacyPc(GAMEOBJECT *object) {
     second = 0.0f;
     if (object->anim_packet.blending) {
         animation = object->anim_packet.blend_target_animation;
-        if (animation >= 0 && animation < apicharsys->model_id_capacity &&
-            object->character_model->model_data_b[animation] != NULL &&
+        if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
             (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
             allowed = 0;
         } else {
             animation = object->anim_packet.blend_source_animation;
-            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
-                object->character_model->model_data_b[animation] != NULL &&
+            if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
                 (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
                 allowed = 0;
             }
         }
     } else {
         animation = object->anim_packet.animation_index;
-        if (animation >= 0 && animation < apicharsys->model_id_capacity &&
-            object->character_model->model_data_b[animation] != NULL &&
+        if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
             (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
             allowed = 0;
         }
@@ -180,18 +176,12 @@ static void HeadMovementLegacyPc(GAMEOBJECT *object) {
     if (blend > 1.0f) {
         blend = 1.0f;
     }
-    joints->overrides[joints->count].rotation.x =
-        first * blend + joints->overrides[joints->count].rotation.x * (1.0f - blend);
-    joints->overrides[joints->count].rotation_max_pc[0] =
-        (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
-    joints->overrides[joints->count].rotation_min_pc[0] =
-        (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
-    joints->overrides[joints->count].rotation.y =
-        second * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-    joints->overrides[joints->count].rotation_max_pc[1] =
-        (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
-    joints->overrides[joints->count].rotation_min_pc[1] =
-        (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
+    joints->overrides[joints->count].rotation.x = first * blend + joints->overrides[joints->count].rotation.x * (1.0f - blend);
+    joints->overrides[joints->count].rotation_max_pc[0] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
+    joints->overrides[joints->count].rotation_min_pc[0] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
+    joints->overrides[joints->count].rotation.y = second * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
+    joints->overrides[joints->count].rotation_max_pc[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
+    joints->overrides[joints->count].rotation_min_pc[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
     joints->overrides[joints->count].rotation.z = 0.0f;
     if (joints->overrides[joints->count].rotation.x > HeadMovementThresholdPc ||
         joints->overrides[joints->count].rotation.x < -HeadMovementThresholdPc ||
@@ -238,8 +228,7 @@ static void HeadMovementAlternatePc(GAMEOBJECT *object) {
         second = 0.0f;
         if (object->anim_packet.blending) {
             animation = object->anim_packet.blend_target_animation;
-            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
-                object->character_model->model_data_b[animation] != NULL &&
+            if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
                 (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
                 allowed = 0;
             } else {
@@ -252,8 +241,7 @@ static void HeadMovementAlternatePc(GAMEOBJECT *object) {
             }
         } else {
             animation = object->anim_packet.animation_index;
-            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
-                object->character_model->model_data_b[animation] != NULL &&
+            if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
                 (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
                 allowed = 0;
             }
@@ -291,18 +279,12 @@ static void HeadMovementAlternatePc(GAMEOBJECT *object) {
             blend = 1.0f;
         }
         joints->overrides[joints->count].rotation.x = 0.0f;
-        joints->overrides[joints->count].rotation.y =
-            first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max_pc[1] =
-            (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min_pc[1] =
-            (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
-        joints->overrides[joints->count].rotation.z =
-            second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max_pc[2] =
-            (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min_pc[2] =
-            (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
+        joints->overrides[joints->count].rotation.y = first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
+        joints->overrides[joints->count].rotation_max_pc[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min_pc[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
+        joints->overrides[joints->count].rotation.z = second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
+        joints->overrides[joints->count].rotation_max_pc[2] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min_pc[2] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
         if (joints->overrides[joints->count].rotation.y > HeadMovementThresholdPc ||
             joints->overrides[joints->count].rotation.y < -HeadMovementThresholdPc ||
             joints->overrides[joints->count].rotation.z > HeadMovementThresholdPc ||
@@ -349,8 +331,7 @@ static void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
         second = 0.0f;
         if (object->anim_packet.blending) {
             animation = object->anim_packet.blend_target_animation;
-            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
-                object->character_model->model_data_b[animation] != NULL &&
+            if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
                 (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
                 allowed = 0;
             } else {
@@ -363,8 +344,7 @@ static void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
             }
         } else {
             animation = object->anim_packet.animation_index;
-            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
-                object->character_model->model_data_b[animation] != NULL &&
+            if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
                 (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
                 allowed = 0;
             }
@@ -402,18 +382,12 @@ static void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
             blend = 1.0f;
         }
         joints->overrides[joints->count].rotation.x = 0.0f;
-        joints->overrides[joints->count].rotation.y =
-            first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max_pc[1] =
-            (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min_pc[1] =
-            (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
-        joints->overrides[joints->count].rotation.z =
-            second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max_pc[2] =
-            (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min_pc[2] =
-            (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
+        joints->overrides[joints->count].rotation.y = first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
+        joints->overrides[joints->count].rotation_max_pc[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min_pc[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
+        joints->overrides[joints->count].rotation.z = second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
+        joints->overrides[joints->count].rotation_max_pc[2] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min_pc[2] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
         if (joints->overrides[joints->count].rotation.y > HeadMovementThresholdPc ||
             joints->overrides[joints->count].rotation.y < -HeadMovementThresholdPc ||
             joints->overrides[joints->count].rotation.z > HeadMovementThresholdPc ||
@@ -461,12 +435,10 @@ void CloakMovement(GAMEOBJECT *object) {
     if (joints->count >= 3 || object->character_data->game_character->cloak_joint == -1) {
         return;
     }
-    phase = NuFsqrt(
-        (joints->overrides[joints->count].rotation.z - object->character_data->game_character->field_060) /
-        (object->character_data->game_character->field_05c - object->character_data->game_character->field_060));
-    if (LEGOACT_FALL != -1 &&
-        ((object->anim_packet.blending && object->anim_packet.blend_target_animation == LEGOACT_FALL) ||
-         (!object->anim_packet.blending && object->anim_packet.animation_index == LEGOACT_FALL))) {
+    phase = NuFsqrt((joints->overrides[joints->count].rotation.z - object->character_data->game_character->field_060) /
+                    (object->character_data->game_character->field_05c - object->character_data->game_character->field_060));
+    if (LEGOACT_FALL != -1 && ((object->anim_packet.blending && object->anim_packet.blend_target_animation == LEGOACT_FALL) ||
+                               (!object->anim_packet.blending && object->anim_packet.animation_index == LEGOACT_FALL))) {
         phase += FRAMETIME * CloakMovementFallRatePc;
         if (phase > 1.0f) {
             phase = 1.0f;
@@ -479,8 +451,7 @@ void CloakMovement(GAMEOBJECT *object) {
     }
     phase *= phase;
     joints->overrides[joints->count].joint_index = object->character_data->game_character->cloak_joint;
-    phase = (1.0f - phase) * object->character_data->game_character->field_060 +
-            phase * object->character_data->game_character->field_05c;
+    phase = (1.0f - phase) * object->character_data->game_character->field_060 + phase * object->character_data->game_character->field_05c;
     joints->overrides[joints->count].rotation.z = phase;
     if (joints->overrides[joints->count].rotation.z != 0.0f) {
         joints->overrides[joints->count].flags_pc = 0x21;
@@ -510,9 +481,8 @@ void HairMovement(GAMEOBJECT *object) {
     }
     phase = NuFsqrt((joints->overrides[joints->count].rotation.z - HairMovementRestAnglePc) /
                     (HairMovementFallAnglePc - HairMovementRestAnglePc));
-    if (LEGOACT_FALL != -1 &&
-        ((object->anim_packet.blending && object->anim_packet.blend_target_animation == LEGOACT_FALL) ||
-         (!object->anim_packet.blending && object->anim_packet.animation_index == LEGOACT_FALL))) {
+    if (LEGOACT_FALL != -1 && ((object->anim_packet.blending && object->anim_packet.blend_target_animation == LEGOACT_FALL) ||
+                               (!object->anim_packet.blending && object->anim_packet.animation_index == LEGOACT_FALL))) {
         phase += FRAMETIME * HairMovementFallRatePc;
         if (phase > 1.0f) {
             phase = 1.0f;
@@ -530,15 +500,11 @@ void HairMovement(GAMEOBJECT *object) {
     if (joints->overrides[joints->count].rotation.z != 0.0f) {
         joints->overrides[joints->count].flags_pc = 0x21;
         if (HairMovementRestAnglePc > HairMovementFallAnglePc) {
-            joints->overrides[joints->count].rotation_max_pc[2] =
-                (i32)((f64)HairMovementRestAnglePc * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min_pc[2] =
-                (i32)((f64)HairMovementFallAnglePc * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_max_pc[2] = (i32)((f64)HairMovementRestAnglePc * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_min_pc[2] = (i32)((f64)HairMovementFallAnglePc * AIPathAngularScale);
         } else {
-            joints->overrides[joints->count].rotation_max_pc[2] =
-                (i32)((f64)HairMovementFallAnglePc * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min_pc[2] =
-                (i32)((f64)HairMovementRestAnglePc * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_max_pc[2] = (i32)((f64)HairMovementFallAnglePc * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_min_pc[2] = (i32)((f64)HairMovementRestAnglePc * AIPathAngularScale);
         }
     }
     joints->count++;

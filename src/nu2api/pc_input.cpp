@@ -23,8 +23,7 @@ PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) 
     }
     if (mask & 1) {
         for (u32 i = 0; i < sizeof(PcStaticInputConfigs) / sizeof(PcStaticInputConfigs[0]); ++i) {
-            if (PcStaticInputConfigs[i].product_id == devices[port].product.Data1 &&
-                (key < 0 || PcStaticInputConfigs[i].key == key)) {
+            if (PcStaticInputConfigs[i].product_id == devices[port].product.Data1 && (key < 0 || PcStaticInputConfigs[i].key == key)) {
                 return &PcStaticInputConfigs[i];
             }
         }
@@ -95,8 +94,7 @@ void PC_INPUT_RUNTIME_PC::BindPreferredConfig(i32 mask, i32 port) {
     }
 }
 
-void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i32 key, i32 auxiliary,
-                                        i32 auxiliary_port) {
+void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port) {
     PC_INPUT_BINDING_PC *bindings;
     if (auxiliary) {
         auxiliary_ports[auxiliary_port] = port;
@@ -268,8 +266,7 @@ struct PC_DI_FACTORY_INTERFACE {
     virtual ULONG __stdcall AddRef(void) = 0;
     virtual ULONG __stdcall Release(void) = 0;
     virtual HRESULT __stdcall CreateDevice(REFGUID, NuKeyboardDevice_PC **, IUnknown *) = 0;
-    virtual HRESULT __stdcall EnumDevices(DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *,
-                                          DWORD) = 0;
+    virtual HRESULT __stdcall EnumDevices(DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *, DWORD) = 0;
 };
 
 extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *device) {
@@ -388,8 +385,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
             return TRUE;
         }
         NuKeyboardDevice_PC *device;
-        if (((PC_DI_FACTORY_INTERFACE *)nu_keyboard_owner.factory)->CreateDevice(instance->instance, &device, NULL) <
-            0) {
+        if (((PC_DI_FACTORY_INTERFACE *)nu_keyboard_owner.factory)->CreateDevice(instance->instance, &device, NULL) < 0) {
             return TRUE;
         }
         i32 port;
@@ -424,8 +420,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         memset(record->name, 0, 63);
         PCByteCopy(record->name, instance->product_name, length);
         if (NuStrIStr((char *)instance->product_name, "Saitek") != NULL &&
-            (NuStrIStr((char *)instance->product_name, "P2600") != NULL ||
-             NuStrIStr((char *)instance->product_name, "P2900") != NULL)) {
+            (NuStrIStr((char *)instance->product_name, "P2600") != NULL || NuStrIStr((char *)instance->product_name, "P2900") != NULL)) {
             record->button_count -= 2;
         }
         ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetDataFormat(&PcJoystickDataFormat);
@@ -436,8 +431,8 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         ++nu_keyboard_owner.device_count;
         return TRUE;
     }
-    if (nu_keyboard_owner.factory->methods->create_device(nu_keyboard_owner.factory, PcSystemKeyboardId,
-                                                          &nu_keyboard_owner.device, NULL) != 0) {
+    if (nu_keyboard_owner.factory->methods->create_device(nu_keyboard_owner.factory, PcSystemKeyboardId, &nu_keyboard_owner.device, NULL) !=
+        0) {
         return TRUE;
     }
     PcKeyboardCapabilities.size = sizeof(PcKeyboardCapabilities);

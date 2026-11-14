@@ -43,8 +43,7 @@ extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
     }
 }
 
-extern "C" void InitPadDescriptorsPc(const u16 *first, const u16 *second, const u16 *third, const u16 *fourth,
-                                     const i8 *order) {
+extern "C" void InitPadDescriptorsPc(const u16 *first, const u16 *second, const u16 *third, const u16 *fourth, const i8 *order) {
     SetPadDescriptorPc(3, first);
     SetPadDescriptorPc(1, second);
     SetPadDescriptorPc(4, third);

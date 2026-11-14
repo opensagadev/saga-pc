@@ -81,8 +81,7 @@ extern "C" i32 Movie_CallBack(void) {
 
 extern "C" {
 
-    i32 Movie_Play(char *name, VARIPTR *buffer, VARIPTR *buffer_end, f32 frame_time, i32 (*input_fn)(void),
-                   f32 volume) {
+    i32 Movie_Play(char *name, VARIPTR *buffer, VARIPTR *buffer_end, f32 frame_time, i32 (*input_fn)(void), f32 volume) {
         char path[256];
         char subtitles[256];
         f32 movie_volume;
@@ -112,8 +111,8 @@ extern "C" {
         if (buffer == NULL || buffer_end == NULL) {
             return 0;
         }
-        if (NuFmvPlayV(2, path, 3, 4, 2, 7, Movie_CallBack, 10, 0, 14, &movie_volume, 8, buffer, buffer_end->void_ptr,
-                       5, subtitles, 1) == 0) {
+        if (NuFmvPlayV(2, path, 3, 4, 2, 7, Movie_CallBack, 10, 0, 14, &movie_volume, 8, buffer, buffer_end->void_ptr, 5, subtitles, 1) ==
+            0) {
             return 0;
         }
         return movie_skipped != 0 ? 1 : 2;

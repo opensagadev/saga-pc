@@ -90,8 +90,7 @@ i32 NuFadeSetFxCodeMtls(NUGEOM *geometry, u8 *codes) {
     return count;
 }
 
-PC_NUFADEGROUP *NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 near_distance,
-                                   f32 far_distance, i32 flags) {
+PC_NUFADEGROUP *NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 near_distance, f32 far_distance, i32 flags) {
     PC_NUFADEGROUP *group;
     NUMTX *matrix = matrices;
     i16 *platform;
@@ -148,8 +147,7 @@ PC_NUFADEGROUP *NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16
         group->centre.x = (max_x + min_x) * 0.5;
         group->centre.y = (max_y + min_y) * 0.5;
         group->centre.z = (max_z + min_z) * 0.5;
-        group->radius_squared = ((max_x - min_x) * 0.5) * ((max_x - min_x) * 0.5) +
-                                ((max_y - min_y) * 0.5) * ((max_y - min_y) * 0.5) +
+        group->radius_squared = ((max_x - min_x) * 0.5) * ((max_x - min_x) * 0.5) + ((max_y - min_y) * 0.5) * ((max_y - min_y) * 0.5) +
                                 ((max_z - min_z) * 0.5) * ((max_z - min_z) * 0.5) + 1.0;
         group->cull_distance_squared += group->radius_squared;
         return group;

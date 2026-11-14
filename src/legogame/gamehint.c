@@ -13,8 +13,7 @@ f32 CurrentHintAlpha(void) {
     if (hintsys.active_hint->display_duration > 0.0f) {
         fade_start = (f32)((f64)hintsys.active_hint->display_duration - 0.5);
         if (hintsys.display_elapsed >= fade_start) {
-            alpha =
-                1.0f - (hintsys.display_elapsed - fade_start) / (hintsys.active_hint->display_duration - fade_start);
+            alpha = 1.0f - (hintsys.display_elapsed - fade_start) / (hintsys.active_hint->display_duration - fade_start);
             if (alpha <= 0.0f) {
                 alpha = 0.0f;
             }
@@ -23,7 +22,13 @@ f32 CurrentHintAlpha(void) {
     return alpha * hintsys.alpha;
 }
 
-const u8 HintRGB[5][3] = {{255, 0, 0}, {0, 255, 0}, {0, 127, 255}, {127, 0, 255}, {255, 255, 0}};
+const u8 HintRGB[5][3] = {
+    {255, 0,   0  },
+    {0,   255, 0  },
+    {0,   127, 255},
+    {127, 0,   255},
+    {255, 255, 0  }
+};
 
 /* LoadPermData calls this right after Alt_registerStatusScreen; the body is empty. */
 void Alt_registerStatusScreenExtraPc(void) {

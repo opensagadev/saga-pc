@@ -17,8 +17,7 @@ static void NetPrimSetColour(i32 colour) {
             ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00u);
     } else {
         ((NET_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour =
-            (((colour & 0xff) >> 1) << 16) + ((((colour >> 8) & 0xff) >> 1) << 8) + (((colour >> 16) & 0xff) >> 1) +
-            (colour & 0xff000000);
+            (((colour & 0xff) >> 1) << 16) + ((((colour >> 8) & 0xff) >> 1) << 8) + (((colour >> 16) & 0xff) >> 1) + (colour & 0xff000000);
     }
 }
 

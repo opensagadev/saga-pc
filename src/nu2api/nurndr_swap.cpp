@@ -54,10 +54,8 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
         if (!PcWindowOptions.speedblurenabled) {
             scene->unknown_188 = 0;
         }
-        if ((scene->unknown_58 != 0 && NuPostEffectIsInitialised(4)) ||
-            (scene->unknown_ac != 0 && NuPostEffectIsInitialised(8)) ||
-            (scene->unknown_48 != 0 && NuPostEffectIsInitialised(0x20)) ||
-            (scene->unknown_188 != 0 && NuPostEffectIsInitialised(0x80))) {
+        if ((scene->unknown_58 != 0 && NuPostEffectIsInitialised(4)) || (scene->unknown_ac != 0 && NuPostEffectIsInitialised(8)) ||
+            (scene->unknown_48 != 0 && NuPostEffectIsInitialised(0x20)) || (scene->unknown_188 != 0 && NuPostEffectIsInitialised(0x80))) {
             last_effect_scene = i;
         }
     }
@@ -147,10 +145,8 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             PCDeviceResetSamplerDefaultsPc();
         }
         if (scene->unknown_214 != 0) {
-            FRAME_NATIVE_TEXTURE_PC *texture =
-                reinterpret_cast<FRAME_NATIVE_TEXTURE_PC *>(NuTextureGetDimensions((i32)scene->unknown_214));
-            i32 index =
-                (i32)((u32)texture - (u32)&FrameNativeTexturePoolPc.records[0]) / (i32)sizeof(FRAME_NATIVE_TEXTURE_PC);
+            FRAME_NATIVE_TEXTURE_PC *texture = reinterpret_cast<FRAME_NATIVE_TEXTURE_PC *>(NuTextureGetDimensions((i32)scene->unknown_214));
+            i32 index = (i32)((u32)texture - (u32)&FrameNativeTexturePoolPc.records[0]) / (i32)sizeof(FRAME_NATIVE_TEXTURE_PC);
             if ((u32)index <= 15u) {
                 GRAPHICS_RENDER_TEXTURE_PC *render_texture = texture->render_texture;
                 if (render_texture != NULL) {

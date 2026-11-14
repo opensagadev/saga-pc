@@ -143,8 +143,7 @@ void instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *owner, NUMTX *matrix
     out->x = 0.0f;
     out->y = 0.0f;
     out->z = 0.0f;
-    if (instance == NULL || instance->scene == NULL || instance->scene->rigid_system == NULL ||
-        instance->rigid_instance->rigids == NULL) {
+    if (instance == NULL || instance->scene == NULL || instance->scene->rigid_system == NULL || instance->rigid_instance->rigids == NULL) {
         return;
     }
     for (i = 0; i < instance->scene->rigid_system->count; ++i) {
@@ -261,8 +260,7 @@ static void CutSceneSetPrimitiveColourPc(i32 colour) {
     if (NuPrimNeedsOverbrightening != 0) {
         converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff00) + (colour & 0xff000000u);
     } else {
-        converted =
-            ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
+        converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
     }
     ((CUT_MEMORY_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
@@ -398,13 +396,12 @@ struct cut_script_s {          // size 0xc
     CUT_SCRIPT_NODE_PC *nodes; // 0x8
 };
 
-#define CUT_SCRIPT_NODE_ALLOC(node, buffer, size)                                                                      \
-    (node) = (CUT_SCRIPT_NODE_PC *)(buffer)->void_ptr;                                                                 \
-    (buffer)->addr += (size);                                                                                          \
+#define CUT_SCRIPT_NODE_ALLOC(node, buffer, size)                                                                                          \
+    (node) = (CUT_SCRIPT_NODE_PC *)(buffer)->void_ptr;                                                                                     \
+    (buffer)->addr += (size);                                                                                                              \
     memset((node), 0, (size))
 
-static CUT_SCRIPT_NODE_PC *CutScriptNodeAllocPc(i32 type, VARIPTR *buffer, CUT_SCRIPT_NODE_PC *prev,
-                                                CUT_SCRIPT_NODE_PC **head) {
+static CUT_SCRIPT_NODE_PC *CutScriptNodeAllocPc(i32 type, VARIPTR *buffer, CUT_SCRIPT_NODE_PC *prev, CUT_SCRIPT_NODE_PC **head) {
     CUT_SCRIPT_NODE_PC *node = NULL;
     buffer->addr = (buffer->addr + 0xf) & ~0xfU;
     switch (type) {
@@ -463,10 +460,10 @@ static CUT_SCRIPT_NODE_PC *CutScriptNodeAllocPc(i32 type, VARIPTR *buffer, CUT_S
     return node;
 }
 
-#define CUT_SCRIPT_READ_WORD(fp, buffer, field)                                                                        \
-    NuFParGetWord(fp);                                                                                                 \
-    (field) = (buffer)->char_ptr;                                                                                      \
-    (buffer)->addr += strlen((fp)->word_buffer_ptr) + 1;                                                               \
+#define CUT_SCRIPT_READ_WORD(fp, buffer, field)                                                                                            \
+    NuFParGetWord(fp);                                                                                                                     \
+    (field) = (buffer)->char_ptr;                                                                                                          \
+    (buffer)->addr += strlen((fp)->word_buffer_ptr) + 1;                                                                                   \
     sprintf((field), (fp)->word_buffer_ptr)
 
 CUT_SCRIPT_NODE_PC *CutScriptParseBlockPc(NUFPAR_PC *fp, VARIPTR *buffer, i32 unused) {
@@ -740,8 +737,8 @@ void CutTriggerActivatePendingPc(void) {
     }
 }
 
-CUT_TRIGGER_SET_PC *CutTriggerSetCreatePc(CUT_TRIGGER_FILE_PC *file, NUGSCN *scene, CUT_SCRIPT_PC *scripts,
-                                          VARIPTR *buffer, VARIPTR *end, i32 pending) {
+CUT_TRIGGER_SET_PC *CutTriggerSetCreatePc(CUT_TRIGGER_FILE_PC *file, NUGSCN *scene, CUT_SCRIPT_PC *scripts, VARIPTR *buffer, VARIPTR *end,
+                                          i32 pending) {
     CUT_TRIGGER_SET_PC *set = NULL;
     CUT_TRIGGER_SET_PC *list;
     i32 i;
@@ -968,8 +965,8 @@ i32 CutTriggerEntryTestPc(CUT_TRIGGER_ENTRY_PC *entry, NUVEC *pos, f32 radius) {
                 if (pos->y < cylinder->base.y - radius || pos->y > cylinder->height + cylinder->base.y + radius) {
                     break;
                 }
-                dist = (pos->x - cylinder->base.x) * (pos->x - cylinder->base.x) +
-                       (pos->z - cylinder->base.z) * (pos->z - cylinder->base.z);
+                dist =
+                    (pos->x - cylinder->base.x) * (pos->x - cylinder->base.x) + (pos->z - cylinder->base.z) * (pos->z - cylinder->base.z);
                 if (dist < (cylinder->radius + radius) * (cylinder->radius + radius)) {
                     return 1;
                 }
@@ -996,8 +993,7 @@ i32 CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NUVEC *pos
     delta.x = pos->x - mtx->m30;
     delta.y = pos->y - mtx->m31;
     delta.z = pos->z - mtx->m32;
-    if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z >
-        (entry->radius + radius) * (entry->radius + radius)) {
+    if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z > (entry->radius + radius) * (entry->radius + radius)) {
         return 0;
     }
     if ((entry->flags & 1) != 0) {
@@ -1358,12 +1354,12 @@ void CutTriggerUpdatePc(NUVEC *pos, f32 radius, i32 include_hidden) {
     }
 }
 
-#define CUT_TRIGGER_HIT_PC(set, entry, state, amount)                                                                  \
-    {                                                                                                                  \
-        (state)->count += (amount);                                                                                    \
-        if ((state)->count >= (entry)->threshold)                                                                      \
-            CutTriggerFirePc((set), (entry), (state), 1);                                                              \
-        return 1;                                                                                                      \
+#define CUT_TRIGGER_HIT_PC(set, entry, state, amount)                                                                                      \
+    {                                                                                                                                      \
+        (state)->count += (amount);                                                                                                        \
+        if ((state)->count >= (entry)->threshold)                                                                                          \
+            CutTriggerFirePc((set), (entry), (state), 1);                                                                                  \
+        return 1;                                                                                                                          \
     }
 
 i32 CutTriggerHitPc(NUVEC *pos, f32 radius, i16 amount) {

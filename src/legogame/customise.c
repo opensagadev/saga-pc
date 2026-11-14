@@ -120,8 +120,7 @@ typedef struct custom_material_update_s {
 
 extern NUVEC CustomisePos[2];
 i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category);
-i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
-                           GAMEOBJECT *, u32);
+i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 i32 Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_input, i32 unused);
 extern i16 TextIdPc880fa0;
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
@@ -262,13 +261,15 @@ static void UpdateCustomPieceAnim(CUSTOM_PIECE_ANIM_PC *anim, u16 minimum, u16 m
     }
 }
 
-static CUSTOMISER_GAME_SETTING_PC CustomiserGameSettingsPrivatePc[] = {{"bountyhunter", 0x1000000, 0},
-                                                                       {"jedi", 8, 0},
-                                                                       {"sith", 0xc, 2},
-                                                                       {"blaster", 0x100080, 0x40000000},
-                                                                       {"alreadygothat", 0, 0x10},
-                                                                       {"stormtrooperhelmet", 0, 0x40000},
-                                                                       {NULL, 0, 0}};
+static CUSTOMISER_GAME_SETTING_PC CustomiserGameSettingsPrivatePc[] = {
+    {"bountyhunter",       0x1000000, 0         },
+    {"jedi",               8,         0         },
+    {"sith",               0xc,       2         },
+    {"blaster",            0x100080,  0x40000000},
+    {"alreadygothat",      0,         0x10      },
+    {"stormtrooperhelmet", 0,         0x40000   },
+    {NULL,                 0,         0         }
+};
 
 void PermanentCustomPieceConfigPc(CUSTOMPIECE_LAYERS_PC *input, NUFPAR_PC *parser) {
     CUSTOM_PIECE_CONFIG_PC *piece = (CUSTOM_PIECE_CONFIG_PC *)input;
@@ -362,8 +363,7 @@ void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *input, i32 index) {
             }
         }
         sprintf(names->display_names[side], "%s %i", TTab[TextIdPc880fa0], side + 1);
-        CDataList[customiser->character_ids[side]].icon_model =
-            (i16)Customiser_GetIcon(input, &Game.customiser_start[side], side);
+        CDataList[customiser->character_ids[side]].icon_model = (i16)Customiser_GetIcon(input, &Game.customiser_start[side], side);
     }
 }
 
@@ -465,9 +465,8 @@ void Customiser_Init(CUSTOMISER_LAYERS_PC *input) {
     for (side = 0; side < 2; ++side) {
         for (category = 0; category < 9; ++category) {
             if (customiser->piece_counts[category] > 0) {
-                Game.customiser_start[side].pieces[category] =
-                    (u16)Customiser_NextPieceRight(input, Game.customiser_start[side].pieces[category] - 1,
-                                                   customiser->piece_counts[category], side, category);
+                Game.customiser_start[side].pieces[category] = (u16)Customiser_NextPieceRight(
+                    input, Game.customiser_start[side].pieces[category] - 1, customiser->piece_counts[category], side, category);
             }
         }
     }
@@ -641,8 +640,7 @@ i32 CustomiserMenu_Update(void) {
         CustomiseNameBoardTMulPc[player] = CustomiseMode[player] == 1 ? 1.0f : 0.0f;
         CustomiseNameBoardMulPc[player] =
             SeekLinearF(CustomiseNameBoardMulPc[player], CustomiseNameBoardTMulPc[player], (f32)((f64)FRAMETIME * 4.0));
-        CustomiseNameLetterBlipScalePc[player] =
-            SeekLinearF(CustomiseNameLetterBlipScalePc[player], 1.0f, (f32)((f64)FRAMETIME * 5.0));
+        CustomiseNameLetterBlipScalePc[player] = SeekLinearF(CustomiseNameLetterBlipScalePc[player], 1.0f, (f32)((f64)FRAMETIME * 5.0));
         if (MissionMenuPacketPc.active_player[player] != 0) {
             if ((pad->pressed & GAMEPAD_MENUSELECT) != 0) {
                 select[player] = 1;
@@ -665,8 +663,7 @@ i32 CustomiserMenu_Update(void) {
         } else {
             quit = 1;
         }
-    } else if ((select[0] != 0 || select[1] != 0) && active_count == 1 && CustomiseMode[0] != 1 &&
-               CustomiseMode[1] != 1) {
+    } else if ((select[0] != 0 || select[1] != 0) && active_count == 1 && CustomiseMode[0] != 1 && CustomiseMode[1] != 1) {
         toggle = 1;
     } else {
         quit = 0;
@@ -746,10 +743,8 @@ i32 CustomiserMenu_Update(void) {
                 }
                 MenuRepeat(&up_held, &up, &uprepeattime[player], &uprepeatcount[player], 0.1f, FRAMETIME);
                 MenuRepeat(&down_held, &down, &downrepeattime[player], &downrepeatcount[player], 0.1f, FRAMETIME);
-                MenuRepeat(&left_held, &left, &leftrepeattime[player], &leftrepeatcount[player], repeat_delay,
-                           FRAMETIME);
-                MenuRepeat(&right_held, &right, &rightrepeattime[player], &rightrepeatcount[player], repeat_delay,
-                           FRAMETIME);
+                MenuRepeat(&left_held, &left, &leftrepeattime[player], &leftrepeatcount[player], repeat_delay, FRAMETIME);
+                MenuRepeat(&right_held, &right, &rightrepeattime[player], &rightrepeatcount[player], repeat_delay, FRAMETIME);
                 if (CustomiseMode[side] == 1) {
                     i32 old_x = CustomiseNameXPc[side];
                     i32 old_y = CustomiseNameYPc[side];
@@ -757,8 +752,7 @@ i32 CustomiserMenu_Update(void) {
                         if (old_x > 0) {
                             Game.customiser_start[side].name[old_x] = CustomiseLetter[old_y];
                             CustomiseNameXPc[side] = old_x - 1;
-                            CustomiseNameYPc[side] =
-                                Customise_FindLetter(Game.customiser_start[side].name[CustomiseNameXPc[side]]);
+                            CustomiseNameYPc[side] = Customise_FindLetter(Game.customiser_start[side].name[CustomiseNameXPc[side]]);
                         }
                     } else if (right != 0) {
                         i32 x;
@@ -804,11 +798,9 @@ i32 CustomiserMenu_Update(void) {
                             ++category;
                         }
                     } else if (left != 0) {
-                        next_piece = Customiser_NextPieceLeft((CUSTOMISER_LAYERS_PC *)customiser, old_piece,
-                                                              piece_count, side, category);
+                        next_piece = Customiser_NextPieceLeft((CUSTOMISER_LAYERS_PC *)customiser, old_piece, piece_count, side, category);
                     } else if (right != 0) {
-                        next_piece = Customiser_NextPieceRight((CUSTOMISER_LAYERS_PC *)customiser, old_piece,
-                                                               piece_count, side, category);
+                        next_piece = Customiser_NextPieceRight((CUSTOMISER_LAYERS_PC *)customiser, old_piece, piece_count, side, category);
                     }
                     *slot = (u16)next_piece;
                     CustomiseMenuYPc[side] = category;
@@ -830,14 +822,12 @@ i32 CustomiserMenu_Update(void) {
                     if (length < 15) {
                         Game.customiser_start[side].name[length] = ' ';
                     }
-                    CustomiseNameYPc[side] =
-                        Customise_FindLetter(Game.customiser_start[side].name[CustomiseNameXPc[side]]);
+                    CustomiseNameYPc[side] = Customise_FindLetter(Game.customiser_start[side].name[CustomiseNameXPc[side]]);
                     CustomiseNameLetterBlipScalePc[side] = 1.0f;
                 } else if (old_mode == 1) {
                     if (cancel_name == 0) {
                         i32 last = 14;
-                        Game.customiser_start[side].name[CustomiseNameXPc[side]] =
-                            CustomiseLetter[CustomiseNameYPc[side]];
+                        Game.customiser_start[side].name[CustomiseNameXPc[side]] = CustomiseLetter[CustomiseNameYPc[side]];
                         if (Game.customiser_start[side].name[last] == ' ') {
                             do {
                                 --last;
@@ -850,8 +840,8 @@ i32 CustomiserMenu_Update(void) {
                         } else {
                             Game.customiser_start[side].name[last + 1] = 0;
                         }
-                        if (NuStringFilterBadWords((u8 *)Game.customiser_start[side].name,
-                                                   (u8 *)Game.customiser_start[side].name, (u8 *)"Stranger") != 0) {
+                        if (NuStringFilterBadWords((u8 *)Game.customiser_start[side].name, (u8 *)Game.customiser_start[side].name,
+                                                   (u8 *)"Stranger") != 0) {
                             NuStrCpy(Game.customiser_start[side].name, Game.customiser_start[side].name + 16);
                         }
                     } else {
@@ -873,8 +863,7 @@ i32 CustomiserMenu_Update(void) {
                         i32 piece;
                         do {
                             piece = qrand() / (65535 / customiser->piece_counts[category] + 1);
-                        } while (customiser->piece_available(
-                                     (CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][piece]) == 0);
+                        } while (customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][piece]) == 0);
                         Game.customiser_start[side].pieces[category] = (u16)piece;
                     }
                 }
@@ -900,8 +889,7 @@ i32 CustomiserMenu_Update(void) {
     }
     if (toggle != 0) {
         GAMEOBJECT *object;
-        MissionMenuPacketPc.customise_other_player[active_index] =
-            MissionMenuPacketPc.customise_other_player[active_index] == 0;
+        MissionMenuPacketPc.customise_other_player[active_index] = MissionMenuPacketPc.customise_other_player[active_index] == 0;
         GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
         object = Player[active_index];
         NewBuzzFrames(object->pad->bound_pad, 1, 0);
@@ -981,12 +969,10 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
                 if (column == CustomiseNameXPc[side]) {
                     const i32 colour = menu_flash == 0 ? 255 : 191;
                     letter[0] = CustomiseLetter[CustomiseNameYPc[side]];
-                    Text3D((char *)InitAsciiUpPc, x, (f32)(CustomiseNameArrowOffsetPc - (f64)0.65f), 1.0f,
-                           CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, 0, colour,
-                           colour, colour);
-                    Text3D((char *)TagAsciiDownPc, x, (f32)(-(f64)0.65f - CustomiseNameArrowOffsetPc), 1.0f,
-                           CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, 0, colour,
-                           colour, colour);
+                    Text3D((char *)InitAsciiUpPc, x, (f32)(CustomiseNameArrowOffsetPc - (f64)0.65f), 1.0f, CustomiseNameArrowScalePc,
+                           CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, 0, colour, colour, colour);
+                    Text3D((char *)TagAsciiDownPc, x, (f32)(-(f64)0.65f - CustomiseNameArrowOffsetPc), 1.0f, CustomiseNameArrowScalePc,
+                           CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, 0, colour, colour, colour);
                     scale = CustomiseNameLetterBlipScalePc[side];
                     letter_red = letter_blue = 255;
                     letter_green = menu_flash == 0 ? 255 : 0;
@@ -1000,35 +986,33 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
                     letter_green = green;
                     letter_blue = blue;
                 }
-                Text3D(letter, x, -0.65f, 1.0f, scale * CustomiseNameLetterScalePc, (f32)(scale * 0.5), 0.5f, 0,
-                       letter_red, letter_green, letter_blue);
+                Text3D(letter, x, -0.65f, 1.0f, scale * CustomiseNameLetterScalePc, (f32)(scale * 0.5), 0.5f, 0, letter_red, letter_green,
+                       letter_blue);
                 if (column == 0) {
-                    Text3D("[", (x - gap) + CustomiseNameBracketOffsetXPc,
-                           (f32)(CustomiseNameBracketOffsetYPc - (f64)0.65f), 1.0f, 0.5f, 0.6f, 0.5f, 0, red, green,
-                           blue);
+                    Text3D("[", (x - gap) + CustomiseNameBracketOffsetXPc, (f32)(CustomiseNameBracketOffsetYPc - (f64)0.65f), 1.0f, 0.5f,
+                           0.6f, 0.5f, 0, red, green, blue);
                 } else if (column == 14) {
-                    Text3D("]", (x + gap) - CustomiseNameBracketOffsetXPc,
-                           (f32)(CustomiseNameBracketOffsetYPc - (f64)0.65f), 1.0f, 0.5f, 0.6f, 0.5f, 0, red, green,
-                           blue);
+                    Text3D("]", (x + gap) - CustomiseNameBracketOffsetXPc, (f32)(CustomiseNameBracketOffsetYPc - (f64)0.65f), 1.0f, 0.5f,
+                           0.6f, 0.5f, 0, red, green, blue);
                 }
                 x += gap;
             }
         } else {
             GameObj_GetNamePc(customiser->character_ids[side], NULL, name);
-            SmartTextEx(name, CustomiseScreenPosPc[side].x, -0.65f, 1.0f, 0.5f, 0.5f, 0.5f, 0, red, green, blue, 0.75f,
-                        2, NULL, 0, (i32)(CustomiseNameAlphaPc * 128.0));
+            SmartTextEx(name, CustomiseScreenPosPc[side].x, -0.65f, 1.0f, 0.5f, 0.5f, 0.5f, 0, red, green, blue, 0.75f, 2, NULL, 0,
+                        (i32)(CustomiseNameAlphaPc * 128.0));
         }
         x = CustomiseScreenPosPc[side].x;
         alpha = (1.0f - CustomiseNameBoardMulPc[side]) * CustomiseNameAlphaPc;
-        DrawPanel3DObject(x, -0.48f, 1.0f, MissionPlayerIconSizePc, MissionPlayerIconSizePc, MissionPlayerIconSizePc, 0,
-                          0, 0, &WORLD->level_objects[167].special, 0, alpha);
+        DrawPanel3DObject(x, -0.48f, 1.0f, MissionPlayerIconSizePc, MissionPlayerIconSizePc, MissionPlayerIconSizePc, 0, 0, 0,
+                          &WORLD->level_objects[167].special, 0, alpha);
         icon = Customiser_GetIcon(input, &Game.customiser_start[side], index);
         if (icon != -1) {
             if (icon != PCArcadeUnpairedIconModel) {
                 ++icon;
             }
-            DrawPanel3DObject(x, -0.48f, 1.0f, MissionPlayerIconSizePc, MissionPlayerIconSizePc,
-                              MissionPlayerIconSizePc, 0, 0, 0, &WORLD->level_objects[icon].special, 0, alpha);
+            DrawPanel3DObject(x, -0.48f, 1.0f, MissionPlayerIconSizePc, MissionPlayerIconSizePc, MissionPlayerIconSizePc, 0, 0, 0,
+                              &WORLD->level_objects[icon].special, 0, alpha);
         }
     }
 }
@@ -1105,14 +1089,12 @@ void Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
         if (model == NULL) {
             continue;
         }
-        saber_colour = LightSabre_ColourFromObj(
-            customiser->piece_sets[2][Game.customiser_start[side].pieces[2]].weapon_model, NULL);
+        saber_colour = LightSabre_ColourFromObj(customiser->piece_sets[2][Game.customiser_start[side].pieces[2]].weapon_model, NULL);
         if (runtime->animation_state[side] > 0) {
             --runtime->animation_state[side];
         }
         packet = &runtime->animation_packets[side].packet;
-        if (runtime->animation_active[side] == 0 &&
-            model->model_data_b[intro = saber_colour == -1 ? 0x62 : 0x61] != NULL) {
+        if (runtime->animation_active[side] == 0 && model->model_data_b[intro = saber_colour == -1 ? 0x62 : 0x61] != NULL) {
             if (runtime->animation_values[side] == 0.0f) {
                 runtime->animation_values[side] = AnimDuration(model->model_id, intro, 0.0f, 0.0f, 1);
             } else {
@@ -1145,8 +1127,7 @@ void Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
                 message.unknown_4f = 2;
                 if (customiser->locator_x_offsets[category] != 0.0f) {
                     position.x += NuTrigTable[(angle >> 1) & 0x7fff] * customiser->locator_x_offsets[category];
-                    position.z +=
-                        NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * customiser->locator_x_offsets[category];
+                    position.z += NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * customiser->locator_x_offsets[category];
                 }
                 position.y = customiser->locator_y_offsets[category] + position.y;
 
@@ -1163,20 +1144,17 @@ void Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
             if (resources == NULL || customiser->piece_counts[category] <= 0) {
                 continue;
             }
-            if (customiser->categories[category]->uses_special != 0 ||
-                customiser->categories[category]->material_tag == -1) {
+            if (customiser->categories[category]->uses_special != 0 || customiser->categories[category]->material_tag == -1) {
                 continue;
             }
             resources += Game.customiser_start[side].pieces[category];
             if (resources->texture_id == 0) {
                 continue;
             }
-            for (material = 0; material < ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->material_count;
-                 ++material) {
-                if (((CUSTOM_MATERIAL_UPDATE_PC *)((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material])
-                        ->material_tag == customiser->categories[category]->material_tag) {
-                    ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material]->texture_id =
-                        (u16)resources->texture_id;
+            for (material = 0; material < ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->material_count; ++material) {
+                if (((CUSTOM_MATERIAL_UPDATE_PC *)((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material])->material_tag ==
+                    customiser->categories[category]->material_tag) {
+                    ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material]->texture_id = (u16)resources->texture_id;
                     NuMtlUpdate(((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material]);
                 }
             }
@@ -1230,18 +1208,16 @@ void Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
         mask = CustomiserPreviewLayerMaskPc(customiser, Game.customiser_start[side].pieces, selected, character);
         NuMtxSetRotationY(&matrix, CustomiseYRotPc[side] + 0x8000);
         NuMtxTranslate(&matrix, &CustomisePos[side]);
-        if (GameDrawCharacterModel(model, &runtime->animation_packets[side].packet, &matrix, NULL, NULL,
-                                   runtime->joint_matrices[side], NULL, mask) == 0) {
+        if (GameDrawCharacterModel(model, &runtime->animation_packets[side].packet, &matrix, NULL, NULL, runtime->joint_matrices[side],
+                                   NULL, mask) == 0) {
             continue;
         }
         if (helmet != -1) {
             for (category = 0; category < 9; ++category) {
-                CUSTOM_ACCESSORY_RESOURCE_PC *resources =
-                    (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
+                CUSTOM_ACCESSORY_RESOURCE_PC *resources = (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
                 CUSTOM_ACCESSORY_RESOURCE_PC *resource;
                 CUSTOM_PIECE_CONFIG_PC *piece;
-                if (resources == NULL || customiser->piece_counts[category] <= 0 ||
-                    customiser->categories[category]->uses_special == 0) {
+                if (resources == NULL || customiser->piece_counts[category] <= 0 || customiser->categories[category]->uses_special == 0) {
                     continue;
                 }
                 resource = &resources[Game.customiser_start[side].pieces[category]];
@@ -1249,8 +1225,7 @@ void Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
                     continue;
                 }
                 piece = &customiser->piece_sets[category][Game.customiser_start[side].pieces[category]];
-                if (GetMenuID() == 12 && customiser_quit == 0 && category == selected &&
-                    (active_count == 2 || side == preview_side)) {
+                if (GetMenuID() == 12 && customiser_quit == 0 && category == selected && (active_count == 2 || side == preview_side)) {
                     NuFmod(CustomiseMenuTimePc[side], 0.3f);
                 } else if (category == 0 && (piece->availability_flags & 0x20) != 0) {
                     continue;
@@ -1306,11 +1281,10 @@ void MenuUpdateCustomiserPc(MENU *menu) {
         return;
     }
     quit = CustomiserMenu_Update();
-    customiser_changed =
-        memcmp(Game.customiser_start, OldCustomiseGame.customiser_start, 0x70) != 0 ||
-        memcmp(Game.customiser_start[0].name, OldCustomiseGame.customiser_start[0].name, 0x20) != 0 ||
-        Game.customiser_start[0].use_saved_name != OldCustomiseGame.customiser_start[0].use_saved_name ||
-        Game.customiser_start[1].use_saved_name != OldCustomiseGame.customiser_start[1].use_saved_name;
+    customiser_changed = memcmp(Game.customiser_start, OldCustomiseGame.customiser_start, 0x70) != 0 ||
+                         memcmp(Game.customiser_start[0].name, OldCustomiseGame.customiser_start[0].name, 0x20) != 0 ||
+                         Game.customiser_start[0].use_saved_name != OldCustomiseGame.customiser_start[0].use_saved_name ||
+                         Game.customiser_start[1].use_saved_name != OldCustomiseGame.customiser_start[1].use_saved_name;
     if (quit == 0) {
         return;
     }
@@ -1350,11 +1324,9 @@ void MenuDrawCustomiserPc(MENU *menu) {
     CustomiserDrawNameEditorPc(CharacterCustomiser);
     Customiser_GetActiveWeirdoIndex(&active_index, &active_count);
     alpha = MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc;
-    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 0xa6, alpha,
-                 alpha, 1, NULL);
+    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 0xa6, alpha, alpha, 1, NULL);
     alpha = MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc;
-    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 0xa5, alpha,
-                 alpha, 1, NULL);
+    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 0xa5, alpha, alpha, 1, NULL);
     select[0] = select[1] = active_count == 1 ? TextIdPc880750 : -1;
     action[0] = action[1] = TextIdPc880758;
     toggle[0] = toggle[1] = -1;
@@ -1397,9 +1369,8 @@ void MenuDrawCustomiserPc(MENU *menu) {
             }
         }
     }
-    DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], select[0], 1.0f, action[0], cancel[0], toggle[0],
-                          TextIdPc880eac, MissionMenuPacketPc.active_player[1], select[1], 1.0f, action[1], cancel[1],
-                          toggle[1], TextIdPc880eac);
+    DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], select[0], 1.0f, action[0], cancel[0], toggle[0], TextIdPc880eac,
+                          MissionMenuPacketPc.active_player[1], select[1], 1.0f, action[1], cancel[1], toggle[1], TextIdPc880eac);
     x = -ICONX;
     colour = menu_flash == 0 ? 255 : 191;
     for (player = 0; player < 2; ++player) {
@@ -1410,18 +1381,16 @@ void MenuDrawCustomiserPc(MENU *menu) {
         }
         if (MissionMenuPacketPc.active_player[player] != 0 && CustomiseMode[side] != 1) {
             y = (f32)(STATSPOSY - 0.22499999403953552);
-            Text3D("<", (f32)(x - 0.05000000074505806 - (BlipL[player] > 0.0f ? 0.015000001f : 0.0f)), y, 1.0f, 0.5f,
-                   0.5f, 0.5f, 0, colour, colour, colour);
-            Text3D(">", (f32)(x + 0.05000000074505806 + (BlipR[player] > 0.0f ? 0.015000001f : 0.0f)), y, 1.0f, 0.5f,
-                   0.5f, 0.5f, 0, colour, colour, colour);
-            Text3DEx((char *)InitAsciiUpPc, x,
-                     (f32)(y - -0.07000000029802322 - (BlipU[player] > 0.0f ? -0.021000002f : 0.0f)), 1.0f, 0.5f, 0.5f,
-                     0.5f, 0, colour, colour, colour, CustomiseMenuYPc[side] > 0 ? 128 : 32);
-            Text3DEx((char *)TagAsciiDownPc, x,
-                     (f32)(y - 0.07000000029802322 + (BlipD[player] > 0.0f ? -0.021000002f : 0.0f)), 1.0f, 0.5f, 0.5f,
-                     0.5f, 0, colour, colour, colour, CustomiseMenuYPc[side] < 8 ? 128 : 32);
-            SmartTextEx(TTab[TextIdPc880888], x, (f32)(STATSPOSY - 0.375), 1.0f, 0.3f, 0.3f, 0.3f, 0, colour, colour,
-                        colour, 0.15f, 1, NULL, 0, 128);
+            Text3D("<", (f32)(x - 0.05000000074505806 - (BlipL[player] > 0.0f ? 0.015000001f : 0.0f)), y, 1.0f, 0.5f, 0.5f, 0.5f, 0, colour,
+                   colour, colour);
+            Text3D(">", (f32)(x + 0.05000000074505806 + (BlipR[player] > 0.0f ? 0.015000001f : 0.0f)), y, 1.0f, 0.5f, 0.5f, 0.5f, 0, colour,
+                   colour, colour);
+            Text3DEx((char *)InitAsciiUpPc, x, (f32)(y - -0.07000000029802322 - (BlipU[player] > 0.0f ? -0.021000002f : 0.0f)), 1.0f, 0.5f,
+                     0.5f, 0.5f, 0, colour, colour, colour, CustomiseMenuYPc[side] > 0 ? 128 : 32);
+            Text3DEx((char *)TagAsciiDownPc, x, (f32)(y - 0.07000000029802322 + (BlipD[player] > 0.0f ? -0.021000002f : 0.0f)), 1.0f, 0.5f,
+                     0.5f, 0.5f, 0, colour, colour, colour, CustomiseMenuYPc[side] < 8 ? 128 : 32);
+            SmartTextEx(TTab[TextIdPc880888], x, (f32)(STATSPOSY - 0.375), 1.0f, 0.3f, 0.3f, 0.3f, 0, colour, colour, colour, 0.15f, 1,
+                        NULL, 0, 128);
         }
         x += ICONX + ICONX;
     }

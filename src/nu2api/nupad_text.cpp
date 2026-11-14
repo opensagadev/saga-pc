@@ -33,8 +33,8 @@ class TEXT_INPUT_MANAGER_PC { // size 0x68b0
     u8 use_keyboard_override;                     // 0x67e0
     u8 unknown_67e1[0x0f];                        // 0x67e1
     TEXT_INPUT_DEVICE_KIND_PC device_kind[32];    // 0x67f0
-    i32 ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
-                   i32 alternate_labels, char *delimiters);
+    i32 ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback, i32 alternate_labels,
+                   char *delimiters);
     i32 fun_006d9dc0(i32 device, i32 button, char *destination, i32 custom, i32 custom_index);
 };
 
@@ -46,8 +46,8 @@ extern "C" {
     }
 }
 
-i32 TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index,
-                                      i32 use_callback, i32 alternate_labels, char *delimiters) {
+i32 TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
+                                      i32 alternate_labels, char *delimiters) {
     i32 result = 0;
     i32 open = 0;
     i32 close = 0;
@@ -290,15 +290,13 @@ extern "C" void fun_006d63e0(f32 *value, f32 target, f32 rate) {
     *value += target;
 }
 
-extern "C" i32 fun_006d94b0(i32 player, i32 button, char *destination, i32, i32, i32 use_callback, i32 alternate_labels,
-                            char *delimiters) {
+extern "C" i32 fun_006d94b0(i32 player, i32 button, char *destination, i32, i32, i32 use_callback, i32 alternate_labels, char *delimiters) {
     TEXT_INPUT_MANAGER_PC *manager = (TEXT_INPUT_MANAGER_PC *)nu_input_state;
     i32 port = NuPadGetPort(player);
     return manager->ButtonName(port, button, destination, 0, 0, use_callback, alternate_labels, delimiters);
 }
 
-extern "C" i32 PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a,
-                                          i32 b, char *c) {
+extern "C" i32 PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a, i32 b, char *c) {
     return ((TEXT_INPUT_MANAGER_PC *)nu_input_state)->ButtonName(action, port, destination, auxiliary, bank, a, b, c);
 }
 
@@ -310,8 +308,7 @@ i32 TEXT_INPUT_MANAGER_PC::fun_006d9dc0(i32 device, i32 button, char *destinatio
 extern "C" char TextInputActionLabelBufferPc[128]; /*2975970..29759ef*/
 
 extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32 custom, i32 custom_index) {
-    ((TEXT_INPUT_MANAGER_PC *)nu_input_state)
-        ->ButtonName(device, action, TextInputActionLabelBufferPc, custom, custom_index, 1, 1, "()");
+    ((TEXT_INPUT_MANAGER_PC *)nu_input_state)->ButtonName(device, action, TextInputActionLabelBufferPc, custom, custom_index, 1, 1, "()");
     return TextInputActionLabelBufferPc;
 }
 

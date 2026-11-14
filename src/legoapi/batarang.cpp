@@ -178,8 +178,8 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
         if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate->dead != 0 ||
             (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 || candidate->model_draw_result == 0 ||
             candidate == object || candidate->field_280 != 0xff || candidate->character_context == 0x3b ||
-            candidate->character_context == 0x39 || candidate->character_context == 0x3c ||
-            (object->flags_1f8 & 0x10004) != 0 || ((object->flags_1f8 ^ candidate->flags_1f8) & 1) == 0) {
+            candidate->character_context == 0x39 || candidate->character_context == 0x3c || (object->flags_1f8 & 0x10004) != 0 ||
+            ((object->flags_1f8 ^ candidate->flags_1f8) & 1) == 0) {
             continue;
         }
         if (BatarangContainsTargetPc(batarang, candidate)) {
@@ -254,8 +254,7 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
     for (i = 0; i < world->gizmo_blowup_count; ++i, ++candidate_blowup) {
         if ((candidate_blowup->status_flags & 1) != 0 || (candidate_blowup->status_flags & 0x800000) == 0 ||
             (candidate_blowup->status_flags & 0x4000) == 0 || (candidate_blowup->status_flags & 0x8000) == 0 ||
-            (candidate_blowup->draw_flags & 1) == 0 ||
-            ((candidate_blowup->draw_flags & 0x20) != 0 && ShadowMode == 0)) {
+            (candidate_blowup->draw_flags & 1) == 0 || ((candidate_blowup->draw_flags & 0x20) != 0 && ShadowMode == 0)) {
             continue;
         }
         i32 target;
@@ -281,8 +280,7 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
                  (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f &&
                 ((absolute.value = (candidate_blowup->screen_position.y - batarang->sight_position.y)),
                  (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f &&
-                NuVecDistSqr(&candidate_blowup->mid_position, &object->collision_position, &delta) <
-                    selected_distance) {
+                NuVecDistSqr(&candidate_blowup->mid_position, &object->collision_position, &delta) < selected_distance) {
                 blowup = candidate_blowup;
                 break;
             }
@@ -302,8 +300,7 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
         origin.y = (f32)((object->upper_position.y + object->collision_position.y) * 0.5);
         origin.z = object->collision_position.z;
         NuVecSub(&ray, &selected_position, &origin);
-        if (NewRayCastScaleYMask(&origin, &ray, 0.0f, 1.0f, 0, 0x1f) == 0 ||
-            (platform != -1 && TerrainPlatId() == platform)) {
+        if (NewRayCastScaleYMask(&origin, &ray, 0.0f, 1.0f, 0, 0x1f) == 0 || (platform != -1 && TerrainPlatId() == platform)) {
             if (selected_type != -1 && BatarangAppendTargetPc(batarang, selected, selected_type) == 2) {
                 return 1;
             }
@@ -333,8 +330,7 @@ extern "C" void Batarang_Release(GAMEOBJECT *object, i32 mode) {
         if (BATARANG_PACKET_PC(object)->active == 0) {
             BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].fallback_position.x =
                 (f32)(NU_SIN_LUT(object->movement_facing_angle) * 2.0 + object->collision_position.x);
-            BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].fallback_position.y =
-                object->collision_position.y;
+            BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].fallback_position.y = object->collision_position.y;
             BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].fallback_position.z =
                 (f32)(2.0 * NU_COS_LUT(object->movement_facing_angle) + object->collision_position.z);
             BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].object =
@@ -639,14 +635,10 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                         x *= ramp;
                         y *= ramp;
                     }
-                    BATARANG_PACKET_PC(object)->sight_velocity.x =
-                        SeekValF(BATARANG_PACKET_PC(object)->sight_velocity.x, x, 10.0f);
-                    BATARANG_PACKET_PC(object)->sight_velocity.y =
-                        SeekValF(BATARANG_PACKET_PC(object)->sight_velocity.y, y, 10.0f);
-                    BATARANG_PACKET_PC(object)->sight_position.x +=
-                        BATARANG_PACKET_PC(object)->sight_velocity.x * FRAMETIME;
-                    BATARANG_PACKET_PC(object)->sight_position.y +=
-                        BATARANG_PACKET_PC(object)->sight_velocity.y * FRAMETIME;
+                    BATARANG_PACKET_PC(object)->sight_velocity.x = SeekValF(BATARANG_PACKET_PC(object)->sight_velocity.x, x, 10.0f);
+                    BATARANG_PACKET_PC(object)->sight_velocity.y = SeekValF(BATARANG_PACKET_PC(object)->sight_velocity.y, y, 10.0f);
+                    BATARANG_PACKET_PC(object)->sight_position.x += BATARANG_PACKET_PC(object)->sight_velocity.x * FRAMETIME;
+                    BATARANG_PACKET_PC(object)->sight_position.y += BATARANG_PACKET_PC(object)->sight_velocity.y * FRAMETIME;
                 }
                 batarang = BATARANG_PACKET_PC(object);
                 KeepPointOnScreen(&batarang->sight_position, &batarang->sight_velocity);
@@ -737,8 +729,8 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
         batarang = BATARANG_PACKET_PC(object);
         if (((object->flags_1fc & 0x80) == 0 || (runtime->flags_090 & 0x20000000) == 0 || batarang == NULL ||
              batarang->flight_state.in_flight != 0 || object->use_model_origin == 0 || (object->flags_e24 & 8) == 0 ||
-             object->model_draw_result == 0 || !(object->camera_screen_position.z > 0.0f) ||
-             !(object->hold_timer >= 0.25f) || object->field_281 == 0 || ObjLandReady(object) == 0)) {
+             object->model_draw_result == 0 || !(object->camera_screen_position.z > 0.0f) || !(object->hold_timer >= 0.25f) ||
+             object->field_281 == 0 || ObjLandReady(object) == 0)) {
             return;
         }
         object->flags_e20 |= 0x00400000;
@@ -763,8 +755,7 @@ extern "C" i32 Batarang_SeekToTarget(BATARANG_NATIVE_PC *batarang) {
     if (batarang == NULL) {
         return 0;
     }
-    if (batarang->flight_state.current_target > batarang->active ||
-        batarang->targets[batarang->flight_state.current_target].lost != 0) {
+    if (batarang->flight_state.current_target > batarang->active || batarang->targets[batarang->flight_state.current_target].lost != 0) {
         target = batarang->owner->collision_position;
     } else if (!Batarang_GetTargetPos(batarang, batarang->flight_state.current_target, &target)) {
         return 0;
@@ -834,8 +825,7 @@ extern "C" void Batarangs_Update(void) {
                        owner->character_model->model_data_b[0x98] != NULL) {
                 owner->character_context = 0x50;
                 owner->field_7aa = 0x98;
-                batarang->owner->context_timer =
-                    AnimDuration((i16)batarang->owner->id, batarang->owner->field_7aa, 0, 0, 1);
+                batarang->owner->context_timer = AnimDuration((i16)batarang->owner->id, batarang->owner->field_7aa, 0, 0, 1);
             }
             batarang->flight_state.in_flight = 0;
             batarang->active = 0;
@@ -871,13 +861,10 @@ extern "C" {
 
     i32 Batman_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-        u32 capabilities =
-            packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
+        u32 capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
         AIPATHNODE_PC *destination =
-            &packet->path_info.path
-                 ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        AIPATHNODE_PC *source =
-            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+        AIPATHNODE_PC *source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
         AIPATHNODE_PC *node;
         AIPATH_PC *path;
         i32 skip_inside;
@@ -903,9 +890,7 @@ extern "C" {
             }
             if (owner->field_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL &&
                 NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle) ==
-                    ((AI_SPECIAL_TERRAIN_VIEW_PC *)CurrentTerrain)
-                        ->platforms[owner->supporting_platform_id]
-                        .scene_object_index) {
+                    ((AI_SPECIAL_TERRAIN_VIEW_PC *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
                 skip_inside = 0;
             }
         } else {
@@ -913,8 +898,7 @@ extern "C" {
         }
         if (((GAMEOBJECT *)object)->respawn_timer > 2.0f ||
             (skip_inside == 0 &&
-             owner->ai_packet.inside_path_node ==
-                 owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes &&
+             owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes &&
              (owner->field_281 != 0 || owner->velocity.y < 0.0f))) {
             ClearSpecialMove(owner);
         } else if (owner->character_context != 0 &&
@@ -966,16 +950,14 @@ extern "C" {
         owner = (GAMEOBJECT *)object->owner;
         flags = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
         if ((packet->path_info.flags & 1) != 0) {
-            source =
-                &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+            source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
             destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
             destination = &packet->path_info.path->nodes[destination_index];
             distance = NuVecXZDistSqr(&object->position, &destination->position, &offset);
             if (!(distance < destination->radius_squared)) {
                 if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
                     packet->inside_path_node != destination_index &&
-                    (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
-                     (1 << (destination_index % 8))) != 0) {
+                    (packet->path_info.path->previous_inside_node_bits[destination_index / 8] & (1 << (destination_index % 8))) != 0) {
                     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
                         return 1;
                     }
@@ -987,8 +969,7 @@ extern "C" {
                         if (distance < source->radius) {
                             packet->path_connection_state = 0;
                         }
-                    } else if (distance >
-                               (f64)packet->path_info.connection->horizontal_distance - destination->radius) {
+                    } else if (distance > (f64)packet->path_info.connection->horizontal_distance - destination->radius) {
                         packet->path_connection_state = 0;
                     }
                 }
@@ -1008,8 +989,8 @@ extern "C" {
             NuVecScale(&offset, &offset, radius / packet->path_info.connection->horizontal_distance);
             NuVecAdd(&packet->movement_destination, &source->position, &offset);
             distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
-            if (checks != 0 && (distance < (f64)ai_moveradius * ai_moveradius ||
-                                owner->respawn_timer > jump_stuck_time || owner->character_context == 0x44)) {
+            if (checks != 0 && (distance < (f64)ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time ||
+                                owner->character_context == 0x44)) {
                 packet->movement_destination = object->position;
                 ready = 1;
             }
@@ -1030,19 +1011,16 @@ extern "C" {
             switch (packet->path_connection_state) {
                 case 1:
                     if (ready != 0) {
-                        skip_ahead =
-                            (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
-                            packet->inside_path_node != destination_index &&
-                            (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
-                             (1 << (destination_index % 8))) != 0;
+                        skip_ahead = (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
+                                     packet->inside_path_node != destination_index &&
+                                     (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
+                                      (1 << (destination_index % 8))) != 0;
                         if (skip_ahead) {
                             if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
                                 return 1;
                             }
-                        } else if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] &
-                                    0x800) == 0) {
-                            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) !=
-                                    0 ||
+                        } else if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) == 0) {
+                            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0 ||
                                 ((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
                                 NuSpecialCompare(&source->special_handle, &destination->special_handle) != 0) {
                                 packet->path_connection_state = 4;
@@ -1105,12 +1083,11 @@ extern "C" {
                     if ((connection->traversal_flags[packet->path_info.direction] & 0x200) == 0) {
                         other = Obj;
                         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++other) {
-                            if ((other->flags_1fc_word & 1) == 0 || other == owner ||
-                                (other->flags_1fc_word & 0x1000) == 0 || other->dead != 0) {
+                            if ((other->flags_1fc_word & 1) == 0 || other == owner || (other->flags_1fc_word & 0x1000) == 0 ||
+                                other->dead != 0) {
                                 continue;
                             }
-                            if (other != player &&
-                                other->ai_packet.path_info.connection == packet->path_info.connection &&
+                            if (other != player && other->ai_packet.path_info.connection == packet->path_info.connection &&
                                 other->ai_packet.special_move_node == NULL &&
                                 other->ai_packet.path_update_flag < packet->path_connection_state) {
                                 continue;
@@ -1121,12 +1098,10 @@ extern "C" {
                                 if (other->collision_min.y > height + tolerance) {
                                     continue;
                                 }
-                            } else if (height - tolerance > owner->collision_min.y &&
-                                       height - tolerance > other->collision_min.y) {
+                            } else if (height - tolerance > owner->collision_min.y && height - tolerance > other->collision_min.y) {
                                 continue;
                             }
-                            clearance = (f32)((f64)other->ai_packet.mover_height + other->ai_packet.mover_height +
-                                              packet->mover_height);
+                            clearance = (f32)((f64)other->ai_packet.mover_height + other->ai_packet.mover_height + packet->mover_height);
                             offset.x = other->position.x - destination->position.x;
                             if (!(clearance > offset.x && offset.x > -clearance)) {
                                 continue;
@@ -1163,8 +1138,7 @@ extern "C" {
 
         owner = (GAMEOBJECT *)object->owner;
         if (owner->special_move_timer_pc <= 0.0f) {
-            destination = &packet->path_info.path
-                               ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
             if (owner->character_context == 0x0f) {
                 packet->movement_destination = destination->position;
                 packet->movement_stopping_distance = 0.0f;
@@ -1207,8 +1181,7 @@ extern "C" {
             case 1:
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                 owner->ai_packet.movement_stopping_distance = 0.0f;
-                if (owner->ai_packet.inside_path_node ==
-                        owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes ||
+                if (owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes ||
                     owner->special_move_timer_pc == 0.0f) {
                     ClearSpecialMove(owner);
                     return 0;
@@ -1222,11 +1195,9 @@ extern "C" {
     i32 Batman_PrepareBigJump(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
         AIPATHCNX_PC *connection = packet->path_info.connection;
-        AIPATHNODE_PC *destination =
-            &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction == 0]];
+        AIPATHNODE_PC *destination = &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction == 0]];
         if ((connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
-            packet->movement_destination =
-                packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction]].position;
+            packet->movement_destination = packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction]].position;
             packet->flags |= 0x800000;
             packet->movement_stopping_distance = 0.0f;
             ((GAMEOBJECT *)apiobject)->ai_collision_priority_pc |= 0x2000;
@@ -1253,8 +1224,7 @@ extern "C" {
 
     i32 Batman_PrepareGlidePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
         AIPATHNODE_PC *destination =
-            &packet->path_info.path
-                 ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         if (TryToTeleportToNextNode(owner, destination, 1) != 0) {
             return 1;
@@ -1298,10 +1268,8 @@ extern "C" {
             owner->indy_climb = FindClimbObject(WORLD->climb_objects, packet->path_info.connection);
         }
         if (owner->indy_climb != NULL) {
-            destination = &packet->path_info.path
-                               ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-            source =
-                &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+            destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
             if (TryToTeleportToNextNode(owner, destination, 0)) {
                 return 1;
             }
@@ -1427,11 +1395,9 @@ extern "C" {
 
     i32 Batman_PrepareGrapple(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-        AIPATHNODE_PC *source =
-            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+        AIPATHNODE_PC *source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
         AIPATHNODE_PC *destination =
-            &packet->path_info.path
-                 ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
         if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
             return 1;
         }
@@ -1595,8 +1561,7 @@ extern "C" {
                     packet->path_connection_state = 1;
                     // Fall through.
                 case 1:
-                    if (ObjInTube(object) != 0 &&
-                        !(object->collision_min.y > object->attached_tube_pc->top && object->velocity.y > 0.0f)) {
+                    if (ObjInTube(object) != 0 && !(object->collision_min.y > object->attached_tube_pc->top && object->velocity.y > 0.0f)) {
                         break;
                     }
                     packet->path_connection_state = 2;
@@ -1622,9 +1587,7 @@ extern "C" {
         if ((owner->character_data->game_character->flags_090 & 0x40) != 0) {
             participant = owner->takeover_source;
             if (participant != NULL) {
-                destination =
-                    &packet->path_info.path
-                         ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+                destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
                 ReleaseTakeOver(participant, 1);
                 StartBigJump(participant, &destination->position, 0, 0.5f, 1.0f, 0);
                 SetSpecialMove(participant, destination, NULL, 3);
@@ -1636,17 +1599,17 @@ extern "C" {
 
 #pragma data_seg(".data$batman_prepareforspecialmove")
     BATMAN_PREPARE_PC batman_prepareforspecialmove[11] = {
-        {4, Batman_PrepareJump},
-        {0x23, Batman_PrepareJump},
-        {8, Batman_PrepareGrapple},
-        {0x20000000, Batman_PrepareObstacle},
-        {0x10, Batman_PrepareSpecialUsePc},
-        {0x40, Batman_PrepareHoverTube},
-        {0x1000, Batman_PrepareBigJump},
-        {0x8000, Batman_PrepareTakeOverJump},
-        {0xc0000, Batman_PrepareGlidePc},
-        {0x300000, Batman_PrepareClimb},
-        {0, NULL},
+        {4,          Batman_PrepareJump        },
+        {0x23,       Batman_PrepareJump        },
+        {8,          Batman_PrepareGrapple     },
+        {0x20000000, Batman_PrepareObstacle    },
+        {0x10,       Batman_PrepareSpecialUsePc},
+        {0x40,       Batman_PrepareHoverTube   },
+        {0x1000,     Batman_PrepareBigJump     },
+        {0x8000,     Batman_PrepareTakeOverJump},
+        {0xc0000,    Batman_PrepareGlidePc     },
+        {0x300000,   Batman_PrepareClimb       },
+        {0,          NULL                      },
     };
 #pragma data_seg()
 
@@ -1659,16 +1622,14 @@ extern "C" {
         }
         if (packet->path_info.connection->traversal_flags[packet->path_info.direction] != 0 &&
             (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x40000000) == 0) {
-            capabilities =
-                packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
+            capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
             if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x8000) != 0 &&
                 (owner->character_data->game_character->flags_090 & 0x40) == 0 && owner->takeover_target == NULL &&
                 owner->character_context != 0x3c && (capabilities & 0xffff7fff) == 0) {
                 AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, "TakeOverJump");
                 return 1;
             }
-            if (capabilities != 0 &&
-                (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x98000000) == 0) {
+            if (capabilities != 0 && (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x98000000) == 0) {
                 for (entry = batman_prepareforspecialmove; entry->prepare != NULL; ++entry) {
                     if ((entry->capabilities & capabilities) != 0) {
                         if (entry->prepare(packet, apiobject, checks) != 0) {
@@ -1687,19 +1648,15 @@ extern "C" {
         if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f &&
             (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0xd8000000) == 0) {
             TryToTeleportToNextNode(
-                owner,
-                &packet->path_info.path
-                     ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]],
-                0);
+                owner, &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]], 0);
         }
         return 0;
     }
 
 #pragma data_seg(".data$batman_midspecialmovefns")
     AI_MID_SPECIAL_MOVE_PC batman_midspecialmovefns[8] = {
-        Batman_MidSpecialMove_Default,     Batman_MidSpecialMove_StartJump, Batman_MidSpecialMove_SpecialUsePc,
-        Batman_MidSpecialMove_BigJump,     Batman_MidSpecialMove_GlidePc,   Batman_MidSpecialMove_ClimbUpPc,
-        Batman_MidSpecialMove_ClimbDownPc, Batman_MidSpecialMove_Grapple,
+        Batman_MidSpecialMove_Default, Batman_MidSpecialMove_StartJump, Batman_MidSpecialMove_SpecialUsePc, Batman_MidSpecialMove_BigJump,
+        Batman_MidSpecialMove_GlidePc, Batman_MidSpecialMove_ClimbUpPc, Batman_MidSpecialMove_ClimbDownPc,  Batman_MidSpecialMove_Grapple,
     };
 #pragma data_seg()
 
@@ -1749,8 +1706,7 @@ extern "C" {
                 object->ai_packet.capabilities |= 0x80000;
             }
         }
-        if (model->action_animations[0x8a] != NULL && model->action_animations[0x8b] != NULL &&
-            model->action_animations[0x8c] != NULL) {
+        if (model->action_animations[0x8a] != NULL && model->action_animations[0x8b] != NULL && model->action_animations[0x8c] != NULL) {
             object->ai_packet.capabilities |= 0x400000;
         }
         if (model->action_animations[0xcd] != NULL) {

@@ -15,32 +15,26 @@ void NuRndrSetDebBox(NUVEC *range) {
         debris_box_camera_cache = global_camera.mtx;
     }
     size = *range;
-    minimum.x =
-        (f32)(((debris_box_corners[0].x * ((f64)size.x * debris_box_camera_cache.m00) + debris_box_camera_cache.m30) +
-               debris_box_corners[0].y * ((f64)size.y * debris_box_camera_cache.m10)) +
-              debris_box_corners[0].z * ((f64)size.z * debris_box_camera_cache.m20));
+    minimum.x = (f32)(((debris_box_corners[0].x * ((f64)size.x * debris_box_camera_cache.m00) + debris_box_camera_cache.m30) +
+                       debris_box_corners[0].y * ((f64)size.y * debris_box_camera_cache.m10)) +
+                      debris_box_corners[0].z * ((f64)size.z * debris_box_camera_cache.m20));
     maximum.x = minimum.x;
-    minimum.y =
-        (f32)(((debris_box_corners[0].x * ((f64)size.x * debris_box_camera_cache.m01) + debris_box_camera_cache.m31) +
-               debris_box_corners[0].y * ((f64)size.y * debris_box_camera_cache.m11)) +
-              debris_box_corners[0].z * ((f64)size.z * debris_box_camera_cache.m21));
+    minimum.y = (f32)(((debris_box_corners[0].x * ((f64)size.x * debris_box_camera_cache.m01) + debris_box_camera_cache.m31) +
+                       debris_box_corners[0].y * ((f64)size.y * debris_box_camera_cache.m11)) +
+                      debris_box_corners[0].z * ((f64)size.z * debris_box_camera_cache.m21));
     maximum.y = minimum.y;
-    minimum.z =
-        (f32)(((debris_box_corners[0].x * ((f64)size.x * debris_box_camera_cache.m02) + debris_box_camera_cache.m32) +
-               debris_box_corners[0].y * ((f64)size.y * debris_box_camera_cache.m12)) +
-              debris_box_corners[0].z * ((f64)size.z * debris_box_camera_cache.m22));
+    minimum.z = (f32)(((debris_box_corners[0].x * ((f64)size.x * debris_box_camera_cache.m02) + debris_box_camera_cache.m32) +
+                       debris_box_corners[0].y * ((f64)size.y * debris_box_camera_cache.m12)) +
+                      debris_box_corners[0].z * ((f64)size.z * debris_box_camera_cache.m22));
     maximum.z = minimum.z;
     for (i = 1; i < 8; ++i) {
-        corners[i].x = (f32)(((debris_box_corners[i].x * ((f64)size.x * debris_box_camera_cache.m00) +
-                               debris_box_camera_cache.m30) +
+        corners[i].x = (f32)(((debris_box_corners[i].x * ((f64)size.x * debris_box_camera_cache.m00) + debris_box_camera_cache.m30) +
                               debris_box_corners[i].y * ((f64)size.y * debris_box_camera_cache.m10)) +
                              debris_box_corners[i].z * ((f64)size.z * debris_box_camera_cache.m20));
-        corners[i].y = (f32)(((debris_box_corners[i].x * ((f64)size.x * debris_box_camera_cache.m01) +
-                               debris_box_camera_cache.m31) +
+        corners[i].y = (f32)(((debris_box_corners[i].x * ((f64)size.x * debris_box_camera_cache.m01) + debris_box_camera_cache.m31) +
                               debris_box_corners[i].y * ((f64)size.y * debris_box_camera_cache.m11)) +
                              debris_box_corners[i].z * ((f64)size.z * debris_box_camera_cache.m21));
-        corners[i].z = (f32)(((debris_box_corners[i].x * ((f64)size.x * debris_box_camera_cache.m02) +
-                               debris_box_camera_cache.m32) +
+        corners[i].z = (f32)(((debris_box_corners[i].x * ((f64)size.x * debris_box_camera_cache.m02) + debris_box_camera_cache.m32) +
                               debris_box_corners[i].y * ((f64)size.y * debris_box_camera_cache.m12)) +
                              debris_box_corners[i].z * ((f64)size.z * debris_box_camera_cache.m22));
         if (corners[i].x < minimum.x) {

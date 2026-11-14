@@ -77,8 +77,7 @@ extern "C" {
             if (in_level_config) {
                 if (NuStrICmp(parser->word_buffer_ptr, "level_end") == 0) {
                     in_level_config = 0;
-                    if (current_level->dir[0] == '\0' || current_level->name[0] == '\0' ||
-                        (current_level->flags & 0x200) != 0) {
+                    if (current_level->dir[0] == '\0' || current_level->name[0] == '\0' || (current_level->flags & 0x200) != 0) {
                         continue;
                     }
 
@@ -652,8 +651,7 @@ extern "C" {
                 name[0] = '\0';
                 if (Mission_Active(NULL) != NULL) {
                     NuStrCpy(name, "bounty_start");
-                } else if (world->area_index != -1 && (ADataList[world->area_index].flags & 0x40) &&
-                           RenderHubFromCutscenePlayerPc != 0) {
+                } else if (world->area_index != -1 && (ADataList[world->area_index].flags & 0x40) && RenderHubFromCutscenePlayerPc != 0) {
                     NuStrCpy(name, "shop_start");
                 }
                 if (name[0] != '\0') {
@@ -679,8 +677,7 @@ extern "C" {
     i32 LEVOBJREF_FIRSTREFOBJ = -1;
     i32 LEVOBJREF_LASTREFOBJ = -1;
 
-    void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *table, VARIPTR *buffer, VARIPTR *buffer_end, i32 maximum,
-                                  i32 name_table_size) {
+    void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *table, VARIPTR *buffer, VARIPTR *buffer_end, i32 maximum, i32 name_table_size) {
         i32 reflection_range;
         i32 object_range;
         LEVOBJREF_FIRSTOBJ = -1;
@@ -779,8 +776,7 @@ extern "C" {
                     i32 character;
                     for (character = 0; !found && character < CHARCOUNT; ++character) {
                         scene = IconScene_FindById(character);
-                        if (scene != NULL && NuSpecialFind(scene, &world->level_objects[index].special,
-                                                           ObjTabList[index].name, 1) != 0) {
+                        if (scene != NULL && NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1) != 0) {
                             found = 1;
                         }
                     }
@@ -808,8 +804,7 @@ extern "C" {
             if (scene == NULL) {
                 continue;
             }
-            if (NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1) == 0 &&
-                area_override != 0) {
+            if (NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1) == 0 && area_override != 0) {
                 NuSpecialFind(things_scene, &world->level_objects[index].special, ObjTabList[index].name, 1);
             }
         resolved:
@@ -840,11 +835,10 @@ extern "C" {
         }
         for (index = 0; index < LEVELOBJECTCOUNT; ++index) {
             ((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].platform_id = -1;
-            if (world->terrain != NULL &&
-                NuSpecialExistsFn(&((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].special) &&
+            if (world->terrain != NULL && NuSpecialExistsFn(&((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].special) &&
                 ObjTabList[index].kind == 1) {
-                ((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].platform_id = (i16)FindPlatInst(
-                    NuSpecialGetInstanceix(&((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].special));
+                ((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].platform_id =
+                    (i16)FindPlatInst(NuSpecialGetInstanceix(&((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].special));
             }
         }
     }
@@ -915,8 +909,7 @@ extern "C" {
         if (update != NULL) {
             update(world);
         }
-        if (DoubleScoreTime > 0.0f &&
-            (i32)((f64)GameTimer.time_elapsed * 2.0) != (i32)((f64)GameTimer.last_time_elapsed * 2.0)) {
+        if (DoubleScoreTime > 0.0f && (i32)((f64)GameTimer.time_elapsed * 2.0) != (i32)((f64)GameTimer.last_time_elapsed * 2.0)) {
             GameAudio_PlaySfxAndSetVolume(0x35, NULL, DoubleScoreTime);
         }
         if (AreaGlobals_PC.field_00 == 0 && Cheats_CheckFlags(0x2000) != 0) {
@@ -973,8 +966,8 @@ extern "C" {
             ResetBits |= 0x17;
             reset_restart = 1;
             LevelCompletionFallbackFlagPC = 1;
-            GizmoTypeStoreProgress((GIZMOSYS_PC *)WORLD->gizmo_sys, WORLD, WORLD->current_level->area_level_index,
-                                   gizmopickup_typeid, NULL);
+            GizmoTypeStoreProgress((GIZMOSYS_PC *)WORLD->gizmo_sys, WORLD, WORLD->current_level->area_level_index, gizmopickup_typeid,
+                                   NULL);
         }
     }
 

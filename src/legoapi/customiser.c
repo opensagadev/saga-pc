@@ -189,8 +189,7 @@ i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, 
             if (category != 2) {
                 WORLDINFO *world = WorldInfo_CurrentlyActive();
                 if (world != NULL && HUB_ADATA != NULL && world->area == HUB_ADATA) {
-                    CUSTOM_ACCESSORY_RESOURCE_PC *resources =
-                        (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
+                    CUSTOM_ACCESSORY_RESOURCE_PC *resources = (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
                     if (resources == NULL) {
                         continue;
                     }
@@ -203,8 +202,7 @@ i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, 
                     }
                 }
             }
-            if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 ||
-                 Game_100PercentComplete() != 0) &&
+            if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 || Game_100PercentComplete() != 0) &&
                 customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][index]) != 0) {
                 break;
             }
@@ -228,8 +226,7 @@ i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count,
         if (category != 2) {
             WORLDINFO *world = WorldInfo_CurrentlyActive();
             if (world != NULL && HUB_ADATA != NULL && world->area == HUB_ADATA) {
-                CUSTOM_ACCESSORY_RESOURCE_PC *resources =
-                    (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
+                CUSTOM_ACCESSORY_RESOURCE_PC *resources = (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
                 if (resources == NULL) {
                     continue;
                 }
@@ -242,8 +239,7 @@ i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count,
                 }
             }
         }
-        if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 ||
-             Game_100PercentComplete() != 0) &&
+        if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 || Game_100PercentComplete() != 0) &&
             customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][index]) != 0) {
             break;
         }
@@ -282,9 +278,7 @@ void Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTERMODELLI
                 continue;
             }
             resource->character_model = model;
-            piece_index =
-                customiser->save
-                    ->pieces[side * (offsetof(CUSTOM_SAVE_CONFIG_PC, secondary_pieces) / sizeof(u16)) + category];
+            piece_index = customiser->save->pieces[side * (offsetof(CUSTOM_SAVE_CONFIG_PC, secondary_pieces) / sizeof(u16)) + category];
             NuStrCpy(piece_name, customiser->piece_sets[category][piece_index].name);
             NuStrCpy(path, "chars\\weirdo\\");
             NuStrCat(path, customiser->categories[category]->name);
@@ -305,21 +299,17 @@ void Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTERMODELLI
                 if (resource->texture_id == 0) {
                     continue;
                 }
-                for (material_index = 0;
-                     material_index < ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->material_count;
+                for (material_index = 0; material_index < ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->material_count;
                      ++material_index) {
                     NUMTL *material = ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material_index];
-                    if (((CUSTOM_ACCESSORY_MATERIAL_PC *)material)->material_tag !=
-                        customiser->categories[category]->material_tag) {
+                    if (((CUSTOM_ACCESSORY_MATERIAL_PC *)material)->material_tag != customiser->categories[category]->material_tag) {
                         continue;
                     }
                     resource->material_index = material_index;
                     resource->original_texture_id =
-                        ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)
-                             ->materials[material_index])
+                        ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material_index])
                             ->texture_id;
-                    ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)
-                         ->materials[material_index])
+                    ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material_index])
                         ->texture_id = (i16)resource->texture_id;
                     NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material_index]);
                 }
@@ -347,8 +337,7 @@ void CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *input, GAMEOBJECT *object
             continue;
         }
         if (category == 0) {
-            pieces =
-                customiser->save->pieces + side * (offsetof(CUSTOM_SAVE_CONFIG_PC, secondary_pieces) / sizeof(u16));
+            pieces = customiser->save->pieces + side * (offsetof(CUSTOM_SAVE_CONFIG_PC, secondary_pieces) / sizeof(u16));
             if ((customiser->piece_sets[0][pieces[0]].availability_flags & 0x20) != 0 ||
                 (customiser->piece_sets[1][pieces[1]].availability_flags & 1) != 0 || object->helmet != 0) {
                 continue;
@@ -363,9 +352,8 @@ void CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *input, GAMEOBJECT *object
             matrix = object->locator_matrices[joint];
         }
         NuSpecialDrawAt(&resource->special, &matrix);
-        if ((u8)object->field_107c != 0 &&
-            MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
-                             WORLD->current_level->reflection_y, &reflection) != 0) {
+        if ((u8)object->field_107c != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                                            WORLD->current_level->reflection_y, &reflection) != 0) {
             NuRndrStartReflectionRender(0);
             NuSpecialDrawAt(&resource->special, &reflection);
             NuRndrEndReflectionRender();
@@ -373,8 +361,7 @@ void CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *input, GAMEOBJECT *object
     }
 }
 
-void Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAMEOBJECT *object, i32 animation, i32 mode,
-                                   f32 scale) {
+void Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAMEOBJECT *object, i32 animation, i32 mode, f32 scale) {
     KILLPARTS_CUSTOMISER *accessories;
     i32 side;
     KILLPARTS_ACCESSORY_PC *resource;
@@ -394,9 +381,8 @@ void Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAMEOBJECT 
         if (category == 2) {
             continue;
         }
-        if (category == 0 &&
-            ((accessories->helmet_pieces[((u16)(accessories->save[side].pieces[1]))].layer_flags & 1) != 0 ||
-             (accessories->head_pieces[((u16)(accessories->save[side].pieces[0]))].layer_flags & 0x20) != 0)) {
+        if (category == 0 && ((accessories->helmet_pieces[((u16)(accessories->save[side].pieces[1]))].layer_flags & 1) != 0 ||
+                              (accessories->head_pieces[((u16)(accessories->save[side].pieces[0]))].layer_flags & 0x20) != 0)) {
             continue;
         }
         special = &resource->special;
@@ -415,8 +401,8 @@ void Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAMEOBJECT 
         params.matrix = &object->locator_matrices[joint];
         params.velocity = &momentum;
         params.special = special;
-        params.lighting_data = Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc))
-                                                    : &((KILLPARTS_OBJECT_LIGHT *)object)->lighting;
+        params.lighting_data =
+            Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc)) : &((KILLPARTS_OBJECT_LIGHT *)object)->lighting;
         params.time_step = FRAMETIME;
         params.flags = mode == 0 ? 0x480 : 0x90;
         params.stop_fn = PartStop_Flickerer;
@@ -451,8 +437,7 @@ void Customiser_DumpAccessories(void *input) {
                 ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)resource->character_model->hierarchy)
                      ->materials[material_index])
                     ->texture_id = (i16)resource->original_texture_id;
-                NuMtlUpdate(
-                    ((CUSTOM_ACCESSORY_HIERARCHY_PC *)resource->character_model->hierarchy)->materials[material_index]);
+                NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY_PC *)resource->character_model->hierarchy)->materials[material_index]);
 
                 NuTexDestroy(resource->texture_id);
             }
@@ -479,16 +464,13 @@ void Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
     for (category = 0; category < 9; ++category) {
         if (customiser->piece_counts[category] > 0 && customiser->categories[category]->name != NULL) {
             world->customiser_resources[category] = world->giz_buffer.void_ptr;
-            memset(world->giz_buffer.void_ptr, 0,
-                   customiser->piece_counts[category] * sizeof(CUSTOM_ACCESSORY_RESOURCE_PC));
+            memset(world->giz_buffer.void_ptr, 0, customiser->piece_counts[category] * sizeof(CUSTOM_ACCESSORY_RESOURCE_PC));
             world->giz_buffer.addr += customiser->piece_counts[category] * sizeof(CUSTOM_ACCESSORY_RESOURCE_PC);
         } else {
             world->customiser_resources[category] = NULL;
         }
     }
-    texture_pack = CHARPAK != 0
-                       ? NuFilePakLoad("chars\\weirdo\\all_textures.fpk", &world->giz_buffer, world->buffer_end, 0x20)
-                       : NULL;
+    texture_pack = CHARPAK != 0 ? NuFilePakLoad("chars\\weirdo\\all_textures.fpk", &world->giz_buffer, world->buffer_end, 0x20) : NULL;
     for (category = 0; category < 9; ++category) {
         CUSTOM_ACCESSORY_RESOURCE_PC *resources = (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
         world->customiser_shared_scenes[category] = NULL;
@@ -601,11 +583,9 @@ void Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS_PC *mode
             continue;
         }
         for (category = 0; category < 9; ++category) {
-            for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->material_count;
-                 ++material) {
+            for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->material_count; ++material) {
                 NUMTL *entry = ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material];
-                if (((CUSTOM_ACCESSORY_MATERIAL_PC *)entry)->material_tag ==
-                    customiser->categories[category]->material_tag) {
+                if (((CUSTOM_ACCESSORY_MATERIAL_PC *)entry)->material_tag == customiser->categories[category]->material_tag) {
                     textures->model_texture_ids[side * 9 + category] = entry->texture_id;
                 }
             }
@@ -631,14 +611,11 @@ void Customiser_RestoreModelTextureIDs(void *input) {
             if (textures->model_texture_ids[side * 9 + category] == 0) {
                 continue;
             }
-            for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->material_count;
-                 ++material) {
+            for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->material_count; ++material) {
                 NUMTL *entry = ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material];
-                if (((CUSTOM_ACCESSORY_MATERIAL_PC *)entry)->material_tag ==
-                    customiser->categories[category]->material_tag) {
-                    ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)
-                         ->materials[material])
-                        ->texture_id = (i16)textures->model_texture_ids[side * 9 + category];
+                if (((CUSTOM_ACCESSORY_MATERIAL_PC *)entry)->material_tag == customiser->categories[category]->material_tag) {
+                    ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material])->texture_id =
+                        (i16)textures->model_texture_ids[side * 9 + category];
                     NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material]);
                 }
             }
@@ -752,20 +729,21 @@ i32 Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_input, i32 
 }
 
 static CUSTOM_CATEGORY_CONFIG_PC CustomiserSetDataPrivatePc[9] = {
-    {"hat_hair", 1, -1, {1, 0}, "chars\\weirdo\\all\\hat_hair_all.gsc"},
-    {"head", 1, -1, {0, 0}, "chars\\weirdo\\all\\head_all.gsc"},
-    {NULL, 0, -1, {0, 0}, NULL},
-    {"arm", 0, 2, {1, 0}, NULL},
-    {"hand", 0, 4, {0, 0}, NULL},
-    {"cape", 0, 3, {2, 0}, NULL},
-    {"body", 0, 1, {3, 0}, NULL},
-    {"under_pants", 0, 6, {1, 0}, NULL},
-    {"leg", 0, 5, {2, 0}, NULL}};
+    {"hat_hair",    1, -1, {1, 0}, "chars\\weirdo\\all\\hat_hair_all.gsc"},
+    {"head",        1, -1, {0, 0}, "chars\\weirdo\\all\\head_all.gsc"    },
+    {NULL,          0, -1, {0, 0}, NULL                                  },
+    {"arm",         0, 2,  {1, 0}, NULL                                  },
+    {"hand",        0, 4,  {0, 0}, NULL                                  },
+    {"cape",        0, 3,  {2, 0}, NULL                                  },
+    {"body",        0, 1,  {3, 0}, NULL                                  },
+    {"under_pants", 0, 6,  {1, 0}, NULL                                  },
+    {"leg",         0, 5,  {2, 0}, NULL                                  }
+};
 
-CUSTOMISER_LAYERS_PC *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR *buffer_end, i32 first_character,
-                                           i32 second_character, i32 (*available)(CUSTOMPIECE_LAYERS_PC *),
-                                           void (*configure_piece)(CUSTOMPIECE_LAYERS_PC *, NUFPAR_PC *),
-                                           i32 (*weapon_from_name)(char *), void *save_input, i16 *animations) {
+CUSTOMISER_LAYERS_PC *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR *buffer_end, i32 first_character, i32 second_character,
+                                           i32 (*available)(CUSTOMPIECE_LAYERS_PC *),
+                                           void (*configure_piece)(CUSTOMPIECE_LAYERS_PC *, NUFPAR_PC *), i32 (*weapon_from_name)(char *),
+                                           void *save_input, i16 *animations) {
     NUFPAR_PC *parser;
     CUSTOMISER_CONFIG_PC *customiser;
     CUSTOM_SAVE_CONFIG_PC *save = save_input;

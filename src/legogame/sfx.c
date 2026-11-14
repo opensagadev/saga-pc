@@ -47,8 +47,7 @@ i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
             }
         }
     }
-    if (world->current_level == JABBASPALACEA_LDATA &&
-        (object->jump_animation_state == 0x18 || object->jump_animation_state == 9)) {
+    if (world->current_level == JABBASPALACEA_LDATA && (object->jump_animation_state == 0x18 || object->jump_animation_state == 9)) {
         return GetSfxId("fs_ice");
     }
     if ((area == DEATHSTARRESCUE_ADATA || area == DEATHSTARESCAPE_ADATA || WORLD->area == JABBASPALACE_ADATA) &&
@@ -373,9 +372,8 @@ void SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("Dianoga_Roar");
         } else if (level == DEATHSTARESCAPEB_LDATA) {
             ADD_SFX("SqueakWash");
-        } else if (level == DEATHSTARESCAPEC_LDATA || level == DEATHSTARBATTLEA_LDATA ||
-                   level == DEATHSTARBATTLEB_LDATA || level == DEATHSTARBATTLEC_LDATA ||
-                   level == DEATHSTARBATTLED_LDATA) {
+        } else if (level == DEATHSTARESCAPEC_LDATA || level == DEATHSTARBATTLEA_LDATA || level == DEATHSTARBATTLEB_LDATA ||
+                   level == DEATHSTARBATTLEC_LDATA || level == DEATHSTARBATTLED_LDATA) {
             ADD_SFX("FField");
             ADD_SFX("FFieldOff");
         } else if (level == HOTHESCAPEA_LDATA) {

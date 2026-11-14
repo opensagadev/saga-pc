@@ -161,8 +161,7 @@ i32 GizmoObstacle_ActivateRev(GIZMO_PC *gizmo, i32 activate, i32 flags) {
         obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | 1;
     }
     if (flags & 1) {
-        if (activate == ((obstacle->progress_flags >> 8) & 1) &&
-            (!(flags & 4) || ((obstacle->progress_flags >> 1) & 1) != activate)) {
+        if (activate == ((obstacle->progress_flags >> 8) & 1) && (!(flags & 4) || ((obstacle->progress_flags >> 1) & 1) != activate)) {
             return 0;
         }
         if (activate == 1 && ai_active) {
@@ -303,13 +302,11 @@ void *GizObstacles_ReserveBufferSpace(void *world_ptr) {
     system = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
     system->capacity = world->current_level->max_obstacles;
     system->obstacles = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * 0xa0);
-    system->active_gizmos =
-        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(*system->active_gizmos));
-    system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 4,
-                                                     (u16)world->current_level->max_obstacle_objects);
+    system->active_gizmos = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(*system->active_gizmos));
+    system->anim_pool =
+        GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 4, (u16)world->current_level->max_obstacle_objects);
     for (i = 0; i < system->capacity; ++i) {
-        system->obstacles[i].anim_set =
-            GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_pool, world->game_anim_sys);
+        system->obstacles[i].anim_set = GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_pool, world->game_anim_sys);
     }
     world->giz_obstacle_sys = system;
     return system;
@@ -358,8 +355,7 @@ i32 GizObstacles_Load(void *world_ptr, void *data) {
             } else {
                 obstacle->trigger_mode = 0xff;
             }
-            GizmoFileReadGameAnimSet(obstacle->anim_set, world, Gizobstacle_ReadAnimSetData, version, "GizObstacle",
-                                     obstacle->name);
+            GizmoFileReadGameAnimSet(obstacle->anim_set, world, Gizobstacle_ReadAnimSetData, version, "GizObstacle", obstacle->name);
             if (version >= 4) {
                 obstacle->forward_speed_factor = EdFileReadFloat();
             } else {
@@ -438,8 +434,7 @@ void GizObstacles_PostLoad(void *world, void *data) {
 static void GizObstacle_EvalAveragePosAndRadius(GIZOBSTACLE *obstacle, i32 state) {
     obstacle->evaluated_position = obstacle->position;
     obstacle->evaluated_radius = 1.0f;
-    GameAnimSet_GetCentreAndRadius(obstacle->anim_set, &obstacle->evaluated_position, &obstacle->evaluated_radius,
-                                   state, 1, 1);
+    GameAnimSet_GetCentreAndRadius(obstacle->anim_set, &obstacle->evaluated_position, &obstacle->evaluated_radius, state, 1, 1);
 }
 
 static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle) {
@@ -486,12 +481,10 @@ void GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr) {
             u32 bit = 1u << (i & 31);
             ((OBSTACLE_PROGRESS_FLAGS_PC *)&obstacle->progress_flags)->visible = (progress->visible[word] & bit) != 0;
             ((OBSTACLE_PROGRESS_FLAGS_PC *)&obstacle->progress_flags)->active = (progress->enabled[word] & bit) != 0;
-            ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->pickups_spawned =
-                (progress->pickups_spawned[word] & bit) != 0;
+            ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->pickups_spawned = (progress->pickups_spawned[word] & bit) != 0;
             ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->ai_active = (progress->ai_active[word] & bit) != 0;
             ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->blocked = (progress->blocked[word] & bit) != 0;
-            ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->trigger_latched =
-                (progress->trigger_latched[word] & bit) != 0;
+            ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->trigger_latched = (progress->trigger_latched[word] & bit) != 0;
             ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->destroyed = (progress->destroyed[word] & bit) != 0;
         }
     }
@@ -542,8 +535,7 @@ static i32 GizObstacle_PosWithinBox(GIZOBSTACLE *obstacle, NUVEC *position) {
 static i32 GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GAMEOBJECT *object) {
     GAMEANIMOBJ *anim_object;
     if ((i8)obstacle->trigger_mode >= 0) {
-        if ((!object->field_281 && !(object->flags_ef4 & 0x20000000)) ||
-            object->jump_animation_state != obstacle->trigger_mode) {
+        if ((!object->field_281 && !(object->flags_ef4 & 0x20000000)) || object->jump_animation_state != obstacle->trigger_mode) {
             return 0;
         }
     } else if (obstacle->config_flags & 0x10) {
@@ -552,8 +544,7 @@ static i32 GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GAMEOBJECT
         }
         if (object->supporting_platform_id >= 0 && obstacle->anim_set && (obstacle->runtime_flags & 0x10)) {
             for (anim_object = obstacle->anim_set->objects; anim_object; anim_object = anim_object->next) {
-                if (((GIZOBSTACLE_OBJECT_DATA_PC *)anim_object->object_data)->platform_id ==
-                    object->supporting_platform_id) {
+                if (((GIZOBSTACLE_OBJECT_DATA_PC *)anim_object->object_data)->platform_id == object->supporting_platform_id) {
                     return 1;
                 }
             }
@@ -596,8 +587,8 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         for (i = 0, object = Obj; i < HIGHGAMEOBJECT; ++i, ++object) {
             i8 player;
             if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead ||
-                (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED) ||
-                !(object->flags_1044 & 1) || (object->flags_e20 & 0x20)) {
+                (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED) || !(object->flags_1044 & 1) ||
+                (object->flags_e20 & 0x20)) {
                 continue;
             }
             player = (i8)object->field_280;
@@ -608,15 +599,14 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                 continue;
             }
             if (((obstacle->config_flags & 0x20) && !(object->flags_1fc_word & 0x80)) ||
-                (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) ||
-                ((obstacle->config_flags & 0x400) && !object->rider) ||
+                (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) || ((obstacle->config_flags & 0x400) && !object->rider) ||
                 ((obstacle->config_flags & 0x4000) && !(object->character_data->model_flags & 4)) ||
                 ((obstacle->config_flags & 8) && !(object->character_data->model_flags & 0x2000)) ||
                 (GizObstacleExcludeFnPc && GizObstacleExcludeFnPc(obstacle, object))) {
                 continue;
             }
-            if ((obstacle->mode == 2 || obstacle->mode == 6) && !object->field_281 &&
-                !(object->flags_ef4 & 0x20000000) && object->jump_variant_state != 1) {
+            if ((obstacle->mode == 2 || obstacle->mode == 6) && !object->field_281 && !(object->flags_ef4 & 0x20000000) &&
+                object->jump_variant_state != 1) {
                 GAMEANIMOBJ *anim_object = obstacle->anim_set ? obstacle->anim_set->objects : NULL;
                 while (anim_object) {
                     i16 platform = ((GIZOBSTACLE_OBJECT_DATA_PC *)anim_object->object_data)->platform_id;
@@ -658,8 +648,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         }
     }
     state = obstacle->anim_set->state;
-    if (state != 0 && state != 2 &&
-        !(WORLD->current_level == ObstacleReturnLevelPc && obstacle == LevGizObst[0] && state == 4)) {
+    if (state != 0 && state != 2 && !(WORLD->current_level == ObstacleReturnLevelPc && obstacle == LevGizObst[0] && state == 4)) {
         return;
     }
     if (state == 2 && !obstacle->playback_state) {
@@ -769,12 +758,10 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
                 }
             }
             if (obstacle->animation_speed < 0.0f) {
-                if (obstacle->stop_sfx_id != -1 &&
-                    (obstacle->anim_set->state == 2 || IsSfxLooping(obstacle->stop_sfx_id))) {
+                if (obstacle->stop_sfx_id != -1 && (obstacle->anim_set->state == 2 || IsSfxLooping(obstacle->stop_sfx_id))) {
                     GameAudio_PlaySfxById(obstacle->stop_sfx_id, &obstacle->evaluated_position, 0, 0);
                 }
-            } else if (obstacle->start_sfx_id != -1 &&
-                       (!obstacle->anim_set->state || IsSfxLooping(obstacle->start_sfx_id))) {
+            } else if (obstacle->start_sfx_id != -1 && (!obstacle->anim_set->state || IsSfxLooping(obstacle->start_sfx_id))) {
                 GameAudio_PlaySfxById(obstacle->start_sfx_id, &obstacle->evaluated_position, 0, 0);
             }
         }
@@ -782,14 +769,12 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
             obstacle->runtime_flags &= ~0x40u;
         }
         if ((!obstacle->playback_state || obstacle->playback_state == 3 || (obstacle->config_flags & 0x80)) &&
-            ((obstacle->anim_set->flags & 2) || !obstacle->anim_set->animated_object_count) &&
-            obstacle->anim_set->state == 2) {
+            ((obstacle->anim_set->flags & 2) || !obstacle->anim_set->animated_object_count) && obstacle->anim_set->state == 2) {
             if (obstacle->blowup_type != -1 || obstacle->pickup_count) {
                 if (obstacle->blowup_type != -1) {
                     if (obstacle->config_flags & 0x200) {
                         GAMEANIMOBJ *object;
-                        for (object = obstacle->anim_set ? obstacle->anim_set->objects : NULL; object;
-                             object = object->next) {
+                        for (object = obstacle->anim_set ? obstacle->anim_set->objects : NULL; object; object = object->next) {
                             NUVEC *position = NuSpecialGetDrawPos(&object->special);
                             if (position) {
                                 GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, position);
@@ -807,8 +792,8 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
                     NuVecAdd(&position, &obstacle->evaluated_position, &obstacle->pickup_offset);
                     NuVecRotateX(&direction, &v010, (u16)obstacle->pickup_direction_x);
                     NuVecRotateY(&direction, &direction, (u16)obstacle->pickup_direction_y);
-                    AddPickups((u16)obstacle->pickup_count, 0, 0, 0, &position, &direction, 2.0f, -1,
-                               obstacle->pickup_scatter_height, 2000000.0f, NULL, 1, 0);
+                    AddPickups((u16)obstacle->pickup_count, 0, 0, 0, &position, &direction, 2.0f, -1, obstacle->pickup_scatter_height,
+                               2000000.0f, NULL, 1, 0);
                     obstacle->runtime_flags |= 1;
                 }
             }
@@ -837,8 +822,8 @@ void GizObstacles_AddTrigger(NUVEC *position) {
         GizObstacleTriggersPc[ngizobstacletriggers++] = position;
     } else {
         message_position = v001;
-        AddGameMessage("MAXGIZOBSTACLETRIGGERS needs increasing, ask a programmer!", &message_position, 0.4f, NULL,
-                       0.4f, 200, 200, 200, 0x2080, 0.0f);
+        AddGameMessage("MAXGIZOBSTACLETRIGGERS needs increasing, ask a programmer!", &message_position, 0.4f, NULL, 0.4f, 200, 200, 200,
+                       0x2080, 0.0f);
     }
 }
 
@@ -867,8 +852,8 @@ GIZOBSTACLE *GizObstacle_FindNearest(void *ptr, NUVEC *position, GAMEOBJECT *obj
         closest = 1.0e9f;
         for (i = 0, obstacle = system->obstacles; i < system->count; ++i, ++obstacle) {
             f32 distance;
-            if ((mode != -1 && obstacle->mode != mode) || !(obstacle->progress_flags & 2) ||
-                !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80)) {
+            if ((mode != -1 && obstacle->mode != mode) || !(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) ||
+                (obstacle->runtime_flags & 0x80)) {
                 continue;
             }
             if (object && obstacle->anim_set) {
@@ -930,9 +915,9 @@ i32 GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 pl
     return 1;
 }
 
-GIZMO_PC *GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_distance, NUVEC *result_position,
-                                         NUVEC *result_velocity, void *object_ptr, NUVEC *position, NUVEC *direction,
-                                         f32 radius, f32 range_squared, i32 directional, i32 planar, i32 bolt_id) {
+GIZMO_PC *GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_distance, NUVEC *result_position, NUVEC *result_velocity,
+                                         void *object_ptr, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared,
+                                         i32 directional, i32 planar, i32 bolt_id) {
     BOLTTYPE_PC *type = BoltType_FindByID(bolt_id, WORLD);
     u16 near_angle = TargetDeg_Near;
     u16 mid_angle = TargetDeg_Mid;
@@ -975,8 +960,7 @@ GIZMO_PC *GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_distance,
             f32 distance;
             f32 dot;
             u16 angle;
-            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) ||
-                (obstacle->runtime_flags & 0x80)) {
+            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80)) {
                 continue;
             }
             target = &obstacle->evaluated_position;
@@ -990,8 +974,7 @@ GIZMO_PC *GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_distance,
             }
             if (!directional) {
                 NuVecRotateY(&aim, &v001,
-                             NuAtan2D(obstacle->evaluated_position.x - position->x,
-                                      obstacle->evaluated_position.z - position->z));
+                             NuAtan2D(obstacle->evaluated_position.x - position->x, obstacle->evaluated_position.z - position->z));
             }
             if (type->flags_60 & 0x20000) {
                 delta.y = 0.0f;
@@ -1102,8 +1085,8 @@ static i32 GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bolt, u8 *
         for (i = 0; i < count; ++i) {
             GIZOBSTACLE *obstacle = system->active_gizmos[i]->object;
             GAMEANIMOBJ *object;
-            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) ||
-                !(obstacle->runtime_flags & 0x10) || (obstacle->runtime_flags & 0x80)) {
+            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || !(obstacle->runtime_flags & 0x10) ||
+                (obstacle->runtime_flags & 0x80)) {
                 continue;
             }
             for (object = obstacle->anim_set->objects; object; object = object->next) {
@@ -1128,8 +1111,8 @@ static i32 GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bolt, u8 *
     return 0;
 }
 
-static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUVEC *points, i32 point_count, f32 radius,
-                                NUVEC *minimum, NUVEC *maximum, BOLT_PC *bolt, u32 hit_type, u8 *hit_flags) {
+static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum,
+                                NUVEC *maximum, BOLT_PC *bolt, u32 hit_type, u8 *hit_flags) {
     GIZOBSTACLE_SYSTEM_PC *system = data;
     GAMEOBJECT *attacker = attacker_ptr;
     GIZOBSTACLE *nearest = NULL;
@@ -1141,8 +1124,7 @@ static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUV
             NUVEC *position;
             i32 point_index;
             f32 obstacle_radius;
-            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) ||
-                (obstacle->runtime_flags & 0x80)) {
+            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80)) {
                 continue;
             }
             // MATCH-EXCEPTION: the radius local feeds only the first bound; the original then loads the position
@@ -1268,8 +1250,7 @@ typedef struct bomb_generator_system_runtime_s { // size 0x14
     void *progress;                              // 0x10
 } BOMB_GENERATOR_SYSTEM_RUNTIME_PC;
 
-STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, flags) == 0xc &&
-              sizeof(((BOMB_GENERATOR_SYSTEM_RUNTIME_PC *)0)->flags) == 2);
+STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, flags) == 0xc && sizeof(((BOMB_GENERATOR_SYSTEM_RUNTIME_PC *)0)->flags) == 2);
 
 /* Studs the level's obstacles release (TotalLevelCoinTally). */
 u32 GizObstacles_TotalScore(WORLDINFO *world) {

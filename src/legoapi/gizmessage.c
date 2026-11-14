@@ -21,8 +21,7 @@ void ClearGizAIMessageSys(GIZAIMESSAGESYS *sys) {
     if (sys == NULL) {
         return;
     }
-    for (node = NuLinkedListGetHead(&sys->active_list); node != NULL;
-         node = NuLinkedListGetNext(&sys->active_list, node)) {
+    for (node = NuLinkedListGetHead(&sys->active_list); node != NULL; node = NuLinkedListGetNext(&sys->active_list, node)) {
         ((GIZAIMESSAGE *)node)->value = 0.0f;
     }
 }
@@ -45,8 +44,7 @@ GIZAIMESSAGE *CheckGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMES
                 sprintf(local, "%s%s", gizaimessage_prefix, name);
             }
 
-            for (node = NuLinkedListGetHead(&sys->active_list); node != NULL;
-                 node = NuLinkedListGetNext(&sys->active_list, node)) {
+            for (node = NuLinkedListGetHead(&sys->active_list); node != NULL; node = NuLinkedListGetNext(&sys->active_list, node)) {
                 if (NuStrNICmp(local, ((GIZAIMESSAGE *)node)->name, sizeof(local)) == 0) {
                     break;
                 }

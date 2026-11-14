@@ -181,8 +181,7 @@ void SecurityDoors_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     }
 }
 
-SECURITY_DOOR_RECORD_PC *SecurityDoor_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object,
-                                                  f32 *distance) {
+SECURITY_DOOR_RECORD_PC *SecurityDoor_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     SECURITY_DOOR_RECORD_PC *nearest = NULL;
     SECURITY_DOOR_RECORD_PC *door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
     f32 best = 1000000000.0f;
@@ -190,8 +189,7 @@ SECURITY_DOOR_RECORD_PC *SecurityDoor_FindNearest(WORLDINFO *world, NUVEC *posit
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         f32 candidate;
         if (object != NULL) {
-            if ((door->flags & 2) == 0 || (door->flags & 1) == 0 || (door->flags & 4) != 0 || door->state != 0 ||
-                door->opening != 0.0f) {
+            if ((door->flags & 2) == 0 || (door->flags & 1) == 0 || (door->flags & 4) != 0 || door->state != 0 || door->opening != 0.0f) {
                 continue;
             }
             candidate = NuVecDistSqr(position, &door->player_position, NULL);
@@ -219,10 +217,8 @@ void SecurityDoors_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
         return;
     }
     rotation = (u16)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
-    pulse =
-        (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] *
-            (f64)0.2f +
-        (f64)0.8f;
+    pulse = (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] * (f64)0.2f +
+            (f64)0.8f;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         NUMTX matrix;
         f32 distance;

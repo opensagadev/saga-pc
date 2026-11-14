@@ -134,22 +134,18 @@ void cbPtlInstanceSettingsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
         return;
     }
 
-    edptl_instancesettings_menu =
-        eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelInstanceSettingsMenu, "Instance Settings");
+    edptl_instancesettings_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelInstanceSettingsMenu, "Instance Settings");
     if (edptl_instancesettings_menu == NULL) {
         return;
     }
 
+    eduiMenuAddItem(edptl_instancesettings_menu, eduiItemSliderCreateInt(0, edblack, 0, cbPtlChangePriority, 0, 0xffff,
+                                                                         edpp_ptls[edpp_nearest].render_priority, "Base Priority"));
+    eduiMenuAddItem(edptl_instancesettings_menu, eduiItemToggleCreate(1, edblack, edpp_ptls[edpp_nearest].dynamic_priority, 1,
+                                                                      cbPtlToggleDynamicPriority, "Dynamic Priority"));
+    eduiMenuAddItem(edptl_instancesettings_menu, eduiItemSelCreate(1, edblack, 0, 0, edptlcbScaleEffectMenu, "Scale Effect..."));
     eduiMenuAddItem(edptl_instancesettings_menu,
-                    eduiItemSliderCreateInt(0, edblack, 0, cbPtlChangePriority, 0, 0xffff,
-                                            edpp_ptls[edpp_nearest].render_priority, "Base Priority"));
-    eduiMenuAddItem(edptl_instancesettings_menu,
-                    eduiItemToggleCreate(1, edblack, edpp_ptls[edpp_nearest].dynamic_priority, 1,
-                                         cbPtlToggleDynamicPriority, "Dynamic Priority"));
-    eduiMenuAddItem(edptl_instancesettings_menu,
-                    eduiItemSelCreate(1, edblack, 0, 0, edptlcbScaleEffectMenu, "Scale Effect..."));
-    eduiMenuAddItem(edptl_instancesettings_menu, eduiItemToggleCreate(0, edblack, edpp_ptls[edpp_nearest].facing_mode,
-                                                                      2, cbPtlSetFacing, "Facing Enabled"));
+                    eduiItemToggleCreate(0, edblack, edpp_ptls[edpp_nearest].facing_mode, 2, cbPtlSetFacing, "Facing Enabled"));
     eduiMenuAttach(parent, edptl_instancesettings_menu);
     edptl_instancesettings_menu->x = parent->x + 10;
     edptl_instancesettings_menu->y = parent->y + 40;
@@ -177,12 +173,10 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         if (item->data == 7) {
             effect->time_group = 2;
         }
-        if (item->data == 7 ||
-            debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->particle_type == 7) {
+        if (item->data == 7 || debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->particle_type == 7) {
             i32 index;
             for (index = 0; index < 512; ++index) {
-                if (edpp_ptls[index].effect_index == type && edpp_ptls[index].instance_id != -1 &&
-                    edpp_ptls[index].instance_id != 99999) {
+                if (edpp_ptls[index].effect_index == type && edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999) {
                     DebFreeInstantly(&edpp_ptls[index].instance_id);
                     edpp_ptls[index].instance_id = 99999;
                 }
@@ -194,22 +188,21 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
                     continue;
                 }
                 edpp_ptls[index].instance_id = -1;
-                AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[index].effect_index,
-                                edpp_ptls[index].position.x, edpp_ptls[index].position.y, edpp_ptls[index].position.z);
+                AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[index].effect_index, edpp_ptls[index].position.x,
+                                edpp_ptls[index].position.y, edpp_ptls[index].position.z);
                 if (edpp_ptls[index].instance_id != -1) {
                     debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
-                    DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z,
-                                      edpp_ptls[index].rotation_y);
+                    DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
                     DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z,
                                              edpp_ptls[index].emitter_rotation_y, edpp_ptls[index].emitter_rotation_x);
                     DebrisStartOffsetEx(&debkeydata[edpp_ptls[index].instance_id], edpp_ptls[index].start_offset);
-                    edppLoadDebrisSetTrigger(edpp_ptls[index].instance_id, edpp_ptls[index].switch_type,
-                                             edpp_ptls[index].switch_id, edpp_ptls[index].switch_variable);
+                    edppLoadDebrisSetTrigger(edpp_ptls[index].instance_id, edpp_ptls[index].switch_type, edpp_ptls[index].switch_id,
+                                             edpp_ptls[index].switch_variable);
                     DebrisReflectionOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].reflection_rotation_z,
-                                                edpp_ptls[index].reflection_rotation_y,
-                                                edpp_ptls[index].reflection_offset, edpp_ptls[index].reflection_bounce);
-                    DebrisSetFacing(edpp_ptls[index].instance_id, edpp_ptls[index].facing_mode,
-                                    edpp_ptls[index].facing_rotation_x, edpp_ptls[index].facing_rotation_y);
+                                                edpp_ptls[index].reflection_rotation_y, edpp_ptls[index].reflection_offset,
+                                                edpp_ptls[index].reflection_bounce);
+                    DebrisSetFacing(edpp_ptls[index].instance_id, edpp_ptls[index].facing_mode, edpp_ptls[index].facing_rotation_x,
+                                    edpp_ptls[index].facing_rotation_y);
                     edppLoadDebrisSetGroupID(edpp_ptls[index].instance_id, edpp_ptls[index].render_group);
                     DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenesPc[edpp_ptls[index].page]);
                 } else {
@@ -266,8 +259,7 @@ void cbPtlTextureSelectMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
             if (textureselectmenu == NULL) {
                 return;
             }
-            eduiMenuAddItem(textureselectmenu,
-                            eduiItemTexturePickCreate(0, colours, cbPtlChangeTextureSelect, "Texture Select"));
+            eduiMenuAddItem(textureselectmenu, eduiItemTexturePickCreate(0, colours, cbPtlChangeTextureSelect, "Texture Select"));
             texture = (edui_texture_pick_s *)edui_last_item;
             texture->material = NuMtlCreate(1);
             texture->material->texture_id = DebMat[1]->texture_id;
@@ -301,26 +293,22 @@ void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
         texturemenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelTextureMenu, "Texture");
         if (texturemenu) {
-            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(0, colours, effect->particle_type == 0, 1,
-                                                             cbPtlSelTextureType, "Addative"));
-            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(2, colours, effect->particle_type == 2, 1,
-                                                             cbPtlSelTextureType, "Modulative"));
-            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(3, colours, effect->particle_type == 3, 1,
-                                                             cbPtlSelTextureType, "Subtractive"));
+            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(0, colours, effect->particle_type == 0, 1, cbPtlSelTextureType, "Addative"));
+            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(2, colours, effect->particle_type == 2, 1, cbPtlSelTextureType, "Modulative"));
+            eduiMenuAddItem(texturemenu,
+                            eduiItemCheckCreate(3, colours, effect->particle_type == 3, 1, cbPtlSelTextureType, "Subtractive"));
             if (!(effect->generator_type == 0 || effect->generator_type == 8)) {
                 eduiMenuAddItem(texturemenu, eduiItemSelCreate(7, edgrey, 0, 0, NULL, "Glass"));
             } else {
-                eduiMenuAddItem(texturemenu, eduiItemCheckCreate(7, colours, effect->particle_type == 7, 1,
-                                                                 cbPtlSelTextureType, "Glass"));
+                eduiMenuAddItem(texturemenu, eduiItemCheckCreate(7, colours, effect->particle_type == 7, 1, cbPtlSelTextureType, "Glass"));
             }
             if (effect->particle_type == 7) {
                 eduiMenuAddItem(texturemenu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Texture Selector..."));
             } else {
-                eduiMenuAddItem(texturemenu,
-                                eduiItemSelCreate(1, colours, 0, 0, cbPtlTextureSelectMenu, "Texture Selector..."));
+                eduiMenuAddItem(texturemenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlTextureSelectMenu, "Texture Selector..."));
             }
-            eduiMenuAddItem(texturemenu, eduiItemToggleCreate(0, edblack, effect->camera_facing, 2, cbPtlSetXZFacing,
-                                                              "Default to XZ Plane"));
+            eduiMenuAddItem(texturemenu,
+                            eduiItemToggleCreate(0, edblack, effect->camera_facing, 2, cbPtlSetXZFacing, "Default to XZ Plane"));
             eduiMenuAttach(menu, texturemenu);
             texturemenu->x = menu->x + 10;
             texturemenu->y = menu->y + 40;
@@ -346,18 +334,15 @@ void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 
             used = 0;
             for (index = 0; index < 512; ++index) {
-                if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999 &&
-                    edpp_ptls[index].effect_index == type) {
+                if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999 && edpp_ptls[index].effect_index == type) {
                     used = 1;
                     break;
                 }
             }
             if (used) {
-                eduiMenuAddItem(edptl_quickdel_menu,
-                                eduiItemSelCreate(type, edblack, 0, 1, cbPtlQuickDeleteType, effect->name));
+                eduiMenuAddItem(edptl_quickdel_menu, eduiItemSelCreate(type, edblack, 0, 1, cbPtlQuickDeleteType, effect->name));
             } else {
-                eduiMenuAddItem(edptl_quickdel_menu,
-                                eduiItemSelCreate(type, eddarkred, 0, 1, cbPtlQuickDeleteType, effect->name));
+                eduiMenuAddItem(edptl_quickdel_menu, eduiItemSelCreate(type, eddarkred, 0, 1, cbPtlQuickDeleteType, effect->name));
             }
         }
         eduiMenuAttach(menu, edptl_quickdel_menu);
@@ -740,9 +725,8 @@ void cbChangeGenRateMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         if (changegenratemenu == NULL) {
             return;
         }
-        eduiMenuAddItem(changegenratemenu,
-                        eduiItemSliderCreateInt(0, colours, 0, cbPtlChangeGenRate, 0, 1200 * edptl_superscale,
-                                                effect->frequency, "Particles per Second"));
+        eduiMenuAddItem(changegenratemenu, eduiItemSliderCreateInt(0, colours, 0, cbPtlChangeGenRate, 0, 1200 * edptl_superscale,
+                                                                   effect->frequency, "Particles per Second"));
         eduiMenuAttach(parent, changegenratemenu);
         changegenratemenu->x = parent->x + 10;
         changegenratemenu->y = parent->y + 40;
@@ -757,8 +741,8 @@ void cbChangeETimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         if (etimemenu == NULL) {
             return;
         }
-        eduiMenuAddItem(etimemenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeETime, 0.0f, 10.0f,
-                                                        effect->particle_lifetime, "Particle Life"));
+        eduiMenuAddItem(etimemenu,
+                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeETime, 0.0f, 10.0f, effect->particle_lifetime, "Particle Life"));
         eduiMenuAttach(parent, etimemenu);
         etimemenu->x = parent->x + 10;
         etimemenu->y = parent->y + 40;
@@ -774,18 +758,14 @@ void cbPtlEmitTimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     emittimemenu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelEmitTimeMenu, "Emitter Timing");
     if (emittimemenu != NULL) {
-        eduiMenuAddItem(emittimemenu,
-                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOn, 0.01f, 5.0f * edptl_superscale,
-                                             effect->emission_period, "On Time"));
-        eduiMenuAddItem(emittimemenu,
-                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOnRan, 0.0f, 5.0f * edptl_superscale,
-                                             effect->emission_period_random, "Random On Time"));
-        eduiMenuAddItem(emittimemenu,
-                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOff, 0.0f, 5.0f * edptl_superscale,
-                                             effect->emission_pause, "Off Time"));
-        eduiMenuAddItem(emittimemenu,
-                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOffRan, 0.0f, 5.0f * edptl_superscale,
-                                             effect->emission_pause_random, "Random Off Time"));
+        eduiMenuAddItem(emittimemenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOn, 0.01f, 5.0f * edptl_superscale,
+                                                           effect->emission_period, "On Time"));
+        eduiMenuAddItem(emittimemenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOnRan, 0.0f, 5.0f * edptl_superscale,
+                                                           effect->emission_period_random, "Random On Time"));
+        eduiMenuAddItem(emittimemenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOff, 0.0f, 5.0f * edptl_superscale,
+                                                           effect->emission_pause, "Off Time"));
+        eduiMenuAddItem(emittimemenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOffRan, 0.0f, 5.0f * edptl_superscale,
+                                                           effect->emission_pause_random, "Random Off Time"));
         eduiMenuAttach(parent, emittimemenu);
         emittimemenu->x = parent->x + 10;
         emittimemenu->y = parent->y + 40;
@@ -832,10 +812,9 @@ void edptlcbScaleEffectMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons) {
     if (edptl_scaleeffect_menu == NULL) {
         return;
     }
-    eduiMenuAddItem(edptl_scaleeffect_menu, eduiItemSliderCreate(0, edblack, 0, edptlcbSetScaleFactor, 0.1f, 9.9f,
-                                                                 edpp_scale_factor, "Scale Factor"));
     eduiMenuAddItem(edptl_scaleeffect_menu,
-                    eduiItemSelCreate(1, edblack, 0, 0, edptlcbApplyScaleFactor, "Scale Effect"));
+                    eduiItemSliderCreate(0, edblack, 0, edptlcbSetScaleFactor, 0.1f, 9.9f, edpp_scale_factor, "Scale Factor"));
+    eduiMenuAddItem(edptl_scaleeffect_menu, eduiItemSelCreate(1, edblack, 0, 0, edptlcbApplyScaleFactor, "Scale Effect"));
     eduiMenuAttach(parent, edptl_scaleeffect_menu);
     edptl_scaleeffect_menu->x = (i32)((u32)parent->x + 10u);
     edptl_scaleeffect_menu->y = (i32)((u32)parent->y + 40u);
@@ -858,8 +837,7 @@ void cbPtlSScaleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (sscalemenu == NULL) {
         return;
     }
-    eduiMenuAddItem(sscalemenu,
-                    eduiItemSliderCreateInt(0, colours, 0, cbPtlChangeSScale, 1, 99, edptl_superscale, "Super Scale"));
+    eduiMenuAddItem(sscalemenu, eduiItemSliderCreateInt(0, colours, 0, cbPtlChangeSScale, 1, 99, edptl_superscale, "Super Scale"));
     eduiMenuAttach(parent, sscalemenu);
     sscalemenu->x = parent->x + 10;
     sscalemenu->y = parent->y + 40;

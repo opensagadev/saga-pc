@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
-void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
-                      void (*draw_save_slots_info_fn)(f32, f32, i32, i32), i32 is_fade_enabled, i32 is_shadow_enabled) {
+void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count, void (*draw_save_slots_info_fn)(f32, f32, i32, i32),
+                      i32 is_fade_enabled, i32 is_shadow_enabled) {
     char menus_used_str[64];
     i32 menu_ids_used = menu_id_count;
     i32 i;
@@ -38,8 +38,8 @@ void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_cou
     MenuSetPlatformState(-1);
 }
 
-void MenuInitialise(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
-                    void (*draw_save_slots_fn)(MENU *, f32), i32 is_fade_enabled, i32 is_shadow_enabled) {
+void MenuInitialise(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count, void (*draw_save_slots_fn)(MENU *, f32),
+                    i32 is_fade_enabled, i32 is_shadow_enabled) {
     MenuInitialiseEx(menu_info, menu_id_count, language_count, NULL, is_fade_enabled, is_shadow_enabled);
     if (draw_save_slots_fn != NULL) {
         drawslotsfn = draw_save_slots_fn;
@@ -323,8 +323,8 @@ void DrawMenu(i32 paused) {
         headerdrawfn();
     }
     if (MenuAlpha >= 0.5f && g_enableButtonPrompts != 0) {
-        DrawMenuButtonPrompts(MenuInfo[view->menu].confirm_prompt, MenuInfo[view->menu].cancel_prompt, 1, MENUNORMALR,
-                              MENUNORMALG, MENUNORMALB, (u8)MenuA);
+        DrawMenuButtonPrompts(MenuInfo[view->menu].confirm_prompt, MenuInfo[view->menu].cancel_prompt, 1, MENUNORMALR, MENUNORMALG,
+                              MENUNORMALB, (u8)MenuA);
     }
     if ((SmartTextFont != NULL ? SmartTextFont : QFont2D) != NULL) {
         (SmartTextFont != NULL ? SmartTextFont : QFont2D)->baseline = saved_baseline;
@@ -336,14 +336,14 @@ void DrawMenu(i32 paused) {
 
 void DrawMenuHeader(void) {
     if (MenuDisableHeaders == 0) {
-        MenuSmartTextEx(MenuHeader, 0, MenuTopYPc, 1, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
-                        (u8)header_r, (u8)header_g, (u8)header_b, 1.2f, 1, NULL, 0, MenuA);
+        MenuSmartTextEx(MenuHeader, 0, MenuTopYPc, 1, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, (u8)header_r, (u8)header_g,
+                        (u8)header_b, 1.2f, 1, NULL, 0, MenuA);
     }
 }
 
 void fun_0050f620(char *text, u32 red, u32 green, u32 blue) {
-    MenuSmartTextEx(text, 0.0f, MenuTopYPc, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 1, red, green,
-                    blue, 1.5f, 3, NULL, 0, MenuA);
+    MenuSmartTextEx(text, 0.0f, MenuTopYPc, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 1, red, green, blue, 1.5f, 3, NULL, 0,
+                    MenuA);
 }
 
 void MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *buffer, VARIPTR buffer_end) {
@@ -473,8 +473,8 @@ void MenuRepeat(i32 *held, i32 *repeat, f32 *repeat_time, u8 *repeat_count, f32 
     }
 }
 
-i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 alternate_pressed, f32 elapsed,
-               u32 confirm_mask, u32 cancel_mask, u32 start_mask, u32 select_mask) {
+i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 alternate_pressed, f32 elapsed, u32 confirm_mask,
+               u32 cancel_mask, u32 start_mask, u32 select_mask) {
     i32 previous_item = 0;
     PC_MENU_UPDATE_VIEW *menu;
     u32 held;
@@ -673,8 +673,7 @@ i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 al
                 MenuSFX = MENUSFX_MENUMOVE;
             }
         }
-        if (menu->state == 1 || (menu->state == 2 && menu->selected_row == 0) ||
-            (menu->state == 3 && menu->selected_row != last_row)) {
+        if (menu->state == 1 || (menu->state == 2 && menu->selected_row == 0) || (menu->state == 3 && menu->selected_row != last_row)) {
             previous_item = menu->selected_column;
             if (menu->selected_column < menu->first_column) {
                 menu->selected_column = menu->first_column;
@@ -869,8 +868,8 @@ void DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     if (view->item_offsets != NULL) {
         f32 offset_x = view->item_offsets[0];
         Text3DEx2(text, (f32)(view->draw_x + (f64)offset_x * view->item_offset_scale),
-                  (f32)(view->draw_y + (f64)view->item_offsets[1] * view->item_offset_scale), view->draw_z,
-                  (f32)((f64)scale * dme_sx), scale, scale, dme_align, 0, 0, 0, alpha >> 2);
+                  (f32)(view->draw_y + (f64)view->item_offsets[1] * view->item_offset_scale), view->draw_z, (f32)((f64)scale * dme_sx),
+                  scale, scale, dme_align, 0, 0, 0, alpha >> 2);
     }
     if (view->draw_item >= view->first_row && view->draw_item <= view->last_row) {
         if (view->draw_item == menu->selected_row) {
@@ -898,11 +897,11 @@ void DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
             blue.byte = MENUENTRYB;
         }
         if (view->item_offsets != NULL) {
-            Text3DEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale,
-                     dme_align, red.slot, green.slot, blue.slot, alpha);
+            Text3DEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale, dme_align, red.slot,
+                     green.slot, blue.slot, alpha);
         } else {
-            MenuSmartTextEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale,
-                            dme_align, red.slot, green.slot, blue.slot, MENUENTRYEXWIDTH, 1, NULL, 0, alpha);
+            MenuSmartTextEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale, dme_align, red.slot,
+                            green.slot, blue.slot, MENUENTRYEXWIDTH, 1, NULL, 0, alpha);
         }
     }
     ++view->draw_item;
@@ -913,9 +912,8 @@ void DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     dme_sy = 1.0f;
 }
 
-void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r, u8 header_g,
-                    u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g, u8 flash0_b, u8 flash1_r,
-                    u8 flash1_g, u8 flash1_b) {
+void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r, u8 header_g, u8 header_b,
+                    u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g, u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b) {
     MENUNORMALR = normal_r;
     MENUNORMALG = normal_g;
     MENUNORMALB = normal_b;

@@ -68,8 +68,8 @@ extern "C" void fun_006988b0(void) {
 extern "C" void fun_006988f0(void) {
 }
 
-extern "C" void PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg3, i32 arg4, f32 arg5, i32 arg6,
-                                        f32 arg7, f32 arg8, i32 arg9) {
+extern "C" void PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg3, i32 arg4, f32 arg5, i32 arg6, f32 arg7, f32 arg8,
+                                        i32 arg9) {
     SoundSamplePC *sample;
     i32 scaled_volume;
     i32 voice_id;
@@ -111,8 +111,7 @@ extern "C" void PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg
     (void)arg9;
 }
 
-extern "C" void PCSoundPlayUnpositionedWrapper(i32 arg1, i32 arg2, i32 arg3, i32 arg4, f32 arg5, i32 arg6, f32 arg7,
-                                               f32 arg8) {
+extern "C" void PCSoundPlayUnpositionedWrapper(i32 arg1, i32 arg2, i32 arg3, i32 arg4, f32 arg5, i32 arg6, f32 arg7, f32 arg8) {
     PCSoundPlayUnpositioned(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, 0);
 }
 
@@ -143,9 +142,8 @@ extern "C" {
     }
 }
 
-extern "C" void PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right, i32 pitch,
-                                      f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain, f32 rumble_release,
-                                      i32 priority) {
+extern "C" void PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right, i32 pitch, f32 buzz_timer,
+                                      i32 rumble_strength, f32 rumble_sustain, f32 rumble_release, i32 priority) {
     NUVEC relative;
     i32 scaled_volume;
     i32 attenuated_volume;
@@ -191,11 +189,10 @@ extern "C" void PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i32 volume
     (void)priority;
 }
 
-extern "C" void PCSoundPlayPositionedWrapper(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right,
-                                             i32 pitch, f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain,
-                                             f32 rumble_release) {
-    PCSoundPlayPositioned(position, sample_id, volume_left, volume_right, pitch, buzz_timer, rumble_strength,
-                          rumble_sustain, rumble_release, 0);
+extern "C" void PCSoundPlayPositionedWrapper(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right, i32 pitch, f32 buzz_timer,
+                                             i32 rumble_strength, f32 rumble_sustain, f32 rumble_release) {
+    PCSoundPlayPositioned(position, sample_id, volume_left, volume_right, pitch, buzz_timer, rumble_strength, rumble_sustain,
+                          rumble_release, 0);
 }
 
 bool SoundVoiceManagerPC::FindLoopVoicePc(NUVEC *position, i32 sample_id, i32 *voice_id) {
@@ -206,8 +203,7 @@ bool SoundVoiceManagerPC::FindLoopVoicePc(NUVEC *position, i32 sample_id, i32 *v
         return false;
     }
     for (index = 0; index < 64; ++index) {
-        if (voices[index].sample_id == sample_id && voices[index].sound_key == (i32)position &&
-            voices[index].field_19 == 0) {
+        if (voices[index].sample_id == sample_id && voices[index].sound_key == (i32)position && voices[index].field_19 == 0) {
             *voice_id = index;
             return true;
         }
@@ -216,8 +212,8 @@ bool SoundVoiceManagerPC::FindLoopVoicePc(NUVEC *position, i32 sample_id, i32 *v
     return false;
 }
 
-extern "C" void PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right, i32 pitch,
-                                          f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain, f32 rumble_release) {
+extern "C" void PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right, i32 pitch, f32 buzz_timer,
+                                          i32 rumble_strength, f32 rumble_sustain, f32 rumble_release) {
     NUVEC relative;
     i32 scaled_volume;
     i32 attenuated_volume;
@@ -310,8 +306,7 @@ i32 SoundVoiceManagerPC::AllocateVoice(i32 sample_id, i32 bank) {
             result = E_FAIL;
             EnterCriticalSection(&SoundVoiceCriticalSection);
             if (samples[sample_id].buffer != NULL) {
-                result = factory->vtable->duplicate_sound_buffer(factory, samples[sample_id].buffer,
-                                                                 &voices[voice_id].voice);
+                result = factory->vtable->duplicate_sound_buffer(factory, samples[sample_id].buffer, &voices[voice_id].voice);
             }
             LeaveCriticalSection(&SoundVoiceCriticalSection);
             if (result >= 0) {
@@ -602,8 +597,8 @@ extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet) {
             flags |= 1;
         }
         NuSound3StereoStreams[packet->stream_index]->Stop();
-        NuSound3StereoStreams[packet->stream_index]->SetStreamFile(
-            SoundVoiceManager.samples[packet->first_sample].file_name, packet->start_offset);
+        NuSound3StereoStreams[packet->stream_index]->SetStreamFile(SoundVoiceManager.samples[packet->first_sample].file_name,
+                                                                   packet->start_offset);
         NuSound3StereoStreams[packet->stream_index]->SetStreamFlags(flags);
     }
 }
@@ -781,8 +776,8 @@ i32 SoundVoiceManagerPC::LoadWavSamplePc(const char *name, i32 index) {
                 samples[index].failed_byte = 1;
                 return 0;
             }
-            result = samples[index].buffer->vtable->lock(samples[index].buffer, 0, descriptor.bytes, &first,
-                                                         &first_bytes, &second, &second_bytes, 0);
+            result = samples[index].buffer->vtable->lock(samples[index].buffer, 0, descriptor.bytes, &first, &first_bytes, &second,
+                                                         &second_bytes, 0);
             if (result >= 0) {
                 result = reader.Read(first, first_bytes, &read_bytes);
                 if (result < 0 || read_bytes != descriptor.bytes) {

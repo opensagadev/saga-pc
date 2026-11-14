@@ -1047,8 +1047,7 @@ extern "C" {
     extern NUMTL **PCSpecialForcedMaterialTable;
     extern NUMTL *PCSpecialForcedMaterial;
     extern NUMTL *PCMaterialPoolPc;
-    void NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
-                          NUMTL *material, i32 z);
+    void NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material, i32 z);
 
     typedef struct FONT_LEGACY_READER_PC { // size 0x1520
         u8 unknown00[12];                  // 0x0000
@@ -1075,8 +1074,7 @@ extern "C" {
     extern NUDISPLAY_LIST_PC *PCDisplayScenes[256];
     extern NUDISPLAY_LIST_PC PCDynamicDisplayScene;
 
-    void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
-                        RENDER_POST_BLOOM_READER_PC *parameters);
+    void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, RENDER_POST_BLOOM_READER_PC *parameters);
 #ifdef __cplusplus
 }
 #endif

@@ -106,8 +106,8 @@ static void edbricbPlankCountMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     }
     eduiMenuAddItem(edbri_plankcount_menu,
                     eduiItemSliderCreateInt(0, edblack, 0, edbricbSetPlankCount, 1, 23, edbri_planks, "Plank Count"));
-    eduiMenuAddItem(edbri_plankcount_menu, eduiItemSliderCreateInt(0, edblack, 0, edbricbSetPostInterval, 1, 23,
-                                                                   edbri_post_interval, "Post Interval"));
+    eduiMenuAddItem(edbri_plankcount_menu,
+                    eduiItemSliderCreateInt(0, edblack, 0, edbricbSetPostInterval, 1, 23, edbri_post_interval, "Post Interval"));
     eduiMenuAttach(parent, edbri_plankcount_menu);
     edbri_plankcount_menu->x = parent->x + 10;
     edbri_plankcount_menu->y = parent->y + 40;
@@ -118,10 +118,8 @@ static void edbricbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unu
     if (!edbri_dpadmode_menu) {
         return;
     }
-    eduiMenuAddItem(edbri_dpadmode_menu,
-                    eduiItemCheckCreate(0, edblack, edbri_mode == 0, 1, edbricbSetDpadMode, "Bridge Orient"));
-    eduiMenuAddItem(edbri_dpadmode_menu,
-                    eduiItemCheckCreate(1, edblack, edbri_mode == 1, 1, edbricbSetDpadMode, "Bridge Size"));
+    eduiMenuAddItem(edbri_dpadmode_menu, eduiItemCheckCreate(0, edblack, edbri_mode == 0, 1, edbricbSetDpadMode, "Bridge Orient"));
+    eduiMenuAddItem(edbri_dpadmode_menu, eduiItemCheckCreate(1, edblack, edbri_mode == 1, 1, edbricbSetDpadMode, "Bridge Size"));
     eduiMenuAttach(parent, edbri_dpadmode_menu);
     edbri_dpadmode_menu->x = parent->x + 10;
     edbri_dpadmode_menu->y = parent->y + 40;
@@ -256,10 +254,9 @@ void edbriBridgeUpdate(i32 index, NUGSCN *scene) {
         NuGScnGetSpecial(&second, edbits_base_scene, edBridges[index].special_24);
     }
     edBridges[index].instance_id =
-        NuBridgeCreate(scene, &first, &second, &edBridges[index].position, &end, edBridges[index].field_3c,
-                       edBridges[index].rotation_y, edBridges[index].field_28, edBridges[index].field_2c,
-                       edBridges[index].field_30, edBridges[index].field_34, edBridges[index].field_1d,
-                       edBridges[index].field_14, edBridges[index].field_38, edBridges[index].field_1e, colour);
+        NuBridgeCreate(scene, &first, &second, &edBridges[index].position, &end, edBridges[index].field_3c, edBridges[index].rotation_y,
+                       edBridges[index].field_28, edBridges[index].field_2c, edBridges[index].field_30, edBridges[index].field_34,
+                       edBridges[index].field_1d, edBridges[index].field_14, edBridges[index].field_38, edBridges[index].field_1e, colour);
 }
 
 void edbriBridgePlace(i32 index, NUVEC *position) {
@@ -379,30 +376,23 @@ static void edbricbBridgePropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1,
     if (edbri_nearest == -1) {
         return;
     }
-    edbri_bridgeproperties_menu =
-        eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelBridgePropertiesMenu, "Bridge Properties");
+    edbri_bridgeproperties_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelBridgePropertiesMenu, "Bridge Properties");
     if (!edbri_bridgeproperties_menu) {
         return;
     }
     eduiMenuAddItem(edbri_bridgeproperties_menu,
-                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeTension, 0.0f, 1.0f,
-                                         edBridges[edbri_nearest].field_28, "Tension"));
-    eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeDamp, 0.0f, 1.0f,
-                                                                      edBridges[edbri_nearest].field_2c, "Damp"));
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeTension, 0.0f, 1.0f, edBridges[edbri_nearest].field_28, "Tension"));
     eduiMenuAddItem(edbri_bridgeproperties_menu,
-                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeGravity, -0.1f, 0.2f,
-                                         edBridges[edbri_nearest].field_30, "Gravity"));
-    eduiMenuAddItem(edbri_bridgeproperties_menu,
-                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgePlrweight, 0.0f, 10.0f,
-                                         edBridges[edbri_nearest].field_34, "Plrweight"));
-    eduiMenuAddItem(edbri_bridgeproperties_menu,
-                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeRopeheight, 0.0f, 2.0f,
-                                         edBridges[edbri_nearest].field_38, "Rope Height"));
-    eduiMenuAddItem(edbri_bridgeproperties_menu,
-                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeStability, 0.0f, 10.0f,
-                                         edBridges[edbri_nearest].field_3c, "Stability"));
-    eduiMenuAddItem(edbri_bridgeproperties_menu,
-                    eduiItemSelCreate(1, edblack, 0, 0, edbricbRopeColourMenu, "Rope Colour..."));
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeDamp, 0.0f, 1.0f, edBridges[edbri_nearest].field_2c, "Damp"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeGravity, -0.1f, 0.2f,
+                                                                      edBridges[edbri_nearest].field_30, "Gravity"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgePlrweight, 0.0f, 10.0f,
+                                                                      edBridges[edbri_nearest].field_34, "Plrweight"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeRopeheight, 0.0f, 2.0f,
+                                                                      edBridges[edbri_nearest].field_38, "Rope Height"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeStability, 0.0f, 10.0f,
+                                                                      edBridges[edbri_nearest].field_3c, "Stability"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbRopeColourMenu, "Rope Colour..."));
     eduiMenuAttach(parent, edbri_bridgeproperties_menu);
     edbri_bridgeproperties_menu->x = parent->x + 10;
     edbri_bridgeproperties_menu->y = parent->y + 40;
@@ -511,16 +501,15 @@ void edbricbPostInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused
     if (!edbri_postinstance_menu || !edbits_base_scene) {
         return;
     }
-    eduiMenuAddItem(edbri_postinstance_menu, eduiItemCheckCreate((size_t)(-1), edblack, edbri_post_instance_type == -1,
-                                                                 1, edbricbSetPostInstanceType, "None"));
+    eduiMenuAddItem(edbri_postinstance_menu,
+                    eduiItemCheckCreate((size_t)(-1), edblack, edbri_post_instance_type == -1, 1, edbricbSetPostInstanceType, "None"));
     count = NuSpecialGetNumSpecials(edbits_base_scene);
     for (i = 0; i < count; ++i) {
         NUSPECIALHANDLE special;
         selected = edbri_post_instance_type == i;
         NuGScnGetSpecial(&special, edbits_base_scene, i);
-        eduiMenuAddItem(
-            edbri_postinstance_menu,
-            eduiItemCheckCreate(i, edblack, selected, 1, edbricbSetPostInstanceType, NuSpecialGetName(&special)));
+        eduiMenuAddItem(edbri_postinstance_menu,
+                        eduiItemCheckCreate(i, edblack, selected, 1, edbricbSetPostInstanceType, NuSpecialGetName(&special)));
         if (selected == 1) {
             edbri_postinstance_menu->selected = edui_last_item;
         }
@@ -548,16 +537,14 @@ void edbricbPlankInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unuse
         return;
     }
     eduiMenuAddItem(edbri_plankinstance_menu,
-                    eduiItemCheckCreate((size_t)(-1), edblack, edbri_plank_instance_type == -1, 1,
-                                        edbricbSetPlankInstanceType, "None"));
+                    eduiItemCheckCreate((size_t)(-1), edblack, edbri_plank_instance_type == -1, 1, edbricbSetPlankInstanceType, "None"));
     count = NuSpecialGetNumSpecials(edbits_base_scene);
     for (i = 0; i < count; ++i) {
         NUSPECIALHANDLE special;
         selected = edbri_plank_instance_type == i;
         NuGScnGetSpecial(&special, edbits_base_scene, i);
-        eduiMenuAddItem(
-            edbri_plankinstance_menu,
-            eduiItemCheckCreate(i, edblack, selected, 1, edbricbSetPlankInstanceType, NuSpecialGetName(&special)));
+        eduiMenuAddItem(edbri_plankinstance_menu,
+                        eduiItemCheckCreate(i, edblack, selected, 1, edbricbSetPlankInstanceType, NuSpecialGetName(&special)));
         if (selected == 1) {
             edbri_plankinstance_menu->selected = edui_last_item;
         }
@@ -605,17 +592,14 @@ void edbriCreateOptionsMenu(void) {
     if (!edbri_options_menu) {
         return;
     }
-    eduiMenuAddItem(edbri_options_menu,
-                    eduiItemSelCreate(1, edblack, 0, 0, edbricbPlankInstanceMenu, "Plank Instance..."));
-    eduiMenuAddItem(edbri_options_menu,
-                    eduiItemSelCreate(1, edblack, 0, 0, edbricbPostInstanceMenu, "Post Instance..."));
+    eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbPlankInstanceMenu, "Plank Instance..."));
+    eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbPostInstanceMenu, "Post Instance..."));
     eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbPlankCountMenu, "Plank Counts..."));
     eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbDpadModeMenu, "Dpad Mode..."));
     if (edbri_nearest == -1) {
         eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Bridge Properties..."));
     } else {
-        eduiMenuAddItem(edbri_options_menu,
-                        eduiItemSelCreate(1, edblack, 0, 0, edbricbBridgePropertiesMenu, "Bridge Properties..."));
+        eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbBridgePropertiesMenu, "Bridge Properties..."));
     }
     eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbFileSave, "Save Bridges"));
     eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbFileLoad, "Load Bridges"));

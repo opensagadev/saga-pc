@@ -160,8 +160,7 @@ void Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
                     GAMEOBJECT *player = Player[player_index];
                     if (player != NULL && (player->flags_1fc_word & 1) != 0 && (player->flags_1fc_word & 0x1000) != 0 &&
                         player->id == (u16)signal->suit->character_id &&
-                        (f64)NuVecDistSqr(&player->collision_position, &signal->target_position, NULL) <
-                            0.49000006914138794) {
+                        (f64)NuVecDistSqr(&player->collision_position, &signal->target_position, NULL) < 0.49000006914138794) {
                         NUVEC offset;
                         f32 along_normal;
                         f32 distance;
@@ -212,8 +211,7 @@ SIGNAL_s *Signal_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *obje
     for (index = 0; index < world->signal_count; ++index, ++signal) {
         f32 signal_distance;
         if (object != NULL) {
-            if (!signal->visible || !signal->active || signal->in_use ||
-                (u16)signal->suit->character_id != object->id) {
+            if (!signal->visible || !signal->active || signal->in_use || (u16)signal->suit->character_id != object->id) {
                 continue;
             }
             signal_distance = NuVecDistSqr(position, &signal->target_position, NULL);
@@ -530,9 +528,8 @@ void SuitBlowupCodePc(WORLDINFO *world, GAMEOBJECT *object) {
             if ((draw & 0x40) == 0 || ((draw & 0x20) != 0 && ShadowMode == 0)) {
                 continue;
             }
-            if (blowup->mid_position.x < minimum.x || blowup->mid_position.x > maximum.x ||
-                blowup->mid_position.z < minimum.z || blowup->mid_position.z > maximum.z ||
-                blowup->mid_position.y < minimum.y || blowup->mid_position.y > maximum.y) {
+            if (blowup->mid_position.x < minimum.x || blowup->mid_position.x > maximum.x || blowup->mid_position.z < minimum.z ||
+                blowup->mid_position.z > maximum.z || blowup->mid_position.y < minimum.y || blowup->mid_position.y > maximum.y) {
                 continue;
             }
             if (!(NuVecDistSqr(&blowup->mid_position, &object->collision_position, NULL) > 9.0f) && count < 256) {

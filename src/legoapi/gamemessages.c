@@ -86,8 +86,7 @@ GAME_MESSAGE_PC *AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
         slot = &GameMessage[GameMessageIndex];
     }
 found:
-    if (slot->active != 0 && slot->score > 0 && (slot->player_index == 0 || slot->player_index == 1) &&
-        slot->end_fn != NULL) {
+    if (slot->active != 0 && slot->score > 0 && (slot->player_index == 0 || slot->player_index == 1) && slot->end_fn != NULL) {
         slot->end_fn(slot);
     }
     slot->text = NULL;
@@ -179,8 +178,8 @@ found:
     return slot;
 }
 
-GAME_MESSAGE_PC *AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position, f32 target_scale,
-                                u8 red, u8 green, u8 blue, u32 flags, f32 duration) {
+GAME_MESSAGE_PC *AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position, f32 target_scale, u8 red, u8 green, u8 blue,
+                                u32 flags, f32 duration) {
     ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
     message.text = text;
     message.position = position;
@@ -265,19 +264,15 @@ void UpdateGameMessages(void) {
             }
             if ((flags & 0x10) != 0) {
                 message->position.x =
-                    (f32)(((f64)message->target_position.x - (f64)message->position_a.x) * (f64)progress +
-                          (f64)message->position_a.x);
+                    (f32)(((f64)message->target_position.x - (f64)message->position_a.x) * (f64)progress + (f64)message->position_a.x);
                 message->position.y =
-                    (f32)(((f64)message->target_position.y - (f64)message->position_a.y) * (f64)progress +
-                          (f64)message->position_a.y);
+                    (f32)(((f64)message->target_position.y - (f64)message->position_a.y) * (f64)progress + (f64)message->position_a.y);
                 message->position.z =
-                    (f32)(((f64)message->target_position.z - (f64)message->position_a.z) * (f64)progress +
-                          (f64)message->position_a.z);
+                    (f32)(((f64)message->target_position.z - (f64)message->position_a.z) * (f64)progress + (f64)message->position_a.z);
             }
             if ((flags & 0x40) != 0) {
                 message->scale_initial =
-                    (f32)(((f64)message->target_scale - (f64)message->scale_start) * (f64)progress +
-                          (f64)message->scale_start);
+                    (f32)(((f64)message->target_scale - (f64)message->scale_start) * (f64)progress + (f64)message->scale_start);
             }
         }
         if ((flags & 0x8000) != 0) {
@@ -404,29 +399,27 @@ void DrawGameMessages(void) {
                                          message->parameter_e2, message->parameter_e4, &message->special, 2);
             } else {
                 const f32 alpha = (draw_flags & 0x10000) != 0 ? (f32)(message->alpha * 0.0078125) : 1.0f;
-                DrawPanel3DObject(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0,
-                                  message->parameter_e2, message->parameter_e4, &message->special, 2, alpha);
+                DrawPanel3DObject(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0, message->parameter_e2,
+                                  message->parameter_e4, &message->special, 2, alpha);
             }
             if (GameMsg_GetExtraObjFn != NULL) {
                 NUSPECIALHANDLE *extra = GameMsg_GetExtraObjFn(message);
                 if (extra != NULL && NuSpecialExistsFn(extra) != 0) {
                     const u32 draw_flags = message->flags;
                     if ((draw_flags & 0x20000) != 0) {
-                        DrawPanel3DObjectNoAlpha(position.x, position.y, position.z, scale, scale, scale,
-                                                 message->parameter_e0, message->parameter_e2, message->parameter_e4,
-                                                 extra, 2);
+                        DrawPanel3DObjectNoAlpha(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0,
+                                                 message->parameter_e2, message->parameter_e4, extra, 2);
                     } else {
                         const f32 alpha = (draw_flags & 0x10000) != 0 ? (f32)(message->alpha * 0.0078125) : 1.0f;
-                        DrawPanel3DObject(position.x, position.y, position.z, scale, scale, scale,
-                                          message->parameter_e0, message->parameter_e2, message->parameter_e4, extra, 2,
-                                          alpha);
+                        DrawPanel3DObject(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0,
+                                          message->parameter_e2, message->parameter_e4, extra, 2, alpha);
                     }
                 }
             }
         } else {
             const char *text = message->text != NULL ? message->text : message->text_buffer;
-            Text3DEx((char *)text, position.x, position.y, position.z, scale, scale, scale, message->parameter_fc,
-                     message->red, message->green, message->blue, message->alpha);
+            Text3DEx((char *)text, position.x, position.y, position.z, scale, scale, scale, message->parameter_fc, message->red,
+                     message->green, message->blue, message->alpha);
         }
     }
 }
@@ -447,8 +440,7 @@ i32 FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *exclude)
     return count;
 }
 
-void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, unsigned char green, unsigned char blue,
-                     float field_0xd4) {
+void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, unsigned char green, unsigned char blue, float field_0xd4) {
     void *message;
     char text[32];
     sprintf(text, "%i/%i", count, total);
@@ -475,10 +467,8 @@ void AddFancyMessageRGB(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 m
     position.y = y;
     position.z = 1.0f;
     half_scale = (f64)doubled_scale * 0.5;
-    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale + half_scale), red, green, blue,
-                   0x4020, duration);
-    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale - half_scale), red, green, blue,
-                   0x4020, duration);
+    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale + half_scale), red, green, blue, 0x4020, duration);
+    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale - half_scale), red, green, blue, 0x4020, duration);
 }
 
 void AddFancyMessage(char *text, float x, float y, float scale, float duration, i32 message_id, i32 colour_type) {

@@ -418,8 +418,7 @@ extern i32 edui_filepick_listsize;
 
 static void eduiFilePickAllocDirListPc(void) {
     if (edui_filepick_listsize != 0 && dir_list == NULL) {
-        dir_list =
-            NuAlloc(edui_filepick_listsize * 0x118, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x821);
+        dir_list = NuAlloc(edui_filepick_listsize * 0x118, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x821);
     }
 }
 
@@ -440,8 +439,7 @@ static void EduiPrimSetColourPc(i32 colour) {
     if (NuPrimNeedsOverbrightening != 0) {
         converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
     } else {
-        converted =
-            ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
+        converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
     ((EDUI_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
@@ -880,8 +878,7 @@ i32 eduiMenuDetach(eduimenu_s *menu) {
     return 0;
 }
 
-eduiitem_s *eduiItemCheckCreate(size_t data, const void *colours, i32 selected, i32 group, EdUiItemCallback callback,
-                                char *text) {
+eduiitem_s *eduiItemCheckCreate(size_t data, const void *colours, i32 selected, i32 group, EdUiItemCallback callback, char *text) {
     eduiitem_s *item = eduiItemSelCreate(data, colours, selected, group, callback, text);
     if (item) {
         item->type = 2;
@@ -891,8 +888,7 @@ eduiitem_s *eduiItemCheckCreate(size_t data, const void *colours, i32 selected, 
     return item;
 }
 
-eduiitem_s *eduiItemToggleCreate(size_t data, const void *colours, i32 selected, i32 group, EdUiItemCallback callback,
-                                 char *text) {
+eduiitem_s *eduiItemToggleCreate(size_t data, const void *colours, i32 selected, i32 group, EdUiItemCallback callback, char *text) {
     eduiitem_s *item = eduiItemSelCreate(data, colours, selected, group, callback, text);
     if (item) {
         item->type = 3;
@@ -1024,23 +1020,20 @@ void eduiCreateMessageMenu(eduimenu_s *parent, char *message, i32 highlighted) {
     edui_messagemenu->y = parent->y + 40;
 }
 
-void eduiCreate3LineMessageMenu(eduimenu_s *parent, char *first, char *second, char *third, i32 first_highlight,
-                                i32 second_highlight, i32 third_highlight) {
+void eduiCreate3LineMessageMenu(eduimenu_s *parent, char *first, char *second, char *third, i32 first_highlight, i32 second_highlight,
+                                i32 third_highlight) {
     eduiiattr_s normal = {0x800000c0, 0x80ff0000, 0x80808080, 0x80404040};
     eduiiattr_s highlighted = {0x8000c000, 0x80ff0000, 0x80808080, 0x80404040};
     edui_messagemenu = eduiMenuCreate(70, 70, 300, 250, parent->font, eduicbCancelMessageMenu, ((char *)("Message")));
     if (edui_messagemenu) {
         if (first) {
-            eduiMenuAddItem(edui_messagemenu,
-                            eduiItemSelCreate(1, first_highlight ? &highlighted : &normal, 0, 0, NULL, first));
+            eduiMenuAddItem(edui_messagemenu, eduiItemSelCreate(1, first_highlight ? &highlighted : &normal, 0, 0, NULL, first));
         }
         if (second) {
-            eduiMenuAddItem(edui_messagemenu,
-                            eduiItemSelCreate(1, second_highlight ? &highlighted : &normal, 0, 0, NULL, second));
+            eduiMenuAddItem(edui_messagemenu, eduiItemSelCreate(1, second_highlight ? &highlighted : &normal, 0, 0, NULL, second));
         }
         if (third) {
-            eduiMenuAddItem(edui_messagemenu,
-                            eduiItemSelCreate(1, third_highlight ? &highlighted : &normal, 0, 0, NULL, third));
+            eduiMenuAddItem(edui_messagemenu, eduiItemSelCreate(1, third_highlight ? &highlighted : &normal, 0, 0, NULL, third));
         }
         eduiMenuAttach(parent, edui_messagemenu);
         edui_messagemenu->x = parent->x + 10;
@@ -1295,18 +1288,15 @@ void edmainCreateMenus(void) {
     NuQFntSetScale(system_qfont, edmain_menu_scale, edmain_menu_scale);
     ed_cfg_menu = eduiMenuCreate(220, 50, 180, 320, ed_fnt, cbmcfgCancel, "Editor Config");
     if (ed_cfg_menu != NULL) {
-        eduiMenuAddItem(ed_cfg_menu, eduiItemSliderCreate(0, &ed_attr, 0, cbmcfgCameraSpeed, 1.0f, 20.0f,
-                                                          edmain_default_camera_speed, "Camera Speed"));
-        eduiMenuAddItem(ed_cfg_menu, eduiItemToggleCreate(0, &ed_attr, edmain_auto_speed, 1, cbSetAutoSpeed,
-                                                          "Proportional Cursor Speed"));
+        eduiMenuAddItem(ed_cfg_menu,
+                        eduiItemSliderCreate(0, &ed_attr, 0, cbmcfgCameraSpeed, 1.0f, 20.0f, edmain_default_camera_speed, "Camera Speed"));
+        eduiMenuAddItem(ed_cfg_menu, eduiItemToggleCreate(0, &ed_attr, edmain_auto_speed, 1, cbSetAutoSpeed, "Proportional Cursor Speed"));
         eduiMenuFitWidth(ed_cfg_menu, 8);
     }
-    ed_main_menu = eduiMenuCreate(ed_main_menu_x, ed_main_menu_y, ed_main_menu_w, ed_main_menu_h, ed_fnt, cbMMCancel,
-                                  "Editor Options");
+    ed_main_menu = eduiMenuCreate(ed_main_menu_x, ed_main_menu_y, ed_main_menu_w, ed_main_menu_h, ed_fnt, cbMMCancel, "Editor Options");
     if (ed_main_menu != NULL) {
         for (module = ed_list; module != NULL; module = module->next) {
-            eduiitem_s *item =
-                eduiMenuAddItem(ed_main_menu, eduiItemSelCreate((u32)module, &ed_attr, 0, 1, cbMMRegSel, module->name));
+            eduiitem_s *item = eduiMenuAddItem(ed_main_menu, eduiItemSelCreate((u32)module, &ed_attr, 0, 1, cbMMRegSel, module->name));
             if (module == ed_curr) {
                 eduiMenuHighlight(ed_main_menu, item);
             }
@@ -1401,8 +1391,7 @@ void edmainInitEx(void *font, char *configuration_file, eduiiattr_s *colours, i3
 void eduiGradStageSetHSV(edui_gradient_node_s *stage, f32 hue, f32 saturation, f32 value);
 
 edui_gradient_node_s *eduiGradStageAdd(edui_gradient_pick_s *item, f32 time, f32 hue, f32 saturation, f32 value) {
-    edui_gradient_node_s *stage =
-        NuAlloc(sizeof(edui_gradient_node_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xa37);
+    edui_gradient_node_s *stage = NuAlloc(sizeof(edui_gradient_node_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xa37);
     edui_gradient_node_s *previous;
     edui_gradient_node_s *next;
     if (stage) {
@@ -1434,8 +1423,7 @@ edui_gradient_node_s *eduiGradStageAdd(edui_gradient_pick_s *item, f32 time, f32
 i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
 
 eduiitem_s *eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_gradient_pick_s *item =
-        NuAlloc(sizeof(edui_gradient_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xaa2);
+    edui_gradient_pick_s *item = NuAlloc(sizeof(edui_gradient_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xaa2);
     if (item) {
         memset(item, 0, sizeof(edui_gradient_pick_s));
         item->base.data = data;
@@ -1462,9 +1450,8 @@ eduiitem_s *eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiIte
     return item;
 }
 
-eduiitem_s *eduiItemDataGradPickCreate(size_t data, void *colours, EdUiItemCallback callback, EdUiItemCallback press,
-                                       EdUiItemCallback add, EdUiItemCallback remove, EdUiItemCallback copy,
-                                       EdUiItemCallback paste, char *text) {
+eduiitem_s *eduiItemDataGradPickCreate(size_t data, void *colours, EdUiItemCallback callback, EdUiItemCallback press, EdUiItemCallback add,
+                                       EdUiItemCallback remove, EdUiItemCallback copy, EdUiItemCallback paste, char *text) {
     edui_gradient_pick_s *item = (edui_gradient_pick_s *)eduiItemGradPickCreate(data, colours, callback, text);
     if (item) {
         item->base.type = 9;
@@ -1670,8 +1657,7 @@ eduiitem_s *eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, 
     return NULL;
 }
 
-eduiitem_s *eduiItemSelWithClipColourCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
-                                            char *text) {
+eduiitem_s *eduiItemSelWithClipColourCreate(u32 data, void *colours, i32 selected, i32 group, void *callback, char *text) {
     eduiitem_s *item = eduiItemSelCreate(data, colours, selected, group, callback, text);
     if (item) {
         item->render = eduicbRenderSelWithClipColour;
@@ -1818,12 +1804,10 @@ void eduiGetCursorDelta(f32 *x, f32 *y) {
 /* 1 when the left stick is off centre, 2 for the right stick. */
 i32 eduiUsedAlgPad(FRAME_PAD_PC *pad) {
     if (pad != NULL) {
-        if (pad->analog_left_x < 0x40 || pad->analog_left_x > 0xc0 || pad->analog_left_y < 0x40 ||
-            pad->analog_left_y > 0xc0) {
+        if (pad->analog_left_x < 0x40 || pad->analog_left_x > 0xc0 || pad->analog_left_y < 0x40 || pad->analog_left_y > 0xc0) {
             return 1;
         }
-        if (pad->analog_right_x < 0x40 || pad->analog_right_x > 0xc0 || pad->analog_right_y < 0x40 ||
-            pad->analog_right_y > 0xc0) {
+        if (pad->analog_right_x < 0x40 || pad->analog_right_x > 0xc0 || pad->analog_right_y < 0x40 || pad->analog_right_y > 0xc0) {
             return 2;
         }
     }
@@ -2190,32 +2174,32 @@ i32 EduiMenuContainsCursorPc(eduimenu_s *menu) {
  * the 16x/8x sub-pixel coordinates of the 2D renderer. */
 static void EduiDrawRectPc(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMTL *material) {
     if (edui_donotdraw == 0) {
-        NuRndrRect2di((i32)(x * EduiScaleXPc), (i32)(y * EduiScaleYPc), (i32)(width * EduiScaleXPc),
-                      (i32)(height * EduiScaleYPc), colour, material);
+        NuRndrRect2di((i32)(x * EduiScaleXPc), (i32)(y * EduiScaleYPc), (i32)(width * EduiScaleXPc), (i32)(height * EduiScaleYPc), colour,
+                      material);
     }
 }
 
 /* Line primitives in 640x448 units; the coordinates are rounded to f32 first. */
-#define EDUI_DRAW_LINE(x0, y0, x1, y1, colour, material)                                                               \
-    do {                                                                                                               \
-        f32 line_x0 = (x0);                                                                                            \
-        f32 line_y0 = (y0);                                                                                            \
-        f32 line_x1 = (x1);                                                                                            \
-        f32 line_y1 = (y1);                                                                                            \
-        if (edui_donotdraw == 0)                                                                                       \
-            NuRndrLine2di((i32)(line_x0 * EduiScaleXPc), (i32)(line_y0 * EduiScaleYPc), (i32)(line_x1 * EduiScaleXPc), \
-                          (i32)(line_y1 * EduiScaleYPc), colour, material);                                            \
+#define EDUI_DRAW_LINE(x0, y0, x1, y1, colour, material)                                                                                   \
+    do {                                                                                                                                   \
+        f32 line_x0 = (x0);                                                                                                                \
+        f32 line_y0 = (y0);                                                                                                                \
+        f32 line_x1 = (x1);                                                                                                                \
+        f32 line_y1 = (y1);                                                                                                                \
+        if (edui_donotdraw == 0)                                                                                                           \
+            NuRndrLine2di((i32)(line_x0 * EduiScaleXPc), (i32)(line_y0 * EduiScaleYPc), (i32)(line_x1 * EduiScaleXPc),                     \
+                          (i32)(line_y1 * EduiScaleYPc), colour, material);                                                                \
     } while (0)
 
-#define EDUI_DRAW_LINE_RECT(x, y, width, height, colour, material)                                                     \
-    do {                                                                                                               \
-        f32 rect_x = (x);                                                                                              \
-        f32 rect_y = (y);                                                                                              \
-        f32 rect_width = (width);                                                                                      \
-        f32 rect_height = (height);                                                                                    \
-        if (edui_donotdraw == 0)                                                                                       \
-            NuRndrLineRect2di((i32)(rect_x * EduiScaleXPc), (i32)(rect_y * EduiScaleYPc),                              \
-                              (i32)(rect_width * EduiScaleXPc), (i32)(rect_height * EduiScaleYPc), colour, material);  \
+#define EDUI_DRAW_LINE_RECT(x, y, width, height, colour, material)                                                                         \
+    do {                                                                                                                                   \
+        f32 rect_x = (x);                                                                                                                  \
+        f32 rect_y = (y);                                                                                                                  \
+        f32 rect_width = (width);                                                                                                          \
+        f32 rect_height = (height);                                                                                                        \
+        if (edui_donotdraw == 0)                                                                                                           \
+            NuRndrLineRect2di((i32)(rect_x * EduiScaleXPc), (i32)(rect_y * EduiScaleYPc), (i32)(rect_width * EduiScaleXPc),                \
+                              (i32)(rect_height * EduiScaleYPc), colour, material);                                                        \
     } while (0)
 
 static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip_x, f32 clip_width, char *format, ...) {
@@ -2284,8 +2268,7 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
     row_height = NuQFntHeight(edui_font) * 1.25 * (1.0f / EduiScaleYPc);
     baseline = (NuQFntHeight(edui_font) * 0.125 + NuQFntBaseline(edui_font)) * (1.0f / EduiScaleYPc);
     if (menu != NULL && EduiMenuChainActivePc(menu)) {
-        EduiDrawRectPc(item_x, item_y, item_width, row_height, item->colours[2 + item->highlighted],
-                       (NUMTL *)uimtls[ui_bgmtl]);
+        EduiDrawRectPc(item_x, item_y, item_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
     }
     for (depth = 0; depth < expander->depth; depth++) {
         f32 guide_x = item_x + ((f32)depth + 0.5) * (row_height - 2.0);
@@ -2295,28 +2278,24 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
     expander->button_x = item_x + expander->depth * expander->button_size + 1.0f;
     expander->button_y = item_y + 1.0f;
     if (expander->first_child) {
-        EDUI_DRAW_LINE_RECT(expander->button_x, expander->button_y, expander->button_size, expander->button_size,
-                            0xff000000, (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+        EDUI_DRAW_LINE_RECT(expander->button_x, expander->button_y, expander->button_size, expander->button_size, 0xff000000,
+                            (NUMTL *)uimtls[EduiSelectionMaterialPc]);
         EDUI_DRAW_LINE(expander->button_x + 2.0f, expander->button_y + expander->button_size * 0.5,
-                       expander->button_x + expander->button_size - 2.0f,
-                       expander->button_y + expander->button_size * 0.5, button_colours[expander->hover],
-                       (NUMTL *)uimtls[0]);
+                       expander->button_x + expander->button_size - 2.0f, expander->button_y + expander->button_size * 0.5,
+                       button_colours[expander->hover], (NUMTL *)uimtls[0]);
         if (!expander->open) {
             EDUI_DRAW_LINE(expander->button_x + expander->button_size * 0.5, expander->button_y + 2.0f,
-                           expander->button_x + expander->button_size * 0.5,
-                           expander->button_y + expander->button_size - 2.0f, button_colours[expander->hover],
-                           (NUMTL *)uimtls[0]);
+                           expander->button_x + expander->button_size * 0.5, expander->button_y + expander->button_size - 2.0f,
+                           button_colours[expander->hover], (NUMTL *)uimtls[0]);
         }
     }
     text_x = expander->button_x + expander->button_size + 2.0f;
-    eduiFntPrintClipEx(edui_font, text_x, item_y + baseline, 16, text_x, item_width - (expander->button_size - 2.0f),
-                       item->text);
+    eduiFntPrintClipEx(edui_font, text_x, item_y + baseline, 16, text_x, item_width - (expander->button_size - 2.0f), item->text);
     return (i32)row_height;
 }
 
 eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback, char *text) {
-    EDUI_EXPANDER *item =
-        NuAlloc(sizeof(EDUI_EXPANDER), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1473);
+    EDUI_EXPANDER *item = NuAlloc(sizeof(EDUI_EXPANDER), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1473);
     if (item != NULL) {
         memset(item, 0, sizeof(EDUI_EXPANDER));
         item->base.data = data;
@@ -2351,8 +2330,7 @@ i32 eduiItemPropSetText(edui_prop_s *item, char *text) {
         item->property_text = NULL;
     }
     if (item->property_text == NULL) {
-        item->property_text =
-            NuAlloc(NuStrLen(text) + 1, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x110d);
+        item->property_text = NuAlloc(NuStrLen(text) + 1, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x110d);
     }
     if (item->property_text) {
         NuStrCpy(item->property_text, text);
@@ -2521,8 +2499,7 @@ static i32 EduiPropOverValuePc(edui_interact_s *interact) {
 
 static i32 EduiPropOverButtonPc(edui_prop_s *property) {
     return edui_cursor_x >= property->button_x && edui_cursor_y >= property->button_y * 0.5 &&
-           edui_cursor_x < property->button_x + property->button_size &&
-           edui_cursor_y < (property->button_y + property->button_size) * 0.5;
+           edui_cursor_x < property->button_x + property->button_size && edui_cursor_y < (property->button_y + property->button_size) * 0.5;
 }
 
 static i32 eduicbInteractProp(edui_interact_s *interact) {
@@ -2581,8 +2558,8 @@ static void eduicbItemDestroyProp(eduimenu_s *menu, eduiitem_s *item) {
 
 static void EduiDrawLinePc(f32 x0, f32 y0, f32 x1, f32 y1, u32 colour, NUMTL *material) {
     if (edui_donotdraw == 0) {
-        NuRndrLine2di((i32)(x0 * EduiScaleXPc), (i32)(y0 * EduiScaleYPc), (i32)(x1 * EduiScaleXPc),
-                      (i32)(y1 * EduiScaleYPc), colour, material);
+        NuRndrLine2di((i32)(x0 * EduiScaleXPc), (i32)(y0 * EduiScaleYPc), (i32)(x1 * EduiScaleXPc), (i32)(y1 * EduiScaleYPc), colour,
+                      material);
     }
 }
 
@@ -2648,29 +2625,24 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
         f32 edit_width = draw_width - property->label_width - 4.0;
         f32 caret_x;
         text_width = EDUI_MAX(text_width, edit_width);
-        EduiDrawRectPc(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted],
-                       (NUMTL *)uimtls[0]);
+        EduiDrawRectPc(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[0]);
         if (edui_donotdraw == 0) {
-            NuRndrRect2di((i32)((draw_x + property->label_width + 2.0) * EduiScaleXPc),
-                          (i32)((draw_y + 2.0) * EduiScaleYPc), (i32)(text_width * EduiScaleXPc),
-                          (i32)((row_height - 4.0) * EduiScaleYPc), 0xffffffff, (NUMTL *)uimtls[0]);
+            NuRndrRect2di((i32)((draw_x + property->label_width + 2.0) * EduiScaleXPc), (i32)((draw_y + 2.0) * EduiScaleYPc),
+                          (i32)(text_width * EduiScaleXPc), (i32)((row_height - 4.0) * EduiScaleYPc), 0xffffffff, (NUMTL *)uimtls[0]);
         }
         for (depth = 0; depth < property->depth; depth++) {
             f32 guide_x = draw_x + (depth + 0.5) * indent_width;
             if (edui_donotdraw == 0) {
-                NuRndrLine2di((i32)(guide_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc),
-                              (i32)(guide_x * EduiScaleXPc), (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000,
-                              (NUMTL *)uimtls[0]);
+                NuRndrLine2di((i32)(guide_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc), (i32)(guide_x * EduiScaleXPc),
+                              (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000, (NUMTL *)uimtls[0]);
             }
         }
         if (edui_donotdraw == 0) {
             NuRndrLine2di((i32)((draw_x + property->label_width) * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc),
-                          (i32)((draw_x + property->label_width) * EduiScaleXPc),
-                          (i32)((draw_y + row_height) * EduiScaleYPc), divider_colours[property->divider_active],
-                          (NUMTL *)uimtls[0]);
+                          (i32)((draw_x + property->label_width) * EduiScaleXPc), (i32)((draw_y + row_height) * EduiScaleYPc),
+                          divider_colours[property->divider_active], (NUMTL *)uimtls[0]);
         }
-        eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation,
-                           property->label_width, item->text);
+        eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation, property->label_width, item->text);
         EduiFntPrintScaledPc(edui_font, draw_x + property->label_width + 2.0f, draw_y + baseline, 16, eduiPropTextEdit);
         NuStrNCpy(prefix, eduiPropTextEdit, eduiPropTextPos + 1);
         prefix[eduiPropTextPos + 1] = '\0';
@@ -2684,34 +2656,30 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
         property->button_x = draw_x + draw_width - (property->button_size + 1.0f);
         property->button_y = draw_y + 1.0f;
         if (menu != NULL && EduiMenuChainActivePc(menu)) {
-            EduiDrawRectPc(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted],
-                           (NUMTL *)uimtls[ui_bgmtl]);
+            EduiDrawRectPc(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
         }
         EduiDrawLinePc(draw_x + property->label_width, draw_y, draw_x + property->label_width, draw_y + row_height,
                        divider_colours[property->divider_active], (NUMTL *)uimtls[0]);
         for (depth = 0; depth < property->depth; depth++) {
             f32 guide_x = draw_x + (depth + 0.5) * indent_width;
             if (edui_donotdraw == 0) {
-                NuRndrLine2di((i32)(guide_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc),
-                              (i32)(guide_x * EduiScaleXPc), (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000,
-                              (NUMTL *)uimtls[0]);
+                NuRndrLine2di((i32)(guide_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc), (i32)(guide_x * EduiScaleXPc),
+                              (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000, (NUMTL *)uimtls[0]);
             }
         }
-        eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation,
-                           property->label_width, item->text);
+        eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation, property->label_width, item->text);
         value_x = property->button_x - 1.0;
         clip_x = draw_x + property->label_width;
-        eduiFntPrintClipEx(edui_font, value_x, draw_y + baseline, 32, clip_x, value_x - clip_x,
-                           property->property_text);
+        eduiFntPrintClipEx(edui_font, value_x, draw_y + baseline, 32, clip_x, value_x - clip_x, property->property_text);
         if (property->button_type == 3 && edui_donotdraw == 0) {
             NuRndrRect2di((i32)(property->button_x * EduiScaleXPc), (i32)(property->button_y * EduiScaleYPc),
-                          (i32)(property->button_size * EduiScaleXPc), (i32)(property->button_size * EduiScaleYPc),
-                          property->button_colour, (NUMTL *)uimtls[0]);
+                          (i32)(property->button_size * EduiScaleXPc), (i32)(property->button_size * EduiScaleYPc), property->button_colour,
+                          (NUMTL *)uimtls[0]);
         }
         if (edui_donotdraw == 0) {
             NuRndrLineRect2di((i32)(property->button_x * EduiScaleXPc), (i32)(property->button_y * EduiScaleYPc),
-                              (i32)(property->button_size * EduiScaleXPc), (i32)(property->button_size * EduiScaleYPc),
-                              0xff000000, (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+                              (i32)(property->button_size * EduiScaleXPc), (i32)(property->button_size * EduiScaleYPc), 0xff000000,
+                              (NUMTL *)uimtls[EduiSelectionMaterialPc]);
         }
         if (property->button_type == 1) {
             points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleXPc);
@@ -2748,10 +2716,9 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
     return (i32)row_height;
 }
 
-eduiitem_s *eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *changed, void *button, i32 button_type,
-                                 char *text, char *value, i32 extra_data) {
-    edui_prop_s *item =
-        NuAlloc(sizeof(edui_prop_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1327);
+eduiitem_s *eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *changed, void *button, i32 button_type, char *text,
+                                 char *value, i32 extra_data) {
+    edui_prop_s *item = NuAlloc(sizeof(edui_prop_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1327);
     if (item) {
         memset(item, 0, sizeof(edui_prop_s));
         item->base.data = data;
@@ -2777,8 +2744,8 @@ eduiitem_s *eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *
     return NULL;
 }
 
-eduiitem_s *eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button, i32 button_type,
-                               char *text, char *value) {
+eduiitem_s *eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button, i32 button_type, char *text,
+                               char *value) {
     return eduiItemPropCreateEx(data, colours, selected, changed, button, button_type, text, value, 0);
 }
 
@@ -2914,8 +2881,7 @@ static i32 eduicbRenderFilter(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, 
 }
 
 eduiitem_s *eduiItemFilterCreate(u32 data, void *colours, char *text, char *value) {
-    edui_filter_s *item =
-        NuAlloc(sizeof(edui_filter_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x151a);
+    edui_filter_s *item = NuAlloc(sizeof(edui_filter_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x151a);
     if (item) {
         memset(item, 0, sizeof(edui_filter_s));
         item->prop.base.data = data;
@@ -3021,8 +2987,7 @@ i32 eduicbRenderColourPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32
 i32 eduicbInteractColourPick(edui_interact_s *interact);
 
 eduiitem_s *eduiItemColourPickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_colour_pick_s *item =
-        NuAlloc(sizeof(edui_colour_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xb6c);
+    edui_colour_pick_s *item = NuAlloc(sizeof(edui_colour_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xb6c);
     if (item) {
         memset(item, 0, sizeof(edui_colour_pick_s));
         item->base.data = data;
@@ -3123,8 +3088,7 @@ static i32 eduicbProcessTexturePick(eduimenu_s *menu, eduiitem_s *item, f32 delt
 }
 
 eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_texture_pick_s *item =
-        NuAlloc(sizeof(edui_texture_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xce1);
+    edui_texture_pick_s *item = NuAlloc(sizeof(edui_texture_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xce1);
     if (item) {
         memset(item, 0, sizeof(edui_texture_pick_s));
         item->base.data = data;
@@ -3154,8 +3118,7 @@ void nugraphInit(nugraph_s *graph);
 i32 nugraphCalcCurve(nugraph_s *graph, i32 point_count);
 
 eduiitem_s *eduiItemGraphCreate(u32 data, void *colours, void *callback, nugraph_s *graph, i32 width, i32 height) {
-    edui_graph_s *item =
-        NuAlloc(sizeof(edui_graph_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xd9f);
+    edui_graph_s *item = NuAlloc(sizeof(edui_graph_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xd9f);
     i32 i;
     if (item) {
         memset(item, 0, sizeof(edui_graph_s));
@@ -3188,10 +3151,8 @@ eduiitem_s *eduiItemGraphCreate(u32 data, void *colours, void *callback, nugraph
     return NULL;
 }
 
-eduiitem_s *eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum, f32 range, f32 value,
-                                 char *text) {
-    edui_slider_s *item =
-        NuAlloc(sizeof(edui_slider_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xfd4);
+eduiitem_s *eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum, f32 range, f32 value, char *text) {
+    edui_slider_s *item = NuAlloc(sizeof(edui_slider_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xfd4);
     if (item) {
         memset(item, 0, sizeof(edui_slider_s));
         item->base.data = data;
@@ -3216,10 +3177,8 @@ eduiitem_s *eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callb
     return NULL;
 }
 
-eduiitem_s *eduiItemSliderCreateInt(u32 data, void *colours, i32 group, void *callback, i32 minimum, i32 maximum,
-                                    i32 value, char *text) {
-    edui_slider_s *item =
-        (edui_slider_s *)eduiItemSliderCreate(data, colours, group, callback, minimum, maximum, value, text);
+eduiitem_s *eduiItemSliderCreateInt(u32 data, void *colours, i32 group, void *callback, i32 minimum, i32 maximum, i32 value, char *text) {
+    edui_slider_s *item = (edui_slider_s *)eduiItemSliderCreate(data, colours, group, callback, minimum, maximum, value, text);
     if (item) {
         eduiItemSliderSetFmt(item, "(%d)");
         item->granularity = 1.0f;
@@ -3228,10 +3187,9 @@ eduiitem_s *eduiItemSliderCreateInt(u32 data, void *colours, i32 group, void *ca
     return &item->base;
 }
 
-eduiitem_s *eduiItemColourSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum, f32 range,
-                                       f32 value, u8 red, u8 green, u8 blue, char *text) {
-    edui_colour_slider_s *item =
-        NuAlloc(sizeof(edui_colour_slider_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1a53);
+eduiitem_s *eduiItemColourSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum, f32 range, f32 value, u8 red,
+                                       u8 green, u8 blue, char *text) {
+    edui_colour_slider_s *item = NuAlloc(sizeof(edui_colour_slider_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1a53);
     if (item) {
         memset(item, 0, sizeof(edui_colour_slider_s));
         item->base.base.data = data;
@@ -3511,8 +3469,7 @@ copy:
 }
 
 eduiitem_s *eduiItemTextPickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_textpicker_s *item =
-        NuAlloc(sizeof(edui_textpicker_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x63d);
+    edui_textpicker_s *item = NuAlloc(sizeof(edui_textpicker_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x63d);
     if (item) {
         memset(item, 0, sizeof(edui_textpicker_s));
         item->base.data = data;
@@ -3550,8 +3507,7 @@ copy:
 }
 
 eduiitem_s *eduiItemFilePickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_file_pick_s *item =
-        NuAlloc(sizeof(edui_file_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x950);
+    edui_file_pick_s *item = NuAlloc(sizeof(edui_file_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x950);
     if (item) {
         memset(item, 0, sizeof(edui_file_pick_s));
         item->base.data = data;
@@ -3757,9 +3713,7 @@ void eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
                 if (label_width > property_label_width) {
                     property_label_width = label_width;
                 }
-                item_text_width = property->property_text != NULL
-                                      ? (i32)NuQFntPrintLenU(edui_font, property->property_text) >> 4
-                                      : 30;
+                item_text_width = property->property_text != NULL ? (i32)NuQFntPrintLenU(edui_font, property->property_text) >> 4 : 30;
                 if (item_text_width > property_value_width) {
                     property_value_width = item_text_width;
                 }
@@ -3833,10 +3787,10 @@ i32 EduiRenderItemPc(eduiitem_s *item, eduimenu_s *menu, i32 x, i32 y, i32 width
     return height;
 }
 
-#define EDUI_DRAW_LINE_I(x0, y0, x1, y1, colour, material)                                                             \
-    do {                                                                                                               \
-        if (!edui_donotdraw)                                                                                           \
-            NuRndrLine2di(x0, y0, x1, y1, colour, material);                                                           \
+#define EDUI_DRAW_LINE_I(x0, y0, x1, y1, colour, material)                                                                                 \
+    do {                                                                                                                                   \
+        if (!edui_donotdraw)                                                                                                               \
+            NuRndrLine2di(x0, y0, x1, y1, colour, material);                                                                               \
     } while (0)
 
 static void EduiDrawDisabledItemPc(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
@@ -3847,8 +3801,7 @@ static void EduiDrawDisabledItemPc(eduiitem_s *item, i32 x, i32 y, i32 width, i3
         i32 bottom = top + (height << 3);
         EDUI_DRAW_LINE_I(left, top, left + span / 4, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
         EDUI_DRAW_LINE_I(left + span / 4, top, left + span / 2, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
-        EDUI_DRAW_LINE_I(left + span / 2, top, left + span * 3 / 4, bottom, item->colours[0],
-                         (NUMTL *)uimtls[ui_bgmtl]);
+        EDUI_DRAW_LINE_I(left + span / 2, top, left + span * 3 / 4, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
         EDUI_DRAW_LINE_I(left + span * 3 / 4, top, left + span, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
     }
 }
@@ -4279,8 +4232,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
     picker->reopen_directory = 0;
     filepick_menu = menu;
     filepick_item = picker;
-    directory_menu =
-        eduiMenuCreate(menu->x + 20, menu->y + 20, 250, 300, menu->font, eduicbDestroyDirectoryList, "Directory");
+    directory_menu = eduiMenuCreate(menu->x + 20, menu->y + 20, 250, 300, menu->font, eduicbDestroyDirectoryList, "Directory");
     if (directory_menu == NULL) {
         return;
     }
@@ -4292,8 +4244,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
             dir_size++;
         }
         if (picker->compare_entries) {
-            qsort(dir_list, dir_size, sizeof(FILE_DIRECTORY_ENTRY_PC),
-                  (i32(*)(const void *, const void *))picker->compare_entries);
+            qsort(dir_list, dir_size, sizeof(FILE_DIRECTORY_ENTRY_PC), (i32(*)(const void *, const void *))picker->compare_entries);
         }
         if (picker->filename[0]) {
             item = eduiItemSelCreate(9999, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, "<..>");
@@ -4323,8 +4274,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
             eduiMenuAddItem(directory_menu, item);
         }
         if (directory_menu->first == NULL) {
-            eduiMenuAddItem(directory_menu, eduiItemSelCreate(dir_size, picker->base.colours, 0, 1,
-                                                              eduicbSelectDirectoryExit, "No Files"));
+            eduiMenuAddItem(directory_menu, eduiItemSelCreate(dir_size, picker->base.colours, 0, 1, eduicbSelectDirectoryExit, "No Files"));
         }
         NuFileCloseDir(directory);
     }
@@ -4421,8 +4371,7 @@ void FS_GetDirList(char *path, char *filter, char *filter_out) {
         next = FS_FileList + 10;
         if (directory != 0) {
             while ((length = NuFileReadDir(directory, &entry)) != 0) {
-                if ((entry.name[0] == '.' && (entry.name[1] == 0 || (entry.name[1] == '.' && entry.name[2] == 0))) ||
-                    !(entry.flags & 8)) {
+                if ((entry.name[0] == '.' && (entry.name[1] == 0 || (entry.name[1] == '.' && entry.name[2] == 0))) || !(entry.flags & 8)) {
                     continue;
                 }
                 if (next + length + 8 >= FS_FileList + sizeof(FS_FileList)) {
@@ -4484,8 +4433,7 @@ f32 edui_cursor_y = 50.0f;
 
 /* Drops a locked interaction whose owner went away. */
 static void EduiReleaseStaleInteractPc(void) {
-    if (eduiInteractLocked && (!eduiInteractLocked->menu || !eduiInteractLocked->item) &&
-        eduiInteractLocked->field_20) {
+    if (eduiInteractLocked && (!eduiInteractLocked->menu || !eduiInteractLocked->item) && eduiInteractLocked->field_20) {
         eduiInteractLocked = NULL;
     }
 }
@@ -4555,8 +4503,7 @@ i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD_PC *pad) {
     (void)pad;
     if (edmain_cursor_enabled) {
         if (eduiInteractLocked != NULL) {
-            if ((eduiInteractLocked->menu == NULL || eduiInteractLocked->item == NULL) &&
-                eduiInteractLocked->field_20) {
+            if ((eduiInteractLocked->menu == NULL || eduiInteractLocked->item == NULL) && eduiInteractLocked->field_20) {
                 eduiInteractLocked = NULL;
             }
         }
@@ -4590,19 +4537,16 @@ i32 eduiMenuProcessAux(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
 }
 
 void FS_MakeDateTimeString(const FS_PACKED_ENTRY_HEADER *entry, char *output) {
-    NuSPrintf(output, " %.2d/%.2d/%d %.2d:%.2d:%.2d", entry->encoded_day - 'A', entry->encoded_month - 'A',
-              entry->encoded_year + 1915, entry->encoded_hour - 'A', entry->encoded_minute - 'A',
-              entry->encoded_second - 'A');
+    NuSPrintf(output, " %.2d/%.2d/%d %.2d:%.2d:%.2d", entry->encoded_day - 'A', entry->encoded_month - 'A', entry->encoded_year + 1915,
+              entry->encoded_hour - 'A', entry->encoded_minute - 'A', entry->encoded_second - 'A');
 }
 
 void FS_MakeTimeString(const FS_PACKED_ENTRY_HEADER *entry, char *output) {
-    NuSPrintf(output, " %.2d:%.2d:%.2d", entry->encoded_hour - 'A', entry->encoded_minute - 'A',
-              entry->encoded_second - 'A');
+    NuSPrintf(output, " %.2d:%.2d:%.2d", entry->encoded_hour - 'A', entry->encoded_minute - 'A', entry->encoded_second - 'A');
 }
 
 void FS_MakeDateString(const FS_PACKED_ENTRY_HEADER *entry, char *output) {
-    NuSPrintf(output, " %.2d/%.2d/%d", entry->encoded_day - 'A', entry->encoded_month - 'A',
-              entry->encoded_year + 1915);
+    NuSPrintf(output, " %.2d/%.2d/%d", entry->encoded_day - 'A', entry->encoded_month - 'A', entry->encoded_year + 1915);
 }
 
 void FS_MoveCursorDown(i32 steps) {
@@ -4830,15 +4774,13 @@ void RenderFileSel3(i32 draw_title) {
             f32 length;
             f64 time_x;
             NuQFntSetPointSize(system_qfont, 0.8f, 1.0f);
-            NuSPrintf(date_time, " %.2d:%.2d:%.2d", header->encoded_hour - 'A', header->encoded_minute - 'A',
-                      header->encoded_second - 'A');
+            NuSPrintf(date_time, " %.2d:%.2d:%.2d", header->encoded_hour - 'A', header->encoded_minute - 'A', header->encoded_second - 'A');
             length = NuQFntPrintLenU(system_qfont, date_time);
             NuQFntSetColour(system_qfont, 0x80208080);
             time_x = (width + x) * 16.0 - length;
             NuQFntMove(system_qfont, time_x, line_y, 0.0f);
             NuQFntPrintU(system_qfont, date_time);
-            NuSPrintf(date_time, " %.2d/%.2d/%d", header->encoded_day - 'A', header->encoded_month - 'A',
-                      header->encoded_year + 1915);
+            NuSPrintf(date_time, " %.2d/%.2d/%d", header->encoded_day - 'A', header->encoded_month - 'A', header->encoded_year + 1915);
             length = NuQFntPrintLenU(system_qfont, date_time);
             NuQFntSetColour(system_qfont, 0x80808020);
             NuQFntMove(system_qfont, time_x - length, line_y, 0.0f);
@@ -5065,8 +5007,7 @@ void ProcessFileSel(f32 elapsed, FRAME_PAD_PC *pad) {
     }
 }
 
-void FS_OpenFileSelPc(char *title, char *path, char *filter, char *filter_out,
-                      void (*callback)(char *path, char *name)) {
+void FS_OpenFileSelPc(char *title, char *path, char *filter, char *filter_out, void (*callback)(char *path, char *name)) {
     if (title) {
         NuStrCpy(FS_Title, title);
     }
@@ -5118,8 +5059,7 @@ static i32 eduicbRenderFileSelPc(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 
 }
 
 eduiitem_s *eduiItemFileSelCreatePc(u32 data, void *colours, void *callback, char *text) {
-    EDUI_FILE_SELECT *item =
-        NuAlloc(sizeof(EDUI_FILE_SELECT), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\fileselect.c", 0x54a);
+    EDUI_FILE_SELECT *item = NuAlloc(sizeof(EDUI_FILE_SELECT), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\fileselect.c", 0x54a);
     if (item) {
         memset(item, 0, sizeof(EDUI_FILE_SELECT));
         item->base.data = data;
@@ -5156,8 +5096,7 @@ void CreateTestMenu(void *font) {
     submenu0 = eduiMenuCreate(70, 70, 180, 50, font, NULL, ("SubMenu0"));
     if (submenu0 != NULL) {
         eduiMenuAddItem(submenu0, eduiItemSelCreate(0, colours, 0, 1, (void *)cbSel, ("Sub Sel")));
-        eduiMenuAddItem(submenu0,
-                        eduiItemSelCreate((u32)(submenu1), colours, 0, 0, (void *)cbSubMenu, ("Sub Menu 1..")));
+        eduiMenuAddItem(submenu0, eduiItemSelCreate((u32)(submenu1), colours, 0, 0, (void *)cbSubMenu, ("Sub Menu 1..")));
         eduiMenuAddItem(submenu0, eduiItemSelCreate(2, colours, 0, 1, (void *)cbSel, ("Sub Sel")));
     }
 
@@ -5165,8 +5104,7 @@ void CreateTestMenu(void *font) {
     if (testmenu0 != NULL) {
         edui_gradient_pick_s *gradient;
         edui_gradient_pick_s *grey_gradient;
-        eduiMenuAddItem(testmenu0,
-                        eduiItemSelCreate((u32)(submenu0), colours, 0, 0, (void *)cbSubMenu, ("Sub Menu 0..")));
+        eduiMenuAddItem(testmenu0, eduiItemSelCreate((u32)(submenu0), colours, 0, 0, (void *)cbSubMenu, ("Sub Menu 0..")));
 
         gradient = (edui_gradient_pick_s *)(eduiItemGradPickCreate(1, colours, (void *)cbGradChange, ("GradPick")));
         if (gradient != NULL) {
@@ -5175,8 +5113,7 @@ void CreateTestMenu(void *font) {
         }
         eduiMenuAddItem(testmenu0, (eduiitem_s *)gradient);
 
-        grey_gradient = (edui_gradient_pick_s *)(eduiItemGreyGradPickCreate(1, colours, (EdUiItemCallback)cbGradChange,
-                                                                            ("GreyGradPick")));
+        grey_gradient = (edui_gradient_pick_s *)(eduiItemGreyGradPickCreate(1, colours, (EdUiItemCallback)cbGradChange, ("GreyGradPick")));
         if (grey_gradient != NULL) {
             eduiGradStageAdd(grey_gradient, 0.0f, 0.0f, 0.0f, 0.0f);
             eduiGradStageAdd(grey_gradient, 1.0f, 0.0f, 0.0f, 1.0f);

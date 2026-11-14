@@ -47,8 +47,8 @@ extern "C" {
     i32 NuSpecialGetOnScreenFn(NUSPECIALHANDLE *special);
     i32 NuSpecialGetVisibilityFn(NUSPECIALHANDLE *special);
     i32 NuSpecialGetInstanceix(NUSPECIALHANDLE *);
-    void PCBuildLegacySkeletalJoint(DWA_CURVE_CELL *, i8 *, u8, NUANIM_TIME2_PC *, NUHGOBJ_EVAL_JOINT_PC *, NUVEC *,
-                                    NUVEC *, NUMTX *, NUHGOBJ_JOINT_OVERRIDE_PC *, NUVEC *, NUVEC *);
+    void PCBuildLegacySkeletalJoint(DWA_CURVE_CELL *, i8 *, u8, NUANIM_TIME2_PC *, NUHGOBJ_EVAL_JOINT_PC *, NUVEC *, NUVEC *, NUMTX *,
+                                    NUHGOBJ_JOINT_OVERRIDE_PC *, NUVEC *, NUVEC *);
     void NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
     f32 NuSpecialGetOriginRadius(NUSPECIALHANDLE *special);
     void NuSpecialList(struct NUGSCN_s *scene);

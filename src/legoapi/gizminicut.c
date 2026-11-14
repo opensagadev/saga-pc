@@ -116,9 +116,9 @@ static void GizMiniCut_Play(MINICUT_PC *cut) {
         if (part->field_of_view > 0.0f) {
             flags |= 0x1000;
         }
-        GameCameraMakeMiniCut3(flags, part->distance, part->pitch, part->yaw, part->roll, part->resolved_position, 0,
-                               &position, cut->blend_in, cut->blend_out, cut->tracking_speed, cut->hold_time,
-                               part->duration, part->field_of_view, cut->end_time, 0, NULL, -1, 2);
+        GameCameraMakeMiniCut3(flags, part->distance, part->pitch, part->yaw, part->roll, part->resolved_position, 0, &position,
+                               cut->blend_in, cut->blend_out, cut->tracking_speed, cut->hold_time, part->duration, part->field_of_view,
+                               cut->end_time, 0, NULL, -1, 2);
         if (editor_active == 0) {
             cut->played = 1;
         }
@@ -208,10 +208,8 @@ static void *GizMiniCut_ReserveBufferSpace(WORLDINFO *world) {
         memset(view->minicuts, 0, world->current_level->max_minicuts * sizeof(MINICUT_PC));
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         view->parts = (MINICUT_PART_PC *)world->giz_buffer.addr;
-        world->giz_buffer.addr +=
-            world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART_PC);
-        memset(view->parts, 0,
-               world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART_PC));
+        world->giz_buffer.addr += world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART_PC);
+        memset(view->parts, 0, world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART_PC));
         for (i = 0; i < world->current_level->max_minicuts; ++i) {
             view->minicuts[i].parts = &view->parts[i * world->current_level->max_minicut_stages];
             view->minicuts[i].blend_out = 2.5f;

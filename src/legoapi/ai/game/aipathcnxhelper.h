@@ -64,9 +64,8 @@ typedef i32 (*AI_HELPER_FILTER_PC)(AI_HELPER_SLOT_PC *, struct gameobject_s *, s
 #ifdef __cplusplus
 extern "C" {
 #endif
-    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, struct gameobject_s *object,
-                                               struct AIPATHCNX_PC *connection, u8 direction, u8 type,
-                                               AI_HELPER_FILTER_PC filter);
+    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, struct gameobject_s *object, struct AIPATHCNX_PC *connection,
+                                               u8 direction, u8 type, AI_HELPER_FILTER_PC filter);
 #ifdef __cplusplus
 }
 #endif

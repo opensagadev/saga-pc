@@ -81,9 +81,9 @@ extern "C" i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format
     }
 
     PC_GEOMETRY_PUBLISH_RECORD_PC *old = PcGeometryRegistryPc;
-    PcGeometryRegistryPc = (PC_GEOMETRY_PUBLISH_RECORD_PC *)NuAlloc(
-        (i32)(((u32)PcGeometryRegistryCountPc + 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD_PC)),
-        "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x7c);
+    PcGeometryRegistryPc =
+        (PC_GEOMETRY_PUBLISH_RECORD_PC *)NuAlloc((i32)(((u32)PcGeometryRegistryCountPc + 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD_PC)),
+                                                 "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x7c);
     for (i32 i = 0; i < PcGeometryRegistryCountPc; ++i) {
         PcGeometryRegistryPc[i] = old[i];
     }
@@ -100,9 +100,8 @@ extern "C" i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format
     if (!PcInitializeDynamicGeometryBuffersPc((PC_DYNAMIC_GEOMETRY_PC *)record, count)) {
         return 0;
     }
-    record->sort_items =
-        (PC_GEOMETRY_SORT_ITEM_PC *)NuAlloc((i32)((u32)count * sizeof(PC_GEOMETRY_PUBLISH_SORT_ITEM)),
-                                            "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x91);
+    record->sort_items = (PC_GEOMETRY_SORT_ITEM_PC *)NuAlloc((i32)((u32)count * sizeof(PC_GEOMETRY_PUBLISH_SORT_ITEM)),
+                                                             "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x91);
     for (i32 i = 0; i < count; ++i) {
         ((PC_GEOMETRY_PUBLISH_SORT_ITEM *)record->sort_items)[i].output_index = (u32)i;
     }
@@ -115,8 +114,8 @@ extern "C" i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format
     }
     if (PcGeometryMatrixCapacityPc < maximum || PcGeometryTransformsPc == NULL) {
         PcGeometryMatrixCapacityPc = maximum;
-        void *raw = NuAlloc((i32)(((u32)maximum + 2) * sizeof(NUMTX)),
-                            "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x9d);
+        void *raw =
+            NuAlloc((i32)(((u32)maximum + 2) * sizeof(NUMTX)), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x9d);
         PcGeometryTransformsPc = (PC_GEOMETRY_BASIS_PC *)(((u32)raw + 0x7f) & 0xffffff00);
         if (PcGeometryTransformsPc == NULL) {
             PcGeometryMatrixCapacityPc = -1;
@@ -127,8 +126,7 @@ extern "C" i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format
             NuFree(PcGeometryOutputPc, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xaa);
         }
         PcGeometryOutputCapacityPc = count;
-        void *raw = NuAlloc((i32)((u32)count * 0x50 + 0x80),
-                            "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xae);
+        void *raw = NuAlloc((i32)((u32)count * 0x50 + 0x80), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xae);
         PcGeometryOutputPc = (PC_GEOMETRY_OUTPUT_PC *)(((u32)raw + 0x7f) & 0xffffff00);
         if (PcGeometryOutputPc == NULL) {
             PcGeometryOutputCapacityPc = -1;
@@ -145,9 +143,9 @@ extern "C" i32 PcUnregisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *form
             fun_005fbd40(&PcGeometryRegistryPc[i]);
             if (PcGeometryRegistryCountPc != 0) {
                 PC_GEOMETRY_PUBLISH_RECORD_PC *old = PcGeometryRegistryPc;
-                PcGeometryRegistryPc = (PC_GEOMETRY_PUBLISH_RECORD_PC *)NuAlloc(
-                    ((PcGeometryRegistryCountPc - 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD_PC)),
-                    "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xd0);
+                PcGeometryRegistryPc =
+                    (PC_GEOMETRY_PUBLISH_RECORD_PC *)NuAlloc(((PcGeometryRegistryCountPc - 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD_PC)),
+                                                             "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xd0);
                 i32 count = 0;
                 for (i32 j = 0; j < PcGeometryRegistryCountPc; ++j) {
                     if (format != old[j].format) {

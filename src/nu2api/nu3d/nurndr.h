@@ -39,8 +39,7 @@ extern "C" {
     extern PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128];
     STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC[4]) == 0x90);
     void NuRndrShadPolys(struct numtl_s *);
-    i32 NuRndrSetDirectionalLightsPS(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *,
-                                     const NUVEC *);
+    i32 NuRndrSetDirectionalLightsPS(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *);
     void NuRndrAddShadow(NUVEC *, f32, i32, i32, i32, i32);
     void NuRndrAxisArrowsMtx(struct numtx_s *, f32, struct numtl_s *);
     i32 NuRndrSetAmbientLightPS(const NUVEC *colour);
@@ -81,10 +80,8 @@ extern "C" {
     i32 NuRndrSwapScreen(i32 mode);
     i32 NuRndrSwapScreenEx(i32 mode, void (*callback)(void));
     void NuRndrEndSceneEx(i32 flags);
-    void NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
-                         struct numtl_s *material);
-    void NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours,
-                             void *material);
+    void NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, struct numtl_s *material);
+    void NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours, void *material);
 #ifdef __cplusplus
 }
 #endif

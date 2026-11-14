@@ -40,12 +40,12 @@ extern "C" void InitOnce(i32 argc, char **argv) {
                    0x50, 0x4c, 0x4f, -1,   -1, -1, 0x9c, -1, -1, -1, -1,   -1};
     i8 order[] = {0, 1, 2, 3, 12, 13, 14, 15, 16, 18, 23, 4, 5, 6, 7, 8, 10, 11, 9, -1};
     InitPadDescriptorsPc((const u16 *)first, NULL, (const u16 *)third, NULL, order);
-    NuInitHardwarePc(&permbuffer_base, &superbuffer_end, 0, 4, InitOnceHostFsPc, 24, StartupDatNames, 7, 6,
-                     InitOnceFileModePc, 7, InitOnceEjectPc, 8, 0x500000, 18, PAL ? 8 : 0, 33, 512, PAL ? 256 : 224, 26,
-                     0x1000, 21, 1, 5, &InitOnceDvdPc, NOSOUND ? 28 : 10, 0, 0x640, 0, 0, 11, 5, 0x1fff, 14, Game_NuPad,
-                     15, Game_NuPad + 1, 46, "LEGO\xae Star Wars\x99: The Complete Saga", 45,
-                     "LEGO\xae Star Wars\x99: The Complete Saga", 47, "LUCASARTS\\LEGOSTARWARSSAGA", 48, "LucasArts",
-                     49, "LEGO Star Wars - The Complete Saga", 52, InitOnceSelector34Pc, 70, 1, 71, 1, 73, 1, 75, 1, 0);
+    NuInitHardwarePc(&permbuffer_base, &superbuffer_end, 0, 4, InitOnceHostFsPc, 24, StartupDatNames, 7, 6, InitOnceFileModePc, 7,
+                     InitOnceEjectPc, 8, 0x500000, 18, PAL ? 8 : 0, 33, 512, PAL ? 256 : 224, 26, 0x1000, 21, 1, 5, &InitOnceDvdPc,
+                     NOSOUND ? 28 : 10, 0, 0x640, 0, 0, 11, 5, 0x1fff, 14, Game_NuPad, 15, Game_NuPad + 1, 46,
+                     "LEGO\xae Star Wars\x99: The Complete Saga", 45, "LEGO\xae Star Wars\x99: The Complete Saga", 47,
+                     "LUCASARTS\\LEGOSTARWARSSAGA", 48, "LucasArts", 49, "LEGO Star Wars - The Complete Saga", 52, InitOnceSelector34Pc, 70,
+                     1, 71, 1, 73, 1, 75, 1, 0);
     NuTimeBarInit();
     pNuCam = NuCameraCreate();
     InitPanel(Game.options_save.widescreen);

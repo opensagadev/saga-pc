@@ -19,69 +19,62 @@ typedef struct render_post_prim_vertex_s { // size 0x18
     f32 v;                                 // 0x14
 } RENDER_POST_PRIM_VERTEX_PC;
 
-#define GRID_TAN_HALF_FOV(half_fov)                                                                                    \
-    (NuTrigTable[(i32)((half_fov) * 10430.378f) >> 1 & 0x7fff] /                                                       \
-     NuTrigTable[(16384 - (i32)((half_fov) * -10430.378f)) >> 1 & 0x7fff])
+#define GRID_TAN_HALF_FOV(half_fov)                                                                                                        \
+    (NuTrigTable[(i32)((half_fov) * 10430.378f) >> 1 & 0x7fff] / NuTrigTable[(16384 - (i32)((half_fov) * -10430.378f)) >> 1 & 0x7fff])
 #ifndef MIN
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 #ifndef MAX
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
-#define RGBA_TO_NUCOLOUR32(r, g, b, a)                                                                                 \
-    ((u32)(u8)(r) | ((u32)(u8)(g) << 8) | ((u32)(u8)(b) << 16) | ((u32)(u8)(a) << 24))
-#define ALPHA_GRID_INLINE_COLOUR                                                                                       \
-    colour = RGBA_TO_NUCOLOUR32((MIN(255.0f, (MAX(0.0f, brightness)))), (MIN(255.0f, (MAX(0.0f, brightness)))),        \
+#define RGBA_TO_NUCOLOUR32(r, g, b, a) ((u32)(u8)(r) | ((u32)(u8)(g) << 8) | ((u32)(u8)(b) << 16) | ((u32)(u8)(a) << 24))
+#define ALPHA_GRID_INLINE_COLOUR                                                                                                           \
+    colour = RGBA_TO_NUCOLOUR32((MIN(255.0f, (MAX(0.0f, brightness)))), (MIN(255.0f, (MAX(0.0f, brightness)))),                            \
                                 (MIN(255.0f, (MAX(0.0f, brightness)))), 128)
-#define ALPHA_GRID_CLAMP_COLOUR                                                                                        \
-    do {                                                                                                               \
-        const u32 component = NuPrim2DAddCLR(0, 255, brightness);                                                      \
-        colour = RGBA_TO_NUCOLOUR32(component, component, component, 128);                                             \
+#define ALPHA_GRID_CLAMP_COLOUR                                                                                                            \
+    do {                                                                                                                                   \
+        const u32 component = NuPrim2DAddCLR(0, 255, brightness);                                                                          \
+        colour = RGBA_TO_NUCOLOUR32(component, component, component, 128);                                                                 \
     } while (0)
-#define ALPHA_GRID_VERTEX(vx, vy, colour_source)                                                                       \
-    do {                                                                                                               \
-        i32 colour;                                                                                                    \
-        u32 converted;                                                                                                 \
-        direction.x = (vx);                                                                                            \
-        direction.y = -(vy) * camera.aspect;                                                                           \
-        direction.z = adjacent;                                                                                        \
-        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);                                                           \
-        direction.w = 1.0f;                                                                                            \
-        NuVecMtxTransform((NUVEC *)&direction, (NUVEC *)&direction, &camera.mtx);                                      \
-        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);                                                           \
-        direction.w = 1.0f;                                                                                            \
-        brightness = direction.y * 0.5f + 0.5f;                                                                        \
-        if (brightness <= near_angle)                                                                                  \
-            brightness = near_scale * parameters->intensity;                                                           \
-        else if (brightness >= far_angle)                                                                              \
-            brightness = far_scale * parameters->intensity;                                                            \
-        else                                                                                                           \
-            brightness = ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity; \
-        if (parameters->directional) {                                                                                 \
-            f32 angle = (i16)(0x4000 - RenderPostASinPc(NuVecDot(&parameters->direction, (NUVEC *)&direction))) *      \
-                        0.005493164f;                                                                                  \
-            if (angle < parameters->direction_near_angle) {                                                            \
-                brightness += 128.0f * parameters->direction_far_scale;                                                \
-            } else if (!(angle > parameters->direction_far_angle)) {                                                   \
-                brightness +=                                                                                          \
-                    128.0f *                                                                                           \
-                    ((1.0f - NuPowFast((angle - parameters->direction_near_angle) /                                    \
-                                           (parameters->direction_far_angle - parameters->direction_near_angle),       \
-                                       parameters->direction_bias)) *                                                  \
-                         (parameters->direction_far_scale - parameters->direction_near_scale) +                        \
-                     parameters->direction_near_scale);                                                                \
-            }                                                                                                          \
-        }                                                                                                              \
-        colour_source;                                                                                                 \
-        if (NuPrimNeedsOverbrightening != 0) {                                                                         \
-            converted =                                                                                                \
-                ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);        \
-        } else {                                                                                                       \
-            converted =                                                                                                \
-                ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u); \
-        }                                                                                                              \
-        ((RENDER_POST_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;                       \
-        NuPrim2DAddXYZ((vx), (vy), 0.0f);                                                                              \
+#define ALPHA_GRID_VERTEX(vx, vy, colour_source)                                                                                           \
+    do {                                                                                                                                   \
+        i32 colour;                                                                                                                        \
+        u32 converted;                                                                                                                     \
+        direction.x = (vx);                                                                                                                \
+        direction.y = -(vy) * camera.aspect;                                                                                               \
+        direction.z = adjacent;                                                                                                            \
+        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);                                                                               \
+        direction.w = 1.0f;                                                                                                                \
+        NuVecMtxTransform((NUVEC *)&direction, (NUVEC *)&direction, &camera.mtx);                                                          \
+        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);                                                                               \
+        direction.w = 1.0f;                                                                                                                \
+        brightness = direction.y * 0.5f + 0.5f;                                                                                            \
+        if (brightness <= near_angle)                                                                                                      \
+            brightness = near_scale * parameters->intensity;                                                                               \
+        else if (brightness >= far_angle)                                                                                                  \
+            brightness = far_scale * parameters->intensity;                                                                                \
+        else                                                                                                                               \
+            brightness = ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity;                     \
+        if (parameters->directional) {                                                                                                     \
+            f32 angle = (i16)(0x4000 - RenderPostASinPc(NuVecDot(&parameters->direction, (NUVEC *)&direction))) * 0.005493164f;            \
+            if (angle < parameters->direction_near_angle) {                                                                                \
+                brightness += 128.0f * parameters->direction_far_scale;                                                                    \
+            } else if (!(angle > parameters->direction_far_angle)) {                                                                       \
+                brightness += 128.0f * ((1.0f - NuPowFast((angle - parameters->direction_near_angle) /                                     \
+                                                              (parameters->direction_far_angle - parameters->direction_near_angle),        \
+                                                          parameters->direction_bias)) *                                                   \
+                                            (parameters->direction_far_scale - parameters->direction_near_scale) +                         \
+                                        parameters->direction_near_scale);                                                                 \
+            }                                                                                                                              \
+        }                                                                                                                                  \
+        colour_source;                                                                                                                     \
+        if (NuPrimNeedsOverbrightening != 0) {                                                                                             \
+            converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);                    \
+        } else {                                                                                                                           \
+            converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);             \
+        }                                                                                                                                  \
+        ((RENDER_POST_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;                                           \
+        NuPrim2DAddXYZ((vx), (vy), 0.0f);                                                                                                  \
     } while (0)
 
 void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) {
@@ -172,11 +165,11 @@ typedef struct StatusPlayerModelPair { // size 0x4
     u16 model[2];                      // 0x0
 } StatusPlayerModelPair;
 
-#define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                  \
-    do {                                                                                                               \
-        (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                         \
-        (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                  \
-        ++(packet_arg)->stage_count;                                                                                   \
+#define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                                      \
+    do {                                                                                                                                   \
+        (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                                             \
+        (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                                      \
+        ++(packet_arg)->stage_count;                                                                                                       \
     } while (0)
 
 #undef STATUS_APPEND_STAGE_INLINE_PC

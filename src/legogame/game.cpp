@@ -10,25 +10,25 @@ static f32 BuckSnowmobRadiusPc = 0.2f;
 extern "C" void Game_WorldInfo_InitLast(WORLDINFO *world);
 extern "C" void Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y);
 
-extern "C" void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r,
-                               u8 header_g, u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g,
-                               u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b);
+extern "C" void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r, u8 header_g,
+                               u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g, u8 flash0_b, u8 flash1_r,
+                               u8 flash1_g, u8 flash1_b);
 #include <string.h>
 #include <stdio.h>
 extern "C" void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 #pragma data_seg(".data$NarrowSockExceptionsLswPc")
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4] = {
-    {"deathstarbattle_d", -1, 1, 67.5f, 999.0f},
+    {"deathstarbattle_d",  -1, 1, 67.5f, 999.0f},
     {"deathstar2battle_b", -1, 0, 67.5f, 999.0f},
     {"deathstar2battle_c", -1, 0, 30.0f, 999.0f},
-    {NULL, 0, 0, 0.0f, 0.0f},
+    {NULL,                 0,  0, 0.0f,  0.0f  },
 };
 #pragma data_seg()
 extern "C" void SurfaceMaskOn(u32 *surface_mask);
 extern "C" void Grabber_Reset(WORLDINFO *world);
 extern "C" void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *customiser);
-extern "C" u32 TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces,
-                                   u32 *obstacles, u32 *turrets, u32 *characters);
+extern "C" u32 TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces, u32 *obstacles, u32 *turrets,
+                                   u32 *characters);
 extern "C" void SurfaceMaskOff(u32 *surface_mask);
 extern "C" void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
 extern "C" void PodRace_IncreaseLap(void);
@@ -85,8 +85,7 @@ typedef struct SHOP_SAVE_VIEW {
 } SHOP_SAVE_VIEW;
 
 extern "C" i32 Hub_PanelBusy(void);
-#define GAME_PUBLISHER_ASSERT(expression)                                                                              \
-    typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
+#define GAME_PUBLISHER_ASSERT(expression) typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
 GAME_PUBLISHER_ASSERT(offsetof(SUIT_LAYERS_PC, flags) == 0xc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
@@ -225,11 +224,10 @@ extern i32 (*CheckMusicOtherFn)(void);
 extern i32 (*GameAudio_ActionMusicFn)(void);
 extern i32 (*PauseRenderOffFn)(void);
 i32 Hub_Outside(void);
-#define ACTION_MUSIC_PLAYER_FIGHTING(player)                                                                           \
-    ((player) != NULL &&                                                                                               \
-     ((player)->ai_packet.opponent != NULL ||                                                                          \
-      ((player)->ai_packet.nearest_opponent != NULL && (player)->ai_packet.nearest_opponent->dead == 0 &&              \
-       (player)->ai_packet.nearest_opponent_metric < 3.0f)))
+#define ACTION_MUSIC_PLAYER_FIGHTING(player)                                                                                               \
+    ((player) != NULL && ((player)->ai_packet.opponent != NULL ||                                                                          \
+                          ((player)->ai_packet.nearest_opponent != NULL && (player)->ai_packet.nearest_opponent->dead == 0 &&              \
+                           (player)->ai_packet.nearest_opponent_metric < 3.0f)))
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 0x1);
 extern f32 minikittime;
@@ -622,15 +620,12 @@ static void GameMsg_EndDelay_Game(GAME_MESSAGE_PC *message) {
     AddGameDebris(WORLD->game_debris_sys, 0x38, &message->position_a);
     if (WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0) {
         random = qrand();
-        message->position.x =
-            (f32)((f64)random * (f64)(1.0f / 65535.0f) * (f64)0.2f - (f64)0.1f + (f64)message->position.x);
+        message->position.x = (f32)((f64)random * (f64)(1.0f / 65535.0f) * (f64)0.2f - (f64)0.1f + (f64)message->position.x);
         random = qrand();
-        message->position.y =
-            (f32)((f64)random * (f64)(1.0f / 65535.0f) * (f64)0.2f - (f64)0.1f + (f64)message->position.y);
+        message->position.y = (f32)((f64)random * (f64)(1.0f / 65535.0f) * (f64)0.2f - (f64)0.1f + (f64)message->position.y);
         random = qrand();
         message->has_start_position = 0;
-        message->position.z =
-            (f32)((f64)random * (f64)(1.0f / 65535.0f) * (f64)0.2f - (f64)0.1f + (f64)message->position.z);
+        message->position.z = (f32)((f64)random * (f64)(1.0f / 65535.0f) * (f64)0.2f - (f64)0.1f + (f64)message->position.z);
     }
 }
 
@@ -646,8 +641,7 @@ static i32 Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 soun
             } else {
                 ++selected;
             }
-            if (selected < 0 || selected == 10 || SuitRecordInitPc[selected].character_id != (i16)object->id ||
-                selected == previous) {
+            if (selected < 0 || selected == 10 || SuitRecordInitPc[selected].character_id != (i16)object->id || selected == previous) {
                 return 0;
             }
             if ((areaSuitBits & (1 << selected)) != 0) {
@@ -742,8 +736,7 @@ static i32 Punch_GetDamage_LSW(GAMEOBJECT *attacker, GAMEOBJECT *target) {
 }
 
 static void Punch_HitHold(GAMEOBJECT *attacker, GAMEOBJECT *target) {
-    if (attacker != NULL && target != NULL &&
-        (target->id == (u16)id_IMPERIALGUARD || target->id == (u16)id_GAMORREANGUARD)) {
+    if (attacker != NULL && target != NULL && (target->id == (u16)id_IMPERIALGUARD || target->id == (u16)id_GAMORREANGUARD)) {
         GameAudio_PlaySfx(0x4a, &target->collision_position, 0, 0);
     }
 }
@@ -839,9 +832,8 @@ static i32 SetSoundFadeDistCallBackFn_LSW(WORLDINFO_s *) {
         nusound_fade_end = 200.0f;
         return 1;
     }
-    if (WORLD->area != NULL &&
-        (WORLD->area == E1CHARACTER_ADATA || WORLD->area == E2CHARACTER_ADATA || WORLD->area == E3CHARACTER_ADATA ||
-         WORLD->area == BONUSKAMINO_ADATA || WORLD->area == BONUSDAGOBAH_ADATA)) {
+    if (WORLD->area != NULL && (WORLD->area == E1CHARACTER_ADATA || WORLD->area == E2CHARACTER_ADATA || WORLD->area == E3CHARACTER_ADATA ||
+                                WORLD->area == BONUSKAMINO_ADATA || WORLD->area == BONUSDAGOBAH_ADATA)) {
         nusound_fade_start = 4.0f;
         nusound_fade_end = 40.0f;
         return 1;
@@ -855,8 +847,8 @@ static void BuckStartExtra_LSW(GAMEOBJECT *object) {
     }
     for (i32 i = 0; i < 8; ++i) {
         GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
-        if (player == NULL || !(player->flags_1fc_word & 1) || !(player->flags_1fc_word & 0x1000) ||
-            player->dead != 0 || player->rider != NULL) {
+        if (player == NULL || !(player->flags_1fc_word & 1) || !(player->flags_1fc_word & 0x1000) || player->dead != 0 ||
+            player->rider != NULL) {
             continue;
         }
         NUVEC delta;
@@ -872,8 +864,7 @@ static void BuckStartExtra_LSW(GAMEOBJECT *object) {
                 if (height != 2000000.0f) {
                     destination.y = height;
                 }
-                StartBigJump((GAMEOBJECT *)Player[i], &destination, 0, BuckSnowmobJumpHeightPc,
-                             BuckSnowmobJumpDurationPc, 1);
+                StartBigJump((GAMEOBJECT *)Player[i], &destination, 0, BuckSnowmobJumpHeightPc, BuckSnowmobJumpDurationPc, 1);
             }
         }
     }
@@ -923,8 +914,8 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         scale->x = 4.0f;
     } else if (character_id == VehicleBoltId7f19a4Pc) {
         scale->x = 10.0f;
-    } else if (character_id == id_TIEFIGHTER || character_id == VehicleBoltId7f1a28Pc ||
-               character_id == VehicleBoltId7f196cPc || character_id == id_TIEBOMBER) {
+    } else if (character_id == id_TIEFIGHTER || character_id == VehicleBoltId7f1a28Pc || character_id == VehicleBoltId7f196cPc ||
+               character_id == id_TIEBOMBER) {
         scale->x = 6.0f;
     } else if (character_id == VehicleBoltId7f1a2cPc) {
         scale->x = 8.0f;
@@ -934,9 +925,9 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         scale->x = 6.0f;
     } else if (character_id == FreePlayId007f1a98Pc) {
         scale->x = 5.0f;
-    } else if (character_id == FreePlayId007f1b40Pc || character_id == FreePlayId007f1b44Pc ||
-               character_id == id_ANAKINSNEWPOD || character_id == id_ANAKINSNEWPODGREEN ||
-               character_id == id_NEW_REPUBLIC_GUNSHIP || character_id == id_NEW_REPUBLIC_GUNSHIP_GREEN) {
+    } else if (character_id == FreePlayId007f1b40Pc || character_id == FreePlayId007f1b44Pc || character_id == id_ANAKINSNEWPOD ||
+               character_id == id_ANAKINSNEWPODGREEN || character_id == id_NEW_REPUBLIC_GUNSHIP ||
+               character_id == id_NEW_REPUBLIC_GUNSHIP_GREEN) {
         scale->x = 6.0f;
     } else if (character_id == VehicleBoltId7f1a9cPc || character_id == VehicleBoltId7f1aa0Pc) {
         scale->x = 7.0f;
@@ -1062,8 +1053,8 @@ static void BackDrop_Alpha(f32 *alpha) {
             *alpha *= CreditsAlpha;
             return;
         }
-        if ((WORLD->current_level->flags & 0x400) != 0 && StatusPacket.status_flags != 0 &&
-            StatusPacket.stage->type == 12 && (StatusPacket.flags_word & 0x1000) == 0) {
+        if ((WORLD->current_level->flags & 0x400) != 0 && StatusPacket.status_flags != 0 && StatusPacket.stage->type == 12 &&
+            (StatusPacket.flags_word & 0x1000) == 0) {
             if (StatusPacket.stage->field_0x18 < 0.5f) {
                 *alpha = 1.0f - StatusPacket.stage->field_0x18 * 2.0f;
             } else {
@@ -1086,8 +1077,7 @@ static void LEGO_100PercentFn(void) {
         i32 category;
         i32 piece;
         Customiser_Set100PercentPieces(CharacterCustomiser);
-        if (Customiser_FindPieceByName(CharacterCustomiser, "hat_hair_00", &category, &piece) != NULL &&
-            category != -1 && piece != -1) {
+        if (Customiser_FindPieceByName(CharacterCustomiser, "hat_hair_00", &category, &piece) != NULL && category != -1 && piece != -1) {
             GAME_CUSTOMISER_REWARD_READER *customiser = (GAME_CUSTOMISER_REWARD_READER *)CharacterCustomiser;
             customiser->save_pieces[category] = (u16)piece;
         }
@@ -1129,15 +1119,13 @@ static i32 ActionMusicSockChoicePc(void) {
 
 static i32 ActionMusicFn(void) {
     if (StartupGameFlag0 != 0) {
-        if (WORLD->area != NULL && WORLD->area == LOSTTEMPLE_ADATA &&
-            WORLD->current_level != LevelFixupSlotPc0087b2c4) {
+        if (WORLD->area != NULL && WORLD->area == LOSTTEMPLE_ADATA && WORLD->current_level != LevelFixupSlotPc0087b2c4) {
             return 1;
         }
     } else {
         if (Arcade != 0 || DoubleScore != 0 || Cheat_PowerUpActive(-1) != 0 ||
             (WORLD->current_level == LevelFixupSlotPc0087b164 && MiniCutCam != 0) ||
-            (WORLD->current_level == CRUISERD_LDATA && CruiserD_LiftChase != 0) ||
-            WORLD->current_level == DEATHSTARRESCUEE_LDATA) {
+            (WORLD->current_level == CRUISERD_LDATA && CruiserD_LiftChase != 0) || WORLD->current_level == DEATHSTARRESCUEE_LDATA) {
             return 1;
         }
         if (WORLD->current_level == LevelFixupSlotPc0087b1bc && CheckMusicOther() != 0) {
@@ -1195,8 +1183,7 @@ static i32 Jump_PreventJump(GAMEOBJECT *object) {
 }
 
 static void SurfaceInfo_ExtraReflect(GAMEOBJECT *object) {
-    if (WORLD->current_level == LevelFixupSlotPc0087b170 && object->reflection_height == 2000000.0 &&
-        object->position.x < 11.0f) {
+    if (WORLD->current_level == LevelFixupSlotPc0087b170 && object->reflection_height == 2000000.0 && object->position.x < 11.0f) {
         object->reflection_enabled = 3;
         object->reflection_height = -39.2f;
     }
@@ -1227,8 +1214,7 @@ static f32 GizmoPickups_Collide2D(GAMEOBJECT *object) {
 }
 
 static i32 Tag_NoHiddenIcon(GAMEOBJECT *object) {
-    if (WorldInfo_CurrentlyActive()->current_level == DEATHSTARESCAPEB_LDATA &&
-        GameCam->sock_position.sock_index == 5) {
+    if (WorldInfo_CurrentlyActive()->current_level == DEATHSTARESCAPEB_LDATA && GameCam->sock_position.sock_index == 5) {
         return 1;
     }
     return 0;
@@ -1261,8 +1247,8 @@ void GizmoBlowUp_Sfx(GIZMOBLOWUP_PC *unused, NUVEC *position) {
     LEVELDATA_PC *level = WORLD->current_level;
     GAME_GIZMO_SFX_CAMERA_READER *camera = (GAME_GIZMO_SFX_CAMERA_READER *)GameCam;
     (void)unused;
-    if (level == PODSPRINTA_LDATA && (camera->sock == 10 || camera->sock == 11 || camera->sock == 12) &&
-        camera->sock_distance > 145.0f && camera->sock_distance < 195.0f) {
+    if (level == PODSPRINTA_LDATA && (camera->sock == 10 || camera->sock == 11 || camera->sock == 12) && camera->sock_distance > 145.0f &&
+        camera->sock_distance < 195.0f) {
         PlaySfx("PodX_PurpCrysHit", position);
     } else if (level == PODRACEB_LDATA && camera->sock == 0 && camera->sock_distance > 145.0f) {
         PlaySfx("PodX_PurpCrysHit", position);
@@ -1280,17 +1266,16 @@ static NUSPECIALHANDLE *GameMsg_GetExtraObj(GAME_MESSAGE_PC *message) {
 
 static void Jump_EndOfLandContext(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS_PC *weapon = (GAME_CALLBACK_WEAPON_FLAGS_PC *)object;
-    if ((i16)object->id == id_THEEMPEROR && object->character_context == LEGOCONTEXT_LAND_COMBOJUMP &&
-        BigJumpLandPreferredPc != -1 && object->field_7aa == BigJumpLandPreferredPc &&
-        ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
+    if ((i16)object->id == id_THEEMPEROR && object->character_context == LEGOCONTEXT_LAND_COMBOJUMP && BigJumpLandPreferredPc != -1 &&
+        object->field_7aa == BigJumpLandPreferredPc && ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
 }
 
 static void BigJump_EndOfLand(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS_PC *weapon = (GAME_CALLBACK_WEAPON_FLAGS_PC *)object;
-    if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferredPc != -1 &&
-        object->field_7aa == BigJumpLandPreferredPc && ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
+    if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferredPc != -1 && object->field_7aa == BigJumpLandPreferredPc &&
+        ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
 }
@@ -1592,8 +1577,7 @@ extern "C" {
             if (ChallengeMode == 2) {
                 if (NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
                     char text[64];
-                    f32 remaining =
-                        (f32)ADataList[WORLD->area_index].challenge_trial_time - ChallengeTimer.time_elapsed;
+                    f32 remaining = (f32)ADataList[WORLD->area_index].challenge_trial_time - ChallengeTimer.time_elapsed;
                     if (remaining < 0.0f) {
                         remaining = 0.0f;
                     }
@@ -1667,8 +1651,7 @@ extern "C" void InitGameMode(void) {
             type = &GizmoPickupType[GetRandomCoinType()];
             ((PLAYER_COIN_PACKET_PC *)players[i]->coin_packet)->last_coin = type->first_model_id;
             if (type->random_model_count > 0) {
-                ((PLAYER_COIN_PACKET_PC *)players[i]->coin_packet)->last_coin +=
-                    (i16)(qrand() / (0xffff / type->random_model_count + 1));
+                ((PLAYER_COIN_PACKET_PC *)players[i]->coin_packet)->last_coin += (i16)(qrand() / (0xffff / type->random_model_count + 1));
             }
         }
     }
@@ -1840,8 +1823,8 @@ extern "C" void CheckResetBits(void) {
                     }
                 }
             }
-            AIScriptProcessorInit(WORLD->ai_sys, &(*player_slot)->ai_packet,
-                                  &(*player_slot)->ai_packet.script_processor, NULL, script_name, NULL, 1, NULL, NULL);
+            AIScriptProcessorInit(WORLD->ai_sys, &(*player_slot)->ai_packet, &(*player_slot)->ai_packet.script_processor, NULL, script_name,
+                                  NULL, 1, NULL, NULL);
             if (FreePlay == 0 && Mission_Active(NULL) == NULL && (*player_slot)->rider == NULL &&
                 AIScriptSetBaseScriptStateByName(&(*player_slot)->ai_packet.script_processor, "InActive") != 0) {
                 (*player_slot)->flags_1fc_word &= ~0x1000;
@@ -1954,8 +1937,7 @@ extern "C" void CheckResetBits(void) {
         WeaponInOut_NoAIJediSfx = 0;
     }
     bonusmodearcade = 0;
-    if (WORLD->area != NULL && (WORLD->area->flags & 0x10) != 0 &&
-        AreaGlobals_PC.progress_flags < AreaGlobals_PC.area_phase) {
+    if (WORLD->area != NULL && (WORLD->area->flags & 0x10) != 0 && AreaGlobals_PC.progress_flags < AreaGlobals_PC.area_phase) {
         AreaGlobals_PC.progress_flags = AreaGlobals_PC.area_phase;
         if (AreaGlobals_PC.area_phase > 10) {
             AreaGlobals_PC.progress_flags = 10;
@@ -1978,15 +1960,13 @@ extern "C" {
         KillPart(part, 0);
         if (deflect != 0 && owner != NULL) {
             if ((object->flags_1fc & 0x80) != 0 && owner->field_280 == 0xff) {
-                MakeThrowVector(&velocity, (NUVEC *)&matrix.m30, &owner->collision_position, &owner->velocity, speed,
-                                gravity);
+                MakeThrowVector(&velocity, (NUVEC *)&matrix.m30, &owner->collision_position, &owner->velocity, speed, gravity);
             } else {
                 velocity.x = velocity.y = 0.0f;
                 velocity.z = 2.0f;
                 NuVecRotateX(&velocity, &velocity, (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * -5461.0));
-                NuVecRotateY(
-                    &velocity, &velocity,
-                    (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 + (object->movement_facing_angle - 0x1555)));
+                NuVecRotateY(&velocity, &velocity,
+                             (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 + (object->movement_facing_angle - 0x1555)));
             }
             params = Default_ADDPART;
             params.matrix = &matrix;
@@ -2073,8 +2053,8 @@ extern "C" {
             if ((part->flags & 4) != 0 && (api->flags_1fc_word & 0x80) == 0) {
                 continue;
             }
-            if (minimum.x > api->collision_max.x || maximum.x < api->collision_min.x ||
-                minimum.z > api->collision_max.z || maximum.z < api->collision_min.z) {
+            if (minimum.x > api->collision_max.x || maximum.x < api->collision_min.x || minimum.z > api->collision_max.z ||
+                maximum.z < api->collision_min.z) {
                 continue;
             }
             if (three_dimensional != 0) {
@@ -2090,9 +2070,8 @@ extern "C" {
                 if ((character->flags_090 & 0x8000) != 0) {
                     continue;
                 }
-                if (!SphereSphereOverlapScaleY(&part->position, part->field_e4, part->field_e4,
-                                               &api->collision_position, api->collision_radius,
-                                               api->bounds_half_height)) {
+                if (!SphereSphereOverlapScaleY(&part->position, part->field_e4, part->field_e4, &api->collision_position,
+                                               api->collision_radius, api->bounds_half_height)) {
                     continue;
                 }
                 if (!((part->active & 2) != 0 && (part->flags & 0x1000008) == 0x1000008)) {
@@ -2101,8 +2080,7 @@ extern "C" {
                 if ((part->flags & 8) != 0 && !((part->flags & 0x1000000) != 0 && (part->active & 2) != 0) &&
                     ((api->flags_1fc_word & 0x80) != 0 || (part->flags & 0x800000) == 0)) {
                     flags = U64_PAIR(&CInfo[(object->character_context)].flags);
-                    if ((flags & 0x4000000) != 0 ||
-                        ((flags & 0x8000000) != 0 && (object->context_variant_flags & 0x20000) != 0)) {
+                    if ((flags & 0x4000000) != 0 || ((flags & 0x8000000) != 0 && (object->context_variant_flags & 0x20000) != 0)) {
                         if (object->id == (u16)id_BOB) {
                             effect = (object->flags_ef0 & 0x200) != 0 ? 2 : 3;
                         } else if (object->blade_index != -1) {
@@ -2121,8 +2099,8 @@ extern "C" {
                             NewRumble(part->owner->pad->bound_pad, 0.5f, 0);
                             NewRumble(object->pad->bound_pad, 0.5f, 0);
                         } else {
-                            ObjHitObj((part->flags & 0x10000) != 0 ? NULL : part->owner, object, part->field_204,
-                                      (u16)(part->force_flags), 0, 1);
+                            ObjHitObj((part->flags & 0x10000) != 0 ? NULL : part->owner, object, part->field_204, (u16)(part->force_flags),
+                                      0, 1);
                         }
                     }
                 }
@@ -2140,8 +2118,7 @@ extern "C" {
                 }
                 if ((part->flags & 0x2000000) != 0 && ((part->flags & 0x4000000) == 0 || (part->active & 2) != 0)) {
                     angle = NuAtan2D(api->position.x - part->position.x, api->position.z - part->position.z);
-                    api->movement_direction_x =
-                        NuTrigTable[angle >> 1] * api->character_data->game_character->run_speed;
+                    api->movement_direction_x = NuTrigTable[angle >> 1] * api->character_data->game_character->run_speed;
                     api->movement_direction_z =
                         NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * api->character_data->game_character->run_speed;
                 }
@@ -2311,8 +2288,7 @@ extern "C" {
             direction = v010;
             NuVecRotateX(&direction, &direction, blowup->pickup_x_rotation);
             NuVecRotateY(&direction, &direction, blowup->pickup_y_rotation);
-            AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f,
-                       NULL, 1, 1);
+            AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f, NULL, 1, 1);
             return;
         }
         choice -= 50.0f;
@@ -2320,8 +2296,7 @@ extern "C" {
             count = 1 - (i32)(NuFloatRand((NURAND *)(&GAMERAND)) * -3.0f);
             for (i = 0; i < count; ++i) {
                 u16 angle = (u16)(NuFloatRand((NURAND *)(&GAMERAND)) * 65536.0f);
-                GAMEOBJECT *object =
-                    AddDynamicCreature(model, &blowup->mid_position, angle, script, NULL, NULL, 1, NULL, NULL, 0, -1);
+                GAMEOBJECT *object = AddDynamicCreature(model, &blowup->mid_position, angle, script, NULL, NULL, 1, NULL, NULL, 0, -1);
                 if (object != NULL) {
                     object->collision_scale_override = 0.0f;
                     object->collision_scale = 0.0f;
@@ -2334,8 +2309,7 @@ extern "C" {
                     direction = v010;
                     NuVecRotateX(&direction, &direction, blowup->pickup_x_rotation);
                     NuVecRotateY(&direction, &direction, blowup->pickup_y_rotation);
-                    AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f,
-                               2000000.0f, NULL, 1, 1);
+                    AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f, NULL, 1, 1);
                 }
             }
             return;
@@ -2351,8 +2325,7 @@ extern "C" {
         direction = v010;
         NuVecRotateX(&direction, &direction, blowup->pickup_x_rotation);
         NuVecRotateY(&direction, &direction, blowup->pickup_y_rotation);
-        AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f, NULL, 1,
-                   1);
+        AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f, NULL, 1, 1);
     }
 
     void FindGameCutScenes(void) {
@@ -2369,8 +2342,7 @@ extern "C" {
 
         game_cutscenes_podrace_pod_explode = CutScene_Find(WORLD->cutscene_sys, "ep1_podrace_podexplode");
         game_cutscenes_podrace_out_of_time = CutScene_Find(WORLD->cutscene_sys, "ep1_podrace_outoftime");
-        game_cutscenes_bonus_gunship_cavalry_explode =
-            CutScene_Find(WORLD->cutscene_sys, "ep2_bonus_gunshipcavalry_explode");
+        game_cutscenes_bonus_gunship_cavalry_explode = CutScene_Find(WORLD->cutscene_sys, "ep2_bonus_gunshipcavalry_explode");
         game_cutscenes_droid_factory_conveyor = CutScene_Find(WORLD->cutscene_sys, "ep2_droidfactory_conveyor");
         game_cutscenes_podrace_avalanche = CutScene_Find(WORLD->cutscene_sys, "ep1_podrace_avalanche");
         game_cutscenes_dogfight_die = CutScene_Find(WORLD->cutscene_sys, "ep3_dogfight_die");
@@ -2600,8 +2572,7 @@ extern "C" {
         }
         if (WORLD->area == MOSEISLEY_ADATA || WORLD->area == HUB_ADATA) {
             name = NuSpecialGetName(&blowup->type->animated_special);
-            if (name == NULL || NuStrIStr(name, "bin_lid") != NULL || NuStrIStr(name, "bin") == NULL ||
-                qrand() / 656 >= 75) {
+            if (name == NULL || NuStrIStr(name, "bin_lid") != NULL || NuStrIStr(name, "bin") == NULL || qrand() / 656 >= 75) {
                 return;
             }
         } else if (WORLD->area == TATOOINE_ADATA) {
@@ -2617,14 +2588,12 @@ extern "C" {
             if (name == NULL || (NuStrIStr(name, "bush") == NULL && NuStrIStr(name, "web") == NULL)) {
                 return;
             }
-            AddDynamicCreature(ZipUpLineCharacterIdPc, &blowup->position, 0, "blowup_spider", NULL, NULL, 1, NULL, NULL,
-                               0, 16);
+            AddDynamicCreature(ZipUpLineCharacterIdPc, &blowup->position, 0, "blowup_spider", NULL, NULL, 1, NULL, NULL, 0, 16);
             return;
         } else {
             return;
         }
-        AddDynamicCreature(CharacterFixupIdPc007f18c4, &blowup->position, 0, "spawned_womprat", NULL, NULL, 1, NULL,
-                           NULL, 0, 16);
+        AddDynamicCreature(CharacterFixupIdPc007f18c4, &blowup->position, 0, "spawned_womprat", NULL, NULL, 1, NULL, NULL, 0, 16);
     }
 
     void GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle) {
@@ -2675,8 +2644,7 @@ extern "C" {
 }
 
 static void GizBuildIt_FinishFn_Game(GIZBUILDIT_PC *input) {
-    if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0 && input == HubBuildItPc &&
-        (Game.hub_buildit_completed & 0x80) == 0) {
+    if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0 && input == HubBuildItPc && (Game.hub_buildit_completed & 0x80) == 0) {
         AddFancyMessageRGB(TTab[TextIdPc880ff0], 0.0f, 0.0f, 0.6f, 1.25f, 1, 255, 0, 0);
         BuyAllShopExtras();
         ReCalculateCompletionPoints();
@@ -2686,8 +2654,10 @@ static void GizBuildIt_FinishFn_Game(GIZBUILDIT_PC *input) {
 
 static CUT_DRAW_SETTINGS_PC InitCutSettingsLswPc = {0x5b, 0x5c, 0xe7, 2, 0};
 static CUT_DRAW_SETTINGS_PC InitCutSettingsAlternatePc = {0x5b, 0x5c, 0xe7, 2, 1};
-static PLAYER_ITEM_TYPE_RESET_PC InitPlayerItemTypesPc[2] = {{15, {6, 0}, "blue", 2, 0, {0, 0}},
-                                                             {-1, {0, 0}, NULL, 0, 0, {0, 0}}};
+static PLAYER_ITEM_TYPE_RESET_PC InitPlayerItemTypesPc[2] = {
+    {15, {6, 0}, "blue", 2, 0, {0, 0}},
+    {-1, {0, 0}, NULL,   0, 0, {0, 0}}
+};
 
 void InitGameAfterConfig(void) {
     POINTS_PER_STORY = 6;
@@ -2808,8 +2778,7 @@ void InitGameAfterConfig(void) {
     Level_RegisterGameConfigKeywords(LevelConfigKeywords_BeforeLoad, WorldLoadAfterKeywordsPc);
     Suits_Init();
     Collection_Configure("chars\\collection.txt", &permbuffer_ptr, &permbuffer_end);
-    if ((u16)VehicleBoltId7f17d4Pc != 0xffff && InCollectList_Index(VehicleBoltId7f17d4Pc, NULL, 0) != -1 &&
-        TempCollectID != NULL) {
+    if ((u16)VehicleBoltId7f17d4Pc != 0xffff && InCollectList_Index(VehicleBoltId7f17d4Pc, NULL, 0) != -1 && TempCollectID != NULL) {
         TempCollectID->selection_type = 0;
         TempCollectID->shop_enabled = 1;
         TempCollectID->price = 50000;
@@ -3084,8 +3053,7 @@ void InitGameAfterConfig(void) {
     GizmoBlowup_TransformDrawFn = GizmoBlowup_TransformDraw_Game;
     KEEPONSCREEN_SIDESONLY = 1;
     CutScenePlayer_AcceptFn = CutScenePlayer_Accept;
-    CutScenePlayer_Configure("cut\\clips.txt", &permbuffer_ptr, &permbuffer_end, &tCLIPi, &tINTRO, &tMIDTRO, &tOUTRO,
-                             &tENDING);
+    CutScenePlayer_Configure("cut\\clips.txt", &permbuffer_ptr, &permbuffer_end, &tCLIPi, &tINTRO, &tMIDTRO, &tOUTRO, &tENDING);
     i32 powerup_text = tPOWERUP;
     i32 startup_game = StartupGameFlag1;
     CanMagnetClimbFn = CanMagnetClimb_Game;

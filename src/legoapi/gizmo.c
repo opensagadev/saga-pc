@@ -40,21 +40,21 @@ typedef struct area_gizmosys_prefix_s {
 void GizmoDiagnosticPc(char *format, ...);
 #define GIZMO_DIAGNOSTIC_BARE() ((void (*)())GizmoDiagnosticPc)()
 void GizmoNameDiagnosticPc(char *name);
-#define GIZMO_BUFFER_ALLOC_CHECKED(result, type, buffer, end, size)                                                    \
-    do {                                                                                                               \
-        void *allocation_ = NULL;                                                                                      \
-        if ((buffer) != NULL && (end) != NULL) {                                                                       \
-            if ((buffer)->addr + (size) < (end)->addr) {                                                               \
-                allocation_ = (void *)(((buffer)->addr + 15) & ~15u);                                                  \
-                (buffer)->addr = (((buffer)->addr + 15) & ~15u) + (size);                                              \
-                memset(allocation_, 0, (size));                                                                        \
-            } else {                                                                                                   \
-                GIZMO_DIAGNOSTIC_BARE();                                                                               \
-            }                                                                                                          \
-        } else {                                                                                                       \
-            GIZMO_DIAGNOSTIC_BARE();                                                                                   \
-        }                                                                                                              \
-        (result) = (type)allocation_;                                                                                  \
+#define GIZMO_BUFFER_ALLOC_CHECKED(result, type, buffer, end, size)                                                                        \
+    do {                                                                                                                                   \
+        void *allocation_ = NULL;                                                                                                          \
+        if ((buffer) != NULL && (end) != NULL) {                                                                                           \
+            if ((buffer)->addr + (size) < (end)->addr) {                                                                                   \
+                allocation_ = (void *)(((buffer)->addr + 15) & ~15u);                                                                      \
+                (buffer)->addr = (((buffer)->addr + 15) & ~15u) + (size);                                                                  \
+                memset(allocation_, 0, (size));                                                                                            \
+            } else {                                                                                                                       \
+                GIZMO_DIAGNOSTIC_BARE();                                                                                                   \
+            }                                                                                                                              \
+        } else {                                                                                                                           \
+            GIZMO_DIAGNOSTIC_BARE();                                                                                                       \
+        }                                                                                                                                  \
+        (result) = (type)allocation_;                                                                                                      \
     } while (0)
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, clear_progress_fn) == 0x7c);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, store_progress_fn) == 0x80);
@@ -91,11 +91,12 @@ typedef struct level_sfx_gizmotype_s {
 static i32 DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo);
 static i32 DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode);
 static char *DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output);
-ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE = {NULL,
-                                        NULL,
-                                        {-1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                                         (void *)DefaultGizmo_GetOutput, (void *)DefaultGizmo_GetOutputName,
-                                         (void *)DefaultGizmo_GetNumOutputs}};
+ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE = {
+    NULL,
+    NULL,
+    {-1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, (void *)DefaultGizmo_GetOutput, (void *)DefaultGizmo_GetOutputName,
+      (void *)DefaultGizmo_GetNumOutputs}
+};
 
 i32 GizmoFileReadName(char *name) {
     i32 length = EdFileReadChar();
@@ -134,8 +135,7 @@ void *GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
     return allocation;
 }
 
-void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYPE_FN *register_functions,
-                        i32 max_levels) {
+void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYPE_FN *register_functions, i32 max_levels) {
     GIZMOTYPE_PC *type;
     ADDGIZMOTYPE_PC *definition;
     i32 count = 0;
@@ -968,8 +968,7 @@ static void GizmoAppendSpecialErrorPrivate(void *ptr, const char *text) {
     }
 }
 
-i32 Gizmo_FindNuSpecial(NUGSCN *scene, NUSPECIALHANDLE *special, char *name, i32 flags, void *ptr, char *prefix,
-                        char *suffix) {
+i32 Gizmo_FindNuSpecial(NUGSCN *scene, NUSPECIALHANDLE *special, char *name, i32 flags, void *ptr, char *prefix, char *suffix) {
     GIZMOSYS_PC *system = ptr;
     if (NuSpecialFind(scene, special, name, flags)) {
         return 1;

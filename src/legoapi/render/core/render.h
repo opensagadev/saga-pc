@@ -24,8 +24,7 @@ extern "C" {
     void DrawCharIcon(i32, f32, f32, f32, f32, i32, f32, f32, i32, NUSPECIALHANDLE *);
     extern i32 dco_locatorposonly;
     extern void (*DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
-    void DrawObjectOnCharacter(WORLDINFO *, GAMEOBJECT *, i32, NUSPECIALHANDLE *, i32, i32, NUMTX *, i32, u32, NUMTX *,
-                               NUVEC *, f32, f32);
+    void DrawObjectOnCharacter(WORLDINFO *, GAMEOBJECT *, i32, NUSPECIALHANDLE *, i32, i32, NUMTX *, i32, u32, NUMTX *, NUVEC *, f32, f32);
     i32 Draw3DObjectMtx(WORLDINFO *, i32, NUMTX *);
     extern f32 KITPOSX;
     extern f32 KITPOSY;
@@ -34,8 +33,8 @@ extern "C" {
     void RndrOSphere(NUVEC *centre, f32 radius, i32 colour, i32 segments, NUMTL *mtl);
     void RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *mtl);
     void BackDrop_ResetColours(void);
-    i32 DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y,
-                                 u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order);
+    i32 DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y, u16 rotate_z,
+                                 NUSPECIALHANDLE *special, i32 rotate_order);
     void DrawMiniSnowTroopers(struct WORLDINFO_s *world);
     void DrawMiniKitCount(f32, f32, i32, i32);
 

@@ -63,8 +63,7 @@ extern "C" void PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *
         vsprintf(PCNativeDebugFormatBuffer, format, arguments);
         va_end(arguments);
     }
-    sprintf(PCNativeDebugOutputBuffer,
-            "Important. Do not ignore!\n\n%s\n\n(Your application has generated an error message)\n\n",
+    sprintf(PCNativeDebugOutputBuffer, "Important. Do not ignore!\n\n%s\n\n(Your application has generated an error message)\n\n",
             PCNativeDebugFormatBuffer);
     PCNativeErrorHookPc(PCNativeDebugOutputBuffer);
     switch (MessageBoxA(PCInputInstance, PCNativeDebugOutputBuffer, "Nu2Api Runtime Error!", 0x12)) {
@@ -97,8 +96,7 @@ extern "C" void PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char
 }
 
 /* Only format the text; the PC build draws nothing. */
-extern "C" void PCNativeDebugPrintAtPc(PC_NATIVE_DEBUG_STATE_PC *state, i32 x, i32 y, u32 colour, const char *format,
-                                       ...) {
+extern "C" void PCNativeDebugPrintAtPc(PC_NATIVE_DEBUG_STATE_PC *state, i32 x, i32 y, u32 colour, const char *format, ...) {
     va_list arguments;
     (void)state;
     (void)x;
@@ -159,20 +157,20 @@ struct PC_NATIVE_DEBUG_POSITION {
     f32 w;
 };
 
-#define DEBUG_POINT_PC(index, px, py)                                                                                  \
-    do {                                                                                                               \
-        position.x = (px);                                                                                             \
-        position.y = (py);                                                                                             \
-        position.z = 0.5f;                                                                                             \
-        position.w = 1.0f;                                                                                             \
-        *(PC_NATIVE_DEBUG_POSITION *)&vertex[index].x = position;                                                      \
+#define DEBUG_POINT_PC(index, px, py)                                                                                                      \
+    do {                                                                                                                                   \
+        position.x = (px);                                                                                                                 \
+        position.y = (py);                                                                                                                 \
+        position.z = 0.5f;                                                                                                                 \
+        position.w = 1.0f;                                                                                                                 \
+        *(PC_NATIVE_DEBUG_POSITION *)&vertex[index].x = position;                                                                          \
     } while (0)
-#define DEBUG_RECT_PC(start, l, t, r, b)                                                                               \
-    DEBUG_POINT_PC(start, l, t);                                                                                       \
-    DEBUG_POINT_PC(start + 1, r, t);                                                                                   \
-    DEBUG_POINT_PC(start + 2, r, b);                                                                                   \
-    DEBUG_POINT_PC(start + 3, l, t);                                                                                   \
-    DEBUG_POINT_PC(start + 4, r, b);                                                                                   \
+#define DEBUG_RECT_PC(start, l, t, r, b)                                                                                                   \
+    DEBUG_POINT_PC(start, l, t);                                                                                                           \
+    DEBUG_POINT_PC(start + 1, r, t);                                                                                                       \
+    DEBUG_POINT_PC(start + 2, r, b);                                                                                                       \
+    DEBUG_POINT_PC(start + 3, l, t);                                                                                                       \
+    DEBUG_POINT_PC(start + 4, r, b);                                                                                                       \
     DEBUG_POINT_PC(start + 5, l, b)
 
 void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {

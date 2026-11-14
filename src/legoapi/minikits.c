@@ -62,8 +62,7 @@ void MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR
             for (direction = 0; direction < 6; ++direction) {
                 sprintf(name, "%s_%s_%i", CDataList[minikit->model_id].name, MiniKitDirectionNamesPc[direction], index);
                 if (NuSpecialFind(minikit->scene, &minikit->pieces[minikit->piece_count].special, name, 1) != 0) {
-                    minikit->pieces[minikit->piece_count].matrix =
-                        *NuSpecialGetInstanceMtx(&minikit->pieces[minikit->piece_count].special);
+                    minikit->pieces[minikit->piece_count].matrix = *NuSpecialGetInstanceMtx(&minikit->pieces[minikit->piece_count].special);
                     minikit->pieces[minikit->piece_count].direction = (u8)direction;
                     minikit->pieces[minikit->piece_count].direction_index = (u8)direction_counts[direction]++;
                     ++minikit->piece_count;
@@ -234,8 +233,7 @@ void DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
         u16 angle = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
         u16 pitch = (u16)(i32)((f64)NU_SIN_LUT(angle * 2) * 1820.0);
         f32 size = PANEL_MINIKITSCALE * scale;
-        DrawPanel3DObjectNoAlpha(x, y + PANEL_MINIKITY, 1.0f, size, size, size, pitch, angle, 0,
-                                 &world->level_objects[model].special, 2);
+        DrawPanel3DObjectNoAlpha(x, y + PANEL_MINIKITY, 1.0f, size, size, size, pitch, angle, 0, &world->level_objects[model].special, 2);
     }
     sprintf(text, "%i/%i", amount, total);
     scale *= PANEL_MINIKITCOUNTSCALE;

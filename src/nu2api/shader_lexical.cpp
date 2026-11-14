@@ -270,8 +270,7 @@ bool ShaderLexicalSlicePc::fun_0074b080(const char *text) {
     return !Equals(text);
 }
 
-ShaderConditionNodePc::ShaderConditionNodePc(const char *token, ShaderConditionNodePc *left,
-                                             ShaderConditionNodePc *right)
+ShaderConditionNodePc::ShaderConditionNodePc(const char *token, ShaderConditionNodePc *left, ShaderConditionNodePc *right)
     : left(left), right(right), token(token) {
 }
 
@@ -367,8 +366,7 @@ ShaderConditionNodePc *ShaderCompilerParserPc::ParseExpression(ShaderCompilerBuf
         } else if ((ShaderLexicalClassesPc[(u8)token[0]] & 4) != 0 || strcmp(token, "defined") == 0) {
             if (strcmp(current->token, "(") == 0) {
                 stack[count++] = current;
-            } else if (((ShaderLexicalClassesPc[(u8)current->token[0]] & 4) != 0 ||
-                        strcmp(current->token, "defined") == 0) &&
+            } else if (((ShaderLexicalClassesPc[(u8)current->token[0]] & 4) != 0 || strcmp(current->token, "defined") == 0) &&
                        ShaderConditionPrecedencePc(token) > ShaderConditionPrecedencePc(current->token)) {
                 stack[count++] = current;
                 current = current->AppendOperand(node);

@@ -325,14 +325,12 @@ i32 GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL_PC *panel) {
     }
     switch (panel->model_variant) {
         case 0:
-            if ((object->character_data->model_flags & 0x40) != 0 ||
-                (object->character_data->model_flags & 0x1000010) == 0x1000010) {
+            if ((object->character_data->model_flags & 0x40) != 0 || (object->character_data->model_flags & 0x1000010) == 0x1000010) {
                 return 1;
             }
             break;
         case 1:
-            if ((object->character_data->model_flags & 0x20) != 0 ||
-                (object->character_data->model_flags & 0x1000010) == 0x1000010) {
+            if ((object->character_data->model_flags & 0x20) != 0 || (object->character_data->model_flags & 0x1000010) == 0x1000010) {
                 return 1;
             }
             break;
@@ -343,9 +341,8 @@ i32 GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL_PC *panel) {
             if (GCDataList[(i16)object->id].weapon_action == 1 || GCDataList[(i16)object->id].weapon_action == 8) {
                 return 1;
             }
-            if ((i16)object->id == FreePlayId007f199cPc || (i16)object->id == id_THEEMPEROR ||
-                (i16)object->id == FreePlayId007f1a4cPc || (i16)object->id == FreePlayId007f1a48Pc ||
-                (i16)object->id == FreePlayId007f1a44Pc) {
+            if ((i16)object->id == FreePlayId007f199cPc || (i16)object->id == id_THEEMPEROR || (i16)object->id == FreePlayId007f1a4cPc ||
+                (i16)object->id == FreePlayId007f1a48Pc || (i16)object->id == FreePlayId007f1a44Pc) {
                 return 1;
             }
             break;
@@ -388,8 +385,7 @@ PANEL_MOVEMENT_PC *GizPanel_FindNearest(WORLDINFO *world, NUVEC *position, GAMEO
         f32 distance;
         if (object != NULL) {
             NUVEC target;
-            if ((panel->flags & 8) == 0 || (panel->flags & 4) == 0 || (panel->flags & 3) != 0 ||
-                panel->floor_position.y == 2000000.0f) {
+            if ((panel->flags & 8) == 0 || (panel->flags & 4) == 0 || (panel->flags & 3) != 0 || panel->floor_position.y == 2000000.0f) {
                 continue;
             }
             if (check_eligibility != 0 && GizPanel_CanUsePanel(object, panel) == 0) {
@@ -517,8 +513,7 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
     }
     target_spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     target_alpha =
-        (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] *
-            (f64)0.2f +
+        (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] * (f64)0.2f +
         (f64)0.8f;
     for (index = 0; index < system->count; ++index) {
         PANEL_MOVEMENT_PC *panel = &system->panels[index];
@@ -655,9 +650,8 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
                 NuSpecialDrawAtAlpha(&world->level_objects[animated].special, &animated_matrix, 1.0f);
             }
         }
-        if ((panel->flags & 0x40) == 0 && (panel->flags & 8) != 0 &&
-            (f64)panel->target_offset.y != GameObjectNearFloorNoFloorHeight && target != -1 &&
-            world->level_objects[target].active != 0) {
+        if ((panel->flags & 0x40) == 0 && (panel->flags & 8) != 0 && (f64)panel->target_offset.y != GameObjectNearFloorNoFloorHeight &&
+            target != -1 && world->level_objects[target].active != 0) {
             NUVEC target_position;
             GizPanel_GetAbsTargetPos(panel, &target_position, 0);
             NuMtxSetRotationY(&base_matrix, target_spin);
@@ -669,8 +663,7 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             }
             NuMtxTranslate(&base_matrix, &target_position);
             NuMtxPreScaleU(&base_matrix, panel->target_scale);
-            NuSpecialDrawAtAlpha(&world->level_objects[target].special, &base_matrix,
-                                 (panel->flags & 1) != 0 ? 0.0f : target_alpha);
+            NuSpecialDrawAtAlpha(&world->level_objects[target].special, &base_matrix, (panel->flags & 1) != 0 ? 0.0f : target_alpha);
         }
         if ((panel->flags & 0x20) == 0 && arm != -1 && world->level_objects[arm].active != 0) {
             NUVEC arm_offset;
@@ -774,8 +767,7 @@ void GizPanels_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     progress->enabled[0] = 0xffffffffu;
     progress->visible[0] = 0xffffffffu;
 
-    if (world == NULL || world->giz_panel_sys == NULL ||
-        ((PANEL_PROGRESS_SYSTEM_PC *)world->giz_panel_sys)->records == NULL) {
+    if (world == NULL || world->giz_panel_sys == NULL || ((PANEL_PROGRESS_SYSTEM_PC *)world->giz_panel_sys)->records == NULL) {
         return;
     }
     for (index = 0; index < ((PANEL_PROGRESS_SYSTEM_PC *)world->giz_panel_sys)->count && index < 32; ++index) {
@@ -896,8 +888,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     if (panel != NULL) {
         radius = (f32)((0.25 + object->bounds_radius) * panel->target_scale);
         radius_squared = radius * radius;
-        if (!(distance < radius_squared) ||
-            (use == 0 && (object->panel_use_request != 1 || object->panel_request_data == NULL))) {
+        if (!(distance < radius_squared) || (use == 0 && (object->panel_use_request != 1 || object->panel_request_data == NULL))) {
             return;
         }
         object->movement_facing_angle = panel->y_rotation;
@@ -919,8 +910,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             Hint_SetComplete(0x261);
             Hint_SetComplete(0x26a);
         } else if (panel->model_variant == 3) {
-            if (object->character_model->model_data_b[0x45] == NULL &&
-                object->character_model->model_data_b[0x46] != NULL) {
+            if (object->character_model->model_data_b[0x45] == NULL && object->character_model->model_data_b[0x46] != NULL) {
                 object->field_7aa = 0x46;
             } else {
                 object->field_7aa = 0x45;

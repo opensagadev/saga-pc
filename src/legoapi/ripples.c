@@ -85,8 +85,8 @@ static RIPPLE_NODE_PC *RippleAllocPc(RIPPLE_SET_PC *set) {
     return NULL;
 }
 
-void AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 lifetime, f32 delay, u32 start_color,
-               u32 end_color, i32 flags, NUMTL *material, NUVEC *velocity) {
+void AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 lifetime, f32 delay, u32 start_color, u32 end_color, i32 flags,
+               NUMTL *material, NUVEC *velocity) {
     RIPPLE_NODE_PC *node;
     if (material == NULL || set == NULL) {
         return;
@@ -223,14 +223,16 @@ static void RippleEffectTypePc(NUFPAR_PC *parser) {
     }
 }
 
-static NUFPCOMJMP RippleEffectConfigKeywordsPc[8] = {{"texture_name", RippleTextureNamePc},
-                                                     {"effect_type", RippleEffectTypePc},
-                                                     {"start_colour", RippleStartColourPc},
-                                                     {"end_colour", RippleEndColourPc},
-                                                     {"life", RippleLifePc},
-                                                     {"start_radius", RippleStartRadiusPc},
-                                                     {"end_radius", RippleEndRadiusPc},
-                                                     {NULL, NULL}};
+static NUFPCOMJMP RippleEffectConfigKeywordsPc[8] = {
+    {"texture_name", RippleTextureNamePc},
+    {"effect_type",  RippleEffectTypePc },
+    {"start_colour", RippleStartColourPc},
+    {"end_colour",   RippleEndColourPc  },
+    {"life",         RippleLifePc       },
+    {"start_radius", RippleStartRadiusPc},
+    {"end_radius",   RippleEndRadiusPc  },
+    {NULL,           NULL               }
+};
 
 void RippleEffects_Configure(WORLDINFO *world, char *config) {
     WORLD_RIPPLE_VIEW_PC *view = (WORLD_RIPPLE_VIEW_PC *)world;
@@ -286,8 +288,7 @@ void RippleEffects_Configure(WORLDINFO *world, char *config) {
     if (view->count > 0) {
         world->giz_buffer.addr = ((u32)(view->effects + view->count) + 15) & ~15u;
         for (i = 0; i < view->count; ++i) {
-            InitRippleMtl(view->effects[i].texture_name, &view->effects[i].material, &world->giz_buffer,
-                          &world->buffer_end);
+            InitRippleMtl(view->effects[i].texture_name, &view->effects[i].material, &world->giz_buffer, &world->buffer_end);
         }
     } else {
         view->effects = NULL;

@@ -122,8 +122,7 @@ extern "C" i32 refpack(u8 *source, i32 source_size, u8 *destination) {
                 *output++ = (u8)((literal_count << 6) + (match_offset >> 8));
                 *output++ = (u8)match_offset;
             } else {
-                *output++ =
-                    (u8)(0xc0u + ((match_offset >> 16) << 4) + (((match_length - 5u) >> 8) << 2) + literal_count);
+                *output++ = (u8)(0xc0u + ((match_offset >> 16) << 4) + (((match_length - 5u) >> 8) << 2) + literal_count);
                 *output++ = (u8)(match_offset >> 8);
                 *output++ = (u8)match_offset;
                 *output++ = (u8)(match_length - 5u);

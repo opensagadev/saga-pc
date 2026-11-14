@@ -34,8 +34,8 @@ void AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {
         NuSpecialGetRadius(special, &ShoveSystemPc.objects[ShoveSystemPc.count].position,
                            &ShoveSystemPc.objects[ShoveSystemPc.count].radius);
         matrix = NuSpecialGetDrawMtx(special);
-        NuVecMtxTransform(&ShoveSystemPc.objects[ShoveSystemPc.count].position,
-                          &ShoveSystemPc.objects[ShoveSystemPc.count].position, matrix);
+        NuVecMtxTransform(&ShoveSystemPc.objects[ShoveSystemPc.count].position, &ShoveSystemPc.objects[ShoveSystemPc.count].position,
+                          matrix);
         ++ShoveSystemPc.count;
     }
 }
@@ -64,8 +64,7 @@ void ShoveSystemCheckGameObject(GAMEOBJECT *object) {
         NUVEC minimum;
         NUVEC maximum;
         NUVEC point;
-        if (shove->platform_id != -1 && shove->platform_id == object->supporting_platform_id &&
-            object->contact_normal.y > 0.707f) {
+        if (shove->platform_id != -1 && shove->platform_id == object->supporting_platform_id && object->contact_normal.y > 0.707f) {
             continue;
         }
         delta = object->collision_position.x - shove->position.x;

@@ -56,8 +56,7 @@ extern "C" {
     void *NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_stream_buffers);
     void NuGCutSceneFixUp(void *scene, NUGSCN *gscene, void *extra_scene, i32 page);
     void NuGCutSceneFixUpExtra(void *scene, NUGSCN *gscene);
-    INSTNUGCUTSCENE *instNuGCutSceneCreate(void *scene, NUGSCN *gscene, void *extra_scene, char *name, VARIPTR *buffer,
-                                           i32 background);
+    INSTNUGCUTSCENE *instNuGCutSceneCreate(void *scene, NUGSCN *gscene, void *extra_scene, char *name, VARIPTR *buffer, i32 background);
     PARTDEBRISSYS *InitPartDebris(VARIPTR *, VARIPTR *, i32, i32, char **, i32);
     GAMEOBJECT *AddGameObject(void);
     i32 InitCreature(GAMEOBJECT *, i32, i32);

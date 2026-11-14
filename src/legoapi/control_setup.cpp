@@ -26,8 +26,7 @@ i32 PC_CONTROL_SCREEN_PC::ItemAllowsBinding(PC_CONTROL_ROW_PC *row, i32 index, i
 void PC_CONTROL_SCREEN_PC::AdvanceSelection(PC_CONTROL_ROW_PC *row) {
     PC_CONTROL_ITEM_PC *items = row->items;
     for (;;) {
-        if (!(drop_in && items[row->selected].label != 0) &&
-            !(selected_player == 0 && (items[row->selected].flags & 0x20)) &&
+        if (!(drop_in && items[row->selected].label != 0) && !(selected_player == 0 && (items[row->selected].flags & 0x20)) &&
             !(selected_player == 1 && (items[row->selected].flags & 0x40)) && !(items[row->selected].flags & 0x80)) {
             return;
         }
@@ -599,8 +598,7 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                         port = PcInput_RemapVirtualKeyboard(port, selected_player);
                         if (port >= 0 && port == ports[selected_player]) {
                             if (PcInputBindingAvailablePc(selected_player, player_count, kind, value)) {
-                                PcInputAssignBindingPc(row->items[row->selected].command, port, kind, value, 1, 1,
-                                                       selected_player, 0);
+                                PcInputAssignBindingPc(row->items[row->selected].command, port, kind, value, 1, 1, selected_player, 0);
                                 PcInputResolveAuxiliaryConflictsPc(selected_player, player_count);
                                 PcInputClearOtherBankConflictsPc(selected_player, player_count);
                             }
@@ -786,14 +784,11 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                                     case 40: {
                                         i32 key = selected_player;
                                         for (i32 attempt = 0; attempt < 2; ++attempt) {
-                                            PC_INPUT_CONFIG_PC *config =
-                                                PcInputFindConfigPc(1, ports[selected_player], key);
+                                            PC_INPUT_CONFIG_PC *config = PcInputFindConfigPc(1, ports[selected_player], key);
                                             if (config) {
-                                                PcInputInstallConfigPc(config, ports[selected_player], selected_player,
-                                                                       1, selected_player);
+                                                PcInputInstallConfigPc(config, ports[selected_player], selected_player, 1, selected_player);
                                                 PcInputResolveAuxiliaryConflictsPc(selected_player, player_count);
-                                                deadzone[selected_player] =
-                                                    (f32)NuPadGetDeadzoneByPortPS(ports[selected_player]);
+                                                deadzone[selected_player] = (f32)NuPadGetDeadzoneByPortPS(ports[selected_player]);
                                                 break;
                                             }
                                             if (++key == 2) {
@@ -915,8 +910,7 @@ static void PcControlPrimColourPc(u32 colour) {
     if (NuPrimNeedsOverbrightening) {
         converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000) + (colour & 0xff00);
     } else {
-        converted =
-            ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
+        converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
     ((PC_CONTROL_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
@@ -1018,8 +1012,8 @@ extern "C" void PcControlFontScalePc(VUFNT *font, f32 width, f32 height, f32 *sx
     }
 }
 
-void PC_CONTROL_SCREEN_PC::QueueText(char *string, f32 x, f32 y, f32 z, i32 alignment, f32 sx, f32 sy, u32 colour,
-                                     f32 brightness, f32 wrap, u32 key) {
+void PC_CONTROL_SCREEN_PC::QueueText(char *string, f32 x, f32 y, f32 z, i32 alignment, f32 sx, f32 sy, u32 colour, f32 brightness, f32 wrap,
+                                     u32 key) {
     char decoded[0x400];
     if (!string || !*string) {
         return;
@@ -1060,8 +1054,7 @@ void PC_CONTROL_SCREEN_PC::QueueText(char *string, f32 x, f32 y, f32 z, i32 alig
     text[index].wrap_width = wrap;
 }
 
-f32 PC_CONTROL_SCREEN_PC::DrawText(char *string, f32 x, f32 y, f32 z, i32 alignment, f32 sx, f32 sy, u32 colour,
-                                   i32 mode, f32 wrap) {
+f32 PC_CONTROL_SCREEN_PC::DrawText(char *string, f32 x, f32 y, f32 z, i32 alignment, f32 sx, f32 sy, u32 colour, i32 mode, f32 wrap) {
     NuQFntSet(font);
     PcControlFontScalePc(font, x_scale * sx, y_scale * sy, &sx, &sy);
     NuQFntSetScale(font, sx, sy);
@@ -1132,8 +1125,7 @@ void PC_CONTROL_SCREEN_PC::DrawQueuedText(f32 delta) {
     }
 }
 
-void PC_CONTROL_SCREEN_PC::DrawDeadzone(f32 x, f32 y, f32 z, f32 width, f32 height, f32 brightness, f32 alpha,
-                                        f32 deadzone_value) {
+void PC_CONTROL_SCREEN_PC::DrawDeadzone(f32 x, f32 y, f32 z, f32 width, f32 height, f32 brightness, f32 alpha, f32 deadzone_value) {
     u32 colour = ScaleAlpha(alpha * opacity, 0x40c88080);
     y = (f32)(-y - 0.05999999865889549);
     NuPrim2DBegin(13, 5, material);
@@ -1191,8 +1183,7 @@ void PC_CONTROL_SCREEN_PC::DrawDeadzone(f32 x, f32 y, f32 z, f32 width, f32 heig
     NuPrim2DEnd();
 }
 
-void PC_CONTROL_SCREEN_PC::fun_00420d30(f32 x, f32 y, f32 z, f32 width, f32 height, f32 brightness, f32 bars,
-                                        f32 level) {
+void PC_CONTROL_SCREEN_PC::fun_00420d30(f32 x, f32 y, f32 z, f32 width, f32 height, f32 brightness, f32 bars, f32 level) {
     f32 base = (height * NuQFntHalfScale);
     u32 colour = ScaleAlpha(opacity * brightness, 0x40c88080);
     y = (f32)(-y - 0.05999999865889549);
@@ -1317,12 +1308,10 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
         f32 device_y = (f32)(y - line_height * 1.100000023841858);
         if (port0 >= 0 || port1 >= 0) {
             if (port0 >= 0) {
-                QueueText(PcInputDeviceNamePc(port0), left, device_y, 0.0f, 0x40, 1.4f, 0.8f, 0x80208020, 1.0f, 0.6f,
-                          0);
+                QueueText(PcInputDeviceNamePc(port0), left, device_y, 0.0f, 0x40, 1.4f, 0.8f, 0x80208020, 1.0f, 0.6f, 0);
             }
             if (port1 >= 0 && player_count > 1) {
-                QueueText(PcInputDeviceNamePc(port1), label_x + 0.65f, device_y, 0.0f, 0x40, 1.4f, 0.8f, 0x80208020,
-                          1.0f, 0.6f, 0);
+                QueueText(PcInputDeviceNamePc(port1), label_x + 0.65f, device_y, 0.0f, 0x40, 1.4f, 0.8f, 0x80208020, 1.0f, 0.6f, 0);
             }
             device_y -= line_height * 2.0f;
         }
@@ -1400,25 +1389,23 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
                 if (port0 >= 0) {
                     if (!(item->flags & 0x20)) {
                         PcInputBindingButtonNamePc(port0, item->command, button, 1, 0, 1, 0, 0);
-                        DrawText(button, (f32)(label_x - 0.6499999761581421), y, 0.0f, 0x40, 2.5f, brightness, binding0,
-                                 1, 0.45f);
+                        DrawText(button, (f32)(label_x - 0.6499999761581421), y, 0.0f, 0x40, 2.5f, brightness, binding0, 1, 0.45f);
                     }
                 } else if (show_empty0) {
                     show_empty0 = 0;
-                    DrawText(PcControlTextPc[6], (f32)(label_x - 0.6499999761581421), 0.0f, 0.0f, 0x40, 2.5f, 1.0f,
-                             player0_colour, 1, 0.45f);
+                    DrawText(PcControlTextPc[6], (f32)(label_x - 0.6499999761581421), 0.0f, 0.0f, 0x40, 2.5f, 1.0f, player0_colour, 1,
+                             0.45f);
                 }
                 if (player_count == 2) {
                     if (port1 >= 0) {
                         if (!(item->flags & 0x40)) {
                             PcInputBindingButtonNamePc(port1, item->command, button, 1, 1, 1, 0, 0);
-                            DrawText(button, (f32)(label_x + 0.6499999761581421), y, 0.0f, 0x40, 2.5f, brightness,
-                                     binding1, 1, 0.45f);
+                            DrawText(button, (f32)(label_x + 0.6499999761581421), y, 0.0f, 0x40, 2.5f, brightness, binding1, 1, 0.45f);
                         }
                     } else if (show_empty1) {
                         show_empty1 = 0;
-                        DrawText(PcControlTextPc[6], (f32)(label_x + 0.6499999761581421), 0.0f, 0.0f, 0x40, 2.5f, 1.0f,
-                                 player1_colour, 1, 0.45f);
+                        DrawText(PcControlTextPc[6], (f32)(label_x + 0.6499999761581421), 0.0f, 0.0f, 0x40, 2.5f, 1.0f, player1_colour, 1,
+                                 0.45f);
                     }
                 }
             }

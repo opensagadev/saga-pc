@@ -50,8 +50,8 @@ extern "C" {
     i32 OnOrInsidePlane(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32 *);
     void SetAnimFrame(struct nuhspecial_s *special, f32 frame);
     i32 DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *, NUMTX *);
-    f32 XZLinesClosest(struct nuvec_s *first_start, struct nuvec_s *first_end, struct nuvec_s *second_start,
-                       struct nuvec_s *second_end, f32 *first_fraction, f32 *second_fraction);
+    f32 XZLinesClosest(struct nuvec_s *first_start, struct nuvec_s *first_end, struct nuvec_s *second_start, struct nuvec_s *second_end,
+                       f32 *first_fraction, f32 *second_fraction);
 #ifdef __cplusplus
 }
 #endif

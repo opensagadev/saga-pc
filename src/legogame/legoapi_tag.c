@@ -2,10 +2,9 @@
 #include <string.h>
 
 extern GAMEOBJECT *player_tag_from;
-#define TAG_CAN_TARGET(source, target)                                                                                 \
-    ((target) != NULL && ((target)->flags_1fc_word & 1) != 0 && ((target)->flags_1fc_word & 0x1000) != 0 &&            \
-     (target) != (source) && (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 &&                          \
-     ((target)->tag_flags & 2) == 0)
+#define TAG_CAN_TARGET(source, target)                                                                                                     \
+    ((target) != NULL && ((target)->flags_1fc_word & 1) != 0 && ((target)->flags_1fc_word & 0x1000) != 0 && (target) != (source) &&        \
+     (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 && ((target)->tag_flags & 2) == 0)
 
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
@@ -46,9 +45,8 @@ i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
         }
         --remaining;
         candidate = &Obj[index];
-        if (candidate != NULL && candidate != object && (candidate->flags_1fc_word & 1) != 0 &&
-            (candidate->flags_1fc_word & 0x1000) != 0 && candidate->dead == 0 && candidate->field_280 != 0xff &&
-            (candidate->tag_flags & 2) == 0 && (candidate->flags_ef4 & 2) == 0 &&
+        if (candidate != NULL && candidate != object && (candidate->flags_1fc_word & 1) != 0 && (candidate->flags_1fc_word & 0x1000) != 0 &&
+            candidate->dead == 0 && candidate->field_280 != 0xff && (candidate->tag_flags & 2) == 0 && (candidate->flags_ef4 & 2) == 0 &&
             (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x800) == 0) {
             return (i8)candidate->field_280;
         }
@@ -65,8 +63,8 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
         GAMEOBJECT *candidate = Tag_Mode == 3 ? &Obj[index] : Player[index];
         NUVEC direction;
         f32 distance;
-        if (candidate == NULL || (candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 ||
-            candidate == object || candidate->dead != 0 || (candidate->tag_flags & 2) != 0) {
+        if (candidate == NULL || (candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate == object ||
+            candidate->dead != 0 || (candidate->tag_flags & 2) != 0) {
             continue;
         }
         if (candidate->character_context == 0x17 || candidate->character_context == 0x3d ||
@@ -193,8 +191,8 @@ void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     i32 count = HIGHGAMEOBJECT;
     CHARACTER_MODEL_LAYERS_PC *model;
     for (i = 0; i < count; ++i, ++object) {
-        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-            object->character_context == 0x3c && object->force_target == vehicle) {
+        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->character_context == 0x3c &&
+            object->force_target == vehicle) {
             return;
         }
     }
@@ -471,14 +469,12 @@ void Tag_Check(GAMEOBJECT *object) {
                     } else if (Arcade == 0) {
                         target = NULL;
                         if (Tag_Mode == 3) {
-                            if (context == -1 || context == 0x17 || (context_flags & 4) != 0 ||
-                                (context_flags & 0x1000000000ull) != 0) {
+                            if (context == -1 || context == 0x17 || (context_flags & 4) != 0 || (context_flags & 0x1000000000ull) != 0) {
                                 target = Tag_FindGameObject_TRANSFER(object);
                                 if (target != NULL && InCollectList_Index((i16)target->id, NULL, 0) == -1) {
                                     GameAudio_PlaySfx(0x32, &object->collision_position, 0, 0);
                                     NewRumble(object->pad->bound_pad, 0.5f, 0.0f);
-                                    if (AIScriptSetBaseScriptStateByName(&target->ai_packet.script_processor,
-                                                                         "MapRunAway") != 0) {
+                                    if (AIScriptSetBaseScriptStateByName(&target->ai_packet.script_processor, "MapRunAway") != 0) {
                                         AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
                                                         &target->ai_packet.script_processor, FRAMETIME);
                                     }
@@ -646,12 +642,10 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
         GameCam_Blend(GameCam, 0.3f, 0.0f, 1);
     }
     if (AIScriptSetBaseScriptStateByName(&rider->ai_packet.script_processor, "ReleasedTakeOver") != 0) {
-        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)rider, &rider->ai_packet, &rider->ai_packet.script_processor,
-                        FRAMETIME);
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)rider, &rider->ai_packet, &rider->ai_packet.script_processor, FRAMETIME);
     }
     if (AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "ReleasedTakeOver") != 0) {
-        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, &object->ai_packet.script_processor,
-                        FRAMETIME);
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, &object->ai_packet.script_processor, FRAMETIME);
     }
 }
 
@@ -673,8 +667,7 @@ void TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camer
     if ((rider->flags_ef4 & 2) != 0) {
         result = TakeOverYoda(rider, vehicle, blend_camera, 1);
     } else {
-        if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 &&
-            (rider->flags_1fc_word & 0x80) != 0) {
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 && (rider->flags_1fc_word & 0x80) != 0) {
             blend_camera = 1;
         }
         RegisterTakeOverObject(vehicle);
@@ -729,8 +722,8 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                     Hint_SetComplete(8);
                 }
             }
-            if (WORLD->grabber != NULL && (object->force_target->id == (u16)id_GRABCONTROL ||
-                                           object->force_target->id == (u16)id_GRABR2CONTROL)) {
+            if (WORLD->grabber != NULL &&
+                (object->force_target->id == (u16)id_GRABCONTROL || object->force_target->id == (u16)id_GRABR2CONTROL)) {
                 PlaySfx("env_crane_in", &object->collision_position);
             } else {
                 PlayLandSfx(object, 0, 0);
@@ -756,9 +749,8 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         phase = (f64)fraction * 32768.0;
         object->position.y += height * NuTrigTable[((i32)phase >> 1) & 0x7fff];
         object->facing_angle = object->movement_facing_angle = object->field_0x276 =
-            (u16)((f64)object->takeover_start_angle +
-                  (f64)RotDiff(object->takeover_start_angle, object->force_target->field_0x276) *
-                      (1.0 - ((f64)NuTrigTable[((i32)(phase + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5));
+            (u16)((f64)object->takeover_start_angle + (f64)RotDiff(object->takeover_start_angle, object->force_target->field_0x276) *
+                                                          (1.0 - ((f64)NuTrigTable[((i32)(phase + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5));
         return;
     }
     object->tag_flags &= ~1u;
@@ -785,8 +777,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
             SetRiderPos(object, NULL);
             object->takeover_timer = 1.0f;
         } else if (object->character_data->game_character->weapon_action == 12) {
-            i32 animation =
-                CurrentAnim(&object->anim_packet) == 3 || CurrentAnim(&object->anim_packet) == 0x17 ? 0xc4 : 0xc3;
+            i32 animation = CurrentAnim(&object->anim_packet) == 3 || CurrentAnim(&object->anim_packet) == 0x17 ? 0xc4 : 0xc3;
             CHARACTER_MODEL_LAYERS_PC *model;
             target = object->rider;
             model = target->character_model;
@@ -800,10 +791,10 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         object->takeover_timer -= FRAMETIME;
         return;
     }
-    if (MiniCutCam != 0 || (object->flags_1fc_word & 0x80) == 0 || object->dead != 0 ||
-        !(object->takeover_timer <= 0.0f) || object->character_context == 0x2b ||
-        (object->character_context != -1 && (object->character_context != 0 || object->action_movement_state == 3 ||
-                                             object->action_movement_state == 4))) {
+    if (MiniCutCam != 0 || (object->flags_1fc_word & 0x80) == 0 || object->dead != 0 || !(object->takeover_timer <= 0.0f) ||
+        object->character_context == 0x2b ||
+        (object->character_context != -1 &&
+         (object->character_context != 0 || object->action_movement_state == 3 || object->action_movement_state == 4))) {
         return;
     }
     {
@@ -821,10 +812,9 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         }
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 ||
-                candidate->dead != 0 || candidate->field_280 != 0xff ||
-                (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 || candidate->rider != NULL ||
-                (candidate->character_data->game_character->flags_090 & 0x40) == 0 ||
+            if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate->dead != 0 ||
+                candidate->field_280 != 0xff || (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 ||
+                candidate->rider != NULL || (candidate->character_data->game_character->flags_090 & 0x40) == 0 ||
                 ((candidate->character_data->model_flags & 0x40000000) != 0 &&
                  (candidate->character_context == 0x17 || candidate->character_context == 0x3e)) ||
                 (candidate->tag_flags & 2) != 0) {
@@ -836,8 +826,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                 }
                 continue;
             }
-            if (object->collision_min.y > candidate->collision_max.y ||
-                object->collision_max.y < candidate->collision_min.y) {
+            if (object->collision_min.y > candidate->collision_max.y || object->collision_max.y < candidate->collision_min.y) {
                 continue;
             }
             range = (f64)candidate->bounds_radius * 2.0 + object->bounds_radius;

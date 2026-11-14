@@ -313,9 +313,8 @@ i32 ReadPad(i32 port) {
     f32 axis_y;
     if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn() != 0) {
         mode = 1;
-    } else if (readpads_always != 0 || world == NULL || world->current_level == NULL ||
-               world->current_level == TITLES_LDATA || world->current_level == CREDITS_LDATA ||
-               (world->current_level->flags & 0x400) != 0) {
+    } else if (readpads_always != 0 || world == NULL || world->current_level == NULL || world->current_level == TITLES_LDATA ||
+               world->current_level == CREDITS_LDATA || (world->current_level->flags & 0x400) != 0) {
         mode = 2;
     } else {
         mode = 1;
@@ -465,9 +464,8 @@ void DoInput(WORLDINFO *world) {
         }
         if (Paused == 0) {
             if (GameMenu[GameMenuLevel].menu == -1 && CutSceneWaiting == 0) {
-                if ((CUTSTOPGAME == 0 || CutScene_IsSkippable(CutStopInfo)) && MiniCutCam == 0 &&
-                    memcard_autosavestarted == 0 && !(memcard_autosavepostdelay > 0.0f) &&
-                    !(memcard_autosavepredelay > 0.0f) && GameTimer.update_count != 0) {
+                if ((CUTSTOPGAME == 0 || CutScene_IsSkippable(CutStopInfo)) && MiniCutCam == 0 && memcard_autosavestarted == 0 &&
+                    !(memcard_autosavepostdelay > 0.0f) && !(memcard_autosavepredelay > 0.0f) && GameTimer.update_count != 0) {
                     PauseGame((GAMEPAD_INIT_RECORD *)player->pad - GamePadStorage);
                     changed = 1;
                     continue;
@@ -491,8 +489,7 @@ void DoInput(WORLDINFO *world) {
 u16 GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {
     if ((object->flags_1fc_word & 0x80) != 0 && object->sock_position.sock_index != -1) {
         if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 0x40) != 0) {
-            return (u16)(pad->input_angle + object->sock_heading +
-                         WORLD->sock_sys->socks[object->sock_position.sock_index].input_yaw);
+            return (u16)(pad->input_angle + object->sock_heading + WORLD->sock_sys->socks[object->sock_position.sock_index].input_yaw);
         }
     }
     return (u16)(pad->input_angle + GameCam->input_yaw);

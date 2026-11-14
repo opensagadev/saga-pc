@@ -200,8 +200,7 @@ void Minicam_AddDeltas(float duration) {
                 fraction = NuTrigTable[(((i32)(doubled_fraction * 16384.0f)) >> 1) & 0x7fff] * 0.5f;
             } else if (fraction > 0.5f) {
                 f32 doubled_fraction = (fraction - 0.5f) * 2.0f;
-                fraction =
-                    (1.0f - NuTrigTable[(((i32)(doubled_fraction * 16384.0f + 16384.0f)) >> 1) & 0x7fff]) * 0.5f + 0.5f;
+                fraction = (1.0f - NuTrigTable[(((i32)(doubled_fraction * 16384.0f + 16384.0f)) >> 1) & 0x7fff]) * 0.5f + 0.5f;
             } else {
                 fraction = 0.5f;
             }
@@ -287,8 +286,7 @@ void Minicam_CalcCamPos(void) {
     }
 }
 
-void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, f32 blend_out, i32 borders,
-                           i32 hold_until_players_move) {
+void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, f32 blend_out, i32 borders, i32 hold_until_players_move) {
     if (spline == NULL) {
         return;
     }
@@ -316,8 +314,8 @@ void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, 
     ObstacleCamAlwaysSnapAnglesPc = 0;
 }
 
-void GameCameraMakeMiniCut2(NUVEC *camera, NUVEC *target, i32 target_guid, float start, float end, float blend_in,
-                            float blend_out, i32 follow_target, i32 follow_camera, i32 borders) {
+void GameCameraMakeMiniCut2(NUVEC *camera, NUVEC *target, i32 target_guid, float start, float end, float blend_in, float blend_out,
+                            i32 follow_target, i32 follow_camera, i32 borders) {
     ObstacleCamCutSpline.length = 2;
     ObstacleCamCutSpline.pt_size = 12;
     ObstacleCamCutSpline.pts = ObstacleCamCutPts;
@@ -544,10 +542,9 @@ void Minicam_Update(void) {
     Minicam_CalcCamPos();
 }
 
-void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 roll, void *focus, i32 target_guid,
-                            NUVEC *position, float start_time, float blend_in_time, float end_time,
-                            float blend_out_time, float blend_time, float hold_time, float max_time, i32 borders,
-                            NUGSPLINE *spline, i8 mode, i8 easing) {
+void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 roll, void *focus, i32 target_guid, NUVEC *position,
+                            float start_time, float blend_in_time, float end_time, float blend_out_time, float blend_time, float hold_time,
+                            float max_time, i32 borders, NUGSPLINE *spline, i8 mode, i8 easing) {
     NUVEC command_origin;
     f32 remaining_duration;
     GameCam->blend_time = 0.0f;
@@ -562,15 +559,15 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
             MiniCam.focus_offset = reset_origin;
             MiniCam.target = *(NUVEC *)focus;
             MiniCam.position = *position;
-            GameCameraMakeMiniCut2(&MiniCam.position, &MiniCam.target, target_guid, start_time, 1000000000.0f,
-                                   blend_in_time, 0.0f, 1, 1, MiniCam.borders);
+            GameCameraMakeMiniCut2(&MiniCam.position, &MiniCam.target, target_guid, start_time, 1000000000.0f, blend_in_time, 0.0f, 1, 1,
+                                   MiniCam.borders);
         } else {
             MiniCam.focus = &MiniCam.target;
             MiniCam.focus_offset = reset_origin;
             MiniCam.target = reset_origin;
             MiniCam.position = *position;
-            GameCameraMakeMiniCut2(&MiniCam.position, NULL, target_guid, start_time, 1000000000.0f, blend_in_time, 0.0f,
-                                   0, 1, MiniCam.borders);
+            GameCameraMakeMiniCut2(&MiniCam.position, NULL, target_guid, start_time, 1000000000.0f, blend_in_time, 0.0f, 0, 1,
+                                   MiniCam.borders);
         }
     }
 

@@ -33,13 +33,13 @@ void NuDatFileMissingPc(char *filepath);
 void NuRDPIVariableErrorPc(char *name);
 
 // Fetch one control bit; the marker bit refills the buffer from the next input byte.
-#define NUPP_GETBIT()                                                                                                  \
-    bits += bits;                                                                                                      \
-    bit = (bits >> 8) & 1;                                                                                             \
-    bits &= 0xff;                                                                                                      \
-    if (bits == 0) {                                                                                                   \
-        bits = bit + *src++ * 2;                                                                                       \
-        bit = (bits >> 8) & 1;                                                                                         \
+#define NUPP_GETBIT()                                                                                                                      \
+    bits += bits;                                                                                                                          \
+    bit = (bits >> 8) & 1;                                                                                                                 \
+    bits &= 0xff;                                                                                                                          \
+    if (bits == 0) {                                                                                                                       \
+        bits = bit + *src++ * 2;                                                                                                           \
+        bit = (bits >> 8) & 1;                                                                                                             \
     }
 
 struct NUPPHEADER {    // size 0xc
@@ -48,16 +48,15 @@ struct NUPPHEADER {    // size 0xc
     u32 packed_size;   // 0x8
 };
 
-#define NUPP_SWAP32(value)                                                                                             \
-    (((value) >> 24) | (((value) & 0x00ff0000) >> 8) | (((value) & 0x0000ff00) << 8) | ((value) << 24))
+#define NUPP_SWAP32(value) (((value) >> 24) | (((value) & 0x00ff0000) >> 8) | (((value) & 0x0000ff00) << 8) | ((value) << 24))
 
-#define NU_WIDE_LENGTH(text, length)                                                                                   \
-    do {                                                                                                               \
-        const u16 *nu_cursor = (const u16 *)(text);                                                                    \
-        (length) = 0;                                                                                                  \
-        while (*nu_cursor++ != 0) {                                                                                    \
-            ++(length);                                                                                                \
-        }                                                                                                              \
+#define NU_WIDE_LENGTH(text, length)                                                                                                       \
+    do {                                                                                                                                   \
+        const u16 *nu_cursor = (const u16 *)(text);                                                                                        \
+        (length) = 0;                                                                                                                      \
+        while (*nu_cursor++ != 0) {                                                                                                        \
+            ++(length);                                                                                                                    \
+        }                                                                                                                                  \
     } while (0)
 
 static i32 old_line_pos;
@@ -77,17 +76,7 @@ typedef struct nurdpfcontext_s {               // size 0x14
     i32 (*get_variable)(char *, f32 *, i32 *); // 0x10
 } NURDPFCTX_PC;
 
-enum {
-    RDPF_ADD,
-    RDPF_SUBTRACT,
-    RDPF_MULTIPLY,
-    RDPF_DIVIDE,
-    RDPF_LEFT_PAREN,
-    RDPF_RIGHT_PAREN,
-    RDPF_END,
-    RDPF_NUMBER,
-    RDPF_VARIABLE
-};
+enum { RDPF_ADD, RDPF_SUBTRACT, RDPF_MULTIPLY, RDPF_DIVIDE, RDPF_LEFT_PAREN, RDPF_RIGHT_PAREN, RDPF_END, RDPF_NUMBER, RDPF_VARIABLE };
 
 static f32 NuRDPFExpression(NURDPFCTX_PC *context);
 
@@ -168,7 +157,12 @@ typedef struct FRAME_PAD_RAMP_PC {
 static FRAME_SCANNED_PAD_PC g_nupadScannedPads[16] = {0};
 static f32 FramePadRampRatePc = 0.1f;
 static FRAME_PAD_RAMP_PC FramePadRampValuesPc[5] = {
-    {0.0f, 0.0f}, {0.5f, 0.1f}, {0.75f, 0.25f}, {0.85f, 0.5f}, {1.0f, 1.0f}};
+    {0.0f,  0.0f },
+    {0.5f,  0.1f },
+    {0.75f, 0.25f},
+    {0.85f, 0.5f },
+    {1.0f,  1.0f }
+};
 static i32 FramePadDirectMappingPc = 0;
 static i32 FramePadActivatedPc = 0;
 
@@ -196,25 +190,25 @@ static i32 inlen = 0;
 
 static unsigned char ImplodeRingBufferPc[0x2000] = {0};
 
-#define SELECT(dst, table, shift, count, initial_mask, len)                                                            \
-    do {                                                                                                               \
-        (dst) = (table)[implode_bitbuf >> shift];                                                                      \
-                                                                                                                       \
-        if ((dst) > (count)) {                                                                                         \
-            u32 mask = (initial_mask);                                                                                 \
-                                                                                                                       \
-            do {                                                                                                       \
-                if ((implode_bitbuf & mask) != 0) {                                                                    \
-                    (dst) = implode_right[(dst)];                                                                      \
-                } else {                                                                                               \
-                    (dst) = implode_left[(dst)];                                                                       \
-                }                                                                                                      \
-                                                                                                                       \
-                mask >>= 1;                                                                                            \
-            } while ((dst) > (count));                                                                                 \
-        }                                                                                                              \
-                                                                                                                       \
-        ImplodeFillBuf((len)[(dst)]);                                                                                  \
+#define SELECT(dst, table, shift, count, initial_mask, len)                                                                                \
+    do {                                                                                                                                   \
+        (dst) = (table)[implode_bitbuf >> shift];                                                                                          \
+                                                                                                                                           \
+        if ((dst) > (count)) {                                                                                                             \
+            u32 mask = (initial_mask);                                                                                                     \
+                                                                                                                                           \
+            do {                                                                                                                           \
+                if ((implode_bitbuf & mask) != 0) {                                                                                        \
+                    (dst) = implode_right[(dst)];                                                                                          \
+                } else {                                                                                                                   \
+                    (dst) = implode_left[(dst)];                                                                                           \
+                }                                                                                                                          \
+                                                                                                                                           \
+                mask >>= 1;                                                                                                                \
+            } while ((dst) > (count));                                                                                                     \
+        }                                                                                                                                  \
+                                                                                                                                           \
+        ImplodeFillBuf((len)[(dst)]);                                                                                                      \
     } while (0)
 
 static u32 blocksize = 0;
@@ -256,14 +250,14 @@ extern void bgprocFrameSleepPc(i32 milliseconds);
 extern void NuFrameEndLeafPc(void);
 extern void FmvPlatformUpdatePc(void);
 
-#define NUFRAME_ELAPSED(elapsed, now, start)                                                                           \
-    if ((now).low >= (start).low) {                                                                                    \
-        (elapsed).low = (now).low - (start).low;                                                                       \
-        (elapsed).high = (now).high - (start).high;                                                                    \
-    } else {                                                                                                           \
-        (elapsed).high = (now).high - (start).high;                                                                    \
-        (elapsed).low = (now).low - (start).low;                                                                       \
-        (elapsed).high -= 1;                                                                                           \
+#define NUFRAME_ELAPSED(elapsed, now, start)                                                                                               \
+    if ((now).low >= (start).low) {                                                                                                        \
+        (elapsed).low = (now).low - (start).low;                                                                                           \
+        (elapsed).high = (now).high - (start).high;                                                                                        \
+    } else {                                                                                                                               \
+        (elapsed).high = (now).high - (start).high;                                                                                        \
+        (elapsed).low = (now).low - (start).low;                                                                                           \
+        (elapsed).high -= 1;                                                                                                               \
     }
 
 extern void (*NuApiEndFrameCallbackPc)(void);
@@ -1852,10 +1846,8 @@ void NuFileInitAddress(i32 capacity) {
             NuFree(addr_pos, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa59);
         }
         MAX_FILE_ADDRESS = capacity;
-        addr_ref = NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC),
-                           "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa5d);
-        addr_pos = NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC),
-                           "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa5e);
+        addr_ref = NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa5d);
+        addr_pos = NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa5e);
     }
     ref_count = 0;
     pos_count = 0;
@@ -1987,8 +1979,7 @@ i32 NuDatFileRead(NUFILE file, void *destination, i32 size) {
                 if (read_buffer_size == read_buffer_decoded_size) {
                     memcpy(decode_buffer, read_buffer, read_buffer_size);
                 } else {
-                    ExplodeBufferNoHeader((char *)read_buffer, (char *)decode_buffer, read_buffer_size,
-                                          read_buffer_decoded_size);
+                    ExplodeBufferNoHeader((char *)read_buffer, (char *)decode_buffer, read_buffer_size, read_buffer_decoded_size);
                 }
                 decode_buffer_pos = 0;
                 decode_buffer_left = read_buffer_decoded_size;
@@ -2813,8 +2804,7 @@ i32 NuFilePakCondense(void *pak) {
                 removed_size &= ~(item->alignment - 1);
             }
             if (removed_size != 0) {
-                PCByteCopy((char *)header + item->data_offset - removed_size, (char *)header + item->data_offset,
-                           item->size);
+                PCByteCopy((char *)header + item->data_offset - removed_size, (char *)header + item->data_offset, item->size);
                 item->data_offset -= removed_size;
             }
         } else {
@@ -3140,8 +3130,7 @@ i32 NuFParGetWordW(NUFPAR_PC *parser) {
     while (line[parser->line_position & ((parser->line_buffer_size >> 1) - 1)] != 0) {
         u16 character = line[parser->line_position];
 
-        if (parser->separator_tokens != NULL && !in_quoted_text &&
-            NuStrChr(parser->separator_tokens, (char)character) != NULL) {
+        if (parser->separator_tokens != NULL && !in_quoted_text && NuStrChr(parser->separator_tokens, (char)character) != NULL) {
             if (length == 0) {
                 word[0] = character;
                 length++;
@@ -3151,8 +3140,7 @@ i32 NuFParGetWordW(NUFPAR_PC *parser) {
             return length;
         }
 
-        if (parser->separator_list != NULL && !in_quoted_text &&
-            NuStrChr(parser->separator_list, (char)character) != NULL) {
+        if (parser->separator_list != NULL && !in_quoted_text && NuStrChr(parser->separator_list, (char)character) != NULL) {
             character = ' ';
         }
 
@@ -3207,8 +3195,7 @@ i32 NuFParGetWord(NUFPAR_PC *parser) {
     while (parser->line_buffer_ptr[parser->line_position & (parser->line_buffer_size - 1)] != '\0') {
         char character = parser->line_buffer_ptr[parser->line_position];
 
-        if (parser->separator_tokens != NULL && !in_quoted_text &&
-            NuStrChr(parser->separator_tokens, character) != NULL) {
+        if (parser->separator_tokens != NULL && !in_quoted_text && NuStrChr(parser->separator_tokens, character) != NULL) {
             if (length == 0) {
                 parser->word_buffer_ptr[0] = character;
                 length++;
@@ -4637,8 +4624,7 @@ static i32 AddNode(NUQTHDR_PC *header, i32 parent) {
     return index;
 }
 
-static i32 AddElementR(NUQTHDR_PC *header, i32 index, NUQTDIM_PC *bounds, NUQTDIM_PC *item_bounds, void *item,
-                       i32 depth) {
+static i32 AddElementR(NUQTHDR_PC *header, i32 index, NUQTDIM_PC *bounds, NUQTDIM_PC *item_bounds, void *item, i32 depth) {
     i32 result = 0;
     NUQTDIM_PC q0 = {bounds->x0, (bounds->x0 + bounds->x1) * 0.5, bounds->y0, (bounds->y1 + bounds->y0) * 0.5};
     NUQTDIM_PC q1 = {(bounds->x0 + bounds->x1) * 0.5, bounds->x1, bounds->y0, (bounds->y1 + bounds->y0) * 0.5};
@@ -4724,8 +4710,8 @@ void NuQTAddElement(NUQTHDR_PC *header, void *item, f32 x0, f32 x1, f32 y0, f32 
     AddElementR(header, 0, &bounds, &item_bounds, item, header->max_depth);
 }
 
-i32 NuQTCreate(i32 entry_capacity, i32 data_capacity, i32 element_size, i32 max_depth, i32 split_count, f32 y0, f32 x0,
-               f32 y1, f32 x1, VARIPTR *cursor, VARIPTR *end) {
+i32 NuQTCreate(i32 entry_capacity, i32 data_capacity, i32 element_size, i32 max_depth, i32 split_count, f32 y0, f32 x0, f32 y1, f32 x1,
+               VARIPTR *cursor, VARIPTR *end) {
     cursor->addr = (cursor->addr + 15) & ~15;
     if (cursor->addr + sizeof(NUQTHDR_PC) + sizeof(NUQTENTRY) * entry_capacity + 16 + data_capacity <= end->addr) {
         NUQTHDR_PC *header = cursor->void_ptr;
@@ -4888,8 +4874,8 @@ static void *NuAllocManagerPayloadPc(NUALLOC_MANAGER_BLOCK_PC *block) {
 }
 
 static void NuAllocManagerSetTrailerPc(NUALLOC_MANAGER_BLOCK_PC *block) {
-    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)block + NuAllocManagerGetSizePc(block) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))
-        ->previous_block = block;
+    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)block + NuAllocManagerGetSizePc(block) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))->previous_block =
+        block;
 }
 
 static void NuAllocManagerUnlinkPc(NUALLOC_MANAGER_BLOCK_PC *block) {
@@ -4921,15 +4907,13 @@ static void NuAllocManagerSplitPc(NUALLOC_MANAGER_BLOCK_PC **allocated, NUALLOC_
     (*allocated)->size_flags = ((*allocated)->size_flags & 0x80000000U) | *size;
     (*allocated)->next = NULL;
     (*allocated)->previous = NULL;
-    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)*allocated + ((*allocated)->size_flags & 0x7fffffffU) +
-                                    sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)*allocated + ((*allocated)->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))
         ->previous_block = *allocated;
     (*remainder)->size_flags &= 0x7fffffffU;
     (*remainder)->size_flags = ((*remainder)->size_flags & 0x80000000U) | remainder_size;
     (*remainder)->next = NULL;
     (*remainder)->previous = NULL;
-    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)*remainder + ((*remainder)->size_flags & 0x7fffffffU) +
-                                    sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)*remainder + ((*remainder)->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))
         ->previous_block = *remainder;
 }
 
@@ -5040,19 +5024,16 @@ void NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
     next = (NUALLOC_MANAGER_BLOCK_PC *)((u32)block + (block->size_flags & 0x7fffffffU) + 16);
     if (!(next->size_flags & 0x80000000U)) {
         NuAllocManagerUnlinkPc(next);
-        block->size_flags = (block->size_flags & 0x80000000U) |
-                            ((next->size_flags & 0x7fffffffU) + (block->size_flags & 0x7fffffffU) + 16);
-        ((NUALLOC_MANAGER_TRAILER_PC *)((u32)block + (block->size_flags & 0x7fffffffU) +
-                                        sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+        block->size_flags = (block->size_flags & 0x80000000U) | ((next->size_flags & 0x7fffffffU) + (block->size_flags & 0x7fffffffU) + 16);
+        ((NUALLOC_MANAGER_TRAILER_PC *)((u32)block + (block->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))
             ->previous_block = block;
     }
     previous = ((NUALLOC_MANAGER_TRAILER_PC *)block)[-1].previous_block;
     if (!(previous->size_flags & 0x80000000U)) {
         NuAllocManagerUnlinkPc(block);
-        previous->size_flags = (previous->size_flags & 0x80000000U) |
-                               ((block->size_flags & 0x7fffffffU) + (previous->size_flags & 0x7fffffffU) + 16);
-        ((NUALLOC_MANAGER_TRAILER_PC *)((u32)previous + (previous->size_flags & 0x7fffffffU) +
-                                        sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+        previous->size_flags =
+            (previous->size_flags & 0x80000000U) | ((block->size_flags & 0x7fffffffU) + (previous->size_flags & 0x7fffffffU) + 16);
+        ((NUALLOC_MANAGER_TRAILER_PC *)((u32)previous + (previous->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))
             ->previous_block = previous;
     }
 }
@@ -6720,8 +6701,7 @@ i32 fun_004fcba0(NUFILE file) {
     NuFileRead(file, header, 12);
     if (header[0] == 0x2434e52) {
         header[1] = ((header[1] & 0xff0000 | header[1] >> 16) >> 8) | ((header[1] & 0xff00 | header[1] << 16) << 8);
-        header[2] =
-            (((header[2] & 0xff0000 | header[2] >> 16) >> 8) | ((header[2] & 0xff00 | header[2] << 16) << 8)) + 6;
+        header[2] = (((header[2] & 0xff0000 | header[2] >> 16) >> 8) | ((header[2] & 0xff00 | header[2] << 16) << 8)) + 6;
         size = header[1];
     } else {
         size = NuFileOpenSize(file);
@@ -7100,8 +7080,7 @@ void NuStrFixExtPlatform(char *dst, char *src, char *ext, i32 dst_size, char *pl
     NuStrCpy(suffix, "PC");
     NuStrCat(suffix, ".");
     NuStrCat(suffix, ext);
-    if (NuStrLen(src) > NuStrLen(suffix) &&
-        NuStrNICmp(&src[NuStrLen(src) - NuStrLen(suffix)], suffix, NuStrLen(suffix)) == 0) {
+    if (NuStrLen(src) > NuStrLen(suffix) && NuStrNICmp(&src[NuStrLen(src) - NuStrLen(suffix)], suffix, NuStrLen(suffix)) == 0) {
         NuStrCpy(dst, src);
         return;
     }
@@ -7727,8 +7706,7 @@ void NuTimeWait(f32 milliseconds) {
         }
         NuTimeSub(&elapsed, &now, &start);
         NuTimeGetTicksPerSecondPS(&rate_low, &rate_high);
-        waited =
-            (f32)((elapsed.low + elapsed.high * NuTime_LowScale) / (rate_low + rate_high * NuTime_LowScale) * 1000.0);
+        waited = (f32)((elapsed.low + elapsed.high * NuTime_LowScale) / (rate_low + rate_high * NuTime_LowScale) * 1000.0);
     }
 }
 
@@ -7758,8 +7736,7 @@ void NuErrorSleep(void) {
         }
         NUFRAME_ELAPSED(elapsed, now, start);
         NuTimeGetTicksPerSecondPS(&rate_low, &rate_high);
-        milliseconds =
-            (f32)((elapsed.high * NuTime_LowScale + elapsed.low) / (rate_high * NuTime_LowScale + rate_low) * 1000.0);
+        milliseconds = (f32)((elapsed.high * NuTime_LowScale + elapsed.low) / (rate_high * NuTime_LowScale + rate_low) * 1000.0);
         if (nuapi.frame_begin_count != 0) {
             NuFileError();
         }
@@ -7912,8 +7889,7 @@ void NuPadRecordLoad(char *filepath, VARIPTR *buffer, VARIPTR end) {
         if (file != 0) {
             size = NuFileReadInt(file);
             record->record.u8_ptr =
-                (u8 *)(((u32)NuAlloc(size + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 0x44b) + 3) &
-                       ~3u);
+                (u8 *)(((u32)NuAlloc(size + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 0x44b) + 3) & ~3u);
             if (record->record.u8_ptr == NULL) {
                 NuFileError();
                 return;
@@ -7933,8 +7909,7 @@ void NuPadRecordInit(i32 mode, char *filepath, VARIPTR *buffer, VARIPTR end, i32
         case NUPAD_RECORD:
             record->mode = NUPAD_RECORD;
             record->record.u8_ptr =
-                (u8 *)(((u32)NuAlloc(size + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 0x47a) + 3) &
-                       ~3u);
+                (u8 *)(((u32)NuAlloc(size + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 0x47a) + 3) & ~3u);
             record->buf_start = record->record.u8_ptr;
             record->buf_end = record->record.u8_ptr + size;
             record->filepath = filepath;
@@ -8093,8 +8068,7 @@ static void DeadZoneValueXY(i32 *x_value, i32 *y_value, i32 deadzone) {
 }
 
 FRAME_PAD_PC *NuPadOpen(i32 device, i32 slot) {
-    FRAME_PAD_PC *pad =
-        NuAlloc(sizeof(FRAME_PAD_PC) + 0x800, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 180);
+    FRAME_PAD_PC *pad = NuAlloc(sizeof(FRAME_PAD_PC) + 0x800, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 180);
     if (pad != NULL) {
         memset(pad, 0, sizeof(*pad));
         pad->device = device;
@@ -8280,11 +8254,10 @@ void NuPadUpdatePads(void) {
 
     for (i = 0; i < max_interface_devices; i++) {
         g_nupadScannedPads[i].is_valid = (u8)NuPadReadOutputsPc(
-            i, &g_nupadScannedPads[i].analog_left_x, &g_nupadScannedPads[i].analog_left_y,
-            &g_nupadScannedPads[i].analog_right_x, &g_nupadScannedPads[i].analog_right_y,
-            &g_nupadScannedPads[i].analog_l1, &g_nupadScannedPads[i].analog_l2, &g_nupadScannedPads[i].analog_r1,
-            &g_nupadScannedPads[i].analog_r2, &g_nupadScannedPads[i].digital_buttons, &g_nupadScannedPads[i].unknown_7c,
-            &g_nupadScannedPads[i].analog_button_flags);
+            i, &g_nupadScannedPads[i].analog_left_x, &g_nupadScannedPads[i].analog_left_y, &g_nupadScannedPads[i].analog_right_x,
+            &g_nupadScannedPads[i].analog_right_y, &g_nupadScannedPads[i].analog_l1, &g_nupadScannedPads[i].analog_l2,
+            &g_nupadScannedPads[i].analog_r1, &g_nupadScannedPads[i].analog_r2, &g_nupadScannedPads[i].digital_buttons,
+            &g_nupadScannedPads[i].unknown_7c, &g_nupadScannedPads[i].analog_button_flags);
 
         NuPadRecordPlay(g_nupadScannedPads + i);
 
@@ -8334,10 +8307,8 @@ void NuPadUpdatePads(void) {
                     g_nupadScannedPads[j].mapped_to_pad = 0;
                 }
 
-                if (g_nupadScannedPads[j].digital_buttons != 0 ||
-                    g_nupadScannedPads[j].analog_left_x != ANALOG_CENTER ||
-                    g_nupadScannedPads[j].analog_left_y != ANALOG_CENTER ||
-                    g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
+                if (g_nupadScannedPads[j].digital_buttons != 0 || g_nupadScannedPads[j].analog_left_x != ANALOG_CENTER ||
+                    g_nupadScannedPads[j].analog_left_y != ANALOG_CENTER || g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
                     g_nupadScannedPads[j].analog_right_y != ANALOG_CENTER) {
                     g_nupadMapping[0].port = j;
                     g_nupadScannedPads[j].mapped_to_pad = 0;
@@ -8354,10 +8325,8 @@ void NuPadUpdatePads(void) {
         for (i = 0; i < max_game_pads; i++) {
             if (g_nupadMapping[i].is_active == 1 && !g_nupadScannedPads[g_nupadMapping[i].port].is_valid) {
                 for (j = 0; j < max_interface_devices; j++) {
-                    if (g_nupadScannedPads[j].is_valid &&
-                        (g_nupadScannedPads[j].digital_buttons_pressed & 0x800) != 0 &&
-                        (g_nupadScannedPads[j].mapped_to_pad == -1 ||
-                         !g_nupadMapping[g_nupadScannedPads[j].mapped_to_pad].is_active)) {
+                    if (g_nupadScannedPads[j].is_valid && (g_nupadScannedPads[j].digital_buttons_pressed & 0x800) != 0 &&
+                        (g_nupadScannedPads[j].mapped_to_pad == -1 || !g_nupadMapping[g_nupadScannedPads[j].mapped_to_pad].is_active)) {
                         g_nupadMapping[i].port = j;
                         g_nupadScannedPads[j].mapped_to_pad = i;
                         g_nupadScannedPads[j].digital_buttons_pressed = 0;
@@ -8402,10 +8371,8 @@ void NuPadUpdatePads(void) {
                         }
                         selected = j;
 
-                        if (g_nupadScannedPads[j].digital_buttons != 0 ||
-                            g_nupadScannedPads[j].analog_left_x != ANALOG_CENTER ||
-                            g_nupadScannedPads[j].analog_left_y != ANALOG_CENTER ||
-                            g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
+                        if (g_nupadScannedPads[j].digital_buttons != 0 || g_nupadScannedPads[j].analog_left_x != ANALOG_CENTER ||
+                            g_nupadScannedPads[j].analog_left_y != ANALOG_CENTER || g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
                             /* As on every platform, analog_right_x is tested twice. */
                             g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
                             (g_nupadScannedPads[j].digital_buttons_pressed & 0x840) != 0) {
@@ -8476,8 +8443,7 @@ void NuPadSetDirectMappingState(i32 state) {
 i32 NuPadRead(FRAME_PAD_PC *pad) {
     i32 device;
 
-    if (g_nupadMapping[pad->device].port != -1 ||
-        (FramePadDirectMappingPc && g_nupadScannedPads[pad->device].is_valid)) {
+    if (g_nupadMapping[pad->device].port != -1 || (FramePadDirectMappingPc && g_nupadScannedPads[pad->device].is_valid)) {
         if (FramePadDirectMappingPc != 0) {
             device = pad->device;
         } else {
@@ -8618,13 +8584,11 @@ void NuPadSetStatus(i32 pad, i32 status) {
 void NuPadRecordPlay(NUGENERICPAD *pad) {
     FRAME_RECORD_CURSOR_PC *record_ptr;
 
-    if (pad->is_valid && nuapi.pad_record.mode == NUPAD_PLAY &&
-        (pad->digital_buttons & nuapi.pad_record.end_play_buttons) != 0) {
+    if (pad->is_valid && nuapi.pad_record.mode == NUPAD_PLAY && (pad->digital_buttons & nuapi.pad_record.end_play_buttons) != 0) {
         nuapi.pad_record.mode = NUPAD_NORM;
     }
 
-    if (pad->is_valid && nuapi.pad_record.mode == NUPAD_RECORD &&
-        (pad->digital_buttons & nuapi.pad_record.end_record_buttons) != 0) {
+    if (pad->is_valid && nuapi.pad_record.mode == NUPAD_RECORD && (pad->digital_buttons & nuapi.pad_record.end_record_buttons) != 0) {
         nuapi.pad_record.should_end = 1;
     }
 
@@ -9030,9 +8994,9 @@ i32 ExplodeBuffer(char *in_buf, char *out_buf) {
     }
     original_size = ExplodeBufferSize(in_buf);
     if (original_size != 0) {
-        compressed_size = (i32)(((u32)(u8)in_buf[8] | ((u32)(u8)in_buf[9] << 8) | ((u32)(u8)in_buf[10] << 16) |
-                                 ((u32)(u8)in_buf[11] << 24)) &
-                                PCImplodeWordMask);
+        compressed_size =
+            (i32)(((u32)(u8)in_buf[8] | ((u32)(u8)in_buf[9] << 8) | ((u32)(u8)in_buf[10] << 16) | ((u32)(u8)in_buf[11] << 24)) &
+                  PCImplodeWordMask);
         return ExplodeBufferNoHeader(in_buf + 12, out_buf, compressed_size, original_size);
     }
     return 0;
@@ -9319,8 +9283,7 @@ i32 ExplodeBufferSize(char *header) {
             return 0;
         }
     }
-    return (i32)(((u32)(u8)header[0] | ((u32)(u8)header[1] << 8) | ((u32)(u8)header[2] << 16) |
-                  ((u32)(u8)header[3] << 24)) &
+    return (i32)(((u32)(u8)header[0] | ((u32)(u8)header[1] << 8) | ((u32)(u8)header[2] << 16) | ((u32)(u8)header[3] << 24)) &
                  PCImplodeWordMask);
 }
 
@@ -9334,8 +9297,7 @@ i32 ExplodeCompressedSize(char *header) {
             return 0;
         }
     }
-    size = ((u32)(u8)header[4] | ((u32)(u8)header[5] << 8) | ((u32)(u8)header[6] << 16) | ((u32)(u8)header[7] << 24)) &
-           PCImplodeWordMask;
+    size = ((u32)(u8)header[4] | ((u32)(u8)header[5] << 8) | ((u32)(u8)header[6] << 16) | ((u32)(u8)header[7] << 24)) & PCImplodeWordMask;
     if (size != 0) {
         size += 12;
     }

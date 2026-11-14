@@ -330,8 +330,7 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
     NuPrimInit(buffer, *end);
     PCGraphicsInitRenderTexturePool(buffer, *end);
     NuKeyboardPlatformStartup();
-    nuapi.video_aspect =
-        PcWindowOptions.aspect_mode == 3 ? PCDeviceBackend.active_aspect_mode : PcWindowOptions.aspect_mode;
+    nuapi.video_aspect = PcWindowOptions.aspect_mode == 3 ? PCDeviceBackend.active_aspect_mode : PcWindowOptions.aspect_mode;
     SetCursor(NULL);
     if (!PCDeviceIsAbsent()) {
         PCDeviceShowCursorPc(0);
@@ -379,8 +378,8 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
     NuAnimInit(animation_count, buffer, *end);
     NuTexAnimInitMutex();
     if (audio_enabled) {
-        NuSound3InitV(buffer, *end, video_parameter, 1, (SFX_FILE_INFO_PC *)audio_gate, 2, audio_buffer_size, 3,
-                      audio_channels, 4, audio_capacity, 0);
+        NuSound3InitV(buffer, *end, video_parameter, 1, (SFX_FILE_INFO_PC *)audio_gate, 2, audio_buffer_size, 3, audio_channels, 4,
+                      audio_capacity, 0);
     }
     if (audio_gate && audio_names && audio_parameter) {
         NuSound3SetRequestTable((u16 *)audio_names, (i32)audio_parameter);

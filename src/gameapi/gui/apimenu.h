@@ -113,11 +113,10 @@ extern "C" {
     extern i32 MenuFadeEnabled;
     extern const char Menu_ColonSeparator[3];
     extern f32 dme_sy;
-    void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
-                          void (*draw_save_slots_info_fn)(f32, f32, i32, i32), i32 is_fade_enabled,
-                          i32 is_shadow_enabled);
-    void MenuInitialise(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
-                        void (*draw_save_slots_fn)(MENU *, f32), i32 is_fade_enabled, i32 is_shadow_enabled);
+    void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count, void (*draw_save_slots_info_fn)(f32, f32, i32, i32),
+                          i32 is_fade_enabled, i32 is_shadow_enabled);
+    void MenuInitialise(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count, void (*draw_save_slots_fn)(MENU *, f32),
+                        i32 is_fade_enabled, i32 is_shadow_enabled);
     void MenuReset(void);
     extern i32 newgamecam;
 

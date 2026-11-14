@@ -129,8 +129,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         object->field_db0 -= FRAMETIME;
     }
     if (object->character_context != 0x61 || machine == NULL) {
-        if (object->character_model->model_data_b[0x5d] == NULL || object->field_281 == 0 ||
-            ObjLandReady(object) == 0) {
+        if (object->character_model->model_data_b[0x5d] == NULL || object->field_281 == 0 || ObjLandReady(object) == 0) {
             return;
         }
         f32 distance;
@@ -140,8 +139,8 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         }
         f32 range = (f64)object->bounds_radius + 0.25;
         range *= machine->scale;
-        if (distance < range && (special_pressed != 0 || (((HAT_USE_REQUEST *)object)->request == 2 &&
-                                                          ((HAT_USE_REQUEST *)object)->net_wait_info != NULL))) {
+        if (distance < range &&
+            (special_pressed != 0 || (((HAT_USE_REQUEST *)object)->request == 2 && ((HAT_USE_REQUEST *)object)->net_wait_info != NULL))) {
             object->grapple = machine;
             object->movement_facing_angle = machine->yaw;
             object->context_hover_target_y = 0.0f;
@@ -177,8 +176,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             object->field_db0 = 0.0f;
             return;
         }
-        if ((object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & 0x20) != 0 &&
-            object->field_db0 <= 0.0f) {
+        if ((object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & 0x20) != 0 && object->field_db0 <= 0.0f) {
             PlaySfx("TC14_VLN", &object->collision_position);
             object->field_db0 = 0.5f;
         }
@@ -610,12 +608,10 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
     NUVEC draw_position;
     u16 spin_angle = (u16)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     f32 target_pulse =
-        (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] *
-            (f64)0.2f +
+        (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] * (f64)0.2f +
         (f64)0.8f;
     f32 ready_alpha =
-        (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] *
-            (f64)0.15f +
+        (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] * (f64)0.15f +
         (f64)0.85f;
     EnableShadowMapRendering(0);
     NUSPECIALHANDLE *specials[4];
@@ -626,8 +622,8 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
             specials[effect] = &world->level_objects[HatMachineDrawSpecialIndicesPc[effect]].special;
             animations[effect] = (NUINSTANIM *)NuSpecialGetInstAnim(specials[effect]);
             if (specials[effect] != NULL && animations[effect] != NULL) {
-                end_frames[effect] = NuAnimEndFrameOld(
-                    ((NUGSCN *)specials[effect]->scene)->instance_animation_data[animations[effect]->animation_index]);
+                end_frames[effect] =
+                    NuAnimEndFrameOld(((NUGSCN *)specials[effect]->scene)->instance_animation_data[animations[effect]->animation_index]);
             }
         }
     }
@@ -658,8 +654,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
             u32 bits;
         } magnitude;
 
-        if ((machine->flags & 0x20) == 0 && machine->target_offset.y != 2000000.0f &&
-            world->level_objects[85].active != 0) {
+        if ((machine->flags & 0x20) == 0 && machine->target_offset.y != 2000000.0f && world->level_objects[85].active != 0) {
             NUVEC target;
             Hat_GetAbsTargetPos(machine, &target);
             NuMtxSetRotationY(&matrix, spin_angle);
@@ -672,8 +667,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
             NuMtxScaleU(&matrix, 0.8f);
             NuMtxTranslate(&matrix, &target);
             NuMtxPreScaleU(&matrix, machine->scale);
-            NuSpecialDrawAtAlpha(&world->level_objects[85].special, &matrix,
-                                 (machine->flags & 1) != 0 ? 0.0f : target_pulse);
+            NuSpecialDrawAtAlpha(&world->level_objects[85].special, &matrix, (machine->flags & 1) != 0 ? 0.0f : target_pulse);
         }
         if (StartupGameFlag1 != 0) {
             if (specials[0] != NULL && animations[0] != NULL) {
@@ -697,9 +691,8 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                             if (machine->idle_bounce_timer < 0.0f) {
                                 machine->idle_bounce_timer = 0.0f;
                             } else {
-                                frame = NuTrigTable
-                                    [((i32)((f64)machine->idle_bounce_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) &
-                                     0x7fff];
+                                frame =
+                                    NuTrigTable[((i32)((f64)machine->idle_bounce_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) & 0x7fff];
                                 magnitude.value = HatmachineFabsPc(frame);
                                 frame = (1.0 - magnitude.value) * 1.5 + 16.0;
                             }
@@ -739,10 +732,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                 offset = HatMachine_HatOffset;
                 if (machine->animation_time < 2.35f) {
                     f32 hat_scale =
-                        1.0 -
-                        (1.0 -
-                         ((f64)NuTrigTable[((i32)((f64)machine->hat_delay * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) *
-                             0.5);
+                        1.0 - (1.0 - ((f64)NuTrigTable[((i32)((f64)machine->hat_delay * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5);
                     offset.y = (1.0 - hat_scale) * (f64)0.1f + HatMachine_HatOffset.y;
                     if (machine->animation_state < 3) {
                         frame = NuFdiv(frame, 50.0f);
@@ -792,37 +782,25 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                 switch (machine->animation_state) {
                     case 2:
                         offset.z =
-                            (1.0 +
-                             NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >>
-                                          1) &
-                                         0x7fff]) *
+                            (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.1441f;
                         break;
                     case 3:
                         offset.z = -0.1441f;
                         offset.y =
-                            (1.0 +
-                             NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >>
-                                          1) &
-                                         0x7fff]) *
+                            (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.35f;
                         break;
                     case 4:
                         offset.z = -0.1441f;
                         offset.y =
-                            (1.0 -
-                             (NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >>
-                                           1) &
-                                          0x7fff] +
-                              1.0)) *
+                            (1.0 - (NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] +
+                                    1.0)) *
                             (f64)-0.35f;
                         break;
                     case 5:
                         offset.z =
-                            (1.0 -
-                             NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 49152.0 + 16384.0) >>
-                                          1) &
-                                         0x7fff]) *
+                            (1.0 - NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.1441f;
                         break;
                 }
@@ -837,37 +815,25 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                 switch (machine->animation_state) {
                     case 2:
                         offset.z =
-                            (1.0 +
-                             NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >>
-                                          1) &
-                                         0x7fff]) *
+                            (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.1441f;
                         break;
                     case 3:
                         offset.z = -0.1441f;
                         offset.y =
-                            (1.0 +
-                             NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >>
-                                          1) &
-                                         0x7fff]) *
+                            (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.35f;
                         break;
                     case 4:
                         offset.z = -0.1441f;
                         offset.y =
-                            (1.0 -
-                             (NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >>
-                                           1) &
-                                          0x7fff] +
-                              1.0)) *
+                            (1.0 - (NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] +
+                                    1.0)) *
                             (f64)-0.35f;
                         break;
                     case 5:
                         offset.z =
-                            (1.0 -
-                             NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 49152.0 + 16384.0) >>
-                                          1) &
-                                         0x7fff]) *
+                            (1.0 - NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.1441f;
                         break;
                 }
@@ -884,10 +850,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                     case 2:
                         offset.z =
                             (f64)HatMachine_HatOffset.z -
-                            (1.0 +
-                             NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >>
-                                          1) &
-                                         0x7fff]) *
+                            (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                                 (f64)0.1441f;
                         break;
                     case 3:
@@ -896,16 +859,10 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                         }
                         offset.z = (f64)HatMachine_HatOffset.z - (f64)0.1441f;
                         offset.y -=
-                            (1.0 +
-                             NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >>
-                                          1) &
-                                         0x7fff]) *
+                            (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)0.35f;
                         offset.y +=
-                            (1.0 +
-                             NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >>
-                                          1) &
-                                         0x7fff]) *
+                            (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             0.125;
                         break;
                     case 4:
@@ -913,9 +870,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                         continue;
                 }
                 f32 hat_scale =
-                    1.0 - (1.0 - ((f64)NuTrigTable[((i32)((f64)machine->hat_delay * 32768.0 + 16384.0) >> 1) & 0x7fff] +
-                                  1.0) *
-                                     0.5);
+                    1.0 - (1.0 - ((f64)NuTrigTable[((i32)((f64)machine->hat_delay * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5);
                 offset.y += (1.0 - hat_scale) * (f64)0.1f;
                 NuVecRotateY(&offset, &offset, machine->yaw);
                 NuMtxSetRotationY(&matrix, machine->yaw + 0x8000);

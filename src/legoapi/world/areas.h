@@ -139,8 +139,7 @@ extern "C" {
     AREA_SUPERCOUNTER_PC *SuperCounter_FindFromNameAndLevel(char *name, struct WORLDINFO_s *world,
                                                             AREA_SUPERCOUNTER_PICKUP_PC **pickup_out);
     void SuperCounters_ResetProcessed(struct WORLDINFO_s *world);
-    struct area_supercounter_s *SuperCounters_FindPickup(struct WORLDINFO_s *arg0, void *arg1, struct nuvec_s *arg2,
-                                                         void *arg3);
+    struct area_supercounter_s *SuperCounters_FindPickup(struct WORLDINFO_s *arg0, void *arg1, struct nuvec_s *arg2, void *arg3);
 #ifdef __cplusplus
 }
 #endif

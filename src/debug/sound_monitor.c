@@ -32,11 +32,10 @@ static void SoundUnlock(void) {
 }
 
 static void SoundSkip(int reason, const char *stage, DWORD thread) {
-    static const char *const names[5] = {"concurrent-setters-disabled", "no-published-baseline", "setter-active",
-                                         "observer-busy", "setter-generation-changed"};
+    static const char *const names[5] = {"concurrent-setters-disabled", "no-published-baseline", "setter-active", "observer-busy",
+                                         "setter-generation-changed"};
     if (InterlockedExchange(&sound_skip_reported[reason], 1) == 0) {
-        LOG_INFO("Sound observer unavailable: reason=%s checkpoint=%s thread=%lu; tuple not certified", names[reason],
-                 stage, thread);
+        LOG_INFO("Sound observer unavailable: reason=%s checkpoint=%s thread=%lu; tuple not certified", names[reason], stage, thread);
     }
 }
 
@@ -74,9 +73,8 @@ void SagaDebugSoundSetterEndPc(const void *source, int count, const void *destin
     }
     InterlockedIncrement(&sound_generation);
     InterlockedDecrement(&sound_active_setters);
-    LOG_INFO("Sound request setter: thread=%lu caller=%p source=%p count=%d (0x%08x) destination=%p baseline=%s",
-             thread, caller, source, count, (unsigned)count, destination,
-             published ? "published at setter end" : "unavailable; no certified baseline");
+    LOG_INFO("Sound request setter: thread=%lu caller=%p source=%p count=%d (0x%08x) destination=%p baseline=%s", thread, caller, source,
+             count, (unsigned)count, destination, published ? "published at setter end" : "unavailable; no certified baseline");
     errno = saved_errno;
     SetLastError(saved_error);
 }
@@ -130,8 +128,7 @@ void SagaDebugSoundCheckpointPc(const char *stage, void *volatile const *source,
         skip = 4;
         goto unlock;
     }
-    diverged = observed.source != expected.source || observed.count != expected.count ||
-               observed.destination != expected.destination;
+    diverged = observed.source != expected.source || observed.count != expected.count || observed.destination != expected.destination;
     if (diverged) {
         diverged = InterlockedExchange(&sound_reported, 1) == 0;
     } else {
@@ -149,12 +146,12 @@ done:
                  "thread=%lu setter-thread=%lu setter-caller=%p generation=%ld "
                  "expected source=%p count=%d (0x%08x) destination=%p; observed source=%p count=%d (0x%08x) "
                  "destination=%p; observation interval only, writer unknown, native copy unchanged",
-                 previous, previous_thread, stage, thread, setter_thread, caller, generation, expected.source,
-                 expected.count, (unsigned)expected.count, expected.destination, observed.source, observed.count,
-                 (unsigned)observed.count, observed.destination);
+                 previous, previous_thread, stage, thread, setter_thread, caller, generation, expected.source, expected.count,
+                 (unsigned)expected.count, expected.destination, observed.source, observed.count, (unsigned)observed.count,
+                 observed.destination);
     } else if (ready) {
-        LOG_INFO("Sound observer first accepted checkpoint: checkpoint=%s thread=%lu setter-thread=%lu generation=%ld",
-                 stage, thread, setter_thread, generation);
+        LOG_INFO("Sound observer first accepted checkpoint: checkpoint=%s thread=%lu setter-thread=%lu generation=%ld", stage, thread,
+                 setter_thread, generation);
     }
     errno = saved_errno;
     SetLastError(saved_error);

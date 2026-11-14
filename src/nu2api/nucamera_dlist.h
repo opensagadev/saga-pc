@@ -47,8 +47,8 @@ extern "C" {
     void NuGobjRegistryCleanupPc(void);
     void NuGobjRegistryInitPc(void);
 #ifdef __cplusplus
-    void PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32,
-                                 POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *);
+    void PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, POST_SHADER_PROGRAM_PC *,
+                                 GRAPHICS_RENDER_TEXTURE_PC *);
 #ifdef __cplusplus
 }
 #endif

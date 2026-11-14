@@ -74,8 +74,7 @@ extern "C" {
     i32 SpawnMeleeCreatureType(i32 type);
     void DrawGameObjectsDraw(i32 pass);
     void ResetPlayer(struct gameobject_s *arg0, i32 arg1, struct nuvec_s *arg2, i32 arg3);
-    void DrawWeapon_SetSabreObjects(struct gameobject_s *object, i32 red, i32 green, i32 blue, i32 purple, i32 *models,
-                                    i32 *hilt);
+    void DrawWeapon_SetSabreObjects(struct gameobject_s *object, i32 red, i32 green, i32 blue, i32 purple, i32 *models, i32 *hilt);
     struct AILOCATOR_PC *getSpawnLocator(f32 clip_radius, char *name);
     extern i32 CharacterLoadAreaModelsPc;
     void InitAICreatures(AISYS_PC *);

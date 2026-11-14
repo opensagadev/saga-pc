@@ -411,8 +411,8 @@ void NuAllocDumpRecords(i32 min_size) {
 
     while (record != NULL) {
         if ((i32)record->requested_size >= min_size) {
-            NuAllocReport((char *)(record + 1) + record->requested_size + sizeof(NUALLOC_TAIL), record->source_line,
-                          record->serial, record->requested_size);
+            NuAllocReport((char *)(record + 1) + record->requested_size + sizeof(NUALLOC_TAIL), record->source_line, record->serial,
+                          record->requested_size);
         }
         record = record->next;
         if (record == (NUALLOC_RECORD *)0xfefefefe) {

@@ -29,17 +29,17 @@ struct numtx_s;
 
 typedef struct PC_D3D9_DEVICE_PC PC_D3D9_DEVICE_PC;
 
-typedef struct PC_D3D9_METHODS_PC {                                                      // size 0x1dc
-    void *query_interface;                                                               // 0x000
-    void *add_ref;                                                                       // 0x004
-    void *release;                                                                       // 0x008
-    void *test_cooperative_level;                                                        // 0x00c
-    u32(__stdcall *get_available_texture_mem)(PC_D3D9_DEVICE_PC *);                      // 0x010
-    void *evict_managed_resources;                                                       // 0x014
-    void *get_direct3d;                                                                  // 0x018
-    HRESULT(__stdcall *get_device_caps)(PC_D3D9_DEVICE_PC *, struct GRAPHICS_CAPS_PC *); // 0x01c
-    HRESULT(__stdcall *get_display_mode)(PC_D3D9_DEVICE_PC *, u32, void *);              // 0x020
-    HRESULT(__stdcall *get_creation_parameters)(PC_D3D9_DEVICE_PC *, void *);            // 0x024
+typedef struct PC_D3D9_METHODS_PC {                                                                            // size 0x1dc
+    void *query_interface;                                                                                     // 0x000
+    void *add_ref;                                                                                             // 0x004
+    void *release;                                                                                             // 0x008
+    void *test_cooperative_level;                                                                              // 0x00c
+    u32(__stdcall *get_available_texture_mem)(PC_D3D9_DEVICE_PC *);                                            // 0x010
+    void *evict_managed_resources;                                                                             // 0x014
+    void *get_direct3d;                                                                                        // 0x018
+    HRESULT(__stdcall *get_device_caps)(PC_D3D9_DEVICE_PC *, struct GRAPHICS_CAPS_PC *);                       // 0x01c
+    HRESULT(__stdcall *get_display_mode)(PC_D3D9_DEVICE_PC *, u32, void *);                                    // 0x020
+    HRESULT(__stdcall *get_creation_parameters)(PC_D3D9_DEVICE_PC *, void *);                                  // 0x024
     HRESULT(__stdcall *set_cursor_properties)(PC_D3D9_DEVICE_PC *, u32, u32, struct PC_TEXTURE_RESOURCE_PC *); // 0x028
     void(__stdcall *set_cursor_position)(PC_D3D9_DEVICE_PC *, i32, i32, DWORD);                                // 0x02c
     HRESULT(__stdcall *show_cursor)(PC_D3D9_DEVICE_PC *, BOOL);                                                // 0x030
@@ -65,16 +65,14 @@ typedef struct PC_D3D9_METHODS_PC {                                             
     void *create_render_target;         // 0x070
     void *create_depth_stencil_surface; // 0x074
     HRESULT(__stdcall *update_surface)  // 0x078
-    (PC_D3D9_DEVICE_PC *, struct PC_TEXTURE_RESOURCE_PC *, const RECT *, struct PC_TEXTURE_RESOURCE_PC *,
-     const POINT *);
+    (PC_D3D9_DEVICE_PC *, struct PC_TEXTURE_RESOURCE_PC *, const RECT *, struct PC_TEXTURE_RESOURCE_PC *, const POINT *);
     HRESULT(__stdcall *update_texture) // 0x07c
     (PC_D3D9_DEVICE_PC *, struct PC_TEXTURE_RESOURCE_PC *, struct PC_TEXTURE_RESOURCE_PC *);
     HRESULT(__stdcall *get_render_target_data) // 0x080
     (PC_D3D9_DEVICE_PC *, struct PC_TEXTURE_RESOURCE_PC *, struct PC_TEXTURE_RESOURCE_PC *);
     HRESULT(__stdcall *get_front_buffer_data)(PC_D3D9_DEVICE_PC *, u32, struct PC_TEXTURE_RESOURCE_PC *); // 0x084
     HRESULT(__stdcall *stretch_rect)                                                                      // 0x088
-    (PC_D3D9_DEVICE_PC *, struct PC_TEXTURE_RESOURCE_PC *, const RECT *, struct PC_TEXTURE_RESOURCE_PC *, const RECT *,
-     i32);
+    (PC_D3D9_DEVICE_PC *, struct PC_TEXTURE_RESOURCE_PC *, const RECT *, struct PC_TEXTURE_RESOURCE_PC *, const RECT *, i32);
     HRESULT(__stdcall *color_fill)(PC_D3D9_DEVICE_PC *, struct PC_TEXTURE_RESOURCE_PC *, const RECT *, u32); // 0x08c
     HRESULT(__stdcall *create_offscreen_plain_surface)                                                       // 0x090
     (PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, struct PC_TEXTURE_RESOURCE_PC **, HANDLE *);

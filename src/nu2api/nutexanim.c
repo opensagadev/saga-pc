@@ -59,8 +59,7 @@ PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material, u16 *t
         environment = (PC_TEXTURE_ANIM_ENV *)((buffer->addr + 3) & ~3u);
         buffer->void_ptr = environment + 1;
     } else {
-        environment =
-            NuAlloc(sizeof(PC_TEXTURE_ANIM_ENV), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 548);
+        environment = NuAlloc(sizeof(PC_TEXTURE_ANIM_ENV), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 548);
     }
     if (environment != NULL) {
         environment->program = program;
@@ -273,8 +272,7 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 if (environment->loop_depth >= 16) {
                     ((void (*)(i32))AnimationDiagnosticNoOpPc)(environment->instruction_index);
                 }
-                environment->loop_counts[environment->loop_depth] =
-                    program->instructions[environment->instruction_index + 1];
+                environment->loop_counts[environment->loop_depth] = program->instructions[environment->instruction_index + 1];
                 if (program->instructions[environment->instruction_index + 2] != 0) {
                     i32 *loop_count = &environment->loop_counts[environment->loop_depth];
                     i32 random = NuRand(&texanim_rand);
@@ -311,8 +309,7 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 }
                 continue;
             case 17:
-                TextureAnimationCrossReferencePrivatePc(program->instructions[environment->instruction_index + 1],
-                                                        environment);
+                TextureAnimationCrossReferencePrivatePc(program->instructions[environment->instruction_index + 1], environment);
                 environment->instruction_index += 2;
                 continue;
             case 0:
@@ -363,9 +360,9 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 i32 range = program->instructions[environment->instruction_index + 2] -
                             program->instructions[environment->instruction_index + 1] + 1;
                 i32 texture = program->instructions[environment->instruction_index + 1] + NuRand(&texanim_rand) % range;
-                environment->texture_index = MIN(program->instructions[environment->instruction_index + 4],
-                                                 MAX(program->instructions[environment->instruction_index + 3],
-                                                     environment->texture_index + texture));
+                environment->texture_index =
+                    MIN(program->instructions[environment->instruction_index + 4],
+                        MAX(program->instructions[environment->instruction_index + 3], environment->texture_index + texture));
                 material->texture_id = environment->texture_ids[environment->texture_index];
                 material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
                 environment->instruction_index += 5;
@@ -381,8 +378,7 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
             case 4:
                 environment->wait_remaining += program->instructions[environment->instruction_index + 1];
                 if (program->instructions[environment->instruction_index + 2] != 0) {
-                    environment->wait_remaining +=
-                        NuRand(&texanim_rand) % program->instructions[environment->instruction_index + 2];
+                    environment->wait_remaining += NuRand(&texanim_rand) % program->instructions[environment->instruction_index + 2];
                 }
                 environment->instruction_index += 3;
                 if (environment->wait_remaining < 0) {
@@ -701,8 +697,7 @@ static void TextureAnimationBranchPrivatePc(NUFPAR_PC *parser) {
 
 static void TextureAnimationReturnPrivatePc(NUFPAR_PC *parser) {
     (void)parser;
-    TextureAnimationParseProgramPrivatePc->instructions[TextureAnimationParseProgramPrivatePc->instruction_count++] =
-        12;
+    TextureAnimationParseProgramPrivatePc->instructions[TextureAnimationParseProgramPrivatePc->instruction_count++] = 12;
 }
 
 static void TextureAnimationRepeatPrivatePc(NUFPAR_PC *parser) {
@@ -721,8 +716,7 @@ static void TextureAnimationRepeatPrivatePc(NUFPAR_PC *parser) {
 
 static void TextureAnimationRepeatEndPrivatePc(NUFPAR_PC *parser) {
     (void)parser;
-    TextureAnimationParseProgramPrivatePc->instructions[TextureAnimationParseProgramPrivatePc->instruction_count++] =
-        14;
+    TextureAnimationParseProgramPrivatePc->instructions[TextureAnimationParseProgramPrivatePc->instruction_count++] = 14;
 }
 
 static void TextureAnimationUntilPrivatePc(NUFPAR_PC *parser) {
@@ -736,8 +730,7 @@ static void TextureAnimationUntilPrivatePc(NUFPAR_PC *parser) {
 
 static void TextureAnimationEndPrivatePc(NUFPAR_PC *parser) {
     (void)parser;
-    TextureAnimationParseProgramPrivatePc->instructions[TextureAnimationParseProgramPrivatePc->instruction_count++] =
-        16;
+    TextureAnimationParseProgramPrivatePc->instructions[TextureAnimationParseProgramPrivatePc->instruction_count++] = 16;
 }
 
 static void TextureAnimationScriptNamePrivatePc(NUFPAR_PC *parser) {
@@ -767,28 +760,30 @@ static void TextureAnimationExternalReferencePrivatePc(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)label;
 }
 
-static NUFPCOMJMP TextureAnimationCommandsPrivatePc[] = {{"scriptmask", TextureAnimationScriptMaskPrivatePc},
-                                                         {"tex", TextureAnimationTexPrivatePc},
-                                                         {"texr", TextureAnimationTexRandomPrivatePc},
-                                                         {"texadj", TextureAnimationTexAdjustPrivatePc},
-                                                         {"texadjr", TextureAnimationTexAdjustRandomPrivatePc},
-                                                         {"wait", TextureAnimationWaitPrivatePc},
-                                                         {"rate", TextureAnimationRatePrivatePc},
-                                                         {"on", TextureAnimationOnPrivatePc},
-                                                         {"off", TextureAnimationOffPrivatePc},
-                                                         {"label", TextureAnimationLabelPrivatePc},
-                                                         {"goto", TextureAnimationGotoPrivatePc},
-                                                         {"btex", TextureAnimationBranchPrivatePc},
-                                                         {"gosub", TextureAnimationGosubPrivatePc},
-                                                         {"ret", TextureAnimationReturnPrivatePc},
-                                                         {"repeat", TextureAnimationRepeatPrivatePc},
-                                                         {"repend", TextureAnimationRepeatEndPrivatePc},
-                                                         {"untiltex", TextureAnimationUntilPrivatePc},
-                                                         {"end", TextureAnimationEndPrivatePc},
-                                                         {"scriptname", TextureAnimationScriptNamePrivatePc},
-                                                         {"xdef", TextureAnimationExternalDefinitionPrivatePc},
-                                                         {"xref", TextureAnimationExternalReferencePrivatePc},
-                                                         {NULL, NULL}};
+static NUFPCOMJMP TextureAnimationCommandsPrivatePc[] = {
+    {"scriptmask", TextureAnimationScriptMaskPrivatePc        },
+    {"tex",        TextureAnimationTexPrivatePc               },
+    {"texr",       TextureAnimationTexRandomPrivatePc         },
+    {"texadj",     TextureAnimationTexAdjustPrivatePc         },
+    {"texadjr",    TextureAnimationTexAdjustRandomPrivatePc   },
+    {"wait",       TextureAnimationWaitPrivatePc              },
+    {"rate",       TextureAnimationRatePrivatePc              },
+    {"on",         TextureAnimationOnPrivatePc                },
+    {"off",        TextureAnimationOffPrivatePc               },
+    {"label",      TextureAnimationLabelPrivatePc             },
+    {"goto",       TextureAnimationGotoPrivatePc              },
+    {"btex",       TextureAnimationBranchPrivatePc            },
+    {"gosub",      TextureAnimationGosubPrivatePc             },
+    {"ret",        TextureAnimationReturnPrivatePc            },
+    {"repeat",     TextureAnimationRepeatPrivatePc            },
+    {"repend",     TextureAnimationRepeatEndPrivatePc         },
+    {"untiltex",   TextureAnimationUntilPrivatePc             },
+    {"end",        TextureAnimationEndPrivatePc               },
+    {"scriptname", TextureAnimationScriptNamePrivatePc        },
+    {"xdef",       TextureAnimationExternalDefinitionPrivatePc},
+    {"xref",       TextureAnimationExternalReferencePrivatePc },
+    {NULL,         NULL                                       }
+};
 
 void NuTexAnimProgInit(TEXTURE_ANIM_PROGRAM_PC *program) {
     i32 i;
@@ -814,8 +809,7 @@ TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgCreate(VARIPTR *buffer, i32 extra_bytes, c
         program = (TEXTURE_ANIM_PROGRAM_PC *)buffer->addr;
         buffer->addr += sizeof(*program) + extra_bytes;
     } else {
-        program =
-            NuAlloc(sizeof(*program) + extra_bytes, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 386);
+        program = NuAlloc(sizeof(*program) + extra_bytes, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 386);
     }
     if (program != NULL) {
         NuTexAnimProgInit(program);
@@ -890,18 +884,15 @@ void NuTexAnimProgAssembleEnd(TEXTURE_ANIM_PROGRAM_PC *program) {
                 index += 3;
                 break;
             case 9:
-                program->instructions[index + 1] =
-                    (i16)TextureAnimationLabelOffsetsPrivatePc[program->instructions[index + 1]];
+                program->instructions[index + 1] = (i16)TextureAnimationLabelOffsetsPrivatePc[program->instructions[index + 1]];
                 index += 2;
                 break;
             case 10:
-                program->instructions[index + 1] =
-                    (i16)TextureAnimationLabelOffsetsPrivatePc[program->instructions[index + 1]];
+                program->instructions[index + 1] = (i16)TextureAnimationLabelOffsetsPrivatePc[program->instructions[index + 1]];
                 index += 2;
                 break;
             case 11:
-                program->instructions[index + 3] =
-                    (i16)TextureAnimationLabelOffsetsPrivatePc[program->instructions[index + 3]];
+                program->instructions[index + 3] = (i16)TextureAnimationLabelOffsetsPrivatePc[program->instructions[index + 3]];
                 index += 4;
                 break;
             case 12:
@@ -1115,15 +1106,14 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
     buffer->addr = (buffer->addr + 15) & ~15u;
 }
 
-TEXTURE_ANIMATION_PC *NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *program, NUMTL *material,
-                                      u16 *texture_ids, i32 texture_count) {
+TEXTURE_ANIMATION_PC *NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *program, NUMTL *material, u16 *texture_ids,
+                                      i32 texture_count) {
     TEXTURE_ANIMATION_PC *animation;
     if (buffer != NULL) {
         animation = (TEXTURE_ANIMATION_PC *)((buffer->addr + 3) & ~3u);
         buffer->addr = (u32)(animation + 1) + texture_count * 2;
     } else {
-        animation = NuAlloc(sizeof(*animation) + texture_count * 2,
-                            "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 1720);
+        animation = NuAlloc(sizeof(*animation) + texture_count * 2, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 1720);
     }
     animation->previous = NULL;
     animation->next = NULL;

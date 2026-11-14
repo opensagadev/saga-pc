@@ -263,7 +263,7 @@ camera.c) it adds C4244 121 and C4996 120 (CRT deprecations), C4700 19, C4099
 first (no object change; budget the rest), then work C4244 down by unit; make
 C4005, C4133 and C4700 errors when they reach zero.
 
-**clang-format.** `.clang-format` (LLVM base, indent 4, 120 columns) now also
+**clang-format.** `.clang-format` (LLVM base, indent 4, 140 columns, initializer tables aligned in columns) now also
 sets `SeparateDefinitionBlocks: Always`, `MaxEmptyLinesToKeep: 1`,
 `KeepEmptyLinesAtTheStartOfBlocks: false`, `InsertBraces: true`,
 `RemoveSemicolon: true`, `InsertNewlineAtEOF: true`, `LineEnding: LF`.

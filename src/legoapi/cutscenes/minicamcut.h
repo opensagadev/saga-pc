@@ -68,8 +68,7 @@ extern "C" {
     extern i32 ObstacleCamTargetGuid;
     extern u8 ObstacleCamAlwaysSnapAnglesPc;
     void GameCameraMakeMiniCut(NUGSPLINE *, f32, f32, f32, f32, i32, i32);
-    void GameCameraMakeMiniCut3(u32, f32, i32, i32, i32, void *, i32, NUVEC *, f32, f32, f32, f32, f32, f32, f32, i32,
-                                NUGSPLINE *, i8, i8);
+    void GameCameraMakeMiniCut3(u32, f32, i32, i32, i32, void *, i32, NUVEC *, f32, f32, f32, f32, f32, f32, f32, i32, NUGSPLINE *, i8, i8);
     void Minicam_AddCommand(i32, f32, i32, void *, NUVEC);
     void MiniCam_ChangeMode(i32 mode);
     void Minicam_AddDeltas(f32 duration);

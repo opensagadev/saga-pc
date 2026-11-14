@@ -505,9 +505,8 @@ void NuMusic::Debug(i32 unused, i32 y) {
         NuQFntPrintEx(system_qfont, 4800, y, 0x10, "VOICE:%d", i);
         y += (i32)NuQFntHeight(system_qfont);
         if (voices[i].tracks[voices[i].track_index] != NULL) {
-            NuQFntPrintEx(
-                system_qfont, 4800, y, 0x10, "TRACK:%s",
-                voices[i].tracks[voices[i].track_index]->filenames[voices[i].track_sub[voices[i].track_index]]);
+            NuQFntPrintEx(system_qfont, 4800, y, 0x10, "TRACK:%s",
+                          voices[i].tracks[voices[i].track_index]->filenames[voices[i].track_sub[voices[i].track_index]]);
             y += (i32)NuQFntHeight(system_qfont);
             NuQFntPrintEx(system_qfont, 4800, y, 0x10, "CLASS:%s",
                           class_names[ClassToIX(voices[i].tracks[voices[i].track_index]->clazz) + 1]);
@@ -620,9 +619,8 @@ i32 NuMusic::Voice::Unload(void) {
         if (tracks[track_index] != NULL) {
             gain = 0.0f;
             NuSound3StopStereoStream(stream_index * 2);
-            i32 result =
-                NuSound3PlayStereoV(2, stream_index, 3, tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0,
-                                    6, 0, 10, tracks[track_index]->start_offset, 1);
+            i32 result = NuSound3PlayStereoV(2, stream_index, 3, tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0, 6, 0, 10,
+                                             tracks[track_index]->start_offset, 1);
             last_volume = 0.0f;
             tracks[track_index]->ManageEntryTime();
             if (result != 0 && status != 4) {
@@ -693,10 +691,9 @@ void NuMusic::Process(f32 delta) {
                         }
                         voice->flags_word &= ~1U;
                     } else if (current_track->entry_count != 0) {
-                        i32 result =
-                            NuSound3PlayStereoV(2, voice->stream_index, 3,
-                                                current_track->file_indexes[voice->track_sub[voice->track_index]], 9, 0,
-                                                6, 0, 10, current_track->start_offset, 1);
+                        i32 result = NuSound3PlayStereoV(2, voice->stream_index, 3,
+                                                         current_track->file_indexes[voice->track_sub[voice->track_index]], 9, 0, 6, 0, 10,
+                                                         current_track->start_offset, 1);
                         voice->last_volume = 0.0f;
                         current_track->ManageEntryTime();
                         if (result != 0 && voice->status != 4) {
@@ -769,8 +766,7 @@ void NuMusic::Process(f32 delta) {
                 class_volume = class_volumes[ClassToIX(current_track->clazz)];
                 attenuation = current_track->attenuation;
             }
-            f32 volume =
-                master_volume * duck * voice->gain * class_volume * fader_current * attenuation * global_attenuation;
+            f32 volume = master_volume * duck * voice->gain * class_volume * fader_current * attenuation * global_attenuation;
             voice->volume = volume;
             if (voice->last_volume != volume) {
                 NuSound3SetStreamVolume(voice->stream_index * 2, (i32)((f64)volume * 16383.0));
@@ -866,8 +862,7 @@ void NuMusic::SubstituteString(char *dst, char *src, char *find, char *subst) {
     NuStrCpy(dst, src);
 }
 
-i32 NuMusic::FindOrCreateSoundFile(nusound_filename_info_s *files, i32 *count, const char *name, i32 streaming,
-                                   i32 pitch_) {
+i32 NuMusic::FindOrCreateSoundFile(nusound_filename_info_s *files, i32 *count, const char *name, i32 streaming, i32 pitch_) {
     if (name == NULL) {
         return -1;
     }
@@ -895,12 +890,10 @@ void NuMusic::BuildSoundTable(VARIPTR *cursor, VARIPTR end) {
     count = 0;
     for (i = 0; i < extra_track_count; ++i) {
         /* Bit 1 of the track flags is read as a signed one-bit field (0 or -1). */
-        extra_tracks[i].file_indexes[0] =
-            FindOrCreateSoundFile(fileinfo, &count, extra_tracks[i].filenames[0],
-                                  (i32)(extra_tracks[i].flags << 30) >> 31, extra_tracks[i].pitch);
-        extra_tracks[i].file_indexes[1] =
-            FindOrCreateSoundFile(fileinfo, &count, extra_tracks[i].filenames[1],
-                                  (i32)(extra_tracks[i].flags << 30) >> 31, extra_tracks[i].pitch);
+        extra_tracks[i].file_indexes[0] = FindOrCreateSoundFile(fileinfo, &count, extra_tracks[i].filenames[0],
+                                                                (i32)(extra_tracks[i].flags << 30) >> 31, extra_tracks[i].pitch);
+        extra_tracks[i].file_indexes[1] = FindOrCreateSoundFile(fileinfo, &count, extra_tracks[i].filenames[1],
+                                                                (i32)(extra_tracks[i].flags << 30) >> 31, extra_tracks[i].pitch);
     }
     fileinfo[count].filename = NULL;
     fileinfo[count].pitch = 0;
@@ -1246,32 +1239,36 @@ void NuMusic::xsAttenuation(NUFPAR_PC *p, void *ctx) {
     ((NuMusic *)ctx)->xAttenuation(p);
 }
 
-NUFPCOMJMPCTX NuMusic::top_jmp_tab[11] = {{"ALBUM", xsAlbum},
-                                          {"ACTION", xsAction},
-                                          {"QUIET", xsQuiet},
-                                          {"OVERLAY", xsOverlay},
-                                          {"SIGNATURE", xsSignature},
-                                          {"CUTSCENE", xsCutscene},
-                                          {"NOMUSIC", xsNoMusicC},
-                                          {"GLOBALATTENUATION", xsGlobalAttenuation},
-                                          {"PATH", xsPath},
-                                          {"STRICT", xsStrict},
-                                          {NULL, NULL}};
-NUFPCOMJMPCTX NuMusic::track_jmp_tab[15] = {{"IDENT", xsIdent},
-                                            {"ID", xsIdent},
-                                            {"IDENT", xsIdent},
-                                            {"INDEX", xsIndex},
-                                            {"IX", xsIndex},
-                                            {"NOMUSIC", xsNoMusic},
-                                            {"STARTPOINT", xsIndex},
-                                            {"NODUCK", xsNoDuck},
-                                            {"DUCK", xsDuck},
-                                            {"LOOPING", xsLooping},
-                                            {"LOOP", xsLooping},
-                                            {"NONLOOPING", xsNonLooping},
-                                            {"NOLOOP", xsNonLooping},
-                                            {"ATTENUATION", xsAttenuation},
-                                            {NULL, NULL}};
+NUFPCOMJMPCTX NuMusic::top_jmp_tab[11] = {
+    {"ALBUM",             xsAlbum            },
+    {"ACTION",            xsAction           },
+    {"QUIET",             xsQuiet            },
+    {"OVERLAY",           xsOverlay          },
+    {"SIGNATURE",         xsSignature        },
+    {"CUTSCENE",          xsCutscene         },
+    {"NOMUSIC",           xsNoMusicC         },
+    {"GLOBALATTENUATION", xsGlobalAttenuation},
+    {"PATH",              xsPath             },
+    {"STRICT",            xsStrict           },
+    {NULL,                NULL               }
+};
+NUFPCOMJMPCTX NuMusic::track_jmp_tab[15] = {
+    {"IDENT",       xsIdent      },
+    {"ID",          xsIdent      },
+    {"IDENT",       xsIdent      },
+    {"INDEX",       xsIndex      },
+    {"IX",          xsIndex      },
+    {"NOMUSIC",     xsNoMusic    },
+    {"STARTPOINT",  xsIndex      },
+    {"NODUCK",      xsNoDuck     },
+    {"DUCK",        xsDuck       },
+    {"LOOPING",     xsLooping    },
+    {"LOOP",        xsLooping    },
+    {"NONLOOPING",  xsNonLooping },
+    {"NOLOOP",      xsNonLooping },
+    {"ATTENUATION", xsAttenuation},
+    {NULL,          NULL         }
+};
 
 i32 NuMusic::Voice::Load(Track *track, i32 subtrack) {
     if (track == tracks[track_index]) {
@@ -1301,8 +1298,8 @@ i32 NuMusic::Voice::Cue(void) {
     if (status == 6 || status == 7 || status == 4 || status == 5) {
         return -5;
     }
-    result = NuSound3PlayStereoV(2, stream_index, 3, tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0, 6,
-                                 0, 10, tracks[track_index]->start_offset, 1);
+    result = NuSound3PlayStereoV(2, stream_index, 3, tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0, 6, 0, 10,
+                                 tracks[track_index]->start_offset, 1);
     last_volume = 0.0f;
     tracks[track_index]->ManageEntryTime();
     if (result != 0) {
@@ -1359,8 +1356,8 @@ i32 NuMusic::Voice::Play(void) {
         return 1;
     }
     Track *track = tracks[track_index];
-    i32 result = NuSound3PlayStereoV(2, stream_index, 3, track->file_indexes[track_sub[track_index]], 9, track->pitch,
-                                     6, 0, 10, track->start_offset, 1);
+    i32 result = NuSound3PlayStereoV(2, stream_index, 3, track->file_indexes[track_sub[track_index]], 9, track->pitch, 6, 0, 10,
+                                     track->start_offset, 1);
     last_volume = 0.0f;
     tracks[track_index]->ManageEntryTime();
     if (result != 0) {

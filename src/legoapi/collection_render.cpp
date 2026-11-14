@@ -7,8 +7,8 @@ extern "C" i32 LEGOOBJ_ICON_FRAME_NEUTRAL;
 extern "C" i32 LEGOOBJ_ICON_FRAME_GREEN;
 extern "C" i32 LEGOOBJ_ICON_FRAME_BLUE;
 
-extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f32 scale, APICHARACTERMODELLIST *models,
-                                f32 alpha, i32 hide_selected) {
+extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f32 scale, APICHARACTERMODELLIST *models, f32 alpha,
+                                i32 hide_selected) {
     f32 dx = COLLECTION_DX * scale;
     const f32 dy = COLLECTION_DY * scale;
     f32 size = COLLECTION_ICONSIZE * scale;
@@ -69,16 +69,12 @@ extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f
                     if (models != NULL && InModelList(models, id, &model_index) != 0) {
                         if (model_index == 0) {
                             frame = LEGOOBJ_ICON_FRAME_BLUE;
-                            opacity = (f32)(NuTrigTable[((i32)(GlobalTimer.time_elapsed_mod_seconds * 65536.0) >> 1) &
-                                                        0x7fff] *
-                                                .125 +
-                                            .375);
+                            opacity =
+                                (f32)(NuTrigTable[((i32)(GlobalTimer.time_elapsed_mod_seconds * 65536.0) >> 1) & 0x7fff] * .125 + .375);
                         } else if (model_index == 1) {
                             frame = LEGOOBJ_ICON_FRAME_GREEN;
-                            opacity = (f32)(NuTrigTable[((i32)(GlobalTimer.time_elapsed_mod_seconds * 65536.0) >> 1) &
-                                                        0x7fff] *
-                                                .125 +
-                                            .375);
+                            opacity =
+                                (f32)(NuTrigTable[((i32)(GlobalTimer.time_elapsed_mod_seconds * 65536.0) >> 1) & 0x7fff] * .125 + .375);
                         } else {
                             opacity = .25f;
                         }

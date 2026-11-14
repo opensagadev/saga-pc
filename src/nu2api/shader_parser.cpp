@@ -5,24 +5,24 @@
 #include <stdlib.h>
 
 // Copies a NUL-terminated string into the parse arena.
-#define ARENA_COPY_STRING(copy, string)                                                                                \
-    do {                                                                                                               \
-        VirtualStackAllocator *stack = arena;                                                                          \
-        i32 length = (i32)strlen(string);                                                                              \
-        copy = reinterpret_cast<char *>(stack->cursor);                                                                \
-        stack->cursor += length + 1;                                                                                   \
-        memcpy(copy, string, length + 1);                                                                              \
+#define ARENA_COPY_STRING(copy, string)                                                                                                    \
+    do {                                                                                                                                   \
+        VirtualStackAllocator *stack = arena;                                                                                              \
+        i32 length = (i32)strlen(string);                                                                                                  \
+        copy = reinterpret_cast<char *>(stack->cursor);                                                                                    \
+        stack->cursor += length + 1;                                                                                                       \
+        memcpy(copy, string, length + 1);                                                                                                  \
     } while (0)
 // Links a new node at the current insertion point.
-#define APPEND_NODE(node)                                                                                              \
-    do {                                                                                                               \
-        if (tail == NULL) {                                                                                            \
-            head = node;                                                                                               \
-            tail = &node->next;                                                                                        \
-        } else {                                                                                                       \
-            *tail = node;                                                                                              \
-            tail = &node->next;                                                                                        \
-        }                                                                                                              \
+#define APPEND_NODE(node)                                                                                                                  \
+    do {                                                                                                                                   \
+        if (tail == NULL) {                                                                                                                \
+            head = node;                                                                                                                   \
+            tail = &node->next;                                                                                                            \
+        } else {                                                                                                                           \
+            *tail = node;                                                                                                                  \
+            tail = &node->next;                                                                                                            \
+        }                                                                                                                                  \
     } while (0)
 
 void ShaderCompilerParserPc::FlushText() {
@@ -173,8 +173,8 @@ struct ShaderParserDeclarationPc : ShaderParserNodePc { // size 0x28
     char *custom_semantic;                              // 0x1c
     i32 vertex_register;                                // 0x20
     i32 pixel_register;                                 // 0x24
-    ShaderParserDeclarationPc(u32 flags, i32 type, i32 array_count, char *name, i32 semantic, char *custom_semantic,
-                              i32 vertex_register, i32 pixel_register);
+    ShaderParserDeclarationPc(u32 flags, i32 type, i32 array_count, char *name, i32 semantic, char *custom_semantic, i32 vertex_register,
+                              i32 pixel_register);
 };
 
 struct ShaderParserEmitPc : ShaderParserNodePc { // size 0xc
@@ -189,15 +189,14 @@ ShaderParserBranchNodePc::ShaderParserBranchNodePc(ShaderConditionNodePc *condit
     : ShaderParserNodePc(0), if_true(NULL), if_false(NULL), condition(condition) {
 }
 
-ShaderParserMacroNodePc::ShaderParserMacroNodePc(char *name, char *value)
-    : ShaderParserNodePc(1), name(name), value(value) {
+ShaderParserMacroNodePc::ShaderParserMacroNodePc(char *name, char *value) : ShaderParserNodePc(1), name(name), value(value) {
 }
 
 ShaderParserUndefNodePc::ShaderParserUndefNodePc(char *name) : ShaderParserNodePc(2), name(name) {
 }
 
-ShaderParserDeclarationPc::ShaderParserDeclarationPc(u32 flags, i32 type, i32 array_count, char *name, i32 semantic,
-                                                     char *custom_semantic, i32 vertex_register, i32 pixel_register)
+ShaderParserDeclarationPc::ShaderParserDeclarationPc(u32 flags, i32 type, i32 array_count, char *name, i32 semantic, char *custom_semantic,
+                                                     i32 vertex_register, i32 pixel_register)
     : ShaderParserNodePc(3), flags(flags), type(type), array_count(array_count), name(name), semantic(semantic),
       custom_semantic(custom_semantic), vertex_register(vertex_register), pixel_register(pixel_register) {
 }
@@ -212,8 +211,7 @@ ShaderParserEmitPc::ShaderParserEmitPc(u32 flags) : ShaderParserNodePc(6), flags
 ShaderParserTogglePc::ShaderParserTogglePc(u8 enabled) : ShaderParserNodePc(5), enabled(enabled) {
 }
 
-ShaderParserTextNodePc::ShaderParserTextNodePc(char *bytes, i32 count)
-    : ShaderParserNodePc(7), bytes(bytes), count(count) {
+ShaderParserTextNodePc::ShaderParserTextNodePc(char *bytes, i32 count) : ShaderParserNodePc(7), bytes(bytes), count(count) {
 }
 
 void ShaderCompilerParserPc::fun_0074b330(const ShaderLexicalSlicePc &slice) {
@@ -260,8 +258,8 @@ void ShaderCompilerParserPc::UseDeclaration(u32 flags, i32 depth, const char *na
     APPEND_NODE(node);
 }
 
-void ShaderCompilerParserPc::AddDeclaration(u32 flags, i32 type, i32 count, const char *name, i32 semantic,
-                                            const char *custom, i32 vertex, i32 pixel) {
+void ShaderCompilerParserPc::AddDeclaration(u32 flags, i32 type, i32 count, const char *name, i32 semantic, const char *custom, i32 vertex,
+                                            i32 pixel) {
     FlushText();
     char *copy;
     ARENA_COPY_STRING(copy, name);
@@ -646,8 +644,8 @@ void ShaderCompilerParserPc::ClearIncludes() {
 
 /* Out-of-line copies of the include-list members the parser's loops inline. */
 template void std::vector<ShaderParserIncludePc *>::clear();
-template bool std::vector<ShaderParserIncludePc *>::const_iterator::operator<(
-    const std::vector<ShaderParserIncludePc *>::const_iterator &) const;
+template bool
+std::vector<ShaderParserIncludePc *>::const_iterator::operator<(const std::vector<ShaderParserIncludePc *>::const_iterator &) const;
 
 ShaderCompilerParserPc::~ShaderCompilerParserPc() {
     ClearIncludes();

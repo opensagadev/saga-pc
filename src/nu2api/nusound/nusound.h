@@ -107,10 +107,10 @@ typedef struct SoundVoiceManagerPC { // size 0xda8
 
 typedef struct PC_SOUND_COMMIT_PC PC_SOUND_COMMIT_PC;
 
-typedef struct PC_SOUND_COMMIT_METHODS {             // size 0x48
-    void *unknown_00[2];                             // 0x00
-    ULONG(__stdcall *release)(PC_SOUND_COMMIT_PC *); // 0x08
-    void *unknown_0c[10];                            // 0x0c
+typedef struct PC_SOUND_COMMIT_METHODS {                                                                        // size 0x48
+    void *unknown_00[2];                                                                                        // 0x00
+    ULONG(__stdcall *release)(PC_SOUND_COMMIT_PC *);                                                            // 0x08
+    void *unknown_0c[10];                                                                                       // 0x0c
     HRESULT(__stdcall *set_orientation)(PC_SOUND_COMMIT_PC *, float, float, float, float, float, float, DWORD); // 0x34
     HRESULT(__stdcall *set_position)(PC_SOUND_COMMIT_PC *, float, float, float, DWORD);                         // 0x38
     HRESULT(__stdcall *set_rolloff_factor)(PC_SOUND_COMMIT_PC *, float, DWORD);                                 // 0x3c

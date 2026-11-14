@@ -47,8 +47,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void DrawRopeSingle(NUVEC *start, NUVEC *end, f32 amount, struct numtl_s *material, f32 time, f32 grow_time,
-                        f32 spacing, f32 scale);
+    void DrawRopeSingle(NUVEC *start, NUVEC *end, f32 amount, struct numtl_s *material, f32 time, f32 grow_time, f32 spacing, f32 scale);
     extern struct numtl_s *ropemtl;
 #ifdef __cplusplus
 }

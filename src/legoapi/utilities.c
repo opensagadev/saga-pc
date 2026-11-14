@@ -138,8 +138,7 @@ i32 SphereSphereOverlap(NUVEC *a, f32 radius_a, NUVEC *b, f32 radius_b) {
     return x * x + y * y + z * z <= radius * radius;
 }
 
-i32 SphereSphereOverlapScaleY(NUVEC *position_a, f32 radius_a, f32 y_radius_a, NUVEC *position_b, f32 radius_b,
-                              f32 y_radius_b) {
+i32 SphereSphereOverlapScaleY(NUVEC *position_a, f32 radius_a, f32 y_radius_a, NUVEC *position_b, f32 radius_b, f32 y_radius_b) {
     f32 dx = position_b->x - position_a->x;
     f32 dz = position_b->z - position_a->z;
     f32 dy = position_b->y - position_a->y;
@@ -151,8 +150,7 @@ i32 SphereSphereOverlapScaleY(NUVEC *position_a, f32 radius_a, f32 y_radius_a, N
     return dx * dx + dy * dy + dz * dz <= radius * radius;
 }
 
-i32 OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_normal, NUVEC *corrected_point, f32 normal_offset,
-                    f32 *distance_out) {
+i32 OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_normal, NUVEC *corrected_point, f32 normal_offset, f32 *distance_out) {
     NUVEC test_point;
     f32 distance;
     f32 correction;
@@ -180,8 +178,7 @@ i32 OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_normal, NUVEC
 }
 
 i32 OnOrOutsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
-    return (point->y - plane_point->y) * normal->y + (point->x - plane_point->x) * normal->x +
-               (point->z - plane_point->z) * normal->z >=
+    return (point->y - plane_point->y) * normal->y + (point->x - plane_point->x) * normal->x + (point->z - plane_point->z) * normal->z >=
            0.0;
 }
 
@@ -299,8 +296,7 @@ void AnglesBetweenPoints(NUVEC *from, NUVEC *to, u16 *vertical, u16 *horizontal)
     *horizontal = NuAtan2D(x, z);
 }
 
-void CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *velocity, f32 speed, NUVEC *direction,
-                              NUVEC *intercept) {
+void CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *velocity, f32 speed, NUVEC *direction, NUVEC *intercept) {
     NUVEC prediction = *target;
     i32 i;
     for (i = 0; i < 3; ++i) {
@@ -376,8 +372,7 @@ i32 MatrixReflection(NUMTX *matrix, i32 axis, f32 plane, f32 override_plane, NUM
             result->m30 = plane - (result->m30 - plane);
             return 1;
         case 2:
-            if ((f64)override_plane != 2000000.0 &&
-                (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0)) {
+            if ((f64)override_plane != 2000000.0 && (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0)) {
                 plane = override_plane;
             }
             *result = *matrix;
@@ -399,8 +394,7 @@ i32 MatrixReflection(NUMTX *matrix, i32 axis, f32 plane, f32 override_plane, NUM
 }
 
 i32 MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result) {
-    if ((f64)override_plane != 2000000.0 &&
-        (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0)) {
+    if ((f64)override_plane != 2000000.0 && (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0)) {
         plane = override_plane;
     }
     ReflectionCopyMatrixPc(result, matrix);
@@ -441,8 +435,7 @@ f32 GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
         if (object->level_object_index != -1) {
             handles[handle_count++] = object->level_object_index;
         }
-        if (world != NULL && world->shadow_platform_list_pc != NULL && VehicleArea == 0 &&
-            (object->flags_1fc & 0x80u) == 0) {
+        if (world != NULL && world->shadow_platform_list_pc != NULL && VehicleArea == 0 && (object->flags_1fc & 0x80u) == 0) {
             struct shadow_platform_list_pc_s *list = world->shadow_platform_list_pc;
             for (i = 0; i < list->count; ++i) {
                 if (list->entries[i].object != NULL) {
@@ -587,8 +580,7 @@ void PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *position, u16 *angle,
     position->x += (next->x - current->x) * fraction;
     position->y += (next->y - current->y) * fraction;
     position->z += (next->z - current->z) * fraction;
-    SplinePointAngles(spline, next_index, looping, pitch != NULL ? &next_pitch : NULL,
-                      angle != NULL ? &next_angle : NULL);
+    SplinePointAngles(spline, next_index, looping, pitch != NULL ? &next_pitch : NULL, angle != NULL ? &next_angle : NULL);
     if (angle != NULL) {
         *angle += (i32)(RotDiff(*angle, next_angle) * fraction);
     }
@@ -627,11 +619,9 @@ i32 StreamingInsideLineXZPc(f32 x, f32 z, f32 x0, f32 z0, f32 x1, f32 z1) {
 
 i32 LineCrossedXZ(f32 ax, f32 az, f32 bx, f32 bz, f32 cx, f32 cz, f32 dx, f32 dz) {
     i32 result = 0;
-    if (!((bx - cx) * (dz - cz) + (bz - cz) * (cx - dx) >= 0.0f) &&
-        (ax - cx) * (dz - cz) + (az - cz) * (cx - dx) >= 0.0f) {
+    if (!((bx - cx) * (dz - cz) + (bz - cz) * (cx - dx) >= 0.0f) && (ax - cx) * (dz - cz) + (az - cz) * (cx - dx) >= 0.0f) {
         result = 1;
-        if ((bx - ax) * (cz - az) + (bz - az) * (ax - cx) >= 0.0f &&
-            (bx - dx) * (az - dz) + (bz - dz) * (dx - ax) >= 0.0f) {
+        if ((bx - ax) * (cz - az) + (bz - az) * (ax - cx) >= 0.0f && (bx - dx) * (az - dz) + (bz - dz) * (dx - ax) >= 0.0f) {
             result = 2;
         }
     }
@@ -665,8 +655,8 @@ f32 DistanceToLineXZ(NUVEC *position, NUVEC *first, NUVEC *second) {
     } result, absolute;
 
     angle = (u16)-NuAtan2D(second->x - first->x, second->z - first->z);
-    result.value = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * (position->x - first->x) +
-                   NuTrigTable[angle >> 1] * (position->z - first->z);
+    result.value =
+        NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * (position->x - first->x) + NuTrigTable[angle >> 1] * (position->z - first->z);
     absolute.bits = result.bits & 0x7fffffffu;
     return absolute.value;
 }
@@ -888,8 +878,7 @@ void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
                     current = SPLINE_POINT(position->spline, position->segment);
                     next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
                     NuVecSub(&offset, next, current);
-                    fraction =
-                        position->segment_length != 0.0f ? position->segment_distance / position->segment_length : 0.0f;
+                    fraction = position->segment_length != 0.0f ? position->segment_distance / position->segment_length : 0.0f;
                     NuVecScale(&offset, &offset, fraction);
                     NuVecAdd(&position->position, current, &offset);
                     break;
@@ -923,8 +912,7 @@ void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
                 current = SPLINE_POINT(position->spline, position->segment);
                 next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
                 NuVecSub(&offset, next, current);
-                fraction =
-                    position->segment_length != 0.0f ? position->segment_distance / position->segment_length : 0.0f;
+                fraction = position->segment_length != 0.0f ? position->segment_distance / position->segment_length : 0.0f;
                 NuVecScale(&offset, &offset, fraction);
                 NuVecAdd(&position->position, current, &offset);
                 break;
@@ -955,8 +943,7 @@ void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
     position->along = (fraction + position->segment) / (points - 1);
 }
 
-void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i32 looping, i16 first_point,
-                         i16 last_point) {
+void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i32 looping, i16 first_point, i16 last_point) {
     f32 nearest = 1000000000.0f;
     i16 point_count;
     i32 logical_count;
@@ -1009,8 +996,8 @@ void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i3
     result->along = (nearest + result->segment) / (logical_count - 1);
 }
 
-void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS *first_position, NUGSPLINE *second,
-                                  i32 second_looping, SPLINEPOS *second_position) {
+void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS *first_position, NUGSPLINE *second, i32 second_looping,
+                                  SPLINEPOS *second_position) {
     f32 closest = 1000000000.0f;
     i32 first_count;
     i32 second_count;
@@ -1050,8 +1037,8 @@ void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS
          * without looping, and only stops this inner scan at an intersection. */
         for (j = 0; j < second_count; ++j) {
             second_segment = j % second->length;
-            distance = XZLinesClosest(first_start, first_end, &second->pts[second_segment],
-                                      &second->pts[(j + 1) % second->length], &first_fraction, &second_fraction);
+            distance = XZLinesClosest(first_start, first_end, &second->pts[second_segment], &second->pts[(j + 1) % second->length],
+                                      &first_fraction, &second_fraction);
             if (distance < closest) {
                 closest = distance;
                 first_position->segment = (i16)first_segment;
@@ -1064,12 +1051,12 @@ void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS
             }
         }
     }
-    first_position->segment_length = NuVecDist(&first->pts[(first_position->segment + 1) % first->length],
-                                               &first->pts[first_position->segment], &direction);
+    first_position->segment_length =
+        NuVecDist(&first->pts[(first_position->segment + 1) % first->length], &first->pts[first_position->segment], &direction);
     first_position->segment_distance *= first_position->segment_length;
     MoveSplinePosition(first_position, 0.00001f);
-    second_position->segment_length = NuVecDist(&second->pts[(second_position->segment + 1) % second->length],
-                                                &second->pts[second_position->segment], &direction);
+    second_position->segment_length =
+        NuVecDist(&second->pts[(second_position->segment + 1) % second->length], &second->pts[second_position->segment], &direction);
     second_position->segment_distance *= second_position->segment_length;
     MoveSplinePosition(second_position, 0.00001f);
 }
@@ -1354,8 +1341,7 @@ void DrawRectRGBA(f32 x, f32 y, f32 width, f32 height, i32 colour, NUMTL *materi
     } else if ((alignment & 10) == 0) {
         x -= width * 0.5;
     }
-    NuRndrRect2di(((x + 1.0) * 0.5 * 10240.0), ((2.0 - (y + 1.0)) * 0.5 * 3584.0), rect_width, rect_height, colour,
-                  material);
+    NuRndrRect2di(((x + 1.0) * 0.5 * 10240.0), ((2.0 - (y + 1.0)) * 0.5 * 3584.0), rect_width, rect_height, colour, material);
 }
 
 void InitTexAnimScripts(char **table) {
@@ -1381,8 +1367,8 @@ void SetTexAnimSignals() {
     NuTexAnimSetSignals(texanimbits);
 }
 
-i32 Draw3DObject(WORLDINFO *world, i32 object_index, NUVEC *position, u16 x_rotation, u16 y_rotation, u16 z_rotation,
-                 float scale_x, float scale_y, float scale_z, i32 rotate_order) {
+i32 Draw3DObject(WORLDINFO *world, i32 object_index, NUVEC *position, u16 x_rotation, u16 y_rotation, u16 z_rotation, float scale_x,
+                 float scale_y, float scale_z, i32 rotate_order) {
     if (object_index == -1) {
         return 1;
     }
@@ -1419,10 +1405,9 @@ i32 Draw3DObjectMtx(WORLDINFO *world, i32 object_id, NUMTX *matrix) {
     return 0;
 }
 
-i32 DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y,
-                      u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order, f32 alpha) {
-    if (alpha > 0.0f && special != NULL && NuSpecialExistsFn(special) != 0 &&
-        (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
+i32 DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y, u16 rotate_z,
+                      NUSPECIALHANDLE *special, i32 rotate_order, f32 alpha) {
+    if (alpha > 0.0f && special != NULL && NuSpecialExistsFn(special) != 0 && (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
         NUVEC scale = {scale_x, scale_y, scale_z};
         NUMTX matrix;
         NuMtxSetScale(&matrix, &scale);
@@ -1436,8 +1421,8 @@ i32 DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z
     return 0;
 }
 
-i32 DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y,
-                             u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order) {
+i32 DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y, u16 rotate_z,
+                             NUSPECIALHANDLE *special, i32 rotate_order) {
     if (special != NULL && NuSpecialExistsFn(special) != 0 && (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
         NUVEC scale = {scale_x, scale_y, scale_z};
         NUMTX matrix;
@@ -1468,9 +1453,8 @@ i32 DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *special, NUMTX *matrix) {
     return NuSpecialDrawAt(special, matrix);
 }
 
-void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, NUSPECIALHANDLE *special, i32 locator,
-                           i32 second_locator, NUMTX *joints, i32 reflect, u32 layers, NUMTX *rotation,
-                           NUVEC *translation, f32 alpha, f32 scale) {
+void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, NUSPECIALHANDLE *special, i32 locator, i32 second_locator,
+                           NUMTX *joints, i32 reflect, u32 layers, NUMTX *rotation, NUVEC *translation, f32 alpha, f32 scale) {
     i32 position_only = dco_locatorposonly;
     u16 rotate_z;
     i32 id;

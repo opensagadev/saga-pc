@@ -145,8 +145,7 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
         if (((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index] == NULL) {
             continue;
         }
-        end_frame =
-            NuAnimEndFrameOld(((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index]);
+        end_frame = NuAnimEndFrameOld(((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index]);
         frame = animation->ltime;
         if ((animation->flags & 1) == 0 && entry->animation_playing == 0) {
             for (j = 0; j < entry->event_count; ++j) {
@@ -172,8 +171,7 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
                         if (event->trigger_frame <= frame && frame <= event->previous_frame) {
                             play = 1;
                         }
-                    } else if (direction == 1 && (flags & 8) != 0 && frame <= event->trigger_frame &&
-                               frame >= event->previous_frame) {
+                    } else if (direction == 1 && (flags & 8) != 0 && frame <= event->trigger_frame && frame >= event->previous_frame) {
                         play = 1;
                     }
                     // MATCH-EXCEPTION: bit 2 is read as (flags >> 2) & 1, the code VC8 emits for a one-bit
@@ -568,10 +566,8 @@ void cbPtlReadoutMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     ptlreadoutmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelReadoutMenu, "Info Box Style");
     if (ptlreadoutmenu != NULL) {
-        eduiMenuAddItem(ptlreadoutmenu,
-                        eduiItemCheckCreate(0, colours, edpp_readout == 0, 1, cbPtlSelReadout, "Normal"));
-        eduiMenuAddItem(ptlreadoutmenu,
-                        eduiItemCheckCreate(1, colours, edpp_readout == 1, 1, cbPtlSelReadout, "Co-ordinates"));
+        eduiMenuAddItem(ptlreadoutmenu, eduiItemCheckCreate(0, colours, edpp_readout == 0, 1, cbPtlSelReadout, "Normal"));
+        eduiMenuAddItem(ptlreadoutmenu, eduiItemCheckCreate(1, colours, edpp_readout == 1, 1, cbPtlSelReadout, "Co-ordinates"));
     }
     eduiMenuAttach(menu, ptlreadoutmenu);
     ptlreadoutmenu->x = menu->x + 10;
@@ -587,33 +583,26 @@ static void cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     ptlgsortmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelGSortMenu, "GenSort Type");
     if (ptlgsortmenu) {
-        eduiMenuAddItem(ptlgsortmenu,
-                        eduiItemCheckCreate(0, colours, effect->generator_type == 0, 1, cbPtlSelGSort, "Normal"));
+        eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(0, colours, effect->generator_type == 0, 1, cbPtlSelGSort, "Normal"));
         if (effect->particle_type == 7) {
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(6, edgrey, 0, 0, NULL, "Radial"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(7, edgrey, 0, 0, NULL, "Radial Rotor"));
         } else {
-            eduiMenuAddItem(ptlgsortmenu,
-                            eduiItemCheckCreate(6, colours, effect->generator_type == 6, 1, cbPtlSelGSort, "Radial"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(7, colours, effect->generator_type == 7, 1, cbPtlSelGSort,
-                                                              "Radial Rotor"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(6, colours, effect->generator_type == 6, 1, cbPtlSelGSort, "Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(7, colours, effect->generator_type == 7, 1, cbPtlSelGSort, "Radial Rotor"));
         }
-        eduiMenuAddItem(ptlgsortmenu,
-                        eduiItemCheckCreate(8, colours, effect->generator_type == 8, 1, cbPtlSelGSort, "Spheroid"));
+        eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(8, colours, effect->generator_type == 8, 1, cbPtlSelGSort, "Spheroid"));
         if (effect->particle_type == 7) {
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(9, edgrey, 0, 0, NULL, "BounceY"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(10, edgrey, 0, 0, NULL, "BounceXZ"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(11, edgrey, 0, 0, NULL, "Improved Radial"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(12, edgrey, 0, 0, NULL, "Star Radial"));
         } else {
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(9, colours, effect->generator_type == 9, 1, cbPtlSelGSort, "BounceY"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(10, colours, effect->generator_type == 10, 1, cbPtlSelGSort, "BounceXZ"));
             eduiMenuAddItem(ptlgsortmenu,
-                            eduiItemCheckCreate(9, colours, effect->generator_type == 9, 1, cbPtlSelGSort, "BounceY"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(10, colours, effect->generator_type == 10, 1,
-                                                              cbPtlSelGSort, "BounceXZ"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(11, colours, effect->generator_type == 11, 1,
-                                                              cbPtlSelGSort, "Improved Radial"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(12, colours, effect->generator_type == 12, 1,
-                                                              cbPtlSelGSort, "Star Radial"));
+                            eduiItemCheckCreate(11, colours, effect->generator_type == 11, 1, cbPtlSelGSort, "Improved Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(12, colours, effect->generator_type == 12, 1, cbPtlSelGSort, "Star Radial"));
         }
     }
     eduiMenuAttach(menu, ptlgsortmenu);

@@ -26,11 +26,11 @@ static f32 Credits_Duration = 120.0f;
 static f32 CreditsSize = 0;
 static i32 CreditCount = 0;
 static CREDIT_TYPE_PC CreditTypePc[5] = {
-    {"heading", 0.4f, 1.65f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
-    {"company", 0.6f, 1.65f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
-    {"title", 0.35f, 0.825f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
-    {"name", 0.4f, 0.825f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
-    {"credit", 0.45f, 1.65f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
+    {"heading", 0.4f,  1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
+    {"company", 0.6f,  1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
+    {"title",   0.35f, 0.825f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
+    {"name",    0.4f,  0.825f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
+    {"credit",  0.45f, 1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
 };
 
 static CREDIT_TYPE_PC *CreditsFindTypePc(char *word) {
@@ -61,8 +61,8 @@ static void CreditsReadColourPc(NUFPAR_PC *parser, u8 *colour, i32 maximum) {
     }
 }
 
-static void CreditsInitCreditPc(CREDIT_RECORD_PC *credit, char *text, f32 x, f32 y, f32 scale, u8 red, u8 green,
-                                u8 blue, u8 alpha, u8 alignment, VARIPTR *buffer, VARIPTR *end) {
+static void CreditsInitCreditPc(CREDIT_RECORD_PC *credit, char *text, f32 x, f32 y, f32 scale, u8 red, u8 green, u8 blue, u8 alpha,
+                                u8 alignment, VARIPTR *buffer, VARIPTR *end) {
     char *copy = NULL;
     i32 length = NuStrLen(text);
     if (length != 0) {
@@ -136,9 +136,8 @@ void Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
                                 if (previous == NULL || previous->type != 1) {
                                     y = (f32)(y + CreditTypePc[0].scale / CreditTypePc[1].scale * (f64)0.2f);
                                 }
-                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale,
-                                                    type->colour[0], type->colour[1], type->colour[2], type->colour[3],
-                                                    1, buffer, end);
+                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale, type->colour[0], type->colour[1],
+                                                    type->colour[2], type->colour[3], 1, buffer, end);
                                 y = (f32)(y + CreditTypePc[0].scale / CreditTypePc[1].scale * (f64)0.2f);
                                 y = (f32)(y + (f64)0.1f);
                                 break;
@@ -146,26 +145,22 @@ void Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
                                 if (previous != NULL && previous->type != 0) {
                                     y = (f32)(y + CreditTypePc[1].scale / CreditTypePc[1].scale * (f64)0.2f);
                                 }
-                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale,
-                                                    type->colour[0], type->colour[1], type->colour[2], type->colour[3],
-                                                    1, buffer, end);
+                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale, type->colour[0], type->colour[1],
+                                                    type->colour[2], type->colour[3], 1, buffer, end);
                                 y = (f32)(y + CreditTypePc[1].scale / CreditTypePc[1].scale * (f64)0.2f);
                                 break;
                             case 2:
-                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, -0.015f, y, type->scale,
-                                                    type->colour[0], type->colour[1], type->colour[2], type->colour[3],
-                                                    9, buffer, end);
+                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, -0.015f, y, type->scale, type->colour[0],
+                                                    type->colour[1], type->colour[2], type->colour[3], 9, buffer, end);
                                 break;
                             case 3:
-                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.015f, y, type->scale,
-                                                    type->colour[0], type->colour[1], type->colour[2], type->colour[3],
-                                                    3, buffer, end);
+                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.015f, y, type->scale, type->colour[0],
+                                                    type->colour[1], type->colour[2], type->colour[3], 3, buffer, end);
                                 y = (f32)(y + CreditTypePc[3].scale / CreditTypePc[1].scale * (f64)0.2f);
                                 break;
                             case 4:
-                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale,
-                                                    type->colour[0], type->colour[1], type->colour[2], type->colour[3],
-                                                    1, buffer, end);
+                                CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale, type->colour[0], type->colour[1],
+                                                    type->colour[2], type->colour[3], 1, buffer, end);
                                 y = (f32)(y + CreditTypePc[4].scale / CreditTypePc[1].scale * (f64)0.2f);
                                 break;
                         }
@@ -222,9 +217,9 @@ static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
         while (credit->text != NULL) {
             if (offset >= credit->y && offset <= credit->y + (f64)2.2f) {
                 alpha = (i32)(credit->colour[3] * CreditsAlpha);
-                SmartTextEx(credit->text, credit->x, (f32)(-1.0 - (credit->y - offset)), 1.0f, credit->scale,
-                            credit->scale, credit->scale, credit->alignment, credit->colour[0], credit->colour[1],
-                            credit->colour[2], CreditTypePc[credit->type].width, 1, NULL, 0, (u32)alpha);
+                SmartTextEx(credit->text, credit->x, (f32)(-1.0 - (credit->y - offset)), 1.0f, credit->scale, credit->scale, credit->scale,
+                            credit->alignment, credit->colour[0], credit->colour[1], credit->colour[2], CreditTypePc[credit->type].width, 1,
+                            NULL, 0, (u32)alpha);
             }
             ++credit;
         }

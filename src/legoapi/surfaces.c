@@ -48,8 +48,7 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
             surface_index = 0;
         }
         object->reflection_enabled = 2;
-        if ((object->character_data->game_character->flags_090 & 0x8000u) == 0 &&
-            (TerSurface[surface_index].flags & 2u) != 0) {
+        if ((object->character_data->game_character->flags_090 & 0x8000u) == 0 && (TerSurface[surface_index].flags & 2u) != 0) {
             object->reflection_height = floor_height;
         } else {
             object->reflection_height = 2000000.0f;
@@ -120,11 +119,9 @@ i32 SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
     i32 placed;
 
     placed = 0;
-    if (object->floor_height != GameObjectNearFloorNoFloorHeight &&
-        (WorldInfo_CurrentlyActive()->current_level->flags & 0x40000u) == 0) {
+    if (object->floor_height != GameObjectNearFloorNoFloorHeight && (WorldInfo_CurrentlyActive()->current_level->flags & 0x40000u) == 0) {
         if (mode == 2) {
-            y = (f64)object->collision_min.y - (f64)object->character_bottom * object->origin_scale +
-                0.10000000149011612;
+            y = (f64)object->collision_min.y - (f64)object->character_bottom * object->origin_scale + 0.10000000149011612;
             object->position.y = y;
             object->initial_position.y = y;
             object->collision_position.y = y;
@@ -205,10 +202,8 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
         object->surface_normal = v010;
     }
 
-    object->unknown_0286 =
-        (object->field_283 == 1 || object->field_283 == 9) && object->collision_position.y <= object->water_height;
-    object->water_intersects = (object->field_283 == 1 || object->field_283 == 9) &&
-                               object->water_height <= object->collision_max.y &&
+    object->unknown_0286 = (object->field_283 == 1 || object->field_283 == 9) && object->collision_position.y <= object->water_height;
+    object->water_intersects = (object->field_283 == 1 || object->field_283 == 9) && object->water_height <= object->collision_max.y &&
                                object->water_height >= object->collision_min.y;
 
     object->water_height = LevelConfigFarDistance;
@@ -217,8 +212,8 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
     object->roof_surface_id_pc = 0xff;
     GetSurfaceInfo(object, 1, object->floor_height);
 
-    if (!(object->character_data->game_character->flags_090 & 0x8000) &&
-        object->reflection_height == GameObjectNearFloorNoFloorHeight && object->terrain_platform_id != -1) {
+    if (!(object->character_data->game_character->flags_090 & 0x8000) && object->reflection_height == GameObjectNearFloorNoFloorHeight &&
+        object->terrain_platform_id != -1) {
         f32 reflection = FindReflectionNoPlatforms(&object->position);
         if (reflection != GameObjectNearFloorNoFloorHeight) {
             object->reflection_height = reflection;

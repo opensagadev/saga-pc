@@ -86,8 +86,7 @@ extern "C" {
     void NuMtxSetPerspectiveD3D(NUMTX *matrix, f32 fov, f32 aspect, f32 near_plane, f32 far_plane);
     void NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane);
     void NuMtxSetFrustumBlend(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane);
-    void NuMtxGetFrustumD3D(NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *near_plane,
-                            f32 *far_plane);
+    void NuMtxGetFrustumD3D(NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *near_plane, f32 *far_plane);
     void NuMtxInvRSS(NUMTX *inverse, NUMTX *matrix);
     f32 NuMtxSSE(NUMTX *a, NUMTX *b);
     void NuMtxOrth(NUMTX *matrix);

@@ -132,18 +132,18 @@ void AddToCompletionPoints(u32 points);
 extern f32 ShopPurchasePulsePc;
 extern i32 HubForceShopSavePc;
 extern f32 ShopPurchasePulseDurationPc;
-#define SHOP_RESET_SHELF_POSITIONS()                                                                                   \
-    positions[0] = SubShelfPos[0];                                                                                     \
-    positions[1] = SubShelfPos[1];                                                                                     \
-    positions[2] = SubShelfPos[2];                                                                                     \
-    positions[3] = SubShelfPos[3];                                                                                     \
-    positions[4] = SubShelfPos[4];                                                                                     \
-    positions[5] = SubShelfPos[5];                                                                                     \
+#define SHOP_RESET_SHELF_POSITIONS()                                                                                                       \
+    positions[0] = SubShelfPos[0];                                                                                                         \
+    positions[1] = SubShelfPos[1];                                                                                                         \
+    positions[2] = SubShelfPos[2];                                                                                                         \
+    positions[3] = SubShelfPos[3];                                                                                                         \
+    positions[4] = SubShelfPos[4];                                                                                                         \
+    positions[5] = SubShelfPos[5];                                                                                                         \
     positions[6] = SubShelfPos[6];
-#define SHOP_SLIDE_SLOT(i, j)                                                                                          \
-    t = SHOP_CLAMP01(t);                                                                                               \
-    positions[i].x = SubShelfPos[i].x + (SubShelfPos[j].x - SubShelfPos[i].x) * t;                                     \
-    positions[i].y = SubShelfPos[i].y + (SubShelfPos[j].y - SubShelfPos[i].y) * t;                                     \
+#define SHOP_SLIDE_SLOT(i, j)                                                                                                              \
+    t = SHOP_CLAMP01(t);                                                                                                                   \
+    positions[i].x = SubShelfPos[i].x + (SubShelfPos[j].x - SubShelfPos[i].x) * t;                                                         \
+    positions[i].y = SubShelfPos[i].y + (SubShelfPos[j].y - SubShelfPos[i].y) * t;                                                         \
     positions[i].z = SubShelfPos[i].z + (SubShelfPos[j].z - SubShelfPos[i].z) * t;
 extern f32 ShopCheatTimerPc;
 extern AREA_DATA_PC *ANEWHOPE_ADATA;
@@ -711,8 +711,7 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
             if (items[index].unlocked == 1 || (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0) {
                 return 0;
             }
-            if (ExtrasCheatsPc[id].area_index != -1 &&
-                Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0) {
+            if (ExtrasCheatsPc[id].area_index != -1 && Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0) {
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 ShopLockedScalePc = 1.5f;
                 return 0;
@@ -1292,8 +1291,7 @@ i32 CodeMenu(void *menu) {
                 ShopCheatNamePc = NULL;
             } else {
                 if (i < charcheatix) {
-                    if (Game_CharacterSave &&
-                        !(Game_CharacterSave[(u16)CharItems[i].item_id] & SAVE_CHARACTER_UNLOCKED)) {
+                    if (Game_CharacterSave && !(Game_CharacterSave[(u16)CharItems[i].item_id] & SAVE_CHARACTER_UNLOCKED)) {
                         Game_CharacterSave[(u16)CharItems[i].item_id] |= SAVE_CHARACTER_UNLOCKED;
                         AddToCompletionPoints(POINTS_PER_CHARACTER);
                         PlaySfx("Shop_BuyCheat", &SubShelfPos[3]);
@@ -1334,20 +1332,17 @@ i32 CodeMenu(void *menu) {
         if (ShopLastItemPc != -1) {
             if (ShopEaseSubInPc == 1) {
                 factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopLastItemPc] =
-                    SHOP_LERP(codemenuscale[ShopLastItemPc], codebigscale[ShopLastItemPc], factor);
+                codeshelfscale[ShopLastItemPc] = SHOP_LERP(codemenuscale[ShopLastItemPc], codebigscale[ShopLastItemPc], factor);
                 factor = SHOP_CLAMP01(factor);
                 subpush[2] = SHOP_LERP(SubNormCharPush, SubBigCharPush, factor);
             } else if (ShopEaseSubInPc == -1) {
                 factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopLastItemPc] =
-                    SHOP_LERP(codebigscale[ShopLastItemPc], codemenuscale[ShopLastItemPc], factor);
+                codeshelfscale[ShopLastItemPc] = SHOP_LERP(codebigscale[ShopLastItemPc], codemenuscale[ShopLastItemPc], factor);
                 factor = SHOP_CLAMP01(factor);
                 subpush[2] = SHOP_LERP(SubBigCharPush, SubNormCharPush, factor);
             } else {
                 factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopLastItemPc] =
-                    SHOP_LERP(codebigscale[ShopLastItemPc], codemenuscale[ShopLastItemPc], factor);
+                codeshelfscale[ShopLastItemPc] = SHOP_LERP(codebigscale[ShopLastItemPc], codemenuscale[ShopLastItemPc], factor);
                 factor = SHOP_CLAMP01(factor);
                 subpush[2] = SHOP_LERP(SubBigCharPush, SubNormCharPush, factor);
             }
@@ -1355,20 +1350,17 @@ i32 CodeMenu(void *menu) {
         if (ShopColumnPc != -1) {
             if (ShopEaseSubInPc == 1) {
                 factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopColumnPc] =
-                    SHOP_LERP(codemenuscale[ShopColumnPc], codebigscale[ShopColumnPc], factor);
+                codeshelfscale[ShopColumnPc] = SHOP_LERP(codemenuscale[ShopColumnPc], codebigscale[ShopColumnPc], factor);
                 factor = SHOP_CLAMP01(factor);
                 subpush[1] = SHOP_LERP(SubNormCharPush, SubBigCharPush, factor);
             } else if (ShopEaseSubInPc == -1) {
                 factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopColumnPc] =
-                    SHOP_LERP(codebigscale[ShopColumnPc], codemenuscale[ShopColumnPc], factor);
+                codeshelfscale[ShopColumnPc] = SHOP_LERP(codebigscale[ShopColumnPc], codemenuscale[ShopColumnPc], factor);
                 factor = SHOP_CLAMP01(factor);
                 subpush[1] = SHOP_LERP(SubBigCharPush, SubNormCharPush, factor);
             } else {
                 factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopColumnPc] =
-                    SHOP_LERP(codemenuscale[ShopColumnPc], codebigscale[ShopColumnPc], factor);
+                codeshelfscale[ShopColumnPc] = SHOP_LERP(codemenuscale[ShopColumnPc], codebigscale[ShopColumnPc], factor);
                 factor = SHOP_CLAMP01(factor);
                 subpush[1] = SHOP_LERP(SubNormCharPush, SubBigCharPush, factor);
             }
@@ -1392,17 +1384,15 @@ i32 CodeMenu(void *menu) {
 /* ShopCheatNamePc is a text pointer; the integer code column is separate. */
 void DrawCodeMenu(void) {
     if (ShopCheatTimerPc > 0.0f) {
-        if (ShopCheatNamePc != NULL && (f64)ShopCheatTimerPc < 3.1499998569488525 &&
-            NuFmod(ShopCheatTimerPc, 0.35f) < 0.175f) {
-            SmartTextEx(ShopCheatNamePc, 0.0f, (f32)(((f64)HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5), 1.0f,
-                        0.8f, 0.8f, 0.8f, 0, 0, 255, 0, 1.7f, 1, NULL, 0, 128);
+        if (ShopCheatNamePc != NULL && (f64)ShopCheatTimerPc < 3.1499998569488525 && NuFmod(ShopCheatTimerPc, 0.35f) < 0.175f) {
+            SmartTextEx(ShopCheatNamePc, 0.0f, (f32)(((f64)HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5), 1.0f, 0.8f, 0.8f, 0.8f, 0, 0,
+                        255, 0, 1.7f, 1, NULL, 0, 128);
         }
         ShopCheatTimerPc -= FRAMETIME;
     }
 }
 
-static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_value, f32 ypush, u16 xrot, u16 yrot,
-                               u16 zrot) {
+static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_value, f32 ypush, u16 xrot, u16 yrot, u16 zrot) {
     if (!(!NuSpecialExistsFn(&iconback))) {
         i32 character_id;
         i32 unavailable;
@@ -1412,8 +1402,7 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
         i32 icon_object_id;
         i32 top_shelf_character;
         if (item == &TopShelf[1]) {
-            item =
-                CharItems - (i32)(NuFmod(GameTimer.time_elapsed, (f32)(SHOPCHARCOUNT * (double)0.2f)) / (double)-0.2f);
+            item = CharItems - (i32)(NuFmod(GameTimer.time_elapsed, (f32)(SHOPCHARCOUNT * (double)0.2f)) / (double)-0.2f);
             top_shelf_character = 1;
         } else {
             top_shelf_character = 0;
@@ -1453,8 +1442,7 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
     }
 }
 
-void DrawItem(nuhspecial_s *special, NUVEC *position, float scale_value, float unused3, float y_push, u16 x_rot,
-              u16 y_rot, u16 z_rot) {
+void DrawItem(nuhspecial_s *special, NUVEC *position, float scale_value, float unused3, float y_push, u16 x_rot, u16 y_rot, u16 z_rot) {
     NUVEC scale;
     NUANGVEC rotation;
     NUMTX matrix;
@@ -1483,8 +1471,8 @@ void DrawArrow(nuhspecial_s *special, float scale_value) {
     }
 }
 
-static void Shop_DrawItemPc(shopitem_s *item, NUVEC *position, f32 scale_value, f32 alpha, i32 opaque, f32 ypush,
-                            u16 xrot, u16 yrot, u16 zrot) {
+static void Shop_DrawItemPc(shopitem_s *item, NUVEC *position, f32 scale_value, f32 alpha, i32 opaque, f32 ypush, u16 xrot, u16 yrot,
+                            u16 zrot) {
     NUVEC scale;
     NUANGVEC rotation;
     NUMTX matrix;
@@ -1509,8 +1497,7 @@ static void Shop_DrawItemPc(shopitem_s *item, NUVEC *position, f32 scale_value, 
     }
 }
 
-static void Shop_DrawBrickPc(shopitem_s *item, NUVEC *position, f32 scale_value, f32 ypush, u16 xrot, u16 yrot,
-                             u16 zrot) {
+static void Shop_DrawBrickPc(shopitem_s *item, NUVEC *position, f32 scale_value, f32 ypush, u16 xrot, u16 yrot, u16 zrot) {
     NUVEC scale;
     NUMTX matrix;
     if (NuSpecialExistsFn(&item->special) != 0) {
@@ -1528,12 +1515,10 @@ static void Shop_DrawBrickPc(shopitem_s *item, NUVEC *position, f32 scale_value,
 void DrawTopShelf(i32 unused) {
     Shop_DrawItemPc(&TopShelf[0], &ShelfPos[0], topscale[0], 1.0f, 1, toppush[0] + ShopTopHintOffsetPc, 0, shelfang, 0);
     Shop_DrawCharacter(&TopShelf[1], &ShelfPos[1], topscale[1], toppush[1] + ShopCharTopOffsetPc, 0, shelfang, 0);
-    Shop_DrawItemPc(&TopShelf[2], &ShelfPos[2], topscale[2], 1.0f, 1, toppush[2] + ShopTopExtraOffsetPc, 0, shelfang,
-                    0);
+    Shop_DrawItemPc(&TopShelf[2], &ShelfPos[2], topscale[2], 1.0f, 1, toppush[2] + ShopTopExtraOffsetPc, 0, shelfang, 0);
     DrawItem(&codeblank, &ShelfPos[3], topscale[3], 1.0f, toppush[3] + ShopTopCodeOffsetPc, 0, shelfang, 0);
     Shop_DrawItemPc(&TopShelf[3], &ShelfPos[3], topscale[3], 1.0f, 0, ShopTopCodeOffsetPc + toppush[3], 0, shelfang, 0);
-    Shop_DrawBrickPc(&TopShelf[4], &ShelfPos[4], topscale[4], toppush[4] + ShopTopBrickOffsetPc, 0,
-                     (u16)(shelfang + 0x2000), 0);
+    Shop_DrawBrickPc(&TopShelf[4], &ShelfPos[4], topscale[4], toppush[4] + ShopTopBrickOffsetPc, 0, (u16)(shelfang + 0x2000), 0);
     Shop_DrawItemPc(&TopShelf[5], &ShelfPos[5], topscale[5], 1.0f, 1, toppush[5], 0, shelfang, 0);
 }
 
@@ -1702,14 +1687,12 @@ void DrawSubItems(void) {
                 }
                 break;
             case 1:
-                rotation =
-                    (u16)(i32)((f64)
-                                   NuTrigTable[(((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, ShopCharacterPeriodPc) /
-                                                            (f64)ShopCharacterPeriodPc * 65536.0) +
-                                                 0x4000) >>
-                                                1) &
-                                               0x7fff] *
-                               4369.0);
+                rotation = (u16)(i32)((f64)NuTrigTable[(((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, ShopCharacterPeriodPc) /
+                                                                    (f64)ShopCharacterPeriodPc * 65536.0) +
+                                                         0x4000) >>
+                                                        1) &
+                                                       0x7fff] *
+                                      4369.0);
                 if (item->unlocked != 1) {
                     rotation = 0;
                 }
@@ -1735,8 +1718,7 @@ void DrawSubItems(void) {
                     DrawItem(&toolblank, &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
                     item = &items[shelf_ids[slot]];
                     id = (u16)item->item_id;
-                    if ((save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0 || id < 8 ||
-                        ExtrasCheatsPc[id].area_index == -1 ||
+                    if ((save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0 || id < 8 || ExtrasCheatsPc[id].area_index == -1 ||
                         Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected != 0) {
                         Shop_DrawItemPc(item, &positions[slot], scale, 1.0f, 1, ypush, 0, angle, 0);
                     } else if (NuSpecialExistsFn(&extrasils[shelf_ids[slot]]) != 0) {
@@ -1781,8 +1763,7 @@ void DrawSubItems(void) {
                             blank = &toolblank;
                         }
                     }
-                    rotation =
-                        (u16)(id * 0x1555 - (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * -65536.0));
+                    rotation = (u16)(id * 0x1555 - (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * -65536.0));
                     film = &cutfilm_unlocked;
                 }
                 angle = shelfang + (item->unlocked == 1 ? rotation : 0);
@@ -1810,8 +1791,8 @@ void DrawItemMenu2D(void) {
         } else {
             text_id = TextIdPc880908;
         }
-        SmartTextEx(TTab[text_id], 0.0f, (f32)(((f64)HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5), 1.0f, 0.8f,
-                    0.8f, 0.8f, 0, 255, 255, 255, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
+        SmartTextEx(TTab[text_id], 0.0f, (f32)(((f64)HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5), 1.0f, 0.8f, 0.8f, 0.8f, 0, 255,
+                    255, 255, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
     }
 }
 
@@ -1854,14 +1835,13 @@ void DrawSubItemMenu2D(void) {
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
             buyable = 0;
-        } else if ((u16)items[ids[3]].item_id == VehicleBoltId7f17d4Pc
-                       ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
-                       : CollectIDUnlocked((u16)items[ids[3]].item_id) != 0) {
+        } else if ((u16)items[ids[3]].item_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
+                                                                       : CollectIDUnlocked((u16)items[ids[3]].item_id) != 0) {
             buyable = show_name = 1;
         } else {
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.7f);
-            SmartTextEx(TTab[TextIdPc880708], 0.0f, (f32)((HubEpisodeTitleYPc + (f64)HubEpisodeSubtitleYPc) * 0.5),
-                        1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
+            SmartTextEx(TTab[TextIdPc880708], 0.0f, (f32)((HubEpisodeTitleYPc + (f64)HubEpisodeSubtitleYPc) * 0.5), 1.0f, scale, scale,
+                        scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
         }
     } else if (items[ids[3]].type == 0) {
         show_name = 0;
@@ -1870,23 +1850,21 @@ void DrawSubItemMenu2D(void) {
         id = (u16)items[ids[3]].item_id;
         // MATCH-EXCEPTION: the original selects the 16-bit text id before sign-extending it once, which the
         // casts reproduce; the plain ternary widens each arm separately.
-        NuStrCpy(subtitle,
-                 TTab[(i16)(ExtrasCheatsPc[id].text_id != NULL ? (u16)*ExtrasCheatsPc[id].text_id : tUNKNOWN)]);
+        NuStrCpy(subtitle, TTab[(i16)(ExtrasCheatsPc[id].text_id != NULL ? (u16)*ExtrasCheatsPc[id].text_id : tUNKNOWN)]);
         name = subtitle;
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
             buyable = 0;
         } else {
-            if (id < 8 || ExtrasCheatsPc[id].area_index == -1 ||
-                Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected != 0) {
+            if (id < 8 || ExtrasCheatsPc[id].area_index == -1 || Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected != 0) {
                 buyable = show_name = 1;
             } else {
                 sprintf(title, "%s %i", TTab[TextIdPc88074c], id - 7);
                 scale = (f32)((f64)ShopLockedScalePc * (f64)0.6f);
                 SmartTextEx(title, 0.0f, HubEpisodeTitleYPc, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
                             (i32)((f64)ShopNameAlpha * 128.0));
-                SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0,
-                            1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
+                SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0,
+                            (i32)((f64)ShopNameAlpha * 128.0));
                 buyable = show_name = 0;
             }
         }
@@ -1901,8 +1879,8 @@ void DrawSubItemMenu2D(void) {
             SmartTextEx(title, 0.0f, HubEpisodeTitleYPc, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
                         (i32)((f64)ShopNameAlpha * 128.0));
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.6f);
-            SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0,
-                        1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
+            SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0,
+                        (i32)((f64)ShopNameAlpha * 128.0));
             buyable = show_name = 0;
         } else {
             buyable = show_name = 1;
@@ -1918,8 +1896,8 @@ void DrawSubItemMenu2D(void) {
                         (i32)((f64)ShopNameAlpha * 128.0));
         } else {
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.6f);
-            SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0,
-                        1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
+            SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0,
+                        (i32)((f64)ShopNameAlpha * 128.0));
         }
         buyable = show_name = 0;
     }
@@ -1927,8 +1905,7 @@ void DrawSubItemMenu2D(void) {
         if (show_name != 0) {
             y = buyable != 0 ? HubEpisodeTitleYPc : (f32)(((f64)HubEpisodeSubtitleYPc + HubEpisodeTitleYPc) * 0.5);
             scale = buyable != 0 ? 0.6f : 0.8f;
-            SmartTextEx(name, 0.0f, y, 1.0f, scale, scale, scale, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
-                        (i32)((f64)ShopNameAlpha * 128.0));
+            SmartTextEx(name, 0.0f, y, 1.0f, scale, scale, scale, 0, 255, 255, 255, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
         }
         if (buyable != 0) {
             switch (items[ids[3]].type) {
@@ -1994,8 +1971,7 @@ static i32 Shop_CanSelectPc(void) {
             }
             item = &ExtraItems[ExtraShelfIds[3]];
             id = (u16)item->item_id;
-            if (id >= 8 && ExtrasCheatsPc[id].area_index != -1 &&
-                Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0) {
+            if (id >= 8 && ExtrasCheatsPc[id].area_index != -1 && Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0) {
                 return 0;
             }
             return (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) == 0 && item->unlocked != 1;
@@ -2115,11 +2091,11 @@ i32 ItemMenu(void *menu) {
             forward_factor = (f32)(1.0 - ((f64)NuTrigTable[(forward_angle >> 1) & 0x7fff] + 1.0) * 0.5);
             if (ShopLastItemPc != -1) {
                 old_factor = SHOP_CLAMP01(old_factor);
-                topscale[ShopLastItemPc] = TopBigScale[ShopLastItemPc] +
-                                           (TopShelfScale[ShopLastItemPc] - TopBigScale[ShopLastItemPc]) * old_factor;
+                topscale[ShopLastItemPc] =
+                    TopBigScale[ShopLastItemPc] + (TopShelfScale[ShopLastItemPc] - TopBigScale[ShopLastItemPc]) * old_factor;
                 forward_factor = SHOP_CLAMP01(forward_factor);
-                toppush[ShopLastItemPc] = TopBigPush[ShopLastItemPc] +
-                                          (TopShelfPush[ShopLastItemPc] - TopBigPush[ShopLastItemPc]) * forward_factor;
+                toppush[ShopLastItemPc] =
+                    TopBigPush[ShopLastItemPc] + (TopShelfPush[ShopLastItemPc] - TopBigPush[ShopLastItemPc]) * forward_factor;
             }
             if (picked != -1 && ShopLastItemPc != -1) {
                 old_factor = SHOP_CLAMP01(old_factor);

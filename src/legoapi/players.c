@@ -150,15 +150,14 @@ void Players_InitPositions(WORLDINFO *world) {
             i32 count = spline->length / 4;
             i32 start = qrand() / (65535 / count + 1) * 4;
             PlayerStart[0].position = &spline->pts[start];
-            PlayerStart[0].angle = NuAtan2D(spline->pts[start + 1].x - PlayerStart[0].position->x,
-                                            spline->pts[start + 1].z - PlayerStart[0].position->z);
+            PlayerStart[0].angle =
+                NuAtan2D(spline->pts[start + 1].x - PlayerStart[0].position->x, spline->pts[start + 1].z - PlayerStart[0].position->z);
             PlayerStart[1].position = &spline->pts[start + 2];
-            PlayerStart[1].angle = NuAtan2D(spline->pts[start + 3].x - PlayerStart[0].position->x,
-                                            spline->pts[start + 3].z - PlayerStart[1].position->z);
+            PlayerStart[1].angle =
+                NuAtan2D(spline->pts[start + 3].x - PlayerStart[0].position->x, spline->pts[start + 3].z - PlayerStart[1].position->z);
         }
     }
-    if (HUB_ADATA != NULL && world->area == HUB_ADATA && last_area != world->area_index &&
-        RenderHubFromCutscenePlayerPc == 0) {
+    if (HUB_ADATA != NULL && world->area == HUB_ADATA && last_area != world->area_index && RenderHubFromCutscenePlayerPc == 0) {
         void *door = NULL;
         if (hub_from_superstory != -1) {
             i32 area = Episode_FindAreaFromFlags(&EDataList[hub_from_superstory], 5, 5);
@@ -241,8 +240,7 @@ GAMEOBJECT *fun_0055e2b0(i32 id) {
     i32 index;
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *player = Player[index];
-        if (player != NULL && (player->flags_1fc_word & 1) != 0 && (player->flags_1fc_word & 0x1000) != 0 &&
-            (i16)player->id == id) {
+        if (player != NULL && (player->flags_1fc_word & 1) != 0 && (player->flags_1fc_word & 0x1000) != 0 && (i16)player->id == id) {
             return player;
         }
     }
@@ -374,8 +372,8 @@ i32 MovingBackwards(GAMEOBJECT *object) {
     return 0;
 }
 
-void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEOBJECT *object, GAMEOBJECT *excluded,
-              f32 speed_multiplier, u32 flags) {
+void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEOBJECT *object, GAMEOBJECT *excluded, f32 speed_multiplier,
+              u32 flags) {
     i32 count;
     i32 i;
     NUVEC bounds_min;
@@ -416,8 +414,8 @@ void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEO
         if (object->character_data->game_character->flags_090 & 0x8000) {
             continue;
         }
-        if (minimum->x > object->collision_max.x || maximum->x < object->collision_min.x ||
-            minimum->z > object->collision_max.z || maximum->z < object->collision_min.z) {
+        if (minimum->x > object->collision_max.x || maximum->x < object->collision_min.x || minimum->z > object->collision_max.z ||
+            maximum->z < object->collision_min.z) {
             continue;
         }
         if ((flags & 1) && (minimum->y > object->collision_max.y || maximum->y < object->collision_min.y)) {
@@ -447,8 +445,8 @@ void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEO
     }
 }
 
-u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared,
-                          u8 require_character_flags, u32 character_flags) {
+u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared, u8 require_character_flags,
+                          u32 character_flags) {
     i32 index;
     *nearest_player = NULL;
     *distance_squared = 0.0f;
@@ -471,8 +469,8 @@ u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *dis
     return 0;
 }
 
-u8 FindFurthestPlayerFromVec(NUVEC *position, GAMEOBJECT **furthest_player, f32 *distance_squared,
-                             u8 require_character_flags, u32 character_flags) {
+u8 FindFurthestPlayerFromVec(NUVEC *position, GAMEOBJECT **furthest_player, f32 *distance_squared, u8 require_character_flags,
+                             u32 character_flags) {
     i32 index;
     // Bug in the original: clears the parameter, not *furthest_player, so the loop dereferences NULL.
     furthest_player = NULL;
@@ -512,8 +510,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
     u32 right_mask;
     FULLDEBUGTOGGLE = 0;
     if ((HUB_ADATA != NULL && world->area == HUB_ADATA) || FadeSys.fade != 0.0f ||
-        (U64_PAIR(&CInfo[object->character_context].flags) & 0x100) != 0 || object->takeover_source != NULL ||
-        FreePlay == 0) {
+        (U64_PAIR(&CInfo[object->character_context].flags) & 0x100) != 0 || object->takeover_source != NULL || FreePlay == 0) {
         return;
     }
     if ((MiniCutCam != 0 && object->player_controlled && (object->flags_1fc_word & 0x100) == 0) || object->dead != 0 ||
@@ -593,15 +590,12 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
         if ((apicharsys->models[index].flags & 1) == 0) {
             goto next_character;
         }
-        if (collected == -1 && (GCDataList[id].flags_090 & 0x80000000) == 0 &&
-            ((GCDataList[id].flags_094 >> 24) & 1) == 0 &&
-            !(VehicleArea != 0 && BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
-              (GCDataList[id].flags_094 & 0x2000000) != 0)) {
+        if (collected == -1 && (GCDataList[id].flags_090 & 0x80000000) == 0 && ((GCDataList[id].flags_094 >> 24) & 1) == 0 &&
+            !(VehicleArea != 0 && BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
             goto next_character;
         }
         if (VehicleArea != 0) {
-            if ((CDataList[id].model_flags & 0x2000) == 0 &&
-                !(BonusArea != 0 && (CDataList[id].model_flags & 0x4000000) != 0) &&
+            if ((CDataList[id].model_flags & 0x2000) == 0 && !(BonusArea != 0 && (CDataList[id].model_flags & 0x4000000) != 0) &&
                 (GCDataList[id].flags_090 & 0x80000000) == 0 &&
                 !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
                 goto next_character;
@@ -613,8 +607,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                         goto next_character;
                     }
                 } else if ((GCDataList[id].flags_090 & 0x80000000) == 0 &&
-                           !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
-                             (GCDataList[id].flags_094 & 0x2000000) != 0)) {
+                           !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
                     goto next_character;
                 }
                 if (object->field_283 >= 0 && object->field_283 < 17 && (TerLayer[object->field_283].flags & 1) != 0 &&
@@ -631,8 +624,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                     goto next_character;
                 }
             } else {
-                if ((object->flags_1fc_word & 0x80) == 0 && collected == -1 &&
-                    ((GCDataList[id].flags_094 >> 24) & 1) == 0) {
+                if ((object->flags_1fc_word & 0x80) == 0 && collected == -1 && ((GCDataList[id].flags_094 >> 24) & 1) == 0) {
                     goto next_character;
                 }
                 if (((GCDataList[id].flags_094 >> 24) & 1) == 0 && (collected == -1 || Collection_Got(id) == 0)) {
@@ -640,8 +632,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                 }
             }
         }
-        if (object->floor_height != 2000000.0f && object->roof_height_pc != 2000000.0f &&
-            object->character_data->move_fn != Move_DEFAULT &&
+        if (object->floor_height != 2000000.0f && object->roof_height_pc != 2000000.0f && object->character_data->move_fn != Move_DEFAULT &&
             CDataList[id].top - CDataList[id].bottom >= (f32)((f64)object->roof_height_pc - object->floor_height)) {
             GameAudio_PlaySfx(0x32, &object->collision_position, 0, 0);
             goto next_character;
@@ -795,8 +786,8 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
                 complexsockposition_forcesock = Door_NextSock;
                 movegamecamera_forcesock = Door_NextSock;
             }
-            ComplexSockPosition(WORLD->sock_sys, &object->position, object->sock_position.sock_index,
-                                object->sock_position.segment, &object->sock_position);
+            ComplexSockPosition(WORLD->sock_sys, &object->position, object->sock_position.sock_index, object->sock_position.segment,
+                                &object->sock_position);
             ComplexSockAngles(&object->sock_angles);
             if ((i8)object->field_280 < 2 && object->sock_position.sock_index != -1) {
                 if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
@@ -809,8 +800,8 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
                 } else if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {
                     if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 1) == 0) {
                         object->position = object->sock_position.midpoint;
-                        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 &&
-                            Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
+                        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
+                            (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
                             NUVEC offset;
                             f32 side = object == Player[0] ? -1.0f : 1.0f;
                             NuVecNorm(&offset, &WORLD->sock_sys->socks[object->sock_position.sock_index]

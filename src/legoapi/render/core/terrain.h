@@ -51,8 +51,8 @@ extern "C" {
     void NewTerrStoreAnyInfo(void);
     void TerrainPlatGetMtx(i32, NUMTX **, NUMTX **);
     extern i32 IgnoreWallSplines;
-    void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn, i32 scene_id,
-                        u32 max_group_indices, u32 max_groups, u32 max_platforms);
+    void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn, i32 scene_id, u32 max_group_indices,
+                        u32 max_groups, u32 max_platforms);
     f32 NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_range, i32 mask);
     void PlatOnOff(i32 platform_index, i32 enabled);
     void NewTerrPlatformsOff(void);

@@ -106,17 +106,15 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 continue;
             }
             if ((explosion->flags & 8) == 0 &&
-                ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->field_00)) != 0 ||
-                 explosion->owner == target)) {
+                ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->field_00)) != 0 || explosion->owner == target)) {
                 continue;
             }
-            if (object->collision_min.x > maximum.x || object->collision_max.x < minimum.x ||
-                object->collision_min.y > maximum.y || object->collision_max.y < minimum.y ||
-                object->collision_min.z > maximum.z || object->collision_max.z < minimum.z) {
+            if (object->collision_min.x > maximum.x || object->collision_max.x < minimum.x || object->collision_min.y > maximum.y ||
+                object->collision_max.y < minimum.y || object->collision_min.z > maximum.z || object->collision_max.z < minimum.z) {
                 continue;
             }
-            if (!SphereSphereOverlapScaleY(&object->collision_position, object->bounds_radius,
-                                           object->bounds_half_height, &explosion->position, radius, radius)) {
+            if (!SphereSphereOverlapScaleY(&object->collision_position, object->bounds_radius, object->bounds_half_height,
+                                           &explosion->position, radius, radius)) {
                 continue;
             }
             if ((explosion->flags & 8) != 0) {
@@ -136,9 +134,8 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             if (hit_character || (explosion->flags & 1) == 0) {
                 continue;
             }
-            if ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->field_00)) != 0 ||
-                target == explosion->owner || target->spawn_protection_timer > 0.0f ||
-                (target->flags_ef0 & 0x400000) != 0) {
+            if ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->field_00)) != 0 || target == explosion->owner ||
+                target->spawn_protection_timer > 0.0f || (target->flags_ef0 & 0x400000) != 0) {
                 continue;
             }
             if (object->field_280 != 0xff && !(target->vehicle_hit_timer <= 0.0f) && (explosion->flags & 0x2000) == 0) {
@@ -146,8 +143,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             }
             if (explosion->owner != NULL && !(Arcade_GetMode(NULL) == 0 && (explosion->flags & 0x10010) != 0)) {
                 if (object->field_280 == 0xff) {
-                    if (explosion->owner->field_280 == 0xff &&
-                        ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0) {
+                    if (explosion->owner->field_280 == 0xff && ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0) {
                         continue;
                     }
                 } else if (explosion->owner->field_280 != 0xff && target->origin_scale_override != 1.0f &&
@@ -172,8 +168,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 damage = 0;
             } else if ((explosion->flags & 0x800) != 0 && (target->portal_flags & 0x8000000) == 0) {
                 damage = -1;
-            } else if ((explosion->flags & 0x20) != 0 && (target->portal_flags & 0x8000000) == 0 &&
-                       target->current_hp > 0) {
+            } else if ((explosion->flags & 0x20) != 0 && (target->portal_flags & 0x8000000) == 0 && target->current_hp > 0) {
                 damage = -1;
             } else {
                 damage = explosion->field_32;
@@ -192,8 +187,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                     NewRumble(source->pad->bound_pad, 0.5f, 0);
                 }
                 ++explosion->field_30;
-                if ((explosion->flags & 0x200) != 0 && (explosion->field_33 == 0 || explosion->field_33 == 1) &&
-                    Arcade != 0) {
+                if ((explosion->flags & 0x200) != 0 && (explosion->field_33 == 0 || explosion->field_33 == 1) && Arcade != 0) {
                     if (object->field_280 <= 1) {
                         Arcade_PlayerKilled((object->field_280 ^ 1) & 1, 0);
                     } else if (object->field_280 == 0xff) {
@@ -215,8 +209,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
         } else {
             hit_type = (explosion->flags & 0x8000) != 0 ? 9 : 2;
         }
-        if (GizmoBlowUp_Hit(explosion->owner, &explosion->position, 1, radius, &minimum, &maximum, NULL, hit_type,
-                            NULL)) {
+        if (GizmoBlowUp_Hit(explosion->owner, &explosion->position, 1, radius, &minimum, &maximum, NULL, hit_type, NULL)) {
             Explosion_Feedback(explosion);
             return;
         }

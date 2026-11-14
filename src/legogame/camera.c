@@ -38,9 +38,8 @@ void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
 void GetShopCamLookPos(struct nuvec_s *position);
 i32 SockSysCamera(SOCKSYS_PC *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed,
                   struct nuvec_s *player_camera_positions, struct nuvec_s *player_positions, i32 player_count,
-                  struct sockposition_s *camera_socket_position, struct nuvec_s *camera_position,
-                  struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
-                  f32 *camera_shake, f32 *separation_scale);
+                  struct sockposition_s *camera_socket_position, struct nuvec_s *camera_position, struct nuvec_s *camera_target,
+                  f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake, f32 *separation_scale);
 struct nuvec_s *Technos_TgtPos(struct TECHNO_s *techno);
 f32 getPodRoll(i32 arg0);
 
@@ -78,18 +77,18 @@ typedef struct CAMERA_GRABBER {
 
 i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
 f32 NuVecMagVU0(NUVEC *v);
-#define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                   \
-    do {                                                                                                               \
-        union {                                                                                                        \
-            f32 value;                                                                                                 \
-            u32 bits;                                                                                                  \
-        } storage;                                                                                                     \
-        u32 bits;                                                                                                      \
-        storage.value = (source);                                                                                      \
-        bits = storage.bits;                                                                                           \
-        bits &= 0x7fffffff;                                                                                            \
-        storage.bits = bits;                                                                                           \
-        (destination) = storage.value;                                                                                 \
+#define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                                       \
+    do {                                                                                                                                   \
+        union {                                                                                                                            \
+            f32 value;                                                                                                                     \
+            u32 bits;                                                                                                                      \
+        } storage;                                                                                                                         \
+        u32 bits;                                                                                                                          \
+        storage.value = (source);                                                                                                          \
+        bits = storage.bits;                                                                                                               \
+        bits &= 0x7fffffff;                                                                                                                \
+        storage.bits = bits;                                                                                                               \
+        (destination) = storage.value;                                                                                                     \
     } while (0)
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
@@ -116,8 +115,7 @@ f32 __fastcall PCDeviceBackend_GetActiveAspectPc(PC_DEVICE_BACKEND_PC *backend) 
 }
 
 static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) {
-    f32 height =
-        (object->character_data->top + object->character_data->bottom) * object->character_data->model_scale * 0.5f;
+    f32 height = (object->character_data->top + object->character_data->bottom) * object->character_data->model_scale * 0.5f;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     NUVEC direction;
     NUVEC focus;
@@ -143,8 +141,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
         return;
     }
     target = NULL;
-    if (object->character_context == 0x0f && object->techno != NULL &&
-        (((CAMERA_CONTEXT_PATH *)object->techno)->flags & 0x10) != 0) {
+    if (object->character_context == 0x0f && object->techno != NULL && (((CAMERA_CONTEXT_PATH *)object->techno)->flags & 0x10) != 0) {
         NUVEC *points = ((CAMERA_CONTEXT_PATH *)object->techno)->path->pts;
         f32 scale;
         NuVecSub(&direction, &points[0], &points[3]);
@@ -222,7 +219,10 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
 }
 
 #pragma data_seg(".data$ViewCam")
-VIEWCAM_PC ViewCam = {0, {1000000000.0f, 0.0f, 0.0f}, -8192, -29500, 2.66f, 0.0f, 120.0f, 0x43480000, NULL};
+VIEWCAM_PC ViewCam = {
+    0, {1000000000.0f, 0.0f, 0.0f},
+     -8192, -29500, 2.66f, 0.0f, 120.0f, 0x43480000, NULL
+};
 #pragma data_seg()
 
 void ViewCamSetActive(i32 mode, GAMEPAD_PC *gamepad) {
@@ -276,9 +276,8 @@ void UpdatePlayerCameraOcclusionPc(void) {
             if (object == NULL || (object->flags_1fc & 0x80) == 0) {
                 continue;
             }
-            if (FadeSys.fade != 0.0f || object->dead != 0 || object->character_context == 0x2b ||
-                object->hud_icon_timer > 0.0f || GetMenuID() != -1 || object->character_context == 0x0f ||
-                object->rider != NULL || (object->field_e24 & 8) == 0 ||
+            if (FadeSys.fade != 0.0f || object->dead != 0 || object->character_context == 0x2b || object->hud_icon_timer > 0.0f ||
+                GetMenuID() != -1 || object->character_context == 0x0f || object->rider != NULL || (object->field_e24 & 8) == 0 ||
                 ((object->character_data->model_flags & 0x40) != 0 && object->communicate_blend > 0.0f)) {
                 object->tag_reset_timer = 0.0f;
                 object->pause_context_state = 0.0f;
@@ -305,16 +304,15 @@ void UpdatePlayerCameraOcclusionPc(void) {
                         object->tag_reset_timer += FRAMETIME;
                         if (object->tag_reset_timer >= 0.3f) {
                             object->tag_reset_timer = 0.3f;
-                            object->flags_ef0 =
-                                (object->flags_ef0 & ~0x100000u) | (((object->flags_ef0 >> 19) & 1) << 20);
+                            object->flags_ef0 = (object->flags_ef0 & ~0x100000u) | (((object->flags_ef0 >> 19) & 1) << 20);
                         }
                     }
                 } else {
                     object->tag_reset_timer = 0.0f;
                 }
             }
-            object->pause_context_state = SeekLinearF(object->pause_context_state,
-                                                      (object->flags_ef0 & 0x100000) ? 1.0f : 0.0f, 3.0f * FRAMETIME);
+            object->pause_context_state =
+                SeekLinearF(object->pause_context_state, (object->flags_ef0 & 0x100000) ? 1.0f : 0.0f, 3.0f * FRAMETIME);
         }
     }
 }
@@ -409,8 +407,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
     }
     if (newgamecam) {
         newgamecamtime += FRAMETIME;
-        if (newgamecamtime >= CamNewGameDurationPc || WORLD->camera_splines[6] == NULL ||
-            WORLD->camera_splines[7] == NULL) {
+        if (newgamecamtime >= CamNewGameDurationPc || WORLD->camera_splines[6] == NULL || WORLD->camera_splines[7] == NULL) {
             newgamecam = 0;
         }
     }
@@ -436,8 +433,8 @@ void MoveGameCamera(GAMECAMERA *camera) {
                     GAMEOBJECT *object = Player[i];
                     if (object != NULL && (object->flags_1fc & 0x80) != 0 &&
                         (object->model_draw_result == 0 || object->pad->input_magnitude > 0.0f ||
-                         (object->pad->buttons_held & (GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_ACTION | GAMEPAD_SPECIAL |
-                                                       GAMEPAD_TAG | GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0)) {
+                         (object->pad->buttons_held & (GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_ACTION | GAMEPAD_SPECIAL | GAMEPAD_TAG |
+                                                       GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0)) {
                         ObstacleCamHoldUntilPlayersMove = 0;
                     }
                 }
@@ -511,8 +508,7 @@ mode_selected:
     }
     if (camera->mode == 2 || camera->mode == 4) {
         MiniCutCam = camera->blend_time < camera->blend_duration ? 1 : (ObstacleCamHoldUntilPlayersMove ? 3 : 2);
-    } else if (camera->blend_time < camera->blend_duration &&
-               (camera->previous_camera_mode == 2 || camera->previous_camera_mode == 4)) {
+    } else if (camera->blend_time < camera->blend_duration && (camera->previous_camera_mode == 2 || camera->previous_camera_mode == 4)) {
         MiniCutCam = 4;
     }
     position = *PlayerStart[0].position;
@@ -574,8 +570,7 @@ mode_selected:
                     vehicle_count++;
                     if ((i16)object->id == id_LANDSPEEDER) {
                         if (landspeeder_lookahead != 0.0f) {
-                            landspeeder_lookahead =
-                                (landspeeder_lookahead + (object->horizontal_velocity_magnitude * 0.6f)) * 0.5f;
+                            landspeeder_lookahead = (landspeeder_lookahead + (object->horizontal_velocity_magnitude * 0.6f)) * 0.5f;
                             landspeeder_yaw = (landspeeder_yaw + object->field_0x276) * 0.5f;
                             landspeeder_speed = (landspeeder_speed + object->horizontal_velocity_magnitude) * 0.5f;
                         } else {
@@ -627,12 +622,10 @@ mode_selected:
                 NUVEC rail_position;
                 complexsockposition_forcesock = movegamecamera_forcesock;
 
-                LOG_WARN_ONCE("SockSysCamera before: player_count=%d camera=%p world=%p", player_count, (void *)camera,
-                              (void *)WORLD);
-                index = SockSysCamera(WORLD->sock_sys, &camera->position, camera->mode != camera->previous_mode,
-                                      player_focus, player_positions, player_count, &camera->sock_position, &position,
-                                      &target, &blend_duration, &position_seek, &angle_seek, &camera_shake,
-                                      &separation_scale);
+                LOG_WARN_ONCE("SockSysCamera before: player_count=%d camera=%p world=%p", player_count, (void *)camera, (void *)WORLD);
+                index = SockSysCamera(WORLD->sock_sys, &camera->position, camera->mode != camera->previous_mode, player_focus,
+                                      player_positions, player_count, &camera->sock_position, &position, &target, &blend_duration,
+                                      &position_seek, &angle_seek, &camera_shake, &separation_scale);
                 LOG_WARN_ONCE("SockSysCamera after: index=%d", index);
                 rail_position = position;
                 blend_duration *= 1.5f;
@@ -664,14 +657,12 @@ mode_selected:
                     }
                     camera->field_1e8 = SeekLinearF(camera->field_1e8, pullback, FRAMETIME);
                     camera->field_1ec = SeekValF(camera->field_1ec, camera->field_1e8, 3.0f);
-                    NuVecScale(&(*pullback_offset), &(*pullback_direction),
-                               camera->field_1ec * WORLD->current_level->cam_pullback_dist);
+                    NuVecScale(&(*pullback_offset), &(*pullback_direction), camera->field_1ec * WORLD->current_level->cam_pullback_dist);
                     NuVecAdd(&position, &position, &(*pullback_offset));
                     NuVecAdd(&target, &target, &(*pullback_offset));
                     lateral = 0.0f;
-                    if (vehicle_count &&
-                        (camera->sock_position.sock_index == -1 ||
-                         (WORLD->sock_sys->socks[camera->sock_position.sock_index].flags & 0x1000) == 0)) {
+                    if (vehicle_count && (camera->sock_position.sock_index == -1 ||
+                                          (WORLD->sock_sys->socks[camera->sock_position.sock_index].flags & 0x1000) == 0)) {
                         lateral = 1.0f - abs(0x4000 - abs(index)) * (1.0f / 16384.0f);
                         if (index < 0) {
                             lateral = -lateral;
@@ -735,8 +726,7 @@ mode_selected:
                     f32 floor;
                     f32 countdown = PodSprint_InStartCountdown(WORLD);
                     f32 distance = countdown > 0.0f
-                                       ? (CamPodSprintStartDistPc - CamPodSprintEndDistPc) * (countdown / 3.0) +
-                                             CamPodSprintEndDistPc
+                                       ? (CamPodSprintStartDistPc - CamPodSprintEndDistPc) * (countdown / 3.0) + CamPodSprintEndDistPc
                                        : CamPodSprintEndDistPc;
                     if (player_count == 2) {
                         distance *= 1.5f;
@@ -829,9 +819,8 @@ mode_selected:
                         NUVEC average_position;
                         Players_AveragePos(&average_position, NULL);
                     } else if (GameObjectRotationAtstId != -1) {
-                        GAMEOBJECT *walker =
-                            FindNearestGameObject(&position, NULL, 0, CamWalkerRadiusPc, 0.0f, -1,
-                                                  GameObjectRotationAtstId, -1, &walker_distance_sq, 0, NULL);
+                        GAMEOBJECT *walker = FindNearestGameObject(&position, NULL, 0, CamWalkerRadiusPc, 0.0f, -1,
+                                                                   GameObjectRotationAtstId, -1, &walker_distance_sq, 0, NULL);
                         if (walker != NULL) {
                             f32 distance;
                             f32 factor;
@@ -859,8 +848,8 @@ mode_selected:
                         }
                     }
                     if (!near_walker && id_DEWBACK != -1) {
-                        if (FindNearestGameObject(&position, NULL, 0, CamWalkerRadiusPc, 0.0f, -1, id_DEWBACK, -1,
-                                                  &walker_distance_sq, 0, NULL) != NULL) {
+                        if (FindNearestGameObject(&position, NULL, 0, CamWalkerRadiusPc, 0.0f, -1, id_DEWBACK, -1, &walker_distance_sq, 0,
+                                                  NULL) != NULL) {
                             f32 amount;
                             f32 distance = NuFsqrt(walker_distance_sq);
                             NUVEC *offset = &(mode_scratch);
@@ -874,8 +863,7 @@ mode_selected:
                         }
                     }
                 }
-                if (TATOOINEE_LDATA != NULL && WORLD->current_level == TATOOINEE_LDATA &&
-                    landspeeder_lookahead == 0.0f) {
+                if (TATOOINEE_LDATA != NULL && WORLD->current_level == TATOOINEE_LDATA && landspeeder_lookahead == 0.0f) {
                     f32 magnitude;
                     f32 blend;
                     f32 scale;
@@ -1029,23 +1017,17 @@ mode_selected:
                 NuVecAdd(&position, &position, &offset);
                 target.y -= 0.075f;
             }
-            position.x +=
-                NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))) * 0.05f;
-            position.y +=
-                NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))) * 0.025f;
-            position.z +=
-                NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))) * 0.025f;
+            position.x += NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))) * 0.05f;
+            position.y += NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))) * 0.025f;
+            position.z += NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))) * 0.025f;
             break;
         }
         case 8:
             position = *shopcampos;
             GetShopCamLookPos(&target);
-            position.x +=
-                0.1f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))));
-            position.y +=
-                0.05f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))));
-            position.z +=
-                0.05f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))));
+            position.x += 0.1f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))));
+            position.y += 0.05f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))));
+            position.z += 0.05f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))));
             break;
         case 9:
             position = HubMiniKitViewerSplinePc->pts[0];
@@ -1058,12 +1040,9 @@ mode_selected:
             NUVEC *points = WORLD->camera_splines[24]->pts;
             memcpy(&position, &points[0], sizeof(position));
             memcpy(&target, &points[1], sizeof(target));
-            position.x +=
-                NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))) * 0.05f;
-            position.y +=
-                NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))) * 0.025f;
-            position.z +=
-                NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))) * 0.025f;
+            position.x += NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))) * 0.05f;
+            position.y += NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))) * 0.025f;
+            position.z += NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))) * 0.025f;
             break;
         }
 
@@ -1072,8 +1051,7 @@ mode_selected:
             NUVEC ahead;
             NUVEC lateral;
             NUVEC *offset;
-            f32 spline_position =
-                (GamePlayTimer.time_elapsed + (((u8 *)(LevFlag))[0] == 2 ? CamTitlesBonusTimePc : 6.0f)) / 100.0f;
+            f32 spline_position = (GamePlayTimer.time_elapsed + (((u8 *)(LevFlag))[0] == 2 ? CamTitlesBonusTimePc : 6.0f)) / 100.0f;
             f32 first_position = spline_position;
             if (spline_position > CamTitlesSplineEndPc) {
                 ((u8 *)(LevFlag))[1] = 1;
@@ -1082,8 +1060,7 @@ mode_selected:
 
             PointAlongSpline(WORLD->sock_sys->socks[0].mid, first_position, &target, &yaw, NULL, 0);
 
-            PointAlongSpline(WORLD->sock_sys->socks[0].mid, spline_position > 1.0f ? 1.0f : spline_position, &ahead,
-                             NULL, NULL, 0);
+            PointAlongSpline(WORLD->sock_sys->socks[0].mid, spline_position > 1.0f ? 1.0f : spline_position, &ahead, NULL, NULL, 0);
 
             NuVecRotateY(&lateral, &v001, yaw);
             GunshipANorm = lateral;
@@ -1131,8 +1108,7 @@ mode_selected:
     }
     if (camera->mode == previous_mode) {
         if (previous_sock_position.sock_index == -1 || camera->sock_position.sock_index == -1) {
-            if (previous_sock_position.sock_index != camera->sock_position.sock_index &&
-                WORLD->current_level != DOGFIGHTA_LDATA) {
+            if (previous_sock_position.sock_index != camera->sock_position.sock_index && WORLD->current_level != DOGFIGHTA_LDATA) {
                 GameCam_Blend(camera, 1.0f, 0.0f, 1);
             }
         } else if (camera->sock_position.candidate_count != previous_sock_position.candidate_count ||
@@ -1162,14 +1138,11 @@ mode_selected:
                 angle_blend = 1.0f;
             }
             camera->blend_start_position.x =
-                camera->blend_end_position.x +
-                (camera->blend_destination_position.x - camera->blend_end_position.x) * blend;
+                camera->blend_end_position.x + (camera->blend_destination_position.x - camera->blend_end_position.x) * blend;
             camera->blend_start_position.y =
-                camera->blend_end_position.y +
-                (camera->blend_destination_position.y - camera->blend_end_position.y) * blend;
+                camera->blend_end_position.y + (camera->blend_destination_position.y - camera->blend_end_position.y) * blend;
             camera->blend_start_position.z =
-                camera->blend_end_position.z +
-                (camera->blend_destination_position.z - camera->blend_end_position.z) * blend;
+                camera->blend_end_position.z + (camera->blend_destination_position.z - camera->blend_end_position.z) * blend;
             camera->blend_start_target.x =
                 camera->blend_end_target.x + (camera->blend_destination_target.x - camera->blend_end_target.x) * blend;
             camera->blend_start_target.y =
@@ -1252,8 +1225,7 @@ mode_selected:
             camera->input_yaw = yaw_override;
         }
         if (roll_override == -1) {
-            roll = SeekRot(camera->roll, roll,
-                           (roll_seek_override > 0.0f ? roll_seek_override : camera->angle_seek) * CamStopBlend);
+            roll = SeekRot(camera->roll, roll, (roll_seek_override > 0.0f ? roll_seek_override : camera->angle_seek) * CamStopBlend);
         } else {
             roll = roll_override;
         }
@@ -1272,8 +1244,7 @@ mode_selected:
         NUMTX orientation = {0};
         shared_count = 0;
         for (i = 0; i < 2; i++) {
-            if (Player[i] != NULL && (((GAMEOBJECT *)Player[i])->flags_1fc & 0x80) != 0 &&
-                ((GAMEOBJECT *)Player[i])->flags_107a == 4) {
+            if (Player[i] != NULL && (((GAMEOBJECT *)Player[i])->flags_1fc & 0x80) != 0 && ((GAMEOBJECT *)Player[i])->flags_107a == 4) {
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 0), NUMTX_GET_ROW_VEC(&orientation, 0),
                          NUMTX_GET_ROW_VEC(&((GAMEOBJECT *)Player[i])->vehicle_orientation, 0));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 1), NUMTX_GET_ROW_VEC(&orientation, 1),
@@ -1319,10 +1290,9 @@ mode_selected:
             camera->judder_time -= FRAMETIME;
             if (camera->judder_time > 0.0f) {
                 i32 degrees = (((i32)(camera->judder_duration / 0.333f)) + 1) * 360;
-                i32 phase = ((i32)(((degrees * 0x10000) / 360) *
-                                   ((camera->judder_duration - camera->judder_time) / camera->judder_duration)));
-                f32 amount = (camera->judder_time / camera->judder_duration) *
-                             ((546.0f * camera->judder_duration) * NU_SIN_LUT(phase));
+                i32 phase =
+                    ((i32)(((degrees * 0x10000) / 360) * ((camera->judder_duration - camera->judder_time) / camera->judder_duration)));
+                f32 amount = (camera->judder_time / camera->judder_duration) * ((546.0f * camera->judder_duration) * NU_SIN_LUT(phase));
                 if (camera->judder_reverse) {
                     amount = -amount;
                 }
@@ -1338,11 +1308,9 @@ mode_selected:
         {
             GIZMO_PC *window = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, "window_frame1");
             if (Cheat_PowerUpActive(-1) ||
-                (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks &&
-                 camera->sock_position.sock_index == 1) ||
+                (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks && camera->sock_position.sock_index == 1) ||
                 (WORLD->current_level == CLOUDCITYTRAPB_LDATA && window != NULL && window->object != NULL &&
-                 (((GIZMOBLOWUP_PC *)(window->object))->status_flags & 1) != 0 &&
-                 ((u8)(camera->sock_position.sock_index)) <= 1)) {
+                 (((GIZMOBLOWUP_PC *)(window->object))->status_flags & 1) != 0 && ((u8)(camera->sock_position.sock_index)) <= 1)) {
                 camera_shake = 0.5f;
             } else if (WORLD->current_level == DEATHSTAR2BATTLED_LDATA && ((u8 *)(LevFlag))[0] > 0) {
                 camera_shake = 1.5f;
@@ -1351,8 +1319,7 @@ mode_selected:
                 for (i = 0; i < 2; i++) {
                     GAMEOBJECT *object = Player[i];
                     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-                        if (WORLD->current_level == DEATHSTARBATTLED_LDATA &&
-                            ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx)) {
+                        if (WORLD->current_level == DEATHSTARBATTLED_LDATA && ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx)) {
                             camera_shake = 0.6f;
                             break;
                         }

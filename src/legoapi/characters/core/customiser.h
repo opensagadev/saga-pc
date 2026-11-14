@@ -88,10 +88,9 @@ extern "C" {
     void Customiser_InitNames(struct CUSTOMISER_LAYERS_PC *);
     void Customiser_AddPartAccessories(struct CUSTOMISER_LAYERS_PC *, struct gameobject_s *, i32, i32, f32);
 
-    struct CUSTOMISER_LAYERS_PC *Customiser_Configure(char *, VARIPTR *, VARIPTR *, i32, i32,
-                                                      i32 (*)(CUSTOMPIECE_LAYERS_PC *),
-                                                      void (*)(CUSTOMPIECE_LAYERS_PC *, struct nufpar_pc_s *),
-                                                      i32 (*)(char *), void *, i16 *);
+    struct CUSTOMISER_LAYERS_PC *Customiser_Configure(char *, VARIPTR *, VARIPTR *, i32, i32, i32 (*)(CUSTOMPIECE_LAYERS_PC *),
+                                                      void (*)(CUSTOMPIECE_LAYERS_PC *, struct nufpar_pc_s *), i32 (*)(char *), void *,
+                                                      i16 *);
     void Customiser_CopyDefaultPiecesToSave(struct CUSTOMISER_LAYERS_PC *, void *);
     void Customiser_LoadAccessories(struct CUSTOMISER_LAYERS_PC *, struct apicharactermodellist_s *);
     void Customiser_Set100PercentPieces(struct CUSTOMISER_LAYERS_PC *);

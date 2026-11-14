@@ -40,8 +40,8 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         target = object->grapple;
         trigger = 0;
-        object->movement_facing_angle = NuAtan2D(target->mid_position.x - object->collision_position.x,
-                                                 target->mid_position.z - object->collision_position.z);
+        object->movement_facing_angle =
+            NuAtan2D(target->mid_position.x - object->collision_position.x, target->mid_position.z - object->collision_position.z);
         if (frame != NULL && !(object->context_variant_flags & 0x40)) {
             f32 marker = AnimListFrame(object->character_model, object->field_7aa, 0);
             if (marker >= 1.0f && *frame >= marker) {
@@ -87,17 +87,15 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         max.y = object->collision_position.y + 2.0;
         max.z = object->collision_position.z + 2.0;
         for (i = 0; i < world->gizmo_blowup_count; ++i, ++candidate) {
-            if ((candidate->status_flags & 1) || !(candidate->status_flags & 0x800000) ||
-                !(candidate->status_flags & 0x4000) || !(candidate->status_flags & 0x8000) ||
-                !(candidate->draw_flags & 0x10)) {
+            if ((candidate->status_flags & 1) || !(candidate->status_flags & 0x800000) || !(candidate->status_flags & 0x4000) ||
+                !(candidate->status_flags & 0x8000) || !(candidate->draw_flags & 0x10)) {
                 continue;
             }
             if ((candidate->draw_flags & 0x20) && ShadowMode == 0) {
                 continue;
             }
-            if (candidate->mid_position.x < min.x || candidate->mid_position.x > max.x ||
-                candidate->mid_position.z < min.z || candidate->mid_position.z > max.z ||
-                candidate->mid_position.y < min.y || candidate->mid_position.y > max.y) {
+            if (candidate->mid_position.x < min.x || candidate->mid_position.x > max.x || candidate->mid_position.z < min.z ||
+                candidate->mid_position.z > max.z || candidate->mid_position.y < min.y || candidate->mid_position.y > max.y) {
                 continue;
             }
             distance = NuVecDistSqr(&candidate->mid_position, &object->collision_position, &delta);
@@ -123,8 +121,8 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                     object->context_duration = 1.0f;
                 }
                 target = object->grapple;
-                object->movement_facing_angle = NuAtan2D(target->mid_position.x - object->collision_position.x,
-                                                         target->mid_position.z - object->collision_position.z);
+                object->movement_facing_angle =
+                    NuAtan2D(target->mid_position.x - object->collision_position.x, target->mid_position.z - object->collision_position.z);
             }
         }
     }

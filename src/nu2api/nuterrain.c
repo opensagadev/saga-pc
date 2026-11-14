@@ -102,8 +102,7 @@ i32 NewPlatInst(void *object, i32 instance) {
         return -1;
     }
 
-    TERRAIN_NPI_SET->groups[terrain->group_count] =
-        TERRAIN_NPI_SET->groups[terrain->platforms[source_index].terrain_group_index];
+    TERRAIN_NPI_SET->groups[terrain->group_count] = TERRAIN_NPI_SET->groups[terrain->platforms[source_index].terrain_group_index];
     TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].scene_index = (i16)new_index;
     TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].chunk_type = 1;
     TERRAIN_NPI_SET->platforms[new_index].scene_object = object;
@@ -232,8 +231,7 @@ i32 DeletePlatinst(i32 platform_index) {
     cell_group_index = TERRAIN_DP_SET->platform_cell.first_group;
     for (i = 0; i < TERRAIN_DP_SET->platform_cell.group_count; i++, cell_group_index++) {
         if (TERRAIN_DP_SET->group_indices[cell_group_index] == TERRAIN_DP_SET->group_count) {
-            TERRAIN_DP_SET->group_indices[cell_group_index] =
-                TERRAIN_DP_SET->group_indices[TERRAIN_DP_SET->group_index_count];
+            TERRAIN_DP_SET->group_indices[cell_group_index] = TERRAIN_DP_SET->group_indices[TERRAIN_DP_SET->group_index_count];
             break;
         }
     }
@@ -408,12 +406,10 @@ NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO *info, const NUVEC *po
                 const NUMTX *start = info->matrix;
                 const TERRAIN_SKIN_BLEND *blend = info->blend;
                 i32 angle = (i32)(weight * 32768.0);
-#define TERRAIN_SKIN_ROW(M, A)                                                                                         \
-    matrix.M = (weight * blend->end_matrix.M + start->M * (1.0f - weight)) *                                           \
-               (NU_SIN_LUT(angle) * blend->row_amplitude.A + 1.0f)
-#define TERRAIN_SKIN_MOVE(M, A)                                                                                        \
-    matrix.M =                                                                                                         \
-        weight * blend->end_matrix.M + start->M * (1.0f - weight) + NU_SIN_LUT(angle) * blend->translation_amplitude.A
+#define TERRAIN_SKIN_ROW(M, A)                                                                                                             \
+    matrix.M = (weight * blend->end_matrix.M + start->M * (1.0f - weight)) * (NU_SIN_LUT(angle) * blend->row_amplitude.A + 1.0f)
+#define TERRAIN_SKIN_MOVE(M, A)                                                                                                            \
+    matrix.M = weight * blend->end_matrix.M + start->M * (1.0f - weight) + NU_SIN_LUT(angle) * blend->translation_amplitude.A
                 TERRAIN_SKIN_ROW(m00, x);
                 TERRAIN_SKIN_ROW(m01, x);
                 TERRAIN_SKIN_ROW(m02, x);
@@ -442,27 +438,27 @@ NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO *info, const NUVEC *po
     return result;
 }
 
-#define TERRAIN_SKIN_NORMAL(normal, a, b)                                                                              \
-    do {                                                                                                               \
-        NUVEC cross;                                                                                                   \
-        f32 length;                                                                                                    \
-        f32 inverse;                                                                                                   \
-        cross.x = (a).y * (b).z - (a).z * (b).y;                                                                       \
-        cross.y = (a).z * (b).x - (a).x * (b).z;                                                                       \
-        cross.z = (a).x * (b).y - (a).y * (b).x;                                                                       \
-        *(normal) = cross;                                                                                             \
-        length = NuFsqrt((normal)->x * (normal)->x + (normal)->y * (normal)->y + (normal)->z * (normal)->z);           \
-        inverse = length != 0.0f ? 1.0f / length : 0.0f;                                                               \
-        (normal)->x = (normal)->x * inverse;                                                                           \
-        (normal)->y = (normal)->y * inverse;                                                                           \
-        (normal)->z = (normal)->z * inverse;                                                                           \
+#define TERRAIN_SKIN_NORMAL(normal, a, b)                                                                                                  \
+    do {                                                                                                                                   \
+        NUVEC cross;                                                                                                                       \
+        f32 length;                                                                                                                        \
+        f32 inverse;                                                                                                                       \
+        cross.x = (a).y * (b).z - (a).z * (b).y;                                                                                           \
+        cross.y = (a).z * (b).x - (a).x * (b).z;                                                                                           \
+        cross.z = (a).x * (b).y - (a).y * (b).x;                                                                                           \
+        *(normal) = cross;                                                                                                                 \
+        length = NuFsqrt((normal)->x * (normal)->x + (normal)->y * (normal)->y + (normal)->z * (normal)->z);                               \
+        inverse = length != 0.0f ? 1.0f / length : 0.0f;                                                                                   \
+        (normal)->x = (normal)->x * inverse;                                                                                               \
+        (normal)->y = (normal)->y * inverse;                                                                                               \
+        (normal)->z = (normal)->z * inverse;                                                                                               \
     } while (0)
-#define TERRAIN_SKIN_BOUND(value, lo, hi)                                                                              \
-    do {                                                                                                               \
-        if ((value) < (lo))                                                                                            \
-            (lo) = (value);                                                                                            \
-        if ((value) > (hi))                                                                                            \
-            (hi) = (value);                                                                                            \
+#define TERRAIN_SKIN_BOUND(value, lo, hi)                                                                                                  \
+    do {                                                                                                                                   \
+        if ((value) < (lo))                                                                                                                \
+            (lo) = (value);                                                                                                                \
+        if ((value) > (hi))                                                                                                                \
+            (hi) = (value);                                                                                                                \
     } while (0)
 
 /* Valid initialized variable records, vertex_order 0 or 1, and enough output
@@ -517,8 +513,7 @@ void SkinPlatform(TERRAIN_GROUP_PC *group, TERRAIN_SKIN_STREAM *output, const TE
             *polygon = *source;
             pmax_x = pmax_y = pmax_z = -123456789.0f;
             for (p = &polygon->vertices[vertex]; vertex >= 0; --vertex, --p) {
-                *p = *TerrainSkin(&transformed, info, &source->vertices[SkinFlipTab[vertex + info->vertex_order * 4]],
-                                  -1.0f, info->mode);
+                *p = *TerrainSkin(&transformed, info, &source->vertices[SkinFlipTab[vertex + info->vertex_order * 4]], -1.0f, info->mode);
                 p->x = p->x - info->matrix->m30;
                 p->y = p->y - info->matrix->m31;
                 p->z = p->z - info->matrix->m32;
@@ -643,8 +638,7 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     group->data = infos[-1 - group->scene_index].original_shape;
     infos[-1 - group->scene_index].pool_slot = (i16)selected;
     records[selected].skin_index = -1 - group->scene_index;
-    SkinPlatform(group, (TERRAIN_SKIN_STREAM *)(PlatSkinMem + PlatSkinMaxSize * selected),
-                 &infos[-(group->scene_index + 1)]);
+    SkinPlatform(group, (TERRAIN_SKIN_STREAM *)(PlatSkinMem + PlatSkinMaxSize * selected), &infos[-(group->scene_index + 1)]);
     SkinMemInfo[selected].last_use = (i32)TerrainUpadteCnt;
 }
 
@@ -673,61 +667,59 @@ typedef struct TERRAIN_SCAN_WRITER {
     i32 shape_count;
 } TERRAIN_SCAN_WRITER;
 
-#define TERRAIN_FINISH_GROUP(w, group_index)                                                                           \
-    do {                                                                                                               \
-        if ((w).shape_count > 0) {                                                                                     \
-            (w).group_header->header.shape_count = (i16)(w).shape_count;                                               \
-            (w).group_header->header.terrain_group = (i16)(group_index);                                               \
-            (w).group_header = (w).cursor;                                                                             \
-            (w).cursor++;                                                                                              \
-            (w).shape_count = 0;                                                                                       \
-        }                                                                                                              \
+#define TERRAIN_FINISH_GROUP(w, group_index)                                                                                               \
+    do {                                                                                                                                   \
+        if ((w).shape_count > 0) {                                                                                                         \
+            (w).group_header->header.shape_count = (i16)(w).shape_count;                                                                   \
+            (w).group_header->header.terrain_group = (i16)(group_index);                                                                   \
+            (w).group_header = (w).cursor;                                                                                                 \
+            (w).cursor++;                                                                                                                  \
+            (w).shape_count = 0;                                                                                                           \
+        }                                                                                                                                  \
     } while (0)
-#define TERRAIN_CROSS(dst, a, b)                                                                                       \
-    do {                                                                                                               \
-        (dst).x = (a).y * (b).z - (a).z * (b).y;                                                                       \
-        (dst).y = (a).z * (b).x - (b).z * (a).x;                                                                       \
-        (dst).z = (a).x * (b).y - (a).y * (b).x;                                                                       \
+#define TERRAIN_CROSS(dst, a, b)                                                                                                           \
+    do {                                                                                                                                   \
+        (dst).x = (a).y * (b).z - (a).z * (b).y;                                                                                           \
+        (dst).y = (a).z * (b).x - (b).z * (a).x;                                                                                           \
+        (dst).z = (a).x * (b).y - (a).y * (b).x;                                                                                           \
     } while (0)
-#define SHADOW_BOUNDS_OVERLAP(ax, az, bx, bz, lo, hi)                                                                  \
-    ((bx) >= (lo).x && (hi).x > (ax) && (bz) >= (lo).z && (hi).z > (az))
+#define SHADOW_BOUNDS_OVERLAP(ax, az, bx, bz, lo, hi) ((bx) >= (lo).x && (hi).x > (ax) && (bz) >= (lo).z && (hi).z > (az))
 
 #define TERRAIN_ROT_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 #define TERRAIN_ROT_PLATFORM(group_ptr) (TERRAIN_ROT_SET->platforms[(group_ptr)->scene_index])
 #define TERRAIN_ROT_MATRIX(group_ptr) ((NUMTX *)TERRAIN_ROT_PLATFORM(group_ptr).scene_object)
-#define TERRAIN_ROT_GROUP_OVERLAP(lo_x, lo_z, hi_x, hi_z, group_ptr)                                                   \
-    ((hi_x) >= (group_ptr)->bounds_min.x && (hi_z) >= (group_ptr)->bounds_min.z &&                                     \
-     (group_ptr)->bounds_max.x >= (lo_x) && (group_ptr)->bounds_max.z > (lo_z))
-#define TERRAIN_ROT_SHAPE_OVERLAP(shape_ptr)                                                                           \
-    (local_max_x >= (shape_ptr)->min_x && (shape_ptr)->max_x > local_min_x && local_max_z >= (shape_ptr)->min_z &&     \
+#define TERRAIN_ROT_GROUP_OVERLAP(lo_x, lo_z, hi_x, hi_z, group_ptr)                                                                       \
+    ((hi_x) >= (group_ptr)->bounds_min.x && (hi_z) >= (group_ptr)->bounds_min.z && (group_ptr)->bounds_max.x >= (lo_x) &&                  \
+     (group_ptr)->bounds_max.z > (lo_z))
+#define TERRAIN_ROT_SHAPE_OVERLAP(shape_ptr)                                                                                               \
+    (local_max_x >= (shape_ptr)->min_x && (shape_ptr)->max_x > local_min_x && local_max_z >= (shape_ptr)->min_z &&                         \
      (shape_ptr)->max_z > local_min_z)
-#define TERRAIN_ROT_MATERIAL_OK(shape_ptr)                                                                             \
-    ((shape_ptr)->material[1] == 0 || ((shape_ptr)->material[1] & terrain_mask) != 0)
-#define TERRAIN_ROT_FINISH_GROUP(group_index_arg)                                                                      \
-    do {                                                                                                               \
-        if (shape_count != 0) {                                                                                        \
-            group_header->header.shape_count = (i16)shape_count;                                                       \
-            group_header->header.terrain_group = (i16)(group_index_arg);                                               \
-            group_header = cursor;                                                                                     \
-            cursor++;                                                                                                  \
-            shape_count = 0;                                                                                           \
-        }                                                                                                              \
+#define TERRAIN_ROT_MATERIAL_OK(shape_ptr) ((shape_ptr)->material[1] == 0 || ((shape_ptr)->material[1] & terrain_mask) != 0)
+#define TERRAIN_ROT_FINISH_GROUP(group_index_arg)                                                                                          \
+    do {                                                                                                                                   \
+        if (shape_count != 0) {                                                                                                            \
+            group_header->header.shape_count = (i16)shape_count;                                                                           \
+            group_header->header.terrain_group = (i16)(group_index_arg);                                                                   \
+            group_header = cursor;                                                                                                         \
+            cursor++;                                                                                                                      \
+            shape_count = 0;                                                                                                               \
+        }                                                                                                                                  \
     } while (0)
-#define TERRAIN_ROT_LOCAL_BOUNDS(group_ptr)                                                                            \
-    do {                                                                                                               \
-        local_max_x = max_x - (group_ptr)->origin.x;                                                                   \
-        local_max_z = max_z - (group_ptr)->origin.z;                                                                   \
-        local_min_x = min_x - (group_ptr)->origin.x;                                                                   \
-        local_min_z = min_z - (group_ptr)->origin.z;                                                                   \
+#define TERRAIN_ROT_LOCAL_BOUNDS(group_ptr)                                                                                                \
+    do {                                                                                                                                   \
+        local_max_x = max_x - (group_ptr)->origin.x;                                                                                       \
+        local_max_z = max_z - (group_ptr)->origin.z;                                                                                       \
+        local_min_x = min_x - (group_ptr)->origin.x;                                                                                       \
+        local_min_z = min_z - (group_ptr)->origin.z;                                                                                       \
     } while (0)
 
-#define TERRAIN_ROT_CROSS(dst, a, b)                                                                                   \
-    do {                                                                                                               \
-        NUVEC cross;                                                                                                   \
-        cross.x = (a)->y * (b)->z - (a)->z * (b)->y;                                                                   \
-        cross.y = (a)->z * (b)->x - (a)->x * (b)->z;                                                                   \
-        cross.z = (a)->x * (b)->y - (a)->y * (b)->x;                                                                   \
-        (dst) = cross;                                                                                                 \
+#define TERRAIN_ROT_CROSS(dst, a, b)                                                                                                       \
+    do {                                                                                                                                   \
+        NUVEC cross;                                                                                                                       \
+        cross.x = (a)->y * (b)->z - (a)->z * (b)->y;                                                                                       \
+        cross.y = (a)->z * (b)->x - (a)->x * (b)->z;                                                                                       \
+        cross.z = (a)->x * (b)->y - (a)->y * (b)->x;                                                                                       \
+        (dst) = cross;                                                                                                                     \
     } while (0)
 
 i32 EShadowRoofInfo(void) {
@@ -867,8 +859,8 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                     TERRAIN_POLYGON_INFO_PC *shape = batch->polygons;
                     const i32 count = batch->header.count;
 
-                    if (local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x &&
-                        local_max_z >= batch->header.min_z && batch->header.max_z > local_min_z) {
+                    if (local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x && local_max_z >= batch->header.min_z &&
+                        batch->header.max_z > local_min_z) {
                         i16 remaining;
 
                         for (remaining = count; remaining > 0; --remaining, ++shape) {
@@ -966,24 +958,20 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 if (TERRAIN_ROT_MATRIX(group)->m30 > TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) {
                     local_min_x = min_x - group->origin.x;
                     local_max_x =
-                        (TERRAIN_ROT_MATRIX(group)->m30 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) * 1.5 +
-                        max_x - group->origin.x;
+                        (TERRAIN_ROT_MATRIX(group)->m30 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) * 1.5 + max_x - group->origin.x;
                 } else {
                     local_max_x = max_x - group->origin.x;
                     local_min_x =
-                        (TERRAIN_ROT_MATRIX(group)->m30 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) * 1.5 +
-                        min_x - group->origin.x;
+                        (TERRAIN_ROT_MATRIX(group)->m30 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) * 1.5 + min_x - group->origin.x;
                 }
                 if (TERRAIN_ROT_MATRIX(group)->m32 > TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) {
                     local_min_z = min_z - group->origin.z;
                     local_max_z =
-                        (TERRAIN_ROT_MATRIX(group)->m32 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) * 1.5 +
-                        max_z - group->origin.z;
+                        (TERRAIN_ROT_MATRIX(group)->m32 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) * 1.5 + max_z - group->origin.z;
                 } else {
                     local_max_z = max_z - group->origin.z;
                     local_min_z =
-                        (TERRAIN_ROT_MATRIX(group)->m32 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) * 1.5 +
-                        min_z - group->origin.z;
+                        (TERRAIN_ROT_MATRIX(group)->m32 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) * 1.5 + min_z - group->origin.z;
                 }
             } else {
                 local_max_x = max_x - group->origin.x;
@@ -1057,20 +1045,20 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                         } else {
                             vertices[3] = vertices[2];
                         }
-                        if (!(vertices[0].x > local_min_x || vertices[1].x > local_min_x ||
-                              vertices[2].x > local_min_x || vertices[3].x > local_min_x)) {
+                        if (!(vertices[0].x > local_min_x || vertices[1].x > local_min_x || vertices[2].x > local_min_x ||
+                              vertices[3].x > local_min_x)) {
                             continue;
                         }
-                        if (!(local_max_x > vertices[0].x || local_max_x > vertices[1].x ||
-                              local_max_x > vertices[2].x || local_max_x > vertices[3].x)) {
+                        if (!(local_max_x > vertices[0].x || local_max_x > vertices[1].x || local_max_x > vertices[2].x ||
+                              local_max_x > vertices[3].x)) {
                             continue;
                         }
-                        if (!(vertices[0].z > local_min_z || vertices[1].z > local_min_z ||
-                              vertices[2].z > local_min_z || vertices[3].z > local_min_z)) {
+                        if (!(vertices[0].z > local_min_z || vertices[1].z > local_min_z || vertices[2].z > local_min_z ||
+                              vertices[3].z > local_min_z)) {
                             continue;
                         }
-                        if (!(local_max_z > vertices[0].z || local_max_z > vertices[1].z ||
-                              local_max_z > vertices[2].z || local_max_z > vertices[3].z)) {
+                        if (!(local_max_z > vertices[0].z || local_max_z > vertices[1].z || local_max_z > vertices[2].z ||
+                              local_max_z > vertices[3].z)) {
                             continue;
                         }
                         transformed = &ScaleTerrain[transformed_count];
@@ -1131,8 +1119,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 }
                 TERRAIN_ROT_FINISH_GROUP(*platform_groups);
             } else {
-                if (!TERRAIN_ROT_GROUP_OVERLAP(local_min_x, local_min_z, local_max_x, local_max_z, group) ||
-                    group->chunk_type == -1) {
+                if (!TERRAIN_ROT_GROUP_OVERLAP(local_min_x, local_min_z, local_max_x, local_max_z, group) || group->chunk_type == -1) {
                     continue;
                 }
                 if (platform->instance_flags != NULL) {
@@ -1151,8 +1138,8 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                     TERRAIN_POLYGON_INFO_PC *shape = batch->polygons;
                     const i32 count = batch->header.count;
 
-                    if (local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x &&
-                        local_max_z >= batch->header.min_z && batch->header.max_z > local_min_z) {
+                    if (local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x && local_max_z >= batch->header.min_z &&
+                        batch->header.max_z > local_min_z) {
                         i16 remaining;
 
                         for (remaining = count; remaining > 0; --remaining, ++shape) {
@@ -1214,38 +1201,37 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
             i32 side;
 /* InsideLineF(x, z, start, end), inlined (the start and end coordinates
  * are f32 parameter copies). */
-#define CAST_LINE(a, b)                                                                                                \
-    (line_x = surface->vertices[a].x, line_z = surface->vertices[a].z, end_x = surface->vertices[b].x,                 \
-     end_z = surface->vertices[b].z, (x - line_x) * (end_z - line_z) + (z - line_z) * (line_x - end_x) < 0.0f ? 0 : 1)
-#define CAST_PLANE(n, v)                                                                                               \
-    quotient = ((z - surface->vertices[v].z) * surface->normals[n].z +                                                 \
-                (x - surface->vertices[v].x) * surface->normals[n].x) /                                                \
-               -surface->normals[n].y;                                                                                 \
-    y = groups[group_index].origin.y + surface->vertices[v].y + quotient;                                              \
-    if (surface->material[1] != 0) {                                                                                   \
-        if (y <= position->y && y > efloor_y && facing == 1) {                                                         \
-            efloor_normal = surface->normals[n];                                                                       \
-            efloor_poly = surface;                                                                                     \
-            efloor_y = y;                                                                                              \
-            TerrainShadowFloorIndexPc = group_index;                                                                   \
-        } else if (position->y < y && eroof_y >= y && (y != eroof_y || surface->normals[n].y < eroof_normal.y)) {      \
-            eroof_normal = surface->normals[n];                                                                        \
-            eroof_poly = surface;                                                                                      \
-            eroof_y = y;                                                                                               \
-            eroof_group = group_index;                                                                                 \
-        }                                                                                                              \
-    } else {                                                                                                           \
-        if (y <= position->y && y > floor_y && facing == 1) {                                                          \
-            floor_normal = surface->normals[n];                                                                        \
-            floor_poly = surface;                                                                                      \
-            floor_y = y;                                                                                               \
-            castnum = group_index;                                                                                     \
-        } else if (position->y < y && roof_y >= y && (y != roof_y || surface->normals[n].y < roof_normal.y)) {         \
-            roof_normal = surface->normals[n];                                                                         \
-            roof_poly = surface;                                                                                       \
-            roof_y = y;                                                                                                \
-            roof_group = group_index;                                                                                  \
-        }                                                                                                              \
+#define CAST_LINE(a, b)                                                                                                                    \
+    (line_x = surface->vertices[a].x, line_z = surface->vertices[a].z, end_x = surface->vertices[b].x, end_z = surface->vertices[b].z,     \
+     (x - line_x) * (end_z - line_z) + (z - line_z) * (line_x - end_x) < 0.0f ? 0 : 1)
+#define CAST_PLANE(n, v)                                                                                                                   \
+    quotient = ((z - surface->vertices[v].z) * surface->normals[n].z + (x - surface->vertices[v].x) * surface->normals[n].x) /             \
+               -surface->normals[n].y;                                                                                                     \
+    y = groups[group_index].origin.y + surface->vertices[v].y + quotient;                                                                  \
+    if (surface->material[1] != 0) {                                                                                                       \
+        if (y <= position->y && y > efloor_y && facing == 1) {                                                                             \
+            efloor_normal = surface->normals[n];                                                                                           \
+            efloor_poly = surface;                                                                                                         \
+            efloor_y = y;                                                                                                                  \
+            TerrainShadowFloorIndexPc = group_index;                                                                                       \
+        } else if (position->y < y && eroof_y >= y && (y != eroof_y || surface->normals[n].y < eroof_normal.y)) {                          \
+            eroof_normal = surface->normals[n];                                                                                            \
+            eroof_poly = surface;                                                                                                          \
+            eroof_y = y;                                                                                                                   \
+            eroof_group = group_index;                                                                                                     \
+        }                                                                                                                                  \
+    } else {                                                                                                                               \
+        if (y <= position->y && y > floor_y && facing == 1) {                                                                              \
+            floor_normal = surface->normals[n];                                                                                            \
+            floor_poly = surface;                                                                                                          \
+            floor_y = y;                                                                                                                   \
+            castnum = group_index;                                                                                                         \
+        } else if (position->y < y && roof_y >= y && (y != roof_y || surface->normals[n].y < roof_normal.y)) {                             \
+            roof_normal = surface->normals[n];                                                                                             \
+            roof_poly = surface;                                                                                                           \
+            roof_y = y;                                                                                                                    \
+            roof_group = group_index;                                                                                                      \
+        }                                                                                                                                  \
     }
             f32 line_x;
             f32 line_z;
@@ -1563,15 +1549,15 @@ void NuVecCheckForSNANs(NUVEC *v) {
 }
 
 /* Normals exported as NaN (0xffc00000) are replaced by straight up. */
-#define TERRAIN_FIX_NORMAL(normal)                                                                                     \
-    if (*(u32 *)&(normal).x == 0xffc00000 || *(u32 *)&(normal).y == 0xffc00000 || *(u32 *)&(normal).z == 0xffc00000) { \
-        (normal).x = 0;                                                                                                \
-        (normal).z = 0;                                                                                                \
-        (normal).y = 1;                                                                                                \
+#define TERRAIN_FIX_NORMAL(normal)                                                                                                         \
+    if (*(u32 *)&(normal).x == 0xffc00000 || *(u32 *)&(normal).y == 0xffc00000 || *(u32 *)&(normal).z == 0xffc00000) {                     \
+        (normal).x = 0;                                                                                                                    \
+        (normal).z = 0;                                                                                                                    \
+        (normal).y = 1;                                                                                                                    \
     }
 
-void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn, i32 scene_id,
-                    u32 max_group_indices, u32 max_groups, u32 max_platforms) {
+void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn, i32 scene_id, u32 max_group_indices,
+                    u32 max_groups, u32 max_platforms) {
     i32 level;
     i32 group_index;
     i32 reset_cell;
@@ -1767,8 +1753,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
                 }
 
                 if (terrain->file_version == 0) {
-                    shape->normal_flags &=
-                        ((u8)(~(TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP | TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP)));
+                    shape->normal_flags &= ((u8)(~(TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP | TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP)));
                     if (kSteepNormalY >= shape->normals[0].y) {
                         shape->normal_flags |= TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP;
                     }
@@ -1796,15 +1781,15 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
                     max_z = shape->max_z;
                 }
 
-#define TERRAIN_INIT_MIN_HEIGHT(v)                                                                                     \
-    if (terrain->minimum_height > shape->vertices[v].y + group->origin.y) {                                            \
-        terrain->minimum_height = (i32)(shape->vertices[v].y + group->origin.y);                                       \
+#define TERRAIN_INIT_MIN_HEIGHT(v)                                                                                                         \
+    if (terrain->minimum_height > shape->vertices[v].y + group->origin.y) {                                                                \
+        terrain->minimum_height = (i32)(shape->vertices[v].y + group->origin.y);                                                           \
     }
-#define TERRAIN_INIT_RADIUS(v)                                                                                         \
-    length_squared = shape->vertices[v].x * shape->vertices[v].x + shape->vertices[v].y * shape->vertices[v].y +       \
-                     shape->vertices[v].z * shape->vertices[v].z;                                                      \
-    if (length_squared > radius_squared) {                                                                             \
-        radius_squared = length_squared;                                                                               \
+#define TERRAIN_INIT_RADIUS(v)                                                                                                             \
+    length_squared = shape->vertices[v].x * shape->vertices[v].x + shape->vertices[v].y * shape->vertices[v].y +                           \
+                     shape->vertices[v].z * shape->vertices[v].z;                                                                          \
+    if (length_squared > radius_squared) {                                                                                                 \
+        radius_squared = length_squared;                                                                                                   \
     }
                 TERRAIN_INIT_MIN_HEIGHT(0);
                 TERRAIN_INIT_MIN_HEIGHT(1);
@@ -2253,8 +2238,7 @@ void TerrainPlatformNewUpdate(void) {
                 offset = TERRAIN_TPNU_PLATFORM(index).bounce_offset;
                 offset_bits = *(u32 *)&offset & 0x7fffffff;
                 TERRAIN_TPNU_PLATFORM(index).bounce_velocity =
-                    (-TERRAIN_TPNU_PLATFORM(index).bounce_offset * *(f32 *)&offset_bits *
-                         TERRAIN_TPNU_PLATFORM(index).bounce_spring * 0.5 -
+                    (-TERRAIN_TPNU_PLATFORM(index).bounce_offset * *(f32 *)&offset_bits * TERRAIN_TPNU_PLATFORM(index).bounce_spring * 0.5 -
                      TERRAIN_TPNU_PLATFORM(index).bounce_offset * TERRAIN_TPNU_PLATFORM(index).bounce_spring) +
                     TERRAIN_TPNU_PLATFORM(index).bounce_velocity;
                 TERRAIN_TPNU_PLATFORM(index).bounce_offset += TERRAIN_TPNU_PLATFORM(index).bounce_velocity;
@@ -2309,8 +2293,7 @@ i32 FindPlatInst(i32 instance) {
     if (instance != -1) {
         terrain = CurrentTerrain;
         for (index = 0; index < terrain->max_platforms; ++index) {
-            if (terrain->platforms[index].scene_object != NULL &&
-                terrain->platforms[index].scene_object_index == instance) {
+            if (terrain->platforms[index].scene_object != NULL && terrain->platforms[index].scene_object_index == instance) {
                 result = index;
                 break;
             }
@@ -2472,8 +2455,7 @@ void terrainpickupinit(char *path, void **buffer) {
                     max_z = shape->max_z;
                 }
                 for (k = 0; k < 4; ++k) {
-                    f32 length_squared = shape->vertices[k].x * shape->vertices[k].x +
-                                         shape->vertices[k].y * shape->vertices[k].y +
+                    f32 length_squared = shape->vertices[k].x * shape->vertices[k].x + shape->vertices[k].y * shape->vertices[k].y +
                                          shape->vertices[k].z * shape->vertices[k].z;
                     if (radius_squared < length_squared) {
                         radius_squared = length_squared;
@@ -2596,8 +2578,7 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
     TERRAIN_APTR_SET->platforms[found].bounce_60 = 0;
     TERRAIN_APTR_SET->platforms[found].flags &= ~2u;
     if (TERRAIN_APTR_SET->active_platform_count < 96) {
-        TERRAIN_APTR_SET->active_platform_groups[TERRAIN_APTR_SET->active_platform_count] =
-            TERRAIN_APTR_SET->group_count;
+        TERRAIN_APTR_SET->active_platform_groups[TERRAIN_APTR_SET->active_platform_count] = TERRAIN_APTR_SET->group_count;
         ++TERRAIN_APTR_SET->active_platform_count;
     }
     ++TERRAIN_APTR_SET->group_count;
@@ -2712,8 +2693,7 @@ void TerrDraw(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
                             origin->z + record->vertices[0].z + (record->vertices[1].z - record->vertices[0].z) * t,
                             origin->x + record->vertices[2].x + (record->vertices[3].x - record->vertices[2].x) * t,
                             origin->y + record->vertices[2].y + (record->vertices[3].y - record->vertices[2].y) * t,
-                            origin->z + record->vertices[2].z + (record->vertices[3].z - record->vertices[2].z) * t,
-                            (green << 8) + blue);
+                            origin->z + record->vertices[2].z + (record->vertices[3].z - record->vertices[2].z) * t, (green << 8) + blue);
         }
         for (i = 0; i <= 1; ++i) {
             t = (f32)(i);
@@ -2723,8 +2703,7 @@ void TerrDraw(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
                             origin->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t,
                             origin->x + record->vertices[1].x + (record->vertices[3].x - record->vertices[1].x) * t,
                             origin->y + record->vertices[1].y + (record->vertices[3].y - record->vertices[1].y) * t,
-                            origin->z + record->vertices[1].z + (record->vertices[3].z - record->vertices[1].z) * t,
-                            (green << 8) + blue);
+                            origin->z + record->vertices[1].z + (record->vertices[3].z - record->vertices[1].z) * t, (green << 8) + blue);
         }
     }
     origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
@@ -2755,8 +2734,7 @@ void TerrDrawSitu(TERRAIN_POLYGON_INFO_PC *terrain, NUVEC *situation) {
                             situation->z + record->vertices[0].z,
                             situation->x + record->vertices[1].x + (record->vertices[2].x - record->vertices[1].x) * t,
                             situation->y + record->vertices[1].y + (record->vertices[2].y - record->vertices[1].y) * t,
-                            situation->z + record->vertices[1].z + (record->vertices[2].z - record->vertices[1].z) * t,
-                            0x003f7f80);
+                            situation->z + record->vertices[1].z + (record->vertices[2].z - record->vertices[1].z) * t, 0x003f7f80);
         }
         for (i = 0; i <= 1; ++i) {
             t = (f32)(i);
@@ -2764,8 +2742,7 @@ void TerrDrawSitu(TERRAIN_POLYGON_INFO_PC *terrain, NUVEC *situation) {
                             situation->z + record->vertices[1].z,
                             situation->x + record->vertices[0].x + (record->vertices[2].x - record->vertices[0].x) * t,
                             situation->y + record->vertices[0].y + (record->vertices[2].y - record->vertices[0].y) * t,
-                            situation->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t,
-                            0x003f7f80);
+                            situation->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t, 0x003f7f80);
         }
     } else {
         for (i = 0; i <= 1; ++i) {
@@ -2775,8 +2752,7 @@ void TerrDrawSitu(TERRAIN_POLYGON_INFO_PC *terrain, NUVEC *situation) {
                             situation->z + record->vertices[0].z + (record->vertices[1].z - record->vertices[0].z) * t,
                             situation->x + record->vertices[2].x + (record->vertices[3].x - record->vertices[2].x) * t,
                             situation->y + record->vertices[2].y + (record->vertices[3].y - record->vertices[2].y) * t,
-                            situation->z + record->vertices[2].z + (record->vertices[3].z - record->vertices[2].z) * t,
-                            0xffff7f80);
+                            situation->z + record->vertices[2].z + (record->vertices[3].z - record->vertices[2].z) * t, 0xffff7f80);
         }
         for (i = 0; i <= 1; ++i) {
             t = (f32)(i);
@@ -2785,8 +2761,7 @@ void TerrDrawSitu(TERRAIN_POLYGON_INFO_PC *terrain, NUVEC *situation) {
                             situation->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t,
                             situation->x + record->vertices[1].x + (record->vertices[3].x - record->vertices[1].x) * t,
                             situation->y + record->vertices[1].y + (record->vertices[3].y - record->vertices[1].y) * t,
-                            situation->z + record->vertices[1].z + (record->vertices[3].z - record->vertices[1].z) * t,
-                            0xffff7f80);
+                            situation->z + record->vertices[1].z + (record->vertices[3].z - record->vertices[1].z) * t, 0xffff7f80);
         }
     }
 }
@@ -2803,27 +2778,24 @@ void TerrDrawPlat(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
     i8 green = (i8)(index << 4);
 
 #define TERRAIN_TDP_GROUP (((TERRAIN_SET_PC *)CurrentTerrain)->groups[index])
-#define TERRAIN_TDP_MATRIX                                                                                             \
-    ((NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index].scene_object)
-#define TERRAIN_TDP_LINE(a, b, c, d)                                                                                   \
-    for (i = 0; i <= 1; ++i) {                                                                                         \
-        t = (f32)i;                                                                                                    \
-        origin = &TERRAIN_TDP_GROUP.origin;                                                                            \
-        NuRndrLine3dDbg(origin->x + points[a].x + (points[b].x - points[a].x) * t,                                     \
-                        origin->y + points[a].y + (points[b].y - points[a].y) * t,                                     \
-                        origin->z + points[a].z + (points[b].z - points[a].z) * t,                                     \
-                        origin->x + points[c].x + (points[d].x - points[c].x) * t,                                     \
-                        origin->y + points[c].y + (points[d].y - points[c].y) * t,                                     \
-                        origin->z + points[c].z + (points[d].z - points[c].z) * t, colour);                            \
+#define TERRAIN_TDP_MATRIX ((NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index].scene_object)
+#define TERRAIN_TDP_LINE(a, b, c, d)                                                                                                       \
+    for (i = 0; i <= 1; ++i) {                                                                                                             \
+        t = (f32)i;                                                                                                                        \
+        origin = &TERRAIN_TDP_GROUP.origin;                                                                                                \
+        NuRndrLine3dDbg(                                                                                                                   \
+            origin->x + points[a].x + (points[b].x - points[a].x) * t, origin->y + points[a].y + (points[b].y - points[a].y) * t,          \
+            origin->z + points[a].z + (points[b].z - points[a].z) * t, origin->x + points[c].x + (points[d].x - points[c].x) * t,          \
+            origin->y + points[c].y + (points[d].y - points[c].y) * t, origin->z + points[c].z + (points[d].z - points[c].z) * t, colour); \
     }
-#define TERRAIN_TDP_FAN(a, c, d)                                                                                       \
-    for (i = 0; i <= 1; ++i) {                                                                                         \
-        t = (f32)i;                                                                                                    \
-        origin = &TERRAIN_TDP_GROUP.origin;                                                                            \
-        NuRndrLine3dDbg(origin->x + points[a].x, origin->y + points[a].y, origin->z + points[a].z,                     \
-                        origin->x + points[c].x + (points[d].x - points[c].x) * t,                                     \
-                        origin->y + points[c].y + (points[d].y - points[c].y) * t,                                     \
-                        origin->z + points[c].z + (points[d].z - points[c].z) * t, colour);                            \
+#define TERRAIN_TDP_FAN(a, c, d)                                                                                                           \
+    for (i = 0; i <= 1; ++i) {                                                                                                             \
+        t = (f32)i;                                                                                                                        \
+        origin = &TERRAIN_TDP_GROUP.origin;                                                                                                \
+        NuRndrLine3dDbg(origin->x + points[a].x, origin->y + points[a].y, origin->z + points[a].z,                                         \
+                        origin->x + points[c].x + (points[d].x - points[c].x) * t,                                                         \
+                        origin->y + points[c].y + (points[d].y - points[c].y) * t,                                                         \
+                        origin->z + points[c].z + (points[d].z - points[c].z) * t, colour);                                                \
     }
 
     platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index];
@@ -2866,9 +2838,8 @@ void TerrDrawPlat(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
         TERRAIN_TDP_LINE(0, 2, 1, 3);
     }
     origin = &TERRAIN_TDP_GROUP.origin;
-    NuRndrLine3dDbg(origin->x + points[0].x, origin->y + points[0].y, origin->z + points[0].z,
-                    origin->x + points[0].x + normal->x, origin->y + points[0].y + normal->y,
-                    origin->z + points[0].z + normal->z, (green << 8) + blue);
+    NuRndrLine3dDbg(origin->x + points[0].x, origin->y + points[0].y, origin->z + points[0].z, origin->x + points[0].x + normal->x,
+                    origin->y + points[0].y + normal->y, origin->z + points[0].z + normal->z, (green << 8) + blue);
 #undef TERRAIN_TDP_FAN
 #undef TERRAIN_TDP_LINE
 #undef TERRAIN_TDP_MATRIX
@@ -2884,33 +2855,29 @@ void TerrDrawPlatCol(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) {
     f32 t;
 
 #define TERRAIN_TDP_GROUP (((TERRAIN_SET_PC *)CurrentTerrain)->groups[index])
-#define TERRAIN_TDP_MATRIX                                                                                             \
-    ((NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index].scene_object)
-#define TERRAIN_TDP_LINE(a, b, c, d)                                                                                   \
-    for (i = 0; i <= 1; ++i) {                                                                                         \
-        t = (f32)i;                                                                                                    \
-        origin = &TERRAIN_TDP_GROUP.origin;                                                                            \
-        NuRndrLine3dDbg(origin->x + points[a].x + (points[b].x - points[a].x) * t,                                     \
-                        origin->y + points[a].y + (points[b].y - points[a].y) * t,                                     \
-                        origin->z + points[a].z + (points[b].z - points[a].z) * t,                                     \
-                        origin->x + points[c].x + (points[d].x - points[c].x) * t,                                     \
-                        origin->y + points[c].y + (points[d].y - points[c].y) * t,                                     \
-                        origin->z + points[c].z + (points[d].z - points[c].z) * t, colour);                            \
+#define TERRAIN_TDP_MATRIX ((NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index].scene_object)
+#define TERRAIN_TDP_LINE(a, b, c, d)                                                                                                       \
+    for (i = 0; i <= 1; ++i) {                                                                                                             \
+        t = (f32)i;                                                                                                                        \
+        origin = &TERRAIN_TDP_GROUP.origin;                                                                                                \
+        NuRndrLine3dDbg(                                                                                                                   \
+            origin->x + points[a].x + (points[b].x - points[a].x) * t, origin->y + points[a].y + (points[b].y - points[a].y) * t,          \
+            origin->z + points[a].z + (points[b].z - points[a].z) * t, origin->x + points[c].x + (points[d].x - points[c].x) * t,          \
+            origin->y + points[c].y + (points[d].y - points[c].y) * t, origin->z + points[c].z + (points[d].z - points[c].z) * t, colour); \
     }
-#define TERRAIN_TDP_FAN(a, c, d)                                                                                       \
-    for (i = 0; i <= 1; ++i) {                                                                                         \
-        t = (f32)i;                                                                                                    \
-        origin = &TERRAIN_TDP_GROUP.origin;                                                                            \
-        NuRndrLine3dDbg(origin->x + points[a].x, origin->y + points[a].y, origin->z + points[a].z,                     \
-                        origin->x + points[c].x + (points[d].x - points[c].x) * t,                                     \
-                        origin->y + points[c].y + (points[d].y - points[c].y) * t,                                     \
-                        origin->z + points[c].z + (points[d].z - points[c].z) * t, colour);                            \
+#define TERRAIN_TDP_FAN(a, c, d)                                                                                                           \
+    for (i = 0; i <= 1; ++i) {                                                                                                             \
+        t = (f32)i;                                                                                                                        \
+        origin = &TERRAIN_TDP_GROUP.origin;                                                                                                \
+        NuRndrLine3dDbg(origin->x + points[a].x, origin->y + points[a].y, origin->z + points[a].z,                                         \
+                        origin->x + points[c].x + (points[d].x - points[c].x) * t,                                                         \
+                        origin->y + points[c].y + (points[d].y - points[c].y) * t,                                                         \
+                        origin->z + points[c].z + (points[d].z - points[c].z) * t, colour);                                                \
     }
-#define TERRAIN_TDP_NORMAL(p, n)                                                                                       \
-    origin = &TERRAIN_TDP_GROUP.origin;                                                                                \
-    NuRndrLine3dDbg(origin->x + points[p].x, origin->y + points[p].y, origin->z + points[p].z,                         \
-                    origin->x + points[p].x + normals[n].x, origin->y + points[p].y + normals[n].y,                    \
-                    origin->z + points[p].z + normals[n].z, 0xff)
+#define TERRAIN_TDP_NORMAL(p, n)                                                                                                           \
+    origin = &TERRAIN_TDP_GROUP.origin;                                                                                                    \
+    NuRndrLine3dDbg(origin->x + points[p].x, origin->y + points[p].y, origin->z + points[p].z, origin->x + points[p].x + normals[n].x,     \
+                    origin->y + points[p].y + normals[n].y, origin->z + points[p].z + normals[n].z, 0xff)
 
     platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index];
     if (platform->instance_flags != NULL) {
@@ -2994,8 +2961,7 @@ void DrawMPlatPc(i32 index) {
     if (CurrentTerrain == NULL || index < 0) {
         return;
     }
-    group = &((TERRAIN_SET_PC *)CurrentTerrain)
-                 ->groups[((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].terrain_group_index];
+    group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].terrain_group_index];
     if (group->chunk_type != 0 && group->chunk_type != 1) {
         return;
     }
@@ -3102,26 +3068,26 @@ static u8 *TerrainSkinArenaEndPc = 0;
 static i32 TerrainSkinOriginalGroupCountPc = -1;
 /* This preparation updates group bounds/radius, leaving the copied polygon
  * and batch bounds intact. */
-#define TERRAIN_SKIN_BOUND(value, lo, hi)                                                                              \
-    do {                                                                                                               \
-        if ((value) < (lo))                                                                                            \
-            (lo) = (value);                                                                                            \
-        if ((value) > (hi))                                                                                            \
-            (hi) = (value);                                                                                            \
+#define TERRAIN_SKIN_BOUND(value, lo, hi)                                                                                                  \
+    do {                                                                                                                                   \
+        if ((value) < (lo))                                                                                                                \
+            (lo) = (value);                                                                                                                \
+        if ((value) > (hi))                                                                                                                \
+            (hi) = (value);                                                                                                                \
     } while (0)
-#define TERRAIN_SKIN_PREPARE_NORMAL(normal, a, b)                                                                      \
-    do {                                                                                                               \
-        NUVEC cross;                                                                                                   \
-        f32 inverse;                                                                                                   \
-        cross.x = (a).y * (b).z - (a).z * (b).y;                                                                       \
-        cross.y = (a).z * (b).x - (a).x * (b).z;                                                                       \
-        cross.z = (a).x * (b).y - (a).y * (b).x;                                                                       \
-        *(normal) = cross;                                                                                             \
-        length_squared = (normal)->x * (normal)->x + (normal)->y * (normal)->y + (normal)->z * (normal)->z;            \
-        inverse = length_squared != 0.0f ? 1.0f / NuFsqrt(length_squared) : 0.0f;                                      \
-        (normal)->x = (normal)->x * inverse;                                                                           \
-        (normal)->y = (normal)->y * inverse;                                                                           \
-        (normal)->z = (normal)->z * inverse;                                                                           \
+#define TERRAIN_SKIN_PREPARE_NORMAL(normal, a, b)                                                                                          \
+    do {                                                                                                                                   \
+        NUVEC cross;                                                                                                                       \
+        f32 inverse;                                                                                                                       \
+        cross.x = (a).y * (b).z - (a).z * (b).y;                                                                                           \
+        cross.y = (a).z * (b).x - (a).x * (b).z;                                                                                           \
+        cross.z = (a).x * (b).y - (a).y * (b).x;                                                                                           \
+        *(normal) = cross;                                                                                                                 \
+        length_squared = (normal)->x * (normal)->x + (normal)->y * (normal)->y + (normal)->z * (normal)->z;                                \
+        inverse = length_squared != 0.0f ? 1.0f / NuFsqrt(length_squared) : 0.0f;                                                          \
+        (normal)->x = (normal)->x * inverse;                                                                                               \
+        (normal)->y = (normal)->y * inverse;                                                                                               \
+        (normal)->z = (normal)->z * inverse;                                                                                               \
     } while (0)
 
 void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM *output, const TERRAIN_SKIN_INFO *info) {
@@ -3168,8 +3134,7 @@ void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM *output, con
                 }
                 *polygon = *source;
                 for (p = &polygon->vertices[vertex]; vertex >= 0; --vertex, --p) {
-                    *p = *TerrainSkin(&transformed, info,
-                                      &source->vertices[SkinFlipTab[vertex + info->vertex_order * 4]], -1.0f,
+                    *p = *TerrainSkin(&transformed, info, &source->vertices[SkinFlipTab[vertex + info->vertex_order * 4]], -1.0f,
                                       info->mode);
                     p->x = p->x - info->matrix->m30;
                     p->y = p->y - info->matrix->m31;
@@ -3233,8 +3198,8 @@ void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM *output, con
  * skin preparation call. */
 #define TERRAIN_SCI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 
-i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale,
-                            i32 source_scene_index, i16 mode, TERRAIN_SET_PC *source_terrain) {
+i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale, i32 source_scene_index,
+                            i16 mode, TERRAIN_SET_PC *source_terrain) {
     TERRAIN_SKIN_INFO *info;
     i32 count;
     i32 skin_index;
@@ -3290,8 +3255,7 @@ i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, cons
     return TERRAIN_SCI_SET->group_count - 1;
 }
 
-i32 fun_006816a0(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale,
-                 i32 source_scene_index, i16 mode) {
+i32 fun_006816a0(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale, i32 source_scene_index, i16 mode) {
     return TerrainSkinCreateInfoPc(matrix, blend, sample_rows, scale, source_scene_index, mode, CurrentTerrain);
 }
 
@@ -3410,15 +3374,13 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
             if (group->bounds_max.z > max_z[i]) {
                 max_z[i] = group->bounds_max.z;
             }
-            x = (i32)((f64)((i32)(((f64)min_x[i] + max_x[i]) * 0.5 - world_min_x) * 7) /
-                      ((f64)world_max_x - world_min_x));
+            x = (i32)((f64)((i32)(((f64)min_x[i] + max_x[i]) * 0.5 - world_min_x) * 7) / ((f64)world_max_x - world_min_x));
             if (x < 0) {
                 x = 0;
             } else if (x > 6) {
                 x = 6;
             }
-            z = (i32)((f64)((i32)(((f64)min_z[i] + max_z[i]) * 0.5 - world_min_z) * 7) /
-                      ((f64)world_max_z - world_min_z));
+            z = (i32)((f64)((i32)(((f64)min_z[i] + max_z[i]) * 0.5 - world_min_z) * 7) / ((f64)world_max_z - world_min_z));
             if (z < 0) {
                 z = 0;
             } else if (z > 6) {
@@ -3573,8 +3535,7 @@ void TerrainAddWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
     terrain->spatial_nodes = node;
 }
 
-#define TERRAIN_SPATIAL_PREVIOUS(n)                                                                                    \
-    (((TERRAIN_SPATIAL_CHUNK *)((u8 *)(n) - offsetof(TERRAIN_SPATIAL_CHUNK, node)))->previous)
+#define TERRAIN_SPATIAL_PREVIOUS(n) (((TERRAIN_SPATIAL_CHUNK *)((u8 *)(n) - offsetof(TERRAIN_SPATIAL_CHUNK, node)))->previous)
 
 void TerrainRemoveWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
     TERRAIN_SPATIAL_NODE *current;

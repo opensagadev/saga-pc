@@ -59,8 +59,8 @@ struct D3DXMATRIX {
     FLOAT m43;
     FLOAT m44;
 
-    D3DXMATRIX(FLOAT f11, FLOAT f12, FLOAT f13, FLOAT f14, FLOAT f21, FLOAT f22, FLOAT f23, FLOAT f24, FLOAT f31,
-               FLOAT f32, FLOAT f33, FLOAT f34, FLOAT f41, FLOAT f42, FLOAT f43, FLOAT f44) {
+    D3DXMATRIX(FLOAT f11, FLOAT f12, FLOAT f13, FLOAT f14, FLOAT f21, FLOAT f22, FLOAT f23, FLOAT f24, FLOAT f31, FLOAT f32, FLOAT f33,
+               FLOAT f34, FLOAT f41, FLOAT f42, FLOAT f43, FLOAT f44) {
         m11 = f11;
         m12 = f12;
         m13 = f13;
@@ -328,8 +328,7 @@ extern "C" {
 }
 
 extern "C" void PCDeviceSetWorldIdentityPc(void) {
-    static D3DXMATRIX identity(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                               1.0f);
+    static D3DXMATRIX identity(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
     PCDeviceSetTransform(0x100, (const NUMTX *)&identity);
 }
 
@@ -413,8 +412,7 @@ extern "C" void fun_006dfb30(f32 gamma) {
     PCDeviceSetGammaRampPc(ramp);
 }
 
-extern "C" void fun_006dfbf0(PC_TEXTURE_RESOURCE_PC *texture, u32 level, const void *rect, u32 flags,
-                             PC_LOCKED_RECT *locked) {
+extern "C" void fun_006dfbf0(PC_TEXTURE_RESOURCE_PC *texture, u32 level, const void *rect, u32 flags, PC_LOCKED_RECT *locked) {
     if (texture != NULL) {
         texture->methods->lock_rect(texture, level, locked, rect, flags);
     }
@@ -436,8 +434,7 @@ extern "C" u32 fun_006dfc60(PC_TEXTURE_RESOURCE_PC *texture) {
     return texture->methods->get_level_count(texture);
 }
 
-extern "C" void fun_006dfc70(i32 format, u32 width, u32 height, u32 levels, i32 render_target,
-                             PC_TEXTURE_RESOURCE_PC **texture) {
+extern "C" void fun_006dfc70(i32 format, u32 width, u32 height, u32 levels, i32 render_target, PC_TEXTURE_RESOURCE_PC **texture) {
     if (render_target == 0) {
         PCDeviceCreateTexture(width, height, levels, 0, format, 1, texture);
     } else {

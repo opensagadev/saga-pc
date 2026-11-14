@@ -44,10 +44,9 @@ extern "C" {
     void RegisterHelpers(void);
     void LSW_registerStatusScreen(void);
 
-    extern LEVELDATA_PC *Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                              i32 *count_out, void *set_defaults_fn);
-    extern AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                             i32 *count_out);
+    extern LEVELDATA_PC *Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out,
+                                              void *set_defaults_fn);
+    extern AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out);
 
     extern "C" {
         extern NUMTL *FadeMtl;
@@ -79,11 +78,9 @@ extern "C" {
         static void NuPrim2DSetColor(i32 colour) {
             u32 converted;
             if (NuPrimNeedsOverbrightening != 0) {
-                converted =
-                    ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
+                converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
             } else {
-                converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) +
-                            (colour & 0xff000000u);
+                converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
             }
             ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
         }
@@ -315,8 +312,7 @@ extern "C" {
 
             Movies_ConfigureList("movies\\movies.txt", &permbuffer_ptr, &permbuffer_end);
             SetProceduralAnimationFn(NuAnimBuffProceduralAnimation);
-            CDataList = ConfigureCharacterList("chars\\chars.txt", &permbuffer_ptr, &permbuffer_end, 0x154, &CHARCOUNT,
-                                               0x120, &GCDataList);
+            CDataList = ConfigureCharacterList("chars\\chars.txt", &permbuffer_ptr, &permbuffer_end, 0x154, &CHARCOUNT, 0x120, &GCDataList);
             CharScenes_Init(&permbuffer_ptr, &permbuffer_end);
             IconScenes_Init("stuff\\icons\\", &permbuffer_ptr, &permbuffer_end);
             FixUpCharacters(CharacterFixupTablePc);
@@ -337,15 +333,13 @@ extern "C" {
             PlayerID[1] = id_DEFAULTCHARACTER[1];
             CharVariants_Init(StartupCharVariantNamesPc, 0x17);
 
-            LDataList = Levels_ConfigureList("levels\\levels.txt", &permbuffer_ptr, &permbuffer_end, 0x16d, &LEVELCOUNT,
-                                             Level_SetDefaults);
+            LDataList = Levels_ConfigureList("levels\\levels.txt", &permbuffer_ptr, &permbuffer_end, 0x16d, &LEVELCOUNT, Level_SetDefaults);
             FixUpLevels(LevelFixupStartupPc);
 
             ADataList = Areas_ConfigureList("levels\\areas.txt", &permbuffer_ptr, &permbuffer_end, 0x48, &AREACOUNT);
             FixUpAreas();
 
-            EDataList =
-                Episodes_ConfigureList("levels\\episodes.txt", &permbuffer_ptr, &permbuffer_end, 6, &EPISODECOUNT);
+            EDataList = Episodes_ConfigureList("levels\\episodes.txt", &permbuffer_ptr, &permbuffer_end, 6, &EPISODECOUNT);
 
             NewGame();
             InitGameAfterConfig();
@@ -354,8 +348,8 @@ extern "C" {
                 CutScenes_ConfigureList((char *)"cut\\cutscenes.txt", &permbuffer_ptr, permbuffer_end);
             }
 
-            APICharacterSysInit(&permbuffer_ptr, permbuffer_end, CHARCOUNT, 0x30, 0xe9, 0x400,
-                                (APICHARACTERDATA *)CDataList, SetCreatureLights);
+            APICharacterSysInit(&permbuffer_ptr, permbuffer_end, CHARCOUNT, 0x30, 0xe9, 0x400, (APICHARACTERDATA *)CDataList,
+                                SetCreatureLights);
             SetActionInfo((API_ACTION_INFO_PC *)PlayerBlockActionInfoPc, PlayerExtraActionInfoPc);
             gizaimessagesys = CreateGizAIMessageSys(&permbuffer_ptr, &permbuffer_end, 0x40);
 
@@ -480,16 +474,16 @@ extern "C" {
                     }
                 }
 
-                if (ready_timer < 1.0f && language_timer >= 3.3f && LoadPerm_LanguageSelect == 3 &&
-                    LoadPerm_StringsLoaded != 0 && saveload_status == 1 && GameMenuLevel == 0) {
+                if (ready_timer < 1.0f && language_timer >= 3.3f && LoadPerm_LanguageSelect == 3 && LoadPerm_StringsLoaded != 0 &&
+                    saveload_status == 1 && GameMenuLevel == 0) {
                     ready_timer += FRAMETIME;
                     if (ready_timer > 1.0f) {
                         ready_timer = 1.0f;
                     }
                 }
 
-                if (legal_timer < 5.8f && language_timer >= 3.3f && LoadPerm_LanguageSelect == 3 &&
-                    ready_timer >= 1.0f && loadlegal_done != 0) {
+                if (legal_timer < 5.8f && language_timer >= 3.3f && LoadPerm_LanguageSelect == 3 && ready_timer >= 1.0f &&
+                    loadlegal_done != 0) {
                     if (legal_timer == 0.0f && legal_mtl == NULL) {
                         if (legal_tid == 0) {
                             legal_timer = 5.8f;
@@ -506,9 +500,8 @@ extern "C" {
                     }
                 }
 
-                if (intro_timer < 3.8f && language_timer >= 3.3f && LoadPerm_LanguageSelect == 3 &&
-                    ready_timer >= 1.0f && legal_timer >= 5.8f && Text_IsFontLoaded() != 0 &&
-                    LoadPerm_StringsLoaded != 0) {
+                if (intro_timer < 3.8f && language_timer >= 3.3f && LoadPerm_LanguageSelect == 3 && ready_timer >= 1.0f &&
+                    legal_timer >= 5.8f && Text_IsFontLoaded() != 0 && LoadPerm_StringsLoaded != 0) {
                     if (StartupGameFlag1 == 0 || INTROTEXT_ID != -1) {
                         intro_timer += FRAMETIME;
                         if (intro_timer > 3.8f) {
@@ -517,8 +510,8 @@ extern "C" {
                     }
                 }
 
-                if (PermDataLoaded != 0 && LoadPerm_LanguageSelect == 3 && language_timer >= 3.3f &&
-                    ready_timer >= 1.0f && legal_timer >= 5.8f && intro_timer >= 3.8f) {
+                if (PermDataLoaded != 0 && LoadPerm_LanguageSelect == 3 && language_timer >= 3.3f && ready_timer >= 1.0f &&
+                    legal_timer >= 5.8f && intro_timer >= 3.8f) {
                     tail_timer -= FRAMETIME;
                     if (tail_timer < 0.0f) {
                         tail_timer = 0.0f;

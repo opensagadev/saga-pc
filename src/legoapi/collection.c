@@ -121,9 +121,9 @@ void Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD_PC *col
     collection->scale = scale;
 }
 
-void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, u32 required_model_flags,
-                             u32 excluded_model_flags, u32 required_game_flags, i32 require_buyable, i32 columns,
-                             VARIPTR *buffer, VARIPTR *buffer_end, i32 use_all_characters, f32 scale) {
+void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, u32 required_model_flags, u32 excluded_model_flags,
+                             u32 required_game_flags, i32 require_buyable, i32 columns, VARIPTR *buffer, VARIPTR *buffer_end,
+                             i32 use_all_characters, f32 scale) {
     i32 index;
     (void)buffer_end;
     collection->list = (COLLECTID_PC *)((buffer->addr + 3) & ~3u);
@@ -145,8 +145,7 @@ void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD_PC *col
             if (required_game_flags != 0 && (GCDataList[id].flags_090 & required_game_flags) != required_game_flags) {
                 continue;
             }
-            if (required_model_flags != 0 &&
-                (CDataList[id].model_flags & required_model_flags) != required_model_flags) {
+            if (required_model_flags != 0 && (CDataList[id].model_flags & required_model_flags) != required_model_flags) {
                 continue;
             }
             collection->list[collection->count++] = *source;
@@ -156,12 +155,10 @@ void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD_PC *col
             if (excluded_model_flags != 0 && (apicharsys->char_data[index].model_flags & excluded_model_flags) != 0) {
                 continue;
             }
-            if (required_game_flags != 0 &&
-                (GCDataList[index].flags_090 & required_game_flags) != required_game_flags) {
+            if (required_game_flags != 0 && (GCDataList[index].flags_090 & required_game_flags) != required_game_flags) {
                 continue;
             }
-            if (required_model_flags != 0 &&
-                (CDataList[index].model_flags & required_model_flags) != required_model_flags) {
+            if (required_model_flags != 0 && (CDataList[index].model_flags & required_model_flags) != required_model_flags) {
                 continue;
             }
             memset(&collection->list[collection->count], 0, sizeof(COLLECTID_PC));
@@ -191,8 +188,7 @@ extern "C" {
 }
 #endif
 
-i32 Collection_GetIDList(COLLECTION_BUILD_PC *collection, u32 mask, u32 required, i16 *out, i32 *first, i32 *second,
-                         i32 unused) {
+i32 Collection_GetIDList(COLLECTION_BUILD_PC *collection, u32 mask, u32 required, i16 *out, i32 *first, i32 *second, i32 unused) {
     i32 index;
     i32 count = 0;
     if (first != NULL) {
@@ -259,8 +255,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
     COLLECTION_COMPLETIONCOUNT = 0;
 
     while (NuFParGetLine(parser) != 0) {
-        if (NuFParGetWord(parser) == 0 || NuStrICmp(parser->word_buffer_ptr, "collect") != 0 ||
-            NuFParGetWord(parser) == 0) {
+        if (NuFParGetWord(parser) == 0 || NuStrICmp(parser->word_buffer_ptr, "collect") != 0 || NuFParGetWord(parser) == 0) {
             continue;
         }
         entry->id = (i16)CharIDFromName(parser->word_buffer_ptr);

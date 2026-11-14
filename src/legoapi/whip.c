@@ -33,8 +33,8 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                             object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
                             object->context_variant_flags &= ~0x40u;
                             target = object->grapple;
-                            object->movement_facing_angle = NuAtan2D(target->position.x - object->position.x,
-                                                                     target->position.z - object->position.z);
+                            object->movement_facing_angle =
+                                NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
                             return;
                         }
                         break;
@@ -47,8 +47,8 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                             object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
                             object->context_variant_flags &= ~0x40u;
                             target = object->grapple;
-                            object->movement_facing_angle = NuAtan2D(target->position.x - object->position.x,
-                                                                     target->position.z - object->position.z);
+                            object->movement_facing_angle =
+                                NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
                             return;
                         }
                         break;
@@ -72,8 +72,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                 target_position = &object->force_target->collision_position;
             }
             if (target_position != NULL) {
-                object->movement_facing_angle =
-                    NuAtan2D(target_position->x - object->position.x, target_position->z - object->position.z);
+                object->movement_facing_angle = NuAtan2D(target_position->x - object->position.x, target_position->z - object->position.z);
             }
         }
         activate = 0;
@@ -127,8 +126,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
         }
         object->whip_action = -1;
         target = NULL;
-        if (LEGOACT_WHIP_GRAB != -1 && object->character_model->model_data_b[LEGOACT_WHIP_GRAB] != NULL &&
-            SuperCarry_Possible(object, 0) &&
+        if (LEGOACT_WHIP_GRAB != -1 && object->character_model->model_data_b[LEGOACT_WHIP_GRAB] != NULL && SuperCarry_Possible(object, 0) &&
             (target = GizmoBlowUpOpponent(object, 2.0f, 0.75f, 0.25f, 5, 0, 0, 1)) != NULL) {
             action = 3;
         } else if (LEGOACT_WHIP_BREAK != -1 && object->character_model->model_data_b[LEGOACT_WHIP_BREAK] != NULL &&
@@ -149,8 +147,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
         object->grapple = target;
         object->force_target = NULL;
         if (target != NULL) {
-            object->movement_facing_angle =
-                NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
+            object->movement_facing_angle = NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
         }
     }
 }

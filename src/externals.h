@@ -150,31 +150,28 @@ extern "C" {
 
     int __stdcall D3DPERF_BeginEvent(D3DCOLOR, const WCHAR *);
     int __stdcall D3DPERF_EndEvent(void);
-    HRESULT __stdcall D3DXCompileShader(const char *, UINT, const D3DXMACRO *, ID3DXInclude *, const char *,
-                                        const char *, DWORD, ID3DXBuffer **, ID3DXBuffer **, ID3DXConstantTable **);
+    HRESULT __stdcall D3DXCompileShader(const char *, UINT, const D3DXMACRO *, ID3DXInclude *, const char *, const char *, DWORD,
+                                        ID3DXBuffer **, ID3DXBuffer **, ID3DXConstantTable **);
     HRESULT __stdcall D3DXCreateBuffer(DWORD, ID3DXBuffer **);
-    HRESULT __stdcall D3DXCreateCubeTextureFromFileInMemory(IDirect3DDevice9 *, const void *, UINT,
-                                                            IDirect3DCubeTexture9 **);
-    HRESULT __stdcall D3DXCreateEffect(IDirect3DDevice9 *, const void *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD,
-                                       ID3DXEffectPool *, ID3DXEffect **, ID3DXBuffer **);
-    HRESULT __stdcall D3DXCreateEffectCompiler(const char *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD,
-                                               ID3DXEffectCompiler **, ID3DXBuffer **);
-    HRESULT __stdcall D3DXCreateEffectFromFileA(IDirect3DDevice9 *, const char *, const D3DXMACRO *, ID3DXInclude *,
-                                                DWORD, ID3DXEffectPool *, ID3DXEffect **, ID3DXBuffer **);
-    HRESULT __stdcall D3DXCreateFontA(IDirect3DDevice9 *, INT, UINT, UINT, UINT, BOOL, DWORD, DWORD, DWORD, DWORD,
-                                      const char *, ID3DXFont **);
-    HRESULT __stdcall D3DXCreateRenderToSurface(IDirect3DDevice9 *, UINT, UINT, D3DFORMAT, BOOL, D3DFORMAT,
-                                                ID3DXRenderToSurface **);
+    HRESULT __stdcall D3DXCreateCubeTextureFromFileInMemory(IDirect3DDevice9 *, const void *, UINT, IDirect3DCubeTexture9 **);
+    HRESULT __stdcall D3DXCreateEffect(IDirect3DDevice9 *, const void *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectPool *,
+                                       ID3DXEffect **, ID3DXBuffer **);
+    HRESULT __stdcall D3DXCreateEffectCompiler(const char *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectCompiler **,
+                                               ID3DXBuffer **);
+    HRESULT __stdcall D3DXCreateEffectFromFileA(IDirect3DDevice9 *, const char *, const D3DXMACRO *, ID3DXInclude *, DWORD,
+                                                ID3DXEffectPool *, ID3DXEffect **, ID3DXBuffer **);
+    HRESULT __stdcall D3DXCreateFontA(IDirect3DDevice9 *, INT, UINT, UINT, UINT, BOOL, DWORD, DWORD, DWORD, DWORD, const char *,
+                                      ID3DXFont **);
+    HRESULT __stdcall D3DXCreateRenderToSurface(IDirect3DDevice9 *, UINT, UINT, D3DFORMAT, BOOL, D3DFORMAT, ID3DXRenderToSurface **);
     HRESULT __stdcall D3DXCreateTextureFromFileInMemory(IDirect3DDevice9 *, const void *, UINT, IDirect3DTexture9 **);
-    HRESULT __stdcall D3DXCreateTextureFromFileInMemoryEx(IDirect3DDevice9 *, const void *, UINT, UINT, UINT, UINT,
-                                                          DWORD, D3DFORMAT, D3DPOOL, DWORD, DWORD, D3DCOLOR,
-                                                          D3DXIMAGE_INFO *, PALETTEENTRY *, IDirect3DTexture9 **);
-    D3DXMATRIX *__stdcall D3DXMatrixLookAtLH(D3DXMATRIX *, const D3DXVECTOR3 *, const D3DXVECTOR3 *,
-                                             const D3DXVECTOR3 *);
+    HRESULT __stdcall D3DXCreateTextureFromFileInMemoryEx(IDirect3DDevice9 *, const void *, UINT, UINT, UINT, UINT, DWORD, D3DFORMAT,
+                                                          D3DPOOL, DWORD, DWORD, D3DCOLOR, D3DXIMAGE_INFO *, PALETTEENTRY *,
+                                                          IDirect3DTexture9 **);
+    D3DXMATRIX *__stdcall D3DXMatrixLookAtLH(D3DXMATRIX *, const D3DXVECTOR3 *, const D3DXVECTOR3 *, const D3DXVECTOR3 *);
     D3DXMATRIX *__stdcall D3DXMatrixMultiply(D3DXMATRIX *, const D3DXMATRIX *, const D3DXMATRIX *);
     D3DXMATRIX *__stdcall D3DXMatrixOrthoLH(D3DXMATRIX *, FLOAT, FLOAT, FLOAT, FLOAT);
-    HRESULT __stdcall D3DXSaveSurfaceToFileInMemory(ID3DXBuffer **, D3DXIMAGE_FILEFORMAT, IDirect3DSurface9 *,
-                                                    const PALETTEENTRY *, const RECT *);
+    HRESULT __stdcall D3DXSaveSurfaceToFileInMemory(ID3DXBuffer **, D3DXIMAGE_FILEFORMAT, IDirect3DSurface9 *, const PALETTEENTRY *,
+                                                    const RECT *);
     IDirect3D9 *__stdcall Direct3DCreate9(UINT);
     HRESULT __stdcall DirectInput8Create(HINSTANCE, DWORD, REFIID, void **, IUnknown *);
     HRESULT __stdcall DirectSoundCreate8(LPCGUID, LPDIRECTSOUND8 *, LPUNKNOWN);

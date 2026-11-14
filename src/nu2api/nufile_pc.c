@@ -268,8 +268,7 @@ i32 FileDirectoryHostOpenPc(char *path) {
         strcat(search, "\\");
     }
     strcat(search, "*.*");
-    FileDirectoryPathSlotsPc[slot] =
-        NuAlloc(strlen(search) + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x21a);
+    FileDirectoryPathSlotsPc[slot] = NuAlloc(strlen(search) + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x21a);
     strcpy(FileDirectoryPathSlotsPc[slot], search);
     ++FileDirectoryOpenCountPc;
     FileDirectoryHostHandlesPc[slot] = FindFirstFileA(FileDirectoryPathSlotsPc[slot], &FileDirectoryFindDataPc[slot]);

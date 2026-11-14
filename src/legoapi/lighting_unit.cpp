@@ -89,8 +89,8 @@ extern "C" void NuLightSpotFadeSet(u32 fade);
 
 extern "C" {
 
-    static void ZeroLightSetupPrivatePc(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1,
-                                        NUVEC *direction2, NUVEC *colour2) {
+    static void ZeroLightSetupPrivatePc(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1, NUVEC *direction2,
+                                        NUVEC *colour2) {
         PCGlobalLightingState.direction[0] = *direction0;
         PCGlobalLightingState.direction[1] = *direction1;
         PCGlobalLightingState.direction[2] = *direction2;
@@ -207,8 +207,8 @@ extern "C" void fun_005954e0() {
 
 extern "C" {
 
-    void SetLights(NUVEC *colour0, NUVEC *direction0, NUVEC *colour1, NUVEC *direction1, NUVEC *colour2,
-                   NUVEC *direction2, NUVEC *ambient) {
+    void SetLights(NUVEC *colour0, NUVEC *direction0, NUVEC *colour1, NUVEC *direction1, NUVEC *colour2, NUVEC *direction2,
+                   NUVEC *ambient) {
         ZeroLightSetupPrivatePc(direction0, colour0, direction1, colour1, direction2, colour2);
         PCGlobalLightingState.ambient = *ambient;
         NuRndrSetAmbientLightPS(ambient);
@@ -278,8 +278,8 @@ extern "C" {
             selected_colours = PanelLightingColoursPc;
             selected_ambient = &PanelLightingAmbientPc;
         }
-        ZeroLightSetupPrivatePc(&PanelLightingDirectionsPc[0], &selected_colours[0], &PanelLightingDirectionsPc[1],
-                                &selected_colours[1], &PanelLightingDirectionsPc[2], &selected_colours[2]);
+        ZeroLightSetupPrivatePc(&PanelLightingDirectionsPc[0], &selected_colours[0], &PanelLightingDirectionsPc[1], &selected_colours[1],
+                                &PanelLightingDirectionsPc[2], &selected_colours[2]);
         PCGlobalLightingState.ambient = *selected_ambient;
         NuRndrSetAmbientLightPS(selected_ambient);
     }
@@ -308,8 +308,7 @@ extern "C" {
 
     void SetZeroLights(void) {
         NUVEC black = {0, 0, 0};
-        ZeroLightSetupPrivatePc(&LightingUnitDirectionPc, &black, &LightingUnitDirectionPc, &black,
-                                &LightingUnitDirectionPc, &black);
+        ZeroLightSetupPrivatePc(&LightingUnitDirectionPc, &black, &LightingUnitDirectionPc, &black, &LightingUnitDirectionPc, &black);
         PCGlobalLightingState.ambient = APIObjectZeroMomentumPC;
         NuRndrSetAmbientLightPS(&APIObjectZeroMomentumPC);
     }
@@ -367,13 +366,11 @@ extern "C" {
         i32 index;
         rtlResetEx(&view->light_data, 1);
         rtlApplySetScale(set, &view->light_data, &object->collision_position, NULL, -1, 1.0f);
-        surface_fade =
-            object->floor_height != 2000000.0f && (TerSurface[view->floor_surface].flags & 8) != 0 ? 1.0f : 0.0f;
+        surface_fade = object->floor_height != 2000000.0f && (TerSurface[view->floor_surface].flags & 8) != 0 ? 1.0f : 0.0f;
         if (object->flags_ef0 & 0x80) {
             object->surface_flag8_scale_pc = surface_fade;
         } else {
-            object->surface_flag8_scale_pc =
-                SeekLinearF(object->surface_flag8_scale_pc, surface_fade, (f32)((f64)FRAMETIME * 3.0));
+            object->surface_flag8_scale_pc = SeekLinearF(object->surface_flag8_scale_pc, surface_fade, (f32)((f64)FRAMETIME * 3.0));
         }
         if (object->flags_ef0 & 0x80) {
             view->lighting_state.ambient = view->light_data.ambient;
@@ -387,12 +384,12 @@ extern "C" {
                 view->lighting_state.intensity[index] = view->light_data.intensity_vectors[index];
                 view->lighting_state.direction[index] = view->light_data.direction[index];
             } else {
-                view->lighting_state.intensity[index].x = SeekValF(view->lighting_state.intensity[index].x,
-                                                                   view->light_data.intensity_vectors[index].x, 5.0f);
-                view->lighting_state.intensity[index].y = SeekValF(view->lighting_state.intensity[index].y,
-                                                                   view->light_data.intensity_vectors[index].y, 5.0f);
-                view->lighting_state.intensity[index].z = SeekValF(view->lighting_state.intensity[index].z,
-                                                                   view->light_data.intensity_vectors[index].z, 5.0f);
+                view->lighting_state.intensity[index].x =
+                    SeekValF(view->lighting_state.intensity[index].x, view->light_data.intensity_vectors[index].x, 5.0f);
+                view->lighting_state.intensity[index].y =
+                    SeekValF(view->lighting_state.intensity[index].y, view->light_data.intensity_vectors[index].y, 5.0f);
+                view->lighting_state.intensity[index].z =
+                    SeekValF(view->lighting_state.intensity[index].z, view->light_data.intensity_vectors[index].z, 5.0f);
                 view->lighting_state.direction[index].x =
                     SeekValF(view->lighting_state.direction[index].x, view->light_data.direction[index].x, 5.0f);
                 view->lighting_state.direction[index].y =
@@ -426,9 +423,8 @@ extern "C" {
             return;
         }
         if (owner->dead != 0) {
-            SetLights(&view->light_data.intensity_vectors[0], &view->light_data.direction[0],
-                      &view->light_data.intensity_vectors[1], &view->light_data.direction[1],
-                      &view->light_data.intensity_vectors[2], &view->light_data.direction[2],
+            SetLights(&view->light_data.intensity_vectors[0], &view->light_data.direction[0], &view->light_data.intensity_vectors[1],
+                      &view->light_data.direction[1], &view->light_data.intensity_vectors[2], &view->light_data.direction[2],
                       &view->light_data.ambient);
             return;
         }
@@ -472,10 +468,9 @@ extern "C" {
             }
         } else if (owner->arrow_blend > 0.0f) {
             i32 angle = (i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
-            red = green = blue =
-                (f32)(NuTrigTable[((u32)(angle >> 1)) & 0x7fff] * ((f64)owner->arrow_blend * 0.5) + 1.0);
-        } else if (Lighting_FlashRedOnLastHeart != 0 && (owner->flags_1fc_word & 0x80) && owner->current_hp == 1 &&
-                   owner->field_107e > 1 && owner->vehicle_hit_timer < -0.5f) {
+            red = green = blue = (f32)(NuTrigTable[((u32)(angle >> 1)) & 0x7fff] * ((f64)owner->arrow_blend * 0.5) + 1.0);
+        } else if (Lighting_FlashRedOnLastHeart != 0 && (owner->flags_1fc_word & 0x80) && owner->current_hp == 1 && owner->field_107e > 1 &&
+                   owner->vehicle_hit_timer < -0.5f) {
             // MATCH-EXCEPTION: the original negates the (negative) timer and subtracts it rather than adding.
             i32 angle = (i32)((1.0 - (-owner->vehicle_hit_timer)) * 2.0 * 65536.0 + 16384.0);
             f32 flash = (f32)((1.0 - NuTrigTable[((u32)(angle >> 1)) & 0x7fff]) * 0.5 * (f64)0.333f);
@@ -697,8 +692,7 @@ extern "C" void SetShadowLight(void) {
     target.x = center.x;
     target.y = ShadowLightFocusHeightPc + center.y;
     target.z = center.z;
-    i32 alternate =
-        WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0 && (WORLD->current_level->flags & 0x400) == 0;
+    i32 alternate = WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0 && (WORLD->current_level->flags & 0x400) == 0;
     if (CutStopInfo != NULL) {
         direction = WORLD->shadow_editor->direction;
         secondary_strength = WORLD->shadow_editor->field_0c;

@@ -100,5 +100,5 @@ extern "C" {
 }
 extern "C" void StartBallooning(GAMEOBJECT *, i32);
 
-extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH_PC *,
-                                                                   char *, char *, i32, char *, i32, i32);
+extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH_PC *, char *, char *, i32,
+                                                                   char *, i32, i32);

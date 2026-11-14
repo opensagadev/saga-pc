@@ -55,11 +55,9 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
                 break;
             }
             if (NuStrICmp(parser->word_buffer_ptr, "attacker") == 0) {
-                SpecialMove_ConfigParticipant(parser, &move->attacker_id, &move->attacker_action_type,
-                                              &move->attacker_animation);
+                SpecialMove_ConfigParticipant(parser, &move->attacker_id, &move->attacker_action_type, &move->attacker_animation);
             } else if (NuStrICmp(parser->word_buffer_ptr, "victim") == 0) {
-                SpecialMove_ConfigParticipant(parser, &move->victim_id, &move->victim_action_type,
-                                              &move->victim_animation);
+                SpecialMove_ConfigParticipant(parser, &move->victim_id, &move->victim_action_type, &move->victim_animation);
             } else if (NuStrICmp(parser->word_buffer_ptr, "distance_apart") == 0) {
                 move->distance_apart = NuFParGetFloat(parser);
             } else if (NuStrICmp(parser->word_buffer_ptr, "kill_victim_at_end") == 0) {
@@ -129,15 +127,12 @@ i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     for (i = 0; i < SpecialMoveCount; ++i) {
         SPECIALMOVE_PC *move = &moves[i];
         if ((attacker->id == (u16)move->attacker_id ||
-             (move->attacker_action_type != -1 &&
-              attacker->character_data->game_character->weapon_action == move->attacker_action_type)) &&
+             (move->attacker_action_type != -1 && attacker->character_data->game_character->weapon_action == move->attacker_action_type)) &&
             attacker->character_model->model_data_b[move->attacker_animation] != NULL &&
             (victim->id == (u16)move->victim_id ||
-             (move->victim_action_type != -1 &&
-              victim->character_data->game_character->weapon_action == move->victim_action_type)) &&
+             (move->victim_action_type != -1 && victim->character_data->game_character->weapon_action == move->victim_action_type)) &&
             victim->character_model->model_data_b[move->victim_animation] != NULL &&
-            (!(victim->flags_1fc & 0x80) ||
-             (!(victim->spawn_protection_timer > 0.0f) && !(victim->flags_ef0 & 0x400000)))) {
+            (!(victim->flags_1fc & 0x80) || (!(victim->spawn_protection_timer > 0.0f) && !(victim->flags_ef0 & 0x400000)))) {
             return i;
         }
     }
@@ -149,8 +144,7 @@ static void SpecialMove_KillVictim(GAMEOBJECT *victim) {
         objhitobj_throwkillpartsup = 1;
     }
     ObjHitObj(victim->force_target, victim,
-              (victim->force_target->flags_1fc_word & 0x80) && Player_HasInvincibility(victim->force_target) ? 1 : -1,
-              0x1000, 0, 1);
+              (victim->force_target->flags_1fc_word & 0x80) && Player_HasInvincibility(victim->force_target) ? 1 : -1, 0x1000, 0, 1);
 }
 
 i32 SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
@@ -180,10 +174,9 @@ void SpecialMove_Cancel(GAMEOBJECT *object) {
         (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM)) {
         object->character_context = -1;
         other = object->force_target;
-        if (other != NULL &&
-            ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
-              other->special_move_pc != -1) ||
-             (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM))) {
+        if (other != NULL && ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
+                               other->special_move_pc != -1) ||
+                              (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM))) {
             other->character_context = -1;
         }
     }
@@ -210,8 +203,7 @@ void SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
     f32 distance = move != -1 ? SpecialMove[move].distance_apart : 0.0f;
     NUVEC target;
     target.x = object->force_target->position.x - NuTrigTable[object->movement_facing_angle >> 1] * distance;
-    target.z = object->force_target->position.z -
-               NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * distance;
+    target.z = object->force_target->position.z - NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * distance;
     object->velocity.x = object->target_velocity.x = (target.x - object->position.x) * 10.0;
     object->velocity.z = object->target_velocity.z = (target.z - object->position.z) * 10.0;
 }

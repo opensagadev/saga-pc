@@ -57,8 +57,8 @@ extern "C" {
     void NuTexAnimRestart(void);
     TEXTURE_ANIMATION_PC *NuTexAnimFind(TEXTURE_ANIMATION_PC *animation, const char *name);
     void NuTexAnimDestroy(TEXTURE_ANIMATION_PC *animation);
-    TEXTURE_ANIMATION_PC *NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *program, struct numtl_s *material,
-                                          u16 *texture_ids, i32 texture_count);
+    TEXTURE_ANIMATION_PC *NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *program, struct numtl_s *material, u16 *texture_ids,
+                                          i32 texture_count);
     TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgFind(const char *name);
     void NuTexAnimProgDestroy(TEXTURE_ANIM_PROGRAM_PC *program);
     void NuTexAnimProgRelease(void);

@@ -18,8 +18,7 @@ extern "C" {
     extern f32 memcard_autosavepostdelay;
     extern void (*memcard_drawasiconfn)(void);
     extern i32 saveload_autosave;
-    void saveloadInit(VARIPTR *buffer, VARIPTR end, i32 size, const char *product, const char *icon, const char *title,
-                      i32 flags);
+    void saveloadInit(VARIPTR *buffer, VARIPTR end, i32 size, const char *product, const char *icon, const char *title, i32 flags);
     extern i32 saveload_status;
 
     void PCOptionsBuildFolder(char *);

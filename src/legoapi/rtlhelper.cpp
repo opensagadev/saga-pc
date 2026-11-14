@@ -26,8 +26,8 @@ extern "C" {
 }
 
 extern "C" {
-    eduiitem_s *eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button,
-                                   i32 button_type, char *text, char *value);
+    eduiitem_s *eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button, i32 button_type, char *text,
+                                   char *value);
     i32 eduiItemPropSetText(edui_prop_s *item, char *text);
     void eduiGetCursorDelta(f32 *x, f32 *y);
 }
@@ -234,8 +234,7 @@ template <class T> void EdValueControl<T>::AddMenuItem(eduimenu_s *menu, EdRef *
         control->GetVal(&value);
         char text[128];
         NuSPrintf(text, format, value);
-        control->item = eduiItemPropCreate((u32)control, &EdLevelAttr, EdControl::cbSelected, cbChanged, cbButton, 2,
-                                           member->name, text);
+        control->item = eduiItemPropCreate((u32)control, &EdLevelAttr, EdControl::cbSelected, cbChanged, cbButton, 2, member->name, text);
         eduiMenuAddItem(menu, control->item);
     }
 }
@@ -397,16 +396,14 @@ found:
 
 /* Opens a submenu with one 0..1 strength slider per light modifier. */
 void cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32) {
-    eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, (void *)EdLevelFnt, cbEdLevelDestroy, NULL);
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, (void *)EdLevelFnt, cbEdLevelDestroy, NULL);
     i32 i;
     if (menu == NULL) {
         return;
     }
     for (i = 0; i < modifier_cnt; i++) {
-        edui_slider_s *slider =
-            (edui_slider_s *)eduiMenuAddItem(menu, eduiItemSliderCreate(i, item->colours, 0, cbModifierAdjust, 0.0f,
-                                                                        1.0f, modifiers[i], modifier_names[i]));
+        edui_slider_s *slider = (edui_slider_s *)eduiMenuAddItem(
+            menu, eduiItemSliderCreate(i, item->colours, 0, cbModifierAdjust, 0.0f, 1.0f, modifiers[i], modifier_names[i]));
         eduiItemSliderSetGranularity(slider, 0.1f);
     }
     eduiMenuFitWidth(menu, 5);
@@ -573,8 +570,8 @@ static void RtlHelperCopyMtx(NUMTX *dst, const NUMTX *src) {
     dst->m33 = src->m33;
 }
 
-#define RTLHELPER_COLOUR(c, scale)                                                                                     \
-    (((static_cast<i32>((c).z * (scale)) & 0xff) << 16 | static_cast<i32>(0xff000000)) |                               \
+#define RTLHELPER_COLOUR(c, scale)                                                                                                         \
+    (((static_cast<i32>((c).z * (scale)) & 0xff) << 16 | static_cast<i32>(0xff000000)) |                                                   \
      ((static_cast<i32>((c).y * (scale)) & 0xff) << 8) | (static_cast<i32>((c).x * (scale)) & 0xff))
 
 void RTLHelper::Render(void *object, i32) {
@@ -616,8 +613,7 @@ void RTLHelper::Render(void *object, i32) {
     matrix.m31 = centre.y;
     matrix.m32 = centre.z;
     matrix.m33 = 1.0f;
-    EdDrawPolyCylinder(&matrix, rtl_helper_radius * 0.75, rtl_helper_radius, rtl_helper_radius * 2.0f, 4, dark_colour,
-                       0, 0);
+    EdDrawPolyCylinder(&matrix, rtl_helper_radius * 0.75, rtl_helper_radius, rtl_helper_radius * 2.0f, 4, dark_colour, 0, 0);
     EdDrawEnd();
 }
 
@@ -748,8 +744,7 @@ found:
  * (0x80000002 up) instead of a byte offset. */
 class EdRefRTL : public EdRef {
   public:
-    EdRefRTL(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
-             EdControl *member_control)
+    EdRefRTL(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes, EdControl *member_control)
         : EdRef(type_name, member_name, offset, member_size, member_attributes, member_control, 0) {
     }
 
@@ -872,11 +867,18 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
 
 /* Light types offered by the "Type" row. */
 static EdEnumControl::Item rtl_helper_type_items[] = {
-    {"AMBIENT", 1},    {"POINT", 2},     {"POINTFLICKER", 3}, {"DIRECTIONAL", 4}, {"CAMDIR", 5},
-    {"POINTBLEND", 6}, {"ANTILIGHT", 7}, {"JONFLICKER", 8},   {NULL, 0},
+    {"AMBIENT",      1},
+    {"POINT",        2},
+    {"POINTFLICKER", 3},
+    {"DIRECTIONAL",  4},
+    {"CAMDIR",       5},
+    {"POINTBLEND",   6},
+    {"ANTILIGHT",    7},
+    {"JONFLICKER",   8},
+    {NULL,           0},
 };
 
-#define RTLHELPER_REF(ref_class, type, name, offset, size, attributes, control)                                        \
+#define RTLHELPER_REF(ref_class, type, name, offset, size, attributes, control)                                                            \
     new (theMemoryManager.AllocPool(sizeof(ref_class), 1)) ref_class(type, name, offset, size, attributes, control)
 #define RTLHELPER_NEW(control_class) new (theMemoryManager.AllocPool(sizeof(control_class), 1)) control_class
 
@@ -887,12 +889,9 @@ void RTLHelper::Initialise() {
 #undef RegisterClass
     EdClass *object_class = theRegistry.RegisterClass("Light", this, 0x8400000);
 #pragma pop_macro("RegisterClass")
-    object_class->AddType(
-        RTLHELPER_REF(EdRefRTL, "String", "Name", 0x80000002, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Short", "LEDFile", 0x80, 0, 0x10000100, NULL, 0));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefRTL, "Int", "Type", 0x80000004, 0, 0, RTLHELPER_NEW(EdEnumControl)(rtl_helper_type_items)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "String", "Name", 0x80000002, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Short", "LEDFile", 0x80, 0, 0x10000100, NULL, 0));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Type", 0x80000004, 0, 0, RTLHELPER_NEW(EdEnumControl)(rtl_helper_type_items)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
                               EdRef("Colour3", "Hi Col", 0x24, 0, 0, RTLHELPER_NEW(EdColourControl), 0));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
@@ -903,33 +902,29 @@ void RTLHelper::Initialise() {
                               EdRef("Float", "High Time", 0x44, 0, 0, new EdFloatControl, 0));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
                               EdRef("Float", "High Rand", 0x48, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Float", "Low Time", 0x4c, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Float", "Low Rand", 0x50, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefRTL, "VuMtx", "Pos/Rot", 0x80000003, 0, 0x18, RTLHELPER_NEW(EdMatrixControl)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Low Time", 0x4c, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Low Rand", 0x50, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "VuMtx", "Pos/Rot", 0x80000003, 0, 0x18, RTLHELPER_NEW(EdMatrixControl)));
     object_class->AddType(RTLHELPER_REF(EdRefRTL, "Float", "Inner", 0x80000008, 0, 0, new EdFloatControl));
     object_class->AddType(RTLHELPER_REF(EdRefRTL, "Float", "Outer", 0x80000009, 0, 0, new EdFloatControl));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Associate IDs", 0x8000000a, 0, 0,
-                                        RTLHELPER_NEW(EdBitControl)(0xffff, EdEnumControl::YesNoItems)));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Exclude IDs", 0x8000000b, 0, 0,
-                                        RTLHELPER_NEW(EdBitControl)(0xffff, EdEnumControl::YesNoItems)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefRTL, "Int", "Associate IDs", 0x8000000a, 0, 0, RTLHELPER_NEW(EdBitControl)(0xffff, EdEnumControl::YesNoItems)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefRTL, "Int", "Exclude IDs", 0x8000000b, 0, 0, RTLHELPER_NEW(EdBitControl)(0xffff, EdEnumControl::YesNoItems)));
     object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "User ID", 0x8000000c, 0, 0, new EdIntControl(0, 16)));
     object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Group ID", 0x8000000d, 0, 0, new EdIntControl(0, 255)));
     object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Modifier Id", 0x8000000e, 0, 0, new EdIntControl(0, 32)));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Cast Shadows", 0x80000006, 0, 0,
-                                        RTLHELPER_NEW(EdEnumControl)(EdEnumControl::YesNoItems)));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Specular", 0x80000007, 0, 0,
-                                        RTLHELPER_NEW(EdEnumControl)(EdEnumControl::YesNoItems)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefRTL, "Int", "Cast Shadows", 0x80000006, 0, 0, RTLHELPER_NEW(EdEnumControl)(EdEnumControl::YesNoItems)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefRTL, "Int", "Specular", 0x80000007, 0, 0, RTLHELPER_NEW(EdEnumControl)(EdEnumControl::YesNoItems)));
 }
 
 /* Editor member references into a fog zone; colours are edited as 0..1
  * vectors, alphas and the low-quality density as 0..1 against 128. */
 class EdRefFog : public EdRef {
   public:
-    EdRefFog(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
-             EdControl *member_control)
+    EdRefFog(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes, EdControl *member_control)
         : EdRef(type_name, member_name, offset, member_size, member_attributes, member_control, 0) {
     }
 
@@ -984,11 +979,9 @@ void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, 
     switch (member_offset) {
         case 0x80000003: {
             NUVEC *colour = static_cast<NUVEC *>(data);
-            fog->colour =
-                (fog->colour & 0xff000000) |
-                (((static_cast<u32>(colour->z * 255.0f) & 0xff) << 8 | (static_cast<u32>(colour->y * 255.0f) & 0xff))
-                 << 8) |
-                (static_cast<u32>(colour->x * 255.0f) & 0xff);
+            fog->colour = (fog->colour & 0xff000000) |
+                          (((static_cast<u32>(colour->z * 255.0f) & 0xff) << 8 | (static_cast<u32>(colour->y * 255.0f) & 0xff)) << 8) |
+                          (static_cast<u32>(colour->x * 255.0f) & 0xff);
             break;
         }
         case 0x80000004:
@@ -999,8 +992,7 @@ void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, 
             NUVEC *colour = static_cast<NUVEC *>(data);
             fog->low_quality_colour =
                 (fog->low_quality_colour & 0xff000000) |
-                (((static_cast<u32>(colour->z * 255.0f) & 0xff) << 8 | (static_cast<u32>(colour->y * 255.0f) & 0xff))
-                 << 8) |
+                (((static_cast<u32>(colour->z * 255.0f) & 0xff) << 8 | (static_cast<u32>(colour->y * 255.0f) & 0xff)) << 8) |
                 (static_cast<u32>(colour->x * 255.0f) & 0xff);
 
             break;
@@ -1028,32 +1020,21 @@ void FogHelper::Initialise() {
 #undef RegisterClass
     EdClass *object_class = theRegistry.RegisterClass("Fog", this, 0x8400000);
 #pragma pop_macro("RegisterClass")
-    object_class->AddType(
-        RTLHELPER_REF(EdRefFog, "String", "Name", 0x80000002, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Short", "LEDFile", 0x38, 0, 0x10000100, NULL, 0));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefFog, "Colour3", "Fog Colour", 0x80000003, 0, 0, RTLHELPER_NEW(EdColourControl)));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefFog, "Float", "Fog Alpha", 0x80000004, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "String", "Name", 0x80000002, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Short", "LEDFile", 0x38, 0, 0x10000100, NULL, 0));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "Colour3", "Fog Colour", 0x80000003, 0, 0, RTLHELPER_NEW(EdColourControl)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "Float", "Fog Alpha", 0x80000004, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
                               EdRef("Float", "Fog Density", 0x2c, 0, 0, new EdFloatControl(0.0f, 4.0f), 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Float", "Fog Start", 0x0, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Float", "Fog End", 0x4, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefFog, "Colour3", "Haze Colour", 0x80000005, 0, 0, RTLHELPER_NEW(EdColourControl)));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefFog, "Float", "Haze Density", 0x80000006, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefFog, "Float", "Blur Density", 0x80000007, 0, 0, new EdFloatControl(0.0f, 1.0f)));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefFog, "Float", "DOF F-Stop", 0x80000008, 0, 0, new EdFloatControl(1.0f, 21.0f)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Fog Start", 0x0, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Fog End", 0x4, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "Colour3", "Haze Colour", 0x80000005, 0, 0, RTLHELPER_NEW(EdColourControl)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "Float", "Haze Density", 0x80000006, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "Float", "Blur Density", 0x80000007, 0, 0, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "Float", "DOF F-Stop", 0x80000008, 0, 0, new EdFloatControl(1.0f, 21.0f)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
                               EdRef("Float", "Range", 0x1c, 0, 0, new EdFloatControl(1.0f, 1000.0f), 0));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefFog, "VuVec", "Position", 0x80000009, 0, 8, RTLHELPER_NEW(EdVectorControl)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "VuVec", "Position", 0x80000009, 0, 8, RTLHELPER_NEW(EdVectorControl)));
 }
 
 #undef RTLHELPER_NEW

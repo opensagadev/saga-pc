@@ -296,8 +296,8 @@ void PerformActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box) {
     }
     for (action = box->data; action != NULL; action = action->next) {
         if (action->definition != NULL && action->definition->action_fn != NULL) {
-            LOG_INFO_IF(GameTimer.update_count < 2, "Giz action before: definition=%p function=%p",
-                        (void *)action->definition, (void *)action->definition->action_fn);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Giz action before: definition=%p function=%p", (void *)action->definition,
+                        (void *)action->definition->action_fn);
             action->definition->action_fn(system, box, action->parameters, action->parameter_count);
             LOG_INFO_IF(GameTimer.update_count < 2, "Giz action after: system=%p box=%p", (void *)system, (void *)box);
         }
@@ -455,8 +455,7 @@ void ProcessGizFlow(GIZFLOW_PC *system, f32 delta_time) {
     ++system->frame;
     box = system->flowboxes;
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
-        if (box->last_process_frame != system->frame &&
-            ((box->state_flags & 1) != 0 || (box->state_flags & 0x100) != 0)) {
+        if (box->last_process_frame != system->frame && ((box->state_flags & 1) != 0 || (box->state_flags & 0x100) != 0)) {
             ProcessFlowBox(system, box, system->frame);
         }
         box->last_process_frame = system->frame;
@@ -492,8 +491,8 @@ void ResetGizFlowPointers(GIZFLOW_PC *system) {
         data = box->data;
         for (j = 0; j < data->gizmo_count; ++j) {
             if (data->gizmos[j]->gizmo != NULL) {
-                data->gizmos[j]->gizmo = GizmoFindByName(
-                    system->gizmo_sys, ((GIZMO_PC *)data->gizmos[j]->gizmo)->type_id, data->gizmos[j]->name);
+                data->gizmos[j]->gizmo =
+                    GizmoFindByName(system->gizmo_sys, ((GIZMO_PC *)data->gizmos[j]->gizmo)->type_id, data->gizmos[j]->name);
             } else {
                 void *found = GizmoFindByName(system->gizmo_sys, -1, data->gizmos[j]->name);
                 data->gizmos[j]->gizmo = found;
@@ -602,8 +601,8 @@ void ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
         if (flowbox_callbacks[box->type].reset != NULL && (box->state_flags & 0x1000) == 0) {
             flowbox_callbacks[box->type].reset(system, box);
         }
-        if (box->type == 0 && (((box->state_flags & 0x4000) == 0 && FreePlay == 0) ||
-                               ((box->state_flags & 0x2000) == 0 && FreePlay != 0))) {
+        if (box->type == 0 &&
+            (((box->state_flags & 0x4000) == 0 && FreePlay == 0) || ((box->state_flags & 0x2000) == 0 && FreePlay != 0))) {
             FLOWBOXGIZMODATA *data = box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j) {
@@ -705,21 +704,21 @@ static void GizFlowConfigRand_OutputChancePc(NUFPAR_PC *parser) {
 }
 
 static NUFPCOMJMP cfgtab_gizmo_pc[] = {
-    {"Type", GizFlowConfigGizmoTypePc},
-    {"Name", GizFlowConfigGizmoNamePc},
-    {"StartInvisible", GizFlowConfigStartInvisPc},
-    {"FinishedInvisible", GizFlowConfigEndInvisPc},
-    {"FinishedDeactive", GizFlowConfigEndDeactPc},
-    {"Reverse", GizFlowConfigReversePc},
-    {"RevInvis", GizFlowConfigReverseInvisPc},
-    {"NotStoryMode", GizFlowConfigNotStoryModePc},
-    {"NotFreeplay", GizFlowConfigNotFreeplayPc},
-    {"OutputOnly", GizFlowConfigOutputOnlyPc},
-    {"Timer", GizFlowConfigGizTimerPc},
-    {"RandomTime", GizFlowConfigGizRandomTimePc},
-    {"NumRandomOutputs", GizFlowConfigRand_NumOutputsPc},
+    {"Type",               GizFlowConfigGizmoTypePc        },
+    {"Name",               GizFlowConfigGizmoNamePc        },
+    {"StartInvisible",     GizFlowConfigStartInvisPc       },
+    {"FinishedInvisible",  GizFlowConfigEndInvisPc         },
+    {"FinishedDeactive",   GizFlowConfigEndDeactPc         },
+    {"Reverse",            GizFlowConfigReversePc          },
+    {"RevInvis",           GizFlowConfigReverseInvisPc     },
+    {"NotStoryMode",       GizFlowConfigNotStoryModePc     },
+    {"NotFreeplay",        GizFlowConfigNotFreeplayPc      },
+    {"OutputOnly",         GizFlowConfigOutputOnlyPc       },
+    {"Timer",              GizFlowConfigGizTimerPc         },
+    {"RandomTime",         GizFlowConfigGizRandomTimePc    },
+    {"NumRandomOutputs",   GizFlowConfigRand_NumOutputsPc  },
     {"RandomOutputChance", GizFlowConfigRand_OutputChancePc},
-    {NULL, NULL},
+    {NULL,                 NULL                            },
 };
 
 static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
@@ -762,19 +761,16 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
     if (load_gizmotype == giztimer_gizmotype_id) {
         data->gizmos[data->gizmo_count]->gizmo = createGizTimer(NULL, load_t_time, load_t_randomTime, load_gizmoname);
     } else if (load_gizmotype == gizrandom_gizmotype_id) {
-        data->gizmos[data->gizmo_count]->gizmo =
-            createGizRandom(NULL, load_r_noutputs, load_r_outputChance, load_gizmoname);
+        data->gizmos[data->gizmo_count]->gizmo = createGizRandom(NULL, load_r_noutputs, load_r_outputChance, load_gizmoname);
     } else if (load_gizmotype == gizspecial_gizmotype_id) {
         data->gizmos[data->gizmo_count]->gizmo = createGizSpecial(NULL, load_gizmoname);
         if (data->gizmos[data->gizmo_count]->gizmo != NULL) {
-            NuStrCpy(data->gizmos[data->gizmo_count]->name,
-                     ((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix);
+            NuStrCpy(data->gizmos[data->gizmo_count]->name, ((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix);
             NuStrNCat(data->gizmos[data->gizmo_count]->name, load_gizmoname,
                       32 - NuStrLen(((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix));
         }
     } else {
-        data->gizmos[data->gizmo_count]->gizmo =
-            GizmoFindByName(load_gizflow->gizmo_sys, load_gizmotype, load_gizmoname);
+        data->gizmos[data->gizmo_count]->gizmo = GizmoFindByName(load_gizflow->gizmo_sys, load_gizmotype, load_gizmoname);
         if (data->gizmos[data->gizmo_count]->gizmo == NULL) {
             GizFlowMissingNamePc(load_gizmoname, load_gizmotype);
         }
@@ -937,8 +933,8 @@ static void GizFlowConfigParentCollapsePc(NUFPAR_PC *parser) {
 
 static NUFPCOMJMP cfgtab_collapse_pc[] = {
     {"Parent", GizFlowConfigParentCollapsePc},
-    {"Child", GizFlowConfigChildCollapsePc},
-    {NULL, NULL},
+    {"Child",  GizFlowConfigChildCollapsePc },
+    {NULL,     NULL                         },
 };
 
 static void GizFlowConfigCollapsePc(NUFPAR_PC *parser) {
@@ -979,10 +975,13 @@ struct GIZFLOW_CONDITION_TYPE { // size 0xc
 };
 
 static GIZFLOW_CONDITION_TYPE gizflow_condition_types_pc[] = {
-    {0, "All", NULL},  {1, "Any", NULL},
-    {2, "None", NULL}, {3, "Sum", GizFlowConfigSumBoxPc},
-    {4, "loop", NULL}, {5, "exactly", GizFlowConfigSumBoxPc},
-    {-1, NULL, NULL},
+    {0,  "All",     NULL                 },
+    {1,  "Any",     NULL                 },
+    {2,  "None",    NULL                 },
+    {3,  "Sum",     GizFlowConfigSumBoxPc},
+    {4,  "loop",    NULL                 },
+    {5,  "exactly", GizFlowConfigSumBoxPc},
+    {-1, NULL,      NULL                 },
 };
 
 static void GizFlowConfigConditionTypePc(NUFPAR_PC *parser) {
@@ -1006,9 +1005,9 @@ static void GizFlowConfigMonitorInputsPc(NUFPAR_PC *parser) {
 }
 
 static NUFPCOMJMP cfgtab_condition_pc[] = {
-    {"Type", GizFlowConfigConditionTypePc},
+    {"Type",          GizFlowConfigConditionTypePc},
     {"MonitorInputs", GizFlowConfigMonitorInputsPc},
-    {NULL, NULL},
+    {NULL,            NULL                        },
 };
 
 static void GizFlowConfigConditionPc(NUFPAR_PC *parser) {
@@ -1153,15 +1152,15 @@ static void GizFlowConfigFlowBoxCountPc(NUFPAR_PC *parser) {
 }
 
 static NUFPCOMJMP cfgtab_flowbox_pc[] = {
-    {"Parent", GizFlowConfigParentPc},
-    {"Child", GizFlowConfigChildPc},
-    {"Gizmo", GizFlowConfigGizmoPc},
-    {"Condition", GizFlowConfigConditionPc},
-    {"Action", GizFlowConfigActionPc},
-    {"Name", GizFlowConfigNamePc},
-    {"Num_Gizmos", GizFlowConfigNumGizmosPc},
+    {"Parent",     GizFlowConfigParentPc    },
+    {"Child",      GizFlowConfigChildPc     },
+    {"Gizmo",      GizFlowConfigGizmoPc     },
+    {"Condition",  GizFlowConfigConditionPc },
+    {"Action",     GizFlowConfigActionPc    },
+    {"Name",       GizFlowConfigNamePc      },
+    {"Num_Gizmos", GizFlowConfigNumGizmosPc },
     {"AIAssistId", GizFlowConfigAIAssistIDPc},
-    {NULL, NULL},
+    {NULL,         NULL                     },
 };
 
 static void GizFlowConfigFlowBoxPc(NUFPAR_PC *parser) {
@@ -1203,9 +1202,15 @@ static void GizFlowConfigFlowBoxPc(NUFPAR_PC *parser) {
     ++load_flowbox;
 }
 
-static NUFPCOMJMP cfgtab_gitcount_pc[] = {{"FlowBox", GizFlowConfigFlowBoxCountPc}, {NULL, NULL}};
+static NUFPCOMJMP cfgtab_gitcount_pc[] = {
+    {"FlowBox", GizFlowConfigFlowBoxCountPc},
+    {NULL,      NULL                       }
+};
 static NUFPCOMJMP cfgtab_git_pc[] = {
-    {"FlowBox", GizFlowConfigFlowBoxPc}, {"Collapse", GizFlowConfigCollapsePc}, {NULL, NULL}};
+    {"FlowBox",  GizFlowConfigFlowBoxPc },
+    {"Collapse", GizFlowConfigCollapsePc},
+    {NULL,       NULL                   }
+};
 
 void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPTR *end) {
     GIZFLOW_REMAP remaps[96];
@@ -1267,8 +1272,7 @@ void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPT
 void DynamicAddGizmoToFlow(GIZFLOW_PC *system, GIZMO_PC *gizmo) {
     FLOWBOX_PC *box;
     i32 i;
-    if (system == NULL || gizmo == NULL || gizmotypes == NULL ||
-        gizmo->type_id >= ((GIZMOTYPES_PC *)gizmotypes)->count ||
+    if (system == NULL || gizmo == NULL || gizmotypes == NULL || gizmo->type_id >= ((GIZMOTYPES_PC *)gizmotypes)->count ||
         ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn == NULL) {
         return;
     }
@@ -1283,8 +1287,7 @@ void DynamicAddGizmoToFlow(GIZFLOW_PC *system, GIZMO_PC *gizmo) {
             if (data->gizmos[j]->gizmo != NULL) {
                 continue;
             }
-            if (NuStrICmp(data->gizmos[j]->name,
-                          ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn(gizmo)) != 0) {
+            if (NuStrICmp(data->gizmos[j]->name, ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn(gizmo)) != 0) {
                 continue;
             }
             data->gizmos[j]->gizmo = gizmo;

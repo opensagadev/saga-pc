@@ -35,8 +35,7 @@ typedef struct MISSION_SYSTEM_READER { // size 0x30
    (see SpecialMovesConfigMissingPc). */
 void MissionsConfigMissingPc(char *filename);
 
-MISSIONSYS_PC *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end,
-                                  MISSION_SAVE_READER_PC *save) {
+MISSIONSYS_PC *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, MISSION_SAVE_READER_PC *save) {
     NUFPAR_PC *parser;
     MISSION_SYSTEM_READER temporary;
     MISSION_SYSTEM_READER *destination;

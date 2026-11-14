@@ -37,8 +37,8 @@ extern "C" {
 #endif
     void EdDrawBegin(i32 index);
     void EdDrawEnd(void);
-    void EdDrawPolyCylinder(struct numtx_s *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments,
-                            i32 colour, i32 cap_bottom, i32 cap_top);
+    void EdDrawPolyCylinder(struct numtx_s *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments, i32 colour, i32 cap_bottom,
+                            i32 cap_top);
 #ifdef __cplusplus
 }
 #endif
@@ -229,8 +229,7 @@ class EdControl { // size 0x10
     virtual void Process(EdInputContext &input);
     virtual void Render();
     virtual void AddMenuItem(struct eduimenu_s *menu, EdRef *reference, void *object);
-    virtual void SetMenuItemAttr(i32 state, struct eduiitem_s *item, struct eduiiattr_s *normal,
-                                 struct eduiiattr_s *highlighted);
+    virtual void SetMenuItemAttr(i32 state, struct eduiitem_s *item, struct eduiiattr_s *normal, struct eduiiattr_s *highlighted);
     i32 SelectSubObject();
     static void cbSelected(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
     struct eduiitem_s *item; // 0x4
@@ -424,8 +423,7 @@ struct EdDefunctList { // size 0xc
  * the control that edits it. Attribute bit 30 marks a pointer member. */
 class EdRef : public CSListLink<EdRef> { // size 0x28
   public:
-    EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
-          EdControl *member_control, i32 group);
+    EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes, EdControl *member_control, i32 group);
 
     EdRef() {
     }
@@ -464,8 +462,7 @@ struct ClassObject {   // size 0xc
     void *object;      // 0x4
     EdRef *reference;  // 0x8
 
-    ClassObject(EdClass *object_class = NULL, void *object_data = NULL)
-        : ed_class(object_class), object(object_data), reference(NULL) {
+    ClassObject(EdClass *object_class = NULL, void *object_data = NULL) : ed_class(object_class), object(object_data), reference(NULL) {
     }
 
     i32 GetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);

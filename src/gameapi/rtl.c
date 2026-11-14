@@ -131,9 +131,7 @@ static f32 ApplyAntilights(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, f32 
     for (index = 0; index < lighting_data->anti_light_count; ++index) {
         if (lighting_data->anti_lights[index]->field_5e == 0 ||
             ((u16)(lighting_data->anti_lights[index]->field_5e) & (u16)(light->field_5e)) != 0) {
-            anti_strength =
-                (anti_strength > lighting_data->anti_strengths[index] ? anti_strength
-                                                                      : lighting_data->anti_strengths[index]);
+            anti_strength = (anti_strength > lighting_data->anti_strengths[index] ? anti_strength : lighting_data->anti_strengths[index]);
         }
     }
     strength *= 1.0f - anti_strength;
@@ -203,8 +201,8 @@ static void RtlSpecularStatePc(const NUVEC *direction, const NUVEC4 *intensity) 
 }
 
 void rtlSetLights(RTL_DATA_PC *data) {
-    RtlDirectionStatePc(&data->direction[0], &data->intensity_vectors[0], &data->direction[1],
-                        &data->intensity_vectors[1], &data->direction[2], &data->intensity_vectors[2]);
+    RtlDirectionStatePc(&data->direction[0], &data->intensity_vectors[0], &data->direction[1], &data->intensity_vectors[1],
+                        &data->direction[2], &data->intensity_vectors[2]);
     RtlAmbientStatePc(&data->ambient);
 }
 
@@ -242,8 +240,7 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA_
                     if (position == NULL) {
                         invalid = 1;
                     } else {
-                        NuVecSub(&lighting_data->direction[slot], &lighting_data->directional_lights[slot]->position,
-                                 position);
+                        NuVecSub(&lighting_data->direction[slot], &lighting_data->directional_lights[slot]->position, position);
                         NuVecNorm(&lighting_data->direction[slot], &lighting_data->direction[slot]);
                     }
                     break;
@@ -253,8 +250,7 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA_
                     if (position == NULL) {
                         invalid = 1;
                     } else {
-                        NuVecSub(&lighting_data->direction[slot], &lighting_data->directional_lights[slot]->position,
-                                 position);
+                        NuVecSub(&lighting_data->direction[slot], &lighting_data->directional_lights[slot]->position, position);
                         NuVecNorm(&lighting_data->direction[slot], &lighting_data->direction[slot]);
                     }
                     break;
@@ -266,8 +262,7 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA_
                                  lighting_data->directional_lights[slot]->pitch);
                     NuVecRotateY(&lighting_data->direction[slot], &lighting_data->direction[slot],
                                  lighting_data->directional_lights[slot]->yaw);
-                    NuVecMtxRotate(&lighting_data->direction[slot], &lighting_data->direction[slot],
-                                   &global_camera.mtx);
+                    NuVecMtxRotate(&lighting_data->direction[slot], &lighting_data->direction[slot], &global_camera.mtx);
                     lighting_data->directional_strengths[slot] = 1.0f;
                     break;
             }
@@ -275,15 +270,11 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA_
                 lighting_data->intensity_vectors[slot] = zero;
             } else {
                 strength = ApplyAntilights(lighting_data->directional_lights[slot], lighting_data,
-                                           lighting_data->directional_strengths[slot] *
-                                               lighting_data->directional_lights[slot]->intensity);
+                                           lighting_data->directional_strengths[slot] * lighting_data->directional_lights[slot]->intensity);
                 // Re-read selected lights after service callbacks, as in the reference.
-                lighting_data->intensity_vectors[slot].x =
-                    lighting_data->directional_lights[slot]->ambient.x * strength;
-                lighting_data->intensity_vectors[slot].y =
-                    lighting_data->directional_lights[slot]->ambient.y * strength;
-                lighting_data->intensity_vectors[slot].z =
-                    lighting_data->directional_lights[slot]->ambient.z * strength;
+                lighting_data->intensity_vectors[slot].x = lighting_data->directional_lights[slot]->ambient.x * strength;
+                lighting_data->intensity_vectors[slot].y = lighting_data->directional_lights[slot]->ambient.y * strength;
+                lighting_data->intensity_vectors[slot].z = lighting_data->directional_lights[slot]->ambient.z * strength;
             }
         } else {
             lighting_data->intensity_vectors[slot] = zero;
@@ -302,12 +293,11 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA_
     for (slot = 0; slot < 3; ++slot) {
         if (lighting_data->ambient_lights[slot] != NULL) {
             strength = ApplyAntilights(lighting_data->ambient_lights[slot], lighting_data,
-                                       lighting_data->ambient_lights[slot]->intensity *
-                                           lighting_data->ambient_strengths[slot]);
-#define RTL_AMBIENT_COMPONENT(component)                                                                               \
-    lighting_data->ambient.component =                                                                                 \
-        lighting_data->ambient.component + lighting_data->ambient_lights[slot]->ambient.component * strength > 1.0f    \
-            ? 1.0f                                                                                                     \
+                                       lighting_data->ambient_lights[slot]->intensity * lighting_data->ambient_strengths[slot]);
+#define RTL_AMBIENT_COMPONENT(component)                                                                                                   \
+    lighting_data->ambient.component =                                                                                                     \
+        lighting_data->ambient.component + lighting_data->ambient_lights[slot]->ambient.component * strength > 1.0f                        \
+            ? 1.0f                                                                                                                         \
             : lighting_data->ambient.component + lighting_data->ambient_lights[slot]->ambient.component * strength
             RTL_AMBIENT_COMPONENT(x);
             RTL_AMBIENT_COMPONENT(y);
@@ -339,8 +329,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
         light = lights->lights;
         grid = (RTL_INDEX_PC *)(lights + 1);
         dbg_rtlindex = grid;
-        if (grid->enabled != 0 && position != NULL &&
-            (x = (i32)(grid->scale * (position->x + grid->offset_x))) < grid->width && x >= 0 &&
+        if (grid->enabled != 0 && position != NULL && (x = (i32)(grid->scale * (position->x + grid->offset_x))) < grid->width && x >= 0 &&
             (z = (i32)(grid->scale * (position->z + grid->offset_z))) < grid->depth && z >= 0) {
             indices = grid->cells[x + grid->width * z];
             index = 0;
@@ -356,23 +345,23 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
         identity &= 15;
     }
     // These three fixed paths and their falloff expressions are distinct in the reference.
-#define RTL_DISTANCE_SQ                                                                                                \
-    ((position->x - light->position.x) * (position->x - light->position.x) +                                           \
-     (position->y - light->position.y) * (position->y - light->position.y) +                                           \
+#define RTL_DISTANCE_SQ                                                                                                                    \
+    ((position->x - light->position.x) * (position->x - light->position.x) +                                                               \
+     (position->y - light->position.y) * (position->y - light->position.y) +                                                               \
      (position->z - light->position.z) * (position->z - light->position.z))
 #define RTL_RADIUS_FRACTION ((distance - light->inner_radius) / (light->outer_radius - light->inner_radius))
-#define RTL_FALLOFF                                                                                                    \
-    do {                                                                                                               \
-        if (light->outer_radius <= light->inner_radius)                                                                \
-            strength = 1.0f;                                                                                           \
-        else {                                                                                                         \
-            distance = NuFsqrt(distance_sq);                                                                           \
-            strength = 1.0f - ((RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION) < 0.0f                        \
-                                   ? 0.0f                                                                              \
-                                   : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));                       \
-        }                                                                                                              \
-        if (light->field_79 == -1 && light->field_7a == -1)                                                            \
-            strength *= modifiers[light->field_7b];                                                                    \
+#define RTL_FALLOFF                                                                                                                        \
+    do {                                                                                                                                   \
+        if (light->outer_radius <= light->inner_radius)                                                                                    \
+            strength = 1.0f;                                                                                                               \
+        else {                                                                                                                             \
+            distance = NuFsqrt(distance_sq);                                                                                               \
+            strength = 1.0f - ((RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION) < 0.0f                                            \
+                                   ? 0.0f                                                                                                  \
+                                   : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));                                           \
+        }                                                                                                                                  \
+        if (light->field_79 == -1 && light->field_7a == -1)                                                                                \
+            strength *= modifiers[light->field_7b];                                                                                        \
     } while (0)
     if (light != NULL) {
         while (light != NULL) {
@@ -388,8 +377,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
                     light = GetNextRTL(set, light, indices, &index);
                     continue;
                 }
-                if (light->field_5e != 0 && light->type == 5 &&
-                    (identity == -1 || !((1 << identity) & (u16)light->field_5e))) {
+                if (light->field_5e != 0 && light->type == 5 && (identity == -1 || !((1 << identity) & (u16)light->field_5e))) {
                     light = GetNextRTL(set, light, indices, &index);
                     continue;
                 }
@@ -438,15 +426,12 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
                                 lighting_data->field_134.z += light->direction.z * strength;
                                 lighting_data->specular_value += strength;
                                 if (light->intensity > 16.0f) {
-                                    lighting_data->field_134.x +=
-                                        NU_SIN_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
-                                        (f32)((i32)(light->intensity) & 15) * rtlwob;
-                                    lighting_data->field_134.y +=
-                                        NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
-                                        (f32)((i32)(light->intensity) & 15) * rtlwob;
-                                    lighting_data->field_134.z +=
-                                        NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
-                                        (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->field_134.x += NU_SIN_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
+                                                                  (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->field_134.y += NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
+                                                                  (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->field_134.z += NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
+                                                                  (f32)((i32)(light->intensity) & 15) * rtlwob;
                                 }
                             }
                             if (position != NULL && (light->flags & 2)) {
@@ -480,8 +465,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
                         InsertLight(light, lighting_data, 2.0f);
                         break;
                     case 7:
-                        if (position != NULL &&
-                            (distance_sq = RTL_DISTANCE_SQ) < light->outer_radius * light->outer_radius) {
+                        if (position != NULL && (distance_sq = RTL_DISTANCE_SQ) < light->outer_radius * light->outer_radius) {
                             RTL_FALLOFF;
                             if (strength != 0.0f) {
                                 InsertAntiLight(light, lighting_data, strength);
@@ -502,8 +486,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
 }
 
 static void rtlCalcShadow(RTL_DATA_PC *data) {
-    if (data->cached_light != NULL && rtl_frametime != 0.0f &&
-        (data->cached_light->type == 3 || data->cached_light->type == 8)) {
+    if (data->cached_light != NULL && rtl_frametime != 0.0f && (data->cached_light->type == 3 || data->cached_light->type == 8)) {
         data->shadow_direction.x += (NuRandFloat() - 0.5f) * rtl_shadow_flicker.x;
         data->shadow_direction.y += (NuRandFloat() - 0.5f) * rtl_shadow_flicker.y;
         data->shadow_direction.z += (NuRandFloat() - 0.5f) * rtl_shadow_flicker.z;
@@ -524,12 +507,10 @@ static void rtlCalcShadow(RTL_DATA_PC *data) {
             data->previous_shadow_direction.z == 0.0f) {
             data->blended_shadow_direction = data->shadow_direction;
         } else {
-            NuVecLerp(&data->blended_shadow_direction, &data->previous_shadow_direction, &data->shadow_direction,
-                      data->shadow_blend);
+            NuVecLerp(&data->blended_shadow_direction, &data->previous_shadow_direction, &data->shadow_direction, data->shadow_blend);
         }
         NuVecNorm(&data->blended_shadow_direction, &data->blended_shadow_direction);
-        data->blended_shadow_value =
-            data->previous_shadow_value * data->shadow_blend + (1.0f - data->shadow_blend) * data->cached_value;
+        data->blended_shadow_value = data->previous_shadow_value * data->shadow_blend + (1.0f - data->shadow_blend) * data->cached_value;
         data->shadow_blend = (0.0f > data->shadow_blend - rtl_frametime * rtl_shadow_blend_rate
                                   ? 0.0f
                                   : data->shadow_blend - rtl_frametime * rtl_shadow_blend_rate);
@@ -550,8 +531,7 @@ void rtlApplySetScale(void *set, RTL_DATA_PC *data, NUVEC *position, NUMTX *rota
     } else {
         lighting_data = data;
         rtlResetEx(lighting_data, 0);
-        if (lighting_data->cached_light != NULL &&
-            (u16)(lighting_data->cached_light->uid) != lighting_data->cached_light_uid) {
+        if (lighting_data->cached_light != NULL && (u16)(lighting_data->cached_light->uid) != lighting_data->cached_light_uid) {
             lighting_data->cached_light = NULL;
             lighting_data->cached_light_uid = 0;
             lighting_data->cached_value = 0.0f;
@@ -899,10 +879,9 @@ void IndexLights(RTL_SET_PC *set, VARIPTR *buffer, i32 buffer_end) {
             minimum_x = (f32)(column) / grid->scale - grid->offset_x;
             maximum_x = (f32)(column + 1) / grid->scale - grid->offset_x;
             for (index = 0, light = set->lights; light->type != 0; ++index, ++light) {
-                if (light->type == 5 || !(light->position.x + light->outer_radius < minimum_x ||
-                                          light->position.x - light->outer_radius > maximum_x ||
-                                          light->position.z + light->outer_radius < minimum_z ||
-                                          light->position.z - light->outer_radius > maximum_z)) {
+                if (light->type == 5 ||
+                    !(light->position.x + light->outer_radius < minimum_x || light->position.x - light->outer_radius > maximum_x ||
+                      light->position.z + light->outer_radius < minimum_z || light->position.z - light->outer_radius > maximum_z)) {
                     ++*indices;
                     indices[*indices] = (char)index;
                     ++buffer->addr;
@@ -1250,8 +1229,7 @@ BURN_SET_PC *edrtlBurnoutLoad(char *filename, VARIPTR *buffer, i32 unused_end) {
 }
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
-void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32 *dispersion, NUVEC *camera_position,
-                           f32 frame_time) {
+void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32 *dispersion, NUVEC *camera_position, f32 frame_time) {
     i32 i;
     f32 nearest_distance = -1.0f;
     i32 nearest_index = -1;
@@ -1281,14 +1259,10 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
 
     if (nearest_index != -1) {
         if (nearest_distance > set->burnouts[nearest_index].field_1c) {
-            f32 fraction =
-                (nearest_distance - set->burnouts[nearest_index].field_1c) / set->burnouts[nearest_index].field_20;
-            desired_threshold =
-                (set->burnouts[nearest_index].field_10 * (1.0f - fraction)) + (set->parameters.field_24 * fraction);
-            desired_intensity =
-                set->burnouts[nearest_index].field_14 * (1.0f - fraction) + set->parameters.field_14 * fraction;
-            desired_dispersion =
-                set->burnouts[nearest_index].field_18 * (1.0f - fraction) + set->parameters.field_1c * fraction;
+            f32 fraction = (nearest_distance - set->burnouts[nearest_index].field_1c) / set->burnouts[nearest_index].field_20;
+            desired_threshold = (set->burnouts[nearest_index].field_10 * (1.0f - fraction)) + (set->parameters.field_24 * fraction);
+            desired_intensity = set->burnouts[nearest_index].field_14 * (1.0f - fraction) + set->parameters.field_14 * fraction;
+            desired_dispersion = set->burnouts[nearest_index].field_18 * (1.0f - fraction) + set->parameters.field_1c * fraction;
         } else {
             desired_threshold = set->burnouts[nearest_index].field_10;
             desired_intensity = set->burnouts[nearest_index].field_14;
@@ -1312,22 +1286,18 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
     } else {
         f32 step = set->field_b8 * frame_time;
         if (desired_threshold > set->parameters_copy.field_24) {
-            set->parameters_copy.field_24 = (set->parameters_copy.field_24 + step) > desired_threshold
-                                                ? desired_threshold
-                                                : (set->parameters_copy.field_24 + step);
+            set->parameters_copy.field_24 =
+                (set->parameters_copy.field_24 + step) > desired_threshold ? desired_threshold : (set->parameters_copy.field_24 + step);
         } else if (desired_threshold < set->parameters_copy.field_24) {
-            set->parameters_copy.field_24 = desired_threshold > (set->parameters_copy.field_24 - step)
-                                                ? desired_threshold
-                                                : (set->parameters_copy.field_24 - step);
+            set->parameters_copy.field_24 =
+                desired_threshold > (set->parameters_copy.field_24 - step) ? desired_threshold : (set->parameters_copy.field_24 - step);
         }
         if (desired_dispersion > set->parameters_copy.field_1c) {
-            set->parameters_copy.field_1c = desired_dispersion > (set->parameters_copy.field_1c + step)
-                                                ? desired_dispersion
-                                                : (set->parameters_copy.field_1c + step);
+            set->parameters_copy.field_1c =
+                desired_dispersion > (set->parameters_copy.field_1c + step) ? desired_dispersion : (set->parameters_copy.field_1c + step);
         } else if (desired_dispersion < set->parameters_copy.field_1c) {
-            set->parameters_copy.field_1c = (set->parameters_copy.field_1c - step) > desired_dispersion
-                                                ? desired_dispersion
-                                                : (set->parameters_copy.field_1c - step);
+            set->parameters_copy.field_1c =
+                (set->parameters_copy.field_1c - step) > desired_dispersion ? desired_dispersion : (set->parameters_copy.field_1c - step);
         }
 
         if (!set->field_b0 && !set->field_a8 && !set->field_ac) {
@@ -1355,13 +1325,11 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
             desired_intensity = intensity_target;
         }
         if (desired_intensity > set->parameters_copy.field_14) {
-            set->parameters_copy.field_14 = (set->parameters_copy.field_14 + step) > desired_intensity
-                                                ? desired_intensity
-                                                : (set->parameters_copy.field_14 + step);
+            set->parameters_copy.field_14 =
+                (set->parameters_copy.field_14 + step) > desired_intensity ? desired_intensity : (set->parameters_copy.field_14 + step);
         } else if (desired_intensity < set->parameters_copy.field_14) {
-            set->parameters_copy.field_14 = desired_intensity > (set->parameters_copy.field_14 - step)
-                                                ? desired_intensity
-                                                : (set->parameters_copy.field_14 - step);
+            set->parameters_copy.field_14 =
+                desired_intensity > (set->parameters_copy.field_14 - step) ? desired_intensity : (set->parameters_copy.field_14 - step);
         }
         if (set->field_b0 && desired_intensity == set->parameters_copy.field_14) {
             set->field_b0 = 0;
@@ -1380,8 +1348,7 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 void edrtlCalculateBurnoutEx(BURN_SET_PC *set, BURN_PARAMETERS_PC *parameters, NUVEC *camera_position, f32 frame_time) {
     memcpy(parameters, &set->parameters, sizeof(*parameters));
-    edrtlCalculateBurnout(set, &parameters->field_24, &parameters->field_14, &parameters->field_1c, camera_position,
-                          frame_time);
+    edrtlCalculateBurnout(set, &parameters->field_24, &parameters->field_14, &parameters->field_1c, camera_position, frame_time);
 }
 
 typedef struct rtl_direction_lookup_pc_s { // size 0x4690
@@ -1456,14 +1423,13 @@ void rtlSetUserIdName(i32 index, char *name) {
 }
 
 static void edrtlDrawHelp(void) {
-    // clang-format off: rows wider than the column limit hold nested braces
+    // clang-format off: aligned table wider than the column limit
     static const char *help_text[2][6] = {
-        {NULL, "SQR=ADD, O=SELECT",
-         "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
+        {NULL, "SQR=ADD, O=SELECT",    "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
          "SQR=ADD, TRI=DEL, L-UP=LOCK, X=ADJUST, O=SELECT\n",
-         "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-LEFT=EDIT ALTERNATES", "L-LEFT=PREV, L-RIGHT=NEXT"},
-        {NULL, "X=ADD, SELECT=SELECT",
-         "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
+         "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-LEFT=EDIT ALTERNATES",
+         "L-LEFT=PREV, L-RIGHT=NEXT"},
+        {NULL, "X=ADD, SELECT=SELECT", "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
          "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EDIT / ADD ALTERNATE SETTINGS",
          "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EXIT ALTERNATE SETTINGS MODE",
          "L1-PREV, R1-NEXT"},
@@ -1495,8 +1461,7 @@ static void edrtlDrawHelp(void) {
 
 void edrtlDrawRTLInfo(void) {
     const char *light_types[10] = {
-        "INVALID", "AMBIENT",     "POINT",     "POINT FLICKER", "DIRECTIONAL",
-        "CAMDIR",  "POINT BLEND", "ANTILIGHT", "JON FLICKER",   "ALSO INVALID",
+        "INVALID", "AMBIENT", "POINT", "POINT FLICKER", "DIRECTIONAL", "CAMDIR", "POINT BLEND", "ANTILIGHT", "JON FLICKER", "ALSO INVALID",
     };
     i32 x;
     i32 height;
@@ -1521,8 +1486,8 @@ void edrtlDrawRTLInfo(void) {
         y += height;
         for (i = 0; i < 10; i++) {
             NuQFntSet(system_qfont);
-            NuQFntPrintEx(system_qfont, x, y, 16, "%02d - %02d - %02d : %02d", i, curr_set->lights[i].type,
-                          curr_set->lights[i].field_79, curr_set->lights[i].field_7a);
+            NuQFntPrintEx(system_qfont, x, y, 16, "%02d - %02d - %02d : %02d", i, curr_set->lights[i].type, curr_set->lights[i].field_79,
+                          curr_set->lights[i].field_7a);
             y += height;
         }
     }
@@ -1567,8 +1532,7 @@ void edrtlDrawRTLInfo(void) {
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, base_rtl ? "MODE: Alternate Set (DPAD Left to exit)" : "MODE: Normal");
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", curr_rtl->position.x, curr_rtl->position.y,
-                      curr_rtl->position.z);
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", curr_rtl->position.x, curr_rtl->position.y, curr_rtl->position.z);
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "TYPE: %s", light_types[MAX(0, MIN(9, curr_rtl->type))]);
         y += height;
@@ -1583,13 +1547,11 @@ void edrtlDrawRTLInfo(void) {
         NuQFntPrintEx(system_qfont, x, y, 16, "SPECULAR: %s", (curr_rtl->flags & 4) ? "YES" : "NO");
         y += height;
         if (curr_rtl->field_68 != 0) {
-            NuQFntPrintEx(system_qfont, x, y, 16, "USER ID: (%d)%s", curr_rtl->field_68,
-                          userid_names[curr_rtl->field_68]);
+            NuQFntPrintEx(system_qfont, x, y, 16, "USER ID: (%d)%s", curr_rtl->field_68, userid_names[curr_rtl->field_68]);
             y += height;
         }
         if (curr_rtl->field_7a != -1 || (curr_rtl->field_7a == -1 && curr_rtl->field_79 == -1)) {
-            NuQFntPrintEx(system_qfont, x, y, 16, "MODIFIER: %s",
-                          modifier_names[MAX(0, MIN(modifier_cnt - 1, curr_rtl->field_7b))]);
+            NuQFntPrintEx(system_qfont, x, y, 16, "MODIFIER: %s", modifier_names[MAX(0, MIN(modifier_cnt - 1, curr_rtl->field_7b))]);
             y += height;
         }
         if (curr_rtl->type == 5 && curr_rtl->field_5e != 0) {
@@ -1636,8 +1598,8 @@ void edrtlDrawRTLInfo(void) {
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, base_rtl ? "MODE: Alternate Set (DPAD Left to exit)" : "MODE: Normal");
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", burn_editor_position_pc.x,
-                      burn_editor_position_pc.y, burn_editor_position_pc.z);
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", burn_editor_position_pc.x, burn_editor_position_pc.y,
+                      burn_editor_position_pc.z);
         y += height;
     }
     if (maxundo) {
@@ -1828,27 +1790,22 @@ void edrtlCancelBurnTransitionsMenu(eduimenu_s *unused_menu, eduimenu_s *unused_
 }
 
 void edrtlBurnTransitionsMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_value) {
-    edrtl_burn_transitions_menu =
-        eduiMenuCreate(70, 70, 250, 300, ed_fnt, edrtlCancelBurnTransitionsMenu, "Transitions");
+    edrtl_burn_transitions_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edrtlCancelBurnTransitionsMenu, "Transitions");
     if (edrtl_edit_burnset != NULL && edrtl_burn_transitions_menu != NULL) {
+        eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutNormalRate, 0.01f, 4.99f,
+                                                                          edrtl_edit_burnset->field_b8, "Normal Rate"));
+        eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootRate, 0.01f, 4.99f,
+                                                                          edrtl_edit_burnset->field_bc, "Overshoot Rate"));
+        eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootCutin, 0.0f, 2.0f,
+                                                                          edrtl_edit_burnset->field_c0, "Overshoot Cutin"));
+        eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootAmount, 0.0f, 2.0f,
+                                                                          edrtl_edit_burnset->field_c4, "Overshoot Amount"));
         eduiMenuAddItem(edrtl_burn_transitions_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutNormalRate, 0.01f, 4.99f,
-                                             edrtl_edit_burnset->field_b8, "Normal Rate"));
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOverbrightCap, 0.0f, 2.0f, edrtl_edit_burnset->field_c8,
+                                             "edrtl_edit_burnset->Overbright Cap"));
         eduiMenuAddItem(edrtl_burn_transitions_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootRate, 0.01f, 4.99f,
-                                             edrtl_edit_burnset->field_bc, "Overshoot Rate"));
-        eduiMenuAddItem(edrtl_burn_transitions_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootCutin, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->field_c0, "Overshoot Cutin"));
-        eduiMenuAddItem(edrtl_burn_transitions_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootAmount, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->field_c4, "Overshoot Amount"));
-        eduiMenuAddItem(edrtl_burn_transitions_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOverbrightCap, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->field_c8, "edrtl_edit_burnset->Overbright Cap"));
-        eduiMenuAddItem(edrtl_burn_transitions_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOverdarkCap, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->field_cc, "edrtl_edit_burnset->Overdark Cap"));
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOverdarkCap, 0.0f, 2.0f, edrtl_edit_burnset->field_cc,
+                                             "edrtl_edit_burnset->Overdark Cap"));
         eduiMenuAttach(parent, edrtl_burn_transitions_menu);
         edrtl_burn_transitions_menu->x = parent->x + 10;
         edrtl_burn_transitions_menu->y = parent->y + 40;
@@ -1987,57 +1944,40 @@ void edrtlCancelBurnDefaultsMenu(eduimenu_s *unused_menu, eduimenu_s *unused_par
 void edrtlBurnDefaultsMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_value) {
     edrtl_burn_defaults_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edrtlCancelBurnDefaultsMenu, "Level Defaults");
     if (edrtl_edit_burnset != NULL && edrtl_burn_defaults_menu != NULL) {
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutGlobalScale, 0.0f, 4.0f,
-                                             edrtl_edit_burnset->parameters.field_14, "Global Scale/Intensity"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutStartAngle, 0.0f, 180.0f,
-                                             edrtl_edit_burnset->parameters.field_04, "Start Angle"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutMinIntensity, 0.0f, 1.0f,
-                                             edrtl_edit_burnset->parameters.field_08, "Min Intensity"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutEndAngle, 0.0f, 180.0f,
-                                             edrtl_edit_burnset->parameters.field_0c, "End Angle"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutMaxIntensity, 0.0f, 1.0f,
-                                             edrtl_edit_burnset->parameters.field_10, "Max Intensity"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutDispersion, 0.0f, 4.0f,
-                                             edrtl_edit_burnset->parameters.field_1c, "Flare/Dispersion"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutFragmentGlowFactor, 0.0f, 10.0f,
-                                             edrtl_edit_burnset->parameters.field_20, "Fragment Glow Factor"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutThreshold, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->parameters.field_24, "Threshold"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemToggleCreate(0, edblack, edrtl_edit_burnset->parameters.field_28 != 0, 1,
-                                             edrtlSetBurnoutSourceAvailable, "Source Available"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionX, -1.0f, 2.0f,
-                                             edrtl_edit_burnset->parameters.field_2c, "Source Direction X"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionY, -1.0f, 2.0f,
-                                             edrtl_edit_burnset->parameters.field_30, "Source Direction Y"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionZ, -1.0f, 2.0f,
-                                             edrtl_edit_burnset->parameters.field_34, "Source Direction Z"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceInnerRadius, 0.0f, 180.0f,
-                                             edrtl_edit_burnset->parameters.field_38, "Source Inner Radius"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceInnerIntensity, 0.0f, 1.0f,
-                                             edrtl_edit_burnset->parameters.field_3c, "Source Inner Intensity"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceOuterRadius, 0.0f, 180.0f,
-                                             edrtl_edit_burnset->parameters.field_40, "Source Outer Radius"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceOuterIntensity, 0.0f, 1.0f,
-                                             edrtl_edit_burnset->parameters.field_44, "Source Outer Intensity"));
-        eduiMenuAddItem(edrtl_burn_defaults_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceFallOffPower, 0.0f, 10.0f,
-                                             edrtl_edit_burnset->parameters.field_48, "Source FallOff Power"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutGlobalScale, 0.0f, 4.0f,
+                                                                       edrtl_edit_burnset->parameters.field_14, "Global Scale/Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutStartAngle, 0.0f, 180.0f,
+                                                                       edrtl_edit_burnset->parameters.field_04, "Start Angle"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutMinIntensity, 0.0f, 1.0f,
+                                                                       edrtl_edit_burnset->parameters.field_08, "Min Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutEndAngle, 0.0f, 180.0f,
+                                                                       edrtl_edit_burnset->parameters.field_0c, "End Angle"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutMaxIntensity, 0.0f, 1.0f,
+                                                                       edrtl_edit_burnset->parameters.field_10, "Max Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutDispersion, 0.0f, 4.0f,
+                                                                       edrtl_edit_burnset->parameters.field_1c, "Flare/Dispersion"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutFragmentGlowFactor, 0.0f, 10.0f,
+                                                                       edrtl_edit_burnset->parameters.field_20, "Fragment Glow Factor"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutThreshold, 0.0f, 2.0f,
+                                                                       edrtl_edit_burnset->parameters.field_24, "Threshold"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemToggleCreate(0, edblack, edrtl_edit_burnset->parameters.field_28 != 0, 1,
+                                                                       edrtlSetBurnoutSourceAvailable, "Source Available"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionX, -1.0f, 2.0f,
+                                                                       edrtl_edit_burnset->parameters.field_2c, "Source Direction X"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionY, -1.0f, 2.0f,
+                                                                       edrtl_edit_burnset->parameters.field_30, "Source Direction Y"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionZ, -1.0f, 2.0f,
+                                                                       edrtl_edit_burnset->parameters.field_34, "Source Direction Z"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceInnerRadius, 0.0f, 180.0f,
+                                                                       edrtl_edit_burnset->parameters.field_38, "Source Inner Radius"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceInnerIntensity, 0.0f, 1.0f,
+                                                                       edrtl_edit_burnset->parameters.field_3c, "Source Inner Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceOuterRadius, 0.0f, 180.0f,
+                                                                       edrtl_edit_burnset->parameters.field_40, "Source Outer Radius"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceOuterIntensity, 0.0f, 1.0f,
+                                                                       edrtl_edit_burnset->parameters.field_44, "Source Outer Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceFallOffPower, 0.0f, 10.0f,
+                                                                       edrtl_edit_burnset->parameters.field_48, "Source FallOff Power"));
 
         eduiMenuAttach(parent, edrtl_burn_defaults_menu);
         edrtl_burn_defaults_menu->x = parent->x + 10;
@@ -2069,10 +2009,10 @@ void edrtlCancelBurnRadiusMenu(eduimenu_s *unused_menu, eduimenu_s *unused_paren
 void edrtlBurnRadiusMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_value) {
     edrtl_burn_radius_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edrtlCancelBurnRadiusMenu, "Radius Defaults");
     if (edrtl_edit_burnset != NULL && edrtl_burn_radius_menu != NULL) {
-        eduiMenuAddItem(edrtl_burn_radius_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnRadius, 0.2f, 19.8f,
-                                                                     edrtl_edit_burnset->field_558, "Radius"));
-        eduiMenuAddItem(edrtl_burn_radius_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnFalloff, 0.0f, 10.0f,
-                                                                     edrtl_edit_burnset->field_55c, "Falloff"));
+        eduiMenuAddItem(edrtl_burn_radius_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnRadius, 0.2f, 19.8f, edrtl_edit_burnset->field_558, "Radius"));
+        eduiMenuAddItem(edrtl_burn_radius_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnFalloff, 0.0f, 10.0f, edrtl_edit_burnset->field_55c, "Falloff"));
         eduiMenuAttach(parent, edrtl_burn_radius_menu);
         edrtl_burn_radius_menu->x = parent->x + 10;
         edrtl_burn_radius_menu->y = parent->y + 40;
@@ -2126,24 +2066,19 @@ void edrtlBurnSetMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_va
     if (edrtl_edit_burnset != NULL && edrtl_burn_set_menu != NULL) {
         eduiMenuAddItem(edrtl_burn_set_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetThreshold, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_10,
-                                             "Threshold"));
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_10, "Threshold"));
         eduiMenuAddItem(edrtl_burn_set_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetIntensity, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_14,
-                                             "Intensity"));
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_14, "Intensity"));
         eduiMenuAddItem(edrtl_burn_set_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetFlare, 0.0f, 2.0f,
-                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_18,
-                                             "Flare"));
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_18, "Flare"));
         eduiMenuAddItem(edrtl_burn_set_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetRadius, 0.2f, 19.8f,
-                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c,
-                                             "Radius"));
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c, "Radius"));
         eduiMenuAddItem(edrtl_burn_set_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetFalloff, 0.0f, 10.0f,
-                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20,
-                                             "Falloff"));
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20, "Falloff"));
 
         eduiMenuAttach(parent, edrtl_burn_set_menu);
         edrtl_burn_set_menu->x = parent->x + 10;
@@ -2165,22 +2100,16 @@ void edrtlCancelBurnMainMenu(eduimenu_s *unused_menu, eduimenu_s *unused_parent)
 void edrtlBurnMainMenu(void) {
     edrtl_burn_main_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edrtlCancelBurnMainMenu, "Burnout Menu");
     if (edrtl_burn_main_menu != NULL) {
-        eduiMenuAddItem(edrtl_burn_main_menu,
-                        eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnDefaultsMenu, "Level Defaults..."));
-        eduiMenuAddItem(edrtl_burn_main_menu,
-                        eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnRadiusMenu, "Radius Defaults..."));
+        eduiMenuAddItem(edrtl_burn_main_menu, eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnDefaultsMenu, "Level Defaults..."));
+        eduiMenuAddItem(edrtl_burn_main_menu, eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnRadiusMenu, "Radius Defaults..."));
         if (edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
-            eduiMenuAddItem(edrtl_burn_main_menu,
-                            eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnSetMenu, "Burnset Properties..."));
+            eduiMenuAddItem(edrtl_burn_main_menu, eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnSetMenu, "Burnset Properties..."));
         } else {
             eduiMenuAddItem(edrtl_burn_main_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Burnset Properties..."));
         }
-        eduiMenuAddItem(edrtl_burn_main_menu,
-                        eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnTransitionsMenu, "Transitions..."));
-        eduiMenuAddItem(edrtl_burn_main_menu,
-                        eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnoutFileSave, "Save Burnouts"));
-        eduiMenuAddItem(edrtl_burn_main_menu,
-                        eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnoutFileLoad, "Load Burnouts"));
+        eduiMenuAddItem(edrtl_burn_main_menu, eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnTransitionsMenu, "Transitions..."));
+        eduiMenuAddItem(edrtl_burn_main_menu, eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnoutFileSave, "Save Burnouts"));
+        eduiMenuAddItem(edrtl_burn_main_menu, eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnoutFileLoad, "Load Burnouts"));
     }
 }
 
@@ -2304,11 +2233,9 @@ RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET_PC *set, NUVEC *position) {
                                    (position->y - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.y) +
                                (position->z - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.z) *
                                    (position->z - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.z);
-            if (distance_squared <
-                ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius * ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius) {
+            if (distance_squared < ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius * ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius) {
                 if (selected != -1) {
-                    if (((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius <
-                        ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[selected].radius) {
+                    if (((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius < ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[selected].radius) {
                         selected = i;
                     }
                 } else {
@@ -2441,11 +2368,11 @@ extern i32 rtl_zoff;
 
 #define EDRTL_LIGHT_MTL() mtls[rtl_zoff != 0]
 #define EDRTL_RNDR_VTX_LINE(line) edrtlRndrLine3d(NULL, line)
-#define EDRTL_RADIUS_PAIR(light)                                                                                       \
-    RndrOSphere(&(light).position, (light).inner_radius, inner_colour, numsegs, EDRTL_LIGHT_MTL());                    \
-    if ((light).outer_radius > (light).inner_radius)                                                                   \
-        RndrOSphere(&(light).position, (light).outer_radius, outer_colour, numsegs, EDRTL_LIGHT_MTL());                \
-    if (&(light) == curr_rtl)                                                                                          \
+#define EDRTL_RADIUS_PAIR(light)                                                                                                           \
+    RndrOSphere(&(light).position, (light).inner_radius, inner_colour, numsegs, EDRTL_LIGHT_MTL());                                        \
+    if ((light).outer_radius > (light).inner_radius)                                                                                       \
+        RndrOSphere(&(light).position, (light).outer_radius, outer_colour, numsegs, EDRTL_LIGHT_MTL());                                    \
+    if (&(light) == curr_rtl)                                                                                                              \
     RndrOSquare(&(light).position, (light).outer_radius, -1, EDRTL_LIGHT_MTL())
 
 void edrtlDrawLightEx(i32 index, i32 style) {
@@ -2455,8 +2382,7 @@ void edrtlDrawLightEx(i32 index, i32 style) {
     NURND_VERTEX3D_PC line[2];
 
     colour = (((u32)(curr_set->lights[index].colour.z * 255.0) & 0xff) << 16 | 0x80000000) |
-             (((u32)(curr_set->lights[index].colour.y * 255.0) & 0xff) << 8) |
-             ((u32)(curr_set->lights[index].colour.x * 255.0) & 0xff);
+             (((u32)(curr_set->lights[index].colour.y * 255.0) & 0xff) << 8) | ((u32)(curr_set->lights[index].colour.x * 255.0) & 0xff);
     inner_colour = outer_colour = colour;
     if (style == 1) {
         inner_colour = ~inner_colour;
@@ -2523,8 +2449,7 @@ void edrtlDrawFogInfo(void) {
             NuQFntPrintEx(system_qfont, x, y, 16, "FOGMODE: CAMERA POS");
         }
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", curr_fog->position.x, curr_fog->position.y,
-                      curr_fog->position.z);
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", curr_fog->position.x, curr_fog->position.y, curr_fog->position.z);
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "TYPE: %s", fog_types[curr_fog->type]);
         y += height;
@@ -2540,8 +2465,8 @@ void edrtlDrawFogInfo(void) {
             NuQFntPrintEx(system_qfont, x, y, 16, "FOGMODE: CAMERA POS");
         }
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", burn_editor_position_pc.x,
-                      burn_editor_position_pc.y, burn_editor_position_pc.z);
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", burn_editor_position_pc.x, burn_editor_position_pc.y,
+                      burn_editor_position_pc.z);
     }
 }
 
@@ -2567,8 +2492,7 @@ void edrtlDrawBurnInfo(void) {
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "Default Falloff: %0.2f", edrtl_edit_burnset->field_55c);
         y += 2 * height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "Current Global Scale/Intensity: %0.2f",
-                      edrtl_edit_burnset->parameters_copy.field_14);
+        NuQFntPrintEx(system_qfont, x, y, 16, "Current Global Scale/Intensity: %0.2f", edrtl_edit_burnset->parameters_copy.field_14);
     } else {
         NuQFntPrintEx(system_qfont, x, y, 16, "NO BURNSET LOADED");
     }
@@ -3082,8 +3006,7 @@ __declspec(allocate(".bss$RtlUI_initialised")) static i32 rtl_ui_initialised = 0
 /* Camera direction names, in their own section to keep the data layout. */
 #pragma section(".data$RtlUICamdirNamesPc", read, write)
 __declspec(allocate(".data$RtlUICamdirNamesPc")) static char *camdir_id_names[16] = {
-    "ID 0", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
-    "ID 8", "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
+    "ID 0", "ID 1", "ID 2", "ID 3", "ID 4", "ID 5", "ID 6", "ID 7", "ID 8", "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
 
 void rtlSetAssocName(i32 index, char *name) {
     if (index < 16) {
@@ -3219,8 +3142,7 @@ void InitUI(void) {
     eduiMenuAddItem(prop_menu, created);
     created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbHighColour, "Colour...");
     colour_item = eduiMenuAddItem(prop_menu, created);
-    created =
-        eduiItemSelCreate((u32)flicker_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Flicker Light Options...");
+    created = eduiItemSelCreate((u32)flicker_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Flicker Light Options...");
     flicker_item = eduiMenuAddItem(prop_menu, created);
     created = eduiItemSelCreate((u32)associd_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Associate ID(s)...");
     associd_item = eduiMenuAddItem(prop_menu, created);
@@ -3330,8 +3252,7 @@ void InitUI(void) {
     eduiMenuAddItem(main_menu, created);
     created = eduiItemToggleCreate(0, colours, 0, 3, &cbNearClipAtCursor, "Near Clip At Cursor");
     eduiMenuAddItem(main_menu, created);
-    created =
-        eduiItemSelCreate((u32)modifier_adj_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Adjust Modifiers...");
+    created = eduiItemSelCreate((u32)modifier_adj_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Adjust Modifiers...");
     eduiMenuAddItem(main_menu, created);
     created = eduiItemSelCreate((u32)hide_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Hide Lights...");
     eduiMenuAddItem(main_menu, created);
@@ -3384,11 +3305,9 @@ void InitUI(void) {
     blurdensity_item = eduiMenuAddItem(fog_menu, created);
     created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjRng, 0.0f, 2000.0f, 1000.0f, "Fog Distance Range");
     fogadjrng_item = eduiMenuAddItem(fog_menu, created);
-    created =
-        eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjNear, 0.001f, 2000.0f, 0.1f, "Near Clip (editor only)");
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjNear, 0.001f, 2000.0f, 0.1f, "Near Clip (editor only)");
     fogadjnear_item = eduiMenuAddItem(fog_menu, created);
-    created =
-        eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjFar, 0.001f, 5000.0f, 1000.0f, "Far Clip (editor only)");
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjFar, 0.001f, 5000.0f, 1000.0f, "Far Clip (editor only)");
     fogadjfar_item = eduiMenuAddItem(fog_menu, created);
     created = eduiItemSliderCreate(0, colours, 0, (void *)cbDOFFStop, 1.0f, 21.0f, 1.0f, "DOF - F-Stop");
     created = eduiMenuAddItem(fog_menu, created);
@@ -3540,9 +3459,7 @@ void RefreshUI(void) {
         }
         castshadow_item->highlighted = curr_rtl->flags >> 1;
         hasspecular_item->highlighted = curr_rtl->flags >> 2;
-        eduiMenuHighlight(
-            modifier_menu,
-            modifier_items[modifier_cnt - 1 < curr_rtl->field_7b ? modifier_cnt - 1 : curr_rtl->field_7b]);
+        eduiMenuHighlight(modifier_menu, modifier_items[modifier_cnt - 1 < curr_rtl->field_7b ? modifier_cnt - 1 : curr_rtl->field_7b]);
         for (i = 0; i < 16; i++) {
             if ((((u16)curr_rtl->field_5e & (1 << i)) != 0) ^ associd_items[i]->highlighted) {
                 eduiMenuHighlight(associd_menu, associd_items[i]);
@@ -3731,8 +3648,7 @@ void cbHighColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 void cbLowColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     RTL_LIGHT_PC *light = curr_rtl;
     if (light != NULL) {
-        AddColourPick(menu, item, &light->secondary_colour.x, &light->secondary_colour.y, &light->secondary_colour.z,
-                      NULL);
+        AddColourPick(menu, item, &light->secondary_colour.x, &light->secondary_colour.y, &light->secondary_colour.z, NULL);
     }
 }
 
@@ -3977,8 +3893,8 @@ __declspec(allocate(".data$RtlProc_def_fr")) f32 def_fr = 2.0f;
 __declspec(allocate(".bss$RtlProc_edrtl_mode")) static i32 edrtl_mode = 0;
 #pragma section(".data$RtlProc_ctl", read, write)
 __declspec(allocate(".data$RtlProc_ctl")) u32 ctl[2][8] = {
-    {0x80, 0x10, 0x40, 0x1000, 0x100, 0x20, 0x8000, 0x2000},
-    {0x40, 0x10, 0x20, 0x1000, 0x80, 0x100, 0x4, 0x8},
+    {0x80, 0x10, 0x40, 0x1000, 0x100, 0x20,  0x8000, 0x2000},
+    {0x40, 0x10, 0x20, 0x1000, 0x80,  0x100, 0x4,    0x8   },
 };
 #pragma section(".bss$RtlProc_edrtl_dragging_pc", read, write)
 __declspec(allocate(".bss$RtlProc_edrtl_dragging_pc")) i32 edrtl_dragging_pc = 0;
@@ -4114,13 +4030,10 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
                 updated.direction.z = 1.0f;
                 NuVecRotateX(&updated.direction, &updated.direction, updated.pitch);
                 NuVecRotateY(&updated.direction, &updated.direction, updated.yaw);
-                updated.inner_radius +=
-                    scale_rate * (pad->analog_left_pad_right - pad->analog_left_pad_left) * move_scale * delta_time;
-                updated.outer_radius +=
-                    scale_rate * (pad->analog_left_pad_up - pad->analog_left_pad_down) * move_scale * delta_time;
+                updated.inner_radius += scale_rate * (pad->analog_left_pad_right - pad->analog_left_pad_left) * move_scale * delta_time;
+                updated.outer_radius += scale_rate * (pad->analog_left_pad_up - pad->analog_left_pad_down) * move_scale * delta_time;
                 updated.inner_radius = min_r > updated.inner_radius ? min_r : updated.inner_radius;
-                updated.outer_radius =
-                    updated.inner_radius > updated.outer_radius ? updated.inner_radius : updated.outer_radius;
+                updated.outer_radius = updated.inner_radius > updated.outer_radius ? updated.inner_radius : updated.outer_radius;
                 if (edrtl_dragundo_pc) {
                     if (rtlCmp(&updated, edrtl_drag_rtl_pc)) {
                         edrtlSaveUndo();
@@ -4238,10 +4151,9 @@ static RTL_FOG_MIGRATION_PC *FindNearestFog(NUVEC *position) {
         if (hide_types[curr_set->lights[i].type]) {
             continue;
         }
-        distance =
-            ((RTL_FOG_PC(curr_set)[i].position.x - position->x) * (RTL_FOG_PC(curr_set)[i].position.x - position->x)) +
-            (RTL_FOG_PC(curr_set)[i].position.y - position->y) * (RTL_FOG_PC(curr_set)[i].position.y - position->y) +
-            (RTL_FOG_PC(curr_set)[i].position.z - position->z) * (RTL_FOG_PC(curr_set)[i].position.z - position->z);
+        distance = ((RTL_FOG_PC(curr_set)[i].position.x - position->x) * (RTL_FOG_PC(curr_set)[i].position.x - position->x)) +
+                   (RTL_FOG_PC(curr_set)[i].position.y - position->y) * (RTL_FOG_PC(curr_set)[i].position.y - position->y) +
+                   (RTL_FOG_PC(curr_set)[i].position.z - position->z) * (RTL_FOG_PC(curr_set)[i].position.z - position->z);
         if (distance < RTL_FOG_PC(curr_set)[i].radius * RTL_FOG_PC(curr_set)[i].radius && distance < nearest_distance) {
             nearest_distance = distance;
             nearest = i;
@@ -4373,8 +4285,7 @@ static i32 edrtlProcFog(f32 delta_time, FRAME_PAD_PC *pad) {
                 NuVecSub(&dragoff, &burn_editor_position_pc, &dragstart);
                 NuVecAdd(&drag_fog->position, &drag_fog->position, &dragoff);
                 dragstart = burn_editor_position_pc;
-                curr_fog->radius +=
-                    scale_rate * (pad->analog_left_pad_right - pad->analog_left_pad_left) * camera_step * delta_time;
+                curr_fog->radius += scale_rate * (pad->analog_left_pad_right - pad->analog_left_pad_left) * camera_step * delta_time;
                 curr_fog->radius = min_r > curr_fog->radius ? min_r : curr_fog->radius;
             }
         } else {
@@ -4458,10 +4369,8 @@ static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
             }
             if (edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
                 edcamSetPos(&edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].position);
-                edrtl_edit_burnset->field_558 =
-                    edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c;
-                edrtl_edit_burnset->field_55c =
-                    edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20;
+                edrtl_edit_burnset->field_558 = edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c;
+                edrtl_edit_burnset->field_55c = edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20;
             }
         }
 
@@ -4475,8 +4384,7 @@ static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
         if ((pad->digital_buttons & 0x20) && edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
             edrtlPlaceBurnout(edrtl_edit_burnset->selected_index, &burn_editor_position_pc);
         }
-        if ((pad->digital_buttons_pressed & 0x10) && edrtl_edit_burnset != NULL &&
-            edrtl_edit_burnset->selected_index != -1) {
+        if ((pad->digital_buttons_pressed & 0x10) && edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
             edrtlRemoveBurnout(edrtl_edit_burnset->selected_index);
         }
     }
@@ -4537,12 +4445,12 @@ void edrtlDrawBurnouts(void) {
             segments = 16;
         }
         if (edrtl_edit_burnset->burnouts[index].active) {
-            RndrOSphere(&edrtl_edit_burnset->burnouts[index].position, edrtl_edit_burnset->burnouts[index].field_1c,
-                        colour, segments, NULL);
+            RndrOSphere(&edrtl_edit_burnset->burnouts[index].position, edrtl_edit_burnset->burnouts[index].field_1c, colour, segments,
+                        NULL);
             if (edrtl_edit_burnset->burnouts[index].field_20 > 0.0f) {
                 RndrOSphere(&edrtl_edit_burnset->burnouts[index].position,
-                            edrtl_edit_burnset->burnouts[index].field_1c + edrtl_edit_burnset->burnouts[index].field_20,
-                            colour, segments, NULL);
+                            edrtl_edit_burnset->burnouts[index].field_1c + edrtl_edit_burnset->burnouts[index].field_20, colour, segments,
+                            NULL);
             }
         }
     }
@@ -4626,8 +4534,6 @@ static void edrtlLeave(void) {
     RTL_EditorActive = 0;
 }
 
-ed_module_s edrtldesc = {NULL,        NULL,       "Realtime Light Editor",
-                         edrtlInit,   edrtlClose, edrtlEnter,
-                         edrtlLeave,  NULL,       NULL,
-                         NULL,        0x2e6c7472, edrtlProc,
-                         edrtlRender, NULL};
+ed_module_s edrtldesc = {
+    NULL,        NULL, "Realtime Light Editor", edrtlInit, edrtlClose, edrtlEnter, edrtlLeave, NULL, NULL, NULL, 0x2e6c7472, edrtlProc,
+    edrtlRender, NULL};

@@ -55,10 +55,10 @@ extern "C" DETONATOR_s *Detonator_FindNearest(NUVEC *position, f32 radius, GAMEO
     return nearest;
 }
 
-#define DETONATOR_CONSIDER_OLDEST(detonator)                                                                           \
-    if ((detonator)->active != 0 && (detonator)->timer > oldest_time) {                                                \
-        oldest_time = (detonator)->timer;                                                                              \
-        oldest = (detonator);                                                                                          \
+#define DETONATOR_CONSIDER_OLDEST(detonator)                                                                                               \
+    if ((detonator)->active != 0 && (detonator)->timer > oldest_time) {                                                                    \
+        oldest_time = (detonator)->timer;                                                                                                  \
+        oldest = (detonator);                                                                                                              \
     }
 
 extern "C" {
@@ -135,8 +135,8 @@ extern "C" void Detonators_Update(void) {
             Detonator_Detonate(detonator);
         } else if (detonator->field_0x34 != NULL) {
             BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->field_0x34);
-            if (!(detonator->timer >= 10.0f) && (detonator->object == NULL || detonator->object->dead != 0 ||
-                                                 !(detonator->object->field_de0 >= 0.3f))) {
+            if (!(detonator->timer >= 10.0f) &&
+                (detonator->object == NULL || detonator->object->dead != 0 || !(detonator->object->field_de0 >= 0.3f))) {
                 hit_data->scale = DetonatorHitScaleIdlePc;
             } else {
                 hit_data->scale = DetonatorHitScaleArmedPc;
@@ -161,9 +161,8 @@ extern "C" void Detonators_Draw(void) {
         NuMtxRotateX(&matrix, detonator->rotation_x);
         NuMtxTranslate(&matrix, &detonator->position);
         NuSpecialDrawAt(&WORLD->level_objects[0xec].special, &matrix);
-        if (GameTimer.update_count % 6 < 3 &&
-            (detonator->timer >= 10.0f ||
-             (detonator->object != NULL && detonator->object->dead == 0 && detonator->object->field_de0 >= 0.3f))) {
+        if (GameTimer.update_count % 6 < 3 && (detonator->timer >= 10.0f || (detonator->object != NULL && detonator->object->dead == 0 &&
+                                                                             detonator->object->field_de0 >= 0.3f))) {
             if (WORLD->level_objects[0xef].active) {
                 detonator->draw_result = (u8)NuSpecialDrawAt(&WORLD->level_objects[0xef].special, &matrix);
             }
@@ -203,8 +202,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
             return;
         }
         if (object->field_de0 > 0.0f && object->field_de0 < 0.3f) {
-            DETONATOR_s *nearest =
-                Detonator_FindNearest(&object->lower_position, object->bounds_radius + 0.0775f, object);
+            DETONATOR_s *nearest = Detonator_FindNearest(&object->lower_position, object->bounds_radius + 0.0775f, object);
             if (nearest != NULL) {
                 object->field_7b3 = 0;
                 object->character_context = 0x49;
@@ -217,8 +215,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
                 object->launch_origin.x = nearest->position.x - NU_SIN_LUT(object->movement_facing_angle) * 0.1684f;
                 object->launch_origin.z = nearest->position.z - NU_COS_LUT(object->movement_facing_angle) * 0.1684f;
                 object->takeover_start_angle = (u16)RotDiff(object->movement_facing_angle, nearest->rotation_y);
-            } else if (DetonatorPlacementSlot(object) != NULL &&
-                       object->floor_height != GameObjectNearFloorNoFloorHeight &&
+            } else if (DetonatorPlacementSlot(object) != NULL && object->floor_height != GameObjectNearFloorNoFloorHeight &&
                        object->lower_position.y - object->floor_height < 0.155f) {
                 object->launch_origin.x = object->lower_position.x;
                 object->launch_origin.y = object->floor_height;
@@ -275,8 +272,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
             return;
         }
         if (object->character_model->model_data_b[object->field_7aa] != NULL) {
-            f32 marker =
-                AnimListFrame(object->character_model, object->field_7aa, object->character_context == 0x49 ? 0 : 2);
+            f32 marker = AnimListFrame(object->character_model, object->field_7aa, object->character_context == 0x49 ? 0 : 2);
             if (frame == NULL || !(*frame > 0.0f)) {
                 return;
             }
@@ -314,8 +310,8 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
         NuVecRotateX(&detonator->field_0x0c, &detonator->field_0x0c, detonator->rotation_x);
         NuVecAdd(&detonator->field_0x0c, &detonator->field_0x0c, &detonator->position);
         detonator->timer = 0.0f;
-        detonator->field_0x34 = GameAntinode_RegisterAntiNode(WORLD->game_antinode_sys, &detonator->field_0x0c, 1.0f,
-                                                              1.0f, 1.0f, 0, 0, 0.0f);
+        detonator->field_0x34 =
+            GameAntinode_RegisterAntiNode(WORLD->game_antinode_sys, &detonator->field_0x0c, 1.0f, 1.0f, 1.0f, 0, 0, 0.0f);
         PlaySfx((char *)"imp_thermalDet_attach", &detonator->position);
     } else {
         GameAudio_PlaySfx(0x32, NULL, 0, 0);

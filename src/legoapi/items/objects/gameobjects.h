@@ -15,8 +15,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    GAMEOBJECT *FindNearestGameObject(NUVEC *, GAMEOBJECT *, u32, f32, f32, i32, i32, i32, f32 *, i32,
-                                      i32 (*)(GAMEOBJECT *));
+    GAMEOBJECT *FindNearestGameObject(NUVEC *, GAMEOBJECT *, u32, f32, f32, i32, i32, i32, f32 *, i32, i32 (*)(GAMEOBJECT *));
     i32 GameObjectNearFloor(GAMEOBJECT *, f32, f32 *);
 
     extern GAMEOBJECT *CarWashHack;

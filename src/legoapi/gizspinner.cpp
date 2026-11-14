@@ -230,8 +230,8 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
                             start_frame = EdFileReadFloat();
                             end_frame = EdFileReadFloat();
                         }
-                        object = GameAnimSet_AddObject(world->spinners[index].anim_set, (NUSPECIALHANDLE *)&special,
-                                                       start_frame, end_frame, 0);
+                        object =
+                            GameAnimSet_AddObject(world->spinners[index].anim_set, (NUSPECIALHANDLE *)&special, start_frame, end_frame, 0);
                         if (world->spinners[index].primary_anim_obj == NULL) {
                             if (object != NULL && object->animation != NULL) {
                                 world->spinners[index].primary_anim_obj = object;
@@ -298,15 +298,15 @@ extern "C" void *GizSpinner_ReserveBufferSpace(void *pointer) {
     world->spinners = NULL;
     world->spinner_count = 0;
     if (world->current_level->max_spinners != 0) {
-        world->spinner_anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0,
-                                                                world->current_level->max_spinneranim_objs);
+        world->spinner_anim_pool =
+            GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0, world->current_level->max_spinneranim_objs);
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         world->spinners = (GIZSPINNER_s *)world->giz_buffer.void_ptr;
         world->giz_buffer.addr += world->current_level->max_spinners * sizeof(*world->spinners);
         memset(world->spinners, 0, world->current_level->max_spinners * sizeof(*world->spinners));
         for (i = 0; i < world->current_level->max_spinners; ++i) {
-            world->spinners[i].anim_set = GameAnimSet_Create(&world->giz_buffer, &world->buffer_end,
-                                                             world->spinner_anim_pool, world->game_anim_sys);
+            world->spinners[i].anim_set =
+                GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, world->spinner_anim_pool, world->game_anim_sys);
         }
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
     }
@@ -330,15 +330,13 @@ extern "C" void GizSpinners_InitTerrain(WORLDINFO *world) {
             NuMtxTranslate(&matrix, &world->spinners[index].position);
             world->spinners[index].matrix = matrix;
 
-            if (NuSpecialCompare((NUSPECIALHANDLE *)&world->spinners[index].special,
-                                 (NUSPECIALHANDLE *)&thingsSceneBase) != 0) {
+            if (NuSpecialCompare((NUSPECIALHANDLE *)&world->spinners[index].special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0) {
                 use_default_terrain = 1;
             }
             if (use_default_terrain != 0) {
                 i32 arm;
                 if (LEGOTHINGSSCENE_TER_SPINBASE != -1) {
-                    world->spinners[index].platform_id =
-                        NewPlatPickupInst(&world->spinners[index].matrix, LEGOTHINGSSCENE_TER_SPINBASE);
+                    world->spinners[index].platform_id = NewPlatPickupInst(&world->spinners[index].matrix, LEGOTHINGSSCENE_TER_SPINBASE);
                 } else {
                     world->spinners[index].platform_id = -1;
                 }
@@ -369,8 +367,7 @@ extern "C" GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *nam
     }
     for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
         GIZSPINNER_s *spinner = &world->spinners[index];
-        if (spinner != NULL && (spinner->flags & 1) != 0 &&
-            NuStrCmp(NuSpecialGetName((NUSPECIALHANDLE *)&spinner->special), name) == 0) {
+        if (spinner != NULL && (spinner->flags & 1) != 0 && NuStrCmp(NuSpecialGetName((NUSPECIALHANDLE *)&spinner->special), name) == 0) {
             return spinner;
         }
     }
@@ -397,8 +394,7 @@ extern "C" void GizSpinner_Draw(void *world_pointer, void *data, f32 frame_time)
         }
         if (NuSpecialExistsFn((NUSPECIALHANDLE *)&spinner->special)) {
             NuSpecialDrawAt((NUSPECIALHANDLE *)&spinner->special, &spinner->matrix);
-            if (spinner->type > 0 &&
-                NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0 &&
+            if (spinner->type > 0 && NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0 &&
                 NuSpecialExistsFn((NUSPECIALHANDLE *)&thingsSceneArm) != 0) {
                 arm = spinner->arms;
                 for (arm_index = 0; arm_index < spinner->type; ++arm_index, ++arm) {
@@ -418,8 +414,7 @@ extern "C" void GizSpinner_Draw(void *world_pointer, void *data, f32 frame_time)
         }
         NuRndrStartReflectionRender(0);
         NuSpecialDrawAt((NUSPECIALHANDLE *)&spinner->special, &reflection);
-        if (spinner->type > 0 &&
-            NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0 &&
+        if (spinner->type > 0 && NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0 &&
             NuSpecialExistsFn((NUSPECIALHANDLE *)&thingsSceneArm) != 0) {
             arm = spinner->arms;
             for (arm_index = 0; arm_index < spinner->type; ++arm_index, ++arm) {
@@ -532,8 +527,7 @@ static void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 output) {
         f32 rotation = (f64)duration * 30.0;
         rotation = rotation / length;
         rotation = rotation * (length / 100.0);
-        spinner->rotation =
-            (u16)((i32)(direction * ((f64)target * 100.0 * rotation * 65536.0 / 360.0)) + spinner->initial_rotation);
+        spinner->rotation = (u16)((i32)(direction * ((f64)target * 100.0 * rotation * 65536.0 / 360.0)) + spinner->initial_rotation);
     } else if (spinner->field_70 > target) {
         GameAnimSet_Play(spinner->anim_set, -0.25f, 1);
         spinner->rotation -= (i32)(direction * ((f64)frequency * difference * 5461.0));
@@ -556,8 +550,7 @@ extern "C" void GizSpinner_PushFail(GAMEOBJECT *object, GIZSPINNER_s *) {
     NUVEC position;
     position.x = ((GIZSPINNER_s *)object->grapple)->position.x;
     i32 random = qrand();
-    position.y =
-        random * (f64)(1.0f / 65535.0f) * (f64)0.25f + (f64)0.15f + ((GIZSPINNER_s *)object->grapple)->position.y;
+    position.y = random * (f64)(1.0f / 65535.0f) * (f64)0.25f + (f64)0.15f + ((GIZSPINNER_s *)object->grapple)->position.y;
     position.z = ((GIZSPINNER_s *)object->grapple)->position.z;
     AddGameDebris(WORLD->game_debris_sys, GizSpinnerGDeb_Fail[1], &position);
     AddGameDebris(WORLD->game_debris_sys, GizSpinnerGDeb_Fail[2], &position);
@@ -738,8 +731,7 @@ extern "C" i32 GizSpinner_GetTargetPoints(GIZSPINNER_s *spinner, NUVEC *position
         if (positions != NULL) {
             positions[count].x = spinner->field_0x094 * NuTrigTable[position_angle >> 1] + spinner->position.x;
             positions[count].y = y;
-            positions[count].z =
-                spinner->field_0x094 * NuTrigTable[((position_angle + 0x4000) >> 1) & 0x7fff] + spinner->position.z;
+            positions[count].z = spinner->field_0x094 * NuTrigTable[((position_angle + 0x4000) >> 1) & 0x7fff] + spinner->position.z;
         }
         direction_angle += step;
         position_angle += step;
@@ -821,8 +813,7 @@ static void SpinnerResetEntryPc(GIZSPINNER_s *spinner, SpinnerProgressEntryPc *p
     NuMtxTranslate(&spinner->matrix, &spinner->position);
     NewTerrPlatformsOff();
     if (NuSpecialGetMtx((NUSPECIALHANDLE *)&spinner->special) != NULL) {
-        spinner->ground_height =
-            GameShadow(NULL, (NUVEC *)&NuSpecialGetMtx((NUSPECIALHANDLE *)&spinner->special)->m30, 5.0f, -1);
+        spinner->ground_height = GameShadow(NULL, (NUVEC *)&NuSpecialGetMtx((NUSPECIALHANDLE *)&spinner->special)->m30, 5.0f, -1);
     } else {
         spinner->ground_height = LevelConfigFarDistance;
     }
@@ -875,8 +866,7 @@ extern "C" void GizSpinner_SetVisibility(void *gizmo_pointer, i32 visible) {
                 }
                 for (i32 index = 0; index < spinner->type; ++index) {
                     if (LEGOTHINGSSCENE_TER_SPINARM != -1) {
-                        spinner->arms[index].platform_id =
-                            NewPlatPickupInst(&spinner->arms[index].matrix, LEGOTHINGSSCENE_TER_SPINARM);
+                        spinner->arms[index].platform_id = NewPlatPickupInst(&spinner->arms[index].matrix, LEGOTHINGSSCENE_TER_SPINARM);
                     } else {
                         spinner->arms[index].platform_id = -1;
                     }
@@ -887,8 +877,8 @@ extern "C" void GizSpinner_SetVisibility(void *gizmo_pointer, i32 visible) {
             }
         }
         if (spinner->anti_node == NULL) {
-            spinner->anti_node = (GAMEANTINODE_s *)GameAntinode_RegisterAntiNode(
-                WORLD->game_antinode_sys, &spinner->position, 0.66f, 1.0f, 1.0f, spinner->rotation, 0, 0.0f);
+            spinner->anti_node = (GAMEANTINODE_s *)GameAntinode_RegisterAntiNode(WORLD->game_antinode_sys, &spinner->position, 0.66f, 1.0f,
+                                                                                 1.0f, spinner->rotation, 0, 0.0f);
         }
     } else {
         spinner->flags |= 4;
@@ -993,9 +983,8 @@ extern "C" i32 GizSpinner_BoltHitPlatPc(WORLDINFO *, void *spinner_ptr, BOLT_PC 
     return 0;
 }
 
-extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *result_position, NUVEC *result_velocity,
-                                             void *, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared,
-                                             i32 directional, i32, i32) {
+extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *result_position, NUVEC *result_velocity, void *, NUVEC *position,
+                                             NUVEC *direction, f32 radius, f32 range_squared, i32 directional, i32, i32) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GIZMO_PC *result = NULL;
     NUVEC target_position = v000;
@@ -1011,13 +1000,11 @@ extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *result
     maximum.x = position->x + radius;
     maximum.z = position->z + radius;
     GIZMOSET_PC *set = &((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets[spinner_gizmotype_id];
-    for (i32 index = 0; index < set->count;
-         ++index, set = &((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets[spinner_gizmotype_id]) {
+    for (i32 index = 0; index < set->count; ++index, set = &((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets[spinner_gizmotype_id]) {
         GIZMO_PC *gizmo = &set->gizmos[index];
         GIZSPINNER_s *spinner = &world->spinners[index];
-        if (spinner->flags == 0 || (spinner->flags & 0x26) != 0 || (spinner->state_flags & 8) != 0 ||
-            spinner->position.x < minimum.x || spinner->position.x > maximum.x || spinner->position.z < minimum.z ||
-            spinner->position.z > maximum.z) {
+        if (spinner->flags == 0 || (spinner->flags & 0x26) != 0 || (spinner->state_flags & 8) != 0 || spinner->position.x < minimum.x ||
+            spinner->position.x > maximum.x || spinner->position.z < minimum.z || spinner->position.z > maximum.z) {
             continue;
         }
         target_position.y = spinner->position.y + spinner->field_0x098;
@@ -1026,16 +1013,14 @@ extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *result
         u16 tangent_angle = (u16)(angle + 0x4000);
         for (i32 arm = 0; arm < spinner->type; ++arm, angle += step, tangent_angle += step) {
             target_position.x = spinner->position.x + NuTrigTable[angle >> 1] * spinner->field_0x094;
-            target_position.z =
-                spinner->position.z + NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * spinner->field_0x094;
+            target_position.z = spinner->position.z + NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * spinner->field_0x094;
             NUVEC tangent;
             tangent.x = NuTrigTable[tangent_angle >> 1];
             tangent.z = NuTrigTable[((tangent_angle + 0x4000) >> 1) & 0x7fff];
             NUVEC facing;
             f32 absolute_dot;
             if (directional == 0) {
-                NuVecRotateY(&facing, &v001,
-                             NuAtan2D(spinner->position.x - position->x, spinner->position.z - position->z));
+                NuVecRotateY(&facing, &v001, NuAtan2D(spinner->position.x - position->x, spinner->position.z - position->z));
                 absolute_dot = SpinnerFabsPc(facing.z * tangent.z + facing.x * tangent.x);
             } else {
                 absolute_dot = SpinnerFabsPc(direction->z * tangent.z + direction->x * tangent.x);
@@ -1162,11 +1147,9 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
         GAMEOBJECT *object = Obj;
         for (i32 index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
             if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-                (object->flags_e20 & 0x20) != 0 ||
-                (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) != 0 ||
-                (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) != 0 ||
-                minimum.x > object->collision_max.x || maximum.x < object->collision_min.x ||
-                minimum.z > object->collision_max.z || maximum.z < object->collision_min.z) {
+                (object->flags_e20 & 0x20) != 0 || (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) != 0 ||
+                (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) != 0 || minimum.x > object->collision_max.x ||
+                maximum.x < object->collision_min.x || minimum.z > object->collision_max.z || maximum.z < object->collision_min.z) {
                 continue;
             }
             f32 radius = (f64)spinner->field_0x09c + 0.5 + object->bounds_radius;
@@ -1184,8 +1167,7 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
                 speed = object->character_data->game_character->tiptoe_speed;
             } else {
                 movement = NuAtan2D(object->velocity.x, object->velocity.z);
-                f32 length_squared =
-                    (f64)object->velocity.x * object->velocity.x + (f64)object->velocity.z * object->velocity.z;
+                f32 length_squared = (f64)object->velocity.x * object->velocity.x + (f64)object->velocity.z * object->velocity.z;
                 speed = NuFsqrt(length_squared);
                 if (speed < object->character_data->game_character->tiptoe_speed) {
                     speed = object->character_data->game_character->tiptoe_speed;
@@ -1259,11 +1241,9 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
     }
     play_speed = -spinner->animation_points[0];
     if ((spinner->state_flags & 6) != 0 && (spinner->state_flags & 6) != 6) {
-        spinner->rotation +=
-            (i32)(((f64)spinner->animation_points[0] / spinner->animation_speed) * ((f64)FRAMETIME * -5461.0));
+        spinner->rotation += (i32)(((f64)spinner->animation_points[0] / spinner->animation_speed) * ((f64)FRAMETIME * -5461.0));
     } else {
-        spinner->rotation +=
-            (i32)(((f64)spinner->animation_points[0] / spinner->animation_speed) * ((f64)FRAMETIME * 5461.0));
+        spinner->rotation += (i32)(((f64)spinner->animation_points[0] / spinner->animation_speed) * ((f64)FRAMETIME * 5461.0));
     }
 play_animation:
     if (play_speed != 0.0f) {
@@ -1330,12 +1310,10 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
                 NUVEC position = spinner->position;
                 position.y = (f64)position.y + (f64)0.3f;
                 if (GizSpinnerGDeb_Fail[0] != -1) {
-                    AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[GizSpinnerGDeb_Fail[0]].effect,
-                                                &position, 2, 0, 0);
+                    AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[GizSpinnerGDeb_Fail[0]].effect, &position, 2, 0, 0);
                 }
                 if (GizSpinnerGDeb_Fail[2] != -1) {
-                    AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[GizSpinnerGDeb_Fail[2]].effect,
-                                                &position, 2, 0, 0);
+                    AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[GizSpinnerGDeb_Fail[2]].effect, &position, 2, 0, 0);
                 }
             }
         }
@@ -1390,8 +1368,7 @@ extern "C" f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *spinner, NUVEC *or
     for (i32 i = 0; i < count; ++i) {
         f32 distance = NuVecDistSqr(origin, &positions[i], NULL);
         if (check_direction != 0) {
-            u16 angle = spinner->field_0x08c - (0x10000 / spinner->type) * i - spinner->rotation -
-                        spinner->initial_rotation + 0x4000;
+            u16 angle = spinner->field_0x08c - (0x10000 / spinner->type) * i - spinner->rotation - spinner->initial_rotation + 0x4000;
             NUVEC offset;
             in_front = 0;
             NuVecSub(&offset, origin, &spinner->position);
@@ -1435,8 +1412,7 @@ extern "C" void GizSpinner_ResetAll(WORLDINFO *world, void *unused, SpinnerProgr
     GizSpinners_Update(world, NULL, FRAMETIME);
 }
 
-extern "C" i32 GizSpinner_HasBoltHit(void *, void *, void *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, u32,
-                                     u8 *) {
+extern "C" i32 GizSpinner_HasBoltHit(void *, void *, void *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, u32, u8 *) {
     return 0;
 }
 

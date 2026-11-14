@@ -23,8 +23,7 @@ extern "C" {
     __declspec(dllimport) void __stdcall BinkClose(PC_FMV_BINK_PC *);
     __declspec(dllimport) void __stdcall BinkSetVolume(PC_FMV_BINK_PC *, u32, i32);
     __declspec(dllimport) i32 __stdcall BinkDoFrame(PC_FMV_BINK_PC *);
-    __declspec(dllimport) i32 __stdcall BinkCopyToBufferRect(PC_FMV_BINK_PC *, void *, i32, u32, u32, u32, u32, u32,
-                                                             u32, u32, u32);
+    __declspec(dllimport) i32 __stdcall BinkCopyToBufferRect(PC_FMV_BINK_PC *, void *, i32, u32, u32, u32, u32, u32, u32, u32, u32);
     __declspec(dllimport) i32 __stdcall BinkWait(PC_FMV_BINK_PC *);
     __declspec(dllimport) void __stdcall BinkNextFrame(PC_FMV_BINK_PC *);
     __declspec(dllimport) void __stdcall BinkGetRealtime(PC_FMV_BINK_PC *, PC_FMV_REALTIME_PC *, u32);

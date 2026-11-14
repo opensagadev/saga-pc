@@ -226,8 +226,7 @@ extern "C" {
 extern "C" {
 #endif
     extern i32 (*GizmoBlowUp_NoTargetFn)(struct WORLDINFO_s *, struct gameobject_s *);
-    void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 add_offset, i32 flags,
-                                struct gameobject_s *object);
+    void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 add_offset, i32 flags, struct gameobject_s *object);
     i32 GizmoBlowupCheckProximity(struct WORLDINFO_s *, struct gameobject_s *);
     i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *, i32, i32, i32, struct gameobject_s *, i32);
     GIZMOBLOWUPTYPE_PC *GizmoBlowupTypeAdd(struct WORLDINFO_s *, NUSPECIALHANDLE *, i32, i32 *);
@@ -243,8 +242,7 @@ extern "C" {
     i32 InitGizmoBlowupTypes(struct WORLDINFO_s *);
     i32 InitGizmoBlowups(struct WORLDINFO_s *);
     i32 InitGizmoBlowupsMtxBuffer(struct WORLDINFO_s *);
-    GIZMOBLOWUP_PC *GizmoBlowUp_Hit(struct gameobject_s *, NUVEC *, i32, f32, NUVEC *, NUVEC *, struct bolt_s *, u32,
-                                    u8 *);
+    GIZMOBLOWUP_PC *GizmoBlowUp_Hit(struct gameobject_s *, NUVEC *, i32, f32, NUVEC *, NUVEC *, struct bolt_s *, u32, u8 *);
 #ifdef __cplusplus
 }
 #endif

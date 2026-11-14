@@ -80,13 +80,13 @@ extern "C" {
     extern NUFPCOMJMP ConfigChar_GameKeywords[2];
     extern f32 PermCollectionScalePc;
 }
-#define LEVEL_BYTE_CALLBACK(name, field)                                                                               \
-    void name(NUFPAR_PC *parser) {                                                                                     \
-        levelconfig_ldata->field = (u8)NuFParGetInt(parser);                                                           \
+#define LEVEL_BYTE_CALLBACK(name, field)                                                                                                   \
+    void name(NUFPAR_PC *parser) {                                                                                                         \
+        levelconfig_ldata->field = (u8)NuFParGetInt(parser);                                                                               \
     }
-#define LEVEL_WORD_CALLBACK(name, field)                                                                               \
-    void name(NUFPAR_PC *parser) {                                                                                     \
-        levelconfig_ldata->field = (i16)NuFParGetInt(parser);                                                          \
+#define LEVEL_WORD_CALLBACK(name, field)                                                                                                   \
+    void name(NUFPAR_PC *parser) {                                                                                                         \
+        levelconfig_ldata->field = (i16)NuFParGetInt(parser);                                                                              \
     }
 extern "C" void KashyyykD_Init(WORLDINFO *);
 extern "C" void KashyyykD_Reset(WORLDINFO *);
@@ -402,8 +402,8 @@ static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {
         if (Collection_Got(list->model_id) != 0) {
             i16 id = list->model_id;
             i8 action = GCDataList[id].weapon_action;
-            if (action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR ||
-                id == FreePlayId007f1a4cPc || id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc) {
+            if (action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR || id == FreePlayId007f1a4cPc ||
+                id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc) {
                 return 1;
             }
         }
@@ -428,8 +428,8 @@ static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
             continue;
         }
         action = GCDataList[id].weapon_action;
-        if ((action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR ||
-             id == FreePlayId007f1a4cPc || id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc) &&
+        if ((action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR || id == FreePlayId007f1a4cPc ||
+             id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc) &&
             count < 500) {
             candidates[count++] = (i16)id;
         }
@@ -590,22 +590,18 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
         if (CharCategory != NULL) {
             for (index = 0; index < CHARCATEGORYCOUNT; ++index) {
                 i32 model;
-                if (InModelListDataFlags(FreePlayModelList, CharCategory[index].model_flags,
-                                         CharCategory[index].game_flags, 0, 1) != 0) {
+                if (InModelListDataFlags(FreePlayModelList, CharCategory[index].model_flags, CharCategory[index].game_flags, 0, 1) != 0) {
                     continue;
                 }
                 if (hats == 0 || (StartupGameFlag1 != 0 && (CharCategory[index].model_flags & 0x80) != 0)) {
-                    model =
-                        RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 1, NULL, 1);
+                    model = RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 1, NULL, 1);
                     if (model != -1) {
                         hats = 1;
                     } else {
-                        model = RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 0,
-                                                  NULL, 1);
+                        model = RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 0, NULL, 1);
                     }
                 } else {
-                    model =
-                        RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 0, NULL, 1);
+                    model = RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 0, NULL, 1);
                 }
                 if (model != -1 && World_AppendFreePlayPrivate(model) != 0) {
                     ++FreePlayBonusCount;
@@ -812,9 +808,9 @@ extern "C" void Titles_Draw(WORLDINFO *world) {
         scale.y = TitleScalePc;
         scale.z = TitleScalePc;
         NuMtxPreScale(&matrix, &scale);
-        NuSpecialDrawAtAlpha(&LevHSpecial[0], &matrix,
-                             (f32)(((f64)newgamealpha * TitlesAlpha) *
-                                   (1.0 - NuTrigTable[((i32)((f64)LevAlpha * 16384.0 + 16384.0) >> 1) & 0x7fff])));
+        NuSpecialDrawAtAlpha(
+            &LevHSpecial[0], &matrix,
+            (f32)(((f64)newgamealpha * TitlesAlpha) * (1.0 - NuTrigTable[((i32)((f64)LevAlpha * 16384.0 + 16384.0) >> 1) & 0x7fff])));
     }
     if (!(LevTime[0] > 0.0f) || !(newgamealpha > 0.0f)) {
         return;
@@ -841,8 +837,7 @@ extern "C" void Titles_Draw(WORLDINFO *world) {
             }
             if (alpha > 0.0f && NuSpecialExistsFn(&LevHSpecial[10 + index]) != 0) {
                 matrix.m31 = TitlePictureYPc;
-                NuSpecialDrawAtAlpha(&LevHSpecial[10 + index], &matrix,
-                                     (f32)((f64)newgamealpha * 0.5 * alpha * LevTime[0]));
+                NuSpecialDrawAtAlpha(&LevHSpecial[10 + index], &matrix, (f32)((f64)newgamealpha * 0.5 * alpha * LevTime[0]));
             }
         }
     }
@@ -913,8 +908,7 @@ extern "C" {
         GameAnimSys_ClearProgress(index);
     }
 
-    static void WorldStoreScriptProgressPC(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *processor,
-                                           LEVEL_PROGRESS *progress) {
+    static void WorldStoreScriptProgressPC(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *processor, LEVEL_PROGRESS *progress) {
         i32 index;
         i32 parameter;
 
@@ -925,14 +919,12 @@ extern "C" {
             if (NuStrLen(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name) == 0) {
                 NuStrCpy(((LEVEL_PROGRESS_TRANSFER_PC *)world->level_progress)->scripts[index].name, processor->name);
                 for (parameter = 0; parameter < 4; ++parameter) {
-                    ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] =
-                        processor->processor.params[parameter];
+                    ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] = processor->processor.params[parameter];
                 }
                 break;
             } else if (NuStrICmp(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name, processor->name) == 0) {
                 for (parameter = 0; parameter < 4; ++parameter) {
-                    ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] =
-                        processor->processor.params[parameter];
+                    ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] = processor->processor.params[parameter];
                 }
                 break;
             }
@@ -949,8 +941,7 @@ extern "C" {
             if (NuStrLen(((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].name) == 0) {
                 break;
             }
-            if (NuStrICmp(((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].name, process->name) ==
-                0) {
+            if (NuStrICmp(((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].name, process->name) == 0) {
                 for (parameter = 0; parameter < 4; ++parameter) {
                     process->processor.params[parameter] =
                         ((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].params[parameter];
@@ -1113,8 +1104,8 @@ void LoadPerm1(void) {
         }
     }
     terrain_scene = things_scene;
-    things_scene_terrain = TerrainInitEx(-1, &permbuffer_ptr, permbuffer_end.void_ptr, 0, "stuff\\things",
-                                         terrain_scene, 0, 0x14, 0x14, 0x14);
+    things_scene_terrain =
+        TerrainInitEx(-1, &permbuffer_ptr, permbuffer_end.void_ptr, 0, "stuff\\things", terrain_scene, 0, 0x14, 0x14, 0x14);
     terrainpickupinit("stuff\\things", &things_scene_terrain);
     if (StartupGameFlag1 != 0) {
         BackDrop_Init("stuff\\starfield.gsc", &permbuffer_ptr, &permbuffer_end);
@@ -1137,25 +1128,25 @@ extern "C" {
         nopakfile = CHARPAK == 0;
         APILoadCharacterModels(PermModelListPc, 1, &permbuffer_ptr, permbuffer_end, 1);
         Collection_CreateMaster("All", NULL, &MasterCollectionPc, 15, PermCollectionScalePc);
-        Collection_CreateCustom("Characters", &PermanentAllTitleIdPc, &CharacterCollectionPc, 0, 0x04002000, 0, 0, 22,
-                                &permbuffer_ptr, &permbuffer_end, 0, 0.515f);
-        Collection_CreateCustom("Vehicles", NULL, &VehicleCollectionPc, 0x2000, 0x04000000, 0, 0, 7, &permbuffer_ptr,
-                                &permbuffer_end, 0, PermCollectionScalePc);
-        Collection_CreateCustom("Minikits", NULL, &MiniKitCollection, 0x04000000, 0, 0, 0, 12, &permbuffer_ptr,
-                                &permbuffer_end, 0, PermCollectionScalePc);
+        Collection_CreateCustom("Characters", &PermanentAllTitleIdPc, &CharacterCollectionPc, 0, 0x04002000, 0, 0, 22, &permbuffer_ptr,
+                                &permbuffer_end, 0, 0.515f);
+        Collection_CreateCustom("Vehicles", NULL, &VehicleCollectionPc, 0x2000, 0x04000000, 0, 0, 7, &permbuffer_ptr, &permbuffer_end, 0,
+                                PermCollectionScalePc);
+        Collection_CreateCustom("Minikits", NULL, &MiniKitCollection, 0x04000000, 0, 0, 0, 12, &permbuffer_ptr, &permbuffer_end, 0,
+                                PermCollectionScalePc);
         Collection_CreateCustom("Shop", NULL, &ShopCollectionPc, 0, 0, 0, 1, 10, &permbuffer_ptr, &permbuffer_end, 0,
                                 PermCollectionScalePc);
-        Collection_CreateCustom("Jedi", &PermanentJediTitleIdPc, &JediCollectionPc, 8, 0, 0, 0, 7, &permbuffer_ptr,
-                                &permbuffer_end, 0, PermCollectionScalePc);
-        Collection_CreateCustom("BlasterZipUps", &PermanentBlasterTitleIdPc, &BlasterCollectionPc, 0x100080, 0x01000000,
-                                0, 0, 11, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
-        Collection_CreateCustom("BountyHunters", &PermanentBountyTitleIdPc, &BountyHunterCollectionPc, 0x01000000, 0, 0,
-                                0, 4, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
+        Collection_CreateCustom("Jedi", &PermanentJediTitleIdPc, &JediCollectionPc, 8, 0, 0, 0, 7, &permbuffer_ptr, &permbuffer_end, 0,
+                                PermCollectionScalePc);
+        Collection_CreateCustom("BlasterZipUps", &PermanentBlasterTitleIdPc, &BlasterCollectionPc, 0x100080, 0x01000000, 0, 0, 11,
+                                &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
+        Collection_CreateCustom("BountyHunters", &PermanentBountyTitleIdPc, &BountyHunterCollectionPc, 0x01000000, 0, 0, 0, 4,
+                                &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
         Areas_ConfigureResidents(&permbuffer_ptr, &permbuffer_end);
-        CharacterCustomiser = Customiser_Configure(
-            "chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1IdPc, PermanentWeirdo2IdPc,
-            PermanentCustomPieceAvailablePc, PermanentCustomPieceConfigPc, LevelObject_FindIndexFromName,
-            &((PERMANENT_CUSTOMISER_GAME_PC *)&Game)->customiser, PermanentCustomiserActionsPc);
+        CharacterCustomiser =
+            Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1IdPc, PermanentWeirdo2IdPc,
+                                 PermanentCustomPieceAvailablePc, PermanentCustomPieceConfigPc, LevelObject_FindIndexFromName,
+                                 &((PERMANENT_CUSTOMISER_GAME_PC *)&Game)->customiser, PermanentCustomiserActionsPc);
         SpecialMoves_Configure("chars\\specialmoves.txt", &permbuffer_ptr, &permbuffer_end);
         for (i32 index = 0; index < LEVELCOUNT; ++index) {
             if ((LDataList[index].flags & 0x400) != 0) {
@@ -1235,11 +1226,9 @@ extern "C" {
         }
         if (makefreeplaymodellist != 0) {
             if ((ADataList[area].flags & 1) != 0) {
-                MakeFreePlayModelList(Area_PlayerModelList[0].model_id, Area_PlayerModelList[1].model_id, area, level,
-                                      0);
+                MakeFreePlayModelList(Area_PlayerModelList[0].model_id, Area_PlayerModelList[1].model_id, area, level, 0);
             } else if (Area_PlayerModelCount >= 2 && BonusArea == 0) {
-                MakeFreePlayModelList(Area_PlayerModelList[0].model_id, Area_PlayerModelList[1].model_id, area, level,
-                                      0);
+                MakeFreePlayModelList(Area_PlayerModelList[0].model_id, Area_PlayerModelList[1].model_id, area, level, 0);
             } else {
                 MakeFreePlayModelList(id_DEFAULTCHARACTER[0], id_DEFAULTCHARACTER[1], area, level, 0);
             }
@@ -1363,8 +1352,8 @@ void LoadAreaCharacters(void) {
            (GAMEDEMO != 0 && (LastLData == TITLES_LDATA || LastLData == STATUS_LDATA))))) {
         if (0 != SuperStory && (ADataList[Area].flags & 2) != 0) {
             load_type = 1;
-        } else if (last_area != -1 && LastLData != NULL && (LastLData->flags & 0x400) != 0 &&
-                   ADataList[Area].flags != 2 && HUB_ADATA != NULL && Area != HUB_ADATA->index) {
+        } else if (last_area != -1 && LastLData != NULL && (LastLData->flags & 0x400) != 0 && ADataList[Area].flags != 2 &&
+                   HUB_ADATA != NULL && Area != HUB_ADATA->index) {
             load_type = 2;
         } else {
             load_type = 0;
@@ -1397,8 +1386,7 @@ void LoadAreaCharacters(void) {
     loadareadata_loadlevel = 1;
     WorldInfo_ReArrangeBuffers(Area, last_area);
     SetBackgroundMusic(1);
-    if (load_type == 2 && AreaCrawlMusicEnabledPc != 0 && Game.options_save.music_enabled != 0 && NOSOUND == 0 &&
-        0 == NOMUSIC) {
+    if (load_type == 2 && AreaCrawlMusicEnabledPc != 0 && Game.options_save.music_enabled != 0 && NOSOUND == 0 && 0 == NOMUSIC) {
         if (Arcade == 0 && Area != -1 && -1 != ADataList[Area].episode_index) {
             i32 handle = music_man.GetTrackHandle(1, crawl_music[ADataList[Area].episode_index]);
             music_man.SelectTrackByHandle(1, handle);
@@ -1424,11 +1412,10 @@ void LoadAreaCharacters(void) {
             if (AreaDataLoaded != 0) {
                 skip_text_scroll = 1;
             }
-        } else if (AreaDataLoaded != 0 && LoadWait == LOADWAITTIME && LoadTime < AreaCrawlMaximumTimePc &&
-                   skip_text_scroll == 0 && (NuSound3LoadingSfx() == 0 || !(LoadTime < AreaCrawlSoundWaitTimePc))) {
+        } else if (AreaDataLoaded != 0 && LoadWait == LOADWAITTIME && LoadTime < AreaCrawlMaximumTimePc && skip_text_scroll == 0 &&
+                   (NuSound3LoadingSfx() == 0 || !(LoadTime < AreaCrawlSoundWaitTimePc))) {
             AREA_LOADING_PAD_READER_PC *pads = (AREA_LOADING_PAD_READER_PC *)GamePadStorage;
-            if ((pads[0].buttons_pressed & GAMEPAD_START) != 0 || (pads[1].buttons_pressed & GAMEPAD_START) != 0 ||
-                NuKeyboard_db(1) != 0) {
+            if ((pads[0].buttons_pressed & GAMEPAD_START) != 0 || (pads[1].buttons_pressed & GAMEPAD_START) != 0 || NuKeyboard_db(1) != 0) {
                 skip_text_scroll = 1;
             } else {
                 draw_touch_prompt = 1;
@@ -1436,12 +1423,11 @@ void LoadAreaCharacters(void) {
             touch_prompt_time += FRAMETIME;
         }
         UpdateTimer(&GlobalTimer);
-        ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time =
-            ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time + FRAMETIME;
+        ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time = ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time + FRAMETIME;
         LoadTime += FRAMETIME;
         if (icon_stage == 0) {
-            if (CharacterDataLoad == 2 || (CharacterDataLoad != 0 && NULL != APICharacterLoaded(PlayerID[0]) &&
-                                           APICharacterLoaded(PlayerID[1]) != NULL)) {
+            if (CharacterDataLoad == 2 ||
+                (CharacterDataLoad != 0 && NULL != APICharacterLoaded(PlayerID[0]) && APICharacterLoaded(PlayerID[1]) != NULL)) {
                 icon_stage = 1;
             }
         } else if (icon_stage == 1) {
@@ -1462,8 +1448,7 @@ void LoadAreaCharacters(void) {
                 }
             }
         } else {
-            if (AreaDataLoaded != 0 && LoadWait > 0.0f &&
-                (LoadTime >= AreaCrawlMaximumTimePc || skip_text_scroll != 0)) {
+            if (AreaDataLoaded != 0 && LoadWait > 0.0f && (LoadTime >= AreaCrawlMaximumTimePc || skip_text_scroll != 0)) {
                 LoadWait -= FRAMETIME;
                 if (LoadWait < 0.0f) {
                     LoadWait = 0.0f;
@@ -1514,8 +1499,7 @@ void LoadAreaCharacters(void) {
                                     alpha = (f32)((f64)phase / 0.6000000238418579);
                                     f32 start_x = (f32)((f64)base_x + 0.30000001192092896);
                                     i32 angle = (i32)((f64)alpha * 16384.0);
-                                    x = (f32)((f64)start_x +
-                                              ((f64)base_x - start_x) * NuTrigTable[(angle >> 1) & 0x7fff]);
+                                    x = (f32)((f64)start_x + ((f64)base_x - start_x) * NuTrigTable[(angle >> 1) & 0x7fff]);
                                 } else {
                                     x = base_x;
                                     if (phase < 3.1f) {
@@ -1552,8 +1536,7 @@ void LoadAreaCharacters(void) {
             f32 alpha = loadareacharacters_no_backdrop_reset == 0 && LoadTime < 0.5f ? LoadTime * 2.0f : 1.0f;
             BackDrop_Draw(alpha, 1);
             if (AreaDataLoaded == 0 || (f64)LoadWait >= (f64)0.1f) {
-                f32 crawl_alpha =
-                    AreaDataLoaded == 0 ? 1.0f : (f32)(((f64)LoadWait - (f64)0.1f) / ((f64)LOADWAITTIME - (f64)0.1f));
+                f32 crawl_alpha = AreaDataLoaded == 0 ? 1.0f : (f32)(((f64)LoadWait - (f64)0.1f) / ((f64)LOADWAITTIME - (f64)0.1f));
                 if (AreaDataLoaded == 0 || crawl_alpha > 0.0f) {
                     TextCrawl_Draw(FRAMETIME, 0, crawl_alpha, NULL);
                     SetQFont2D();
@@ -1564,8 +1547,8 @@ void LoadAreaCharacters(void) {
                 f32 wave = NuTrigTable[(((u16)phase + 0x4000) >> 1) & 0x7fff];
                 i32 prompt_alpha = (i32)(32.0 - wave * 32.0);
                 SetQFont2D();
-                Text3DEx(TTab[tTOUCHTOSTART], 0.0f, AreaCrawlPromptYPc, 1.0f, AreaCrawlPromptScalePc,
-                         AreaCrawlPromptScalePc, AreaCrawlPromptScalePc, 0, 255, 255, 255, prompt_alpha);
+                Text3DEx(TTab[tTOUCHTOSTART], 0.0f, AreaCrawlPromptYPc, 1.0f, AreaCrawlPromptScalePc, AreaCrawlPromptScalePc,
+                         AreaCrawlPromptScalePc, 0, 255, 255, 255, prompt_alpha);
             }
         }
         if (fade_scene_active != 0) {
@@ -1750,20 +1733,19 @@ extern "C" {
             NUVEC box_minimum;
             NUVEC box_maximum;
 
-            if (world->current_gscn->display_list != NULL &&
-                (world->current_gscn->display_list->render_flags & 0x4000) > 0) {
-                box_minimum.x = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x -
-                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].x;
-                box_minimum.y = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y -
-                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
-                box_minimum.z = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].z -
-                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z;
-                box_maximum.x = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x +
-                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].x;
-                box_maximum.y = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y +
-                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
-                box_maximum.z = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z +
-                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].z;
+            if (world->current_gscn->display_list != NULL && (world->current_gscn->display_list->render_flags & 0x4000) > 0) {
+                box_minimum.x =
+                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x - WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].x;
+                box_minimum.y =
+                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y - WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
+                box_minimum.z =
+                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].z - WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z;
+                box_maximum.x =
+                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x + WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].x;
+                box_maximum.y =
+                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y + WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
+                box_maximum.z =
+                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z + WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].z;
             } else {
                 box_minimum.x = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x;
                 box_minimum.y = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y;
@@ -1921,8 +1903,8 @@ void WorldInfo_Load(WORLDINFO *world) {
     NUGSCN *cutscene_scene;
     WORLD_LOAD_READER_PC *resource = (WORLD_LOAD_READER_PC *)world;
     i32 index;
-    LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", (void *)world, world->area_index,
-             world->level_idx, world->config_file);
+    LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", (void *)world, world->area_index, world->level_idx,
+             world->config_file);
     Level_LoadConfigFile(world);
     if (abort_load != 0) {
         goto abort;
@@ -1995,8 +1977,8 @@ void WorldInfo_Load(WORLDINFO *world) {
     if (world->config_count > 0) {
         BoltTypes_Configure(world, ConfigBuffer.bytes);
     }
-    world->game_antinode_sys = GameAntnode_CreateSys(world, &world->giz_buffer, &world->buffer_end,
-                                                     (u16)world->current_level->max_gameantinodes);
+    world->game_antinode_sys =
+        GameAntnode_CreateSys(world, &world->giz_buffer, &world->buffer_end, (u16)world->current_level->max_gameantinodes);
     world->gizmo_sys = CreateGizmoSys(world, &world->giz_buffer, &world->buffer_end);
     sprintf(path, "%s%s", world->config_file, ".spl");
     LoadEditorSplines(path, &world->giz_buffer, &world->buffer_end);
@@ -2011,8 +1993,7 @@ void WorldInfo_Load(WORLDINFO *world) {
             goto abort;
         }
     } else if ((world->current_level->flags & 0x400) != 0 && world->area != NULL && world->area->minikit_id != -1) {
-        MiniKit_Load((MINIKIT_PC *)&resource->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end,
-                     NULL);
+        MiniKit_Load((MINIKIT_PC *)&resource->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end, NULL);
         if (resource->minikit.scene != NULL) {
             MiniKit_InitPieces((MINIKIT_PC *)&resource->minikit, 10, &world->giz_buffer, &world->buffer_end);
         }
@@ -2021,16 +2002,14 @@ void WorldInfo_Load(WORLDINFO *world) {
         }
     }
     if ((world->current_level == HUB_LDATA || (world->current_level->flags & 0x400) != 0) && big_icon_scene == NULL) {
-        resource->icons_scene =
-            NuGScnRead(&world->giz_buffer, world->buffer_end, "stuff\\icons\\starwars_icons_all.gsc");
+        resource->icons_scene = NuGScnRead(&world->giz_buffer, world->buffer_end, "stuff\\icons\\starwars_icons_all.gsc");
     }
     cutscene_scene = area_scene;
     if (cutscene_scene == NULL || world->area == NULL || (world->area->flags & 0x400) == 0) {
         cutscene_scene = things_scene;
     }
-    world->cutscene_sys =
-        (CUTSYS_PC *)CutScenes_Load(ConfigBuffer.bytes, world->current_gscn, cutscene_scene, world->page_pp,
-                                    &world->giz_buffer, &world->buffer_end, world->area_index, world->level_idx, world);
+    world->cutscene_sys = (CUTSYS_PC *)CutScenes_Load(ConfigBuffer.bytes, world->current_gscn, cutscene_scene, world->page_pp,
+                                                      &world->giz_buffer, &world->buffer_end, world->area_index, world->level_idx, world);
     if (abort_load != 0) {
         goto abort;
     }
@@ -2060,8 +2039,7 @@ void WorldInfo_Load(WORLDINFO *world) {
     }
     if (world->sock_sys != NULL) {
         if (world->config_count > 0) {
-            SockSys_Configure(world->sock_sys, ConfigBuffer.bytes, 0, &world->giz_buffer, &world->buffer_end,
-                              world->current_gscn);
+            SockSys_Configure(world->sock_sys, ConfigBuffer.bytes, 0, &world->giz_buffer, &world->buffer_end, world->current_gscn);
         }
         SockSys_GenerateData(world->sock_sys, &world->giz_buffer, world->buffer_end);
         if (abort_load != 0) {
@@ -2091,8 +2069,8 @@ void WorldInfo_Load(WORLDINFO *world) {
     if (resource->ai_loaded == 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         sprintf(ai_name, "ai");
-        world->ai_sys = AISysLoad(&world->giz_buffer, &world->buffer_end, 0x1cc00, world->current_gscn,
-                                  world->current_level->dir, world->current_level->name, ai_name);
+        world->ai_sys = AISysLoad(&world->giz_buffer, &world->buffer_end, 0x1cc00, world->current_gscn, world->current_level->dir,
+                                  world->current_level->name, ai_name);
         resource->ai_connection_control = AIPathCnxControlSysCreate(&world->giz_buffer, &world->buffer_end, 32);
         resource->ai_connection_helper = AIPathCnxHelperSysCreate(&world->giz_buffer, &world->buffer_end, 32);
         resource->ai_trigger_set = AITriggerSetSysCreate(&world->giz_buffer, &world->buffer_end);
@@ -2136,8 +2114,7 @@ void WorldInfo_Load(WORLDINFO *world) {
     }
     NuStrCpy(path, world->config_file);
     NuStrCat(path, ".git");
-    resource->giz_flow =
-        (GIZFLOW_PC *)LoadGizFlow(world, world->gizmo_sys, path, &world->giz_buffer, &world->buffer_end);
+    resource->giz_flow = (GIZFLOW_PC *)LoadGizFlow(world, world->gizmo_sys, path, &world->giz_buffer, &world->buffer_end);
     if (abort_load != 0) {
         goto abort;
     }
@@ -2147,17 +2124,15 @@ void WorldInfo_Load(WORLDINFO *world) {
         goto abort;
     }
     if (world->current_level->callbacks[0] != NULL) {
-        ((void (*)(WORLDINFO *, VARIPTR *, VARIPTR *))world->current_level->callbacks[0])(world, &world->giz_buffer,
-                                                                                          &world->buffer_end);
+        ((void (*)(WORLDINFO *, VARIPTR *, VARIPTR *))world->current_level->callbacks[0])(world, &world->giz_buffer, &world->buffer_end);
     }
     SetAreaPickupGravity(world->area_index, world->level_idx);
     world->loaded = 1;
-    LOG_INFO("World load complete: world=%p area=%d level=%d scene=%p", (void *)world, world->area_index,
-             world->level_idx, (void *)world->current_gscn);
+    LOG_INFO("World load complete: world=%p area=%d level=%d scene=%p", (void *)world, world->area_index, world->level_idx,
+             (void *)world->current_gscn);
     return;
 abort:
-    LOG_WARN("World load aborted: world=%p area=%d level=%d abort_load=%d", (void *)world, world->area_index,
-             world->level_idx, abort_load);
+    LOG_WARN("World load aborted: world=%p area=%d level=%d abort_load=%d", (void *)world, world->area_index, world->level_idx, abort_load);
     WorldInfo_Dump(world);
     WorldInfo_Reset(world, -1);
 }
@@ -3193,8 +3168,8 @@ extern "C" {
             AREA_GLOBALS_PROGRESS_FLAGS_PC = 0;
             for (index = 0; index < ADataList[area_index].level_count; ++index) {
                 i32 level = ADataList[area_index].levels[index];
-                memcpy(&Game.level_save[level * sizeof(struct LEVELSAVE_s)],
-                       &BackupGame.level_save[level * sizeof(struct LEVELSAVE_s)], sizeof(struct LEVELSAVE_s));
+                memcpy(&Game.level_save[level * sizeof(struct LEVELSAVE_s)], &BackupGame.level_save[level * sizeof(struct LEVELSAVE_s)],
+                       sizeof(struct LEVELSAVE_s));
             }
         }
     }
@@ -3206,8 +3181,7 @@ extern "C" {
             if (VADER_ADATA != NULL && WORLD->area == VADER_ADATA) {
                 return;
             }
-            if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA &&
-                bonus_gunship_store_progress_flag == 0) {
+            if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA && bonus_gunship_store_progress_flag == 0) {
                 return;
             }
         }
@@ -3241,13 +3215,11 @@ extern "C" {
     store_flags:
         if (progress != NULL) {
             if (progress != world->level_progress) {
-                PCByteCopy(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names,
-                           world->level_progress->disabled_effect_names,
+                PCByteCopy(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names, world->level_progress->disabled_effect_names,
                            sizeof(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names));
             }
-            ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->flags =
-                (((LEVEL_PROGRESS_TRANSFER_PC *)progress)->flags & ~4U) |
-                ((((WORLD_PERSISTENCE_FLAGS_PC *)world)->progress_flags << 2) & 4) | 2;
+            ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->flags = (((LEVEL_PROGRESS_TRANSFER_PC *)progress)->flags & ~4U) |
+                                                              ((((WORLD_PERSISTENCE_FLAGS_PC *)world)->progress_flags << 2) & 4) | 2;
         }
     }
 

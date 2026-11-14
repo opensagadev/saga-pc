@@ -25,10 +25,10 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#define SAGA_SKIN_CALL(function, ...)                                                                                  \
-    do {                                                                                                               \
-        if (skin_trace_gate)                                                                                           \
-            function(__VA_ARGS__);                                                                                     \
+#define SAGA_SKIN_CALL(function, ...)                                                                                                      \
+    do {                                                                                                                                   \
+        if (skin_trace_gate)                                                                                                               \
+            function(__VA_ARGS__);                                                                                                         \
     } while (0)
 
 #define LOG(level, ...) _saga_log(level, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
@@ -36,30 +36,28 @@ extern "C" {
 #define LOG_WARN(...) LOG(LOG_LEVEL_WARN, __VA_ARGS__)
 #define LOG_INFO(...) LOG(LOG_LEVEL_INFO, __VA_ARGS__)
 #define LOG_DEBUG(...) LOG(LOG_LEVEL_DEBUG, __VA_ARGS__)
-#define LOG_INFO_IF(condition, ...)                                                                                    \
-    do {                                                                                                               \
-        if (condition) {                                                                                               \
-            LOG_INFO(__VA_ARGS__);                                                                                     \
-        }                                                                                                              \
+#define LOG_INFO_IF(condition, ...)                                                                                                        \
+    do {                                                                                                                                   \
+        if (condition) {                                                                                                                   \
+            LOG_INFO(__VA_ARGS__);                                                                                                         \
+        }                                                                                                                                  \
     } while (0)
-#define LOG_WARN_ONCE(...)                                                                                             \
-    do {                                                                                                               \
-        static volatile LONG saga_logged_once = 0;                                                                     \
-        if (_InterlockedExchange(&saga_logged_once, 1) == 0) {                                                         \
-            LOG_WARN(__VA_ARGS__);                                                                                     \
-        }                                                                                                              \
+#define LOG_WARN_ONCE(...)                                                                                                                 \
+    do {                                                                                                                                   \
+        static volatile LONG saga_logged_once = 0;                                                                                         \
+        if (_InterlockedExchange(&saga_logged_once, 1) == 0) {                                                                             \
+            LOG_WARN(__VA_ARGS__);                                                                                                         \
+        }                                                                                                                                  \
     } while (0)
-#define LOG_WARN_ONCE_IF(condition, ...)                                                                               \
-    do {                                                                                                               \
-        if (condition) {                                                                                               \
-            LOG_WARN_ONCE(__VA_ARGS__);                                                                                \
-        }                                                                                                              \
+#define LOG_WARN_ONCE_IF(condition, ...)                                                                                                   \
+    do {                                                                                                                                   \
+        if (condition) {                                                                                                                   \
+            LOG_WARN_ONCE(__VA_ARGS__);                                                                                                    \
+        }                                                                                                                                  \
     } while (0)
 #define SAGA_SOUND_SETTER_BEGIN() SagaDebugSoundSetterBeginPc()
-#define SAGA_SOUND_SETTER_END(source, count, destination)                                                              \
-    SagaDebugSoundSetterEndPc(source, count, destination, _ReturnAddress())
-#define SAGA_SOUND_CHECK(stage)                                                                                        \
-    SagaDebugSoundCheckpointPc(stage, &PCSoundMixSource, &PCSoundMixSampleCount, &PCSoundMixDestination)
+#define SAGA_SOUND_SETTER_END(source, count, destination) SagaDebugSoundSetterEndPc(source, count, destination, _ReturnAddress())
+#define SAGA_SOUND_CHECK(stage) SagaDebugSoundCheckpointPc(stage, &PCSoundMixSource, &PCSoundMixSampleCount, &PCSoundMixDestination)
 #undef STUBBED
 #undef STUBBED_NAMED
 #define STUBBED() LOG_WARN_ONCE("STUBBED: %s", __FUNCTION__)

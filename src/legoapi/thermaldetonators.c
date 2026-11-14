@@ -63,8 +63,7 @@ void PartUpdate_ThermalDetonator(PART_PC *part) {
     f32 water;
     i32 surface;
     i32 layer;
-    if ((part->active & 0x4000) == 0 && (part->active & 2) != 0 && part->time_remaining > 0.0f &&
-        part->time_remaining < 1.0f) {
+    if ((part->active & 0x4000) == 0 && (part->active & 2) != 0 && part->time_remaining > 0.0f && part->time_remaining < 1.0f) {
         PlaySfx("ThermalDet_Beep", &part->position);
         part->active |= 0x4000;
         return;
@@ -382,8 +381,7 @@ i32 ShinyMetal_UpdateHint(HINT_PC *hint) {
         return 0;
     }
     if ((player != NULL && (f64)NuVecDistSqr(&player->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0) ||
-        (player2 != NULL &&
-         (f64)NuVecDistSqr(&player2->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0)) {
+        (player2 != NULL && (f64)NuVecDistSqr(&player2->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0)) {
         return 1;
     }
     return 0;

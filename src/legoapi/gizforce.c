@@ -22,12 +22,10 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
         target_position.x = target->collision_position.x;
         target_position.z = target->collision_position.z;
         height = target->upper_position.y - target->lower_position.y;
-        target_position.y =
-            target->lower_position.y + height * 0.25f + height * (1.0f / 17.0f) * qrand() * 1.5259022e-05f;
+        target_position.y = target->lower_position.y + height * 0.25f + height * (1.0f / 17.0f) * qrand() * 1.5259022e-05f;
         distance = NuVecDist(&target_position, &primary, &delta);
-        NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index],
-                   lightning_sizewab[lightning_index], &primary, &delta, lightning_col[lightning_index],
-                   lightning_endw[lightning_index], distance);
+        NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index], lightning_sizewab[lightning_index],
+                   &primary, &delta, lightning_col[lightning_index], lightning_endw[lightning_index], distance);
         PlaySfx("ForceLightningLp", &target->collision_position);
 
         if (object->field_1088 != 0 && object->field_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
@@ -56,9 +54,8 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
     height = target->upper_position.y - target->lower_position.y;
     target_position.y = target->lower_position.y + height * 0.25f + height * (1.0f / 17.0f) * qrand() * 1.5259022e-05f;
     distance = NuVecDist(&target_position, &secondary, &delta);
-    NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index],
-               lightning_sizewab[lightning_index], &secondary, &delta, lightning_col[lightning_index],
-               lightning_endw[lightning_index], distance);
+    NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index], lightning_sizewab[lightning_index],
+               &secondary, &delta, lightning_col[lightning_index], lightning_endw[lightning_index], distance);
     PlaySfx("ForceLightningLp", &target->collision_position);
 
     if (object->field_1088 != 0 && object->field_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
@@ -71,9 +68,8 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
         reflected_origin.y = plane - (reflected_origin.y - plane);
         reflected_target.y = plane - (reflected_target.y - plane);
         distance = NuVecDist(&reflected_target, &reflected_origin, &delta);
-        NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index],
-                   lightning_sizewab[lightning_index], &reflected_origin, &delta, lightning_col[lightning_index],
-                   lightning_endw[lightning_index], distance);
+        NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index], lightning_sizewab[lightning_index],
+                   &reflected_origin, &delta, lightning_col[lightning_index], lightning_endw[lightning_index], distance);
     }
 }
 
@@ -169,14 +165,10 @@ static void *GizForces_ReserveBufferSpace(void *world_ptr) {
     GIZFORCESYS_s *force_sys = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(GIZFORCESYS_s));
 
     force_sys->capacity = world->current_level->max_force;
-    force_sys->forces =
-        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZFORCE_s));
-    force_sys->hit_test_gizmos =
-        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZMO_PC *));
-    force_sys->visible_forces =
-        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZFORCE_s *));
-    force_sys->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 8,
-                                                        world->current_level->max_force_objects);
+    force_sys->forces = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZFORCE_s));
+    force_sys->hit_test_gizmos = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZMO_PC *));
+    force_sys->visible_forces = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZFORCE_s *));
+    force_sys->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 8, world->current_level->max_force_objects);
 
     for (i = 0; i < force_sys->capacity; ++i) {
         force_sys->forces[i].anim_set =

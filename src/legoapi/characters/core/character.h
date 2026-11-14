@@ -172,8 +172,7 @@ extern "C" {
     extern i16 id_R2Q5;
     extern i16 id_PRINCESSLEIABOUSHH;
 
-    CHARACTERDATA_PC *ConfigureCharacterList(char *, VARIPTR *, VARIPTR *, i32, i32 *, i32,
-                                             PLAYERCHARACTERCONFIG_PC **);
+    CHARACTERDATA_PC *ConfigureCharacterList(char *, VARIPTR *, VARIPTR *, i32, i32 *, i32, PLAYERCHARACTERCONFIG_PC **);
     extern i16 id_SUPERBATTLEDROID;
     extern i16 id_SUPERBATTLEDROID;
     extern i16 id_BATTLEDROID;
@@ -229,8 +228,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void APITransparentCharDraw(struct NUHGOBJ_EVAL_PC *, struct numtx_s *, i32, i16 *, struct numtx_s *,
-                                struct DWA_WEIGHT_BLOCK_PC **, i32);
+    void APITransparentCharDraw(struct NUHGOBJ_EVAL_PC *, struct numtx_s *, i32, i16 *, struct numtx_s *, struct DWA_WEIGHT_BLOCK_PC **,
+                                i32);
     struct NUGSCN_s *IconScene_FindById(i32);
 #ifdef __cplusplus
 }
@@ -246,10 +245,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, struct animpacket_s *, struct numtx_s *,
-                              struct numtx_s *, struct numtx_s *, NUVEC *, struct numtx_s *, GAMEOBJECT *, u32,
-                              struct NUHGOBJ_JOINT_OVERRIDE_PC *, i32, i32, f32, struct numtx_s *,
-                              void (*)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS_PC *);
+    i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, struct animpacket_s *, struct numtx_s *, struct numtx_s *,
+                              struct numtx_s *, NUVEC *, struct numtx_s *, GAMEOBJECT *, u32, struct NUHGOBJ_JOINT_OVERRIDE_PC *, i32, i32,
+                              f32, struct numtx_s *, void (*)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS_PC *);
     i32 GetDefaultIdle(GAMEOBJECT *);
     void IconScenes_Load(struct apicharactermodellist_s *, i32, VARIPTR *, VARIPTR *);
     void PostAnimate_ASTROMECH(GAMEOBJECT *);

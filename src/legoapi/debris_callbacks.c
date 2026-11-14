@@ -45,14 +45,11 @@ i32 DebrisNuASin(f32 sin) {
 
     unknown_d = unknown_b * unknown_c + unknown_c;
 
-    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW3(unknown_b * unknown_c * unknown_a) +
+    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) * ASIN_POW3(unknown_b * unknown_c * unknown_a) +
             (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
              ASIN_NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * ASIN_POW2(unknown_b * unknown_c * unknown_a)) +
-            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW4(unknown_b * unknown_c * unknown_a) +
-            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
+            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) * ASIN_POW4(unknown_b * unknown_c * unknown_a) +
+            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) * ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
            10430.4f;
 }
 
@@ -120,8 +117,6 @@ void GenDebMomAdjFromAshRock(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, DEBRISPA
 void GenDebMomAdjFromPosRevTree(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, DEBRISPARTICLE_PC *particle) {
     particle->momentum.x += particle->position.x * -(f64)0.6f;
     particle->momentum.z += particle->position.z * -(f64)0.6f;
-    particle->position.y -=
-        NuFsqrt(particle->position.x * particle->position.x + particle->position.z * particle->position.z) * (f64)0.4f;
-    particle->inverse_lifetime =
-        64.0 / ((f32)rand() * effect->particle_lifetime / 1503238528.0 + effect->particle_lifetime);
+    particle->position.y -= NuFsqrt(particle->position.x * particle->position.x + particle->position.z * particle->position.z) * (f64)0.4f;
+    particle->inverse_lifetime = 64.0 / ((f32)rand() * effect->particle_lifetime / 1503238528.0 + effect->particle_lifetime);
 }

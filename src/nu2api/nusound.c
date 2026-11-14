@@ -49,8 +49,7 @@ void GroupBuffer_MoveToEnd(i32 group_id) {
     }
     NuSound3Groups[group_id].first_sample = (i16)buffer_length;
     PCByteCopy(&NuSound3GroupSampleIds[buffer_length], &NuSound3GroupSampleIds[first_sample], sample_count * 2);
-    PCByteCopy(&NuSound3GroupSampleIds[first_sample], &NuSound3GroupSampleIds[group_end],
-               (NuSound3GroupSampleCount - first_sample) * 2);
+    PCByteCopy(&NuSound3GroupSampleIds[first_sample], &NuSound3GroupSampleIds[group_end], (NuSound3GroupSampleCount - first_sample) * 2);
     for (index = 0; index < NuSound3GroupCount; index++) {
         if (NuSound3Groups[index].first_sample > first_sample) {
             NuSound3Groups[index].first_sample -= (i16)sample_count;
@@ -82,8 +81,7 @@ void GroupBuffer_RemoveFromGroup(i32 group_id, i32 sample_id) {
     if (found == -1) {
         return;
     }
-    PCByteCopy(&NuSound3GroupSampleIds[found], &NuSound3GroupSampleIds[found + 1],
-               (NuSound3GroupSampleCount - found - 1) * 2);
+    PCByteCopy(&NuSound3GroupSampleIds[found], &NuSound3GroupSampleIds[found + 1], (NuSound3GroupSampleCount - found - 1) * 2);
     NuSound3GroupSampleCount--;
     NuSound3Groups[group_id].sample_count--;
     NuSound3Groups[group_id].cursor = 0;
@@ -107,8 +105,7 @@ void GroupBuffer_RemoveGroup(i32 group_id) {
             NuSound3Groups[index].first_sample -= (i16)sample_count;
         }
     }
-    PCByteCopy(&NuSound3Groups[group_id], &NuSound3Groups[group_id + 1],
-               (NuSound3GroupCount - 1) * sizeof(SFX_GROUP_PC));
+    PCByteCopy(&NuSound3Groups[group_id], &NuSound3Groups[group_id + 1], (NuSound3GroupCount - 1) * sizeof(SFX_GROUP_PC));
     NuSound3GroupCount--;
     for (index = SfxFileCount; index < NumSfxInst; index++) {
         if (SfxInfo[index].group > group_id) {
@@ -252,8 +249,7 @@ void PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
 
     listener = NuSound3GetListener();
     if (position != NULL) {
-        if ((position->x - listener->m30) * (position->x - listener->m30) +
-                (position->y - listener->m31) * (position->y - listener->m31) +
+        if ((position->x - listener->m30) * (position->x - listener->m30) + (position->y - listener->m31) * (position->y - listener->m31) +
                 (position->z - listener->m32) * (position->z - listener->m32) >
             nusound_fade_end * nusound_fade_end) {
             if (SfxInfo[sfx_id].falloff_near != 0.0f || SfxInfo[sfx_id].falloff_far != 0.0f) {
@@ -302,14 +298,14 @@ void PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     if ((u32)sample_id <= 1599u) {
         if (position != NULL) {
             if (loop != 0) {
-                PCSoundPlayPositionedLoop(position, sample_id, voice_volume, voice_volume, pitch_parameter, buzz_timer,
-                                          rumble_strength, rumble_sustain, rumble_release);
+                PCSoundPlayPositionedLoop(position, sample_id, voice_volume, voice_volume, pitch_parameter, buzz_timer, rumble_strength,
+                                          rumble_sustain, rumble_release);
             } else if (priority != 0) {
-                PCSoundPlayPositioned(position, sample_id, voice_volume, voice_volume, pitch_parameter, buzz_timer,
-                                      rumble_strength, rumble_sustain, rumble_release, priority);
+                PCSoundPlayPositioned(position, sample_id, voice_volume, voice_volume, pitch_parameter, buzz_timer, rumble_strength,
+                                      rumble_sustain, rumble_release, priority);
             } else {
-                PCSoundPlayPositionedWrapper(position, sample_id, voice_volume, voice_volume, pitch_parameter,
-                                             buzz_timer, rumble_strength, rumble_sustain, rumble_release);
+                PCSoundPlayPositionedWrapper(position, sample_id, voice_volume, voice_volume, pitch_parameter, buzz_timer, rumble_strength,
+                                             rumble_sustain, rumble_release);
             }
         } else {
             volume_left = pan < 0.0f ? voice_volume : (i32)((1.0f - pan) * voice_volume);
@@ -318,15 +314,15 @@ void PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
                 listener = NuSound3GetListener();
                 PCSoundListenerLoopPositionPc = *(NUVEC *)&listener->m30;
                 NuVecAdd(&PCSoundListenerLoopPositionPc, &PCSoundListenerLoopPositionPc, (NUVEC *)&listener->m20);
-                PCSoundPlayPositionedLoop(&PCSoundListenerLoopPositionPc, sample_id, volume_left, volume_right,
-                                          pitch_parameter, buzz_timer, rumble_strength, rumble_sustain, rumble_release);
+                PCSoundPlayPositionedLoop(&PCSoundListenerLoopPositionPc, sample_id, volume_left, volume_right, pitch_parameter, buzz_timer,
+                                          rumble_strength, rumble_sustain, rumble_release);
             } else {
                 if (priority != 0) {
-                    PCSoundPlayUnpositioned(sample_id, volume_left, volume_right, pitch_parameter, buzz_timer,
-                                            rumble_strength, rumble_sustain, rumble_release, priority);
+                    PCSoundPlayUnpositioned(sample_id, volume_left, volume_right, pitch_parameter, buzz_timer, rumble_strength,
+                                            rumble_sustain, rumble_release, priority);
                 } else {
-                    PCSoundPlayUnpositionedWrapper(sample_id, volume_left, volume_right, pitch_parameter, buzz_timer,
-                                                   rumble_strength, rumble_sustain, rumble_release);
+                    PCSoundPlayUnpositionedWrapper(sample_id, volume_left, volume_right, pitch_parameter, buzz_timer, rumble_strength,
+                                                   rumble_sustain, rumble_release);
                 }
             }
         }
@@ -733,12 +729,12 @@ void SoundUpdate(f32 frame_time) {
                 Music.transition_frames = 0;
             }
             if (Music.current_track != -1) {
-                NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[Music.current_track].index *
-                                                                    Music.transition * MusicVolume));
+                NuSound3SetStreamVolume(Music.primary_stream,
+                                        (i32)((f32)SfxFileTable[Music.current_track].index * Music.transition * MusicVolume));
             }
             if (Music.queued_track != -1) {
-                NuSound3SetStreamVolume(1 - Music.primary_stream, (i32)((f32)SfxFileTable[Music.queued_track].index *
-                                                                        (1.0f - Music.transition) * MusicVolume));
+                NuSound3SetStreamVolume(1 - Music.primary_stream,
+                                        (i32)((f32)SfxFileTable[Music.queued_track].index * (1.0f - Music.transition) * MusicVolume));
             }
             break;
         case 11:
@@ -763,8 +759,7 @@ void SoundUpdate(f32 frame_time) {
                         NuSound3ResumeStereoStream(Music.primary_stream);
                     }
                     Music.transition = 1.0f;
-                    NuSound3SetStreamVolume(Music.primary_stream,
-                                            (i32)((f32)SfxFileTable[Music.current_track].index * MusicVolume));
+                    NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[Music.current_track].index * MusicVolume));
                     NuSound3Update();
                     Music.transition_frames = 0;
                     Music.requested_track = -1;
@@ -1136,8 +1131,7 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
                 i = 0;
                 for (; i < NumSfx; i++) {
                     if (NuStrICmp(SfxFileInfoPc[i].filename, fpar->word_buffer_ptr) == 0) {
-                        SfxInfo[NumSfxInst].sample_id_flags =
-                            (SfxInfo[NumSfxInst].sample_id_flags & ~0x7fffu) | ((i) & 0x7fff);
+                        SfxInfo[NumSfxInst].sample_id_flags = (SfxInfo[NumSfxInst].sample_id_flags & ~0x7fffu) | ((i) & 0x7fff);
                         SfxInfo[NumSfxInst].filename = SfxFileInfoPc[i].filename;
                         SfxRefCountsPc[i]++;
                         break;
@@ -1152,13 +1146,11 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
                     NuStrNCpy(str, fpar->word_buffer_ptr, 0x40);
                     SfxRefCountsPc[NumSfx] = 1;
                     SfxInfo[NumSfxInst].filename = SfxFileInfoPc[NumSfx].filename;
-                    SfxInfo[NumSfxInst].sample_id_flags =
-                        (SfxInfo[NumSfxInst].sample_id_flags & ~0x7fffu) | ((NumSfx) & 0x7fff);
+                    SfxInfo[NumSfxInst].sample_id_flags = (SfxInfo[NumSfxInst].sample_id_flags & ~0x7fffu) | ((NumSfx) & 0x7fff);
                     NumSfx++;
                 }
             } else {
-                SfxInfo[NumSfxInst].sample_id_flags =
-                    (SfxInfo[NumSfxInst].sample_id_flags & ~0x7fffu) | ((-1) & 0x7fff);
+                SfxInfo[NumSfxInst].sample_id_flags = (SfxInfo[NumSfxInst].sample_id_flags & ~0x7fffu) | ((-1) & 0x7fff);
                 i = 0;
                 for (; i < NumSfx; i++) {
                     if (NuStrICmp(SfxFileInfoPc[i].filename, fpar->word_buffer_ptr) == 0) {
@@ -1238,9 +1230,7 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
                 buzz_timer = 5.0f;
             }
             SfxInfo[NumSfxInst].buzz_timer = buzz_timer;
-            SfxInfo[NumSfxInst].rumble_strength = rumble_strength < 0      ? 0
-                                                  : rumble_strength > 0xff ? 0xff
-                                                                           : rumble_strength;
+            SfxInfo[NumSfxInst].rumble_strength = rumble_strength < 0 ? 0 : rumble_strength > 0xff ? 0xff : rumble_strength;
             rumble_sustain = NuFParGetFloat(fpar);
             if (rumble_sustain < 0.0f) {
                 rumble_sustain = 0.0f;
@@ -1271,7 +1261,11 @@ static void fnAudioAudio(NUFPAR_PC *parser) {
 }
 
 static NUFPCOMJMP audioComPc[] = {
-    {"Audio", fnAudioAudio}, {"Sample", fnAudioSample}, {"Group", AudioGroup_Parse}, {NULL, NULL}};
+    {"Audio",  fnAudioAudio    },
+    {"Sample", fnAudioSample   },
+    {"Group",  AudioGroup_Parse},
+    {NULL,     NULL            }
+};
 
 void InitSoundInfo(i32 index) {
     SfxInfo[index].sample_id_flags |= 0x7fff;
@@ -1465,8 +1459,7 @@ void MusicSeekOffset(i32 track, f32 seek_offset) {
             (&Music.field_0012)[Music.primary_stream] = 0;
             if (Music.transition_frames >= 0x40) {
                 Music.pause_requested = 0;
-                MusicPlayStream(Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * MusicVolume),
-                                seek_offset, 1);
+                MusicPlayStream(Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * MusicVolume), seek_offset, 1);
                 Music.seek_offset = 0.0f;
                 Music.transition_frames = 0;
             } else {
@@ -1483,8 +1476,7 @@ void MusicSeekOffset(i32 track, f32 seek_offset) {
         Music.pause_requested = 0;
         Music.transition_frames = 0;
         (&Music.field_0012)[Music.primary_stream] = 0;
-        MusicPlayStream(Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * MusicVolume), seek_offset,
-                        1);
+        MusicPlayStream(Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * MusicVolume), seek_offset, 1);
     }
 }
 
@@ -1512,8 +1504,7 @@ i32 PlayCutMusic(i32 track, i32 state, void *context) {
         NuSound3CancelCheckStereo();
         NuSound3PauseStereoStream(Music.primary_stream);
         NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[track].index * CutVolume));
-        if (Music.requested_track == track && Music.pause_requested == 0 &&
-            NuSoundGetStereoStreamStatus(1 - Music.primary_stream) != 2) {
+        if (Music.requested_track == track && Music.pause_requested == 0 && NuSoundGetStereoStreamStatus(1 - Music.primary_stream) != 2) {
             NuSound3ResumeStereoStream(1 - Music.primary_stream);
             NuSound3SetStreamVolume(1 - Music.primary_stream, (i32)((f32)SfxFileTable[track].index * CutVolume));
             NuSound3Update();
@@ -1537,8 +1528,7 @@ i32 PlayCutMusic(i32 track, i32 state, void *context) {
 }
 
 void PauseGameMusic(void) {
-    if (NOMUSIC == 0 && NOSOUND == 0 && PCStereoChannel1B != -1 && Music.state != 11 && Music.state != 12 &&
-        Music.state != 13) {
+    if (NOMUSIC == 0 && NOSOUND == 0 && PCStereoChannel1B != -1 && Music.state != 11 && Music.state != 12 && Music.state != 13) {
         NuSound3CancelCheckStereo();
         NuSound3PauseStereoStream(Music.primary_stream);
         switch (Music.state) {
@@ -1623,8 +1613,7 @@ void PlayMusic(i32 track, i32 mode) {
         Music.primary_stream = (i16)(1 - Music.primary_stream);
     }
     NuSound3StopStereoStream(1 - Music.primary_stream);
-    if (Music.requested_track == track && Music.pause_requested == 0 &&
-        NuSoundGetStereoStreamStatus(Music.primary_stream) != 2) {
+    if (Music.requested_track == track && Music.pause_requested == 0 && NuSoundGetStereoStreamStatus(Music.primary_stream) != 2) {
         NuSound3ResumeStereoStream(Music.primary_stream);
         NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[track].index * MusicVolume));
         NuSound3Update();

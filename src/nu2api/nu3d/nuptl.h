@@ -21,10 +21,8 @@ extern "C" {
     void NuDebrisRendererFlushBuffers(void);
     i32 NuDebrisRendererNextBuffer(void);
     void NuRndrParticleSetRepeat(NUVEC *);
-    void BuildDebrisVerts(DEBRIS_PART_HEADER_PC *, DEBRIS_PARTICLE_CHUNK_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32,
-                          f32, f32);
-    void NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *, DEBRIS_PART_HEADER_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32,
-                             f32, f32);
+    void BuildDebrisVerts(DEBRIS_PART_HEADER_PC *, DEBRIS_PARTICLE_CHUNK_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32);
+    void NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *, DEBRIS_PART_HEADER_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32);
     void AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET_PC *);
 
     void GenericDebinfoDmaTypeUpdate(DEBRIS_INFO_PC *effect);

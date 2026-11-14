@@ -163,8 +163,7 @@ i32 StartDoorPositions(void) {
                             /* Reads start[-1] here, which in the original data layout is
                                PlayerList. PlayerList is not placed before PlayerStart here,
                                so it is named explicitly. */
-                            PLAYER_POSITION_RECORD_PC *previous =
-                                point == 5 ? (PLAYER_POSITION_RECORD_PC *)PlayerList : start - 1;
+                            PLAYER_POSITION_RECORD_PC *previous = point == 5 ? (PLAYER_POSITION_RECORD_PC *)PlayerList : start - 1;
                             start->position = previous->position;
                             angle = previous->angle;
                         }
@@ -450,26 +449,28 @@ static void D_cut_scene(NUFPAR_PC *parser) {
     }
 }
 
-static NUFPCOMJMP Door_ConfigKeywords[] = {{"spline", D_spline},
-                                           {"level", D_level},
-                                           {"level_freeplay", D_level_freeplay},
-                                           {"cam_spline", D_cam_spline},
-                                           {"cam_wait", D_cam_wait},
-                                           {"cam_blend_time", D_cam_blend_time},
-                                           {"cam_lookatplayers", D_cam_lookatplayers},
-                                           {"1_way", D_one_way},
-                                           {"one_way", D_one_way},
-                                           {"2_player_only", D_two_player_only},
-                                           {"2_players_only", D_two_player_only},
-                                           {"two_player_only", D_two_player_only},
-                                           {"two_players_only", D_two_player_only},
-                                           {"do_not_use", D_do_not_use},
-                                           {"next_sock", D_next_sock},
-                                           {"vehicle", D_vehicle},
-                                           {"use_as_start", D_use_as_start},
-                                           {"cut_scene", D_cut_scene},
-                                           {"cutscene", D_cut_scene},
-                                           {NULL, NULL}};
+static NUFPCOMJMP Door_ConfigKeywords[] = {
+    {"spline",            D_spline           },
+    {"level",             D_level            },
+    {"level_freeplay",    D_level_freeplay   },
+    {"cam_spline",        D_cam_spline       },
+    {"cam_wait",          D_cam_wait         },
+    {"cam_blend_time",    D_cam_blend_time   },
+    {"cam_lookatplayers", D_cam_lookatplayers},
+    {"1_way",             D_one_way          },
+    {"one_way",           D_one_way          },
+    {"2_player_only",     D_two_player_only  },
+    {"2_players_only",    D_two_player_only  },
+    {"two_player_only",   D_two_player_only  },
+    {"two_players_only",  D_two_player_only  },
+    {"do_not_use",        D_do_not_use       },
+    {"next_sock",         D_next_sock        },
+    {"vehicle",           D_vehicle          },
+    {"use_as_start",      D_use_as_start     },
+    {"cut_scene",         D_cut_scene        },
+    {"cutscene",          D_cut_scene        },
+    {NULL,                NULL               }
+};
 
 void Doors_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_DOOR_CONFIG_PC *world = (WORLD_DOOR_CONFIG_PC *)world_ptr;
@@ -564,8 +565,8 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     i32 destination;
     i32 index;
     (void)player_triggered;
-    if ((door->flags & 0x10) != 0 && (Player[0] == NULL || (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) == 0 ||
-                                      Player[1] == NULL || (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) == 0)) {
+    if ((door->flags & 0x10) != 0 && (Player[0] == NULL || (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) == 0 || Player[1] == NULL ||
+                                      (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) == 0)) {
         return;
     }
     if (NewLData != NULL) {
@@ -651,8 +652,7 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
     i32 two_players;
     f32 previous_abs;
     f32 current_abs;
-    if (object->dead != 0 || (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED) ||
-        NewLData != NULL) {
+    if (object->dead != 0 || (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED) || NewLData != NULL) {
         return;
     }
     door = WORLD->doors;

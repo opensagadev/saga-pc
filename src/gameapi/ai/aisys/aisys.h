@@ -338,8 +338,7 @@ extern "C" {
     f32 AIPathNodeDistanceToPathNode(AIPATH_PC *, i32, i32, i32, u32);
     typedef i32 (*AISYS_SPECIAL_NODE_CALLBACK_PC)(void *, NUSPECIALHANDLE *);
     extern AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback;
-    i32 WithinConnection(void *, NUVEC *, AIPATH_PC *, AIPATHCNX_PC *, i32, AIPATHCNX_PC *, i32, i32, AIPATHINFO_PC *,
-                         f32, i32);
+    i32 WithinConnection(void *, NUVEC *, AIPATH_PC *, AIPATHCNX_PC *, i32, AIPATHCNX_PC *, i32, i32, AIPATHINFO_PC *, f32, i32);
     void AIPathNodeUpdatePos(void *, AIPATH_PC *, AIPATHNODE_PC *);
 #ifdef __cplusplus
 }
@@ -454,10 +453,8 @@ extern "C" {
     void AISysUpdateCharacterPathPos(AISYS_PC *, struct APIOBJECT_PC *, struct AIPACKET_PC *, i32, f32);
     void InitFn_APIOBJECTFromObjIDFn(APIOBJECT_FROM_ID_PC);
     void AILocatorSet_CheckLocatorsStillAssigned(AISYS_PC *, AILOCATORSET_PC *);
-    void AILocatorSet_AssignNearestLocator(AISYS_PC *, AILOCATORSET_PC *, struct APIOBJECT_PC *, f32, NUVEC *, NUVEC *,
-                                           f32, i32);
-    void AILocatorSet_AssignFurthestLocator(AISYS_PC *, AILOCATORSET_PC *, struct APIOBJECT_PC *, f32, NUVEC *, NUVEC *,
-                                            f32, i32);
+    void AILocatorSet_AssignNearestLocator(AISYS_PC *, AILOCATORSET_PC *, struct APIOBJECT_PC *, f32, NUVEC *, NUVEC *, f32, i32);
+    void AILocatorSet_AssignFurthestLocator(AISYS_PC *, AILOCATORSET_PC *, struct APIOBJECT_PC *, f32, NUVEC *, NUVEC *, f32, i32);
     void AILocatorSet_AssignRandomLocator(AISYS_PC *, AILOCATORSET_PC *, struct APIOBJECT_PC *, f32, NUVEC *, f32, i32);
     void AISysGetPathPosEx(AISYS_PC *, NUVEC *, AIPATHINFO_PC *, AIPATH_PC *, i32, i32, f32 *);
     void AISysGetPathPos(AISYS_PC *, NUVEC *, AIPATHINFO_PC *, AIPATH_PC *, i32);
@@ -495,8 +492,8 @@ extern "C" {
     struct AISCRIPT_PC *AIScriptFind(AISYS_PC *, const char *, i32, i32, i32);
     struct AISTATE_PC *AIStateFind(const char *, struct AISCRIPT_PC *);
     void AIScriptSetState(struct AISCRIPTPROCESS_PC *, struct AISTATE_PC *);
-    void AIScriptProcessorInit(AISYS_PC *, struct AIPACKET_PC *, struct AISCRIPTPROCESS_PC *, AICREATURE_PC *, char *,
-                               char *, i32, struct AISCRIPT_PC *, struct AISTATE_PC *);
+    void AIScriptProcessorInit(AISYS_PC *, struct AIPACKET_PC *, struct AISCRIPTPROCESS_PC *, AICREATURE_PC *, char *, char *, i32,
+                               struct AISCRIPT_PC *, struct AISTATE_PC *);
     extern struct AISCRIPT_PC *aiscript_load_script;
     extern struct AISTATE_PC *aiscript_load_state;
     extern void (*GameAILoadFn)(AISYS_PC *, i32, struct NUGSCN_s *, VARIPTR *, VARIPTR *);

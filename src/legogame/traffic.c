@@ -63,8 +63,8 @@ static i32 Traffic_FindVehiclePc(char *name) {
         if (parse_trafficanimsys->vehicle_count >= 16) {
             return -1;
         }
-        if (NuSpecialFind(parse_worldinfo->current_gscn,
-                          &parse_trafficanimsys->vehicles[parse_trafficanimsys->vehicle_count], name, 1) != 0) {
+        if (NuSpecialFind(parse_worldinfo->current_gscn, &parse_trafficanimsys->vehicles[parse_trafficanimsys->vehicle_count], name, 1) !=
+            0) {
             parse_trafficanimsys->vehicle_count++;
             return parse_trafficanimsys->vehicle_count - 1;
         }
@@ -83,7 +83,10 @@ static void Traffic_vehicle(NUFPAR_PC *parser) {
     }
 }
 
-static NUFPCOMJMP TrafficAnim_ConfigKeywords[] = {{"yoffset", TrafficAnim_yoffset}, {NULL, NULL}};
+static NUFPCOMJMP TrafficAnim_ConfigKeywords[] = {
+    {"yoffset", TrafficAnim_yoffset},
+    {NULL,      NULL               }
+};
 
 static void Traffic_animobj(NUFPAR_PC *parser) {
     NUSPECIALHANDLE special;
@@ -112,12 +115,14 @@ static void Traffic_animobj(NUFPAR_PC *parser) {
     NuFParPopCom(parser);
 }
 
-static NUFPCOMJMP Traffic_ConfigKeywords[] = {{"animobj", Traffic_animobj},
-                                              {"frame_interval", Traffic_frame_interval},
-                                              {"rand_interval", Traffic_rand_interval},
-                                              {"tfactor", Traffic_tfactor},
-                                              {"vehicle", Traffic_vehicle},
-                                              {NULL, NULL}};
+static NUFPCOMJMP Traffic_ConfigKeywords[] = {
+    {"animobj",        Traffic_animobj       },
+    {"frame_interval", Traffic_frame_interval},
+    {"rand_interval",  Traffic_rand_interval },
+    {"tfactor",        Traffic_tfactor       },
+    {"vehicle",        Traffic_vehicle       },
+    {NULL,             NULL                  }
+};
 
 void TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
     TRAFFIC_WORLD_VIEW *view = (TRAFFIC_WORLD_VIEW *)world;
@@ -233,8 +238,7 @@ void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system) {
             random = qrand() / (0xffff / animation->vehicle_count + 1);
             instance->animation = animation;
             instance->vehicle_index = random;
-            frame += animation->frame_interval - animation->random_interval +
-                     animation->random_interval * 2.0f * NuRandFloat();
+            frame += animation->frame_interval - animation->random_interval + animation->random_interval * 2.0f * NuRandFloat();
         }
 
         animation->next_spawn_time =
@@ -252,8 +256,7 @@ void TrafficAnimSys_Update(TRAFFICANIMSYS_s *system) {
 
     instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->active_instances));
     while (instance != NULL) {
-        TRAFFICANIMINSTANCE_s *next =
-            (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetNext(&system->active_instances, &instance->link));
+        TRAFFICANIMINSTANCE_s *next = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetNext(&system->active_instances, &instance->link));
         TRAFFICANIM_s *animation = instance->animation;
         instance->frame += animation->tfactor * FRAMETIME * 60.0f;
         if (instance->frame > animation->end_frame) {
@@ -281,8 +284,8 @@ void TrafficAnimSys_Update(TRAFFICANIMSYS_s *system) {
                 }
             }
 
-            animation->next_spawn_time = animation->frame_interval - animation->random_interval +
-                                         animation->random_interval * 2.0f * NuRandFloat();
+            animation->next_spawn_time =
+                animation->frame_interval - animation->random_interval + animation->random_interval * 2.0f * NuRandFloat();
         }
     }
 }

@@ -12,8 +12,7 @@ void edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
     for (i = sound_index; i < AnimParams[parameter_index].sound_count - 1; ++i) {
         AnimParams[parameter_index].sound_ids[i] = AnimParams[parameter_index].sound_ids[i + 1];
         AnimParams[parameter_index].sound_values[i] = AnimParams[parameter_index].sound_values[i + 1];
-        memcpy(AnimParams[parameter_index].sound_positions[i], AnimParams[parameter_index].sound_positions[i + 1],
-               sizeof(NUVEC));
+        memcpy(AnimParams[parameter_index].sound_positions[i], AnimParams[parameter_index].sound_positions[i + 1], sizeof(NUVEC));
         strcpy(AnimParams[parameter_index].sound_names[i], AnimParams[parameter_index].sound_names[i + 1]);
     }
     --AnimParams[parameter_index].sound_count;
@@ -50,23 +49,21 @@ void edanimUpdateObjects(f32 elapsed) {
             switch (AnimParams[index].control_mode) {
                 case 1:
                     animation->flags &= ~1U;
-                    if (AnimParams[index].control_switch != -1 &&
-                        debris_object_switches[AnimParams[index].control_switch] != 0) {
+                    if (AnimParams[index].control_switch != -1 && debris_object_switches[AnimParams[index].control_switch] != 0) {
                         animation->flags |= 1;
                     }
                     break;
                 case 2:
                     animation->flags &= ~8U;
-                    if (AnimParams[index].control_switch != -1 &&
-                        debris_object_switches[AnimParams[index].control_switch] != 0 && (animation->flags & 1) == 0) {
+                    if (AnimParams[index].control_switch != -1 && debris_object_switches[AnimParams[index].control_switch] != 0 &&
+                        (animation->flags & 1) == 0) {
                         animation->ltime = 1.0f;
                         animation->flags = (animation->flags & ~6U) | 1;
                     }
                     break;
                 case 3:
                     animation->flags |= 8;
-                    if (AnimParams[index].control_switch != -1 &&
-                        debris_object_switches[AnimParams[index].control_switch] != 0) {
+                    if (AnimParams[index].control_switch != -1 && debris_object_switches[AnimParams[index].control_switch] != 0) {
                         animation->flags |= 1;
                     }
                     break;
@@ -79,8 +76,7 @@ void edanimUpdateObjects(f32 elapsed) {
                     break;
                 case 5:
                     animation->flags &= ~8U;
-                    if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance &&
-                        (animation->flags & 1) == 0) {
+                    if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance && (animation->flags & 1) == 0) {
                         animation->ltime = 1.0f;
                         animation->flags = (animation->flags & ~6U) | 1;
                     }
@@ -108,10 +104,8 @@ void edanimUpdateObjects(f32 elapsed) {
         }
         if (NuSpecialGetVisibilityFn(&special) != 0) {
             for (particle_index = 0; particle_index < AnimParams[index].effect_count; ++particle_index) {
-                if (AnimParams[index].effect_ids[particle_index] != -1 &&
-                    debtab[AnimParams[index].effect_ids[particle_index]] != NULL) {
-                    if (AnimParams[index].effect_flags[particle_index] == 0 ||
-                        (animation != NULL && (animation->flags & 1) != 0)) {
+                if (AnimParams[index].effect_ids[particle_index] != -1 && debtab[AnimParams[index].effect_ids[particle_index]] != NULL) {
+                    if (AnimParams[index].effect_flags[particle_index] == 0 || (animation != NULL && (animation->flags & 1) != 0)) {
                         NUMTX matrix;
                         NUVEC position;
                         NuMtxInvRSS(&matrix, NuSpecialGetMtx(&special));
@@ -122,10 +116,9 @@ void edanimUpdateObjects(f32 elapsed) {
                         NuMtxRotateZ(&orientation, AnimParams[index].effect_angles[particle_index]);
                         NuMtxRotateY(&orientation, AnimParams[index].effect_angle_ranges[particle_index]);
                         NuMtxMul(&matrix, &orientation, &matrix);
-                        AddVariableShotDebrisEffectTimed3(AnimParams[index].effect_ids[particle_index], &position,
-                                                          &APIObjectZeroMomentumPC,
-                                                          AnimParams[index].effect_intervals[particle_index], seconds,
-                                                          &matrix, &NuMtxSetIdentityTemplate);
+                        AddVariableShotDebrisEffectTimed3(AnimParams[index].effect_ids[particle_index], &position, &APIObjectZeroMomentumPC,
+                                                          AnimParams[index].effect_intervals[particle_index], seconds, &matrix,
+                                                          &NuMtxSetIdentityTemplate);
                     }
                 } else if (AnimParams[index].effect_names[particle_index][0] != 0) {
                     AnimParams[index].effect_ids[particle_index] =
@@ -140,8 +133,7 @@ void edanimUpdateObjects(f32 elapsed) {
                 if (AnimParams[index].sound_ids[sound_index] != -1) {
                     play = -1;
                     if (AnimParams[index].sound_flags[sound_index] == 1) {
-                        if ((i32)((f64)EdAnimLocalFrameCountPc + (f64)elapsed) /
-                                (i32)AnimParams[index].sound_values[sound_index] >
+                        if ((i32)((f64)EdAnimLocalFrameCountPc + (f64)elapsed) / (i32)AnimParams[index].sound_values[sound_index] >
                             EdAnimLocalFrameCountPc / (i32)AnimParams[index].sound_values[sound_index]) {
                             play = AnimParams[index].sound_ids[sound_index];
                         }
@@ -150,8 +142,7 @@ void edanimUpdateObjects(f32 elapsed) {
                             AnimParams[index].sound_values[sound_index] > AnimParams[index].field_17c) {
                             play = AnimParams[index].sound_ids[sound_index];
                         }
-                        if ((animation->flags & 0x10) != 0 &&
-                            animation->ltime <= AnimParams[index].sound_values[sound_index] &&
+                        if ((animation->flags & 0x10) != 0 && animation->ltime <= AnimParams[index].sound_values[sound_index] &&
                             AnimParams[index].sound_values[sound_index] < EdAnimFabsPc(AnimParams[index].field_17c)) {
                             play = AnimParams[index].sound_ids[sound_index];
                         }

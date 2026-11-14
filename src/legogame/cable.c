@@ -201,8 +201,7 @@ void UpdateCables(void) {
         source = cable->source;
         if (source == NULL || !(source->flags_1fc_word & 0x1000) || source->dead != 0 || (source->field_e20 & 0x20) ||
             (target != NULL && target->character_context == 0x17) ||
-            ((flags & 2) && source->pad->bound_pad != NULL &&
-             (source->pad->bound_pad->digital_buttons_pressed & GAMEPAD_SPECIAL))) {
+            ((flags & 2) && source->pad->bound_pad != NULL && (source->pad->bound_pad->digital_buttons_pressed & GAMEPAD_SPECIAL))) {
             release = 1;
         } else {
             flags |= 2;
@@ -219,9 +218,8 @@ void UpdateCables(void) {
                         f32 nearest = AIPositionUnsetPc;
                         i32 selected = 0;
                         for (i = 0; i < 4; ++i) {
-                            f32 distance = NuVecDistSqr(
-                                &path[0], NUMTX_GET_ROW_VEC(&cable->target->locator_matrices[atat_locators[i]], 3),
-                                &delta);
+                            f32 distance =
+                                NuVecDistSqr(&path[0], NUMTX_GET_ROW_VEC(&cable->target->locator_matrices[atat_locators[i]], 3), &delta);
                             if (distance < nearest) {
                                 nearest = distance;
                                 selected = i;
@@ -277,18 +275,15 @@ void UpdateCables(void) {
                     } else {
                         i32 next = (last + 1) % 4;
                         NUVEC *next_position = NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[next]], 3);
-                        NUVEC *opposite_position =
-                            NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[(last + 2) % 4]], 3);
+                        NUVEC *opposite_position = NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[(last + 2) % 4]], 3);
                         i32 previous = (last + 3) % 4;
-                        NUVEC *previous_position =
-                            NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[previous]], 3);
+                        NUVEC *previous_position = NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[previous]], 3);
                         NUVEC *previous_opposite_position =
                             NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[(previous + 3) % 4]], 3);
-                        if (XZLinesIntersect(&path[0], last_position, next_position, opposite_position, &along0,
-                                             &along1)) {
+                        if (XZLinesIntersect(&path[0], last_position, next_position, opposite_position, &along0, &along1)) {
                             cable->wrap_indices[cable->wrap_count++] = (u8)next;
-                        } else if (XZLinesIntersect(&path[0], last_position, previous_position,
-                                                    previous_opposite_position, &along0, &along1)) {
+                        } else if (XZLinesIntersect(&path[0], last_position, previous_position, previous_opposite_position, &along0,
+                                                    &along1)) {
                             cable->wrap_indices[cable->wrap_count++] = (u8)previous;
                         }
                     }
@@ -300,8 +295,7 @@ void UpdateCables(void) {
                     for (i = cable->wrap_count - 1; i >= 0; --i) {
                         i32 locator = cable->wrap_indices[i];
                         if (cable->target->character_model->points_of_interest[locator] != NULL) {
-                            path[count++] =
-                                *NUMTX_GET_ROW_VEC(&cable->target->locator_matrices[atat_locators[locator]], 3);
+                            path[count++] = *NUMTX_GET_ROW_VEC(&cable->target->locator_matrices[atat_locators[locator]], 3);
                         }
                     }
                 } else {
@@ -313,8 +307,7 @@ void UpdateCables(void) {
                         release = 1;
                     } else {
                         f32 distance_sq = NuVecDistSqr(&path[0], &path[1], &delta);
-                        if (NewRayCastScaleYMask(&path[1], &delta, 0.0f, 1.0f, 0,
-                                                 GetSurfaceInfoRuntimeMaskPc.word | 0x1f)) {
+                        if (NewRayCastScaleYMask(&path[1], &delta, 0.0f, 1.0f, 0, GetSurfaceInfoRuntimeMaskPc.word | 0x1f)) {
                             release = 1;
                             snapped = 1;
                         } else {
@@ -323,30 +316,26 @@ void UpdateCables(void) {
                                 GAMEOBJECT *object = &Obj[i];
                                 f32 line_distance;
                                 f32 squared;
-                                if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) ||
-                                    object->dead != 0 || (object->field_e20 & 0x20) ||
-                                    (object->flags_1fc_word & 0x80)) {
+                                if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead != 0 ||
+                                    (object->field_e20 & 0x20) || (object->flags_1fc_word & 0x80)) {
                                     continue;
                                 }
-                                if (WORLD->area != NULL && WORLD->area == HOTHBATTLE_ADATA &&
-                                    object->id != (u16)id_ATAT && object->id != id_DRAGBOMB &&
-                                    object->id != GameObjectRotationAtstId && object->id != (u16)id_ATST_LOWRES) {
+                                if (WORLD->area != NULL && WORLD->area == HOTHBATTLE_ADATA && object->id != (u16)id_ATAT &&
+                                    object->id != id_DRAGBOMB && object->id != GameObjectRotationAtstId &&
+                                    object->id != (u16)id_ATST_LOWRES) {
                                     continue;
                                 }
-                                if (object->cable != NULL &&
-                                    (((CABLE_RECORD_PC *)object->cable)->target == cable->target ||
-                                     ((CABLE_RECORD_PC *)object->cable)->target == cable->source)) {
+                                if (object->cable != NULL && (((CABLE_RECORD_PC *)object->cable)->target == cable->target ||
+                                                              ((CABLE_RECORD_PC *)object->cable)->target == cable->source)) {
                                     continue;
                                 }
                                 if (object == cable->source || object == cable->target) {
                                     continue;
                                 }
-                                line_distance =
-                                    NuLineToPointDistSqrEx(&path[0], &path[1], &object->collision_position, &closest);
+                                line_distance = NuLineToPointDistSqrEx(&path[0], &path[1], &object->collision_position, &closest);
                                 squared = object->bounds_half_height + object->bounds_radius;
                                 squared *= squared;
-                                if (line_distance < squared &&
-                                    closest.y < object->collision_position.y + object->bounds_half_height &&
+                                if (line_distance < squared && closest.y < object->collision_position.y + object->bounds_half_height &&
                                     closest.y > object->collision_position.y - object->bounds_half_height) {
                                     f32 dx = object->collision_position.x - closest.x;
                                     f32 dz = object->collision_position.z - closest.z;
@@ -365,8 +354,7 @@ void UpdateCables(void) {
                                 if (target != NULL && (target->flags_1fc_word & 0x1000)) {
                                     if (target->id != (u16)id_ATAT) {
                                         target->flags_ef4 |= 0x200;
-                                        AIScriptSetBaseScriptStateByName(&cable->target->ai_packet.script_processor,
-                                                                         "BeingTowed");
+                                        AIScriptSetBaseScriptStateByName(&cable->target->ai_packet.script_processor, "BeingTowed");
                                         cable->target->ai_packet.opponent = cable->source;
                                         FaceOpponent(cable->target, &cable->source->collision_position);
                                         target = cable->target;
@@ -385,11 +373,9 @@ void UpdateCables(void) {
                                         NuVecScale(&delta, &delta, FRAMETIME);
                                         NuVecScale(&target_impulse, &delta, strength * targetmomf);
                                         NuVecScale(&source_impulse, &delta, strength * ownermomf);
-                                        if (cable->max_length == MoveSplineRunSpeedSentinel &&
-                                            cable->target->id != (u16)id_ATAT) {
+                                        if (cable->max_length == MoveSplineRunSpeedSentinel && cable->target->id != (u16)id_ATAT) {
                                             target_impulse.y = 0.0f;
-                                            NuVecAdd(&cable->target->velocity, &cable->target->velocity,
-                                                     &target_impulse);
+                                            NuVecAdd(&cable->target->velocity, &cable->target->velocity, &target_impulse);
                                             if (cable->total_length > tow_length) {
                                                 cable->pull_time += FRAMETIME;
                                                 cable->target->flags_ef4 |= 0x20;
@@ -430,8 +416,8 @@ void UpdateCables(void) {
                                                 cable->segment_lengths[i] = remaining;
                                                 cable->total_length += remaining;
                                                 NuVecScale(&delta, &delta, CableFdiv(remaining, length));
-                                                NuVecAdd(&cable->points[cable->point_count],
-                                                         &cable->points[cable->point_count - 1], &delta);
+                                                NuVecAdd(&cable->points[cable->point_count], &cable->points[cable->point_count - 1],
+                                                         &delta);
                                                 ++cable->point_count;
                                                 break;
                                             }
@@ -516,8 +502,7 @@ void DrawCables(void) {
                 vertices[1].position = cable->points[segment + 1];
                 vertices[1].position.y = y_span * end_fraction + cable->points[0].y;
                 if (solid_cable != 0) {
-                    DrawRopeSingle(&vertices[0].position, &vertices[1].position, 1.0f, ropemtl, end_fraction,
-                                   end_fraction, 10.0f, 5.0f);
+                    DrawRopeSingle(&vertices[0].position, &vertices[1].position, 1.0f, ropemtl, end_fraction, end_fraction, 10.0f, 5.0f);
                 } else {
                     NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
                 }
@@ -565,8 +550,7 @@ void DrawCables(void) {
                     f32 end_floor;
                     vertices[0].position = cursor;
                     start_sag =
-                        cable->slack *
-                        NU_SIN_LUT((i32)(CableFdiv(distance_along + local_distance, cable->total_length) * 32768.0f));
+                        cable->slack * NU_SIN_LUT((i32)(CableFdiv(distance_along + local_distance, cable->total_length) * 32768.0f));
                     vertices[0].position.y -= start_sag;
                     start_fraction = CableFdiv(local_distance, cable->segment_lengths[segment]);
                     start_floor = start_fraction * ground_end + (1.0f - start_fraction) * ground_start + 0.05f;
@@ -587,8 +571,7 @@ void DrawCables(void) {
                         vertices[1].position.y = end_floor;
                     }
                     if (solid_cable != 0) {
-                        DrawRopeSingle(&vertices[0].position, &vertices[1].position, 1.0f, ropemtl, end_sag, end_sag,
-                                       10.0f, 5.0f);
+                        DrawRopeSingle(&vertices[0].position, &vertices[1].position, 1.0f, ropemtl, end_sag, end_sag, 10.0f, 5.0f);
                     } else {
                         NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
                     }
@@ -621,12 +604,11 @@ GAMEOBJECT *CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f32 radiu
             continue;
         }
         context = candidate->character_context;
-        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) || context == 0x3b || context == 0x17 || context == 0x41 ||
-            context == 0x3d) {
+        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) || context == 0x3b || context == 0x17 || context == 0x41 || context == 0x3d) {
             continue;
         }
-        if (candidate->id != id_DRAGBOMB && candidate->id != (u16)id_ATAT &&
-            candidate->id != GameObjectRotationAtstId && candidate->id != (u16)id_ATST_LOWRES) {
+        if (candidate->id != id_DRAGBOMB && candidate->id != (u16)id_ATAT && candidate->id != GameObjectRotationAtstId &&
+            candidate->id != (u16)id_ATST_LOWRES) {
             continue;
         }
         if (candidate->collision_position.x < minimum.x || candidate->collision_position.x > maximum.x ||

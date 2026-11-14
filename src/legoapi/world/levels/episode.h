@@ -25,8 +25,7 @@ extern "C" {
 #endif
     GAMEOBJECT *BossKilled(i32);
     extern EPISODEDATA_PC *EDataList;
-    EPISODEDATA_PC *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                           i32 *count_out);
+    EPISODEDATA_PC *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out);
     extern const char LoadPermLevelsPath[18];
     extern const char LoadPermAreasPath[17];
     extern const char LoadPermEpisodesPath[20];

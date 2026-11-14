@@ -821,8 +821,7 @@ extern "C" {
     extern i32 TERRAINMASK_NONDROID;
     u32 ParseAIPathCnxFlag(char *name);
     void *CreatePodRaceMine(struct nuvec_s *pos);
-    void HothBattle_AssignSpawnLocator(struct gameobject_s *object, struct AILOCATOR_PC *locator,
-                                       struct AILOCATORSET_PC *set);
+    void HothBattle_AssignSpawnLocator(struct gameobject_s *object, struct AILOCATOR_PC *locator, struct AILOCATORSET_PC *set);
     extern i16 id_SPEEDERBIKESNOW;
     void eduiMenuEnsureSelection(struct eduimenu_s *menu);
     i32 eduiMenuProcessSelectedItem(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
@@ -830,16 +829,14 @@ extern "C" {
     extern i32 hub_new_level;
     void edpartRemoveInstance(struct parttype_lookup_s *type, i32 index);
     extern const char NuFileIopImageNamePc[13];
-    void MakePlayCorner(struct gamecamera_s *camera, f32 screen_x, f32 screen_y, struct nuvec_s *near_corner,
-                        struct nuvec_s *far_corner);
-    void SetPlayPlane(struct KEEP_SCREEN_PLANE_PC *plane, struct nuvec_s *a, struct nuvec_s *b, struct nuvec_s *c,
-                      struct nuvec_s *d, struct nuvec_s *edge_a0, struct nuvec_s *edge_a1, struct nuvec_s *edge_b0,
-                      struct nuvec_s *edge_b1);
+    void MakePlayCorner(struct gamecamera_s *camera, f32 screen_x, f32 screen_y, struct nuvec_s *near_corner, struct nuvec_s *far_corner);
+    void SetPlayPlane(struct KEEP_SCREEN_PLANE_PC *plane, struct nuvec_s *a, struct nuvec_s *b, struct nuvec_s *c, struct nuvec_s *d,
+                      struct nuvec_s *edge_a0, struct nuvec_s *edge_a1, struct nuvec_s *edge_b0, struct nuvec_s *edge_b1);
     void edcamSetSpeed(f32 position_x, f32 position_y, f32 position_z, f32 distance);
     extern char nullobjectname[16];
     extern GRAPPLE_DYNAMIC_PC DynamicGrapple[4];
-    void Grapples_DrawList(struct WORLDINFO_s *world, struct GRAPPLE_DYNAMIC_PC *grapples, i32 grapple_count,
-                           u16 target_rotation, f32 target_alpha);
+    void Grapples_DrawList(struct WORLDINFO_s *world, struct GRAPPLE_DYNAMIC_PC *grapples, i32 grapple_count, u16 target_rotation,
+                           f32 target_alpha);
     extern NUVEC edpart_cam_pos;
     extern struct PC_SCENE_MTL_VIEW *SolidMtl3D;
     extern i16 tCHEAT_SELFDESTRUCT;

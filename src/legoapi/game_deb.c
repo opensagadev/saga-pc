@@ -24,8 +24,7 @@ i32 LookupDebrisEffectPageIgnore(char *name, i8 page, i32 ignore) {
     }
 
     for (i = 1; i < debinf_count; ++i) {
-        if (i != ignore && debtab[i] != NULL && edpp_page_used[debtab[i]->page] != 0 &&
-            NuStrICmp(debtab[i]->name, name) == 0) {
+        if (i != ignore && debtab[i] != NULL && edpp_page_used[debtab[i]->page] != 0 && NuStrICmp(debtab[i]->name, name) == 0) {
             return i;
         }
     }
@@ -52,8 +51,7 @@ i32 LookupDebrisEffectPageOnly(char *name, i8 page) {
     }
 
     for (i = 1; i < debinf_count; ++i) {
-        if (debtab[i] != NULL &&
-            ((debtab[i]->page == 0 && edpp_page_used[0] != 0) || (debtab[i]->page == 1 && edpp_page_used[1] != 0)) &&
+        if (debtab[i] != NULL && ((debtab[i]->page == 0 && edpp_page_used[0] != 0) || (debtab[i]->page == 1 && edpp_page_used[1] != 0)) &&
             NuStrICmp(debtab[i]->name, name) == 0) {
             return i;
         }
@@ -126,8 +124,7 @@ void fun_006592d0(i32 thinning) {
 float edanimPlayerAnimDistance(i32 parameter_index) {
     if (edmainQueryLocVec() != NULL) {
         nuhspecial_s special;
-        NuGScnGetSpecial(&special, edanim_page_scene[AnimParams[parameter_index].page],
-                         AnimParams[parameter_index].instance_id);
+        NuGScnGetSpecial(&special, edanim_page_scene[AnimParams[parameter_index].page], AnimParams[parameter_index].instance_id);
         return NuVecDist(NuSpecialGetPos(&special), edmainQueryLocVec(), NULL);
     }
     return 0.0f;
@@ -225,8 +222,8 @@ i32 AddFiniteShotPART(i32 effect, NUVEC *position, i32 count) {
     if (index != -1) {
         part_emits[index].shots_remaining = count;
         part_emits[index].time_24 = partglobaltime;
-        part_emits[index].time_28 = part_types[effect].emission_period + partglobaltime +
-                                    NuRandFloatSeeded(&partseed) * part_types[effect].emission_period_random;
+        part_emits[index].time_28 =
+            part_types[effect].emission_period + partglobaltime + NuRandFloatSeeded(&partseed) * part_types[effect].emission_period_random;
         part_emits[index].time_20 = partglobaltime - 1.0f / part_types[effect].emission_rate;
     }
     return index;
@@ -288,8 +285,8 @@ void DebrisStartOffsetEx(DEBRISKEY_PC *key, f32 offset) {
     } else {
         key->emission_time = now;
     }
-    key->emission_end_time = NuRandFloatSeeded(&debrisseed) * effect->emission_period_random +
-                             (effect->emission_period + key->emission_time);
+    key->emission_end_time =
+        NuRandFloatSeeded(&debrisseed) * effect->emission_period_random + (effect->emission_period + key->emission_time);
     key->previous_emission_time = -10.0f;
 }
 

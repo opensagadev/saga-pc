@@ -23,8 +23,7 @@ struct gameobject_s;
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
-#if SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_PART == 1 &&                                                        \
-    !defined(SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_STOP)
+#if SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_PART == 1 && !defined(SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_STOP)
 typedef void (*PART_ACTION_PC)(struct PART_PC *);
 #ifdef __cplusplus
 extern "C" {
@@ -40,8 +39,7 @@ extern "C" {
 #endif
 #endif
 
-#if SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_PART == 2 &&                                                        \
-    !defined(SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_STOP)
+#if SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_PART == 2 && !defined(SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif

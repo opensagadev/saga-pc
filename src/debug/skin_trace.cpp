@@ -118,8 +118,7 @@ namespace {
 
     unsigned int stream_of(TraceWord address) {
         for (unsigned int i = 0; i < 2; ++i) {
-            if (state.stream[i].size && address >= state.stream[i].base &&
-                address - state.stream[i].base < state.stream[i].size) {
+            if (state.stream[i].size && address >= state.stream[i].base && address - state.stream[i].base < state.stream[i].size) {
                 return i;
             }
         }
@@ -212,8 +211,7 @@ extern "C" void skin_trace_stream(unsigned int index, TraceWord base, unsigned i
     }
 }
 
-extern "C" void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const void *world64, TraceWord skin,
-                                unsigned int count) {
+extern "C" void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const void *world64, TraceWord skin, unsigned int count) {
     char record[512] = {0};
     bool emit = false;
     {
@@ -242,8 +240,7 @@ extern "C" void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const voi
             ordinal = v.ordinal;
             if (ordinal <= 8) {
                 unsigned int used = 0;
-                text(record, used, sizeof(record),
-                     "SKIN_TRACE inventory submission-instance ordinal/hierarchy/joints/world: ");
+                text(record, used, sizeof(record), "SKIN_TRACE inventory submission-instance ordinal/hierarchy/joints/world: ");
                 hex(record, used, sizeof(record), ordinal);
                 hex(record, used, sizeof(record), hierarchy);
                 hex(record, used, sizeof(record), joints);
@@ -480,9 +477,8 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
                 break;
             }
         }
-        if (!item || item->ordinal != state.selected || item->palette != t->palette ||
-            t->palette_stream != item->stream || t->palette_epoch != item->epoch || t->palette_count < 0 ||
-            t->palette_count > 8) {
+        if (!item || item->ordinal != state.selected || item->palette != t->palette || t->palette_stream != item->stream ||
+            t->palette_epoch != item->epoch || t->palette_count < 0 || t->palette_count > 8) {
             return;
         }
         TraceWord identity[4] = {draw->vertex_buffer, draw->index_buffer, draw->base_vertex, draw->start_index};
@@ -490,8 +486,7 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
             memcpy(state.selected_geometry, identity, sizeof(identity));
             state.selected_material = draw->material;
             state.selected_draw = 1;
-        } else if (memcmp(state.selected_geometry, identity, sizeof(identity)) ||
-                   state.selected_material != draw->material) {
+        } else if (memcmp(state.selected_geometry, identity, sizeof(identity)) || state.selected_material != draw->material) {
             return;
         }
         unsigned int used = 0;
@@ -546,8 +541,8 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
             if (semantic == 5 && count > (unsigned int)t->palette_count * 4) {
                 count = t->palette_count * 4;
             }
-            if (count > (semantic == 5 ? 32u : (semantic == 0 || semantic == 4 ? 4u : 1u)) ||
-                (unsigned int)v.first >= limit || count > limit - (unsigned int)v.first) {
+            if (count > (semantic == 5 ? 32u : (semantic == 0 || semantic == 4 ? 4u : 1u)) || (unsigned int)v.first >= limit ||
+                count > limit - (unsigned int)v.first) {
                 text(record, used, sizeof(record), "range-unknown ");
                 continue;
             }

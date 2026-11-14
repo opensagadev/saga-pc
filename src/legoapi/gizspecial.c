@@ -238,8 +238,7 @@ static NUVEC *GizSpecial_GetPos(GIZMO_PC *gizmo) {
     GIZSPECIAL_CALLBACK_PC *special;
     if (gizmo != NULL) {
         special = gizmo->object;
-        if (special == NULL || special->anim_set->object_count == 0 ||
-            !NuSpecialExistsFn(&special->anim_set->objects->special)) {
+        if (special == NULL || special->anim_set->object_count == 0 || !NuSpecialExistsFn(&special->anim_set->objects->special)) {
             return NULL;
         }
         return NuSpecialGetPos(&special->anim_set->objects->special);
@@ -342,8 +341,7 @@ static void *GizSpecial_ReserveBuffer(void *world_ptr) {
         fields->specials = (GIZFLOW_SPECIAL_SYSTEM *)world->giz_buffer.addr;
         system = (GIZSPECIAL_SYSTEM_CALLBACK_PC *)fields->specials;
         world->giz_buffer.addr += 16;
-        system->anim_pool =
-            GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0, fields->level->max_specials);
+        system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0, fields->level->max_specials);
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         system->specials = (GIZSPECIAL_CALLBACK_PC *)world->giz_buffer.addr;
         world->giz_buffer.addr += fields->level->max_specials * sizeof(GIZSPECIAL_CALLBACK_PC);
@@ -441,8 +439,8 @@ void edbobs_DrawCoordinateInfo(NUVEC *position, i32 x, i32 y) {
     NuQFntPrintEx(system_qfont, (x + 150) * 16, row, 0x10, "%.3f", position->z);
 }
 
-i32 GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void (*read_data)(GAMEANIMOBJ *, u8), u8 version,
-                             char *prefix, char *suffix) {
+i32 GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void (*read_data)(GAMEANIMOBJ *, u8), u8 version, char *prefix,
+                             char *suffix) {
     WORLDINFO *world = world_ptr;
     i32 success = 1;
     i32 i;
@@ -468,8 +466,7 @@ i32 GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void (*read_data
         if (!set->object_pool || !set->object_pool->free_objects) {
             success = 0;
         }
-        object = GameAnimSet_AddObjectByName(set, world->current_gscn, name, start_frame, end_frame, 0,
-                                             world->gizmo_sys, prefix, suffix);
+        object = GameAnimSet_AddObjectByName(set, world->current_gscn, name, start_frame, end_frame, 0, world->gizmo_sys, prefix, suffix);
         if (!object) {
             memset(&missing, 0, sizeof(missing));
             object = &missing;

@@ -1,7 +1,6 @@
 #include "saga.h"
 
-extern "C" void NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL_VIEW *shader,
-                                                   PC_SHADER_WATER_MATERIAL_VIEW *material);
+extern "C" void NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL_VIEW *shader, PC_SHADER_WATER_MATERIAL_VIEW *material);
 
 void PCShaderNativeUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     if (shader->vertex_shader != NULL) {
@@ -15,8 +14,8 @@ void PCShaderNativeUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     NuShaderObjectUnInit(shader);
 }
 
-void PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index, const char *vertex_source,
-                              i32 vertex_length, const char *pixel_source, i32 pixel_length, i32 version) {
+void PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index, const char *vertex_source, i32 vertex_length,
+                              const char *pixel_source, i32 pixel_length, i32 version) {
     NuShaderObjectInit(shader, key, index, vertex_source, vertex_length, pixel_source, pixel_length, version);
     ID3DXBuffer *vertex_code = NULL;
     ID3DXBuffer *pixel_code = NULL;
@@ -49,8 +48,8 @@ void PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key
     if (version < 2) {
         flags = 0x10200;
     }
-    result = D3DXCompileShader(vertex_source, vertex_length, NULL, NULL, "vertexProgram", vertex_profile, flags,
-                               &vertex_code, &errors, &vertex_constants);
+    result = D3DXCompileShader(vertex_source, vertex_length, NULL, NULL, "vertexProgram", vertex_profile, flags, &vertex_code, &errors,
+                               &vertex_constants);
     if (result != 0) {
         errors->methods->get_buffer_pointer(errors);
         if (vertex_code != NULL) {
@@ -67,8 +66,8 @@ void PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key
         return;
     }
     if (pixel_source != NULL) {
-        result = D3DXCompileShader(pixel_source, pixel_length, NULL, NULL, "fragmentProgram", pixel_profile, flags,
-                                   &pixel_code, &errors, &pixel_constants);
+        result = D3DXCompileShader(pixel_source, pixel_length, NULL, NULL, "fragmentProgram", pixel_profile, flags, &pixel_code, &errors,
+                                   &pixel_constants);
         if (result != 0) {
             errors->methods->get_buffer_pointer(errors);
             if (vertex_code != NULL) {
@@ -90,14 +89,12 @@ void PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key
             return;
         }
     }
-    PCDeviceCreateVertexShader((const DWORD *)vertex_code->methods->get_buffer_pointer(vertex_code),
-                               &shader->vertex_shader);
+    PCDeviceCreateVertexShader((const DWORD *)vertex_code->methods->get_buffer_pointer(vertex_code), &shader->vertex_shader);
     if (pixel_source != NULL) {
         if (bgProcIsBgThread() && PCFrameLoadingYieldEnabled()) {
             Sleep(10);
         }
-        PCDeviceCreatePixelShader((const DWORD *)pixel_code->methods->get_buffer_pointer(pixel_code),
-                                  &shader->pixel_shader);
+        PCDeviceCreatePixelShader((const DWORD *)pixel_code->methods->get_buffer_pointer(pixel_code), &shader->pixel_shader);
     }
     PCShaderProbeHLSLConstants(shader, vertex_constants, pixel_constants);
     if (vertex_code != NULL) {
@@ -174,8 +171,8 @@ extern "C" i32 fun_007421c0(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 
-extern "C" void NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element,
-                                            i32 count, const f32 *values) {
+extern "C" void NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element, i32 count,
+                                            const f32 *values) {
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
     if (parameter->register_index < 0) {
         return;
@@ -195,8 +192,8 @@ extern "C" void NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *shader, 
     }
 }
 
-extern "C" void NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic,
-                                                      i32 first_element, i32 count, const f32 *values) {
+extern "C" void NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element, i32 count,
+                                                      const f32 *values) {
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
     if (parameter->register_index < 0) {
         return;
@@ -445,8 +442,7 @@ static void PCShaderSamplerWrapPc(i32 u_mode, u32 stage, i32 v_mode) {
 }
 
 extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *shader, NUMTL *original_material) {
-    PC_SHADER_MATERIAL_DISPATCH_VIEW *material =
-        reinterpret_cast<PC_SHADER_MATERIAL_DISPATCH_VIEW *>(original_material);
+    PC_SHADER_MATERIAL_DISPATCH_VIEW *material = reinterpret_cast<PC_SHADER_MATERIAL_DISPATCH_VIEW *>(original_material);
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = shader->active_parameters;
     NUVEC4 vector_2;
     NUVEC4 vector_10;
@@ -749,9 +745,7 @@ extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *shad
                 } else if (PCDeviceHardwareVertexProcessingPC != 1 && (material->texture_flags & 0x50000u) != 0) {
                     texture = NuTextureEnvironmentCubePc;
                 } else {
-                    texture = material->cube_texture_id > 0
-                                  ? NuTextureGetDimensions(material->cube_texture_id)->resource
-                                  : NULL;
+                    texture = material->cube_texture_id > 0 ? NuTextureGetDimensions(material->cube_texture_id)->resource : NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 3);

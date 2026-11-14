@@ -433,8 +433,7 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
         camera->distance = MIN(-camera->minimum_distance, camera->distance);
     }
     if (camera->freedoms & EDCAM_FREEDOM_PITCH) {
-        camera->pitch +=
-            (i32)((f32)(NuPs2ApplyDeadZone(pad_pitch_axis, 32) * camera->pad_pitch_speed) * delta_time * -64.0);
+        camera->pitch += (i32)((f32)(NuPs2ApplyDeadZone(pad_pitch_axis, 32) * camera->pad_pitch_speed) * delta_time * -64.0);
         camera->pitch = MIN(0x4000, camera->pitch);
         camera->pitch = MAX(-0x4000, camera->pitch);
     }
@@ -446,12 +445,10 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
         movement.y -= (f32)pad->analog_l2 * camera->position_speed.y * move_speed * frame_scale * 0.5;
     }
     if (camera->freedoms & EDCAM_FREEDOM_POSITION_Z) {
-        movement.z =
-            -(f32)NuPs2ApplyDeadZone(pad->analog_left_y, 32) * camera->position_speed.y * move_speed * frame_scale;
+        movement.z = -(f32)NuPs2ApplyDeadZone(pad->analog_left_y, 32) * camera->position_speed.y * move_speed * frame_scale;
     }
     if (camera->freedoms & EDCAM_FREEDOM_POSITION_X) {
-        movement.x =
-            (f32)NuPs2ApplyDeadZone(pad->analog_left_x, 32) * camera->position_speed.y * move_speed * frame_scale;
+        movement.x = (f32)NuPs2ApplyDeadZone(pad->analog_left_x, 32) * camera->position_speed.y * move_speed * frame_scale;
     }
     NuVecRotateY(&movement, &movement, camera->yaw);
     NuVecAdd(&camera->position, &camera->position, &movement);
@@ -482,9 +479,8 @@ void do_maya_mouse_camera(edcam_s *camera) {
     /* The historical mapped name TargetAng denotes the smoothed PC slot. */
     __declspec(allocate(".bss$EdcamMayaSmoothedAnglePc")) static EdcamMayaAngleObservedPc TargetAng = {0};
     __declspec(allocate(".bss$EdcamMayaRawAnglePc")) static EdcamMayaAngleObservedPc RawTargetAngPc = {0};
-    f32 zoom_scale = camera->auto_zoom_dist_scale != 0.0f
-                         ? EdcamFabsPc(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base
-                         : 1.0f;
+    f32 zoom_scale =
+        camera->auto_zoom_dist_scale != 0.0f ? EdcamFabsPc(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base : 1.0f;
     NUVEC movement;
     f32 mouse_x;
     f32 mouse_y;
@@ -530,8 +526,7 @@ void do_maya_mouse_camera(edcam_s *camera) {
                 }
                 length_squared = mouse_x * mouse_x + mouse_y * mouse_y;
                 zoom_delta = NuFsqrt(length_squared) * sine;
-                camera->distance =
-                    camera->distance + camera->distance_speed * zoom_scale * zoom_delta * camera->mouse_move_speed;
+                camera->distance = camera->distance + camera->distance_speed * zoom_scale * zoom_delta * camera->mouse_move_speed;
                 minimum = -camera->minimum_distance;
                 camera->distance = MIN(minimum, camera->distance);
             }

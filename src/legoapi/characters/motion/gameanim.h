@@ -25,12 +25,10 @@ extern "C" {
     void RootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
     void RootFnY(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
     void BlendRootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
-    GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame,
-                                       i32 append);
-    i32 GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated,
-                                  i32 include_static);
-    i32 GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection,
-                                       i32 include_animated, i32 include_static);
+    GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame, i32 append);
+    i32 GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated, i32 include_static);
+    i32 GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection, i32 include_animated,
+                                       i32 include_static);
     i32 GameAnimSet_GetVisibility(GAMEANIMSET *set);
     void GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility);
     void GameAnimSet_EvalAnim(GAMEANIMSET *set);
@@ -73,8 +71,7 @@ extern "C" {
     f32 AnimStopFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
     i32 AnimMiscFlags(CHARACTER_MODEL_LAYERS_PC *, i32);
     f32 AnimSpeed(CHARACTER_MODEL_LAYERS_PC *, i32);
-    void EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, DWA_WEIGHT_BLOCK_PC ***, NUVEC *,
-                       NUMTX *, u32);
+    void EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, DWA_WEIGHT_BLOCK_PC ***, NUVEC *, NUMTX *, u32);
 
     /* Proposed finite public interfaces; UpdateAnimTimer remains original-TU private. */
     void AnimatePlayer(GAMEOBJECT *);

@@ -50,8 +50,8 @@ const FtpFile *NetFtpManager::GetTransfers() const {
 void NetFtpManager::Update() {
 }
 
-void FtpFile::Init(i32 new_direction, const char *new_name, i32 new_size, const NetAddress &new_address,
-                   void *new_buffer, i32 new_capacity) {
+void FtpFile::Init(i32 new_direction, const char *new_name, i32 new_size, const NetAddress &new_address, void *new_buffer,
+                   i32 new_capacity) {
     address = new_address.address;
     direction = new_direction;
     accepted = 0;

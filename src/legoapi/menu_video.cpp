@@ -4,8 +4,7 @@ u8 MENU_VIDEO_OPTIONS_PC::ChangedPc() {
     if (aspect_mode != PcWindowOptions.aspect_mode) {
         return 1;
     }
-    if ((shadows_enabled == 1) != PcWindowOptions.shadowsenabled ||
-        (bloom_enabled == 1) != PcWindowOptions.bloomenabled ||
+    if ((shadows_enabled == 1) != PcWindowOptions.shadowsenabled || (bloom_enabled == 1) != PcWindowOptions.bloomenabled ||
         (speed_blur_enabled == 1) != PcWindowOptions.speedblurenabled) {
         return 1;
     }
@@ -522,13 +521,13 @@ extern "C" void MenuExitVideoConfirmPc(MENU *) {
 }
 
 extern "C" void MenuDrawNoticePc(char *text, u32 red, u32 green, u32 blue) {
-    MenuSmartTextEx(text, 0.0f, 0.15f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue,
-                    1.5f, 4, NULL, 0, MenuA);
+    MenuSmartTextEx(text, 0.0f, 0.15f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue, 1.5f, 4, NULL, 0,
+                    MenuA);
 }
 
 extern "C" void fun_0050f6e0(char *text, u32 red, u32 green, u32 blue) {
-    MenuSmartTextEx(text, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue,
-                    1.5f, 4, NULL, 0, MenuA);
+    MenuSmartTextEx(text, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue, 1.5f, 4, NULL, 0,
+                    MenuA);
 }
 
 extern "C" void MenuEnterHiresNoticePc(MENU *menu) {

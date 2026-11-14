@@ -23,8 +23,7 @@ i32 MosEisleyC_PastBarrier(GAMEOBJECT *object) {
 }
 
 void MosEisleyE_Update(WORLDINFO *unused0) {
-    if ((texanimbits & 2) == 0 && LevGizmo[0] != NULL && LevGizmo[0]->object != NULL &&
-        GizForce_Complete(LevGizmo[0]->object)) {
+    if ((texanimbits & 2) == 0 && LevGizmo[0] != NULL && LevGizmo[0]->object != NULL && GizForce_Complete(LevGizmo[0]->object)) {
         texanimbits |= 2;
     }
 }
@@ -59,8 +58,8 @@ i32 DeathStarShieldDown(void) {
         return 0;
     }
     player = Player[0];
-    if (player != NULL && (WORLD->current_level != DEATHSTARBATTLED_LDATA ||
-                           ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
+    if (player != NULL &&
+        (WORLD->current_level != DEATHSTARBATTLED_LDATA || ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[0];
         packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->torpedo;
         if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
@@ -68,8 +67,8 @@ i32 DeathStarShieldDown(void) {
         }
     }
     player = Player[1];
-    if (player != NULL && (WORLD->current_level != DEATHSTARBATTLED_LDATA ||
-                           ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
+    if (player != NULL &&
+        (WORLD->current_level != DEATHSTARBATTLED_LDATA || ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[1];
         packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->torpedo;
         if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
@@ -92,8 +91,7 @@ void DeathStarEscapeB_Init(WORLDINFO *world) {
     for (index = 0; index < 2; ++index) {
         animation[index] = NuSpecialGetInstAnim(&LevHSpecial[index]);
         if (animation[index] != NULL) {
-            data[index] =
-                ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
+            data[index] = ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
             if (data[index] != NULL) {
                 fakeanimendframe[0] = (f32)((f64)NuAnimEndFrameOld(data[index]) + (f64)fakeanimendframe[0]);
             }
@@ -117,8 +115,7 @@ void DeathStarEscapeB_Update(WORLDINFO *world) {
     for (index = 0; index < 2; ++index) {
         animation[index] = NuSpecialGetInstAnim(&LevHSpecial[index]);
         if (animation[index] != NULL) {
-            data[index] =
-                ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
+            data[index] = ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
         }
     }
     if (data[0] != NULL && data[1] != NULL) {
@@ -179,7 +176,10 @@ static void BlockadeRunnerDKillEjectedCreaturePc(PART_PC *part, i32 reason) {
     }
 }
 
-static NUVEC BlockadeRunnerDEjectVecPc[2] = {{13.0f, 1.6f, 7.93f}, {13.0f, 1.6f, 6.55f}};
+static NUVEC BlockadeRunnerDEjectVecPc[2] = {
+    {13.0f, 1.6f, 7.93f},
+    {13.0f, 1.6f, 6.55f}
+};
 static NUVEC BlockadeRunnerDEjectMomPc = {-0.5f, 0.0f, 0.0f};
 
 static i32 BlockadeRunnerDDrawCreaturePc(PART_PC *part) {
@@ -205,8 +205,8 @@ static void BlockadeRunnerDEjectCreaturePc(i32 eject_index) {
         }
         NuMtxSetTranslation(&matrix, &BlockadeRunnerDEjectVecPc[eject_index]);
         model = models[qrand() / 0x4000];
-        LevGameObject[i] = AddDynamicCreature(model, &BlockadeRunnerDEjectVecPc[eject_index], 0, "default", NULL, NULL,
-                                              0, NULL, NULL, 0, 0);
+        LevGameObject[i] =
+            AddDynamicCreature(model, &BlockadeRunnerDEjectVecPc[eject_index], 0, "default", NULL, NULL, 0, NULL, NULL, 0, 0);
         if (LevGameObject[i] != NULL) {
             LevGameObject[i]->flags_ef4 = (LevGameObject[i]->flags_ef4 & ~0x20) | ((test_tb & 1) << 5);
             LevGameObject[i]->flags_ef0 |= 0x10;
@@ -338,8 +338,8 @@ void DeathStarEscapeA_Update(WORLDINFO *world) {
 
 void DeathStarEscapeC_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], "door_push", 1);
-    LevPathCnx[0] = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "droid_rescue_a",
-                                      "droid_rescue_b", &LevPathCnxDir);
+    LevPathCnx[0] =
+        AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "droid_rescue_a", "droid_rescue_b", &LevPathCnxDir);
 }
 
 void DeathStarEscapeC_Update(WORLDINFO *world) {
@@ -543,8 +543,7 @@ void TrenchMove(GAMEOBJECT *object) {
     NuVecSub(&object->velocity, &object->position, &object->start_position);
     NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
     if ((object->character_data->game_character->flags_090 & 1) != 0) {
-        if (object->character_context != 0x2a && object->character_context != 0x36 &&
-            object->character_context != 0x3a) {
+        if (object->character_context != 0x2a && object->character_context != 0x36 && object->character_context != 0x3a) {
             roll = (i32)(object->velocity.z * TrenchRollScalePc);
         } else {
             roll = 0;
@@ -660,8 +659,8 @@ void DeathStarBattleDUpdate(WORLDINFO *world) {
                     } else {
                         model = id_TIEFIGHTER;
                     }
-                    ship = AddDynamicCreature(model, &spawn, 0xc000, "TrenchBaddie", &player->ai_packet.path_info, NULL,
-                                              0, NULL, NULL, 0, 1);
+                    ship =
+                        AddDynamicCreature(model, &spawn, 0xc000, "TrenchBaddie", &player->ai_packet.path_info, NULL, 0, NULL, NULL, 0, 1);
                     if (ship != NULL) {
                         ship->flags_ef8_word |= 4;
                         ship->tag_object_callback = TrenchKilledCallback;

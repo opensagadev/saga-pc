@@ -192,20 +192,20 @@ void NuMtxCalcDebrisFaceOn(NUMTX *m) {
     m->m33 = 1.0f;
 }
 
-#define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                             \
-    {                                                                                                                  \
-        if ((v).z < global_camera.near_clip && (near_enabled))                                                         \
-            (code) |= 0x20;                                                                                            \
-        if ((v).z > far_clip)                                                                                          \
-            (code) |= 0x10;                                                                                            \
-        if ((v).x < -(v).z * (horizontal))                                                                             \
-            (code) |= 1;                                                                                               \
-        if ((v).x > (v).z * (horizontal))                                                                              \
-            (code) |= 2;                                                                                               \
-        if ((v).y < -(v).z * (vertical))                                                                               \
-            (code) |= 8;                                                                                               \
-        if ((v).y > (v).z * (vertical))                                                                                \
-            (code) |= 4;                                                                                               \
+#define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                                                 \
+    {                                                                                                                                      \
+        if ((v).z < global_camera.near_clip && (near_enabled))                                                                             \
+            (code) |= 0x20;                                                                                                                \
+        if ((v).z > far_clip)                                                                                                              \
+            (code) |= 0x10;                                                                                                                \
+        if ((v).x < -(v).z * (horizontal))                                                                                                 \
+            (code) |= 1;                                                                                                                   \
+        if ((v).x > (v).z * (horizontal))                                                                                                  \
+            (code) |= 2;                                                                                                                   \
+        if ((v).y < -(v).z * (vertical))                                                                                                   \
+            (code) |= 8;                                                                                                                   \
+        if ((v).y > (v).z * (vertical))                                                                                                    \
+            (code) |= 4;                                                                                                                   \
     }
 
 #define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)
@@ -341,8 +341,7 @@ void NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     }
     if (fast == 0) {
         if (NuCameraOrthographic == 0) {
-            NuCameraSetProjectionMtx(&pmtx, global_camera.fov, global_camera.aspect, global_camera.near_clip,
-                                     global_camera.far_clip);
+            NuCameraSetProjectionMtx(&pmtx, global_camera.fov, global_camera.aspect, global_camera.near_clip, global_camera.far_clip);
             pmtx.m00 *= global_camera.unknown_58;
             pmtx.m11 *= global_camera.unknown_5c;
             pmtx.m20 += global_camera.unknown_50;
@@ -421,41 +420,39 @@ i32 NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32 far_cli
         AxisClipNearFarPlanesPc.m30 += far_clip;
     }
     NuVecMtxTransform(&distance.sides, center, &AxisClipFrustumPlanesPc);
-    distance.fourth = AxisClipFrustumPlanesPc.m33 +
-                      (center->z * AxisClipFrustumPlanesPc.m23 +
-                       (center->x * AxisClipFrustumPlanesPc.m03 + center->y * AxisClipFrustumPlanesPc.m13));
-    distance.far_plane = AxisClipNearFarPlanesPc.m30 +
-                         (center->z * AxisClipNearFarPlanesPc.m20 +
-                          (center->x * AxisClipNearFarPlanesPc.m00 + center->y * AxisClipNearFarPlanesPc.m10));
-    distance.near_plane = AxisClipNearFarPlanesPc.m31 +
-                          (center->z * AxisClipNearFarPlanesPc.m21 +
-                           (center->x * AxisClipNearFarPlanesPc.m01 + center->y * AxisClipNearFarPlanesPc.m11));
+    distance.fourth = AxisClipFrustumPlanesPc.m33 + (center->z * AxisClipFrustumPlanesPc.m23 +
+                                                     (center->x * AxisClipFrustumPlanesPc.m03 + center->y * AxisClipFrustumPlanesPc.m13));
+    distance.far_plane =
+        AxisClipNearFarPlanesPc.m30 +
+        (center->z * AxisClipNearFarPlanesPc.m20 + (center->x * AxisClipNearFarPlanesPc.m00 + center->y * AxisClipNearFarPlanesPc.m10));
+    distance.near_plane =
+        AxisClipNearFarPlanesPc.m31 +
+        (center->z * AxisClipNearFarPlanesPc.m21 + (center->x * AxisClipNearFarPlanesPc.m01 + center->y * AxisClipNearFarPlanesPc.m11));
     NuVecMtxTransform(&radius.sides, extent, &AxisClipAbsFrustumPlanesPc);
     radius.fourth = extent->x * AxisClipAbsFrustumPlanesPc.m03 + extent->y * AxisClipAbsFrustumPlanesPc.m13 +
                     extent->z * AxisClipAbsFrustumPlanesPc.m23;
-    radius.far_plane = extent->x * AxisClipNearFarPlanesPc.m02 + extent->y * AxisClipNearFarPlanesPc.m12 +
-                       extent->z * AxisClipNearFarPlanesPc.m22;
-    radius.near_plane = extent->x * AxisClipNearFarPlanesPc.m03 + extent->y * AxisClipNearFarPlanesPc.m13 +
-                        extent->z * AxisClipNearFarPlanesPc.m23;
+    radius.far_plane =
+        extent->x * AxisClipNearFarPlanesPc.m02 + extent->y * AxisClipNearFarPlanesPc.m12 + extent->z * AxisClipNearFarPlanesPc.m22;
+    radius.near_plane =
+        extent->x * AxisClipNearFarPlanesPc.m03 + extent->y * AxisClipNearFarPlanesPc.m13 + extent->z * AxisClipNearFarPlanesPc.m23;
     AxisClipNearFarPlanesPc.m30 = saved_far;
 
-    if (distance.sides.x < -radius.sides.x || distance.sides.y < -radius.sides.y ||
-        distance.sides.z < -radius.sides.z || distance.fourth < -radius.fourth ||
-        distance.far_plane < -radius.far_plane || distance.near_plane < -radius.near_plane) {
+    if (distance.sides.x < -radius.sides.x || distance.sides.y < -radius.sides.y || distance.sides.z < -radius.sides.z ||
+        distance.fourth < -radius.fourth || distance.far_plane < -radius.far_plane || distance.near_plane < -radius.near_plane) {
         return 0;
     }
     if (distance.sides.x < radius.sides.x || distance.sides.y < radius.sides.y || distance.sides.z < radius.sides.z ||
         distance.fourth < radius.fourth) {
         NuVecMtxTransform(&distance.sides, center, &AxisClipScissorPlanesPc);
-        distance.fourth = AxisClipScissorPlanesPc.m33 +
-                          (center->z * AxisClipScissorPlanesPc.m23 +
-                           (center->x * AxisClipScissorPlanesPc.m03 + center->y * AxisClipScissorPlanesPc.m13));
+        distance.fourth =
+            AxisClipScissorPlanesPc.m33 +
+            (center->z * AxisClipScissorPlanesPc.m23 + (center->x * AxisClipScissorPlanesPc.m03 + center->y * AxisClipScissorPlanesPc.m13));
         NuVecMtxTransform(&radius.sides, extent, &AxisClipAbsScissorPlanesPc);
-        radius.fourth = AxisClipAbsScissorPlanesPc.m33 +
-                        (extent->z * AxisClipAbsScissorPlanesPc.m23 +
-                         (extent->y * AxisClipAbsScissorPlanesPc.m13 + extent->x * AxisClipAbsScissorPlanesPc.m03));
-        if (distance.sides.x < radius.sides.x || distance.sides.y < radius.sides.y ||
-            distance.sides.z < radius.sides.z || distance.fourth < radius.fourth) {
+        radius.fourth =
+            AxisClipAbsScissorPlanesPc.m33 + (extent->z * AxisClipAbsScissorPlanesPc.m23 +
+                                              (extent->y * AxisClipAbsScissorPlanesPc.m13 + extent->x * AxisClipAbsScissorPlanesPc.m03));
+        if (distance.sides.x < radius.sides.x || distance.sides.y < radius.sides.y || distance.sides.z < radius.sides.z ||
+            distance.fourth < radius.fourth) {
             return 2;
         }
     }
@@ -484,8 +481,8 @@ f32 NuCameraFocalLenToFOV(f32 focal_length) {
 f32 NuCameraFOVToFocalLen(f32 fov) {
     f32 half_fov = (f32)(fov * 0.5);
 
-    return (f32)(18.0 / (NU_SIN_LUT(half_fov * 10430.3779296875) /
-                         NuTrigTable[(0x4000 - (i32)(half_fov * -10430.3779296875)) >> 1 & 0x7fff]));
+    return (f32)(18.0 /
+                 (NU_SIN_LUT(half_fov * 10430.3779296875) / NuTrigTable[(0x4000 - (i32)(half_fov * -10430.3779296875)) >> 1 & 0x7fff]));
 }
 
 f32 NuCameraCalcAperture(f32 focal_length, f32 root_fstop) {

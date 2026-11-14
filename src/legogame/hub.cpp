@@ -164,9 +164,9 @@ typedef struct hub_door_reader_s {
 
 extern void (*HubResetAIFnPc)(WORLDINFO *);
 struct GIZBUILDIT_PC;
-#define HUB_PC_MENU_PLAYER(p, mode)                                                                                    \
-    ((p) != NULL && ((p)->flags_1fc & 0x80) != 0 && (p)->field_281 != 0 &&                                             \
-     ((p)->character_context == -1 || (p)->character_context == 0x31 || (p)->character_context == 0x32) &&             \
+#define HUB_PC_MENU_PLAYER(p, mode)                                                                                                        \
+    ((p) != NULL && ((p)->flags_1fc & 0x80) != 0 && (p)->field_281 != 0 &&                                                                 \
+     ((p)->character_context == -1 || (p)->character_context == 0x31 || (p)->character_context == 0x32) &&                                 \
      (p)->jump_animation_state == (mode))
 extern "C" i32 HubDrawMiniKitCharacterPc;
 extern "C" i32 HubDoorNewLevelPc;
@@ -358,57 +358,57 @@ static void HubResolveAreaInfoPc(HUB_AREA_INFO_PC *info, WORLDINFO *world) {
 }
 
 static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
-    {AreaFixUpName_Negotiations, "de1_1", "lock_1_1_on", NULL, NULL, 0.1f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"gungan", "de1_2", "lock_1_2_on", NULL, NULL, 0.025f, 0.8f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"palacerescue", "de1_3", "lock_1_3_on", NULL, NULL, 0.0f, 0.5f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Podsprint, "de1_4", "lock_1_4_on", NULL, NULL, 0.025f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"retakepalace", "de1_5", "lock_1_5_on", NULL, NULL, 0.075f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"maul", "de1_6", "lock_1_6_on", NULL, NULL, 0.225f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e1vehiclebonus", "de1_7", "lock_1_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Pursuit, "de2_1", "lock_2_1_on", NULL, NULL, 0.125f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"kamino", "de2_2", "lock_2_2_on", NULL, NULL, 0.075f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"factory", "de2_3", "lock_2_3_on", NULL, NULL, 0.25f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"jedi", "de2_4", "lock_2_4_on", NULL, NULL, 0.0125f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Gunship, "de2_5", "lock_2_5_on", NULL, NULL, 0.11f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"dooku", "de2_6", "lock_2_6_on", NULL, NULL, 0.42f, 0.5f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e2vehiclebonus", "de2_7", "lock_2_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"dogfight", "de3_1", "lock_3_1_on", NULL, NULL, 0.275f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"cruiser", "de3_2", "lock_3_2_on", NULL, NULL, 0.02f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"grievous", "de3_3", "lock_3_3_on", NULL, NULL, 0.1375f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"kashyyyk", "de3_4", "lock_3_4_on", NULL, NULL, 0.01f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"temple", "de3_5", "lock_3_5_on", NULL, NULL, 0.025f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"vader", "de3_6", "lock_3_6_on", NULL, NULL, 0.21f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e3vehiclebonus", "de3_7", "lock_3_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"blockaderunner", "de4_1", "lock_4_1_on", NULL, NULL, 0.16f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Tatooine, "de4_2", "lock_4_2_on", NULL, NULL, 0.01f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Moseisley, "de4_3", "lock_4_3_on", NULL, NULL, 0.02f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"deathstarrescue", "de4_4", "lock_4_4_on", NULL, NULL, 0.17f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"deathstarescape", "de4_5", "lock_4_5_on", NULL, NULL, 0.025f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"deathstarbattle", "de4_6", "lock_4_6_on", NULL, NULL, 0.165f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e4vehiclebonus", "de4_7", "lock_4_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"hothbattle", "de5_1", "lock_5_1_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"hothescape", "de5_2", "lock_5_2_on", NULL, NULL, 0.01f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"asteroidchase", "de5_3", "lock_5_3_on", NULL, NULL, 0.1825f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"dagobah", "de5_4", "lock_5_4_on", NULL, NULL, 0.165f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"cloudcitytrap", "de5_5", "lock_5_5_on", NULL, NULL, 0.1f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"cloudcityescape", "de5_6", "lock_5_6_on", NULL, NULL, 0.0125f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e5vehiclebonus", "de5_7", "lock_5_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"jabbaspalace", "de6_1", "lock_6_1_on", NULL, NULL, 0.01f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"sarlaccpit", "de6_2", "lock_6_2_on", NULL, NULL, 0.01f, 0.8f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"speederchase", "de6_3", "lock_6_3_on", NULL, NULL, 0.165f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"endorbattle", "de6_4", "lock_6_4_on", NULL, NULL, 0.01f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Emperorfight, "de6_5", "lock_6_5_on", NULL, NULL, 0.245f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"deathstar2battle", "de6_6", "lock_6_6_on", NULL, NULL, 0.1825f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e6vehiclebonus", "de6_7", "lock_6_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"podrace", "de7_1", "lock_7_1_on", "frame_1", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"anakinsflight", "de7_2", "lock_7_2_on", "frame_2", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"bonus_gunship", "de7_3", "lock_7_3_on", "frame_3", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"anewhope", "de7_4", "lock_7_4_on", "frame_4", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"bonus2", "de7_5", "lock_7_5_on", "frame_5", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"bonus", "de7_6", "lock_7_6_on", "frame_6", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Losttemple, "de7_7", "lock_7_7_on", NULL, NULL, 0.0f, 0.0f, 257, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Senate, "network_door", NULL, NULL, NULL, 0.0f, 0.0f, 257, NULL, NULL, {0}, NULL, NULL},
-    {NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f, 0, NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Negotiations, "de1_1",        "lock_1_1_on", NULL,      NULL, 0.1f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"gungan",                   "de1_2",        "lock_1_2_on", NULL,      NULL, 0.025f,  0.8f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"palacerescue",             "de1_3",        "lock_1_3_on", NULL,      NULL, 0.0f,    0.5f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Podsprint,    "de1_4",        "lock_1_4_on", NULL,      NULL, 0.025f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"retakepalace",             "de1_5",        "lock_1_5_on", NULL,      NULL, 0.075f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"maul",                     "de1_6",        "lock_1_6_on", NULL,      NULL, 0.225f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"e1vehiclebonus",           "de1_7",        "lock_1_7_on", NULL,      NULL, 0.0f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Pursuit,      "de2_1",        "lock_2_1_on", NULL,      NULL, 0.125f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"kamino",                   "de2_2",        "lock_2_2_on", NULL,      NULL, 0.075f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"factory",                  "de2_3",        "lock_2_3_on", NULL,      NULL, 0.25f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"jedi",                     "de2_4",        "lock_2_4_on", NULL,      NULL, 0.0125f, 1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Gunship,      "de2_5",        "lock_2_5_on", NULL,      NULL, 0.11f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"dooku",                    "de2_6",        "lock_2_6_on", NULL,      NULL, 0.42f,   0.5f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"e2vehiclebonus",           "de2_7",        "lock_2_7_on", NULL,      NULL, 0.0f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"dogfight",                 "de3_1",        "lock_3_1_on", NULL,      NULL, 0.275f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"cruiser",                  "de3_2",        "lock_3_2_on", NULL,      NULL, 0.02f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"grievous",                 "de3_3",        "lock_3_3_on", NULL,      NULL, 0.1375f, 1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"kashyyyk",                 "de3_4",        "lock_3_4_on", NULL,      NULL, 0.01f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"temple",                   "de3_5",        "lock_3_5_on", NULL,      NULL, 0.025f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"vader",                    "de3_6",        "lock_3_6_on", NULL,      NULL, 0.21f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"e3vehiclebonus",           "de3_7",        "lock_3_7_on", NULL,      NULL, 0.0f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"blockaderunner",           "de4_1",        "lock_4_1_on", NULL,      NULL, 0.16f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Tatooine,     "de4_2",        "lock_4_2_on", NULL,      NULL, 0.01f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Moseisley,    "de4_3",        "lock_4_3_on", NULL,      NULL, 0.02f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"deathstarrescue",          "de4_4",        "lock_4_4_on", NULL,      NULL, 0.17f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"deathstarescape",          "de4_5",        "lock_4_5_on", NULL,      NULL, 0.025f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"deathstarbattle",          "de4_6",        "lock_4_6_on", NULL,      NULL, 0.165f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"e4vehiclebonus",           "de4_7",        "lock_4_7_on", NULL,      NULL, 0.0f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"hothbattle",               "de5_1",        "lock_5_1_on", NULL,      NULL, 0.0f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"hothescape",               "de5_2",        "lock_5_2_on", NULL,      NULL, 0.01f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"asteroidchase",            "de5_3",        "lock_5_3_on", NULL,      NULL, 0.1825f, 1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"dagobah",                  "de5_4",        "lock_5_4_on", NULL,      NULL, 0.165f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"cloudcitytrap",            "de5_5",        "lock_5_5_on", NULL,      NULL, 0.1f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"cloudcityescape",          "de5_6",        "lock_5_6_on", NULL,      NULL, 0.0125f, 1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"e5vehiclebonus",           "de5_7",        "lock_5_7_on", NULL,      NULL, 0.0f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"jabbaspalace",             "de6_1",        "lock_6_1_on", NULL,      NULL, 0.01f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"sarlaccpit",               "de6_2",        "lock_6_2_on", NULL,      NULL, 0.01f,   0.8f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"speederchase",             "de6_3",        "lock_6_3_on", NULL,      NULL, 0.165f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"endorbattle",              "de6_4",        "lock_6_4_on", NULL,      NULL, 0.01f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Emperorfight, "de6_5",        "lock_6_5_on", NULL,      NULL, 0.245f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"deathstar2battle",         "de6_6",        "lock_6_6_on", NULL,      NULL, 0.1825f, 1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"e6vehiclebonus",           "de6_7",        "lock_6_7_on", NULL,      NULL, 0.0f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"podrace",                  "de7_1",        "lock_7_1_on", "frame_1", NULL, 0.0f,    0.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"anakinsflight",            "de7_2",        "lock_7_2_on", "frame_2", NULL, 0.0f,    0.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"bonus_gunship",            "de7_3",        "lock_7_3_on", "frame_3", NULL, 0.0f,    0.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"anewhope",                 "de7_4",        "lock_7_4_on", "frame_4", NULL, 0.0f,    0.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"bonus2",                   "de7_5",        "lock_7_5_on", "frame_5", NULL, 0.0f,    0.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"bonus",                    "de7_6",        "lock_7_6_on", "frame_6", NULL, 0.0f,    0.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Losttemple,   "de7_7",        "lock_7_7_on", NULL,      NULL, 0.0f,    0.0f, 257, NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Senate,       "network_door", NULL,          NULL,      NULL, 0.0f,    0.0f, 257, NULL, NULL, {0}, NULL, NULL},
+    {NULL,                       NULL,           NULL,          NULL,      NULL, 0.0f,    0.0f, 0,   NULL, NULL, {0}, NULL, NULL},
 };
 
 extern "C" i32 Hub_BonusBuildIt(GIZBUILDIT_PC *buildit) {
@@ -569,8 +569,7 @@ static void HubDrawSelectModeMenuPc(i32 selected, f32 alpha) {
             green = MENUENTRYG;
             blue = MENUENTRYB;
         }
-        SmartTextEx(TTab[ids[i]], 0.0f, y, 1.0f, 0.7f, 0.7f, 0.7f, 0, red, green, blue, 1.7f, 1, NULL, 0,
-                    (i32)(opacity[i] * alpha));
+        SmartTextEx(TTab[ids[i]], 0.0f, y, 1.0f, 0.7f, 0.7f, 0.7f, 0, red, green, blue, 1.7f, 1, NULL, 0, (i32)(opacity[i] * alpha));
         y = (f32)(y - 0.20000000298023224);
     }
 }
@@ -713,9 +712,8 @@ extern "C" {
 static void HubDrawArcadeStatsPc(f32 alpha) {
     const i32 menu = GetMenuID();
     const f64 alpha_scaled = alpha * 128.0;
-    SmartTextEx(TTab[TextIdPc8807b8], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
-                HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
-                HubEpisodeBluePc, 1.7f, 1, NULL, 0, (i32)alpha_scaled);
+    SmartTextEx(TTab[TextIdPc8807b8], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+                HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, (i32)alpha_scaled);
     i32 first;
     i32 second;
     if (menu == -1) {
@@ -746,11 +744,9 @@ static void HubDrawArcadeStatsPc(f32 alpha) {
         return;
     }
     const f64 pulse =
-        (f64)NuTrigTable[(u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, .5f) * 2.0f) * 65536.0) >> 1] *
-            .25 +
-        .75;
-    SmartTextEx(TTab[text], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc,
-                HubEpisodeTitleSizePc, 0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)(pulse * alpha_scaled));
+        (f64)NuTrigTable[(u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, .5f) * 2.0f) * 65536.0) >> 1] * .25 + .75;
+    SmartTextEx(TTab[text], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 255, 0,
+                0, 1.7f, 1, NULL, 0, (i32)(pulse * alpha_scaled));
 }
 
 extern "C" {
@@ -780,16 +776,13 @@ extern "C" {
         if (Arcade == 0 || paused != 0 || Arcade_BothPlayersActive() != 0) {
             return;
         }
-        alpha =
-            (f32)((f64)NuTrigTable[((i32)((f64)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >>
-                                    1) &
-                                   0x7fff] *
-                      (f64)0.2f +
-                  (f64)0.8f);
+        alpha = (f32)((f64)NuTrigTable[((i32)((f64)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >> 1) & 0x7fff] *
+                          (f64)0.2f +
+                      (f64)0.8f);
         scale = Arcade_NeedTwoPlayers_Scale;
         size = (f32)((f64)scale * (f64)0.6f);
-        SmartTextEx(TTab[TextIdPc8807c0], 0.0f, -0.55f, 1.0f, size, size, size, 0, 255, 0, 0,
-                    (f32)((f64)scale * (f64)1.7f), 1, NULL, 0, (i32)((f64)alpha * 128.0));
+        SmartTextEx(TTab[TextIdPc8807c0], 0.0f, -0.55f, 1.0f, size, size, size, 0, 255, 0, 0, (f32)((f64)scale * (f64)1.7f), 1, NULL, 0,
+                    (i32)((f64)alpha * 128.0));
     }
 
     void Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
@@ -995,8 +988,7 @@ extern "C" void Arcade_DrawEndMenu(MENU *menu) {
     if (MenuStopDraw != 0) {
         return;
     }
-    SmartTextEx(TTab[TextIdPc88075c], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, 0, menu_flash ? 191 : 255, 0, 1.7f, 1,
-                NULL, 0, 128);
+    SmartTextEx(TTab[TextIdPc88075c], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, 0, menu_flash ? 191 : 255, 0, 1.7f, 1, NULL, 0, 128);
 }
 
 static void HubInitBonusModePc(void) {
@@ -1095,8 +1087,8 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
         for (i32 index = 0; index < FreePlayModelCount; ++index) {
             const i32 model = FreePlayModelList[index].model_id;
             if ((CDataList[model].model_flags & 0x4000000) == 0 ||
-                InCollectList_Index(model, MiniKitCollection.list, MiniKitCollection.count) == -1 ||
-                PlayerList[0] == model || PlayerList[1] == model || Collection_Got(model) == 0) {
+                InCollectList_Index(model, MiniKitCollection.list, MiniKitCollection.count) == -1 || PlayerList[0] == model ||
+                PlayerList[1] == model || Collection_Got(model) == 0) {
                 continue;
             }
             fplist[fpcount++] = FreePlayModelList[index];
@@ -1283,8 +1275,7 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                 freeplaymode = 1;
                 freeplayduration = 0;
                 for (i32 player = 0; player < 2; ++player) {
-                    freeplay_i[player] = InCollectList_Index(MissionMenuPacketPc.player_model[player], collection->list,
-                                                             collection->count);
+                    freeplay_i[player] = InCollectList_Index(MissionMenuPacketPc.player_model[player], collection->list, collection->count);
                     if (freeplay_i[player] == -1) {
                         freeplay_i[player] = player;
                         if (player == 1 && freeplay_i[0] == 1) {
@@ -1314,10 +1305,8 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                 } else if ((digital & GAMEPAD_MENUCANCEL) != 0) {
                     cancel = 1;
                 } else if (freeplay_selected[player] == 0) {
-                    const u32 held =
-                        GamePadStorage[player].menu_buttons_held | GamePadStorage[player].menu_directions_held;
-                    const u32 pressed =
-                        GamePadStorage[player].menu_buttons_pressed | GamePadStorage[player].menu_directions;
+                    const u32 held = GamePadStorage[player].menu_buttons_held | GamePadStorage[player].menu_directions_held;
+                    const u32 pressed = GamePadStorage[player].menu_buttons_pressed | GamePadStorage[player].menu_directions;
                     i32 up_held = held & GAMEPAD_DUP;
                     i32 down_held = held & GAMEPAD_DDOWN;
                     i32 left_held = held & GAMEPAD_DLEFT;
@@ -1341,8 +1330,7 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                     MenuRepeat(&up_held, &up, &uprepeattime[player], &uprepeatcount[player], 0.1f, FRAMETIME);
                     MenuRepeat(&down_held, &down, &downrepeattime[player], &downrepeatcount[player], 0.1f, FRAMETIME);
                     MenuRepeat(&left_held, &left, &leftrepeattime[player], &leftrepeatcount[player], 0.1f, FRAMETIME);
-                    MenuRepeat(&right_held, &right, &rightrepeattime[player], &rightrepeatcount[player], 0.1f,
-                               FRAMETIME);
+                    MenuRepeat(&right_held, &right, &rightrepeattime[player], &rightrepeatcount[player], 0.1f, FRAMETIME);
                     if (up) {
                         index = HubMoveFreePlayCursorPc(collection, player, 0, previous);
                     } else if (down) {
@@ -1381,8 +1369,7 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                 if (cancel) {
                     switch (freeplay_selected[player]) {
                         case 2:
-                            if (MissionMenuPacketPc.active_player[other] != 0 &&
-                                freeplay_selected[other] < freeplay_selected[player]) {
+                            if (MissionMenuPacketPc.active_player[other] != 0 && freeplay_selected[other] < freeplay_selected[player]) {
                                 freeplay_selected[player] = 1;
                                 GameAudio_PlaySfx(0x31, NULL, 0, 0);
                             }
@@ -1504,8 +1491,7 @@ static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cur
                 if (freeplay_selected[player] == 0) {
                     progress = 1.0f - progress;
                 }
-                size =
-                    (f32)(size * (1.0 - (NuTrigTable[((i32)(progress * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * .5));
+                size = (f32)(size * (1.0 - (NuTrigTable[((i32)(progress * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * .5));
             } else if (freeplay_selected[player] != 0) {
                 size = 0.0f;
             }
@@ -1513,10 +1499,9 @@ static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cur
             if (size > 0.0f) {
                 const f32 offset = (f32)(ratio * .009999999776482582);
                 const i32 wibble = player * 2;
-                DrawCharIcon(
-                    model, collection->list[index].grid_x + offset * NuTrigTable[HubIconWibbleAnglePc[wibble] >> 1],
-                    collection->list[index].grid_y + offset * NuTrigTable[HubIconWibbleAnglePc[wibble + 1] >> 1], z,
-                    size, frame, alpha, alpha, 1, NULL);
+                DrawCharIcon(model, collection->list[index].grid_x + offset * NuTrigTable[HubIconWibbleAnglePc[wibble] >> 1],
+                             collection->list[index].grid_y + offset * NuTrigTable[HubIconWibbleAnglePc[wibble + 1] >> 1], z, size, frame,
+                             alpha, alpha, 1, NULL);
             }
         } else {
             DrawCharIcon(model, collection->list[index].grid_x, collection->list[index].grid_y, 0.0f,
@@ -1630,8 +1615,7 @@ static i32 Hub_UpdateMiniKitBoundsPc(i32 area_index, WORLDINFO *world) {
     kit->collision_center.z = kit->position.z + kit->offset_z;
     kit->collision_center.y = (top + bottom) * 0.5 + kit->position.y;
     const f32 scale = kit->scale;
-    kit->collision_center.y +=
-        (1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)((f64)scale * 32768.0 + 16384.0))) * 0.5) * (f64)0.333f;
+    kit->collision_center.y += (1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)((f64)scale * 32768.0 + 16384.0))) * 0.5) * (f64)0.333f;
     kit->collision_center.y += (f64)HUB_SIN_LUT_PC(kit->phase_rotation) * (f64)0.025f * scale;
     const f32 panel_offset = info ? info->panel_offset : 0.0f;
     kit->collision_center.y += panel_offset;
@@ -1708,8 +1692,7 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
         kit->offset_z += kit->velocity_z * FRAMETIME;
         if (i == hub_minikitviewer_area) {
             if (speed > 0.0f) {
-                kit->target_rotation =
-                    TurnRot(kit->target_rotation, angle + 0x8000, (u16)(i32)((f64)kit->scale * 32768.0), NULL);
+                kit->target_rotation = TurnRot(kit->target_rotation, angle + 0x8000, (u16)(i32)((f64)kit->scale * 32768.0), NULL);
             }
             kit->target_piece_count = count[i];
             const HUB_PAD_READER_PC *pads = (const HUB_PAD_READER_PC *)GamePadStorage;
@@ -1846,14 +1829,12 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
         }
         f32 x = hub_minikitviewer_pos.x + offset;
         if (hub_minikitviewer_movewait > 0.0f) {
-            const f32 wait_ease =
-                (f32)(1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f))) * 0.5);
+            const f32 wait_ease = (f32)(1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f))) * 0.5);
             x += (f64)wait_ease * 2.0 * (f64)hub_minikitviewer_move;
         }
         HUB_MINIKIT_PIECES_PC *pieces = ((HUB_WORLD_READER_PC *)world)->pieces[area];
         const f32 scale = kit->scale;
-        const f32 lift =
-            (f32)((1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)(scale * 32768.0f + 16384.0f))) * 0.5) * (f64)0.333f);
+        const f32 lift = (f32)((1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)(scale * 32768.0f + 16384.0f))) * 0.5) * (f64)0.333f);
         const u16 phase_x = (i32)(HUB_SIN_LUT_PC(kit->phase_x) * 910.0f);
         const u16 phase_y = (i32)(HUB_SIN_LUT_PC(kit->phase_y) * 910.0f);
         const u16 phase_z = (i32)(HUB_SIN_LUT_PC(kit->phase_z) * 910.0f);
@@ -1873,8 +1854,7 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
         matrix.m32 += kit->offset_z;
         NuMtxPreRotateZ(&matrix, (i32)(RotDiff(0, kit->rotation_velocity) * scale));
         for (i32 piece = 0; piece < pieces->piece_count; ++piece) {
-            if (pieces->pieces[piece].enabled && NuSpecialExistsFn(&pieces->pieces[piece].special) &&
-                piece < kit->displayed_piece_count) {
+            if (pieces->pieces[piece].enabled && NuSpecialExistsFn(&pieces->pieces[piece].special) && piece < kit->displayed_piece_count) {
                 NUMTX piece_matrix = pieces->pieces[piece].matrix;
                 NuMtxMulVU0(&piece_matrix, &piece_matrix, &matrix);
                 NUMTX reflected;
@@ -1908,8 +1888,8 @@ static void Hub_DrawMiniKitCount(f32 x, f32 y, i32 count, i32 total, f32 alpha) 
     } else {
         sprintf(text, "%i/%i", count, total);
     }
-    Text3DEx(text, x, y, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
-             0, 255, 0, 127, (u8)(i32)(128.0 * alpha));
+    Text3DEx(text, x, y, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127,
+             (u8)(i32)(128.0 * alpha));
     const u16 rotation = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     const f32 scale = NuTrigTable[((i32)(alpha * 16384.0) >> 1) & 0x7fff] * PANEL_MINIKITSCALE;
     const u16 tilt = (u16)(i32)(1820.0 * NU_SIN_LUT(rotation * 2));
@@ -1930,8 +1910,8 @@ extern "C" void Hub_DrawImportantBrick(i32 object, f32 x, f32 y, f32 alpha, i32 
         } else {
             sprintf(text, "%i/%i", count, total);
         }
-        Text3DEx(text, x, y, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale, PANEL_MINIKITCOUNTSCALE,
-                 PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)(i32)(128.0 * alpha));
+        Text3DEx(text, x, y, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127,
+                 (u8)(i32)(128.0 * alpha));
     }
 }
 
@@ -1942,17 +1922,15 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
     AREA_DATA_PC *area = &ADataList[area_index];
     const i32 alpha = (i32)(phase * 128.0);
     if (LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area_index) {
-        SmartTextEx(TTab[TextIdPc8807e8], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
-                    HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
-                    HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+        SmartTextEx(TTab[TextIdPc8807e8], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+                    HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
         if (Game.lost_temple_area_complete != 0) {
             Hub_DrawImportantBrick(251, 0.0f, (f32)(HubEpisodeSubtitleYPc - .05000000074505806), phase, -1, -1);
         }
         return;
     }
-    SmartTextEx(TTab[area->name_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
-                HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
-                HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+    SmartTextEx(TTab[area->name_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+                HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
     if ((area->flags & 0x10) == 0) {
         if (Game.area_save[area_index].area_complete != 0) {
             if ((area->flags & 0x800) != 0) {
@@ -1970,47 +1948,43 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
             DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
                            NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             NuStrCpy(text, Game.area_save[area_index].true_hero_complete[0] != 0 ? "$" : "X");
-            Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
+            Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
+                     PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
             SmartTextEx(TTab[TextIdPc8808a4], HubAreaPanelXPc[1], HubTrueJediLabelOffsetPc + HubEpisodeTitleYPc, 1.0f,
-                        HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
-                        HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
-                        1, NULL, 0, (i32)(HubTrueJediTypeAlphaPc * phase));
+                        HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0, HubTrueJediLabelRedPc,
+                        HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc, 1, NULL, 0,
+                        (i32)(HubTrueJediTypeAlphaPc * phase));
             DrawBuildUpBar(HubAreaPanelXPc[4], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
                            NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             NuStrCpy(text, Game.area_save[area_index].true_hero_complete[1] != 0 ? "$" : "X");
-            Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
+            Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
+                     PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
             SmartTextEx(TTab[TextIdPc8808a8], HubAreaPanelXPc[4], HubTrueJediLabelOffsetPc + HubEpisodeTitleYPc, 1.0f,
-                        HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
-                        HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
-                        1, NULL, 0, (i32)(HubTrueJediTypeAlphaPc * phase));
+                        HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0, HubTrueJediLabelRedPc,
+                        HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc, 1, NULL, 0,
+                        (i32)(HubTrueJediTypeAlphaPc * phase));
         } else {
             DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
                            NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
-            NuStrCpy(text, Game.area_save[area_index].true_hero_complete[0] != 0 ||
-                                   Game.area_save[area_index].true_hero_complete[1] != 0
+            NuStrCpy(text, Game.area_save[area_index].true_hero_complete[0] != 0 || Game.area_save[area_index].true_hero_complete[1] != 0
                                ? "$"
                                : "X");
             // MATCH-EXCEPTION: the original converts phase * 128.0 again here instead of reusing alpha.
-            Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)(i32)(phase * 128.0));
+            Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
+                     PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)(i32)(phase * 128.0));
         }
         if ((area->flags & 0x10) != 0) {
-            Hub_DrawMiniKitCount(HubAreaPanelXPc[0], HubEpisodeTitleYPc, Game.area_save[area_index].minikit_count, 10,
-                                 phase);
+            Hub_DrawMiniKitCount(HubAreaPanelXPc[0], HubEpisodeTitleYPc, Game.area_save[area_index].minikit_count, 10, phase);
         }
-        Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeTitleYPc, phase,
-                               Game.area_save[area_index].red_brick_collected, 1);
+        Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeTitleYPc, phase, Game.area_save[area_index].red_brick_collected, 1);
         Hub_DrawImportantBrick(211, HubAreaPanelXPc[3], HubEpisodeTitleYPc, phase, EpGoldBrickCount, EpGoldBrickTotal);
         HubDrawMiniKitCharacterPc = 1;
         Hub_DrawMiniKitCount(HubAreaPanelXPc[5], HubEpisodeTitleYPc, EpCharKitCount, EpCharKitTotal, phase);
     } else if (area->area_index != -1 && (area->flags & 0x14) == 0x10) {
         char text[128];
         sprintf(text, "%s %i", TTab[TextCrawlChapterIdPc], area->area_index + 1);
-        SmartTextEx(text, 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc,
-                    HubEpisodeTitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0,
-                    alpha);
+        SmartTextEx(text, 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0,
+                    HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
     }
 }
 
@@ -2025,9 +1999,8 @@ static void HubDrawMiniKitStatsPc(i32 index, f32 phase) {
         scale = HubEpisodeTitleSizePc;
         i32 kit = area->minikit_id;
         if (kit != -1 && CDataList[kit].name_id != -1) {
-            SmartTextEx(TTab[CDataList[kit].name_id], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
-                        HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
-                        HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+            SmartTextEx(TTab[CDataList[kit].name_id], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+                        HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
         }
         sprintf(title, "(%s)", TTab[area->name_id]);
         text = title;
@@ -2038,15 +2011,14 @@ static void HubDrawMiniKitStatsPc(i32 index, f32 phase) {
     } else if ((episode = area->episode_index) != -1 && area->area_index != -1) {
         scale = HubEpisodeSubtitleSizePc;
         Hub_DrawMiniKitCount(0.0f, HubEpisodeTitleYPc, Game.area_save[index].minikit_count, 10, phase);
-        sprintf(title, "%s, %s %i", TTab[EDataList[episode].name_id], TTab[TextCrawlChapterIdPc],
-                ADataList[index].area_index + 1);
+        sprintf(title, "%s, %s %i", TTab[EDataList[episode].name_id], TTab[TextCrawlChapterIdPc], ADataList[index].area_index + 1);
         text = title;
     } else {
         return;
     }
     if (scale > 0.0f && text != NULL) {
-        SmartTextEx(text, 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
-                    HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+        SmartTextEx(text, 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc,
+                    1.7f, 1, NULL, 0, alpha);
     }
 }
 
@@ -2117,11 +2089,16 @@ extern "C" void Hub_UpdateKit(void) {
 }
 
 static HUB_EPISODE_INFO_PC HubEpisodeInfoPc[10] = {
-    {0, 1, "DE1", "lock_1_on", 0, 0, NULL, NULL, {0}},   {1, 1, "DE2", "lock_2_on", 0, 0, NULL, NULL, {0}},
-    {2, 1, "DE3", "lock_3_on", 0, 0, NULL, NULL, {0}},   {3, 1, "DE4", "lock_4_on", 0, 0, NULL, NULL, {0}},
-    {4, 1, "DE5", "lock_5_on", 0, 0, NULL, NULL, {0}},   {5, 1, "DE6", "lock_6_on", 0, 0, NULL, NULL, {0}},
-    {8, 1, "DE7", "lock_7_on", 1, 0, NULL, NULL, {0}},   {6, 2, "hologram", "lock_8_on", 0, 0, NULL, NULL, {0}},
-    {7, 2, "jabba", "lock_B_on", 0, 0, NULL, NULL, {0}}, {-1, 0, NULL, NULL, 0, 0, NULL, NULL, {0}},
+    {0,  1, "DE1",      "lock_1_on", 0, 0, NULL, NULL, {0}},
+    {1,  1, "DE2",      "lock_2_on", 0, 0, NULL, NULL, {0}},
+    {2,  1, "DE3",      "lock_3_on", 0, 0, NULL, NULL, {0}},
+    {3,  1, "DE4",      "lock_4_on", 0, 0, NULL, NULL, {0}},
+    {4,  1, "DE5",      "lock_5_on", 0, 0, NULL, NULL, {0}},
+    {5,  1, "DE6",      "lock_6_on", 0, 0, NULL, NULL, {0}},
+    {8,  1, "DE7",      "lock_7_on", 1, 0, NULL, NULL, {0}},
+    {6,  2, "hologram", "lock_8_on", 0, 0, NULL, NULL, {0}},
+    {7,  2, "jabba",    "lock_B_on", 0, 0, NULL, NULL, {0}},
+    {-1, 0, NULL,       NULL,        0, 0, NULL, NULL, {0}},
 };
 
 extern "C" void Hub_Reset(WORLDINFO *world) {
@@ -2142,8 +2119,7 @@ extern "C" void Hub_Reset(WORLDINFO *world) {
     }
     for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; i++) {
         if (HubAreaInfoPc[i].door != NULL) {
-            if (Episode_CountOpenAreas(HubAreaInfoPc[i].area->episode_index, HubAreaInfoPc[i].area->index,
-                                       Game_AreaSave) != 0) {
+            if (Episode_CountOpenAreas(HubAreaInfoPc[i].area->episode_index, HubAreaInfoPc[i].area->index, Game_AreaSave) != 0) {
                 ((HUB_DOOR_READER_PC *)HubAreaInfoPc[i].door)->object->flags &= ~8U;
                 NuSpecialSetVisibility(&HubAreaInfoPc[i].lock, 1);
             } else {
@@ -2154,8 +2130,7 @@ extern "C" void Hub_Reset(WORLDINFO *world) {
     }
     for (i32 i = 0; HubEpisodeInfoPc[i].episode >= 0 && HubEpisodeInfoPc[i].episode < 9; i++) {
         if (HubEpisodeInfoPc[i].door != NULL) {
-            if (Episode_CountOpenAreas(HubEpisodeInfoPc[i].episode, -1, Game_AreaSave) == 0 &&
-                (u8)HubEpisodeInfoPc[i].force_open == 0) {
+            if (Episode_CountOpenAreas(HubEpisodeInfoPc[i].episode, -1, Game_AreaSave) == 0 && (u8)HubEpisodeInfoPc[i].force_open == 0) {
                 ((HUB_DOOR_READER_PC *)HubEpisodeInfoPc[i].door)->object->flags |= 8U;
                 NuSpecialSetVisibility(&HubEpisodeInfoPc[i].lock_on, 0);
             } else {
@@ -2181,8 +2156,7 @@ extern "C" {
     NUVEC PercentHint_TriggerPos = {-28.421f, 0.0f, -52.462f};
 
     i32 Percent_UpdateHint(HINT_PC *hint) {
-        if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
-            CustomiserCompletionSavePc != NULL &&
+        if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f && CustomiserCompletionSavePc != NULL &&
             ((HINT_COMPLETION *)CustomiserCompletionSavePc)->points >= HubCompletionPointsPc) {
             i32 nearby = 0;
             i32 active = 0;
@@ -2205,8 +2179,7 @@ extern "C" {
     }
 
     i32 IndyUnlocked_UpdateHint(HINT_PC *hint) {
-        if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
-            Game.losttemple_trailer_watched != 0) {
+        if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f && Game.losttemple_trailer_watched != 0) {
             hint->colour_index = 4;
             return 1;
         }
@@ -2226,8 +2199,7 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
     Hub_DrawMiniKits(world);
     if (QFont3DZ != NULL) {
         const i32 spin = (i32)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
-        const u16 angle =
-            (u16)(i32)((f64)NuTrigTable[(spin >> 1) & 0x7fff] * 2730.0 + (HubStatsBaseAnglePc << 16) / 360);
+        const u16 angle = (u16)(i32)((f64)NuTrigTable[(spin >> 1) & 0x7fff] * 2730.0 + (HubStatsBaseAnglePc << 16) / 360);
         const i32 pulse = (i32)((f64)NuFmod(GameTimer.time_elapsed, 3.21f) / (f64)3.21f * 65536.0);
         const f32 bob = NuTrigTable[(pulse >> 1) & 0x7fff] * HubStatsBobAmplitudePc;
         const i32 alpha = (i32)((f64)HubHologramAlphaPc * 15.0 + 56.0);
@@ -2243,8 +2215,7 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
         NuQFntSet(QFont3DZ);
         NuQFntSetMtx(QFont3DZ, &matrix);
         NuQFntSetCoordinateSystem(4);
-        colour = ((((u32)alpha << 8) | (u8)HubStatsHighColourPc) << 8 | (u8)HubStatsMiddleColourPc) << 8 |
-                 HubStatsLowColourPc;
+        colour = ((((u32)alpha << 8) | (u8)HubStatsHighColourPc) << 8 | (u8)HubStatsMiddleColourPc) << 8 | HubStatsLowColourPc;
         NuQFntSetColour(QFont3DZ, colour);
         NuQFntSetScale(QFont3DZ, 0.00375f, 0.005f);
         NuQFntMove(QFont3DZ, (f32)(-NuQFntPrintLenU(QFont3DZ, text) * 0.5), 0, 0);
@@ -2259,8 +2230,7 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
         NuQFntSet(QFont3DZ);
         NuQFntSetMtx(QFont3DZ, &matrix);
         NuQFntSetCoordinateSystem(4);
-        colour = ((((u32)alpha << 8) | (u8)HubStatsHighColourPc) << 8 | (u8)HubStatsMiddleColourPc) << 8 |
-                 HubStatsLowColourPc;
+        colour = ((((u32)alpha << 8) | (u8)HubStatsHighColourPc) << 8 | (u8)HubStatsMiddleColourPc) << 8 | HubStatsLowColourPc;
         NuQFntSetColour(QFont3DZ, colour);
         NuQFntSetScale(QFont3DZ, 0.0028124998f, 0.00375f);
         NuQFntMove(QFont3DZ, (f32)(-NuQFntPrintLenU(QFont3DZ, text) * 0.5), 0, 0);
@@ -2282,36 +2252,35 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
     Episode_CountOpenAreas(episode_index, -1, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
     if (EpCompleteCount == 0) {
         if (episode->name_id != -1) {
-            SmartTextEx(TTab[episode->name_id], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc,
-                        HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
-                        HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+            SmartTextEx(TTab[episode->name_id], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc,
+                        HubEpisodeTitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
         }
     } else {
         if (HubBothTrueJediGoldBricksPc) {
             DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
                            NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             sprintf(text, "%i/%i", EpStoryBuildUpCount, EpStoryBuildUpTotal);
-            Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
+            Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
+                     PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
             SmartTextEx(TTab[TextIdPc8808a4], HubAreaPanelXPc[1], HubTrueJediLabelOffsetPc + HubEpisodeTitleYPc, 1.0f,
-                        HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
-                        HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
-                        1, NULL, 0, static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlphaPc) * phase));
+                        HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0, HubTrueJediLabelRedPc,
+                        HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc, 1, NULL, 0,
+                        static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlphaPc) * phase));
             DrawBuildUpBar(HubAreaPanelXPc[4], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
                            NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             sprintf(text, "%i/%i", EpFreePlayBuildUpCount, EpFreePlayBuildUpTotal);
-            Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
+            Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
+                     PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
             SmartTextEx(TTab[TextIdPc8808a8], HubAreaPanelXPc[4], HubTrueJediLabelOffsetPc + HubEpisodeTitleYPc, 1.0f,
-                        HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
-                        HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
-                        1, NULL, 0, static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlphaPc) * phase));
+                        HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0, HubTrueJediLabelRedPc,
+                        HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc, 1, NULL, 0,
+                        static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlphaPc) * phase));
         } else {
             DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
                            NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             sprintf(text, "%i/%i", EpBuildUpCount, EpBuildUpTotal);
-            Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
+            Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
+                     PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
         }
         Hub_DrawMiniKitCount(HubAreaPanelXPc[0], HubEpisodeTitleYPc, EpMiniKitCount, EpMiniKitTotal, phase);
         Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeTitleYPc, phase, EpRedBrickCount, EpRedBrickTotal);
@@ -2322,9 +2291,8 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
         }
     }
     if (episode->text_id != -1) {
-        SmartTextEx(TTab[episode->text_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
-                    HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
-                    HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+        SmartTextEx(TTab[episode->text_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+                    HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
     }
 }
 
@@ -2448,19 +2416,18 @@ static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
         title = TextIdPc881040;
     }
     SmartTextEx(TTab[title], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
-                HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0,
-                opacity);
+                HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, opacity);
     f32 x;
     f32 time;
     switch (mode) {
         case 0:
             x = -0.4f;
             time = Game.episode_save[episode].superstory_time_limit;
-            SmartTextEx(TTab[TextIdPc880718], 0.4f, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc,
-                        HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
+            SmartTextEx(TTab[TextIdPc880718], 0.4f, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc,
+                        HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
             Text_MakeScore(Game.episode_save[episode].superstory_score_target, score);
-            Text3DEx(score, 0.4f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
-                     HubEpisodeSubtitleSizePc, 0, 255, 255, 255, opacity);
+            Text3DEx(score, 0.4f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0,
+                     255, 255, 255, opacity);
             break;
         case 1:
             if (character_area == -1) {
@@ -2482,11 +2449,11 @@ static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
             break;
     }
     if (mode != -1) {
-        SmartTextEx(TTab[TextIdPc880714], x, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc,
-                    HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
+        SmartTextEx(TTab[TextIdPc880714], x, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc,
+                    HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
         Text_MakeTime(time, 1, 1, 1, text);
-        Text3DEx(text, x, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
-                 HubEpisodeSubtitleSizePc, 0, 255, 255, 255, opacity);
+        Text3DEx(text, x, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, 255,
+                 255, 255, opacity);
     } else {
         i32 total = 0;
         i32 count = 0;
@@ -2516,20 +2483,18 @@ static void HubDrawSuperBonusStatsPc(AREA_DATA_PC *area, f32 alpha) {
     const i32 opacity = (i32)(alpha * 128.0);
     if (area == NULL) {
         SmartTextEx((char *)"?", 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
-                    HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0,
-                    opacity);
+                    HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, opacity);
         return;
     }
-    SmartTextEx(TTab[area->name_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
-                HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
-                HubEpisodeBluePc, 1.7f, 1, NULL, 0, opacity);
+    SmartTextEx(TTab[area->name_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+                HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, opacity);
     if (Game.area_save[area->index].area_complete != 0) {
         char text[64];
-        SmartTextEx(TTab[TextIdPc880714], 0.0f, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc,
-                    HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
+        SmartTextEx(TTab[TextIdPc880714], 0.0f, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc,
+                    HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
         Text_MakeTime(Game.area_save[area->index].challenge_trial_time, 1, 1, 1, text);
-        Text3DEx(text, 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
-                 HubEpisodeSubtitleSizePc, 0, 255, 255, 255, opacity);
+        Text3DEx(text, 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, 255,
+                 255, 255, opacity);
         if (EpisodeGoldBrickForSuperBonusPc != 0) {
             Hub_DrawImportantBrick(211, 0.0f, (f32)(HubEpisodeTitleYPc + 0.125), alpha, -1, -1);
         }
@@ -2562,21 +2527,19 @@ static void HubDrawSelectModePc(void) {
         HubDrawAreaStatsPc(alpha, HubDoorAreaPc, hub_selectmode);
     }
     const f32 first_alpha = (MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
-    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166,
-                 first_alpha, first_alpha, 1, NULL);
+    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, first_alpha, first_alpha, 1,
+                 NULL);
     const f32 second_alpha = (MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
-    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165,
-                 second_alpha, second_alpha, 1, NULL);
+    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, second_alpha, second_alpha, 1,
+                 NULL);
     if (MainRenderTime <= 0.0f) {
         HubDrawSelectModeMenuPc(1, alpha);
     } else if (MainRenderTime < 1.0f) {
-        HubDrawSelectModeMenuPc(
-            0, (1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff]) * alpha);
+        HubDrawSelectModeMenuPc(0, (1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff]) * alpha);
     }
     if (!(MainRenderTime > 0.0f) && selectmodemode == 0 && alpha == 1.0f) {
         DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], TextIdPc880888, 1.0f, -1, tBACK, -1, TextIdPc880eac,
-                              MissionMenuPacketPc.active_player[1], TextIdPc880888, 1.0f, -1, tBACK, -1,
-                              TextIdPc880eac);
+                              MissionMenuPacketPc.active_player[1], TextIdPc880888, 1.0f, -1, tBACK, -1, TextIdPc880eac);
     }
 }
 
@@ -2603,16 +2566,15 @@ static void HubDrawBonusModePc(void) {
         HubDrawSuperBonusStatsPc(hub_bonusarea != -1 ? &ADataList[hub_bonusarea] : NULL, alpha);
     }
     f32 icon_alpha = (MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
-    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, icon_alpha,
-                 icon_alpha, 1, NULL);
+    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, icon_alpha, icon_alpha, 1,
+                 NULL);
     icon_alpha = (MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
-    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, icon_alpha,
-                 icon_alpha, 1, NULL);
+    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, icon_alpha, icon_alpha, 1,
+                 NULL);
     if (MainRenderTime <= 0.0f) {
         HubDrawBonusModeMenuPc(1, alpha);
     } else if (MainRenderTime < 1.0f) {
-        HubDrawBonusModeMenuPc(
-            0, (1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff]) * alpha);
+        HubDrawBonusModeMenuPc(0, (1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff]) * alpha);
     }
     if (MainRenderTime > 0.0f || bonusmodemode != 0 || alpha != 1.0f) {
         return;
@@ -2620,8 +2582,7 @@ static void HubDrawBonusModePc(void) {
     f32 prompt_alpha = .333f;
     if (bonusmodearcade != 0) {
         AREA_DATA_PC *area;
-        if ((hub_bonusmode == 4 && (area = *ArcadeLevelPc[ArcadeItem.level]) != NULL &&
-             Game.area_save[area->index].complete != 0) ||
+        if ((hub_bonusmode == 4 && (area = *ArcadeLevelPc[ArcadeItem.level]) != NULL && Game.area_save[area->index].complete != 0) ||
             (hub_bonusmode == 3 && ArcadeItem.entries[3].index == 1)) {
             prompt_alpha = 1.0f;
         }
@@ -2641,17 +2602,15 @@ static void HubDrawBonusModePc(void) {
                 horizontal_alpha = 128;
             }
             const f32 left = BlipL[player] > 0.0f ? 0.015000001f : 0.0f;
-            Text3DEx("<", (f32)(x - .05000000074505806 - left), y, 1.0f, .5f, .5f, .5f, 0, colour, colour, colour,
-                     horizontal_alpha);
+            Text3DEx("<", (f32)(x - .05000000074505806 - left), y, 1.0f, .5f, .5f, .5f, 0, colour, colour, colour, horizontal_alpha);
             const f32 right = BlipR[player] > 0.0f ? 0.015000001f : 0.0f;
-            Text3DEx(">", (f32)(x + .05000000074505806 + right), y, 1.0f, .5f, .5f, .5f, 0, colour, colour, colour,
-                     horizontal_alpha);
+            Text3DEx(">", (f32)(x + .05000000074505806 + right), y, 1.0f, .5f, .5f, .5f, 0, colour, colour, colour, horizontal_alpha);
             const f32 up = BlipU[player] > 0.0f ? -0.021000002f : 0.0f;
-            Text3DEx((char *)InitAsciiUpPc, x, (f32)(y - (-.07000000029802322) - up), 1.0f, .5f, .5f, .5f, 0, colour,
-                     colour, colour, hub_bonusmode != 0 ? 128 : 32);
+            Text3DEx((char *)InitAsciiUpPc, x, (f32)(y - (-.07000000029802322) - up), 1.0f, .5f, .5f, .5f, 0, colour, colour, colour,
+                     hub_bonusmode != 0 ? 128 : 32);
             const f32 down = BlipD[player] > 0.0f ? -0.021000002f : 0.0f;
-            Text3DEx((char *)TagAsciiDownPc, x, (f32)(y - .07000000029802322 + down), 1.0f, .5f, .5f, .5f, 0, colour,
-                     colour, colour, hub_bonusmode >= 4 ? 32 : 128);
+            Text3DEx((char *)TagAsciiDownPc, x, (f32)(y - .07000000029802322 + down), 1.0f, .5f, .5f, .5f, 0, colour, colour, colour,
+                     hub_bonusmode >= 4 ? 32 : 128);
         }
     }
     DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], TextIdPc880888, prompt_alpha, -1, tBACK, -1, -1,
@@ -2851,22 +2810,19 @@ static void Hub_DrawFreePlaySelect(void) {
                     if (freeplay_selected[player] == 0) {
                         progress = 1.0f - progress;
                     }
-                    eased =
-                        (f32)(1.0 -
-                              (NuTrigTable[((i32)((1.0f - progress) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * .5);
+                    eased = (f32)(1.0 - (NuTrigTable[((i32)((1.0f - progress) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * .5);
                 } else if (freeplay_selected[player] != 0) {
                     opacity = 0.0f;
                     progress = 0.0f;
                 }
                 if (opacity > 0.0f) {
-                    DrawCharIcon(model, (target_x - base_x) * eased + base_x,
-                                 (target_y - HubFreePlayBigYPc) * eased + HubFreePlayBigYPc, 0.0f,
-                                 (target_size - base_size) * eased + base_size, frame, opacity, opacity, 1, NULL);
+                    DrawCharIcon(model, (target_x - base_x) * eased + base_x, (target_y - HubFreePlayBigYPc) * eased + HubFreePlayBigYPc,
+                                 0.0f, (target_size - base_size) * eased + base_size, frame, opacity, opacity, 1, NULL);
                 }
                 if (model != -1 && progress > 0.0f) {
                     char name[64];
-                    SmartTextEx(GameObj_GetNamePc(model, NULL, name), base_x, HubFreePlayNameYPc, 1.0f, .45f, .45f,
-                                .45f, 1, 255, 191, 0, 0.75f, 2, NULL, 0, (i32)(progress * 128.0 * opacity));
+                    SmartTextEx(GameObj_GetNamePc(model, NULL, name), base_x, HubFreePlayNameYPc, 1.0f, .45f, .45f, .45f, 1, 255, 191, 0,
+                                0.75f, 2, NULL, 0, (i32)(progress * 128.0 * opacity));
                 }
             }
         }
@@ -2877,9 +2833,7 @@ static void Hub_DrawFreePlaySelect(void) {
         list[1].model_id = MissionMenuPacketPc.player_model[1];
         list[2].model_id = -1;
         const f32 offset = -((1.0f - HubFabsPc(COLLECTION_Y_HUB)) + 1.0f);
-        const f32 y = (COLLECTION_Y_HUB - offset) *
-                          NuTrigTable[((i32)(freeplaytime / freeplayduration * 16384.0) >> 1) & 0x7fff] +
-                      offset;
+        const f32 y = (COLLECTION_Y_HUB - offset) * NuTrigTable[((i32)(freeplaytime / freeplayduration * 16384.0) >> 1) & 0x7fff] + offset;
         Collection_Draw(collection, 0.0f, y, collection->scale, list, 1.0f, 1);
         HubDrawIconCursorsPc(collection, 1, 1.0f, 1.0f);
         return;
@@ -2915,8 +2869,7 @@ static void Hub_DrawFreePlaySelect(void) {
                     break;
                 case 2:
                 case 3:
-                    if (MissionMenuPacketPc.active_player[other] != 0 &&
-                        freeplay_selected[other] < freeplay_selected[player]) {
+                    if (MissionMenuPacketPc.active_player[other] != 0 && freeplay_selected[other] < freeplay_selected[player]) {
                         back[player] = TextIdPc880890;
                         status[player] = TextIdPc880eb4;
                     }
@@ -3010,8 +2963,7 @@ static void Hub_DrawFreePlaySelect(void) {
                 opacity = 1.0f;
                 frame = 167;
             }
-            const f32 eased =
-                (f32)(1.0 - (NuTrigTable[((i32)(progress * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * .5);
+            const f32 eased = (f32)(1.0 - (NuTrigTable[((i32)(progress * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * .5);
             const f32 draw_alpha = eased * (1.0f - opacity) + opacity;
             DrawCharIcon(list[i].model_id, (x - source_x) * eased + source_x, (y - source_y) * eased + source_y, 0.0f,
                          (target_size - source_size) * eased + source_size, frame, draw_alpha, draw_alpha, 1, NULL);
@@ -3099,9 +3051,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         HubPreventDropOutTimePc = 1;
     }
     HubTrueJediTypeAlphaPc =
-        (i32)((f64)NuTrigTable
-                      [((u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0)) >> 1] *
-                  16.0 +
+        (i32)((f64)NuTrigTable[((u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0)) >> 1] * 16.0 +
               80.0);
     if (menu == 8) {
         HubJabbaAwakePc = 1;
@@ -3212,8 +3162,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             }
         }
         i32 episode_index;
-        for (episode_index = 0;
-             HubEpisodeInfoPc[episode_index].episode >= 0 && HubEpisodeInfoPc[episode_index].episode < 9;
+        for (episode_index = 0; HubEpisodeInfoPc[episode_index].episode >= 0 && HubEpisodeInfoPc[episode_index].episode < 9;
              ++episode_index) {
             if (HubEpisodeInfoPc[episode_index].door != NULL) {
                 if (HubEpisodeInfoPc[episode_index].episode != selected && selected != -1) {
@@ -3232,8 +3181,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         if (HubAreaTimePc == 0) {
             HubAreaPc = selected;
         }
-        HubAreaTimePc =
-            SeekLinearF(HubAreaTimePc, HubAreaPc != -1 && HubAreaPc == selected ? 1.0f : 0.0f, FRAMETIME * 2);
+        HubAreaTimePc = SeekLinearF(HubAreaTimePc, HubAreaPc != -1 && HubAreaPc == selected ? 1.0f : 0.0f, FRAMETIME * 2);
     }
     for (i32 episode = 0; episode < 6; ++episode) {
         i32 completed;
@@ -3252,18 +3200,15 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     }
     if (selected_area != -1) {
         for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
-            if (HubAreaInfoPc[i].door != NULL && HubAreaInfoPc[i].area != NULL &&
-                HubAreaInfoPc[i].area->index != selected_area) {
+            if (HubAreaInfoPc[i].door != NULL && HubAreaInfoPc[i].area != NULL && HubAreaInfoPc[i].area->index != selected_area) {
                 ((HUB_DOOR_READER_PC *)HubAreaInfoPc[i].door)->object->flags |= 8;
             }
         }
     } else {
         for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
             if (HubAreaInfoPc[i].door != NULL &&
-                (Episode_CountOpenAreas(HubAreaInfoPc[i].area->episode_index, HubAreaInfoPc[i].area->index,
-                                        Game_AreaSave) != 0 ||
-                 (HubAreaInfoPc[i].bonus_gizmo != NULL &&
-                  GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].bonus_gizmo, 0, 0) != 0) ||
+                (Episode_CountOpenAreas(HubAreaInfoPc[i].area->episode_index, HubAreaInfoPc[i].area->index, Game_AreaSave) != 0 ||
+                 (HubAreaInfoPc[i].bonus_gizmo != NULL && GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].bonus_gizmo, 0, 0) != 0) ||
                  ((HubAreaInfoPc[i].flags >> 8) & 255) == 1)) {
                 ((HUB_DOOR_READER_PC *)HubAreaInfoPc[i].door)->object->flags &= ~8U;
                 NuSpecialSetVisibility(&HubAreaInfoPc[i].lock, 1);
@@ -3279,8 +3224,8 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             HubLastAreaPc = selected_area;
             HubDoorAreaPc = selected_area;
         }
-        HubEpisodeTimePc = SeekLinearF(
-            HubEpisodeTimePc, HubLastAreaPc != -1 && HubLastAreaPc == selected_area ? 1.0f : 0.0f, FRAMETIME * 2);
+        HubEpisodeTimePc =
+            SeekLinearF(HubEpisodeTimePc, HubLastAreaPc != -1 && HubLastAreaPc == selected_area ? 1.0f : 0.0f, FRAMETIME * 2);
     } else {
         HubAreaTimePc = 0;
         HubEpisodeTimePc = 0;
@@ -3301,13 +3246,11 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             continue;
         }
         GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
-        if (player != NULL && (player->flags_1fc & 0x80) != 0 &&
-            NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
+        if (player != NULL && (player->flags_1fc & 0x80) != 0 && NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
             break;
         }
         player = (GAMEOBJECT *)Player[1];
-        if (player != NULL && (player->flags_1fc & 0x80) != 0 &&
-            NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
+        if (player != NULL && (player->flags_1fc & 0x80) != 0 && NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
             break;
         }
     }
@@ -3328,8 +3271,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         HubMiniKitOpenTimePc = 0;
     } else if (LevLock[4] == 0) {
         i32 selected = -1;
-        if (!(HubAreaPc != -1 && HubAreaTimePc > 0) && !(HubLastAreaPc != -1 && HubEpisodeTimePc > 0) &&
-            candidate != -1) {
+        if (!(HubAreaPc != -1 && HubAreaTimePc > 0) && !(HubLastAreaPc != -1 && HubEpisodeTimePc > 0) && candidate != -1) {
             GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
             if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0) {
                 selected = hub_minikitviewer_area;
@@ -3397,8 +3339,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
                 }
                 if ((f64)Game.gold_bricks < 160.0) {
                     GizmoSetVisibility(world->gizmo_sys, LevGizmo[0], 0, 0);
-                    HubSetBuildItPiecesVisiblePc((GIZBUILDIT_PC *)LevGizmo[0]->object,
-                                                 (i32)((f64)Game.gold_bricks * 0.5));
+                    HubSetBuildItPiecesVisiblePc((GIZBUILDIT_PC *)LevGizmo[0]->object, (i32)((f64)Game.gold_bricks * 0.5));
                 } else if ((((GIZBUILDIT_PC *)LevGizmo[0]->object)->availability_flags & 1) == 0) {
                     GizmoActivate(world->gizmo_sys, LevGizmo[0], 1, 0);
                 }
@@ -3409,8 +3350,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         if (HubStatsTimePc == 0) {
             HubEpisodePc = selected;
         }
-        HubStatsTimePc =
-            SeekLinearF(HubStatsTimePc, HubEpisodePc != -1 && HubEpisodePc == selected ? 1.0f : 0.0f, FRAMETIME * 2);
+        HubStatsTimePc = SeekLinearF(HubStatsTimePc, HubEpisodePc != -1 && HubEpisodePc == selected ? 1.0f : 0.0f, FRAMETIME * 2);
     }
     if (HubUpdateAIFnPc != NULL) {
         HubUpdateAIFnPc(world);
@@ -3444,9 +3384,8 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             alpha = 1.0f - (newgamecamtime - 7.5f) * 2.0f;
         }
         if (alpha > 0.0f) {
-            SmartTextEx(TTab[TextIdPc8806f8], 0.0f, (HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5f, 1.0f, 0.8f,
-                        0.8f, 0.8f, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0,
-                        static_cast<i32>(alpha * 128.0));
+            SmartTextEx(TTab[TextIdPc8806f8], 0.0f, (HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5f, 1.0f, 0.8f, 0.8f, 0.8f, 0,
+                        HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, static_cast<i32>(alpha * 128.0));
         }
     }
     DrawShopPanel();
@@ -3486,37 +3425,34 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             }
             stats_xscale = 0.8f;
             if (HubBothTrueJediGoldBricksPc) {
-                DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100,
-                               100, NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
+                DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
+                               NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
                 sprintf(text, "%i/%i", story_count, story_total);
                 Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeSubtitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale,
                          PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
-                SmartTextEx(TTab[TextIdPc8808a4], HubAreaPanelXPc[1], HubTrueJediLabelOffsetPc + HubEpisodeSubtitleYPc,
-                            1.0f, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
-                            HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc,
-                            HubTrueJediLabelWidthPc, 1, NULL, 0,
+                SmartTextEx(TTab[TextIdPc8808a4], HubAreaPanelXPc[1], HubTrueJediLabelOffsetPc + HubEpisodeSubtitleYPc, 1.0f,
+                            HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0, HubTrueJediLabelRedPc,
+                            HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc, 1, NULL, 0,
                             static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlphaPc) * HubAreaTimePc));
-                DrawBuildUpBar(HubAreaPanelXPc[4], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100,
-                               100, NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
+                DrawBuildUpBar(HubAreaPanelXPc[4], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
+                               NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
                 sprintf(text, "%i/%i", free_count, free_total);
                 Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeSubtitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale,
                          PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
-                SmartTextEx(TTab[TextIdPc8808a8], HubAreaPanelXPc[4], HubTrueJediLabelOffsetPc + HubEpisodeSubtitleYPc,
-                            1.0f, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
-                            HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc,
-                            HubTrueJediLabelWidthPc, 1, NULL, 0,
+                SmartTextEx(TTab[TextIdPc8808a8], HubAreaPanelXPc[4], HubTrueJediLabelOffsetPc + HubEpisodeSubtitleYPc, 1.0f,
+                            HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0, HubTrueJediLabelRedPc,
+                            HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc, 1, NULL, 0,
                             static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlphaPc) * HubAreaTimePc));
             } else {
-                DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100,
-                               100, NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
+                DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
+                               NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
                 sprintf(text, "%i/%i", buildup_count, buildup_total);
                 Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeSubtitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale,
                          PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
             }
             Hub_DrawMiniKitCount(HubAreaPanelXPc[0], HubEpisodeSubtitleYPc, mini_count, mini_total, HubAreaTimePc);
             Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeSubtitleYPc, HubAreaTimePc, red_count, red_total);
-            Hub_DrawImportantBrick(211, HubAreaPanelXPc[3], HubEpisodeSubtitleYPc, HubAreaTimePc, Game.gold_bricks,
-                                   GOLDBRICKPOINTS);
+            Hub_DrawImportantBrick(211, HubAreaPanelXPc[3], HubEpisodeSubtitleYPc, HubAreaTimePc, Game.gold_bricks, GOLDBRICKPOINTS);
             HubDrawMiniKitCharacterPc = 1;
             Hub_DrawMiniKitCount(HubAreaPanelXPc[5], HubEpisodeSubtitleYPc, char_count, char_total, HubAreaTimePc);
             stats_xscale = 1.0f;
@@ -3534,8 +3470,8 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             AREA_SAVE_PICKUP *save = Game.area_save;
             if (count > 0) {
                 for (; count != 0; --count, ++area, ++save) {
-                    if (area == HUB_ADATA || (area->flags & 0x22) != 0 || area->episode_index != -1 ||
-                        (area->flags & 0x10) != 0 || (area->flags & 0x2000) != 0) {
+                    if (area == HUB_ADATA || (area->flags & 0x22) != 0 || area->episode_index != -1 || (area->flags & 0x10) != 0 ||
+                        (area->flags & 0x2000) != 0) {
                         continue;
                     }
                     if ((area->flags & 0x100) != 0) {
@@ -3564,9 +3500,8 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 x = -.1f;
             }
             Hub_DrawImportantBrick(211, x, HubEpisodeTitleYPc, HubAreaTimePc, gold_count, gold_total);
-            SmartTextEx(TTab[TextIdPc8807e4], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
-                        HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
-                        HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+            SmartTextEx(TTab[TextIdPc8807e4], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+                        HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
         } else if (HubAreaPc >= 0 && HubAreaPc < EPISODECOUNT) {
             HubDrawEpisodeStatsPc(HubAreaPc, HubAreaTimePc);
         }
@@ -3595,8 +3530,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             i32 total;
             if (HubEpisodePc == 999) {
                 total = ((GIZBUILDIT_PC *)HubBuildItPc)->anim_object_count * 2;
-                Hub_DrawImportantBrick(211, 0.0f, HubEpisodeSubtitleYPc, alpha,
-                                       Game.gold_bricks > total ? total : Game.gold_bricks, total);
+                Hub_DrawImportantBrick(211, 0.0f, HubEpisodeSubtitleYPc, alpha, Game.gold_bricks > total ? total : Game.gold_bricks, total);
             } else {
                 GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfoPc[HubEpisodePc].bonus_gizmo;
                 if (gizmo != NULL) {
@@ -3685,8 +3619,7 @@ static void HubUpdateSelectModePc(void) {
                             if ((ADataList[area].flags & 1) != 0) {
                                 i32 first;
                                 i32 second;
-                                const i32 count = Collection_GetIDList(&VehicleCollectionPc, 0x4002000, 0x2000, ids,
-                                                                       &first, &second, 0);
+                                const i32 count = Collection_GetIDList(&VehicleCollectionPc, 0x4002000, 0x2000, ids, &first, &second, 0);
                                 if (count == 1) {
                                     selectmodemode = count;
                                     MissionMenuPacketPc.player_model[1] = ids[0];
@@ -3747,8 +3680,7 @@ static void HubUpdateSelectModePc(void) {
             if (!(selectmodetime >= selectmodeduration)) {
                 return;
             }
-            MakeFreePlayModelList(MissionMenuPacketPc.player_model[0], MissionMenuPacketPc.player_model[1],
-                                  level->area_index, -1, 1);
+            MakeFreePlayModelList(MissionMenuPacketPc.player_model[0], MissionMenuPacketPc.player_model[1], level->area_index, -1, 1);
             makeplayerlist_freeplay = 2;
             NextArea_FreePlay = 1;
             FreePlay = 1;
@@ -3986,8 +3918,7 @@ static void HubUpdateBonusModePc(void) {
                         }
                         i32 first;
                         i32 second;
-                        const i32 count =
-                            Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, &first, &second, 0);
+                        const i32 count = Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, &first, &second, 0);
                         if (count < 1) {
                             GameAudio_PlaySfx(0x32, NULL, 0, 0);
                             return;
@@ -4109,10 +4040,8 @@ extern "C" {
     i32 Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         AIPATHNODE_PC *destination =
-            &packet->path_info.path
-                 ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        AIPATHNODE_PC *source =
-            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+        AIPATHNODE_PC *source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
         AIPATHNODE_PC *node;
         AIPATH_PC *path;
         i32 skip_inside;
@@ -4139,9 +4068,8 @@ extern "C" {
             }
             if (owner->field_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
                 instance = NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle);
-                if (instance == ((AI_SPECIAL_TERRAIN_VIEW_PC *)CurrentTerrain)
-                                    ->platforms[owner->supporting_platform_id]
-                                    .scene_object_index) {
+                if (instance ==
+                    ((AI_SPECIAL_TERRAIN_VIEW_PC *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
                     skip_inside = 0;
                 }
             }
@@ -4149,11 +4077,10 @@ extern "C" {
             skip_inside = 0;
         }
         if (((GAMEOBJECT *)object)->respawn_timer > 2.0f ||
-            (skip_inside == 0 && owner->ai_packet.inside_path_node ==
-                                     owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes)) {
+            (skip_inside == 0 &&
+             owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes)) {
             ClearSpecialMove(owner);
-        } else if (owner->character_context != 0 && owner->character_context != 0x5b &&
-                   owner->character_context != 0x55 &&
+        } else if (owner->character_context != 0 && owner->character_context != 0x5b && owner->character_context != 0x55 &&
                    (owner->position.y < owner->ai_packet.special_move_node->min_height ||
                     (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0 ||
                     owner->special_move_timer_pc < -5.0f)) {
@@ -4180,10 +4107,8 @@ extern "C" {
             owner->indy_climb = FindClimbObject(WORLD->climb_objects, packet->path_info.connection);
         }
         if (owner->indy_climb != NULL) {
-            destination = &packet->path_info.path
-                               ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-            source =
-                &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+            destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
             if (TryToTeleportToNextNode(owner, destination, 0)) {
                 return 1;
             }
@@ -4312,19 +4237,16 @@ extern "C" {
         return 1;
     }
 
-    i32 IndyGrappleHelperOccupiedPc(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX_PC *connection,
-                                    u8 direction, u8 type) {
+    i32 IndyGrappleHelperOccupiedPc(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX_PC *connection, u8 direction, u8 type) {
         GRAPPLE_DYNAMIC_PC *grapple = (GRAPPLE_DYNAMIC_PC *)helper->target;
         return Grapple_Occupied(grapple, owner, owner->ai_packet.path_info.connection) != NULL;
     }
 
     i32 Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-        AIPATHNODE_PC *source =
-            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+        AIPATHNODE_PC *source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
         AIPATHNODE_PC *destination =
-            &packet->path_info.path
-                 ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
         GRAPPLE_DYNAMIC_PC *grapple;
         GAMEOBJECT *occupant;
         NUVEC offset;
@@ -4338,10 +4260,8 @@ extern "C" {
                 (owner->indy_connection_helper->direction != 0xff &&
                  owner->ai_packet.path_info.direction != owner->indy_connection_helper->direction) ||
                 owner->indy_connection_helper->type != 1 ||
-                (!(owner->character_context == LEGOCONTEXT_GRAPPLE &&
-                   owner->grapple == owner->indy_connection_helper->target) &&
-                 Grapple_Occupied(owner->indy_connection_helper->target, owner, packet->path_info.connection) !=
-                     NULL)) {
+                (!(owner->character_context == LEGOCONTEXT_GRAPPLE && owner->grapple == owner->indy_connection_helper->target) &&
+                 Grapple_Occupied(owner->indy_connection_helper->target, owner, packet->path_info.connection) != NULL)) {
                 owner->indy_connection_helper = NULL;
             }
         }
@@ -4449,8 +4369,7 @@ extern "C" {
             }
             return 1;
         }
-        difference = owner->indy_connection_helper->jump_off_dy + owner->ai_packet.special_move_node->position.y -
-                     owner->position.y;
+        difference = owner->indy_connection_helper->jump_off_dy + owner->ai_packet.special_move_node->position.y - owner->position.y;
         if (difference > IndyGrappleHeightTolerancePc) {
             owner->indy_guideline_state.movement_direction = 1;
             // MATCH-EXCEPTION: negated <= keeps the unordered-compare branch (test ah,1).
@@ -4566,16 +4485,14 @@ extern "C" {
         owner = (GAMEOBJECT *)object->owner;
         flags = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
         if ((packet->path_info.flags & 1) != 0) {
-            source =
-                &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+            source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
             destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
             destination = &packet->path_info.path->nodes[destination_index];
             distance = NuVecXZDistSqr(&object->position, &destination->position, &offset);
             if (!(distance < destination->radius_squared)) {
                 if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x20) == 0 &&
                     packet->inside_path_node != destination_index &&
-                    (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
-                     (1 << (destination_index % 8))) != 0) {
+                    (packet->path_info.path->previous_inside_node_bits[destination_index / 8] & (1 << (destination_index % 8))) != 0) {
                     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
                         return 1;
                     }
@@ -4607,8 +4524,8 @@ extern "C" {
             NuVecScale(&offset, &offset, radius / packet->path_info.connection->horizontal_distance);
             NuVecAdd(&packet->movement_destination, &source->position, &offset);
             distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
-            if (checks != 0 && (distance < ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time ||
-                                owner->character_context == 0x44)) {
+            if (checks != 0 &&
+                (distance < ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time || owner->character_context == 0x44)) {
                 ready = 1;
                 packet->movement_destination = object->position;
             }
@@ -4621,8 +4538,7 @@ extern "C" {
             switch (packet->path_connection_state) {
                 case 1:
                     if (ready != 0) {
-                        u32 connection_flags =
-                            packet->path_info.connection->traversal_flags[packet->path_info.direction];
+                        u32 connection_flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
                         skip_ahead = (connection_flags & 0x20) == 0 && packet->inside_path_node != destination_index &&
                                      (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
                                       (1 << (destination_index % 8))) != 0;
@@ -4631,8 +4547,7 @@ extern "C" {
                                 return 1;
                             }
                         } else if ((connection_flags & 0x80) == 0) {
-                            if ((connection_flags & 0x40) != 0 ||
-                                ((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
+                            if ((connection_flags & 0x40) != 0 || ((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
                                 NuSpecialCompare(&source->special_handle, &destination->special_handle) != 0) {
                                 packet->path_connection_state = 4;
                             } else {
@@ -4696,12 +4611,11 @@ extern "C" {
                     if ((connection->traversal_flags[packet->path_info.direction] & 0x20) == 0) {
                         other = Obj;
                         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++other) {
-                            if ((other->flags_1fc_word & 1) == 0 || other == owner ||
-                                (other->flags_1fc_word & 0x1000) == 0 || other->dead != 0) {
+                            if ((other->flags_1fc_word & 1) == 0 || other == owner || (other->flags_1fc_word & 0x1000) == 0 ||
+                                other->dead != 0) {
                                 continue;
                             }
-                            if (other != player &&
-                                other->ai_packet.path_info.connection == packet->path_info.connection &&
+                            if (other != player && other->ai_packet.path_info.connection == packet->path_info.connection &&
                                 other->ai_packet.special_move_node == NULL &&
                                 other->ai_packet.path_update_flag < packet->path_connection_state) {
                                 continue;
@@ -4714,15 +4628,13 @@ extern "C" {
                                        other->collision_min.y < destination->position.y - ai_moveradius * 0.5) {
                                 continue;
                             }
-                            clearance =
-                                other->ai_packet.mover_height + other->ai_packet.mover_height + packet->mover_height;
+                            clearance = other->ai_packet.mover_height + other->ai_packet.mover_height + packet->mover_height;
                             offset.x = other->position.x - destination->position.x;
                             if (!(offset.x < clearance && offset.x > -clearance)) {
                                 continue;
                             }
                             offset.z = other->position.z - destination->position.z;
-                            if (!(offset.z < clearance && offset.x > -clearance) ||
-                                !(other->collision_max.y >= destination->position.y) ||
+                            if (!(offset.z < clearance && offset.x > -clearance) || !(other->collision_max.y >= destination->position.y) ||
                                 !(other->collision_min.y <= destination->position.y + owner->scaled_height)) {
                                 continue;
                             }
@@ -4748,12 +4660,10 @@ extern "C" {
     i32 Indy_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
         AIPATHNODE_PC *destination =
-            &packet->path_info.path
-                 ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
         if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80) != 0) {
             packet->movement_destination =
-                packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]]
-                    .position;
+                packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]].position;
             packet->flags |= 0x800000;
             packet->movement_stopping_distance = 0.0f;
             ((GAMEOBJECT *)apiobject)->ai_collision_priority_pc |= 0x2000;
@@ -4857,8 +4767,7 @@ extern "C" {
 
         owner = (GAMEOBJECT *)object->owner;
         if (owner->special_move_timer_pc <= 0.0f) {
-            destination = &packet->path_info.path
-                               ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
             if (owner->character_context == 0x47) {
                 packet->movement_destination = destination->position;
                 packet->movement_stopping_distance = 0.0f;
@@ -4901,8 +4810,7 @@ extern "C" {
             case 1:
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                 owner->ai_packet.movement_stopping_distance = 0.0f;
-                if (owner->ai_packet.inside_path_node ==
-                        owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes ||
+                if (owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes ||
                     owner->special_move_timer_pc <= 0.0f) {
                     ClearSpecialMove(owner);
                     return 0;
@@ -4914,13 +4822,13 @@ extern "C" {
     }
 
     INDY_PREPARE_SPECIAL_MOVE_PC IndyPrepareSpecialMovePc[7] = {
-        {3, Indy_PrepareJumpPc},
-        {4, Indy_PrepareBigJumpPc},
-        {8, Indy_PrepareGrapplePc},
-        {0x10, Indy_PrepareClimbPc},
-        {0x20000000, Indy_PrepareObstaclePc},
-        {0x400, Indy_PrepareWhipSwingPc},
-        {0, NULL},
+        {3,          Indy_PrepareJumpPc     },
+        {4,          Indy_PrepareBigJumpPc  },
+        {8,          Indy_PrepareGrapplePc  },
+        {0x10,       Indy_PrepareClimbPc    },
+        {0x20000000, Indy_PrepareObstaclePc },
+        {0x400,      Indy_PrepareWhipSwingPc},
+        {0,          NULL                   },
     };
 
     i32 Indy_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks) {
@@ -4954,19 +4862,16 @@ extern "C" {
         if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f &&
             (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0xd8000000) == 0) {
             TryToTeleportToNextNode(
-                owner,
-                &packet->path_info.path
-                     ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]],
-                0);
+                owner, &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]], 0);
         }
         return 0;
     }
 
-    AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFnsPc[10] = {
-        Indy_MidSpecialMove_DefaultPc,      Indy_MidSpecialMove_StartJumpPc,    Indy_MidSpecialMove_BigJumpPc,
-        Indy_MidSpecialMove_ClimbUpPc,      Indy_MidSpecialMove_ClimbDownPc,    Indy_MidSpecialMove_SwingPc,
-        Indy_MidSpecialMove_GrappleStartPc, Indy_MidSpecialMove_GrappleClimbPc, Indy_MidSpecialMove_GrappleEndPc,
-        Indy_MidSpecialMove_WhipSwingPc};
+    AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFnsPc[10] = {Indy_MidSpecialMove_DefaultPc,      Indy_MidSpecialMove_StartJumpPc,
+                                                          Indy_MidSpecialMove_BigJumpPc,      Indy_MidSpecialMove_ClimbUpPc,
+                                                          Indy_MidSpecialMove_ClimbDownPc,    Indy_MidSpecialMove_SwingPc,
+                                                          Indy_MidSpecialMove_GrappleStartPc, Indy_MidSpecialMove_GrappleClimbPc,
+                                                          Indy_MidSpecialMove_GrappleEndPc,   Indy_MidSpecialMove_WhipSwingPc};
 
     i32 Indy_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *apiobject) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
@@ -5017,8 +4922,7 @@ extern "C" {
                         midpoint.z = (second->position.z + first->position.z) * 0.5;
                         grapple = Grapple_FindNearestToPos(world, &midpoint);
                         if (grapple != NULL) {
-                            AIPathCnxHelperSys_AddHelper(world->ai_connection_helpers, connection, direction, grapple,
-                                                         1);
+                            AIPathCnxHelperSys_AddHelper(world->ai_connection_helpers, connection, direction, grapple, 1);
                         }
                     }
                 }
@@ -5129,13 +5033,11 @@ extern "C" void LostTempleC_UpdatePc(WORLDINFO *world) {
     f32 exit_distance = MidDistanceFromSockStart(world->sock_sys, &LostTempleExitSockPositionPc);
     for (i32 i = 0; i < 2; ++i) {
         if (Player[i] != NULL) {
-            f32 distance =
-                NuVecDistSqr(&((GAMEOBJECT *)Player[i])->collision_position, &LevGizObst[0]->evaluated_position, NULL);
+            f32 distance = NuVecDistSqr(&((GAMEOBJECT *)Player[i])->collision_position, &LevGizObst[0]->evaluated_position, NULL);
             if ((f64)distance < (f64)LevGizObst[0]->evaluated_radius * LevGizObst[0]->evaluated_radius) {
                 inside = 1;
             } else if (((GAMEOBJECT *)Player[i])->sock_position.segment == 1 &&
-                       MidDistanceFromSockStart(world->sock_sys, &((GAMEOBJECT *)Player[i])->sock_position) <
-                           exit_distance) {
+                       MidDistanceFromSockStart(world->sock_sys, &((GAMEOBJECT *)Player[i])->sock_position) < exit_distance) {
                 goto complete;
             }
         }

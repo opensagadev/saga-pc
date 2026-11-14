@@ -152,12 +152,9 @@ void Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time
             shard->collection_velocity.x = SeekValF(shard->collection_velocity.x, velocity.x, acceleration);
             shard->collection_velocity.y = SeekValF(shard->collection_velocity.y, velocity.y, acceleration);
             shard->collection_velocity.z = SeekValF(shard->collection_velocity.z, velocity.z, acceleration);
-            shard->current_position.x =
-                (f64)shard->current_position.x + (f64)shard->collection_velocity.x * (f64)FRAMETIME;
-            shard->current_position.y =
-                (f64)shard->current_position.y + (f64)shard->collection_velocity.y * (f64)FRAMETIME;
-            shard->current_position.z =
-                (f64)shard->current_position.z + (f64)shard->collection_velocity.z * (f64)FRAMETIME;
+            shard->current_position.x = (f64)shard->current_position.x + (f64)shard->collection_velocity.x * (f64)FRAMETIME;
+            shard->current_position.y = (f64)shard->current_position.y + (f64)shard->collection_velocity.y * (f64)FRAMETIME;
+            shard->current_position.z = (f64)shard->current_position.z + (f64)shard->collection_velocity.z * (f64)FRAMETIME;
             if (NuVecDistSqr(&shard->current_position, &target, NULL) < ForcePushApproachOuterSquare) {
                 shard->state_flags = (shard->state_flags & ~4u) | 8;
                 ++shard->collector->field_1062;

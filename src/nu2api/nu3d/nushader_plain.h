@@ -25,8 +25,7 @@
 extern "C" {
 #endif
     void NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end);
-    PC_SHADER_OBJECT_FULL_VIEW *NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *,
-                                                              const PC_SHADER_FILTER_MATERIAL_VIEW *);
+    PC_SHADER_OBJECT_FULL_VIEW *NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
     PC_SHADER_OBJECT_FULL_VIEW *NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *,
                                                                      const PC_SHADER_FILTER_MATERIAL_VIEW *, i32);
     void NuShaderManagerReleaseShader(PC_SHADER_RECORD_VIEW *);

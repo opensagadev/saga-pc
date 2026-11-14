@@ -40,8 +40,7 @@ void AddCameraRain(WORLDINFO *world, i32 mode) {
         position.x += GameCam->dir.x * 2.0;
         position.y += GameCam->dir.y * 2.0;
         position.z += GameCam->dir.z * 2.0;
-        AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[mode].effect, &position, 0x3c, FRAMETIME, 0,
-                                          0, NULL);
+        AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[mode].effect, &position, 0x3c, FRAMETIME, 0, 0, NULL);
     }
 }
 

@@ -47,8 +47,7 @@ extern "C" {
     i32 OutSideSplineArea(NUVEC *, struct nugspline_s *, NUVEC *, NUVEC *, i32);
     void PointAlongSpline(struct nugspline_s *spline, f32 along, NUVEC *result, u16 *yaw, u16 *pitch, i32 looping);
     void MoveSplinePosition(SPLINEPOS *position, f32 distance);
-    void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, struct nugspline_s *spline, i32 looping, i16 first_point,
-                             i16 last_point);
+    void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, struct nugspline_s *spline, i32 looping, i16 first_point, i16 last_point);
     void InitSplinePosition(SPLINEPOS *position, struct nugspline_s *spline, f32 distance, i32 looping);
     extern struct nugspline_s *splineStore;
     extern i32 numSplinesLoaded;

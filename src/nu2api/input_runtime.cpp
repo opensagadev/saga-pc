@@ -38,8 +38,8 @@ i32 PC_INPUT_RUNTIME_PC::ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 ba
                 for (i32 second = *second_order; second >= 0; second = *++second_order) {
                     PC_INPUT_BINDING_PC *selected_binding = &bindings[second];
                     PC_INPUT_BINDING_PC *peer_binding = &peer_bindings[second];
-                    if (selected_binding->kind && selected_binding->value != 255 &&
-                        first_binding->value == peer_binding->value && first_binding->kind == peer_binding->kind) {
+                    if (selected_binding->kind && selected_binding->value != 255 && first_binding->value == peer_binding->value &&
+                        first_binding->kind == peer_binding->kind) {
                         first_binding->value = 0;
                         first_binding->kind = 0;
                     }
@@ -523,10 +523,9 @@ extern "C" i32 PcConfigureInputGraphicsCaps() {
     if (!original_class) {
         switch (NuLanguageGet()) {
             case 2:
-                PCGraphicsFatalDiagnostic(
-                    &PCNativeWarningDebugState,
-                    "Impossible de lancer ce jeu sur votre ordinateur.\nUne carte graphique compatible avec Pixel "
-                    "Shaders v.1.1 est n\351cessaire.\nLe jeu va maintenant \352tre ferm\351.");
+                PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
+                                          "Impossible de lancer ce jeu sur votre ordinateur.\nUne carte graphique compatible avec Pixel "
+                                          "Shaders v.1.1 est n\351cessaire.\nLe jeu va maintenant \352tre ferm\351.");
                 break;
             case 3:
                 PCGraphicsFatalDiagnostic(
@@ -535,16 +534,14 @@ extern "C" i32 PcConfigureInputGraphicsCaps() {
                     "compatible con Pixel Shaders v1.1.\nEl juego finalizar\341 ahora.");
                 break;
             case 4:
-                PCGraphicsFatalDiagnostic(
-                    &PCNativeWarningDebugState,
-                    "Das Spiel kann auf diesem System leider nicht ausgef\374hrt werden.\nDu brauchst eine Pixel "
-                    "Shader v1.1-kompatible Grafikkarte.\nDas Spiel wird nun beendet.");
+                PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
+                                          "Das Spiel kann auf diesem System leider nicht ausgef\374hrt werden.\nDu brauchst eine Pixel "
+                                          "Shader v1.1-kompatible Grafikkarte.\nDas Spiel wird nun beendet.");
                 break;
             case 5:
-                PCGraphicsFatalDiagnostic(
-                    &PCNativeWarningDebugState,
-                    "Purtroppo, il tuo sistema non \350 in grado di eseguire il gioco.\n\310 necessaria una scheda "
-                    "video che supporti Pixel Shaders v1.1.\nIl gioco verr\340 chiuso.");
+                PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
+                                          "Purtroppo, il tuo sistema non \350 in grado di eseguire il gioco.\n\310 necessaria una scheda "
+                                          "video che supporti Pixel Shaders v1.1.\nIl gioco verr\340 chiuso.");
                 break;
             case 6:
                 PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
@@ -552,10 +549,9 @@ extern "C" i32 PcConfigureInputGraphicsCaps() {
                                           "met Pixel Shaders v1.1-ondersteuning nodig.\nHet spel wordt nu afgesloten.");
                 break;
             case 8:
-                PCGraphicsFatalDiagnostic(
-                    &PCNativeWarningDebugState,
-                    "Beklager, men din maskine kan ikke k\370re dette spil.\nDen skal have et grafikkort der "
-                    "underst\370tter Pixel Shaders v1.1.\nSpillet vil nu blive lukket.");
+                PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
+                                          "Beklager, men din maskine kan ikke k\370re dette spil.\nDen skal have et grafikkort der "
+                                          "underst\370tter Pixel Shaders v1.1.\nSpillet vil nu blive lukket.");
                 break;
             default:
                 PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
@@ -579,17 +575,16 @@ extern "C" i32 NuPadGetDeadzoneByPortPS(i32 port) {
     return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[port].deadzone;
 }
 
-extern "C" i32 NuPadReadOutputsPc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2,
-                                  u32 *buttons, u8 *unknown, i32 *flags) {
+extern "C" i32 NuPadReadOutputsPc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2, u32 *buttons, u8 *unknown,
+                                  i32 *flags) {
     if (nu_input_state != NULL) {
-        return ((PC_INPUT_RUNTIME_PC *)nu_input_state)
-            ->ReadSamplePc(port, lx, ly, rx, ry, l1, l2, r1, r2, buttons, unknown, flags);
+        return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->ReadSamplePc(port, lx, ly, rx, ry, l1, l2, r1, r2, buttons, unknown, flags);
     }
     return 0;
 }
 
-i32 PC_INPUT_RUNTIME_PC::ReadSamplePc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2,
-                                      u32 *buttons, u8 *unknown, i32 *flags) {
+i32 PC_INPUT_RUNTIME_PC::ReadSamplePc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2, u32 *buttons, u8 *unknown,
+                                      i32 *flags) {
     i32 valid = 0;
     if ((u32)(port - 10) <= 3 && !devices[port].action_keys_active) {
         return 0;
@@ -815,8 +810,7 @@ extern u32 mbuttons;
 
 i32 PC_INPUT_RUNTIME_PC::UpdateMousePc() {
     if (!(nu_keyboard_device_flags & 1) && !mouse_polled) {
-        i32 button_count =
-            nu_keyboard_owner.mouse_axes && nu_keyboard_owner.mouse_buttons ? nu_keyboard_owner.mouse_buttons : 0;
+        i32 button_count = nu_keyboard_owner.mouse_axes && nu_keyboard_owner.mouse_buttons ? nu_keyboard_owner.mouse_buttons : 0;
         mouse_polled = 1;
         const PC_DI_MOUSE_STATE_PC *state = nu_keyboard_owner.PollMousePc();
         for (i32 axis = 0; axis < 3; ++axis) {
@@ -878,8 +872,7 @@ i32 PC_INPUT_RUNTIME_PC::UpdateMousePc() {
             return 1;
         }
         memset(mouse.buttons, 0, 16);
-        mouse.accumulated[0] = mouse.accumulated[1] = mouse.accumulated[2] = mouse.delta[0] = mouse.delta[1] =
-            mouse.delta[2] = 0.0f;
+        mouse.accumulated[0] = mouse.accumulated[1] = mouse.accumulated[2] = mouse.delta[0] = mouse.delta[1] = mouse.delta[2] = 0.0f;
         for (i32 axis = 0; axis < 3; ++axis) {
             mouse.previous[axis] = mouse.current[axis];
         }
@@ -1616,8 +1609,8 @@ extern "C" i32 fun_006d5f20(u32 buttons, u32 axes) {
     }
     if (buttons != 0) {
         for (action = 0; action < 32; ++action) {
-            if (((PC_INPUT_RUNTIME_PC *)nu_input_state)->fun_006d4ef0(action, &active, &axis, &button, &value) &&
-                button >= 0 && (buttons & (1 << button))) {
+            if (((PC_INPUT_RUNTIME_PC *)nu_input_state)->fun_006d4ef0(action, &active, &axis, &button, &value) && button >= 0 &&
+                (buttons & (1 << button))) {
                 if (buttons & ~(1 << button)) {
                     return -4;
                 }
@@ -1696,8 +1689,7 @@ i32 PC_INPUT_RUNTIME_PC::HashAuxiliaryBindingsPc() {
     i32 hash = 0;
     for (i32 bank = 0; bank < 4; ++bank) {
         for (i32 action = 0; action < 32; ++action) {
-            hash =
-                ((hash & 0x80000000) ? hash * 2 + 1 : hash * 2) ^ auxiliary_bindings[bank][action].value ^ 0x12345678;
+            hash = ((hash & 0x80000000) ? hash * 2 + 1 : hash * 2) ^ auxiliary_bindings[bank][action].value ^ 0x12345678;
             hash = ((hash & 0x80000000) ? hash * 2 + 1 : hash * 2) ^ auxiliary_bindings[bank][action].kind ^ 0x12345678;
         }
     }
@@ -1914,8 +1906,7 @@ void PC_INPUT_RUNTIME_PC::AddInputRecord(i32 field_00, i32 field_01, i32 field_0
     }
 }
 
-void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary,
-                                          i32 bank, u32 excluded) {
+void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
     PC_INPUT_BINDING_PC *bindings = auxiliary ? auxiliary_bindings[bank] : devices[port].bindings;
     i32 simple = (u32)port <= 3;
     i32 active = commands[action].active;
@@ -1982,8 +1973,7 @@ void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 va
         kind = negative;
     }
     for (i32 i = 0; i < 32; ++i) {
-        if ((bindings[i].kind == positive || bindings[i].kind == negative) && bindings[i].value == value &&
-            !(excluded & (1u << i))) {
+        if ((bindings[i].kind == positive || bindings[i].kind == negative) && bindings[i].value == value && !(excluded & (1u << i))) {
             bindings[i].kind = 0;
             bindings[i].value = 0;
         }
@@ -2007,14 +1997,11 @@ void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 va
     }
 }
 
-extern "C" void PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank,
-                                       u32 excluded) {
-    ((PC_INPUT_RUNTIME_PC *)nu_input_state)
-        ->AssignBindingPc(action, port, kind, value, unused, auxiliary, bank, excluded);
+extern "C" void PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
+    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->AssignBindingPc(action, port, kind, value, unused, auxiliary, bank, excluded);
 }
 
-extern "C" void fun_006d9250(i32 button, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank,
-                             u32 excluded) {
+extern "C" void fun_006d9250(i32 button, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
     PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     i32 command_button;
     for (i32 action = 0; action < 32; ++action) {
@@ -2026,8 +2013,7 @@ extern "C" void fun_006d9250(i32 button, i32 port, i32 kind, i32 value, i32 unus
     }
 }
 
-extern "C" void fun_006d92c0(i32 axis, i32 active, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank,
-                             u32 excluded) {
+extern "C" void fun_006d92c0(i32 axis, i32 active, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
     PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     i32 command_active;
     i32 command_axis;
@@ -2208,14 +2194,13 @@ void PC_INPUT_RUNTIME_PC::FormatConfigTextPc(char *destination, PC_INPUT_CONFIG_
         strcat(text, i < 7 ? "," : "}, //Guid stuff\n");
     }
     NuStrCpy(destination, text);
-    sprintf(text, "\t%d,%d,%d,%d,%d,%d,0,0,\t//NumButtons etc.\n", config->button_count, config->pov_count,
-            config->axis_count, (i16)((u16)config->deadzone | ((u16)config->unknown_5b << 8)),
+    sprintf(text, "\t%d,%d,%d,%d,%d,%d,0,0,\t//NumButtons etc.\n", config->button_count, config->pov_count, config->axis_count,
+            (i16)((u16)config->deadzone | ((u16)config->unknown_5b << 8)),
             (i16)((u16)config->alternate_deadzone | ((u16)config->unknown_5d << 8)), config->key);
     NuStrCat(destination, text);
     NuStrCpy(text, "\t");
     for (i32 i = 0; i < 4; ++i) {
-        sprintf(part, "%s,%d,%d, ", PcInputBindingKindNames[config->axes[i][0]], config->axes[i][1],
-                config->axes[i][2]);
+        sprintf(part, "%s,%d,%d, ", PcInputBindingKindNames[config->axes[i][0]], config->axes[i][1], config->axes[i][2]);
         NuStrCat(text, part);
     }
     NuStrCat(text, "//analogue thumb sticks\n");
@@ -2331,8 +2316,7 @@ extern "C" void PcInputSaveConfigurationPc() {
 
 u8 PcInputAxisRemap[16] = {0};
 u32 PcInputAxisRemapInitialized = 0;
-const char *PcInputBindingKindNames[14] = {"NOTSET",        "PADDIGITAL",    "PADANALOGUEPOS",  "PADANALOGUENEG",
-                                           "MOUSEDIGITAL",  "MOUSEMOVEPOS",  "MOUSEMOVENEG",    "KEYDIGITAL",
-                                           "KEYDIGITALPOS", "KEYDIGITALNEG", "KEYANALOGUEPAIR", "PADANALOGUEPAIR",
-                                           "FORCEDMOUSEX",  "FORCEDMOUSEY"};
+const char *PcInputBindingKindNames[14] = {"NOTSET",          "PADDIGITAL",      "PADANALOGUEPOS", "PADANALOGUENEG", "MOUSEDIGITAL",
+                                           "MOUSEMOVEPOS",    "MOUSEMOVENEG",    "KEYDIGITAL",     "KEYDIGITALPOS",  "KEYDIGITALNEG",
+                                           "KEYANALOGUEPAIR", "PADANALOGUEPAIR", "FORCEDMOUSEX",   "FORCEDMOUSEY"};
 u8 PcInputWriteTextProfiles = 0;

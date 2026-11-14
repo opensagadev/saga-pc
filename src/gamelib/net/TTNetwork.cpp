@@ -91,8 +91,7 @@ NetTransportEntry::NetTransportEntry(NetListenerInterface *entry_client, u8 entr
 }
 
 NetTransportEntry *NetTransportList::Find(const NetTransportEntry &key) {
-    for (NetTransportEntry *entry = (NetTransportEntry *)head; entry != NULL;
-         entry = (NetTransportEntry *)entry->next) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         if (*entry == key) {
             return entry;
         }
@@ -118,9 +117,8 @@ void NetTransporter::RemoveListener(NetListenerInterface *client, u8 channel) {
     }
 }
 
-#define TT_FOR_EACH_CLIENT(entry)                                                                                      \
-    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL;                                  \
-         entry = (NetTransportEntry *)entry->next)
+#define TT_FOR_EACH_CLIENT(entry)                                                                                                          \
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next)
 
 i32 TTNetwork::PeerRequest(const V2Peer &peer) {
     i32 result = 1;

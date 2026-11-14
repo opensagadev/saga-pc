@@ -178,9 +178,8 @@ extern "C" TIGHTROPE_MOTION_PC *TightRope_InRange(GAMEOBJECT *object, WORLDINFO 
         *(i32 *)&distance = *(i32 *)&delta & 0x7fffffff; /* NuFabs */
         if (distance < object->bounds_half_height) {
             if (position != NULL) {
-                f32 margin = (object->character_data->game_character->flags_090 & 0x10000000) != 0
-                                 ? object->bounds_half_height
-                                 : object->bounds_radius;
+                f32 margin = (object->character_data->game_character->flags_090 & 0x10000000) != 0 ? object->bounds_half_height
+                                                                                                   : object->bounds_radius;
                 if (offset.z > rope->horizontal_length - margin) {
                     offset.z = rope->horizontal_length - margin;
                 } else if (margin > offset.z) {
@@ -246,13 +245,12 @@ extern "C" {
             count = 0;
             object = Obj;
             for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++object) {
-                if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->character_context != 0x44 ||
-                    object->field_7aa == 6 || object->field_7aa == 5 || object->grapple != rope) {
+                if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->character_context != 0x44 || object->field_7aa == 6 ||
+                    object->field_7aa == 5 || object->grapple != rope) {
                     continue;
                 }
-                positions[count] = (object->character_data->game_character->flags_090 & 0x80000) != 0
-                                       ? &object->lower_position
-                                       : &object->upper_position;
+                positions[count] =
+                    (object->character_data->game_character->flags_090 & 0x80000) != 0 ? &object->lower_position : &object->upper_position;
                 distances[count] = NuVecDist(positions[count], &rope->start_position, NULL);
                 ++count;
                 if (count == 64) {
@@ -487,8 +485,8 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
     if (rope != NULL) {
         object->character_context = 0x44;
         object->grapple = rope;
-        object->context_variant_flags = (object->context_variant_flags & ~0x800) |
-                                        ((((object->character_data->game_character->flags_090 >> 19) ^ 1) & 1) << 11);
+        object->context_variant_flags =
+            (object->context_variant_flags & ~0x800) | ((((object->character_data->game_character->flags_090 >> 19) ^ 1) & 1) << 11);
         if (object->character_model->model_data_b[0x8f] != NULL &&
             ((object->character_data->game_character->flags_090 & 0x80000) == 0 ||
              (object->upper_position.y - object->lower_position.y) * 0.25f + object->lower_position.y < position.y)) {
@@ -498,8 +496,7 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
             object->field_7aa = 0x88;
         }
         object->launch_origin = position;
-        if (abs(RotDiff(((TIGHTROPE_MOTION_PC *)(object->grapple))->rotation, object->movement_facing_angle)) <=
-            0x4000) {
+        if (abs(RotDiff(((TIGHTROPE_MOTION_PC *)(object->grapple))->rotation, object->movement_facing_angle)) <= 0x4000) {
             rope = ((TIGHTROPE_MOTION_PC *)(object->grapple));
             object->movement_facing_angle = rope->rotation;
         } else {
@@ -615,8 +612,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
 
                 if (frame >= 1.0f && *playing >= frame && object->pad->input_magnitude > 0.0f &&
                     TightropeFabsPc(PushingTowardsAngle(GamePad_InputAngle(object, object->pad),
-                                                        ((TIGHTROPE_MOTION_PC *)(object->grapple))->rotation)) >
-                        NuTrigTable[0x3000]) {
+                                                        ((TIGHTROPE_MOTION_PC *)(object->grapple))->rotation)) > NuTrigTable[0x3000]) {
                     TightRope_MoveUpdate(object, 0);
                 } else {
                     object->context_timer -= FRAMETIME;
@@ -625,8 +621,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                     }
                 }
             }
-        } else if (TightRope_MoveUpdate(object, 0) == 0 && object->field_7aa != 0x8f &&
-                   object->external_force.y >= 0.5f) {
+        } else if (TightRope_MoveUpdate(object, 0) == 0 && object->field_7aa != 0x8f && object->external_force.y >= 0.5f) {
             StartJump(object, 0);
             if ((object->character_data->game_character->flags_090 & 0x80000) != 0) {
                 object->velocity.y = 1.2f;
@@ -634,18 +629,15 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 object->velocity.y = 1.8f;
             }
         }
-        object->context_hover_target_y =
-            NuVecXZDist(&object->collision_position, &((TIGHTROPE_MOTION_PC *)(object->grapple))->start, NULL);
+        object->context_hover_target_y = NuVecXZDist(&object->collision_position, &((TIGHTROPE_MOTION_PC *)(object->grapple))->start, NULL);
         return;
     }
-    if (object->field_281 != 0 || !(object->velocity.y <= 0.0f) ||
-        object->character_model->model_data_b[0x88] == NULL) {
+    if (object->field_281 != 0 || !(object->velocity.y <= 0.0f) || object->character_model->model_data_b[0x88] == NULL) {
         return;
     }
     if (object->character_context != -1) {
-        if (object->character_context != 0 || !(object->context_timer >= (f64)0.1f) ||
-            object->action_movement_state == 3 || object->action_movement_state == 4 ||
-            object->action_movement_state == 8) {
+        if (object->character_context != 0 || !(object->context_timer >= (f64)0.1f) || object->action_movement_state == 3 ||
+            object->action_movement_state == 4 || object->action_movement_state == 8) {
             return;
         }
     }
@@ -666,8 +658,7 @@ extern "C" {
         u16 rotation;
         f32 fraction;
         f32 amplitude;
-        anchor = (object->character_data->game_character->flags_090 & 0x80000) ? &object->lower_position
-                                                                               : &object->upper_position;
+        anchor = (object->character_data->game_character->flags_090 & 0x80000) ? &object->lower_position : &object->upper_position;
         object->target_velocity.x = (object->launch_origin.x - anchor->x) * 3.0f;
         object->target_velocity.y = (object->launch_origin.y - anchor->y) * 3.0f;
         object->target_velocity.z = (object->launch_origin.z - anchor->z) * 3.0f;
@@ -678,11 +669,10 @@ extern "C" {
             fraction = 1.0f;
         }
         amplitude = NuQFntHalfScale * NuTrigTable[(((i32)(fraction * 32768.0)) >> 1) & 0x7fff];
-        object->target_velocity.x +=
-            (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * NuTrigTable[rotation >> 1];
+        object->target_velocity.x += (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * NuTrigTable[rotation >> 1];
         object->target_velocity.y -= qrand() * PlayerRandomScalePc * amplitude;
-        object->target_velocity.z += (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude *
-                                     NuTrigTable[((rotation + 0x4000) >> 1) & 0x7fff];
+        object->target_velocity.z +=
+            (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * NuTrigTable[((rotation + 0x4000) >> 1) & 0x7fff];
         return object->field_7aa != 6 && object->field_7aa != 5;
     }
 }

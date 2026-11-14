@@ -248,8 +248,8 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
 
     PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *descriptor, i32 flags, i32 parameter);
 
-    PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *desc,
-                                   const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 flags, i32 variant);
+    PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *desc, const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 flags,
+                                   i32 variant);
     void Initialize(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32);
     bool UnfilteredHasLayer(i32) const;
     bool HasDiffuse(i32) const;

@@ -91,32 +91,23 @@ extern "C" {
 extern "C" void CreateFadeMaterials(void) {
     FadeMtl = NuMtlCreate(1);
     ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes |= 0xc000;
-    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
-        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x20u) | 0x10u;
-    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
-        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x10000u) | 0x20000u;
-    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
-        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x200u) | 0x100u;
-    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
-        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x800u) | 0x400u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes = (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x20u) | 0x10u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes = (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x10000u) | 0x20000u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes = (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x200u) | 0x100u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes = (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x800u) | 0x400u;
     ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes |= 0x40000;
-    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
-        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0xcu) | 3u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes = (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0xcu) | 3u;
     NuMtlUpdate(FadeMtl);
 
     FadeMtl2 = NuMtlCreate(1);
     ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes |= 0xc000;
-    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes =
-        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x20u) | 0x10u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes = (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x20u) | 0x10u;
     ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes =
         (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x10000u) | 0x20000u;
-    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes =
-        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x200u) | 0x100u;
-    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes =
-        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x800u) | 0x400u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes = (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x200u) | 0x100u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes = (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x800u) | 0x400u;
     ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes |= 0x40000;
-    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes =
-        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0xeu) | 1u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes = (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0xeu) | 1u;
     NuMtlUpdate(FadeMtl2);
 
     ScreenFadeMtl = NuMtlCreate(1);
@@ -196,10 +187,8 @@ extern "C" {
             return;
         }
         if (RenderBackdropTopRPc == RenderBackdropTargetTopRPc && RenderBackdropTopGPc == RenderBackdropTargetTopGPc &&
-            RenderBackdropTopBPc == RenderBackdropTargetTopBPc &&
-            RenderBackdropBottomRPc == RenderBackdropTargetBottomRPc &&
-            RenderBackdropBottomGPc == RenderBackdropTargetBottomGPc &&
-            RenderBackdropBottomBPc == RenderBackdropTargetBottomBPc) {
+            RenderBackdropTopBPc == RenderBackdropTargetTopBPc && RenderBackdropBottomRPc == RenderBackdropTargetBottomRPc &&
+            RenderBackdropBottomGPc == RenderBackdropTargetBottomGPc && RenderBackdropBottomBPc == RenderBackdropTargetBottomBPc) {
             RenderBackdropWaitPc = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.5 + 2.5);
             return;
         }
@@ -305,8 +294,7 @@ extern "C" {
         RTL_FOG_MIGRATION_PC *previous = (RTL_FOG_MIGRATION_PC *)GameFogSet;
         RTL_FOG_MIGRATION_PC *fog;
         f32 blend;
-        if (world->rtl_set != NULL &&
-            !(CUTSTOPGAME != 0 && CutStopInfo != NULL && (((CUTINFO *)CutStopInfo)->flags & 4) != 0)) {
+        if (world->rtl_set != NULL && !(CUTSTOPGAME != 0 && CutStopInfo != NULL && (((CUTINFO *)CutStopInfo)->flags & 4) != 0)) {
             fog = rtlGetFogSet((RTL_SET_PC *)world->rtl_set, &pNuCam->mtx.translation);
         } else {
             fog = NULL;
@@ -364,21 +352,20 @@ extern "C" {
             if (GameFogTime >= GameFogDuration) {
                 GameFog = GameFogNew;
             } else {
-                blend = (f32)(1.0 -
-                              ((f64)NU_SIN_LUT((f64)(GameFogTime / GameFogDuration) * 32768.0 + 16384.0) + 1.0) * 0.5);
-                GameFog.colour_channels[0] = GameFogOld.colour_channels[0] +
-                                             (GameFogNew.colour_channels[0] - GameFogOld.colour_channels[0]) * blend;
-                GameFog.colour_channels[1] = GameFogOld.colour_channels[1] +
-                                             (GameFogNew.colour_channels[1] - GameFogOld.colour_channels[1]) * blend;
-                GameFog.colour_channels[2] = GameFogOld.colour_channels[2] +
-                                             (GameFogNew.colour_channels[2] - GameFogOld.colour_channels[2]) * blend;
-                GameFog.colour_channels[3] = GameFogOld.colour_channels[3] +
-                                             (GameFogNew.colour_channels[3] - GameFogOld.colour_channels[3]) * blend;
+                blend = (f32)(1.0 - ((f64)NU_SIN_LUT((f64)(GameFogTime / GameFogDuration) * 32768.0 + 16384.0) + 1.0) * 0.5);
+                GameFog.colour_channels[0] =
+                    GameFogOld.colour_channels[0] + (GameFogNew.colour_channels[0] - GameFogOld.colour_channels[0]) * blend;
+                GameFog.colour_channels[1] =
+                    GameFogOld.colour_channels[1] + (GameFogNew.colour_channels[1] - GameFogOld.colour_channels[1]) * blend;
+                GameFog.colour_channels[2] =
+                    GameFogOld.colour_channels[2] + (GameFogNew.colour_channels[2] - GameFogOld.colour_channels[2]) * blend;
+                GameFog.colour_channels[3] =
+                    GameFogOld.colour_channels[3] + (GameFogNew.colour_channels[3] - GameFogOld.colour_channels[3]) * blend;
                 GameFog.start = GameFogOld.start + (GameFogNew.start - GameFogOld.start) * blend;
                 GameFog.end = GameFogOld.end + (GameFogNew.end - GameFogOld.end) * blend;
                 GameFog.density = GameFogOld.density + (GameFogNew.density - GameFogOld.density) * blend;
-                GameFog.low_quality_density = GameFogOld.low_quality_density +
-                                              (GameFogNew.low_quality_density - GameFogOld.low_quality_density) * blend;
+                GameFog.low_quality_density =
+                    GameFogOld.low_quality_density + (GameFogNew.low_quality_density - GameFogOld.low_quality_density) * blend;
                 GameFog.low_quality_colour_channels[0] =
                     GameFogOld.low_quality_colour_channels[0] +
                     (GameFogNew.low_quality_colour_channels[0] - GameFogOld.low_quality_colour_channels[0]) * blend;
@@ -394,10 +381,9 @@ extern "C" {
             }
         }
         GameFogSnap = 0;
-        GameFog.colour = ((((u32)GameFog.colour_channels[0] << 8) + (u32)GameFog.colour_channels[1] << 8) +
-                              (u32)GameFog.colour_channels[2]
-                          << 8) +
-                         (u32)GameFog.colour_channels[3];
+        GameFog.colour =
+            ((((u32)GameFog.colour_channels[0] << 8) + (u32)GameFog.colour_channels[1] << 8) + (u32)GameFog.colour_channels[2] << 8) +
+            (u32)GameFog.colour_channels[3];
         GameFog.low_quality_colour =
             ((((u32)GameFog.low_quality_colour_channels[0] << 8) + (u32)GameFog.low_quality_colour_channels[1] << 8) +
                  (u32)GameFog.low_quality_colour_channels[2]
@@ -427,11 +413,10 @@ extern "C" void GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
     } else {
         pNuCam->far_clip = (f32)(u16)display->far_clip;
     }
-    if (WORLD->current_level != TITLES_LDATA && (WORLD->current_level->flags & 0x400) == 0 &&
-        WORLD->current_level != STATUS_LDATA && WORLD->current_level != CREDITS_LDATA && !(MainRenderTime < 1.0f)) {
+    if (WORLD->current_level != TITLES_LDATA && (WORLD->current_level->flags & 0x400) == 0 && WORLD->current_level != STATUS_LDATA &&
+        WORLD->current_level != CREDITS_LDATA && !(MainRenderTime < 1.0f)) {
         colours[0] = (((0xffff8000 | display->bg_blue_top) << 8 | display->bg_green_top) << 8) | display->bg_red_top;
-        colours[1] =
-            (((0xffff8000 | display->bg_blue_bottom) << 8 | display->bg_green_bottom) << 8) | display->bg_red_bottom;
+        colours[1] = (((0xffff8000 | display->bg_blue_bottom) << 8 | display->bg_green_bottom) << 8) | display->bg_red_bottom;
         return;
     }
     BackDrop_UpdateColours(0);
@@ -607,8 +592,7 @@ extern "C" void DrawPauseScreenWipe(void) {
                 x = (i32)((1.0f - FadeSys.fade) * 10260.0f);
                 u0 = 1.0f - FadeSys.fade;
                 width -= x;
-                NuRndrGradRectUV2di(x - 0x402, y, 0x402, height, u0 - 0.1f, 0.0f, u0, 1.0f, colours_left,
-                                    (NUMTL *)pause_rndr_mtl);
+                NuRndrGradRectUV2di(x - 0x402, y, 0x402, height, u0 - 0.1f, 0.0f, u0, 1.0f, colours_left, (NUMTL *)pause_rndr_mtl);
             } else {
                 colours_right[0] = 0x80808080;
                 colours_right[1] = 0x808080;
@@ -616,8 +600,7 @@ extern "C" void DrawPauseScreenWipe(void) {
                 colours_right[3] = 0x808080;
                 width = (i32)(FadeSys.fade * 10260.0f);
                 u1 = FadeSys.fade;
-                NuRndrGradRectUV2di(width - 0x20, -0xc, 0x402, 0xe08, u1, 0.0f, u1 + 0.1f, 1.0f, colours_right,
-                                    (NUMTL *)pause_rndr_mtl);
+                NuRndrGradRectUV2di(width - 0x20, -0xc, 0x402, 0xe08, u1, 0.0f, u1 + 0.1f, 1.0f, colours_right, (NUMTL *)pause_rndr_mtl);
             }
         } else if ((FadeSys.direction & 0xc) != 0) {
             if ((FadeSys.direction & 4) != 0) {
@@ -628,8 +611,7 @@ extern "C" void DrawPauseScreenWipe(void) {
                 y = (i32)((1.0f - FadeSys.fade) * 3592.0f);
                 v0 = 1.0f - FadeSys.fade;
                 height -= y;
-                NuRndrGradRectUV2di(-0x20, y - 0x167, 0x2814, 0x167, 0.0f, v0 - 0.1f, 1.0f, v0, colours_top,
-                                    (NUMTL *)pause_rndr_mtl);
+                NuRndrGradRectUV2di(-0x20, y - 0x167, 0x2814, 0x167, 0.0f, v0 - 0.1f, 1.0f, v0, colours_top, (NUMTL *)pause_rndr_mtl);
             } else {
                 colours_bottom[0] = 0x80808080;
                 colours_bottom[1] = 0x80808080;
@@ -637,8 +619,7 @@ extern "C" void DrawPauseScreenWipe(void) {
                 colours_bottom[3] = 0x808080;
                 height = (i32)(FadeSys.fade * 3592.0f);
                 v1 = FadeSys.fade;
-                NuRndrGradRectUV2di(-0x20, height - 0xc, 0x2814, 0x167, 0.0f, v1, 1.0f, v1 + 0.1f, colours_bottom,
-                                    (NUMTL *)pause_rndr_mtl);
+                NuRndrGradRectUV2di(-0x20, height - 0xc, 0x2814, 0x167, 0.0f, v1, 1.0f, v1 + 0.1f, colours_bottom, (NUMTL *)pause_rndr_mtl);
             }
         }
     }
@@ -676,11 +657,11 @@ extern "C" void DrawStillScreen(i32 clear) {
     if (MainRenderTime < 1.0f) {
         const i32 colour = (((i32)(MainRenderTime * 128.0f)) << 24) | 0x00808080;
         u32 colours[4] = {colour, colour, colour, colour};
-        NuRndrGradRectUV2di(ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc, 0.0f, 0.0f, 1.0f,
-                            1.0f, colours, (NUMTL *)pause_rndr_mtl);
+        NuRndrGradRectUV2di(ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc, 0.0f, 0.0f, 1.0f, 1.0f, colours,
+                            (NUMTL *)pause_rndr_mtl);
     } else {
-        NuRndrRectUV2di(ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc, 0.0f, 0.0f, 1.0f, 1.0f,
-                        0x80808080u, (NUMTL *)pause_rndr_mtl);
+        NuRndrRectUV2di(ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc, 0.0f, 0.0f, 1.0f, 1.0f, 0x80808080u,
+                        (NUMTL *)pause_rndr_mtl);
     }
     NuRndrEndScene();
 }
@@ -728,8 +709,7 @@ extern "C" void HandleStillRender(void) {
         pause_rndr_on = 0;
     }
     old_pause_state = Paused;
-    if (waiting_for_level != -1 &&
-        (gone_through_door_to_new_level != 0 || cut_waiting_for_new_level != 0 || waiting_for_new_level != 0)) {
+    if (waiting_for_level != -1 && (gone_through_door_to_new_level != 0 || cut_waiting_for_new_level != 0 || waiting_for_new_level != 0)) {
         pause_rndr_on = 1;
     } else if (NewLData == CREDITS_LDATA && LastLData == STATUS_LDATA) {
         pause_rndr_on = 1;
@@ -957,8 +937,7 @@ extern "C" {
             }
             if (text != NULL) {
                 SetQFont2D();
-                Text3D(text, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0, (u8)(alpha * 0.0f), (u8)(alpha * 191.0f),
-                       (u8)(alpha * 255.0f));
+                Text3D(text, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0, (u8)(alpha * 0.0f), (u8)(alpha * 191.0f), (u8)(alpha * 255.0f));
             }
             if (draw != NULL) {
                 draw(alpha);

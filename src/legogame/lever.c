@@ -85,8 +85,8 @@ GIZMO_LEVER_PC *Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT 
         f32 candidate_distance;
         if (object != NULL) {
             NUVEC target;
-            if ((lever->flags & 0x80) == 0 || (lever->flags & 0x10) == 0 || (lever->flags & 3) != 0 ||
-                lever->pull_progress != 0.0f || lever->floor_position.y == 2000000.0f) {
+            if ((lever->flags & 0x80) == 0 || (lever->flags & 0x10) == 0 || (lever->flags & 3) != 0 || lever->pull_progress != 0.0f ||
+                lever->floor_position.y == 2000000.0f) {
                 continue;
             }
             Lever_GetAbsTargetPos(lever, &target);
@@ -451,8 +451,7 @@ static i32 Levers_Load(void *world_ptr, void *data) {
             ((LEVER_WORLD *)world)->levers[index].model_variant = EdFileReadChar();
             if (version >= 2) {
                 char bit = EdFileReadChar() & 1;
-                ((LEVER_WORLD *)world)->levers[index].flags =
-                    (((LEVER_WORLD *)world)->levers[index].flags & ~0x20) | (bit << 5);
+                ((LEVER_WORLD *)world)->levers[index].flags = (((LEVER_WORLD *)world)->levers[index].flags & ~0x20) | (bit << 5);
             }
             if (version >= 3) {
                 ((LEVER_WORLD *)world)->levers[index].auto_reset_delay = EdFileReadFloat();
@@ -461,8 +460,7 @@ static i32 Levers_Load(void *world_ptr, void *data) {
             }
             if (version >= 4) {
                 char bit = EdFileReadChar() & 1;
-                ((LEVER_WORLD *)world)->levers[index].flags =
-                    (((LEVER_WORLD *)world)->levers[index].flags & ~0x100) | (bit << 8);
+                ((LEVER_WORLD *)world)->levers[index].flags = (((LEVER_WORLD *)world)->levers[index].flags & ~0x100) | (bit << 8);
             } else {
                 ((LEVER_WORLD *)world)->levers[index].flags &= ~0x100;
             }
@@ -477,8 +475,7 @@ static i32 Levers_Load(void *world_ptr, void *data) {
             }
             if (version >= 6) {
                 char bit = EdFileReadChar() & 1;
-                ((LEVER_WORLD *)world)->levers[index].flags =
-                    (((LEVER_WORLD *)world)->levers[index].flags & ~0x200) | (bit << 9);
+                ((LEVER_WORLD *)world)->levers[index].flags = (((LEVER_WORLD *)world)->levers[index].flags & ~0x200) | (bit << 9);
             }
             ((LEVER_WORLD *)world)->levers[index].platform_id = -1;
         }
@@ -601,14 +598,10 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
     lever = lever_world->levers;
     target_spin_angle = (u16)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     target_pulse =
-        (f32)((f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) &
-                               0x7fff] *
-                  (f64)0.2f +
+        (f32)((f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] * (f64)0.2f +
               (f64)0.8f);
     ready_alpha =
-        (f32)((f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) &
-                               0x7fff] *
-                  (f64)0.15f +
+        (f32)((f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] * (f64)0.15f +
               (f64)0.85f);
     EnableShadowMapRendering(0);
     if (StartupGameFlag1 != 0 && world->level_objects[30].active != 0) {
@@ -645,8 +638,7 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
                     if (lever->idle_animation_timer < 0.0f) {
                         lever->idle_animation_timer = 0.0f;
                     } else {
-                        f32 sine = NuTrigTable
-                            [((i32)((f64)lever->idle_animation_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) & 0x7fff];
+                        f32 sine = NuTrigTable[((i32)((f64)lever->idle_animation_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) & 0x7fff];
                         animation_frame = (f32)((1.0 - LeverFabsPc(sine)) * 1.5 + 16.0);
                     }
                 } else if (qrand() < 0x800) {
@@ -678,8 +670,7 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
             if (lever->pull_progress >= 1.0f) {
                 status_special = 42;
             }
-            draw_target = (lever->flags & 0x200) == 0 && lever->target_offset.y != 2000000.0f &&
-                          world->level_objects[85].active != 0;
+            draw_target = (lever->flags & 0x200) == 0 && lever->target_offset.y != 2000000.0f && world->level_objects[85].active != 0;
             draw_ready = (lever->flags & 3) == 0 && world->level_objects[41].active != 0;
             if (draw_ready) {
                 NuSpecialDrawAtAlpha(&world->level_objects[41].special, &target_matrix, ready_alpha);
@@ -689,8 +680,7 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
                 f32 distance_squared;
                 if (FindNearestPlayerToVec(&lever->position, &nearest_player, &distance_squared, 0, 0) != 0) {
                     i32 angle =
-                        (i32)(((f64)distance_squared / 6.0 < 1.0 ? (f64)distance_squared / 6.0 : 1.0) * 16384.0 +
-                              49152.0 + 16384.0);
+                        (i32)(((f64)distance_squared / 6.0 < 1.0 ? (f64)distance_squared / 6.0 : 1.0) * 16384.0 + 49152.0 + 16384.0);
                     f32 alpha = (f32)((1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]) * (f64)target_pulse);
                     if (alpha > 0.0f && draw_target) {
                         NUVEC target_position;

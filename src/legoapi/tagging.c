@@ -1,9 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, script_processor) +
-                  offsetof(AISCRIPTPROCESS_PC, script) ==
-              0x2cc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, script_processor) + offsetof(AISCRIPTPROCESS_PC, script) == 0x2cc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 extern void *Door_Last;
 extern u64 CharacterMaskAllPc;
@@ -61,9 +59,8 @@ void StoreStatusTakeOverObjectSys(void) {
         }
         takeoverobjects[index].last_safe_position = object->last_safe_position;
         takeoverobjects[index].heading = object->field_0x276;
-        if (object->rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
-            object->rider->character_context == LEGOCONTEXT_BEENTAKENOVER && object->field_280 != 0xff &&
-            Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
+        if (object->rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 && object->rider->character_context == LEGOCONTEXT_BEENTAKENOVER &&
+            object->field_280 != 0xff && Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
             (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAllPc ||
              ((character_index = (u8)Area_CharIDInCurrentList((i16)object->id)) < 63 &&
               (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0))) {
@@ -102,9 +99,8 @@ void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
                 if (takeoverobjects[index].source_creature == 0xff) {
                     if (takeoverobjects[index].current_level == level) {
                         takeoverobjects[index].object = AddDynamicCreature(
-                            takeoverobjects[index].character_id, &takeoverobjects[index].last_safe_position,
-                            takeoverobjects[index].heading, takeoverobjects[index].script_name, NULL, NULL, 1, NULL,
-                            NULL, 0, 0);
+                            takeoverobjects[index].character_id, &takeoverobjects[index].last_safe_position, takeoverobjects[index].heading,
+                            takeoverobjects[index].script_name, NULL, NULL, 1, NULL, NULL, 0, 0);
                     }
                 } else {
                     candidate = Obj;
@@ -121,17 +117,16 @@ void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
                 takeoverobjects[index].object = NULL;
             }
         } else if (takeoverobjects[index].current_level == level && takeoverobjects[index].object == NULL) {
-            takeoverobjects[index].object = AddDynamicCreature(
-                takeoverobjects[index].character_id, &takeoverobjects[index].last_safe_position,
-                takeoverobjects[index].heading, takeoverobjects[index].script_name, NULL, NULL, 1, NULL, NULL, 0, 0);
+            takeoverobjects[index].object =
+                AddDynamicCreature(takeoverobjects[index].character_id, &takeoverobjects[index].last_safe_position,
+                                   takeoverobjects[index].heading, takeoverobjects[index].script_name, NULL, NULL, 1, NULL, NULL, 0, 0);
         }
         object = takeoverobjects[index].object;
         if (object != NULL) {
             object->current_hp = takeoverobjects[index].hitpoints;
-            if (!(takeoverobjects[index].contact_index != 0xff &&
-                  (controller = Player[takeoverobjects[index].contact_index]) != NULL)) {
-                SnapCreaturePos(takeoverobjects[index].object, &takeoverobjects[index].last_safe_position,
-                                takeoverobjects[index].heading, NULL, 1);
+            if (!(takeoverobjects[index].contact_index != 0xff && (controller = Player[takeoverobjects[index].contact_index]) != NULL)) {
+                SnapCreaturePos(takeoverobjects[index].object, &takeoverobjects[index].last_safe_position, takeoverobjects[index].heading,
+                                NULL, 1);
             } else {
                 takeoverobjects[index].object->dead = 0;
                 takeoverobjects[index].object->flags_1fc_word |= 0x1000;

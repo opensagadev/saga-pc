@@ -116,11 +116,9 @@ typedef struct kamino_e_s {
 extern i32 turret_gizmotype_id;
 void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
 void KaminoEGizmoMissingPc(char *name);
-#define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                     \
-    ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask &                                                \
-      (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
-#define KAMINO_DISCO_PLAYER_IN_AREA_PC(world, who, area)                                                               \
-    ((who) != NULL && (area) != NULL && KAMINO_DISCO_AREA_MASK_SET_PC(world, area))
+#define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                                         \
+    ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
+#define KAMINO_DISCO_PLAYER_IN_AREA_PC(world, who, area) ((who) != NULL && (area) != NULL && KAMINO_DISCO_AREA_MASK_SET_PC(world, area))
 
 typedef struct KAMINO_SHIP_ZERO_ANGLES_PC {
     u16 pitch;
@@ -268,8 +266,7 @@ void UpdatePaintPuzzle(WORLDINFO *world) {
     ((u8 *)factoryb_netpacket)[1] = (u8)painttry;
     ((u8 *)factoryb_netpacket)[3] = (u8)painttarget;
     if (((u8 *)factoryb_netpacket)[2] == 1 && played_sound == 0) {
-        PlaySfx("Fac_BonusCylUp",
-                &NuSpecialGetMtx(&((GIZOBSTACLE *)forcetube->object)->anim_set->objects->special)->translation);
+        PlaySfx("Fac_BonusCylUp", &NuSpecialGetMtx(&((GIZOBSTACLE *)forcetube->object)->anim_set->objects->special)->translation);
         played_sound = 1;
     }
 }
@@ -384,8 +381,7 @@ void JediB_Init(WORLDINFO *world) {
                     position.y = floor_y;
                 }
                 angle = NuRandIntSeeded(&jedi_b.seed);
-                if (JediBInitLocator(world, &position, angle, &locator, jedib_outer_r) != 0 &&
-                    jedi_b.baddie_count < 256) {
+                if (JediBInitLocator(world, &position, angle, &locator, jedib_outer_r) != 0 && jedi_b.baddie_count < 256) {
                     goody = &jedi_b.baddies[jedi_b.baddie_count++];
                     goody->position = position;
                     goody->locator = locator;
@@ -395,8 +391,7 @@ void JediB_Init(WORLDINFO *world) {
                     offset.z = jedib_proximity;
                     angle = NuRandIntSeeded(&jedi_b.seed);
                     NuVecRotateY(&offset, &offset, NuRandIntSeeded(&jedi_b.seed));
-                    count = NuRandIntSeeded(&jedi_b.seed) %
-                                (u32)(jedib_max_baddies_per_goody - jedib_min_baddies_per_goody) +
+                    count = NuRandIntSeeded(&jedi_b.seed) % (u32)(jedib_max_baddies_per_goody - jedib_min_baddies_per_goody) +
                             jedib_min_baddies_per_goody;
                     for (index = 0; index < count && jedi_b.baddie_count < 256; index++) {
                         if (index != 0) {
@@ -532,16 +527,15 @@ static void JediBStartPhasePc(WORLDINFO *world) {
         case 1:
         case 2:
         case 3:
-            for (entry = phase_lists[jedi_b.phase - 1]; entry != NULL && entry->id != NULL && jedi_b.goody_count < 8;
-                 entry++) {
+            for (entry = phase_lists[jedi_b.phase - 1]; entry != NULL && entry->id != NULL && jedi_b.goody_count < 8; entry++) {
                 sprintf(name, "phase%d_%d", jedi_b.phase, jedi_b.goody_count + 1);
                 locator = AIPathFindLocator(world->ai_sys, name);
                 if (locator == NULL) {
                     continue;
                 }
                 jedi_b.goodies[jedi_b.goody_count].locator = *locator;
-                spawned = AddDynamicCreature(*entry->id, &locator->position, locator->rotation, (char *)entry->script,
-                                             &locator->path_info, NULL, 1, NULL, NULL, 0, 0);
+                spawned = AddDynamicCreature(*entry->id, &locator->position, locator->rotation, (char *)entry->script, &locator->path_info,
+                                             NULL, 1, NULL, NULL, 0, 0);
                 jedi_b.goodies[jedi_b.goody_count].object = spawned;
                 if (jedi_b.goodies[jedi_b.goody_count].object == NULL) {
                     continue;
@@ -720,8 +714,7 @@ void JediB_Update(WORLDINFO *world) {
             for (spawn = 0; spawn < 4; spawn++) {
                 if (NuSpecialGetVisibilityFn(&jedi_b.hero_spawns[hero][spawn]) != 0) {
                     pos = NuSpecialGetDrawPos(&jedi_b.hero_spawns[hero][spawn]);
-                    jedi_b.heroes[hero] =
-                        AddDynamicCreature(*JediB_playerids[hero], pos, 0, "Party", NULL, NULL, 1, NULL, NULL, 0, 0);
+                    jedi_b.heroes[hero] = AddDynamicCreature(*JediB_playerids[hero], pos, 0, "Party", NULL, NULL, 1, NULL, NULL, 0, 0);
                 }
             }
         }
@@ -760,14 +753,13 @@ void JediB_Update(WORLDINFO *world) {
             jedi_b.exclusion_mask = (u64)1 << shift;
         }
     } else {
-        if (player->collision_position.x * player->collision_position.x +
-                player->collision_position.z * player->collision_position.z >
+        if (player->collision_position.x * player->collision_position.x + player->collision_position.z * player->collision_position.z >
             jedib_safe_r * jedib_safe_r) {
             jedi_b.exclusion_mask = (u64)1 << player->hostility_group;
         }
-        if (player2 != NULL && player2->collision_position.x * player2->collision_position.x +
-                                       player2->collision_position.z * player2->collision_position.z >
-                                   jedib_safe_r * jedib_safe_r) {
+        if (player2 != NULL &&
+            player2->collision_position.x * player2->collision_position.x + player2->collision_position.z * player2->collision_position.z >
+                jedib_safe_r * jedib_safe_r) {
             jedi_b.exclusion_mask |= (u64)1 << player2->hostility_group;
         }
     }
@@ -814,8 +806,7 @@ void JediB_Update(WORLDINFO *world) {
                     }
                     if (player2 != NULL) {
                         if ((player2->character_data->model_flags & 0x80000) == 0 &&
-                            ((i16)player->objptr->id != CharacterFixupIdPc007f19c4 ||
-                             (player->flags_1fc & 0x80) != 0) &&
+                            ((i16)player->objptr->id != CharacterFixupIdPc007f19c4 || (player->flags_1fc & 0x80) != 0) &&
                             (player->character_data->game_character->weapon_action != 4 ||
                              baddie->object->character_data->game_character->weapon_action != 4)) {
                             target = player2;
@@ -828,14 +819,11 @@ void JediB_Update(WORLDINFO *world) {
                     baddie->object->ai_packet.opponent = target;
                 }
             } else {
-                in_range = (OnOrInsidePlane(&baddie->object->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal,
-                                            NULL, 2.0f, NULL) == 0 &&
-                            OnOrInsidePlane(&baddie->object->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal,
-                                            NULL, 2.0f, NULL) == 0) ||
-                           (OnOrInsidePlane(&baddie->locator.position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal,
-                                            NULL, 2.0f, NULL) == 0 &&
-                            OnOrInsidePlane(&baddie->locator.position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal,
-                                            NULL, 2.0f, NULL) == 0);
+                in_range =
+                    (OnOrInsidePlane(&baddie->object->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 2.0f, NULL) == 0 &&
+                     OnOrInsidePlane(&baddie->object->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 2.0f, NULL) == 0) ||
+                    (OnOrInsidePlane(&baddie->locator.position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 2.0f, NULL) == 0 &&
+                     OnOrInsidePlane(&baddie->locator.position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 2.0f, NULL) == 0);
                 if (in_range == 0) {
                     baddie->position = baddie->object->position;
                     baddie->angle = baddie->object->field_0x276;
@@ -846,21 +834,17 @@ void JediB_Update(WORLDINFO *world) {
                 if (baddie->object == NULL) {
                     continue;
                 }
-                if (((APIOBJECT_PC *)baddie->object)->ai->opponent == NULL && baddie->partner != NULL &&
-                    baddie->partner->object != NULL) {
+                if (((APIOBJECT_PC *)baddie->object)->ai->opponent == NULL && baddie->partner != NULL && baddie->partner->object != NULL) {
                     ((APIOBJECT_PC *)baddie->object)->ai->opponent = baddie->partner->object;
                 }
             }
-        } else if ((baddie->flags & 0x10) == 0 && (OnOrInsidePlane(&baddie->position, &PlayPlanePc[1].point,
-                                                                   &PlayPlanePc[1].normal, NULL, 1.5f, NULL) != 0 ||
-                                                   OnOrInsidePlane(&baddie->position, &PlayPlanePc[2].point,
-                                                                   &PlayPlanePc[2].normal, NULL, 1.5f, NULL) != 0)) {
+        } else if ((baddie->flags & 0x10) == 0 &&
+                   (OnOrInsidePlane(&baddie->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 1.5f, NULL) != 0 ||
+                    OnOrInsidePlane(&baddie->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 1.5f, NULL) != 0)) {
         } else {
             if ((baddie->flags & 1) != 0 &&
-                OnOrInsidePlane(&baddie->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.5f, NULL) ==
-                    0 &&
-                OnOrInsidePlane(&baddie->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.5f, NULL) ==
-                    0) {
+                OnOrInsidePlane(&baddie->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.5f, NULL) == 0 &&
+                OnOrInsidePlane(&baddie->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.5f, NULL) == 0) {
                 spawn_position = baddie->position;
                 NuVecRotateY(&spawn_position, &spawn_position, 0x8000);
             } else {
@@ -869,8 +853,8 @@ void JediB_Update(WORLDINFO *world) {
             if (baddie->id == -1) {
                 JediBResetRecordPc(baddie);
             }
-            baddie->object = AddDynamicCreature(baddie->id, &spawn_position, baddie->angle, "gen_bdroids",
-                                                &baddie->locator.path_info, NULL, 1, NULL, NULL, 0, 0);
+            baddie->object = AddDynamicCreature(baddie->id, &spawn_position, baddie->angle, "gen_bdroids", &baddie->locator.path_info, NULL,
+                                                1, NULL, NULL, 0, 0);
             if (baddie->object == NULL) {
                 continue;
             }
@@ -978,8 +962,7 @@ void JediB_DrawPanelPc(WORLDINFO *world) {
                 case 1:
                 case 2:
                 case 3:
-                    DrawMeleeTargetsAlphaPc(jedib_netpacket->ids, jedib_netpacket->spawned, NULL,
-                                            jedib_netpacket->count);
+                    DrawMeleeTargetsAlphaPc(jedib_netpacket->ids, jedib_netpacket->spawned, NULL, jedib_netpacket->count);
                     break;
                 case 4:
                 case 5:
@@ -1114,10 +1097,8 @@ void FactoryG_Update(WORLDINFO *world) {
         ObiWan->position.x = 112.76f;
         ObiWan->position.y = 0.75f;
         ObiWan->position.z = -10.5f;
-        lamp = (f32)(NuTrigTable[(u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.0f) * NuQFntHalfScale *
-                                            VehicleTurnPhaseScale) >>
-                                 1] *
-                     30.0);
+        lamp =
+            (f32)(NuTrigTable[(u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.0f) * NuQFntHalfScale * VehicleTurnPhaseScale) >> 1] * 30.0);
         ObiWan->field_0x276 = (u16)(0xc000 - (i16)(i32)((f64)lamp * -182.04444885253906));
         return;
     }
@@ -1134,8 +1115,7 @@ void FactoryG_Update(WORLDINFO *world) {
 }
 
 void KaminoA_AlwaysUpdate(WORLDINFO *world) {
-    debris_object_switches[1] =
-        CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
+    debris_object_switches[1] = CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
 }
 
 KAMINODISCO_PC kaminodisco = {0};
@@ -1327,8 +1307,7 @@ void KaminoC_Update(WORLDINFO *world) {
     if (GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) == 0) {
         if ((progress->flags & 1) == 0) {
             GizmoActivate(world->gizmo_sys, LevGizmo[1], 1, 1);
-            if (GizmoGetOutput(world->gizmo_sys, gizTurrets[0], 0, 0) != 0 &&
-                GizmoGetOutput(world->gizmo_sys, gizTurrets[1], 0, 0) != 0) {
+            if (GizmoGetOutput(world->gizmo_sys, gizTurrets[0], 0, 0) != 0 && GizmoGetOutput(world->gizmo_sys, gizTurrets[1], 0, 0) != 0) {
                 GizmoSetVisibility(world->gizmo_sys, LevGizmo[1], 0, 1);
             }
         }
@@ -1381,8 +1360,7 @@ void KaminoC_Update(WORLDINFO *world) {
                         }
                     }
                 }
-                if (old_state != kaminodisco.tile_state[kaminodisco.tile[k]] &&
-                    kaminodisco.tile_state[kaminodisco.tile[k]] == 2) {
+                if (old_state != kaminodisco.tile_state[kaminodisco.tile[k]] && kaminodisco.tile_state[kaminodisco.tile[k]] == 2) {
                     kaminoc_netpacket->sound_mask |= 1 << kaminodisco.tile[k];
                 }
             }
@@ -1420,11 +1398,9 @@ void KaminoC_Update(WORLDINFO *world) {
                 }
                 if (companion != NULL) {
                     if (occupied_by_player == kaminodisco.tile[0]) {
-                        SetGizAIMessage(gizaimessagesys, "NextDiscoTile", (f32)(kaminodisco.tile[1] + 1),
-                                        kaminodisco.next_tile_message);
+                        SetGizAIMessage(gizaimessagesys, "NextDiscoTile", (f32)(kaminodisco.tile[1] + 1), kaminodisco.next_tile_message);
                     } else if (occupied_by_player == kaminodisco.tile[1]) {
-                        SetGizAIMessage(gizaimessagesys, "NextDiscoTile", (f32)(kaminodisco.tile[0] + 1),
-                                        kaminodisco.next_tile_message);
+                        SetGizAIMessage(gizaimessagesys, "NextDiscoTile", (f32)(kaminodisco.tile[0] + 1), kaminodisco.next_tile_message);
                     }
                 }
             }
@@ -1577,8 +1553,7 @@ static void KaminoEResetTurretsPc(void) {
     i32 i;
     kamino_e.active_turret = NULL;
     for (i = 0; i < 4; i++) {
-        GizmoActivate(WORLD->gizmo_sys, GizmoFindByData(WORLD->gizmo_sys, gizpanel_gizmotype_id, kamino_e.panels[i]), 1,
-                      1);
+        GizmoActivate(WORLD->gizmo_sys, GizmoFindByData(WORLD->gizmo_sys, gizpanel_gizmotype_id, kamino_e.panels[i]), 1, 1);
         kamino_e.turrets[i]->field_12e = 1;
         kamino_e.turrets[i]->flags_13a &= ~0x10;
     }
@@ -1588,7 +1563,10 @@ NUVEC KaminoShipCentrePc = {56.5f, -2.89f, 8.0f};
 f32 KaminoShipRadiusPc = 6.5f;
 i32 KaminoShipOrbitPitchPc = -3640;
 i32 KaminoShipOrbitYawPc = 0x4000;
-NUVEC KaminoShipGunOffsetPc[2] = {{0.2f, -1.1f, 0.9f}, {-0.2f, -1.1f, 0.9f}};
+NUVEC KaminoShipGunOffsetPc[2] = {
+    {0.2f,  -1.1f, 0.9f},
+    {-0.2f, -1.1f, 0.9f}
+};
 f32 KaminoShipFireIntervalPc = 0.15f;
 f32 KaminoShipSeekRatePc = 1.0f;
 f32 KaminoShipAimScalePc = 30.0f;
@@ -1731,8 +1709,7 @@ void KaminoE_Update(WORLDINFO *world) {
                         continue;
                     }
                     flags = object->flags_1fc_word;
-                    if ((flags & 1) == 0 || (flags & 0x1000) == 0 ||
-                        (object->character_data->model_flags & 0x80000) != 0) {
+                    if ((flags & 1) == 0 || (flags & 0x1000) == 0 || (object->character_data->model_flags & 0x80000) != 0) {
                         continue;
                     }
                     distance = NuVecDistSqr(&object->collision_position, (NUVEC *)&matrix->m30, &delta);
@@ -1784,8 +1761,7 @@ void KaminoE_Update(WORLDINFO *world) {
                         if (i == 0) {
                             distance = NuVecDist(&origin, &aim, NULL);
                         }
-                        adjustment = (i32)((f64)NuAtan2(-KaminoShipGunOffsetPc[kamino_e.fire_index].x, distance) *
-                                           10430.3779296875);
+                        adjustment = (i32)((f64)NuAtan2(-KaminoShipGunOffsetPc[kamino_e.fire_index].x, distance) * 10430.3779296875);
                         NuMtxPreRotateY(&bolt_matrix, adjustment);
                         BoltNoSfxPc = 1;
                         bolt = Bolt_Add(NULL, &origin, &bolt_matrix, 0x27, 0x800);
@@ -1853,8 +1829,7 @@ void KaminoE_UpdatePc(WORLDINFO *world) {
         kamino_e.jango_fight->value = 1.0f;
     }
     KaminoE_Update(world);
-    connection =
-        AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "Bridge1_a", "Bridge1_b", &direction);
+    connection = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "Bridge1_a", "Bridge1_b", &direction);
     fight_area = AISysFindArea(WORLD->ai_sys, "Fight");
     if (target == NULL || connection == NULL || fight_area == NULL) {
         return;
@@ -1925,8 +1900,7 @@ i32 KaminoDiscoOn(void) {
 }
 
 void KaminoOutro_Init(WORLDINFO *world) {
-    debris_object_switches[1] =
-        CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
+    debris_object_switches[1] = CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
 }
 
 static const char GunshipAGreenBoltPc[16] = "trooper_green";
@@ -2070,8 +2044,8 @@ void BonusGunshipB_ResetPc(WORLDINFO *world) {
 
 void BonusGunshipB_UpdatePc(WORLDINFO *world) {
     if (netclient == 0) {
-        if (GunshipPlayerDeadPc == 0 && ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0) ||
-                                         (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0))) {
+        if (GunshipPlayerDeadPc == 0 &&
+            ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0) || (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0))) {
             GunshipPlayerDeadPc = 1;
             ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
         }

@@ -87,8 +87,7 @@ extern "C" {
 #endif
 
     i32 Action_CameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS_PC *, struct AIPACKET_PC *, char **, i32, i32, f32);
-    i32 Action_EndCameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS_PC *, struct AIPACKET_PC *, char **, i32, i32,
-                            f32);
+    i32 Action_EndCameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS_PC *, struct AIPACKET_PC *, char **, i32, i32, f32);
     void RegisterGizActions(GIZACTIONDEF_PC *definitions);
     extern GIZACTIONDEF_PC game_gizactiondefs[24];
 #ifdef __cplusplus

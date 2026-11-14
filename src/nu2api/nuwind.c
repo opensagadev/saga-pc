@@ -42,8 +42,8 @@ void NuWindFreeGrp(PC_NUWINDGROUP *group) {
     }
 }
 
-PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 value20, f32 value24,
-                                i32 flags, f32 near_distance, f32 far_distance) {
+PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 value20, f32 value24, i32 flags, f32 near_distance,
+                                f32 far_distance) {
     PC_NUWINDGROUP *group = NuWindAllocateGrp();
     NUMTX *matrix = matrices;
     i32 index;
@@ -97,9 +97,8 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
     group->center.x = 0.5 * (max_x + min_x);
     group->center.y = 0.5 * (max_y + min_y);
     group->center.z = 0.5 * (max_z + min_z);
-    group->radius_squared =
-        1.5 + ((0.5 * (max_x - min_x)) * ((max_x - min_x) * 0.5) + ((max_y - min_y) * 0.5) * (0.5 * (max_y - min_y)) +
-               ((max_z - min_z) * 0.5) * (0.5 * (max_z - min_z)));
+    group->radius_squared = 1.5 + ((0.5 * (max_x - min_x)) * ((max_x - min_x) * 0.5) + ((max_y - min_y) * 0.5) * (0.5 * (max_y - min_y)) +
+                                   ((max_z - min_z) * 0.5) * (0.5 * (max_z - min_z)));
     group->extended_radius_squared += group->radius_squared;
     group->radius = NuFsqrt(group->radius_squared);
     return group;
@@ -128,8 +127,7 @@ void NuWindUpdateArray(NUVEC **positions) {
     NuWindWave += 501;
     NuWindDir2 += 133;
     NuWindDir += 377;
-    wind.x = NU_SIN_LUT((i32)(16384.0f + NU_SIN_LUT(NuWindDir2) * 8192.0f)) * 0.75f +
-             NU_SIN_LUT((i32)((u32)NuWindDir + 0x4000)) * 0.15f;
+    wind.x = NU_SIN_LUT((i32)(16384.0f + NU_SIN_LUT(NuWindDir2) * 8192.0f)) * 0.75f + NU_SIN_LUT((i32)((u32)NuWindDir + 0x4000)) * 0.15f;
     wind.z = NU_SIN_LUT((i32)(NU_SIN_LUT(NuWindDir2) * 8192.0f)) * 0.75f - NU_SIN_LUT(NuWindDir) * 0.15f;
     any_interaction = 0;
     for (index = 0; index < NuWindMaxGroupsPC; ++index, ++group) {
@@ -145,12 +143,9 @@ void NuWindUpdateArray(NUVEC **positions) {
                         for (object = 0; object < 8; ++object) {
                             if (positions[object] == NULL) {
                                 nearby[object] = 0;
-                            } else if ((group->center.x - positions[object]->x) *
-                                               (group->center.x - positions[object]->x) +
-                                           (group->center.y - positions[object]->y) *
-                                               (group->center.y - positions[object]->y) +
-                                           (group->center.z - positions[object]->z) *
-                                               (group->center.z - positions[object]->z) <
+                            } else if ((group->center.x - positions[object]->x) * (group->center.x - positions[object]->x) +
+                                           (group->center.y - positions[object]->y) * (group->center.y - positions[object]->y) +
+                                           (group->center.z - positions[object]->z) * (group->center.z - positions[object]->z) <
                                        group->radius_squared) {
                                 nearby[object] = 1;
                                 any_interaction = 1;
@@ -161,15 +156,11 @@ void NuWindUpdateArray(NUVEC **positions) {
                     }
                     if (group->flags == 0 || any_interaction == 0) {
                         for (instance = 0; instance < group->matrix_count; ++instance, ++matrix) {
-                            target_x =
-                                matrix->m33 * wind.x *
-                                (NU_SIN_LUT((i32)((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f)) * 0.5f +
-                                 1.0f);
-                            target_z = matrix->m33 * wind.z *
-                                       (NU_SIN_LUT((i32)(16384.0f +
-                                                         ((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f))) *
-                                            0.5f +
-                                        1.0f);
+                            target_x = matrix->m33 * wind.x *
+                                       (NU_SIN_LUT((i32)((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f)) * 0.5f + 1.0f);
+                            target_z =
+                                matrix->m33 * wind.z *
+                                (NU_SIN_LUT((i32)(16384.0f + ((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f))) * 0.5f + 1.0f);
                             matrix->m10 += (target_x - matrix->m10) * 0.2f;
                             matrix->m12 += (target_z - matrix->m12) * 0.2f;
                             scale = 1.0f - NuFsqrt(matrix->m10 * matrix->m10 + matrix->m12 * matrix->m12) * 0.35f;
@@ -190,9 +181,8 @@ void NuWindUpdateArray(NUVEC **positions) {
                             closest = -1;
                             for (object = 0; object < 8; ++object) {
                                 if (positions[object] != NULL) {
-                                    squared =
-                                        (matrix->m30 - positions[object]->x) * (matrix->m30 - positions[object]->x) +
-                                        (matrix->m32 - positions[object]->z) * (matrix->m32 - positions[object]->z);
+                                    squared = (matrix->m30 - positions[object]->x) * (matrix->m30 - positions[object]->x) +
+                                              (matrix->m32 - positions[object]->z) * (matrix->m32 - positions[object]->z);
                                     if (squared < closest_squared) {
                                         closest_squared = squared;
                                         closest = object;
@@ -210,9 +200,7 @@ void NuWindUpdateArray(NUVEC **positions) {
                                 if (positions[closest]->y - matrix->m31 < 0.0f) {
                                     contact_height = (matrix->m33 * 0.2f) / group->value20;
                                 } else {
-                                    contact_height =
-                                        (((positions[closest]->y - matrix->m31) * 0.5f + 0.2f) * matrix->m33) /
-                                        group->value20;
+                                    contact_height = (((positions[closest]->y - matrix->m31) * 0.5f + 0.2f) * matrix->m33) / group->value20;
                                 }
                             }
                             matrix->m10 *= matrix->m23;
@@ -221,15 +209,11 @@ void NuWindUpdateArray(NUVEC **positions) {
                             contact_z = (matrix->m12 * contact_height + matrix->m32) - positions[closest]->z;
                             scale = contact_x * contact_x + contact_z * contact_z;
                             if (scale >= contact_radius * contact_radius) {
-                                target_x =
-                                    matrix->m33 * wind.x *
-                                    (NU_SIN_LUT((i32)((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f)) * 0.5f +
-                                     1.0f);
-                                target_z = matrix->m33 * wind.z *
-                                           (NU_SIN_LUT((i32)(16384.0f + ((f32)NuWindWave +
-                                                                         (matrix->m30 + matrix->m32) * 8192.0f))) *
-                                                0.5f +
-                                            1.0f);
+                                target_x = matrix->m33 * wind.x *
+                                           (NU_SIN_LUT((i32)((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f)) * 0.5f + 1.0f);
+                                target_z =
+                                    matrix->m33 * wind.z *
+                                    (NU_SIN_LUT((i32)(16384.0f + ((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f))) * 0.5f + 1.0f);
                                 contact_x = 0.2f * (target_x - matrix->m10);
                                 contact_z = 0.2f * (target_z - matrix->m12);
                                 scale = contact_x * contact_x + contact_z * contact_z;
@@ -249,10 +233,8 @@ void NuWindUpdateArray(NUVEC **positions) {
                                     contact_x *= scale;
                                     contact_z *= scale;
                                 }
-                                contact_x =
-                                    (0.3f * ((positions[closest]->x + contact_x) - matrix->m30)) / contact_height;
-                                contact_z =
-                                    (0.3f * ((positions[closest]->z + contact_z) - matrix->m32)) / contact_height;
+                                contact_x = (0.3f * ((positions[closest]->x + contact_x) - matrix->m30)) / contact_height;
+                                contact_z = (0.3f * ((positions[closest]->z + contact_z) - matrix->m32)) / contact_height;
                                 scale = contact_x * contact_x + contact_z * contact_z;
                                 if (scale > 0.25f) {
                                     scale = 0.5f / NuFsqrt(scale);
@@ -269,16 +251,11 @@ void NuWindUpdateArray(NUVEC **positions) {
                                 }
                                 matrix->m10 += contact_x;
                                 matrix->m12 += contact_z;
-                                target_x =
-                                    matrix->m33 * wind.x *
-                                    (1.0f +
-                                     (NU_SIN_LUT((i32)((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f)) *
-                                      0.5f));
-                                target_z = matrix->m33 * wind.z *
-                                           (NU_SIN_LUT((i32)(16384.0f + ((f32)NuWindWave +
-                                                                         (matrix->m30 + matrix->m32) * 8192.0f))) *
-                                                0.5f +
-                                            1.0f);
+                                target_x = matrix->m33 * wind.x *
+                                           (1.0f + (NU_SIN_LUT((i32)((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f)) * 0.5f));
+                                target_z =
+                                    matrix->m33 * wind.z *
+                                    (NU_SIN_LUT((i32)(16384.0f + ((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f))) * 0.5f + 1.0f);
                                 matrix->m10 += (target_x - matrix->m10) * 0.05f;
                                 matrix->m12 += (target_z - matrix->m12) * 0.05f;
                             }

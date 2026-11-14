@@ -52,8 +52,7 @@ extern "C" {
     int skin_trace_configuration(unsigned int *delay, unsigned int *ordinal);
     void skin_trace_emit(const char *record);
     void skin_trace_stream(unsigned int index, TraceWord base, unsigned int size);
-    void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const void *world64, TraceWord skin,
-                         unsigned int count);
+    void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const void *world64, TraceWord skin, unsigned int count);
     void skin_trace_item(TraceWord draw_item, TraceWord palette, TraceWord geometry, TraceWord skin);
     void skin_trace_enter_item(TraceWord item);
     void skin_trace_leave_item(void);

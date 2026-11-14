@@ -1,7 +1,7 @@
 #include "saga.h"
 
-PC_VERTEX_DECL_ENTRY_PC *PCVertexDeclarationFindSlot(const PC_VERTEX_DECL_ENTRY_PC *key, PC_VERTEX_DECL_ENTRY_PC *first,
-                                                     i32 count, u8 *found) {
+PC_VERTEX_DECL_ENTRY_PC *PCVertexDeclarationFindSlot(const PC_VERTEX_DECL_ENTRY_PC *key, PC_VERTEX_DECL_ENTRY_PC *first, i32 count,
+                                                     u8 *found) {
     PC_VERTEX_DECL_ENTRY_PC *last = first + count - 1;
     PC_VERTEX_DECL_ENTRY_PC *middle;
     while (first <= last) {
@@ -77,14 +77,14 @@ PC_TEXTURE_RESOURCE_PC *NuGetVertexDeclaration(u32 descriptor) {
         instanced = (descriptor >> 22) & 1;
         offset = 0;
         element_count = 0;
-#define VERTEX_ELEMENT(type_value, usage_value, index_value, byte_count)                                               \
-    elements[element_count].stream = 0;                                                                                \
-    elements[element_count].offset = (u16)offset;                                                                      \
-    elements[element_count].type = type_value;                                                                         \
-    elements[element_count].method = 0;                                                                                \
-    elements[element_count].usage = usage_value;                                                                       \
-    elements[element_count].usage_index = index_value;                                                                 \
-    ++element_count;                                                                                                   \
+#define VERTEX_ELEMENT(type_value, usage_value, index_value, byte_count)                                                                   \
+    elements[element_count].stream = 0;                                                                                                    \
+    elements[element_count].offset = (u16)offset;                                                                                          \
+    elements[element_count].type = type_value;                                                                                             \
+    elements[element_count].method = 0;                                                                                                    \
+    elements[element_count].usage = usage_value;                                                                                           \
+    elements[element_count].usage_index = index_value;                                                                                     \
+    ++element_count;                                                                                                                       \
     offset += byte_count
         VERTEX_ELEMENT(2, 0, 0, 12);
         switch (normal) {

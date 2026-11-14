@@ -81,8 +81,8 @@ extern "C" {
 extern "C" {
 #endif
     extern struct NUHGOBJ_EVAL_PC *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
-    extern void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, struct cut_load_locator_instance_s *,
-                                       CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
+    extern void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, struct cut_load_locator_instance_s *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
+                                       i32);
     void NuGCutSceneSysInit(CUT_LOCATOR_FUNCTION_ENTRY_PC *);
     void NuSetCutSceneCharacterRenderFn(CUT_DRAW_RENDER_CALLBACK_PC);
     void NuSetCutSceneCharacterEvalFn(CUT_DRAW_EVAL_CALLBACK_PC);

@@ -97,8 +97,7 @@ void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
                 continue;
             }
             character_id = CharIDFromName(parser->word_buffer_ptr);
-            if (character_id == -1 || NuFParGetWord(parser) == 0 ||
-                NuStrICmp(parser->word_buffer_ptr, "resident") != 0) {
+            if (character_id == -1 || NuFParGetWord(parser) == 0 || NuStrICmp(parser->word_buffer_ptr, "resident") != 0) {
                 continue;
             }
 
@@ -180,8 +179,7 @@ void SuperCounters_Reset(i32 area_index) {
     }
 }
 
-AREA_SUPERCOUNTER_PC *SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world,
-                                                        AREA_SUPERCOUNTER_PICKUP_PC **pickup_out) {
+AREA_SUPERCOUNTER_PC *SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world, AREA_SUPERCOUNTER_PICKUP_PC **pickup_out) {
     if (world->area != NULL && world->area->super_counters != NULL) {
         AREA_SUPERCOUNTER_PC *counter = world->area->super_counters;
         for (i32 counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index, ++counter) {
@@ -245,8 +243,7 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
         if (in_area != 0) {
             if (NuStrICmp(parser->word_buffer_ptr, "area_end") == 0) {
                 in_area = 0;
-                if (area->dir[0] != '\0' && area->file[0] != '\0' && area->level_count > 0 &&
-                    (area->flags & 0x20) == 0) {
+                if (area->dir[0] != '\0' && area->file[0] != '\0' && area->level_count > 0 && (area->flags & 0x20) == 0) {
                     ++area_count;
                     ++area;
                 }
@@ -434,8 +431,8 @@ typedef struct AREA_MISSION_DATA_READER { // size 0x2
 
 #define AREA_STORY_MODELS_PC Area_StoryModelList
 
-static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id,
-                                      i32 load_model, AREA_EXTRA_MODEL_PC *extras) {
+static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id, i32 load_model,
+                                      AREA_EXTRA_MODEL_PC *extras) {
     if (*count < capacity && InModelList(list, character_id, NULL) == 0) {
         list[*count].model_id = (i16)character_id;
         list[*count].count = (i16)load_model;
@@ -489,9 +486,8 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models,
         if (shuffle_count > 2) {
             for (index = 0; index < shuffle_count * 3; ++index) {
                 const i32 first = qrand() / (0xffff / ((AREA_MISSION_READER *)MissionSys)->character_count + 1);
-                const i32 second =
-                    (qrand() / (0xffff / (((AREA_MISSION_READER *)MissionSys)->character_count - 1) + 1) + first) %
-                    ((AREA_MISSION_READER *)MissionSys)->character_count;
+                const i32 second = (qrand() / (0xffff / (((AREA_MISSION_READER *)MissionSys)->character_count - 1) + 1) + first) %
+                                   ((AREA_MISSION_READER *)MissionSys)->character_count;
                 const i16 held = mission_characters[first];
                 mission_characters[first] = mission_characters[second];
                 mission_characters[second] = held;
@@ -510,8 +506,7 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models,
             }
         }
         if (Area_MissionModelCount < 0x30) {
-            Area_MissionModelList[Area_MissionModelCount].model_id =
-                ((AREA_MISSION_DATA_READER *)MissionSys->active_mission)->find_char;
+            Area_MissionModelList[Area_MissionModelCount].model_id = ((AREA_MISSION_DATA_READER *)MissionSys->active_mission)->find_char;
             Area_MissionModelList[Area_MissionModelCount].count = (i16)(1);
             ++Area_MissionModelCount;
         }
@@ -622,16 +617,15 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models,
             }
             if (NuStrICmp(fp->word_buffer_ptr, "player") == 0) {
                 if (Area_MissionModelCount == 0) {
-                    AreaAddModelListPrivatePc(reinterpret_cast<APICHARACTERMODELLIST *>(Area_PlayerModelList),
-                                              &Area_PlayerModelCount, 8, character_id, 1, models);
+                    AreaAddModelListPrivatePc(reinterpret_cast<APICHARACTERMODELLIST *>(Area_PlayerModelList), &Area_PlayerModelCount, 8,
+                                              character_id, 1, models);
                 }
                 AreaAddModelListPrivatePc(AREA_STORY_MODELS_PC, &Area_StoryModelCount, 0x30, character_id, 1, models);
             } else if (NuStrICmp(fp->word_buffer_ptr, "resident") == 0) {
                 AreaAddModelListPrivatePc(AREA_STORY_MODELS_PC, &Area_StoryModelCount, 0x30, character_id, 1, models);
-                AreaAddModelListPrivatePc(reinterpret_cast<APICHARACTERMODELLIST *>(Area_FreePlayModelList),
-                                          &Area_FreePlayModelCount, 0x30, character_id, 1, models);
-                AreaAddModelListPrivatePc(Area_MissionModelList, &Area_MissionModelCount, 0x30, character_id, 1,
-                                          models);
+                AreaAddModelListPrivatePc(reinterpret_cast<APICHARACTERMODELLIST *>(Area_FreePlayModelList), &Area_FreePlayModelCount, 0x30,
+                                          character_id, 1, models);
+                AreaAddModelListPrivatePc(Area_MissionModelList, &Area_MissionModelCount, 0x30, character_id, 1, models);
             } else if (NuStrICmp(fp->word_buffer_ptr, "cutscene") == 0) {
                 if (Area_StoryModelCount < 0x30 && InModelList(AREA_STORY_MODELS_PC, character_id, NULL) == 0) {
                     AREA_STORY_MODELS_PC[Area_StoryModelCount].model_id = static_cast<i16>(character_id);
@@ -831,8 +825,7 @@ extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINF
     for (index = 0; index < counter->pickup_count; ++index, ++pickup) {
         if (world->area_index != -1) {
             for (saved = 0; saved < AreaGlobals_PC.new_minikit_count; ++saved) {
-                if (NewMiniPiece[saved].level == pickup->level_index &&
-                    NuStrICmp(NewMiniPiece[saved].name, pickup->name) == 0) {
+                if (NewMiniPiece[saved].level == pickup->level_index && NuStrICmp(NewMiniPiece[saved].name, pickup->name) == 0) {
                     return 1;
                 }
             }
@@ -851,8 +844,7 @@ extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINF
 
 /* Append to areas.cpp; native573780316 +5738c0295. */
 
-extern "C" AREA_SUPERCOUNTER_PC *SuperCounters_FindPickup(WORLDINFO *world, void *gizmo, NUVEC *position,
-                                                          void *output_pointer) {
+extern "C" AREA_SUPERCOUNTER_PC *SuperCounters_FindPickup(WORLDINFO *world, void *gizmo, NUVEC *position, void *output_pointer) {
     AREA_SUPERCOUNTER_PICKUP_PC **output = (AREA_SUPERCOUNTER_PICKUP_PC **)output_pointer;
     if (world->area != NULL && world->area->super_counters != NULL) {
         AREA_SUPERCOUNTER_PC *counter = world->area->super_counters;
@@ -914,8 +906,8 @@ extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP_PC
             } else {
                 message_position = &gizmo_pickup->position;
             }
-            AddGameMsgCount(message_position, counter->collected_count, counter->pickup_count, counter->red,
-                            counter->green, counter->blue, 0.75f);
+            AddGameMsgCount(message_position, counter->collected_count, counter->pickup_count, counter->red, counter->green, counter->blue,
+                            0.75f);
             GameAudio_PlaySfx(0x53, NULL, 0, 0);
         }
     }
@@ -935,8 +927,8 @@ extern "C" void SuperCounters_FixUpGizmos(WORLDINFO *world) {
                 if (pickup->use_special == 0) {
                     pickup->position_gizmo = GizmoFindByName(world->gizmo_sys, -1, pickup->position_name);
                 } else {
-                    NuSpecialFind(world->current_gscn, reinterpret_cast<NUSPECIALHANDLE *>(pickup->position_special),
-                                  pickup->position_name, 1);
+                    NuSpecialFind(world->current_gscn, reinterpret_cast<NUSPECIALHANDLE *>(pickup->position_special), pickup->position_name,
+                                  1);
                 }
             }
         }

@@ -186,8 +186,7 @@ NuNetEmu::EmuPacket::EmuPacket(u32 *net_address) {
     address = *net_address;
 }
 
-NuNetEmu::NuNetEmu()
-    : first_packet(NULL), last_packet(NULL), packet_count(0), raw_stats("EmuRaw"), packet_stats("EmuPack") {
+NuNetEmu::NuNetEmu() : first_packet(NULL), last_packet(NULL), packet_count(0), raw_stats("EmuRaw"), packet_stats("EmuPack") {
     enabled = 0;
     min_latency = 0;
     max_latency = 0;

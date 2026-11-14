@@ -68,6 +68,5 @@ void NuHtmlHeading3(char *text, ...) {
 }
 
 void NuHtmlBanner(void) {
-    NuHtmlWrite("<table   width=100%c height=20 bgcolor=#FF0000><tr><td><font face=arial size=+2></font></table>",
-                0x25);
+    NuHtmlWrite("<table   width=100%c height=20 bgcolor=#FF0000><tr><td><font face=arial size=+2></font></table>", 0x25);
 }

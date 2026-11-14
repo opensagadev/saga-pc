@@ -27,8 +27,7 @@ static i32 LedgeTerrain_Attach(GAMEOBJECT *object, u16 facing, NUVEC *position, 
         return 0;
     }
     surface = (i8)object->contact_material[0];
-    if (surface >= 0 ? surface < 32 && (TerSurface[surface].flags & 0x581) != 0
-                     : 0) { /* the original surface-flag macro shape */
+    if (surface >= 0 ? surface < 32 && (TerSurface[surface].flags & 0x581) != 0 : 0) { /* the original surface-flag macro shape */
         return 0;
     }
     if (object->contact_position.y <= object->collision_position.y - (f64)0.05f ||
@@ -173,14 +172,11 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     if (object->field_281 != 0 || !(object->velocity.y <= 0.0f)) {
         return;
     }
-    if (LedgeTerrain_CheckAnims != 0 &&
-        (LEGOACT_LEDGE_IDLE == -1 || object->character_model->model_data_b[LEGOACT_LEDGE_IDLE] == NULL)) {
+    if (LedgeTerrain_CheckAnims != 0 && (LEGOACT_LEDGE_IDLE == -1 || object->character_model->model_data_b[LEGOACT_LEDGE_IDLE] == NULL)) {
         return;
     }
-    if (object->character_context != -1 &&
-        !(LEGOCONTEXT_CLIMB != -1 && object->character_context == LEGOCONTEXT_CLIMB) &&
-        !(LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP &&
-          object->context_timer >= (f64)0.1f)) {
+    if (object->character_context != -1 && !(LEGOCONTEXT_CLIMB != -1 && object->character_context == LEGOCONTEXT_CLIMB) &&
+        !(LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->context_timer >= (f64)0.1f)) {
         return;
     }
     if ((object->flags_1fc & 0x80) == 0 && (object->flags_ef4 & 0x8000) == 0) {
@@ -217,11 +213,10 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
 i32 LedgeTerrain_SetTargetMom(GAMEOBJECT *object) {
     i32 angle = object->movement_facing_angle;
     object->target_velocity.x =
-        (NuTrigTable[(u32)angle >> 1] * LEDGETERRAINLOOKAHEAD + object->external_force.x - object->upper_position.x) *
+        (NuTrigTable[(u32)angle >> 1] * LEDGETERRAINLOOKAHEAD + object->external_force.x - object->upper_position.x) * 10.0f;
+    object->target_velocity.z =
+        (NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * LEDGETERRAINLOOKAHEAD + object->external_force.z - object->upper_position.z) *
         10.0f;
-    object->target_velocity.z = (NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * LEDGETERRAINLOOKAHEAD +
-                                 object->external_force.z - object->upper_position.z) *
-                                10.0f;
     object->target_velocity.y = (object->external_force.y - object->upper_position.y) * 10.0f;
     return 1;
 }
@@ -268,23 +263,21 @@ void Climb_MoveCode(GAMEOBJECT *object) {
         if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 && object->context_variant != 5) {
             StartJump(object, 0);
             object->flags_e24 |= 0x1000;
-            object->velocity.x =
-                -NuTrigTable[object->movement_facing_angle >> 1] * object->character_data->game_character->run_speed;
-            object->velocity.z = -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
-                                 object->character_data->game_character->run_speed;
+            object->velocity.x = -NuTrigTable[object->movement_facing_angle >> 1] * object->character_data->game_character->run_speed;
+            object->velocity.z =
+                -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * object->character_data->game_character->run_speed;
             return;
         }
         input_angle = GamePad_InputAngle(object, object->pad);
         if ((object->field_281 & 2) != 0 && object->jump_animation_state == object->context_variant) {
             object->character_context = -1;
         } else if ((object->field_281 & 2) != 0 && object->jump_animation_state != object->context_variant &&
-                   object->pad->input_magnitude > 0.0f &&
-                   PushingTowardsAngle(input_angle, object->movement_facing_angle) < 0.0f) {
+                   object->pad->input_magnitude > 0.0f && PushingTowardsAngle(input_angle, object->movement_facing_angle) < 0.0f) {
             object->character_context = -1;
         } else if (object->contact_count != 0 && object->contact_material[0] == object->context_variant) {
             object->context_duration = 0.25f;
-            object->movement_facing_angle = NuAtan2D(object->contact_position.x - object->position.x,
-                                                     object->contact_position.z - object->position.z);
+            object->movement_facing_angle =
+                NuAtan2D(object->contact_position.x - object->position.x, object->contact_position.z - object->position.z);
             object->external_force = object->contact_normal;
             object->launch_origin = object->contact_position;
             FindAnglesXY(&object->external_force, &object->field_7a4, NULL);
@@ -351,8 +344,7 @@ void Climb_MoveCode(GAMEOBJECT *object) {
         }
         normal_y.value = object->contact_normal.y;
         normal_y_abs.bits = normal_y.bits & 0x7fffffff;
-        if (!(normal_y_abs.value < NuTrigTable[0x3000]) ||
-            CanClimbSurface(object, (i8)object->contact_material[0]) == 0) {
+        if (!(normal_y_abs.value < NuTrigTable[0x3000]) || CanClimbSurface(object, (i8)object->contact_material[0]) == 0) {
             return;
         }
         normal = object->contact_normal;
@@ -393,9 +385,8 @@ i32 Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     u16 side_angle;
     f32 lateral;
     speed.value = 0.0f;
-    if (animation != -1 &&
-        (animation == LEGOACT_CLIMB_UP || animation == LEGOACT_CLIMB_DOWN || animation == LEGOACT_CLIMB_LEFT ||
-         animation == LEGOACT_CLIMB_RIGHT || animation == LEGOACT_MAGNET_WALK_METAL)) {
+    if (animation != -1 && (animation == LEGOACT_CLIMB_UP || animation == LEGOACT_CLIMB_DOWN || animation == LEGOACT_CLIMB_LEFT ||
+                            animation == LEGOACT_CLIMB_RIGHT || animation == LEGOACT_MAGNET_WALK_METAL)) {
         if (object->character_model->model_data_b[animation] != NULL) {
             raw_speed.value = AnimSpeed(object->character_model, animation);
             speed.bits = raw_speed.bits & 0x7fffffff;
@@ -455,15 +446,12 @@ void Hang_MoveCode(GAMEOBJECT *object) {
         }
         return;
     }
-    if (object->field_281 != 0 || object->contact_count == 0 ||
-        CanClimbSurface(object, (i8)object->contact_material[0]) == 0 ||
+    if (object->field_281 != 0 || object->contact_count == 0 || CanClimbSurface(object, (i8)object->contact_material[0]) == 0 ||
         !(object->contact_normal.y < -NuTrigTable[0x3000])) {
         return;
     }
-    if (object->character_context != -1 &&
-        !(LEGOCONTEXT_CLIMB != -1 && object->character_context == LEGOCONTEXT_CLIMB) &&
-        !(LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP &&
-          object->context_timer >= (f64)0.1f)) {
+    if (object->character_context != -1 && !(LEGOCONTEXT_CLIMB != -1 && object->character_context == LEGOCONTEXT_CLIMB) &&
+        !(LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->context_timer >= (f64)0.1f)) {
         return;
     }
     object->character_context = (i8)LEGOCONTEXT_HANG;
@@ -476,8 +464,7 @@ void Hang_MoveCode(GAMEOBJECT *object) {
 i32 Hang_SetTargetMom(GAMEOBJECT *object) {
     if (object->pad->input_magnitude > 0.0f) {
         f32 speed;
-        if (LEGOACT_HANG_MOVE != -1 &&
-            ((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[LEGOACT_HANG_MOVE] != NULL) {
+        if (LEGOACT_HANG_MOVE != -1 && ((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[LEGOACT_HANG_MOVE] != NULL) {
             speed = AnimSpeed(object->character_model, LEGOACT_HANG_MOVE);
             if (speed < 0.25f) {
                 speed = 0.25f;
@@ -554,8 +541,7 @@ void InitClimbObjectSys(WORLDINFO *world) {
         connection = path->connections;
         for (connection_index = 0; connection_index < path->connection_count; ++connection_index, ++connection) {
             if (world->climb_objects->count < world->climb_objects->capacity &&
-                (connection->traversal_flags[0] &
-                 (LEGO_AIPATHCNX_VARIANT_FLAG0_PC | LEGO_AIPATHCNX_VARIANT_FLAG1_PC)) != 0) {
+                (connection->traversal_flags[0] & (LEGO_AIPATHCNX_VARIANT_FLAG0_PC | LEGO_AIPATHCNX_VARIANT_FLAG1_PC)) != 0) {
                 object = &world->climb_objects->objects[world->climb_objects->count++];
                 object->connection = connection;
                 object->path = path;

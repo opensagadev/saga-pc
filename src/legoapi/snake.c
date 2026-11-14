@@ -156,16 +156,14 @@ void UpdateSnakeBody(GAMEOBJECT *object) {
         if (reader->snake_body->segments[index].ground_height == 1000000000.0f) {
             reader->snake_body->segments[index].ground_height = ground;
         } else {
-            reader->snake_body->segments[index].ground_height =
-                SeekValF(reader->snake_body->segments[index].ground_height, ground, 10.0f);
+            reader->snake_body->segments[index].ground_height = SeekValF(reader->snake_body->segments[index].ground_height, ground, 10.0f);
         }
         if (reader->snake_body->segments[index].ground_height != 2000000.0f) {
             position.y = reader->snake_body->segments[index].ground_height;
             length = NuVecDist(&position, &reader->snake_body->segments[index].position, &offset);
             NuVecScale(&offset, &offset, reader->snake_body->scale * SnakeSegmentSpacingPc / length);
             NuVecAdd(&position, &reader->snake_body->segments[index].position, &offset);
-            reader->snake_body->segments[index].pitch =
-                (i16)SnakeASinPc(-offset.y / (reader->snake_body->scale * SnakeSegmentSpacingPc));
+            reader->snake_body->segments[index].pitch = (i16)SnakeASinPc(-offset.y / (reader->snake_body->scale * SnakeSegmentSpacingPc));
         }
     }
 }
@@ -250,8 +248,7 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
             NuMtxPreScale(&matrix, &scale);
         }
         matrix.m30 = matrix.m30 + reader->snake_body->segments[index].position.x;
-        matrix.m31 = reader->snake_body->scale * SnakeSegmentHeightPc + reader->snake_body->segments[index].position.y +
-                     matrix.m31;
+        matrix.m31 = reader->snake_body->scale * SnakeSegmentHeightPc + reader->snake_body->segments[index].position.y + matrix.m31;
         matrix.m32 = reader->snake_body->segments[index].position.z + matrix.m32;
         special_index = index == reader->snake_body->segment_count - 1 ? 2 : index % 2;
         special = &snake_hspecials[special_index];
@@ -302,8 +299,7 @@ void DrawSnakeBody(GAMEOBJECT *object) {
             NuMtxPreScale(&matrix, &scale);
         }
         matrix.m30 = reader->snake_body->segments[segment_index].position.x + matrix.m30;
-        matrix.m31 = reader->snake_body->scale * SnakeSegmentHeightPc +
-                     reader->snake_body->segments[segment_index].position.y + matrix.m31;
+        matrix.m31 = reader->snake_body->scale * SnakeSegmentHeightPc + reader->snake_body->segments[segment_index].position.y + matrix.m31;
         matrix.m32 = reader->snake_body->segments[segment_index].position.z + matrix.m32;
         special_index = segment_index == reader->snake_body->segment_count - 1 ? 2 : segment_index % 2;
         if (NuSpecialExistsFn(&snake_hspecials[special_index])) {

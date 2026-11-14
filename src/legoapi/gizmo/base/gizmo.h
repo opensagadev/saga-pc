@@ -58,8 +58,8 @@ typedef struct gizmofns_s {                                                     
     void *get_pos_fn;                                                              // 0x3c
     void *using_special_fn;                                                        // 0x40
     void *bolt_hit_plat_fn;                                                        // 0x44
-    struct gizmo_pc_s *(*get_best_bolt_target_fn)(struct gizmoset_s *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *,
-                                                  NUVEC *, f32, f32, i32, i32, i32);   // 0x48
+    struct gizmo_pc_s *(*get_best_bolt_target_fn)(struct gizmoset_s *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32,
+                                                  i32, i32);                           // 0x48
     void *bolt_hit_fn;                                                                 // 0x4c
     void *(*allocate_progress_data_fn)(union variptr_u *buffer, union variptr_u *end); // 0x50
     void (*clear_progress_fn)(void *world, void *progress);                            // 0x54
@@ -205,8 +205,7 @@ extern "C" {
 #endif
     void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *, struct WORLDINFO_s *, i32 *, i32 *, i32);
 
-    i32 GizmoSys_SetBestBoltTarget(void *, struct WORLDINFO_s *, struct gameobject_s *, NUVEC *, NUVEC *, f32, f32, i32,
-                                   i32, i32);
+    i32 GizmoSys_SetBestBoltTarget(void *, struct WORLDINFO_s *, struct gameobject_s *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
     i32 GizmoSys_BoltHitPlat(void *, struct WORLDINFO_s *, struct bolt_s *, u8 *);
     void ResetPaintPuzzle(struct WORLDINFO_s *world);
 #ifdef __cplusplus

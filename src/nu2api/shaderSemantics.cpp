@@ -6,10 +6,8 @@ extern "C" {
     ShaderUniformRecordPc *NuShaderUniformGetByString(const char *name) {
         i32 i;
         for (i = 0; i < 100; ++i) {
-            if ((ShaderUniformRecordsPc[i].fragment_name != NULL &&
-                 strcmp(ShaderUniformRecordsPc[i].fragment_name, name) == 0) ||
-                (ShaderUniformRecordsPc[i].vertex_name != NULL &&
-                 strcmp(ShaderUniformRecordsPc[i].vertex_name, name) == 0)) {
+            if ((ShaderUniformRecordsPc[i].fragment_name != NULL && strcmp(ShaderUniformRecordsPc[i].fragment_name, name) == 0) ||
+                (ShaderUniformRecordsPc[i].vertex_name != NULL && strcmp(ShaderUniformRecordsPc[i].vertex_name, name) == 0)) {
                 return &ShaderUniformRecordsPc[i];
             }
         }

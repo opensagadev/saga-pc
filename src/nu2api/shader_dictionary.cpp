@@ -69,8 +69,7 @@ extern "C" i32 fun_00746560(u32 flags) {
     return (flags >> 12) & 1;
 }
 
-PC_SHADER_MATERIAL_FILTER_VIEW::PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *descriptor, i32 flags,
-                                                               i32 parameter) {
+PC_SHADER_MATERIAL_FILTER_VIEW::PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *descriptor, i32 flags, i32 parameter) {
     Initialize(descriptor, NULL, flags, parameter);
 }
 
@@ -115,39 +114,38 @@ ShaderMacroDefinitionPc *ShaderCompilerDictionaryPc::FindDefinition(const char *
 
 // AddDefinition body; inlined into EmitProgram only.
 char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena);
-#define SHADER_ADD_DEFINITION_PC(DICTIONARY, NAME, VALUE, EMIT)                                                        \
-    do {                                                                                                               \
-        ShaderMacroDefinitionPc *definition = (DICTIONARY)->FindDefinition(NAME);                                      \
-        if (definition != NULL) {                                                                                      \
-            const char *stored_value;                                                                                  \
-            if ((VALUE) != NULL) {                                                                                     \
-                stored_value = ShaderCloneArenaStringPc(VALUE, &(DICTIONARY)->scratch);                                \
-            } else {                                                                                                   \
-                stored_value = NULL;                                                                                   \
-            }                                                                                                          \
-            definition->value = stored_value;                                                                          \
-            definition->emit = (u8)(EMIT);                                                                             \
-        } else {                                                                                                       \
-            char *stored_name = ShaderCloneArenaStringPc(NAME, &(DICTIONARY)->scratch);                                \
-            const char *stored_value;                                                                                  \
-            if ((VALUE) != NULL) {                                                                                     \
-                stored_value = ShaderCloneArenaStringPc(VALUE, &(DICTIONARY)->scratch);                                \
-            } else {                                                                                                   \
-                stored_value = NULL;                                                                                   \
-            }                                                                                                          \
-            ShaderMacroDefinitionPc *storage =                                                                         \
-                reinterpret_cast<ShaderMacroDefinitionPc *>((DICTIONARY)->scratch.cursor);                             \
-            (DICTIONARY)->scratch.cursor += sizeof(ShaderMacroDefinitionPc);                                           \
-            if (storage != NULL) {                                                                                     \
-                storage->name = stored_name;                                                                           \
-                storage->value = stored_value;                                                                         \
-                storage->emit = (u8)(EMIT);                                                                            \
-                definition = storage;                                                                                  \
-            } else {                                                                                                   \
-                definition = NULL;                                                                                     \
-            }                                                                                                          \
-            (DICTIONARY)->programs[(DICTIONARY)->program_count++] = definition;                                        \
-        }                                                                                                              \
+#define SHADER_ADD_DEFINITION_PC(DICTIONARY, NAME, VALUE, EMIT)                                                                            \
+    do {                                                                                                                                   \
+        ShaderMacroDefinitionPc *definition = (DICTIONARY)->FindDefinition(NAME);                                                          \
+        if (definition != NULL) {                                                                                                          \
+            const char *stored_value;                                                                                                      \
+            if ((VALUE) != NULL) {                                                                                                         \
+                stored_value = ShaderCloneArenaStringPc(VALUE, &(DICTIONARY)->scratch);                                                    \
+            } else {                                                                                                                       \
+                stored_value = NULL;                                                                                                       \
+            }                                                                                                                              \
+            definition->value = stored_value;                                                                                              \
+            definition->emit = (u8)(EMIT);                                                                                                 \
+        } else {                                                                                                                           \
+            char *stored_name = ShaderCloneArenaStringPc(NAME, &(DICTIONARY)->scratch);                                                    \
+            const char *stored_value;                                                                                                      \
+            if ((VALUE) != NULL) {                                                                                                         \
+                stored_value = ShaderCloneArenaStringPc(VALUE, &(DICTIONARY)->scratch);                                                    \
+            } else {                                                                                                                       \
+                stored_value = NULL;                                                                                                       \
+            }                                                                                                                              \
+            ShaderMacroDefinitionPc *storage = reinterpret_cast<ShaderMacroDefinitionPc *>((DICTIONARY)->scratch.cursor);                  \
+            (DICTIONARY)->scratch.cursor += sizeof(ShaderMacroDefinitionPc);                                                               \
+            if (storage != NULL) {                                                                                                         \
+                storage->name = stored_name;                                                                                               \
+                storage->value = stored_value;                                                                                             \
+                storage->emit = (u8)(EMIT);                                                                                                \
+                definition = storage;                                                                                                      \
+            } else {                                                                                                                       \
+                definition = NULL;                                                                                                         \
+            }                                                                                                                              \
+            (DICTIONARY)->programs[(DICTIONARY)->program_count++] = definition;                                                            \
+        }                                                                                                                                  \
     } while (0)
 
 // noinline: the original calls AddDefinition out of line from ShaderCompilerDictionaryPc::EmitVertexInput; VC8 would
@@ -280,9 +278,8 @@ i32 ShaderCompilerDictionaryPc::EvaluateValue(ShaderConditionNodePc *node) {
     return EvaluateCondition(node, &value) ? value : 0;
 }
 
-ShaderSourceNodePc::ShaderSourceNodePc(u32 input_flags, i32 input_type, i32 input_array_count, const char *input_name,
-                                       i32 input_semantic, const char *input_custom_semantic, i32 input_vertex_register,
-                                       i32 input_pixel_register) {
+ShaderSourceNodePc::ShaderSourceNodePc(u32 input_flags, i32 input_type, i32 input_array_count, const char *input_name, i32 input_semantic,
+                                       const char *input_custom_semantic, i32 input_vertex_register, i32 input_pixel_register) {
     flags = input_flags;
     type = input_type;
     array_count = input_array_count;
@@ -356,9 +353,8 @@ ShaderSourceNodePc *ShaderCompilerDictionaryPc::FindASTUniform(const char *name)
 }
 
 static const char *ShaderCompilerTypeNamesPc[22] = {
-    "undefined", "float",     "float",     "float2",    "float3",      "float4",  "float3x3", "float4x4",
-    "half",      "half",      "half2",     "half3",     "half4",       "half3x3", "half4x4",  "bool",
-    "int",       "sampler1D", "sampler2D", "sampler3D", "samplerCUBE", "hook"};
+    "undefined", "float", "float",   "float2",  "float3", "float4", "float3x3",  "float4x4",  "half",      "half",        "half2",
+    "half3",     "half4", "half3x3", "half4x4", "bool",   "int",    "sampler1D", "sampler2D", "sampler3D", "samplerCUBE", "hook"};
 
 const char *ShaderSourceNodePc::SemanticName() {
     switch (semantic) {
@@ -481,8 +477,7 @@ void ShaderCompilerDictionaryPc::EmitVertexInput(ShaderCompilerBufferAllocatorPc
     output->AppendText("};\r\n");
 }
 
-static const i32 ShaderCompilerTypeComponentsPc[22] = {-1, 1, 1, 2,  3, 4, 9,  16, 1,  1,  2,
-                                                       3,  4, 9, 16, 1, 1, -1, -1, -1, -1, -1};
+static const i32 ShaderCompilerTypeComponentsPc[22] = {-1, 1, 1, 2, 3, 4, 9, 16, 1, 1, 2, 3, 4, 9, 16, 1, 1, -1, -1, -1, -1, -1};
 
 const char *ShaderRegisterComponentsPc(i32 first, i32 count) {
     switch (first) {
@@ -534,9 +529,8 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
     i32 colors = 0;
     bool overflow = false;
     i32 used[16] = {0};
-    const char *names[16] = {"texcoord0",  "texcoord1",  "texcoord2",  "texcoord3", "texcoord4",  "texcoord5",
-                             "texcoord6",  "texcoord7",  "texcoord8",  "texcoord9", "texcoord10", "texcoord11",
-                             "texcoord12", "texcoord13", "texcoord14", "texcoord15"};
+    const char *names[16] = {"texcoord0", "texcoord1", "texcoord2",  "texcoord3",  "texcoord4",  "texcoord5",  "texcoord6",  "texcoord7",
+                             "texcoord8", "texcoord9", "texcoord10", "texcoord11", "texcoord12", "texcoord13", "texcoord14", "texcoord15"};
     output->AppendText("struct VertexOutput { \r\n");
     for (i32 i = 0; i < definition_count; ++i) {
         ShaderSourceNodePc *node = definitions[i];
@@ -700,8 +694,7 @@ ShaderCompilerBufferAllocatorPc &ShaderCompilerBufferAllocatorPc::operator<<(i32
     return *this;
 }
 
-ShaderMacroDefinitionPc::ShaderMacroDefinitionPc(const char *name, const char *value, u8 emit)
-    : name(name), value(value), emit(emit) {
+ShaderMacroDefinitionPc::ShaderMacroDefinitionPc(const char *name, const char *value, u8 emit) : name(name), value(value), emit(emit) {
 }
 
 i32 ShaderSourceNodePc::fun_00746620() {
@@ -878,10 +871,10 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                                              : NULL;
                     ShaderSourceNodePc *storage = reinterpret_cast<ShaderSourceNodePc *>(arena->cursor);
                     arena->cursor += sizeof(ShaderSourceNodePc);
-                    AddASTDefinition(new (storage) ShaderSourceNodePc(
-                        node->data.declaration.flags, node->data.declaration.type, node->data.declaration.array_count,
-                        name, node->data.declaration.semantic, custom, node->data.declaration.vertex_register,
-                        node->data.declaration.pixel_register));
+                    AddASTDefinition(
+                        new (storage) ShaderSourceNodePc(node->data.declaration.flags, node->data.declaration.type,
+                                                         node->data.declaration.array_count, name, node->data.declaration.semantic, custom,
+                                                         node->data.declaration.vertex_register, node->data.declaration.pixel_register));
                 }
                 break;
             case 4: {

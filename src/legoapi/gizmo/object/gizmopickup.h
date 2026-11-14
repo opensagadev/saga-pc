@@ -75,8 +75,8 @@ extern "C" {
     extern char PickupTypeLiteral758c80[12];
     extern GIZMO_PICKUP_TYPE_PC GizmoPickupType[10];
 
-    void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *position, NUVEC *direction, f32 unused,
-                    i32 player_index, f32 speed, f32 lifetime, struct gameobject_s *owner, i32 random_types, i32 panel);
+    void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *position, NUVEC *direction, f32 unused, i32 player_index,
+                    f32 speed, f32 lifetime, struct gameobject_s *owner, i32 random_types, i32 panel);
     void AddCoinsAsParts(i32 coins, NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
     void AddHeartAsPart(struct gameobject_s *owner, NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
     void AddTorpedoAsPart(NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
@@ -98,8 +98,7 @@ extern "C" {
     void AddCoinsAsParts(i32, NUVEC *, NUVEC *, f32, f32);
 #define PickupCoinName PickupCoinSfx_PC         // NOLINT(readability-identifier-naming)
 #define PickupCoinBName PickupTypeLiteral758c5c // NOLINT(readability-identifier-naming)
-    void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player_index, f32 scale, struct gameobject_s *object,
-                         i32 mode);
+    void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player_index, f32 scale, struct gameobject_s *object, i32 mode);
     i32 LoseCoins(struct gameobject_s *object, i32 cause);
     extern char ScorePanelName[9];
     extern char ScoreCounterName[8];

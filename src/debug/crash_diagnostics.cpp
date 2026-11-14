@@ -70,9 +70,8 @@ static BOOL fault_read(const void *address, void *target, SIZE_T size) {
 }
 
 static BOOL fault_selected(DWORD code) {
-    return code == EXCEPTION_ACCESS_VIOLATION || code == EXCEPTION_IN_PAGE_ERROR ||
-           code == EXCEPTION_ILLEGAL_INSTRUCTION || code == EXCEPTION_PRIV_INSTRUCTION ||
-           code == EXCEPTION_INT_DIVIDE_BY_ZERO || code == EXCEPTION_INT_OVERFLOW ||
+    return code == EXCEPTION_ACCESS_VIOLATION || code == EXCEPTION_IN_PAGE_ERROR || code == EXCEPTION_ILLEGAL_INSTRUCTION ||
+           code == EXCEPTION_PRIV_INSTRUCTION || code == EXCEPTION_INT_DIVIDE_BY_ZERO || code == EXCEPTION_INT_OVERFLOW ||
            code == EXCEPTION_FLT_DIVIDE_BY_ZERO || code == EXCEPTION_FLT_INVALID_OPERATION;
 }
 
@@ -88,8 +87,7 @@ static LONG CALLBACK fault_observe(EXCEPTION_POINTERS *pointers) {
         return EXCEPTION_CONTINUE_SEARCH;
     }
     if (!fault_read(pointers, &fault_pointers, sizeof(fault_pointers)) ||
-        !fault_read(fault_pointers.ExceptionRecord, &fault_record, sizeof(fault_record)) ||
-        !fault_selected(fault_record.ExceptionCode)) {
+        !fault_read(fault_pointers.ExceptionRecord, &fault_record, sizeof(fault_record)) || !fault_selected(fault_record.ExceptionCode)) {
         goto finished;
     }
     have_context = fault_read(fault_pointers.ContextRecord, &fault_context, sizeof(fault_context));
@@ -181,8 +179,7 @@ static LONG CALLBACK fault_observe(EXCEPTION_POINTERS *pointers) {
     }
     if (fault_latest != INVALID_HANDLE_VALUE) {
         SetLastError(NO_ERROR);
-        if (SetFilePointer(fault_latest, 0, NULL, FILE_BEGIN) != INVALID_SET_FILE_POINTER ||
-            GetLastError() == NO_ERROR) {
+        if (SetFilePointer(fault_latest, 0, NULL, FILE_BEGIN) != INVALID_SET_FILE_POINTER || GetLastError() == NO_ERROR) {
             if (WriteFile(fault_latest, fault_text, fault_used, &written, NULL) && written == fault_used) {
                 SetEndOfFile(fault_latest);
             }
@@ -208,8 +205,7 @@ extern "C" void SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build
     GetModuleFileNameA(NULL, fault_image, sizeof(fault_image));
     fault_image[sizeof(fault_image) - 1] = 0;
     if (existing_log_file != NULL && existing_log_file != INVALID_HANDLE_VALUE) {
-        DuplicateHandle(GetCurrentProcess(), existing_log_file, GetCurrentProcess(), &fault_file, 0, FALSE,
-                        DUPLICATE_SAME_ACCESS);
+        DuplicateHandle(GetCurrentProcess(), existing_log_file, GetCurrentProcess(), &fault_file, 0, FALSE, DUPLICATE_SAME_ACCESS);
     }
     modules = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, GetCurrentProcessId());
     if (modules != INVALID_HANDLE_VALUE) {
@@ -239,8 +235,8 @@ extern "C" void SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build
                 fault_path[i] = log_path[i];
             }
             fault_copy(fault_path + length - 4, sizeof(fault_path) - length + 4, suffix);
-            fault_latest = CreateFileA(fault_path, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_NEW,
-                                       FILE_ATTRIBUTE_NORMAL, NULL);
+            fault_latest =
+                CreateFileA(fault_path, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
         }
     }
     AddVectoredExceptionHandler(1, fault_observe);

@@ -15,15 +15,14 @@ void NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     NuShaderObjectBaseDestroy(shader);
 }
 
-void NuShaderObjectInit(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index, const char *vertex_source,
-                        i32 vertex_length, const char *pixel_source, i32 pixel_length, i32 version) {
+void NuShaderObjectInit(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index, const char *vertex_source, i32 vertex_length,
+                        const char *pixel_source, i32 pixel_length, i32 version) {
     NuShaderObjectBaseInit(shader, key, index);
     shader->version = version;
 }
 
 /* Looks a uniform up in one constant table and marks the stage that provides it. */
-static const char *PCShaderFindConstantPc(ShaderUniformRecordPc *uniform, ID3DXConstantTable *table, const char *name,
-                                          i32 stage) {
+static const char *PCShaderFindConstantPc(ShaderUniformRecordPc *uniform, ID3DXConstantTable *table, const char *name, i32 stage) {
     const char *handle;
     if (name != NULL && table != NULL) {
         handle = table->methods->get_constant_by_name(table, NULL, name);
@@ -79,9 +78,8 @@ void PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *shader, ID3DXConstan
         parameter->register_index = (i16)description.register_index;
         parameter->register_count = (u8)description.register_count;
         parameter->array_count = (u8)description.elements;
-        if ((uniform->stage_mask & 1) != 0 &&
-            (description.type_kind == 10 || description.type_kind == 11 || description.type_kind == 12 ||
-             description.type_kind == 13 || description.type_kind == 14)) {
+        if ((uniform->stage_mask & 1) != 0 && (description.type_kind == 10 || description.type_kind == 11 || description.type_kind == 12 ||
+                                               description.type_kind == 13 || description.type_kind == 14)) {
             parameter->register_index = (i16)(description.register_index + 0x101);
         }
         if ((PCDeviceHardwareVertexProcessingPC != 4 && uniform->field_18 != 0) || uniform->register_index < 0) {

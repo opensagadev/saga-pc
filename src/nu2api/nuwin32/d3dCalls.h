@@ -20,8 +20,8 @@ extern "C" {
     void PCDeviceLockVertexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE_PC *);
     HRESULT PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *);
     void PCDeviceCreateTextureFromMemory(const void *, u32, PC_TEXTURE_RESOURCE_PC **);
-    void PCDeviceCreateTextureFromMemoryEx(const void *, u32, u32, u32, u32, u32, i32, i32, u32, u32, u32,
-                                           D3DXIMAGE_INFO *, PALETTEENTRY *, PC_TEXTURE_RESOURCE_PC **);
+    void PCDeviceCreateTextureFromMemoryEx(const void *, u32, u32, u32, u32, u32, i32, i32, u32, u32, u32, D3DXIMAGE_INFO *, PALETTEENTRY *,
+                                           PC_TEXTURE_RESOURCE_PC **);
     void PCDeviceCreateCubeTextureFromMemory(const void *, u32, PC_TEXTURE_RESOURCE_PC **);
     void NuVpSubmitPc(const PC_VIEWPORT_PC *viewport);
     HRESULT PCDeviceSetTransform(i32 state, const NUMTX *matrix);

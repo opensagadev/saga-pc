@@ -98,9 +98,8 @@ typedef struct kamino_e_s {                  // size 0x78
     i16 platform;                            // 0x76
 } KAMINO_E_PC;
 
-#define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                     \
-    ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask &                                                \
-      (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
+#define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                                         \
+    ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
 
 typedef struct KAMINO_SHIP_ZERO_ANGLES_PC { // size 0x8
     u16 pitch;                              // 0x0
@@ -227,8 +226,8 @@ void CruiserCUpdate(WORLDINFO *world) {
     if (cruiser_c.count_dooku == NULL) {
         cruiser_c.count_dooku = FindGameObject(id_DOOKU, 1, 1, 1, 0);
     }
-    if (FreePlay == 0 && cruiser_c.palpatine != NULL && cruiser_c.palpatine_locator != NULL &&
-        cruiser_c.free_palpatine != NULL && cruiser_c.free_palpatine->value < 2.0f) {
+    if (FreePlay == 0 && cruiser_c.palpatine != NULL && cruiser_c.palpatine_locator != NULL && cruiser_c.free_palpatine != NULL &&
+        cruiser_c.free_palpatine->value < 2.0f) {
         cruiser_c.palpatine->position = cruiser_c.palpatine_locator->position;
         cruiser_c.palpatine->field_0x276 = cruiser_c.palpatine_locator->rotation;
     }
@@ -282,8 +281,7 @@ void CruiserDReset(WORLDINFO *world) {
             CruiserD_frame = 1.0f;
             CruiserD_LiftAnim->tfactor = CruiserD_LiftSpeedPc;
         } else if (CruiserD_direction >= 0) {
-            f32 *end_frame =
-                ((NUGSCN *)CruiserD_Lift.scene)->instance_animation_data[CruiserD_LiftAnim->animation_index];
+            f32 *end_frame = ((NUGSCN *)CruiserD_Lift.scene)->instance_animation_data[CruiserD_LiftAnim->animation_index];
             CruiserD_LiftAnim->ltime = *end_frame;
             CruiserD_LiftAnim->playing = 0;
             CruiserD_LiftAnim->tfactor = CruiserD_LiftSpeedPc;
@@ -322,8 +320,7 @@ void CruiserDUpdate(WORLDINFO *world) {
             for (i = 0; i < 8; i++) {
                 GAMEOBJECT *victim = Player[i];
                 if (victim != NULL && victim->dead == 0 &&
-                    (victim->supporting_platform_id == CruiserD_Lift_plat_id ||
-                     victim->collision_position.z > lift_pos->z)) {
+                    (victim->supporting_platform_id == CruiserD_Lift_plat_id || victim->collision_position.z > lift_pos->z)) {
                     ObjHitObj(NULL, victim, -1, 0, 0, 1);
                     KillGameObject(victim, 2, 0);
                     if (CruiserD_direction >= 0 && MiscTime == 0.0f) {
@@ -538,8 +535,8 @@ void KashyyykD_Update(WORLDINFO *world) {
     }
 }
 
-i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                          i32 param_count, i32 first_time, f32 unused6) {
+i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
+                          i32 first_time, f32 unused6) {
     GAMEOBJECT *object;
     PART_PC *nearest = NULL;
     i32 can_attack = 1;
@@ -593,8 +590,8 @@ i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
         }
     } else {
         AIPACKET_PC *player_packet = system->player_1->ai;
-        AIMoveInstruction(packet, &player_packet->last_path_position, player_packet->mover_height,
-                          &player_packet->path_info, 1, packet->movement_instruction_parameter);
+        AIMoveInstruction(packet, &player_packet->last_path_position, player_packet->mover_height, &player_packet->path_info, 1,
+                          packet->movement_instruction_parameter);
     }
     return 0;
 }
@@ -617,8 +614,7 @@ static void VaderA_StartCollapseStage(WORLDINFO *world) {
     NUSPECIALHANDLE specials[100];
     i32 special_count;
     i32 i;
-    u32 *path_connection =
-        AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "Block1_a", "Block1_b", &path_index);
+    u32 *path_connection = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "Block1_a", "Block1_b", &path_index);
     if (path_connection != NULL) {
         path_connection[path_index] |= 0x80000000;
     }
@@ -724,10 +720,9 @@ void VaderA_Update(WORLDINFO *world) {
             KillGameObject(player, 2, 0);
         }
     }
-    if (vader_a.reset_flag == 0 && ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0 &&
-                                     (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000) == 0) ||
-                                    (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0 &&
-                                     (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000) == 0))) {
+    if (vader_a.reset_flag == 0 &&
+        ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0 && (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000) == 0) ||
+         (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0 && (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000) == 0))) {
         vader_a.reset_flag = 1;
         ResetLevel(NULL, NULL, 1);
     }
@@ -764,14 +759,12 @@ void VaderB_Reset(WORLDINFO *unused0) {
 }
 
 void VaderB_Update(WORLDINFO *world) {
-    if (netclient == 0 && vader_b_complete_msg != NULL && vader_b_complete_msg->value == 1.0f &&
-        LevelFixupSlotPc0087b17c != NULL) {
+    if (netclient == 0 && vader_b_complete_msg != NULL && vader_b_complete_msg->value == 1.0f && LevelFixupSlotPc0087b17c != NULL) {
         GoToNewLevel(VADERC_LDATA->index);
     }
-    if (vader_b_playersDead == 0 && ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0 &&
-                                      (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000) == 0) ||
-                                     (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0 &&
-                                      (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000) == 0))) {
+    if (vader_b_playersDead == 0 &&
+        ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0 && (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000) == 0) ||
+         (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0 && (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000) == 0))) {
         vader_b_playersDead = 1;
         ResetLevel(NULL, NULL, 1);
     }
@@ -811,24 +804,22 @@ void VaderC_Update(WORLDINFO *world) {
     i32 i;
     if (netclient == 0) {
         GIZAIMESSAGE *final_fight = vader_c.final_fight_message;
-        if (final_fight != NULL && ChallengeMode == 0 && final_fight->value == 0.0f &&
-            vader_c.big_jump_locator != NULL && player != NULL && player->supporting_platform_id != -1) {
+        if (final_fight != NULL && ChallengeMode == 0 && final_fight->value == 0.0f && vader_c.big_jump_locator != NULL && player != NULL &&
+            player->supporting_platform_id != -1) {
             vader_c.big_jump_locator->position = player->lower_position;
             for (i = 0; i < 10; i++) {
                 if (Player[0] != NULL && vader_c.platform_ids[i] != -1 && ((GAMEOBJECT *)Player[0])->field_281 != 0 &&
                     ((GAMEOBJECT *)Player[0])->supporting_platform_id == vader_c.platform_ids[i] &&
-                    ((GAMEOBJECT *)Player[0])->position.y >=
-                        ((TERRAIN_SET_READER_PC *)CurTerr)
-                            ->platforms[((GAMEOBJECT *)Player[0])->supporting_platform_id]
-                            .scene_object->translation.y) {
+                    ((GAMEOBJECT *)Player[0])->position.y >= ((TERRAIN_SET_READER_PC *)CurTerr)
+                                                                 ->platforms[((GAMEOBJECT *)Player[0])->supporting_platform_id]
+                                                                 .scene_object->translation.y) {
                     vader_c.progress_mask |= 1;
                 }
                 if (Player[1] != NULL && vader_c.platform_ids[i] != -1 && ((GAMEOBJECT *)Player[1])->field_281 != 0 &&
                     ((GAMEOBJECT *)Player[1])->supporting_platform_id == vader_c.platform_ids[i] &&
-                    ((GAMEOBJECT *)Player[1])->position.y >=
-                        ((TERRAIN_SET_READER_PC *)CurTerr)
-                            ->platforms[((GAMEOBJECT *)Player[1])->supporting_platform_id]
-                            .scene_object->translation.y) {
+                    ((GAMEOBJECT *)Player[1])->position.y >= ((TERRAIN_SET_READER_PC *)CurTerr)
+                                                                 ->platforms[((GAMEOBJECT *)Player[1])->supporting_platform_id]
+                                                                 .scene_object->translation.y) {
                     vader_c.progress_mask |= 2;
                 }
             }
@@ -863,10 +854,8 @@ void VaderC_Update(WORLDINFO *world) {
     if (vader_c.players_dead == 0) {
         first = Player[0];
         second = Player[1];
-        if (((first != NULL && (first->flags_1fc & 0x80) != 0 && first->dead != 0 &&
-              (first->flags_1f8 & 0x40000) == 0) ||
-             (second != NULL && (second->flags_1fc & 0x80) != 0 && second->dead != 0 &&
-              (second->flags_1f8 & 0x40000) == 0)) &&
+        if (((first != NULL && (first->flags_1fc & 0x80) != 0 && first->dead != 0 && (first->flags_1f8 & 0x40000) == 0) ||
+             (second != NULL && (second->flags_1fc & 0x80) != 0 && second->dead != 0 && (second->flags_1f8 & 0x40000) == 0)) &&
             (((u8 *)vaderc_netpacket)[0] == 0 || first == NULL || (first->flags_1fc & 0x80) == 0 || second == NULL ||
              (second->flags_1fc & 0x80) == 0) &&
             (ChallengeMode == 0 || AreaGlobals_PC.field_1c < 10)) {

@@ -130,8 +130,7 @@ void *GizTorpMachine_FindNearest(WORLDINFO *world, NUVEC *position, f32 *distanc
         return NULL;
     }
     for (index = 0; index < ((TORPEDO_MACHINE_QUERY_SYS_PC *)world->torpedo_machine_sys)->count; ++index) {
-        TORPEDO_MACHINE_QUERY_PC *machine =
-            &((TORPEDO_MACHINE_QUERY_SYS_PC *)world->torpedo_machine_sys)->machines[index];
+        TORPEDO_MACHINE_QUERY_PC *machine = &((TORPEDO_MACHINE_QUERY_SYS_PC *)world->torpedo_machine_sys)->machines[index];
         f32 distance;
         if (!machine->active || !machine->visible) {
             continue;
@@ -180,8 +179,7 @@ void GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
         return;
     }
     system = (TORPEDO_MACHINE_QUERY_SYS_PC *)world->torpedo_machine_sys;
-    if (system == NULL || system->count == 0 || world->level_objects[0x122].active == 0 ||
-        world->level_objects[0x123].active == 0) {
+    if (system == NULL || system->count == 0 || world->level_objects[0x122].active == 0 || world->level_objects[0x123].active == 0) {
         return;
     }
     EnableShadowMapRendering(0);

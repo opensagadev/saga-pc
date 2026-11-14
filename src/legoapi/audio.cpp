@@ -850,7 +850,6 @@ extern "C" {
         for (i = 0; i < 84; ++i) {
             GameAudio->sfx_ids[i] = (i16)GetSfxId(GameAudio->sfx_names[i]);
         }
-        MenuRegisterSoundFX(GameAudio->sfx_ids[0x2f], GameAudio->sfx_ids[0x30], GameAudio->sfx_ids[0x31],
-                            GameAudio->sfx_ids[0x32]);
+        MenuRegisterSoundFX(GameAudio->sfx_ids[0x2f], GameAudio->sfx_ids[0x30], GameAudio->sfx_ids[0x31], GameAudio->sfx_ids[0x32]);
     }
 }

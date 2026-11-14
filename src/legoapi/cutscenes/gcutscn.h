@@ -96,8 +96,8 @@ extern "C" {
     typedef void (*CUT_DRAW_EVAL_CALLBACK_PC)(struct instnugcutscene_s *, void *, void *, void *, f32);
     typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, struct nuspecial_handle_s *, NUMTX *);
     void instGetLookAtLocatorInfo(struct instnugcutscene_s *, struct CUT_LOOKAT_STATE_PC *);
-    void instNuGCutLocatorUpdate(struct instnugcutscene_s *, CUT_LOAD_LOCATOR_SYSTEM *,
-                                 struct cut_load_locator_instance_s *, CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
+    void instNuGCutLocatorUpdate(struct instnugcutscene_s *, CUT_LOAD_LOCATOR_SYSTEM *, struct cut_load_locator_instance_s *,
+                                 CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
     extern i32 CutSceneSingleStreamBufferPc;
     extern CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctionsPc;
     f32 *PCCutLocatorAni3(CUT_LOCATOR_ANIMATION_PC *, NUMTX *, f32);

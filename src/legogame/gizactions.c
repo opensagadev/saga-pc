@@ -252,16 +252,14 @@ void GizActions_ActivateCharPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **para
         }
     } else if (active == 0 && name != NULL) {
         player = Player[0];
-        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 &&
-            player->ai_packet.creature_index != 0xff) {
+        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 && player->ai_packet.creature_index != 0xff) {
             creature = &world->ai_sys->creatures[player->ai_packet.creature_index];
             if (creature != NULL && NuStrICmp(creature->name, name) == 0) {
                 ReleaseTakeOver(Player[0], 0);
             }
         }
         player = Player[1];
-        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 &&
-            player->ai_packet.creature_index != 0xff) {
+        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 && player->ai_packet.creature_index != 0xff) {
             creature = &world->ai_sys->creatures[((GAMEOBJECT *)Player[0])->ai_packet.creature_index];
             if (creature != NULL && NuStrICmp(creature->name, name) == 0) {
                 ReleaseTakeOver(Player[1], 0);
@@ -452,8 +450,7 @@ void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
 
     if (state_name == NULL || (type_count <= 0 && !(range_squared > 0.0f))) {
         if (named_object != NULL) {
-            named_object->ai_packet.script_processor.next_state =
-                AIStateFind(state_name, named_object->ai_packet.script_processor.script);
+            named_object->ai_packet.script_processor.next_state = AIStateFind(state_name, named_object->ai_packet.script_processor.script);
         }
         return;
     }
@@ -465,8 +462,8 @@ void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
         f32 distance_squared;
         i32 type_index;
         GAMEOBJECT *object = &Obj[object_index];
-        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
-            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || (object->flags_1f8 & 0x400) == 0) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+            (object->flags_1f8 & 0x400) == 0) {
             continue;
         }
         NuVecSub(&difference, &origin, &object->position);
@@ -482,8 +479,7 @@ void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
                     AIStateFind(state_name, ((APIOBJECT_PC *)object)->ai->script_processor.script);
             }
         } else if (range_squared > distance_squared) {
-            object->ai_packet.script_processor.next_state =
-                AIStateFind(state_name, object->ai_packet.script_processor.script);
+            object->ai_packet.script_processor.next_state = AIStateFind(state_name, object->ai_packet.script_processor.script);
         }
     }
 }
@@ -809,30 +805,30 @@ void GizActions_EnableSock(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **para
 }
 
 GIZACTIONDEF_PC game_gizactiondefs[24] = {
-    {"SetVisibility", GizActions_SetVisibilityPc},
-    {"SetGizmoVisibility", GizActions_SetGizmoVisibilityPc},
-    {"SetPickupVisibility", GizActions_SetPickupVisibilityPc},
-    {"ActivateGizmo", GizActions_ActivateGizmoPc},
-    {"ActivateChar", GizActions_ActivateCharPc},
-    {"TurnOnFlowBox", GizActions_TurnOnFlowBoxPc},
-    {"ActivateEffect", GizAction_ActivateEffect},
-    {"ActivatePartEffect", GizAction_ActivatePartEffect},
-    {"ChangeTechnoTarget", GizAction_ChangeTechnoTgt},
-    {"SetAIMessage", GizAction_SetAIMessage},
-    {"SetAIState", GizAction_SetAIState},
-    {"CompleteLevel", GizActions_CompleteLevel},
-    {"GoToNewLevel", GizActions_GoToNewLevel},
-    {"GoThroughDoor", GizActions_GoThroughDoor},
-    {"PlayObstacle", GizActions_PlayObstacle},
-    {"PlaySpecial", GizActions_PlaySpecial},
-    {"PlayForce", GizActions_PlayForce},
+    {"SetVisibility",         GizActions_SetVisibilityPc      },
+    {"SetGizmoVisibility",    GizActions_SetGizmoVisibilityPc },
+    {"SetPickupVisibility",   GizActions_SetPickupVisibilityPc},
+    {"ActivateGizmo",         GizActions_ActivateGizmoPc      },
+    {"ActivateChar",          GizActions_ActivateCharPc       },
+    {"TurnOnFlowBox",         GizActions_TurnOnFlowBoxPc      },
+    {"ActivateEffect",        GizAction_ActivateEffect        },
+    {"ActivatePartEffect",    GizAction_ActivatePartEffect    },
+    {"ChangeTechnoTarget",    GizAction_ChangeTechnoTgt       },
+    {"SetAIMessage",          GizAction_SetAIMessage          },
+    {"SetAIState",            GizAction_SetAIState            },
+    {"CompleteLevel",         GizActions_CompleteLevel        },
+    {"GoToNewLevel",          GizActions_GoToNewLevel         },
+    {"GoThroughDoor",         GizActions_GoThroughDoor        },
+    {"PlayObstacle",          GizActions_PlayObstacle         },
+    {"PlaySpecial",           GizActions_PlaySpecial          },
+    {"PlayForce",             GizActions_PlayForce            },
     {"ChangeObstTriggerType", GizActions_ChangeObstTriggerType},
-    {"PlayRadio", GizActions_PlayRadio},
-    {"PlayCutscene", GizActions_PlayCutscene},
-    {"HitBlowup", GizActions_HitBlowup},
-    {"ActivateBelt", GizActions_ActivateBelt},
-    {"EnableSock", GizActions_EnableSock},
-    {NULL, NULL},
+    {"PlayRadio",             GizActions_PlayRadio            },
+    {"PlayCutscene",          GizActions_PlayCutscene         },
+    {"HitBlowup",             GizActions_HitBlowup            },
+    {"ActivateBelt",          GizActions_ActivateBelt         },
+    {"EnableSock",            GizActions_EnableSock           },
+    {NULL,                    NULL                            },
 };
 
 void GameRegisterGizActions(void) {

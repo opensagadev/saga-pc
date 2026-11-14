@@ -48,8 +48,7 @@ i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
     NuVecRotateY(&forward, &v001, object->field_0x276);
     distance = NuVecDistSqr(&opponent->position, &object->position, &difference);
     dot = forward.x * difference.x + forward.z * difference.z;
-    if ((!((object->context_variant_flags >> 7) & 1) && dot >= 0.0f) ||
-        (((object->context_variant_flags >> 7) & 1) && dot <= 0.0f)) {
+    if ((!((object->context_variant_flags >> 7) & 1) && dot >= 0.0f) || (((object->context_variant_flags >> 7) & 1) && dot <= 0.0f)) {
         radius = object->bounds_radius + opponent->bounds_radius;
         radius += gap;
         radius_squared = radius * radius;
@@ -151,20 +150,17 @@ void WeaponOutCode(GAMEOBJECT *object) {
             return;
         }
     } else {
-        if (object->weapon_scale != 0.0f || object->field_e33 == 1 ||
-            object->anim_packet.requested_animation != object->field_7aa) {
+        if (object->weapon_scale != 0.0f || object->field_e33 == 1 || object->anim_packet.requested_animation != object->field_7aa) {
             return;
         }
-        time =
-            object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
+        time = object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
         if (!(*time >= start)) {
             return;
         }
     }
     end = AnimListFrame(object->character_model, object->field_7aa, 1);
     object->field_e33 = 1;
-    ((WEAPON_RATE_PC *)object)->weapon_scale_rate =
-        1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
+    ((WEAPON_RATE_PC *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
     if ((object->character_data->model_flags & 8) != 0) {
         if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
@@ -276,20 +272,17 @@ void WeaponInCode(GAMEOBJECT *object) {
             return;
         }
     } else {
-        if (object->weapon_scale != 1.0f || object->field_e33 == 2 ||
-            object->anim_packet.requested_animation != object->field_7aa) {
+        if (object->weapon_scale != 1.0f || object->field_e33 == 2 || object->anim_packet.requested_animation != object->field_7aa) {
             return;
         }
-        time =
-            object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
+        time = object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
         if (!(*time >= start)) {
             return;
         }
     }
     end = AnimListFrame(object->character_model, object->field_7aa, 1);
     object->field_e33 = 2;
-    ((WEAPON_RATE_PC *)object)->weapon_scale_rate =
-        1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
+    ((WEAPON_RATE_PC *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
     if ((object->character_data->model_flags & 8) != 0) {
         if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
@@ -347,16 +340,14 @@ void AutoWeaponOnOff(GAMEOBJECT *object) {
 void WeaponScalingCode(GAMEOBJECT *object) {
     switch (object->field_e33) {
         case 1:
-            object->weapon_scale =
-                SeekLinearF(object->weapon_scale, 1.0f, ((WEAPON_RATE_PC *)object)->weapon_scale_rate * FRAMETIME);
+            object->weapon_scale = SeekLinearF(object->weapon_scale, 1.0f, ((WEAPON_RATE_PC *)object)->weapon_scale_rate * FRAMETIME);
             if (object->weapon_scale >= 1.0f) {
                 object->field_e33 = 0;
                 object->flags_e20 |= 0x10000;
             }
             break;
         case 2:
-            object->weapon_scale =
-                SeekLinearF(object->weapon_scale, 0.0f, ((WEAPON_RATE_PC *)object)->weapon_scale_rate * FRAMETIME);
+            object->weapon_scale = SeekLinearF(object->weapon_scale, 0.0f, ((WEAPON_RATE_PC *)object)->weapon_scale_rate * FRAMETIME);
             if (object->weapon_scale <= 0.0f) {
                 object->field_e33 = 0;
                 object->flags_e20 &= ~0x10000;
@@ -394,8 +385,7 @@ void BlockSfx(GAMEOBJECT *object) {
     GAMEOBJECT *target = object->force_target;
     if (target != NULL) {
         if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x4000000) != 0 ||
-            ((U64_PAIR(&CInfo[target->character_context].flags) & 0x8000000) != 0 &&
-             (target->context_variant_flags & 0x20000) != 0)) {
+            ((U64_PAIR(&CInfo[target->character_context].flags) & 0x8000000) != 0 && (target->context_variant_flags & 0x20000) != 0)) {
             GameAudio_PlaySfx(0x3f, &object->collision_position, GameAudio_GetPlrSfxBits(target), 0);
         }
     }
@@ -409,8 +399,7 @@ i32 CanStepBack(GAMEOBJECT *object) {
     if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->action_movement_state == 3) {
         return 1;
     }
-    if ((object->character_data->game_character->flags_090 & 0x8000) && LEGOCONTEXT_COMBO != 0 &&
-        context == LEGOCONTEXT_COMBO) {
+    if ((object->character_data->game_character->flags_090 & 0x8000) && LEGOCONTEXT_COMBO != 0 && context == LEGOCONTEXT_COMBO) {
         return 1;
     }
     return 0;
@@ -427,8 +416,7 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
     if (blowup != NULL) {
         target_position = &blowup->mid_position;
         if ((LEGOCONTEXT_COMBO != -1 && object->character_context == LEGOCONTEXT_COMBO) ||
-            (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP &&
-             object->action_movement_state == 3)) {
+            (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->action_movement_state == 3)) {
             inner_distance = object->collision_radius * PlayerStepInnerActionPc + blowup->target_radius;
             outer_distance = object->collision_radius * PlayerStepOuterActionPc + blowup->target_radius;
         } else {
@@ -440,8 +428,7 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
             return 0;
         }
         if ((LEGOCONTEXT_COMBO == -1 || object->character_context != LEGOCONTEXT_COMBO) &&
-            (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
-             object->action_movement_state != 3)) {
+            (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP || object->action_movement_state != 3)) {
             return 0;
         }
         target_position = &object->force_target->collision_position;
@@ -534,8 +521,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     }
     if (target != NULL) {
         if (!(target->flags_1fc_word & 1) || !(target->flags_1fc_word & 0x1000) || target->dead != 0 ||
-            attacker->collision_max.y < target->collision_min.y ||
-            attacker->collision_min.y > target->collision_max.y) {
+            attacker->collision_max.y < target->collision_min.y || attacker->collision_min.y > target->collision_max.y) {
             goto finish;
         }
         if (LEGOCONTEXT_HOLD != -1 && target->character_context == LEGOCONTEXT_HOLD) {
@@ -549,8 +535,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
                 if (LEGOCONTEXT_PUNCH != -1 && target->character_context == LEGOCONTEXT_PUNCH) {
                     goto finish;
                 }
-                if (LEGOCONTEXT_JUMP != -1 && target->character_context == LEGOCONTEXT_JUMP &&
-                    attacker->action_movement_state == 3) {
+                if (LEGOCONTEXT_JUMP != -1 && target->character_context == LEGOCONTEXT_JUMP && attacker->action_movement_state == 3) {
                     goto finish;
                 }
             }
@@ -566,14 +551,12 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             }
             flags = U64_PAIR(&CInfo[target->character_context].flags);
             if (!(flags & 0x80)) {
-                if ((flags & 0x04000000) || ((flags & 0x08000000) && (target->context_variant_flags & 0x20000)) ||
-                    CannotKill(target)) {
+                if ((flags & 0x04000000) || ((flags & 0x08000000) && (target->context_variant_flags & 0x20000)) || CannotKill(target)) {
                     NewRumble(attacker->pad->bound_pad, 0.5f, 0);
                     NewRumble(target->pad->bound_pad, 0.5f, 0);
                     if (!(U64_PAIR(&CInfo[target->character_context].flags) & 0x80000000)) {
-                        target->movement_facing_angle =
-                            NuAtan2D(attacker->collision_position.x - target->collision_position.x,
-                                     attacker->collision_position.z - target->collision_position.z);
+                        target->movement_facing_angle = NuAtan2D(attacker->collision_position.x - target->collision_position.x,
+                                                                 attacker->collision_position.z - target->collision_position.z);
                     }
                 } else {
                     ObjHitObj(attacker, target, damage, (u16)(ObjHitObj_Flags(attacker) | 0x40), 0, 1);
@@ -595,9 +578,8 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
         }
     } else {
         blowup = (PUNCH_BLOWUP_VIEW *)attacker->blowup_target;
-        if (blowup == NULL || (blowup->status_flags & 1) || !(blowup->status_flags & 0x4000) ||
-            !(blowup->status_flags & 0x800000) || attacker->collision_max.y < blowup->bounds_min.y ||
-            attacker->collision_min.y > blowup->bounds_max.y) {
+        if (blowup == NULL || (blowup->status_flags & 1) || !(blowup->status_flags & 0x4000) || !(blowup->status_flags & 0x800000) ||
+            attacker->collision_max.y < blowup->bounds_min.y || attacker->collision_min.y > blowup->bounds_max.y) {
             goto finish;
         }
         hit_position = &blowup->mid_position;

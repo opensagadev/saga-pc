@@ -15,8 +15,7 @@ typedef struct episode_area_save_reader_s { // size 0xc
 extern "C" {
     void EpisodesConfigDiagnosticPc(char *path);
 
-    EPISODEDATA_PC *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
-                                           i32 *count_out) {
+    EPISODEDATA_PC *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out) {
         NUFPAR_PC *parser = NuFParCreate(path);
         EPISODEDATA_PC *episode_base;
         EPISODEDATA_PC *episode;
@@ -68,10 +67,8 @@ extern "C" {
 
                             if (area_slot == episode->area_count) {
                                 found = 0;
-                                for (prior_episode_index = 0; found == 0 && prior_episode_index < episode_count;
-                                     prior_episode_index++) {
-                                    for (area_slot = 0;
-                                         found == 0 && area_slot < episode_base[prior_episode_index].area_count;
+                                for (prior_episode_index = 0; found == 0 && prior_episode_index < episode_count; prior_episode_index++) {
+                                    for (area_slot = 0; found == 0 && area_slot < episode_base[prior_episode_index].area_count;
                                          area_slot++) {
                                         if (episode_base[prior_episode_index].area_ids[area_slot] == area_index) {
                                             found = 1;
@@ -240,8 +237,7 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
         }
         if ((ADataList[id].flags & 4) != 0) {
             ++EpGoldBrickTotal;
-            if ((f64)((EPISODE_AREA_SAVE_READER_PC *)&saves[id])->challenge_time <
-                (f64)ADataList[id].challenge_trial_time) {
+            if ((f64)((EPISODE_AREA_SAVE_READER_PC *)&saves[id])->challenge_time < (f64)ADataList[id].challenge_trial_time) {
                 ++EpGoldBrickCount;
             }
             continue;

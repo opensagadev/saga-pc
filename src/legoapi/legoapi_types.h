@@ -2751,10 +2751,9 @@ class LevelEditor : public BaseThing { // size 0x10b0
     i32 FindSceneId(char *name);
     i32 IsEditable(i32 index);
     i32 Load(char *filename, variptr_u *buffer, variptr_u *buffer_end, i32 flags);
-    i32 LoadState(variptr_u *buffer, variptr_u *buffer_end, variptr_u *scratch_begin, variptr_u *scratch_end,
-                  variptr_u *file_begin, variptr_u *file_end);
-    void DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32 available_height, i32 text_colour,
-                      i32 background);
+    i32 LoadState(variptr_u *buffer, variptr_u *buffer_end, variptr_u *scratch_begin, variptr_u *scratch_end, variptr_u *file_begin,
+                  variptr_u *file_end);
+    void DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32 available_height, i32 text_colour, i32 background);
     void fun_006b8ff0(bool value);
     void fun_006b9000(u8 value);
     void fun_006b9010(u8 value);

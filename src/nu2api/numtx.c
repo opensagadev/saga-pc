@@ -217,15 +217,15 @@ f32 NuASin_Accurate(f32 value) {
         if (value >= 1.0f) {
             return 1.57079637f;
         }
-        return 1.5707963705062866 - NuFsqrt(1.0f - value) * (1.5707287788391113 - 0.2121143937110901 * value +
-                                                             0.07426100224256516 * value * value -
-                                                             0.018729299306869507 * value * value * value);
+        return 1.5707963705062866 -
+               NuFsqrt(1.0f - value) * (1.5707287788391113 - 0.2121143937110901 * value + 0.07426100224256516 * value * value -
+                                        0.018729299306869507 * value * value * value);
     }
     if (value <= -1.0f) {
         return -1.57079637f;
     }
-    return NuFsqrt(value + 1.0) * (1.5707287788391113 + 0.2121143937110901 * value +
-                                   0.07426100224256516 * value * value + 0.018729299306869507 * value * value * value) -
+    return NuFsqrt(value + 1.0) * (1.5707287788391113 + 0.2121143937110901 * value + 0.07426100224256516 * value * value +
+                                   0.018729299306869507 * value * value * value) -
            1.5707963705062866;
 }
 

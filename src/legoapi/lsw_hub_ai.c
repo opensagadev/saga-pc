@@ -177,16 +177,14 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
             object = Player[index];
             if (object != NULL && (object->flags_1fc_half & 1) != 0) {
                 AISysCharacterSetPath(&object->ai_packet, world->ai_sys->path_sys->active_path);
-                AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff,
-                                         (i8)object->field_281);
+                AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, (i8)object->field_281);
             }
         }
     }
     Hub_MakeListCharactersAvailable(characters);
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_half & 1) == 0 || (i8)object->field_280 != -1 ||
-            object->ai_packet.creature_index != 0xff) {
+        if ((object->flags_1fc_half & 1) == 0 || (i8)object->field_280 != -1 || object->ai_packet.creature_index != 0xff) {
             continue;
         }
         object->tag_object_callback = NULL;

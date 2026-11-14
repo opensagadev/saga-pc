@@ -120,20 +120,17 @@ class NetInputStream : public EdInputStream { // size 0x24
  * no vtables or RTTI are emitted. */
 class NetSimpleReplicator : public NetReplicator {
   public:
-    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
-                          i32 check_only);
+    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force, i32 check_only);
 };
 
 class NetConstReplicator : public NetReplicator {
   public:
-    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
-                          i32 check_only);
+    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force, i32 check_only);
 };
 
 class NetChangedReplicator : public NetReplicator {
   public:
-    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
-                          i32 skip_checksum);
+    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force, i32 skip_checksum);
     void CheckSum(u8 byte, u32 &checksum) const;
     void CheckSum(const u8 *bytes, u32 size, u32 &checksum) const;
     void CheckSumObject(const EdClass *object_class, const void *object, u32 &checksum) const;
@@ -155,20 +152,18 @@ class NetPredictor : public NetReplicator { // size 0x28
         f32 factors[3];
     };
 
-    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
-                          i32 check_only);
-    virtual i32 SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object,
-                                ReplicatorData &data, i16 *class_mapping);
+    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force, i32 check_only);
+    virtual i32 SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object, ReplicatorData &data,
+                                i16 *class_mapping);
     virtual i32 DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, i32 check_only);
-    virtual void StoreSampleData(const EdClass *object_class, void *object, PredictorTime *time,
-                                 PredictorData **samples, f32 *values, i32 count);
+    virtual void StoreSampleData(const EdClass *object_class, void *object, PredictorTime *time, PredictorData **samples, f32 *values,
+                                 i32 count);
     virtual i32 CheckPredictionError(const EdClass *object_class, void *object, f32 *actual, f32 *predicted, i32 count);
-    virtual void PredictValue(const EdClass *object_class, void *object, PredictorTime *time, PredictorData **samples,
-                              f32 *values, i32 count) = 0;
+    virtual void PredictValue(const EdClass *object_class, void *object, PredictorTime *time, PredictorData **samples, f32 *values,
+                              i32 count) = 0;
     i32 SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object, ReplicatorData &data,
                         PredictorTime *time, i16 *class_mapping);
-    i32 DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, PredictorTime *time,
-                     i32 check_only);
+    i32 DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, PredictorTime *time, i32 check_only);
 
     f32 maximum_prediction_error; // 0x18
     f32 maximum_sample_delta;     // 0x1c
@@ -180,20 +175,20 @@ STATIC_ASSERT(sizeof(NetPredictor::PredictorTime) == 0x1c);
 
 class NetPredictor2 : public NetPredictor {
   public:
-    virtual void PredictValue(const EdClass *object_class, void *object, PredictorTime *time, PredictorData **samples,
-                              f32 *values, i32 count);
+    virtual void PredictValue(const EdClass *object_class, void *object, PredictorTime *time, PredictorData **samples, f32 *values,
+                              i32 count);
 };
 
 class NetPredictor3 : public NetPredictor {
   public:
-    virtual void PredictValue(const EdClass *object_class, void *object, PredictorTime *time, PredictorData **samples,
-                              f32 *values, i32 count);
+    virtual void PredictValue(const EdClass *object_class, void *object, PredictorTime *time, PredictorData **samples, f32 *values,
+                              i32 count);
 };
 
 class NetRotator2 : public NetPredictor {
   public:
-    virtual void PredictValue(const EdClass *object_class, void *object, PredictorTime *time, PredictorData **samples,
-                              f32 *values, i32 count);
+    virtual void PredictValue(const EdClass *object_class, void *object, PredictorTime *time, PredictorData **samples, f32 *values,
+                              i32 count);
 };
 
 i32 ForceDummySerialise = 0;
@@ -334,8 +329,7 @@ void NetChangedReplicator::CheckSum(const u8 *bytes, u32 size, u32 &checksum) co
     checksum = ~checksum;
 }
 
-void NetPredictor::StoreSampleData(const EdClass *, void *, PredictorTime *time, PredictorData **samples, f32 *values,
-                                   i32 count) {
+void NetPredictor::StoreSampleData(const EdClass *, void *, PredictorTime *time, PredictorData **samples, f32 *values, i32 count) {
     for (i32 i = 0; i < count; i++) {
         samples[i]->values[0] = samples[i]->values[1];
         samples[i]->values[1] = samples[i]->values[2];
@@ -356,8 +350,7 @@ i32 NetPredictor::CheckPredictionError(const EdClass *, void *, f32 *actual, f32
     return 0;
 }
 
-void NetPredictor2::PredictValue(const EdClass *, void *, PredictorTime *time, PredictorData **samples, f32 *values,
-                                 i32 count) {
+void NetPredictor2::PredictValue(const EdClass *, void *, PredictorTime *time, PredictorData **samples, f32 *values, i32 count) {
     f32 now = (f32)UtilGetFrameStartTime();
     f32 interval_scale = 1.0f / (time->values[2] - time->values[1]);
     f32 elapsed = now - time->values[2];
@@ -375,15 +368,13 @@ void NetPredictor2::PredictValue(const EdClass *, void *, PredictorTime *time, P
     }
 }
 
-void NetPredictor3::PredictValue(const EdClass *, void *, PredictorTime *time, PredictorData **samples, f32 *values,
-                                 i32 count) {
+void NetPredictor3::PredictValue(const EdClass *, void *, PredictorTime *time, PredictorData **samples, f32 *values, i32 count) {
     f32 now = (f32)UtilGetFrameStartTime();
     for (i32 i = 0; i < count; i++) {
         f32 weight0 = (now - time->values[1]) * (now - time->values[2]) * time->factors[0];
         f32 weight1 = (now - time->values[0]) * (now - time->values[2]) * time->factors[1];
         f32 weight2 = (now - time->values[0]) * (now - time->values[1]) * time->factors[2];
-        f32 predicted =
-            weight0 * samples[i]->values[0] + weight1 * samples[i]->values[1] + weight2 * samples[i]->values[2];
+        f32 predicted = weight0 * samples[i]->values[0] + weight1 * samples[i]->values[1] + weight2 * samples[i]->values[2];
         if (replication_group & 0x10) {
             predicted = predicted > minimum_value ? predicted : minimum_value;
         }
@@ -394,8 +385,7 @@ void NetPredictor3::PredictValue(const EdClass *, void *, PredictorTime *time, P
     }
 }
 
-void NetRotator2::PredictValue(const EdClass *, void *, PredictorTime *time, PredictorData **samples, f32 *values,
-                               i32 count) {
+void NetRotator2::PredictValue(const EdClass *, void *, PredictorTime *time, PredictorData **samples, f32 *values, i32 count) {
     f32 now = (f32)UtilGetFrameStartTime();
     f32 interval_scale = 1.0f / (time->values[2] - time->values[1]);
     f32 elapsed = now - time->values[2];
@@ -1096,8 +1086,7 @@ void NetworkObjectManager::InitClassStats() {
 #pragma push_macro("GetMessage")
 #undef GetMessage
 
-i32 NetworkObjectManager::Push(const NetworkObject *object, NetReplicator *replicator, ReplicatorData &data,
-                               NetPeerPush *push) {
+i32 NetworkObjectManager::Push(const NetworkObject *object, NetReplicator *replicator, ReplicatorData &data, NetPeerPush *push) {
     if (push == NULL) {
         push = &default_push;
     }
@@ -1120,8 +1109,7 @@ i32 NetworkObjectManager::Push(const NetworkObject *object, NetReplicator *repli
     message->Write16(flags);
     i32 initial_size = message->GetSize();
     stream.SetMessage(message);
-    if (!replicator->SerialiseObject(stream, NULL, object->object_class, object->object, data, &flags) &&
-        message->data != NULL) {
+    if (!replicator->SerialiseObject(stream, NULL, object->object_class, object->object, data, &flags) && message->data != NULL) {
         message->write_offset -= 9;
     }
     if (class_stats[class_id] != NULL) {
@@ -1338,8 +1326,7 @@ void NetworkObjectManager::ReceiveReplicaMessage(NETMESSAGE_PC &message, const V
         data.end = data.start + replicator->data_size;
         replicator->AllowPush(object->object_class, object->object, data, 1, 0);
         stream.SetMessage(&message);
-        replicator->SerialiseObject(stream, (V2Peer *)&peer, object->object_class, object->object, data,
-                                    (i16 *)&object->flags);
+        replicator->SerialiseObject(stream, (V2Peer *)&peer, object->object_class, object->object, data, (i16 *)&object->flags);
     } else if (message.data != NULL) {
         message.read_offset += replicator->message_size;
     }
@@ -1392,8 +1379,7 @@ void NetworkObjectManager::ReceiveObjectCallMessage(NETMESSAGE_PC &message, cons
             EdClass *object_class = theRegistry.GetClass(class_id);
             NetworkObject *object = &objects[id];
             if (object->object == NULL && (registered_calls[call_id].flags & 1)) {
-                object->Initialise(id, theRegistry.CreateObject(object_class->object_interface, NULL, 0, id, 1),
-                                   object_class, peer, 0);
+                object->Initialise(id, theRegistry.CreateObject(object_class->object_interface, NULL, 0, id, 1), object_class, peer, 0);
             }
             if (object->object != NULL) {
                 if (object->object_class != object_class) {
@@ -1464,8 +1450,8 @@ void NetworkObjectManager::ReceiveStatusMessage(NETMESSAGE_PC &message, const V2
     }
 }
 
-void NetworkObjectManager::CalcReplicatorDataSize(NetReplicator *replicator, const EdClass *object_class,
-                                                  i32 &data_size, i32 &message_size) {
+void NetworkObjectManager::CalcReplicatorDataSize(NetReplicator *replicator, const EdClass *object_class, i32 &data_size,
+                                                  i32 &message_size) {
     u8 data_memory[0x1400];
     u8 object_memory[0x1400];
     memset(data_memory, 0, sizeof(data_memory));
@@ -1647,8 +1633,8 @@ NetReplicator::NetReplicator(i32 group, f32 minimum_seconds, f32 maximum_seconds
     maximum_interval = (u16)(maximum_seconds * 1000.0);
 }
 
-i32 NetReplicator::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object,
-                                   ReplicatorData &data, i16 *class_mapping) {
+i32 NetReplicator::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object, ReplicatorData &data,
+                                   i16 *class_mapping) {
     u8 member_data[256];
     memset(member_data, 0, sizeof(member_data));
     for (EdRef *member = object_class->members; member != NULL; member = member->next) {
@@ -1732,8 +1718,7 @@ void NetChangedReplicator::CheckSumObject(const EdClass *object_class, const voi
     }
 }
 
-i32 NetChangedReplicator::AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
-                                    i32 skip_checksum) {
+i32 NetChangedReplicator::AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force, i32 skip_checksum) {
     u32 *last_push = (u32 *)REPLICATOR_ALIGN(data.cursor);
     data.cursor = (u8 *)(last_push + 1);
     u32 *last_checksum = (u32 *)REPLICATOR_ALIGN(data.cursor);
@@ -1784,8 +1769,8 @@ i32 NetPredictor::AllowPush(const EdClass *object_class, const void *object, Rep
     return allowed;
 }
 
-i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object,
-                                  ReplicatorData &data, PredictorTime *time, i16 *class_mapping) {
+i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object, ReplicatorData &data,
+                                  PredictorTime *time, i16 *class_mapping) {
     u8 member_data[256];
     u8 continuity_break = (replication_group >> 3) & 1;
     for (EdRef *member = object_class->members; member != NULL; member = member->next) {
@@ -1846,8 +1831,7 @@ i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass 
     return 1;
 }
 
-i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, PredictorTime *time,
-                               i32 check_only) {
+i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, PredictorTime *time, i32 check_only) {
     i32 result = 0;
     u8 member_data[16];
     for (EdRef *member = object_class->members; member != NULL; member = member->next) {
@@ -1926,8 +1910,8 @@ void NetworkObjectManager::ImportObjects() {
     }
 }
 
-i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object,
-                                  ReplicatorData &data, i16 *class_mapping) {
+i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object, ReplicatorData &data,
+                                  i16 *class_mapping) {
     PredictorTime *time = (PredictorTime *)REPLICATOR_ALIGN(data.cursor);
     data.cursor = (u8 *)(time + 1);
     u8 continuity_break = (replication_group >> 3) & 1;

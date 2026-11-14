@@ -222,8 +222,8 @@ void BountyHunterPursuitD_Update(WORLDINFO *world) {
     if (nearest != NULL) {
         if (nearest_distance_sq < pursuit_laser_range * pursuit_laser_range) {
             distance = NuVecDist(&LevGameObject[0]->collision_position, &nearest->position, &delta);
-            NuLgtLaser(pursuit_laser_type, pursuit_laser_width, pursuit_laser_segment, pursuit_laser_wobble,
-                       &nearest->position, &delta, 0xff808040, pursuit_laser_end_width, distance);
+            NuLgtLaser(pursuit_laser_type, pursuit_laser_width, pursuit_laser_segment, pursuit_laser_wobble, &nearest->position, &delta,
+                       0xff808040, pursuit_laser_end_width, distance);
         }
     } else {
         LevGameObject[0]->shield_hitpoints = 0;

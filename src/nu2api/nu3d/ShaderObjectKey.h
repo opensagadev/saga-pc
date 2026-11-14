@@ -41,12 +41,10 @@ class ShaderBuilderGen { // size 0xbd0
     bool LoadSource(const char *, i32);
     void *ParseSource(const char *, i32, ShaderCompilerBufferAllocatorPc *, i32, VirtualStackAllocator *);
     void SaveFile(const char *suffix, const char *name, const void *data, i32 size);
-    void *ParseFile(const char *name, ShaderCompilerBufferAllocatorPc *buffer, i32 prefix,
-                    VirtualStackAllocator *memory);
+    void *ParseFile(const char *name, ShaderCompilerBufferAllocatorPc *buffer, i32 prefix, VirtualStackAllocator *memory);
     bool LoadFile(const char *name);
     i32 CompileEffect(const char *source, i32 length, void *output, i32 unused);
-    void Generate(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocatorPc *,
-                  ShaderCompilerBufferAllocatorPc *);
+    void Generate(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocatorPc *, ShaderCompilerBufferAllocatorPc *);
     void fun_00745270(const char *name, i32 count);
     bool fun_00745290();
     i32 fun_007452a0();

@@ -69,12 +69,14 @@ void edbitsRegisterEditorEnabledFlag(i32 *enabled) {
     edbits_editor_enabled = enabled;
 }
 
-void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x, i32 rotation_y,
-                         i32 rotation_z, i32 colour, NUMTL *material) {
-    NUVEC outlines[4][5] = {{{-1, -1, 1}, {1, -1, 1}, {1, 1, 1}, {-1, 1, 1}, {-1, -1, 1}},
-                            {{-1, -1, -1}, {1, -1, -1}, {1, 1, -1}, {-1, 1, -1}, {-1, -1, -1}},
-                            {{-1, -1, 1}, {-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1}, {-1, -1, 1}},
-                            {{1, -1, 1}, {1, -1, -1}, {1, 1, -1}, {1, 1, 1}, {1, -1, 1}}};
+void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x, i32 rotation_y, i32 rotation_z,
+                         i32 colour, NUMTL *material) {
+    NUVEC outlines[4][5] = {
+        {{-1, -1, 1},  {1, -1, 1},   {1, 1, 1},   {-1, 1, 1},  {-1, -1, 1} },
+        {{-1, -1, -1}, {1, -1, -1},  {1, 1, -1},  {-1, 1, -1}, {-1, -1, -1}},
+        {{-1, -1, 1},  {-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1},  {-1, -1, 1} },
+        {{1, -1, 1},   {1, -1, -1},  {1, 1, -1},  {1, 1, 1},   {1, -1, 1}  }
+    };
     NUVEC endpoints[2];
     NURND_VERTEX3D_PC vertices[2];
     i32 face;
@@ -106,12 +108,14 @@ void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z
     }
 }
 
-void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
-                    i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material) {
-    NUVEC outlines[4][5] = {{{-1, -1, 1}, {1, -1, 1}, {1, 1, 1}, {-1, 1, 1}, {-1, -1, 1}},
-                            {{-1, -1, -1}, {1, -1, -1}, {1, 1, -1}, {-1, 1, -1}, {-1, -1, -1}},
-                            {{-1, -1, 1}, {-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1}, {-1, -1, 1}},
-                            {{1, -1, 1}, {1, -1, -1}, {1, 1, -1}, {1, 1, 1}, {1, -1, 1}}};
+void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
+                    i32 outer_y, i32 colour, NUMTL *material) {
+    NUVEC outlines[4][5] = {
+        {{-1, -1, 1},  {1, -1, 1},   {1, 1, 1},   {-1, 1, 1},  {-1, -1, 1} },
+        {{-1, -1, -1}, {1, -1, -1},  {1, 1, -1},  {-1, 1, -1}, {-1, -1, -1}},
+        {{-1, -1, 1},  {-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1},  {-1, -1, 1} },
+        {{1, -1, 1},   {1, -1, -1},  {1, 1, -1},  {1, 1, 1},   {1, -1, 1}  }
+    };
     NUVEC endpoints[2];
     NURND_VERTEX3D_PC vertices[2];
     i32 face;
@@ -149,8 +153,8 @@ void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32
 
 void edbitsDrawBBox(NUVEC *minimum, NUVEC *maximum, i32 colour, NUMTL *material) {
     edbitsDrawCube((minimum->x + maximum->x) * 0.5, (minimum->y + maximum->y) * 0.5, (minimum->z + maximum->z) * 0.5,
-                   (maximum->x - minimum->x) * 0.5, (maximum->y - minimum->y) * 0.5, (maximum->z - minimum->z) * 0.5, 0,
-                   0, 0, 0, 0, colour, material);
+                   (maximum->x - minimum->x) * 0.5, (maximum->y - minimum->y) * 0.5, (maximum->z - minimum->z) * 0.5, 0, 0, 0, 0, 0, colour,
+                   material);
 }
 
 i32 edbitsLookupInstance(char *name, NUGSCN *scene) {
@@ -339,8 +343,8 @@ void edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct
     }
 }
 
-void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct PC_SCENE_MTL_VIEW *material,
-                          i32 rotation_z, i32 rotation_y) {
+void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct PC_SCENE_MTL_VIEW *material, i32 rotation_z,
+                          i32 rotation_y) {
     NUVEC vertices[2];
     i32 i;
     i32 angle;
@@ -371,13 +375,11 @@ void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
         vertices[1].x += centre->x;
         vertices[1].y += centre->y;
         vertices[1].z += centre->z;
-        NuRndrLine3dDbg(vertices[0].x, vertices[0].y, vertices[0].z, vertices[1].x, vertices[1].y, vertices[1].z,
-                        colour);
+        NuRndrLine3dDbg(vertices[0].x, vertices[0].y, vertices[0].z, vertices[1].x, vertices[1].y, vertices[1].z, colour);
     }
 }
 
-void edbitsDrawCircleTilted(NUVEC *centre, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material, i32 rotation_z,
-                            i32 rotation_y) {
+void edbitsDrawCircleTilted(NUVEC *centre, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material, i32 rotation_z, i32 rotation_y) {
     edbitsDrawOvalTilted(centre, radius, radius, colour, material, rotation_z, rotation_y);
 }
 
@@ -409,8 +411,7 @@ void edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_
         angle = (i << 16) / 10;
         point.x += radius * NU_SIN_LUT(angle);
         point.z += radius * NU_COS_LUT(angle);
-        edbitsDrawOvalTilted(&point, vertical_extent, radial_extent, colour, (struct PC_SCENE_MTL_VIEW *)material,
-                             0x4000, angle);
+        edbitsDrawOvalTilted(&point, vertical_extent, radial_extent, colour, (struct PC_SCENE_MTL_VIEW *)material, 0x4000, angle);
     }
 }
 
@@ -480,17 +481,11 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
             sample = &samples[element];
             if (GrassClumps[clump_index].kind == 3) {
                 sample->position.x =
-                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
-                                   element]
-                        .position.x;
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].position.x;
                 sample->position.y =
-                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
-                                   element]
-                        .position.y;
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].position.y;
                 sample->position.z =
-                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
-                                   element]
-                        .position.z;
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].position.z;
             } else {
                 switch ((i8)GrassClumps[clump_index].unknown_25) {
                     case 1: {
@@ -534,8 +529,7 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                         rows = (i32)NuFsqrt((f32)count);
                         columns = (count - 1 + rows) / rows;
                         spacing_x = (GrassClumps[clump_index].size + GrassClumps[clump_index].size) / (f32)(rows - 1);
-                        spacing_z =
-                            (GrassClumps[clump_index].size + GrassClumps[clump_index].size) / (f32)(columns - 1);
+                        spacing_z = (GrassClumps[clump_index].size + GrassClumps[clump_index].size) / (f32)(columns - 1);
                         offset.x = (f32)(element / columns) * spacing_x - GrassClumps[clump_index].size;
                         offset.y = 0.0f;
                         offset.z = (f32)(element % columns) * spacing_z - GrassClumps[clump_index].size;
@@ -558,9 +552,7 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
             sample->position.z += GrassClumps[clump_index].position.z;
             if (GrassClumps[clump_index].kind == 3) {
                 computed_scale =
-                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
-                                   element]
-                        .field_0c *
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].field_0c *
                     (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c);
                 sample->scale = computed_scale + GrassClumps[clump_index].field_2c;
             } else {
@@ -576,21 +568,18 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                         break;
                     }
                     case 2:
-                        computed_scale = NuRandFloatSeeded(&seed) *
-                                         (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c);
+                        computed_scale = NuRandFloatSeeded(&seed) * (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c);
                         sample->scale = computed_scale + GrassClumps[clump_index].field_2c;
                         break;
                     case 3: {
-                        limited = sample->scale < GrassClumps[clump_index].size ? sample->scale
-                                                                                : GrassClumps[clump_index].size;
+                        limited = sample->scale < GrassClumps[clump_index].size ? sample->scale : GrassClumps[clump_index].size;
                         computed_scale = (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c) *
                                          (limited / GrassClumps[clump_index].size);
                         sample->scale = GrassClumps[clump_index].field_30 - computed_scale;
                         break;
                     }
                     case 4: {
-                        limited = sample->scale < GrassClumps[clump_index].size ? sample->scale
-                                                                                : GrassClumps[clump_index].size;
+                        limited = sample->scale < GrassClumps[clump_index].size ? sample->scale : GrassClumps[clump_index].size;
                         angle = (i32)(-(limited / GrassClumps[clump_index].size) * 16384.0);
                         computed_scale = NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff] *
                                          (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c);
@@ -611,20 +600,15 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
             position.z = sample->position.z;
             if (GrassClumps[clump_index].kind == 3) {
                 if (terrain_enabled && calculate_vectors) {
-                    ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element] =
-                        NuFadeObjGetAngleTerrainValues(&position);
+                    ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element] = NuFadeObjGetAngleTerrainValues(&position);
                 }
                 NuMtxSetIdentity(current_matrix);
                 NuMtxRotateZ(
                     current_matrix,
-                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
-                                   element]
-                        .field_10);
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].field_10);
                 NuMtxRotateY(
                     current_matrix,
-                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
-                                   element]
-                        .field_12);
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].field_12);
                 if (slope_enabled) {
                     NuMtxRotateZ(current_matrix, (i32)(((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].z));
                     NuMtxRotateX(current_matrix, (i32)(((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].x));
@@ -636,8 +620,7 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                 NuMtxTranslate(current_matrix, &position);
             } else {
                 if (terrain_enabled && calculate_vectors) {
-                    ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element] =
-                        NuFadeObjGetAngleTerrainValues(&position);
+                    ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element] = NuFadeObjGetAngleTerrainValues(&position);
                 }
                 NuMtxSetIdentity(current_matrix);
                 NuMtxPreRotateY(current_matrix, (u16)(NuRandIntSeeded(&seed)));
@@ -758,8 +741,7 @@ void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         if (edgra_filter && NuStrNCmp(edgra_filter_string, name, NuStrLen(edgra_filter_string)) && !keep) {
             continue;
         }
-        eduiMenuAddItem(edgra_instance_menu,
-                        eduiItemCheckCreate(i, edblack, selected, 1, edgracbSetInstanceType, name));
+        eduiMenuAddItem(edgra_instance_menu, eduiItemCheckCreate(i, edblack, selected, 1, edgracbSetInstanceType, name));
         ++added;
         if (selected == 1) {
             edgra_instance_menu->selected = edui_last_item;
@@ -769,8 +751,8 @@ void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (added == 1) {
         eduiMenuAddItem(edgra_instance_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "All Instances Filtered"));
     }
-    eduiMenuAddItemFirst(edgra_instance_menu, eduiItemCheckCreate((size_t)(-1), edblack, edgra_instance_type == -1, 1,
-                                                                  edgracbSetInstanceType, "None"));
+    eduiMenuAddItemFirst(edgra_instance_menu,
+                         eduiItemCheckCreate((size_t)(-1), edblack, edgra_instance_type == -1, 1, edgracbSetInstanceType, "None"));
     eduiMenuAttach(parent, edgra_instance_menu);
     edgra_instance_menu->x = parent->x + 10;
     edgra_instance_menu->y = parent->y + 40;
@@ -783,10 +765,8 @@ void edgracbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edgra_dpadmode_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edgracbCancelDpadModeMenu, "Dpad Mode");
     if (edgra_dpadmode_menu) {
-        eduiMenuAddItem(edgra_dpadmode_menu,
-                        eduiItemCheckCreate(0, colours, edgra_dpadmode == 0, 1, edgracbSetDpadMode, "Clump Size"));
-        eduiMenuAddItem(edgra_dpadmode_menu,
-                        eduiItemCheckCreate(1, colours, edgra_dpadmode == 1, 1, edgracbSetDpadMode, "Clump Tilt"));
+        eduiMenuAddItem(edgra_dpadmode_menu, eduiItemCheckCreate(0, colours, edgra_dpadmode == 0, 1, edgracbSetDpadMode, "Clump Size"));
+        eduiMenuAddItem(edgra_dpadmode_menu, eduiItemCheckCreate(1, colours, edgra_dpadmode == 1, 1, edgracbSetDpadMode, "Clump Tilt"));
         eduiMenuAttach(parent, edgra_dpadmode_menu);
         edgra_dpadmode_menu->x = parent->x + 10;
         edgra_dpadmode_menu->y = parent->y + 40;

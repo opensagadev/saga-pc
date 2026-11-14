@@ -620,8 +620,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     if (available && object->field_281 != 0 && ObjLandReady(object)) {
         f32 radius = (f64)object->bounds_radius + 0.25;
         f32 distance;
-        ATTRACTO_RECORD_PC *attracto =
-            (ATTRACTO_RECORD_PC *)Attracto_FindNearest(world, &object->lower_position, object, &distance);
+        ATTRACTO_RECORD_PC *attracto = (ATTRACTO_RECORD_PC *)Attracto_FindNearest(world, &object->lower_position, object, &distance);
         if (attracto != NULL) {
             radius = (f64)radius * (f64)radius;
             if (distance < radius && object->field_1062 > 0 && (object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {

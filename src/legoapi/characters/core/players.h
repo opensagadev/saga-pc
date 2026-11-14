@@ -130,9 +130,8 @@ extern "C" {
 
     typedef void (*PLAYER_CLEAR_CONTEXT_CALLBACK_PC)(GAMEOBJECT *, i32);
     extern PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn;
-    void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 model_capacity,
-                             i32 model_id_capacity, i32 animation_capacity, APICHARACTERDATA *characters,
-                             void (*set_lights)(APIOBJECT_PC *));
+    void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 model_capacity, i32 model_id_capacity,
+                             i32 animation_capacity, APICHARACTERDATA *characters, void (*set_lights)(APIOBJECT_PC *));
     CHARACTER_MODEL_LAYERS_PC *APICharacterLoaded(i32);
     void APIResetCharacterRemap(void);
     i32 NewPlayerCharacter(GAMEOBJECT *, i32, i32, i32);
@@ -184,8 +183,8 @@ extern "C" {
     void SetCreatureLights(APIOBJECT_PC *);
     extern u32 (*CanPushObstaclesFn)(GAMEOBJECT *);
 
-    u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared,
-                              u8 require_character_flags, u32 character_flags);
+    u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared, u8 require_character_flags,
+                              u32 character_flags);
 
     i32 Players_AveragePos(NUVEC *, SOCKPOSITION_PC *);
 #ifdef __cplusplus

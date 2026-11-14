@@ -527,8 +527,7 @@ struct PC_INPUT_RUNTIME_PC {          // size 0x68b4
     i32 SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample);
     i32 UpdateMousePc();
     void CaptureBindingPc(i32 port);
-    i32 TranslateBindingsPc(i32 port, PC_INPUT_SAMPLE_PC *, i32 valid, PC_INPUT_RAW_SAMPLE_PC *,
-                            PC_INPUT_MOUSE_RUNTIME_PC *, u8 **keys);
+    i32 TranslateBindingsPc(i32 port, PC_INPUT_SAMPLE_PC *, i32 valid, PC_INPUT_RAW_SAMPLE_PC *, PC_INPUT_MOUSE_RUNTIME_PC *, u8 **keys);
     void ApplyMouseAxisPc(PC_INPUT_SAMPLE_PC *sample);
     u32 CombineUiButtonsPc(i32 port, u32 buttons);
     void NormalizeAxisPairPc(i16 *x, i16 *y);
@@ -619,10 +618,8 @@ extern "C" i32 PcInputAlternateDeadzonePc(i32 port);
 extern "C" void PcInputSetDeadzonePc(i32 port, i32 value);
 extern "C" void PcInputSetAlternateDeadzonePc(i32 port, i32 value);
 extern "C" PC_INPUT_COMMAND_FILTER_PC PcInputGetCommandFilterPc();
-extern "C" void PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank,
-                                       u32 excluded);
-extern "C" i32 PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a,
-                                          i32 b, char *c);
+extern "C" void PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded);
+extern "C" i32 PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a, i32 b, char *c);
 extern "C" void PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key);
 extern "C" void PcInputSaveConfigurationPc();
 

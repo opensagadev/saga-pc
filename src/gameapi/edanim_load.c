@@ -4,8 +4,8 @@
 /* edbitsGetSoundName is an inline stub returning NULL in the PC build. */
 #define EDANIM_SOUND_NAME_PC(type) ((char *)0)
 
-void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
-                    i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
+void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
+                    i32 outer_y, i32 colour, NUMTL *material);
 
 extern i32 edqseed;
 extern char edbits_level_filename[256];
@@ -103,8 +103,7 @@ void edanimDetermineNearestParticle(float distance) {
     edanim_nearest_particle = -1;
     for (particle = 0; particle < AnimParams[edanim_nearest_param_id].effect_count; ++particle) {
         f32 candidate;
-        NuVecAdd(&world_position, base_position,
-                 ((NUVEC *)(AnimParams[edanim_nearest_param_id].effect_positions[particle])));
+        NuVecAdd(&world_position, base_position, ((NUVEC *)(AnimParams[edanim_nearest_param_id].effect_positions[particle])));
         NuVecSub(&delta, &edanim_cam_pos, &world_position);
         candidate = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         if (distance < 0.0f || candidate < distance) {
@@ -130,8 +129,7 @@ void edanimDetermineNearestSound(float distance) {
     base_position = NuSpecialGetPos(&special);
 
     if (edanim_nearest_sound != -1) {
-        NuVecAdd(&world_position, base_position,
-                 ((NUVEC *)(AnimParams[edanim_nearest_param_id].sound_positions[edanim_nearest_sound])));
+        NuVecAdd(&world_position, base_position, ((NUVEC *)(AnimParams[edanim_nearest_param_id].sound_positions[edanim_nearest_sound])));
         NuVecSub(&delta, &edanim_cam_pos, &world_position);
         length = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         if (length == 0.0f) {
@@ -141,8 +139,7 @@ void edanimDetermineNearestSound(float distance) {
     edanim_nearest_sound = -1;
     for (sound = 0; sound < AnimParams[edanim_nearest_param_id].sound_count; ++sound) {
         f32 candidate;
-        NuVecAdd(&world_position, base_position,
-                 ((NUVEC *)(AnimParams[edanim_nearest_param_id].sound_positions[sound])));
+        NuVecAdd(&world_position, base_position, ((NUVEC *)(AnimParams[edanim_nearest_param_id].sound_positions[sound])));
         NuVecSub(&delta, &edanim_cam_pos, &world_position);
         candidate = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         if (distance < 0.0f || candidate < distance) {
@@ -165,8 +162,7 @@ void edanimParticleDestroy(i32 parameter_index, i32 particle_index) {
         AnimParams[parameter_index].effect_ids[index] = AnimParams[parameter_index].effect_ids[index + 1];
         AnimParams[parameter_index].effect_intervals[index] = AnimParams[parameter_index].effect_intervals[index + 1];
         AnimParams[parameter_index].effect_flags[index] = AnimParams[parameter_index].effect_flags[index + 1];
-        memcpy(AnimParams[parameter_index].effect_positions[index],
-               AnimParams[parameter_index].effect_positions[index + 1], sizeof(NUVEC));
+        memcpy(AnimParams[parameter_index].effect_positions[index], AnimParams[parameter_index].effect_positions[index + 1], sizeof(NUVEC));
         strcpy(AnimParams[parameter_index].effect_names[index], AnimParams[parameter_index].effect_names[index + 1]);
     }
     --AnimParams[parameter_index].effect_count;
@@ -361,9 +357,8 @@ void edanimcbSetBouncyPlayerGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unus
     value = slider->value;
     AnimParams[edanim_nearest_param_id].bounce_impulse = value;
     if (AnimParams[edanim_nearest_param_id].platform_id != -1) {
-        PlatInstBounce(
-            AnimParams[edanim_nearest_param_id].platform_id, AnimParams[edanim_nearest_param_id].bounce_impulse,
-            AnimParams[edanim_nearest_param_id].bounce_spring, AnimParams[edanim_nearest_param_id].bounce_damping);
+        PlatInstBounce(AnimParams[edanim_nearest_param_id].platform_id, AnimParams[edanim_nearest_param_id].bounce_impulse,
+                       AnimParams[edanim_nearest_param_id].bounce_spring, AnimParams[edanim_nearest_param_id].bounce_damping);
     }
 }
 
@@ -376,9 +371,8 @@ void edanimcbSetBouncyTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2
     value = slider->value;
     AnimParams[edanim_nearest_param_id].bounce_spring = value;
     if (AnimParams[edanim_nearest_param_id].platform_id != -1) {
-        PlatInstBounce(
-            AnimParams[edanim_nearest_param_id].platform_id, AnimParams[edanim_nearest_param_id].bounce_impulse,
-            AnimParams[edanim_nearest_param_id].bounce_spring, AnimParams[edanim_nearest_param_id].bounce_damping);
+        PlatInstBounce(AnimParams[edanim_nearest_param_id].platform_id, AnimParams[edanim_nearest_param_id].bounce_impulse,
+                       AnimParams[edanim_nearest_param_id].bounce_spring, AnimParams[edanim_nearest_param_id].bounce_damping);
     }
 }
 
@@ -391,9 +385,8 @@ void edanimcbSetBouncyDamping(eduimenu_s *unused0, eduiitem_s *item, u32 unused2
     value = slider->value;
     AnimParams[edanim_nearest_param_id].bounce_damping = value;
     if (AnimParams[edanim_nearest_param_id].platform_id != -1) {
-        PlatInstBounce(
-            AnimParams[edanim_nearest_param_id].platform_id, AnimParams[edanim_nearest_param_id].bounce_impulse,
-            AnimParams[edanim_nearest_param_id].bounce_spring, AnimParams[edanim_nearest_param_id].bounce_damping);
+        PlatInstBounce(AnimParams[edanim_nearest_param_id].platform_id, AnimParams[edanim_nearest_param_id].bounce_impulse,
+                       AnimParams[edanim_nearest_param_id].bounce_spring, AnimParams[edanim_nearest_param_id].bounce_damping);
     }
 }
 
@@ -409,22 +402,19 @@ static void edanimcbSetLocalSoundType(eduimenu_s *menu, eduiitem_s *item, u32 un
 void edanimcbBouncyMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edanim_nearest != -1) {
-        edanim_bouncy_menu =
-            eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelBouncyMenu, ((char *)("Bounciness")));
+        edanim_bouncy_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelBouncyMenu, ((char *)("Bounciness")));
         if (!edanim_bouncy_menu) {
             return;
         }
 
         eduiMenuAddItem(edanim_bouncy_menu,
                         eduiItemSliderCreate(0, colours, 0, edanimcbSetBouncyPlayerGrav, -0.1f, 0.2f,
-                                             AnimParams[edanim_nearest_param_id].bounce_impulse,
-                                             ((char *)("Player Grav"))));
+                                             AnimParams[edanim_nearest_param_id].bounce_impulse, ((char *)("Player Grav"))));
+        eduiMenuAddItem(edanim_bouncy_menu, eduiItemSliderCreate(0, colours, 0, edanimcbSetBouncyTension, 0.0f, 1.0f,
+                                                                 AnimParams[edanim_nearest_param_id].bounce_spring, ((char *)("Tension"))));
         eduiMenuAddItem(edanim_bouncy_menu,
-                        eduiItemSliderCreate(0, colours, 0, edanimcbSetBouncyTension, 0.0f, 1.0f,
-                                             AnimParams[edanim_nearest_param_id].bounce_spring, ((char *)("Tension"))));
-        eduiMenuAddItem(edanim_bouncy_menu, eduiItemSliderCreate(0, colours, 0, edanimcbSetBouncyDamping, 0.0f, 1.0f,
-                                                                 AnimParams[edanim_nearest_param_id].bounce_damping,
-                                                                 ((char *)("Damping"))));
+                        eduiItemSliderCreate(0, colours, 0, edanimcbSetBouncyDamping, 0.0f, 1.0f,
+                                             AnimParams[edanim_nearest_param_id].bounce_damping, ((char *)("Damping"))));
 
         eduiMenuAttach(parent, edanim_bouncy_menu);
         edanim_bouncy_menu->x = parent->x + 10;
@@ -436,17 +426,16 @@ static void edanimcbLocalSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, 
     i32 index;
     i32 selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-    edanim_localsoundtype_menu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelLocalSoundTypeMenu,
-                                                ((char *)("Highlighted Sound Type")));
+    edanim_localsoundtype_menu =
+        eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelLocalSoundTypeMenu, ((char *)("Highlighted Sound Type")));
     if (!edanim_localsoundtype_menu) {
         return;
     }
 
     for (index = 0; index < edSfxAllCount; ++index) {
         selected = AnimParams[edanim_nearest_param_id].sound_ids[edanim_nearest_sound] == index;
-        eduiMenuAddItem(
-            edanim_localsoundtype_menu,
-            eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetLocalSoundType, EDANIM_SOUND_NAME_PC(index)));
+        eduiMenuAddItem(edanim_localsoundtype_menu,
+                        eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetLocalSoundType, EDANIM_SOUND_NAME_PC(index)));
         if (selected == 1) {
             edanim_localsoundtype_menu->selected = edui_last_item;
         }
@@ -461,18 +450,17 @@ void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
     i32 index;
     i32 selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-    edanim_soundtype_menu =
-        eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelSoundTypeMenu, (char *)("Sound Type"));
+    edanim_soundtype_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelSoundTypeMenu, (char *)("Sound Type"));
     if (!edanim_soundtype_menu) {
         return;
     }
 
-    eduiMenuAddItem(edanim_soundtype_menu, eduiItemCheckCreate(0x1869f, colours, edanim_sound_type == -1, 0,
-                                                               edanimcbSetSoundType, (char *)("NONE")));
+    eduiMenuAddItem(edanim_soundtype_menu,
+                    eduiItemCheckCreate(0x1869f, colours, edanim_sound_type == -1, 0, edanimcbSetSoundType, (char *)("NONE")));
     for (index = 0; index < edSfxAllCount; ++index) {
         selected = edanim_sound_type == index;
-        eduiMenuAddItem(edanim_soundtype_menu, eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetSoundType,
-                                                                   EDANIM_SOUND_NAME_PC(index)));
+        eduiMenuAddItem(edanim_soundtype_menu,
+                        eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetSoundType, EDANIM_SOUND_NAME_PC(index)));
         if (selected == 1) {
             edanim_soundtype_menu->selected = edui_last_item;
         }
@@ -492,11 +480,10 @@ void edanimcbSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (!edanim_sound_menu) {
         return;
     }
-    eduiMenuAddItem(edanim_sound_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbSoundTypeMenu, (char *)("Sound Type...")));
+    eduiMenuAddItem(edanim_sound_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbSoundTypeMenu, (char *)("Sound Type...")));
     if (edanim_nearest_sound != -1) {
-        eduiMenuAddItem(edanim_sound_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalSoundMenu,
-                                                             (char *)("Highlighted Snd Settings...")));
+        eduiMenuAddItem(edanim_sound_menu,
+                        eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalSoundMenu, (char *)("Highlighted Snd Settings...")));
     }
     eduiMenuAttach(parent, edanim_sound_menu);
     edanim_sound_menu->x = parent->x + 10;
@@ -596,8 +583,7 @@ void edanimRenderParticleEmitters(i32 parameter_index) {
                                base_position->y + AnimParams[parameter_index].effect_positions[particle][1],
                                base_position->z + AnimParams[parameter_index].effect_positions[particle][2],
                                definition->emitter_random_extent.x, definition->emitter_random_extent.y,
-                               definition->emitter_random_extent.z, edanim_emitrotz, edanim_emitroty, 0, 0, 0,
-                               0xff008000, edanim_mtl);
+                               definition->emitter_random_extent.z, edanim_emitrotz, edanim_emitroty, 0, 0, 0, 0xff008000, edanim_mtl);
             }
             colour = 0xff00ff00;
         } else {
@@ -605,8 +591,7 @@ void edanimRenderParticleEmitters(i32 parameter_index) {
         }
         edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].effect_positions[particle][0],
                                 base_position->y + AnimParams[parameter_index].effect_positions[particle][1],
-                                base_position->z + AnimParams[parameter_index].effect_positions[particle][2], 0.25f,
-                                colour, edanim_mtl);
+                                base_position->z + AnimParams[parameter_index].effect_positions[particle][2], 0.25f, colour, edanim_mtl);
     }
 }
 
@@ -624,23 +609,20 @@ void edanimRenderSoundEmitters(i32 parameter_index) {
         colour = edanim_sound_mode && edanim_nearest_sound == sound ? 0xffff0000 : 0xffffffff;
         edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].sound_positions[sound][0],
                                 base_position->y + AnimParams[parameter_index].sound_positions[sound][1],
-                                base_position->z + AnimParams[parameter_index].sound_positions[sound][2], 0.25f, colour,
-                                edanim_mtl);
+                                base_position->z + AnimParams[parameter_index].sound_positions[sound][2], 0.25f, colour, edanim_mtl);
     }
 }
 
 void edanimSoundPlace(i32 sound_index, NUVEC *position) {
     NUSPECIALHANDLE special;
     NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
-    NuVecSub((NUVEC *)AnimParams[edanim_nearest_param_id].sound_positions[sound_index], position,
-             NuSpecialGetPos(&special));
+    NuVecSub((NUVEC *)AnimParams[edanim_nearest_param_id].sound_positions[sound_index], position, NuSpecialGetPos(&special));
 }
 
 void edanimParticlePlace(i32 particle_index, NUVEC *position) {
     NUSPECIALHANDLE special;
     NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
-    NuVecSub((NUVEC *)AnimParams[edanim_nearest_param_id].effect_positions[particle_index], position,
-             NuSpecialGetPos(&special));
+    NuVecSub((NUVEC *)AnimParams[edanim_nearest_param_id].effect_positions[particle_index], position, NuSpecialGetPos(&special));
     AnimParams[edanim_nearest_param_id].effect_angles[particle_index] = edanim_emitrotz;
     AnimParams[edanim_nearest_param_id].effect_angle_ranges[particle_index] = edanim_emitroty;
 }
@@ -705,8 +687,7 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
             if (edanim_nearest_particle != -1) {
                 NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
                 origin = NuSpecialGetPos(&special);
-                NuVecAdd(&position, origin,
-                         (NUVEC *)AnimParams[edanim_nearest_param_id].effect_positions[edanim_nearest_particle]);
+                NuVecAdd(&position, origin, (NUVEC *)AnimParams[edanim_nearest_param_id].effect_positions[edanim_nearest_particle]);
                 edcamSetPos(&position);
                 edanim_emitrotz = AnimParams[edanim_nearest_param_id].effect_angles[edanim_nearest_particle];
                 edanim_emitroty = AnimParams[edanim_nearest_param_id].effect_angle_ranges[edanim_nearest_particle];
@@ -739,8 +720,7 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
                 if (edanim_nearest_sound != -1) {
                     NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
                     origin = NuSpecialGetPos(&special);
-                    NuVecAdd(&position, origin,
-                             (NUVEC *)AnimParams[edanim_nearest_param_id].sound_positions[edanim_nearest_sound]);
+                    NuVecAdd(&position, origin, (NUVEC *)AnimParams[edanim_nearest_param_id].sound_positions[edanim_nearest_sound]);
                     edcamSetPos(&position);
                     edanim_sound_type = AnimParams[edanim_nearest_param_id].sound_ids[edanim_nearest_sound];
                 }
@@ -917,21 +897,18 @@ void edanimDrawCursor(void) {
     } else {
         NuQFntPrintEx(system_qfont, 0x17c0, 0xb90, 0x10, "Params: Yes");
         if (edanim_particle_mode) {
-            NuQFntPrintEx(system_qfont, 0x1810, 0xc30, 0x10, "Particles: %d (Max %d)",
-                          AnimParams[edanim_nearest_param_id].effect_count, 8);
+            NuQFntPrintEx(system_qfont, 0x1810, 0xc30, 0x10, "Particles: %d (Max %d)", AnimParams[edanim_nearest_param_id].effect_count, 8);
             if (edanim_particle_type == -1) {
                 NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: <none>");
             } else {
                 NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: %s", debtab[edanim_particle_type]->name);
             }
         } else if (edanim_sound_mode) {
-            NuQFntPrintEx(system_qfont, 0x1810, 0xc30, 0x10, "Sounds: %d (Max %d)",
-                          AnimParams[edanim_nearest_param_id].sound_count, 8);
+            NuQFntPrintEx(system_qfont, 0x1810, 0xc30, 0x10, "Sounds: %d (Max %d)", AnimParams[edanim_nearest_param_id].sound_count, 8);
             if (edanim_sound_type == -1) {
                 NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: <none>");
             } else {
-                NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: %s",
-                              EDANIM_SOUND_NAME_PC(edanim_sound_type));
+                NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: %s", EDANIM_SOUND_NAME_PC(edanim_sound_type));
             }
         }
     }
@@ -953,23 +930,20 @@ void edanimcbLocalSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     if (edanim_nearest_sound == -1) {
         return;
     }
-    edanim_localsound_menu =
-        eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelLocalSoundMenu, (char *)("Highlighted Sound Settings"));
+    edanim_localsound_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelLocalSoundMenu, (char *)("Highlighted Sound Settings"));
     if (!edanim_localsound_menu) {
         return;
     }
-    eduiMenuAddItem(edanim_localsound_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalSoundTypeMenu,
-                                                              (char *)("Highlighted Sound Type...")));
     eduiMenuAddItem(edanim_localsound_menu,
-                    eduiItemToggleCreate(1, colours,
-                                         AnimParams[edanim_nearest_param_id].sound_flags[edanim_nearest_sound] == 1, 1,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalSoundTypeMenu, (char *)("Highlighted Sound Type...")));
+    eduiMenuAddItem(edanim_localsound_menu,
+                    eduiItemToggleCreate(1, colours, AnimParams[edanim_nearest_param_id].sound_flags[edanim_nearest_sound] == 1, 1,
                                          edanimcbToggleSoundType, (char *)("Repeating Sound")));
     if (AnimParams[edanim_nearest_param_id].sound_flags[edanim_nearest_sound] == 1) {
-        eduiMenuAddItem(
-            edanim_localsound_menu,
-            eduiItemSliderCreateInt(0, colours, 0, edanimcbSetSoundTiming, 1, 99,
-                                    (i32)AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound],
-                                    (char *)("Repeat Every")));
+        eduiMenuAddItem(edanim_localsound_menu,
+                        eduiItemSliderCreateInt(0, colours, 0, edanimcbSetSoundTiming, 1, 99,
+                                                (i32)AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound],
+                                                (char *)("Repeat Every")));
     } else {
         NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
         if (NuSpecialTestAnim(&special)) {
@@ -977,10 +951,9 @@ void edanimcbLocalSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
                 edanim_localsound_menu,
                 eduiItemSliderCreate(
                     0, colours, 0, edanimcbSetSoundTiming, 1.0f,
-                    *(f32 *)edbits_base_scene->instance_animation_data[edbits_base_scene->specials[edanim_nearest]
-                                                                           .instance->animation->animation_index],
-                    AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound],
-                    (char *)("Sound Trigger Time")));
+                    *(f32 *)edbits_base_scene
+                         ->instance_animation_data[edbits_base_scene->specials[edanim_nearest].instance->animation->animation_index],
+                    AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound], (char *)("Sound Trigger Time")));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, (char *)("(%1.01f)"));
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         }
@@ -1032,22 +1005,14 @@ void edanimInit(void) {
     if (!edanim_options_menu) {
         return;
     }
-    eduiMenuAddItem(edanim_options_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbParticleMenu, (char *)("Attached Particles...")));
-    eduiMenuAddItem(edanim_options_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbSoundMenu, (char *)("Attached Sounds...")));
-    eduiMenuAddItem(edanim_options_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbBouncyMenu, (char *)("Bounciness...")));
-    eduiMenuAddItem(edanim_options_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbSwitchMenu, (char *)("Switch Properties...")));
-    eduiMenuAddItem(edanim_options_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbFileSave, (char *)("Save Params")));
-    eduiMenuAddItem(edanim_options_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbFileLoad, (char *)("Load Params")));
-    eduiMenuAddItem(edanim_options_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbCubeMap, (char *)("Dump Cube Map")));
-    eduiMenuAddItem(edanim_options_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBMenu, (char *)("Memory Card Test Bed...")));
+    eduiMenuAddItem(edanim_options_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbParticleMenu, (char *)("Attached Particles...")));
+    eduiMenuAddItem(edanim_options_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbSoundMenu, (char *)("Attached Sounds...")));
+    eduiMenuAddItem(edanim_options_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbBouncyMenu, (char *)("Bounciness...")));
+    eduiMenuAddItem(edanim_options_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbSwitchMenu, (char *)("Switch Properties...")));
+    eduiMenuAddItem(edanim_options_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbFileSave, (char *)("Save Params")));
+    eduiMenuAddItem(edanim_options_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbFileLoad, (char *)("Load Params")));
+    eduiMenuAddItem(edanim_options_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbCubeMap, (char *)("Dump Cube Map")));
+    eduiMenuAddItem(edanim_options_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBMenu, (char *)("Memory Card Test Bed...")));
 }
 
 i32 edanimProc(f32 delta_time, FRAME_PAD_PC *pad) {

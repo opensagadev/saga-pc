@@ -97,8 +97,7 @@ void FRAME_NATIVE_TEXTURE_POOL_PC::fun_0060a010(FRAME_NATIVE_TEXTURE_PC *record)
     cursor = index;
 }
 
-extern "C" POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32 mode, const DWORD *vertex_tokens,
-                                                             const DWORD *pixel_tokens) {
+extern "C" POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32 mode, const DWORD *vertex_tokens, const DWORD *pixel_tokens) {
     POST_VERTEX_SHADER_CACHE_ENTRY_PC vertex = {NULL, vertex_tokens};
     POST_PIXEL_SHADER_CACHE_ENTRY_PC pixel = {NULL, pixel_tokens};
     std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC>::iterator vertex_it = PostVertexShaderCachePc.begin();

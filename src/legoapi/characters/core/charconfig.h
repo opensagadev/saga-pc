@@ -97,9 +97,9 @@ extern "C" {
 extern "C" {
 #endif
     extern BOLTSYS_PC GlobalBoltSystem_Default;
-    void AddAnimEffects(struct CHARACTER_MODEL_LAYERS_PC *, struct apicharacterdata_s *, struct animpacket_s *,
-                        struct numtx_s *, struct gameobject_s *, CHARACTER_EFFECT_CONFIG_PC *, i32, f32,
-                        void (*)(void *, struct gameobject_s *, i32, i32), struct APIDEBRISSYS_PC *);
+    void AddAnimEffects(struct CHARACTER_MODEL_LAYERS_PC *, struct apicharacterdata_s *, struct animpacket_s *, struct numtx_s *,
+                        struct gameobject_s *, CHARACTER_EFFECT_CONFIG_PC *, i32, f32, void (*)(void *, struct gameobject_s *, i32, i32),
+                        struct APIDEBRISSYS_PC *);
     i32 CharCategory_IsCategory(struct gameobject_s *, i32);
     void GameLoadCharacterModels(struct apicharactermodellist_s *, i32, VARIPTR *, VARIPTR *, i32, i32);
     i32 InModelListDataFlags(struct apicharactermodellist_s *, u32, u32, i32, i32);

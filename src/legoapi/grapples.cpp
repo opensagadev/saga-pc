@@ -14,9 +14,7 @@ typedef struct {
 } GRAPPLE_PROGRESS_PC;
 
 extern "C" {}
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) +
-                  offsetof(AIPATHINFO_PC, connection) ==
-              0x424);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) + offsetof(AIPATHINFO_PC, connection) == 0x424);
 
 typedef struct WORLD_GRAPPLE_MOTION_VIEW { // size 0x5088
     u8 unknown_0000[0x5080];               // 0x0000
@@ -110,8 +108,7 @@ extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
                 if (length > 0) {
                     EdFileRead(name, length);
                     name[length] = '\0';
-                    NuSpecialFind(world->current_gscn, &((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special, name,
-                                  1);
+                    NuSpecialFind(world->current_gscn, &((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special, name, 1);
                 }
             }
         }
@@ -145,8 +142,7 @@ static void Grapple_ResetRopeTargetsPc(GRAPPLE_MOTION_PC *grapple) {
     }
 }
 
-static void Grapple_ResetPositionPc(GRAPPLE_MOTION_PC *grapple, NUVEC *offset, NUVEC *position,
-                                    i32 has_terrain_platform) {
+static void Grapple_ResetPositionPc(GRAPPLE_MOTION_PC *grapple, NUVEC *offset, NUVEC *position, i32 has_terrain_platform) {
     f32 rounded_height;
     f32 height;
     if (offset != NULL) {
@@ -261,8 +257,7 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
         f32 distance;
         if (object != NULL) {
             f32 side_distance;
-            if (!grapple->visible || !grapple->active ||
-                (grapple->has_terrain_platform != 0 && grapple->attached_object == NULL)) {
+            if (!grapple->visible || !grapple->active || (grapple->has_terrain_platform != 0 && grapple->attached_object == NULL)) {
                 continue;
             }
             if (grapple->disabled) {
@@ -271,21 +266,18 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
                 }
                 if ((object->flags_1fc & 0x80) != 0 &&
                     (object->field_281 != 0 || !(object->velocity.y <= 0.0f) ||
-                     (object->character_context != -1 &&
-                      (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
-                       !(object->context_timer >= (f64)0.1f))))) {
+                     (object->character_context != -1 && (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
+                                                          !(object->context_timer >= (f64)0.1f))))) {
                     continue;
                 }
             }
-            if (grapple->reversed &&
-                ((object->character_data->game_character->flags_094 & 0x20000000) == 0 || !grapple->disabled)) {
+            if (grapple->reversed && ((object->character_data->game_character->flags_094 & 0x20000000) == 0 || !grapple->disabled)) {
                 continue;
             }
             if (!(object->upper_position.y < grapple->shadow_probe_position.y)) {
                 continue;
             }
-            if (!((grapple->disabled &&
-                   object->upper_position.y > grapple->hook_position.y - ((f64)0.1f + grapple->rope_length)) ||
+            if (!((grapple->disabled && object->upper_position.y > grapple->hook_position.y - ((f64)0.1f + grapple->rope_length)) ||
                   (!grapple->disabled && object->collision_position.y > grapple->ground_position.y))) {
                 continue;
             }
@@ -310,8 +302,7 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
     }
 }
 
-extern "C" GRAPPLE_MOTION_PC *Grapple_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object,
-                                                  f32 *distance_squared) {
+extern "C" GRAPPLE_MOTION_PC *Grapple_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared) {
     if (((WORLD_GRAPPLE_MOTION_VIEW *)world)->grapples == NULL) {
         return NULL;
     }
@@ -327,11 +318,10 @@ extern "C" GRAPPLE_MOTION_PC *Grapple_FindNearest(WORLDINFO *world, NUVEC *posit
     } else {
         nearest_distance = 1000000000.0f;
     }
-    Grapple_FindNearestInList(position, ((WORLD_GRAPPLE_MOTION_VIEW *)world)->grapples,
-                              ((WORLD_GRAPPLE_MOTION_VIEW *)world)->grapple_count, object, &nearest, &nearest_distance);
+    Grapple_FindNearestInList(position, ((WORLD_GRAPPLE_MOTION_VIEW *)world)->grapples, ((WORLD_GRAPPLE_MOTION_VIEW *)world)->grapple_count,
+                              object, &nearest, &nearest_distance);
     if (object != NULL) {
-        Grapple_FindNearestInList(position, ((GRAPPLE_MOTION_PC *)DynamicGrapplePc), 4, object, &nearest,
-                                  &nearest_distance);
+        Grapple_FindNearestInList(position, ((GRAPPLE_MOTION_PC *)DynamicGrapplePc), 4, object, &nearest, &nearest_distance);
     }
     if (distance_squared != NULL) {
         *distance_squared = nearest_distance;
@@ -365,8 +355,7 @@ extern "C" {
         return nearest;
     }
 
-    static void GrapplesDrawListPc(WORLDINFO *world, GRAPPLE_MOTION_PC *grapple, i32 count, u16 target_rotation,
-                                   f32 target_alpha) {
+    static void GrapplesDrawListPc(WORLDINFO *world, GRAPPLE_MOTION_PC *grapple, i32 count, u16 target_rotation, f32 target_alpha) {
         GAMEOBJECT *nearest_player = NULL;
         NUMTX matrix;
         if (world == NULL || grapple == NULL || count <= 0) {
@@ -701,15 +690,11 @@ extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 un
         } else {
             y_offset = (f64)grapple->rope_length * (f64)0.333f;
             sway = (f64)grapple->rope_length * (f64)0.0125f;
-            attachment.x = (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0) +
-                                           index * 0x2000) *
-                               sway +
+            attachment.x = (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0) + index * 0x2000) * sway +
                            grapple->hook_position.x;
             attachment.y = grapple->hook_position.y - y_offset;
             attachment.z =
-                (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)1.217f * 65536.0) +
-                                index * 0x2666) *
-                    sway +
+                (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)1.217f * 65536.0) + index * 0x2666) * sway +
                 grapple->hook_position.z;
         }
         distance = NuVecDist(&attachment, &grapple->hook_position, &direction);
@@ -733,12 +718,9 @@ extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 un
                 wave_base = (f64)slack * (f64)0.1f;
                 wave_scale = ((f64)(point + 1) / 6.0) * wave_base;
                 grapple->target_rope_points[point].x +=
-                    (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0) +
-                                    index * 0x2000) *
-                    wave_scale;
+                    (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0) + index * 0x2000) * wave_scale;
                 grapple->target_rope_points[point].z +=
-                    (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)1.217f * 65536.0) +
-                                    index * 0x2666) *
+                    (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)1.217f * 65536.0) + index * 0x2666) *
                     wave_scale;
             }
         }
@@ -848,8 +830,8 @@ GRAPPLE_DYNAMIC_PC *Grapple_RemoveDynamic(void *attached_object) {
 
 static f32 Grapple_MaximumLengthPc(GAMEOBJECT *object) {
     GRAPPLE_MOTION_PC *grapple = (GRAPPLE_MOTION_PC *)object->grapple;
-    f32 ground = grapple->shadow_probe_position.y -
-                 (grapple->ground_position.y + (object->upper_position.y - object->lower_position.y) + (f64)0.1f);
+    f32 ground =
+        grapple->shadow_probe_position.y - (grapple->ground_position.y + (object->upper_position.y - object->lower_position.y) + (f64)0.1f);
     if (grapple->disabled) {
         f32 rope = grapple->rope_length - ((object->upper_position.y - object->lower_position.y) * 0.5 + (f64)0.1f);
         if (rope < ground) {
@@ -874,8 +856,7 @@ static void Grapple_InitializeSwingAnglePc(GAMEOBJECT *object) {
         object->takeover_start_angle = object->movement_facing_angle;
     }
     if (PlayerGrappleSwingModePc == 1) {
-        object->takeover_start_angle =
-            Grapple_QuantizeAnglePc((GRAPPLE_MOTION_PC *)object->grapple, object->takeover_start_angle);
+        object->takeover_start_angle = Grapple_QuantizeAnglePc((GRAPPLE_MOTION_PC *)object->grapple, object->takeover_start_angle);
     }
 }
 
@@ -906,8 +887,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
     }
 
     if (object->character_context == LEGOCONTEXT_GRAPPLE) {
-        if ((object->flags_1fc & 0x80) == 0 &&
-            ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != object->grapple) {
+        if ((object->flags_1fc & 0x80) == 0 && ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != object->grapple) {
             GRAPPLE_CURRENT->activation_progress = 0.0f;
             object->character_context = -1;
             return;
@@ -917,8 +897,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
                 Grapple_JumpPc(object);
                 return;
             }
-            if (object->pad->input_magnitude == 0.0f || object->pad->input_angle <= 0x6000 ||
-                object->pad->input_angle >= 40960) {
+            if (object->pad->input_magnitude == 0.0f || object->pad->input_angle <= 0x6000 || object->pad->input_angle >= 40960) {
                 return;
             }
             object->field_7b3 = 0;
@@ -991,10 +970,8 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
                 }
             }
         }
-        if (AnimBlendingFromTo(object->character_model, &object->anim_packet, LEGOACT_GRAPPLE_HANG,
-                               LEGOACT_GRAPPLE_IDLE) != 0 ||
-            AnimBlendingFromTo(object->character_model, &object->anim_packet, LEGOACT_LEDGE_IDLE,
-                               LEGOACT_GRAPPLE_IDLE) != 0) {
+        if (AnimBlendingFromTo(object->character_model, &object->anim_packet, LEGOACT_GRAPPLE_HANG, LEGOACT_GRAPPLE_IDLE) != 0 ||
+            AnimBlendingFromTo(object->character_model, &object->anim_packet, LEGOACT_LEDGE_IDLE, LEGOACT_GRAPPLE_IDLE) != 0) {
             object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation + 0x8000);
         }
         object->field_7aa = LEGOACT_GRAPPLE_IDLE;
@@ -1015,12 +992,10 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
                     object->context_hover_target_y = 0.0f;
                 }
                 if (Grapple_RopeSwingRotate != 0 && GRAPPLE_CURRENT->disabled) {
-                    object->movement_facing_angle +=
-                        static_cast<i32>(static_cast<u16>(Grapple_RopeSwingRotate) * FRAMETIME);
+                    object->movement_facing_angle += static_cast<i32>(static_cast<u16>(Grapple_RopeSwingRotate) * FRAMETIME);
                 }
             }
-            if (!(object->context_hover_target_y <= 0.0f) || GRAPPLE_CURRENT->has_terrain_platform != 0 ||
-                GRAPPLE_CURRENT->disabled) {
+            if (!(object->context_hover_target_y <= 0.0f) || GRAPPLE_CURRENT->has_terrain_platform != 0 || GRAPPLE_CURRENT->disabled) {
                 object->context_duration = 0.0f;
             } else {
                 object->context_duration += FRAMETIME;
@@ -1070,8 +1045,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
                     }
                     object->context_duration = 0.0f;
                     if (0 != Grapple_RopeSwingRotate && GRAPPLE_CURRENT->disabled) {
-                        object->movement_facing_angle +=
-                            static_cast<i32>(FRAMETIME * (static_cast<u16>(Grapple_RopeSwingRotate)));
+                        object->movement_facing_angle += static_cast<i32>(FRAMETIME * (static_cast<u16>(Grapple_RopeSwingRotate)));
                     }
                 } else {
                     object->flags_e24 |= 0x80;
@@ -1086,9 +1060,8 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
                 angle += 0x8000;
             }
             i32 difference;
-            object->takeover_start_angle = TurnRot(static_cast<u16>(object->takeover_start_angle * 2),
-                                                   static_cast<u16>(2 * angle), 0x2000, &difference) >>
-                                           1;
+            object->takeover_start_angle =
+                TurnRot(static_cast<u16>(object->takeover_start_angle * 2), static_cast<u16>(2 * angle), 0x2000, &difference) >> 1;
             if ((difference > 0 && object->takeover_start_angle < old_angle) ||
                 (difference < 0 && object->takeover_start_angle > old_angle)) {
                 object->field_7a8 += 0x8000;
@@ -1193,8 +1166,8 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         object->field_7a8 = 0x2000;
         object->big_jump_animation = 0;
         if (object->pad->input_magnitude > 0.0f && (object->flags_1fc & 0x80) != 0) {
-            object->big_jump_animation = static_cast<u8>(static_cast<i32>(
-                (object->pad->input_magnitude / object->character_data->game_character->run_speed) * 30.0f));
+            object->big_jump_animation = static_cast<u8>(
+                static_cast<i32>((object->pad->input_magnitude / object->character_data->game_character->run_speed) * 30.0f));
             if (object->big_jump_animation > 0) {
                 if (object->big_jump_animation > 60) {
                     object->big_jump_animation = 60;
@@ -1305,12 +1278,9 @@ extern "C" void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unuse
             f32 phase_squared = phase * phase;
             f32 complement_squared = complement * complement;
             f64 mixed = ((f64)phase + phase) * complement;
-            vertices[1].position.x =
-                ((f64)phase_squared * previous.x + current->x * mixed) + (f64)complement_squared * middle.x;
-            vertices[1].position.y =
-                ((f64)phase_squared * previous.y + current->y * mixed) + (f64)complement_squared * middle.y;
-            vertices[1].position.z =
-                ((f64)phase_squared * previous.z + current->z * mixed) + (f64)complement_squared * middle.z;
+            vertices[1].position.x = ((f64)phase_squared * previous.x + current->x * mixed) + (f64)complement_squared * middle.x;
+            vertices[1].position.y = ((f64)phase_squared * previous.y + current->y * mixed) + (f64)complement_squared * middle.y;
+            vertices[1].position.z = ((f64)phase_squared * previous.z + current->z * mixed) + (f64)complement_squared * middle.z;
             NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
             vertices[0] = vertices[1];
             phase -= step;

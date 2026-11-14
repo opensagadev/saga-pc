@@ -47,19 +47,17 @@ extern "C" {
     void *NuAnimData2LoadBuffEx(char *, VARIPTR *, VARIPTR *, void **);
     void *NuAnimData2LoadBuff(char *, VARIPTR *, VARIPTR *);
     void NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK_PC callback, void **data, i32 *joints);
-    void NuAnimBuffEvaluate_3_QuatB(NUMTX *, ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *,
-                                    ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
-    void NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *, ANI3_ROOT_CALLBACK_PC,
-                              NUVEC *, void *);
+    void NuAnimBuffEvaluate_3_QuatB(NUMTX *, ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *, ANI3_ROOT_CALLBACK_PC, NUVEC *,
+                                    void *);
+    void NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *, ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
     i32 NuAnimNumNodes(NUANIMDATA2 *);
     f32 NuAnimCurve2CalcValEx(DWA_CURVE_CELL *, NUANIM_TIME2_PC *, u32);
     extern i32 MaxAnimJoints;
     void NuAnimInit(i32, VARIPTR *, VARIPTR);
     f32 NuAnimCurveCalcVal2(NUANIM_LEGACY_CURVE_PC *, NUANIM_TIME2_PC *);
     void NuAnimCurveSetApplyToMatrix(NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUMTX *);
-    void NuAnimCurveSetApplyBlendToJoint2(NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUANIM_LEGACY_SET_PC *,
-                                          NUANIM_TIME2_PC *, f32, NUHGOBJ_EVAL_JOINT_PC *, NUVEC *, NUVEC *, NUMTX *,
-                                          NUHGOBJ_JOINT_OVERRIDE_PC *);
+    void NuAnimCurveSetApplyBlendToJoint2(NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, f32,
+                                          NUHGOBJ_EVAL_JOINT_PC *, NUVEC *, NUVEC *, NUMTX *, NUHGOBJ_JOINT_OVERRIDE_PC *);
 #ifdef __cplusplus
 }
 #endif

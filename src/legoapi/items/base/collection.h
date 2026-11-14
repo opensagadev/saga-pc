@@ -21,8 +21,7 @@ extern "C" {
     i32 Collection_GotAnyOfType(i32, u32);
 
     void Collection_CreateMaster(char *, i16 *, COLLECTION_BUILD_PC *, i32, f32);
-    void Collection_CreateCustom(char *, i16 *, COLLECTION_BUILD_PC *, u32, u32, u32, i32, i32, VARIPTR *, VARIPTR *,
-                                 i32, f32);
+    void Collection_CreateCustom(char *, i16 *, COLLECTION_BUILD_PC *, u32, u32, u32, i32, i32, VARIPTR *, VARIPTR *, i32, f32);
     i32 Collection_GetIDList(COLLECTION_BUILD_PC *, u32, u32, i16 *, i32 *, i32 *, i32);
     extern i32 COLLECTION_COMPLETIONCOUNT;
 

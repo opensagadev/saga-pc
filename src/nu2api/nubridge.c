@@ -173,17 +173,15 @@ void NuBridgeUpdate(NUVEC *position) {
                     if (bridge->was_drawn) {
                         if (bridge->contact_frames) {
                             delta.x = (bridge->edge_positions[bridge->platform_count - 1][0].x +
-                                       bridge->edge_positions[bridge->platform_count - 1][1].x -
-                                       bridge->edge_positions[0][0].x - bridge->edge_positions[0][1].x) *
+                                       bridge->edge_positions[bridge->platform_count - 1][1].x - bridge->edge_positions[0][0].x -
+                                       bridge->edge_positions[0][1].x) *
                                       0.5f;
                             delta.z = (bridge->edge_positions[bridge->platform_count - 1][0].z +
-                                       bridge->edge_positions[bridge->platform_count - 1][1].z -
-                                       bridge->edge_positions[0][0].z - bridge->edge_positions[0][1].z) *
+                                       bridge->edge_positions[bridge->platform_count - 1][1].z - bridge->edge_positions[0][0].z -
+                                       bridge->edge_positions[0][1].z) *
                                       0.5f;
-                            t = delta.x * (position->x -
-                                           (bridge->edge_positions[0][0].x + bridge->edge_positions[0][1].x) * 0.5f) +
-                                delta.z * (position->z -
-                                           (bridge->edge_positions[0][0].z + bridge->edge_positions[0][1].z) * 0.5f);
+                            t = delta.x * (position->x - (bridge->edge_positions[0][0].x + bridge->edge_positions[0][1].x) * 0.5f) +
+                                delta.z * (position->z - (bridge->edge_positions[0][0].z + bridge->edge_positions[0][1].z) * 0.5f);
                             t = t * (bridge->platform_count - 1) / (delta.x * delta.x + delta.z * delta.z);
                             if (t < 0.0f) {
                                 t = 0.0f;
@@ -195,11 +193,8 @@ void NuBridgeUpdate(NUVEC *position) {
                             t -= n;
                             side = 2.0f / (NuFsqrt(delta.x * delta.x + delta.z * delta.z) * bridge->width);
                             side =
-                                side *
-                                (delta.z * (position->x -
-                                            (bridge->edge_positions[0][0].x + bridge->edge_positions[0][1].x) * 0.5f) +
-                                 delta.x * ((bridge->edge_positions[0][0].z + bridge->edge_positions[0][1].z) * 0.5f -
-                                            position->z));
+                                side * (delta.z * (position->x - (bridge->edge_positions[0][0].x + bridge->edge_positions[0][1].x) * 0.5f) +
+                                        delta.x * ((bridge->edge_positions[0][0].z + bridge->edge_positions[0][1].z) * 0.5f - position->z));
                             if (side > 1.0f) {
                                 side = 1.0f;
                             }
@@ -210,10 +205,8 @@ void NuBridgeUpdate(NUVEC *position) {
                             right = bridge->gravity * (side + 3.0f) * 0.25f;
                             if (t == 0.0f) {
                                 if (n > 0 && n < bridge->platform_count - 1) {
-                                    bridge->edge_motion[n][0].y =
-                                        bridge->edge_motion[n][0].y + (left * bridge->load_multiplier);
-                                    bridge->edge_motion[n][1].y =
-                                        right * bridge->load_multiplier + bridge->edge_motion[n][1].y;
+                                    bridge->edge_motion[n][0].y = bridge->edge_motion[n][0].y + (left * bridge->load_multiplier);
+                                    bridge->edge_motion[n][1].y = right * bridge->load_multiplier + bridge->edge_motion[n][1].y;
                                 }
                             } else {
                                 if (n > 0 && n < bridge->platform_count - 1) {
@@ -251,167 +244,124 @@ void NuBridgeUpdate(NUVEC *position) {
                         }
                         if (bridge->idle_frames < 180) {
                             for (i = 1; i < bridge->platform_count - 1; ++i) {
-                                bridge->edge_motion[i][0].x =
-                                    bridge->edge_motion[i][0].x - bridge->edge_motion[i][0].x * bridge->damping;
+                                bridge->edge_motion[i][0].x = bridge->edge_motion[i][0].x - bridge->edge_motion[i][0].x * bridge->damping;
                                 bridge->edge_motion[i][0].y =
-                                    bridge->edge_motion[i][0].y +
-                                    (bridge->gravity - bridge->edge_motion[i][0].y * bridge->damping);
-                                bridge->edge_motion[i][0].z =
-                                    bridge->edge_motion[i][0].z - bridge->edge_motion[i][0].z * bridge->damping;
-                                bridge->edge_motion[i][1].x =
-                                    bridge->edge_motion[i][1].x - bridge->edge_motion[i][1].x * bridge->damping;
+                                    bridge->edge_motion[i][0].y + (bridge->gravity - bridge->edge_motion[i][0].y * bridge->damping);
+                                bridge->edge_motion[i][0].z = bridge->edge_motion[i][0].z - bridge->edge_motion[i][0].z * bridge->damping;
+                                bridge->edge_motion[i][1].x = bridge->edge_motion[i][1].x - bridge->edge_motion[i][1].x * bridge->damping;
                                 bridge->edge_motion[i][1].y =
-                                    bridge->edge_motion[i][1].y +
-                                    (bridge->gravity - bridge->edge_motion[i][1].y * bridge->damping);
-                                bridge->edge_motion[i][1].z =
-                                    bridge->edge_motion[i][1].z - bridge->edge_motion[i][1].z * bridge->damping;
+                                    bridge->edge_motion[i][1].y + (bridge->gravity - bridge->edge_motion[i][1].y * bridge->damping);
+                                bridge->edge_motion[i][1].z = bridge->edge_motion[i][1].z - bridge->edge_motion[i][1].z * bridge->damping;
                                 bridge->edge_motion[i][0].x =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x)) *
-                                        (bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x)) *
+                                        (bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].x;
                                 bridge->edge_motion[i][0].y =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y)) *
-                                        (bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y)) *
+                                        (bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].y;
                                 bridge->edge_motion[i][0].z =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z)) *
-                                        (bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z)) *
+                                        (bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].z;
                                 bridge->edge_motion[i][0].x =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x)) *
-                                        (bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x)) *
+                                        (bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].x;
                                 bridge->edge_motion[i][0].y =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y)) *
-                                        (bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y)) *
+                                        (bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].y;
                                 bridge->edge_motion[i][0].z =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z)) *
-                                        (bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z)) *
+                                        (bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z) * bridge->spring_strength +
                                     bridge->edge_motion[i][0].z;
                                 bridge->edge_motion[i][1].x =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x)) *
-                                        (bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x)) *
+                                        (bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].x;
                                 bridge->edge_motion[i][1].y =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y)) *
-                                        (bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y)) *
+                                        (bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].y;
                                 bridge->edge_motion[i][1].z =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z)) *
-                                        (bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z)) *
+                                        (bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].z;
                                 bridge->edge_motion[i][1].x =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x)) *
-                                        (bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x)) *
+                                        (bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].x;
                                 bridge->edge_motion[i][1].y =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y)) *
-                                        (bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y)) *
+                                        (bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].y;
                                 bridge->edge_motion[i][1].z =
-                                    NuBridgeFabsPc(
-                                        (bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z)) *
-                                        (bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z) *
-                                        bridge->spring_strength * 0.5f +
-                                    (bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z) *
-                                        bridge->spring_strength +
+                                    NuBridgeFabsPc((bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z)) *
+                                        (bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z) * bridge->spring_strength *
+                                        0.5f +
+                                    (bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z) * bridge->spring_strength +
                                     bridge->edge_motion[i][1].z;
                             }
                             for (i = 1; i < bridge->platform_count - 1; ++i) {
-                                bridge->edge_positions[i][0].x =
-                                    bridge->edge_positions[i][0].x + (bridge->edge_motion[i][0].x);
-                                bridge->edge_positions[i][0].y =
-                                    bridge->edge_positions[i][0].y + (bridge->edge_motion[i][0].y);
-                                bridge->edge_positions[i][0].z =
-                                    bridge->edge_positions[i][0].z + (bridge->edge_motion[i][0].z);
-                                bridge->edge_positions[i][1].x =
-                                    bridge->edge_positions[i][1].x + (bridge->edge_motion[i][1].x);
-                                bridge->edge_positions[i][1].y =
-                                    bridge->edge_positions[i][1].y + (bridge->edge_motion[i][1].y);
-                                bridge->edge_positions[i][1].z =
-                                    bridge->edge_positions[i][1].z + (bridge->edge_motion[i][1].z);
+                                bridge->edge_positions[i][0].x = bridge->edge_positions[i][0].x + (bridge->edge_motion[i][0].x);
+                                bridge->edge_positions[i][0].y = bridge->edge_positions[i][0].y + (bridge->edge_motion[i][0].y);
+                                bridge->edge_positions[i][0].z = bridge->edge_positions[i][0].z + (bridge->edge_motion[i][0].z);
+                                bridge->edge_positions[i][1].x = bridge->edge_positions[i][1].x + (bridge->edge_motion[i][1].x);
+                                bridge->edge_positions[i][1].y = bridge->edge_positions[i][1].y + (bridge->edge_motion[i][1].y);
+                                bridge->edge_positions[i][1].z = bridge->edge_positions[i][1].z + (bridge->edge_motion[i][1].z);
                                 NuMtxSetRotationY(&bridge->platform_matrices[i], bridge->rotation_y);
                                 left = NuFsqrt((bridge->edge_positions[i][1].x - bridge->edge_positions[i][0].x) *
                                                    (bridge->edge_positions[i][1].x - bridge->edge_positions[i][0].x) +
                                                (bridge->edge_positions[i][1].z - bridge->edge_positions[i][0].z) *
                                                    (bridge->edge_positions[i][1].z - bridge->edge_positions[i][0].z));
-                                NuMtxPreRotateX(
-                                    &bridge->platform_matrices[i],
-                                    NuAtan2D((bridge->edge_positions[i][1].y - bridge->edge_positions[i][0].y), left));
-                                left = NuFsqrt(
-                                    (bridge->edge_positions[i + 1][0].x + bridge->edge_positions[i + 1][1].x -
-                                     bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i - 1][1].x) *
-                                        (bridge->edge_positions[i + 1][0].x + bridge->edge_positions[i + 1][1].x -
-                                         bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i - 1][1].x) +
-                                    (bridge->edge_positions[i + 1][0].z + bridge->edge_positions[i + 1][1].z -
-                                     bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i - 1][1].z) *
-                                        (bridge->edge_positions[i + 1][0].z + bridge->edge_positions[i + 1][1].z -
-                                         bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i - 1][1].z));
-                                NuMtxPreRotateZ(
-                                    &bridge->platform_matrices[i],
-                                    NuAtan2D((bridge->edge_positions[i + 1][0].y + bridge->edge_positions[i + 1][1].y -
-                                              bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i - 1][1].y),
-                                             left));
-                                bridge->platform_matrices[i].m30 =
-                                    (bridge->edge_positions[i][0].x + bridge->edge_positions[i][1].x) * 0.5f;
-                                bridge->platform_matrices[i].m31 =
-                                    (bridge->edge_positions[i][0].y + bridge->edge_positions[i][1].y) * 0.5f;
-                                bridge->platform_matrices[i].m32 =
-                                    (bridge->edge_positions[i][0].z + bridge->edge_positions[i][1].z) * 0.5f;
+                                NuMtxPreRotateX(&bridge->platform_matrices[i],
+                                                NuAtan2D((bridge->edge_positions[i][1].y - bridge->edge_positions[i][0].y), left));
+                                left = NuFsqrt((bridge->edge_positions[i + 1][0].x + bridge->edge_positions[i + 1][1].x -
+                                                bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i - 1][1].x) *
+                                                   (bridge->edge_positions[i + 1][0].x + bridge->edge_positions[i + 1][1].x -
+                                                    bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i - 1][1].x) +
+                                               (bridge->edge_positions[i + 1][0].z + bridge->edge_positions[i + 1][1].z -
+                                                bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i - 1][1].z) *
+                                                   (bridge->edge_positions[i + 1][0].z + bridge->edge_positions[i + 1][1].z -
+                                                    bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i - 1][1].z));
+                                NuMtxPreRotateZ(&bridge->platform_matrices[i],
+                                                NuAtan2D((bridge->edge_positions[i + 1][0].y + bridge->edge_positions[i + 1][1].y -
+                                                          bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i - 1][1].y),
+                                                         left));
+                                bridge->platform_matrices[i].m30 = (bridge->edge_positions[i][0].x + bridge->edge_positions[i][1].x) * 0.5f;
+                                bridge->platform_matrices[i].m31 = (bridge->edge_positions[i][0].y + bridge->edge_positions[i][1].y) * 0.5f;
+                                bridge->platform_matrices[i].m32 = (bridge->edge_positions[i][0].z + bridge->edge_positions[i][1].z) * 0.5f;
                             }
                             NuMtxSetRotationY(&bridge->platform_matrices[0], bridge->rotation_y);
                             left = NuFsqrt((bridge->edge_positions[0][1].x - bridge->edge_positions[0][0].x) *
                                                (bridge->edge_positions[0][1].x - bridge->edge_positions[0][0].x) +
                                            (bridge->edge_positions[0][1].z - bridge->edge_positions[0][0].z) *
                                                (bridge->edge_positions[0][1].z - bridge->edge_positions[0][0].z));
-                            NuMtxPreRotateX(
-                                &bridge->platform_matrices[0],
-                                NuAtan2D((bridge->edge_positions[0][1].y - bridge->edge_positions[0][0].y), left));
+                            NuMtxPreRotateX(&bridge->platform_matrices[0],
+                                            NuAtan2D((bridge->edge_positions[0][1].y - bridge->edge_positions[0][0].y), left));
                             left = NuFsqrt((bridge->edge_positions[1][0].x + bridge->edge_positions[1][1].x -
                                             bridge->edge_positions[0][0].x - bridge->edge_positions[0][1].x) *
                                                (bridge->edge_positions[1][0].x + bridge->edge_positions[1][1].x -
@@ -420,20 +370,15 @@ void NuBridgeUpdate(NUVEC *position) {
                                             bridge->edge_positions[0][0].z - bridge->edge_positions[0][1].z) *
                                                (bridge->edge_positions[1][0].z + bridge->edge_positions[1][1].z -
                                                 bridge->edge_positions[0][0].z - bridge->edge_positions[0][1].z));
-                            right = (bridge->edge_positions[0][0].y + bridge->edge_positions[0][1].y +
-                                     bridge->edge_positions[1][0].y + bridge->edge_positions[1][1].y) *
+                            right = (bridge->edge_positions[0][0].y + bridge->edge_positions[0][1].y + bridge->edge_positions[1][0].y +
+                                     bridge->edge_positions[1][1].y) *
                                     0.25f;
-                            NuMtxPreRotateZ(
-                                &bridge->platform_matrices[0],
-                                NuAtan2D(bridge->edge_positions[1][0].y + bridge->edge_positions[1][1].y - right * 2.0f,
-                                         left));
-                            bridge->platform_matrices[0].m30 =
-                                (bridge->edge_positions[0][0].x + bridge->edge_positions[0][1].x) * 0.5f;
+                            NuMtxPreRotateZ(&bridge->platform_matrices[0],
+                                            NuAtan2D(bridge->edge_positions[1][0].y + bridge->edge_positions[1][1].y - right * 2.0f, left));
+                            bridge->platform_matrices[0].m30 = (bridge->edge_positions[0][0].x + bridge->edge_positions[0][1].x) * 0.5f;
                             bridge->platform_matrices[0].m31 = right;
-                            bridge->platform_matrices[0].m32 =
-                                (bridge->edge_positions[0][0].z + bridge->edge_positions[0][1].z) * 0.5f;
-                            NuMtxSetRotationY(&bridge->platform_matrices[bridge->platform_count - 1],
-                                              bridge->rotation_y);
+                            bridge->platform_matrices[0].m32 = (bridge->edge_positions[0][0].z + bridge->edge_positions[0][1].z) * 0.5f;
+                            NuMtxSetRotationY(&bridge->platform_matrices[bridge->platform_count - 1], bridge->rotation_y);
                             left = NuFsqrt((bridge->edge_positions[bridge->platform_count - 2][1].x -
                                             bridge->edge_positions[bridge->platform_count - 2][0].x) *
                                                (bridge->edge_positions[bridge->platform_count - 2][1].x -
@@ -470,8 +415,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                     0.25f;
                             NuMtxPreRotateZ(&bridge->platform_matrices[bridge->platform_count - 1],
                                             NuAtan2D(bridge->edge_positions[bridge->platform_count - 1][0].y +
-                                                         bridge->edge_positions[bridge->platform_count - 1][1].y -
-                                                         right * 2.0f,
+                                                         bridge->edge_positions[bridge->platform_count - 1][1].y - right * 2.0f,
                                                      left));
                             bridge->platform_matrices[bridge->platform_count - 1].m30 =
                                 (bridge->edge_positions[bridge->platform_count - 1][0].x +
@@ -547,9 +491,9 @@ void NuBridgeOn(i32 enabled) {
     NuBridgeProc = enabled;
 }
 
-i32 NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDLE *second, NUVEC *start, NUVEC *end, f32 width,
-                   i16 rotation, f32 spring_strength, f32 damping, f32 gravity, f32 load_multiplier, i32 count,
-                   f32 field_b04, f32 field_b08, i32 field_ae7, u32 colour) {
+i32 NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDLE *second, NUVEC *start, NUVEC *end, f32 width, i16 rotation,
+                   f32 spring_strength, f32 damping, f32 gravity, f32 load_multiplier, i32 count, f32 field_b04, f32 field_b08,
+                   i32 field_ae7, u32 colour) {
     i32 index;
     i32 i;
     NUBRIDGE_PC *bridge;
@@ -588,8 +532,8 @@ i32 NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDLE *secon
         delta.x = end->x - start->x;
         delta.y = end->y - start->y;
         delta.z = end->z - start->z;
-        bridge->cull_radius_squared = (delta.x * 0.5f) * (delta.x * 0.5f) + (delta.y * 0.5f) * (delta.y * 0.5f) +
-                                      (delta.z * 0.5f) * (delta.z * 0.5f) + 1.0f;
+        bridge->cull_radius_squared =
+            (delta.x * 0.5f) * (delta.x * 0.5f) + (delta.y * 0.5f) * (delta.y * 0.5f) + (delta.z * 0.5f) * (delta.z * 0.5f) + 1.0f;
         bridge->in_range = 0;
 
         inverse_length = 1.0f / NuFsqrt(delta.x * delta.x + delta.z * delta.z);
@@ -601,8 +545,7 @@ i32 NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDLE *secon
         /* The loop is intentionally not clamped to the 24-element arrays. */
         for (i = 0; i < count; ++i) {
             if (NuSpecialExistsFn(&bridge->special)) {
-                bridge->platforms[i] =
-                    (i16)NewPlatInst(&bridge->platform_matrices[i], NuSpecialGetInstanceix(&bridge->special));
+                bridge->platforms[i] = (i16)NewPlatInst(&bridge->platform_matrices[i], NuSpecialGetInstanceix(&bridge->special));
             } else {
                 bridge->platforms[i] = -1;
             }

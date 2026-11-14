@@ -225,8 +225,8 @@ extern "C" {
         }
         for (index = 0; index < 8; ++index) {
             GAMEOBJECT *player = (GAMEOBJECT *)Player[index];
-            if (player != NULL && (player->flags_1fc_word & 0x80) != 0 &&
-                player->character_context == LEGOCONTEXT_BUILDIT && player->grapple == buildit) {
+            if (player != NULL && (player->flags_1fc_word & 0x80) != 0 && player->character_context == LEGOCONTEXT_BUILDIT &&
+                player->grapple == buildit) {
                 return player;
             }
         }
@@ -275,8 +275,7 @@ extern "C" GIZBUILDIT_PC *GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *p
                 i32 p;
                 for (p = 0; p < 8; p++) {
                     GAMEOBJECT *object = (GAMEOBJECT *)Player[p];
-                    if (object != NULL && object->character_context == LEGOCONTEXT_BUILDIT &&
-                        object->grapple == (void *)buildit) {
+                    if (object != NULL && object->character_context == LEGOCONTEXT_BUILDIT && object->grapple == (void *)buildit) {
                         break;
                     }
                 }
@@ -380,8 +379,7 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEA
         from_position = *(NUVEC *)&draw->m30;
         to_position = *(NUVEC *)&data->end_mtx.m30;
         result.m30 = (to_position.x - from_position.x) * progress + from_position.x;
-        result.m31 =
-            (to_position.y - from_position.y) * progress + from_position.y + NU_SIN_LUT(progress * 32768.0) * 0.1f;
+        result.m31 = (to_position.y - from_position.y) * progress + from_position.y + NU_SIN_LUT(progress * 32768.0) * 0.1f;
         result.m32 = (to_position.z - from_position.z) * progress + from_position.z;
         *draw = result;
     }
@@ -406,8 +404,7 @@ extern "C" void GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
     NUQUAT to_rotation;
     NUQUAT rotation;
     NUVEC to_position;
-    if (buildit == NULL || buildit->builders_active == 0 || buildit->build_state != 0 ||
-        buildit->anim_object_count == 0) {
+    if (buildit == NULL || buildit->builders_active == 0 || buildit->build_state != 0 || buildit->anim_object_count == 0) {
         return;
     }
     progress = 1.0f - buildit->step_timer / buildit->step_duration;
@@ -435,8 +432,8 @@ extern "C" void GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
     }
     NuSpecialDrawAt(&piece->special, &matrix);
     if (draw_reflection != 0) {
-        if (MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
-                             WORLD->current_level->reflection_y, &reflected) != 0) {
+        if (MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height, WORLD->current_level->reflection_y,
+                             &reflected) != 0) {
             NuRndrStartReflectionRender(0);
             NuSpecialDrawAt(&piece->special, &reflected);
             NuRndrEndReflectionRender();
@@ -459,8 +456,7 @@ extern "C" {
         f32 dx;
         f32 dz;
         f32 inverse_distance;
-        if (PLAYER_BUILDIT(player) == NULL || PLAYER_BUILDIT(player)->anim_set == NULL ||
-            PLAYER_BUILDIT(player)->anim_object_count == 0) {
+        if (PLAYER_BUILDIT(player) == NULL || PLAYER_BUILDIT(player)->anim_set == NULL || PLAYER_BUILDIT(player)->anim_object_count == 0) {
             return;
         }
         count = PLAYER_BUILDIT(player)->anim_object_count;
@@ -602,8 +598,7 @@ extern "C" {
         buildit = (GIZBUILDIT_PC *)WORLD->giz_buildit_sys->buildits;
         for (i = 0; i < WORLD->giz_buildit_sys->count; ++i, ++buildit) {
             centre = v000;
-            if ((buildit->state_flags & 8) == 0 || (buildit->availability_flags & 2) == 0 ||
-                buildit->built_object_count <= 0) {
+            if ((buildit->state_flags & 8) == 0 || (buildit->availability_flags & 2) == 0 || buildit->built_object_count <= 0) {
                 continue;
             }
             end_position = buildit->position;
@@ -727,10 +722,9 @@ extern "C" {
         system->max_animation_objects = (u16)world->current_level->max_buildit_objects;
         system->buildits = (REGISTRY_BUILDIT_RECORD_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
                                                                          system->capacity * sizeof(*system->buildits));
-        system->anim_pool =
-            GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 200, system->max_animation_objects);
-        system->anim_objects = (GAMEANIMOBJ **)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                               system->max_animation_objects * sizeof(void *));
+        system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 200, system->max_animation_objects);
+        system->anim_objects =
+            (GAMEANIMOBJ **)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->max_animation_objects * sizeof(void *));
         for (i = 0; i < system->capacity; ++i) {
             system->buildits[i].anim_set =
                 GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_pool, world->game_anim_sys);
@@ -885,8 +879,7 @@ extern "C" {
 
         if (world_ptr != NULL) {
             WORLDINFO *world = (WORLDINFO *)(world_ptr);
-            buildit->room_index =
-                world->current_gscn != NULL ? NuPortalWhichRoom(world->current_gscn, &buildit->file_position) : -1;
+            buildit->room_index = world->current_gscn != NULL ? NuPortalWhichRoom(world->current_gscn, &buildit->file_position) : -1;
         }
     }
 
@@ -987,8 +980,7 @@ extern "C" {
         }
         buildit = system->buildits;
         for (index = 0; index < system->count; ++index, ++buildit) {
-            if (!(buildit->availability_flags & 2) ||
-                (buildit->room_index >= 0 && world->rooms_visible_ptr[buildit->room_index] == 0)) {
+            if (!(buildit->availability_flags & 2) || (buildit->room_index >= 0 && world->rooms_visible_ptr[buildit->room_index] == 0)) {
                 continue;
             }
             if (!(buildit->state_flags & 0x400)) {
@@ -1011,8 +1003,7 @@ extern "C" {
                     matrix = data->draw_mtx;
                     data->was_drawn = (u8)NuSpecialDrawAt(&object->special, &matrix);
                     if ((buildit->state_flags & 0x100) && !(object->flags & 2) &&
-                        MatrixReflection(&data->draw_mtx, 2, reflection_height, WORLD->current_level->reflection_y,
-                                         &matrix)) {
+                        MatrixReflection(&data->draw_mtx, 2, reflection_height, WORLD->current_level->reflection_y, &matrix)) {
                         NuSpecialDrawAt(&object->special, &matrix);
                     }
                 }
@@ -1054,8 +1045,7 @@ extern "C" {
 
     i32 GizmoBuildit_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_read) {
         BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)gizmo->object;
-        if (((buildit->availability.visible && buildit->availability.active) || force_read != 0) &&
-            buildit->build_state == 2) {
+        if (((buildit->availability.visible && buildit->availability.active) || force_read != 0) && buildit->build_state == 2) {
             return 1;
         }
         return 0;
@@ -1322,8 +1312,7 @@ extern "C" {
                     if (EdFileReadChar() != 0) {
                         EdFileRead(linked_name, 16);
                         for (linked_index = 0; linked_index < system->count; ++linked_index) {
-                            if (NuStrICmp(((BUILDIT_RESET_PC *)system->buildits)[linked_index].name, linked_name) ==
-                                0) {
+                            if (NuStrICmp(((BUILDIT_RESET_PC *)system->buildits)[linked_index].name, linked_name) == 0) {
                                 buildit->linked_buildit = &((BUILDIT_RESET_PC *)system->buildits)[linked_index];
                                 buildit->availability_flags |= 3;
                                 break;
@@ -1334,8 +1323,7 @@ extern "C" {
                 buildit->anim_object_count = 0;
                 buildit->anim_objects = &system->anim_objects[animation_index];
                 for (object = buildit->anim_set->objects; object != NULL; object = object->next) {
-                    if ((object->animation != NULL && object->instance_animation != NULL) ||
-                        (buildit->state_flags & 0x40)) {
+                    if ((object->animation != NULL && object->instance_animation != NULL) || (buildit->state_flags & 0x40)) {
                         buildit->anim_objects[buildit->anim_object_count] = object;
                         ++buildit->anim_object_count;
                         ++animation_index;
@@ -1415,8 +1403,8 @@ extern "C" {
         }
         buildit = system->buildits;
         for (index = 0; index < system->count; ++index, ++buildit) {
-            if ((buildit->availability_flags & 2) == 0 || (buildit->availability_flags & 1) == 0 ||
-                buildit->anim_set == NULL || buildit->anim_object_count == 0) {
+            if ((buildit->availability_flags & 2) == 0 || (buildit->availability_flags & 1) == 0 || buildit->anim_set == NULL ||
+                buildit->anim_object_count == 0) {
                 continue;
             }
             if (buildit->build_state == 1) {
@@ -1438,8 +1426,8 @@ extern "C" {
                         if ((u16)buildit->completion_score > 0 || hearts != 0) {
                             NuVecRotateX(&reward_direction, &v010, (u16)buildit->field_58);
                             NuVecRotateY(&reward_direction, &reward_direction, (u16)buildit->field_5a);
-                            AddPickups((u16)buildit->completion_score, hearts, 0, 0, &finish_position,
-                                       &reward_direction, 2.0f, -1, 1.75f, 2000000.0f, NULL, 1, 0);
+                            AddPickups((u16)buildit->completion_score, hearts, 0, 0, &finish_position, &reward_direction, 2.0f, -1, 1.75f,
+                                       2000000.0f, NULL, 1, 0);
                         }
                     }
                     if (buildit->blowup_type != -1) {
@@ -1464,8 +1452,7 @@ extern "C" {
                     if ((buildit->state_flags & 1) != 0) {
                         displacement.x = displacement.y = 0.0f;
                         displacement.z = offset;
-                        NuVecRotateY(&displacement, &displacement,
-                                     (i32)((u32)(u16)buildit->wobble_parameter << 16) / 360);
+                        NuVecRotateY(&displacement, &displacement, (i32)((u32)(u16)buildit->wobble_parameter << 16) / 360);
                     } else {
                         displacement.x = displacement.z = 0.0f;
                         displacement.y = offset;
@@ -1503,8 +1490,7 @@ extern "C" {
                                 angle_step = (u16)(i32)BuildItSafeRatioPc(65536.0f, buildit->anim_object_count);
                                 radius = 0.5 - progress * (f64)0.3f;
                             }
-                            for (piece_index = buildit->anim_object_count - 1;
-                                 piece_index >= buildit->built_object_count; --piece_index) {
+                            for (piece_index = buildit->anim_object_count - 1; piece_index >= buildit->built_object_count; --piece_index) {
                                 NUVEC *position;
                                 angle = (u16)(angle + angle_step);
                                 target = centre;
@@ -1515,12 +1501,10 @@ extern "C" {
                                 target.y = SeekValF(position->y, target.y, 6.0f);
                                 target.z = SeekValF(position->z, target.z, 6.0f);
                                 if (buildit->linked_buildit != NULL) {
-                                    GIZBUILDITANIMDATA_s *data =
-                                        (GIZBUILDITANIMDATA_s *)buildit->anim_objects[piece_index]->object_data;
+                                    GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[piece_index]->object_data;
                                     *(NUVEC *)&data->draw_mtx.m30 = target;
                                 } else {
-                                    NuSpecialSetDrawPos((nuhspecial_s *)&buildit->anim_objects[piece_index]->special,
-                                                        &target);
+                                    NuSpecialSetDrawPos((nuhspecial_s *)&buildit->anim_objects[piece_index]->special, &target);
                                     NuSpecialUpdate(&buildit->anim_objects[piece_index]->special);
                                 }
                             }
@@ -1551,10 +1535,8 @@ extern "C" {
                             buildit->reset_step_timer = 0.0f;
                             buildit->build_state = 1;
                             for (piece_index = 0; piece_index < buildit->anim_object_count; ++piece_index) {
-                                GIZBUILDITANIMDATA_s *data =
-                                    (GIZBUILDITANIMDATA_s *)buildit->anim_objects[piece_index]->object_data;
-                                AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab],
-                                              (NUVEC *)&data->end_mtx.m30);
+                                GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[piece_index]->object_data;
+                                AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], (NUVEC *)&data->end_mtx.m30);
                             }
                         } else {
                             buildit->reset_step_duration = 0.3f;
@@ -1563,8 +1545,7 @@ extern "C" {
                     } else {
                         GAMEANIMOBJ *piece = buildit->anim_objects[buildit->built_object_count];
                         if (previous_timer == buildit->reset_step_duration) {
-                            AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab],
-                                          NuSpecialGetDrawPos(&piece->special));
+                            AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], NuSpecialGetDrawPos(&piece->special));
                         }
                         GizMoveAttractoBuildItPiece((GIZBUILDIT_s *)buildit, piece);
                     }
@@ -1592,10 +1573,8 @@ extern "C" {
                             buildit->reset_step_timer = 0.0f;
                             buildit->build_state = 1;
                             for (piece_index = 0; piece_index < buildit->anim_object_count; ++piece_index) {
-                                GIZBUILDITANIMDATA_s *data =
-                                    (GIZBUILDITANIMDATA_s *)buildit->anim_objects[piece_index]->object_data;
-                                AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab],
-                                              (NUVEC *)&data->end_mtx.m30);
+                                GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[piece_index]->object_data;
+                                AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], (NUVEC *)&data->end_mtx.m30);
                             }
                             buzz_time = 0.1f;
                         } else if (buildit->built_object_count <= buildit->anim_object_count) {
@@ -1608,10 +1587,9 @@ extern "C" {
                             } else if (buzz_frames != 0) {
                                 NewBuzzFrames(builder->pad->bound_pad, buzz_frames, 0);
                             }
-                            if (buildit->build_state == 0 && ((builder->pad->buttons_held & GAMEPAD_SPECIAL) != 0 ||
-                                                              (builder->flags_1f8 & 0x40000) != 0)) {
-                                builder->flags_e20 =
-                                    ((~builder->flags_e20 ^ builder->flags_e20) & 0x4000) ^ builder->flags_e20;
+                            if (buildit->build_state == 0 &&
+                                ((builder->pad->buttons_held & GAMEPAD_SPECIAL) != 0 || (builder->flags_1f8 & 0x40000) != 0)) {
+                                builder->flags_e20 = ((~builder->flags_e20 ^ builder->flags_e20) & 0x4000) ^ builder->flags_e20;
                                 if (builder->big_jump_animation < 10) {
                                     ++builder->big_jump_animation;
                                 }
@@ -1622,8 +1600,7 @@ extern "C" {
                     } else {
                         GAMEANIMOBJ *piece = buildit->anim_objects[buildit->built_object_count];
                         if (previous_timer == buildit->reset_step_duration) {
-                            AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab],
-                                          NuSpecialGetDrawPos(&piece->special));
+                            AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], NuSpecialGetDrawPos(&piece->special));
                         }
                         if (buildit->linked_buildit == NULL) {
                             NuSpecialSetVisibility(&piece->special, 0);
@@ -1695,8 +1672,7 @@ extern "C" {
                             NuMtxGetZAxis(&matrix, &axis);
                             NuMtxPreRotateZ(&matrix, (i32)(angle * BuildItAxisWobbleFactorPc(&axis)));
                         }
-                        matrix.m31 += (f64)NU_SIN_LUT((f64)phase * 32768.0) * GIZBUILDITWOBBLEJUMPHEIGHT *
-                                      buildit->interaction_radius;
+                        matrix.m31 += (f64)NU_SIN_LUT((f64)phase * 32768.0) * GIZBUILDITWOBBLEJUMPHEIGHT * buildit->interaction_radius;
                     }
                     if (buildit->linked_buildit != NULL) {
                         data->draw_mtx = matrix;
@@ -1775,13 +1751,11 @@ extern "C" {
                 ((GIZBUILDIT_PC *)player->grapple)->availability_flags |= 4;
             }
             animation = player->field_7aa;
-            if (player->character_model->model_data_b[animation] != NULL &&
-                AnimPlaying(&player->anim_packet, animation, 1, 0) == NULL) {
+            if (player->character_model->model_data_b[animation] != NULL && AnimPlaying(&player->anim_packet, animation, 1, 0) == NULL) {
                 return;
             }
             buildit = (GIZBUILDIT_PC *)player->grapple;
-            if (buildit->build_state == 0 && (player->pad->buttons_held & GAMEPAD_SPECIAL) != 0 &&
-                (f64)player->context_timer < (f64)0.2f) {
+            if (buildit->build_state == 0 && (player->pad->buttons_held & GAMEPAD_SPECIAL) != 0 && (f64)player->context_timer < (f64)0.2f) {
                 player->context_timer = 0.2f;
             } else {
                 timer = (f64)player->context_timer - FRAMETIME;
@@ -1826,8 +1800,7 @@ extern "C" {
         GizBuildIt_SetHeadTarget((GIZBUILDIT_s *)buildit, player);
         buildit->availability_flags |= 4;
         if ((player->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0 ||
-            (objInNetWaitContext(player, LEGOCONTEXT_BUILDIT) != 0 &&
-             (player->pad->buttons_held & GAMEPAD_SPECIAL) != 0)) {
+            (objInNetWaitContext(player, LEGOCONTEXT_BUILDIT) != 0 && (player->pad->buttons_held & GAMEPAD_SPECIAL) != 0)) {
             if (GizBuildIt_CanStartBuildingFn != NULL && GizBuildIt_CanStartBuildingFn(buildit, player) == 0) {
                 return;
             }

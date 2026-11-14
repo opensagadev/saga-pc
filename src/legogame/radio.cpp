@@ -73,14 +73,12 @@ void PlayRadio(char *special_name, char *blowup_name, i32 play) {
             for (i = 0, radio = pool; i < 8; ++i, ++radio) {
                 if (radio->time <= 0.0f) {
                     if (blowup_name != NULL) {
-                        GIZMO_PC *gizmo =
-                            (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, blowup_name);
+                        GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, blowup_name);
                         if (gizmo == NULL) {
                             return;
                         }
                         radio->blowup = (GIZMOBLOWUP_PC *)gizmo->object;
-                    } else if (special_name == NULL ||
-                               NuSpecialFind(WORLD->current_gscn, &radio->special, special_name, 1) == 0) {
+                    } else if (special_name == NULL || NuSpecialFind(WORLD->current_gscn, &radio->special, special_name, 1) == 0) {
                         return;
                     }
                     radio->time = RadioLifetimePc;

@@ -120,8 +120,7 @@ extern "C" {
 extern "C" {
 #endif
     void PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *, ID3DXConstantTable *, ID3DXConstantTable *);
-    void PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32, const char *, i32, const char *, i32,
-                                  i32);
+    void PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *, const u32 *, i32, const char *, i32, const char *, i32, i32);
 #ifdef __cplusplus
 }
 #endif

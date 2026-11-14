@@ -6,8 +6,7 @@ void saveloadASDelete(i32 slot);
 extern i32 saveload_slotused[];
 void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
-void SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, i32 autosave,
-                          SAVE_VOID_FN_PC draw_save_icon) {
+void SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, i32 autosave, SAVE_VOID_FN_PC draw_save_icon) {
     SAVESLOTS = slots;
     if (slots >= 6) {
         SAVESLOTS = 6;
@@ -15,25 +14,22 @@ void SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 sav
     memcard_hashfn = hashfn;
     memcard_savedata = save;
     memcard_savedatasize = save_size;
-    memcard_savedatabuffer =
-        NuAlloc(save_size + 4, "d:\\projects\\game_saga\\gameapi.saga\\gui\\gamemenu\\apisave.c", 0x6d);
+    memcard_savedatabuffer = NuAlloc(save_size + 4, "d:\\projects\\game_saga\\gameapi.saga\\gui\\gamemenu\\apisave.c", 0x6d);
     memcard_autosave = autosave;
     memcard_drawasiconfn = draw_save_icon;
 }
 
-void SaveSystemInitialiseEx(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, void *header, i32 header_size,
-                            i32 autosave, SAVE_VOID_FN_PC draw_save_icon) {
+void SaveSystemInitialiseEx(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, void *header, i32 header_size, i32 autosave,
+                            SAVE_VOID_FN_PC draw_save_icon) {
     memcard_hashfn = hashfn;
     memcard_savedata = save;
     memcard_savedatasize = save_size;
-    memcard_savedatabuffer =
-        NuAlloc(save_size + 4, "d:\\projects\\game_saga\\gameapi.saga\\gui\\gamemenu\\apisave.c", 0x7f);
+    memcard_savedatabuffer = NuAlloc(save_size + 4, "d:\\projects\\game_saga\\gameapi.saga\\gui\\gamemenu\\apisave.c", 0x7f);
     memcard_autosave = autosave;
     memcard_drawasiconfn = draw_save_icon;
     memcard_headerdata = header;
     memcard_headerdatasize = header_size;
-    memcard_headerdatabuffer =
-        NuAlloc(header_size + 4, "d:\\projects\\game_saga\\gameapi.saga\\gui\\gamemenu\\apisave.c", 0x84);
+    memcard_headerdatabuffer = NuAlloc(header_size + 4, "d:\\projects\\game_saga\\gameapi.saga\\gui\\gamemenu\\apisave.c", 0x84);
     if (header != NULL) {
         SAVESLOTS = slots < 5 ? slots : 5;
     } else {
@@ -60,11 +56,11 @@ void UpdateSaveSlots(void) {
     if (memcard_autosavecanceldelay > 0.0f) {
         memcard_autosavecanceldelay -= elapsed;
     }
-#define ADVANCE_SAVE_DELAY(message, result)                                                                            \
-    if (message > 0.0f) {                                                                                              \
-        message -= elapsed;                                                                                            \
-    } else if (result > 0.0f) {                                                                                        \
-        result -= elapsed;                                                                                             \
+#define ADVANCE_SAVE_DELAY(message, result)                                                                                                \
+    if (message > 0.0f) {                                                                                                                  \
+        message -= elapsed;                                                                                                                \
+    } else if (result > 0.0f) {                                                                                                            \
+        result -= elapsed;                                                                                                                 \
     }
     ADVANCE_SAVE_DELAY(memcard_loadmessage_delay, memcard_loadresult_delay);
     ADVANCE_SAVE_DELAY(memcard_savemessage_delay, memcard_saveresult_delay);
@@ -143,8 +139,7 @@ void UpdateSaveSlots(void) {
             memcard_autosavestarted = 1;
             memcard_autosaveinprogress = 1;
         }
-    } else if (memcard_autosavestarted != 0 && memcard_saveneeded == 0 && memcard_savestarted == 0 &&
-               memcard_autosavepredelay <= 0.0f) {
+    } else if (memcard_autosavestarted != 0 && memcard_saveneeded == 0 && memcard_savestarted == 0 && memcard_autosavepredelay <= 0.0f) {
         memcard_slot = saveload_autosave;
         memcard_saveneeded = 1;
     }
@@ -246,8 +241,7 @@ void loadsaveCallEachFrame(void) {
     }
 }
 
-void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
-            u8 blue) {
+void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green, u8 blue) {
     Text3DEx(text, x, y, z, x_scale, y_scale, z_scale, alignment, red, green, blue, 128);
 }
 
@@ -830,8 +824,7 @@ void APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
         x = 0.0 - (menu->selected_column - first) * 0.5 - slideright * 0.5 / 10.0 + slideleft * 0.5 / 10.0;
     }
     for (; slot <= last; ++slot, x += 0.5) {
-        highlight =
-            menu->selected_row == menu->first_row && menu->selected_column == slot && slideleft == 0 && slideright == 0;
+        highlight = menu->selected_row == menu->first_row && menu->selected_column == slot && slideleft == 0 && slideright == 0;
         if (slot < 0 || slot > menu->last_column) {
             continue;
         }
@@ -858,8 +851,8 @@ void APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
                 green = MENUENTRYG;
                 blue = MENUENTRYB;
             }
-            MenuText3DEx(apitxt_NEWSAVE, x, y, 1.0f, (f32)(MenuTextScalePc * (f64)0.85f),
-                         (f32)(MenuTextScalePc * (f64)0.85f), MenuTextScalePc, 0, red, green, blue, (u8)MenuA);
+            MenuText3DEx(apitxt_NEWSAVE, x, y, 1.0f, (f32)(MenuTextScalePc * (f64)0.85f), (f32)(MenuTextScalePc * (f64)0.85f),
+                         MenuTextScalePc, 0, red, green, blue, (u8)MenuA);
         }
     }
     if (menu->selected_row == 0) {
@@ -939,8 +932,8 @@ void MenuDrawNoMemoryCard(MENU *menu) {
 }
 
 void MenuDrawDeleteConfirm(MENU *menu) {
-    MenuSmartTextEx(apitxt_CONFIRMDELETE, 0.0f, 0.0f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
-                    MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_CONFIRMDELETE, 0.0f, 0.0f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, MENUNORMALR, MENUNORMALG,
+                    MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
@@ -952,11 +945,11 @@ void MenuDrawSaveConfirm(MENU *menu) {
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
     if (Menu_Overwriteflag != 0) {
-        MenuSmartTextEx(apitxt_CONFIRMOVERWRITE, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc,
-                        0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
+        MenuSmartTextEx(apitxt_CONFIRMOVERWRITE, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, MENUNORMALR,
+                        MENUNORMALG, MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
     } else {
-        MenuSmartTextEx(apitxt_CONFIRMSAVE, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
-                        MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
+        MenuSmartTextEx(apitxt_CONFIRMSAVE, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, MENUNORMALR,
+                        MENUNORMALG, MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
     }
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
@@ -968,8 +961,8 @@ void MenuDrawSaveCancel(MENU *menu) {
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
-    MenuSmartTextEx(apitxt_DOYOUWANTTOABORT, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
-                    MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_DOYOUWANTTOABORT, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, MENUNORMALR,
+                    MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
@@ -980,16 +973,16 @@ void MenuDrawLoadCancel(MENU *menu) {
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
-    MenuSmartTextEx(apitxt_DOYOUWANTTOABORTLOAD, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc,
-                    0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_DOYOUWANTTOABORTLOAD, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, MENUNORMALR,
+                    MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
 
 void MenuDrawFormatCancel(MENU *menu) {
-    MenuSmartTextEx(apitxt_DOYOUWANTTOABORTFORMAT, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc,
-                    0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_DOYOUWANTTOABORTFORMAT, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, MENUNORMALR,
+                    MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
@@ -1009,8 +1002,8 @@ void MenuDrawLoadConfirm(MENU *menu) {
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
-    MenuText3DEx(apitxt_CONFIRMLOAD, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
-                 MENUNORMALR, MENUNORMALG, MENUNORMALB, (u8)MenuA);
+    MenuText3DEx(apitxt_CONFIRMLOAD, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, MENUNORMALR, MENUNORMALG,
+                 MENUNORMALB, (u8)MenuA);
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
@@ -1020,8 +1013,8 @@ void MenuDrawFileCorrupt(MENU *menu) {
     char message[1024];
     (void)menu;
     sprintf(message, apitxt_CORRUPTLOAD);
-    MenuSmartTextEx(message, 0.0f, 0.0f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, MENUNORMALR,
-                    MENUNORMALG, MENUNORMALB, 1.3f, 3, NULL, 0, MenuA);
+    MenuSmartTextEx(message, 0.0f, 0.0f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
+                    1.3f, 3, NULL, 0, MenuA);
 }
 
 void APIMenuDrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
@@ -1052,14 +1045,14 @@ void APIMenuDrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     sprintf(label, "%s %i", apitxt_SLOT, slot + 1);
     MenuText3DEx(label, x, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue, (u8)MenuA);
     if (saveload_slotused[slot] != 0) {
-        MenuSmartTextEx(apitxt_PRESENT, x, (f32)(y + MenuTextScalePc * 0.5), 1.0f, MenuTextScalePc, MenuTextScalePc,
-                        MenuTextScalePc, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 0.4f, 2, NULL, 0, MenuA);
+        MenuSmartTextEx(apitxt_PRESENT, x, (f32)(y + MenuTextScalePc * 0.5), 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
+                        MENUNORMALR, MENUNORMALG, MENUNORMALB, 0.4f, 2, NULL, 0, MenuA);
     } else if (saveload_freespace >= SAVESIZE_ADDITIONAL) {
-        MenuSmartTextEx(apitxt_EMPTY, x, (f32)(y + MenuTextScalePc * 0.5), 1.0f, MenuTextScalePc, MenuTextScalePc,
-                        MenuTextScalePc, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 0.4f, 2, NULL, 0, MenuA);
+        MenuSmartTextEx(apitxt_EMPTY, x, (f32)(y + MenuTextScalePc * 0.5), 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
+                        MENUNORMALR, MENUNORMALG, MENUNORMALB, 0.4f, 2, NULL, 0, MenuA);
     } else {
-        MenuSmartTextEx(apitxt_NOSPACE, x, (f32)(y + MenuTextScalePc * 0.5), 1.0f, MenuTextScalePc, MenuTextScalePc,
-                        MenuTextScalePc, 0, MENUWARNR, MENUWARNG, MENUWARNB, 0.4f, 2, NULL, 0, MenuA);
+        MenuSmartTextEx(apitxt_NOSPACE, x, (f32)(y + MenuTextScalePc * 0.5), 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
+                        MENUWARNR, MENUWARNG, MENUWARNB, 0.4f, 2, NULL, 0, MenuA);
     }
 }
 
@@ -1067,8 +1060,7 @@ static void Draw_NODATAAVAILABLE(void) {
     char message[1024];
     f32 scale = MenuTextScalePc;
     sprintf(message, apitxt_NODATAAVAILABLE, apiGameName);
-    MenuSmartTextEx(message, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3,
-                    NULL, 0, MenuA);
+    MenuSmartTextEx(message, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
 }
 
 void MenuEnterNoMemoryCard(MENU *menu) {
@@ -1083,38 +1075,38 @@ void MenuDrawNoData(MENU *menu) {
 
 static void MenuDrawLoadingMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_GAMELOADING, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
-                    MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_GAMELOADING, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0,
+                    MenuA);
 }
 
 static void MenuDrawLoadedMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_GAMELOADED, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
-                    1.5f, 2, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_GAMELOADED, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0,
+                    MenuA);
 }
 
 static void MenuDrawLoadFailedMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_FAILEDTOLOAD, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
-                    MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_FAILEDTOLOAD, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3, NULL, 0,
+                    MenuA);
 }
 
 static void MenuDrawLoadCorruptMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_CORRUPTLOAD, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
-                    1.5f, 3, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_CORRUPTLOAD, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3, NULL, 0,
+                    MenuA);
 }
 
 static void MenuDrawFormattingMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_FORMATTING, 0.0f, 0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
-                    1.5f, 2, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_FORMATTING, 0.0f, 0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0,
+                    MenuA);
 }
 
 static void MenuDrawFormattedMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_FORMATTINGCOMPLETE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
-                    MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_FORMATTINGCOMPLETE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3,
+                    NULL, 0, MenuA);
 }
 
 static i32 MenuLoadResultShownPc = 0;
@@ -1170,42 +1162,42 @@ void MenuDrawFormatConfirm(MENU *menu) {
 
 static void MenuDrawNotEnoughSpaceMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_NOTENOUGHSPACE, 0.0f, 0.3f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
-                    MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_NOTENOUGHSPACE, 0.0f, 0.3f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3, NULL,
+                    0, MenuA);
 }
 
 static void MenuDrawSavingMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_GAMESAVING, 0.0f, -0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
-                    1.5f, 2, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_GAMESAVING, 0.0f, -0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0,
+                    MenuA);
 }
 
 static void MenuDrawSavedMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_GAMESAVED, 0.0f, -0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
-                    1.5f, 2, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_GAMESAVED, 0.0f, -0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0,
+                    MenuA);
 }
 
 static void MenuDrawDeletingMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_DELETING, 0.0f, 0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
-                    1.5f, 2, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_DELETING, 0.0f, 0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0,
+                    MenuA);
 }
 
 static void MenuDrawDeletedMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    MenuSmartTextEx(apitxt_DELETECOMPLETE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
-                    MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+    MenuSmartTextEx(apitxt_DELETECOMPLETE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3, NULL,
+                    0, MenuA);
 }
 
 static void MenuDrawSaveFailedMessagePc(void) {
     f32 scale = MenuTextScalePc;
     if (Menu_Overwriteflag != 0) {
-        MenuSmartTextEx(apitxt_FAILEDTOOVERWRITE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
-                        MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+        MenuSmartTextEx(apitxt_FAILEDTOOVERWRITE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3,
+                        NULL, 0, MenuA);
     } else {
-        MenuSmartTextEx(apitxt_FAILEDTOSAVE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
-                        MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+        MenuSmartTextEx(apitxt_FAILEDTOSAVE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3, NULL,
+                        0, MenuA);
     }
 }
 
@@ -1216,8 +1208,7 @@ static void Draw_AUTOSAVEWARNING(void) {
         memcard_drawasiconfn();
     }
     sprintf(message, apitxt_AUTOSAVE_ENABLED, saveload_autosave + 1);
-    MenuSmartTextEx(message, 0.0f, 0.45f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3,
-                    NULL, 0, MenuA);
+    MenuSmartTextEx(message, 0.0f, 0.45f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
 }
 
 void MenuDrawNotEnoughSpace(MENU *menu) {

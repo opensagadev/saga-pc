@@ -303,8 +303,7 @@ extern "C" {
                 continue;
             }
             memset(cursor, 0, sizeof(*cursor));
-            if (NuFParGetWord(parser) == 0 ||
-                NuSpecialFind(world->current_gscn, &cursor->special, parser->word_buffer_ptr, 1) == 0) {
+            if (NuFParGetWord(parser) == 0 || NuSpecialFind(world->current_gscn, &cursor->special, parser->word_buffer_ptr, 1) == 0) {
                 continue;
             }
             cursor->portal_id = (u8)NuFParGetInt(parser);
@@ -335,8 +334,7 @@ extern "C" {
         for (index = 0; index < world->portal_door_count; ++index, ++door) {
             NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim((NUSPECIALHANDLE *)&door->special);
             if (animation != NULL) {
-                const f32 end_frame =
-                    NuAnimEndFrameOld(door->special.scene->instance_animation_data[animation->animation_index]);
+                const f32 end_frame = NuAnimEndFrameOld(door->special.scene->instance_animation_data[animation->animation_index]);
                 const u16 flags = door->flags;
                 i32 closed;
                 if ((flags & PORTALDOOR_TRIGGER_AT_END) != 0) {
@@ -391,8 +389,7 @@ extern "C" {
             cursor->object_count = 0;
             cursor->byte_size = 4;
             while (NuFParGetWord(parser) != 0) {
-                if (NuSpecialFind(world->current_gscn, &cursor->objects[cursor->object_count], parser->word_buffer_ptr,
-                                  1) != 0) {
+                if (NuSpecialFind(world->current_gscn, &cursor->objects[cursor->object_count], parser->word_buffer_ptr, 1) != 0) {
                     ++cursor->object_count;
                     cursor->byte_size += sizeof(NUSPECIALHANDLE);
                 }
@@ -443,9 +440,9 @@ extern "C" {
         world->terrain = NULL;
         if ((level->flags & 8) != 0) {
             world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3U;
-            world->terrain = TerrainInitEx(world->level_idx, &world->giz_buffer, world->buffer_end.void_ptr, 0,
-                                           world->config_file, world->current_gscn, 0, (u16)level->max_ter_groups,
-                                           (u16)level->max_ter_groups, (u16)level->max_ter_platforms);
+            world->terrain =
+                TerrainInitEx(world->level_idx, &world->giz_buffer, world->buffer_end.void_ptr, 0, world->config_file, world->current_gscn,
+                              0, (u16)level->max_ter_groups, (u16)level->max_ter_groups, (u16)level->max_ter_platforms);
         }
     }
 
@@ -456,8 +453,7 @@ extern "C" {
         if (Grass_Available != 0) {
             sprintf(path, "%s.gra", world->config_file);
             if (NuFileExists(path) != 0) {
-                world->page_grass = edgraLoadPage(path, world->current_gscn, (i32)world->terrain, &world->giz_buffer,
-                                                  &world->buffer_end);
+                world->page_grass = edgraLoadPage(path, world->current_gscn, (i32)world->terrain, &world->giz_buffer, &world->buffer_end);
             }
         }
     }
@@ -480,8 +476,7 @@ extern "C" {
         i32 was_loaded = world->loaded != 0;
         SetLevelExBlowupFlags(0);
         if (was_loaded != 0) {
-            if (world->level_idx == level_index && (u8)LDataList[level_index].area_index != 0xff &&
-                new_level_from_menu == 0) {
+            if (world->level_idx == level_index && (u8)LDataList[level_index].area_index != 0xff && new_level_from_menu == 0) {
                 return 0;
             }
             WorldInfo_Dump(world);
@@ -596,10 +591,8 @@ extern "C" {
         if (NOSOUND == 0) {
             NuSound3Update();
         }
-        if (world->level_progress != NULL &&
-            (((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->initialized_flags & 1) == 0) {
-            memcpy(&((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->scene, &world->scene_progress,
-                   sizeof(SCENEPROGRESS));
+        if (world->level_progress != NULL && (((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->initialized_flags & 1) == 0) {
+            memcpy(&((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->scene, &world->scene_progress, sizeof(SCENEPROGRESS));
             ((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->initialized_flags |= 1;
         }
         Doors_Init(world);
@@ -770,17 +763,16 @@ extern "C" {
                 }
             }
         }
-        if (waiting_for_level == -1 && bgGetProcActive() == NULL && other_level != -1 &&
-            other_level != WorldInfo_OtherLevel(world) && LDataList[other_level].area_index == world->area_index) {
+        if (waiting_for_level == -1 && bgGetProcActive() == NULL && other_level != -1 && other_level != WorldInfo_OtherLevel(world) &&
+            LDataList[other_level].area_index == world->area_index) {
             waiting_for_level = other_level;
             next_level = other_level;
             abort_load = 0;
             WaitingForLevelTime = 0.0f;
-            LOG_INFO("Stream level request: current=%d next=%d area=%d", world->level_idx, next_level,
-                     world->area_index);
+            LOG_INFO("Stream level request: current=%d next=%d area=%d", world->level_idx, next_level, world->area_index);
             bgPostRequest(WorldInfo_StreamLevel, NULL, NULL, 0);
-        } else if (waiting_for_level != -1 && bgGetProcActive() != NULL && other_level != -1 &&
-                   other_level != waiting_for_level && LDataList[other_level].area_index == world->area_index) {
+        } else if (waiting_for_level != -1 && bgGetProcActive() != NULL && other_level != -1 && other_level != waiting_for_level &&
+                   LDataList[other_level].area_index == world->area_index) {
             abort_load = 1;
         }
     }

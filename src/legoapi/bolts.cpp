@@ -58,112 +58,148 @@ extern "C" {
     static i32 BT_gdeb_moving_count = 0;
 
     /* 44 records; the configuration is published in InitGameAfterConfig. */
-    // clang-format off: rows wider than the column limit hold nested braces
+    // clang-format off: aligned table wider than the column limit
     BOLTTYPE_PC GlobalBoltType[44] = {
-        {"red", 4.0f, 2.0f, 0.0f, 0.125f, 1.0f, 0.1f, {{-65484, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL, NULL, NULL,
-         NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 0, {0}, {0}, {0}},
-        {"green", 4.0f, 2.0f, 0.0f, 0.125f, 1.0f, 0.1f, {{-65484, 196607, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 0, {0}, {0}, {0}},
-        {"blue", 4.0f, 2.0f, 0.0f, 0.125f, 1.0f, 0.1f, {{-65484, 262143, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL, NULL, NULL,
-         NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 0, {0}, {0}, {0}},
-        {"trainingremote", 4.0f, 0.5f, 0.0f, 0.125f, 1.0f, 0.1f, {{6160477, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 8388608, {0}, {0}, {0}},
-        {"walker", 8.0f, 1.0f, 0.0f, 0.125f, 3.0f, 0.1f, {{6160477, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 256, {0}, {0}, {0}},
-        {"spaceship", 40.0f, 0.75f, 0.0f, 0.125f, 8.0f, 0.1f, {{6160477, 5898239, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"xwing", 40.0f, 0.75f, 0.0f, 0.125f, 5.0f, 0.1f, {{7471217, 5898239, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"falcon", 40.0f, 0.75f, 0.0f, 0.125f, 5.0f, 0.1f, {{7471217, 5898239, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"falcon_a", 45.0f, 1.5f, 0.0f, 0.125f, 5.0f, 0.1f, {{7471217, 5898239, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 132352, {0}, {0}, {0}},
-        {"falcon360", 40.0f, 0.75f, 0.0f, 0.125f, 5.0f, 0.1f, {{7471217, 5898239, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 17664, {0}, {0}, {0}},
-        {"speederbike", 15.0f, 0.75f, 0.0f, 0.125f, 2.5f, 0.1f, {{6160477, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 256, {0}, {0}, {0}},
-        {"snowspeeder", 30.0f, 0.75f, 0.0f, 0.125f, 5.0f, 0.1f, {{6160477, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"tiefighter", 40.0f, 0.75f, 0.0f, 0.125f, 5.0f, 0.1f, {{7602291, 5963775, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"tiefighter_d", 60.0f, 1.0f, 0.0f, 0.125f, 5.0f, 0.1f, {{7602291, 5963775, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1288, {0}, {0}, {0}},
-        {"tiefighter_dog", 40.0f, 0.75f, 0.0f, 0.125f, 5.0f, 0.1f, {{6291551, 5963775, -1, 0}}, -1, 0, 1, 255, 0, 0,
-         NULL, NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"photontorpedo", 30.0f, 2.0f, -2.5f, 0.1f, 3.0f, 0.4f, {{7995513, 4718591, -1, 0}}, -1, 0, 10, 255, 0, 0,
-         Torpedo_InitBolt, Torpedo_UpdateBolt, Torpedo_EndBolt, Torpedo_InitRicochet, Torpedo_Scale, {"XWing_Torpedo"},
-         {"imp_proton_torp"}, 34642700, {0}, {0}, {0}},
-        {"photontorpedo_s", 10.0f, 2.0f, -2.5f, 0.1f, 3.0f, 0.4f, {{7995513, 4784127, -1, 0}}, -1, 0, 10, 255, 0, 0,
-         Torpedo_InitBolt, Torpedo_UpdateBolt, Torpedo_EndBolt, Torpedo_InitRicochet, Torpedo_Scale, {"XWing_Torpedo"},
-         {"imp_proton_torp"}, 34642700, {0}, {0}, {0}},
-        {"dd_double", 4.0f, 2.0f, 0.0f, 0.125f, 1.0f, 0.1f, {{6553699, 131071, -1, 0}}, -1, 0, 2, 18, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 67117056, {0}, {0}, {0}},
-        {"dd_deflected", 4.0f, 2.0f, 0.0f, 0.125f, 1.0f, 0.1f, {{6160477, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 67117056, {0}, {0}, {0}},
-        {"geonosian", 4.0f, 2.0f, 0.0f, 0.1f, 1.0f, 0.1f, {{7733365, 196607, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         UpdateBolt_Geonosian, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 0, {0}, {0}, {0}},
-        {"cannon", 8.0f, 2.0f, 0.0f, 0.125f, 2.0f, 0.1f, {{6160477, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 0, {0}, {0}, {0}},
-        {"minikitred", 12.0f, 0.75f, 0.0f, 0.125f, 2.0f, 0.1f, {{7471217, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"minifalcon360", 12.0f, 0.75f, 0.0f, 0.125f, 2.0f, 0.1f, {{7471217, 5898239, -1, 0}}, -1, 0, 1, 255, 0, 0,
-         NULL, NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 17664, {0}, {0}, {0}},
-        {"minikitgreen", 12.0f, 0.75f, 0.0f, 0.125f, 2.0f, 0.1f, {{7602291, 196607, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"atat", 30.0f, 1.0f, 0.0f, 0.125f, 5.0f, 0.1f, {{6160477, 5898239, -1, 0}}, -1, 0, 2, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"walker", 30.0f, 1.0f, 0.0f, 0.125f, 3.0f, 0.1f, {{6160477, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 256, {0}, {0}, {0}},
-        {"bobafett", 6.0f, 1.34f, 0.0f, 0.125f, 2.0f, 0.1f, {{6160477, 131071, -1, 0}}, -1, 0, 2, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 0, {0}, {0}, {0}},
-        {"ewokpebble", 4.0f, 2.0f, -6.0f, 0.06f, 1.0f, 0.0f, {{-65295, 7667711, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"imp_impacts"}, 4198920, {0}, {0}, {0}},
-        {"wicketpebble", 4.0f, 2.0f, -6.0f, 0.06f, 1.0f, 0.0f, {{-65292, 7667711, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"imp_impacts"}, 4198920, {0}, {0}, {0}},
-        {"boulder", 6.0f, 1.34f, -6.0f, 0.18f, 1.0f, 0.0f, {{-65296, 7667711, -1, 0}}, -1, 0, 3, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"Blaster"}, {"imp_impacts"}, 3150600, {0}, {0}, {0}},
-        {"ewoktorpedo", 4.0f, 2.0f, -6.0f, 0.06f, 1.0f, 0.0f, {{15925490, 7667711, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, EndBolt_EwokTorpedo, NULL, NULL, {"XWing_Torpedo"}, {"imp_proton_torp"}, 4198920, {0}, {0}, {0}},
-        {"wickettorpedo", 4.0f, 2.0f, -6.0f, 0.06f, 1.0f, 0.0f, {{16122101, 7667711, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, EndBolt_EwokTorpedo, NULL, NULL, {"XWing_Torpedo"}, {"imp_proton_torp"}, 4198920, {0}, {0}, {0}},
-        {"jedistarfighter", 40.0f, 1.85f, 0.0f, 0.125f, 0.75f, 0.1f, {{19792173, 5963775, -1, 0}}, -1, 0, 1, 255, 0, 0,
-         NULL, NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"jfightergreen", 40.0f, 0.75f, 0.0f, 0.125f, 7.0f, 0.1f, {{6291551, 5963775, -1, 0}}, -1, 0, 1, 255, 0, 0,
-         NULL, NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"naboofighter", 40.0f, 0.75f, 0.0f, 0.125f, 6.0f, 0.1f, {{6291551, 5963775, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"bonrepgunshipa", 30.0f, 0.75f, 0.0f, 1.0f, 1.0f, 0.1f, {{8192124, 9240575, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 134219008, {0}, {0}, {0}},
-        {"bonrepgunshipb", 45.0f, 0.5f, 0.0f, 1.0f, 1.0f, 0.1f, {{8192124, 9240575, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"bonrepgunshipa", 30.0f, 0.75f, 0.0f, 1.0f, 1.0f, 0.1f, {{8192124, 9240575, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"bonrepgunshipb", 45.0f, 0.5f, 0.0f, 1.0f, 1.0f, 0.1f, {{8192124, 9240575, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 1280, {0}, {0}, {0}},
-        {"spaceship", 16.0f, 0.75f, 0.0f, 0.125f, 1.0f, 0.1f, {{6160477, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"Blaster"}, {"Blast_Hit"}, 0, {0}, {0}, {0}},
-        {"podracesniper", 50.0f, 2.0f, 0.0f, 0.125f, 8.0f, 0.1f, {{6160477, 9371647, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"PodX_TuskenBlast"}, {"Blast_Hit"}, 0, {0}, {0}, {0}},
-        {"podracesniper", 27.5f, 2.0f, 0.0f, 0.125f, 4.4f, 0.1f, {{6160477, 9371647, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL,
-         NULL, NULL, NULL, NULL, {"PodX_TuskenBlast"}, {"Blast_Hit"}, 0, {0}, {0}, {0}},
-        {"bullet", 4.0f, 2.0f, 0.0f, 0.125f, 1.0f, 0.1f, {{-65484, 131071, -1, 0}}, -1, 0, 1, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"GunShot"}, {"Blast_Hit"}, 570425856, {0}, {0}, {0}},
-        {"spear", 3.0f, 2.0f, -3.0f, 0.15f, 1.0f, 0.1f, {{-65509, 9568255, -1, 0}}, 14, 0, 1, 255, 0, 0, NULL, NULL,
-         NULL, NULL, NULL, {"wpn_axe_swing"}, {"wpn_bib_stab"}, 3258978304, {0}, {0}, {0}},
+        {"red",             4.0f,  2.0f,  0.0f,  0.125f, 1.0f,  0.1f, {{-65484, 131071, -1, 0}},    -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       0,          {0}, {0}, {0}},
+        {"green",           4.0f,  2.0f,  0.0f,  0.125f, 1.0f,  0.1f, {{-65484, 196607, -1, 0}},    -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       0,          {0}, {0}, {0}},
+        {"blue",            4.0f,  2.0f,  0.0f,  0.125f, 1.0f,  0.1f, {{-65484, 262143, -1, 0}},    -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       0,          {0}, {0}, {0}},
+        {"trainingremote",  4.0f,  0.5f,  0.0f,  0.125f, 1.0f,  0.1f, {{6160477, 131071, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       8388608,    {0}, {0}, {0}},
+        {"walker",          8.0f,  1.0f,  0.0f,  0.125f, 3.0f,  0.1f, {{6160477, 131071, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       256,        {0}, {0}, {0}},
+        {"spaceship",       40.0f, 0.75f, 0.0f,  0.125f, 8.0f,  0.1f, {{6160477, 5898239, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"xwing",           40.0f, 0.75f, 0.0f,  0.125f, 5.0f,  0.1f, {{7471217, 5898239, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"falcon",          40.0f, 0.75f, 0.0f,  0.125f, 5.0f,  0.1f, {{7471217, 5898239, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"falcon_a",        45.0f, 1.5f,  0.0f,  0.125f, 5.0f,  0.1f, {{7471217, 5898239, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       132352,     {0}, {0}, {0}},
+        {"falcon360",       40.0f, 0.75f, 0.0f,  0.125f, 5.0f,  0.1f, {{7471217, 5898239, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       17664,      {0}, {0}, {0}},
+        {"speederbike",     15.0f, 0.75f, 0.0f,  0.125f, 2.5f,  0.1f, {{6160477, 131071, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       256,        {0}, {0}, {0}},
+        {"snowspeeder",     30.0f, 0.75f, 0.0f,  0.125f, 5.0f,  0.1f, {{6160477, 131071, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"tiefighter",      40.0f, 0.75f, 0.0f,  0.125f, 5.0f,  0.1f, {{7602291, 5963775, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"tiefighter_d",    60.0f, 1.0f,  0.0f,  0.125f, 5.0f,  0.1f, {{7602291, 5963775, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1288,       {0}, {0}, {0}},
+        {"tiefighter_dog",  40.0f, 0.75f, 0.0f,  0.125f, 5.0f,  0.1f, {{6291551, 5963775, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"photontorpedo",   30.0f, 2.0f,  -2.5f, 0.1f,   3.0f,  0.4f, {{7995513, 4718591, -1, 0}},  -1, 0, 10, 255, 0, 0,
+         Torpedo_InitBolt, Torpedo_UpdateBolt,   Torpedo_EndBolt,     Torpedo_InitRicochet, Torpedo_Scale, {"XWing_Torpedo"},
+         {"imp_proton_torp"}, 34642700,   {0}, {0}, {0}},
+        {"photontorpedo_s", 10.0f, 2.0f,  -2.5f, 0.1f,   3.0f,  0.4f, {{7995513, 4784127, -1, 0}},  -1, 0, 10, 255, 0, 0,
+         Torpedo_InitBolt, Torpedo_UpdateBolt,   Torpedo_EndBolt,     Torpedo_InitRicochet, Torpedo_Scale, {"XWing_Torpedo"},
+         {"imp_proton_torp"}, 34642700,   {0}, {0}, {0}},
+        {"dd_double",       4.0f,  2.0f,  0.0f,  0.125f, 1.0f,  0.1f, {{6553699, 131071, -1, 0}},   -1, 0, 2,  18,  0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       67117056,   {0}, {0}, {0}},
+        {"dd_deflected",    4.0f,  2.0f,  0.0f,  0.125f, 1.0f,  0.1f, {{6160477, 131071, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       67117056,   {0}, {0}, {0}},
+        {"geonosian",       4.0f,  2.0f,  0.0f,  0.1f,   1.0f,  0.1f, {{7733365, 196607, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             UpdateBolt_Geonosian, NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       0,          {0}, {0}, {0}},
+        {"cannon",          8.0f,  2.0f,  0.0f,  0.125f, 2.0f,  0.1f, {{6160477, 131071, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       0,          {0}, {0}, {0}},
+        {"minikitred",      12.0f, 0.75f, 0.0f,  0.125f, 2.0f,  0.1f, {{7471217, 131071, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"minifalcon360",   12.0f, 0.75f, 0.0f,  0.125f, 2.0f,  0.1f, {{7471217, 5898239, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       17664,      {0}, {0}, {0}},
+        {"minikitgreen",    12.0f, 0.75f, 0.0f,  0.125f, 2.0f,  0.1f, {{7602291, 196607, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"atat",            30.0f, 1.0f,  0.0f,  0.125f, 5.0f,  0.1f, {{6160477, 5898239, -1, 0}},  -1, 0, 2,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"walker",          30.0f, 1.0f,  0.0f,  0.125f, 3.0f,  0.1f, {{6160477, 131071, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       256,        {0}, {0}, {0}},
+        {"bobafett",        6.0f,  1.34f, 0.0f,  0.125f, 2.0f,  0.1f, {{6160477, 131071, -1, 0}},   -1, 0, 2,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       0,          {0}, {0}, {0}},
+        {"ewokpebble",      4.0f,  2.0f,  -6.0f, 0.06f,  1.0f,  0.0f, {{-65295, 7667711, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"imp_impacts"},     4198920,    {0}, {0}, {0}},
+        {"wicketpebble",    4.0f,  2.0f,  -6.0f, 0.06f,  1.0f,  0.0f, {{-65292, 7667711, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"imp_impacts"},     4198920,    {0}, {0}, {0}},
+        {"boulder",         6.0f,  1.34f, -6.0f, 0.18f,  1.0f,  0.0f, {{-65296, 7667711, -1, 0}},   -1, 0, 3,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"imp_impacts"},     3150600,    {0}, {0}, {0}},
+        {"ewoktorpedo",     4.0f,  2.0f,  -6.0f, 0.06f,  1.0f,  0.0f, {{15925490, 7667711, -1, 0}}, -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 EndBolt_EwokTorpedo, NULL,                 NULL,          {"XWing_Torpedo"},
+         {"imp_proton_torp"}, 4198920,    {0}, {0}, {0}},
+        {"wickettorpedo",   4.0f,  2.0f,  -6.0f, 0.06f,  1.0f,  0.0f, {{16122101, 7667711, -1, 0}}, -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 EndBolt_EwokTorpedo, NULL,                 NULL,          {"XWing_Torpedo"},
+         {"imp_proton_torp"}, 4198920,    {0}, {0}, {0}},
+        {"jedistarfighter", 40.0f, 1.85f, 0.0f,  0.125f, 0.75f, 0.1f, {{19792173, 5963775, -1, 0}}, -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"jfightergreen",   40.0f, 0.75f, 0.0f,  0.125f, 7.0f,  0.1f, {{6291551, 5963775, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"naboofighter",    40.0f, 0.75f, 0.0f,  0.125f, 6.0f,  0.1f, {{6291551, 5963775, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"bonrepgunshipa",  30.0f, 0.75f, 0.0f,  1.0f,   1.0f,  0.1f, {{8192124, 9240575, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       134219008,  {0}, {0}, {0}},
+        {"bonrepgunshipb",  45.0f, 0.5f,  0.0f,  1.0f,   1.0f,  0.1f, {{8192124, 9240575, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"bonrepgunshipa",  30.0f, 0.75f, 0.0f,  1.0f,   1.0f,  0.1f, {{8192124, 9240575, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"bonrepgunshipb",  45.0f, 0.5f,  0.0f,  1.0f,   1.0f,  0.1f, {{8192124, 9240575, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       1280,       {0}, {0}, {0}},
+        {"spaceship",       16.0f, 0.75f, 0.0f,  0.125f, 1.0f,  0.1f, {{6160477, 131071, -1, 0}},   -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
+         {"Blast_Hit"},       0,          {0}, {0}, {0}},
+        {"podracesniper",   50.0f, 2.0f,  0.0f,  0.125f, 8.0f,  0.1f, {{6160477, 9371647, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"PodX_TuskenBlast"},
+         {"Blast_Hit"},       0,          {0}, {0}, {0}},
+        {"podracesniper",   27.5f, 2.0f,  0.0f,  0.125f, 4.4f,  0.1f, {{6160477, 9371647, -1, 0}},  -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"PodX_TuskenBlast"},
+         {"Blast_Hit"},       0,          {0}, {0}, {0}},
+        {"bullet",          4.0f,  2.0f,  0.0f,  0.125f, 1.0f,  0.1f, {{-65484, 131071, -1, 0}},    -1, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"GunShot"},
+         {"Blast_Hit"},       570425856,  {0}, {0}, {0}},
+        {"spear",           3.0f,  2.0f,  -3.0f, 0.15f,  1.0f,  0.1f, {{-65509, 9568255, -1, 0}},   14, 0, 1,  255, 0, 0,
+         NULL,             NULL,                 NULL,                NULL,                 NULL,          {"wpn_axe_swing"},
+         {"wpn_bib_stab"},    3258978304, {0}, {0}, {0}},
     };
     // clang-format on
     STATIC_ASSERT(42 * sizeof(BOLTTYPE_PC) + offsetof(BOLTTYPE_PC, object_ids) == 0x1b10);
 
-    BOLTSYS_PC BoltSys_LSW = {GlobalBoltType,
-                              44,
-                              AlertSurroundingCreatures,
-                              Bolt_Debris_LSW,
-                              GetShootOrigin_LSW,
-                              GetShootDirection_LSW,
-                              Bolt_HitPart_LSW,
-                              Bolt_AlternateFire_LSW};
-    BOLTSYS_PC BoltSys_Batman = {GlobalBoltType, 44,  AlertSurroundingCreatures, NULL, NULL, GetShootDirection_Batman,
-                                 NULL,           NULL};
+    BOLTSYS_PC BoltSys_LSW = {
+        GlobalBoltType,        44, AlertSurroundingCreatures, Bolt_Debris_LSW, GetShootOrigin_LSW, GetShootDirection_LSW, Bolt_HitPart_LSW,
+        Bolt_AlternateFire_LSW};
+    BOLTSYS_PC BoltSys_Batman = {GlobalBoltType, 44, AlertSurroundingCreatures, NULL, NULL, GetShootDirection_Batman, NULL, NULL};
 }
 
 /* Private collision helpers and callers retain their original translation-unit group. */
@@ -397,8 +433,7 @@ extern "C" {
         f32 limit;
         f32 distance;
         i32 index;
-        radius =
-            object->bounds_half_height > object->bounds_radius ? object->bounds_half_height : object->bounds_radius;
+        radius = object->bounds_half_height > object->bounds_radius ? object->bounds_half_height : object->bounds_radius;
         result = NULL;
         radius = radius * radius;
         nearest = 100000000.0f;
@@ -415,8 +450,7 @@ extern "C" {
             half_speed = (f32)((f64)bolt->speed * 0.5);
             distance = NuVecDistSqr(&bolt->position, &object->collision_position, NULL);
             limit = half_speed * half_speed;
-            if (distance < limit &&
-                LineIntersectSphere(&bolt->position, &bolt->direction, &object->collision_position, radius, NULL) &&
+            if (distance < limit && LineIntersectSphere(&bolt->position, &bolt->direction, &object->collision_position, radius, NULL) &&
                 distance < nearest) {
                 nearest = distance;
                 result = bolt;
@@ -439,8 +473,7 @@ extern "C" {
         i32 index;
         for (index = 0; index < 32; ++index, ++bolt) {
             f32 distance;
-            if (bolt->active == 0 || (type_id != -1 && bolt->type_id != type_id) ||
-                (owner != NULL && bolt->owner != owner)) {
+            if (bolt->active == 0 || (type_id != -1 && bolt->type_id != type_id) || (owner != NULL && bolt->owner != owner)) {
                 continue;
             }
             if (position == NULL) {
@@ -560,8 +593,7 @@ extern "C" {
 
     static void BT_debris_moving(NUFPAR_PC *parser) {
         if (BT_gdeb_moving_count < 2 && NuFParGetWord(parser) != 0) {
-            BT_bolttype->moving_debris[BT_gdeb_moving_count] =
-                (i16)FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr);
+            BT_bolttype->moving_debris[BT_gdeb_moving_count] = (i16)FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr);
             BT_bolttype->moving_debris_counts[BT_gdeb_moving_count] = (i16)abs((i32)NuFParGetFloat(parser));
             BT_gdeb_moving_count++;
         }
@@ -618,33 +650,33 @@ extern "C" {
     }
 
     static NUFPCOMJMP BoltType_ConfigKeywords[] = {
-        {("name"), BT_name},
-        {("speed"), BT_speed},
-        {("duration"), BT_duration},
-        {("radius"), BT_radius},
-        {("scale"), BT_scale},
-        {("rand_angle"), BT_rand_angle},
-        {("scene"), BT_sceneconfig},
-        {("obj"), BT_obj},
-        {("ref_obj"), BT_ref_obj},
-        {("glow_obj"), BT_glow_obj},
-        {("ref_glow_obj"), BT_ref_glow_obj},
-        {("shadow_obj"), BT_shadow_obj},
-        {("debris"), BT_debris},
-        {("debris_moving"), BT_debris_moving},
-        {("part_hit"), BT_part_hit},
-        {("sfx"), BT_sfx_shoot},
-        {("sfx_shoot"), BT_sfx_shoot},
-        {("sfx_hit"), BT_sfx_hit},
-        {("damage"), BT_damage},
-        {("nodeflect"), BT_nodeflect},
-        {("converge"), BT_converge},
+        {("name"),              BT_name             },
+        {("speed"),             BT_speed            },
+        {("duration"),          BT_duration         },
+        {("radius"),            BT_radius           },
+        {("scale"),             BT_scale            },
+        {("rand_angle"),        BT_rand_angle       },
+        {("scene"),             BT_sceneconfig      },
+        {("obj"),               BT_obj              },
+        {("ref_obj"),           BT_ref_obj          },
+        {("glow_obj"),          BT_glow_obj         },
+        {("ref_glow_obj"),      BT_ref_glow_obj     },
+        {("shadow_obj"),        BT_shadow_obj       },
+        {("debris"),            BT_debris           },
+        {("debris_moving"),     BT_debris_moving    },
+        {("part_hit"),          BT_part_hit         },
+        {("sfx"),               BT_sfx_shoot        },
+        {("sfx_shoot"),         BT_sfx_shoot        },
+        {("sfx_hit"),           BT_sfx_hit          },
+        {("damage"),            BT_damage           },
+        {("nodeflect"),         BT_nodeflect        },
+        {("converge"),          BT_converge         },
         {("canonlyhitplayers"), BT_canonlyhitplayers},
-        {("no_terrain"), BT_no_terrain},
-        {("no_collide"), BT_no_collide},
-        {("trooper_bolt"), BT_trooper_bolt},
-        {("single_debris"), BT_single_debris},
-        {NULL, NULL},
+        {("no_terrain"),        BT_no_terrain       },
+        {("no_collide"),        BT_no_collide       },
+        {("trooper_bolt"),      BT_trooper_bolt     },
+        {("single_debris"),     BT_single_debris    },
+        {NULL,                  NULL                },
     };
 
     BOLTTYPE_PC *BoltType_FindByID(i32 id, WORLDINFO *world) {
@@ -760,17 +792,15 @@ extern "C" {
             if (!(part->flags & 0x08000000) && (part->flags & 0xa) != 0xa) {
                 continue;
             }
-            if (part->collision_max.x < minimum->x || part->collision_min.x > maximum->x ||
-                part->collision_max.z < minimum->z || part->collision_min.z > maximum->z ||
-                part->collision_max.y < minimum->y || part->collision_min.y > maximum->y) {
+            if (part->collision_max.x < minimum->x || part->collision_min.x > maximum->x || part->collision_max.z < minimum->z ||
+                part->collision_min.z > maximum->z || part->collision_max.y < minimum->y || part->collision_min.y > maximum->y) {
                 continue;
             }
             for (point = 2; point >= 0; --point) {
                 if ((bolt->flags & 0x200) && point != 1) {
                     continue;
                 }
-                if (SphereSphereOverlapScaleY(&part->position, part->field_e4, part->field_e4, &points[point], radius,
-                                              radius)) {
+                if (SphereSphereOverlapScaleY(&part->position, part->field_e4, part->field_e4, &points[point], radius, radius)) {
                     BoltSys->debris(bolt, points, point, &part->velocity, 0);
                     Bolt_PlayHitSfx(bolt);
                     if (bolt->owner && (((GAMEOBJECT *)bolt->owner)->flags_1fc & 1)) {
@@ -851,14 +881,12 @@ static i32 Bolt_HitPlatPrivate(BOLT_PC *bolt, u8 *hit_flags) {
     if (blowup != NULL) {
         if ((blowup->draw_flags & 0x8000) != 0) {
             if ((exclude & 1) != 0 && bolt->owner != NULL) {
-                i32 field_028_positive =
-                    static_cast<GAMEOBJECT *>(bolt->owner)->character_data->game_character->field_028 > 0.0f;
+                i32 field_028_positive = static_cast<GAMEOBJECT *>(bolt->owner)->character_data->game_character->field_028 > 0.0f;
                 if ((blowup->draw_flags & 0x80000) != 0 && field_028_positive) {
                     return 0;
                 }
             }
-            if (bolt->owner != NULL && (blowup->draw_flags & 0x80000) != 0 &&
-                static_cast<GAMEOBJECT *>(bolt->owner)->rider == NULL) {
+            if (bolt->owner != NULL && (blowup->draw_flags & 0x80000) != 0 && static_cast<GAMEOBJECT *>(bolt->owner)->rider == NULL) {
                 return 0;
             }
             if (GizmoBlowupBlowup(blowup, 1, 3, bolt->type->field_3c, NULL, 1) != 0 && bolt->owner != NULL) {
@@ -879,8 +907,7 @@ static i32 Bolt_HitPlatPrivate(BOLT_PC *bolt, u8 *hit_flags) {
     return 0;
 }
 
-static i32 Bolt_HitBlowupPrivate(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
-                                 u8 *hit_flags) {
+static i32 Bolt_HitBlowupPrivate(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius, u8 *hit_flags) {
     NUVEC *hit_points;
     i32 count;
     if (bolt->flags & 0x200) {
@@ -890,8 +917,7 @@ static i32 Bolt_HitBlowupPrivate(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, N
         hit_points = points;
         count = 3;
     }
-    if (GizmoBlowUp_Hit(static_cast<GAMEOBJECT *>(bolt->owner), hit_points, count, radius, minimum, maximum, bolt, 1,
-                        hit_flags)) {
+    if (GizmoBlowUp_Hit(static_cast<GAMEOBJECT *>(bolt->owner), hit_points, count, radius, minimum, maximum, bolt, 1, hit_flags)) {
         BoltSys->debris(bolt, points, -1, NULL, 0);
         if (bolt->owner) {
             NewRumble(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, .6f, 0);
@@ -920,8 +946,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
     BOLT_PC *bolt = &Bolt[bolt_index];
     GAMEOBJECT *object = &Obj[object_index];
     BOLTTYPE_PC *type = bolt->type;
-    if (BoltSys->stop_targeting != NULL && bolt->owner != NULL &&
-        (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 0x80) != 0) {
+    if (BoltSys->stop_targeting != NULL && bolt->owner != NULL && (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 0x80) != 0) {
         BoltSys->stop_targeting(static_cast<GAMEOBJECT *>(bolt->owner), &bolt->position);
     }
     i32 deflect;
@@ -941,8 +966,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
         ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x4000000) != 0 ||
          ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x8000000) != 0 &&
           (object->context_variant_flags & 0x20000) != 0) ||
-         deflect ||
-         (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x800000) != 0 ||
+         deflect || (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x800000) != 0 ||
          ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x1000000) != 0 &&
           (object->jump_flags & 1) != 0) ||
          CannotKill(object))) {
@@ -952,8 +976,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
         }
         GameAudio_PlaySfx(42, &points[hit], 0, 0);
         BoltNoSfxPc = 1;
-        if ((BoltBlockContextPc == -1 || object->character_context != BoltBlockContextPc) && !deflect &&
-            !(bolt->time >= 0.1f)) {
+        if ((BoltBlockContextPc == -1 || object->character_context != BoltBlockContextPc) && !deflect && !(bolt->time >= 0.1f)) {
             goto finish;
         }
         if (bolt->owner != NULL && (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 1) != 0) {
@@ -993,8 +1016,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
             reflected_bolt->flags |= 0x10000000;
         }
     } else if (object->origin_scale_override == 1.0f ||
-               ((object->character_data->game_character->flags_094 & 0x4000000) != 0 && VehicleArea != 0 &&
-                BonusArea != 0) ||
+               ((object->character_data->game_character->flags_094 & 0x4000000) != 0 && VehicleArea != 0 && BonusArea != 0) ||
                (object->current_hp == 0 && (object->character_data->model_flags & 0x2000) != 0) ||
                ((object->character_data->model_flags & 0x20000000) != 0 && object->rider == NULL)) {
         if ((bolt->flags & 0x4000000) != 0) {
@@ -1006,8 +1028,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
             GameAudio_PlaySfx(41, &bolt->position, 0, 0);
             NewBuzz(object->pad->bound_pad, 0.1f, 0);
             if ((bolt->flags & 0x100000) == 0) {
-                temp_yrot = NuAtan2D(bolt->position.x - object->collision_position.x,
-                                     bolt->position.z - object->collision_position.z);
+                temp_yrot = NuAtan2D(bolt->position.x - object->collision_position.x, bolt->position.z - object->collision_position.z);
                 temp_yrot += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
                 temp_zrot = static_cast<i32>(-1820.0f - (qrand() * static_cast<f64>(1.0f / 65535.0f)) * 6371.0f);
                 NUMTX matrix;
@@ -1035,8 +1056,8 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
         }
         Bolt_PlayHitSfx(bolt);
         GAMEOBJECT *owner = static_cast<GAMEOBJECT *>(bolt->owner);
-        if (owner != NULL && (owner->flags_1fc_word & 1) != 0 && (owner->flags_1fc_word & 0x80) == 0 &&
-            (owner->flags_1f8 & 1) != 0 && (owner->flags_1f8 & 1) == (object->flags_1f8 & 1)) {
+        if (owner != NULL && (owner->flags_1fc_word & 1) != 0 && (owner->flags_1fc_word & 0x80) == 0 && (owner->flags_1f8 & 1) != 0 &&
+            (owner->flags_1f8 & 1) == (object->flags_1f8 & 1)) {
             goto owner_feedback;
         }
         objhitobj_bolt = bolt;
@@ -1109,8 +1130,7 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
                        : 0;
         if (static_cast<f64>(bolt->reflection_height) != 2000000.0) {
             NUMTX reflection;
-            if (MatrixReflectionVU0_AXISY(&matrix, bolt->reflection_height, world->current_level->reflection_y,
-                                          &reflection)) {
+            if (MatrixReflectionVU0_AXISY(&matrix, bolt->reflection_height, world->current_level->reflection_y, &reflection)) {
                 if (NuSpecialExistsFn(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[2])) {
                     NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[2], &reflection);
                 }
@@ -1181,8 +1201,8 @@ extern "C" {
     }
 }
 
-extern "C" i32 Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUVEC *points, NUVEC *minimum, NUVEC *maximum,
-                                  f32 radius, u8 *hit_flags) {
+extern "C" i32 Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
+                                  u8 *hit_flags) {
     NUVEC center = object->collision_position;
     i32 hit;
     for (hit = 2; hit >= 0; --hit) {
@@ -1195,8 +1215,7 @@ extern "C" i32 Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUVEC *poin
             center.y = 0.0f;
             point.y = 0.0f;
         }
-        if (SphereSphereOverlapScaleY(&center, object->bounds_radius, object->bounds_half_height, &point, radius,
-                                      radius)) {
+        if (SphereSphereOverlapScaleY(&center, object->bounds_radius, object->bounds_half_height, &point, radius, radius)) {
             u16 bolt_index = static_cast<u16>(bolt - Bolt);
             u16 object_index = static_cast<u16>(object - Obj);
             NETMESSAGE_PC message(0x20);
@@ -1215,8 +1234,7 @@ extern "C" i32 Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUVEC *poin
     return 0;
 }
 
-extern "C" i32 Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
-                                   u8 *hit_flags) {
+extern "C" i32 Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius, u8 *hit_flags) {
     GAMEOBJECT *object = Obj;
     i32 index;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
@@ -1233,27 +1251,24 @@ extern "C" i32 Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum,
             continue;
         }
         flags = bolt->flags;
-        if ((flags & 0x80) != 0 && object->field_280 == 0xff &&
-            (object->rider == NULL || object->rider->field_280 == 0xff)) {
+        if ((flags & 0x80) != 0 && object->field_280 == 0xff && (object->rider == NULL || object->rider->field_280 == 0xff)) {
             continue;
         }
         if ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
             (object->flags_e24 & 0x8000) != 0) {
             continue;
         }
-        if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->field_280 != 0xff &&
-            object->field_280 != 0xff) {
+        if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->field_280 != 0xff && object->field_280 != 0xff) {
             continue;
         }
         if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
             continue;
         }
-        if (object->collision_max.x < minimum->x || object->collision_min.x > maximum->x ||
-            object->collision_max.z < minimum->z || object->collision_min.z > maximum->z) {
+        if (object->collision_max.x < minimum->x || object->collision_min.x > maximum->x || object->collision_max.z < minimum->z ||
+            object->collision_min.z > maximum->z) {
             continue;
         }
-        if ((flags & 0x8000000) == 0 &&
-            (object->collision_max.y < minimum->y || object->collision_min.y > maximum->y)) {
+        if ((flags & 0x8000000) == 0 && (object->collision_max.y < minimum->y || object->collision_min.y > maximum->y)) {
             continue;
         }
         if (Bolt_HitGameObject(bolt, object, points, minimum, maximum, radius, hit_flags)) {
@@ -1335,12 +1350,10 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE_PC &message) {
         bool add_speed = InitBolt_AddMomentumType != NULL && InitBolt_AddMomentumType(bolt, owner, &momentum) != 0;
         if (!add_speed) {
             u32 model_flags = owner->character_data->model_flags;
-            add_speed =
-                (model_flags & 0x4000000) != 0 || ((owner->flags_1fc & 0x80) != 0 && (model_flags & 0x2000) != 0);
+            add_speed = (model_flags & 0x4000000) != 0 || ((owner->flags_1fc & 0x80) != 0 && (model_flags & 0x2000) != 0);
         }
         if (add_speed && !no_momentum) {
-            f32 speed =
-                (owner->facing_direction.x * owner->velocity.x) + (owner->facing_direction.z * owner->velocity.z);
+            f32 speed = (owner->facing_direction.x * owner->velocity.x) + (owner->facing_direction.z * owner->velocity.z);
             if (speed < 0.0f) {
                 speed = 0.0f;
             }
@@ -1428,8 +1441,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     }
     f32 back_distance;
     if (owner != NULL) {
-        if ((owner->character_data->model_flags & 0x2000) == 0 &&
-            (owner->character_data->game_character->flags_090 & 0x80) == 0) {
+        if ((owner->character_data->model_flags & 0x2000) == 0 && (owner->character_data->game_character->flags_090 & 0x80) == 0) {
             back_distance = owner->collision_radius * 3.0f;
         } else {
             back_distance = owner->collision_radius;
@@ -1457,20 +1469,19 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE_PC &message) {
             if (bolt->type && bolt->type->end_callback) {
                 bolt->type->end_callback(bolt);
             }
-            if ((bolt->flags & 0x10000) == 0 && !Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max,
-                                                                     bolt->collision_radius, NULL)) {
+            if ((bolt->flags & 0x10000) == 0 &&
+                !Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL)) {
                 i32 hit = 0;
                 if ((bolt->flags & 0x13) != 0 ||
                     (bolt->owner != NULL && ((static_cast<GAMEOBJECT *>(bolt->owner)->portal_flags & 0x10000000) != 0 ||
                                              static_cast<GAMEOBJECT *>(bolt->owner)->field_f00 == 5))) {
                     hit = bolt->hit_platform != -1 && Bolt_HitPlatPrivate(bolt, NULL);
                     if (!hit) {
-                        hit = GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min,
-                                               &bolt->bounds_max, bolt->collision_radius, NULL);
+                        hit = GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max,
+                                               bolt->collision_radius, NULL);
                     }
                     if (!hit) {
-                        hit = Bolt_HitBlowupPrivate(bolt, points, &bolt->bounds_min, &bolt->bounds_max,
-                                                    bolt->collision_radius, NULL);
+                        hit = Bolt_HitBlowupPrivate(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL);
                     }
                     if (!hit) {
                         hit = Bolt_HitParts(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
@@ -1536,8 +1547,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 NuVecScale(&movement, &bolt->direction, (f32)((f64)0.2f * bolt->speed));
                 bolt->ray_time = 0.2f;
                 if (bolt->acceleration_y != 0.0f) {
-                    movement.y =
-                        (f32)((f64)0.2f * bolt->velocity.y + (f64)bolt->acceleration_y * .5 * 0.04000000283122063);
+                    movement.y = (f32)((f64)0.2f * bolt->velocity.y + (f64)bolt->acceleration_y * .5 * 0.04000000283122063);
                 }
                 NuVecAdd(&offset, &bolt->position, &movement);
                 NuVecSub(&movement, &offset, &bolt->ray_end);
@@ -1602,8 +1612,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 Bolt_Reflect(&bolt->hit_normal, &bolt->velocity, &reflection);
                 NuVecScale(&reflection, &reflection, 0.2f);
                 surface_hit = 1;
-                if (bolt->hit_platform != -1 && bolt->field_104 != -1 &&
-                    (TerSurface[bolt->field_104].flags & 0x1000) != 0) {
+                if (bolt->hit_platform != -1 && bolt->field_104 != -1 && (TerSurface[bolt->field_104].flags & 0x1000) != 0) {
                     BoltSys->debris(bolt, points, -1, &reflection, surface_hit);
                 } else {
                     BoltSys->debris(bolt, points, -1, &reflection, 0);
@@ -1615,8 +1624,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
             if ((bolt->flags & 0x10000) != 0) {
                 continue;
             }
-            if (Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) !=
-                0) {
+            if (Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) != 0) {
                 continue;
             }
             if ((bolt->flags & 0x13) != 0 ||
@@ -1628,16 +1636,14 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     }
                     goto stop_targeting;
                 }
-                if (GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max,
-                                     bolt->collision_radius, NULL)) {
+                if (GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
+                                     NULL)) {
                     goto stop_targeting;
                 }
-                if (Bolt_HitBlowupPrivate(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
-                                          NULL)) {
+                if (Bolt_HitBlowupPrivate(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL)) {
                     goto stop_targeting;
                 }
-                if (Bolt_HitParts(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
-                                  Bolt_HitPartMode(bolt))) {
+                if (Bolt_HitParts(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, Bolt_HitPartMode(bolt))) {
                     goto stop_targeting;
                 }
             } else if (surface_hit && bolt->hit_platform != -1 && bolt->field_104 != -1 &&
@@ -1645,16 +1651,15 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 GameAudio_PlaySfx(41, &bolt->position, 0, 0);
                 Bolt_AddDeflectedBolt(bolt, &bolt->direction, &bolt->hit_normal, processed);
             }
-            if (surface_hit && bolt->field_104 >= 0 && bolt->field_104 < 32 &&
-                (TerSurface[bolt->field_104].flags & 0x800) != 0 && (bolt->flags & 0x8000) == 0) {
+            if (surface_hit && bolt->field_104 >= 0 && bolt->field_104 < 32 && (TerSurface[bolt->field_104].flags & 0x800) != 0 &&
+                (bolt->flags & 0x8000) == 0) {
                 GameAudio_PlaySfx(41, &bolt->position, 0, 0);
                 Bolt_AddDeflectedBolt(bolt, &bolt->velocity, &bolt->hit_normal, processed);
             } else if ((bolt->flags & 0x80000) == 0) {
                 Bolt_PlayHitSfx(bolt);
             }
         stop_targeting:
-            if (BoltSys->stop_targeting != NULL && bolt->owner != NULL &&
-                (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 0x80) != 0) {
+            if (BoltSys->stop_targeting != NULL && bolt->owner != NULL && (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 0x80) != 0) {
                 BoltSys->stop_targeting(static_cast<GAMEOBJECT *>(bolt->owner), &bolt->position);
             }
         } else {
@@ -1663,9 +1668,8 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
             }
             for (i32 i = 0; i < 2; ++i) {
                 if (type->moving_debris[i] != -1 && type->moving_debris_counts[i] > 0) {
-                    AddVariableShotDebrisEffectTimed5(world->game_debris_sys->entries[type->moving_debris[i]].effect,
-                                                      &bolt->position, NULL, &bolt->velocity,
-                                                      type->moving_debris_counts[i], FRAMETIME, NULL, NULL, 20000, 0);
+                    AddVariableShotDebrisEffectTimed5(world->game_debris_sys->entries[type->moving_debris[i]].effect, &bolt->position, NULL,
+                                                      &bolt->velocity, type->moving_debris_counts[i], FRAMETIME, NULL, NULL, 20000, 0);
                 }
             }
             if ((bolt->flags & 0x10000) != 0) {
@@ -1684,16 +1688,14 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     continue;
                 }
                 u32 flags = bolt->flags;
-                if ((flags & 0x80) != 0 && object->field_280 == 0xff &&
-                    (object->rider == NULL || object->rider->field_280 == 0xff)) {
+                if ((flags & 0x80) != 0 && object->field_280 == 0xff && (object->rider == NULL || object->rider->field_280 == 0xff)) {
                     continue;
                 }
                 if ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
                     (object->flags_e24 & 0x8000) != 0) {
                     continue;
                 }
-                if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->field_280 != 0xff &&
-                    object->field_280 != 0xff) {
+                if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->field_280 != 0xff && object->field_280 != 0xff) {
                     continue;
                 }
                 if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
@@ -1707,24 +1709,21 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     (object->collision_max.y < bolt->bounds_min.y || object->collision_min.y > bolt->bounds_max.y)) {
                     continue;
                 }
-                if (Bolt_HitGameObject(bolt, object, points, &bolt->bounds_min, &bolt->bounds_max,
-                                       bolt->collision_radius, processed)) {
+                if (Bolt_HitGameObject(bolt, object, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, processed)) {
                     goto next_bolt;
                 }
             }
             if ((bolt->flags & 0x13) != 0 ||
                 (bolt->owner != NULL && ((static_cast<GAMEOBJECT *>(bolt->owner)->portal_flags & 0x10000000) != 0 ||
                                          static_cast<GAMEOBJECT *>(bolt->owner)->field_f00 == 5))) {
-                if (GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max,
-                                     bolt->collision_radius, processed)) {
+                if (GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
+                                     processed)) {
                     continue;
                 }
-                if (Bolt_HitBlowupPrivate(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
-                                          processed)) {
+                if (Bolt_HitBlowupPrivate(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, processed)) {
                     continue;
                 }
-                Bolt_HitParts(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
-                              Bolt_HitPartMode(bolt));
+                Bolt_HitParts(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, Bolt_HitPartMode(bolt));
             }
         }
     next_bolt:;
@@ -1862,8 +1861,7 @@ extern "C" {
                 u16 pitch;
                 NUANGVEC angles;
                 if ((flags & 0x80000000) != 0 && (object->flags_1fc & 0x80) == 0 && object->field_ea0_target != NULL) {
-                    f32 distance =
-                        NuVecXZDist(&object->field_ea0_target->collision_position, &object->collision_position, NULL);
+                    f32 distance = NuVecXZDist(&object->field_ea0_target->collision_position, &object->collision_position, NULL);
                     f32 degrees;
                     if (distance > 2.0f) {
                         distance = 2.0f;

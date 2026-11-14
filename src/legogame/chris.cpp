@@ -152,13 +152,25 @@ extern "C" {
     f32 DogfightResetTimerPc = 0.0f;
 #pragma data_seg(".data$DogfightResetPc")
     DOGFIGHT_ACTION_PC DogfightAnakinActionsPc[10] = {
-        {0, 1.0f}, {2, 7.5f}, {0, 1.5f}, {2, 7.5f}, {0, 7.5f}, {1, 8.0f}, {0, 4.0f}, {1, 8.0f}, {0, 8.0f}, {3, 0.0f},
+        {0, 1.0f},
+        {2, 7.5f},
+        {0, 1.5f},
+        {2, 7.5f},
+        {0, 7.5f},
+        {1, 8.0f},
+        {0, 4.0f},
+        {1, 8.0f},
+        {0, 8.0f},
+        {3, 0.0f},
     };
     DOGFIGHT_DOOR_PC DogfightDoorsPc[7] = {
-        {"door_to_a2", 33.0359993f, 11.5f},      {"door_to_a3", 121.769997f, 31.2399998f},
-        {"door_to_b", 196.729996f, 60.3320007f}, {"door_to_b2", 334.369995f, 97.558197f},
-        {"door_to_c", 435.119995f, 131.429993f}, {"door_to_c1", 508.679993f, 147.050003f},
-        {"door_to_c2", 583.72998f, 167.5f},
+        {"door_to_a2", 33.0359993f, 11.5f      },
+        {"door_to_a3", 121.769997f, 31.2399998f},
+        {"door_to_b",  196.729996f, 60.3320007f},
+        {"door_to_b2", 334.369995f, 97.558197f },
+        {"door_to_c",  435.119995f, 131.429993f},
+        {"door_to_c1", 508.679993f, 147.050003f},
+        {"door_to_c2", 583.72998f,  167.5f     },
     };
 #pragma data_seg()
 
@@ -174,8 +186,15 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$DogfightSpeedListPc")
     DOGFIGHT_SPEEDUP_PC DogfightSpeedListPc[9] = {
-        {58.0f, 0.5f},  {72.0f, 1.0f},  {174.0f, 0.5f}, {183.0f, 1.0f}, {207.0f, 0.5f},
-        {220.0f, 1.0f}, {313.0f, 0.5f}, {335.0f, 1.0f}, {0.0f, 0.0f},
+        {58.0f,  0.5f},
+        {72.0f,  1.0f},
+        {174.0f, 0.5f},
+        {183.0f, 1.0f},
+        {207.0f, 0.5f},
+        {220.0f, 1.0f},
+        {313.0f, 0.5f},
+        {335.0f, 1.0f},
+        {0.0f,   0.0f},
     };
 #pragma data_seg()
 
@@ -307,8 +326,7 @@ extern "C" {
     i32 DogfightBoltModelsSecondPc[4] = {304, 306, 302, 302};
 #pragma data_seg(pop)
     extern i32 DogfightDebrisKeysPc[4];
-    extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
-                                      GAMEOBJECT *, u32);
+    extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 
 #pragma data_seg(".data$DogfightCollisionRadiusSquaredPc")
     f32 DogfightCollisionRadiusSquaredPc = 2.0f;
@@ -325,21 +343,21 @@ extern "C" {
 
     /* Anakin C door pairs; the table ends with an empty name. */
     anakin_door_setup_s DoorSetupList[15] = {
-        {"door1", "door1r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door2", "door2r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door3", "door3r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door4", "door4r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door5", "door5r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door6", "door6r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door7", "door7r", 15.0f, 1.0f, 0, {0}, {1.0f, 1.0f, 0.0f}, -0.5f, 0.0f},
-        {"door8", "door8r", 15.0f, 1.0f, 0, {0}, {0.0f, -1.0f, 0.0f}, -0.5f, 0.0f},
-        {"door9", "door9r", 15.0f, 1.0f, 0, {0}, {0.0f, 1.0f, 0.0f}, -0.5f, 0.0f},
+        {"door1",  "door1r",  15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door2",  "door2r",  15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f},  -0.5f, 0.0f},
+        {"door3",  "door3r",  15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f},  -0.5f, 0.0f},
+        {"door4",  "door4r",  15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door5",  "door5r",  15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f},  -0.5f, 0.0f},
+        {"door6",  "door6r",  15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door7",  "door7r",  15.0f, 1.0f, 0, {0}, {1.0f, 1.0f, 0.0f},  -0.5f, 0.0f},
+        {"door8",  "door8r",  15.0f, 1.0f, 0, {0}, {0.0f, -1.0f, 0.0f}, -0.5f, 0.0f},
+        {"door9",  "door9r",  15.0f, 1.0f, 0, {0}, {0.0f, 1.0f, 0.0f},  -0.5f, 0.0f},
         {"door10", "door10r", 15.0f, 1.0f, 0, {0}, {0.0f, -1.0f, 0.0f}, -0.5f, 0.0f},
-        {"door11", "door11r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door11", "door11r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f},  -0.5f, 0.0f},
         {"door12", "door12r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door15", "door15r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door15", "door15r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f},  -0.5f, 0.0f},
         {"door16", "door16r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"", NULL, 0.0f, 0.0f, 0, {0}, {0.0f, 0.0f, 0.0f}, 0.0f, 0.0f},
+        {"",       NULL,      0.0f,  0.0f, 0, {0}, {0.0f, 0.0f, 0.0f},  0.0f,  0.0f},
     };
 
     /* PC file records share the established 0x530-byte evaluator layout. */
@@ -382,8 +400,7 @@ extern "C" {
     static void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
     static void DrawQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
     DOGFIGHT_QUICK_BOLT_PC *QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
-    static i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration,
-                                 i32 type, i32 model_id);
+    static i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration, i32 type, i32 model_id);
     static void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count);
     static f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline);
     static f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline);
@@ -478,8 +495,7 @@ extern "C" {
                 matrix = &scaled;
                 NuMtxPreScaleUVU0(matrix, scale);
             }
-            return GameDrawCharacterModel(&apicharsys->models[model_index], NULL, matrix, NULL, NULL, NULL, NULL,
-                                          flags);
+            return GameDrawCharacterModel(&apicharsys->models[model_index], NULL, matrix, NULL, NULL, NULL, NULL, flags);
         }
         return 0;
     }
@@ -640,8 +656,7 @@ extern "C" {
         return record;
     }
 
-    static i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration,
-                                 i32 type, i32 model_id) {
+    static i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration, i32 type, i32 model_id) {
         DOGFIGHT_QUICK_BOLT_PC *record = QuickBoltRecordAllocatePc(buffer);
         f64 dx;
         f64 dy;
@@ -877,8 +892,7 @@ extern "C" {
                 difference.x = current.x - previous.x;
                 difference.y = current.y - previous.y;
                 difference.z = current.z - previous.z;
-                squared = (f32)((f64)difference.x * difference.x + (f64)difference.y * difference.y +
-                                (f64)difference.z * difference.z);
+                squared = (f32)((f64)difference.x * difference.x + (f64)difference.y * difference.y + (f64)difference.z * difference.z);
                 distance = (f32)((f64)NuFsqrt(squared) + distance);
                 previous = current;
             }
@@ -1056,13 +1070,13 @@ extern "C" {
         position_delta.y = 0.0f;
         position_delta.x = new_position.x - RadialMoveCentre.x;
         position_delta.z = new_position.z - RadialMoveCentre.z;
-        position_radius = NuFsqrt(position_delta.x * position_delta.x + position_delta.y * position_delta.y +
-                                  position_delta.z * position_delta.z);
+        position_radius =
+            NuFsqrt(position_delta.x * position_delta.x + position_delta.y * position_delta.y + position_delta.z * position_delta.z);
         origin_delta.x = dat_00855e40.x - RadialMoveCentre.x;
         origin_delta.y = 0.0f;
         origin_delta.z = dat_00855e40.z - RadialMoveCentre.z;
-        RadialPlayerRadius[0] = NuFsqrt(origin_delta.x * origin_delta.x + origin_delta.y * origin_delta.y +
-                                        origin_delta.z * origin_delta.z);
+        RadialPlayerRadius[0] =
+            NuFsqrt(origin_delta.x * origin_delta.x + origin_delta.y * origin_delta.y + origin_delta.z * origin_delta.z);
 
         if (RadialPlayerRadius[0] < dat_007f15e4) {
             base_radius = dat_007f15e4;
@@ -1170,9 +1184,9 @@ extern "C" {
     // noinline: the original calls DogfightResetGroupPc out of line from DogfightResetSpacePc; VC8 would inline it
     // there.
     static __declspec(noinline) void DogfightResetGroupPc(DOGFIGHT_GROUP_PC *group) {
-#define RESET_FIGHTER(index)                                                                                           \
-    group->fighters[index].fields.active = 0;                                                                          \
-    group->fighters[index].fields.parent = NULL;                                                                       \
+#define RESET_FIGHTER(index)                                                                                                               \
+    group->fighters[index].fields.active = 0;                                                                                              \
+    group->fighters[index].fields.parent = NULL;                                                                                           \
     group->fighters[index].fields.spline = NULL
         RESET_FIGHTER(0);
         RESET_FIGHTER(1);
@@ -1266,8 +1280,7 @@ extern "C" {
             return 1;
         }
         if (fighter->target_id == -2) {
-            if ((NuRandFloat() < 0.5f && (player = (GAMEOBJECT *)Player[0]) != NULL &&
-                 (player->flags_1fc & 0x80) != 0) ||
+            if ((NuRandFloat() < 0.5f && (player = (GAMEOBJECT *)Player[0]) != NULL && (player->flags_1fc & 0x80) != 0) ||
                 ((player = (GAMEOBJECT *)Player[1]) != NULL && (player->flags_1fc & 0x80) != 0)) {
                 DogfightCachedPlayerPositionPc = player->collision_position;
                 DogfightCachedPlayerVelocityPc = player->velocity;
@@ -1301,8 +1314,7 @@ extern "C" {
         if (ratio < (f64)0.969f) {
             return 2;
         }
-        closing_speed = (f64)front->y * target_velocity->y + (f64)target_velocity->x * front->x +
-                        (f64)front->z * target_velocity->z;
+        closing_speed = (f64)front->y * target_velocity->y + (f64)target_velocity->x * front->x + (f64)front->z * target_velocity->z;
         closing_speed = 50.0 - (f64)closing_speed;
         if (closing_speed < 1.0f) {
             return 2;
@@ -1444,8 +1456,7 @@ extern "C" {
                 } else {
                     *(NUVEC *)&direction = v010;
                 }
-                magnitude =
-                    (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
+                magnitude = (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
                 magnitude = NuFsqrt(magnitude);
                 if (magnitude != 0.0f) {
                     scale = qrand() * (((f64)DogfightDeathImpulseScalePc + 1.0) / 65535.0) / magnitude;
@@ -1466,8 +1477,7 @@ extern "C" {
                 fighter->death_timer = 0.0f;
             }
         }
-        if (fighter->health <= 0 &&
-            (fighter->spline == NULL || (fighter->spline->id != 85 && fighter->spline->id != 84))) {
+        if (fighter->health <= 0 && (fighter->spline == NULL || (fighter->spline->id != 85 && fighter->spline->id != 84))) {
             fighter->death_timer -= FRAMETIME;
             if (fighter->death_timer <= 0.0f) {
                 AddGameDebris(WORLD->game_debris_sys, 23, (NUVEC *)&fighter->matrix.m30);
@@ -1482,8 +1492,7 @@ extern "C" {
                 fighter->matrix.m30 += step.x;
                 fighter->matrix.m31 += step.y;
                 fighter->matrix.m32 += step.z;
-                AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[48].effect, (NUVEC *)&fighter->matrix.m30,
-                                            1, 0, 0);
+                AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[48].effect, (NUVEC *)&fighter->matrix.m30, 1, 0, 0);
             }
             return 0;
         }
@@ -1510,8 +1519,7 @@ extern "C" {
         direction.x = fighter->target_position.x - fighter->matrix.m30;
         direction.y = fighter->target_position.y - fighter->matrix.m31;
         direction.z = fighter->target_position.z - fighter->matrix.m32;
-        distance_squared =
-            (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
+        distance_squared = (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
         if (fighter->death_timer >= 0.0f) {
             fighter->death_timer -= FRAMETIME;
         }
@@ -1532,8 +1540,7 @@ extern "C" {
             direction.x = fighter->target_position.x - fighter->matrix.m30;
             direction.y = fighter->target_position.y - fighter->matrix.m31;
             direction.z = fighter->target_position.z - fighter->matrix.m32;
-            distance_squared =
-                (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
+            distance_squared = (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
         }
         camera_distance = ((f64)fighter->matrix.m31 - global_camera.mtx.m31) * global_camera.mtx.m21 +
                           ((f64)fighter->matrix.m30 - global_camera.mtx.m30) * global_camera.mtx.m20 +
@@ -1618,8 +1625,7 @@ extern "C" {
                 }
                 return 1;
             }
-            if (fighter->missile_count != 0 && fighter->spline->id != 85 && fighter->spline->id != 84 &&
-                NuRandFloat() < (f64)0.2f) {
+            if (fighter->missile_count != 0 && fighter->spline->id != 85 && fighter->spline->id != 84 && NuRandFloat() < (f64)0.2f) {
                 missile = QueuedFighterSelectorPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
                 if (missile != NULL) {
                     --fighter->missile_count;
@@ -1647,8 +1653,7 @@ extern "C" {
         starfighter_s *fighter = &record->fields;
         __declspec(align(16)) NUMTX scaled;
         if (fighter->model_id < 0) {
-            if (fighter->model_id == -297 || fighter->model_id == -299 || fighter->model_id == -298 ||
-                fighter->model_id == -307) {
+            if (fighter->model_id == -297 || fighter->model_id == -299 || fighter->model_id == -298 || fighter->model_id == -307) {
                 scaled = fighter->matrix;
                 scaled.m00 *= (f64)1.15f;
                 scaled.m01 *= (f64)1.15f;
@@ -1665,15 +1670,14 @@ extern "C" {
             }
             if (fighter->model_id == -307) {
                 if (fighter->model_id == -307) {
-                    AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[49].effect,
-                                                (NUVEC *)&fighter->matrix.m30, 1, 0, 0);
+                    AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[49].effect, (NUVEC *)&fighter->matrix.m30, 1, 0, 0);
                 }
             }
         } else {
             DrawFlightCharacterPc(&fighter->matrix, fighter->model_id, fighter->draw_flags, fighter->scale);
         }
-        if (DogfightDrawFighterSplinePc != 0 && fighter->health > 0 && fighter->parent == NULL &&
-            DogfightDrawSplinePc != 0 && fighter->spline != NULL && fighter->spline->point_count != 0) {
+        if (DogfightDrawFighterSplinePc != 0 && fighter->health > 0 && fighter->parent == NULL && DogfightDrawSplinePc != 0 &&
+            fighter->spline != NULL && fighter->spline->point_count != 0) {
             DrawFlightSplineDebugPc(fighter->spline, 3);
         }
     }
@@ -1903,8 +1907,7 @@ extern "C" {
         if (nearest < 35.0f) {
             f64 amount = 1.0 - (f64)nearest / 35.0;
             f32 strength;
-            GameCam_NewShake(GameCam, (f32)((f64)MulDist * amount + MulAdd), 0.2f,
-                             (f32)((f64)SpeedDist * amount + SpeedAdd));
+            GameCam_NewShake(GameCam, (f32)((f64)MulDist * amount + MulAdd), 0.2f, (f32)((f64)SpeedDist * amount + SpeedAdd));
             strength = (f32)(amount * 0.5);
             if (strength > 0.35f) {
                 strength = 0.35f;
@@ -1934,8 +1937,7 @@ extern "C" {
         if (DogfightHideGeometryPc == 0) {
             for (i = 0; i < 2; ++i) {
                 if (space->crosses[i].enabled != 0) {
-                    NuVecMtxTransform((NUVEC *)&space->crosses[i].matrix.m30, (NUVEC *)&space->crosses[i].matrix.m10,
-                                      &GameCam->render_mtx);
+                    NuVecMtxTransform((NUVEC *)&space->crosses[i].matrix.m30, (NUVEC *)&space->crosses[i].matrix.m10, &GameCam->render_mtx);
                 }
             }
             for (i = 0; i < 8; ++i) {
@@ -2105,8 +2107,7 @@ extern "C" {
         world->has_level_specific_data = 1;
         if (world->current_level == DOGFIGHTA_LDATA) {
             DOGFIGHT_SPACE_PC *space;
-            world->level_specific_data =
-                GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(DOGFIGHT_SPACE_PC));
+            world->level_specific_data = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(DOGFIGHT_SPACE_PC));
             space = (DOGFIGHT_SPACE_PC *)world->level_specific_data;
             space->reset_buffer.records = space->reset_records;
             space->reset_buffer.capacity = 256;
@@ -2217,8 +2218,7 @@ extern "C" {
                 coins = 0;
             }
             player_index = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
-            AddPickups(coins, ReleaseHearts(), 0, 0, ship_position, NULL, 2.0f, player_index, 1.0f, 2000000.0f, NULL, 1,
-                       1);
+            AddPickups(coins, ReleaseHearts(), 0, 0, ship_position, NULL, 2.0f, player_index, 1.0f, 2000000.0f, NULL, 1, 1);
             AddFiniteShotPART(PARTLookupType("DogBits"), ship_position, 1);
             dy = (f64)fighter->matrix.m31 - global_camera.mtx.m31;
             dx = (f64)fighter->matrix.m30 - global_camera.mtx.m30;
@@ -2262,8 +2262,7 @@ extern "C" {
             if (space->groups[group].active != 0) {
                 for (i = 0; i < 5; ++i) {
                     if (space->groups[group].fighters[i].fields.active != 0 &&
-                        CollideBoltStarFighter(bolt, &space->groups[group].fighters[i].fields, &position.xyz,
-                                               &velocity.xyz) != 0) {
+                        CollideBoltStarFighter(bolt, &space->groups[group].fighters[i].fields, &position.xyz, &velocity.xyz) != 0) {
                         return 1;
                     }
                 }
@@ -2333,8 +2332,7 @@ extern "C" {
             difference.x -= d.x;
             difference.y -= d.y;
             difference.z -= d.z;
-            square =
-                (f64)difference.y * difference.y + (f64)difference.x * difference.x + (f64)difference.z * difference.z;
+            square = (f64)difference.y * difference.y + (f64)difference.x * difference.x + (f64)difference.z * difference.z;
             (void)NuFsqrt(square);
             difference.x = (f64)b.x + a.x;
             difference.y = (f64)b.y + a.y;
@@ -2345,8 +2343,7 @@ extern "C" {
             difference.x -= d.x;
             difference.y -= d.y;
             difference.z -= d.z;
-            square =
-                (f64)difference.y * difference.y + (f64)difference.x * difference.x + (f64)difference.z * difference.z;
+            square = (f64)difference.y * difference.y + (f64)difference.x * difference.x + (f64)difference.z * difference.z;
             (void)NuFsqrt(square);
         }
     }
@@ -2374,8 +2371,7 @@ extern "C" {
                 continue;
             }
 
-            if (NuSpecialFind(WORLD->current_gscn, (NUSPECIALHANDLE *)&door->secondary_special, setup->secondary_name,
-                              1)) {
+            if (NuSpecialFind(WORLD->current_gscn, (NUSPECIALHANDLE *)&door->secondary_special, setup->secondary_name, 1)) {
                 door->has_secondary = ((i16)(NuSpecialExistsFn((NUSPECIALHANDLE *)&door->secondary_special)));
             }
 
@@ -2383,8 +2379,7 @@ extern "C" {
             door->matrix = door->original_matrix = *NuSpecialGetMtx((NUSPECIALHANDLE *)&door->special);
             if (door->has_secondary != 0) {
                 CopyFlightMatrixPc(&door->original_secondary_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
-                door->secondary_matrix = door->original_secondary_matrix =
-                    *NuSpecialGetMtx((NUSPECIALHANDLE *)&door->secondary_special);
+                door->secondary_matrix = door->original_secondary_matrix = *NuSpecialGetMtx((NUSPECIALHANDLE *)&door->secondary_special);
             }
             door->platform_id = ((i16)(FindPlatInst(NuSpecialGetInstanceix((NUSPECIALHANDLE *)&door->special))));
             door->active = 1;
@@ -2663,12 +2658,10 @@ extern "C" {
         ChrisAllocLevelStuff(world);
         DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
         for (i = 0; i < 256; ++i) {
-            ((FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines)[i].point_count =
-                0;
+            ((FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines)[i].point_count = 0;
         }
         if (world->current_level == DOGFIGHTA_LDATA) {
-            FlightSpline_Init(
-                world, (FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines, 256);
+            FlightSpline_Init(world, (FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines, 256);
         }
         DogfightResetSplineHistoryPc(((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->splines, 256);
     }

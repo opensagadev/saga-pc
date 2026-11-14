@@ -1,12 +1,15 @@
 # House style (docs/cleanup-audit.md, section 3). `make format` applies it to src/.
 BasedOnStyle: LLVM
 IndentWidth: 4
-ColumnLimit: 120
+ColumnLimit: 140
 
 AllowShortFunctionsOnASingleLine: None
 NamespaceIndentation: All
 IndentExternBlock: Indent
 IndentCaseLabels: true
+
+# Initializer tables: one row per line, columns aligned.
+AlignArrayOfStructures: Left
 
 # Include order steers VC8 code generation in a few units (the audit lists them): never reorder.
 SortIncludes: Never

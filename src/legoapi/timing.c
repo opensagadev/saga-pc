@@ -110,9 +110,8 @@ void GameTiming(WORLDINFO *world, f32 *game_time) {
                 if (world->area != NULL && (world->area->flags & 0x10) != 0) {
                     if (ChallengeMode == 1) {
                         UpdateTimer(&ChallengeTimer);
-                        if (Game_AreaSave != NULL &&
-                            ChallengeTimer.time_elapsed >=
-                                ((GAME_TIMING_AREA_SAVE *)Game_AreaSave)[world->area_index].challenge_trial_time) {
+                        if (Game_AreaSave != NULL && ChallengeTimer.time_elapsed >=
+                                                         ((GAME_TIMING_AREA_SAVE *)Game_AreaSave)[world->area_index].challenge_trial_time) {
                             EndChallenge(3, 1);
                         }
                     } else if (Mission_CurrentState(NULL) == 1) {

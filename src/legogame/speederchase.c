@@ -84,8 +84,8 @@ void SpeederChaseA_Update(WORLDINFO *world) {
     for (i = 0; i < 2; ++i) {
         object = Player[i];
         if (object != NULL) {
-            if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 &&
-                object->id == (u16)id_SPEEDERBIKE && object->rider != NULL && (object->rider->flags_1fc & 0x80) != 0) {
+            if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 && object->id == (u16)id_SPEEDERBIKE &&
+                object->rider != NULL && (object->rider->flags_1fc & 0x80) != 0) {
                 object->flags_ef4 |= 0x1000000;
             } else {
                 object->flags_ef4 &= ~0x1000000;
@@ -138,8 +138,7 @@ void SpeederChaseA_Panel(WORLDINFO *world) {
     i32 i;
     (void)world;
     if (netclient != 0) {
-        if (SpeederChaseNetPacketPc == NULL || SpeederChaseNetPacketPc->phase != 1 ||
-            SpeederChaseNetPacketPc->target_count == 0) {
+        if (SpeederChaseNetPacketPc == NULL || SpeederChaseNetPacketPc->phase != 1 || SpeederChaseNetPacketPc->target_count == 0) {
             return;
         }
         for (i = 0; i < SpeederChaseNetPacketPc->target_count; ++i) {
@@ -150,8 +149,8 @@ void SpeederChaseA_Panel(WORLDINFO *world) {
         }
         DrawMeleeTargetsPc(targets, defeated, SpeederChaseNetPacketPc->target_count);
     } else {
-        if (LevAIMessage[0] == NULL || LevAIMessage[1] == NULL || LevAIMessage[3] == NULL ||
-            LevAIMessage[3]->value != 1.0f || !(LevAIMessage[0]->value > 0.0f)) {
+        if (LevAIMessage[0] == NULL || LevAIMessage[1] == NULL || LevAIMessage[3] == NULL || LevAIMessage[3]->value != 1.0f ||
+            !(LevAIMessage[0]->value > 0.0f)) {
             return;
         }
         count = (i32)LevAIMessage[0]->value;
@@ -211,18 +210,18 @@ f32 speeder_kill_dist = 75.0f;
 f32 speeder_shootrate = 1.0f;
 f32 speederfirerange = -1.0f;
 SPEEDERCHASEVALUES speedervals[4] = {
-    {9.0f, -3.0f, 1.5f, 5.0f, 10.0f, 0.5f, 5.0f},
-    {-3.0f, -3.0f, 1.5f, 5.0f, 5.0f, 0.3f, 5.0f},
-    {-3.0f, -3.0f, 1.5f, 5.0f, 2.0f, 0.3f, 5.0f},
-    {4.0f, -3.0f, 1.5f, 5.0f, 10.0f, 0.5f, 5.0f},
+    {9.0f,  -3.0f, 1.5f, 5.0f, 10.0f, 0.5f, 5.0f},
+    {-3.0f, -3.0f, 1.5f, 5.0f, 5.0f,  0.3f, 5.0f},
+    {-3.0f, -3.0f, 1.5f, 5.0f, 2.0f,  0.3f, 5.0f},
+    {4.0f,  -3.0f, 1.5f, 5.0f, 10.0f, 0.5f, 5.0f},
 };
 f32 speeder_level_height = 1.0f;
 f32 speeder_level_height_lerpf = 5.0f;
 f32 zoom_ahead_extra_time = 5.0f;
 f32 zoom_ahead_extra = 3.0f;
 
-i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                              i32 param_count, i32 first_time, f32 elapsed) {
+i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_count,
+                              i32 first_time, f32 elapsed) {
     SOCK_PC *sock = &WORLD->sock_sys->socks[1];
     GAMEOBJECT *object;
     GAMEOBJECT *reference;
@@ -282,8 +281,7 @@ i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
             error = distance - speedervals[processor->action_data_1].distance;
             if (processor->action_data_1 == 0) {
                 if (processor->action_timer < zoom_ahead_extra_time) {
-                    error -=
-                        (zoom_ahead_extra_time - processor->action_timer) / zoom_ahead_extra_time * zoom_ahead_extra;
+                    error -= (zoom_ahead_extra_time - processor->action_timer) / zoom_ahead_extra_time * zoom_ahead_extra;
                 }
                 if (speeder_mode_ahead_timer < 2.0f) {
                     speeder_hitpoints_lost = 0;
@@ -319,11 +317,9 @@ i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
             speeder_mode_ahead_timer += elapsed;
         }
         if (processor->action_data_1 == 1 || processor->action_data_3 == NULL) {
-            object->movement_spline_offset.y =
-                SeekValF(object->movement_spline_offset.y, speeder_level_height, speeder_level_height_lerpf);
+            object->movement_spline_offset.y = SeekValF(object->movement_spline_offset.y, speeder_level_height, speeder_level_height_lerpf);
         } else {
-            object->movement_spline_offset.y =
-                SeekValF(object->movement_spline_offset.y, 0.0f, speeder_level_height_lerpf);
+            object->movement_spline_offset.y = SeekValF(object->movement_spline_offset.y, 0.0f, speeder_level_height_lerpf);
         }
         if (processor->action_data_2 > object->current_hp) {
             speeder_hitpoints_lost++;
@@ -367,8 +363,7 @@ i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
                     return 0;
                 }
                 processor->action_timer -= elapsed;
-                if (!(processor->action_timer > 0.0f) && processor->action_timer < -1.0f &&
-                    player->character_context == 0x36) {
+                if (!(processor->action_timer > 0.0f) && processor->action_timer < -1.0f && player->character_context == 0x36) {
                     SpeederChase_SetMode(processor, 3);
                     return 0;
                 }

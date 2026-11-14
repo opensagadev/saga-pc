@@ -1,16 +1,16 @@
 #include "saga.h"
 
 /* Do not split a "~~" pair, and keep a single '~' with the text after it. */
-#define KEEP_TILDE_PAIR(text, index)                                                                                   \
-    if ((text)[index] == '~') {                                                                                        \
-        if ((index) > 0 && (text)[(index) - 1] == '~')                                                                 \
-            --(index);                                                                                                 \
-    } else if ((index) > 0 && (text)[(index) - 1] == '~' && (index) > 1 && (text)[(index) - 2] != '~')                 \
+#define KEEP_TILDE_PAIR(text, index)                                                                                                       \
+    if ((text)[index] == '~') {                                                                                                            \
+        if ((index) > 0 && (text)[(index) - 1] == '~')                                                                                     \
+            --(index);                                                                                                                     \
+    } else if ((index) > 0 && (text)[(index) - 1] == '~' && (index) > 1 && (text)[(index) - 2] != '~')                                     \
     --(index)
 
-#define IS_BREAK_POINT(text, index)                                                                                    \
-    (((text)[index] == ' ' && (text)[(index) + 1] != '!' && (text)[(index) + 1] != '?' &&                              \
-      (text)[(index) + 1] != ';' && (text)[(index) + 1] != ':') ||                                                     \
+#define IS_BREAK_POINT(text, index)                                                                                                        \
+    (((text)[index] == ' ' && (text)[(index) + 1] != '!' && (text)[(index) + 1] != '?' && (text)[(index) + 1] != ';' &&                    \
+      (text)[(index) + 1] != ':') ||                                                                                                       \
      ((text)[index] == '.' && (text)[(index) + 1] != '.') || (text)[index] == '-' || (text)[index] == ',')
 
 i32 FindNextBreak(u8 *text, i32 index) {
@@ -164,7 +164,6 @@ void DrawMessageBox(i32 unused, f32 x, f32 y, f32 width, f32 height) {
     colours[1] = 0x80808080;
     colours[2] = 0x808080;
     colours[3] = 0x808080;
-    NuRndrGradRectUV2di(screen_x, screen_y + box_height - 15, box_width, 30, 0.0f, 1.0f, 1.0f, 1.0f, colours,
-                        MessageMtl);
+    NuRndrGradRectUV2di(screen_x, screen_y + box_height - 15, box_width, 30, 0.0f, 1.0f, 1.0f, 1.0f, colours, MessageMtl);
     NuRndrEndScene();
 }

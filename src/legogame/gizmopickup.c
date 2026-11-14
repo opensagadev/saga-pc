@@ -188,8 +188,7 @@ static void PartExtraCoinsPrivate(NUVEC *position, i32 index) {
     if (effect == -1) {
         return;
     }
-    count = ParticlesPerSecond(WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4 ? PartExtraCoinRate_PC * 0.5
-                                                                                        : PartExtraCoinRate_PC,
+    count = ParticlesPerSecond(WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4 ? PartExtraCoinRate_PC * 0.5 : PartExtraCoinRate_PC,
                                FRAMETIME);
     if (count > 0) {
         AddVariableShotDebrisEffect(effect, position, count, 0, 0);
@@ -292,8 +291,7 @@ counter_sound:
     }
 }
 
-void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, i32 model_variant, GAMEOBJECT *object,
-                             i32 ignored) {
+void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, i32 model_variant, GAMEOBJECT *object, i32 ignored) {
     i32 player_index;
     i32 player0_active;
     i32 player1_active;
@@ -751,8 +749,8 @@ void PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) 
 
 /* Every stud the level can release, optionally split per source. AI
  * characters count only in areas flagged 0x100. */
-u32 TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces, u32 *obstacles,
-                        u32 *turrets, u32 *characters) {
+u32 TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces, u32 *obstacles, u32 *turrets,
+                        u32 *characters) {
     u32 value = GizmoPickups_TotalScore(world);
     u32 total = value;
     if (pickups != NULL) {
@@ -1216,8 +1214,8 @@ void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJ
     }
 }
 
-void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *position, NUVEC *direction, f32 unused,
-                i32 player_id, f32 speed, f32 lifetime, GAMEOBJECT *owner, i32 random_types, i32 panel) {
+void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *position, NUVEC *direction, f32 unused, i32 player_id, f32 speed,
+                f32 lifetime, GAMEOBJECT *owner, i32 random_types, i32 panel) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     const f32 scale = AreaPickupScale;
     u32 arcade_flags;
@@ -1317,8 +1315,8 @@ void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *posit
             }
         }
     }
-    if (hearts > 0 && VehicleArea != 0 && Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) &&
-        Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)) {
+    if (hearts > 0 && VehicleArea != 0 && Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) && Player[1] != NULL &&
+        (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)) {
         hearts = 2;
         both_players = 1;
     } else {

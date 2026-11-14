@@ -32,13 +32,12 @@ static void save_original_streams(void) {
     /* Validate both before any _dup/CreateFile can reuse a closed handle number. */
     BOOL out_valid = GetHandleInformation(out_handle, &flags);
     BOOL err_valid = GetHandleInformation(err_handle, &flags);
-    log_capture_eligible = out_valid && err_valid && GetStdHandle(STD_OUTPUT_HANDLE) == out_handle &&
-                           GetStdHandle(STD_ERROR_HANDLE) == err_handle;
+    log_capture_eligible =
+        out_valid && err_valid && GetStdHandle(STD_OUTPUT_HANDLE) == out_handle && GetStdHandle(STD_ERROR_HANDLE) == err_handle;
     if (out_valid) {
         fflush(stdout);
         log_original_out = _dup(out);
-        if (log_original_out >= 0 &&
-            !SetHandleInformation((HANDLE)_get_osfhandle(log_original_out), HANDLE_FLAG_INHERIT, 0)) {
+        if (log_original_out >= 0 && !SetHandleInformation((HANDLE)_get_osfhandle(log_original_out), HANDLE_FLAG_INHERIT, 0)) {
             _close(log_original_out);
             log_original_out = -1;
         }
@@ -46,8 +45,7 @@ static void save_original_streams(void) {
     if (err_valid) {
         fflush(stderr);
         log_original_err = _dup(err);
-        if (log_original_err >= 0 &&
-            !SetHandleInformation((HANDLE)_get_osfhandle(log_original_err), HANDLE_FLAG_INHERIT, 0)) {
+        if (log_original_err >= 0 && !SetHandleInformation((HANDLE)_get_osfhandle(log_original_err), HANDLE_FLAG_INHERIT, 0)) {
             _close(log_original_err);
             log_original_err = -1;
         }
@@ -85,9 +83,9 @@ static void open_log_file(const SYSTEMTIME *time) {
         return;
     }
     for (attempt = 0; attempt < 100; attempt++) {
-        int count = _snprintf(log_filename, sizeof(log_filename), "%s\\%04u%02u%02u-%02u%02u%02u-%03u-%s-%lu-%u.log",
-                              directory, time->wYear, time->wMonth, time->wDay, time->wHour, time->wMinute,
-                              time->wSecond, time->wMilliseconds, SAGA_BUILD_ID, GetCurrentProcessId(), attempt);
+        int count = _snprintf(log_filename, sizeof(log_filename), "%s\\%04u%02u%02u-%02u%02u%02u-%03u-%s-%lu-%u.log", directory,
+                              time->wYear, time->wMonth, time->wDay, time->wHour, time->wMinute, time->wSecond, time->wMilliseconds,
+                              SAGA_BUILD_ID, GetCurrentProcessId(), attempt);
         if (count < 0 || count >= sizeof(log_filename)) {
             return;
         }
@@ -100,8 +98,7 @@ static void open_log_file(const SYSTEMTIME *time) {
 }
 
 static void write_record(enum log_level level, const char *record) {
-    static const WORD colors[] = {FOREGROUND_RED, FOREGROUND_RED | FOREGROUND_GREEN, FOREGROUND_GREEN,
-                                  FOREGROUND_INTENSITY};
+    static const WORD colors[] = {FOREGROUND_RED, FOREGROUND_RED | FOREGROUND_GREEN, FOREGROUND_GREEN, FOREGROUND_INTENSITY};
     CONSOLE_SCREEN_BUFFER_INFO console;
     HANDLE output = log_original_out >= 0 ? (HANDLE)_get_osfhandle(log_original_out) : INVALID_HANDLE_VALUE;
     BOOL colored = FALSE;
@@ -158,9 +155,8 @@ void _saga_log(enum log_level level, const char *file, int line, const char *fun
         _snprintf(record, sizeof(record),
                   "%04u-%02u-%02u %02u:%02u:%02u.%03u [INFO] Debug build %s; pid %lu; file logging %s; standard-stream "
                   "capture %s\n",
-                  time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds,
-                  SAGA_BUILD_ID, GetCurrentProcessId(),
-                  log_file == INVALID_HANDLE_VALUE ? "unavailable (stdout active)" : log_filename,
+                  time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, SAGA_BUILD_ID,
+                  GetCurrentProcessId(), log_file == INVALID_HANDLE_VALUE ? "unavailable (stdout active)" : log_filename,
                   log_capture ? "active" : "unavailable");
         record[sizeof(record) - 1] = 0;
         write_record(LOG_LEVEL_INFO, record);
@@ -179,8 +175,8 @@ void _saga_log(enum log_level level, const char *file, int line, const char *fun
     if (count < 0 || count >= sizeof(message)) {
         strcpy(message + sizeof(message) - sizeof(" [truncated]"), " [truncated]");
     }
-    _snprintf(record, sizeof(record), "%02u:%02u:%02u.%06u [%s] %s:%d: %s: %s\n", time.wHour, time.wMinute,
-              time.wSecond, time.wMilliseconds * 1000u, names[level], file, line, function, message);
+    _snprintf(record, sizeof(record), "%02u:%02u:%02u.%06u [%s] %s:%d: %s: %s\n", time.wHour, time.wMinute, time.wSecond,
+              time.wMilliseconds * 1000u, names[level], file, line, function, message);
     record[sizeof(record) - 1] = 0;
     write_record(level, record);
     InterlockedExchange(&log_lock, 0);

@@ -182,8 +182,7 @@ extern "C" {
     static void PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE_PC *texture) {
         if (texture != NULL) {
             const u32 *tuple = &texture->flags;
-            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] ||
-                (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1]) {
+            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] || (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1]) {
                 PCGraphicsSetSamplerTuplePc(stage, tuple);
             }
             PCDeviceSetTexture(stage, texture->resource);
@@ -238,8 +237,7 @@ extern "C" void fun_005fa620(i32 mode) {
 
 extern "C" void NuDisplayListMaterialPc(void *arg) {
     PC_DL_E_MATERIAL_READER *material = (PC_DL_E_MATERIAL_READER *)arg;
-    PC_SHADER_OBJECT_FULL_VIEW *shader =
-        (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderRecordFromHandle((u32)(i32)material->shader_id);
+    PC_SHADER_OBJECT_FULL_VIEW *shader = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderRecordFromHandle((u32)(i32)material->shader_id);
     NUMTX transposed;
     NuDisplayMaterialLastPc = material;
     NuDisplayHandlerMaterialPc = material;
@@ -252,9 +250,8 @@ extern "C" void NuDisplayListMaterialPc(void *arg) {
         NuDisplayHandlerPixelShaderCachePc = NULL;
         NuShaderManagerBindShader(NULL);
         PCDeviceSetVertexDeclarationPc(NuDisplayMaterialDebrisDeclarationPc);
-        PCDisplayHandlerBindProgramsPc((u8)material->common.particle_type_tag == 0x97
-                                           ? NuDisplayMaterialGlassProgramsPc
-                                           : NuDisplayMaterialDebrisProgramsPc);
+        PCDisplayHandlerBindProgramsPc((u8)material->common.particle_type_tag == 0x97 ? NuDisplayMaterialGlassProgramsPc
+                                                                                      : NuDisplayMaterialDebrisProgramsPc);
         if (PcWindowOptions.usehires == 0 || PCDeviceHardwareVertexProcessingPC != 4) {
             NuMtxTranspose(&transposed, &PcGeometryViewProjectionMatrixPc);
             PCDeviceSetVertexShaderConstantsF(0, &transposed.m00, 4);
@@ -471,55 +468,52 @@ extern "C" {
     void PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
     void PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
 }
-extern "C" void PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
-                                  GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations, i32 levels,
-                                  bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program);
+extern "C" void PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod,
+                                  i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program);
 
 // NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
-#define POST_BLUR_BIND_PROGRAM(bound_program)                                                                          \
-    do {                                                                                                               \
-        POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \
-        if (bound != NULL) {                                                                                           \
-            if (NuDisplayHandlerVertexShaderCachePc != bound->vertex_shader) {                                         \
-                PCDeviceSetVertexShaderPc(bound->vertex_shader);                                                       \
-                NuDisplayHandlerVertexShaderCachePc = bound->vertex_shader;                                            \
-            }                                                                                                          \
-            if (NuDisplayHandlerPixelShaderCachePc != bound->pixel_shader) {                                           \
-                PCDeviceSetPixelShaderPc(bound->pixel_shader);                                                         \
-                NuDisplayHandlerPixelShaderCachePc = bound->pixel_shader;                                              \
-            }                                                                                                          \
-        } else {                                                                                                       \
-            PCDeviceSetVertexShaderPc(NULL);                                                                           \
-            PCDeviceSetPixelShaderPc(NULL);                                                                            \
-            NuDisplayHandlerVertexShaderCachePc = NULL;                                                                \
-            NuDisplayHandlerPixelShaderCachePc = NULL;                                                                 \
-        }                                                                                                              \
+#define POST_BLUR_BIND_PROGRAM(bound_program)                                                                                              \
+    do {                                                                                                                                   \
+        POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                                                   \
+        if (bound != NULL) {                                                                                                               \
+            if (NuDisplayHandlerVertexShaderCachePc != bound->vertex_shader) {                                                             \
+                PCDeviceSetVertexShaderPc(bound->vertex_shader);                                                                           \
+                NuDisplayHandlerVertexShaderCachePc = bound->vertex_shader;                                                                \
+            }                                                                                                                              \
+            if (NuDisplayHandlerPixelShaderCachePc != bound->pixel_shader) {                                                               \
+                PCDeviceSetPixelShaderPc(bound->pixel_shader);                                                                             \
+                NuDisplayHandlerPixelShaderCachePc = bound->pixel_shader;                                                                  \
+            }                                                                                                                              \
+        } else {                                                                                                                           \
+            PCDeviceSetVertexShaderPc(NULL);                                                                                               \
+            PCDeviceSetPixelShaderPc(NULL);                                                                                                \
+            NuDisplayHandlerVertexShaderCachePc = NULL;                                                                                    \
+            NuDisplayHandlerPixelShaderCachePc = NULL;                                                                                     \
+        }                                                                                                                                  \
     } while (0)
-#define POST_BLUR_LOW_ATTACH(texture, lod)                                                                             \
-    do {                                                                                                               \
-        PC_FRAMEBUFFER_PC *framebuffer = PostBlurFramebufferPc;                                                        \
-        framebuffer->targets[0].Attach((texture), (lod), false);                                                       \
-        framebuffer->changed = 1;                                                                                      \
+#define POST_BLUR_LOW_ATTACH(texture, lod)                                                                                                 \
+    do {                                                                                                                                   \
+        PC_FRAMEBUFFER_PC *framebuffer = PostBlurFramebufferPc;                                                                            \
+        framebuffer->targets[0].Attach((texture), (lod), false);                                                                           \
+        framebuffer->changed = 1;                                                                                                          \
     } while (0)
-#define POST_BLUR_LOW_BIND_INPUT(stage)                                                                                \
-    do {                                                                                                               \
-        if ((u32)PCDeviceSamplerInvalidation[stage][0] != input->flags ||                                              \
-            (u32)PCDeviceSamplerInvalidation[stage][1] != input->field_24)                                             \
-            PCGraphicsSetSamplerTuplePc(stage, &input->flags);                                                         \
-        PCDeviceSetTexture(stage, input->resource);                                                                    \
+#define POST_BLUR_LOW_BIND_INPUT(stage)                                                                                                    \
+    do {                                                                                                                                   \
+        if ((u32)PCDeviceSamplerInvalidation[stage][0] != input->flags || (u32)PCDeviceSamplerInvalidation[stage][1] != input->field_24)   \
+            PCGraphicsSetSamplerTuplePc(stage, &input->flags);                                                                             \
+        PCDeviceSetTexture(stage, input->resource);                                                                                        \
     } while (0)
-#define POST_BIND_GLOBAL_TEXTURE(stage, global)                                                                        \
-    do {                                                                                                               \
-        GRAPHICS_RENDER_TEXTURE_PC *bound = (global);                                                                  \
-        if (bound != NULL) {                                                                                           \
-            u32 *tuple = &bound->flags;                                                                                \
-            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] ||                                              \
-                (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1])                                                \
-                PCGraphicsSetSamplerTuplePc(stage, tuple);                                                             \
-            PCDeviceSetTexture(stage, bound->resource);                                                                \
-        } else {                                                                                                       \
-            PCDeviceSetTexture(stage, NULL);                                                                           \
-        }                                                                                                              \
+#define POST_BIND_GLOBAL_TEXTURE(stage, global)                                                                                            \
+    do {                                                                                                                                   \
+        GRAPHICS_RENDER_TEXTURE_PC *bound = (global);                                                                                      \
+        if (bound != NULL) {                                                                                                               \
+            u32 *tuple = &bound->flags;                                                                                                    \
+            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] || (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1])          \
+                PCGraphicsSetSamplerTuplePc(stage, tuple);                                                                                 \
+            PCDeviceSetTexture(stage, bound->resource);                                                                                    \
+        } else {                                                                                                                           \
+            PCDeviceSetTexture(stage, NULL);                                                                                               \
+        }                                                                                                                                  \
     } while (0)
 
 // One vertex-shader tap offset; rounds both coordinates through f32 temporaries.
@@ -530,17 +524,16 @@ struct __declspec(align(16)) POST_BLUR_LOW_OFFSET_PC {
     f32 w;
 };
 
-#define POST_BLUR_LOW_SET_OFFSET(offset, offset_x, offset_y)                                                           \
-    do {                                                                                                               \
-        f32 set_x = (f32)(offset_x);                                                                                   \
-        f32 set_y = (f32)(offset_y);                                                                                   \
-        (offset).x = set_x;                                                                                            \
-        (offset).y = set_y;                                                                                            \
+#define POST_BLUR_LOW_SET_OFFSET(offset, offset_x, offset_y)                                                                               \
+    do {                                                                                                                                   \
+        f32 set_x = (f32)(offset_x);                                                                                                       \
+        f32 set_y = (f32)(offset_y);                                                                                                       \
+        (offset).x = set_x;                                                                                                                \
+        (offset).y = set_y;                                                                                                                \
     } while (0)
 
-extern "C" void PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
-                                 GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations, i32 levels,
-                                 bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
+extern "C" void PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod,
+                                 i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
     f32 weights[4] = {.25f, .25f, .25f, .25f};
     f32 rounded_radius = (f32)ceil((f64)radius);
     i32 guard = (i32)rounded_radius * 3;
@@ -598,8 +591,8 @@ extern "C" void PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_
             POST_BLUR_LOW_SET_OFFSET(horizontal[3], dx * -1.0, dy * .5);
             POST_BLUR_LOW_SET_OFFSET(vertical[3], dx * -1.0, dy * -.5);
             f32 bias[4] = {1, 1, PostBlurInputBiasPc / (f32)width, PostBlurInputBiasPc / (f32)height};
-            f32 output_bias[4] = {(f32)output_width / (f32)work_width, (f32)output_height / (f32)work_height,
-                                  1.0f / (f32)work_width, 1.0f / (f32)work_height};
+            f32 output_bias[4] = {(f32)output_width / (f32)work_width, (f32)output_height / (f32)work_height, 1.0f / (f32)work_width,
+                                  1.0f / (f32)work_height};
             POST_BLUR_LOW_ATTACH(PCGraphicsPostEffectWorkTexturePc, 0);
             PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
             viewport.x = 0;
@@ -658,8 +651,7 @@ extern "C" void PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_
             PCDeviceSetVertexShaderConstantsF(0, &vertical[0].x, 4);
             PCDeviceSetVertexShaderConstantsF(4, output_bias, 1);
             PCDeviceSetPixelShaderConstantsF(0, weights, 1);
-            output->flags =
-                (((output->flags & 0xfca5dbf0) | (output_lod & 15)) & 0xffffff0f) | ((output_lod & 15) << 4) | 0xa41b00;
+            output->flags = (((output->flags & 0xfca5dbf0) | (output_lod & 15)) & 0xffffff0f) | ((output_lod & 15) << 4) | 0xa41b00;
             PCGraphicsPostEffectWorkTexturePc->flags =
                 (((PCGraphicsPostEffectWorkTexturePc->flags & 0xfffffbff) | 0x300) & 0xffffdfff) | 0x1800;
             PCGraphicsPostEffectWorkTexturePc->flags =
@@ -675,14 +667,13 @@ extern "C" void PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_
     }
 }
 
-extern "C" void PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
-                                      GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations, i32 levels,
-                                      bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
+extern "C" void PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE_PC *textures,
+                                      i32 first_lod, i32 iterations, i32 levels, bool mip_chain, f32 radius,
+                                      POST_SHADER_PROGRAM_PC *program) {
     if (PCDeviceHardwareVertexProcessingPC >= 2) {
         PostBlur7x7HighPc(source, source_lod, textures, first_lod, iterations, levels, mip_chain, radius, program);
     } else {
-        PostBlur7x7LowPc(source, source_lod, textures, first_lod, iterations, levels, mip_chain, radius,
-                         PostCopyAuxProgramPc);
+        PostBlur7x7LowPc(source, source_lod, textures, first_lod, iterations, levels, mip_chain, radius, PostCopyAuxProgramPc);
     }
 }
 
@@ -716,8 +707,8 @@ inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
 inline NuPostFilterGen::~NuPostFilterGen() {
 }
 
-extern "C" void PCGraphicsCopyFramebufferTex2DPc(i32 attachment, GRAPHICS_RENDER_TEXTURE_PC *texture, i32 level, i32 x,
-                                                 i32 y, i32 width, i32 height) {
+extern "C" void PCGraphicsCopyFramebufferTex2DPc(i32 attachment, GRAPHICS_RENDER_TEXTURE_PC *texture, i32 level, i32 x, i32 y, i32 width,
+                                                 i32 height) {
     (void)x;
     (void)y;
     if (attachment == 0) {
@@ -736,12 +727,9 @@ NuMainFilter::NuMainFilter() {
 }
 
 void NuMainFilter::RenderBloomPc() {
-    PC_FRAMEBUFFER_PC *output =
-        (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
-    PC_POST_BUFFER_PROXY_PC *color =
-        (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
-    PC_POST_BUFFER_PROXY_PC *normal =
-        (PC_POST_BUFFER_PROXY_PC *)PostPortNormalBufferPc.manager->entries[PostPortNormalBufferPc.index].data;
+    PC_FRAMEBUFFER_PC *output = (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
+    PC_POST_BUFFER_PROXY_PC *color = (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
+    PC_POST_BUFFER_PROXY_PC *normal = (PC_POST_BUFFER_PROXY_PC *)PostPortNormalBufferPc.manager->entries[PostPortNormalBufferPc.index].data;
     if (!color->resolved) {
         color->resolved = true;
     }
@@ -778,11 +766,11 @@ void NuMainFilter::RenderBloomPc() {
         PCDeviceBackend.DrawPostEffectQuadPc();
         PCDeviceSetTexture(0, NULL);
         PCDeviceBackend.SetColorWriteMaskPc(0, 0, 0);
-        PostBlur7x7DispatchPc(PCGraphicsPostEffectBackBufferTexturePc, 0, PCGraphicsPostEffectBackBufferTexturePc, 0, 5,
-                              1, false, 1.0f, PostBlur5x5ProgramPc);
+        PostBlur7x7DispatchPc(PCGraphicsPostEffectBackBufferTexturePc, 0, PCGraphicsPostEffectBackBufferTexturePc, 0, 5, 1, false, 1.0f,
+                              PostBlur5x5ProgramPc);
     } else {
-        PostBlur7x7DispatchPc(PCGraphicsPostEffectBackBufferTexturePc, 0, PCGraphicsPostEffectBackBufferTexturePc, 0, 2,
-                              1, false, 1.0f, PostBlur5x5ProgramPc);
+        PostBlur7x7DispatchPc(PCGraphicsPostEffectBackBufferTexturePc, 0, PCGraphicsPostEffectBackBufferTexturePc, 0, 2, 1, false, 1.0f,
+                              PostBlur5x5ProgramPc);
     }
     PCGraphicsBindFramebuffer(output);
     {
@@ -804,11 +792,9 @@ void NuMainFilter::RenderBloomPc() {
     }
     void *program;
     if (bloom->directional) {
-        program = output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL ? programs[8]
-                                                                                              : platform_programs[1];
+        program = output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL ? programs[8] : platform_programs[1];
     } else {
-        program = output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL ? programs[6]
-                                                                                              : platform_programs[0];
+        program = output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL ? programs[6] : platform_programs[0];
     }
     PCDisplayHandlerBindProgramsPc((PC_DL_SHADER_PROGRAM_PAIR_PC *)program);
     if (PCDeviceHardwareVertexProcessingPC < 4) {
@@ -823,8 +809,7 @@ void NuMainFilter::RenderBloomPc() {
         NUVEC4 depth = {z_near, z_far, z_far - z_near, 1.0f / PcGeometryProjectionMatrixPc.m22};
         PCDeviceSetVertexShaderConstantsF(49, &depth.x, 1);
         NUVEC4 frustum;
-        NuMtxGetFrustumD3D(&PcGeometryProjectionMatrixPc, &frustum.x, &frustum.y, &frustum.z, &frustum.w, &z_near,
-                           &z_far);
+        NuMtxGetFrustumD3D(&PcGeometryProjectionMatrixPc, &frustum.x, &frustum.y, &frustum.z, &frustum.w, &z_near, &z_far);
         frustum.y = frustum.y - frustum.x;
         frustum.w = frustum.w - frustum.z;
         PCDeviceSetVertexShaderConstantsF(50, &frustum.x, 1);
@@ -842,10 +827,8 @@ void NuMainFilter::RenderBloomPc() {
     if (bloom->directional) {
         f32 directional_range = (bloom->direction_far_scale - bloom->direction_near_scale) * bloom->intensity;
         f32 direction_angle = (f32)((bloom->direction_near_angle * 3.1415927410125732) / 180.0);
-        f32 direction_angle_range =
-            (f32)(180.0 / ((bloom->direction_far_angle - bloom->direction_near_angle) * 3.1415927410125732));
-        NUVEC4 directional = {bloom->intensity * bloom->direction_near_scale, directional_range, direction_angle,
-                              direction_angle_range};
+        f32 direction_angle_range = (f32)(180.0 / ((bloom->direction_far_angle - bloom->direction_near_angle) * 3.1415927410125732));
+        NUVEC4 directional = {bloom->intensity * bloom->direction_near_scale, directional_range, direction_angle, direction_angle_range};
         PCDeviceSetVertexShaderConstantsF(platform_uniforms[2], &directional.x, 1);
         const NUVEC *source = &bloom->direction;
         f32 direction_y = source->y;
@@ -899,16 +882,14 @@ void NuPostFilterGen::copy(GRAPHICS_RENDER_TEXTURE_PC *color, PC_FRAMEBUFFER_PC 
 }
 
 /* Same unit as ??_GNuMainFilter: the atexit thunks for its static surfaces expand the inline destructor. */
-extern "C" void PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *destination, i32 destination_level,
-                                        GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_level,
-                                        POST_SHADER_PROGRAM_PC *program, GRAPHICS_RENDER_TEXTURE_PC *extra) {
+extern "C" void PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *destination, i32 destination_level, GRAPHICS_RENDER_TEXTURE_PC *source,
+                                        i32 source_level, POST_SHADER_PROGRAM_PC *program, GRAPHICS_RENDER_TEXTURE_PC *extra) {
     if (program == PostCopyTexProgramPc) {
         static PC_EFFECT_SURFACE_PC source_surface;
         static PC_EFFECT_SURFACE_PC destination_surface;
         source_surface.Attach(source, source_level, false);
         destination_surface.Attach(destination, destination_level, false);
-        bool scaled =
-            destination_surface.width != source_surface.width || destination_surface.height != source_surface.height;
+        bool scaled = destination_surface.width != source_surface.width || destination_surface.height != source_surface.height;
         PCDeviceStretchRectPc(source_surface.surface, NULL, destination_surface.surface, NULL, scaled ? 2 : 0);
         return;
     }
@@ -935,10 +916,8 @@ f32 NuSpeedBlurVertexScalePc = 40000.0f;
 
 void NuSpeedBlurFilter::render() {
     extern POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc;
-    PC_FRAMEBUFFER_PC *output =
-        (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
-    PC_POST_BUFFER_PROXY_PC *color =
-        (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
+    PC_FRAMEBUFFER_PC *output = (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
+    PC_POST_BUFFER_PROXY_PC *color = (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
     if (!color->resolved) {
         color->resolved = true;
     }

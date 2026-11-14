@@ -93,13 +93,11 @@ extern "C" {
     extern const char WorldLevelConfigFormat[7];
     void GameCam_NewShake(GAMECAMERA *, f32, f32, f32);
 
-    GAMEOBJECT *AddDynamicCreature(i32, NUVEC *, i32, char *, AIPATHINFO_PC *, AIGROUP_PC *, i32, NUGSPLINE *, NUVEC *,
-                                   i32, i32);
+    GAMEOBJECT *AddDynamicCreature(i32, NUVEC *, i32, char *, AIPATHINFO_PC *, AIGROUP_PC *, i32, NUGSPLINE *, NUVEC *, i32, i32);
     void Move_DEFAULT(GAMEOBJECT *);
     void KeepPointOnScreen(NUVEC *, NUVEC *);
 
-    void SetMoveAndAnimateFunctions(u32, u32, u32, u32, i32, void (*)(GAMEOBJECT *), void (*)(GAMEOBJECT *),
-                                    void (*)(GAMEOBJECT *));
+    void SetMoveAndAnimateFunctions(u32, u32, u32, u32, i32, void (*)(GAMEOBJECT *), void (*)(GAMEOBJECT *), void (*)(GAMEOBJECT *));
     void Move_ATAT(GAMEOBJECT *);
     void Move_BARMAN(GAMEOBJECT *);
     void Move_DRAGBOMB(GAMEOBJECT *);

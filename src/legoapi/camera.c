@@ -202,10 +202,8 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
             }
         }
     }
-    camera->field_20c =
-        SeekLinearF(camera->field_20c, camera->field_204, (f32)((GameCamLookRotXPc << 16) / 360) * FRAMETIME * 2.0f);
-    camera->field_210 =
-        SeekLinearF(camera->field_210, camera->field_208, (f32)((GameCamLookRotYPc << 16) / 360) * FRAMETIME * 2.0f);
+    camera->field_20c = SeekLinearF(camera->field_20c, camera->field_204, (f32)((GameCamLookRotXPc << 16) / 360) * FRAMETIME * 2.0f);
+    camera->field_210 = SeekLinearF(camera->field_210, camera->field_208, (f32)((GameCamLookRotYPc << 16) / 360) * FRAMETIME * 2.0f);
     camera->field_214 = SeekValF(camera->field_214, camera->field_20c, 3.0f);
     camera->adjusted_yaw_offset = SeekValF(camera->adjusted_yaw_offset, camera->field_210, 3.0f);
 }
@@ -243,18 +241,12 @@ void MakePlayPlanes(GAMECAMERA *camera) {
         corners[i].far_point.z = corners[i].near_point.z + PP_dist * ray.z;
     }
     // Plane order is near, left, right, top, bottom, far.
-    MakePlayPlane(&PlayPlanePc[1], &corners[0].near_point, &corners[0].far_point, &corners[2].far_point,
-                  &corners[2].near_point);
-    MakePlayPlane(&PlayPlanePc[2], &corners[1].far_point, &corners[1].near_point, &corners[3].near_point,
-                  &corners[3].far_point);
-    MakePlayPlane(&PlayPlanePc[3], &corners[0].near_point, &corners[1].near_point, &corners[1].far_point,
-                  &corners[0].far_point);
-    MakePlayPlane(&PlayPlanePc[4], &corners[2].near_point, &corners[2].far_point, &corners[3].far_point,
-                  &corners[3].near_point);
-    MakePlayPlane(&PlayPlanePc[0], &corners[0].near_point, &corners[2].near_point, &corners[3].near_point,
-                  &corners[1].near_point);
-    MakePlayPlane(&PlayPlanePc[5], &corners[0].far_point, &corners[1].far_point, &corners[3].far_point,
-                  &corners[2].far_point);
+    MakePlayPlane(&PlayPlanePc[1], &corners[0].near_point, &corners[0].far_point, &corners[2].far_point, &corners[2].near_point);
+    MakePlayPlane(&PlayPlanePc[2], &corners[1].far_point, &corners[1].near_point, &corners[3].near_point, &corners[3].far_point);
+    MakePlayPlane(&PlayPlanePc[3], &corners[0].near_point, &corners[1].near_point, &corners[1].far_point, &corners[0].far_point);
+    MakePlayPlane(&PlayPlanePc[4], &corners[2].near_point, &corners[2].far_point, &corners[3].far_point, &corners[3].near_point);
+    MakePlayPlane(&PlayPlanePc[0], &corners[0].near_point, &corners[2].near_point, &corners[3].near_point, &corners[1].near_point);
+    MakePlayPlane(&PlayPlanePc[5], &corners[0].far_point, &corners[1].far_point, &corners[3].far_point, &corners[2].far_point);
 }
 
 void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount) {
@@ -273,8 +265,7 @@ void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount) {
         amount = ambient_amount > 0.0f ? ambient_amount : 0.0f;
     }
     camera->shake_amplitude = SeekLinearF(camera->shake_amplitude, amount, FRAMETIME * 2.0f);
-    if (NuVecDistSqr(&camera->shake_direction, &camera->shake_target, NULL) <
-        GameCamShakeRetargetPc * GameCamShakeRetargetPc) {
+    if (NuVecDistSqr(&camera->shake_direction, &camera->shake_target, NULL) < GameCamShakeRetargetPc * GameCamShakeRetargetPc) {
         camera->shake_target.x = 0.0f;
         camera->shake_target.y = qrand() * (1.0f / 65535.0f) * GameCamShakeRadiusPc;
         camera->shake_target.z = 0.0f;
@@ -376,18 +367,18 @@ typedef struct CAMERA_GRABBER { // size 0x498
     NUVEC grab_position;        // 0x48c
 } CAMERA_GRABBER;
 
-#define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                   \
-    do {                                                                                                               \
-        union {                                                                                                        \
-            f32 value;                                                                                                 \
-            u32 bits;                                                                                                  \
-        } storage;                                                                                                     \
-        u32 bits;                                                                                                      \
-        storage.value = (source);                                                                                      \
-        bits = storage.bits;                                                                                           \
-        bits &= 0x7fffffff;                                                                                            \
-        storage.bits = bits;                                                                                           \
-        (destination) = storage.value;                                                                                 \
+#define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                                       \
+    do {                                                                                                                                   \
+        union {                                                                                                                            \
+            f32 value;                                                                                                                     \
+            u32 bits;                                                                                                                      \
+        } storage;                                                                                                                         \
+        u32 bits;                                                                                                                          \
+        storage.value = (source);                                                                                                          \
+        bits = storage.bits;                                                                                                               \
+        bits &= 0x7fffffff;                                                                                                                \
+        storage.bits = bits;                                                                                                               \
+        (destination) = storage.value;                                                                                                     \
     } while (0)
 
 static void SetCameraEffectMatrixPc(void) {
@@ -429,8 +420,7 @@ static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *positi
     list = NarrowSockException;
     if (list != NULL) {
         for (exception = list; exception->level_name != NULL; ++exception) {
-            if (exception->level_index == -1 || exception->level_index != level_index ||
-                position->sock_index != exception->sock_index) {
+            if (exception->level_index == -1 || exception->level_index != level_index || position->sock_index != exception->sock_index) {
                 continue;
             }
             if (position->distance >= exception->start_distance && position->distance <= exception->end_distance) {

@@ -144,15 +144,13 @@ outer_lines:
                     pulse_sys.radial_hit_direction = 1;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "debris_hitplayer") == 0) {
                     if (NuFParGetWord(parser) != 0) {
-                        pulse_sys.debris_hit_player =
-                            (i16)FindGameDebris(world->game_debris_sys, parser->word_buffer_ptr);
+                        pulse_sys.debris_hit_player = (i16)FindGameDebris(world->game_debris_sys, parser->word_buffer_ptr);
                     }
                 } else if (NuStrICmp(parser->word_buffer_ptr, "pulse") == 0 && NuFParGetWord(parser) != 0 &&
                            NuSpecialFind(world->current_gscn, &pulse->special, parser->word_buffer_ptr, 1) != 0) {
                     while (NuFParGetWord(parser) != 0) {
                         if (NuStrICmp(parser->word_buffer_ptr, "gizmo") == 0) {
-                            if (NuFParGetWord(parser) != 0 &&
-                                NuStrLen(parser->word_buffer_ptr) < (i32)sizeof(pulse->gizmo_name)) {
+                            if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < (i32)sizeof(pulse->gizmo_name)) {
                                 NuStrCpy(pulse->gizmo_name, parser->word_buffer_ptr);
                             }
                         } else if (NuStrICmp(parser->word_buffer_ptr, "on_time") == 0) {
@@ -208,8 +206,7 @@ void Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
         system->pulses[i].active = 0;
         system->pulses[i].timer = system->pulses[i].start_wait;
         if (system->pulses[i].gizmo_name[0] != '\0') {
-            system->pulses[i].gizmo =
-                GizmoFindByName(WorldInfo_CurrentlyActive()->gizmo_sys, -1, system->pulses[i].gizmo_name);
+            system->pulses[i].gizmo = GizmoFindByName(WorldInfo_CurrentlyActive()->gizmo_sys, -1, system->pulses[i].gizmo_name);
         }
     }
 }
@@ -283,9 +280,8 @@ void Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
             NUVEC offset;
             f32 distance;
             if (player == NULL || (player->flags_1fc & 0x80) == 0 || player->dead != 0 ||
-                (LEGOCONTEXT_DOOMED != -1 && player->character_context == LEGOCONTEXT_DOOMED) ||
-                !(player->vehicle_hit_timer <= 0.0f) || player->spawn_protection_timer > 0.0f ||
-                (player->flags_ef0 & 0x400000) != 0) {
+                (LEGOCONTEXT_DOOMED != -1 && player->character_context == LEGOCONTEXT_DOOMED) || !(player->vehicle_hit_timer <= 0.0f) ||
+                player->spawn_protection_timer > 0.0f || (player->flags_ef0 & 0x400000) != 0) {
                 continue;
             }
             NuVecSub(&offset, &player->collision_position, position);

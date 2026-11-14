@@ -87,8 +87,7 @@ extern "C" {
         for (index = 0; index < system->count; ++index, ++turret) {
             GizTurretClearPc(turret);
             EdFileRead(turret->name, 16);
-            GizmoFileReadGameAnimSet(turret->anim_set, world, GizTurretReadAnimSetDataPc, version, "GizTurret",
-                                     turret->name);
+            GizmoFileReadGameAnimSet(turret->anim_set, world, GizTurretReadAnimSetDataPc, version, "GizTurret", turret->name);
             EdFileReadNuVec(&turret->position);
             EdFileReadNuVec(&turret->opponent_origin);
             EdFileReadNuVec(&turret->initial_origin);
@@ -209,10 +208,9 @@ extern "C" {
         i32 i;
         system = (GIZTURRETSYS_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
         system->capacity = world->current_level->max_turrets;
-        system->turrets = (GIZTURRET_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                         system->capacity * sizeof(*system->turrets));
-        system->anim_pool =
-            GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 4, system->capacity * 2);
+        system->turrets =
+            (GIZTURRET_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(*system->turrets));
+        system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 4, system->capacity * 2);
         for (i = 0; i < system->capacity; ++i) {
             system->turrets[i].anim_set =
                 GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_pool, world->game_anim_sys);
@@ -354,11 +352,10 @@ extern "C" {
         NuVecMtxRotate(&forward, &forward, matrix);
         GAMEOBJECT *object = Obj;
         for (i32 i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-            if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 &&
-                (object->flags_1f8 & 1) && object->model_draw_result != 0) {
+            if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 && (object->flags_1f8 & 1) &&
+                object->model_draw_result != 0) {
                 NUVEC direction;
-                f32 distance =
-                    NuVecDistSqr(&object->collision_position, reinterpret_cast<NUVEC *>(&matrix->m30), &direction);
+                f32 distance = NuVecDistSqr(&object->collision_position, reinterpret_cast<NUVEC *>(&matrix->m30), &direction);
                 if (distance < best_distance) {
                     f32 length = NuFsqrt(distance);
                     f32 scale;
@@ -381,8 +378,8 @@ extern "C" {
         return best;
     }
 
-    void GizTurret_CalculateInterceptVector(NUVEC *origin, NUMTX *matrix, NUVEC *target, NUVEC *velocity, f32 speed,
-                                            NUVEC *intercept_out, NUVEC *velocity_out, u32 fallback) {
+    void GizTurret_CalculateInterceptVector(NUVEC *origin, NUMTX *matrix, NUVEC *target, NUVEC *velocity, f32 speed, NUVEC *intercept_out,
+                                            NUVEC *velocity_out, u32 fallback) {
         NUVEC forward = {0.0f, 0.0f, -1.0f};
         NuVecMtxRotate(&forward, &forward, matrix);
 
@@ -435,8 +432,7 @@ extern "C" {
                     if (turret->visible) {
                         if (turret->active) {
                             if (!turret->update_disabled) {
-                                BOLTTYPE_PC *bolt_type =
-                                    BoltType_FindByID(turret->bolt_type_id, static_cast<WORLDINFO *>(context));
+                                BOLTTYPE_PC *bolt_type = BoltType_FindByID(turret->bolt_type_id, static_cast<WORLDINFO *>(context));
                                 GAMEOBJECT *autoaim_target = NULL;
                                 should_fire = 0;
                                 NUMTX fallback_draw;
@@ -447,12 +443,10 @@ extern "C" {
                                 NUMTX *secondary_base;
                                 NUMTX *reference;
                                 u16 home_yaw = 0;
-                                if (turret->primary_anim_obj != NULL &&
-                                    NuSpecialExistsFn(&turret->primary_anim_obj->special)) {
+                                if (turret->primary_anim_obj != NULL && NuSpecialExistsFn(&turret->primary_anim_obj->special)) {
                                     primary_draw = NuSpecialGetDrawMtx(&turret->primary_anim_obj->special);
                                     primary_base = NuSpecialGetMtx(&turret->primary_anim_obj->special);
-                                    if (turret->secondary_anim_obj != NULL &&
-                                        NuSpecialExistsFn(&turret->secondary_anim_obj->special)) {
+                                    if (turret->secondary_anim_obj != NULL && NuSpecialExistsFn(&turret->secondary_anim_obj->special)) {
                                         secondary_base = NuSpecialGetMtx(&turret->secondary_anim_obj->special);
                                         secondary_draw = NuSpecialGetDrawMtx(&turret->secondary_anim_obj->special);
                                         reference = secondary_base;
@@ -504,22 +498,17 @@ extern "C" {
                                         }
                                         turret->pitch = SeekRot(turret->pitch, desired_pitch, pitch_rate);
                                         turret->yaw = SeekRot(turret->yaw, desired_yaw, yaw_rate);
-                                        if (turret->fire_cooldown > 0.0f &&
-                                            (turret->controller->pad->buttons_pressed & GAMEPAD_ACTION)) {
-                                            if (turret->fire_cooldown >
-                                                turret->fire_interval * gizturret_rapid_fire_rate) {
-                                                turret->fire_cooldown =
-                                                    turret->fire_interval * gizturret_rapid_fire_rate;
+                                        if (turret->fire_cooldown > 0.0f && (turret->controller->pad->buttons_pressed & GAMEPAD_ACTION)) {
+                                            if (turret->fire_cooldown > turret->fire_interval * gizturret_rapid_fire_rate) {
+                                                turret->fire_cooldown = turret->fire_interval * gizturret_rapid_fire_rate;
                                             }
                                             turret->rapid_fire_pending = 1;
                                         }
                                         if (turret->fire_cooldown == 0.0f &&
-                                            ((turret->controller->pad->buttons_held & GAMEPAD_ACTION) ||
-                                             (turret->rapid_fire_pending))) {
+                                            ((turret->controller->pad->buttons_held & GAMEPAD_ACTION) || (turret->rapid_fire_pending))) {
                                             should_fire = 1;
                                             if (turret->rapid_fire_pending) {
-                                                turret->fire_cooldown =
-                                                    turret->fire_interval * gizturret_rapid_fire_rate;
+                                                turret->fire_cooldown = turret->fire_interval * gizturret_rapid_fire_rate;
                                             } else {
                                                 turret->fire_cooldown = turret->fire_interval;
                                             }
@@ -568,8 +557,7 @@ extern "C" {
                                                 break;
                                             }
                                             case 1:
-                                                target_position = reinterpret_cast<NUVEC *>(
-                                                    static_cast<u8 *>(turret->opponent) + 0x11c);
+                                                target_position = reinterpret_cast<NUVEC *>(static_cast<u8 *>(turret->opponent) + 0x11c);
                                                 break;
                                             case 2:
                                                 target_position = static_cast<NUVEC *>(turret->opponent);
@@ -577,28 +565,22 @@ extern "C" {
                                             default:
                                                 goto autonomous_apply;
                                         }
-                                        distance =
-                                            NuVecDistSqr(target_position, &turret->initial_origin, &local_direction);
+                                        distance = NuVecDistSqr(target_position, &turret->initial_origin, &local_direction);
                                         if (target_position == NULL) {
                                             goto autonomous_apply;
                                         }
-                                        if ((turret->behavior_flags & 0x200) && target_velocity != NULL &&
-                                            bolt_type != NULL) {
-                                            GizTurret_CalculateInterceptVector(
-                                                reinterpret_cast<NUVEC *>(&reference->m30), primary_draw,
-                                                target_position, target_velocity, bolt_type->field_10, &direction, NULL,
-                                                turret->controller != NULL);
+                                        if ((turret->behavior_flags & 0x200) && target_velocity != NULL && bolt_type != NULL) {
+                                            GizTurret_CalculateInterceptVector(reinterpret_cast<NUVEC *>(&reference->m30), primary_draw,
+                                                                               target_position, target_velocity, bolt_type->field_10,
+                                                                               &direction, NULL, turret->controller != NULL);
                                         } else {
-                                            NuVecSub(&direction, target_position,
-                                                     reinterpret_cast<NUVEC *>(&reference->m30));
+                                            NuVecSub(&direction, target_position, reinterpret_cast<NUVEC *>(&reference->m30));
                                         }
                                         if ((turret->behavior_flags & 0xc0) != 0xc0) {
                                             NuVecInvMtxRotate(&local_direction, &direction, reference);
                                             if (!(turret->behavior_flags & 0x80)) {
                                                 desired_yaw = NuAngAdd(
-                                                    static_cast<i32>(NuAtan2(-local_direction.x, -local_direction.z) *
-                                                                     10430.378f),
-                                                    0);
+                                                    static_cast<i32>(NuAtan2(-local_direction.x, -local_direction.z) * 10430.378f), 0);
                                                 if (turret->yaw_upper != 0 && desired_yaw > turret->yaw_upper) {
                                                     desired_yaw = turret->yaw_upper;
                                                 } else if (turret->yaw_lower != 0 && desired_yaw < turret->yaw_lower) {
@@ -609,21 +591,18 @@ extern "C" {
                                                 NuVecRotateY(&local_direction, &local_direction, -desired_yaw);
                                                 if (secondary_base != NULL) {
                                                     local_direction.y -= turret->relative_matrix.m31;
-                                                    NuVecInvMtxRotate(&local_direction, &local_direction,
-                                                                      &turret->relative_matrix);
+                                                    NuVecInvMtxRotate(&local_direction, &local_direction, &turret->relative_matrix);
                                                     local_direction.y -= turret->muzzle_offsets[0].y;
                                                 }
-                                                desired_pitch = NuAngAdd(
-                                                    static_cast<i32>(
-                                                        NuAtan2(local_direction.y,
-                                                                NuFsqrt(local_direction.x * local_direction.x +
-                                                                        local_direction.z * local_direction.z)) *
-                                                        10430.378f),
-                                                    0);
+                                                desired_pitch =
+                                                    NuAngAdd(static_cast<i32>(NuAtan2(local_direction.y,
+                                                                                      NuFsqrt(local_direction.x * local_direction.x +
+                                                                                              local_direction.z * local_direction.z)) *
+                                                                              10430.378f),
+                                                             0);
                                                 if (turret->pitch_upper != 0 && desired_pitch > turret->pitch_upper) {
                                                     desired_pitch = turret->pitch_upper;
-                                                } else if (turret->pitch_lower != 0 &&
-                                                           desired_pitch < turret->pitch_lower) {
+                                                } else if (turret->pitch_lower != 0 && desired_pitch < turret->pitch_lower) {
                                                     desired_pitch = turret->pitch_lower;
                                                 }
                                             }
@@ -643,8 +622,7 @@ extern "C" {
                                         turret->rapid_fire_pending = 0;
                                     }
                                 autonomous_apply:
-                                    if (!(turret->primary_anim_obj != NULL &&
-                                          NuSpecialExistsFn(&turret->primary_anim_obj->special))) {
+                                    if (!(turret->primary_anim_obj != NULL && NuSpecialExistsFn(&turret->primary_anim_obj->special))) {
                                         desired_yaw = NuAngAdd(desired_yaw, turret->base_y_rotation);
                                     }
                                     if (turret->behavior_flags & 0x400) {
@@ -699,22 +677,17 @@ extern "C" {
                                     }
                                     // These are absolute differences of unsigned angles, not wrapped rotation
                                     // differences.
-                                    if (nearby && (abs((static_cast<u16>(desired_pitch)) -
-                                                       (static_cast<u16>(turret->pitch))) > 0x400 ||
-                                                   abs((static_cast<u16>(desired_yaw)) -
-                                                       (static_cast<u16>(turret->yaw))) > 0x400)) {
+                                    if (nearby && (abs((static_cast<u16>(desired_pitch)) - (static_cast<u16>(turret->pitch))) > 0x400 ||
+                                                   abs((static_cast<u16>(desired_yaw)) - (static_cast<u16>(turret->yaw))) > 0x400)) {
                                         if (!rotation_sound_playing || IsSfxLooping(turret->rotate_sfx)) {
-                                            GameAudio_PlaySfxById(turret->rotate_sfx,
-                                                                  reinterpret_cast<NUVEC *>(&reference->m30), 0, 0);
+                                            GameAudio_PlaySfxById(turret->rotate_sfx, reinterpret_cast<NUVEC *>(&reference->m30), 0, 0);
                                         }
                                         turret->rotation_sound_playing = 1;
                                     }
                                 }
-                                if (should_fire && bolt_type != NULL && MiniCutCam == 0 &&
-                                    (turret->behavior_flags & 0x4000) == 0) {
+                                if (should_fire && bolt_type != NULL && MiniCutCam == 0 && (turret->behavior_flags & 0x4000) == 0) {
                                     if (turret->fire_sfx != -1) {
-                                        GameAudio_PlaySfxById(turret->fire_sfx,
-                                                              reinterpret_cast<NUVEC *>(&reference->m30), 0, 0);
+                                        GameAudio_PlaySfxById(turret->fire_sfx, reinterpret_cast<NUVEC *>(&reference->m30), 0, 0);
                                         BoltNoSfxPc = 1;
                                     }
                                     i32 scatter_pitch = 0;
@@ -722,12 +695,10 @@ extern "C" {
                                     if (bolt_type->field_40 != 0) {
                                         f32 spread = static_cast<f32>(static_cast<i32>(bolt_type->field_40));
                                         f32 random = NuRandFloat();
-                                        scatter_pitch =
-                                            static_cast<i32>(spread - ((random * spread) + (random * spread))) / 2;
+                                        scatter_pitch = static_cast<i32>(spread - ((random * spread) + (random * spread))) / 2;
                                         spread = static_cast<f32>(static_cast<i32>(bolt_type->field_40));
                                         random = NuRandFloat();
-                                        scatter_yaw =
-                                            static_cast<i32>(spread - ((random * spread) + (random * spread)));
+                                        scatter_yaw = static_cast<i32>(spread - ((random * spread) + (random * spread)));
                                     }
                                     i32 sound_muzzle = 0;
                                     if (turret->muzzle_count != 0) {
@@ -751,10 +722,10 @@ extern "C" {
                                             NuMtxPreRotateY(&direction_matrix, scatter_yaw);
                                         }
                                         if (autoaim_target != NULL) {
-                                            GizTurret_CalculateInterceptVector(
-                                                reinterpret_cast<NUVEC *>(&muzzle_matrix.m30), primary_draw,
-                                                &autoaim_target->collision_position, &autoaim_target->velocity,
-                                                bolt_type->field_10, &direction, NULL, turret->controller != NULL);
+                                            GizTurret_CalculateInterceptVector(reinterpret_cast<NUVEC *>(&muzzle_matrix.m30), primary_draw,
+                                                                               &autoaim_target->collision_position,
+                                                                               &autoaim_target->velocity, bolt_type->field_10, &direction,
+                                                                               NULL, turret->controller != NULL);
                                             FindAnglesXY(&direction, NULL, NULL);
                                             NUANGVEC angles;
                                             angles.x = temp_zrot;
@@ -765,8 +736,8 @@ extern "C" {
                                         if (muzzle != sound_muzzle) {
                                             BoltNoSfxPc = 1;
                                         }
-                                        BOLT *bolt = Bolt_Add(NULL, reinterpret_cast<NUVEC *>(&muzzle_matrix.m30),
-                                                              &direction_matrix, turret->bolt_type_id, flags);
+                                        BOLT *bolt = Bolt_Add(NULL, reinterpret_cast<NUVEC *>(&muzzle_matrix.m30), &direction_matrix,
+                                                              turret->bolt_type_id, flags);
                                         if (bolt != NULL && (turret->behavior_flags & 0x8000)) {
                                             bolt->flags |= 0x10;
                                         }
@@ -795,9 +766,8 @@ extern "C" {
         if (system != NULL) {
             turret = system->turrets;
             for (index = 0; index < system->count; ++index, ++turret) {
-                if (turret->active && turret->visible && (turret->behavior_flags & 0x4000) != 0 &&
-                    (turret->behavior_flags & 0x10) == 0 && turret->opponent != NULL &&
-                    NuVecDistSqr(&GameCam->position, &turret->position, NULL) < 36.0f) {
+                if (turret->active && turret->visible && (turret->behavior_flags & 0x4000) != 0 && (turret->behavior_flags & 0x10) == 0 &&
+                    turret->opponent != NULL && NuVecDistSqr(&GameCam->position, &turret->position, NULL) < 36.0f) {
                     return 1;
                 }
             }
@@ -923,8 +893,7 @@ extern "C" {
         }
     }
 
-    GIZTURRET_s *GizTurret_FindNearest(GIZTURRETSYS_s *system, NUVEC *position, GAMEOBJECT *object,
-                                       f32 *distance_squared) {
+    GIZTURRET_s *GizTurret_FindNearest(GIZTURRETSYS_s *system, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared) {
         if (system != NULL) {
             GIZTURRET_s *turret = system->turrets;
             GIZTURRET_s *nearest = NULL;
@@ -1156,21 +1125,19 @@ extern "C" {
                     }
                 }
                 if (turret->blowup_type != -1) {
-                    GizmoBlowUpTypeBlowUp(world, turret->blowup_type,
-                                          NuSpecialGetDrawPos(&turret->primary_anim_obj->special));
+                    GizmoBlowUpTypeBlowUp(world, turret->blowup_type, NuSpecialGetDrawPos(&turret->primary_anim_obj->special));
                 }
                 centre = turret->position;
                 GameAnimSet_GetCentreAndRadius(turret->anim_set, &centre, NULL, 2, 1, 1);
                 if (turret->destroy_sfx != -1) {
                     GameAudio_PlaySfxById(turret->destroy_sfx, &centre, 0, 0);
                 }
-                if (turret->completion_score != 0 &&
-                    ((turret->flags & 0x400) == 0 || (turret->behavior_flags & 0x40000) != 0)) {
+                if (turret->completion_score != 0 && ((turret->flags & 0x400) == 0 || (turret->behavior_flags & 0x40000) != 0)) {
                     NuVecAdd(&position, &centre, &turret->pickup_offset);
                     NuVecRotateX(&direction, &v010, (u16)turret->pickup_pitch);
                     NuVecRotateY(&direction, &direction, (u16)turret->pickup_yaw);
-                    AddPickups(turret->completion_score, 0, 0, 0, &position, &direction, 2.0f, -1,
-                               turret->pickup_radius, 2000000.0f, NULL, 1, 0);
+                    AddPickups(turret->completion_score, 0, 0, 0, &position, &direction, 2.0f, -1, turret->pickup_radius, 2000000.0f, NULL,
+                               1, 0);
                     turret->flags |= 0x400;
                 }
                 if ((turret->behavior_flags & 0x4010) == 0x4000 && LEGOHINT_SHOOTCAMERAS != -1) {
@@ -1198,8 +1165,7 @@ extern "C" {
             count = system->count;
             turret = system->turrets;
             for (index = 0; index < count; ++index, ++turret) {
-                if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
-                    (turret->flags & 0x200) == 0) {
+                if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 || (turret->flags & 0x200) == 0) {
                     continue;
                 }
                 animation = turret->anim_set->objects;
@@ -1209,8 +1175,7 @@ extern "C" {
                         owner = (GAMEOBJECT *)bolt->owner;
                         if (owner != NULL && (turret->behavior_flags & 0x10000) != 0 && owner->rider == NULL) {
                             damage = 0;
-                        } else if (owner != NULL && (turret->behavior_flags & 0x20000) != 0 &&
-                                   (owner->flags_1fc_word & 0x80) == 0) {
+                        } else if (owner != NULL && (turret->behavior_flags & 0x20000) != 0 && (owner->flags_1fc_word & 0x80) == 0) {
                             damage = 0;
                         } else {
                             damage = type->field_3c;
@@ -1226,10 +1191,9 @@ extern "C" {
         return 0;
     }
 
-    GIZMO_PC *GizTurrets_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_distance, NUVEC *output_position,
-                                           NUVEC *output_velocity, void *object_pointer, NUVEC *origin,
-                                           NUVEC *direction, f32 radius, f32 range_squared, i32 directional, i32 planar,
-                                           i32 bolt_id) {
+    GIZMO_PC *GizTurrets_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_distance, NUVEC *output_position, NUVEC *output_velocity,
+                                           void *object_pointer, NUVEC *origin, NUVEC *direction, f32 radius, f32 range_squared,
+                                           i32 directional, i32 planar, i32 bolt_id) {
         BOLTTYPE_PC *type = BoltType_FindByID(bolt_id, WORLD);
         u16 near_angle = TargetDeg_Near;
         u16 mid_angle = TargetDeg_Mid;
@@ -1279,8 +1243,7 @@ extern "C" {
                 if (position == NULL) {
                     continue;
                 }
-                if (position->x < minimum_x || position->x > maximum_x || position->z < minimum_z ||
-                    position->z > maximum_z) {
+                if (position->x < minimum_x || position->x > maximum_x || position->z < minimum_z || position->z > maximum_z) {
                     continue;
                 }
                 if (planar == 0) {
@@ -1338,8 +1301,8 @@ extern "C" {
         return NULL;
     }
 
-    i32 GizTurrets_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT *object, NUVEC *points, i32 point_count,
-                           f32 radius, NUVEC *minimum, NUVEC *maximum, BOLT_PC *bolt, i32 hit_type, u8 *hit_flags) {
+    i32 GizTurrets_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT *object, NUVEC *points, i32 point_count, f32 radius,
+                           NUVEC *minimum, NUVEC *maximum, BOLT_PC *bolt, i32 hit_type, u8 *hit_flags) {
         GIZTURRETSYS_s *system = (GIZTURRETSYS_s *)system_pointer;
         GIZTURRET_s *turret;
         GIZTURRET_s *best = NULL;

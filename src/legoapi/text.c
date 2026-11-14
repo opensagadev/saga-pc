@@ -734,8 +734,7 @@ f32 TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, 
 
 #define TEXT3D_FONT() (SmartTextFont != NULL ? SmartTextFont : QFont2D)
 
-void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
-              u8 blue, u8 alpha) {
+void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green, u8 blue, u8 alpha) {
     u8 alpha_byte = alpha;
     f32 width;
     f32 height;
@@ -877,8 +876,7 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
                 ++i;
                 if (decoded[i] == '~') {
                     if (apitext_half_rgb != 0) {
-                        colour =
-                            ((u32)alpha_byte << 24) | ((u32)(blue >> 1) << 16) | ((u32)(green >> 1) << 8) | (red >> 1);
+                        colour = ((u32)alpha_byte << 24) | ((u32)(blue >> 1) << 16) | ((u32)(green >> 1) << 8) | (red >> 1);
                     } else {
                         colour = ((u32)alpha_byte << 24) | ((u32)blue << 16) | ((u32)green << 8) | red;
                     }
@@ -887,8 +885,8 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
                     if (red == 0 && green == 0 && blue == 0) {
                         colour = (u32)alpha_byte << 24;
                     } else if (apitext_half_rgb != 0) {
-                        colour = ((u32)alpha_byte << 24) | ((u32)text_preset_b[preset] << 16) |
-                                 ((u32)text_preset_g[preset] << 8) | text_preset_r[preset];
+                        colour = ((u32)alpha_byte << 24) | ((u32)text_preset_b[preset] << 16) | ((u32)text_preset_g[preset] << 8) |
+                                 text_preset_r[preset];
                     } else {
                         colour = (u8)(2 * text_preset_r[preset]) | ((u32)((2 * text_preset_b[preset]) & 255) << 16) |
                                  ((u32)((2 * text_preset_g[preset]) & 255) << 8) | ((u32)alpha_byte << 24);
@@ -898,8 +896,7 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
                 if (count > 0 && colour != current_rgba) {
                     fragment[count] = 0;
                     if (button_font != 0) {
-                        x += TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba,
-                                                button_font);
+                        x += TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba, button_font);
                     } else {
                         x += TextPrintSubstring(fragment, x, y, z, x_scale, y_scale, current_rgba, button_font);
                     }
@@ -960,12 +957,10 @@ void IntroText_Draw(f32 alpha) {
     Text3DStringEncode(TTab[INTROTEXT_ID], encoded);
     NuQFntSetJustifiedTolerances(1.0f, 1.0f);
     colour = ((u32)((f64)alpha * 128.0) << 24) | 0x7f5f00;
-    NuQFntPrintJustifiedW(QFont2D, encoded, -0.85f, INTROTEXT_Y, 1.0f, INTROTEXT_SCALE, INTROTEXT_SCALE, 1.7f, 1.0f,
-                          colour, NULL);
+    NuQFntPrintJustifiedW(QFont2D, encoded, -0.85f, INTROTEXT_Y, 1.0f, INTROTEXT_SCALE, INTROTEXT_SCALE, 1.7f, 1.0f, colour, NULL);
 }
 
-void Text3DEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green, u32 blue,
-               u8 alpha) {
+void Text3DEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green, u32 blue, u8 alpha) {
     if (QFont2DLower != NULL) {
         VUFNT *saved_font = SmartTextFont;
         SmartTextFont = QFont2DLower;
@@ -974,8 +969,7 @@ void Text3DEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alig
     }
 }
 
-void MenuText3DEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green, u32 blue,
-                  i32 alpha) {
+void MenuText3DEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green, u32 blue, i32 alpha) {
     if (MenuDrawDropShadows != 0) {
         f32 shadow_x = (f32)((f64)x + (f64)sx * (f64)0.015f);
         f32 shadow_y = (f32)((f64)y - (f64)sy * (f64)0.015f);
@@ -984,8 +978,8 @@ void MenuText3DEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 a
     Text3DEx(text, x, y, z, sx, sy, sz, alignment, red, green, blue, alpha);
 }
 
-void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
-                 u8 green, u8 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, i32 alpha) {
+void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green, u8 blue,
+                 f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, i32 alpha) {
     typedef struct box_geometry_s {
         f32 reserved;
         f32 x;
@@ -1171,8 +1165,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                 while (decoded[end] == ' ') {
                     --end;
                 }
-                while (decoded[begin] == ' ' || decoded[begin] == '-' || decoded[begin] == '.' ||
-                       decoded[begin] == ',') {
+                while (decoded[begin] == ' ' || decoded[begin] == '-' || decoded[begin] == '.' || decoded[begin] == ',') {
                     ++begin;
                 }
                 length = end - begin + 1;
@@ -1229,8 +1222,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                 if (line != 0) {
                     followon_line = 1;
                 }
-                Text3DEx((char *)(lines[line]), x, line_y, z, draw_x_scale, y_scale, z_scale, alignment, red, green,
-                         blue, alpha);
+                Text3DEx((char *)(lines[line]), x, line_y, z, draw_x_scale, y_scale, z_scale, alignment, red, green, blue, alpha);
             }
         } else {
             Text3DEx((char *)(decoded), x, y, z, draw_x_scale, y_scale, z_scale, alignment, red, green, blue, alpha);
@@ -1241,8 +1233,8 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     TextScaleY = saved_y_scale;
 }
 
-void SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green, u8 blue,
-                  f32 max_width, i32 max_lines, void *box, i32 suppress, u32 alpha) {
+void SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green, u8 blue, f32 max_width,
+                  i32 max_lines, void *box, i32 suppress, u32 alpha) {
     VUFNT *saved_font = SmartTextFont;
     if (QFont2DLower != NULL) {
         SmartTextFont = QFont2DLower;
@@ -1251,25 +1243,24 @@ void SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 a
     SmartTextFont = saved_font;
 }
 
-void SmartTextExDrop(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
-                     u8 green, u8 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, u32 alpha) {
-    SmartTextEx2(text, x - x_scale * 0.007f, y - y_scale * 0.01f, z, x_scale, y_scale, z_scale, alignment, 0, 0, 0,
-                 max_width, max_lines, message_box, suppress_draw, alpha);
-    SmartTextEx(text, x, y, z, x_scale, y_scale, z_scale, alignment, red, green, blue, max_width, max_lines,
-                message_box, suppress_draw, alpha);
+void SmartTextExDrop(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green, u8 blue,
+                     f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, u32 alpha) {
+    SmartTextEx2(text, x - x_scale * 0.007f, y - y_scale * 0.01f, z, x_scale, y_scale, z_scale, alignment, 0, 0, 0, max_width, max_lines,
+                 message_box, suppress_draw, alpha);
+    SmartTextEx(text, x, y, z, x_scale, y_scale, z_scale, alignment, red, green, blue, max_width, max_lines, message_box, suppress_draw,
+                alpha);
 }
 
 void fun_0050e510(i32 mode) {
     TextPrintModePc = mode;
 }
 
-void MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green, u8 blue,
-                     f32 max_width, i32 max_lines, void *box, i32 suppress, i32 alpha) {
+void MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green, u8 blue, f32 max_width,
+                     i32 max_lines, void *box, i32 suppress, i32 alpha) {
     if (MenuDrawDropShadows != 0) {
         f32 shadow_x = (f32)((f64)x + (f64)sx * (f64)0.015f);
         f32 shadow_y = (f32)((f64)y - (f64)sy * (f64)0.015f);
-        SmartTextEx2(text, shadow_x, shadow_y, z, sx, sy, sz, alignment, 0, 0, 0, max_width, max_lines, box, suppress,
-                     alpha >> 2);
+        SmartTextEx2(text, shadow_x, shadow_y, z, sx, sy, sz, alignment, 0, 0, 0, max_width, max_lines, box, suppress, alpha >> 2);
     }
     SmartTextEx(text, x, y, z, sx, sy, sz, alignment, red, green, blue, max_width, max_lines, box, suppress, alpha);
 }
@@ -1559,8 +1550,8 @@ void Text_LoadFont(char *path, VARIPTR *buffer, VARIPTR *end) {
 
 f32 MatrixTextScalePc = 0.004f;
 
-void MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, u32 alignment,
-                u32 colour, NUMTX *matrix, i32 camera_relative) {
+void MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, u32 alignment, u32 colour, NUMTX *matrix,
+                i32 camera_relative) {
     u16 encoded[512];
     f32 width;
     f32 height;
@@ -1674,13 +1665,13 @@ void MenuDrawViewTextStrings(MENU *menu) {
         dme_b = (u8)blue;
         dme_rgb = 1;
         sprintf(text, "%i", i);
-        SmartTextEx(text, -0.76f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 8, red, green, blue,
-                    0.09000003f, 1, NULL, 0, MenuA);
+        SmartTextEx(text, -0.76f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 8, red, green, blue, 0.09000003f, 1, NULL, 0,
+                    MenuA);
         if (TTab[i] != NULL) {
             dme_rgb = 1;
             Text_ExpandAllButtonStrings(TTab[i], text);
-            SmartTextEx(text, -0.74f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 2, red, green, blue,
-                        1.59f, 2, NULL, 0, MenuA);
+            SmartTextEx(text, -0.74f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 2, red, green, blue, 1.59f, 2, NULL, 0,
+                        MenuA);
         }
     }
 }

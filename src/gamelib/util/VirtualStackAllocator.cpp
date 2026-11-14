@@ -56,8 +56,7 @@ struct ShaderObjectKey {
 };
 
 PC_SHADER_MATERIAL_FILTER_VIEW::PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *desc,
-                                                               const PC_SHADER_FILTER_MATERIAL_VIEW *material,
-                                                               i32 flags, i32 variant) {
+                                                               const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 flags, i32 variant) {
     Initialize(desc, material, flags, variant);
 }
 

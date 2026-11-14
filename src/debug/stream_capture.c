@@ -104,8 +104,8 @@ int SagaDebugCaptureStreamsPc(HANDLE log_file, int saved_out, int saved_err) {
     startup.startup.hStdOutput = to;
     startup.startup.hStdError = te;
     startup.attributes = attributes;
-    if (_snprintf(command, sizeof(command), "\"%s\" %lx %lx %lx %lx %lx %lx saga-debug-capture-v1", helper,
-                  (ULONG_PTR)ro, (ULONG_PTR)re, (ULONG_PTR)to, (ULONG_PTR)te, (ULONG_PTR)file, (ULONG_PTR)ready) < 0) {
+    if (_snprintf(command, sizeof(command), "\"%s\" %lx %lx %lx %lx %lx %lx saga-debug-capture-v1", helper, (ULONG_PTR)ro, (ULONG_PTR)re,
+                  (ULONG_PTR)to, (ULONG_PTR)te, (ULONG_PTR)file, (ULONG_PTR)ready) < 0) {
         goto cleanup;
     }
     if (!CreateProcessA(helper, command, NULL, NULL, TRUE, 0x00080000, NULL, NULL, &startup.startup, &copier)) {

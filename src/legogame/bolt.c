@@ -64,17 +64,16 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
         }
         return 12;
     }
-    if (id == VehicleBoltId7f1b00Pc || id == VehicleBoltId7f1ad8Pc || id == VehicleBoltId7f1b04Pc ||
-        id == id_MINITIEBOMBER || id == VehicleBoltId7f1aecPc || id == VehicleBoltId7f1b08Pc ||
-        id == VehicleBoltId7f1b0cPc || id == id_MINIATAT || id == id_MINISTARDESTROYER) {
+    if (id == VehicleBoltId7f1b00Pc || id == VehicleBoltId7f1ad8Pc || id == VehicleBoltId7f1b04Pc || id == id_MINITIEBOMBER ||
+        id == VehicleBoltId7f1aecPc || id == VehicleBoltId7f1b08Pc || id == VehicleBoltId7f1b0cPc || id == id_MINIATAT ||
+        id == id_MINISTARDESTROYER) {
         return 23;
     }
     if (id == VehicleBoltId7f1af0Pc) {
         return 21 + (state->bolt_fire_phase != 0);
     }
     if (id == id_JEDISTARFIGHTERYELLOWEP3 || id == VehicleBoltId7f19e8Pc) {
-        if (WORLD->area != NULL && WORLD->area == BATTLEOVERCORUSCANT_ADATA &&
-            WORLD->level_objects[0x12d].active != 0) {
+        if (WORLD->area != NULL && WORLD->area == BATTLEOVERCORUSCANT_ADATA && WORLD->level_objects[0x12d].active != 0) {
             return 32;
         }
         return 33;
@@ -189,8 +188,8 @@ void Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32
         GameCam_NewShake(GameCam, 0.75f, 0.75f, 1.0f);
         NewRumbleAllPlayers(0.5f, 0.0f, 0, 0);
     }
-    if (no_explosion == 0 && bolt->owner != NULL && (((GAMEOBJECT *)bolt->owner)->flags_1fc & 0x80) != 0 &&
-        Cheat_IsOn(0x12) && (world->area == NULL || !(world->area->flags & 1))) {
+    if (no_explosion == 0 && bolt->owner != NULL && (((GAMEOBJECT *)bolt->owner)->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x12) &&
+        (world->area == NULL || !(world->area->flags & 1))) {
         EXPLOSION_PC *explosion;
         AddGameDebris(WORLD->game_debris_sys, 0x49, &bolt->position);
         NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, 0.3f, 0);
@@ -220,8 +219,8 @@ i32 Bolt_HitPart_LSW(BOLT_PC *bolt, PART_PC *part) {
 
 i32 Bolt_AlternateFire_LSW(GAMEOBJECT *object, i32 index) {
     i16 id = object->id;
-    if (id == id_XWING || id == id_MINIXWING || id == VehicleBoltId7f1ad8Pc || id == id_MINIATAT ||
-        id == id_MINIROYALSTARSHIP || id == VehicleBoltId7f1aecPc) {
+    if (id == id_XWING || id == id_MINIXWING || id == VehicleBoltId7f1ad8Pc || id == id_MINIATAT || id == id_MINIROYALSTARSHIP ||
+        id == VehicleBoltId7f1aecPc) {
         if (object->bolt_fire_phase == 0 && (index == 0 || index == 2)) {
             return 0;
         }
@@ -232,8 +231,7 @@ i32 Bolt_AlternateFire_LSW(GAMEOBJECT *object, i32 index) {
         if (index != object->bolt_fire_phase) {
             return 0;
         }
-    } else if (id == (i16)GameObjectRotationAtstId || id == VehicleBoltId7f19e8Pc ||
-               id == id_JEDISTARFIGHTERYELLOWEP3) {
+    } else if (id == (i16)GameObjectRotationAtstId || id == VehicleBoltId7f19e8Pc || id == id_JEDISTARFIGHTERYELLOWEP3) {
         if (index != object->bolt_fire_phase) {
             return 0;
         }

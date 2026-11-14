@@ -353,8 +353,7 @@ i32 GameAnimSet_SetRepeating(GAMEANIMSET *set, i32 repeating) {
     if (set != NULL) {
         for (object = set->objects; object != NULL; object = object->next) {
             if (object->instance_animation != NULL) {
-                object->instance_animation->flags =
-                    (object->instance_animation->flags & ~8u) | (((u32)repeating & 1) << 3);
+                object->instance_animation->flags = (object->instance_animation->flags & ~8u) | (((u32)repeating & 1) << 3);
             }
         }
     }
@@ -399,8 +398,7 @@ void GameAnimSet_JumpToAnimPos(GAMEANIMSET *set, f32 position) {
     for (object = set->objects; object != NULL; object = object->next) {
         if (object->instance_animation != NULL && object->animation != NULL) {
             object->instance_animation->flags &= ~1u;
-            object->instance_animation->ltime =
-                (object->end_frame - object->start_frame) * position + object->start_frame;
+            object->instance_animation->ltime = (object->end_frame - object->start_frame) * position + object->start_frame;
             direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
             if (object->end_frame * direction < object->instance_animation->ltime * direction) {
                 object->instance_animation->ltime = object->end_frame;
@@ -445,8 +443,7 @@ f32 GameAnimSet_GetAnimPos(GAMEANIMOBJ *object) {
         if (object->start_frame == object->end_frame) {
             position = 1.0f;
         } else {
-            position =
-                (object->instance_animation->ltime - object->start_frame) / (object->end_frame - object->start_frame);
+            position = (object->instance_animation->ltime - object->start_frame) / (object->end_frame - object->start_frame);
             if (position < 0.0f) {
                 position = 0.0f;
             } else if (position > 1.0f) {
@@ -505,8 +502,7 @@ f32 GameAnimSet_GetCompletionRatio(GAMEANIMSET *set) {
                 if (object->start_frame == object->end_frame) {
                     ratio = 1.0f;
                 } else {
-                    ratio = (object->instance_animation->ltime - object->start_frame) /
-                            (object->end_frame - object->start_frame);
+                    ratio = (object->instance_animation->ltime - object->start_frame) / (object->end_frame - object->start_frame);
                     if (ratio > 1.0f) {
                         ratio = 1.0f;
                     } else if (ratio < 0.0f) {
@@ -520,8 +516,7 @@ f32 GameAnimSet_GetCompletionRatio(GAMEANIMSET *set) {
     return ratio;
 }
 
-GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame,
-                                   i32 append) {
+GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame, i32 append) {
     GAMEANIMOBJPOOL *pool;
     GAMEANIMOBJ *object = NULL;
     GAMEANIMOBJ *tail;
@@ -557,8 +552,7 @@ GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f
         object->special = *special;
         object->instance_animation = NuSpecialGetInstAnim(&object->special);
         if (object->instance_animation != NULL) {
-            object->animation =
-                ((NUGSCN *)object->special.scene)->instance_animation_data[object->instance_animation->animation_index];
+            object->animation = ((NUGSCN *)object->special.scene)->instance_animation_data[object->instance_animation->animation_index];
             last_frame = NuSpecialGetAnimEndFrame(&object->special);
             if (last_frame > 0.0f) {
                 if (end_frame > last_frame) {
@@ -587,8 +581,7 @@ GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f
     return object;
 }
 
-i32 GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated,
-                              i32 include_static) {
+i32 GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated, i32 include_static) {
     GAMEANIMOBJ *object;
     NUVEC sum = {0.0f, 0.0f, 0.0f};
     i32 count = 0;
@@ -692,8 +685,8 @@ f32 GameAnimSet_AutoSetReflectY(GAMEANIMSET *set, NUVEC *position, NUMTX *matrix
     return 0.0f;
 }
 
-i32 GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection,
-                                   i32 include_animated, i32 include_static) {
+i32 GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection, i32 include_animated,
+                                   i32 include_static) {
     GAMEANIMOBJ *object;
     NUVEC minimum;
     NUVEC maximum;
@@ -1041,86 +1034,72 @@ void edanimcbCancelSwitchMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 
 void edanimcbSwitchTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-    edanim_switchtype_menu =
-        eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelSwitchTypeMenu, (char *)("Switch Type"));
+    edanim_switchtype_menu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelSwitchTypeMenu, (char *)("Switch Type"));
     if (!edanim_switchtype_menu) {
         return;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(0, colours, AnimParams[edanim_nearest_param_id].control_mode == 0, 1,
-                                        edanimcbSetSwitchType, (char *)("None")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(0, colours, AnimParams[edanim_nearest_param_id].control_mode == 0, 1,
+                                                                edanimcbSetSwitchType, (char *)("None")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(1, colours, AnimParams[edanim_nearest_param_id].control_mode == 1, 1,
-                                        edanimcbSetSwitchType, (char *)("Switch")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(1, colours, AnimParams[edanim_nearest_param_id].control_mode == 1, 1,
+                                                                edanimcbSetSwitchType, (char *)("Switch")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(2, colours, AnimParams[edanim_nearest_param_id].control_mode == 2, 1,
-                                        edanimcbSetSwitchType, (char *)("Switch One Cycle")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(2, colours, AnimParams[edanim_nearest_param_id].control_mode == 2, 1,
+                                                                edanimcbSetSwitchType, (char *)("Switch One Cycle")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(3, colours, AnimParams[edanim_nearest_param_id].control_mode == 3, 1,
-                                        edanimcbSetSwitchType, (char *)("Switch Continuous")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(3, colours, AnimParams[edanim_nearest_param_id].control_mode == 3, 1,
+                                                                edanimcbSetSwitchType, (char *)("Switch Continuous")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(4, colours, AnimParams[edanim_nearest_param_id].control_mode == 4, 1,
-                                        edanimcbSetSwitchType, (char *)("Proximity")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(4, colours, AnimParams[edanim_nearest_param_id].control_mode == 4, 1,
+                                                                edanimcbSetSwitchType, (char *)("Proximity")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(5, colours, AnimParams[edanim_nearest_param_id].control_mode == 5, 1,
-                                        edanimcbSetSwitchType, (char *)("Proximity One Cycle")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(5, colours, AnimParams[edanim_nearest_param_id].control_mode == 5, 1,
+                                                                edanimcbSetSwitchType, (char *)("Proximity One Cycle")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(6, colours, AnimParams[edanim_nearest_param_id].control_mode == 6, 1,
-                                        edanimcbSetSwitchType, (char *)("Proximity Continuous")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(6, colours, AnimParams[edanim_nearest_param_id].control_mode == 6, 1,
+                                                                edanimcbSetSwitchType, (char *)("Proximity Continuous")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(7, colours, AnimParams[edanim_nearest_param_id].control_mode == 7, 1,
-                                        edanimcbSetSwitchType, (char *)("Terrain")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(7, colours, AnimParams[edanim_nearest_param_id].control_mode == 7, 1,
+                                                                edanimcbSetSwitchType, (char *)("Terrain")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(8, colours, AnimParams[edanim_nearest_param_id].control_mode == 8, 1,
-                                        edanimcbSetSwitchType, (char *)("Terrain One Cycle")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(8, colours, AnimParams[edanim_nearest_param_id].control_mode == 8, 1,
+                                                                edanimcbSetSwitchType, (char *)("Terrain One Cycle")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(9, colours, AnimParams[edanim_nearest_param_id].control_mode == 9, 1,
-                                        edanimcbSetSwitchType, (char *)("Terrain Continuous")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(9, colours, AnimParams[edanim_nearest_param_id].control_mode == 9, 1,
+                                                                edanimcbSetSwitchType, (char *)("Terrain Continuous")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(10, colours, AnimParams[edanim_nearest_param_id].control_mode == 10, 1,
-                                        edanimcbSetSwitchType, (char *)("Override NoAnim")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(10, colours, AnimParams[edanim_nearest_param_id].control_mode == 10, 1,
+                                                                edanimcbSetSwitchType, (char *)("Override NoAnim")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(11, colours, AnimParams[edanim_nearest_param_id].control_mode == 11, 1,
-                                        edanimcbSetSwitchType, (char *)("Override Play")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(11, colours, AnimParams[edanim_nearest_param_id].control_mode == 11, 1,
+                                                                edanimcbSetSwitchType, (char *)("Override Play")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu,
-                    eduiItemCheckCreate(12, colours, AnimParams[edanim_nearest_param_id].control_mode == 12, 1,
-                                        edanimcbSetSwitchType, (char *)("Override PlayCont")));
+    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(12, colours, AnimParams[edanim_nearest_param_id].control_mode == 12, 1,
+                                                                edanimcbSetSwitchType, (char *)("Override PlayCont")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
@@ -1138,17 +1117,13 @@ void edanimcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (!edanim_switch_menu) {
         return;
     }
-    eduiMenuAddItem(edanim_switch_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbSwitchTypeMenu, (char *)("Switch Type...")));
-    eduiMenuAddItem(edanim_switch_menu,
-                    eduiItemSliderCreateInt(0, colours, 0, edanimcbSetSwitchId, -1, 129,
-                                            AnimParams[edanim_nearest_param_id].control_switch, (char *)("Switch ID")));
-    eduiMenuAddItem(edanim_switch_menu,
-                    eduiItemSliderCreate(0, colours, 0, edanimcbSetSwitchDelay, 0.0f, 20.0f,
-                                         AnimParams[edanim_nearest_param_id].field_018, (char *)("Switch Delay")));
-    eduiMenuAddItem(edanim_switch_menu,
-                    eduiItemSliderCreate(0, colours, 0, edanimcbSetSwitchVar, 0.0f, 20.0f,
-                                         AnimParams[edanim_nearest_param_id].control_distance, (char *)("Switch Var")));
+    eduiMenuAddItem(edanim_switch_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbSwitchTypeMenu, (char *)("Switch Type...")));
+    eduiMenuAddItem(edanim_switch_menu, eduiItemSliderCreateInt(0, colours, 0, edanimcbSetSwitchId, -1, 129,
+                                                                AnimParams[edanim_nearest_param_id].control_switch, (char *)("Switch ID")));
+    eduiMenuAddItem(edanim_switch_menu, eduiItemSliderCreate(0, colours, 0, edanimcbSetSwitchDelay, 0.0f, 20.0f,
+                                                             AnimParams[edanim_nearest_param_id].field_018, (char *)("Switch Delay")));
+    eduiMenuAddItem(edanim_switch_menu, eduiItemSliderCreate(0, colours, 0, edanimcbSetSwitchVar, 0.0f, 20.0f,
+                                                             AnimParams[edanim_nearest_param_id].control_distance, (char *)("Switch Var")));
     eduiMenuAttach(parent, edanim_switch_menu);
     edanim_switch_menu->x = parent->x + 10;
     edanim_switch_menu->y = parent->y + 40;
@@ -1200,16 +1175,14 @@ void edanimcbSetParticleType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
 void edanimcbSetLocalParticleType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_localparticletype_menu = NULL;
     AnimParams[edanim_nearest_param_id].effect_ids[edanim_nearest_particle] = item->data;
-    strcpy(AnimParams[edanim_nearest_param_id].effect_names[edanim_nearest_particle],
-           debtab[edanim_nearest_particle]->name);
+    strcpy(AnimParams[edanim_nearest_param_id].effect_names[edanim_nearest_particle], debtab[edanim_nearest_particle]->name);
     edanim_particle_type = item->data;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
 
 static void edanimcbSetParticleRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    AnimParams[edanim_nearest_param_id].effect_intervals[edanim_nearest_particle] =
-        ((i32)(((edui_slider_s *)(item))->value));
+    AnimParams[edanim_nearest_param_id].effect_intervals[edanim_nearest_particle] = ((i32)(((edui_slider_s *)(item))->value));
 }
 
 void edanimcbCancelParticleTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
@@ -1221,8 +1194,8 @@ void edanimcbLocalParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 
     i32 index;
     i32 selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-    edanim_localparticletype_menu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelLocalParticleTypeMenu,
-                                                   ((char *)("Highlighted Particle Type")));
+    edanim_localparticletype_menu =
+        eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelLocalParticleTypeMenu, ((char *)("Highlighted Particle Type")));
     if (!edanim_localparticletype_menu) {
         return;
     }
@@ -1232,9 +1205,8 @@ void edanimcbLocalParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 
             continue;
         }
         selected = AnimParams[edanim_nearest_param_id].effect_ids[edanim_nearest_particle] == index;
-        eduiMenuAddItem(
-            edanim_localparticletype_menu,
-            eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetLocalParticleType, debtab[index]->name));
+        eduiMenuAddItem(edanim_localparticletype_menu,
+                        eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetLocalParticleType, debtab[index]->name));
         if (selected == 1) {
             edanim_localparticletype_menu->selected = edui_last_item;
         }
@@ -1253,23 +1225,21 @@ static void edanimcbCancelLocalParticleMenu(eduimenu_s *unused0, eduimenu_s *unu
 void edanimcbLocalParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edanim_nearest_particle != -1) {
-        edanim_localparticle_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelLocalParticleMenu,
-                                                   ((char *)("Highlighted Particle Settings")));
+        edanim_localparticle_menu =
+            eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelLocalParticleMenu, ((char *)("Highlighted Particle Settings")));
         if (!edanim_localparticle_menu) {
             return;
         }
 
-        eduiMenuAddItem(edanim_localparticle_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalParticleTypeMenu,
-                                                                     ((char *)("Highlighted Particle Type..."))));
-        eduiMenuAddItem(
-            edanim_localparticle_menu,
-            eduiItemSliderCreateInt(0, colours, 0, edanimcbSetParticleRate, 0, 300,
-                                    AnimParams[edanim_nearest_param_id].effect_intervals[edanim_nearest_particle],
-                                    ((char *)("Particles Per Sec"))));
         eduiMenuAddItem(edanim_localparticle_menu,
-                        eduiItemToggleCreate(0, colours,
-                                             AnimParams[edanim_nearest_param_id].effect_flags[edanim_nearest_particle],
-                                             1, edanimcbToggleParticleSwitch, ((char *)("Only On Moving"))));
+                        eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalParticleTypeMenu, ((char *)("Highlighted Particle Type..."))));
+        eduiMenuAddItem(edanim_localparticle_menu,
+                        eduiItemSliderCreateInt(0, colours, 0, edanimcbSetParticleRate, 0, 300,
+                                                AnimParams[edanim_nearest_param_id].effect_intervals[edanim_nearest_particle],
+                                                ((char *)("Particles Per Sec"))));
+        eduiMenuAddItem(edanim_localparticle_menu,
+                        eduiItemToggleCreate(0, colours, AnimParams[edanim_nearest_param_id].effect_flags[edanim_nearest_particle], 1,
+                                             edanimcbToggleParticleSwitch, ((char *)("Only On Moving"))));
 
         eduiMenuAttach(parent, edanim_localparticle_menu);
         edanim_localparticle_menu->x = parent->x + 10;
@@ -1308,14 +1278,13 @@ void edanimcbParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unuse
     i32 index;
     i32 selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-    edanim_particletype_menu =
-        eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelParticleTypeMenu, (char *)("Particle Type"));
+    edanim_particletype_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelParticleTypeMenu, (char *)("Particle Type"));
     if (!edanim_particletype_menu) {
         return;
     }
 
-    eduiMenuAddItem(edanim_particletype_menu, eduiItemCheckCreate(0, colours, edanim_particle_type == -1, 0,
-                                                                  edanimcbSetParticleType, (char *)("NONE")));
+    eduiMenuAddItem(edanim_particletype_menu,
+                    eduiItemCheckCreate(0, colours, edanim_particle_type == -1, 0, edanimcbSetParticleType, (char *)("NONE")));
     for (index = 1; index < debinf_count; ++index) {
         if (!debtab[index]) {
             continue;
@@ -1344,17 +1313,15 @@ void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) 
         return;
     }
 
-    edanim_particle_menu =
-        eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelParticleMenu, (char *)("Attached Particles"));
+    edanim_particle_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelParticleMenu, (char *)("Attached Particles"));
     if (!edanim_particle_menu) {
         return;
     }
 
-    eduiMenuAddItem(edanim_particle_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbParticleTypeMenu, (char *)("Particle Type...")));
+    eduiMenuAddItem(edanim_particle_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbParticleTypeMenu, (char *)("Particle Type...")));
     if (edanim_nearest_particle != -1) {
-        eduiMenuAddItem(edanim_particle_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalParticleMenu,
-                                                                (char *)("Highlighted Ptl Settings...")));
+        eduiMenuAddItem(edanim_particle_menu,
+                        eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalParticleMenu, (char *)("Highlighted Ptl Settings...")));
     }
 
     eduiMenuAttach(parent, edanim_particle_menu);
@@ -1511,41 +1478,25 @@ static void edanimcbCancelMCTBMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 
 void edanimcbMCTBMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-    edanim_mctb_menu =
-        eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelMCTBMenu, (char *)("Memory Card Test Menu"));
+    edanim_mctb_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelMCTBMenu, (char *)("Memory Card Test Menu"));
     if (!edanim_mctb_menu) {
         return;
     }
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardPresent, (char *)("Card Present Test")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardType, (char *)("Card Type Test")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardCheckFormat, (char *)("Card Format Test")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardFreeSpace, (char *)("Card Free Space")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardSlotsUsed, (char *)("Card Slots Used")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(0, colours, 0, 0, edanimcbMCTBCardSaveSlot, (char *)("Card Save Slot 0")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(0, colours, 0, 0, edanimcbMCTBCardLoadSlot, (char *)("Card Load Slot 0")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(0, colours, 0, 0, edanimcbMCTBCardDeleteSlot, (char *)("Card Delete Slot 0")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardSaveSlot, (char *)("Card Save Slot 1")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardLoadSlot, (char *)("Card Load Slot 1")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardDeleteSlot, (char *)("Card Delete Slot 1")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardFormat, (char *)("Format Card")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardUnFormat, (char *)("Unformat Card")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardWriteKeyCard, (char *)("Write KeyCard")));
-    eduiMenuAddItem(edanim_mctb_menu,
-                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardCheckKeyCard, (char *)("Check KeyCard")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardPresent, (char *)("Card Present Test")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardType, (char *)("Card Type Test")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardCheckFormat, (char *)("Card Format Test")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardFreeSpace, (char *)("Card Free Space")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardSlotsUsed, (char *)("Card Slots Used")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(0, colours, 0, 0, edanimcbMCTBCardSaveSlot, (char *)("Card Save Slot 0")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(0, colours, 0, 0, edanimcbMCTBCardLoadSlot, (char *)("Card Load Slot 0")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(0, colours, 0, 0, edanimcbMCTBCardDeleteSlot, (char *)("Card Delete Slot 0")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardSaveSlot, (char *)("Card Save Slot 1")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardLoadSlot, (char *)("Card Load Slot 1")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardDeleteSlot, (char *)("Card Delete Slot 1")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardFormat, (char *)("Format Card")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardUnFormat, (char *)("Unformat Card")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardWriteKeyCard, (char *)("Write KeyCard")));
+    eduiMenuAddItem(edanim_mctb_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardCheckKeyCard, (char *)("Check KeyCard")));
     eduiMenuAttach(parent, edanim_mctb_menu);
     edanim_mctb_menu->x = parent->x + 10;
     edanim_mctb_menu->y = parent->y + 40;
@@ -1554,8 +1505,8 @@ void edanimcbMCTBMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 void fun_0065b5e0(void) {
 }
 
-GAMEANIMOBJ *GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene, char *name, f32 start_frame, f32 end_frame,
-                                         i32 append, void *gizmo_sys, char *prefix, char *suffix) {
+GAMEANIMOBJ *GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene, char *name, f32 start_frame, f32 end_frame, i32 append,
+                                         void *gizmo_sys, char *prefix, char *suffix) {
     NUSPECIALHANDLE special;
     if (set && Gizmo_FindNuSpecial(scene, &special, name, 1, gizmo_sys, prefix, suffix)) {
         return GameAnimSet_AddObject(set, &special, start_frame, end_frame, append);

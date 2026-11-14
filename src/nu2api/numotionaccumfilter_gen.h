@@ -14,8 +14,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PostFilterBlitTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32,
-                                 POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *);
+    void PostFilterBlitTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, POST_SHADER_PROGRAM_PC *,
+                                 GRAPHICS_RENDER_TEXTURE_PC *);
 #ifdef __cplusplus
 }
 #endif

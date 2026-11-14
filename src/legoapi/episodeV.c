@@ -62,30 +62,30 @@ typedef struct ASTEROIDC_NETPACKET_PC {
 #define PLAYER_OBJ(i) ((GAMEOBJECT *)Player[i])
 void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
 extern u32 LEGO_AIPATHCNX_BIGJUMP;
-#define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw) \
-    do {                                                                                                               \
-        GIZMO_PC *gizmo = LevGizmo[gizmo_index];                                                                       \
-        if (gizmo != NULL && gizmo->object != NULL) {                                                                  \
-            GIZMOPICKUP_PC *pickup = (GIZMOPICKUP_PC *)gizmo->object;                                                  \
-            if ((pickup->flags & 0x48) == 0 && *(counter) < 10) {                                                      \
-                ++*(counter);                                                                                          \
-                if (*(counter) == 10) {                                                                                \
-                    NUVEC camera;                                                                                      \
-                    NUVEC message_pos;                                                                                 \
-                    camera.x = 0.0f;                                                                                   \
-                    camera.y = 0.0f;                                                                                   \
-                    camera.z = camera_distance;                                                                        \
-                    NuVecRotateX(&camera, &camera, camera_pitch);                                                      \
-                    NuVecRotateY(&camera, &camera, camera_yaw);                                                        \
-                    NuVecAdd(&camera, &camera, &pickup->position);                                                     \
-                    GameCameraMakeMiniCut2(&camera, &pickup->position, 0, 0.0f, 4.0f, 0.0f, 0.0f, 0, 0, 0);            \
-                    GizmoActivate((world)->gizmo_sys, LevGizmo[gizmo_index], 1, 1);                                    \
-                    AddGameMsgCount(&message_pos, *(counter), 10, 200, 100, 30, 0.75f);                                \
-                } else {                                                                                               \
-                    AddGameMsgCount(average, *(counter), 10, 200, 100, 30, 0.75f);                                     \
-                }                                                                                                      \
-            }                                                                                                          \
-        }                                                                                                              \
+#define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw)                     \
+    do {                                                                                                                                   \
+        GIZMO_PC *gizmo = LevGizmo[gizmo_index];                                                                                           \
+        if (gizmo != NULL && gizmo->object != NULL) {                                                                                      \
+            GIZMOPICKUP_PC *pickup = (GIZMOPICKUP_PC *)gizmo->object;                                                                      \
+            if ((pickup->flags & 0x48) == 0 && *(counter) < 10) {                                                                          \
+                ++*(counter);                                                                                                              \
+                if (*(counter) == 10) {                                                                                                    \
+                    NUVEC camera;                                                                                                          \
+                    NUVEC message_pos;                                                                                                     \
+                    camera.x = 0.0f;                                                                                                       \
+                    camera.y = 0.0f;                                                                                                       \
+                    camera.z = camera_distance;                                                                                            \
+                    NuVecRotateX(&camera, &camera, camera_pitch);                                                                          \
+                    NuVecRotateY(&camera, &camera, camera_yaw);                                                                            \
+                    NuVecAdd(&camera, &camera, &pickup->position);                                                                         \
+                    GameCameraMakeMiniCut2(&camera, &pickup->position, 0, 0.0f, 4.0f, 0.0f, 0.0f, 0, 0, 0);                                \
+                    GizmoActivate((world)->gizmo_sys, LevGizmo[gizmo_index], 1, 1);                                                        \
+                    AddGameMsgCount(&message_pos, *(counter), 10, 200, 100, 30, 0.75f);                                                    \
+                } else {                                                                                                                   \
+                    AddGameMsgCount(average, *(counter), 10, 200, 100, 30, 0.75f);                                                         \
+                }                                                                                                                          \
+            }                                                                                                                              \
+        }                                                                                                                                  \
     } while (0)
 
 typedef struct HOTH_WORLD_SCRIPT {
@@ -124,8 +124,7 @@ static void KilledTrooperCannon(GAMEOBJECT *object) {
         if (troopercannons[index].object == object) {
             DeactivateCharacter(troopercannons[index].character_name);
             GizBuildIt_SetToStart(troopercannons[index].buildit, 0, 0);
-            GizmoActivate(WORLD->gizmo_sys,
-                          GizmoFindByData(WORLD->gizmo_sys, gizbuildit_gizmotype_id, troopercannons[index].buildit), 1,
+            GizmoActivate(WORLD->gizmo_sys, GizmoFindByData(WORLD->gizmo_sys, gizbuildit_gizmotype_id, troopercannons[index].buildit), 1,
                           1);
             GizBuildit_SetVisibility(troopercannons[index].buildit, 1);
             troopercannons[index].rebuilding = 1;
@@ -178,10 +177,9 @@ void ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
                 troopercannons[cannon].rebuilding = 0;
                 ActivateCharacter(name, NULL, 0);
                 AddGameDebris(world->game_debris_sys, 0x5c, &troopercannons[index].object->collision_position);
-                trooper =
-                    AddDynamicCreature(trooper_id, &troopercannons[index].object->collision_position,
-                                       troopercannons[index].object->field_0x276, "CannonTrooper",
-                                       &troopercannons[index].object->ai_packet.path_info, NULL, 0, NULL, NULL, 0, 0);
+                trooper = AddDynamicCreature(trooper_id, &troopercannons[index].object->collision_position,
+                                             troopercannons[index].object->field_0x276, "CannonTrooper",
+                                             &troopercannons[index].object->ai_packet.path_info, NULL, 0, NULL, NULL, 0, 0);
                 if (trooper != NULL) {
                     TakeOverGameObject(trooper, troopercannons[index].object, 0, 1);
                 }
@@ -566,12 +564,10 @@ void AsteroidChaseB_Update(WORLDINFO *world) {
     i32 i;
     Asteroids_Update();
     for (i = 0; i < 4; i++) {
-        if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & 1) != 0 &&
-            (((u8 *)LevFlag)[0] & (1 << i)) == 0) {
+        if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & 1) != 0 && (((u8 *)LevFlag)[0] & (1 << i)) == 0) {
             ((u8 *)LevFlag)[0] |= (u8)(1 << i);
             AddMiscPickups(&classicBlowups[i]->position, -1, -1, 1);
-        } else if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & 1) == 0 &&
-                   (((u8 *)LevFlag)[0] & (1 << i)) != 0) {
+        } else if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & 1) == 0 && (((u8 *)LevFlag)[0] & (1 << i)) != 0) {
             ((u8 *)LevFlag)[0] &= ~(u8)(1 << i);
         }
     }
@@ -826,8 +822,7 @@ void CloudCityTrapA_Update(WORLDINFO *world) {
         }
     }
     gizmo = LevGizmo[0];
-    if (gizmo != NULL && gizmo->object != NULL &&
-        ((GIZFORCE_s *)(gizmo->object))->anim_set->state == GAMEANIMSET_STATE_AT_END) {
+    if (gizmo != NULL && gizmo->object != NULL && ((GIZFORCE_s *)(gizmo->object))->anim_set->state == GAMEANIMSET_STATE_AT_END) {
         AIAntinodeCreateSingleFrame(&pos, 0.5f);
     }
 }
@@ -868,8 +863,7 @@ void CloudCityTrapC_Reset(WORLDINFO *world) {
     struct gizmo_pc_s *gizmo;
     LevGameObject[0] = FindGameObject(FreePlayId007f199cPc, 1, 1, 0, 0);
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
-    LevPathCnx[0] =
-        AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "gap1_a", "gap1_b", &LevPathCnxDir);
+    LevPathCnx[0] = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "gap1_a", "gap1_b", &LevPathCnxDir);
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle3");
     LevGizmo[0] = gizmo;
     if (gizmo != NULL && gizmo->object != NULL) {
@@ -887,8 +881,7 @@ void CloudCityTrapC_Update(WORLDINFO *world) {
     if (netclient != 0 || LevPathCnx[0] == NULL) {
         return;
     }
-    ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[LevPathCnxDir] &=
-        ~(LEGO_AIPATHCNX_BIGJUMP | LEGO_AIPATHCNX_R2D2GLIDE | 0x80000000);
+    ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[LevPathCnxDir] &= ~(LEGO_AIPATHCNX_BIGJUMP | LEGO_AIPATHCNX_R2D2GLIDE | 0x80000000);
     if ((LevGizObst[1] != NULL && LevGizObst[1]->anim_set->state != 0 && player->collision_position.z < -20.0f) ||
         player->collision_position.z < -21.0f) {
         active = LEGO_AIPATHCNX_BIGJUMP;
@@ -958,8 +951,8 @@ void CloudCityEscapeA_Update(WORLDINFO *world) {
             }
         }
     }
-    if (LevGizmo[0] != NULL && LevAIMessage[1] != NULL && LevAIMessage[1]->value == 0.0f &&
-        LevGizmo[0]->object != NULL && ((GIZBUILDIT_PC *)LevGizmo[0]->object)->build_state == 2) {
+    if (LevGizmo[0] != NULL && LevAIMessage[1] != NULL && LevAIMessage[1]->value == 0.0f && LevGizmo[0]->object != NULL &&
+        ((GIZBUILDIT_PC *)LevGizmo[0]->object)->build_state == 2) {
         LevAIMessage[1]->value = 1.0f;
     }
 }
@@ -998,8 +991,7 @@ void CloudCityEscapeC_Update(WORLDINFO *world) {
 
 i32 TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *offset) {
     if ((object->flags_ef4 & 2) == 0 || dagobah_training == 0 || object->rider != NULL || luke == NULL ||
-        (luke->flags_1fc_word & 0x80) == 0 ||
-        !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
+        (luke->flags_1fc_word & 0x80) == 0 || !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
         return 0;
     }
     NuVecRotateY(offset, offset, -luke->field_0x276);
@@ -1189,8 +1181,8 @@ void HothBattleC_Reset(WORLDINFO *world) {
 }
 
 void HothBattleC_Update(WORLDINFO *world) {
-    if (netclient == 0 && HothBattleC_BombGenerator != NULL && !HothBattleC_BombGenerator->active &&
-        LevAIMessage[0] != NULL && LevAIMessage[0]->value > 0.0f) {
+    if (netclient == 0 && HothBattleC_BombGenerator != NULL && !HothBattleC_BombGenerator->active && LevAIMessage[0] != NULL &&
+        LevAIMessage[0]->value > 0.0f) {
         HothBattleC_BombGenerator->active = 1;
     }
     UpdateMiniSnowTroopers(world);
@@ -1268,8 +1260,8 @@ void HothBattleE_PanelPc(WORLDINFO *world) {
         }
         DrawMeleeTargetsRowsPc(targets, defeated, HothBattleEPanelAlphaPc, count);
     } else {
-        DrawMeleeTargetsRowsPc(HothBattleENetPacketPc->targets, (char *)HothBattleENetPacketPc->defeated,
-                               HothBattleENetPacketPc->alpha, HothBattleENetPacketPc->count);
+        DrawMeleeTargetsRowsPc(HothBattleENetPacketPc->targets, (char *)HothBattleENetPacketPc->defeated, HothBattleENetPacketPc->alpha,
+                               HothBattleENetPacketPc->count);
     }
 }
 
@@ -1298,8 +1290,8 @@ AILOCATOR_PC *getSpawnLocator(float clip_radius, char *name) {
                 locators[locator_count++] = &WORLD->ai_sys->locators[locator_set->locator_entries[i]];
             }
         }
-        return LocalGetRandomLocator(locators, locator_count, clip_radius, &player->collision_position, 1000000000.0f,
-                                     0, 1000000000.0f, 1000000000.0f);
+        return LocalGetRandomLocator(locators, locator_count, clip_radius, &player->collision_position, 1000000000.0f, 0, 1000000000.0f,
+                                     1000000000.0f);
     }
     return NULL;
 }
@@ -1335,8 +1327,8 @@ void HothBattle_ManageBackgroundCreatures(void) {
         if (spawn == NULL) {
             return;
         }
-        object = AddDynamicCreature(VehicleBoltId7f18b4Pc, &spawn->position, spawn->rotation, "Probe",
-                                    &spawn->path_info, NULL, 1, NULL, NULL, 0, 1);
+        object = AddDynamicCreature(VehicleBoltId7f18b4Pc, &spawn->position, spawn->rotation, "Probe", &spawn->path_info, NULL, 1, NULL,
+                                    NULL, 0, 1);
         if (object == NULL) {
             break;
         }
@@ -1373,8 +1365,8 @@ void HothBattle_ManageBackgroundCreatures(void) {
         if (spawn == NULL) {
             return;
         }
-        object = AddDynamicCreature(id_ATST_LOWRES, &spawn->position, spawn->rotation, "rider", &spawn->path_info, NULL,
-                                    1, NULL, NULL, 0, 3);
+        object =
+            AddDynamicCreature(id_ATST_LOWRES, &spawn->position, spawn->rotation, "rider", &spawn->path_info, NULL, 1, NULL, NULL, 0, 3);
         melee.background_creatures[++last] = object;
         if (object == NULL) {
             return;
@@ -1433,14 +1425,10 @@ i32 SpawnMeleeCreatureType(i32 type) {
         for (attempts = 50; attempts > 0; --attempts) {
             locator = getSpawnLocator(5.0f, "spawn");
             if (locator != NULL) {
-                if (OnOrInsidePlane(&locator->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.5f,
-                                    NULL) == 0 ||
-                    OnOrInsidePlane(&locator->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.5f,
-                                    NULL) == 0) {
-                    if (OnOrInsidePlane(&locator->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 2.5f,
-                                        NULL) != 0 ||
-                        OnOrInsidePlane(&locator->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 2.5f,
-                                        NULL) != 0) {
+                if (OnOrInsidePlane(&locator->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.5f, NULL) == 0 ||
+                    OnOrInsidePlane(&locator->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.5f, NULL) == 0) {
+                    if (OnOrInsidePlane(&locator->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 2.5f, NULL) != 0 ||
+                        OnOrInsidePlane(&locator->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 2.5f, NULL) != 0) {
                         break;
                     }
                 }
@@ -1455,11 +1443,11 @@ i32 SpawnMeleeCreatureType(i32 type) {
         NuVecRotateY(&offset, &offset, qrand());
         NuVecAdd(&offset, &offset, &locator->position);
         if (melee.waves[type].character_id == id_ATAT) {
-            object = AddDynamicCreature(melee.waves[type].character_id, &locator->position, locator->rotation,
-                                        melee.waves[type].name, &locator->path_info, NULL, 1, NULL, NULL, 0, 0);
+            object = AddDynamicCreature(melee.waves[type].character_id, &locator->position, locator->rotation, melee.waves[type].name,
+                                        &locator->path_info, NULL, 1, NULL, NULL, 0, 0);
         } else {
-            object = AddDynamicCreature(melee.waves[type].character_id, &offset, locator->rotation,
-                                        melee.waves[type].name, &locator->path_info, NULL, 1, NULL, NULL, 0, 0);
+            object = AddDynamicCreature(melee.waves[type].character_id, &offset, locator->rotation, melee.waves[type].name,
+                                        &locator->path_info, NULL, 1, NULL, NULL, 0, 0);
         }
         if (object == NULL) {
             return 0;
@@ -1601,9 +1589,8 @@ void HothBattleE_UpdateWave(void) {
                 if (melee.transition_phase == 1) {
                     object = Obj;
                     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-                        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-                            object->id != (u16)id_ATAT && object->player_index == -1 &&
-                            (object->character_data->model_flags & 4) != 0) {
+                        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->id != (u16)id_ATAT &&
+                            object->player_index == -1 && (object->character_data->model_flags & 4) != 0) {
                             KillGameObject(object, 4, 0);
                         }
                     }

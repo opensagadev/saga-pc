@@ -78,10 +78,8 @@ static f32 NuFdiv(f32 a, f32 b) {
 }
 
 void NuVpGetPosition2(f32 *x, f32 *y) {
-    *x = NuFdiv((f32)vpCurrent.x * 0.0625f - ((f32)PS2_VCNTR_X - (f32)(PS2_REZ_W >> 1)),
-                NuFdiv((f32)PS2_REZ_W, (f32)PS2_VREZ_W));
-    *y = NuFdiv((f32)vpCurrent.y * 0.0625f - ((f32)PS2_VCNTR_Y - (f32)(PS2_REZ_H >> 1)),
-                NuFdiv((f32)PS2_REZ_H, (f32)PS2_VREZ_H));
+    *x = NuFdiv((f32)vpCurrent.x * 0.0625f - ((f32)PS2_VCNTR_X - (f32)(PS2_REZ_W >> 1)), NuFdiv((f32)PS2_REZ_W, (f32)PS2_VREZ_W));
+    *y = NuFdiv((f32)vpCurrent.y * 0.0625f - ((f32)PS2_VCNTR_Y - (f32)(PS2_REZ_H >> 1)), NuFdiv((f32)PS2_REZ_H, (f32)PS2_VREZ_H));
 }
 
 i32 NuDisplayListAddRenderScene(void) {
@@ -370,15 +368,13 @@ void NuDepthOfFieldEffect(f32 strength, f32 near_distance, f32 far_distance) {
 void NuDepthOfFieldEffect1(f32 near_distance, f32 far_distance) {
     f32 ratio = near_distance / (near_distance + far_distance);
     near_distance = (far_distance - near_distance) * ratio + near_distance;
-    NuDepthOfFieldEffect(1.0f, (far_distance * near_distance) / ((far_distance - near_distance) + far_distance),
-                         near_distance);
+    NuDepthOfFieldEffect(1.0f, (far_distance * near_distance) / ((far_distance - near_distance) + far_distance), near_distance);
 }
 
 void NuDepthOfFieldEffect2(f32 near_distance, f32 far_distance, f32 strength) {
     f32 ratio = near_distance / (near_distance + far_distance);
     near_distance = (far_distance - near_distance) * ratio + near_distance;
-    NuDepthOfFieldEffect(strength, (far_distance * near_distance) / ((far_distance - near_distance) + far_distance),
-                         near_distance);
+    NuDepthOfFieldEffect(strength, (far_distance * near_distance) / ((far_distance - near_distance) + far_distance), near_distance);
 }
 
 void NuTextureBlendEffect(i32 arg0, i32 arg1, NUVEC4 *parameters) {
@@ -508,19 +504,18 @@ static void NuRndrPrimSetColourPrivate(i32 colour) {
     if (NuPrimNeedsOverbrightening != 0) {
         converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
     } else {
-        converted =
-            ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
+        converted = ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
     ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
 
-#define LOCATOR_PRIM_POSITION(X, Y, Z)                                                                                 \
-    do {                                                                                                               \
-        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = (X);                                      \
-        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = (Y);                                      \
-        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = (Z);                                      \
-        NuPrimStreamBufferPointer->void_ptr = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr + 1;       \
-        ++NuPrimVertexCount;                                                                                           \
+#define LOCATOR_PRIM_POSITION(X, Y, Z)                                                                                                     \
+    do {                                                                                                                                   \
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = (X);                                                          \
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = (Y);                                                          \
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = (Z);                                                          \
+        NuPrimStreamBufferPointer->void_ptr = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr + 1;                           \
+        ++NuPrimVertexCount;                                                                                                               \
     } while (0)
 
 void NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
@@ -594,8 +589,7 @@ void NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *material) {
         for (i = 0; i <= segments; ++i) {
             f32 radius = NuTrigTable[((i32)angle >> 1) & 0x7fff];
             NuRndrPrimSetColourPrivate(colour);
-            NuRndrPrimPosition(radius * sin_theta, NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff],
-                               radius * cos_theta);
+            NuRndrPrimPosition(radius * sin_theta, NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff], radius * cos_theta);
             angle += step;
         }
         theta += step;
@@ -871,11 +865,11 @@ i32 NuRndrTri3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matrix, NUMTL
 
 extern i32 NuPrimCoordSystemStack[2];
 
-#define NURNDR_PRIM_UV(U, V)                                                                                           \
-    do {                                                                                                               \
-        LOCATOR_PRIM_VERTEX_PC *uv_vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;             \
-        uv_vertex->u = (U);                                                                                            \
-        uv_vertex->v = (V);                                                                                            \
+#define NURNDR_PRIM_UV(U, V)                                                                                                               \
+    do {                                                                                                                                   \
+        LOCATOR_PRIM_VERTEX_PC *uv_vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;                                 \
+        uv_vertex->u = (U);                                                                                                                \
+        uv_vertex->v = (V);                                                                                                                \
     } while (0)
 
 void NuRndr3dLine(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
@@ -914,8 +908,7 @@ void NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour)
     NuPrim3DEnd();
 }
 
-void NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material,
-                      i32 z) {
+void NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material, i32 z) {
     f32 sx = (f32)((f64)x * 0.0625);
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sz = (f32)((f64)z * (1.0f / 16777215.0f));
@@ -976,8 +969,7 @@ void NuRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL 
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-void NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours,
-                         void *material) {
+void NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours, void *material) {
     f32 sx = (f32)((f64)x * 0.0625);
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sw = (f32)((f64)width * 0.0625);
@@ -1076,12 +1068,10 @@ void NuRndrSphere(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale) {
         lower_y += centre->y;
         upper_y += centre->y;
         for (angle = 0; angle < 65536; angle += 2048) {
-            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y,
-                            centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
-                            centre->x + upper_radius * PORTAL_DEBUG_COS(angle), upper_y,
-                            centre->z + upper_radius * PORTAL_DEBUG_SIN(angle), colour);
-            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y,
-                            centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
+            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y, centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
+                            centre->x + upper_radius * PORTAL_DEBUG_COS(angle), upper_y, centre->z + upper_radius * PORTAL_DEBUG_SIN(angle),
+                            colour);
+            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y, centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
                             centre->x + lower_radius * PORTAL_DEBUG_COS(angle + 2048), lower_y,
                             centre->z + lower_radius * PORTAL_DEBUG_SIN(angle + 2048), colour);
         }
@@ -1118,12 +1108,10 @@ void NuRndrSphereEx(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale, i
         lower_y = centre->y + lower_y;
         upper_y = centre->y + upper_y;
         for (angle = 0; angle < 65536; angle += angle_step) {
-            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y,
-                            centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
-                            centre->x + upper_radius * PORTAL_DEBUG_COS(angle), upper_y,
-                            centre->z + upper_radius * PORTAL_DEBUG_SIN(angle), colour);
-            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y,
-                            centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
+            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y, centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
+                            centre->x + upper_radius * PORTAL_DEBUG_COS(angle), upper_y, centre->z + upper_radius * PORTAL_DEBUG_SIN(angle),
+                            colour);
+            NuRndrLine3dDbg(centre->x + lower_radius * PORTAL_DEBUG_COS(angle), lower_y, centre->z + lower_radius * PORTAL_DEBUG_SIN(angle),
                             centre->x + lower_radius * PORTAL_DEBUG_COS(angle + angle_step), lower_y,
                             centre->z + lower_radius * PORTAL_DEBUG_SIN(angle + angle_step), colour);
         }
@@ -1173,36 +1161,34 @@ void RenderPostClearScreenPc(void) {
 #endif
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define IMAGE_TAN_HALF_FOV(v)                                                                                          \
+#define IMAGE_TAN_HALF_FOV(v)                                                                                                              \
     (NuTrigTable[(i32)((v) * 10430.378f) >> 1 & 0x7fff] / NuTrigTable[(16384 - (i32)((v) * -10430.378f)) >> 1 & 0x7fff])
-#define POST_IMAGE_UV(U, V)                                                                                            \
-    do {                                                                                                               \
-        LOCATOR_PRIM_VERTEX_PC *uv_vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;             \
-        uv_vertex->u = (U);                                                                                            \
-        uv_vertex->v = (V);                                                                                            \
+#define POST_IMAGE_UV(U, V)                                                                                                                \
+    do {                                                                                                                                   \
+        LOCATOR_PRIM_VERTEX_PC *uv_vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;                                 \
+        uv_vertex->u = (U);                                                                                                                \
+        uv_vertex->v = (V);                                                                                                                \
     } while (0)
-#define POST_IMAGE_DIRECTIONAL(brightness)                                                                             \
-    do {                                                                                                               \
-        f32 dot = NuVecDot(&parameters->direction, (NUVEC *)&direction);                                               \
-        f32 angle = (i16)(0x4000 - RenderPostASinPc(dot)) * 0.0054931640625;                                           \
-        if (angle < parameters->direction_near_angle) {                                                                \
-            (brightness) += parameters->direction_far_scale * 128.0;                                                   \
-        } else if (!(angle > parameters->direction_far_angle)) {                                                       \
-            (brightness) +=                                                                                            \
-                ((1.0f - (parameters->direction_bias == 1.0f                                                           \
-                              ? (angle - parameters->direction_near_angle) /                                           \
-                                    (parameters->direction_far_angle - parameters->direction_near_angle)               \
-                              : NuPowFast((angle - parameters->direction_near_angle) /                                 \
-                                              (parameters->direction_far_angle - parameters->direction_near_angle),    \
-                                          parameters->direction_bias))) *                                              \
-                     (parameters->direction_far_scale - parameters->direction_near_scale) +                            \
-                 parameters->direction_near_scale) *                                                                   \
-                128.0;                                                                                                 \
-        }                                                                                                              \
+#define POST_IMAGE_DIRECTIONAL(brightness)                                                                                                 \
+    do {                                                                                                                                   \
+        f32 dot = NuVecDot(&parameters->direction, (NUVEC *)&direction);                                                                   \
+        f32 angle = (i16)(0x4000 - RenderPostASinPc(dot)) * 0.0054931640625;                                                               \
+        if (angle < parameters->direction_near_angle) {                                                                                    \
+            (brightness) += parameters->direction_far_scale * 128.0;                                                                       \
+        } else if (!(angle > parameters->direction_far_angle)) {                                                                           \
+            (brightness) += ((1.0f - (parameters->direction_bias == 1.0f                                                                   \
+                                          ? (angle - parameters->direction_near_angle) /                                                   \
+                                                (parameters->direction_far_angle - parameters->direction_near_angle)                       \
+                                          : NuPowFast((angle - parameters->direction_near_angle) /                                         \
+                                                          (parameters->direction_far_angle - parameters->direction_near_angle),            \
+                                                      parameters->direction_bias))) *                                                      \
+                                 (parameters->direction_far_scale - parameters->direction_near_scale) +                                    \
+                             parameters->direction_near_scale) *                                                                           \
+                            128.0;                                                                                                         \
+        }                                                                                                                                  \
     } while (0)
 
-void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
-                    RENDER_POST_BLOOM_READER_PC *parameters) {
+void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, RENDER_POST_BLOOM_READER_PC *parameters) {
     f32 inv_col = 1.0f / (cols - 1);
     f32 inv_row = 1.0f / (rows - 1);
     f32 x0 = 0.0f * inv_row * 2.0f - 1.0f;
@@ -1287,8 +1273,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
                 } else if (brightness >= far_angle) {
                     brightness = far_scale * parameters->intensity;
                 } else {
-                    brightness =
-                        ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity;
+                    brightness = ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity;
                 }
                 if (parameters->directional) {
                     POST_IMAGE_DIRECTIONAL(brightness);
@@ -1314,8 +1299,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
             } else if (brightness >= far_angle) {
                 brightness = far_scale * parameters->intensity;
             } else {
-                brightness =
-                    ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity;
+                brightness = ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity;
             }
             if (parameters->directional) {
                 POST_IMAGE_DIRECTIONAL(brightness);
@@ -1745,8 +1729,7 @@ void NuRndrArenaAddCylinderVolumePc(PC_SHADOW_CYLINDER_PC *cylinder, PC_HG_SHADO
 
 /* Extrudes the eight-direction silhouette of a queued ellipsoid (centre and three axes) along the light offset into
  * arena quads. */
-void NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUVEC *offset, f32 near_value,
-                                     f32 far_value) {
+void NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUVEC *offset, f32 near_value, f32 far_value) {
     VuVec v[32];
     NUVEC4 centre;
     NUVEC axis[3];
@@ -1805,18 +1788,15 @@ void NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, N
         v[0].x = axis[0].x * local.x + axis[1].x * local.y + axis[2].x * local.z;
         v[0].y = axis[0].y * local.x + axis[1].y * local.y + axis[2].y * local.z;
         v[0].z = axis[0].z * local.x + axis[1].z * local.y + axis[2].z * local.z;
-        local.x =
-            (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[0].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[0].y +
-             NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[0].z) *
-            scale[0];
-        local.y =
-            (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[1].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[1].y +
-             NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[1].z) *
-            scale[1];
-        local.z =
-            (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[2].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[2].y +
-             NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[2].z) *
-            scale[2];
+        local.x = (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[0].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[0].y +
+                   NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[0].z) *
+                  scale[0];
+        local.y = (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[1].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[1].y +
+                   NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[1].z) *
+                  scale[1];
+        local.z = (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[2].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[2].y +
+                   NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[2].z) *
+                  scale[2];
         v[1].x = axis[0].x * local.x + axis[1].x * local.y + axis[2].x * local.z;
         v[1].y = axis[0].y * local.x + axis[1].y * local.y + axis[2].y * local.z;
         v[1].z = axis[0].z * local.x + axis[1].z * local.y + axis[2].z * local.z;
@@ -1852,8 +1832,7 @@ void NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, N
     }
 }
 
-void NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *groups, PC_SHADOW_EDGE_PC *points,
-                                 NUVEC *offset) {
+void NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *groups, PC_SHADOW_EDGE_PC *points, NUVEC *offset) {
     f32 buffer[256];
     NUMTX *matrix = (NUMTX *)(((u32)buffer + 15) & ~15u);
     VuVec *v;
@@ -2056,8 +2035,7 @@ i32 NuRndrLine2d(NULINEVERTEX2D_PC *vertices, NUMTL *material) {
     return 1;
 }
 
-void NuRndrRect(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
-                NUMTL *material) {
+void NuRndrRect(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material) {
     NuPrim2DBegin(16, 7, material);
     NURNDR_PRIM_UV(u0, v0);
     NuRndrPrimSetColourPrivate(colour);
@@ -2068,8 +2046,7 @@ void NuRndrRect(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 
     NuPrim2DEnd();
 }
 
-void NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
-                           NUMTL *material) {
+void NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material) {
     NuPrim2DBegin(16, 7, material);
     NURNDR_PRIM_UV(u0, v0);
     NuRndrPrimSetColourPrivate(colour);
@@ -2138,8 +2115,7 @@ void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *m
         f32 y;
         f32 width;
         f32 height;
-    } rectangle = {(f32)((f64)x * 0.0625), (f32)((f64)y * 0.0625), (f32)((f64)width * 0.0625),
-                   (f32)((f64)height * 0.0625)};
+    } rectangle = {(f32)((f64)x * 0.0625), (f32)((f64)y * 0.0625), (f32)((f64)width * 0.0625), (f32)((f64)height * 0.0625)};
 
     f32 ex;
     f32 ey;

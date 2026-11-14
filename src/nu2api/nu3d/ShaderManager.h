@@ -85,8 +85,8 @@ class NuShaderObject {
     void fun_007412b0();
     i32 fun_007412c0() const;
     u32 *fun_007412d0();
-    void fun_00745470(const u32 *key, i32 index, const char *vertex_source, i32 vertex_length, const char *pixel_source,
-                      i32 pixel_length, i32 version);
+    void fun_00745470(const u32 *key, i32 index, const char *vertex_source, i32 vertex_length, const char *pixel_source, i32 pixel_length,
+                      i32 version);
     i32 fun_007454a0();
 };
 
@@ -95,14 +95,13 @@ template <class T> class ShaderManagerTemplate {
     ShaderManagerTemplate();
     virtual ~ShaderManagerTemplate();
     virtual bool CreateShader(const struct PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
-    virtual void AdaptDescriptor(const struct PC_SHADER_FILTER_DESC_VIEW *,
-                                 const struct PC_SHADER_FILTER_MATERIAL_VIEW *);
+    virtual void AdaptDescriptor(const struct PC_SHADER_FILTER_DESC_VIEW *, const struct PC_SHADER_FILTER_MATERIAL_VIEW *);
     T slots[400];
     i32 last_allocated;
     PC_SHADER_OBJECT_FULL_VIEW *bound_slot;
     PC_SHADER_OBJECT_FULL_VIEW *AllocateSlot(i32 *index);
-    PC_SHADER_OBJECT_FULL_VIEW *Retrieve(const struct PC_SHADER_FILTER_DESC_VIEW *,
-                                         const struct PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32, bool);
+    PC_SHADER_OBJECT_FULL_VIEW *Retrieve(const struct PC_SHADER_FILTER_DESC_VIEW *, const struct PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32,
+                                         bool);
     void ReleaseShader(T *slot);
     void DestroyShaders();
     void SetCurrentShader(T *slot);

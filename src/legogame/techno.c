@@ -66,8 +66,7 @@ void *Technos_FindTgt(TECHNO_s *techno) {
             return techno->controlled_object;
         case 2:
             techno->controlled_object = techno->target_special_storage;
-            if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage),
-                              techno->target_name, 0) == 0) {
+            if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage), techno->target_name, 0) == 0) {
                 techno->controlled_object = NULL;
                 techno->target_mode = 0;
                 TechnoTargetDiagnosticPc(techno->target_name);
@@ -87,8 +86,7 @@ void *Technos_FindTgt(TECHNO_s *techno) {
             if (target == NULL) {
                 target = GizmoFindByName(WORLD->gizmo_sys, -1, techno->target_name);
                 if (target == NULL) {
-                    if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage),
-                                      techno->target_name, 0) == 0) {
+                    if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage), techno->target_name, 0) == 0) {
                         techno->target_mode = 0;
                         techno->controlled_object = NULL;
                         return NULL;
@@ -292,9 +290,7 @@ static void Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
                 continue;
             }
             hand_angle =
-                (i32)((1.0 -
-                       ((f64)NuTrigTable[((i32)((f64)techno->ground_offset * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) *
-                           0.5) *
+                (i32)((1.0 - ((f64)NuTrigTable[((i32)((f64)techno->ground_offset * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5) *
                       29127.0);
             NuMtxSetRotationY(&matrix, slot != 0 ? -hand_angle : hand_angle);
             NuMtxTranslate(&matrix, &TechnoSysPc.hand_offsets[slot]);
@@ -354,9 +350,7 @@ static i32 Techno_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
         case 1:
             return (techno->flags >> 3) & 1;
         case 3:
-            if (NuStrICmp(((TECHNO_GIZMO_TYPE_NAME_PC *)((GIZMOTYPES_PC *)gizmotypes)
-                               ->types)[techno->controlled_object->type_id]
-                              .name,
+            if (NuStrICmp(((TECHNO_GIZMO_TYPE_NAME_PC *)((GIZMOTYPES_PC *)gizmotypes)->types)[techno->controlled_object->type_id].name,
                           "GIZOBSTACLE") == 0) {
                 target = techno->controlled_object;
                 return ((TECHNO_OBSTACLE_VIEW_PC *)target->object)->anim_set->state == 2;
@@ -650,8 +644,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             return;
         }
         object->context_timer += FRAMETIME;
-        if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0 ||
-            ((object->flags_1fc & 0x80) == 0 && object->field_f00 != 2)) {
+        if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0 || ((object->flags_1fc & 0x80) == 0 && object->field_f00 != 2)) {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             object->tag_flags |= 1;
             object->movement_facing_angle += 0x8000;
@@ -661,8 +654,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             Technos_MoveTarget(object->techno, object);
         }
     } else {
-        if (!((((object->flags_1fc & 0x80) != 0 || object->field_f00 == 2) && object->suit != NULL &&
-               (object->suit->flags & 0x20) != 0) ||
+        if (!((((object->flags_1fc & 0x80) != 0 || object->field_f00 == 2) && object->suit != NULL && (object->suit->flags & 0x20) != 0) ||
               (StartupGameFlag1 != 0 && StartupGameFlag0 != 0))) {
             return;
         }

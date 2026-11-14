@@ -38,8 +38,7 @@ void Faders_Configure(WORLDINFO *world, char *config) {
         fader->while_animating.scene = NULL;
         fader->while_animating.special = NULL;
         fader->while_animating.display_special = NULL;
-        if (NuFParGetWord(parser) == 0 ||
-            NuSpecialFind(world->current_gscn, &fader->special, parser->word_buffer_ptr, 1) == 0) {
+        if (NuFParGetWord(parser) == 0 || NuSpecialFind(world->current_gscn, &fader->special, parser->word_buffer_ptr, 1) == 0) {
             continue;
         }
         while (NuFParGetWord(parser) != 0) {

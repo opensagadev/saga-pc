@@ -269,8 +269,7 @@ struct FtpFile { // size 0xb0
     i32 fun_00617260() const;
     void RecvData(NETMESSAGE_PC &message);
     void fun_006176d0();
-    void Init(i32 new_direction, const char *new_name, i32 new_size, const NetAddress &new_address, void *new_buffer,
-              i32 new_capacity);
+    void Init(i32 new_direction, const char *new_name, i32 new_size, const NetAddress &new_address, void *new_buffer, i32 new_capacity);
     i32 Accept(i32 new_capacity, void *new_buffer);
     i32 Accept(i32 new_size);
     i32 Accept();
@@ -349,10 +348,9 @@ class NOSFilter {
 class NetReplicator : public CSListLink<NetReplicator> { // size 0x18
   public:
     NetReplicator(i32 group, f32 minimum_seconds, f32 maximum_seconds);
-    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
-                          i32 check_only) = 0;
-    virtual i32 SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object,
-                                ReplicatorData &data, i16 *flags);
+    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force, i32 check_only) = 0;
+    virtual i32 SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object, ReplicatorData &data,
+                                i16 *flags);
     virtual i32 DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, i32 check_only);
     i32 fun_00611bb0() const;
     i32 fun_00611bc0(i32 groups) const;
@@ -448,8 +446,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void AddToLocalObjectList(NetworkObject *object);
     void BindFilter(NOSFilter *filter, const EdClass *object_class);
     void BindReplicator(NetReplicator *replicator, const EdClass *object_class);
-    void CalcReplicatorDataSize(NetReplicator *replicator, const EdClass *object_class, i32 &data_size,
-                                i32 &message_size);
+    void CalcReplicatorDataSize(NetReplicator *replicator, const EdClass *object_class, i32 &data_size, i32 &message_size);
     void ChangeContext(NOSContext &new_context);
     void ConstructObject(NetworkObject *object, NetPeerPush *push);
     void ContinuityBreak(i32 id, f32 time);

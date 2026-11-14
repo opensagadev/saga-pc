@@ -42,43 +42,37 @@ static NUVEC *control;
 u32 fseed = 0;
 static NURAND global_rand = {1};
 u16 ang[513] = {
-    0x0000, 0x0014, 0x0029, 0x003d, 0x0051, 0x0066, 0x007a, 0x008f, 0x00a3, 0x00b7, 0x00cc, 0x00e0, 0x00f4, 0x0109,
-    0x011d, 0x0131, 0x0146, 0x015a, 0x016f, 0x0183, 0x0197, 0x01ac, 0x01c0, 0x01d4, 0x01e9, 0x01fd, 0x0211, 0x0226,
-    0x023a, 0x024e, 0x0262, 0x0277, 0x028b, 0x029f, 0x02b4, 0x02c8, 0x02dc, 0x02f0, 0x0305, 0x0319, 0x032d, 0x0341,
-    0x0356, 0x036a, 0x037e, 0x0392, 0x03a7, 0x03bb, 0x03cf, 0x03e3, 0x03f7, 0x040c, 0x0420, 0x0434, 0x0448, 0x045c,
-    0x0470, 0x0484, 0x0499, 0x04ad, 0x04c1, 0x04d5, 0x04e9, 0x04fd, 0x0511, 0x0525, 0x0539, 0x054d, 0x0561, 0x0575,
-    0x0589, 0x059d, 0x05b1, 0x05c5, 0x05d9, 0x05ed, 0x0601, 0x0615, 0x0629, 0x063d, 0x0651, 0x0665, 0x0678, 0x068c,
-    0x06a0, 0x06b4, 0x06c8, 0x06dc, 0x06ef, 0x0703, 0x0717, 0x072b, 0x073e, 0x0752, 0x0766, 0x077a, 0x078d, 0x07a1,
-    0x07b5, 0x07c8, 0x07dc, 0x07ef, 0x0803, 0x0817, 0x082a, 0x083e, 0x0851, 0x0865, 0x0878, 0x088c, 0x089f, 0x08b3,
-    0x08c6, 0x08da, 0x08ed, 0x0901, 0x0914, 0x0927, 0x093b, 0x094e, 0x0961, 0x0975, 0x0988, 0x099b, 0x09ae, 0x09c2,
-    0x09d5, 0x09e8, 0x09fb, 0x0a0e, 0x0a22, 0x0a35, 0x0a48, 0x0a5b, 0x0a6e, 0x0a81, 0x0a94, 0x0aa7, 0x0aba, 0x0acd,
-    0x0ae0, 0x0af3, 0x0b06, 0x0b19, 0x0b2c, 0x0b3f, 0x0b51, 0x0b64, 0x0b77, 0x0b8a, 0x0b9d, 0x0baf, 0x0bc2, 0x0bd5,
-    0x0be7, 0x0bfa, 0x0c0d, 0x0c1f, 0x0c32, 0x0c45, 0x0c57, 0x0c6a, 0x0c7c, 0x0c8f, 0x0ca1, 0x0cb4, 0x0cc6, 0x0cd9,
-    0x0ceb, 0x0cfd, 0x0d10, 0x0d22, 0x0d34, 0x0d47, 0x0d59, 0x0d6b, 0x0d7d, 0x0d90, 0x0da2, 0x0db4, 0x0dc6, 0x0dd8,
-    0x0dea, 0x0dfc, 0x0e0f, 0x0e21, 0x0e33, 0x0e45, 0x0e56, 0x0e68, 0x0e7a, 0x0e8c, 0x0e9e, 0x0eb0, 0x0ec2, 0x0ed4,
-    0x0ee5, 0x0ef7, 0x0f09, 0x0f1b, 0x0f2c, 0x0f3e, 0x0f50, 0x0f61, 0x0f73, 0x0f84, 0x0f96, 0x0fa7, 0x0fb9, 0x0fca,
-    0x0fdc, 0x0fed, 0x0fff, 0x1010, 0x1021, 0x1033, 0x1044, 0x1055, 0x1067, 0x1078, 0x1089, 0x109a, 0x10ab, 0x10bc,
-    0x10ce, 0x10df, 0x10f0, 0x1101, 0x1112, 0x1123, 0x1134, 0x1145, 0x1156, 0x1166, 0x1177, 0x1188, 0x1199, 0x11aa,
-    0x11bb, 0x11cb, 0x11dc, 0x11ed, 0x11fd, 0x120e, 0x121f, 0x122f, 0x1240, 0x1250, 0x1261, 0x1271, 0x1282, 0x1292,
-    0x12a3, 0x12b3, 0x12c3, 0x12d4, 0x12e4, 0x12f4, 0x1305, 0x1315, 0x1325, 0x1335, 0x1345, 0x1355, 0x1366, 0x1376,
-    0x1386, 0x1396, 0x13a6, 0x13b6, 0x13c6, 0x13d6, 0x13e6, 0x13f5, 0x1405, 0x1415, 0x1425, 0x1435, 0x1444, 0x1454,
-    0x1464, 0x1473, 0x1483, 0x1493, 0x14a2, 0x14b2, 0x14c1, 0x14d1, 0x14e0, 0x14f0, 0x14ff, 0x150f, 0x151e, 0x152d,
-    0x153d, 0x154c, 0x155b, 0x156b, 0x157a, 0x1589, 0x1598, 0x15a7, 0x15b7, 0x15c6, 0x15d5, 0x15e4, 0x15f3, 0x1602,
-    0x1611, 0x1620, 0x162f, 0x163e, 0x164c, 0x165b, 0x166a, 0x1679, 0x1688, 0x1696, 0x16a5, 0x16b4, 0x16c2, 0x16d1,
-    0x16e0, 0x16ee, 0x16fd, 0x170b, 0x171a, 0x1728, 0x1737, 0x1745, 0x1754, 0x1762, 0x1770, 0x177f, 0x178d, 0x179b,
-    0x17aa, 0x17b8, 0x17c6, 0x17d4, 0x17e2, 0x17f0, 0x17fe, 0x180d, 0x181b, 0x1829, 0x1837, 0x1845, 0x1853, 0x1860,
-    0x186e, 0x187c, 0x188a, 0x1898, 0x18a6, 0x18b3, 0x18c1, 0x18cf, 0x18dd, 0x18ea, 0x18f8, 0x1906, 0x1913, 0x1921,
-    0x192e, 0x193c, 0x1949, 0x1957, 0x1964, 0x1972, 0x197f, 0x198c, 0x199a, 0x19a7, 0x19b4, 0x19c2, 0x19cf, 0x19dc,
-    0x19e9, 0x19f6, 0x1a04, 0x1a11, 0x1a1e, 0x1a2b, 0x1a38, 0x1a45, 0x1a52, 0x1a5f, 0x1a6c, 0x1a79, 0x1a86, 0x1a93,
-    0x1a9f, 0x1aac, 0x1ab9, 0x1ac6, 0x1ad3, 0x1adf, 0x1aec, 0x1af9, 0x1b05, 0x1b12, 0x1b1f, 0x1b2b, 0x1b38, 0x1b44,
-    0x1b51, 0x1b5d, 0x1b6a, 0x1b76, 0x1b83, 0x1b8f, 0x1b9c, 0x1ba8, 0x1bb4, 0x1bc1, 0x1bcd, 0x1bd9, 0x1be5, 0x1bf2,
-    0x1bfe, 0x1c0a, 0x1c16, 0x1c22, 0x1c2e, 0x1c3a, 0x1c46, 0x1c52, 0x1c5e, 0x1c6a, 0x1c76, 0x1c82, 0x1c8e, 0x1c9a,
-    0x1ca6, 0x1cb2, 0x1cbe, 0x1cc9, 0x1cd5, 0x1ce1, 0x1ced, 0x1cf8, 0x1d04, 0x1d10, 0x1d1b, 0x1d27, 0x1d33, 0x1d3e,
-    0x1d4a, 0x1d55, 0x1d61, 0x1d6c, 0x1d78, 0x1d83, 0x1d8e, 0x1d9a, 0x1da5, 0x1db1, 0x1dbc, 0x1dc7, 0x1dd3, 0x1dde,
-    0x1de9, 0x1df4, 0x1dff, 0x1e0b, 0x1e16, 0x1e21, 0x1e2c, 0x1e37, 0x1e42, 0x1e4d, 0x1e58, 0x1e63, 0x1e6e, 0x1e79,
-    0x1e84, 0x1e8f, 0x1e9a, 0x1ea5, 0x1eb0, 0x1eba, 0x1ec5, 0x1ed0, 0x1edb, 0x1ee6, 0x1ef0, 0x1efb, 0x1f06, 0x1f10,
-    0x1f1b, 0x1f26, 0x1f30, 0x1f3b, 0x1f45, 0x1f50, 0x1f5a, 0x1f65, 0x1f6f, 0x1f7a, 0x1f84, 0x1f8f, 0x1f99, 0x1fa4,
-    0x1fae, 0x1fb8, 0x1fc3, 0x1fcd, 0x1fd7, 0x1fe1, 0x1fec, 0x1ff6, 0x2000};
+    0x0000, 0x0014, 0x0029, 0x003d, 0x0051, 0x0066, 0x007a, 0x008f, 0x00a3, 0x00b7, 0x00cc, 0x00e0, 0x00f4, 0x0109, 0x011d, 0x0131, 0x0146,
+    0x015a, 0x016f, 0x0183, 0x0197, 0x01ac, 0x01c0, 0x01d4, 0x01e9, 0x01fd, 0x0211, 0x0226, 0x023a, 0x024e, 0x0262, 0x0277, 0x028b, 0x029f,
+    0x02b4, 0x02c8, 0x02dc, 0x02f0, 0x0305, 0x0319, 0x032d, 0x0341, 0x0356, 0x036a, 0x037e, 0x0392, 0x03a7, 0x03bb, 0x03cf, 0x03e3, 0x03f7,
+    0x040c, 0x0420, 0x0434, 0x0448, 0x045c, 0x0470, 0x0484, 0x0499, 0x04ad, 0x04c1, 0x04d5, 0x04e9, 0x04fd, 0x0511, 0x0525, 0x0539, 0x054d,
+    0x0561, 0x0575, 0x0589, 0x059d, 0x05b1, 0x05c5, 0x05d9, 0x05ed, 0x0601, 0x0615, 0x0629, 0x063d, 0x0651, 0x0665, 0x0678, 0x068c, 0x06a0,
+    0x06b4, 0x06c8, 0x06dc, 0x06ef, 0x0703, 0x0717, 0x072b, 0x073e, 0x0752, 0x0766, 0x077a, 0x078d, 0x07a1, 0x07b5, 0x07c8, 0x07dc, 0x07ef,
+    0x0803, 0x0817, 0x082a, 0x083e, 0x0851, 0x0865, 0x0878, 0x088c, 0x089f, 0x08b3, 0x08c6, 0x08da, 0x08ed, 0x0901, 0x0914, 0x0927, 0x093b,
+    0x094e, 0x0961, 0x0975, 0x0988, 0x099b, 0x09ae, 0x09c2, 0x09d5, 0x09e8, 0x09fb, 0x0a0e, 0x0a22, 0x0a35, 0x0a48, 0x0a5b, 0x0a6e, 0x0a81,
+    0x0a94, 0x0aa7, 0x0aba, 0x0acd, 0x0ae0, 0x0af3, 0x0b06, 0x0b19, 0x0b2c, 0x0b3f, 0x0b51, 0x0b64, 0x0b77, 0x0b8a, 0x0b9d, 0x0baf, 0x0bc2,
+    0x0bd5, 0x0be7, 0x0bfa, 0x0c0d, 0x0c1f, 0x0c32, 0x0c45, 0x0c57, 0x0c6a, 0x0c7c, 0x0c8f, 0x0ca1, 0x0cb4, 0x0cc6, 0x0cd9, 0x0ceb, 0x0cfd,
+    0x0d10, 0x0d22, 0x0d34, 0x0d47, 0x0d59, 0x0d6b, 0x0d7d, 0x0d90, 0x0da2, 0x0db4, 0x0dc6, 0x0dd8, 0x0dea, 0x0dfc, 0x0e0f, 0x0e21, 0x0e33,
+    0x0e45, 0x0e56, 0x0e68, 0x0e7a, 0x0e8c, 0x0e9e, 0x0eb0, 0x0ec2, 0x0ed4, 0x0ee5, 0x0ef7, 0x0f09, 0x0f1b, 0x0f2c, 0x0f3e, 0x0f50, 0x0f61,
+    0x0f73, 0x0f84, 0x0f96, 0x0fa7, 0x0fb9, 0x0fca, 0x0fdc, 0x0fed, 0x0fff, 0x1010, 0x1021, 0x1033, 0x1044, 0x1055, 0x1067, 0x1078, 0x1089,
+    0x109a, 0x10ab, 0x10bc, 0x10ce, 0x10df, 0x10f0, 0x1101, 0x1112, 0x1123, 0x1134, 0x1145, 0x1156, 0x1166, 0x1177, 0x1188, 0x1199, 0x11aa,
+    0x11bb, 0x11cb, 0x11dc, 0x11ed, 0x11fd, 0x120e, 0x121f, 0x122f, 0x1240, 0x1250, 0x1261, 0x1271, 0x1282, 0x1292, 0x12a3, 0x12b3, 0x12c3,
+    0x12d4, 0x12e4, 0x12f4, 0x1305, 0x1315, 0x1325, 0x1335, 0x1345, 0x1355, 0x1366, 0x1376, 0x1386, 0x1396, 0x13a6, 0x13b6, 0x13c6, 0x13d6,
+    0x13e6, 0x13f5, 0x1405, 0x1415, 0x1425, 0x1435, 0x1444, 0x1454, 0x1464, 0x1473, 0x1483, 0x1493, 0x14a2, 0x14b2, 0x14c1, 0x14d1, 0x14e0,
+    0x14f0, 0x14ff, 0x150f, 0x151e, 0x152d, 0x153d, 0x154c, 0x155b, 0x156b, 0x157a, 0x1589, 0x1598, 0x15a7, 0x15b7, 0x15c6, 0x15d5, 0x15e4,
+    0x15f3, 0x1602, 0x1611, 0x1620, 0x162f, 0x163e, 0x164c, 0x165b, 0x166a, 0x1679, 0x1688, 0x1696, 0x16a5, 0x16b4, 0x16c2, 0x16d1, 0x16e0,
+    0x16ee, 0x16fd, 0x170b, 0x171a, 0x1728, 0x1737, 0x1745, 0x1754, 0x1762, 0x1770, 0x177f, 0x178d, 0x179b, 0x17aa, 0x17b8, 0x17c6, 0x17d4,
+    0x17e2, 0x17f0, 0x17fe, 0x180d, 0x181b, 0x1829, 0x1837, 0x1845, 0x1853, 0x1860, 0x186e, 0x187c, 0x188a, 0x1898, 0x18a6, 0x18b3, 0x18c1,
+    0x18cf, 0x18dd, 0x18ea, 0x18f8, 0x1906, 0x1913, 0x1921, 0x192e, 0x193c, 0x1949, 0x1957, 0x1964, 0x1972, 0x197f, 0x198c, 0x199a, 0x19a7,
+    0x19b4, 0x19c2, 0x19cf, 0x19dc, 0x19e9, 0x19f6, 0x1a04, 0x1a11, 0x1a1e, 0x1a2b, 0x1a38, 0x1a45, 0x1a52, 0x1a5f, 0x1a6c, 0x1a79, 0x1a86,
+    0x1a93, 0x1a9f, 0x1aac, 0x1ab9, 0x1ac6, 0x1ad3, 0x1adf, 0x1aec, 0x1af9, 0x1b05, 0x1b12, 0x1b1f, 0x1b2b, 0x1b38, 0x1b44, 0x1b51, 0x1b5d,
+    0x1b6a, 0x1b76, 0x1b83, 0x1b8f, 0x1b9c, 0x1ba8, 0x1bb4, 0x1bc1, 0x1bcd, 0x1bd9, 0x1be5, 0x1bf2, 0x1bfe, 0x1c0a, 0x1c16, 0x1c22, 0x1c2e,
+    0x1c3a, 0x1c46, 0x1c52, 0x1c5e, 0x1c6a, 0x1c76, 0x1c82, 0x1c8e, 0x1c9a, 0x1ca6, 0x1cb2, 0x1cbe, 0x1cc9, 0x1cd5, 0x1ce1, 0x1ced, 0x1cf8,
+    0x1d04, 0x1d10, 0x1d1b, 0x1d27, 0x1d33, 0x1d3e, 0x1d4a, 0x1d55, 0x1d61, 0x1d6c, 0x1d78, 0x1d83, 0x1d8e, 0x1d9a, 0x1da5, 0x1db1, 0x1dbc,
+    0x1dc7, 0x1dd3, 0x1dde, 0x1de9, 0x1df4, 0x1dff, 0x1e0b, 0x1e16, 0x1e21, 0x1e2c, 0x1e37, 0x1e42, 0x1e4d, 0x1e58, 0x1e63, 0x1e6e, 0x1e79,
+    0x1e84, 0x1e8f, 0x1e9a, 0x1ea5, 0x1eb0, 0x1eba, 0x1ec5, 0x1ed0, 0x1edb, 0x1ee6, 0x1ef0, 0x1efb, 0x1f06, 0x1f10, 0x1f1b, 0x1f26, 0x1f30,
+    0x1f3b, 0x1f45, 0x1f50, 0x1f5a, 0x1f65, 0x1f6f, 0x1f7a, 0x1f84, 0x1f8f, 0x1f99, 0x1fa4, 0x1fae, 0x1fb8, 0x1fc3, 0x1fcd, 0x1fd7, 0x1fe1,
+    0x1fec, 0x1ff6, 0x2000};
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
@@ -589,8 +583,7 @@ i32 NuLineLineIntersect(NUVEC *pnt0, NUVEC *v0, NUVEC *pnt1, NUVEC *v1, f32 *s, 
     return 0;
 }
 
-i32 BoundingBoxToLine(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, NUVEC *start, NUVEC *end, f32 expansion,
-                      NUVEC *intersection) {
+i32 BoundingBoxToLine(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, NUVEC *start, NUVEC *end, f32 expansion, NUVEC *intersection) {
     NUVEC a;
     NUVEC b;
     NUVEC direction;
@@ -1603,8 +1596,7 @@ void NuMtxAlignZ(NUMTX *m, NUVEC *v) {
     m->m21 = v->y * len;
     m->m22 = v->z * len;
 
-    if (NumathIncludesFabsPc(NuVecDot(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2))) >
-        0.86602540378f /* cos(30 deg) */) {
+    if (NumathIncludesFabsPc(NuVecDot(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2))) > 0.86602540378f /* cos(30 deg) */) {
         NuVecCross(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2), NUMTX_GET_ROW_VEC(m, 0));
         len = NuFsqrt(NumathIncludesFdivPc(yLenSq, (m->m10 * m->m10) + (m->m11 * m->m11) + (m->m12 * m->m12)));
         m->m10 = m->m10 * len;
@@ -2620,14 +2612,10 @@ void NuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
         u = u * u;
         v = t * angle - 1.5707963705062866;
         v = v * v;
-        sin_u =
-            0.9999999403953552 +
-            (((u * 2.3154014343163e-05 - 0.0013853708514943719) * u + 0.04166358336806297) * u - 0.4999990463256836) *
-                u;
-        sin_v =
-            0.9999999403953552 +
-            (((v * 2.3154014343163e-05 - 0.0013853708514943719) * v + 0.04166358336806297) * v - 0.4999990463256836) *
-                v;
+        sin_u = 0.9999999403953552 +
+                (((u * 2.3154014343163e-05 - 0.0013853708514943719) * u + 0.04166358336806297) * u - 0.4999990463256836) * u;
+        sin_v = 0.9999999403953552 +
+                (((v * 2.3154014343163e-05 - 0.0013853708514943719) * v + 0.04166358336806297) * v - 0.4999990463256836) * v;
         from_factor = sin_u * inverse_sine;
         to_factor = sin_v * inverse_sine;
         out->x = from->x * from_factor + target->x * to_factor;
@@ -2694,18 +2682,14 @@ void VuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
         u = u * u;
         v = t * angle - 1.5707963705062866;
         v = v * v;
-        sin_u =
-            0.9999999403953552 +
-            (((u * 2.3154014343163e-05 - 0.0013853708514943719) * u + 0.04166358336806297) * u - 0.4999990463256836) *
-                u;
-        sin_v =
-            0.9999999403953552 +
-            (((v * 2.3154014343163e-05 - 0.0013853708514943719) * v + 0.04166358336806297) * v - 0.4999990463256836) *
-                v;
+        sin_u = 0.9999999403953552 +
+                (((u * 2.3154014343163e-05 - 0.0013853708514943719) * u + 0.04166358336806297) * u - 0.4999990463256836) * u;
+        sin_v = 0.9999999403953552 +
+                (((v * 2.3154014343163e-05 - 0.0013853708514943719) * v + 0.04166358336806297) * v - 0.4999990463256836) * v;
         from_factor = sin_u * inverse_sine;
         to_factor = sin_v * inverse_sine;
-        _mm_store_ps(&out->x, _mm_add_ps(_mm_mul_ps(_mm_set1_ps(from_factor), _mm_load_ps(&from->x)),
-                                         _mm_mul_ps(_mm_set1_ps(to_factor), end)));
+        _mm_store_ps(&out->x,
+                     _mm_add_ps(_mm_mul_ps(_mm_set1_ps(from_factor), _mm_load_ps(&from->x)), _mm_mul_ps(_mm_set1_ps(to_factor), end)));
     }
 }
 
@@ -2791,9 +2775,9 @@ f32 NuPlnLine3(NUPLANE *plane, NUVEC *pnt, NUVEC *v, NUVEC *out) {
     pln = &plane->normal;
     dot = v->x * pln->x + v->y * pln->y + v->z * pln->z;
 
-    dist = ((plane->a * -plane->d - pnt->x) * pln->x + (plane->b * -plane->d - pnt->y) * pln->y +
-            (plane->c * -plane->d - pnt->z) * pln->z) /
-           dot;
+    dist =
+        ((plane->a * -plane->d - pnt->x) * pln->x + (plane->b * -plane->d - pnt->y) * pln->y + (plane->c * -plane->d - pnt->z) * pln->z) /
+        dot;
 
     out->x = pnt->x + v->x * dist;
     out->y = pnt->y + v->y * dist;
@@ -2848,8 +2832,7 @@ i32 NuPtInPolyXY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
     if ((t1->x - t0->x) * (pnt->y - t1->y) - (pnt->x - t1->x) * (t1->y - t0->y) <= 0.0f &&
         (t2->x - t1->x) * (pnt->y - t2->y) - (pnt->x - t2->x) * (t2->y - t1->y) <= 0.0f &&
         (t0->x - t2->x) * (pnt->y - t0->y) - (pnt->x - t0->x) * (t0->y - t2->y) <= 0.0f) {
-        if ((t0->x != t1->x || t0->y != t1->y) && (t0->x != t2->x || t0->y != t2->y) &&
-            (t1->x != t2->x || t1->y != t2->y)) {
+        if ((t0->x != t1->x || t0->y != t1->y) && (t0->x != t2->x || t0->y != t2->y) && (t1->x != t2->x || t1->y != t2->y)) {
             return 1;
         }
     }
@@ -2861,8 +2844,7 @@ i32 NuPtInPolyYX(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
     if ((t1->y - t0->y) * (pnt->x - t1->x) - ((pnt->y - t1->y) * (t1->x - t0->x)) <= 0.0f &&
         (t2->y - t1->y) * (pnt->x - t2->x) - (pnt->y - t2->y) * (t2->x - t1->x) <= 0.0f &&
         (t0->y - t2->y) * (pnt->x - t0->x) - (pnt->y - t0->y) * (t0->x - t2->x) <= 0.0f) {
-        if ((t0->y != t1->y || t0->x != t1->x) && (t0->y != t2->y || t0->x != t2->x) &&
-            (t1->y != t2->y || t1->x != t2->x)) {
+        if ((t0->y != t1->y || t0->x != t1->x) && (t0->y != t2->y || t0->x != t2->x) && (t1->y != t2->y || t1->x != t2->x)) {
             return 1;
         }
     }
@@ -2874,8 +2856,7 @@ i32 NuPtInPolyXZ(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
     if ((t1->x - t0->x) * (pnt->z - t1->z) - (pnt->x - t1->x) * (t1->z - t0->z) <= 0.0f &&
         (t2->x - t1->x) * (pnt->z - t2->z) - (pnt->x - t2->x) * (t2->z - t1->z) <= 0.0f &&
         (t0->x - t2->x) * (pnt->z - t0->z) - (pnt->x - t0->x) * (t0->z - t2->z) <= 0.0f) {
-        if ((t0->x != t1->x || t0->z != t1->z) && (t0->x != t2->x || t0->z != t2->z) &&
-            (t1->x != t2->x || t1->z != t2->z)) {
+        if ((t0->x != t1->x || t0->z != t1->z) && (t0->x != t2->x || t0->z != t2->z) && (t1->x != t2->x || t1->z != t2->z)) {
             return 1;
         }
     }
@@ -2887,8 +2868,7 @@ i32 NuPtInPolyZX(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
     if ((t1->z - t0->z) * (pnt->x - t1->x) - ((pnt->z - t1->z) * (t1->x - t0->x)) <= 0.0f &&
         (t2->z - t1->z) * (pnt->x - t2->x) - (pnt->z - t2->z) * (t2->x - t1->x) <= 0.0f &&
         (t0->z - t2->z) * (pnt->x - t0->x) - (pnt->z - t0->z) * (t0->x - t2->x) <= 0.0f) {
-        if ((t0->z != t1->z || t0->x != t1->x) && (t0->z != t2->z || t0->x != t2->x) &&
-            (t1->z != t2->z || t1->x != t2->x)) {
+        if ((t0->z != t1->z || t0->x != t1->x) && (t0->z != t2->z || t0->x != t2->x) && (t1->z != t2->z || t1->x != t2->x)) {
             return 1;
         }
     }
@@ -2900,8 +2880,7 @@ i32 NuPtInPolyYZ(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
     if ((t1->y - t0->y) * (pnt->z - t1->z) - (pnt->y - t1->y) * (t1->z - t0->z) <= 0.0f &&
         (t2->y - t1->y) * (pnt->z - t2->z) - (pnt->y - t2->y) * (t2->z - t1->z) <= 0.0f &&
         (t0->y - t2->y) * (pnt->z - t0->z) - (pnt->y - t0->y) * (t0->z - t2->z) <= 0.0f) {
-        if ((t0->y != t1->y || t0->z != t1->z) && (t0->y != t2->y || t0->z != t2->z) &&
-            (t1->y != t2->y || t1->z != t2->z)) {
+        if ((t0->y != t1->y || t0->z != t1->z) && (t0->y != t2->y || t0->z != t2->z) && (t1->y != t2->y || t1->z != t2->z)) {
             return 1;
         }
     }
@@ -2913,8 +2892,7 @@ i32 NuPtInPolyZY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
     if ((t1->z - t0->z) * (pnt->y - t1->y) - ((pnt->z - t1->z) * (t1->y - t0->y)) <= 0.0f &&
         (t2->z - t1->z) * (pnt->y - t2->y) - (pnt->z - t2->z) * (t2->y - t1->y) <= 0.0f &&
         (t0->z - t2->z) * (pnt->y - t0->y) - (pnt->z - t0->z) * (t0->y - t2->y) <= 0.0f) {
-        if ((t0->z != t1->z || t0->y != t1->y) && (t0->z != t2->z || t0->y != t2->y) &&
-            (t1->z != t2->z || t1->y != t2->y)) {
+        if ((t0->z != t1->z || t0->y != t1->y) && (t0->z != t2->z || t0->y != t2->y) && (t1->z != t2->z || t1->y != t2->y)) {
             return 1;
         }
     }
@@ -3569,8 +3547,7 @@ f32 NuBez3EvaluateX(NUVEC4 *control, f32 t) {
     powers.z = t;
     powers.w = 1.0f;
     NuVec4MtxTransformH(&coefficients, control, &basis);
-    return coefficients.x * powers.x + coefficients.w * powers.w + coefficients.y * powers.y +
-           coefficients.z * powers.z;
+    return coefficients.x * powers.x + coefficients.w * powers.w + coefficients.y * powers.y + coefficients.z * powers.z;
 }
 
 void nugraphInit(nugraph_s *graph) {
@@ -3680,8 +3657,7 @@ f32 nugraph_blend(i32 interval, i32 degree, i32 *knots, f32 parameter) {
         if (knots[interval + degree - 1] == knots[interval] && knots[interval + degree] == knots[interval + 1]) {
             result = 0.0f;
         } else if (knots[interval + degree - 1] == knots[interval]) {
-            result = ((f32)knots[interval + degree] - parameter) /
-                     (f32)(knots[interval + degree] - knots[interval + 1]) *
+            result = ((f32)knots[interval + degree] - parameter) / (f32)(knots[interval + degree] - knots[interval + 1]) *
                      nugraph_blend(interval + 1, degree - 1, knots, parameter);
         } else if (knots[interval + degree] == knots[interval + 1]) {
             result = (parameter - (f32)knots[interval]) / (f32)(knots[interval + degree - 1] - knots[interval]) *
@@ -3689,16 +3665,14 @@ f32 nugraph_blend(i32 interval, i32 degree, i32 *knots, f32 parameter) {
         } else {
             result = (parameter - (f32)knots[interval]) / (f32)(knots[interval + degree - 1] - knots[interval]) *
                          nugraph_blend(interval, degree - 1, knots, parameter) +
-                     ((f32)knots[interval + degree] - parameter) /
-                         (f32)(knots[interval + degree] - knots[interval + 1]) *
+                     ((f32)knots[interval + degree] - parameter) / (f32)(knots[interval + degree] - knots[interval + 1]) *
                          nugraph_blend(interval + 1, degree - 1, knots, parameter);
         }
     }
     return result;
 }
 
-void nugraph_compute_point(i32 *knots, i32 segment_count, i32 degree, f32 parameter, NUVEC *control_points,
-                           NUVEC *point) {
+void nugraph_compute_point(i32 *knots, i32 segment_count, i32 degree, f32 parameter, NUVEC *control_points, NUVEC *point) {
     i32 i;
     f32 weight;
     point->x = 0.0f;
@@ -3726,10 +3700,8 @@ void nugraph_compute_catmull_point(i32 segment_count, f32 parameter, NUVEC *cont
     }
     first.x = control_points[0].x + (control_points[0].x - control_points[1].x) * 0.1f;
     first.y = control_points[0].y + (control_points[0].y - control_points[1].y) * 0.1f;
-    last.x = control_points[segment_count].x +
-             (control_points[segment_count].x - control_points[segment_count - 1].x) * 0.1f;
-    last.y = control_points[segment_count].y +
-             (control_points[segment_count].y - control_points[segment_count - 1].y) * 0.1f;
+    last.x = control_points[segment_count].x + (control_points[segment_count].x - control_points[segment_count - 1].x) * 0.1f;
+    last.y = control_points[segment_count].y + (control_points[segment_count].y - control_points[segment_count - 1].y) * 0.1f;
     for (segment = 1; segment <= segment_count; ++segment) {
         if ((f32)segment / (f32)segment_count > parameter) {
             break;
@@ -3750,12 +3722,12 @@ void nugraph_compute_catmull_point(i32 segment_count, f32 parameter, NUVEC *cont
     } else {
         p3 = &control_points[segment + 1];
     }
-    point->x = 0.5f * (2.0f * p1->x + (p2->x - p0->x) * fraction +
-                       (2.0f * p0->x - 5.0f * p1->x + 4.0f * p2->x - p3->x) * (fraction * fraction) +
-                       (3.0f * p1->x - p0->x - 3.0f * p2->x + p3->x) * (fraction * fraction * fraction));
-    point->y = 0.5f * (2.0f * p1->y + (p2->y - p0->y) * fraction +
-                       (2.0f * p0->y - 5.0f * p1->y + 4.0f * p2->y - p3->y) * (fraction * fraction) +
-                       (3.0f * p1->y - p0->y - 3.0f * p2->y + p3->y) * (fraction * fraction * fraction));
+    point->x =
+        0.5f * (2.0f * p1->x + (p2->x - p0->x) * fraction + (2.0f * p0->x - 5.0f * p1->x + 4.0f * p2->x - p3->x) * (fraction * fraction) +
+                (3.0f * p1->x - p0->x - 3.0f * p2->x + p3->x) * (fraction * fraction * fraction));
+    point->y =
+        0.5f * (2.0f * p1->y + (p2->y - p0->y) * fraction + (2.0f * p0->y - 5.0f * p1->y + 4.0f * p2->y - p3->y) * (fraction * fraction) +
+                (3.0f * p1->y - p0->y - 3.0f * p2->y + p3->y) * (fraction * fraction * fraction));
     point->z = 0.0f;
 }
 
@@ -3997,22 +3969,18 @@ f32 nugraphGetYatX(nugraph_s *graph, f32 x, i32 iterations) {
                                            (2.0 * p0.x - 5.0 * p1.x + 4.0 * p2.x - p3.x) * parameter_squared +
                                            (3.0 * p1.x - p0.x - 3.0 * p2.x + p3.x) * (parameter * parameter_squared));
                     }
-                    current_y = 0.5 * (2.0 * p1.y + (p2.y - p0.y) * parameter +
-                                       (2.0 * p0.y - 5.0 * p1.y + 4.0 * p2.y - p3.y) * parameter_squared +
-                                       (3.0 * p1.y - p0.y - 3.0 * p2.y + p3.y) * (parameter * parameter_squared));
+                    current_y =
+                        0.5 * (2.0 * p1.y + (p2.y - p0.y) * parameter + (2.0 * p0.y - 5.0 * p1.y + 4.0 * p2.y - p3.y) * parameter_squared +
+                               (3.0 * p1.y - p0.y - 3.0 * p2.y + p3.y) * (parameter * parameter_squared));
                     if (current_x < x) {
-                        bound_y =
-                            0.5 * (2.0 * p1.y + (p2.y - p0.y) * upper_parameter +
-                                   (2.0 * p0.y - 5.0 * p1.y + 4.0 * p2.y - p3.y) * (upper_parameter * upper_parameter) +
-                                   (3.0 * p1.y - p0.y - 3.0 * p2.y + p3.y) *
-                                       (upper_parameter * upper_parameter * upper_parameter));
+                        bound_y = 0.5 * (2.0 * p1.y + (p2.y - p0.y) * upper_parameter +
+                                         (2.0 * p0.y - 5.0 * p1.y + 4.0 * p2.y - p3.y) * (upper_parameter * upper_parameter) +
+                                         (3.0 * p1.y - p0.y - 3.0 * p2.y + p3.y) * (upper_parameter * upper_parameter * upper_parameter));
                         return current_y + (bound_y - current_y) * (x - current_x) / (upper_x - current_x);
                     } else {
-                        bound_y =
-                            0.5 * (2.0 * p1.y + (p2.y - p0.y) * lower_parameter +
-                                   (2.0 * p0.y - 5.0 * p1.y + 4.0 * p2.y - p3.y) * (lower_parameter * lower_parameter) +
-                                   (3.0 * p1.y - p0.y - 3.0 * p2.y + p3.y) *
-                                       (lower_parameter * lower_parameter * lower_parameter));
+                        bound_y = 0.5 * (2.0 * p1.y + (p2.y - p0.y) * lower_parameter +
+                                         (2.0 * p0.y - 5.0 * p1.y + 4.0 * p2.y - p3.y) * (lower_parameter * lower_parameter) +
+                                         (3.0 * p1.y - p0.y - 3.0 * p2.y + p3.y) * (lower_parameter * lower_parameter * lower_parameter));
                         return current_y + (bound_y - current_y) * (x - current_x) / (lower_x - current_x);
                     }
                 case 2:
@@ -4509,8 +4477,7 @@ void NuMtxGetPerspectiveBlend(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f3
     *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.141592653589793;
 }
 
-i32 NuPlnLine2(NUPLANE *plane, NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *start, NUVEC *end, NUVEC *out, f32 *distance,
-               f32 *fraction) {
+i32 NuPlnLine2(NUPLANE *plane, NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *start, NUVEC *end, NUVEC *out, f32 *distance, f32 *fraction) {
     if (NuPlnLine(plane, start, end, out)) {
         if (NuPtInPoly(out, a, b, c, plane)) {
             if (distance != NULL || fraction != NULL) {

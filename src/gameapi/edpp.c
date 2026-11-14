@@ -124,8 +124,7 @@ void edppStopPage(i8 page) {
         if (particle->page == page) {
             DebFreeInstantly(&particle->instance_id);
             particle->instance_id = 99999;
-        } else if (particle->effect_index > 0 && debtab[particle->effect_index] != NULL &&
-                   debtab[particle->effect_index]->page == page) {
+        } else if (particle->effect_index > 0 && debtab[particle->effect_index] != NULL && debtab[particle->effect_index]->page == page) {
             edppPtlDestroy(index);
         }
     }
@@ -183,15 +182,15 @@ void edppStartSingleEffect(i32 index) {
     if (edpp_ptls[index].instance_id != -1) {
         return;
     }
-    AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[index].effect_index, edpp_ptls[index].position.x,
-                    edpp_ptls[index].position.y, edpp_ptls[index].position.z);
+    AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[index].effect_index, edpp_ptls[index].position.x, edpp_ptls[index].position.y,
+                    edpp_ptls[index].position.z);
     if (edpp_ptls[index].instance_id == -1) {
         return;
     }
     debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
     DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
-    DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z,
-                             edpp_ptls[index].emitter_rotation_y, edpp_ptls[index].emitter_rotation_x);
+    DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z, edpp_ptls[index].emitter_rotation_y,
+                             edpp_ptls[index].emitter_rotation_x);
     DebrisStartOffsetEx(&debkeydata[edpp_ptls[index].instance_id], edpp_ptls[index].start_offset);
     DebrisSetTrigger(edpp_ptls[index].instance_id, edpp_ptls[index].switch_type, edpp_ptls[index].switch_id,
                      edpp_ptls[index].switch_variable);
@@ -227,8 +226,7 @@ void edppDetermineNearest(f32 max_distance_squared) {
     NUVEC delta;
     i32 i;
     f32 distance;
-    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1 &&
-        edpp_ptls[edpp_nearest].instance_id != 99999) {
+    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1 && edpp_ptls[edpp_nearest].instance_id != 99999) {
         NuVecSub(&delta, &edpp_cam_pos, &edpp_ptls[edpp_nearest].position);
         distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         if (distance == 0.0f) {
@@ -407,17 +405,17 @@ void cbPtlJibMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             return;
         }
 
-        eduiMenuAddItem(ptljibmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 32.0f,
-                                                         effect->jib_x_frequency, "Jibber X Freq"));
+        eduiMenuAddItem(ptljibmenu,
+                        eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 32.0f, effect->jib_x_frequency, "Jibber X Freq"));
         grad_jib_x_freq_item = ((edui_slider_s *)(edui_last_item));
-        eduiMenuAddItem(ptljibmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 1000.0f,
-                                                         effect->jib_x_amplitude, "Jibber X Amp"));
+        eduiMenuAddItem(ptljibmenu,
+                        eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 1000.0f, effect->jib_x_amplitude, "Jibber X Amp"));
         grad_jib_x_amp_item = ((edui_slider_s *)(edui_last_item));
-        eduiMenuAddItem(ptljibmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 32.0f,
-                                                         effect->jib_y_frequency, "Jibber Y Freq"));
+        eduiMenuAddItem(ptljibmenu,
+                        eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 32.0f, effect->jib_y_frequency, "Jibber Y Freq"));
         grad_jib_y_freq_item = ((edui_slider_s *)(edui_last_item));
-        eduiMenuAddItem(ptljibmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 1000.0f,
-                                                         effect->jib_y_amplitude, "Jibber Y Amp"));
+        eduiMenuAddItem(ptljibmenu,
+                        eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 1000.0f, effect->jib_y_amplitude, "Jibber Y Amp"));
         grad_jib_y_amp_item = ((edui_slider_s *)(edui_last_item));
         eduiMenuAttach(parent, ptljibmenu);
         ptljibmenu->x = parent->x + 10;
@@ -431,9 +429,8 @@ void edptlcbBounceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         DEBRISKEY_PC *key = &debkeydata[edpp_ptls[edpp_nearest].instance_id];
         edptl_bounce_menu = eduiMenuCreate(70, 70, 200, 300, ed_fnt, edptlcbCancelBounceMenu, "Particle Bounce");
         if (edptl_bounce_menu != NULL) {
-            eduiMenuAddItem(edptl_bounce_menu,
-                            eduiItemSliderCreate(0, colours, 0, edptlcbApplyBounceOffset, -2.0 * (f32)edptl_superscale,
-                                                 4.0 * (f32)edptl_superscale, key->collision_plane, "Plane Offset"));
+            eduiMenuAddItem(edptl_bounce_menu, eduiItemSliderCreate(0, colours, 0, edptlcbApplyBounceOffset, -2.0 * (f32)edptl_superscale,
+                                                                    4.0 * (f32)edptl_superscale, key->collision_plane, "Plane Offset"));
             eduiMenuAddItem(edptl_bounce_menu, eduiItemSliderCreate(0, colours, 0, edptlcbApplyBounceFactor, 0.0f, 2.0f,
                                                                     key->reflection_scale, "Bounce Factor"));
             eduiMenuAttach(parent, edptl_bounce_menu);
@@ -451,10 +448,10 @@ static void edptlcbStarMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
         if (edptl_star_menu == NULL) {
             return;
         }
-        eduiMenuAddItem(edptl_star_menu, eduiItemSliderCreateInt(0, colours, 0, edptlcbApplyStarPoints, 3, 17,
-                                                                 effect->radial_segments, "Number of Points"));
-        eduiMenuAddItem(edptl_star_menu, eduiItemSliderCreate(0, colours, 0, edptlcbApplyStarRatio, 0.1f, 0.8f,
-                                                              effect->radial_floor, "Radius Ratio"));
+        eduiMenuAddItem(edptl_star_menu,
+                        eduiItemSliderCreateInt(0, colours, 0, edptlcbApplyStarPoints, 3, 17, effect->radial_segments, "Number of Points"));
+        eduiMenuAddItem(edptl_star_menu,
+                        eduiItemSliderCreate(0, colours, 0, edptlcbApplyStarRatio, 0.1f, 0.8f, effect->radial_floor, "Radius Ratio"));
         eduiMenuAttach(parent, edptl_star_menu);
         edptl_star_menu->x = parent->x + 10;
         edptl_star_menu->y = parent->y + 40;
@@ -469,10 +466,10 @@ void cbPtlDamageFlagMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     edptl_damageflag_menu = eduiMenuCreate(70, 70, 200, 250, ed_fnt, cbPtlCancelDamageFlagMenu, "Damage Flags");
     if (edptl_damageflag_menu != NULL) {
-        eduiMenuAddItem(edptl_damageflag_menu, eduiItemToggleCreate(1, edblack, effect->collision_flags & 1, 1,
-                                                                    cbPtlChangeDamageFlags, "Good"));
-        eduiMenuAddItem(edptl_damageflag_menu, eduiItemToggleCreate(2, edblack, (effect->collision_flags >> 1) & 1, 2,
-                                                                    cbPtlChangeDamageFlags, "Evil"));
+        eduiMenuAddItem(edptl_damageflag_menu,
+                        eduiItemToggleCreate(1, edblack, effect->collision_flags & 1, 1, cbPtlChangeDamageFlags, "Good"));
+        eduiMenuAddItem(edptl_damageflag_menu,
+                        eduiItemToggleCreate(2, edblack, (effect->collision_flags >> 1) & 1, 2, cbPtlChangeDamageFlags, "Evil"));
     }
     eduiMenuAttach(menu, edptl_damageflag_menu);
     edptl_damageflag_menu->x = menu->x + 10;
@@ -580,8 +577,7 @@ static void cbPtlChangeRepeatXZLock(eduimenu_s *unused0, eduiitem_s *item, u32 u
         value = effect->particle_box.x;
         effect->particle_box.z = value;
         ptlrepeatbox_z_slider->value = value;
-        ptlrepeatbox_z_slider->normalized_value =
-            (value - ptlrepeatbox_z_slider->minimum) / ptlrepeatbox_z_slider->range;
+        ptlrepeatbox_z_slider->normalized_value = (value - ptlrepeatbox_z_slider->minimum) / ptlrepeatbox_z_slider->range;
     }
 }
 
@@ -601,8 +597,7 @@ static void cbPtlChangeRepeatBox(eduimenu_s *unused0, eduiitem_s *item, u32 unus
         if (ptlrepeatbox_xz_lock != 0 && ptlrepeatbox_z_slider != NULL) {
             effect->particle_box.z = value;
             ptlrepeatbox_z_slider->value = value;
-            ptlrepeatbox_z_slider->normalized_value =
-                (value - ptlrepeatbox_z_slider->minimum) / ptlrepeatbox_z_slider->range;
+            ptlrepeatbox_z_slider->normalized_value = (value - ptlrepeatbox_z_slider->minimum) / ptlrepeatbox_z_slider->range;
         }
     } else if (item->data == 1) {
         effect->particle_box.y = ((edui_slider_s *)item)->value;
@@ -612,8 +607,7 @@ static void cbPtlChangeRepeatBox(eduimenu_s *unused0, eduiitem_s *item, u32 unus
         if (ptlrepeatbox_xz_lock != 0 && ptlrepeatbox_x_slider != NULL) {
             effect->particle_box.x = value;
             ptlrepeatbox_x_slider->value = value;
-            ptlrepeatbox_x_slider->normalized_value =
-                (value - ptlrepeatbox_x_slider->minimum) / ptlrepeatbox_x_slider->range;
+            ptlrepeatbox_x_slider->normalized_value = (value - ptlrepeatbox_x_slider->minimum) / ptlrepeatbox_x_slider->range;
         }
     }
 }
@@ -635,18 +629,14 @@ void cbPtlRepeatBoxMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (ptlrepeatboxmenu == NULL) {
         return;
     }
-    eduiMenuAddItem(ptlrepeatboxmenu,
-                    eduiItemToggleCreate(0, edblack, ptlrepeatbox_xz_lock, 1, cbPtlChangeRepeatXZLock, "XZ Lock"));
-    eduiMenuAddItem(ptlrepeatboxmenu,
-                    eduiItemSliderCreate(0, edblack, 0, cbPtlChangeRepeatBox, 0.1f, 5.0 * edptl_superscale,
-                                         effect->particle_box.x, "Repeat Box X"));
+    eduiMenuAddItem(ptlrepeatboxmenu, eduiItemToggleCreate(0, edblack, ptlrepeatbox_xz_lock, 1, cbPtlChangeRepeatXZLock, "XZ Lock"));
+    eduiMenuAddItem(ptlrepeatboxmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeRepeatBox, 0.1f, 5.0 * edptl_superscale,
+                                                           effect->particle_box.x, "Repeat Box X"));
     ptlrepeatbox_x_slider = (edui_slider_s *)edui_last_item;
-    eduiMenuAddItem(ptlrepeatboxmenu,
-                    eduiItemSliderCreate(1, edblack, 0, cbPtlChangeRepeatBox, 0.1f, 5.0 * edptl_superscale,
-                                         effect->particle_box.y, "Repeat Box Y"));
-    eduiMenuAddItem(ptlrepeatboxmenu,
-                    eduiItemSliderCreate(2, edblack, 0, cbPtlChangeRepeatBox, 0.1f, 5.0 * edptl_superscale,
-                                         effect->particle_box.z, "Repeat Box Z"));
+    eduiMenuAddItem(ptlrepeatboxmenu, eduiItemSliderCreate(1, edblack, 0, cbPtlChangeRepeatBox, 0.1f, 5.0 * edptl_superscale,
+                                                           effect->particle_box.y, "Repeat Box Y"));
+    eduiMenuAddItem(ptlrepeatboxmenu, eduiItemSliderCreate(2, edblack, 0, cbPtlChangeRepeatBox, 0.1f, 5.0 * edptl_superscale,
+                                                           effect->particle_box.z, "Repeat Box Z"));
     ptlrepeatbox_z_slider = (edui_slider_s *)edui_last_item;
     eduiMenuAttach(parent, ptlrepeatboxmenu);
     ptlrepeatboxmenu->x = parent->x + 10;
@@ -664,22 +654,19 @@ static void cbPtlCutOffMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     if (ptlcutoffmenu == NULL) {
         return;
     }
-    eduiMenuAddItem(ptlcutoffmenu, eduiItemToggleCreate(0, edblack, effect->use_explicit_clip_box != 0, 1,
-                                                        cbPtlChangeRepeatFlag, "Repeat"));
+    eduiMenuAddItem(ptlcutoffmenu,
+                    eduiItemToggleCreate(0, edblack, effect->use_explicit_clip_box != 0, 1, cbPtlChangeRepeatFlag, "Repeat"));
     eduiMenuAddItem(ptlcutoffmenu, eduiItemSelCreate(1, edblack, 0, 0, cbPtlRepeatBoxMenu, "Repeat Box..."));
-    eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCutOff, 0.0f,
-                                                        25.0f * edptl_superscale, effect->clip_extent, "CutOff Rad"));
-    eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCutOn, 0.0f, 25.0f * edptl_superscale,
-                                                        effect->cut_on, "CutOn Rad"));
+    eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCutOff, 0.0f, 25.0f * edptl_superscale,
+                                                        effect->clip_extent, "CutOff Rad"));
     eduiMenuAddItem(ptlcutoffmenu,
-                    eduiItemSliderCreate(0, edblack, 0, cbPtlChangeDrawCutOff, 0.0f, 25.0f * edptl_superscale,
-                                         effect->sound_range, "DrawCutOff Rad"));
-    eduiMenuAddItem(ptlcutoffmenu,
-                    eduiItemSliderCreate(0, edblack, 0, cbPtlChangeSoundCutOff, 0.0f, 25.0f * edptl_superscale,
-                                         effect->sound_range_override, "SoundCutOff Rad"));
-    eduiMenuAddItem(ptlcutoffmenu,
-                    eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCameraCutOff, 0.0f, 5.0f * edptl_superscale,
-                                         effect->field_044, "CameraCutOff Rad"));
+                    eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCutOn, 0.0f, 25.0f * edptl_superscale, effect->cut_on, "CutOn Rad"));
+    eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeDrawCutOff, 0.0f, 25.0f * edptl_superscale,
+                                                        effect->sound_range, "DrawCutOff Rad"));
+    eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeSoundCutOff, 0.0f, 25.0f * edptl_superscale,
+                                                        effect->sound_range_override, "SoundCutOff Rad"));
+    eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCameraCutOff, 0.0f, 5.0f * edptl_superscale,
+                                                        effect->field_044, "CameraCutOff Rad"));
     eduiMenuAttach(parent, ptlcutoffmenu);
     ptlcutoffmenu->x = parent->x + 10;
     ptlcutoffmenu->y = parent->y + 40;
@@ -706,12 +693,9 @@ void cbEffectListMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     effectlistmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbCancelEffectListMenu, "Effect List");
     if (effectlistmenu != NULL) {
-        eduiMenuAddItem(effectlistmenu,
-                        eduiItemCheckCreate(0, colours, edpp_effect_list == 0, 1, cbSelEffectList, "General"));
-        eduiMenuAddItem(effectlistmenu,
-                        eduiItemCheckCreate(1, colours, edpp_effect_list == 1, 1, cbSelEffectList, "Level"));
-        eduiMenuAddItem(effectlistmenu,
-                        eduiItemCheckCreate(5, colours, edpp_effect_list == 5, 1, cbSelEffectList, "Char"));
+        eduiMenuAddItem(effectlistmenu, eduiItemCheckCreate(0, colours, edpp_effect_list == 0, 1, cbSelEffectList, "General"));
+        eduiMenuAddItem(effectlistmenu, eduiItemCheckCreate(1, colours, edpp_effect_list == 1, 1, cbSelEffectList, "Level"));
+        eduiMenuAddItem(effectlistmenu, eduiItemCheckCreate(5, colours, edpp_effect_list == 5, 1, cbSelEffectList, "Char"));
         eduiMenuAttach(parent, effectlistmenu);
         effectlistmenu->x = parent->x + 10;
         effectlistmenu->y = parent->y + 40;
@@ -723,12 +707,12 @@ static void edptlcbTestDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     if (edptl_testdetail_menu == NULL) {
         return;
     }
-    eduiMenuAddItem(edptl_testdetail_menu, eduiItemSliderCreate(0, edblack, 0, edptlcbSetDebrisThinning, 1.0f, 9.0f,
-                                                                debris_thinning_level, "Thinning Level"));
-    eduiMenuAddItem(edptl_testdetail_menu, eduiItemCheckCreate(4, edblack, debris_detail_level == 4, 1,
-                                                               edptlcbSetDebrisDetail, "High Detail"));
-    eduiMenuAddItem(edptl_testdetail_menu, eduiItemCheckCreate(2, edblack, debris_detail_level == 2, 1,
-                                                               edptlcbSetDebrisDetail, "Medium Detail"));
+    eduiMenuAddItem(edptl_testdetail_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edptlcbSetDebrisThinning, 1.0f, 9.0f, debris_thinning_level, "Thinning Level"));
+    eduiMenuAddItem(edptl_testdetail_menu,
+                    eduiItemCheckCreate(4, edblack, debris_detail_level == 4, 1, edptlcbSetDebrisDetail, "High Detail"));
+    eduiMenuAddItem(edptl_testdetail_menu,
+                    eduiItemCheckCreate(2, edblack, debris_detail_level == 2, 1, edptlcbSetDebrisDetail, "Medium Detail"));
     eduiMenuAddItem(edptl_testdetail_menu,
                     eduiItemCheckCreate(1, edblack, debris_detail_level == 1, 1, edptlcbSetDebrisDetail, "Low Detail"));
     eduiMenuAttach(parent, edptl_testdetail_menu);
@@ -742,16 +726,11 @@ void edptlcbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (dpadmodemenu == NULL) {
         return;
     }
-    eduiMenuAddItem(dpadmodemenu,
-                    eduiItemCheckCreate(0, colours, edpp_dpad_mode == 0, 1, edptlcbSetDpadMode, "Emitter Rotate"));
-    eduiMenuAddItem(dpadmodemenu,
-                    eduiItemCheckCreate(1, colours, edpp_dpad_mode == 1, 1, edptlcbSetDpadMode, "Gravity Rotate"));
-    eduiMenuAddItem(dpadmodemenu,
-                    eduiItemCheckCreate(2, colours, edpp_dpad_mode == 2, 1, edptlcbSetDpadMode, "Offset"));
-    eduiMenuAddItem(dpadmodemenu,
-                    eduiItemCheckCreate(3, colours, edpp_dpad_mode == 3, 1, edptlcbSetDpadMode, "Reflections"));
-    eduiMenuAddItem(dpadmodemenu,
-                    eduiItemCheckCreate(4, colours, edpp_dpad_mode == 4, 1, edptlcbSetDpadMode, "Texture Facing"));
+    eduiMenuAddItem(dpadmodemenu, eduiItemCheckCreate(0, colours, edpp_dpad_mode == 0, 1, edptlcbSetDpadMode, "Emitter Rotate"));
+    eduiMenuAddItem(dpadmodemenu, eduiItemCheckCreate(1, colours, edpp_dpad_mode == 1, 1, edptlcbSetDpadMode, "Gravity Rotate"));
+    eduiMenuAddItem(dpadmodemenu, eduiItemCheckCreate(2, colours, edpp_dpad_mode == 2, 1, edptlcbSetDpadMode, "Offset"));
+    eduiMenuAddItem(dpadmodemenu, eduiItemCheckCreate(3, colours, edpp_dpad_mode == 3, 1, edptlcbSetDpadMode, "Reflections"));
+    eduiMenuAddItem(dpadmodemenu, eduiItemCheckCreate(4, colours, edpp_dpad_mode == 4, 1, edptlcbSetDpadMode, "Texture Facing"));
     eduiMenuAttach(parent, dpadmodemenu);
     dpadmodemenu->x = parent->x + 10;
     dpadmodemenu->y = parent->y + 40;
@@ -888,10 +867,10 @@ extern i32 edpp_copy_enclosed;
 extern i32 edpp_copyrotz;
 extern i32 edpp_copyroty;
 extern f32 edpp_offset;
-void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
-                    i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
-void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x, i32 rotation_y,
-                         i32 rotation_z, i32 colour, NUMTL *material);
+void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
+                    i32 outer_y, i32 colour, NUMTL *material);
+void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x, i32 rotation_y, i32 rotation_z,
+                         i32 colour, NUMTL *material);
 void edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, NUMTL *material);
 void edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_extent, i32 colour, NUMTL *material);
 
@@ -977,9 +956,8 @@ void edppDrawTorus(DEBRIS_INFO_PC *effect, i32 key_index) {
         if (time >= effect->torus_keys3[index].time && time <= effect->torus_keys3[index + 1].time) {
             delta = time - effect->torus_keys3[index].time;
             range = effect->torus_keys3[index + 1].time - effect->torus_keys3[index].time;
-            vertical_extent =
-                delta / range * (effect->torus_keys3[index + 1].value - effect->torus_keys3[index].value) +
-                effect->torus_keys3[index].value;
+            vertical_extent = delta / range * (effect->torus_keys3[index + 1].value - effect->torus_keys3[index].value) +
+                              effect->torus_keys3[index].value;
             break;
         }
     }
@@ -990,56 +968,56 @@ void edppDrawTorus(DEBRIS_INFO_PC *effect, i32 key_index) {
                     vertical_extent * effect->torus_radius2, 0xffff0000, (NUMTL *)edpp_mtl);
 }
 
-#define EDPP_ROTATE()                                                                                                  \
-    NuVecRotateZ(&vector, &vector, rotation_z);                                                                        \
+#define EDPP_ROTATE()                                                                                                                      \
+    NuVecRotateZ(&vector, &vector, rotation_z);                                                                                            \
     NuVecRotateY(&vector, &vector, rotation_y)
-#define EDPP_LINE_FROM_CAM(colour_value)                                                                               \
-    line[0].position.x = edpp_cam_pos.x;                                                                               \
-    line[0].position.y = edpp_cam_pos.y;                                                                               \
-    line[0].position.z = edpp_cam_pos.z;                                                                               \
-    line[1].position.x = edpp_cam_pos.x + vector.x;                                                                    \
-    line[1].position.y = edpp_cam_pos.y + vector.y;                                                                    \
-    line[1].position.z = edpp_cam_pos.z + vector.z;                                                                    \
-    line[0].colour = colour_value;                                                                                     \
-    line[1].colour = colour_value;                                                                                     \
+#define EDPP_LINE_FROM_CAM(colour_value)                                                                                                   \
+    line[0].position.x = edpp_cam_pos.x;                                                                                                   \
+    line[0].position.y = edpp_cam_pos.y;                                                                                                   \
+    line[0].position.z = edpp_cam_pos.z;                                                                                                   \
+    line[1].position.x = edpp_cam_pos.x + vector.x;                                                                                        \
+    line[1].position.y = edpp_cam_pos.y + vector.y;                                                                                        \
+    line[1].position.z = edpp_cam_pos.z + vector.z;                                                                                        \
+    line[0].colour = colour_value;                                                                                                         \
+    line[1].colour = colour_value;                                                                                                         \
     NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL)
-#define EDPP_DRAW_AXIS()                                                                                               \
-    EDPP_ROTATE();                                                                                                     \
-    line[0].position.x = edpp_cam_pos.x - vector.x;                                                                    \
-    line[0].position.y = edpp_cam_pos.y - vector.y;                                                                    \
-    line[0].position.z = edpp_cam_pos.z - vector.z;                                                                    \
-    line[0].colour = 0xffffffff;                                                                                       \
-    line[1].position.x = edpp_cam_pos.x;                                                                               \
-    line[1].position.y = edpp_cam_pos.y;                                                                               \
-    line[1].position.z = edpp_cam_pos.z;                                                                               \
-    line[1].colour = 0xffffffff;                                                                                       \
-    NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL);                                                                       \
-    line[0].position.x = edpp_cam_pos.x;                                                                               \
-    line[0].position.y = edpp_cam_pos.y;                                                                               \
-    line[0].position.z = edpp_cam_pos.z;                                                                               \
-    line[0].colour = 0xff00ff00;                                                                                       \
-    line[1].position.x = edpp_cam_pos.x + vector.x;                                                                    \
-    line[1].position.y = edpp_cam_pos.y + vector.y;                                                                    \
-    line[1].position.z = edpp_cam_pos.z + vector.z;                                                                    \
-    line[1].colour = 0xff00ff00;                                                                                       \
+#define EDPP_DRAW_AXIS()                                                                                                                   \
+    EDPP_ROTATE();                                                                                                                         \
+    line[0].position.x = edpp_cam_pos.x - vector.x;                                                                                        \
+    line[0].position.y = edpp_cam_pos.y - vector.y;                                                                                        \
+    line[0].position.z = edpp_cam_pos.z - vector.z;                                                                                        \
+    line[0].colour = 0xffffffff;                                                                                                           \
+    line[1].position.x = edpp_cam_pos.x;                                                                                                   \
+    line[1].position.y = edpp_cam_pos.y;                                                                                                   \
+    line[1].position.z = edpp_cam_pos.z;                                                                                                   \
+    line[1].colour = 0xffffffff;                                                                                                           \
+    NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL);                                                                                           \
+    line[0].position.x = edpp_cam_pos.x;                                                                                                   \
+    line[0].position.y = edpp_cam_pos.y;                                                                                                   \
+    line[0].position.z = edpp_cam_pos.z;                                                                                                   \
+    line[0].colour = 0xff00ff00;                                                                                                           \
+    line[1].position.x = edpp_cam_pos.x + vector.x;                                                                                        \
+    line[1].position.y = edpp_cam_pos.y + vector.y;                                                                                        \
+    line[1].position.z = edpp_cam_pos.z + vector.z;                                                                                        \
+    line[1].colour = 0xff00ff00;                                                                                                           \
     NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL)
-#define EDPP_DRAW_MARK(sx, sy, sz, ex, ey, ez)                                                                         \
-    vector.x = sx;                                                                                                     \
-    vector.y = sy;                                                                                                     \
-    vector.z = sz;                                                                                                     \
-    EDPP_ROTATE();                                                                                                     \
-    line[0].position.x = edpp_cam_pos.x + vector.x;                                                                    \
-    line[0].position.y = edpp_cam_pos.y + vector.y;                                                                    \
-    line[0].position.z = edpp_cam_pos.z + vector.z;                                                                    \
-    line[0].colour = 0xff00ff00;                                                                                       \
-    vector.x = ex;                                                                                                     \
-    vector.y = ey;                                                                                                     \
-    vector.z = ez;                                                                                                     \
-    EDPP_ROTATE();                                                                                                     \
-    line[1].position.x = edpp_cam_pos.x + vector.x;                                                                    \
-    line[1].position.y = edpp_cam_pos.y + vector.y;                                                                    \
-    line[1].position.z = edpp_cam_pos.z + vector.z;                                                                    \
-    line[1].colour = 0xff00ff00;                                                                                       \
+#define EDPP_DRAW_MARK(sx, sy, sz, ex, ey, ez)                                                                                             \
+    vector.x = sx;                                                                                                                         \
+    vector.y = sy;                                                                                                                         \
+    vector.z = sz;                                                                                                                         \
+    EDPP_ROTATE();                                                                                                                         \
+    line[0].position.x = edpp_cam_pos.x + vector.x;                                                                                        \
+    line[0].position.y = edpp_cam_pos.y + vector.y;                                                                                        \
+    line[0].position.z = edpp_cam_pos.z + vector.z;                                                                                        \
+    line[0].colour = 0xff00ff00;                                                                                                           \
+    vector.x = ex;                                                                                                                         \
+    vector.y = ey;                                                                                                                         \
+    vector.z = ez;                                                                                                                         \
+    EDPP_ROTATE();                                                                                                                         \
+    line[1].position.x = edpp_cam_pos.x + vector.x;                                                                                        \
+    line[1].position.y = edpp_cam_pos.y + vector.y;                                                                                        \
+    line[1].position.z = edpp_cam_pos.z + vector.z;                                                                                        \
+    line[1].colour = 0xff00ff00;                                                                                                           \
     NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL)
 
 void edppDrawCursor(void) {
@@ -1080,8 +1058,8 @@ void edppDrawCursor(void) {
     EDPP_DRAW_MARK(0.0f, -0.05f, 0.55f, 0.0f, -0.05f, 0.6f);
 
     if (edpp_copy_mode != 0) {
-        edbitsDrawCube(edpp_cam_pos.x, edpp_cam_pos.y, edpp_cam_pos.z, edpp_copy_size, edpp_copy_size, edpp_copy_size,
-                       0, 0, 0, 0, 0, 0xffffffff, (NUMTL *)edpp_mtl);
+        edbitsDrawCube(edpp_cam_pos.x, edpp_cam_pos.y, edpp_cam_pos.z, edpp_copy_size, edpp_copy_size, edpp_copy_size, 0, 0, 0, 0, 0,
+                       0xffffffff, (NUMTL *)edpp_mtl);
     } else {
         vector.x = 0.0f;
         vector.y = 0.375f;
@@ -1118,9 +1096,8 @@ void edppDrawCursor(void) {
                 NuVecRotateZ(&vector, &vector, edpp_refrotz);
                 NuVecRotateY(&vector, &vector, edpp_refroty);
                 EDPP_ROTATE();
-                edbitsDrawCube(edpp_cam_pos.x + vector.x, edpp_cam_pos.y + vector.y, edpp_cam_pos.z + vector.z, 0.25f,
-                               0.0f, 0.25f, edpp_refrotz, edpp_refroty, 0, rotation_z, rotation_y, 0xffff0000,
-                               (NUMTL *)edpp_mtl);
+                edbitsDrawCube(edpp_cam_pos.x + vector.x, edpp_cam_pos.y + vector.y, edpp_cam_pos.z + vector.z, 0.25f, 0.0f, 0.25f,
+                               edpp_refrotz, edpp_refroty, 0, rotation_z, rotation_y, 0xffff0000, (NUMTL *)edpp_mtl);
             }
         }
         if (edpp_dpad_mode == 4) {
@@ -1130,8 +1107,8 @@ void edppDrawCursor(void) {
             NuVecRotateX(&vector, &vector, edpp_facrotx);
             NuVecRotateY(&vector, &vector, edpp_facroty);
             EDPP_LINE_FROM_CAM(0xffff0000);
-            edbitsDrawBasicCube(edpp_cam_pos.x, edpp_cam_pos.y, edpp_cam_pos.z, 0.25f, 0.25f, 0.0f, edpp_facrotx,
-                                edpp_facroty, 0, 0xffff0000, (NUMTL *)edpp_mtl);
+            edbitsDrawBasicCube(edpp_cam_pos.x, edpp_cam_pos.y, edpp_cam_pos.z, 0.25f, 0.25f, 0.0f, edpp_facrotx, edpp_facroty, 0,
+                                0xffff0000, (NUMTL *)edpp_mtl);
         }
     }
 
@@ -1202,8 +1179,8 @@ void edppDrawCursor(void) {
                 effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
                 if (effect->generator_type == 0) {
                     edbitsDrawCube(edpp_cam_pos.x, edpp_cam_pos.y, edpp_cam_pos.z, effect->emitter_random_extent.x,
-                                   effect->emitter_random_extent.y, effect->emitter_random_extent.z, edpp_emitrotz,
-                                   edpp_emitroty, edpp_emitrotx, rotation_z, rotation_y, 0xff0000ff, (NUMTL *)edpp_mtl);
+                                   effect->emitter_random_extent.y, effect->emitter_random_extent.z, edpp_emitrotz, edpp_emitroty,
+                                   edpp_emitrotx, rotation_z, rotation_y, 0xff0000ff, (NUMTL *)edpp_mtl);
                     edppDrawSpheres(effect, edpp_ptls[edpp_nearest].instance_id);
                 }
                 edppDrawTorus(effect, edpp_ptls[edpp_nearest].instance_id);
@@ -1238,14 +1215,11 @@ void edppDrawCursor(void) {
         } else {
             key = &debkeydata[edpp_ptls[edpp_nearest].instance_id];
             NuQFntPrintEx(system_qfont, 0x1720, 0xa50, 0x10, "Highlight: %s", debtab[key->effect_index]->name);
-            NuQFntPrintEx(system_qfont, 0x1720, 0xaf0, 0x10, "XYZ: %0.2f %0.2f %0.2f", key->position.x, key->position.y,
-                          key->position.z);
+            NuQFntPrintEx(system_qfont, 0x1720, 0xaf0, 0x10, "XYZ: %0.2f %0.2f %0.2f", key->position.x, key->position.y, key->position.z);
             NuQFntPrintEx(system_qfont, 0x1720, 0xb90, 0x10, "RotZ: %d", edpp_ptls[edpp_nearest].rotation_z);
             NuQFntPrintEx(system_qfont, 0x1720, 0xc30, 0x10, "RotY: %d", edpp_ptls[edpp_nearest].rotation_y);
-            NuQFntPrintEx(system_qfont, 0x1720, 0xcd0, 0x10, "EmitRotZ: %d",
-                          edpp_ptls[edpp_nearest].emitter_rotation_z);
-            NuQFntPrintEx(system_qfont, 0x1720, 0xd70, 0x10, "EmitRotY: %d",
-                          edpp_ptls[edpp_nearest].emitter_rotation_y);
+            NuQFntPrintEx(system_qfont, 0x1720, 0xcd0, 0x10, "EmitRotZ: %d", edpp_ptls[edpp_nearest].emitter_rotation_z);
+            NuQFntPrintEx(system_qfont, 0x1720, 0xd70, 0x10, "EmitRotY: %d", edpp_ptls[edpp_nearest].emitter_rotation_y);
         }
     }
     NuQFntPopPrintMode();
@@ -1367,8 +1341,8 @@ i32 edppPtlCreate(NUVEC *position, i32 effect_index) {
         edpp_ptls[index].facing_rotation_y = 0;
         strcpy(edpp_ptls[index].name, debtab[edpp_ptls[index].effect_index]->name);
         DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
-        DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z,
-                                 edpp_ptls[index].emitter_rotation_y, edpp_ptls[index].emitter_rotation_x);
+        DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z, edpp_ptls[index].emitter_rotation_y,
+                                 edpp_ptls[index].emitter_rotation_x);
         DebrisStartOffsetEx(&debkeydata[edpp_ptls[index].instance_id], edpp_ptls[index].start_offset);
         DebrisReflectionOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].reflection_rotation_z,
                                     edpp_ptls[index].reflection_rotation_y, edpp_ptls[index].reflection_offset,
@@ -1376,8 +1350,7 @@ i32 edppPtlCreate(NUVEC *position, i32 effect_index) {
         DebrisSetFacing(edpp_ptls[index].instance_id, edpp_ptls[index].facing_mode, edpp_ptls[index].facing_rotation_x,
                         edpp_ptls[index].facing_rotation_y);
         edppDebrisSetGroupID(edpp_ptls[index].instance_id, edpp_ptls[index].render_group);
-        edppDebrisSetPriority(edpp_ptls[index].instance_id, edpp_ptls[index].render_priority,
-                              edpp_ptls[index].dynamic_priority);
+        edppDebrisSetPriority(edpp_ptls[index].instance_id, edpp_ptls[index].render_priority, edpp_ptls[index].dynamic_priority);
         edppDebrisClearRoomID(edpp_ptls[index].instance_id);
         edppDebrisSetDetailLevels(edpp_ptls[index].instance_id, edpp_ptls[index].detail_levels);
         ++edpp_instances_used;
@@ -1399,8 +1372,7 @@ i32 edppPtlCreateCopy(NUVEC *position, i32 source_index) {
     while (edpp_ptls[index].instance_id != -1) {
         ++index;
     }
-    AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[source_index].effect_index, position->x, position->y,
-                    position->z);
+    AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[source_index].effect_index, position->x, position->y, position->z);
     if (edpp_ptls[index].instance_id != -1) {
         debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
         edpp_ptls[index].render_group = edpp_ptls[source_index].render_group;
@@ -1423,8 +1395,8 @@ i32 edppPtlCreateCopy(NUVEC *position, i32 source_index) {
         edpp_ptls[index].facing_rotation_y = edpp_ptls[source_index].facing_rotation_y;
         strcpy(edpp_ptls[index].name, debtab[edpp_ptls[index].effect_index]->name);
         DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
-        DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z,
-                                 edpp_ptls[index].emitter_rotation_y, edpp_ptls[index].emitter_rotation_x);
+        DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z, edpp_ptls[index].emitter_rotation_y,
+                                 edpp_ptls[index].emitter_rotation_x);
         DebrisStartOffsetEx(&debkeydata[edpp_ptls[index].instance_id], edpp_ptls[index].start_offset);
         DebrisReflectionOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].reflection_rotation_z,
                                     edpp_ptls[index].reflection_rotation_y, edpp_ptls[index].reflection_offset,
@@ -1444,8 +1416,8 @@ i32 edppPtlPlace(i32 index, NUVEC *position) {
     edppDebrisEmitterPos(edpp_ptls[index].instance_id, position->x, position->y, position->z);
     DebrisOrientation(edpp_ptls[index].instance_id, edpp_rotz, edpp_roty);
     DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_emitrotz, edpp_emitroty, edpp_emitrotx);
-    DebrisReflectionOrientation(edpp_ptls[index].instance_id, edpp_refrotz, edpp_refroty,
-                                edpp_ptls[index].reflection_offset, edpp_ptls[index].reflection_bounce);
+    DebrisReflectionOrientation(edpp_ptls[index].instance_id, edpp_refrotz, edpp_refroty, edpp_ptls[index].reflection_offset,
+                                edpp_ptls[index].reflection_bounce);
     if (edpp_ptls[index].facing_mode != 0) {
         edpp_ptls[index].facing_rotation_x = edpp_facrotx;
         edpp_ptls[index].facing_rotation_y = edpp_facroty;
@@ -1472,8 +1444,7 @@ void edppMultipleCopyCopy(void) {
             continue;
         }
         NuVecSub(&delta, &edpp_cam_pos, &edpp_ptls[index].position);
-        if (edppFabs(delta.x) <= edpp_copy_size && edppFabs(delta.y) <= edpp_copy_size &&
-            edppFabs(delta.z) <= edpp_copy_size) {
+        if (edppFabs(delta.x) <= edpp_copy_size && edppFabs(delta.y) <= edpp_copy_size && edppFabs(delta.z) <= edpp_copy_size) {
             edpp_copy_source[edpp_copy_source_count++] = index;
             if (edpp_copy_source_count == 8) {
                 break;
@@ -1499,8 +1470,8 @@ void edppMultipleCopyPaste(void) {
         index = edppPtlCreateCopy(&position, edpp_copy_source[source]);
         if (index != -1) {
             edpp_ptls[index].emitter_rotation_y += (i16)edpp_copyroty;
-            DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z,
-                                     edpp_ptls[index].emitter_rotation_y, edpp_ptls[index].emitter_rotation_x);
+            DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z, edpp_ptls[index].emitter_rotation_y,
+                                     edpp_ptls[index].emitter_rotation_x);
         }
     }
 }
@@ -1691,11 +1662,10 @@ void edppHighlightNearest(void) {
                 continue;
             }
             NuVecSub(&delta, &edpp_cam_pos, &edpp_ptls[index].position);
-            if (edppFabs(delta.x) <= edpp_copy_size && edppFabs(delta.y) <= edpp_copy_size &&
-                edppFabs(delta.z) <= edpp_copy_size) {
+            if (edppFabs(delta.x) <= edpp_copy_size && edppFabs(delta.y) <= edpp_copy_size && edppFabs(delta.z) <= edpp_copy_size) {
                 ++edpp_copy_enclosed;
-                edbitsDrawDiagonalCross(edpp_ptls[index].position.x, edpp_ptls[index].position.y,
-                                        edpp_ptls[index].position.z, 0.05f, 0xffffffff, edpp_mtl);
+                edbitsDrawDiagonalCross(edpp_ptls[index].position.x, edpp_ptls[index].position.y, edpp_ptls[index].position.z, 0.05f,
+                                        0xffffffff, edpp_mtl);
             }
         }
         if (edpp_copy_source_count > 0) {
@@ -1708,16 +1678,14 @@ void edppHighlightNearest(void) {
         }
     } else {
         if (edpp_nearest != -1) {
-            edbitsDrawCube(edpp_ptls[edpp_nearest].position.x, edpp_ptls[edpp_nearest].position.y,
-                           edpp_ptls[edpp_nearest].position.z, 0.5f, 0.5f, 0.5f, 0, 0, 0, 0, 0, 0xffffffff,
-                           (NUMTL *)edpp_mtl);
+            edbitsDrawCube(edpp_ptls[edpp_nearest].position.x, edpp_ptls[edpp_nearest].position.y, edpp_ptls[edpp_nearest].position.z, 0.5f,
+                           0.5f, 0.5f, 0, 0, 0, 0, 0, 0xffffffff, (NUMTL *)edpp_mtl);
         }
         if (edpp_showAllPlaced != 0) {
             for (index = 0; index < 512; ++index) {
                 if (edpp_ptls[index].effect_index > 0 && index != edpp_nearest) {
-                    edbitsDrawCube(edpp_ptls[index].position.x, edpp_ptls[index].position.y,
-                                   edpp_ptls[index].position.z, 0.5f, 0.5f, 0.5f, 0, 0, 0, 0, 0, 0xff000000,
-                                   (NUMTL *)edpp_mtl);
+                    edbitsDrawCube(edpp_ptls[index].position.x, edpp_ptls[index].position.y, edpp_ptls[index].position.z, 0.5f, 0.5f, 0.5f,
+                                   0, 0, 0, 0, 0, 0xff000000, (NUMTL *)edpp_mtl);
                 }
             }
         }
@@ -2151,16 +2119,16 @@ void edppRestartAllEffectsInLevel(void) {
         if (edpp_ptls[index].instance_id != -1) {
             debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
             DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
-            DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z,
-                                     edpp_ptls[index].emitter_rotation_y, edpp_ptls[index].emitter_rotation_x);
+            DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z, edpp_ptls[index].emitter_rotation_y,
+                                     edpp_ptls[index].emitter_rotation_x);
             DebrisStartOffsetEx(&debkeydata[edpp_ptls[index].instance_id], edpp_ptls[index].start_offset);
             edppDebrisSetTrigger(edpp_ptls[index].instance_id, edpp_ptls[index].switch_type, edpp_ptls[index].switch_id,
                                  edpp_ptls[index].switch_variable);
             edppDebrisReflectionOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].reflection_rotation_z,
                                             edpp_ptls[index].reflection_rotation_y, edpp_ptls[index].reflection_offset,
                                             edpp_ptls[index].reflection_bounce);
-            DebrisSetFacing(edpp_ptls[index].instance_id, edpp_ptls[index].facing_mode,
-                            edpp_ptls[index].facing_rotation_x, edpp_ptls[index].facing_rotation_y);
+            DebrisSetFacing(edpp_ptls[index].instance_id, edpp_ptls[index].facing_mode, edpp_ptls[index].facing_rotation_x,
+                            edpp_ptls[index].facing_rotation_y);
             edppDebrisSetGroupID(edpp_ptls[index].instance_id, edpp_ptls[index].render_group);
             DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenesPc[edpp_ptls[index].page]);
         } else {
@@ -2264,11 +2232,9 @@ void cbPtlDataMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             eduiMenuAddItem(ptldatamenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbOrphanListMenu, "List Orphans..."));
             eduiMenuAddItem(ptldatamenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbDeleteOrphans, "Delete Orphans"));
         }
-        eduiMenuAddItem(ptldatamenu,
-                        eduiItemSelCreate(1, colours, 0, 0, cbPtlQuickDeleteMenu, "Quick Delete Types..."));
+        eduiMenuAddItem(ptldatamenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlQuickDeleteMenu, "Quick Delete Types..."));
         eduiMenuAddItem(ptldatamenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlReadoutMenu, "Info Box Style..."));
-        eduiMenuAddItem(ptldatamenu,
-                        eduiItemToggleCreate(1, colours, edpp_showAllPlaced, 2, cbPtlShowAll, "Show All Placed"));
+        eduiMenuAddItem(ptldatamenu, eduiItemToggleCreate(1, colours, edpp_showAllPlaced, 2, cbPtlShowAll, "Show All Placed"));
         eduiMenuAttach(parent, ptldatamenu);
         ptldatamenu->x = parent->x + 10;
         ptldatamenu->y = parent->y + 40;
@@ -2319,19 +2285,16 @@ void cbPtlTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         }
         placed = 0;
         for (i = 0; i < 512; ++i) {
-            if (edpp_ptls[i].instance_id != -1 && edpp_ptls[i].instance_id != 99999 &&
-                edpp_ptls[i].effect_index == index) {
+            if (edpp_ptls[i].instance_id != -1 && edpp_ptls[i].instance_id != 99999 && edpp_ptls[i].effect_index == index) {
                 placed = 1;
                 break;
             }
         }
         selected = edpp_create_type == index;
         if (placed) {
-            eduiMenuAddItem(ptltypemenu,
-                            eduiItemCheckCreate(index, edblack, selected, 1, cbPtlSelType, debtab[index]->name));
+            eduiMenuAddItem(ptltypemenu, eduiItemCheckCreate(index, edblack, selected, 1, cbPtlSelType, debtab[index]->name));
         } else {
-            eduiMenuAddItem(ptltypemenu,
-                            eduiItemCheckCreate(index, eddarkred, selected, 1, cbPtlSelType, debtab[index]->name));
+            eduiMenuAddItem(ptltypemenu, eduiItemCheckCreate(index, eddarkred, selected, 1, cbPtlSelType, debtab[index]->name));
         }
         if (selected == 1) {
             ptltypemenu->selected = edui_last_item;
@@ -2362,31 +2325,24 @@ void cbPtlEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         if (ptlemitmenu != NULL) {
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlEmitVelMenu, "Emitter Vel..."));
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlGravMenu, "Gravity..."));
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-                effect->generator_type == 10) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
                 eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlVarStartMenu, "Random Start..."));
             } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
                        effect->generator_type == 12) {
-                eduiMenuAddItem(ptlemitmenu,
-                                eduiItemSelCreate(1, colours, 0, 0, cbPtlVarStartMenu, "Base Emit Vector..."));
+                eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlVarStartMenu, "Base Emit Vector..."));
             }
             if (effect->generator_type == 0) {
-                eduiMenuAddItem(ptlemitmenu,
-                                eduiItemSelCreate(1, colours, 0, 0, cbPtlStartVelMenu, "Start Velocity..."));
+                eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlStartVelMenu, "Start Velocity..."));
             } else if (effect->generator_type == 7 || effect->generator_type == 11) {
-                eduiMenuAddItem(ptlemitmenu,
-                                eduiItemSelCreate(1, colours, 0, 0, cbPtlStartVelMenu, "Emit Point Velocity..."));
+                eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlStartVelMenu, "Emit Point Velocity..."));
             }
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlVarEmitMenu, "Emitter Variation..."));
-            eduiMenuAddItem(ptlemitmenu,
-                            eduiItemSelCreate(1, colours, 0, 0, cbChangeGenRateMenu, "Particles per Sec..."));
+            eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbChangeGenRateMenu, "Particles per Sec..."));
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbChangeETimeMenu, "Particle Life..."));
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlEmitTimeMenu, "Emitter Timing..."));
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlCutOffMenu, "Repeat / Radii..."));
-            if (effect->generator_type == 0 || effect->generator_type == 6 || effect->generator_type == 7 ||
-                effect->generator_type == 8) {
-                eduiMenuAddItem(ptlemitmenu,
-                                eduiItemSelCreate(1, colours, 0, 0, edptlcbGhostMenu, "Particle Ghosts..."));
+            if (effect->generator_type == 0 || effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 8) {
+                eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbGhostMenu, "Particle Ghosts..."));
             } else {
                 eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, disabled_colours, 0, 0, NULL, "Particle Ghosts..."));
             }
@@ -2501,9 +2457,8 @@ void cbPtlEmitVelMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     ptlemitvelmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelEmitVelMenu, "Emitter Vel");
     if (ptlemitvelmenu != NULL) {
-        eduiMenuAddItem(ptlemitvelmenu,
-                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeEmitVel, -(10.0f * edptl_superscale),
-                                             20.0f * edptl_superscale, effect->momentum_base, "Emitter Vel"));
+        eduiMenuAddItem(ptlemitvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeEmitVel, -(10.0f * edptl_superscale),
+                                                             20.0f * edptl_superscale, effect->momentum_base, "Emitter Vel"));
         eduiMenuAttach(menu, ptlemitvelmenu);
         ptlemitvelmenu->x = menu->x + 10;
         ptlemitvelmenu->y = menu->y + 40;
@@ -2533,8 +2488,8 @@ void edptlcbGhostMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
         edptl_ghost_menu = eduiMenuCreate(70, 70, 200, 300, ed_fnt, edptlcbCancelGhostMenu, "Particle Ghosts");
         if (edptl_ghost_menu != NULL) {
-            eduiMenuAddItem(edptl_ghost_menu, eduiItemSliderCreateInt(0, colours, 0, edptlcbApplyNumGhosts, 0, 10,
-                                                                      effect->trail_count, "Number of Ghosts"));
+            eduiMenuAddItem(edptl_ghost_menu,
+                            eduiItemSliderCreateInt(0, colours, 0, edptlcbApplyNumGhosts, 0, 10, effect->trail_count, "Number of Ghosts"));
             eduiMenuAddItem(edptl_ghost_menu, eduiItemSliderCreate(0, colours, 0, edptlcbApplyGhostTime, 0.0f, 1.0f,
                                                                    (f32)(i32)effect->trail_time, "Ghost Separation"));
             eduiMenuAttach(parent, edptl_ghost_menu);
@@ -2617,24 +2572,21 @@ static void cbPtlChangeY(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     effect = debtab[debkeydata[instance_id].effect_index];
     if (menu != NULL) {
         if (menu == ptlvaremitmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-                effect->generator_type == 10) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
                 effect->rotor_speed_x = ((edui_slider_s *)item)->value;
             } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
                        effect->generator_type == 12) {
                 effect->rotor_speed_x = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
             }
         } else if (menu == ptlvarstartmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-                effect->generator_type == 10) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
                 effect->emitter_random_extent.y = ((edui_slider_s *)item)->value;
             } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
                        effect->generator_type == 12) {
                 effect->emitter_random_extent.y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
             }
         } else if (menu == ptlstartvelmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-                effect->generator_type == 10) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
                 effect->emitter_velocity.y = ((edui_slider_s *)item)->value;
             } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
                        effect->generator_type == 12) {
@@ -2657,21 +2609,17 @@ static void cbPtlChangeZ(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     effect = debtab[debkeydata[instance_id].effect_index];
     if (menu != NULL) {
         if (menu == ptlvaremitmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-                effect->generator_type == 10) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
                 effect->rotor_speed_y = ((edui_slider_s *)item)->value;
             } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
                 effect->rotor_speed_y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
             } else if (effect->generator_type == 11) {
                 effect->rotor_speed_y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
-                effect->emitter_random_extent.z =
-                    MIN(effect->emitter_random_extent.z, 16384.0f - effect->rotor_speed_y);
-                effect->emitter_random_extent.z =
-                    MAX(effect->emitter_random_extent.z, -(16384.0f - effect->rotor_speed_y));
+                effect->emitter_random_extent.z = MIN(effect->emitter_random_extent.z, 16384.0f - effect->rotor_speed_y);
+                effect->emitter_random_extent.z = MAX(effect->emitter_random_extent.z, -(16384.0f - effect->rotor_speed_y));
             }
         } else if (menu == ptlvarstartmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-                effect->generator_type == 10) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
                 effect->emitter_random_extent.z = ((edui_slider_s *)item)->value;
             } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
                 effect->emitter_random_extent.z = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
@@ -2681,8 +2629,7 @@ static void cbPtlChangeZ(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
                 effect->rotor_speed_y = MAX(effect->rotor_speed_y, -(16384.0f - effect->emitter_random_extent.z));
             }
         } else if (menu == ptlstartvelmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-                effect->generator_type == 10) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
                 effect->emitter_velocity.z = ((edui_slider_s *)item)->value;
             } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
                        effect->generator_type == 12) {
@@ -2701,57 +2648,44 @@ void cbPtlVarEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     ptlvaremitmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelVarEmitMenu, "Emitter Variation");
     if (ptlvaremitmenu != NULL) {
-        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-            effect->generator_type == 10) {
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->momentum_random_x, "Rand Emit X"));
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->rotor_speed_x, "Rand Emit Y"));
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->rotor_speed_y, "Rand Emit Z"));
+        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                                 effect->momentum_random_x, "Rand Emit X"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 5.0f * edptl_superscale,
+                                                                 effect->rotor_speed_x, "Rand Emit Y"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 5.0f * edptl_superscale,
+                                                                 effect->rotor_speed_y, "Rand Emit Z"));
         } else if (effect->generator_type == 6 || effect->generator_type == 12) {
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->momentum_random_x, "Rand Mag X"));
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 180.0f,
-                                                 effect->rotor_speed_x * (360.0f / 65536.0f), "Rand Rot Y"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                                 effect->momentum_random_x, "Rand Mag X"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 180.0f,
+                                                                 effect->rotor_speed_x * (360.0f / 65536.0f), "Rand Rot Y"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 180.0f,
-                                                 effect->rotor_speed_y * (360.0f / 65536.0f), "Rand Rot Z"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 180.0f,
+                                                                 effect->rotor_speed_y * (360.0f / 65536.0f), "Rand Rot Z"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         } else if (effect->generator_type == 7) {
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->momentum_random_x, "Rand Mag"));
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -90.0f, 180.0f,
-                                                 effect->rotor_speed_x * (360.0f / 65536.0f), "Step Rot Y"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                                 effect->momentum_random_x, "Rand Mag"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -90.0f, 180.0f,
+                                                                 effect->rotor_speed_x * (360.0f / 65536.0f), "Step Rot Y"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -90.0f, 180.0f,
-                                                 effect->rotor_speed_y * (360.0f / 65536.0f), "Step Rot Z"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -90.0f, 180.0f,
+                                                                 effect->rotor_speed_y * (360.0f / 65536.0f), "Step Rot Z"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         } else if (effect->generator_type == 11) {
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->momentum_random_x, "Rand Mag X"));
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 180.0f,
-                                                 effect->rotor_speed_x * (360.0f / 65536.0f), "Rand Rot Y"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                                 effect->momentum_random_x, "Rand Mag X"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 180.0f,
+                                                                 effect->rotor_speed_x * (360.0f / 65536.0f), "Rand Rot Y"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-            eduiMenuAddItem(ptlvaremitmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 90.0f,
-                                                 effect->rotor_speed_y * (360.0f / 65536.0f), "Rand Rot Z"));
+            eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 90.0f,
+                                                                 effect->rotor_speed_y * (360.0f / 65536.0f), "Rand Rot Z"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         }
@@ -2765,8 +2699,7 @@ void cbPtlVarStartMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-            effect->generator_type == 10) {
+        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
             ptlvarstartmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelVarStartMenu, "Random Start");
         } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
                    effect->generator_type == 12) {
@@ -2775,50 +2708,39 @@ void cbPtlVarStartMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         if (ptlvarstartmenu == NULL) {
             return;
         }
-        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-            effect->generator_type == 10) {
-            eduiMenuAddItem(ptlvarstartmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->emitter_random_extent.x, "Rand Start X"));
-            eduiMenuAddItem(ptlvarstartmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->emitter_random_extent.y, "Rand Start Y"));
-            eduiMenuAddItem(ptlvarstartmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->emitter_random_extent.z, "Rand Start Z"));
+        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+            eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                                  effect->emitter_random_extent.x, "Rand Start X"));
+            eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 5.0f * edptl_superscale,
+                                                                  effect->emitter_random_extent.y, "Rand Start Y"));
+            eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 5.0f * edptl_superscale,
+                                                                  effect->emitter_random_extent.z, "Rand Start Z"));
         } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
-            eduiMenuAddItem(ptlvarstartmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->emitter_random_extent.x, "Base Mag"));
-            eduiMenuAddItem(ptlvarstartmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
-                                                 effect->emitter_random_extent.y * (360.0f / 65536.0f), "Base Rot Y"));
+            eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                                  effect->emitter_random_extent.x, "Base Mag"));
+            eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
+                                                                  effect->emitter_random_extent.y * (360.0f / 65536.0f), "Base Rot Y"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-            eduiMenuAddItem(ptlvarstartmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -180.0f, 180.0f,
-                                                 effect->emitter_random_extent.z * (360.0f / 65536.0f), "Base Rot Z"));
+            eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -180.0f, 180.0f,
+                                                                  effect->emitter_random_extent.z * (360.0f / 65536.0f), "Base Rot Z"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         } else if (effect->generator_type == 11) {
-            eduiMenuAddItem(ptlvarstartmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->emitter_random_extent.x, "Base Mag"));
-            eduiMenuAddItem(ptlvarstartmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
-                                                 effect->emitter_random_extent.y * (360.0f / 65536.0f), "Base Rot Y"));
+            eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                                  effect->emitter_random_extent.x, "Base Mag"));
+            eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
+                                                                  effect->emitter_random_extent.y * (360.0f / 65536.0f), "Base Rot Y"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-            eduiMenuAddItem(ptlvarstartmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -90.0f, 180.0f,
-                                                 effect->emitter_random_extent.z * (360.0f / 65536.0f), "Base Rot Z"));
+            eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -90.0f, 180.0f,
+                                                                  effect->emitter_random_extent.z * (360.0f / 65536.0f), "Base Rot Z"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         }
         if (effect->generator_type == 6 || effect->generator_type == 12) {
-            eduiMenuAddItem(ptlvarstartmenu,
-                            eduiItemSliderCreate(0, colours, 0, edptlcbChangeRampTime, 0.0f, (f32)edptl_superscale,
-                                                 effect->scale_in_time, "Ramp Time"));
+            eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeRampTime, 0.0f, (f32)edptl_superscale,
+                                                                  effect->scale_in_time, "Ramp Time"));
         }
         eduiMenuAttach(parent, ptlvarstartmenu);
         ptlvarstartmenu->x = parent->x + 10;
@@ -2830,8 +2752,7 @@ void cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-            effect->generator_type == 10) {
+        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
             ptlstartvelmenu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelStartVelMenu, "Start Velocity");
         } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
                    effect->generator_type == 12) {
@@ -2840,50 +2761,39 @@ void cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         if (ptlstartvelmenu == NULL) {
             return;
         }
-        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
-            effect->generator_type == 10) {
-            eduiMenuAddItem(ptlstartvelmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, -5.0f, 10.0f * edptl_superscale,
-                                                 effect->emitter_velocity.x, "Start Vel X"));
-            eduiMenuAddItem(ptlstartvelmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -5.0f, 10.0f * edptl_superscale,
-                                                 effect->emitter_velocity.y, "Start Vel Y"));
-            eduiMenuAddItem(ptlstartvelmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -5.0f, 10.0f * edptl_superscale,
-                                                 effect->emitter_velocity.z, "Start Vel Z"));
+        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+            eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, -5.0f, 10.0f * edptl_superscale,
+                                                                  effect->emitter_velocity.x, "Start Vel X"));
+            eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -5.0f, 10.0f * edptl_superscale,
+                                                                  effect->emitter_velocity.y, "Start Vel Y"));
+            eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -5.0f, 10.0f * edptl_superscale,
+                                                                  effect->emitter_velocity.z, "Start Vel Z"));
         } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
-            eduiMenuAddItem(ptlstartvelmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->emitter_velocity.x, "Mag Velocity"));
-            eduiMenuAddItem(ptlstartvelmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
-                                                 effect->emitter_velocity.y * (360.0f / 65536.0f), "Rot Y Vel"));
+            eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                                  effect->emitter_velocity.x, "Mag Velocity"));
+            eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
+                                                                  effect->emitter_velocity.y * (360.0f / 65536.0f), "Rot Y Vel"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-            eduiMenuAddItem(ptlstartvelmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -180.0f, 180.0f,
-                                                 effect->emitter_velocity.z * (360.0f / 65536.0f), "Rot Z Vel"));
+            eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -180.0f, 180.0f,
+                                                                  effect->emitter_velocity.z * (360.0f / 65536.0f), "Rot Z Vel"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         } else if (effect->generator_type == 11) {
-            eduiMenuAddItem(ptlstartvelmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
-                                                 effect->emitter_velocity.x, "Mag Velocity"));
-            eduiMenuAddItem(ptlstartvelmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
-                                                 effect->emitter_velocity.y * (360.0f / 65536.0f), "Rot Y Vel"));
+            eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                                  effect->emitter_velocity.x, "Mag Velocity"));
+            eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
+                                                                  effect->emitter_velocity.y * (360.0f / 65536.0f), "Rot Y Vel"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-            eduiMenuAddItem(ptlstartvelmenu,
-                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -90.0f, 180.0f,
-                                                 effect->emitter_velocity.z * (360.0f / 65536.0f), "Rot Z Vel"));
+            eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -90.0f, 180.0f,
+                                                                  effect->emitter_velocity.z * (360.0f / 65536.0f), "Rot Z Vel"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         }
         if (effect->generator_type == 6 || effect->generator_type == 12) {
-            eduiMenuAddItem(ptlstartvelmenu,
-                            eduiItemSliderCreate(0, colours, 0, edptlcbChangeRampTime, 0.0f, (f32)edptl_superscale,
-                                                 effect->scale_in_time, "Ramp Time"));
+            eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeRampTime, 0.0f, (f32)edptl_superscale,
+                                                                  effect->scale_in_time, "Ramp Time"));
         }
         eduiMenuAttach(parent, ptlstartvelmenu);
         ptlstartvelmenu->x = parent->x + 10;
@@ -3297,8 +3207,7 @@ void cbPtlSelGSort(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         effect->rotor_speed_y *= 2.0f;
         effect->emitter_random_extent.z *= 2.0f;
         effect->emitter_velocity.z *= 2.0f;
-    } else if (!((effect->generator_type == 6 && item->data == 12) ||
-                 (effect->generator_type == 12 && item->data == 6))) {
+    } else if (!((effect->generator_type == 6 && item->data == 12) || (effect->generator_type == 12 && item->data == 6))) {
         /* Clears momentum_random_x through emitter_velocity (0x4c-0x6f). */
         memset(&effect->momentum_random_x, 0, 9 * sizeof(f32));
         effect->scale_in_time = 0.0f;
@@ -3351,14 +3260,10 @@ void edptlcbDrawflagMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (edptl_drawflag_menu == NULL) {
         return;
     }
-    eduiMenuAddItem(edptl_drawflag_menu,
-                    eduiItemCheckCreate(1, edblack, effect->time_group == 1, 1, edptlcbSetDrawflag, "Before Fog"));
-    eduiMenuAddItem(edptl_drawflag_menu,
-                    eduiItemCheckCreate(0, edblack, effect->time_group == 0, 1, edptlcbSetDrawflag, "After Fog"));
-    eduiMenuAddItem(edptl_drawflag_menu,
-                    eduiItemCheckCreate(3, edblack, effect->time_group == 3, 1, edptlcbSetDrawflag, "Super Early"));
-    eduiMenuAddItem(edptl_drawflag_menu,
-                    eduiItemCheckCreate(4, edblack, effect->time_group == 4, 1, edptlcbSetDrawflag, "Panel Mode"));
+    eduiMenuAddItem(edptl_drawflag_menu, eduiItemCheckCreate(1, edblack, effect->time_group == 1, 1, edptlcbSetDrawflag, "Before Fog"));
+    eduiMenuAddItem(edptl_drawflag_menu, eduiItemCheckCreate(0, edblack, effect->time_group == 0, 1, edptlcbSetDrawflag, "After Fog"));
+    eduiMenuAddItem(edptl_drawflag_menu, eduiItemCheckCreate(3, edblack, effect->time_group == 3, 1, edptlcbSetDrawflag, "Super Early"));
+    eduiMenuAddItem(edptl_drawflag_menu, eduiItemCheckCreate(4, edblack, effect->time_group == 4, 1, edptlcbSetDrawflag, "Panel Mode"));
     eduiMenuAttach(parent, edptl_drawflag_menu);
     edptl_drawflag_menu->x = parent->x + 10;
     edptl_drawflag_menu->y = parent->y + 40;
@@ -3377,13 +3282,13 @@ void edptlcbGroupMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         } else {
             eduiMenuAddItem(edptl_group_menu, eduiItemSelCreate(1, edblack, 0, 0, edptlcbDrawflagMenu, "Draw Flag..."));
         }
-        eduiMenuAddItem(edptl_group_menu, eduiItemToggleCreate(2, edblack, effect->cutscene_only != 0, 1,
-                                                               edptlcbChangeCSDisable, "Disable in Cut-Scenes"));
-        eduiMenuAddItem(edptl_group_menu, eduiItemSliderCreateInt(0, edblack, 0, edptlcbSetGroup, 0, 32,
-                                                                  edpp_ptls[edpp_nearest].render_group, "Group ID"));
+        eduiMenuAddItem(edptl_group_menu,
+                        eduiItemToggleCreate(2, edblack, effect->cutscene_only != 0, 1, edptlcbChangeCSDisable, "Disable in Cut-Scenes"));
+        eduiMenuAddItem(edptl_group_menu,
+                        eduiItemSliderCreateInt(0, edblack, 0, edptlcbSetGroup, 0, 32, edpp_ptls[edpp_nearest].render_group, "Group ID"));
     }
-    eduiMenuAddItem(edptl_group_menu, eduiItemSliderCreateInt(0, edblack, 0, edptlcbSetMasterGroup, 0, 32,
-                                                              debris_render_group, "Master Test Switch"));
+    eduiMenuAddItem(edptl_group_menu,
+                    eduiItemSliderCreateInt(0, edblack, 0, edptlcbSetMasterGroup, 0, 32, debris_render_group, "Master Test Switch"));
     eduiMenuAttach(parent, edptl_group_menu);
     edptl_group_menu->x = parent->x + 10;
     edptl_group_menu->y = parent->y + 40;
@@ -3397,18 +3302,15 @@ void edptlcbDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     }
     if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
         effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-        eduiMenuAddItem(edptl_detail_menu, eduiItemSliderCreate(0, edblack, 0, edptlcbSetMaxThin, 1.0f, 9.0f,
-                                                                effect->thinning, "Maximum Thinning"));
         eduiMenuAddItem(edptl_detail_menu,
-                        eduiItemToggleCreate(4, edblack, (edpp_ptls[edpp_nearest].detail_levels & 4u) >> 2, 1,
-                                             edptlcbSetDetail, "High Detail"));
+                        eduiItemSliderCreate(0, edblack, 0, edptlcbSetMaxThin, 1.0f, 9.0f, effect->thinning, "Maximum Thinning"));
+        eduiMenuAddItem(edptl_detail_menu, eduiItemToggleCreate(4, edblack, (edpp_ptls[edpp_nearest].detail_levels & 4u) >> 2, 1,
+                                                                edptlcbSetDetail, "High Detail"));
+        eduiMenuAddItem(edptl_detail_menu, eduiItemToggleCreate(2, edblack, (edpp_ptls[edpp_nearest].detail_levels & 2u) >> 1, 2,
+                                                                edptlcbSetDetail, "Medium Detail"));
         eduiMenuAddItem(edptl_detail_menu,
-                        eduiItemToggleCreate(2, edblack, (edpp_ptls[edpp_nearest].detail_levels & 2u) >> 1, 2,
-                                             edptlcbSetDetail, "Medium Detail"));
-        eduiMenuAddItem(edptl_detail_menu, eduiItemToggleCreate(1, edblack, edpp_ptls[edpp_nearest].detail_levels & 1,
-                                                                3, edptlcbSetDetail, "Low Detail"));
-        eduiMenuAddItem(edptl_detail_menu,
-                        eduiItemSelCreate(1, edblack, 0, 0, edptlcbTestDetailMenu, "Detail Level Test..."));
+                        eduiItemToggleCreate(1, edblack, edpp_ptls[edpp_nearest].detail_levels & 1, 3, edptlcbSetDetail, "Low Detail"));
+        eduiMenuAddItem(edptl_detail_menu, eduiItemSelCreate(1, edblack, 0, 0, edptlcbTestDetailMenu, "Detail Level Test..."));
     }
     eduiMenuAttach(parent, edptl_detail_menu);
     edptl_detail_menu->x = parent->x + 10;
@@ -3424,33 +3326,26 @@ void cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     ptlgsortmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelGSortMenu, "GenSort Type");
     if (ptlgsortmenu) {
-        eduiMenuAddItem(ptlgsortmenu,
-                        eduiItemCheckCreate(0, colours, effect->generator_type == 0, 1, cbPtlSelGSort, "Normal"));
+        eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(0, colours, effect->generator_type == 0, 1, cbPtlSelGSort, "Normal"));
         if (effect->particle_type == 7) {
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(6, edgrey, 0, 0, NULL, "Radial"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(7, edgrey, 0, 0, NULL, "Radial Rotor"));
         } else {
-            eduiMenuAddItem(ptlgsortmenu,
-                            eduiItemCheckCreate(6, colours, effect->generator_type == 6, 1, cbPtlSelGSort, "Radial"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(7, colours, effect->generator_type == 7, 1, cbPtlSelGSort,
-                                                              "Radial Rotor"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(6, colours, effect->generator_type == 6, 1, cbPtlSelGSort, "Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(7, colours, effect->generator_type == 7, 1, cbPtlSelGSort, "Radial Rotor"));
         }
-        eduiMenuAddItem(ptlgsortmenu,
-                        eduiItemCheckCreate(8, colours, effect->generator_type == 8, 1, cbPtlSelGSort, "Spheroid"));
+        eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(8, colours, effect->generator_type == 8, 1, cbPtlSelGSort, "Spheroid"));
         if (effect->particle_type == 7) {
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(9, edgrey, 0, 0, NULL, "BounceY"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(10, edgrey, 0, 0, NULL, "BounceXZ"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(11, edgrey, 0, 0, NULL, "Improved Radial"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(12, edgrey, 0, 0, NULL, "Star Radial"));
         } else {
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(9, colours, effect->generator_type == 9, 1, cbPtlSelGSort, "BounceY"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(10, colours, effect->generator_type == 10, 1, cbPtlSelGSort, "BounceXZ"));
             eduiMenuAddItem(ptlgsortmenu,
-                            eduiItemCheckCreate(9, colours, effect->generator_type == 9, 1, cbPtlSelGSort, "BounceY"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(10, colours, effect->generator_type == 10, 1,
-                                                              cbPtlSelGSort, "BounceXZ"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(11, colours, effect->generator_type == 11, 1,
-                                                              cbPtlSelGSort, "Improved Radial"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(12, colours, effect->generator_type == 12, 1,
-                                                              cbPtlSelGSort, "Star Radial"));
+                            eduiItemCheckCreate(11, colours, effect->generator_type == 11, 1, cbPtlSelGSort, "Improved Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(12, colours, effect->generator_type == 12, 1, cbPtlSelGSort, "Star Radial"));
         }
     }
     eduiMenuAttach(menu, ptlgsortmenu);
@@ -3485,13 +3380,11 @@ void cbPtlRotMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             break;
         }
     }
-    eduiMenuAddItem(ptlrotmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyRot, -720.0f, 1440.0f,
-                                                     effect->min_rotation, "Min Rotation"));
+    eduiMenuAddItem(ptlrotmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyRot, -720.0f, 1440.0f, effect->min_rotation, "Min Rotation"));
     grad_rot_min_item = (edui_slider_s *)edui_last_item;
     eduiItemSliderSetFmt(grad_rot_min_item, "(%1.01f)");
     eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-    eduiMenuAddItem(ptlrotmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyRot, -720.0f, 1440.0f,
-                                                     effect->max_rotation, "Max Rotation"));
+    eduiMenuAddItem(ptlrotmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyRot, -720.0f, 1440.0f, effect->max_rotation, "Max Rotation"));
     grad_rot_max_item = (edui_slider_s *)edui_last_item;
     eduiItemSliderSetFmt(grad_rot_max_item, "(%1.01f)");
     eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
@@ -3593,8 +3486,7 @@ static void cbPtlCopySize(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     for (i = 0; i < 8; ++i) {
         if (item->data == 1) {
             grey = (effect->height_keys[i].value - effect->min_size) / (effect->max_size - effect->min_size);
-            eduiGradStageAddRGB((edui_gradient_pick_s *)grad_size_h_item, effect->height_keys[i].time, grey, grey,
-                                grey);
+            eduiGradStageAddRGB((edui_gradient_pick_s *)grad_size_h_item, effect->height_keys[i].time, grey, grey, grey);
             if (effect->height_keys[i].time == 1.0f) {
                 break;
             }
@@ -3648,13 +3540,13 @@ void cbPtlSizeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             break;
         }
     }
-    eduiMenuAddItem(ptlsizemenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplySize, 0.0f, 5000.0f * edptl_superscale,
-                                                      effect->min_size, "Min Size"));
+    eduiMenuAddItem(ptlsizemenu,
+                    eduiItemSliderCreate(0, colours, 0, cbPtlApplySize, 0.0f, 5000.0f * edptl_superscale, effect->min_size, "Min Size"));
     grad_size_min_item = (edui_slider_s *)edui_last_item;
     eduiItemSliderSetFmt(grad_size_min_item, "(%1.01f)");
     eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-    eduiMenuAddItem(ptlsizemenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplySize, 0.0f, 5000.0f * edptl_superscale,
-                                                      effect->max_size, "Max Size"));
+    eduiMenuAddItem(ptlsizemenu,
+                    eduiItemSliderCreate(0, colours, 0, cbPtlApplySize, 0.0f, 5000.0f * edptl_superscale, effect->max_size, "Max Size"));
     grad_size_max_item = (edui_slider_s *)edui_last_item;
     eduiItemSliderSetFmt(grad_size_max_item, "(%1.01f)");
     eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
@@ -3684,16 +3576,14 @@ void cbPtlCollMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         if (effect->min_size == effect->max_size) {
             value = 1.0f;
         } else {
-            value = (effect->collision_keys[i].value - effect->min_size / 10000.0f) /
-                    ((effect->max_size - effect->min_size) / 10000.0f);
+            value = (effect->collision_keys[i].value - effect->min_size / 10000.0f) / ((effect->max_size - effect->min_size) / 10000.0f);
         }
         eduiGradStageAddRGB((edui_gradient_pick_s *)coll_env_item, effect->collision_keys[i].time, value, value, value);
         if (effect->collision_keys[i].time == 1.0f) {
             break;
         }
     }
-    eduiMenuAddItem(collmenu, eduiItemSliderCreateInt(0, colours, 0, cbChangeNumCollSpheres, 0, 8,
-                                                      effect->process_spheres, "Num Spheres"));
+    eduiMenuAddItem(collmenu, eduiItemSliderCreateInt(0, colours, 0, cbChangeNumCollSpheres, 0, 8, effect->process_spheres, "Num Spheres"));
     eduiMenuAddItem(collmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlDefaultCollEnv, "Default Envelope"));
     eduiMenuAttach(parent, collmenu);
     collmenu->x = parent->x + 10;
@@ -3713,17 +3603,13 @@ void cbPtlTorusMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (edptl_torus_menu == NULL) {
         return;
     }
-    eduiMenuAddItem(edptl_torus_menu,
-                    eduiItemSliderCreate(0, colours, 0, cbChangeTorusLife, 0.0f, 5.0f * edptl_superscale,
-                                         effect->torus_lifetime, "Torus Life"));
-    eduiMenuAddItem(edptl_torus_menu,
-                    eduiItemSliderCreate(0, colours, 0, cbChangeTorusRad1, 0.01f, 5.0f * edptl_superscale,
-                                         effect->torus_radius1, "Base Major Radius"));
-    eduiMenuAddItem(edptl_torus_menu,
-                    eduiItemSliderCreate(0, colours, 0, cbChangeTorusRad2, 0.01f, 5.0f * edptl_superscale,
-                                         effect->torus_radius2, "Base Minor Radius"));
-    eduiMenuAddItem(edptl_torus_menu,
-                    eduiItemGreyGradPickCreate(0, colours, cbPtlApplyTorusEnv1, "Major Radius Envelope"));
+    eduiMenuAddItem(edptl_torus_menu, eduiItemSliderCreate(0, colours, 0, cbChangeTorusLife, 0.0f, 5.0f * edptl_superscale,
+                                                           effect->torus_lifetime, "Torus Life"));
+    eduiMenuAddItem(edptl_torus_menu, eduiItemSliderCreate(0, colours, 0, cbChangeTorusRad1, 0.01f, 5.0f * edptl_superscale,
+                                                           effect->torus_radius1, "Base Major Radius"));
+    eduiMenuAddItem(edptl_torus_menu, eduiItemSliderCreate(0, colours, 0, cbChangeTorusRad2, 0.01f, 5.0f * edptl_superscale,
+                                                           effect->torus_radius2, "Base Minor Radius"));
+    eduiMenuAddItem(edptl_torus_menu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplyTorusEnv1, "Major Radius Envelope"));
     torus_env1_item = edui_last_item;
     for (i = 0; i < 8; ++i) {
         value = effect->torus_keys1[i].value;
@@ -3732,8 +3618,7 @@ void cbPtlTorusMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             break;
         }
     }
-    eduiMenuAddItem(edptl_torus_menu,
-                    eduiItemGreyGradPickCreate(0, colours, cbPtlApplyTorusEnv2, "Minor Radius Envelope 1"));
+    eduiMenuAddItem(edptl_torus_menu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplyTorusEnv2, "Minor Radius Envelope 1"));
     torus_env2_item = edui_last_item;
     for (i = 0; i < 8; ++i) {
         value = effect->torus_keys2[i].value;
@@ -3742,8 +3627,7 @@ void cbPtlTorusMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             break;
         }
     }
-    eduiMenuAddItem(edptl_torus_menu,
-                    eduiItemGreyGradPickCreate(0, colours, cbPtlApplyTorusEnv3, "Minor Radius Envelope 2"));
+    eduiMenuAddItem(edptl_torus_menu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplyTorusEnv3, "Minor Radius Envelope 2"));
     torus_env3_item = edui_last_item;
     for (i = 0; i < 8; ++i) {
         value = effect->torus_keys3[i].value;
@@ -3768,8 +3652,7 @@ void cbPtlSelGCode(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
     }
-    debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->momentum_adjustment_type =
-        (i8)(item->data - 1);
+    debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->momentum_adjustment_type = (i8)(item->data - 1);
     debkeydata[edpp_ptls[edpp_nearest].instance_id].momentum_adjuster = gencodetab[item->data - 1];
 }
 
@@ -3899,10 +3782,10 @@ void edptlcbSwitchTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
     if (edptl_switchtype_menu == NULL) {
         return;
     }
-    eduiMenuAddItem(edptl_switchtype_menu, eduiItemCheckCreate(0, colours, edpp_ptls[edpp_nearest].switch_type == 0, 1,
-                                                               edptlcbSetSwitchType, "None"));
-    eduiMenuAddItem(edptl_switchtype_menu, eduiItemCheckCreate(1, colours, edpp_ptls[edpp_nearest].switch_type == 1, 1,
-                                                               edptlcbSetSwitchType, "Global Switch"));
+    eduiMenuAddItem(edptl_switchtype_menu,
+                    eduiItemCheckCreate(0, colours, edpp_ptls[edpp_nearest].switch_type == 0, 1, edptlcbSetSwitchType, "None"));
+    eduiMenuAddItem(edptl_switchtype_menu,
+                    eduiItemCheckCreate(1, colours, edpp_ptls[edpp_nearest].switch_type == 1, 1, edptlcbSetSwitchType, "Global Switch"));
     eduiMenuAttach(parent, edptl_switchtype_menu);
     edptl_switchtype_menu->x = parent->x + 10;
     edptl_switchtype_menu->y = parent->y + 40;
@@ -3923,8 +3806,8 @@ void edptlcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         return;
     }
     eduiMenuAddItem(edptl_switch_menu, eduiItemSelCreate(1, colours, 0, 0, edptlcbSwitchTypeMenu, "Switch Type..."));
-    eduiMenuAddItem(edptl_switch_menu, eduiItemSliderCreateInt(0, colours, 0, edptlcbSetSwitchId, -1, 129,
-                                                               edpp_ptls[edpp_nearest].switch_id, "Switch ID"));
+    eduiMenuAddItem(edptl_switch_menu,
+                    eduiItemSliderCreateInt(0, colours, 0, edptlcbSetSwitchId, -1, 129, edpp_ptls[edpp_nearest].switch_id, "Switch ID"));
     eduiMenuAddItem(edptl_switch_menu, eduiItemSliderCreate(0, colours, 0, edptlcbSetSwitchVar, 0.0f, 20.0f,
                                                             edpp_ptls[edpp_nearest].switch_variable, "Switch Var"));
     eduiMenuAttach(parent, edptl_switch_menu);
@@ -4020,9 +3903,8 @@ void cbPtlColMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     eduiMenuAddItem(ptlcolmenu, eduiItemGradPickCreate(0, colours, cbPtlApplyGrad, "Colour Grad"));
     grad_item = edui_last_item;
     for (i = 0; i < 8; ++i) {
-        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_item, effect->colour_keys[i].time,
-                            effect->colour_keys[i].red / 255.0, effect->colour_keys[i].green / 255.0,
-                            effect->colour_keys[i].blue / 255.0);
+        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_item, effect->colour_keys[i].time, effect->colour_keys[i].red / 255.0,
+                            effect->colour_keys[i].green / 255.0, effect->colour_keys[i].blue / 255.0);
         if (effect->colour_keys[i].time == 1.0f) {
             break;
         }
@@ -4034,18 +3916,17 @@ void cbPtlColMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     }
     grad_alpha_item = edui_last_item;
     for (i = 0; i < 8; ++i) {
-        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_alpha_item, effect->alpha_keys[i].time,
-                            effect->alpha_keys[i].value / 255.0, effect->alpha_keys[i].value / 255.0,
-                            effect->alpha_keys[i].value / 255.0);
+        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_alpha_item, effect->alpha_keys[i].time, effect->alpha_keys[i].value / 255.0,
+                            effect->alpha_keys[i].value / 255.0, effect->alpha_keys[i].value / 255.0);
         if (effect->alpha_keys[i].time == 1.0f) {
             break;
         }
     }
     if (effect->particle_type == 7) {
-        eduiMenuAddItem(ptlcolmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeDistortX, 0.0f, 1.0f,
-                                                         effect->particle_parameter_a, "X-axis Distortion"));
-        eduiMenuAddItem(ptlcolmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeDistortY, 0.0f, 1.0f,
-                                                         effect->particle_parameter_b, "Y-axis Distortion"));
+        eduiMenuAddItem(ptlcolmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeDistortX, 0.0f, 1.0f, effect->particle_parameter_a,
+                                                         "X-axis Distortion"));
+        eduiMenuAddItem(ptlcolmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeDistortY, 0.0f, 1.0f, effect->particle_parameter_b,
+                                                         "Y-axis Distortion"));
     }
     eduiMenuAttach(parent, ptlcolmenu);
     ptlcolmenu->x = parent->x + 10;
@@ -4101,8 +3982,7 @@ void edptlcbSetSoundControl(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     data = item->data;
     sound_index = data >> 16;
     if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
-        debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->sound_data[sound_index * 3 + 1] =
-            data - (sound_index << 16);
+        debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->sound_data[sound_index * 3 + 1] = data - (sound_index << 16);
     }
     for (index = 0; index < 512; ++index) {
         if (edpp_ptls[index].instance_id == -1 || edpp_ptls[index].instance_id == 99999) {
@@ -4134,16 +4014,15 @@ void edptlcbSoundIDMenu(eduimenu_s *parent, eduiitem_s *item, u32 unused2) {
     if (edptl_soundid_menu == NULL) {
         return;
     }
-    eduiMenuAddItem(edptl_soundid_menu,
-                    eduiItemCheckCreate((item->data << 16) + 9999, colours, effect->sound_data[item->data * 3] == -1, 0,
-                                        edptlcbSetSoundID, "NONE"));
+    eduiMenuAddItem(edptl_soundid_menu, eduiItemCheckCreate((item->data << 16) + 9999, colours, effect->sound_data[item->data * 3] == -1, 0,
+                                                            edptlcbSetSoundID, "NONE"));
     for (sound = 0; sound < 1600; ++sound) {
         if (SfxInfo[sound].name == NULL) {
             continue;
         }
         selected = effect->sound_data[item->data * 3] == sound;
-        eduiMenuAddItem(edptl_soundid_menu, eduiItemCheckCreate((item->data << 16) + sound, colours, selected, 1,
-                                                                edptlcbSetSoundID, SfxInfo[sound].name));
+        eduiMenuAddItem(edptl_soundid_menu,
+                        eduiItemCheckCreate((item->data << 16) + sound, colours, selected, 1, edptlcbSetSoundID, SfxInfo[sound].name));
         if (selected == 1) {
             edptl_soundid_menu->selected = edui_last_item;
         }
@@ -4165,9 +4044,8 @@ void edptlcbSoundControlMenu(eduimenu_s *parent, eduiitem_s *item, u32 unused2) 
     if (edptl_soundcontrol_menu == NULL) {
         return;
     }
-    eduiMenuAddItem(edptl_soundcontrol_menu,
-                    eduiItemCheckCreate(item->data << 16, colours, effect->sound_data[item->data * 3 + 1] == 0, 1,
-                                        edptlcbSetSoundControl, "Off"));
+    eduiMenuAddItem(edptl_soundcontrol_menu, eduiItemCheckCreate(item->data << 16, colours, effect->sound_data[item->data * 3 + 1] == 0, 1,
+                                                                 edptlcbSetSoundControl, "Off"));
     if (edui_last_item->highlighted) {
         edptl_soundcontrol_menu->selected = edui_last_item;
     }
@@ -4217,8 +4095,7 @@ void edptlcbSoundXMenu(eduimenu_s *parent, eduiitem_s *item, u32 unused2) {
         return;
     }
     eduiMenuAddItem(edptl_soundx_menu, eduiItemSelCreate(item->data, colours, 0, 0, edptlcbSoundIDMenu, "Sound ID..."));
-    eduiMenuAddItem(edptl_soundx_menu,
-                    eduiItemSelCreate(item->data, colours, 0, 0, edptlcbSoundControlMenu, "Sound Control..."));
+    eduiMenuAddItem(edptl_soundx_menu, eduiItemSelCreate(item->data, colours, 0, 0, edptlcbSoundControlMenu, "Sound Control..."));
     eduiMenuAttach(parent, edptl_soundx_menu);
     edptl_soundx_menu->x = parent->x + 10;
     edptl_soundx_menu->y = parent->y + 40;
@@ -4318,17 +4195,14 @@ void edppInit(void) {
     eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbPageMenu, "Test Page Menu..."));
     eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbResetParticles, "Reset Particles"));
     eduiMenuAddItem(ptloptmenu, eduiItemToggleCreate(1, colours, 0, 1, cbPtlSnapToggle, "Snap"));
-    eduiMenuAddItem(ptloptmenu,
-                    eduiItemSelCreate(1, colours, 0, 0, edptlcbJumpToGameLocation, "Jump To Game Location"));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbJumpToGameLocation, "Jump To Game Location"));
 }
 
 extern void *CurTerr;
 
-void NewTerrain(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_index, f32 radius, f32 collision_radius,
-                i32 scan_flags) {
+void NewTerrain(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_index, f32 radius, f32 collision_radius, i32 scan_flags) {
     if (CurTerr != NULL) {
-        NewTerrainScaleYMask(position, movement, hit_flags, object_index, radius, collision_radius, 1.0f, 0, scan_flags,
-                             0);
+        NewTerrainScaleYMask(position, movement, hit_flags, object_index, radius, collision_radius, 1.0f, 0, scan_flags, 0);
     }
 }
 
@@ -4366,8 +4240,8 @@ i32 edppPtlChangeType(i32 index, i32 effect_index) {
             --edpp_instances_used;
             edpp_ptls[index].instance_id = -1;
         }
-        AddDebrisEffect(&edpp_ptls[index].instance_id, effect_index, edpp_ptls[index].position.x,
-                        edpp_ptls[index].position.y, edpp_ptls[index].position.z);
+        AddDebrisEffect(&edpp_ptls[index].instance_id, effect_index, edpp_ptls[index].position.x, edpp_ptls[index].position.y,
+                        edpp_ptls[index].position.z);
         if (edpp_ptls[index].instance_id != -1) {
             debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
         }

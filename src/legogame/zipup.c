@@ -168,14 +168,11 @@ static i32 ZipUpArcSinePc(f32 sin) {
 
     unknown_d = unknown_b * unknown_c + unknown_c;
 
-    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW3(unknown_b * unknown_c * unknown_a) +
+    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) * ASIN_POW3(unknown_b * unknown_c * unknown_a) +
             (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
              ASIN_NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * ASIN_POW2(unknown_b * unknown_c * unknown_a)) +
-            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW4(unknown_b * unknown_c * unknown_a) +
-            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
+            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) * ASIN_POW4(unknown_b * unknown_c * unknown_a) +
+            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) * ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
            10430.4f;
 }
 
@@ -366,8 +363,7 @@ static void ZipUpResetSinglePc(ZIPUP_PC *zipup) {
         zipup->upper_ground_height += (f64)0.005f;
         FindAnglesZX(&ShadNorm, &zipup->upper_ground_x_rotation, &zipup->upper_ground_z_rotation);
     }
-    zipup->facing_angle =
-        NuAtan2D(zipup->upper_position.x - zipup->lower_position.x, zipup->upper_position.z - zipup->lower_position.z);
+    zipup->facing_angle = NuAtan2D(zipup->upper_position.x - zipup->lower_position.x, zipup->upper_position.z - zipup->lower_position.z);
     zipup->occupant = NULL;
     zipup->flags_word = (zipup->flags_word & ~0x100) | 0xc0;
 }
@@ -396,8 +392,7 @@ extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *prog
     }
 }
 
-ZIPUP_PC *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *distance, i32 *endpoint,
-                            GAMEOBJECT *object) {
+ZIPUP_PC *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *distance, i32 *endpoint, GAMEOBJECT *object) {
     ZIPUP_PC *nearest;
     i32 index;
     i32 end;
@@ -554,8 +549,8 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 }
                 object->movement_facing_angle = object->facing_angle = object->field_0x276 =
                     NuAtan2D(destination->x - object->position.x, destination->z - object->position.z);
-                object->airborne_action_timer = NuVecXZDist(&object->position, destination, NULL) /
-                                                object->character_data->game_character->jump_duration;
+                object->airborne_action_timer =
+                    NuVecXZDist(&object->position, destination, NULL) / object->character_data->game_character->jump_duration;
                 object->velocity.x = NU_SIN_LUT(object->movement_facing_angle) * object->airborne_action_timer;
                 object->velocity.z = NU_COS_LUT(object->movement_facing_angle) * object->airborne_action_timer;
                 object->context_variant_flags &= ~0x20u;
@@ -619,8 +614,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 NuVecRotateY(&offset, &offset, (u16)-axis);
                 normalized_time = object->context_timer / ZipUpSwingDurationPc;
                 phase = normalized_time * 32768.0;
-                swing_pitch =
-                    (i32)((1.0f - (NU_SIN_LUT((i32)(phase + 16384.0)) + 1.0f) * 0.5) * zipup->pitch_adjustment);
+                swing_pitch = (i32)((1.0f - (NU_SIN_LUT((i32)(phase + 16384.0)) + 1.0f) * 0.5) * zipup->pitch_adjustment);
                 NuVecRotateX(&zipup->rider_target_position, &offset, swing_pitch);
                 NuVecRotateY(&zipup->rider_target_position, &zipup->rider_target_position, axis);
                 zipup->rider_target_position.y *= 1.0f - (1.0f - NuTrigTable[0x1000]) * NU_SIN_LUT((i32)phase);
@@ -655,8 +649,8 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             return;
         }
         if (!SuperWeirdo(object)) {
-            if ((object->character_data->model_flags & 8) == 0 ||
-                (object->character_data->game_character->flags_094 & 0x8000) != 0 || !Cheat_IsOn(13)) {
+            if ((object->character_data->model_flags & 8) == 0 || (object->character_data->game_character->flags_094 & 0x8000) != 0 ||
+                !Cheat_IsOn(13)) {
                 return;
             }
         }
@@ -671,8 +665,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     if (zipup == NULL) {
         return;
     }
-    if ((special_pressed != 0 || objInNetWaitContext(object, 0x47)) &&
-        ((zipup->flags_word & 1) == 0 || (zipup->flags_word & 0x100) == 0)) {
+    if ((special_pressed != 0 || objInNetWaitContext(object, 0x47)) && ((zipup->flags_word & 1) == 0 || (zipup->flags_word & 0x100) == 0)) {
         if ((object->character_data->model_flags & 0x100000) == 0) {
             destination = endpoint == 0 ? &zipup->upper_position : &zipup->lower_position;
             if (StartBigJump(object, destination, 0, 0.5f, 1.0f, 0)) {
@@ -713,8 +706,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             NuVecScale(&offset, &offset, ZipUpSwingOffsetLengthPc);
             NuVecAdd(&transport->swing, &transport->start, &offset);
             transport->swing.y = transport->swing.y + ZipUpSwingOffsetHeightPc;
-            object->movement_facing_angle =
-                NuAtan2D(transport->landing.x - transport->start.x, transport->landing.z - transport->start.z);
+            object->movement_facing_angle = NuAtan2D(transport->landing.x - transport->start.x, transport->landing.z - transport->start.z);
             object->field_281 = 0;
         } else {
             NUVEC end_offset;
@@ -771,8 +763,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             ((ZIPUP_PC *)object->grapple)->rider_start_offset.y =
                 rider_height * object->scaled_height + ((ZIPUP_PC *)object->grapple)->rider_start_offset.y;
             ((ZIPUP_PC *)object->grapple)->rider_start_offset.z *= scale;
-            yaw = -(u16)NuAtan2D(((ZIPUP_PC *)object->grapple)->rider_start_offset.x,
-                                 ((ZIPUP_PC *)object->grapple)->rider_start_offset.z);
+            yaw = -(u16)NuAtan2D(((ZIPUP_PC *)object->grapple)->rider_start_offset.x, ((ZIPUP_PC *)object->grapple)->rider_start_offset.z);
             start_offset = ((ZIPUP_PC *)object->grapple)->rider_start_offset;
             NuVecRotateY(&start_offset, &start_offset, yaw);
             NuVecRotateY(&end_offset, &end_offset, yaw);
@@ -781,8 +772,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             ((ZIPUP_PC *)object->grapple)->pitch_adjustment =
                 (u16)(0x4000 - ZipUpArcSinePc(start_offset.z * end_offset.z + start_offset.y * end_offset.y));
             ((ZIPUP_PC *)object->grapple)->rider_target_position = ((ZIPUP_PC *)object->grapple)->rider_start_offset;
-            NuVecAdd(&((ZIPUP_PC *)object->grapple)->rider_target_position, hook,
-                     &((ZIPUP_PC *)object->grapple)->rider_target_position);
+            NuVecAdd(&((ZIPUP_PC *)object->grapple)->rider_target_position, hook, &((ZIPUP_PC *)object->grapple)->rider_target_position);
         }
     } else {
         SetHeadTarget(object, &zipup->hook_origin, 4, 2.0f, 1.0f, 2.0f);
@@ -796,11 +786,11 @@ static void ZipUp_GetStartPoint(GAMEOBJECT *object, NUVEC *position) {
     if ((joint = character->grapple_locators[0]) != -1 && object->character_model->points_of_interest[joint] != NULL &&
         object->origin_joint_ready != 0) {
         *position = object->locator_matrices[joint].translation;
-    } else if ((joint = character->weapon_shoot_joints[0]) != -1 &&
-               object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
+    } else if ((joint = character->weapon_shoot_joints[0]) != -1 && object->character_model->points_of_interest[joint] != NULL &&
+               object->origin_joint_ready != 0) {
         *position = object->locator_matrices[joint].translation;
-    } else if ((joint = character->weapon_joints[0]) != -1 &&
-               object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
+    } else if ((joint = character->weapon_joints[0]) != -1 && object->character_model->points_of_interest[joint] != NULL &&
+               object->origin_joint_ready != 0) {
         *position = object->locator_matrices[joint].translation;
     } else {
         position->x = object->collision_position.x;
@@ -894,10 +884,7 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
         i32 index;
 
         spin_angle = ((u16)(NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0f * 65536.0f));
-        pulse_alpha =
-            NuTrigTable[((i32)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0f) >> 1) & 0x7fff] *
-                0.2f +
-            0.8f;
+        pulse_alpha = NuTrigTable[((i32)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0f) >> 1) & 0x7fff] * 0.2f + 0.8f;
 
         for (index = 0; index < world->zipup_count; ++index, ++zipup) {
             u32 flags = zipup->flags_word;
@@ -1127,8 +1114,7 @@ void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end) {
     }
 }
 
-void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, float time, float grow_time, float spacing,
-                    float scale) {
+void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, float time, float grow_time, float spacing, float scale) {
     NUVEC direction;
     f32 length;
     f32 repeats;
@@ -1328,8 +1314,7 @@ void ZipUps_DrawLines() {
                     end->position.z = (end->position.z - start->position.z) * fraction + start->position.z;
                 }
                 end->colour = 0xff808080;
-                DrawRopeSingle(&start->position, &end->position, 1.0f, ropemtl, object->context_timer, 0.2f, 3.5f,
-                               1.0f);
+                DrawRopeSingle(&start->position, &end->position, 1.0f, ropemtl, object->context_timer, 0.2f, 3.5f, 1.0f);
             }
         } else if (object->character_context == 0x35) {
             start->colour = 0xffffffff;

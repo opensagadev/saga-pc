@@ -21,8 +21,8 @@ extern "C" STREAK_HEADER_PC *fun_005a35c0(void) {
 // Takes the endpoint pointers in EDI/ESI and six stack arguments; the helper
 // stays beside its sole caller for VC8's internal ABI.
 extern "C" {
-    static void StreakBezierPointPrivate(NUVEC *result, NUVEC *start, NUVEC *end, NUVEC *start_tangent,
-                                         NUVEC *end_tangent, i32 negate_start, i32 negate_end, f32 amount) {
+    static void StreakBezierPointPrivate(NUVEC *result, NUVEC *start, NUVEC *end, NUVEC *start_tangent, NUVEC *end_tangent,
+                                         i32 negate_start, i32 negate_end, f32 amount) {
         NUVEC negative_start;
         NUVEC negative_end;
         NUVEC control_a;
@@ -43,12 +43,9 @@ extern "C" {
         f64 three_amount = static_cast<f64>(amount) * 3.0;
         f32 control_a_weight = static_cast<f32>(inverse * three_amount * inverse);
         f32 control_b_weight = static_cast<f32>(amount * three_amount * inverse);
-        result->x = start->x * start_weight + control_a.x * control_a_weight + control_b.x * control_b_weight +
-                    end->x * end_weight;
-        result->y = start->y * start_weight + control_a.y * control_a_weight + control_b.y * control_b_weight +
-                    end->y * end_weight;
-        result->z = start->z * start_weight + control_a.z * control_a_weight + control_b.z * control_b_weight +
-                    end->z * end_weight;
+        result->x = start->x * start_weight + control_a.x * control_a_weight + control_b.x * control_b_weight + end->x * end_weight;
+        result->y = start->y * start_weight + control_a.y * control_a_weight + control_b.y * control_b_weight + end->y * end_weight;
+        result->z = start->z * start_weight + control_a.z * control_a_weight + control_b.z * control_b_weight + end->z * end_weight;
     }
 }
 
@@ -124,13 +121,13 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
         for (i32 index = 1; index < header->nodes->next->next->segment_count; ++index) {
             STREAK_NODE_PC *newer = header->nodes->next;
             STREAK_NODE_PC *segment = newer->next;
-            StreakBezierPointPrivate(&segment->positions[index - 1], &newer->position, &segment->position,
-                                     &newer->start_tangent, &segment->start_tangent, 0, 1,
+            StreakBezierPointPrivate(&segment->positions[index - 1], &newer->position, &segment->position, &newer->start_tangent,
+                                     &segment->start_tangent, 0, 1,
                                      (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
             newer = header->nodes->next;
             segment = newer->next;
-            StreakBezierPointPrivate(&segment->tangents[index - 1], &newer->previous_position,
-                                     &segment->previous_position, &newer->end_tangent, &segment->end_tangent, 0, 1,
+            StreakBezierPointPrivate(&segment->tangents[index - 1], &newer->previous_position, &segment->previous_position,
+                                     &newer->end_tangent, &segment->end_tangent, 0, 1,
                                      (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
         }
     } else {
@@ -150,14 +147,13 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
     for (i32 index = 1; index < header->nodes->next->segment_count; ++index) {
         STREAK_NODE_PC *newer = header->nodes;
         STREAK_NODE_PC *segment = newer->next;
-        StreakBezierPointPrivate(&segment->positions[index - 1], &newer->position, &segment->position,
-                                 &newer->start_tangent, &segment->start_tangent, 0, 1,
+        StreakBezierPointPrivate(&segment->positions[index - 1], &newer->position, &segment->position, &newer->start_tangent,
+                                 &segment->start_tangent, 0, 1,
                                  (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
         newer = header->nodes;
         segment = newer->next;
-        StreakBezierPointPrivate(&segment->tangents[index - 1], &newer->previous_position, &segment->previous_position,
-                                 &newer->end_tangent, &segment->end_tangent, 0, 1,
-                                 (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
+        StreakBezierPointPrivate(&segment->tangents[index - 1], &newer->previous_position, &segment->previous_position, &newer->end_tangent,
+                                 &segment->end_tangent, 0, 1, (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
     }
 }
 
@@ -213,8 +209,8 @@ extern "C" void UpdateStreaks(f32 elapsed) {
 extern "C" f32 StreakAlphaScalePc;
 #define STREAK_FADE(node) MAX(0.0f, (node)->remaining_time)
 #define STREAK_ALPHA(colour, node) ((f64)(i32)((colour) >> 24) * STREAK_FADE(node) * StreakAlphaScalePc)
-#define STREAK_SET_ALPHA(colour, header, node)                                                                         \
-    (colour) = (header)->colour;                                                                                       \
+#define STREAK_SET_ALPHA(colour, header, node)                                                                                             \
+    (colour) = (header)->colour;                                                                                                           \
     ((u8 *)&(colour))[3] = (u8)(STREAK_ALPHA(colour, node) > 255.0 ? 255.0 : STREAK_ALPHA(colour, node))
 
 extern "C" void DrawStreaks(void) {
@@ -307,8 +303,8 @@ extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     for (i = 0; i < 32; ++i) {
         StreakHeadersPc[i].index = static_cast<u16>(i);
         StreakHeadersPc[i].next = &StreakHeadersPc[i + 1];
-        StreakHeadersPc[i].prev = reinterpret_cast<STREAK_HEADER_PC *>(reinterpret_cast<u32>(StreakHeadersPc) +
-                                                                       (i - 1) * sizeof(STREAK_HEADER_PC));
+        StreakHeadersPc[i].prev =
+            reinterpret_cast<STREAK_HEADER_PC *>(reinterpret_cast<u32>(StreakHeadersPc) + (i - 1) * sizeof(STREAK_HEADER_PC));
     }
     StreakHeadersPc[i - 1].next = NULL;
     StreakHeadersPc[0].prev = NULL;
@@ -316,8 +312,7 @@ extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     streakhdrs_used = NULL;
     for (i = 0; i < 128; ++i) {
         StreakNodesPc[i].next = &StreakNodesPc[i + 1];
-        StreakNodesPc[i].prev =
-            reinterpret_cast<STREAK_NODE_PC *>(reinterpret_cast<u32>(StreakNodesPc) + (i - 1) * sizeof(STREAK_NODE_PC));
+        StreakNodesPc[i].prev = reinterpret_cast<STREAK_NODE_PC *>(reinterpret_cast<u32>(StreakNodesPc) + (i - 1) * sizeof(STREAK_NODE_PC));
     }
     StreakNodesPc[i - 1].next = NULL;
     StreakNodesPc[0].prev = NULL;

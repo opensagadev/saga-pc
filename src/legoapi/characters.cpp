@@ -18,9 +18,7 @@ typedef struct CHARACTER_SCENE_CUTSYS { // size 0xc
 } CHARACTER_SCENE_CUTSYS;
 
 STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + offsetof(GAME_CUSTOMISER_START, name) == 0x7c38);
-STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + sizeof(GAME_CUSTOMISER_START) +
-                  offsetof(GAME_CUSTOMISER_START, name) ==
-              0x7c70);
+STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + sizeof(GAME_CUSTOMISER_START) + offsetof(GAME_CUSTOMISER_START, name) == 0x7c70);
 typedef void (*CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
 
 typedef struct character_callback_writer_s {
@@ -40,23 +38,26 @@ struct KILLPARTS_WORLD_SCENES {
 extern "C" {
 #pragma data_seg(".data$StartupCharCategoriesDefaultPc")
     CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefaultPc[6] = {
-        {"SuperJump", 0x0u, 0x400000u},         {"SuperStrength", 0x0u, 0x800000u},
-        {"Transformatron", 0x0u, 0x1000000u},   {"BypassSecurity", 0x0u, 0x2000000u},
-        {"HazardProtection", 0x0u, 0x4000000u}, {NULL, 0x0u, 0x0u},
+        {"SuperJump",        0x0u, 0x400000u },
+        {"SuperStrength",    0x0u, 0x800000u },
+        {"Transformatron",   0x0u, 0x1000000u},
+        {"BypassSecurity",   0x0u, 0x2000000u},
+        {"HazardProtection", 0x0u, 0x4000000u},
+        {NULL,               0x0u, 0x0u      },
     };
 #pragma data_seg()
 #pragma data_seg(".data$StartupCharCategoriesLswPc")
     CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLswPc[10] = {
-        {(char *)AreaFixUpName_Jedi, 0x8u, 0x0u},
-        {"JediBaddie", 0xcu, 0x0u},
-        {"BountyHunter", 0x1100080u, 0x0u},
-        {"Teleport", 0x40000u, 0x0u},
-        {"HighJump", 0x0u, 0x400000u},
-        {"Astromech", 0x40u, 0x0u},
-        {"Protocol", 0x20u, 0x0u},
-        {"ZipUp", 0x100080u, 0x0u},
-        {"Blaster", 0x80u, 0x0u},
-        {NULL, 0x0u, 0x0u},
+        {(char *)AreaFixUpName_Jedi, 0x8u,       0x0u     },
+        {"JediBaddie",               0xcu,       0x0u     },
+        {"BountyHunter",             0x1100080u, 0x0u     },
+        {"Teleport",                 0x40000u,   0x0u     },
+        {"HighJump",                 0x0u,       0x400000u},
+        {"Astromech",                0x40u,      0x0u     },
+        {"Protocol",                 0x20u,      0x0u     },
+        {"ZipUp",                    0x100080u,  0x0u     },
+        {"Blaster",                  0x80u,      0x0u     },
+        {NULL,                       0x0u,       0x0u     },
     };
 #pragma data_seg()
 #pragma data_seg(".data$StartupCharVariantNamesPc")
@@ -132,11 +133,10 @@ extern "C" {
     void CharScenes_LevelLoad(WORLDINFO *world) {
         for (i32 i = 0; i < CHARCOUNT; ++i) {
             ((CHARACTER_SCENE_WORLD *)world)->character_scenes[i].scene = NULL;
-            if ((KillPartsCharSceneAreaPc == NULL || KillPartsCharSceneAreaPc[i].scene == NULL) &&
-                (CDataList[i].flags & 1) != 0 && world->cutscene_sys != NULL &&
+            if ((KillPartsCharSceneAreaPc == NULL || KillPartsCharSceneAreaPc[i].scene == NULL) && (CDataList[i].flags & 1) != 0 &&
+                world->cutscene_sys != NULL &&
                 ((((CHARACTER_SCENE_CUTSYS *)world->cutscene_sys)->character_flags[i / 32] & (1 << (i & 31))) != 0)) {
-                CharScene_Load(&((CHARACTER_SCENE_WORLD *)world)->character_scenes[i], i, &world->giz_buffer,
-                               world->buffer_end);
+                CharScene_Load(&((CHARACTER_SCENE_WORLD *)world)->character_scenes[i], i, &world->giz_buffer, world->buffer_end);
             }
         }
     }
@@ -287,8 +287,8 @@ extern "C" {
         }
     }
 
-    void DrawCharIcon(i32 character_id, f32 x, f32 y, f32 z, f32 scale, i32 frame_object_id, f32 character_alpha,
-                      f32 frame_alpha, i32 draw_character, NUSPECIALHANDLE *override_special) {
+    void DrawCharIcon(i32 character_id, f32 x, f32 y, f32 z, f32 scale, i32 frame_object_id, f32 character_alpha, f32 frame_alpha,
+                      i32 draw_character, NUSPECIALHANDLE *override_special) {
         WORLDINFO *world = WorldInfo_CurrentlyActive();
         NUSPECIALHANDLE special;
         if (ObjTabList == NULL || world == NULL) {
@@ -304,8 +304,7 @@ extern "C" {
         }
         if (draw_character != 0) {
             if (override_special != NULL && NuSpecialExistsFn(override_special) != 0) {
-                DrawPanel3DObject(x, y, (f32)(z + 1.0), scale, scale, scale, 0, 0, 0, override_special, 0,
-                                  character_alpha);
+                DrawPanel3DObject(x, y, (f32)(z + 1.0), scale, scale, scale, 0, 0, 0, override_special, 0, character_alpha);
             } else {
                 i32 icon_object_id;
                 if (character_id == -1) {
@@ -329,8 +328,7 @@ extern "C" {
                         special = world->level_objects[icon_object_id].special;
                     }
                     if (NuSpecialExistsFn(&special) != 0) {
-                        DrawPanel3DObject(x, y, (f32)(z + 1.0), scale, scale, scale, 0, 0, 0, &special, 0,
-                                          character_alpha);
+                        DrawPanel3DObject(x, y, (f32)(z + 1.0), scale, scale, scale, 0, 0, 0, &special, 0, character_alpha);
                     }
                 }
             }
@@ -460,16 +458,14 @@ extern "C" {
         }
     }
 
-    void GameLoadCharacterModels(APICHARACTERMODELLIST *list, i32 append_models, VARIPTR *buffer, VARIPTR *end,
-                                 i32 area_models, i32 area) {
+    void GameLoadCharacterModels(APICHARACTERMODELLIST *list, i32 append_models, VARIPTR *buffer, VARIPTR *end, i32 area_models, i32 area) {
         if (area_models != 0 && CutScenePlayer_Active() != NULL && area != -1 && &ADataList[area] != HUB_ADATA) {
             area_models = 0;
         }
         APILoadCharacterModels(list, append_models, buffer, *end, area_models);
     }
 
-    i32 InModelListDataFlags(APICHARACTERMODELLIST *list, u32 model_flags, u32 game_flags, i32 require_hats,
-                             i32 reject_hidden) {
+    i32 InModelListDataFlags(APICHARACTERMODELLIST *list, u32 model_flags, u32 game_flags, i32 require_hats, i32 reject_hidden) {
         if (list != NULL) {
             for (; list->model_id != -1; ++list) {
                 i32 id;
@@ -477,8 +473,7 @@ extern "C" {
                     continue;
                 }
                 id = list->model_id;
-                if ((GCDataList[id].flags_090 & game_flags) != game_flags ||
-                    (CDataList[id].model_flags & model_flags) != model_flags ||
+                if ((GCDataList[id].flags_090 & game_flags) != game_flags || (CDataList[id].model_flags & model_flags) != model_flags ||
                     (reject_hidden != 0 && (GCDataList[id].flags_094 & 0x4000) != 0) ||
                     ((model_flags & 8) != 0 && (GCDataList[id].flags_094 & 0x8000) != 0)) {
                     continue;
@@ -491,8 +486,7 @@ extern "C" {
         return 0;
     }
 
-    i32 RandomIDFromFlags(u32 model_flags, u32 game_flags, i32 require_hat, APICHARACTERMODELLIST *excluded,
-                          i32 exclude_hidden) {
+    i32 RandomIDFromFlags(u32 model_flags, u32 game_flags, i32 require_hat, APICHARACTERMODELLIST *excluded, i32 exclude_hidden) {
         i16 candidates[500];
         i32 count = 0;
         i32 id;
@@ -508,8 +502,7 @@ extern "C" {
             }
             runtime = character->game_character;
             if (character->move_fn == Move_DEFAULT || (runtime->flags_090 & game_flags) != game_flags ||
-                (character->model_flags & model_flags) != model_flags ||
-                (exclude_hidden != 0 && (runtime->flags_094 & 0x4000) != 0) ||
+                (character->model_flags & model_flags) != model_flags || (exclude_hidden != 0 && (runtime->flags_094 & 0x4000) != 0) ||
                 ((model_flags & 8) != 0 && (runtime->flags_094 & 0x8000) != 0) || Collection_Got(id) == 0 ||
                 (require_hat != 0 && CanWearHatsInFreePlay(id) == 0)) {
                 continue;

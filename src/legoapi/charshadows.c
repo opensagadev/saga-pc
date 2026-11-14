@@ -42,8 +42,7 @@ void CharShadows_Update(void) {
             if (count >= 5) {
                 break;
             }
-            if ((object->shadow_joint_mask & (1u << locator)) == 0 ||
-                object->character_model->points_of_interest[locator] == NULL) {
+            if ((object->shadow_joint_mask & (1u << locator)) == 0 || object->character_model->points_of_interest[locator] == NULL) {
                 continue;
             }
             slot = &packet->shadows[count];
@@ -106,8 +105,8 @@ void CharShadows_Draw(void) {
         if ((object->flags_e20 & 0x20) != 0 && (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000) == 0) {
             continue;
         }
-        if ((object->character_data->model_flags & 0x10000) != 0 || !(object->shadow_opacity > 0.0f) ||
-            object->model_draw_result == 0 || object->shadow_joint_mask == 0 || (object->flags_ef0 & 0x4000000) != 0 ||
+        if ((object->character_data->model_flags & 0x10000) != 0 || !(object->shadow_opacity > 0.0f) || object->model_draw_result == 0 ||
+            object->shadow_joint_mask == 0 || (object->flags_ef0 & 0x4000000) != 0 ||
             (U64_PAIR(&CInfo[object->character_context].flags) & 0x20000) != 0) {
             continue;
         }
@@ -133,8 +132,7 @@ void CharShadows_Draw(void) {
             if (count >= 5) {
                 break;
             }
-            if ((object->shadow_joint_mask & (1u << locator)) == 0 ||
-                object->character_model->points_of_interest[locator] == NULL) {
+            if ((object->shadow_joint_mask & (1u << locator)) == 0 || object->character_model->points_of_interest[locator] == NULL) {
                 continue;
             }
             if ((f64)slot->position.y != 2000000.0 && slot->opacity > 0.0f &&

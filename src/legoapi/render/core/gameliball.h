@@ -489,8 +489,7 @@ extern "C" {
     struct TERRAIN_SKIN_STREAM;
     struct TERRAIN_SKIN_INFO;
     struct TERRAIN_SKIN_BLEND;
-    void TerrainSkinPrepareGroupPc(i32 group_index, struct TERRAIN_SKIN_STREAM *output,
-                                   const struct TERRAIN_SKIN_INFO *info);
+    void TerrainSkinPrepareGroupPc(i32 group_index, struct TERRAIN_SKIN_STREAM *output, const struct TERRAIN_SKIN_INFO *info);
     void TerrainSkinInitArenaPc(struct TERRAIN_SKIN_INFO *base, u8 *end, i32 capacity);
     void TerrainSkinResetArenaPc(void);
     u8 *TerrainSkinRebuildIndexPc(i32 pool_slots);
@@ -630,11 +629,10 @@ extern "C" {
     void DebrisEmitterOrientationMtx(i32, NUMTX *);
     void DebrisShift(NUMTX *);
     extern struct debris_collision_entry_s *toruscolldata;
-    i32 AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y,
-                                           NUMTX *orientation, f32 scale);
+    i32 AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y, NUMTX *orientation, f32 scale);
     struct TERRAIN_SET_PC;
-    i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const struct TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows,
-                                f32 scale, i32 source_scene_index, i16 mode, struct TERRAIN_SET_PC *source_terrain);
+    i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const struct TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale,
+                                i32 source_scene_index, i16 mode, struct TERRAIN_SET_PC *source_terrain);
     i32 AddPickupTerrRot(i32, NUMTX *, NUMTX *, i32);
 #ifdef __cplusplus
 }
@@ -703,8 +701,7 @@ extern "C" {
 #endif
     extern struct debris_key_s *debkeydata;
     void AudioGroup_Parse(struct nufpar_pc_s *);
-    void edbitsDrawCircleTilted(struct nuvec_s *arg0, f32 arg1, i32 arg2, struct PC_SCENE_MTL_VIEW *arg3, i32 arg4,
-                                i32 arg5);
+    void edbitsDrawCircleTilted(struct nuvec_s *arg0, f32 arg1, i32 arg2, struct PC_SCENE_MTL_VIEW *arg3, i32 arg4, i32 arg5);
 #ifdef __cplusplus
 }
 #endif

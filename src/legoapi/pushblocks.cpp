@@ -202,8 +202,8 @@ extern "C" void ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
 
 extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *object, float range) {
     WORLDINFO *push_world = world;
-    if (push_world == NULL || push_world->push_blocks == NULL || push_world->push_block_count == 0 ||
-        LEGOCONTEXT_PUSH == -1 || object->character_context != LEGOCONTEXT_PUSH) {
+    if (push_world == NULL || push_world->push_blocks == NULL || push_world->push_block_count == 0 || LEGOCONTEXT_PUSH == -1 ||
+        object->character_context != LEGOCONTEXT_PUSH) {
         return NULL;
     }
     f32 max_y = object->upper_position.y;
@@ -215,17 +215,13 @@ extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *o
     min_y += adjust;
     i32 mode;
     PUSH_BLOCK_PC *nearest = NULL;
-    if (facing == 0 || facing > 0x10000 - PushBlockFacingTolerancePc ||
-        (facing > 0 && facing < PushBlockFacingTolerancePc)) {
+    if (facing == 0 || facing > 0x10000 - PushBlockFacingTolerancePc || (facing > 0 && facing < PushBlockFacingTolerancePc)) {
         mode = 2;
-    } else if (facing == 0x4000 ||
-               (facing > 0x4000 - PushBlockFacingTolerancePc && facing < 0x4000 + PushBlockFacingTolerancePc)) {
+    } else if (facing == 0x4000 || (facing > 0x4000 - PushBlockFacingTolerancePc && facing < 0x4000 + PushBlockFacingTolerancePc)) {
         mode = 0;
-    } else if (facing == 0x8000 ||
-               (facing > 0x8000 - PushBlockFacingTolerancePc && facing < 0x8000 + PushBlockFacingTolerancePc)) {
+    } else if (facing == 0x8000 || (facing > 0x8000 - PushBlockFacingTolerancePc && facing < 0x8000 + PushBlockFacingTolerancePc)) {
         mode = 3;
-    } else if (facing == 0xc000 ||
-               (facing > 0xc000 - PushBlockFacingTolerancePc && facing < 0xc000 + PushBlockFacingTolerancePc)) {
+    } else if (facing == 0xc000 || (facing > 0xc000 - PushBlockFacingTolerancePc && facing < 0xc000 + PushBlockFacingTolerancePc)) {
         mode = 1;
     } else {
         return NULL;
@@ -380,8 +376,7 @@ extern "C" i32 PushBlock(GAMEOBJECT *object) {
 
 extern "C" {
 
-    PUSH_BLOCK_PC *BlockInBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 excluded,
-                                PUSH_BLOCK_PC **support) {
+    PUSH_BLOCK_PC *BlockInBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 excluded, PUSH_BLOCK_PC **support) {
         WORLDINFO *world = opaque_world;
         PUSH_BLOCK_PC *block = opaque_block;
         NUVEC *position = block->position;
@@ -509,8 +504,8 @@ extern "C" {
                 test.max.x = test.max.x - PushBlockGapEpsilonPc;
                 test.max.z = test.max.z - PushBlockGapEpsilonPc;
             }
-            if (!(other_position->x >= test.min.x) || !(other_position->x <= test.max.x) ||
-                !(other_position->z >= test.min.z) || !(other_position->z <= test.max.z)) {
+            if (!(other_position->x >= test.min.x) || !(other_position->x <= test.max.x) || !(other_position->z >= test.min.z) ||
+                !(other_position->z <= test.max.z)) {
                 continue;
             }
             other->snap_origin = *other_position;
@@ -548,11 +543,9 @@ extern "C" {
             block->packed_state_flags |= 0x400u;
         } else {
             MoveBlocksOverBlock(opaque_world, opaque_block, index, &delta);
-            if (block->pushing_object != NULL &&
-                (PushblocksFabsPc(delta.x) > 0.001f || PushblocksFabsPc(delta.z) > 0.001f) &&
+            if (block->pushing_object != NULL && (PushblocksFabsPc(delta.x) > 0.001f || PushblocksFabsPc(delta.z) > 0.001f) &&
                 NuFmod(GameTimer.time_elapsed, PushRumblePeriodPc) < PushRumbleWindowPc) {
-                NewRumble(block->pushing_object->pad->bound_pad,
-                          (f32)((f64)qrand() * 0.000015259021893143654 * (f64)0.05f), 0);
+                NewRumble(block->pushing_object->pad->bound_pad, (f32)((f64)qrand() * 0.000015259021893143654 * (f64)0.05f), 0);
             }
         }
         if ((block->packed_state_flags & 8u) != 0) {
@@ -722,15 +715,9 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
                     NUVEC *position = p->position;
                     i32 angle = static_cast<i32>(16384.0 + (static_cast<f64>(fraction) * 16384.0 + 49152.0));
                     fraction = NuTrigTable[(angle >> 1) & 0x7fff];
-                    position->x =
-                        p->snap_origin.x +
-                        (p->snap_positions[(p->packed_state_flags >> 15) & 7].x - p->snap_origin.x) * fraction;
-                    position->y =
-                        p->snap_origin.y +
-                        (p->snap_positions[(p->packed_state_flags >> 15) & 7].y - p->snap_origin.y) * fraction;
-                    position->z =
-                        p->snap_origin.z +
-                        (p->snap_positions[(p->packed_state_flags >> 15) & 7].z - p->snap_origin.z) * fraction;
+                    position->x = p->snap_origin.x + (p->snap_positions[(p->packed_state_flags >> 15) & 7].x - p->snap_origin.x) * fraction;
+                    position->y = p->snap_origin.y + (p->snap_positions[(p->packed_state_flags >> 15) & 7].y - p->snap_origin.y) * fraction;
+                    position->z = p->snap_origin.z + (p->snap_positions[(p->packed_state_flags >> 15) & 7].z - p->snap_origin.z) * fraction;
                     NuSpecialUpdate(&p->special);
                     for (i32 j = 0; j < p->end_position_count; ++j) {
                         NUVEC *translation = &NuSpecialGetInstanceMtx(&p->end_position_specials[j])->translation;
@@ -788,8 +775,8 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
                 }
             }
         }
-        if (p->flag_006 == 0 && (((p->packed_state_flags & 2u) != 0 && p->flag_000 == 0) ||
-                                 p->snap_origin.x != p->position->x || p->snap_origin.z != p->position->z)) {
+        if (p->flag_006 == 0 && (((p->packed_state_flags & 2u) != 0 && p->flag_000 == 0) || p->snap_origin.x != p->position->x ||
+                                 p->snap_origin.z != p->position->z)) {
             p->velocity.x = p->velocity.z = p->target_velocity.x = p->target_velocity.z = 0.0f;
         }
         if (p->flag_000 == 0 && (p->packed_state_flags & 8u) == 0 && p->flag_006 == 0) {
@@ -808,8 +795,7 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
                 if ((p->packed_state_flags & 0x40u) == 0) {
                     p->target_velocity.x = p->target_velocity.z = 0.0f;
                 }
-                if (PushblocksFabsPc(p->pushing_object->target_velocity.x) >
-                    PushblocksFabsPc(p->pushing_object->target_velocity.z)) {
+                if (PushblocksFabsPc(p->pushing_object->target_velocity.x) > PushblocksFabsPc(p->pushing_object->target_velocity.z)) {
                     p->target_velocity.x = FRAMETIME * p->pushing_object->target_velocity.x;
                     p->target_velocity.z = p->velocity.z = 0.0f;
                 } else {
@@ -851,8 +837,7 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK_PC *p = &world->push_blocks[index];
-        if ((p->packed_state_flags & 0x40000u) != 0 && (p->packed_state_flags & 0x06000100u) == 0 &&
-            (p->packed_state_flags & 0x69u) != 0) {
+        if ((p->packed_state_flags & 0x40000u) != 0 && (p->packed_state_flags & 0x06000100u) == 0 && (p->packed_state_flags & 0x69u) != 0) {
             MoveBlocks(world, p, index, &p->velocity);
         }
     }
@@ -1003,8 +988,7 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
             }
         } else if ((p->packed_state_flags & 1u) != 0) {
             if ((p->packed_state_flags & 2u) == 0 && p->pushing_object != NULL) {
-                GameAudio_PlaySfx(71, &p->pushing_object->collision_position,
-                                  GameAudio_GetPlrSfxBits(p->pushing_object), 0);
+                GameAudio_PlaySfx(71, &p->pushing_object->collision_position, GameAudio_GetPlrSfxBits(p->pushing_object), 0);
             }
             if (PushBlockHintIdPc != -1 && p->pushing_object != NULL && (p->pushing_object->flags_1fc_word & 1u) != 0 &&
                 (p->pushing_object->flags_1fc_word & 0x80u) != 0) {
@@ -1059,8 +1043,8 @@ extern "C" PUSH_BLOCK_PC *NearestPushBlock(WORLDINFO *opaque_world, NUVEC *posit
             continue;
         }
         NUVEC *candidate = block->position;
-        if (candidate->x < minimum.x || candidate->x > maximum.x || candidate->z < minimum.z ||
-            candidate->z > maximum.z || candidate->y < minimum.y || candidate->y > maximum.y) {
+        if (candidate->x < minimum.x || candidate->x > maximum.x || candidate->z < minimum.z || candidate->z > maximum.z ||
+            candidate->y < minimum.y || candidate->y > maximum.y) {
             continue;
         }
         f32 distance = NuVecDistSqr(position, candidate, NULL);
@@ -1085,8 +1069,7 @@ extern "C" {
         }
         for (index = 0; index < 8; ++index) {
             GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
-            if (object != NULL && (object->flags_1fc & 0x80) != 0 &&
-                object->character_model->model_data_b[LEGOACT_PUSH] != NULL &&
+            if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->character_model->model_data_b[LEGOACT_PUSH] != NULL &&
                 NearestPushBlock(WORLD, &object->collision_position, 2.0f) != NULL) {
                 return 1;
             }
@@ -1323,8 +1306,8 @@ static i32 edpush_Load(void *world_ptr, void *) {
                     EdFileRead(special_name, EdFileReadChar());
                     special_name[16] = '\0';
                     void *gizmo_sys = world->gizmo_sys;
-                    if (Gizmo_FindNuSpecial(world->current_gscn, &block->end_position_specials[index], special_name, 1,
-                                            gizmo_sys, const_cast<char *>("PushBlockLinkObject"), block->name) == 0) {
+                    if (Gizmo_FindNuSpecial(world->current_gscn, &block->end_position_specials[index], special_name, 1, gizmo_sys,
+                                            const_cast<char *>("PushBlockLinkObject"), block->name) == 0) {
                         --block->end_position_count;
                     }
                 }
@@ -1442,16 +1425,15 @@ extern "C" void GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
     RunOutOfPosTabSpacePc = 0;
     pushposincrease = 0;
     world->push_block_positions = static_cast<NUVEC *>(world->giz_buffer.void_ptr);
-    world->giz_buffer.addr =
-        (world->giz_buffer.addr + world->current_level->max_pushblock_endpos * sizeof(NUVEC) + 3) & ~3u;
+    world->giz_buffer.addr = (world->giz_buffer.addr + world->current_level->max_pushblock_endpos * sizeof(NUVEC) + 3) & ~3u;
     PUSH_BLOCK_PC *block = world->push_blocks;
     ResetPushProgress(opaque, progress);
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         block->animation_positions = 0;
         NUINSTANIM *animation = static_cast<NUINSTANIM *>(NuSpecialGetInstAnim(&block->special));
         if (animation != NULL) {
-            i32 end_frame = static_cast<i32>(NuAnimEndFrameOld(
-                static_cast<NUGSCN *>(block->special.scene)->instance_animation_data[animation->animation_index]));
+            i32 end_frame = static_cast<i32>(
+                NuAnimEndFrameOld(static_cast<NUGSCN *>(block->special.scene)->instance_animation_data[animation->animation_index]));
             block->animation_positions = end_frame;
             block->output_count = static_cast<u8>(block->animation_positions);
             i32 required = world->push_block_position_count + block->animation_positions;
@@ -1466,8 +1448,7 @@ extern "C" void GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
             if (block->animation_positions > 0 && RunOutOfPosTabSpacePc == 0) {
                 block->snap_positions = &world->push_block_positions[world->push_block_position_count];
                 f32 frame = 1.0f;
-                for (i32 position = 0; position < static_cast<i32>(block->animation_positions);
-                     ++position, frame += 1.0) {
+                for (i32 position = 0; position < static_cast<i32>(block->animation_positions); ++position, frame += 1.0) {
                     EvalAnim(&block->special, frame, &evaluated, 0);
                     block->snap_positions[position] = *reinterpret_cast<NUVEC *>(&evaluated.m30);
                     evaluated = *NuSpecialGetMtx(&block->special);

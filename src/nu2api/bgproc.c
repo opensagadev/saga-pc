@@ -234,8 +234,7 @@ void bgProcInit(void) {
         bgproc_work_event = CreateEventA(NULL, FALSE, FALSE, "BGWorkToDo");
         bgproc_resume_event = CreateEventA(NULL, TRUE, TRUE, "BGFreeze");
         bgproc_active = NULL;
-        bgproc_thread_handle_pc =
-            CreateThread(NULL, 0x10000, bgProcWorkerPc, NULL, CREATE_SUSPENDED, &bgproc_thread_id);
+        bgproc_thread_handle_pc = CreateThread(NULL, 0x10000, bgProcWorkerPc, NULL, CREATE_SUSPENDED, &bgproc_thread_id);
         SetThreadPriority(bgproc_thread_handle_pc, -1);
         ResumeThread(bgproc_thread_handle_pc);
     }

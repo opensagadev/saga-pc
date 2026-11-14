@@ -209,8 +209,7 @@ extern "C" {
     extern u32 eduimenu_outline_colour;
     extern u32 eduimenu_selected_outline_colour;
     struct eduiitem_s *eduiItemColourPickCreate(u32 arg0, void *arg1, void *arg2, char *arg3);
-    struct eduiitem_s *eduiItemSelWithClipColourCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
-                                                       char *text);
+    struct eduiitem_s *eduiItemSelWithClipColourCreate(u32 data, void *colours, i32 selected, i32 group, void *callback, char *text);
     extern struct edcam_s *gp_cam;
     extern i32 ed_init;
     void edmainClose(void);
@@ -220,12 +219,12 @@ extern "C" {
     void eduiInitMaterials(void);
     void cbGradChange(void);
     struct eduiitem_s *eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text);
-    struct eduiitem_s *eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum,
-                                            f32 maximum, f32 value, char *text);
+    struct eduiitem_s *eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum, f32 maximum, f32 value,
+                                            char *text);
     struct eduiitem_s *eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, void *callback, char *text);
     struct eduiitem_s *eduiItemTextPickCreate(u32 data, void *colours, void *callback, char *text);
-    struct eduiitem_s *eduiItemSliderCreateInt(u32 data, void *colours, i32 group, void *callback, i32 minimum,
-                                               i32 maximum, i32 value, char *text);
+    struct eduiitem_s *eduiItemSliderCreateInt(u32 data, void *colours, i32 group, void *callback, i32 minimum, i32 maximum, i32 value,
+                                               char *text);
     i32 eduiItemSetText(struct eduiitem_s *item, char *text);
     extern char *textrow[4];
     extern i32 numInteracts;
@@ -418,13 +417,11 @@ extern "C" {
     i32 eduiMenuProcess(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
     void eduiItemSliderSetVal(struct edui_slider_s *item, f32 value);
     void eduicbItemSliderDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
-    i32 eduicbProcessColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
-                                  struct FRAME_PAD_PC *arg3);
+    i32 eduicbProcessColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
     i32 eduicbProcessSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
     i32 eduicbProcessSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
     i32 eduicbRenderCheck(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
-    i32 eduicbRenderColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
-                                 i32 arg5);
+    i32 eduicbRenderColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     i32 eduicbRenderSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     i32 eduicbRenderSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     i32 eduicbRenderSliderInt(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
@@ -535,14 +532,12 @@ struct edui_colour_pick_s {                        // size 0x74
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct edui_gradient_node_s *eduiGradStageAdd(struct edui_gradient_pick_s *item, f32 time, f32 hue, f32 saturation,
-                                                  f32 value);
-    struct eduiitem_s *eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiItemCallback callback,
-                                                  char *text);
-    struct eduiitem_s *eduiItemToggleCreate(size_t data, const void *colours, i32 selected, i32 group,
-                                            EdUiItemCallback callback, char *text);
-    struct eduiitem_s *eduiItemCheckCreate(size_t data, const void *colours, i32 selected, i32 group,
-                                           EdUiItemCallback callback, char *text);
+    struct edui_gradient_node_s *eduiGradStageAdd(struct edui_gradient_pick_s *item, f32 time, f32 hue, f32 saturation, f32 value);
+    struct eduiitem_s *eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiItemCallback callback, char *text);
+    struct eduiitem_s *eduiItemToggleCreate(size_t data, const void *colours, i32 selected, i32 group, EdUiItemCallback callback,
+                                            char *text);
+    struct eduiitem_s *eduiItemCheckCreate(size_t data, const void *colours, i32 selected, i32 group, EdUiItemCallback callback,
+                                           char *text);
     i32 eduicbInteractSel(struct edui_interact_s *arg0);
     void eduiItemFilePickSetFmt(struct edui_file_pick_s *item, char *format);
     extern struct edui_interact_s *eduiInteractLocked;

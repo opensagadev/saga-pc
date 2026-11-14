@@ -3,8 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void ShaderCompilerBasePc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor,
-                                   ShaderCompilerDictionaryPc *dictionary) {
+void ShaderCompilerBasePc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor, ShaderCompilerDictionaryPc *dictionary) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     filter.Initialize(descriptor, NULL, 0, 0);
     Configure(&filter, dictionary);
@@ -18,8 +17,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     const char *uv_names[4] = {"varying_uvSet0", "varying_uvSet1", "varying_uvSet2", "varying_uvSet3"};
     const char *vertex_uvs[4] = {"vs_uvSet0", "vs_uvSet1", "vs_uvSet2", "vs_uvSet3"};
     const char *combine[5] = {"DISABLE", "COMBINE_OVER", "COMBINE_ADD", "COMBINE_SUBTRACT", "COMBINE_MULTIPLY"};
-    const char *numbers[17] = {"0", "1",  "2",  "3",  "4",  "5",  "6",  "7", "8",
-                               "9", "10", "11", "12", "13", "14", "15", "16"};
+    const char *numbers[17] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"};
     if (profile == 4) {
         definitions->AddDefinition("VERTEX_SHADER_VERSION", "30", 0);
         definitions->AddDefinition("PIXEL_SHADER_VERSION", "30", 0);
@@ -50,9 +48,8 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     if (nvidia_profile) {
         if ((filter->descriptor->layer_flags & 0x400000) && (filter->descriptor->vertex_format & 0x2000000)) {
             definitions->AddDefinition("FUNC_pipePosition",
-                                       filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000)
-                                           ? "VERTEX_TRANSFORM_PLANT2"
-                                           : "VERTEX_TRANSFORM_PLANT",
+                                       filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000) ? "VERTEX_TRANSFORM_PLANT2"
+                                                                                                           : "VERTEX_TRANSFORM_PLANT",
                                        0);
             definitions->AddDefinition("WIND", NULL, 0);
         }
@@ -71,8 +68,8 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         }
     }
     if (!nvidia_profile || filter->variant != 0 || !(filter->descriptor->layer_flags & 0x2000)) {
-        if (0 == filter->variant && (filter->descriptor->layer_flags & 0x20000000) &&
-            (filter->descriptor->vertex_format & 0x30000) && !(filter->descriptor->vertex_format & 0x400000)) {
+        if (0 == filter->variant && (filter->descriptor->layer_flags & 0x20000000) && (filter->descriptor->vertex_format & 0x30000) &&
+            !(filter->descriptor->vertex_format & 0x400000)) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_TRANSFORM_REFRACTED_GLASS_SKINNING", 0);
             definitions->AddDefinition("FUNC_computeNormal", "VERTEX_TRANSFORM_SKINNING", 0);
             definitions->AddDefinition("FUNC_computeTangent", "VERTEX_TRANSFORM_SKINNING", 0);
@@ -105,16 +102,13 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     } else {
         definitions->AddDefinition("SURFACE_TYPE", "SURFACE_SMOOTH", 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 3) &&
-        filter->descriptor->normal_threshold > filter->parameter) {
-        definitions->AddDefinition(
-            "SURFACE_TYPE2", filter->descriptor->layer_flags & 2 ? "SURFACE_PARALLAX_MAP" : "SURFACE_NORMAL_MAP", 0);
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & 3) && filter->descriptor->normal_threshold > filter->parameter) {
+        definitions->AddDefinition("SURFACE_TYPE2", filter->descriptor->layer_flags & 2 ? "SURFACE_PARALLAX_MAP" : "SURFACE_NORMAL_MAP", 0);
         definitions->AddDefinition("LAYER1_UVSET", uv_names[descriptor->sampler_indices[2] - 1], 1);
     } else {
         definitions->AddDefinition("SURFACE_TYPE2", "SURFACE_SMOOTH", 0);
     }
-    if ((filter->variant == 0 || filter->descriptor->override_mode != 0) &&
-        (filter->descriptor->vertex_format & 0x100)) {
+    if ((filter->variant == 0 || filter->descriptor->override_mode != 0) && (filter->descriptor->vertex_format & 0x100)) {
         definitions->AddDefinition("LAYER0_COLORSET", "0", 0);
     }
     if (filter->HasLayer(0)) {
@@ -132,8 +126,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     // The three layer paths are distinct and ordered. Their record indices are fixed 1,2,3.
     if (filter->HasLayer(1) && profile != 1) {
         definitions->AddDefinition("COMBINE_OP_1", combine[descriptor->blend_ops[0]], 1);
-        if ((filter->variant == 0 || filter->descriptor->override_mode != 0) &&
-            ((filter->descriptor->vertex_format >> 9) & 3) >= 1) {
+        if ((filter->variant == 0 || filter->descriptor->override_mode != 0) && ((filter->descriptor->vertex_format >> 9) & 3) >= 1) {
             definitions->AddDefinition("LAYER1_ALPHA", NULL, 0);
             definitions->AddDefinition("LAYER1_COLORSET", "varying_colorSet1", 1);
         }
@@ -146,8 +139,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     }
     if (filter->HasLayer(2) && profile != 1) {
         definitions->AddDefinition("COMBINE_OP_2", combine[descriptor->blend_ops[1]], 1);
-        if ((0 == filter->variant || filter->descriptor->override_mode != 0) &&
-            ((filter->descriptor->vertex_format >> 9) & 3) >= 2) {
+        if ((0 == filter->variant || filter->descriptor->override_mode != 0) && ((filter->descriptor->vertex_format >> 9) & 3) >= 2) {
             definitions->AddDefinition("LAYER2_ALPHA", NULL, 0);
             definitions->AddDefinition("LAYER1_COLORSET", "varying_colorSet1", 1);
         }
@@ -160,8 +152,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     }
     if (filter->HasLayer(3) && profile != 1) {
         definitions->AddDefinition("COMBINE_OP_3", combine[descriptor->blend_ops[2]], 1);
-        if ((filter->variant == 0 || filter->descriptor->override_mode != 0) &&
-            ((filter->descriptor->vertex_format >> 9) & 3) > 2) {
+        if ((filter->variant == 0 || filter->descriptor->override_mode != 0) && ((filter->descriptor->vertex_format >> 9) & 3) > 2) {
             definitions->AddDefinition("LAYER3_ALPHA", NULL, 0);
             definitions->AddDefinition("LAYER1_COLORSET", "varying_colorSet1", 1);
         }
@@ -183,16 +174,14 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
                 definitions->AddDefinition("ANISO_FLIP", NULL, 0);
             }
         } else {
-            definitions->AddDefinition("LIGHTING_STAGE",
-                                       filter->HasPhongLighting() ? "LIGHTING_PHONG" : "LIGHTING_LAMBERT", 0);
+            definitions->AddDefinition("LIGHTING_STAGE", filter->HasPhongLighting() ? "LIGHTING_PHONG" : "LIGHTING_LAMBERT", 0);
         }
     } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x80000000)) {
         definitions->AddDefinition("PRELIGHT_FX", NULL, 0);
         if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x18)) {
             definitions->AddDefinition("PRELIGHT_FX_LIVE_SPECULAR", NULL, 0);
         }
-        if (filter->variant == 0 && !(filter->descriptor->layer_flags & 0xa0000) &&
-            (filter->descriptor->layer_flags & 0x10)) {
+        if (filter->variant == 0 && !(filter->descriptor->layer_flags & 0xa0000) && (filter->descriptor->layer_flags & 0x10)) {
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_ANISO", 0);
             if (filter->HasAnisoFlip()) {
                 definitions->AddDefinition("ANISO_FLIP", NULL, 0);
@@ -200,14 +189,12 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 0xa0000)) {
             definitions->AddDefinition("LIGHTING_STAGE", "DISABLE", 0);
         } else {
-            definitions->AddDefinition("LIGHTING_STAGE",
-                                       filter->HasPhongLighting() ? "LIGHTING_PHONG" : "LIGHTING_LAMBERT", 0);
+            definitions->AddDefinition("LIGHTING_STAGE", filter->HasPhongLighting() ? "LIGHTING_PHONG" : "LIGHTING_LAMBERT", 0);
         }
     } else {
         definitions->AddDefinition("LIGHTING_STAGE", "DISABLE", 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000) &&
-        !(filter->descriptor->layer_flags & 0x400000) &&
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000) && !(filter->descriptor->layer_flags & 0x400000) &&
         ((i32)filter->descriptor->flags >= 0 || !(filter->descriptor->flags & 0x800000))) {
         definitions->AddDefinition("CAR_PAINT", NULL, 0);
     }
@@ -226,9 +213,8 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
             definitions->AddDefinition("LIGHTMAP_UVSET", uv_names[descriptor->texture_units - 1], 1);
         }
         definitions->AddDefinition("LIGHTMAP_STAGE",
-                                   !PcWindowOptions.usehires ||
-                                           (filter->variant == 0 && (i32)filter->descriptor->flags < 0 &&
-                                            (filter->descriptor->flags & 0x800000))
+                                   !PcWindowOptions.usehires || (filter->variant == 0 && (i32)filter->descriptor->flags < 0 &&
+                                                                 (filter->descriptor->flags & 0x800000))
                                        ? "LIGHTMAP_SMOOTH"
                                        : "LIGHTMAP_DIRECTIONAL",
                                    0);
@@ -236,8 +222,8 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         definitions->AddDefinition("LIGHTMAP_STAGE", "DISABLE", 0);
     }
     bool environment = false;
-    if (filter->variant == 0 && ((filter->descriptor->layer_flags & 0x20) ||
-                                 ((filter->descriptor->layer_flags & 0x60000000) && profile != 1))) {
+    if (filter->variant == 0 &&
+        ((filter->descriptor->layer_flags & 0x20) || ((filter->descriptor->layer_flags & 0x60000000) && profile != 1))) {
         environment = true;
         definitions->AddDefinition("ENVMAP_STAGE", "ENVMAP_CUBE", 0);
         if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x20000000) && profile != 1) {
@@ -291,8 +277,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     if (filter->first_path) {
         definitions->AddDefinition("NORMAL_OUTPUT", "1", 1);
         if ((filter->descriptor->vertex_format & 0xc) &&
-            !(filter->variant == 0 &&
-              ((i32)filter->descriptor->flags < 0 || (filter->descriptor->layer_flags & 0x80000000)))) {
+            !(filter->variant == 0 && ((i32)filter->descriptor->flags < 0 || (filter->descriptor->layer_flags & 0x80000000)))) {
             definitions->AddDefinition("NORMAL_OUTPUT_NOT_NULL", NULL, 0);
         }
     }
@@ -348,8 +333,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     definitions->AddDefinition("SKIN_WORLD", NULL, 0);
 }
 
-void ShaderCompilerHLSLPc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor,
-                                   ShaderCompilerDictionaryPc *dictionary) {
+void ShaderCompilerHLSLPc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor, ShaderCompilerDictionaryPc *dictionary) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     filter.Initialize(descriptor, NULL, 0, 0);
     Configure(&filter, dictionary);
@@ -364,8 +348,7 @@ void ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
 }
 
 ShaderBuilderGen::ShaderBuilderGen(VirtualStackAllocator &parent, i32 mode)
-    : unknown_204(0), parsed_source(NULL), dictionary(parent, mode), source_buffer(parent, 0x2d000),
-      parser_memory(parent, 0x32000) {
+    : unknown_204(0), parsed_source(NULL), dictionary(parent, mode), source_buffer(parent, 0x2d000), parser_memory(parent, 0x32000) {
     save_directory[0] = 0;
 }
 
@@ -404,8 +387,8 @@ i32 ShaderCompilerBasePc::fun_007452a0() {
     return dictionary.profile;
 }
 
-void *ShaderCompilerBasePc::ParseSource(const char *source, i32 length, ShaderCompilerBufferAllocatorPc *buffer,
-                                        i32 prefix, VirtualStackAllocator *memory) {
+void *ShaderCompilerBasePc::ParseSource(const char *source, i32 length, ShaderCompilerBufferAllocatorPc *buffer, i32 prefix,
+                                        VirtualStackAllocator *memory) {
     if (length < 0) {
         length = (i32)strlen(source);
     }
@@ -653,8 +636,8 @@ void __stdcall ShaderParameterDefaultPc(const PC_SHADER_DEFAULTS_VIEW_PC *materi
             break;
         case 2: {
             i32 colour = material->specular_colour;
-            FormatFloat4Pc(out, (f32)(colour & 0xff) / 255.0f, (f32)((colour >> 8) & 0xff) / 255.0f,
-                           (f32)((colour >> 16) & 0xff) / 255.0f, material->parameter_1b4);
+            FormatFloat4Pc(out, (f32)(colour & 0xff) / 255.0f, (f32)((colour >> 8) & 0xff) / 255.0f, (f32)((colour >> 16) & 0xff) / 255.0f,
+                           material->parameter_1b4);
             break;
         }
         case 9:
@@ -667,8 +650,7 @@ void __stdcall ShaderParameterDefaultPc(const PC_SHADER_DEFAULTS_VIEW_PC *materi
             FormatFloat4Pc(out, material->texture_lerp, 0.0f, 0.0f, 0.0f);
             break;
         case 12:
-            FormatFloat4Pc(out, material->parameter_130, material->parameter_12c, material->parameter_144,
-                           material->parameter_148);
+            FormatFloat4Pc(out, material->parameter_130, material->parameter_12c, material->parameter_144, material->parameter_148);
             break;
         case 13:
             FormatFloat4Pc(out, material->parameter_13c, material->parameter_140, 0.0f, 0.0f);
@@ -689,8 +671,7 @@ void __stdcall ShaderParameterDefaultPc(const PC_SHADER_DEFAULTS_VIEW_PC *materi
             FormatColourPc(material->channel_colours[3], out);
             break;
         case 55:
-            FormatFloat4Pc(out, material->parameter_d8, material->parameter_dc, material->parameter_e0,
-                           material->parameter_e4);
+            FormatFloat4Pc(out, material->parameter_d8, material->parameter_dc, material->parameter_e0, material->parameter_e4);
             break;
         case 57:
             FormatColourPc(material->shadow_colour, out);

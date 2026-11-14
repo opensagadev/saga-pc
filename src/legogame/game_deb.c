@@ -124,16 +124,13 @@ void DebrisKillPlayers(void) {
     DebrisPreCheckCollisions(&GameCam->position, 50.0f);
     for (i = 0; i < 8; i++) {
         player = Player[i];
-        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 &&
-            player->vehicle_hit_timer <= 0.0f && !(player->spawn_protection_timer > 0.0f) &&
-            (player->flags_ef0 & 0x400000) == 0 && CannotKill(player) == 0 && Player_HasInvincibility(player) == 0 &&
-            (player->character_data->game_character->flags_090 & 0x4008000) == 0) {
-            if (DebrisCollisionCheckScaleY(&player->collision_position, player->collision_radius,
-                                           player->collision_y_scale) != -1) {
+        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 && player->vehicle_hit_timer <= 0.0f &&
+            !(player->spawn_protection_timer > 0.0f) && (player->flags_ef0 & 0x400000) == 0 && CannotKill(player) == 0 &&
+            Player_HasInvincibility(player) == 0 && (player->character_data->game_character->flags_090 & 0x4008000) == 0) {
+            if (DebrisCollisionCheckScaleY(&player->collision_position, player->collision_radius, player->collision_y_scale) != -1) {
                 ObjHitObj(NULL, player, 1, 0, 0, 1);
             }
-            if (DebrisTorusCollisionCheckScaleY(&player->collision_position, player->collision_radius,
-                                                player->collision_y_scale) != -1) {
+            if (DebrisTorusCollisionCheckScaleY(&player->collision_position, player->collision_radius, player->collision_y_scale) != -1) {
                 ObjHitObj(NULL, player, 1, 0, 0, 1);
             }
         }
@@ -313,8 +310,7 @@ void BurnoutApply(i32 view) {
     parameters.field_00 = 0;
     memset(&parameters.field_04, 0, 0x50);
     if ((CutStopInfo == NULL || (((BURNOUT_CUT_PREFIX *)CutStopInfo)->flags & 0x80) == 0) && WORLD->page_unknown != 0) {
-        edrtlCalculateBurnoutEx((BURN_SET_PC *)WORLD->page_unknown, &parameters, (NUVEC *)&global_camera.mtx.m30,
-                                FRAMETIME);
+        edrtlCalculateBurnoutEx((BURN_SET_PC *)WORLD->page_unknown, &parameters, (NUVEC *)&global_camera.mtx.m30, FRAMETIME);
     }
     if (parameters.field_14 > 0.0f) {
         NuRndrSetBurnoutParametersPc(view, &parameters);
@@ -347,8 +343,7 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
     }
     if (object->contact_count == 1) {
         if (object->contact_material[0] == 13 || object->contact_material[0] == 12) {
-            rate = object->pad->input_magnitude / object->character_data->game_character->run_speed *
-                   ForceFieldRippleRatePc;
+            rate = object->pad->input_magnitude / object->character_data->game_character->run_speed * ForceFieldRippleRatePc;
             if (rate < .5f) {
                 rate = .5f;
             }
@@ -405,14 +400,11 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
         BuildRippleMtx(&matrix, &v010, &position, 0, 0);
         size = (f32)(object->bounds_radius * .5);
         for (i = 0; i < count; ++i) {
-            matrix.m30 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbationPc +
-                               object->collision_position.x);
+            matrix.m30 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbationPc + object->collision_position.x);
             matrix.m31 = (f32)(object->water_height + (f64).001f);
-            matrix.m32 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbationPc +
-                               object->collision_position.z);
+            matrix.m32 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbationPc + object->collision_position.z);
             RippleRandomRadiusPc = object->bounds_radius + object->bounds_radius + object->bounds_radius;
-            AddRipple(RippleSetPc, &matrix, size, RippleRandomRadiusPc,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].lifetime, 0.0f,
+            AddRipple(RippleSetPc, &matrix, size, RippleRandomRadiusPc, RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].lifetime, 0.0f,
                       RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].start_color,
                       RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].end_color, 7,
                       RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].material, NULL);

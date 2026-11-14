@@ -89,8 +89,7 @@ i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
             EdFileReadNuVec(&bomb_generator->position);
             bomb_generator->interval = EdFileReadInt();
             bomb_generator->flags |= GIZBOMBGEN_FLAG_ACTIVE | GIZBOMBGEN_FLAG_VISIBLE;
-            GizmoFileReadGameAnimSet(bomb_generator->anim_set, world_ptr, NULL, version, (char *)("BombGenerator"),
-                                     bomb_generator->name);
+            GizmoFileReadGameAnimSet(bomb_generator->anim_set, world_ptr, NULL, version, (char *)("BombGenerator"), bomb_generator->name);
         }
     }
     return 1;
@@ -102,10 +101,9 @@ void *GizBombGens_ReserveBufferSpace(void *pointer) {
     i32 i;
     system = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
     system->capacity = world->current_level->max_bombgens;
-    system->bomb_generators =
-        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(*system->bomb_generators));
-    system->anim_object_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0,
-                                                            (u16)world->current_level->max_bombgen_objects);
+    system->bomb_generators = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(*system->bomb_generators));
+    system->anim_object_pool =
+        GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0, (u16)world->current_level->max_bombgen_objects);
     for (i = 0; i < system->capacity; ++i) {
         system->bomb_generators[i].anim_set =
             GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_object_pool, world->game_anim_sys);
@@ -159,8 +157,7 @@ static void BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system,
         if (generator->anim_set != NULL) {
             GameAnimSet_EvaluateState(generator->anim_set);
         }
-        if (generator->generated_bomb != NULL && (system->flags & 2) != 0 &&
-            (generator->generated_bomb->flags_1fc_word & 1) != 0 &&
+        if (generator->generated_bomb != NULL && (system->flags & 2) != 0 && (generator->generated_bomb->flags_1fc_word & 1) != 0 &&
             (generator->generated_bomb->flags_1fc_word & 0x1000) != 0) {
             KillGameObject(generator->generated_bomb, 4, 0);
         }
@@ -187,8 +184,7 @@ static void BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system,
             ((GAMEOBJECT *)Player[index])->cable = NULL;
         }
         player = Player[index];
-        if (player == NULL || (player->flags_1fc_word & 0x80) == 0 || BombGenerator_PlayerBomb[index] == NULL ||
-            player->cable != NULL) {
+        if (player == NULL || (player->flags_1fc_word & 0x80) == 0 || BombGenerator_PlayerBomb[index] == NULL || player->cable != NULL) {
             continue;
         }
         if (index != 0 && shared_bomb != 0 && ((GAMEOBJECT *)Player[0])->cable != NULL &&
@@ -251,8 +247,8 @@ void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_tim
                     NUVEC position;
                     GameAnimSet_GetAveragePos(generator->anim_set, &position, 2, 1, 1);
                     if (netclient == 0) {
-                        generator->generated_bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, "dragbomb", NULL,
-                                                                       NULL, 1, NULL, NULL, 0, 0);
+                        generator->generated_bomb =
+                            AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, "dragbomb", NULL, NULL, 1, NULL, NULL, 0, 0);
                         if (Cheat_IsOn(5) != 0) {
                             AddGameDebris(world->game_debris_sys, 0x7d, &position);
                             AddGameDebris(world->game_debris_sys, 0x7e, &position);

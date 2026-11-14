@@ -12,11 +12,11 @@ typedef struct StatusPlayerModelPair {
     u16 model[2];
 } StatusPlayerModelPair;
 
-#define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                  \
-    do {                                                                                                               \
-        (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                         \
-        (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                  \
-        ++(packet_arg)->stage_count;                                                                                   \
+#define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                                      \
+    do {                                                                                                                                   \
+        (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                                             \
+        (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                                      \
+        ++(packet_arg)->stage_count;                                                                                                       \
     } while (0)
 
 typedef struct status_world_minikit_reader_s {
@@ -146,8 +146,7 @@ extern "C" {
                 NuQFntMove(QFont3DZ, -NuQFntPrintLenW(QFont3DZ, encoded), (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
                 break;
             default:
-                NuQFntMove(QFont3DZ, (f32)(-NuQFntPrintLenW(QFont3DZ, encoded) * 0.5),
-                           (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
+                NuQFntMove(QFont3DZ, (f32)(-NuQFntPrintLenW(QFont3DZ, encoded) * 0.5), (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
                 break;
         }
         NuQFntPrintW(QFont3DZ, encoded);
@@ -249,10 +248,8 @@ extern "C" {
     void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
         for (i32 i = 0; i < 2; ++i) {
             if (StatusPacket.player_active[i] != 0 && (player == -1 || player == i)) {
-                RUMBLE_PACKET_RESOURCE_PC *rumble =
-                    &((STATUS_RUMBLE_PAIR *)&StatusPacket.player0_rumble_amount)->players[i];
-                if (amount > 0.0f &&
-                    (rumble->amount <= 0.0f || amount > rumble->amount / rumble->decay_duration * rumble->intensity)) {
+                RUMBLE_PACKET_RESOURCE_PC *rumble = &((STATUS_RUMBLE_PAIR *)&StatusPacket.player0_rumble_amount)->players[i];
+                if (amount > 0.0f && (rumble->amount <= 0.0f || amount > rumble->amount / rumble->decay_duration * rumble->intensity)) {
                     rumble->intensity = amount;
                     rumble->decay_duration = amount;
                     rumble->amount = amount;
@@ -288,8 +285,7 @@ extern "C" {
     }
 
     void NextStatusStage(STATUSPACKET_s *packet) {
-        if (packet->stage != NULL && packet->stage->field_0x14 == -1 &&
-            packet->stage->field_0x18 < packet->field_0x68) {
+        if (packet->stage != NULL && packet->stage->field_0x14 == -1 && packet->stage->field_0x18 < packet->field_0x68) {
             packet->flags_word |= 2;
             return;
         }
@@ -346,8 +342,7 @@ extern "C" {
     i32 newCharactersCollected(STATUSPACKET_s *packet) {
         i32 count = 0;
         if (StartupGameFlag1 == 0) {
-            if ((((u8 *)&packet->lsw_packet->field_0x00)[3] & 1) != 0 &&
-                Game.initial_store_pack_flags != areaSuitBits) {
+            if ((((u8 *)&packet->lsw_packet->field_0x00)[3] & 1) != 0 && Game.initial_store_pack_flags != areaSuitBits) {
                 return 1;
             }
         } else {
@@ -548,8 +543,7 @@ extern "C" {
                 if (Game.gold_bricks > p->previous_gold_bricks) {
                     AddStatusStage(p, 19, 0);
                 }
-                if (netclient == 0 &&
-                    (p->new_best_time != 0.0f || p->new_best_score != 0 || p->superstory_score != 0)) {
+                if (netclient == 0 && (p->new_best_time != 0.0f || p->new_best_score != 0 || p->superstory_score != 0)) {
                     AddStatusStage(p, 11, 0);
                 }
                 hub_from_superstory = p->area->episode_index;
@@ -573,8 +567,7 @@ extern "C" {
             p->flags_word = (p->flags_word & ~0x20u) | (((u32)BonusWinner << 5) & 0x20u);
             p->previous_best_time = Game.area_save[area].challenge_trial_time;
             if (p->previous_best_time <= 0.0f || p->previous_best_time > p->elapsed_time) {
-                if (WORLD->area->challenge_trial_time != 0 &&
-                    p->previous_best_time >= WORLD->area->challenge_trial_time) {
+                if (WORLD->area->challenge_trial_time != 0 && p->previous_best_time >= WORLD->area->challenge_trial_time) {
                     AddToCompletionPoints(POINTS_PER_TIMETRIAL);
                     gold = AddGoldBrickMessage(p, TextIdPc88071c);
                 }
@@ -619,8 +612,7 @@ extern "C" {
             p->reward_score = p->original_score;
             p->elapsed_time = MissionSys->timer.time_elapsed;
             if (p->mission_state == 2) {
-                if (Game_MissionSave == NULL ||
-                    Game_MissionSave->completed[(i8)MissionSys->active_mission->index] == 0) {
+                if (Game_MissionSave == NULL || Game_MissionSave->completed[(i8)MissionSys->active_mission->index] == 0) {
                     if (Game_MissionSave != NULL) {
                         Game_MissionSave->completed[(i8)MissionSys->active_mission->index] = 1;
                     }
@@ -752,8 +744,7 @@ extern "C" {
         {
             i32 gold = 0;
             i32 completed_episode = 0;
-            if (area != -1 && (p->field_0xb0 & 0x40) == 0 && Game.area_save[area].area_complete == 0 &&
-                (p->area->flags & 0x26) == 0) {
+            if (area != -1 && (p->field_0xb0 & 0x40) == 0 && Game.area_save[area].area_complete == 0 && (p->area->flags & 0x26) == 0) {
                 p->newly_completed = 1;
                 Game.area_save[area].area_complete = 1;
                 AddToCompletionPoints(POINTS_PER_STORY);
@@ -824,8 +815,7 @@ extern "C" {
                         AddStatusStage(p, 2, 0);
                     }
                 }
-            } else if (Game.area_save[area].true_hero_complete[0] == 0 &&
-                       Game.area_save[area].true_hero_complete[1] == 0) {
+            } else if (Game.area_save[area].true_hero_complete[0] == 0 && Game.area_save[area].true_hero_complete[1] == 0) {
                 if ((p->field_0xb0 & 4) != 0) {
                     Game.area_save[area].true_hero_complete[1] = 1;
                     Game.area_save[area].true_hero_complete[0] = 1;
@@ -896,8 +886,8 @@ extern "C" {
             }
             weight = packet->player_active[player] != 0 ? 1.0f : 0.25f;
             icon_alpha = weight * alpha;
-            DrawCharIcon((i16)((StatusPlayerModelPair *)&packet->player0_model)->model[player], x, y, 0.0f,
-                         MissionPlayerIconSizePc, frame, icon_alpha, icon_alpha, 1, NULL);
+            DrawCharIcon((i16)((StatusPlayerModelPair *)&packet->player0_model)->model[player], x, y, 0.0f, MissionPlayerIconSizePc, frame,
+                         icon_alpha, icon_alpha, 1, NULL);
         }
     }
 
@@ -923,8 +913,7 @@ i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
         slideseek = 1.0f;
         return 1;
     }
-    if (stage->field_0x18 > stage->field_0x1c - jibberlen - slidetime &&
-        stage->field_0x18 <= stage->field_0x1c - jibberlen) {
+    if (stage->field_0x18 > stage->field_0x1c - jibberlen - slidetime && stage->field_0x18 <= stage->field_0x1c - jibberlen) {
         slideseek = (stage->field_0x1c - stage->field_0x18 - jibberlen) / slidetime;
     }
     return 0;
@@ -935,8 +924,7 @@ extern "C" {
     STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10] = {0};
 }
 
-void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 max_pieces, STATUSPACKET_s *packet,
-                       f32 phase) {
+void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 max_pieces, STATUSPACKET_s *packet, f32 phase) {
     STATUS_WORLD_MINIKIT_READER_PC *view = (STATUS_WORLD_MINIKIT_READER_PC *)WORLD;
     if (view->minikit.scene == NULL || view->minikit.pieces == NULL) {
         return;
@@ -1006,11 +994,9 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
             matrix.m32 += offset.z;
         }
         StatusMiniKitRotateYPc(&matrix, (u16)(NuFmod(GameTimer.time_elapsed, 2.0f) * 0.5 * 65536.0));
-        StatusMiniKitRotateZPc(
-            &matrix, (u16)(NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 2.24f) / 2.24f * 65536.0) >> 1] * 2730.0));
-        StatusMiniKitRotateXPc(
-            &matrix,
-            (u16)(NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 1.87f) / 1.87f * 65536.0) >> 1] * 2730.0 - 5461.0));
+        StatusMiniKitRotateZPc(&matrix, (u16)(NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 2.24f) / 2.24f * 65536.0) >> 1] * 2730.0));
+        StatusMiniKitRotateXPc(&matrix,
+                               (u16)(NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 1.87f) / 1.87f * 65536.0) >> 1] * 2730.0 - 5461.0));
         WORLDINFO *world = WORLD;
         matrix.m30 += PANEL3DMULX * x;
         matrix.m31 += PANEL3DMULY * y;
@@ -1021,8 +1007,7 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
             StatusMiniKitDrawCachePc[index].active = 1;
         }
         if (world->level_objects[206].active != 0) {
-            DrawPanel3DObjectMtxNoAlpha(
-                (nuhspecial_s *)&((STATUS_WORLD_MINIKIT_READER_PC *)world)->minikit.pieces[index].special, &matrix);
+            DrawPanel3DObjectMtxNoAlpha((nuhspecial_s *)&((STATUS_WORLD_MINIKIT_READER_PC *)world)->minikit.pieces[index].special, &matrix);
         }
     }
 }
@@ -1145,12 +1130,10 @@ extern "C" {
             y = StartupGameFlag1 != 0 ? StatusPromptSingleYPc : title;
             if (locked != 0) {
                 label = areas[packet->next_area].area_index == 5 ? TextIdPc88078c : TextIdPc880790;
-                SmartTextEx(TTab[label], 0.0f, 0.325f, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255, 63, 0, 1.7f, 1, NULL, 0,
-                            (i32)((f64)alpha * 128.0));
+                SmartTextEx(TTab[label], 0.0f, 0.325f, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255, 63, 0, 1.7f, 1, NULL, 0, (i32)((f64)alpha * 128.0));
             }
         } else {
-            if (StartupGameFlag1 != 0 && packet->newly_completed != 0 && packet->area != NULL &&
-                packet->area == NEGOTIATIONS_ADATA) {
+            if (StartupGameFlag1 != 0 && packet->newly_completed != 0 && packet->area != NULL && packet->area == NEGOTIATIONS_ADATA) {
                 Hint_SetHintFromId(0x26c, 0, 1);
                 Hint_SetComplete(0x26c);
                 y = StatusPromptHintYPc;
@@ -1293,8 +1276,7 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
                 green = MENUENTRYG;
                 blue = MENUENTRYB;
             }
-            Text3D(labels[option], 0.0f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green,
-                   blue);
+            Text3D(labels[option], 0.0f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue);
             y += MENUDY;
         }
         return;
@@ -1306,8 +1288,7 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
         if (StatusPacket.draw_background_callback != NULL) {
             StatusPacket.draw_background_callback(&StatusPacket);
         }
-        if (DrawGoldBrick_Phase != -1 && DrawGoldBrick_Stage != -1 &&
-            StatusPacket.stage->field_0x14 == DrawGoldBrick_Phase &&
+        if (DrawGoldBrick_Phase != -1 && DrawGoldBrick_Stage != -1 && StatusPacket.stage->field_0x14 == DrawGoldBrick_Phase &&
             StatusPacket.current_gold_brick == DrawGoldBrick_Stage) {
             f32 duration;
             if (DrawGoldBrick_Phase == 4) {
@@ -1328,18 +1309,16 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
             } else if (StatusPacket.stage->field_0x18 < three_quarters) {
                 alpha = 1.0f;
             } else {
-                alpha = NuTrigTable[((i32)((1.0f - (StatusPacket.stage->field_0x18 - three_quarters) /
-                                                       (duration - three_quarters)) *
-                                           16384.0f) >>
-                                     1) &
-                                    0x7fff];
+                alpha = NuTrigTable
+                    [((i32)((1.0f - (StatusPacket.stage->field_0x18 - three_quarters) / (duration - three_quarters)) * 16384.0f) >> 1) &
+                     0x7fff];
             }
             f32 scale = StatusGoldBrickScalePc * alpha;
-            DrawPanel3DObjectNoAlpha(StatusGoldBrickXPc, StatusGoldBrickYPc, 1.0f, scale, scale, scale, tilt, rotation,
-                                     0, &WORLD->level_objects[211].special, 2);
+            DrawPanel3DObjectNoAlpha(StatusGoldBrickXPc, StatusGoldBrickYPc, 1.0f, scale, scale, scale, tilt, rotation, 0,
+                                     &WORLD->level_objects[211].special, 2);
             if (Text_Language != 0) {
-                Text3DEx((char *)"+1", StatusGoldBrickXPc, StatusGoldBrickYPc - 0.15f, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255,
-                         0, 255, (u8)(alpha * 128.0f));
+                Text3DEx((char *)"+1", StatusGoldBrickXPc, StatusGoldBrickYPc - 0.15f, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255, 0, 255,
+                         (u8)(alpha * 128.0f));
             }
         }
     draw_stages:
@@ -1367,8 +1346,7 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
             } else {
                 f32 fade_start = StatusPacket.stage->field_0x1c - 1.0;
                 if (StatusPacket.stage->field_0x18 >= fade_start) {
-                    alpha =
-                        (StatusPacket.stage->field_0x18 - fade_start) / (StatusPacket.stage->field_0x1c - fade_start);
+                    alpha = (StatusPacket.stage->field_0x18 - fade_start) / (StatusPacket.stage->field_0x1c - fade_start);
                 } else {
                     alpha = 0.0f;
                 }
@@ -1377,8 +1355,7 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
             alpha = 1.0f;
         }
         if (StatusDrawPlayerIconsPc != 0) {
-            Status_DrawPlayerIconsPc(&StatusPacket, StatusIconYPc,
-                                     iconalphaoverride >= 0.0f ? iconalphaoverride : alpha);
+            Status_DrawPlayerIconsPc(&StatusPacket, StatusIconYPc, iconalphaoverride >= 0.0f ? iconalphaoverride : alpha);
         }
     } else {
         char time[256];
@@ -1388,8 +1365,8 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
         }
         Text_MakeTime(remaining, 0, 0, 0, time);
         Text3D(time, NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 0.432f) / 0.432f * 65536.0f) >> 1] * 0.01f,
-               NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 0.5f) * 2.0f * 65536.0f) >> 1] * 0.01f, 1.0f, 1.0f,
-               1.0f, 1.0f, 0, 255, 191, 0);
+               NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 0.5f) * 2.0f * 65536.0f) >> 1] * 0.01f, 1.0f, 1.0f, 1.0f, 1.0f, 0, 255, 191,
+               0);
     }
 }
 
@@ -1406,9 +1383,8 @@ extern "C" void FinishStatusPacket(i32 choice) {
         return;
     }
     NewLData = HUB_LDATA;
-    if (choice == 0 &&
-        ((StatusPacket.flags_word & 0x100) != 0 ||
-         (StartupGameFlag1 != 0 && (StatusPacket.challenge_state != 0 || StatusPacket.mission_state != 0)))) {
+    if (choice == 0 && ((StatusPacket.flags_word & 0x100) != 0 ||
+                        (StartupGameFlag1 != 0 && (StatusPacket.challenge_state != 0 || StatusPacket.mission_state != 0)))) {
         NewLData = Area_FindNextPlayLevel(ADataList[StatusPacket.area->index].levels[0]);
         ResetBits = 0xffffffbfu;
         reset_area = 1;
@@ -1433,15 +1409,15 @@ extern "C" void FinishStatusPacket(i32 choice) {
                 finishloop_backdroponly = 1;
             }
         }
-    } else if (StartupGameFlag1 != 0 && ((StatusPacket.flags_word & 0x400) != 0 ||
-                                         ((StatusPacket.area->flags & 4) != 0 && StatusPacket.free_play == 0))) {
+    } else if (StartupGameFlag1 != 0 &&
+               ((StatusPacket.flags_word & 0x400) != 0 || ((StatusPacket.area->flags & 4) != 0 && StatusPacket.free_play == 0))) {
         NewLData = CREDITS_LDATA;
     }
     if ((StatusPacket.flags_word & 0x800) != 0) {
         NewLData = HUB_LDATA;
     }
-    if (NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & 0x40) != 0 &&
-        StatusPacket.mission_state != 0 && MissionSys->active_mission != NULL) {
+    if (NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & 0x40) != 0 && StatusPacket.mission_state != 0 &&
+        MissionSys->active_mission != NULL) {
         hub_from_mission = (i8)MissionSys->active_mission->index;
     }
     if (NewLData == HUB_LDATA) {
@@ -1547,8 +1523,7 @@ extern "C" {
         if (StatusPacket.status_flags == 0) {
             return;
         }
-        if (!(StatusPacket.newly_completed != 0 && StatusPacket.area != NULL &&
-              StatusPacket.area == NEGOTIATIONS_ADATA)) {
+        if (!(StatusPacket.newly_completed != 0 && StatusPacket.area != NULL && StatusPacket.area == NEGOTIATIONS_ADATA)) {
             u32 button = Text_Language != 0 ? GAMEPAD_JUMP : GAMEPAD_MENUSELECT;
             if ((StatusPacket.player0_active != 0 && (GamePadStorage[0].menu_buttons_pressed & button) != 0) ||
                 (StatusPacket.player1_active != 0 && (GamePadStorage[1].menu_buttons_pressed & button) != 0) ||

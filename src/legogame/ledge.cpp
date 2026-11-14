@@ -42,12 +42,12 @@ typedef struct LEDGEPIECE { // size 0x20
 } LEDGEPIECE;
 
 static LEDGEPIECE LedgePiece[6] = {
-    {79, '8', 1, {-0.3048f, 0.0f, 0.0f}, {0.3048f, 0.0f, 0.0f}, 0, 0},
-    {75, '4', 1, {-0.1524f, 0.0f, 0.0f}, {0.1524f, 0.0f, 0.0f}, 0, 0},
-    {76, '2', 1, {-0.0762f, 0.0f, 0.0f}, {0.0762f, 0.0f, 0.0f}, 0, 0},
-    {77, 'i', 0, {-0.1524f, 0.0f, 0.0f}, {0.0f, 0.0f, -0.1524f}, 0x4000, 0x2000},
-    {78, 'o', 0, {-0.1524f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.1524f}, 0xc000, 0x6000},
-    {80, 'e', 1, {-0.03048f, 0.0f, 0.0f}, {0.03048f, 0.0f, 0.0f}, 0, 0},
+    {79, '8', 1, {-0.3048f, 0.0f, 0.0f},  {0.3048f, 0.0f, 0.0f},  0,      0     },
+    {75, '4', 1, {-0.1524f, 0.0f, 0.0f},  {0.1524f, 0.0f, 0.0f},  0,      0     },
+    {76, '2', 1, {-0.0762f, 0.0f, 0.0f},  {0.0762f, 0.0f, 0.0f},  0,      0     },
+    {77, 'i', 0, {-0.1524f, 0.0f, 0.0f},  {0.0f, 0.0f, -0.1524f}, 0x4000, 0x2000},
+    {78, 'o', 0, {-0.1524f, 0.0f, 0.0f},  {0.0f, 0.0f, 0.1524f},  0xc000, 0x6000},
+    {80, 'e', 1, {-0.03048f, 0.0f, 0.0f}, {0.03048f, 0.0f, 0.0f}, 0,      0     },
 };
 
 static void LedgeSetAttachPositionPc(GAMEOBJECT *object, NUVEC *position, u16 angle) {
@@ -55,8 +55,7 @@ static void LedgeSetAttachPositionPc(GAMEOBJECT *object, NUVEC *position, u16 an
     object->external_force = *position;
     object->launch_origin.x = object->external_force.x - NuTrigTable[angle >> 1] * object->bounds_radius;
     object->launch_origin.y = object->external_force.y;
-    object->launch_origin.z =
-        object->external_force.z - NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * object->bounds_radius;
+    object->launch_origin.z = object->external_force.z - NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * object->bounds_radius;
 }
 
 /* Takes these absolute values through the float's bit pattern. */
@@ -68,8 +67,7 @@ extern "C" {
     }
 }
 
-static LEDGE_MOTION_PC *LedgeAttachPointPc(WORLDINFO *world, NUVEC *position, NUVEC *bounds_min, NUVEC *bounds_max,
-                                           u16 *angle) {
+static LEDGE_MOTION_PC *LedgeAttachPointPc(WORLDINFO *world, NUVEC *position, NUVEC *bounds_min, NUVEC *bounds_max, u16 *angle) {
     LEDGE_MOTION_PC *ledge = ((LEDGE_WORLD *)world)->ledges;
     LEDGE_MOTION_PC *nearest_segment;
     LEDGE_MOTION_PC *nearest_endpoint;
@@ -102,9 +100,8 @@ static LEDGE_MOTION_PC *LedgeAttachPointPc(WORLDINFO *world, NUVEC *position, NU
         if ((ledge->flags & 1) != 0 && ShadowMode == 0) {
             continue;
         }
-        if (bounds_min->x > ledge->bounds_max.x || bounds_max->x < ledge->bounds_min.x ||
-            bounds_min->z > ledge->bounds_max.z || bounds_max->z < ledge->bounds_min.z ||
-            bounds_min->y > ledge->bounds_max.y || bounds_max->y < ledge->bounds_min.y) {
+        if (bounds_min->x > ledge->bounds_max.x || bounds_max->x < ledge->bounds_min.x || bounds_min->z > ledge->bounds_max.z ||
+            bounds_max->z < ledge->bounds_min.z || bounds_min->y > ledge->bounds_max.y || bounds_max->y < ledge->bounds_min.y) {
             continue;
         }
         piece = &LedgePiece[ledge->type_index];
@@ -450,8 +447,7 @@ extern "C" {
             return;
         }
         for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
-            if ((ledge->state_flags & 2) != 0 &&
-                world->level_objects[LedgePiece[ledge->type_index].object_id].active != 0) {
+            if ((ledge->state_flags & 2) != 0 && world->level_objects[LedgePiece[ledge->type_index].object_id].active != 0) {
                 NuMtxSetRotationY(&matrix, ledge->y_rotation);
                 NuMtxTranslate(&matrix, &ledge->position);
                 NuSpecialDrawAt(&world->level_objects[LedgePiece[ledge->type_index].object_id].special, &matrix);

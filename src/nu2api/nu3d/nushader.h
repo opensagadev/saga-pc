@@ -82,8 +82,8 @@ extern "C" {
     void NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *);
     void NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *);
     void NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *);
-    void NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element,
-                                               i32 count, const f32 *values);
+    void NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element, i32 count,
+                                               const f32 *values);
 #ifdef __cplusplus
 }
 #endif

@@ -4,12 +4,8 @@
  * here. */
 #include "saga.h"
 
-template <>
-bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *,
-                                          i32);
-template <>
-void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *,
-                                             const PC_SHADER_FILTER_MATERIAL_VIEW *);
+template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
+template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
 
 template <> PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
     i32 i;
@@ -90,8 +86,8 @@ template <> PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::FindShader(const
 
 template <>
 PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::Retrieve(const PC_SHADER_FILTER_DESC_VIEW *desc,
-                                                             const PC_SHADER_FILTER_MATERIAL_VIEW *material,
-                                                             i32 variant, i32 flags, bool pixel_stage) {
+                                                             const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 variant, i32 flags,
+                                                             bool pixel_stage) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     u32 key;
     PC_SHADER_OBJECT_FULL_VIEW *shader;
@@ -123,9 +119,8 @@ extern "C" PC_SHADER_OBJECT_FULL_VIEW *NuShaderManagerRetrieveShader(const PC_SH
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, 0, 0, false);
 }
 
-extern "C" PC_SHADER_OBJECT_FULL_VIEW *
-NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *desc,
-                                     const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 variant) {
+extern "C" PC_SHADER_OBJECT_FULL_VIEW *NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *desc,
+                                                                            const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 variant) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, variant, 0, false);
 }
 

@@ -101,8 +101,7 @@ struct SIGNAL_s {          // size 0x94
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct SIGNAL_s *Signal_FindNearest(struct WORLDINFO_s *world, struct nuvec_s *position,
-                                        struct gameobject_s *object, f32 *distance);
+    struct SIGNAL_s *Signal_FindNearest(struct WORLDINFO_s *world, struct nuvec_s *position, struct gameobject_s *object, f32 *distance);
 #ifdef __cplusplus
 }
 #endif

@@ -5,13 +5,11 @@ u8 PcInput_MappingIsGood(i32 port, i32 player_index);
 i32 PcInput_GetFirstKeyboardPort(void);
 i32 PC_CtrlConfigGetPlayerPort(i32 player_index);
 void PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints);
-#define DROPIN_SCREEN_INSIDE(object)                                                                                   \
-    ((object)->camera_screen_position.x > -0.8500000238418579 &&                                                       \
-     (object)->camera_screen_position.x < 0.8500000238418579 &&                                                        \
-     (object)->camera_screen_position.y > -0.8500000238418579 &&                                                       \
-     (object)->camera_screen_position.y < 0.8500000238418579)
-#define DROPIN_SCREEN_OUTSIDE(object)                                                                                  \
-    ((object)->camera_screen_position.x < -1.0f || (object)->camera_screen_position.x > 1.0f ||                        \
+#define DROPIN_SCREEN_INSIDE(object)                                                                                                       \
+    ((object)->camera_screen_position.x > -0.8500000238418579 && (object)->camera_screen_position.x < 0.8500000238418579 &&                \
+     (object)->camera_screen_position.y > -0.8500000238418579 && (object)->camera_screen_position.y < 0.8500000238418579)
+#define DROPIN_SCREEN_OUTSIDE(object)                                                                                                      \
+    ((object)->camera_screen_position.x < -1.0f || (object)->camera_screen_position.x > 1.0f ||                                            \
      (object)->camera_screen_position.y < -1.0f || (object)->camera_screen_position.y > 1.0f)
 
 void CheckForPlayersTurnedOff(void) {
@@ -22,8 +20,8 @@ void CheckForPlayersTurnedOff(void) {
             i32 target_index;
             for (target_index = 2; target_index < 8; ++target_index) {
                 GAMEOBJECT *target = Player[target_index];
-                if (target == NULL || (target->tag_flags & 2) || (target->portal_flags & 0x4000000) ||
-                    target->character_context == 0x24 || target->character_context == 0x1f) {
+                if (target == NULL || (target->tag_flags & 2) || (target->portal_flags & 0x4000000) || target->character_context == 0x24 ||
+                    target->character_context == 0x1f) {
                     continue;
                 }
                 if (target->field_281 != 0 ||
@@ -51,10 +49,9 @@ i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
     if (WORLD != NULL && WORLD->current_level == FACTORYF_LDATA) {
         return 0;
     }
-    if (player != NULL && FreePlay != 0 && drop_in_teleport >= 2 && VehicleArea == 0 &&
-        (Arcade != 0 || teleport_all_freeplay_modes != 0) && object->takeover_source == NULL &&
-        (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) == 0 && object->character_context != 0x2b &&
-        object->model_draw_result == 0 && (object->tag_flags & 2) == 0) {
+    if (player != NULL && FreePlay != 0 && drop_in_teleport >= 2 && VehicleArea == 0 && (Arcade != 0 || teleport_all_freeplay_modes != 0) &&
+        object->takeover_source == NULL && (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) == 0 &&
+        object->character_context != 0x2b && object->model_draw_result == 0 && (object->tag_flags & 2) == 0) {
         NUVEC position = player->last_safe_position;
         if (position.x == player->position.x && position.y == player->position.y && position.z == player->position.z) {
             position.z = (f32)((f64)position.z + (f64)0.01f);
@@ -85,8 +82,7 @@ f32 DropInOutScale(GAMEOBJECT *object) {
         return NuTrigTable[((i32)(object->context_timer / object->context_duration * 16384.0f) >> 1) & 0x7fff];
     }
     if (context == CHARACTER_CONTEXT_DROP_OUT) {
-        return NuTrigTable[((i32)(object->context_timer / object->context_duration * 16384.0f + 16384.0f) >> 1) &
-                           0x7fff];
+        return NuTrigTable[((i32)(object->context_timer / object->context_duration * 16384.0f + 16384.0f) >> 1) & 0x7fff];
     }
     return 1.0f;
 }
@@ -235,8 +231,7 @@ i32 PlayersDropInOut(void) {
                     continue;
                 }
                 if (object->flags_ef0 & 0x200000) {
-                    if (FreePlay_DropInToPlayerPos(object) ||
-                        ((GAMEOBJECT *)Player[index])->camera_screen_position.z < 1.0f) {
+                    if (FreePlay_DropInToPlayerPos(object) || ((GAMEOBJECT *)Player[index])->camera_screen_position.z < 1.0f) {
                         force_join = 1;
                     }
                     break;
@@ -326,9 +321,8 @@ i32 PlayersDropInOut(void) {
         }
         object->model_draw_result = 1;
         join = VehicleArea != 0 && object->character_context != 0x24;
-        if (!join && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(object->tag_flags & 2) &&
-            !(object->portal_flags & 0x4000000) && object->character_context != 0x24 &&
-            object->character_context != 0x1f) {
+        if (!join && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(object->tag_flags & 2) && !(object->portal_flags & 0x4000000) &&
+            object->character_context != 0x24 && object->character_context != 0x1f) {
             if (DROPIN_SCREEN_INSIDE(object) &&
                 (force_join || object->field_281 != 0 || object->id == (u16)id_SPEEDERBIKE ||
                  (object->jump_variant_state == 1 && object->character_data->game_character->field_028 > 0.0f))) {
@@ -346,9 +340,8 @@ i32 PlayersDropInOut(void) {
                     continue;
                 }
                 tag = VehicleArea != 0 && object->character_context != 0x24;
-                if (!tag && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(target->tag_flags & 2) &&
-                    !(target->portal_flags & 0x4000000) && target->character_context != 0x24 &&
-                    target->character_context != 0x1f && target->model_draw_result != 0 &&
+                if (!tag && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(target->tag_flags & 2) && !(target->portal_flags & 0x4000000) &&
+                    target->character_context != 0x24 && target->character_context != 0x1f && target->model_draw_result != 0 &&
                     (target->field_281 != 0 ||
                      (target->jump_variant_state == 1 && target->character_data->game_character->field_028 > 0.0f)) &&
                     DROPIN_SCREEN_INSIDE(target)) {
@@ -395,15 +388,15 @@ i32 PlayersDropInOut(void) {
         force_join = 0;
     }
     if (VehicleArea != 0 || CUTSTOPGAME != 0 || MiniCutCam != 0 ||
-        (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0) || menu == 0xd || menu == 0xc ||
-        menu == 0xe || menu == 0xf || menu == 0x10 || menu == 0x11 || menu == 8) {
+        (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0) || menu == 0xd || menu == 0xc || menu == 0xe ||
+        menu == 0xf || menu == 0x10 || menu == 0x11 || menu == 8) {
         return changed;
     }
     drop_index = -1;
     for (index = 0; index < 2; ++index) {
         object = Player[index];
-        if (object == NULL || object->dead != 0 || object->character_context == 0x2b ||
-            object->character_context == 0x51 || object->character_context == 0x1f) {
+        if (object == NULL || object->dead != 0 || object->character_context == 0x2b || object->character_context == 0x51 ||
+            object->character_context == 0x1f) {
             continue;
         }
         if (object->flags_ef0 & 0x200000) {

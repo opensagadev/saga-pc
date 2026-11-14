@@ -16,10 +16,9 @@
 extern "C" {
 #endif
     void Text3DStringEncode(char *source, u16 *destination);
-    void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
-                  u8 green, u8 blue, u8 alpha);
-    void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
-                u8 blue);
+    void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green, u8 blue,
+                  u8 alpha);
+    void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green, u8 blue);
     extern f32 text3d_height;
     extern f32 text3d_width;
     void SetQFont2D(void);

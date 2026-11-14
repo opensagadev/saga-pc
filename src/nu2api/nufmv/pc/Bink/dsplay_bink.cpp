@@ -36,8 +36,15 @@ extern "C" i32 RadFmvCheckFormatPc(GRAPHICS_FACTORY_PC *factory, u32 format, u32
 }
 
 extern "C" i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY_PC *factory, u32 display_format, RADFMV_CONTEXT_PC *context) {
-    const u32 formats[7][4] = {{22, 0, 4, 0}, {20, 8, 3, 0}, {23, 3, 2, 0}, {24, 2, 2, 0},
-                               {21, 1, 4, 1}, {26, 5, 2, 1}, {25, 4, 2, 1}};
+    const u32 formats[7][4] = {
+        {22, 0, 4, 0},
+        {20, 8, 3, 0},
+        {23, 3, 2, 0},
+        {24, 2, 2, 0},
+        {21, 1, 4, 1},
+        {26, 5, 2, 1},
+        {25, 4, 2, 1}
+    };
     u32 i;
     for (i = 0; i < 7; ++i) {
         if (RadFmvCheckFormatPc(factory, formats[i][0], display_format)) {
@@ -171,8 +178,7 @@ static u32 RadFmvRoundTexturePc(u32 size) {
     return size > 2 ? 4 : size;
 }
 
-RADFMV_TEXTURE_PC *RadFmvCreateTexturePc(PC_D3D9_DEVICE_PC *device, u32 format, u32 pitch, u32 bytes, u32 width,
-                                         u32 height) {
+RADFMV_TEXTURE_PC *RadFmvCreateTexturePc(PC_D3D9_DEVICE_PC *device, u32 format, u32 pitch, u32 bytes, u32 width, u32 height) {
     (void)pitch;
     RADFMV_TEXTURE_PC *texture = NULL;
     RADFMV_LOCK_PC locked;
@@ -205,8 +211,7 @@ struct RADFMV_VERTEX_PC { // size 0x20
     f32 v;                // 0x1c
 };
 
-static void RadFmvDrawQuadPc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 x_scale, f32 y_scale, i32 width, i32 height,
-                             f32 alpha) {
+static void RadFmvDrawQuadPc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 x_scale, f32 y_scale, i32 width, i32 height, f32 alpha) {
     RADFMV_VERTEX_PC vertices[4];
     vertices[0].x = (f32)(x - 0.5);
     vertices[0].y = (f32)(y - 0.5);
@@ -319,22 +324,22 @@ RADFMV_IMAGE_PC *RadFmvCreateTiledPc(RADFMV_CONTEXT_PC *context, u32 width, u32 
     RADFMV_TEXTURE_PC **out = image->textures;
     for (u32 row = 0; row < image->full_rows; ++row) {
         for (u32 col = 0; col < image->full_columns; ++col) {
-            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel,
-                                           image->maximum_texture, image->maximum_texture);
+            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel, image->maximum_texture,
+                                           image->maximum_texture);
         }
         if (image->remainder_width) {
-            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel,
-                                           image->remainder_width, image->maximum_texture);
+            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel, image->remainder_width,
+                                           image->maximum_texture);
         }
     }
     if (image->remainder_height) {
         for (u32 col = 0; col < image->full_columns; ++col) {
-            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel,
-                                           image->maximum_texture, image->remainder_height);
+            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel, image->maximum_texture,
+                                           image->remainder_height);
         }
         if (image->remainder_width) {
-            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel,
-                                           image->remainder_width, image->remainder_height);
+            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel, image->remainder_width,
+                                           image->remainder_height);
         }
     }
     for (u32 i = 0; i < image->texture_count; ++i) {
@@ -365,12 +370,10 @@ void RadFmvDestroyTiledPc(RADFMV_IMAGE_PC *image) {
     }
 }
 
-i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h,
-                      u32 discard) {
+i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h, u32 discard) {
     RADFMV_LOCK_PC locked;
     if (image->lock_index >= image->texture_count ||
-        image->textures[image->lock_index]->methods->lock(image->textures[image->lock_index], 0, &locked, NULL,
-                                                          discard ? 0x2000 : 0) < 0) {
+        image->textures[image->lock_index]->methods->lock(image->textures[image->lock_index], 0, &locked, NULL, discard ? 0x2000 : 0) < 0) {
         image->lock_index = 0;
         return 0;
     }
@@ -481,8 +484,7 @@ void RadFmvOutlineSinglePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys)
     RadFmvDrawOutlinePc(image->device, x, y, xs, ys, image->width, image->height);
 }
 
-i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h,
-                       u32 discard) {
+i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h, u32 discard) {
     if (!image->lock_index) {
         if (pixels || pitch) {
             RADFMV_LOCK_PC locked;
@@ -574,8 +576,8 @@ extern "C" void RadFmvDrawLinesPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, 
     }
 }
 
-extern "C" i32 RadFmvLockImagePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y,
-                                 u32 *w, u32 *h, u32 discard) {
+extern "C" i32 RadFmvLockImagePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h,
+                                 u32 discard) {
     if (!image) {
         return 0;
     }
@@ -593,8 +595,7 @@ extern "C" void RadFmvUnlockImagePc(RADFMV_IMAGE_PC *image) {
     }
 }
 
-extern "C" RADFMV_IMAGE_PC *RadFmvCreateImagePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha,
-                                                u32 maximum) {
+extern "C" RADFMV_IMAGE_PC *RadFmvCreateImagePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha, u32 maximum) {
     if ((RadFmvRoundTexturePc(width) == width && RadFmvRoundTexturePc(height) == height) || context->permits_nonpow2) {
         return RadFmvCreateSinglePc(context, width, height, alpha, maximum);
     }

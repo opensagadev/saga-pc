@@ -95,8 +95,7 @@ static void NuRndrPrimSetColour(i32 colour) {
     if (NuPrimNeedsOverbrightening != 0) {
         converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
     } else {
-        converted =
-            ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
+        converted = ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
     ((PANEL_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
@@ -152,8 +151,7 @@ extern "C" {
             if (DrawMiniKitTime > 0.0f) {
                 DrawMiniKitTime -= FRAMETIME;
             }
-            if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && (Paused != 0 || NetPaused != 0 || DrawMiniKitTime > 0.0f) &&
-                screendump == 0) {
+            if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && (Paused != 0 || NetPaused != 0 || DrawMiniKitTime > 0.0f) && screendump == 0) {
                 target = 1.0f;
             } else {
                 target = 0.0f;
@@ -179,9 +177,8 @@ extern "C" {
                 }
                 if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 &&
                     (Paused != 0 ||
-                     (NetPaused != 0 &&
-                      (AreaGlobals_PC.field_08 != 0 ||
-                       (WORLD->area_index != -1 && Game.area_save[WORLD->area_index].red_brick_collected != 0))) ||
+                     (NetPaused != 0 && (AreaGlobals_PC.field_08 != 0 ||
+                                         (WORLD->area_index != -1 && Game.area_save[WORLD->area_index].red_brick_collected != 0))) ||
                      DrawRedBrickTime > 0.0f) &&
                     screendump == 0) {
                     target = 1.0f;
@@ -239,8 +236,7 @@ extern "C" {
         if (DrawCoinTotalTime > 0.0f) {
             DrawCoinTotalTime -= FRAMETIME;
         }
-        if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && (Paused != 0 || NetPaused != 0 || DrawCoinTotalTime > 0.0f) &&
-            screendump == 0) {
+        if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && (Paused != 0 || NetPaused != 0 || DrawCoinTotalTime > 0.0f) && screendump == 0) {
             target = 1.0f;
         } else {
             target = 0.0f;
@@ -268,9 +264,8 @@ extern "C" {
     }
 }
 
-extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 other0, i32 back0, i32 alternate0,
-                                      i32 selecting0, i32 active1, i32 select1, f32 alpha1, i32 other1, i32 back1,
-                                      i32 alternate1, i32 selecting1) {
+extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 other0, i32 back0, i32 alternate0, i32 selecting0,
+                                      i32 active1, i32 select1, f32 alpha1, i32 other1, i32 back1, i32 alternate1, i32 selecting1) {
     if (((FADEINFO_PC *)&FadeSys)->fade != 0.0f) {
         return;
     }
@@ -354,8 +349,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
             Text_ExpandButtonString((char *)(alternate[player] == TextIdPc880780 ? "[T]" : "[O]"), text);
             SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffsetPc - .01));
-            SmartTextEx(TTab[alternate[player]], x, y, 1.0f, .4f, .25f, .4f, align, red, green, blue, max_width, 1,
-                        NULL, 0, 128);
+            SmartTextEx(TTab[alternate[player]], x, y, 1.0f, .4f, .25f, .4f, align, red, green, blue, max_width, 1, NULL, 0, 128);
         }
         if (other[player] != -1) {
             const i32 red = menu_flash != 0 ? 192 : 255;
@@ -379,8 +373,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
             y -= spacing;
             y = (f32)(y - (HubPromptLabelOffsetPc - .01));
             const u8 colour = menu_flash != 0 ? 196 : 255;
-            SmartTextEx(TTab[selecting[player]], x, y, 1.0f, .4f, .25f, .4f, align, colour, 0, colour, max_width, 1,
-                        NULL, 0, 128);
+            SmartTextEx(TTab[selecting[player]], x, y, 1.0f, .4f, .25f, .4f, align, colour, 0, colour, max_width, 1, NULL, 0, 128);
         }
     }
     PcInput_SetCtrlStringPlayer(last_device);
@@ -388,8 +381,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
 
 extern "C" {
 
-    void CoinTotal_Draw(i32 total, f32 y, f32 scale, i32 remember_positions, f32 icon_phase, i32 red, i32 green,
-                        i32 blue) {
+    void CoinTotal_Draw(i32 total, f32 y, f32 scale, i32 remember_positions, f32 icon_phase, i32 red, i32 green, i32 blue) {
         char text[32];
         f32 score_scale;
         f32 icon_scale;
@@ -407,8 +399,8 @@ extern "C" {
             if (remember_positions != 0) {
                 cointotal_x[0] = x;
             }
-            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0,
-                              &WORLD->level_objects[cointotal_i_obj[0]].special, 0, 1.0f);
+            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0, &WORLD->level_objects[cointotal_i_obj[0]].special, 0,
+                              1.0f);
         }
         object = cointotal_i_obj[1];
         if (WORLD->level_objects[object].active != 0) {
@@ -418,8 +410,7 @@ extern "C" {
             } else {
                 object = 187;
             }
-            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0,
-                              &WORLD->level_objects[object].special, 0, 1.0f);
+            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0, &WORLD->level_objects[object].special, 0, 1.0f);
         }
     }
 
@@ -462,8 +453,7 @@ extern "C" {
         i32 green = 191;
         i32 blue = 0;
         if (source == 1) {
-            DrawSuperStoryTime(-y, SuperStoryTimer.time_elapsed,
-                               Game.episode_save[SuperStoryEpisode].superstory_time_limit, 0, 1);
+            DrawSuperStoryTime(-y, SuperStoryTimer.time_elapsed, Game.episode_save[SuperStoryEpisode].superstory_time_limit, 0, 1);
             total = SuperStoryScore;
             if ((u32)Game.episode_save[SuperStoryEpisode].superstory_score_target > 0) {
                 if (hide_super_story_target == 0) {
@@ -491,8 +481,7 @@ void DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32 scale_y
     const i32 filled = (i32)progress;
     const f32 fraction = NuFmod(progress, 1.0f);
     i32 object = 178 - (i32)(GlobalTimer.time_elapsed_mod_seconds * 10.0);
-    const f32 spacing =
-        HubBuildBarSpacingPc * HubBuildBarOverallScalePc * scale_y * NuTrigTable[((angle + 16384) >> 1) & 0x7fff];
+    const f32 spacing = HubBuildBarSpacingPc * HubBuildBarOverallScalePc * scale_y * NuTrigTable[((angle + 16384) >> 1) & 0x7fff];
     f32 cursor = (f32)(x - (HubBuildBarSegmentsPc - 1) * spacing * .5);
     for (i32 i = 0; i < HubBuildBarSegmentsPc; ++i) {
         if (count == total) {
@@ -508,8 +497,8 @@ void DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32 scale_y
             object = 169;
         }
         const f32 size = HubBuildBarScalePc * HubBuildBarOverallScalePc * scale_x * scale_y;
-        DrawPanel3DObject(cursor, y, (f32)((HubBuildBarSegmentsPc - i - 1) * .0010000000474974513 + 1.0), size, size,
-                          size, 0, 0, 0, &WORLD->level_objects[object].special, 0, alpha);
+        DrawPanel3DObject(cursor, y, (f32)((HubBuildBarSegmentsPc - i - 1) * .0010000000474974513 + 1.0), size, size, size, 0, 0, 0,
+                          &WORLD->level_objects[object].special, 0, alpha);
         cursor += spacing;
     }
 }
@@ -557,8 +546,8 @@ extern "C" {
         if (two_rows != 0 && hitpoints < 2) {
             two_rows = 0;
         }
-        if ((object->field_280 == 0 || object->field_280 == 1) && hitpoints > 1 && object->dead != 0 &&
-            object->field_1010 > 0.0f && object->field_1010 < 1.0f) {
+        if ((object->field_280 == 0 || object->field_280 == 1) && hitpoints > 1 && object->dead != 0 && object->field_1010 > 0.0f &&
+            object->field_1010 < 1.0f) {
             transitioning = 1;
             current_hp = (i32)((1.0f - object->field_1010) * (f32)object->field_107e);
         }
@@ -676,8 +665,8 @@ extern "C" {
 
     void DrawInDoubleScoreZone(f32 time) {
         i32 alpha = (i32)((f64)DoubleScoreAlpha() * 128.0 * (f64)time);
-        SmartTextEx(TTab[TextIdPc88098c], 0.0f, DoubleScoreTextYPc, 1.0f, DoubleScoreTextScalePc,
-                    DoubleScoreTextScalePc, DoubleScoreTextScalePc, 0, 255, 255, 255, 1.5f, 1, NULL, 0, alpha);
+        SmartTextEx(TTab[TextIdPc88098c], 0.0f, DoubleScoreTextYPc, 1.0f, DoubleScoreTextScalePc, DoubleScoreTextScalePc,
+                    DoubleScoreTextScalePc, 0, 255, 255, 255, 1.5f, 1, NULL, 0, alpha);
     }
 
     void DrawPlayerHudPc(i32 paused) {
@@ -694,15 +683,12 @@ extern "C" {
             return;
         }
         arcade_mode = Arcade_GetMode(&arcade_flags);
-        status_y =
-            (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
-        raised_hearts = (WORLD->area != NULL && (WORLD->area == HUB_ADATA || (WORLD->area->flags & 0x100) != 0)) ||
-                        SuperStory != 0 || ChallengeMode != 0 || Mission_Active(NULL) != NULL || arcade_mode == 0;
+        status_y = (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
+        raised_hearts = (WORLD->area != NULL && (WORLD->area == HUB_ADATA || (WORLD->area->flags & 0x100) != 0)) || SuperStory != 0 ||
+                        ChallengeMode != 0 || Mission_Active(NULL) != NULL || arcade_mode == 0;
         GetMenuID();
         flash_alpha =
-            (i32)((f64)NuTrigTable[(
-                      (u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >> 1)] *
-                      16.0 +
+            (i32)((f64)NuTrigTable[((u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >> 1)] * 16.0 +
                   96.0);
         old_input_device = PcInput_GetCtrlStringPlayer();
         for (player = 0; player < 2; ++player) {
@@ -737,14 +723,13 @@ extern "C" {
                 object->takeover_source->id == static_cast<u16>(id_YODA)) {
                 visible = object->hud_icon_timer <= 0.0f ||
                           (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
-                DrawCharIcon(static_cast<i16>(object->id), icon_x, status_y, 0.0f, MissionPlayerIconSizePc, frame_model,
-                             alpha, alpha, visible, NULL);
+                DrawCharIcon(static_cast<i16>(object->id), icon_x, status_y, 0.0f, MissionPlayerIconSizePc, frame_model, alpha, alpha,
+                             visible, NULL);
             } else {
                 visible = object->hud_icon_timer <= 0.0f ||
                           (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
-                DrawCharIcon(
-                    static_cast<i16>(object->takeover_source != NULL ? object->takeover_source->id : object->id),
-                    icon_x, status_y, 0.0f, MissionPlayerIconSizePc, frame_model, alpha, alpha, visible, NULL);
+                DrawCharIcon(static_cast<i16>(object->takeover_source != NULL ? object->takeover_source->id : object->id), icon_x, status_y,
+                             0.0f, MissionPlayerIconSizePc, frame_model, alpha, alpha, visible, NULL);
             }
             name_x = player == 0 ? -(ICONX + HudNameOffsetXPc) : ICONX + HudNameOffsetXPc;
             if ((object->flags_1fc & 0x80) != 0 && object->character_data->name_id != -1 &&
@@ -753,26 +738,25 @@ extern "C" {
                 f32 name_y = status_y + HudNameOffsetYPc;
                 i32 name_alpha = (i32)((f64)base_alpha * 128.0);
                 f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidthPc : HudNameWidthPc;
-                SmartTextEx(GameObj_GetNamePc(-1, object, auxiliary), name_x, name_y, 1.0f, HudNameScalePc,
-                            HudNameScalePc, HudNameScalePc, alignment | 1, (u8)HudNameRedPc, (u8)HudNameGreenPc,
-                            (u8)HudNameBluePc, width, 2, NULL, 0, name_alpha);
+                SmartTextEx(GameObj_GetNamePc(-1, object, auxiliary), name_x, name_y, 1.0f, HudNameScalePc, HudNameScalePc, HudNameScalePc,
+                            alignment | 1, (u8)HudNameRedPc, (u8)HudNameGreenPc, (u8)HudNameBluePc, width, 2, NULL, 0, name_alpha);
             }
             if (HudPausePromptEnabledPc != 0 && paused != 0 && player == pause_i_pad) {
                 f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidthPc : HudNameWidthPc;
-                SmartTextEx(TTab[TextIdPc880834], name_x, status_y + HudPausePromptOffsetYPc, 1.0f, HudNameScalePc,
-                            HudNameScalePc, HudNameScalePc, alignment | 1, (u8)HudPausePromptRedPc,
-                            (u8)HudPausePromptGreenPc, HudPausePromptBluePc, width, 1, NULL, 0, flash_alpha);
+                SmartTextEx(TTab[TextIdPc880834], name_x, status_y + HudPausePromptOffsetYPc, 1.0f, HudNameScalePc, HudNameScalePc,
+                            HudNameScalePc, alignment | 1, (u8)HudPausePromptRedPc, (u8)HudPausePromptGreenPc, HudPausePromptBluePc, width,
+                            1, NULL, 0, flash_alpha);
             }
             if (StartupGameFlag1 != 0 && paused == 0 && FadeSys.fade == 0.0f && (object->flags_1fc & 0x80) != 0) {
                 if (ONEPLAYERPOWERUPS != 0 && object->powerup_time > 0.0f) {
                     if (FindGameMsgsWithID(7, 0, (i8)object->field_280, NULL) == 0 &&
                         (object->powerup_time >= 3.0f || GameTimer.update_count % 6 < 3)) {
-                        DrawPanel3DObject(player == 0 ? -ICONX : ICONX, PowerUp_GetPanelY(player) + status_y, 1.0f,
-                                          POWERUPOBJSIZE, POWERUPOBJSIZE, POWERUPOBJSIZE, 0, PowerUp_PanelYRot[player],
-                                          0, &WORLD->level_objects[208].special, 0, 1.0f);
-                        DrawPanel3DObject(player == 0 ? -ICONX : ICONX, PowerUp_GetPanelY(player) + status_y, 1.0f,
-                                          POWERUPOBJSIZE, POWERUPOBJSIZE, POWERUPOBJSIZE, 0, PowerUp_PanelYRot[player],
-                                          0, &WORLD->level_objects[209].special, 0, 1.0f);
+                        DrawPanel3DObject(player == 0 ? -ICONX : ICONX, PowerUp_GetPanelY(player) + status_y, 1.0f, POWERUPOBJSIZE,
+                                          POWERUPOBJSIZE, POWERUPOBJSIZE, 0, PowerUp_PanelYRot[player], 0,
+                                          &WORLD->level_objects[208].special, 0, 1.0f);
+                        DrawPanel3DObject(player == 0 ? -ICONX : ICONX, PowerUp_GetPanelY(player) + status_y, 1.0f, POWERUPOBJSIZE,
+                                          POWERUPOBJSIZE, POWERUPOBJSIZE, 0, PowerUp_PanelYRot[player], 0,
+                                          &WORLD->level_objects[209].special, 0, 1.0f);
                     }
                 } else {
                     u32 multiplier = Cheat_MultiplyScore(1);
@@ -781,8 +765,8 @@ extern "C" {
                     }
                     if (multiplier > 1) {
                         sprintf(text, "x%i", multiplier);
-                        Text3DEx(text, player == 0 ? -ICONX : ICONX, status_y + HudPausePromptOffsetYPc, 1.0f, 0.3f,
-                                 0.35f, 0.35f, 1, 255, 0, 255, (u8)flash_alpha);
+                        Text3DEx(text, player == 0 ? -ICONX : ICONX, status_y + HudPausePromptOffsetYPc, 1.0f, 0.3f, 0.35f, 0.35f, 1, 255,
+                                 0, 255, (u8)flash_alpha);
                     }
                 }
             }
@@ -795,9 +779,8 @@ extern "C" {
                 if (drop_alpha > 0) {
                     f32 x = player == 0 ? -HudDropInXPc : HudDropInXPc;
                     f32 y = raised_hearts != 0 ? status_y : status_y + HudHeartYPc;
-                    SmartTextEx(player == 0 ? apitxt_PCPRESSSTARTP1 : apitxt_PCPRESSSTARTP2, x, y, 1.0f,
-                                HudDropInScalePc, HudDropInScalePc, HudDropInScalePc, alignment, 255, 255, 255, 0.3f, 2,
-                                NULL, 0, drop_alpha);
+                    SmartTextEx(player == 0 ? apitxt_PCPRESSSTARTP1 : apitxt_PCPRESSSTARTP2, x, y, 1.0f, HudDropInScalePc, HudDropInScalePc,
+                                HudDropInScalePc, alignment, 255, 255, 255, 0.3f, 2, NULL, 0, drop_alpha);
                 }
             }
             if (raised_hearts == 0) {
@@ -813,14 +796,12 @@ extern "C" {
                     coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
                     scale = ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->scale * HudScoreScalePc;
                     y = status_y + PANEL_COINY;
-                    Text3DEx(text, score_x, y + HudCoinAdjustYPc, 1.0f, scale, scale, scale, alignment, 255, 191, 0,
-                             (u8)icon_alpha);
+                    Text3DEx(text, score_x, y + HudCoinAdjustYPc, 1.0f, scale, scale, scale, alignment, 255, 191, 0, (u8)icon_alpha);
                     model = 53;
                     if (WORLD->level_objects[model].active != 0) {
                         packet = (PLAYER_COIN_PACKET_PC *)object->coin_packet;
                         scale = packet->scale * PANEL_COINSCALE_END;
-                        DrawPanel3DObject(coin_x, y, 1.0f, scale, scale, scale, 0, 0, 0,
-                                          &WORLD->level_objects[model].special, 0, alpha);
+                        DrawPanel3DObject(coin_x, y, 1.0f, scale, scale, scale, 0, 0, 0, &WORLD->level_objects[model].special, 0, alpha);
                     }
                 } else {
                     if (object->coin_packet == NULL) {
@@ -831,8 +812,7 @@ extern "C" {
                     coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
                     scale = ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->scale * HudScoreScalePc;
                     y = status_y + PANEL_COINY;
-                    Text3DEx(text, score_x, y + HudCoinAdjustYPc, 1.0f, scale, scale, scale, alignment, 255, 191, 0,
-                             (u8)icon_alpha);
+                    Text3DEx(text, score_x, y + HudCoinAdjustYPc, 1.0f, scale, scale, scale, alignment, 255, 191, 0, (u8)icon_alpha);
                     packet = (PLAYER_COIN_PACKET_PC *)object->coin_packet;
                     model = packet->last_coin;
                     if (model >= 183 && model <= 186) {
@@ -847,8 +827,7 @@ extern "C" {
                     if (WORLD->level_objects[model].active != 0) {
                         packet = (PLAYER_COIN_PACKET_PC *)object->coin_packet;
                         scale = packet->scale * PANEL_COINSCALE_END;
-                        DrawPanel3DObject(coin_x, y, 1.0f, scale, scale, scale, 0, 0, 0,
-                                          &WORLD->level_objects[model].special, 0, alpha);
+                        DrawPanel3DObject(coin_x, y, 1.0f, scale, scale, scale, 0, 0, 0, &WORLD->level_objects[model].special, 0, alpha);
                     }
                 }
             }
@@ -858,17 +837,15 @@ extern "C" {
                 i32 freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
                 if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     (WORLD->area->flags & 0x10) != 0 &&
-                    (HubBothTrueJediGoldBricksPc != 0
-                         ? Game.area_save[WORLD->area_index].true_hero_complete[freeplay] == 0
-                         : Game.area_save[WORLD->area_index].true_hero_complete[0] == 0 &&
-                               Game.area_save[WORLD->area_index].true_hero_complete[1] == 0)) {
+                    (HubBothTrueJediGoldBricksPc != 0 ? Game.area_save[WORLD->area_index].true_hero_complete[freeplay] == 0
+                                                      : Game.area_save[WORLD->area_index].true_hero_complete[0] == 0 &&
+                                                            Game.area_save[WORLD->area_index].true_hero_complete[1] == 0)) {
                     u32 maximum = WORLD->area->true_hero_targets[freeplay];
                     if (maximum > 0) {
-                        status_y = (STATSPOSY - STATSPOS2YPc) *
-                                       NuTrigTable[((i32)((f64)builduptime * 16384.0) >> 1) & 0x7fff] +
-                                   STATSPOS2YPc;
-                        DrawBuildUpBar(0.0f, status_y + PANEL_COINY, BuildUpTotal != 0 ? maximum : BuildUpDone, maximum,
-                                       1.0f, BuildUpScale, 1.0f, 0);
+                        status_y =
+                            (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)builduptime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
+                        DrawBuildUpBar(0.0f, status_y + PANEL_COINY, BuildUpTotal != 0 ? maximum : BuildUpDone, maximum, 1.0f, BuildUpScale,
+                                       1.0f, 0);
                     }
                 }
                 if (SuperStory == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
@@ -884,12 +861,10 @@ extern "C" {
                     f32 factor = NuTrigTable[((i32)((f64)redbrickslidetime * 16384.0) >> 1) & 0x7fff];
                     f32 x = (REDBRICKPOSX - REDBRICKPOS2X) * factor + REDBRICKPOS2X;
                     f32 y = (REDBRICKPOSY - REDBRICKPOS2Y) * factor + REDBRICKPOS2Y;
-                    u16 angle =
-                        (u16)(0x1555 - (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * -65536.0));
+                    u16 angle = (u16)(0x1555 - (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * -65536.0));
                     u16 pitch = (u16)(i32)((f64)NuTrigTable[angle & 0x7fff] * 1820.0);
                     f32 scale = RedBrickScale * PANEL_REDBRICKSCALE;
-                    DrawPanel3DObjectNoAlpha(x, y, 1.0f, scale, scale, scale, pitch, angle, 0,
-                                             &WORLD->level_objects[210].special, 2);
+                    DrawPanel3DObjectNoAlpha(x, y, 1.0f, scale, scale, scale, pitch, angle, 0, &WORLD->level_objects[210].special, 2);
                 }
             }
             if (DoubleScoreTime > 0.0f) {
@@ -902,8 +877,7 @@ extern "C" {
                            Arcade != 0 ? Arcade_Points : BonusScore);
         }
         if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA && goldbricktime > 0.0f) {
-            f32 y = (STATSPOS2YPc - STATSPOSY) * NuTrigTable[((i32)((f64)goldbricktime * 16384.0) >> 1) & 0x7fff] -
-                    STATSPOS2YPc;
+            f32 y = (STATSPOS2YPc - STATSPOSY) * NuTrigTable[((i32)((f64)goldbricktime * 16384.0) >> 1) & 0x7fff] - STATSPOS2YPc;
             Hub_DrawImportantBrick(211, 0.0f, y, 1.0f, Game.gold_bricks, GOLDBRICKPOINTS);
         }
         PcInput_SetCtrlStringPlayer(old_input_device);
@@ -1115,14 +1089,13 @@ extern "C" {
                 red = 255;
             }
             if (meleeTarg_localCount[i] > 0) {
-                Text3D(text, x, y + text_offset, 0.0f, meleeTarg_scaleSize[i], meleeTarg_scaleSize[i],
-                       meleeTarg_scaleSize[i], 0, red, green, 0);
+                Text3D(text, x, y + text_offset, 0.0f, meleeTarg_scaleSize[i], meleeTarg_scaleSize[i], meleeTarg_scaleSize[i], 0, red,
+                       green, 0);
             }
             alpha_target = (f32)meleeTarg_localCount[i] / (f32)meleeTarg_maxCount[i] * 2.0f;
             meleeTarg_alpha[i] = SeekLinearF(meleeTarg_alpha[i], alpha_target, 0.005f);
             if (special != NULL) {
-                DrawCharIcon(targets[i], x, y, 0.0f, icon_scale, 0xa7, meleeTarg_alpha[i], meleeTarg_alpha[i], 1,
-                             special);
+                DrawCharIcon(targets[i], x, y, 0.0f, icon_scale, 0xa7, meleeTarg_alpha[i], meleeTarg_alpha[i], 1, special);
             } else {
                 DrawCharIcon(targets[i], x, y, 0.0f, icon_scale, 0xa7, meleeTarg_alpha[i], meleeTarg_alpha[i], 1, NULL);
             }
@@ -1182,8 +1155,7 @@ extern "C" {
         }
         sprintf(text, "%d", time);
         scale = TimerBaseScalePc * TimerScalePc;
-        Text3DEx(text, 0.0f, HudBossIconYPc, 1.0f, scale, scale, scale, 0, 255, 0, 255,
-                 (u8)((f64)TimerAlphaPc * 128.0));
+        Text3DEx(text, 0.0f, HudBossIconYPc, 1.0f, scale, scale, scale, 0, 255, 0, 255, (u8)((f64)TimerAlphaPc * 128.0));
     }
 
     void InitPanel(i32 mode) {
@@ -1239,10 +1211,8 @@ extern "C" {
                     green = 255;
                 }
                 Text3D(bonus_score,
-                       (f32)((f64)NuTrigTable[(u16)(NuFmod(WaitingForLevelTime, 0.479f) / (f64)0.479f * 65536.0) >> 1] *
-                             (f64)0.035f),
-                       (f32)((f64)NuTrigTable[(u16)(NuFmod(WaitingForLevelTime, 0.430f) / (f64)0.430f * 65536.0) >> 1] *
-                                 (f64)0.035f -
+                       (f32)((f64)NuTrigTable[(u16)(NuFmod(WaitingForLevelTime, 0.479f) / (f64)0.479f * 65536.0) >> 1] * (f64)0.035f),
+                       (f32)((f64)NuTrigTable[(u16)(NuFmod(WaitingForLevelTime, 0.430f) / (f64)0.430f * 65536.0) >> 1] * (f64)0.035f -
                              (f64)STATSPOSY),
                        1.0f, 0.3f, 0.3f, 0.3f, 0, red, green, 0);
             }
@@ -1280,17 +1250,15 @@ extern "C" {
             if (StartupGameFlag1 == 0 && LevelNameTime > 0.0f && (WORLD->current_level->flags & 0xe0) == 0 &&
                 WORLD->current_level != TITLES_LDATA && WORLD->current_level != CREDITS_LDATA) {
                 LEVELDATA_PC *level = WORLD->current_level;
-                char *name = level->title_text_id != 0xffff && level->title_text_id != (u16)tUNKNOWN
-                                 ? TTab[(i16)level->title_text_id]
-                                 : level->name;
+                char *name =
+                    level->title_text_id != 0xffff && level->title_text_id != (u16)tUNKNOWN ? TTab[(i16)level->title_text_id] : level->name;
                 if (name != NULL) {
                     f32 alpha = NuTrigTable[((i32)((f64)LevelNameTime * 16384.0) >> 1) & 0x7fff];
                     if (FadeSys.fade > 0.0f) {
                         alpha = (f32)((1.0 - (f64)FadeSys.fade) * (f64)alpha);
                     }
-                    SmartTextEx(name, 0.0f, HudLevelTitleYPc, 1.0f, HudLevelTitleScalePc * HudLevelTitleScaleXPc,
-                                HudLevelTitleScalePc, HudLevelTitleScalePc, 0, 255, 255, 255, HudLevelTitleWidthPc, 1,
-                                NULL, 0, (u8)(i32)((f64)alpha * 64.0));
+                    SmartTextEx(name, 0.0f, HudLevelTitleYPc, 1.0f, HudLevelTitleScalePc * HudLevelTitleScaleXPc, HudLevelTitleScalePc,
+                                HudLevelTitleScalePc, 0, 255, 255, 255, HudLevelTitleWidthPc, 1, NULL, 0, (u8)(i32)((f64)alpha * 64.0));
                 }
             }
             i32 hide_super_story_target = drawbosshitpoints != NULL ? DrawBossHitPointsPc(drawbosshitpoints) : 0;
@@ -1310,14 +1278,13 @@ extern "C" {
                         NuStrCpy(coordinate_text, const_cast<char *>("("));
                         NuStrCat(coordinate_text, bonus_score);
                         NuStrCat(coordinate_text, const_cast<char *>(")"));
-                        Text3DEx(coordinate_text, 0.0f, DrawCoinTotalYPc + CoinTotalTargetOffsetYPc, 1.0f, 0.35f, 0.35f,
-                                 0.35f, 0, 255, 255, 255, 48);
+                        Text3DEx(coordinate_text, 0.0f, DrawCoinTotalYPc + CoinTotalTargetOffsetYPc, 1.0f, 0.35f, 0.35f, 0.35f, 0, 255, 255,
+                                 255, 48);
                     }
                 }
                 if (FadeSys.fade == 0.0f && (WORLD->current_level->flags & 2) != 0) {
                     DrawSuperStoryTime(
-                        -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] +
-                          STATSPOS2YPc),
+                        -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc),
                         BonusTimer.time_elapsed, Game.area_save[WORLD->area_index].challenge_trial_time, 0, 1);
                 }
             } else if (BonusArea == 0 && ChallengeMode != 0) {
@@ -1327,15 +1294,11 @@ extern "C" {
                 }
                 Text_MakeTime(remaining, 0, 1, 1, coordinate_text);
                 Text3D(coordinate_text, 0.0f,
-                       (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] +
-                           STATSPOS2YPc,
-                       1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+                       (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc, 1.0f, 0.6f,
+                       0.6f, 0.6f, 0, 255, 191, 0);
             } else if (BonusArea == 0 && Mission_Active(NULL) != NULL) {
-                f32 mission_y =
-                    (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] +
-                    STATSPOS2YPc;
-                f32 remaining = (f32)MissionSys->missions[(i8)MissionSys->active_mission->index].time -
-                                MissionSys->timer.time_elapsed;
+                f32 mission_y = (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
+                f32 remaining = (f32)MissionSys->missions[(i8)MissionSys->active_mission->index].time - MissionSys->timer.time_elapsed;
                 if (remaining < 0.0f) {
                     remaining = 0.0f;
                 }
@@ -1345,10 +1308,7 @@ extern "C" {
                     GAMEOBJECT *target = Mission_FindTarget(MissionSys, NULL);
                     if (target != NULL && player != NULL) {
                         f32 pulse =
-                            (f32)((f64)NuTrigTable[(u16)((f64)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) *
-                                                               2.0f) *
-                                                         65536.0) >>
-                                                   1] *
+                            (f32)((f64)NuTrigTable[(u16)((f64)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >> 1] *
                                       (f64)0.2f +
                                   (f64)0.8f);
                         f32 distance = NuVecDistSqr(&player->collision_position, &target->collision_position, NULL);
@@ -1384,10 +1344,9 @@ extern "C" {
             if (Player[player_index] != NULL && (((GAMEOBJECT *)Player[player_index])->flags_1fc & 0x80) != 0 &&
                 ShowPlayerCoordinatePc != 0) {
                 sprintf(coordinate_text, "X:%.2f Y:%.2f Z:%.2f", ((GAMEOBJECT *)Player[player_index])->position.x,
-                        ((GAMEOBJECT *)Player[player_index])->position.y,
-                        ((GAMEOBJECT *)Player[player_index])->position.z);
-                Text3DEx(coordinate_text, coordinate_positions[player_index].x, coordinate_positions[player_index].y,
-                         1.0f, 0.4f, 0.5f, 0.5f, 0, 255, 191, 0, 48);
+                        ((GAMEOBJECT *)Player[player_index])->position.y, ((GAMEOBJECT *)Player[player_index])->position.z);
+                Text3DEx(coordinate_text, coordinate_positions[player_index].x, coordinate_positions[player_index].y, 1.0f, 0.4f, 0.5f,
+                         0.5f, 0, 255, 191, 0, 48);
             }
         }
         DebrisDraw(paused, 4);
@@ -1407,15 +1366,11 @@ extern "C" {
     finish:
         if (drawautosaveicon != 0 && WORLD->level_objects[0].active != 0) {
             DrawPanel3DObject(
-                (f32)((f64)NuTrigTable[(u16)(NuFmod(GlobalTimer.time_elapsed, 1.1f) / (f64)1.1f * 65536.0) >> 1] *
-                      (f64)0.01f),
-                (f32)((f64)NuTrigTable
-                              [(((u16)(NuFmod(GlobalTimer.time_elapsed, 0.77f) / (f64)0.77f * 65536.0) + 0x4000) >> 1) &
-                               0x7fff] *
+                (f32)((f64)NuTrigTable[(u16)(NuFmod(GlobalTimer.time_elapsed, 1.1f) / (f64)1.1f * 65536.0) >> 1] * (f64)0.01f),
+                (f32)((f64)NuTrigTable[(((u16)(NuFmod(GlobalTimer.time_elapsed, 0.77f) / (f64)0.77f * 65536.0) + 0x4000) >> 1) & 0x7fff] *
                           (f64)0.01f -
                       (f64)0.05f),
-                1.0f, HudAutoSaveScalePc, HudAutoSaveScalePc, HudAutoSaveScalePc, 0, 0, 0,
-                &WORLD->level_objects[0].special, 0, 1.0f);
+                1.0f, HudAutoSaveScalePc, HudAutoSaveScalePc, HudAutoSaveScalePc, 0, 0, 0, &WORLD->level_objects[0].special, 0, 1.0f);
         }
         drawautosaveicon = 0;
         if (GameCam != NULL) {
@@ -1462,8 +1417,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     i32 first_green;
     i32 first_blue;
     i32 alpha;
-    if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 ||
-        !(object->pause_context_state > 0.0f)) {
+    if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 || !(object->pause_context_state > 0.0f)) {
         return;
     }
     message = AddGameMsg_Default;
@@ -1535,8 +1489,7 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     ADD_GAME_MESSAGE_PC message;
     NUVEC position;
     i32 id;
-    if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 ||
-        (WORLD->current_level->flags & 0x800000) != 0) {
+    if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 || (WORLD->current_level->flags & 0x800000) != 0) {
         return;
     }
     if (Tag_NoHiddenIconFn != NULL && Tag_NoHiddenIconFn(object) != 0) {

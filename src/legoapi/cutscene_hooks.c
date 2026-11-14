@@ -5,14 +5,14 @@
 void CutScene_PostUpdateFn_LSW(void) {
 }
 
-#define CUT_HAND_FLIP(m)                                                                                               \
-    do {                                                                                                               \
-        (m)->m02 = -(m)->m02;                                                                                          \
-        (m)->m12 = -(m)->m12;                                                                                          \
-        (m)->m20 = -(m)->m20;                                                                                          \
-        (m)->m21 = -(m)->m21;                                                                                          \
-        (m)->m23 = -(m)->m23;                                                                                          \
-        (m)->m32 = -(m)->m32;                                                                                          \
+#define CUT_HAND_FLIP(m)                                                                                                                   \
+    do {                                                                                                                                   \
+        (m)->m02 = -(m)->m02;                                                                                                              \
+        (m)->m12 = -(m)->m12;                                                                                                              \
+        (m)->m20 = -(m)->m20;                                                                                                              \
+        (m)->m21 = -(m)->m21;                                                                                                              \
+        (m)->m23 = -(m)->m23;                                                                                                              \
+        (m)->m32 = -(m)->m32;                                                                                                              \
     } while (0)
 
 i32 PCCutAni3CurveInteger(ANI3_HEADER_PC *animation, f32 *values, i32 index) {
@@ -81,8 +81,8 @@ void PCCutRigidAni3(CUT_RIGID_ANIMATION_PC *rigid, f32 frame, NUMTX *matrix) {
     NuMtxTranslate(matrix, (NUVEC *)&rigid->base_matrix.m30);
 }
 
-void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *character, f32 frame, NUMTX *matrix, i32 *visible,
-                        u32 *animation_index, f32 *animation_rate, f32 *blend_time, f32 *start_frame, i32 *layer_mask) {
+void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *character, f32 frame, NUMTX *matrix, i32 *visible, u32 *animation_index,
+                        f32 *animation_rate, f32 *blend_time, f32 *start_frame, i32 *layer_mask) {
     ANI3_HEADER_PC *animation = character->animation;
     f32 *values = NuAnimCurveExtractAllNodeCurves_3(animation, 0, frame, NULL);
     u32 flags = animation->node_flags[0];
@@ -154,14 +154,14 @@ void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *character, f32 frame, NUMTX 
 #undef CUT_HAND_FLIP
 
 #define CUT2_VALUE(c, t, k, n) ((k)[n] == 0 ? (c)[n].constant : NuAnimCurve2CalcValEx(&(c)[n], (t), (i32)(k)[n]))
-#define CUT2_FLIP(m)                                                                                                   \
-    do {                                                                                                               \
-        (m)->m02 = -(m)->m02;                                                                                          \
-        (m)->m12 = -(m)->m12;                                                                                          \
-        (m)->m20 = -(m)->m20;                                                                                          \
-        (m)->m21 = -(m)->m21;                                                                                          \
-        (m)->m23 = -(m)->m23;                                                                                          \
-        (m)->m32 = -(m)->m32;                                                                                          \
+#define CUT2_FLIP(m)                                                                                                                       \
+    do {                                                                                                                                   \
+        (m)->m02 = -(m)->m02;                                                                                                              \
+        (m)->m12 = -(m)->m12;                                                                                                              \
+        (m)->m20 = -(m)->m20;                                                                                                              \
+        (m)->m21 = -(m)->m21;                                                                                                              \
+        (m)->m23 = -(m)->m23;                                                                                                              \
+        (m)->m32 = -(m)->m32;                                                                                                              \
     } while (0)
 
 f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NUMTX *matrix, NUANIM_TIME2_PC *time) {
@@ -170,8 +170,7 @@ f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NUMTX *mat
     NUVEC translation;
     NUVEC rotation;
     if (locator->animation != NULL) {
-        if ((i32)locator->animation->prefix.header.magic >= 0x414e4934 &&
-            (i32)locator->animation->prefix.header.magic <= 0x414e4935) {
+        if ((i32)locator->animation->prefix.header.magic >= 0x414e4934 && (i32)locator->animation->prefix.header.magic <= 0x414e4935) {
             return PCCutLocatorAni3((CUT_LOCATOR_ANIMATION_PC *)locator, matrix, frame);
         }
         curves = locator->animation->prefix.curves;
@@ -208,8 +207,7 @@ void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *rigid, f32 frame, NUMTX *matrix) {
     NUVEC translation;
     NUVEC scale;
     if (rigid->animation != NULL) {
-        if ((i32)rigid->animation->prefix.header.magic >= 0x414e4934 &&
-            (i32)rigid->animation->prefix.header.magic <= 0x414e4935) {
+        if ((i32)rigid->animation->prefix.header.magic >= 0x414e4934 && (i32)rigid->animation->prefix.header.magic <= 0x414e4935) {
             PCCutRigidAni3((CUT_RIGID_ANIMATION_PC *)rigid, frame, matrix);
             return;
         }
@@ -246,9 +244,8 @@ void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *rigid, f32 frame, NUMTX *matrix) {
     }
 }
 
-void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 frame, NUMTX *matrix, i32 *visible,
-                           u32 *animation_index, f32 *animation_rate, f32 *blend_time, f32 *start_frame,
-                           i32 *layer_mask) {
+void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 frame, NUMTX *matrix, i32 *visible, u32 *animation_index,
+                           f32 *animation_rate, f32 *blend_time, f32 *start_frame, i32 *layer_mask) {
     NUANIM_TIME2_PC time;
     DWA_CURVE_CELL *curves;
     i8 *types;
@@ -257,10 +254,9 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 frame, NUMTX
     NUVEC scale;
     NUVEC rotation;
     if (character->animation != NULL) {
-        if ((i32)character->animation->prefix.header.magic >= 0x414e4934 &&
-            (i32)character->animation->prefix.header.magic <= 0x414e4935) {
-            PCCutCharacterAni3((CUT_CHARACTER_ANIMATION_PC *)character, frame, matrix, visible, animation_index,
-                               animation_rate, blend_time, start_frame, layer_mask);
+        if ((i32)character->animation->prefix.header.magic >= 0x414e4934 && (i32)character->animation->prefix.header.magic <= 0x414e4935) {
+            PCCutCharacterAni3((CUT_CHARACTER_ANIMATION_PC *)character, frame, matrix, visible, animation_index, animation_rate, blend_time,
+                               start_frame, layer_mask);
             return;
         }
         NuAnimData2CalcTime(&character->animation->prefix, frame, &time);

@@ -59,8 +59,7 @@ i32 WavReader::SeekTime(f32 time) {
 }
 
 /* Uncalled. SetFilePointerEx with an optional result. */
-BOOL __stdcall WavReaderSetFilePointerPc(HANDLE file, LARGE_INTEGER distance, LARGE_INTEGER *new_position,
-                                         DWORD method) {
+BOOL __stdcall WavReaderSetFilePointerPc(HANDLE file, LARGE_INTEGER distance, LARGE_INTEGER *new_position, DWORD method) {
     BOOL result = SetFilePointerEx(file, distance, &distance, method);
     if (new_position != NULL) {
         *new_position = distance;
@@ -107,8 +106,7 @@ HRESULT WavReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
     LARGE_INTEGER position;
     if (header != NULL) {
         if (NuDatGetFileInfo(header, path, &base_position, &archive_size)) {
-            file = CreateFileA(header->name, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
-                               NULL);
+            file = CreateFileA(header->name, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
             if (file != INVALID_HANDLE_VALUE) {
                 move.QuadPart = base_position;
                 SetFilePointerEx(file, move, &position, FILE_BEGIN);
@@ -129,8 +127,7 @@ HRESULT WavReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
 
         DWORD bytes;
         PC_WAVE_CHUNK_PC chunk;
-        if (!ReadFile(file, &riff, 12, &bytes, NULL) || bytes != 12 || riff.riff != 0x46464952 ||
-            riff.wave != 0x45564157) {
+        if (!ReadFile(file, &riff, 12, &bytes, NULL) || bytes != 12 || riff.riff != 0x46464952 || riff.wave != 0x45564157) {
             goto fail;
         }
         if (!FindChunkPc(file, "fmt ", &chunk) || chunk.bytes < 16) {

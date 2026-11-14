@@ -19,10 +19,10 @@ extern "C" char HubButtonStringBufferPc[];
 extern "C" {}
 
 extern "C" {
-    LEVELFIXUP_PC LevelFixupStartupPc[2] = {{"losttemple_c", &UpdateSockets_LDATA, NULL, NULL,
-                                             (void *)LostTempleC_ResetPc, (void *)LostTempleC_UpdatePc, NULL, NULL,
-                                             NULL},
-                                            {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}};
+    LEVELFIXUP_PC LevelFixupStartupPc[2] = {
+        {"losttemple_c", &UpdateSockets_LDATA, NULL, NULL, (void *)LostTempleC_ResetPc, (void *)LostTempleC_UpdatePc, NULL, NULL, NULL},
+        {NULL,           NULL,                 NULL, NULL, NULL,                        NULL,                         NULL, NULL, NULL}
+    };
 }
 
 extern "C" void Hub_LockUnlockDoors(WORLDINFO *world) {
@@ -34,8 +34,8 @@ extern "C" void Hub_DrawStarField(void) {
 }
 
 /* Lives in the menu unit and is never inlined into hub callers. */
-extern "C" void SmartText(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align, i32 red, i32 green,
-                          i32 blue, f32 max_width, i32 center) {
+extern "C" void SmartText(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align, i32 red, i32 green, i32 blue, f32 max_width,
+                          i32 center) {
     SmartTextEx(text, x, y, z, sx, sy, sz, align, red, green, blue, max_width, center, NULL, 0, 128);
 }
 
@@ -62,16 +62,13 @@ extern "C" i32 Text_ExpandButtonString(char *command, char *output) {
     if (NuStrICmp(command, "[TAG]") == 0 || NuStrICmp(command, "[TRIANGLE]") == 0 || NuStrICmp(command, "[T]") == 0) {
         NuStrCpy(output, TextButtonStringPc(12, TTab[816], TTab[817]));
         return 1;
-    } else if (NuStrICmp(command, "[ACTION]") == 0 || NuStrICmp(command, "[SQUARE]") == 0 ||
-               NuStrICmp(command, "[S]") == 0) {
+    } else if (NuStrICmp(command, "[ACTION]") == 0 || NuStrICmp(command, "[SQUARE]") == 0 || NuStrICmp(command, "[S]") == 0) {
         NuStrCpy(output, TextButtonStringPc(15, TTab[816], TTab[817]));
         return 1;
-    } else if (NuStrICmp(command, "[SPECIAL]") == 0 || NuStrICmp(command, "[CIRCLE]") == 0 ||
-               NuStrICmp(command, "[O]") == 0) {
+    } else if (NuStrICmp(command, "[SPECIAL]") == 0 || NuStrICmp(command, "[CIRCLE]") == 0 || NuStrICmp(command, "[O]") == 0) {
         NuStrCpy(output, TextButtonStringPc(13, TTab[816], TTab[817]));
         return 1;
-    } else if (NuStrICmp(command, "[JUMP]") == 0 || NuStrICmp(command, "[CROSS]") == 0 ||
-               NuStrICmp(command, "[X]") == 0) {
+    } else if (NuStrICmp(command, "[JUMP]") == 0 || NuStrICmp(command, "[CROSS]") == 0 || NuStrICmp(command, "[X]") == 0) {
         NuStrCpy(output, TextButtonStringPc(14, TTab[816], TTab[817]));
         return 1;
     } else if (NuStrICmp(command, "[TOGGLELEFT]") == 0) {

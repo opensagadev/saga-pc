@@ -165,10 +165,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     LOG_INFO_IF(GameTimer.update_count < 2, "NuMainUpdateFrame after DoInput: world=%p", (void *)WORLD);
     if (memcard_autosaveenabled != 0 && memcard_autosavedisabled != 0 &&
         (world == NULL || world->area == NULL || (world->area->flags & 2) == 0) && NewMode == 0 && NewLData == NULL &&
-        FadeSys.fade == 0.0f && editor_active == 0 &&
-        (GamePads_IgnoreInputFn == NULL || GamePads_IgnoreInputFn() == 0)) {
-        if ((CUTSTOPGAME == 0 || CutScene_IsSkippable((CUTINFO *)CutStopInfo) != 0) && MiniCutCam == 0 &&
-            CutSceneWaiting == 0) {
+        FadeSys.fade == 0.0f && editor_active == 0 && (GamePads_IgnoreInputFn == NULL || GamePads_IgnoreInputFn() == 0)) {
+        if ((CUTSTOPGAME == 0 || CutScene_IsSkippable((CUTINFO *)CutStopInfo) != 0) && MiniCutCam == 0 && CutSceneWaiting == 0) {
             if (GameMenu[GameMenuLevel].menu != -1) {
                 if (MenuInMemoryCard() == 0 && MenuInfo[GameMenu[GameMenuLevel].menu].id != 1 &&
                     MenuInfo[GameMenu[GameMenuLevel].menu].id != 4) {
@@ -205,14 +203,13 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         }
         NuSound3Update();
         UpdateLevelSfx(world, Paused);
-        NuSound3SetRumblePads(Game.options_save.unknown_0000[0] != 0 && Player[0] != NULL &&
-                                      (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0
-                                  ? ((GAMEOBJECT *)Player[0])->pad->bound_pad
-                                  : NULL,
-                              Game.options_save.unknown_0000[1] != 0 && Player[1] != NULL &&
-                                      (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0
-                                  ? ((GAMEOBJECT *)Player[1])->pad->bound_pad
-                                  : NULL);
+        NuSound3SetRumblePads(
+            Game.options_save.unknown_0000[0] != 0 && Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0
+                ? ((GAMEOBJECT *)Player[0])->pad->bound_pad
+                : NULL,
+            Game.options_save.unknown_0000[1] != 0 && Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0
+                ? ((GAMEOBJECT *)Player[1])->pad->bound_pad
+                : NULL);
         NuSound3UpdateRumble(FRAMETIME);
         SoundUpdate(FRAMETIME);
         ProcessMusicChanges(world->current_level, &Game.options_save);
@@ -236,8 +233,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         for (i = 0; i < 2; ++i) {
             object = (GAMEOBJECT *)Player[i];
             if (object != NULL) {
-                UpdateCoinPacket((PLAYER_COIN_PACKET_PC *)object->coin_packet, (object->flags_1fc_word >> 7) & 1,
-                                 (i8)object->field_280);
+                UpdateCoinPacket((PLAYER_COIN_PACKET_PC *)object->coin_packet, (object->flags_1fc_word >> 7) & 1, (i8)object->field_280);
             }
         }
         Debris(1);
@@ -344,8 +340,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                 tieoffsfxwait -= FRAMETIME;
             }
             UpdateExplosions();
-            Tag_UpdateTransfers(world->game_debris_sys->entries[39].effect, world->game_debris_sys->entries[40].effect,
-                                180);
+            Tag_UpdateTransfers(world->game_debris_sys->entries[39].effect, world->game_debris_sys->entries[40].effect, 180);
             UpdateRepeatSfx();
             GizmoSysLateUpdate(world->gizmo_sys, world, FRAMETIME);
             SAGA_SOUND_CHECK("after GizmoSysLateUpdate");
@@ -373,8 +368,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             UpdateStreaks(FRAMETIME);
         }
         if ((world->area != NULL && world->area == HUB_ADATA) || world->current_level == TITLES_LDATA ||
-            world->current_level == STATUS_LDATA || (world->current_level->flags & 0x400) != 0 ||
-            world->current_level == CREDITS_LDATA) {
+            world->current_level == STATUS_LDATA || (world->current_level->flags & 0x400) != 0 || world->current_level == CREDITS_LDATA) {
             BackDrop_Update(FRAMETIME);
         }
     }
@@ -398,14 +392,13 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         return;
     }
     level = world->current_level;
-    if (level != NULL && (level->flags & 0x400) != 0 && HUB_LDATA != NULL && NewLData != HUB_LDATA &&
-        NewLData != NULL && NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & 2) == 0) {
+    if (level != NULL && (level->flags & 0x400) != 0 && HUB_LDATA != NULL && NewLData != HUB_LDATA && NewLData != NULL &&
+        NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & 2) == 0) {
         FadeSys.fade = 1.0f;
         FinishLoop_On = 0;
         return;
     }
-    if (FadeSys.pending_type == FADE_TYPE_NONE ||
-        (NewLData != NULL && WORLD->current_level != NewLData && NewLData == HUB_LDATA)) {
+    if (FadeSys.pending_type == FADE_TYPE_NONE || (NewLData != NULL && WORLD->current_level != NewLData && NewLData == HUB_LDATA)) {
         level = WORLD->current_level;
         if (level != NULL) {
             if (NewLData == NULL) {
@@ -416,8 +409,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                     NewLData == CREDITS_LDATA) {
                     goto fade_wipe;
                 }
-                if (SuperStory != 0 && (level->flags & 0x400) != 0 &&
-                    (ADataList[NewLData->area_index].flags & 2) != 0) {
+                if (SuperStory != 0 && (level->flags & 0x400) != 0 && (ADataList[NewLData->area_index].flags & 2) != 0) {
                     goto fade_wipe;
                 }
             }
@@ -506,8 +498,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     CutScenes_Draw(world);
     NuRndrShadPolys(PermanentShadowMaterialPc);
     NuLgtLaserDraw(paused);
-    if (world->current_level == TITLES_LDATA || (world->current_level->flags & 0x400) != 0 ||
-        world->current_level == CREDITS_LDATA ||
+    if (world->current_level == TITLES_LDATA || (world->current_level->flags & 0x400) != 0 || world->current_level == CREDITS_LDATA ||
         (world->current_level == STATUS_LDATA && (StatusPacket.flags_word & 0x400) != 0)) {
         BackDrop_Draw(1.0f, 0);
     }
@@ -654,8 +645,8 @@ extern "C" int NuMain(int argc, char **argv) {
         if (StartupGameFlag1 != 0) {
             LSW_SetIndy(Area);
         }
-        if (last_area != -1 && LastLData != NULL && (LastLData->flags & 0x400) != 0 && ADataList[Area].flags != 2 &&
-            HUB_ADATA != NULL && Area != HUB_ADATA->index) {
+        if (last_area != -1 && LastLData != NULL && (LastLData->flags & 0x400) != 0 && ADataList[Area].flags != 2 && HUB_ADATA != NULL &&
+            Area != HUB_ADATA->index) {
             FinishLoop(2);
         }
         GameAISysSetGame();
@@ -707,8 +698,7 @@ extern "C" int NuMain(int argc, char **argv) {
                 message->output_count = 2;
             }
         }
-        if (Area == -1 || ADataList[Area].episode_index == -1 || (ADataList[Area].flags & 0x10) == 0 ||
-            (ADataList[Area].flags & 4) != 0) {
+        if (Area == -1 || ADataList[Area].episode_index == -1 || (ADataList[Area].flags & 0x10) == 0 || (ADataList[Area].flags & 4) != 0) {
             ChallengeMode = 0;
             Mission_Clear(NULL);
         }
@@ -813,11 +803,9 @@ extern "C" int NuMain(int argc, char **argv) {
             reset_load = 1;
             NuVideoRollingFrameRateReset();
 
-            while (
-                ((NewMode == 0 && NewLData == NULL) || FadeSys.fade < 1.0f || pFadeInfo->busy != 0 ||
-                 (((waiting_for_level != -1 && (reset_load != 0 || abort_load != 0)) || waiting_for_character != -1) &&
-                  NewMode == 0)) &&
-                (CutScenes_BGLoadManager(), NuWindowsProcessMessages() != 0)) {
+            while (((NewMode == 0 && NewLData == NULL) || FadeSys.fade < 1.0f || pFadeInfo->busy != 0 ||
+                    (((waiting_for_level != -1 && (reset_load != 0 || abort_load != 0)) || waiting_for_character != -1) && NewMode == 0)) &&
+                   (CutScenes_BGLoadManager(), NuWindowsProcessMessages() != 0)) {
                 NuVideoGetSwapMode();
                 NuTimeBarSlotReset(0, 0xf);
                 _NuTimeBarSlotBegin(0, 0xf, "frmtmr");
@@ -825,8 +813,8 @@ extern "C" int NuMain(int argc, char **argv) {
                 InitPanel(GetMenuID() == 4 ? TempOptions.widescreen : Game.options_save.widescreen);
                 saved_frametime = FRAMETIME;
                 if ((waiting_for_level == -1 || gone_through_door_to_new_level == 0) && screendump == 0) {
-                    if (ChallengeMode == 1 && AreaGlobals_PC.field_20 >= 10 && WORLD->current_level != HUB_LDATA &&
-                        MiniCutCam == 0 && CutScene_PlayingOrRequested(NULL) == 0 && FadeSys.fade == 0.0f) {
+                    if (ChallengeMode == 1 && AreaGlobals_PC.field_20 >= 10 && WORLD->current_level != HUB_LDATA && MiniCutCam == 0 &&
+                        CutScene_PlayingOrRequested(NULL) == 0 && FadeSys.fade == 0.0f) {
                         EndChallenge(2, 1);
                     }
                     LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before update: world=%p", (void *)WORLD);
@@ -1016,9 +1004,8 @@ extern "C" int NuMain(int argc, char **argv) {
                 }
             }
         }
-        if (status->status_flags != 0 &&
-            ((STATUS_LDATA != NULL && LastLData == STATUS_LDATA) || (LastLData->flags & 0x400) != 0 ||
-             (CREDITS_LDATA != NULL && LastLData == CREDITS_LDATA))) {
+        if (status->status_flags != 0 && ((STATUS_LDATA != NULL && LastLData == STATUS_LDATA) || (LastLData->flags & 0x400) != 0 ||
+                                          (CREDITS_LDATA != NULL && LastLData == CREDITS_LDATA))) {
             for (player_index = 0; player_index < 8; ++player_index) {
                 if (player_index < 2) {
                     PlayerList[player_index] = status->player_models[player_index];
