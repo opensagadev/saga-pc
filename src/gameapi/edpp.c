@@ -564,8 +564,7 @@ void cbPtlChangeRepeatFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     }
 }
 
-/* PC 0x02947b78, 0x02962b40/0x02962b44, 0x00810ae4: the repeat-box submenu, its X and Z sliders and the
-   XZ lock that keeps the box square. */
+/* The repeat-box submenu, its X and Z sliders and the XZ lock that keeps the box square. */
 eduimenu_s *ptlrepeatboxmenu = NULL;
 static edui_slider_s *ptlrepeatbox_x_slider = NULL;
 static edui_slider_s *ptlrepeatbox_z_slider = NULL;
@@ -3300,7 +3299,7 @@ void cbPtlSelGSort(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         effect->emitter_velocity.z *= 2.0f;
     } else if (!((effect->generator_type == 6 && item->data == 12) ||
                  (effect->generator_type == 12 && item->data == 6))) {
-        /* Retail clears momentum_random_x through emitter_velocity (0x4c-0x6f) with integer stores: one memset. */
+        /* Clears momentum_random_x through emitter_velocity (0x4c-0x6f). */
         memset(&effect->momentum_random_x, 0, 9 * sizeof(f32));
         effect->scale_in_time = 0.0f;
         effect->trail_count = 0;

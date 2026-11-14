@@ -645,9 +645,8 @@ extern "C" {
 }
 
 extern "C" {
-    /* Selected native domain only: callback count remains zero. Native capacity unknown. */
     PC_WINDOW_CALLBACK_PC PcWindowCallbacks[1] = {NULL};
-    /* Selected empty/recognized-only command line: module slot0 and scratch slot1. */
+    /* Command line: module slot 0 and scratch slot 1. */
     char *PcArgv[2] = {NULL, NULL};
 }
 
@@ -3694,7 +3693,7 @@ TEXT_INPUT_LABELS_PC PcInputLabels8208e0 = {
     {PcInputText7742f8, PcInputText7742e0, PcInputText7742cc},
     PcInputText7742b8,
     PcInputText7742a8};
-/* Retail address order: entries past the end of a 222-entry table read the next table. */
+/* Entries past the end of a 222-entry table read the next table. */
 char *PcInputKeyNames821558[238] = {
     TextInputKeyNameTextPc771d80, TextInputKeyNameTextPc771d7c, "1",
     TextInputKeyNameTextPc771d78, TextInputKeyNameTextPc771d74, TextInputKeyNameTextPc771d70,
@@ -10623,8 +10622,7 @@ extern "C" {
 #pragma bss_seg(".bss$CheckLostDataFn")
     CHECK_LOST_DATA_PC CheckLostDataFn = 0;
 #pragma bss_seg()
-// Existing complete working bytes view retained, including the native utility WORD at +0x10000.
-// The original owner capacity remains unknown; the CSV extent intentionally stays blank.
+// Includes the utility WORD at +0x10000.
 #pragma bss_seg(".bss$ConfigBuffer")
     CONFIG_BUFFER_PC ConfigBuffer = {0};
 #pragma bss_seg()
@@ -17324,7 +17322,6 @@ extern "C" {
     i16 id_CLONEEP3SAND = -1;
 }
 
-// Sole-writer proposal only. Native working record 288; original owning extent remains unknown.
 extern "C" {
     PLAYERCHARACTERCONFIG_PC GCDATA_DEFAULT = {
         PCBuildModelLayerList,                    /* 0x0 make_layer_list */
@@ -17486,7 +17483,6 @@ extern "C" {
 }
 
 extern "C" {
-    /* Sole-writer proposal only; ordinary compiler-owned language literal. */
     const char *TagAsciiDownPc = "\xC2\xA3";
 }
 
@@ -17628,7 +17624,7 @@ extern "C" {
     i32 LEGOHINT_BUILD = -1;
     f32 REDBRICKPOS2X = 1.27499998f;
     f32 REDBRICKPOS2Y = -1.255f;
-    /* The Android build names these bytes MENUEXITR, MENUEXITG and the MENULOST* blend
+    /* These bytes are MENUEXITR, MENUEXITG and the MENULOST* blend
        endpoints; MenuDrawPauseRestart/Exit and InitGameAfterConfig address all eight. */
     u8 AlternateHudColourBytesPc[8] = {255, 191, 191, 95, 128, 255, 31, 128};
     u8 AlternateHudRgbPc[3] = {0, 0, 0};
@@ -26009,7 +26005,6 @@ STATIC_ASSERT(sizeof(uberShader2) == 158576);
 
 #pragma data_seg(".data$FrameRenderCaptureStatePc")
 #pragma bss_seg(".bss$FrameRenderCaptureStatePc")
-/* Native pre-initialization state; original owning extents remain unknown. */
 extern "C" {
     f32 RenderFrameShaderTimePc = 0.0f;
     i32 nuspecial_vertex_noffsets = 0;
@@ -26098,55 +26093,55 @@ extern "C" {
 #pragma data_seg(".data$DisplayHandlerTablePc")
 #pragma bss_seg(".bss$DisplayHandlerTablePc")
 extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefixPc[49] = {
-    NuDisplayListMaterialPc,             /* index0,itemtype0x80,native0x608000 */
-    NULL,                                /* index1,itemtype0x81,native0x0 */
-    NuDisplayListDrawGeometryPc,         /* index2,itemtype0x82,native0x607880 */
-    NuDisplayListTransformPc,            /* index3,itemtype0x83,native0x5fd6b0 */
-    NULL,                                /* index4,itemtype0x84,native0x0 */
-    NULL,                                /* index5,itemtype0x85,native0x0 */
-    NULL,                                /* index6,itemtype0x86,native0x0 */
-    NULL,                                /* index7,itemtype0x87,native0x0 */
-    NULL,                                /* index8,itemtype0x88,native0x0 */
-    NULL,                                /* index9,itemtype0x89,native0x0 */
-    NULL,                                /* index10,itemtype0x8a,native0x0 */
-    NuDisplayListDrawGeometryPc,         /* index11,itemtype0x8b,native0x607880 */
-    NuDisplayListTransformTransposePc,   /* index12,itemtype0x8c,native0x5fd7f0 */
-    NULL,                                /* index13,itemtype0x8d,native0x0 */
-    NULL,                                /* index14,itemtype0x8e,native0x0 */
-    NuDisplayListDrawFaceOnPc,           /* index15,itemtype0x8f,native0x5fd9f0 */
-    NuDisplayListFaceOnTransformPc,      /* index16,itemtype0x90,native0x5fda20 */
-    NULL,                                /* index17,itemtype0x91,native0x0 */
-    NULL,                                /* index18,itemtype0x92,native0x0 */
-    NuDisplayListDrawPrimitive2DPc,      /* index19,itemtype0x93,native0x5fd560 */
-    NuDisplayListLightsPc,               /* index20,itemtype0x94,native0x5fdb60 */
-    NULL,                                /* index21,itemtype0x95,native0x0 */
-    NULL,                                /* index22,itemtype0x96,native0x0 */
-    NULL,                                /* index23,itemtype0x97,native0x0 */
-    NuDisplayListDrawGeometryPc,         /* index24,itemtype0x98,native0x607880 */
-    NuDisplayListSkinPalettePc,          /* index25,itemtype0x99,native0x5fd9c0 */
-    NuDisplayListCameraPc,               /* index26,itemtype0x9a,native0x603b20 */
-    NULL,                                /* index27,itemtype0x9b,native0x0 */
-    NULL,                                /* index28,itemtype0x9c,native0x0 */
-    NULL,                                /* index29,itemtype0x9d,native0x0 */
-    NULL,                                /* index30,itemtype0x9e,native0x0 */
-    NULL,                                /* index31,itemtype0x9f,native0x0 */
-    NULL,                                /* index32,itemtype0xa0,native0x0 */
-    NULL,                                /* index33,itemtype0xa1,native0x0 */
-    NULL,                                /* index34,itemtype0xa2,native0x0 */
-    NULL,                                /* index35,itemtype0xa3,native0x0 */
-    NULL,                                /* index36,itemtype0xa4,native0x0 */
-    NuDisplayListTintPc,                 /* index37,itemtype0xa5,native0x5fdd20 */
-    NuDisplayListFogPc,                  /* index38,itemtype0xa6,native0x5fdd70 */
-    NuDisplayListDrawDebrisPc,           /* index39,itemtype0xa7,native0x5ffd50 */
-    NULL,                                /* index40,itemtype0xa8,native0x0 */
-    NuDisplayListVertexGroupsPc,         /* index41,itemtype0xa9,native0x603a20 */
-    NuDisplayListVertexOffsetsPc,        /* index42,itemtype0xaa,native0x603a60 */
-    NuDisplayListReflectionPc,           /* index43,itemtype0xab,native0x6015e0 */
-    NULL,                                /* index44,itemtype0xac,native0x0 */
-    NuDisplayListPacketAdPc,             /* index45,itemtype0xad,native0x5fe0d0 */
-    NuDisplayListLegacyLightmapPc,       /* index46,itemtype0xae,native0x5fdfd0 */
-    NuDisplayListLegacyLightmapOffsetPc, /* index47,itemtype0xaf,native0x5fe050 */
-    NuDisplayListLightmapPacketPc,       /* index48,itemtype0xb0,native0x5fde50 */
+    NuDisplayListMaterialPc,             /* item type 0x80 */
+    NULL,                                /* item type 0x81 */
+    NuDisplayListDrawGeometryPc,         /* item type 0x82 */
+    NuDisplayListTransformPc,            /* item type 0x83 */
+    NULL,                                /* item type 0x84 */
+    NULL,                                /* item type 0x85 */
+    NULL,                                /* item type 0x86 */
+    NULL,                                /* item type 0x87 */
+    NULL,                                /* item type 0x88 */
+    NULL,                                /* item type 0x89 */
+    NULL,                                /* item type 0x8a */
+    NuDisplayListDrawGeometryPc,         /* item type 0x8b */
+    NuDisplayListTransformTransposePc,   /* item type 0x8c */
+    NULL,                                /* item type 0x8d */
+    NULL,                                /* item type 0x8e */
+    NuDisplayListDrawFaceOnPc,           /* item type 0x8f */
+    NuDisplayListFaceOnTransformPc,      /* item type 0x90 */
+    NULL,                                /* item type 0x91 */
+    NULL,                                /* item type 0x92 */
+    NuDisplayListDrawPrimitive2DPc,      /* item type 0x93 */
+    NuDisplayListLightsPc,               /* item type 0x94 */
+    NULL,                                /* item type 0x95 */
+    NULL,                                /* item type 0x96 */
+    NULL,                                /* item type 0x97 */
+    NuDisplayListDrawGeometryPc,         /* item type 0x98 */
+    NuDisplayListSkinPalettePc,          /* item type 0x99 */
+    NuDisplayListCameraPc,               /* item type 0x9a */
+    NULL,                                /* item type 0x9b */
+    NULL,                                /* item type 0x9c */
+    NULL,                                /* item type 0x9d */
+    NULL,                                /* item type 0x9e */
+    NULL,                                /* item type 0x9f */
+    NULL,                                /* item type 0xa0 */
+    NULL,                                /* item type 0xa1 */
+    NULL,                                /* item type 0xa2 */
+    NULL,                                /* item type 0xa3 */
+    NULL,                                /* item type 0xa4 */
+    NuDisplayListTintPc,                 /* item type 0xa5 */
+    NuDisplayListFogPc,                  /* item type 0xa6 */
+    NuDisplayListDrawDebrisPc,           /* item type 0xa7 */
+    NULL,                                /* item type 0xa8 */
+    NuDisplayListVertexGroupsPc,         /* item type 0xa9 */
+    NuDisplayListVertexOffsetsPc,        /* item type 0xaa */
+    NuDisplayListReflectionPc,           /* item type 0xab */
+    NULL,                                /* item type 0xac */
+    NuDisplayListPacketAdPc,             /* item type 0xad */
+    NuDisplayListLegacyLightmapPc,       /* item type 0xae */
+    NuDisplayListLegacyLightmapOffsetPc, /* item type 0xaf */
+    NuDisplayListLightmapPacketPc,       /* item type 0xb0 */
 };
 extern "C" PC_DISPLAY_ITEM_HANDLER_PC *CurrentItemTable = PCDisplayItemHandlerPrefixPc;
 #pragma bss_seg()
@@ -28126,7 +28121,7 @@ extern "C" {
 #pragma data_seg(".data$GameCamShakeOffsetSeekPc")
     f32 GameCamShakeOffsetSeekPc = 2.0f;
 #pragma data_seg()
-    // Native PC frontend strings: language-selected index/string tables.
+    // Frontend strings: language-selected index/string tables.
 
     extern const char MenuPcString75f0b0[5] = "Back";
     extern const char MenuPcString75f2b4[7] = "Cancel";
@@ -29422,7 +29417,6 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    /* Persistent native ControlSetup data proposals; include after types. */
     extern "C" {
         extern i16 TextIdPc880f00;
         extern i16 TextIdPc880f04;
@@ -29532,7 +29526,7 @@ extern "C" {
                                               NULL,
                                               NULL};
 
-    // Original .data virtual tail (BSS) at 0x85686c; initial bits zero.
+    // .data virtual tail (BSS); initial bits zero.
     f32 PcControlBaselineAdjustPc = 0.0f;
 }
 
@@ -30183,9 +30177,6 @@ extern "C" {
 #pragma bss_seg(".bss$MenuAppliedAspectPc")
     i32 MenuAppliedAspectPc = 0;
 #pragma bss_seg()
-// Replace existing MenuInfo rows exactly (native row metadata is unchanged):
-// {1025, MenuEnterVideoPc, MenuDrawVideoPc, MenuUpdateVideoPc, MenuExitVideoPc, -1, -1, 0, 0, 0, 0},
-// {1026, MenuEnterEffectsPc, MenuDrawEffectsPc, MenuUpdateEffectsPc, MenuExitEffectsPc, -1, -1, 0, 0, 0, 0},
 #pragma bss_seg(".bss$MenuVideoConfirmDurationPc")
     f32 MenuVideoConfirmDurationPc = 0;
 #pragma bss_seg(".bss$MenuVideoConfirmWaitPc")
@@ -30258,7 +30249,6 @@ extern "C" {
 #pragma bss_seg()
 }
 
-/* Append to data.cpp. Each new native owner gets its own contribution. */
 extern "C" {
 #pragma data_seg(".data$PANEL_MINIKITCOUNTSCALE")
     f32 PANEL_MINIKITCOUNTSCALE = 0.5f;
@@ -30362,8 +30352,6 @@ extern "C" {
 #pragma bss_seg(".bss$TextInputActionLabelBufferPc")
     char TextInputActionLabelBufferPc[128] = {0};
 #pragma bss_seg()
-/* Exact address-backed native span [8016a8,8016f0), not a claim about original logical array capacity. Reader remains
- * unsized. */
 #pragma data_seg(".data$HubButtonStringBufferPc")
     char HubButtonStringBufferPc[72] = "???";
 #pragma data_seg()
@@ -31101,7 +31089,7 @@ extern "C" {
 #pragma bss_seg()
 }
 
-/* Native static-shadow frustum topology and mutable extrusion distance. */
+/* Static-shadow frustum topology and mutable extrusion distance. */
 i32 PostShadowCubeFaceIndicesPc[6][4] = {{0, 1, 2, 3}, {3, 2, 6, 7}, {7, 6, 5, 4},
                                          {4, 5, 1, 0}, {1, 5, 6, 2}, {4, 0, 3, 7}};
 f32 PostShadowPlaneExtrusionPc = 120.0f;
