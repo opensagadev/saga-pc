@@ -1,10 +1,9 @@
 #include "saga.h"
 
-/* The memory-card device stubs form their own unit (0x6dee30-0x6def60); the nucore file
+/* The memory-card device stubs form their own unit; the nucore file
    functions call them out of line. */
 
-/* Native 0x6dede0-0x6dee22: the card queries sit just before that range and are
-   equally empty on PC. */
+/* The card queries are equally empty on PC. */
 i32 NuMcCheckCardPresent(i32 port, i32 slot) {
     (void)port;
     (void)slot;

@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x54f960-0x553700 (legoapi/utilities.c): definitions in retail address order. */
 #include <stdlib.h>
 
 extern char **TexAnimScriptTablePc;
@@ -75,7 +74,7 @@ i32 getqseed(void) {
 }
 
 void ResetSeeds(void) {
-    // The PC runtime uses srand where the Android version calls srand48.
+    // The PC runtime uses srand.
     srand(0);
     qseed = 0x3039;
     GAMERAND = 0x1f3ad27f;
@@ -1048,7 +1047,7 @@ void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS
         first_segment = i % first->length;
         first_start = &first->pts[first_segment];
         first_end = &first->pts[(i + 1) % first->length];
-        /* Retail includes the wraparound segment of the second spline even
+        /* Includes the wraparound segment of the second spline even
          * without looping, and only stops this inner scan at an intersection. */
         for (j = 0; j < second_count; ++j) {
             second_segment = j % second->length;
@@ -1438,7 +1437,6 @@ i32 DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z
     return 0;
 }
 
-/* Append to render.c. Native PC 552d10, 229 bytes, cdecl full stack ABI. */
 i32 DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y,
                              u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order) {
     if (special != NULL && NuSpecialExistsFn(special) != 0 && (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
@@ -1455,7 +1453,6 @@ i32 DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 
     return 0;
 }
 
-/* Add to render.c. Native PC 552e00/78; cdecl (special,matrix,alpha). */
 i32 DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 alpha) {
     if (!(alpha <= 0.0f) && special != NULL && NuSpecialExistsFn(special) != 0) {
         NuMtxMulVU0(matrix, matrix, NuCameraGetMtx());

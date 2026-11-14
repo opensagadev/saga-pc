@@ -248,8 +248,8 @@ i32 FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entry) {
     return strlen(entry->name);
 }
 
-extern i32 FileDirectoryOpenCountPc;       /* 921268 */
-extern char *FileDirectoryPathSlotsPc[16]; /* 921270 */
+extern i32 FileDirectoryOpenCountPc;
+extern char *FileDirectoryPathSlotsPc[16];
 
 i32 FileDirectoryHostOpenPc(char *path) {
     char search[200];
@@ -277,7 +277,7 @@ i32 FileDirectoryHostOpenPc(char *path) {
     if (FileDirectoryHostHandlesPc[slot] == INVALID_HANDLE_VALUE) {
         NuFree(FileDirectoryPathSlotsPc[slot], FileDirectorySourceNamePc, 0x222);
         --FileDirectoryOpenCountPc;
-        /* Retail clears the slot before this one (slot 0 hits the word in front of the table). */
+        /* Clears the slot before this one (slot 0 hits the word in front of the table). */
         FileDirectoryPathSlotsPc[slot - 1] = NULL;
         return -1;
     }
@@ -288,7 +288,7 @@ i32 FileDirectoryHostClosePc(i32 slot) {
     HANDLE handle;
     NuFree(FileDirectoryPathSlotsPc[slot], FileDirectorySourceNamePc, 0x22e);
     handle = FileDirectoryHostHandlesPc[slot];
-    /* Retail clears the slot before this one, as in FileDirectoryHostOpenPc. */
+    /* Clears the slot before this one, as in FileDirectoryHostOpenPc. */
     FileDirectoryPathSlotsPc[slot - 1] = NULL;
     FindClose(handle);
     --FileDirectoryOpenCountPc;

@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x58bc60-0x58d311 (legoapi/animation.c): definitions in retail address order. */
-
 static f32 HairMovementFallAnglePc = -1.8325958251953125f;
 static f32 HairMovementFallRatePc = 2.0f;
 static f32 HairMovementRecoverRatePc = 2.0f;
@@ -63,7 +61,7 @@ void AddFootSteps(GAMEOBJECT *object) {
     } else if (previous < current) {
         valid_interval = 1;
     }
-    /* Retail tests the four-footstep flag again before each of the first two events. */
+    /* Tests the four-footstep flag again before each of the first two events. */
     if ((config->flags & 0x10000) != 0) {
         FOOTSTEP_CHECK(0)
     }

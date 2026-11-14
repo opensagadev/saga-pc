@@ -2,8 +2,6 @@
 #include <string.h>
 #include "saga.h"
 
-/* Retail unit 0x4e2cf0-0x4e4a14: definitions in retail address order. */
-
 STATIC_ASSERT(offsetof(VADERA_PC, in_control_room_message) == 0x00);
 
 typedef struct BONUS_GUNSHIP_FLAGS_PC {
@@ -584,8 +582,8 @@ i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
     }
     object->portal_flags |= 0x10;
     nearest_distance = processor->action_data_4 * processor->action_data_4;
-    /* MATCH-EXCEPTION: retail scans three entries of the two-entry boulder_part array; the third read is
-       the first word of the next global (vader_a), exactly as the original binary does. */
+    /* MATCH-EXCEPTION: the original scans three entries of the two-entry boulder_part array; the third read is
+       the first word of the next global (vader_a). */
     for (index = 0; index < 3; ++index) {
         if (boulder_part[index] != NULL) {
             f32 distance = NuVecDistSqr(&object->collision_position, &boulder_part[index]->position, &difference);

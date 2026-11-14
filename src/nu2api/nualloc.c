@@ -31,17 +31,17 @@ struct nualloc_pool_s {
     u32 unknown_0c; // 0xc
 }; // size 0x10
 
-/* PC state at 0x88ab38..0x88ab54. */
+/* Allocator state. */
 extern NUALLOC_RECORD *NuAllocRecordHead;
 
 /* The PC copies these three dwords before the returned storage and after it. */
 extern u32 NuAllocHeaderMetadata[3];
 
-/* Retail diagnostic hooks compiled out to a bare RET; defined in nudebug.c. */
+/* Diagnostic hooks compiled out to a bare return; defined in nudebug.c. */
 void NuAllocBadPointer(void);
 void NuAllocReport(const void *message, ...);
 
-/* PC manager prefix and block header touched by the retail allocator. */
+/* PC manager prefix and block header touched by the allocator. */
 typedef struct nualloc_manager_block_pc_s {
     u32 size_flags;                              // 0x0
     struct nualloc_manager_block_pc_s *next;     // 0x4

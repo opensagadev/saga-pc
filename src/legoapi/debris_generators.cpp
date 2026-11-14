@@ -380,7 +380,7 @@ extern "C" {
                     AddChunkControlToStack(freechunkcontrols[freechunkcontrolsptr], &debris_chunk_control_stack[0]);
                     ++freechunkcontrolsptr;
                 }
-                /* Retail inlines DebrisReleaseControlStackLock here. */
+                /* DebrisReleaseControlStackLock, inlined. */
                 debris_control_stack_lock = 0;
             }
         }
@@ -445,7 +445,7 @@ extern "C" {
         f32 end_distance = normal.x * end_delta.x + normal.z * end_delta.z;
         if ((start_distance < 0.0f && end_distance > 0.0f) || (start_distance > 0.0f && end_distance < 0.0f)) {
             f32 collision_time = (0.0f - start_distance) / (end_distance - start_distance) * effect->particle_lifetime;
-            /* Retail inlines DebrisGetControlStackLock here. */
+            /* DebrisGetControlStackLock, inlined. */
             while (debris_control_stack_lock != 0) {
             }
             debris_control_stack_lock = 1;
@@ -464,7 +464,7 @@ extern "C" {
                 AddChunkControlToStack(freechunkcontrols[freechunkcontrolsptr], &debris_chunk_control_stack[0]);
                 ++freechunkcontrolsptr;
             }
-            /* Retail inlines DebrisReleaseControlStackLock here. */
+            /* DebrisReleaseControlStackLock, inlined. */
             debris_control_stack_lock = 0;
         }
         if (key->momentum_adjuster != NULL) {

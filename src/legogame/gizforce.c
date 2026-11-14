@@ -79,9 +79,6 @@ typedef struct trigger_force_object_pc_s {
     GIZFORCE_PC *force;
 } TRIGGER_FORCE_OBJECT_PC;
 
-/* Private integration fragment: append to gizforce.c after its actual static
- * version owner. Extend its existing GIZFORCE_PC with the named native fields
- * in the companion layout file. */
 extern const char GizmoRegistryGizForceNamePc[];
 void GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
 
@@ -101,7 +98,6 @@ typedef struct {
     u8 opaque[0xa4 - 16];
 } ADD_FORCE_PC;
 
-/* Append gizmo_add_callbacks_pc.c: complete native21+21+15+15+21. */
 typedef struct {
     u8 unknown_00[0x1c];
     NUVEC position;
@@ -603,7 +599,7 @@ f32 ForceAnimationSeekRatePc = 5.0f;
 static f32 ForceUpdateSpeedPc(GIZFORCE_PC *force, GAMEOBJECT *object) {
     f32 target = 1.0f;
     if (force != NULL) {
-        // MATCH-EXCEPTION: retail stores the default speed again once force is known (second fstp of 1.0).
+        // MATCH-EXCEPTION: the original stores the default speed again once force is known (second fstp of 1.0).
         target = 1.0f;
         if (object != NULL && (Cheats_CheckFlags(0x400000) != 0 || object->powerup_time > 0.0f)) {
             target = 3.0f;
@@ -700,7 +696,7 @@ static void GizForce_AddToStack(GIZFORCE_PC *force) {
 static void ForceGroupPopPc(GIZFORCE_PC *force) {
     if ((force->runtime_flags & 0x20) != 0 && force->group != NULL && force->group->member_count != 0 &&
         force->group->forces[force->group->member_count - 1] == force) {
-        /* Retail clears slot COUNT (not COUNT-1); count8 aliases combined_height. */
+        /* Clears slot COUNT (not COUNT-1); count8 aliases combined_height. */
         force->group->slot_words[force->group->member_count] = 0;
         --force->group->member_count;
         if (force->group->member_count != 0) {
@@ -1043,8 +1039,6 @@ void GizForces_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     }
 }
 
-/* Retail uses private EDI FORCE and two stack arguments; all three callers
- * are rebuilt below with this ordinary C contract. */
 static i32 GizForces_BoltHitPlat(GIZFORCE_PC *force, WORLDINFO *world, i32 player_index) {
     u32 flags = force->runtime_flags;
     u32 config;

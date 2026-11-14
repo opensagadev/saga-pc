@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x743990-0x743d50: definitions in retail address order. */
-
 /* Minimum accessed cohort, not a whole NUMTL allocation/size claim. */
 typedef struct PC_SHADER_WATER_MATERIAL_VIEW {
     u8 unknown_0000[0x60];

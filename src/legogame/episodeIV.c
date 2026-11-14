@@ -89,7 +89,6 @@ i32 DeathStarShieldDown(void) {
     return 0;
 }
 
-/* Native 0x004e5170, 204 bytes. */
 void DeathStarEscapeB_Init(WORLDINFO *world) {
     NUINSTANIM *animation[2];
     void *data[2];
@@ -112,7 +111,6 @@ void DeathStarEscapeB_Init(WORLDINFO *world) {
     }
 }
 
-/* Native 0x004e5240, 307 bytes. */
 void DeathStarEscapeB_Update(WORLDINFO *world) {
     NUINSTANIM *animation[2] = {NULL, NULL};
     void *data[2] = {NULL, NULL};
@@ -407,7 +405,7 @@ void DeathStarEscapeB_AlwaysUpdate(WORLDINFO *world) {
     }
 }
 
-/* PC 0x0087b1f8: Death Star battle midtro level slot (never assigned by FixUpLevels). */
+/* Death Star battle midtro level slot (never assigned by FixUpLevels). */
 LEVELDATA_PC *DEATHSTARBATTLEMIDTRO_LDATA = NULL;
 
 void DeathStarBattleC_AlwaysUpdate(WORLDINFO *world) {
@@ -429,7 +427,7 @@ typedef struct trenchrun_pc_s {
     f32 spawn_timer;        // 0x1c
 } TRENCHRUN_PC;             // size 0x20
 
-/* PC 0x00889638: Death Star trench run state. */
+/* Death Star trench run state. */
 static TRENCHRUN_PC trenchrun;
 
 void DeathStarBattleDInit(WORLDINFO *world) {
@@ -445,7 +443,7 @@ void DeathStarBattleDDraw(WORLDINFO *world) {
 void fun_004e5eb0(void) {
 }
 
-/* PC 0x00889660: asteroid field (original episodeV.cpp). */
+/* Asteroid field. */
 typedef struct ASTEROID_PC {
     NUSPECIALHANDLE special; // 0x00
     GIZMOBLOWUP_PC *blowup;  // 0x0c
@@ -455,7 +453,7 @@ typedef struct ASTEROID_PC {
     u8 activated;            // 0x16
 } ASTEROID_PC;               // size 0x18
 
-/* PC 0x0088a268: rotating rock at the end of AsteroidChase C. */
+/* Rotating rock at the end of AsteroidChase C. */
 typedef struct FINAL_ASTEROID_PC {
     NUSPECIALHANDLE special;    // 0x00
     GIZMOBLOWUP_PC *blowups[8]; // 0x0c
@@ -478,7 +476,7 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_x) == 0xe8);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, score) == 0xa0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, layer_mask) == 0x1048);
 
-/* Native-observed mutable scalar providers; Native allocation extents unknown. */
+/* Mutable tuning values. */
 #pragma data_seg(".data$TrenchLaneOffsetPc")
 f32 TrenchLaneOffsetPc = 10.0f;
 #pragma data_seg(".data$TrenchSeekXPc")
@@ -586,7 +584,7 @@ void TrenchMove(GAMEOBJECT *object) {
     GameObjectOrigin(object);
 }
 
-/* Native-observed mutable scalar minima; original allocation extents unknown. */
+/* Mutable tuning values. */
 #pragma data_seg(".data$TrenchBaseHeightPc")
 f32 TrenchBaseHeightPc = -10.5f;
 #pragma data_seg(".data$TrenchVerticalOffsetPc")
@@ -605,7 +603,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, tag_object_callback) == 0xea8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, move_override) == 0x10b0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_offset) == 0xe84);
 
-/* Native 0x004e5b70..0x004e5b94, complete 36-byte cdecl callback. */
 static void TrenchKilledCallback(GAMEOBJECT *object) {
     i32 index;
     for (index = 0; index < 3; ++index) {

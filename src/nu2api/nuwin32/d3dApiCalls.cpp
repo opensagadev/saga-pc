@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x6df010-0x6dfea0: definitions in retail address order. */
-
 extern "C" {
     void PCDeviceBeginScenePc(void);
     void PCGraphicsReleaseFramebuffers(void);

@@ -82,7 +82,7 @@ void NuBridgeDraw(NUMTL *material) {
     NUVEC first[512];
     NUVEC second[512];
     NUMTX matrix;
-    i32 boundaries[8]; /* retail size: boundaries[group + 1] can write one past the end with all 8 bridges */
+    i32 boundaries[8]; /* boundaries[group + 1] can write one past the end with all 8 bridges */
     NUVEC4 offsets[2];
     if (NuBridgeProc) {
         bridge = Bridges;
@@ -598,7 +598,7 @@ i32 NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDLE *secon
         side.z = delta.x * inverse_length;
         bridge->rotation_y = rotation;
 
-        /* The retail loop is intentionally not clamped to the 24-element arrays. */
+        /* The loop is intentionally not clamped to the 24-element arrays. */
         for (i = 0; i < count; ++i) {
             if (NuSpecialExistsFn(&bridge->special)) {
                 bridge->platforms[i] =

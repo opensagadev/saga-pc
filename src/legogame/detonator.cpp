@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x426b30-0x4277a2 (legogame/detonator.c): definitions in retail address order. */
-
 struct BATARANG_DETONATOR_HIT_VIEW_PC {
     u8 unknown00[0xc];  // 0x00
     f32 scale;          // 0x0c

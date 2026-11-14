@@ -16,7 +16,7 @@ void PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW
     flags = input_flags;
     parameter = input_parameter;
     variant = input_flags & 3;
-    /* Bit 18 of the vertex format is a one-bit field in retail (shr 18, test dl 1). */
+    /* Bit 18 of the vertex format is a one-bit field (shr 18, test dl 1). */
     first_path = variant == 0 && (input_flags & 0x10) != 0 && ((u8)(desc->vertex_format >> 18) & 1) == 0 &&
                  (((mtl->blend_flags >> 14) & 3) == 0 || ((mtl->blend_flags >> 14) & 3) == 2);
     second_path = (variant != 0 || (input_flags & 0x10) != 0) && ((u8)(desc->vertex_format >> 18) & 1) == 0 &&
@@ -606,7 +606,7 @@ ShaderManagerHLSL::~ShaderManagerHLSL() {
     }
 }
 
-// for saga.h: NuShaderObject::unknown_4d4 is a bitfield (retail stores each path bit with xor/and/xor).
+// for saga.h: NuShaderObject::unknown_4d4 is a bitfield (each path bit is stored with xor/and/xor).
 struct NuShaderObjectPathsPc {
     u32 base : 1;
     u32 first : 1;

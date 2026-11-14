@@ -1,7 +1,7 @@
-/* Shader manager front end (retail unit 0x7412e0-0x741962): the slot table
- * template, Retrieve and the NuShaderManager C entry points. The material
- * filter view and ShaderManagerHLSL live in other units, so calls into them
- * stay real calls here. */
+/* Shader manager front end: the slot table template, Retrieve and the
+ * NuShaderManager C entry points. The material filter view and
+ * ShaderManagerHLSL live in other units, so calls into them stay real calls
+ * here. */
 #include "saga.h"
 
 template <>

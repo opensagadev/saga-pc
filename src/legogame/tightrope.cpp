@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4d0650-0x4d1e80 (legoapi/props/objects/tightrope.cpp): definitions in retail address order. */
-
 typedef struct TIGHTROPE_MOTION_PC {
     char name[16];         // 0x00
     NUVEC start;           // 0x10

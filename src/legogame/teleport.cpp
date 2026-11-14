@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4cdd10-0x4cf2a0 (legoapi/gizmos/transport/teleport.cpp): definitions in retail address order. */
-
 typedef struct TELEPORT_CONFIG_PC {
     char name[0x40];                  // 0x00
     NUGSPLINE *path;                  // 0x40
@@ -722,7 +720,6 @@ extern "C" {
         }
     }
 
-    /* Append gizmo_add_callbacks_pc.c. Native4cf150..4cf16017B. */
     char *Teleport_GetGizmoName(GIZMO_PC *gizmo) {
         if (gizmo == NULL || gizmo->object == NULL) {
             return NULL;

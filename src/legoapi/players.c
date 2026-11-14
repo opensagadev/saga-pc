@@ -75,7 +75,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 STATIC_ASSERT(offsetof(APIDEBRISSYS_PC, entries) == 8);
 STATIC_ASSERT(sizeof(GAMEDEBRISENTRY_PC) == 0x14);
 STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
-/* Retail-private helpers and combo provider; keep in move.c with native callers. */
+/* Private helpers and combo provider. */
 STATIC_ASSERT(offsetof(GAMEOBJECT, incoming_bolt) == 0xd04);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_e12) == 0xe12);
 STATIC_ASSERT(offsetof(GAMEOBJECT, landing_followup) == 0x7b1);
@@ -146,8 +146,7 @@ typedef struct player_reset_packet_pc_s {
 } PLAYER_RESET_PACKET_PC;       // size 0x780
 
 STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
-/* Two-DWORD consumer view of the existing genuine mutable default mask. */
-/* Genuine original call declarations: no placeholder implementations. */
+/* Two-DWORD view of the default mask. */
 GAMEOBJECT *AddCreature(i32 model, i32 mode);
 
 typedef struct CREATURE_RESET_PACKET_VIEW_PC {
@@ -972,8 +971,8 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     object->flags_ef0 |= 0x80;
     object->field_1010 = 0.0f;
     object->field_da8 = 0.0f;
-    // MATCH-EXCEPTION: retail clears bit 8 as or 0x100 then xor 0x100 in a register; a plain &= ~0x100 emits a
-    // memory and.
+    // MATCH-EXCEPTION: the original clears bit 8 as or 0x100 then xor 0x100 in a register; a plain &= ~0x100
+    // emits a memory and.
     object->flags_1f8 |= 0x100;
     object->flags_1f8 ^= 0x100;
     object->flags_e20 |= 0x8000;
@@ -998,7 +997,7 @@ static i32 Customise_FindLetter(char character) {
     return letter == 38 ? 0 : letter;
 }
 
-/* Native ResetPlayer shares the light packet at 4d8 with LightGameObject. */
+/* ResetPlayer shares the light packet at 4d8 with LightGameObject. */
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_dbc) == 0xdbc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_de0) == 0xde0);
 
@@ -1019,7 +1018,6 @@ STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, extra_character_locator) == 0x11d);
 
-/* Private native PC 41cb50/2038 draft; integrate only after source review. */
 STATIC_ASSERT(offsetof(GAMEOBJECT, joint_overrides) == 0xf3c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, head_target) == 0xfd8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, joint_override_count) == 0x107d);
@@ -1034,7 +1032,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, min_view_height) == 0x23c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, mini_anim_packet) == 0x7d0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, use_action_word) == 0xf00);
 
-/* Selective append to players.c after the existing five private matrix helpers. */
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
@@ -1088,5 +1085,4 @@ STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) == 0x14);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_range) == 0xcd);
 
-/* Native 0x0041fe90, 526 bytes. */
 STATIC_ASSERT(offsetof(AIPACKET_PC, creature_index) + offsetof(GAMEOBJECT, ai_packet) == 0x400);

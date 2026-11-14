@@ -1,6 +1,6 @@
 #include "saga.h"
 
-/* RefPack decompressor (retail 0x617a60), the counterpart of refpack. Returns
+/* RefPack decompressor, the counterpart of refpack. Returns
  * the number of bytes written to destination. */
 i32 unref(u8 *source, u8 *destination) {
     u8 *output = destination;

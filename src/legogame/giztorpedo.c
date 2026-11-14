@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x46f890-0x470050: definitions in retail address order. */
-
 typedef struct torpedo_machine_query_pc_s {
     char name[16];          // 0x00
     NUVEC position;         // 0x10
@@ -68,7 +66,7 @@ i32 GizTorp_Load(void *world_pointer, void *unused) {
     return 0;
 }
 
-/* MATCH-EXCEPTION: retail re-reads world->torpedo_machine_sys at each use; the casts stand in for its
+/* MATCH-EXCEPTION: the original re-reads world->torpedo_machine_sys at each use; the casts stand in for its
  * GIZTORPMACHINESYS_s type (saga.h has the narrower TORPEDO_MACHINE_SYS_PC view). */
 void *GizTorps_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = pointer;

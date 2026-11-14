@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Retail unit 0x4cf2a0-0x4cf653: definitions in retail address order. */
-
 extern i16 TextIdPc880894;
 extern i16 TextIdPc880898;
 

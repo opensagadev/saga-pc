@@ -2,9 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Retail unit 0x58d340-0x58e8e2 (legoapi/fighting.c), after two functions of other
-   compilands (legogame/game.c, legogame/move.c): definitions in retail address order. */
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
@@ -231,7 +228,7 @@ void SlowWeaponIn(GAMEOBJECT *object) {
         if (Fighting_WeaponInActionFn != NULL) {
             action = Fighting_WeaponInActionFn(object);
         }
-        /* Native indexes model_data_b with -1 when the callback is absent or returns -1. */
+        /* Indexes model_data_b with -1 when the callback is absent or returns -1. */
         if (object->character_model->model_data_b[action] != NULL) {
             end = NuAnimEndFrame(object->character_model->model_data_b[action]);
             start = AnimListFrame(object->character_model, action, 0);

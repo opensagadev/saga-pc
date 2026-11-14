@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Retail unit 0x5477e0-0x548f85: definitions in retail address order. */
-
 struct PC_MUSIC_ACTION_PAIR_PC {
     i16 quiet_id;         // 0x00
     i16 action_id;        // 0x02
@@ -19,7 +17,6 @@ extern "C" {
         i32 (*override_footstep)(GAMEOBJECT *, i32);
     } FOOTSTEP_AUDIO_CALLBACKS_PC;
 }
-// External declarations only; final shared integration must use canonical C linkage.
 extern i32 (*CheckMusicOtherFn)(void);
 extern i32 (*GameAudio_ActionMusicFn)(void);
 
@@ -220,7 +217,6 @@ extern "C" {
         }
     }
 
-    /* PC 0x00547d70. */
     void LevChatterSfx(char *name, NUVEC *position) {
         if (TerrainChatterWaitPc <= 0.0f && qrand() < 0x400) {
             PlaySfx(name, position);

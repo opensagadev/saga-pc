@@ -1,6 +1,6 @@
 #include "saga.h"
 
-/* Network condition emulator (retail nunetemu.cpp, 0x610a50-0x611889). */
+/* Network condition emulator. */
 
 STATIC_ASSERT(sizeof(NuNetEmu::EmuPacket) == 0x24);
 STATIC_ASSERT(offsetof(NuNetEmu::EmuPacket, address) == 0x8);

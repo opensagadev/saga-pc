@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x744210-0x74431f: definitions in retail address order. */
-
 extern "C" {
 
     ShaderUniformRecordPc *NuShaderUniformGetByString(const char *name) {

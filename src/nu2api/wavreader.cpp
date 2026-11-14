@@ -58,7 +58,7 @@ i32 WavReader::SeekTime(f32 time) {
     return current_sample * format.nBlockAlign;
 }
 
-/* Original name unknown; uncalled in retail (0x69a2f0). SetFilePointerEx with an optional result. */
+/* Uncalled. SetFilePointerEx with an optional result. */
 BOOL __stdcall WavReaderSetFilePointerPc(HANDLE file, LARGE_INTEGER distance, LARGE_INTEGER *new_position,
                                          DWORD method) {
     BOOL result = SetFilePointerEx(file, distance, &distance, method);
