@@ -35,11 +35,11 @@ import sys
 from pathlib import Path
 
 if __package__:
-    from .binary import BinaryError, COFF, _mapped_code_label
+    from .binary import BinaryError, COFF, _COFFAnalysis, _mapped_code_label
     from .lib import ROOT, dependency_files, load_symbols, number, object_path, project, retail
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from tools.binary import BinaryError, COFF, _mapped_code_label
+    from tools.binary import BinaryError, COFF, _COFFAnalysis, _mapped_code_label
     from tools.lib import ROOT, dependency_files, load_symbols, number, object_path, project, retail
 
 PRIORITY = "aebcfdgup"
@@ -181,7 +181,7 @@ def available_objects():
             continue
         path = object_path(unit)
         if path.is_file():
-            objects[unit] = COFF(path)
+            objects[unit] = _COFFAnalysis(COFF(path))  # definitions indexed once
         else:
             missing.append(unit)
     return objects, missing

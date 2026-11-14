@@ -473,7 +473,7 @@
     "tools/codemap.py": "37ae2234030eaaf78b65c787ee562708bdfff67cd2e2b42008d69fcffbea912b",
     "tools/crash_symbols.py": "0be18dcb6f0e8e78b022c0c35def96f871bfd480dadab7a3b7eb5acf1a43cc4f",
     "tools/data_members.py": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
-    "tools/datadiff.py": "eec6a359fd7a00510aeb388432597a9b9da49ca838beea37d206df3d23dae295",
+    "tools/datadiff.py": "61cae0b8a493ebc7110d36197a68bd0e431aa6658579147e6825743a69c8a1f8",
     "tools/datasizes.py": "9dbca5474a65a9d837b10fd97bc1113389b7648161c635ecbad9b6c074a84d09",
     "tools/debug_identity.py": "4c91005a5701e255c789d664f61e2267e1609973998d14ddea0208e0bef482fd",
     "tools/declscan.py": "2bfd3476fcfd663e44f2d8ca499af55c04450aa1b923756e13e46c1c2da20972",
@@ -896823,7 +896823,7 @@
       "metadata_sha256": "6b757d74030b0786c5ace831064b67c802bf8a62330a6455cbfb39b4bf3dc557",
       "header_path": "src/saga.h",
       "header_sha256": "32821a4efc28c3664a09bfd790056096f2229f6880d69f849f281bbbbc274228",
-      "geometry_object_sha256": "405b5884f4fe4c08489227c4d7e71a40107029c0d450c786241ab8e6a4140b70",
+      "geometry_object_sha256": "80202c9af0f64592876b94b92b57d64f0fbec809c811ab2fcea64bf2bed52fb1",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
