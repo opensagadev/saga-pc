@@ -29,7 +29,7 @@ once, or whose array is longer than the text are not counted: they have a
 meaning beyond their text.
 
 `--fix` deletes the declaration (with its `#pragma const_seg` pair and any
-`extern` declaration of the name), writes the literal at the use (a `(char *)`
+`extern` declaration of the name outside src/saga.h, see HELD_DECLARATIONS), writes the literal at the use (a `(char *)`
 cast of the name goes with it) and renames the name's config/symbols.csv row to
 the literal's `??_C@` name, or drops the row when the literal's row is already
 there. A constant whose literal name config/symbols.csv maps to another address
@@ -59,6 +59,10 @@ KEEP = ROOT / "config/literalscan-keep.csv"
 SYMBOLS = ROOT / "config/symbols.csv"
 SUFFIXES = {".c", ".cpp", ".h", ".inc"}
 CLASSES = ("single-use", "kept")
+# `extern` declarations that --fix leaves: VC8 code generation of a few units (BoulderSpawnPc,
+# BlockadeRunnerDEjectCreaturePc) depends on the number of declarations saga.h gives them, so
+# saga.h loses its unused declarations header by header (docs/header-plan.md, step 2).
+HELD_DECLARATIONS = ("src/saga.h",)
 
 # On code whose comments are blanked and whose string contents are spaces.
 DECL = re.compile(r'(?P<storage>\b(?:extern\s*"\s*"\s*|extern\s+|static\s+))?\bconst\s+char\s+'
@@ -353,6 +357,8 @@ def fix(sources, found, only=None):
             use_start = CHAR_CAST.search(use_source.code[:use_start].rstrip()).start()
         edits.setdefault(use_source.path, []).append((use_start, use_end, decl["literal"]))
         for other in sources:
+            if other.path in HELD_DECLARATIONS:
+                continue
             for span in extern_spans(other, decl["name"]):
                 edits.setdefault(other.path, []).append((*remove_line_span(other.text, *span), ""))
         fixed.append(decl)

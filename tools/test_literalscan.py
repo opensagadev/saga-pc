@@ -53,6 +53,7 @@ class LiteralScanTests(unittest.TestCase):
         (self.root / "src/unit.c").write_text(UNIT)
         (self.root / "src/other.c").write_text(OTHER)
         (self.root / "src/saga.h").write_text(HEADER)
+        (self.root / "src/other.h").write_text("extern const char OtherPc[6];\n")
         (self.root / "config/symbols.csv").write_text(SYMBOLS)
         patches = [mock.patch.object(literalscan, "ROOT", self.root),
                    mock.patch.object(literalscan, "SYMBOLS", self.root / "config/symbols.csv")]
@@ -100,7 +101,8 @@ class LiteralScanTests(unittest.TestCase):
         self.assertNotIn("pragma const_seg", unit)
         self.assertNotIn("WarningPc", unit)
         self.assertNotIn("OtherPc", (self.root / "src/other.c").read_text())
-        self.assertEqual((self.root / "src/saga.h").read_text(), "")
+        self.assertEqual((self.root / "src/saga.h").read_text(), HEADER)  # held (HELD_DECLARATIONS)
+        self.assertEqual((self.root / "src/other.h").read_text(), "")
         symbols = (self.root / "config/symbols.csv").read_text()
         self.assertIn("0x751000,??_C@_0BD@", symbols)
         self.assertNotIn("_WarningPc", symbols)
