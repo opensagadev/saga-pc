@@ -1,11 +1,9 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Original source name unknown. Retail links a second status-screen stage set at
-   0x458470-0x45e362, between the LSW hint code and the LSW status stages. Its stage
-   table (0x7f8280) is registered from the non-LSW branch of LoadPermData. The
-   functions below compile to the same code as their LSW counterparts; the stage
-   type in the comment comes from that table. */
+/* A second status-screen stage set, registered from the non-LSW branch of
+   LoadPermData. The functions below compile to the same code as their LSW
+   counterparts; the stage type in each comment comes from its stage table. */
 
 extern "C" {
 
@@ -126,7 +124,7 @@ extern "C" {
                             GAMEPAD_JUMP, GAMEPAD_ACTION,  GAMEPAD_ACTION,  GAMEPAD_ACTION, GAMEPAD_ACTION,
                             GAMEPAD_TAG,  GAMEPAD_TAG,     GAMEPAD_TAG,     GAMEPAD_TAG,    GAMEPAD_TAG};
 
-    /* Retail keeps an out-of-line copy at 0x458470; the draws inline it. */
+    /* Kept out of line; the draws inline it. */
     f32 StatusAltFabsPc(f32 value) {
         i32 bits = *(i32 *)&value;
         bits &= 0x7fffffff;
@@ -477,7 +475,7 @@ extern "C" {
 
     i32 InitStatusScreen_Alt(WORLDINFO *world, STATUSPACKET_s *packet) {
         (void)world;
-        /* Retail sets bit 24 of the packet word with a byte OR on its top byte. */
+        /* Sets bit 24 of the packet word with a byte OR on its top byte. */
         ((u8 *)&packet->lsw_packet->field_0x00)[3] |= 1;
         StatusAltBgPosPc.x = -StatusAltGridStepXPc;
         StatusAltBgPosPc.y = -StatusAltGridStepYPc * 2.0f;
@@ -485,7 +483,7 @@ extern "C" {
         return 0;
     }
 
-    /* Unreferenced in retail: the three-panel variant of DrawStatusBG_Alt. It slides the
+    /* Unreferenced: the three-panel variant of DrawStatusBG_Alt. It slides the
        previous, current and next stage panels along x and seeks the shared zoom. */
     void StatusAltDrawStagePanelsPc(STATUSPACKET_s *packet) {
         NUMTX mtx;
@@ -639,7 +637,7 @@ extern "C" {
         }
     }
 
-    /* 0x457f60: LoadPermData calls this right after Alt_registerStatusScreen; retail's body is empty. */
+    /* LoadPermData calls this right after Alt_registerStatusScreen; the body is empty. */
     void Alt_registerStatusScreenExtraPc(void) {
     }
 
