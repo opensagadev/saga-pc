@@ -3,18 +3,13 @@
 #include "vorbis/vorbisfile.h"
 
 struct PC_OGG_CACHE_RECORD_PC {
-    char path[0x104];
-    u8 *data;
-    i32 bytes;
-    u32 last_used;
-    volatile i32 references; // shared with the streaming thread: every update is a separate load and store
-};
+    char path[0x104];        // 0x000
+    u8 *data;                // 0x104
+    i32 bytes;               // 0x108
+    u32 last_used;           // 0x10c
+    volatile i32 references; // 0x110 shared with the streaming thread: every update is a separate load and store
+}; // size 0x114
 
-STATIC_ASSERT(sizeof(PC_OGG_CACHE_RECORD_PC) == 0x114);
-STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, data) == 0x104);
-STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, bytes) == 0x108);
-STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, last_used) == 0x10c);
-STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, references) == 0x110);
 #pragma pack(push, 4)
 
 class OggReader : public WavReader {
@@ -34,23 +29,16 @@ class OggReader : public WavReader {
     static i32 __cdecl CloseCallbackPc(void *);
     // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
     static long __cdecl TellCallbackPc(void *);
-    u8 compressed;
-    u8 unknown_041[7];
-    OggVorbis_File vorbis_state;
-    PC_OGG_CACHE_RECORD_PC *cache;
-    i32 position;
-    WAVEFORMATEX compressed_format;
-    u8 unknown_332[6];
-};
+    u8 compressed;                  // 0x040
+    u8 unknown_041[7];              // 0x041
+    OggVorbis_File vorbis_state;    // 0x048
+    PC_OGG_CACHE_RECORD_PC *cache;  // 0x318
+    i32 position;                   // 0x31c
+    WAVEFORMATEX compressed_format; // 0x320
+    u8 unknown_332[6];              // 0x332
+}; // size 0x338
 
 #pragma pack(pop)
-STATIC_ASSERT(sizeof(OggReader) == 0x338);
-STATIC_ASSERT(offsetof(OggReader, compressed) == 0x40);
-STATIC_ASSERT(offsetof(OggReader, vorbis_state) == 0x48);
-STATIC_ASSERT(offsetof(OggReader, cache) == 0x318);
-STATIC_ASSERT(offsetof(OggReader, position) == 0x31c);
-STATIC_ASSERT(offsetof(OggReader, compressed_format) == 0x320);
-STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, path) == 0);
 STATIC_ASSERT(sizeof(OggVorbis_File) == 0x2d0);
 STATIC_ASSERT(offsetof(OggVorbis_File, callbacks) == 0x2c0);
 

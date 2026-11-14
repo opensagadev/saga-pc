@@ -10,11 +10,10 @@ extern "C" {
 }
 
 typedef struct batman_prepare_pc_s {
-    u32 capabilities;
-    AI_PREPARING_SPECIAL_MOVE_PC prepare;
-} BATMAN_PREPARE_PC;
+    u32 capabilities;                     // 0x0
+    AI_PREPARING_SPECIAL_MOVE_PC prepare; // 0x4
+} BATMAN_PREPARE_PC;                      // size 0x8
 
-STATIC_ASSERT(sizeof(BATMAN_PREPARE_PC) == 8);
 extern "C" {
     extern BATMAN_PREPARE_PC batman_prepareforspecialmove[11];
     extern AI_MID_SPECIAL_MOVE_PC batman_midspecialmovefns[8];

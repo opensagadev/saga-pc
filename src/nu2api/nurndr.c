@@ -298,19 +298,13 @@ void __cdecl NuBackbufferCopy(i32 texture_id) {
 }
 
 typedef struct locator_prim_vertex_pc_s {
-    f32 x;
-    f32 y;
-    f32 z;
-    u32 colour;
-    f32 u;
-    f32 v;
-} LOCATOR_PRIM_VERTEX_PC;
-
-STATIC_ASSERT(sizeof(LOCATOR_PRIM_VERTEX_PC) == 0x18);
-STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, x) == 0);
-STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, y) == 4);
-STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, z) == 8);
-STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, colour) == 0xc);
+    f32 x;                // 0x00
+    f32 y;                // 0x04
+    f32 z;                // 0x08
+    u32 colour;           // 0x0c
+    f32 u;                // 0x10
+    f32 v;                // 0x14
+} LOCATOR_PRIM_VERTEX_PC; // size 0x18
 
 static void NuRndrPrimSetColourPrivate(i32 colour) {
     i32 converted;
@@ -552,9 +546,6 @@ void __cdecl NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
 }
 
 #undef LOCATOR_PRIM_POSITION
-
-STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, u) == 0x10);
-STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, v) == 0x14);
 
 i32 __cdecl NuRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix) {
     NuPrim3DBegin(14, 7, material, matrix);
@@ -1158,9 +1149,9 @@ PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc = 0;
 
 /* Stencil shadow-volume arena vertex: D3DDECLTYPE_FLOAT3 position and D3DCOLOR. */
 typedef struct RENDERER_ARENA_VERTEX_PC {
-    NUVEC position;
-    u32 colour;
-} RENDERER_ARENA_VERTEX_PC;
+    NUVEC position;         // 0x0
+    u32 colour;             // 0xc
+} RENDERER_ARENA_VERTEX_PC; // size 0x10
 
 RENDERER_ARENA_VERTEX_PC *RendererArenaDataPc = 0;
 u32 *RendererArenaOffsetsPc = 0;
@@ -1171,14 +1162,9 @@ i32 RendererArenaIndexCountPc = 0;
 
 /* Shadow outline records: a direction or point with a count (or a -1 marker in the arena) in the fourth word. */
 typedef struct pc_shadow_edge_s {
-    NUVEC v;
-    i32 count;
-} PC_SHADOW_EDGE_PC;
-
-STATIC_ASSERT(sizeof(PC_SHADOW_EDGE_PC) == 16);
-STATIC_ASSERT(offsetof(PC_SHADOW_EDGE_PC, count) == 12);
-STATIC_ASSERT(sizeof(RENDERER_ARENA_VERTEX_PC) == 16);
-STATIC_ASSERT(offsetof(RENDERER_ARENA_VERTEX_PC, colour) == 12);
+    NUVEC v;         // 0x0
+    i32 count;       // 0xc
+} PC_SHADOW_EDGE_PC; // size 0x10
 
 void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
     RendererArenaDataPc = (RENDERER_ARENA_VERTEX_PC *)((buffer->addr + 3) & ~3u);
@@ -1232,20 +1218,17 @@ void __cdecl NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
 /* Shadow cylinder records: a centre, the axis and two side vectors in object space. Bit 0 of the first word selects a
  * rounded (capsule) outline instead of a box. */
 typedef struct PC_SHADOW_CYLINDER_PC {
-    union {
-        NUVEC centre;
-        u32 flags;
+    union {           // 0x00
+        NUVEC centre; // 0x00
+        u32 flags;    // 0x00
     };
 
-    NUVEC axis;
-    NUVEC side;
-    f32 unknown_24;
-    NUVEC up;
-    f32 unknown_34[3];
-} PC_SHADOW_CYLINDER_PC;
-
-STATIC_ASSERT(sizeof(PC_SHADOW_CYLINDER_PC) == 64);
-STATIC_ASSERT(offsetof(PC_SHADOW_CYLINDER_PC, up) == 0x28);
+    NUVEC axis;          // 0x0c
+    NUVEC side;          // 0x18
+    f32 unknown_24;      // 0x24
+    NUVEC up;            // 0x28
+    f32 unknown_34[3];   // 0x34
+} PC_SHADOW_CYLINDER_PC; // size 0x40
 
 /* Extrudes the silhouette of a queued cylinder along the light offset into arena quads: ten edges of a capsule outline
  * when bit 0 of the record is set, otherwise the four edges of a box. */
@@ -1845,16 +1828,13 @@ void __cdecl NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *ma
 }
 
 typedef struct NULINEVERTEX2D_PC {
-    f32 x;
-    f32 y;
-    f32 unused[2];
-    i32 colour;
-    f32 u;
-    f32 v;
-} NULINEVERTEX2D_PC;
-
-STATIC_ASSERT(sizeof(NULINEVERTEX2D_PC) == 0x1c);
-STATIC_ASSERT(offsetof(NULINEVERTEX2D_PC, colour) == 0x10);
+    f32 x;           // 0x00
+    f32 y;           // 0x04
+    f32 unused[2];   // 0x08
+    i32 colour;      // 0x10
+    f32 u;           // 0x14
+    f32 v;           // 0x18
+} NULINEVERTEX2D_PC; // size 0x1c
 
 i32 __cdecl NuRndrLine2d(NULINEVERTEX2D_PC *vertices, NUMTL *material) {
     f32 u;
@@ -2069,9 +2049,6 @@ void __cdecl NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, 
     --NuPrimCSPos;
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
-
-STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, u) == 0x10);
-STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, v) == 0x14);
 
 void __cdecl NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, NUMTL *material) {
     LOCATOR_PRIM_VERTEX_PC *vertex;

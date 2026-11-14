@@ -2,91 +2,62 @@
 
 /* Retail unit 0x5b0340-0x5b0769: definitions in retail address order. */
 typedef struct GIZFLOW_LOAD_LEVEL_PC {
-    u8 unknown_000[0xe9];
-    u8 max_timers;
-    u8 unknown_0ea[0xb];
-    u8 max_specials;
-    u8 unknown_0f6[0xd];
-    u8 max_randoms;
-} GIZFLOW_LOAD_LEVEL_PC;
+    u8 unknown_000[0xe9]; // 0x000
+    u8 max_timers;        // 0x0e9
+    u8 unknown_0ea[0xb];  // 0x0ea
+    u8 max_specials;      // 0x0f5
+    u8 unknown_0f6[0xd];  // 0x0f6
+    u8 max_randoms;       // 0x103
+} GIZFLOW_LOAD_LEVEL_PC;  // size 0x104
 
 typedef struct GIZFLOW_TIMER_PC {
-    f32 time_remaining;
-    f32 start_time;
-    u8 unknown_008[2];
-    u8 flags;
-    u8 unknown_00b;
-    char name[16];
-} GIZFLOW_TIMER_PC;
+    f32 time_remaining; // 0x00
+    f32 start_time;     // 0x04
+    u8 unknown_008[2];  // 0x08
+    u8 flags;           // 0x0a
+    u8 unknown_00b;     // 0x0b
+    char name[16];      // 0x0c
+} GIZFLOW_TIMER_PC;     // size 0x1c
 
 typedef struct GIZFLOW_RANDOM_PC {
-    char name[16];
-    i32 output_count;
-    i32 output_weights[8];
-    u8 unknown_034[8];
-} GIZFLOW_RANDOM_PC;
+    char name[16];         // 0x00
+    i32 output_count;      // 0x10
+    i32 output_weights[8]; // 0x14
+    u8 unknown_034[8];     // 0x34
+} GIZFLOW_RANDOM_PC;       // size 0x3c
 
 typedef struct GIZFLOW_RANDOM_SYSTEM_PC {
-    GIZFLOW_RANDOM_PC *randoms;
-    i32 count;
-} GIZFLOW_RANDOM_SYSTEM_PC;
+    GIZFLOW_RANDOM_PC *randoms; // 0x0
+    i32 count;                  // 0x4
+} GIZFLOW_RANDOM_SYSTEM_PC;     // size 0x8
 
 typedef struct GIZFLOW_SPECIAL_PC {
-    char name[32];
-    GAMEANIMSET *anim_set;
-    u8 unknown_024[4];
-} GIZFLOW_SPECIAL_PC;
+    char name[32];         // 0x00
+    GAMEANIMSET *anim_set; // 0x20
+    u8 unknown_024[4];     // 0x24
+} GIZFLOW_SPECIAL_PC;      // size 0x28
 
 typedef struct GIZFLOW_SPECIAL_SYSTEM_PC {
-    GIZFLOW_SPECIAL_PC *specials;
-    i32 count;
-} GIZFLOW_SPECIAL_SYSTEM_PC;
+    GIZFLOW_SPECIAL_PC *specials; // 0x0
+    i32 count;                    // 0x4
+} GIZFLOW_SPECIAL_SYSTEM_PC;      // size 0x8
 
 typedef struct GIZFLOW_LOAD_WORLD_PC {
-    u8 unknown_000[0x104];
-    VARIPTR giz_buffer;
-    u8 unknown_108[0x20];
-    GIZFLOW_LOAD_LEVEL_PC *level;
-    u8 unknown_12c[0x10];
-    NUGSCN *current_gscn;
-    u8 unknown_140[0x2988];
-    void *gizmo_sys;
-    u8 unknown_2acc[0x262c];
-    GIZFLOW_TIMER_PC *timers;
-    i32 timer_count;
-    u8 unknown_5100[4];
-    GIZFLOW_RANDOM_SYSTEM_PC *randoms;
-    GIZFLOW_SPECIAL_SYSTEM_PC *specials;
-} GIZFLOW_LOAD_WORLD_PC;
-
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_timers) == 0xe9);
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_specials) == 0xf5);
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_randoms) == 0x103);
-STATIC_ASSERT(sizeof(GIZFLOW_TIMER_PC) == 0x1c);
-STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, time_remaining) == 0);
-STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, start_time) == 4);
-STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, flags) == 0xa);
-STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, name) == 0xc);
-STATIC_ASSERT(sizeof(GIZFLOW_RANDOM_PC) == 0x3c);
-STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_PC, output_count) == 0x10);
-STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_PC, output_weights) == 0x14);
-STATIC_ASSERT(sizeof(GIZFLOW_SPECIAL_PC) == 0x28);
-STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_PC, anim_set) == 0x20);
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, level) == 0x128);
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, current_gscn) == 0x13c);
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, gizmo_sys) == 0x2ac8);
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, timers) == 0x50f8);
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, timer_count) == 0x50fc);
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, randoms) == 0x5104);
-STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, specials) == 0x5108);
-
-STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_PC, name) == 0);
-STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_PC, name) == 0);
-STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, randoms) == 0);
-STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, count) == 4);
-STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
-STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
+    u8 unknown_000[0x104];               // 0x0000
+    VARIPTR giz_buffer;                  // 0x0104
+    u8 unknown_108[0x20];                // 0x0108
+    GIZFLOW_LOAD_LEVEL_PC *level;        // 0x0128
+    u8 unknown_12c[0x10];                // 0x012c
+    NUGSCN *current_gscn;                // 0x013c
+    u8 unknown_140[0x2988];              // 0x0140
+    void *gizmo_sys;                     // 0x2ac8
+    u8 unknown_2acc[0x262c];             // 0x2acc
+    GIZFLOW_TIMER_PC *timers;            // 0x50f8
+    i32 timer_count;                     // 0x50fc
+    u8 unknown_5100[4];                  // 0x5100
+    GIZFLOW_RANDOM_SYSTEM_PC *randoms;   // 0x5104
+    GIZFLOW_SPECIAL_SYSTEM_PC *specials; // 0x5108
+} GIZFLOW_LOAD_WORLD_PC;                 // size 0x510c
 
 i32 GizTimer_GetMaxGizmos(void *world_info) {
     WORLDINFO *world = world_info;

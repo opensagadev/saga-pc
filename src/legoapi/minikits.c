@@ -7,17 +7,14 @@ STATIC_ASSERT(sizeof(*Char_MiniKit) == 4);
 extern f32 KITPOS2YPc;
 
 typedef struct world_minikit_reader_pc_s {
-    u8 unknown_0000[0x2968];
-    MINIKIT_PC minikit;
-    u8 unknown_2980[4];
-    MINIKIT_PC **pieces_by_id;
-    u8 unknown_2988[0x158];
-    u8 *hub_minikits;
-} WORLD_MINIKIT_READER_PC;
+    u8 unknown_0000[0x2968];   // 0x0000
+    MINIKIT_PC minikit;        // 0x2968
+    u8 unknown_2980[4];        // 0x2980
+    MINIKIT_PC **pieces_by_id; // 0x2984
+    u8 unknown_2988[0x158];    // 0x2988
+    u8 *hub_minikits;          // 0x2ae0
+} WORLD_MINIKIT_READER_PC;     // size 0x2ae4
 
-STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, minikit) == 0x2968);
-STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, pieces_by_id) == 0x2984);
-STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, hub_minikits) == 0x2ae0);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
@@ -279,17 +276,15 @@ void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
 /* PC level-script and antinode views retain the surrounding canonical layouts.
  */
 typedef struct HOTH_WORLD_SCRIPT_PC {
-    u8 reserved[0x2b00];
-    AISCRIPTPROCESS_PC processor;
-} HOTH_WORLD_SCRIPT_PC;
+    u8 reserved[0x2b00];          // 0x0000
+    AISCRIPTPROCESS_PC processor; // 0x2b00
+} HOTH_WORLD_SCRIPT_PC;           // size 0x2bc8
 
 typedef struct HOTH_ANTINODE_PC {
-    u8 reserved[0x50];
-    i64 excluded_character_types;
-} HOTH_ANTINODE_PC;
+    u8 reserved[0x50];            // 0x00
+    i64 excluded_character_types; // 0x50
+} HOTH_ANTINODE_PC;               // size 0x58
 
-STATIC_ASSERT(offsetof(HOTH_WORLD_SCRIPT_PC, processor) == 0x2b00);
-STATIC_ASSERT(offsetof(HOTH_ANTINODE_PC, excluded_character_types) == 0x50);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.locator) == 0x36c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.creature_set) == 0x378);

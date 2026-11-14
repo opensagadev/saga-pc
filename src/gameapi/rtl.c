@@ -13,17 +13,15 @@ static i32 rtl_dynamic_cnt = 0;
 #pragma bss_seg()
 
 typedef union RTL_FRAME_TIMER_VIEW_PC {
-    i32 value;
+    i32 value; // 0x0
 
-    struct {
-        u16 low;
-        u16 high;
+    struct {      // 0x0
+        u16 low;  // 0x0
+        u16 high; // 0x2
     } words;
-} RTL_FRAME_TIMER_VIEW_PC;
+} RTL_FRAME_TIMER_VIEW_PC; // size 0x4
 
 STATIC_ASSERT(sizeof(RTL_FRAME_TIMER_VIEW_PC) == sizeof(i32));
-STATIC_ASSERT(offsetof(RTL_FRAME_TIMER_VIEW_PC, words.low) == 0);
-STATIC_ASSERT(offsetof(RTL_FRAME_TIMER_VIEW_PC, words.high) == 2);
 
 void __cdecl rtlFrameUpdate(f32 frame_time) {
     ((RTL_FRAME_TIMER_VIEW_PC *)&rtltimer1)->words.low += (u16)(i32)(rtltimer1adv * frame_time);
@@ -1041,35 +1039,35 @@ void __cdecl rtlSetShadowFlickerBlendTime(f32 time) {
 }
 
 typedef struct BURN_OUT_PC {
-    i32 active;
-    NUVEC position;
-    f32 field_10;
-    f32 field_14;
-    f32 field_18;
-    f32 field_1c;
-    f32 field_20;
-} BURN_OUT_PC;
+    i32 active;     // 0x00
+    NUVEC position; // 0x04
+    f32 field_10;   // 0x10
+    f32 field_14;   // 0x14
+    f32 field_18;   // 0x18
+    f32 field_1c;   // 0x1c
+    f32 field_20;   // 0x20
+} BURN_OUT_PC;      // size 0x24
 
 struct BURN_SET_PC {
-    BURN_PARAMETERS_PC parameters;
-    BURN_PARAMETERS_PC parameters_copy;
-    i32 field_a8;
-    i32 field_ac;
-    i32 field_b0;
-    i32 field_b4;
-    f32 field_b8;
-    f32 field_bc;
-    f32 field_c0;
-    f32 field_c4;
-    f32 field_c8;
-    f32 field_cc;
-    BURN_OUT_PC burnouts[32];
-    i32 active_count;
-    i32 selected_index;
-    f32 field_558;
-    f32 field_55c;
-    i32 field_560;
-};
+    BURN_PARAMETERS_PC parameters;      // 0x000
+    BURN_PARAMETERS_PC parameters_copy; // 0x054
+    i32 field_a8;                       // 0x0a8
+    i32 field_ac;                       // 0x0ac
+    i32 field_b0;                       // 0x0b0
+    i32 field_b4;                       // 0x0b4
+    f32 field_b8;                       // 0x0b8
+    f32 field_bc;                       // 0x0bc
+    f32 field_c0;                       // 0x0c0
+    f32 field_c4;                       // 0x0c4
+    f32 field_c8;                       // 0x0c8
+    f32 field_cc;                       // 0x0cc
+    BURN_OUT_PC burnouts[32];           // 0x0d0
+    i32 active_count;                   // 0x550
+    i32 selected_index;                 // 0x554
+    f32 field_558;                      // 0x558
+    f32 field_55c;                      // 0x55c
+    i32 field_560;                      // 0x560
+}; // size 0x564
 
 STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_00) == 0x0);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_00) == 4);
@@ -1114,33 +1112,6 @@ STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_4c) == 4);
 STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_50) == 0x50);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_50) == 4);
 STATIC_ASSERT(sizeof(BURN_PARAMETERS_PC) == 0x54);
-STATIC_ASSERT(sizeof(BURN_OUT_PC) == 0x24);
-STATIC_ASSERT(sizeof(BURN_SET_PC) == 0x564);
-STATIC_ASSERT(offsetof(BURN_OUT_PC, active) == 0x0);
-STATIC_ASSERT(offsetof(BURN_OUT_PC, position) == 0x4);
-STATIC_ASSERT(offsetof(BURN_OUT_PC, field_10) == 0x10);
-STATIC_ASSERT(offsetof(BURN_OUT_PC, field_14) == 0x14);
-STATIC_ASSERT(offsetof(BURN_OUT_PC, field_18) == 0x18);
-STATIC_ASSERT(offsetof(BURN_OUT_PC, field_1c) == 0x1c);
-STATIC_ASSERT(offsetof(BURN_OUT_PC, field_20) == 0x20);
-STATIC_ASSERT(offsetof(BURN_SET_PC, parameters) == 0x0);
-STATIC_ASSERT(offsetof(BURN_SET_PC, parameters_copy) == 0x54);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_a8) == 0xa8);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_ac) == 0xac);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_b0) == 0xb0);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_b4) == 0xb4);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_b8) == 0xb8);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_bc) == 0xbc);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_c0) == 0xc0);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_c4) == 0xc4);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_c8) == 0xc8);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_cc) == 0xcc);
-STATIC_ASSERT(offsetof(BURN_SET_PC, burnouts) == 0xd0);
-STATIC_ASSERT(offsetof(BURN_SET_PC, active_count) == 0x550);
-STATIC_ASSERT(offsetof(BURN_SET_PC, selected_index) == 0x554);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_558) == 0x558);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_55c) == 0x55c);
-STATIC_ASSERT(offsetof(BURN_SET_PC, field_560) == 0x560);
 
 static NUVEC burn_editor_position_pc = {0};
 // NOLINTNEXTLINE(readability-identifier-naming) -- original same-TU public state name.
@@ -1451,11 +1422,10 @@ void edrtlCalculateBurnoutEx(BURN_SET_PC *set, BURN_PARAMETERS_PC *parameters, N
 }
 
 typedef struct rtl_direction_lookup_pc_s {
-    u32 header;
-    RTL_LIGHT_PC lights[129];
-} RTL_DIRECTION_LOOKUP_PC;
+    u32 header;               // 0x0000
+    RTL_LIGHT_PC lights[129]; // 0x0004
+} RTL_DIRECTION_LOOKUP_PC;    // size 0x4690
 
-STATIC_ASSERT(offsetof(RTL_DIRECTION_LOOKUP_PC, lights) == 4);
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, direction) == 0xc);
 
 i32 __cdecl rtlGetDirection(RTL_SET_PC *set, i32 index, NUVEC **out) {

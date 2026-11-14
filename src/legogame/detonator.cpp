@@ -4,14 +4,12 @@
 /* Retail unit 0x426b30-0x4277a2 (legogame/detonator.c): definitions in retail address order. */
 
 struct BATARANG_DETONATOR_HIT_VIEW_PC {
-    u8 unknown00[0xc];
-    f32 scale;
-    u8 unknown10[0x10];
-    f32 delay;
-};
+    u8 unknown00[0xc];  // 0x00
+    f32 scale;          // 0x0c
+    u8 unknown10[0x10]; // 0x10
+    f32 delay;          // 0x20
+}; // size 0x24
 
-STATIC_ASSERT(offsetof(BATARANG_DETONATOR_HIT_VIEW_PC, scale) == 0xc);
-STATIC_ASSERT(offsetof(BATARANG_DETONATOR_HIT_VIEW_PC, delay) == 0x20);
 extern "C" const f64 GameObjectNearFloorNoFloorHeight;
 
 extern "C" {

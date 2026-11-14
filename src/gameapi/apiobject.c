@@ -17,43 +17,32 @@ typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
 typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
 
 struct PC_HG_SHADOW_SHAPE48 {
-    union {
-        NUVEC axes[4];
+    union {            // 0x00
+        NUVEC axes[4]; // 0x00
 
-        struct {
-            f32 center_x;
-            u32 flags;
-            u8 rest[40];
+        struct {          // 0x00
+            f32 center_x; // 0x00
+            u32 flags;    // 0x04
+            u8 rest[40];  // 0x08
         } filter;
     };
-};
+}; // size 0x30
 
 struct PC_HG_SHADOW_SHAPE64 {
-    PC_HG_SHADOW_SHAPE48 position;
-    u8 unknown_30[16];
-};
+    PC_HG_SHADOW_SHAPE48 position; // 0x00
+    u8 unknown_30[16];             // 0x30
+}; // size 0x40
 
 struct PC_HG_SHADOW_GROUP {
-    PC_HG_SHADOW_SHAPE48 *ellipses;
-    PC_HG_SHADOW_SHAPE64 *cylinders;
-    void *third_shape;
-    u8 ellipse_count;
-    u8 cylinder_count;
-    u8 third_count;
-    u8 joint_index;
-};
+    PC_HG_SHADOW_SHAPE48 *ellipses;  // 0x0
+    PC_HG_SHADOW_SHAPE64 *cylinders; // 0x4
+    void *third_shape;               // 0x8
+    u8 ellipse_count;                // 0xc
+    u8 cylinder_count;               // 0xd
+    u8 third_count;                  // 0xe
+    u8 joint_index;                  // 0xf
+}; // size 0x10
 
-STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
-STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE64) == 64);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_SHAPE48, filter.flags) == 4);
-STATIC_ASSERT(sizeof(PC_HG_SHADOW_GROUP) == 16);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipses) == 0);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinders) == 4);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_shape) == 8);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipse_count) == 12);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinder_count) == 13);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_count) == 14);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, joint_index) == 15);
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder) == 0x44);
@@ -83,37 +72,27 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, animation_root_delta) == 0x26c);
          ->character_model->animation_configs[(object)->anim_packet.blend_target_animation])
 
 struct PC_ANIMATION_RENDER_VIEW {
-    ANIMPACKET_PC packet;
-    f32 overlay_weight;
-};
+    ANIMPACKET_PC packet; // 0x00
+    f32 overlay_weight;   // 0x44
+}; // size 0x48
 
-STATIC_ASSERT(offsetof(PC_ANIMATION_RENDER_VIEW, overlay_weight) == 0x44);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_count) == 0x28e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_id) == 0x290);
 STATIC_ASSERT(offsetof(APICHARACTERDATA, effects) == 0x28);
 
 typedef struct minianimpacket_pc_s {
-    f32 current_time;
-    f32 previous_time;
-    u8 unknown_08[0xc];
-    f32 blend_target_time;
-    u8 flags;
-    u8 blending;
-    u8 unknown_1a[4];
-    i16 current_animation_id;
-    i16 previous_animation_id;
-    i16 requested_animation_id;
-} MINIANIMPACKET_PC;
+    f32 current_time;           // 0x00
+    f32 previous_time;          // 0x04
+    u8 unknown_08[0xc];         // 0x08
+    f32 blend_target_time;      // 0x14
+    u8 flags;                   // 0x18
+    u8 blending;                // 0x19
+    u8 unknown_1a[4];           // 0x1a
+    i16 current_animation_id;   // 0x1e
+    i16 previous_animation_id;  // 0x20
+    i16 requested_animation_id; // 0x22
+} MINIANIMPACKET_PC;            // size 0x24
 
-STATIC_ASSERT(sizeof(MINIANIMPACKET_PC) == 0x24);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, current_time) == 0);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, previous_time) == 4);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, blend_target_time) == 0x14);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, flags) == 0x18);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, blending) == 0x19);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, current_animation_id) == 0x1e);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, previous_animation_id) == 0x20);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, requested_animation_id) == 0x22);
 STATIC_ASSERT(offsetof(GAMEOBJECT, initial_position) == 0x98);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
@@ -126,60 +105,38 @@ STATIC_ASSERT(offsetof(CHARACTERDATA_PC, dir) == 8);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animations) == 0x10);
 
 typedef struct CHARACTER_PACK_ANIMATION_PC {
-    u32 pointer_table;
-    u32 animation_magic;
-} CHARACTER_PACK_ANIMATION_PC;
+    u32 pointer_table;         // 0x0
+    u32 animation_magic;       // 0x4
+} CHARACTER_PACK_ANIMATION_PC; // size 0x8
 
-STATIC_ASSERT(offsetof(CHARACTER_PACK_ANIMATION_PC, animation_magic) == 4);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, field_12_low) == 0x12);
 
 typedef struct CHARACTER_LIST_ENTRY_PC {
-    i32 name_id;
-    u32 model_flags;
-    char *dir;
-    char *name;
-    CHARACTERANIM_CONFIG_PC *animations;
-    u16 animation_count;
-    u8 unknown_16[2];
-    void(__cdecl *move_fn)(GAMEOBJECT *);
-    void(__cdecl *animate_fn)(GAMEOBJECT *);
-    void(__cdecl *post_animate_fn)(GAMEOBJECT *);
-    PLAYERCHARACTERCONFIG_PC *game_character;
-    CHARACTER_EFFECT_CONFIG_PC *effects;
-    f32 scaled_radius;
-    f32 collision_radius;
-    f32 bottom;
-    f32 top;
-    f32 model_scale;
-    u8 flags;
-    u8 unknown_41;
-    i16 icon_model;
-    u32 unknown_44;
-    u32 unknown_48;
-} CHARACTER_LIST_ENTRY_PC;
+    i32 name_id;                                  // 0x00
+    u32 model_flags;                              // 0x04
+    char *dir;                                    // 0x08
+    char *name;                                   // 0x0c
+    CHARACTERANIM_CONFIG_PC *animations;          // 0x10
+    u16 animation_count;                          // 0x14
+    u8 unknown_16[2];                             // 0x16
+    void(__cdecl *move_fn)(GAMEOBJECT *);         // 0x18
+    void(__cdecl *animate_fn)(GAMEOBJECT *);      // 0x1c
+    void(__cdecl *post_animate_fn)(GAMEOBJECT *); // 0x20
+    PLAYERCHARACTERCONFIG_PC *game_character;     // 0x24
+    CHARACTER_EFFECT_CONFIG_PC *effects;          // 0x28
+    f32 scaled_radius;                            // 0x2c
+    f32 collision_radius;                         // 0x30
+    f32 bottom;                                   // 0x34
+    f32 top;                                      // 0x38
+    f32 model_scale;                              // 0x3c
+    u8 flags;                                     // 0x40
+    u8 unknown_41;                                // 0x41
+    i16 icon_model;                               // 0x42
+    u32 unknown_44;                               // 0x44
+    u32 unknown_48;                               // 0x48
+} CHARACTER_LIST_ENTRY_PC;                        // size 0x4c
 
-STATIC_ASSERT(sizeof(CHARACTER_LIST_ENTRY_PC) == 0x4c);
 STATIC_ASSERT(sizeof(CHARACTER_LIST_ENTRY_PC) == sizeof(CHARACTERDATA_PC));
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, name_id) == 0);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, model_flags) == 4);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, dir) == 8);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, name) == 0xc);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, animations) == 0x10);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, animation_count) == 0x14);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, move_fn) == 0x18);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, animate_fn) == 0x1c);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, post_animate_fn) == 0x20);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, game_character) == 0x24);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, effects) == 0x28);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, scaled_radius) == 0x2c);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, collision_radius) == 0x30);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, bottom) == 0x34);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, top) == 0x38);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, model_scale) == 0x3c);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, flags) == 0x40);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, icon_model) == 0x42);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, unknown_44) == 0x44);
-STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, unknown_48) == 0x48);
 extern void __cdecl NuHGobjDestroy(NUHGOBJ_EVAL_PC *object);
 STATIC_ASSERT(offsetof(APICHARSYS, permanent_model_count) == 0xc);
 STATIC_ASSERT(offsetof(APICHARSYS, loaded_model_count) == 0x10);

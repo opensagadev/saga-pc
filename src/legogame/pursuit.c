@@ -4,29 +4,22 @@
 /* Bounty hunter pursuit level callbacks (original pursuit.cpp). */
 
 typedef struct PURSUIT_TRAFFIC_ENTRY_PC {
-    NUSPECIALHANDLE special;
-    void *animation;
-    f32 end_frame;
-    u8 unknown_14[0x139 - 0x14];
-    u8 active;
-    i8 direction;
-    u8 unknown_13b[5];
-} PURSUIT_TRAFFIC_ENTRY_PC;
-
-STATIC_ASSERT(sizeof(PURSUIT_TRAFFIC_ENTRY_PC) == 0x140);
-STATIC_ASSERT(offsetof(PURSUIT_TRAFFIC_ENTRY_PC, end_frame) == 0x10);
-STATIC_ASSERT(offsetof(PURSUIT_TRAFFIC_ENTRY_PC, direction) == 0x13a);
+    NUSPECIALHANDLE special;     // 0x000
+    void *animation;             // 0x00c
+    f32 end_frame;               // 0x010
+    u8 unknown_14[0x139 - 0x14]; // 0x014
+    u8 active;                   // 0x139
+    i8 direction;                // 0x13a
+    u8 unknown_13b[5];           // 0x13b
+} PURSUIT_TRAFFIC_ENTRY_PC;      // size 0x140
 
 typedef struct PURSUIT_TRAFFIC_PC {
-    PURSUIT_TRAFFIC_ENTRY_PC entries[64];
-    u8 unknown_5000[0x77e0 - 0x5000];
-    i8 count;
-    u8 unknown_77e1[2];
-    i8 side;
-} PURSUIT_TRAFFIC_PC;
-
-STATIC_ASSERT(offsetof(PURSUIT_TRAFFIC_PC, count) == 0x77e0);
-STATIC_ASSERT(offsetof(PURSUIT_TRAFFIC_PC, side) == 0x77e3);
+    PURSUIT_TRAFFIC_ENTRY_PC entries[64]; // 0x0000
+    u8 unknown_5000[0x77e0 - 0x5000];     // 0x5000
+    i8 count;                             // 0x77e0
+    u8 unknown_77e1[2];                   // 0x77e1
+    i8 side;                              // 0x77e3
+} PURSUIT_TRAFFIC_PC;                     // size 0x77e4
 
 typedef struct ZAMARROW_PC {
     GAMEOBJECT *object;

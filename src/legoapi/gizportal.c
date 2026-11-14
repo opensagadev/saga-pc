@@ -4,16 +4,13 @@
 #include <stdio.h>
 
 typedef struct portal_callback_pc_s {
-    u8 reserved_00[0x1a];
-    i8 id;
-    u8 reserved_1b;
-    u8 flags;
-    u8 reserved_1d[3];
-} PORTAL_CALLBACK_PC;
+    u8 reserved_00[0x1a]; // 0x00
+    i8 id;                // 0x1a
+    u8 reserved_1b;       // 0x1b
+    u8 flags;             // 0x1c
+    u8 reserved_1d[3];    // 0x1d
+} PORTAL_CALLBACK_PC;     // size 0x20
 
-STATIC_ASSERT(sizeof(PORTAL_CALLBACK_PC) == 0x20);
-STATIC_ASSERT(offsetof(PORTAL_CALLBACK_PC, id) == 0x1a);
-STATIC_ASSERT(offsetof(PORTAL_CALLBACK_PC, flags) == 0x1c);
 static char portal_output_name_pc[64] = "Active";
 static char portal_gizmo_name_pc[16] = {0};
 

@@ -4,16 +4,13 @@
  * NetStats::Draw (Android gamelib/util/Stats.cpp). */
 
 typedef struct NET_PRIM_VERTEX_PC {
-    f32 x;
-    f32 y;
-    f32 z;
-    u32 colour;
-    f32 u;
-    f32 v;
-} NET_PRIM_VERTEX_PC;
-
-STATIC_ASSERT(sizeof(NET_PRIM_VERTEX_PC) == 0x18);
-STATIC_ASSERT(offsetof(NET_PRIM_VERTEX_PC, colour) == 0xc);
+    f32 x;            // 0x00
+    f32 y;            // 0x04
+    f32 z;            // 0x08
+    u32 colour;       // 0x0c
+    f32 u;            // 0x10
+    f32 v;            // 0x14
+} NET_PRIM_VERTEX_PC; // size 0x18
 
 static void NetPrimSetColour(i32 colour) {
     if (NuPrimNeedsOverbrightening != 0) {

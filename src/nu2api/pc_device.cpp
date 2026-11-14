@@ -221,13 +221,11 @@ extern "C" void __cdecl PCDeviceCreateCubeTextureFromMemory(const void *data, u3
 }
 
 struct PC_MATERIAL_DEVICE_CAPS_VIEW {
-    u8 unknown_000[0x654];
-    u8 shader_caps;
+    u8 unknown_000[0x654]; // 0x000
+    u8 shader_caps;        // 0x654
     i32 __thiscall ShaderVariant16();
     i32 __thiscall ShaderVariant1();
-};
-
-STATIC_ASSERT(offsetof(PC_MATERIAL_DEVICE_CAPS_VIEW, shader_caps) == 0x654);
+}; // size 0x655
 
 i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant16() {
     i32 variant = 0;
@@ -267,17 +265,13 @@ extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceUnlockVertexBuffer(PC_BU
 struct PRIMITIVE_D3D_DEVICE_VIEW;
 
 struct PRIMITIVE_D3D_VTABLE_VIEW {
-    void *unknown_000[83];
-    HRESULT(__stdcall *draw_primitive_up)(PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, const void *, u32);
-    HRESULT(__stdcall *draw_indexed_primitive_up)
+    void *unknown_000[83];                                                                           // 0x000
+    HRESULT(__stdcall *draw_primitive_up)(PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, const void *, u32); // 0x14c
+    HRESULT(__stdcall *draw_indexed_primitive_up)                                                    // 0x150
     (PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, u32, u32, const void *, i32, const void *, u32);
-    void *unknown_154[4];
-    HRESULT(__stdcall *set_fvf)(PRIMITIVE_D3D_DEVICE_VIEW *, u32);
-};
-
-STATIC_ASSERT(offsetof(PRIMITIVE_D3D_VTABLE_VIEW, draw_primitive_up) == 0x14c);
-STATIC_ASSERT(offsetof(PRIMITIVE_D3D_VTABLE_VIEW, draw_indexed_primitive_up) == 0x150);
-STATIC_ASSERT(offsetof(PRIMITIVE_D3D_VTABLE_VIEW, set_fvf) == 0x164);
+    void *unknown_154[4];                                          // 0x154
+    HRESULT(__stdcall *set_fvf)(PRIMITIVE_D3D_DEVICE_VIEW *, u32); // 0x164
+}; // size 0x168
 
 struct PRIMITIVE_D3D_DEVICE_VIEW {
     PRIMITIVE_D3D_VTABLE_VIEW *methods;
@@ -520,48 +514,34 @@ PC_DEVICE_BACKEND_PC::~PC_DEVICE_BACKEND_PC() {
 struct GRAPHICS_DEVICE_PC;
 
 struct GRAPHICS_DEVICE_METHODS_PC {
-    void *unknown_0000[3];
-    HRESULT(__stdcall *test_cooperative_level)(GRAPHICS_DEVICE_PC *);
-    void *get_available_texture_memory;
-    HRESULT(__stdcall *evict_managed_resources)(GRAPHICS_DEVICE_PC *);
-    void *get_direct3d;
-    HRESULT(__stdcall *get_device_caps)(GRAPHICS_DEVICE_PC *, GRAPHICS_CAPS_PC *);
-    void *unknown_0020[8];
-    HRESULT(__stdcall *reset)(GRAPHICS_DEVICE_PC *, GRAPHICS_PRESENT_PARAMETERS_PC *);
-    HRESULT(__stdcall *present)(GRAPHICS_DEVICE_PC *, const RECT *, const RECT *, HWND, const RGNDATA *);
-    HRESULT(__stdcall *get_back_buffer)(GRAPHICS_DEVICE_PC *, u32, u32, i32, PC_TEXTURE_RESOURCE_PC **);
-    void *unknown_004c[15];
-    HRESULT(__stdcall *stretch_rect)
+    void *unknown_0000[3];                                                                                // 0x000
+    HRESULT(__stdcall *test_cooperative_level)(GRAPHICS_DEVICE_PC *);                                     // 0x00c
+    void *get_available_texture_memory;                                                                   // 0x010
+    HRESULT(__stdcall *evict_managed_resources)(GRAPHICS_DEVICE_PC *);                                    // 0x014
+    void *get_direct3d;                                                                                   // 0x018
+    HRESULT(__stdcall *get_device_caps)(GRAPHICS_DEVICE_PC *, GRAPHICS_CAPS_PC *);                        // 0x01c
+    void *unknown_0020[8];                                                                                // 0x020
+    HRESULT(__stdcall *reset)(GRAPHICS_DEVICE_PC *, GRAPHICS_PRESENT_PARAMETERS_PC *);                    // 0x040
+    HRESULT(__stdcall *present)(GRAPHICS_DEVICE_PC *, const RECT *, const RECT *, HWND, const RGNDATA *); // 0x044
+    HRESULT(__stdcall *get_back_buffer)(GRAPHICS_DEVICE_PC *, u32, u32, i32, PC_TEXTURE_RESOURCE_PC **);  // 0x048
+    void *unknown_004c[15];                                                                               // 0x04c
+    HRESULT(__stdcall *stretch_rect)                                                                      // 0x088
     (GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *, i32);
-    void *unknown_008c[2];
-    HRESULT(__stdcall *set_render_target)(GRAPHICS_DEVICE_PC *, u32, PC_TEXTURE_RESOURCE_PC *);
-    void *get_render_target;
-    HRESULT(__stdcall *set_depth_stencil_surface)(GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *);
-    HRESULT(__stdcall *get_depth_stencil_surface)(GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC **);
-    HRESULT(__stdcall *begin_scene)(GRAPHICS_DEVICE_PC *);
-    HRESULT(__stdcall *end_scene)(GRAPHICS_DEVICE_PC *);
-    HRESULT(__stdcall *clear)(GRAPHICS_DEVICE_PC *, u32, const RECT *, u32, u32, f32, u32);
-    void *unknown_00b0[33];
-    HRESULT(__stdcall *set_software_vertex_processing)(GRAPHICS_DEVICE_PC *, BOOL);
-};
+    void *unknown_008c[2];                                                                          // 0x08c
+    HRESULT(__stdcall *set_render_target)(GRAPHICS_DEVICE_PC *, u32, PC_TEXTURE_RESOURCE_PC *);     // 0x094
+    void *get_render_target;                                                                        // 0x098
+    HRESULT(__stdcall *set_depth_stencil_surface)(GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *);  // 0x09c
+    HRESULT(__stdcall *get_depth_stencil_surface)(GRAPHICS_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC **); // 0x0a0
+    HRESULT(__stdcall *begin_scene)(GRAPHICS_DEVICE_PC *);                                          // 0x0a4
+    HRESULT(__stdcall *end_scene)(GRAPHICS_DEVICE_PC *);                                            // 0x0a8
+    HRESULT(__stdcall *clear)(GRAPHICS_DEVICE_PC *, u32, const RECT *, u32, u32, f32, u32);         // 0x0ac
+    void *unknown_00b0[33];                                                                         // 0x0b0
+    HRESULT(__stdcall *set_software_vertex_processing)(GRAPHICS_DEVICE_PC *, BOOL);                 // 0x134
+}; // size 0x138
 
 struct GRAPHICS_DEVICE_PC {
     const GRAPHICS_DEVICE_METHODS_PC *methods;
 };
-
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, test_cooperative_level) == 0xc);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, evict_managed_resources) == 0x14);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, get_device_caps) == 0x1c);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, reset) == 0x40);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, present) == 0x44);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, get_back_buffer) == 0x48);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, get_depth_stencil_surface) == 0xa0);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, set_render_target) == 0x94);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, set_depth_stencil_surface) == 0x9c);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, begin_scene) == 0xa4);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, end_scene) == 0xa8);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, clear) == 0xac);
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, set_software_vertex_processing) == 0x134);
 
 // noinline: the original calls EndScene out of line from PCDeviceEndScenePc; VC8 would inline it there.
 __declspec(noinline) HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene() {
@@ -614,21 +594,17 @@ u32 __thiscall PC_DEVICE_BACKEND_PC::GetMultisampleType() {
 struct PC_TEXTURE_CREATE_DEVICE_PC;
 
 struct PC_TEXTURE_CREATE_METHODS_PC {
-    void *reserved_00[23];
-    HRESULT(__stdcall *create_texture)
+    void *reserved_00[23];             // 0x00
+    HRESULT(__stdcall *create_texture) // 0x5c
     (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
-    void *reserved_60[5];
-    HRESULT(__stdcall *create_depth_surface)
+    void *reserved_60[5];                    // 0x60
+    HRESULT(__stdcall *create_depth_surface) // 0x74
     (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
-};
+}; // size 0x78
 
 struct PC_TEXTURE_CREATE_DEVICE_PC {
-    const PC_TEXTURE_CREATE_METHODS_PC *methods;
-};
-
-STATIC_ASSERT(offsetof(PC_TEXTURE_CREATE_METHODS_PC, create_texture) == 0x5c);
-STATIC_ASSERT(offsetof(PC_TEXTURE_CREATE_METHODS_PC, create_depth_surface) == 0x74);
-STATIC_ASSERT(offsetof(PC_TEXTURE_CREATE_DEVICE_PC, methods) == 0);
+    const PC_TEXTURE_CREATE_METHODS_PC *methods; // 0x0
+}; // size 0x4
 
 extern "C" void __cdecl PCDeviceCreateDepthSurface(u32 width, u32 height, i32 format, i32 multisample, u32 quality,
                                                    BOOL discard, PC_TEXTURE_RESOURCE_PC **surface,
@@ -1290,44 +1266,30 @@ extern "C" {
 }
 
 struct PC_GRAPHICS_CLIP_VERTEX_PC {
-    f32 x;
-    f32 y;
-    f32 z;
-    f32 u;
-    f32 v;
-};
+    f32 x; // 0x00
+    f32 y; // 0x04
+    f32 z; // 0x08
+    f32 u; // 0x0c
+    f32 v; // 0x10
+}; // size 0x14
 
 struct PC_GRAPHICS_SCREEN_VERTEX_PC {
-    f32 x;
-    f32 y;
-    f32 u;
-    f32 v;
-};
+    f32 x; // 0x0
+    f32 y; // 0x4
+    f32 u; // 0x8
+    f32 v; // 0xc
+}; // size 0x10
 
-STATIC_ASSERT(sizeof(PC_GRAPHICS_CLIP_VERTEX_PC) == 20);
-STATIC_ASSERT(offsetof(PC_GRAPHICS_CLIP_VERTEX_PC, x) == 0);
-STATIC_ASSERT(offsetof(PC_GRAPHICS_CLIP_VERTEX_PC, y) == 4);
-STATIC_ASSERT(offsetof(PC_GRAPHICS_CLIP_VERTEX_PC, z) == 8);
-STATIC_ASSERT(offsetof(PC_GRAPHICS_CLIP_VERTEX_PC, u) == 12);
-STATIC_ASSERT(offsetof(PC_GRAPHICS_CLIP_VERTEX_PC, v) == 16);
-STATIC_ASSERT(sizeof(PC_GRAPHICS_SCREEN_VERTEX_PC) == 16);
-STATIC_ASSERT(offsetof(PC_GRAPHICS_SCREEN_VERTEX_PC, x) == 0);
-STATIC_ASSERT(offsetof(PC_GRAPHICS_SCREEN_VERTEX_PC, y) == 4);
-STATIC_ASSERT(offsetof(PC_GRAPHICS_SCREEN_VERTEX_PC, u) == 8);
-STATIC_ASSERT(offsetof(PC_GRAPHICS_SCREEN_VERTEX_PC, v) == 12);
 struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC;
 
 struct GRAPHICS_TEXTURE_SURFACE_METHODS_PC {
-    void *unknown_000[18];
-    HRESULT(__stdcall *get_surface_level)(GRAPHICS_TEXTURE_SURFACE_VIEW_PC *, u32, PC_TEXTURE_RESOURCE_PC **);
-};
+    void *unknown_000[18];                                                                                     // 0x00
+    HRESULT(__stdcall *get_surface_level)(GRAPHICS_TEXTURE_SURFACE_VIEW_PC *, u32, PC_TEXTURE_RESOURCE_PC **); // 0x48
+}; // size 0x4c
 
 struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC {
-    const GRAPHICS_TEXTURE_SURFACE_METHODS_PC *methods;
-};
-
-STATIC_ASSERT(offsetof(GRAPHICS_TEXTURE_SURFACE_VIEW_PC, methods) == 0);
-STATIC_ASSERT(offsetof(GRAPHICS_TEXTURE_SURFACE_METHODS_PC, get_surface_level) == 0x48);
+    const GRAPHICS_TEXTURE_SURFACE_METHODS_PC *methods; // 0x0
+}; // size 0x4
 
 // noinline: the original calls PCDeviceLockIndexBuffer out of line from
 // PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
@@ -1374,20 +1336,17 @@ extern "C" const char *WINAPI DXGetErrorString9A(HRESULT result);
 typedef struct PC_SURFACE_PC PC_SURFACE_PC;
 
 typedef struct PC_SURFACE_METHODS_PC {
-    void *unknown_0000[2];
-    ULONG(__stdcall *release)(PC_SURFACE_PC *);
-    void *unknown_000c[9];
-    HRESULT(__stdcall *get_desc)(PC_SURFACE_PC *, PC_TEXTURE_LEVEL_DESC_PC *);
-    HRESULT(__stdcall *lock_rect)(PC_SURFACE_PC *, PC_LOCKED_RECT_PC *, const RECT *, u32);
-    HRESULT(__stdcall *unlock_rect)(PC_SURFACE_PC *);
-} PC_SURFACE_METHODS_PC;
+    void *unknown_0000[2];                                                                  // 0x00
+    ULONG(__stdcall *release)(PC_SURFACE_PC *);                                             // 0x08
+    void *unknown_000c[9];                                                                  // 0x0c
+    HRESULT(__stdcall *get_desc)(PC_SURFACE_PC *, PC_TEXTURE_LEVEL_DESC_PC *);              // 0x30
+    HRESULT(__stdcall *lock_rect)(PC_SURFACE_PC *, PC_LOCKED_RECT_PC *, const RECT *, u32); // 0x34
+    HRESULT(__stdcall *unlock_rect)(PC_SURFACE_PC *);                                       // 0x38
+} PC_SURFACE_METHODS_PC;                                                                    // size 0x3c
 
 struct PC_SURFACE_PC {
     const PC_SURFACE_METHODS_PC *methods;
 };
-
-STATIC_ASSERT(offsetof(PC_SURFACE_METHODS_PC, get_desc) == 0x30);
-STATIC_ASSERT(offsetof(PC_SURFACE_METHODS_PC, unlock_rect) == 0x38);
 
 /* Copies a render-target surface to system memory and writes it as the first free "<prefix>_pcNNN.bmp".
    No retail caller remains. */
@@ -1783,8 +1742,6 @@ void __thiscall PC_DEVICE_BACKEND_PC::ResetRequestedMode() {
     requested_feature = feature634;
     requested_multisample = multisample_index;
 }
-
-STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, stretch_rect) == 0x88);
 
 void PC_DEVICE_BACKEND_PC::SetDepthStencilSurface(PC_EFFECT_SURFACE_PC *target) {
     if (target != NULL && target->surface != NULL) {

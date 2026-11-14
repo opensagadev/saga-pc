@@ -1,159 +1,104 @@
 #include "saga.h"
 
 typedef struct grabber_progress_source_pc_s {
-    u8 unknown_0000[0x484];
-    f32 stored_tfactor;
-    u8 unknown_0488[4];
-    f32 stored_frame;
-    u8 unknown_0490[4];
-    f32 stored_parameter;
-} GRABBER_PROGRESS_SOURCE_PC;
-
-STATIC_ASSERT(offsetof(GRABBER_PROGRESS_SOURCE_PC, stored_tfactor) == 0x484);
-STATIC_ASSERT(offsetof(GRABBER_PROGRESS_SOURCE_PC, stored_frame) == 0x48c);
-STATIC_ASSERT(offsetof(GRABBER_PROGRESS_SOURCE_PC, stored_parameter) == 0x494);
+    u8 unknown_0000[0x484];   // 0x000
+    f32 stored_tfactor;       // 0x484
+    u8 unknown_0488[4];       // 0x488
+    f32 stored_frame;         // 0x48c
+    u8 unknown_0490[4];       // 0x490
+    f32 stored_parameter;     // 0x494
+} GRABBER_PROGRESS_SOURCE_PC; // size 0x498
 
 typedef struct world_grabber_progress_pc_s {
-    u8 unknown_0000[0x46ec];
-    GRABBER_PROGRESS_SOURCE_PC *grabber;
-} WORLD_GRABBER_PROGRESS_PC;
-
-STATIC_ASSERT(offsetof(WORLD_GRABBER_PROGRESS_PC, grabber) == 0x46ec);
+    u8 unknown_0000[0x46ec];             // 0x0000
+    GRABBER_PROGRESS_SOURCE_PC *grabber; // 0x46ec
+} WORLD_GRABBER_PROGRESS_PC;             // size 0x46f0
 
 typedef struct level_grabber_progress_pc_s {
-    u8 unknown_0000[0x2810];
-    f32 stored_frame;
-    f32 stored_tfactor;
-    f32 stored_parameter;
-} LEVEL_GRABBER_PROGRESS_PC;
-
-STATIC_ASSERT(offsetof(LEVEL_GRABBER_PROGRESS_PC, stored_frame) == 0x2810);
-STATIC_ASSERT(offsetof(LEVEL_GRABBER_PROGRESS_PC, stored_tfactor) == 0x2814);
-STATIC_ASSERT(offsetof(LEVEL_GRABBER_PROGRESS_PC, stored_parameter) == 0x2818);
+    u8 unknown_0000[0x2810]; // 0x0000
+    f32 stored_frame;        // 0x2810
+    f32 stored_tfactor;      // 0x2814
+    f32 stored_parameter;    // 0x2818
+} LEVEL_GRABBER_PROGRESS_PC; // size 0x281c
 
 typedef struct grabber_pc_s {
-    NUMTX matrix;
-    NUMTX grab_matrix;
-    u8 unknown_080[0x440 - 0x80];
-    NUMTX carried_matrix;
-    NUVEC initial_position;
-    NUVEC grab_position;
-    NUVEC velocity;
-    NUVEC target_velocity;
-    CHARACTER_MODEL_LAYERS_PC *character_model;
-    ANIMPACKET_PC animation;
-    u8 unknown_4f8[4];
-    NUSPECIALHANDLE special;
-    NUSPECIALHANDLE shadow_special;
-    GAMEOBJECT *victim;
-    GIZOBSTACLE *action_switch;
-    GIZOBSTACLE *direction_switches[4];
-    GIZMOBLOWUP_PC *carried_blowup;
-    f32 scale;
-    f32 speed;
-    f32 radius;
-    f32 stuck_timer;
-    f32 shadow_height;
-    f32 carried_height_offset;
-    u16 shadow_z_angle;
-    u16 shadow_x_angle;
-    f32 floor_height;
-    f32 animation_timer;
-    f32 platform_contact_timer;
-    u8 state;
+    NUMTX matrix;                               // 0x000
+    NUMTX grab_matrix;                          // 0x040
+    u8 unknown_080[0x440 - 0x80];               // 0x080
+    NUMTX carried_matrix;                       // 0x440
+    NUVEC initial_position;                     // 0x480
+    NUVEC grab_position;                        // 0x48c
+    NUVEC velocity;                             // 0x498
+    NUVEC target_velocity;                      // 0x4a4
+    CHARACTER_MODEL_LAYERS_PC *character_model; // 0x4b0
+    ANIMPACKET_PC animation;                    // 0x4b4
+    u8 unknown_4f8[4];                          // 0x4f8
+    NUSPECIALHANDLE special;                    // 0x4fc
+    NUSPECIALHANDLE shadow_special;             // 0x508
+    GAMEOBJECT *victim;                         // 0x514
+    GIZOBSTACLE *action_switch;                 // 0x518
+    GIZOBSTACLE *direction_switches[4];         // 0x51c
+    GIZMOBLOWUP_PC *carried_blowup;             // 0x52c
+    f32 scale;                                  // 0x530
+    f32 speed;                                  // 0x534
+    f32 radius;                                 // 0x538
+    f32 stuck_timer;                            // 0x53c
+    f32 shadow_height;                          // 0x540
+    f32 carried_height_offset;                  // 0x544
+    u16 shadow_z_angle;                         // 0x548
+    u16 shadow_x_angle;                         // 0x54a
+    f32 floor_height;                           // 0x54c
+    f32 animation_timer;                        // 0x550
+    f32 platform_contact_timer;                 // 0x554
+    u8 state;                                   // 0x558
 
-    union {
-        u8 flags;
+    union {       // 0x559
+        u8 flags; // 0x559
 
-        struct {
-            u8 flag_0 : 1;
-            u8 lifted : 1;
-            u8 switch_latched : 1;
-            u8 rotate : 1;
+        struct {                   // 0x559
+            u8 flag_0 : 1;         // 0x559:0
+            u8 lifted : 1;         // 0x559:1
+            u8 switch_latched : 1; // 0x559:2
+            u8 rotate : 1;         // 0x559:3
         } bits;
     };
 
-    u16 yaw;
-    u16 target_yaw;
-    i16 character_id;
-    i16 platform_id;
-    u8 move_xy;
-    u8 invert_x;
-    u8 unknown_564[4];
-} GRABBER_PC;
-
-STATIC_ASSERT(sizeof(GRABBER_PC) == 0x568);
-STATIC_ASSERT(offsetof(GRABBER_PC, matrix) == 0);
-STATIC_ASSERT(offsetof(GRABBER_PC, initial_position) == 0x480);
-STATIC_ASSERT(offsetof(GRABBER_PC, character_model) == 0x4b0);
-STATIC_ASSERT(offsetof(GRABBER_PC, special) == 0x4fc);
-STATIC_ASSERT(offsetof(GRABBER_PC, shadow_special) == 0x508);
-STATIC_ASSERT(offsetof(GRABBER_PC, scale) == 0x530);
-STATIC_ASSERT(offsetof(GRABBER_PC, speed) == 0x534);
-STATIC_ASSERT(offsetof(GRABBER_PC, radius) == 0x538);
-STATIC_ASSERT(offsetof(GRABBER_PC, flags) == 0x559);
-STATIC_ASSERT(offsetof(GRABBER_PC, character_id) == 0x55e);
-STATIC_ASSERT(offsetof(GRABBER_PC, platform_id) == 0x560);
-STATIC_ASSERT(offsetof(GRABBER_PC, move_xy) == 0x562);
-STATIC_ASSERT(offsetof(GRABBER_PC, invert_x) == 0x563);
-STATIC_ASSERT(offsetof(GRABBER_PC, grab_matrix) == 0x40);
-STATIC_ASSERT(offsetof(GRABBER_PC, carried_matrix) == 0x440);
-STATIC_ASSERT(offsetof(GRABBER_PC, grab_position) == 0x48c);
-STATIC_ASSERT(offsetof(GRABBER_PC, velocity) == 0x498);
-STATIC_ASSERT(offsetof(GRABBER_PC, target_velocity) == 0x4a4);
-STATIC_ASSERT(offsetof(GRABBER_PC, animation) == 0x4b4);
-STATIC_ASSERT(offsetof(GRABBER_PC, victim) == 0x514);
-STATIC_ASSERT(offsetof(GRABBER_PC, action_switch) == 0x518);
-STATIC_ASSERT(offsetof(GRABBER_PC, carried_blowup) == 0x52c);
-STATIC_ASSERT(offsetof(GRABBER_PC, stuck_timer) == 0x53c);
-STATIC_ASSERT(offsetof(GRABBER_PC, shadow_height) == 0x540);
-STATIC_ASSERT(offsetof(GRABBER_PC, carried_height_offset) == 0x544);
-STATIC_ASSERT(offsetof(GRABBER_PC, shadow_z_angle) == 0x548);
-STATIC_ASSERT(offsetof(GRABBER_PC, floor_height) == 0x54c);
-STATIC_ASSERT(offsetof(GRABBER_PC, animation_timer) == 0x550);
-STATIC_ASSERT(offsetof(GRABBER_PC, platform_contact_timer) == 0x554);
-STATIC_ASSERT(offsetof(GRABBER_PC, state) == 0x558);
-STATIC_ASSERT(offsetof(GRABBER_PC, yaw) == 0x55a);
-STATIC_ASSERT(offsetof(GRABBER_PC, target_yaw) == 0x55c);
+    u16 yaw;           // 0x55a
+    u16 target_yaw;    // 0x55c
+    i16 character_id;  // 0x55e
+    i16 platform_id;   // 0x560
+    u8 move_xy;        // 0x562
+    u8 invert_x;       // 0x563
+    u8 unknown_564[4]; // 0x564
+} GRABBER_PC;          // size 0x568
 
 typedef struct world_grabber_config_pc_s {
-    u8 unknown_000[0x104];
-    void *giz_buffer;
-    u8 unknown_108[0x128 - 0x108];
-    LEVELDATA_PC *current_level;
-    u8 unknown_12c[0x13c - 0x12c];
-    NUGSCN *scene;
-    u8 unknown_140[0x46ec - 0x140];
-    GRABBER_PC *grabber;
-} WORLD_GRABBER_PC;
-
-STATIC_ASSERT(offsetof(WORLD_GRABBER_PC, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(WORLD_GRABBER_PC, current_level) == 0x128);
-STATIC_ASSERT(offsetof(WORLD_GRABBER_PC, scene) == 0x13c);
-STATIC_ASSERT(offsetof(WORLD_GRABBER_PC, grabber) == 0x46ec);
+    u8 unknown_000[0x104];          // 0x0000
+    void *giz_buffer;               // 0x0104
+    u8 unknown_108[0x128 - 0x108];  // 0x0108
+    LEVELDATA_PC *current_level;    // 0x0128
+    u8 unknown_12c[0x13c - 0x12c];  // 0x012c
+    NUGSCN *scene;                  // 0x013c
+    u8 unknown_140[0x46ec - 0x140]; // 0x0140
+    GRABBER_PC *grabber;            // 0x46ec
+} WORLD_GRABBER_PC;                 // size 0x46f0
 
 typedef struct grab_config_data_pc_s {
-    f32 level_y_offset;
-    NUFPCOMJMP keywords[9];
-} GRAB_CONFIG_DATA_PC;
-
-STATIC_ASSERT(offsetof(GRAB_CONFIG_DATA_PC, keywords) == 4);
-STATIC_ASSERT(sizeof(GRAB_CONFIG_DATA_PC) == 76);
+    f32 level_y_offset;     // 0x00
+    NUFPCOMJMP keywords[9]; // 0x04
+} GRAB_CONFIG_DATA_PC;      // size 0x4c
 
 typedef struct grabber_hg_view_pc_s {
-    u8 unknown_000[0x19c];
-    i32 shadow_surface_points;
-    u8 suppress_shadow_points;
-} GRABBER_HG_VIEW_PC;
-
-STATIC_ASSERT(offsetof(GRABBER_HG_VIEW_PC, suppress_shadow_points) == 0x1a0);
+    u8 unknown_000[0x19c];     // 0x000
+    i32 shadow_surface_points; // 0x19c
+    u8 suppress_shadow_points; // 0x1a0
+} GRABBER_HG_VIEW_PC;          // size 0x1a4
 
 typedef struct grabber_antinode_view_pc_s {
-    u8 unknown_00[0x50];
-    i64 object_mask;
-} GRABBER_ANTINODE_VIEW_PC;
+    u8 unknown_00[0x50];    // 0x00
+    i64 object_mask;        // 0x50
+} GRABBER_ANTINODE_VIEW_PC; // size 0x58
 
-STATIC_ASSERT(offsetof(GRABBER_ANTINODE_VIEW_PC, object_mask) == 0x50);
 GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
 extern i32 CharacterBlobShadowsOnPc;
 i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result);

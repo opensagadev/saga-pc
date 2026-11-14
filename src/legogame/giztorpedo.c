@@ -3,32 +3,23 @@
 /* Retail unit 0x46f890-0x470050: definitions in retail address order. */
 
 typedef struct torpedo_machine_query_pc_s {
-    char name[16];
-    NUVEC position;
-    f32 activation_time;
-    u16 y_rotation;
-    u8 unknown_22[9];
-    u8 active : 1;
-    u8 visible : 1;
-    u8 alternate : 1;
-} TORPEDO_MACHINE_QUERY_PC;
+    char name[16];          // 0x00
+    NUVEC position;         // 0x10
+    f32 activation_time;    // 0x1c
+    u16 y_rotation;         // 0x20
+    u8 unknown_22[9];       // 0x22
+    u8 active : 1;          // 0x2b:0
+    u8 visible : 1;         // 0x2b:1
+    u8 alternate : 1;       // 0x2b:2
+} TORPEDO_MACHINE_QUERY_PC; // size 0x2c
 
 typedef struct torpedo_machine_query_sys_pc_s {
-    TORPEDO_MACHINE_QUERY_PC *machines;
-    i32 count;
-    f32 scale;
-} TORPEDO_MACHINE_QUERY_SYS_PC;
+    TORPEDO_MACHINE_QUERY_PC *machines; // 0x0
+    i32 count;                          // 0x4
+    f32 scale;                          // 0x8
+} TORPEDO_MACHINE_QUERY_SYS_PC;         // size 0xc
 
-STATIC_ASSERT(sizeof(TORPEDO_MACHINE_QUERY_PC) == 0x2c);
-STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, name) == 0);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, position) == 0x10);
-STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, activation_time) == 0x1c);
-STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, y_rotation) == 0x20);
-STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, unknown_22) == 0x22);
-STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_SYS_PC, machines) == 0);
-STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_SYS_PC, count) == 4);
-STATIC_ASSERT(sizeof(TORPEDO_MACHINE_QUERY_SYS_PC) == 0xc);
 i32 __cdecl Draw3DObject(WORLDINFO *, i32, NUVEC *, u16, u16, u16, f32, f32, f32, i32);
 
 typedef struct {

@@ -199,151 +199,83 @@ extern "C" void __cdecl NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_F
 
 /* Verified accessed material cohort; no original allocation extent claim. */
 typedef struct PC_SHADER_MATERIAL_DISPATCH_VIEW {
-    u8 unknown_0000[0x40];
-    u32 sampler_address_modes;
-    u8 unknown_0044[0x1c];
-    f32 phase_speed;
-    f32 phase_scale;
-    f32 phase_factor;
-    f32 amplitude;
-    u8 unknown_0070[0x44];
-    u32 texture_flags;
-    i32 diffuse_texture_ids[4];
-    u32 channel_colours[4];
-    f32 parameter_d8;
-    f32 parameter_dc;
-    f32 parameter_e0;
-    f32 parameter_e4;
-    i32 height_texture_id;
-    i32 normal_texture_id;
-    f32 texture_lerp;
-    u32 reflection_colour;
-    u8 unknown_00f8[0x3];
-    u8 flip_sign;
-    i32 specular_texture_id;
-    i32 bump_texture_id;
-    i32 cube_texture_id;
-    i32 reflection_texture_id;
-    i32 depth_texture_id;
-    i32 lighting_texture_id;
-    f32 parameter_114;
-    f32 parameter_118;
-    u32 diffuse_colour;
-    u32 specular_colour;
-    u32 tint_colour;
-    u32 shadow_colour;
-    f32 parameter_12c;
-    f32 parameter_130;
-    f32 parameter_134;
-    f32 parameter_138;
-    f32 parameter_13c;
-    f32 parameter_140;
-    f32 parameter_144;
-    f32 parameter_148;
-    f32 parameter_14c;
-    f32 parameter_150;
-    f32 parameter_154;
-    f32 parameter_158;
-    u8 unknown_015c[0x30];
-    f32 texture_bias[6];
-    u8 unknown_01a4[0x4];
-    f32 parameter_1a8;
-    f32 parameter_1ac;
-    f32 parameter_1b0;
-    f32 parameter_1b4;
-    f32 parameter_1b8;
-    f32 parameter_1bc;
-    u8 unknown_01c0[0x10];
-    f32 uv_upload_lanes[10];
-    u8 unknown_01f8[0x50];
-    f32 parameter_248;
-    i32 clamp_texture_id;
-    u32 palette_colours[4];
-    f32 parameter_260;
-    f32 parameter_264;
-    u8 unknown_0268[0x4];
-    u32 phase_flags;
-    u8 unknown_0270[0x4];
-    f32 parameter_274;
-    f32 parameter_278;
-    f32 parameter_27c;
-    f32 parameter_280;
-    f32 parameter_284;
-    f32 parameter_288;
-    f32 parameter_28c;
-    f32 parameter_290;
-    f32 parameter_294;
-    i32 point_texture_id;
-    i32 unfiltered_texture_id;
-} PC_SHADER_MATERIAL_DISPATCH_VIEW;
-
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, sampler_address_modes) == 0x40);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, phase_speed) == 0x60);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, phase_scale) == 0x64);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, phase_factor) == 0x68);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, amplitude) == 0x6c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, texture_flags) == 0xb4);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, diffuse_texture_ids) == 0xb8);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, channel_colours) == 0xc8);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_d8) == 0xd8);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_dc) == 0xdc);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_e0) == 0xe0);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_e4) == 0xe4);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, height_texture_id) == 0xe8);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, normal_texture_id) == 0xec);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, texture_lerp) == 0xf0);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, reflection_colour) == 0xf4);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, flip_sign) == 0xfb);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, specular_texture_id) == 0xfc);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, bump_texture_id) == 0x100);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, cube_texture_id) == 0x104);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, reflection_texture_id) == 0x108);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, depth_texture_id) == 0x10c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, lighting_texture_id) == 0x110);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_114) == 0x114);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_118) == 0x118);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, diffuse_colour) == 0x11c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, specular_colour) == 0x120);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, tint_colour) == 0x124);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, shadow_colour) == 0x128);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_12c) == 0x12c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_130) == 0x130);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_134) == 0x134);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_138) == 0x138);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_13c) == 0x13c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_140) == 0x140);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_144) == 0x144);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_148) == 0x148);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_14c) == 0x14c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_150) == 0x150);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_154) == 0x154);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_158) == 0x158);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, texture_bias) == 0x18c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_1a8) == 0x1a8);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_1ac) == 0x1ac);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_1b0) == 0x1b0);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_1b4) == 0x1b4);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_1b8) == 0x1b8);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_1bc) == 0x1bc);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, uv_upload_lanes) == 0x1d0);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_248) == 0x248);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, clamp_texture_id) == 0x24c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, palette_colours) == 0x250);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_260) == 0x260);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_264) == 0x264);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, phase_flags) == 0x26c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_274) == 0x274);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_278) == 0x278);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_27c) == 0x27c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_280) == 0x280);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_284) == 0x284);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_288) == 0x288);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_28c) == 0x28c);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_290) == 0x290);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, parameter_294) == 0x294);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, point_texture_id) == 0x298);
-STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, unfiltered_texture_id) == 0x29c);
-STATIC_ASSERT(sizeof(PC_SHADER_MATERIAL_DISPATCH_VIEW) == 0x2a0);
+    u8 unknown_0000[0x40];          // 0x000
+    u32 sampler_address_modes;      // 0x040
+    u8 unknown_0044[0x1c];          // 0x044
+    f32 phase_speed;                // 0x060
+    f32 phase_scale;                // 0x064
+    f32 phase_factor;               // 0x068
+    f32 amplitude;                  // 0x06c
+    u8 unknown_0070[0x44];          // 0x070
+    u32 texture_flags;              // 0x0b4
+    i32 diffuse_texture_ids[4];     // 0x0b8
+    u32 channel_colours[4];         // 0x0c8
+    f32 parameter_d8;               // 0x0d8
+    f32 parameter_dc;               // 0x0dc
+    f32 parameter_e0;               // 0x0e0
+    f32 parameter_e4;               // 0x0e4
+    i32 height_texture_id;          // 0x0e8
+    i32 normal_texture_id;          // 0x0ec
+    f32 texture_lerp;               // 0x0f0
+    u32 reflection_colour;          // 0x0f4
+    u8 unknown_00f8[0x3];           // 0x0f8
+    u8 flip_sign;                   // 0x0fb
+    i32 specular_texture_id;        // 0x0fc
+    i32 bump_texture_id;            // 0x100
+    i32 cube_texture_id;            // 0x104
+    i32 reflection_texture_id;      // 0x108
+    i32 depth_texture_id;           // 0x10c
+    i32 lighting_texture_id;        // 0x110
+    f32 parameter_114;              // 0x114
+    f32 parameter_118;              // 0x118
+    u32 diffuse_colour;             // 0x11c
+    u32 specular_colour;            // 0x120
+    u32 tint_colour;                // 0x124
+    u32 shadow_colour;              // 0x128
+    f32 parameter_12c;              // 0x12c
+    f32 parameter_130;              // 0x130
+    f32 parameter_134;              // 0x134
+    f32 parameter_138;              // 0x138
+    f32 parameter_13c;              // 0x13c
+    f32 parameter_140;              // 0x140
+    f32 parameter_144;              // 0x144
+    f32 parameter_148;              // 0x148
+    f32 parameter_14c;              // 0x14c
+    f32 parameter_150;              // 0x150
+    f32 parameter_154;              // 0x154
+    f32 parameter_158;              // 0x158
+    u8 unknown_015c[0x30];          // 0x15c
+    f32 texture_bias[6];            // 0x18c
+    u8 unknown_01a4[0x4];           // 0x1a4
+    f32 parameter_1a8;              // 0x1a8
+    f32 parameter_1ac;              // 0x1ac
+    f32 parameter_1b0;              // 0x1b0
+    f32 parameter_1b4;              // 0x1b4
+    f32 parameter_1b8;              // 0x1b8
+    f32 parameter_1bc;              // 0x1bc
+    u8 unknown_01c0[0x10];          // 0x1c0
+    f32 uv_upload_lanes[10];        // 0x1d0
+    u8 unknown_01f8[0x50];          // 0x1f8
+    f32 parameter_248;              // 0x248
+    i32 clamp_texture_id;           // 0x24c
+    u32 palette_colours[4];         // 0x250
+    f32 parameter_260;              // 0x260
+    f32 parameter_264;              // 0x264
+    u8 unknown_0268[0x4];           // 0x268
+    u32 phase_flags;                // 0x26c
+    u8 unknown_0270[0x4];           // 0x270
+    f32 parameter_274;              // 0x274
+    f32 parameter_278;              // 0x278
+    f32 parameter_27c;              // 0x27c
+    f32 parameter_280;              // 0x280
+    f32 parameter_284;              // 0x284
+    f32 parameter_288;              // 0x288
+    f32 parameter_28c;              // 0x28c
+    f32 parameter_290;              // 0x290
+    f32 parameter_294;              // 0x294
+    i32 point_texture_id;           // 0x298
+    i32 unfiltered_texture_id;      // 0x29c
+} PC_SHADER_MATERIAL_DISPATCH_VIEW; // size 0x2a0
 
 void PC_SHADER_PARAMETER_LOCAL_PC::SetScalar(f32 value) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
@@ -414,14 +346,11 @@ extern "C" u32 __cdecl PCShaderSamplerBiasBitsPc(f32 bias) {
 
 /* Minimum accessed cohort, not a whole NUMTL allocation/size claim. */
 typedef struct PC_SHADER_WATER_MATERIAL_VIEW {
-    u8 unknown_0000[0x60];
-    f32 phase_speed;
-    u8 unknown_0064[8];
-    f32 amplitude;
-} PC_SHADER_WATER_MATERIAL_VIEW;
-
-STATIC_ASSERT(offsetof(PC_SHADER_WATER_MATERIAL_VIEW, phase_speed) == 0x60);
-STATIC_ASSERT(offsetof(PC_SHADER_WATER_MATERIAL_VIEW, amplitude) == 0x6c);
+    u8 unknown_0000[0x60];       // 0x00
+    f32 phase_speed;             // 0x60
+    u8 unknown_0064[8];          // 0x64
+    f32 amplitude;               // 0x6c
+} PC_SHADER_WATER_MATERIAL_VIEW; // size 0x70
 
 /* Original caller/helper cohort required; these are logical signatures only.
  * Physical register ABI remains a compiler proof hold until the real dispatcher

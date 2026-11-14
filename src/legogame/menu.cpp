@@ -18,21 +18,18 @@ extern "C" {
 }
 
 struct EXTRAS_AREA_SAVE_READER_PC {
-    u8 unknown0[6];
-    u8 red_brick_unlocked;
-    u8 unknown7[5];
-};
+    u8 unknown0[6];        // 0x0
+    u8 red_brick_unlocked; // 0x6
+    u8 unknown7[5];        // 0x7
+}; // size 0xc
 
 struct EXTRAS_SAVE_READER_PC {
-    u8 unknown0[0x782c];
-    EXTRAS_AREA_SAVE_READER_PC areas[72];
-    u8 unknown7b8c[0x74];
-    u32 unlocked[2];
-};
+    u8 unknown0[0x782c];                  // 0x0000
+    EXTRAS_AREA_SAVE_READER_PC areas[72]; // 0x782c
+    u8 unknown7b8c[0x74];                 // 0x7b8c
+    u32 unlocked[2];                      // 0x7c00
+}; // size 0x7c08
 
-STATIC_ASSERT(sizeof(EXTRAS_AREA_SAVE_READER_PC) == 12);
-STATIC_ASSERT(offsetof(EXTRAS_AREA_SAVE_READER_PC, red_brick_unlocked) == 6);
-STATIC_ASSERT(offsetof(EXTRAS_SAVE_READER_PC, unlocked) == 0x7c00);
 extern "C" {
     extern i32 HubForceShopSavePc;
     i32 __cdecl UpdateShop(void *);

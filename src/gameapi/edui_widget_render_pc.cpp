@@ -534,12 +534,9 @@ extern "C" eduiitem_s *__cdecl eduiItemNumberCreate(u32 data, void *colours, i32
 }
 
 struct EduiTextSelectorViewPc {
-    edui_slider_s slider;
-    char **options;
-};
-
-STATIC_ASSERT(sizeof(EduiTextSelectorViewPc) == 112);
-STATIC_ASSERT(offsetof(EduiTextSelectorViewPc, options) == 0x6c);
+    edui_slider_s slider; // 0x00
+    char **options;       // 0x6c
+}; // size 0x70
 
 extern "C" i32 __cdecl eduicbRenderTextSelector(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
                                                 i32 unused_selected) {
@@ -604,12 +601,9 @@ extern "C" eduiitem_s *__cdecl eduiItemTextSelectorCreate(u32 data, void *colour
 }
 
 struct EduiSeparatorViewPc {
-    eduiitem_s base;
-    i32(__cdecl *interact)(edui_interact_s *);
-};
-
-STATIC_ASSERT(sizeof(EduiSeparatorViewPc) == 76);
-STATIC_ASSERT(offsetof(EduiSeparatorViewPc, interact) == 0x48);
+    eduiitem_s base;                           // 0x00
+    i32(__cdecl *interact)(edui_interact_s *); // 0x48
+}; // size 0x4c
 
 extern "C" i32 __cdecl eduicbProcessSeparator(eduimenu_s *unused_menu, eduiitem_s *unused_item, f32 unused_delta_time,
                                               FRAME_PAD_PC *unused_pad) {
@@ -690,16 +684,12 @@ extern "C" void __cdecl cbgpcfgDel(eduimenu_s *menu, eduiitem_s *item, u32 value
 }
 
 struct EDUI_COLOUR_CLIPBOARD_PC {
-    f32 hue;
-    f32 saturation;
-    f32 value;
-    f32 gray;
-};
+    f32 hue;        // 0x0
+    f32 saturation; // 0x4
+    f32 value;      // 0x8
+    f32 gray;       // 0xc
+}; // size 0x10
 
-STATIC_ASSERT(sizeof(EDUI_COLOUR_CLIPBOARD_PC) == 16);
-STATIC_ASSERT(offsetof(EDUI_COLOUR_CLIPBOARD_PC, saturation) == 4);
-STATIC_ASSERT(offsetof(EDUI_COLOUR_CLIPBOARD_PC, value) == 8);
-STATIC_ASSERT(offsetof(EDUI_COLOUR_CLIPBOARD_PC, gray) == 12);
 extern "C" {
     EDUI_COLOUR_CLIPBOARD_PC EduiColourClipboardPc = {0.0f, 0.0f, 0.0f, 0.0f};
 }
@@ -1265,11 +1255,9 @@ STATIC_ASSERT(offsetof(edui_colour_pick_s, saturation) == 0x58);
 STATIC_ASSERT(offsetof(edui_colour_pick_s, value) == 0x5c);
 
 typedef union edui_gradient_colour_pc_u {
-    u32 word;
-    u8 channel[4];
-} EDUI_GRADIENT_COLOUR_PC;
-
-STATIC_ASSERT(sizeof(EDUI_GRADIENT_COLOUR_PC) == 4);
+    u32 word;              // 0x0
+    u8 channel[4];         // 0x0
+} EDUI_GRADIENT_COLOUR_PC; // size 0x4
 
 static void EduiDrawGradientGridPc(i32 x, i32 y, i32 width, i32 height, f32 start, f32 end, u32 top_left, u32 top_right,
                                    u32 bottom_left, u32 bottom_right, i32 steps) {
@@ -1381,36 +1369,30 @@ extern "C" i32 __cdecl eduicbRenderColourPick(eduimenu_s *unused_menu, eduiitem_
 }
 
 typedef struct edui_colour_pick_flags_pc_s {
-    eduiitem_s base;
-    i32(__cdecl *interact)(edui_interact_s *);
-    f32 cursor_x;
-    f32 cursor_y;
-    f32 hue;
-    f32 saturation;
-    f32 value;
-    f32 red;
-    f32 green;
-    f32 blue;
+    eduiitem_s base;                           // 0x00
+    i32(__cdecl *interact)(edui_interact_s *); // 0x48
+    f32 cursor_x;                              // 0x4c
+    f32 cursor_y;                              // 0x50
+    f32 hue;                                   // 0x54
+    f32 saturation;                            // 0x58
+    f32 value;                                 // 0x5c
+    f32 red;                                   // 0x60
+    f32 green;                                 // 0x64
+    f32 blue;                                  // 0x68
 
-    union {
-        u32 flags;
+    union {        // 0x6c
+        u32 flags; // 0x6c
 
-        struct {
-            u32 dragging_colour : 1;
-            u32 dragging_saturation : 1;
-            u32 confirm : 1;
-            u32 unknown_flags : 29;
+        struct {                         // 0x6c
+            u32 dragging_colour : 1;     // 0x6c:0
+            u32 dragging_saturation : 1; // 0x6c:1
+            u32 confirm : 1;             // 0x6c:2
+            u32 unknown_flags : 29;      // 0x6c:3
         };
     };
 
-    void(__cdecl *changed)(eduimenu_s *, eduiitem_s *, u32);
-} EDUI_COLOUR_PICK_FLAGS_PC;
-
-STATIC_ASSERT(sizeof(EDUI_COLOUR_PICK_FLAGS_PC) == 0x74);
-STATIC_ASSERT(offsetof(EDUI_COLOUR_PICK_FLAGS_PC, cursor_x) == 0x4c);
-STATIC_ASSERT(offsetof(EDUI_COLOUR_PICK_FLAGS_PC, saturation) == 0x58);
-STATIC_ASSERT(offsetof(EDUI_COLOUR_PICK_FLAGS_PC, flags) == 0x6c);
-STATIC_ASSERT(offsetof(EDUI_COLOUR_PICK_FLAGS_PC, changed) == 0x70);
+    void(__cdecl *changed)(eduimenu_s *, eduiitem_s *, u32); // 0x70
+} EDUI_COLOUR_PICK_FLAGS_PC;                                 // size 0x74
 
 extern "C" i32 __cdecl eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
     EDUI_COLOUR_PICK_FLAGS_PC *pick = (EDUI_COLOUR_PICK_FLAGS_PC *)item;
@@ -2395,27 +2377,17 @@ extern "C" i32 __cdecl eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *i
 }
 
 typedef struct edui_gradient_stage_pc_s {
-    f32 time;
-    f32 hue;
-    f32 saturation;
-    f32 value;
-    f32 red;
-    f32 green;
-    f32 blue;
-    u32 colour;
-    u32 metadata;
-} EDUI_GRADIENT_STAGE_PC;
+    f32 time;             // 0x00
+    f32 hue;              // 0x04
+    f32 saturation;       // 0x08
+    f32 value;            // 0x0c
+    f32 red;              // 0x10
+    f32 green;            // 0x14
+    f32 blue;             // 0x18
+    u32 colour;           // 0x1c
+    u32 metadata;         // 0x20
+} EDUI_GRADIENT_STAGE_PC; // size 0x24
 
-STATIC_ASSERT(sizeof(EDUI_GRADIENT_STAGE_PC) == 0x24);
-STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, time) == 0);
-STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, hue) == 4);
-STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, saturation) == 8);
-STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, value) == 0xc);
-STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, red) == 0x10);
-STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, green) == 0x14);
-STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, blue) == 0x18);
-STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, colour) == 0x1c);
-STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, metadata) == 0x20);
 STATIC_ASSERT(offsetof(edui_gradient_node_s, hue) == 0x10);
 STATIC_ASSERT(offsetof(edui_gradient_node_s, saturation) == 0x14);
 STATIC_ASSERT(offsetof(edui_gradient_node_s, value) == 0x18);

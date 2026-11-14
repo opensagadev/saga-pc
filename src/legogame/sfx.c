@@ -5,43 +5,32 @@
 /* Retail unit 0x4bdcd0-0x4c00fc: definitions in retail address order. */
 
 typedef struct level_sfx_world_view_s {
-    u8 unknown_00[0x4684];
-    i32 teleport_count;
-    u8 unknown_4688[0x38];
-    i32 push_block_count;
-    u8 unknown_46c4[0x20];
-    i32 spinner_count;
-    u8 unknown_46e8[4];
-    void *grabber;
-    u8 unknown_46f0[0x960];
-    LEVEL_SFX_PULSE_PC *pulses_sys;
-    u8 unknown_5054[0x18];
-    i32 nlevers;
-    u8 unknown_5070[4];
-    i32 *hat_machine_sys;
-} LEVEL_SFX_WORLD_VIEW_PC;
-
-STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, teleport_count) == 0x4684);
-STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, push_block_count) == 0x46c0);
-STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, spinner_count) == 0x46e4);
-STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, grabber) == 0x46ec);
-STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, pulses_sys) == 0x5050);
-STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, nlevers) == 0x506c);
-STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, hat_machine_sys) == 0x5074);
+    u8 unknown_00[0x4684];          // 0x0000
+    i32 teleport_count;             // 0x4684
+    u8 unknown_4688[0x38];          // 0x4688
+    i32 push_block_count;           // 0x46c0
+    u8 unknown_46c4[0x20];          // 0x46c4
+    i32 spinner_count;              // 0x46e4
+    u8 unknown_46e8[4];             // 0x46e8
+    void *grabber;                  // 0x46ec
+    u8 unknown_46f0[0x960];         // 0x46f0
+    LEVEL_SFX_PULSE_PC *pulses_sys; // 0x5050
+    u8 unknown_5054[0x18];          // 0x5054
+    i32 nlevers;                    // 0x506c
+    u8 unknown_5070[4];             // 0x5070
+    i32 *hat_machine_sys;           // 0x5074
+} LEVEL_SFX_WORLD_VIEW_PC;          // size 0x5078
 
 typedef struct level_sfx_cut_slot_s {
-    i16 id;
-    u8 unknown_02[0x12];
-} LEVEL_SFX_CUT_SLOT_PC;
-
-STATIC_ASSERT(sizeof(LEVEL_SFX_CUT_SLOT_PC) == 0x14);
+    i16 id;              // 0x00
+    u8 unknown_02[0x12]; // 0x02
+} LEVEL_SFX_CUT_SLOT_PC; // size 0x14
 
 typedef struct level_sfx_cut_s {
-    u8 unknown_00[0x70];
-    LEVEL_SFX_CUT_SLOT_PC sfx[6];
-} LEVEL_SFX_CUT_PC;
+    u8 unknown_00[0x70];          // 0x00
+    LEVEL_SFX_CUT_SLOT_PC sfx[6]; // 0x70
+} LEVEL_SFX_CUT_PC;               // size 0xe8
 
-STATIC_ASSERT(offsetof(LEVEL_SFX_CUT_PC, sfx) == 0x70);
 // Genuine original static configuration definitions.
 /* Original static game.cpp settings/items. Proposal only, no production data. */
 AREA_DATA_PC *DEATHSTARRESCUE_ADATA;

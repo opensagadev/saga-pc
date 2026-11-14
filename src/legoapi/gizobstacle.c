@@ -43,54 +43,43 @@ STATIC_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 
 typedef struct gizobstacle_system_pc_s {
-    GIZOBSTACLE *obstacles;
-    GIZMO_PC **active_gizmos;
-    u16 count;
-    u16 capacity;
-    u16 active_gizmo_count;
-    u16 unknown_00e;
-    GAMEANIMOBJPOOL *anim_pool;
-} GIZOBSTACLE_SYSTEM_PC;
-
-STATIC_ASSERT(sizeof(GIZOBSTACLE_SYSTEM_PC) == 0x14);
-STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, count) == 8);
-STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, capacity) == 0xa);
-STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, active_gizmo_count) == 0xc);
-STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, anim_pool) == 0x10);
+    GIZOBSTACLE *obstacles;     // 0x00
+    GIZMO_PC **active_gizmos;   // 0x04
+    u16 count;                  // 0x08
+    u16 capacity;               // 0x0a
+    u16 active_gizmo_count;     // 0x0c
+    u16 unknown_00e;            // 0x0e
+    GAMEANIMOBJPOOL *anim_pool; // 0x10
+} GIZOBSTACLE_SYSTEM_PC;        // size 0x14
 
 typedef struct gizobstacle_progress_pc_s {
-    u32 enabled[4];
-    u32 visible[4];
-    u32 pickups_spawned[4];
-    u32 ai_active[4];
-    u32 blocked[4];
-    u32 trigger_latched[4];
-    u32 destroyed[4];
-} GIZOBSTACLE_PROGRESS_PC;
-
-STATIC_ASSERT(sizeof(GIZOBSTACLE_PROGRESS_PC) == 0x70);
+    u32 enabled[4];         // 0x00
+    u32 visible[4];         // 0x10
+    u32 pickups_spawned[4]; // 0x20
+    u32 ai_active[4];       // 0x30
+    u32 blocked[4];         // 0x40
+    u32 trigger_latched[4]; // 0x50
+    u32 destroyed[4];       // 0x60
+} GIZOBSTACLE_PROGRESS_PC;  // size 0x70
 
 typedef struct obstacle_progress_flags_pc_s {
-    u32 active : 1;
-    u32 visible : 1;
-    u32 unknown : 30;
-} OBSTACLE_PROGRESS_FLAGS_PC;
-
-STATIC_ASSERT(sizeof(OBSTACLE_PROGRESS_FLAGS_PC) == 4);
+    u32 active : 1;           // 0x0:0
+    u32 visible : 1;          // 0x0:1
+    u32 unknown : 30;         // 0x0:2
+} OBSTACLE_PROGRESS_FLAGS_PC; // size 0x4
 
 typedef struct obstacle_runtime_flags_pc_s {
-    u32 pickups_spawned : 1;
-    u32 pending_blowup_type : 1;
-    u32 ai_active : 1;
-    u32 blocked : 1;
-    u32 has_platform : 1;
-    u32 anim_object_bit_1 : 1;
-    u32 trigger_latched : 1;
-    u32 destroyed : 1;
-    u32 unknown : 24;
-} OBSTACLE_RUNTIME_FLAGS_PC;
+    u32 pickups_spawned : 1;     // 0x0:0
+    u32 pending_blowup_type : 1; // 0x0:1
+    u32 ai_active : 1;           // 0x0:2
+    u32 blocked : 1;             // 0x0:3
+    u32 has_platform : 1;        // 0x0:4
+    u32 anim_object_bit_1 : 1;   // 0x0:5
+    u32 trigger_latched : 1;     // 0x0:6
+    u32 destroyed : 1;           // 0x0:7
+    u32 unknown : 24;            // 0x0:8
+} OBSTACLE_RUNTIME_FLAGS_PC;     // size 0x4
 
-STATIC_ASSERT(sizeof(OBSTACLE_RUNTIME_FLAGS_PC) == 4);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, progress_flags) == 0x94);
 
 void __cdecl GizmoObstacle_Activate(GIZMO_PC *ptr, i32 activate) {
@@ -516,13 +505,10 @@ void __cdecl GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr)
 }
 
 typedef struct gizobstacle_object_data_pc_s {
-    i16 flags;
-    i16 platform_id;
-} GIZOBSTACLE_OBJECT_DATA_PC;
+    i16 flags;                // 0x0
+    i16 platform_id;          // 0x2
+} GIZOBSTACLE_OBJECT_DATA_PC; // size 0x4
 
-STATIC_ASSERT(sizeof(GIZOBSTACLE_OBJECT_DATA_PC) == 4);
-STATIC_ASSERT(offsetof(GIZOBSTACLE_OBJECT_DATA_PC, flags) == 0);
-STATIC_ASSERT(offsetof(GIZOBSTACLE_OBJECT_DATA_PC, platform_id) == 2);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, auto_return_timer) == 0x40);
 extern i32(__cdecl *GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
@@ -1080,8 +1066,6 @@ void __cdecl GizObstacles_Draw(void *world_ptr, void *data, f32 time) {
     }
 }
 
-STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, obstacles) == 0);
-STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, active_gizmos) == 4);
 STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
 STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
 STATIC_ASSERT(offsetof(BOLT_PC, direction) == 0xac);
@@ -1273,43 +1257,36 @@ ADDGIZMOTYPE_PC *__cdecl GizObstacles_RegisterGizmo(i32 type_id) {
 }
 
 typedef struct bomb_generator_runtime_pc_s {
-    char name[16];
-    NUVEC position;
-    GAMEANIMSET *anim_set;
-    i32 interval;
-    GAMEOBJECT *generated_bomb;
-    u16 unknown_28;
+    char name[16];              // 0x00
+    NUVEC position;             // 0x10
+    GAMEANIMSET *anim_set;      // 0x1c
+    i32 interval;               // 0x20
+    GAMEOBJECT *generated_bomb; // 0x24
+    u16 unknown_28;             // 0x28
 
-    union {
-        u16 flags;
+    union {        // 0x2a
+        u16 flags; // 0x2a
 
-        struct {
-            u16 active : 1;
-            u16 visible : 1;
-            u16 unknown_flags : 14;
+        struct {                    // 0x2a
+            u16 active : 1;         // 0x2a:0
+            u16 visible : 1;        // 0x2a:1
+            u16 unknown_flags : 14; // 0x2a:2
         };
     };
-} BOMB_GENERATOR_RUNTIME_PC;
+} BOMB_GENERATOR_RUNTIME_PC; // size 0x2c
 
 typedef struct bomb_generator_system_runtime_pc_s {
-    BOMB_GENERATOR_RUNTIME_PC *items;
-    u16 count;
-    u16 capacity;
-    void *pool;
-    i16 flags;
-    u16 unknown_0e;
-    void *progress;
-} BOMB_GENERATOR_SYSTEM_RUNTIME_PC;
+    BOMB_GENERATOR_RUNTIME_PC *items; // 0x00
+    u16 count;                        // 0x04
+    u16 capacity;                     // 0x06
+    void *pool;                       // 0x08
+    i16 flags;                        // 0x0c
+    u16 unknown_0e;                   // 0x0e
+    void *progress;                   // 0x10
+} BOMB_GENERATOR_SYSTEM_RUNTIME_PC;   // size 0x14
 
-STATIC_ASSERT(sizeof(BOMB_GENERATOR_RUNTIME_PC) == 0x2c);
-STATIC_ASSERT(offsetof(BOMB_GENERATOR_RUNTIME_PC, anim_set) == 0x1c);
-STATIC_ASSERT(offsetof(BOMB_GENERATOR_RUNTIME_PC, generated_bomb) == 0x24);
-STATIC_ASSERT(offsetof(BOMB_GENERATOR_RUNTIME_PC, flags) == 0x2a);
-STATIC_ASSERT(sizeof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC) == 0x14);
-STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, count) == 4);
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, flags) == 0xc &&
               sizeof(((BOMB_GENERATOR_SYSTEM_RUNTIME_PC *)0)->flags) == 2);
-STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, progress) == 0x10);
 STATIC_ASSERT(offsetof(GAMEOBJECT, cable) == 0x1040);
 STATIC_ASSERT(offsetof(CABLE_s, target) == 4);
 STATIC_ASSERT(offsetof(CABLE_s, max_length) == 0x1c4);

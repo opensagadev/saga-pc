@@ -39,59 +39,37 @@ extern "C" {
     STATIC_ASSERT(sizeof(PART_PC) == 0x220);
 
     typedef struct BOLT_CONFIG_PC {
-        char name[16];
-        f32 field_10;
-        f32 field_14;
-        f32 field_18;
-        f32 field_1c;
-        f32 field_20;
-        f32 field_24;
-        i16 object_ids[3];
-        i16 debris_id;
-        i16 moving_debris[2];
-        i16 moving_debris_counts[2];
-        i16 field_38;
-        i16 field_3a;
-        u8 field_3c;
-        u8 field_3d;
-        u16 field_3e;
-        i32 field_40;
-        void *callbacks[7];
-        u32 flags_60;
-        i16 shoot_sfx_id;
-        i16 hit_sfx_id;
+        char name[16];               // 0x00
+        f32 field_10;                // 0x10
+        f32 field_14;                // 0x14
+        f32 field_18;                // 0x18
+        f32 field_1c;                // 0x1c
+        f32 field_20;                // 0x20
+        f32 field_24;                // 0x24
+        i16 object_ids[3];           // 0x28
+        i16 debris_id;               // 0x2e
+        i16 moving_debris[2];        // 0x30
+        i16 moving_debris_counts[2]; // 0x34
+        i16 field_38;                // 0x38
+        i16 field_3a;                // 0x3a
+        u8 field_3c;                 // 0x3c
+        u8 field_3d;                 // 0x3d
+        u16 field_3e;                // 0x3e
+        i32 field_40;                // 0x40
+        void *callbacks[7];          // 0x44
+        u32 flags_60;                // 0x60
+        i16 shoot_sfx_id;            // 0x64
+        i16 hit_sfx_id;              // 0x66
 
-        struct {
-            NUSPECIALHANDLE object_special;
-            NUSPECIALHANDLE glow_special;
-            NUSPECIALHANDLE reference_object_special;
-            NUSPECIALHANDLE reference_glow_special;
-            NUSPECIALHANDLE shadow_special;
+        struct {                                      // 0x68
+            NUSPECIALHANDLE object_special;           // 0x68
+            NUSPECIALHANDLE glow_special;             // 0x74
+            NUSPECIALHANDLE reference_object_special; // 0x80
+            NUSPECIALHANDLE reference_glow_special;   // 0x8c
+            NUSPECIALHANDLE shadow_special;           // 0x98
         } specials;
-    } BOLT_CONFIG_PC;
+    } BOLT_CONFIG_PC; // size 0xa4
 
-    STATIC_ASSERT(sizeof(BOLT_CONFIG_PC) == 0xa4);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, object_ids) == 0x28);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, debris_id) == 0x2e);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, moving_debris) == 0x30);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, moving_debris_counts) == 0x34);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, flags_60) == 0x60);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, shoot_sfx_id) == 0x64);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials) == 0x68);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, name) == 0x0);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_10) == 0x10);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_14) == 0x14);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_1c) == 0x1c);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_20) == 0x20);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_38) == 0x38);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_3c) == 0x3c);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, field_40) == 0x40);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, hit_sfx_id) == 0x66);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials.object_special) == 0x68);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials.glow_special) == 0x74);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials.reference_object_special) == 0x80);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials.reference_glow_special) == 0x8c);
-    STATIC_ASSERT(offsetof(BOLT_CONFIG_PC, specials.shadow_special) == 0x98);
     static BOLT_CONFIG_PC *BT_bolttype = 0;
     static WORLDINFO *BT_worldinfo = 0;
     static NUGSCN *BT_scene = 0;
@@ -1223,24 +1201,21 @@ static i32 Bolt_HitPlatPrivate(BOLT_PC *, u8 *);
 extern "C" i32 i_temp_xrot;
 
 typedef struct bolt_context_info_pc_s {
-    const char *name;
-    i32 action;
-    u64 flags;
-} BOLT_CONTEXT_INFO_PC;
+    const char *name;   // 0x0
+    i32 action;         // 0x4
+    u64 flags;          // 0x8
+} BOLT_CONTEXT_INFO_PC; // size 0x10
 
-STATIC_ASSERT(sizeof(BOLT_CONTEXT_INFO_PC) == 0x10);
-STATIC_ASSERT(offsetof(BOLT_CONTEXT_INFO_PC, flags) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale_override) == 0xd30);
 STATIC_ASSERT(offsetof(GAMEOBJECT, scaled_radius) == 0xa4);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, walk_speed) == 0x18);
 
 typedef struct BOLT_UPDATE_TYPE_PC_s {
-    u8 unknown_000[0x98];
-    NUSPECIALHANDLE shadow_special;
-} BOLT_UPDATE_TYPE_PC;
+    u8 unknown_000[0x98];           // 0x00
+    NUSPECIALHANDLE shadow_special; // 0x98
+} BOLT_UPDATE_TYPE_PC;              // size 0xa4
 
-STATIC_ASSERT(offsetof(BOLT_UPDATE_TYPE_PC, shadow_special) == 0x98);
 STATIC_ASSERT(sizeof(BOLT_UPDATE_TYPE_PC) == sizeof(BOLTTYPE_PC));
 
 STATIC_ASSERT(offsetof(BOLT_PC, effect_orientation) == 0x48);

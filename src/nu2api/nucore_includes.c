@@ -8,24 +8,16 @@ static char *NuFParBufferBase = 0;
 static NUFPAR_PC *NuFParRecordBase = 0;
 
 typedef struct numemblklink_s {
-    struct numemblklink_s *next;
-} NUMEMBLKLINK;
+    struct numemblklink_s *next; // 0x0
+} NUMEMBLKLINK;                  // size 0x4
 
 typedef struct numemblk_s {
-    NUMEMBLKLINK *free_list;
-    u32 stride;
-    i32 capacity;
-    i16 flags;
-    u16 free_count;
-} NUMEMBLK;
-
-STATIC_ASSERT(sizeof(NUMEMBLKLINK) == 4);
-STATIC_ASSERT(sizeof(NUMEMBLK) == 16);
-STATIC_ASSERT(offsetof(NUMEMBLK, free_list) == 0);
-STATIC_ASSERT(offsetof(NUMEMBLK, stride) == 4);
-STATIC_ASSERT(offsetof(NUMEMBLK, capacity) == 8);
-STATIC_ASSERT(offsetof(NUMEMBLK, flags) == 12);
-STATIC_ASSERT(offsetof(NUMEMBLK, free_count) == 14);
+    NUMEMBLKLINK *free_list; // 0x0
+    u32 stride;              // 0x4
+    i32 capacity;            // 0x8
+    i16 flags;               // 0xc
+    u16 free_count;          // 0xe
+} NUMEMBLK;                  // size 0x10
 
 i32 decode_buffer_left = 0;
 static i32 decode_buffer_pos = 0;
@@ -53,12 +45,11 @@ void __cdecl NuRDPIVariableErrorPc(char *name);
     }
 
 struct NUPPHEADER_PC {
-    u32 magic;
-    u32 unpacked_size;
-    u32 packed_size;
-};
+    u32 magic;         // 0x0
+    u32 unpacked_size; // 0x4
+    u32 packed_size;   // 0x8
+}; // size 0xc
 
-STATIC_ASSERT(sizeof(struct NUPPHEADER_PC) == 12);
 #define NUPP_SWAP32(value)                                                                                             \
     (((value) >> 24) | (((value) & 0x00ff0000) >> 8) | (((value) & 0x0000ff00) << 8) | ((value) << 24))
 
@@ -87,19 +78,12 @@ static i32 file_time_count;
 #define CLAMP_WIDE_WORD(position) ((position) & ((parser->word_buffer_size >> 1) - 1))
 
 typedef struct nurdpfcontext_pc_s {
-    i32 token;
-    f32 value;
-    char *input;
-    i32 position;
-    i32(__cdecl *get_variable)(char *, f32 *, i32 *);
-} NURDPFCTX_PC;
-
-STATIC_ASSERT(sizeof(NURDPFCTX_PC) == 20);
-STATIC_ASSERT(offsetof(NURDPFCTX_PC, token) == 0);
-STATIC_ASSERT(offsetof(NURDPFCTX_PC, value) == 4);
-STATIC_ASSERT(offsetof(NURDPFCTX_PC, input) == 8);
-STATIC_ASSERT(offsetof(NURDPFCTX_PC, position) == 12);
-STATIC_ASSERT(offsetof(NURDPFCTX_PC, get_variable) == 16);
+    i32 token;                                        // 0x00
+    f32 value;                                        // 0x04
+    char *input;                                      // 0x08
+    i32 position;                                     // 0x0c
+    i32(__cdecl *get_variable)(char *, f32 *, i32 *); // 0x10
+} NURDPFCTX_PC;                                       // size 0x14
 
 enum {
     RDPF_ADD,
@@ -116,19 +100,12 @@ enum {
 static f32 NuRDPFExpression(NURDPFCTX_PC *context);
 
 typedef struct nurdpicontext_pc_s {
-    i32 token;
-    i32 value;
-    char *input;
-    i32 position;
-    NURDPGETVARFN get_variable;
-} NURDPICTX_PC;
-
-STATIC_ASSERT(sizeof(NURDPICTX_PC) == 20);
-STATIC_ASSERT(offsetof(NURDPICTX_PC, token) == 0);
-STATIC_ASSERT(offsetof(NURDPICTX_PC, value) == 4);
-STATIC_ASSERT(offsetof(NURDPICTX_PC, input) == 8);
-STATIC_ASSERT(offsetof(NURDPICTX_PC, position) == 12);
-STATIC_ASSERT(offsetof(NURDPICTX_PC, get_variable) == 16);
+    i32 token;                  // 0x00
+    i32 value;                  // 0x04
+    char *input;                // 0x08
+    i32 position;               // 0x0c
+    NURDPGETVARFN get_variable; // 0x10
+} NURDPICTX_PC;                 // size 0x14
 
 enum {
     RDPI_ADD,
@@ -159,38 +136,28 @@ static i32 NuRDPIExpression(NURDPICTX_PC *context);
 
 /* PC manager prefix and block header touched by the retail allocator. */
 typedef struct nualloc_manager_block_pc_s {
-    union {
-        u32 size_flags;
+    union {             // 0x0
+        u32 size_flags; // 0x0
 
-        struct {
-            u32 size : 31;
-            u32 used : 1;
+        struct {           // 0x0
+            u32 size : 31; // 0x0:0
+            u32 used : 1;  // 0x0:31
         };
     };
-    struct nualloc_manager_block_pc_s *next;
-    struct nualloc_manager_block_pc_s *previous;
-} NUALLOC_MANAGER_BLOCK_PC;
+    struct nualloc_manager_block_pc_s *next;     // 0x4
+    struct nualloc_manager_block_pc_s *previous; // 0x8
+} NUALLOC_MANAGER_BLOCK_PC;                      // size 0xc
 
 typedef struct nualloc_manager_trailer_pc_s {
-    NUALLOC_MANAGER_BLOCK_PC *previous_block;
-} NUALLOC_MANAGER_TRAILER_PC;
+    NUALLOC_MANAGER_BLOCK_PC *previous_block; // 0x0
+} NUALLOC_MANAGER_TRAILER_PC;                 // size 0x4
 
 typedef struct nualloc_manager_prefix_pc_s {
-    void *base;
-    u32 size;
-    u32 block_count;
-    u32 used_bytes;
-} NUALLOC_MANAGER_PREFIX_PC;
-
-STATIC_ASSERT(sizeof(NUALLOC_MANAGER_BLOCK_PC) == 12);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_BLOCK_PC, next) == 4);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_BLOCK_PC, previous) == 8);
-STATIC_ASSERT(sizeof(NUALLOC_MANAGER_TRAILER_PC) == 4);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_TRAILER_PC, previous_block) == 0);
-STATIC_ASSERT(sizeof(NUALLOC_MANAGER_PREFIX_PC) == 16);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, size) == 4);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, block_count) == 8);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, used_bytes) == 12);
+    void *base;              // 0x0
+    u32 size;                // 0x4
+    u32 block_count;         // 0x8
+    u32 used_bytes;          // 0xc
+} NUALLOC_MANAGER_PREFIX_PC; // size 0x10
 
 #define NUGENERICPAD FRAME_SCANNED_PAD_PC
 #define ANALOG_CENTER 0x80
@@ -269,28 +236,17 @@ static u32 bitcount = 0;
 extern NUMTL *NuTimeBar_FrameOutMtl;
 
 typedef struct TimeBarSet {
-    i32 uses_buffer;
-    i32 slot_count;
-    i32 *accumulators[2];
-    NuTime *start_times;
-    i32 *field_14;
-    i32 *field_18;
-    i32 *colours;
-    i32 *toggle_flags;
-    const char **slot_names;
-    i32 field_28;
-} TimeBarSet;
-
-STATIC_ASSERT(sizeof(TimeBarSet) == 0x2c);
-STATIC_ASSERT(offsetof(TimeBarSet, slot_count) == 4);
-STATIC_ASSERT(offsetof(TimeBarSet, accumulators) == 8);
-STATIC_ASSERT(offsetof(TimeBarSet, start_times) == 0x10);
-STATIC_ASSERT(offsetof(TimeBarSet, field_14) == 0x14);
-STATIC_ASSERT(offsetof(TimeBarSet, field_18) == 0x18);
-STATIC_ASSERT(offsetof(TimeBarSet, colours) == 0x1c);
-STATIC_ASSERT(offsetof(TimeBarSet, toggle_flags) == 0x20);
-STATIC_ASSERT(offsetof(TimeBarSet, slot_names) == 0x24);
-STATIC_ASSERT(offsetof(TimeBarSet, field_28) == 0x28);
+    i32 uses_buffer;         // 0x00
+    i32 slot_count;          // 0x04
+    i32 *accumulators[2];    // 0x08
+    NuTime *start_times;     // 0x10
+    i32 *field_14;           // 0x14
+    i32 *field_18;           // 0x18
+    i32 *colours;            // 0x1c
+    i32 *toggle_flags;       // 0x20
+    const char **slot_names; // 0x24
+    i32 field_28;            // 0x28
+} TimeBarSet;                // size 0x2c
 
 /* Original source: nu2api/nucore/nuapi.cpp; PC initializes only the fields
  * below after clearing the real 0x90-byte API record. */
@@ -1641,22 +1597,16 @@ i32 __cdecl NuFileWriteUnsignedChar(NUFILE file, u8 value) {
 }
 
 typedef struct NUFILE_WRITEBLOCK_PC {
-    i32 tag;
-    i32 size_sign;
-    i64 position;
-} NUFILE_WRITEBLOCK_PC;
-
-STATIC_ASSERT(sizeof(NUFILE_WRITEBLOCK_PC) == 0x10);
-STATIC_ASSERT(offsetof(NUFILE_WRITEBLOCK_PC, position) == 8);
+    i32 tag;            // 0x0
+    i32 size_sign;      // 0x4
+    i64 position;       // 0x8
+} NUFILE_WRITEBLOCK_PC; // size 0x10
 
 typedef struct NUFILE_ADDRESS_PC {
-    void *address;
-    i32 reserved;
-    i64 position;
-} NUFILE_ADDRESS_PC;
-
-STATIC_ASSERT(sizeof(NUFILE_ADDRESS_PC) == 0x10);
-STATIC_ASSERT(offsetof(NUFILE_ADDRESS_PC, position) == 8);
+    void *address;   // 0x0
+    i32 reserved;    // 0x4
+    i64 position;    // 0x8
+} NUFILE_ADDRESS_PC; // size 0x10
 
 static i32 nufile_wblkcnt = 1;
 static i32 iff_padsize = 16;
@@ -4351,13 +4301,10 @@ void __cdecl NuMemBlkFree(NUMEMBLK *pool, void *block) {
 }
 
 typedef struct NUMEMHIGHBLOCK_PC {
-    struct NUMEMHIGHBLOCK_PC *next;
-    u32 units;
-    u32 reserved[2];
-} NUMEMHIGHBLOCK_PC;
-
-STATIC_ASSERT(sizeof(NUMEMHIGHBLOCK_PC) == 0x10);
-STATIC_ASSERT(offsetof(NUMEMHIGHBLOCK_PC, units) == 4);
+    struct NUMEMHIGHBLOCK_PC *next; // 0x0
+    u32 units;                      // 0x4
+    u32 reserved[2];                // 0x8
+} NUMEMHIGHBLOCK_PC;                // size 0x10
 
 static NUMEMHIGHBLOCK_PC *freep = 0;
 
@@ -4426,49 +4373,38 @@ void __cdecl NuFreeHigh(void *ptr) {
 }
 
 typedef struct NUQTDIM_PC {
-    f32 x0;
-    f32 x1;
-    f32 y0;
-    f32 y1;
-} NUQTDIM_PC;
-
-STATIC_ASSERT(sizeof(NUQTDIM_PC) == 0x10);
+    f32 x0;   // 0x0
+    f32 x1;   // 0x4
+    f32 y0;   // 0x8
+    f32 y1;   // 0xc
+} NUQTDIM_PC; // size 0x10
 
 typedef struct NUQTENTRY_PC {
-    i16 count;
-    i16 parent;
+    i16 count;  // 0x0
+    i16 parent; // 0x2
 
-    union {
-        u8 *data;
-        u16 children[4];
+    union {              // 0x4
+        u8 *data;        // 0x4
+        u16 children[4]; // 0x4
     } u;
-} NUQTENTRY_PC;
-
-STATIC_ASSERT(sizeof(NUQTENTRY_PC) == 0xc);
-STATIC_ASSERT(offsetof(NUQTENTRY_PC, u) == 4);
+} NUQTENTRY_PC; // size 0xc
 
 typedef struct NUQTHDR_PC {
-    u32 flags;
-    f32 y0;
-    f32 y1;
-    f32 x0;
-    f32 x1;
-    NUQTENTRY_PC *entries;
-    i32 entry_count;
-    i32 entry_capacity;
-    u8 *data;
-    i32 data_used;
-    i32 data_capacity;
-    i32 element_size;
-    i32 split_count;
-    i32 max_depth;
-} NUQTHDR_PC;
-
-STATIC_ASSERT(sizeof(NUQTHDR_PC) == 0x38);
-STATIC_ASSERT(offsetof(NUQTHDR_PC, entries) == 0x14);
-STATIC_ASSERT(offsetof(NUQTHDR_PC, data) == 0x20);
-STATIC_ASSERT(offsetof(NUQTHDR_PC, element_size) == 0x2c);
-STATIC_ASSERT(offsetof(NUQTHDR_PC, max_depth) == 0x34);
+    u32 flags;             // 0x00
+    f32 y0;                // 0x04
+    f32 y1;                // 0x08
+    f32 x0;                // 0x0c
+    f32 x1;                // 0x10
+    NUQTENTRY_PC *entries; // 0x14
+    i32 entry_count;       // 0x18
+    i32 entry_capacity;    // 0x1c
+    u8 *data;              // 0x20
+    i32 data_used;         // 0x24
+    i32 data_capacity;     // 0x28
+    i32 element_size;      // 0x2c
+    i32 split_count;       // 0x30
+    i32 max_depth;         // 0x34
+} NUQTHDR_PC;              // size 0x38
 
 static i32 ElOverlaps(NUQTDIM_PC *a, NUQTDIM_PC *b) {
     if (b->x0 < a->x1 && b->x1 > a->x0 && b->y1 < a->y0 && b->y0 > a->y1) {

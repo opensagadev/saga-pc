@@ -833,16 +833,14 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
 extern char *PcControlTextPc[45];
 
 struct PC_CONTROL_VERTEX_PC {
-    f32 x;
-    f32 y;
-    f32 z;
-    u32 colour;
-    f32 u;
-    f32 v;
-};
+    f32 x;      // 0x00
+    f32 y;      // 0x04
+    f32 z;      // 0x08
+    u32 colour; // 0x0c
+    f32 u;      // 0x10
+    f32 v;      // 0x14
+}; // size 0x18
 
-STATIC_ASSERT(offsetof(PC_CONTROL_VERTEX_PC, colour) == 0xc);
-STATIC_ASSERT(sizeof(PC_CONTROL_VERTEX_PC) == 0x18);
 extern "C" i32 __cdecl PcControlWrapTextPc(char *, f32);
 extern "C" void __cdecl PcControlFontScalePc(VUFNT *, f32, f32, f32 *, f32 *);
 

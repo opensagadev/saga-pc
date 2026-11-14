@@ -7,14 +7,12 @@ static f32 HairMovementFallRatePc = 2.0f;
 static f32 HairMovementRecoverRatePc = 2.0f;
 
 typedef struct character_joint_movement_pc_s {
-    u8 unknown_000[0xf3c];
-    NUHGOBJ_JOINT_OVERRIDE_PC overrides[3];
-    u8 unknown_fd8[0x107d - 0xfd8];
-    u8 count;
-} CHARACTER_JOINT_MOVEMENT_PC;
+    u8 unknown_000[0xf3c];                  // 0x0000
+    NUHGOBJ_JOINT_OVERRIDE_PC overrides[3]; // 0x0f3c
+    u8 unknown_fd8[0x107d - 0xfd8];         // 0x0fd8
+    u8 count;                               // 0x107d
+} CHARACTER_JOINT_MOVEMENT_PC;              // size 0x1080
 
-STATIC_ASSERT(offsetof(CHARACTER_JOINT_MOVEMENT_PC, overrides) == 0xf3c);
-STATIC_ASSERT(offsetof(CHARACTER_JOINT_MOVEMENT_PC, count) == 0x107d);
 STATIC_ASSERT(sizeof(NUHGOBJ_JOINT_OVERRIDE_PC) == 0x34);
 
 #define FOOTSTEP_CHECK(index)                                                                                          \

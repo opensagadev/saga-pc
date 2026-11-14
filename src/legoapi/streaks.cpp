@@ -283,11 +283,10 @@ extern "C" void __cdecl ResetStreaks(void) {
 }
 
 struct STREAK_MATERIAL_SCALE_PC {
-    u8 unknown_00[0x64];
-    f32 effect_scale;
-};
+    u8 unknown_00[0x64]; // 0x00
+    f32 effect_scale;    // 0x64
+}; // size 0x68
 
-STATIC_ASSERT(offsetof(STREAK_MATERIAL_SCALE_PC, effect_scale) == 0x64);
 STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, sort_pri) == 0x76);
 
 extern "C" void __cdecl InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {

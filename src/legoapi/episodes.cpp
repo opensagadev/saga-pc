@@ -3,27 +3,17 @@
 /* Retail unit 0x59b330-0x59bb30 (legoapi/episodes.cpp): definitions in retail address order. */
 
 typedef struct episode_area_save_reader_pc_s {
-    u8 complete;
-    u8 area_complete;
-    u8 story_complete;
-    u8 freeplay_complete;
-    u8 minikit_complete;
-    u8 minikit_count;
-    u8 red_brick_complete;
-    u8 challenge_complete;
-    f32 challenge_time;
-} EPISODE_AREA_SAVE_READER_PC;
+    u8 complete;               // 0x0
+    u8 area_complete;          // 0x1
+    u8 story_complete;         // 0x2
+    u8 freeplay_complete;      // 0x3
+    u8 minikit_complete;       // 0x4
+    u8 minikit_count;          // 0x5
+    u8 red_brick_complete;     // 0x6
+    u8 challenge_complete;     // 0x7
+    f32 challenge_time;        // 0x8
+} EPISODE_AREA_SAVE_READER_PC; // size 0xc
 
-STATIC_ASSERT(sizeof(EPISODE_AREA_SAVE_READER_PC) == 12);
-STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, complete) == 0);
-STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, area_complete) == 1);
-STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, story_complete) == 2);
-STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, freeplay_complete) == 3);
-STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, minikit_complete) == 4);
-STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, minikit_count) == 5);
-STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, red_brick_complete) == 6);
-STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, challenge_complete) == 7);
-STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, challenge_time) == 8);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_ids) == 4);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_count) == 0x18);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);

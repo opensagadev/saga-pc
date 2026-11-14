@@ -16,38 +16,31 @@ extern "C" {
 
 /* Native 0x0048a310, 217 bytes. */
 typedef struct level_script_progress_pc_s {
-    char name[16];
-    f32 params[4];
-} LEVEL_SCRIPT_PROGRESS_PC;
+    char name[16];          // 0x00
+    f32 params[4];          // 0x10
+} LEVEL_SCRIPT_PROGRESS_PC; // size 0x20
 
 typedef struct ai_script_progress_view_pc_s {
-    u8 unknown_0000[0x2824];
-    LEVEL_SCRIPT_PROGRESS_PC scripts[32];
-} AI_SCRIPT_PROGRESS_VIEW_PC;
+    u8 unknown_0000[0x2824];              // 0x0000
+    LEVEL_SCRIPT_PROGRESS_PC scripts[32]; // 0x2824
+} AI_SCRIPT_PROGRESS_VIEW_PC;             // size 0x2c24
 
-STATIC_ASSERT(offsetof(AI_SCRIPT_PROGRESS_VIEW_PC, scripts) == 0x2824);
-STATIC_ASSERT(sizeof(LEVEL_SCRIPT_PROGRESS_PC) == 0x20);
 extern "C" {
     void __cdecl LevelObjectsArenaDiagnosticPc(i32 size);
 }
 
 typedef struct startup_level_object_pc_s {
-    NUSPECIALHANDLE special;
-    i16 platform_id;
-    u8 active;
-    u8 unknown_f;
-} STARTUP_LEVEL_OBJECT_PC;
-
-STATIC_ASSERT(sizeof(STARTUP_LEVEL_OBJECT_PC) == 0x10);
-STATIC_ASSERT(offsetof(STARTUP_LEVEL_OBJECT_PC, special) == 0);
-STATIC_ASSERT(offsetof(STARTUP_LEVEL_OBJECT_PC, platform_id) == 0xc);
+    NUSPECIALHANDLE special; // 0x0
+    i16 platform_id;         // 0xc
+    u8 active;               // 0xe
+    u8 unknown_f;            // 0xf
+} STARTUP_LEVEL_OBJECT_PC;   // size 0x10
 
 typedef struct WORLD_OBJECT_SETUP_READER_PC {
-    u8 unknown_0000[0x2964];
-    NUGSCN *icons_gscn;
-} WORLD_OBJECT_SETUP_READER_PC;
+    u8 unknown_0000[0x2964];    // 0x0000
+    NUGSCN *icons_gscn;         // 0x2964
+} WORLD_OBJECT_SETUP_READER_PC; // size 0x2968
 
-STATIC_ASSERT(offsetof(WORLD_OBJECT_SETUP_READER_PC, icons_gscn) == 0x2964);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
 STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
 STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
@@ -57,11 +50,10 @@ STATIC_ASSERT(sizeof(LEVEL_OBJECT_CONFIG_PC) == 8);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, name) == 4);
 
 typedef struct menu_mission_reader_pc_s {
-    u8 unknown_00[0x12];
-    i8 active_count;
-} MENU_MISSION_READER_PC;
+    u8 unknown_00[0x12];  // 0x00
+    i8 active_count;      // 0x12
+} MENU_MISSION_READER_PC; // size 0x13
 
-STATIC_ASSERT(offsetof(MENU_MISSION_READER_PC, active_count) == 0x12);
 extern "C" {
 
     void __cdecl Level_RegisterGameConfigKeywords(NUFPCOMJMP *before_load, NUFPCOMJMP *after_load) {

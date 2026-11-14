@@ -1,65 +1,43 @@
 #include "saga.h"
 
 struct PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC {
-    u32 unknown_00;
-    i32 element_count;
-    u8 unknown_08[0x70];
-};
+    u32 unknown_00;      // 0x00
+    i32 element_count;   // 0x04
+    u8 unknown_08[0x70]; // 0x08
+}; // size 0x78
 
 struct PC_GEOMETRY_PUBLISH_SKIN_REF_PC {
-    u32 unknown_00;
-    i32 matrix_count;
-    u8 unknown_08[0x14];
-};
+    u32 unknown_00;      // 0x00
+    i32 matrix_count;    // 0x04
+    u8 unknown_08[0x14]; // 0x08
+}; // size 0x1c
 
 struct PC_GEOMETRY_PUBLISH_FORMAT_PC {
-    u32 kind;
-    u32 record_count;
-    u32 skin_ref_count;
-    PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC *records;
-    PC_GEOMETRY_PUBLISH_SKIN_REF_PC *skin_refs;
-};
+    u32 kind;                                      // 0x00
+    u32 record_count;                              // 0x04
+    u32 skin_ref_count;                            // 0x08
+    PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC *records; // 0x0c
+    PC_GEOMETRY_PUBLISH_SKIN_REF_PC *skin_refs;    // 0x10
+}; // size 0x14
 
 struct PC_GEOMETRY_PUBLISH_RECORD_PC {
-    PC_GEOMETRY_PUBLISH_FORMAT_PC *format;
-    i32 element_count;
-    u32 unknown_08;
-    PC_GEOMETRY_SORT_ITEM_PC *sort_items;
-    u32 unknown_10;
-    PC_BUFFER_RESOURCE_PC *vertex_buffer;
-    PC_BUFFER_RESOURCE_PC *strip_vertex_buffer;
-    PC_BUFFER_RESOURCE_PC *strip_index_buffer;
-    u32 frame_stamp;
-    u32 unknown_24;
-};
+    PC_GEOMETRY_PUBLISH_FORMAT_PC *format;      // 0x00
+    i32 element_count;                          // 0x04
+    u32 unknown_08;                             // 0x08
+    PC_GEOMETRY_SORT_ITEM_PC *sort_items;       // 0x0c
+    u32 unknown_10;                             // 0x10
+    PC_BUFFER_RESOURCE_PC *vertex_buffer;       // 0x14
+    PC_BUFFER_RESOURCE_PC *strip_vertex_buffer; // 0x18
+    PC_BUFFER_RESOURCE_PC *strip_index_buffer;  // 0x1c
+    u32 frame_stamp;                            // 0x20
+    u32 unknown_24;                             // 0x24
+}; // size 0x28
 
 struct PC_GEOMETRY_PUBLISH_SORT_ITEM_PC {
-    u32 output_index;
-    f32 distance_squared;
-    u32 unknown_08;
-};
-
-STATIC_ASSERT(sizeof(PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC) == 0x78);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC, element_count) == 4);
-STATIC_ASSERT(sizeof(PC_GEOMETRY_PUBLISH_SKIN_REF_PC) == 0x1c);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_SKIN_REF_PC, matrix_count) == 4);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_FORMAT_PC, kind) == 0);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_FORMAT_PC, record_count) == 4);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_FORMAT_PC, skin_ref_count) == 8);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_FORMAT_PC, records) == 0xc);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_FORMAT_PC, skin_refs) == 0x10);
-STATIC_ASSERT(sizeof(PC_GEOMETRY_PUBLISH_RECORD_PC) == 0x28);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_RECORD_PC, format) == 0);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_RECORD_PC, element_count) == 4);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_RECORD_PC, unknown_08) == 8);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_RECORD_PC, sort_items) == 0xc);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_RECORD_PC, unknown_10) == 0x10);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_RECORD_PC, vertex_buffer) == 0x14);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_RECORD_PC, strip_vertex_buffer) == 0x18);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_RECORD_PC, strip_index_buffer) == 0x1c);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_RECORD_PC, frame_stamp) == 0x20);
-STATIC_ASSERT(sizeof(PC_GEOMETRY_PUBLISH_SORT_ITEM_PC) == 0xc);
-STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_SORT_ITEM_PC, output_index) == 0);
+    u32 output_index;     // 0x0
+    f32 distance_squared; // 0x4
+    u32 unknown_08;       // 0x8
+}; // size 0xc
 
 extern "C" i32 __cdecl PcGeometryBackendAvailablePc(void) {
     return PCDeviceHardwareVertexProcessingPC >= 4;

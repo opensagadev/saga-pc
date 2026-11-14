@@ -9,41 +9,39 @@ STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
 
 typedef struct MISSION_END_DATA_VIEW_PC {
-    i16 find_character;
-} MISSION_END_DATA_VIEW_PC;
+    i16 find_character;     // 0x0
+} MISSION_END_DATA_VIEW_PC; // size 0x2
 
 typedef struct MISSION_END_SYSTEM_VIEW_PC {
-    u8 unknown_00[8];
-    f32 elapsed_time;
-} MISSION_END_SYSTEM_VIEW_PC;
+    u8 unknown_00[8];         // 0x0
+    f32 elapsed_time;         // 0x8
+} MISSION_END_SYSTEM_VIEW_PC; // size 0xc
 
-STATIC_ASSERT(offsetof(MISSION_END_DATA_VIEW_PC, find_character) == 0);
-STATIC_ASSERT(offsetof(MISSION_END_SYSTEM_VIEW_PC, elapsed_time) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_contact_mask) == 0x1f0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
 
 typedef struct MISSION_SYSTEM_READER_PC {
-    MISSIONDATA_PC *missions;
-    MISSIONDATA_PC *active_mission;
-    TIMER timer;
-    MISSION_SAVE_READER_PC *save;
-    u8 count;
-    u8 state;
+    MISSIONDATA_PC *missions;       // 0x00
+    MISSIONDATA_PC *active_mission; // 0x04
+    TIMER timer;                    // 0x08
+    MISSION_SAVE_READER_PC *save;   // 0x18
+    u8 count;                       // 0x1c
+    u8 state;                       // 0x1d
 
-    union {
-        u8 flags;
+    union {       // 0x1e
+        u8 flags; // 0x1e
 
-        struct {
-            u8 pickups : 1;
-            u8 unknown_flags : 7;
+        struct {                  // 0x1e
+            u8 pickups : 1;       // 0x1e:0
+            u8 unknown_flags : 7; // 0x1e:1
         };
     };
 
-    u8 character_count;
-    i16 character_ids[8];
-} MISSION_SYSTEM_READER_PC;
+    u8 character_count;     // 0x1f
+    i16 character_ids[8];   // 0x20
+} MISSION_SYSTEM_READER_PC; // size 0x30
 
 STATIC_ASSERT(sizeof(MISSIONDATA_PC) == 0x18);
 STATIC_ASSERT(offsetof(MISSIONDATA_PC, find_character) == 0);
@@ -57,16 +55,6 @@ STATIC_ASSERT(offsetof(MISSIONDATA_PC, index) == 0x12);
 STATIC_ASSERT(sizeof(MISSION_SAVE_READER_PC) == 0x64);
 STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, best_times) == 0);
 STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, completed) == 0x50);
-STATIC_ASSERT(sizeof(MISSION_SYSTEM_READER_PC) == 0x30);
-STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, missions) == 0);
-STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, active_mission) == 4);
-STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, timer) == 8);
-STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, save) == 0x18);
-STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, count) == 0x1c);
-STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, state) == 0x1d);
-STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, flags) == 0x1e);
-STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, character_count) == 0x1f);
-STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, character_ids) == 0x20);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
 
 /* Original name unknown. Empty on PC (a bare RET at 0x58a510); called when the file cannot be

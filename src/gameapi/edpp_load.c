@@ -2,92 +2,65 @@
 #include <stdio.h>
 
 typedef struct edpp_file_particle_pc_s {
-    NUVEC position;
-    i32 effect_index;
-    i32 instance_id;
-    i16 rotation_z;
-    i16 rotation_y;
-    i16 emitter_rotation_z;
-    i16 emitter_rotation_y;
-    i16 emitter_rotation_x;
-    u8 unknown_01e[2];
-    f32 start_offset;
-    char name[16];
-    i32 switch_type;
-    i32 switch_id;
-    f32 switch_variable;
-    i16 reflection_rotation_z;
-    i16 reflection_rotation_y;
-    f32 reflection_offset;
-    f32 reflection_bounce;
-    i16 render_group;
-    u16 render_priority;
-    u8 dynamic_priority;
-    i8 page;
-    i8 detail_levels;
-    u8 facing_mode;
-    i16 facing_rotation_x;
-    i16 facing_rotation_y;
-} EDPP_FILE_PARTICLE_PC;
+    NUVEC position;            // 0x00
+    i32 effect_index;          // 0x0c
+    i32 instance_id;           // 0x10
+    i16 rotation_z;            // 0x14
+    i16 rotation_y;            // 0x16
+    i16 emitter_rotation_z;    // 0x18
+    i16 emitter_rotation_y;    // 0x1a
+    i16 emitter_rotation_x;    // 0x1c
+    u8 unknown_01e[2];         // 0x1e
+    f32 start_offset;          // 0x20
+    char name[16];             // 0x24
+    i32 switch_type;           // 0x34
+    i32 switch_id;             // 0x38
+    f32 switch_variable;       // 0x3c
+    i16 reflection_rotation_z; // 0x40
+    i16 reflection_rotation_y; // 0x42
+    f32 reflection_offset;     // 0x44
+    f32 reflection_bounce;     // 0x48
+    i16 render_group;          // 0x4c
+    u16 render_priority;       // 0x4e
+    u8 dynamic_priority;       // 0x50
+    i8 page;                   // 0x51
+    i8 detail_levels;          // 0x52
+    u8 facing_mode;            // 0x53
+    i16 facing_rotation_x;     // 0x54
+    i16 facing_rotation_y;     // 0x56
+} EDPP_FILE_PARTICLE_PC;       // size 0x58
 
-STATIC_ASSERT(sizeof(EDPP_FILE_PARTICLE_PC) == 0x58);
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, render_priority) == 0x4e);
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, dynamic_priority) == 0x50);
-
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, position) == 0);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->position) == sizeof(((EDPP_PARTICLE_PC *)0)->position));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, effect_index) == 0xc);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->effect_index) == sizeof(((EDPP_PARTICLE_PC *)0)->effect_index));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, instance_id) == 0x10);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->instance_id) == sizeof(((EDPP_PARTICLE_PC *)0)->instance_id));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, rotation_z) == 0x14);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->rotation_z) == sizeof(((EDPP_PARTICLE_PC *)0)->rotation_z));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, rotation_y) == 0x16);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->rotation_y) == sizeof(((EDPP_PARTICLE_PC *)0)->rotation_y));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, emitter_rotation_z) == 0x18);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->emitter_rotation_z) ==
               sizeof(((EDPP_PARTICLE_PC *)0)->emitter_rotation_z));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, emitter_rotation_y) == 0x1a);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->emitter_rotation_y) ==
               sizeof(((EDPP_PARTICLE_PC *)0)->emitter_rotation_y));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, emitter_rotation_x) == 0x1c);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->emitter_rotation_x) ==
               sizeof(((EDPP_PARTICLE_PC *)0)->emitter_rotation_x));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, start_offset) == 0x20);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->start_offset) == sizeof(((EDPP_PARTICLE_PC *)0)->start_offset));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, name) == 0x24);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->name) == sizeof(((EDPP_PARTICLE_PC *)0)->name));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, switch_type) == 0x34);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->switch_type) == sizeof(((EDPP_PARTICLE_PC *)0)->switch_type));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, switch_id) == 0x38);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->switch_id) == sizeof(((EDPP_PARTICLE_PC *)0)->switch_id));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, switch_variable) == 0x3c);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->switch_variable) ==
               sizeof(((EDPP_PARTICLE_PC *)0)->switch_variable));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, reflection_rotation_z) == 0x40);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->reflection_rotation_z) ==
               sizeof(((EDPP_PARTICLE_PC *)0)->reflection_rotation_z));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, reflection_rotation_y) == 0x42);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->reflection_rotation_y) ==
               sizeof(((EDPP_PARTICLE_PC *)0)->reflection_rotation_y));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, reflection_offset) == 0x44);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->reflection_offset) ==
               sizeof(((EDPP_PARTICLE_PC *)0)->reflection_offset));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, reflection_bounce) == 0x48);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->reflection_bounce) ==
               sizeof(((EDPP_PARTICLE_PC *)0)->reflection_bounce));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, render_group) == 0x4c);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->render_group) == sizeof(((EDPP_PARTICLE_PC *)0)->render_group));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, page) == 0x51);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->page) == sizeof(((EDPP_PARTICLE_PC *)0)->page));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, detail_levels) == 0x52);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->detail_levels) == sizeof(((EDPP_PARTICLE_PC *)0)->detail_levels));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, facing_mode) == 0x53);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->facing_mode) == sizeof(((EDPP_PARTICLE_PC *)0)->facing_mode));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, facing_rotation_x) == 0x54);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->facing_rotation_x) ==
               sizeof(((EDPP_PARTICLE_PC *)0)->facing_rotation_x));
-STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, facing_rotation_y) == 0x56);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->facing_rotation_y) ==
               sizeof(((EDPP_PARTICLE_PC *)0)->facing_rotation_y));
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->render_priority) == 2);

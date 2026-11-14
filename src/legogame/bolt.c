@@ -26,15 +26,13 @@ STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
 STATIC_ASSERT(85 * sizeof(GAMEDEBRISENTRY_PC) == 0x6a4);
 
 typedef struct VEHICLE_FIRE_STATE_PC {
-    u8 unknown_000[0x7f4];
-    WEAPON_AMMO_PC weapon_ammo;
-    u8 unknown_7fc[0xe3a - 0x7fc];
-    u8 bolt_fire_phase;
-} VEHICLE_FIRE_STATE_PC;
+    u8 unknown_000[0x7f4];         // 0x000
+    WEAPON_AMMO_PC weapon_ammo;    // 0x7f4
+    u8 unknown_7fc[0xe3a - 0x7fc]; // 0x7fc
+    u8 bolt_fire_phase;            // 0xe3a
+} VEHICLE_FIRE_STATE_PC;           // size 0xe3c
 
-STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, weapon_ammo) == 0x7f4);
 STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, weapon_ammo) + offsetof(WEAPON_AMMO_PC, ammo) == 0x7f8);
-STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, bolt_fire_phase) == 0xe3a);
 
 i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();

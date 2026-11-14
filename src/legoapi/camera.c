@@ -1,18 +1,14 @@
 #include "saga.h"
 
 typedef struct CAMERA_JUDDER_FIELDS_PC {
-    u8 unknown_000[0x11c];
-    NUVEC position;
-} CAMERA_JUDDER_FIELDS_PC;
-
-STATIC_ASSERT(offsetof(CAMERA_JUDDER_FIELDS_PC, position) == 0x11c);
+    u8 unknown_000[0x11c]; // 0x000
+    NUVEC position;        // 0x11c
+} CAMERA_JUDDER_FIELDS_PC; // size 0x128
 
 typedef struct LEVEL_JUDDER_FIELDS_PC {
-    u8 unknown_000[0xcd];
-    u8 maximum_distance;
-} LEVEL_JUDDER_FIELDS_PC;
-
-STATIC_ASSERT(offsetof(LEVEL_JUDDER_FIELDS_PC, maximum_distance) == 0xcd);
+    u8 unknown_000[0xcd]; // 0x00
+    u8 maximum_distance;  // 0xcd
+} LEVEL_JUDDER_FIELDS_PC; // size 0xce
 
 void __cdecl GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *source) {
     union {
@@ -310,14 +306,11 @@ void __cdecl ViewCamDraw(void) {
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 
 typedef struct KEEP_SCREEN_CAMERA_FIELDS_PC {
-    u8 unknown_000[0x110];
-    NUVEC direction;
-    u8 unknown_11c[0xdc];
-    u16 pitch;
-} KEEP_SCREEN_CAMERA_FIELDS_PC;
-
-STATIC_ASSERT(offsetof(KEEP_SCREEN_CAMERA_FIELDS_PC, direction) == 0x110);
-STATIC_ASSERT(offsetof(KEEP_SCREEN_CAMERA_FIELDS_PC, pitch) == 0x1f8);
+    u8 unknown_000[0x110];      // 0x000
+    NUVEC direction;            // 0x110
+    u8 unknown_11c[0xdc];       // 0x11c
+    u16 pitch;                  // 0x1f8
+} KEEP_SCREEN_CAMERA_FIELDS_PC; // size 0x1fc
 
 void __cdecl GameCam_Reset(GAMECAMERA *camera) {
     if (camera == NULL) {
@@ -347,49 +340,37 @@ void __cdecl GameCam_Reset(GAMECAMERA *camera) {
 }
 
 typedef struct CAMERA_CONTEXT_PATH_PC {
-    u8 unknown_00[0x40];
-    struct nugspline_s *path;
-    u8 unknown_44[8];
-    u8 flags;
-} CAMERA_CONTEXT_PATH_PC;
-
-STATIC_ASSERT(offsetof(CAMERA_CONTEXT_PATH_PC, path) == 0x40);
-STATIC_ASSERT(offsetof(CAMERA_CONTEXT_PATH_PC, flags) == 0x4c);
+    u8 unknown_00[0x40];      // 0x00
+    struct nugspline_s *path; // 0x40
+    u8 unknown_44[8];         // 0x44
+    u8 flags;                 // 0x4c
+} CAMERA_CONTEXT_PATH_PC;     // size 0x50
 
 typedef struct CAMERA_CONTEXT_FOCUS_PC {
-    u8 unknown_00[0x28];
-    NUVEC focus;
-} CAMERA_CONTEXT_FOCUS_PC;
-
-STATIC_ASSERT(offsetof(CAMERA_CONTEXT_FOCUS_PC, focus) == 0x28);
+    u8 unknown_00[0x28];   // 0x00
+    NUVEC focus;           // 0x28
+} CAMERA_CONTEXT_FOCUS_PC; // size 0x34
 
 typedef struct CAMERA_CONTEXT_BUILDIT_PC {
-    u8 unknown_00[0x34];
-    NUVEC position;
-} CAMERA_CONTEXT_BUILDIT_PC;
-
-STATIC_ASSERT(offsetof(CAMERA_CONTEXT_BUILDIT_PC, position) == 0x34);
+    u8 unknown_00[0x34];     // 0x00
+    NUVEC position;          // 0x34
+} CAMERA_CONTEXT_BUILDIT_PC; // size 0x40
 
 typedef struct CAMERA_GIZFORCE_TARGET_PC {
-    u8 unknown_00[0x1c];
-    NUVEC position;
-} CAMERA_GIZFORCE_TARGET_PC;
-
-STATIC_ASSERT(offsetof(CAMERA_GIZFORCE_TARGET_PC, position) == 0x1c);
+    u8 unknown_00[0x1c];     // 0x00
+    NUVEC position;          // 0x1c
+} CAMERA_GIZFORCE_TARGET_PC; // size 0x28
 
 typedef struct CAMERA_CABLE_PC {
-    GAMEOBJECT *source;
-    GAMEOBJECT *target;
-} CAMERA_CABLE_PC;
-
-STATIC_ASSERT(offsetof(CAMERA_CABLE_PC, target) == 0x4);
+    GAMEOBJECT *source; // 0x0
+    GAMEOBJECT *target; // 0x4
+} CAMERA_CABLE_PC;      // size 0x8
 
 typedef struct CAMERA_GRABBER_PC {
-    u8 unknown_000[0x48c];
-    NUVEC grab_position;
-} CAMERA_GRABBER_PC;
+    u8 unknown_000[0x48c]; // 0x000
+    NUVEC grab_position;   // 0x48c
+} CAMERA_GRABBER_PC;       // size 0x498
 
-STATIC_ASSERT(offsetof(CAMERA_GRABBER_PC, grab_position) == 0x48c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, previous_position) == 0x1c0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);

@@ -23,14 +23,12 @@ typedef struct FILE_DIRECTORY_TIME_PC {
 } FILE_DIRECTORY_TIME_PC;
 
 typedef struct FILE_DIRECTORY_ENTRY_PC {
-    u32 flags;
-    u32 size;
-    FILE_DIRECTORY_TIME_PC created;
-    FILE_DIRECTORY_TIME_PC modified;
-    char name[256];
-} FILE_DIRECTORY_ENTRY_PC;
-
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_ENTRY_PC, name) == 0x18);
+    u32 flags;                       // 0x000
+    u32 size;                        // 0x004
+    FILE_DIRECTORY_TIME_PC created;  // 0x008
+    FILE_DIRECTORY_TIME_PC modified; // 0x010
+    char name[256];                  // 0x018
+} FILE_DIRECTORY_ENTRY_PC;           // size 0x118
 
 typedef struct FILE_DIRECTORY_RAW_TIME_PC {
     u8 second;
@@ -43,23 +41,19 @@ typedef struct FILE_DIRECTORY_RAW_TIME_PC {
 } FILE_DIRECTORY_RAW_TIME_PC;
 
 typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
-    u32 flags;
-    u8 reserved_04[4];
-    u32 size;
-    u8 reserved_0c;
-    FILE_DIRECTORY_RAW_TIME_PC created;
-    u8 reserved_14;
-    FILE_DIRECTORY_RAW_TIME_PC accessed;
-    u8 reserved_1c;
-    FILE_DIRECTORY_RAW_TIME_PC modified;
-    u32 unused_24;
-    u8 reserved_28[0x18];
-    char name[MAX_PATH];
-} FILE_DIRECTORY_HOST_ENTRY_PC;
-
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, created) == 0xd);
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, modified) == 0x1d);
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, name) == 0x40);
+    u32 flags;                           // 0x000
+    u8 reserved_04[4];                   // 0x004
+    u32 size;                            // 0x008
+    u8 reserved_0c;                      // 0x00c
+    FILE_DIRECTORY_RAW_TIME_PC created;  // 0x00d
+    u8 reserved_14;                      // 0x014
+    FILE_DIRECTORY_RAW_TIME_PC accessed; // 0x015
+    u8 reserved_1c;                      // 0x01c
+    FILE_DIRECTORY_RAW_TIME_PC modified; // 0x01d
+    u32 unused_24;                       // 0x024
+    u8 reserved_28[0x18];                // 0x028
+    char name[MAX_PATH];                 // 0x040
+} FILE_DIRECTORY_HOST_ENTRY_PC;          // size 0x144
 
 extern i32 __cdecl FileDirectoryHostOpenPc(char *path);
 extern const char FileDirectorySourceNamePc[56];

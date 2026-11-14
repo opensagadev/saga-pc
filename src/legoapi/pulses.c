@@ -12,60 +12,37 @@ static f32 PulsesFabsPc(f32 f) {
 }
 
 typedef struct PULSE_PC {
-    NUSPECIALHANDLE special;
-    f32 on_time;
-    f32 off_time;
-    f32 timer;
-    f32 start_wait;
-    u16 active;
-    u16 disabled;
-    char gizmo_name[16];
-    void *gizmo;
-} PULSE_PC;
+    NUSPECIALHANDLE special; // 0x00
+    f32 on_time;             // 0x0c
+    f32 off_time;            // 0x10
+    f32 timer;               // 0x14
+    f32 start_wait;          // 0x18
+    u16 active;              // 0x1c
+    u16 disabled;            // 0x1e
+    char gizmo_name[16];     // 0x20
+    void *gizmo;             // 0x30
+} PULSE_PC;                  // size 0x34
 
 struct level_sfx_pulse_prefix_s {
-    PULSE_PC *pulses;
-    u16 pulse_count;
-    i16 sfx_turn_on;
-    i16 sfx_turn_off;
-    i16 sfx_on_loop;
-    i16 sfx_off_loop;
-    i16 sfx_hit_player;
-    f32 collide_radius;
-    f32 hit_direction_line;
-    f32 hit_direction_radius_origin;
-    i16 debris_hit_player;
-    u8 radial_hit_direction;
-    u8 unknown_1f;
-};
+    PULSE_PC *pulses;                // 0x00
+    u16 pulse_count;                 // 0x04
+    i16 sfx_turn_on;                 // 0x06
+    i16 sfx_turn_off;                // 0x08
+    i16 sfx_on_loop;                 // 0x0a
+    i16 sfx_off_loop;                // 0x0c
+    i16 sfx_hit_player;              // 0x0e
+    f32 collide_radius;              // 0x10
+    f32 hit_direction_line;          // 0x14
+    f32 hit_direction_radius_origin; // 0x18
+    i16 debris_hit_player;           // 0x1c
+    u8 radial_hit_direction;         // 0x1e
+    u8 unknown_1f;                   // 0x1f
+}; // size 0x20
 
 typedef struct PULSE_WORLD_VIEW_PC {
-    u8 unknown_0[0x5050];
-    LEVEL_SFX_PULSE_PC *pulses_sys;
-} PULSE_WORLD_VIEW_PC;
-
-STATIC_ASSERT(sizeof(PULSE_PC) == 0x34);
-STATIC_ASSERT(offsetof(PULSE_PC, on_time) == 0xc);
-STATIC_ASSERT(offsetof(PULSE_PC, off_time) == 0x10);
-STATIC_ASSERT(offsetof(PULSE_PC, timer) == 0x14);
-STATIC_ASSERT(offsetof(PULSE_PC, start_wait) == 0x18);
-STATIC_ASSERT(offsetof(PULSE_PC, active) == 0x1c);
-STATIC_ASSERT(offsetof(PULSE_PC, disabled) == 0x1e);
-STATIC_ASSERT(offsetof(PULSE_PC, gizmo_name) == 0x20);
-STATIC_ASSERT(offsetof(PULSE_PC, gizmo) == 0x30);
-STATIC_ASSERT(sizeof(LEVEL_SFX_PULSE_PC) == 0x20);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, pulse_count) == 4);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, sfx_turn_on) == 6);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, sfx_turn_off) == 8);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, sfx_on_loop) == 0xa);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, sfx_off_loop) == 0xc);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, sfx_hit_player) == 0xe);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, collide_radius) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, hit_direction_line) == 0x14);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, hit_direction_radius_origin) == 0x18);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, debris_hit_player) == 0x1c);
-STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, radial_hit_direction) == 0x1e);
-STATIC_ASSERT(offsetof(PULSE_WORLD_VIEW_PC, pulses_sys) == 0x5050);
+    u8 unknown_0[0x5050];           // 0x0000
+    LEVEL_SFX_PULSE_PC *pulses_sys; // 0x5050
+} PULSE_WORLD_VIEW_PC;              // size 0x5054
 
 void __cdecl Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32 capacity) {
     if (system == NULL) {

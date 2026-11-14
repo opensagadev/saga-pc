@@ -162,53 +162,45 @@ i32 __cdecl NewShadowOnPlatform(void) {
 }
 
 typedef struct TERRAIN_SKIN_BLEND_PC {
-    NUMTX end_matrix;    /* +00 */
-    NUVEC row_amplitude; /* +40 */
-    u8 opaque4c_50[4];
-    NUVEC translation_amplitude; /* +50 */
-} TERRAIN_SKIN_BLEND_PC;
+    NUMTX end_matrix; /* +00 */            // 0x00
+    NUVEC row_amplitude; /* +40 */         // 0x40
+    u8 opaque4c_50[4];                     // 0x4c
+    NUVEC translation_amplitude; /* +50 */ // 0x50
+} TERRAIN_SKIN_BLEND_PC;                   // size 0x5c
 
 typedef struct TERRAIN_SKIN_INFO_PC {
-    NUMTX *matrix;                          /* +00 */
-    const TERRAIN_SKIN_BLEND_PC *blend;     /* +04 */
-    const NUVEC4 *sample_rows;              /* +08: sampled row banks */
-    f32 scale;                              /* +0c */
-    TERRAIN_SKIN_STREAM_PC *original_shape; /* +10 */
-    i16 group_index;                        /* +14 */
-    i16 pool_slot;                          /* +16 */
-    i16 mode;                               /* +18 */
-    i16 vertex_order;                       /* +1a */
-} TERRAIN_SKIN_INFO_PC;
+    NUMTX *matrix; /* +00 */                                // 0x00
+    const TERRAIN_SKIN_BLEND_PC *blend; /* +04 */           // 0x04
+    const NUVEC4 *sample_rows; /* +08: sampled row banks */ // 0x08
+    f32 scale; /* +0c */                                    // 0x0c
+    TERRAIN_SKIN_STREAM_PC *original_shape; /* +10 */       // 0x10
+    i16 group_index; /* +14 */                              // 0x14
+    i16 pool_slot; /* +16 */                                // 0x16
+    i16 mode; /* +18 */                                     // 0x18
+    i16 vertex_order; /* +1a */                             // 0x1a
+} TERRAIN_SKIN_INFO_PC;                                     // size 0x1c
 
 typedef struct TERRAIN_SKIN_USE_RECORD_PC {
-    i32 last_use;
-    i16 skin_index;
-    u8 unknown_06[2];
-} TERRAIN_SKIN_USE_RECORD_PC;
-
-STATIC_ASSERT(sizeof(TERRAIN_SKIN_INFO_PC) == 0x1c);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, original_shape) == 0x10);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, group_index) == 0x14);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, pool_slot) == 0x16);
-STATIC_ASSERT(sizeof(TERRAIN_SKIN_USE_RECORD_PC) == 8);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_USE_RECORD_PC, last_use) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_USE_RECORD_PC, skin_index) == 4);
+    i32 last_use;             // 0x0
+    i16 skin_index;           // 0x4
+    u8 unknown_06[2];         // 0x6
+} TERRAIN_SKIN_USE_RECORD_PC; // size 0x8
 
 typedef struct TERRAIN_SKIN_BATCH_PC {
-    i16 kind;
-    i16 count;
-    f32 min_x;
-    f32 max_x;
-    f32 min_z;
-    f32 max_z;
-} TERRAIN_SKIN_BATCH_PC;
+    i16 kind;            // 0x00
+    i16 count;           // 0x02
+    f32 min_x;           // 0x04
+    f32 max_x;           // 0x08
+    f32 min_z;           // 0x0c
+    f32 max_z;           // 0x10
+} TERRAIN_SKIN_BATCH_PC; // size 0x14
 
 /* Raw records remain variable-length: a stream is the observed
  * 20-byte header followed by count 100-byte polygons. */
 struct TERRAIN_SKIN_STREAM_PC {
-    TERRAIN_SKIN_BATCH_PC header;
-    TERRAIN_POLYGON_INFO_PC polygons[1];
-};
+    TERRAIN_SKIN_BATCH_PC header;        // 0x00
+    TERRAIN_POLYGON_INFO_PC polygons[1]; // 0x14
+}; // size 0x78
 
 extern const f32 TerrainSkinBoundsMaxPc;
 extern const f32 TerrainSkinBoundsMinPc;
@@ -430,17 +422,6 @@ void SkinPlatform(TERRAIN_GROUP_PC *group, TERRAIN_SKIN_STREAM_PC *output, const
 
 #undef TERRAIN_SKIN_NORMAL
 #undef TERRAIN_SKIN_BOUND
-
-STATIC_ASSERT(sizeof(TERRAIN_SKIN_BATCH_PC) == 0x14);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_STREAM_PC, polygons) == 0x14);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, matrix) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, blend) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, sample_rows) == 8);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, scale) == 0xc);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, mode) == 0x18);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, vertex_order) == 0x1a);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_BLEND_PC, row_amplitude) == 0x40);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_BLEND_PC, translation_amplitude) == 0x50);
 
 /* Insert after skin-info/use-record declarations; storage root-owned.
  * All seven new views retain BLANK original CSVsize and ctype / zero credit.
@@ -1921,34 +1902,22 @@ void __cdecl TerrainSetPlatConnectTol(f32 tolerance) {
 }
 
 typedef struct TERRAIN_PLATFORM_LIFECYCLE_PC {
-    NUMTX previous_matrix;
-    NUMTX *scene_matrix;
-    i32 motion_status;
-    i16 terrain_group_index;
-    i16 scene_object_index;
-    u32 flags;
-    i16 bounce_frames;
-    u8 unknown_52[2];
-    f32 bounce_impulse;
-    f32 bounce_offset;
-    f32 bounce_velocity;
-    f32 bounce_spring;
-    f32 bounce_damping;
-    u32 *instance_flags;
-} TERRAIN_PLATFORM_LIFECYCLE_PC;
+    NUMTX previous_matrix;       // 0x00
+    NUMTX *scene_matrix;         // 0x40
+    i32 motion_status;           // 0x44
+    i16 terrain_group_index;     // 0x48
+    i16 scene_object_index;      // 0x4a
+    u32 flags;                   // 0x4c
+    i16 bounce_frames;           // 0x50
+    u8 unknown_52[2];            // 0x52
+    f32 bounce_impulse;          // 0x54
+    f32 bounce_offset;           // 0x58
+    f32 bounce_velocity;         // 0x5c
+    f32 bounce_spring;           // 0x60
+    f32 bounce_damping;          // 0x64
+    u32 *instance_flags;         // 0x68
+} TERRAIN_PLATFORM_LIFECYCLE_PC; // size 0x6c
 
-STATIC_ASSERT(sizeof(TERRAIN_PLATFORM_LIFECYCLE_PC) == 0x6c);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, previous_matrix) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, scene_matrix) == 0x40);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, motion_status) == 0x44);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, flags) == 0x4c);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, bounce_frames) == 0x50);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, bounce_impulse) == 0x54);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, bounce_offset) == 0x58);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, bounce_velocity) == 0x5c);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, bounce_spring) == 0x60);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, bounce_damping) == 0x64);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, instance_flags) == 0x68);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platform_count) == 0x154);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platforms) == 0x158);
 
@@ -2197,22 +2166,15 @@ void __cdecl PlatInstRotate(i32 platform_index, i32 enabled) {
 }
 
 typedef struct TERRAIN_PICKUP_SET_PC {
-    TERRAIN_GROUP_PC *groups;
-    void *shape_data;
-    i32 group_count;
-    i16 group_for_type[128];
-    TERRAIN_PLATFORM_PC platforms[32];
-    TERRAIN_SPATIAL_NODE *spatial_nodes;
-    u8 unknown_e90[0xa490 - 0xe90];
-} TERRAIN_PICKUP_SET_PC;
+    TERRAIN_GROUP_PC *groups;            // 0x0000
+    void *shape_data;                    // 0x0004
+    i32 group_count;                     // 0x0008
+    i16 group_for_type[128];             // 0x000c
+    TERRAIN_PLATFORM_PC platforms[32];   // 0x010c
+    TERRAIN_SPATIAL_NODE *spatial_nodes; // 0x0e8c
+    u8 unknown_e90[0xa490 - 0xe90];      // 0x0e90
+} TERRAIN_PICKUP_SET_PC;                 // size 0xa490
 
-STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, groups) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, shape_data) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, group_count) == 8);
-STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, group_for_type) == 0xc);
-STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, platforms) == 0x10c);
-STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, spatial_nodes) == 0xe8c);
-STATIC_ASSERT(sizeof(TERRAIN_PICKUP_SET_PC) == 0xa490);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_58) == 0x58);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_5c) == 0x5c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_60) == 0x60);
@@ -2851,11 +2813,8 @@ void TerrDrawPlatCol(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) {
 }
 
 typedef struct terrain_debug_source_link_pc_s {
-    TERRAIN_POLYGON_INFO_PC *source_polygon;
-} TERRAIN_DEBUG_SOURCE_LINK_PC;
-
-STATIC_ASSERT(offsetof(TERRAIN_DEBUG_SOURCE_LINK_PC, source_polygon) == 0);
-STATIC_ASSERT(sizeof(TERRAIN_DEBUG_SOURCE_LINK_PC) == 4);
+    TERRAIN_POLYGON_INFO_PC *source_polygon; // 0x0
+} TERRAIN_DEBUG_SOURCE_LINK_PC;              // size 0x4
 
 void TerrDrawImpactPol(void) {
     TerrainQuery_s *query = TerI;

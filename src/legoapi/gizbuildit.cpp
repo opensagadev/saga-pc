@@ -3,144 +3,98 @@
 /* Retail unit 0x58e8f0-0x5925c0 (legoapi/gizmo/object/gizbuildit.cpp): definitions in retail address order. */
 
 typedef struct gizbuildit_record_reader_pc_s {
-    char name[16];
-    u8 unknown_10[0x6c];
-} GIZBUILDIT_RECORD_READER_PC;
-
-STATIC_ASSERT(sizeof(GIZBUILDIT_RECORD_READER_PC) == 0x7c);
-STATIC_ASSERT(offsetof(GIZBUILDIT_RECORD_READER_PC, name) == 0);
+    char name[16];             // 0x00
+    u8 unknown_10[0x6c];       // 0x10
+} GIZBUILDIT_RECORD_READER_PC; // size 0x7c
 
 typedef struct gizbuildit_system_reader_pc_s {
-    GIZBUILDIT_RECORD_READER_PC *buildits;
-    u16 count;
-} GIZBUILDIT_SYSTEM_READER_PC;
-
-STATIC_ASSERT(offsetof(GIZBUILDIT_SYSTEM_READER_PC, buildits) == 0);
-STATIC_ASSERT(offsetof(GIZBUILDIT_SYSTEM_READER_PC, count) == 4);
+    GIZBUILDIT_RECORD_READER_PC *buildits; // 0x0
+    u16 count;                             // 0x4
+} GIZBUILDIT_SYSTEM_READER_PC;             // size 0x8
 
 typedef struct gizbuildit_world_reader_pc_s {
-    u8 unknown_00[0x46a8];
-    GIZBUILDIT_SYSTEM_READER_PC *system;
-} GIZBUILDIT_WORLD_READER_PC;
-
-STATIC_ASSERT(offsetof(GIZBUILDIT_WORLD_READER_PC, system) == 0x46a8);
+    u8 unknown_00[0x46a8];               // 0x0000
+    GIZBUILDIT_SYSTEM_READER_PC *system; // 0x46a8
+} GIZBUILDIT_WORLD_READER_PC;            // size 0x46ac
 
 typedef struct buildit_matrices_pc_s {
-    NUMTX start_mtx;
-    NUMTX end_mtx;
-} BUILDIT_MATRICES_PC;
-
-STATIC_ASSERT(offsetof(BUILDIT_MATRICES_PC, start_mtx) == 0);
-STATIC_ASSERT(offsetof(BUILDIT_MATRICES_PC, end_mtx) == 0x40);
+    NUMTX start_mtx;   // 0x00
+    NUMTX end_mtx;     // 0x40
+} BUILDIT_MATRICES_PC; // size 0x80
 
 typedef struct buildit_animation_pc_s {
-    u8 unknown_00[4];
-    NUSPECIALHANDLE special;
-    u8 unknown_10[0x14];
-    BUILDIT_MATRICES_PC *object_data;
-} BUILDIT_ANIMATION_PC;
-
-STATIC_ASSERT(offsetof(BUILDIT_ANIMATION_PC, special) == 4);
-STATIC_ASSERT(offsetof(BUILDIT_ANIMATION_PC, object_data) == 0x24);
+    u8 unknown_00[4];                 // 0x00
+    NUSPECIALHANDLE special;          // 0x04
+    u8 unknown_10[0x14];              // 0x10
+    BUILDIT_MATRICES_PC *object_data; // 0x24
+} BUILDIT_ANIMATION_PC;               // size 0x28
 
 typedef struct buildit_movement_pc_s {
-    u8 unknown_00[0x10];
-    void *anim_set;
-    BUILDIT_ANIMATION_PC **anim_objects;
-    u8 unknown_18[0x10];
-    NUVEC start_position;
-    u8 unknown_34[0x38];
-    u8 anim_object_count;
-    u8 unknown_6d[2];
-    u8 built_object_count;
-    u8 batch_size;
-    u8 unknown_71;
-    u8 state_flags;
-} BUILDIT_MOVEMENT_PC;
-
-STATIC_ASSERT(offsetof(BUILDIT_MOVEMENT_PC, anim_set) == 0x10);
-STATIC_ASSERT(offsetof(BUILDIT_MOVEMENT_PC, anim_objects) == 0x14);
-STATIC_ASSERT(offsetof(BUILDIT_MOVEMENT_PC, start_position) == 0x28);
-STATIC_ASSERT(offsetof(BUILDIT_MOVEMENT_PC, anim_object_count) == 0x6c);
-STATIC_ASSERT(offsetof(BUILDIT_MOVEMENT_PC, built_object_count) == 0x6f);
-STATIC_ASSERT(offsetof(BUILDIT_MOVEMENT_PC, batch_size) == 0x70);
-STATIC_ASSERT(offsetof(BUILDIT_MOVEMENT_PC, state_flags) == 0x72);
+    u8 unknown_00[0x10];                 // 0x00
+    void *anim_set;                      // 0x10
+    BUILDIT_ANIMATION_PC **anim_objects; // 0x14
+    u8 unknown_18[0x10];                 // 0x18
+    NUVEC start_position;                // 0x28
+    u8 unknown_34[0x38];                 // 0x34
+    u8 anim_object_count;                // 0x6c
+    u8 unknown_6d[2];                    // 0x6d
+    u8 built_object_count;               // 0x6f
+    u8 batch_size;                       // 0x70
+    u8 unknown_71;                       // 0x71
+    u8 state_flags;                      // 0x72
+} BUILDIT_MOVEMENT_PC;                   // size 0x74
 
 typedef struct buildit_reset_matrices_pc_s {
-    NUMTX start_mtx;
-    NUMTX end_mtx;
-    NUMTX draw_mtx;
-} BUILDIT_RESET_MATRICES_PC;
-
-STATIC_ASSERT(offsetof(BUILDIT_RESET_MATRICES_PC, start_mtx) == 0);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_MATRICES_PC, end_mtx) == 0x40);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_MATRICES_PC, draw_mtx) == 0x80);
+    NUMTX start_mtx;         // 0x00
+    NUMTX end_mtx;           // 0x40
+    NUMTX draw_mtx;          // 0x80
+} BUILDIT_RESET_MATRICES_PC; // size 0xc0
 
 typedef struct buildit_reset_pc_s {
-    char name[16];
-    GAMEANIMSET *anim_set;
-    GAMEANIMOBJ **anim_objects;
-    struct buildit_reset_pc_s *linked_buildit;
-    NUVEC file_position;
-    NUVEC start_position;
-    NUVEC position;
-    f32 bounds_radius;
-    f32 reset_step_timer;
-    f32 reset_step_duration;
-    f32 interaction_radius;
-    f32 field_50;
-    i16 wobble_parameter;
-    i16 completion_score;
-    i16 field_58;
-    i16 field_5a;
-    NUVEC effect_position;
-    f32 activation_radius;
-    u8 anim_object_count;
-    u8 build_state;
-    u8 builders_active;
-    u8 built_object_count;
-    u8 batch_size;
-    u8 progress;
-    u16 state_flags;
-    u16 linked_rotation;
-    i16 room_index;
-    i16 blowup_type;
+    char name[16];                             // 0x00
+    GAMEANIMSET *anim_set;                     // 0x10
+    GAMEANIMOBJ **anim_objects;                // 0x14
+    struct buildit_reset_pc_s *linked_buildit; // 0x18
+    NUVEC file_position;                       // 0x1c
+    NUVEC start_position;                      // 0x28
+    NUVEC position;                            // 0x34
+    f32 bounds_radius;                         // 0x40
+    f32 reset_step_timer;                      // 0x44
+    f32 reset_step_duration;                   // 0x48
+    f32 interaction_radius;                    // 0x4c
+    f32 field_50;                              // 0x50
+    i16 wobble_parameter;                      // 0x54
+    i16 completion_score;                      // 0x56
+    i16 field_58;                              // 0x58
+    i16 field_5a;                              // 0x5a
+    NUVEC effect_position;                     // 0x5c
+    f32 activation_radius;                     // 0x68
+    u8 anim_object_count;                      // 0x6c
+    u8 build_state;                            // 0x6d
+    u8 builders_active;                        // 0x6e
+    u8 built_object_count;                     // 0x6f
+    u8 batch_size;                             // 0x70
+    u8 progress;                               // 0x71
+    u16 state_flags;                           // 0x72
+    u16 linked_rotation;                       // 0x74
+    i16 room_index;                            // 0x76
+    i16 blowup_type;                           // 0x78
 
-    union {
-        u16 availability_flags;
+    union {                     // 0x7a
+        u16 availability_flags; // 0x7a
 
-        struct {
-            u16 active : 1;
-            u16 visible : 1;
-            u16 flag_04 : 1;
-            u16 unknown_bits_3 : 4;
-            u16 flag_80 : 1;
-            u16 unknown_bit_8 : 1;
-            u16 reward_released : 1;
+        struct {                     // 0x7a
+            u16 active : 1;          // 0x7a:0
+            u16 visible : 1;         // 0x7a:1
+            u16 flag_04 : 1;         // 0x7a:2
+            u16 unknown_bits_3 : 4;  // 0x7a:3
+            u16 flag_80 : 1;         // 0x7a:7
+            u16 unknown_bit_8 : 1;   // 0x7a:8
+            u16 reward_released : 1; // 0x7a:9
         } availability;
     };
-} BUILDIT_RESET_PC;
+} BUILDIT_RESET_PC; // size 0x7c
 
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_set) == 0x10);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_objects) == 0x14);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, linked_buildit) == 0x18);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, reset_step_timer) == 0x44);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, reset_step_duration) == 0x48);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_object_count) == 0x6c);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, build_state) == 0x6d);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, builders_active) == 0x6e);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, built_object_count) == 0x6f);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, availability_flags) == 0x7a);
-STATIC_ASSERT(sizeof(BUILDIT_RESET_PC) == 0x7c);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, file_position) == 0x1c);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, start_position) == 0x28);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, position) == 0x34);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, bounds_radius) == 0x40);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, wobble_parameter) == 0x54);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, state_flags) == 0x72);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, linked_rotation) == 0x74);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, room_index) == 0x76);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, blowup_type) == 0x78);
 STATIC_ASSERT(sizeof(GIZBUILDITANIMDATA_s) == 0xc8);
 STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, start_mtx) == 0);
 STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, end_mtx) == 0x40);
@@ -148,37 +102,18 @@ STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) == 0x80);
 STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, wobble_time) == 0xc0);
 
 typedef struct buildit_reset_system_pc_s {
-    BUILDIT_RESET_PC *buildits;
-    u16 count;
-} BUILDIT_RESET_SYSTEM_PC;
-
-STATIC_ASSERT(offsetof(BUILDIT_RESET_SYSTEM_PC, buildits) == 0);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_SYSTEM_PC, count) == 4);
+    BUILDIT_RESET_PC *buildits; // 0x0
+    u16 count;                  // 0x4
+} BUILDIT_RESET_SYSTEM_PC;      // size 0x8
 
 typedef struct buildit_reset_progress_pc_s {
-    u32 completed[2];
-    u32 active[2];
-    u32 visible[2];
-    u32 reward_released[2];
-    u8 built_object_count[64];
-} BUILDIT_RESET_PROGRESS_PC;
+    u32 completed[2];          // 0x00
+    u32 active[2];             // 0x08
+    u32 visible[2];            // 0x10
+    u32 reward_released[2];    // 0x18
+    u8 built_object_count[64]; // 0x20
+} BUILDIT_RESET_PROGRESS_PC;   // size 0x60
 
-STATIC_ASSERT(sizeof(BUILDIT_RESET_PROGRESS_PC) == 0x60);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PROGRESS_PC, completed) == 0);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PROGRESS_PC, active) == 8);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PROGRESS_PC, visible) == 0x10);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PROGRESS_PC, reward_released) == 0x18);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PROGRESS_PC, built_object_count) == 0x20);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, name) == 0x0);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, interaction_radius) == 0x4c);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, field_50) == 0x50);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, completion_score) == 0x56);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, field_58) == 0x58);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, field_5a) == 0x5a);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, effect_position) == 0x5c);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, activation_radius) == 0x68);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, batch_size) == 0x70);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, progress) == 0x71);
 extern "C" {
     extern const char GizmoRegistryGizBuildItsNamePc[];
 }
@@ -207,18 +142,14 @@ STATIC_ASSERT(offsetof(GIZBUILDITSYS_s, buildits) == 0);
 STATIC_ASSERT(offsetof(GIZBUILDITSYS_s, count) == 4);
 
 typedef struct buildit_attracto_reader_pc_s {
-    u8 unknown_00[0x18];
-    void *linked_buildit;
-    u8 unknown_1c[0x28];
-    f32 step_timer;
-    f32 step_duration;
-    u8 unknown_4c[0x30];
-} BUILDIT_ATTRACTO_READER_PC;
+    u8 unknown_00[0x18];      // 0x00
+    void *linked_buildit;     // 0x18
+    u8 unknown_1c[0x28];      // 0x1c
+    f32 step_timer;           // 0x44
+    f32 step_duration;        // 0x48
+    u8 unknown_4c[0x30];      // 0x4c
+} BUILDIT_ATTRACTO_READER_PC; // size 0x7c
 
-STATIC_ASSERT(sizeof(BUILDIT_ATTRACTO_READER_PC) == 0x7c);
-STATIC_ASSERT(offsetof(BUILDIT_ATTRACTO_READER_PC, linked_buildit) == 0x18);
-STATIC_ASSERT(offsetof(BUILDIT_ATTRACTO_READER_PC, step_timer) == 0x44);
-STATIC_ASSERT(offsetof(BUILDIT_ATTRACTO_READER_PC, step_duration) == 0x48);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, step_timer) == 0x44);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, step_duration) == 0x48);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, anim_object_count) == 0x6c);

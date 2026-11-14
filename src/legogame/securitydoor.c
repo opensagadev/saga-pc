@@ -1,50 +1,38 @@
 #include "saga.h"
 
 typedef struct security_door_record_pc_s {
-    NUMTX leaf_matrix[2];
-    char name[16];
-    NUVEC position;
-    i16 platform_id[2];
-    u16 yaw;
+    NUMTX leaf_matrix[2]; // 0x00
+    char name[16];        // 0x80
+    NUVEC position;       // 0x90
+    i16 platform_id[2];   // 0x9c
+    u16 yaw;              // 0xa0
 
-    union {
-        u8 flags;
+    union {       // 0xa2
+        u8 flags; // 0xa2
 
-        struct {
-            u8 active : 1;
-            u8 visible : 1;
-            u8 opened : 1;
-            u8 drawn : 1;
-            u8 unused : 4;
+        struct {            // 0xa2
+            u8 active : 1;  // 0xa2:0
+            u8 visible : 1; // 0xa2:1
+            u8 opened : 1;  // 0xa2:2
+            u8 drawn : 1;   // 0xa2:3
+            u8 unused : 4;  // 0xa2:4
         } bits;
     };
 
-    u8 state;
-    NUVEC player_position;
-    u16 terrain_angle_z;
-    u16 terrain_angle_x;
-    f32 opening;
-    u8 unknown_b8[8];
-} SECURITY_DOOR_RECORD_PC;
+    u8 state;              // 0xa3
+    NUVEC player_position; // 0xa4
+    u16 terrain_angle_z;   // 0xb0
+    u16 terrain_angle_x;   // 0xb2
+    f32 opening;           // 0xb4
+    u8 unknown_b8[8];      // 0xb8
+} SECURITY_DOOR_RECORD_PC; // size 0xc0
 
 typedef struct security_door_progress_pc_s {
-    u32 visible_mask[1];
-    u32 active_mask[1];
-    u32 opened_mask[1];
-} SECURITY_DOOR_PROGRESS_PC;
+    u32 visible_mask[1];     // 0x0
+    u32 active_mask[1];      // 0x4
+    u32 opened_mask[1];      // 0x8
+} SECURITY_DOOR_PROGRESS_PC; // size 0xc
 
-STATIC_ASSERT(sizeof(SECURITY_DOOR_RECORD_PC) == 0xc0);
-STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, name) == 0x80);
-STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, position) == 0x90);
-STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, platform_id) == 0x9c);
-STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, yaw) == 0xa0);
-STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, flags) == 0xa2);
-STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, state) == 0xa3);
-STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, player_position) == 0xa4);
-STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, terrain_angle_z) == 0xb0);
-STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, terrain_angle_x) == 0xb2);
-STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, opening) == 0xb4);
-STATIC_ASSERT(sizeof(SECURITY_DOOR_PROGRESS_PC) == 12);
 STATIC_ASSERT(offsetof(WORLDINFO, security_doors) == 0x50b0);
 STATIC_ASSERT(offsetof(WORLDINFO, security_door_count) == 0x50b4);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);

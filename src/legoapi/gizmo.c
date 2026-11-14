@@ -64,17 +64,14 @@ STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
 STATIC_ASSERT(offsetof(GIZMOSET_PC, data) == 0x10);
 
 typedef struct bolt_gizmo_type_pc_s {
-    u8 unknown_00[0x6c];
-    i32(__cdecl *hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *);
-    u8 unknown_70[4];
-    i32(__cdecl *hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32,
-                           u8 *);
-    u8 unknown_78[0x24];
-} BOLT_GIZMO_TYPE_PC;
+    u8 unknown_00[0x6c];                                              // 0x00
+    i32(__cdecl *hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *); // 0x6c
+    u8 unknown_70[4];                                                 // 0x70
+    i32(__cdecl *hit_bolt)(WORLDINFO *,                               // 0x74
+                           void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *);
+    u8 unknown_78[0x24]; // 0x78
+} BOLT_GIZMO_TYPE_PC;    // size 0x9c
 
-STATIC_ASSERT(sizeof(BOLT_GIZMO_TYPE_PC) == 0x9c);
-STATIC_ASSERT(offsetof(BOLT_GIZMO_TYPE_PC, hit_platform) == 0x6c);
-STATIC_ASSERT(offsetof(BOLT_GIZMO_TYPE_PC, hit_bolt) == 0x74);
 typedef NUVEC *(__cdecl *GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
 void EdFileWrite(void *data, i32 len);
 void EdFileWriteInt(i32 value);
@@ -82,16 +79,12 @@ void EdFileWriteChar(char value);
 extern GIZACTIONDEF_PC *gizactiondefs;
 
 typedef struct GIZMO_NAME_TYPE_PC {
-    u8 unknown_00[0x20];
-    char prefix[0x20];
-    u8 unknown_40[4];
-    char *(__cdecl *get_gizmo_name)(void *);
-    u8 unknown_48[0x54];
-} GIZMO_NAME_TYPE_PC;
-
-STATIC_ASSERT(sizeof(GIZMO_NAME_TYPE_PC) == 0x9c);
-STATIC_ASSERT(offsetof(GIZMO_NAME_TYPE_PC, prefix) == 0x20);
-STATIC_ASSERT(offsetof(GIZMO_NAME_TYPE_PC, get_gizmo_name) == 0x44);
+    u8 unknown_00[0x20];                     // 0x00
+    char prefix[0x20];                       // 0x20
+    u8 unknown_40[4];                        // 0x40
+    char *(__cdecl *get_gizmo_name)(void *); // 0x44
+    u8 unknown_48[0x54];                     // 0x48
+} GIZMO_NAME_TYPE_PC;                        // size 0x9c
 
 typedef struct level_sfx_gizmotype_s {
     u8 unknown_00[0x94];

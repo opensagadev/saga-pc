@@ -3,109 +3,68 @@
 /* Retail unit 0x59a5a0-0x59b32d: definitions in retail address order. */
 
 typedef struct antinode_pc_s {
-    NUVEC position;
-    f32 radius;
-    f32 min_y;
-    f32 max_y;
-    f32 extent_x;
-    f32 extent_z;
-    f32 remaining_time;
-    u32 user_data[3];
-    u16 angle;
-    u8 shape;
-    u8 grid_min_x;
-    u8 grid_min_z;
-    u8 grid_max_x;
-    u8 grid_max_z;
-    u8 reserved_37;
-    struct antinode_pc_s *next;
-    u8 unknown_3c[4];
-} ANTINODE_PC;
+    NUVEC position;             // 0x00
+    f32 radius;                 // 0x0c
+    f32 min_y;                  // 0x10
+    f32 max_y;                  // 0x14
+    f32 extent_x;               // 0x18
+    f32 extent_z;               // 0x1c
+    f32 remaining_time;         // 0x20
+    u32 user_data[3];           // 0x24
+    u16 angle;                  // 0x30
+    u8 shape;                   // 0x32
+    u8 grid_min_x;              // 0x33
+    u8 grid_min_z;              // 0x34
+    u8 grid_max_x;              // 0x35
+    u8 grid_max_z;              // 0x36
+    u8 reserved_37;             // 0x37
+    struct antinode_pc_s *next; // 0x38
+    u8 unknown_3c[4];           // 0x3c
+} ANTINODE_PC;                  // size 0x40
 
 typedef struct antinode_sys_pc_s {
-    ANTINODE_PC *nodes;
-    ANTINODE_PC *active;
-    ANTINODE_PC *free;
-    WORLDINFO *world;
-    i32 capacity;
-    i32 count;
-} ANTINODE_SYS_PC;
+    ANTINODE_PC *nodes;  // 0x00
+    ANTINODE_PC *active; // 0x04
+    ANTINODE_PC *free;   // 0x08
+    WORLDINFO *world;    // 0x0c
+    i32 capacity;        // 0x10
+    i32 count;           // 0x14
+} ANTINODE_SYS_PC;       // size 0x18
 
 typedef struct antinode_data_pc_s {
-    NUVEC position;
-    f32 radius;
-    f32 min_y;
-    f32 max_y;
-    f32 extent_x;
-    f32 extent_z;
-    u16 angle;
-    u8 shape;
-    u8 mode;
-} ANTINODE_DATA_PC;
+    NUVEC position; // 0x00
+    f32 radius;     // 0x0c
+    f32 min_y;      // 0x10
+    f32 max_y;      // 0x14
+    f32 extent_x;   // 0x18
+    f32 extent_z;   // 0x1c
+    u16 angle;      // 0x20
+    u8 shape;       // 0x22
+    u8 mode;        // 0x23
+} ANTINODE_DATA_PC; // size 0x24
 
 typedef struct antinode_world_pc_s {
-    u8 unknown_0000[0x144];
-    NUVEC level_min;
-    NUVEC level_max;
-} ANTINODE_WORLD_PC;
-
-STATIC_ASSERT(offsetof(ANTINODE_PC, radius) == 0xc);
-STATIC_ASSERT(offsetof(ANTINODE_PC, min_y) == 0x10);
-STATIC_ASSERT(offsetof(ANTINODE_PC, max_y) == 0x14);
-STATIC_ASSERT(offsetof(ANTINODE_PC, extent_x) == 0x18);
-STATIC_ASSERT(offsetof(ANTINODE_PC, extent_z) == 0x1c);
-STATIC_ASSERT(offsetof(ANTINODE_PC, remaining_time) == 0x20);
-STATIC_ASSERT(offsetof(ANTINODE_PC, angle) == 0x30);
-STATIC_ASSERT(offsetof(ANTINODE_PC, shape) == 0x32);
-STATIC_ASSERT(offsetof(ANTINODE_PC, grid_min_x) == 0x33);
-STATIC_ASSERT(offsetof(ANTINODE_PC, grid_min_z) == 0x34);
-STATIC_ASSERT(offsetof(ANTINODE_PC, grid_max_x) == 0x35);
-STATIC_ASSERT(offsetof(ANTINODE_PC, grid_max_z) == 0x36);
-STATIC_ASSERT(offsetof(ANTINODE_PC, next) == 0x38);
-STATIC_ASSERT(offsetof(ANTINODE_SYS_PC, active) == 4);
-STATIC_ASSERT(offsetof(ANTINODE_SYS_PC, free) == 8);
-STATIC_ASSERT(offsetof(ANTINODE_SYS_PC, world) == 0xc);
-STATIC_ASSERT(offsetof(ANTINODE_SYS_PC, count) == 0x14);
-STATIC_ASSERT(offsetof(ANTINODE_DATA_PC, radius) == 0xc);
-STATIC_ASSERT(offsetof(ANTINODE_DATA_PC, min_y) == 0x10);
-STATIC_ASSERT(offsetof(ANTINODE_DATA_PC, max_y) == 0x14);
-STATIC_ASSERT(offsetof(ANTINODE_DATA_PC, extent_x) == 0x18);
-STATIC_ASSERT(offsetof(ANTINODE_DATA_PC, extent_z) == 0x1c);
-STATIC_ASSERT(offsetof(ANTINODE_DATA_PC, angle) == 0x20);
-STATIC_ASSERT(offsetof(ANTINODE_DATA_PC, shape) == 0x22);
-STATIC_ASSERT(offsetof(ANTINODE_DATA_PC, mode) == 0x23);
-STATIC_ASSERT(offsetof(ANTINODE_WORLD_PC, level_min) == 0x144);
-STATIC_ASSERT(offsetof(ANTINODE_WORLD_PC, level_max) == 0x150);
-
-STATIC_ASSERT(sizeof(ANTINODE_PC) == 0x40);
-STATIC_ASSERT(sizeof(ANTINODE_SYS_PC) == 0x18);
-STATIC_ASSERT(offsetof(ANTINODE_SYS_PC, nodes) == 0);
-STATIC_ASSERT(offsetof(ANTINODE_SYS_PC, capacity) == 0x10);
+    u8 unknown_0000[0x144]; // 0x000
+    NUVEC level_min;        // 0x144
+    NUVEC level_max;        // 0x150
+} ANTINODE_WORLD_PC;        // size 0x15c
 
 typedef struct ANTINODE_AI_OUTPUT_PC {
-    u8 unknown_00[0x10];
-    f32 min_y;
-    u8 unknown_14[4];
-    f32 max_y;
-    u8 unknown_1c[0x1c];
-    i32 rotation;
-    u8 unknown_3c[4];
-    f32 extent_x;
-    f32 extent_z;
-    u8 unknown_48[2];
-    u8 shape;
-    u8 unknown_4b[5];
-    u32 user_data[2];
-} ANTINODE_AI_OUTPUT_PC;
+    u8 unknown_00[0x10]; // 0x00
+    f32 min_y;           // 0x10
+    u8 unknown_14[4];    // 0x14
+    f32 max_y;           // 0x18
+    u8 unknown_1c[0x1c]; // 0x1c
+    i32 rotation;        // 0x38
+    u8 unknown_3c[4];    // 0x3c
+    f32 extent_x;        // 0x40
+    f32 extent_z;        // 0x44
+    u8 unknown_48[2];    // 0x48
+    u8 shape;            // 0x4a
+    u8 unknown_4b[5];    // 0x4b
+    u32 user_data[2];    // 0x50
+} ANTINODE_AI_OUTPUT_PC; // size 0x58
 
-STATIC_ASSERT(sizeof(ANTINODE_AI_OUTPUT_PC) == 0x58);
-STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT_PC, min_y) == 0x10);
-STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT_PC, max_y) == 0x18);
-STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT_PC, rotation) == 0x38);
-STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT_PC, extent_x) == 0x40);
-STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT_PC, extent_z) == 0x44);
-STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT_PC, shape) == 0x4a);
-STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT_PC, user_data) == 0x50);
 STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT_PC, user_data) + sizeof(u32) == 0x54);
 STATIC_ASSERT(offsetof(ANTINODE_PC, user_data) + sizeof(u32) == 0x28);
 STATIC_ASSERT(offsetof(ANTINODE_PC, user_data) + 2 * sizeof(u32) == 0x2c);

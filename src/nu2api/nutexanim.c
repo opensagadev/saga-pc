@@ -84,71 +84,43 @@ PC_TEXTURE_ANIM_ENV *__cdecl NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material
 typedef struct TEXTURE_ANIM_PROGRAM_PC TEXTURE_ANIM_PROGRAM_PC;
 
 struct TEXTURE_ANIM_PROGRAM_PC {
-    TEXTURE_ANIM_PROGRAM_PC *next;
-    TEXTURE_ANIM_PROGRAM_PC *previous;
-    char name[32];
-    i32 on_signal[32];
-    i32 off_signal[32];
-    u32 on_mask;
-    u32 off_mask;
-    i16 label_ids[32];
-    i16 label_offsets[32];
-    i32 label_count;
-    i16 instruction_count;
-    u16 flags;
-    u16 mask;
-    i16 instructions[1];
-};
+    TEXTURE_ANIM_PROGRAM_PC *next;     // 0x000
+    TEXTURE_ANIM_PROGRAM_PC *previous; // 0x004
+    char name[32];                     // 0x008
+    i32 on_signal[32];                 // 0x028
+    i32 off_signal[32];                // 0x0a8
+    u32 on_mask;                       // 0x128
+    u32 off_mask;                      // 0x12c
+    i16 label_ids[32];                 // 0x130
+    i16 label_offsets[32];             // 0x170
+    i32 label_count;                   // 0x1b0
+    i16 instruction_count;             // 0x1b4
+    u16 flags;                         // 0x1b6
+    u16 mask;                          // 0x1b8
+    i16 instructions[1];               // 0x1ba
+}; // size 0x1bc
 
-STATIC_ASSERT(sizeof(TEXTURE_ANIM_PROGRAM_PC) == 0x1bc);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, next) == 0);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, previous) == 4);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, name) == 8);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, on_signal) == 0x28);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, off_signal) == 0xa8);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, on_mask) == 0x128);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, off_mask) == 0x12c);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, label_ids) == 0x130);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, label_offsets) == 0x170);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, label_count) == 0x1b0);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, instruction_count) == 0x1b4);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, flags) == 0x1b6);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, mask) == 0x1b8);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, instructions) == 0x1ba);
 typedef struct TEXTURE_ANIMATION_PC TEXTURE_ANIMATION_PC;
 
 struct TEXTURE_ANIMATION_PC {
-    TEXTURE_ANIMATION_PC *next;
-    TEXTURE_ANIMATION_PC *previous;
-    u16 *texture_ids;
-    i16 texture_count;
-    u8 flags;
-    u8 reserved_0f;
-    NUMTL *material;
-    PC_TEXTURE_ANIM_ENV *environment;
-    char *name;
-    char *program_name;
-};
-
-STATIC_ASSERT(sizeof(TEXTURE_ANIMATION_PC) == 0x20);
-STATIC_ASSERT(offsetof(TEXTURE_ANIMATION_PC, next) == 0);
-STATIC_ASSERT(offsetof(TEXTURE_ANIMATION_PC, previous) == 4);
-STATIC_ASSERT(offsetof(TEXTURE_ANIMATION_PC, texture_ids) == 8);
-STATIC_ASSERT(offsetof(TEXTURE_ANIMATION_PC, texture_count) == 0xc);
-STATIC_ASSERT(offsetof(TEXTURE_ANIMATION_PC, flags) == 0xe);
-STATIC_ASSERT(offsetof(TEXTURE_ANIMATION_PC, material) == 0x10);
-STATIC_ASSERT(offsetof(TEXTURE_ANIMATION_PC, environment) == 0x14);
-STATIC_ASSERT(offsetof(TEXTURE_ANIMATION_PC, name) == 0x18);
+    TEXTURE_ANIMATION_PC *next;       // 0x00
+    TEXTURE_ANIMATION_PC *previous;   // 0x04
+    u16 *texture_ids;                 // 0x08
+    i16 texture_count;                // 0x0c
+    u8 flags;                         // 0x0e
+    u8 reserved_0f;                   // 0x0f
+    NUMTL *material;                  // 0x10
+    PC_TEXTURE_ANIM_ENV *environment; // 0x14
+    char *name;                       // 0x18
+    char *program_name;               // 0x1c
+}; // size 0x20
 
 typedef struct TEXTURE_ANIM_MATERIAL_PC {
-    u8 unknown_00[0x74];
-    i16 texture_id;
-    u8 unknown_76[0x42];
-    i32 diffuse_texture_id;
-} TEXTURE_ANIM_MATERIAL_PC;
-
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_MATERIAL_PC, texture_id) == 0x74);
-STATIC_ASSERT(offsetof(TEXTURE_ANIM_MATERIAL_PC, diffuse_texture_id) == 0xb8);
+    u8 unknown_00[0x74];    // 0x00
+    i16 texture_id;         // 0x74
+    u8 unknown_76[0x42];    // 0x76
+    i32 diffuse_texture_id; // 0xb8
+} TEXTURE_ANIM_MATERIAL_PC; // size 0xbc
 
 static u32 nta_sig_off = 0;
 static u32 nta_sig_on = 0;

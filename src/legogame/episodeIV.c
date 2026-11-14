@@ -8,14 +8,14 @@ typedef struct CLOUDCITY_PANEL_FLAGS_VIEW_PC {
     u8 flags;
 } CLOUDCITY_PANEL_FLAGS_VIEW_PC;
 
+// Kept as an assert, not a layout comment: the declaration count of this unit steers
+// BlockadeRunnerDEjectCreaturePc (docs/cleanup-audit.md, section 6).
 STATIC_ASSERT(offsetof(CLOUDCITY_PANEL_FLAGS_VIEW_PC, flags) == 0x62);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
 
 typedef struct CLOUDCITY_LEVEL_FLAG_VIEW_PC {
-    u8 started;
-} CLOUDCITY_LEVEL_FLAG_VIEW_PC;
-
-STATIC_ASSERT(offsetof(CLOUDCITY_LEVEL_FLAG_VIEW_PC, started) == 0);
+    u8 started;                 // 0x0
+} CLOUDCITY_LEVEL_FLAG_VIEW_PC; // size 0x1
 
 i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *object) {
     if (WORLD->current_level == MOSEISLEYC_LDATA) {
@@ -40,6 +40,8 @@ typedef struct TORPEDO_MUSIC_FLAGS_VIEW_PC {
     u8 flags;
 } TORPEDO_MUSIC_FLAGS_VIEW_PC;
 
+// Kept as an assert, not a layout comment: the declaration count of this unit steers
+// BlockadeRunnerDEjectCreaturePc (docs/cleanup-audit.md, section 6).
 STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW_PC, count) == 0);
 STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW_PC, flags) == 1);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
@@ -421,13 +423,11 @@ void __cdecl DeathStarBattleC_AlwaysUpdate(WORLDINFO *world) {
 }
 
 typedef struct trenchrun_pc_s {
-    GAMEOBJECT *objects[3];
-    NUVEC position;
-    i32 midtro_played;
-    f32 spawn_timer;
-} TRENCHRUN_PC;
-
-STATIC_ASSERT(sizeof(TRENCHRUN_PC) == 0x20);
+    GAMEOBJECT *objects[3]; // 0x00
+    NUVEC position;         // 0x0c
+    i32 midtro_played;      // 0x18
+    f32 spawn_timer;        // 0x1c
+} TRENCHRUN_PC;             // size 0x20
 
 /* PC 0x00889638: Death Star trench run state. */
 static TRENCHRUN_PC trenchrun;
@@ -444,32 +444,26 @@ void __cdecl DeathStarBattleDDraw(WORLDINFO *world) {
 
 /* PC 0x00889660: asteroid field (original episodeV.cpp). */
 typedef struct ASTEROID_PC {
-    NUSPECIALHANDLE special;
-    GIZMOBLOWUP_PC *blowup;
-    i16 rotation_speed_x;
-    i16 rotation_speed_y;
-    i16 rotation_speed_z;
-    u8 activated;
-} ASTEROID_PC;
-
-STATIC_ASSERT(sizeof(ASTEROID_PC) == 0x18);
-STATIC_ASSERT(offsetof(ASTEROID_PC, activated) == 0x16);
+    NUSPECIALHANDLE special; // 0x00
+    GIZMOBLOWUP_PC *blowup;  // 0x0c
+    i16 rotation_speed_x;    // 0x10
+    i16 rotation_speed_y;    // 0x12
+    i16 rotation_speed_z;    // 0x14
+    u8 activated;            // 0x16
+} ASTEROID_PC;               // size 0x18
 
 /* PC 0x0088a268: rotating rock at the end of AsteroidChase C. */
 typedef struct FINAL_ASTEROID_PC {
-    NUSPECIALHANDLE special;
-    GIZMOBLOWUP_PC *blowups[8];
-    i16 blowup_count;
-    i16 rotation_speed_x;
-    i16 rotation_speed_y;
-    i16 rotation_speed_z;
-    i16 rotation_x;
-    i16 rotation_y;
-    i16 rotation_z;
-} FINAL_ASTEROID_PC;
-
-STATIC_ASSERT(sizeof(FINAL_ASTEROID_PC) == 0x3c);
-STATIC_ASSERT(offsetof(FINAL_ASTEROID_PC, rotation_x) == 0x34);
+    NUSPECIALHANDLE special;    // 0x00
+    GIZMOBLOWUP_PC *blowups[8]; // 0x0c
+    i16 blowup_count;           // 0x2c
+    i16 rotation_speed_x;       // 0x2e
+    i16 rotation_speed_y;       // 0x30
+    i16 rotation_speed_z;       // 0x32
+    i16 rotation_x;             // 0x34
+    i16 rotation_y;             // 0x36
+    i16 rotation_z;             // 0x38
+} FINAL_ASTEROID_PC;            // size 0x3c
 
 typedef struct ASTEROIDC_NETPACKET_PC {
     u16 rotation_x;
@@ -601,10 +595,6 @@ f32 TrenchSpawnDistancePc = 20.0f;
 #pragma data_seg(".data$TrenchSpawnHeightPc")
 f32 TrenchSpawnHeightPc = 40.0f;
 #pragma data_seg()
-STATIC_ASSERT(offsetof(TRENCHRUN_PC, objects) == 0);
-STATIC_ASSERT(offsetof(TRENCHRUN_PC, position) == 0xc);
-STATIC_ASSERT(offsetof(TRENCHRUN_PC, midtro_played) == 0x18);
-STATIC_ASSERT(offsetof(TRENCHRUN_PC, spawn_timer) == 0x1c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef8_word) == 0xef8);

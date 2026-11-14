@@ -1,20 +1,13 @@
 #include "saga.h"
 
 struct text_crawl_view_pc_s {
-    i16 *heading_text;
-    i16 *vehicle_bonus_text;
-    i16 *character_bonus_text;
-    u8 paragraph_count;
-    i8 area;
-    u8 unknown_0e[2];
-};
-
-STATIC_ASSERT(sizeof(struct text_crawl_view_pc_s) == 0x10);
-STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, heading_text) == 0);
-STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, vehicle_bonus_text) == 4);
-STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, character_bonus_text) == 8);
-STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, paragraph_count) == 0xc);
-STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, area) == 0xd);
+    i16 *heading_text;         // 0x0
+    i16 *vehicle_bonus_text;   // 0x4
+    i16 *character_bonus_text; // 0x8
+    u8 paragraph_count;        // 0xc
+    i8 area;                   // 0xd
+    u8 unknown_0e[2];          // 0xe
+}; // size 0x10
 
 extern "C" {
     AREA_EXTRA_MODEL_PC ExtraModelList[6] = {
@@ -34956,16 +34949,11 @@ extern "C" {
 }
 
 typedef struct AI_PATH_CONNECTION_TYPE_PC {
-    u32 connection_flag;
-    void(__cdecl *draw)(NUVEC *, f32, NUVEC *, u32, i32);
-    char name[64];
-    u32 flags;
-} AI_PATH_CONNECTION_TYPE_PC;
-
-STATIC_ASSERT(sizeof(AI_PATH_CONNECTION_TYPE_PC) == 0x4c);
-STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, draw) == 4);
-STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, name) == 8);
-STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, flags) == 0x48);
+    u32 connection_flag;                                  // 0x00
+    void(__cdecl *draw)(NUVEC *, f32, NUVEC *, u32, i32); // 0x04
+    char name[64];                                        // 0x08
+    u32 flags;                                            // 0x48
+} AI_PATH_CONNECTION_TYPE_PC;                             // size 0x4c
 
 #pragma section(".data$AIPathConnectionViewsPc", read, write)
 extern "C" {

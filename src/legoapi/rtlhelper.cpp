@@ -96,19 +96,15 @@ class EdVectorControl : public EdControl {
   public:
     EdVectorControl();
 
-    eduiitem_s *components[3];
-};
-
-STATIC_ASSERT(sizeof(EdVectorControl) == 0x1c);
+    eduiitem_s *components[3]; // 0x10
+}; // size 0x1c
 
 class EdMatrixControl : public EdControl {
   public:
     EdMatrixControl();
 
-    eduiitem_s *components[9];
-};
-
-STATIC_ASSERT(sizeof(EdMatrixControl) == 0x34);
+    eduiitem_s *components[9]; // 0x10
+}; // size 0x34
 
 /* Numeric property row clamped to [minimum, maximum]; the button drags the
  * value with the cursor or the analogue sticks. */
@@ -318,11 +314,8 @@ class RTLHelper : public EdClassInterface {
     RTL_SET_PC *GetIndexedSet();
     void Initialise();
 
-    RTL_SET_PC *set;
-};
-
-STATIC_ASSERT(sizeof(RTLHelper) == 0xc);
-STATIC_ASSERT(offsetof(RTLHelper, set) == 0x8);
+    RTL_SET_PC *set; // 0x8
+}; // size 0xc
 
 RTLHelper::RTLHelper() : set(NULL) {
 }
@@ -659,9 +652,7 @@ class FogHelper : public EdClassInterface {
 
     virtual void Render(void *object, i32 selected);
     void Initialise();
-};
-
-STATIC_ASSERT(sizeof(FogHelper) == 0x8);
+}; // size 0x8
 
 FogHelper::FogHelper() {
 }

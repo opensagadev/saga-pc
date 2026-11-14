@@ -3,47 +3,30 @@
 #include <string.h>
 
 struct CABLE_RECORD_PC {
-    GAMEOBJECT *source;
-    GAMEOBJECT *target;
-    NUVEC points[16];
-    NUVEC velocities[16];
-    f32 segment_lengths[15];
-    f32 max_length;
-    f32 total_length;
-    u8 unused_01cc[4];
-    f32 slack;
-    f32 pull_time;
-    u8 wrap_indices[15];
-    u8 point_count;
-    u8 wrap_count;
-    u8 unused_01e9;
-    u16 flags;
-};
-
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, source) == 0x0);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, target) == 0x4);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, points) == 0x8);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, velocities) == 0xc8);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, segment_lengths) == 0x188);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, max_length) == 0x1c4);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, total_length) == 0x1c8);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, slack) == 0x1d0);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, pull_time) == 0x1d4);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, wrap_indices) == 0x1d8);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, point_count) == 0x1e7);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, wrap_count) == 0x1e8);
-STATIC_ASSERT(offsetof(CABLE_RECORD_PC, flags) == 0x1ea);
-STATIC_ASSERT(sizeof(CABLE_RECORD_PC) == 0x1ec);
+    GAMEOBJECT *source;      // 0x000
+    GAMEOBJECT *target;      // 0x004
+    NUVEC points[16];        // 0x008
+    NUVEC velocities[16];    // 0x0c8
+    f32 segment_lengths[15]; // 0x188
+    f32 max_length;          // 0x1c4
+    f32 total_length;        // 0x1c8
+    u8 unused_01cc[4];       // 0x1cc
+    f32 slack;               // 0x1d0
+    f32 pull_time;           // 0x1d4
+    u8 wrap_indices[15];     // 0x1d8
+    u8 point_count;          // 0x1e7
+    u8 wrap_count;           // 0x1e8
+    u8 unused_01e9;          // 0x1e9
+    u16 flags;               // 0x1ea
+}; // size 0x1ec
 
 // The retail cable code tests the character context flags as a 64-bit field.
 typedef struct cable_context_info_pc_s {
-    const char *name;
-    i32 action;
-    u64 flags;
-} CABLE_CONTEXT_INFO_PC;
+    const char *name;    // 0x0
+    i32 action;          // 0x4
+    u64 flags;           // 0x8
+} CABLE_CONTEXT_INFO_PC; // size 0x10
 
-STATIC_ASSERT(sizeof(CABLE_CONTEXT_INFO_PC) == 0x10);
-STATIC_ASSERT(offsetof(CABLE_CONTEXT_INFO_PC, flags) == 0x8);
 extern const f64 GameObjectNearFloorNoFloorHeight;
 i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second);
 

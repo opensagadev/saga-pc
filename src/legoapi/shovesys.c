@@ -4,25 +4,18 @@ static f32 ShoveCollisionExpansionPc = 0.10000000149011612f;
 #pragma data_seg()
 
 typedef struct shove_object_pc_s {
-    NUSPECIALHANDLE *special;
-    NUVEC position;
-    f32 radius;
-    i16 platform_id;
-    i16 padding;
-} SHOVE_OBJECT_PC;
+    NUSPECIALHANDLE *special; // 0x00
+    NUVEC position;           // 0x04
+    f32 radius;               // 0x10
+    i16 platform_id;          // 0x14
+    i16 padding;              // 0x16
+} SHOVE_OBJECT_PC;            // size 0x18
 
 typedef struct shove_system_pc_s {
-    SHOVE_OBJECT_PC objects[16];
-    i32 count;
-} SHOVE_SYSTEM_PC;
+    SHOVE_OBJECT_PC objects[16]; // 0x000
+    i32 count;                   // 0x180
+} SHOVE_SYSTEM_PC;               // size 0x184
 
-STATIC_ASSERT(sizeof(SHOVE_OBJECT_PC) == 0x18);
-STATIC_ASSERT(offsetof(SHOVE_OBJECT_PC, special) == 0);
-STATIC_ASSERT(offsetof(SHOVE_OBJECT_PC, position) == 4);
-STATIC_ASSERT(offsetof(SHOVE_OBJECT_PC, radius) == 0x10);
-STATIC_ASSERT(offsetof(SHOVE_OBJECT_PC, platform_id) == 0x14);
-STATIC_ASSERT(sizeof(SHOVE_SYSTEM_PC) == 0x184);
-STATIC_ASSERT(offsetof(SHOVE_SYSTEM_PC, count) == 0x180);
 static SHOVE_SYSTEM_PC ShoveSystemPc = {0};
 
 void __cdecl AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {

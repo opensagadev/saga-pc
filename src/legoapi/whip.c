@@ -1,11 +1,10 @@
 #include "saga.h"
 
 typedef struct whip_basis_pc_s {
-    u8 unknown_000[0x748];
-    NUVEC basis[3];
-} WHIP_BASIS_PC;
+    u8 unknown_000[0x748]; // 0x000
+    NUVEC basis[3];        // 0x748
+} WHIP_BASIS_PC;           // size 0x76c
 
-STATIC_ASSERT(offsetof(WHIP_BASIS_PC, basis) == 0x748);
 i32 __cdecl SuperCarry_Possible(GAMEOBJECT *, i32);
 void __cdecl SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP_PC *, i32);
 

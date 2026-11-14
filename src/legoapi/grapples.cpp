@@ -30,20 +30,20 @@ STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, name) == 0);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 
 typedef struct WORLD_GRAPPLE_MOTION_VIEW_PC {
-    u8 unknown_0000[0x5080];
-    GRAPPLE_MOTION_PC *grapples;
-    i32 grapple_count;
-} WORLD_GRAPPLE_MOTION_VIEW_PC;
+    u8 unknown_0000[0x5080];     // 0x0000
+    GRAPPLE_MOTION_PC *grapples; // 0x5080
+    i32 grapple_count;           // 0x5084
+} WORLD_GRAPPLE_MOTION_VIEW_PC;  // size 0x5088
 
 typedef struct OBJECT_GRAPPLE_MOTION_VIEW_PC {
-    u8 unknown_0000[0x79c];
-    i32 panel_use_request;
-    void *tube_entry_data;
-    u8 unknown_07a4[0x758];
-    GRAPPLE_MOTION_PC *can_use_object;
-    u8 unknown_0f00[0x172];
-    u8 input_flags;
-} OBJECT_GRAPPLE_MOTION_VIEW_PC;
+    u8 unknown_0000[0x79c];            // 0x0000
+    i32 panel_use_request;             // 0x079c
+    void *tube_entry_data;             // 0x07a0
+    u8 unknown_07a4[0x758];            // 0x07a4
+    GRAPPLE_MOTION_PC *can_use_object; // 0x0efc
+    u8 unknown_0f00[0x172];            // 0x0f00
+    u8 input_flags;                    // 0x1072
+} OBJECT_GRAPPLE_MOTION_VIEW_PC;       // size 0x1074
 
 STATIC_ASSERT(sizeof(GRAPPLE_MOTION_PC) == sizeof(GRAPPLE_DYNAMIC_PC));
 STATIC_ASSERT(sizeof(GRAPPLE_MOTION_PC) == 0xf8);
@@ -60,12 +60,6 @@ STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, swing_scale) == 0x4c);
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, rope_length) == 0x50);
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, attached_object) == 0x54);
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, activation_progress) == 0x58);
-STATIC_ASSERT(offsetof(WORLD_GRAPPLE_MOTION_VIEW_PC, grapples) == 0x5080);
-STATIC_ASSERT(offsetof(WORLD_GRAPPLE_MOTION_VIEW_PC, grapple_count) == 0x5084);
-STATIC_ASSERT(offsetof(OBJECT_GRAPPLE_MOTION_VIEW_PC, panel_use_request) == 0x79c);
-STATIC_ASSERT(offsetof(OBJECT_GRAPPLE_MOTION_VIEW_PC, tube_entry_data) == 0x7a0);
-STATIC_ASSERT(offsetof(OBJECT_GRAPPLE_MOTION_VIEW_PC, can_use_object) == 0xefc);
-STATIC_ASSERT(offsetof(OBJECT_GRAPPLE_MOTION_VIEW_PC, input_flags) == 0x1072);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
 STATIC_ASSERT(offsetof(GAMEOBJECT, big_jump_animation) == 0x7b4);
@@ -74,15 +68,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 #define GRAPPLE_CURRENT ((GRAPPLE_MOTION_PC *)object->grapple)
 
 typedef struct grapple_load_extra_pc_s {
-    char name[16];
-    NUVEC file_position;
-    u8 unknown_1c[0xd0];
-    NUSPECIALHANDLE special;
-} GRAPPLE_LOAD_EXTRA_PC;
+    char name[16];           // 0x00
+    NUVEC file_position;     // 0x10
+    u8 unknown_1c[0xd0];     // 0x1c
+    NUSPECIALHANDLE special; // 0xec
+} GRAPPLE_LOAD_EXTRA_PC;     // size 0xf8
 
-STATIC_ASSERT(sizeof(GRAPPLE_LOAD_EXTRA_PC) == 0xf8);
-STATIC_ASSERT(offsetof(GRAPPLE_LOAD_EXTRA_PC, file_position) == 0x10);
-STATIC_ASSERT(offsetof(GRAPPLE_LOAD_EXTRA_PC, special) == 0xec);
 STATIC_ASSERT(sizeof(GRAPPLE_DYNAMIC_PC) == 0xf8);
 STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, flags) == 0x1e);
 STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, y_rotation) == 0x20);

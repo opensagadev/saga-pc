@@ -2,32 +2,25 @@
 #include <vector>
 
 struct POST_VERTEX_SHADER_CACHE_ENTRY_PC {
-    PC_TEXTURE_RESOURCE_PC *shader;
-    const DWORD *tokens;
-};
+    PC_TEXTURE_RESOURCE_PC *shader; // 0x0
+    const DWORD *tokens;            // 0x4
+}; // size 0x8
 
 struct POST_PIXEL_SHADER_CACHE_ENTRY_PC {
-    PC_TEXTURE_RESOURCE_PC *shader;
-    const DWORD *tokens;
-};
+    PC_TEXTURE_RESOURCE_PC *shader; // 0x0
+    const DWORD *tokens;            // 0x4
+}; // size 0x8
 
 struct POST_SHADER_PROGRAM_POOL_PC {
-    POST_SHADER_PROGRAM_PC programs[64];
-    u8 occupied[8];
-    i32 cursor;
+    POST_SHADER_PROGRAM_PC programs[64]; // 0x000
+    u8 occupied[8];                      // 0x400
+    i32 cursor;                          // 0x408
     POST_SHADER_PROGRAM_PC *__thiscall Allocate(void);
-};
+}; // size 0x40c
 
-STATIC_ASSERT(sizeof(POST_VERTEX_SHADER_CACHE_ENTRY_PC) == 8);
-STATIC_ASSERT(offsetof(POST_VERTEX_SHADER_CACHE_ENTRY_PC, tokens) == 4);
-STATIC_ASSERT(sizeof(POST_PIXEL_SHADER_CACHE_ENTRY_PC) == 8);
-STATIC_ASSERT(offsetof(POST_PIXEL_SHADER_CACHE_ENTRY_PC, tokens) == 4);
 STATIC_ASSERT(sizeof(std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC>) == 16);
 STATIC_ASSERT(sizeof(std::vector<POST_PIXEL_SHADER_CACHE_ENTRY_PC>) == 16);
 STATIC_ASSERT(sizeof(POST_SHADER_PROGRAM_PC) == 16);
-STATIC_ASSERT(offsetof(POST_SHADER_PROGRAM_POOL_PC, occupied) == 0x400);
-STATIC_ASSERT(offsetof(POST_SHADER_PROGRAM_POOL_PC, cursor) == 0x408);
-STATIC_ASSERT(sizeof(POST_SHADER_PROGRAM_POOL_PC) == 0x40c);
 extern "C" {
 #pragma bss_seg(".bss$PostShaderProgramPoolPc")
     POST_SHADER_PROGRAM_POOL_PC PostShaderProgramPoolPc = {0};

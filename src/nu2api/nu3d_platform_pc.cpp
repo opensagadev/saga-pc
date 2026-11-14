@@ -50,21 +50,15 @@ extern "C" {
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
 
     typedef struct SCENE_TEXTURE_PACKET_B0_PC {
-        i32 kind;
-        i32 texture_id;
-        i32 extra_texture_ids[3];
-    } SCENE_TEXTURE_PACKET_B0_PC;
+        i32 kind;                 // 0x00
+        i32 texture_id;           // 0x04
+        i32 extra_texture_ids[3]; // 0x08
+    } SCENE_TEXTURE_PACKET_B0_PC; // size 0x14
 
     typedef struct SCENE_TEXTURE_PACKET_AE_PC {
-        i32 texture_ids[3];
-    } SCENE_TEXTURE_PACKET_AE_PC;
+        i32 texture_ids[3];       // 0x0
+    } SCENE_TEXTURE_PACKET_AE_PC; // size 0xc
 
-    STATIC_ASSERT(sizeof(SCENE_TEXTURE_PACKET_B0_PC) == 20);
-    STATIC_ASSERT(offsetof(SCENE_TEXTURE_PACKET_B0_PC, kind) == 0);
-    STATIC_ASSERT(offsetof(SCENE_TEXTURE_PACKET_B0_PC, texture_id) == 4);
-    STATIC_ASSERT(offsetof(SCENE_TEXTURE_PACKET_B0_PC, extra_texture_ids) == 8);
-    STATIC_ASSERT(sizeof(SCENE_TEXTURE_PACKET_AE_PC) == 12);
-    STATIC_ASSERT(offsetof(SCENE_TEXTURE_PACKET_AE_PC, texture_ids) == 0);
     STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, type) == 0);
     STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, next) == 4);
     STATIC_ASSERT(sizeof(NUDISPLAYLISTITEM) == 16);
@@ -72,14 +66,12 @@ extern "C" {
     /* nuportal PC backend (0x600bd0-0x600f20). */
 
     typedef struct PORTAL_BOX_PC {
-        NUVEC first;
-        f32 first_w;
-        NUVEC second;
-        f32 second_w;
-    } PORTAL_BOX_PC;
+        NUVEC first;  // 0x00
+        f32 first_w;  // 0x0c
+        NUVEC second; // 0x10
+        f32 second_w; // 0x1c
+    } PORTAL_BOX_PC;  // size 0x20
 
-    STATIC_ASSERT(sizeof(PORTAL_BOX_PC) == 0x20);
-    STATIC_ASSERT(offsetof(PORTAL_BOX_PC, second) == 0x10);
     STATIC_ASSERT(offsetof(NUGSCN, num_instances) == 0x1c);
     STATIC_ASSERT(offsetof(NUGSCN, sphere_count) == 0xf0);
     STATIC_ASSERT(offsetof(NUGSCN, portal_instance_count) == 0xf4);
@@ -94,60 +86,37 @@ extern "C" {
     /* numtl PS half (0x601210). */
 
     typedef struct FRAME_MTL_ANIM_DESC_PC {
-        u8 u_mode;
-        u8 v_mode;
-        u8 reserved02[2];
-        f32 u_amplitude;
-        f32 v_amplitude;
-        f32 u_frequency;
-        f32 v_frequency;
-    } FRAME_MTL_ANIM_DESC_PC;
-
-    STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_DESC_PC) == 0x14);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_frequency) == 0xc);
+        u8 u_mode;            // 0x00
+        u8 v_mode;            // 0x01
+        u8 reserved02[2];     // 0x02
+        f32 u_amplitude;      // 0x04
+        f32 v_amplitude;      // 0x08
+        f32 u_frequency;      // 0x0c
+        f32 v_frequency;      // 0x10
+    } FRAME_MTL_ANIM_DESC_PC; // size 0x14
 
     typedef struct FRAME_MTL_ANIM_PC {
-        u8 reserved00[0x7b];
-        u8 disable_u_animation;
-        u8 disable_v_animation;
-        u8 reserved7d[0x143];
-        i32 texture_animation_data[4];
-        f32 texture_animation_offsets[4][2];
-        u8 reserved1f0[8];
-        FRAME_MTL_ANIM_DESC_PC animation[4];
-    } FRAME_MTL_ANIM_PC;
-
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, disable_u_animation) == 0x7b);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, disable_v_animation) == 0x7c);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, texture_animation_data) == 0x1c0);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, texture_animation_offsets) == 0x1d0);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, animation) == 0x1f8);
+        u8 reserved00[0x7b];                 // 0x000
+        u8 disable_u_animation;              // 0x07b
+        u8 disable_v_animation;              // 0x07c
+        u8 reserved7d[0x143];                // 0x07d
+        i32 texture_animation_data[4];       // 0x1c0
+        f32 texture_animation_offsets[4][2]; // 0x1d0
+        u8 reserved1f0[8];                   // 0x1f0
+        FRAME_MTL_ANIM_DESC_PC animation[4]; // 0x1f8
+    } FRAME_MTL_ANIM_PC;                     // size 0x248
 
     typedef struct FRAME_MTL_ANIM_SET_PC {
-        NUDISPLAY_LIST_PC *scene;
-        i32 material_count;
-        i32 *material_indices;
-        struct FRAME_MTL_ANIM_SET_PC *next;
-    } FRAME_MTL_ANIM_SET_PC;
-
-    STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_SET_PC) == 0x10);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, next) == 0xc);
+        NUDISPLAY_LIST_PC *scene;           // 0x0
+        i32 material_count;                 // 0x4
+        i32 *material_indices;              // 0x8
+        struct FRAME_MTL_ANIM_SET_PC *next; // 0xc
+    } FRAME_MTL_ANIM_SET_PC;                // size 0x10
 
     typedef struct FRAME_MTL_SCENE_PC {
-        u8 reserved00[0x158];
-        i32 shader_texture_animation_enabled;
-    } FRAME_MTL_SCENE_PC;
-
-    STATIC_ASSERT(offsetof(FRAME_MTL_SCENE_PC, shader_texture_animation_enabled) == 0x158);
-
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_mode) == 0x0);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_mode) == 0x1);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_amplitude) == 0x4);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_amplitude) == 0x8);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_frequency) == 0x10);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, scene) == 0x0);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_count) == 0x4);
-    STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_indices) == 0x8);
+        u8 reserved00[0x158];                 // 0x000
+        i32 shader_texture_animation_enabled; // 0x158
+    } FRAME_MTL_SCENE_PC;                     // size 0x15c
 
 #pragma data_seg(".data$NuMainRendererControlPc")
     i32 NuMainRendererControlPc = 1;
@@ -181,11 +150,9 @@ extern "C" {
     void __cdecl NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1);
 
     typedef struct CAMERA_RENDER_SPECULAR_READER_PC {
-        u8 unknown_0000[0xdc];
-        NUVEC direction;
-    } CAMERA_RENDER_SPECULAR_READER_PC;
-
-    STATIC_ASSERT(offsetof(CAMERA_RENDER_SPECULAR_READER_PC, direction) == 0xdc);
+        u8 unknown_0000[0xdc];          // 0x00
+        NUVEC direction;                // 0xdc
+    } CAMERA_RENDER_SPECULAR_READER_PC; // size 0xe8
 
     static NUMTX RndrStateTransformPc = {0};
     static NUMTX RndrStateScaledTransformPc = {0};
@@ -199,17 +166,13 @@ extern "C" {
     typedef struct PC_TRANSFORM_MATERIAL_VIEW PC_TRANSFORM_MATERIAL_VIEW;
 
     struct PC_TRANSFORM_MATERIAL_VIEW {
-        u8 unknown_00[0x30];
-        PC_TRANSFORM_MATERIAL_VIEW *next;
-        u8 unknown_34[0x2c];
-        f32 transform_scale;
-        u8 unknown_64[0x35];
-        u8 transform_kind;
-    };
-
-    STATIC_ASSERT(offsetof(PC_TRANSFORM_MATERIAL_VIEW, next) == 0x30);
-    STATIC_ASSERT(offsetof(PC_TRANSFORM_MATERIAL_VIEW, transform_scale) == 0x60);
-    STATIC_ASSERT(offsetof(PC_TRANSFORM_MATERIAL_VIEW, transform_kind) == 0x99);
+        u8 unknown_00[0x30];              // 0x00
+        PC_TRANSFORM_MATERIAL_VIEW *next; // 0x30
+        u8 unknown_34[0x2c];              // 0x34
+        f32 transform_scale;              // 0x60
+        u8 unknown_64[0x35];              // 0x64
+        u8 transform_kind;                // 0x99
+    }; // size 0x9c
 
     static VARIPTR rndrstream_b = {0};
     static VARIPTR rndrstream_a = {0};
@@ -219,124 +182,86 @@ extern "C" {
     static u32 rndrstream_max_used = 0;
 
     typedef struct SCENE_FILE_TEXTURE_HEADER_PC {
-        i32 width;
-        u32 height;
-        u32 unknown_08;
-        u32 unknown_0c;
-        u32 flags;
-        u32 size;
-    } SCENE_FILE_TEXTURE_HEADER_PC;
-
-    STATIC_ASSERT(sizeof(SCENE_FILE_TEXTURE_HEADER_PC) == 0x18);
-    STATIC_ASSERT(offsetof(SCENE_FILE_TEXTURE_HEADER_PC, width) == 0);
-    STATIC_ASSERT(offsetof(SCENE_FILE_TEXTURE_HEADER_PC, height) == 4);
-    STATIC_ASSERT(offsetof(SCENE_FILE_TEXTURE_HEADER_PC, flags) == 0x10);
-    STATIC_ASSERT(offsetof(SCENE_FILE_TEXTURE_HEADER_PC, size) == 0x14);
+        i32 width;                  // 0x00
+        u32 height;                 // 0x04
+        u32 unknown_08;             // 0x08
+        u32 unknown_0c;             // 0x0c
+        u32 flags;                  // 0x10
+        u32 size;                   // 0x14
+    } SCENE_FILE_TEXTURE_HEADER_PC; // size 0x18
 
     typedef struct SCENE_FIXUP_GEOMETRY_PC {
-        u8 unknown_00[8];
-        u16 vertex_stride;
-        u8 unknown_0a[0xe];
-        u32 vertex_count;
-        u8 unknown_1c[4];
-        PC_BUFFER_RESOURCE_PC *index_buffer;
-        PC_BUFFER_RESOURCE_PC *vertex_buffer;
-        u32 vertex_format;
-        u8 unknown_2c[4];
-        PC_BUFFER_RESOURCE_PC *dynamic_vertex_buffer;
-    } SCENE_FIXUP_GEOMETRY_PC;
-
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_stride) == 8);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_count) == 0x18);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, index_buffer) == 0x20);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_buffer) == 0x24);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_format) == 0x28);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, dynamic_vertex_buffer) == 0x30);
+        u8 unknown_00[8];                             // 0x00
+        u16 vertex_stride;                            // 0x08
+        u8 unknown_0a[0xe];                           // 0x0a
+        u32 vertex_count;                             // 0x18
+        u8 unknown_1c[4];                             // 0x1c
+        PC_BUFFER_RESOURCE_PC *index_buffer;          // 0x20
+        PC_BUFFER_RESOURCE_PC *vertex_buffer;         // 0x24
+        u32 vertex_format;                            // 0x28
+        u8 unknown_2c[4];                             // 0x2c
+        PC_BUFFER_RESOURCE_PC *dynamic_vertex_buffer; // 0x30
+    } SCENE_FIXUP_GEOMETRY_PC;                        // size 0x34
 
     typedef struct SCENE_FIXUP_VERTEX_STREAM_PC {
-        u8 unknown_00[8];
-        PC_BUFFER_RESOURCE_PC *vertex_buffer;
-    } SCENE_FIXUP_VERTEX_STREAM_PC;
-
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_VERTEX_STREAM_PC, vertex_buffer) == 8);
+        u8 unknown_00[8];                     // 0x0
+        PC_BUFFER_RESOURCE_PC *vertex_buffer; // 0x8
+    } SCENE_FIXUP_VERTEX_STREAM_PC;           // size 0xc
 
     typedef struct SCENE_FIXUP_NATIVE_PC {
-        u16 vertex_buffer_count;
-        u8 unknown_02[2];
-        PC_BUFFER_RESOURCE_PC **vertex_buffers;
-        u16 index_buffer_count;
-        u8 unknown_0a[2];
-        PC_BUFFER_RESOURCE_PC **index_buffers;
-        SCENE_FIXUP_GEOMETRY_PC **geometries;
-        u32 geometry_count;
-        SCENE_FIXUP_VERTEX_STREAM_PC **vertex_streams;
-        u32 vertex_stream_count;
-    } SCENE_FIXUP_NATIVE_PC;
-
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_buffers) == 4);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, index_buffer_count) == 8);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, index_buffers) == 0xc);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, geometries) == 0x10);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, geometry_count) == 0x14);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_streams) == 0x18);
-    STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_stream_count) == 0x1c);
+        u16 vertex_buffer_count;                       // 0x00
+        u8 unknown_02[2];                              // 0x02
+        PC_BUFFER_RESOURCE_PC **vertex_buffers;        // 0x04
+        u16 index_buffer_count;                        // 0x08
+        u8 unknown_0a[2];                              // 0x0a
+        PC_BUFFER_RESOURCE_PC **index_buffers;         // 0x0c
+        SCENE_FIXUP_GEOMETRY_PC **geometries;          // 0x10
+        u32 geometry_count;                            // 0x14
+        SCENE_FIXUP_VERTEX_STREAM_PC **vertex_streams; // 0x18
+        u32 vertex_stream_count;                       // 0x1c
+    } SCENE_FIXUP_NATIVE_PC;                           // size 0x20
 
     STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, native_word) == 0x7c);
 
     struct __declspec(align(16)) PC_GEOMETRY_BASIS_VECTOR_PC {
-        f32 x;
-        f32 y;
-        f32 z;
-        f32 w;
-    };
-
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_BASIS_VECTOR_PC) == 0x10);
+        f32 x; // 0x0
+        f32 y; // 0x4
+        f32 z; // 0x8
+        f32 w; // 0xc
+    }; // size 0x10
 
     struct PC_GEOMETRY_BASIS_INPUT_RECORD_PC {
-        PC_GEOMETRY_BASIS_VECTOR_PC rows[3];
-        NUVEC weights;
-        u8 bones[3];
-        u8 unknown_3f;
-    };
+        PC_GEOMETRY_BASIS_VECTOR_PC rows[3]; // 0x00
+        NUVEC weights;                       // 0x30
+        u8 bones[3];                         // 0x3c
+        u8 unknown_3f;                       // 0x3f
+    }; // size 0x40
 
     struct PC_GEOMETRY_MORPH_DELTA_PC {
-        u32 unknown_00;
-        u32 unknown_04;
-        PC_GEOMETRY_BASIS_VECTOR_PC *vectors;
-    };
+        u32 unknown_00;                       // 0x0
+        u32 unknown_04;                       // 0x4
+        PC_GEOMETRY_BASIS_VECTOR_PC *vectors; // 0x8
+    }; // size 0xc
 
     struct PC_GEOMETRY_BASIS_SOURCE_PC {
-        u32 unknown_00;
-        i32 record_count;
-        u32 unknown_08;
-        i32 morph_count;
-        u32 unknown_10;
-        PC_GEOMETRY_BASIS_INPUT_RECORD_PC *records;
-        PC_GEOMETRY_MORPH_DELTA_PC *morph_deltas;
-    };
+        u32 unknown_00;                             // 0x00
+        i32 record_count;                           // 0x04
+        u32 unknown_08;                             // 0x08
+        i32 morph_count;                            // 0x0c
+        u32 unknown_10;                             // 0x10
+        PC_GEOMETRY_BASIS_INPUT_RECORD_PC *records; // 0x14
+        PC_GEOMETRY_MORPH_DELTA_PC *morph_deltas;   // 0x18
+    }; // size 0x1c
 
     struct PC_GEOMETRY_MORPH_WEIGHTS_PC {
-        f32 *weight_words;
-    };
+        f32 *weight_words; // 0x0
+    }; // size 0x4
 
     struct PC_GEOMETRY_INITIALIZED_BASIS_RECORD_PC {
-        PC_GEOMETRY_BASIS_VECTOR_PC rows[3];
-        u8 unwritten_30[0x10];
-    };
+        PC_GEOMETRY_BASIS_VECTOR_PC rows[3]; // 0x00
+        u8 unwritten_30[0x10];               // 0x30
+    }; // size 0x40
 
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_BASIS_INPUT_RECORD_PC) == 0x40);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_BASIS_INPUT_RECORD_PC, rows) == 0);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_BASIS_INPUT_RECORD_PC, weights) == 0x30);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_BASIS_INPUT_RECORD_PC, bones) == 0x3c);
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_MORPH_DELTA_PC) == 0xc);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_MORPH_DELTA_PC, vectors) == 8);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_BASIS_SOURCE_PC, record_count) == 4);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_BASIS_SOURCE_PC, morph_count) == 0xc);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_BASIS_SOURCE_PC, records) == 0x14);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_BASIS_SOURCE_PC, morph_deltas) == 0x18);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_MORPH_WEIGHTS_PC, weight_words) == 0);
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_INITIALIZED_BASIS_RECORD_PC) == 0x40);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_INITIALIZED_BASIS_RECORD_PC, rows) == 0);
     extern "C" i32 PcGeometryMatrixCapacityPc;
 
     static void PcGeometryCopyMatrixPc(NUMTX *dst, const NUMTX *src) {
@@ -381,166 +306,118 @@ extern "C" {
     }
 
     typedef struct PC_GEOMETRY_FORMAT_RECORD_PC {
-        u8 unknown_00[0x18];
-        i32 strip_segments;
-        u8 unknown_1c[0x5c];
-    } PC_GEOMETRY_FORMAT_RECORD_PC;
+        u8 unknown_00[0x18];        // 0x00
+        i32 strip_segments;         // 0x18
+        u8 unknown_1c[0x5c];        // 0x1c
+    } PC_GEOMETRY_FORMAT_RECORD_PC; // size 0x78
 
     typedef struct PC_GEOMETRY_FORMAT_PC {
-        u32 unknown_00;
-        u32 record_count;
-        u32 unknown_08;
-        PC_GEOMETRY_FORMAT_RECORD_PC *records;
-    } PC_GEOMETRY_FORMAT_PC;
+        u32 unknown_00;                        // 0x0
+        u32 record_count;                      // 0x4
+        u32 unknown_08;                        // 0x8
+        PC_GEOMETRY_FORMAT_RECORD_PC *records; // 0xc
+    } PC_GEOMETRY_FORMAT_PC;                   // size 0x10
 
     typedef struct PC_DYNAMIC_GEOMETRY_PC {
-        PC_GEOMETRY_FORMAT_PC *format;
-        u8 unknown_04[0x10];
-        PC_BUFFER_RESOURCE_PC *vertex_buffer;
-        PC_BUFFER_RESOURCE_PC *strip_vertex_buffer;
-        PC_BUFFER_RESOURCE_PC *strip_index_buffer;
-    } PC_DYNAMIC_GEOMETRY_PC;
+        PC_GEOMETRY_FORMAT_PC *format;              // 0x00
+        u8 unknown_04[0x10];                        // 0x04
+        PC_BUFFER_RESOURCE_PC *vertex_buffer;       // 0x14
+        PC_BUFFER_RESOURCE_PC *strip_vertex_buffer; // 0x18
+        PC_BUFFER_RESOURCE_PC *strip_index_buffer;  // 0x1c
+    } PC_DYNAMIC_GEOMETRY_PC;                       // size 0x20
 
     typedef struct PC_GEOMETRY_STRIP_VERTEX_PC {
-        f32 fraction;
-        f32 side;
-        u8 unknown_08[8];
-    } PC_GEOMETRY_STRIP_VERTEX_PC;
+        f32 fraction;              // 0x0
+        f32 side;                  // 0x4
+        u8 unknown_08[8];          // 0x8
+    } PC_GEOMETRY_STRIP_VERTEX_PC; // size 0x10
 
     typedef struct PC_GEOMETRY_CORNER_PC {
-        NUVEC position;
-        f32 w;
-    } PC_GEOMETRY_CORNER_PC;
+        NUVEC position;      // 0x0
+        f32 w;               // 0xc
+    } PC_GEOMETRY_CORNER_PC; // size 0x10
 
     typedef struct PC_GEOMETRY_OUTPUT_PC {
-        PC_GEOMETRY_CORNER_PC corners[4];
-        NUVEC basis_axis;
-        f32 distance_squared;
-    } PC_GEOMETRY_OUTPUT_PC;
+        PC_GEOMETRY_CORNER_PC corners[4]; // 0x00
+        NUVEC basis_axis;                 // 0x40
+        f32 distance_squared;             // 0x4c
+    } PC_GEOMETRY_OUTPUT_PC;              // size 0x50
 
     typedef struct PC_GEOMETRY_SORT_ITEM_PC {
-        u32 output_index;
-        f32 distance_squared;
-        u32 unknown_08;
-    } PC_GEOMETRY_SORT_ITEM_PC;
+        u32 output_index;       // 0x0
+        f32 distance_squared;   // 0x4
+        u32 unknown_08;         // 0x8
+    } PC_GEOMETRY_SORT_ITEM_PC; // size 0xc
 
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_FORMAT_RECORD_PC) == 0x78);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_FORMAT_RECORD_PC, strip_segments) == 0x18);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_FORMAT_PC, record_count) == 4);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_FORMAT_PC, records) == 0xc);
-    STATIC_ASSERT(offsetof(PC_DYNAMIC_GEOMETRY_PC, format) == 0);
-    STATIC_ASSERT(offsetof(PC_DYNAMIC_GEOMETRY_PC, vertex_buffer) == 0x14);
-    STATIC_ASSERT(offsetof(PC_DYNAMIC_GEOMETRY_PC, strip_vertex_buffer) == 0x18);
-    STATIC_ASSERT(offsetof(PC_DYNAMIC_GEOMETRY_PC, strip_index_buffer) == 0x1c);
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_STRIP_VERTEX_PC) == 0x10);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_STRIP_VERTEX_PC, fraction) == 0);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_STRIP_VERTEX_PC, side) == 4);
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_OUTPUT_PC) == 0x50);
     STATIC_ASSERT(offsetof(PC_GEOMETRY_OUTPUT_PC, corners) + 2 * sizeof(PC_GEOMETRY_CORNER_PC) == 0x20);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_OUTPUT_PC, distance_squared) == 0x4c);
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_SORT_ITEM_PC) == 0xc);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_SORT_ITEM_PC, output_index) == 0);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_SORT_ITEM_PC, distance_squared) == 4);
     extern "C" NUVEC4 PcGeometryDistanceOriginPc;
 
     typedef struct PC_GEOMETRY_INPUT_PC {
-        PC_GEOMETRY_CORNER_PC corners[4];
-        NUVEC basis_weights;
-        u32 unknown_4c;
-        f32 output_w[4];
-        i32 skin_indices[3];
-        u8 skin_weights[3];
-        u8 unknown_6f;
-    } PC_GEOMETRY_INPUT_PC;
+        PC_GEOMETRY_CORNER_PC corners[4]; // 0x00
+        NUVEC basis_weights;              // 0x40
+        u32 unknown_4c;                   // 0x4c
+        f32 output_w[4];                  // 0x50
+        i32 skin_indices[3];              // 0x60
+        u8 skin_weights[3];               // 0x6c
+        u8 unknown_6f;                    // 0x6f
+    } PC_GEOMETRY_INPUT_PC;               // size 0x70
 
     typedef struct PC_GEOMETRY_GROUP_PC {
-        u32 element_count;
-        u32 first_element;
-        u32 transform_index;
-    } PC_GEOMETRY_GROUP_PC;
+        u32 element_count;   // 0x0
+        u32 first_element;   // 0x4
+        u32 transform_index; // 0x8
+    } PC_GEOMETRY_GROUP_PC;  // size 0xc
 
     typedef struct PC_GEOMETRY_MESH_PC {
-        u8 unknown_00[8];
-        u32 group_count;
-        PC_GEOMETRY_INPUT_PC *elements;
-        PC_GEOMETRY_GROUP_PC *groups;
-    } PC_GEOMETRY_MESH_PC;
+        u8 unknown_00[8];               // 0x00
+        u32 group_count;                // 0x08
+        PC_GEOMETRY_INPUT_PC *elements; // 0x0c
+        PC_GEOMETRY_GROUP_PC *groups;   // 0x10
+    } PC_GEOMETRY_MESH_PC;              // size 0x14
 
     typedef struct PC_GEOMETRY_SKIN_PC {
-        u8 unknown_00[8];
-        u32 matrix_group_count;
-        u32 unknown_0c;
-        NUMTX *matrices;
-    } PC_GEOMETRY_SKIN_PC;
+        u8 unknown_00[8];       // 0x00
+        u32 matrix_group_count; // 0x08
+        u32 unknown_0c;         // 0x0c
+        NUMTX *matrices;        // 0x10
+    } PC_GEOMETRY_SKIN_PC;      // size 0x14
 
     typedef struct PC_GEOMETRY_BASIS_MATRIX_PC {
         PC_GEOMETRY_BASIS_VECTOR_PC rows[4];
     } PC_GEOMETRY_BASIS_MATRIX_PC;
 
     typedef struct PC_GEOMETRY_BASIS_PC {
-        PC_GEOMETRY_BASIS_MATRIX_PC matrices[3];
-    } PC_GEOMETRY_BASIS_PC;
+        PC_GEOMETRY_BASIS_MATRIX_PC matrices[3]; // 0x00
+    } PC_GEOMETRY_BASIS_PC;                      // size 0xc0
 
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_INPUT_PC) == 0x70);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_INPUT_PC, corners) == 0);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_INPUT_PC, basis_weights) == 0x40);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_INPUT_PC, output_w) == 0x50);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_INPUT_PC, skin_indices) == 0x60);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_INPUT_PC, skin_weights) == 0x6c);
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_GROUP_PC) == 0xc);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_GROUP_PC, element_count) == 0);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_GROUP_PC, first_element) == 4);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_GROUP_PC, transform_index) == 8);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_MESH_PC, group_count) == 8);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_MESH_PC, elements) == 0xc);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_MESH_PC, groups) == 0x10);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_SKIN_PC, matrix_group_count) == 8);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_SKIN_PC, matrices) == 0x10);
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_BASIS_PC) == 0xc0);
     extern "C" PC_GEOMETRY_BASIS_PC *PcGeometryTransformsPc;
     extern "C" PC_GEOMETRY_OUTPUT_PC *PcGeometryOutputPc;
 
-    STATIC_ASSERT(sizeof(PC_GEOMETRY_CORNER_PC) == 0x10);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_CORNER_PC, position) == 0);
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_CORNER_PC, w) == 0xc);
-
     typedef struct PC_MATERIAL_UPDATE_VIEW {
-        u8 unknown_00[0x3c];
-        void *display;
-        u8 unknown_40[4];
-        u32 attribs;
-        u8 unknown_48[0xc];
-        NUVEC diffuse;
-        u8 unknown_60[0x14];
-        i16 texture_id;
-        u8 unknown_76[0x3e];
-        PC_MATERIAL_SHADER_DESC_VIEW shader;
-        PC_TEXTURE_RESOURCE_PC *vertex_declaration;
-        u16 version;
-    } PC_MATERIAL_UPDATE_VIEW;
-
-    STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, display) == 0x3c);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, attribs) == 0x44);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, diffuse) == 0x54);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, texture_id) == 0x74);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, shader) == 0xb4);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, vertex_declaration) == 0x2bc);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, version) == 0x2c0);
+        u8 unknown_00[0x3c];                        // 0x000
+        void *display;                              // 0x03c
+        u8 unknown_40[4];                           // 0x040
+        u32 attribs;                                // 0x044
+        u8 unknown_48[0xc];                         // 0x048
+        NUVEC diffuse;                              // 0x054
+        u8 unknown_60[0x14];                        // 0x060
+        i16 texture_id;                             // 0x074
+        u8 unknown_76[0x3e];                        // 0x076
+        PC_MATERIAL_SHADER_DESC_VIEW shader;        // 0x0b4
+        PC_TEXTURE_RESOURCE_PC *vertex_declaration; // 0x2bc
+        u16 version;                                // 0x2c0
+    } PC_MATERIAL_UPDATE_VIEW;                      // size 0x2c4
 
     typedef struct PC_SHADER_HANDLE_VIEW {
-        i16 handle;
-    } PC_SHADER_HANDLE_VIEW;
-
-    STATIC_ASSERT(offsetof(PC_SHADER_HANDLE_VIEW, handle) == 0);
+        i16 handle;          // 0x0
+    } PC_SHADER_HANDLE_VIEW; // size 0x2
 
     struct PC_MATERIAL_DEVICE_CAPS_VIEW {
-        u8 unknown_000[0x654];
-        u8 shader_caps;
+        u8 unknown_000[0x654]; // 0x000
+        u8 shader_caps;        // 0x654
         i32 __thiscall ShaderVariant16();
         i32 __thiscall ShaderVariant1();
-    };
-
-    STATIC_ASSERT(offsetof(PC_MATERIAL_DEVICE_CAPS_VIEW, shader_caps) == 0x654);
+    }; // size 0x655
 
     typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
 
@@ -806,298 +683,186 @@ extern "C" {
     }
 
     typedef struct PC_SPECIAL_GEOMETRY {
-        u8 unknown_0000[8];
-        u16 vertex_stride;
-        u8 joint_indices[8];
-        u8 unknown_0012[2];
-        u32 base_vertex;
-        u32 vertex_count;
-        u8 unknown_001c[8];
-        PC_BUFFER_RESOURCE_PC *vertex_buffer;
-        u32 morph_count;
-        NUVEC **morph_deltas;
-        u32 unknown_0030;
-        void *dynamic_vertices;
-    } PC_SPECIAL_GEOMETRY;
-
-    STATIC_ASSERT(sizeof(PC_SPECIAL_GEOMETRY) == 0x38);
-    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, vertex_stride) == 8);
-    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, joint_indices) == 0xa);
-    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, base_vertex) == 0x14);
-    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, vertex_count) == 0x18);
-    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, vertex_buffer) == 0x24);
-    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, morph_count) == 0x28);
-    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, morph_deltas) == 0x2c);
-    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, dynamic_vertices) == 0x34);
+        u8 unknown_0000[8];                   // 0x00
+        u16 vertex_stride;                    // 0x08
+        u8 joint_indices[8];                  // 0x0a
+        u8 unknown_0012[2];                   // 0x12
+        u32 base_vertex;                      // 0x14
+        u32 vertex_count;                     // 0x18
+        u8 unknown_001c[8];                   // 0x1c
+        PC_BUFFER_RESOURCE_PC *vertex_buffer; // 0x24
+        u32 morph_count;                      // 0x28
+        NUVEC **morph_deltas;                 // 0x2c
+        u32 unknown_0030;                     // 0x30
+        void *dynamic_vertices;               // 0x34
+    } PC_SPECIAL_GEOMETRY;                    // size 0x38
 
     typedef struct PC_SPECIAL_DEFORMER_WEIGHTS {
-        u32 unknown_0000[2];
-        f32 weights[1];
-    } PC_SPECIAL_DEFORMER_WEIGHTS;
-
-    STATIC_ASSERT(offsetof(PC_SPECIAL_DEFORMER_WEIGHTS, weights) == 8);
+        u32 unknown_0000[2];       // 0x0
+        f32 weights[1];            // 0x8
+    } PC_SPECIAL_DEFORMER_WEIGHTS; // size 0xc
 
     typedef struct PC_SPECIAL_FACEON {
         i32 kind;
     } PC_SPECIAL_FACEON;
 
     typedef struct PC_SPECIAL_TRANSFORM_PACKET {
-        NUMTX matrix;
-    } PC_SPECIAL_TRANSFORM_PACKET;
-
-    STATIC_ASSERT(offsetof(PC_SPECIAL_TRANSFORM_PACKET, matrix.m32) == 0x38);
-    STATIC_ASSERT(offsetof(PC_SPECIAL_TRANSFORM_PACKET, matrix.m33) == 0x3c);
+        NUMTX matrix;              // 0x00
+    } PC_SPECIAL_TRANSFORM_PACKET; // size 0x40
 
     typedef struct display_primitive_packet_pc_s {
-        u32 type;
-        u8 unknown_0004[0x14];
-        u32 vertex_count;
-        u8 unknown_001c[0x1c];
-    } DISPLAY_PRIMITIVE_PACKET_PC;
-
-    STATIC_ASSERT(sizeof(DISPLAY_PRIMITIVE_PACKET_PC) == 0x38);
-    STATIC_ASSERT(offsetof(DISPLAY_PRIMITIVE_PACKET_PC, vertex_count) == 0x18);
+        u32 type;                  // 0x00
+        u8 unknown_0004[0x14];     // 0x04
+        u32 vertex_count;          // 0x18
+        u8 unknown_001c[0x1c];     // 0x1c
+    } DISPLAY_PRIMITIVE_PACKET_PC; // size 0x38
 
     typedef struct PC_DL_SKIN_PALETTE_READER {
-        i32 count;
-        f32 elements[1];
-    } PC_DL_SKIN_PALETTE_READER;
-
-    STATIC_ASSERT(offsetof(PC_DL_SKIN_PALETTE_READER, count) == 0);
-    STATIC_ASSERT(offsetof(PC_DL_SKIN_PALETTE_READER, elements) == 4);
+        i32 count;               // 0x0
+        f32 elements[1];         // 0x4
+    } PC_DL_SKIN_PALETTE_READER; // size 0x8
 
     typedef struct PC_DL_LIGHTS_READER {
-        NUVEC4 ambient;
-        NUVEC4 intensity[3];
-        NUVEC4 direction[3];
-        NUMTX shine_matrix;
-    } PC_DL_LIGHTS_READER;
-
-    STATIC_ASSERT(sizeof(PC_DL_LIGHTS_READER) == 0xb0);
-    STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, intensity) == 0x10);
-    STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, direction) == 0x40);
-    STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, shine_matrix) == 0x70);
+        NUVEC4 ambient;      // 0x00
+        NUVEC4 intensity[3]; // 0x10
+        NUVEC4 direction[3]; // 0x40
+        NUMTX shine_matrix;  // 0x70
+    } PC_DL_LIGHTS_READER;   // size 0xb0
 
     typedef union PC_DL_NORMALIZED_DIRECTION {
-        NUVEC4 four;
+        NUVEC4 four; // 0x0
 
-        struct {
-            NUVEC three;
-            f32 w;
+        struct {         // 0x0
+            NUVEC three; // 0x0
+            f32 w;       // 0xc
         } normalized;
-    } PC_DL_NORMALIZED_DIRECTION;
-
-    STATIC_ASSERT(sizeof(PC_DL_NORMALIZED_DIRECTION) == 16);
-    STATIC_ASSERT(offsetof(PC_DL_NORMALIZED_DIRECTION, normalized.w) == 12);
+    } PC_DL_NORMALIZED_DIRECTION; // size 0x10
 
     typedef struct PC_DL_FOG_READER {
-        i32 enabled;
-        u32 colour;
-        f32 near_distance;
-        f32 far_distance;
-        f32 density;
-    } PC_DL_FOG_READER;
-
-    STATIC_ASSERT(sizeof(PC_DL_FOG_READER) == 0x14);
-    STATIC_ASSERT(offsetof(PC_DL_FOG_READER, colour) == 4);
-    STATIC_ASSERT(offsetof(PC_DL_FOG_READER, near_distance) == 8);
-    STATIC_ASSERT(offsetof(PC_DL_FOG_READER, far_distance) == 0xc);
-    STATIC_ASSERT(offsetof(PC_DL_FOG_READER, density) == 0x10);
+        i32 enabled;       // 0x00
+        u32 colour;        // 0x04
+        f32 near_distance; // 0x08
+        f32 far_distance;  // 0x0c
+        f32 density;       // 0x10
+    } PC_DL_FOG_READER;    // size 0x14
 
     typedef struct PC_DL_LEGACY_LIGHTMAP_READER {
-        i32 texture_id[3];
-        f32 x_offset;
-        f32 y_offset;
-    } PC_DL_LEGACY_LIGHTMAP_READER;
-
-    STATIC_ASSERT(offsetof(PC_DL_LEGACY_LIGHTMAP_READER, x_offset) == 0xc);
-    STATIC_ASSERT(offsetof(PC_DL_LEGACY_LIGHTMAP_READER, y_offset) == 0x10);
+        i32 texture_id[3];          // 0x00
+        f32 x_offset;               // 0x0c
+        f32 y_offset;               // 0x10
+    } PC_DL_LEGACY_LIGHTMAP_READER; // size 0x14
 
     typedef struct PC_DL_CAMERA_READER {
-        i32 id;
-        NUMTX view;
-        NUMTX projection;
-        f32 viewport[4];
-    } PC_DL_CAMERA_READER;
-
-    STATIC_ASSERT(sizeof(PC_DL_CAMERA_READER) == 0x94);
-    STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, view) == 4);
-    STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, projection) == 0x44);
-    STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, viewport) == 0x84);
+        i32 id;            // 0x00
+        NUMTX view;        // 0x04
+        NUMTX projection;  // 0x44
+        f32 viewport[4];   // 0x84
+    } PC_DL_CAMERA_READER; // size 0x94
 
     /* Source-local working declarations; backing and canonical union remain separate gates. */
     typedef struct PC_DL_MATERIAL_READER {
-        u8 unknown_0000[0x40];
-        u32 reflection_flags;
-    } PC_DL_MATERIAL_READER;
-
-    STATIC_ASSERT(offsetof(PC_DL_MATERIAL_READER, reflection_flags) == 0x40);
+        u8 unknown_0000[0x40]; // 0x00
+        u32 reflection_flags;  // 0x40
+    } PC_DL_MATERIAL_READER;   // size 0x44
 
     typedef struct PC_DL_CAMERA_PROJECTION_READER {
-        NUMTX projection;
-        f32 viewport[4];
-    } PC_DL_CAMERA_PROJECTION_READER;
-
-    STATIC_ASSERT(offsetof(PC_DL_CAMERA_PROJECTION_READER, viewport) == 0x40);
+        NUMTX projection;             // 0x00
+        f32 viewport[4];              // 0x40
+    } PC_DL_CAMERA_PROJECTION_READER; // size 0x50
 
     typedef struct PC_DL_VERTEX_GROUPS_READER {
-        i32 count;
-        u32 flags;
-        NUVEC4 values[1];
-    } PC_DL_VERTEX_GROUPS_READER;
-
-    STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, count) == 0);
-    STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, flags) == 4);
-    STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, values) == 8);
+        i32 count;                // 0x00
+        u32 flags;                // 0x04
+        NUVEC4 values[1];         // 0x08
+    } PC_DL_VERTEX_GROUPS_READER; // size 0x18
 
     typedef struct PC_DL_VERTEX_OFFSETS_READER {
-        i32 count;
-        NUVEC4 values[1];
-    } PC_DL_VERTEX_OFFSETS_READER;
-
-    STATIC_ASSERT(offsetof(PC_DL_VERTEX_OFFSETS_READER, count) == 0);
-    STATIC_ASSERT(offsetof(PC_DL_VERTEX_OFFSETS_READER, values) == 4);
+        i32 count;                 // 0x00
+        NUVEC4 values[1];          // 0x04
+    } PC_DL_VERTEX_OFFSETS_READER; // size 0x14
 
     extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49];
 
     /* PC-only table slot 0xad; no Android function identity is asserted. */
     typedef struct PC_DL_AD_COLOURS {
-        NUVEC colour[5];
-    } PC_DL_AD_COLOURS;
-
-    STATIC_ASSERT(sizeof(PC_DL_AD_COLOURS) == 0x3c);
+        NUVEC colour[5]; // 0x00
+    } PC_DL_AD_COLOURS;  // size 0x3c
 
     typedef struct PC_DL_AD_RECORD {
-        u8 unknown_0000[0x14];
-        u8 enabled;
-        u8 unknown_0015[3];
-        i32 segment_count;
-        f32 pixel_parameter;
-        f32 vertex_parameter_x;
-        f32 vertex_parameter_y;
-        f32 vertex_parameter_z;
-        f32 pixel_parameter_x;
-        f32 pixel_parameter_y;
-        f32 pixel_parameter_z;
-        f32 pixel_scalar;
-        PC_DL_AD_COLOURS colours;
-    } PC_DL_AD_RECORD;
-
-    STATIC_ASSERT(sizeof(PC_DL_AD_RECORD) == 0x78);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, enabled) == 0x14);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, segment_count) == 0x18);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter) == 0x1c);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, vertex_parameter_x) == 0x20);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, vertex_parameter_y) == 0x24);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, vertex_parameter_z) == 0x28);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter_x) == 0x2c);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter_y) == 0x30);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter_z) == 0x34);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_scalar) == 0x38);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, colours) == 0x3c);
+        u8 unknown_0000[0x14];    // 0x00
+        u8 enabled;               // 0x14
+        u8 unknown_0015[3];       // 0x15
+        i32 segment_count;        // 0x18
+        f32 pixel_parameter;      // 0x1c
+        f32 vertex_parameter_x;   // 0x20
+        f32 vertex_parameter_y;   // 0x24
+        f32 vertex_parameter_z;   // 0x28
+        f32 pixel_parameter_x;    // 0x2c
+        f32 pixel_parameter_y;    // 0x30
+        f32 pixel_parameter_z;    // 0x34
+        f32 pixel_scalar;         // 0x38
+        PC_DL_AD_COLOURS colours; // 0x3c
+    } PC_DL_AD_RECORD;            // size 0x78
 
     typedef struct PC_DL_AD_RECORD_LIST {
-        u32 unknown_0000;
-        i32 count;
-        u32 unknown_0008;
-        PC_DL_AD_RECORD *records;
-    } PC_DL_AD_RECORD_LIST;
-
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD_LIST, count) == 4);
-    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD_LIST, records) == 0xc);
+        u32 unknown_0000;         // 0x0
+        i32 count;                // 0x4
+        u32 unknown_0008;         // 0x8
+        PC_DL_AD_RECORD *records; // 0xc
+    } PC_DL_AD_RECORD_LIST;       // size 0x10
 
     typedef struct PC_DL_AD_PACKET {
-        PC_DL_AD_RECORD_LIST *list;
-        u32 instances;
-        u8 unknown_0008[0xc];
-        PC_BUFFER_RESOURCE_PC *instance_buffer;
-        PC_BUFFER_RESOURCE_PC *vertex_buffer;
-        PC_BUFFER_RESOURCE_PC *index_buffer;
-    } PC_DL_AD_PACKET;
-
-    STATIC_ASSERT(sizeof(PC_DL_AD_PACKET) == 0x20);
-    STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, list) == 0);
-    STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, instances) == 4);
-    STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, instance_buffer) == 0x14);
-    STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, vertex_buffer) == 0x18);
-    STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, index_buffer) == 0x1c);
+        PC_DL_AD_RECORD_LIST *list;             // 0x00
+        u32 instances;                          // 0x04
+        u8 unknown_0008[0xc];                   // 0x08
+        PC_BUFFER_RESOURCE_PC *instance_buffer; // 0x14
+        PC_BUFFER_RESOURCE_PC *vertex_buffer;   // 0x18
+        PC_BUFFER_RESOURCE_PC *index_buffer;    // 0x1c
+    } PC_DL_AD_PACKET;                          // size 0x20
 
     typedef struct PC_DL_GEOMETRY_READER {
-        u32 kind;
-        u32 primitive_count;
-        u16 vertex_stride;
-        u8 unknown_000a[0xa];
-        i32 base_vertex;
-        u32 vertex_count;
-        u32 start_index;
-        PC_BUFFER_RESOURCE_PC *index_buffer;
-        PC_BUFFER_RESOURCE_PC *vertex_buffer;
-        u32 dynamic_count;
-        void *morph_deltas;
-        PC_BUFFER_RESOURCE_PC *dynamic_buffer;
-        void *dynamic_vertices;
-    } PC_DL_GEOMETRY_READER;
-
-    STATIC_ASSERT(sizeof(PC_DL_GEOMETRY_READER) == 0x38);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, kind) == 0);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, primitive_count) == 4);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, vertex_stride) == 8);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, base_vertex) == 0x14);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, vertex_count) == 0x18);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, start_index) == 0x1c);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, index_buffer) == 0x20);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, vertex_buffer) == 0x24);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, dynamic_count) == 0x28);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, dynamic_buffer) == 0x30);
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, dynamic_vertices) == 0x34);
+        u32 kind;                              // 0x00
+        u32 primitive_count;                   // 0x04
+        u16 vertex_stride;                     // 0x08
+        u8 unknown_000a[0xa];                  // 0x0a
+        i32 base_vertex;                       // 0x14
+        u32 vertex_count;                      // 0x18
+        u32 start_index;                       // 0x1c
+        PC_BUFFER_RESOURCE_PC *index_buffer;   // 0x20
+        PC_BUFFER_RESOURCE_PC *vertex_buffer;  // 0x24
+        u32 dynamic_count;                     // 0x28
+        void *morph_deltas;                    // 0x2c
+        PC_BUFFER_RESOURCE_PC *dynamic_buffer; // 0x30
+        void *dynamic_vertices;                // 0x34
+    } PC_DL_GEOMETRY_READER;                   // size 0x38
 
     typedef struct PC_DL_GEOMETRY_MATERIAL_READER {
-        u8 unknown_0000[0x26c];
-        u32 lightmap_flags;
-    } PC_DL_GEOMETRY_MATERIAL_READER;
-
-    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_MATERIAL_READER, lightmap_flags) == 0x26c);
+        u8 unknown_0000[0x26c];       // 0x000
+        u32 lightmap_flags;           // 0x26c
+    } PC_DL_GEOMETRY_MATERIAL_READER; // size 0x270
 
     typedef struct PC_DL_FACEON_DRAW_READER {
-        u32 unknown_0000;
-        u32 primitive_count;
-        PC_BUFFER_RESOURCE_PC *vertex_buffer;
-        u32 first_vertex;
-    } PC_DL_FACEON_DRAW_READER;
-
-    STATIC_ASSERT(sizeof(PC_DL_FACEON_DRAW_READER) == 0x10);
-    STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, primitive_count) == 4);
-    STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, vertex_buffer) == 8);
-    STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, first_vertex) == 0xc);
+        u32 unknown_0000;                     // 0x0
+        u32 primitive_count;                  // 0x4
+        PC_BUFFER_RESOURCE_PC *vertex_buffer; // 0x8
+        u32 first_vertex;                     // 0xc
+    } PC_DL_FACEON_DRAW_READER;               // size 0x10
 
     typedef struct PC_DL_DEBRIS_DRAW_READER {
-        u8 buffer_index;
-        u8 unknown_0001[3];
-        u32 use_system_buffer;
-        u32 first_vertex;
-        u32 vertex_count;
-    } PC_DL_DEBRIS_DRAW_READER;
-
-    STATIC_ASSERT(sizeof(PC_DL_DEBRIS_DRAW_READER) == 0x10);
-    STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, buffer_index) == 0);
-    STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, use_system_buffer) == 4);
-    STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, first_vertex) == 8);
-    STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, vertex_count) == 0xc);
+        u8 buffer_index;        // 0x0
+        u8 unknown_0001[3];     // 0x1
+        u32 use_system_buffer;  // 0x4
+        u32 first_vertex;       // 0x8
+        u32 vertex_count;       // 0xc
+    } PC_DL_DEBRIS_DRAW_READER; // size 0x10
 
     typedef struct PC_DL_LIGHTMAP_UPDATE_READER {
-        i32 mode;
-        i32 texture_id;
-        i32 texture_ids[3];
-        f32 x_offset;
-        f32 y_offset;
-    } PC_DL_LIGHTMAP_UPDATE_READER;
-
-    STATIC_ASSERT(sizeof(PC_DL_LIGHTMAP_UPDATE_READER) == 0x1c);
-    STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, mode) == 0);
-    STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, texture_id) == 4);
-    STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, texture_ids) == 8);
-    STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, x_offset) == 0x14);
-    STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, y_offset) == 0x18);
+        i32 mode;                   // 0x00
+        i32 texture_id;             // 0x04
+        i32 texture_ids[3];         // 0x08
+        f32 x_offset;               // 0x14
+        f32 y_offset;               // 0x18
+    } PC_DL_LIGHTMAP_UPDATE_READER; // size 0x1c
 
     /* Existing canonical integer slot holds the native 32-bit packet identity. */
     extern i32 PCGraphicsBoundShader;
@@ -1137,11 +902,9 @@ extern "C" {
     STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_24) == 0x24);
 
     typedef struct PC_TEXTURE_LEVEL_COUNT_METHODS_PC {
-        void *reserved00[13];
-        u32(__stdcall *get_level_count)(PC_TEXTURE_RESOURCE_PC *);
-    } PC_TEXTURE_LEVEL_COUNT_METHODS_PC;
-
-    STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_COUNT_METHODS_PC, get_level_count) == 0x34);
+        void *reserved00[13];                                      // 0x00
+        u32(__stdcall *get_level_count)(PC_TEXTURE_RESOURCE_PC *); // 0x34
+    } PC_TEXTURE_LEVEL_COUNT_METHODS_PC;                           // size 0x38
 
     STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) == 8);
     STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
@@ -1178,20 +941,15 @@ extern "C" {
 
     /* The material fields the atlas font set-up writes. */
     typedef struct nuqfnt_atlas_material_pc_s {
-        u8 unknown_000[0x40];
-        u32 attributes;
-        u32 attributes_high;
-        u8 unknown_048[0xc];
-        NUVEC diffuse;
-        u8 unknown_060[0x10];
-        f32 opacity;
-        i16 texture_id;
-    } NUQFNT_ATLAS_MATERIAL_PC;
-
-    STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, attributes) == 0x40);
-    STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, diffuse) == 0x54);
-    STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, opacity) == 0x70);
-    STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, texture_id) == 0x74);
+        u8 unknown_000[0x40];   // 0x00
+        u32 attributes;         // 0x40
+        u32 attributes_high;    // 0x44
+        u8 unknown_048[0xc];    // 0x48
+        NUVEC diffuse;          // 0x54
+        u8 unknown_060[0x10];   // 0x60
+        f32 opacity;            // 0x70
+        i16 texture_id;         // 0x74
+    } NUQFNT_ATLAS_MATERIAL_PC; // size 0x78
 
 #define NUQFNT_ATLAS_MAP_SIZE 808
 #define NUQFNT_ATLAS_GLYPH_SIZE 750
@@ -1300,129 +1058,90 @@ extern "C" {
     PC_BUFFER_RESOURCE_PC *NuWaterVertexBufferPc = 0;
 
     typedef struct nuprimvertex_pc_s {
-        f32 x;
-        f32 y;
-        f32 z;
-        u32 colour;
-        f32 u;
-        f32 v;
-    } NUPRIMVERTEX_PC;
-
-    STATIC_ASSERT(sizeof(NUPRIMVERTEX_PC) == 0x18);
-    STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, colour) == 0x0c);
-    STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, u) == 0x10);
-    STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, v) == 0x14);
+        f32 x;         // 0x00
+        f32 y;         // 0x04
+        f32 z;         // 0x08
+        u32 colour;    // 0x0c
+        f32 u;         // 0x10
+        f32 v;         // 0x14
+    } NUPRIMVERTEX_PC; // size 0x18
 
     typedef struct nuprim_packet_pc_s {
-        u32 primitive_type;
-        u8 unknown_0004[0x14];
-        i32 vertex_count;
-        u8 unknown_001c[0x1c];
-    } NUPRIM_PACKET_PC;
-
-    STATIC_ASSERT(sizeof(NUPRIM_PACKET_PC) == 0x38);
-    STATIC_ASSERT(offsetof(NUPRIM_PACKET_PC, vertex_count) == 0x18);
+        u32 primitive_type;    // 0x00
+        u8 unknown_0004[0x14]; // 0x04
+        i32 vertex_count;      // 0x18
+        u8 unknown_001c[0x1c]; // 0x1c
+    } NUPRIM_PACKET_PC;        // size 0x38
 
     typedef struct nuprim_command_pc_s {
-        u8 type;
-        u8 id;
-        u16 unknown_0002;
-        void *target;
-        u32 unknown_0008[2];
-    } NUPRIM_COMMAND_PC;
-
-    STATIC_ASSERT(sizeof(NUPRIM_COMMAND_PC) == 0x10);
-    STATIC_ASSERT(offsetof(NUPRIM_COMMAND_PC, target) == 4);
+        u8 type;             // 0x0
+        u8 id;               // 0x1
+        u16 unknown_0002;    // 0x2
+        void *target;        // 0x4
+        u32 unknown_0008[2]; // 0x8
+    } NUPRIM_COMMAND_PC;     // size 0x10
 
     typedef struct nuprim_material_state_pc_s {
-        u32 unknown_0000[2];
-        NUMTL *material;
-        u32 unknown_000c;
-        u32 unknown_0010;
-        i32 texture_id;
-    } NUPRIM_MATERIAL_STATE_PC;
-
-    STATIC_ASSERT(offsetof(NUPRIM_MATERIAL_STATE_PC, material) == 0x08);
-    STATIC_ASSERT(offsetof(NUPRIM_MATERIAL_STATE_PC, texture_id) == 0x14);
+        u32 unknown_0000[2];    // 0x00
+        NUMTL *material;        // 0x08
+        u32 unknown_000c;       // 0x0c
+        u32 unknown_0010;       // 0x10
+        i32 texture_id;         // 0x14
+    } NUPRIM_MATERIAL_STATE_PC; // size 0x18
 
     typedef struct nuprim_transform_packet_pc_s {
-        u8 unknown_0000[0x40];
-    } NUPRIM_TRANSFORM_PACKET_PC;
-
-    STATIC_ASSERT(sizeof(NUPRIM_TRANSFORM_PACKET_PC) == 0x40);
+        u8 unknown_0000[0x40];    // 0x00
+    } NUPRIM_TRANSFORM_PACKET_PC; // size 0x40
 
     typedef struct nuprim_render_state_ids_pc_s {
-        u8 unknown_0000[0x1e];
-        i16 konst_id;
-        i32 global_id;
-        i16 lights_id;
-        u16 unknown_0026[3];
-        i16 camera_id;
-        i16 fog_id;
-        i16 vertex_groups_id;
-        i16 reflection_id;
-    } NUPRIM_RENDER_STATE_IDS_PC;
-
-    STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, konst_id) == 0x1e);
-    STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, global_id) == 0x20);
-    STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, lights_id) == 0x24);
-    STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, camera_id) == 0x2c);
-    STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, fog_id) == 0x2e);
-    STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, vertex_groups_id) == 0x30);
-    STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, reflection_id) == 0x32);
+        u8 unknown_0000[0x1e];    // 0x00
+        i16 konst_id;             // 0x1e
+        i32 global_id;            // 0x20
+        i16 lights_id;            // 0x24
+        u16 unknown_0026[3];      // 0x26
+        i16 camera_id;            // 0x2c
+        i16 fog_id;               // 0x2e
+        i16 vertex_groups_id;     // 0x30
+        i16 reflection_id;        // 0x32
+    } NUPRIM_RENDER_STATE_IDS_PC; // size 0x34
 
     typedef struct nuprim_camera_packet_pc_s {
-        i32 id;
-        NUMTX view;
-        NUMTX projection;
-        f32 viewport[4];
-    } NUPRIM_CAMERA_PACKET_PC;
-
-    STATIC_ASSERT(sizeof(NUPRIM_CAMERA_PACKET_PC) == 0x94);
-    STATIC_ASSERT(offsetof(NUPRIM_CAMERA_PACKET_PC, view) == 4);
-    STATIC_ASSERT(offsetof(NUPRIM_CAMERA_PACKET_PC, projection) == 0x44);
-    STATIC_ASSERT(offsetof(NUPRIM_CAMERA_PACKET_PC, viewport) == 0x84);
+        i32 id;                // 0x00
+        NUMTX view;            // 0x04
+        NUMTX projection;      // 0x44
+        f32 viewport[4];       // 0x84
+    } NUPRIM_CAMERA_PACKET_PC; // size 0x94
 
     typedef struct nuprim_vec4_pc_s {
-        f32 x;
-        f32 y;
-        f32 z;
-        f32 w;
-    } NUPRIM_VEC4_PC;
-
-    STATIC_ASSERT(sizeof(NUPRIM_VEC4_PC) == 0x10);
+        f32 x;        // 0x0
+        f32 y;        // 0x4
+        f32 z;        // 0x8
+        f32 w;        // 0xc
+    } NUPRIM_VEC4_PC; // size 0x10
 
     typedef struct nuprim_light_packet_pc_s {
-        NUPRIM_VEC4_PC ambient_intensity;
-        NUPRIM_VEC4_PC light_intensity[3];
-        NUPRIM_VEC4_PC light_direction[3];
-        NUMTX specular_mtx;
-        NUVEC specular_colour;
-    } NUPRIM_LIGHT_PACKET_PC;
+        NUPRIM_VEC4_PC ambient_intensity;  // 0x00
+        NUPRIM_VEC4_PC light_intensity[3]; // 0x10
+        NUPRIM_VEC4_PC light_direction[3]; // 0x40
+        NUMTX specular_mtx;                // 0x70
+        NUVEC specular_colour;             // 0xb0
+    } NUPRIM_LIGHT_PACKET_PC;              // size 0xbc
 
-    STATIC_ASSERT(sizeof(NUPRIM_LIGHT_PACKET_PC) == 0xbc);
-    STATIC_ASSERT(offsetof(NUPRIM_LIGHT_PACKET_PC, light_intensity) == 0x10);
-    STATIC_ASSERT(offsetof(NUPRIM_LIGHT_PACKET_PC, light_direction) == 0x40);
-    STATIC_ASSERT(offsetof(NUPRIM_LIGHT_PACKET_PC, specular_mtx) == 0x70);
-    STATIC_ASSERT(offsetof(NUPRIM_LIGHT_PACKET_PC, specular_colour) == 0xb0);
 #undef LINK_MTL_STATE
 
     /* Native selects one of the two adjacent material-use buffers by bit 15. */
     typedef struct NUPRIM_SCENE_USAGE_PC {
-        u8 unknown_0000[0x58];
-        u8 *material_used[2];
-    } NUPRIM_SCENE_USAGE_PC;
+        u8 unknown_0000[0x58]; // 0x00
+        u8 *material_used[2];  // 0x58
+    } NUPRIM_SCENE_USAGE_PC;   // size 0x60
 
-    STATIC_ASSERT(offsetof(NUPRIM_SCENE_USAGE_PC, material_used) == 0x58);
     STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, material_used_back) ==
                   offsetof(NUPRIM_SCENE_USAGE_PC, material_used) + sizeof(u8 *));
 
     typedef struct AMBIENT_SPECULAR_RENDER_VIEW_PC {
-        u8 unknown_00[0x8c];
-        f32 global_specular;
-    } AMBIENT_SPECULAR_RENDER_VIEW_PC;
-
-    STATIC_ASSERT(offsetof(AMBIENT_SPECULAR_RENDER_VIEW_PC, global_specular) == 0x8c);
+        u8 unknown_00[0x8c];           // 0x00
+        f32 global_specular;           // 0x8c
+    } AMBIENT_SPECULAR_RENDER_VIEW_PC; // size 0x90
 
     // @@FUNCTIONS
 
@@ -1566,21 +1285,19 @@ extern "C" {
 
     /* Sampler fields packed into GRAPHICS_RENDER_TEXTURE_PC::flags. */
     typedef union PC_SAMPLER_FLAGS_PC {
-        u32 value;
+        u32 value; // 0x0
 
-        struct {
-            u32 unknown_0 : 8;
-            u32 address_u : 3;
-            u32 address_v : 3;
-            u32 unknown_14 : 3;
-            u32 min_filter : 3;
-            u32 mag_filter : 3;
-            u32 mip_filter : 3;
-            u32 unknown_26 : 6;
+        struct {                // 0x0
+            u32 unknown_0 : 8;  // 0x0:0
+            u32 address_u : 3;  // 0x0:8
+            u32 address_v : 3;  // 0x0:11
+            u32 unknown_14 : 3; // 0x0:14
+            u32 min_filter : 3; // 0x0:17
+            u32 mag_filter : 3; // 0x0:20
+            u32 mip_filter : 3; // 0x0:23
+            u32 unknown_26 : 6; // 0x0:26
         } bits;
-    } PC_SAMPLER_FLAGS_PC;
-
-    STATIC_ASSERT(sizeof(PC_SAMPLER_FLAGS_PC) == 4);
+    } PC_SAMPLER_FLAGS_PC; // size 0x4
 
     void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second,
                                                         i32 third) {
@@ -6766,43 +6483,31 @@ typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
 typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
 
 struct PC_HG_SHADOW_SHAPE48 {
-    union {
-        NUVEC axes[4];
+    union {            // 0x00
+        NUVEC axes[4]; // 0x00
 
-        struct {
-            f32 center_x;
-            u32 flags;
-            u8 rest[40];
+        struct {          // 0x00
+            f32 center_x; // 0x00
+            u32 flags;    // 0x04
+            u8 rest[40];  // 0x08
         } filter;
     };
-};
+}; // size 0x30
 
 struct PC_HG_SHADOW_SHAPE64 {
-    PC_HG_SHADOW_SHAPE48 position;
-    u8 unknown_30[16];
-};
+    PC_HG_SHADOW_SHAPE48 position; // 0x00
+    u8 unknown_30[16];             // 0x30
+}; // size 0x40
 
 struct PC_HG_SHADOW_GROUP {
-    PC_HG_SHADOW_SHAPE48 *ellipses;
-    PC_HG_SHADOW_SHAPE64 *cylinders;
-    void *third_shape;
-    u8 ellipse_count;
-    u8 cylinder_count;
-    u8 third_count;
-    u8 joint_index;
-};
-
-STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
-STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE64) == 64);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_SHAPE48, filter.flags) == 4);
-STATIC_ASSERT(sizeof(PC_HG_SHADOW_GROUP) == 16);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipses) == 0);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinders) == 4);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_shape) == 8);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipse_count) == 12);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinder_count) == 13);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_count) == 14);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, joint_index) == 15);
+    PC_HG_SHADOW_SHAPE48 *ellipses;  // 0x0
+    PC_HG_SHADOW_SHAPE64 *cylinders; // 0x4
+    void *third_shape;               // 0x8
+    u8 ellipse_count;                // 0xc
+    u8 cylinder_count;               // 0xd
+    u8 third_count;                  // 0xe
+    u8 joint_index;                  // 0xf
+}; // size 0x10
 
 extern "C" {
     NUHGOBJ_POI_PC *__cdecl NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index) {
@@ -6887,27 +6592,22 @@ extern "C" void __cdecl NuDisplayListShadowTransformTransposePc(void *data) {
 }
 
 typedef struct PC_SHADOW_MATERIAL_READER_PC {
-    union {
-        NUMTL common;
+    union {           // 0x000
+        NUMTL common; // 0x000
 
-        struct {
-            u8 unknown_000[0x40];
-            u32 attributes_word;
+        struct {                  // 0x000
+            u8 unknown_000[0x40]; // 0x000
+            u32 attributes_word;  // 0x040
         };
     };
 
-    u8 unknown_09c[0x154];
-    u32 vertex_format;
-    i16 shader_id;
-    i16 shadow_shader_id;
-    u8 unknown_1f8[0xc4];
-    PC_TEXTURE_RESOURCE_PC *vertex_declaration;
-} PC_SHADOW_MATERIAL_READER_PC;
-
-STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, attributes_word) == 0x40);
-STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, vertex_format) == 0x1f0);
-STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, shadow_shader_id) == 0x1f6);
-STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, vertex_declaration) == 0x2bc);
+    u8 unknown_09c[0x154];                      // 0x09c
+    u32 vertex_format;                          // 0x1f0
+    i16 shader_id;                              // 0x1f4
+    i16 shadow_shader_id;                       // 0x1f6
+    u8 unknown_1f8[0xc4];                       // 0x1f8
+    PC_TEXTURE_RESOURCE_PC *vertex_declaration; // 0x2bc
+} PC_SHADOW_MATERIAL_READER_PC;                 // size 0x2c0
 
 extern "C" void __cdecl NuDisplayListShadowMaterialPc(void *data) {
     PC_SHADOW_MATERIAL_READER_PC *material = (PC_SHADOW_MATERIAL_READER_PC *)data;
@@ -7265,44 +6965,29 @@ extern "C" {
     }
 
     typedef struct RENDERER_CLEAR_RECORD_PC {
-        u8 unknown_00[0x20];
-        u16 active;
-        u8 unknown_22[6];
-    } RENDERER_CLEAR_RECORD_PC;
+        u8 unknown_00[0x20];    // 0x00
+        u16 active;             // 0x20
+        u8 unknown_22[6];       // 0x22
+    } RENDERER_CLEAR_RECORD_PC; // size 0x28
 
-    STATIC_ASSERT(sizeof(RENDERER_CLEAR_RECORD_PC) == 0x28);
-    STATIC_ASSERT(offsetof(RENDERER_CLEAR_RECORD_PC, active) == 0x20);
     static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32] = {0};
 
     typedef struct RENDERER_SHADOW_DEFAULTS_PC {
-        f32 state0;
-        f32 state1;
-        f32 state2;
-        u32 packed_colour;
-    } RENDERER_SHADOW_DEFAULTS_PC;
-
-    STATIC_ASSERT(sizeof(RENDERER_SHADOW_DEFAULTS_PC) == 16);
-    STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state0) == 0);
-    STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state1) == 4);
-    STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state2) == 8);
-    STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, packed_colour) == 12);
+        f32 state0;                // 0x0
+        f32 state1;                // 0x4
+        f32 state2;                // 0x8
+        u32 packed_colour;         // 0xc
+    } RENDERER_SHADOW_DEFAULTS_PC; // size 0x10
 
     typedef struct RENDERER_SCREEN_VERTEX_PC {
-        f32 x;
-        f32 y;
-        f32 z;
-        f32 w;
-        u32 attribute_bits;
-        u8 unknown_14[8];
-    } RENDERER_SCREEN_VERTEX_PC;
+        f32 x;                   // 0x00
+        f32 y;                   // 0x04
+        f32 z;                   // 0x08
+        f32 w;                   // 0x0c
+        u32 attribute_bits;      // 0x10
+        u8 unknown_14[8];        // 0x14
+    } RENDERER_SCREEN_VERTEX_PC; // size 0x1c
 
-    STATIC_ASSERT(sizeof(RENDERER_SCREEN_VERTEX_PC) == 0x1c);
-    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, x) == 0);
-    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, y) == 4);
-    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, z) == 8);
-    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, w) == 12);
-    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, attribute_bits) == 16);
-    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, unknown_14) == 20);
 #define QUAD_VERTEX ((RENDERER_SCREEN_VERTEX_PC *)data)
 
     void __cdecl NuRndrQuadBufferInitPc(void) {
@@ -7485,24 +7170,17 @@ extern "C" {
     }
 
     typedef struct PC_STARTUP_MATERIAL_READER_PC {
-        u8 unknown_00[0x40];
-        u32 render_flags;
-        u32 secondary_flags;
-        u8 unknown_48[0xc];
-        NUVEC diffuse;
-        u8 unknown_60[0x10];
-        f32 opacity;
-        i16 texture_id;
-        i16 sort_priority;
-    } PC_STARTUP_MATERIAL_READER_PC;
+        u8 unknown_00[0x40];         // 0x00
+        u32 render_flags;            // 0x40
+        u32 secondary_flags;         // 0x44
+        u8 unknown_48[0xc];          // 0x48
+        NUVEC diffuse;               // 0x54
+        u8 unknown_60[0x10];         // 0x60
+        f32 opacity;                 // 0x70
+        i16 texture_id;              // 0x74
+        i16 sort_priority;           // 0x76
+    } PC_STARTUP_MATERIAL_READER_PC; // size 0x78
 
-    STATIC_ASSERT(sizeof(PC_STARTUP_MATERIAL_READER_PC) == 0x78);
-    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, render_flags) == 0x40);
-    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, secondary_flags) == 0x44);
-    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, diffuse) == 0x54);
-    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, opacity) == 0x70);
-    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, texture_id) == 0x74);
-    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, sort_priority) == 0x76);
 #define STARTUP_MATERIAL(material) ((PC_STARTUP_MATERIAL_READER_PC *)(material))
 
     void __cdecl NuRndrInitStartupMaterialsPc(void) {

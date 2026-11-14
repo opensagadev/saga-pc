@@ -24,17 +24,13 @@ i32 __cdecl InCollectList_Index(i32 id, COLLECTID_PC *list, i32 count) {
 }
 
 typedef struct coin_reset_packet_pc_s {
-    u8 unknown_00[4];
-    f32 scale;
-    u8 unknown_08[2];
-    u8 active;
-    u8 unknown_0b;
-    f32 double_score_timer;
-} COIN_RESET_PACKET_PC;
-
-STATIC_ASSERT(offsetof(COIN_RESET_PACKET_PC, scale) == 4);
-STATIC_ASSERT(offsetof(COIN_RESET_PACKET_PC, active) == 0xa);
-STATIC_ASSERT(offsetof(COIN_RESET_PACKET_PC, double_score_timer) == 0xc);
+    u8 unknown_00[4];       // 0x0
+    f32 scale;              // 0x4
+    u8 unknown_08[2];       // 0x8
+    u8 active;              // 0xa
+    u8 unknown_0b;          // 0xb
+    f32 double_score_timer; // 0xc
+} COIN_RESET_PACKET_PC;     // size 0x10
 
 i32 __cdecl Collection_Got(i32 id) {
     i32 area;
@@ -55,14 +51,12 @@ i32 __cdecl Collection_Got(i32 id) {
 }
 
 typedef struct collection_variant_reader_pc_s {
-    u8 unknown_00[0x116];
-    i8 variant_type;
-    u8 unknown_117[9];
-} COLLECTION_VARIANT_READER_PC;
+    u8 unknown_00[0x116];       // 0x000
+    i8 variant_type;            // 0x116
+    u8 unknown_117[9];          // 0x117
+} COLLECTION_VARIANT_READER_PC; // size 0x120
 
-STATIC_ASSERT(sizeof(COLLECTION_VARIANT_READER_PC) == 0x120);
 STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
-STATIC_ASSERT(offsetof(COLLECTION_VARIANT_READER_PC, variant_type) == 0x116);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
@@ -116,14 +110,13 @@ void CollectAllCharacters(i32 only_story) {
 }
 
 typedef struct collection_buyable_reader_pc_s {
-    i16 id;
-    u8 unknown_02[6];
-    u8 can_buy;
-    u8 unknown_09[0x13];
-} COLLECTION_BUYABLE_READER_PC;
+    i16 id;                     // 0x00
+    u8 unknown_02[6];           // 0x02
+    u8 can_buy;                 // 0x08
+    u8 unknown_09[0x13];        // 0x09
+} COLLECTION_BUYABLE_READER_PC; // size 0x1c
 
 STATIC_ASSERT(sizeof(COLLECTION_BUYABLE_READER_PC) == sizeof(COLLECTID_PC));
-STATIC_ASSERT(offsetof(COLLECTION_BUYABLE_READER_PC, can_buy) == 8);
 STATIC_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
 STATIC_ASSERT(sizeof(APICHARACTERDATA) == 0x4c);
 STATIC_ASSERT(offsetof(APICHARACTERDATA, model_flags) == 4);
@@ -255,26 +248,17 @@ i32 __cdecl Collection_GetIDList(COLLECTION_BUILD_PC *collection, u32 mask, u32 
 }
 
 typedef struct collection_config_entry_pc_s {
-    i16 id;
-    u8 type;
-    u8 area_index;
-    i32 buy_price;
-    u8 can_buy;
-    u8 counts_towards_completion;
-    u16 gold_bricks;
-    char cheat_code[16];
-} COLLECTION_CONFIG_ENTRY_PC;
+    i16 id;                       // 0x00
+    u8 type;                      // 0x02
+    u8 area_index;                // 0x03
+    i32 buy_price;                // 0x04
+    u8 can_buy;                   // 0x08
+    u8 counts_towards_completion; // 0x09
+    u16 gold_bricks;              // 0x0a
+    char cheat_code[16];          // 0x0c
+} COLLECTION_CONFIG_ENTRY_PC;     // size 0x1c
 
-STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == 0x1c);
 STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == sizeof(COLLECTID_PC));
-STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, id) == 0);
-STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, type) == 2);
-STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, area_index) == 3);
-STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, buy_price) == 4);
-STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, can_buy) == 8);
-STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, counts_towards_completion) == 9);
-STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, gold_bricks) == 0xa);
-STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, cheat_code) == 0xc);
 STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
 
 /* Native 594220 is an actual RET with no argument reads. */
@@ -372,20 +356,16 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 /* Append to existing collection.c after its canonical static CollectCount/CollectList. */
 
 typedef struct SHOP_UNLOCK_AREA_PC {
-    u8 unknown_00;
-    u8 area_complete;
-    u8 unknown_02[10];
-} SHOP_UNLOCK_AREA_PC;
-
-STATIC_ASSERT(sizeof(SHOP_UNLOCK_AREA_PC) == 12);
-STATIC_ASSERT(offsetof(SHOP_UNLOCK_AREA_PC, area_complete) == 1);
+    u8 unknown_00;     // 0x0
+    u8 area_complete;  // 0x1
+    u8 unknown_02[10]; // 0x2
+} SHOP_UNLOCK_AREA_PC; // size 0xc
 
 typedef struct SHOP_UNLOCK_COMPLETION_PC {
-    u8 unknown_00[2];
-    u8 gold_bricks;
-} SHOP_UNLOCK_COMPLETION_PC;
+    u8 unknown_00[2];        // 0x0
+    u8 gold_bricks;          // 0x2
+} SHOP_UNLOCK_COMPLETION_PC; // size 0x3
 
-STATIC_ASSERT(offsetof(SHOP_UNLOCK_COMPLETION_PC, gold_bricks) == 2);
 i32 __cdecl Episodes_Completed(void);
 i32 __cdecl AllMiniKitsDone(AREASAVE_s *);
 

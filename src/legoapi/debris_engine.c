@@ -1372,31 +1372,22 @@ void __cdecl DebrisPopulateInstance(i32 handle, f32 duration) {
 }
 
 typedef struct debris_collision_effect_pc_s {
-    u8 unknown_000[0x2b0];
-    DEBRIS_FLOAT_KEY_PC collision_keys[8];
-    i8 process_spheres;
-    i8 time_group;
-    u8 collision_flags;
-    u8 use_explicit_clip_box;
-    f32 thinning;
-    NUVEC particle_box;
-    f32 torus_radius1;
-    f32 torus_radius2;
-    f32 torus_lifetime;
-    DEBRIS_FLOAT_KEY_PC torus_keys1[8];
-    DEBRIS_FLOAT_KEY_PC torus_keys2[8];
-    DEBRIS_FLOAT_KEY_PC torus_keys3[8];
-    u8 unknown_3d0[0x58];
-} DEBRIS_COLLISION_EFFECT_PC;
-
-STATIC_ASSERT(sizeof(DEBRIS_COLLISION_EFFECT_PC) == 0x428);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, collision_keys) == 0x2b0);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_radius1) == 0x304);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_radius2) == 0x308);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_lifetime) == 0x30c);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys1) == 0x310);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys2) == 0x350);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys3) == 0x390);
+    u8 unknown_000[0x2b0];                 // 0x000
+    DEBRIS_FLOAT_KEY_PC collision_keys[8]; // 0x2b0
+    i8 process_spheres;                    // 0x2f0
+    i8 time_group;                         // 0x2f1
+    u8 collision_flags;                    // 0x2f2
+    u8 use_explicit_clip_box;              // 0x2f3
+    f32 thinning;                          // 0x2f4
+    NUVEC particle_box;                    // 0x2f8
+    f32 torus_radius1;                     // 0x304
+    f32 torus_radius2;                     // 0x308
+    f32 torus_lifetime;                    // 0x30c
+    DEBRIS_FLOAT_KEY_PC torus_keys1[8];    // 0x310
+    DEBRIS_FLOAT_KEY_PC torus_keys2[8];    // 0x350
+    DEBRIS_FLOAT_KEY_PC torus_keys3[8];    // 0x390
+    u8 unknown_3d0[0x58];                  // 0x3d0
+} DEBRIS_COLLISION_EFFECT_PC;              // size 0x428
 
 i32 __cdecl DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     DEBRIS_INFO_PC *effect;

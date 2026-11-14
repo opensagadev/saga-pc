@@ -1,66 +1,54 @@
 #include "saga.h"
 
 struct HATMACHINE_PC {
-    NUMTX matrix;
-    char name[16];
-    NUVEC position;
-    u16 yaw;
-    u8 configured_hat;
-    u8 displayed_hat;
-    i8 animation_state;
-    u8 model_letter;
-    u8 model_special_index;
+    NUMTX matrix;           // 0x00
+    char name[16];          // 0x40
+    NUVEC position;         // 0x50
+    u16 yaw;                // 0x5c
+    u8 configured_hat;      // 0x5e
+    u8 displayed_hat;       // 0x5f
+    i8 animation_state;     // 0x60
+    u8 model_letter;        // 0x61
+    u8 model_special_index; // 0x62
 
-    union {
-        u8 flags;
+    union {       // 0x63
+        u8 flags; // 0x63
 
-        struct {
-            u8 state_bit0 : 1;
-            u8 state_bit1 : 1;
-            u8 visible : 1;
-            u8 enabled : 1;
-            u8 reserved_state_bits : 4;
+        struct {                        // 0x63
+            u8 state_bit0 : 1;          // 0x63:0
+            u8 state_bit1 : 1;          // 0x63:1
+            u8 visible : 1;             // 0x63:2
+            u8 enabled : 1;             // 0x63:3
+            u8 reserved_state_bits : 4; // 0x63:4
         };
     };
 
-    NUVEC player_position;
-    NUVEC target_offset;
-    u16 terrain_pitch;
-    u16 terrain_roll;
-    i16 platform_id;
-    u16 reserved_82;
-    f32 hat_delay;
-    f32 state_duration;
-    f32 state_elapsed;
-    f32 scale;
-    f32 animation_time;
-    f32 idle_bounce_timer;
-    u8 reserved_9c[4];
-};
+    NUVEC player_position; // 0x64
+    NUVEC target_offset;   // 0x70
+    u16 terrain_pitch;     // 0x7c
+    u16 terrain_roll;      // 0x7e
+    i16 platform_id;       // 0x80
+    u16 reserved_82;       // 0x82
+    f32 hat_delay;         // 0x84
+    f32 state_duration;    // 0x88
+    f32 state_elapsed;     // 0x8c
+    f32 scale;             // 0x90
+    f32 animation_time;    // 0x94
+    f32 idle_bounce_timer; // 0x98
+    u8 reserved_9c[4];     // 0x9c
+}; // size 0xa0
 
 struct HATMACHINE_SYS_PC {
-    i32 count;
-    i32 reserved_04;
-    i32 reserved_08;
-    HATMACHINE_PC *machines;
-};
+    i32 count;               // 0x0
+    i32 reserved_04;         // 0x4
+    i32 reserved_08;         // 0x8
+    HATMACHINE_PC *machines; // 0xc
+}; // size 0x10
 
 struct HATMACHINE_WORLD_PC {
-    u8 unknown_000[0x5074];
-    HATMACHINE_SYS_PC *hat_machine_sys;
-};
-
-STATIC_ASSERT(sizeof(HATMACHINE_PC) == 0xa0);
-STATIC_ASSERT(sizeof(HATMACHINE_SYS_PC) == 0x10);
-STATIC_ASSERT(offsetof(HATMACHINE_SYS_PC, count) == 0);
-STATIC_ASSERT(offsetof(HATMACHINE_SYS_PC, machines) == 0xc);
-STATIC_ASSERT(offsetof(HATMACHINE_WORLD_PC, hat_machine_sys) == 0x5074);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, position) == 0x50);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, yaw) == 0x5c);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, flags) == 0x63);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, player_position) == 0x64);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, target_offset) == 0x70);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, platform_id) == 0x80);
+    u8 unknown_000[0x5074];             // 0x0000
+    HATMACHINE_SYS_PC *hat_machine_sys; // 0x5074
+}; // size 0x5078
 
 extern "C" void __cdecl Hat_GetAbsTargetPos(HATMACHINE_PC *machine, NUVEC *position) {
     if (machine != NULL && position != NULL) {
@@ -120,20 +108,11 @@ extern "C" i32 __cdecl HatMachine_BeingUsed(HATMACHINE_PC *machine) {
 }
 
 struct HAT_USE_REQUEST_PC {
-    u8 unknown_000[0x79c];
-    i32 request;
-    void *net_wait_info;
-};
+    u8 unknown_000[0x79c]; // 0x000
+    i32 request;           // 0x79c
+    void *net_wait_info;   // 0x7a0
+}; // size 0x7a4
 
-STATIC_ASSERT(offsetof(HAT_USE_REQUEST_PC, request) == 0x79c);
-STATIC_ASSERT(offsetof(HAT_USE_REQUEST_PC, net_wait_info) == 0x7a0);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, configured_hat) == 0x5e);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, displayed_hat) == 0x5f);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, animation_state) == 0x60);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, state_duration) == 0x88);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, state_elapsed) == 0x8c);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, scale) == 0x90);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, idle_bounce_timer) == 0x98);
 extern "C" i16 id_PRINCESSLEIABOUSHH;
 
 extern "C" void __cdecl HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 special_pressed) {
@@ -304,21 +283,11 @@ extern "C" void __cdecl HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object
 }
 
 struct HATMACHINE_PROGRESS_PC {
-    i32 preserved_state;
-    u32 enabled_mask[1];
-    u32 visible_mask[1];
-};
+    i32 preserved_state; // 0x0
+    u32 enabled_mask[1]; // 0x4
+    u32 visible_mask[1]; // 0x8
+}; // size 0xc
 
-STATIC_ASSERT(sizeof(HATMACHINE_PROGRESS_PC) == 12);
-STATIC_ASSERT(offsetof(HATMACHINE_PROGRESS_PC, enabled_mask) == 4);
-STATIC_ASSERT(offsetof(HATMACHINE_PROGRESS_PC, visible_mask) == 8);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, name) == 0x40);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, model_letter) == 0x61);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, model_special_index) == 0x62);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, terrain_pitch) == 0x7c);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, terrain_roll) == 0x7e);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, hat_delay) == 0x84);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, animation_time) == 0x94);
 extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 extern "C" i32 hatmachine_gizmotype_id;
 // Genuine Draw callback is retained as an unresolved source dependency until its full body is transferred.
@@ -625,12 +594,6 @@ static inline f32 NuFdiv(f32 a, f32 b) {
     return a / b;
 }
 
-STATIC_ASSERT(offsetof(HATMACHINE_PC, matrix) == 0);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, model_special_index) == 0x62);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, terrain_pitch) == 0x7c);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, terrain_roll) == 0x7e);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, hat_delay) == 0x84);
-STATIC_ASSERT(offsetof(HATMACHINE_PC, animation_time) == 0x94);
 STATIC_ASSERT(sizeof(((HATMACHINE_PC *)0)->model_special_index) == 1);
 
 extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {

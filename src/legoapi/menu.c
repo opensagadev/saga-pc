@@ -55,55 +55,34 @@ void MenuReset(void) {
 }
 
 typedef struct PC_MENU_SERVICE_VIEW {
-    f32 menu_time;
-    f32 time_04;
-    i16 selected_column;
-    i16 selected_row;
-    i16 first_column;
-    i16 first_row;
-    i16 last_column;
-    i16 last_row;
-    i16 menu;
-    i8 previous_menu;
-    i8 flags;
-    f32 transition_18;
-    f32 transition_1c;
-    u8 unknown_20[0x30];
-    i32 state_50;
-    u8 unknown_54[0x38];
-    i32 draw_item;
-    u8 unknown_90[0x20];
-    i32 state_b0;
-    i32 state_b4;
-    i32 state_b8;
-    i32 state_bc;
-    i32 state_c0;
-    u8 unknown_c4[0x18];
-    i32 state_dc;
-} PC_MENU_SERVICE_VIEW;
+    f32 menu_time;       // 0x00
+    f32 time_04;         // 0x04
+    i16 selected_column; // 0x08
+    i16 selected_row;    // 0x0a
+    i16 first_column;    // 0x0c
+    i16 first_row;       // 0x0e
+    i16 last_column;     // 0x10
+    i16 last_row;        // 0x12
+    i16 menu;            // 0x14
+    i8 previous_menu;    // 0x16
+    i8 flags;            // 0x17
+    f32 transition_18;   // 0x18
+    f32 transition_1c;   // 0x1c
+    u8 unknown_20[0x30]; // 0x20
+    i32 state_50;        // 0x50
+    u8 unknown_54[0x38]; // 0x54
+    i32 draw_item;       // 0x8c
+    u8 unknown_90[0x20]; // 0x90
+    i32 state_b0;        // 0xb0
+    i32 state_b4;        // 0xb4
+    i32 state_b8;        // 0xb8
+    i32 state_bc;        // 0xbc
+    i32 state_c0;        // 0xc0
+    u8 unknown_c4[0x18]; // 0xc4
+    i32 state_dc;        // 0xdc
+} PC_MENU_SERVICE_VIEW;  // size 0xe0
 
 STATIC_ASSERT(sizeof(PC_MENU_SERVICE_VIEW) == sizeof(MENU));
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, first_column) == 0xc);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, menu) == 0x14);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, previous_menu) == 0x16);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, transition_18) == 0x18);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_50) == 0x50);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, draw_item) == 0x8c);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_b0) == 0xb0);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_bc) == 0xbc);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_dc) == 0xdc);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, menu_time) == 0x0);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, time_04) == 0x4);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, selected_column) == 0x8);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, selected_row) == 0xa);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, first_row) == 0xe);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, last_column) == 0x10);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, last_row) == 0x12);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, flags) == 0x17);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, transition_1c) == 0x1c);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_b4) == 0xb4);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_b8) == 0xb8);
-STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_c0) == 0xc0);
 
 MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
 #define NEWMENU_VIEW ((PC_MENU_SERVICE_VIEW *)GameMenu)
@@ -277,34 +256,23 @@ void __cdecl DrawMenuButtonPrompts(i32 confirm, i32 cancel, i32 enabled, u32 red
 }
 
 typedef struct menu_draw_state_pc_s {
-    u8 unknown_00[0x0e];
-    i16 first_row;
-    u8 unknown_10[2];
-    i16 last_row;
-    i16 menu;
-    u8 unknown_16[0x76];
-    i32 draw_item;
-    f32 item_scale;
-    f32 draw_x;
-    f32 draw_y;
-    f32 draw_z;
-    f32 draw_offset;
-    f32 centre_offset;
-    u8 unknown_a8[4];
-    i32 paused;
-} MENU_DRAW_STATE_PC;
+    u8 unknown_00[0x0e]; // 0x00
+    i16 first_row;       // 0x0e
+    u8 unknown_10[2];    // 0x10
+    i16 last_row;        // 0x12
+    i16 menu;            // 0x14
+    u8 unknown_16[0x76]; // 0x16
+    i32 draw_item;       // 0x8c
+    f32 item_scale;      // 0x90
+    f32 draw_x;          // 0x94
+    f32 draw_y;          // 0x98
+    f32 draw_z;          // 0x9c
+    f32 draw_offset;     // 0xa0
+    f32 centre_offset;   // 0xa4
+    u8 unknown_a8[4];    // 0xa8
+    i32 paused;          // 0xac
+} MENU_DRAW_STATE_PC;    // size 0xb0
 
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, first_row) == 0xe);
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, last_row) == 0x12);
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, menu) == 0x14);
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, draw_item) == 0x8c);
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, item_scale) == 0x90);
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, draw_x) == 0x94);
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, draw_y) == 0x98);
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, draw_z) == 0x9c);
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, draw_offset) == 0xa0);
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, centre_offset) == 0xa4);
-STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, paused) == 0xac);
 STATIC_ASSERT(offsetof(MENUFNINFO, draw_fn) == 8);
 STATIC_ASSERT(offsetof(MENUFNINFO, confirm_prompt) == 0x19);
 STATIC_ASSERT(offsetof(MENUFNINFO, cancel_prompt) == 0x1a);
@@ -438,99 +406,55 @@ void __cdecl MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *b
 }
 
 typedef struct PC_MENU_UPDATE_VIEW {
-    f32 menu_time;
-    f32 unk;
-    i16 selected_column;
-    i16 selected_row;
-    i16 first_column;
-    i16 first_row;
-    i16 last_column;
-    i16 last_row;
-    i16 menu;
-    i8 previous_menu;
-    i8 flags_17;
-    f32 transition_time;
-    f32 transition_duration;
-    f32 repeat_up_time;
-    f32 repeat_down_time;
-    f32 repeat_left_time;
-    f32 repeat_right_time;
-    u8 repeat_up_count;
-    u8 repeat_down_count;
-    u8 repeat_left_count;
-    u8 repeat_right_count;
-    i32 selected_item;
-    i32 selected_item_column;
-    i32 previous_item;
-    u32 buttons_held;
-    u32 buttons_pressed;
-    i32 column_count;
-    i32 row_count;
-    i32 unknown50;
-    i32 up_pressed;
-    i32 down_pressed;
-    i32 left_pressed;
-    i32 right_pressed;
-    i32 confirm_pressed;
-    i32 cancel_pressed;
-    i32 up_held;
-    i32 down_held;
-    i32 left_held;
-    i32 right_held;
-    u32 start_pressed;
-    u32 select_pressed;
-    u32 action_04_pressed;
-    u32 action_08_pressed;
-    u8 unknown8c[0x4c];
-    i32 input_disabled;
-    i32 state;
-} PC_MENU_UPDATE_VIEW;
+    f32 menu_time;            // 0x00
+    f32 unk;                  // 0x04
+    i16 selected_column;      // 0x08
+    i16 selected_row;         // 0x0a
+    i16 first_column;         // 0x0c
+    i16 first_row;            // 0x0e
+    i16 last_column;          // 0x10
+    i16 last_row;             // 0x12
+    i16 menu;                 // 0x14
+    i8 previous_menu;         // 0x16
+    i8 flags_17;              // 0x17
+    f32 transition_time;      // 0x18
+    f32 transition_duration;  // 0x1c
+    f32 repeat_up_time;       // 0x20
+    f32 repeat_down_time;     // 0x24
+    f32 repeat_left_time;     // 0x28
+    f32 repeat_right_time;    // 0x2c
+    u8 repeat_up_count;       // 0x30
+    u8 repeat_down_count;     // 0x31
+    u8 repeat_left_count;     // 0x32
+    u8 repeat_right_count;    // 0x33
+    i32 selected_item;        // 0x34
+    i32 selected_item_column; // 0x38
+    i32 previous_item;        // 0x3c
+    u32 buttons_held;         // 0x40
+    u32 buttons_pressed;      // 0x44
+    i32 column_count;         // 0x48
+    i32 row_count;            // 0x4c
+    i32 unknown50;            // 0x50
+    i32 up_pressed;           // 0x54
+    i32 down_pressed;         // 0x58
+    i32 left_pressed;         // 0x5c
+    i32 right_pressed;        // 0x60
+    i32 confirm_pressed;      // 0x64
+    i32 cancel_pressed;       // 0x68
+    i32 up_held;              // 0x6c
+    i32 down_held;            // 0x70
+    i32 left_held;            // 0x74
+    i32 right_held;           // 0x78
+    u32 start_pressed;        // 0x7c
+    u32 select_pressed;       // 0x80
+    u32 action_04_pressed;    // 0x84
+    u32 action_08_pressed;    // 0x88
+    u8 unknown8c[0x4c];       // 0x8c
+    i32 input_disabled;       // 0xd8
+    i32 state;                // 0xdc
+} PC_MENU_UPDATE_VIEW;        // size 0xe0
 
 STATIC_ASSERT(sizeof(PC_MENU_UPDATE_VIEW) == sizeof(MENU));
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, menu_time) == 0x0);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, unk) == 0x4);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, selected_column) == 0x8);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, selected_row) == 0xa);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, first_column) == 0xc);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, first_row) == 0xe);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, last_column) == 0x10);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, last_row) == 0x12);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, menu) == 0x14);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, previous_menu) == 0x16);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, flags_17) == 0x17);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, transition_time) == 0x18);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, transition_duration) == 0x1c);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_up_time) == 0x20);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_down_time) == 0x24);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_left_time) == 0x28);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_right_time) == 0x2c);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_up_count) == 0x30);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_down_count) == 0x31);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_left_count) == 0x32);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, repeat_right_count) == 0x33);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, selected_item) == 0x34);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, selected_item_column) == 0x38);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, previous_item) == 0x3c);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, buttons_held) == 0x40);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, buttons_pressed) == 0x44);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, column_count) == 0x48);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, row_count) == 0x4c);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, up_pressed) == 0x54);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, down_pressed) == 0x58);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, left_pressed) == 0x5c);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, right_pressed) == 0x60);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, confirm_pressed) == 0x64);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, cancel_pressed) == 0x68);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, up_held) == 0x6c);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, down_held) == 0x70);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, left_held) == 0x74);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, right_held) == 0x78);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, start_pressed) == 0x7c);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, select_pressed) == 0x80);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, action_04_pressed) == 0x84);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, action_08_pressed) == 0x88);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, input_disabled) == 0xd8);
-STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, state) == 0xdc);
 
 void MenuRepeat(i32 *held, i32 *repeat, f32 *repeat_time, u8 *repeat_count, f32 interval, f32 elapsed) {
     if (*held != 0) {
@@ -888,37 +812,26 @@ void __cdecl BackupMenuNoFn(void) {
 }
 
 typedef struct MENU_DRAW_VIEW_PC {
-    u8 unknown_00[0xe];
-    i16 first_row;
-    u8 unknown_10[2];
-    i16 last_row;
-    u8 unknown_14[0x78];
-    i32 draw_item;
-    f32 item_scale;
-    f32 draw_x;
-    f32 draw_y;
-    f32 draw_z;
-    u8 unknown_a0[0x24];
-    f32 *item_offsets;
-    f32 item_offset_scale;
-    u8 unknown_cc[4];
-    f32 item_scale_x;
-    f32 item_spacing;
-    u8 unknown_d8[8];
-} MENU_DRAW_VIEW_PC;
+    u8 unknown_00[0xe];    // 0x00
+    i16 first_row;         // 0x0e
+    u8 unknown_10[2];      // 0x10
+    i16 last_row;          // 0x12
+    u8 unknown_14[0x78];   // 0x14
+    i32 draw_item;         // 0x8c
+    f32 item_scale;        // 0x90
+    f32 draw_x;            // 0x94
+    f32 draw_y;            // 0x98
+    f32 draw_z;            // 0x9c
+    u8 unknown_a0[0x24];   // 0xa0
+    f32 *item_offsets;     // 0xc4
+    f32 item_offset_scale; // 0xc8
+    u8 unknown_cc[4];      // 0xcc
+    f32 item_scale_x;      // 0xd0
+    f32 item_spacing;      // 0xd4
+    u8 unknown_d8[8];      // 0xd8
+} MENU_DRAW_VIEW_PC;       // size 0xe0
 
 STATIC_ASSERT(sizeof(MENU_DRAW_VIEW_PC) == sizeof(MENU));
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, first_row) == 0xe);
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, last_row) == 0x12);
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, draw_item) == 0x8c);
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_scale) == 0x90);
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, draw_x) == 0x94);
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, draw_y) == 0x98);
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, draw_z) == 0x9c);
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_offsets) == 0xc4);
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_offset_scale) == 0xc8);
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_scale_x) == 0xd0);
-STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_spacing) == 0xd4);
 
 void __cdecl DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     MENU_DRAW_VIEW_PC *view = (MENU_DRAW_VIEW_PC *)menu;

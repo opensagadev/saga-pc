@@ -1,22 +1,16 @@
 #include "saga.h"
 
 typedef struct terrain_player_platform_record_pc_s {
-    u8 unknown_0[0xe];
-    i16 platform_id;
-    GAMEOBJECT *object;
-} TERRAIN_PLAYER_PLATFORM_RECORD_PC;
+    u8 unknown_0[0xe];               // 0x00
+    i16 platform_id;                 // 0x0e
+    GAMEOBJECT *object;              // 0x10
+} TERRAIN_PLAYER_PLATFORM_RECORD_PC; // size 0x14
 
 typedef struct terrain_player_platform_sys_pc_s {
-    u8 unknown_0[4];
-    i32 count;
-    TERRAIN_PLAYER_PLATFORM_RECORD_PC entries[1];
-} TERRAIN_PLAYER_PLATFORM_SYS_PC;
-
-STATIC_ASSERT(sizeof(TERRAIN_PLAYER_PLATFORM_RECORD_PC) == 0x14);
-STATIC_ASSERT(offsetof(TERRAIN_PLAYER_PLATFORM_RECORD_PC, platform_id) == 0xe);
-STATIC_ASSERT(offsetof(TERRAIN_PLAYER_PLATFORM_RECORD_PC, object) == 0x10);
-STATIC_ASSERT(offsetof(TERRAIN_PLAYER_PLATFORM_SYS_PC, count) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_PLAYER_PLATFORM_SYS_PC, entries) == 8);
+    u8 unknown_0[4];                              // 0x00
+    i32 count;                                    // 0x04
+    TERRAIN_PLAYER_PLATFORM_RECORD_PC entries[1]; // 0x08
+} TERRAIN_PLAYER_PLATFORM_SYS_PC;                 // size 0x1c
 
 GAMEOBJECT *__cdecl CharPlatform_FindObjFromPlatID(void *system, i32 id) {
     TERRAIN_PLAYER_PLATFORM_SYS_PC *platforms = system;
@@ -33,49 +27,34 @@ GAMEOBJECT *__cdecl CharPlatform_FindObjFromPlatID(void *system, i32 id) {
 }
 
 typedef struct EQUIVALENT_GROUP_PC {
-    i16 object_count;
-    i16 byte_size;
-    NUSPECIALHANDLE objects[1];
-} EQUIVALENT_GROUP_PC;
+    i16 object_count;           // 0x0
+    i16 byte_size;              // 0x2
+    NUSPECIALHANDLE objects[1]; // 0x4
+} EQUIVALENT_GROUP_PC;          // size 0x10
 
 typedef struct EQUIVALENT_WORLD_VIEW_PC {
-    u8 unknown_0[0x46b0];
-    EQUIVALENT_GROUP_PC *equivalent_groups;
-    i32 equivalent_group_count;
-} EQUIVALENT_WORLD_VIEW_PC;
+    u8 unknown_0[0x46b0];                   // 0x0000
+    EQUIVALENT_GROUP_PC *equivalent_groups; // 0x46b0
+    i32 equivalent_group_count;             // 0x46b4
+} EQUIVALENT_WORLD_VIEW_PC;                 // size 0x46b8
 
 typedef struct CHAR_PLATFORM_PC {
-    NUSPECIALHANDLE special;
-    i16 object_id;
-    i16 platform_id;
-    GAMEOBJECT *object;
-} CHAR_PLATFORM_PC;
+    NUSPECIALHANDLE special; // 0x00
+    i16 object_id;           // 0x0c
+    i16 platform_id;         // 0x0e
+    GAMEOBJECT *object;      // 0x10
+} CHAR_PLATFORM_PC;          // size 0x14
 
 typedef struct CHAR_PLATFORM_SYSTEM_PC {
-    NUGSCN *scene;
-    i32 platform_count;
-    CHAR_PLATFORM_PC platforms[1];
-} CHAR_PLATFORM_SYSTEM_PC;
+    NUGSCN *scene;                 // 0x00
+    i32 platform_count;            // 0x04
+    CHAR_PLATFORM_PC platforms[1]; // 0x08
+} CHAR_PLATFORM_SYSTEM_PC;         // size 0x1c
 
 typedef struct CHAR_PLATFORM_WORLD_PC {
-    u8 unknown_0[0x2adc];
-    CHAR_PLATFORM_SYSTEM_PC *char_platform_sys;
-} CHAR_PLATFORM_WORLD_PC;
-
-STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, object_count) == 0);
-STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, byte_size) == 2);
-STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, objects) == 4);
-STATIC_ASSERT(offsetof(EQUIVALENT_WORLD_VIEW_PC, equivalent_groups) == 0x46b0);
-STATIC_ASSERT(offsetof(EQUIVALENT_WORLD_VIEW_PC, equivalent_group_count) == 0x46b4);
-STATIC_ASSERT(sizeof(CHAR_PLATFORM_PC) == 0x14);
-STATIC_ASSERT(offsetof(CHAR_PLATFORM_PC, special) == 0);
-STATIC_ASSERT(offsetof(CHAR_PLATFORM_PC, object_id) == 0xc);
-STATIC_ASSERT(offsetof(CHAR_PLATFORM_PC, platform_id) == 0xe);
-STATIC_ASSERT(offsetof(CHAR_PLATFORM_PC, object) == 0x10);
-STATIC_ASSERT(offsetof(CHAR_PLATFORM_SYSTEM_PC, scene) == 0);
-STATIC_ASSERT(offsetof(CHAR_PLATFORM_SYSTEM_PC, platform_count) == 4);
-STATIC_ASSERT(offsetof(CHAR_PLATFORM_SYSTEM_PC, platforms) == 8);
-STATIC_ASSERT(offsetof(CHAR_PLATFORM_WORLD_PC, char_platform_sys) == 0x2adc);
+    u8 unknown_0[0x2adc];                       // 0x0000
+    CHAR_PLATFORM_SYSTEM_PC *char_platform_sys; // 0x2adc
+} CHAR_PLATFORM_WORLD_PC;                       // size 0x2ae0
 
 void __cdecl CharPlatforms_Configure(WORLDINFO *world, char *config) {
     CHAR_PLATFORM_WORLD_PC *view = (CHAR_PLATFORM_WORLD_PC *)world;

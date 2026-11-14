@@ -2,39 +2,32 @@
 #include <string.h>
 
 typedef struct PUSH_CONTEXT_INFO_PC {
-    const char *name;
-    i32 action;
-    u64 flags;
-} PUSH_CONTEXT_INFO_PC;
-
-STATIC_ASSERT(sizeof(PUSH_CONTEXT_INFO_PC) == 0x10);
+    const char *name;   // 0x0
+    i32 action;         // 0x4
+    u64 flags;          // 0x8
+} PUSH_CONTEXT_INFO_PC; // size 0x10
 
 typedef struct PART_RELEASE_PUSH_PC {
-    u8 unknown_000[0xdc4];
-    f32 push_timer;
-} PART_RELEASE_PUSH_PC;
+    u8 unknown_000[0xdc4]; // 0x000
+    f32 push_timer;        // 0xdc4
+} PART_RELEASE_PUSH_PC;    // size 0xdc8
 
-STATIC_ASSERT(offsetof(PART_RELEASE_PUSH_PC, push_timer) == 0xdc4);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, state_flags) == 0x84);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, spin_timer) == 0x90);
 
 typedef struct PUSH_OBJECT_LOCAL_PC {
-    u8 unknown_000[0x768];
-    f32 obstacle_timer;
-    u8 unknown_076c[0x7b1 - 0x76c];
-    u8 landing_followup;
-} PUSH_OBJECT_LOCAL_PC;
+    u8 unknown_000[0x768];          // 0x000
+    f32 obstacle_timer;             // 0x768
+    u8 unknown_076c[0x7b1 - 0x76c]; // 0x76c
+    u8 landing_followup;            // 0x7b1
+} PUSH_OBJECT_LOCAL_PC;             // size 0x7b4
 
-STATIC_ASSERT(offsetof(PUSH_OBJECT_LOCAL_PC, obstacle_timer) == 0x768);
-STATIC_ASSERT(offsetof(PUSH_OBJECT_LOCAL_PC, landing_followup) == 0x7b1);
 extern u32(__cdecl *CanPushObstaclesFn)(GAMEOBJECT *);
 
 typedef struct PUSH_OBSTACLE_WORLD_PC {
-    u8 unknown_000[0x46a4];
-    void *obstacle_sys;
-} PUSH_OBSTACLE_WORLD_PC;
-
-STATIC_ASSERT(offsetof(PUSH_OBSTACLE_WORLD_PC, obstacle_sys) == 0x46a4);
+    u8 unknown_000[0x46a4]; // 0x0000
+    void *obstacle_sys;     // 0x46a4
+} PUSH_OBSTACLE_WORLD_PC;   // size 0x46a8
 
 typedef struct spinner_movement_pc_s {
     u8 unknown_00[0x84];

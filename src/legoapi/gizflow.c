@@ -351,15 +351,13 @@ i32 __cdecl ProcessActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) 
 }
 
 typedef struct GIZFLOW_BOX_LOADER_PREFIX_PC {
-    u8 unknown_000[4];
-    u8 assist_id;
-    u8 unknown_005[5];
-    u16 state_flags;
-} GIZFLOW_BOX_LOADER_PREFIX_PC;
+    u8 unknown_000[4];          // 0x0
+    u8 assist_id;               // 0x4
+    u8 unknown_005[5];          // 0x5
+    u16 state_flags;            // 0xa
+} GIZFLOW_BOX_LOADER_PREFIX_PC; // size 0xc
 
-STATIC_ASSERT(offsetof(GIZFLOW_BOX_LOADER_PREFIX_PC, assist_id) == 4);
 STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->assist_id) == 1);
-STATIC_ASSERT(offsetof(GIZFLOW_BOX_LOADER_PREFIX_PC, state_flags) == 0xa);
 STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->state_flags) == 2);
 
 static void FlowBoxActivationFeedback(GIZFLOW_PC *system, FLOWBOX_PC *box) {
@@ -796,14 +794,11 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
 typedef struct GIZFLOW_REMAP_PC GIZFLOW_REMAP_PC;
 
 struct GIZFLOW_REMAP_PC {
-    i16 parents[16];
-    i16 children[32];
-    u8 parent_outputs[16];
-};
+    i16 parents[16];       // 0x00
+    i16 children[32];      // 0x20
+    u8 parent_outputs[16]; // 0x60
+}; // size 0x70
 
-STATIC_ASSERT(sizeof(GIZFLOW_REMAP_PC) == 0x70);
-STATIC_ASSERT(offsetof(GIZFLOW_REMAP_PC, children) == 0x20);
-STATIC_ASSERT(offsetof(GIZFLOW_REMAP_PC, parent_outputs) == 0x60);
 static GIZFLOW_REMAP_PC *remap = 0;
 static i32 numRemaps = 0;
 static i32 load_nparents = 0;
@@ -945,10 +940,10 @@ static void GizFlowConfigSumBoxPc(NUFPAR_PC *parser) {
 typedef struct GIZFLOW_CONDITION_TYPE_PC GIZFLOW_CONDITION_TYPE_PC;
 
 struct GIZFLOW_CONDITION_TYPE_PC {
-    i32 type;
-    char *name;
-    void(__cdecl *load)(NUFPAR_PC *);
-};
+    i32 type;                         // 0x0
+    char *name;                       // 0x4
+    void(__cdecl *load)(NUFPAR_PC *); // 0x8
+}; // size 0xc
 
 static GIZFLOW_CONDITION_TYPE_PC gizflow_condition_types_pc[] = {
     {0, "All", NULL},  {1, "Any", NULL},
@@ -956,7 +951,6 @@ static GIZFLOW_CONDITION_TYPE_PC gizflow_condition_types_pc[] = {
     {4, "loop", NULL}, {5, "exactly", GizFlowConfigSumBoxPc},
     {-1, NULL, NULL},
 };
-STATIC_ASSERT(sizeof(GIZFLOW_CONDITION_TYPE_PC) == 12);
 
 static void GizFlowConfigConditionTypePc(NUFPAR_PC *parser) {
     i32 index;

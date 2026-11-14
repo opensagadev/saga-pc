@@ -33,10 +33,8 @@ extern "C" void __cdecl MenuPcStringsInit(void) {
 }
 
 typedef struct OPTIONS_MENU_READER_PC {
-    u8 player_control[2];
-} OPTIONS_MENU_READER_PC;
-
-STATIC_ASSERT(offsetof(OPTIONS_MENU_READER_PC, player_control) == 0);
+    u8 player_control[2]; // 0x0
+} OPTIONS_MENU_READER_PC; // size 0x2
 
 extern "C" void __cdecl GameDrawMenuEntry(MENU *menu, char *text) {
     if (Paused != 0) {
@@ -47,8 +45,6 @@ extern "C" void __cdecl GameDrawMenuEntry(MENU *menu, char *text) {
 }
 
 typedef struct GAME_STATE_MENU_READER_PC {
-    u8 reserved[0x7c18];
-    u16 completion;
-} GAME_STATE_MENU_READER_PC;
-
-STATIC_ASSERT(offsetof(GAME_STATE_MENU_READER_PC, completion) == 0x7c18);
+    u8 reserved[0x7c18];     // 0x0000
+    u16 completion;          // 0x7c18
+} GAME_STATE_MENU_READER_PC; // size 0x7c1a

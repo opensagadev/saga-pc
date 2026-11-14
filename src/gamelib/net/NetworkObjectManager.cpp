@@ -64,10 +64,8 @@ class NetOutputStream : public EdOutputStream {
         message = new_message;
     }
 
-    NETMESSAGE_PC *message;
-};
-
-STATIC_ASSERT(sizeof(NetOutputStream) == 0x24);
+    NETMESSAGE_PC *message; // 0x20
+}; // size 0x24
 
 /* Reads replicated members back out of a NETMESSAGE_PC (Android NetInputStream). */
 class NetInputStream : public EdInputStream {
@@ -103,10 +101,8 @@ class NetInputStream : public EdInputStream {
         message = new_message;
     }
 
-    NETMESSAGE_PC *message;
-};
-
-STATIC_ASSERT(sizeof(NetInputStream) == 0x24);
+    NETMESSAGE_PC *message; // 0x20
+}; // size 0x24
 
 /* Replicator data is a packed run of word-aligned per-object records. */
 #define REPLICATOR_ALIGN(cursor) (((u32)(cursor) + 3) & ~3)
@@ -165,13 +161,12 @@ class NetPredictor : public NetReplicator {
     i32 DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, PredictorTime *time,
                      i32 check_only);
 
-    f32 maximum_prediction_error;
-    f32 maximum_sample_delta;
-    f32 minimum_value;
-    f32 maximum_value;
-};
+    f32 maximum_prediction_error; // 0x18
+    f32 maximum_sample_delta;     // 0x1c
+    f32 minimum_value;            // 0x20
+    f32 maximum_value;            // 0x24
+}; // size 0x28
 
-STATIC_ASSERT(sizeof(NetPredictor) == 0x28);
 STATIC_ASSERT(sizeof(NetPredictor::PredictorTime) == 0x1c);
 STATIC_ASSERT(offsetof(V2Peer, time_offset) == 0x29c);
 

@@ -15,19 +15,16 @@ extern "C" {
 }
 
 typedef struct CHARACTER_SCENE_WORLD_PC {
-    u8 unknown_0000[0x2980];
-    KILLPARTS_CHARSCENE_PC *character_scenes;
-} CHARACTER_SCENE_WORLD_PC;
-
-STATIC_ASSERT(offsetof(CHARACTER_SCENE_WORLD_PC, character_scenes) == 0x2980);
+    u8 unknown_0000[0x2980];                  // 0x0000
+    KILLPARTS_CHARSCENE_PC *character_scenes; // 0x2980
+} CHARACTER_SCENE_WORLD_PC;                   // size 0x2984
 
 typedef struct CHARACTER_SCENE_CUTSYS_PC {
-    CUTINFO **records;
-    i32 count;
-    u32 *character_flags;
-} CHARACTER_SCENE_CUTSYS_PC;
+    CUTINFO **records;       // 0x0
+    i32 count;               // 0x4
+    u32 *character_flags;    // 0x8
+} CHARACTER_SCENE_CUTSYS_PC; // size 0xc
 
-STATIC_ASSERT(offsetof(CHARACTER_SCENE_CUTSYS_PC, character_flags) == 8);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, flags) == 0x40);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);

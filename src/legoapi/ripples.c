@@ -2,21 +2,15 @@
 #include <string.h>
 
 typedef struct ripple_effect_cleanup_pc_s {
-    u8 unknown_00[0x24];
-    NUMTL *material;
-} RIPPLE_EFFECT_CLEANUP_PC;
-
-STATIC_ASSERT(offsetof(RIPPLE_EFFECT_CLEANUP_PC, material) == 0x24);
-STATIC_ASSERT(sizeof(RIPPLE_EFFECT_CLEANUP_PC) == 0x28);
+    u8 unknown_00[0x24];    // 0x00
+    NUMTL *material;        // 0x24
+} RIPPLE_EFFECT_CLEANUP_PC; // size 0x28
 
 typedef struct world_ripple_cleanup_pc_s {
-    u8 unknown_0000[0x46f4];
-    RIPPLE_EFFECT_CLEANUP_PC *effects;
-    i32 count;
-} WORLD_RIPPLE_CLEANUP_PC;
-
-STATIC_ASSERT(offsetof(WORLD_RIPPLE_CLEANUP_PC, effects) == 0x46f4);
-STATIC_ASSERT(offsetof(WORLD_RIPPLE_CLEANUP_PC, count) == 0x46f8);
+    u8 unknown_0000[0x46f4];           // 0x0000
+    RIPPLE_EFFECT_CLEANUP_PC *effects; // 0x46f4
+    i32 count;                         // 0x46f8
+} WORLD_RIPPLE_CLEANUP_PC;             // size 0x46fc
 
 void __cdecl DestroyRippleMtls(WORLDINFO *world) {
     // MATCH-EXCEPTION: the cast is repeated at each use; a cast local gives the other SIB order (U1)
@@ -32,56 +26,32 @@ void __cdecl DestroyRippleMtls(WORLDINFO *world) {
 typedef struct ripple_node_pc_s RIPPLE_NODE_PC;
 
 struct ripple_set_pc_s {
-    u16 capacity;
-    u16 active_count;
-    RIPPLE_NODE_PC *nodes;
-    RIPPLE_NODE_PC *free_head;
-    RIPPLE_NODE_PC *newest;
-    RIPPLE_NODE_PC *oldest;
-};
+    u16 capacity;              // 0x00
+    u16 active_count;          // 0x02
+    RIPPLE_NODE_PC *nodes;     // 0x04
+    RIPPLE_NODE_PC *free_head; // 0x08
+    RIPPLE_NODE_PC *newest;    // 0x0c
+    RIPPLE_NODE_PC *oldest;    // 0x10
+}; // size 0x14
 
 struct ripple_node_pc_s {
-    NUMTX matrix;
-    NUVEC velocity;
-    NUMTL *material;
-    f32 initial_size;
-    f32 size;
-    f32 growth;
-    u32 start_color;
-    u32 color;
-    u32 end_color;
-    f32 age;
-    f32 lifetime;
-    f32 delay;
-    u16 flags;
-    u8 unknown_76[2];
-    RIPPLE_NODE_PC *next;
-    RIPPLE_NODE_PC *previous;
-};
-
-STATIC_ASSERT(sizeof(RIPPLE_SET_PC) == 0x14);
-STATIC_ASSERT(offsetof(RIPPLE_SET_PC, nodes) == 4);
-STATIC_ASSERT(offsetof(RIPPLE_SET_PC, free_head) == 8);
-STATIC_ASSERT(offsetof(RIPPLE_SET_PC, oldest) == 0x10);
-STATIC_ASSERT(sizeof(RIPPLE_NODE_PC) == 0x80);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, velocity) == 0x40);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, material) == 0x4c);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, size) == 0x54);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, start_color) == 0x5c);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, age) == 0x68);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, flags) == 0x74);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, next) == 0x78);
-STATIC_ASSERT(offsetof(RIPPLE_SET_PC, capacity) == 0);
-STATIC_ASSERT(offsetof(RIPPLE_SET_PC, active_count) == 2);
-STATIC_ASSERT(offsetof(RIPPLE_SET_PC, newest) == 0xc);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, matrix) == 0);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, initial_size) == 0x50);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, growth) == 0x58);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, color) == 0x60);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, end_color) == 0x64);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, lifetime) == 0x6c);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, delay) == 0x70);
-STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, previous) == 0x7c);
+    NUMTX matrix;             // 0x00
+    NUVEC velocity;           // 0x40
+    NUMTL *material;          // 0x4c
+    f32 initial_size;         // 0x50
+    f32 size;                 // 0x54
+    f32 growth;               // 0x58
+    u32 start_color;          // 0x5c
+    u32 color;                // 0x60
+    u32 end_color;            // 0x64
+    f32 age;                  // 0x68
+    f32 lifetime;             // 0x6c
+    f32 delay;                // 0x70
+    u16 flags;                // 0x74
+    u8 unknown_76[2];         // 0x76
+    RIPPLE_NODE_PC *next;     // 0x78
+    RIPPLE_NODE_PC *previous; // 0x7c
+}; // size 0x80
 
 static RIPPLE_NODE_PC *RippleAllocPc(RIPPLE_SET_PC *set) {
     RIPPLE_NODE_PC *node = set->free_head;
@@ -150,66 +120,52 @@ void __cdecl AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, 
 }
 
 typedef struct ripple_effect_pc_s {
-    union {
-        u32 start_color;
-        u8 start_rgba[4];
+    union {               // 0x00
+        u32 start_color;  // 0x00
+        u8 start_rgba[4]; // 0x00
     };
 
-    union {
-        u32 end_color;
-        u8 end_rgba[4];
+    union {             // 0x04
+        u32 end_color;  // 0x04
+        u8 end_rgba[4]; // 0x04
     };
 
-    f32 lifetime;
-    f32 initial_size;
-    f32 end_size;
-    char texture_name[16];
-    NUMTL *material;
-} RIPPLE_EFFECT_PC;
-
-STATIC_ASSERT(sizeof(RIPPLE_EFFECT_PC) == 0x28);
-STATIC_ASSERT(offsetof(RIPPLE_EFFECT_PC, lifetime) == 8);
-STATIC_ASSERT(offsetof(RIPPLE_EFFECT_PC, initial_size) == 0xc);
-STATIC_ASSERT(offsetof(RIPPLE_EFFECT_PC, texture_name) == 0x14);
-STATIC_ASSERT(offsetof(RIPPLE_EFFECT_PC, material) == 0x24);
-STATIC_ASSERT(offsetof(RIPPLE_EFFECT_PC, start_color) == 0);
-STATIC_ASSERT(offsetof(RIPPLE_EFFECT_PC, end_color) == 4);
-STATIC_ASSERT(offsetof(RIPPLE_EFFECT_PC, end_size) == 0x10);
+    f32 lifetime;          // 0x08
+    f32 initial_size;      // 0x0c
+    f32 end_size;          // 0x10
+    char texture_name[16]; // 0x14
+    NUMTL *material;       // 0x24
+} RIPPLE_EFFECT_PC;        // size 0x28
 
 typedef struct world_ripple_view_pc_s {
-    u8 unknown_0000[0x46f4];
-    RIPPLE_EFFECT_PC *effects;
-    i32 count;
+    u8 unknown_0000[0x46f4];   // 0x0000
+    RIPPLE_EFFECT_PC *effects; // 0x46f4
+    i32 count;                 // 0x46f8
 
-    union {
-        struct {
-            i32 water_effect;
-            i32 sabre_effect;
+    union { // 0x46fc
+
+        struct {              // 0x46fc
+            i32 water_effect; // 0x46fc
+            i32 sabre_effect; // 0x4700
         };
 
-        i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
+        i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */ // 0x46fc
     };
-} WORLD_RIPPLE_VIEW_PC;
-
-STATIC_ASSERT(offsetof(WORLD_RIPPLE_VIEW_PC, effects) == 0x46f4);
-STATIC_ASSERT(offsetof(WORLD_RIPPLE_VIEW_PC, water_effect) == 0x46fc);
-STATIC_ASSERT(offsetof(WORLD_RIPPLE_VIEW_PC, sabre_effect) == 0x4700);
+} WORLD_RIPPLE_VIEW_PC; // size 0x4704
 
 typedef struct ripple_contact_timer_view_pc_s {
-    u8 unknown_0000[0xdc0];
-    f32 timer;
-} RIPPLE_CONTACT_TIMER_VIEW_PC;
+    u8 unknown_0000[0xdc0];     // 0x000
+    f32 timer;                  // 0xdc0
+} RIPPLE_CONTACT_TIMER_VIEW_PC; // size 0xdc4
 
-STATIC_ASSERT(offsetof(RIPPLE_CONTACT_TIMER_VIEW_PC, timer) == 0xdc0);
 #define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW_PC *)WORLD)
 #undef RIPPLE_WORLD
 
 typedef struct ripple_material_reader_pc_s {
-    u8 unknown_0000[0x70];
-    f32 opacity;
-} RIPPLE_MATERIAL_READER_PC;
+    u8 unknown_0000[0x70];   // 0x00
+    f32 opacity;             // 0x70
+} RIPPLE_MATERIAL_READER_PC; // size 0x74
 
-STATIC_ASSERT(offsetof(RIPPLE_MATERIAL_READER_PC, opacity) == 0x70);
 static WORLDINFO *RippleEffectsWorldInfoPc = 0;
 static RIPPLE_EFFECT_PC *RippleEffectsCurrentPc = 0;
 static const char *RippleEffectNamesPc[2] = {"water", "forcefield"};

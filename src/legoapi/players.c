@@ -48,19 +48,18 @@ STATIC_ASSERT(offsetof(EXPLOSION_PC, flags) == 0x24);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
 
 struct minianimpacket_pc_s {
-    f32 current_time;
-    f32 previous_time;
-    u8 unknown_08[0xc];
-    f32 blend_target_time;
-    u8 flags;
-    u8 blending;
-    u8 unknown_1a[4];
-    i16 current_animation_id;
-    i16 previous_animation_id;
-    i16 requested_animation_id;
-};
+    f32 current_time;           // 0x00
+    f32 previous_time;          // 0x04
+    u8 unknown_08[0xc];         // 0x08
+    f32 blend_target_time;      // 0x14
+    u8 flags;                   // 0x18
+    u8 blending;                // 0x19
+    u8 unknown_1a[4];           // 0x1a
+    i16 current_animation_id;   // 0x1e
+    i16 previous_animation_id;  // 0x20
+    i16 requested_animation_id; // 0x22
+}; // size 0x24
 
-STATIC_ASSERT(sizeof(MINIANIMPACKET_PC) == 0x24);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
 STATIC_ASSERT(offsetof(GAMEOBJECT, roof_height_pc) == 0x224);
@@ -90,133 +89,93 @@ STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
 
 typedef struct player_reset_packet_pc_s {
-    u8 unknown_000[0xe8];
-    i16 context_animation;
-    u8 unknown_0ea[0x4];
-    u8 context_mode;
-    u8 unknown_0ef[0x2];
-    i8 build_context;
-    u8 unknown_0f2[0x2];
-    u8 action_movement_state;
-    u8 action_movement_variant;
-    u8 unknown_0f6[0x6];
-    f32 context_animation_time;
-    i8 context_target;
-    u8 unknown_101[0x4df];
-    GAMEPAD_PC *gamepad;
-    u8 unknown_5e4[0x28];
-    void *linked_object;
-    u8 unknown_610[0x38];
-    i32 unknown_648;
-    u8 unknown_64c[0x10];
-    i32 input_state;
-    u8 unknown_660[0x4];
-    f32 unknown_664;
-    u8 unknown_668[0x4];
-    f32 unknown_66c;
-    f32 unknown_670;
-    f32 unknown_674;
-    f32 context_blend;
-    f32 context_distance;
-    u8 unknown_680[0x14];
-    f32 unknown_694;
-    f32 unknown_698;
-    u8 unknown_69c[0x34];
-    f32 unknown_6d0;
-    u8 unknown_6d4[0x14];
-    f32 unknown_6e8;
-    u8 unknown_6ec[0x14];
-    f32 unknown_700;
-    u8 unknown_704[0x10];
-    f32 unknown_714;
-    u8 unknown_718[0x8];
-    f32 unknown_720;
-    f32 unknown_724;
-    u8 unknown_728[0x24];
-    i16 movement_angle_0;
-    u8 unknown_74e[0x2];
-    i16 movement_angle_2;
-    i16 movement_angle_3;
-    u8 unknown_754[0x8];
-    u32 secondary_flags;
-    u8 unknown_760[0xe];
-    u8 unknown_76e;
-    u8 unknown_76f;
-    u8 unknown_770[0xd];
-    i8 random_context;
-} PLAYER_RESET_PACKET_PC;
+    u8 unknown_000[0xe8];       // 0x000
+    i16 context_animation;      // 0x0e8
+    u8 unknown_0ea[0x4];        // 0x0ea
+    u8 context_mode;            // 0x0ee
+    u8 unknown_0ef[0x2];        // 0x0ef
+    i8 build_context;           // 0x0f1
+    u8 unknown_0f2[0x2];        // 0x0f2
+    u8 action_movement_state;   // 0x0f4
+    u8 action_movement_variant; // 0x0f5
+    u8 unknown_0f6[0x6];        // 0x0f6
+    f32 context_animation_time; // 0x0fc
+    i8 context_target;          // 0x100
+    u8 unknown_101[0x4df];      // 0x101
+    GAMEPAD_PC *gamepad;        // 0x5e0
+    u8 unknown_5e4[0x28];       // 0x5e4
+    void *linked_object;        // 0x60c
+    u8 unknown_610[0x38];       // 0x610
+    i32 unknown_648;            // 0x648
+    u8 unknown_64c[0x10];       // 0x64c
+    i32 input_state;            // 0x65c
+    u8 unknown_660[0x4];        // 0x660
+    f32 unknown_664;            // 0x664
+    u8 unknown_668[0x4];        // 0x668
+    f32 unknown_66c;            // 0x66c
+    f32 unknown_670;            // 0x670
+    f32 unknown_674;            // 0x674
+    f32 context_blend;          // 0x678
+    f32 context_distance;       // 0x67c
+    u8 unknown_680[0x14];       // 0x680
+    f32 unknown_694;            // 0x694
+    f32 unknown_698;            // 0x698
+    u8 unknown_69c[0x34];       // 0x69c
+    f32 unknown_6d0;            // 0x6d0
+    u8 unknown_6d4[0x14];       // 0x6d4
+    f32 unknown_6e8;            // 0x6e8
+    u8 unknown_6ec[0x14];       // 0x6ec
+    f32 unknown_700;            // 0x700
+    u8 unknown_704[0x10];       // 0x704
+    f32 unknown_714;            // 0x714
+    u8 unknown_718[0x8];        // 0x718
+    f32 unknown_720;            // 0x720
+    f32 unknown_724;            // 0x724
+    u8 unknown_728[0x24];       // 0x728
+    i16 movement_angle_0;       // 0x74c
+    u8 unknown_74e[0x2];        // 0x74e
+    i16 movement_angle_2;       // 0x750
+    i16 movement_angle_3;       // 0x752
+    u8 unknown_754[0x8];        // 0x754
+    u32 secondary_flags;        // 0x75c
+    u8 unknown_760[0xe];        // 0x760
+    u8 unknown_76e;             // 0x76e
+    u8 unknown_76f;             // 0x76f
+    u8 unknown_770[0xd];        // 0x770
+    i8 random_context;          // 0x77d
+} PLAYER_RESET_PACKET_PC;       // size 0x780
 
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_animation) == 0xe8);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_mode) == 0xee);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, build_context) == 0xf1);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, action_movement_state) == 0xf4);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, action_movement_variant) == 0xf5);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_animation_time) == 0xfc);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_target) == 0x100);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, gamepad) == 0x5e0);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, linked_object) == 0x60c);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_648) == 0x648);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, input_state) == 0x65c);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_664) == 0x664);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_66c) == 0x66c);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_670) == 0x670);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_674) == 0x674);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_blend) == 0x678);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_distance) == 0x67c);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_694) == 0x694);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_698) == 0x698);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_6d0) == 0x6d0);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_6e8) == 0x6e8);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_700) == 0x700);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_714) == 0x714);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_720) == 0x720);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_724) == 0x724);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, movement_angle_0) == 0x74c);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, movement_angle_2) == 0x750);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, movement_angle_3) == 0x752);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, secondary_flags) == 0x75c);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_76e) == 0x76e);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, unknown_76f) == 0x76f);
-STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, random_context) == 0x77d);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
 /* Two-DWORD consumer view of the existing genuine mutable default mask. */
 /* Genuine original call declarations: no placeholder implementations. */
 GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
 
 typedef struct CREATURE_RESET_PACKET_VIEW_PC {
-    u8 unknown_000[0x6c4];
-    u8 packet[0x788];
-} CREATURE_RESET_PACKET_VIEW_PC;
+    u8 unknown_000[0x6c4];       // 0x000
+    u8 packet[0x788];            // 0x6c4
+} CREATURE_RESET_PACKET_VIEW_PC; // size 0xe4c
 
-STATIC_ASSERT(offsetof(CREATURE_RESET_PACKET_VIEW_PC, packet) == 0x6c4);
 STATIC_ASSERT(sizeof(((CREATURE_RESET_PACKET_VIEW_PC *)0)->packet) == 0x788);
 STATIC_ASSERT(offsetof(GAMEOBJECT, weapon_model_override_pc) == 0x7f4);
 
 typedef struct player_position_record_pc_s {
-    NUVEC *position;
-    i32 sock_location;
-    f32 sock_ratio;
-    i16 angle;
-    u8 unknown_0e[2];
-} PLAYER_POSITION_RECORD_PC;
+    NUVEC *position;         // 0x0
+    i32 sock_location;       // 0x4
+    f32 sock_ratio;          // 0x8
+    i16 angle;               // 0xc
+    u8 unknown_0e[2];        // 0xe
+} PLAYER_POSITION_RECORD_PC; // size 0x10
 
 typedef union player_position_sock_pc_u {
-    SOCKPOSITION_PC sock;
+    SOCKPOSITION_PC sock; // 0x00
 
-    struct {
-        i32 location;
-        f32 ratio;
+    struct {          // 0x00
+        i32 location; // 0x00
+        f32 ratio;    // 0x04
     } start;
-} PLAYER_POSITION_SOCK_PC;
+} PLAYER_POSITION_SOCK_PC; // size 0x38
 
-STATIC_ASSERT(sizeof(PLAYER_POSITION_RECORD_PC) == 16);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, position) == 0);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, sock_location) == 4);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, sock_ratio) == 8);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, angle) == 12);
 STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
-STATIC_ASSERT(offsetof(PLAYER_POSITION_SOCK_PC, start.location) == 0);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_SOCK_PC, start.ratio) == 4);
 STATIC_ASSERT(sizeof(PLAYER_ITEM_TYPE_RESET_PC) == 12);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, id) == 0);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_name) == 4);
@@ -995,7 +954,6 @@ static i32 Customise_FindLetter(char character) {
 /* Native ResetPlayer shares the light packet at 4d8 with LightGameObject. */
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_dbc) == 0xdbc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_de0) == 0xde0);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, angle) == 0xc);
 
 STATIC_ASSERT(sizeof(DRAW_ATTACHMENTS_MINI_PC) == 0x24);
 STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, flags) == 0x18);

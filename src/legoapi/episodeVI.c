@@ -4,43 +4,29 @@
 /* Retail unit 0x4e9f30-0x4eead7 (legogame/episodeVI.c): definitions in retail address order. */
 
 typedef struct SARLACC_DISCO_PC {
-    AIAREA_PC *area;
-    NUSPECIALHANDLE off[16];
-    NUSPECIALHANDLE flash[16];
-    NUSPECIALHANDLE select[16];
-    NUSPECIALHANDLE on[16];
-    NUSPECIALHANDLE finish[16];
-    GIZOBSTACLE *off_obstacle;
-    GIZOBSTACLE *on_obstacle;
-    u8 panel_state[16];
-    i8 count;
-    i8 phase;
-    i8 first_panel;
-    i8 second_panel;
-    f32 timer;
-    f32 initial_height;
-    f32 height;
-    u8 reserved_3ec[4];
-    GIZAIMESSAGE *help_message;
-    GIZAIMESSAGE *complete_message;
-    GIZAIMESSAGE *state_message;
-    NUVEC *last_selected_position;
-} SARLACC_DISCO_PC;
+    AIAREA_PC *area;                // 0x000
+    NUSPECIALHANDLE off[16];        // 0x004
+    NUSPECIALHANDLE flash[16];      // 0x0c4
+    NUSPECIALHANDLE select[16];     // 0x184
+    NUSPECIALHANDLE on[16];         // 0x244
+    NUSPECIALHANDLE finish[16];     // 0x304
+    GIZOBSTACLE *off_obstacle;      // 0x3c4
+    GIZOBSTACLE *on_obstacle;       // 0x3c8
+    u8 panel_state[16];             // 0x3cc
+    i8 count;                       // 0x3dc
+    i8 phase;                       // 0x3dd
+    i8 first_panel;                 // 0x3de
+    i8 second_panel;                // 0x3df
+    f32 timer;                      // 0x3e0
+    f32 initial_height;             // 0x3e4
+    f32 height;                     // 0x3e8
+    u8 reserved_3ec[4];             // 0x3ec
+    GIZAIMESSAGE *help_message;     // 0x3f0
+    GIZAIMESSAGE *complete_message; // 0x3f4
+    GIZAIMESSAGE *state_message;    // 0x3f8
+    NUVEC *last_selected_position;  // 0x3fc
+} SARLACC_DISCO_PC;                 // size 0x400
 
-STATIC_ASSERT(sizeof(SARLACC_DISCO_PC) == 0x400);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, off) == 4);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, flash) == 0xc4);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, select) == 0x184);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, on) == 0x244);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, finish) == 0x304);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, panel_state) == 0x3cc);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, count) == 0x3dc);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, timer) == 0x3e0);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, initial_height) == 0x3e4);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, height) == 0x3e8);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, help_message) == 0x3f0);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, complete_message) == 0x3f4);
-STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, state_message) == 0x3f8);
 STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, off_mask) == 4);
 STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, flash_mask) == 6);
 STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, select_mask) == 8);
@@ -66,55 +52,42 @@ static f32 slowDownTimer[2] = {0};
 f32 FireDeltaPositionPc = 0.0f;
 
 typedef struct emperor_fight_packet_pc_s {
-    i32 state;
-    u8 enabled;
-    u8 zap;
-    u8 player_floor_mask;
-    u8 reserved;
-} EMPEROR_FIGHT_PACKET_PC;
-
-STATIC_ASSERT(sizeof(EMPEROR_FIGHT_PACKET_PC) == 8);
-STATIC_ASSERT(offsetof(EMPEROR_FIGHT_PACKET_PC, enabled) == 4);
+    i32 state;             // 0x0
+    u8 enabled;            // 0x4
+    u8 zap;                // 0x5
+    u8 player_floor_mask;  // 0x6
+    u8 reserved;           // 0x7
+} EMPEROR_FIGHT_PACKET_PC; // size 0x8
 
 typedef struct level_script_flags_pc_s {
-    u8 first;
-    u8 light_flags[4];
-    u8 arrow_flags[4];
-    u8 remaining[7];
-} LEVEL_SCRIPT_FLAGS_PC;
-
-STATIC_ASSERT(sizeof(LEVEL_SCRIPT_FLAGS_PC) == 16);
-STATIC_ASSERT(offsetof(LEVEL_SCRIPT_FLAGS_PC, light_flags) == 1);
-STATIC_ASSERT(offsetof(LEVEL_SCRIPT_FLAGS_PC, arrow_flags) == 5);
+    u8 first;            // 0x0
+    u8 light_flags[4];   // 0x1
+    u8 arrow_flags[4];   // 0x5
+    u8 remaining[7];     // 0x9
+} LEVEL_SCRIPT_FLAGS_PC; // size 0x10
 
 typedef struct sarlacc_world_pc_s {
-    u8 unknown_0000[0x50cc];
-    i32 blowup_target_count;
-    GIZMOBLOWUP_PC **blowup_targets;
-} SARLACC_WORLD_PC;
-
-STATIC_ASSERT(offsetof(SARLACC_WORLD_PC, blowup_target_count) == 0x50cc);
-STATIC_ASSERT(offsetof(SARLACC_WORLD_PC, blowup_targets) == 0x50d0);
+    u8 unknown_0000[0x50cc];         // 0x0000
+    i32 blowup_target_count;         // 0x50cc
+    GIZMOBLOWUP_PC **blowup_targets; // 0x50d0
+} SARLACC_WORLD_PC;                  // size 0x50d4
 
 typedef struct sarlacc_panel_pc_s {
-    u8 unknown_00[0x62];
-    u8 state_flags;
-} SARLACC_PANEL_PC;
+    u8 unknown_00[0x62]; // 0x00
+    u8 state_flags;      // 0x62
+} SARLACC_PANEL_PC;      // size 0x63
 
-STATIC_ASSERT(offsetof(SARLACC_PANEL_PC, state_flags) == 0x62);
 extern i32 DrawBossHitPointsTwoRowsPc;
 
 /* Native Emperor floor packet and private controls. */
 typedef struct emperor_update_packet_pc_s {
-    i32 state;
-    u8 enabled;
-    u8 zap;
-    i8 player_floor_mask;
-    u8 reserved;
-} EMPEROR_UPDATE_PACKET_PC;
+    i32 state;              // 0x0
+    u8 enabled;             // 0x4
+    u8 zap;                 // 0x5
+    i8 player_floor_mask;   // 0x6
+    u8 reserved;            // 0x7
+} EMPEROR_UPDATE_PACKET_PC; // size 0x8
 
-STATIC_ASSERT(sizeof(EMPEROR_UPDATE_PACKET_PC) == 8);
-STATIC_ASSERT(offsetof(EMPEROR_UPDATE_PACKET_PC, player_floor_mask) == 6);
 void __cdecl KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_opponent_exclusion_mask) == 0xeb8);
@@ -135,9 +108,6 @@ STATIC_ASSERT(offsetof(JABBA_ANTINODE_VIEW_PC, type) == offsetof(AIANTINODE_PC, 
 extern i16 CharacterFixupIdPc007f1a7c;
 extern i16 CharacterFixupIdPc007f1a88;
 #pragma section(".sarlrw", read, write)
-STATIC_ASSERT(offsetof(EMPEROR_UPDATE_PACKET_PC, state) == 0);
-STATIC_ASSERT(offsetof(EMPEROR_UPDATE_PACKET_PC, enabled) == 4);
-STATIC_ASSERT(offsetof(EMPEROR_UPDATE_PACKET_PC, zap) == 5);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);

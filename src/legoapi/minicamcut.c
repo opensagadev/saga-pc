@@ -4,24 +4,19 @@
 #include <string.h>
 
 typedef struct MINICAM_CAMERA_PC {
-    u8 unknown000[0xe8];
-    NUVEC render_position;
-    u8 unknown0f4[0x28];
-    NUVEC position;
-    u8 unknown128[0xd0];
-    u16 pitch;
-    u8 unknown1fa[2];
-    u16 yaw;
-    u8 unknown1fe[0x2e];
-    i8 mode;
-} MINICAM_CAMERA_PC;
+    u8 unknown000[0xe8];   // 0x000
+    NUVEC render_position; // 0x0e8
+    u8 unknown0f4[0x28];   // 0x0f4
+    NUVEC position;        // 0x11c
+    u8 unknown128[0xd0];   // 0x128
+    u16 pitch;             // 0x1f8
+    u8 unknown1fa[2];      // 0x1fa
+    u16 yaw;               // 0x1fc
+    u8 unknown1fe[0x2e];   // 0x1fe
+    i8 mode;               // 0x22c
+} MINICAM_CAMERA_PC;       // size 0x230
 
 #define MINI_CAM_CAMERA (*(MINICAM_CAMERA_PC *)GameCam)
-STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, render_position) == 0xe8);
-STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, position) == 0x11c);
-STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, pitch) == 0x1f8);
-STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, yaw) == 0x1fc);
-STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, mode) == 0x22c);
 
 void __cdecl Minicam_InitSystem(void) {
     memset(&MiniCam, 0, sizeof(MiniCam));

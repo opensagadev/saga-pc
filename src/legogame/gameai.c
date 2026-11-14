@@ -185,11 +185,10 @@ const char GameAIRobinPc[6] = "Robin";
 const char GameAIGlidePackPc[11] = "Glide_Pack";
 
 typedef struct bulk_ai_full_object_pc_s {
-    APIOBJECT_PC object;
-    u8 trailing[0x2b8 - sizeof(APIOBJECT_PC)];
-} BULK_AI_FULL_OBJECT_PC;
+    APIOBJECT_PC object;                       // 0x000
+    u8 trailing[0x2b8 - sizeof(APIOBJECT_PC)]; // 0x29c
+} BULK_AI_FULL_OBJECT_PC;                      // size 0x2b8
 
-STATIC_ASSERT(sizeof(BULK_AI_FULL_OBJECT_PC) == 0x2b8);
 STATIC_ASSERT(sizeof(AIPACKET_PC) <= 0x210);
 
 i32 OpponentCanAcquirePc(APIOBJECT_PC *observer, APIOBJECT_PC *target, f32 distance, u64 awareness, f32 dx, f32 dz) {

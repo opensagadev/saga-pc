@@ -30,70 +30,49 @@
 extern "C" {
 
     typedef struct NuAnimDataPrefixView {
-        union {
-            i32 magic;
-            f32 legacy_end_frame;
+        union {                   // 0x00
+            i32 magic;            // 0x00
+            f32 legacy_end_frame; // 0x00
         } first_word;
 
-        u8 unknown_04[6];
-        u16 first_frame;
-        u16 unknown_0c;
-        u16 frame_count;
-        u8 unknown_10[6];
-        u16 declared_end_frame;
-    } NuAnimDataPrefixView;
-
-    STATIC_ASSERT(offsetof(NuAnimDataPrefixView, first_frame) == 0xa);
-    STATIC_ASSERT(offsetof(NuAnimDataPrefixView, unknown_0c) == 0xc);
-    STATIC_ASSERT(offsetof(NuAnimDataPrefixView, frame_count) == 0xe);
-    STATIC_ASSERT(offsetof(NuAnimDataPrefixView, declared_end_frame) == 0x16);
-    STATIC_ASSERT(sizeof(NuAnimDataPrefixView) == 0x18);
+        u8 unknown_04[6];       // 0x04
+        u16 first_frame;        // 0x0a
+        u16 unknown_0c;         // 0x0c
+        u16 frame_count;        // 0x0e
+        u8 unknown_10[6];       // 0x10
+        u16 declared_end_frame; // 0x16
+    } NuAnimDataPrefixView;     // size 0x18
 
     typedef struct NuAnimReadSharedCurve {
-        u32 unknown_00;
-        void *key_data;
-        i32 key_count;
-        u32 unknown_0c;
-    } NuAnimReadSharedCurve;
+        u32 unknown_00;      // 0x0
+        void *key_data;      // 0x4
+        i32 key_count;       // 0x8
+        u32 unknown_0c;      // 0xc
+    } NuAnimReadSharedCurve; // size 0x10
 
     typedef struct NuAnimReadCurveSet {
-        i32 constant_count;
-        f32 *constants;
-        void **curves;
-        i8 curve_count;
-        u8 unknown_0d[3];
-    } NuAnimReadCurveSet;
+        i32 constant_count; // 0x0
+        f32 *constants;     // 0x4
+        void **curves;      // 0x8
+        i8 curve_count;     // 0xc
+        u8 unknown_0d[3];   // 0xd
+    } NuAnimReadCurveSet;   // size 0x10
 
     typedef struct NuAnimReadChunk {
-        i32 curve_set_count;
-        i32 shared_curve_count;
-        NuAnimReadCurveSet **curve_sets;
-        void *curve_data;
-        NuAnimReadSharedCurve *shared_curves;
-    } NuAnimReadChunk;
+        i32 curve_set_count;                  // 0x00
+        i32 shared_curve_count;               // 0x04
+        NuAnimReadCurveSet **curve_sets;      // 0x08
+        void *curve_data;                     // 0x0c
+        NuAnimReadSharedCurve *shared_curves; // 0x10
+    } NuAnimReadChunk;                        // size 0x14
 
     typedef struct NuAnimReadData {
-        f32 duration;
-        char *name;
-        i32 chunk_count;
-        NuAnimReadChunk **chunks;
-        NuAnimReadChunk *chunk_storage[1];
-    } NuAnimReadData;
-
-    STATIC_ASSERT(sizeof(NuAnimReadSharedCurve) == 0x10);
-    STATIC_ASSERT(offsetof(NuAnimReadSharedCurve, key_data) == 0x4);
-    STATIC_ASSERT(offsetof(NuAnimReadSharedCurve, key_count) == 0x8);
-    STATIC_ASSERT(sizeof(NuAnimReadCurveSet) == 0x10);
-    STATIC_ASSERT(offsetof(NuAnimReadCurveSet, constants) == 0x4);
-    STATIC_ASSERT(offsetof(NuAnimReadCurveSet, curves) == 0x8);
-    STATIC_ASSERT(offsetof(NuAnimReadCurveSet, curve_count) == 0xc);
-    STATIC_ASSERT(sizeof(NuAnimReadChunk) == 0x14);
-    STATIC_ASSERT(offsetof(NuAnimReadChunk, curve_sets) == 0x8);
-    STATIC_ASSERT(offsetof(NuAnimReadChunk, curve_data) == 0xc);
-    STATIC_ASSERT(offsetof(NuAnimReadChunk, shared_curves) == 0x10);
-    STATIC_ASSERT(sizeof(NuAnimReadData) == 0x14);
-    STATIC_ASSERT(offsetof(NuAnimReadData, chunks) == 0xc);
-    STATIC_ASSERT(offsetof(NuAnimReadData, chunk_storage) == 0x10);
+        f32 duration;                      // 0x00
+        char *name;                        // 0x04
+        i32 chunk_count;                   // 0x08
+        NuAnimReadChunk **chunks;          // 0x0c
+        NuAnimReadChunk *chunk_storage[1]; // 0x10
+    } NuAnimReadData;                      // size 0x14
 
 #define CALC_1648_LAST_KEY(keys) ((u16)(((keys)[2] & 0xf000) >> 8 | ((keys)[3] & 0xf000) >> 4 | (keys)[1] >> 12))
 
@@ -102,151 +81,112 @@ extern "C" {
 #define CALC_1648_LAST(keys) ((u16)(((keys)[2] & 0xf000) >> 8 | ((keys)[3] & 0xf000) >> 4 | (keys)[1] >> 12))
 
     typedef struct NuAnimData2CurveDataPrefix_PC {
-        u32 *key_mask;
-        u16 *key_offsets;
-        void *key_data;
-    } NuAnimData2CurveDataPrefix_PC;
+        u32 *key_mask;               // 0x0
+        u16 *key_offsets;            // 0x4
+        void *key_data;              // 0x8
+    } NuAnimData2CurveDataPrefix_PC; // size 0xc
 
     typedef struct NuAnimData2Curve_PC {
         NuAnimData2CurveDataPrefix_PC *curve_data;
     } NuAnimData2Curve_PC;
 
     typedef struct NuAnimData2Prefix_PC {
-        union {
-            f32 duration;
-            u32 magic;
+        union {           // 0x00
+            f32 duration; // 0x00
+            u32 magic;    // 0x00
         } first_word;
 
-        i16 node_count;
-        i16 curve_count;
-        i16 chunk_count;
-        u16 unknown_0a;
-        NuAnimData2Curve_PC *curves;
-        u8 *curve_types;
-        u8 *node_flags;
-    } NuAnimData2Prefix_PC;
-
-    STATIC_ASSERT(offsetof(NuAnimData2CurveDataPrefix_PC, key_mask) == 0);
-    STATIC_ASSERT(offsetof(NuAnimData2CurveDataPrefix_PC, key_offsets) == 4);
-    STATIC_ASSERT(offsetof(NuAnimData2CurveDataPrefix_PC, key_data) == 8);
-    STATIC_ASSERT(sizeof(NuAnimData2CurveDataPrefix_PC) == 0xc);
-    STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, node_count) == 4);
-    STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, curve_count) == 6);
-    STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, curves) == 0xc);
-    STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, curve_types) == 0x10);
-    STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, node_flags) == 0x14);
-    STATIC_ASSERT(sizeof(NuAnimData2Prefix_PC) == 0x18);
+        i16 node_count;              // 0x04
+        i16 curve_count;             // 0x06
+        i16 chunk_count;             // 0x08
+        u16 unknown_0a;              // 0x0a
+        NuAnimData2Curve_PC *curves; // 0x0c
+        u8 *curve_types;             // 0x10
+        u8 *node_flags;              // 0x14
+    } NuAnimData2Prefix_PC;          // size 0x18
 
 #define NUANIM_REBASE_POINTER(pointer, amount) ((pointer) == NULL ? NULL : (void *)((u32)(pointer) + (u32)(amount)))
 
-    STATIC_ASSERT(offsetof(NuAnimReadData, name) == 4);
-    STATIC_ASSERT(offsetof(NuAnimReadData, chunk_count) == 8);
-    STATIC_ASSERT(offsetof(NuAnimReadChunk, curve_set_count) == 0);
-
     /* The relocation buffer holds 32-bit address/offset words before fixup. */
     typedef struct NuAnimData2RelocCurve_PC {
-        u32 curve_data;
-    } NuAnimData2RelocCurve_PC;
+        u32 curve_data;         // 0x0
+    } NuAnimData2RelocCurve_PC; // size 0x4
 
     typedef struct NuAnimData2RelocKeys_PC {
-        u32 key_mask;
-        u32 key_offsets;
-        u32 key_data;
-    } NuAnimData2RelocKeys_PC;
+        u32 key_mask;          // 0x0
+        u32 key_offsets;       // 0x4
+        u32 key_data;          // 0x8
+    } NuAnimData2RelocKeys_PC; // size 0xc
 
     typedef struct NuAnimData2RelocHeader_PC {
-        u32 magic;
-        i16 node_count;
-        i16 curve_count;
-        i16 chunk_count;
-        u16 unknown_0a;
-        u32 curves;
-        u32 curve_types;
-        u32 node_flags;
-    } NuAnimData2RelocHeader_PC;
-
-    STATIC_ASSERT(offsetof(NuAnimData2RelocCurve_PC, curve_data) == 0);
-    STATIC_ASSERT(sizeof(NuAnimData2RelocCurve_PC) == 4);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocKeys_PC, key_mask) == 0);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocKeys_PC, key_offsets) == 4);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocKeys_PC, key_data) == 8);
-    STATIC_ASSERT(sizeof(NuAnimData2RelocKeys_PC) == 12);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, magic) == 0);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, node_count) == 4);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, curve_count) == 6);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, chunk_count) == 8);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, unknown_0a) == 10);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, curves) == 12);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, curve_types) == 16);
-    STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, node_flags) == 20);
-    STATIC_ASSERT(sizeof(NuAnimData2RelocHeader_PC) == 24);
+        u32 magic;               // 0x00
+        i16 node_count;          // 0x04
+        i16 curve_count;         // 0x06
+        i16 chunk_count;         // 0x08
+        u16 unknown_0a;          // 0x0a
+        u32 curves;              // 0x0c
+        u32 curve_types;         // 0x10
+        u32 node_flags;          // 0x14
+    } NuAnimData2RelocHeader_PC; // size 0x18
 
     typedef struct NuAnimData2FileHeader_PC {
-        u32 size;
-        u32 relocation_base;
-        void *animation;
-    } NuAnimData2FileHeader_PC;
-
-    STATIC_ASSERT(offsetof(NuAnimData2FileHeader_PC, size) == 0);
-    STATIC_ASSERT(offsetof(NuAnimData2FileHeader_PC, relocation_base) == 4);
-    STATIC_ASSERT(offsetof(NuAnimData2FileHeader_PC, animation) == 8);
-    STATIC_ASSERT(sizeof(NuAnimData2FileHeader_PC) == 12);
+        u32 size;               // 0x0
+        u32 relocation_base;    // 0x4
+        void *animation;        // 0x8
+    } NuAnimData2FileHeader_PC; // size 0xc
 
     extern void __cdecl PCSpecialEmptyHandler(...);
 
     typedef struct ANIMATION_PACK_HEADER_PC {
-        u32 first_word;
-        i32 format_tag;
-    } ANIMATION_PACK_HEADER_PC;
-
-    STATIC_ASSERT(offsetof(ANIMATION_PACK_HEADER_PC, format_tag) == 4);
-    STATIC_ASSERT(sizeof(ANIMATION_PACK_HEADER_PC) == 8);
+        u32 first_word;         // 0x0
+        i32 format_tag;         // 0x4
+    } ANIMATION_PACK_HEADER_PC; // size 0x8
 
     typedef struct PCCurveFullKey {
-        f32 frame;
-        f32 inverse_duration;
-        f32 value;
-        f32 tangent;
-    } PCCurveFullKey;
+        f32 frame;            // 0x0
+        f32 inverse_duration; // 0x4
+        f32 value;            // 0x8
+        f32 tangent;          // 0xc
+    } PCCurveFullKey;         // size 0x10
 
     typedef struct PCCurvePacked6Key {
-        i16 value;
-        i8 tangent;
-        u8 unused;
-        u16 frame;
-    } PCCurvePacked6Key;
+        i16 value;       // 0x0
+        i8 tangent;      // 0x2
+        u8 unused;       // 0x3
+        u16 frame;       // 0x4
+    } PCCurvePacked6Key; // size 0x6
 
     typedef struct PCCurvePacked4Key {
-        i16 value;
-        i8 tangent;
-        u8 frame;
-    } PCCurvePacked4Key;
+        i16 value;       // 0x0
+        i8 tangent;      // 0x2
+        u8 frame;        // 0x3
+    } PCCurvePacked4Key; // size 0x4
 
     typedef struct PCCurvePacked6 {
-        f32 tangent_scale;
-        f32 value_scale;
-        f32 value_offset;
-        PCCurvePacked6Key keys[1];
-    } PCCurvePacked6;
+        f32 tangent_scale;         // 0x00
+        f32 value_scale;           // 0x04
+        f32 value_offset;          // 0x08
+        PCCurvePacked6Key keys[1]; // 0x0c
+    } PCCurvePacked6;              // size 0x14
 
     typedef struct PCCurvePacked4 {
-        f32 tangent_scale;
-        f32 value_scale;
-        PCCurvePacked4Key keys[1];
-    } PCCurvePacked4;
+        f32 tangent_scale;         // 0x0
+        f32 value_scale;           // 0x4
+        PCCurvePacked4Key keys[1]; // 0x8
+    } PCCurvePacked4;              // size 0xc
 
     typedef struct PCCurveScaled4 {
-        f32 tangent_scale;
-        f32 value_scale;
-        f32 value_offset;
-        f32 time_scale;
-        PCCurvePacked4Key keys[1];
-    } PCCurveScaled4;
+        f32 tangent_scale;         // 0x00
+        f32 value_scale;           // 0x04
+        f32 value_offset;          // 0x08
+        f32 time_scale;            // 0x0c
+        PCCurvePacked4Key keys[1]; // 0x10
+    } PCCurveScaled4;              // size 0x14
 
     typedef struct PCCurveStepKey {
-        f32 value;
-        u32 unused;
-    } PCCurveStepKey;
+        f32 value;    // 0x0
+        u32 unused;   // 0x4
+    } PCCurveStepKey; // size 0x8
 
     typedef union PCCurveValues {
         PCCurveFullKey *full;
@@ -257,41 +197,10 @@ extern "C" {
     } PCCurveValues;
 
     typedef struct PCCurveBlock {
-        u32 *chunk_bits;
-        u16 *chunk_starts;
-        PCCurveValues values;
-    } PCCurveBlock;
-
-    STATIC_ASSERT(offsetof(PCCurveBlock, chunk_bits) == 0);
-    STATIC_ASSERT(offsetof(PCCurveBlock, chunk_starts) == 4);
-    STATIC_ASSERT(offsetof(PCCurveBlock, values) == 8);
-    STATIC_ASSERT(sizeof(PCCurveFullKey) == 16);
-    STATIC_ASSERT(offsetof(PCCurveFullKey, frame) == 0);
-    STATIC_ASSERT(offsetof(PCCurveFullKey, inverse_duration) == 4);
-    STATIC_ASSERT(offsetof(PCCurveFullKey, value) == 8);
-    STATIC_ASSERT(offsetof(PCCurveFullKey, tangent) == 12);
-    STATIC_ASSERT(sizeof(PCCurvePacked6Key) == 6);
-    STATIC_ASSERT(offsetof(PCCurvePacked6Key, value) == 0);
-    STATIC_ASSERT(offsetof(PCCurvePacked6Key, tangent) == 2);
-    STATIC_ASSERT(offsetof(PCCurvePacked6Key, frame) == 4);
-    STATIC_ASSERT(sizeof(PCCurvePacked4Key) == 4);
-    STATIC_ASSERT(offsetof(PCCurvePacked4Key, value) == 0);
-    STATIC_ASSERT(offsetof(PCCurvePacked4Key, tangent) == 2);
-    STATIC_ASSERT(offsetof(PCCurvePacked4Key, frame) == 3);
-    STATIC_ASSERT(offsetof(PCCurvePacked6, keys) == 12);
-    STATIC_ASSERT(offsetof(PCCurvePacked6, tangent_scale) == 0);
-    STATIC_ASSERT(offsetof(PCCurvePacked6, value_scale) == 4);
-    STATIC_ASSERT(offsetof(PCCurvePacked6, value_offset) == 8);
-    STATIC_ASSERT(offsetof(PCCurvePacked4, keys) == 8);
-    STATIC_ASSERT(offsetof(PCCurvePacked4, tangent_scale) == 0);
-    STATIC_ASSERT(offsetof(PCCurvePacked4, value_scale) == 4);
-    STATIC_ASSERT(offsetof(PCCurveScaled4, keys) == 16);
-    STATIC_ASSERT(offsetof(PCCurveScaled4, tangent_scale) == 0);
-    STATIC_ASSERT(offsetof(PCCurveScaled4, value_scale) == 4);
-    STATIC_ASSERT(offsetof(PCCurveScaled4, value_offset) == 8);
-    STATIC_ASSERT(offsetof(PCCurveScaled4, time_scale) == 12);
-    STATIC_ASSERT(sizeof(PCCurveStepKey) == 8);
-    STATIC_ASSERT(offsetof(PCCurveStepKey, value) == 0);
+        u32 *chunk_bits;      // 0x0
+        u16 *chunk_starts;    // 0x4
+        PCCurveValues values; // 0x8
+    } PCCurveBlock;           // size 0xc
 
 /* Cubic Hermite coefficient; the value difference is spelled twice so VC8 keeps it in a register. */
 #define PC_CURVE_HERMITE_COEFF(value0, value1, tangent0, tangent1, t)                                                  \
@@ -3939,18 +3848,13 @@ extern "C" {
     }
 
     typedef struct qfont_prim_vertex_pc_s {
-        f32 x;
-        f32 y;
-        f32 z;
-        u32 colour;
-        f32 u;
-        f32 v;
-    } QFONT_PRIM_VERTEX_PC;
-
-    STATIC_ASSERT(sizeof(QFONT_PRIM_VERTEX_PC) == 0x18);
-    STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, colour) == 0xc);
-    STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, u) == 0x10);
-    STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, v) == 0x14);
+        f32 x;              // 0x00
+        f32 y;              // 0x04
+        f32 z;              // 0x08
+        u32 colour;         // 0x0c
+        f32 u;              // 0x10
+        f32 v;              // 0x14
+    } QFONT_PRIM_VERTEX_PC; // size 0x18
 
     // noinline: the original calls NuRndrPrimSetColourPrivate out of line from NuQFntPrintCharW; VC8 would inline it
     // there.
@@ -4110,11 +4014,9 @@ extern "C" {
     }
 
     typedef struct qfont_material_stream_view_pc_s {
-        u8 unknown_0000[4];
-        u8 stream_begin;
-    } QFONT_MATERIAL_STREAM_VIEW_PC;
-
-    STATIC_ASSERT(offsetof(QFONT_MATERIAL_STREAM_VIEW_PC, stream_begin) == 4);
+        u8 unknown_0000[4];          // 0x0
+        u8 stream_begin;             // 0x4
+    } QFONT_MATERIAL_STREAM_VIEW_PC; // size 0x5
 
     void __cdecl NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z) {
         void *stream;
@@ -4144,11 +4046,9 @@ extern "C" {
     }
 
     typedef struct font_stream_anchor_pc_s {
-        u8 prefix[4];
-        u8 stream_anchor;
-    } FONT_STREAM_ANCHOR_PC;
-
-    STATIC_ASSERT(offsetof(FONT_STREAM_ANCHOR_PC, stream_anchor) == 4);
+        u8 prefix[4];        // 0x0
+        u8 stream_anchor;    // 0x4
+    } FONT_STREAM_ANCHOR_PC; // size 0x5
 
     void __cdecl NuQFntSetSpaceWidth(VUFNT *font, f32 width) {
         (void)font;
@@ -4309,122 +4209,82 @@ extern "C" {
     }
 
     struct PC_MATERIAL_CREATE_SHADER {
-        u32 flags;
-        i32 diffuse_map_id;
-        u8 unknown_08[0xc];
-        u32 packed_diffuse_colour;
-        u8 unknown_18[0xc];
-        f32 default_scale;
-        u8 unknown_28[0x80];
-        u8 texture_unit_count;
-        u8 unknown_a9[0x63];
-        i32 animation_ids[4];
-        u8 unknown_11c[0x20];
-        u32 vertex_format;
-        i16 shader_handle;
-        i16 shader_variant_handle;
-        u8 unknown_144[0x74];
-        u32 material_flags;
-        u8 unknown_1bc[0x4c];
-    };
+        u32 flags;                 // 0x000
+        i32 diffuse_map_id;        // 0x004
+        u8 unknown_08[0xc];        // 0x008
+        u32 packed_diffuse_colour; // 0x014
+        u8 unknown_18[0xc];        // 0x018
+        f32 default_scale;         // 0x024
+        u8 unknown_28[0x80];       // 0x028
+        u8 texture_unit_count;     // 0x0a8
+        u8 unknown_a9[0x63];       // 0x0a9
+        i32 animation_ids[4];      // 0x10c
+        u8 unknown_11c[0x20];      // 0x11c
+        u32 vertex_format;         // 0x13c
+        i16 shader_handle;         // 0x140
+        i16 shader_variant_handle; // 0x142
+        u8 unknown_144[0x74];      // 0x144
+        u32 material_flags;        // 0x1b8
+        u8 unknown_1bc[0x4c];      // 0x1bc
+    }; // size 0x208
 
-    STATIC_ASSERT(sizeof(PC_MATERIAL_CREATE_SHADER) == 0x208);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, packed_diffuse_colour) == 0x14);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, default_scale) == 0x24);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, texture_unit_count) == 0xa8);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, animation_ids) == 0x10c);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, vertex_format) == 0x13c);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, shader_handle) == 0x140);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, material_flags) == 0x1b8);
     typedef struct PC_MATERIAL_CREATE_VIEW PC_MATERIAL_CREATE_VIEW;
 
     struct PC_MATERIAL_CREATE_VIEW {
-        u16 flags;
-        u8 unknown_002[0x26];
-        u32 retained_28;
-        u32 retained_2c;
-        NUMTL *next;
-        u8 unknown_034[8];
-        NUDISPLAYLIST_PC *display_list;
-        u32 attributes;
-        u32 attributes_high;
-        u8 unknown_048[0xc];
-        NUVEC diffuse;
-        u8 unknown_060[0x10];
-        f32 opacity;
-        i16 texture_id;
-        i16 sort_priority;
-        u8 unknown_078[0x3c];
-        PC_MATERIAL_CREATE_SHADER shader;
-        PC_TEXTURE_RESOURCE_PC *vertex_declaration;
-        u16 version;
-        u8 unknown_2c2[2];
-    };
-
-    STATIC_ASSERT(sizeof(PC_MATERIAL_CREATE_VIEW) == 0x2c4);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, retained_28) == 0x28);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, retained_2c) == 0x2c);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, next) == 0x30);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, display_list) == 0x3c);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, attributes) == 0x40);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, attributes_high) == 0x44);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, diffuse) == 0x54);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, opacity) == 0x70);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, texture_id) == 0x74);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, shader) == 0xb4);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, vertex_declaration) == 0x2bc);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, version) == 0x2c0);
-
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, sort_priority) == 0x76);
+        u16 flags;                                  // 0x000
+        u8 unknown_002[0x26];                       // 0x002
+        u32 retained_28;                            // 0x028
+        u32 retained_2c;                            // 0x02c
+        NUMTL *next;                                // 0x030
+        u8 unknown_034[8];                          // 0x034
+        NUDISPLAYLIST_PC *display_list;             // 0x03c
+        u32 attributes;                             // 0x040
+        u32 attributes_high;                        // 0x044
+        u8 unknown_048[0xc];                        // 0x048
+        NUVEC diffuse;                              // 0x054
+        u8 unknown_060[0x10];                       // 0x060
+        f32 opacity;                                // 0x070
+        i16 texture_id;                             // 0x074
+        i16 sort_priority;                          // 0x076
+        u8 unknown_078[0x3c];                       // 0x078
+        PC_MATERIAL_CREATE_SHADER shader;           // 0x0b4
+        PC_TEXTURE_RESOURCE_PC *vertex_declaration; // 0x2bc
+        u16 version;                                // 0x2c0
+        u8 unknown_2c2[2];                          // 0x2c2
+    }; // size 0x2c4
 
     typedef struct FONT_LOAD_READER_PC {
-        u8 unknown00[6];
-        u16 flags;
-        i32 size;
-        i32 glyph_count;
-        i32 unicode_count;
-        f32 height;
-        f32 baseline;
-        f32 space_width;
-        i32 mode;
-        f32 ic_gap;
-        void *legacy_font;
-        f32 *x_scale;
-        f32 *y_scale;
-        VUFNTCHAR *glyphs;
-        VUCHARIDX *unicode_map;
-        void *header;
-        NUMTL *material;
-        u32 *colour;
-        NUQFNT_RENDER_DATA_PC *platform_data;
-    } FONT_LOAD_READER_PC;
-
-    STATIC_ASSERT(sizeof(FONT_LOAD_READER_PC) == 0x4c);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, flags) == 6);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, size) == 8);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, glyphs) == 0x34);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, unicode_map) == 0x38);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, header) == 0x3c);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, material) == 0x40);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, colour) == 0x44);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, platform_data) == 0x48);
+        u8 unknown00[6];                      // 0x00
+        u16 flags;                            // 0x06
+        i32 size;                             // 0x08
+        i32 glyph_count;                      // 0x0c
+        i32 unicode_count;                    // 0x10
+        f32 height;                           // 0x14
+        f32 baseline;                         // 0x18
+        f32 space_width;                      // 0x1c
+        i32 mode;                             // 0x20
+        f32 ic_gap;                           // 0x24
+        void *legacy_font;                    // 0x28
+        f32 *x_scale;                         // 0x2c
+        f32 *y_scale;                         // 0x30
+        VUFNTCHAR *glyphs;                    // 0x34
+        VUCHARIDX *unicode_map;               // 0x38
+        void *header;                         // 0x3c
+        NUMTL *material;                      // 0x40
+        u32 *colour;                          // 0x44
+        NUQFNT_RENDER_DATA_PC *platform_data; // 0x48
+    } FONT_LOAD_READER_PC;                    // size 0x4c
 
     typedef struct FONT_RENDER_STORAGE_PC {
-        NUQFNT_RENDER_DATA_PC draw;
-        f32 x_scale;
-        f32 y_scale;
-    } FONT_RENDER_STORAGE_PC;
-
-    STATIC_ASSERT(sizeof(FONT_RENDER_STORAGE_PC) == 0x58);
-    STATIC_ASSERT(offsetof(FONT_RENDER_STORAGE_PC, x_scale) == 0x50);
-    STATIC_ASSERT(offsetof(FONT_RENDER_STORAGE_PC, y_scale) == 0x54);
+        NUQFNT_RENDER_DATA_PC draw; // 0x00
+        f32 x_scale;                // 0x50
+        f32 y_scale;                // 0x54
+    } FONT_RENDER_STORAGE_PC;       // size 0x58
 
     typedef struct FONT_PTR_BLOCK_PC {
-        VUFNT *font;
-        void *texture;
-    } FONT_PTR_BLOCK_PC;
-
-    STATIC_ASSERT(sizeof(FONT_PTR_BLOCK_PC) == 8);
+        VUFNT *font;     // 0x0
+        void *texture;   // 0x4
+    } FONT_PTR_BLOCK_PC; // size 0x8
 
     void __cdecl NuQFntDestroy(VUFNT *font) {
         if (font != NULL) {
@@ -4874,18 +4734,6 @@ extern "C" {
             NuFileClose(file);
         }
     }
-
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, glyph_count) == 0xc);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, unicode_count) == 0x10);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, height) == 0x14);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, baseline) == 0x18);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, space_width) == 0x1c);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, ic_gap) == 0x24);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, legacy_font) == 0x28);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, x_scale) == 0x2c);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, y_scale) == 0x30);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, flags) == 0);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, diffuse_map_id) == 4);
 
     void __cdecl NuQFntSetPointSize(VUFNT *font, f32 width, f32 height) {
         u16 glyph_index;
@@ -5451,16 +5299,13 @@ void OccluderSet::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, co
 }
 
 typedef struct OCCLUDER_PRIM_VERTEX_PC {
-    f32 x;
-    f32 y;
-    f32 z;
-    u32 colour;
-    f32 u;
-    f32 v;
-} OCCLUDER_PRIM_VERTEX_PC;
-
-STATIC_ASSERT(sizeof(OCCLUDER_PRIM_VERTEX_PC) == 0x18);
-STATIC_ASSERT(offsetof(OCCLUDER_PRIM_VERTEX_PC, colour) == 0xc);
+    f32 x;                 // 0x00
+    f32 y;                 // 0x04
+    f32 z;                 // 0x08
+    u32 colour;            // 0x0c
+    f32 u;                 // 0x10
+    f32 v;                 // 0x14
+} OCCLUDER_PRIM_VERTEX_PC; // size 0x18
 
 #define OCCLUDER_PRIM_POSITION(source)                                                                                 \
     do {                                                                                                               \
@@ -6089,11 +5934,10 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUGSCN_ANIM_LOOKUP_PC, values) == 8);
 
     typedef struct SCENE_ANIMATION_LOOKUP_ALLOCATION_PC {
-        i32 references;
-        NUGSCN_ANIM_LOOKUP_PC first;
-    } SCENE_ANIMATION_LOOKUP_ALLOCATION_PC;
+        i32 references;                     // 0x0
+        NUGSCN_ANIM_LOOKUP_PC first;        // 0x4
+    } SCENE_ANIMATION_LOOKUP_ALLOCATION_PC; // size 0x10
 
-    STATIC_ASSERT(offsetof(SCENE_ANIMATION_LOOKUP_ALLOCATION_PC, first) == 4);
     STATIC_ASSERT(offsetof(NUGSCN, num_instance_animations) == 0x48);
     STATIC_ASSERT(offsetof(NUGSCN, num_instance_animation_data) == 0x4a);
     STATIC_ASSERT(offsetof(NUGSCN, instance_animation_matrices) == 0x50);
@@ -6101,16 +5945,12 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUGSCN, end_frame_lookup) == 0x1e0);
 
     typedef struct SCENE_SPECIAL_TRANSFORM_PC {
-        u8 unknown_00[0x40];
-        NUMTX draw_matrix;
-        u8 unknown_80[0x38];
-        u32 flags;
-        u8 unknown_bc[0x14];
-    } SCENE_SPECIAL_TRANSFORM_PC;
-
-    STATIC_ASSERT(sizeof(SCENE_SPECIAL_TRANSFORM_PC) == 0xd0);
-    STATIC_ASSERT(offsetof(SCENE_SPECIAL_TRANSFORM_PC, draw_matrix) == 0x40);
-    STATIC_ASSERT(offsetof(SCENE_SPECIAL_TRANSFORM_PC, flags) == 0xb8);
+        u8 unknown_00[0x40];      // 0x00
+        NUMTX draw_matrix;        // 0x40
+        u8 unknown_80[0x38];      // 0x80
+        u32 flags;                // 0xb8
+        u8 unknown_bc[0x14];      // 0xbc
+    } SCENE_SPECIAL_TRANSFORM_PC; // size 0xd0
 
     void __cdecl NuGScnUpdate(NUGSCN *gscn, f32 delta) {
         NUMTX *matrix = gscn->instance_animation_matrices;
@@ -7146,18 +6986,13 @@ extern "C" {
 extern "C" {
 
     typedef struct material_cleanup_flags_pc_s {
-        i16 flags;
-    } MATERIAL_CLEANUP_FLAGS_PC;
-
-    STATIC_ASSERT(offsetof(MATERIAL_CLEANUP_FLAGS_PC, flags) == 0);
+        i16 flags;               // 0x0
+    } MATERIAL_CLEANUP_FLAGS_PC; // size 0x2
 
     typedef struct material_override_cleanup_pc_s {
-        NUMTL *material;
-        NUMTL *original;
-    } MATERIAL_OVERRIDE_CLEANUP_PC;
-
-    STATIC_ASSERT(offsetof(MATERIAL_OVERRIDE_CLEANUP_PC, material) == 0);
-    STATIC_ASSERT(offsetof(MATERIAL_OVERRIDE_CLEANUP_PC, original) == 4);
+        NUMTL *material;            // 0x0
+        NUMTL *original;            // 0x4
+    } MATERIAL_OVERRIDE_CLEANUP_PC; // size 0x8
 
     void __cdecl NuMtlDestroy(NUMTL *material) {
         MATERIAL_OVERRIDE_CLEANUP_PC *entry;
@@ -7181,38 +7016,13 @@ extern "C" {
         ++((PC_SCENE_MTL_VIEW *)material)->version;
     }
 
-    STATIC_ASSERT(sizeof(PC_MATERIAL_CREATE_SHADER) == 0x208);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, packed_diffuse_colour) == 0x14);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, default_scale) == 0x24);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, texture_unit_count) == 0xa8);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, animation_ids) == 0x10c);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, vertex_format) == 0x13c);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, shader_handle) == 0x140);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, material_flags) == 0x1b8);
-    STATIC_ASSERT(sizeof(PC_MATERIAL_CREATE_VIEW) == 0x2c4);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, retained_28) == 0x28);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, retained_2c) == 0x2c);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, next) == 0x30);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, display_list) == 0x3c);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, attributes) == 0x40);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, attributes_high) == 0x44);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, diffuse) == 0x54);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, opacity) == 0x70);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, texture_id) == 0x74);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, shader) == 0xb4);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, vertex_declaration) == 0x2bc);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, version) == 0x2c0);
     typedef struct PC_MATERIAL_VARIANT_RECORD PC_MATERIAL_VARIANT_RECORD;
 
     struct PC_MATERIAL_VARIANT_RECORD {
-        NUMTL *material;
-        NUMTL *original;
-        u32 vertex_descriptor;
-    };
-
-    STATIC_ASSERT(sizeof(PC_MATERIAL_VARIANT_RECORD) == 12);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_VARIANT_RECORD, original) == 4);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_VARIANT_RECORD, vertex_descriptor) == 8);
+        NUMTL *material;       // 0x0
+        NUMTL *original;       // 0x4
+        u32 vertex_descriptor; // 0x8
+    }; // size 0xc
 
     void __cdecl NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *desc) {
         if (desc == NULL) {
@@ -7367,7 +7177,6 @@ extern "C" {
 
     static NUMTL *RendererZClearMaterialPc = 0;
     static NUMTL *RendererAlphaMaskMaterialPc = 0;
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, version) == 0x2c0);
 
     void __cdecl NuRndrInitGeneric(void) {
         i32 saved_plane = (i32)numtl_renderplane;
@@ -7394,11 +7203,9 @@ extern "C" {
     }
 
     typedef struct screengrab_tile_params_pc_s {
-        i8 channels[4];
-        u16 width;
-    } SCREENGRAB_TILE_PARAMS_PC;
-
-    STATIC_ASSERT(offsetof(SCREENGRAB_TILE_PARAMS_PC, width) == 4);
+        i8 channels[4];          // 0x0
+        u16 width;               // 0x4
+    } SCREENGRAB_TILE_PARAMS_PC; // size 0x6
 
     void __cdecl NuRndrScreenGrabTileInit(SCREENGRAB_TILE_PARAMS_PC *params, i32 tiles, f32 b, f32 a, f32 c);
     void __cdecl NuRndrScreenGrabTileDeInit(SCREENGRAB_TILE_PARAMS_PC *params);
@@ -7603,9 +7410,6 @@ extern "C" {
         return 0;
     }
 
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, flags) == 0);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, diffuse_map_id) == 4);
-    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, default_scale) == 0x24);
     void __cdecl NuMtlInitExPS(VARIPTR *buffer);
 
     void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count) {
@@ -7649,19 +7453,6 @@ extern "C" {
         g_overrideList = NuLstCreateBuff(count, sizeof(PC_MATERIAL_VARIANT_RECORD), buffer, *end, 0x10);
     }
 
-    STATIC_ASSERT(sizeof(FONT_LOAD_READER_PC) == 0x4c);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, flags) == 6);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, size) == 8);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, glyphs) == 0x34);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, unicode_map) == 0x38);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, header) == 0x3c);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, material) == 0x40);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, colour) == 0x44);
-    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, platform_data) == 0x48);
-    STATIC_ASSERT(sizeof(FONT_RENDER_STORAGE_PC) == 0x58);
-    STATIC_ASSERT(offsetof(FONT_RENDER_STORAGE_PC, x_scale) == 0x50);
-    STATIC_ASSERT(offsetof(FONT_RENDER_STORAGE_PC, y_scale) == 0x54);
-
     i32 __cdecl NuQFntReadPS(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
         PC_MATERIAL_CREATE_SHADER description;
         FONT_LOAD_READER_PC *reader = (FONT_LOAD_READER_PC *)font;
@@ -7703,16 +7494,14 @@ extern "C" {
     }
 
     typedef struct RNDR_MASK_VERTEX_PC {
-        f32 x;
-        f32 y;
-        f32 z;
-        u32 colour;
-        f32 u;
-        f32 v;
-    } RNDR_MASK_VERTEX_PC;
+        f32 x;             // 0x00
+        f32 y;             // 0x04
+        f32 z;             // 0x08
+        u32 colour;        // 0x0c
+        f32 u;             // 0x10
+        f32 v;             // 0x14
+    } RNDR_MASK_VERTEX_PC; // size 0x18
 
-    STATIC_ASSERT(offsetof(RNDR_MASK_VERTEX_PC, u) == 0x10);
-    STATIC_ASSERT(offsetof(RNDR_MASK_VERTEX_PC, v) == 0x14);
 #pragma section(".rdata$MaskCoordinateModesPc", read)
     __declspec(allocate(".rdata$MaskCoordinateModesPc")) i32 kPRIM_COORD_LOOKUP[3] = {0, 1, 2};
 
@@ -7785,42 +7574,32 @@ extern "C" {
     }
 
     typedef struct nuvisiboxtreenode_pc_s {
-        NUVEC minimum;
-        f32 minimum_w;
-        NUVEC maximum;
-        f32 maximum_w;
-        struct nuvisiboxtreenode_pc_s *children[8];
-        i32 child_count;
-        i32 inside_count;
-        i32 *inside_instances;
-        i32 partial_count;
-        i32 *partial_instances;
-        u32 unknown_54;
-        f32 far_clip;
-    } NUVISIBOXTREENODE_PC;
-
-    STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, maximum) == 0x10);
-    STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, children) == 0x20);
-    STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, child_count) == 0x40);
-    STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, inside_count) == 0x44);
-    STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, partial_instances) == 0x50);
-    STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, far_clip) == 0x58);
+        NUVEC minimum;                              // 0x00
+        f32 minimum_w;                              // 0x0c
+        NUVEC maximum;                              // 0x10
+        f32 maximum_w;                              // 0x1c
+        struct nuvisiboxtreenode_pc_s *children[8]; // 0x20
+        i32 child_count;                            // 0x40
+        i32 inside_count;                           // 0x44
+        i32 *inside_instances;                      // 0x48
+        i32 partial_count;                          // 0x4c
+        i32 *partial_instances;                     // 0x50
+        u32 unknown_54;                             // 0x54
+        f32 far_clip;                               // 0x58
+    } NUVISIBOXTREENODE_PC;                         // size 0x5c
 
     typedef struct nuvisiboxtree_pc_s {
         NUVISIBOXTREENODE_PC *root;
     } NUVISIBOXTREE_PC;
 
     typedef struct nuboxtreevisibility_pc_s {
-        i32 instance_count;
-        NUVISIBOXTREE_PC *tree;
-        u32 unknown_08[6];
-        u8 *clip_results;
-        u32 unknown_24;
-        u32 state;
-    } NUBOXTREEVISIBILITY_PC;
-
-    STATIC_ASSERT(offsetof(NUBOXTREEVISIBILITY_PC, clip_results) == 0x20);
-    STATIC_ASSERT(offsetof(NUBOXTREEVISIBILITY_PC, state) == 0x28);
+        i32 instance_count;     // 0x00
+        NUVISIBOXTREE_PC *tree; // 0x04
+        u32 unknown_08[6];      // 0x08
+        u8 *clip_results;       // 0x20
+        u32 unknown_24;         // 0x24
+        u32 state;              // 0x28
+    } NUBOXTREEVISIBILITY_PC;   // size 0x2c
 
     typedef struct boxtree_stack_entry_pc_s {
         NUVISIBOXTREENODE_PC *node;
@@ -7896,28 +7675,17 @@ extern "C" {
     extern NUMTL *NuTimeBar_FrameOutMtl;
 
     typedef struct TimeBarSet {
-        i32 uses_buffer;
-        i32 slot_count;
-        i32 *accumulators[2];
-        NuTime *start_times;
-        i32 *field_14;
-        i32 *field_18;
-        i32 *colours;
-        i32 *toggle_flags;
-        const char **slot_names;
-        i32 field_28;
-    } TimeBarSet;
-
-    STATIC_ASSERT(sizeof(TimeBarSet) == 0x2c);
-    STATIC_ASSERT(offsetof(TimeBarSet, slot_count) == 4);
-    STATIC_ASSERT(offsetof(TimeBarSet, accumulators) == 8);
-    STATIC_ASSERT(offsetof(TimeBarSet, start_times) == 0x10);
-    STATIC_ASSERT(offsetof(TimeBarSet, field_14) == 0x14);
-    STATIC_ASSERT(offsetof(TimeBarSet, field_18) == 0x18);
-    STATIC_ASSERT(offsetof(TimeBarSet, colours) == 0x1c);
-    STATIC_ASSERT(offsetof(TimeBarSet, toggle_flags) == 0x20);
-    STATIC_ASSERT(offsetof(TimeBarSet, slot_names) == 0x24);
-    STATIC_ASSERT(offsetof(TimeBarSet, field_28) == 0x28);
+        i32 uses_buffer;         // 0x00
+        i32 slot_count;          // 0x04
+        i32 *accumulators[2];    // 0x08
+        NuTime *start_times;     // 0x10
+        i32 *field_14;           // 0x14
+        i32 *field_18;           // 0x18
+        i32 *colours;            // 0x1c
+        i32 *toggle_flags;       // 0x20
+        const char **slot_names; // 0x24
+        i32 field_28;            // 0x28
+    } TimeBarSet;                // size 0x2c
 
     static i32 TimeBarAddSet(TimeBarSet *timebar) {
         i32 index;
@@ -8627,32 +8395,26 @@ extern "C" {
     }
 
     typedef struct pc_display_material_pc_s {
-        union {
-            u16 flags;
+        union {        // 0x00
+            u16 flags; // 0x00
 
-            struct {
-                u16 flags_low : 4;
-                i16 sort_layer : 8;
-                u16 flags_high : 4;
+            struct {                // 0x00
+                u16 flags_low : 4;  // 0x00:0
+                i16 sort_layer : 8; // 0x00:4
+                u16 flags_high : 4; // 0x00:12
             };
         };
 
-        u8 unknown_0002[0x3a];
-        NUDISPLAYLIST *display_list;
-        u8 unknown_0040[4];
-        u32 visibility_flags;
-        u8 unknown_0048[0x2c];
-        i16 texture_id;
-        i16 sort_priority;
-        u8 unknown_0078[0x80];
-        u8 blend_operation[3];
-    } PC_DISPLAY_MATERIAL_PC;
-
-    STATIC_ASSERT(offsetof(PC_DISPLAY_MATERIAL_PC, display_list) == 0x3c);
-    STATIC_ASSERT(offsetof(PC_DISPLAY_MATERIAL_PC, visibility_flags) == 0x44);
-    STATIC_ASSERT(offsetof(PC_DISPLAY_MATERIAL_PC, texture_id) == 0x74);
-    STATIC_ASSERT(offsetof(PC_DISPLAY_MATERIAL_PC, sort_priority) == 0x76);
-    STATIC_ASSERT(offsetof(PC_DISPLAY_MATERIAL_PC, blend_operation) == 0xf8);
+        u8 unknown_0002[0x3a];       // 0x02
+        NUDISPLAYLIST *display_list; // 0x3c
+        u8 unknown_0040[4];          // 0x40
+        u32 visibility_flags;        // 0x44
+        u8 unknown_0048[0x2c];       // 0x48
+        i16 texture_id;              // 0x74
+        i16 sort_priority;           // 0x76
+        u8 unknown_0078[0x80];       // 0x78
+        u8 blend_operation[3];       // 0xf8
+    } PC_DISPLAY_MATERIAL_PC;        // size 0xfc
 
     /* Staged fragment for the original nudlist caller group. */
     void __cdecl NuDisplayListRecalculateMaterialStartsPC(NUDISPLAY_LIST_PC *scene) {
@@ -9245,43 +9007,31 @@ extern "C" {
 }
 
 typedef struct PC_CLONE_LIST_VIEW {
-    NUDISPLAYLIST list;
-    i32 scene_item_count;
-    u8 unknown_003c[8];
-} PC_CLONE_LIST_VIEW;
-
-STATIC_ASSERT(sizeof(PC_CLONE_LIST_VIEW) == 0x44);
-STATIC_ASSERT(offsetof(PC_CLONE_LIST_VIEW, scene_item_count) == 0x38);
+    NUDISPLAYLIST list;   // 0x00
+    i32 scene_item_count; // 0x38
+    u8 unknown_003c[8];   // 0x3c
+} PC_CLONE_LIST_VIEW;     // size 0x44
 
 typedef struct PC_CLONE_MATERIAL_VIEW {
-    u8 unknown_0000[0x3c];
-    NUDISPLAYLIST *display_list;
-    u8 unknown_0040[0x280];
-    u16 version;
-    u8 unknown_02c2[2];
-} PC_CLONE_MATERIAL_VIEW;
-
-STATIC_ASSERT(sizeof(PC_CLONE_MATERIAL_VIEW) == 0x2c4);
-STATIC_ASSERT(offsetof(PC_CLONE_MATERIAL_VIEW, display_list) == 0x3c);
-STATIC_ASSERT(offsetof(PC_CLONE_MATERIAL_VIEW, version) == 0x2c0);
+    u8 unknown_0000[0x3c];       // 0x000
+    NUDISPLAYLIST *display_list; // 0x03c
+    u8 unknown_0040[0x280];      // 0x040
+    u16 version;                 // 0x2c0
+    u8 unknown_02c2[2];          // 0x2c2
+} PC_CLONE_MATERIAL_VIEW;        // size 0x2c4
 
 typedef struct PC_CLONE_ANIMATION_VIEW {
-    NUDISPLAY_LIST_PC *scene;
-    u8 unknown_0004[8];
-    PC_MATERIAL_ANIM_SET *next;
-} PC_CLONE_ANIMATION_VIEW;
-
-STATIC_ASSERT(sizeof(PC_CLONE_ANIMATION_VIEW) == 0x10);
-STATIC_ASSERT(offsetof(PC_CLONE_ANIMATION_VIEW, next) == 0xc);
+    NUDISPLAY_LIST_PC *scene;   // 0x0
+    u8 unknown_0004[8];         // 0x4
+    PC_MATERIAL_ANIM_SET *next; // 0xc
+} PC_CLONE_ANIMATION_VIEW;      // size 0x10
 
 typedef struct PC_CLONE_SORT_SELF_VIEW {
-    u8 unknown_0000[0x10];
-    NUSORTPRI *self;
-    u8 unknown_0014[0x10];
-} PC_CLONE_SORT_SELF_VIEW;
+    u8 unknown_0000[0x10]; // 0x00
+    NUSORTPRI *self;       // 0x10
+    u8 unknown_0014[0x10]; // 0x14
+} PC_CLONE_SORT_SELF_VIEW; // size 0x24
 
-STATIC_ASSERT(sizeof(PC_CLONE_SORT_SELF_VIEW) == 0x24);
-STATIC_ASSERT(offsetof(PC_CLONE_SORT_SELF_VIEW, self) == 0x10);
 STATIC_ASSERT(sizeof(NUDISPLAY_LIST_PC) == 0x90);
 
 #define CLONE_ALIGN(buffer, alignment) (((buffer)->addr + (alignment) - 1) & ~((alignment) - 1u))
@@ -9438,50 +9188,36 @@ extern "C" NUDISPLAY_LIST_PC *__cdecl NuDisplaySceneClone(NUDISPLAY_LIST_PC *sou
 }
 
 typedef struct PC_SPECIAL_RENDER_MATERIAL {
-    u8 unknown_0000[0x30];
-    struct PC_SPECIAL_RENDER_MATERIAL *next;
-    u8 unknown_0034[8];
-    NUDISPLAYLIST_PC *display_list;
-    u32 attributes;
-    u8 unknown_0044[0x56];
-    u8 override_slot;
-    u8 unknown_009b[0x19];
-    u32 shader_flags;
-    u8 unknown_00b8[0x40];
-    u8 colour[3];
-    u8 unknown_00fb[0xf5];
-    u32 vertex_format;
-    u8 unknown_01f4[0x74];
-    u8 shadow_set;
-} PC_SPECIAL_RENDER_MATERIAL;
-
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_MATERIAL, next) == 0x30);
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_MATERIAL, display_list) == 0x3c);
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_MATERIAL, attributes) == 0x40);
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_MATERIAL, override_slot) == 0x9a);
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_MATERIAL, shader_flags) == 0xb4);
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_MATERIAL, colour) == 0xf8);
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_MATERIAL, vertex_format) == 0x1f0);
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_MATERIAL, shadow_set) == 0x268);
+    u8 unknown_0000[0x30];                   // 0x000
+    struct PC_SPECIAL_RENDER_MATERIAL *next; // 0x030
+    u8 unknown_0034[8];                      // 0x034
+    NUDISPLAYLIST_PC *display_list;          // 0x03c
+    u32 attributes;                          // 0x040
+    u8 unknown_0044[0x56];                   // 0x044
+    u8 override_slot;                        // 0x09a
+    u8 unknown_009b[0x19];                   // 0x09b
+    u32 shader_flags;                        // 0x0b4
+    u8 unknown_00b8[0x40];                   // 0x0b8
+    u8 colour[3];                            // 0x0f8
+    u8 unknown_00fb[0xf5];                   // 0x0fb
+    u32 vertex_format;                       // 0x1f0
+    u8 unknown_01f4[0x74];                   // 0x1f4
+    u8 shadow_set;                           // 0x268
+} PC_SPECIAL_RENDER_MATERIAL;                // size 0x26c
 
 typedef union PC_SPECIAL_RENDER_SPECIAL {
-    NUDISPLAY_SPECIAL_PC common;
+    NUDISPLAY_SPECIAL_PC common; // 0x00
 
-    struct {
-        u8 unknown_0000[0xb0];
-        PC_DISPLAY_CLIP_OBJECT_PC *clip_objects;
-        u8 unknown_00b4[8];
-        f32 *lod_ranges;
-        u8 unknown_00c0[8];
-        i16 wind_speed;
-        i16 wind_scale;
+    struct {                                     // 0x00
+        u8 unknown_0000[0xb0];                   // 0x00
+        PC_DISPLAY_CLIP_OBJECT_PC *clip_objects; // 0xb0
+        u8 unknown_00b4[8];                      // 0xb4
+        f32 *lod_ranges;                         // 0xbc
+        u8 unknown_00c0[8];                      // 0xc0
+        i16 wind_speed;                          // 0xc8
+        i16 wind_scale;                          // 0xca
     };
-} PC_SPECIAL_RENDER_SPECIAL;
-
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_SPECIAL, clip_objects) == 0xb0);
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_SPECIAL, lod_ranges) == 0xbc);
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_SPECIAL, wind_speed) == 0xc8);
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_SPECIAL, wind_scale) == 0xca);
+} PC_SPECIAL_RENDER_SPECIAL; // size 0xd0
 
 typedef union PC_SPECIAL_RENDER_SCENE {
     NUDISPLAY_LIST_PC common;
@@ -9492,33 +9228,29 @@ typedef union PC_SPECIAL_RENDER_SCENE {
     };
 } PC_SPECIAL_RENDER_SCENE;
 
+// Kept as an assert, not a layout comment: the declaration count of this unit steers
+// NuDeferredFilterGen::render (docs/cleanup-audit.md, section 6).
 STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_SCENE, fade_ranges) == 0xc);
 
 /* PC render-set's second list begins at +0x44, not sizeof the public list prefix. */
 typedef struct PC_SHADOW_RENDER_LISTS {
-    NUDISPLAYLIST_PC regular;
-    u8 unknown_0028[0x1c];
-    NUDISPLAYLIST_PC variant;
-    u8 unknown_006c[0x314];
-} PC_SHADOW_RENDER_LISTS;
-
-STATIC_ASSERT(sizeof(PC_SHADOW_RENDER_LISTS) == 0x380);
-STATIC_ASSERT(offsetof(PC_SHADOW_RENDER_LISTS, variant) == 0x44);
+    NUDISPLAYLIST_PC regular; // 0x000
+    u8 unknown_0028[0x1c];    // 0x028
+    NUDISPLAYLIST_PC variant; // 0x044
+    u8 unknown_006c[0x314];   // 0x06c
+} PC_SHADOW_RENDER_LISTS;     // size 0x380
 
 typedef union PC_SPECIAL_SHADOW_LIGHT_VIEW {
-    struct {
-        u8 unknown_0000[0x2a4];
-        PC_SHADOW_RENDER_LISTS render_sets[1];
+    struct {                                   // 0x000
+        u8 unknown_0000[0x2a4];                // 0x000
+        PC_SHADOW_RENDER_LISTS render_sets[1]; // 0x2a4
     };
 
-    struct {
-        u8 unknown_count_prefix[0x710];
-        i32 render_set_count;
+    struct {                            // 0x000
+        u8 unknown_count_prefix[0x710]; // 0x000
+        i32 render_set_count;           // 0x710
     };
-} PC_SPECIAL_SHADOW_LIGHT_VIEW;
-
-STATIC_ASSERT(offsetof(PC_SPECIAL_SHADOW_LIGHT_VIEW, render_sets) == 0x2a4);
-STATIC_ASSERT(offsetof(PC_SPECIAL_SHADOW_LIGHT_VIEW, render_set_count) == 0x710);
+} PC_SPECIAL_SHADOW_LIGHT_VIEW; // size 0x714
 
 extern "C" {
 
@@ -9837,19 +9569,14 @@ extern "C" {
 }
 
 typedef struct display_list_allocation_pc_s {
-    NUDISPLAYLIST base;
-    u8 unknown_0038[0xc];
-} DISPLAY_LIST_ALLOCATION_PC;
-
-STATIC_ASSERT(sizeof(DISPLAY_LIST_ALLOCATION_PC) == 0x44);
-STATIC_ASSERT(offsetof(DISPLAY_LIST_ALLOCATION_PC, base.first) == 0x10);
+    NUDISPLAYLIST base;       // 0x00
+    u8 unknown_0038[0xc];     // 0x38
+} DISPLAY_LIST_ALLOCATION_PC; // size 0x44
 
 typedef struct display_material_allocation_pc_s {
-    NUMTL base;
-    u8 unknown_tail[0x2c4 - sizeof(NUMTL)];
-} DISPLAY_MATERIAL_ALLOCATION_PC;
-
-STATIC_ASSERT(sizeof(DISPLAY_MATERIAL_ALLOCATION_PC) == 0x2c4);
+    NUMTL base;                             // 0x000
+    u8 unknown_tail[0x2c4 - sizeof(NUMTL)]; // 0x09c
+} DISPLAY_MATERIAL_ALLOCATION_PC;           // size 0x2c4
 
 extern "C" void __cdecl NuDisplayListCreate(NUDISPLAY_LIST_PC *scene, VARIPTR *buffer, VARIPTR end, i32 item_count,
                                             i32 material_count, i32 unused5, i32 unused6, i32 sort_count, i32 unused8,
@@ -9919,10 +9646,8 @@ extern "C" void __cdecl NuDisplayListCreate(NUDISPLAY_LIST_PC *scene, VARIPTR *b
 }
 
 typedef struct display_scene_name_pc_s {
-    const char *name;
-} DISPLAY_SCENE_NAME_PC;
-
-STATIC_ASSERT(offsetof(DISPLAY_SCENE_NAME_PC, name) == 0);
+    const char *name;    // 0x0
+} DISPLAY_SCENE_NAME_PC; // size 0x4
 
 extern "C" void __cdecl NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer, VARIPTR end) {
     i32 i;
@@ -10028,19 +9753,17 @@ extern "C" void __cdecl NuDisplayListExecute(NUDISPLAYLISTITEM *item, void(__cde
 }
 
 union PC_CLIP_SCENE_VIEW {
-    NUDISPLAY_LIST_PC common;
+    NUDISPLAY_LIST_PC common; // 0x00
 
-    struct {
-        u8 unknown_00[0xc];
-        f32 *fade_ranges;
-        u8 unknown_10[0x1c];
-        f32 *far_clip_ranges;
+    struct {                  // 0x00
+        u8 unknown_00[0xc];   // 0x00
+        f32 *fade_ranges;     // 0x0c
+        u8 unknown_10[0x1c];  // 0x10
+        f32 *far_clip_ranges; // 0x2c
     };
-};
+}; // size 0x90
 
 STATIC_ASSERT(sizeof(PC_CLIP_SCENE_VIEW) == sizeof(NUDISPLAY_LIST_PC));
-STATIC_ASSERT(offsetof(PC_CLIP_SCENE_VIEW, fade_ranges) == 0xc);
-STATIC_ASSERT(offsetof(PC_CLIP_SCENE_VIEW, far_clip_ranges) == 0x2c);
 
 static void DisplayClipFallbackPC(NUDISPLAY_LIST_PC *scene, VISIBILITY_RESULT_READER_PC *visibility) {
     PC_CLIP_SCENE_VIEW *view = reinterpret_cast<PC_CLIP_SCENE_VIEW *>(scene);
@@ -10137,19 +9860,15 @@ static void DisplayClipFallbackPC(NUDISPLAY_LIST_PC *scene, VISIBILITY_RESULT_RE
 }
 
 typedef union visibility_display_special_reader_pc_u {
-    NUDISPLAY_SPECIAL_PC common;
+    NUDISPLAY_SPECIAL_PC common; // 0x00
 
-    struct {
-        u8 unknown_00[0x40];
-        NUMTX draw_matrix;
-        u8 unknown_80[0x44];
-        NUMTX *draw_matrix_override;
+    struct {                         // 0x00
+        u8 unknown_00[0x40];         // 0x00
+        NUMTX draw_matrix;           // 0x40
+        u8 unknown_80[0x44];         // 0x80
+        NUMTX *draw_matrix_override; // 0xc4
     };
-} VISIBILITY_DISPLAY_SPECIAL_READER_PC;
-
-STATIC_ASSERT(sizeof(VISIBILITY_DISPLAY_SPECIAL_READER_PC) == 0xd0);
-STATIC_ASSERT(offsetof(VISIBILITY_DISPLAY_SPECIAL_READER_PC, draw_matrix) == 0x40);
-STATIC_ASSERT(offsetof(VISIBILITY_DISPLAY_SPECIAL_READER_PC, draw_matrix_override) == 0xc4);
+} VISIBILITY_DISPLAY_SPECIAL_READER_PC; // size 0xd0
 
 extern "C" void __cdecl NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
     u8 visibility_context[0x2800];
@@ -10213,51 +9932,38 @@ extern "C" void __cdecl NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
 }
 
 typedef struct FRAME_MTL_ANIM_DESC_PC {
-    u8 u_mode;
-    u8 v_mode;
-    u8 reserved02[2];
-    f32 u_amplitude;
-    f32 v_amplitude;
-    f32 u_frequency;
-    f32 v_frequency;
-} FRAME_MTL_ANIM_DESC_PC;
-
-STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_DESC_PC) == 0x14);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_frequency) == 0xc);
+    u8 u_mode;            // 0x00
+    u8 v_mode;            // 0x01
+    u8 reserved02[2];     // 0x02
+    f32 u_amplitude;      // 0x04
+    f32 v_amplitude;      // 0x08
+    f32 u_frequency;      // 0x0c
+    f32 v_frequency;      // 0x10
+} FRAME_MTL_ANIM_DESC_PC; // size 0x14
 
 typedef struct FRAME_MTL_ANIM_PC {
-    u8 reserved00[0x7b];
-    u8 disable_u_animation;
-    u8 disable_v_animation;
-    u8 reserved7d[0x143];
-    i32 texture_animation_data[4];
-    f32 texture_animation_offsets[4][2];
-    u8 reserved1f0[8];
-    FRAME_MTL_ANIM_DESC_PC animation[4];
-} FRAME_MTL_ANIM_PC;
-
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, disable_u_animation) == 0x7b);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, disable_v_animation) == 0x7c);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, texture_animation_data) == 0x1c0);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, texture_animation_offsets) == 0x1d0);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, animation) == 0x1f8);
+    u8 reserved00[0x7b];                 // 0x000
+    u8 disable_u_animation;              // 0x07b
+    u8 disable_v_animation;              // 0x07c
+    u8 reserved7d[0x143];                // 0x07d
+    i32 texture_animation_data[4];       // 0x1c0
+    f32 texture_animation_offsets[4][2]; // 0x1d0
+    u8 reserved1f0[8];                   // 0x1f0
+    FRAME_MTL_ANIM_DESC_PC animation[4]; // 0x1f8
+} FRAME_MTL_ANIM_PC;                     // size 0x248
 
 typedef struct FRAME_MTL_ANIM_SET_PC {
-    NUDISPLAY_LIST_PC *scene;
-    i32 material_count;
-    i32 *material_indices;
-    struct FRAME_MTL_ANIM_SET_PC *next;
-} FRAME_MTL_ANIM_SET_PC;
-
-STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_SET_PC) == 0x10);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, next) == 0xc);
+    NUDISPLAY_LIST_PC *scene;           // 0x0
+    i32 material_count;                 // 0x4
+    i32 *material_indices;              // 0x8
+    struct FRAME_MTL_ANIM_SET_PC *next; // 0xc
+} FRAME_MTL_ANIM_SET_PC;                // size 0x10
 
 typedef struct FRAME_MTL_SCENE_PC {
-    u8 reserved00[0x158];
-    i32 shader_texture_animation_enabled;
-} FRAME_MTL_SCENE_PC;
+    u8 reserved00[0x158];                 // 0x000
+    i32 shader_texture_animation_enabled; // 0x158
+} FRAME_MTL_SCENE_PC;                     // size 0x15c
 
-STATIC_ASSERT(offsetof(FRAME_MTL_SCENE_PC, shader_texture_animation_enabled) == 0x158);
 static f32 FrameMaterialAnimationTimePc = 0;
 
 void __cdecl NuDisplayListAnimateMtls(f32 frame_time) {
@@ -10330,15 +10036,6 @@ void __cdecl NuDisplayListAnimateMtls(f32 frame_time) {
     NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_mode) == 0x0);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_mode) == 0x1);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_amplitude) == 0x4);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_amplitude) == 0x8);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, v_frequency) == 0x10);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, scene) == 0x0);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_count) == 0x4);
-STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_indices) == 0x8);
-
 extern "C" void __cdecl NuDisplayListCaptureBegin(void) {
     if (nudlist_field_9d0 != 0) {
         nudlist_frame_active = (i32)(nudlist_field_9d0 - 1U);
@@ -10368,11 +10065,9 @@ extern "C" void __cdecl NuDisplayListHtmlEndPc(void) {
 /* The native debug-name projection reads one pointer at scene+0. Historical
  * visibility/owning extent of this projection is not established. */
 typedef struct PC_DISPLAY_DEBUG_NAME_READER {
-    const char *name;
-} PC_DISPLAY_DEBUG_NAME_READER;
+    const char *name;           // 0x0
+} PC_DISPLAY_DEBUG_NAME_READER; // size 0x4
 
-STATIC_ASSERT(sizeof(PC_DISPLAY_DEBUG_NAME_READER) == 4);
-STATIC_ASSERT(offsetof(PC_DISPLAY_DEBUG_NAME_READER, name) == 0);
 STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, nsort_pris) == 0);
 STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, sort_pris) == 4);
 STATIC_ASSERT(offsetof(NUSORTPRI, sort_pri) == 0);
@@ -11963,26 +11658,20 @@ extern "C" {
 
 /* nuprim's nu3d material linker; the packet builders are in nu3d_platform_pc.cpp. */
 typedef struct nuprim_command_pc_s {
-    u8 type;
-    u8 id;
-    u16 unknown_0002;
-    void *target;
-    u32 unknown_0008[2];
-} NUPRIM_COMMAND_PC;
-
-STATIC_ASSERT(sizeof(NUPRIM_COMMAND_PC) == 0x10);
-STATIC_ASSERT(offsetof(NUPRIM_COMMAND_PC, target) == 4);
+    u8 type;             // 0x0
+    u8 id;               // 0x1
+    u16 unknown_0002;    // 0x2
+    void *target;        // 0x4
+    u32 unknown_0008[2]; // 0x8
+} NUPRIM_COMMAND_PC;     // size 0x10
 
 typedef struct nuprim_material_state_pc_s {
-    u32 unknown_0000[2];
-    NUMTL *material;
-    u32 unknown_000c;
-    u32 unknown_0010;
-    i32 texture_id;
-} NUPRIM_MATERIAL_STATE_PC;
-
-STATIC_ASSERT(offsetof(NUPRIM_MATERIAL_STATE_PC, material) == 0x08);
-STATIC_ASSERT(offsetof(NUPRIM_MATERIAL_STATE_PC, texture_id) == 0x14);
+    u32 unknown_0000[2];    // 0x00
+    NUMTL *material;        // 0x08
+    u32 unknown_000c;       // 0x0c
+    u32 unknown_0010;       // 0x10
+    i32 texture_id;         // 0x14
+} NUPRIM_MATERIAL_STATE_PC; // size 0x18
 
 void __cdecl NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material) {
 #define LINK_MTL_STATE ((NUPRIM_MATERIAL_STATE_PC *)list->render_state)
@@ -12490,43 +12179,32 @@ extern "C" void __cdecl NuDynamicLightAddRenderScene(NURNDRLIGHTRECORD *records,
 
 /* Access-only native views; storage remains PC_SPECIAL_SHADOW_LIGHT/NUGSCN. */
 struct SHADOW_PRODUCER_SET_PC {
-    u8 unknown000[0x280];
-    NUVEC4 endpoint0;
-    NUVEC4 endpoint1;
-    f32 radius;
+    u8 unknown000[0x280]; // 0x000
+    NUVEC4 endpoint0;     // 0x280
+    NUVEC4 endpoint1;     // 0x290
+    f32 radius;           // 0x2a0
 
-    struct List {
-        NUDISPLAYLIST_PC list;
-        u8 unknown028[0x1c];
+    struct List {              // 0x2a4
+        NUDISPLAYLIST_PC list; // 0x2a4
+        u8 unknown028[0x1c];   // 0x2cc
     } lists[2];
 
-    u8 unknown32c[0x10];
-    NUDISPLAYLISTITEM *cursor[2];
-    NUDISPLAYLISTITEM *first[2];
-    NUDISPLAYLISTITEM *last[2];
-    u8 unknown354[0x2c];
-};
-
-STATIC_ASSERT(sizeof(SHADOW_PRODUCER_SET_PC) == 0x380);
-STATIC_ASSERT(offsetof(SHADOW_PRODUCER_SET_PC, endpoint0) == 0x280);
-STATIC_ASSERT(offsetof(SHADOW_PRODUCER_SET_PC, lists) == 0x2a4);
-STATIC_ASSERT(offsetof(SHADOW_PRODUCER_SET_PC, cursor) == 0x33c);
-STATIC_ASSERT(offsetof(SHADOW_PRODUCER_SET_PC, first) == 0x344);
-STATIC_ASSERT(offsetof(SHADOW_PRODUCER_SET_PC, last) == 0x34c);
+    u8 unknown32c[0x10];          // 0x32c
+    NUDISPLAYLISTITEM *cursor[2]; // 0x33c
+    NUDISPLAYLISTITEM *first[2];  // 0x344
+    NUDISPLAYLISTITEM *last[2];   // 0x34c
+    u8 unknown354[0x2c];          // 0x354
+}; // size 0x380
 
 struct SHADOW_PRODUCER_BOUNDS_PC {
-    NUVEC4 center_radius;
-    NUVEC4 extent;
-};
-
-STATIC_ASSERT(sizeof(SHADOW_PRODUCER_BOUNDS_PC) == 0x20);
+    NUVEC4 center_radius; // 0x00
+    NUVEC4 extent;        // 0x10
+}; // size 0x20
 
 struct SHADOW_PRODUCER_MATERIAL_PC {
-    u8 unknown000[0x268];
-    u8 alternate;
-};
-
-STATIC_ASSERT(offsetof(SHADOW_PRODUCER_MATERIAL_PC, alternate) == 0x268);
+    u8 unknown000[0x268]; // 0x000
+    u8 alternate;         // 0x268
+}; // size 0x269
 
 /* The local helper's native compiler ABI uses ECX, EDX and three caller-clean stack words. */
 static i32 ShadowSegmentClipPc(const NUVEC *point, const NUVEC *end, const NUVEC *start, f32 radius0, f32 radius1) {
@@ -12965,54 +12643,36 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUGSCN, legacy_format) == 0x1f4);
 
     typedef struct SCENE_INGEST_PTR_BLOCK_PC {
-        u32 table_relative_offset;
-        NUGSCN *scene;
-    } SCENE_INGEST_PTR_BLOCK_PC;
-
-    STATIC_ASSERT(sizeof(SCENE_INGEST_PTR_BLOCK_PC) == 8);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_PTR_BLOCK_PC, scene) == 4);
+        u32 table_relative_offset; // 0x0
+        NUGSCN *scene;             // 0x4
+    } SCENE_INGEST_PTR_BLOCK_PC;   // size 0x8
 
     typedef struct SCENE_INGEST_FILE_PC {
-        u8 unknown_00[8];
-        i32 version;
-        u8 unknown_0c[0xc];
-        SCENE_INGEST_PTR_BLOCK_PC pointer_block;
-    } SCENE_INGEST_FILE_PC;
-
-    STATIC_ASSERT(offsetof(SCENE_INGEST_FILE_PC, version) == 8);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_FILE_PC, pointer_block) == 0x18);
+        u8 unknown_00[8];                        // 0x00
+        i32 version;                             // 0x08
+        u8 unknown_0c[0xc];                      // 0x0c
+        SCENE_INGEST_PTR_BLOCK_PC pointer_block; // 0x18
+    } SCENE_INGEST_FILE_PC;                      // size 0x20
 
     typedef struct SCENE_INGEST_TEXTURE_ANIMATION_PC {
-        struct SCENE_INGEST_TEXTURE_ANIMATION_PC *next;
-        struct SCENE_INGEST_TEXTURE_ANIMATION_PC *previous;
-        u16 *texture_ids;
-        i16 texture_count;
-        u8 flags;
-        u8 reserved_0f;
-        NUMTL *material;
-        PC_TEXTURE_ANIM_ENV *environment;
-        char *name;
-        char *program_name;
-    } SCENE_INGEST_TEXTURE_ANIMATION_PC;
-
-    STATIC_ASSERT(sizeof(SCENE_INGEST_TEXTURE_ANIMATION_PC) == 0x20);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_TEXTURE_ANIMATION_PC, next) == 0);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_TEXTURE_ANIMATION_PC, previous) == 4);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_TEXTURE_ANIMATION_PC, texture_ids) == 8);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_TEXTURE_ANIMATION_PC, texture_count) == 0xc);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_TEXTURE_ANIMATION_PC, flags) == 0xe);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_TEXTURE_ANIMATION_PC, material) == 0x10);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_TEXTURE_ANIMATION_PC, environment) == 0x14);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_TEXTURE_ANIMATION_PC, program_name) == 0x1c);
+        struct SCENE_INGEST_TEXTURE_ANIMATION_PC *next;     // 0x00
+        struct SCENE_INGEST_TEXTURE_ANIMATION_PC *previous; // 0x04
+        u16 *texture_ids;                                   // 0x08
+        i16 texture_count;                                  // 0x0c
+        u8 flags;                                           // 0x0e
+        u8 reserved_0f;                                     // 0x0f
+        NUMTL *material;                                    // 0x10
+        PC_TEXTURE_ANIM_ENV *environment;                   // 0x14
+        char *name;                                         // 0x18
+        char *program_name;                                 // 0x1c
+    } SCENE_INGEST_TEXTURE_ANIMATION_PC;                    // size 0x20
 
     typedef struct SCENE_INGEST_TEXTURE_PROGRAM_PC {
-        struct SCENE_INGEST_TEXTURE_PROGRAM_PC *next;
-        struct SCENE_INGEST_TEXTURE_PROGRAM_PC *previous;
-        char name[32];
-    } SCENE_INGEST_TEXTURE_PROGRAM_PC;
+        struct SCENE_INGEST_TEXTURE_PROGRAM_PC *next;     // 0x00
+        struct SCENE_INGEST_TEXTURE_PROGRAM_PC *previous; // 0x04
+        char name[32];                                    // 0x08
+    } SCENE_INGEST_TEXTURE_PROGRAM_PC;                    // size 0x28
 
-    STATIC_ASSERT(offsetof(SCENE_INGEST_TEXTURE_PROGRAM_PC, next) == 0);
-    STATIC_ASSERT(offsetof(SCENE_INGEST_TEXTURE_PROGRAM_PC, name) == 8);
     void __cdecl NuGScnFixupPS(NUGSCN *);
 
     static const char SceneIngestCharacterVersionWarningPc[] =
@@ -13141,11 +12801,9 @@ extern "C" {
     }
 
     typedef struct CHARACTER_GHG_API_STATE_PC {
-        u8 unknown_00[0x80];
-        i32 loading_hgobj;
-    } CHARACTER_GHG_API_STATE_PC;
-
-    STATIC_ASSERT(offsetof(CHARACTER_GHG_API_STATE_PC, loading_hgobj) == 0x80);
+        u8 unknown_00[0x80];      // 0x00
+        i32 loading_hgobj;        // 0x80
+    } CHARACTER_GHG_API_STATE_PC; // size 0x84
 
     NUHGOBJ_EVAL_PC *__cdecl NuGHGRead(char *path, VARIPTR *buffer, VARIPTR end) {
         NUGSCN *scene;
@@ -13162,11 +12820,10 @@ extern "C" {
     }
 
     typedef struct SCENE_MATERIAL_FLAGS_PC {
-        u8 unknown_00[0x44];
-        u32 flags;
-    } SCENE_MATERIAL_FLAGS_PC;
+        u8 unknown_00[0x44];   // 0x00
+        u32 flags;             // 0x44
+    } SCENE_MATERIAL_FLAGS_PC; // size 0x48
 
-    STATIC_ASSERT(offsetof(SCENE_MATERIAL_FLAGS_PC, flags) == 0x44);
     STATIC_ASSERT(offsetof(NUTEXDIM_PC, checksum) == 8);
     STATIC_ASSERT(offsetof(NUGSCN, texture_ids) == 0);
     STATIC_ASSERT(offsetof(NUGSCN, texture_count) == 4);
@@ -13337,50 +12994,40 @@ extern "C" {
     i32 __cdecl NuFileCopy(char *destination, char *source);
 
     typedef struct visibility_scene_reader_pc_s {
-        u8 unknown_00[0x1c];
-        i32 instance_count;
-        u8 unknown_20[0x100];
-        VISIBILITY_RESULT_READER_PC result;
-    } VISIBILITY_SCENE_READER_PC;
+        u8 unknown_00[0x1c];                // 0x000
+        i32 instance_count;                 // 0x01c
+        u8 unknown_20[0x100];               // 0x020
+        VISIBILITY_RESULT_READER_PC result; // 0x120
+    } VISIBILITY_SCENE_READER_PC;           // size 0x14c
 
     typedef struct visibility_occlusion_grid_pc_s {
-        u32 unknown_00;
-        i32 width;
-        f32 min_x;
-        f32 max_x;
-        f32 min_z;
-        f32 max_z;
-        f32 scale_x;
-        f32 scale_z;
-        i32 mode;
-        u32 output_size;
-        u32 unknown_28;
-        u8 **cells;
-    } VISIBILITY_OCCLUSION_GRID_PC;
-
-    STATIC_ASSERT(offsetof(VISIBILITY_SCENE_READER_PC, instance_count) == 0x1c);
-    STATIC_ASSERT(offsetof(VISIBILITY_SCENE_READER_PC, result) == 0x120);
-    STATIC_ASSERT(sizeof(VISIBILITY_OCCLUSION_GRID_PC) == 0x30);
-    STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, min_x) == 8);
-    STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, scale_x) == 0x18);
-    STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, mode) == 0x20);
-    STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, output_size) == 0x24);
-    STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, cells) == 0x2c);
+        u32 unknown_00;             // 0x00
+        i32 width;                  // 0x04
+        f32 min_x;                  // 0x08
+        f32 max_x;                  // 0x0c
+        f32 min_z;                  // 0x10
+        f32 max_z;                  // 0x14
+        f32 scale_x;                // 0x18
+        f32 scale_z;                // 0x1c
+        i32 mode;                   // 0x20
+        u32 output_size;            // 0x24
+        u32 unknown_28;             // 0x28
+        u8 **cells;                 // 0x2c
+    } VISIBILITY_OCCLUSION_GRID_PC; // size 0x30
 
     /* Unsized reference only: no inferred allocation or emitted backing. */
 
     typedef union visibility_tree_flag_word_pc_u {
-        u32 word;
+        u32 word; // 0x0
 
-        struct {
-            u32 : 4;
-            u32 instance_tree : 1;
-            u32 : 27;
+        struct {                   // 0x0
+            u32 : 4;               // 0x0:0
+            u32 instance_tree : 1; // 0x0:4
+            u32 : 27;              // 0x0:5
         } bits;
-    } VISIBILITY_TREE_FLAG_WORD_PC;
+    } VISIBILITY_TREE_FLAG_WORD_PC; // size 0x4
 
     STATIC_ASSERT(sizeof(VISIBILITY_TREE_FLAG_WORD_PC) == sizeof(u32));
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_FLAG_WORD_PC, word) == 0);
 
     void __cdecl NuCameraLock(i32 lock) {
         if (lock != NuPortalCameraSelectPc && NuPortalCameraSelectPc == 0) {
@@ -13789,57 +13436,38 @@ extern "C" {
     }
 
     typedef struct visibility_tree_node_pc_s {
-        u16 bounds_index;
-        u16 subtree_instance_count;
-        u16 child_count;
-        u16 child_first;
-        u16 instance_count;
-        u16 instance_first;
-    } VISIBILITY_TREE_NODE_PC;
+        u16 bounds_index;           // 0x0
+        u16 subtree_instance_count; // 0x2
+        u16 child_count;            // 0x4
+        u16 child_first;            // 0x6
+        u16 instance_count;         // 0x8
+        u16 instance_first;         // 0xa
+    } VISIBILITY_TREE_NODE_PC;      // size 0xc
 
     typedef struct visibility_tree_bounds_pc_s {
-        NUVEC center;
-        u8 unknown_0c[4];
-        NUVEC extent;
-        u8 unknown_1c[4];
-    } VISIBILITY_TREE_BOUNDS_PC;
+        NUVEC center;            // 0x00
+        u8 unknown_0c[4];        // 0x0c
+        NUVEC extent;            // 0x10
+        u8 unknown_1c[4];        // 0x1c
+    } VISIBILITY_TREE_BOUNDS_PC; // size 0x20
 
     typedef struct visibility_tree_reader_pc_s {
-        u8 unknown_00[8];
-        u16 *instance_ids;
-        VISIBILITY_TREE_BOUNDS_PC *instance_bounds;
-        u8 unknown_10[4];
-        VISIBILITY_TREE_NODE_PC *nodes;
-        VISIBILITY_TREE_BOUNDS_PC *node_bounds;
-        u16 root_count;
-        u8 unknown_1e[2];
-        u16 *root_indices;
-        f32 *root_far_distance;
-    } VISIBILITY_TREE_READER_PC;
+        u8 unknown_00[8];                           // 0x00
+        u16 *instance_ids;                          // 0x08
+        VISIBILITY_TREE_BOUNDS_PC *instance_bounds; // 0x0c
+        u8 unknown_10[4];                           // 0x10
+        VISIBILITY_TREE_NODE_PC *nodes;             // 0x14
+        VISIBILITY_TREE_BOUNDS_PC *node_bounds;     // 0x18
+        u16 root_count;                             // 0x1c
+        u8 unknown_1e[2];                           // 0x1e
+        u16 *root_indices;                          // 0x20
+        f32 *root_far_distance;                     // 0x24
+    } VISIBILITY_TREE_READER_PC;                    // size 0x28
 
     typedef struct visibility_extent_scratch_pc_s {
-        NUVEC xyz;
-        f32 unknown_w;
-    } VISIBILITY_EXTENT_SCRATCH_PC;
-
-    STATIC_ASSERT(sizeof(VISIBILITY_TREE_NODE_PC) == 12);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_NODE_PC, subtree_instance_count) == 2);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_NODE_PC, child_count) == 4);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_NODE_PC, child_first) == 6);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_NODE_PC, instance_count) == 8);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_NODE_PC, instance_first) == 10);
-    STATIC_ASSERT(sizeof(VISIBILITY_TREE_BOUNDS_PC) == 32);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_BOUNDS_PC, extent) == 16);
-    STATIC_ASSERT(sizeof(VISIBILITY_TREE_READER_PC) == 40);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, instance_ids) == 8);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, instance_bounds) == 12);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, nodes) == 20);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, node_bounds) == 24);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, root_count) == 28);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, root_indices) == 32);
-    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, root_far_distance) == 36);
-    STATIC_ASSERT(sizeof(VISIBILITY_EXTENT_SCRATCH_PC) == 16);
-    STATIC_ASSERT(offsetof(VISIBILITY_EXTENT_SCRATCH_PC, unknown_w) == 12);
+        NUVEC xyz;                  // 0x0
+        f32 unknown_w;              // 0xc
+    } VISIBILITY_EXTENT_SCRATCH_PC; // size 0x10
 
 /* Preserve the native f32 load/store before clearing the sign, including NaNs. */
 #define VISIBILITY_ABSOLUTE_COMPONENT_PC(destination, source)                                                          \
@@ -15776,43 +15404,32 @@ extern "C" {
     typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
 
     struct PC_HG_SHADOW_SHAPE48 {
-        union {
-            NUVEC axes[4];
+        union {            // 0x00
+            NUVEC axes[4]; // 0x00
 
-            struct {
-                f32 center_x;
-                u32 flags;
-                u8 rest[40];
+            struct {          // 0x00
+                f32 center_x; // 0x00
+                u32 flags;    // 0x04
+                u8 rest[40];  // 0x08
             } filter;
         };
-    };
+    }; // size 0x30
 
     struct PC_HG_SHADOW_SHAPE64 {
-        PC_HG_SHADOW_SHAPE48 position;
-        u8 unknown_30[16];
-    };
+        PC_HG_SHADOW_SHAPE48 position; // 0x00
+        u8 unknown_30[16];             // 0x30
+    }; // size 0x40
 
     struct PC_HG_SHADOW_GROUP {
-        PC_HG_SHADOW_SHAPE48 *ellipses;
-        PC_HG_SHADOW_SHAPE64 *cylinders;
-        void *third_shape;
-        u8 ellipse_count;
-        u8 cylinder_count;
-        u8 third_count;
-        u8 joint_index;
-    };
+        PC_HG_SHADOW_SHAPE48 *ellipses;  // 0x0
+        PC_HG_SHADOW_SHAPE64 *cylinders; // 0x4
+        void *third_shape;               // 0x8
+        u8 ellipse_count;                // 0xc
+        u8 cylinder_count;               // 0xd
+        u8 third_count;                  // 0xe
+        u8 joint_index;                  // 0xf
+    }; // size 0x10
 
-    STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
-    STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE64) == 64);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_SHAPE48, filter.flags) == 4);
-    STATIC_ASSERT(sizeof(PC_HG_SHADOW_GROUP) == 16);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipses) == 0);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinders) == 4);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_shape) == 8);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipse_count) == 12);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinder_count) == 13);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_count) == 14);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, joint_index) == 15);
     STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
     STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);
     STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder) == 0x44);

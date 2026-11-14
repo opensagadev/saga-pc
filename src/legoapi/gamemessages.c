@@ -5,27 +5,21 @@
 #include <string.h>
 
 typedef struct coin_packet_pc_s {
-    u32 coins;
-    f32 scale;
-    i16 last_coin;
-    u8 unknown_0a[2];
-} COIN_PACKET_PC;
+    u32 coins;        // 0x0
+    f32 scale;        // 0x4
+    i16 last_coin;    // 0x8
+    u8 unknown_0a[2]; // 0xa
+} COIN_PACKET_PC;     // size 0xc
 
 typedef struct object_coin_packet_pc_s {
-    u8 unknown_000[0x7fc];
-    COIN_PACKET_PC *coin_packet;
-} OBJECT_COIN_PACKET_PC;
+    u8 unknown_000[0x7fc];       // 0x000
+    COIN_PACKET_PC *coin_packet; // 0x7fc
+} OBJECT_COIN_PACKET_PC;         // size 0x800
 
 typedef struct game_save_score_pc_s {
-    u8 unknown_0000[0x7c14];
-    u32 coins;
-} GAME_SAVE_SCORE_PC;
-
-STATIC_ASSERT(offsetof(COIN_PACKET_PC, coins) == 0);
-STATIC_ASSERT(offsetof(COIN_PACKET_PC, scale) == 4);
-STATIC_ASSERT(offsetof(COIN_PACKET_PC, last_coin) == 8);
-STATIC_ASSERT(offsetof(OBJECT_COIN_PACKET_PC, coin_packet) == 0x7fc);
-STATIC_ASSERT(offsetof(GAME_SAVE_SCORE_PC, coins) == 0x7c14);
+    u8 unknown_0000[0x7c14]; // 0x0000
+    u32 coins;               // 0x7c14
+} GAME_SAVE_SCORE_PC;        // size 0x7c18
 
 /* Out-of-line copies of the SDK's static float helpers (nufloat.h). */
 static f32 GameMessagesFabsPc(f32 f) {

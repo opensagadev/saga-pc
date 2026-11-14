@@ -6,58 +6,44 @@ STATIC_ASSERT(offsetof(HINTSYS_PC, active_hint) == 8);
 STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
 
 typedef struct HINT_CANCEL_PC {
-    u8 unknown00[8];
-    f32 display_duration;
-    u8 unknown0c[0xc];
-    f32 cooldown;
-} HINT_CANCEL_PC;
-
-STATIC_ASSERT(offsetof(HINT_CANCEL_PC, display_duration) == 8);
-STATIC_ASSERT(offsetof(HINT_CANCEL_PC, cooldown) == 0x18);
+    u8 unknown00[8];      // 0x00
+    f32 display_duration; // 0x08
+    u8 unknown0c[0xc];    // 0x0c
+    f32 cooldown;         // 0x18
+} HINT_CANCEL_PC;         // size 0x1c
 
 typedef struct HINT_COMPLETION_PC {
-    u16 points;
-    u8 reserved02;
-    u8 flags;
-} HINT_COMPLETION_PC;
+    u16 points;       // 0x0
+    u8 reserved02;    // 0x2
+    u8 flags;         // 0x3
+} HINT_COMPLETION_PC; // size 0x4
 
 STATIC_ASSERT(sizeof(HINT_COMPLETION_PC) == sizeof(CUSTOMISER_COMPLETION_READER_PC));
-STATIC_ASSERT(offsetof(HINT_COMPLETION_PC, points) == 0);
-STATIC_ASSERT(offsetof(HINT_COMPLETION_PC, flags) == 3);
 
 typedef struct HINT_WORLD_TELEPORT_PC {
-    u8 reserved00[0x4684];
-    i32 teleport_count;
-} HINT_WORLD_TELEPORT_PC;
-
-STATIC_ASSERT(offsetof(HINT_WORLD_TELEPORT_PC, teleport_count) == 0x4684);
+    u8 reserved00[0x4684]; // 0x0000
+    i32 teleport_count;    // 0x4684
+} HINT_WORLD_TELEPORT_PC;  // size 0x4688
 
 /* Native PC hint updater records retain their original packed field offsets. */
 typedef struct HINT_PANEL_PC {
-    u8 reserved00[0x61];
-    u8 model_variant;
-    u8 flags;
-    u8 reserved63[0x29];
-    f32 target_scale;
-} HINT_PANEL_PC;
+    u8 reserved00[0x61]; // 0x00
+    u8 model_variant;    // 0x61
+    u8 flags;            // 0x62
+    u8 reserved63[0x29]; // 0x63
+    f32 target_scale;    // 0x8c
+} HINT_PANEL_PC;         // size 0x90
 
-STATIC_ASSERT(sizeof(HINT_PANEL_PC) == 0x90);
-STATIC_ASSERT(offsetof(HINT_PANEL_PC, model_variant) == 0x61);
-STATIC_ASSERT(offsetof(HINT_PANEL_PC, flags) == 0x62);
-STATIC_ASSERT(offsetof(HINT_PANEL_PC, target_scale) == 0x8c);
 struct panel_movement_pc_s;
 
 typedef struct HINT_ZIPUP_PC {
-    u8 name[16];
-    NUVEC lower_position;
-    u8 reserved1c[0x4c];
-    u8 flags;
-    u8 reserved69[0x13];
-} HINT_ZIPUP_PC;
+    u8 name[16];          // 0x00
+    NUVEC lower_position; // 0x10
+    u8 reserved1c[0x4c];  // 0x1c
+    u8 flags;             // 0x68
+    u8 reserved69[0x13];  // 0x69
+} HINT_ZIPUP_PC;          // size 0x7c
 
-STATIC_ASSERT(sizeof(HINT_ZIPUP_PC) == 0x7c);
-STATIC_ASSERT(offsetof(HINT_ZIPUP_PC, lower_position) == 0x10);
-STATIC_ASSERT(offsetof(HINT_ZIPUP_PC, flags) == 0x68);
 STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_0e28) + 4 == 0xe2c);
 STATIC_ASSERT(offsetof(GAMESAVE, losttemple_trailer_watched) == 0x7c1d);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);

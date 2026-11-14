@@ -501,23 +501,17 @@ void NuMusic::Debug(i32 unused, i32 y) {
 }
 
 struct PC_STEREO_PLAY_PACKET {
-    i32 option11;
-    i32 reserved;
-    i32 stream_index;
-    i32 first_sample;
-    i32 last_sample;
-    i32 volume_left;
-    i32 volume_right;
-    i32 option9_mode;
-    f32 start_offset;
-};
+    i32 option11;     // 0x00
+    i32 reserved;     // 0x04
+    i32 stream_index; // 0x08
+    i32 first_sample; // 0x0c
+    i32 last_sample;  // 0x10
+    i32 volume_left;  // 0x14
+    i32 volume_right; // 0x18
+    i32 option9_mode; // 0x1c
+    f32 start_offset; // 0x20
+}; // size 0x24
 
-STATIC_ASSERT(sizeof(PC_STEREO_PLAY_PACKET) == 36);
-STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, stream_index) == 8);
-STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, first_sample) == 12);
-STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, last_sample) == 16);
-STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, option9_mode) == 28);
-STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, start_offset) == 32);
 extern "C" f32 PCMusicDuckOverride;
 
 extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {

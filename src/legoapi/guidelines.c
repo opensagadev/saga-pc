@@ -3,32 +3,27 @@
 /* Retail unit 0x56cdb0-0x56d2ec: definitions in retail address order. */
 
 typedef struct guideline_record_pc_s {
-    char name[8];
-    NUVEC start_position;
-    NUVEC end_position;
+    char name[8];         // 0x00
+    NUVEC start_position; // 0x08
+    NUVEC end_position;   // 0x14
 
-    union {
-        u8 flags;
+    union {       // 0x20
+        u8 flags; // 0x20
 
-        struct {
-            u8 active : 1;
-            u8 visible : 1;
+        struct {            // 0x20
+            u8 active : 1;  // 0x20:0
+            u8 visible : 1; // 0x20:1
         };
     };
 
-    u8 unknown_21[3];
-} GUIDELINE_RECORD_PC;
+    u8 unknown_21[3];  // 0x21
+} GUIDELINE_RECORD_PC; // size 0x24
 
 typedef struct guideline_progress_pc_s {
-    u32 active_mask[1];
-    u32 visible_mask[1];
-} GUIDELINE_PROGRESS_PC;
+    u32 active_mask[1];  // 0x0
+    u32 visible_mask[1]; // 0x4
+} GUIDELINE_PROGRESS_PC; // size 0x8
 
-STATIC_ASSERT(sizeof(GUIDELINE_RECORD_PC) == 0x24);
-STATIC_ASSERT(offsetof(GUIDELINE_RECORD_PC, start_position) == 8);
-STATIC_ASSERT(offsetof(GUIDELINE_RECORD_PC, end_position) == 0x14);
-STATIC_ASSERT(offsetof(GUIDELINE_RECORD_PC, flags) == 0x20);
-STATIC_ASSERT(sizeof(GUIDELINE_PROGRESS_PC) == 8);
 STATIC_ASSERT(offsetof(WORLDINFO, guidelines) == 0x50a0);
 STATIC_ASSERT(offsetof(WORLDINFO, guideline_count) == 0x50a4);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);

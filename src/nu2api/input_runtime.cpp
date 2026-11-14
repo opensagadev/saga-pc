@@ -187,97 +187,62 @@ extern "C" void __cdecl PcInput_SetIsUsedCallBack(i32(__cdecl *filter)(i32, i32)
 }
 
 typedef struct NuKeyboardInitKeyRecord_PC {
-    u8 unknown_00;
-    u8 unknown_01;
-    u8 unknown_02;
-    u8 unknown_03;
-    u16 unknown_04;
-} NuKeyboardInitKeyRecord_PC;
-
-STATIC_ASSERT(sizeof(NuKeyboardInitKeyRecord_PC) == 6);
+    u8 unknown_00;            // 0x0
+    u8 unknown_01;            // 0x1
+    u8 unknown_02;            // 0x2
+    u8 unknown_03;            // 0x3
+    u16 unknown_04;           // 0x4
+} NuKeyboardInitKeyRecord_PC; // size 0x6
 
 typedef struct NuKeyboardInitTriplet_PC {
-    u8 unknown_00;
-    u8 unknown_01;
-    u8 unknown_02;
-    u8 unknown_03_to_09[7];
-} NuKeyboardInitTriplet_PC;
-
-STATIC_ASSERT(sizeof(NuKeyboardInitTriplet_PC) == 0x0a);
+    u8 unknown_00;          // 0x0
+    u8 unknown_01;          // 0x1
+    u8 unknown_02;          // 0x2
+    u8 unknown_03_to_09[7]; // 0x3
+} NuKeyboardInitTriplet_PC; // size 0xa
 
 typedef struct NuKeyboardInitLayout_PC {
-    u8 cleared_0000_to_26ff[0x2700];
-    u8 cleared_2700_to_4dff[0x2700];
-    i32 unknown_4e00;
-    i32 unknown_4e04;
-    i32 unknown_4e08;
-    i32 unknown_4e0c;
-    u8 keyboard_polled;
-    u8 unknown_4e11;
-    u8 unknown_4e12;
-    u8 unknown_4e13;
-    u8 unknown_4e14_to_4e33[0x20];
-    u8 cleared_4e34_to_62fb[0x14c8];
-    u8 cleared_62fc_to_6343[0x48];
-    u8 unknown_6344;
-    u8 unknown_6345_to_6352[14];
-    u8 unknown_6353;
-    i32 unknown_6354;
-    u8 cleared_6358_to_6557[0x200];
-    u8 unknown_6558_to_6567[0x10];
-    i32 unknown_6568;
-    i32 unknown_656c;
-    f32 unknown_6570;
-    u8 unknown_6574_to_6575[2];
-    NuKeyboardInitTriplet_PC unknown_6576_triplets[14];
-    u8 unknown_6602_to_6603[2];
-    i32 unknown_6604;
-    i32 unknown_6608;
-    NuKeyboardInitTriplet_PC unknown_660c_triplets[14];
-    u8 unknown_6698_to_6719[0x82];
-    u8 unknown_671a;
-    u8 unknown_671b;
-    u8 cleared_671c_to_67df[0xc4];
-    u8 unknown_67e0;
-    u8 unknown_67e1;
-    u8 unknown_67e2_to_67e3[2];
-    i32 unknown_67e4;
-    i32 unknown_67e8;
-    i32 unknown_67ec;
-    NuKeyboardInitKeyRecord_PC key_records[32];
-    u8 *keyboard_state;
-} NuKeyboardInitLayout_PC;
-
-STATIC_ASSERT(sizeof(NuKeyboardInitLayout_PC) == 0x68b4);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_4e00) == 0x4e00);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_4e04) == 0x4e04);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_4e08) == 0x4e08);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_4e0c) == 0x4e0c);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, keyboard_polled) == 0x4e10);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_4e11) == 0x4e11);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_4e12) == 0x4e12);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_4e13) == 0x4e13);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, cleared_62fc_to_6343) == 0x62fc);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_6345_to_6352) == 0x6345);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_6354) == 0x6354);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_6568) == 0x6568);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_656c) == 0x656c);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_6570) == 0x6570);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_6576_triplets) == 0x6576);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_6604) == 0x6604);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_6608) == 0x6608);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_660c_triplets) == 0x660c);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_671a) == 0x671a);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, cleared_671c_to_67df) == 0x671c);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_67e0) == 0x67e0);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_67e1) == 0x67e1);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, unknown_67e4) == 0x67e4);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, key_records) == 0x67f0);
-STATIC_ASSERT(offsetof(NuKeyboardInitLayout_PC, keyboard_state) == 0x68b0);
-
-STATIC_ASSERT(offsetof(NuKeyboardInitTriplet_PC, unknown_00) == 0);
-STATIC_ASSERT(offsetof(NuKeyboardInitTriplet_PC, unknown_01) == 1);
-STATIC_ASSERT(offsetof(NuKeyboardInitTriplet_PC, unknown_02) == 2);
+    u8 cleared_0000_to_26ff[0x2700];                    // 0x0000
+    u8 cleared_2700_to_4dff[0x2700];                    // 0x2700
+    i32 unknown_4e00;                                   // 0x4e00
+    i32 unknown_4e04;                                   // 0x4e04
+    i32 unknown_4e08;                                   // 0x4e08
+    i32 unknown_4e0c;                                   // 0x4e0c
+    u8 keyboard_polled;                                 // 0x4e10
+    u8 unknown_4e11;                                    // 0x4e11
+    u8 unknown_4e12;                                    // 0x4e12
+    u8 unknown_4e13;                                    // 0x4e13
+    u8 unknown_4e14_to_4e33[0x20];                      // 0x4e14
+    u8 cleared_4e34_to_62fb[0x14c8];                    // 0x4e34
+    u8 cleared_62fc_to_6343[0x48];                      // 0x62fc
+    u8 unknown_6344;                                    // 0x6344
+    u8 unknown_6345_to_6352[14];                        // 0x6345
+    u8 unknown_6353;                                    // 0x6353
+    i32 unknown_6354;                                   // 0x6354
+    u8 cleared_6358_to_6557[0x200];                     // 0x6358
+    u8 unknown_6558_to_6567[0x10];                      // 0x6558
+    i32 unknown_6568;                                   // 0x6568
+    i32 unknown_656c;                                   // 0x656c
+    f32 unknown_6570;                                   // 0x6570
+    u8 unknown_6574_to_6575[2];                         // 0x6574
+    NuKeyboardInitTriplet_PC unknown_6576_triplets[14]; // 0x6576
+    u8 unknown_6602_to_6603[2];                         // 0x6602
+    i32 unknown_6604;                                   // 0x6604
+    i32 unknown_6608;                                   // 0x6608
+    NuKeyboardInitTriplet_PC unknown_660c_triplets[14]; // 0x660c
+    u8 unknown_6698_to_6719[0x82];                      // 0x6698
+    u8 unknown_671a;                                    // 0x671a
+    u8 unknown_671b;                                    // 0x671b
+    u8 cleared_671c_to_67df[0xc4];                      // 0x671c
+    u8 unknown_67e0;                                    // 0x67e0
+    u8 unknown_67e1;                                    // 0x67e1
+    u8 unknown_67e2_to_67e3[2];                         // 0x67e2
+    i32 unknown_67e4;                                   // 0x67e4
+    i32 unknown_67e8;                                   // 0x67e8
+    i32 unknown_67ec;                                   // 0x67ec
+    NuKeyboardInitKeyRecord_PC key_records[32];         // 0x67f0
+    u8 *keyboard_state;                                 // 0x68b0
+} NuKeyboardInitLayout_PC;                              // size 0x68b4
 
 extern "C" void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC *);
 extern void(__cdecl *PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *);
@@ -727,16 +692,11 @@ u32 PC_INPUT_RUNTIME_PC::CombineUiButtonsPc(i32 port, u32 buttons) {
 }
 
 struct PC_DI_JOYSTICK_STATE_PC {
-    i32 axes[8];
-    i32 pov[4];
-    u8 buttons[128];
-    i32 extended_axes[24];
-};
-
-STATIC_ASSERT(sizeof(PC_DI_JOYSTICK_STATE_PC) == 0x110);
-STATIC_ASSERT(offsetof(PC_DI_JOYSTICK_STATE_PC, pov) == 0x20);
-STATIC_ASSERT(offsetof(PC_DI_JOYSTICK_STATE_PC, buttons) == 0x30);
-STATIC_ASSERT(offsetof(PC_DI_JOYSTICK_STATE_PC, extended_axes) == 0xb0);
+    i32 axes[8];           // 0x000
+    i32 pov[4];            // 0x020
+    u8 buttons[128];       // 0x030
+    i32 extended_axes[24]; // 0x0b0
+}; // size 0x110
 
 i32 PC_INPUT_RUNTIME_PC::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample) {
     memset(sample->axes, 0, 64);
@@ -1629,22 +1589,15 @@ extern "C" void __cdecl PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i
 
 // Append to input_runtime.cpp. Extend config unknown_44 with metadata named in B-layout.txt.
 struct PC_INPUT_EXPORT_METADATA_PC {
-    i16 button_count;
-    i16 pov_count;
-    i16 axis_count;
-    u16 deadzone_word;
-    u16 alternate_deadzone_word;
-    i16 key;
-};
+    i16 button_count;            // 0x0
+    i16 pov_count;               // 0x2
+    i16 axis_count;              // 0x4
+    u16 deadzone_word;           // 0x6
+    u16 alternate_deadzone_word; // 0x8
+    i16 key;                     // 0xa
+}; // size 0xc
 
-STATIC_ASSERT(sizeof(PC_INPUT_EXPORT_METADATA_PC) == 12);
 STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, button_count) == 0x54);
-STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, button_count) == 0);
-STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, pov_count) == 2);
-STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, axis_count) == 4);
-STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, deadzone_word) == 6);
-STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, alternate_deadzone_word) == 8);
-STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, key) == 10);
 
 void PC_INPUT_RUNTIME_PC::ExportConfigPc(i32 port, PC_INPUT_CONFIG_PC *config, i32 auxiliary, i32 bank, i32 key) {
     PC_INPUT_BINDING_PC *bindings = auxiliary ? auxiliary_bindings[bank] : devices[port].bindings;

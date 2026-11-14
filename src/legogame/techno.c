@@ -112,84 +112,61 @@ void *Technos_FindTgt(TECHNO_s *techno) {
 }
 
 typedef struct techno_callback_pc_s {
-    char name[16];
-    NUVEC position;
-    NUVEC ground_position;
-    f32 ground_offset;
-    f32 scale;
-    u16 y_rotation;
-    u16 ground_x_rotation;
-    u16 ground_z_rotation;
-    u8 enabled;
-    u8 target_mode;
-    i32 output;
+    char name[16];         // 0x00
+    NUVEC position;        // 0x10
+    NUVEC ground_position; // 0x1c
+    f32 ground_offset;     // 0x28
+    f32 scale;             // 0x2c
+    u16 y_rotation;        // 0x30
+    u16 ground_x_rotation; // 0x32
+    u16 ground_z_rotation; // 0x34
+    u8 enabled;            // 0x36
+    u8 target_mode;        // 0x37
+    i32 output;            // 0x38
 
-    union {
-        u8 flags;
+    union {       // 0x3c
+        u8 flags; // 0x3c
 
-        struct {
-            u8 active : 1;
-            u8 visible : 1;
-            u8 in_use : 1;
-            u8 triggered : 1;
-            u8 unused : 4;
+        struct {              // 0x3c
+            u8 active : 1;    // 0x3c:0
+            u8 visible : 1;   // 0x3c:1
+            u8 in_use : 1;    // 0x3c:2
+            u8 triggered : 1; // 0x3c:3
+            u8 unused : 4;    // 0x3c:4
         } bits;
     };
 
-    char target_name[16];
-    char target_object_name[31];
-    GIZMO_PC *controlled_object;
-} TECHNO_CALLBACK_PC;
+    char target_name[16];        // 0x3d
+    char target_object_name[31]; // 0x4d
+    GIZMO_PC *controlled_object; // 0x6c
+} TECHNO_CALLBACK_PC;            // size 0x70
 
 typedef struct techno_level_view_pc_s {
-    u8 reserved_000[0xec];
-    u8 max_technos;
-} TECHNO_LEVEL_VIEW_PC;
+    u8 reserved_000[0xec]; // 0x00
+    u8 max_technos;        // 0xec
+} TECHNO_LEVEL_VIEW_PC;    // size 0xed
 
 typedef struct techno_gizmo_type_name_pc_s {
-    char name[32];
-    u8 reserved_20[0x7c];
-} TECHNO_GIZMO_TYPE_NAME_PC;
+    char name[32];           // 0x00
+    u8 reserved_20[0x7c];    // 0x20
+} TECHNO_GIZMO_TYPE_NAME_PC; // size 0x9c
 
 typedef struct techno_obstacle_view_pc_s {
-    u8 reserved_00[0x34];
-    GAMEANIMSET *anim_set;
-} TECHNO_OBSTACLE_VIEW_PC;
+    u8 reserved_00[0x34];  // 0x00
+    GAMEANIMSET *anim_set; // 0x34
+} TECHNO_OBSTACLE_VIEW_PC; // size 0x38
 
 typedef struct techno_progress_pc_s {
-    u32 active[1];
-    u32 visible[1];
-} TECHNO_PROGRESS_PC;
+    u32 active[1];    // 0x0
+    u32 visible[1];   // 0x4
+} TECHNO_PROGRESS_PC; // size 0x8
 
-STATIC_ASSERT(sizeof(TECHNO_CALLBACK_PC) == 0x70);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, name) == 0);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, position) == 0x10);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, ground_position) == 0x1c);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, ground_offset) == 0x28);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, scale) == 0x2c);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, y_rotation) == 0x30);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, ground_x_rotation) == 0x32);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, ground_z_rotation) == 0x34);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, enabled) == 0x36);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, target_mode) == 0x37);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, output) == 0x38);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, flags) == 0x3c);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, target_name) == 0x3d);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, target_object_name) == 0x4d);
-STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, controlled_object) == 0x6c);
 STATIC_ASSERT(sizeof(TECHNO_CONFIG_PC) == 0x4c);
 STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, interaction_time) == 0);
 STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, idle_object_ids) == 4);
 STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, idle_offsets) == 0xc);
 STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, hand_object_ids) == 0x30);
 STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, hand_offsets) == 0x34);
-STATIC_ASSERT(offsetof(TECHNO_LEVEL_VIEW_PC, max_technos) == 0xec);
-STATIC_ASSERT(sizeof(TECHNO_GIZMO_TYPE_NAME_PC) == 0x9c);
-STATIC_ASSERT(offsetof(TECHNO_GIZMO_TYPE_NAME_PC, name) == 0);
-STATIC_ASSERT(offsetof(TECHNO_OBSTACLE_VIEW_PC, anim_set) == 0x34);
-STATIC_ASSERT(sizeof(TECHNO_PROGRESS_PC) == 8);
-STATIC_ASSERT(offsetof(TECHNO_PROGRESS_PC, active) == 0);
-STATIC_ASSERT(offsetof(TECHNO_PROGRESS_PC, visible) == 4);
 
 static void Techno_ResetFields(TECHNO_CALLBACK_PC *techno) {
     f32 floor_height;

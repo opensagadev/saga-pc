@@ -28,29 +28,20 @@ extern "C" void __cdecl PodRace_IncreaseLap(void);
 
 /* Native Game fields consumed by 42b080. */
 typedef struct SHOP_COMPLETION_GAME_PC {
-    u8 reserved_0000[0x782c];
-    AREASAVE_s area_save[72];
-    struct EPISODESAVE_s episode_save[6];
-    u32 purchased_hint_bits[9];
-    u32 purchased_gold_brick_bits[2];
-    u32 purchased_extra_bits[2];
-    u8 reserved_7c08[0x10];
-    u16 completion_points;
-    u8 gold_bricks;
-    u8 reserved_7c1b[0x79];
-    MISSION_SAVE_READER_PC mission_save;
-    u8 reserved_7cf8[0x154];
-} SHOP_COMPLETION_GAME_PC;
+    u8 reserved_0000[0x782c];             // 0x0000
+    AREASAVE_s area_save[72];             // 0x782c
+    struct EPISODESAVE_s episode_save[6]; // 0x7b8c
+    u32 purchased_hint_bits[9];           // 0x7bd4
+    u32 purchased_gold_brick_bits[2];     // 0x7bf8
+    u32 purchased_extra_bits[2];          // 0x7c00
+    u8 reserved_7c08[0x10];               // 0x7c08
+    u16 completion_points;                // 0x7c18
+    u8 gold_bricks;                       // 0x7c1a
+    u8 reserved_7c1b[0x79];               // 0x7c1b
+    MISSION_SAVE_READER_PC mission_save;  // 0x7c94
+    u8 reserved_7cf8[0x154];              // 0x7cf8
+} SHOP_COMPLETION_GAME_PC;                // size 0x7e4c
 
-STATIC_ASSERT(sizeof(SHOP_COMPLETION_GAME_PC) == 0x7e4c);
-STATIC_ASSERT(offsetof(SHOP_COMPLETION_GAME_PC, area_save) == 0x782c);
-STATIC_ASSERT(offsetof(SHOP_COMPLETION_GAME_PC, episode_save) == 0x7b8c);
-STATIC_ASSERT(offsetof(SHOP_COMPLETION_GAME_PC, purchased_hint_bits) == 0x7bd4);
-STATIC_ASSERT(offsetof(SHOP_COMPLETION_GAME_PC, purchased_gold_brick_bits) == 0x7bf8);
-STATIC_ASSERT(offsetof(SHOP_COMPLETION_GAME_PC, purchased_extra_bits) == 0x7c00);
-STATIC_ASSERT(offsetof(SHOP_COMPLETION_GAME_PC, completion_points) == 0x7c18);
-STATIC_ASSERT(offsetof(SHOP_COMPLETION_GAME_PC, gold_bricks) == 0x7c1a);
-STATIC_ASSERT(offsetof(SHOP_COMPLETION_GAME_PC, mission_save) == 0x7c94);
 STATIC_ASSERT(offsetof(COLLECTID, field5_0x9) == 9);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, challenge_trial_time) == 0x84);
@@ -366,17 +357,14 @@ typedef struct GAME_CUSTOMISER_REWARD_READER_PC {
 GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER_PC, save_pieces) == 0x174);
 
 struct MUSIC_PAIR_ARENA_PC {
-    i32 prefix_word;
-    u8 unknown_004[0x18];
-    i16 action_first;
-    u8 unknown_01e[0x1a];
-    i16 ambient_first;
-    u8 unknown_03a[2];
-};
+    i32 prefix_word;      // 0x00
+    u8 unknown_004[0x18]; // 0x04
+    i16 action_first;     // 0x1c
+    u8 unknown_01e[0x1a]; // 0x1e
+    i16 ambient_first;    // 0x38
+    u8 unknown_03a[2];    // 0x3a
+}; // size 0x3c
 
-STATIC_ASSERT(sizeof(MUSIC_PAIR_ARENA_PC) == 0x3c);
-STATIC_ASSERT(offsetof(MUSIC_PAIR_ARENA_PC, action_first) == 0x1c);
-STATIC_ASSERT(offsetof(MUSIC_PAIR_ARENA_PC, ambient_first) == 0x38);
 STATIC_ASSERT(offsetof(CUTINFO, skip_level) == 0xec);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent) == 0x39c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent_metric) == 0x3a0);

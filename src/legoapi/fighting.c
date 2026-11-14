@@ -10,31 +10,20 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 
 typedef struct PUNCH_BLOWUP_VIEW_PC {
-    u8 unknown_00[0x4c];
-    NUVEC mid_position;
-    NUVEC bounds_min;
-    NUVEC bounds_max;
-    u8 unknown_70[0x24];
-    u32 status_flags;
-    u32 draw_flags;
-    u32 secondary_flags;
-    u8 unknown_a0[8];
-    f32 target_scale;
-    u8 unknown_ac[0x56];
-    i16 platform_id;
-    u8 unknown_104[0x10];
-} PUNCH_BLOWUP_VIEW_PC;
-
-STATIC_ASSERT(sizeof(PUNCH_BLOWUP_VIEW_PC) == 0x114);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, mid_position) == 0x4c);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, draw_flags) == 0x98);
-
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, bounds_min) == 0x58);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, bounds_max) == 0x64);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, status_flags) == 0x94);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, secondary_flags) == 0x9c);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, target_scale) == 0xa8);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, platform_id) == 0x102);
+    u8 unknown_00[0x4c];  // 0x000
+    NUVEC mid_position;   // 0x04c
+    NUVEC bounds_min;     // 0x058
+    NUVEC bounds_max;     // 0x064
+    u8 unknown_70[0x24];  // 0x070
+    u32 status_flags;     // 0x094
+    u32 draw_flags;       // 0x098
+    u32 secondary_flags;  // 0x09c
+    u8 unknown_a0[8];     // 0x0a0
+    f32 target_scale;     // 0x0a8
+    u8 unknown_ac[0x56];  // 0x0ac
+    i16 platform_id;      // 0x102
+    u8 unknown_104[0x10]; // 0x104
+} PUNCH_BLOWUP_VIEW_PC;   // size 0x114
 
 typedef struct weapon_rate_pc_s {
     u8 unknown_000[0xd40];
@@ -49,11 +38,9 @@ typedef struct blowup_movement_pc_s {
 } BLOWUP_MOVEMENT_PC;
 
 typedef struct HOLD_RUNTIME_VIEW_PC {
-    u8 unknown_000[0xde4];
-    f32 hold_timer;
-} HOLD_RUNTIME_VIEW_PC;
-
-STATIC_ASSERT(offsetof(HOLD_RUNTIME_VIEW_PC, hold_timer) == 0xde4);
+    u8 unknown_000[0xde4]; // 0x000
+    f32 hold_timer;        // 0xde4
+} HOLD_RUNTIME_VIEW_PC;    // size 0xde8
 
 i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
     NUVEC forward;

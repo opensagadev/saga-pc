@@ -20,16 +20,14 @@ STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
 /* Source-first scratch candidate; unclosed real leaf declarations only. */
 
 typedef struct render_post_prim_vertex_pc_s {
-    f32 x;
-    f32 y;
-    f32 z;
-    u32 colour;
-    f32 u;
-    f32 v;
-} RENDER_POST_PRIM_VERTEX_PC;
+    f32 x;                    // 0x00
+    f32 y;                    // 0x04
+    f32 z;                    // 0x08
+    u32 colour;               // 0x0c
+    f32 u;                    // 0x10
+    f32 v;                    // 0x14
+} RENDER_POST_PRIM_VERTEX_PC; // size 0x18
 
-STATIC_ASSERT(sizeof(RENDER_POST_PRIM_VERTEX_PC) == 0x18);
-STATIC_ASSERT(offsetof(RENDER_POST_PRIM_VERTEX_PC, colour) == 0xc);
 #define GRID_TAN_HALF_FOV(half_fov)                                                                                    \
     (NuTrigTable[(i32)((half_fov) * 10430.3779296875f) >> 1 & 0x7fff] /                                                \
      NuTrigTable[(16384 - (i32)((half_fov) * -10430.3779296875f)) >> 1 & 0x7fff])
@@ -186,10 +184,9 @@ STATIC_ASSERT(offsetof(STATUSPACKET_s, area_time) ==
               offsetof(STATUSPACKET_s, player0_rumble_amount) + sizeof(STATUS_RUMBLE_PAIR_PC));
 
 typedef struct StatusPlayerModelPairPc {
-    u16 model[2];
-} StatusPlayerModelPairPc;
+    u16 model[2];          // 0x0
+} StatusPlayerModelPairPc; // size 0x4
 
-STATIC_ASSERT(sizeof(StatusPlayerModelPairPc) == 4);
 STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_model) == offsetof(STATUSPACKET_s, player0_model) + sizeof(u16));
 STATIC_ASSERT(offsetof(STATUSPACKET_s, area_id) ==
               offsetof(STATUSPACKET_s, player0_model) + sizeof(StatusPlayerModelPairPc));

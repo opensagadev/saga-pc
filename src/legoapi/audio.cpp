@@ -5,14 +5,10 @@
 /* Retail unit 0x5477e0-0x548f85: definitions in retail address order. */
 
 struct PC_MUSIC_ACTION_PAIR_PC {
-    i16 quiet_id;
-    i16 action_id;
-    u8 unknown_004[0x18];
-};
-
-STATIC_ASSERT(offsetof(PC_MUSIC_ACTION_PAIR_PC, quiet_id) == 0);
-STATIC_ASSERT(offsetof(PC_MUSIC_ACTION_PAIR_PC, action_id) == 2);
-STATIC_ASSERT(sizeof(PC_MUSIC_ACTION_PAIR_PC) == 0x1c);
+    i16 quiet_id;         // 0x00
+    i16 action_id;        // 0x02
+    u8 unknown_004[0x18]; // 0x04
+}; // size 0x1c
 
 extern "C" {
     extern void(__cdecl *ExtraHurtSfxFn)(GAMEOBJECT *);

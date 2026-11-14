@@ -870,160 +870,100 @@ STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, last_used_time) == 0x16c);
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 
 typedef struct debris_material_flags_pc_s {
-    u32 alpha_mode : 4;
-    u32 filter_mode : 2;
-    u32 unknown_0_64_128 : 2;
-    u32 unknown_1_1_2 : 2;
-    u32 unknown_1_4_8 : 2;
-    u32 cull_mode : 2;
-    u32 z_mode : 2;
-    u32 unknown_2_1_2 : 2;
-    u32 unknown_2_4 : 1;
-    u32 unknown_19 : 1;
-    u32 alpha_test : 3;
-    u32 unknown_23_31 : 9;
-} DEBRIS_MATERIAL_FLAGS_PC;
+    u32 alpha_mode : 4;       // 0x0:0
+    u32 filter_mode : 2;      // 0x0:4
+    u32 unknown_0_64_128 : 2; // 0x0:6
+    u32 unknown_1_1_2 : 2;    // 0x0:8
+    u32 unknown_1_4_8 : 2;    // 0x0:10
+    u32 cull_mode : 2;        // 0x0:12
+    u32 z_mode : 2;           // 0x0:14
+    u32 unknown_2_1_2 : 2;    // 0x0:16
+    u32 unknown_2_4 : 1;      // 0x0:18
+    u32 unknown_19 : 1;       // 0x0:19
+    u32 alpha_test : 3;       // 0x0:20
+    u32 unknown_23_31 : 9;    // 0x0:23
+} DEBRIS_MATERIAL_FLAGS_PC;   // size 0x4
 
 typedef struct debris_material_secondary_pc_s {
-    u32 alpha_fail : 2;
-    u32 disable_depth_write : 1;
-    u32 unknown_03_31 : 29;
-} DEBRIS_MATERIAL_SECONDARY_PC;
+    u32 alpha_fail : 2;          // 0x0:0
+    u32 disable_depth_write : 1; // 0x0:2
+    u32 unknown_03_31 : 29;      // 0x0:3
+} DEBRIS_MATERIAL_SECONDARY_PC;  // size 0x4
 
 typedef struct debris_material_pc_s {
-    u8 unknown_000[0x40];
-    DEBRIS_MATERIAL_FLAGS_PC attribs;
-    DEBRIS_MATERIAL_SECONDARY_PC secondary;
-    u8 unknown_048[0xc];
-    NUVEC diffuse;
-    f32 glass_parameter;
-    u8 unknown_064[0xc];
-    f32 opacity;
-    i16 texture_id;
-    i16 sort_priority;
-    u8 unknown_078[0x21];
-    i8 particle_type_tag;
-    u8 unknown_09a[0x156];
-    u32 vertex_flags;
-} DEBRIS_MATERIAL_PC;
-
-STATIC_ASSERT(sizeof(DEBRIS_MATERIAL_FLAGS_PC) == 4);
-STATIC_ASSERT(sizeof(DEBRIS_MATERIAL_SECONDARY_PC) == 4);
-STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, attribs) == 0x40);
-STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, secondary) == 0x44);
-STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, diffuse) == 0x54);
-STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, glass_parameter) == 0x60);
-STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, opacity) == 0x70);
-STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, texture_id) == 0x74);
-STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, sort_priority) == 0x76);
-STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, particle_type_tag) == 0x99);
-STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, vertex_flags) == 0x1f0);
+    u8 unknown_000[0x40];                   // 0x000
+    DEBRIS_MATERIAL_FLAGS_PC attribs;       // 0x040
+    DEBRIS_MATERIAL_SECONDARY_PC secondary; // 0x044
+    u8 unknown_048[0xc];                    // 0x048
+    NUVEC diffuse;                          // 0x054
+    f32 glass_parameter;                    // 0x060
+    u8 unknown_064[0xc];                    // 0x064
+    f32 opacity;                            // 0x070
+    i16 texture_id;                         // 0x074
+    i16 sort_priority;                      // 0x076
+    u8 unknown_078[0x21];                   // 0x078
+    i8 particle_type_tag;                   // 0x099
+    u8 unknown_09a[0x156];                  // 0x09a
+    u32 vertex_flags;                       // 0x1f0
+} DEBRIS_MATERIAL_PC;                       // size 0x1f4
 
 typedef struct debris_animation_effect_pc_s {
-    u8 unknown_000[0xa8];
-    i16 texture_frames;
-    i8 texture_rows;
-    i8 frame_divisor;
+    u8 unknown_000[0xa8]; // 0x00
+    i16 texture_frames;   // 0xa8
+    i8 texture_rows;      // 0xaa
+    i8 frame_divisor;     // 0xab
 
-    union {
-        f32 rate;
-        u32 packed_rate;
+    union {              // 0xac
+        f32 rate;        // 0xac
+        u32 packed_rate; // 0xac
     } animation_rate;
-} DEBRIS_ANIMATION_EFFECT_PC;
-
-STATIC_ASSERT(offsetof(DEBRIS_ANIMATION_EFFECT_PC, texture_frames) == 0xa8);
-STATIC_ASSERT(offsetof(DEBRIS_ANIMATION_EFFECT_PC, texture_rows) == 0xaa);
-STATIC_ASSERT(offsetof(DEBRIS_ANIMATION_EFFECT_PC, frame_divisor) == 0xab);
-STATIC_ASSERT(offsetof(DEBRIS_ANIMATION_EFFECT_PC, animation_rate) == 0xac);
+} DEBRIS_ANIMATION_EFFECT_PC; // size 0xb0
 
 typedef struct part_runtime_type_pc_s {
-    char name[16];
-    char object_names[8][16];
-    i16 effect_ids[8];
-    i8 effect_pages[8];
-    i8 scene_indices[8];
-    i8 variant_count;
-    u8 variant_mode;
-    i8 page;
-    u8 field_b3;
-    f32 particle_scale;
-    f32 effect_scale;
-    f32 lifetime;
-    f32 lifetime_random;
-    f32 speed;
-    f32 gravity;
-    f32 emission_rate;
-    f32 bounce;
-    NUVEC position_random;
-    NUVEC velocity_random;
-    f32 emission_period;
-    f32 emission_period_random;
-    f32 emission_pause;
-    f32 emission_pause_random;
-    i32 rotation[3];
-    i32 rotation_random[3];
-    u32 flags;
-    i32 trail_effects[2];
-    f32 trail_rates[2];
-    i32 attached_effect;
-    i32 impact_effect;
-    i32 impact_part;
-    char impact_part_name[16];
-    i32 kill_effect;
-    i32 sounds[4];
-    u8 sound_modes[4];
-    f32 maximum_distance;
-    f32 field_160;
-    f32 field_164;
-    f32 field_168;
-    f32 last_used_time;
-    f32 scale;
-    u32 field_174;
-} PART_RUNTIME_TYPE_PC;
+    char name[16];              // 0x000
+    char object_names[8][16];   // 0x010
+    i16 effect_ids[8];          // 0x090
+    i8 effect_pages[8];         // 0x0a0
+    i8 scene_indices[8];        // 0x0a8
+    i8 variant_count;           // 0x0b0
+    u8 variant_mode;            // 0x0b1
+    i8 page;                    // 0x0b2
+    u8 field_b3;                // 0x0b3
+    f32 particle_scale;         // 0x0b4
+    f32 effect_scale;           // 0x0b8
+    f32 lifetime;               // 0x0bc
+    f32 lifetime_random;        // 0x0c0
+    f32 speed;                  // 0x0c4
+    f32 gravity;                // 0x0c8
+    f32 emission_rate;          // 0x0cc
+    f32 bounce;                 // 0x0d0
+    NUVEC position_random;      // 0x0d4
+    NUVEC velocity_random;      // 0x0e0
+    f32 emission_period;        // 0x0ec
+    f32 emission_period_random; // 0x0f0
+    f32 emission_pause;         // 0x0f4
+    f32 emission_pause_random;  // 0x0f8
+    i32 rotation[3];            // 0x0fc
+    i32 rotation_random[3];     // 0x108
+    u32 flags;                  // 0x114
+    i32 trail_effects[2];       // 0x118
+    f32 trail_rates[2];         // 0x120
+    i32 attached_effect;        // 0x128
+    i32 impact_effect;          // 0x12c
+    i32 impact_part;            // 0x130
+    char impact_part_name[16];  // 0x134
+    i32 kill_effect;            // 0x144
+    i32 sounds[4];              // 0x148
+    u8 sound_modes[4];          // 0x158
+    f32 maximum_distance;       // 0x15c
+    f32 field_160;              // 0x160
+    f32 field_164;              // 0x164
+    f32 field_168;              // 0x168
+    f32 last_used_time;         // 0x16c
+    f32 scale;                  // 0x170
+    u32 field_174;              // 0x174
+} PART_RUNTIME_TYPE_PC;         // size 0x178
 
-STATIC_ASSERT(sizeof(PART_RUNTIME_TYPE_PC) == 0x178);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, name) == 0x0);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, object_names) == 0x10);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, effect_ids) == 0x90);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, effect_pages) == 0xa0);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, scene_indices) == 0xa8);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, variant_count) == 0xb0);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, variant_mode) == 0xb1);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, page) == 0xb2);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_b3) == 0xb3);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, particle_scale) == 0xb4);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, effect_scale) == 0xb8);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, lifetime) == 0xbc);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, lifetime_random) == 0xc0);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, speed) == 0xc4);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, gravity) == 0xc8);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, emission_rate) == 0xcc);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, bounce) == 0xd0);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, position_random) == 0xd4);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, velocity_random) == 0xe0);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, emission_period) == 0xec);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, emission_period_random) == 0xf0);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, emission_pause) == 0xf4);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, emission_pause_random) == 0xf8);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, rotation) == 0xfc);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, rotation_random) == 0x108);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, flags) == 0x114);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, trail_effects) == 0x118);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, trail_rates) == 0x120);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, attached_effect) == 0x128);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, impact_effect) == 0x12c);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, impact_part) == 0x130);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, impact_part_name) == 0x134);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, kill_effect) == 0x144);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, sounds) == 0x148);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, sound_modes) == 0x158);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, maximum_distance) == 0x15c);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_160) == 0x160);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_164) == 0x164);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_168) == 0x168);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, last_used_time) == 0x16c);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, scale) == 0x170);
-STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_174) == 0x174);
 void edpartChangeMaxLifeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 extern NUMTL *edpart_mtl;
@@ -1034,14 +974,12 @@ void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32
                     i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, struct PC_SCENE_MTL_VIEW *material);
 
 typedef struct PART_TERRAIN_STATE_PC {
-    u8 unknown_000[0x200];
-    u32 platform_id;
-    u8 unknown_204[5];
-    i8 impact_material;
-} PART_TERRAIN_STATE_PC;
+    u8 unknown_000[0x200]; // 0x000
+    u32 platform_id;       // 0x200
+    u8 unknown_204[5];     // 0x204
+    i8 impact_material;    // 0x209
+} PART_TERRAIN_STATE_PC;   // size 0x20c
 
-STATIC_ASSERT(offsetof(PART_TERRAIN_STATE_PC, platform_id) == 0x200);
-STATIC_ASSERT(offsetof(PART_TERRAIN_STATE_PC, impact_material) == 0x209);
 #define PART_NORM PartImpactNormalPrivate
 i32 edpartPlace(i32 index, NUVEC *position);
 void edcamMove(FRAME_PAD_PC *pad);

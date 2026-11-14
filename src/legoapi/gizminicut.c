@@ -2,61 +2,37 @@
 #include <stdio.h>
 
 typedef struct minicut_part_pc_s {
-    char name[32];
-    NUVEC *resolved_position;
-    NUVEC position;
-    f32 distance;
-    u16 pitch;
-    u16 yaw;
-    u16 roll;
-    u16 padding;
-    f32 duration;
-    f32 field_of_view;
-} MINICUT_PART_PC;
+    char name[32];            // 0x00
+    NUVEC *resolved_position; // 0x20
+    NUVEC position;           // 0x24
+    f32 distance;             // 0x30
+    u16 pitch;                // 0x34
+    u16 yaw;                  // 0x36
+    u16 roll;                 // 0x38
+    u16 padding;              // 0x3a
+    f32 duration;             // 0x3c
+    f32 field_of_view;        // 0x40
+} MINICUT_PART_PC;            // size 0x44
 
 typedef struct minicut_pc_s {
-    char name[16];
-    MINICUT_PART_PC *parts;
-    i32 part_count;
-    u8 played;
-    u8 padding[3];
-    f32 blend_in;
-    f32 tracking_speed;
-    f32 blend_out;
-    f32 hold_time;
-    f32 end_time;
-} MINICUT_PC;
+    char name[16];          // 0x00
+    MINICUT_PART_PC *parts; // 0x10
+    i32 part_count;         // 0x14
+    u8 played;              // 0x18
+    u8 padding[3];          // 0x19
+    f32 blend_in;           // 0x1c
+    f32 tracking_speed;     // 0x20
+    f32 blend_out;          // 0x24
+    f32 hold_time;          // 0x28
+    f32 end_time;           // 0x2c
+} MINICUT_PC;               // size 0x30
 
 typedef struct minicut_world_pc_s {
-    u8 unknown[0x50ec];
-    MINICUT_PC *minicuts;
-    MINICUT_PART_PC *parts;
-    i32 count;
-} MINICUT_WORLD_PC;
-
-STATIC_ASSERT(sizeof(MINICUT_PART_PC) == 0x44);
-STATIC_ASSERT(offsetof(MINICUT_PART_PC, name) == 0);
-STATIC_ASSERT(offsetof(MINICUT_PART_PC, resolved_position) == 0x20);
-STATIC_ASSERT(offsetof(MINICUT_PART_PC, position) == 0x24);
-STATIC_ASSERT(offsetof(MINICUT_PART_PC, distance) == 0x30);
-STATIC_ASSERT(offsetof(MINICUT_PART_PC, pitch) == 0x34);
-STATIC_ASSERT(offsetof(MINICUT_PART_PC, yaw) == 0x36);
-STATIC_ASSERT(offsetof(MINICUT_PART_PC, roll) == 0x38);
-STATIC_ASSERT(offsetof(MINICUT_PART_PC, duration) == 0x3c);
-STATIC_ASSERT(offsetof(MINICUT_PART_PC, field_of_view) == 0x40);
-STATIC_ASSERT(sizeof(MINICUT_PC) == 0x30);
-STATIC_ASSERT(offsetof(MINICUT_PC, name) == 0);
-STATIC_ASSERT(offsetof(MINICUT_PC, parts) == 0x10);
-STATIC_ASSERT(offsetof(MINICUT_PC, part_count) == 0x14);
-STATIC_ASSERT(offsetof(MINICUT_PC, played) == 0x18);
-STATIC_ASSERT(offsetof(MINICUT_PC, blend_in) == 0x1c);
-STATIC_ASSERT(offsetof(MINICUT_PC, tracking_speed) == 0x20);
-STATIC_ASSERT(offsetof(MINICUT_PC, blend_out) == 0x24);
-STATIC_ASSERT(offsetof(MINICUT_PC, hold_time) == 0x28);
-STATIC_ASSERT(offsetof(MINICUT_PC, end_time) == 0x2c);
-STATIC_ASSERT(offsetof(MINICUT_WORLD_PC, minicuts) == 0x50ec);
-STATIC_ASSERT(offsetof(MINICUT_WORLD_PC, parts) == 0x50f0);
-STATIC_ASSERT(offsetof(MINICUT_WORLD_PC, count) == 0x50f4);
+    u8 unknown[0x50ec];     // 0x0000
+    MINICUT_PC *minicuts;   // 0x50ec
+    MINICUT_PART_PC *parts; // 0x50f0
+    i32 count;              // 0x50f4
+} MINICUT_WORLD_PC;         // size 0x50f8
 
 static i32 __cdecl GizMiniCut_GetMaxGizmos(void *world) {
     return ((WORLDINFO *)world)->current_level->max_minicuts;

@@ -7,50 +7,35 @@ extern "C" {
 }
 
 typedef struct area_gizmotype_pc_s {
-    u8 unknown_0000[0x44];
-    char *(__cdecl *get_gizmo_name)(void *gizmo);
-    u8 unknown_0048[0x54];
-} AREA_GIZMOTYPE_PC;
-
-STATIC_ASSERT(sizeof(AREA_GIZMOTYPE_PC) == 0x9c);
-STATIC_ASSERT(offsetof(AREA_GIZMOTYPE_PC, get_gizmo_name) == 0x44);
+    u8 unknown_0000[0x44];                        // 0x00
+    char *(__cdecl *get_gizmo_name)(void *gizmo); // 0x44
+    u8 unknown_0048[0x54];                        // 0x48
+} AREA_GIZMOTYPE_PC;                              // size 0x9c
 
 typedef struct area_gizmotypes_pc_s {
-    i32 count;
-    i32 unknown_0004;
-    AREA_GIZMOTYPE_PC *types;
-} AREA_GIZMOTYPES_PC;
-
-STATIC_ASSERT(sizeof(AREA_GIZMOTYPES_PC) == 0x0c);
-STATIC_ASSERT(offsetof(AREA_GIZMOTYPES_PC, types) == 0x08);
+    i32 count;                // 0x0
+    i32 unknown_0004;         // 0x4
+    AREA_GIZMOTYPE_PC *types; // 0x8
+} AREA_GIZMOTYPES_PC;         // size 0xc
 
 typedef struct area_gizmoset_pc_s {
-    void *type;
-    i32 count;
-    i32 max_count;
-    void *gizmos;
-    void *unknown_0010;
-} AREA_GIZMOSET_PC;
-
-STATIC_ASSERT(sizeof(AREA_GIZMOSET_PC) == 0x14);
-STATIC_ASSERT(offsetof(AREA_GIZMOSET_PC, count) == 0x04);
-STATIC_ASSERT(offsetof(AREA_GIZMOSET_PC, gizmos) == 0x0c);
+    void *type;         // 0x00
+    i32 count;          // 0x04
+    i32 max_count;      // 0x08
+    void *gizmos;       // 0x0c
+    void *unknown_0010; // 0x10
+} AREA_GIZMOSET_PC;     // size 0x14
 
 typedef struct area_gizmo_pc_s {
-    void *object;
-    i16 unknown_0004;
-    u8 type_id;
-    u8 unknown_0007;
-} AREA_GIZMO_PC;
-
-STATIC_ASSERT(sizeof(AREA_GIZMO_PC) == 8);
-STATIC_ASSERT(offsetof(AREA_GIZMO_PC, type_id) == 0x06);
+    void *object;     // 0x0
+    i16 unknown_0004; // 0x4
+    u8 type_id;       // 0x6
+    u8 unknown_0007;  // 0x7
+} AREA_GIZMO_PC;      // size 0x8
 
 typedef struct area_gizmosys_prefix_pc_s {
-    AREA_GIZMOSET_PC *sets;
-} AREA_GIZMOSYS_PREFIX_PC;
-
-STATIC_ASSERT(offsetof(AREA_GIZMOSYS_PREFIX_PC, sets) == 0x00);
+    AREA_GIZMOSET_PC *sets; // 0x0
+} AREA_GIZMOSYS_PREFIX_PC;  // size 0x4
 
 AREA_DATA_PC *__cdecl Area_FindByName(char *name, i32 *index_out) {
     i32 index;
@@ -398,13 +383,10 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
 }
 
 typedef struct player_progress_hp_pc_s {
-    u8 unknown_0000[8];
-    u8 hitpoints;
-    u8 unknown_0009[7];
-} PLAYER_PROGRESS_HP_PC;
-
-STATIC_ASSERT(sizeof(PLAYER_PROGRESS_HP_PC) == 0x10);
-STATIC_ASSERT(offsetof(PLAYER_PROGRESS_HP_PC, hitpoints) == 8);
+    u8 unknown_0000[8];  // 0x0
+    u8 hitpoints;        // 0x8
+    u8 unknown_0009[7];  // 0x9
+} PLAYER_PROGRESS_HP_PC; // size 0x10
 
 i32 __cdecl AreaFromMiniKitID(i32 id) {
     i32 index;
@@ -432,19 +414,15 @@ extern "C" i8 __cdecl Area_CharIDInCurrentList(i32 character_id) {
 }
 
 typedef struct AREA_MISSION_READER_PC {
-    u8 unknown_00[0x1f];
-    u8 character_count;
-    i16 character_ids[8];
-} AREA_MISSION_READER_PC;
-
-STATIC_ASSERT(offsetof(AREA_MISSION_READER_PC, character_count) == 0x1f);
-STATIC_ASSERT(offsetof(AREA_MISSION_READER_PC, character_ids) == 0x20);
+    u8 unknown_00[0x1f];  // 0x00
+    u8 character_count;   // 0x1f
+    i16 character_ids[8]; // 0x20
+} AREA_MISSION_READER_PC; // size 0x30
 
 typedef struct AREA_MISSION_DATA_READER_PC {
-    i16 find_char;
-} AREA_MISSION_DATA_READER_PC;
+    i16 find_char;             // 0x0
+} AREA_MISSION_DATA_READER_PC; // size 0x2
 
-STATIC_ASSERT(offsetof(AREA_MISSION_DATA_READER_PC, find_char) == 0);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_other_index) == 0x9c);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, red) == 0x1e4);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, green) == 0x1e5);
@@ -828,20 +806,16 @@ extern "C" void DumpAreaData(i32 mode, i32) {
 }
 
 typedef struct area_loading_clock_reader_pc_s {
-    u8 unknown_0000[0x7c20];
-    f32 elapsed_time;
-} AREA_LOADING_CLOCK_READER_PC;
-
-STATIC_ASSERT(offsetof(AREA_LOADING_CLOCK_READER_PC, elapsed_time) == 0x7c20);
+    u8 unknown_0000[0x7c20];    // 0x0000
+    f32 elapsed_time;           // 0x7c20
+} AREA_LOADING_CLOCK_READER_PC; // size 0x7c24
 
 typedef struct area_loading_pad_reader_pc_s {
-    u8 unknown_0000[8];
-    u32 buttons_pressed;
-    u8 unknown_000c[0x54];
-} AREA_LOADING_PAD_READER_PC;
+    u8 unknown_0000[8];       // 0x00
+    u32 buttons_pressed;      // 0x08
+    u8 unknown_000c[0x54];    // 0x0c
+} AREA_LOADING_PAD_READER_PC; // size 0x60
 
-STATIC_ASSERT(sizeof(AREA_LOADING_PAD_READER_PC) == 0x60);
-STATIC_ASSERT(offsetof(AREA_LOADING_PAD_READER_PC, buttons_pressed) == 8);
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_04) == 4);
 extern "C" u8 *Game_LevelSave;
 

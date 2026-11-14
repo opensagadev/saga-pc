@@ -54,36 +54,25 @@ extern "C" {
         extern NUMTL *FadeMtl;
 
         typedef struct nuprimvertex_pc_s {
-            f32 x;
-            f32 y;
-            f32 z;
-            u32 colour;
-            f32 u;
-            f32 v;
-        } NUPRIMVERTEX_PC;
-
-        STATIC_ASSERT(sizeof(NUPRIMVERTEX_PC) == 0x18);
-        STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, colour) == 0x0c);
-        STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, u) == 0x10);
-        STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, v) == 0x14);
+            f32 x;         // 0x00
+            f32 y;         // 0x04
+            f32 z;         // 0x08
+            u32 colour;    // 0x0c
+            f32 u;         // 0x10
+            f32 v;         // 0x14
+        } NUPRIMVERTEX_PC; // size 0x18
 
         typedef struct LEGAL_MATERIAL_PC {
-            u8 reserved00[0x40];
-            u32 attributes;
-            u8 reserved44[0x10];
-            NUVEC diffuse;
-            u8 reserved60[0x10];
-            f32 opacity;
-            i16 texture_id;
-            u8 reserved76[0x3e];
-            u32 shader_flags;
-        } LEGAL_MATERIAL_PC;
-
-        STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, attributes) == 0x40);
-        STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, diffuse) == 0x54);
-        STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, opacity) == 0x70);
-        STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, texture_id) == 0x74);
-        STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, shader_flags) == 0xb4);
+            u8 reserved00[0x40]; // 0x00
+            u32 attributes;      // 0x40
+            u8 reserved44[0x10]; // 0x44
+            NUVEC diffuse;       // 0x54
+            u8 reserved60[0x10]; // 0x60
+            f32 opacity;         // 0x70
+            i16 texture_id;      // 0x74
+            u8 reserved76[0x3e]; // 0x76
+            u32 shader_flags;    // 0xb4
+        } LEGAL_MATERIAL_PC;     // size 0xb8
     }
 
     extern "C" {

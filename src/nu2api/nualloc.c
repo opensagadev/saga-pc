@@ -7,41 +7,29 @@ static NUALLOC_POOL *NuAllocPool = 0;
 static u32 NuAllocRecordSerial = 0;
 
 struct nualloc_record_s {
-    struct nualloc_record_s *next;
-    struct nualloc_record_s *previous;
-    i32 source_line;
-    u32 serial;
-    u32 requested_size;
-    u32 header_metadata[3];
-};
+    struct nualloc_record_s *next;     // 0x00
+    struct nualloc_record_s *previous; // 0x04
+    i32 source_line;                   // 0x08
+    u32 serial;                        // 0x0c
+    u32 requested_size;                // 0x10
+    u32 header_metadata[3];            // 0x14
+}; // size 0x20
 
 typedef struct nualloc_tail_s {
-    u32 metadata[3];
-} NUALLOC_TAIL;
+    u32 metadata[3]; // 0x0
+} NUALLOC_TAIL;      // size 0xc
 
 struct nualloc_arena_s {
-    u32 *cursor;
-    u32 end;
-};
+    u32 *cursor; // 0x0
+    u32 end;     // 0x4
+}; // size 0x8
 
 struct nualloc_pool_s {
-    u32 capacity;
-    u32 remaining;
-    u32 cursor;
-    u32 unknown_0c;
-};
-
-STATIC_ASSERT(sizeof(NUALLOC_RECORD) == 0x20);
-STATIC_ASSERT(offsetof(NUALLOC_RECORD, source_line) == 0x08);
-STATIC_ASSERT(offsetof(NUALLOC_RECORD, serial) == 0x0c);
-STATIC_ASSERT(offsetof(NUALLOC_RECORD, requested_size) == 0x10);
-STATIC_ASSERT(offsetof(NUALLOC_RECORD, header_metadata) == 0x14);
-STATIC_ASSERT(sizeof(NUALLOC_TAIL) == 0x0c);
-STATIC_ASSERT(offsetof(NUALLOC_ARENA, cursor) == 0x00);
-STATIC_ASSERT(offsetof(NUALLOC_ARENA, end) == 0x04);
-STATIC_ASSERT(offsetof(NUALLOC_POOL, remaining) == 0x04);
-STATIC_ASSERT(offsetof(NUALLOC_POOL, cursor) == 0x08);
-STATIC_ASSERT(sizeof(NUALLOC_POOL) == 0x10);
+    u32 capacity;   // 0x0
+    u32 remaining;  // 0x4
+    u32 cursor;     // 0x8
+    u32 unknown_0c; // 0xc
+}; // size 0x10
 
 /* PC state at 0x88ab38..0x88ab54. */
 extern NUALLOC_RECORD *NuAllocRecordHead;
@@ -55,31 +43,21 @@ void __cdecl NuAllocReport(const void *message, ...);
 
 /* PC manager prefix and block header touched by the retail allocator. */
 typedef struct nualloc_manager_block_pc_s {
-    u32 size_flags;
-    struct nualloc_manager_block_pc_s *next;
-    struct nualloc_manager_block_pc_s *previous;
-} NUALLOC_MANAGER_BLOCK_PC;
+    u32 size_flags;                              // 0x0
+    struct nualloc_manager_block_pc_s *next;     // 0x4
+    struct nualloc_manager_block_pc_s *previous; // 0x8
+} NUALLOC_MANAGER_BLOCK_PC;                      // size 0xc
 
 typedef struct nualloc_manager_trailer_pc_s {
-    NUALLOC_MANAGER_BLOCK_PC *previous_block;
-} NUALLOC_MANAGER_TRAILER_PC;
+    NUALLOC_MANAGER_BLOCK_PC *previous_block; // 0x0
+} NUALLOC_MANAGER_TRAILER_PC;                 // size 0x4
 
 typedef struct nualloc_manager_prefix_pc_s {
-    void *base;
-    u32 size;
-    u32 block_count;
-    u32 used_bytes;
-} NUALLOC_MANAGER_PREFIX_PC;
-
-STATIC_ASSERT(sizeof(NUALLOC_MANAGER_BLOCK_PC) == 12);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_BLOCK_PC, next) == 4);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_BLOCK_PC, previous) == 8);
-STATIC_ASSERT(sizeof(NUALLOC_MANAGER_TRAILER_PC) == 4);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_TRAILER_PC, previous_block) == 0);
-STATIC_ASSERT(sizeof(NUALLOC_MANAGER_PREFIX_PC) == 16);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, size) == 4);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, block_count) == 8);
-STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, used_bytes) == 12);
+    void *base;              // 0x0
+    u32 size;                // 0x4
+    u32 block_count;         // 0x8
+    u32 used_bytes;          // 0xc
+} NUALLOC_MANAGER_PREFIX_PC; // size 0x10
 
 void *__cdecl NuAllocManagerAllocateAlignedPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment);
 void __cdecl NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *memory);

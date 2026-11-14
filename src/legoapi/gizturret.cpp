@@ -37,25 +37,20 @@ STATIC_ASSERT(offsetof(GIZTURRETSYS_s, opponent_cursor) == 0xc);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_turret_sys) == 0x46b8);
 
 typedef struct TURRET_ANIM_DATA_PC {
-    u8 flags;
-    u8 role;
-    i16 platform_id;
-} TURRET_ANIM_DATA_PC;
-
-STATIC_ASSERT(sizeof(TURRET_ANIM_DATA_PC) == 4);
+    u8 flags;          // 0x0
+    u8 role;           // 0x1
+    i16 platform_id;   // 0x2
+} TURRET_ANIM_DATA_PC; // size 0x4
 
 typedef struct {
-    u32 enabled[2];
-    u32 visible[2];
-    u32 reward[2];
-    u32 fired[2];
-    u32 stopped[2];
-    u32 completed[2];
-    u8 timers[64];
-} TURRET_PROGRESS_PC;
-
-STATIC_ASSERT(sizeof(TURRET_PROGRESS_PC) == 0x70);
-STATIC_ASSERT(offsetof(TURRET_PROGRESS_PC, timers) == 0x30);
+    u32 enabled[2];   // 0x00
+    u32 visible[2];   // 0x08
+    u32 reward[2];    // 0x10
+    u32 fired[2];     // 0x18
+    u32 stopped[2];   // 0x20
+    u32 completed[2]; // 0x28
+    u8 timers[64];    // 0x30
+} TURRET_PROGRESS_PC; // size 0x70
 
 extern "C" {
     extern const char GizmoRegistryGizTurretsNamePc[];

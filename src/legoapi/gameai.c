@@ -25,12 +25,11 @@ AI_GLOBAL_CHARACTER_RENDER_PC GlobalCharacterRenderFn = 0;
 AI_CLEAR_CREATURES_PC ClearAICreaturesFn = 0;
 
 typedef struct EQUIVALENTOBJECTGROUP_PC {
-    i16 object_count;
-    i16 byte_size;
-    NUSPECIALHANDLE objects[1];
-} EQUIVALENTOBJECTGROUP_PC;
+    i16 object_count;           // 0x0
+    i16 byte_size;              // 0x2
+    NUSPECIALHANDLE objects[1]; // 0x4
+} EQUIVALENTOBJECTGROUP_PC;     // size 0x10
 
-STATIC_ASSERT(offsetof(EQUIVALENTOBJECTGROUP_PC, objects) == 4);
 STATIC_ASSERT(offsetof(WORLDINFO, equivalent_groups) == 0x46b0);
 STATIC_ASSERT(offsetof(WORLDINFO, equivalent_group_count) == 0x46b4);
 

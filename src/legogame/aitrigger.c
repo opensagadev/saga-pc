@@ -4,74 +4,55 @@
 /* Retail unit 0x401870-0x4028b4 (legogame/aitrigger.c): definitions in retail address order. */
 
 typedef struct trigger_lever_pc_s {
-    u8 unknown000[0x94];
-    u16 flags;
-} TRIGGER_LEVER_PC;
+    u8 unknown000[0x94]; // 0x00
+    u16 flags;           // 0x94
+} TRIGGER_LEVER_PC;      // size 0x96
 
 typedef struct trigger_spinner_pc_s {
-    u8 unknown000[0x70];
-    f32 progress;
-    u8 unknown074[0x10];
-    u8 state_flags;
-    u8 unknown085[4];
-    i8 room_index;
-    u8 unknown08a[0x22];
-    u8 flags;
-} TRIGGER_SPINNER_PC;
+    u8 unknown000[0x70]; // 0x00
+    f32 progress;        // 0x70
+    u8 unknown074[0x10]; // 0x74
+    u8 state_flags;      // 0x84
+    u8 unknown085[4];    // 0x85
+    i8 room_index;       // 0x89
+    u8 unknown08a[0x22]; // 0x8a
+    u8 flags;            // 0xac
+} TRIGGER_SPINNER_PC;    // size 0xb0
 
 typedef struct trigger_force_pc_s {
-    u8 unknown000[0x38];
-    GAMEOBJECT *using_object;
-    i32 active_state;
-    u8 unknown040[0x34];
-    u32 config_flags;
-    u8 unknown078[0x28];
-    u32 progress_flags;
-} TRIGGER_FORCE_PC;
+    u8 unknown000[0x38];      // 0x00
+    GAMEOBJECT *using_object; // 0x38
+    i32 active_state;         // 0x3c
+    u8 unknown040[0x34];      // 0x40
+    u32 config_flags;         // 0x74
+    u8 unknown078[0x28];      // 0x78
+    u32 progress_flags;       // 0xa0
+} TRIGGER_FORCE_PC;           // size 0xa4
 
 typedef struct trigger_set_pc_s {
-    FLOWBOX_PC *flowbox;
-    GIZMO_PC *gizmos[8];
-    AILOCATOR_PC locators[8];
-    i8 trigger_indices[8];
-    u8 trigger_count;
-    u8 unknown20d;
-    u16 occupied;
-    u16 flags;
-    u8 unknown212[2];
-} TRIGGER_SET_PC;
+    FLOWBOX_PC *flowbox;      // 0x000
+    GIZMO_PC *gizmos[8];      // 0x004
+    AILOCATOR_PC locators[8]; // 0x024
+    i8 trigger_indices[8];    // 0x204
+    u8 trigger_count;         // 0x20c
+    u8 unknown20d;            // 0x20d
+    u16 occupied;             // 0x20e
+    u16 flags;                // 0x210
+    u8 unknown212[2];         // 0x212
+} TRIGGER_SET_PC;             // size 0x214
 
 typedef struct trigger_system_pc_s {
-    TRIGGER_SET_PC sets[32];
-    i8 assigned_set[64];
-    i8 assigned_trigger[64];
-    i32 unknown4300;
-} TRIGGER_SYSTEM_PC;
+    TRIGGER_SET_PC sets[32]; // 0x0000
+    i8 assigned_set[64];     // 0x4280
+    i8 assigned_trigger[64]; // 0x42c0
+    i32 unknown4300;         // 0x4300
+} TRIGGER_SYSTEM_PC;         // size 0x4304
 
 typedef struct trigger_object_force_pc_s {
-    u8 unknown000[0x10cc];
-    GIZFORCE_PC *force;
-} TRIGGER_OBJECT_FORCE_PC;
+    u8 unknown000[0x10cc]; // 0x0000
+    GIZFORCE_PC *force;    // 0x10cc
+} TRIGGER_OBJECT_FORCE_PC; // size 0x10d0
 
-STATIC_ASSERT(offsetof(TRIGGER_LEVER_PC, flags) == 0x94);
-STATIC_ASSERT(offsetof(TRIGGER_SPINNER_PC, progress) == 0x70);
-STATIC_ASSERT(offsetof(TRIGGER_SPINNER_PC, state_flags) == 0x84);
-STATIC_ASSERT(offsetof(TRIGGER_SPINNER_PC, room_index) == 0x89);
-STATIC_ASSERT(offsetof(TRIGGER_SPINNER_PC, flags) == 0xac);
-STATIC_ASSERT(offsetof(TRIGGER_FORCE_PC, using_object) == 0x38);
-STATIC_ASSERT(offsetof(TRIGGER_FORCE_PC, active_state) == 0x3c);
-STATIC_ASSERT(offsetof(TRIGGER_FORCE_PC, config_flags) == 0x74);
-STATIC_ASSERT(offsetof(TRIGGER_FORCE_PC, progress_flags) == 0xa0);
-STATIC_ASSERT(offsetof(TRIGGER_SET_PC, locators) == 0x24);
-STATIC_ASSERT(offsetof(TRIGGER_SET_PC, trigger_indices) == 0x204);
-STATIC_ASSERT(offsetof(TRIGGER_SET_PC, trigger_count) == 0x20c);
-STATIC_ASSERT(offsetof(TRIGGER_SET_PC, occupied) == 0x20e);
-STATIC_ASSERT(offsetof(TRIGGER_SET_PC, flags) == 0x210);
-STATIC_ASSERT(sizeof(TRIGGER_SET_PC) == 0x214);
-STATIC_ASSERT(offsetof(TRIGGER_SYSTEM_PC, assigned_set) == 0x4280);
-STATIC_ASSERT(offsetof(TRIGGER_SYSTEM_PC, assigned_trigger) == 0x42c0);
-STATIC_ASSERT(sizeof(TRIGGER_SYSTEM_PC) == 0x4304);
-STATIC_ASSERT(offsetof(TRIGGER_OBJECT_FORCE_PC, force) == 0x10cc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);

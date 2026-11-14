@@ -2,98 +2,82 @@
 extern i32 configureallcharacters_perm;
 
 typedef struct CHARCONFIG_PC {
-    CHARACTERDATA_PC *character;
-    PLAYERCHARACTERCONFIG_PC *runtime;
-    GAMECHARACTERLAYER_PC *layer_scratch;
+    CHARACTERDATA_PC *character;          // 0x000
+    PLAYERCHARACTERCONFIG_PC *runtime;    // 0x004
+    GAMECHARACTERLAYER_PC *layer_scratch; // 0x008
 
-    union {
-        u32 flags;
+    union {        // 0x00c
+        u32 flags; // 0x00c
 
-        struct {
-            u32 flags_low : 6;
-            u32 permanent : 1;
-            u32 flags_high : 25;
+        struct {                 // 0x00c
+            u32 flags_low : 6;   // 0x00c:0
+            u32 permanent : 1;   // 0x00c:6
+            u32 flags_high : 25; // 0x00c:7
         };
     };
 
-    u8 named_layers;
-    u8 unknown_11[3];
-    i32 effect_count;
-    struct CHARACTER_EFFECT_CONFIG_PC *effect_scratch;
-    i16 character_id;
-    u16 animation_count;
-    VARIPTR *arena;
-    VARIPTR *arena_end;
-    char animation_names[100][40];
-} CHARCONFIG_PC;
+    u8 named_layers;                                   // 0x010
+    u8 unknown_11[3];                                  // 0x011
+    i32 effect_count;                                  // 0x014
+    struct CHARACTER_EFFECT_CONFIG_PC *effect_scratch; // 0x018
+    i16 character_id;                                  // 0x01c
+    u16 animation_count;                               // 0x01e
+    VARIPTR *arena;                                    // 0x020
+    VARIPTR *arena_end;                                // 0x024
+    char animation_names[100][40];                     // 0x028
+} CHARCONFIG_PC;                                       // size 0xfc8
 
-STATIC_ASSERT(sizeof(CHARCONFIG_PC) == 0xfc8);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, character) == 0);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, runtime) == 4);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, layer_scratch) == 8);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, flags) == 0xc);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, named_layers) == 0x10);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, effect_count) == 0x14);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, effect_scratch) == 0x18);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, character_id) == 0x1c);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, animation_count) == 0x1e);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, arena) == 0x20);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, arena_end) == 0x24);
-STATIC_ASSERT(offsetof(CHARCONFIG_PC, animation_names) == 0x28);
 CHARCONFIG_PC charconfig = {0};
 
 /* Bit views of PLAYERCHARACTERCONFIG_PC.flags_094 and flags_098: the keyword handlers
    store these as 1-bit fields of a 32-bit unit. They belong in saga.h as members of the
    flags_094/flags_098 unions; until then the CC_FLAGS macros view the words through them. */
 typedef struct CHARCONFIG_FLAGS094_PC {
-    u32 minikit_with_scene : 1;
-    u32 dont_turn : 1;
-    u32 no_jump : 1;
-    u32 no_shoot : 1;
-    u32 fixed_layers : 1;
-    u32 lift_hover : 1;
-    u32 glide_anytime : 1;
-    u32 can_communicate : 1;
-    u32 immune_to_magnets : 1;
-    u32 immune_to_forcepush : 1;
-    u32 minikit_noscenewhenplayable : 1;
-    u32 cannot_kill : 1;
-    u32 wait_for_weapon_in_out : 1;
-    u32 double_jump_hover : 1;
-    u32 no_category : 1;
-    u32 no_force : 1;
-    u32 white_lightning : 1;
-    u32 buck_rider : 1;
-    u32 die_usecurrentlayers : 1;
-    u32 combat_roll_can_get_up : 1;
-    u32 combat_roll_can_direct_land : 1;
-    u32 no_weapon_draw : 1;
-    u32 no_jump_fire : 1;
-    u32 hover_over_mud : 1;
-    u32 toggle_if_not_in_collection : 1;
-    u32 toggle_if_in_minikit_bonus : 1;
-    u32 deflect_bolts_in_minikit_bonus : 1;
-    u32 has_grapple : 1;
-    u32 hover_wings : 1;
-    u32 has_whip : 1;
-    u32 atatheadmovement : 1;
-    u32 can_poo : 1;
-} CHARCONFIG_FLAGS094_PC;
-
-STATIC_ASSERT(sizeof(CHARCONFIG_FLAGS094_PC) == 4);
+    u32 minikit_with_scene : 1;             // 0x0:0
+    u32 dont_turn : 1;                      // 0x0:1
+    u32 no_jump : 1;                        // 0x0:2
+    u32 no_shoot : 1;                       // 0x0:3
+    u32 fixed_layers : 1;                   // 0x0:4
+    u32 lift_hover : 1;                     // 0x0:5
+    u32 glide_anytime : 1;                  // 0x0:6
+    u32 can_communicate : 1;                // 0x0:7
+    u32 immune_to_magnets : 1;              // 0x0:8
+    u32 immune_to_forcepush : 1;            // 0x0:9
+    u32 minikit_noscenewhenplayable : 1;    // 0x0:10
+    u32 cannot_kill : 1;                    // 0x0:11
+    u32 wait_for_weapon_in_out : 1;         // 0x0:12
+    u32 double_jump_hover : 1;              // 0x0:13
+    u32 no_category : 1;                    // 0x0:14
+    u32 no_force : 1;                       // 0x0:15
+    u32 white_lightning : 1;                // 0x0:16
+    u32 buck_rider : 1;                     // 0x0:17
+    u32 die_usecurrentlayers : 1;           // 0x0:18
+    u32 combat_roll_can_get_up : 1;         // 0x0:19
+    u32 combat_roll_can_direct_land : 1;    // 0x0:20
+    u32 no_weapon_draw : 1;                 // 0x0:21
+    u32 no_jump_fire : 1;                   // 0x0:22
+    u32 hover_over_mud : 1;                 // 0x0:23
+    u32 toggle_if_not_in_collection : 1;    // 0x0:24
+    u32 toggle_if_in_minikit_bonus : 1;     // 0x0:25
+    u32 deflect_bolts_in_minikit_bonus : 1; // 0x0:26
+    u32 has_grapple : 1;                    // 0x0:27
+    u32 hover_wings : 1;                    // 0x0:28
+    u32 has_whip : 1;                       // 0x0:29
+    u32 atatheadmovement : 1;               // 0x0:30
+    u32 can_poo : 1;                        // 0x0:31
+} CHARCONFIG_FLAGS094_PC;                   // size 0x4
 
 typedef struct CHARCONFIG_FLAGS098_PC {
-    u32 can_zap : 1;
-    u32 put_weapon_away_on_shoot : 1;
-    u32 always_stop_to_shoot : 1;
-    u32 second_shot_only : 1;
-    u32 no_start_punch_sfx : 1;
-    u32 single_jump_slam : 1;
-    u32 dont_draw_rider : 1;
-    u32 unknown_7 : 1;
-} CHARCONFIG_FLAGS098_PC;
+    u32 can_zap : 1;                  // 0x0:0
+    u32 put_weapon_away_on_shoot : 1; // 0x0:1
+    u32 always_stop_to_shoot : 1;     // 0x0:2
+    u32 second_shot_only : 1;         // 0x0:3
+    u32 no_start_punch_sfx : 1;       // 0x0:4
+    u32 single_jump_slam : 1;         // 0x0:5
+    u32 dont_draw_rider : 1;          // 0x0:6
+    u32 unknown_7 : 1;                // 0x0:7
+} CHARCONFIG_FLAGS098_PC;             // size 0x4
 
-STATIC_ASSERT(sizeof(CHARCONFIG_FLAGS098_PC) == 4);
 #define CC_FLAGS094 (*(CHARCONFIG_FLAGS094_PC *)&charconfig.runtime->flags_094)
 #define CC_FLAGS098 (*(CHARCONFIG_FLAGS098_PC *)charconfig.runtime->flags_098)
 

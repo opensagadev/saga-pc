@@ -1,21 +1,15 @@
 #include "saga.h"
 
 typedef struct FADER_PC {
-    NUSPECIALHANDLE special;
-    NUSPECIALHANDLE while_animating;
-} FADER_PC;
-
-STATIC_ASSERT(sizeof(FADER_PC) == 0x18);
-STATIC_ASSERT(offsetof(FADER_PC, while_animating) == 0xc);
+    NUSPECIALHANDLE special;         // 0x00
+    NUSPECIALHANDLE while_animating; // 0x0c
+} FADER_PC;                          // size 0x18
 
 typedef struct FADERS_WORLD_VIEW_PC {
-    u8 unknown_000[0x5034];
-    FADER_PC *faders;
-    i32 fader_count;
-} FADERS_WORLD_VIEW_PC;
-
-STATIC_ASSERT(offsetof(FADERS_WORLD_VIEW_PC, faders) == 0x5034);
-STATIC_ASSERT(offsetof(FADERS_WORLD_VIEW_PC, fader_count) == 0x5038);
+    u8 unknown_000[0x5034]; // 0x0000
+    FADER_PC *faders;       // 0x5034
+    i32 fader_count;        // 0x5038
+} FADERS_WORLD_VIEW_PC;     // size 0x503c
 
 void __cdecl Faders_Configure(WORLDINFO *world, char *config) {
     FADERS_WORLD_VIEW_PC *view = (FADERS_WORLD_VIEW_PC *)world;

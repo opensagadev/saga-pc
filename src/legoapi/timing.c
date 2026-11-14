@@ -66,18 +66,15 @@ extern TIMER ChallengeTimer;
 extern f32 global_pulse;
 
 typedef struct GAME_TIMING_MISSION_DATA_PC {
-    u8 unknown_00[0x10];
-    u16 time;
-} GAME_TIMING_MISSION_DATA_PC;
+    u8 unknown_00[0x10];       // 0x00
+    u16 time;                  // 0x10
+} GAME_TIMING_MISSION_DATA_PC; // size 0x12
 
 typedef struct GAME_TIMING_AREA_SAVE_PC {
-    u8 unknown_00[8];
-    f32 challenge_trial_time;
-} GAME_TIMING_AREA_SAVE_PC;
+    u8 unknown_00[8];         // 0x0
+    f32 challenge_trial_time; // 0x8
+} GAME_TIMING_AREA_SAVE_PC;   // size 0xc
 
-STATIC_ASSERT(offsetof(GAME_TIMING_MISSION_DATA_PC, time) == 0x10);
-STATIC_ASSERT(sizeof(GAME_TIMING_AREA_SAVE_PC) == 0xc);
-STATIC_ASSERT(offsetof(GAME_TIMING_AREA_SAVE_PC, challenge_trial_time) == 8);
 STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
 
 void __cdecl GameTiming(WORLDINFO *world, f32 *game_time) {

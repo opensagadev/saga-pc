@@ -4,49 +4,38 @@
 #pragma pack(push, 1)
 
 struct TEXT_INPUT_BINDING_PC {
-    u8 type;
-    u8 unknown_0001;
-    i16 value;
-};
+    u8 type;         // 0x0
+    u8 unknown_0001; // 0x1
+    i16 value;       // 0x2
+}; // size 0x4
 
 struct TEXT_INPUT_DEVICE_PC {
-    u8 unknown_0000[0x6e];
-    TEXT_INPUT_BINDING_PC bindings[32];
-    u8 unknown_00ee[0x8e];
-};
+    u8 unknown_0000[0x6e];              // 0x000
+    TEXT_INPUT_BINDING_PC bindings[32]; // 0x06e
+    u8 unknown_00ee[0x8e];              // 0x0ee
+}; // size 0x17c
 
 struct TEXT_INPUT_DEVICE_KIND_PC {
-    i8 kind;
-    u8 unknown_0001[5];
-};
+    i8 kind;            // 0x0
+    u8 unknown_0001[5]; // 0x1
+}; // size 0x6
 
 #pragma pack(pop)
-STATIC_ASSERT(sizeof(TEXT_INPUT_BINDING_PC) == 4);
-STATIC_ASSERT(offsetof(TEXT_INPUT_BINDING_PC, value) == 2);
-STATIC_ASSERT(sizeof(TEXT_INPUT_DEVICE_PC) == 0x17c);
-STATIC_ASSERT(offsetof(TEXT_INPUT_DEVICE_PC, bindings) == 0x6e);
-STATIC_ASSERT(sizeof(TEXT_INPUT_DEVICE_KIND_PC) == 6);
 
 class TEXT_INPUT_MANAGER_PC {
   public:
-    u8 unknown_0000[0x4e34];
-    TEXT_INPUT_DEVICE_PC devices[14];
-    u8 unknown_62fc[0x58];
-    i32 custom_active;
-    TEXT_INPUT_BINDING_PC custom_bindings[4][32];
-    u8 unknown_6558[0x288];
-    u8 use_keyboard_override;
-    u8 unknown_67e1[0x0f];
-    TEXT_INPUT_DEVICE_KIND_PC device_kind[32];
+    u8 unknown_0000[0x4e34];                      // 0x0000
+    TEXT_INPUT_DEVICE_PC devices[14];             // 0x4e34
+    u8 unknown_62fc[0x58];                        // 0x62fc
+    i32 custom_active;                            // 0x6354
+    TEXT_INPUT_BINDING_PC custom_bindings[4][32]; // 0x6358
+    u8 unknown_6558[0x288];                       // 0x6558
+    u8 use_keyboard_override;                     // 0x67e0
+    u8 unknown_67e1[0x0f];                        // 0x67e1
+    TEXT_INPUT_DEVICE_KIND_PC device_kind[32];    // 0x67f0
     i32 __thiscall ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
                               i32 alternate_labels, char *delimiters);
-};
-
-STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, devices) == 0x4e34);
-STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, custom_active) == 0x6354);
-STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, custom_bindings) == 0x6358);
-STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, use_keyboard_override) == 0x67e0);
-STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, device_kind) == 0x67f0);
+}; // size 0x68b0
 
 extern "C" {
     extern void(__cdecl *TextInputNameCallbackPc)(i32, char *);

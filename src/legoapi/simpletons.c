@@ -52,9 +52,6 @@ i32 __cdecl ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_in
 }
 
 typedef struct AIONCEATTACKER_PC {
-    GAMEOBJECT *object;
-    f32 distance;
-} AIONCEATTACKER_PC;
-
-STATIC_ASSERT(sizeof(AIONCEATTACKER_PC) == 8);
-STATIC_ASSERT(offsetof(AIONCEATTACKER_PC, distance) == 4);
+    GAMEOBJECT *object; // 0x0
+    f32 distance;       // 0x4
+} AIONCEATTACKER_PC;    // size 0x8

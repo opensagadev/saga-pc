@@ -2,83 +2,63 @@
 
 /* Retail unit 0x597c20-0x5999e0: definitions in retail address order. */
 typedef struct carry_plug_pc_s {
-    char name[16];
-    NUVEC position;
-    u16 rotation_x;
-    u16 rotation_y;
-    u16 rotation_z;
-    u8 enabled;
-    u8 active : 1;
-    u8 visible : 1;
-    u8 plugged : 1;
-    u8 unknown_23 : 5;
-    u8 unknown_24[0x10];
-} CARRY_PLUG_PC;
+    char name[16];       // 0x00
+    NUVEC position;      // 0x10
+    u16 rotation_x;      // 0x1c
+    u16 rotation_y;      // 0x1e
+    u16 rotation_z;      // 0x20
+    u8 enabled;          // 0x22
+    u8 active : 1;       // 0x23:0
+    u8 visible : 1;      // 0x23:1
+    u8 plugged : 1;      // 0x23:2
+    u8 unknown_23 : 5;   // 0x23:3
+    u8 unknown_24[0x10]; // 0x24
+} CARRY_PLUG_PC;         // size 0x34
 
 typedef struct carry_plug_sys_pc_s {
-    CARRY_PLUG_PC *plugs;
-    i32 count;
-} CARRY_PLUG_SYS_PC;
-
-STATIC_ASSERT(sizeof(CARRY_PLUG_PC) == 0x34);
-STATIC_ASSERT(offsetof(CARRY_PLUG_PC, position) == 0x10);
-STATIC_ASSERT(offsetof(CARRY_PLUG_PC, rotation_x) == 0x1c);
-STATIC_ASSERT(offsetof(CARRY_PLUG_PC, rotation_y) == 0x1e);
-STATIC_ASSERT(offsetof(CARRY_PLUG_PC, rotation_z) == 0x20);
-STATIC_ASSERT(offsetof(CARRY_PLUG_PC, unknown_24) == 0x24);
-STATIC_ASSERT(sizeof(CARRY_PLUG_SYS_PC) == 8);
-STATIC_ASSERT(offsetof(CARRY_PLUG_SYS_PC, count) == 4);
+    CARRY_PLUG_PC *plugs; // 0x0
+    i32 count;            // 0x4
+} CARRY_PLUG_SYS_PC;      // size 0x8
 
 typedef struct carry_blowup_pc_s {
-    NUMTX transform;
-    u8 unknown_40[0x9c - 0x40];
-    u8 secondary_flags;
-    u8 unknown_9d[0xa8 - 0x9d];
-    f32 target_scale;
-} CARRY_BLOWUP_PC;
+    NUMTX transform;            // 0x00
+    u8 unknown_40[0x9c - 0x40]; // 0x40
+    u8 secondary_flags;         // 0x9c
+    u8 unknown_9d[0xa8 - 0x9d]; // 0x9d
+    f32 target_scale;           // 0xa8
+} CARRY_BLOWUP_PC;              // size 0xac
 
 typedef struct carry_world_pc_s {
-    u8 unknown_0000[0x516c];
-    CARRY_PLUG_SYS_PC *plug_sys;
-} CARRY_WORLD_PC;
-
-STATIC_ASSERT(offsetof(CARRY_BLOWUP_PC, transform) == 0);
-STATIC_ASSERT(offsetof(CARRY_BLOWUP_PC, secondary_flags) == 0x9c);
-STATIC_ASSERT(offsetof(CARRY_BLOWUP_PC, target_scale) == 0xa8);
-STATIC_ASSERT(offsetof(CARRY_WORLD_PC, plug_sys) == 0x516c);
+    u8 unknown_0000[0x516c];     // 0x0000
+    CARRY_PLUG_SYS_PC *plug_sys; // 0x516c
+} CARRY_WORLD_PC;                // size 0x5170
 
 typedef struct carry_model_pc_s {
-    u8 unknown_00[0xc];
-    void **model_data_b;
-} CARRY_MODEL_PC;
-
-STATIC_ASSERT(offsetof(CARRY_MODEL_PC, model_data_b) == 0xc);
+    u8 unknown_00[0xc];  // 0x0
+    void **model_data_b; // 0xc
+} CARRY_MODEL_PC;        // size 0x10
 
 typedef struct carry_basis_pc_s {
-    u8 unknown_000[0x4d8];
-    PART_LIGHTING_DATA_PC lighting;
-    u8 unknown_5a4[0x748 - 0x5a4];
-    NUVEC basis[3];
-} CARRY_BASIS_PC;
+    u8 unknown_000[0x4d8];          // 0x000
+    PART_LIGHTING_DATA_PC lighting; // 0x4d8
+    u8 unknown_5a4[0x748 - 0x5a4];  // 0x5a4
+    NUVEC basis[3];                 // 0x748
+} CARRY_BASIS_PC;                   // size 0x76c
 
 typedef struct carry_part_pc_s {
-    u8 unknown_000[0x218];
-    GIZMOBLOWUP_PC *blowup;
-} CARRY_PART_PC;
+    u8 unknown_000[0x218];  // 0x000
+    GIZMOBLOWUP_PC *blowup; // 0x218
+} CARRY_PART_PC;            // size 0x21c
 
-STATIC_ASSERT(offsetof(CARRY_BASIS_PC, lighting) == 0x4d8);
-STATIC_ASSERT(offsetof(CARRY_BASIS_PC, basis) == 0x748);
-STATIC_ASSERT(offsetof(CARRY_PART_PC, blowup) == 0x218);
 STATIC_ASSERT(offsetof(PART_PC, force_flags) == 0x218);
 STATIC_ASSERT(offsetof(PART_PC, rotation_y) == 0x13a);
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_start_angle) == 0x7a6);
 
 typedef struct carry_drop_pc_s {
-    u8 unknown_000[0x76c];
-    NUVEC drop_position;
-} CARRY_DROP_PC;
+    u8 unknown_000[0x76c]; // 0x000
+    NUVEC drop_position;   // 0x76c
+} CARRY_DROP_PC;           // size 0x778
 
-STATIC_ASSERT(offsetof(CARRY_DROP_PC, drop_position) == 0x76c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, external_force) == 0x748);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);

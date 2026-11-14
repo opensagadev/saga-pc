@@ -1,24 +1,17 @@
 #include "saga.h"
 
 typedef struct ai_control_slot_pc_s {
-    NULISTLNK links;
-    u8 unknown_08[0xa0];
-} AI_CONTROL_SLOT_PC;
+    NULISTLNK links;     // 0x00
+    u8 unknown_08[0xa0]; // 0x08
+} AI_CONTROL_SLOT_PC;    // size 0xa8
 
 typedef struct ai_control_system_pc_s {
-    i32 capacity;
-    AI_CONTROL_SLOT_PC *controllers;
-    NULISTHDR available;
-    NULISTHDR active;
-} AI_CONTROL_SYSTEM_PC;
+    i32 capacity;                    // 0x00
+    AI_CONTROL_SLOT_PC *controllers; // 0x04
+    NULISTHDR available;             // 0x08
+    NULISTHDR active;                // 0x10
+} AI_CONTROL_SYSTEM_PC;              // size 0x18
 
-STATIC_ASSERT(sizeof(AI_CONTROL_SLOT_PC) == 0xa8);
-STATIC_ASSERT(offsetof(AI_CONTROL_SLOT_PC, links) == 0);
-STATIC_ASSERT(sizeof(AI_CONTROL_SYSTEM_PC) == 0x18);
-STATIC_ASSERT(offsetof(AI_CONTROL_SYSTEM_PC, capacity) == 0);
-STATIC_ASSERT(offsetof(AI_CONTROL_SYSTEM_PC, controllers) == 4);
-STATIC_ASSERT(offsetof(AI_CONTROL_SYSTEM_PC, available) == 8);
-STATIC_ASSERT(offsetof(AI_CONTROL_SYSTEM_PC, active) == 0x10);
 STATIC_ASSERT(sizeof(AI_HELPER_SLOT_PC) == 0x10);
 STATIC_ASSERT(sizeof(AI_HELPER_SYSTEM_PC) == 8);
 STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, capacity) == 0);

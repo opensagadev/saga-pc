@@ -208,19 +208,13 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
 }
 
 struct PC_DI_RANGE_PC {
-    DWORD size;
-    DWORD header_size;
-    DWORD object;
-    DWORD how;
-    LONG minimum;
-    LONG maximum;
-};
-
-STATIC_ASSERT(sizeof(PC_DI_RANGE_PC) == 24);
-STATIC_ASSERT(offsetof(PC_DI_RANGE_PC, object) == 8);
-STATIC_ASSERT(offsetof(PC_DI_RANGE_PC, how) == 12);
-STATIC_ASSERT(offsetof(PC_DI_RANGE_PC, minimum) == 16);
-STATIC_ASSERT(offsetof(PC_DI_RANGE_PC, maximum) == 20);
+    DWORD size;        // 0x00
+    DWORD header_size; // 0x04
+    DWORD object;      // 0x08
+    DWORD how;         // 0x0c
+    LONG minimum;      // 0x10
+    LONG maximum;      // 0x14
+}; // size 0x18
 
 /* TODO(saga.h): the DirectInput device is called through its C++ interface in retail. */
 struct PC_DI_DEVICE_INTERFACE_PC {

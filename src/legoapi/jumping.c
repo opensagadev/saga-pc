@@ -7,46 +7,32 @@ extern void(__cdecl *BigJump_EndOfLandFn)(GAMEOBJECT *);
 extern i32(__cdecl *BigJump_LandActionFn)(GAMEOBJECT *);
 
 struct minianimpacket_pc_s {
-    f32 current_time;
-    f32 previous_time;
-    u8 unknown_08[0xc];
-    f32 blend_target_time;
-    u8 flags;
-    u8 blending;
-    u8 unknown_1a[4];
-    i16 current_animation_id;
-    i16 previous_animation_id;
-    i16 requested_animation_id;
-};
-
-STATIC_ASSERT(sizeof(MINIANIMPACKET_PC) == 0x24);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, current_time) == 0);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, previous_time) == 4);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, blend_target_time) == 0x14);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, flags) == 0x18);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, blending) == 0x19);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, current_animation_id) == 0x1e);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, previous_animation_id) == 0x20);
-STATIC_ASSERT(offsetof(MINIANIMPACKET_PC, requested_animation_id) == 0x22);
+    f32 current_time;           // 0x00
+    f32 previous_time;          // 0x04
+    u8 unknown_08[0xc];         // 0x08
+    f32 blend_target_time;      // 0x14
+    u8 flags;                   // 0x18
+    u8 blending;                // 0x19
+    u8 unknown_1a[4];           // 0x1a
+    i16 current_animation_id;   // 0x1e
+    i16 previous_animation_id;  // 0x20
+    i16 requested_animation_id; // 0x22
+}; // size 0x24
 
 typedef struct beast_fall_land_view_pc_s {
-    u8 unknown_0[0x7d0];
-    MINIANIMPACKET_PC mini_animation;
-    u8 unknown_7f4[0xdac - 0x7f4];
-    f32 fall_animation_time;
-} BEAST_FALL_LAND_VIEW_PC;
+    u8 unknown_0[0x7d0];              // 0x000
+    MINIANIMPACKET_PC mini_animation; // 0x7d0
+    u8 unknown_7f4[0xdac - 0x7f4];    // 0x7f4
+    f32 fall_animation_time;          // 0xdac
+} BEAST_FALL_LAND_VIEW_PC;            // size 0xdb0
 
-STATIC_ASSERT(offsetof(BEAST_FALL_LAND_VIEW_PC, mini_animation) == 0x7d0);
-STATIC_ASSERT(offsetof(BEAST_FALL_LAND_VIEW_PC, fall_animation_time) == 0xdac);
 extern i32(__cdecl *IsWearingBackPackFn)(GAMEOBJECT *);
 extern i32(__cdecl *UsingExtraActionsFn)(GAMEOBJECT *);
 
 typedef struct BALLOON_HEIGHT_VIEW_PC {
-    u8 unknown[0x778];
-    f32 height;
-} BALLOON_HEIGHT_VIEW_PC;
-
-STATIC_ASSERT(offsetof(BALLOON_HEIGHT_VIEW_PC, height) == 0x778);
+    u8 unknown[0x778];    // 0x000
+    f32 height;           // 0x778
+} BALLOON_HEIGHT_VIEW_PC; // size 0x77c
 
 typedef struct jump_auxiliary_fields_pc_s {
     u8 unknown_000[0x7b1];

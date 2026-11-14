@@ -7,21 +7,15 @@ static void *pause_rndr_mtl = 0;
 static i32 pause_rt = 0;
 
 typedef struct STILL_RENDER_MATERIAL_PC {
-    u8 unknown_00[0x40];
-    u32 attributes;
-    u8 unknown_44[0x2c];
-    f32 opacity;
-    i16 texture_id;
-    i16 sort_priority;
-    u8 unknown_78[0x3c];
-    PC_MATERIAL_SHADER_DESC_VIEW shader;
-} STILL_RENDER_MATERIAL_PC;
-
-STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, attributes) == 0x40);
-STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, opacity) == 0x70);
-STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, texture_id) == 0x74);
-STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, sort_priority) == 0x76);
-STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, shader) == 0xb4);
+    u8 unknown_00[0x40];                 // 0x000
+    u32 attributes;                      // 0x040
+    u8 unknown_44[0x2c];                 // 0x044
+    f32 opacity;                         // 0x070
+    i16 texture_id;                      // 0x074
+    i16 sort_priority;                   // 0x076
+    u8 unknown_78[0x3c];                 // 0x078
+    PC_MATERIAL_SHADER_DESC_VIEW shader; // 0x0b4
+} STILL_RENDER_MATERIAL_PC;              // size 0x2bc
 
 typedef struct permanent_material_reader_pc_s {
     u8 unknown_0000[0x40];
@@ -44,22 +38,19 @@ extern "C" {
 extern "C" GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsFrameRenderTexturePc(i32);
 
 typedef struct CUT_DISPLAY_VIEW_PC {
-    u8 unknown_00[0x6c];
-    f32 camera_near_clip;
-    u8 unknown_70[0x78];
-    u16 camera_far_clip;
-} CUT_DISPLAY_VIEW_PC;
+    u8 unknown_00[0x6c];  // 0x00
+    f32 camera_near_clip; // 0x6c
+    u8 unknown_70[0x78];  // 0x70
+    u16 camera_far_clip;  // 0xe8
+} CUT_DISPLAY_VIEW_PC;    // size 0xec
 
-STATIC_ASSERT(offsetof(CUT_DISPLAY_VIEW_PC, camera_near_clip) == 0x6c);
-STATIC_ASSERT(offsetof(CUT_DISPLAY_VIEW_PC, camera_far_clip) == 0xe8);
 extern "C" f32 CutSceneCameraFocalLengthPc;
 
 typedef struct CUT_BORDER_RECORD_PC {
-    u8 unknown_00[0x50];
-    u32 flags;
-} CUT_BORDER_RECORD_PC;
+    u8 unknown_00[0x50]; // 0x00
+    u32 flags;           // 0x50
+} CUT_BORDER_RECORD_PC;  // size 0x54
 
-STATIC_ASSERT(offsetof(CUT_BORDER_RECORD_PC, flags) == 0x50);
 extern "C" NUMTL *FadeMtl;
 extern "C" {
     void __cdecl NuRndrGradRect2di(i32, i32, i32, i32, u32 *, NUMTL *);

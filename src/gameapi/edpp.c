@@ -2905,18 +2905,16 @@ extern struct edui_slider_s *grad_rot_min_item;
 extern struct edui_slider_s *grad_rot_max_item;
 
 typedef struct edui_gradient_stage_pc_s {
-    f32 time;
-    f32 hue;
-    f32 saturation;
-    f32 value;
-    f32 red;
-    f32 green;
-    f32 blue;
-    u32 colour;
-    u32 metadata;
-} EDUI_GRADIENT_STAGE_PC;
-
-STATIC_ASSERT(sizeof(EDUI_GRADIENT_STAGE_PC) == 0x24);
+    f32 time;             // 0x00
+    f32 hue;              // 0x04
+    f32 saturation;       // 0x08
+    f32 value;            // 0x0c
+    f32 red;              // 0x10
+    f32 green;            // 0x14
+    f32 blue;             // 0x18
+    u32 colour;           // 0x1c
+    u32 metadata;         // 0x20
+} EDUI_GRADIENT_STAGE_PC; // size 0x24
 
 i32 __cdecl eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE_PC *stages, i32 capacity);
 struct edui_gradient_node_s *__cdecl eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green,

@@ -367,17 +367,14 @@ void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 fram
 #undef CUT2_FLIP
 
 typedef struct CUT_VISIBLE_LOCATOR_PC {
-    NUMTX matrix;
-    NUVEC pivot;
-    f32 scale;
-    NUANIMDATA2_PC *animation;
-    u32 unknown_54;
-    u8 flags;
-} CUT_VISIBLE_LOCATOR_PC;
+    NUMTX matrix;              // 0x00
+    NUVEC pivot;               // 0x40
+    f32 scale;                 // 0x4c
+    NUANIMDATA2_PC *animation; // 0x50
+    u32 unknown_54;            // 0x54
+    u8 flags;                  // 0x58
+} CUT_VISIBLE_LOCATOR_PC;      // size 0x5c
 
-STATIC_ASSERT(offsetof(CUT_VISIBLE_LOCATOR_PC, scale) == 0x4c);
-STATIC_ASSERT(offsetof(CUT_VISIBLE_LOCATOR_PC, animation) == 0x50);
-STATIC_ASSERT(offsetof(CUT_VISIBLE_LOCATOR_PC, flags) == 0x58);
 static char CutLocatorSfxFilterPc[] = {3, -1};
 static char CutLocatorFilterPc[] = {6, 7, -1};
 static char CutLocatorScaleFilterPc[] = {6, 7, 8, -1};

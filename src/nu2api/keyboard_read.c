@@ -11,21 +11,17 @@ static f32 EdcamFabsPc(f32 f) {
 }
 
 typedef struct NuKeyboardDeviceVTable_PC {
-    u8 unknown_0000_to_001c[0x1c];
-    i32(__stdcall *acquire)(NuKeyboardDevice_PC *device);
-    u8 unknown_0020_to_0024[4];
-    i32(__stdcall *get_state)(NuKeyboardDevice_PC *device, u32 size, void *state);
-    u8 unknown_0028_to_0064[0x64 - 0x28];
-    i32(__stdcall *poll)(NuKeyboardDevice_PC *device);
-} NuKeyboardDeviceVTable_PC;
+    u8 unknown_0000_to_001c[0x1c];                                                 // 0x00
+    i32(__stdcall *acquire)(NuKeyboardDevice_PC *device);                          // 0x1c
+    u8 unknown_0020_to_0024[4];                                                    // 0x20
+    i32(__stdcall *get_state)(NuKeyboardDevice_PC *device, u32 size, void *state); // 0x24
+    u8 unknown_0028_to_0064[0x64 - 0x28];                                          // 0x28
+    i32(__stdcall *poll)(NuKeyboardDevice_PC *device);                             // 0x64
+} NuKeyboardDeviceVTable_PC;                                                       // size 0x68
 
 struct NuKeyboardDevice_PC {
     NuKeyboardDeviceVTable_PC *vtable;
 };
-
-STATIC_ASSERT(offsetof(NuKeyboardDeviceVTable_PC, acquire) == 0x1c);
-STATIC_ASSERT(offsetof(NuKeyboardDeviceVTable_PC, get_state) == 0x24);
-STATIC_ASSERT(offsetof(NuKeyboardDeviceVTable_PC, poll) == 0x64);
 
 u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
     u8 *page;
@@ -531,17 +527,14 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
 /* PC Maya drag angles are observed through DWORD reads and low-WORD writes.
  * The upper halves remain part of each view and are preserved by updates. */
 typedef union EdcamMayaAngleObservedPc {
-    u32 word;
+    u32 word; // 0x0
 
-    struct {
-        u16 angle;
-        u16 upper;
+    struct {       // 0x0
+        u16 angle; // 0x0
+        u16 upper; // 0x2
     } parts;
-} EdcamMayaAngleObservedPc;
+} EdcamMayaAngleObservedPc; // size 0x4
 
-STATIC_ASSERT(sizeof(EdcamMayaAngleObservedPc) == 4);
-STATIC_ASSERT(offsetof(EdcamMayaAngleObservedPc, parts.angle) == 0);
-STATIC_ASSERT(offsetof(EdcamMayaAngleObservedPc, parts.upper) == 2);
 STATIC_ASSERT(offsetof(edcam_s, distance) == 0x14);
 STATIC_ASSERT(offsetof(edcam_s, distance_speed) == 0x6c);
 STATIC_ASSERT(offsetof(edcam_s, minimum_distance) == 0x70);

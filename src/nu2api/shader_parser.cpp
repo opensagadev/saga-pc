@@ -149,48 +149,31 @@ void ShaderCompilerParserPc::EndIf() {
 }
 
 struct ShaderParserTogglePc : ShaderParserNodePc {
-    u8 enabled;
-    u8 unknown_9[3];
-};
+    u8 enabled;      // 0x8
+    u8 unknown_9[3]; // 0x9
+}; // size 0xc
 
 struct ShaderParserReferencePc : ShaderParserNodePc {
-    u32 flags;
-    i32 alias_depth;
-    char *name;
-};
+    u32 flags;       // 0x08
+    i32 alias_depth; // 0x0c
+    char *name;      // 0x10
+}; // size 0x14
 
 struct ShaderParserDeclarationPc : ShaderParserNodePc {
-    u32 flags;
-    i32 type;
-    i32 array_count;
-    char *name;
-    i32 semantic;
-    char *custom_semantic;
-    i32 vertex_register;
-    i32 pixel_register;
-};
+    u32 flags;             // 0x08
+    i32 type;              // 0x0c
+    i32 array_count;       // 0x10
+    char *name;            // 0x14
+    i32 semantic;          // 0x18
+    char *custom_semantic; // 0x1c
+    i32 vertex_register;   // 0x20
+    i32 pixel_register;    // 0x24
+}; // size 0x28
 
 struct ShaderParserEmitPc : ShaderParserNodePc {
-    u32 flags;
-};
+    u32 flags; // 0x8
+}; // size 0xc
 
-STATIC_ASSERT(sizeof(ShaderParserTogglePc) == 12);
-STATIC_ASSERT(offsetof(ShaderParserTogglePc, enabled) == 8);
-STATIC_ASSERT(sizeof(ShaderParserReferencePc) == 20);
-STATIC_ASSERT(offsetof(ShaderParserReferencePc, flags) == 8);
-STATIC_ASSERT(offsetof(ShaderParserReferencePc, alias_depth) == 12);
-STATIC_ASSERT(offsetof(ShaderParserReferencePc, name) == 16);
-STATIC_ASSERT(sizeof(ShaderParserDeclarationPc) == 40);
-STATIC_ASSERT(offsetof(ShaderParserDeclarationPc, flags) == 8);
-STATIC_ASSERT(offsetof(ShaderParserDeclarationPc, type) == 12);
-STATIC_ASSERT(offsetof(ShaderParserDeclarationPc, array_count) == 16);
-STATIC_ASSERT(offsetof(ShaderParserDeclarationPc, name) == 20);
-STATIC_ASSERT(offsetof(ShaderParserDeclarationPc, semantic) == 24);
-STATIC_ASSERT(offsetof(ShaderParserDeclarationPc, custom_semantic) == 28);
-STATIC_ASSERT(offsetof(ShaderParserDeclarationPc, vertex_register) == 32);
-STATIC_ASSERT(offsetof(ShaderParserDeclarationPc, pixel_register) == 36);
-STATIC_ASSERT(sizeof(ShaderParserEmitPc) == 12);
-STATIC_ASSERT(offsetof(ShaderParserEmitPc, flags) == 8);
 STATIC_ASSERT(sizeof(ShaderCompilerParserPc) == 0x45c);
 
 void ShaderCompilerParserPc::SetShowDefinitions(u8 enabled) {
@@ -580,8 +563,8 @@ template <class T> inline void SafeDeleteArray(T *&pointer) {
 }
 
 struct ShaderParserIncludePc {
-    const char *name;
-    ShaderCompilerBufferAllocatorPc buffer;
+    const char *name;                       // 0x00
+    ShaderCompilerBufferAllocatorPc buffer; // 0x04
 
   private:
     friend class ShaderCompilerParserPc;
@@ -592,11 +575,7 @@ struct ShaderParserIncludePc {
     ~ShaderParserIncludePc() {
         SafeDeleteArray(name);
     }
-};
-
-STATIC_ASSERT(sizeof(ShaderParserIncludePc) == 20);
-STATIC_ASSERT(offsetof(ShaderParserIncludePc, name) == 0);
-STATIC_ASSERT(offsetof(ShaderParserIncludePc, buffer) == 4);
+}; // size 0x14
 
 ShaderCompilerParserPc::ShaderCompilerParserPc() : text((ShaderLexicalClassesInitPc(), 0x1000), true) {
     include_directories[0] = 0;

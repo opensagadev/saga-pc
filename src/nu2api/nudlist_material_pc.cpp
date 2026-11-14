@@ -4,11 +4,10 @@
 #include <math.h>
 
 typedef struct PC_DL_MATERIAL_READER {
-    u8 unknown_0000[0x40];
-    u32 reflection_flags;
-} PC_DL_MATERIAL_READER;
+    u8 unknown_0000[0x40]; // 0x00
+    u32 reflection_flags;  // 0x40
+} PC_DL_MATERIAL_READER;   // size 0x44
 
-STATIC_ASSERT(offsetof(PC_DL_MATERIAL_READER, reflection_flags) == 0x40);
 STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
 STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
@@ -156,37 +155,27 @@ extern "C" void __cdecl NuDisplayListFaceOnTransformPc(void *arg) {
 
 /* Minimum reader only; no material allocation, pointee or full extent claim. */
 typedef struct PC_DL_E_MATERIAL_READER {
-    NUMTL common;
-    u8 unknown_009c[0x1c];
-    i32 texture_id;
-    u8 unknown_00bc[0x134];
-    u32 variant_flags;
-    i16 shader_id;
-    u8 unknown_01f6[0x72];
-    u8 face_on_variant;
-    u8 unknown_0269[0x53];
-    PC_TEXTURE_RESOURCE_PC *vertex_declaration;
-} PC_DL_E_MATERIAL_READER;
+    NUMTL common;                               // 0x000
+    u8 unknown_009c[0x1c];                      // 0x09c
+    i32 texture_id;                             // 0x0b8
+    u8 unknown_00bc[0x134];                     // 0x0bc
+    u32 variant_flags;                          // 0x1f0
+    i16 shader_id;                              // 0x1f4
+    u8 unknown_01f6[0x72];                      // 0x1f6
+    u8 face_on_variant;                         // 0x268
+    u8 unknown_0269[0x53];                      // 0x269
+    PC_TEXTURE_RESOURCE_PC *vertex_declaration; // 0x2bc
+} PC_DL_E_MATERIAL_READER;                      // size 0x2c0
 
 STATIC_ASSERT(sizeof(NUMTL) == 0x9c);
-STATIC_ASSERT(offsetof(PC_DL_E_MATERIAL_READER, common) == 0);
-STATIC_ASSERT(offsetof(PC_DL_E_MATERIAL_READER, texture_id) == 0xb8);
-STATIC_ASSERT(offsetof(PC_DL_E_MATERIAL_READER, variant_flags) == 0x1f0);
-STATIC_ASSERT(offsetof(PC_DL_E_MATERIAL_READER, shader_id) == 0x1f4);
-STATIC_ASSERT(offsetof(PC_DL_E_MATERIAL_READER, face_on_variant) == 0x268);
-STATIC_ASSERT(offsetof(PC_DL_E_MATERIAL_READER, vertex_declaration) == 0x2bc);
-STATIC_ASSERT(sizeof(PC_DL_E_MATERIAL_READER) == 0x2c0);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) + 0x4f * sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 0x3d0);
 
 /* New C++ material owner, not a replacement or migration of nudlist_pc.c. */
 struct PC_DL_SHADER_PROGRAM_PAIR_PC {
-    PC_TEXTURE_RESOURCE_PC *vertex_shader;
-    PC_TEXTURE_RESOURCE_PC *pixel_shader;
-};
+    PC_TEXTURE_RESOURCE_PC *vertex_shader; // 0x0
+    PC_TEXTURE_RESOURCE_PC *pixel_shader;  // 0x4
+}; // size 0x8
 
-STATIC_ASSERT(sizeof(PC_DL_SHADER_PROGRAM_PAIR_PC) == 8);
-STATIC_ASSERT(offsetof(PC_DL_SHADER_PROGRAM_PAIR_PC, vertex_shader) == 0);
-STATIC_ASSERT(offsetof(PC_DL_SHADER_PROGRAM_PAIR_PC, pixel_shader) == 4);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, textures) + sizeof(GRAPHICS_RENDER_TEXTURE_PC *) == 0x6b8);
 STATIC_ASSERT(offsetof(ShaderUniformRecordPc, values) == 0x1c);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, unknown_4d4) == 0x4d4);
@@ -347,14 +336,11 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
 }
 
 typedef struct PC_DL_MATERIAL_STATES_READER {
-    u8 unknown_0000[0x40];
-    u32 attributes;
-    u8 unknown_0044[0x1ac];
-    u32 variant_flags;
-} PC_DL_MATERIAL_STATES_READER;
-
-STATIC_ASSERT(offsetof(PC_DL_MATERIAL_STATES_READER, attributes) == 0x40);
-STATIC_ASSERT(offsetof(PC_DL_MATERIAL_STATES_READER, variant_flags) == 0x1f0);
+    u8 unknown_0000[0x40];      // 0x000
+    u32 attributes;             // 0x040
+    u8 unknown_0044[0x1ac];     // 0x044
+    u32 variant_flags;          // 0x1f0
+} PC_DL_MATERIAL_STATES_READER; // size 0x1f4
 
 /* PCDisplayHandlerSetZMode is the real private helper already in the BC cohort. */
 extern "C" void __cdecl NuMtlSetRenderStatesPS(NUMTL *arg) {

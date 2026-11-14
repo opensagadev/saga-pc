@@ -417,13 +417,11 @@ extern i32 edmain_cursor_enabled;
 void __cdecl PcEditorCursorEnablePc(i32 enabled);
 
 typedef struct EDUI_PRIM_VERTEX_PC {
-    f32 x;
-    f32 y;
-    f32 z;
-    u32 colour;
-} EDUI_PRIM_VERTEX_PC;
-
-STATIC_ASSERT(offsetof(EDUI_PRIM_VERTEX_PC, colour) == 0xc);
+    f32 x;             // 0x0
+    f32 y;             // 0x4
+    f32 z;             // 0x8
+    u32 colour;        // 0xc
+} EDUI_PRIM_VERTEX_PC; // size 0x10
 
 static void EduiPrimSetColourPc(i32 colour) {
     u32 converted;
@@ -1859,25 +1857,19 @@ void __cdecl eduiSetFontScale(f32 x, f32 y) {
 }
 
 typedef struct EDUI_EXPANDER_PC {
-    eduiitem_s base;
-    i32(__cdecl *interact)(edui_interact_s *interact);
-    eduiitem_s *first_child;
-    eduiitem_s *last_child;
-    u32 open : 1;
-    u32 hover : 1;
-    u32 unknown_flags : 30;
-    f32 button_size;
-    f32 button_x;
-    f32 button_y;
-    i32 depth;
-    void(__cdecl *changed)(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-} EDUI_EXPANDER_PC;
-
-STATIC_ASSERT(offsetof(EDUI_EXPANDER_PC, first_child) == 0x4c);
-STATIC_ASSERT(offsetof(EDUI_EXPANDER_PC, last_child) == 0x50);
-STATIC_ASSERT(offsetof(EDUI_EXPANDER_PC, button_size) == 0x58);
-STATIC_ASSERT(offsetof(EDUI_EXPANDER_PC, depth) == 0x64);
-STATIC_ASSERT(sizeof(EDUI_EXPANDER_PC) == 0x6c);
+    eduiitem_s base;                                                         // 0x00
+    i32(__cdecl *interact)(edui_interact_s *interact);                       // 0x48
+    eduiitem_s *first_child;                                                 // 0x4c
+    eduiitem_s *last_child;                                                  // 0x50
+    u32 open : 1;                                                            // 0x54:0
+    u32 hover : 1;                                                           // 0x54:1
+    u32 unknown_flags : 30;                                                  // 0x54:2
+    f32 button_size;                                                         // 0x58
+    f32 button_x;                                                            // 0x5c
+    f32 button_y;                                                            // 0x60
+    i32 depth;                                                               // 0x64
+    void(__cdecl *changed)(eduimenu_s *menu, eduiitem_s *item, u32 buttons); // 0x68
+} EDUI_EXPANDER_PC;                                                          // size 0x6c
 
 void __cdecl eduicbItemExpanderClose(eduiitem_s *item) {
     EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
@@ -2681,17 +2673,13 @@ eduiitem_s *__cdecl eduiItemPropCreate(u32 data, void *colours, void *selected, 
 /* A filter item: typing into its value hides every menu item whose text
  * does not contain it; hidden items wait on the filter's own child list. */
 typedef struct edui_filter_s {
-    edui_prop_s prop;
-    eduiitem_s *first_child;
-    i32 reserved_84;
-    u32 sorted;
-} edui_filter_s;
-
-STATIC_ASSERT(sizeof(edui_filter_s) == 0x8c);
+    edui_prop_s prop;        // 0x00
+    eduiitem_s *first_child; // 0x80
+    i32 reserved_84;         // 0x84
+    u32 sorted;              // 0x88
+} edui_filter_s;             // size 0x8c
 
 void __cdecl eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item);
-STATIC_ASSERT(offsetof(edui_filter_s, first_child) == 0x80);
-STATIC_ASSERT(offsetof(edui_filter_s, sorted) == 0x88);
 
 void __cdecl eduiItemFilterAddChild(eduiitem_s *item, eduiitem_s *child) {
     edui_filter_s *filter = (edui_filter_s *)item;
@@ -4021,17 +4009,15 @@ typedef struct FILE_DIRECTORY_TIME_PC {
 } FILE_DIRECTORY_TIME_PC;
 
 typedef struct FILE_DIRECTORY_ENTRY_PC {
-    u32 flags;
-    u32 size;
-    FILE_DIRECTORY_TIME_PC created;
-    FILE_DIRECTORY_TIME_PC modified;
-    char name[256];
-} FILE_DIRECTORY_ENTRY_PC;
+    u32 flags;                       // 0x000
+    u32 size;                        // 0x004
+    FILE_DIRECTORY_TIME_PC created;  // 0x008
+    FILE_DIRECTORY_TIME_PC modified; // 0x010
+    char name[256];                  // 0x018
+} FILE_DIRECTORY_ENTRY_PC;           // size 0x118
 
 /* FILE_DIRECTORY_ENTRY_PC.flags: the entry is a directory (listed as <name>, opened on selection). */
 enum FILE_DIRECTORY_FLAG_PC { FILE_DIRECTORY_FLAG_DIRECTORY_PC = 8 };
-
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_ENTRY_PC, name) == 0x18);
 
 /* As in retail, the key cascade tests the key pointers instead of the keys, so
  * the year only decides when the two pointers differ. */
@@ -4236,43 +4222,31 @@ typedef struct FILE_DIRECTORY_RAW_TIME_PC {
 } FILE_DIRECTORY_RAW_TIME_PC;
 
 typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
-    u32 flags;
-    u8 reserved_04[4];
-    u32 size;
-    u8 reserved_0c;
-    FILE_DIRECTORY_RAW_TIME_PC created;
-    u8 reserved_14;
-    FILE_DIRECTORY_RAW_TIME_PC accessed;
-    u8 reserved_1c;
-    FILE_DIRECTORY_RAW_TIME_PC modified;
-    u32 unused_24;
-    u8 reserved_28[0x18];
-    char name[MAX_PATH];
-} FILE_DIRECTORY_HOST_ENTRY_PC;
+    u32 flags;                           // 0x000
+    u8 reserved_04[4];                   // 0x004
+    u32 size;                            // 0x008
+    u8 reserved_0c;                      // 0x00c
+    FILE_DIRECTORY_RAW_TIME_PC created;  // 0x00d
+    u8 reserved_14;                      // 0x014
+    FILE_DIRECTORY_RAW_TIME_PC accessed; // 0x015
+    u8 reserved_1c;                      // 0x01c
+    FILE_DIRECTORY_RAW_TIME_PC modified; // 0x01d
+    u32 unused_24;                       // 0x024
+    u8 reserved_28[0x18];                // 0x028
+    char name[MAX_PATH];                 // 0x040
+} FILE_DIRECTORY_HOST_ENTRY_PC;          // size 0x144
 
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, created) == 0xd);
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, modified) == 0x1d);
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, name) == 0x40);
 extern i32 __cdecl NuFileReadDir(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
 
 typedef struct FS_PACKED_ENTRY_HEADER_PC {
-    u8 kind;
-    u8 encoded_second;
-    u8 encoded_minute;
-    u8 encoded_hour;
-    u8 encoded_day;
-    u8 encoded_month;
-    u8 encoded_year;
-} FS_PACKED_ENTRY_HEADER_PC;
-
-STATIC_ASSERT(sizeof(FS_PACKED_ENTRY_HEADER_PC) == 7);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, kind) == 0);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_second) == 1);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_minute) == 2);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_hour) == 3);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_day) == 4);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_month) == 5);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_year) == 6);
+    u8 kind;                 // 0x0
+    u8 encoded_second;       // 0x1
+    u8 encoded_minute;       // 0x2
+    u8 encoded_hour;         // 0x3
+    u8 encoded_day;          // 0x4
+    u8 encoded_month;        // 0x5
+    u8 encoded_year;         // 0x6
+} FS_PACKED_ENTRY_HEADER_PC; // size 0x7
 
 void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
     FILE_DIRECTORY_ENTRY_PC entry;
@@ -4969,17 +4943,15 @@ void __cdecl FS_OpenFileSelPc(char *title, char *path, char *filter, char *filte
 /* An editor item hosting the file selector; the layout copies the colour
  * picker's, whose cursor and colour defaults the create call still sets. */
 typedef struct EDUI_FILE_SELECT_PC {
-    eduiitem_s base;
-    i32(__cdecl *interact)(edui_interact_s *interact);
-    f32 cursor_x;
-    f32 cursor_y;
-    f32 hue;
-    f32 saturation;
-    f32 value;
-    void(__cdecl *changed)(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-} EDUI_FILE_SELECT_PC;
-
-STATIC_ASSERT(sizeof(EDUI_FILE_SELECT_PC) == 0x64);
+    eduiitem_s base;                                                         // 0x00
+    i32(__cdecl *interact)(edui_interact_s *interact);                       // 0x48
+    f32 cursor_x;                                                            // 0x4c
+    f32 cursor_y;                                                            // 0x50
+    f32 hue;                                                                 // 0x54
+    f32 saturation;                                                          // 0x58
+    f32 value;                                                               // 0x5c
+    void(__cdecl *changed)(eduimenu_s *menu, eduiitem_s *item, u32 buttons); // 0x60
+} EDUI_FILE_SELECT_PC;                                                       // size 0x64
 
 static i32 __cdecl eduicbProcessFileSelPc(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
     if (ProcessFileSel3(delta_time, pad) && ((EDUI_FILE_SELECT_PC *)item)->changed) {

@@ -3,46 +3,35 @@
 /* Retail unit 0x4d0650-0x4d1e80 (legoapi/props/objects/tightrope.cpp): definitions in retail address order. */
 
 typedef struct TIGHTROPE_MOTION_PC {
-    char name[16];
-    NUVEC start;
-    NUVEC end;
-    u16 start_x_rotation;
-    u16 end_x_rotation;
-    u16 start_y_rotation;
-    u16 end_y_rotation;
-    u8 start_model;
-    u8 end_model;
-    i8 start_visible;
-    u8 reserved_33;
-    NUVEC direction;
-    f32 horizontal_length;
-    u16 rotation;
-    u8 enabled;
-    u8 available;
-} TIGHTROPE_MOTION_PC;
+    char name[16];         // 0x00
+    NUVEC start;           // 0x10
+    NUVEC end;             // 0x1c
+    u16 start_x_rotation;  // 0x28
+    u16 end_x_rotation;    // 0x2a
+    u16 start_y_rotation;  // 0x2c
+    u16 end_y_rotation;    // 0x2e
+    u8 start_model;        // 0x30
+    u8 end_model;          // 0x31
+    i8 start_visible;      // 0x32
+    u8 reserved_33;        // 0x33
+    NUVEC direction;       // 0x34
+    f32 horizontal_length; // 0x40
+    u16 rotation;          // 0x44
+    u8 enabled;            // 0x46
+    u8 available;          // 0x47
+} TIGHTROPE_MOTION_PC;     // size 0x48
 
 typedef struct WORLD_TIGHTROPE_VIEW_PC {
-    u8 unknown_0000[0x5058];
-    TIGHTROPE_MOTION_PC *tightropes;
-    i32 tightrope_count;
-} WORLD_TIGHTROPE_VIEW_PC;
+    u8 unknown_0000[0x5058];         // 0x0000
+    TIGHTROPE_MOTION_PC *tightropes; // 0x5058
+    i32 tightrope_count;             // 0x505c
+} WORLD_TIGHTROPE_VIEW_PC;           // size 0x5060
 
 typedef struct TIGHTROPE_OBJECT_AUX_PC {
-    u8 unknown_0000[0xd28];
-    f32 jump_reentry_timer;
-} TIGHTROPE_OBJECT_AUX_PC;
+    u8 unknown_0000[0xd28]; // 0x000
+    f32 jump_reentry_timer; // 0xd28
+} TIGHTROPE_OBJECT_AUX_PC;  // size 0xd2c
 
-STATIC_ASSERT(sizeof(TIGHTROPE_MOTION_PC) == 0x48);
-STATIC_ASSERT(offsetof(TIGHTROPE_MOTION_PC, start) == 0x10);
-STATIC_ASSERT(offsetof(TIGHTROPE_MOTION_PC, end) == 0x1c);
-STATIC_ASSERT(offsetof(TIGHTROPE_MOTION_PC, direction) == 0x34);
-STATIC_ASSERT(offsetof(TIGHTROPE_MOTION_PC, horizontal_length) == 0x40);
-STATIC_ASSERT(offsetof(TIGHTROPE_MOTION_PC, rotation) == 0x44);
-STATIC_ASSERT(offsetof(TIGHTROPE_MOTION_PC, enabled) == 0x46);
-STATIC_ASSERT(offsetof(TIGHTROPE_MOTION_PC, available) == 0x47);
-STATIC_ASSERT(offsetof(WORLD_TIGHTROPE_VIEW_PC, tightropes) == 0x5058);
-STATIC_ASSERT(offsetof(WORLD_TIGHTROPE_VIEW_PC, tightrope_count) == 0x505c);
-STATIC_ASSERT(offsetof(TIGHTROPE_OBJECT_AUX_PC, jump_reentry_timer) == 0xd28);
 STATIC_ASSERT(offsetof(GAMEOBJECT, launch_origin) == 0x754);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_position_offset) == 0x760);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);

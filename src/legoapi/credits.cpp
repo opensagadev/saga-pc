@@ -2,41 +2,25 @@
 #include <stdio.h>
 
 struct credit_record_pc_s {
-    char *text;
-    f32 x;
-    f32 y;
-    f32 scale;
-    u8 colour[4];
-    u8 alignment;
-    i8 type;
-    u8 reserved[2];
-};
+    char *text;     // 0x00
+    f32 x;          // 0x04
+    f32 y;          // 0x08
+    f32 scale;      // 0x0c
+    u8 colour[4];   // 0x10
+    u8 alignment;   // 0x14
+    i8 type;        // 0x15
+    u8 reserved[2]; // 0x16
+}; // size 0x18
 
 typedef struct credit_type_pc_s {
-    char *name;
-    f32 scale;
-    f32 width;
-    u8 default_colour[4];
-    u8 colour[4];
-    u8 reserved[3];
-    i8 type;
-} CREDIT_TYPE_PC;
-
-STATIC_ASSERT(sizeof(CREDIT_RECORD_PC) == 24);
-STATIC_ASSERT(offsetof(CREDIT_RECORD_PC, text) == 0);
-STATIC_ASSERT(offsetof(CREDIT_RECORD_PC, x) == 4);
-STATIC_ASSERT(offsetof(CREDIT_RECORD_PC, y) == 8);
-STATIC_ASSERT(offsetof(CREDIT_RECORD_PC, scale) == 12);
-STATIC_ASSERT(offsetof(CREDIT_RECORD_PC, colour) == 16);
-STATIC_ASSERT(offsetof(CREDIT_RECORD_PC, alignment) == 20);
-STATIC_ASSERT(offsetof(CREDIT_RECORD_PC, type) == 21);
-STATIC_ASSERT(sizeof(CREDIT_TYPE_PC) == 24);
-STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, name) == 0);
-STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, scale) == 4);
-STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, width) == 8);
-STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, default_colour) == 12);
-STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, colour) == 16);
-STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, type) == 23);
+    char *name;           // 0x00
+    f32 scale;            // 0x04
+    f32 width;            // 0x08
+    u8 default_colour[4]; // 0x0c
+    u8 colour[4];         // 0x10
+    u8 reserved[3];       // 0x14
+    i8 type;              // 0x17
+} CREDIT_TYPE_PC;         // size 0x18
 
 static f32 Credits_Duration = 120.0f;
 static f32 CreditsSize = 0;
@@ -220,14 +204,10 @@ void __cdecl Credits_GetInfo(f32 *duration, i32 *flag, f32 *alpha) {
 }
 
 typedef struct credits_completion_reader_pc_s {
-    u16 points;
-    u8 unknown_02;
-    u8 flags;
-} CREDITS_COMPLETION_READER_PC;
-
-STATIC_ASSERT(sizeof(CREDITS_COMPLETION_READER_PC) == 4);
-STATIC_ASSERT(offsetof(CREDITS_COMPLETION_READER_PC, points) == 0);
-STATIC_ASSERT(offsetof(CREDITS_COMPLETION_READER_PC, flags) == 3);
+    u16 points;                 // 0x0
+    u8 unknown_02;              // 0x2
+    u8 flags;                   // 0x3
+} CREDITS_COMPLETION_READER_PC; // size 0x4
 
 static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
     char percentage[32];

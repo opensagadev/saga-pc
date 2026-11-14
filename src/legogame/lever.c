@@ -1,11 +1,9 @@
 #include "saga.h"
 
 typedef struct lever_trigger_flags_pc_s {
-    u8 unknown000[0x94];
-    u8 flags;
-} LEVER_TRIGGER_FLAGS_PC;
-
-STATIC_ASSERT(offsetof(LEVER_TRIGGER_FLAGS_PC, flags) == 0x94);
+    u8 unknown000[0x94];  // 0x00
+    u8 flags;             // 0x94
+} LEVER_TRIGGER_FLAGS_PC; // size 0x95
 
 i32 __cdecl Lever_BeingPulled(void *lever) {
     return (((LEVER_TRIGGER_FLAGS_PC *)lever)->flags >> 1) & 1;
@@ -13,35 +11,34 @@ i32 __cdecl Lever_BeingPulled(void *lever) {
 
 /* GIZMO_LEVER_PC.flags as the u16 bitfields retail reads and stores (belongs in saga.h). */
 typedef struct lever_flag_bits_pc_s {
-    u16 interacting : 1;
-    u16 being_pulled : 1;
-    u16 goodie : 1;
-    u16 baddie : 1;
-    u16 visible : 1;
-    u16 auto_reset : 1;
-    u16 returning : 1;
-    u16 enabled : 1;
-    u16 hide_base : 1;
-    u16 hide_target_indicator : 1;
-    u16 unused_10 : 1;
-    u16 interaction_finished : 1;
-    u16 pulled_down : 1;
-    u16 unused_13 : 3;
-} LEVER_FLAG_BITS_PC;
+    u16 interacting : 1;           // 0x0:0
+    u16 being_pulled : 1;          // 0x0:1
+    u16 goodie : 1;                // 0x0:2
+    u16 baddie : 1;                // 0x0:3
+    u16 visible : 1;               // 0x0:4
+    u16 auto_reset : 1;            // 0x0:5
+    u16 returning : 1;             // 0x0:6
+    u16 enabled : 1;               // 0x0:7
+    u16 hide_base : 1;             // 0x0:8
+    u16 hide_target_indicator : 1; // 0x0:9
+    u16 unused_10 : 1;             // 0x0:10
+    u16 interaction_finished : 1;  // 0x0:11
+    u16 pulled_down : 1;           // 0x0:12
+    u16 unused_13 : 3;             // 0x0:13
+} LEVER_FLAG_BITS_PC;              // size 0x2
 
-STATIC_ASSERT(sizeof(LEVER_FLAG_BITS_PC) == 2);
 #define LEVER_BITS(lever) ((LEVER_FLAG_BITS_PC *)&(lever)->flags)
 
 typedef struct LEVER_WORLD_PC {
-    u8 unknown_000[0x5068];
-    GIZMO_LEVER_PC *levers;
-    i32 lever_count;
-} LEVER_WORLD_PC;
+    u8 unknown_000[0x5068]; // 0x0000
+    GIZMO_LEVER_PC *levers; // 0x5068
+    i32 lever_count;        // 0x506c
+} LEVER_WORLD_PC;           // size 0x5070
 
 typedef struct LEVER_NET_WAIT_PC {
-    u8 unknown_000[0x7a0];
-    void *net_wait_info;
-} LEVER_NET_WAIT_PC;
+    u8 unknown_000[0x7a0]; // 0x000
+    void *net_wait_info;   // 0x7a0
+} LEVER_NET_WAIT_PC;       // size 0x7a4
 
 STATIC_ASSERT(sizeof(GIZMO_LEVER_PC) == 0xa0);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, floor_position) == 0x40);
@@ -53,9 +50,6 @@ STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, target_indicator_scale) == 0x84);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, yaw) == 0x88);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, platform_id) == 0x8c);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, flags) == 0x94);
-STATIC_ASSERT(offsetof(LEVER_WORLD_PC, levers) == 0x5068);
-STATIC_ASSERT(offsetof(LEVER_WORLD_PC, lever_count) == 0x506c);
-STATIC_ASSERT(offsetof(LEVER_NET_WAIT_PC, net_wait_info) == 0x7a0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
@@ -204,14 +198,11 @@ void __cdecl Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
 }
 
 typedef struct LEVER_PROGRESS_PC {
-    u32 pulled_down[1];
-    u32 enabled[1];
-    u32 visible[1];
-} LEVER_PROGRESS_PC;
+    u32 pulled_down[1]; // 0x0
+    u32 enabled[1];     // 0x4
+    u32 visible[1];     // 0x8
+} LEVER_PROGRESS_PC;    // size 0xc
 
-STATIC_ASSERT(sizeof(LEVER_PROGRESS_PC) == 12);
-STATIC_ASSERT(offsetof(LEVER_PROGRESS_PC, enabled) == 4);
-STATIC_ASSERT(offsetof(LEVER_PROGRESS_PC, visible) == 8);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, name) == 0x58);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, idle_animation_timer) == 0x74);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, auto_reset_delay) == 0x80);

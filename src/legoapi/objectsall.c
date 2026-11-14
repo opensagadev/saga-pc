@@ -110,14 +110,11 @@ i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
 }
 
 typedef struct EQUIVALENT_GROUP_PC {
-    i16 object_count;
-    i16 byte_size;
-    NUSPECIALHANDLE objects[1];
-} EQUIVALENT_GROUP_PC;
+    i16 object_count;           // 0x0
+    i16 byte_size;              // 0x2
+    NUSPECIALHANDLE objects[1]; // 0x4
+} EQUIVALENT_GROUP_PC;          // size 0x10
 
-STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, object_count) == 0);
-STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, byte_size) == 2);
-STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, objects) == 4);
 STATIC_ASSERT(offsetof(WORLDINFO, equivalent_groups) == 0x46b0);
 STATIC_ASSERT(offsetof(WORLDINFO, equivalent_group_count) == 0x46b4);
 

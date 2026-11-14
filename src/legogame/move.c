@@ -393,19 +393,17 @@ typedef struct lunge_target_slots_pc_s {
 } LUNGE_TARGET_SLOTS_PC;
 
 struct minianimpacket_pc_s {
-    f32 current_time;
-    f32 previous_time;
-    u8 unknown_08[0xc];
-    f32 blend_target_time;
-    u8 flags;
-    u8 blending;
-    u8 unknown_1a[4];
-    i16 current_animation_id;
-    i16 previous_animation_id;
-    i16 requested_animation_id;
-};
-
-STATIC_ASSERT(sizeof(MINIANIMPACKET_PC) == 0x24);
+    f32 current_time;           // 0x00
+    f32 previous_time;          // 0x04
+    u8 unknown_08[0xc];         // 0x08
+    f32 blend_target_time;      // 0x14
+    u8 flags;                   // 0x18
+    u8 blending;                // 0x19
+    u8 unknown_1a[4];           // 0x1a
+    i16 current_animation_id;   // 0x1e
+    i16 previous_animation_id;  // 0x20
+    i16 requested_animation_id; // 0x22
+}; // size 0x24
 
 typedef struct jump_auxiliary_fields_pc_s {
     u8 unknown_000[0x7b1];

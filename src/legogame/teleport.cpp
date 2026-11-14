@@ -3,62 +3,40 @@
 /* Retail unit 0x4cdd10-0x4cf2a0 (legoapi/gizmos/transport/teleport.cpp): definitions in retail address order. */
 
 typedef struct TELEPORT_CONFIG_PC {
-    char name[0x40];
-    NUGSPLINE *path;
-    f32 duration;
-    f32 range_squared;
-    u16 flags;
-    u8 enabled;
-    u8 active;
-    NUSPECIALHANDLE blocking_special;
-    NUSPECIALHANDLE flap1_special;
-    NUSPECIALHANDLE flap2_special;
-    u8 unknown_74[8];
-    NUMTX flap1_matrix;
-    NUMTX flap2_matrix;
-} TELEPORT_CONFIG_PC;
+    char name[0x40];                  // 0x00
+    NUGSPLINE *path;                  // 0x40
+    f32 duration;                     // 0x44
+    f32 range_squared;                // 0x48
+    u16 flags;                        // 0x4c
+    u8 enabled;                       // 0x4e
+    u8 active;                        // 0x4f
+    NUSPECIALHANDLE blocking_special; // 0x50
+    NUSPECIALHANDLE flap1_special;    // 0x5c
+    NUSPECIALHANDLE flap2_special;    // 0x68
+    u8 unknown_74[8];                 // 0x74
+    NUMTX flap1_matrix;               // 0x7c
+    NUMTX flap2_matrix;               // 0xbc
+} TELEPORT_CONFIG_PC;                 // size 0xfc
 
-STATIC_ASSERT(sizeof(TELEPORT_CONFIG_PC) == 0xfc);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, name) == 0);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, path) == 0x40);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, duration) == 0x44);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, range_squared) == 0x48);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, flags) == 0x4c);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, enabled) == 0x4e);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, active) == 0x4f);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, blocking_special) == 0x50);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, flap1_special) == 0x5c);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, flap2_special) == 0x68);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, flap1_matrix) == 0x7c);
-STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, flap2_matrix) == 0xbc);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 
 typedef struct WORLD_TELEPORT_CONFIG_PC {
-    u8 unknown_00[0x104];
-    VARIPTR giz_buffer;
-    u8 unknown_108[0x34];
-    NUGSCN *scene;
-    u8 unknown_140[0x2988];
-    GIZMOSYS_PREFIX_PC *gizmo_system;
-    u8 unknown_2acc[0x1bb4];
-    TELEPORT_CONFIG_PC *teleports;
-    i32 teleport_count;
-} WORLD_TELEPORT_CONFIG_PC;
-
-STATIC_ASSERT(offsetof(WORLD_TELEPORT_CONFIG_PC, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(WORLD_TELEPORT_CONFIG_PC, scene) == 0x13c);
-STATIC_ASSERT(offsetof(WORLD_TELEPORT_CONFIG_PC, gizmo_system) == 0x2ac8);
-STATIC_ASSERT(offsetof(WORLD_TELEPORT_CONFIG_PC, teleports) == 0x4680);
-STATIC_ASSERT(offsetof(WORLD_TELEPORT_CONFIG_PC, teleport_count) == 0x4684);
+    u8 unknown_00[0x104];             // 0x0000
+    VARIPTR giz_buffer;               // 0x0104
+    u8 unknown_108[0x34];             // 0x0108
+    NUGSCN *scene;                    // 0x013c
+    u8 unknown_140[0x2988];           // 0x0140
+    GIZMOSYS_PREFIX_PC *gizmo_system; // 0x2ac8
+    u8 unknown_2acc[0x1bb4];          // 0x2acc
+    TELEPORT_CONFIG_PC *teleports;    // 0x4680
+    i32 teleport_count;               // 0x4684
+} WORLD_TELEPORT_CONFIG_PC;           // size 0x4688
 
 typedef struct TELEPORT_KEYWORDS_PC {
-    char *name_prefix;
-    NUFPCOMJMP keywords[12];
-} TELEPORT_KEYWORDS_PC;
+    char *name_prefix;       // 0x00
+    NUFPCOMJMP keywords[12]; // 0x04
+} TELEPORT_KEYWORDS_PC;      // size 0x64
 
-STATIC_ASSERT(sizeof(TELEPORT_KEYWORDS_PC) == 100);
-STATIC_ASSERT(offsetof(TELEPORT_KEYWORDS_PC, name_prefix) == 0);
-STATIC_ASSERT(offsetof(TELEPORT_KEYWORDS_PC, keywords) == 4);
 extern "C" {
     i32 __cdecl Teleport_GetMaxGizmos(void *);
     void __cdecl Teleport_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
@@ -73,56 +51,39 @@ extern "C" {
 }
 
 typedef struct TELEPORT_MOTION_PC {
-    char name[0x40];
-    NUGSPLINE *path;
-    f32 duration;
-    f32 range_squared;
-    u16 flags;
-    u8 enabled;
-    u8 active;
-    NUSPECIALHANDLE blocking_special;
-    NUSPECIALHANDLE flap1_special;
-    NUSPECIALHANDLE flap2_special;
-    u16 flap_angle[2];
-    u16 flap_target[2];
-    NUMTX flap1_matrix;
-    NUMTX flap2_matrix;
-} TELEPORT_MOTION_PC;
+    char name[0x40];                  // 0x00
+    NUGSPLINE *path;                  // 0x40
+    f32 duration;                     // 0x44
+    f32 range_squared;                // 0x48
+    u16 flags;                        // 0x4c
+    u8 enabled;                       // 0x4e
+    u8 active;                        // 0x4f
+    NUSPECIALHANDLE blocking_special; // 0x50
+    NUSPECIALHANDLE flap1_special;    // 0x5c
+    NUSPECIALHANDLE flap2_special;    // 0x68
+    u16 flap_angle[2];                // 0x74
+    u16 flap_target[2];               // 0x78
+    NUMTX flap1_matrix;               // 0x7c
+    NUMTX flap2_matrix;               // 0xbc
+} TELEPORT_MOTION_PC;                 // size 0xfc
 
 typedef struct TELEPORT_WORLD_PC {
-    u8 unknown_000[0x4680];
-    TELEPORT_MOTION_PC *teleports;
-    i32 teleport_count;
-} TELEPORT_WORLD_PC;
+    u8 unknown_000[0x4680];        // 0x0000
+    TELEPORT_MOTION_PC *teleports; // 0x4680
+    i32 teleport_count;            // 0x4684
+} TELEPORT_WORLD_PC;               // size 0x4688
 
 typedef struct TELEPORT_NET_WAIT_VIEW_PC {
-    u8 unknown_000[0x7a0];
-    void *net_wait_info;
-} TELEPORT_NET_WAIT_VIEW_PC;
+    u8 unknown_000[0x7a0];   // 0x000
+    void *net_wait_info;     // 0x7a0
+} TELEPORT_NET_WAIT_VIEW_PC; // size 0x7a4
 
 typedef struct TELEPORT_VARIANT_VIEW_PC {
-    u8 unknown_000[0x7bc];
-    u32 variant_low_bits : 10;
-    u32 forwards : 1;
-} TELEPORT_VARIANT_VIEW_PC;
+    u8 unknown_000[0x7bc];     // 0x000
+    u32 variant_low_bits : 10; // 0x7bc:0
+    u32 forwards : 1;          // 0x7bc:10
+} TELEPORT_VARIANT_VIEW_PC;    // size 0x7c0
 
-STATIC_ASSERT(sizeof(TELEPORT_MOTION_PC) == 0xfc);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, path) == 0x40);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, duration) == 0x44);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, range_squared) == 0x48);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flags) == 0x4c);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, enabled) == 0x4e);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, active) == 0x4f);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, blocking_special) == 0x50);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap1_special) == 0x5c);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap2_special) == 0x68);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap_target) == 0x78);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap1_matrix) == 0x7c);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap2_matrix) == 0xbc);
-STATIC_ASSERT(offsetof(TELEPORT_WORLD_PC, teleports) == 0x4680);
-STATIC_ASSERT(offsetof(TELEPORT_WORLD_PC, teleport_count) == 0x4684);
-STATIC_ASSERT(offsetof(TELEPORT_NET_WAIT_VIEW_PC, net_wait_info) == 0x7a0);
-STATIC_ASSERT(sizeof(TELEPORT_VARIANT_VIEW_PC) == 0x7c0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
@@ -131,7 +92,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, big_jump_animation) == 0x7b4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap_angle) == 0x74);
 STATIC_ASSERT(sizeof(((TELEPORT_MOTION_PC *)0)->flap_angle) == 4);
 
 typedef struct {

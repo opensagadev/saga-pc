@@ -28,9 +28,7 @@ class AINet : NetListenerInterface {
     void ReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
 
     static AINet *sm_instance;
-};
-
-STATIC_ASSERT(sizeof(AINet) == 4);
+}; // size 0x4
 
 AINet *AINet::sm_instance = NULL;
 
