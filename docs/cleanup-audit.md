@@ -708,6 +708,9 @@ functions (`BoulderSpawnPc`, `SubItemMenu`, `InitGameAfterConfig`,
    recorded here (as with the two units in docs/declarations.md).
 4. Delete the shim when no unit includes it.
 
+The measured picture, the mapping and the tool for these steps are in
+[header-plan.md](header-plan.md) (`tools/headersplit.py`, `config/header-map.csv`).
+
 Enums and named masks (section 5) go in during step 2, in the header of the
 owning struct, so a field is converted once.
 
