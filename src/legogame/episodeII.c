@@ -140,7 +140,60 @@ static i32 PaintMixColourPc(i32 first, i32 second) {
     return -1;
 }
 
+struct gizmo_pc_s *paintobst[6] = {0};
+GAMEOBJECT *ObiWan = NULL;
+i32 LevForce = 0;
+struct gizmo_pc_s *forcetube = 0;
+nuhspecial_s paintlights[3] = {0};
+i32 last = 0;
+NUSPECIALHANDLE discolights[2] = {0};
+JEDIB_NETPACKET_PC *jedib_netpacket = NULL;
+NUSPECIALHANDLE walllights[2] = {0};
+void *factoryb_netpacket = 0;
+static DOOKU_C_PC dooku_c = {0};
+GIZAIMESSAGE *factoryb_conveyor_stopped_msg = NULL;
+NUSPECIALHANDLE walllights_disco[2] = {0};
+nuhspecial_s green_light = {0};
+GIZMO_PC *gizTurrets[2] = {0};
+KAMINOC_PACKET_PC *kaminoc_netpacket = NULL;
+NUSPECIALHANDLE disco_on_spin[3] = {0};
+NUSPECIALHANDLE discorm_wall_off = {0};
+i32 painttry = 0;
+NUSPECIALHANDLE striplights[2] = {0};
+JEDIB_STATE_PC jedi_b = {0};
+void *kaminoe_netpacket = 0;
+struct GIZFORCE_s *force_array[4] = {0};
+CUTINFO *factoryb_cut = NULL;
+i32 paintsused[2] = {0};
+nuhspecial_s painttargetcolour[3] = {0};
+NUSPECIALHANDLE discorm_wall_on = {0};
+KAMINO_E_PC kamino_e = {0};
+static KAMINOEPLATE *kamino_plate_1 = 0;
+static KAMINOEPLATE *kamino_plate_2 = 0;
+static KAMINOEPLATE *kamino_plate_3 = 0;
+static KAMINOEPLATE *kamino_plate_4 = 0;
+static KAMINOEPLATE *kamino_plate_hit = 0;
+static i32 kamino_plate_1_active = 0;
+static i32 kamino_plate_2_active = 0;
+static i32 kamino_plate_3_active = 0;
+static i32 kamino_plate_4_active = 0;
+static u16 kamino_plate_id = 0;
+BONUS_GUNSHIP_B_NETPACKET_PC *BonusGunshipBNetPacketPc = NULL;
+GIZMO_PC *disco_off_spina[3] = {0};
+i32 GunshipPlayerDeadPc = 0;
+struct gizmo_pc_s *paintpanel[3] = {0};
+KAMINO_DISCO_MUSIC_VIEW_PC KaminoDiscoMusicStatePc = {0};
+KAMINODISCO_PC kaminodisco = {0};
 i32 randpaints[3] = {0};
+i32 painttarget = 0;
+i32 paintmixed = 0;
+i32 played_sound = 0;
+i32 PAINTPUZZLESTAGE = 0;
+i32 JediBActiveCountPc = 0;
+static f32 FactoryBConveyorXSpeed = 0.0f;
+static f32 FactoryBConveyorZSpeed = 0.0f;
+i32 bonus_gunship_store_progress_flag = 0;
+KAMINO_SHIP_ZERO_ANGLES_PC KaminoShipZeroAnglesPc = {0};
 
 static void RandomisePaintsPc(void) {
     i32 i = 0;
@@ -156,9 +209,6 @@ static void RandomisePaintsPc(void) {
     } while (i < 2);
     randpaints[2] = 3 - randpaints[1] - randpaints[0];
 }
-
-nuhspecial_s paintlights[3] = {0};
-nuhspecial_s painttargetcolour[3] = {0};
 
 void DrawPaintLights(void) {
     i32 i;
@@ -177,10 +227,6 @@ void DrawPaintLights(void) {
     }
 }
 
-i32 PAINTPUZZLESTAGE = 0;
-i32 painttry = 0;
-struct gizmo_pc_s *paintobst[6] = {0};
-
 void ResetPaintPuzzle(WORLDINFO *world) {
     i32 i;
     for (i = 0; i < 6; i++) {
@@ -190,12 +236,6 @@ void ResetPaintPuzzle(WORLDINFO *world) {
     PAINTPUZZLESTAGE = 1;
     RandomisePaintsPc();
 }
-
-i32 paintmixed = 0;
-i32 painttarget = 0;
-i32 paintsused[2] = {0};
-i32 played_sound = 0;
-struct gizmo_pc_s *paintpanel[3] = {0};
 
 void UpdatePaintPuzzle(WORLDINFO *world) {
     i32 i;
@@ -339,14 +379,65 @@ static void JediBResetRecordPc(JEDIB_CREATURE_PC *record) {
     record->field_0x58 = 0;
 }
 
-static f32 jedib_create_step_Normal = 2.0f;
-static f32 jedib_inner = 3.0f;
-static i32 jedib_max_baddies_per_goody = 3;
-static i32 jedib_min_baddies_per_goody = 1;
-static f32 jedib_offset = 0.5f;
-static f32 jedib_outer_r = 8.0f;
-static f32 jedib_proximity = 0.5f;
+char *paint_name[6] = {"red_juice", "yellow_juice", "blue_juice", "orange_juice", "green_juice", "purple_juice"};
+char *paint_panel_name[3] = {"redp", "yellp", "bluep"};
+char *paint_target_colour[3] = {"but_orange", "but_green", "but_purple"};
+char *paint_light_name[3] = {"off_purple", "off_green", "off_orange"};
+JEDIB_PHASE_PC jedi_b_phase1[8] = {{&id_DROIDEKA, "phase_droids"},
+                                   {&id_DROIDEKA, "phase_droids"},
+                                   {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                   {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                   {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                   {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                   {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                   {NULL, NULL}};
+JEDIB_PHASE_PC jedi_b_phase2[8] = {{&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
+                                   {&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
+                                   {&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
+                                   {&id_SUPERBATTLEDROID, "phase_droids"}, {NULL, NULL}};
+JEDIB_PHASE_PC jedi_b_phase3[8] = {{&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
+                                   {&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
+                                   {&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
+                                   {&id_DROIDEKA, "phase_droids"},         {NULL, NULL}};
 static i32 jedib_seed = 17;
+static i32 jedib_min_baddies_per_goody = 1;
+static i32 jedib_max_baddies_per_goody = 3;
+static f32 jedib_outer_r = 8.0f;
+f32 jedib_safe_r = 9.0f;
+static f32 jedib_inner = 3.0f;
+static f32 jedib_offset = 0.5f;
+static f32 jedib_proximity = 0.5f;
+static f32 jedib_create_step_Normal = 2.0f;
+NUVEC jedib_offsets[3] = {{0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, 0.1f}};
+i32 jedib_yrot[3] = {0x6000, 0xa000, 0xe000};
+i16 *JediB_playerids[3] = {&CharacterFixupIdPc007f19c8, &id_ANAKINPADAWAN, &CharacterFixupIdPc007f19d0};
+f32 FactoryBConveyorStopFrame = 28.0f;
+NUVEC KaminoShipCentrePc = {56.5f, -2.890000104904175f, 8.0f};
+f32 KaminoShipRadiusPc = 6.5f;
+i32 KaminoShipOrbitPitchPc = -3640;
+i32 KaminoShipOrbitYawPc = 0x4000;
+NUVEC KaminoShipGunOffsetPc[2] = {{0.2f, -1.1f, 0.9f}, {-0.2f, -1.1f, 0.9f}};
+f32 KaminoShipFireIntervalPc = 0.15f;
+f32 gunshipb_seekrange = 4.0f;
+f32 gunshipb_seekmom = 5.0f;
+f32 gunshipb_seekmomseek = 5.0f;
+i32 GUNSHIPAHACK = 2;
+static f32 KaminoDiscoTileTimePc = 2.5f;
+static f32 KaminoDiscoTileRadiusPc = 0.2f;
+f32 KaminoShipSeekRatePc = 1.0f;
+f32 KaminoShipAimScalePc = 30.0f;
+f32 KaminoShipAimLiftPc = 0.5f;
+i32 KaminoShipTargetPitchPc = 0xb60;
+i32 KaminoShipTargetYawPc = -0x4000;
+f32 KaminoShipYawRatePc = 4.0f;
+f32 KaminoShipPitchRatePc = 4.0f;
+f32 KaminoShipLiftTimePc = 4.0f;
+i32 KaminoShipStartPitchPc = -0x4000;
+f32 KaminoShipStartHeightPc = -2.8f;
+f32 KaminoShipZAmplitudePc = 0.2f;
+f32 KaminoShipZPeriodPc = 4.0f;
+f32 KaminoShipYAmplitudePc = 0.2f;
+f32 KaminoShipYPeriodPc = 3.0f;
 
 void JediB_Init(WORLDINFO *world) {
     NUVEC position;
@@ -999,9 +1090,6 @@ void JediB_DrawPanelPc(WORLDINFO *world) {
     }
 }
 
-CUTINFO *factoryb_cut = NULL;
-GIZAIMESSAGE *factoryb_conveyor_stopped_msg = NULL;
-
 void FactoryB_Reset(WORLDINFO *world) {
     ResetPaintPuzzle(world);
     factoryb_cut = NewCutScene(NULL, world->cutscene_sys, "ep2_droidfactory_conveyor", 0);
@@ -1011,10 +1099,6 @@ void FactoryB_Reset(WORLDINFO *world) {
     }
     factoryb_conveyor_stopped_msg = CheckGizAIMessage(gizaimessagesys, "conveyor_stop", NULL);
 }
-
-f32 FactoryBConveyorStopFrame = 28.0f;
-static f32 FactoryBConveyorXSpeed = 0.0f;
-static f32 FactoryBConveyorZSpeed = 0.0f;
 
 void FactoryB_Update(WORLDINFO *world) {
     GIZAIMESSAGE *message;
@@ -1039,8 +1123,6 @@ void FactoryB_Update(WORLDINFO *world) {
 void FactoryB_Draw(WORLDINFO *world) {
     DrawPaintLights();
 }
-
-static DOOKU_C_PC dooku_c = {0};
 
 void DookuC_Reset(WORLDINFO *world) {
     memset(&dooku_c, 0, sizeof(dooku_c));
@@ -1096,8 +1178,6 @@ void FactoryG_Init(WORLDINFO *world) {
     }
 }
 
-GAMEOBJECT *ObiWan = NULL;
-
 void FactoryG_Update(WORLDINFO *world) {
     i32 complete = 0;
     i32 i;
@@ -1137,19 +1217,6 @@ void KaminoA_AlwaysUpdate(WORLDINFO *world) {
     debris_object_switches[1] =
         CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
 }
-
-KAMINODISCO_PC kaminodisco = {0};
-KAMINOC_PACKET_PC *kaminoc_netpacket = NULL;
-NUSPECIALHANDLE disco_on_spin[3] = {0};
-GIZMO_PC *disco_off_spina[3] = {0};
-NUSPECIALHANDLE walllights[2] = {0};
-NUSPECIALHANDLE walllights_disco[2] = {0};
-NUSPECIALHANDLE striplights[2] = {0};
-NUSPECIALHANDLE discolights[2] = {0};
-NUSPECIALHANDLE discorm_wall_on = {0};
-NUSPECIALHANDLE discorm_wall_off = {0};
-GIZMO_PC *gizTurrets[2] = {0};
-i32 last = 0;
 
 void KaminoC_Init(WORLDINFO *world) {
     char name[32];
@@ -1318,9 +1385,6 @@ static void KaminoDiscoUpdateVisualsPc(WORLDINFO *world) {
     }
 }
 
-static f32 KaminoDiscoTileTimePc = 2.5f;
-static f32 KaminoDiscoTileRadiusPc = 0.2f;
-
 void KaminoC_Update(WORLDINFO *world) {
     KAMINO_PROGRESS_GIZMO_READER_PC *progress = LevGizmo[0]->object;
     i32 i;
@@ -1488,8 +1552,6 @@ void KaminoE_Init(WORLDINFO *world) {
     }
 }
 
-KAMINO_E_PC kamino_e = {0};
-
 void KaminoE_Reset(WORLDINFO *world) {
     char name[16];
     i32 i;
@@ -1526,17 +1588,6 @@ void KaminoE_Reset(WORLDINFO *world) {
     CutScene_Find(world->cutscene_sys, "Ep2_Kamino_Intro2");
     kamino_e.intro_cutscene = CutScene_Find(world->cutscene_sys, "Ep2_Kamino_Intro2");
 }
-
-static KAMINOEPLATE *kamino_plate_1 = 0;
-static i32 kamino_plate_1_active = 0;
-static KAMINOEPLATE *kamino_plate_2 = 0;
-static i32 kamino_plate_2_active = 0;
-static KAMINOEPLATE *kamino_plate_3 = 0;
-static i32 kamino_plate_3_active = 0;
-static KAMINOEPLATE *kamino_plate_4 = 0;
-static i32 kamino_plate_4_active = 0;
-static KAMINOEPLATE *kamino_plate_hit = 0;
-static u16 kamino_plate_id = 0;
 
 i32 KaminoE_CheckPlatHit(BOLT *bolt) {
     if (bolt->unknown_fa == kamino_plate_id) {
@@ -1583,28 +1634,6 @@ static void KaminoEResetTurretsPc(void) {
         kamino_e.turrets[i]->flags_13a &= ~0x10;
     }
 }
-
-NUVEC KaminoShipCentrePc = {56.5f, -2.890000104904175f, 8.0f};
-f32 KaminoShipRadiusPc = 6.5f;
-i32 KaminoShipOrbitPitchPc = -3640;
-i32 KaminoShipOrbitYawPc = 0x4000;
-NUVEC KaminoShipGunOffsetPc[2] = {{0.2f, -1.1f, 0.9f}, {-0.2f, -1.1f, 0.9f}};
-f32 KaminoShipFireIntervalPc = 0.15f;
-f32 KaminoShipSeekRatePc = 1.0f;
-f32 KaminoShipAimScalePc = 30.0f;
-f32 KaminoShipAimLiftPc = 0.5f;
-i32 KaminoShipTargetPitchPc = 0xb60;
-i32 KaminoShipTargetYawPc = -0x4000;
-f32 KaminoShipYawRatePc = 4.0f;
-f32 KaminoShipPitchRatePc = 4.0f;
-f32 KaminoShipLiftTimePc = 4.0f;
-i32 KaminoShipStartPitchPc = -0x4000;
-f32 KaminoShipStartHeightPc = -2.8f;
-f32 KaminoShipZAmplitudePc = 0.2f;
-f32 KaminoShipZPeriodPc = 4.0f;
-f32 KaminoShipYAmplitudePc = 0.2f;
-f32 KaminoShipYPeriodPc = 3.0f;
-KAMINO_SHIP_ZERO_ANGLES_PC KaminoShipZeroAnglesPc = {0};
 
 void KaminoE_Update(WORLDINFO *world) {
     f32 best_distance = 1000000000.0f;
@@ -1974,10 +2003,6 @@ void GunshipB_Reset(WORLDINFO *world) {
     LevGizmo[7] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "gun_d21");
 }
 
-f32 gunshipb_seekrange = 4.0f;
-f32 gunshipb_seekmom = 5.0f;
-f32 gunshipb_seekmomseek = 5.0f;
-
 void GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
     GIZMOBLOWUP_PC *nearest = NULL;
     f32 nearest_distance;
@@ -2019,8 +2044,6 @@ void GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
     object->velocity.z = SeekValF(object->velocity.z, direction.z, gunshipb_seekmomseek);
 }
 
-i32 GunshipPlayerDeadPc = 0;
-
 void BonusGunshipA_ResetPc(WORLDINFO *world) {
     GunshipPlayerDeadPc = 0;
     BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = 0;
@@ -2052,8 +2075,6 @@ void BonusGunshipA_UpdatePc(WORLDINFO *world) {
         ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
     }
 }
-
-BONUS_GUNSHIP_B_NETPACKET_PC *BonusGunshipBNetPacketPc = NULL;
 
 void BonusGunshipB_InitPc(WORLDINFO *world) {
     BonusGunshipBNetPacketPc = SetLevelHack(12);
@@ -2131,11 +2152,6 @@ void BonusGunshipB_PanelPc(WORLDINFO *world) {
         }
     }
 }
-
-char *paint_name[6] = {"red_juice", "yellow_juice", "blue_juice", "orange_juice", "green_juice", "purple_juice"};
-char *paint_panel_name[3] = {"redp", "yellp", "bluep"};
-char *paint_target_colour[3] = {"but_orange", "but_green", "but_purple"};
-char *paint_light_name[3] = {"off_purple", "off_green", "off_orange"};
 
 void InitPaintPuzzle(WORLDINFO *world) {
     i32 i;

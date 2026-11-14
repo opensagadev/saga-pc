@@ -9835,9 +9835,6 @@ extern "C" {
 #pragma data_seg(".data$CircleLeanDegrees")
     i32 CircleLeanDegrees = 30;
 #pragma data_seg()
-#pragma data_seg(".data$GUNSHIPAHACK")
-    i32 GUNSHIPAHACK = 2;
-#pragma data_seg()
     i32 podrace_section = 0;
     i32 newgamecam = 0;
 #pragma data_seg(".data$GAMEPAD_DUP")
@@ -10346,7 +10343,6 @@ extern "C" {
 #pragma data_seg(".data$NuMusicDebugColour")
     u32 NuMusicDebugColour = 0x80ffffff;
 #pragma data_seg()
-    i32 bonus_gunship_store_progress_flag = 0;
 
 #pragma data_seg(".data$LEDGETERRAINLOOKAHEAD")
     f32 LEDGETERRAINLOOKAHEAD = 0.02f;
@@ -14140,7 +14136,6 @@ extern "C" {
 
 extern "C" {
     HUB_AI_MUSIC_VIEW_PC HubAiMusicStatePc = {0};
-    KAMINO_DISCO_MUSIC_VIEW_PC KaminoDiscoMusicStatePc = {0};
 }
 
 extern "C" {
@@ -23171,10 +23166,6 @@ extern "C" {
 
     struct gameobject_s *Maul_obj = 0;
 
-    void *kaminoe_netpacket = 0;
-
-    i32 LevForce = 0;
-
     i32 mushroom_collapse = 0;
 
 #pragma data_seg(".data$mushroom0_along")
@@ -23578,7 +23569,6 @@ extern "C" {
 }
 
 extern "C" {
-    struct GIZFORCE_s *force_array[4] = {0};
 
 #pragma data_seg(".data$sockstep")
     f32 sockstep = 10.0f;
@@ -23753,14 +23743,6 @@ extern "C" {
 
 #pragma data_seg(".data$aiEditor_LocatorWidth")
     f32 aiEditor_LocatorWidth = 0.25f;
-}
-
-extern "C" {
-    void *factoryb_netpacket = 0;
-
-    struct gizmo_pc_s *forcetube = 0;
-
-    nuhspecial_s green_light = {0};
 }
 
 extern "C" {
@@ -26317,13 +26299,7 @@ extern "C" {
     NURND_VERTEX3D_PC NuRndrShadowVerticesPc[4] = {0};
 }
 
-extern "C" {
-    i32 JediBActiveCountPc = 0;
-    JEDIB_NETPACKET_PC *jedib_netpacket = NULL;
-    JEDIB_STATE_PC jedi_b = {0};
-}
-
-/* Static-shadow frustum topology and mutable extrusion distance. */
+/* Native static-shadow frustum topology and mutable extrusion distance. */
 i32 PostShadowCubeFaceIndicesPc[6][4] = {{0, 1, 2, 3}, {3, 2, 6, 7}, {7, 6, 5, 4},
                                          {4, 5, 1, 0}, {1, 5, 6, 2}, {4, 0, 3, 7}};
 f32 PostShadowPlaneExtrusionPc = 120.0f;
@@ -26424,31 +26400,6 @@ extern "C" {
 #pragma data_seg(".data$ForceDeflectTuningPc")
     f32 ForceDeflectSpeedPc = 4.0f;
     f32 ForceDeflectSeekRatePc = 3.0f;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$JediBArenaTuningPc")
-    f32 jedib_safe_r = 9.0f;
-    NUVEC jedib_offsets[3] = {{0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, 0.1f}};
-    i32 jedib_yrot[3] = {0x6000, 0xa000, 0xe000};
-    i16 *JediB_playerids[3] = {&CharacterFixupIdPc007f19c8, &id_ANAKINPADAWAN, &CharacterFixupIdPc007f19d0};
-    JEDIB_PHASE_PC jedi_b_phase1[8] = {{&id_DROIDEKA, "phase_droids"},
-                                       {&id_DROIDEKA, "phase_droids"},
-                                       {&id_BATTLEDROIDSECURITY, "phase_droids"},
-                                       {&id_BATTLEDROIDSECURITY, "phase_droids"},
-                                       {&id_BATTLEDROIDSECURITY, "phase_droids"},
-                                       {&id_BATTLEDROIDSECURITY, "phase_droids"},
-                                       {&id_BATTLEDROIDSECURITY, "phase_droids"},
-                                       {NULL, NULL}};
-    JEDIB_PHASE_PC jedi_b_phase2[8] = {{&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
-                                       {&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
-                                       {&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
-                                       {&id_SUPERBATTLEDROID, "phase_droids"}, {NULL, NULL}};
-    JEDIB_PHASE_PC jedi_b_phase3[8] = {{&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
-                                       {&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
-                                       {&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
-                                       {&id_DROIDEKA, "phase_droids"},         {NULL, NULL}};
 #pragma data_seg()
 }
 
