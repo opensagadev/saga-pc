@@ -3,17 +3,48 @@
 
 /* Retail unit 0x57a810-0x57f647: definitions in retail address order. */
 static i32 CS_area = 0;
+static VARIPTR *CS_buffend = 0;
+void *CutStopInfo = 0;
+static u8 CutBlobShadowAlpha = 0;
 static i32 CS_fadefogcount = 0;
+i32 CUTNOFOG = 0;
+static i32 CutInstEndStop = 0;
+static f32 CutReflectRange2 = 0;
+static f32 CutReflectRange = 0;
 static i32 CS_texanimcount = 0;
+// Eight queue slots are a source access view; the complete original extent is unknown.
+CUTINFO *NewCutInfo[8] = {0};
+static i32 cutaudiopaused = 0;
+i32 CUTCAMONLY = 0;
+i32 CUTCAM = 0;
 static VARIPTR *CS_buffptr = 0;
+static INSTNUGCUTSCENE *CutInstEnd[4] = {0};
 static CUT_LOAD_RECORD_PC *CS_CutInfo = 0;
+static f32 CutBlobShadowFadeNear = 0;
+static i32 CutFramePc = 0;
+i32 CutSceneWaiting = 0;
+i32 CUTSKIPLOCK = 0;
+i32 CUTDRAWWORLD = 0;
+static f32 CutBlobShadowFadeFar = 0;
+i32 cut_waiting_for_new_level = 0;
+void *newmode_cutinfo = 0;
+i32 ACTIVECUTCOUNT = 0;
+i32 NewCutInfoCount = 0;
+i32 CutInstEndCount = 0;
+u8 CUTSUBTITLEDEFAULT_ALIGN = 0;
+f32 CUTSUBTITLEDEFAULT_X = 0;
+i32 (*CutScene_StartFn)(CUTINFO *cut) = 0;
+void (*CutScene_PreUpdateFn)(CUTINFO *cut) = 0;
+void (*CutScene_PostUpdateFn)(void) = 0;
+void (*CutScene_StoppedFn)(CUTINFO *cut) = 0;
+i32 (*CutScene_ReplaceCharacterModelFn)(CUTINFO *cut, CUTSCENECHARACTER *character) = 0;
+void (*CutScene_OverrideConfigFileNameFn)(char *, i32, i32) = 0;
+CUT_LOAD_LIST_ENTRY_PC *CutList = 0;
+i32 CUTCOUNT = 0;
+i32 stream_cut_issued = 0;
+CUT_PLAYER_ACTIVE_PC *CutScenePlayer = NULL;
 static WORLDINFO *CS_worldinfo = 0;
 static CUT_LOAD_SYS_PC *CS_cutsys = 0;
-static VARIPTR *CS_buffend = 0;
-static u8 CutBlobShadowAlpha = 0;
-static f32 CutBlobShadowFadeFar = 0;
-static f32 CutBlobShadowFadeNear = 0;
-static f32 CutReflectRange2 = 0;
 extern "C" void GameFog_Reset(void);
 extern "C" void Panel_Clear(void);
 extern "C" void PauseGameCut(void);
@@ -836,6 +867,14 @@ extern "C" {
         ++CS_CutInfo->state_count;
     }
 
+    u8 CUTSUBTITLEDEFAULT_R = 255;
+    u8 CUTSUBTITLEDEFAULT_G = 255;
+    u8 CUTSUBTITLEDEFAULT_B = 255;
+    u8 CUTSUBTITLEDEFAULT_A = 128;
+    f32 CUTSUBTITLEDEFAULT_Y = -0.5f;
+    f32 CUTSUBTITLEDEFAULT_SCALEX = 1.0f;
+    f32 CUTSUBTITLEDEFAULT_SCALEY = 1.0f;
+    f32 CUTSUBTITLEDEFAULT_FITWIDTH = 1.7000000476837158f;
     NUFPCOMJMP CutScene_ConfigKeywords[] = {
         {const_cast<char *>("fpsec"), CS_fpsec},
         {const_cast<char *>("no_fog"), CS_no_fog},
@@ -881,6 +920,9 @@ extern "C" {
         {const_cast<char *>("farclip"), CS_farclip},
         {const_cast<char *>("drawgizmosys"), CS_draw_gizmo_sys},
         {NULL, NULL}};
+    i32 CutSceneMusicStartFramePc = -1;
+    static CUT_DRAW_LOCATOR_ENTRY_PC cutscene_locatorfns[] = {
+        {const_cast<char *>("blaster"), 0, 0, 0, LocatorFunction_Blaster}, {NULL, 0, 0, 0, NULL}};
 
     static void CutScene_Configure(CUT_LOAD_RECORD_PC *cut, char *name, VARIPTR *buf, VARIPTR *buf_end) {
         CUT_LOAD_STATE_PC states[32];
@@ -1464,8 +1506,6 @@ extern "C" {
         }
     }
 
-    static f32 CutReflectRange = 0;
-
     void CutScenes_Draw(WORLDINFO *world) {
         if (world->cutscene_sys == NULL || ACTIVECUTCOUNT <= 0) {
             return;
@@ -1966,9 +2006,6 @@ extern "C" {
         }
     }
 
-    static CUT_DRAW_LOCATOR_ENTRY_PC cutscene_locatorfns[] = {
-        {const_cast<char *>("blaster"), 0, 0, 0, LocatorFunction_Blaster}, {NULL, 0, 0, 0, NULL}};
-
     void CutScenes_InitSystem(CUT_DRAW_SETTINGS_PC *system) {
         CutSceneSys = system;
         NuGCutSceneSysInit(reinterpret_cast<CUT_LOCATOR_FUNCTION_ENTRY_PC *>(cutscene_locatorfns));
@@ -2230,10 +2267,6 @@ extern "C" {
         }
     }
 
-    static i32 cutaudiopaused = 0;
-    static i32 CutFramePc = 0;
-    i32 CutSceneMusicStartFramePc = -1;
-
     static i32 CutScene_Start(WORLDINFO *world, CUT_LOAD_RECORD_PC *cut) {
         if (cut == NULL || cut->instance == NULL || CutScenePlayOncePrivatePc(world, cut) != 0) {
             return 0;
@@ -2368,9 +2401,6 @@ extern "C" {
         NewCutInfoCount = 0;
         cut_waiting_for_new_level = 0;
     }
-
-    static INSTNUGCUTSCENE *CutInstEnd[4] = {0};
-    static i32 CutInstEndStop = 0;
 
     void CutScenes_End(void) {
         if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayer)->active != NULL &&

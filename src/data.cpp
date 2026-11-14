@@ -8058,11 +8058,6 @@ extern "C" {
     f32 TextScaleX = 1.0f;
     f32 TextScaleY = 1.0f;
     void *OldLevelHackData = 0;
-    i32 (*CutScene_StartFn)(CUTINFO *cut) = 0;
-    void (*CutScene_PreUpdateFn)(CUTINFO *cut) = 0;
-    void (*CutScene_PostUpdateFn)(void) = 0;
-    void (*CutScene_StoppedFn)(CUTINFO *cut) = 0;
-    i32 (*CutScene_ReplaceCharacterModelFn)(CUTINFO *cut, CUTSCENECHARACTER *character) = 0;
     i32 (*InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) = 0;
     i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
     i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
@@ -9810,7 +9805,6 @@ extern "C" {
 #pragma data_seg(".data$TOGGLEHOLDTIME")
     f32 TOGGLEHOLDTIME = 1.0f;
 #pragma data_seg()
-    i32 CUTSKIPLOCK = 0;
 #pragma const_seg(".rdata$TakeOverState_ReleasedTakeOver")
     const char TakeOverState_ReleasedTakeOver[17] = "ReleasedTakeOver";
 #pragma const_seg()
@@ -10142,9 +10136,6 @@ extern "C" {
 #pragma data_seg(".data$v010")
     NUVEC v010 = {0.0f, 1.0f, 0.0f};
 #pragma data_seg()
-    // Eight queue slots are a source access view; the complete original extent is unknown.
-    CUTINFO *NewCutInfo[8] = {0};
-    i32 NewCutInfoCount = 0;
 #pragma const_seg(".rdata$AIAnimSpeedValueName")
     const char AIAnimSpeedValueName[7] = "value=";
 #pragma const_seg()
@@ -10437,7 +10428,6 @@ extern "C" {
     PC_FILEEXTINFO extensions[64] = {0};
     i32 num_extensions = 0;
     void *Game_Customiser = 0;
-    i32 CUTCAM = 0;
 }
 
 extern "C" {
@@ -12179,44 +12169,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_R")
-    u8 CUTSUBTITLEDEFAULT_R = 255;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_G")
-    u8 CUTSUBTITLEDEFAULT_G = 255;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_B")
-    u8 CUTSUBTITLEDEFAULT_B = 255;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_A")
-    u8 CUTSUBTITLEDEFAULT_A = 128;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_Y")
-    f32 CUTSUBTITLEDEFAULT_Y = -0.5f;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_SCALEX")
-    f32 CUTSUBTITLEDEFAULT_SCALEX = 1.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_SCALEY")
-    f32 CUTSUBTITLEDEFAULT_SCALEY = 1.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_FITWIDTH")
-    f32 CUTSUBTITLEDEFAULT_FITWIDTH = 1.7000000476837158f;
-#pragma data_seg()
-
-    u8 CUTSUBTITLEDEFAULT_ALIGN = 0;
-
-    f32 CUTSUBTITLEDEFAULT_X = 0;
-}
-
-extern "C" {
     char TextInputKeyNameTextPc7516c0[1] = "";
 
 #pragma data_seg(".data$TextInputKeyNameTextPc753370")
@@ -13261,14 +13213,6 @@ extern "C" {
 }
 
 extern "C" {
-    void (*CutScene_OverrideConfigFileNameFn)(char *, i32, i32) = 0;
-
-    CUT_LOAD_LIST_ENTRY_PC *CutList = 0;
-
-    i32 CUTCOUNT = 0;
-}
-
-extern "C" {
 
 #pragma data_seg(".data$DrawCharIconPanelPc")
     i32 drawcharicon_i_panel = -1;
@@ -13452,8 +13396,6 @@ extern "C" {
     i32 dco_locatorposonly = 0;
 
     void (*DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *) = 0;
-
-    i32 CutSceneWaiting = 0;
 }
 
 extern "C" {
@@ -13464,10 +13406,6 @@ extern "C" {
 #pragma data_seg(".data$EDPP_SCALE_TYPES")
     i32 EDPP_SCALE_TYPES = 20;
 #pragma data_seg()
-}
-
-extern "C" {
-    void *CutStopInfo = 0;
 }
 
 extern "C" {
@@ -14176,10 +14114,6 @@ extern "C" {
 }
 
 extern "C" {
-    CUT_PLAYER_ACTIVE_PC *CutScenePlayer = NULL;
-}
-
-extern "C" {
     void (*NuCutSceneRigidCollisionCheck)(struct cut_load_rigid_s *, NUMTX *) = NULL;
 }
 
@@ -14207,12 +14141,6 @@ extern "C" {
     f32 LevelNameMul = 0.0f;
     f32 LevelNameTime = 0.0f;
     u32 texanimbits = 0;
-    i32 CUTNOFOG = 0;
-    i32 CUTDRAWWORLD = 0;
-    i32 CUTCAMONLY = 0;
-    i32 ACTIVECUTCOUNT = 0;
-    i32 CutInstEndCount = 0;
-    i32 cut_waiting_for_new_level = 0;
 }
 
 extern "C" {
@@ -23450,10 +23378,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 stream_cut_issued = 0;
-}
-
-extern "C" {
     f32 statstime = 0;
 
     f32 cointotaltime = 0;
@@ -23481,8 +23405,6 @@ extern "C" {
     i32 reset_reimport = 0;
 
     i32 come_from_an_editor = 0;
-
-    void *newmode_cutinfo = 0;
 }
 
 extern "C" {
