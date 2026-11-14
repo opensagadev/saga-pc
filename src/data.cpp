@@ -24086,12 +24086,6 @@ extern "C" {
 }
 
 extern "C" {
-    i16 gunship_bolts[2] = {0};
-
-    u8 gunship_flags[10] = {0};
-}
-
-extern "C" {
     SPLINEPOS fireSplinePos = {0};
 
     SPLINEPOS fireBackPos = {0};
@@ -24108,8 +24102,6 @@ extern "C" {
 extern "C" {
 #pragma data_seg(".data$gizmopickup_typeid")
     i32 gizmopickup_typeid = -1;
-
-    void *hothtroopers = 0;
 }
 
 extern "C" {
