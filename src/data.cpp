@@ -9984,7 +9984,6 @@ extern "C" {
     f32 TOGGLEHOLDTIME = 1.0f;
 #pragma data_seg()
     i32 CUTSKIPLOCK = 0;
-    i32 players_cannot_exit_speeder = 0;
 #pragma const_seg(".rdata$TakeOverState_ReleasedTakeOver")
     const char TakeOverState_ReleasedTakeOver[17] = "ReleasedTakeOver";
 #pragma const_seg()
@@ -24188,7 +24187,6 @@ extern "C" {
     u8 troopercannons_beenReset = 0;
 
 #pragma data_seg(".data$players_going_forward")
-    i32 players_going_forward = 1;
 }
 
 extern "C" {
@@ -27887,10 +27885,6 @@ extern "C" {
 }
 
 extern "C" f32 ExplosionKnockbackScalePc = 2.0f;
-
-extern "C" {
-    i32 speeder_hitpoints_lost = 0;
-}
 
 extern "C" {
     STREAK_NODE_PC StreakNodesPc[128] = {0};
